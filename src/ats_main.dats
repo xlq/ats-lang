@@ -43,7 +43,7 @@
 
 #include "ats_main.cats"
 
-%}
+%} // end of [%{^]
 
 (* ****** ****** *)
 

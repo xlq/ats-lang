@@ -41,8 +41,8 @@
 (* ****** ****** *)
 
 #define ATS_MAJOR_VERSION 0
-#define ATS_MINOR_VERSION 1
-#define ATS_MICRO_VERSION 9
+#define ATS_MINOR_VERSION 2
+#define ATS_MICRO_VERSION 0
 
 (* ****** ****** *)
 

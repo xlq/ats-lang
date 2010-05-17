@@ -593,6 +593,7 @@ fn doc_dir_copy () = let
     val () = cp "fft.dats"
     val () = cp "GarsiaWachs.dats"
     val () = cp "GaussElim.dats"
+    val () = cp "gcd_mt.dats"
     val () = cp "hamming_lazy.dats"
     val () = cp "hanoi.dats"
     val () = cp "isqrt.dats"
@@ -723,6 +724,18 @@ fn doc_dir_copy () = let
     val () = cp "Makefile"
     val () = dir_copy
       (SRCROOTdoc_EXAMPLE_MULTICORE, DSTROOTdoc_EXAMPLE_MULTICORE, name_is_xats)
+  } // end of [val]
+//
+  val () = () where {
+    val SRCROOTdoc_EXAMPLE_cairo = SRCROOTdoc_EXAMPLE ++ "cairo/"
+    val DSTROOTdoc_EXAMPLE_cairo = DSTROOTdoc_EXAMPLE ++ "cairo/"
+    val () = mkdir_exn (DSTROOTdoc_EXAMPLE_cairo, DIRmode)
+    macdef cp (name) = fcopy_exn (
+      SRCROOTdoc_EXAMPLE_cairo ++ ,(name), DSTROOTdoc_EXAMPLE_cairo ++ ,(name)
+    ) // end of [macdef]
+    val () = cp "Makefile"
+    val () = dir_copy
+      (SRCROOTdoc_EXAMPLE_cairo, DSTROOTdoc_EXAMPLE_cairo, name_is_xats)
   } // end of [val]
 //
   val () = () where {

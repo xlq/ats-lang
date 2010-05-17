@@ -4,10 +4,19 @@
 #
 #
 
-.PHONY: all
-all:  compall
+######
 
 ATSCC=$(or $(ATSHOME), "/usr")/bin/atscc
+
+######
+
+.PHONY: all
+all:: checkall
+
+checkall: compall cleanall
+compall:: server server2
+
+######
 
 #
 # If on SunOS, please add [-lsocket]

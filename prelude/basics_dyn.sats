@@ -253,21 +253,22 @@ overload free_gc_elim with free_gc_t0ype_int_addr_elim
 castfn cloptr_get_view_ptr {a:viewt@ype}
   (x: cloptr a):<> [l:addr] (free_gc_v l, clo a @ l | ptr l)
   = "atspre_cloptr_get_view_ptr"
-
+// end of [cloptr_get_view_ptr]
 castfn cloptr_make_view_ptr {a:viewt@ype} {l:addr}
   (pf_gc: free_gc_v l, pf_at: clo a @ l | p: ptr l):<> cloptr a
   = "atspre_cloptr_make_view_ptr"
+// end of [cloptr_make_view_ptr]
 
 castfn cloref_get_view_ptr {a:t@ype}
   (x: cloref a):<> [l:addr] (vbox (clo a @ l) | ptr l)
   = "atspre_cloref_get_view_ptr"
-
+// end of [cloref_get_view_ptr]
 castfn cloref_make_view_ptr {a:t@ype}
   {l:addr} (pf: vbox (clo a @ l) | p: ptr l):<> cloref a
   = "atspre_cloref_make_view_ptr"
-  
-fun cloptr_free {a:t@ype} (x: cloptr a):<> void
-  = "atspre_cloptr_free"
+// end of [cloref_make_view_ptr]
+
+fun cloptr_free {a:t@ype} (x: cloptr a):<> void = "atspre_cloptr_free"
 
 (* ****** ****** *)
 
@@ -275,10 +276,14 @@ praxi clstrans
   {c1,c2,c3:cls | c1 <= c2; c2 <= c3} (): [c1 <= c3] void
 // end of [clstrans]
 
+dataprop SUBCLS (c1:cls, c2:cls, bool) =
+  | {c1 <= c2} SUBCLS (c1, c2, true) of () | SUBCLSfalse (c1, c2, false) of ()
+// end of [SUBCLS]
+
 (* ****** ****** *)
-
+//
 // fun void ():<> void = "ats_void"
-
+//
 // [vbox_make_view_ptr] implemented in [basics.cats]
 fun vbox_make_view_ptr
   {a:viewt@ype} {l:addr} // for statically allocated
@@ -290,10 +295,8 @@ fun vbox_make_view_ptr
 
 praxi opt_some {a:viewt@ype} (x: !(a) >> opt (a, true)):<prf> void
 praxi opt_unsome {a:viewt@ype} (x: !opt (a, true) >> a):<prf> void
-
 praxi opt_none {a:viewt@ype} (x: !(a?) >> opt (a, false)):<prf> void
 praxi opt_unnone {a:viewt@ype} (x: !opt (a, false) >> a?):<prf> void
-
 praxi opt_clear {a:t@ype} {b:bool} (x: !opt (a, b) >> a?):<prf> void
 
 (* ****** ****** *)
@@ -324,13 +327,15 @@ and vtfrac_unsplit {vt:viewtype} {r1,r2:rat} {s:stamp}
 
 abstype file_mode (file_mode) // string type
 
-dataprop file_mode_lte (file_mode, file_mode) =
+dataprop file_mode_lte
+  (file_mode, file_mode) =
   | {m:file_mode} file_mode_lte_refl (m, m)
   | {m1,m2,m3:file_mode}
       file_mode_lte_tran (m1, m3) of
         (file_mode_lte (m1, m2), file_mode_lte (m2, m3))
   | {m:file_mode} file_mode_lte_rw_r (rw, r)
   | {m:file_mode} file_mode_lte_rw_w (rw, w)
+// end of [file_mode_lte]
 
 prval file_mode_lte_r_r: file_mode_lte (r, r) // implemented in [file.dats]
 prval file_mode_lte_w_w: file_mode_lte (w, w) // implemented in [file.dats]
@@ -349,17 +354,22 @@ macdef stdin = $extval (ptr stdin_addr, "stdin")
 
 fun stdin_get ():<!exnref> (FILE r @ stdin_addr | ptr stdin_addr)
   = "atspre_stdin_get"
+// end of [stdin_get]
 fun stdin_view_get ():<!exnref> (FILE r @ stdin_addr | void)
   = "atspre_stdin_view_get"
+// end of [stdin_view_get]
 and stdin_view_set (pf: FILE r @ stdin_addr | (*none*)):<!exnref> void
   = "atspre_stdin_view_set"
+// end of [stdin_view_set]
 
 fun stdin_view_get_opt ()
   :<!ref> [b:bool] (option_v (FILE r @ stdin_addr, b) | bool b)
   = "atspre_stdin_view_get_opt"
+// end of [stdin_view_get_opt]
 and stdin_view_set_opt (pf: FILE r @ stdin_addr | (*none*))
   :<!ref> [b:bool] (option_v (FILE r @ stdin_addr, ~b) | bool b)
   = "atspre_stdin_view_set_opt"
+// end of [stdin_view_set_opt]
 
 // standard output
 
@@ -370,19 +380,25 @@ macdef stdout = $extval (ptr stdout_addr, "stdout")
 fun stdout_get ()
   :<!exnref> (FILE w @ stdout_addr | ptr stdout_addr)
   = "atspre_stdout_get"
+// end of [stdout_get]
+
 fun stdout_view_get ()
   :<!exnref> (FILE w @ stdout_addr | void)
   = "atspre_stdout_view_get"
+// end of [stdout_view_get]
 and stdout_view_set
   (pf: FILE w @ stdout_addr | (*none*)):<!exnref> void
   = "atspre_stdout_view_set"
+// end of [stdout_view_set]
 
 fun stdout_view_get_opt ()
   :<!ref> [b:bool] (option_v (FILE w @ stdout_addr, b) | bool b)
   = "atspre_stdout_view_get_opt"
+// end of [stdout_view_get_opt]
 and stdout_view_set_opt (pf: FILE w @ stdout_addr | (*none*))
   :<!ref> [b:bool] (option_v (FILE w @ stdout_addr, ~b) | bool b)
   = "atspre_stdout_view_set_opt"
+// end of [stdout_view_set_opt]
 
 // standard error
 
@@ -393,23 +409,26 @@ macdef stderr = $extval (ptr stderr_addr, "stderr")
 fun stderr_get ()
   :<!exnref> (FILE w @ stderr_addr | ptr stderr_addr)
   = "atspre_stderr_get"
+// end of [stderr_get]
 
 fun stderr_view_get ()
   :<!exnref> (FILE w @ stderr_addr | void)
   = "atspre_stderr_view_get"
-
+// end of [stderr_view_get]
 and stderr_view_set
   (pf: FILE w @ stderr_addr | (*none*)):<!exnref> void
   = "atspre_stderr_view_set"
+// end of [stderr_view_set]
 
 fun stderr_view_get_opt ()
   :<!ref> [b:bool] (option_v (FILE w @ stderr_addr, b) | bool b)
   = "atspre_stderr_view_get_opt"
-
+// end of [stderr_view_get_opt]
 and stderr_view_set_opt
   (pf: FILE w @ stderr_addr | (*none*))
   :<!ref> [b:bool] (option_v (FILE w @ stderr_addr, ~b) | bool b)
   = "atspre_stderr_view_set_opt"
+// end of [stderr_view_set_opt]
 
 (* ****** ****** *)
 
@@ -439,11 +458,8 @@ overload fprint_newline with fprint1_newline
 
 (* ****** ****** *)
 
-fun print_newline ():<!ref> void
-  = "atspre_print_newline"
-
-and prerr_newline ():<!ref> void
-  = "atspre_prerr_newline"
+fun print_newline ():<!ref> void = "atspre_print_newline"
+and prerr_newline ():<!ref> void = "atspre_prerr_newline"
 
 (* ****** ****** *)
 
@@ -486,7 +502,6 @@ macdef lazy_vt_force (x) = lazy_vt_force_crypt ($encrypt ,(x))
 
 fun lazy_vt_free {a:viewt@ype} (x: lazy_vt a):<1,~ref> void
   = "ats_lazy_vt_free"
-
 overload ~ with lazy_vt_free
 
 (* ****** ****** *)
