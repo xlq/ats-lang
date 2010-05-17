@@ -152,9 +152,7 @@ ats_void_type
 mainats (
   ats_int_type argc, ats_ptr_type argv
 ) {
-  gtk_init ((int*)&argc, (char***)&argv) ;
-  main1 () ;
-  return ;
+  gtk_init ((int*)&argc, (char***)&argv) ; main1 () ; return ;
 } // end of [mainats]
 %} // end of [%{$]
 
