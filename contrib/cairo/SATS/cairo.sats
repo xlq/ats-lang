@@ -85,67 +85,46 @@ abst@ype cairo_matrix_t = $extype "cairo_matrix_t"
 // enum type
 abst@ype cairo_status_t = $extype "cairo_status_t"
 castfn int_of_cairo_status_t (x: cairo_status_t):<> int
-
 macdef CAIRO_STATUS_SUCCESS =
   $extval (cairo_status_t, "CAIRO_STATUS_SUCCESS")
-
 macdef CAIRO_STATUS_NO_MEMORY =
   $extval (cairo_status_t, "CAIRO_STATUS_NO_MEMORY")
-
 macdef CAIRO_STATUS_INVALID_RESTORE =
   $extval (cairo_status_t, "CAIRO_STATUS_INVALID_RESTORE")
-
 macdef CAIRO_STATUS_INVALID_POP_GROUP =
   $extval (cairo_status_t, "CAIRO_STATUS_INVALID_POP_GROUP")
-
 macdef CAIRO_STATUS_NO_CURRENT_POINT =
   $extval (cairo_status_t, "CAIRO_STATUS_NO_CURRENT_POINT")
-
 macdef CAIRO_STATUS_INVALID_MATRIX =
   $extval (cairo_status_t, "CAIRO_STATUS_INVALID_MATRIX")
-
 macdef CAIRO_STATUS_INVALID_STATUS =
   $extval (cairo_status_t, "CAIRO_STATUS_INVALID_STATUS")
-
 macdef CAIRO_STATUS_NULL_POINTER =
   $extval (cairo_status_t, "CAIRO_STATUS_NULL_POINTER")
-
 macdef CAIRO_STATUS_INVALID_STRING =
   $extval (cairo_status_t, "CAIRO_STATUS_INVALID_STRING")
-
 macdef CAIRO_STATUS_INVALID_PATH_DATA =
   $extval (cairo_status_t, "CAIRO_STATUS_INVALID_PATH_DATA")
-
 macdef CAIRO_STATUS_READ_ERROR =
   $extval (cairo_status_t, "CAIRO_STATUS_READ_ERROR")
-
 macdef CAIRO_STATUS_WRITE_ERROR =
   $extval (cairo_status_t, "CAIRO_STATUS_WRITE_ERROR")
-
 macdef CAIRO_STATUS_SURFACE_FINISHED =
   $extval (cairo_status_t, "CAIRO_STATUS_SURFACE_FINISHED")
-
 macdef CAIRO_STATUS_SURFACE_TYPE_MISMATCH =
   $extval (cairo_status_t, "CAIRO_STATUS_SURFACE_TYPE_MISMATCH")
-
 macdef CAIRO_STATUS_PATTERN_TYPE_MISMATCH =
   $extval (cairo_status_t, "CAIRO_STATUS_PATTERN_TYPE_MISMATCH")
-
 macdef CAIRO_STATUS_INVALID_CONTENT =
   $extval (cairo_status_t, "CAIRO_STATUS_INVALID_CONTENT")
-
 macdef CAIRO_STATUS_INVALID_FORMAT =
   $extval (cairo_status_t, "CAIRO_STATUS_INVALID_FORMAT")
-
 macdef CAIRO_STATUS_INVALID_VISUAL =
   $extval (cairo_status_t, "CAIRO_STATUS_INVALID_VISUAL")
-
 macdef CAIRO_STATUS_FILE_NOT_FOUND =
   $extval (cairo_status_t, "CAIRO_STATUS_FILE_NOT_FOUND")
-
 macdef CAIRO_STATUS_INVALID_DASH =
   $extval (cairo_status_t, "CAIRO_STATUS_INVALID_DASH")
-
 macdef CAIRO_STATUS_INVALID_DSC_COMMENT =
   $extval (cairo_status_t, "CAIRO_STATUS_INVALID_DSC_COMMENT")
 
@@ -157,25 +136,33 @@ overload = with eq_cairo_status_cairo_status
 (* ****** ****** *)
 
 // enum type
-abst@ype cairo_format_t = $extype "cairo_format_t"
-castfn int_of_cairo_format_t (x: cairo_format_t):<> int
-
+abst@ype
+cairo_format_t = $extype "cairo_format_t"
+castfn
+int_of_cairo_format_t (x: cairo_format_t):<> int
 macdef CAIRO_FORMAT_ARGB32 =
   $extval (cairo_format_t, "CAIRO_FORMAT_ARGB32")
-
 macdef CAIRO_FORMAT_RGB24 =
   $extval (cairo_format_t, "CAIRO_FORMAT_RGB24")
-
 macdef CAIRO_FORMAT_A8 =
   $extval (cairo_format_t, "CAIRO_FORMAT_A8")
-
 macdef CAIRO_FORMAT_A1 =
   $extval (cairo_format_t, "CAIRO_FORMAT_A1")
-
 (*
 macdef CAIRO_FORMAT_RGB16_565 = // deprecated!
   $extval (cairo_format_t, "CAIRO_FORMAT_RGB16_565")
 *)
+
+(* ****** ****** *)
+
+// enum type
+abst@ype cairo_content_t = $extype "cairo_content_t"
+macdef CAIRO_CONTENT_COLOR =
+  $extval (cairo_content_t, "CAIRO_CONTENT_COLOR")
+macdef CAIRO_CONTENT_ALPHA =
+  $extval (cairo_content_t, "CAIRO_CONTENT_ALPHA")
+macdef CAIRO_CONTENT_COLOR_ALPHA =
+  $extval (cairo_content_t, "CAIRO_CONTENT_COLOR_ALPHA")
 
 (* ****** ****** *)
 
@@ -252,18 +239,10 @@ fun cairo_get_group_target1
 
 (* ****** ****** *)
 
-fun cairo_push_group {l:agz}
-  (cr: !cairo_ref l): (cairo_push_group_v l | void)
+fun cairo_push_group
+  {l:agz} (cr: !cairo_ref l) : (cairo_push_group_v l | void)
   = "#atsctrb_cairo_push_group"
-
-// enum type
-abst@ype cairo_content_t = $extype "cairo_content_t"
-macdef CAIRO_CONTENT_COLOR =
-  $extval (cairo_content_t, "CAIRO_CONTENT_COLOR")
-macdef CAIRO_CONTENT_ALPHA =
-  $extval (cairo_content_t, "CAIRO_CONTENT_ALPHA")
-macdef CAIRO_CONTENT_COLOR_ALPHA =
-  $extval (cairo_content_t, "CAIRO_CONTENT_COLOR_ALPHA")
+// end of [cairo_push_group]
 
 fun cairo_push_group_with_content
   {l:agz} (
@@ -959,10 +938,27 @@ fun cairo_set_font_size
 fun cairo_get_font_matrix {l:agz}
   (cr: !cairo_ref l, mat: &cairo_matrix_t? >> cairo_matrix_t): void
   = "#atsctrb_cairo_get_font_matrx"
+// end of [cairo_get_font_matrix]
 
 fun cairo_set_font_matrix {l:agz}
   (cr: !cairo_ref l, mat: &cairo_matrix_t): void
   = "#atsctrb_cairo_set_font_matrx"
+// end of [cairo_set_font_matrix]
+
+(* ****** ****** *)
+
+//
+// HX: options is over written
+//
+fun cairo_get_font_options {l1,l2:agz}
+  (cr: !cairo_ref l1, options: !cairo_font_options_ptr l2): void
+  = "#atsctrb_cairo_get_font_options"
+// end of [cairo_get_font_options]
+
+fun cairo_set_font_options {l1,l2:agz}
+  (cr: !cairo_ref l1, options: !cairo_font_options_ptr l2): void
+  = "#atsctrb_cairo_set_font_options"
+// end of [cairo_set_font_options]
 
 (* ****** ****** *)
 
@@ -1412,7 +1408,7 @@ fun cairo_font_options_get_hint_metrics
 // end of [cairo_font_options_get_hint_metrics]
 
 fun cairo_font_options_set_hint_metrics {l:agz} (
-    options: cairo_font_options_ptr l, hint_metrics: cairo_hint_metrics_t
+    options: !cairo_font_options_ptr l, hint_metrics: cairo_hint_metrics_t
   ) : void = "#atsctrb_cairo_font_options_set_hint_metrics"
 // end of [cairo_font_options_set_hint_metrics]
 

@@ -312,6 +312,11 @@ atsctrb_cairo_get_dash (
 
 /* ****** ****** */
 
+#define atsctrb_cairo_get_font_options cairo_get_font_options
+#define atsctrb_cairo_set_font_options cairo_set_font_options
+
+/* ****** ****** */
+
 #define atsctrb_cairo_get_font_face cairo_get_font_face
 #define atsctrb_cairo_set_font_face cairo_set_font_face
 
