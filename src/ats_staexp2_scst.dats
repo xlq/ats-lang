@@ -62,7 +62,6 @@ typedef s2cst_struct = struct { (* builtin or abstract *)
 , s2cst_iscpy= s2cstopt // is a copy?
   // is list-like?
 , s2cst_islst= Option @(d2con_t (*nil*), d2con_t (*cons*))
-, s2cst_decarg= s2qualst // template arg
 , s2cst_arilst= List int // arity list
   // variance: -1: contravarint; 0: invariant; 1: covarint
 , s2cst_argvar= Option (List @(symopt_t, s2rt, int))
@@ -111,7 +110,6 @@ p->s2cst_isrec := isrec;
 p->s2cst_isasp := isasp;
 p->s2cst_iscpy := S2CSTOPTnone ();
 p->s2cst_islst := islst;
-p->s2cst_decarg := list_nil ();
 p->s2cst_arilst := s2rt_arity_list s2t;
 p->s2cst_argvar := argvar;
 p->s2cst_conlst := None ();
@@ -168,14 +166,6 @@ implement s2cst_islst_get (s2c) =
 
 implement s2cst_islst_set (s2c, islst) =
   let val (vbox pf | p) = s2c in p->s2cst_islst := islst end
-
-implement s2cst_decarg_get (s2c) =
-  let val (vbox pf | p) = s2c in p->s2cst_decarg end
-// end of [s2cst_decarg_get]
-
-implement s2cst_decarg_set (s2c, s2qss) =
-  let val (vbox pf | p) = s2c in p->s2cst_decarg := s2qss end
-// end of [s2cst_decarg_set]
 
 implement s2cst_arilst_get (s2c) =
   let val (vbox pf | p) = s2c in p->s2cst_arilst end

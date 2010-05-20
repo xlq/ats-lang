@@ -737,11 +737,6 @@ implement s0exp_tr s0e0 = let
       in
         $Fix.ITEMatm (s1exp_struct (loc0, ls1es))
       end // end of [S0Estruct]
-    | S0Etmpid (qid, decarg) => let
-        val decarg = t1mps0explstlst_tr (decarg)
-      in
-        $Fix.ITEMatm (s1exp_tmpid (loc0, qid, decarg))
-      end // end of [S0Etmpid]
     | S0Etyarr (s0e_elt, s0ess_dim) => let
         val s1e_elt = s0exp_tr s0e_elt
         val s1ess_dim = s0explstlst_tr s0ess_dim

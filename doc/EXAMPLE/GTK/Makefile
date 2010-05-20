@@ -41,11 +41,19 @@ gtkcairoclock: gtkcairoclock.dats
 
 ######
 
+html::
+	$(ATSOPT) --posmark_html -d GameOf24.dats > GameOf24_dats.html
+	$(ATSOPT) --posmark_html -d gtkcairoclock.dats > gtkcairoclock_dats.html
+
+######
+
 clean::
 	rm -f *_dats.c *_sats.c *~
 
 cleanall:: clean
 	rm -f GameOf24
+	rm -f GameOf24_dats.html
 	rm -f gtkcairoclock
+	rm -f gtkcairoclock_dats.html
 
 ###### end of [Makefile] ######

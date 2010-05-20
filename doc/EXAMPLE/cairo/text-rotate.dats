@@ -58,7 +58,7 @@ fun draw {l:agz} (
   in
     // nothing
   end // end of [if]
-  var i: int = 0
+  var i: int // uninitialized
   val () = for (i := 0; i < NUM_TEXT; i := i+1) let
     val (pf_save | ()) = cairo_save (cr)
     val () = cairo_rotate (cr, 2*M_PI*i/NUM_TEXT)

@@ -843,6 +843,7 @@ fun cairo_pattern_get_rgba
 fun cairo_pattern_create_for_surface
   {l:agz} (sf: !cairo_surface_ref l): cairo_pattern_ref1
   = "#atsctrb_cairo_pattern_create_for_surface"
+// end of [cairo_pattern_create_for_surface]
 
 fun cairo_pattern_get_surface
   {l:agz} (
@@ -1043,12 +1044,12 @@ fun cairo_set_font_size
 
 fun cairo_get_font_matrix {l:agz}
   (cr: !cairo_ref l, mat: &cairo_matrix_t? >> cairo_matrix_t): void
-  = "#atsctrb_cairo_get_font_matrx"
+  = "#atsctrb_cairo_get_font_matrix"
 // end of [cairo_get_font_matrix]
 
 fun cairo_set_font_matrix {l:agz}
   (cr: !cairo_ref l, mat: &cairo_matrix_t): void
-  = "#atsctrb_cairo_set_font_matrx"
+  = "#atsctrb_cairo_set_font_matrix"
 // end of [cairo_set_font_matrix]
 
 (* ****** ****** *)

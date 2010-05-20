@@ -54,9 +54,9 @@ fun draw {l:agz} (
   val () = cairo_pattern_add_color_stop_rgba (gradient, 0.0, 0.3, 0.3, 0.3, 1.0)
   val () = cairo_pattern_add_color_stop_rgba (gradient, 1.0, 1.0, 1.0, 1.0, 1.0)
 //
-  var i: int = 0 and j: int = 0  
-//
+  var j: int // uninitalized
   val () = for (j := 0; j < 1; j := j + 1) let
+    var i: int // unintialized
     val () = for (i := 0; i < 1; i := i + 1) let
       val (pf1 | ()) = cairo_save (cr)
       val x = (i * UNIT_SIZE) + (i + 1) * PAD

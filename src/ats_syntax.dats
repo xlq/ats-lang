@@ -1062,15 +1062,6 @@ in '{
   s0exp_loc= loc, s0exp_node= S0Estruct ls0es
 } end // end of [s0exp_struct]
 
-implement s0exp_tmpid (qid, arg, args, t_gt) = let
-  val loc_qid = qid.tmpqi0de_loc
-  val loc_qid_end = $Loc.location_end_make loc_qid
-  val loc = combine (loc_qid, t_gt.t0kn_loc)
-  val args = gtlt_t1mps0expseqseq_cons_loc (loc_qid_end, arg, args) 
-in
-  '{ s0exp_loc= loc, s0exp_node= S0Etmpid (qid, args) }
-end // end of [s0exp_tmpid]
-
 implement s0exp_tyarr (t_beg, elt, ind) = let
   val loc = combine (t_beg.t0kn_loc, ind.s0arrind_loc)
 in '{

@@ -257,8 +257,6 @@ datatype s1exp_node =
       (s1exp(*view*), s1exp(*viewtype*))
   | S1Estruct of (* struct type *)
       labs1explst
-  | S1Etmpid of (* template id *)
-      ($Syn.tmpqi0de, tmps1explstlst)
   | S1Etop of (*0/1: topization/typization *)
       (int(*knd*), s1exp)
   | S1Etrans of (* view or viewtype transform *)
@@ -425,10 +423,6 @@ fun s1exp_named (_: loc_t, name: sym_t, s1e: s1exp): s1exp
 fun s1exp_qid (_: loc_t, q: s0taq, id: sym_t): s1exp
 fun s1exp_read (_: loc_t, s1e: s1exp(*list*)): s1exp
 fun s1exp_struct (_: loc_t, _: labs1explst): s1exp
-
-fun s1exp_tmpid
-  (_: loc_t, qid: $Syn.tmpqi0de, decarg: tmps1explstlst): s1exp
-// end of [s1exp_tmpid]
 
 fun s1exp_top (_: loc_t, knd: int, arg: s1exp): s1exp
 fun s1exp_trans (_: loc_t, arg1: s1exp, arg2: s1exp): s1exp

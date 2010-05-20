@@ -425,10 +425,6 @@ implement s2exp_sizeof (s2e) = '{
   s2exp_srt= s2rt_int, s2exp_node= S2Esizeof s2e
 } // end of [s2exp_sizeof]
 
-implement s2exp_tmpid (s2t, s2c, decarg) = '{
-  s2exp_srt= s2t, s2exp_node= S2Etmpid (s2c, decarg)
-} // end of [s2exp_tmpid]
-
 implement s2exp_top_srt (s2t, knd, s2e) = '{
   s2exp_srt= s2t, s2exp_node= S2Etop (knd, s2e)
 } // end of [s2exp_top_srt]

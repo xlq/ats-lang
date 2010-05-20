@@ -133,8 +133,7 @@ end // end of [draw_clock]
 (* ****** ****** *)
 
 extern fun draw_main {l:agz}
-  (cr: !cairo_ref l, width: int, height: int)
-  : void = "draw_main"
+  (cr: !cairo_ref l, width: int, height: int): void
 implement draw_main
   (cr, width, height) = () where {
   val w = (double_of)width
@@ -177,9 +176,8 @@ staload "contrib/GTK/SATS/gtk.sats"
 
 %{^
 extern
-ats_void_type
-mainats (ats_int_type argc, ats_ptr_type argv) ;
-%}
+ats_void_type mainats (ats_int_type argc, ats_ptr_type argv) ;
+%} // end of [%{^]
 
 (* ****** ****** *)
 
@@ -280,7 +278,7 @@ in
     prval () = minus_addback (fpf_win, win | darea)
     prval () = fpf_darea (darea)
   in
-    GFALSE
+    GFALSE // HX: terminating the timer
   end // end of [if]
 end // end of [ftimeout]
 
@@ -292,7 +290,7 @@ implement main1 () = () where {
   val window = gtk_window_new (GTK_WINDOW_TOPLEVEL)
   val () = gtk_window_set_default_size (window, (gint)400, (gint)400)
 //
-  val (fpf_x | x) = (gstring_of_string)"gtkcairoclock"
+  val (fpf_x | x) = (gstring_of_string)"ATS: gtkcairoclock"
   val () = gtk_window_set_title (window, x)
   prval () = fpf_x (x)
 //
@@ -324,9 +322,7 @@ ats_void_type
 mainats (
   ats_int_type argc, ats_ptr_type argv
 ) {
-  gtk_init ((int*)&argc, (char***)&argv) ;
-  main1 () ;
-  return ;
+  gtk_init ((int*)&argc, (char***)&argv) ; main1 () ; return ;
 } // end of [mainats]
 %} // end of [%{$]
 

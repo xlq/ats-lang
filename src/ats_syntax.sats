@@ -761,8 +761,6 @@ datatype s0exp_node =
       (s0taq, sym_t)
   | S0Estruct of (* struct type *)
       labs0explst 
-  | S0Etmpid of (* template id *)
-      (tmpqi0de, t1mps0explstlst)
   | S0Etyarr of (* array type *)
       (s0exp (*element*), s0explstlst (*dimension*))
   | S0Etyrec of (* record type *)
@@ -872,10 +870,6 @@ fun s0exp_qid (q: s0taq, id: i0de): s0exp = "s0exp_qid"
 
 fun s0exp_struct (t_struct: t0kn, _: labs0explst, t_end: t0kn): s0exp
   = "s0exp_struct"
-
-fun s0exp_tmpid
-  (qid: tmpqi0de, arg: s0explst, args: t1mps0explstlst, t_gt: t0kn): s0exp
-  = "s0exp_tmpid"
 
 fun s0exp_tyarr (t_beg: t0kn, elt: s0exp, ind: s0arrind): s0exp
   = "s0exp_tyarr"

@@ -255,8 +255,6 @@ and s2exp_node =
       s2zexp
   | S2Esizeof of (* size of a type *)
       s2exp
-  | S2Etmpid of (* instantiated class template *)
-      (s2cst_t, tmps2explstlst)
   | S2Etop of (* 0/1: topization/typization *)
       (int(*knd*), s2exp)
   | S2Etup of (* tuple *)
@@ -534,8 +532,6 @@ fun s2cst_iscpy_get (_: s2cst_t): s2cstopt
 fun s2cst_iscpy_set (_: s2cst_t, _: s2cstopt): void
 fun s2cst_islst_get (_: s2cst_t): Option @(d2con_t, d2con_t)
 fun s2cst_islst_set (_: s2cst_t, _: Option @(d2con_t, d2con_t)): void
-fun s2cst_decarg_get (_: s2cst_t): s2qualst
-fun s2cst_decarg_set (_: s2cst_t, _: s2qualst): void
 fun s2cst_arilst_get (_: s2cst_t): List int // arity list
 fun s2cst_argvar_get (_: s2cst_t): Option (List @(symopt_t, s2rt, int))
 fun s2cst_conlst_get (_: s2cst_t): Option d2conlst
@@ -1110,10 +1106,6 @@ fun s2exp_sel_srt (s2t: s2rt, s2e: s2exp, i: int): s2exp
 fun s2exp_size (s2ze: s2zexp): s2exp
 fun s2exp_sizeof (s2e: s2exp): s2exp
 
-fun s2exp_tmpid
-  (s2t: s2rt, s2c: s2cst_t, decarg: tmps2explstlst): s2exp
-// end of [s2exp_tmpid]
-
 fun s2exp_top_srt (s2t: s2rt, knd: int, s2e: s2exp): s2exp
 fun s2exp_tup_srt (s2t: s2rt, s2es: s2explst): s2exp
 fun s2exp_tyarr (elt: s2exp, dim: s2explstlst): s2exp
@@ -1188,10 +1180,6 @@ fun stasub_extend_svarlst
 fun stasub_extend_sarglst_svarlst
   (loc0: loc_t, sub: stasub_t, s2as: s2arglst, s2vs: s2varlst)
   : @(stasub_t, s2varlst)
-
-fun stasub_extend_decarg_tmps2explstlst
-  (sub: stasub_t, decarg: s2qualst, ts2ess: tmps2explstlst): stasub_t
-// end of [stasub_extend_decarg_tmps2explstlst]
 
 fun s2exp_subst (sub: stasub_t, s2e: s2exp): s2exp
 fun s2explst_subst {n:nat} (sub: stasub_t, s2es: s2explst n): s2explst n

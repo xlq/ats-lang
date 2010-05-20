@@ -349,7 +349,6 @@ extern s0exp_t s0exp_named (i0de_t, s0exp_t) ;
 extern s0exp_t s0exp_opide (t0kn_t, i0de_t) ;
 extern s0exp_t s0exp_qid (s0taq_t, i0de_t) ;
 extern s0exp_t s0exp_struct (t0kn_t, labs0explst_t, t0kn_t) ;
-extern s0exp_t s0exp_tmpid (tmpqi0de_t, s0explst_t, t1mps0explstlst_t, t0kn_t) ;
 extern s0exp_t s0exp_tyarr (t0kn_t, s0exp_t, s0arrind_t) ;
 extern s0exp_t s0exp_tyrec (int, t0kn_t, labs0explst_t, t0kn_t) ;
 extern s0exp_t s0exp_tyrec_ext (t0kn_t, s0tring_t, labs0explst_t, t0kn_t) ;
@@ -2195,8 +2194,6 @@ atms0exp /* atomic static expression */
   | si0de                               { $$ = s0exp_ide($1) ; }
   | OP si0de                            { $$ = s0exp_opide($1, $2) ; }
   | s0taq si0de                         { $$ = s0exp_qid($1, $2) ; }
-  | tmpqi0de t1mps0expseq gtlt_t1mps0expseqseq GT
-                                        { $$ = s0exp_tmpid ($1, $2, $3, $4) ; }
 /*
   | sqi0de HASHLBRACE labs0expseq RBRACE
                                         { $$ = s0exp_mod($1, $3, $4) ; }
