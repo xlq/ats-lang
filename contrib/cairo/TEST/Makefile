@@ -115,9 +115,12 @@ test11: cairo-test11.dats
 	$(ATSCC) -o test11 $(XRCFLAGS) cairo-test11.dats \
      && ./test11
 
+######
+
 test12: cairo-test12.dats
-	$(ATSCC) -o test12 $(XRCFLAGS) cairo-test12.dats \
-     && ./test12
+	$(ATSCC) -o test12 $(GTKCFLAGS) cairo-test12.dats \
+
+######
 
 test13: cairo-test13.dats
 	$(ATSCC) -o test13 $(XRCFLAGS) cairo-test13.dats \
@@ -155,7 +158,7 @@ cleanall: clean
 	rm -f test9
 	rm -f test10 cairo-test10.ps
 	rm -f test11 cairo-test11.png
-	rm -f test12 cairo-test12.png
+	rm -f test12
 	rm -f test13 cairo-test13.png
 	rm -f test14 cairo-test14.png
 	rm -f test15 cairo-test15.png

@@ -133,18 +133,6 @@ fun draw_rings
 
 (* ****** ****** *)
 
-staload "contrib/glib/SATS/glib.sats"
-staload "contrib/glib/SATS/glib-object.sats"
-
-(* ****** ****** *)
-
-staload "contrib/GTK/SATS/gdkclassdec.sats"
-staload "contrib/GTK/SATS/gdk.sats"
-staload "contrib/GTK/SATS/gtkclassdec.sats"
-staload "contrib/GTK/SATS/gtk.sats"
-
-(* ****** ****** *)
-
 extern fun draw_all {l:agz}
   (cr: !cairo_ref l, width: int, height: int) : void = "draw_main"
 implement draw_all
@@ -187,6 +175,18 @@ implement draw_all
   ) // end of [val]
   val () = cairo_restore (pf0 | cr)
 } // end of [draw_all]
+
+(* ****** ****** *)
+
+staload "contrib/glib/SATS/glib.sats"
+staload "contrib/glib/SATS/glib-object.sats"
+
+(* ****** ****** *)
+
+staload "contrib/GTK/SATS/gdkclassdec.sats"
+staload "contrib/GTK/SATS/gdk.sats"
+staload "contrib/GTK/SATS/gtkclassdec.sats"
+staload "contrib/GTK/SATS/gtk.sats"
 
 (* ****** ****** *)
 

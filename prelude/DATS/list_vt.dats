@@ -55,11 +55,11 @@ fn list_vt_is_cons {a:viewt@ype} {n:nat} (xs: !list_vt (a, n)): bool (n>0) =
 
 (* ****** ****** *)
 
-// A feature in this implementation is yet to be realized
+viewtypedef
+List_vt = [a:viewt@ype] List_vt a
 
-viewtypedef List_vt = [a:viewt@ype] List_vt a
-
-implement{a} list_vt_of_arraysize (arrsz) = let
+implement{a}
+list_vt_of_arraysize (arrsz) = let
   fun loop {n:nat} {l1,l2:addr} .<n>. (
       pf1: !array_v (a, n, l1) >> array_v (a?, n, l1)
     , pf2: !List_vt? @ l2 >> list_vt (a, n) @ l2
@@ -85,14 +85,14 @@ implement{a} list_vt_of_arraysize (arrsz) = let
   var res: List_vt?
   val (pf_gc, pf_arr | p_arr, sz) = arrsz
   val () = loop (pf_arr, view@ res | p_arr, &res, sz)
+  val () = array_ptr_free {a} (pf_gc, pf_arr | p_arr)
 in
-  array_ptr_free {a} (pf_gc, pf_arr | p_arr); res
+  res
 end // end of [list_vt_of_arraysize]
 
 (*
-
-implement{a} list_vt_of_arraysize (arrsz) = let
-
+implement{a}
+list_vt_of_arraysize (arrsz) = let
 // the loop goes from the end of an array to its beginning
 fun loop {i,j:nat} {l:addr} {ofs:int} .<i>.
   (pf_mul: MUL (i, sizeof a, ofs), pf_arr: array_v (a, i, l) |
@@ -111,16 +111,15 @@ fun loop {i,j:nat} {l:addr} {ofs:int} .<i>.
     prval () = array_v_unnone {a} (pf_arr)
   in
     (array_v_none {a?} () | res)
-  end
-
+  end // end of [if]
+// end of [loop]
 val (pf_arr | p_arr, sz) = arrsz
 val (pf_mul | ofs) = sz imul2 sizeof<a>
 val (pf_arr | res) = loop (pf_mul, pf_arr | sz, p_arr+ofs, nil ())
-
+//
 in
   array_ptr_free {a} (pf_arr | p_arr); res
 end // end of [list_vt_of_arraysize]
-
 *)
 
 (* ****** ****** *)

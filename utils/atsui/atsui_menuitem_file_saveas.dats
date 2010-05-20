@@ -181,6 +181,29 @@ cb_saveas_activate () = GTRUE where {
   prval () = minus_addback (fpf_dialogwin, dialogwin | dialog)
 //
   val (fpf_chooser | chooser) = gtk_file_chooser_dialog_get_chooser (dialog)
+  val (fpf_srcwin | srcwin) = $SWL.the_srcwinlst_get_current ()
+  val p_srcwin = $SWL.ptr_of_srcwin (srcwin)
+  val () = if (p_srcwin > null) then let
+    val nsaved = $SWL.srcwin_get_nsaved (srcwin)
+    val (fpf_name | name) = $SWL.srcwin_get_name (srcwin)
+    val () = if nsaved >= 0 then let
+      // HX-2010-05-10: why is the next line alone not enough?
+      val _gboolean = gtk_file_chooser_set_filename (chooser, name)
+      val (fpf_base | base) = $UT.filename_get_basename (name)
+      val () = gtk_file_chooser_set_current_name (chooser, base)
+      prval () = minus_addback (fpf_base, base | name)
+    in
+      // nothing
+    end else let
+      val () = gtk_file_chooser_set_current_name (chooser, name)
+    in
+      // nothing
+    end // end of [val]
+    prval () = minus_addback (fpf_name, name | srcwin)
+  in
+    // nothing
+  end // end of [val]
+  prval () = fpf_srcwin (srcwin)
   val () = gtk_file_chooser_set_do_overwrite_confirmation (chooser, GTRUE)
   prval () = minus_addback (fpf_chooser, chooser | dialog)
 //

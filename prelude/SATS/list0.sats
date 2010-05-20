@@ -78,7 +78,10 @@ castfn list1_of_list0 {a:t@ype} (xs: list0 a):<> List a
 
 (* ****** ****** *)
 
-fun{a:t@ype} list0_make_arraysize {n:nat} (arrsz: arraysize (a, n)):<> list0 a
+fun{a:t@ype}
+list0_make_arrsz
+  {n:nat} (arrsz: arraysize (a, n)):<> list0 a
+// end of [list0_make_arrsz]
 
 (* ****** ****** *)
 
@@ -101,10 +104,12 @@ fun{a:t@ype} list0_filter_cloref (xs: list0 a, pred: a -<cloref1> bool): list0 a
 
 (* ****** ****** *)
 
-fun{init,a:t@ype} list0_fold_left {f:eff}
+fun{init,a:t@ype}
+list0_fold_left {f:eff}
   (f: (init, a) -<cloref,f> init, ini: init, xs: list0 a):<f> init
 
-fun{a,sink:t@ype} list0_fold_right {f:eff}
+fun{a,sink:t@ype}
+list0_fold_right {f:eff}
   (f: (a, sink) -<cloref,f> sink, xs: list0 a, snk: sink):<f> sink
 
 (* ****** ****** *)

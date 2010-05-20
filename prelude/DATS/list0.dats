@@ -47,20 +47,24 @@
 
 (* ****** ****** *)
 
-implement{a} list0_make_arraysize (arrsz) =
+implement{a}
+list0_make_arrsz (arrsz) =
   list0_of_list1 (list_of_arraysize<a> arrsz)
+// end of [list0_make_arraysize]
 
 (* ****** ****** *)
 
-implement{a} list0_append (xs, ys) = let
+implement{a}
+list0_append (xs, ys) = let
   val xs = list1_of_list0 xs and ys = list1_of_list0 ys
 in
   list0_of_list1 (list_append (xs, ys))
-end
+end // end of [list0_append]
 
 (* ****** ****** *)
 
-implement{a} list0_concat (xss) = let
+implement{a}
+list0_concat (xss) = let
   castfn __cast {n:nat} .<n>. 
     (xss: list (list0 a, n)):<> List (List a) =
     case+ xss of
@@ -76,10 +80,12 @@ end // end of [list0_concat]
 
 (* ****** ****** *)
 
-implement{a} list0_exists_fun (xs, f) =
+implement{a}
+list0_exists_fun (xs, f) =
   list_exists_fun (list1_of_list0 xs, f)
 
-implement{a} list0_exists_cloref (xs, f) =
+implement{a}
+list0_exists_cloref (xs, f) =
   list_exists_cloref (list1_of_list0 xs, f)
 
 (* ****** ****** *)
@@ -106,29 +112,35 @@ end // end of [list0_filter]
 
 (* ****** ****** *)
 
-implement{init,a} list0_fold_left (f, init, xs) =
+implement{init,a}
+list0_fold_left (f, init, xs) =
   list_fold_left_cloref<init,a> (f, init, list1_of_list0 xs)
 // end of [list0_fold_left]
 
-implement{a,sink} list0_fold_right (f, xs, sink) =
+implement{a,sink}
+list0_fold_right (f, xs, sink) =
   list_fold_right_cloref<a,sink> (f, list1_of_list0 xs, sink)
 // end of [list0_fold_right]
 
 (* ****** ****** *)
 
-implement{a} list0_forall_fun (xs, f) =
+implement{a}
+list0_forall_fun (xs, f) =
   list_forall_fun (list1_of_list0 xs, f)
 
-implement{a} list0_forall_cloref (xs, f) =
+implement{a}
+list0_forall_cloref (xs, f) =
   list_forall_cloref (list1_of_list0 xs, f)
 
 (* ****** ****** *)
 
-implement{a} list0_foreach_fun (xs, f) =
+implement{a}
+list0_foreach_fun (xs, f) =
   list_foreach_fun<a> (list1_of_list0 xs, f)
 // end of [list0_foreach_fun]
   
-implement{a} list0_foreach_cloref (xs, f) = let
+implement{a}
+list0_foreach_cloref (xs, f) = let
   val () = list_foreach_cloref<a> (list1_of_list0 xs, f)
 in
   // empty
@@ -136,28 +148,32 @@ end // end of [list0_foreach_cloref]
 
 (* ****** ****** *)
 
-implement{a} list0_head_exn (xs) = begin case+ xs of
+implement{a}
+list0_head_exn (xs) = begin case+ xs of
   | list0_cons (x, xs) => x | list0_nil () => $raise ListSubscriptException
 end // end of [list0_head_exn]
 
 (* ****** ****** *)
 
-implement{a} list0_length (xs) =
-  list_length (list1_of_list0 xs)
+implement{a}
+list0_length (xs) = list_length (list1_of_list0 xs)
 
 (* ****** ****** *)
 
-implement{a,b} list0_map_fun (xs, f) =
+implement{a,b}
+list0_map_fun (xs, f) =
   list0_of_list_vt (list_map_fun (list1_of_list0 xs, f))
 // end of [list0_map_fun]
 
-implement{a,b} list0_map_cloref (xs, f) =
+implement{a,b}
+list0_map_cloref (xs, f) =
   list0_of_list_vt (list_map_cloref (list1_of_list0 xs, f))
 // end of [list0_map_cloref]
 
 (* ****** ****** *)
 
-implement{a1,a2,b} list0_map2_fun (xs1, xs2, f) = let
+implement{a1,a2,b}
+list0_map2_fun (xs1, xs2, f) = let
   fun loop {n1,n2:nat} .<n1>.
     (xs1: list (a1, n1), xs2: list (a2, n2), res: &list0 b? >> list0 b)
     :<cloref1> void =
@@ -182,7 +198,8 @@ in
   res
 end // end of [list0_map2_fun]
 
-implement{a1,a2,b} list0_map2_cloref (xs1, xs2, f) = let
+implement{a1,a2,b}
+list0_map2_cloref (xs1, xs2, f) = let
   fun loop {n1,n2:nat} .<n1>.
     (xs1: list (a1, n1), xs2: list (a2, n2), res: &list0 b? >> list0 b)
     :<cloref1> void =
@@ -209,7 +226,8 @@ end // end of [list0_map2_cloref]
 
 (* ****** ****** *)
 
-implement{a} list0_nth_exn (xs, i) = let
+implement{a}
+list0_nth_exn (xs, i) = let
   fun loop {i:nat} .<i>.
     (xs: list0 a, i: int i): a = begin case+ xs of
     | cons (x, xs) => if i > 0 then loop (xs, i-1) else x
@@ -220,7 +238,8 @@ in
   if i >= 0 then loop (xs, i) else $raise ListSubscriptException
 end // end of [list0_nth_exn]
 
-implement{a} list0_nth_opt (xs, i) = begin try
+implement{a}
+list0_nth_opt (xs, i) = begin try
   let val x = list0_nth_exn<a> (xs, i) in Some x end
 with
   | ~ListSubscriptException () => None ()
@@ -228,10 +247,12 @@ end // end of [try]
 
 (* ****** ****** *)
 
-implement{a} list0_reverse (xs) =
+implement{a}
+list0_reverse (xs) =
   list0_reverse_append (xs, list0_nil ())
 
-implement{a} list0_reverse_append (xs, ys) = let
+implement{a}
+list0_reverse_append (xs, ys) = let
   val xs = list1_of_list0 xs and ys = list1_of_list0 ys
 in
   list0_of_list1 (list_reverse_append (xs, ys))
@@ -239,13 +260,15 @@ end // end of [list0_reverse_append]
 
 (* ****** ****** *)
 
-implement{a} list0_tail_exn (xs) = begin case+ xs of
+implement{a}
+list0_tail_exn (xs) = begin case+ xs of
   | list0_cons (x, xs) => xs | list0_nil () => $raise ListSubscriptException
 end // end of [list0_tail_exn]
 
 (* ****** ****** *)
 
-implement{a} list0_take_exn (xs, n) = res where {
+implement{a}
+list0_take_exn (xs, n) = res where {
   fun loop {i:nat} .<i>.
     (xs: list0 a, i: int i, res: &list0 a? >> list0 a): int =
     if i > 0 then begin case+ xs of
@@ -273,7 +296,8 @@ implement{a} list0_take_exn (xs, n) = res where {
 
 (* ****** ****** *)
 
-implement{a} list0_drop_exn (xs, n) = res where {
+implement{a}
+list0_drop_exn (xs, n) = res where {
   fun loop {i:nat} .<i>.
     (xs: list0 a, i: int i, err: &int): list0 a =
     if i > 0 then begin case+ xs of

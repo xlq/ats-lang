@@ -5,7 +5,7 @@
 # Time: January, 2010
 #
 
-ATSCC="$(ATSHOME)"/bin/atscc
+ATSCC="$(ATSHOME)"/bin/atscc -Wall
 
 ######
 

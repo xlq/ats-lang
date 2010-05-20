@@ -188,15 +188,19 @@ fun cairo_create0 {l:agz} (sf: cairo_surface_ref l): cairo_ref1
 
 (* ****** ****** *)
 
+fun cairo_status
+  {l:agz} (cr: !cairo_ref l): cairo_status_t = "#atsctrb_cairo_status"
+// end of [cairo_status]
+
 fun cairo_reference
   {l:agz} (cr: !cairo_ref l): cairo_ref l = "#atsctrb_cairo_reference"
 // end of [cairo_reference]
 
 fun cairo_destroy (cr: cairo_ref1): void = "#atsctrb_cairo_destroy"
 
-fun cairo_status
-  {l:agz} (cr: !cairo_ref l): cairo_status_t = "#atsctrb_cairo_status"
-// end of [cairo_status]
+fun cairo_get_reference_count
+  {l:agz} (cr: !cairo_ref l): uint = "#atsctrb_cairo_get_reference_count"
+// end of [cairo_get_reference_count]
 
 (* ****** ****** *)
 
@@ -602,12 +606,6 @@ fun cairo_in_stroke
 
 (* ****** ****** *)
 
-fun cairo_get_reference_count
-  {l:agz} (cr: !cairo_ref l): uint = "#atsctrb_cairo_get_reference_count"
-// end of [cairo_get_reference_count]
-
-(* ****** ****** *)
-
 fun cairo_copy_page
   {l:agz} (cr: !cairo_ref l): void = "#atsctrb_cairo_copy_page"
 // end of [cairo_copy_page]
@@ -623,6 +621,12 @@ abst@ype cairo_user_data_key_t = $extype "cairo_user_data_key_t"
 //
 // note: this interface is unsafe!!!
 //
+
+fun cairo_get_user_data {l:agz} (
+    cr: !cairo_ref l, key: &cairo_user_data_key_t
+  ) : Ptr = "#atsctrb_cairo_get_user_data"
+// end of [cairo_get_user_data]
+
 fun cairo_set_user_data
   {l:agz} (
     cr: !cairo_ref l
@@ -632,11 +636,6 @@ fun cairo_set_user_data
   ) : cairo_status_t
   = "#atsctrb_cairo_set_user_data"
 // end of [cairo_set_user_data]
-
-fun cairo_get_user_data {l:agz} (
-    cr: !cairo_ref l, key: &cairo_user_data_key_t
-  ) : Ptr = "#atsctrb_cairo_get_user_data"
-// end of [cairo_get_user_data]
 
 (* ****** ****** *)
 
@@ -799,6 +798,26 @@ macdef CAIRO_PATTERN_TYPE_RADIAL =
 
 (* ****** ****** *)
 
+// HX: this is an enum type
+abst@ype cairo_extend_t = $extype "cairo_extend_t"
+macdef CAIRO_EXTEND_NONE = $extval (cairo_extend_t, "CAIRO_EXTEND_NONE")
+macdef CAIRO_EXTEND_REPEAT = $extval (cairo_extend_t, "CAIRO_EXTEND_REPEAT")
+macdef CAIRO_EXTEND_REFLECT = $extval (cairo_extend_t, "CAIRO_EXTEND_REFLECT")
+macdef CAIRO_EXTEND_PAD = $extval (cairo_extend_t, "CAIRO_EXTEND_PAD")
+
+(* ****** ****** *)
+
+// HX: this is an enum type
+abst@ype cairo_filter_t = $extype "cairo_filter_t"
+macdef CAIRO_FILTER_FAST = $extval (cairo_filter_t, "CAIRO_FILTER_FAST")
+macdef CAIRO_FILTER_GOOD = $extval (cairo_filter_t, "CAIRO_FILTER_GOOD")
+macdef CAIRO_FILTER_BEST = $extval (cairo_filter_t, "CAIRO_FILTER_BEST")
+macdef CAIRO_FILTER_NEAREST = $extval (cairo_filter_t, "CAIRO_FILTER_NEAREST")
+macdef CAIRO_FILTER_BILINEAR = $extval (cairo_filter_t, "CAIRO_FILTER_BILINEAR")
+macdef CAIRO_FILTER_GAUSSIAN = $extval (cairo_filter_t, "CAIRO_FILTER_GAUSSIAN")
+
+(* ****** ****** *)
+
 fun cairo_pattern_create_rgb
   (red: double, green: double, blue: double): cairo_pattern_ref1
   = "#atsctrb_cairo_pattern_create_rgb"
@@ -816,7 +835,7 @@ fun cairo_pattern_get_rgba
   , g: &double? >> double
   , b: &double? >> double    
   , a: &double? >> double
-  ) : void = "#atsctrb_cairo_pattern_get_rgba"
+  ) : cairo_status_t = "#atsctrb_cairo_pattern_get_rgba"
 // end of [cairo_pattern_get_rgba]
 
 (* ****** ****** *)
@@ -840,12 +859,36 @@ fun cairo_pattern_create_linear
   (x0: double, x1: double, x2: double, x3: double): cairo_pattern_ref1
   = "#atsctrb_cairo_pattern_create_linear"
 
+fun cairo_pattern_get_linear_points
+  {l:agz} (
+    cr: !cairo_pattern_ref l
+  , x0: &double? >> double
+  , x1: &double? >> double
+  , x2: &double? >> double
+  , x3: &double? >> double
+  ) : cairo_status_t
+  = "#atsctrb_cairo_pattern_get_linear_points"
+// end of [cairo_pattern_get_linear_points]
+
 (* ****** ****** *)
 
 fun cairo_pattern_create_radial (
     cx0: double, cy0: double, rad0: double, cx1: double, cy1: double, rad1: double
   ) : cairo_pattern_ref1 = "#atsctrb_cairo_pattern_create_radial"
 // end of [cairo_pattern_create_radial]
+
+fun cairo_pattern_get_radial_circles
+  {l:agz} (
+    cr: !cairo_pattern_ref l
+  , x0: &double? >> double
+  , y0: &double? >> double
+  , r0: &double? >> double
+  , x1: &double? >> double
+  , y1: &double? >> double
+  , r1: &double? >> double
+  ) : cairo_status_t
+  = "#atsctrb_cairo_pattern_get_radial_circles"
+// end of [cairo_pattern_get_radial_circles]
 
 (* ****** ****** *)
 
@@ -859,6 +902,10 @@ fun cairo_pattern_reference {l:agz}
 fun cairo_pattern_destroy
   (pat: cairo_pattern_ref1): void = "#atsctrb_cairo_pattern_destroy"
 // end of [cairo_pattern_destroy]
+
+fun cairo_pattern_get_reference_count
+  {l:agz} (cr: !cairo_pattern_ref l): uint = "#atsctrb_cairo_pattern_get_reference_count"
+// end of [cairo_pattern_get_reference_count]
 
 (* ****** ****** *)
 
@@ -878,6 +925,48 @@ fun cairo_pattern_add_color_stop_rgba {l:agz} (
   ) : void = "#atsctrb_cairo_pattern_add_color_stop_rgba"
 // end of [cairo_pattern_add_color_stop_rgba]
 
+fun cairo_pattern_get_color_stop_count {l:agz} (
+    pat: !cairo_pattern_ref l, count: &int? >> int
+  ) : cairo_status_t = "#atsctrb_cairo_pattern_get_color_stop_count"
+// end of [cairo_pattern_get_color_stop_count]
+
+fun cairo_pattern_get_color_stop_rgba {l:agz} (
+    pat: !cairo_pattern_ref l
+  , index: int
+  , offset: &double? >> double
+  , red: &double? >> double
+  , green: &double? >> double
+  , blue: &double? >> double
+  , alpha: &double? >> double
+  ) : cairo_status_t = "#atsctrb_cairo_pattern_get_color_stop_rgba"
+// end of [cairo_pattern_get_color_stop_rgba]
+
+(* ****** ****** *)
+
+fun cairo_pattern_get_extend
+  {l:agz} (pat: !cairo_pattern_ref l): cairo_extend_t
+  = "#atsctrb_cairo_pattern_get_extend"
+// end of [cairo_pattern_get_extend]
+
+fun cairo_pattern_set_extend
+  {l:agz} (pat: !cairo_pattern_ref l, ext: cairo_extend_t): void
+  = "#atsctrb_cairo_pattern_set_extend"
+// end of [cairo_pattern_set_extend]
+
+(* ****** ****** *)
+
+fun cairo_pattern_get_filter
+  {l:agz} (pat: !cairo_pattern_ref l): cairo_filter_t
+  = "#atsctrb_cairo_pattern_get_filter"
+// end of [cairo_pattern_get_filter]
+
+fun cairo_pattern_set_filter
+  {l:agz} (pat: !cairo_pattern_ref l, ext: cairo_filter_t): void
+  = "#atsctrb_cairo_pattern_set_filter"
+// end of [cairo_pattern_set_filter]
+
+(* ****** ****** *)
+
 fun cairo_pattern_set_matrix {l:agz}
   (pat: !cairo_pattern_ref l, matrix: &cairo_matrix_t): void
   = "#atsctrb_cairo_pattern_set_matrix"
@@ -885,6 +974,23 @@ fun cairo_pattern_set_matrix {l:agz}
 fun cairo_pattern_get_matrix {l:agz}
   (pat: !cairo_pattern_ref l, matrix: &cairo_matrix_t? >> cairo_matrix_t): void
   = "#atsctrb_cairo_pattern_get_matrix"
+
+(* ****** ****** *)
+
+fun cairo_pattern_get_user_data {l:agz} (
+    pat: !cairo_pattern_ref l, key: &cairo_user_data_key_t
+  ) : Ptr = "#atsctrb_cairo_pattern_get_user_data"
+// end of [cairo_pattern_get_user_data]
+
+fun cairo_pattern_set_user_data
+  {l:agz} (
+    pat: !cairo_pattern_ref l
+  , key: &cairo_user_data_key_t
+  , user_data: ptr (* the proof of its view is aborbed into [cr] *)
+  , destroy_func: ptr -<fun1> void
+  ) : cairo_status_t
+  = "#atsctrb_cairo_pattern_set_user_data"
+// end of [cairo_pattern_set_user_data]
 
 (* ****** ****** *)
 

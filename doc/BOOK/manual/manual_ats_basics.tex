@@ -564,12 +564,13 @@ follows:
 \begin{verbatim}
 val lst123 = list0_cons (1, list0_cons (2, list0_cons (3, list0_nil ())))
 \end{verbatim}
-Another notation for constructing lists consisting of elements of type
-$T$ is ${\it list0}~@[T][v_1,\ldots,v_n]$. For instance, a string list
-consisting names of weekdays is given as follows:
+Another notation for constructing lists consisting of elements of type $T$
+is $${\it list0\_make\_arrsz}~\$arrsz{T}(v_1,\ldots,v_n)$$
+For instance, a string list consisting names of weekdays is given as follows:
 \begin{verbatim}
-val weekdays (* : list0 string *) =
-  list0 @[string]["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"]
+val weekdays (* : list0 string *) = list0_make_arrsz (
+  $arrsz{string}("Monday", "Tuesday", "Wednesday", "Thursday", "Friday")
+) // end of [val]
 \end{verbatim}
 List manipulation can be done by pattern matching. As an example, the
 following code implements a function template for appending two given list

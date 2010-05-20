@@ -69,54 +69,70 @@ viewtypedef List_vt (a:viewt@ype) = [n:int | n >=0] list_vt (a, n)
 
 prfun list_vt_length_is_nonnegative
   {a:viewt@ype} {n:int} (xs: !list_vt (a, n)): [n>=0] void
+// end of [list_vt_length_is_nonnegative]
 
 (* ****** ****** *)
 
-fun{a:viewt@ype} list_vt_of_arraysize
+fun{a:viewt@ype}
+list_vt_of_arraysize
   {n:nat} (arrsz: arraysize (a, n)):<> list_vt (a, n)
+// end of [list_vt_of_arraysize]
 
 (* ****** ****** *)
 
-fun{a:t@ype} list_vt_copy {n:nat} (xs: !list_vt (a, n)):<> list_vt (a, n)
+fun{a:t@ype}
+list_vt_copy {n:nat} (xs: !list_vt (a, n)):<> list_vt (a, n)
 
 fun{a:t@ype} list_vt_free (xs: List_vt a):<> void
 
 (* ****** ****** *)
 
 // this one is more general than [list_length] as [a] can be linear
-fun{a:viewt@ype} list_vt_length {n:nat} (xs: !list_vt (a, n)):<> int n
+fun{a:viewt@ype}
+list_vt_length {n:nat} (xs: !list_vt (a, n)):<> int n
 
 (* ****** ****** *)
 
-fun{a:t@ype} list_vt_make_elt {n:nat} (x: a, n: int n):<> list_vt (a, n)
+fun{a:t@ype}
+list_vt_make_elt {n:nat} (x: a, n: int n):<> list_vt (a, n)
 
 (* ****** ****** *)
 
 fun{a:viewt@ype} list_vt_append
   {m,n:nat} (xs: list_vt (a, m), ys: list_vt (a, n)):<> list_vt (a, m+n)
+// end of [list_vt_append]
 
 fun{a:viewt@ype} list_vt_reverse
   {n:nat} (xs: list_vt (a, n)):<> list_vt (a, n)
+// end of [list_vt_reverse]
 
 (* ****** ****** *)
 
-fun{a:viewt@ype} list_vt_tabulate__main
+fun{a:viewt@ype}
+list_vt_tabulate__main
   {v:view} {vt:viewtype} {n:nat} {f:eff}
   (pf: !v | f: (!v | natLt n, !vt) -<f> a, n: int n, env: !vt)
   :<f> list_vt (a, n)
+// end of [list_vt_tabulate__main]
 
-fun{a:viewt@ype} list_vt_tabulate_fun {n:nat} {f:eff}
+fun{a:viewt@ype}
+list_vt_tabulate_fun {n:nat} {f:eff}
   (f: natLt n -<f> a, n: int n):<f> list_vt (a, n)
+// end of [list_vt_tabulate_fun]
 
-fun{a:viewt@ype} list_vt_tabulate_clo {v:view} {n:nat} {f:eff}
+fun{a:viewt@ype}
+list_vt_tabulate_clo {v:view} {n:nat} {f:eff}
   (pf: !v | f: &(!v | natLt n) -<clo,f> a, n: int n):<f> list_vt (a, n)
+// end of [list_vt_tabulate_clo]
 
 (* ****** ****** *)
 
-fun{a:viewt@ype} list_vt_foreach__main
+fun{a:viewt@ype}
+list_vt_foreach__main
   {v:view} {vt:viewtype} {n:nat} {f:eff}
   (pf: !v | xs: !list_vt (a, n), f: !(!v | &a, !vt) -<f> void, env: !vt)
   :<f> void
+// end of [list_vt_foreach__main]
 
 fun{a:viewt@ype} list_vt_foreach_fun {n:nat} {f:eff}
   (xs: !list_vt (a, n), f: (&a) -<fun,f> void):<f> void
@@ -146,9 +162,9 @@ fun{a:viewt@ype} list_vt_iforeach_clo {v:view} {n:nat} {f:eff}
 (* ****** ****** *)
 
 local
-
+//
 typedef cmp (a:viewt@ype) = (&a, &a) -<fun> Sgn
-
+//
 in // in of [local]
 
 // note that [libc/CATS/stdlib.cats] is needed

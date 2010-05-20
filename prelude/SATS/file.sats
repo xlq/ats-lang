@@ -31,8 +31,14 @@
 
 (* ****** ****** *)
 
-(* author: Hongwei Xi (hwxi AT cs DOT bu DOT edu) *)
+(* Author: Hongwei Xi (hwxi AT cs DOT bu DOT edu) *)
 
+(* ****** ****** *)
+//
+// HX:
+// The functions declared here are mostly done for the sake of convenience.
+// For full-fledged IO support, please see [$ATSHOME/libc/SATS/stdio.sats].
+//
 (* ****** ****** *)
 
 #include "prelude/params.hats"
@@ -61,11 +67,11 @@ typedef file_mode = [m:file_mode] file_mode (m)
 (* ****** ****** *)
 
 macdef file_mode_r = $extval (file_mode r, "\"r\"")
-macdef file_mode_rr = $extval (file_mode rw, "\"rr\"")
+macdef file_mode_rr = $extval (file_mode rw, "\"r+\"")
 macdef file_mode_w = $extval (file_mode w, "\"w\"")
-macdef file_mode_ww = $extval (file_mode rw, "\"ww\"")
+macdef file_mode_ww = $extval (file_mode rw, "\"w+\"")
 macdef file_mode_a = $extval (file_mode w, "\"a\"")
-macdef file_mode_aa = $extval (file_mode rw, "\"aa\"")
+macdef file_mode_aa = $extval (file_mode rw, "\"a+\"")
 
 (* ****** ****** *)
 

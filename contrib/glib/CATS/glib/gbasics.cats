@@ -109,6 +109,15 @@ atsctrb_lte_guint32_guint32
 
 /* ****** ****** */
 
+//
+// HX-2010-05-19:
+// this one is implemented in $ATSHOME/prelude/CATS/string.cats
+//
+extern ats_int_type
+atspre_compare_string_string
+  (ats_ptr_type x1, ats_ptr_type x2) ;
+// end of [atspre_compare_string_string]
+
 #define atsctrb_compare_gstring_gstring \
   atspre_compare_string_string
 

@@ -46,15 +46,19 @@
 #define :: list_cons
 
 (* ****** ****** *)
-
+//
 // this is a proof function
-implement list_length_is_nonnegative (xs) =
+//
+implement
+list_length_is_nonnegative (xs) =
   case+ xs of list_cons _ => () | list_nil () => ()
+// end of [list_length_is_nonnegative]
 
 (* ****** ****** *)
 
 // this is a casting function
-implement list_of_list_vt {a} (xs) = aux (xs) where {
+implement
+list_of_list_vt {a} (xs) = aux (xs) where {
   castfn aux {n:nat} .<n>.
     (xs: list_vt (a, n)):<> list (a, n) =
     case+ xs of
@@ -67,10 +71,12 @@ implement list_of_list_vt {a} (xs) = aux (xs) where {
 
 implement{a} list_of_arraysize (arrsz) =
   list_of_list_vt (list_vt_of_arraysize<a> arrsz)
+// end of [list_of_arraysize]
 
 (* ****** ****** *)
 
-implement{a} list_app__main
+implement{a}
+list_app__main
   {v} {vt} {f:eff} (pf | xs, f, env) = let
   typedef fun_t = (!v | a, !vt) -<fun,f> void
   fun loop {n:nat} .<n>. (
@@ -88,7 +94,8 @@ in
   loop (pf | xs, f, env)
 end // end of [list_app__main]
 
-implement{a} list_app_fun {f:eff} (xs, f) = let
+implement{a}
+list_app_fun {f:eff} (xs, f) = let
   val f = coerce (f) where {
     extern castfn coerce (f: a -<f> void):<> (!unit_v | a, !ptr) -<f> void
   } // end of [where]
@@ -99,7 +106,8 @@ in
   ()
 end // end of [list_app_fun]
 
-implement{a} list_app_clo {v} {f:eff} (pf1 | xs, f) = let
+implement{a}
+list_app_clo {v} {f:eff} (pf1 | xs, f) = let
   viewtypedef clo_t = (!v | a) -<clo,f> void
   stavar l_f: addr; val p_f: ptr l_f = &f
   viewdef V = (v, clo_t @ l_f)
@@ -118,7 +126,8 @@ in
   ()
 end // end of [list_app_clo]
 
-implement{a} list_app_cloptr
+implement{a}
+list_app_cloptr
   {v:view} {f:eff} (pf | xs, f) = let
   viewtypedef cloptr_t = (!v | a) -<cloptr,f> void
   fn app (pf: !v | x: a, f: !cloptr_t):<f> void = f (pf | x)
@@ -126,7 +135,8 @@ in
   list_app__main<a> {v} {cloptr_t} (pf | xs, app, f)
 end // end of [list_app_cloptr]
 
-implement{a} list_app_cloref {f:eff} (xs, f) = let
+implement{a}
+list_app_cloref {f:eff} (xs, f) = let
   typedef cloref_t = a -<cloref,f> void
   fn app (pf: !unit_v | x: a, f: !cloref_t):<f> void = f (x)
   prval pf = unit_v ()
@@ -138,8 +148,10 @@ end // end of [list_app_cloref]
 
 (* ****** ****** *)
 
-implement{a1,a2} list_app2__main
-  {v:view} {vt:viewtype} {n} {f:eff} (pf | xs1, xs2, f, env) = let
+implement{a1,a2}
+list_app2__main
+  {v:view} {vt:viewtype}
+  {n} {f:eff} (pf | xs1, xs2, f, env) = let
   fun loop {n:nat} .<n>. (
       pf: !v
     | xs1: list (a1, n)
@@ -156,7 +168,8 @@ in
   loop (pf | xs1, xs2, f, env)
 end // end of [list_app2__main]
 
-implement{a1,a2} list_app2_fun {n} {f:eff} (xs1, xs2, f) = let
+implement{a1,a2}
+list_app2_fun {n} {f:eff} (xs1, xs2, f) = let
   val f = coerce (f) where { extern castfn
     coerce (f: (a1, a2) -<f> void):<> (!unit_v | a1, a2, !ptr) -<f> void
   } // end of [where]
@@ -167,7 +180,8 @@ in
   // empty
 end // end of [list_app2_fun]
 
-implement{a1,a2} list_app2_clo
+implement{a1,a2}
+list_app2_clo
   {v} {n} {f:eff} (pf1 | xs1, xs2, f) = let
   typedef clo_t = (!v | a1, a2) -<clo,f> void
   stavar l_f: addr; val p_f: ptr l_f = &f
@@ -187,7 +201,8 @@ in
   // empty
 end // end of [list_app2_clo]
 
-implement{a1,a2} list_app2_cloptr
+implement{a1,a2}
+list_app2_cloptr
   {v} {n} {f:eff} (pf | xs1, xs2, f) = let
   viewtypedef cloptr_t = (!v | a1, a2) -<cloptr,f> void
   fn app (pf: !v | x1: a1, x2: a2, f: !cloptr_t):<f> void = f (pf | x1, x2)
@@ -198,7 +213,8 @@ in
   // empty
 end  // end of [list_app2_cloptr]
 
-implement{a1,a2} list_app2_cloref {n} {f:eff} (xs1, xs2, f) = let
+implement{a1,a2}
+list_app2_cloref {n} {f:eff} (xs1, xs2, f) = let
   typedef cloref_t = (a1, a2) -<cloref,f> void
   fn app (pf: !unit_v | x1: a1, x2: a2, f: !cloref_t):<f> void = f (x1, x2)
   prval pf = unit_v ()
@@ -214,7 +230,8 @@ end  // end of [list_app2_cloref]
 
 // a tail-recursive implementation of list-append
 
-implement{a} list_append {i,j} (xs, ys) = let
+implement{a}
+list_append {i,j} (xs, ys) = let
   var res: List a // uninitialized
   fun loop {n1,n2:nat} .<n1>.
     (xs: list (a, n1), ys: list (a, n2), res: &(List a)? >> list (a, n1+n2))
@@ -231,20 +248,21 @@ in
 end // end of [list_append]
 
 (*
-
+//
 // standard non-tail-recursive implementation of list-append
-
-implement{a} list_append {i,j} (xs, ys) = let
+//
+implement{a}
+list_append {i,j} (xs, ys) = let
   fun aux {n1,n2:nat} .<n1>.
     (xs: list (a, n1), ys: list (a, n2)):<> list (a, n1+n2) =
     case+ xs of x :: xs => x :: aux (xs, ys) | nil () => ys
 in
   aux (xs, ys)
-end
-
+end // end of [list_append]
 *)
 
-implement{a} list_append_vt {i,j} (xs, ys) = let
+implement{a}
+list_append_vt {i,j} (xs, ys) = let
   var res: List_vt a // uninitialized
   fun loop {n1,n2:nat} .<n1>.
     (xs: list (a, n1), ys: list_vt (a, n2), res: &(List_vt a)? >> list_vt (a, n1+n2))
@@ -262,7 +280,8 @@ end // end of [list_append_vt]
 
 (* ****** ****** *)
 
-implement{a1,a2} list_assoc__main
+implement{a1,a2}
+list_assoc__main
   {v} {vt} {eq:eff} (pf | xys, eq, x0, env) = let
   fun loop {n:nat} .<n>. (
       pf: !v
@@ -280,7 +299,9 @@ in
   loop (pf | xys, eq, x0, env)
 end // end of [list_assoc__main]
 
-implement{a1,a2} list_assoc_fun {eq:eff} (xys, eq, x0) = let
+implement{a1,a2}
+list_assoc_fun
+  {eq:eff} (xys, eq, x0) = let
   val eq = coerce (eq) where { extern castfn
     coerce (eq: (a1, a1) -<eq> bool):<> (!unit_v | a1, a1, !ptr) -<eq> bool
   } // end of [where]
@@ -291,7 +312,8 @@ in
   ans
 end // end of [list_assoc_fun]
 
-implement{a1,a2} list_assoc_clo
+implement{a1,a2}
+list_assoc_clo
   {v:view} {eq:eff} (pf1 | xys, eq, x0) = let
   typedef clo_t = (!v | a1, a1) -<clo,eq> bool
   stavar l_eq: addr; val p_eq: ptr l_eq = &eq
@@ -311,7 +333,8 @@ in
   ans
 end // end of [list_assoc_clo]
 
-implement{a1,a2} list_assoc_cloptr
+implement{a1,a2}
+list_assoc_cloptr
   {v} {eq:eff} (pf | xys, eq, x0) = let
   viewtypedef cloptr_t = (!v | a1, a1) -<cloptr,eq> bool
   fn app (pf: !v | x: a1, y: a1, eq: !cloptr_t):<eq> bool = eq (pf | x, y)
@@ -320,7 +343,9 @@ in
   ans
 end // end of [list_assoc_cloptr]
 
-implement{a1,a2} list_assoc_cloref {eq:eff} (xys, eq, x0) = let
+implement{a1,a2}
+list_assoc_cloref
+  {eq:eff} (xys, eq, x0) = let
   typedef cloref_t = (a1, a1) -<cloref,eq> bool
   fn app (pf: !unit_v | x: a1, y: a1, eq: !cloref_t):<eq> bool = eq (x, y)
   prval pf = unit_v ()
@@ -332,7 +357,8 @@ end // end of [list_assoc_cloref]
 
 (* ****** ****** *)
 
-implement{a} list_concat (xss) = let
+implement{a}
+list_concat (xss) = let
   fun aux {n:nat} .<n>.
     (xs0: List a, xss: list (List a, n)):<> List a =
     case+ xss of
@@ -344,14 +370,16 @@ end // end of [list_concat]
 
 (* ****** ****** *)
 
-implement{a} list_drop (xs, i) = loop (xs, i) where {
+implement{a}
+list_drop (xs, i) = loop (xs, i) where {
   fun loop {n,i:nat | i <= n} .<i>.
     (xs: list (a, n), i: int i):<> list (a, n-i) =
     if i > 0 then let val+ _ :: xs = xs in loop (xs, i-1) end
     else xs
 } // end of [list_drop]
 
-implement{a} list_drop_exn (xs, i) = loop (xs, i) where {
+implement{a}
+list_drop_exn (xs, i) = loop (xs, i) where {
   fun loop {n,i:nat} .<i>.
     (xs: list (a, n), i: int i):<> [i <= n] list (a, n-i) =
     if i > 0 then begin case+ xs of
@@ -362,7 +390,8 @@ implement{a} list_drop_exn (xs, i) = loop (xs, i) where {
 
 (* ****** ****** *)
 
-implement{a} list_exists__main
+implement{a}
+list_exists__main
   {v} {vt} {p:eff} (pf | xs, p, env) = let
   fun loop {n:nat} .<n>. (
       pf: !v
@@ -377,7 +406,8 @@ in
   loop (pf | xs, p, env)
 end // end of [list_exists__main]
 
-implement{a} list_exists_fun {p:eff} (xs, p) = let
+implement{a}
+list_exists_fun {p:eff} (xs, p) = let
   val p = coerce (p) where {
     extern castfn coerce (p: a -<p> bool):<> (!unit_v | a, !ptr) -<p> bool
   } // end of [where]
@@ -388,7 +418,8 @@ in
   ans
 end // end of [list_exists_fun]
 
-implement{a} list_exists_clo
+implement{a}
+list_exists_clo
   {v} {p:eff} (pf1 | xs, f) = let
   typedef clo_t = (!v | a) -<clo,p> bool
   stavar l_f: addr; val p_f: ptr l_f = &f
@@ -408,7 +439,8 @@ in
   ans
 end // end of [list_exists_clo]
 
-implement{a} list_exists_cloptr
+implement{a}
+list_exists_cloptr
   {v} {p:eff} (pf | xs, p) = let
   viewtypedef cloptr_t = (!v | a) -<cloptr,p> bool
   fn app (pf: !v | x: a, p: !cloptr_t):<p> bool = p (pf | x)
@@ -417,7 +449,8 @@ in
   ans
 end // end of [list_exists_cloptr]
 
-implement{a} list_exists_cloref {p:eff} (xs, p) = let
+implement{a}
+list_exists_cloref {p:eff} (xs, p) = let
   typedef cloref_t = a -<cloref,p> bool
   fn app (pf: !unit_v | x: a, p: !cloref_t):<p> bool = p (x)
   prval pf = unit_v ()
@@ -429,7 +462,8 @@ end // end of [list_exists_cloref]
 
 (* ****** ****** *)
 
-implement{a1,a2} list_exists2__main
+implement{a1,a2}
+list_exists2__main
   {v} {vt} {n} {p:eff} (pf | xs1, xs2, p, env) = let
   fun loop {n:nat} .<n>. (
       pf: !v
@@ -448,7 +482,8 @@ in
   loop (pf | xs1, xs2, p, env)
 end // end of [list_exists2__main]
 
-implement{a1,a2} list_exists2_fun {n} {p:eff} (xs1, xs2, p) = let
+implement{a1,a2}
+list_exists2_fun {n} {p:eff} (xs1, xs2, p) = let
   val p = coerce (p) where { extern castfn
     coerce (p: (a1, a2) -<p> bool):<> (!unit_v | a1, a2, !ptr) -<p> bool
   } // end of [where]
@@ -459,7 +494,8 @@ in
   ans
 end // end of [list_exists2_fun]
 
-implement{a1,a2} list_exists2_clo
+implement{a1,a2}
+list_exists2_clo
   {v} {n} {p:eff} (pf1 | xs1, xs2, f) = let
   typedef clo_t = (!v | a1, a2) -<clo,p> bool
   stavar l_f: addr; val p_f: ptr l_f = &f
@@ -479,7 +515,8 @@ in
   ans
 end // end of [list_exists2_clo]
 
-implement{a1,a2} list_exists2_cloptr
+implement{a1,a2}
+list_exists2_cloptr
   {v} {n} {p:eff} (pf | xs1, xs2, p) = let
   viewtypedef cloptr_t = (!v | a1, a2) -<cloptr,p> bool
   fn app (pf: !v | x1: a1, x2: a2, p: !cloptr_t):<p> bool = p (pf | x1, x2)
@@ -488,7 +525,8 @@ in
   ans
 end // end of [list_exists2_cloptr]
 
-implement{a1,a2} list_exists2_cloref {n} {p:eff} (xs1, xs2, p) = let
+implement{a1,a2}
+list_exists2_cloref {n} {p:eff} (xs1, xs2, p) = let
   viewtypedef cloref_t = (a1, a2) -<cloref,p> bool
   fn app (pf: !unit_v | x1: a1, x2: a2, p: !cloref_t):<p> bool = p (x1, x2)
   prval pf = unit_v ()
@@ -500,7 +538,8 @@ end // end of [list_exists2_cloref]
 
 (* ****** ****** *)
 
-implement{a} list_extend (xs, y) = let
+implement{a}
+list_extend (xs, y) = let
   var res: List_vt a // uninitialized
   fun loop {n:nat} .<n>. (
       xs: list (a, n), y: a
@@ -520,7 +559,8 @@ end // end of [list_extend]
 
 (* ****** ****** *)
 
-implement{a} list_filter__main
+implement{a}
+list_filter__main
   {v} {vt} {n} {p:eff} (pf | xs, p, env) = let
   fun loop {n:nat} .<n>. (
       pf: !v
@@ -547,7 +587,8 @@ in
   res
 end // end of [list_filter__main]
 
-implement{a} list_filter_fun {n} {p:eff} (xs, f) = let
+implement{a}
+list_filter_fun {n} {p:eff} (xs, f) = let
   val f = coerce (f) where { extern castfn
     coerce (f: a -<p> bool):<> (!unit_v | a, !ptr) -<p> bool
   } // end of [where]
@@ -558,7 +599,8 @@ in
   ans
 end // end of [list_filter_fun]
 
-implement{a} list_filter_clo
+implement{a}
+list_filter_clo
   {v} {n} {p:eff} (pf1 | xs, f) = let
   typedef clo_t = (!v | a) -<clo,p> bool
   stavar l_f: addr; val p_f: ptr l_f = &f
@@ -576,7 +618,8 @@ in
   ans
 end // end of [list_filter_clo]
 
-implement{a} list_filter_cloptr
+implement{a}
+list_filter_cloptr
   {v} {n} {p:eff} (pf | xs, p) = let
   viewtypedef cloptr_t = (!v | a) -<cloptr,p> bool
   fn app (pf: !v | x: a, p: !cloptr_t):<p> bool = p (pf | x)
@@ -585,7 +628,8 @@ in
   ans
 end // end of [list_filter_cloptr]
 
-implement{a} list_filter_cloref {n} {p:eff} (xs, p) = let
+implement{a}
+list_filter_cloref {n} {p:eff} (xs, p) = let
   typedef cloref_t = a -<cloref,p> bool
   fn app (pf: !unit_v | x: a, p: !cloref_t):<p> bool = p (x)
   prval pf = unit_v ()
@@ -597,7 +641,8 @@ end // end of [list_filter_cloref]
 
 (* ****** ****** *)
 
-implement{a} list_find__main {v} {vt} {p:eff} (pf | xs, p, env) = let
+implement{a}
+list_find__main {v} {vt} {p:eff} (pf | xs, p, env) = let
   fun loop {n:nat} .<n>. (
       pf: !v
     | xs: list (a, n), p: !(!v | a, !vt) -<fun,p> bool, env: !vt
@@ -610,7 +655,8 @@ in
   loop (pf | xs, p, env)
 end // end of [list_find__main]
 
-implement{a} list_find_fun {p:eff} (xs, f) = let
+implement{a}
+list_find_fun {p:eff} (xs, f) = let
   val f = coerce (f) where { extern castfn
     coerce (f: a -<p> bool):<> (!unit_v | a, !ptr) -<p> bool
   } // end of [where]
@@ -621,7 +667,8 @@ in
   ans
 end // end of [list_find_fun]
 
-implement{a} list_find_clo
+implement{a}
+list_find_clo
   {v} {p:eff} (pf1 | xs, f) = let
   typedef clo_t = (!v | a) -<clo,p> bool
   stavar l_f: addr; val p_f: ptr l_f = &f
@@ -639,7 +686,8 @@ in
   ans
 end // end of [list_find_clo]
 
-implement{a} list_find_cloptr
+implement{a}
+list_find_cloptr
   {v} {p:eff} (pf | xs, p) = let
   viewtypedef cloptr_t = (!v | a) -<cloptr,p> bool
   fn app (pf: !v | x: a, p: !cloptr_t):<p> bool = p (pf | x)
@@ -648,7 +696,8 @@ in
   ans
 end // end of [list_find_cloptr]
 
-implement{a} list_find_cloref {p:eff} (xs, p) = let
+implement{a}
+list_find_cloref {p:eff} (xs, p) = let
   typedef cloref_t = a -<cloref,p> bool
   fn app (pf: !unit_v | x: a, p: !cloref_t):<p> bool = p (x)
   prval pf = unit_v ()
@@ -661,16 +710,16 @@ end // end of [list_find_cloref]
 (* ****** ****** *)
 
 (*
-
+// HX: this one does not work out
 macrodef list_fold_left_mac (list_fold_left, f, res, xs) = `(
   case+ ,(xs) of
   | x :: xs => ,(list_fold_left) (,(f), ,(f) (,(res), x), xs)
   | nil () => ,(res)
 )
-
 *)
 
-implement{init,a} list_fold_left__main
+implement{init,a}
+list_fold_left__main
   {v} {vt} {f:eff} (pf | f, res, xs, env) = let
   fun loop {n:nat} .<n>. (
       pf: !v
@@ -688,7 +737,8 @@ in
   loop (pf | f, res, xs, env)
 end // end of [list_fold_left__main]
 
-implement{init,a} list_fold_left_fun {f:eff} (f, res, xs) = let
+implement{init,a}
+list_fold_left_fun {f:eff} (f, res, xs) = let
   val f = coerce (f) where { extern castfn
     coerce (f: (init, a) -<f> init):<> (!unit_v | init, a, !ptr) -<f> init
   } // end of [where]
@@ -699,7 +749,8 @@ in
   ans
 end // end of [list_fold_left_fun]
 
-implement{init,a} list_fold_left_clo
+implement{init,a}
+list_fold_left_clo
   {v:view} {f:eff} (pf1 | f, res, xs) = let
   viewtypedef clo_t = (!v | init, a) -<clo,f> init
   stavar l_f: addr; val p_f: ptr l_f = &f
@@ -717,7 +768,8 @@ in
   ans
 end // end of [list_fold_left_clo]
 
-implement{init,a} list_fold_left_cloptr
+implement{init,a}
+list_fold_left_cloptr
   {v:view} {f:eff} (pf | f, res, xs) = let
   viewtypedef cloptr_t = (!v | init, a) -<cloptr,f> init
   fn app (pf: !v | res: init, x: a, f: !cloptr_t):<f> init = f (pf | res, x)
@@ -726,7 +778,8 @@ in
   ans
 end // end of [list_fold_left_cloptr]
 
-implement{init,a} list_fold_left_cloref {f:eff} (f, res, xs) = let
+implement{init,a}
+list_fold_left_cloref {f:eff} (f, res, xs) = let
   typedef cloref_t = (init, a) -<cloref,f> init
   fn app (pf: !unit_v | res: init, x: a, f: !cloref_t):<f> init = f (res, x)
   prval pf = unit_v ()
@@ -738,7 +791,8 @@ end // end of [list_fold_left_cloref]
 
 (* ****** ****** *)
 
-implement{init,a1,a2} list_fold2_left__main
+implement{init,a1,a2}
+list_fold2_left__main
   {v} {vt} {n} {f:eff} (pf | f, res, xs1, xs2, env) = let
   fun loop {n:nat} .<n>. (
       pf: !v
@@ -759,7 +813,8 @@ in
   loop (pf | f, res, xs1, xs2, env)
 end // end of [list_fold2_left__main]
 
-implement{init,a1,a2} list_fold2_left_cloptr
+implement{init,a1,a2}
+list_fold2_left_cloptr
   {v} {n} {f:eff} (pf | f, res, xs1, xs2) = let
   viewtypedef cloptr_t = (!v | init, a1, a2) -<cloptr,f> init
   fn app (
@@ -770,7 +825,8 @@ in
   ans
 end // end of [list_fold2_left_cloptr]
 
-implement{init,a1,a2} list_fold2_left_cloref {n} {f:eff} (f, res, xs1, xs2) = let
+implement{init,a1,a2}
+list_fold2_left_cloref {n} {f:eff} (f, res, xs1, xs2) = let
   typedef cloref_t = (init, a1, a2) -<cloref,f> init
   fn app (pf: !unit_v | res: init, x1: a1, x2: a2, f: !cloref_t):<f> init = f (res, x1, x2)
   prval pf = unit_v ()
@@ -873,7 +929,8 @@ end // end of [list_fold2_right__main]
 
 (* ****** ****** *)
 
-implement{a} list_forall__main {v} {vt} {p:eff} (pf | xs, p, env) = let
+implement{a}
+list_forall__main {v} {vt} {p:eff} (pf | xs, p, env) = let
   fun loop {n:nat} .<n>. (
       pf: !v
     | xs: list (a, n)
@@ -889,7 +946,8 @@ in
   loop (pf | xs, p, env)
 end // end of [list_forall__main]
 
-implement{a} list_forall_fun {p:eff} (xs, p) = let
+implement{a}
+list_forall_fun {p:eff} (xs, p) = let
   val p = coerce (p) where {
     extern castfn coerce (p: a -<p> bool):<> (!unit_v | a, !ptr) -<p> bool
   } // end of [where]
@@ -900,7 +958,8 @@ in
   ans
 end // end of [list_forall_fun]
 
-implement{a} list_forall_clo
+implement{a}
+list_forall_clo
   {v} {p:eff} (pf1 | xs, f) = let
   typedef clo_t = (!v | a) -<clo,p> bool
   stavar l_f: addr; val p_f: ptr l_f = &f
@@ -920,7 +979,8 @@ in
   ans
 end // end of [list_forall_clo]
 
-implement{a} list_forall_cloptr
+implement{a}
+list_forall_cloptr
   {v} {p:eff} (pf | xs, p) = let
   viewtypedef cloptr_t = (!v | a) -<cloptr,p> bool
   fn app (pf: !v | x: a, p: !cloptr_t):<p> bool = p (pf | x)
@@ -929,7 +989,8 @@ in
   ans
 end // end of [list_forall_cloptr]
 
-implement{a} list_forall_cloref {p:eff} (xs, p) = let
+implement{a}
+list_forall_cloref {p:eff} (xs, p) = let
   typedef cloref_t = a -<cloref,p> bool
   fn app (pf: !unit_v | x: a, p: !cloref_t):<p> bool = p (x)
   prval pf = unit_v ()
@@ -941,7 +1002,8 @@ end // end of [list_forall_cloref]
 
 (* ****** ****** *)
 
-implement{a1,a2} list_forall2__main
+implement{a1,a2}
+list_forall2__main
   {v} {vt} {n} {p:eff} (pf | xs1, xs2, p, env) = let
   fun loop {n:nat} .<n>. (
       pf: !v
@@ -961,7 +1023,8 @@ in
   loop (pf | xs1, xs2, p, env)
 end // end of [list_forall2__main]
 
-implement{a1,a2} list_forall2_fun {n} {p:eff} (xs1, xs2, p) = let
+implement{a1,a2}
+list_forall2_fun {n} {p:eff} (xs1, xs2, p) = let
   val p = coerce (p) where { extern castfn
     coerce (p: (a1, a2) -<p> bool):<> (!unit_v | a1, a2, !ptr) -<p> bool
   } // end of [where]
@@ -972,7 +1035,8 @@ in
   ans
 end // end of [list_forall2_fun]
 
-implement{a1,a2} list_forall2_clo
+implement{a1,a2}
+list_forall2_clo
   {v} {n} {p:eff} (pf1 | xs1, xs2, f) = let
   typedef clo_t = (!v | a1, a2) -<clo,p> bool
   stavar l_f: addr; val p_f: ptr l_f = &f
@@ -990,7 +1054,8 @@ in
   ans
 end // end of [list_forall2_clo]
 
-implement{a1,a2} list_forall2_cloptr
+implement{a1,a2}
+list_forall2_cloptr
   {v} {n} {p:eff} (pf | xs1, xs2, p) = let
   viewtypedef clo_t = (!v | a1, a2) -<cloptr,p> bool
   fn app (pf: !v | x1: a1, x2: a2, p: !clo_t):<p> bool = p (pf | x1, x2)
@@ -999,7 +1064,8 @@ in
   ans
 end // end of [list_forall2_cloptr]
 
-implement{a1,a2} list_forall2_cloref {n} {p:eff} (xs1, xs2, p) = let
+implement{a1,a2}
+list_forall2_cloref {n} {p:eff} (xs1, xs2, p) = let
   viewtypedef clo_t = (a1, a2) -<cloref,p> bool
   fn app (pf: !unit_v | x1: a1, x2: a2, p: !clo_t):<p> bool = p (x1, x2)
   prval pf = unit_v ()
@@ -1011,7 +1077,8 @@ end // end of [list_forall2_cloref]
 
 (* ****** ****** *)
 
-implement{a} list_foreach__main
+implement{a}
+list_foreach__main
   {v} {vt} {f:eff} (pf | xs, f, env) = let
   fun loop {n:nat} .<n>. (
       pf: !v
@@ -1026,7 +1093,8 @@ in
   loop (pf | xs, f, env)
 end // end of [list_foreach]
 
-implement{a} list_foreach_fun {f:eff} (xs, f) = let
+implement{a}
+list_foreach_fun {f:eff} (xs, f) = let
   val f = coerce (f) where { extern castfn
     coerce (f: (a) -<f> void):<> (!unit_v | a, !ptr) -<f> void
   } // end of [where]
@@ -1037,7 +1105,8 @@ in
   // empty
 end // end of [list_foreach_fun]
 
-implement{a} list_foreach_clo {v} {f:eff} (pf1 | xs, f) = let
+implement{a}
+list_foreach_clo {v} {f:eff} (pf1 | xs, f) = let
   typedef clo_t = (!v | a) -<clo,f> void
   stavar l_f: addr; val p_f: ptr l_f = &f
   viewdef V = (v, clo_t @ l_f)
@@ -1053,7 +1122,8 @@ in
   ans
 end // end of [list_foreach_clo]
 
-implement{a} list_foreach_cloptr
+implement{a}
+list_foreach_cloptr
   {v} {f:eff} (pf | xs, f) = let
   viewtypedef cloptr_t = (!v | a) -<cloptr,f> void
   fn app (pf: !v | x: a, f: !cloptr_t):<f> void = f (pf | x)
@@ -1062,7 +1132,8 @@ in
   // empty
 end // end of [list_foreach_cloptr]
 
-implement{a} list_foreach_cloref {f:eff} (xs, f) = let
+implement{a}
+list_foreach_cloref {f:eff} (xs, f) = let
   typedef cloref_t = (a) -<cloref,f> void
   fn app (pf: !unit_v | x: a, f: !cloref_t):<f> void = f (x)
   prval pf = unit_v ()
@@ -1074,7 +1145,8 @@ end // end of [list_foreach_cloref]
 
 (* ****** ****** *)
 
-implement{a1,a2} list_foreach2__main
+implement{a1,a2}
+list_foreach2__main
   {v} {vt} {n} {f:eff} (pf | xs1, xs2, f, env) = let
   fun loop {n:nat} .<n>. (
       pf: !v
@@ -1106,7 +1178,8 @@ in
   // empty
 end // end of [list_foreach2_fun]
 
-implement{a1,a2} list_foreach2_clo
+implement{a1,a2}
+list_foreach2_clo
   {v} {n} {f:eff} (pf1 | xs1, xs2, f) = let
   typedef clo_t = (!v | a1, a2) -<clo,f> void
   stavar l_f: addr; val p_f: ptr l_f = &f
@@ -1123,7 +1196,8 @@ in
   // empty
 end // end of [list_foreach2_clo]
 
-implement{a1,a2} list_foreach2_cloptr
+implement{a1,a2}
+list_foreach2_cloptr
   {v} {n} {f:eff} (pf | xs1, xs2, f) = let
   viewtypedef cloptr_t = (!v | a1, a2) -<cloptr,f> void
   fn app (pf: !v | x1: a1, x2: a2, f: !cloptr_t):<f> void =
@@ -1151,7 +1225,8 @@ end // end of [list_foreach2_cloref]
 
 (* ****** ****** *)
 
-implement{a} list_iforeach__main
+implement{a}
+list_iforeach__main
   {v} {vt} {n} {f:eff} (pf | xs, f, env) = let
   viewtypedef cloptr_t = (!v | natLt n, a, !vt) -<fun,f> void
   fun loop {i,j:nat | i+j==n} .<j>. (
@@ -1170,7 +1245,8 @@ in
   loop (pf | 0, xs, f, env)
 end // end of [list_iforeach__main]
 
-implement{a} list_iforeach_fun {n} {f:eff} (xs, f) = let
+implement{a}
+list_iforeach_fun {n} {f:eff} (xs, f) = let
   val f = coerce (f) where { extern castfn
     coerce (f: (natLt n, a) -<f> void):<> (!unit_v | natLt n, a, !ptr) -<f> void
   } // end of [where]
@@ -1181,7 +1257,8 @@ in
   // empty
 end // end of [list_iforeach_fun]
 
-implement{a} list_iforeach_clo {v} {n} {f:eff} (pf1 | xs, f) = let
+implement{a}
+list_iforeach_clo {v} {n} {f:eff} (pf1 | xs, f) = let
   typedef clo_t = (!v | natLt n, a) -<clo,f> void
   stavar l_f: addr; val p_f: ptr l_f = &f
   viewdef V = (v, clo_t @ l_f)
@@ -1197,7 +1274,8 @@ in
   // empty
 end // end of [list_iforeach_clo]
 
-implement{a} list_iforeach_cloptr
+implement{a}
+list_iforeach_cloptr
   {v} {n} {f:eff} (pf | xs, f) = let
   viewtypedef cloptr_t = (!v | natLt n, a) -<cloptr,f> void
   fn app (pf: !v | i: natLt n, x: a, f: !cloptr_t):<f> void = f (pf | i, x)
@@ -1206,7 +1284,8 @@ in
   // empty
 end // end of [list_iforeach_cloptr]
 
-implement{a} list_iforeach_cloref {n} {f:eff} (xs, f) = let
+implement{a}
+list_iforeach_cloref {n} {f:eff} (xs, f) = let
   typedef cloref_t = (natLt n, a) -<cloref,f> void
   fn app (pf: !unit_v | i: natLt n, x: a, f: !cloref_t):<f> void = f (i, x)
   prval pf = unit_v ()
@@ -1218,7 +1297,8 @@ end // end of [list_iforeach_cloref]
 
 (* ****** ****** *)
 
-implement{a1,a2} list_iforeach2__main
+implement{a1,a2}
+list_iforeach2__main
   {v} {vt} {n} {f:eff} (pf | xs1, xs2, f, env) = let
   viewtypedef cloptr_t = (!v | natLt n, a1, a2, !vt) -<fun,f> void
   fun loop {i,j:nat | i+j==n} .<j>. (
@@ -1247,7 +1327,8 @@ in
   // empty
 end // end of [list_foreach2_fun]
 
-implement{a1,a2} list_iforeach2_clo
+implement{a1,a2}
+list_iforeach2_clo
   {v} {n} {f:eff} (pf1 | xs1, xs2, f) = let
   typedef clo_t = (!v | natLt n, a1, a2) -<clo,f> void
   stavar l_f: addr; val p_f: ptr l_f = &f
@@ -1264,7 +1345,8 @@ in
   ans
 end // end of [list_iforeach2_clo]
 
-implement{a1,a2} list_iforeach2_cloptr
+implement{a1,a2}
+list_iforeach2_cloptr
   {v} {n} {f:eff} (pf | xs1, xs2, f) = let
   viewtypedef cloptr_t = (!v | natLt n, a1, a2) -<cloptr,f> void
   fn app (pf: !v | i: natLt n, x1: a1, x2: a2, f: !cloptr_t):<f> void =
@@ -1292,7 +1374,8 @@ end // end of [list_iforeach2_cloref]
 
 (* ****** ****** *)
 
-implement{a} list_get_elt_at (xs, i) = let
+implement{a}
+list_get_elt_at (xs, i) = let
   fun loop {n,i:nat | i < n} .<n>.
     (xs: list (a, n), i: int i):<> a = let
     val x :: xs = xs
@@ -1303,9 +1386,11 @@ in
   loop (xs, i)
 end // end of [list_get_elt_at]
 
-implement{a} list_nth (xs, i) = list_get_elt_at<a> (xs, i)
+implement{a}
+list_nth (xs, i) = list_get_elt_at<a> (xs, i)
 
-implement{a} list_get_elt_at_exn (xs, i) = let
+implement{a}
+list_get_elt_at_exn (xs, i) = let
   fun loop {n,i:nat} .<n>. 
     (xs: list (a, n), i: int i):<!exn> [n>0] a =
     case+ xs of
@@ -1316,9 +1401,11 @@ in
   loop (xs, i)
 end // end of [list_get_elt_at_exn]
 
-implement{a} list_nth_exn (xs, i) = list_get_elt_at_exn<a> (xs, i)
+implement{a}
+list_nth_exn (xs, i) = list_get_elt_at_exn<a> (xs, i)
 
-implement{a} list_get_elt_at_opt (xs, i) = let
+implement{a}
+list_get_elt_at_opt (xs, i) = let
   fun loop {n,i:nat} .<n>.
     (xs: list (a, n), i: int i):<> Option_vt a =
     case+ xs of
@@ -1329,29 +1416,34 @@ in
   loop (xs, i)
 end // end of [list_get_elt_at_opt]
 
-implement{a} list_nth_opt (xs, n) = list_get_elt_at_opt<a> (xs, n)
+implement{a}
+list_nth_opt (xs, n) = list_get_elt_at_opt<a> (xs, n)
 
 (* ****** ****** *)
 
-implement{a} list_head (xs) = let val x :: _ = xs in x end
-implement{a} list_head_exn (xs) = case xs of
+implement{a}
+list_head (xs) = let val x :: _ = xs in x end
+implement{a}
+list_head_exn (xs) = case xs of
   | x :: _ => x | nil () => $raise ListSubscriptException
 // end of [list_hean_exn]
 
 (* ****** ****** *)
 
-implement{} list_is_empty {a} (xs) = begin
+implement{}
+list_is_empty {a} (xs) = begin
   case+ xs of cons _ => false | nil _ => true
 end // end of [list_is_empty]
 
-implement{} list_isnot_empty {a} (xs) = begin
+implement{}
+list_isnot_empty {a} (xs) = begin
   case+ xs of _ :: _ => true | nil () => false
 end // end of [list_is_not_empty]
 
 (* ****** ****** *)
 
 implement{a}
-  list_last (xs0) = loop (x, xs) where {
+list_last (xs0) = loop (x, xs) where {
   fun loop {n:nat} .<n>.
     (x0: a, xs: list (a, n)):<> a = case+ xs of
     | list_cons (x, xs) => loop (x, xs) | list_nil () => x0
@@ -1359,7 +1451,8 @@ implement{a}
   val+ list_cons (x, xs) = xs0
 } // end of [list_last]
 
-implement{a} list_last_exn (xs) = case+ xs of
+implement{a}
+list_last_exn (xs) = case+ xs of
   | _ :: _ => list_last (xs) | nil () => begin
       $raise ListSubscriptException
     end // end of [nil]
@@ -1367,7 +1460,8 @@ implement{a} list_last_exn (xs) = case+ xs of
 
 (* ****** ****** *)
 
-implement{a} list_length (xs) = let
+implement{a}
+list_length (xs) = let
   fun loop {i,j:nat} .<i>.
     (xs: list (a, i), j: int j):<> int (i+j) = begin
     case+ xs of  _ :: xs => loop (xs, isucc j) | nil () => j
@@ -1378,7 +1472,8 @@ end // end of [list_length]
 
 (* ****** ****** *)
 
-implement{a,b} list_map__main
+implement{a,b}
+list_map__main
   {v} {vt} {n} {f:eff} (pf | xs, f, env) = let
   typedef fun_t = (!v | a, !vt) -<fun,f> b
   fun loop {n:nat} .<n>. (
@@ -1401,7 +1496,8 @@ in
   loop (pf | xs, f, res, env); res
 end // end of [list_map__main]
 
-implement{a,b} list_map_fun {n:int} {f:eff} (xs, f) = let
+implement{a,b}
+list_map_fun {n:int} {f:eff} (xs, f) = let
   val f = coerce (f) where {
     extern castfn coerce (f: a -<f> b):<> (!unit_v | a, !ptr) -<f> b
   } // end of [where]
@@ -1412,7 +1508,8 @@ in
   ys
 end // end of [list_map_fun]
 
-implement{a,b} list_map_clo
+implement{a,b}
+list_map_clo
   {v} {n:int} {f:eff} (pf1 | xs, f) = let
   viewtypedef clo_t = (!v | a) -<clo,f> b
   stavar l_f: addr; val p_f: ptr l_f = &f
@@ -1432,7 +1529,8 @@ in
   ys
 end // end of [list_map_clo]
 
-implement{a,b} list_map_cloptr
+implement{a,b}
+list_map_cloptr
   {v} {n:int} {f:eff} (pf | xs, f) = let
   viewtypedef cloptr_t = (!v | a) -<cloptr,f> b
   fn app (pf: !v | x: a, f: !cloptr_t):<f> b = f (pf | x)
@@ -1441,7 +1539,8 @@ in
   ys
 end // end of [list_map_cloptr]
 
-implement{a,b} list_map_cloref {n:int} {f:eff} (xs, f) = let
+implement{a,b}
+list_map_cloref {n:int} {f:eff} (xs, f) = let
   typedef cloref_t = a -<cloref,f> b
   fn app (pf: !unit_v | x: a, f: !cloref_t):<f> b = f (x)
   prval pf = unit_v ()
@@ -1453,7 +1552,8 @@ end // end of [list_map_cloref]
 
 (* ****** ****** *)
 
-implement{a1,a2,b} list_map2__main
+implement{a1,a2,b}
+list_map2__main
   {v:view} {vt:viewtype} {n} {f:eff} (pf | xs, ys, f, env) = let
   var res: List_vt b? // uninitialized
   fun loop {n:nat} .<n>. (
@@ -1477,7 +1577,8 @@ in
   loop (pf | xs, ys, f, res, env); res
 end // end of [list_map2__main]
 
-implement{a1,a2,b} list_map2_fun {n} {f:eff} (xs, ys, f) = let
+implement{a1,a2,b}
+list_map2_fun {n} {f:eff} (xs, ys, f) = let
   val f = coerce (f) where { extern castfn
     coerce (f: (a1, a2) -<f> b):<> (!unit_v | a1, a2, !ptr) -<f> b
   } // end of [where]
@@ -1488,7 +1589,8 @@ in
   zs
 end // end of [list_map2_fun]
 
-implement{a1,a2,b} list_map2_clo
+implement{a1,a2,b}
+list_map2_clo
   {v} {n} {f:eff} (pf1 | xs1, xs2, f) = let
   typedef clo_t = (!v | a1, a2) -<clo,f> b
   stavar l_f: addr; val p_f: ptr l_f = &f
@@ -1508,7 +1610,8 @@ in
   ans
 end // end of [list_map2_clo]
 
-implement{a1,a2,b} list_map2_cloptr
+implement{a1,a2,b}
+list_map2_cloptr
   {v} {n} {f:eff} (pf | xs, ys, f) = let
   viewtypedef cloptr_t = (!v | a1, a2) -<cloptr,f> b
   fn app (pf: !v | x: a1, y: a2, f: !cloptr_t):<f> b = f (pf | x, y)
@@ -1519,7 +1622,8 @@ in
   zs
 end  // end of [list_map2_cloptr]
 
-implement{a1,a2,b} list_map2_cloref {n} {f:eff} (xs, ys, f) = let
+implement{a1,a2,b}
+list_map2_cloref {n} {f:eff} (xs, ys, f) = let
   typedef cloref_t = (a1, a2) -<cloref,f> b
   fn app (pf: !unit_v | x: a1, y: a2, f: !cloref_t):<f> b = f (x, y)
   prval pf = unit_v ()
@@ -1533,7 +1637,8 @@ end  // end of [list_map2_cloref]
 
 (* ****** ****** *)
 
-implement{a} list_reverse_append (xs, ys) = let
+implement{a}
+list_reverse_append (xs, ys) = let
   fun loop {n1,n2:nat} .<n1>.
     (xs: list (a, n1), ys: list (a, n2)):<> list (a, n1+n2) =
     case+ xs of x :: xs => loop (xs, x :: ys) | nil () => ys
@@ -1543,11 +1648,13 @@ end // end of [list_reverse_append]
 
 (* ****** ****** *)
 
-implement{a} list_reverse (xs) =
+implement{a}
+list_reverse (xs) =
   list_reverse_append_vt<a> (xs, list_vt_nil ())
 // end of [list_reverse]
 
-implement{a} list_reverse_append_vt (xs, ys) = let
+implement{a}
+list_reverse_append_vt (xs, ys) = let
   fun loop {n1,n2:nat} .<n1>.
     (xs: list (a, n1), ys: list_vt (a, n2)):<> list_vt (a, n1+n2) =
     case+ xs of x :: xs => loop (xs, list_vt_cons (x, ys)) | nil () => ys
@@ -1557,7 +1664,8 @@ end (* end of [list_reverse] *)
 
 (* ****** ****** *)
 
-implement{a} list_set_elt_at (xs, i, x0) = let
+implement{a}
+list_set_elt_at (xs, i, x0) = let
   var res: List a // uninitialized
   fun loop {n,i:nat | i < n} .<n>.
     (xs: list (a, n), i: int i, x0: a, res: &(List a)? >> list (a, n))
@@ -1587,11 +1695,13 @@ end // end of [aux_test]
 
 in
 
-implement{a} list_set_elt_at_exn (xs, i, x0) =
+implement{a}
+list_set_elt_at_exn (xs, i, x0) =
   if aux_test<a> (xs, i) then list_set_elt_at (xs, i, x0)
   else $raise ListSubscriptException
 
-implement{a} list_set_elt_at_opt (xs, i, x0) =
+implement{a}
+list_set_elt_at_opt (xs, i, x0) =
   if aux_test<a> (xs, i) then Some_vt (list_set_elt_at (xs, i, x0))
   else None_vt ()
 
@@ -1599,7 +1709,8 @@ end // end of [local]
 
 (* ****** ****** *)
 
-implement{a} list_split_at {n,i} (xs, i) = let
+implement{a}
+list_split_at {n,i} (xs, i) = let
   var fsts: List_vt a? // uninitialized
   fun loop {j:nat | j <= i} .<i-j>.
     (xs: list (a, n-j), ij: int (i-j), fsts: &(List_vt a)? >> list_vt (a, i-j))
@@ -1620,13 +1731,16 @@ end // end of [list_split_at]
 
 (* ****** ****** *)
 
-implement{a} list_tail (xs) = let val _ :: xs = xs in xs end
-implement{a} list_tail_exn (xs) = case+ xs of
+implement{a}
+list_tail (xs) = let val _ :: xs = xs in xs end
+implement{a}
+list_tail_exn (xs) = case+ xs of
   | _ :: xs => xs | nil () => $raise ListSubscriptException
 
 (* ****** ****** *)
 
-implement{a} list_take (xs, i) = let
+implement{a}
+list_take (xs, i) = let
   var res: List_vt a // uninitialized
   fun loop {n,i:nat | i <= n} .<i>.
     (xs: list (a, n), i: int i, res: &(List_vt a)? >> list_vt (a, i)):<> void =
@@ -1644,7 +1758,8 @@ in
   loop (xs, i, res); res
 end // end of [list_take]
 
-implement{a} list_take_exn {n,i} (xs, i) = let
+implement{a}
+list_take_exn {n,i} (xs, i) = let
   fun loop {n,i:nat} .<i>.
     (xs: list (a, n), i: int i, res: &List_vt a? >> list_vt (a, j))
     :<> #[j:nat | (i <= n && i == j) || (n < i && n == j)] bool (n < i)  =
@@ -1672,7 +1787,8 @@ end (* end of [list_take_exn] *)
 
 (* ****** ****** *)
 
-implement{a,b} list_zip (xs, ys) = let
+implement{a,b}
+list_zip (xs, ys) = let
   typedef ab = @(a, b)
   var res: List_vt ab // uninitialized
   fun loop {i:nat} .<i>.
@@ -1682,7 +1798,7 @@ implement{a,b} list_zip (xs, ys) = let
         val () = (res := list_vt_cons {ab} {0} (@(x, y), ?)); val+ list_vt_cons (_, !p) = res
       in
         loop (xs, ys, !p); fold@ res
-      end
+      end // end of [::, ::]
     | (nil (), nil ()) => (res := list_vt_nil ())
 in
   loop (xs, ys, res); res
@@ -1690,25 +1806,30 @@ end // end of [list_zip]
 
 (* ****** ****** *)
 
-implement{a1,a2,b} list_zipwth_fun
+implement{a1,a2,b}
+list_zipwth_fun
   (xs, ys, f) = list_map2_fun<a1,a2,b> (xs, ys, f)
 // end of [list_zipwth_fun]
 
-implement{a1,a2,b} list_zipwth_clo
+implement{a1,a2,b}
+list_zipwth_clo
   (pf | xs, ys, f) = list_map2_clo<a1,a2,b> (pf | xs, ys, f)
 // end of [list_zipwth_clo]
 
-implement{a1,a2,b} list_zipwth_cloptr
+implement{a1,a2,b}
+list_zipwth_cloptr
   (pf | xs, ys, f) = list_map2_cloptr<a1,a2,b> (pf | xs, ys, f)
 // end of [list_zipwth_cloptr]
 
-implement{a1,a2,b} list_zipwth_cloref
+implement{a1,a2,b}
+list_zipwth_cloref
   (xs, ys, f) = list_map2_cloref<a1,a2,b> (xs, ys, f)
 // end of [list_zipwth_cloref]
 
 (* ****** ****** *)
 
-implement{a1,a2} list_unzip xys = let
+implement{a1,a2}
+list_unzip xys = let
   var res1: List_vt a1 and res2: List_vt a2 // uninitialized
   fun loop {n:nat} .<n>. (
       xys: list (@(a1, a2), n)
@@ -1733,19 +1854,17 @@ end // end of [list_unzip]
 // implementing merge sort
 
 (*
- *
- * llist(a, i, n): a list of lists such that
- *   1. the sum of the lengths of lists in the list of lists is i, and
- *   2. the length of the list is n.
- *
- *)
+**
+** llist(a, i, n): a list of lists such that
+**   1. the sum of the lengths of lists in the list of lists is i, and
+**   2. the length of the list is n.
+**
+*)
 
 local
-
 //
 // this is not an efficient implementation but it is guaranteed to be O(n*log(n))
 //
-
   datatype llist (a:t@ype+, int, int) =
     | {i,j,n:nat} lcons (a, i+j, n+1) of (list (a, i), llist (a, j, n))
     | lnil (a, 0, 0)
@@ -1808,7 +1927,8 @@ local
 
 in // in of [local]
 
-implement{a} list_mergesort (xs, lte, env) = aux4 (lte, aux1 (lte, xs, env), env)
+implement{a}
+list_mergesort (xs, lte, env) = aux4 (lte, aux1 (lte, xs, env), env)
 
 end // end of [local]
 
@@ -1817,11 +1937,9 @@ end // end of [local]
 // implementing quick sort
 
 local
-
 //
 // this may not be a practical implementation as it can easily be O(n*n)
 //
-
   typedef lte (a:t@ype, env: viewtype, f:eff) = (a, a, !env) -<fun,f> bool
 
   fun{a:t@ype} qs {env:viewtype} {n:nat} {f:eff} .<n,0>.
@@ -1855,7 +1973,8 @@ local
 
 in // end of [local]
 
-implement{a} list_quicksort (xs, lte, env) = qs (lte, xs, env)
+implement{a}
+list_quicksort (xs, lte, env) = qs (lte, xs, env)
 
 end // end of [local]
 

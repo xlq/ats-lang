@@ -75,9 +75,15 @@ atsctrb_eq_cairo_status_cairo_status (
 /* ****** ****** */
 
 #define atsctrb_cairo_create cairo_create
+
+/* ****** ****** */
+
+#define atsctrb_cairo_status cairo_status
 #define atsctrb_cairo_reference cairo_reference
 #define atsctrb_cairo_destroy cairo_destroy
-#define atsctrb_cairo_status cairo_status
+#define atsctrb_cairo_get_reference_count cairo_get_reference_count
+
+/* ****** ****** */
 
 #define atsctrb_cairo_save cairo_save
 #define atsctrb_cairo_restore cairo_restore
@@ -112,9 +118,11 @@ atsctrb_eq_cairo_status_cairo_status (
 
 /* ****** ****** */
 
+#if (CAIRO_VERSION >= CAIRO_VERSION_ENCODE(1,4,0))
+
 #define atsctrb_cairo_get_dash_count cairo_get_dash_count
 
-static inline
+ATSinline()
 ats_int_type
 atsctrb_cairo_get_dash (
   ats_cairo_ref cr
@@ -131,6 +139,8 @@ atsctrb_cairo_get_dash (
 } // end of [atsctrb_cairo_get_dash]
 
 #define atsctrb_cairo_set_dash cairo_set_dash
+
+#endif // end of [#if (CAIRO_VERSION >= 1.4.0)]
 
 /* ****** ****** */
 
@@ -170,10 +180,8 @@ atsctrb_cairo_get_dash (
 /* ****** ****** */
 
 #if (CAIRO_VERSION >= CAIRO_VERSION_ENCODE(1,4,0))
-
 #define atsctrb_cairo_rectangle_list_destroy cairo_rectangle_list_destroy
 #define atsctrb_cairo_copy_clip_rectangle_list cairo_copy_clip_rectangle_list
-
 #endif // end of [#if (CAIRO_VERSION >= 1.4.0)]
 
 /* ****** ****** */
@@ -209,20 +217,14 @@ atsctrb_cairo_get_dash (
 
 /* ****** ****** */
 
-#define atsctrb_cairo_get_reference_count cairo_get_reference_count
-
-/* ****** ****** */
-
 #define atsctrb_cairo_copy_page cairo_copy_page
 #define atsctrb_cairo_show_page cairo_show_page
 
 /* ****** ****** */
 
 #if (CAIRO_VERSION >= CAIRO_VERSION_ENCODE(1,4,0))
-
 #define atsctrb_cairo_get_user_data cairo_get_user_data
 #define atsctrb_cairo_set_user_data cairo_set_user_data
-
 #endif // end of [#if (CAIRO_VERSION >= 1.4.0)]
 
 /* ****** ****** */
@@ -282,17 +284,34 @@ atsctrb_cairo_get_dash (
 #define atsctrb_cairo_pattern_get_surface cairo_pattern_get_surface
 
 #define atsctrb_cairo_pattern_create_linear cairo_pattern_create_linear
+#define atsctrb_cairo_pattern_get_linear_points cairo_pattern_get_linear_points
+
 #define atsctrb_cairo_pattern_create_radial cairo_pattern_create_radial
+#define atsctrb_cairo_pattern_get_radial_circles cairo_pattern_get_radial_circles
 
 #define atsctrb_cairo_pattern_status cairo_pattern_status
 #define atsctrb_cairo_pattern_reference cairo_pattern_reference
 #define atsctrb_cairo_pattern_destroy cairo_pattern_destroy
+#define atsctrb_cairo_pattern_get_reference_count cairo_pattern_get_reference_count
 
 #define atsctrb_cairo_pattern_get_type cairo_pattern_get_type
 #define atsctrb_cairo_pattern_add_color_stop_rgb cairo_pattern_add_color_stop_rgb
 #define atsctrb_cairo_pattern_add_color_stop_rgba cairo_pattern_add_color_stop_rgba
-#define atsctrb_cairo_pattern_set_matrix cairo_pattern_set_matrix
+#define atsctrb_cairo_pattern_get_color_stop_count cairo_pattern_get_color_stop_count
+#define atsctrb_cairo_pattern_get_color_stop_rgba cairo_pattern_get_color_stop_rgba
+
+#define atsctrb_cairo_pattern_get_extend cairo_pattern_get_extend
+#define atsctrb_cairo_pattern_set_extend cairo_pattern_set_extend
+#define atsctrb_cairo_pattern_get_filter cairo_pattern_get_filter
+#define atsctrb_cairo_pattern_set_filter cairo_pattern_set_filter
+
 #define atsctrb_cairo_pattern_get_matrix cairo_pattern_get_matrix
+#define atsctrb_cairo_pattern_set_matrix cairo_pattern_set_matrix
+
+#if (CAIRO_VERSION >= CAIRO_VERSION_ENCODE(1,4,0))
+#define atsctrb_cairo_pattern_get_user_data cairo_pattern_get_user_data
+#define atsctrb_cairo_pattern_set_user_data cairo_pattern_set_user_data
+#endif // end of [#if (CAIRO_VERSION >= 1.4.0)]
 
 /* ****** ****** */
 
@@ -345,13 +364,11 @@ atsctrb_cairo_get_dash (
 
 /* ****** ****** */
 
-#if CAIRO_VERSION_ENCODE(1,8,0)
-
+#if (CAIRO_VERSION >= CAIRO_VERSION_ENCODE(1,8,0))
 #define atsctrb_cairo_glyph_allocate cairo_glyph_allocate
 #define atsctrb_cairo_glyph_free cairo_glyph_free
 #define atsctrb_cairo_cluster_allocate cairo_cluster_allocate
 #define atsctrb_cairo_cluster_free cairo_cluster_free
-
 #endif // end of [#if (CAIRO_VERSION >= 1.8.0)]
 
 /* ****** ****** */
@@ -386,14 +403,14 @@ atsctrb_cairo_get_dash (
 // fonts for drawing
 //
 
+#define atsctrb_cairo_font_face_status cairo_font_face_status
 #define atsctrb_cairo_font_face_reference cairo_font_face_reference
 #define atsctrb_cairo_font_face_destroy cairo_font_face_destroy
-#define atsctrb_cairo_font_face_status cairo_font_face_status
+#define atsctrb_cairo_font_face_get_reference_count cairo_font_face_get_reference_count
 
 typedef cairo_font_type_t ats_cairo_font_type_type ;
 
 #define atsctrb_cairo_font_face_get_type cairo_font_face_get_type
-#define atsctrb_cairo_font_face_get_reference_count cairo_font_face_get_reference_count
 
 /* ****** ****** */
 
@@ -401,9 +418,11 @@ typedef cairo_font_type_t ats_cairo_font_type_type ;
 // scaled fonts
 //
 
+#define atsctrb_cairo_scaled_font_status cairo_scaled_font_status
 #define atsctrb_cairo_scaled_font_reference cairo_scaled_font_reference
 #define atsctrb_cairo_scaled_font_destroy cairo_scaled_font_destroy
-#define atsctrb_cairo_scaled_font_status cairo_scaled_font_status
+#define atsctrb_cairo_scaled_font_get_reference_count cairo_scaled_font_get_reference_count
+
 #define atsctrb_cairo_scaled_font_extents cairo_scaled_font_extents
 #define atsctrb_cairo_scaled_font_text_extents cairo_scaled_font_text_extents
 #define atsctrb_cairo_scaled_font_get_font_face cairo_scaled_font_get_font_face
@@ -412,7 +431,6 @@ typedef cairo_font_type_t ats_cairo_font_type_type ;
 #define atsctrb_cairo_scaled_font_get_ctm cairo_scaled_font_get_ctm
 #define atsctrb_cairo_scaled_font_get_scale_matrix cairo_scaled_font_get_scale_matrix
 #define atsctrb_cairo_scaled_font_get_type cairo_scaled_font_get_type
-#define atsctrb_cairo_scaled_font_get_reference_count cairo_scaled_font_get_reference_count
 
 /* ****** ****** */
 
@@ -456,9 +474,12 @@ typedef cairo_font_type_t ats_cairo_font_type_type ;
 //
 
 #define atsctrb_cairo_surface_create_similar cairo_surface_create_similar
-#define atsctrb_cairo_surface_destroy cairo_surface_destroy
-#define atsctrb_cairo_surface_reference cairo_surface_reference
+
 #define atsctrb_cairo_surface_status cairo_surface_status
+#define atsctrb_cairo_surface_reference cairo_surface_reference
+#define atsctrb_cairo_surface_destroy cairo_surface_destroy
+#define atsctrb_cairo_surface_get_reference_count cairo_surface_get_reference_count
+
 #define atsctrb_cairo_surface_finish cairo_surface_finish
 #define atsctrb_cairo_surface_flush cairo_surface_flush
 #define atsctrb_cairo_surface_get_font_options cairo_surface_get_font_options
@@ -469,7 +490,6 @@ typedef cairo_font_type_t ats_cairo_font_type_type ;
 #define atsctrb_cairo_set_device_offset cairo_set_device_offset
 
 #define atsctrb_cairo_surface_get_type cairo_surface_get_type
-#define atsctrb_cairo_surface_get_reference_count cairo_surface_get_reference_count
 
 #define atsctrb_cairo_surface_copy_page cairo_surface_copy_page
 #define atsctrb_cairo_surface_show_page cairo_surface_show_page

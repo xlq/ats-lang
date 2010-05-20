@@ -433,13 +433,17 @@ atsctrb_gtk_entry_get_text
 
 #define atsctrb_GTK_FILE_CHOOSER GTK_FILE_CHOOSER
 
+#define atsctrb_gtk_file_chooser_get_action gtk_file_chooser_get_action
+#define atsctrb_gtk_file_chooser_set_action gtk_file_chooser_set_action
+
 ATSinline()
 ats_ptr_type
 atsctrb_gtk_file_chooser_get_filename
   (ats_ptr_type filesel) {
-  (void*)gtk_file_chooser_get_filename ((GtkFileChooser*)filesel) ;
+  return (void*)gtk_file_chooser_get_filename ((GtkFileChooser*)filesel) ;
 } // end of [atsctrb_gtk_file_chooser_get_filename]
 #define atsctrb_gtk_file_chooser_set_filename gtk_file_chooser_set_filename
+#define atsctrb_gtk_file_chooser_set_current_name gtk_file_chooser_set_current_name
 
 #define atsctrb_gtk_file_chooser_get_do_overwrite_confirmation \
   gtk_file_chooser_get_do_overwrite_confirmation
@@ -502,7 +506,7 @@ ATSinline()
 ats_ptr_type
 atsctrb_gtk_file_selection_get_filename
   (ats_ptr_type filesel) {
-  (void*)gtk_file_selection_get_filename ((GtkFileSelection*)filesel) ;
+  return (void*)gtk_file_selection_get_filename ((GtkFileSelection*)filesel) ;
 } // end of [atsctrb_gtk_file_selection_get_filename]
 
 #define atsctrb_gtk_file_selection_set_filename gtk_file_selection_set_filename

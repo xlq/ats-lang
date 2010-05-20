@@ -60,6 +60,20 @@ macdef GTK_FILE_CHOOSER_CONFIRMATION_SELECT_AGAIN =
 
 (* ****** ****** *)
 
+fun gtk_file_chooser_get_action
+  {c:cls | c <= GtkFileChooser} {l:agz}
+  (chooser: !gobjref (c, l)): GtkFileChooserAction
+  = "#atsctrb_gtk_file_chooser_get_action"
+// end of [gtk_file_chooser_get_action]
+
+fun gtk_file_chooser_set_action
+  {c:cls | c <= GtkFileChooser} {l:agz}
+  (chooser: !gobjref (c, l), action: GtkFileChooserAction): void
+  = "#atsctrb_gtk_file_chooser_set_action"
+// end of [gtk_file_chooser_set_action]
+
+(* ****** ****** *)
+
 //
 // HX-2010-05-05:
 // the return may be a NULL gstring
@@ -72,9 +86,17 @@ fun gtk_file_chooser_get_filename
 
 fun gtk_file_chooser_set_filename
   {c:cls | c <= GtkFileChooser} {l1,l2:agz}
-  (filesel: !gobjref (c, l1), filename: !gstring l2): gboolean
+  (chooser: !gobjref (c, l1), filename: !gstring l2): gboolean
   = "#atsctrb_gtk_file_chooser_set_filename"
 // end of [gtk_file_chooser_set_filename]
+
+(* ****** ****** *)
+
+fun gtk_file_chooser_set_current_name
+  {c:cls | c <= GtkFileChooser} {l1,l2:agz}
+  (chooser: !gobjref (c, l1), name: !gstring l2): void
+  = "#atsctrb_gtk_file_chooser_set_current_name"
+// end of [gtk_file_chooser_set_current_name]
 
 (* ****** ****** *)
 
