@@ -1,5 +1,5 @@
 //
-// Cairo: Test text rotation
+// Cairo: Test text transform
 // The code is directly translated from on the attached C code
 //
 // Author: Hongwei Xi (hwxi AT cs DOT bu DOT edu)
@@ -75,7 +75,7 @@ fun draw {l:agz}
   val () = cairo_translate (cr, SIZE, SIZE)
   val () =  cairo_rotate (cr, M_PI)
 //
-  val PNGFILENAME = "romedalen.png"
+  val PNGFILENAME = "DATA/romedalen.png"
   val image = cairo_image_surface_create_from_png (PNGFILENAME)
   val pattern = cairo_pattern_create_for_surface (image)
   val () = cairo_surface_destroy (image)
