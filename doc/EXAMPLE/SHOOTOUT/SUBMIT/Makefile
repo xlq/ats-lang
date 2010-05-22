@@ -226,6 +226,7 @@ cleanall: clean
 	rm -f k-nucleotide1
 	rm -f k-nucleotide2
 	rm -f k-nucleotide3
+	rm -f k-nucleotide3_smp
 	rm -f k-nucleotide4
 	rm -f mandelbrot
 	rm -f mandelbrot_simd

@@ -1481,6 +1481,11 @@ atsctrb_gtk_widget_getref_allocation
 
 #define atsctrb_gtk_widget_queue_draw_area gtk_widget_queue_draw_area
 
+#define atsctrb_gtk_widget_create_pango_context gtk_widget_create_pango_context
+#define atsctrb_gtk_widget_get_pango_context gtk_widget_get_pango_context
+
+#define atsctrb_gtk_widget_create_pango_layout gtk_widget_create_pango_layout
+
 /* ****** ****** */
 
 //

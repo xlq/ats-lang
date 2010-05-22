@@ -66,7 +66,11 @@ stadef srcwin = $SWL.srcwin
 (* ****** ****** *)
 
 staload "atsui_topenv.sats"
+
+(* ****** ****** *)
+
 macdef gs = gstring_of_string
+macdef GNULL = (gpointer)null
 overload gint with gint_of_GtkResponseType
 
 (* ****** ****** *)
@@ -194,22 +198,6 @@ atsui_topenv_initset_textview_output
 
 /* ****** ****** */
 
-ats_ptr_type
-atsui_topenv_get_statusbar () {
-  return theATSUItopenv.statusbar ;
-} // end of [atsui_topenv_get_statusbar]
-
-ats_void_type
-atsui_topenv_initset_statusbar
-  (ats_ptr_type x) {
-  if (theATSUItopenv.statusbar != (GtkStatusbar*)0) {
-    fprintf (stderr, "exit(ATS): [atsui_topenv_initset_statusbar] failed\n"); exit(1);
-  } // end of [if]
-  theATSUItopenv.statusbar = (GtkStatusbar*)x ;
-} // end of [atsui_topenv_initset_statusbar]
-
-/* ****** ****** */
-
 %} // end of [%{^]
 
 (* ****** ****** *)
@@ -242,57 +230,6 @@ fun the_drawarea_welcome_set
 fun the_drawarea_welcome_fini (): void = () where {
   val darea = the_drawarea_welcome_get (); val () = gtk_widget_destroy (darea)
 } // end of [the_drawarea_welcome_fini]
-
-(* ****** ****** *)
-
-//
-
-extern
-fun topenv_initset_aclgrp (x: GtkAccelGroup_ref1): void
-  = "atsui_topenv_initset_aclgrp"
-// end of [topenv_initset_aclgrp]
-
-//
-
-extern
-fun topenv_initset_vbox0 (x: GtkVBox_ref1): void
-  = "atsui_topenv_initset_vbox0"
-// end of [topenv_initset_vbox0]
-
-/* ****** ****** */
-
-extern
-fun topenv_initset_container_source
-  {c:cls | c <= GtkContainer} {l:agz} (x: gobjref (c, l)): void
-  = "atsui_topenv_initset_container_source"
-// end of [topenv_initset_container_source]
-extern
-fun topenv_initset_textview_source (x: GtkTextView_ref1): void
-  = "atsui_topenv_initset_textview_source"
-// end of [topenv_initset_textview_source]
-
-//
-
-extern
-fun topenv_initset_container_output
-  {c:cls | c <= GtkContainer} {l:agz} (x: gobjref (c, l)): void
-  = "atsui_topenv_initset_container_output"
-// end of [topenv_initset_container_output]
-extern
-fun topenv_initset_textview_output (x: GtkTextView_ref1): void
-  = "atsui_topenv_initset_textview_output"
-// end of [topenv_initset_textview_output]
-
-//
-
-extern
-fun topenv_initset_statusbar (x: GtkStatusbar_ref1): void
-  = "atsui_topenv_initset_statusbar"
-// end of [topenv_initset_statusbar]
-
-(* ****** ****** *)
-
-macdef GNULL = (gpointer)null
 
 (* ****** ****** *)
 
@@ -379,7 +316,8 @@ end // end of [topenv_make_textview_output]
 
 (* ****** ****** *)
 
-implement topenv_textview_source_initset_if () = let
+implement
+topenv_textview_source_initset_if () = let
   val tvflag = topenv_textview_source_initset_flag_get ()
 in
   if tvflag = 0 then let
@@ -389,7 +327,10 @@ in
     val tv = topenv_make_textview_source ()
     val () = gtk_container_add (win, tv)
     val () = gtk_widget_show (tv)
-    val () = topenv_initset_textview_source (tv)
+    val () = initset (tv) where {
+      extern fun initset
+        (x: GtkTextView_ref1): void = "atsui_topenv_initset_textview_source"
+    } // end of [val]
 //
 // HX: enabling the CLOSE, SAVE and SAVEAS menu items
 //
@@ -403,6 +344,10 @@ in
     val () = gtk_widget_set_sensitive (x, GTRUE)
     prval () = fpf_x (x)
 //
+    val (fpf_x | x) = topenv_get_menuitem_view_linenumber ()
+    val () = gtk_widget_set_sensitive (x, GTRUE)
+    prval () = fpf_x (x)
+//
     val () = the_drawarea_welcome_fini ()
     val (fpf_container | container) = topenv_get_container_source ()
     val () = gtk_container_add (container, win)
@@ -412,81 +357,6 @@ in
     // nothing
   end // end of [val]
 end // end of [topenv_textview_source_initset_if]
-
-(* ****** ****** *)
-
-extern
-fun topenv_make_menu_edit (): GtkMenu_ref1
-implement
-topenv_make_menu_edit () = menu where {
-  val menu = gtk_menu_new () // to be returned
-//
-  val undo_item =
-    $UT.gtk_image_menu_item_new_from_stock_null (GTK_STOCK_UNDO)
-  val () = gtk_menu_shell_append (menu, undo_item)
-  val () = gtk_widget_show_unref (undo_item)
-//
-  val redo_item =
-    $UT.gtk_image_menu_item_new_from_stock_null (GTK_STOCK_REDO)
-  val () = gtk_menu_shell_append (menu, redo_item)
-  val () = gtk_widget_show_unref (redo_item)
-//
-  val sep_item = gtk_separator_menu_item_new ()
-  val () = gtk_menu_shell_append (menu, sep_item)
-  val () = gtk_widget_show_unref (sep_item)
-//
-  val paste_item =
-    $UT.gtk_image_menu_item_new_from_stock_null (GTK_STOCK_PASTE)
-  val () = gtk_menu_shell_append (menu, paste_item)
-  val () = gtk_widget_show_unref (paste_item)
-//
-  val sep_item = gtk_separator_menu_item_new ()
-  val () = gtk_menu_shell_append (menu, sep_item)
-  val () = gtk_widget_show_unref (sep_item)
-//
-  val delete_item =
-    $UT.gtk_image_menu_item_new_from_stock_null (GTK_STOCK_DELETE)
-  val () = gtk_menu_shell_append (menu, delete_item)
-  val () = gtk_widget_show_unref (delete_item)
-//
-} // end of [EDITmenu_make]
-
-(* ****** ****** *)
-
-fn toggle_statusbar
-  (tf: gboolean) = () where {
-  val tf = (bool_of)tf
-  val (fpf_bar | bar) = topenv_get_statusbar ()
-  val () = (
-    if tf then gtk_widget_show (bar) else gtk_widget_hide (bar)
-  ) : void
-  prval () = fpf_bar (bar)
-} // end of [cb_toggle_statusbar]
-
-fun cb_view_statusbar {l:agz}
-  (item: !GtkCheckMenuItem_ref l)
-  : gboolean = GTRUE where {
-  val active = gtk_check_menu_item_get_active (item)
-  val () = toggle_statusbar (active)
-} // end of [cb_view_statusbar]
-
-extern
-fun topenv_make_menu_view (): GtkMenu_ref1
-implement
-topenv_make_menu_view () = menu where {
-  val menu = gtk_menu_new () // to be returned
-//
-  val (fpf_x | x) = (gs)"View Statusbar"
-  val statusbar_item = gtk_check_menu_item_new_with_label (x)
-  val () = gtk_check_menu_item_set_active (statusbar_item, GFALSE)
-  prval () = fpf_x (x)
-//
-  val _sid = g_signal_connect
-    (statusbar_item, (gsignal)"activate", G_CALLBACK(cb_view_statusbar), GNULL)
-//
-  val () = gtk_menu_shell_append (menu, statusbar_item)
-  val () = gtk_widget_show_unref (statusbar_item)
-} // end of [topenv_make_menu_view]
 
 (* ****** ****** *)
 
@@ -682,7 +552,10 @@ implement theHPaned1_make () = hpaned0 where {
     table2, win21, left21, right21, top2, bot2, xopt, yopt, 1U, 1U
   ) // end of [val]
   val () = gtk_widget_show (win21)
-  val () = topenv_initset_container_source (win21)
+  val () = initset (win21) where {
+    extern fun initset {c:cls | c <= GtkContainer} {l:agz}
+      (x: gobjref (c, l)): void = "atsui_topenv_initset_container_source"
+  } // end of [val]
 //
   val win22 = theFunctionlst_make ()
   val left22 = right21
@@ -691,7 +564,10 @@ implement theHPaned1_make () = hpaned0 where {
     table2, win22, left22, right22, top2, bot2, xopt, yopt, 1U, 1U
   ) // end of [val]
   val () = gtk_widget_show (win22)
-  val () = topenv_initset_container_output (win22)
+  val () = initset (win22) where {
+    extern fun initset {c:cls | c <= GtkContainer} {l:agz}
+      (x: gobjref (c, l)): void = "atsui_topenv_initset_container_output"
+  } // end of [val]
 //
   val () = gtk_widget_show_unref (table2)
 //
@@ -702,7 +578,9 @@ implement theHPaned1_make () = hpaned0 where {
   val [l_tv:addr] tv = topenv_make_textview_output ()
   val () = gtk_container_add (win22, tv)
   val () = gtk_widget_show (tv)
-  val () = topenv_initset_textview_output (tv)
+  val () = initset (tv) where {
+    extern fun initset (x: GtkTextView_ref1): void = "atsui_topenv_initset_textview_output"
+  } // end of [val]
   val () = gtk_paned_pack2 (vpaned2, win22, GFALSE(*resize*), GFALSE(*shrink*))
   val () = gtk_widget_show_unref (win22)
 //
@@ -740,7 +618,9 @@ theVBox0_make () = vbox where {
     val statusbar = theStatusbar_make ()
     val () = gtk_box_pack_start (vbox, statusbar, GFALSE, GFALSE, (guint)1)
     // val () = gtk_widget_show (statusbar) // HX: default: hidden
-    val () = topenv_initset_statusbar (statusbar)
+    val () = initset (statusbar) where {
+      extern fun initset (x: GtkStatusbar_ref1): void = "atsui_topenv_initset_statusbar"
+    } // end of [val]
   } // end of [val]
 //
 } // end of [theVBox0_make]
@@ -762,12 +642,16 @@ topenv_init () = () where {
 //
   val aclgrp = gtk_accel_group_new ()
   val () = gtk_window_add_accel_group (win, aclgrp)
-  val () = topenv_initset_aclgrp (aclgrp)
+  val () = initset (aclgrp) where {
+    extern fun initset (x: GtkAccelGroup_ref1): void = "atsui_topenv_initset_aclgrp"
+  } // end of [val]
 //
   val vbox = theVBox0_make ()
   val () = gtk_container_add (win, vbox)
   val () = gtk_widget_show (vbox)
-  val () = topenv_initset_vbox0 (vbox)
+  val () = initset (vbox) where {
+    extern fun initset (x: GtkVBox_ref1): void = "atsui_topenv_initset_vbox0"
+  } // end of [val]
 //
 // val () = gtk_widget_show (win) // this is to be done in [atsui_main]
 //

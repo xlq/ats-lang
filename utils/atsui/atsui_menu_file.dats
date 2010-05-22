@@ -181,7 +181,7 @@ fun cb_close_activate (): gboolean = let
 //
   val () = (print (#LOCATION + ": cb_close_activate"); print_newline ())
 //
-  val () = topenv_textview_source_initset_if ()
+// val () = topenv_textview_source_initset_if () // already set at this point
 //
   val (fpf_tv | tv) = topenv_get_textview_source ()
   val (fpf_tb | tb) = gtk_text_view_get_buffer (tv)
@@ -257,8 +257,8 @@ topenv_make_menu_file () = menu where {
   val () = gtk_menu_shell_append (menu, close_item)
   val () = gtk_widget_set_sensitive (close_item, GFALSE)
   val () = gtk_widget_show (close_item)
-  val () = initset (close_item) where {
-    extern fun initset (x: GtkImageMenuItem_ref1): void = "atsui_topenv_initset_menuitem_file_close"
+  val () = initset (close_item) where { extern fun initset
+    (x: GtkImageMenuItem_ref1): void = "atsui_topenv_initset_menuitem_file_close"
   } // end of [val]
 //
   val sep_item = gtk_separator_menu_item_new ()
@@ -275,8 +275,8 @@ topenv_make_menu_file () = menu where {
   val () = gtk_menu_shell_append (menu, save_item)
   val () = gtk_widget_set_sensitive (save_item, GFALSE)
   val () = gtk_widget_show (save_item)
-  val () = initset (save_item) where {
-    extern fun initset (x: GtkImageMenuItem_ref1): void = "atsui_topenv_initset_menuitem_file_save"
+  val () = initset (save_item) where { extern fun initset
+    (x: GtkImageMenuItem_ref1): void = "atsui_topenv_initset_menuitem_file_save"
   } // end of [val]
 //
   val (fpf_aclgrp | aclgrp) = topenv_get_aclgrp ()
@@ -289,8 +289,8 @@ topenv_make_menu_file () = menu where {
   val () = gtk_menu_shell_append (menu, saveas_item)
   val () = gtk_widget_set_sensitive (saveas_item, GFALSE)
   val () = gtk_widget_show (saveas_item)
-  val () = initset (saveas_item) where {
-    extern fun initset (x: GtkImageMenuItem_ref1): void = "atsui_topenv_initset_menuitem_file_saveas"
+  val () = initset (saveas_item) where { extern fun initset
+    (x: GtkImageMenuItem_ref1): void = "atsui_topenv_initset_menuitem_file_saveas"
   } // end of [val]
 //
   val sep_item = gtk_separator_menu_item_new ()
@@ -305,7 +305,7 @@ topenv_make_menu_file () = menu where {
   val () = gtk_menu_shell_append (menu, quit_item)
   val () = gtk_widget_show_unref (quit_item)
 //
-} // end of [FILEmenu_make]
+} // end of [topenv_make_menu_file]
 
 (* ****** ****** *)
 

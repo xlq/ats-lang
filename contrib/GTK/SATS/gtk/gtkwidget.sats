@@ -264,4 +264,26 @@ fun gtk_widget_queue_draw_area
 
 (* ****** ****** *)
 
+fun gtk_widget_create_pango_context
+  {c:cls | c <= GtkWidget} {l:agz} (widget: !gobjref (c, l)): PangoContext_ref1
+  = "#atsctrb_gtk_widget_create_pango_context"
+// end of [gtk_widget_create_pango_context]
+  
+fun gtk_widget_get_pango_context
+  {c:cls | c <= GtkWidget} {l:agz}
+  (widget: !gobjref (c, l)): [l1:agz] (
+    minus (gobjref (c, l), PangoContext_ref l1) | PangoContext_ref l1
+  ) = "#atsctrb_gtk_widget_get_pango_context"
+// end of [gtk_widget_get_pango_context]
+  
+(* ****** ****** *)
+
+fun gtk_widget_create_pango_layout
+  {c:cls | c <= GtkWidget} {l1,l2:agz}
+  (widget: !gobjref (c, l1), text: !gstring l2): PangoLayout_ref1
+  = "#atsctrb_gtk_widget_create_pango_layout"
+// end of [gtk_widget_create_pango_layout]
+
+(* ****** ****** *)
+
 (* end of [gtkwidget.sats] *)

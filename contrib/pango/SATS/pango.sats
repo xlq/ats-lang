@@ -53,21 +53,51 @@
 (* ****** ****** *)
 
 staload GLIB = "contrib/glib/SATS/glib.sats"
-
+//
+stadef gboolean (b:bool) = $GLIB.gboolean b
 stadef gboolean = $GLIB.gboolean
-
-stadef gdouble = $GLIB.gdouble
-stadef gfloat = $GLIB.gfloat
-
+//
 stadef gint (n:int) = $GLIB.gint (n)
 stadef gint = $GLIB.gint
-
+stadef gint8 = $GLIB.gint8
+stadef gint16 = $GLIB.gint16
+stadef gint32 = $GLIB.gint32
+//
 stadef guint (n:int) = $GLIB.guint (n)
 stadef guint = $GLIB.guint
-
+stadef guint8 = $GLIB.guint8
+stadef guint16 = $GLIB.guint16
+stadef guint32 = $GLIB.guint32
+//
+stadef gdouble = $GLIB.gdouble
+stadef gfloat = $GLIB.gfloat
+//
+stadef gpointer = $GLIB.gpointer
+//
 stadef gstring = $GLIB.gstring
 stadef gstring0 = $GLIB.gstring0
 stadef gstring1 = $GLIB.gstring1
+//
+(* ****** ****** *)
+
+staload GOBJ = "contrib/glib/SATS/glib-object.sats"
+stadef gobjref = $GOBJ.gobjref
+
+(* ****** ****** *)
+
+absview PangoFree_v (l:addr) // for free Pango resources
+
+(* ****** ****** *)
+
+staload "contrib/pango/SATS/pangoclassdec.sats"
+
+viewtypedef PangoContext_ref (l:addr) = gobjref (PangoContext, l)
+viewtypedef PangoContext_ref0 = [l:agez] PangoContext_ref l
+viewtypedef PangoContext_ref1 = [l:addr | l > null] PangoContext_ref l
+
+viewtypedef PangoLayout_ref (l:addr) = gobjref (PangoLayout, l)
+viewtypedef PangoLayout_ref0 = [l:agez] PangoLayout_ref l
+viewtypedef PangoLayout_ref1 = [l:addr | l > null] PangoLayout_ref l
 
 (* ****** ****** *)
 
@@ -90,7 +120,10 @@ stadef gstring1 = $GLIB.gstring1
 
 (* ****** ****** *)
 
+#include "contrib/pango/SATS/pango/pango-attributes.sats"
+#include "contrib/pango/SATS/pango/pango-context.sats"
 #include "contrib/pango/SATS/pango/pango-font.sats"
+#include "contrib/pango/SATS/pango/pango-layout.sats"
 
 (* ****** ****** *)
 

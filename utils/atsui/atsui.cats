@@ -53,6 +53,9 @@ struct {
   GtkMenuItem *menuitem_file_save ; // this is the SAVE item in the FILE menu
   GtkMenuItem *menuitem_file_saveas ; // this is the SAVEAS item in the FILE menu
 //
+  // GtkMenu *menu_view ; // this the VIEW menu
+  GtkMenuItem *menuitem_view_linenumber ; // this is the LINE NUMBERS item in the VIEW menu
+//
   GtkMenu *menu_window ; // this the WINDOW LIST menu
 //
   GtkFrame *container_source ; // for containing textview_source

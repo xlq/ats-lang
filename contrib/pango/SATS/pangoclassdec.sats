@@ -33,44 +33,26 @@
 
 //
 // Author: Hongwei Xi (hwxi AT cs DOT bu DOT edu)
-// Time: April, 2010
+// Time: May, 2010
 //
 
 (* ****** ****** *)
 
-fun gdk_color3_set
-  (color: &GdkColor, r: uint, b: uint, g: uint):<> void
-  = "#atsctrb_gdk_color3_set"
-// end of [gdk_color3_set]
-
-fun gdk_color4_set
-  (color: &GdkColor, pix: uint, r: uint, b: uint, g: uint):<> void
-  = "#atsctrb_gdk_color4_set"
-// end of [gdk_color4_set]
+#define ATS_STALOADFLAG 0 // no need for staloading at run-time
 
 (* ****** ****** *)
 
-(*
-GdkColor *gdk_color_copy      (const GdkColor *color);
-void      gdk_color_free      (GdkColor       *color);
-*)
+staload GOBJ = "contrib/glib/SATS/glib-object.sats"
+stadef GObject = $GOBJ.GObject
 
-fun gdk_color_copy
-  (color: &GdkColor): [l:addr] (GdkFree_v l, GdkColor @ l | ptr l)
-  = "#atsctrb_gdk_color_copy"
-// end of [gdk_color_copy]
-
-fun gdk_color_free {l:addr}
-  (pf1: GdkFree_v l, pf2: GdkColor @ l | p: ptr l): void = "#atsctrb_gdk_color_free"
-// end of [gdk_color_free]
-  
 (* ****** ****** *)
+//
+// class hierarchy for Pango
+//
 
-fun gdk_color_parse {l:agz} (
-    spec: !gstring l, color: &GdkColor? >> opt (GdkColor, b)
-  ) : #[b:bool] gboolean b = "#atsctrb_gdk_color_parse"
-// end of [gdk_color_parse]
+classdec PangoContext : GObject
+classdec PangoLayout : GObject
 
 (* ****** ****** *)
 
-(* end of [gdkcolor.sats] *)
+(* end of [pangoclassdec.sats] *)

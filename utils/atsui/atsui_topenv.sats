@@ -100,6 +100,18 @@ fun topenv_get_menuitem_file_saveas ()
 
 (* ****** ****** *)
 
+fun topenv_make_menu_edit (): GtkMenu_ref1
+
+(* ****** ****** *)
+
+fun topenv_make_menu_view (): GtkMenu_ref1
+fun topenv_get_menuitem_view_linenumber ()
+  : [l:agz] (GtkMenuItem_ref l -<lin,prf> void | GtkMenuItem_ref l)
+  = "atsui_topenv_get_menuitem_view_linenumber"
+// end of [topenv_get_menuitem_view_linenumber]
+
+(* ****** ****** *)
+
 fun topenv_make_menu_window (): GtkMenu_ref1
 fun topenv_get_menu_window ()
   : [l:agz] (GtkMenu_ref l -<lin,prf> void | GtkMenu_ref l)

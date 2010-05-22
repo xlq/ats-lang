@@ -45,6 +45,60 @@
 
 /* ****** ****** */
 
+#define atsctrb_pango_color_copy pango_color_copy
+#define atsctrb_pango_color_free pango_color_free
+#define atsctrb_pango_color_parser pango_color_parse
+
+/* ****** ****** */
+
+//
+// pango-attributes.h
+//
+
+#define atsctrb_pango_layout_new pango_layout_new
+#define atsctrb_pango_layout_copy pango_layout_copy
+//
+#define atsctrb_pango_layout_get_size pango_layout_get_size
+#define atsctrb_pango_layout_get_pixel_size pango_layout_get_pixel_size
+//
+#define atsctrb_pango_layout_get_width pango_layout_get_width
+#define atsctrb_pango_layout_set_width pango_layout_set_width
+#define atsctrb_pango_layout_get_height pango_layout_get_height
+#define atsctrb_pango_layout_set_height pango_layout_set_height
+//
+#define atsctrb_pango_layout_get_alignment pango_layout_get_alignment
+#define atsctrb_pango_layout_set_alignment pango_layout_set_alignment
+//
+#define atsctrb_pango_layout_get_wrap pango_layout_get_wrap
+#define atsctrb_pango_layout_set_wrap pango_layout_set_wrap
+#define atsctrb_pango_layout_is_wrapped pango_layout_is_wrapped
+//
+#define atsctrb_pango_layout_get_ellipsize pango_layout_get_ellipsize
+#define atsctrb_pango_layout_set_ellipsize pango_layout_set_ellipsize
+#define atsctrb_pango_layout_is_ellipsized pango_layout_is_ellipsized
+//
+#define atsctrb_pango_layout_get_indent pango_layout_get_indent
+#define atsctrb_pango_layout_set_indent pango_layout_set_indent
+#define atsctrb_pango_layout_get_spacing pango_layout_get_spacing
+#define atsctrb_pango_layout_set_spacing pango_layout_set_spacing
+//
+#define atsctrb_pango_layout_get_justify pango_layout_get_justify
+#define atsctrb_pango_layout_set_justify pango_layout_set_justify
+#define atsctrb_pango_layout_get_auto_dir pango_layout_get_auto_dir
+#define atsctrb_pango_layout_set_auto_dir pango_layout_set_auto_dir
+#define atsctrb_pango_layout_get_single_paragraph_mode \
+  pango_layout_get_single_paragraph_mode
+#define atsctrb_pango_layout_set_single_paragraph_mode \
+  pango_layout_set_single_paragraph_mode
+
+/* ****** ****** */
+
+//
+// pango-context.h
+//
+
+/* ****** ****** */
+
 //
 // pango-font.h
 //

@@ -49,18 +49,29 @@
 (* ****** ****** *)
 
 staload GLIB = "contrib/glib/SATS/glib.sats"
+//
+stadef gboolean (b:bool) = $GLIB.gboolean b
+stadef gboolean = $GLIB.gboolean
+//
+stadef gchar = $GLIB.gchar
+//
 stadef gint = $GLIB.gint
-stadef guint = $GLIB.guint
 stadef gint8 = $GLIB.gint8
+//
+stadef guint = $GLIB.guint
 stadef guint8 = $GLIB.guint8
 stadef guint16 = $GLIB.guint16
 stadef guint32 = $GLIB.guint32
-
+//
 stadef gfloat = $GLIB.gfloat
 stadef gdouble = $GLIB.gdouble
-
+//
 stadef gpointer = $GLIB.gpointer
-
+//
+stadef gstring = $GLIB.gstring
+stadef gstring0 = $GLIB.gstring0
+stadef gstring1 = $GLIB.gstring1
+//
 (* ****** ****** *)
 
 staload GOBJ = "contrib/glib/SATS/glib-object.sats"

@@ -8,8 +8,8 @@
 
 ATSCC=$(or $(ATSHOME), "/usr")/bin/atscc
 ATSOPT=$(or $(ATSHOME), "/usr")/bin/atsopt
-XRFLAGS=`pkg-config cairo --cflags --libs`
-GTKFLAGS=`pkg-config gtk+-2.0 --cflags --libs`
+XRCFLAGS=`pkg-config cairo --cflags`
+GTKCLFLAGS=`pkg-config gtk+-2.0 --cflags --libs`
 
 ######
 
@@ -21,40 +21,49 @@ all: checkall
 checkall:: compall cleanall
 
 compall:: \
-  clip-all.dats \
-  push-group.dats \
-  stroke-image.dats \
+  blurring \
+  clip-all \
+  push-group \
+  stroke-image \
   testcairo \
   text-rotate \
   text-transform \
 
 ######
 
+blurring: blurring.dats blur_image_surface.o
+	$(ATSCC) -o $@ blurring.dats blur_image_surface.o $(GTKCLFLAGS)
+
+blur_image_surface.o: blur_image_surface.dats
+	$(ATSCC) -c -o $@ blur_image_surface.dats $(XRCFLAGS)
+
+######
+
 clip-all: clip-all.dats
-	$(ATSCC) -o $@ clip-all.dats $(GTKFLAGS)
+	$(ATSCC) -o $@ clip-all.dats $(GTKCLFLAGS)
 
 ######
 
 push-group: push-group.dats
-	$(ATSCC) -g -o $@ push-group.dats $(GTKFLAGS)
+	$(ATSCC) -g -o $@ push-group.dats $(GTKCLFLAGS)
 
 ######
 
 stroke-image: stroke-image.dats
-	$(ATSCC) -o $@ stroke-image.dats $(GTKFLAGS)
+	$(ATSCC) -o $@ stroke-image.dats $(GTKCLFLAGS)
 
 ######
 
 testcairo: testcairo.dats
-	$(ATSCC) -o $@ testcairo.dats $(GTKFLAGS)
+	$(ATSCC) -o $@ testcairo.dats $(GTKCLFLAGS)
 
 ######
 
 text-rotate: text-rotate.dats
-	$(ATSCC) -o $@ text-rotate.dats $(GTKFLAGS)
+	$(ATSCC) -o $@ text-rotate.dats $(GTKCLFLAGS)
 
 text-transform: text-transform.dats
-	$(ATSCC) -o $@ text-transform.dats $(GTKFLAGS)
+	$(ATSCC) -o $@ text-transform.dats $(GTKCLFLAGS)
 
 ######
 
@@ -62,6 +71,8 @@ clean::
 	rm -f *_dats.c *_sats.c *~
 
 cleanall:: clean
+	rm -f blurring
+	rm -f blur_image_surface.o
 	rm -f clip-all
 	rm -f push-group
 	rm -f stroke-image

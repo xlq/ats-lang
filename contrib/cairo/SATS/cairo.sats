@@ -84,7 +84,6 @@ abst@ype cairo_matrix_t = $extype "cairo_matrix_t"
 
 // enum type
 abst@ype cairo_status_t = $extype "cairo_status_t"
-castfn int_of_cairo_status_t (x: cairo_status_t):<> int
 macdef CAIRO_STATUS_SUCCESS =
   $extval (cairo_status_t, "CAIRO_STATUS_SUCCESS")
 macdef CAIRO_STATUS_NO_MEMORY =
@@ -128,18 +127,24 @@ macdef CAIRO_STATUS_INVALID_DASH =
 macdef CAIRO_STATUS_INVALID_DSC_COMMENT =
   $extval (cairo_status_t, "CAIRO_STATUS_INVALID_DSC_COMMENT")
 
+castfn int_of_cairo_status (x: cairo_status_t):<> int
+overload int_of with int_of_cairo_status
+
 fun eq_cairo_status_cairo_status
-  (x1: cairo_status_t, x2: cairo_status_t): bool
-  = "atsctrb_eq_cairo_status_cairo_status"
+  (x1: cairo_status_t, x2: cairo_status_t):<> bool
+  = "#atspre_eq_int_int"
 overload = with eq_cairo_status_cairo_status
+
+fun neq_cairo_status_cairo_status
+  (x1: cairo_status_t, x2: cairo_status_t):<> bool
+  = "#atspre_neq_int_int"
+overload <> with neq_cairo_status_cairo_status
 
 (* ****** ****** *)
 
 // enum type
 abst@ype
 cairo_format_t = $extype "cairo_format_t"
-castfn
-int_of_cairo_format_t (x: cairo_format_t):<> int
 macdef CAIRO_FORMAT_ARGB32 =
   $extval (cairo_format_t, "CAIRO_FORMAT_ARGB32")
 macdef CAIRO_FORMAT_RGB24 =
@@ -152,6 +157,14 @@ macdef CAIRO_FORMAT_A1 =
 macdef CAIRO_FORMAT_RGB16_565 = // deprecated!
   $extval (cairo_format_t, "CAIRO_FORMAT_RGB16_565")
 *)
+
+castfn int_of_cairo_format (x: cairo_format_t):<> int
+overload int_of with int_of_cairo_format
+
+fun eq_cairo_format_cairo_format
+  (x1: cairo_format_t, x2: cairo_format_t):<> bool
+  = "#atspre_eq_int_int"
+overload = with eq_cairo_format_cairo_format
 
 (* ****** ****** *)
 
@@ -429,7 +442,7 @@ fun cairo_set_miter_limit
 
 // enum type
 abst@ype cairo_operator_t = $extype "cairo_operator_t"
-castfn int_of_cairo_operator_t (x: cairo_operator_t):<> int
+castfn int_of_cairo_operator (x: cairo_operator_t):<> int
 macdef CAIRO_OPERATOR_CLEAR =
   $extval (cairo_operator_t, "CAIRO_OPERATOR_CLEAR")
 macdef CAIRO_OPERATOR_SOURCE =
@@ -1003,26 +1016,21 @@ fun cairo_pattern_set_user_data
 
 // enum type
 abst@ype cairo_font_slant_t = $extype "cairo_font_slant_t"
-castfn int_of_cairo_font_slant_t (x: cairo_font_slant_t):<> int
-
 macdef CAIRO_FONT_SLANT_NORMAL =
   $extval (cairo_font_slant_t, "CAIRO_FONT_SLANT_NORMAL")
-
 macdef CAIRO_FONT_SLANT_ITALIC =
   $extval (cairo_font_slant_t, "CAIRO_FONT_SLANT_ITALIC")
-
 macdef CAIRO_FONT_SLANT_OBLIQUE =
   $extval (cairo_font_slant_t, "CAIRO_FONT_SLANT_OBLIQUE")
+castfn int_of_cairo_font_slant (x: cairo_font_slant_t):<> int
 
 // enum type
 abst@ype cairo_font_weight_t = $extype "cairo_font_weight_t"
-castfn int_of_cairo_font_weight_t (x: cairo_font_weight_t):<> int
-
 macdef CAIRO_FONT_WEIGHT_NORMAL =
   $extval (cairo_font_weight_t, "CAIRO_FONT_WEIGHT_NORMAL")
-
 macdef CAIRO_FONT_WEIGHT_BOLD =
   $extval (cairo_font_weight_t, "CAIRO_FONT_WEIGHT_BOLD")
+castfn int_of_cairo_font_weight (x: cairo_font_weight_t):<> int
 
 (* ****** ****** *)
 
@@ -1072,10 +1080,12 @@ fun cairo_set_font_options {l1,l2:agz}
 fun cairo_get_font_face
   {l:agz} (cr: !cairo_ref l): cairo_font_face_ref1
   = "#atsctrb_cairo_get_font_face"
+// end of [cairo_get_font_face]
 
 fun cairo_set_font_face {l1,l2:agz}
   (cr: !cairo_ref l1, face: !cairo_font_face_ref l2): void
   = "#atsctrb_cairo_set_font_face"
+// end of [cairo_set_font_face]
 
 (* ****** ****** *)
 
@@ -1285,18 +1295,23 @@ fun cairo_device_to_user_distance
 // fonts for drawing
 //
 
-fun cairo_font_face_reference
-  {l:agz} (font_face: !cairo_font_face_ref l): cairo_font_face_ref l
-  = "#atsctrb_cairo_font_face_reference"
+fun cairo_font_face_status
+  {l:agz} (font_face: !cairo_font_face_ref l): cairo_status_t
+  = "#atsctrb_cairo_font_face_status"
+// end of [cairo_font_face_status]
 
 fun cairo_font_face_destroy
   (font_face: cairo_font_face_ref1): void = "#atsctrb_cairo_font_face_destroy"
 // end of [cairo_font_face_destroy]
 
-fun cairo_font_face_status
-  {l:agz} (font_face: !cairo_font_face_ref l): cairo_status_t
-  = "#atsctrb_cairo_font_face_status"
-// end of [cairo_font_face_status]
+fun cairo_font_face_reference
+  {l:agz} (font_face: !cairo_font_face_ref l): cairo_font_face_ref l
+  = "#atsctrb_cairo_font_face_reference"
+
+fun cairo_font_face_get_reference_count
+  {l:agz} (font_face: !cairo_font_face_ref l): uint
+  = "#atsctrb_cairo_font_face_get_reference_count"
+// end of [cairo_font_face_get_reference_count]
 
 abst@ype cairo_font_type_t = $extype "cairo_font_type_t"
 
@@ -1314,10 +1329,7 @@ macdef CAIRO_FONT_TYPE_USER =
 fun cairo_font_face_get_type
   {l:agz} (font_face: !cairo_font_face_ref l): cairo_font_type_t
   = "#atsctrb_cairo_font_face_get_type"
-
-fun cairo_font_face_get_reference_count
-  {l:agz} (font_face: !cairo_font_face_ref l): uint
-  = "#atsctrb_cairo_font_face_get_reference_count"
+// end of [cairo_font_face_get_type]
 
 (* ****** ****** *)
 
@@ -1328,19 +1340,26 @@ fun cairo_font_face_get_reference_count
 absviewtype cairo_scaled_font_ref (l:addr) // cairo_scaled_font_t*
 viewtypedef cairo_scaled_font_ref1 = [l:addr | l > null] cairo_scaled_font_ref l
 
-fun cairo_scaled_font_reference
-  {l:agz} (font: !cairo_scaled_font_ref l): cairo_scaled_font_ref1
-  = "#atsctrb_cairo_scaled_font_reference"
-// end of [cairo_scaled_font_reference]
+fun cairo_scaled_font_status
+  {l:agz} (font: !cairo_scaled_font_ref l): cairo_status_t
+  = "#atsctrb_cairo_scaled_font_status"
+// end of [cairo_scaled_font_status]
 
 fun cairo_scaled_font_destroy
   (font: cairo_scaled_font_ref1): void = "#atsctrb_cairo_scaled_font_destroy"
 // end of [cairo_scaled_font_destroy]
 
-fun cairo_scaled_font_status
-  {l:agz} (font: !cairo_scaled_font_ref l): cairo_status_t
-  = "#atsctrb_cairo_scaled_font_status"
-// end of [cairo_scaled_font_status]
+fun cairo_scaled_font_reference
+  {l:agz} (font: !cairo_scaled_font_ref l): cairo_scaled_font_ref1
+  = "#atsctrb_cairo_scaled_font_reference"
+// end of [cairo_scaled_font_reference]
+
+fun cairo_scaled_font_get_reference_count
+  {l:agz} (font: !cairo_scaled_font_ref l): uint
+  = "#atsctrb_cairo_scaled_font_reference_count"
+// end of [cairo_scaled_font_reference_count]
+
+(* ****** ****** *)
 
 fun cairo_scaled_font_extents {l:agz} (
     font: !cairo_scaled_font_ref l
@@ -1386,10 +1405,6 @@ fun cairo_scaled_font_get_type
   {l:agz} (font: !cairo_scaled_font_ref l): cairo_font_type_t
   = "#atsctrb_cairo_scaled_font_get_type"
 // end of [cairo_scaled_font_get_type]
-
-fun cairo_scaled_font_get_reference_count {l:agz}
-  (font: !cairo_scaled_font_ref l): uint = "#atsctrb_cairo_scaled_font_reference_count"
-// end of [cairo_scaled_font_reference_count]
 
 (* ****** ****** *)
 
@@ -1713,13 +1728,10 @@ fun cairo_image_surface_create_for_data (
   ) : cairo_surface_ref1
   = "#atsctrb_cairo_image_surface_create_for_data"
 
-fun cairo_image_surface_get_data
-  {l:agz} (sf: !cairo_surface_ref l): Ptr // uchar*
-  = "#atsctrb_cairo_image_surface_get_data"
-
 fun cairo_image_surface_get_format
   {l:agz} (sf: !cairo_surface_ref l): cairo_format_t
   = "#atsctrb_cairo_image_surface_get_format"
+// end of [cairo_image_surface_get_format]
 
 fun cairo_image_surface_get_width
   {l:agz} (sf: !cairo_surface_ref l): Nat = "#atsctrb_cairo_image_surface_get_width"
@@ -1732,6 +1744,20 @@ fun cairo_image_surface_get_height
 fun cairo_image_surface_get_stride
   {l:agz} (sf: !cairo_surface_ref l): Nat = "#atsctrb_cairo_image_surface_get_stride"
 // end of [cairo_image_surface_get_stride]
+
+//
+// HX-2010-05-21:
+// the data is of the type:
+// GEMAT (uchar, height, alpha*width, row, stride), where
+// alpha = 4 for CAIRO_FORMAT_ARGB32
+// alpga = 4 for CAIRO_FORMAT_RGB24
+// alpha = 1 for CAIRO_FORMAT_A8
+// alpha = 1/8 for CAIRO_FORMAT_A1
+//
+fun cairo_image_surface_get_data
+  {l:agz} (sf: !cairo_surface_ref l): Ptr // uchar*
+  = "#atsctrb_cairo_image_surface_get_data"
+// end of [cairo_image_surface_get_data]
 
 (* ****** ****** *)
 

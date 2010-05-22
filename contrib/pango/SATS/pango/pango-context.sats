@@ -9,14 +9,14 @@
 (*
 ** ATS - Unleashing the Potential of Types!
 **
-** Copyright (C) 2009-2010 Hongwei Xi, Boston University
+** Copyright (C) 2002-2010 Hongwei Xi, Boston University
 **
 ** All rights reserved
 **
 ** ATS is free software;  you can  redistribute it and/or modify it under
-** the  terms of the  GNU General Public License as published by the Free
-** Software Foundation; either version 2.1, or (at your option) any later
-** version.
+** the terms of the GNU LESSER GENERAL PUBLIC LICENSE as published by the
+** Free Software Foundation; either version 2.1, or (at your option)  any
+** later version.
 ** 
 ** ATS is distributed in the hope that it will be useful, but WITHOUT ANY
 ** WARRANTY; without  even  the  implied  warranty  of MERCHANTABILITY or
@@ -31,46 +31,17 @@
 
 (* ****** ****** *)
 
+// Author of the file: Hongwei Xi (hwxi AT cs DOT bu DOT edu)
+// Starting time: May, 2010
+
+(* ****** ****** *)
+
 //
-// Author: Hongwei Xi (hwxi AT cs DOT bu DOT edu)
-// Time: April, 2010
+// API for pango in ATS
 //
 
 (* ****** ****** *)
 
-fun gdk_color3_set
-  (color: &GdkColor, r: uint, b: uint, g: uint):<> void
-  = "#atsctrb_gdk_color3_set"
-// end of [gdk_color3_set]
-
-fun gdk_color4_set
-  (color: &GdkColor, pix: uint, r: uint, b: uint, g: uint):<> void
-  = "#atsctrb_gdk_color4_set"
-// end of [gdk_color4_set]
-
 (* ****** ****** *)
 
-(*
-GdkColor *gdk_color_copy      (const GdkColor *color);
-void      gdk_color_free      (GdkColor       *color);
-*)
-
-fun gdk_color_copy
-  (color: &GdkColor): [l:addr] (GdkFree_v l, GdkColor @ l | ptr l)
-  = "#atsctrb_gdk_color_copy"
-// end of [gdk_color_copy]
-
-fun gdk_color_free {l:addr}
-  (pf1: GdkFree_v l, pf2: GdkColor @ l | p: ptr l): void = "#atsctrb_gdk_color_free"
-// end of [gdk_color_free]
-  
-(* ****** ****** *)
-
-fun gdk_color_parse {l:agz} (
-    spec: !gstring l, color: &GdkColor? >> opt (GdkColor, b)
-  ) : #[b:bool] gboolean b = "#atsctrb_gdk_color_parse"
-// end of [gdk_color_parse]
-
-(* ****** ****** *)
-
-(* end of [gdkcolor.sats] *)
+(* end of [pango-context.sats] *)

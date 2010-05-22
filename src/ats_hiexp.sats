@@ -92,20 +92,17 @@ and hityplstlst = List hityplst
 
 fun fprint_hityp {m:file_mode}
   (pf: file_mode_lte (m, w) | out: &FILE m, hit: hityp): void
-
-fun fprint_hityplst {m:file_mode}
-  (pf: file_mode_lte (m, w) | out: &FILE m, hits: hityplst): void
-
-fun fprint_hityplstlst {m:file_mode}
-  (pf: file_mode_lte (m, w) | out: &FILE m, hitss: hityplstlst): void
-
-//
-
 fun print_hityp (hit: hityp): void
 fun prerr_hityp (hit: hityp): void
 
+fun fprint_hityplst {m:file_mode}
+  (pf: file_mode_lte (m, w) | out: &FILE m, hits: hityplst): void
 fun print_hityplst (hits: hityplst): void
 fun prerr_hityplst (hits: hityplst): void
+
+fun fprint_hityplstlst {m:file_mode}
+  (pf: file_mode_lte (m, w) | out: &FILE m, hitss: hityplstlst): void
+// end of [fprint_hityplstlst]
 
 (* ****** ****** *)
 
@@ -212,25 +209,23 @@ where hipat = '{
 } // end of [hipat]
 
 and hipatlst = List hipat
-
 and hipatopt = Option hipat
 
 (* ****** ****** *)
 
 fun fprint_hipat {m:file_mode}
   (pf: file_mode_lte (m, w) | out: &FILE m, hip: hipat): void
-
-fun fprint_hipatlst {m:file_mode}
-  (pf: file_mode_lte (m, w) | out: &FILE m, hips: hipatlst): void
-
-fun fprint_labhipatlst {m:file_mode}
-  (pf: file_mode_lte (m, w) | out: &FILE m, lhips: labhipatlst): void
-
 fun print_hipat (hip: hipat): void
 fun prerr_hipat (hip: hipat): void
 
+fun fprint_hipatlst {m:file_mode}
+  (pf: file_mode_lte (m, w) | out: &FILE m, hips: hipatlst): void
 fun print_hipatlst (hips: hipatlst): void
 fun prerr_hipatlst (hips: hipatlst): void
+
+fun fprint_labhipatlst {m:file_mode}
+  (pf: file_mode_lte (m, w) | out: &FILE m, lhips: labhipatlst): void
+// end of [fprint_labhipatlst]
 
 (* ****** ****** *)
 
@@ -243,6 +238,7 @@ fun hipat_char (_: loc_t, _: hityp, _: char): hipat
 fun hipat_con (
   _: loc_t, _: hityp, freeknd: int, _: d2con_t, _arg: hipatlst, _sum: hityp)
   : hipat
+// end of [hipat_con]
 
 fun hipat_con_any (_: loc_t, _: hityp, freeknd: int, _: d2con_t): hipat
 
@@ -252,9 +248,9 @@ fun hipat_lst (_: loc_t, _lst: hityp, _elt: hityp, _: hipatlst): hipat
 
 fun hipat_rec
   (_: loc_t, _: hityp, knd: int, _: labhipatlst, _rec: hityp): hipat
+// end of [hipat_rec]
 
 fun hipat_string (_: loc_t, _: hityp, _: string): hipat
-
 fun hipat_var (_: loc_t, _: hityp, refknd: int, d2v: d2var_t): hipat
 
 (* ****** ****** *)
@@ -422,13 +418,13 @@ and hilab_node =
 
 where hidec = '{
   hidec_loc= loc_t, hidec_node= hidec_node
-}
+} // end of [hidec]
 
 and hideclst = List hidec
 
 and hiexp = '{ 
   hiexp_loc= loc_t, hiexp_node= hiexp_node, hiexp_typ= hityp
-}
+} // end of [hiexp]
 
 and hiexplst = List hiexp
 and hiexpopt = Option hiexp
@@ -436,13 +432,13 @@ and hiexplstlst = List hiexplst
 
 and hilab = '{
   hilab_loc= loc_t, hilab_node= hilab_node
-}
+} // end of [hilab]
 
 and hilablst = List hilab
 
 and himat = '{
   himat_loc= loc_t, himat_exp= hiexp, himat_pat= Option (hipat)
-}
+} // end of [himat]
 
 and himatlst = List himat
 
@@ -461,7 +457,7 @@ and hifundec = '{
   hifundec_loc= loc_t
 , hifundec_var= d2var_t
 , hifundec_def= hiexp
-}
+} // end of [hifundec]
 
 and hifundeclst = List hifundec
 
@@ -469,7 +465,7 @@ and hivaldec = '{
   hivaldec_loc= loc_t
 , hivaldec_pat= hipat
 , hivaldec_def= hiexp
-}
+} // end of [hivaldec]
 
 and hivaldeclst = List hivaldec
 
@@ -478,7 +474,7 @@ and hivardec = '{
 , hivardec_knd= int
 , hivardec_ptr= d2var_t
 , hivardec_ini= hiexpopt
-}
+} // end of [hivardec]
 
 and hivardeclst = List hivardec
 
@@ -489,13 +485,13 @@ and hiimpdec = '{ (* implementation *)
 , hiimpdec_decarg= s2qualst, hiimpdec_tmparg= hityplstlst
 , hiimpdec_def= hiexp
 , hiimpdec_cstset= dyncstset_t
-}
+} // end of [hiimpdec]
 
 and hiimpdec_prf = '{ (* proof implementation *)
   hiimpdec_prf_loc= loc_t
 , hiimpdec_prf_cst= d2cst_t
 , hiimpdec_prf_cstset= dyncstset_t
-}
+} // end of [hiimpdec_prf]
 
 (* ****** ****** *)
 
@@ -509,23 +505,21 @@ fun fprint_hilablst {m:file_mode}
 
 fun fprint_hiexp {m:file_mode}
   (pf: file_mode_lte (m, w) | out: &FILE m, hie: hiexp): void
-
-fun fprint_hiexplst {m:file_mode}
-  (pf: file_mode_lte (m, w) | out: &FILE m, hies: hiexplst): void
-
-fun fprint_hiexplstlst {m:file_mode}
-  (pf: file_mode_lte (m, w) | out: &FILE m, hiess: hiexplstlst): void
-
-fun fprint_labhiexplst {m:file_mode}
-  (pf: file_mode_lte (m, w) | out: &FILE m, lhies: labhiexplst): void
-
-//
-
 fun print_hiexp (hie: hiexp): void
 fun prerr_hiexp (hie: hiexp): void
 
+fun fprint_hiexplst {m:file_mode}
+  (pf: file_mode_lte (m, w) | out: &FILE m, hies: hiexplst): void
 fun print_hiexplst (hies: hiexplst): void
 fun prerr_hiexplst (hies: hiexplst): void
+
+fun fprint_hiexplstlst {m:file_mode}
+  (pf: file_mode_lte (m, w) | out: &FILE m, hiess: hiexplstlst): void
+// end of [fprint_hiexplstlst]
+
+fun fprint_labhiexplst {m:file_mode}
+  (pf: file_mode_lte (m, w) | out: &FILE m, lhies: labhiexplst): void
+// end of [fprint_labhiexplst]
 
 (* ****** ****** *)
 
@@ -753,11 +747,13 @@ fun hiimpdec_make (
   , decarg: s2qualst, tmparg: hityplstlst, _def: hiexp
   , _cstset: dyncstset_t
   ) : hiimpdec
+// end of [hiimpdec_make]
 
 fun hidec_impdec (_: loc_t, hid: hiimpdec): hidec
 
 fun hiimpdec_prf_make
   (_: loc_t, d2c: d2cst_t, _cstset: dyncstset_t) : hiimpdec_prf
+// end of [hiimpdec_prf_make]
 
 fun hidec_impdec_prf (_: loc_t, hid: hiimpdec_prf): hidec
 
@@ -829,7 +825,6 @@ overload compare with compare_vartyp_vartyp
 
 fun fprint_vartyp {m:file_mode}
    (pf: file_mode_lte (m, w) | out: &FILE m, vtp: vartyp_t): void
-
 fun print_vartyp (vtp: vartyp_t): void
 fun prerr_vartyp (vtp: vartyp_t): void
 
@@ -839,6 +834,7 @@ typedef strlst = List string
 
 datatype labstrlst =
   | LABSTRLSTcons of (lab_t, string, labstrlst) | LABSTRLSTnil
+// end of [labstrlst]
 
 datatype typkey =
   | TYPKEYrec of labstrlst // record

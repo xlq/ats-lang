@@ -278,13 +278,22 @@ fun compare_gstring0_gstring0
   = "atsctrb_compare_gstring0_gstring0"
 // end of [compare_gstring_gstring]
 
+(* ****** ****** *)
+
 fun g_strdup {l:agz} (x: !gstring l): gstring1
   = "#atsctrb_g_strdup"
 fun g_strdup0 {l:addr} (x: !gstring l): gstring0
   = "#atsctrb_g_strdup"
+
+fun g_strndup {l:agz} (x: !gstring l): gstring1
+  = "#atsctrb_g_strndup"
+// end of [g_strndup]
+
 fun g_strdup_printf {ts:types}
   (fmt: printf_c ts, arg: ts): gstring1 = "#atsctrb_g_strdup_printf"
 // end of [g_strdup_printf]
+
+fun g_strnfill (n: gsize, c: gchar): gstring1 = "#atsctrb_g_strnfill"
 
 (* ****** ****** *)
 

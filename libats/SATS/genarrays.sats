@@ -302,13 +302,12 @@ dataprop tranord_p (order, order) =
 // end of [tranord_p]
 
 (*
-
+//
 // capturing the relation between transpose and uplo
-
+//
 dataprop tranuplo_p (uplo, uplo) =
   | TRANUPLOupperlower (upper, lower) | TRANUPLOlowerupper (lower, upper)
 // end of [transuplo_p]
-
 *)
 
 (* ****** ****** *)
@@ -374,11 +373,13 @@ prfun GEMAT_v_trans // HX: yes, [ld:int] is fine
 
 (* ****** ****** *)
 
-dataprop MATVECINC (order, order, int, int) =
+dataprop
+MATVECINC (order, order, int, int) =
   | {ld:inc} MATVECINCrowrow (row, row, ld, 1)
   | {ld:inc} MATVECINCrowcol (row, col, ld, ld)
   | {ld:inc} MATVECINCcolrow (col, row, ld, ld)
   | {ld:inc} MATVECINCcolcol (col, col, ld, 1)
+// end of [MATVECINC]
 
 // implemented in [genarrays.dats]
 fun MATVECINC_get
@@ -386,22 +387,27 @@ fun MATVECINC_get
     pf: MATVECINC (ord1, ord2, ld, d)
   | x1: ORDER ord1, x2: ORDER ord2, ld: size_t ld
   ) :<> size_t d
+// end of [MATVECINC_get]
 
 (* ****** ****** *)
 
 prfun GEMAT_v_nil_row {a:viewt@ype}
   {ord:order} {n:nat} {ld:inc} {l:addr} () :<prf> GEMAT_v (a, 0, n, ord, ld, l)
+// end of [GEMAT_v_nil_row]
 
 prfun GEMAT_v_unnil_row {a:viewt@ype}
   {ord:order} {n:nat} {ld:inc} {l:addr}
   (pf: GEMAT_v (a, 0, n, ord, ld, l)):<prf> void
+// end of [GEMAT_v_unnil_row]
 
 prfun GEMAT_v_nil_col {a:viewt@ype}
   {ord:order} {m:nat} {ld:inc} {l:addr} () :<prf> GEMAT_v (a, m, 0, ord, ld, l)
+// end of [GEMAT_v_nil_col]
 
 prfun GEMAT_v_unnil_col {a:viewt@ype}
   {ord:order} {m:nat} {ld:inc} {l:addr}
   (pf: GEMAT_v (a, m, 0, ord, ld, l)):<prf> void
+// end of [GEMAT_v_unnil_col]
 
 (* ****** ****** *)
 
@@ -781,10 +787,12 @@ viewdef TRMAT_v
 
 prfun TRMAT_v_nil {a:viewt@ype} {ord:order}
   {ul:uplo} {dg:diag} {ld:inc} {l:addr} ():<prf> TRMAT_v (a, 0, ord, ul, dg, ld, l)
+// end of [TRMAT_v_nil]
 
 prfun TRMAT_v_unnil {a:viewt@ype}
   {ord:order} {ul:uplo} {dg:diag} {ld:inc} {l:addr}
   (pf: TRMAT_v (a, 0, ord, ul, dg, ld, l)):<prf> void
+// end of [TRMAT_v_unnil]
 
 (* ****** ****** *)
 

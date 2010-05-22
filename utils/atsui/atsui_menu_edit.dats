@@ -46,6 +46,7 @@ staload "contrib/GTK/SATS/gtk.sats"
 
 (* ****** ****** *)
 
+staload UT = "atsui_util.sats"
 staload SWL = "atsui_srcwinlst.sats"
 
 (* ****** ****** *)
@@ -54,7 +55,39 @@ staload "atsui_topenv.sats"
 
 (* ****** ****** *)
 
-// it is yet empty
+implement
+topenv_make_menu_edit () = menu where {
+  val menu = gtk_menu_new () // to be returned
+//
+  val undo_item =
+    $UT.gtk_image_menu_item_new_from_stock_null (GTK_STOCK_UNDO)
+  val () = gtk_menu_shell_append (menu, undo_item)
+  val () = gtk_widget_show_unref (undo_item)
+//
+  val redo_item =
+    $UT.gtk_image_menu_item_new_from_stock_null (GTK_STOCK_REDO)
+  val () = gtk_menu_shell_append (menu, redo_item)
+  val () = gtk_widget_show_unref (redo_item)
+//
+  val sep_item = gtk_separator_menu_item_new ()
+  val () = gtk_menu_shell_append (menu, sep_item)
+  val () = gtk_widget_show_unref (sep_item)
+//
+  val paste_item =
+    $UT.gtk_image_menu_item_new_from_stock_null (GTK_STOCK_PASTE)
+  val () = gtk_menu_shell_append (menu, paste_item)
+  val () = gtk_widget_show_unref (paste_item)
+//
+  val sep_item = gtk_separator_menu_item_new ()
+  val () = gtk_menu_shell_append (menu, sep_item)
+  val () = gtk_widget_show_unref (sep_item)
+//
+  val delete_item =
+    $UT.gtk_image_menu_item_new_from_stock_null (GTK_STOCK_DELETE)
+  val () = gtk_menu_shell_append (menu, delete_item)
+  val () = gtk_widget_show_unref (delete_item)
+//
+} // end of [topenv_make_menu_edit]
 
 (* ****** ****** *)
 

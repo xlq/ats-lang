@@ -43,7 +43,9 @@
 #include "contrib/glib/CATS/glib/gbasics.cats"
 //
 #define atsctrb_g_strdup g_strdup
+#define atsctrb_g_strndup g_strndup
 #define atsctrb_g_strdup_printf g_strdup_printf
+#define atsctrb_g_strnfill g_strnfill
 //
 #include "contrib/glib/CATS/glib/garray.cats"
 #include "contrib/glib/CATS/glib/ghash.cats"

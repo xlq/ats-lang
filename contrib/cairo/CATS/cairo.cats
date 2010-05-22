@@ -58,16 +58,6 @@ typedef ats_ref_type ats_cairo_scaled_font_ref ;
 
 /* ****** ****** */
 
-static inline
-ats_bool_type
-atsctrb_eq_cairo_status_cairo_status (
-  cairo_status_t x1, cairo_status_t x2
-) {
-  return (x1 == x2 ? ats_true_bool : ats_false_bool) ;
-} // end of [atsctrb_eq_cairo_status_cairo_status]
-
-/* ****** ****** */
-
 //
 // contexts for drawing
 //

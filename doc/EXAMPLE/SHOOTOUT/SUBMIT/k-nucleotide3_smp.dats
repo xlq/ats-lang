@@ -192,7 +192,7 @@ val eqfn = $extval ($H.eq symbol_t, "0")
 val fhash = $extval ($H.hash symbol_t, "0")
 macdef hastbl_make () = $H.hashtbl_make_hint (fhash, eqfn, 24593)
 
-fn dna_count {lws:addr} {n:pos;k:pos} {N:pos} (
+fn dna_count {lws:agz} {n:pos;k:pos} {N:pos} (
     ws: !WSptr lws
   , dna: dna_t
   , n: size_t n
@@ -297,7 +297,7 @@ fun print_free_frqlst
 end // end of [print_free_frqlst]
 
 fn write_frequencies
-  {lws:addr} {n,k:pos | k <= n} {N:pos} (
+  {lws:agz} {n,k:pos | k <= n} {N:pos} (
     ws: !WSptr lws, dna: dna_t, n: size_t n, k: size_t k, N: int N
   ) : void = let
 //
@@ -326,7 +326,7 @@ end // end of [write_frequencies]
 
 (* ****** ****** *)
 
-fn write_count {lws:addr} {n,k:pos} {N:pos} (
+fn write_count {lws:agz} {n,k:pos} {N:pos} (
     ws: !WSptr lws, dna: dna_t, n: size_t n, seq: string k, N: int N
   ): void = let
   val k = string1_length seq
