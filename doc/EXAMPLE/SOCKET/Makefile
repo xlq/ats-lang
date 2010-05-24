@@ -35,11 +35,17 @@ echo_tcpserver: echo_tcpserver.dats
 
 ######
 
+echo_preforking: echo_preforking.dats
+	atscc -o echo_preforking echo_preforking.dats
+
+######
+
 html::
 	atsopt --posmark_html -d daytime_tcpclient.dats > daytime_tcpclient_dats.html
 	atsopt --posmark_html -d daytime_tcpserver.dats > daytime_tcpserver_dats.html
 	atsopt --posmark_html -d echo_tcpserver.dats > echo_tcpclient_dats.html
 	atsopt --posmark_html -d echo_tcpserver.dats > echo_tcpserver_dats.html
+	atsopt --posmark_html -d echo_tcpserver.dats > echo_preforking_dats.html
 
 ######
 
@@ -52,5 +58,6 @@ cleanall: clean
 	rm -f daytime_tcpclient
 	rm -f echo_tcpserver
 	rm -f echo_tcpclient
+	rm -f echo_preforking
 
 ###### end of [Makefile] ######
