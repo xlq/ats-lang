@@ -80,6 +80,7 @@ macdef GLIB_VERSION =
 #include "contrib/glib/SATS/glib/grand.sats"
 #include "contrib/glib/SATS/glib/gslist.sats"
 #include "contrib/glib/SATS/glib/gstring.sats"
+#include "contrib/glib/SATS/glib/gutils.sats"
 
 (* ****** ****** *)
 

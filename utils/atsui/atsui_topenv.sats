@@ -42,6 +42,7 @@
 
 (* ****** ****** *)
 
+staload "contrib/GTK/SATS/gdk.sats"
 staload "contrib/GTK/SATS/gtkclassdec.sats"
 staload "contrib/GTK/SATS/gtk.sats"
 
@@ -106,7 +107,7 @@ fun topenv_make_menu_edit (): GtkMenu_ref1
 
 fun topenv_make_menu_view (): GtkMenu_ref1
 fun topenv_get_menuitem_view_linenumber ()
-  : [l:agz] (GtkMenuItem_ref l -<lin,prf> void | GtkMenuItem_ref l)
+  : [l:agz] (GtkCheckMenuItem_ref l -<lin,prf> void | GtkCheckMenuItem_ref l)
   = "atsui_topenv_get_menuitem_view_linenumber"
 // end of [topenv_get_menuitem_view_linenumber]
 
@@ -148,6 +149,12 @@ fun cb_textview_source_changed (): gboolean
 
 (* ****** ****** *)
 
+fun cb_textview_source_expose_event_linenumber
+  {c:cls | c <= GtkTextView} {l:agz}
+  (tv: !gobjref (c, l), event: &GdkEventExpose) : gboolean
+
+(* ****** ****** *)
+
 fun topenv_get_container_output ()
   : [l:agz] (GtkTextView_ref l -<lin,prf> void | GtkTextView_ref l)
   = "atsui_topenv_get_container_output"
@@ -179,16 +186,14 @@ fun topenv_menu_window_remove
 
 (* ****** ****** *)
 
-fun cb_openfile_activate (): gboolean
+fun cb_file_openfile_activate (): gboolean
+fun cb_file_save_activate (): gboolean // callback for the [save] menuitem
+fun cb_file_saveas_activate (): gboolean // callback for the [saveas] menuitem
+fun cb_file_quit_activate (): gboolean // callback for the [quit] menuitem
 
 (* ****** ****** *)
 
-fun cb_save_activate (): gboolean // callback for the [save] menuitem
-fun cb_saveas_activate (): gboolean // callback for the [saveas] menuitem
-
-(* ****** ****** *)
-
-fun cb_quit_activate (): gboolean // callback for the [quit] menuitem
+fun cb_view_linenumber_activate (): gboolean
 
 (* ****** ****** *)
 

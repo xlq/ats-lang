@@ -57,6 +57,8 @@ stadef gchar = $GLIB.gchar
 //
 stadef gint = $GLIB.gint
 stadef gint8 = $GLIB.gint8
+stadef gint16 = $GLIB.gint16
+stadef gint32 = $GLIB.gint32
 //
 stadef guint = $GLIB.guint
 stadef guint8 = $GLIB.guint8

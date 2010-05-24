@@ -275,6 +275,10 @@ topenv_make_textview_source () = let
   val () = g_object_unref (tb)
   // val () = gtk_widget_grab_focus (tv) // HX: what does this mean?
 //
+  val _sid = g_signal_connect (
+    tv, (gsignal)"expose_event", G_CALLBACK(cb_textview_source_expose_event_linenumber), GNULL
+  ) // end of [val]
+//
   val (fpf_name | name) = __cast (TEXTVIEW_FONT) where {
     extern castfn __cast (x: string): [l:agz] (gstring l -<lin,prf> void | gstring l)
   } // end of [val]
@@ -631,7 +635,7 @@ implement
 topenv_init () = () where {
   val win = gtk_window_new (GTK_WINDOW_TOPLEVEL)
   val _sid = g_signal_connect
-    (win, (gsignal)"delete_event", G_CALLBACK(cb_quit_activate), GNULL)
+    (win, (gsignal)"delete_event", G_CALLBACK(cb_file_quit_activate), GNULL)
 //
   val (fpf_x | x) = (gs)"ATSUI"
   val () = gtk_window_set_title (win, x)

@@ -70,7 +70,8 @@ dynload "atsui_menu_view.dats"
 dynload "atsui_menu_winlst.dats"
 //
 dynload "atsui_textview_source.dats"
-
+dynload "atsui_textview_source_linenumber.dats"
+//
 dynload "atsui_topenv.dats"
 
 (* ****** ****** *)

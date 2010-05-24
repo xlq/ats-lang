@@ -60,7 +60,8 @@ overload gint with gint_of_GtkResponseType
 
 (* ****** ****** *)
 
-implement cb_quit_activate () = GTRUE where {
+implement
+cb_file_quit_activate () = GTRUE where {
 //
   val () = (print (#LOCATION + ": cb_quit_activate"); print_newline ())
 //
@@ -86,7 +87,7 @@ implement cb_quit_activate () = GTRUE where {
     | _ when response = (gint)GTK_RESPONSE_YES => topenv_fini () // many things to do here!
     | _ => () // quit is not confirmed
   // end of [val]
-} // end of [cb_quit_activate]
+} // end of [cb_file_quit_activate]
 
 (* ****** ****** *)
 

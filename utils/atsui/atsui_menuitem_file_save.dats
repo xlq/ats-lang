@@ -61,7 +61,7 @@ overload gint with gint_of_GtkResponseType
 (* ****** ****** *)
 
 implement
-cb_save_activate () = GTRUE where {
+cb_file_save_activate () = GTRUE where {
   val (fpf_srcwin | srcwin) = $SWL.the_srcwinlst_get_current ()
   val p_scrwin = $SWL.ptr_of_srcwin (srcwin)
   val () = assert_errmsg (p_scrwin > null, #LOCATION + ": [scrwin] is NULL")
@@ -105,11 +105,11 @@ if (nsaved >= 0) then let
 in
   GTRUE
 end else // nsaved = -1
-  cb_saveas_activate ()
+  cb_file_saveas_activate ()
 ) : gboolean // end of [if]
 // end of [val]
   prval () = fpf_srcwin (srcwin)
-} // end of [cb_save_activate]
+} // end of [cb_file_save_activate]
 
 (* ****** ****** *)
 

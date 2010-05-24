@@ -185,6 +185,10 @@ classdec GtkObject : GObject
 
 (* ****** ****** *)
 
+classdec GtkStyle : GObject
+
+(* ****** ****** *)
+
 classdec GtkTextBuffer : GObject
 classdec GtkTextTag : GObject
 classdec GtkTextTagTable : GObject

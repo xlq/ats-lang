@@ -45,18 +45,71 @@
 
 /* ****** ****** */
 
-#define atsctrb_pango_color_copy pango_color_copy
-#define atsctrb_pango_color_free pango_color_free
-#define atsctrb_pango_color_parser pango_color_parse
-
 /* ****** ****** */
 
 //
 // pango-attributes.h
 //
 
+#define atsctrb_pango_color_copy pango_color_copy
+#define atsctrb_pango_color_free pango_color_free
+#define atsctrb_pango_color_parser pango_color_parse
+
+#define atsctrb_pango_attribute_copy pango_attribute_copy
+#define atsctrb_pango_attribute_destroy pango_attribute_destroy
+#define atsctrb_pango_attribute_equal pango_attribute_equal
+
+#define atsctrb_pango_attr_foreground_new pango_attr_foreground_new
+#define atsctrb_pango_attr_background_new pango_attr_background_new
+
+#define atsctrb_pango_attr_list_new pango_attr_list_new
+#define atsctrb_pango_attr_list_ref pango_attr_list_ref
+#define atsctrb_pango_attr_list_unref pango_attr_list_unref
+#define atsctrb_pango_attr_list_copy pango_attr_list_copy
+
+#define atsctrb_pango_attr_list_insert pango_attr_list_insert
+#define atsctrb_pango_attr_list_insert_before pango_attr_list_insert_before
+#define atsctrb_pango_attr_list_change pango_attr_list_change
+
+/* ****** ****** */
+
+//
+// pango-context.h
+//
+
+/* ****** ****** */
+
+//
+// pango-font.h
+//
+
+#define atsctrb_pango_font_description_from_string \
+  pango_font_description_from_string
+#define atsctrb_pango_font_description_to_string \
+  pango_font_description_to_string
+#define atsctrb_pango_font_description_to_filename \
+  pango_font_description_to_filename
+
+#define atsctrb_pango_font_description_free pango_font_description_free
+
+/* ****** ****** */
+
+//
+// pango-layout.h
+//
+
 #define atsctrb_pango_layout_new pango_layout_new
 #define atsctrb_pango_layout_copy pango_layout_copy
+//
+#define atsctrb_pango_layout_get_attributes pango_layout_get_attributes
+#define atsctrb_pango_layout_set_attributes pango_layout_set_attributes
+//
+#define atsctrb_pango_layout_get_text \
+  atsctrb_pango_layout_get_text
+#define atsctrb_pango_layout_set_text \
+  atsctrb_pango_layout_set_text
+#define atsctrb_pango_layout_setall_text(layout,text) \
+  pango_layout_set_text(layout, text, -1)
 //
 #define atsctrb_pango_layout_get_size pango_layout_get_size
 #define atsctrb_pango_layout_get_pixel_size pango_layout_get_pixel_size
@@ -90,27 +143,6 @@
   pango_layout_get_single_paragraph_mode
 #define atsctrb_pango_layout_set_single_paragraph_mode \
   pango_layout_set_single_paragraph_mode
-
-/* ****** ****** */
-
-//
-// pango-context.h
-//
-
-/* ****** ****** */
-
-//
-// pango-font.h
-//
-
-#define atsctrb_pango_font_description_from_string \
-  pango_font_description_from_string
-#define atsctrb_pango_font_description_to_string \
-  pango_font_description_to_string
-#define atsctrb_pango_font_description_to_filename \
-  pango_font_description_to_filename
-
-#define atsctrb_pango_font_description_free pango_font_description_free
 
 /* ****** ****** */
 

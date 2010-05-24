@@ -157,7 +157,7 @@ and dialog_saveas_main {l:agz} (
 (* ****** ****** *)
 
 implement
-cb_saveas_activate () = GTRUE where {
+cb_file_saveas_activate () = GTRUE where {
 (*
   val () = (print (#LOCATION + ": cb_saveas_activate"); print_newline ())
 *)
@@ -241,7 +241,7 @@ cb_saveas_activate () = GTRUE where {
     | _ => () // HX: should the user be asked again?
   // end of [val]
   val () = gtk_widget_destroy (dialog)
-} // end of [cb_saveas_activate]
+} // end of [cb_file_saveas_activate]
 
 (* ****** ****** *)
 

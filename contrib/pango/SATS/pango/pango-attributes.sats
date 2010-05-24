@@ -96,4 +96,79 @@ macdef PANGO_UNDERLINE_ERROR = $extval (PangoUnderline, "PANGO_UNDERLINE_ERROR")
 
 (* ****** ****** *)
 
+abst@ype
+PangoAttribute_rest // totally opaque
+typedef PangoAttribute =
+  $extype_struct "PangoAttribute" of {
+  start_index= guint, end_index= guint
+, _rest = PangoAttribute_rest // inaccessible
+} // end of [PangoAttribute]
+
+absviewtype PangoAttribute_ptr (l:addr) // HX: _not_ refcounted
+viewtypedef PangoAttribute_ptr1 = [l:addr | l > null] PangoAttribute_ptr l
+
+(* ****** ****** *)
+
+fun pango_attribute_copy {l:agz}
+  (attr: !PangoAttribute_ptr l): [l_new:addr] PangoAttribute_ptr l_new
+  = "#atsctrb_pango_attribute_copy"
+// end of [pango_attribute_copy]
+
+fun pango_attribute_destroy
+  {l:agz} (attr: PangoAttribute_ptr l): void = "#atsctrb_pango_attribute_destroy"
+// end of [pango_attribute_destroy]
+
+fun pango_attribute_equal {l1,l2:agz}
+  (attr1: PangoAttribute_ptr l1, attr2: PangoAttribute_ptr l2): gboolean
+  = "#atsctrb_pango_attribute_equal"
+// end of [pango_attribute_equal]
+
+(* ****** ****** *)
+
+fun pango_attr_foreground_new
+  (r: guint16, g: guint16, b: guint16): PangoAttribute_ptr1
+  = "#atsctrb_pango_attr_foreground_new"
+// end of [pango_attr_foreground_new]
+
+fun pango_attr_background_new
+  (r: guint16, g: guint16, b: guint16): PangoAttribute_ptr1
+  = "#atsctrb_pango_attr_background_new"
+// end of [pango_attr_background_new]
+
+(* ****** ****** *)
+
+absviewtype PangoAttrList_ref (l:addr)
+viewtypedef PangoAttrList_ref1 = [l:addr | l > null] PangoAttrList_ref (l)
+
+(* ****** ****** *)
+
+fun pango_attr_list_new (): PangoAttrList_ref1
+  = "#atsctrb_pango_attr_list_new"
+fun pango_attr_list_ref {l:agz} (alist: !PangoAttrList_ref l): PangoAttrList_ref l
+  = "#atsctrb_pango_attr_list_ref"
+fun pango_attr_list_unref {l:agz} (alist: PangoAttrList_ref l): void
+  = "#atsctrb_pango_attr_list_unref"
+fun pango_attr_list_copy {l:agz} (alist: !PangoAttrList_ref l): PangoAttrList_ref1
+  = "#atsctrb_pango_attr_list_copy"
+
+// HX: [attr] is owned by [alist] after the call
+fun pango_attr_list_insert {l1,l2:agz}
+  (alist: !PangoAttrList_ref l1, attr: PangoAttribute_ptr l2): void
+  = "#atsctrb_pango_attr_list_insert"
+// end of [pango_attr_list_insert]
+
+// HX: [attr] is owned by [alist] after the call
+fun pango_attr_list_insert_before {l1,l2:agz}
+  (alist: !PangoAttrList_ref l1, attr: PangoAttribute_ptr l2): void
+  = "#atsctrb_pango_attr_list_insert_before"
+// end of [pango_attr_list_insert_before]
+
+// HX: [attr] is owned by [alist] after the call
+fun pango_attr_list_change {l1,l2:agz}
+  (alist: !PangoAttrList_ref l1, attr: PangoAttribute_ptr l2): void
+  = "#atsctrb_pango_attr_list_change"
+// end of [pango_attr_list_change]
+
+(* ****** ****** *)
+
 (* end of [pango-attributes.sats] *)

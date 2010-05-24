@@ -52,28 +52,28 @@
 // HX-2010-02-17: GArray_ref is reference-counted
 //
 absviewtype GArray_ref (a:viewt@ype+, l:addr) // = GArray*
-viewtypedef GArray_ref (a:viewt@ype) = [l:addr] GArray_ref (a, l)
+viewtypedef GArray_ref1 (a:viewt@ype) = [l:agz] GArray_ref (a, l)
 
 (* ****** ****** *)
 
 fun g_array_new {a:viewt@ype}
-  (zrotrm: gboolean, clear: gboolean, sz: sizeof_t a): GArray_ref a
+  (zrotrm: gboolean, clear: gboolean, sz: sizeof_t a): GArray_ref1 a
   = "#atsctrb_g_array_new"
 // end of [g_array_new]
 
 fun g_array_sized_new {a:viewt@ype} (
     zrotrm: gboolean, clear: gboolean, sz: sizeof_t a, reserved: guint
-  ): GArray_ref a = "#atsctrb_g_array_sized_new"
+  ) : GArray_ref1 a = "#atsctrb_g_array_sized_new"
 // end of [g_array_sized_new]
 
 (* ****** ****** *)
 
-fun g_array_ref {a:viewt@ype} {l:addr}
+fun g_array_ref {a:viewt@ype} {l:agz}
   (array: !GArray_ref (a, l)): GArray_ref (a, l) = "#atsctrb_g_array_ref"
 // end of [g_array_ref]
 
 fun g_array_unref {a:viewt@ype}
-  (array: GArray_ref a): void = "#atsctrb_g_array_unref"
+  (array: GArray_ref1 a): void = "#atsctrb_g_array_unref"
 // end of [g_array_unref]
 
 (* ****** ****** *)
@@ -86,12 +86,12 @@ fun g_array_unref {a:viewt@ype}
 //
 *)
 fun g_array_free_true
-  {a:t@ype} (array: GArray_ref a): void = "atsctrb_g_array_free_true" // fun!
+  {a:t@ype} (array: GArray_ref1 a): void = "atsctrb_g_array_free_true" // fun!
 // end of [g_array_free_true]
 
 (* ****** ****** *)
 
-fun g_array_get_element_size {a:viewt@ype} {l:addr}
+fun g_array_get_element_size {a:viewt@ype} {l:agz}
   (array: !GArray_ref (a, l)): sizeof_t a = "#atslib_g_array_get_element_size"
 // end of [g_array_get_element_size]
 
@@ -102,7 +102,7 @@ fun g_array_get_element_size {a:viewt@ype} {l:addr}
 //
 
 fun g_array_takeout_tsz
-  {a:viewt@ype} {l:addr} {i:nat} (
+  {a:viewt@ype} {l:agz} {i:nat} (
     array: !GArray_ref (a, l), i: gint i, tsz: sizeof_t a
   ) : [l_elt:addr] (
     a @ l_elt, minus (GArray_ref (a, l), a @ l_elt) | ptr l_elt
@@ -110,27 +110,34 @@ fun g_array_takeout_tsz
 // end of [g_array_takeout_tsz]
 
 fun{a:t@ype} g_array_get_elt_at
-  {l:addr} {i:nat} (array: !GArray_ref (a, l), i: gint i): a
+  {l:agz} {i:nat} (array: !GArray_ref (a, l), i: gint i): a
 // end of [g_array_get_elt_at]
 
 fun{a:t@ype} g_array_set_elt_at
-  {l:addr} {i:nat} (array: !GArray_ref (a, l), i: gint i, x: a): void
+  {l:agz} {i:nat} (array: !GArray_ref (a, l), i: gint i, x: a): void
 // end of [g_array_set_elt_at]
 
 (* ****** ****** *)
 
-fun g_array_append_val {a:viewt@ype} {l:addr}
+fun g_array_append_val {a:viewt@ype} {l:agz}
   (array: !GArray_ref (a, l), v: &a >> a?!): void = "#atsctrb_g_array_append_val"
 // end of [g_array_append_val]
 
-fun g_array_prepend_val {a:viewt@ype} {l:addr}
+fun g_array_prepend_val {a:viewt@ype} {l:agz}
   (array: !GArray_ref (a, l), v: &a >> a?!): void = "#atsctrb_g_array_prepend_val"
 // end of [g_array_prepend_val]
 
 (* ****** ****** *)
 
-fun g_array_sort {a:viewt@ype}
-  {l:addr} (A: !GArray_ref (a, l), cmp: GCompareFuncRef a): void
+fun g_array_set_size
+  {a:viewt@ype} {l:agz} (array: !GArray_ref (a, l), size: guint): void
+  = "#atsctrb_g_array_set_size"
+// end of [g_array_set_size]
+
+(* ****** ****** *)
+
+fun g_array_sort
+  {a:viewt@ype} {l:agz} (A: !GArray_ref (a, l), cmp: GCompareFuncRef a): void
   = "#atsctrb_g_array_sort"
 // end of [g_array_sort]
 

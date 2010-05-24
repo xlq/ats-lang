@@ -1,6 +1,9 @@
 //
+// An 'echoing' server with preforked processes
+//
 // Author: Chris Double (chris.double AT double DOT co DOT nz)
 // with minor modification by Hongwei Xi (hwxi AT cs DOT bu DOT edu)
+// Time: May, 2010
 //
 
 (* ****** ****** *)

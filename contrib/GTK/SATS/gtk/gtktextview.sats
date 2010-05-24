@@ -196,4 +196,44 @@ fun gtk_text_view_set_border_window_size
 
 (* ****** ****** *)
 
+fun gtk_text_view_get_line_at_y
+  {c:cls | c <= GtkTextView} {l:agz} (
+    tv: !gobjref (c, l)
+  , iter: &GtkTextIter? >> GtkTextIter
+  , y: gint
+  , linetop: &gint? >> gint
+  ) : void = "#atsctrb_gtk_text_view_get_line_at_y"
+// end of [gtk_text_view_get_line_at_y]
+
+fun gtk_text_view_get_line_yrange
+  {c:cls | c <= GtkTextView} {l:agz} (
+    tv: !gobjref (c, l)
+  , iter: &GtkTextIter
+  , y: &gint? >> gint
+  , height: &gint? >> gint
+  ) : void = "#atsctrb_gtk_text_view_get_line_yrange"
+// end of [gtk_text_view_get_line_yrange]
+
+(* ****** ****** *)
+
+fun gtk_text_view_buffer_to_window_coords
+  {c:cls | c <= GtkTextView} {l:agz} (
+    tv: !gobjref (c, l)
+  , _type: GtkTextWindowType
+  , buf_x: gint, buf_y: gint
+  , win_x: &gint? >> gint, win_y: &gint? >> gint
+  ) : void = "#atsctrb_gtk_text_view_buffer_to_window_coords"
+// end of [gtk_text_view_buffer_to_window_coords]
+
+fun gtk_text_view_window_to_buffer_coords
+  {c:cls | c <= GtkTextView} {l:agz} (
+    tv: !gobjref (c, l)
+  , _type: GtkTextWindowType
+  , win_x: gint, win_y: gint
+  , buf_x: &gint? >> gint, buf_y: &gint? >> gint
+  ) : void = "#atsctrb_gtk_text_view_window_to_buffer_coords"
+// end of [gtk_text_view_window_to_buffer_coords]
+
+(* ****** ****** *)
+
 (* end of [gtktextview.sats] *)

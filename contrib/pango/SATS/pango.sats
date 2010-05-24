@@ -57,6 +57,8 @@ staload GLIB = "contrib/glib/SATS/glib.sats"
 stadef gboolean (b:bool) = $GLIB.gboolean b
 stadef gboolean = $GLIB.gboolean
 //
+stadef gchar = $GLIB.gchar
+//
 stadef gint (n:int) = $GLIB.gint (n)
 stadef gint = $GLIB.gint
 stadef gint8 = $GLIB.gint8

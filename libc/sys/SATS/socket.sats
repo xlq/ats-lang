@@ -143,18 +143,21 @@ fun listen_exn {fd:int} (
 (* ****** ****** *)
 
 dataview accept_v (int) = 
-  | accept_fail (~1)
   | {fd:nat} accept_succ (fd) of socket_v (fd, conn)
+  | accept_fail (~1)
+// end of [accept_v]
 
 fun accept_null_err {fd_s:int}
   (pf_sock: !socket_v (fd_s, listen) | fd_s: int fd_s)
   : [fd_c:int] (accept_v fd_c | int fd_c)
   = "atslib_accept_null_err"
+// end of [accept_null_err]
 
 fun accept_null_exn {fd_s:int}
   (pf_sock: !socket_v (fd_s, listen) | fd_s: int fd_s)
   : [fd_c:int] (socket_v (fd_c, conn) | int fd_c)
   = "atslib_accept_null_exn"
+// end of [accept_null_exn]
 
 fun accept_ipv4_exn {fd_s:int} (
     pf_sock: !socket_v (fd_s, listen)
@@ -163,21 +166,25 @@ fun accept_ipv4_exn {fd_s:int} (
   , addrlen: &socklen_t? >> socklen_t
   ) : [fd_c:int] (socket_v (fd_c, conn) | int fd_c)
   = "atslib_accept_ipv4_exn"
+// end of [accept_ipv4_exn]
 
 (* ****** ****** *)
 
 dataview socket_close_v (fd: int, s: status, int) =
   | socket_close_fail (fd, s, ~1) of socket_v (fd, s)
   | socket_close_succ (fd, s, 0)
+// end of [socket_close_v]
 
 fun socket_close_err {fd:int} {s:status}
   (pf_sock: socket_v (fd, s) | fd: int fd)
   : [i:int] (socket_close_v (fd, s, i) | int i)
   = "atslib_socket_close_err"
+// end of [socket_close_err]
 
 fun socket_close_exn {fd:int} {s:status}
   (pf_sock: socket_v (fd, s) | fd: int fd): void
   = "atslib_socket_close_exn"
+// end of [socket_close_exn]
 
 (* ****** ****** *)
 
@@ -187,12 +194,14 @@ fun socket_read_err {fd:int} {n,sz:nat | n <= sz} (
     pf_sock: !socket_v (fd, conn) | fd: int fd, buf: &bytes sz, ntotal: size_t n
   ) : ssizeBtw(~1, n+1)
   = "atslib_fildes_read_err"
+// end of [socket_read_err]
 
 // implemented in [libc/sys/CATS/socket.cats]
 fun socket_read_exn {fd:int} {n,sz:nat | n <= sz} (
     pf_sock: !socket_v (fd, conn) | fd: int fd, buf: &bytes sz, ntotal: size_t n
   ) : sizeLte n
   = "atslib_socket_read_exn"
+// end of [socket_read_exn]
 
 (* ****** ****** *)
 
@@ -201,12 +210,14 @@ fun socket_read_loop_err {fd:int} {n,sz:nat | n <= sz} (
     pf_sock: !socket_v (fd, conn) | fd: int fd, buf: &bytes sz, ntotal: size_t n
   ) : ssizeBtw (~1, n+1)
   = "atslib_fildes_read_loop_err"
+// end of [socket_read_loop_err]
 
 // implemented in [libc/sys/DATSsocket.dats]
 fun socket_read_loop_exn {fd:int} {n,sz:nat | n <= sz} (
     pf_sock: !socket_v (fd, conn) | fd: int fd, buf: &bytes sz, ntotal: size_t n
   ) : sizeLte n
   = "atslib_socket_read_loop_exn"
+// end of [socket_read_loop_exn]
 
 (* ****** ****** *)
 
@@ -215,12 +226,14 @@ fun socket_write_err {fd:int} {n,sz:nat | n <= sz} (
     pf_sock: !socket_v (fd, conn) | fd: int fd, buf: &bytes sz, ntotal: size_t n
   ) : ssizeBtw(~1, n+1)
   = "atslib_fildes_write_err"
+// end of [socket_write_err]
 
 // implemented in [libc/sys/CATS/socket.cats]
 fun socket_write_exn {fd:int} {n,sz:nat | n <= sz} (
     pf_sock: !socket_v (fd, conn) | fd: int fd, buf: &bytes sz, ntotal: size_t n
   ) : sizeLte n
   = "atslib_socket_write_exn"
+// end of [socket_write_exn]
 
 (* ****** ****** *)
 
@@ -229,14 +242,22 @@ fun socket_write_loop_err {fd:int} {n,sz:nat | n <= sz} (
     pf_sock: !socket_v (fd, conn) | fd: int fd, buf: &bytes sz, ntotal: size_t n
   ) : ssizeBtw(~1, n+1)
   = "atslib_fildes_write_loop_err"
+// end of [socket_write_loop_err]
 
 // implemented in [libc/sys/DATS/socket.dats]
 fun socket_write_loop_exn {fd:int} {n,sz:nat | n <= sz} (
     pf_sock: !socket_v (fd, conn) | fd: int fd, buf: &bytes sz, ntotal: size_t n
   ) : void // all bytes must be written if this function returns
   = "atslib_socket_write_loop_exn"
+// end of [socket_write_loop_exn]
 
 (* ****** ****** *)
+
+//
+// HX-2010-05-23:
+// Note that casting can be used to readily circumvent the need for the
+// following functions.
+//
 
 // implemented in [libc/sys/CATS/socket.cats]
 
@@ -244,11 +265,13 @@ fun socket_write_substring_err {fd:int} {i,n,sz:nat | i+n <= sz}
   (pf_socket: !socket_v (fd, conn) |
    sockfd: int fd, str: string sz, start: size_t i, n: size_t n): ssizeBtw(~1, n+1)
   = "atslib_socket_write_substring_err"
+// end of [socket_write_substring_err]
 
 fun socket_write_substring_exn {fd:int} {i,n,sz:nat | i+n <= sz}
   (pf_socket: !socket_v (fd, conn) |
    sockfd: int fd, str: string sz, start: size_t i, n: size_t n): sizeLte n
   = "atslib_socket_write_substring_exn"
+// end of [socket_write_substring_exn]
 
 (* ****** ****** *)
 

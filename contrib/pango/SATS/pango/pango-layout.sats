@@ -63,6 +63,34 @@ fun pango_layout_copy
 
 (* ****** ****** *)
 
+fun pango_layout_set_attributes
+  {c:cls | c <= PangoLayout} {l,l1:agz}
+  (layout: !gobjref (c, l), alist: !PangoAttrList_ref l1): void
+  = "#atsctrb_pango_layout_set_attributes"
+// end of [pango_layout_set_attributes]
+
+(* ****** ****** *)
+
+fun pango_layout_get_text
+  {c:cls | c <= PangoLayout} {l:agz}
+  (layout: !gobjref (c, l)): [l1:addr] (gobjref (c, l), gstring l1 | gstring l1)
+  = "#atsctrb_pango_layout_get_text"
+// end of [pango_layout_get_text]
+
+fun pango_layout_set_text
+  {c:cls | c <= PangoLayout} {l:agz} {n0,n1:nat | n1 <= n0}
+  (layout: !gobjref (c, l), text: &(@[gchar][n0]), n1: int n1): void
+  = "#atsctrb_pango_layout_set_text"
+// end of [pango_layout_set_text]
+
+fun pango_layout_setall_text
+  {c:cls | c <= PangoLayout} {l,l1:agz}
+  (layout: !gobjref (c, l), text: !gstring l1): void
+  = "#atsctrb_pango_layout_setall_text"
+// end of [pango_layout_setall_text]
+
+(* ****** ****** *)
+
 fun pango_layout_get_size
   {c:cls | c <= PangoLayout} {l:agz}
   (layout: !gobjref (c, l), width: &int? >> int, height: &int? >> int): void
@@ -79,7 +107,7 @@ fun pango_layout_get_pixel_size
 
 fun pango_layout_get_width
   {c:cls | c <= PangoLayout} {l:agz}
-  (layout: !gobjref (c, l): int = "#atsctrb_pango_layout_get_width"
+  (layout: !gobjref (c, l)): int = "#atsctrb_pango_layout_get_width"
 // end of [pango_layout_get_width]
 
 fun pango_layout_set_width
@@ -90,7 +118,7 @@ fun pango_layout_set_width
 
 fun pango_layout_get_height
   {c:cls | c <= PangoLayout} {l:agz}
-  (layout: !gobjref (c, l): int = "#atsctrb_pango_layout_get_height"
+  (layout: !gobjref (c, l)): int = "#atsctrb_pango_layout_get_height"
 // end of [pango_layout_get_height]
 
 fun pango_layout_set_height
@@ -103,7 +131,7 @@ fun pango_layout_set_height
 
 fun pango_layout_get_alignment
   {c:cls | c <= PangoLayout} {l:agz}
-  (layout: !gobjref (c, l): PangoAlignment
+  (layout: !gobjref (c, l)): PangoAlignment
   = "#atsctrb_pango_layout_get_alignment"
 // end of [pango_layout_get_alignment]
 
@@ -117,7 +145,7 @@ fun pango_layout_set_alignment
 
 fun pango_layout_get_wrap
   {c:cls | c <= PangoLayout} {l:agz}
-  (layout: !gobjref (c, l): PangoWrapMode
+  (layout: !gobjref (c, l)): PangoWrapMode
   = "#atsctrb_pango_layout_get_wrap"
 // end of [pango_layout_get_wrap]
 
@@ -129,14 +157,14 @@ fun pango_layout_set_wrap
 
 fun pango_layout_is_wrapped
   {c:cls | c <= PangoLayout} {l:agz}
-  (layout: !gobjref (c, l): gboolean = "#atsctrb_pango_layout_is_wrapped"
+  (layout: !gobjref (c, l)): gboolean = "#atsctrb_pango_layout_is_wrapped"
 // end of [pango_layout_is_wrapped]
 
 (* ****** ****** *)
 
 fun pango_layout_get_ellipsize
   {c:cls | c <= PangoLayout} {l:agz}
-  (layout: !gobjref (c, l): PangoEllipsizeMode
+  (layout: !gobjref (c, l)): PangoEllipsizeMode
   = "#atsctrb_pango_layout_get_ellipsize"
 // end of [pango_layout_get_ellipsize]
 
@@ -148,14 +176,14 @@ fun pango_layout_set_ellipsize
 
 fun pango_layout_is_ellipsized
   {c:cls | c <= PangoLayout} {l:agz}
-  (layout: !gobjref (c, l): gboolean = "#atsctrb_pango_layout_is_ellipsized"
+  (layout: !gobjref (c, l)): gboolean = "#atsctrb_pango_layout_is_ellipsized"
 // end of [pango_layout_is_ellipsized]
 
 (* ****** ****** *)
 
 fun pango_layout_get_indent
   {c:cls | c <= PangoLayout} {l:agz}
-  (layout: !gobjref (c, l): int = "#atsctrb_pango_layout_get_indent"
+  (layout: !gobjref (c, l)): int = "#atsctrb_pango_layout_get_indent"
 // end of [pango_layout_get_indent]
 
 fun pango_layout_set_indent
@@ -166,7 +194,7 @@ fun pango_layout_set_indent
 
 fun pango_layout_get_spacing
   {c:cls | c <= PangoLayout} {l:agz}
-  (layout: !gobjref (c, l): int = "#atsctrb_pango_layout_get_spacing"
+  (layout: !gobjref (c, l)): int = "#atsctrb_pango_layout_get_spacing"
 // end of [pango_layout_get_spacing]
 
 fun pango_layout_set_spacing
@@ -179,7 +207,7 @@ fun pango_layout_set_spacing
 
 fun pango_layout_get_justify
   {c:cls | c <= PangoLayout} {l:agz}
-  (layout: !gobjref (c, l): gboolean = "#atsctrb_pango_layout_get_justify"
+  (layout: !gobjref (c, l)): gboolean = "#atsctrb_pango_layout_get_justify"
 // end of [pango_layout_get_justify]
 
 fun pango_layout_set_justify
@@ -190,7 +218,7 @@ fun pango_layout_set_justify
 
 fun pango_layout_get_auto_dir
   {c:cls | c <= PangoLayout} {l:agz}
-  (layout: !gobjref (c, l): gboolean = "#atsctrb_pango_layout_get_auto_dir"
+  (layout: !gobjref (c, l)): gboolean = "#atsctrb_pango_layout_get_auto_dir"
 // end of [pango_layout_get_auto_dir]
 
 fun pango_layout_set_auto_dir
@@ -201,22 +229,9 @@ fun pango_layout_set_auto_dir
 
 (* ****** ****** *)
 
-fun pango_layout_get_justify
-  {c:cls | c <= PangoLayout} {l:agz}
-  (layout: !gobjref (c, l): gboolean = "#atsctrb_pango_layout_get_justify"
-// end of [pango_layout_get_justify]
-
-fun pango_layout_set_justify
-  {c:cls | c <= PangoLayout} {l:agz}
-  (layout: !gobjref (c, l), justify: gboolean): void
-  = "#atsctrb_pango_layout_set_justify"
-// end of [pango_layout_set_justify]
-
-(* ****** ****** *)
-
 fun pango_layout_get_single_paragraph_mode
   {c:cls | c <= PangoLayout} {l:agz}
-  (layout: !gobjref (c, l): gboolean
+  (layout: !gobjref (c, l)): gboolean
   = "#atsctrb_pango_layout_get_single_paragraph_mode"
 // end of [pango_layout_get_single_paragraph_mode]
 

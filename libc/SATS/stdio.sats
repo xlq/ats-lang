@@ -308,13 +308,14 @@ fun fgets_err
 // this function returns an empty strbuf in the case where
 // EOF is reached but no character is read
 //
-fun fgets_exn {n0,sz:int | 0 < n0; n0 <= sz} {m:fm} {l_buf:addr}
-  (pf_mod: file_mode_lte (m, r),
-   pf_buf: !b0ytes (sz) @ l_buf >>
-     [n:nat | n < n0] strbuf (sz, n) @ l_buf |
-   p: ptr l_buf, n0: int n0, f: &FILE m)
-  :<!exn> void
-  = "atslib_fgets_exn"
+fun fgets_exn
+  {n0,sz:int | 0 < n0; n0 <= sz}
+  {m:fm} {l_buf:addr} (
+    pf_mod: file_mode_lte (m, r),
+    pf_buf: !b0ytes (sz) @ l_buf >>
+     [n:nat | n < n0] strbuf (sz, n) @ l_buf
+  | p: ptr l_buf, n0: int n0, f: &FILE m
+  ) :<!exn> void = "atslib_fgets_exn"
 // end of [fgets_exn]
 
 // ------------------------------------------------

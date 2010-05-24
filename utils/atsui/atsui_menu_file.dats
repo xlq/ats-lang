@@ -238,7 +238,7 @@ topenv_make_menu_file () = menu where {
 //
   val openfile_item = $UT.gtk_menu_item_new_with_label ("Open File...")
   val _sid = g_signal_connect (
-    openfile_item, (gsignal)"activate", G_CALLBACK(cb_openfile_activate), GNULL
+    openfile_item, (gsignal)"activate", G_CALLBACK(cb_file_openfile_activate), GNULL
   ) // end of [val]
   val () = gtk_menu_shell_append (menu, openfile_item)
   val () = gtk_widget_show_unref (openfile_item)
@@ -270,7 +270,7 @@ topenv_make_menu_file () = menu where {
     $UT.gtk_image_menu_item_new_from_stock (GTK_STOCK_SAVE, aclgrp)
   prval () = fpf_aclgrp (aclgrp)
   val _sid = g_signal_connect (
-    save_item, (gsignal)"activate", G_CALLBACK(cb_save_activate), GNULL
+    save_item, (gsignal)"activate", G_CALLBACK(cb_file_save_activate), GNULL
   ) // end of [val]
   val () = gtk_menu_shell_append (menu, save_item)
   val () = gtk_widget_set_sensitive (save_item, GFALSE)
@@ -284,7 +284,7 @@ topenv_make_menu_file () = menu where {
     $UT.gtk_image_menu_item_new_from_stock (GTK_STOCK_SAVE_AS, aclgrp)
   prval () = fpf_aclgrp (aclgrp)
   val _sid = g_signal_connect (
-    saveas_item, (gsignal)"activate", G_CALLBACK(cb_saveas_activate), GNULL
+    saveas_item, (gsignal)"activate", G_CALLBACK(cb_file_saveas_activate), GNULL
   ) // end of [val]
   val () = gtk_menu_shell_append (menu, saveas_item)
   val () = gtk_widget_set_sensitive (saveas_item, GFALSE)
@@ -301,7 +301,7 @@ topenv_make_menu_file () = menu where {
   val quit_item = $UT.gtk_image_menu_item_new_from_stock (GTK_STOCK_QUIT, aclgrp)
   prval () = fpf_aclgrp (aclgrp)
   val _sid = g_signal_connect
-    (quit_item, (gsignal)"activate", G_CALLBACK(cb_quit_activate), GNULL)
+    (quit_item, (gsignal)"activate", G_CALLBACK(cb_file_quit_activate), GNULL)
   val () = gtk_menu_shell_append (menu, quit_item)
   val () = gtk_widget_show_unref (quit_item)
 //

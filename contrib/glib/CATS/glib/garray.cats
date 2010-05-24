@@ -53,6 +53,10 @@ typedef GArray *GArray_ref ;
 
 /* ****** ****** */
 
+#define atsctrb_g_array_set_size g_array_set_size
+
+/* ****** ****** */
+
 ATSinline()
 ats_void_type
 atsctrb_g_array_free_true (

@@ -14,9 +14,9 @@
 ** All rights reserved
 **
 ** ATS is free software;  you can  redistribute it and/or modify it under
-** the terms of the GNU LESSER GENERAL PUBLIC LICENSE as published by the
-** Free Software Foundation; either version 2.1, or (at your option)  any
-** later version.
+** the  terms of the  GNU General Public License as published by the Free
+** Software Foundation; either version 2.1, or (at your option) any later
+** version.
 ** 
 ** ATS is distributed in the hope that it will be useful, but WITHOUT ANY
 ** WARRANTY; without  even  the  implied  warranty  of MERCHANTABILITY or
@@ -31,36 +31,33 @@
 
 (* ****** ****** *)
 
-// Author of the file: Hongwei Xi (hwxi AT cs DOT bu DOT edu)
-// Starting time: February, 2010
+//
+// Author: Hongwei Xi (hwxi AT cs DOT bu DOT edu)
+// Time: May, 2010
+//
 
 (* ****** ****** *)
 
-#define ATS_STALOADFLAG 0 // no need for static loading
-#define ATS_DYNLOADFLAG 0 // no need for dynamic loading
+fun gtk_style_new (): GtkStyle_ref1 = "#atsctrb_gtk_style_new"
+
+fun gtk_style_copy
+  {c:cls | c <= GtkStyle} {l:agz} (x: !gobjref (c, l)): GtkStyle_ref1
+  = "#atsctrb_gtk_style_copy"
+// end of [gtk_style_copy]
 
 (* ****** ****** *)
 
-staload "contrib/glib/SATS/glib.sats"
+fun gtk_style_attach
+  {c1,c2:cls | c1 <= GtkStyle; c2 <= GdkWindow} {l1,l2:agz}
+  (x: gobjref (c1, l1), win: !gobjref (GdkWindow, l2)): GtkStyle_ref1
+  = "#atsctrb_gtk_style_attach"
+// end of [gtk_style_attach]
+
+fun gtk_style_detach
+  {c:cls | c <= GtkStyle} {l:agz} (x: !gobjref (c, l)): void
+  = "#atsctrb_gtk_style_detach"
+// end of [gtk_style_detach]
 
 (* ****** ****** *)
 
-implement{a} g_array_get_elt_at (array, i) = let
-  val (pf, fpf | p) = g_array_takeout_tsz {a} (array, i, sizeof<a>)
-  val x = !p
-  prval () = minus_addback (fpf, pf | array)
-in
-  x
-end // end of [g_array_get_elt_at]
-
-implement{a} g_array_set_elt_at (array, i, x) = let
-  val (pf, fpf | p) = g_array_takeout_tsz {a} (array, i, sizeof<a>)
-  val () = !p := x
-  prval () = minus_addback (fpf, pf | array)
-in
-  // nothing
-end // end of [g_array_set_elt_at]
-
-(* ****** ****** *)
-
-(* end of [glib.dats] *)
+(* end of [gtkstyle.sats] *)

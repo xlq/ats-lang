@@ -55,7 +55,19 @@ fun GTK_WIDGET_SET_FLAGS
   {c:cls | c <= GtkWidget} {l:agz}
   (widget: !gobjref (c, l), flag: GTK_WIDGET_FLAG): void
   = "#atsctrb_GTK_WIDGET_SET_FLAGS"
-// end of [...]
+// end of [GTK_WIDGET_SET_FLAGS]
+
+(* ****** ****** *)
+
+fun GTK_WIDGET_STATE
+  {c:cls | c <= GtkWidget} {l:agz} (wid: !gobjref (c, l)): GtkStateType
+  = "#atsctrb_GTK_WIDGET_STATE"
+// end of [GTK_WIDGET_STATE]
+
+fun GTK_WIDGET_SAVED_STATE
+  {c:cls | c <= GtkWidget} {l:agz} (wid: !gobjref (c, l)): GtkStateType
+  = "#atsctrb_GTK_WIDGET_SAVED_STATE"
+// end of [GTK_WIDGET_SAVED_STATE]
 
 (* ****** ****** *)
 
@@ -283,6 +295,23 @@ fun gtk_widget_create_pango_layout
   (widget: !gobjref (c, l1), text: !gstring l2): PangoLayout_ref1
   = "#atsctrb_gtk_widget_create_pango_layout"
 // end of [gtk_widget_create_pango_layout]
+
+(* ****** ****** *)
+//
+// HX-2010-05-24: style may not be set
+//
+fun gtk_widget_get_style
+  {c:cls | c <= GtkWidget} {l:agz}
+  (widget: !gobjref (c, l)): [l1:addr] (
+    minus (gobjref (c, l), gobjref (GtkStyle, l1)) | gobjref (GtkStyle, l1)
+  ) = "#atsctrb_gtk_widget_get_style"
+// end of [gtk_widget_get_style]
+
+fun gtk_widget_set_style
+  {c1,c2:cls | c1 <= GtkWidget; c2 <= GtkStyle}
+  {l1,l2:agz} (widget: !gobjref (c1, l1), style: gobjref (c2, l2)): void
+  = "#atsctrb_gtk_widget_set_style"
+// end of [gtk_widget_set_style]
 
 (* ****** ****** *)
 

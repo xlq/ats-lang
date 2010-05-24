@@ -62,6 +62,7 @@ SOURCES := \
   atsui_menu_view.dats \
   atsui_menu_winlst.dats \
   atsui_textview_source.dats \
+  atsui_textview_source_linenumber.dats \
   atsui_srcwinlst.sats atsui_srcwinlst.dats \
   atsui_topenv.sats atsui_topenv.dats \
 
@@ -141,6 +142,9 @@ atsui_compile_dats.o: atsui_compile.dats
 
 atsui_textview_source_dats.o: atsui_textview_source.dats
 	$(ATSCC) $(ATSCCFLAGS) $(CCFLAGS) -c atsui_textview_source.dats
+
+atsui_textview_source_linenumber_dats.o: atsui_textview_source_linenumber.dats
+	$(ATSCC) $(ATSCCFLAGS) $(CCFLAGS) -c atsui_textview_source_linenumber.dats
 
 ######
 

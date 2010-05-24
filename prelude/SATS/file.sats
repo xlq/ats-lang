@@ -36,7 +36,11 @@
 (* ****** ****** *)
 //
 // HX:
+//
 // The functions declared here are mostly done for the sake of convenience.
+// Please turn on GC if functions like [input_line] and [output_line] are
+// called repeatedly.
+//
 // For full-fledged IO support, please see [$ATSHOME/libc/SATS/stdio.sats].
 //
 (* ****** ****** *)

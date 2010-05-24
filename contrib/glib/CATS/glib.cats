@@ -55,6 +55,7 @@
 #include "contrib/glib/CATS/glib/grand.cats"
 #include "contrib/glib/CATS/glib/gslist.cats" // singly-linked
 #include "contrib/glib/CATS/glib/gstring.cats"
+#include "contrib/glib/CATS/glib/gutils.cats"
 
 /* ****** ****** */
 

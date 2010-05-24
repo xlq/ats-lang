@@ -116,6 +116,24 @@ overload guint32 with guint32_of_uint
 
 (* ****** ****** *)
 
+symintr glong
+castfn glong_of_int {i:nat} (i: int i): glong i
+overload glong with glong_of_int
+castfn glong_of_lint {i:nat} (i: lint i): glong i
+overload glong with glong_of_lint
+
+(* ****** ****** *)
+
+symintr gulong
+castfn gulong_of_int {i:nat} (i: int i): gulong i
+overload gulong with gulong_of_int
+castfn gulong_of_uint {i:nat} (i: uint i): gulong i
+overload gulong with gulong_of_uint
+castfn gulong_of_ulint {i:nat} (i: ulint i): gulong i
+overload gulong with gulong_of_ulint
+
+(* ****** ****** *)
+
 castfn float_of_gfloat (x: gfloat):<> float
 overload float_of with float_of_gfloat
 
@@ -140,6 +158,11 @@ overload gdouble with gdouble_of_int
 
 (* ****** ****** *)
 
+typedef add (a:t@ype) = (a, a) -<> a
+typedef sub (a:t@ype) = (a, a) -<> a
+typedef mul (a:t@ype) = (a, a) -<> a
+typedef div (a:t@ype) = (a, a) -<> a
+
 typedef lt (a:t@ype) = (a, a) -<> bool
 typedef lte (a:t@ype) = (a, a) -<> bool
 typedef gt (a:t@ype) = (a, a) -<> bool
@@ -149,19 +172,40 @@ typedef neq (a:t@ype) = (a, a) -<> bool
 
 (* ****** ****** *)
 
-fun lt_gint_gint : lt (gint) = "atsctrb_lt_gint_gint"
+fun add_gint_gint {i,j:int}
+  (x: gint i, y: gint j): gint (i+j) = "atsctrb_add_gint_gint"
+overload + with add_gint_gint
+
+fun sub_gint_gint {i,j:int}
+  (x: gint i, y: gint j): gint (i+j) = "atsctrb_sub_gint_gint"
+overload - with sub_gint_gint
+
+fun mul_gint_gint : mul (gint) = "atsctrb_mul_gint_gint"
+overload * with mul_gint_gint
+fun div_gint_gint : div (gint) = "atsctrb_div_gint_gint"
+overload / with div_gint_gint
+
+(* ****** ****** *)
+
+fun lt_gint_gint {i,j:int}
+  (x: gint i, y: gint j): bool (i < j) = "atsctrb_lt_gint_gint"
 overload < with lt_gint_gint
-fun lte_gint_gint : lte (gint) = "atsctrb_lte_gint_gint"
+fun lte_gint_gint {i,j:int}
+  (x: gint i, y: gint j): bool (i <= j) = "atsctrb_lte_gint_gint"
 overload <= with lte_gint_gint
 
-fun gt_gint_gint : gt (gint) = "atsctrb_gt_gint_gint"
+fun gt_gint_gint {i,j:int}
+  (x: gint i, y: gint j): bool (i > j) = "atsctrb_gt_gint_gint"
 overload > with gt_gint_gint
-fun gte_gint_gint : gte (gint) = "atsctrb_gte_gint_gint"
+fun gte_gint_gint {i,j:int}
+  (x: gint i, y: gint j): bool (i >= j) = "atsctrb_gte_gint_gint"
 overload >= with gte_gint_gint
 
-fun eq_gint_gint : eq (gint) = "atsctrb_eq_gint_gint"
+fun eq_gint_gint {i,j:int}
+  (x: gint i, y: gint j): bool (i == j) = "atsctrb_eq_gint_gint"
 overload = with eq_gint_gint
-fun neq_gint_gint : neq (gint) = "atsctrb_neq_gint_gint"
+fun neq_gint_gint {i,j:int}
+  (x: gint i, y: gint j): bool (i <> j) = "atsctrb_neq_gint_gint"
 overload <> with neq_gint_gint
 
 (* ****** ****** *)
@@ -259,6 +303,9 @@ viewtypedef gstring0 = [l:agez] gstring l
 viewtypedef gstring1 = [l:addr | l > null] gstring l
 castfn ptr_of_gstring {l:addr} (x: !gstring l):<> ptr l
 overload ptr_of with ptr_of_gstring
+
+absview gstring_v (l:addr)
+castfn gstring_of_viewptr {l:addr} (pf: gstring_v l | p: ptr l): gstring l
 
 castfn gstring_make_null (x: ptr null): gstring (null)
 castfn gstring_of_string

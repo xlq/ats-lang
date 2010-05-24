@@ -43,6 +43,17 @@
 /* ****** ****** */
 
 ATSinline()
+gint atsctrb_add_gint_gint (gint x, gint y) { return (x + y) ; }
+ATSinline()
+gint atsctrb_sub_gint_gint (gint x, gint y) { return (x - y) ; }
+ATSinline()
+gint atsctrb_mul_gint_gint (gint x, gint y) { return (x * y) ; }
+ATSinline()
+gint atsctrb_div_gint_gint (gint x, gint y) { return (x / y) ; }
+
+/* ****** ****** */
+
+ATSinline()
 ats_bool_type
 atsctrb_lt_gint_gint
   (gint x, gint y) {
@@ -55,6 +66,20 @@ atsctrb_lte_gint_gint
   (gint x, gint y) {
   return (x <= y ? ats_true_bool : ats_false_bool) ;
 } // end of [atsctrb_lte_gint_gint]
+
+ATSinline()
+ats_bool_type
+atsctrb_gt_gint_gint
+  (gint x, gint y) {
+  return (x > y ? ats_true_bool : ats_false_bool) ;
+} // end of [atsctrb_gt_gint_gint]
+
+ATSinline()
+ats_bool_type
+atsctrb_gte_gint_gint
+  (gint x, gint y) {
+  return (x >= y ? ats_true_bool : ats_false_bool) ;
+} // end of [atsctrb_gte_gint_gint]
 
 ATSinline()
 ats_bool_type
@@ -86,6 +111,32 @@ atsctrb_lte_gint32_gint32
   return (x <= y ? ats_true_bool : ats_false_bool) ;
 } // end of [atsctrb_lte_gint32_gint32]
 
+ATSinline()
+ats_bool_type
+atsctrb_gt_gint32_gint32
+  (gint32 x, gint32 y) {
+  return (x > y ? ats_true_bool : ats_false_bool) ;
+} // end of [atsctrb_gt_gint32_gint32]
+
+ATSinline()
+ats_bool_type
+atsctrb_gte_gint32_gint32
+  (gint32 x, gint32 y) {
+  return (x >= y ? ats_true_bool : ats_false_bool) ;
+} // end of [atsctrb_gte_gint32_gint32]
+
+atsctrb_eq_gint32_gint32
+  (gint32 x, gint32 y) {
+  return (x == y ? ats_true_bool : ats_false_bool) ;
+} // end of [atsctrb_eq_gint32_gint32]
+
+ATSinline()
+ats_bool_type
+atsctrb_neq_gint32_gint32
+  (gint32 x, gint32 y) {
+  return (x != y ? ats_true_bool : ats_false_bool) ;
+} // end of [atsctrb_neq_gint32_gint32]
+
 /* ****** ****** */
 
 ATSinline()
@@ -101,6 +152,32 @@ atsctrb_lte_guint32_guint32
   (guint32 x, guint32 y) {
   return (x <= y ? ats_true_bool : ats_false_bool) ;
 } // end of [atsctrb_lte_guint32_guint32]
+
+ATSinline()
+ats_bool_type
+atsctrb_gt_guint32_guint32
+  (guint32 x, guint32 y) {
+  return (x > y ? ats_true_bool : ats_false_bool) ;
+} // end of [atsctrb_gt_guint32_guint32]
+
+ATSinline()
+ats_bool_type
+atsctrb_gte_guint32_guint32
+  (guint32 x, guint32 y) {
+  return (x >= y ? ats_true_bool : ats_false_bool) ;
+} // end of [atsctrb_gte_guint32_guint32]
+
+atsctrb_eq_guint32_guint32
+  (guint32 x, guint32 y) {
+  return (x == y ? ats_true_bool : ats_false_bool) ;
+} // end of [atsctrb_eq_guint32_guint32]
+
+ATSinline()
+ats_bool_type
+atsctrb_neq_guint32_guint32
+  (guint32 x, guint32 y) {
+  return (x != y ? ats_true_bool : ats_false_bool) ;
+} // end of [atsctrb_neq_guint32_guint32]
 
 /* ****** ****** */
 

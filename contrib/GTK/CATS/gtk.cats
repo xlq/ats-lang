@@ -1102,6 +1102,18 @@ atsctrb_gtk_statusbar_new () {
 /* ****** ****** */
 
 //
+// source: gtk/gtkstyle.h
+//
+
+#define atsctrb_gtk_style_new gtk_style_new
+#define atsctrb_gtk_style_copy gtk_style_copy
+
+#define atsctrb_gtk_style_attach gtk_style_attach
+#define atsctrb_gtk_style_detach gtk_style_detach
+
+/* ****** ****** */
+
+//
 // source: gtk/gtktable.h
 //
 
@@ -1200,8 +1212,21 @@ atsctrb_gtk_text_buffer_setall_text
 // source: gtk/gtktextiter.h
 //
 
-#define atsctr_gtk_text_iter_get_line gtk_text_iter_get_line
-#define atsctr_gtk_text_iter_get_line_offset gtk_text_iter_get_line_offset
+#define atsctrb_gtk_text_iter_is_start gtk_text_iter_is_start
+#define atsctrb_gtk_text_iter_is_end gtk_text_iter_is_end
+//
+#define atsctrb_gtk_text_iter_get_line gtk_text_iter_get_line
+#define atsctrb_gtk_text_iter_get_line_offset gtk_text_iter_get_line_offset
+//
+#define atsctrb_gtk_text_iter_forward_char gtk_text_iter_forward_char
+#define atsctrb_gtk_text_iter_backward_char gtk_text_iter_backward_char
+#define atsctrb_gtk_text_iter_forward_chars gtk_text_iter_forward_chars
+#define atsctrb_gtk_text_iter_backward_chars gtk_text_iter_backward_chars
+//
+#define atsctrb_gtk_text_iter_forward_line gtk_text_iter_forward_line
+#define atsctrb_gtk_text_iter_backward_line gtk_text_iter_backward_line
+#define atsctrb_gtk_text_iter_forward_lines gtk_text_iter_forward_lines
+#define atsctrb_gtk_text_iter_backward_lines gtk_text_iter_backward_lines
 
 /* ****** ****** */
 
@@ -1252,8 +1277,18 @@ atsctrb_gtk_text_view_new_with_buffer
 
 #define atsctrb_gtk_text_view_get_window gtk_text_view_get_window
 
-#define atsctrb_gtk_text_view_get_border_window_size gtk_text_view_get_border_window_size
-#define atsctrb_gtk_text_view_set_border_window_size gtk_text_view_set_border_window_size
+#define atsctrb_gtk_text_view_get_border_window_size \
+  gtk_text_view_get_border_window_size
+#define atsctrb_gtk_text_view_set_border_window_size \
+  gtk_text_view_set_border_window_size
+
+#define atsctrb_gtk_text_view_get_line_at_y gtk_text_view_get_line_at_y
+#define atsctrb_gtk_text_view_get_line_yrange gtk_text_view_get_line_yrange
+
+#define atsctrb_gtk_text_view_window_to_buffer_coords \
+  gtk_text_view_window_to_buffer_coords
+#define atsctrb_gtk_text_view_buffer_to_window_coords \
+  gtk_text_view_buffer_to_window_coords
 
 /* ****** ****** */
 
@@ -1428,21 +1463,24 @@ atsctrb_gtk_vseparator_new () {
 //
 
 #define atsctrb_GTK_WIDGET_SET_FLAGS GTK_WIDGET_SET_FLAGS
-
+//
+#define atsctrb_GTK_WIDGET_STATE GTK_WIDGET_STATE
+#define atsctrb_GTK_WIDGET_SAVED_STATE GTK_WIDGET_SAVED_STATE
+//
 #define atsctrb_gtk_widget_destroy gtk_widget_destroy
-
+//
 #define atsctrb_gtk_widget_map gtk_widget_map
 #define atsctrb_gtk_widget_unmap gtk_widget_unmap
-
+//
 #define atsctrb_gtk_widget_realize gtk_widget_realize
 #define atsctrb_gtk_widget_unrealize gtk_widget_unrealize
-
+//
 #define atsctrb_gtk_widget_show gtk_widget_show
 #define atsctrb_gtk_widget_show_now gtk_widget_show_now
 #define atsctrb_gtk_widget_show_all gtk_widget_show_all
-
+//
 #define atsctrb_gtk_widget_hide gtk_widget_hide
-
+//
 #define atsctrb_gtk_widget_get_sensitive gtk_widget_get_sensitive
 #define atsctrb_gtk_widget_set_sensitive gtk_widget_set_sensitive
 
@@ -1462,29 +1500,32 @@ atsctrb_gtk_widget_getref_allocation
 // end of [atsctrb_gtk_widget_get_allocation]
 #define atsctrb_gtk_widget_get_allocation gtk_widget_get_allocation
 #define atsctrb_gtk_widget_set_allocation gtk_widget_set_allocation
-
+//
 #define atsctrb_gtk_widget_set_size_request gtk_widget_set_size_request
-
+//
 #define atsctrb_gtk_widget_grab_focus gtk_widget_grab_focus
 #define atsctrb_gtk_widget_grab_default gtk_widget_grab_default
-
+//
 #define atsctrb_gtk_widget_set_events gtk_widget_set_events
-
+//
 #define atsctrb_gtk_widget_add_accelerator gtk_widget_add_accelerator
 #define atsctrb_gtk_widget_remove_accelerator gtk_widget_remove_accelerator
-
+//
 #define atsctrb_gtk_widget_modify_fg gtk_widget_modify_fg
 #define atsctrb_gtk_widget_modify_bg gtk_widget_modify_bg
-
+//
 #define atsctrb_gtk_widget_get_colormap gtk_widget_get_colormap
 #define atsctrb_gtk_widget_modify_font gtk_widget_modify_font
-
+//
 #define atsctrb_gtk_widget_queue_draw_area gtk_widget_queue_draw_area
-
+//
 #define atsctrb_gtk_widget_create_pango_context gtk_widget_create_pango_context
 #define atsctrb_gtk_widget_get_pango_context gtk_widget_get_pango_context
-
+//
 #define atsctrb_gtk_widget_create_pango_layout gtk_widget_create_pango_layout
+//
+#define atsctrb_gtk_widget_get_style gtk_widget_get_style
+#define atsctrb_gtk_widget_set_style gtk_widget_set_style
 
 /* ****** ****** */
 

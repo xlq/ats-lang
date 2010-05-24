@@ -129,7 +129,7 @@ fun dialog_openfile_first
 fun dialog_openfile
   {c:cls | c <= GtkFileChooserDialog} {l:agz}
   (dialog: !gobjref (c, l)): void = let
-  val () = (print (#LOCATION + ": cb_openfile_activate"); print_newline ())
+  val () = (print (#LOCATION + ": dialog_openfile"); print_newline ())
 //
   val (fpf_chooser | chooser) = gtk_file_chooser_dialog_get_chooser (dialog)
   val [l_filename:addr] filename = gtk_file_chooser_get_filename (chooser)
@@ -162,7 +162,7 @@ end // end of [dialog_openfile]
 (* ****** ****** *)
 
 implement
-cb_openfile_activate () = GTRUE where {
+cb_file_openfile_activate () = GTRUE where {
 //
   val () = topenv_textview_source_initset_if ()
 //
@@ -201,7 +201,7 @@ cb_openfile_activate () = GTRUE where {
   // end of [val]
 //
   val () = gtk_widget_destroy (dialog)
-} // end of [cb_openfile_activate]
+} // end of [cb_file_openfile_activate]
 
 (* ****** ****** *)
 

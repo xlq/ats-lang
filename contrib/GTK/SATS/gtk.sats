@@ -312,6 +312,12 @@ viewtypedef GtkFileChooser_ref1 = [l:addr | l > null] GtkFileChooser_ref l
 
 (* ****** ****** *)
 
+viewtypedef GtkStyle_ref (l:addr) = gobjref (GtkStyle, l)
+viewtypedef GtkStyle_ref0 = [l:agez] GtkStyle_ref l
+viewtypedef GtkStyle_ref1 = [l:addr | l > null] GtkStyle_ref l
+
+(* ****** ****** *)
+
 viewtypedef GtkTextBuffer_ref (l:addr) = gobjref (GtkTextBuffer, l)
 viewtypedef GtkTextBuffer_ref0 = [l:agez] GtkTextBuffer_ref l
 viewtypedef GtkTextBuffer_ref1 = [l:addr | l > null] GtkTextBuffer_ref l
@@ -339,6 +345,10 @@ viewtypedef GtkTextMark_ref1 = [l:addr | l > null] GtkTextMark_ref l
 (* ****** ****** *)
 
 #include "contrib/GTK/SATS/gtk/gtkaccelgroup.sats"
+
+(* ****** ****** *)
+
+#include "contrib/GTK/SATS/gtk/gtkstyle.sats"
 
 (* ****** ****** *)
 

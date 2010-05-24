@@ -55,6 +55,17 @@
 
 /* ****** ****** */
 
+//
+// HX-2010-05-24:
+// if TLS is not supported, then please compile with the flag -D_ATSTLS_NONE
+//
+#define ATSthreadlocalstorage()
+#ifdef _ATSTLS_NONE
+#define ATSthreadlocalstorage() __thread
+#endif // end of [_ATSTLS_NONE]
+
+/* ****** ****** */
+
 /*
 ** function for handling uncaught exceptions
 */
@@ -77,7 +88,7 @@ struct ats_exception_frame_struct {
 /* ****** ****** */
 
 #ifdef _ATS_MULTITHREAD
-extern __thread
+extern ATSthreadlocalstorage()
 ats_exception_frame_type *the_ats_exception_stack ;
 #else /* single thread */
 extern

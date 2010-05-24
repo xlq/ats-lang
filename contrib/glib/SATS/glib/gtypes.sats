@@ -43,12 +43,13 @@
 // these are declared in glibconfig.h
 //
 abst@ype gint8 = $extype "gint8"
-abst@ype guint8 = $extype "guint8"
 abst@ype gint16 = $extype "gint16"
-abst@ype guint16 = $extype "guint16"
 abst@ype gint32 = $extype "gint32"
-abst@ype guint32 = $extype "guint32"
 abst@ype gint64 = $extype "gint64"
+
+abst@ype guint8 = $extype "guint8"
+abst@ype guint16 = $extype "guint16"
+abst@ype guint32 = $extype "guint32"
 abst@ype guint64 = $extype "guint64"
 
 (* ****** ****** *)
@@ -96,8 +97,13 @@ typedef guint = [i:nat] guint i
 abst@ype gshort = $extype "gshort"
 abst@ype gushort = $extype "gushort"
 
-abst@ype glong = $extype "glong"
-abst@ype gulong = $extype "gulong"
+(* ****** ****** *)
+
+abst@ype glong (i: int) = $extype "glong"
+typedef glong = [i:nat] glong (i)
+
+abst@ype gulong (i:int) = $extype "gulong"
+typedef gulong = [i:nat] gulong (i)
 
 (* ****** ****** *)
 
