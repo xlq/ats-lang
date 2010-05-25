@@ -756,7 +756,13 @@ staload _(*anonymous*) = "prelude/SATS/array.sats" // this forces that the stati
 
 typedef unsigned char byte ;
 
+//
+// HX-2010-05-24
+// In case 'memcpy' is already defined as a macro ...
+//
+#ifndef memcpy
 extern void *memcpy (void *dst, const void* src, size_t n) ;
+#endif // end of [memcpy]
 
 ats_void_type
 atspre_array_ptr_initialize_elt_tsz (

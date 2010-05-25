@@ -63,8 +63,18 @@ fun pango_layout_copy
 
 (* ****** ****** *)
 
+//
+// HX-2010-05-24: this is a 'get0' function
+//
+fun pango_layout_get_attributes
+  {c:cls | c <= PangoLayout} {l:agz}
+  (layout: !gobjref (c, l)): [l1:addr] (
+    minus (gobjref (c, l), PangoAttrList_ref l1) | PangoAttrList_ref l1
+  ) = "#atsctrb_pango_layout_get_attributes"
+// end of [pango_layout_get_attributes]
+
 fun pango_layout_set_attributes
-  {c:cls | c <= PangoLayout} {l,l1:agz}
+  {c:cls | c <= PangoLayout} {l,l1:addr | l > null}
   (layout: !gobjref (c, l), alist: !PangoAttrList_ref l1): void
   = "#atsctrb_pango_layout_set_attributes"
 // end of [pango_layout_set_attributes]

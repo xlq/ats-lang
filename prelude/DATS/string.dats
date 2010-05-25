@@ -89,15 +89,13 @@ implement strbuf_v_unsplit
 (* ****** ****** *)
 
 %{^
-
 static inline
 ats_ptr_type
 _string_alloc (const ats_size_type n) {
   char *p ;
   p = ATS_MALLOC(n+1); p[n] = '\000'; return p ;
 } // end of [_string_alloc]
-
-%}
+%} // end of [%{^]
 
 (* ****** ****** *)
 

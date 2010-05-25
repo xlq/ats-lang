@@ -125,6 +125,7 @@ atsctrb_gte_gint32_gint32
   return (x >= y ? ats_true_bool : ats_false_bool) ;
 } // end of [atsctrb_gte_gint32_gint32]
 
+ATSinline()
 atsctrb_eq_gint32_gint32
   (gint32 x, gint32 y) {
   return (x == y ? ats_true_bool : ats_false_bool) ;
@@ -167,6 +168,7 @@ atsctrb_gte_guint32_guint32
   return (x >= y ? ats_true_bool : ats_false_bool) ;
 } // end of [atsctrb_gte_guint32_guint32]
 
+ATSinline()
 atsctrb_eq_guint32_guint32
   (guint32 x, guint32 y) {
   return (x == y ? ats_true_bool : ats_false_bool) ;
