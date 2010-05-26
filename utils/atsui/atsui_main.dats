@@ -64,8 +64,10 @@ dynload "atsui_menuitem_file_saveas.dats"
 dynload "atsui_menuitem_file_quit.dats"
 //
 dynload "atsui_menu_edit.dats"
+dynload "atsui_menuitem_edit_undoredo.dats"
 //
 dynload "atsui_menu_view.dats"
+dynload "atsui_menuitem_view_fontsel.dats"
 //
 dynload "atsui_menu_winlst.dats"
 //

@@ -87,15 +87,19 @@ fun g_string_new_null
 overload g_string_new with g_string_new_null 
 
 fun g_string_new_init
-  (init: string): GString_ptr1 = "#atsctrb_g_string_new_init"
+  {l:addr} (init: !gstring l): GString_ptr1 = "#atsctrb_g_string_new_init"
 overload g_string_new with g_string_new_init 
 
 (* ****** ****** *)
 
-abstype gchararr (n:int) // = vbox (@[gchar][n] @ l)
+absviewtype
+gchararrptr (l:addr, n:int) // @[gchar][n] @ l
 
-fun g_string_new_len {n:nat}
-  (init: gchararr n, n: gsize n): GString_ptr1 = "#g_string_new_len"
+//
+// HX-2010-05-28: [init] can be NULL
+//
+fun g_string_new_len {l:addr} {n,n1:nat | n1 <= n}
+  (init: !gchararrptr (l, n), n1: gsize n1): GString_ptr1 = "#g_string_new_len"
 // end of [g_string_new_len]
 
 (* ****** ****** *)
@@ -107,28 +111,26 @@ fun g_string_sized_new
 (* ****** ****** *)
 
 // string = _val
-fun g_string_assign {l:agz}
-  (string: !GString_ptr l, _val: string): ptr l
-  = "#atsctrb_g_string_assign"
+fun g_string_assign {l,l1:addr | l > null}
+  (string: !GString_ptr l, _val: !gstring l1): ptr l = "#atsctrb_g_string_assign"
 // end of [g_string_assign]
 
 (* ****** ****** *)
 
 // string = string + _val
-fun g_string_append {l:agz}
-  (string: !GString_ptr l, _val: string): ptr l
-  = "#atsctrb_g_string_append"
+fun g_string_append {l,l1:addr | l > null}
+  (string: !GString_ptr l, _val: !gstring l1): ptr l = "#atsctrb_g_string_append"
 // end of [g_string_append]
 
 // string = string + c
 fun g_string_append_c {l:agz}
-  (string: !GString_ptr l, c: gchar): ptr l
-  = "#atsctrb_g_string_append_c"
+  (string: !GString_ptr l, c: gchar): ptr l = "#atsctrb_g_string_append_c"
 // end of [g_string_append_c]
 
 // string = string + _val
-fun g_string_append_len {l:agz} {n:nat}
-  (string: !GString_ptr l, _val: gchararr n, n: gsize n): ptr l
+fun g_string_append_len
+  {l,l1:addr | l > null} {n1,n2:nat | n2 <= n1}
+  (string: !GString_ptr l, _val: !gchararrptr (l1, n1), n2: gsize n2): ptr l
   = "#atsctrb_g_string_append_len"
 // end of [g_string_append_len]
 
@@ -162,8 +164,9 @@ fun g_string_prepend_c {l:agz}
 // end of [g_string_prepend_c]
 
 // string = _val + string
-fun g_string_prepend_len {l:agz} {n:nat}
-  (string: !GString_ptr l, _val: gchararr n, n: gsize n): ptr l
+fun g_string_prepend_len
+  {l,l1:addr | l > null} {n1,n2:nat}
+  (string: !GString_ptr l, _val: !gchararrptr (l1, n1), n2: gsize n2): ptr l
   = "#atsctrb_g_string_prepend_len"
 // end of [g_string_prepend_len]
 
@@ -179,9 +182,10 @@ fun g_string_insert_c {l:agz}
   = "#atsctrb_g_string_insert_c"
 // end of [g_string_insert_c]
 
-fun g_string_insert_len {l:agz} {n:nat}
-  (string: !GString_ptr l, pos: gssize, _val: gchararr n, n: gsize n): ptr l
-  = "#atsctrb_g_string_insert_len"
+fun g_string_insert_len
+  {l,l1:addr | l > null} {n1,n2:nat} (
+    string: !GString_ptr l, pos: gssize, _val: !gchararrptr (l1, n1), n2: gsize n2
+  ) : ptr l = "#atsctrb_g_string_insert_len"
 // end of [g_string_insert_len]
 
 (* ****** ****** *)
@@ -193,9 +197,10 @@ fun g_string_overwrite {l:agz}
 // end of [g_string_overwrite]
 
 // since glib-2.14
-fun g_string_overwrite_len {l:agz} {n:nat}
-  (string: !GString_ptr l, pos: gssize, _val: gchararr n, n: gsize n): ptr l
-  = "#atsctrb_g_string_overwrite_len"
+fun g_string_overwrite_len
+  {l,l1:addr | l > null} {n1,n2:nat} (
+    string: !GString_ptr l, pos: gssize, _val: !gchararrptr (l1, n1), n2: gsize n2
+  ) : ptr l = "#atsctrb_g_string_overwrite_len"
 // end of [g_string_overwrite_len]
 
 (* ****** ****** *)

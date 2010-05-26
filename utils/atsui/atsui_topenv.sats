@@ -106,6 +106,12 @@ fun topenv_make_menu_edit (): GtkMenu_ref1
 (* ****** ****** *)
 
 fun topenv_make_menu_view (): GtkMenu_ref1
+
+fun topenv_get_menuitem_view_fontsel ()
+  : [l:agz] (GtkCheckMenuItem_ref l -<lin,prf> void | GtkCheckMenuItem_ref l)
+  = "atsui_topenv_get_menuitem_view_fontsel"
+// end of [topenv_get_menuitem_view_fontsel]
+
 fun topenv_get_menuitem_view_linenumber ()
   : [l:agz] (GtkCheckMenuItem_ref l -<lin,prf> void | GtkCheckMenuItem_ref l)
   = "atsui_topenv_get_menuitem_view_linenumber"
@@ -114,6 +120,7 @@ fun topenv_get_menuitem_view_linenumber ()
 (* ****** ****** *)
 
 fun topenv_make_menu_window (): GtkMenu_ref1
+
 fun topenv_get_menu_window ()
   : [l:agz] (GtkMenu_ref l -<lin,prf> void | GtkMenu_ref l)
   = "atsui_topenv_get_menu_window"
@@ -193,6 +200,7 @@ fun cb_file_quit_activate (): gboolean // callback for the [quit] menuitem
 
 (* ****** ****** *)
 
+fun cb_view_fontsel_activate (): gboolean
 fun cb_view_linenumber_activate (): gboolean
 
 (* ****** ****** *)

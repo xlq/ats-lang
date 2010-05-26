@@ -464,6 +464,8 @@ atsctrb_gtk_file_chooser_dialog_new (
     (gchar*)title
   , NULL // parent window
   , action
+  , NULL
+//, 0 // response_id // HX-2010-05-25: this is unnecessary
   , NULL // button/reponse_id pairs
   ) ;
   g_object_ref_sink(G_OBJECT(widget)) ; // removing floating reference!
@@ -510,6 +512,43 @@ atsctrb_gtk_file_selection_get_filename
 } // end of [atsctrb_gtk_file_selection_get_filename]
 
 #define atsctrb_gtk_file_selection_set_filename gtk_file_selection_set_filename
+
+/* ****** ****** */
+
+//
+// source: gtk/gtkfontsel.h
+//
+
+ATSinline()
+ats_ptr_type
+atsctrb_gtk_font_selection_new () {
+  GtkWidget *widget = gtk_font_selection_new () ;
+  g_object_ref_sink(G_OBJECT(widget)) ; // removing floating reference!
+  return widget ;
+} // end of [atsctrb_gtk_font_selection_new]
+
+ATSinline()
+ats_ptr_type
+atsctrb_gtk_font_selection_dialog_new (ats_ptr_type title) {
+  GtkWidget *widget = gtk_font_selection_dialog_new ((gchar*)title) ;
+  g_object_ref_sink(G_OBJECT(widget)) ; // removing floating reference!
+  return widget ;
+} // end of [atsctrb_gtk_font_selection_dialog_new]
+
+#define atsctrb_gtk_font_selection_dialog_get_ok_button \
+  gtk_font_selection_dialog_get_ok_button
+#define atsctrb_gtk_font_selection_dialog_get_cancel_button \
+  gtk_font_selection_dialog_get_cancel_button
+
+#define atsctrb_gtk_font_selection_dialog_get_font_name \
+  gtk_font_selection_dialog_get_font_name
+#define atsctrb_gtk_font_selection_dialog_set_font_name \
+  gtk_font_selection_dialog_set_font_name
+
+#define atsctrb_gtk_font_selection_dialog_get_preview_text \
+  gtk_font_selection_dialog_get_preview_text
+#define atsctrb_gtk_font_selection_dialog_set_preview_text \
+  gtk_font_selection_dialog_set_preview_text
 
 /* ****** ****** */
 
@@ -1105,6 +1144,20 @@ atsctrb_gtk_statusbar_new () {
 // source: gtk/gtkstyle.h
 //
 
+ATSinline()
+ats_ptr_type
+atsctrb_gtk_style_get_text_aa
+  (ats_ptr_type x) {
+  return &((GtkStyle*)x)->text_aa ;
+} // end of [atsctrb_gtk_style_get_text_aa]
+
+ATSinline()
+ats_ptr_type
+atsctrb_gtk_style_get_font_desc
+  (ats_ptr_type x) {
+  return ((GtkStyle*)x)->font_desc ;
+} // end of [atsctrb_gtk_style_get_font_desc]
+
 #define atsctrb_gtk_style_new gtk_style_new
 #define atsctrb_gtk_style_copy gtk_style_copy
 
@@ -1514,6 +1567,8 @@ atsctrb_gtk_widget_getref_allocation
 #define atsctrb_gtk_widget_modify_fg gtk_widget_modify_fg
 #define atsctrb_gtk_widget_modify_bg gtk_widget_modify_bg
 //
+#define atsctrb_gtk_widget_get_toplevel gtk_widget_get_toplevel
+//
 #define atsctrb_gtk_widget_get_colormap gtk_widget_get_colormap
 #define atsctrb_gtk_widget_modify_font gtk_widget_modify_font
 //
@@ -1532,6 +1587,8 @@ atsctrb_gtk_widget_getref_allocation
 //
 // source: gtk/gtkwindow.h
 //
+
+#define atsctrb_GTK_IS_WINDOW GTK_IS_WINDOW
 
 ATSinline()
 ats_ptr_type

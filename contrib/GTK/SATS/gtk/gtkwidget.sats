@@ -198,7 +198,6 @@ fun gtk_widget_remove_accelerator
 
 (* ****** ****** *)
 
-
 //
 // HX-2010-04-18: this is probably safe enough :)
 //
@@ -246,6 +245,14 @@ fun gtk_widget_modify_bg
   (widget: !gobjref (c, l), state: GtkStateType, color: &GdkColor): void
   = "#atsctrb_gtk_widget_modify_bg"
 // end of [gtk_widget_modify_bg]
+
+(* ****** ****** *)
+
+fun gtk_widget_get_toplevel
+  {c:cls | c <= GtkWidget} {l:agz} (widget: !gobjref (c, l))
+  : [c1:cls;l1:agz | c1 <= GtkWidget] (gobjref (c1, l1) -<lin,prf> void | gobjref (c1, l1))
+  = "#atsctrb_gtk_widget_get_toplevel"
+// end of [gtk_widget_get_toplevel]
 
 (* ****** ****** *)
 //

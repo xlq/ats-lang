@@ -55,6 +55,7 @@ staload "atsui_topenv.sats"
 
 (* ****** ****** *)
 
+macdef gs = gstring_of_string
 macdef GNULL = (gpointer)null
 
 (* ****** ****** *)
@@ -229,14 +230,23 @@ implement
 topenv_make_menu_file () = menu where {
   val menu = gtk_menu_new () // to be returned
 //
-  val new_item = $UT.gtk_menu_item_new_with_label ("New")
+  val (fpf_aclgrp | aclgrp) = topenv_get_aclgrp ()
+  val new_item =
+    $UT.gtk_image_menu_item_new_from_stock (GTK_STOCK_NEW, aclgrp)
+  prval () = fpf_aclgrp (aclgrp)
   val _sid = g_signal_connect (
     new_item, (gsignal)"activate", G_CALLBACK(cb_new_activate), GNULL
   ) // end of [val]
   val () = gtk_menu_shell_append (menu, new_item)
   val () = gtk_widget_show_unref (new_item)
 //
-  val openfile_item = $UT.gtk_menu_item_new_with_label ("Open File...")
+  val (fpf_aclgrp | aclgrp) = topenv_get_aclgrp ()
+  val openfile_item =
+    $UT.gtk_image_menu_item_new_from_stock (GTK_STOCK_OPEN, aclgrp)
+  prval () = fpf_aclgrp (aclgrp)
+  val (fpf_x | x) = (gs)"Open File..."
+  val () = gtk_menu_item_set_label (openfile_item, x)
+  prval () = fpf_x (x)
   val _sid = g_signal_connect (
     openfile_item, (gsignal)"activate", G_CALLBACK(cb_file_openfile_activate), GNULL
   ) // end of [val]

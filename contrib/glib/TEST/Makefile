@@ -9,7 +9,7 @@
 ATSCC=$(ATSHOME)/bin/atscc
 
 GLIBINC=/usr/lib/glib-2.0/include
-GLIBINC=/usr/lib64/glib-2.0/include
+// GLIBINC=/usr/lib64/glib-2.0/include
 
 INCLUDES= \
   -I $(GLIBINC) \

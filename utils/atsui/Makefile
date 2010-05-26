@@ -59,7 +59,9 @@ SOURCES := \
   atsui_menuitem_file_saveas.dats \
   atsui_menuitem_file_quit.dats \
   atsui_menu_edit.dats \
+  atsui_menuitem_edit_undoredo.dats \
   atsui_menu_view.dats \
+  atsui_menuitem_view_fontsel.dats \
   atsui_menu_winlst.dats \
   atsui_textview_source.dats \
   atsui_textview_source_linenumber.dats \
@@ -127,8 +129,18 @@ atsui_menuitem_file_quit_dats.o: atsui_menuitem_file_quit.dats
 atsui_menu_edit_dats.o: atsui_menu_edit.dats
 	$(ATSCC) $(ATSCCFLAGS) $(CCFLAGS) -c atsui_menu_edit.dats
 
+atsui_menuitem_edit_undoredo_dats.o: atsui_menuitem_edit_undoredo.dats
+	$(ATSCC) $(ATSCCFLAGS) $(CCFLAGS) -c atsui_menuitem_edit_undoredo.dats
+
+######
+
 atsui_menu_view_dats.o: atsui_menu_view.dats
 	$(ATSCC) $(ATSCCFLAGS) $(CCFLAGS) -c atsui_menu_view.dats
+
+atsui_menuitem_view_fontsel_dats.o: atsui_menuitem_view_fontsel.dats
+	$(ATSCC) $(ATSCCFLAGS) $(CCFLAGS) -c atsui_menuitem_view_fontsel.dats
+
+######
 
 atsui_menu_winlst_dats.o: atsui_menu_winlst.dats
 	$(ATSCC) $(ATSCCFLAGS) $(CCFLAGS) -c atsui_menu_winlst.dats

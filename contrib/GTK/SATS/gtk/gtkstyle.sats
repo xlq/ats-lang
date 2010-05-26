@@ -38,6 +38,80 @@
 
 (* ****** ****** *)
 
+(*
+
+struct _GtkStyle
+{
+  GObject parent_instance;
+
+  /*< public >*/
+
+  GdkColor fg[5];
+  GdkColor bg[5];
+  GdkColor light[5];
+  GdkColor dark[5];
+  GdkColor mid[5];
+  GdkColor text[5];
+  GdkColor base[5];
+  GdkColor text_aa[5];		/* Halfway between text/base */
+
+  GdkColor black;
+  GdkColor white;
+  PangoFontDescription *font_desc;
+
+  gint xthickness;
+  gint ythickness;
+
+  GdkGC *fg_gc[5];
+  GdkGC *bg_gc[5];
+  GdkGC *light_gc[5];
+  GdkGC *dark_gc[5];
+  GdkGC *mid_gc[5];
+  GdkGC *text_gc[5];
+  GdkGC *base_gc[5];
+  GdkGC *text_aa_gc[5];
+  GdkGC *black_gc;
+  GdkGC *white_gc;
+
+  GdkPixmap *bg_pixmap[5];
+
+  /*< private >*/
+
+  gint attach_count;
+
+  gint depth;
+  GdkColormap *colormap;
+  GdkFont *private_font;
+  PangoFontDescription *private_font_desc; /* Font description for style->private_font or %NULL */
+
+  /* the RcStyle from which this style was created */
+  GtkRcStyle	 *rc_style;
+
+  GSList	 *styles;	  /* of type GtkStyle* */
+  GArray	 *property_cache;
+  GSList         *icon_factories; /* of type GtkIconFactory* */
+};
+
+*)
+
+(* ****** ****** *)
+
+fun gtk_style_get_text_aa
+  {c:cls | c <= GtkStyle} {l:agz}
+  (x: !gobjref (c, l)): [l1:addr] (
+    minus (gobjref (c, l), array_v (GdkColor, 5, l1)), array_v (GdkColor, 5, l1) | ptr l1
+  ) = "atsctrb_gtk_style_get_text_aa" // a function
+// end of [gtk_style_get_text_aa]
+
+fun gtk_style_get_font_desc
+  {c:cls | c <= GtkStyle} {l:agz}
+  (x: !gobjref (c, l)): [l1:addr] (
+    minus (gobjref (c, l), PangoFontDescription_ptr l1) |  PangoFontDescription_ptr l1
+  ) = "atsctrb_gtk_style_get_font_desc" // a function
+// end of [gtk_style_get_font_desc]
+
+(* ****** ****** *)
+
 fun gtk_style_new (): GtkStyle_ref1 = "#atsctrb_gtk_style_new"
 
 fun gtk_style_copy

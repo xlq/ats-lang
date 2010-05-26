@@ -263,12 +263,12 @@ fun pango_font_description_from_string
 // end of [pango_font_description_from_string]
 
 fun pango_font_description_to_string
-  (fd: !PangoFontDescription_ptr1): gstring1
+  {l:agz} (fd: !PangoFontDescription_ptr l): gstring1
   = "#atsctrb_pango_font_description_to_string"
 // end of [pango_font_description_to_string]
 
 fun pango_font_description_to_filename
-  (fd: !PangoFontDescription_ptr1): gstring1
+  {l:agz} (fd: !PangoFontDescription_ptr l): gstring1
   = "#atsctrb_pango_font_description_to_filename"
 // end of [pango_font_description_to_filename]
 

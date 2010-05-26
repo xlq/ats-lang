@@ -153,14 +153,22 @@ while (true) let
   val () = pango_layout_set_width (layout, linenumber_width)
   val () = pango_layout_set_alignment (layout, PANGO_ALIGN_RIGHT)
 //
-(*
-// HX-2010-05-24: not yet sure what this does:
+// HX-2010-05-24: this does not work in GTK-2.10
+//
   val alist = pango_attr_list_new ()
-  val attr = pango_attr_foreground_new ((guint16)0XFFFFU, (guint16)0U, (guint16)0U)
+//
+  val (fpf_sty | sty) = gtk_widget_get_style (tv)
+  val () = assert_errmsg (ptr_of(sty) > null, ": " + #LOCATION)
+  val (fpf_clr, pf_clr | p_clr) = gtk_style_get_text_aa (sty)
+  prval (pf1_clr, pf2_clr) = array_v_uncons {GdkColor} (pf_clr)
+  val attr = pango_attr_foreground_new (p_clr->red, p_clr->green, p_clr->blue)
+  prval () = pf_clr := array_v_cons (pf1_clr, pf2_clr)
+  prval () = minus_addback (fpf_clr, pf_clr | sty)
+  prval () = minus_addback (fpf_sty, sty | tv)
+//
   val () = pango_attr_list_insert (alist, attr)
   val () = pango_layout_set_attributes (layout, alist)
   val () = pango_attr_list_unref (alist)
-*)
 //
   #define BUFSZ 8
   var !p_buf with pf_buf = @[byte?][BUFSZ]()

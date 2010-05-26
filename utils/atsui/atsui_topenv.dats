@@ -348,6 +348,9 @@ in
     val () = gtk_widget_set_sensitive (x, GTRUE)
     prval () = fpf_x (x)
 //
+    val (fpf_x | x) = topenv_get_menuitem_view_fontsel ()
+    val () = gtk_widget_set_sensitive (x, GTRUE)
+    prval () = fpf_x (x)
     val (fpf_x | x) = topenv_get_menuitem_view_linenumber ()
     val () = gtk_widget_set_sensitive (x, GTRUE)
     prval () = fpf_x (x)
@@ -461,7 +464,7 @@ fun the_drawarea_welcome_cairodraw {l:agz}
 //
 } // end of [the_drawarea_welcom_cairodraw]
 
-fun the_drawarea_welcome_draw
+fun the_drawarea_welcome_gtkdraw
   {c:cls | c <= GtkDrawingArea} {l:agz}
   (darea: !gobjref (c, l)): void = let
 //
@@ -483,12 +486,12 @@ in
   in
     // nothing
   end (* end of [if] *)
-end // end of [the_drawarea_welcome_draw]
+end // end of [the_drawarea_welcome_gtkdraw]
 
 fun the_drawarea_welcome_expose
   (): gboolean = GFALSE where {
   val darea = the_drawarea_welcome_get ()
-  val () = the_drawarea_welcome_draw (darea)
+  val () = the_drawarea_welcome_gtkdraw (darea)
   val () = the_drawarea_welcome_set (darea)
 } // end of [the_drawarea_welcom_expose]
 

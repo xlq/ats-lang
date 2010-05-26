@@ -162,6 +162,14 @@ viewtypedef GtkFileChooserDialog_ref (l:addr) = gobjref (GtkFileChooserDialog, l
 viewtypedef GtkFileChooserDialog_ref0 = [l:agez] GtkFileChooserDialog_ref l
 viewtypedef GtkFileChooserDialog_ref1 = [l:addr | l > null] GtkFileChooserDialog_ref l
 
+viewtypedef GtkFontSelection_ref (l:addr) = gobjref (GtkFontSelection, l)
+viewtypedef GtkFontSelection_ref0 = [l:agez] GtkFontSelection_ref l
+viewtypedef GtkFontSelection_ref1 = [l:addr | l > null] GtkFontSelection_ref l
+
+viewtypedef GtkFontSelectionDialog_ref (l:addr) = gobjref (GtkFontSelectionDialog, l)
+viewtypedef GtkFontSelectionDialog_ref0 = [l:agez] GtkFontSelectionDialog_ref l
+viewtypedef GtkFontSelectionDialog_ref1 = [l:addr | l > null] GtkFontSelectionDialog_ref l
+
 viewtypedef GtkFrame_ref (l:addr) = gobjref (GtkFrame, l)
 viewtypedef GtkFrame_ref0 = [l:agez] GtkFrame_ref l
 viewtypedef GtkFrame_ref1 = [l:addr | l > null] GtkFrame_ref l
@@ -379,6 +387,7 @@ viewtypedef GtkTextMark_ref1 = [l:addr | l > null] GtkTextMark_ref l
 #include "contrib/GTK/SATS/gtk/gtkentry.sats"
 #include "contrib/GTK/SATS/gtk/gtkfilesel.sats" // DEPRECATED!!!
 #include "contrib/GTK/SATS/gtk/gtkfilechooserdialog.sats"
+#include "contrib/GTK/SATS/gtk/gtkfontsel.sats"
 #include "contrib/GTK/SATS/gtk/gtkframe.sats"
 #include "contrib/GTK/SATS/gtk/gtkhbox.sats"
 #include "contrib/GTK/SATS/gtk/gtkhpaned.sats"

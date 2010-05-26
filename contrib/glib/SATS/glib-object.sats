@@ -56,9 +56,9 @@ stadef gpointer = $GLIB.gpointer
 
 (* ****** ****** *)
 
-absviewt@ype
-GObject_vt (c:cls) = $extype "GObject"
-// abst@ype GObjectClass = $extype "GObjectClass"
+// absviewt@ype
+// GObject_vt (c:cls) = $extype "GObject"
+// absviewt@ype GObjectClass = $extype "GObjectClass"
 
 (*
 //

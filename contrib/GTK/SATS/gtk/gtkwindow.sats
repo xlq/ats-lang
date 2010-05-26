@@ -38,6 +38,13 @@
 
 (* ****** ****** *)
 
+fun GTK_IS_WINDOW
+  {c:cls | c <= GObject} {l:agz}
+  (x: !gobjref (c, l)): bool (c <= GtkWindow) = "#atsctrb_GTK_IS_WINDOW"
+// end of [GTK_IS_WINDOW]
+
+(* ****** ****** *)
+
 fun gtk_window_new
   (tp: GtkWindowType): GtkWindow_ref1 = "#atsctrb_gtk_window_new"
 // end of [gtk_window_new]

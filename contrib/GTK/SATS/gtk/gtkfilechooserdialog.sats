@@ -37,9 +37,18 @@
 //
 
 (* ****** ****** *)
-
+//
+// HX-2010-05-28: if [l1] is null, then no button is inserted
+//
 fun gtk_file_chooser_dialog_new
-  (title: Stropt, action: GtkFileChooserAction): GtkFileChooserDialog_ref1
+  {l1:addr} (
+    title: Stropt
+  , action: GtkFileChooserAction
+/*
+  // HX: can be added by gtk_dialog_add_button
+  , first_button_text: !gstring l1, response_id: gint
+*/
+  ) : GtkFileChooserDialog_ref1
   = "atsctrb_gtk_file_chooser_dialog_new" // a function!
 // end of [gtk_file_chooser_dialog_new]
 

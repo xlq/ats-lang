@@ -192,7 +192,7 @@ the_drawingarea_get () {
 } // end of [the_drawingarea_get]
 ats_void_type
 the_drawingarea_initset (ats_ptr_type x) {
-  static the_drawingarea_initset_flag = 0 ;
+  static int the_drawingarea_initset_flag = 0 ;
   if (the_drawingarea_initset_flag) {
     fprintf (stderr, "exit(the_drawingarea_initset): already initialized\n"); exit(1);
   } // end of [if]

@@ -25,6 +25,10 @@ staload _(*anon*) = "contrib/glib/DATS/glib.dats"
 
 (* ****** ****** *)
 
+macdef gs = gstring_of_string
+
+(* ****** ****** *)
+
 fun print_gstring {l:agz}
   (gstring: !GString_ptr l): void = () where {
   val ptr = g_string_get_str (gstring)
@@ -37,8 +41,12 @@ implement main () = () where {
     print ("gstring-test: starts"); print_newline ()
   end // end of [va]
 //
-  val gstring = g_string_new "abcdefghijklm"
-  val _ptr = g_string_append (gstring, "nopqrstuvwxyz")
+  val (fpf_x | x) = (gs)"abcdefghijklm"
+  val gstring = g_string_new x
+  prval () = fpf_x (x)
+  val (fpf_x | x) = (gs)"nopqrstuvwxyz"
+  val _ptr = g_string_append (gstring, x)
+  prval () = fpf_x (x)
   val sgn = strcmp (string, "abcdefghijklmnopqrstuvwxyz") where {
     val ptr = g_string_get_str gstring
     val string = __cast (ptr) where { extern castfn __cast (p: ptr): string }
@@ -49,7 +57,9 @@ implement main () = () where {
   val () = g_string_free_true (gstring)
 //
   val gstring = g_string_new_null ()
-  val _ptr = g_string_append (gstring, "Hello")
+  val (fpf_x | x) = (gs) "Hello"
+  val _ptr = g_string_append (gstring, x)
+  prval () = fpf_x (x)
   val _ptr = g_string_append_c (gstring, (gchar)',')
   val () = g_string_append_printf (gstring, " %s!\n", @("world"))
   val () = print_gstring (gstring)
@@ -62,7 +72,9 @@ implement main () = () where {
   val () = print_gstring (gstring)
   val () = g_string_free_true (gstring)
 //
-  val gstring = g_string_new_init ("Hello  world!")
+  val (fpf_x | x) = (gs)"Hello  world!"
+  val gstring = g_string_new_init (x)
+  prval () = fpf_x (x)
   val n = string1_length "Hello"
   val _ptr = g_string_erase (gstring, (gssize)n, (gssize)2)
   val _ptr = g_string_insert (gstring, (gssize)n, ", ")
