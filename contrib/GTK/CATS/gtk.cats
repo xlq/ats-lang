@@ -860,11 +860,13 @@ ATSinline()
 ats_ptr_type
 atsctrb_gtk_message_dialog_new0 (
   GtkDialogFlags flags
-, GtkMessageType type, GtkButtonsType buttons
-, ats_ptr_type message
+, GtkMessageType _type, GtkButtonsType buttons, ats_ptr_type msg
 ) {
   GtkWidget *widget =
-    gtk_message_dialog_new (NULL, flags, type, buttons, (gchar*)message) ;
+    gtk_message_dialog_new (NULL, flags, _type, buttons, NULL) ;
+  gtk_label_set_text (
+    GTK_LABEL (GTK_MESSAGE_DIALOG (widget)->label), (gchar*)msg
+  ) ; // end of [gtk_label_set_text]
   g_object_ref_sink(G_OBJECT(widget)) ; // removing floating reference!
   return widget ;
 } // end of [atsctrb_gtk_message_dialog_new0]
@@ -873,16 +875,19 @@ ATSinline()
 ats_ptr_type
 atsctrb_gtk_message_dialog_new0_with_markup (
   GtkDialogFlags flags
-, GtkMessageType _type, GtkButtonsType buttons
-, ats_ptr_type message
+, GtkMessageType _type, GtkButtonsType buttons, ats_ptr_type msg
 ) {
   GtkWidget *widget =
-    gtk_message_dialog_new_with_markup (NULL, flags, _type, buttons, (gchar*)message) ;
+    gtk_message_dialog_new_with_markup (NULL, flags, _type, buttons, NULL) ;
+  gtk_message_dialog_set_markup (GTK_MESSAGE_DIALOG (widget), (gchar*)msg) ;
   g_object_ref_sink(G_OBJECT(widget)) ; // removing floating reference!
   return widget ;
 } // end of [atsctrb_gtk_message_dialog_new0_with_markup]
 
 #define atsctrb_gtk_message_dialog_set_markup gtk_message_dialog_set_markup
+
+#define atsctrb_gtk_messgage_dialog_get_image gtk_messgage_dialog_get_image
+#define atsctrb_gtk_messgage_dialog_set_image gtk_messgage_dialog_set_image
 
 /* ****** ****** */
 

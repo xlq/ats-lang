@@ -780,19 +780,21 @@ the_d2varset_env_find_viewat (s2r0, s2ls0) = let
     | None => () // this happens if [d2v] is linear and consumed
   end // end of [f]
 
-  fun loop (pf: !unit_v | ld2vsitems: ld2vsitemlst, env: !env_vt)
-    : void = begin case+ ld2vsitems of
+  fun loop (
+      pf: !unit_v
+    | ld2vsitems: ld2vsitemlst, env: !env_vt
+    ) : void = begin case+ ld2vsitems of
     | list_cons (ld2vsitem, ld2vsitems) => let
         val () = (case+ ld2vsitem of
           | LD2VSITEMlam () => $raise NotFound ()
           | LD2VSITEMllam _(*r_d2vs*) => () // continue search
           | LD2VSITEMset dvs => begin
               d2varset_foreach_main {unit_v} {env_vt} (pf | dvs, f, env)
-            end
+            end // end of [LD2VSITEMset]
         ) : void
       in
         loop (pf | ld2vsitems, env)
-      end
+      end // end of [list_cons]
     | list_nil () => ()
   end // end of [loop]
 in
@@ -821,6 +823,12 @@ the_d2varset_env_stbefitemlst_save () = let
   viewdef V = stbefitemlst @ sbis
   fun f (pf: !V | d2v: d2var_t, sbis: !sbisptr): void = let
     val lin = d2var_lin_get d2v
+(*
+    val () = begin
+      print "the_d2varset_env_stbefitemlst_save: f: d2v = "; print d2v; print_newline ();
+      print "the_d2varset_env_stbefitemlst_save: f: lin = "; print lin; print_newline ();
+    end // end of [val]
+*)
   in
     if lin >= 0 then let val sbi =
       stbefitem_make (d2v, lin) in !sbis := list_cons (sbi, !sbis)
@@ -837,14 +845,14 @@ the_d2varset_env_stbefitemlst_save () = let
           end
         in
           aux (pf | xs, sbis)
-        end
+        end (* LD2VSITEMset *)
       end // end of [list_cons]
     | list_nil () => ()
   end // end of [aux]
   prval pf = view@ sbis
   val () = begin
     d2varset_foreach_main {V} {sbisptr} (pf | !the_ld2vs, f, &sbis)
-  end
+  end // end of [val]
   val () = aux (pf | !the_ld2vsitems, &sbis)
 in
   view@ sbis := pf; sbis

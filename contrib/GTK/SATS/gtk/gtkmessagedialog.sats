@@ -58,7 +58,7 @@ macdef GTK_BUTTONS_OK_CANCEL = $extval (GtkButtonsType, "GTK_BUTTONS_OK_CANCEL")
 (* ****** ****** *)
 
 //
-// HX: these are just simplified versions
+// HX-2010-05: these are just slightly simplified versions
 //
 fun gtk_message_dialog_new0
   {l:addr} (
@@ -87,6 +87,28 @@ fun gtk_message_dialog_set_markup
   (dialog: !gobjref (c, l1), markup: !gstring l2): void
   = "#atsctrb_gtk_message_dialog_set_markup" // macro
 // end of [gtk_message_dialog_set_markup]
+
+(* ****** ****** *)
+
+//
+// HX-2010-05-26: checked: this is a 'get0' function
+//
+fun gtk_messgage_dialog_get_image
+  {c:cls | c <= GtkMessageDialog} {l:agz}
+  (dialog: !gobjref (c, l)): [l1:agz] (
+    minus (gobjref (c, l), gobjref (GtkImage, l1)) | gobjref (GtkImage, l1)
+  ) = "#atsctrb_gtk_messgage_dialog_get_image"
+// end of [gtk_messgage_dialog_get_image]
+
+//
+// HX-2010-05-26: checked: [image] can be NULL!
+//
+fun gtk_messgage_dialog_set_image
+  {c1,c2:cls | c1 <= GtkMessageDialog; c2 <= GtkImage}
+  {l1,l2:addr | l1 > null}
+  (dialog: !gobjref (c1, l1), image: !gobjref (c2, l2)): void
+  = "#atsctrb_gtk_messgage_dialog_set_image"
+// end of [gtk_messgage_dialog_set_image]
 
 (* ****** ****** *)
 

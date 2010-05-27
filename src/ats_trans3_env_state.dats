@@ -30,10 +30,10 @@
 *)
 
 (* ****** ****** *)
-
+//
 // Author: Hongwei Xi (hwxi AT cs DOT bu DOT edu)
 // Time: January 2008
-
+//
 (* ****** ****** *)
 
 (* Mainly for tracking states during the third translation *)
@@ -113,6 +113,25 @@ typedef saityplst = List saityp
 fn saityp_loc_get (x: saityp): loc_t = case+ x of
   | SAITYPsome (loc, _) => loc | SAITYPnone loc => loc
 // end of [saityp_loc_get]
+
+fun print_saityp (x: saityp): void =
+  case+ x of
+  | SAITYPsome (_, s2e) =>
+      (print "SAITYPsome("; print_s2exp s2e; print ")")
+  | SAITYPnone _ => print "SAITYPnone()"
+// end of [print_saityp]
+fun print_saityplst
+  (xs: saityplst): void = loop (xs, 0) where {
+  fun loop (xs: saityplst, i: int): void =
+    case+ xs of
+    | list_cons (x, xs) => (
+        if (i > 0) then print ", "; print_saityp x; loop (xs, i+1)
+      ) // end of [list_cons]
+    | list_nil () => ()
+  // end of [loop]
+} // end of [print_saityp]
+
+(* ****** ****** *)
 
 fn saityplst_check
   (d2v: d2var_t, xs: saityplst): int = let
@@ -198,18 +217,27 @@ typedef staftscstr (n:int) = '{
 
 assume staftscstr_t (n:int) = staftscstr (n)
 
-extern fun staftscstr_cstr_set
-  {n:nat} (sac: staftscstr n, cstr: sascstrlst): void
-  = "ats_trans3_env_state_staftscstr_cstr_set"
+extern
+fun staftscstr_cstr_set {n:nat} (
+    sac: staftscstr n, cstr: sascstrlst
+  ) : void = "ats_trans3_env_state_staftscstr_cstr_set"
+// end of [staftscstr_cstr_set]
 
 (* ****** ****** *)
 
-implement staftscstr_initialize (res, sbis) = let
+implement
+staftscstr_initialize (res, sbis) = let
   val sais = aux sbis where {
     fun aux {n:nat}
       (sbis: stbefitemlst n): staftitemlst n = case+ sbis of
       | list_cons (sbi, sbis) => let
           val d2v = sbi.stbefitem_var; val lin = d2var_lin_get d2v
+(*
+          val () = begin
+            print "staftscstr_initialize: aux: d2v = "; print d2v; print_newline ();
+            print "staftscstr_initialize: aux: lin = "; print lin; print_newline ();
+          end // end of [val]
+*)
           val sai = '{
             staftitem_var= d2v, staftitem_lin= lin, staftitem_typ= list_nil ()
           } // end of [val]
@@ -226,14 +254,16 @@ in '{
 , staftscstr_cstr= list_nil ()
 } end // end of [staftscstr_initialize]
 
-// [loc0] is the location of the branch
-implement staftscstr_stbefitemlst_merge (loc0, sac, sbis) = let
+//
+// HX: [loc0] is the location of the branch
+//
+fun staftscstr_stbefitemlst_merge_ifmetck {n:nat} (
+    loc0: loc_t, sac: staftscstr_t n, sbis: stbefitemlst n, metck: bool
+  ) : void = let
   fn aux (loc0: loc_t, sai: staftitem, sbi: stbefitem): void = let
     val linbef = sbi.stbefitem_lin
     val d2v = sbi.stbefitem_var
     val lincur = d2var_lin_get d2v
-    val saityp = case+ d2var_typ_get d2v of
-      | Some s2e => SAITYPsome (loc0, s2e) | None () => SAITYPnone loc0
     val linaft = sai.staftitem_lin
 (*
     val () = begin
@@ -245,12 +275,28 @@ implement staftscstr_stbefitemlst_merge (loc0, sac, sbis) = let
       print lincur; print_newline ();
       print "staftscstr_stbefitemlst_merge: aux: sai.staftitem_lin = ";
       print linaft; print_newline ();
+
+    end // end of [val]
+*)
+    val saityp = case+ d2var_typ_get d2v of
+      | Some s2e => SAITYPsome (loc0, s2e) | None () => SAITYPnone loc0
+    // end of [val]
+(*
+    val () = begin
+      print "staftscstr_stbefitemlst_merge: aux: saityp = ";
+      print_saityp saityp; print_newline ()
     end // end of [val]
 *)
     val () = if lincur > linbef then begin
       staftitem_lin_set (sai, linaft + lincur - linbef)
     end // end of [val]
     val saityps = sai.staftitem_typ
+(*
+    val () = begin
+      print "staftscstr_stbefitemlst_merge: aux: saityps = ";
+      print_saityplst saityps; print_newline ()
+    end // end of [val]
+*)
     val () = case+ saityps of // consistency check
       | list_cons (saityp1, _) => begin case+ (saityp, saityp1) of
         | (SAITYPsome (loc, _), SAITYPnone _) => begin
@@ -281,12 +327,16 @@ implement staftscstr_stbefitemlst_merge (loc0, sac, sbis) = let
         aux (loc0, sai, sbi); auxlst (loc0, sais, sbis)
       end // end of [list_cons]
     | list_nil () => ()
+  // end of [auxlst]
   val res = sac.staftscstr_res
   val sub = s2qua_instantiate_and_add
     (loc0, res.i2nvresstate_svs, res.i2nvresstate_gua)
   // end of [val]
-  val met = (case+ res.i2nvresstate_met of
-    | Some s2es => Some (s2explst_subst (sub, s2es)) | None () => None ()
+  val met = (
+    if metck then
+      case+ res.i2nvresstate_met of
+      | Some s2es => Some (s2explst_subst (sub, s2es)) | None () => None ()
+    else None () // end of [if]
   ) : s2explstopt
   val r = ref_make_elt<c3stropt> (None ())
   val sascstr = sascstr_make (loc0, met, sub, r)
@@ -294,7 +344,15 @@ in
   trans3_env_add_cstr_ref (r);
   staftscstr_cstr_set (sac, list_cons (sascstr, sac.staftscstr_cstr));
   auxlst (loc0, sac.staftscstr_sais, sbis)
-end // end of [staftscstr_stbefitemlst_merge]
+end // end of [staftscstr_stbefitemlst_merge_ifmetck]
+
+implement staftscstr_stbefitemlst_merge
+  (loc0, sac, sbis) = staftscstr_stbefitemlst_merge_ifmetck (loc0, sac, sbis, true)
+// end of [staftscstr_stbefitemlst_merge]
+
+implement staftscstr_stbefitemlst_merge_skipmetck
+  (loc0, sac, sbis) = staftscstr_stbefitemlst_merge_ifmetck (loc0, sac, sbis, false)
+// end of [staftscstr_stbefitemlst_merge_skipmetck]
 
 (* ****** ****** *)
 
@@ -480,11 +538,7 @@ fn aux_term_check
       in
         trans3_env_add_metric_dec (x.sascstr_loc, s2es, s2es_bound)
       end // end of [Some]
-    | None () => begin
-        prerr_interror ();
-        prerr ": aux_term_check: Some: None"; prerr_newline ();
-        $Err.abort {void} ()
-      end // end of [None]
+    | None () => () // this means that termination checking is skipped
     end (* end of [Some] *)
   | None () => ()
 end // end of [aux_term_check]
@@ -512,7 +566,8 @@ end // end of [aux_itemlst_all]
 
 in // in of [local]
 
-implement staftscstr_stbefitemlst_check (loc0, sac, sbis) = let
+implement
+staftscstr_stbefitemlst_check (loc0, sac, sbis) = let
 (*
   val () = begin
     $Loc.print_location loc0;
@@ -599,7 +654,8 @@ end // end of [aux_iter]
 
 in // in of [local]
 
-implement staftscstr_stbefitemlst_update (loc0, sac, sbis) = let
+implement
+staftscstr_stbefitemlst_update (loc0, sac, sbis) = let
   val res = sac.staftscstr_res and sais = sac.staftscstr_sais
   val () = trans3_env_add_svarlst res.i2nvresstate_svs
   val () = trans3_env_hypo_add_proplst (loc0, res.i2nvresstate_gua)
@@ -616,16 +672,16 @@ extern typedef "staftitem_t" = staftitem
 %{$
 
 ats_void_type
-ats_trans3_env_state_staftitem_lin_set (ats_ptr_type sai, ats_int_type lin)
-{
+ats_trans3_env_state_staftitem_lin_set
+  (ats_ptr_type sai, ats_int_type lin) {
   ((staftitem_t)sai)->atslab_staftitem_lin = lin; return ;
-}
+} // end of [ats_trans3_env_state_staftitem_lin_set]
 
 ats_void_type
-ats_trans3_env_state_staftitem_typ_set (ats_ptr_type sai, ats_ptr_type os2es)
-{
+ats_trans3_env_state_staftitem_typ_set
+  (ats_ptr_type sai, ats_ptr_type os2es) {
   ((staftitem_t)sai)->atslab_staftitem_typ = os2es; return ;
-}
+} // end of [ats_trans3_env_state_staftitem_typ_set]
 
 %} // end of [%{$]
 
@@ -634,20 +690,19 @@ extern typedef "staftscstr_t" = [n:int] staftscstr (n)
 %{$
 
 ats_void_type
-ats_trans3_env_state_staftscstr_met_set (ats_ptr_type sac, ats_ptr_type met)
-{
+ats_trans3_env_state_staftscstr_met_set
+  (ats_ptr_type sac, ats_ptr_type met) {
   ((staftscstr_t)sac)->atslab_staftscstr_met = met ; return ;
-}
+} // end of [ats_trans3_env_state_staftscstr_met_set]
 
 ats_void_type
-ats_trans3_env_state_staftscstr_cstr_set (ats_ptr_type sac, ats_ptr_type cstr)
-{
+ats_trans3_env_state_staftscstr_cstr_set
+  (ats_ptr_type sac, ats_ptr_type cstr) {
   ((staftscstr_t)sac)->atslab_staftscstr_cstr = cstr ; return ;
-}
+} // end of [ats_trans3_env_state_staftscstr_cstr_set]
 
 %} // end of [%{$]
 
 (* ****** ****** *)
 
 (* end of [ats_trans3_env_state.dats] *)
-

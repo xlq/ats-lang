@@ -228,10 +228,17 @@ end // end of [fun]
 
 Saturday: April 2, 2010 (HX)
 
-Status: no solution yet
+STATUS: FIXED on May 27, 2010 (HX)
 
 Using linear proofs/values in a while/for loop is not done correctly during
-typechecking.
+typechecking. Here is an example:
+
+fun f () = () where {
+  prval pf = unit_v ()
+  val () = while (true) let
+    prval unit_v () = pf in continue
+  end // end of [val]
+} // end of [where]
 
 ######
 

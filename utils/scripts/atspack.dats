@@ -345,7 +345,7 @@ in
   in
     res
   end else
-    false // [sfx] cannot be the suffix of [name
+    false // [sfx] cannot be the suffix of [name]
   // end of [if]
 end // end of [name_is_suffix]
 

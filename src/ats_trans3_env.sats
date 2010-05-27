@@ -431,21 +431,29 @@ fun stbefitemlst_restore_lin_typ (sbis: stbefitemlst): void
 abstype staftitem_t // assumed in [ats_trans3_env_state.dats]
 typedef staftitemlst (n:int) = list (staftitem_t, n)
 
-abstype staftscstr_t (n:int) // assumed in [ats_trans3_env_state.dats]
+(* ****** ****** *)
 
-//
+abstype staftscstr_t (n:int) // assumed in [ats_trans3_env_state.dats]
 
 fun staftscstr_met_set
   {n:nat} (sac: staftscstr_t n, met: s2explstopt): void
   = "ats_trans3_env_state_staftscstr_met_set"
-
-//
+// end of [staftscstr_met_set]
 
 fun staftscstr_initialize {n:nat}
   (res: i2nvresstate, sbis: stbefitemlst n): staftscstr_t n
 
 fun staftscstr_stbefitemlst_merge {n:nat}
   (loc: loc_t, sac: staftscstr_t n, sbis: stbefitemlst n): void
+// end of [staftscstr_stbefitemlst_merge]
+//
+// HX-2010-05-27:
+// This version of [staftscstr_stbefitemlst_merge] skips termination
+// metric checking even if termination metric is provided.
+//
+fun staftscstr_stbefitemlst_merge_skipmetck {n:nat}
+  (loc: loc_t, sac: staftscstr_t n, sbis: stbefitemlst n): void
+// end of [staftscstr_stbefitemlst_merge]
 
 fun staftscstr_stbefitemlst_check {n:nat}
   (loc0: loc_t, sac: staftscstr_t n, sbis: stbefitemlst n): void

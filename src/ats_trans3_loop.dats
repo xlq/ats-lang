@@ -30,10 +30,10 @@
 *)
 
 (* ****** ****** *)
-
+//
 // Author: Hongwei Xi (hwxi AT cs DOT bu DOT edu)
 // March 2008
-
+//
 (* ****** ****** *)
 
 staload Err = "ats_error.sats"
@@ -98,7 +98,8 @@ fn d2exp_loopinv_tr
     i2nvresstate_make (i2nv_res_svs, i2nv_res_gua, i2nv_res_arg_new)
   end // end of [val]
   val () = let
-    fn aux (arg: i2nvarg):<cloptr1> void = let
+    fn aux (arg: i2nvarg)
+      :<cloptr1> void = let
       val d2v = arg.i2nvarg_var
     in
       case+ arg.i2nvarg_typ of
@@ -165,13 +166,15 @@ implement d2exp_loop_tr_up
     staftscstr_stbefitemlst_check (loc0, sac0_init, sbis)
 //
   val () = trans3_env_push_sta () // loop checking begs
-  val () = // updating the types of the modified variables
+  val () =
+    // updating the types of the modified variables
     // according to the types given in the invariant
     staftscstr_stbefitemlst_update (loc0, sac0_init, sbis)
   (* end of [val] *)
 //
-  val (i2nv_met, res_exit) = d2exp_loopinv_tr (i2nv)
   val sac_init = staftscstr_initialize (res_init, sbis)
+  val () = staftscstr_stbefitemlst_merge_skipmetck (loc0, sac_init, sbis)
+  val (i2nv_met, res_exit) = d2exp_loopinv_tr (i2nv)
   val () = staftscstr_met_set (sac_init, i2nv_met)
   val sac_exit = staftscstr_initialize (res_exit, sbis)
 //

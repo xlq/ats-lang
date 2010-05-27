@@ -248,7 +248,7 @@ implement d2exp_sif_tr_dn
   val res = i2nvresstate_update (res)
   val sbis = the_d2varset_env_stbefitemlst_save ()
   val sac = staftscstr_initialize (res, sbis)
-
+//
   val d3e_then = let
     val () = trans3_env_push_sta ()
     val () = trans3_env_hypo_add_prop (loc0, s2p_cond)
@@ -258,9 +258,9 @@ implement d2exp_sif_tr_dn
   in
     d3e_then
   end // end of [val]
-
+//
   val () = stbefitemlst_restore_lin_typ (sbis)
-
+//
   val d3e_else = let
     val () = trans3_env_push_sta ()
     val () = trans3_env_hypo_add_prop (loc0, s2exp_neg_bool_bool s2p_cond)
