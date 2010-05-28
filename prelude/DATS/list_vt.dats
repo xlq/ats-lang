@@ -354,7 +354,68 @@ staload STDLIB = "libc/SATS/stdlib.sats"
 
 in // end of [val]
 
-implement{a} list_vt_quicksort {n} (xs, cmp) = let
+implement{a}
+list_vt_mergesort {n} (xs, cmp) = let
+  fun split {n,n1:nat | n >= n1} .<n1>. (
+      xs: &list_vt (a, n) >> list_vt (a, n1)
+    , n1: int n1, res: &List_vt a? >> list_vt (a, n-n1)
+    ) :<> void =
+    if n1 > 0 then let
+      val+ list_vt_cons (_, !p_xs1) = xs
+      val () = split (!p_xs1, n1-1, res)
+    in
+      fold@ (xs)
+    end else let
+      val () = res := xs
+      val () = xs := list_vt_nil ()
+    in
+      // nothing
+    end // end of [if]
+  // end of [split]
+  fun merge {n1,n2:nat} .<n1+n2>. (
+      xs1: list_vt (a, n1)
+    , xs2: list_vt (a, n2)
+    , res: &List_vt a? >> list_vt (a, n1+n2)
+    ) :<cloref> void =
+    case+ xs1 of
+    | list_vt_cons (!p_x1, !p_xs11) => (
+      case+ xs2 of
+      | list_vt_cons (!p_x2, !p_xs21) => let
+          val sgn = cmp (!p_x1, !p_x2)
+        in
+          if sgn <= 0 then let
+            prval () = fold@ xs2
+            val () = merge (!p_xs11, xs2, !p_xs11)
+          in
+            fold@ (xs1); res := xs1
+          end else let
+            prval () = fold@ xs1
+            val () = merge (xs1, !p_xs21, !p_xs21)
+          in
+            fold@ (xs2); res := xs2
+          end // end of [if]
+        end // end of [list_vt_cons]
+      | ~list_vt_nil () => (fold@ (xs1); res := xs1)
+      ) // end of [list_vt_cons]
+    | ~list_vt_nil () => (res := xs2)
+  // end of [merge]
+  val n = list_vt_length<a> (xs)
+in
+  if n >= 2 then let
+    val+ list_vt_cons (_, !p_xs1) = xs
+    var res: List_vt a? // uninitialized
+    val () = split (!p_xs1, (n-1)/2, res)
+    prval () = fold@ (xs)
+    val xs1 = list_vt_mergesort (xs, cmp)
+    val xs2 = list_vt_mergesort (res, cmp)
+    val () = merge (xs1, xs2, res)
+  in
+    res
+  end else xs
+end // end of [list_vt_mergesort]
+
+implement{a}
+list_vt_quicksort {n} (xs, cmp) = let
 //
 // use an array to do quicksorting and then copy the sorted array back
 //

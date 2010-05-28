@@ -707,16 +707,15 @@ fun{a:t@ype} list_take_exn {n,i:nat}
 
 (* ****** ****** *)
 
-fun{a:t@ype} list_tail {n:pos}
-  (xs: list (a, n)):<> list (a, n-1)
+fun{a:t@ype} list_tail {n:pos} (xs: list (a, n)):<> list (a, n-1)
 
-fun{a:t@ype} list_tail_exn {n:nat}
-  (xs: list (a, n)):<!exn> [n>0] list (a, n-1)
+fun{a:t@ype} list_tail_exn {n:nat} (xs: list (a, n)):<!exn> [n>0] list (a, n-1)
 
 (* ****** ****** *)
 
 fun{a,b:t@ype} list_zip {n:nat}
   (xs: list (a, n), ys: list (b, n)):<> list_vt (@(a, b), n)
+// end of [list_zip]
 
 (* ****** ****** *)
 
@@ -742,13 +741,17 @@ fun{a1,a2:t@ype} list_unzip {n:nat}
 
 (* ****** ****** *)
 
-fun{a:t@ype} list_mergesort {env:viewtype} {n:nat} {lte:eff}
+fun{a:t@ype}
+list_mergesort {env:viewtype} {n:nat} {lte:eff}
   (xs: list (a, n), lte: (a, a, !env) -<fun,lte> bool, env: !env)
   :<lte> list (a, n)
+// end of [list_mergesort]
 
-fun{a:t@ype} list_quicksort {env:viewtype} {n:nat} {lte:eff}
+fun{a:t@ype}
+list_quicksort {env:viewtype} {n:nat} {lte:eff}
   (xs: list (a, n), lte: (a, a, !env) -<fun,lte> bool, env: !env)
   :<lte> list (a, n)
+// end of [list_quicksort]
 
 (* ****** ****** *)
 

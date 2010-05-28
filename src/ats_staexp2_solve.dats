@@ -919,7 +919,7 @@ implement s2eff_leq_solve_err (loc0, s2fe1, s2fe2, err) = let
               val s2e1 = s2exp_eff s2fe1
             in
               s2exp_equal_solve_Var_err (loc0, s2V2, s2e2, s2e1, err); 0
-            end
+            end // end of [S2EVar]
           | _ => 1
         end
       | _ => 1

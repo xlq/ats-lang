@@ -40,7 +40,7 @@
 //
 // HX-2010-05-27:
 // The use of [s2Var_link_set] is now replaced with [s2exp_equal_solve];
-// the former does not work correctly if either the lower or the /upper
+// the former does not work correctly if either the lower or the upper
 // bound of a [s2Var] is already set.
 //
 (* ****** ****** *)
@@ -99,7 +99,7 @@ fun p3at_readize
   | P3Tany d2v => d2var_readize (s2e_v, d2v)
   | P3Tas (_, d2v, p3t) => begin
       d2var_readize (s2e_v, d2v); p3at_readize (s2e_v, p3t)
-    end
+    end // end of [P3Tas]
   | P3Tcon (_, _, _, p3ts) => p3atlst_readize (s2e_v, p3ts)
   | P3Texist (_, p3t) => p3at_readize (s2e_v, p3t)
   | P3Tlst (_, p3ts) => p3atlst_readize (s2e_v, p3ts)
@@ -127,11 +127,12 @@ end // end of [labp3atlst_readize]
 
 (* ****** ****** *)
 
-fun labp2atlst_typ_syn (loc0: loc_t, lp2ts: labp2atlst): labs2explst =
+fun labp2atlst_typ_syn
+  (loc0: loc_t, lp2ts: labp2atlst): labs2explst =
   case+ lp2ts of
   | LABP2ATLSTcons (l, p2t, lp2ts) => begin
       LABS2EXPLSTcons (l, p2at_typ_syn p2t, labp2atlst_typ_syn (loc0, lp2ts))
-    end
+    end // end of [LABS2EXPLSTcons]
   | LABP2ATLSTnil () => LABS2EXPLSTnil ()
   | LABP2ATLSTdot () => begin
       prerr loc0; prerr ": error(3)";
@@ -141,7 +142,8 @@ fun labp2atlst_typ_syn (loc0: loc_t, lp2ts: labp2atlst): labs2explst =
     end (* end of [LABP2ATLSTdot] *)
 // end of [labp2atlst_typ_syn]
 
-implement p2at_typ_syn (p2t0) = let
+implement
+p2at_typ_syn (p2t0) = let
   val s2e0 = case+ p2t0.p2at_node of
     | P2Tann (_, s2e) => s2e
     | P2Tany () => begin
@@ -188,7 +190,8 @@ in
   p2at_typ_set (p2t0, Some s2e0); s2e0
 end // end of [p2at_typ_syn]
 
-implement p2atlst_typ_syn (p2ts) = case+ p2ts of
+implement
+p2atlst_typ_syn (p2ts) = case+ p2ts of
   | list_cons (p2t, p2ts) => begin
       list_cons (p2at_typ_syn p2t, p2atlst_typ_syn p2ts)
     end // end of [list_cons]
@@ -197,7 +200,8 @@ implement p2atlst_typ_syn (p2ts) = case+ p2ts of
 
 (* ****** ****** *)
 
-fn pfarity_check (loc0: loc_t, npf1: int, npf2: int): void =
+fn pfarity_check
+  (loc0: loc_t, npf1: int, npf2: int): void =
   if npf1 <> npf2 then begin
     prerr loc0; prerr ": error(3)";
     $Deb.debug_prerrf (": %s", @(THISFILENAME));
@@ -211,7 +215,8 @@ fn pfarity_check (loc0: loc_t, npf1: int, npf2: int): void =
 
 (* ****** ****** *)
 
-fun labp3atlst_typ_get (lp3ts: labp3atlst): labs2explst = begin
+fun labp3atlst_typ_get
+  (lp3ts: labp3atlst): labs2explst = begin
   case+ lp3ts of
   | LABP3ATLSTcons (l, p3t, lp3ts) => begin
       LABS2EXPLSTcons (l, p3t.p3at_typ, labp3atlst_typ_get lp3ts)
@@ -226,7 +231,8 @@ end // end of [labp3atlst_typ_get]
 
 (* ****** ****** *)
 
-fn p2at_any_tr_dn (loc0: loc_t, s2e0: s2exp): p3at = let
+fn p2at_any_tr_dn
+  (loc0: loc_t, s2e0: s2exp): p3at = let
   val d2v = d2var_make_any loc0
   val () = the_d2varset_env_add d2v
   val p3t = p3at_any (loc0, s2e0, d2v)
@@ -300,8 +306,9 @@ in
 end // end of [p2at_char_tr_dn]
 
 (* ****** ****** *)
-
+//
 // for instance: [list] translates into [[n:int] list (X, n)]
+//
 fn s2cst_closure_make_predicative
   (loc0: loc_t, s2c: s2cst_t): s2exp = let
   val s2t_s2c = s2cst_srt_get s2c in case+ un_s2rt_fun s2t_s2c of
@@ -1228,8 +1235,8 @@ implement p2at_arg_tr_dn (p2t0, s2e0) = let
     end // end of [S2Erefarg]
   | S2Evararg s2e_arg => let // va_start ...
 (*
-**    this special argument is to be set as a pointer to a value of
-**    of the type [va_list] (stdarg.h)
+** HX: this special argument is to be set as a pointer to a value of of the type
+** [va_list] (declared in stdarg.h)
 *)
     in
       case+ p2t0.p2at_node of
@@ -1275,7 +1282,8 @@ in
   loop (d2varlst_of_d2varlstord p2t.p2at_dvs)
 end (* end of [p2at_proofize] *)
 
-implement p2atlst_arg_tr_up (npf, p2ts) = let
+implement
+p2atlst_arg_tr_up (npf, p2ts) = let
   fun aux {n:nat} .<n>. // nontailrec
     (i: int, p2ts: p2atlst n): p3atlst n = case+ p2ts of
     | list_cons (p2t, p2ts) => let
@@ -1288,7 +1296,8 @@ in
   aux (npf, p2ts)
 end (* end of [p2atlst_arg_tr_up] *)
 
-implement p2atlst_arg_tr_dn (npf, p2ts, s2es) = let
+implement
+p2atlst_arg_tr_dn (npf, p2ts, s2es) = let
   fun aux {n:nat} .<n>.
     (i: int, p2ts: p2atlst n, s2es: s2explst n): p3atlst n =
     case+ p2ts of
