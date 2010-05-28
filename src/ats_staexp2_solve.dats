@@ -958,7 +958,7 @@ fun s2exp_tyleq_solve_ubs_err
       val () = s2exp_tyleq_solve_err (loc0, s2e, ub_s2e, err)
     in
       s2exp_tyleq_solve_ubs_err (loc0, s2e, ubs, err)
-    end
+    end // end of [cons]
   | nil () => ()
 // end of [s2exp_tyleq_solve_ubs_err]
 

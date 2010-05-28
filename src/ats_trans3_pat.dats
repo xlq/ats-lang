@@ -30,10 +30,19 @@
 *)
 
 (* ****** ****** *)
-
+//
 // Author: Hongwei Xi (hwxi AT cs DOT bu DOT edu)
 // Time: December 2007
-
+//
+(* ****** ****** *)
+//
+// History of bug fixes:
+//
+// HX-2010-05-27:
+// The use of [s2Var_link_set] is now replaced with [s2exp_equal_solve];
+// the former does not work correctly if either the lower or the /upper
+// bound of a [s2Var] is already set.
+//
 (* ****** ****** *)
 
 (* Mainly for handling patterns during type-checking *)
@@ -44,6 +53,8 @@ staload Deb = "ats_debug.sats"
 staload Err = "ats_error.sats"
 staload Lst = "ats_list.sats"
 
+(* ****** ****** *)
+
 staload Eff = "ats_effect.sats"
 
 (* ****** ****** *)
@@ -51,6 +62,7 @@ staload Eff = "ats_effect.sats"
 staload "ats_staexp2.sats"
 staload "ats_dynexp2.sats"
 staload "ats_stadyncst2.sats"
+staload SOL = "ats_staexp2_solve.sats"
 
 (* ****** ****** *)
 
@@ -495,9 +507,12 @@ fn p2at_con_tr_dn (
   val s2c = d2con_scst_get d2c
   val s2e0 = (case+ s2e0.s2exp_node of
     | S2EVar s2V => let
-        val s2e_s2c: s2exp = s2cst_closure_make_predicative (loc0, s2c)
+        val s2e_s2c = (
+          s2cst_closure_make_predicative (loc0, s2c)
+        ) : s2exp // end of [val]
+        val () = $SOL.s2exp_equal_solve (loc0, s2e0, s2e_s2c)
       in
-        s2Var_link_set (s2V, Some s2e_s2c); s2e_s2c
+        s2e_s2c
       end (* end of [S2EVar] *)
     | _ => s2e0
   ) : s2exp // end of [val]
@@ -693,7 +708,8 @@ end // end of [p2at_exist_tr_dn]
 
 (* ****** ****** *)
 
-fun p2atlst_elt_tr_dn (p2ts: p2atlst, s2e: s2exp): p3atlst =
+fun p2atlst_elt_tr_dn
+  (p2ts: p2atlst, s2e: s2exp): p3atlst =
   case+ p2ts of
   | list_cons (p2t, p2ts) => begin
       list_cons (p2at_tr_dn (p2t, s2e), p2atlst_elt_tr_dn (p2ts, s2e))
@@ -701,7 +717,9 @@ fun p2atlst_elt_tr_dn (p2ts: p2atlst, s2e: s2exp): p3atlst =
   | list_nil () => list_nil ()
 // end of [p2atlst_elt_tr_dn]
 
-fn p2at_lst_tr_dn (loc0: loc_t, p2ts: p2atlst, s2e0: s2exp): p3at = let
+fn p2at_lst_tr_dn (
+    loc0: loc_t, p2ts: p2atlst, s2e0: s2exp
+  ) : p3at = let
   val s2e_lst = s2exp_opnexi_and_add (loc0, s2e0)
 in
   case+ un_s2exp_list_t0ype_int_type s2e_lst of
@@ -712,14 +730,14 @@ in
       val p3ts = p2atlst_elt_tr_dn (p2ts, s2e_elt)
     in
       p3at_lst (loc0, s2e_elt, s2e0, p3ts)
-    end
+    end // end of [Some_vt]
   | ~None_vt () => begin
       prerr loc0; prerr ": error(3)";
       prerr ": the pattern is given the type ["; prerr s2e_lst;
       prerr "] but a type of the form [list (_, _)] is expected.";
       prerr_newline ();
       $Err.abort {p3at} ()
-    end
+    end // end of [None_vt]
 end // end of [p2at_lst_tr_dn]
 
 (* ****** ****** *)
@@ -810,10 +828,11 @@ fn p2at_rec_tr_dn
    recknd: int, npf1: int, lp2ts: labp2atlst, s2e0: s2exp): p3at = let
   val loc0 = p2t0.p2at_loc
   val s2e0 = s2exp_whnf s2e0
-  val s2e0 = case+ s2e0.s2exp_node of
+  val s2e0 = (case+ s2e0.s2exp_node of
     | S2EVar s2V => let
-        val tyrecknd: tyreckind = case+ recknd of
+        val tyrecknd = (case+ recknd of
           | 0 => TYRECKINDflt0 () | _ => TYRECKINDbox ()
+        ) : tyreckind
         val ls2es = aux (loc0, lp2ts) where {
           fun aux (loc0: loc_t, lp2ts: labp2atlst): labs2explst =
             case+ lp2ts of
@@ -821,28 +840,32 @@ fn p2at_rec_tr_dn
                 val s2e = s2exp_Var_make_srt (p2t.p2at_loc, s2rt_t0ype)
               in
                 LABS2EXPLSTcons (l, s2e, aux (loc0, lp2ts))
-              end
+              end // end of [LABP2ATLSTcons]
             | LABP2ATLSTnil () => LABS2EXPLSTnil ()
             | LABP2ATLSTdot () => begin
                 prerr loc0; prerr ": error(3)";
                 prerr ": type synthesis for a partial record pattern is not supported.";
                 prerr_newline ();
                 $Err.abort {labs2explst} ()
-              end
+              end // end of [LABP2ATLSTdot]
+          // end of [aux]
         } // end of [where]
         val s2e_rec = s2exp_tyrec (recknd, npf1, ls2es)
         val s2t_s2V = s2Var_srt_get (s2V) and s2t_s2c_rec = s2e_rec.s2exp_srt
-        val () = // sort checking
+        val () = ( // sort checking
           if lte_s2rt_s2rt (s2t_s2c_rec, s2t_s2V) then () else begin
              prerr loc0; prerr ": error(3)";
              prerr ": the pattern cannot be assigned a type of the sort ["; prerr s2t_s2V; prerr "].";
              prerr_newline ();
              $Err.abort {void} ()
           end // end of [if]
+        ) : void // end of [val]
+        val () = $SOL.s2exp_equal_solve (loc0, s2e0, s2e_rec)
       in
-        s2Var_link_set (s2V, Some s2e_rec); s2e_rec
-      end
+        s2e_rec
+      end // end of [S2EVar]
     | _ => s2e0
+  ) : s2exp // end of [val]
   val s2e0 = s2exp_opnexi_and_add (loc0, s2e0)
 in
   case+ s2e0.s2exp_node of
@@ -918,10 +941,10 @@ fn p2at_vbox_tr_dn
     | S2EVar s2V => let
         val s2e = s2exp_Var_make_srt (loc0, s2rt_view)
         val s2e_vbox = s2exp_vbox_view_prop (s2e)
-        val () = s2Var_link_set (s2V, Some s2e_vbox)
+        val () = $SOL.s2exp_equal_solve (loc0, s2e0, s2e_vbox)
       in
         s2e_vbox
-      end
+      end (* end of [S2EVar] *)
     | _ => s2e0
   ) : s2exp
 in

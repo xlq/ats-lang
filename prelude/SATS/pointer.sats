@@ -211,6 +211,7 @@ overload tostring with tostring_ptr
 praxi free_gc_viewt0ype_addr_trans
   {a1,a2:viewt@ype | sizeof a1 == sizeof a2} {l:addr}
   (pf_gc: !free_gc_v (a1, l) >> free_gc_v (a2, l)): void
+// end of [free_gc_viewt0ype_addr_trans]
 
 (* ****** ****** *)
 
@@ -222,15 +223,16 @@ fun ptr_alloc_tsz {a:viewt@ype} (tsz: sizeof_t a)
   = "atspre_ptr_alloc_tsz"
 
 fun ptr_free {a:viewt@ype} {l:addr}
-  (_: free_gc_v (a, l), _: a? @ l | _: ptr l):<> void
-  = "atspre_ptr_free"
+  (_: free_gc_v (a, l), _: a? @ l | _: ptr l):<> void = "atspre_ptr_free"
+// end of [ptr_free]
 
 (* ****** ****** *)
 
 // template
-fun{a:t@ype} ptr_get_t_main {v:view} {l:addr}
+fun{a:t@ype}
+ptr_get_t_main {v:view} {l:addr}
   (pf1: !v, pf2: vsubr_p (a @ l, v) | p: ptr l):<> a
-// end of ..
+// end of [ptr_get_t_main]
 
 // implemented in [prelude/DATS/pointer.dats]
 fun{a:t@ype} ptr_get_t {l:addr} (pf: !a @ l | p: ptr l):<> a
@@ -238,7 +240,7 @@ fun{a:t@ype} ptr_get_t {l:addr} (pf: !a @ l | p: ptr l):<> a
 // implemented in [prelude/DATS/pointer.dats]
 fun{a:t@ype} ptr_set_t {l:addr}
   (pf: !(a?) @ l >> a @ l | p: ptr l, x: a):<> void
-// end of ...
+// end of [ptr_set_t]
 
 (* ****** ****** *)
 

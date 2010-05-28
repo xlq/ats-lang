@@ -41,13 +41,23 @@
 
 (* ****** ****** *)
 
-symintr g_free
+absview gfree_v (l:addr)
+
+(* ****** ****** *)
+
+fun gptr_alloc
+  {a:viewt@ype} (n: sizeof_t a)
+  : [l:addr] (gfree_v l, a? @ l | ptr l) = "#atsctrb_gptr_alloc"
+// end of [gptr_alloc]
+
+fun gptr_free {a:viewt@ype} {l:addr}
+  (pf1: gfree_v l, pf2: a? @ l | p: ptr l): void = "#atsctrb_g_free"
+// end of [gptr_free]
 
 (* ****** ****** *)
 
 castfn gstring_free_null (x: gstring null):<> ptr null
 fun gstring_free {l:addr} (x: gstring l): void = "#atsctrb_g_free"
-overload g_free with gstring_free
 
 (* ****** ****** *)
 
