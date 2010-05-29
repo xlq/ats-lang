@@ -1806,14 +1806,15 @@ fun glGenTexture
 fun glGenTextures {n:pos}
   (n: GLsizei n, textures: &(@[GLtexture?][n]) >> @[GLtexture][n]): void
   = "#atsctrb_glGenTextures"
+// end of [glGenTextures]
 
 fun glDeleteTexture
   (texture: GLtexture): void = "atsctrb_glDeleteTexture" // this is a function!
 // end of [glDeleteTexture]
 
 fun glDeleteTextures {n:pos}
-  (n: GLsizei n, textures: &(@[GLtexture][n])): void
-  = "#atsctrb_glDeleteTextures"
+  (n: GLsizei n, textures: &(@[GLtexture][n])): void = "#atsctrb_glDeleteTextures"
+// end of [glDeleteTextures]
 
 fun glBindTexture {i:int}
   (target: GLenum, texture: !GLtexture i): void = "#atsctrb_glBindTexture"

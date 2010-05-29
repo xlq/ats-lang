@@ -62,7 +62,7 @@ typedef checkImage_t =
 
 extern
 fun initialize {l1,l2:addr} (
-    pf_texName: !array_v (GLuint?, 1, l1) >> array_v (GLuint, 1, l1)
+    pf_texName: !array_v (GLtexture?, 1, l1) >> array_v (GLtexture, 1, l1)
   , pf_checkImage: ! checkImage_t @ l2
   | p_texName : ptr l1
   , p_checkImage: ptr l2
@@ -80,7 +80,9 @@ implement initialize (
   val () = makeCheckImage ()
   val () = glPixelStorei (GL_UNPACK_ALIGNMENT, (GLint)1)
   val () = glGenTextures ((GLsizei)1, !p_texName)
-  val () = glBindTexture (GL_TEXTURE_2D, p_texName->[0])
+  prval (pf1, pf2) = array_v_uncons {GLtexture} (pf_texName)
+  val () = glBindTexture (GL_TEXTURE_2D, !p_texName)
+  prval () = pf_texName := array_v_cons {GLtexture} (pf1, pf2)
   val () = glTexParameteri (GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, (GLint)GL_REPEAT)
   val () = glTexParameteri (GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, (GLint)GL_REPEAT)
   val () = glTexParameteri (GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, (GLint)GL_NEAREST)
@@ -108,7 +110,12 @@ implement display () = () where {
   val () = glClear (GL_COLOR_BUFFER_BIT lor GL_DEPTH_BUFFER_BIT)
   val () = glEnable (GL_TEXTURE_2D)
   val () = glTexEnvi (GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, (GLint)GL_REPLACE)
-  val () = glBindTexture (GL_TEXTURE_2D, texName)
+//
+  extern castfn __cast (x: GLuint) : [i:int] (GLtexture i -<lin,prf> void | GLtexture i)
+  val (fpf_x | x) = __cast (texName)
+  val () = glBindTexture (GL_TEXTURE_2D, x)
+  prval () = fpf_x (x)
+//
   val (pf | ()) = glBegin (GL_QUADS)
 //
   val () = glTexCoord2d (0.0, 0.0)

@@ -115,11 +115,11 @@ implement div<zcmplx> (x1, x2) = $CMPLX.div_zcmplx_zcmplx (x1, x2)
 
 (* ****** ****** *)
 
-implement ceil<float> (x) = $M.ceilf (x)
-implement ceil<double> (x) = $M.ceil (x)
+implement ceil<float> (x) = $MATH.ceilf (x)
+implement ceil<double> (x) = $MATH.ceil (x)
 
-implement floor<float> (x) = $M.floorf (x)
-implement floor<double> (x) = $M.floor (x)
+implement floor<float> (x) = $MATH.floorf (x)
+implement floor<double> (x) = $MATH.floor (x)
 
 (* ****** ****** *)
 

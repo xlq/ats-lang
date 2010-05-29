@@ -39,7 +39,7 @@ fun update_statusbar
   val ncol = int_of_gint (ncol)
   val msg = g_strdup_printf ("Col %d Ln %d", @(ncol+1, nrow+1))
   val _mid = gtk_statusbar_push(bar, (guint)0, msg)
-  val () = g_free (msg)
+  val () = gstring_free (msg)
 } // end of [update_statusbar]
 
 fun mark_set_callback
