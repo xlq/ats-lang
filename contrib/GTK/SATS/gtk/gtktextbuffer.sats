@@ -207,4 +207,40 @@ fun gtk_text_buffer_set_modified
 
 (* ****** ****** *)
 
+fun gtk_text_buffer_cut_clipboard
+  {c1,c2:cls | c1 <= GtkTextBuffer; c2 <= GtkClipBoard}
+  {l1,l2:agz} (
+    tb: !gobjref (c1, l1), cb: !gobjref (c2, l2), editable: gboolean
+  ) : void = "#atsctrb_gtk_text_buffer_cut_clipboard"
+// end of [gtk_text_buffer_cut_clipboard]
+
+fun gtk_text_buffer_copy_clipboard
+  {c1,c2:cls | c1 <= GtkTextBuffer; c2 <= GtkClipBoard}
+  {l1,l2:agz} (tb: !gobjref (c1, l1), cb: !gobjref (c2, l2)): void
+  = "#atsctrb_gtk_text_buffer_copy_clipboard"
+// end of [gtk_text_buffer_copy_clipboard]
+
+fun gtk_text_buffer_paste_clipboard_at_cursor
+  {c1,c2:cls | c1 <= GtkTextBuffer; c2 <= GtkClipBoard}
+  {l1,l2:agz} (
+    tb: !gobjref (c1, l1), cb: !gobjref (c2, l2), editable: gboolean
+  ) : void = "#atsctrb_gtk_text_buffer_paste_clipboard_at_cursor"
+// end of [gtk_text_buffer_paste_clipboard_at_cursor]
+
+(* ****** ****** *)
+
+fun gtk_text_buffer_get_selection_bounds
+  {c:cls | c <= GtkTextBuffer} {l:agz} (
+    tb: !gobjref (c, l)
+  , _beg: &GtkTextIter? >> GtkTextIter, _end: &GtkTextIter? >> GtkTextIter
+  ) : gboolean = "#atsctrb_gtk_text_buffer_get_selection_bounds"
+// end of [gtk_text_buffer_get_selection_bounds]
+
+fun gtk_text_buffer_get_selection_bounds_null
+  {c:cls | c <= GtkTextBuffer} {l:agz} (tb: !gobjref (c, l)): gboolean
+  = "#atsctrb_gtk_text_buffer_get_selection_bounds_null"
+// end of [gtk_text_buffer_get_selection_bounds_null]
+
+(* ****** ****** *)
+
 (* end of [gtktextbuffer.sats] *)

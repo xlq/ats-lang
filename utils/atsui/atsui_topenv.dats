@@ -45,10 +45,6 @@ staload "contrib/glib/SATS/glib-object.sats"
 
 (* ****** ****** *)
 
-staload "contrib/pango/SATS/pango.sats"
-
-(* ****** ****** *)
-
 staload "contrib/GTK/SATS/gdk.sats"
 staload "contrib/GTK/SATS/gtkclassdec.sats"
 staload "contrib/GTK/SATS/gtk.sats"
@@ -145,28 +141,6 @@ atsui_topenv_initset_container_source
 /* ****** ****** */
 
 ats_ptr_type
-atsui_topenv_get_textview_source () {
-  return theATSUItopenv.textview_source ;
-} // end of [atsui_topenv_get_textview_source]
-
-static
-int topenv_textview_source_initset_flag = 0 ;
-
-ats_void_type
-atsui_topenv_initset_textview_source
-  (ats_ptr_type x) {
-  topenv_textview_source_initset_flag = 1 ;
-  theATSUItopenv.textview_source = (GtkTextView*)x ;
-} // end of [atsui_topenv_initset_textview_source]
-
-ats_int_type
-atsui_topenv_textview_source_initset_flag_get
-  () { return topenv_textview_source_initset_flag ; }
-// end of [atsui_topenv_textview_source_initset_flag_get]
-
-/* ****** ****** */
-
-ats_ptr_type
 atsui_topenv_get_container_output () {
   return theATSUItopenv.container_output ;
 } // end of [atsui_topenv_get_container_output]
@@ -182,54 +156,7 @@ atsui_topenv_initset_container_output
 
 /* ****** ****** */
 
-ats_ptr_type
-atsui_topenv_get_textview_output () {
-  return theATSUItopenv.textview_output ;
-} // end of [atsui_topenv_get_textview_output]
-
-ats_void_type
-atsui_topenv_initset_textview_output
-  (ats_ptr_type x) {
-  if (theATSUItopenv.textview_output != (GtkTextView*)0) {
-    fprintf (stderr, "exit(ATS): [atsui_topenv_initset_textview_output] failed\n"); exit(1);
-  } // end of [if]
-  theATSUItopenv.textview_output = (GtkTextView*)x ;
-} // end of [atsui_topenv_initset_textview_output]
-
-/* ****** ****** */
-
 %} // end of [%{^]
-
-(* ****** ****** *)
-
-%{^
-GtkWidget *the_drawarea_welcome = NULL;
-ats_ptr_type
-the_drawarea_welcome_get () {
-  GtkWidget *x = the_drawarea_welcome;
-  if (x == NULL) {
-    fprintf (stderr, "exit(the_drawarea_welcome_get)\n"); exit(1);
-  } // end of [if]
-  the_drawarea_welcome = NULL; return x ;
-} // end of [the_drawarea_welcome_get]
-ats_void_type
-the_drawarea_welcome_set (ats_ptr_type x) {
-  if (the_drawarea_welcome != NULL) {
-    fprintf (stderr, "exit(the_drawarea_welcome_set)\n"); exit(1);
-  } // end of [if]
-  the_drawarea_welcome = x ; return ;
-} // end of [the_drawarea_welcome_set]
-%} // end of [%{^] 
-
-extern
-fun the_drawarea_welcome_get
-  (): GtkDrawingArea_ref1 = "the_drawarea_welcome_get"
-extern
-fun the_drawarea_welcome_set
-  (x: GtkDrawingArea_ref1): void = "the_drawarea_welcome_set"
-fun the_drawarea_welcome_fini (): void = () where {
-  val darea = the_drawarea_welcome_get (); val () = gtk_widget_destroy (darea)
-} // end of [the_drawarea_welcome_fini]
 
 (* ****** ****** *)
 
@@ -259,111 +186,6 @@ in
 end (* end of [if] *)
   prval () = fpf_srcwin (srcwin)
 } // end of [topenv_container_source_set_label]
-
-(* ****** ****** *)
-
-// "Comic sans MS 10"
-#define TEXTVIEW_FONT "Courier 12" // a font of fixed-size
-#define TEXTVIEW_LEFT_MARGIN 6
-
-extern
-fun topenv_make_textview_source (): GtkTextView_ref1
-implement
-topenv_make_textview_source () = let
-  val tb = gtk_text_buffer_new_null ()
-  val tv = gtk_text_view_new_with_buffer (tb)
-  val () = g_object_unref (tb)
-  // val () = gtk_widget_grab_focus (tv) // HX: what does this mean?
-//
-  val _sid = g_signal_connect (
-    tv, (gsignal)"expose_event", G_CALLBACK(cb_textview_source_expose_event_linenumber), GNULL
-  ) // end of [val]
-//
-  val (fpf_name | name) = __cast (TEXTVIEW_FONT) where {
-    extern castfn __cast (x: string): [l:agz] (gstring l -<lin,prf> void | gstring l)
-  } // end of [val]
-  val fd = pango_font_description_from_string (name)
-//
-  val pfd = ptr_of (fd)
-  val () = (print "pfd = "; print pfd; print_newline ())
-  val () = gtk_widget_modify_font (tv, fd)
-//
-  val () = pango_font_description_free (fd)
-  prval () = fpf_name (name)
-  val () = gtk_text_view_set_editable (tv, GFALSE)
-  val () = gtk_text_view_set_cursor_visible (tv, GFALSE)
-  val () = gtk_text_view_set_left_margin (tv, (gint)TEXTVIEW_LEFT_MARGIN)
-in
-  tv (* return *)
-end // end of [topenv_make_textview_source]
-
-(* ****** ****** *)
-
-extern
-fun topenv_make_textview_output (): GtkTextView_ref1
-implement
-topenv_make_textview_output () = let
-  val tb = gtk_text_buffer_new_null ()
-  val [l_tv:addr] tv = gtk_text_view_new_with_buffer (tb)
-  val () = gtk_text_view_set_editable (tv, GFALSE)
-  val () = gtk_text_view_set_cursor_visible (tv, GFALSE)
-  val () = gtk_text_view_set_left_margin (tv, (gint)TEXTVIEW_LEFT_MARGIN)
-//
-  val (fpf_x | x) = (gs)"(No compilation output yet)"  
-  val () = gtk_text_buffer_setall_text (tb, x)
-  prval () = fpf_x (x)
-//
-  val () = g_object_unref (tb)
-in
-  tv (* return *)
-end // end of [topenv_make_textview_output]
-
-(* ****** ****** *)
-
-implement
-topenv_textview_source_initset_if () = let
-  val tvflag = topenv_textview_source_initset_flag_get ()
-in
-  if tvflag = 0 then let
-    val win = gtk_scrolled_window_new_null ()
-    val () = gtk_scrolled_window_set_policy
-      (win, GTK_POLICY_AUTOMATIC, GTK_POLICY_AUTOMATIC)
-    val tv = topenv_make_textview_source ()
-    val () = gtk_container_add (win, tv)
-    val () = gtk_widget_show (tv)
-    val () = initset (tv) where {
-      extern fun initset
-        (x: GtkTextView_ref1): void = "atsui_topenv_initset_textview_source"
-    } // end of [val]
-//
-// HX: enabling the CLOSE, SAVE and SAVEAS menu items
-//
-    val (fpf_x | x) = topenv_get_menuitem_file_close ()
-    val () = gtk_widget_set_sensitive (x, GTRUE)
-    prval () = fpf_x (x)
-    val (fpf_x | x) = topenv_get_menuitem_file_save ()
-    val () = gtk_widget_set_sensitive (x, GTRUE)
-    prval () = fpf_x (x)
-    val (fpf_x | x) = topenv_get_menuitem_file_saveas ()
-    val () = gtk_widget_set_sensitive (x, GTRUE)
-    prval () = fpf_x (x)
-//
-    val (fpf_x | x) = topenv_get_menuitem_view_fontsel ()
-    val () = gtk_widget_set_sensitive (x, GTRUE)
-    prval () = fpf_x (x)
-    val (fpf_x | x) = topenv_get_menuitem_view_linenumber ()
-    val () = gtk_widget_set_sensitive (x, GTRUE)
-    prval () = fpf_x (x)
-//
-    val () = the_drawarea_welcome_fini ()
-    val (fpf_container | container) = topenv_get_container_source ()
-    val () = gtk_container_add (container, win)
-    val () = gtk_widget_show_unref (win)
-    prval () = fpf_container (container)
-  in
-    // nothing
-  end // end of [val]
-end // end of [topenv_textview_source_initset_if]
 
 (* ****** ****** *)
 
@@ -431,6 +253,36 @@ theMenubar_make () = mbar where {
     val () = gtk_widget_show_unref (item)
   } // end of [val]
 } // end of [theMenubar_make]
+
+(* ****** ****** *)
+
+%{^
+GtkWidget *the_drawarea_welcome = NULL;
+ats_ptr_type
+the_drawarea_welcome_get () {
+  GtkWidget *x = the_drawarea_welcome;
+  if (x == NULL) {
+    fprintf (stderr, "exit(the_drawarea_welcome_get)\n"); exit(1);
+  } // end of [if]
+  the_drawarea_welcome = NULL; return x ;
+} // end of [the_drawarea_welcome_get]
+ats_void_type
+the_drawarea_welcome_set (ats_ptr_type x) {
+  if (the_drawarea_welcome != NULL) {
+    fprintf (stderr, "exit(the_drawarea_welcome_set)\n"); exit(1);
+  } // end of [if]
+  the_drawarea_welcome = x ; return ;
+} // end of [the_drawarea_welcome_set]
+%} // end of [%{^] 
+extern
+fun the_drawarea_welcome_get
+  (): GtkDrawingArea_ref1 = "the_drawarea_welcome_get"
+extern
+fun the_drawarea_welcome_set
+  (x: GtkDrawingArea_ref1): void = "the_drawarea_welcome_set"
+implement the_drawarea_welcome_fini () = () where {
+  val darea = the_drawarea_welcome_get (); val () = gtk_widget_destroy (darea)
+} // end of [the_drawarea_welcome_fini]
 
 (* ****** ****** *)
 
@@ -582,7 +434,9 @@ implement theHPaned1_make () = hpaned0 where {
   val () = gtk_scrolled_window_set_policy
     (win22, GTK_POLICY_AUTOMATIC, GTK_POLICY_AUTOMATIC)
   val () = gtk_widget_set_size_request (win22, (gint)0, (gint)72)
-  val [l_tv:addr] tv = topenv_make_textview_output ()
+  val [l_tv:addr] tv = make () where {
+    extern fun make (): GtkTextView_ref1 = "atsui_topenv_make_textview_output"
+  } // end of [val]
   val () = gtk_container_add (win22, tv)
   val () = gtk_widget_show (tv)
   val () = initset (tv) where {

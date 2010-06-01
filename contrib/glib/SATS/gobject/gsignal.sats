@@ -130,4 +130,11 @@ overload g_signal_connect_swapped with g_signal_connect_swapped1
 
 (* ****** ****** *)
 
+fun g_signal_emit_by_name
+  {c:cls | c <= GObject} {l:agz} (x: !gobjref (c, l), sig: gsignal): void
+  = "#atsctrb_g_signal_emit_by_name"
+// end of [g_signal_emit_by_name]
+
+(* ****** ****** *)
+
 (* end of [gsignal.sats] *)

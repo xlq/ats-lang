@@ -319,7 +319,7 @@ staload TE = "atsui_topenv.sats"
 
 implement
 the_srcwinlst_get_current () = let
-  val tvflag = $TE.topenv_textview_source_initset_flag_get ()
+  val tvflag = $TE.topenv_get_textview_source_initset_flag ()
 in
   if tvflag > 0 then let
     val (fpf_tv | tv) = $TE.topenv_get_textview_source ()

@@ -91,6 +91,19 @@ typedef GdkSpan =
 
 (* ****** ****** *)
 
+abst@ype GdkWChar = $extype "GdKWChar"
+
+(* ****** ****** *)
+
+abstype GdkAtom // typedef struct _GdkAtom *GdkAtom
+
+castfn GDK_ATOM_TO_POINTER (x: GdkAtom):<> gpointer
+castfn GDK_POINTER_TO_ATOM (x: gpointer):<> GdkAtom
+
+macdef GDK_NONE = $extval (GdkAtom, "GDK_NONE")
+
+(* ****** ****** *)
+
 abst@ype GdkEventType = $extype "GdkEventType"
 abst@ype GdkEventMask = $extype "GdkEventMask"
 

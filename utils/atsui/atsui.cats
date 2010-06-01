@@ -53,7 +53,14 @@ struct {
   GtkMenuItem *menuitem_file_save ; // this is the SAVE item in the FILE menu
   GtkMenuItem *menuitem_file_saveas ; // this is the SAVEAS item in the FILE menu
 //
-  // GtkMenu *menu_view ; // this the VIEW menu
+  // GtkMenu *menu_edit ; // this is the EDIT menu
+  GtkMenuItem *menuitem_edit_undo ; // this is the UNDO item in the EDIT menu
+  GtkMenuItem *menuitem_edit_redo ; // this is the REDO item in the EDIT menu
+  GtkMenuItem *menuitem_edit_cut ; // this is the CUT item in the EDIT menu
+  GtkMenuItem *menuitem_edit_copy ; // this is the COPY item in the EDIT menu
+  GtkMenuItem *menuitem_edit_paste ; // this is the PASTE item in the EDIT menu
+//
+  // GtkMenu *menu_view ; // this is the VIEW menu
   GtkMenuItem *menuitem_view_fontsel ; // this is the FONT item in the VIEW menu
   GtkMenuItem *menuitem_view_linenumber ; // this is the LINE NUMBERS item in the VIEW menu
 //

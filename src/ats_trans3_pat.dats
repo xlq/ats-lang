@@ -953,7 +953,7 @@ fn p2at_vbox_tr_dn
         s2e_vbox
       end (* end of [S2EVar] *)
     | _ => s2e0
-  ) : s2exp
+  ) : s2exp // end of [val]
 in
   case+ un_s2exp_vbox_view_prop (s2e0) of
   | ~Some_vt s2e_v => let

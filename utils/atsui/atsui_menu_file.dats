@@ -152,13 +152,14 @@ fun cb_new_activate
 //
   val () = (print (#LOCATION + ": cb_new_activate"); print_newline ())
 //
-  val () = topenv_textview_source_initset_if ()
+  val () = topenv_initset_textview_source_if () // create and set it if not existent
 //
   val tb = gtk_text_buffer_new_null ()
   val _sid = g_signal_connect
-    (tb, (gsignal)"changed", G_CALLBACK(cb_textview_source_changed), GNULL)
+    (tb, (gsignal)"mark-set", G_CALLBACK(cb_textview_source_mark_changed), GNULL)
   val _sid = g_signal_connect
-    (tb, (gsignal)"mark_set", G_CALLBACK(cb_textview_source_changed), GNULL)
+    (tb, (gsignal)"modified-changed", G_CALLBACK(cb_textview_source_modified_changed), GNULL)
+  val () = gtk_text_buffer_set_modified (tb, GFALSE)
 //
   val (fpf_tv | tv) = topenv_get_textview_source ()
   val () = gtk_text_view_set_editable (tv, GTRUE)
@@ -172,7 +173,7 @@ fun cb_new_activate
   prval () = fpf_tv (tv)
 //
   val () = topenv_container_source_update_label () // HX: could be more efficient, but ...
-  val _true = cb_textview_source_changed ()
+  val _true = cb_textview_source_modified_changed ()
 //
 } // end of [cb_new_activate]
 

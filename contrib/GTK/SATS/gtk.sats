@@ -134,6 +134,10 @@ viewtypedef GtkCheckMenuItem_ref (l:addr) = gobjref (GtkCheckMenuItem, l)
 viewtypedef GtkCheckMenuItem_ref0 = [l:agez] GtkCheckMenuItem_ref l
 viewtypedef GtkCheckMenuItem_ref1 = [l:addr | l > null] GtkCheckMenuItem_ref l
 
+viewtypedef GtkClipBoard_ref (l:addr) = gobjref (GtkClipBoard, l)
+viewtypedef GtkClipBoard_ref0 = [l:agez] GtkClipBoard_ref l
+viewtypedef GtkClipBoard_ref1 = [l:addr | l > null] GtkClipBoard_ref l
+
 viewtypedef GtkColorSelection_ref (l:addr) = gobjref (GtkColorSelection, l)
 viewtypedef GtkColorSelection_ref0 = [l:agez] GtkColorSelection_ref l
 viewtypedef GtkColorSelection_ref1 = [l:addr | l > null] GtkColorSelection_ref l
@@ -379,6 +383,7 @@ viewtypedef GtkTextMark_ref1 = [l:addr | l > null] GtkTextMark_ref l
 #include "contrib/GTK/SATS/gtk/gtkbutton.sats"
 #include "contrib/GTK/SATS/gtk/gtkcheckbutton.sats"
 #include "contrib/GTK/SATS/gtk/gtkcheckmenuitem.sats"
+#include "contrib/GTK/SATS/gtk/gtkclipboard.sats"
 #include "contrib/GTK/SATS/gtk/gtkcontainer.sats"
 #include "contrib/GTK/SATS/gtk/gtkcolorsel.sats"
 #include "contrib/GTK/SATS/gtk/gtkcolorseldialog.sats"

@@ -100,22 +100,25 @@ fun dialog_openfile_first
 //
     val tb = gtk_text_buffer_new_null ()
     val _sid = g_signal_connect
-      (tb, (gsignal)"changed", G_CALLBACK(cb_textview_source_changed), GNULL)
+      (tb, (gsignal)"mark-set", G_CALLBACK(cb_textview_source_mark_changed), GNULL)
     val _sid = g_signal_connect
-      (tb, (gsignal)"mark_set", G_CALLBACK(cb_textview_source_changed), GNULL)
+      (tb, (gsignal)"mark-deleted", G_CALLBACK(cb_textview_source_mark_changed), GNULL)
+    val _sid = g_signal_connect
+      (tb, (gsignal)"modified-changed", G_CALLBACK(cb_textview_source_modified_changed), GNULL)
 //
     val () = gtk_text_view_set_buffer (tv, tb)
     val () = $UT.gtk_text_buffer_load_file (file_mode_lte_r_r | tb, !p_fil)
+//
     val () = gtk_text_buffer_set_modified (tb, GFALSE)
-    val () = topenv_textview_source_update_statusbar ()
+    val _true = cb_textview_source_modified_changed ()
 //
     val item = topenv_menu_window_append (filename, tb)
     val srcwin = $SWL.srcwin_make (filename, tb, item)
     val () = $SWL.srcwin_set_nsaved (srcwin, 0) // the default is -1
     val () = $SWL.the_srcwinlst_append (srcwin)
-    prval () = fpf_tv (tv)
     val _err = fclose_err (pf_fil | p_fil)
-    val () = assert_errmsg (_err = 0, #LOCATION + ": [fclose] failed")
+    // val () = assert_errmsg (_err = 0, #LOCATION + ": [fclose] failed")
+    prval () = fpf_tv (tv)
   in
     // nothing
   end else let
@@ -164,7 +167,7 @@ end // end of [dialog_openfile]
 implement
 cb_file_openfile_activate () = GTRUE where {
 //
-  val () = topenv_textview_source_initset_if ()
+  val () = topenv_initset_textview_source_if ()
 //
   val dialog = gtk_file_chooser_dialog_new
     (stropt_some "ATSUI: Open File", GTK_FILE_CHOOSER_ACTION_OPEN)

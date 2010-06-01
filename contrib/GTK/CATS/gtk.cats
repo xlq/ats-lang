@@ -274,6 +274,16 @@ atsctrb_gtk_check_menu_item_new_with_mnemonic
 /* ****** ****** */
 
 //
+// source: gtk/gtkclipboard.h
+//
+
+#define atsctrb_gtk_clipboard_get gtk_clipboard_get
+
+#define atsctrb_gtk_clipboard_wait_is_text_available gtk_clipboard_wait_is_text_available
+
+/* ****** ****** */
+
+//
 // source: gtk/gtkcontainer.h
 //
 
@@ -1263,6 +1273,17 @@ atsctrb_gtk_text_buffer_setall_text
 
 #define atsctrb_gtk_text_buffer_get_modified gtk_text_buffer_get_modified
 #define atsctrb_gtk_text_buffer_set_modified gtk_text_buffer_set_modified
+
+#define atsctrb_gtk_text_buffer_cut_clipboard gtk_text_buffer_cut_clipboard
+#define atsctrb_gtk_text_buffer_copy_clipboard gtk_text_buffer_copy_clipboard
+#define atsctrb_gtk_text_buffer_paste_clipboard_at_cursor(tb, cb, editable) \
+  gtk_text_buffer_paste_clipboard(tb, cb, NULL, editable)
+
+
+#define atsctrb_gtk_text_buffer_get_selection_bounds \
+  gtk_text_buffer_get_selection_bounds
+#define atsctrb_gtk_text_buffer_get_selection_bounds_null(tb) \
+  gtk_text_buffer_get_selection_bounds (tb, NULL, NULL)
 
 /* ****** ****** */
 

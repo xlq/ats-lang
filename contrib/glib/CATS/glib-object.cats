@@ -60,6 +60,8 @@ atsctrb_g_object_ref_count
 #define atsctrb_g_signal_connect_after g_signal_connect_after
 #define atsctrb_g_signal_connect_swapped g_signal_connect_swapped
 
+#define atsctrb_g_signal_emit_by_name g_signal_emit_by_name
+
 /* ****** ****** */
 
 #endif /* ATSCTRB_GOBJECT_CATS */

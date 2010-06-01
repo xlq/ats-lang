@@ -118,7 +118,7 @@ fun cb_compile_clicked
 
 implement
 cb_compile_clicked_if () = let
-  val tbflag = topenv_textview_source_initset_flag_get ()
+  val tbflag = topenv_get_textview_source_initset_flag ()
 in
   if tbflag > 0 then let
     // val () = cb_save_activate () // HX: should it be done automatically?

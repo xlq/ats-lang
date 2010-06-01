@@ -49,6 +49,7 @@ stadef GInterface = $GOBJ.GInterface
 (* ****** ****** *)
 
 classdec GtkAccelGroup : GObject
+classdec GtkClipBoard : GObject
 classdec GtkFileChooser : GInterface
 
 (* ****** ****** *)

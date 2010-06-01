@@ -118,6 +118,7 @@ viewtypedef GdkWindow_ref1 = [l:addr | l > null] GdkWindow_ref l
 #include "contrib/GTK/SATS/gdk/gdkpixbuf.sats"
 #include "contrib/GTK/SATS/gdk/gdkpixmap.sats"
 #include "contrib/GTK/SATS/gdk/gdkrgb.sats"
+#include "contrib/GTK/SATS/gdk/gdkselection.sats"
 #include "contrib/GTK/SATS/gdk/gdkwindow.sats"
 
 (* ****** ****** *)

@@ -103,6 +103,21 @@ fun topenv_get_menuitem_file_saveas ()
 
 fun topenv_make_menu_edit (): GtkMenu_ref1
 
+fun topenv_get_menuitem_edit_cut ()
+  : [l:agz] (GtkMenuItem_ref l -<lin,prf> void | GtkMenuItem_ref l)
+  = "atsui_topenv_get_menuitem_edit_cut"
+// end of [topenv_get_menuitem_edit_cut]
+
+fun topenv_get_menuitem_edit_copy ()
+  : [l:agz] (GtkMenuItem_ref l -<lin,prf> void | GtkMenuItem_ref l)
+  = "atsui_topenv_get_menuitem_edit_copy"
+// end of [topenv_get_menuitem_edit_copy]
+
+fun topenv_get_menuitem_edit_paste ()
+  : [l:agz] (GtkMenuItem_ref l -<lin,prf> void | GtkMenuItem_ref l)
+  = "atsui_topenv_get_menuitem_edit_paste"
+// end of [topenv_get_menuitem_edit_paste]
+
 (* ****** ****** *)
 
 fun topenv_make_menu_view (): GtkMenu_ref1
@@ -138,11 +153,12 @@ fun topenv_container_source_update_label (): void
 
 (* ****** ****** *)
 
-fun topenv_textview_source_initset_flag_get (): int
-  = "atsui_topenv_textview_source_initset_flag_get"
-// end of [topenv_textview_source_initset_flag_get]
+fun topenv_get_textview_source_initset_flag (): int
+  = "atsui_topenv_get_textview_source_initset_flag"
+// end of [topenv_get_textview_source_initset_flag]
 
-fun topenv_textview_source_initset_if (): void
+fun the_drawarea_welcome_fini (): void
+fun topenv_initset_textview_source_if (): void
 
 fun topenv_get_textview_source ()
   : [l:agz] (GtkTextView_ref l -<lin,prf> void | GtkTextView_ref l)
@@ -152,7 +168,8 @@ fun topenv_get_textview_source ()
 (* ****** ****** *)
 
 fun topenv_textview_source_update_statusbar (): void
-fun cb_textview_source_changed (): gboolean
+fun cb_textview_source_mark_changed (): gboolean
+fun cb_textview_source_modified_changed (): gboolean
 
 (* ****** ****** *)
 
