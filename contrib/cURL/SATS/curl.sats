@@ -33,7 +33,7 @@
 
 //
 // Author: Hongwei Xi (hwxi AT cs DOT bu DOT edu)
-// Time: May, 2010
+// Time: June, 2010
 //
 
 (* ****** ****** *)
@@ -371,17 +371,28 @@ macdef CURLOPT_LASTENTRY = $extval (CURLoption, "CURLOPT_LASTENTRY")
 
 (* ****** ****** *)
 
-/*
- * NAME curl_global_init()
- *
- * DESCRIPTION
- *
- * curl_global_init() should be invoked exactly once for each application that
- * uses libcurl and before any call of other libcurl functions.
- *
- * This function is not thread-safe!
- */
-fun curl_global_init (flags: lint): CURLcode
+macdef CURL_GLOBAL_SSL = $extval (lint, "CURL_GLOBAL_SSL")
+macdef CURL_GLOBAL_WIN32 = $extval (lint, "CURL_GLOBAL_WIN32")
+macdef CURL_GLOBAL_ALL = $extval (lint, "CURL_GLOBAL_ALL")
+macdef CURL_GLOBAL_NOTHING = $extval (lint, "CURL_GLOBAL_NOTHING") 
+macdef CURL_GLOBAL_DEFAULT = $extval (lint, "CURL_GLOBAL_DEFAULT") // = CURL_GLOBAL_ALL
+
+(*
+** curl_global_init() should be invoked exactly once for each application that
+** uses libcurl and before any call of other libcurl functions.
+**
+** This function is not thread-safe!
+*)
+absview CURLglobal_v (i:int)
+fun curl_global_init (flags: lint): [i:int] (CURLglobal_v i | CURLcode i)
+  = "#atsctrb_curl_global_init"
+// end of [curl_global_init]
+
+(* ****** ****** *)
+
+fun curl_global_cleanup (pf: CURLglobal_v 0 | (*none*)): void
+  = "#atsctrb_curl_global_cleanup"
+// end of [curl_global_cleanup]
 
 (* ****** ****** *)
 

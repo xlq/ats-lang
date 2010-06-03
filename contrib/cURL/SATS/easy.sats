@@ -33,7 +33,7 @@
 
 //
 // Author: Hongwei Xi (hwxi AT cs DOT bu DOT edu)
-// Time: May, 2010
+// Time: June, 2010
 //
 
 (* ****** ****** *)
@@ -42,21 +42,26 @@
 //
 (* ****** ****** *)
 
-fun curl_easy_init (): CURLptr0 = "#atsctrb_curl_easy_init"
+fun curl_easy_init
+  (pf: !CURLglobal_v 0 | (*none*)): CURLptr0 = "#atsctrb_curl_easy_init"
+// end of [curl_easy_init]
 
 (* ****** ****** *)
 
-fun curl_easy_setopt {l:agz} {ts:types}
-  (curl: !CURLptr l, option: CURLoption, args: ts): [i:int] (CURLerr_v i | CURLcode i)
-  = "#atsctrb_curl_easy_setopt"
+fun curl_easy_setopt
+  {l:agz} {ts:types} (
+    curl: !CURLptr l, option: CURLoption, args: ts
+  ) : [i:int] (CURLerr_v i | CURLcode i) = "#atsctrb_curl_easy_setopt"
 // end of [curl_easy_setopt]
 
-(*
-fun curl_easy_setopt_exn {l:agz} {ts:types}
-  (curl: !CURLptr l, option: CURLoption, args: ts): void
-  = "atsctrb_curl_easy_setopt_exn" // this is a function
+//
+// HX-2010-06-02:
+// this one is implemented in $ATSHOME/contril/cURL/DATS/curl.dats
+// it is mostly done as an example demonstrating how [va_list] can be used
+//
+fun curl_easy_setopt_exn
+  {l:agz} {ts:types} (curl: !CURLptr l, option: CURLoption, args: ts): void
 // end of [curl_easy_setopt_exn]
-*)
 
 (* ****** ****** *)
 

@@ -30,7 +30,7 @@
 /* ****** ****** */
 
 // Author of the file: Hongwei Xi (hwxi AT cs DOT bu DOT edu)
-// Starting time: April, 2010
+// Starting time: June, 2010
 
 /* ****** ****** */
 
@@ -40,6 +40,11 @@
 /* ****** ****** */
 
 #include "curl/curl.h"
+
+/* ****** ****** */
+
+#define atsctrb_curl_global_init curl_global_init
+#define atsctrb_curl_global_cleanup curl_global_cleanup
 
 /* ****** ****** */
 

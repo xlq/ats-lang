@@ -33,7 +33,7 @@
 
 //
 // Author: Hongwei Xi (hwxi AT cs DOT bu DOT edu)
-// Time: May, 2010
+// Time: June, 2010
 //
 
 (* ****** ****** *)
@@ -46,16 +46,31 @@ staload "contrib/cURL/SATS/curl.sats"
 
 (* ****** ****** *)
 
-(*
+staload "libc/SATS/stdarg.sats"
+
+(* ****** ****** *)
+
+%{^
+extern CURLcode Curl_setopt(ats_ptr_type, CURLoption, va_list);
+#define atsctrb_Curl_setopt(curl, option, arg) Curl_setopt(curl, option, *(va_list*)arg)
+%} // end of [%{^]
+
 implement
 curl_easy_setopt_exn {l} {ts}
-  (curl, option, args) = let
-  val err = curl_easy_setopt {l} {ts} (curl, option, args)
-  val () = if (err <> CURLE_OK) then exit (1)
+  (curl, option, arg) = let
+  extern fun Curl_setopt (
+    curl: !CURLptr l, option: CURLoption, arg: &va_list ts >> va_list
+  ) : CURLcode = "#atsctrb_Curl_setopt" // declared in lib/url.h
+  val err = Curl_setopt (curl, option, arg)
+  val () = va_end (arg) // a type error is reported if [va_end] is not called
+  val () = if (err <> CURLE_OK) then let
+    val () = fprintf (stderr_ref, "exit(ATS): [curl_easy_setopt] failed\n", @())
+  in
+    exit (1)
+  end // end of [val]
 in
   // nothing
 end // end of [curl_easy_setopt_exn]
-*)
 
 (* ****** ****** *)
 
