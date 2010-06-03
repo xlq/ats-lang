@@ -9,7 +9,7 @@
 (*
 ** ATS - Unleashing the Potential of Types!
 **
-** Copyright (C) 2002-2008 Hongwei Xi, Boston University
+** Copyright (C) 2009-2010 Hongwei Xi, Boston University
 **
 ** All rights reserved
 **
@@ -31,46 +31,23 @@
 
 (* ****** ****** *)
 
-(* author: Hongwei Xi (hwxi AT cs DOT bu DOT edu) *)
+//
+// Author: Hongwei Xi (hwxi AT cs DOT bu DOT edu)
+// Time: June, 2010
+//
 
 (* ****** ****** *)
 
-// HX: note that there is also a [printf.sats] in $ATSHOME/prelude/SATS
+fun gtk_progress_get_value
+  {c:cls | c <= GtkProgress} {l:agz}
+  (progress: !gobjref (c, l)): gdouble = "#atsctrb_gtk_progress_get_value"
+// end of [gtk_progress_get_value]
+
+fun gtk_progress_set_value
+  {c:cls | c <= GtkProgress} {l:agz}
+  (progress: !gobjref (c, l), value: gdouble): void = "#atsctrb_gtk_progress_set_value"
+// end of [gtk_progress_set_value]
 
 (* ****** ****** *)
 
-%{#
-#include "libc/CATS/printf.cats"
-%} // end of [%{#]
-
-(* ****** ****** *)
-
-(*
-
-// it is correct but too detailed!
-fun snprintf {ts:types} {m1,m2:nat | m2 <= m1} {l:addr} (
-    pf: &b0ytes m1 @ l >> strbuf (m1, n1) @ l
-  | p: ptr l, m2: size_t m2, fmt: printf_c ts, arg: ts)
-  : #[n1,n2:nat | (m2 > n2 && n1 == n2) || (n2 >= m2 && n1+1 == m2)] int n2
-  = "atspre_snprintf"
-
-*)
-
-fun snprintf {ts:types}
-  {m1,m2:nat | m2 <= m1} {l:addr} (
-    pf: ! @[byte?][m1] @ l >> strbuf (m1, n1) @ l
-  | p: ptr l, m2: size_t m2, fmt: printf_c ts, arg: ts
-  ) :<> #[n1:nat | n1 < m2] [n2:nat] int n2
-  = "atslib_snprintf"
-
-fun vsnprintf {ts:types}
-  {m1,m2:nat | m2 <= m1} {l:addr} (
-    pf: ! @[byte?][m1] @ l >> strbuf (m1, n1) @ l
-  | p: ptr l, m2: size_t m2
-  , fmt: printf_c ts, arg: &va_list (ts) >> va_list
-  ) :<> #[n1:nat | n1 < m2] [n2:nat] int n2
-  = "atslib_vsnprintf"
-
-(* ****** ****** *)
-
-(* end of [printf.sats] *)
+(* end of [gtkprogress.sats] *)

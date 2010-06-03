@@ -947,6 +947,31 @@ atsctrb_gtk_option_menu_new () {
 /* ****** ****** */
 
 //
+// source: gtk/gtkhprogress.h
+//
+
+#define atsctrb_gtk_progress_get_value gtk_progress_get_value
+#define atsctrb_gtk_progress_set_value gtk_progress_set_value
+
+/* ****** ****** */
+
+//
+// source: gtk/gtkhprogressbar.h
+//
+
+ATSinline()
+ats_ptr_type
+atsctrb_gtk_progress_bar_new_with_adjustment
+  (ats_ptr_type adj) {
+  GtkWidget *widget =
+    gtk_progress_bar_new_with_adjustment ((GtkAdjustment*)adj) ;
+  g_object_ref_sink(G_OBJECT(widget)) ; // removing floating reference!
+  return widget ;
+} // end of [atsctrb_gtk_progress_bar_new_with_adjustment]
+
+/* ****** ****** */
+
+//
 // source: gtk/gtkradiobutton.h
 //
 

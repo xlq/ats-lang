@@ -234,6 +234,10 @@ viewtypedef GtkOptionMenu_ref (l:addr) = gobjref (GtkOptionMenu, l)
 viewtypedef GtkOptionMenu_ref0 = [l:agez] GtkOptionMenu_ref l
 viewtypedef GtkOptionMenu_ref1 = [l:addr | l > null] GtkOptionMenu_ref l
 
+viewtypedef GtkProgressBar_ref (l:addr) = gobjref (GtkProgressBar, l)
+viewtypedef GtkProgressBar_ref0 = [l:agez] GtkProgressBar_ref l
+viewtypedef GtkProgressBar_ref1 = [l:addr | l > null] GtkProgressBar_ref l
+
 viewtypedef GtkRadioButton_ref (l:addr) = gobjref (GtkRadioButton, l)
 viewtypedef GtkRadioButton_ref0 = [l:agez] GtkRadioButton_ref l
 viewtypedef GtkRadioButton_ref1 = [l:addr | l > null] GtkRadioButton_ref l
@@ -410,6 +414,8 @@ viewtypedef GtkTextMark_ref1 = [l:addr | l > null] GtkTextMark_ref l
 #include "contrib/GTK/SATS/gtk/gtkmisc.sats"
 #include "contrib/GTK/SATS/gtk/gtkoptionmenu.sats"
 #include "contrib/GTK/SATS/gtk/gtkpaned.sats"
+#include "contrib/GTK/SATS/gtk/gtkprogress.sats" // DEPRECATED!!!
+#include "contrib/GTK/SATS/gtk/gtkprogressbar.sats"
 #include "contrib/GTK/SATS/gtk/gtkradiobutton.sats"
 #include "contrib/GTK/SATS/gtk/gtkrange.sats"
 #include "contrib/GTK/SATS/gtk/gtkruler.sats"

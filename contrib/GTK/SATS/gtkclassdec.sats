@@ -171,7 +171,9 @@ classdec GtkObject : GObject
     // end of [GtkSeparator]
     classdec GtkInvisible : GtkWidget
     classdec GtkPreview : GtkWidget
-    classdec GtkProgressBar : GtkWidget
+    classdec GtkProgress : GtkWidget // DEPRECATED!!!
+      classdec GtkProgressBar : GtkProgress
+    // end of [GtkProgress]
   // end of [GtkWidget]
   classdec GtkAdjustment : GtkObject
   classdec GtkCellRenderer : GtkObject

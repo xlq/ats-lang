@@ -309,7 +309,7 @@ implement main1 () = () where {
   val () = gtk_widget_show_all (window)
   prval () = fpf_window (window)
   val () = gtk_main ()
-} // end of [val]
+} // end of [main1]
 
 (* ****** ****** *)
 
