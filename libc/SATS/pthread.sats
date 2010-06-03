@@ -62,17 +62,25 @@ fun pthread_self (): pthread_t = "#atslib_pthread_self"
 (* ****** ****** *)
 
 //
-// implemented in [$ATSHOME/ccomp/runtime/ats_prelude.c]
+// HX: this one is implemented in [$ATSHOME/ccomp/runtime/ats_prelude.c]
 //
 fun pthread_create_detached {vt:viewtype}
   (f: (vt) -<fun1> void, env: !vt >> opt (vt, i <> 0)): #[i:int] int i
   = "ats_pthread_create_detached"
 // end of [pthread_create_detached]
 
+//
+// HX: [pthread_create_detached_exn] is implemented in
+// [$ATSHOME/libc/DATS/pthread.dats]
+//
 fun pthread_create_detached_exn {vt:viewtype}
   (f: (vt) -<fun1> void, env: vt): void // env is to be processed by f
 // end of [pthread_create_detached_exn]
 
+//
+// HX: [pthread_create_detached_cloptr] is implemented in
+// [$ATSHOME/libc/DATS/pthread.dats]
+//
 fun pthread_create_detached_cloptr
   (f: () -<lin,cloptr1> void): void // closure must be freed to avoid leak!
 // end of [pthread_create_detached_cloptr]
@@ -132,7 +140,7 @@ fun pthread_mutex_create_unlocked {v:view} {l:addr}
 
 //
 // HX-2010-03-14:
-// it should be called uninitialize in ATS
+// it should be called 'uninitialize' or 'clear' in ATS
 //
 fun pthread_mutex_destroy {v:view} {l:addr}
   (pf: !mutex_vt v @ l >> mutex_vt? @ l | p: ptr l): (v | void)

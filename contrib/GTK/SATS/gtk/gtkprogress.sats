@@ -38,6 +38,12 @@
 
 (* ****** ****** *)
 
+//
+// HX-2010-06-02: this is all deprecated!!!
+//
+
+(* ****** ****** *)
+
 fun gtk_progress_get_value
   {c:cls | c <= GtkProgress} {l:agz}
   (progress: !gobjref (c, l)): gdouble = "#atsctrb_gtk_progress_get_value"
