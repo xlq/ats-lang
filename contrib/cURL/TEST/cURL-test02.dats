@@ -43,20 +43,18 @@ fun my_progress_func {l:agz} (
   d:double,
   ultotal:double,
   ulnow:double): int = let
-  val () = gtk_progress_set_value (bar, (gdouble)(d*100.0/t))
+  val () = gtk_progress_bar_set_fraction (bar, (gdouble)(d/t))
 in
   0
 end
 
 (* ****** ****** *)
 
-extern fun my_thread (bar: GtkProgressBar_ref1): void
+extern fun my_thread
+  (pf: CURLglobal_v 0 | bar: GtkProgressBar_ref1): void
 
-implement my_thread (bar) = () where {
-  val (pf_gerr | gerr) = curl_global_init (CURL_GLOBAL_ALL)
-  val () = assert_errmsg (gerr = CURLE_OK, #LOCATION)
-
-  val curl  = curl_easy_init (pf_gerr | (*none*))
+implement my_thread (pf_gerr | bar) = () where {
+  val curl  = curl_easy_init ()
   val () = assert_errmsg (curlptr_isnot_null curl, #LOCATION)
 
   val (pf_err | err) = curl_easy_setopt (curl, CURLOPT_URL, @("www.ats-lang.org"))
@@ -92,6 +90,10 @@ macdef gs = gstring_of_string
 extern fun main1(): void = "main1"
 
 implement main1 () = () where {
+//
+  val (pf_gerr | gerr) = curl_global_init (CURL_GLOBAL_ALL)
+  val () = assert_errmsg (gerr = CURLE_OK, #LOCATION)
+//
   val window = gtk_window_new (GTK_WINDOW_TOPLEVEL)
   val (fpf_window | window_) = g_object_vref (window)
   val _sid = g_signal_connect0 (
@@ -116,7 +118,7 @@ implement main1 () = () where {
   val () = gtk_container_add (frame2, bar)
   val () = gtk_widget_show_all (window) 
 
-  val () = pthread_create_detached_cloptr (llam () => my_thread (bar))
+  val () = pthread_create_detached_cloptr (llam () => my_thread (pf_gerr | bar))
 
   val () = g_object_unref adj
   val () = g_object_unref frame

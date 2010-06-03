@@ -43,7 +43,7 @@
 (* ****** ****** *)
 
 fun curl_easy_init
-  (pf: !CURLglobal_v 0 | (*none*)): CURLptr0 = "#atsctrb_curl_easy_init"
+  ((*none*)): CURLptr0 = "#atsctrb_curl_easy_init"
 // end of [curl_easy_init]
 
 (* ****** ****** *)

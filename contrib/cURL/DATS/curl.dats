@@ -51,6 +51,9 @@ staload "libc/SATS/stdarg.sats"
 (* ****** ****** *)
 
 %{^
+//
+// HX-2010-06-03: not sure if this is a good idea:
+//
 extern CURLcode Curl_setopt(ats_ptr_type, CURLoption, va_list);
 #define atsctrb_Curl_setopt(curl, option, arg) Curl_setopt(curl, option, *(va_list*)arg)
 %} // end of [%{^]

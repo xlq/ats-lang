@@ -961,6 +961,17 @@ atsctrb_gtk_option_menu_new () {
 
 ATSinline()
 ats_ptr_type
+atsctrb_gtk_progress_bar_new () {
+  GtkWidget *widget = gtk_progress_bar_new () ;
+  g_object_ref_sink(G_OBJECT(widget)) ; // removing floating reference!
+  return widget ;
+} // end of [atsctrb_gtk_progress_bar_new]
+
+//
+// HX-2010-06-03: this one is deprecated!
+//
+ATSinline()
+ats_ptr_type
 atsctrb_gtk_progress_bar_new_with_adjustment
   (ats_ptr_type adj) {
   GtkWidget *widget =
@@ -968,6 +979,23 @@ atsctrb_gtk_progress_bar_new_with_adjustment
   g_object_ref_sink(G_OBJECT(widget)) ; // removing floating reference!
   return widget ;
 } // end of [atsctrb_gtk_progress_bar_new_with_adjustment]
+
+#define atsctrb_gtk_progress_bar_pulse gtk_progress_bar_pulse
+
+#define atsctrb_gtk_progress_bar_get_text gtk_progress_bar_get_text
+#define atsctrb_gtk_progress_bar_set_text gtk_progress_bar_set_text
+
+#define atsctrb_gtk_progress_bar_get_fraction gtk_progress_bar_get_fraction
+#define atsctrb_gtk_progress_bar_set_fraction gtk_progress_bar_set_fraction
+
+#define atsctrb_gtk_progress_bar_get_pulse_step gtk_progress_bar_get_pulse_step
+#define atsctrb_gtk_progress_bar_set_pulse_step gtk_progress_bar_set_pulse_step
+
+#define atsctrb_gtk_progress_bar_get_orientation gtk_progress_bar_get_orientation
+#define atsctrb_gtk_progress_bar_set_orientation gtk_progress_bar_set_orientation
+
+#define atsctrb_gtk_progress_bar_get_ellipsize gtk_progress_bar_get_ellipsize
+#define atsctrb_gtk_progress_bar_set_ellipsize gtk_progress_bar_set_ellipsize
 
 /* ****** ****** */
 
