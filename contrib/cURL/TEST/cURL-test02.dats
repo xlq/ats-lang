@@ -56,32 +56,32 @@ extern fun my_thread
 implement my_thread (pf_gerr | bar) = () where {
   val curl  = curl_easy_init ()
   val () = assert_errmsg (curlptr_isnot_null curl, #LOCATION)
-
+//
   val (pf_err | err) = curl_easy_setopt (curl, CURLOPT_URL, @("www.ats-lang.org"))
   val () = assert_errmsg (err = CURLE_OK, #LOCATION)
   prval () = curlerr_elim_null (pf_err)
-
+//
   val (pf_err | err) = curl_easy_setopt (curl, CURLOPT_NOPROGRESS, @(0))
   val () = assert_errmsg (err = CURLE_OK, #LOCATION)
   prval () = curlerr_elim_null (pf_err)
-
+//
   val (pf_err | err) = curl_easy_setopt (curl, CURLOPT_PROGRESSFUNCTION, @(my_progress_func))
   val () = assert_errmsg (err = CURLE_OK, #LOCATION)
   prval () = curlerr_elim_null (pf_err)
-
+//
   val p_bar = ptr_of (bar)
   val (pf_err | err) = curl_easy_setopt (curl, CURLOPT_PROGRESSDATA, @(p_bar))
   val () = assert_errmsg (err = CURLE_OK, #LOCATION)
   prval () = curlerr_elim_null (pf_err)
-
+//
   val (pf_err | err) = curl_easy_perform (curl)
   val () = assert_errmsg (err = CURLE_OK, #LOCATION)
   prval () = curlerr_elim_null (pf_err)
-
+//
   val () = g_object_unref (bar)
   val () = curl_easy_cleanup (curl)
   val () = curl_global_cleanup (pf_gerr | (*none*))
-}
+} // end of [my_thread]
 
 (* ****** ****** *)
 

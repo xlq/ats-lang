@@ -14,6 +14,7 @@ all: \
   binary-trees2_smp \
   binary-trees3 \
   fannkuch fannkuch2 fannkuch3 \
+  fannkuch-redux \
   fasta fasta2 fasta4 \
   k-nucleotide \
   k-nucleotide2 \
@@ -71,6 +72,11 @@ fannkuch2: fannkuch2.dats
 
 fannkuch3: fannkuch3.dats
 	$(ATSCC) -D_ATS_MULTITHREAD -O3 -fomit-frame-pointer fannkuch3.dats -o fannkuch3 -lpthread -lats_mt
+
+######
+
+fannkuch-redux: fannkuch-redux.dats
+	$(ATSCC) -fomit-frame-pointer -O3 fannkuch-redux.dats -o fannkuch-redux
 
 ######
 

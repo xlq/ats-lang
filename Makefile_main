@@ -234,9 +234,10 @@ cleanall:: clean
 	find . -name .svn -prune -o -name \*~ -exec rm \{} \;
 
 ######
-
+#
 # The inclusion of [ats_grammar_yats.c] and [ats_grammar_yats.h]
 # obviates the need for [yacc] or [byacc]
+#
 tar:: cleanall
 	rm -rf ATS/*
 	cp COPYING ATS

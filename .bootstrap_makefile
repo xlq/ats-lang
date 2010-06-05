@@ -671,7 +671,7 @@ ats_ccomp_main_dats.o: ats_ccomp_main_dats.c
 clean::
 	rm -f *.o
 
-cleanall: clean; rm -f atsopt
+cleanall:: clean; rm -f atsopt
 
 ######
 

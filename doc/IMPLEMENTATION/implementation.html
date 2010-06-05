@@ -71,7 +71,10 @@ errors.
 <B>Bootstrapping via gcc</B>&nbsp;
 In order to bootstrap ATS/Anairiats, one needs to first check out the
 following svn directory and name it as some local directory, say, "FOO":
-<PRE>svn co https://ats-lang.svn.sourceforge.net/svnroot/ats-lang/trunk FOO</PRE>
+<PRE>svn co https://ats-lang.svn.sourceforge.net/svnroot/ats-lang/trunk
+FOO</PRE> Note that this checkout puts the C code needed for bootstrapping
+in a directory of the name "FOO/bootstrap0".
+<P>
 
 <!--
 Then one needs to check out another svn directory and name it as
@@ -90,8 +93,8 @@ After this is done, please go into the directory "FOO" and execute the
 command 'autoconf' and then do 'make all'.
 -->
 
-Then please go into the directory "FOO" and execute the command 'aclocal'
-and then the command 'autoconf' and then do 'make all'.
+Please go into the directory "FOO" and execute the command 'aclocal' and
+then the command 'autoconf' and then do 'make all'.
 <P>
 
 <B>Bootstrapping via ocaml</B>&nbsp;

@@ -20,22 +20,17 @@ typedef iarr (n:int) = array (natLte n, n+1)
 (* ****** ****** *)
 
 %{^
-
-/*
-** HX: it is really difficult to beat [memcpy] :)
-*/
-
+// HX: it is really difficult to beat [memcpy] :)
 static inline
 ats_void_type iarr_copy
   (ats_ptr_type src, ats_ptr_type dst, ats_int_type n) {
   memcpy ((int*)dst+1, (int*)src+1,  n * sizeof(ats_int_type)) ;
   return ;
 } // end of iarr_copy
-
-%}
-
+%} // end of [%{^]
 extern fun iarr_copy {n:nat}
   (src: iarr n, dst: iarr n, n: int n): void = "iarr_copy"
+// end of [iarr_copy]
 
 (* ****** ****** *)
 
@@ -45,7 +40,6 @@ fn fprint_iarr {n:nat}
   val () = while (i <= n) (fprint_int (out, A[i]); i := i+1)
   val () = fprint_char (out, '\n')
 } (* end of [fprint_iarr] *)
-
 macdef print_iarr (A, n) = fprint_iarr (stdout_ref, ,(A), ,(n))
 
 (* ****** ****** *)
@@ -58,8 +52,9 @@ fun perm_rotate
   val () = P[i] := P1
 } (* end of [perm_rotate] *)
 
-fun perm_next {n,i:int | 1 <= i; i <= n}
-  (C: iarr n, P: iarr n, n: int n, i: int i): natLte (n+1) = let
+fun perm_next {n,i:int | 1 <= i; i <= n} (
+    C: iarr n, P: iarr n, n: int n, i: int i
+  ) : natLte (n+1) = let
   val x = C[i]; val x1 = x-1; val () = perm_rotate {n,i} (P, i)
 in
   case+ 0 of

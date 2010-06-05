@@ -18,12 +18,12 @@ implement main () = () where {
   // HX: [curl_easy_init] is advised to be called after [curl_global_init]
   val curl  = curl_easy_init ()
   val () = assert_errmsg (curlptr_isnot_null curl, #LOCATION)
-(*
   val (pf_err | err) = curl_easy_setopt (curl, CURLOPT_URL, @("www.ats-lang.org"))
   val () = assert_errmsg (err = CURLE_OK, #LOCATION)
   prval () = curlerr_elim_null (pf_err)
-*)
+(*
   val () = curl_easy_setopt_exn (curl, CURLOPT_URL, @("www.ats-lang.org"))
+*)
   val (pf_err | err) = curl_easy_perform (curl)
   val () = assert_errmsg (err = CURLE_OK, #LOCATION)
   prval () = curlerr_elim_null (pf_err)

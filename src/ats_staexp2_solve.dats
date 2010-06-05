@@ -99,6 +99,7 @@ datatype staerr =
   | STAERR_s2exp_equal of (loc_t, s2exp, s2exp)
   | STAERR_funclo_equal of (loc_t, funclo, funclo)
   | STAERR_s2eff_leq of (loc_t, s2eff, s2eff)
+  | STAERR_s2exp_linearity of (loc_t, s2exp)
 // end of [datatype]
 
 viewtypedef staerrlst_vt = List_vt (staerr)
@@ -166,6 +167,14 @@ fn prerr_staerr_s2eff_leq
   prerr "The actual term is: "; prerr_s2eff s2fe1; prerr_newline ();  
 end // end of [prerr_staerr_s2eff_leq]
 
+fn prerr_staerr_s2exp_linearity
+  (loc: loc_t, s2e: s2exp): void = begin
+  prerr_loc_error3 (loc);
+  $Deb.debug_prerrf (": %s: s2exp_equal_solve", @(THISFILENAME));
+  prerr ": mismatch of linearity:\n";
+  prerr "A nonlinear term is needed: "; pprerr_s2exp s2e; prerr_newline ();
+end // end of [prerr_staerr_s2exp_linearity]
+
 fn prerr_the_staerrlst () = let
   fun loop (xs: staerrlst_vt): void = case+ xs of
     | ~list_vt_cons (x, xs) => let
@@ -174,6 +183,7 @@ fn prerr_the_staerrlst () = let
         | STAERR_s2exp_equal (loc, s2e1, s2e2) => prerr_staerr_s2exp_equal (loc, s2e1, s2e2)
         | STAERR_s2exp_tyleq (loc, s2e1, s2e2) => prerr_staerr_s2exp_tyleq (loc, s2e1, s2e2)
         | STAERR_s2eff_leq (loc, s2fe1, s2fe2) => prerr_staerr_s2eff_leq (loc, s2fe1, s2fe2)
+        | STAERR_s2exp_linearity (loc, s2e) => prerr_staerr_s2exp_linearity (loc, s2e)
         // end of [case] // end of [val]
       in
         loop (xs)
@@ -186,7 +196,8 @@ end // end of [prerr_the_staerrlst]
 
 (* ****** ****** *)
 
-implement funclo_equal_solve (loc0, fc1, fc2) =
+implement
+funclo_equal_solve (loc0, fc1, fc2) =
   if fc1 = fc2 then () else let
     val () = prerr_staerr_funclo_equal (loc0, fc1, fc2)
   in
@@ -194,7 +205,8 @@ implement funclo_equal_solve (loc0, fc1, fc2) =
   end // end of [if]
 // end of [funclo_equal_solve]
 
-implement funclo_equal_solve_err (loc0, fc1, fc2, err) =
+implement
+funclo_equal_solve_err (loc0, fc1, fc2, err) =
   if fc1 = fc2 then () else let
     val () = err := err + 1
     val () = the_staerrlst_add (STAERR_funclo_equal (loc0, fc1, fc2))
@@ -205,31 +217,38 @@ implement funclo_equal_solve_err (loc0, fc1, fc2, err) =
 
 (* ****** ****** *)
 
-implement clokind_equal_solve_err (loc, knd1, knd2, err) =
+implement
+clokind_equal_solve_err (loc, knd1, knd2, err) =
   if knd1 = knd2 then () else (err := err + 1)
 // end of [clokind_equal_solve_err]
 
-implement label_equal_solve_err (loc, l1, l2, err) =
+implement
+label_equal_solve_err (loc, l1, l2, err) =
   if l1 = l2 then () else (err := err + 1)
 // end of [label_equal_solve_err]
 
-implement linearity_equal_solve_err (loc, lin1, lin2, err) =
+implement
+linearity_equal_solve_err (loc, lin1, lin2, err) =
   if lin1 = lin2 then () else (err := err + 1)
 // end of [linearity_equal_solve_err]
 
-implement pfarity_equal_solve_err (loc, npf1, npf2, err) =
+implement
+pfarity_equal_solve_err (loc, npf1, npf2, err) =
   if npf1 = npf2 then () else (err := err + 1)
 // end of [pfarity_equal_solve_err]
 
-implement refval_equal_solve_err (loc0, refval1, refval2, err) =
+implement
+refval_equal_solve_err (loc0, refval1, refval2, err) =
   if refval1 = refval2 then () else (err := err + 1)
 // end of [refval_equal_solve_err]
 
-implement stamp_equal_solve_err (loc, s1, s2, err) =
+implement
+stamp_equal_solve_err (loc, s1, s2, err) =
   if s1 = s2 then () else (err := err + 1)
 // end of [stamp_equal_solve_err]
 
-implement tyreckind_equal_solve_err (loc, knd1, knd2, err) =
+implement
+tyreckind_equal_solve_err (loc, knd1, knd2, err) =
   if knd1 = knd2 then () else (err := err + 1)
 // end of [tyreckind_equal_solve_err]
 
@@ -274,6 +293,17 @@ implement s2exp_out_void_solve_at (loc0, s2e_at) = begin
 end // end of [s2exp_out_void_solve_at]
 
 (* ****** ****** *)
+
+fn s2exp_nonlin_test_err (
+    loc: loc_t, s2e: s2exp, err: &int
+   ) : void =
+  if s2exp_is_linear s2e then let
+    val () = err := err + 1
+    val () = the_staerrlst_add (STAERR_s2exp_linearity (loc, s2e))
+  in
+    // nothing
+  end // end of [if]
+// end of [s2exp_nonlin_test_err]
 
 fn s2exp_equal_solve_abscon_err (
     loc0: loc_t
@@ -722,8 +752,7 @@ implement
       end // end of [S2Erefarg]
     | _ => (err := err + 1)
     end // end of [S2Erefarg, _]
-  | (S2Etyarr (s2e1_elt, s2ess1_dim), s2en20) => begin
-    case+ s2en20 of
+  | (S2Etyarr (s2e1_elt, s2ess1_dim), s2en20) => begin case+ s2en20 of
     | S2Etyarr (s2e2_elt, s2ess2_dim) => () where {
         val () = s2exp_tyleq_solve_err (loc0, s2e1_elt, s2e2_elt, err)
         val () = s2explstlst_equal_solve_err (loc0, s2ess1_dim, s2ess2_dim, err)
@@ -750,11 +779,19 @@ implement
         val () = labs2explst_tyleq_solve_err (loc0, ls2es1, ls2es2, err)
       } // end of [S2Etyrec]
     | S2Evararg s2e2 => let
-        val s2e1 = s2exp_tylst (aux ls2es1) where {
-          fun aux (ls2es: labs2explst): s2explst = case+ ls2es of
-            | LABS2EXPLSTcons (_, s2e, ls2es) => list_cons (s2e, aux ls2es)
+        val s2e1 = s2exp_tylst (s2es) where {
+          fun aux (
+              loc0: loc_t, ls2es: labs2explst, err: &int
+            ) : s2explst = case+ ls2es of
+            | LABS2EXPLSTcons (_, s2e, ls2es) => let
+                val () = s2exp_nonlin_test_err (loc0, s2e, err)
+                val s2es = aux (loc0, ls2es, err)
+              in
+                list_cons (s2e, s2es)
+              end // end of [LABS2EXPLSTcons]
             | LABS2EXPLSTnil () => list_nil ()
           // end of [aux]
+          val s2es = aux (loc0, ls2es1, err)
         } // end of [where]
         val () = tyreckind_equal_solve_err (loc0, knd1, TYRECKINDflt0, err)
         val () = pfarity_equal_solve_err (loc0, npf1, 0, err)
