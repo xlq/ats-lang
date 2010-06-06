@@ -139,9 +139,11 @@ bin/atspack:
 ###### library ######
 
 ATS_TERMINATION_CHECK=
+#
 # ATS_TERMINATION_CHECK=-D_ATS_TERMINATION_CHECK # it should be turned on from time to time
-
+#
 # [GCC -E] for preprocessing
+#
 .libfiles_local: ; $(GCC) -E -P -x c .libfiles -o .libfiles_local
 libfiles:: .libfiles_local
 	"$(ATSHOME)"/bin/atslib $(ATS_TERMINATION_CHECK) -O2 --libats
@@ -195,7 +197,10 @@ srclines::
 	cd src; make lines
 
 liblines::
-	wc -l prelude/*/*.?ats prelude/*/*/*.?ats  libc/*/*.?ats libc/*/*/*.?ats libats/*/*.?ats libats/*/*/*.?ats 
+	wc -l \
+          prelude/*/*.?ats prelude/*/*/*.?ats \
+          libc/*/*.?ats libc/*/*/*.?ats \
+          libats/*/*.?ats libats/*/*/*.?ats
 
 ######
 
@@ -234,6 +239,8 @@ cleanall:: clean
 	find . -name .svn -prune -o -name \*~ -exec rm \{} \;
 
 ######
+#
+# HX-2010-06-06: this one is no longer needed but in case ...
 #
 # The inclusion of [ats_grammar_yats.c] and [ats_grammar_yats.h]
 # obviates the need for [yacc] or [byacc]

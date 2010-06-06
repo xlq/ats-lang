@@ -384,7 +384,8 @@ macdef CURL_GLOBAL_DEFAULT = $extval (lint, "CURL_GLOBAL_DEFAULT") // = CURL_GLO
 ** This function is not thread-safe!
 *)
 absview CURLglobal_v (i:int)
-fun curl_global_init (flags: lint): [i:int] (CURLglobal_v i | CURLcode i)
+fun curl_global_init
+  (flags: lint): [i:int] (CURLglobal_v i | CURLcode i)
   = "#atsctrb_curl_global_init"
 // end of [curl_global_init]
 
