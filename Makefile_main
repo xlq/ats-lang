@@ -104,12 +104,12 @@ bootstrapping:: ; cd src; $(MAKE) -f Makefile_bootstrap all
 ###### w/o GC ######
 
 atsopt1:: bootstrap1/Makefile
-	cd bootstrap1; $(MAKE) atsopt; mv atsopt "$(ATSHOME)"/bin
+	cd bootstrap1; $(MAKE) atsopt; mv atsopt "$(ATSHOME)"/bin/atsopt
 
 ###### with GC ######
 
 atsopt1_gc:: bootstrap1/Makefile
-	cd bootstrap1; $(MAKE) atsopt_gc; mv atsopt "$(ATSHOME)"/bin
+	cd bootstrap1; $(MAKE) atsopt_gc; mv atsopt_gc "$(ATSHOME)"/bin/atsopt
 
 ###### contrib libraries ######
 

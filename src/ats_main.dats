@@ -625,16 +625,6 @@ end // end of [do_trans1234]
 
 (* ****** ****** *)
 
-%{^
-
-#if _ATS_BOOTSTRAP
-ats_void_type mainats_prelude () { return ; }
-#endif // end of [_ATS_BOOTSTRAP]
-
-%} // end of [%{^]
-
-(* ****** ****** *)
-
 extern fun is_posmark_xref_prefix
   (s: string): bool = "ats_main_is_posmark_xref_prefix"
 // end of ...
@@ -648,13 +638,12 @@ extern fun IATS_extract (s: string): Stropt = "ats_main_IATS_extract"
 
 (* ****** ****** *)
 
-implement main {n} (argc, argv) = let
+implement
+main {n} (argc, argv) = let
 val () = gc_chunk_count_limit_max_set (~1) // [~1]: infinite
-
 (*
 val () = gc_chunk_count_limit_max_set (0) // for testing GC heavily
 *)
-
 val () = ATSHOMERELOC_set () where {
   extern fun ATSHOMERELOC_set (): void = "ats_main_ATSHOMERELOC_set"
 } // end of [val]

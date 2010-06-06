@@ -78,6 +78,9 @@ fannkuch3: fannkuch3.dats
 fannkuch-redux: fannkuch-redux.dats
 	$(ATSCC) -fomit-frame-pointer -O3 fannkuch-redux.dats -o fannkuch-redux
 
+fannkuch2-redux: fannkuch2-redux.dats
+	$(ATSCC) -D_ATS_MULTITHREAD -O3 -fomit-frame-pointer fannkuch2-redux.dats -o fannkuch2-redux -lpthread -lats_mt
+
 ######
 
 fasta: fasta.dats

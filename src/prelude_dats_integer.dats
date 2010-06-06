@@ -48,47 +48,37 @@
 // stringization
 
 ats_ptr_type
-atspre_tostring_llint (ats_llint_type i0) {
+atspre_tostring_llint
+  (ats_llint_type i0) {
   ats_llint_type i, i1 ; int n ; char *res ;
 
   i1 = (i0 >= 0 ? i0 : -i0) ;
-
   for (i = i1, n = 0; i > 0; i = i / 10) n += 1 ;
-
   if (i0 < 0) n += 1 ; if (i0 == 0) n = 1;
-
   res = ATS_MALLOC(n+1) ; res = res + n ; *res = '\000' ;
-
   for (i = i1, n = 0; i > 0; i = i / 10) {
     *--res = ('0' + i % 10) ;
   }
-
   if (i0 < 0) *--res = '-' ; if (i0 == 0) *--res = '0' ;
-
   return res ;
-}
+} // end of [atspre_tostring_llint]
 
 /* ****** ****** */
 
 ats_ptr_type
-atspre_tostring_ullint (ats_ullint_type i0) {
-  ats_ullint_type i; int n ;
-  char *res ;
+atspre_tostring_ullint
+  (ats_ullint_type i0) {
+  ats_ullint_type i; int n ; char *res ;
 
   for (i = i0, n = 0; i > 0; i = i / 10) n += 1 ;
-
   if (i0 == 0) n = 1 ;
-
   res = ATS_MALLOC(n+1) ; res = res + n; *res = '\000' ;
-  
   for (i = i0, n = 0; i > 0; i = i / 10) {
     *--res = ('0' + i % 10) ;
   }
-
   if (i0 == 0) *--res = '0' ;
-
   return res ;
-}
+} // end of [atspre_tostring_ullint]
 
 %} // end of [%{$]
 

@@ -24,55 +24,40 @@ staload "libc/SATS/pthread_uplock.sats"
 absviewt@ype intarr = $extype "intarr" // integer arrays
 
 %{^
-
 static inline
 ats_ptr_type int_make () {
   return malloc(sizeof(ats_int_type)) ;
 }
-
 static inline
 ats_void_type int_free (ats_ptr_type p) { free (p); return ; }
-
 static inline
 ats_ptr_type
 intarr_make (ats_int_type n) {
   return malloc((n+1) * sizeof(ats_int_type)) ;
 }
-
 static inline
 ats_void_type intarr_free (ats_ptr_type A) {
   free (A) ; return ;
 }
-
 static inline
 ats_int_type // unsafe
 intarr_get (ats_ptr_type A, ats_int_type i) {
   return ((ats_int_type*)A)[i] ;
 }
-
 static inline
 ats_void_type // unsafe
 intarr_set (ats_ptr_type A, ats_int_type i, ats_int_type x) {
   ((ats_int_type*)A)[i] = x ; return ;
 }
-
-%}
-
-extern fun int_make (): [l:addr] (int @ l | ptr l)
-  = "int_make"
-extern fun int_free {l:addr} (pf: int @ l | p: ptr l): void
-  = "int_free"
-
-extern fun intarr_make (sz: int): [l:addr] (intarr @ l | ptr l)
-  = "intarr_make"
-extern fun intarr_free {l:addr} (pf: intarr @ l | p: ptr l): void
-  = "intarr_free"
-
+%} // end of [%{^]
+extern fun int_make (): [l:addr] (int @ l | ptr l) = "int_make"
+extern fun int_free {l:addr} (pf: int @ l | p: ptr l): void = "int_free"
+extern fun intarr_make (sz: int): [l:addr] (intarr @ l | ptr l) = "intarr_make"
+extern fun intarr_free {l:addr} (pf: intarr @ l | p: ptr l): void = "intarr_free"
 // unsafe version
 extern fun intarr_get (A: &intarr, i: int): int = "intarr_get"
-extern fun intarr_set (A: &intarr, i: int, x: int): void = "intarr_set"
-
 overload [] with intarr_get
+extern fun intarr_set (A: &intarr, i: int, x: int): void = "intarr_set"
 overload [] with intarr_set
 
 (* ****** ****** *)

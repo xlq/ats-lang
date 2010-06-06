@@ -78,7 +78,7 @@ ats_void_type fprint_symbol
   s = (char*)dna + sym.beg - 1 ; i = 0 ;
 
   while (i < sym.len) {
-    fputc (*s, (FILE*)out) ; ++i ; ++s ;
+    fputc ( *s, (FILE*)out) ; ++i ; ++s ;
   }
 
   return ;
@@ -584,12 +584,12 @@ ats_ptr_type dna_of_string (ats_string_type s) { return s ; }
 ats_bool_type is_three (ats_ptr_type s0) {
   char *s = (char*) s0 ;
 
-  if (*s != '>') return ats_false_bool ; ++s ;
-  if (*s != 'T') return ats_false_bool ; ++s ;
-  if (*s != 'H') return ats_false_bool ; ++s ;
-  if (*s != 'R') return ats_false_bool ; ++s ;
-  if (*s != 'E') return ats_false_bool ; ++s ;
-  if (*s != 'E') return ats_false_bool ;
+  if ( *s != '>') return ats_false_bool ; ++s ;
+  if ( *s != 'T') return ats_false_bool ; ++s ;
+  if ( *s != 'H') return ats_false_bool ; ++s ;
+  if ( *s != 'R') return ats_false_bool ; ++s ;
+  if ( *s != 'E') return ats_false_bool ; ++s ;
+  if ( *s != 'E') return ats_false_bool ;
   return ats_true_bool ;
 }
 
