@@ -1,4 +1,6 @@
 //
+// Game-of-24 with a rough GUI
+//
 // Author: Hongwei Xi (hwxi AT cs DOT bu DOT edu)
 // Time: April, 2010
 //
@@ -466,7 +468,7 @@ end // end of [quitapp]
 extern
 ats_void_type
 mainats (ats_int_type argc, ats_ptr_type argv) ;
-%}
+%} // end of [%{^]
 
 (* ****** ****** *)
 
