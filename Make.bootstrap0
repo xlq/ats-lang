@@ -1,0 +1,33 @@
+
+CPPFLAGS += -I. -I./ccomp/runtime
+CFLAGS += -Wall -Wextra -Wno-unused -O3
+
+BOOTSTRAP0_SOURCES := $(wildcard bootstrap0/*.c)
+BOOTSTRAP0_OBJECTS := $(BOOTSTRAP0_SOURCES:.c=.o)
+
+# Prelude for bootstrap phase 0.
+
+# NOTE(liulk): this variable is not used, but it documents where the pattern
+# rule bootstrap0/%.o: ccomp/runtime/%.c draws the sources for prelude.
+#
+BOOTSTRAP0_PRELUDE_SOURCES := \
+	ccomp/runtime/ats_bootstrap.c \
+	ccomp/runtime/ats_prelude.c
+
+BOOTSTRAP0_PRELUDE_OBJECTS := \
+	bootstrap0/ats_bootstrap.o \
+	bootstrap0/ats_prelude.o
+
+bootstrap0/%.o: ccomp/runtime/%.c
+	$(CC) $(CPPFLAGS) $(CFLAGS) -c $< -o $@
+
+# Compiling the bootstrap0/atsopt target.
+
+bootstrap0/atsopt: LOADLIBES += -lgmp
+bootstrap0/atsopt: $(BOOTSTRAP0_OBJECTS) $(BOOTSTRAP0_PRELUDE_OBJECTS)
+	$(CC) $(LDFLAGS) $(LOADLIBES) $^ -o $@
+
+clean::
+	rm -f bootstrap0/*.o
+	rm -f bootstrap0/atsopt
+

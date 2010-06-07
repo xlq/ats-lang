@@ -1,0 +1,71 @@
+
+CPPFLAGS += -I. -I./ccomp/runtime
+CFLAGS += -Wall -Wextra -Wno-unused -O3
+
+export ATSHOME=$(shell pwd)
+export ATSHOMERELOC='ATS-0.2.0'
+ATSOPT := $(ATSHOME)/bootstrap0/atsopt
+
+# This signifies bootstrap1's dependency on bootstrap0
+
+bootstrap1/%.dats: $(ATSOPT)
+bootstrap1/%.sats: $(ATSOPT)
+
+# The following rules build the sources in bootstrap1
+
+bootstrap1/%: src/%
+	cp $< $@
+
+.PRECIOUS: bootstrap1/%_yats.c bootstrap1/%_yats.h
+bootstrap1/%_yats.c bootstrap1/%_yats.h: src/%.yats
+	$(YACC) $(YFLAGS) -v -d -o $(basename $@).c $<
+
+.PRECIOUS: bootstrap1/%_dats.c
+bootstrap1/%_dats.c: src/%.dats
+	cd src && $(ATSOPT) $(ATSOPTFLAGS) --output ../$@ -d ../$<
+
+.PRECIOUS: bootstrap1/%_sats.c
+bootstrap1/%_sats.c: src/%.sats
+	cd src && $(ATSOPT) $(ATSOPTFLAGS) --output ../$@ -s ../$<
+
+BOOTSTRAP1_SATS := $(wildcard src/*.sats)
+BOOTSTRAP1_DATS := $(wildcard src/*.dats)
+
+BOOTSTRAP1_SOURCES := \
+	$(BOOTSTRAP1_SATS:src/%.sats=bootstrap1/%_sats.c) \
+	$(BOOTSTRAP1_DATS:src/%.dats=bootstrap1/%_dats.c) \
+	bootstrap1/ats_grammar_yats.c
+
+BOOTSTRAP1_OBJECTS := $(BOOTSTRAP1_SOURCES:.c=.o)
+
+BOOTSTRAP1_PRELUDE_OBJECTS := \
+	bootstrap1/ats_bootstrap.o \
+	bootstrap1/ats_prelude.o
+
+bootstrap1/%.o: ccomp/runtime/%.c
+	$(CC) $(CPPFLAGS) $(CFLAGS) -c $< -o $@
+
+bootstrap1/atsopt: LOADLIBES += -lgmp
+bootstrap1/atsopt: $(BOOTSTRAP1_OBJECTS) $(BOOTSTRAP1_PRELUDE_OBJECTS)
+	$(CC) $(LDFLAGS) $(LOADLIBES) $^ -o $@
+
+clean::
+	rm -f bootstrap1/*.o
+clean-all:: clean
+	rm -f bootstrap1/*.c bootstrap1/*.h bootstrap1/*.cats
+	rm -f bootstrap1/*_yats.output
+
+# Extra dependencies on a case-by-case basis
+
+bootstrap1/ats_ccomp_env_sats.c: \
+	bootstrap1/ats_counter.cats \
+	bootstrap1/ats_intinf.cats
+
+bootstrap1/ats_constraint_dats.c: \
+	bootstrap1/ats_solver_fm.cats
+
+bootstrap1/ats_main_dats.c: \
+	bootstrap1/ats_main.cats
+
+bootstrap1/ats_keyword_dats.c: \
+	bootstrap1/ats_grammar_yats.h

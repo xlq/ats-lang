@@ -54,7 +54,6 @@ AC_CONFIG_SRCDIR([config.h.in])
 AC_CONFIG_HEADER([config.h])
 AC_CONFIG_FILES([config.mk])
 AC_CONFIG_FILES([ats_env.sh])
-AC_CONFIG_FILES([test.sh])
 
 AM_INIT_AUTOMAKE
 
