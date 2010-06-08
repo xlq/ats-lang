@@ -210,7 +210,7 @@ PRELINK = $(LD) $(LDFLAGS) -o $@ -r
 .SUFFIXES: .c .o
 
 %.o: %.c
-	$(COMPILE) -c $?
+	$(COMPILE) -c $<
 
 ######
 

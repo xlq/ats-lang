@@ -27,6 +27,8 @@
 ## 02110-1301, USA.
 ##
 
+######
+
 ##
 ## Author: Hongwei Xi (hwxi AT cs DOT bu DOT edu)
 ## Author: Likai Liu (liulk AT cs DOT bu DOT edu)
@@ -41,7 +43,7 @@ DESTDIR =
 export ATSHOMERELOC
 
 .PHONY: all
-all: Makefile_main_temp
+all:: Makefile_main_temp
 	@$(MAKE) -f Makefile_main_temp $@
 
 ######
@@ -79,7 +81,7 @@ config.h.in: configure.ac; autoheader
 # NOTE(liulk): installation to prefix
 
 .PHONY: install
-install: config.h
+install:: config.h
 	# recursively install all files in the list except .svn control files.
 	for d in ccomp/runtime contrib doc libats libc prelude; do \
 	  cd $(abs_top_srcdir) && \
@@ -115,7 +117,7 @@ install: config.h
 	done
 
 .PHONY: test
-test:
+test::
 	sh test.sh
 
 #

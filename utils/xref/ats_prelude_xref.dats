@@ -30,10 +30,10 @@
 *)
 
 (* ****** ****** *)
-
-// Time: March 2009
+//
 // Author: Hongwei Xi (hwxi AT cs DOT bu DOT edu)
-
+// Time: March 2009
+//
 (* ****** ****** *)
 
 //
