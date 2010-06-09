@@ -31,8 +31,13 @@
 
 ## ###### ###### ##
 
-## Time: December 2007
+## Original Version
 ## Author: Hongwei Xi (hwxi AT cs DOT bu DOT edu)
+## Time: December 2007
+
+## Major Revision
+## Author: Yuri D'Elia (wavexx AT thregr DOT org)
+## Time: June 2010
 
 ## ###### ###### ##
 
@@ -137,15 +142,13 @@ SOURCES := \
   ats_ccomp_emit.dats \
   ats_ccomp_main.dats \
 
-TARGETS := $(SOURCES)
-TARGETS := $(patsubst %.sats, %_sats.c, $(TARGETS))
-TARGETS := $(patsubst %.lats, %_lats.dats, $(TARGETS))
-TARGETS := $(patsubst %.dats, %_dats.c, $(TARGETS))
-TARGETS := $(patsubst %, $(BOOTDIR)/%, $(TARGETS))
+OBJECTS := $(SOURCES)
+OBJECTS := $(patsubst %.sats, %_sats.c, $(OBJECTS))
+OBJECTS := $(patsubst %.lats, %_lats.dats, $(OBJECTS))
+OBJECTS := $(patsubst %.dats, %_dats.c, $(OBJECTS))
+OBJECTS := $(patsubst %, $(BOOTDIR)/%, $(OBJECTS))
 
-######
-
-all:: \
+TARGETS := \
   $(BOOTDIR)/ats_main.cats $(BOOTDIR)/ats_main_dats.c \
   $(BOOTDIR)/ats_lexer_lats_dats.c $(BOOTDIR)/ats_lexer_sats.c \
   $(BOOTDIR)/ats_grammar_yats.c $(BOOTDIR)/ats_grammar_yats.h \
@@ -161,469 +164,26 @@ all:: \
   $(BOOTDIR)/libats_lex_lexing_sats.c \
   $(BOOTDIR)/libats_lex_lexing_dats.c \
   $(BOOTDIR)/libats_lex_tables_dats.c \
-  $(TARGETS)
+  $(OBJECTS)
+
+######
+
+all:: $(TARGETS)
 	echo "All the target files have been generated!"
 
 ######
 
-$(BOOTDIR)/ats_main.cats: ats_main.cats
-	cp -f ats_main.cats $@
-$(BOOTDIR)/ats_main_dats.c: ats_main.dats
-	$(ATSOPT) --output $@ -d ats_main.dats
-
-######
-
-$(BOOTDIR)/ats_lexer_sats.c: ats_lexer_lats.dats
-	$(ATSOPT) --output $@ -s ats_lexer.sats
-$(BOOTDIR)/ats_lexer_lats_dats.c: ats_grammar_yats.h ats_lexer_lats.dats
-	$(ATSOPT) --output $@ -d ats_lexer_lats.dats
-
-######
-
-$(BOOTDIR)/ats_grammar.yats: ats_grammar.yats
-	cp -f ats_grammar.yats $@
+$(BOOTDIR)/%: %
+	cp -f $< $@
 
 ats_grammar_yats.c ats_grammar_yats.h: ats_grammar.yats
 	$(YACC) -v -d -o ats_grammar_yats.c ats_grammar.yats
 
-$(BOOTDIR)/ats_grammar_yats.c: ats_grammar_yats.c
-	cp -f ats_grammar_yats.c $@
-
-$(BOOTDIR)/ats_grammar_yats.h: ats_grammar_yats.h
-	cp -f ats_grammar_yats.h $@
-
-######
-
-$(BOOTDIR)/prelude_dats_array_dats.c: prelude_dats_array.dats
-	$(ATSOPT) --output $@ -d prelude_dats_array.dats
-
-$(BOOTDIR)/prelude_dats_basics_dats.c: prelude_dats_basics.dats
-	$(ATSOPT) --output $@ -d prelude_dats_basics.dats
-
-$(BOOTDIR)/prelude_dats_file_dats.c: prelude_dats_file.dats
-	$(ATSOPT) --output $@ -d prelude_dats_file.dats
-
-$(BOOTDIR)/prelude_dats_integer_dats.c: prelude_dats_integer.dats
-	$(ATSOPT) --output $@ -d prelude_dats_integer.dats
-
-$(BOOTDIR)/prelude_dats_printf_dats.c: prelude_dats_printf.dats
-	$(ATSOPT) --output $@ -d prelude_dats_printf.dats
-
-$(BOOTDIR)/prelude_dats_string_dats.c: prelude_dats_string.dats
-	$(ATSOPT) --output $@ -d prelude_dats_string.dats
-
-######
-
-$(BOOTDIR)/libc_sats_gmp_sats.c: libc_sats_gmp.sats
-	$(ATSOPT) --output $@ -s libc_sats_gmp.sats
-
-$(BOOTDIR)/libc_sats_time_sats.c: libc_sats_time.sats
-	$(ATSOPT) --output $@ -s libc_sats_time.sats
-
-$(BOOTDIR)/libc_dats_unistd_dats.c: libc_dats_unistd.dats
-	$(ATSOPT) --output $@ -d libc_dats_unistd.dats
-
-######
-
-$(BOOTDIR)/libats_lex_lexing_sats.c: libats_lex_lexing.sats
-	$(ATSOPT) --output $@ -s libats_lex_lexing.sats
-
-$(BOOTDIR)/libats_lex_lexing_dats.c: libats_lex_lexing.dats
-	$(ATSOPT) --output $@ -d libats_lex_lexing.dats
-
-$(BOOTDIR)/libats_lex_tables_dats.c: libats_lex_tables.dats
-	$(ATSOPT) --output $@ -d libats_lex_tables.dats
-
-######
-
-$(BOOTDIR)/ats_array_sats.c: ats_array.sats
-	$(ATSOPT) --output $@ -s ats_array.sats
-$(BOOTDIR)/ats_array_dats.c: ats_array.dats
-	$(ATSOPT) --output $@ -d ats_array.dats
-
-$(BOOTDIR)/ats_charlst_sats.c: ats_charlst.sats
-	$(ATSOPT) --output $@ -s ats_charlst.sats
-$(BOOTDIR)/ats_charlst_dats.c: ats_charlst.dats
-	$(ATSOPT) --output $@ -d ats_charlst.dats
-
-$(BOOTDIR)/ats_comarg_sats.c: ats_comarg.sats
-	$(ATSOPT) --output $@ -s ats_comarg.sats
-$(BOOTDIR)/ats_comarg_dats.c: ats_comarg.dats
-	$(ATSOPT) --output $@ -d ats_comarg.dats
-
-$(BOOTDIR)/ats_counter.cats: ats_counter.cats
-	cp -f ats_counter.cats $(BOOTDIR)/ats_counter.cats
-$(BOOTDIR)/ats_counter_sats.c: ats_counter.sats
-	$(ATSOPT) --output $@ -s ats_counter.sats
-$(BOOTDIR)/ats_counter_dats.c: ats_counter.dats
-	$(ATSOPT) --output $@ -d ats_counter.dats
-
-$(BOOTDIR)/ats_debug_sats.c: ats_debug.sats
-	$(ATSOPT) --output $@ -s ats_debug.sats
-$(BOOTDIR)/ats_debug_dats.c: ats_debug.dats
-	$(ATSOPT) --output $@ -d ats_debug.dats
-
-$(BOOTDIR)/ats_effect_sats.c: ats_effect.sats
-	$(ATSOPT) --output $@ -s ats_effect.sats
-$(BOOTDIR)/ats_effect_dats.c: ats_effect.dats
-	$(ATSOPT) --output $@ -d ats_effect.dats
-
-$(BOOTDIR)/ats_error_sats.c: ats_error.sats
-	$(ATSOPT) --output $@ -s ats_error.sats
-$(BOOTDIR)/ats_error_dats.c: ats_error.dats ats_error.sats
-	$(ATSOPT) --output $@ -d ats_error.dats
-
-$(BOOTDIR)/ats_filename_sats.c: ats_filename.sats
-	$(ATSOPT) --output $@ -s ats_filename.sats
-$(BOOTDIR)/ats_filename_dats.c: ats_filename.dats
-	$(ATSOPT) --output $@ -d ats_filename.dats
-
-$(BOOTDIR)/ats_fixity_sats.c: ats_fixity.sats
-	$(ATSOPT) --output $@ -s ats_fixity.sats
-$(BOOTDIR)/ats_fixity_dats.c: ats_fixity.dats
-	$(ATSOPT) --output $@ -d ats_fixity.dats
-
-$(BOOTDIR)/ats_global_sats.c: ats_global.sats
-	$(ATSOPT) --output $@ -s ats_global.sats
-$(BOOTDIR)/ats_global_dats.c: ats_global.dats
-	$(ATSOPT) --output $@ -d ats_global.dats
-
-$(BOOTDIR)/ats_hashtbl_sats.c: ats_hashtbl.sats
-	$(ATSOPT) --output $@ -s ats_hashtbl.sats
-$(BOOTDIR)/ats_hashtbl_dats.c: ats_hashtbl.dats
-	$(ATSOPT) --output $@ -d ats_hashtbl.dats
-
-$(BOOTDIR)/ats_gmp.cats: ats_gmp.cats
-	cp -f ats_gmp.cats $(BOOTDIR)/ats_gmp.cats
-$(BOOTDIR)/ats_intinf.cats: ats_intinf.cats
-	cp -f ats_intinf.cats $(BOOTDIR)/ats_intinf.cats
-$(BOOTDIR)/ats_intinf_sats.c: ats_intinf.sats
-	$(ATSOPT) --output $@ -s ats_intinf.sats
-$(BOOTDIR)/ats_intinf_dats.c: ats_intinf.dats
-	$(ATSOPT) --output $@ -d ats_intinf.dats
-
-$(BOOTDIR)/ats_keyword_sats.c: ats_keyword.sats
-	$(ATSOPT) --output $@ -s ats_keyword.sats
-$(BOOTDIR)/ats_keyword_dats.c: ats_keyword.dats
-	$(ATSOPT) --output $@ -d ats_keyword.dats
-
-$(BOOTDIR)/ats_label_sats.c: ats_label.sats
-	$(ATSOPT) --output $@ -s ats_label.sats
-$(BOOTDIR)/ats_label_dats.c: ats_label.dats
-	$(ATSOPT) --output $@ -d ats_label.dats
-
-$(BOOTDIR)/ats_location_sats.c: ats_location.sats
-	$(ATSOPT) --output $@ -s ats_location.sats
-$(BOOTDIR)/ats_location_dats.c: ats_location.dats
-	$(ATSOPT) --output $@ -d ats_location.dats
-
-$(BOOTDIR)/ats_namespace_sats.c: ats_namespace.sats
-	$(ATSOPT) --output $@ -s ats_namespace.sats
-$(BOOTDIR)/ats_namespace_dats.c: ats_namespace.dats
-	$(ATSOPT) --output $@ -d ats_namespace.dats
-
-$(BOOTDIR)/ats_posmark_sats.c: ats_posmark.sats
-	$(ATSOPT) --output $@ -s ats_posmark.sats
-$(BOOTDIR)/ats_posmark_dats.c: ats_posmark.dats
-	$(ATSOPT) --output $@ -d ats_posmark.dats
-
-$(BOOTDIR)/ats_stamp_sats.c: ats_stamp.sats
-	$(ATSOPT) --output $@ -s ats_stamp.sats
-$(BOOTDIR)/ats_stamp_dats.c: ats_stamp.dats
-	$(ATSOPT) --output $@ -d ats_stamp.dats
-
-$(BOOTDIR)/ats_symbol_sats.c: ats_symbol.sats
-	$(ATSOPT) --output $@ -s ats_symbol.sats
-$(BOOTDIR)/ats_symbol_dats.c: ats_symbol.dats
-	$(ATSOPT) --output $@ -d ats_symbol.dats
-
-$(BOOTDIR)/ats_symenv_sats.c: ats_symenv.sats
-	$(ATSOPT) --output $@ -s ats_symenv.sats
-$(BOOTDIR)/ats_symenv_dats.c: ats_symenv.dats
-	$(ATSOPT) --output $@ -d ats_symenv.dats
-
-$(BOOTDIR)/ats_symtbl_sats.c: ats_symtbl.sats
-	$(ATSOPT) --output $@ -s ats_symtbl.sats
-$(BOOTDIR)/ats_symtbl_dats.c: ats_symtbl.dats
-	$(ATSOPT) --output $@ -d ats_symtbl.dats
-
-$(BOOTDIR)/ats_list_sats.c: ats_list.sats
-	$(ATSOPT) --output $@ -s ats_list.sats
-$(BOOTDIR)/ats_list_dats.c: ats_list.dats
-	$(ATSOPT) --output $@ -d ats_list.dats
-
-$(BOOTDIR)/ats_map_lin_sats.c: ats_map_lin.sats
-	$(ATSOPT) --output $@ -s ats_map_lin.sats
-$(BOOTDIR)/ats_map_lin_dats.c: ats_map_lin.dats
-	$(ATSOPT) --output $@ -d ats_map_lin.dats
-
-$(BOOTDIR)/ats_reference_sats.c: ats_reference.sats
-	$(ATSOPT) --output $@ -s ats_reference.sats
-$(BOOTDIR)/ats_reference_dats.c: ats_reference.dats
-	$(ATSOPT) --output $@ -d ats_reference.dats
-
-$(BOOTDIR)/ats_set_fun_sats.c: ats_set_fun.sats
-	$(ATSOPT) --output $@ -s ats_set_fun.sats
-$(BOOTDIR)/ats_set_fun_dats.c: ats_set_fun.dats
-	$(ATSOPT) --output $@ -d ats_set_fun.dats
-
-$(BOOTDIR)/ats_parser_sats.c: ats_parser.sats
-	$(ATSOPT) --output $@ -s ats_parser.sats
-$(BOOTDIR)/ats_parser_dats.c: ats_parser.dats
-	$(ATSOPT) --output $@ -d ats_parser.dats
-
-$(BOOTDIR)/ats_syntax_sats.c: ats_syntax.sats
-	$(ATSOPT) --output $@ -s ats_syntax.sats
-$(BOOTDIR)/ats_syntax_dats.c: ats_syntax.dats
-	$(ATSOPT) --output $@ -d ats_syntax.dats
-
-$(BOOTDIR)/ats_syntax_posmark_dats.c: ats_syntax_posmark.dats
-	$(ATSOPT) --output $@ -d ats_syntax_posmark.dats
-
-$(BOOTDIR)/ats_staexp1_sats.c: ats_staexp1.sats
-	$(ATSOPT) --output $@ -s ats_staexp1.sats
-$(BOOTDIR)/ats_staexp1_dats.c: ats_staexp1.dats
-	$(ATSOPT) --output $@ -d ats_staexp1.dats
-
-$(BOOTDIR)/ats_staexp1_print_dats.c: ats_staexp1_print.dats
-	$(ATSOPT) --output $@ -d ats_staexp1_print.dats
-
-$(BOOTDIR)/ats_dynexp1_sats.c: ats_dynexp1.sats
-	$(ATSOPT) --output $@ -s ats_dynexp1.sats
-$(BOOTDIR)/ats_dynexp1_dats.c: ats_dynexp1.dats
-	$(ATSOPT) --output $@ -d ats_dynexp1.dats
-
-$(BOOTDIR)/ats_dynexp1_print_dats.c: ats_dynexp1_print.dats
-	$(ATSOPT) --output $@ -d ats_dynexp1_print.dats
-
-$(BOOTDIR)/ats_trans1_env_sats.c: ats_trans1_env.sats
-	$(ATSOPT) --output $@ -s ats_trans1_env.sats
-$(BOOTDIR)/ats_trans1_env_dats.c: ats_trans1_env.dats
-	$(ATSOPT) --output $@ -d ats_trans1_env.dats
-
-$(BOOTDIR)/ats_e1xp_eval_sats.c: ats_e1xp_eval.sats
-	$(ATSOPT) --output $@ -s ats_e1xp_eval.sats
-$(BOOTDIR)/ats_e1xp_eval_dats.c: ats_e1xp_eval.dats
-	$(ATSOPT) --output $@ -d ats_e1xp_eval.dats
-
-$(BOOTDIR)/ats_trans1_sats.c: ats_trans1.sats
-	$(ATSOPT) --output $@ -s ats_trans1.sats
-$(BOOTDIR)/ats_trans1_sta_dats.c: ats_trans1_sta.dats
-	$(ATSOPT) --output $@ -d ats_trans1_sta.dats
-$(BOOTDIR)/ats_trans1_dyn_dats.c: ats_trans1_dyn.dats
-	$(ATSOPT) --output $@ -d ats_trans1_dyn.dats
-
-$(BOOTDIR)/ats_staexp2_sats.c: ats_staexp2.sats
-	$(ATSOPT) --output $@ -s ats_staexp2.sats
-$(BOOTDIR)/ats_staexp2_dats.c: ats_staexp2.dats
-	$(ATSOPT) --output $@ -d ats_staexp2.dats
-
-$(BOOTDIR)/ats_staexp2_print_dats.c: ats_staexp2_print.dats
-	$(ATSOPT) --output $@ -d ats_staexp2_print.dats
-
-$(BOOTDIR)/ats_staexp2_scst_dats.c: ats_staexp2_scst.dats
-	$(ATSOPT) --output $@ -d ats_staexp2_scst.dats
-
-$(BOOTDIR)/ats_staexp2_svVar_dats.c: ats_staexp2_svVar.dats
-	$(ATSOPT) --output $@ -d ats_staexp2_svVar.dats
-
-$(BOOTDIR)/ats_staexp2_dcon_dats.c: ats_staexp2_dcon.dats
-	$(ATSOPT) --output $@ -d ats_staexp2_dcon.dats
-
-$(BOOTDIR)/ats_staexp2_util1_dats.c: ats_staexp2_util1.dats
-	$(ATSOPT) --output $@ -d ats_staexp2_util1.dats
-$(BOOTDIR)/ats_staexp2_util2_dats.c: ats_staexp2_util2.dats
-	$(ATSOPT) --output $@ -d ats_staexp2_util2.dats
-
-$(BOOTDIR)/ats_staexp2_pprint_sats.c: ats_staexp2_pprint.sats
-	$(ATSOPT) --output $@ -s ats_staexp2_pprint.sats
-$(BOOTDIR)/ats_staexp2_pprint_dats.c: ats_staexp2_pprint.dats
-	$(ATSOPT) --output $@ -d ats_staexp2_pprint.dats
-
-$(BOOTDIR)/ats_dynexp2_sats.c: ats_dynexp2.sats
-	$(ATSOPT) --output $@ -s ats_dynexp2.sats
-$(BOOTDIR)/ats_dynexp2_dats.c: ats_dynexp2.dats
-	$(ATSOPT) --output $@ -d ats_dynexp2.dats
-
-$(BOOTDIR)/ats_dynexp2_print_dats.c: ats_dynexp2_print.dats
-	$(ATSOPT) --output $@ -d ats_dynexp2_print.dats
-
-$(BOOTDIR)/ats_dynexp2_dcst_dats.c: ats_dynexp2_dcst.dats
-	$(ATSOPT) --output $@ -d ats_dynexp2_dcst.dats
-
-$(BOOTDIR)/ats_dynexp2_dmac_dats.c: ats_dynexp2_dmac.dats
-	$(ATSOPT) --output $@ -d ats_dynexp2_dmac.dats
-
-$(BOOTDIR)/ats_dynexp2_dvar_dats.c: ats_dynexp2_dvar.dats
-	$(ATSOPT) --output $@ -d ats_dynexp2_dvar.dats
-
-$(BOOTDIR)/ats_dynexp2_util_dats.c: ats_dynexp2_util.dats
-	$(ATSOPT) --output $@ -d ats_dynexp2_util.dats
-
-$(BOOTDIR)/ats_trans2_env_sats.c: ats_trans2_env.sats
-	$(ATSOPT) --output $@ -s ats_trans2_env.sats
-$(BOOTDIR)/ats_trans2_env_dats.c: ats_trans2_env.dats
-	$(ATSOPT) --output $@ -d ats_trans2_env.dats
-
-$(BOOTDIR)/ats_stadyncst2_sats.c: ats_stadyncst2.sats
-	$(ATSOPT) --output $@ -s ats_stadyncst2.sats
-$(BOOTDIR)/ats_stadyncst2_dats.c: ats_stadyncst2.dats
-	$(ATSOPT) --output $@ -d ats_stadyncst2.dats
-
-$(BOOTDIR)/ats_trans2_sats.c: ats_trans2.sats
-	$(ATSOPT) --output $@ -s ats_trans2.sats
-
-$(BOOTDIR)/ats_trans2_sta_dats.c: ats_trans2_sta.dats
-	$(ATSOPT) --output $@ -d ats_trans2_sta.dats
-$(BOOTDIR)/ats_trans2_dyn1_dats.c: ats_trans2_dyn1.dats
-	$(ATSOPT) --output $@ -d ats_trans2_dyn1.dats
-$(BOOTDIR)/ats_trans2_dyn2_dats.c: ats_trans2_dyn2.dats
-	$(ATSOPT) --output $@ -d ats_trans2_dyn2.dats
-
-$(BOOTDIR)/ats_macro2_sats.c: ats_macro2.sats
-	$(ATSOPT) --output $@ -s ats_macro2.sats
-$(BOOTDIR)/ats_macro2_dats.c: ats_macro2.dats
-	$(ATSOPT) --output $@ -d ats_macro2.dats
-
-$(BOOTDIR)/ats_patcst2_sats.c: ats_patcst2.sats
-	$(ATSOPT) --output $@ -s ats_patcst2.sats
-$(BOOTDIR)/ats_patcst2_dats.c: ats_patcst2.dats
-	$(ATSOPT) --output $@ -d ats_patcst2.dats
-
-$(BOOTDIR)/ats_string_parse_sats.c: ats_string_parse.sats
-	$(ATSOPT) --output $@ -s ats_string_parse.sats
-$(BOOTDIR)/ats_string_parse_dats.c: ats_string_parse.dats
-	$(ATSOPT) --output $@ -d ats_string_parse.dats
-
-$(BOOTDIR)/ats_printf_c_lats_dats.c: ats_printf_c_lats.dats
-	$(ATSOPT) --output $@ -d ats_printf_c_lats.dats
-
-$(BOOTDIR)/ats_dynexp3_sats.c: ats_dynexp3.sats
-	$(ATSOPT) --output $@ -s ats_dynexp3.sats
-$(BOOTDIR)/ats_dynexp3_dats.c: ats_dynexp3.dats
-	$(ATSOPT) --output $@ -d ats_dynexp3.dats
-
-$(BOOTDIR)/ats_dynexp3_print_dats.c: ats_dynexp3_print.dats
-	$(ATSOPT) --output $@ -d ats_dynexp3_print.dats
-
-$(BOOTDIR)/ats_trans3_env_sats.c: ats_trans3_env.sats
-	$(ATSOPT) --output $@ -s ats_trans3_env.sats
-$(BOOTDIR)/ats_trans3_env_dats.c: ats_trans3_env.dats
-	$(ATSOPT) --output $@ -d ats_trans3_env.dats
-
-$(BOOTDIR)/ats_trans3_env_eff_dats.c: ats_trans3_env_eff.dats
-	$(ATSOPT) --output $@ -d ats_trans3_env_eff.dats
-
-$(BOOTDIR)/ats_trans3_env_loop_dats.c: ats_trans3_env_loop.dats
-	$(ATSOPT) --output $@ -d ats_trans3_env_loop.dats
-
-$(BOOTDIR)/ats_trans3_env_met_dats.c: ats_trans3_env_met.dats
-	$(ATSOPT) --output $@ -d ats_trans3_env_met.dats
-
-$(BOOTDIR)/ats_trans3_env_scst_dats.c: ats_trans3_env_scst.dats
-	$(ATSOPT) --output $@ -d ats_trans3_env_scst.dats
-
-$(BOOTDIR)/ats_trans3_env_state_dats.c: ats_trans3_env_state.dats
-	$(ATSOPT) --output $@ -d ats_trans3_env_state.dats
-
-$(BOOTDIR)/ats_trans3_env_print_dats.c: ats_trans3_env_print.dats
-	$(ATSOPT) --output $@ -d ats_trans3_env_print.dats
-
-$(BOOTDIR)/ats_staexp2_solve_sats.c: ats_staexp2_solve.sats
-	$(ATSOPT) --output $@ -s ats_staexp2_solve.sats
-$(BOOTDIR)/ats_staexp2_solve_dats.c: ats_staexp2_solve.dats
-	$(ATSOPT) --output $@ -d ats_staexp2_solve.dats
-
-$(BOOTDIR)/ats_trans3_sats.c: ats_trans3.sats
-	$(ATSOPT) --output $@ -s ats_trans3.sats
-
-$(BOOTDIR)/ats_trans3_pat_dats.c: ats_trans3_pat.dats
-	$(ATSOPT) --output $@ -d ats_trans3_pat.dats
-
-$(BOOTDIR)/ats_trans3_assgn_dats.c: ats_trans3_assgn.dats
-	$(ATSOPT) --output $@ -d ats_trans3_assgn.dats
-
-$(BOOTDIR)/ats_trans3_deref_dats.c: ats_trans3_deref.dats
-	$(ATSOPT) --output $@ -d ats_trans3_deref.dats
-
-$(BOOTDIR)/ats_trans3_view_dats.c: ats_trans3_view.dats
-	$(ATSOPT) --output $@ -d ats_trans3_view.dats
-
-$(BOOTDIR)/ats_trans3_exp_up_dats.c: ats_trans3_exp_up.dats
-	$(ATSOPT) --output $@ -d ats_trans3_exp_up.dats
-$(BOOTDIR)/ats_trans3_exp_dn_dats.c: ats_trans3_exp_dn.dats
-	$(ATSOPT) --output $@ -d ats_trans3_exp_dn.dats
-
-$(BOOTDIR)/ats_trans3_loop_dats.c: ats_trans3_loop.dats
-	$(ATSOPT) --output $@ -d ats_trans3_loop.dats
-
-$(BOOTDIR)/ats_trans3_dec_dats.c: ats_trans3_dec.dats
-	$(ATSOPT) --output $@ -d ats_trans3_dec.dats
-
-$(BOOTDIR)/ats_constraint_sats.c: ats_constraint.sats
-	$(ATSOPT) --output $@ -s ats_constraint.sats
-$(BOOTDIR)/ats_constraint_dats.c: ats_constraint.dats
-	$(ATSOPT) --output $@ -d ats_constraint.dats
-
-$(BOOTDIR)/ats_constraint_print_dats.c: ats_constraint_print.dats
-	$(ATSOPT) --output $@ -d ats_constraint_print.dats
-
-$(BOOTDIR)/ats_solver_fm.cats: ats_solver_fm.cats
-	cp -f ats_solver_fm.cats $(BOOTDIR)/ats_solver_fm.cats
-$(BOOTDIR)/ats_solver_fm_sats.c: ats_solver_fm.sats
-	$(ATSOPT) --output $@ -s ats_solver_fm.sats
-$(BOOTDIR)/ats_solver_fm_dats.c: ats_solver_fm.dats
-	$(ATSOPT) --output $@ -d ats_solver_fm.dats
-
-$(BOOTDIR)/ats_hiexp_sats.c: ats_hiexp.sats
-	$(ATSOPT) --output $@ -s ats_hiexp.sats
-$(BOOTDIR)/ats_hiexp_dats.c: ats_hiexp.dats
-	$(ATSOPT) --output $@ -d ats_hiexp.dats
-
-$(BOOTDIR)/ats_hiexp_print_dats.c: ats_hiexp_print.dats
-	$(ATSOPT) --output $@ -d ats_hiexp_print.dats
-
-$(BOOTDIR)/ats_hiexp_util_dats.c: ats_hiexp_util.dats
-	$(ATSOPT) --output $@ -d ats_hiexp_util.dats
-
-$(BOOTDIR)/ats_trans4_sats.c: ats_trans4.sats
-	$(ATSOPT) --output $@ -s ats_trans4.sats
-$(BOOTDIR)/ats_trans4_dats.c: ats_trans4.dats
-	$(ATSOPT) --output $@ -d ats_trans4.dats
-
-$(BOOTDIR)/ats_ccomp_sats.c: ats_ccomp.sats
-	$(ATSOPT) --output $@ -s ats_ccomp.sats
-$(BOOTDIR)/ats_ccomp_dats.c: ats_ccomp.dats
-	$(ATSOPT) --output $@ -d ats_ccomp.dats
-
-$(BOOTDIR)/ats_ccomp_env_sats.c: ats_ccomp_env.sats
-	$(ATSOPT) --output $@ -s ats_ccomp_env.sats
-$(BOOTDIR)/ats_ccomp_env_dats.c: ats_ccomp_env.dats
-	$(ATSOPT) --output $@ -d ats_ccomp_env.dats
-
-$(BOOTDIR)/ats_ccomp_print_dats.c: ats_ccomp_print.dats
-	$(ATSOPT) --output $@ -d ats_ccomp_print.dats
-
-$(BOOTDIR)/ats_ccomp_util_dats.c: ats_ccomp_util.dats
-	$(ATSOPT) --output $@ -d ats_ccomp_util.dats
-
-$(BOOTDIR)/ats_ccomp_trans_dats.c: ats_ccomp_trans.dats
-	$(ATSOPT) --output $@ -d ats_ccomp_trans.dats
-
-$(BOOTDIR)/ats_ccomp_trans_clau_dats.c: ats_ccomp_trans_clau.dats
-	$(ATSOPT) --output $@ -d ats_ccomp_trans_clau.dats
-
-$(BOOTDIR)/ats_ccomp_trans_tailcal_dats.c: ats_ccomp_trans_tailcal.dats
-	$(ATSOPT) --output $@ -d ats_ccomp_trans_tailcal.dats
-
-$(BOOTDIR)/ats_ccomp_trans_temp_dats.c: ats_ccomp_trans_temp.dats
-	$(ATSOPT) --output $@ -d ats_ccomp_trans_temp.dats
-
-$(BOOTDIR)/ats_ccomp_emit_dats.c: ats_ccomp_emit.dats
-	$(ATSOPT) --output $@ -d ats_ccomp_emit.dats
-
-$(BOOTDIR)/ats_ccomp_main_dats.c: ats_ccomp_main.dats
-	$(ATSOPT) --output $@ -d ats_ccomp_main.dats
+$(BOOTDIR)/%_dats.c: %.dats
+	$(ATSOPT) --output $@ -d $<
+
+$(BOOTDIR)/%_sats.c: %.sats
+	$(ATSOPT) --output $@ -s $<
 
 ######
 
