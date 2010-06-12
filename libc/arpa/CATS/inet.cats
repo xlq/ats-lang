@@ -44,25 +44,27 @@
 
 /* ****** ****** */
 
+//
 // implemented in [prelude/DATS/basics.dats]
-extern ats_void_type
-ats_exit_errmsg(ats_int_type n, ats_ptr_type msg) ;
+//
+extern
+ats_void_type ats_exit_errmsg(ats_int_type n, ats_ptr_type msg) ;
 
 /* ****** ****** */
 
-static inline
+ATSinline()
 ats_void_type
-atslib_inet_aton_string_exn (ats_ptr_type cp, ats_ref_type inp) {
+atslib_inet_aton_exn (
+  ats_ptr_type cp, ats_ref_type inp
+) {
   int err = inet_aton((char*)cp, (in_addr_struct_t*)inp) ;
   if (err < 0) {
-    perror ("inet_aton"); ats_exit_errmsg(1, "Exit: [inet_aton] failed.\n");
-  }
+    perror ("inet_aton"); ats_exit_errmsg(1, "exit(ATS): [inet_aton] failed.\n");
+  } // end of [if]
   return ;
-} /* end of [atslib_inet_aton_string_exn] */
+} /* end of [atslib_inet_aton_exn] */
 
-static inline
-ats_ptr_type // this function is not reentrant
-atslib_inet_ntoa (in_addr_struct_t inp) { return inet_ntoa(inp) ; }
+#define atslib_inet_ntoa inet_ntoa
 
 /* ****** ****** */
 

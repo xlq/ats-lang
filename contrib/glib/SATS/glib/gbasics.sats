@@ -105,14 +105,20 @@ overload guint with guint_of_int1
 symintr guint8
 castfn guint8_of_uint (i: uint):<> guint8
 overload guint8 with guint8_of_uint
+castfn guint8_of_int {i:nat} (i: int i):<> guint8
+overload guint8 with guint8_of_int
 
 symintr guint16
 castfn guint16_of_uint (i: uint):<> guint16
 overload guint16 with guint16_of_uint
+castfn guint16_of_int {i:nat} (i: int i):<> guint16
+overload guint16 with guint16_of_int
 
 symintr guint32
 castfn guint32_of_uint (i: uint):<> guint32
 overload guint32 with guint32_of_uint
+castfn guint32_of_int {i:nat} (i: int i):<> guint32
+overload guint32 with guint32_of_int
 
 (* ****** ****** *)
 

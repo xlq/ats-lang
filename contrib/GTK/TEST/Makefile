@@ -1,10 +1,11 @@
 #
-#
+# A simple Makefile for GTK tests
 #
 
 ######
 
 ATSCC=$(ATSHOME)/bin/atscc
+GTKFLAGS=`pkg-config gtk+-2.0 --cflags --libs`
 ATSGTKLIB=$(ATSHOME)/contrib/GTK/atsctrb_GTK.o
 
 ######
@@ -41,76 +42,76 @@ compall:: \
 ######
 
 test01: gtk-test01.dats
-	$(ATSCC) -o test01 gtk-test01.dats `pkg-config --cflags --libs gtk+-2.0`
+	$(ATSCC) -o test01 gtk-test01.dats $(GTKFLAGS)
 
 test02: gtk-test02.dats
-	$(ATSCC) -o test02 gtk-test02.dats `pkg-config --cflags --libs gtk+-2.0`
+	$(ATSCC) -o test02 gtk-test02.dats $(GTKFLAGS)
 
 test03: gtk-test03.dats
-	$(ATSCC) -o test03 gtk-test03.dats `pkg-config --cflags --libs gtk+-2.0`
+	$(ATSCC) -o test03 gtk-test03.dats $(GTKFLAGS)
 
 test04: gtk-test04.dats
-	$(ATSCC) -o test04 gtk-test04.dats `pkg-config --cflags --libs gtk+-2.0`
+	$(ATSCC) -o test04 gtk-test04.dats $(GTKFLAGS)
 
 test05: gtk-test05.dats
-	$(ATSCC) -o test05 gtk-test05.dats `pkg-config --cflags --libs gtk+-2.0`
+	$(ATSCC) -o test05 gtk-test05.dats $(GTKFLAGS)
 
 test06: gtk-test06.dats
-	$(ATSCC) -o test06 gtk-test06.dats `pkg-config --cflags --libs gtk+-2.0`
+	$(ATSCC) -o test06 gtk-test06.dats $(GTKFLAGS)
 
 test07: gtk-test07.dats
-	$(ATSCC) -o test07 gtk-test07.dats `pkg-config --cflags --libs gtk+-2.0`
+	$(ATSCC) -o test07 gtk-test07.dats $(GTKFLAGS)
 
 test08: gtk-test08.dats
-	$(ATSCC) -o test08 gtk-test08.dats `pkg-config --cflags --libs gtk+-2.0`
+	$(ATSCC) -o test08 gtk-test08.dats $(GTKFLAGS)
 
 test09: gtk-test09.dats
-	$(ATSCC) -o test09 gtk-test09.dats `pkg-config --cflags --libs gtk+-2.0`
+	$(ATSCC) -o test09 gtk-test09.dats $(GTKFLAGS)
 
 ######
 
 test10: gtk-test10.dats
-	$(ATSCC) -o test10 gtk-test10.dats `pkg-config --cflags --libs gtk+-2.0`
+	$(ATSCC) -o test10 gtk-test10.dats $(GTKFLAGS)
 
 test11: gtk-test11.dats
-	$(ATSCC) -o test11 gtk-test11.dats `pkg-config --cflags --libs gtk+-2.0`
+	$(ATSCC) -o test11 gtk-test11.dats $(GTKFLAGS)
 
 test12: gtk-test12.dats
-	$(ATSCC) -o test12 gtk-test12.dats `pkg-config --cflags --libs gtk+-2.0`
+	$(ATSCC) -o test12 gtk-test12.dats $(GTKFLAGS)
 
 test13: gtk-test13.dats
-	$(ATSCC) -o test13 gtk-test13.dats `pkg-config --cflags --libs gtk+-2.0`
+	$(ATSCC) -o test13 gtk-test13.dats $(GTKFLAGS)
 
 test14: gtk-test14.dats
-	$(ATSCC) -o test14 gtk-test14.dats `pkg-config --cflags --libs gtk+-2.0`
+	$(ATSCC) -o test14 gtk-test14.dats $(GTKFLAGS)
 
 ######
 
 test15-1: gtk-test15-1.dats
-	$(ATSCC) -o test15-1 gtk-test15-1.dats `pkg-config --cflags --libs gtk+-2.0`
+	$(ATSCC) -o test15-1 gtk-test15-1.dats $(GTKFLAGS)
 
 test15-2: gtk-test15-2.dats
-	$(ATSCC) -o test15-2 gtk-test15-2.dats `pkg-config --cflags --libs gtk+-2.0`
+	$(ATSCC) -o test15-2 gtk-test15-2.dats $(GTKFLAGS)
 
 ######
 
 test16: gtk-test16.dats
-	$(ATSCC) -o test16 gtk-test16.dats `pkg-config --cflags --libs gtk+-2.0`
+	$(ATSCC) -o test16 gtk-test16.dats $(GTKFLAGS)
 
 test17: gtk-test17.dats
-	$(ATSCC) -o test17 gtk-test17.dats `pkg-config --cflags --libs gtk+-2.0`
+	$(ATSCC) -o test17 gtk-test17.dats $(GTKFLAGS)
 
 test18: gtk-test18.dats
-	$(ATSCC) -o test18 gtk-test18.dats `pkg-config --cflags --libs gtk+-2.0`
+	$(ATSCC) -o test18 gtk-test18.dats $(GTKFLAGS)
 
 test19: gtk-test19.dats
-	$(ATSCC) -o test19 gtk-test19.dats `pkg-config --cflags --libs gtk+-2.0`
+	$(ATSCC) -o test19 gtk-test19.dats $(GTKFLAGS)
 
 ######
 
 test20: gtk-test20.dats
 	$(ATSCC) -o test20 \
-        $(ATSGTKLIB) gtk-test20.dats `pkg-config --cflags --libs gtk+-2.0`
+        $(ATSGTKLIB) gtk-test20.dats $(GTKFLAGS)
 
 ######
 

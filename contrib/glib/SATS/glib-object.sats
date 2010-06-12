@@ -66,6 +66,7 @@ overload ptr_of with ptr_of_gobjref
 (* ****** ****** *)
 
 classdec GObject // super: none
+  classdec GInitiallyUnowned : GObject // HX: no floating reference in ATS
 classdec GInterface // super: none
 
 (* ****** ****** *)

@@ -64,6 +64,21 @@ fun clutter_stage_set_color
 
 (* ****** ****** *)
 
+fun clutter_stage_get_title
+  {c:cls | c <= ClutterStage}
+  {l:agz} (stage: !gobjref (c, l))
+  : [l1:addr] (minus (gobjref (c, l), gstring l1) | gstring l1)
+  = "#atsctrb_clutter_stage_get_title"
+// end of [clutter_stage_get_title]
+
+fun clutter_stage_set_title
+  {c:cls | c <= ClutterStage}
+  {l,l1:addr | l > null} (stage: !gobjref (c, l), title: !gstring l1): void
+  = "#atsctrb_clutter_stage_set_title"
+// end of [clutter_stage_set_title]
+
+(* ****** ****** *)
+
 fun clutter_stage_get_fullscreen
   {c:cls | c <= ClutterStage} {l:agz} (stage: !gobjref (c, l)): gboolean
   = "#atsctrb_clutter_stage_get_fullscreen"
@@ -77,15 +92,15 @@ fun clutter_stage_set_fullscreen
 
 (* ****** ****** *)
 
-fun clutter_stage_is_show_cursor
+fun clutter_stage_show_cursor
   {c:cls | c <= ClutterStage} {l:agz} (stage: !gobjref (c, l)): void
-  = "#atsctrb_clutter_stage_is_show_cursor"
-// end of [clutter_stage_get_is_show_cursor]
+  = "#atsctrb_clutter_stage_show_cursor"
+// end of [clutter_stage_get_show_cursor]
 
-fun clutter_stage_is_hide_cursor
+fun clutter_stage_hide_cursor
   {c:cls | c <= ClutterStage} {l:agz} (stage: !gobjref (c, l)): void
-  = "#atsctrb_clutter_stage_is_hide_cursor"
-// end of [clutter_stage_get_is_hide_cursor]
+  = "#atsctrb_clutter_stage_hide_cursor"
+// end of [clutter_stage_get_hide_cursor]
 
 (* ****** ****** *)
 

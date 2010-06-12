@@ -83,6 +83,8 @@
 #define atsctrb_clutter_actor_set_height clutter_actor_set_height
 #define atsctrb_clutter_actor_get_size clutter_actor_get_size
 #define atsctrb_clutter_actor_set_size clutter_actor_set_size
+#define atsctrb_clutter_actor_get_position clutter_actor_get_position
+#define atsctrb_clutter_actor_set_position clutter_actor_set_position
 
 /* ****** ****** */
 
@@ -97,12 +99,46 @@
 /* ****** ****** */
 
 //
+// source: clutter-container.h
+//
+
+#define atsctrb_clutter_container_add_actor clutter_container_add_actor
+
+/* ****** ****** */
+
+//
 // source: clutter-main.h
 //
 
 #define atsctrb_clutter_main clutter_main
 #define atsctrb_clutter_main_quit clutter_main_quit
 #define atsctrb_clutter_main_level clutter_main_level
+
+/* ****** ****** */
+
+//
+// source: clutter-rectangle.h
+//
+
+ATSinline()
+ats_ptr_type
+atsctrb_clutter_rectangle_new () {
+  ClutterActor *actor = clutter_rectangle_new() ;
+  g_object_ref_sink(G_OBJECT(actor)) ; // removing floating reference!
+  return actor ;
+} // end of [clutter_rectangle_new]
+
+ATSinline()
+ats_ptr_type
+atsctrb_clutter_rectangle_new_with_color
+  (ats_ptr_type clr) {
+  ClutterActor *actor = clutter_rectangle_new_with_color((ClutterColor*)clr) ;
+  g_object_ref_sink(G_OBJECT(actor)) ; // removing floating reference!
+  return actor ;
+} // end of [clutter_rectangle_new_with_color]
+
+#define atsctrb_clutter_rectangle_get_color clutter_rectangle_get_color
+#define atsctrb_clutter_rectangle_set_color clutter_rectangle_set_color
 
 /* ****** ****** */
 
@@ -119,6 +155,12 @@
 
 #define atsctrb_clutter_stage_get_fullscreen clutter_stage_get_fullscreen
 #define atsctrb_clutter_stage_set_fullscreen clutter_stage_set_fullscreen
+
+#define atsctrb_clutter_stage_show_cursor clutter_stage_show_cursor
+#define atsctrb_clutter_stage_hide_cursor clutter_stage_hide_cursor
+
+#define atsctrb_clutter_stage_get_title clutter_stage_get_title
+#define atsctrb_clutter_stage_set_title clutter_stage_set_title
 
 /* ****** ****** */
 

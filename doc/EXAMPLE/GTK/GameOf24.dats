@@ -225,8 +225,11 @@ macdef gs = gstring_of_string
 overload gint with gint_of_GtkResponseType
 
 fun answering
-  (xs: List exp): void = () where {
+  {c:cls | c <= GtkWindow} {l:agz}
+  (parent: !gobjref (c, l), xs: List exp): void = () where {
   val dialog = gtk_dialog_new ()
+//
+  val () = gtk_window_set_transient_for (dialog, parent)
 //
   val (fpf_win | win) = gtk_dialog_get_window (dialog)
   val (fpf_x | x) = (gs)"Game-of-24 Answer Dialog"
@@ -310,8 +313,9 @@ fun answering
 
 (* ****** ****** *)
 
-fun play24 {n:nat}
-  (ns: list_vt (int, n)) = let
+fun play24
+  {c:cls | c <= GtkWindow} {l:agz} {n:nat}
+  (parent: !gobjref (c, l), ns: list_vt (int, n)): void = let
   val xs = loop (ns, list_nil) where {
     fun loop {i,j:nat} .<i>.
       (ns: list_vt (int, i), xs: explst j): explst (i+j) =
@@ -327,7 +331,7 @@ fun play24 {n:nat}
   val ans = 24.0
   val res = play (ans, n, xs, list_nil)
   val res = explst_remdup (res)
-  val () = answering (res)
+  val () = answering (parent, res)
 (*
   val () = loop (res) where {
     fun loop (xs: List exp): void =
@@ -398,7 +402,9 @@ fun inputapp (): void = () where {
 
 (* ****** ****** *)
 
-fun evalapp (): void = let
+fun evalapp
+  {c:cls | c <= GtkWindow} {l:agz}
+  (parent: !gobjref (c, l)): void = let
   fun loop (xs: !suitSpinnerLst): List_vt int =
     case+ xs of
     | list_vt_cons (!p_x, !p_xs) => let
@@ -413,7 +419,7 @@ fun evalapp (): void = let
   // end of [loop]
   val (vbox pf_xs | p_xs) = ref_get_view_ptr (theSuitSpinnerLst)
   val vs = $effmask_ref (loop (!p_xs))
-  val () = $effmask_ref (play24 (vs))
+  val () = $effmask_ref (play24 (parent, vs))
 in
   // nothing
 end // end of [evalapp]
@@ -526,8 +532,8 @@ implement main1 () = () where {
     val (fpf_x | x) = (gstring_of_string)"Eval"
     val button = gtk_button_new_with_label (x)
     prval () = fpf_x (x)
-    val _sid = g_signal_connect
-      (button, (gsignal)"clicked", G_CALLBACK(evalapp), (gpointer)null)
+    val _sid = g_signal_connect_swapped1
+      (button, (gsignal)"clicked", G_CALLBACK(evalapp), window)
     val () = gtk_box_pack_start (hbox, button, GTRUE, GTRUE, (guint)10)
     val () = gtk_widget_show_unref (button)
   } // end of [val]
@@ -555,7 +561,7 @@ implement main1 () = () where {
   val () = gtk_widget_show (window)
   prval () = fpf_window (window)
   val () = gtk_main ()
-} // end of [main]
+} // end of [main1]
 
 (* ****** ****** *)
 
@@ -568,9 +574,7 @@ ats_void_type
 mainats (
   ats_int_type argc, ats_ptr_type argv
 ) {
-  gtk_init ((int*)&argc, (char***)&argv) ;
-  main1 () ;
-  return ;
+  gtk_init ((int*)&argc, (char***)&argv) ; main1 () ; return ;
 } // end of [mainats]
 %} // end of [%{$]
 

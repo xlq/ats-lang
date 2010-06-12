@@ -2221,7 +2221,6 @@ val d3e0 = (case+ d2e0.d2exp_node of
       d3exp_intsp (loc0, s2e, str, int)
     end // end of [D2Eintsp]
   | D2Elam_dyn (lin, npf, p2ts_arg, d2e_body) => let
-      val loc0 = d2e0.d2exp_loc
       val fc0: $Syn.funclo = $Syn.FUNCLOfun () // default
       val @(s2e_fun, p3ts_arg, d3e_body) =
         d2exp_arg_body_tr_up (loc0, fc0, lin, npf, p2ts_arg, d2e_body)
@@ -2230,10 +2229,27 @@ val d3e0 = (case+ d2e0.d2exp_node of
       d3exp_lam_dyn (loc0, s2e_fun, lin, npf, p3ts_arg, d3e_body)
     end // end of [D2Elam_dyn]
   | D2Elaminit_dyn (lin, npf, p2ts_arg, d2e_body) => let
-      val loc0 = d2e0.d2exp_loc
       val fc0: $Syn.funclo = $Syn.FUNCLOclo 0(*unboxed*) // default
       val @(s2e_fun, p3ts_arg, d3e_body) =
         d2exp_arg_body_tr_up (loc0, fc0, lin, npf, p2ts_arg, d2e_body)
+      var err : int = 0
+      val () = case+ s2e_fun.s2exp_node of
+        | S2Efun (fc, _, _, _, _, _) => begin case+ fc of
+          | $Syn.FUNCLOclo 0 => ()
+          | $Syn.FUNCLOclo _ => let
+              val () = err := err + 1 in
+              prerr_loc_error3 loc0;
+              prerr ": a flat closure is needed."; prerr_newline ()
+            end
+          | $Syn.FUNCLOfun _ => let
+              val () = err := err + 1 in
+              prerr_loc_error3 loc0;
+              prerr ": a flat closure is needed."; prerr_newline ()
+            end
+          end // end of [S2Efun]
+        | _ => () // HX: deadcode
+      // end of [val]
+      val () = if (err > 0) then $Err.abort {void} () else ()
     in
       d3exp_laminit_dyn (loc0, s2e_fun, lin, npf, p3ts_arg, d3e_body)
     end // end of [D2Elaminit_dyn]

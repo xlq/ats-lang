@@ -136,4 +136,17 @@ fun clutter_actor_set_size
 
 (* ****** ****** *)
 
+fun clutter_actor_get_position
+  {c:cls | c <= ClutterActor} {l:agz} (
+    self: !gobjref (c, l), x: &gfloat? >> gfloat, y: &gfloat? >> gfloat
+  ) : void = "#atsctrb_clutter_actor_get_position"
+// end of [clutter_actor_get_position]
+
+fun clutter_actor_set_position
+  {c:cls | c <= ClutterActor} {l:agz}
+  (self: !gobjref (c, l), x: gfloat, y: gfloat): void = "#atsctrb_clutter_actor_set_position"
+// end of [clutter_actor_set_position]
+
+(* ****** ****** *)
+
 (* end of [clutter-actor.sats] *)

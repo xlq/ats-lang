@@ -7,26 +7,25 @@
 /************************************************************************/
 
 /*
- * ATS - Unleashing the Power of Types!
- *
- * Copyright (C) 2002-2008 Hongwei Xi.
- *
- * ATS is  free software;  you can redistribute it and/or modify it under
- * the  terms of the  GNU General Public License as published by the Free
- * Software Foundation; either version 2.1, or (at your option) any later
- * version.
- * 
- * ATS is distributed in the hope that it will be useful, but WITHOUT ANY
- * WARRANTY; without  even  the  implied  warranty  of MERCHANTABILITY or
- * FITNESS FOR A PARTICULAR PURPOSE.  See the  GNU General Public License
- * for more details.
- * 
- * You  should  have  received  a  copy of the GNU General Public License
- * along  with  ATS;  see the  file COPYING.  If not, please write to the
- * Free Software Foundation,  51 Franklin Street, Fifth Floor, Boston, MA
- * 02110-1301, USA.
- *
- */
+** ATS - Unleashing the Power of Types!
+**
+** Copyright (C) 2002-2008 Hongwei Xi.
+**
+** ATS is  free software;  you can redistribute it and/or modify it under
+** the  terms of the  GNU General Public License as published by the Free
+** Software Foundation; either version 2.1, or (at your option) any later
+** version.
+** 
+** ATS is distributed in the hope that it will be useful, but WITHOUT ANY
+** WARRANTY; without  even  the  implied  warranty  of MERCHANTABILITY or
+** FITNESS FOR A PARTICULAR PURPOSE.  See the  GNU General Public License
+** for more details.
+** 
+** You  should  have  received  a  copy of the GNU General Public License
+** along  with  ATS;  see the  file COPYING.  If not, please write to the
+** Free Software Foundation,  51 Franklin Street, Fifth Floor, Boston, MA
+** 02110-1301, USA.
+*/
 
 /* ****** ****** */
 
@@ -43,29 +42,29 @@
 
 /* ****** ****** */
 
-static inline
+ATSinline()
 in_port_t // in_port_nbo_t
-atslib_in_port_nbo_of_int (ats_int_type n) {
-  in_port_t nport = n ; return htons (nport) ;
-} /* end of [atslib_in_port_nbo_of_int] */
+atslib_in_port_nbo_of_int
+  (ats_int_type n) { in_port_t nport = n ; return htons (nport) ; }
+/* end of [atslib_in_port_nbo_of_int] */
 
 /* ****** ****** */
 
-static inline
+ATSinline()
 in_addr_t // in_addr_nbo_t
-atslib_in_addr_nbo_of_hbo (in_addr_t addr_hbo) {
-  return htonl (addr_hbo) ;
-} /* end of [atslib_in_addr_nbo_of_hbo] */
+atslib_in_addr_nbo_of_hbo
+  (in_addr_t addr_hbo) { return htonl (addr_hbo) ; }
+/* end of [atslib_in_addr_nbo_of_hbo] */
 
 /* ****** ****** */
 
 typedef struct in_addr in_addr_struct_t ;
 
-static inline
+ATSinline()
 in_addr_t // in_addr_nbo_t
-atslib_in_addr_struct_s_addr_get (in_addr_struct_t inp) {
-  return (inp.s_addr) ;
-} /* end of [atslib_in_addr_struct_s_addr_get] */
+atslib_in_addr_struct_s_addr_get
+  (in_addr_struct_t inp) { return (inp.s_addr) ; }
+/* end of [atslib_in_addr_struct_s_addr_get] */
 
 /* ****** ****** */
 

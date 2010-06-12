@@ -93,6 +93,10 @@ viewtypedef ClutterAction_ref0 = [l:agez] ClutterAction_ref l
 viewtypedef ClutterAction_ref1 = [l:addr | l > null] ClutterAction_ref l
 *)
 
+viewtypedef ClutterRectangle_ref (l:addr) = gobjref (ClutterRectangle, l)
+viewtypedef ClutterRectangle_ref0 = [l:agez] ClutterRectangle_ref l
+viewtypedef ClutterRectangle_ref1 = [l:addr | l > null] ClutterRectangle_ref l
+
 viewtypedef ClutterStage_ref (l:addr) = gobjref (ClutterStage, l)
 viewtypedef ClutterStage_ref0 = [l:agez] ClutterStage_ref l
 viewtypedef ClutterStage_ref1 = [l:addr | l > null] ClutterStage_ref l
@@ -103,6 +107,9 @@ viewtypedef ClutterStage_ref1 = [l:addr | l > null] ClutterStage_ref l
 "contrib/Clutter/SATS/clutter/clutter-action.sats"
 #include "contrib/Clutter/SATS/clutter/clutter-actor.sats"
 #include "contrib/Clutter/SATS/clutter/clutter-color.sats"
+#include "contrib/Clutter/SATS/clutter/clutter-container.sats"
+#include "contrib/Clutter/SATS/clutter/clutter-group.sats"
+#include "contrib/Clutter/SATS/clutter/clutter-rectangle.sats"
 #include "contrib/Clutter/SATS/clutter/clutter-stage.sats"
 
 (* ****** ****** *)

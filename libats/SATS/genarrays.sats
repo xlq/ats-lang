@@ -38,7 +38,7 @@
 ** Contributed by Hongwei Xi (hwxi AT cs DOT bu DOT edu)
 ** Contributed by Shivkumar Chandrasekaran (shiv AT ece DOT ucsb DOT edu)
 **
-** Time: Summer, 2009
+** Start Time: Summer, 2009
 **
 *)
 

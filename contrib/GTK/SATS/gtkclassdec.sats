@@ -30,12 +30,10 @@
 *)
 
 (* ****** ****** *)
-
 //
 // Author: Hongwei Xi (hwxi AT cs DOT bu DOT edu)
-// Time: April, 2010
+// Start Time: April, 2010
 //
-
 (* ****** ****** *)
 
 #define ATS_STALOADFLAG 0 // no need for staloading at run-time
@@ -44,6 +42,7 @@
 
 staload GOBJ = "contrib/glib/SATS/glib-object.sats"
 stadef GObject = $GOBJ.GObject
+stadef GInitiallyUnowned = $GOBJ.GInitiallyUnowned
 stadef GInterface = $GOBJ.GInterface
 
 (* ****** ****** *)
@@ -56,7 +55,7 @@ classdec GtkFileChooser : GInterface
 //
 // class hierarchy for GTK
 //
-classdec GtkObject : GObject
+classdec GtkObject : GInitiallyUnowned
   classdec GtkWidget : GtkObject
     classdec GtkMisc : GtkWidget
       classdec GtkLabel : GtkMisc

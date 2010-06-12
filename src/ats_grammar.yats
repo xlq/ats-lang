@@ -37,10 +37,10 @@
 /* ****** ****** */
 
 /*
-**
 ** Grammar for ATS/Anairiats
-**
 */
+
+/* ****** ****** */
 
 %{
 
@@ -208,6 +208,22 @@ extern e0xpopt_t e0xpopt_some (e0xp_t) ;
 
 /* ****** ****** */
 
+typedef ats_ptr_type e0fftag_t ;
+extern e0fftag_t e0fftag_cst (int, i0de_t) ;
+extern e0fftag_t e0fftag_var (i0de_t) ;
+extern e0fftag_t e0fftag_var_fun (t0kn_t) ;
+extern e0fftag_t e0fftag_int (i0nt_t) ;
+
+typedef ats_ptr_type e0fftaglst_t ;
+extern e0fftaglst_t e0fftaglst_nil (void) ;
+extern e0fftaglst_t e0fftaglst_cons (e0fftag_t, e0fftaglst_t) ;
+
+typedef ats_ptr_type e0fftaglstopt_t ;
+extern e0fftaglstopt_t e0fftaglstopt_none (void) ;
+extern e0fftaglstopt_t e0fftaglstopt_some (e0fftaglst_t) ;
+
+/* ****** ****** */
+
 typedef ats_ptr_type s0rtq_t ;
 
 extern s0rtq_t s0rtq_str (s0tring_t) ;
@@ -238,22 +254,6 @@ extern s0rtopt_t s0rtopt_some (s0rt_t) ;
 
 typedef ats_ptr_type s0rtpol_t ;
 extern s0rtpol_t s0rtpol_make (s0rt_t, int) ;
-
-/* ****** ****** */
-
-typedef ats_ptr_type e0fftag_t ;
-extern e0fftag_t e0fftag_cst (int, i0de_t) ;
-extern e0fftag_t e0fftag_var (i0de_t) ;
-extern e0fftag_t e0fftag_var_fun (t0kn_t) ;
-extern e0fftag_t e0fftag_int (i0nt_t) ;
-
-typedef ats_ptr_type e0fftaglst_t ;
-extern e0fftaglst_t e0fftaglst_nil (void) ;
-extern e0fftaglst_t e0fftaglst_cons (e0fftag_t, e0fftaglst_t) ;
-
-typedef ats_ptr_type e0fftaglstopt_t ;
-extern e0fftaglstopt_t e0fftaglstopt_none (void) ;
-extern e0fftaglstopt_t e0fftaglstopt_some (e0fftaglst_t) ;
 
 /* ****** ****** */
 
@@ -1030,17 +1030,22 @@ e0xpopt_t e0xpopt ;
 
 /* ****** ****** */
 
+e0fftag_t e0fftag ;
+e0fftaglst_t e0fftaglst ;
+e0fftaglstopt_t e0fftaglstopt ;
+
+/* ****** ****** */
+
 s0rtq_t s0rtq ;
 s0rt_t s0rt ;
 s0rtlst_t s0rtlst ;
 s0rtopt_t s0rtopt ;
 s0rtpol_t s0rtpol ;
 
-/* ****** ****** */
-
-e0fftag_t e0fftag ;
-e0fftaglst_t e0fftaglst ;
-e0fftaglstopt_t e0fftaglstopt ;
+d0atsrtcon_t d0atsrtcon ;
+d0atsrtconlst_t d0atsrtconlst ;
+d0atsrtdec_t d0atsrtdec ;
+d0atsrtdeclst_t d0atsrtdeclst ;
 
 /* ****** ****** */
 
@@ -1097,11 +1102,6 @@ s0rtdef_t s0rtdef ;
 s0rtdeflst_t s0rtdeflst ;
 
 /* ****** ****** */
-
-d0atsrtcon_t d0atsrtcon ;
-d0atsrtconlst_t d0atsrtconlst ;
-d0atsrtdec_t d0atsrtdec ;
-d0atsrtdeclst_t d0atsrtdeclst ;
 
 s0tacon_t s0tacon ;
 s0taconlst_t s0taconlst ;
@@ -1446,7 +1446,9 @@ guad0ec_t guad0ec ;
 
 /* ****** ****** */
 
-/* precedence */
+/*
+** precedence
+*/
 
 %nonassoc PATAS PATFREE
 
@@ -1510,22 +1512,26 @@ guad0ec_t guad0ec ;
 %type <e0xplst> commae0xpseq
 %type <e0xpopt> e0xpopt
 
-%type <s0rtq> s0rtq
+%type <i0de> e0ffid
+%type <e0fftag> e0fftag
+%type <e0fftaglst> e0fftagseq
+%type <e0fftaglst> commae0fftagseq
+%type <e0fftaglstopt> colonwith
 
+%type <s0rtq> s0rtq
 %type <i0de> s0rtid
 %type <s0rt> s0rt
 %type <s0rt> atms0rt
 %type <s0rtlst> atms0rtseq
 %type <s0rtlst> s0rtseq
 %type <s0rtlst> commas0rtseq
-
 %type <s0rtpol> s0rtpol
 
-%type <i0de> e0ffid
-%type <e0fftag> e0fftag
-%type <e0fftaglst> e0fftagseq
-%type <e0fftaglst> commae0fftagseq
-%type <e0fftaglstopt> colonwith
+%type <d0atsrtcon> d0atsrtcon
+%type <d0atsrtconlst> bard0atsrtconseq
+%type <d0atsrtconlst> d0atsrtconseq
+%type <d0atsrtdec> d0atsrtdec
+%type <d0atsrtdeclst> andd0atsrtdecseq
 
 %type <s0taq> s0taq
 %type <d0ynq> d0ynq
@@ -1583,12 +1589,6 @@ guad0ec_t guad0ec ;
 
 %type <s0rtdef> s0rtdef
 %type <s0rtdeflst> ands0rtdefseq
-
-%type <d0atsrtcon> d0atsrtcon
-%type <d0atsrtconlst> bard0atsrtconseq
-%type <d0atsrtconlst> d0atsrtconseq
-%type <d0atsrtdec> d0atsrtdec
-%type <d0atsrtdeclst> andd0atsrtdecseq
 
 %type <d0atarg> d0atarg
 %type <d0atarglst> d0atargseq
@@ -1943,6 +1943,36 @@ e0xpopt
 
 /* ****** ****** */
 
+e0ffid /* alphanum identifier for effects */
+  : IDENTIFIER_alp                      { $$ = $1 ; }
+;
+
+e0fftag /* effect tag */
+  : BANG e0ffid                         { $$ = e0fftag_cst (0, $2) ; }
+  | TILDA e0ffid                        { $$ = e0fftag_cst (1, $2) ; }
+  | e0ffid                              { $$ = e0fftag_var($1) ; }
+  | FUN                                 { $$ = e0fftag_var_fun($1) ; }
+  | LITERAL_int                         { $$ = e0fftag_int($1) ; }
+;
+
+e0fftagseq /* effect tag sequence */
+  : /* empty */                         { $$ = e0fftaglst_nil() ; }
+  | e0fftag commae0fftagseq             { $$ = e0fftaglst_cons($1, $2) ; }
+;
+
+commae0fftagseq
+  : /* empty */                         { $$ = e0fftaglst_nil() ; }
+  | COMMA e0fftag commae0fftagseq       { $$ = e0fftaglst_cons($2, $3) ; }
+;
+
+colonwith /* effection annotation */
+  : COLON                               { $$ = e0fftaglstopt_none() ; }
+  | COLONLTGT                           { $$ = e0fftaglstopt_some(e0fftaglst_nil()) ; }
+  | COLONLT e0fftagseq GT               { $$ = e0fftaglstopt_some($2) ; }
+;
+
+/* ****** ****** */
+
 s0rtq /* sort qualifier */
   : i0de_dlr DOT                        { $$ = s0rtq_sym($1) ; }
   | DOLLAR LITERAL_string DOT           { $$ = s0rtq_str($2) ; }
@@ -2025,36 +2055,6 @@ d0atsrtdec /* datasort declaration */
 andd0atsrtdecseq /* additional datasort declaration sequence */
   : /* empty */                         { $$ = d0atsrtdeclst_nil() ; }
   | AND d0atsrtdec andd0atsrtdecseq     { $$ = d0atsrtdeclst_cons($2, $3) ; }
-;
-
-/* ****** ****** */
-
-e0ffid /* alphanum identifier for effects */
-  : IDENTIFIER_alp                      { $$ = $1 ; }
-;
-
-e0fftag /* effect tag */
-  : BANG e0ffid                         { $$ = e0fftag_cst (0, $2) ; }
-  | TILDA e0ffid                        { $$ = e0fftag_cst (1, $2) ; }
-  | e0ffid                              { $$ = e0fftag_var($1) ; }
-  | FUN                                 { $$ = e0fftag_var_fun($1) ; }
-  | LITERAL_int                         { $$ = e0fftag_int($1) ; }
-;
-
-e0fftagseq /* effect tag sequence */
-  : /* empty */                         { $$ = e0fftaglst_nil() ; }
-  | e0fftag commae0fftagseq             { $$ = e0fftaglst_cons($1, $2) ; }
-;
-
-commae0fftagseq
-  : /* empty */                         { $$ = e0fftaglst_nil() ; }
-  | COMMA e0fftag commae0fftagseq       { $$ = e0fftaglst_cons($2, $3) ; }
-;
-
-colonwith /* effection annotation */
-  : COLON                               { $$ = e0fftaglstopt_none() ; }
-  | COLONLTGT                           { $$ = e0fftaglstopt_some(e0fftaglst_nil()) ; }
-  | COLONLT e0fftagseq GT               { $$ = e0fftaglstopt_some($2) ; }
 ;
 
 /* ****** ****** */
@@ -3291,7 +3291,9 @@ int yylex () {
   return tok ;
 } /* end of [yylex_tok0] */
 
-// needed in [ats_lexer.lats]
+//
+// HX: needed in [ats_lexer.lats]
+//
 ats_void_type
 yylval_char_set (c0har_t val)
   { yylval.c0har = val ; return ; }
@@ -3346,14 +3348,12 @@ yyparse_main (
   ats_int_type tok0
 ) {
 /*
-** must take care of garbage collection
+** HX: must take care of garbage collection
 */
   // fprintf (stderr, "yyparse_main: &yyss = %p\n", &yyss) ;
   // ATS_GC_MARKROOT (&yyss, sizeof(short*)) ; // [ats_malloc_ngc] is used
-
   // fprintf (stderr, "yyparse_main: &yyvs = %p\n", &yyvs) ;
   // ATS_GC_MARKROOT (&yyvs, sizeof(YYSTYPE*)) ;  // [ats_malloc_ngc] is used
-
 /*
 ** HX-2010-02-25:
 ** if BISON is used then [yyval] is a stack variable and

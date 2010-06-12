@@ -7,28 +7,27 @@
 (***********************************************************************)
 
 (*
- * ATS - Unleashing the Potential of Types!
- *
- * Copyright (C) 2002-2008 Hongwei Xi, Boston University
- *
- * All rights reserved
- *
- * ATS is free software;  you can  redistribute it and/or modify it under
- * the  terms of the  GNU General Public License as published by the Free
- * Software Foundation; either version 2.1, or (at your option) any later
- * version.
- * 
- * ATS is distributed in the hope that it will be useful, but WITHOUT ANY
- * WARRANTY; without  even  the  implied  warranty  of MERCHANTABILITY or
- * FITNESS FOR A PARTICULAR PURPOSE.  See the  GNU General Public License
- * for more details.
- * 
- * You  should  have  received  a  copy of the GNU General Public License
- * along  with  ATS;  see  the  file  COPYING.  If not, write to the Free
- * Software Foundation, 51  Franklin  Street,  Fifth  Floor,  Boston,  MA
- * 02110-1301, USA.
- *
- *)
+** ATS - Unleashing the Potential of Types!
+**
+** Copyright (C) 2002-2008 Hongwei Xi, Boston University
+**
+** All rights reserved
+**
+** ATS is free software;  you can  redistribute it and/or modify it under
+** the  terms of the  GNU General Public License as published by the Free
+** Software Foundation; either version 2.1, or (at your option) any later
+** version.
+** 
+** ATS is distributed in the hope that it will be useful, but WITHOUT ANY
+** WARRANTY; without  even  the  implied  warranty  of MERCHANTABILITY or
+** FITNESS FOR A PARTICULAR PURPOSE.  See the  GNU General Public License
+** for more details.
+** 
+** You  should  have  received  a  copy of the GNU General Public License
+** along  with  ATS;  see  the  file  COPYING.  If not, write to the Free
+** Software Foundation, 51  Franklin  Street,  Fifth  Floor,  Boston,  MA
+** 02110-1301, USA.
+*)
 
 (* ****** ****** *)
 
@@ -37,15 +36,12 @@
 (* ****** ****** *)
 
 %{#
-
 #include "libc/netinet/CATS/in.cats"
-
-%}
+%} // end of [%{#]
 
 (* ****** ****** *)
 
 abst@ype address_family_t = $extype "ats_int_type"
-
 macdef AF_INET = $extval (address_family_t, "AF_INET")
 macdef AF_INET6 = $extval (address_family_t, "AF_INET6")
 macdef AF_UNIX = $extval (address_family_t, "AF_UNIX")
@@ -66,10 +62,8 @@ fun in_port_nbo_of_int (n: int): in_port_nbo_t
 (* ****** ****** *)
 
 (*
-
 [struct in_addr] and  [in_addr_t] are really the same:
 struct in_addr { in_addr_t s_addr; }; // defined in [netinet/in.h]
-
 *)
 
 abst@ype in_addr_hbo_t = $extype "in_addr_t"
