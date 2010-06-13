@@ -151,10 +151,12 @@ end // end of [location_combine]
 
 (* ****** ****** *)
 
-implement location_filename_get (loc) = loc.filename
-
+implement
+location_get_filename (loc) = loc.filename
 implement location_begpos_toff (loc) = loc.begpos_toff
 implement location_endpos_toff (loc) = loc.endpos_toff
+
+(* ****** ****** *)
 
 implement lte_location_location (loc1, loc2) = begin
   loc1.begpos_toff <= loc2.begpos_toff

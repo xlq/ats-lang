@@ -632,7 +632,7 @@ in
   | PMstacstuse (i, loc(*dec*)) => if i = 0 then let
       val () = fprint1_string (pf_mod | fil_d, "<A href=\"")
       val () = fprint_stadyncstpos (pf_mod | fil_d, name) where {
-        val fil = $Loc.location_filename_get loc
+        val fil = $Loc.location_get_filename loc
         val name = $Fil.filename_full (fil)
       } // end of [val]
       val () = fprint1_string (pf_mod | fil_d, "#") 
@@ -661,7 +661,7 @@ in
   | PMdyncstimp (i, loc(*dec*)) => if i = 0 then let
       val () = fprint1_string (pf_mod | fil_d, "<A href=\"")
       val () = fprint_stadyncstpos (pf_mod | fil_d, name) where {
-        val fil = $Loc.location_filename_get loc
+        val fil = $Loc.location_get_filename loc
         val name = $Fil.filename_full (fil)
       } // end of [val]
       val () = fprint1_string (pf_mod | fil_d, "#")
@@ -677,7 +677,7 @@ in
   | PMdyncstuse (i, loc(*dec*)) => if i = 0 then let
       val () = fprint1_string (pf_mod | fil_d, "<A href=\"")
       val () = fprint_stadyncstpos (pf_mod | fil_d, name) where {
-        val fil = $Loc.location_filename_get loc
+        val fil = $Loc.location_get_filename loc
         val name = $Fil.filename_full (fil)
       } // end of [val]
       val () = fprint1_string (pf_mod | fil_d, "#") 

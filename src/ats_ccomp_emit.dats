@@ -893,7 +893,7 @@ implement emit_valprim (pf | out, vp0) = begin
     end // end of [VPcst]
   | VPcstsp (loc, cst) => begin case+ cst of
     | $Syn.CSTSPfilename () => let
-        val fil = $Loc.location_filename_get (loc)
+        val fil = $Loc.location_get_filename (loc)
         val name = $Fil.filename_full fil; val len = string_length (name)
       in
         emit_valprim_string (pf | out, name, len)

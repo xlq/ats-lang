@@ -75,6 +75,13 @@ fn prerr_interror () = prerr "INTERNAL ERROR (ats_filename)"
 local
 
 #include "prelude/params_system.hats"
+#if OPERATING_SYSTEM_IS_UNIX_LIKE #then
+//
+val theDirsep: char = '/'
+val theCurdir: string = "./"
+val thePredir: string = "../"
+//
+#endif
 
 in
 
@@ -83,16 +90,10 @@ in
 //
 extern fun getcwd (): String = "atslib_getcwd"
 
-#if OPERATING_SYSTEM_IS_UNIX_LIKE #then
+implement theDirsep_get () = theDirsep
+implement theCurdir_get () = theCurdir
+implement thePredir_get () = thePredir
 
-val theDirsep: char = '/'
-val theCurdir: string = "./"
-val thePredir: string = "../"
-
-#endif
-
-extern val "theDirsep" = theDirsep
-implement dirsep_get () = theDirsep
 
 end // end of [local]
 
@@ -106,8 +107,9 @@ implement filename_is_relative (name) = let
     (name: string n, i: size_t i, dirsep: char): bool =
     if string_is_at_end (name, i) then true else name[i] <> dirsep
   // end of [aux]
+  val dirsep = theDirsep_get ()
 in
-  aux (name, 0, theDirsep)
+  aux (name, 0, dirsep)
 end // [filename_is_relative]
 
 %{^
@@ -129,15 +131,18 @@ ats_ptr_type
 ats_filename_append (
   ats_ptr_type dir, ats_ptr_type bas
 ) {
-  int n1, n2, n ; char *dirbas ;
-
+  int n1, n2, n ;
+  char dirsep, *dirbas ;
+//
+  dirsep = ats_filename_theDirsep_get () ;
+//
   n1 = strlen ((char*)dir) ;
   n2 = strlen ((char*)bas) ;
   n = n1 + n2 ;
-  if (n1 > 0 && ((char*)dir)[n1-1] != theDirsep) n += 1 ;
+  if (n1 > 0 && ((char*)dir)[n1-1] != dirsep) n += 1 ;
   dirbas = ATS_MALLOC (n + 1) ;
   memcpy (dirbas, dir, n1) ;
-  if (n > n1 + n2) { dirbas[n1] = theDirsep ; n1 += 1 ; }
+  if (n > n1 + n2) { dirbas[n1] = dirsep ; n1 += 1 ; }
   memcpy (dirbas + n1, bas, n2) ;
   dirbas[n] = '\000' ;
 
@@ -213,22 +218,27 @@ implement prerr_filename_base (x) = prerr_mac (fprint_filename_base, x)
 
 (* ****** ****** *)
 
-staload Lst = "ats_list.sats"
+typedef path = string
 
-fn filename_normalize (s0: string): string = let
-  val s0 = string1_of_string s0; val n0 = string_length s0
-  fn* loop1 {n0,i0:nat | i0 <= n0}
-    (s0: string n0, n0: size_t n0, i0: size_t i0, dirs: &List string): void =
-    if i0 < n0 then loop2 (s0, n0, i0, i0, dirs) else ()
-  and loop2 {n0,i0,i:nat | i0 < n0; i0 <= i; i <= n0}
-    (s0: string n0, n0: size_t n0, i0: size_t i0, i: size_t i, dirs: &List string)
-    : void =
+staload "ats_list.sats"
+staload _(*anon*) = "ats_list.dats"
+fun path_normalize (s0: path): path = let
+  fun loop1 {n0,i0:nat | i0 <= n0} (
+      dirsep: char
+    , s0: string n0, n0: size_t n0, i0: size_t i0, dirs: &List_vt string
+    ) : void =
+    if i0 < n0 then loop2 (dirsep, s0, n0, i0, i0, dirs) else ()
+  and loop2 {n0,i0,i:nat | i0 < n0; i0 <= i; i <= n0} (
+      dirsep: char
+    , s0: string n0, n0: size_t n0, i0: size_t i0, i: size_t i, dirs: &List_vt string
+    ) : void =
     if i < n0 then let
 (*
       // empty
 *)
     in
-      if s0[i] <> theDirsep then loop2 (s0, n0, i0, i+1, dirs)
+      if s0[i] <> dirsep then
+        loop2 (dirsep, s0, n0, i0, i+1, dirs)
       else let
         val sbp = string_make_substring (s0, i0, i - i0 + 1)
         val dir = string1_of_strbuf (sbp) // this is a no-op cast
@@ -238,7 +248,7 @@ fn filename_normalize (s0: string): string = let
         end // end of [val]
 *)
       in
-        dirs := list_cons (dir, dirs); loop1 (s0, n0, i + 1, dirs)
+        dirs := list_vt_cons (dir, dirs); loop1 (dirsep, s0, n0, i + 1, dirs)
       end // end of [if]
     end else let
       val sbp = string_make_substring (s0, i0, i - i0)
@@ -249,41 +259,53 @@ fn filename_normalize (s0: string): string = let
       end // end of [val]
 *)
     in
-      dirs := list_cons (dir, dirs)
+      dirs := list_vt_cons (dir, dirs)
     end // end of [if]
   // end of [loop1] and [loop2]
-  fun dirs_process
-    (npre: Nat, dirs: List string, res: List string)
-    : List string = case+ dirs of
-    | list_cons (dir, dirs) => begin
-        if dir = theCurdir then dirs_process (npre, dirs, res)
-        else if dir = thePredir then dirs_process (npre + 1, dirs, res)
+  fun dirs_process (
+      curdir: string, predir: string
+    , npre: Nat, dirs: List_vt string, res: List_vt string
+    ) : List_vt string = case+ dirs of
+    | ~list_vt_cons (dir, dirs) => begin
+        if dir = curdir then
+          dirs_process (curdir, predir, npre, dirs, res)
+        else if dir = predir then
+          dirs_process (curdir, predir, npre + 1, dirs, res)
         else begin
           if npre > 0 then begin
-            dirs_process (npre - 1, dirs, res)
+            dirs_process (curdir, predir, npre - 1, dirs, res)
           end else begin
-            dirs_process (0, dirs, list_cons (dir, res))
+            dirs_process (curdir, predir, 0, dirs, list_vt_cons (dir, res))
           end (* end of [if] *)
         end (* end of [if] *)
-      end // end of [list_cons]
-    | list_nil () => aux (npre, res) where {
-        fun aux (npre: Nat, res: List string): List string =
-          if npre > 0 then aux (npre - 1, list_cons (thePredir, res))
+      end // end of [list_vt_cons]
+    | ~list_vt_nil () => loop (predir, npre, res) where {
+        fun loop (
+            predir: string, npre: Nat, res: List_vt string
+          ) : List_vt string =
+          if npre > 0 then loop (predir, npre - 1, list_vt_cons (predir, res))
           else res
-      } // end of [list_nil]
+        // end of [loop]
+      } // end of [list_vt_nil]
 //
-  var dirs: List string = list_nil ()
-  val () = loop1 (s0, n0, 0, dirs)
-  val () = dirs := dirs_process (0, dirs, list_nil ())
-  val fullname = stringlst_concat (dirs)
+  val dirsep = theDirsep_get ()
+  val curdir = theCurdir_get () and predir = thePredir_get ()
+//
+  var dirs: List_vt string = list_vt_nil ()
+  val s0 = string1_of_string s0; val n0 = string_length s0
+  val () = loop1 (dirsep, s0, n0, 0, dirs)
+  val () = dirs := dirs_process (curdir, predir, 0, dirs, list_vt_nil ())
+  val fullname = stringlst_concat (__cast dirs) where {
+    extern castfn __cast (x: !List_vt string): List string
+  }
+  val () = list_vt_free (dirs)
 //
 in
   string1_of_strbuf (fullname)
-end // end of [filename_normalize]
+end // end of [path_normalize]
 
 (* ****** ****** *)
 
-typedef path = string
 typedef pathlst = List path
 
 local
@@ -311,7 +333,7 @@ implement the_pathlst_push (dirname) = let
     | _ when filename_is_relative dirname => filename_append (getcwd (), dirname)
     | _ => dirname
   ) : string
-  val dirname_full = filename_normalize (dirname_full)
+  val dirname_full = path_normalize (dirname_full)
 (*
   val () = begin
     print "the_pathlst_push: dirname = "; print dirname; print_newline ();
@@ -472,7 +494,7 @@ implement filenameopt_make (basename) = let
 in
   if stropt_is_some fullnameopt then let
     val fullname = stropt_unsome fullnameopt
-    val fullname = filename_normalize fullname
+    val fullname = path_normalize fullname
   in
     Some_vt (filename_make_absolute fullname)
   end else begin
@@ -486,20 +508,22 @@ implement ats_filename_prerr () =
   prerr_filename (the_filename_get ())
 // end of [ats_filename_prerr]
 
-implement ats_filename_initialize () = begin
+implement
+ats_filename_initialize () = begin
   the_pathlst_reset (); the_filename_reset (); the_filenamelst_reset ()
 end // end of [ats_filename_initialize]
 
 (* ****** ****** *)
 
 %{$
-
+//
 ats_void_type
 ats_filename_fprint_filename_base
   (ats_ptr_type out, ats_ptr_type fil) {
-  char *name, *basename ;
+  char dirsep, *name, *basename ;
+  dirsep = ats_filename_theDirsep_get () ;
   name = (char*)ats_filename_full (fil) ;
-  basename = strrchr (name, theDirsep) ;
+  basename = strrchr (name, dirsep) ;
 
   if (basename) {
     ++basename ; fputs (basename, (FILE*)out) ;
@@ -509,7 +533,7 @@ ats_filename_fprint_filename_base
 
   return ;
 } /* end of [ats_filename_fprint_filename_base] */
-
+//
 %} // end of [%{$]
 
 (* ****** ****** *)

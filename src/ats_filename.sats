@@ -48,7 +48,9 @@ abstype filename_t // boxed type
 
 (* ****** ****** *)
 
-fun dirsep_get (): char = "ats_filename_dirsep_get"
+fun theDirsep_get (): char = "ats_filename_theDirsep_get"
+fun theCurdir_get (): string = "ats_filename_theCurdir_get"
+fun thePredir_get (): string = "ats_filename_thePredir_get"
 
 (* ****** ****** *)
 
