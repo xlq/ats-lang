@@ -62,15 +62,16 @@ typedef intptr = intptr_type
 
 symintr intptr_of
 
-fun int_of_intptr (i: intptr):<> int
-  = "atspre_int_of_intptr"
+fun int_of_intptr
+  (i: intptr):<> int = "atspre_int_of_intptr"
+// end of [int_of_intptr]
 
-fun intptr_of_int (i: int):<> intptr
-  = "atspre_intptr_of_int"
+fun intptr_of_int
+  (i: int):<> intptr = "atspre_intptr_of_int"
 overload intptr_of with intptr_of_int
 
-fun intptr_of_ptr (p: ptr):<> intptr
-  = "atspre_intptr_of_ptr"
+fun intptr_of_ptr
+  (p: ptr):<> intptr = "atspre_intptr_of_ptr"
 overload intptr_of with intptr_of_ptr
 
 (* ****** ****** *)
@@ -260,15 +261,16 @@ typedef uintptr = uintptr_type
 
 symintr uintptr_of
 
-fun uint_of_uintptr (u: uintptr):<> uint
-  = "atspre_uint_of_uintptr"
+fun uint_of_uintptr
+  (u: uintptr):<> uint = "atspre_uint_of_uintptr"
+// end of [uint_of_uintptr]
 
-fun uintptr_of_uint (u: uint):<> uintptr
-  = "atspre_uintptr_of_uint"
+fun uintptr_of_uint
+  (u: uint):<> uintptr = "atspre_uintptr_of_uint"
 overload uintptr_of with uintptr_of_uint
 
-fun uintptr_of_ptr (p: ptr):<> uintptr
-  = "atspre_uintptr_of_ptr"
+fun uintptr_of_ptr
+  (p: ptr):<> uintptr = "atspre_uintptr_of_ptr"
 overload uintptr_of with uintptr_of_ptr
 
 (* ****** ****** *)

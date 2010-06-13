@@ -121,10 +121,13 @@ val symbol_TYPES : symbol_t // type lists
 
 (* ****** ****** *)
 
-(* special variables for object-oriented programming *)
-
+(*
+//
+// special variables for object-oriented programming
+//
 val symbol_SELF : symbol_t
 val symbol_MYCLS : symbol_t
+*)
 
 (* ****** ****** *)
 

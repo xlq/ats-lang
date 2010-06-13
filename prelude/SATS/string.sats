@@ -89,9 +89,7 @@ viewdef Strbufptr_gc = [m,n:nat;l:addr] strbufptr_gc (m, n, l)
 
 praxi bytes_v_of_b0ytes_v {bsz:int}
   {l:addr} (pf: b0ytes (bsz) @ l):<prf> bytes (bsz) @ l
-
 praxi char_v_of_b0yte_v {l:addr} (pf: byte? @ l): char @ l
-
 praxi chars_v_of_b0ytes_v {bsz:int}
   {l:addr} (pf: b0ytes (bsz) @ l):<prf> chars (bsz) @ l
 
@@ -99,24 +97,22 @@ praxi chars_v_of_b0ytes_v {bsz:int}
 
 praxi bytes_v_of_chars_v {bsz:int}
   {l:addr} (pf: chars (bsz) @ l):<prf> bytes (bsz) @ l
-
 praxi bytes_v_of_strbuf_v {bsz:int}
   {l:addr} (pf: strbuf (bsz) @ l):<prf> bytes (bsz) @ l
 
 (* ****** ****** *)
 
-praxi strbuf_v_null {n:nat} {l:addr}
+praxi strbuf_v_null
+  {n:nat} {l:addr}
   (pf1: char NUL @ l, pf2: b0ytes (n) @ l + sizeof(char))
   : strbuf_v (n+1, 0, l)
-
-//
+// end of [strbuf_v]
 
 praxi strbuf_v_cons
   {m,n:nat} {l:addr}
   (pf1: c1har @ l, pf2: strbuf_v (m, n, l + sizeof(char)))
   :<prf> strbuf_v (m+1, n+1, l)
-
-//
+// end of [strbuf_v_cons]
 
 dataview strbufopt_v (int, int, addr, char) =
   | {m:nat} {l:addr}
@@ -665,9 +661,17 @@ viewtypedef Stropt_gc = [m,n:nat] stropt_gc (m, n)
 
 fun tostringf__bufptr {ts:types}
   (fmt: printf_c ts, arg: ts):<> Strbufptr_gc = "atspre_tostringf"
+// end of [tostringf__bufptr]
 
 fun sprintf__bufptr {ts:types}
   (fmt: printf_c ts, arg: ts):<> Strbufptr_gc = "atspre_tostringf"
+// end of [sprintf__bufptr]
+
+(* ****** ****** *)
+
+castfn strptr_of_string (x: string)
+  : [l:agz] (strptr l -<lin,prf> void | strptr l)
+// end of [strptr_of_string]
 
 (* ****** ****** *)
 

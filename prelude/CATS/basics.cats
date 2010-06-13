@@ -122,9 +122,9 @@ atspre_stdin_get () {
 #ifdef _ATS_RUNTIME_CHECK
   if (!ats_stdin_view_lock) {
     ats_exit_errmsg (1, "exit(ATS): [stdin_get] failed\n") ;
-  }
-#endif
+  } // end of [if]
   ats_stdin_view_lock = 0 ;
+#endif
   return (ats_ptr_type)stdin;
 } // end of [atspre_stdin_get]
 
@@ -135,8 +135,8 @@ atspre_stdin_view_get () {
   if (!ats_stdin_view_lock) {
     ats_exit_errmsg (1, "exit(ATS): [stdin_view_get] failed\n") ;
   } // end of [if]
-#endif
   ats_stdin_view_lock = 0 ;
+#endif
   return ;
 } // end of [atspre_stdin_view_get]
 
@@ -147,24 +147,10 @@ atspre_stdin_view_set () {
   if (ats_stdin_view_lock) {
     ats_exit_errmsg (1, "exit(ATS): [stdin_view_set] failed\n") ;
   } // end of [if]
-#endif
   ats_stdin_view_lock = 1 ;
+#endif
   return ;
 } // end of [atspre_stdin_view_set]
-
-ATSinline()
-ats_bool_type
-atspre_stdin_view_get_opt () {
-  if (ats_stdin_view_lock) { ats_stdin_view_lock = 0 ; return 1 ; }
-  return 0 ;
-} // end of [atspre_stdin_view_get_opt]
-
-ATSinline()
-ats_bool_type
-atspre_stdin_view_set_opt () { 
-  if (!ats_stdin_view_lock) { ats_stdin_view_lock = 1 ; return 1 ; }
-  return 0 ;
-} // end of [atspre_stdin_view_set_opt]
 
 /* ****** ****** */
 
@@ -178,8 +164,8 @@ atspre_stdout_get () {
   if (!ats_stdout_view_lock) {
     ats_exit_errmsg (1, "exit(ATS): [stdout_get] failed\n") ;
   } // end of [if]
-#endif
   ats_stdout_view_lock = 0 ;
+#endif
   return (ats_ptr_type)stdout ;
 } // end of [atspre_stdout_get]
 
@@ -190,8 +176,8 @@ atspre_stdout_view_get () {
   if (!ats_stdout_view_lock) {
     ats_exit_errmsg (1, "exit(ATS): [stdout_view_get] failed\n") ;
   } // end of [if]
-#endif
   ats_stdout_view_lock = 0 ;
+#endif
   return ;
 } // end of [atspre_stdout_view_get]
 
@@ -202,24 +188,10 @@ atspre_stdout_view_set () {
   if (ats_stdout_view_lock) {
     ats_exit_errmsg (1, "exit(ATS): [stdout_view_set] failed\n") ;
   } // end of [if]
-#endif
   ats_stdout_view_lock = 1 ;
+#endif
   return ;
 } // end of [atspre_stdout_view_set]
-
-ATSinline()
-ats_bool_type
-atspre_stdout_view_get_opt () {
-  if (ats_stdout_view_lock) { ats_stdout_view_lock = 0 ; return 1 ; }
-  return 0 ;
-} // end of [atspre_stdout_view_get_opt]
-
-ATSinline()
-ats_bool_type
-atspre_stdout_view_set_opt () { 
-  if (!ats_stdout_view_lock) { ats_stdout_view_lock = 1 ; return 1 ; }
-  return 0 ;
-} // end of [atspre_stdout_view_set_opt]
 
 /* ****** ****** */
 
@@ -233,8 +205,8 @@ atspre_stderr_get () {
   if (!ats_stderr_view_lock) {
     ats_exit_errmsg (1, "exit(ATS): [stderr_get] failed\n") ;
   } // end of [if]
-#endif
   ats_stderr_view_lock = 0 ;
+#endif
   return (ats_ptr_type)stderr ;
 } // end of [atspre_stderr_get]
 
@@ -245,8 +217,8 @@ atspre_stderr_view_get () {
   if (!ats_stderr_view_lock) {
     ats_exit_errmsg (1, "exit(ATS): [stderr_view_get] failed\n") ;
   } // end of [if]
-#endif
   ats_stderr_view_lock = 0 ;
+#endif
   return ;
 } // end of [atspre_stderr_view_get]
 
@@ -257,24 +229,10 @@ atspre_stderr_view_set () {
   if (ats_stderr_view_lock) {
     ats_exit_errmsg (1, (ats_ptr_type)"exit(ATS): [stderr_view_set] failed\n") ;
   } // end of [if]
-#endif
   ats_stderr_view_lock = 1 ;
+#endif
   return ;
 } // end of [atspre_stderr_view_set]
-
-ATSinline()
-ats_bool_type
-atspre_stderr_view_get_opt () {
-  if (ats_stderr_view_lock) { ats_stderr_view_lock = 0 ; return 1 ; }
-  return 0 ;
-} // end of [atspre_stderr_view_get_opt]
-
-ATSinline()
-ats_bool_type
-atspre_stderr_view_set_opt () { 
-  if (!ats_stderr_view_lock) { ats_stderr_view_lock = 1 ; return 1 ; }
-  return 0 ;
-} // end of [atspre_stderr_view_get_opt]
 
 /* ****** ****** */
 

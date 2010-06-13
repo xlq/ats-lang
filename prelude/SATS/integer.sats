@@ -175,13 +175,13 @@ symintr fprint_int
 
 fun fprint0_int (out: FILEref, x: int):<!exnref> void
   = "atspre_fprint_int"
+overload fprint_int with fprint0_int
 
 fun fprint1_int {m:file_mode}
   (pf: file_mode_lte (m, w) | out: &FILE m, x: int):<!exnref> void
   = "atspre_fprint_int"
-
-overload fprint_int with fprint0_int
 overload fprint_int with fprint1_int
+
 overload fprint with fprint_int
 
 //

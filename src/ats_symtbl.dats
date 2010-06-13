@@ -50,13 +50,16 @@ staload "ats_symtbl.sats"
 
 (* ****** ****** *)
 
-viewtypedef tblent = Option symbol_t
-viewtypedef symtbl (sz:int, n:int, l:addr) = @{
+viewtypedef
+tblent = Option symbol_t
+
+viewtypedef
+symtbl (sz:int, n:int, l:addr) = @{
   ptr= ptr l
 , view= @(free_gc_v (tblent, sz, l), @[tblent][sz] @ l)
 , size= int sz
 , nitm= int n
-}
+} // end of [symtbl]
 
 viewtypedef symtbl0 = symtbl (0, 0, null)
 
@@ -65,7 +68,8 @@ assume symtbl_t = [l_tbl: addr] (vbox (symtbl @ l_tbl) | ptr l_tbl)
 
 (* ****** ****** *)
 
-implement symtbl_make (sz) = let
+implement
+symtbl_make (sz) = let
   val (pf_tbl_gc, pf_tbl | p_tbl) =
     ptr_alloc_tsz {symtbl0} (sizeof<symtbl>)
   prval () = free_gc_elim {symtbl0} (pf_tbl_gc)
@@ -135,9 +139,11 @@ end // end of [symtbl_search]
 
 (* ****** ****** *)
 
-fun symtbl_insert_probe {sz,i:nat | i < sz} {l:addr}
-  (pf: !array_v(tblent, sz, l) | p: ptr l, sz: int sz, i: int i, sym: symbol_t)
-  :<!ntm> void = let
+fun symtbl_insert_probe
+  {sz,i:nat | i < sz} {l:addr} (
+    pf: !array_v(tblent, sz, l)
+  | p: ptr l, sz: int sz, i: int i, sym: symbol_t
+  ) :<!ntm> void = let
   val ent = p[i] in case+ ent of
     | Some _ => let
         val i = i + 1; val i = (if i < sz then i else 0): natLt sz
@@ -151,11 +157,12 @@ end // end of [symtbl_insert_probe]
 
 (* ****** ****** *)
 
-fun symtbl_resize_move {sz,i:nat | i <= sz} {l,l_new:addr}
-  (pf: !array_v(tblent, sz, l),
-   pf_new: !array_v(tblent, sz+sz, l_new) |
-   p: ptr l, p_new: ptr l_new, sz: int sz, i: int i)
-  :<!ntm> void = begin
+fun symtbl_resize_move
+  {sz,i:nat | i <= sz} {l,l_new:addr} (
+    pf: !array_v(tblent, sz, l),
+    pf_new: !array_v(tblent, sz+sz, l_new)
+  | p: ptr l, p_new: ptr l_new, sz: int sz, i: int i
+  ) :<!ntm> void = begin
   if i < sz then let
     val () = (case+ p[i] of
       | Some sym => let
@@ -207,7 +214,8 @@ end // end of [symtbl_resize_if]
 
 (* ****** ****** *)
 
-implement symtbl_insert (tbl, name, sym) = let
+implement
+symtbl_insert (tbl, name, sym) = let
 
 val () = symtbl_resize_if (tbl)
 val hash_val = string_hash_33 name

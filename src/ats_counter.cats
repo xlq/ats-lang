@@ -30,10 +30,10 @@
 */
 
 /* ****** ****** */
-
+//
 // Author: Hongwei Xi (hwxi AT cs DOT bu DOT edu)
 // July 2007
-
+//
 /* ****** ****** */
 
 /*
@@ -57,56 +57,62 @@
 /* ****** ****** */
 
 typedef ats_int64_type ats_counter_count_type ;
+/*
 typedef ats_counter_count_type *ats_counter_counter_type ;
+*/
 
 static inline
-ats_counter_counter_type
+ats_ptr_type
 ats_counter_counter_make () {
-  ats_counter_counter_type cntr ;
+  ats_ptr_type cntr ;
   cntr = ATS_MALLOC (sizeof(ats_counter_count_type)) ;
-  *cntr = 0 ; return cntr ;
+  *(ats_counter_count_type*)cntr = 0 ; return cntr ;
 }
 
 static inline
 ats_void_type
-ats_counter_counter_inc (ats_counter_counter_type cntr) {
-  *cntr += 1 ; return ;
+ats_counter_counter_inc (ats_ptr_type cntr) {
+  *(ats_counter_count_type*)cntr += 1 ; return ;
 }
 
 static inline
 ats_counter_count_type
-ats_counter_counter_get (ats_counter_counter_type cntr) {
-  return *cntr ;
+ats_counter_counter_get (ats_ptr_type cntr) {
+  return *(ats_counter_count_type*)cntr ;
 }
 
 static inline
 ats_void_type
 ats_counter_counter_set
-  (ats_counter_counter_type cntr, ats_counter_count_type cnt)
+  (ats_ptr_type cntr, ats_counter_count_type cnt)
 {
- *cntr = cnt ; return ;
+ *(ats_counter_count_type*)cntr = cnt ; return ;
 }
 
 static inline
 ats_void_type
-ats_counter_counter_reset (ats_counter_counter_type cntr) {
- *cntr = 0 ; return ;
+ats_counter_counter_reset
+  (ats_ptr_type cntr) {
+  *(ats_counter_count_type*)cntr = 0 ; return ;
 }
 
 static inline
 ats_counter_count_type
-ats_counter_counter_get_and_inc (ats_counter_counter_type cntr) { 
+ats_counter_counter_get_and_inc
+  (ats_ptr_type cntr) { 
   ats_counter_count_type cnt ;
-  cnt = *cntr ; *cntr += 1 ; return cnt ;
+  cnt = *(ats_counter_count_type*)cntr ;
+  *(ats_counter_count_type*)cntr += 1 ;
+  return cnt ;
 }
 
 static inline
 ats_counter_count_type
-ats_counter_counter_inc_and_get (ats_counter_counter_type cntr)
-{ 
+ats_counter_counter_inc_and_get
+  (ats_ptr_type cntr) { 
   *((ats_counter_count_type*)cntr) += 1 ;
-  return *cntr ;
-}
+  return *(ats_counter_count_type*)cntr ;
+} // end of [ats_counter_counter_inc_and_get]
 
 /* ****** ****** */
 
@@ -123,7 +129,9 @@ ats_counter_compare_count_count
 
 static inline
 ats_uint_type
-ats_counter_count_hash (ats_counter_count_type cnt) {
+ats_counter_count_hash (
+  ats_counter_count_type cnt
+) {
   /* 2654435761 is the golden ration of 2^32 */
   return (2654435761UL * (ats_uint_type)cnt) ;
 }
@@ -132,10 +140,11 @@ ats_counter_count_hash (ats_counter_count_type cnt) {
 
 static inline
 ats_void_type
-ats_counter_fprint_count
-  (ats_ptr_type out, ats_counter_count_type cnt) {
+ats_counter_fprint_count (
+  ats_ptr_type out, ats_counter_count_type cnt
+) {
   fprintf ((FILE*)out, "%lli", (ats_llint_type)cnt) ; return ;
-}
+} // end of [ats_counter_fprint_count]
 
 /* ****** ****** */
 
@@ -143,16 +152,18 @@ extern ats_ptr_type atspre_tostringf (ats_ptr_type format, ...) ;
 
 static inline
 ats_ptr_type
-ats_counter_tostring_count (ats_counter_count_type cnt) {
+ats_counter_tostring_count
+  (ats_counter_count_type cnt) {
   return atspre_tostringf ("%lli", (ats_llint_type)cnt) ;
 }
 
 static inline
 ats_ptr_type
-ats_counter_tostring_count_prefix
-  (ats_ptr_type pre, ats_counter_count_type cnt) {
+ats_counter_tostring_count_prefix (
+  ats_ptr_type pre, ats_counter_count_type cnt
+) {
   return atspre_tostringf ("%s%lli", (char*)pre, (ats_llint_type)cnt) ;
-}
+} // end of [ats_counter_tostring_count_prefix]
 
 /* ****** ****** */
 

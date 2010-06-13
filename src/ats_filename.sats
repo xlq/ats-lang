@@ -61,9 +61,7 @@ val filename_stdin : filename_t
 
 fun filename_is_exist (name: string): bool
   = "ats_filename_is_exist"
-
 fun filename_is_relative (name: string): bool
-
 fun filename_append (dir: string, bas: string): string
   = "ats_filename_append"
 

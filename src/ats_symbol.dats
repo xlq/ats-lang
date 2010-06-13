@@ -41,10 +41,8 @@
 (* ****** ****** *)
 
 %{^
-
 #include "ats_counter.cats" /* only needed for [ATS/Geizella] */
-
-%}
+%} // end of [%{^]
 
 (* ****** ****** *)
 
@@ -62,16 +60,16 @@ assume symbol_t = symbol
 
 (* ****** ****** *)
 
-#define HASHTBL_SIZE_HINT 512
+#define SYMTBLSZHNT 512
 
 implement symbol_name (sym) = sym.name
 
 local
 
 val counter = counter_make ()
-val symtbl = symtbl_make (HASHTBL_SIZE_HINT)
+val symtbl = symtbl_make (SYMTBLSZHNT)
 
-in
+in // in of [local]
 
 implement symbol_make_string name = let
 (*
@@ -178,10 +176,13 @@ implement symbol_TYPES = symbol_make_string "types"
 
 (* ****** ****** *)
 
-(* special variables for OOP *)
-
+(*
+//
+// special variables for OOP
+//
 implement symbol_SELF = symbol_make_string "self"
 implement symbol_MYCLS = symbol_make_string "mycls"
+*)
 
 (* ****** ****** *)
 

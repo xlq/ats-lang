@@ -769,20 +769,15 @@ end // end of [doc_dir_copy]
 
 (* ****** ****** *)
 
-fn file_isexi (name: string): bool = let
-  var buf: $STAT.stat_t
-  val (pf | err) = $STAT.stat_err (view@ buf | name, &buf)
+fn file_isexi
+  (name: string): bool = let
+  var st : $STAT.stat_t
+  val err = $STAT.stat_err (name, st)
+  prval () = opt_clear (st)
 in
-  if (err = 0) then let
-    prval $STAT.stat_v_succ pf = pf; prval () = view@ buf := pf
-  in
-    true
-  end else let
-    prval $STAT.stat_v_fail pf = pf; prval () = view@ buf := pf
-  in
-    false
-  end // end of [if]
+  if (err = 0) then true else false
 end // end of [file_isexi]
+
 
 fn lib_dir_copy
   (srclibname: string, dstlibname: string): void = let

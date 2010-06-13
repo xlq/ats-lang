@@ -36,7 +36,7 @@
 
 (* ****** ****** *)
 
-(* ats_symbol: implementing symbol table facilities for ATS *)
+(* ats_symtbl: implementing symbol table facilities for ATS *)
 
 (* ****** ****** *)
 

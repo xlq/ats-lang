@@ -7,7 +7,7 @@
 (***********************************************************************)
 
 (*
-** ATS/Anairiats - Unleashing the Potential of Types!
+** ATS/Postiats - Unleashing the Potential of Types!
 **
 ** Copyright (C) 2002-2008 Hongwei Xi, Boston University
 **
@@ -30,10 +30,10 @@
 *)
 
 (* ****** ****** *)
-
+//
 // Author: Hongwei Xi (hwxi AT cs DOT bu DOT edu)
 // Time: July 2007
-
+//
 (* ****** ****** *)
 
 (* ats_syntax: AST for source programs in ATS/Anairiats *)

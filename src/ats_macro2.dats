@@ -1462,6 +1462,14 @@ in
     in
       d2exp_viewat (loc0, d2e)
     end // end of [D2Eviewat]
+  | D2Ewhere (d2e, d2cs) => let
+      val () = alphaenv_push (env)
+      val d2cs = eval1_d2eclst (loc0, ctx, env, d2cs)
+      val d2e = eval1_d2exp (loc0, ctx, env, d2e)
+      val () = alphaenv_pop (env)
+    in
+      d2exp_where (loc0, d2e, d2cs)
+    end // end of [D2Elet]
 (*
   | _ => begin
       prerr_loc_errmac loc0;

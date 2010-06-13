@@ -362,15 +362,6 @@ and stdin_view_set (pf: FILE r @ stdin_addr | (*none*)):<!exnref> void
   = "atspre_stdin_view_set"
 // end of [stdin_view_set]
 
-fun stdin_view_get_opt ()
-  :<!ref> [b:bool] (option_v (FILE r @ stdin_addr, b) | bool b)
-  = "atspre_stdin_view_get_opt"
-// end of [stdin_view_get_opt]
-and stdin_view_set_opt (pf: FILE r @ stdin_addr | (*none*))
-  :<!ref> [b:bool] (option_v (FILE r @ stdin_addr, ~b) | bool b)
-  = "atspre_stdin_view_set_opt"
-// end of [stdin_view_set_opt]
-
 // standard output
 
 sta stdout_addr : addr
@@ -391,15 +382,6 @@ and stdout_view_set
   = "atspre_stdout_view_set"
 // end of [stdout_view_set]
 
-fun stdout_view_get_opt ()
-  :<!ref> [b:bool] (option_v (FILE w @ stdout_addr, b) | bool b)
-  = "atspre_stdout_view_get_opt"
-// end of [stdout_view_get_opt]
-and stdout_view_set_opt (pf: FILE w @ stdout_addr | (*none*))
-  :<!ref> [b:bool] (option_v (FILE w @ stdout_addr, ~b) | bool b)
-  = "atspre_stdout_view_set_opt"
-// end of [stdout_view_set_opt]
-
 // standard error
 
 sta stderr_addr : addr
@@ -419,16 +401,6 @@ and stderr_view_set
   (pf: FILE w @ stderr_addr | (*none*)):<!exnref> void
   = "atspre_stderr_view_set"
 // end of [stderr_view_set]
-
-fun stderr_view_get_opt ()
-  :<!ref> [b:bool] (option_v (FILE w @ stderr_addr, b) | bool b)
-  = "atspre_stderr_view_get_opt"
-// end of [stderr_view_get_opt]
-and stderr_view_set_opt
-  (pf: FILE w @ stderr_addr | (*none*))
-  :<!ref> [b:bool] (option_v (FILE w @ stderr_addr, ~b) | bool b)
-  = "atspre_stderr_view_set_opt"
-// end of [stderr_view_set_opt]
 
 (* ****** ****** *)
 

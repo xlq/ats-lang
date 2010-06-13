@@ -40,18 +40,21 @@
 
 (* ****** ****** *)
 
+(*
 staload "ats_location.sats"
+*)
 
 (* ****** ****** *)
-
-exception FatalErrorException
-
-fun abort {a:viewt@ype} (): a
 
 (*
 fun error {a:viewt@ype} (msg: string): a
 fun error_location {a:viewt@ype} (loc: location_t, msg: string): a
 *)
+
+(* ****** ****** *)
+
+exception FatalErrorException
+fun abort {a:viewt@ype} (): a
 
 exception DeadCodeException
 // if this function is called at run-time, something is wrong.

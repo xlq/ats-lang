@@ -176,7 +176,8 @@ all:: $(TARGETS)
 $(BOOTDIR)/%: %
 	cp -f $< $@
 
-ats_grammar_yats.c ats_grammar_yats.h: ats_grammar.yats
+ats_grammar_yats.c \
+ats_grammar_yats.h: ats_grammar.yats
 	$(YACC) -v -d -o ats_grammar_yats.c ats_grammar.yats
 
 $(BOOTDIR)/%_dats.c: %.dats

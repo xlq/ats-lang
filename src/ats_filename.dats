@@ -78,21 +78,21 @@ local
 
 in
 
-#if OPERATING_SYSTEM_IS_UNIX_LIKE #then
-
+//
 // staload "libc/SATS/unistd.sats"
+//
 extern fun getcwd (): String = "atslib_getcwd"
 
-//
+#if OPERATING_SYSTEM_IS_UNIX_LIKE #then
 
-val dirsep: char = '/'
-val curdir: string = "./"
-val predir: string = "../"
+val theDirsep: char = '/'
+val theCurdir: string = "./"
+val thePredir: string = "../"
 
 #endif
 
-extern val "dirsep" = dirsep
-implement dirsep_get () = dirsep
+extern val "theDirsep" = theDirsep
+implement dirsep_get () = theDirsep
 
 end // end of [local]
 
@@ -102,21 +102,23 @@ end // end of [local]
 
 implement filename_is_relative (name) = let
   val name = string1_of_string name
-  fn aux {n,i:nat | i <= n} (name: string n, i: size_t i): bool =
+  fn aux {n,i:nat | i <= n}
+    (name: string n, i: size_t i, dirsep: char): bool =
     if string_is_at_end (name, i) then true else name[i] <> dirsep
+  // end of [aux]
 in
-  aux (name, 0)
+  aux (name, 0, theDirsep)
 end // [filename_is_relative]
 
 %{^
-
+//
 static inline
 ats_bool_type
 ats_filename_is_exist (ats_ptr_type name) {
   struct stat st ;
   return stat ((char*)name, &st) ? ats_false_bool : ats_true_bool ;
 } /* end of [ats_filename_is_exist] */
-
+//
 %} // end of [%{^]
 
 (* ****** ****** *)
@@ -129,13 +131,13 @@ ats_filename_append (
 ) {
   int n1, n2, n ; char *dirbas ;
 
-  n1 = strlen ((char *)dir) ;
-  n2 = strlen ((char *)bas) ;
+  n1 = strlen ((char*)dir) ;
+  n2 = strlen ((char*)bas) ;
   n = n1 + n2 ;
-  if (n1 > 0 && ((char *)dir)[n1-1] != dirsep) n += 1 ;
+  if (n1 > 0 && ((char*)dir)[n1-1] != theDirsep) n += 1 ;
   dirbas = ATS_MALLOC (n + 1) ;
   memcpy (dirbas, dir, n1) ;
-  if (n > n1 + n2) { dirbas[n1] = dirsep ; n1 += 1 ; }
+  if (n > n1 + n2) { dirbas[n1] = theDirsep ; n1 += 1 ; }
   memcpy (dirbas + n1, bas, n2) ;
   dirbas[n] = '\000' ;
 
@@ -226,7 +228,7 @@ fn filename_normalize (s0: string): string = let
       // empty
 *)
     in
-      if s0[i] <> dirsep then loop2 (s0, n0, i0, i+1, dirs)
+      if s0[i] <> theDirsep then loop2 (s0, n0, i0, i+1, dirs)
       else let
         val sbp = string_make_substring (s0, i0, i - i0 + 1)
         val dir = string1_of_strbuf (sbp) // this is a no-op cast
@@ -254,8 +256,8 @@ fn filename_normalize (s0: string): string = let
     (npre: Nat, dirs: List string, res: List string)
     : List string = case+ dirs of
     | list_cons (dir, dirs) => begin
-        if dir = curdir then dirs_process (npre, dirs, res)
-        else if dir = predir then dirs_process (npre + 1, dirs, res)
+        if dir = theCurdir then dirs_process (npre, dirs, res)
+        else if dir = thePredir then dirs_process (npre + 1, dirs, res)
         else begin
           if npre > 0 then begin
             dirs_process (npre - 1, dirs, res)
@@ -266,7 +268,7 @@ fn filename_normalize (s0: string): string = let
       end // end of [list_cons]
     | list_nil () => aux (npre, res) where {
         fun aux (npre: Nat, res: List string): List string =
-          if npre > 0 then aux (npre - 1, list_cons (predir, res))
+          if npre > 0 then aux (npre - 1, list_cons (thePredir, res))
           else res
       } // end of [list_nil]
 //
@@ -497,7 +499,7 @@ ats_filename_fprint_filename_base
   (ats_ptr_type out, ats_ptr_type fil) {
   char *name, *basename ;
   name = (char*)ats_filename_full (fil) ;
-  basename = strrchr (name, dirsep) ;
+  basename = strrchr (name, theDirsep) ;
 
   if (basename) {
     ++basename ; fputs (basename, (FILE*)out) ;

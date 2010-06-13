@@ -47,27 +47,7 @@
 (* ****** ****** *)
 
 abst@ype count_t = $extype "ats_counter_count_type"
-abst@ype counter_t = $extype "ats_counter_counter_type"
-
-// the following functions are implemented in [ats_counter.cats]
-
-fun counter_make (): counter_t
-  = "ats_counter_counter_make"
-
-fun counter_inc (cntr: counter_t): void
-  = "ats_counter_counter_inc"
-
-fun counter_get (cntr: counter_t): count_t
-  = "ats_counter_counter_get"
-fun counter_set (cntr: counter_t, cnt: count_t): void
-  = "ats_counter_counter_set"
-fun counter_reset (cntr: counter_t): void
-  = "ats_counter_counter_reset"
-
-fun counter_get_and_inc (cntr: counter_t): count_t
-  = "ats_counter_counter_get_and_inc"
-fun counter_inc_and_get (cntr: counter_t): count_t
-  = "ats_counter_counter_inc_and_get"
+abstype counter_t // ref (count_t)
 
 (* ****** ****** *)
 
@@ -119,6 +99,28 @@ fun tostring_count (cnt: count_t): string
 
 fun tostring_prefix (pre: string, cnt: count_t): string
   = "ats_counter_tostring_count_prefix"
+
+(* ****** ****** *)
+//
+// the following functions are implemented in [ats_counter.cats]
+//
+fun counter_make (): counter_t
+  = "ats_counter_counter_make"
+
+fun counter_inc (cntr: counter_t): void
+  = "ats_counter_counter_inc"
+
+fun counter_get (cntr: counter_t): count_t
+  = "ats_counter_counter_get"
+fun counter_set (cntr: counter_t, cnt: count_t): void
+  = "ats_counter_counter_set"
+fun counter_reset (cntr: counter_t): void
+  = "ats_counter_counter_reset"
+
+fun counter_get_and_inc (cntr: counter_t): count_t
+  = "ats_counter_counter_get_and_inc"
+fun counter_inc_and_get (cntr: counter_t): count_t
+  = "ats_counter_counter_inc_and_get"
 
 (* ****** ****** *)
 

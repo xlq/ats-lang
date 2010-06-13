@@ -461,8 +461,8 @@ abstype ptr_addr_type (addr)
 
 abstype string_int_type (int)
 abstype stropt_int_type (int)
-
 abst@ype strbuf_int_int_t0ype (bsz: int, len: int) (* variable size *)
+absviewtype strptr_addr_viewtype (addr) // for linear strings
 
 (* ****** ****** *)
 
@@ -599,8 +599,8 @@ stadef strbuf (bsz:int) = [len:int | 0 <= len] strbuf (bsz, len)
 
 stadef string = string_int_type
 stadef string = string_type
-
 stadef stropt = stropt_int_type
+stadef strptr = strptr_addr_viewtype // for linear strings
 
 (* ****** ****** *)
 
@@ -659,7 +659,6 @@ typedef ssizeBtw (lb:int, ub:int) = [i: int | lb <= i; i < ub] ssize_t i
 
 absview free_gc_addr_view (l:addr)
 absview free_ngc_addr_view (l:addr)
-
 stadef free_gc_v = free_gc_addr_view
 stadef free_ngc_v = free_ngc_addr_view
 
@@ -667,7 +666,6 @@ stadef free_ngc_v = free_ngc_addr_view
 
 absview free_gc_viewt0ype_addr_view (a:viewt@ype+, l:addr)
 absview free_ngc_viewt0ype_addr_view (a:viewt@ype+, l:addr)
-
 stadef free_gc_v = free_gc_viewt0ype_addr_view
 stadef free_ngc_v = free_ngc_viewt0ype_addr_view
 
@@ -675,7 +673,6 @@ stadef free_ngc_v = free_ngc_viewt0ype_addr_view
 
 absview free_gc_viewt0ype_addr_int_view (a:viewt@ype+, n:int, l:addr)
 absview free_ngc_viewt0ype_addr_int_view (a:viewt@ype+, n:int, l: addr)
-
 stadef free_gc_v = free_gc_viewt0ype_addr_int_view
 stadef free_ngc_v = free_ngc_viewt0ype_addr_int_view
 
@@ -750,7 +747,9 @@ stadef r = file_mode_r ()
 stadef w = file_mode_w ()
 stadef rw = file_mode_rw ()
 
+//
 // [ats_FILE_viewtype] is defined in [libc/CATS/stdio.cats]
+//
 absviewt@ype
 FILE_viewt0ype (file_mode) = $extype "ats_FILE_viewtype"
 stadef FILE = FILE_viewt0ype
@@ -760,7 +759,15 @@ stadef FILE = FILE_viewt0ype
 // this is unsafe and should probably be deprecated:
 //
 // [FILEref_type] is [ref (FILE m)] for some [m]
-abstype FILEref_type; stadef FILEref = FILEref_type
+abstype FILEref_type
+stadef FILEref = FILEref_type
+
+//
+// HX-2010-06-12:
+//
+absviewtype
+FILEptr_viewtype (addr)
+stadef FILEptr = FILEptr_viewtype
 
 (* ****** ****** *)
 

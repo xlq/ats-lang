@@ -7,9 +7,9 @@
 ######
 
 .PHONY: all
-all:  compall
+all:: compall
 
-checkall: compall cleanall
+checkall:: compall cleanall
 	echo "[checkall] is finished successfully!"
 
 ######

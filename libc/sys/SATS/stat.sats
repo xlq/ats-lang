@@ -108,27 +108,17 @@ fun mkdir_exn (path: string, mode: mode_t): void
 
 (* ****** ****** *)
 
-dataview stat_v (l:addr, int) =
-  | stat_v_fail (l, ~1) of stat_t? @ l
-  | stat_v_succ (l,  0) of stat_t  @ l
-
-//
- 
 fun stat_err {l:addr} (
-    pf_buf: stat_t? @ l | name: string, p_buf: ptr l
-  ) : [i:int] (stat_v (l, i) | int i)
+    name: string, st: &stat_t? >> opt (stat_t, i==0)
+  ) : #[i:int | i <= 0] int i
   = "atslib_stat_err"
-
-fun stat_exn (name: string, buf: &stat_t? >> stat_t): void
+fun stat_exn (name: string, st: &stat_t? >> stat_t): void
   = "atslib_stat_exn"
 
-//
-
 fun lstat_err {l:addr} (
-    pf_buf: stat_t? @ l | name: string, p_buf: ptr l
-  ) : [i:int] (stat_v (l, i) | int i)
+    name: string, st: &stat_t? >> opt (stat_t, i==0)
+  ) : #[i:int | i <= 0] int i
   = "atslib_lstat_err"
-
 fun lstat_exn (name: string, buf: &stat_t? >> stat_t): void
   = "atslib_lstat_exn"
 
