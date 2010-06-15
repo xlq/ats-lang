@@ -69,20 +69,20 @@ typedef GLclampf ats_GLclampf_type ;
 
 /* ****** ****** */
 
-static inline
+ATSinline()
 ats_int_type
 atsctrb_int_of_GLenum (GLenum x) { return x ; }
 
 //
 
-static inline
+ATSinline()
 ats_bool_type
 atsctrb_eq_GLenum_GLenum
   (GLenum x1, GLenum x2) {
   return (x1 == x2 ? ats_true_bool : ats_false_bool) ;
 } // end of [atsctrb_eq_GLenum_GLenum]
 
-static inline
+ATSinline()
 ats_bool_type
 atsctrb_neq_GLenum_GLenum
   (GLenum x1, GLenum x2) {
@@ -91,65 +91,65 @@ atsctrb_neq_GLenum_GLenum
 
 //
 
-static inline
+ATSinline()
 ats_GLbyte_type
 atsctrb_GLbyte_of_int (int x) { return x ; }
 
 //
 
-static inline
+ATSinline()
 ats_GLubyte_type
 atsctrb_GLubyte_of_int (int x) { return x ; }
 
-static inline
+ATSinline()
 ats_GLubyte_type
 atsctrb_GLubyte_of_uint (unsigned int x) { return x ; }
 
 //
 
-static inline
+ATSinline()
 ats_GLshort_type
 atsctrb_GLshort_of_int (int x) { return x ; }
 
 //
 
-static inline
+ATSinline()
 ats_GLushort_type
 atsctrb_GLushort_of_int (int x) { return x ; }
 
-static inline
+ATSinline()
 ats_GLushort_type
 atsctrb_GLushort_of_uint (unsigned int x) { return x ; }
 
 //
 
-static inline
+ATSinline()
 ats_GLsizei_type
 atsctrb_GLsizei_of_int (int x) { return x ; }
 
 //
 
-static inline
+ATSinline()
 ats_GLdouble_type
 atsctrb_GLdouble_of_int (int x) { return x ; }
 
 //
 
-static inline
+ATSinline()
 ats_GLfloat_type
 atsctrb_GLfloat_of_int (int x) { return x ; }
 
-static inline
+ATSinline()
 ats_GLfloat_type
 atsctrb_GLfloat_of_double (double x) { return x ; }
 
-static inline
+ATSinline()
 ats_GLclampf_type
 atsctrb_GLclampf_of_double (double x) { return x ; }
 
 //
 
-static inline
+ATSinline()
 ats_GLbitfield_type
 atsctrb_lor_GLbitfield_GLbitfield
   (GLbitfield b1, GLbitfield b2) {
@@ -322,16 +322,13 @@ atsctrb_lor_GLbitfield_GLbitfield
 
 #define atsctrb_glIsList glIsList
 
-static inline
+ATSinline()
 ats_uint_type
-atsctrb_glGenList_exn () {
-  uint lst = glGenLists (1) ;
-  if (lst == 0) {
-    fprintf (stderr, "exit(ATS/GL): [glGenLists] failed.\n") ;
-    exit (1) ;
-  }
-  return lst ;
-} // end of [atsctrb_glGenList_exn]
+atsctrb_glGenList () { return glGenLists (1) ; }
+
+ATSinline()
+ats_void_type
+atsctrb_glDeleteList () { glDeleteLists (1) ; return ; }
 
 #define atsctrb_glNewList glNewList
 #define atsctrb_glEndList glEndList
@@ -558,7 +555,7 @@ atsctrb_glGenList_exn () {
 // OpenGL 1.1
 //
 
-static inline
+ATSinline()
 ats_void_type
 atsctrb_glGenTexture
   (ats_ref_type texture) {
@@ -567,7 +564,7 @@ atsctrb_glGenTexture
 
 #define atsctrb_glGenTextures glGenTextures
 
-static inline
+ATSinline()
 ats_void_type
 atsctrb_glDeleteTexture
   (ats_GLuint_type texture) {

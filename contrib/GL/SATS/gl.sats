@@ -1166,36 +1166,38 @@ fun glTranslatef : glTranslate_type (GLfloat) = "#atsctrb_glTranslatef"
 // Display Lists
 //
 
-absview GLlist_v (int)
-absview GLnewlist_v (int)
+absview GLlist_v (n:int) // a display list of the name [n] exists
+absview GLnewlist_v (n:int) // indicating that [n] is a unique name
 
 fun glIsList (lst: GLuint): GLboolean = "#atsctrb_glIsList"
 
-fun glDeleteList {n:nat} (pf: GLlist_v n | lst: uint n): void
-  = "#atsctrb_glDeleteList"
+fun glDeleteList {n:pos} (pf: GLlist_v n | lst: uint n): void
+  = "atsctrb_glDeleteList" // function!
 
 (*
+// HX: this one is difficult to handle
 fun glDeleteLists (lst: GLuint, range: GLsizei): void = "atsctrb_glDeleteLists"
 *)
 
-fun glGenList_exn ()
-  : [n:nat] @(GLnewlist_v n | uint n) = "atsctrb_glGenList_exn" // function!
+fun glGenList ()
+  : [n:nat] @(GLnewlist_v n | uint n) = "atsctrb_glGenList" // function!
 // end of [glGenList_exn]
 
 (*
+// HX: this one is difficult to handle
 fun glGenLists (range: GLsizei): GLuint = "atsctrb_glGenLists"
 *)
 
 absview glNewList_v
 
-fun glNewList {n:nat}
+fun glNewList {n:pos}
   (pf: !GLnewlist_v n >> GLlist_v n | lst: uint n, mode: GLenum): @(glNewList_v | void)
   = "#atsctrb_glNewList"
 
 fun glEndList (pf: glNewList_v | (*none*)): void
   = "#atsctrb_glEndList"
 
-fun glCallList {n:nat}
+fun glCallList {n:pos}
   (pf: !GLlist_v n | lst: uint n): void = "#atsctrb_glCallList"
 
 (*

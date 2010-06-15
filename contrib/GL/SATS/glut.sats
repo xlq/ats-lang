@@ -30,17 +30,15 @@
 *)
 
 (* ****** ****** *)
-
 //
 // Author of the file: Hongwei Xi (hwxi AT cs DOT bu DOT edu)
 // Starting time: Summer, 2008
 //
-
 (* ****** ****** *)
 
 %{#
 #include "contrib/GL/CATS/glut.cats"
-%}
+%} // end of [%{#]
 
 (* ****** ****** *)
 
@@ -537,9 +535,11 @@ fun glutSolidTorus (
 
 fun glutWireTeapot
   (size: GLdouble): void = "#atsctrb_glutWireTeapot"
+// end of [glutWireTeapot]
 
 fun glutSolidTeapot
   (size: GLdouble): void = "#atsctrb_glutSolidTeapot"
+// end of [glutSolidTeapot]
 
 (* ****** ****** *)
 
