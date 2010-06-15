@@ -327,8 +327,21 @@ ats_uint_type
 atsctrb_glGenList () { return glGenLists (1) ; }
 
 ATSinline()
+ats_uint_type
+atsctrb_glGenList_exn () {
+  GLuint lst = glGenLists (1) ;
+  if (lst == 0) {
+    fprintf (stderr, "exit(ATS/GL): [glGenLists] failed.\n") ; exit (1) ;
+  } // end of [if]
+  return lst ;
+} // end of [atsctrb_glGenList_exn]
+
+ATSinline()
 ats_void_type
-atsctrb_glDeleteList () { glDeleteLists (1) ; return ; }
+atsctrb_glDeleteList
+  (ats_uint_type lst) {
+  glDeleteLists (lst, 1) ; return ;
+} // end of [atsctrb_glDeleteList]
 
 #define atsctrb_glNewList glNewList
 #define atsctrb_glEndList glEndList

@@ -94,16 +94,16 @@ abst@ype GLushort = $extype "ats_GLushort_type"
 
 (* ****** ****** *)
 
-// typedef GLint = int // 4-byte signed
-abst@ype GLint = $extype "ats_GLint_type"
-castfn GLint_of_int (x: int):<> GLint
-castfn int_of_GLint (x: GLint):<> int
+abst@ype GLint (n:int) = $extype "ats_GLint_type" // 4-byte signed
+typedef GLint = [n:int] GLint (n)
+castfn GLint_of_int {n:int} (x: int n):<> GLint n
+castfn int_of_GLint {n:int} (x: GLint n):<> int n
 castfn GLint_of_GLenum (x: GLenum):<> GLint
 
-// typedef GLuint = uint // 4-byte unsigned
-abst@ype GLuint = $extype "ats_GLuint_type"
-castfn GLuint_of_uint (x: uint):<> GLuint
-castfn uint_of_GLuint (x: GLuint):<> uint
+abst@ype GLuint (n:int) = $extype "ats_GLuint_type" // 4-byte unsigned
+typedef GLuint = [n:nat] GLuint (n)
+castfn GLuint_of_uint {n:int} (x: uint n):<> GLuint n
+castfn uint_of_GLuint {n:int} (x: GLuint n):<> uint n
 
 (* ****** ****** *)
 
@@ -113,8 +113,7 @@ typedef GLsizei = [i:int] GLsizei (i)
 
 (* ****** ****** *)
 
-// typedef GLdouble = double // double precision float
-abst@ype GLdouble = $extype "ats_GLdouble_type"
+abst@ype GLdouble = $extype "ats_GLdouble_type" // double precision
 castfn GLdouble_of_double (x: double):<> GLdouble
 castfn double_of_GLdouble (x: GLdouble):<> double
 overload double_of with double_of_GLdouble
@@ -125,8 +124,7 @@ castfn GLclampd_of_double (x: double):<> GLclampd
 
 (* ****** ****** *)
 
-// typedef GLfloat = float // single precision float
-abst@ype GLfloat = $extype "ats_GLfloat_type"
+abst@ype GLfloat = $extype "ats_GLfloat_type" // single precision
 castfn GLfloat_of_float (x: float):<> GLfloat
 castfn float_of_GLfloat (x: GLfloat):<> float
 overload float_of with float_of_GLfloat
@@ -1169,9 +1167,14 @@ fun glTranslatef : glTranslate_type (GLfloat) = "#atsctrb_glTranslatef"
 absview GLlist_v (n:int) // a display list of the name [n] exists
 absview GLnewlist_v (n:int) // indicating that [n] is a unique name
 
-fun glIsList (lst: GLuint): GLboolean = "#atsctrb_glIsList"
+//
+// HX-2010-06-15:
+// if glIsList(lst) returns true, then we can expect a split
+// (GLlist_v (n) -<lin,prf> void, GLlist_v (n))
+//
+fun glIsList {n:nat} (lst: GLuint n): GLboolean = "#atsctrb_glIsList"
 
-fun glDeleteList {n:pos} (pf: GLlist_v n | lst: uint n): void
+fun glDeleteList {n:pos} (pf: GLlist_v n | lst: GLuint n): void
   = "atsctrb_glDeleteList" // function!
 
 (*
@@ -1179,8 +1182,12 @@ fun glDeleteList {n:pos} (pf: GLlist_v n | lst: uint n): void
 fun glDeleteLists (lst: GLuint, range: GLsizei): void = "atsctrb_glDeleteLists"
 *)
 
+prfun GLnewlst_v_elim_null (pf: GLnewlist_v 0): void
 fun glGenList ()
-  : [n:nat] @(GLnewlist_v n | uint n) = "atsctrb_glGenList" // function!
+  : [n:nat] @(GLnewlist_v n | GLuint n) = "atsctrb_glGenList" // function!
+// end of [glGenList]
+fun glGenList_exn ()
+  : [n:pos] @(GLnewlist_v n | GLuint n) = "atsctrb_glGenList_exn" // function!
 // end of [glGenList_exn]
 
 (*
@@ -1191,14 +1198,14 @@ fun glGenLists (range: GLsizei): GLuint = "atsctrb_glGenLists"
 absview glNewList_v
 
 fun glNewList {n:pos}
-  (pf: !GLnewlist_v n >> GLlist_v n | lst: uint n, mode: GLenum): @(glNewList_v | void)
+  (pf: !GLnewlist_v n >> GLlist_v n | lst: GLuint n, mode: GLenum): @(glNewList_v | void)
   = "#atsctrb_glNewList"
 
 fun glEndList (pf: glNewList_v | (*none*)): void
   = "#atsctrb_glEndList"
 
 fun glCallList {n:pos}
-  (pf: !GLlist_v n | lst: uint n): void = "#atsctrb_glCallList"
+  (pf: !GLlist_v n | lst: GLuint n): void = "#atsctrb_glCallList"
 
 (*
 fun glCallLists (n: GLsizei, typ: GLenum, lst: GLvoid* ): void
@@ -1740,8 +1747,8 @@ fun glBitmap {w8:nat}
   | width: GLsizei w, height: GLsizei h
   , xorig: GLfloat, yorig: GLfloat, xmove: GLfloat, ymove: GLfloat
   , bitmap: &(@[GLubyte][n])
-  ) : void
-  = "#atsctrb_glBitmap"
+  ) : void = "#atsctrb_glBitmap"
+// end of [glBitmap]
 
 (* ****** ****** *)
 
