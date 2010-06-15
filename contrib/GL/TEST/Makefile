@@ -9,54 +9,61 @@ ATSCTRB="$(ATSHOME)"/contrib/GL/atsctrb_GL.o
 
 ######
 
-checkall: compall cleanall
+.PHONY:: checkall
+checkall:: compall cleanall
 
 ######
 
-compall: \
-  test1 \
-  test2 \
-  test3-1 test3-2 \
-  test4 \
-  test5 \
-  test6 \
-  test7 \
-  test8 \
-  test9 \
+compall:: \
+  test01 \
+  test02 \
+  test03-1 test03-2 \
+  test04 \
+  test05 \
+  test06 \
+  test07 \
+  test08 \
+  test09 \
   test10 \
+  test11 \
 
-test1: GL-test1.dats
-	$(ATSCC) -o test1 GL-test1.dats $(ATSCTRB) -lGL -lGLU -lglut
+test01: GL-test01.dats
+	$(ATSCC) -o test01 GL-test01.dats $(ATSCTRB) -lGL -lGLU -lglut
 
-test2: GL-test2.dats
-	$(ATSCC) -o test2 GL-test2.dats $(ATSCTRB) -lGL -lGLU -lglut
+test02: GL-test02.dats
+	$(ATSCC) -o test02 GL-test02.dats $(ATSCTRB) -lGL -lGLU -lglut
 
-test3-1: GL-test3-1.dats
-	$(ATSCC) -o test3-1 GL-test3-1.dats $(ATSCTRB) -lGL -lGLU -lglut
+test03-1: GL-test03-1.dats
+	$(ATSCC) -o test03-1 GL-test03-1.dats $(ATSCTRB) -lGL -lGLU -lglut
 
-test3-2: GL-test3-2.dats
-	$(ATSCC) -o test3-2 GL-test3-2.dats $(ATSCTRB) -lGL -lGLU -lglut
+test03-2: GL-test03-2.dats
+	$(ATSCC) -o test03-2 GL-test03-2.dats $(ATSCTRB) -lGL -lGLU -lglut
 
-test4: GL-test4.dats
-	$(ATSCC) -o test4 GL-test4.dats $(ATSCTRB) -lGL -lGLU -lglut
+test04: GL-test04.dats
+	$(ATSCC) -o test04 GL-test04.dats $(ATSCTRB) -lGL -lGLU -lglut
 
-test5: GL-test5.dats
-	$(ATSCC) -o test5 GL-test5.dats $(ATSCTRB) -lGL -lGLU -lglut
+test05: GL-test05.dats
+	$(ATSCC) -o test05 GL-test05.dats $(ATSCTRB) -lGL -lGLU -lglut
 
-test6: GL-test6.dats
-	$(ATSCC) -O3 -o test6 GL-test6.dats $(ATSCTRB) -lGL -lGLU -lglut
+test06: GL-test06.dats
+	$(ATSCC) -O3 -o test06 GL-test06.dats $(ATSCTRB) -lGL -lGLU -lglut
 
-test7: GL-test7.dats
-	$(ATSCC) -D_ATS_GCATS -O3 -o test7 GL-test7.dats $(ATSCTRB) -lGL -lGLU -lglut
+test07: GL-test07.dats
+	$(ATSCC) -D_ATS_GCATS -O3 -o test07 GL-test07.dats $(ATSCTRB) -lGL -lGLU -lglut
 
-test8: GL-test8.dats
-	$(ATSCC) -O3 -o test8 GL-test8.dats $(ATSCTRB) -lGL -lGLU -lglut
+test08: GL-test08.dats
+	$(ATSCC) -O3 -o test08 GL-test08.dats $(ATSCTRB) -lGL -lGLU -lglut
 
-test9: GL-test9.dats
-	$(ATSCC) -O3 -o test9 GL-test9.dats $(ATSCTRB) -lGL -lGLU -lglut
+test09: GL-test09.dats
+	$(ATSCC) -O3 -o test09 GL-test09.dats $(ATSCTRB) -lGL -lGLU -lglut
+
+######
 
 test10: GL-test10.dats
 	$(ATSCC) -O3 -o test10 GL-test10.dats $(ATSCTRB) -lGL -lGLU -lglut
+
+test11: GL-test11.dats
+	$(ATSCC) -O3 -o test11 GL-test11.dats $(ATSCTRB) -lGL -lGLU -lglut
 
 ######
 
@@ -64,15 +71,16 @@ clean:
 	rm -f *_?ats.c *.o *~
 
 cleanall: clean
-	rm -f test1
-	rm -f test2
-	rm -f test3-1 test3-2
-	rm -f test4
-	rm -f test5
-	rm -f test6
-	rm -f test7
-	rm -f test8
-	rm -f test9
+	rm -f test01
+	rm -f test02
+	rm -f test03-1 test03-2
+	rm -f test04
+	rm -f test05
+	rm -f test06
+	rm -f test07
+	rm -f test08
+	rm -f test09
 	rm -f test10
+	rm -f test11
 
 ###### end of [Makefile] ######

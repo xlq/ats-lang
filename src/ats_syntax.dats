@@ -56,10 +56,8 @@ staload "ats_syntax.sats"
 (* ****** ****** *)
 
 %{^
-
 #include "prelude/CATS/string.cats"
-
-%}
+%} // end of [%{^]
 
 
 (* ****** ****** *)
@@ -145,6 +143,9 @@ implement datakind_is_proof dk = case+ dk of
   | DATAKINDprop () => true
   | DATAKINDview () => true
   | _ => false
+// end of [datakind_is_proof]
+
+(* ****** ****** *)
 
 implement stadefkind_generic () = STADEFKINDgeneric ()
 implement stadefkind_prop (t) = STADEFKINDprop (t)
@@ -567,6 +568,8 @@ in '{
 implement d0atsrtconlst_nil () = nil ()
 implement d0atsrtconlst_cons (x, xs) = cons (x, xs)
 
+(* ****** ****** *)
+
 implement d0atsrtdec_make (id, xs) = let
   fun aux_loc
     (id: i0de, x: d0atsrtcon, xs: d0atsrtconlst): loc_t =
@@ -602,15 +605,6 @@ implement e0fftag_cst (i, id) =
   let val name = $Sym.symbol_name (id.i0de_sym) in
     '{ e0fftag_loc= id.i0de_loc, e0fftag_node= E0FFTAGcst (i, name) }
   end
-
-fn name_is_prf (name: string): bool =
-  if name = "prf" then true else name = "proof"
-
-fn name_is_lin_0 (name: string): bool =
-  if name = "lin" then true
-  else if name = "lin0" then true
-  else if name = "linear" then true
-  else name = "linear0"
 
 local
 
@@ -664,7 +658,7 @@ fn name_is_cloref1 (name: string): bool = name = "cloref1"
 #define CLOPTR  1
 #define CLOREF ~1
 
-in
+in // in of [local]
 
 implement e0fftag_var (id) = let
   val name = $Sym.symbol_name (id.i0de_sym)
@@ -759,6 +753,8 @@ implement s0taq_symdot (id) = '{
   s0taq_loc= id.i0de_loc, s0taq_node= S0TAQsymdot (id.i0de_sym)
 } // end of [s0taq_symdot]
 
+(* ****** ****** *)
+
 (* dynamic qualifiers *)
 
 implement fprint_d0ynq
@@ -835,9 +831,11 @@ in '{
 
 (* static qualified identifiers *)
 
-implement sqi0de_make_some (q, id) = '{
-  sqi0de_loc= id.i0de_loc, sqi0de_qua= q, sqi0de_sym= id.i0de_sym
-}
+implement sqi0de_make_some (q, id) = let
+  val loc = combine (q.s0taq_loc, id.i0de_loc)
+in '{
+  sqi0de_loc= loc, sqi0de_qua= q, sqi0de_sym= id.i0de_sym
+} end // end of [sqi0de_make_some]
 
 implement sqi0de_make_none (id) =
   let val q = s0taq_none () in sqi0de_make_some (q, id) end

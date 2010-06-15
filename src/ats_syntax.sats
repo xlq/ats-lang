@@ -233,28 +233,6 @@ overload fprint with fprint_cstsp
 
 (* ****** ****** *)
 
-typedef i0de = '{
-  i0de_loc= loc_t, i0de_sym= sym_t
-} // end of [i0de]
-
-typedef i0delst = List i0de
-typedef i0delstlst = List i0delst
-
-typedef i0deopt = Option i0de
-
-fun fprint_i0de {m:file_mode}
-  (pf: file_mode_lte (m, w) | out: &FILE m, _: i0de): void
-overload fprint with fprint_i0de
-
-fun print_i0de (_: i0de): void
-fun prerr_i0de (_: i0de): void
-
-fun fprint_i0delst {m:file_mode}
-  (pf: file_mode_lte (m, w) | out: &FILE m, _: i0delst): void
-overload fprint with fprint_i0delst
-
-(* ****** ****** *)
-
 typedef c0har = '{
   c0har_loc= loc_t, c0har_val= char
 } // end of [c0har]
@@ -297,6 +275,28 @@ fun t0kn_make (_: loc_t): t0kn = "t0kn_make"
 
 (* ****** ****** *)
 
+typedef i0de = '{
+  i0de_loc= loc_t, i0de_sym= sym_t
+} // end of [i0de]
+
+typedef i0delst = List i0de
+typedef i0delstlst = List i0delst
+
+typedef i0deopt = Option i0de
+
+fun fprint_i0de {m:file_mode}
+  (pf: file_mode_lte (m, w) | out: &FILE m, _: i0de): void
+overload fprint with fprint_i0de
+
+fun print_i0de (_: i0de): void
+fun prerr_i0de (_: i0de): void
+
+fun fprint_i0delst {m:file_mode}
+  (pf: file_mode_lte (m, w) | out: &FILE m, _: i0delst): void
+overload fprint with fprint_i0delst
+
+(* ****** ****** *)
+
 fun i0de_make (_: loc_t, _: string): i0de = "i0de_make"
 fun i0de_make_ampersand (t: t0kn): i0de = "i0de_make_ampersand"
 fun i0de_make_backslash (t: t0kn): i0de = "i0de_make_backslash"
@@ -325,7 +325,9 @@ fun i0delstlst_cons (x: i0delst, xs: i0delstlst): i0delstlst
 
 (* ****** ****** *)
 
-typedef l0ab = '{ l0ab_loc= loc_t, l0ab_lab= label_t }
+typedef l0ab = '{
+  l0ab_loc= loc_t, l0ab_lab= label_t
+} // end of [l0ab]
 
 fun l0ab_ide (ide: i0de): l0ab = "l0ab_ide"
 fun l0ab_int (int: i0nt): l0ab = "l0ab_int"
@@ -349,10 +351,10 @@ fun p0rec_int (int: i0nt): p0rec = "p0rec_int"
 fun p0rec_opr (ide: i0de, opr: i0de, int: i0nt): p0rec = "p0rec_opr"
 
 (* ****** ****** *)
-
-abst@ype effect_t = // assumed in [ats_effect.dats]
-  $extype "ats_int_type" 
-
+//
+// assumed in [ats_effect.dats]
+//
+abst@ype effect_t = $extype "ats_int_type" 
 typedef effectlst = List effect_t
 
 (* ****** ****** *)
@@ -402,7 +404,10 @@ fun e0xp_string (s: s0tring): e0xp = "e0xp_string"
 
 (* ****** ****** *)
 
-datatype s0rtq_node = (* sort qualifier *)
+//
+// sort qualifier
+//
+datatype s0rtq_node =
   | S0RTQnone
   | S0RTQstr of string (* filename *)
   | S0RTQsym of sym_t (* fileid *)
@@ -499,7 +504,7 @@ fun d0atsrtconlst_nil (): d0atsrtconlst = "d0atsrtconlst_nil"
 fun d0atsrtconlst_cons (x: d0atsrtcon, xs: d0atsrtconlst): d0atsrtconlst
   = "d0atsrtconlst_cons"
 
-//
+(* ****** ****** *)
 
 typedef d0atsrtdec = '{
   d0atsrtdec_loc= loc_t
@@ -581,26 +586,24 @@ typedef s0taq = '{ s0taq_loc= loc_t, s0taq_node= s0taq_node }
 
 //
 
-fun s0taq_make (loc: loc_t, node: s0taq_node): s0taq
-
-//
-
 fun fprint_s0taq {m:file_mode}
   (pf: file_mode_lte (m, w) | out: &FILE m, _: s0taq): void
 overload fprint with fprint_s0taq
 
 fun print_s0taq (_: s0taq): void
-fun prerr_s0taq (_: s0taq): void
-
 overload print with print_s0taq
+fun prerr_s0taq (_: s0taq): void
 overload prerr with prerr_s0taq
 
 //
 
+fun s0taq_make (loc: loc_t, node: s0taq_node): s0taq
 fun s0taq_none (): s0taq = "s0taq_none"
 fun s0taq_fildot (name: s0tring): s0taq = "s0taq_fildot"
 fun s0taq_symcolon (id: i0de): s0taq = "s0taq_symcolon"
 fun s0taq_symdot (id: i0de): s0taq = "s0taq_symdot"
+
+(* ****** ****** *)
 
 datatype d0ynq_node =
   | D0YNQnone
@@ -622,11 +625,9 @@ typedef d0ynqopt = Option d0ynq
 fun fprint_d0ynq {m:file_mode}
   (pf: file_mode_lte (m, w) | out: &FILE m, q: d0ynq): void
 overload fprint with fprint_d0ynq
-
 fun print_d0ynq (q: d0ynq): void
-fun prerr_d0ynq (q: d0ynq): void
-
 overload print with print_d0ynq
+fun prerr_d0ynq (q: d0ynq): void
 overload prerr with prerr_d0ynq
 
 //

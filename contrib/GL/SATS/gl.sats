@@ -1200,9 +1200,7 @@ absview glNewList_v
 fun glNewList {n:pos}
   (pf: !GLnewlist_v n >> GLlist_v n | lst: GLuint n, mode: GLenum): @(glNewList_v | void)
   = "#atsctrb_glNewList"
-
-fun glEndList (pf: glNewList_v | (*none*)): void
-  = "#atsctrb_glEndList"
+fun glEndList (pf: glNewList_v | (*none*)): void = "#atsctrb_glEndList"
 
 fun glCallList {n:pos}
   (pf: !GLlist_v n | lst: GLuint n): void = "#atsctrb_glCallList"
@@ -1385,6 +1383,7 @@ fun glColor3uiv : glColor3v_type (GLushort) = "#atsctrb_glColor3usv"
 
 typedef glColor4_type (a:t@ype) =
   (a(*red*), a(*green*), a(*blue*), a(*alpha*)) -<fun1> void
+// end of [glColor4_type]
 
 //
 
@@ -1394,14 +1393,10 @@ fun glColor4b : glColor4_type (GLbyte) = "#atsctrb_glColor4b"
 
 symintr glColor4d
 
-fun glColor4d_double : glColor4_type (double)
-  = "#atsctrb_glColor4d"
+fun glColor4d_double : glColor4_type (double) = "#atsctrb_glColor4d"
 overload glColor4d with glColor4d_double
-
-fun glColor4d_GLdouble : glColor4_type (GLdouble)
-  = "#atsctrb_glColor4d"
+fun glColor4d_GLdouble : glColor4_type (GLdouble) = "#atsctrb_glColor4d"
 overload glColor4d with glColor4d_GLdouble
-
 
 //
 
