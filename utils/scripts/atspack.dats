@@ -493,6 +493,7 @@ in
   cp "ats_exception.h";
   cp "ats_memory.h";
   cp "ats_types.h";
+  cp "ats_bootstrap.c";
   cp "ats_prelude.c";
   cp "ats_prelude_ngc.c";
   cp "ats_prelude_gcats.c";
@@ -1119,11 +1120,8 @@ implement atspack_source_code () = let
   end // end of [cpx]
   val () = cp "INSTALL"
   val () = cp "VERSION.txt"
-  val () = cp2 "Makefile" "Makefile"
-  val () = cp2 "Makefile_dist_main" "Makefile_main"
-//
-  val () = cp "ATSHOME_check.sh"
-  val () = cp "ATSHOMERELOC_check.sh"
+  val () = cp2 "Makefile_dist" "Makefile"
+  val () = cp2 "Makefile_bootstrap" "Makefile_bootstrap"
 //
   val () = cp "ats_env.sh.in"
 //
@@ -1140,9 +1138,6 @@ implement atspack_source_code () = let
 //
   val () = cp ".libfiles"
   val () = cp ".libfiles_mt"
-  val () = cp ".bootstrap_header"
-  val () = cp ".bootstrap_makefile"
-  val () = cp ".makefile_header"
 //
   val () = bin_dir_copy (PACKNDsource)
   val () = bootstrap_dir_copy ()
