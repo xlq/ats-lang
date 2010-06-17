@@ -37,10 +37,11 @@ fun draw_torus {nc,nt:pos}
       val () = for (k := 1; k >= 0; k := k-1) let
         val s = (i+k) mod numc + 0.5
         val t = j mod numt
-        val xy = (1+0.1*cos(_2PI*s/numc))
+        val alpha = 0.2
+        val xy = (1+alpha*cos(_2PI*s/numc))
         val x = xy*cos(_2PI*t/numt)
         val y = xy*sin(_2PI*t/numt)
-        val z = 0.1 * sin(_2PI*s/numc)
+        val z = alpha * sin(_2PI*s/numc)
       in
         glVertex3d (x, y, z)
       end // end of [val]
@@ -74,11 +75,10 @@ void theTorus_initset
 GLuint theTorus_get () { return theTorus ; }
 %} // end of [%{$]
 extern
-fun theTorus_initset {n:pos}
-  (pf: GLlist_v n | n: GLuint n): void = "#theTorus_initset"
+fun theTorus_initset {n:int} (n: GLlist n): void = "#theTorus_initset"
 extern
 fun theTorus_get (): [n:pos]
-  (GLlist_v n, GLlist_v n -<lin,prf> void | GLuint n) = "#theTorus_get"
+  (GLlist n -<lin,prf> void | GLlist n) = "#theTorus_get"
 // end of ...
 
 (* ****** ****** *)
@@ -88,10 +88,10 @@ fun initialize (): void = "initialize"
 implement
 initialize () = () where {
   val (pf_torus | torus) = glGenList_exn ()
-  val (pf_new | ()) = glNewList (pf_torus | torus, GL_COMPILE)
-  val () = draw_torus (8, 25)
+  val (pf_new | torus) = glNewList_new (pf_torus | torus, GL_COMPILE)
+  val () = draw_torus (16, 25)
   val () = glEndList (pf_new | (*none*))
-  val () = theTorus_initset (pf_torus | torus)
+  val () = theTorus_initset (torus)
   val () = glShadeModel (GL_FLAT)
   val () = glClearColor (0.0, 0.0, 0.0, 0.0)
 } // end of [initialize]
@@ -103,9 +103,9 @@ fun display (): void = "display"
 implement display () = () where {
   val () = glClear (GL_COLOR_BUFFER_BIT)
   val () = glColor3f ((GLfloat)1.0, (GLfloat)1.0, (GLfloat)1.0)
-  val (pf, fpf | n) = theTorus_get ()
-  val () = glCallList (pf | n)
-  prval () = fpf (pf)
+  val (fpf | lst) = theTorus_get ()
+  val () = glCallList (lst)
+  prval () = fpf (lst)
   val () = glFlush ()
 } // end of [display]
 
@@ -144,7 +144,6 @@ in
   | _ when (key = 'i' orelse key = 'I') => () where {
       val () = glLoadIdentity ()
       val () = gluLookAt (0., 0., 10., 0., 0., 0., 0., 1., 0.)
-      val () = glRotated (30., 0., 1., 0.); val () = glutPostRedisplay ()
       val () = glutPostRedisplay ()
     } // end of [...]
   | _ => () // ignored

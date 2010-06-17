@@ -200,8 +200,9 @@ the global variable errno is set to indicate the error.
 
 *)
 
-fun fflush0_err (f: FILEref):<> int
-  = "atslib_fflush_err"
+fun fflush0_err
+  (f: FILEref):<> int = "atslib_fflush_err"
+// end of [fflush0_err]
 
 fun fflush1_err {m:fm}
   (pf: file_mode_lte (m, w) | f: &FILE m):<> [i:int | i <= 0] int i

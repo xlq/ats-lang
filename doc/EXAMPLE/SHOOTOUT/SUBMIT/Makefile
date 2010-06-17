@@ -30,7 +30,9 @@ all: \
   regex-dna \
   regex-dna_smp \
   regex-dna2 \
-  reverse-complement reverse-complement2 \
+  reverse-complement \
+  reverse-complement2 \
+  reverse-complement3 \
   spectral-norm spectral-norm2 spectral-norm3 \
   thread-ring \
 
@@ -182,6 +184,9 @@ reverse-complement: reverse-complement.dats
 reverse-complement2: reverse-complement2.dats
 	$(ATSCC) -O3 -fomit-frame-pointer reverse-complement2.dats -o reverse-complement2
 
+reverse-complement3: reverse-complement3.dats
+	$(ATSCC) -O3 -fomit-frame-pointer reverse-complement3.dats -o reverse-complement3
+
 ######
 
 spectral-norm: spectral-norm.dats
@@ -253,6 +258,7 @@ cleanall: clean
 	rm -f regex-dna2
 	rm -f reverse-complement
 	rm -f reverse-complement2
+	rm -f reverse-complement3
 	rm -f spectral-norm
 	rm -f spectral-norm_smp
 	rm -f spectral-norm_smp2

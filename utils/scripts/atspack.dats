@@ -138,11 +138,11 @@ fn ATSPACKAGE_VERSION_get (): string = let
       exit (1)
     end // end of [if]
   end
-  val fil = open_file (name, file_mode_r)
+  val fil = open_file_exn (name, file_mode_r)
   val version = input_line (fil)
   val () = assert_errmsg (stropt_is_some version, #LOCATION)
   val version = stropt_unsome version
-  val () = close_file (fil)
+  val () = close_file_exn (fil)
 (*
   val () = begin
     prerr "ATSPACKAGE_VERSION_get: version = "; prerr version;

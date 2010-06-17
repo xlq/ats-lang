@@ -1164,25 +1164,30 @@ fun glTranslatef : glTranslate_type (GLfloat) = "#atsctrb_glTranslatef"
 // Display Lists
 //
 
+//
+// GLnewlist_v(n) indicates that [n] is a unique name
+//
+absview GLnewlist_v (n:int)
+prfun GLnewlst_v_elim_null (pf: GLnewlist_v 0): void
 absview GLlist_v (n:int) // a display list of the name [n] exists
-absview GLnewlist_v (n:int) // indicating that [n] is a unique name
+absviewt@ype GLlist (n:int) = GLuint
+castfn GLlist_encode {n:int} (pf: GLlist_v n | n: GLuint n):<> GLlist n
+castfn GLlist_decode {n:int} (lst: GLlist n):<> @(GLlist_v n | GLuint n)
 
 //
 // HX-2010-06-15:
-// if glIsList(lst) returns true, then we can expect a split
+// if glIsList(lst) returns true, then we can expect a split as follows:
 // (GLlist_v (n) -<lin,prf> void, GLlist_v (n))
 //
 fun glIsList {n:nat} (lst: GLuint n): GLboolean = "#atsctrb_glIsList"
 
-fun glDeleteList {n:pos} (pf: GLlist_v n | lst: GLuint n): void
-  = "atsctrb_glDeleteList" // function!
+fun glDeleteList {n:int} (lst: GLlist n): void = "atsctrb_glDeleteList" // function!
 
 (*
 // HX: this one is difficult to handle
 fun glDeleteLists (lst: GLuint, range: GLsizei): void = "atsctrb_glDeleteLists"
 *)
 
-prfun GLnewlst_v_elim_null (pf: GLnewlist_v 0): void
 fun glGenList ()
   : [n:nat] @(GLnewlist_v n | GLuint n) = "atsctrb_glGenList" // function!
 // end of [glGenList]
@@ -1197,13 +1202,17 @@ fun glGenLists (range: GLsizei): GLuint = "atsctrb_glGenLists"
 
 absview glNewList_v
 
-fun glNewList {n:pos}
-  (pf: !GLnewlist_v n >> GLlist_v n | lst: GLuint n, mode: GLenum): @(glNewList_v | void)
-  = "#atsctrb_glNewList"
+symintr glNewList
+fun glNewList_new {n:pos} (
+    pf: GLnewlist_v n | lst: GLuint n, mode: GLenum
+  ) : @(glNewList_v | GLlist n) = "atsctrb_glNewList_new"
+overload glNewList with glNewList_new
+fun glNewList_clear {n:int} (lst: !GLlist n, mode: GLenum): @(glNewList_v | void)
+  = "atsctrb_glNewList_clear"
+overload glNewList with glNewList_clear
 fun glEndList (pf: glNewList_v | (*none*)): void = "#atsctrb_glEndList"
 
-fun glCallList {n:pos}
-  (pf: !GLlist_v n | lst: GLuint n): void = "#atsctrb_glCallList"
+fun glCallList {n:int} (lst: !GLlist n): void = "#atsctrb_glCallList"
 
 (*
 fun glCallLists (n: GLsizei, typ: GLenum, lst: GLvoid* ): void

@@ -323,11 +323,11 @@ atsctrb_lor_GLbitfield_GLbitfield
 #define atsctrb_glIsList glIsList
 
 ATSinline()
-ats_uint_type
+GLuint
 atsctrb_glGenList () { return glGenLists (1) ; }
 
 ATSinline()
-ats_uint_type
+GLuint
 atsctrb_glGenList_exn () {
   GLuint lst = glGenLists (1) ;
   if (lst == 0) {
@@ -337,13 +337,23 @@ atsctrb_glGenList_exn () {
 } // end of [atsctrb_glGenList_exn]
 
 ATSinline()
+GLuint
+atsctrb_glNewList_new
+  (GLuint lst, GLenum mode) {
+  glNewList (lst, mode) ; return lst ;
+} // end of [atsctrb_glNewList_new]
+ATSinline()
+ats_void_type
+atsctrb_glNewList_clear
+  (GLuint lst, GLenum mode) { glNewList (lst, mode) ; return ; }
+// end of [atsctrb_glNewList_clear]
+
+ATSinline()
 ats_void_type
 atsctrb_glDeleteList
-  (ats_uint_type lst) {
-  glDeleteLists (lst, 1) ; return ;
-} // end of [atsctrb_glDeleteList]
+  (GLuint lst) { glDeleteLists (lst, 1) ; return ; }
+// end of [atsctrb_glDeleteList]
 
-#define atsctrb_glNewList glNewList
 #define atsctrb_glEndList glEndList
 #define atsctrb_glCallList glCallList
 

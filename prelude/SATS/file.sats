@@ -86,19 +86,19 @@ macdef stderr_ref = $extval (FILEref, "stderr")
 
 (* ****** ****** *)
 
-fun open_file // exit on failure
+fun open_file_exn // exit on failure
   (path: string, mode: file_mode): FILEref = "atslib_fopen_exn"
 // end of [open_file]
 
-fun close_file (fil: FILEref): void = "atslib_fclose_exn"
+fun close_file_exn (fil: FILEref): void = "atslib_fclose_exn"
 
-fun reopen_file // exit on failure
+fun reopen_file_exn // exit on failure
   (path: string, mode: file_mode, fil: FILEref): void = "atslib_freopen_exn"
 // end of [reopen_file]
 
 (* ****** ****** *)
 
-fun fflush (fil: FILEref): void = "atslib_fflush_exn"
+fun fflush_exn (fil: FILEref): void = "atslib_fflush_exn"
 
 (* ****** ****** *)
 
