@@ -117,8 +117,21 @@ test::
 
 ######
 
-all:: \
-  atsopt0 \
+all:: all-anairiats
+
+#
+# HX: [all1] is the entry point for bootstrapping with ATS/Anairiats
+#
+all-anairiats:: \
+  atsopt0-anairiats all1
+
+#
+# HX: [all1] is the entry point for bootstrapping with ATS/Geizella
+#
+all-geizella:: \
+  atsopt0-geizella all1
+
+all1:: \
   bootstrapping \
   atsopt1 \
   bin/atscc \
@@ -136,12 +149,17 @@ all:: \
 
 ###### w/o GC ######
 
-atsopt0::
+atsopt0:: atsopt0-anairiats
+
+atsopt0-anairiats::
 	$(MAKE) -C bootstrap0 -f ../Makefile_bootstrap BOOTSTRAP0=1 atsopt
+
+atsopt0-geizella::
+	$(MAKE) -C bootstrap0 -f ./Makefile atsopt
 
 ###### bootstrapping ######
 
-bootstrapping:: ; cd src; $(MAKE) -f Makefile_srcbootstrap all
+bootstrapping:: ; cd src; $(MAKE) -f ./Makefile_srcbootstrap all
 
 ###### w/o GC ######
 

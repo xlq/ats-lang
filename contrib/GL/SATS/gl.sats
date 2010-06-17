@@ -1214,9 +1214,10 @@ fun glEndList (pf: glNewList_v | (*none*)): void = "#atsctrb_glEndList"
 
 fun glCallList {n:int} (lst: !GLlist n): void = "#atsctrb_glCallList"
 
+fun glListBase (base: GLuint): void = "#atsctrb_glListBase"
 (*
+// HX: this one is difficult to handle
 fun glCallLists (n: GLsizei, typ: GLenum, lst: GLvoid* ): void
-fun glListBase (base: GLuint): void
 *)
 
 (* ****** ****** *)

@@ -356,6 +356,7 @@ atsctrb_glDeleteList
 
 #define atsctrb_glEndList glEndList
 #define atsctrb_glCallList glCallList
+#define atsctrb_glListBase glListBase
 
 /* ****** ****** */
 
