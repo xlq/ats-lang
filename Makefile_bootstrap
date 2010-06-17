@@ -64,6 +64,26 @@
 
 ######
 
+.SUFFIXES:
+all::
+
+######
+
+include ../config.mk
+
+ifdef BOOTSTRAP1
+CCFLAG=-I$(ATSHOME) -I$(ATSRUNTIME) -O2
+endif
+
+ifdef BOOTSTRAP0
+CCFLAG=-I$(ATSHOME)/bootstrap0 -I$(ATSRUNTIME) -O2
+endif
+
+LIBGMP=
+ifdef HAVE_LIBGMP
+LIBGMP=-lgmp
+endif
+
 ATSRUNTIME := $(ATSHOME)/ccomp/runtime
 LIBOBJS := $(LIBGMP)
 
@@ -165,18 +185,6 @@ OBJECTS := $(patsubst %.sats, %_sats.o, $(OBJECTS))
 OBJECTS := $(patsubst %.lats, %_lats.dats, $(OBJECTS))
 OBJECTS := $(patsubst %.dats, %_dats.o, $(OBJECTS))
 
-OBJECTS += \
-  ats_lexer_lats_dats.o \
-  ats_lexer_sats.o \
-  ats_grammar_yats.o \
-  prelude_dats.o \
-  libc_sats.o \
-  libc_dats.o \
-  libats_lex.o \
-  ats_main_dats.c \
-  $(ATSRUNTIME)/ats_prelude.c \
-  $(ATSRUNTIME)/ats_bootstrap.c \
-
 ATSOPT_GC_OBJECTS := \
   $(ATSHOME)/ccomp/runtime/GCATS/gc.o
 
@@ -199,15 +207,24 @@ LIBATS_LEX_OBJECTS := \
   libats_lex_lexing_dats.o \
   libats_lex_tables_dats.o
 
+OBJECTS += \
+  ats_lexer_lats_dats.o \
+  ats_lexer_sats.o \
+  ats_grammar_yats.o \
+  $(PRELUDE_DATS_OBJECTS) \
+  $(LIBC_SATS_OBJECTS) \
+  $(LIBC_DATS_OBJECTS) \
+  $(LIBATS_LEX_OBJECTS) \
+  ats_main_dats.c \
+  $(ATSRUNTIME)/ats_prelude.c \
+  $(ATSRUNTIME)/ats_bootstrap.c \
+
 ######
 
 COMPILE = $(CC) $(CPPFLAGS) $(CFLAGS) $(CCFLAG) -o $@
 CLINK = $(CC) $(CPPFLAGS) $(CFLAGS) $(CCFLAG) $(LDFLAGS) -o $@
-PRELINK = $(LD) $(LDFLAGS) -o $@ -r
 
 ######
-
-.SUFFIXES: .c .o
 
 %.o: %.c
 	$(COMPILE) -c $<
@@ -222,20 +239,6 @@ atsopt: $(OBJECTS)
 atsopt_gc: $(OBJECTS) $(ATSOPT_GC_OBJECTS)
 	$(CLINK) -D_ATS_GCATS \
 	  $(OBJECTS) $(ATSOPT_GC_OBJECTS) $(LIBOBJS)
-
-######
-
-prelude_dats.o: $(PRELUDE_DATS_OBJECTS)
-	$(PRELINK) $(PRELUDE_DATS_OBJECTS)
-
-libc_sats.o: $(LIBC_SATS_OBJECTS)
-	$(PRELINK) $(LIBC_SATS_OBJECTS)
-
-libc_dats.o: $(LIBC_DATS_OBJECTS)
-	$(PRELINK) $(LIBC_DATS_OBJECTS)
-
-libats_lex.o: $(LIBATS_LEX_OBJECTS)
-	$(PRELINK) $(LIBATS_LEX_OBJECTS)
 
 ######
 

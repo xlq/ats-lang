@@ -59,21 +59,45 @@ AC_CONFIG_FILES([test.sh])
 AM_INIT_AUTOMAKE
 
 AC_PROG_CC
+AC_PROG_INSTALL
+AC_PROG_MKDIR_P
+AC_PROG_LN_S
 PKG_PROG_PKG_CONFIG
 
-dnl = check for [gmp.h pcre.h]
-AC_CHECK_HEADERS(gmp.h pcre.h)
+dnl = check for gmp.h
+AC_CHECK_HEADERS(gmp.h)
+AC_SUBST(HAVE_LIBGMP, ${ac_cv_header_gmp_h%no})
+
+dnl = check for pcre.h
+AC_CHECK_HEADERS(pcre.h)
+AC_SUBST(HAVE_LIBPCRE, ${ac_cv_header_pcre_h%no})
 
 dnl = check for [cairo/cairo]
 dnl = AC_CHECK_HEADERS(cairo/cairo.h)
+
 dnl = check for [glib-2.0.0]
-AM_PATH_GLIB_2_0(2.10.0, AC_DEFINE([HAVE_LIBGLIB20], [1], [Define to 1 if you have glib-2.0]))
+AM_PATH_GLIB_2_0(2.10.0, [
+  AC_DEFINE([HAVE_LIBGLIB20], [1], [Define to 1 if you have glib-2.0])
+  have_glib=1
+])
+AC_SUBST(HAVE_LIBGLIB20, $have_glib)
+
 dnl = check for [gtk+-2.0.0]
-AM_PATH_GTK_2_0(2.10.0, AC_DEFINE([HAVE_LIBGTK20], [1], [Define to 1 if you have gtk+2.0]))
+AM_PATH_GTK_2_0(2.10.0, [
+  AC_DEFINE([HAVE_LIBGTK20], [1], [Define to 1 if you have gtk+2.0])
+  have_gtk=1
+])
+AC_SUBST(HAVE_LIBGTK20, $have_gtk)
+
 dnl = check for [GL/gl.h GL/glut.h]
 dnl = AC_CHECK_HEADERS(GL/gl.h GL/glut.h)
+
 dnl = check for [SDL]
-AM_PATH_SDL(1.0.0, AC_DEFINE([HAVE_SDL], [1], [Define to 1 if you have SDL-1.0]))
+AM_PATH_SDL(1.0.0, [
+  AC_DEFINE([HAVE_SDL], [1], [Define to 1 if you have SDL-1.0])
+  have_sdl=1
+])
+AC_SUBST(HAVE_LIBSDL, $have_sdl)
 
 dnl = check for SIZEOF_VOIDP
 AC_CHECK_SIZEOF(void*)

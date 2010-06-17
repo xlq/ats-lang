@@ -34,53 +34,47 @@
 ## Author: Likai Liu (liulk AT cs DOT bu DOT edu)
 ##
 
-######
-
-DESTDIR =
-
-# Default target.
-
-export ATSHOMERELOC
-
-.PHONY: all
-all:: Makefile_main_temp
-	@$(MAKE) -f Makefile_main_temp $@
+.SUFFIXES:
+all:: Makefile
 
 ######
 
-GCC=gcc
-Makefile_main_temp:: config.h
-	$(GCC) -E -P -x c .makefile_header | cat - Makefile_main > Makefile_main_temp
+# integration with autoconf.
 
-######
+SRC_CONFIG_FILES := config.mk.in config.h.in
+BUILT_CONFIG_FILES := $(SRC_CONFIG_FILES:%.in=%)
 
-# NOTE(liulk): integration with autoconf.
+Makefile: config.mk
 
--include config.mk
-
-config.h ats_env.sh test.sh: \
-  config.h.in config.mk.in ats_env.sh.in test.sh.in configure
-	test -x config.status && ./config.status || ./configure
-
-Makefile: ;
-configure.ac: ;
-config.mk.in: ;
-ats_env.sh.in: ;
-test.sh.in: ;
-
-config.mk:
+config.status: configure
+	./configure
 	touch $@
 
-configure: configure.ac config.h.in
+$(BUILT_CONFIG_FILES): %: config.status $(filter-out %,$(SRC_CONFIG_FILES))
+	./config.status
+	touch $@
+
+config.h.in: configure.ac
+	autoheader $<
+	touch $@
+
+configure: configure.ac $(SRC_CONFIG_FILES)
 	aclocal
 	automake --add-missing --foreign || true
 	autoconf
+	touch $(BUILT_CONFIG_FILES)
 
-config.h.in: configure.ac; autoheader
+-include config.mk
 
-# NOTE(liulk): installation to prefix
+######
 
-.PHONY: install
+DESTDIR :=
+
+export ATSHOME
+export ATSHOMERELOC
+
+######
+
 install:: config.h
 	# recursively install all files in the list except .svn control files.
 	for d in ccomp/runtime contrib doc libats libc prelude; do \
@@ -116,14 +110,174 @@ install:: config.h
 	  echo install ats_env.sh to $(bindir)/"$$b"; \
 	done
 
-.PHONY: test
 test::
 	sh test.sh
 
+all:: \
+  atsopt0 \
+  bootstrapping \
+  atsopt1 \
+  bin/atscc \
+  bin/atslib \
+  libfiles libfiles_mt \
+  bin/atspack \
+  bin/atslex \
+  ccomp/runtime/GCATS/gc.o \
+  ccomp/runtime/GCATS/gc_mt.o \
+  atsopt1_gc \
+  contrib
+	@echo "ATS/Anairiats has been built up successfully!"
+	@echo "The value of ATSHOME for this build is \"$(ATSHOME)\"."
+	@echo "The value of ATSHOMERELOC for this build is \"$(ATSHOMERELOC)\"."
+
+###### w/o GC ######
+
+atsopt0::
+	$(MAKE) -C bootstrap0 -f ../Makefile_bootstrap BOOTSTRAP0=1 atsopt
+
+###### bootstrapping ######
+
+bootstrapping:: ; cd src; $(MAKE) -f Makefile_srcbootstrap all
+
+###### w/o GC ######
+
+atsopt1::
+	$(MAKE) -C bootstrap1 -f ../Makefile_bootstrap BOOTSTRAP1=1 atsopt
+	cp bootstrap1/atsopt $(ATSHOME)/bin/atsopt
+
+###### with GC ######
+
+atsopt1_gc::
+	$(MAKE) -C bootstrap1 -f ../Makefile_bootstrap BOOTSTRAP1=1 atsopt_gc
+	cp bootstrap1/atsopt_gc $(ATSHOME)/bin/atsopt
+
+###### contrib libraries ######
+
+contrib::
+ifdef HAVE_LIBGLIB20
+	cd contrib/glib; make atsctrb_glib.o; make clean
+endif
+ifdef HAVE_LIBGTK20
+	cd contrib/cairo; make atsctrb_cairo.o; make clean
+	cd contrib/pango; make atsctrb_pango.o; make clean
+	cd contrib/GTK; make atsctrb_GTK.o; make clean
+endif
+ifdef HAVE_LIBSDL
+	cd contrib/SDL; make atsctrb_SDL.o; make clean
+endif
+
+###### some toplevel commands ######
+
+bin/atscc bin/atslib:
+	cd utils/scripts; $(MAKE) atscc; cp atscc "$(ATSHOME)"/bin
+	cd utils/scripts; $(MAKE) atslib; cp atslib "$(ATSHOME)"/bin
+	cd utils/scripts; $(MAKE) clean
+
+bin/atspack:
+	cd utils/scripts; $(MAKE) atspack; cp atspack "$(ATSHOME)"/bin
+
+###### library ######
+
+ATS_TERMINATION_CHECK=
 #
-# NOTE(liulk): once most major functions of Makefile_main is
-# superceded, remove the following code.
+# ATS_TERMINATION_CHECK=-D_ATS_TERMINATION_CHECK # it should be turned on from time to time
 #
-%: force
-	@exec $(MAKE) -f Makefile_main_temp $@
-force: ;
+# [CC -E] for preprocessing
+#
+
+.libfiles_local: .libfiles ; $(CC) -E -P -x c -o $@ $<
+libfiles: .libfiles_local
+	"$(ATSHOME)"/bin/atslib $(ATS_TERMINATION_CHECK) -O2 --libats
+	"$(ATSHOME)"/bin/atslib $(ATS_TERMINATION_CHECK) -O2 --libats_lex
+	"$(ATSHOME)"/bin/atslib $(ATS_TERMINATION_CHECK) -O2 --libats_smlbas
+
+lib32files: .libfiles_local
+	"$(ATSHOME)"/bin/atslib $(ATS_TERMINATION_CHECK) -m32 -O2 --libats
+	"$(ATSHOME)"/bin/atslib $(ATS_TERMINATION_CHECK) -m32 -O2 --libats_lex
+	"$(ATSHOME)"/bin/atslib $(ATS_TERMINATION_CHECK) -m32 -O2 --libats_smlbas
+
+lib64files: .libfiles_local
+	"$(ATSHOME)"/bin/atslib $(ATS_TERMINATION_CHECK) -m64 -O2 --libats
+	"$(ATSHOME)"/bin/atslib $(ATS_TERMINATION_CHECK) -m64 -O2 --libats_lex
+	"$(ATSHOME)"/bin/atslib $(ATS_TERMINATION_CHECK) -m64 -O2 --libats_smlbas
+
+.libfiles_mt_local: .libfiles ; $(CC) -E -P -x c -o $@ $<
+libfiles_mt: .libfiles_mt_local
+	"$(ATSHOME)"/bin/atslib $(ATS_TERMINATION_CHECK) -D_ATS_MULTITHREAD -O2 --libats_mt
+
+###### a lexer for ATS ######
+
+bin/atslex:
+	cd utils/atslex; $(MAKE) atslex; cp atslex "$(ATSHOME)"/bin
+	cd utils/atslex; $(MAKE) clean
+
+###### GC runtime ######
+
+ccomp/runtime/GCATS/gc.o:
+	cd ccomp/runtime/GCATS; $(MAKE) gc.o; $(MAKE) clean
+
+ccomp/runtime/GCATS/gc_mt.o:
+	cd ccomp/runtime/GCATS; $(MAKE) gc_mt.o; $(MAKE) clean
+
+######
+
+package::
+	bin/atspack --source
+
+precompiled::
+	/bin/bash -r ./ATSHOMERELOC_check.sh
+	bin/atspack --precompiled
+	rm -fr usr/share/atshome
+	mv ats-lang-anairiats-* usr/share/atshome
+	tar -zvcf ats-lang-anairiats-precompiled.tar.gz \
+          --exclude=usr/.svn --exclude=usr/bin/.svn --exclude=usr/share/.svn usr/
+
+######
+
+srclines::
+	cd src; make lines
+
+liblines::
+	wc -l \
+          prelude/*/*.?ats prelude/*/*/*.?ats \
+          libc/*/*.?ats libc/*/*/*.?ats \
+          libats/*/*.?ats libats/*/*/*.?ats
+
+######
+
+clean::
+	rm -f bootstrap[01]/*.o
+	cd utils/scripts; $(MAKE) clean
+	cd utils/atslex; $(MAKE) clean
+	cd ccomp/runtime/GCATS; $(MAKE) clean
+
+cleanall:: clean
+	rm -f $(BUILT_CONFIG_FILES)
+	rm -f .libfiles_local
+	rm -f .libfiles_mt_local
+	rm -f bin/atsopt bin/atscc bin/atslib bin/atslex bin/atspack
+	rm -f ccomp/lib/libats.a
+	rm -f ccomp/lib/libats_mt.a
+	rm -f ccomp/lib/libats_lex.a
+	rm -f ccomp/lib/libats_smlbas.a
+	rm -f ccomp/lib/output/*
+	rm -f ccomp/lib64/libats.a
+	rm -f ccomp/lib64/libats_mt.a
+	rm -f ccomp/lib64/libats_lex.a
+	rm -f ccomp/lib64/libats_smlbas.a
+	rm -f ccomp/lib64/output/*
+	cd ccomp/runtime/GCATS; $(MAKE) cleanall
+	rm -f contrib/glib/atsctrb_glib.o
+	rm -f contrib/cairo/atsctrb_cairo.o
+	rm -f contrib/pango/atsctrb_pango.o
+	rm -f contrib/X11/atsctrb_X11.o
+	rm -f contrib/GTK/atsctrb_GTK.o
+	rm -f contrib/GL/atsctrb_GL.o
+	rm -f contrib/SDL/atsctrb_SDL.o
+	find . -name .svn -prune -o -name \*~ -exec rm \{} \;
+
+######
+#
+# end of [Makefile]
+#
+######
