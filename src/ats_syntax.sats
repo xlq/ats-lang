@@ -691,6 +691,30 @@ fun tmpqi0de_make_some (q: d0ynq, id: i0de): tmpqi0de =
 
 (* ****** ****** *)
 
+datatype d0atarg_node =
+  | D0ATARGsrt of s0rtpol | D0ATARGidsrt of (sym_t, s0rtpol)
+
+typedef d0atarg = '{
+  d0atarg_loc= loc_t, d0atarg_node= d0atarg_node
+}
+
+fun d0atarg_srt (_: s0rtpol): d0atarg = "d0atarg_srt"
+fun d0atarg_id_srt (_: i0de, _: s0rtpol): d0atarg = "d0atarg_id_srt"
+
+typedef d0atarglst = List d0atarg
+typedef d0atarglstopt = Option d0atarglst
+
+fun d0atarglst_nil (): d0atarglst = "d0atarglst_nil"
+fun d0atarglst_cons (x: d0atarg, xs: d0atarglst): d0atarglst
+  = "d0atarglst_cons"
+
+fun d0atarglstopt_none (): d0atarglstopt
+  = "d0atarglstopt_none"
+fun d0atarglstopt_some (x: d0atarglst): d0atarglstopt
+  = "d0atarglstopt_some"
+
+(* ****** ****** *)
+
 typedef s0arg = '{
   s0arg_loc= loc_t, s0arg_sym= sym_t, s0arg_srt= s0rtopt
 }
@@ -960,27 +984,21 @@ fun s0qualstopt_some (x: s0qualst): s0qualstopt = "s0qualstopt_some"
 
 (* ****** ****** *)
 
-datatype d0atarg_node =
-  | D0ATARGsrt of s0rtpol | D0ATARGidsrt of (sym_t, s0rtpol)
+typedef impqi0de = '{
+  impqi0de_loc= loc_t
+, impqi0de_qua= d0ynq
+, impqi0de_sym= sym_t
+, impqi0de_arg= t1mps0explstlst
+} // end of [impqi0de]
 
-typedef d0atarg = '{
-  d0atarg_loc= loc_t, d0atarg_node= d0atarg_node
-}
+fun impqi0de_make_none
+  (qid: dqi0de): impqi0de = "impqi0de_make_none"
+// end of [impqi0de_make_none]
 
-fun d0atarg_srt (_: s0rtpol): d0atarg = "d0atarg_srt"
-fun d0atarg_id_srt (_: i0de, _: s0rtpol): d0atarg = "d0atarg_id_srt"
-
-typedef d0atarglst = List d0atarg
-typedef d0atarglstopt = Option d0atarglst
-
-fun d0atarglst_nil (): d0atarglst = "d0atarglst_nil"
-fun d0atarglst_cons (x: d0atarg, xs: d0atarglst): d0atarglst
-  = "d0atarglst_cons"
-
-fun d0atarglstopt_none (): d0atarglstopt
-  = "d0atarglstopt_none"
-fun d0atarglstopt_some (x: d0atarglst): d0atarglstopt
-  = "d0atarglstopt_some"
+fun impqi0de_make_some (
+    qid: tmpqi0de, arg: s0explst, args: t1mps0explstlst, t_gt: t0kn
+  ) : impqi0de = "impqi0de_make_some"
+// end of [impqi0de_make_some]
 
 (* ****** ****** *)
 
@@ -988,9 +1006,11 @@ datatype f0xty =
   | F0XTYinf of (p0rec, assoc)
   | F0XTYpre of p0rec
   | F0XTYpos of p0rec
+// end of [f0xty]
 
 datatype e0xpact_kind =
   | E0XPACTassert | E0XPACTerror | E0XPACTprint
+// end of [e0xpact_kind]
 
 (* ****** ****** *)
 
@@ -998,16 +1018,15 @@ typedef s0rtdef = '{
   s0rtdef_loc= loc_t
 , s0rtdef_sym= sym_t
 , s0rtdef_def= s0rtext
-}
-
-fun s0rtdef_make (id: i0de, s0te: s0rtext): s0rtdef
-  = "s0rtdef_make"
+} // end of [s0rtdef]
 
 typedef s0rtdeflst = List s0rtdef
 
-fun s0rtdeflst_nil (): s0rtdeflst
-  = "s0rtdeflst_nil"
+fun s0rtdef_make
+  (id: i0de, s0te: s0rtext): s0rtdef = "s0rtdef_make"
+// end of [s0rtdef_make]
 
+fun s0rtdeflst_nil (): s0rtdeflst = "s0rtdeflst_nil"
 fun s0rtdeflst_cons (x: s0rtdef, xs: s0rtdeflst): s0rtdeflst
   = "s0rtdeflst_cons"
 
@@ -1018,7 +1037,7 @@ typedef s0tacon = '{
 , s0tacon_sym= sym_t
 , s0tacon_arg= d0atarglstopt
 , s0tacon_def= s0expopt
-}
+} // end of [s0tacon]
 
 fun s0tacon_make_none_none (id: i0de): s0tacon
   = "s0tacon_make_none_none"
@@ -1039,7 +1058,7 @@ typedef s0tacst = '{
 , s0tacst_sym= sym_t
 , s0tacst_arg= d0atarglstopt
 , s0tacst_res= s0rt
-}
+} // end of [s0tacst]
 
 fun s0tacst_make_none (id: i0de, srt: s0rt): s0tacst
   = "s0tacst_make_none"
@@ -1055,7 +1074,7 @@ typedef s0tavar = '{
   s0tavar_loc= loc_t
 , s0tavar_sym= sym_t
 , s0tavar_srt= s0rt
-}
+} // end of [s0tavar]
 
 fun s0tavar_make (id: i0de, srt: s0rt): s0tavar
   = "s0tavar_make"
@@ -1064,7 +1083,6 @@ typedef s0tavarlst = List s0tavar
 fun s0tavarlst_nil (): s0tavarlst = "s0tavarlst_nil"
 fun s0tavarlst_cons (x: s0tavar, xs: s0tavarlst): s0tavarlst
   = "s0tavarlst_cons"
-
 
 (* ****** ****** *)
 
@@ -1075,13 +1093,12 @@ typedef s0expdef = '{
 , s0expdef_arg= s0arglstlst
 , s0expdef_res= s0rtopt
 , s0expdef_def= s0exp
-}
+} // end of [s0expdef]
+typedef s0expdeflst = List s0expdef
 
 fun s0expdef_make
   (id: i0de, arg: s0arglstlst, res: s0rtopt, def: s0exp): s0expdef
   = "s0expdef_make"
-
-typedef s0expdeflst = List s0expdef
 
 fun s0expdeflst_nil (): s0expdeflst = "s0expdeflst_nil"
 fun s0expdeflst_cons (x: s0expdef, xs: s0expdeflst): s0expdeflst
@@ -1095,7 +1112,7 @@ typedef s0aspdec = '{
 , s0aspdec_arg= s0arglstlst
 , s0aspdec_res= s0rtopt
 , s0aspdec_def= s0exp
-}
+} // end of [s0aspdec]
 
 fun s0aspdec_make
   (qid: sqi0de, arg: s0arglstlst, res: s0rtopt, def: s0exp): s0aspdec
@@ -1109,7 +1126,7 @@ typedef d0atcon = '{
 , d0atcon_qua= s0qualstlst
 , d0atcon_arg= s0expopt
 , d0atcon_ind= s0expopt
-}
+} // end of [d0atcon]
 
 fun d0atcon_make
   (qua: s0qualstlst, id: i0de, ind: s0expopt, arg: s0expopt): d0atcon
@@ -1127,7 +1144,7 @@ typedef d0atdec = '{
 , d0atdec_sym= sym_t
 , d0atdec_arg= d0atarglstopt
 , d0atdec_con= d0atconlst
-}
+} // end of [d0atdec]
 
 fun d0atdec_make_none (id: i0de, con: d0atconlst): d0atdec
   = "d0atdec_make_none"
@@ -1255,7 +1272,7 @@ datatype d0arg_node =
 
 typedef d0arg = '{
   d0arg_loc= loc_t, d0arg_node= d0arg_node
-}
+} // end of [d0arg]
 
 fun d0arg_var (id: i0de): d0arg = "d0arg_var"
 
@@ -1303,6 +1320,8 @@ fun dcstextdef_is_mac (x: dcstextdef):<> bool
 
 fun extnamopt_none (): Stropt = "extnamopt_none"
 fun extnamopt_some (ext: s0tring): Stropt = "extnamopt_some"
+
+(* ****** ****** *)
 
 typedef d0cstdec = '{
   d0cstdec_loc= loc_t
@@ -1356,6 +1375,44 @@ fun s0vararg_seq (seq: s0arglst):  s0vararg = "s0vararg_seq"
 
 (* ****** ****** *)
 
+datatype s0exparg =
+  | S0EXPARGone (* {..} *)
+  | S0EXPARGall (* {...} *)
+  | S0EXPARGseq of s0explst
+// end of [s0exparg]
+
+typedef s0expargopt = Option s0exparg
+
+fun s0exparg_one ():  s0exparg = "s0exparg_one"
+fun s0exparg_all ():  s0exparg = "s0exparg_all"
+fun s0exparg_seq (seq: s0explst):  s0exparg = "s0exparg_seq"
+
+(* ****** ****** *)
+
+typedef s0elop = '{
+  s0elop_loc= loc_t, s0elop_knd= int
+} // end of [s0elop]
+
+fun s0elop_make (knd: int, t: t0kn): s0elop = "s0elop_make"
+
+(* ****** ****** *)
+
+datatype witht0ype =
+  | WITHT0YPEnone
+  | WITHT0YPEprop of s0exp
+  | WITHT0YPEtype of s0exp
+  | WITHT0YPEview of s0exp
+  | WITHT0YPEviewtype of s0exp
+// end of [witht0ype]
+
+fun witht0ype_none (): witht0ype = "witht0ype_none"
+fun witht0ype_prop (_: s0exp): witht0ype = "witht0ype_prop"
+fun witht0ype_type (_: s0exp): witht0ype = "witht0ype_type"
+fun witht0ype_view (_: s0exp): witht0ype = "witht0ype_view"
+fun witht0ype_viewtype (_: s0exp): witht0ype = "witht0ype_viewtype"
+
+(* ****** ****** *)
+
 datatype p0at_node = 
   | P0Tann of (p0at, s0exp)
   | P0Tapp of (p0at, p0at)
@@ -1387,6 +1444,7 @@ and labp0atlst =
 where p0at = '{
    p0at_loc= loc_t, p0at_node= p0at_node
 } (* end of [p0at] *)
+
 and p0atlst: type = List p0at
 and p0atopt: type = Option p0at
 
@@ -1446,7 +1504,7 @@ fun labp0atlst_dot (): labp0atlst = "labp0atlst_dot"
 fun labp0atlst_cons (l: l0ab, x: p0at, xs: labp0atlst): labp0atlst
   = "labp0atlst_cons"
 
-//
+(* ****** ****** *)
 
 datatype f0arg_node =
   | F0ARGsta1 of s0qualst
@@ -1475,36 +1533,13 @@ fun f0arglst_cons (x: f0arg, xs: f0arglst): f0arglst = "f0arglst_cons"
 
 (* ****** ****** *)
 
-datatype s0exparg =
-  | S0EXPARGone (* {..} *)
-  | S0EXPARGall (* {...} *)
-  | S0EXPARGseq of s0explst
-// end of [s0exparg]
-
-typedef s0expargopt = Option s0exparg
-
-fun s0exparg_one ():  s0exparg = "s0exparg_one"
-fun s0exparg_all ():  s0exparg = "s0exparg_all"
-fun s0exparg_seq (seq: s0explst):  s0exparg = "s0exparg_seq"
-
-(* ****** ****** *)
-
-typedef s0elop = '{
-  s0elop_loc= loc_t, s0elop_knd= int
-}
-
-fun s0elop_make (knd: int, t: t0kn): s0elop = "s0elop_make"
-
-(* ****** ****** *)
-
 typedef i0nvarg = '{
   i0nvarg_loc= loc_t, i0nvarg_sym= sym_t, i0nvarg_typ= s0expopt
-}
+} // end of [i0nvarg]
+typedef i0nvarglst = List i0nvarg
 
 fun i0nvarg_make_none (_: i0de): i0nvarg = "i0nvarg_make_none"
 fun i0nvarg_make_some (_: i0de, _: s0exp): i0nvarg = "i0nvarg_make_some"
-
-typedef i0nvarglst = List i0nvarg
 
 fun i0nvarglst_nil (): i0nvarglst = "i0nvarglst_nil"
 fun i0nvarglst_cons (x: i0nvarg, xs: i0nvarglst): i0nvarglst
@@ -1512,7 +1547,7 @@ fun i0nvarglst_cons (x: i0nvarg, xs: i0nvarglst): i0nvarglst
 
 typedef i0nvresstate = '{
  i0nvresstate_qua= s0qualstopt, i0nvresstate_arg= i0nvarglst
-}
+} // end of [i0nvresstate]
 
 fun i0nvresstate_none (): i0nvresstate = "i0nvresstate_none"
 fun i0nvresstate_some (qua: s0qualstopt, arg: i0nvarglst): i0nvresstate
@@ -1523,30 +1558,14 @@ typedef loopi0nv = '{
 , loopi0nv_met= s0explstopt
 , loopi0nv_arg= i0nvarglst
 , loopi0nv_res= i0nvresstate
-}
+} // end of [loopi0nv]
 
 typedef loopi0nvopt = Option loopi0nv
 
-fun loopi0nv_make
-  (qua: s0qualstopt, met: s0explstopt, arg: i0nvarglst, res: i0nvresstate)
-  : loopi0nv
-  = "loopi0nv_make"
-
-(* ****** ****** *)
-
-datatype witht0ype =
-  | WITHT0YPEnone
-  | WITHT0YPEprop of s0exp
-  | WITHT0YPEtype of s0exp
-  | WITHT0YPEview of s0exp
-  | WITHT0YPEviewtype of s0exp
-// end of [witht0ype]
-
-fun witht0ype_none (): witht0ype = "witht0ype_none"
-fun witht0ype_prop (_: s0exp): witht0ype = "witht0ype_prop"
-fun witht0ype_type (_: s0exp): witht0ype = "witht0ype_type"
-fun witht0ype_view (_: s0exp): witht0ype = "witht0ype_view"
-fun witht0ype_viewtype (_: s0exp): witht0ype = "witht0ype_viewtype"
+fun loopi0nv_make (
+    qua: s0qualstopt, met: s0explstopt, arg: i0nvarglst, res: i0nvresstate
+  ) : loopi0nv = "loopi0nv_make"
+// end of [loopi0nv_make]
 
 (* ****** ****** *)
 
@@ -1861,20 +1880,13 @@ and m0acdeflst = List m0acdef
 
 (* ****** ****** *)
 
-and impqi0de = '{
-  impqi0de_loc= loc_t
-, impqi0de_qua= d0ynq
-, impqi0de_sym= sym_t
-, impqi0de_arg= t1mps0explstlst
-}
-
 and i0mpdec = '{
   i0mpdec_loc= loc_t
 , i0mpdec_qid= impqi0de
 , i0mpdec_arg= f0arglst
 , i0mpdec_res= s0expopt
 , i0mpdec_def= d0exp
-}
+} // end of [i0mpdec]
 
 (* ****** ****** *)
 
@@ -1889,9 +1901,11 @@ and guad0ec : type = '{
 
 (* ****** ****** *)
 
-fun d0exp_ann (_: d0exp, _: s0exp): d0exp = "d0exp_ann"
-
-fun d0exp_apps (_fun: d0exp, _arg: d0explst): d0exp = "d0exp_apps"
+fun d0exp_ann
+  (_: d0exp, _: s0exp): d0exp = "d0exp_ann"
+fun d0exp_apps
+  (_fun: d0exp, _arg: d0explst): d0exp = "d0exp_apps"
+// end of [d0exp_apps]
 
 (* ****** ****** *)
 
@@ -1972,6 +1986,8 @@ fun d0exp_for_itp (hd: loophead, itp: initestpost, body: d0exp): d0exp
 fun d0exp_freeat (t_freeat: t0kn, _: d0explst): d0exp
   = "d0exp_freeat"
 
+(* ****** ****** *)
+
 fun d0exp_ide (id: i0de): d0exp = "d0exp_ide"
 
 fun d0exp_if_none
@@ -2013,7 +2029,7 @@ fun d0exp_lst
 fun d0exp_lst_quote (t_beg: t0kn, elts: d0explst, t_end: t0kn): d0exp
   = "d0exp_lst_quote"
 
-//
+(* ****** ****** *)
 
 fun d0exp_macsyn_cross (t_beg: t0kn, _: d0exp, t_end: t0kn): d0exp
   = "d0exp_macsyn_cross"
@@ -2024,10 +2040,10 @@ fun d0exp_macsyn_decode (t_beg: t0kn, _: d0exp, t_end: t0kn): d0exp
 fun d0exp_macsyn_encode_seq (t_beg: t0kn, _: d0explst, t_end: t0kn): d0exp
   = "d0exp_macsyn_encode_seq"
 
-//
+(* ****** ****** *)
 
 (*
-// HX-2010-05-12: the OOP plan is permanently abandoned
+// HX-2010-05-12: the OOP plan is permanently suspended
 fun d0exp_obj (knd: objkind, cls: s0exp, _: m0thdeclst, t_end: t0kn): d0exp
   = "d0exp_obj"
 // end of [d0exp_obj]
@@ -2114,12 +2130,12 @@ fun d0exp_where (d0e: d0exp, d0cs: d0eclst, t_end: t0kn): d0exp
 fun d0exp_while (hd: loophead, test: d0exp, body: d0exp): d0exp
   = "d0exp_while"
 
-//
+(* ****** ****** *)
 
 fun d0exp_FILENAME (tok: t0kn): d0exp = "d0exp_FILENAME"
 fun d0exp_LOCATION (tok: t0kn): d0exp = "d0exp_LOCATION"
 
-//
+(* ****** ****** *)
 
 fun d0explst_nil (): d0explst = "d0explst_nil"
 fun d0explst_cons (x: d0exp, xs: d0explst): d0explst = "d0explst_cons"
@@ -2188,29 +2204,32 @@ fun loophead_make_some (t_head: t0kn, inv: loopi0nv, t_eqgt: t0kn): loophead
 
 fun tryhead_make (t_try: t0kn): tryhead = "tryhead_make"
 
-//
+(* ****** ****** *)
 
-fun c0lau_make (gp0t: guap0at, seq: int, neg: int, body: d0exp): c0lau
-  = "c0lau_make"
-
+fun c0lau_make (
+    gp0t: guap0at, seq: int, neg: int, body: d0exp
+  ) : c0lau = "c0lau_make"
 fun c0laulst_nil (): c0laulst = "c0laulst_nil"
-fun c0laulst_cons (x: c0lau, xs: c0laulst): c0laulst = "c0laulst_cons"
+fun c0laulst_cons
+  (x: c0lau, xs: c0laulst): c0laulst = "c0laulst_cons"
 
-//
-
-fun sc0lau_make (sp0t: sp0at, body: d0exp): sc0lau = "sc0lau_make"
-
+fun sc0lau_make
+  (sp0t: sp0at, body: d0exp): sc0lau = "sc0lau_make"
 fun sc0laulst_nil (): sc0laulst = "sc0laulst_nil"
-fun sc0laulst_cons (x: sc0lau, xs: sc0laulst): sc0laulst = "sc0laulst_cons"
+fun sc0laulst_cons
+  (x: sc0lau, xs: sc0laulst): sc0laulst = "sc0laulst_cons"
 
 (* ****** ****** *)
 
-fun v0aldec_make (p0t: p0at, def: d0exp, ann: witht0ype): v0aldec
+fun v0aldec_make
+  (p0t: p0at, def: d0exp, ann: witht0ype): v0aldec
   = "v0aldec_make"
 
 fun v0aldeclst_nil (): v0aldeclst = "v0aldeclst_nil"
 fun v0aldeclst_cons (x: v0aldec, xs: v0aldeclst): v0aldeclst
   = "v0aldeclst_cons"
+
+(* ****** ****** *)
 
 fun f0undec_make_none
   (id: i0de, arg: f0arglst, def: d0exp, ann: witht0ype): f0undec
@@ -2252,7 +2271,8 @@ fun v0ardeclst_cons (x: v0ardec, xs: v0ardeclst): v0ardeclst
 
 (* ****** ****** *)
 
-fun m0acdef_make (id: i0de, arg: m0acarglst, def: d0exp): m0acdef
+fun m0acdef_make
+  (id: i0de, arg: m0acarglst, def: d0exp): m0acdef
   = "m0acdef_make"
 
 fun m0acdeflst_nil (): m0acdeflst = "m0acdeflst_nil"
@@ -2260,14 +2280,6 @@ fun m0acdeflst_cons (x: m0acdef, xs: m0acdeflst): m0acdeflst
   = "m0acdeflst_cons"
 
 (* ****** ****** *)
-
-fun impqi0de_make_none
-  (qid: dqi0de): impqi0de = "impqi0de_make_none"
-
-fun impqi0de_make_some (
-    qid: tmpqi0de, arg: s0explst, args: t1mps0explstlst, t_gt: t0kn
-  ) : impqi0de
-  = "impqi0de_make_some"
 
 fun i0mpdec_make
   (qid: impqi0de, arg: f0arglst, res: s0expopt, def: d0exp): i0mpdec
@@ -2334,8 +2346,8 @@ fun d0ec_exndecs (t: t0kn, d: e0xndec, ds: e0xndeclst): d0ec
 (*
 fun d0ec_classdec (
     knd: clskind, arg: s0qualstlst, d_dec: c0lassdec, ds_def: s0expdeflst
-  ) : d0ec
-  = "d0ec_classdec"
+  ) : d0ec = "d0ec_classdec"
+// end of [d0ec_classdec]
 *)
 
 fun d0ec_classdec_none
@@ -2411,16 +2423,19 @@ fun d0ecllst_reverse (xs: d0ecllst): d0eclst = "d0ecllst_reverse"
 
 (* ****** ****** *)
 
-fun guad0ec_one (gua: e0xp, d0cs_then: d0eclst, t_endif: t0kn): guad0ec
+fun guad0ec_one
+  (gua: e0xp, d0cs_then: d0eclst, t_endif: t0kn): guad0ec
   = "guad0ec_one"
 
-fun guad0ec_two
-  (gua: e0xp, d0cs_then: d0eclst, d0cs_else: d0eclst, t_endif: t0kn): guad0ec
-  = "guad0ec_two"
+fun guad0ec_two (
+    gua: e0xp, d0cs_then: d0eclst, d0cs_else: d0eclst, t_endif: t0kn
+  ) : guad0ec = "guad0ec_two"
+// end of [guad0ec_two]
 
-fun guad0ec_cons
-  (gua: e0xp, d0cs: d0eclst, kndtok: srpifkindtok, rest: guad0ec): guad0ec
-  = "guad0ec_cons"
+fun guad0ec_cons (
+    gua: e0xp, d0cs: d0eclst, kndtok: srpifkindtok, rest: guad0ec
+  ) : guad0ec = "guad0ec_cons"
+// end of [guad0ec_cons]
 
 (* ****** ****** *)
 

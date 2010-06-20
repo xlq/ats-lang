@@ -185,11 +185,17 @@ typedef staftitem = '{
 
 assume staftitem_t = staftitem
 
-extern fun staftitem_lin_set (sai: staftitem, lin: int): void
+extern
+fun staftitem_lin_set
+  (sai: staftitem, lin: int): void
   = "ats_trans3_env_state_staftitem_lin_set"
+// end of [staftitem_lin_set]
 
-extern fun staftitem_typ_set (sai: staftitem, typ: saityplst): void
+extern
+fun staftitem_typ_set
+  (sai: staftitem, typ: saityplst): void
   = "ats_trans3_env_state_staftitem_typ_set"
+// end of [staftitem_typ_set]
 
 (* ****** ****** *)
 

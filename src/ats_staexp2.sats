@@ -974,11 +974,9 @@ fun s2exp_is_wth (s2e: s2exp): bool
 
 (* ****** ****** *)
 
-fun s2exp_srt_set (s2e: s2exp, s2t: s2rt): void
-  = "ats_staexp2_s2exp_srt_set"
-
-fun s2exp_equal_ref (_: s2exp, _: s2exp): bool
-  = "ats_staexp2_s2exp_equal_ref"
+fun s2exp_srt_set
+  (s2e: s2exp, s2t: s2rt): void = "atsopt_s2exp_srt_set"
+// end of [s2exp_srt_set]
 
 (* ****** ****** *)
 
@@ -1206,8 +1204,10 @@ fun s2exp_link_remove (root: s2exp): s2exp
 
 (* ****** ****** *)
 
-fun eqref_s2exp_s2exp (s2e1: s2exp, s2e2: s2exp): bool
-  = "ats_staexp2_eqref_s2exp_s2exp"
+fun eqref_s2exp_s2exp
+  (s2e1: s2exp, s2e2: s2exp): bool
+  = "atsopt_eqref_s2exp_s2exp"
+// end of [eqref_s2exp_s2exp]
 
 fun s2exp_syneq (_: s2exp, _: s2exp): bool
 fun s2explst_syneq (_: s2explst, _: s2explst): bool

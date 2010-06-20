@@ -44,9 +44,9 @@
 extern ats_void_type
 ats_posmark_xref_flag_set (ats_ptr_type flag) ;
 
-static inline
+ATSinline()
 ats_bool_type
-ats_main_is_posmark_xref_prefix (ats_ptr_type s0) {
+atsopt_is_posmark_xref_prefix (ats_ptr_type s0) {
   int cmp, n1, n2, ln ; char *s, *flag ;
   static char* POSMARK_XREF = "--posmark_xref" ;
   s = (char*)s0 ;
@@ -65,36 +65,39 @@ ats_main_is_posmark_xref_prefix (ats_ptr_type s0) {
       flag = "" ;
     } // end of [if]
 /*
-    fprintf (stderr, "ats_main_is_posmark_xref_prefix: flag = %s\n", flag) ;
+    fprintf (stderr, "atsopt_is_posmark_xref_prefix: flag = %s\n", flag) ;
 */
     ats_posmark_xref_flag_set ((ats_ptr_type)flag) ;
   } // end of [if]
   return (cmp == 0 ? ats_true_bool : ats_false_bool) ;
-} /* end of [ats_main_is_posmark_xref_prefix] */
+} /* end of [atsopt_is_posmark_xref_prefix] */
 
 /* ****** ****** */
 
 static int the_IATS_wait = 0 ;
 
-static inline
-ats_void_type ats_main_IATS_wait_set () {
+ATSinline()
+ats_void_type
+atsopt_IATS_wait_set () {
   the_IATS_wait = 1 ; return ;
-}
+} // end of [atsopt_IATS_wait_set]
 
-static inline
-ats_bool_type ats_main_IATS_wait_is_set () {
+ATSinline()
+ats_bool_type
+atsopt_IATS_wait_is_set () {
   return (the_IATS_wait ? ats_true_bool : ats_false_bool) ;
-}
+} // end of [atsopt_IATS_wait_is_set]
 
-static inline
-ats_void_type ats_main_IATS_wait_clear () {
+ATSinline()
+ats_void_type
+atsopt_IATS_wait_clear () {
   the_IATS_wait = 0 ; return ;
-}
+} // end of [atsopt_IATS_wait_clear]
 
 /* ****** ****** */
 
 ats_bool_type
-ats_main_is_IATS_flag (ats_ptr_type s0) {
+atsopt_is_IATS_flag (ats_ptr_type s0) {
   char *s = (char*)s0 ;
   if (*s != '-') return ats_false_bool ;
   ++s ; if (*s != 'I') return ats_false_bool ;
@@ -102,49 +105,49 @@ ats_main_is_IATS_flag (ats_ptr_type s0) {
   ++s ; if (*s != 'T') return ats_false_bool ;
   ++s ; if (*s != 'S') return ats_false_bool ;
   return ats_true_bool ; 
-} /* end of [ats_main_is_IATS_flag] */
+} /* end of [atsopt_is_IATS_flag] */
 
 ats_ptr_type
-ats_main_IATS_extract (ats_ptr_type s0) {
+atsopt_IATS_extract (ats_ptr_type s0) {
   int n ; char* s ;
   n = strlen ((char*)s0) ;
   n -= 5 ; if (n <= 0) return (ats_ptr_type)0 ;
   s = (char*)ATS_MALLOC(n + 1) ;
   memcpy (s, (char*)s0 + 5, n) ; s[n] = '\0' ;
   return (ats_ptr_type)s ;
-} /* end of [ats_main_IATS_extract] */
+} /* end of [atsopt_IATS_extract] */
 
 /* ****** ****** */
 
 // global
-char *ats_main_ATSHOME = NULL ; // no need for marking as a root
-int ats_main_ATSHOME_length = 0;
+char *atsopt_ATSHOME = NULL ; // no need for marking as a root
+int atsopt_ATSHOME_length = 0;
 
 ats_ptr_type
-ats_main_ATSHOME_getenv_exn () {
+atsopt_ATSHOME_getenv_exn () {
  char *value0 ;
  value0 = getenv ("ATSHOME") ; // this value cannot be GCed
  if (!value0) {
    fprintf (stderr, "The environment variable ATSHOME is undefined.\n") ;
    exit (1) ;
  }
- ats_main_ATSHOME = value0 ; ats_main_ATSHOME_length = strlen (value0) ;
+ atsopt_ATSHOME = value0 ; atsopt_ATSHOME_length = strlen (value0) ;
  return (ats_ptr_type)value0 ;
-} /* end of [ats_main_ATSHOME_getenv_exn] */
+} /* end of [atsopt_ATSHOME_getenv_exn] */
 
 /* ****** ****** */
 
 // global
-char *ats_main_ATSHOMERELOC = NULL ; // no need for marking as a root
+char *atsopt_ATSHOMERELOC = NULL ; // no need for marking as a root
 
 ats_void_type
-ats_main_ATSHOMERELOC_set () {
-  ats_main_ATSHOMERELOC = getenv ("ATSHOMERELOC") ; // this value cannot be GCed
+atsopt_ATSHOMERELOC_set () {
+  atsopt_ATSHOMERELOC = getenv ("ATSHOMERELOC") ; // this value cannot be GCed
 /*
-  fprintf (stderr, "ats_main_ATSHOMERELOC_set: ATSHOMERELOC = %s\n", ats_main_ATSHOMERELOC) ;
+  fprintf (stderr, "atsopt_ATSHOMERELOC_set: ATSHOMERELOC = %s\n", atsopt_ATSHOMERELOC) ;
 */
   return ;
-} // end of [ats_main_ATSHOMERELOC_set]
+} // end of [atsopt_ATSHOMERELOC_set]
 
 /* ****** ****** */
 

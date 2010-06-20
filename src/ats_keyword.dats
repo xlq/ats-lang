@@ -57,242 +57,247 @@ struct {
   char *key ; int val ;
 } keyval ;
 
-#define ATS_KEYWORD_TABLE_SIZE 1024
-
-keyval // a global variable
-ats_keyword_table[ATS_KEYWORD_TABLE_SIZE] = {0} ;
+#define KEYWORD_TABLE_SIZE 1024
+keyval theKeywordTable[KEYWORD_TABLE_SIZE] = {0} ;
 
 static
-ats_void_type
-ats_keyval_insert (
+void
+keyval_insert (
   char *key, int val
 ) {
   unsigned int hash_val ; int i ; keyval *itm ;
-
+//
   hash_val = atspre_string_hash_33 ((char*)key) ;
-  i = hash_val % ATS_KEYWORD_TABLE_SIZE ; itm = &ats_keyword_table[i] ;
-
+  i = hash_val % KEYWORD_TABLE_SIZE ; itm = &theKeywordTable[i] ;
+//
   while (itm->key) {
-    i += 1 ; if (i == ATS_KEYWORD_TABLE_SIZE) i = 0 ;
-    itm = &ats_keyword_table[i] ;
-  }
+    i += 1 ; if (i == KEYWORD_TABLE_SIZE) i = 0 ;
+    itm = &theKeywordTable[i] ;
+  } // end of [while]
+//
   itm->key = (char*)key ; itm->val = (int)val ;
   return ;
-}
+} // end of [keyval_insert]
 
 ats_int_type
-ats_keyword_search (ats_ptr_type key) {
+atsopt_keyword_search
+  (ats_ptr_type key) {
   unsigned int hash_val ; int i ; keyval *itm ;
-
+//
   hash_val = atspre_string_hash_33 (key) ;
-  i = hash_val % ATS_KEYWORD_TABLE_SIZE ; itm = &ats_keyword_table[i] ;
-
+  i = hash_val % KEYWORD_TABLE_SIZE ; itm = &theKeywordTable[i] ;
+//
   while (itm->key) {
-    if (!strcmp((char*)key, itm->key)) return itm->val ;
-    i += 1 ; if (i == ATS_KEYWORD_TABLE_SIZE) i = 0 ;
-    itm = &ats_keyword_table[i] ;
-  }
+    if (!strcmp((char*)key, itm->key))
+      return itm->val ;
+    i += 1 ; if (i == KEYWORD_TABLE_SIZE) i = 0 ;
+    itm = &theKeywordTable[i] ;
+  } // end of [while]
+//
   return -1 ;
-}
+} // end of [atsopt_keyword_search]
 
-static inline
+static
 ats_void_type
-ats_keyval_table_init (
-  // there no argument for this function
+atsopt_keyval_table_initialize (
+  // no argument for this function
 ) {
-
-/* symbolic keywords */
-ats_keyval_insert("&", AMPERSAND) ;
-ats_keyval_insert("`", BACKQUOTE) ;
-ats_keyval_insert("!", BANG) ;
-ats_keyval_insert("|", BAR) ;
-ats_keyval_insert(":", COLON) ;
-ats_keyval_insert("$", DOLLAR) ;
-ats_keyval_insert(".", DOT) ;
-ats_keyval_insert("=", EQ) ;
-ats_keyval_insert("#", HASH) ;
-ats_keyval_insert("~", TILDA) ;
-ats_keyval_insert("..", DOTDOT) ;
-ats_keyval_insert("...", DOTDOTDOT) ;
-ats_keyval_insert("=>", EQGT) ; // implication without decoration
-ats_keyval_insert("=<", EQLT) ; // implication decoration
-ats_keyval_insert("=<>", EQLTGT) ; // implication with empty decoration
-ats_keyval_insert("=/=>", EQSLASHEQGT) ;
-ats_keyval_insert("=>>", EQGTGT) ;
-ats_keyval_insert("=/=>>", EQSLASHEQGTGT) ;
-ats_keyval_insert("<", LT) ;
-ats_keyval_insert(">", GT) ;
-ats_keyval_insert("><", GTLT) ;
-ats_keyval_insert(".<", DOTLT) ;
-ats_keyval_insert(">.", GTDOT) ; // .<...>. : metric
-ats_keyval_insert(".<>.", DOTLTGTDOT) ;
-ats_keyval_insert("->", MINUSGT) ; // implication
-ats_keyval_insert("-<", MINUSLT) ; // -<...> : decorated implication
-ats_keyval_insert("-<>", MINUSLTGT) ;
-ats_keyval_insert(":<", COLONLT) ; // :<...> : decorated implication
-ats_keyval_insert(":<>", COLONLTGT) ;
-
-/* alphanumeric keywords */
-ats_keyval_insert("absprop", ABSPROP) ;
-ats_keyval_insert("abstype", ABSTYPE) ;
-ats_keyval_insert("abst@ype", ABST0YPE) ;
-ats_keyval_insert("absview", ABSVIEW) ;
-ats_keyval_insert("absviewtype", ABSVIEWTYPE) ;
-ats_keyval_insert("absviewt@ype", ABSVIEWT0YPE) ;
-ats_keyval_insert("and", AND) ;
-ats_keyval_insert("arrvar", ARRVAR) ;
-ats_keyval_insert("as", AS) ;
-ats_keyval_insert("assume", ASSUME) ;
-ats_keyval_insert("begin", BEGIN) ;
-ats_keyval_insert("break", BREAK) ;
-ats_keyval_insert("case", CASE) ;
-ats_keyval_insert("castfn", CASTFN) ; // for casting functions
-ats_keyval_insert("classdec", CLASSDEC) ;
-ats_keyval_insert("continue", CONTINUE) ;
-ats_keyval_insert("datasort", DATASORT) ;
-ats_keyval_insert("dataparasort", DATAPARASORT) ;
-ats_keyval_insert("dataprop", DATAPROP) ;
-ats_keyval_insert("datatype", DATATYPE) ;
-ats_keyval_insert("dataview", DATAVIEW) ;
-ats_keyval_insert("dataviewtype", DATAVIEWTYPE) ;
-ats_keyval_insert("dyn", DYN) ;
-ats_keyval_insert("dynload", DYNLOAD) ;
-ats_keyval_insert("else", ELSE) ;
-ats_keyval_insert("end", END) ;
-ats_keyval_insert("exception", EXCEPTION) ;
-ats_keyval_insert("extern", EXTERN) ;
-ats_keyval_insert("fix", FIX) ;
-ats_keyval_insert("fn", FN) ;
-ats_keyval_insert("for", FOR) ;
-ats_keyval_insert("fun", FUN) ;
-ats_keyval_insert("if", IF) ;
-ats_keyval_insert("implement", IMPLEMENT) ;
-ats_keyval_insert("in", IN) ;
-ats_keyval_insert("infix", INFIX) ;
-ats_keyval_insert("infixl", INFIXL) ;
-ats_keyval_insert("infixr", INFIXR) ;
-ats_keyval_insert("lam", LAM) ;
-ats_keyval_insert("let", LET) ;
-ats_keyval_insert("llam", LLAM) ;
-ats_keyval_insert("local", LOCAL) ;
-ats_keyval_insert("macdef", MACDEF) ;
-ats_keyval_insert("macrodef", MACRODEF) ;
-ats_keyval_insert("method", METHOD) ;
-ats_keyval_insert("modcls", MODCLS) ;
-ats_keyval_insert("nonfix", NONFIX) ;
-ats_keyval_insert("overload", OVERLOAD) ;
-ats_keyval_insert("par", PAR) ;
-ats_keyval_insert("postfix", POSTFIX) ;
-ats_keyval_insert("praxi", PRAXI) ;
-ats_keyval_insert("prefix", PREFIX) ;
-ats_keyval_insert("prfn", PRFN) ;
-ats_keyval_insert("prfun", PRFUN) ;
-ats_keyval_insert("prval", PRVAL) ;
-ats_keyval_insert("of", OF) ;
-ats_keyval_insert("op", OP) ;
-ats_keyval_insert("propdef", PROPDEF) ;
-ats_keyval_insert("rec", REC) ;
-ats_keyval_insert("scase", SCASE) ;
-ats_keyval_insert("sif", SIF) ;
-ats_keyval_insert("sortdef", SORTDEF) ;
-ats_keyval_insert("sta", STA) ;
-ats_keyval_insert("stadef", STADEF) ;
-ats_keyval_insert("staif", STAIF) ;
-ats_keyval_insert("staload", STALOAD) ;
-ats_keyval_insert("stavar", STAVAR) ;
-ats_keyval_insert("struct", STRUCT) ;
-ats_keyval_insert("super", SUPER) ;
-ats_keyval_insert("symelim", SYMELIM) ;
-ats_keyval_insert("symintr", SYMINTR) ;
-ats_keyval_insert("then", THEN) ;
-ats_keyval_insert("try", TRY) ;
-ats_keyval_insert("typedef", TYPEDEF) ;
-ats_keyval_insert("union", UNION) ;
-ats_keyval_insert("val", VAL) ;
-ats_keyval_insert("var", VAR) ;
-ats_keyval_insert("viewdef", VIEWDEF) ;
-ats_keyval_insert("viewtypedef", VIEWTYPEDEF) ;
-ats_keyval_insert("when", WHEN) ;
-ats_keyval_insert("where", WHERE) ;
-ats_keyval_insert("while", WHILE) ;
-ats_keyval_insert("with", WITH) ;
-ats_keyval_insert("withprop", WITHPROP) ;
-ats_keyval_insert("withtype", WITHTYPE) ;
-ats_keyval_insert("withview", WITHVIEW) ;
-ats_keyval_insert("withviewtype", WITHVIEWTYPE) ;
-
-ats_keyval_insert("$arrsz", DLRARRSZ) ;
-ats_keyval_insert("$effmask_all", DLREFFMASK_ALL) ;
-ats_keyval_insert("$effmask_exn", DLREFFMASK_EXN) ;
-ats_keyval_insert("$effmask_ntm", DLREFFMASK_NTM) ;
-ats_keyval_insert("$effmask_ref", DLREFFMASK_REF) ;
-ats_keyval_insert("$exec", DLREXEC) ;
-ats_keyval_insert("$extern", DLREXTERN) ;
-ats_keyval_insert("$extval", DLREXTVAL) ;
-ats_keyval_insert("$extype", DLREXTYPE) ;
-ats_keyval_insert("$extype_struct", DLREXTYPE_STRUCT) ;
-ats_keyval_insert("$decrypt", DLRDECRYPT) ;
-ats_keyval_insert("$delay", DLRDELAY) ;
-ats_keyval_insert("$delay_vt", DLRDELAY_VT) ;
-ats_keyval_insert("$dynload", DLRDYNLOAD) ;
-ats_keyval_insert("$encrypt", DLRENCRYPT) ;
-ats_keyval_insert("$fold", DLRFOLD) ;
-ats_keyval_insert("$lst", DLRLST_T) ;
-ats_keyval_insert("$lst_t", DLRLST_T) ;
-ats_keyval_insert("$lst_vt", DLRLST_VT) ;
-ats_keyval_insert("$raise", DLRRAISE) ;
-ats_keyval_insert("$rec_t", DLRREC_T) ;
-ats_keyval_insert("$rec_vt", DLRREC_VT) ;
-ats_keyval_insert("$spawn", DLRSPAWN) ;
-ats_keyval_insert("$tup_t", DLRTUP_T) ;
-ats_keyval_insert("$tup_vt", DLRTUP_VT) ;
-ats_keyval_insert("$typeof", DLRTYPEOF) ;
-ats_keyval_insert("$unfold", DLRUNFOLD) ;
-
-ats_keyval_insert("#assert", SRPASSERT) ;
-ats_keyval_insert("#define", SRPDEFINE) ;
-ats_keyval_insert("#elif", SRPELIF) ;
-ats_keyval_insert("#elifdef", SRPELIFDEF) ;
-ats_keyval_insert("#elifndef", SRPELIFNDEF) ;
-ats_keyval_insert("#else", SRPELSE) ;
-ats_keyval_insert("#endif", SRPENDIF) ;
-ats_keyval_insert("#error", SRPERROR) ;
-ats_keyval_insert("#if", SRPIF) ;
-ats_keyval_insert("#ifdef", SRPIFDEF) ;
-ats_keyval_insert("#ifndef", SRPIFNDEF) ;
-ats_keyval_insert("#include", SRPINCLUDE) ;
-ats_keyval_insert("#then", SRPTHEN) ;
-ats_keyval_insert("#print", SRPPRINT) ;
-
-ats_keyval_insert("#FILENAME", SRPFILENAME) ;
-ats_keyval_insert("#LOCATION", SRPLOCATION) ;
-ats_keyval_insert("#CHARCOUNT", SRPCHARCOUNT) ;
-ats_keyval_insert("#LINECOUNT", SRPLINECOUNT) ;
-
-ats_keyval_insert("fold@", FOLDAT) ;
-ats_keyval_insert("free@", FREEAT) ;
-ats_keyval_insert("view@", VIEWAT) ;
-
-ats_keyval_insert("r@ead", R0EAD) ;
-
-ats_keyval_insert("t@ype", T0YPE) ;
-ats_keyval_insert("t@ype+", T0YPEPLUS) ;
-ats_keyval_insert("t@ype-", T0YPEMINUS) ;
-ats_keyval_insert("viewt@ype", VIEWT0YPE) ;
-ats_keyval_insert("viewt@ype+", VIEWT0YPEPLUS) ;
-ats_keyval_insert("viewt@ype-", VIEWT0YPEMINUS) ;
-ats_keyval_insert("abst@ype", ABST0YPE) ;
-ats_keyval_insert("absviewt@ype", ABSVIEWT0YPE) ;
-
-}
+//
+// HX: symbolic keywords
+//
+keyval_insert("&", AMPERSAND) ;
+keyval_insert("`", BACKQUOTE) ;
+keyval_insert("!", BANG) ;
+keyval_insert("|", BAR) ;
+keyval_insert(":", COLON) ;
+keyval_insert("$", DOLLAR) ;
+keyval_insert(".", DOT) ;
+keyval_insert("=", EQ) ;
+keyval_insert("#", HASH) ;
+keyval_insert("~", TILDA) ;
+keyval_insert("..", DOTDOT) ;
+keyval_insert("...", DOTDOTDOT) ;
+keyval_insert("=>", EQGT) ; // implication without decoration
+keyval_insert("=<", EQLT) ; // implication decoration
+keyval_insert("=<>", EQLTGT) ; // implication with empty decoration
+keyval_insert("=/=>", EQSLASHEQGT) ;
+keyval_insert("=>>", EQGTGT) ;
+keyval_insert("=/=>>", EQSLASHEQGTGT) ;
+keyval_insert("<", LT) ;
+keyval_insert(">", GT) ;
+keyval_insert("><", GTLT) ;
+keyval_insert(".<", DOTLT) ;
+keyval_insert(">.", GTDOT) ; // .<...>. : metric
+keyval_insert(".<>.", DOTLTGTDOT) ;
+keyval_insert("->", MINUSGT) ; // implication
+keyval_insert("-<", MINUSLT) ; // -<...> : decorated implication
+keyval_insert("-<>", MINUSLTGT) ;
+keyval_insert(":<", COLONLT) ; // :<...> : decorated implication
+keyval_insert(":<>", COLONLTGT) ;
+//
+// HX: alphanumeric keywords
+//
+keyval_insert("absprop", ABSPROP) ;
+keyval_insert("abstype", ABSTYPE) ;
+keyval_insert("abst@ype", ABST0YPE) ;
+keyval_insert("absview", ABSVIEW) ;
+keyval_insert("absviewtype", ABSVIEWTYPE) ;
+keyval_insert("absviewt@ype", ABSVIEWT0YPE) ;
+keyval_insert("and", AND) ;
+keyval_insert("arrvar", ARRVAR) ;
+keyval_insert("as", AS) ;
+keyval_insert("assume", ASSUME) ;
+keyval_insert("begin", BEGIN) ;
+keyval_insert("break", BREAK) ;
+keyval_insert("case", CASE) ;
+keyval_insert("castfn", CASTFN) ; // for casting functions
+keyval_insert("classdec", CLASSDEC) ;
+keyval_insert("continue", CONTINUE) ;
+keyval_insert("datasort", DATASORT) ;
+keyval_insert("dataparasort", DATAPARASORT) ;
+keyval_insert("dataprop", DATAPROP) ;
+keyval_insert("datatype", DATATYPE) ;
+keyval_insert("dataview", DATAVIEW) ;
+keyval_insert("dataviewtype", DATAVIEWTYPE) ;
+keyval_insert("dyn", DYN) ;
+keyval_insert("dynload", DYNLOAD) ;
+keyval_insert("else", ELSE) ;
+keyval_insert("end", END) ;
+keyval_insert("exception", EXCEPTION) ;
+keyval_insert("extern", EXTERN) ;
+keyval_insert("fix", FIX) ;
+keyval_insert("fn", FN) ;
+keyval_insert("for", FOR) ;
+keyval_insert("fun", FUN) ;
+keyval_insert("if", IF) ;
+keyval_insert("implement", IMPLEMENT) ;
+keyval_insert("in", IN) ;
+keyval_insert("infix", INFIX) ;
+keyval_insert("infixl", INFIXL) ;
+keyval_insert("infixr", INFIXR) ;
+keyval_insert("lam", LAM) ;
+keyval_insert("let", LET) ;
+keyval_insert("llam", LLAM) ;
+keyval_insert("local", LOCAL) ;
+keyval_insert("macdef", MACDEF) ;
+keyval_insert("macrodef", MACRODEF) ;
+keyval_insert("method", METHOD) ;
+keyval_insert("modcls", MODCLS) ;
+keyval_insert("nonfix", NONFIX) ;
+keyval_insert("overload", OVERLOAD) ;
+keyval_insert("par", PAR) ;
+keyval_insert("postfix", POSTFIX) ;
+keyval_insert("praxi", PRAXI) ;
+keyval_insert("prefix", PREFIX) ;
+keyval_insert("prfn", PRFN) ;
+keyval_insert("prfun", PRFUN) ;
+keyval_insert("prval", PRVAL) ;
+keyval_insert("of", OF) ;
+keyval_insert("op", OP) ;
+keyval_insert("propdef", PROPDEF) ;
+keyval_insert("rec", REC) ;
+keyval_insert("scase", SCASE) ;
+keyval_insert("sif", SIF) ;
+keyval_insert("sortdef", SORTDEF) ;
+keyval_insert("sta", STA) ;
+keyval_insert("stadef", STADEF) ;
+keyval_insert("staif", STAIF) ;
+keyval_insert("staload", STALOAD) ;
+keyval_insert("stavar", STAVAR) ;
+keyval_insert("struct", STRUCT) ;
+keyval_insert("super", SUPER) ;
+keyval_insert("symelim", SYMELIM) ;
+keyval_insert("symintr", SYMINTR) ;
+keyval_insert("then", THEN) ;
+keyval_insert("try", TRY) ;
+keyval_insert("typedef", TYPEDEF) ;
+keyval_insert("union", UNION) ;
+keyval_insert("val", VAL) ;
+keyval_insert("var", VAR) ;
+keyval_insert("viewdef", VIEWDEF) ;
+keyval_insert("viewtypedef", VIEWTYPEDEF) ;
+keyval_insert("when", WHEN) ;
+keyval_insert("where", WHERE) ;
+keyval_insert("while", WHILE) ;
+keyval_insert("with", WITH) ;
+keyval_insert("withprop", WITHPROP) ;
+keyval_insert("withtype", WITHTYPE) ;
+keyval_insert("withview", WITHVIEW) ;
+keyval_insert("withviewtype", WITHVIEWTYPE) ;
+//
+keyval_insert("$arrsz", DLRARRSZ) ;
+keyval_insert("$effmask_all", DLREFFMASK_ALL) ;
+keyval_insert("$effmask_exn", DLREFFMASK_EXN) ;
+keyval_insert("$effmask_ntm", DLREFFMASK_NTM) ;
+keyval_insert("$effmask_ref", DLREFFMASK_REF) ;
+keyval_insert("$exec", DLREXEC) ;
+keyval_insert("$extern", DLREXTERN) ;
+keyval_insert("$extval", DLREXTVAL) ;
+keyval_insert("$extype", DLREXTYPE) ;
+keyval_insert("$extype_struct", DLREXTYPE_STRUCT) ;
+keyval_insert("$decrypt", DLRDECRYPT) ;
+keyval_insert("$delay", DLRDELAY) ;
+keyval_insert("$delay_vt", DLRDELAY_VT) ;
+keyval_insert("$dynload", DLRDYNLOAD) ;
+keyval_insert("$encrypt", DLRENCRYPT) ;
+keyval_insert("$fold", DLRFOLD) ;
+keyval_insert("$lst", DLRLST_T) ;
+keyval_insert("$lst_t", DLRLST_T) ;
+keyval_insert("$lst_vt", DLRLST_VT) ;
+keyval_insert("$raise", DLRRAISE) ;
+keyval_insert("$rec_t", DLRREC_T) ;
+keyval_insert("$rec_vt", DLRREC_VT) ;
+keyval_insert("$spawn", DLRSPAWN) ;
+keyval_insert("$tup_t", DLRTUP_T) ;
+keyval_insert("$tup_vt", DLRTUP_VT) ;
+keyval_insert("$typeof", DLRTYPEOF) ;
+keyval_insert("$unfold", DLRUNFOLD) ;
+//
+keyval_insert("#assert", SRPASSERT) ;
+keyval_insert("#define", SRPDEFINE) ;
+keyval_insert("#elif", SRPELIF) ;
+keyval_insert("#elifdef", SRPELIFDEF) ;
+keyval_insert("#elifndef", SRPELIFNDEF) ;
+keyval_insert("#else", SRPELSE) ;
+keyval_insert("#endif", SRPENDIF) ;
+keyval_insert("#error", SRPERROR) ;
+keyval_insert("#if", SRPIF) ;
+keyval_insert("#ifdef", SRPIFDEF) ;
+keyval_insert("#ifndef", SRPIFNDEF) ;
+keyval_insert("#include", SRPINCLUDE) ;
+keyval_insert("#then", SRPTHEN) ;
+keyval_insert("#print", SRPPRINT) ;
+//
+keyval_insert("#FILENAME", SRPFILENAME) ;
+keyval_insert("#LOCATION", SRPLOCATION) ;
+keyval_insert("#CHARCOUNT", SRPCHARCOUNT) ;
+keyval_insert("#LINECOUNT", SRPLINECOUNT) ;
+//
+keyval_insert("fold@", FOLDAT) ;
+keyval_insert("free@", FREEAT) ;
+keyval_insert("view@", VIEWAT) ;
+//
+keyval_insert("r@ead", R0EAD) ;
+//
+keyval_insert("t@ype", T0YPE) ;
+keyval_insert("t@ype+", T0YPEPLUS) ;
+keyval_insert("t@ype-", T0YPEMINUS) ;
+keyval_insert("viewt@ype", VIEWT0YPE) ;
+keyval_insert("viewt@ype+", VIEWT0YPEPLUS) ;
+keyval_insert("viewt@ype-", VIEWT0YPEMINUS) ;
+keyval_insert("abst@ype", ABST0YPE) ;
+keyval_insert("absviewt@ype", ABSVIEWT0YPE) ;
+//
+return ;
+} // end of [atsopt_keyval_table_initialize]
 
 %} // end of [%{^]
 
-extern fun keyval_table_init (): void = "ats_keyval_table_init"
-
 (* ****** ****** *)
 
-val () = keyval_table_init () // initializing the keyword table
+val () = initialize () where {
+  extern fun initialize (): void = "atsopt_keyval_table_initialize"
+} // initializing the keyword table
 
 (* ****** ****** *)
 

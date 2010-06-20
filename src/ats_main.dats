@@ -441,7 +441,7 @@ fn do_parse_filename (
       end // end of [None_vt]
   ) : $Fil.filename_t
   val () = input_filename_set (filename)
-  val depgen = $Glo.ats_depgenflag_get ()
+  val depgen = $Glo.atsopt_depgenflag_get ()
   val () = begin
     if depgen > 0 then (print_string basename; print_string ":")
   end // end of [val]
@@ -626,15 +626,15 @@ end // end of [do_trans1234]
 (* ****** ****** *)
 
 extern fun is_posmark_xref_prefix
-  (s: string): bool = "ats_main_is_posmark_xref_prefix"
+  (s: string): bool = "atsopt_is_posmark_xref_prefix"
 // end of ...
 
-extern fun IATS_wait_set (): void = "ats_main_IATS_wait_set"
-extern fun IATS_wait_is_set (): bool = "ats_main_IATS_wait_is_set"
-extern fun IATS_wait_clear (): void = "ats_main_IATS_wait_clear"
+extern fun IATS_wait_set (): void = "atsopt_IATS_wait_set"
+extern fun IATS_wait_is_set (): bool = "atsopt_IATS_wait_is_set"
+extern fun IATS_wait_clear (): void = "atsopt_IATS_wait_clear"
 
-extern fun is_IATS_flag (s: string): bool = "ats_main_is_IATS_flag"
-extern fun IATS_extract (s: string): Stropt = "ats_main_IATS_extract"
+extern fun is_IATS_flag (s: string): bool = "atsopt_is_IATS_flag"
+extern fun IATS_extract (s: string): Stropt = "atsopt_IATS_extract"
 
 (* ****** ****** *)
 
@@ -644,12 +644,12 @@ val () = gc_chunk_count_limit_max_set (~1) // [~1]: infinite
 (*
 val () = gc_chunk_count_limit_max_set (0) // for testing GC heavily
 *)
-val () = ATSHOMERELOC_set () where {
-  extern fun ATSHOMERELOC_set (): void = "ats_main_ATSHOMERELOC_set"
+val () = set () where {
+  extern fun set (): void = "atsopt_ATSHOMERELOC_set"
 } // end of [val]
 
-val ATSHOME = ATSHOME_getenv_exn () where {
-  extern fun ATSHOME_getenv_exn (): string = "ats_main_ATSHOME_getenv_exn"
+val ATSHOME = getenv () where {
+  extern fun getenv (): string = "atsopt_ATSHOME_getenv_exn"
 } // end of [val]
 
 val () = $Fil.the_prepathlst_push ATSHOME // for the run-time and lib
@@ -692,7 +692,7 @@ fun loop {i:nat | i <= n} .<i>. (
           | "-o" => begin
               param.comkind := COMKINDoutput ()
             end
-          | "-dep" => $Glo.ats_depgenflag_set (1)
+          | "-dep" => $Glo.atsopt_depgenflag_set (1)
           | "-tc" => (param.typecheck_only := 1)
           | "-h" => begin
               param.comkind := COMKINDnone (); atsopt_usage (argv.[0])
@@ -726,7 +726,7 @@ fun loop {i:nat | i <= n} .<i>. (
           | "--output" => begin
               param.comkind := COMKINDoutput ()
             end // end of ["--output"]
-          | "--depgen" => $Glo.ats_depgenflag_set (1)
+          | "--depgen" => $Glo.atsopt_depgenflag_set (1)
           | "--typecheck" => (param.typecheck_only := 1)
           | "--posmark_html" => begin
               param.posmark := 1; param.posmark_html := 1
@@ -781,7 +781,7 @@ fun loop {i:nat | i <= n} .<i>. (
               print_newline ()              
 *)
             end // end of [_ when ...]
-          | _ when $Glo.ats_depgenflag_get () > 0 => ()
+          | _ when $Glo.atsopt_depgenflag_get () > 0 => ()
           | _ when param.typecheck_only > 0 => let
               val _(*d3cs*) = do_trans123 (param, basename, d0cs)
             in
@@ -828,7 +828,7 @@ fun loop {i:nat | i <= n} .<i>. (
         val d0cs = do_parse_stdin (flag, param)
         val () = begin case+ 0 of
           | _ when param.posmark = 1 => ()
-          | _ when $Glo.ats_depgenflag_get () > 0 => ()
+          | _ when $Glo.atsopt_depgenflag_get () > 0 => ()
           | _ when param.typecheck_only > 0 => let
               val _(*d3cs*) = do_trans123 (param, "stdin", d0cs)
             in

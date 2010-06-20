@@ -114,12 +114,13 @@ end // [filename_is_relative]
 
 %{^
 //
-static inline
+ATSinline()
 ats_bool_type
-ats_filename_is_exist (ats_ptr_type name) {
+atsopt_filename_is_exist
+  (ats_ptr_type name) {
   struct stat st ;
   return stat ((char*)name, &st) ? ats_false_bool : ats_true_bool ;
-} /* end of [ats_filename_is_exist] */
+} /* end of [atsopt_filename_is_exist] */
 //
 %} // end of [%{^]
 
@@ -128,13 +129,13 @@ ats_filename_is_exist (ats_ptr_type name) {
 %{$
 
 ats_ptr_type
-ats_filename_append (
+atsopt_filename_append (
   ats_ptr_type dir, ats_ptr_type bas
 ) {
   int n1, n2, n ;
   char dirsep, *dirbas ;
 //
-  dirsep = ats_filename_theDirsep_get () ;
+  dirsep = atsopt_filename_theDirsep_get () ;
 //
   n1 = strlen ((char*)dir) ;
   n2 = strlen ((char*)bas) ;
@@ -147,7 +148,7 @@ ats_filename_append (
   dirbas[n] = '\000' ;
 
   return dirbas ;
-} /* end of [ats_filename_append] */
+} /* end of [atsopt_filename_append] */
 
 %} // end of [%{$]
 
@@ -504,25 +505,26 @@ end // end of [filenameopt_make]
 
 (* ****** ****** *)
 
-implement ats_filename_prerr () =
+implement
+atsopt_filename_prerr () =
   prerr_filename (the_filename_get ())
-// end of [ats_filename_prerr]
+// end of [atsopt_filename_prerr]
 
 implement
-ats_filename_initialize () = begin
+atsopt_filename_initialize () = begin
   the_pathlst_reset (); the_filename_reset (); the_filenamelst_reset ()
-end // end of [ats_filename_initialize]
+end // end of [atsopt_filename_initialize]
 
 (* ****** ****** *)
 
 %{$
 //
 ats_void_type
-ats_filename_fprint_filename_base
+atsopt_filename_fprint_filename_base
   (ats_ptr_type out, ats_ptr_type fil) {
   char dirsep, *name, *basename ;
-  dirsep = ats_filename_theDirsep_get () ;
-  name = (char*)ats_filename_full (fil) ;
+  dirsep = atsopt_filename_theDirsep_get () ;
+  name = (char*)atsopt_filename_full (fil) ;
   basename = strrchr (name, dirsep) ;
 
   if (basename) {
@@ -532,7 +534,7 @@ ats_filename_fprint_filename_base
   } /* end of [if] */
 
   return ;
-} /* end of [ats_filename_fprint_filename_base] */
+} /* end of [atsopt_filename_fprint_filename_base] */
 //
 %} // end of [%{$]
 

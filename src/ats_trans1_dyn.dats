@@ -1777,7 +1777,7 @@ implement d0eclst_tr (d0cs) = $Lst.list_map_fun (d0cs, d0ec_tr)
 (* ****** ****** *)
 
 implement initialize () = () where {
-  val () = $Glo.ats_dynloadflag_set (1) // [1] is the default value
+  val () = $Glo.atsopt_dynloadflag_set (1) // [1] is the default value
 } // end of [initialize]
 
 implement finalize () = () where {
@@ -1810,7 +1810,7 @@ implement finalize () = () where {
         val v1al = e1xp_eval (e1xp)
         val flag = if v1al_is_true v1al then 1 else 0
       in
-        $Glo.ats_dynloadflag_set (flag)
+        $Glo.atsopt_dynloadflag_set (flag)
       end // end of [Some_vt]
     | ~None_vt () => () // use the default value
     end // end of [aux_dynloadflag]
@@ -1826,7 +1826,7 @@ implement finalize () = () where {
           | V1ALstring s => let
               val s = string1_of_string s
             in
-              $Glo.ats_dynloadfun_name_set (stropt_some s)
+              $Glo.atsopt_dynloadfun_name_set (stropt_some s)
             end // end of [V1ALstring]
           | _ => begin
               prerr_loc_error1 e1xp.e1xp_loc;

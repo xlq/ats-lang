@@ -505,16 +505,16 @@ extern typedef "s2exp_t" = s2exp
 %{$
 
 ats_void_type
-ats_staexp2_s2exp_srt_set
+atsopt_s2exp_srt_set
   (ats_ptr_type s2e, ats_ptr_type s2t) {
   ((s2exp_t)s2e)->atslab_s2exp_srt = s2t ; return ;
-} /* end of [ats_staexp2_s2exp_srt_set] */
+} /* end of [atsopt_s2exp_srt_set] */
 
 ats_bool_type
-ats_staexp2_eqref_s2exp_s2exp
+atsopt_eqref_s2exp_s2exp
   (ats_ptr_type s2e1, ats_ptr_type s2e2) {
   return (s2e1 == s2e2 ? ats_true_bool : ats_false_bool) ;
-} /* end of [ats_staexp2_eqref_s2exp_s2exp] */
+} /* end of [atsopt_eqref_s2exp_s2exp] */
 
 %} // end of [%{$]
 

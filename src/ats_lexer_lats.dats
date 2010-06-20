@@ -46,8 +46,10 @@ fun poslst_free (ps: poslst): void = case+ ps of
   | ~POSLSTcons (p, ps) => poslst_free ps | ~POSLSTnil () => ()
 // end of [poslst_free]
 
-extern fun keyword_search (name: string): token_t
-  = "ats_keyword_search" // implemented in C in [ats_keyword.dats]
+extern
+fun keyword_search (name: string): token_t
+  = "atsopt_keyword_search" // implemented in C in [ats_keyword.dats]
+// end of [keyword_search]
 
 //
 
@@ -853,7 +855,7 @@ exception LexingErrorException
 *)
 
 fn process_illegal_token {a:viewt@ype} (): a = begin
-  $Fil.ats_filename_prerr ();
+  $Fil.atsopt_filename_prerr ();
   prerr_string ": LEXING ERROR";
   prerr_string ": illegal character [";
   prerr_char (lexeme_get 0);
@@ -866,7 +868,7 @@ end // end of [process_illegal_token]
 
 fn process_illegal_char
   {a:viewt@ype} (fstpos: position_t): a = begin
-  $Fil.ats_filename_prerr ();
+  $Fil.atsopt_filename_prerr ();
   prerr_string ": LEXING ERROR";
   prerr_string ": illegal character at [";
   prerr_position fstpos;

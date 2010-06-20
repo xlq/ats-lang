@@ -41,36 +41,33 @@
 (* ****** ****** *)
 
 fun atsccomp_namespace_get
-  (): Stropt = "ats_global_atsccomp_namespace_get"
+  (): Stropt = "atsccomp_namespace_get"
 // end of ...
 
 fun atsccomp_namespace_set
-  (prfx: Stropt): void = "ats_global_atsccomp_namespace_set"
+  (prfx: Stropt): void = "atsccomp_namespace_set"
 // end of ...
 
 (* ****** ****** *)
 
-fun ats_dynloadflag_get (): int
-  = "ats_global_ats_dynloadflag_get"
-
-fun ats_dynloadflag_set (flag: int): void
-  = "ats_global_ats_dynloadflag_set"
-
-(* ****** ****** *)
-
-fun ats_dynloadfun_name_get (): Stropt
-  = "ats_global_ats_dynloadfun_name_get"
-
-fun ats_dynloadfun_name_set (name: Stropt): void
-  = "ats_global_ats_dynloadfun_name_set"
+fun atsopt_dynloadflag_get
+  (): int = "atsopt_dynloadflag_get"
+fun atsopt_dynloadflag_set
+  (flag: int): void = "atsopt_dynloadflag_set"
 
 (* ****** ****** *)
 
-fun ats_depgenflag_get (): int
-  = "ats_global_ats_depgenflag_get"
+fun atsopt_dynloadfun_name_get
+  (): Stropt = "atsopt_dynloadfun_name_get"
+fun atsopt_dynloadfun_name_set
+  (name: Stropt): void = "atsopt_dynloadfun_name_set"
 
-fun ats_depgenflag_set (flag: int): void
-  = "ats_global_ats_depgenflag_set"
+(* ****** ****** *)
+
+fun atsopt_depgenflag_get
+  (): int = "atsopt_depgenflag_get"
+fun atsopt_depgenflag_set
+  (flag: int): void = "atsopt_depgenflag_set"
 
 (* ****** ****** *)
 

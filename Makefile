@@ -268,15 +268,18 @@ liblines::
 ######
 
 clean::
-	rm -f bootstrap[01]/*.o
-	cd utils/scripts; $(MAKE) clean
-	cd utils/atslex; $(MAKE) clean
+	rm -f bootstrap0/*.o
+	rm -f bootstrap1/*.c bootstrap1/*.o
+	$(MAKE) -C utils/atslex -f ./Makefile clean
+	$(MAKE) -C utils/scripts -f ./Makefile clean
 	cd ccomp/runtime/GCATS; $(MAKE) clean
 
 cleanall:: clean
 	rm -f $(BUILT_CONFIG_FILES)
 	rm -f .libfiles_local
 	rm -f .libfiles_mt_local
+	rm -f bootstrap0/atsopt
+	rm -f bootstrap1/atsopt
 	rm -f bin/atsopt bin/atscc bin/atslib bin/atslex bin/atspack
 	rm -f ccomp/lib/libats.a
 	rm -f ccomp/lib/libats_mt.a
@@ -288,7 +291,7 @@ cleanall:: clean
 	rm -f ccomp/lib64/libats_lex.a
 	rm -f ccomp/lib64/libats_smlbas.a
 	rm -f ccomp/lib64/output/*
-	cd ccomp/runtime/GCATS; $(MAKE) cleanall
+	$(MAKE) -C ccomp/runtime/GCATS -f ./Makefile cleanall
 	rm -f contrib/glib/atsctrb_glib.o
 	rm -f contrib/cairo/atsctrb_cairo.o
 	rm -f contrib/pango/atsctrb_pango.o

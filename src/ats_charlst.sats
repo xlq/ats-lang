@@ -36,8 +36,11 @@
 
 (* ****** ****** *)
 
-dataviewtype charlst_vt (int) =
-  | CHARLSTnil (0) | {n:nat} CHARLSTcons (n+1) of (char, charlst_vt n)
+dataviewtype
+charlst_vt (int) =
+  | CHARLSTnil (0)
+  | {n:nat} CHARLSTcons (n+1) of (char, charlst_vt n)
+// end of [charlst_vt]
 
 viewtypedef Charlst_vt = [n:nat] charlst_vt (n)
 

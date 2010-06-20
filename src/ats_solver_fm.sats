@@ -54,73 +54,76 @@ val i0nt_0 : i0nt
 val i0nt_1 : i0nt
 val i0nt_neg_1 : i0nt
 
-fun i0nt_of_int (_: int): i0nt = "ats_solver_fm_i0nt_of_int"
+fun i0nt_of_int
+  (_: int): i0nt = "atsopt_solver_fm_i0nt_of_int"
 fun i0nt_of_intinf
-  (_: $IntInf.intinf_t): i0nt = "ats_solver_fm_i0nt_of_intinf"
+  (_: $IntInf.intinf_t): i0nt = "atsopt_solver_fm_i0nt_of_intinf"
 
 (* ****** ****** *)
 
-fun gt_i0nt_int (_: i0nt, _: int):<> bool = "ats_solver_fm_gt_i0nt_int"
+fun gt_i0nt_int (_: i0nt, _: int):<> bool = "atsopt_solver_fm_gt_i0nt_int"
 overload > with gt_i0nt_int
 
-fun gte_i0nt_int (_: i0nt, _: int):<> bool = "ats_solver_fm_gte_i0nt_int"
+fun gte_i0nt_int (_: i0nt, _: int):<> bool = "atsopt_solver_fm_gte_i0nt_int"
 overload >= with gte_i0nt_int
 
-fun lt_i0nt_int (_: i0nt, _: int):<> bool = "ats_solver_fm_lt_i0nt_int"
+fun lt_i0nt_int (_: i0nt, _: int):<> bool = "atsopt_solver_fm_lt_i0nt_int"
 overload < with lt_i0nt_int
 
-fun lte_i0nt_int (_: i0nt, _: int):<> bool = "ats_solver_fm_lte_i0nt_int"
+fun lte_i0nt_int (_: i0nt, _: int):<> bool = "atsopt_solver_fm_lte_i0nt_int"
 overload <= with lt_i0nt_int
 
-fun eq_i0nt_int (_: i0nt, _: int):<> bool = "ats_solver_fm_eq_i0nt_int"
+fun eq_i0nt_int (_: i0nt, _: int):<> bool = "atsopt_solver_fm_eq_i0nt_int"
 overload = with eq_i0nt_int
 
-fun neq_i0nt_int (_: i0nt, _: int):<> bool = "ats_solver_fm_neq_i0nt_int"
+fun neq_i0nt_int (_: i0nt, _: int):<> bool = "atsopt_solver_fm_neq_i0nt_int"
 overload <> with neq_i0nt_int
 
 //
 
-fun gt_i0nt_i0nt (_: i0nt, _: i0nt):<> bool = "ats_solver_fm_gt_i0nt_i0nt"
+fun gt_i0nt_i0nt (_: i0nt, _: i0nt):<> bool = "atsopt_solver_fm_gt_i0nt_i0nt"
 overload > with gt_i0nt_i0nt
 
-fun lt_i0nt_i0nt (_: i0nt, _: i0nt):<> bool = "ats_solver_fm_lt_i0nt_i0nt"
+fun lt_i0nt_i0nt (_: i0nt, _: i0nt):<> bool = "atsopt_solver_fm_lt_i0nt_i0nt"
 overload < with lt_i0nt_i0nt
 
 //
 
-fun neg_i0nt (_: i0nt):<> i0nt = "ats_solver_fm_neg_i0nt"
+fun neg_i0nt (_: i0nt):<> i0nt = "atsopt_solver_fm_neg_i0nt"
 overload ~ with neg_i0nt
 
-fun add_i0nt_i0nt (_: i0nt, _: i0nt):<> i0nt = "ats_solver_fm_add_i0nt_i0nt"
+fun add_i0nt_i0nt (_: i0nt, _: i0nt):<> i0nt = "atsopt_solver_fm_add_i0nt_i0nt"
 overload + with add_i0nt_i0nt
 
-fun sub_i0nt_i0nt (_: i0nt, _: i0nt):<> i0nt = "ats_solver_fm_sub_i0nt_i0nt"
+fun sub_i0nt_i0nt (_: i0nt, _: i0nt):<> i0nt = "atsopt_solver_fm_sub_i0nt_i0nt"
 overload - with sub_i0nt_i0nt
 
-fun mul_i0nt_i0nt (_: i0nt, _: i0nt):<> i0nt = "ats_solver_fm_mul_i0nt_i0nt"
+fun mul_i0nt_i0nt (_: i0nt, _: i0nt):<> i0nt = "atsopt_solver_fm_mul_i0nt_i0nt"
 overload * with mul_i0nt_i0nt
 
-fun div_i0nt_i0nt (_: i0nt, _: i0nt):<> i0nt = "ats_solver_fm_div_i0nt_i0nt"
+fun div_i0nt_i0nt (_: i0nt, _: i0nt):<> i0nt = "atsopt_solver_fm_div_i0nt_i0nt"
 overload / with div_i0nt_i0nt
 
 //
 
-fun succ_i0nt (_: i0nt):<> i0nt = "ats_solver_fm_succ_i0nt"
+fun succ_i0nt (_: i0nt):<> i0nt = "atsopt_solver_fm_succ_i0nt"
 overload succ with succ_i0nt
 
-fun pred_i0nt (_: i0nt):<> i0nt = "ats_solver_fm_pred_i0nt"
+fun pred_i0nt (_: i0nt):<> i0nt = "atsopt_solver_fm_pred_i0nt"
 overload pred with pred_i0nt
 
 //
 
-fun mod_i0nt_i0nt (_: i0nt, _: i0nt):<> i0nt = "ats_solver_fm_mod_i0nt_i0nt"
-fun gcd_i0nt_i0nt (_: i0nt, _: i0nt):<> i0nt = "ats_solver_fm_gcd_i0nt_i0nt"
+fun mod_i0nt_i0nt
+  (_: i0nt, _: i0nt):<> i0nt = "atsopt_solver_fm_mod_i0nt_i0nt"
+fun gcd_i0nt_i0nt
+  (_: i0nt, _: i0nt):<> i0nt = "atsopt_solver_fm_gcd_i0nt_i0nt"
 
 //
 
 fun fprint_i0nt {m:file_mode}
   (pf_mod: file_mode_lte (m, w) | out: &FILE m, x: i0nt): void
-  = "ats_solver_fm_fprint_i0nt"
+  = "atsopt_solver_fm_fprint_i0nt"
 
 fun print_i0nt (x: i0nt): void
 
@@ -131,7 +134,7 @@ typedef intvec (n:int) = @[i0nt][n]
 // initialized with zeros
 fun intvec_ptr_make {n: nat}
   (n: int n):<> [l:addr] @(free_gc_v (i0nt, n, l), intvec n @ l | ptr l)
-  = "ats_solver_fm_intvec_ptr_make"
+  = "atsopt_solver_fm_intvec_ptr_make"
 
 fun fprint_intvec {m:file_mode} {n:nat}
   (pf_mod: file_mode_lte (m, w) | out: &FILE m, vec: &intvec n, n: int n): void
@@ -147,11 +150,12 @@ overload prerr with prerr_intvec
 absviewtype intvecptr_t (n:int) // a (read-only) pointer type
 
 fun intvecptr_make_view_ptr {n:pos} {l:addr}
-  (_: free_gc_v (i0nt, n, l), _: intvec n @ l | _: ptr l):<> intvecptr_t n
-  = "ats_solver_fm_intvecptr_make_view_ptr"
+  (_: free_gc_v (i0nt, n, l), _: intvec n @ l | _: ptr l)
+  :<> intvecptr_t n = "atsopt_solver_fm_intvecptr_make_view_ptr"
+// end of [intvecptr_make_view_ptr]
 
 fun intvecptr_free {n:int} (ivp: intvecptr_t n): void
-  = "ats_solver_fm_intvecptr_free"
+  = "atsopt_solver_fm_intvecptr_free"
 
 fun intvecptr_get {n:pos} (vec: !intvecptr_t n, ind: natLt n):<> i0nt
 overload [] with intvecptr_get

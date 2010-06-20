@@ -31,21 +31,23 @@ fun printf_c_argtypes_free (ts: printf_c_argtypes): void = case+ ts of
 #define __LS_t    7
 #define __LS_z    8
 
-extern fun string_contain_char (s: string, c: char): bool
-  = "ats_printf_c_string_find_char"
+extern
+fun string_contain_char
+  (s: string, c: char): bool = "atsopt_printf_c_string_find_char"
+// end of [string_contain_char]
 
 %{^
 
 static inline
 ats_bool_type
-ats_printf_c_string_find_char (
+atsopt_printf_c_string_find_char (
   ats_ptr_type s, ats_char_type c
 ) {
   void *ans = strchr (s, c) ;
   return (ans ? ats_true_bool : ats_false_bool) ;
 } // end of [ats_printf_c_string_find_char]
 
-%}
+%} // end of ...
 
 exception Illegal_printf_c_string
 
@@ -178,7 +180,7 @@ fn printf_c_output (
 in
   if err > 0 then None_vt () else begin
     Some_vt (spec2type_translate (spec, len))
-  end
+  end // end of [if]
 end // end of [printf_c_output]
 
 (* ****** ****** *)
@@ -219,19 +221,22 @@ fn PRECSTR_lexing_error (f: string, w: string)
   : Option_vt (printf_c_argtype) =
   lexing_error ()
 
-extern fun LENSTR (f: string, w: string, p: string)
+extern
+fun LENSTR (f: string, w: string, p: string)
   : Option_vt (printf_c_argtype)
 fn LENSTR_lexing_error
   (f: string, w: string, p: string)
   : Option_vt (printf_c_argtype) =
   lexing_error ()
 
-extern fun SPECHR (f: string, w: string, p: string, l: string)
+extern
+fun SPECHR (f: string, w: string, p: string, l: string)
   : Option_vt (printf_c_argtype)
 fn SPECHR_lexing_error
   (f: string, w: string, p: string, l: string)
   : Option_vt (printf_c_argtype) =
   lexing_error ()
+// end of [SPECHR_lexing_error]
 
 (* ****** ****** *)
 

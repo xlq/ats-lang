@@ -1138,27 +1138,6 @@ implement s0arrind_make_cons (s0es, ind) = '{
 
 (* ****** ****** *)
 
-implement impqi0de_make_none (qid) = '{
-  impqi0de_loc= qid.dqi0de_loc
-, impqi0de_qua= qid.dqi0de_qua
-, impqi0de_sym= qid.dqi0de_sym
-, impqi0de_arg= gtlt_t1mps0expseqseq_nil ()
-}
-
-implement impqi0de_make_some (qid, arg, args, t_gt) = let
-  val loc_qid = qid.tmpqi0de_loc
-  val loc_qid_end = $Loc.location_end_make loc_qid
-  val loc = combine (loc_qid, t_gt.t0kn_loc)
-  val args = gtlt_t1mps0expseqseq_cons_loc (loc_qid_end, arg, args)
-in '{
-  impqi0de_loc= loc
-, impqi0de_qua= qid.tmpqi0de_qua
-, impqi0de_sym= qid.tmpqi0de_sym
-, impqi0de_arg= args
-} end // end of [impqid0de_make_some]
-
-(* ****** ****** *)
-
 implement s0rtext_srt (s0t) =
   '{ s0rtext_loc= s0t.s0rt_loc, s0rtext_node= S0TEsrt s0t }
 
@@ -1189,31 +1168,66 @@ implement s0qualstopt_some (x) = Some (x)
 
 (* ****** ****** *)
 
-implement i0nvarg_make_none (id) = '{
-  i0nvarg_loc= id.i0de_loc, i0nvarg_sym= id.i0de_sym, i0nvarg_typ= s0expopt_none ()
+implement
+impqi0de_make_none (qid) = '{
+  impqi0de_loc= qid.dqi0de_loc
+, impqi0de_qua= qid.dqi0de_qua
+, impqi0de_sym= qid.dqi0de_sym
+, impqi0de_arg= gtlt_t1mps0expseqseq_nil ()
+} // end of [impqi0de_make_none]
+
+implement impqi0de_make_some (qid, arg, args, t_gt) = let
+  val loc_qid = qid.tmpqi0de_loc
+  val loc_qid_end = $Loc.location_end_make loc_qid
+  val loc = combine (loc_qid, t_gt.t0kn_loc)
+  val args = gtlt_t1mps0expseqseq_cons_loc (loc_qid_end, arg, args)
+in '{
+  impqi0de_loc= loc
+, impqi0de_qua= qid.tmpqi0de_qua
+, impqi0de_sym= qid.tmpqi0de_sym
+, impqi0de_arg= args
+} end // end of [impqid0de_make_some]
+
+(* ****** ****** *)
+
+implement
+i0nvarg_make_none (id) = '{
+  i0nvarg_loc= id.i0de_loc
+, i0nvarg_sym= id.i0de_sym, i0nvarg_typ= s0expopt_none ()
 }
 
-implement i0nvarg_make_some (id, s0e) =
-  let val loc = combine (id.i0de_loc, s0e.s0exp_loc) in
-    '{ i0nvarg_loc= loc, i0nvarg_sym= id.i0de_sym, i0nvarg_typ= s0expopt_some s0e }
-  end
+implement
+i0nvarg_make_some (id, s0e) = let
+  val loc = combine (id.i0de_loc, s0e.s0exp_loc)
+in '{
+  i0nvarg_loc= loc
+, i0nvarg_sym= id.i0de_sym, i0nvarg_typ= s0expopt_some s0e 
+} end // end of [i0nvarg_make_some]
 
 implement i0nvarglst_nil () = nil ()
 implement i0nvarglst_cons (x, xs) = cons (x, xs)
 
-implement i0nvresstate_none () = '{
-  i0nvresstate_qua= s0qualstopt_none (), i0nvresstate_arg= i0nvarglst_nil ()
-}
+implement
+i0nvresstate_none () = let
+  val qua = s0qualstopt_none () and arg = i0nvarglst_nil ()
+in '{
+  i0nvresstate_qua= qua, i0nvresstate_arg= arg
+} end // end of [i0nvresstate_none]
 
-implement i0nvresstate_some (qua, arg) =
-  '{ i0nvresstate_qua= qua, i0nvresstate_arg= arg }
+implement
+i0nvresstate_some (qua, arg) = '{
+  i0nvresstate_qua= qua, i0nvresstate_arg= arg
+} // end of [i0nvresstate_some]
 
-implement loopi0nv_make (qua, met, arg, res) = '{
+implement
+loopi0nv_make (qua, met, arg, res) = '{
   loopi0nv_qua= qua
 , loopi0nv_met= met
 , loopi0nv_arg= arg
 , loopi0nv_res= res
-}
+} // end of [loopi0nv_make]
+
+(* ****** ****** *)
 
 implement witht0ype_none () = WITHT0YPEnone ()
 implement witht0ype_prop (s0e) = WITHT0YPEprop (s0e)
@@ -1242,21 +1256,24 @@ implement s0rtdeflst_cons (x, xs) = cons (x, xs)
 
 (* ****** ****** *)
 
-implement s0tacon_make_none_none (id) = '{
+implement
+s0tacon_make_none_none (id) = '{
   s0tacon_loc= id.i0de_loc
 , s0tacon_sym= id.i0de_sym
 , s0tacon_arg= None ()
 , s0tacon_def= None ()
 }
 
-implement s0tacon_make_some_none (id, arg) = '{
+implement
+s0tacon_make_some_none (id, arg) = '{
   s0tacon_loc= id.i0de_loc
 , s0tacon_sym= id.i0de_sym
 , s0tacon_arg= Some arg
 , s0tacon_def= None ()
 }
 
-implement s0tacon_make_none_some (id, def) = let
+implement
+s0tacon_make_none_some (id, def) = let
   val loc = combine (id.i0de_loc, def.s0exp_loc) in '{
   s0tacon_loc= loc
 , s0tacon_sym= id.i0de_sym
@@ -1264,7 +1281,8 @@ implement s0tacon_make_none_some (id, def) = let
 , s0tacon_def= Some def
 } end // end of [s0tacon_make_none_some]
 
-implement s0tacon_make_some_some (id, arg, def) = let
+implement
+s0tacon_make_some_some (id, arg, def) = let
   val loc = combine (id.i0de_loc, def.s0exp_loc) in '{
   s0tacon_loc= loc
 , s0tacon_sym= id.i0de_sym
@@ -1277,7 +1295,8 @@ implement s0taconlst_cons (x, xs) = cons (x, xs)
 
 (* ****** ****** *)
 
-implement s0tacst_make_none (id, s0t) = let
+implement
+s0tacst_make_none (id, s0t) = let
   val loc = combine (id.i0de_loc, s0t.s0rt_loc)
 in '{
   s0tacst_loc= loc
@@ -1286,7 +1305,8 @@ in '{
 , s0tacst_res= s0t
 } end // end of [s0tacst_make_none]
 
-implement s0tacst_make_some (id, arg, s0t) = let
+implement
+s0tacst_make_some (id, arg, s0t) = let
   val loc = combine (id.i0de_loc, s0t.s0rt_loc)
 in '{
   s0tacst_loc= loc
@@ -1300,7 +1320,8 @@ implement s0tacstlst_cons (x, xs) = cons (x, xs)
 
 (* ****** ****** *)
 
-implement s0tavar_make (id, s0t) = let
+implement
+s0tavar_make (id, s0t) = let
   val loc = combine (id.i0de_loc, s0t.s0rt_loc)
 in '{
   s0tavar_loc= loc
@@ -1509,6 +1530,10 @@ implement s0vararg_all () = S0VARARGall ()
 implement s0vararg_seq (s0es) = S0VARARGseq s0es
 
 (* ****** ****** *)
+
+(*
+** HX: dynamic patterns
+*)
 
 implement p0at_ann (p0t, s0e) =
   let val loc = combine (p0t.p0at_loc, s0e.s0exp_loc) in
@@ -1954,6 +1979,8 @@ in '{
 
 //
 
+(* ****** ****** *)
+
 local
 
 fun d0exp_macsyn
@@ -1983,7 +2010,7 @@ end // end of [d0exp_macsyn_encode_seq]
 
 end // end of [local]
 
-//
+(* ****** ****** *)
 
 implement d0exp_opide (t_op, id) = let
   val loc = combine (t_op.t0kn_loc, id.i0de_loc)
@@ -2095,7 +2122,7 @@ implement d0exp_trywith_seq (hd, d0es, t_with, c0ls) = let
   val d0e = d0exp_seq (t_try, d0es, t_with)
 in '{
   d0exp_loc= loc, d0exp_node= D0Etrywith (hd, d0e, c0ls)
-} end // end of [d0exp_case]
+} end // end of [d0exp_trywith]
 
 implement d0exp_tup
   (flat, t_beg, d0es, t_end) = let
@@ -2723,9 +2750,9 @@ implement d0ec_dynload (s) = '{
 
 fn filename_dep_process
   (name: string): void = begin case+ 0 of
-  | _ when $Glo.ats_depgenflag_get () > 0 => begin
+  | _ when $Glo.atsopt_depgenflag_get () > 0 => begin
       print " "; print name
-    end
+    end // end of [filename_dep_process]
   | _ => ()
 end // end of [filename_dep_process]
 

@@ -130,8 +130,9 @@ fun input_line (fil: FILEref): Stropt
 fun output_line (fil: FILEref, line: string): void
 
 (* ****** ****** *)
-
+//
 // making a lazy char stream out of a file handle
+//
 fun char_stream_make_file (fil: FILEref):<1,~ref> stream (char)
 
 // making a lazy line stream out of a file handle
@@ -139,8 +140,9 @@ fun char_stream_make_file (fil: FILEref):<1,~ref> stream (char)
 fun line_stream_make_file (fil: FILEref):<1,~ref> stream (string)
 
 (* ****** ****** *)
-
+//
 // making a _linear_ lazy char stream out of a file handle
+//
 fun char_stream_vt_make_file {m:file_mode} {l:addr}
   (pf_mod: file_mode_lte (m, r), pf_fil: FILE m @ l | p_fil: ptr l)
   :<1,~ref> stream_vt (char)

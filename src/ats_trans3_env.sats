@@ -127,40 +127,32 @@ overload fprint with fprint_h3ypo
 
 fun print_s3itemlst (s3is: s3itemlst): void
   = "ats_trans3_env_print_s3itemlst"
-
+overload print with print_s3itemlst
 fun prerr_s3itemlst (s3is: s3itemlst): void
   = "ats_trans3_env_prerr_s3itemlst"
-
-overload print with print_s3itemlst
 overload prerr with prerr_s3itemlst
 
 fun print_s3itemlstlst (s3iss: s3itemlstlst): void
   = "ats_trans3_env_print_s3itemlstlst"
-
+overload print with print_s3itemlstlst
 fun prerr_s3itemlstlst (s3iss: s3itemlstlst): void
   = "ats_trans3_env_prerr_s3itemlstlst"
-
-overload print with print_s3itemlstlst
 overload prerr with prerr_s3itemlstlst
 
 //
 
 fun print_s3itemlst_vt (s3is: !s3itemlst_vt): void
   = "ats_trans3_env_print_s3itemlst"
-
+overload print with print_s3itemlst_vt
 fun prerr_s3itemlst_vt (s3is: !s3itemlst_vt): void
   = "ats_trans3_env_prerr_s3itemlst"
-
-overload print with print_s3itemlst_vt
 overload prerr with prerr_s3itemlst_vt
 
 fun print_s3itemlstlst_vt (s3iss: !s3itemlstlst_vt): void
   = "ats_trans3_env_print_s3itemlstlst"
-
+overload print with print_s3itemlstlst_vt
 fun prerr_s3itemlstlst_vt (s3iss: !s3itemlstlst_vt): void
   = "ats_trans3_env_prerr_s3itemlstlst"
-
-overload print with print_s3itemlstlst_vt
 overload prerr with prerr_s3itemlstlst_vt
 
 //
@@ -435,9 +427,9 @@ typedef staftitemlst (n:int) = list (staftitem_t, n)
 
 abstype staftscstr_t (n:int) // assumed in [ats_trans3_env_state.dats]
 
-fun staftscstr_met_set
-  {n:nat} (sac: staftscstr_t n, met: s2explstopt): void
-  = "ats_trans3_env_state_staftscstr_met_set"
+fun staftscstr_met_set {n:nat} (
+    sac: staftscstr_t n, met: s2explstopt
+  ) : void = "ats_trans3_env_state_staftscstr_met_set"
 // end of [staftscstr_met_set]
 
 fun staftscstr_initialize {n:nat}

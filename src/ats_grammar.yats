@@ -257,6 +257,23 @@ extern s0rtpol_t s0rtpol_make (s0rt_t, int) ;
 
 /* ****** ****** */
 
+/* datasort declaration */
+
+typedef ats_ptr_type d0atsrtcon_t ;
+typedef ats_ptr_type d0atsrtconlst_t ;
+extern d0atsrtcon_t d0atsrtcon_make_none (i0de_t) ;
+extern d0atsrtcon_t d0atsrtcon_make_some (i0de_t, s0rt_t) ;
+extern d0atsrtconlst_t d0atsrtconlst_nil (void) ;
+extern d0atsrtconlst_t d0atsrtconlst_cons (d0atsrtcon_t, d0atsrtconlst_t) ;
+
+typedef ats_ptr_type d0atsrtdec_t ;
+typedef ats_ptr_type d0atsrtdeclst_t ;
+extern d0atsrtdec_t d0atsrtdec_make (i0de_t, d0atsrtconlst_t) ;
+extern d0atsrtdeclst_t d0atsrtdeclst_nil (void) ;
+extern d0atsrtdeclst_t d0atsrtdeclst_cons (d0atsrtdec_t, d0atsrtdeclst_t) ;
+
+/* ****** ****** */
+
 /* static qualifiers */
 
 typedef ats_ptr_type s0taq_t ;
@@ -309,6 +326,8 @@ extern s0arglstlst_t s0arglstlst_nil (void) ;
 extern s0arglstlst_t s0arglstlst_cons (s0arglst_t, s0arglstlst_t) ;
 extern s0arglstlst_t s0arglstlst_cons_ide (i0de_t, s0arglstlst_t) ;
 
+/* ****** ****** */
+
 typedef ats_ptr_type s0exp_t ;
 typedef ats_ptr_type s0explst_t ;
 typedef ats_ptr_type s0expopt_t ;
@@ -318,6 +337,14 @@ typedef ats_ptr_type labs0explst_t ;
 typedef ats_ptr_type s0arrind_t ;
 typedef ats_ptr_type t1mps0explstlst_t ; // with location information
 
+typedef ats_ptr_type s0rtext_t ;
+typedef ats_ptr_type s0qua_t ;
+typedef ats_ptr_type s0qualst_t ;
+typedef ats_ptr_type s0qualstlst_t ;
+typedef ats_ptr_type s0qualstopt_t ;
+
+/* ****** ****** */
+
 typedef ats_ptr_type impqi0de_t ;
 extern impqi0de_t impqi0de_make_none (dqi0de_t) ;
 extern impqi0de_t impqi0de_make_some
@@ -325,12 +352,6 @@ extern impqi0de_t impqi0de_make_some
   
 typedef ats_ptr_type sp0at_t ;
 extern sp0at_t sp0at_con (sqi0de_t, s0arglst_t, t0kn_t) ;
-
-typedef ats_ptr_type s0rtext_t ;
-typedef ats_ptr_type s0qua_t ;
-typedef ats_ptr_type s0qualst_t ;
-typedef ats_ptr_type s0qualstlst_t ;
-typedef ats_ptr_type s0qualstopt_t ;
 
 extern s0exp_t s0exp_ann (s0exp_t, s0rt_t) ;
 extern s0exp_t s0exp_app (s0exp_t, s0exp_t) ;
@@ -415,23 +436,6 @@ typedef ats_ptr_type s0rtdeflst_t ;
 extern s0rtdef_t s0rtdef_make (i0de_t, s0rtext_t) ;
 extern s0rtdeflst_t s0rtdeflst_nil (void) ;
 extern s0rtdeflst_t s0rtdeflst_cons (s0rtdef_t, s0rtdeflst_t) ;
-
-/* ****** ****** */
-
-/* datasort declaration */
-
-typedef ats_ptr_type d0atsrtcon_t ;
-typedef ats_ptr_type d0atsrtconlst_t ;
-extern d0atsrtcon_t d0atsrtcon_make_none (i0de_t) ;
-extern d0atsrtcon_t d0atsrtcon_make_some (i0de_t, s0rt_t) ;
-extern d0atsrtconlst_t d0atsrtconlst_nil (void) ;
-extern d0atsrtconlst_t d0atsrtconlst_cons (d0atsrtcon_t, d0atsrtconlst_t) ;
-
-typedef ats_ptr_type d0atsrtdec_t ;
-typedef ats_ptr_type d0atsrtdeclst_t ;
-extern d0atsrtdec_t d0atsrtdec_make (i0de_t, d0atsrtconlst_t) ;
-extern d0atsrtdeclst_t d0atsrtdeclst_nil (void) ;
-extern d0atsrtdeclst_t d0atsrtdeclst_cons (d0atsrtdec_t, d0atsrtdeclst_t) ;
 
 /* ****** ****** */
 
@@ -543,6 +547,13 @@ typedef ats_ptr_type d0arglst_t ;
 extern d0arglst_t d0arglst_nil (void) ;
 extern d0arglst_t d0arglst_cons (d0arg_t, d0arglst_t) ;
 
+typedef ats_ptr_type m0acarg_t ;
+typedef ats_ptr_type m0acarglst_t ;
+extern m0acarg_t m0acarg_one (i0de_t) ;
+extern m0acarg_t m0acarg_lst (t0kn_t, i0delst_t, t0kn_t) ;
+extern m0acarglst_t m0acarglst_nil () ;
+extern m0acarglst_t m0acarglst_cons (m0acarg_t, m0acarglst_t) ;
+
 /* ****** ****** */
 
 typedef ats_ptr_type extnamopt_t ;
@@ -622,6 +633,12 @@ extern f0arglst_t f0arglst_cons (f0arg_t, f0arglst_t) ;
 
 typedef ats_ptr_type s0elop_t ;
 extern s0elop_t s0elop_make (int, t0kn_t) ;
+typedef ats_ptr_type witht0ype_t ;
+extern witht0ype_t witht0ype_none (void) ;
+extern witht0ype_t witht0ype_prop (s0exp_t) ;
+extern witht0ype_t witht0ype_type (s0exp_t) ;
+extern witht0ype_t witht0ype_view (s0exp_t) ;
+extern witht0ype_t witht0ype_viewtype (s0exp_t) ;
 
 //
 
@@ -648,7 +665,6 @@ typedef ats_ptr_type i0nvresstate_t ;
 typedef ats_ptr_type loopi0nv_t ;
 typedef ats_ptr_type initestpost_t ;
 
-typedef ats_ptr_type witht0ype_t ;
 typedef ats_ptr_type v0aldec_t ;
 typedef ats_ptr_type v0aldeclst_t ;
 typedef ats_ptr_type f0undec_t ;
@@ -680,10 +696,14 @@ extern d0exp_t d0exp_caseof (casehead_t, d0exp_t, t0kn_t, c0laulst_t) ;
 extern d0exp_t d0exp_crypt (int, t0kn_t) ;
 extern d0exp_t d0exp_delay (int/*lin*/, t0kn_t) ;
 extern d0exp_t d0exp_dynload (t0kn_t) ;
+//
+// HX: [d0exp_effmask_*] are implemented in [ats_effect.dats]
+//
 extern d0exp_t d0exp_effmask_all (t0kn_t) ;
 extern d0exp_t d0exp_effmask_exn (t0kn_t) ;
 extern d0exp_t d0exp_effmask_ntm (t0kn_t) ;
 extern d0exp_t d0exp_effmask_ref (t0kn_t) ;
+//
 extern d0exp_t d0exp_empty (void) ;
 
 extern d0exp_t d0exp_exist (t0kn_t, s0exparg_t, t0kn_t, d0exp_t, t0kn_t) ;
@@ -810,12 +830,6 @@ extern initestpost_t initestpost_make
 
 /* ****** ****** */
 
-extern witht0ype_t witht0ype_none (void) ;
-extern witht0ype_t witht0ype_prop (s0exp_t) ;
-extern witht0ype_t witht0ype_type (s0exp_t) ;
-extern witht0ype_t witht0ype_view (s0exp_t) ;
-extern witht0ype_t witht0ype_viewtype (s0exp_t) ;
-
 extern v0aldec_t v0aldec_make (p0at_t, d0exp_t, witht0ype_t) ;
 extern v0aldeclst_t v0aldeclst_nil (void) ;
 extern v0aldeclst_t v0aldeclst_cons (v0aldec_t, v0aldeclst_t) ;
@@ -843,14 +857,6 @@ extern v0ardeclst_t v0ardeclst_nil (void) ;
 extern v0ardeclst_t v0ardeclst_cons (v0ardec_t, v0ardeclst_t) ;
 
 /* ****** ****** */
-
-typedef ats_ptr_type m0acarg_t ;
-extern m0acarg_t m0acarg_one (i0de_t) ;
-extern m0acarg_t m0acarg_lst (t0kn_t, i0delst_t, t0kn_t) ;
-
-typedef ats_ptr_type m0acarglst_t ;
-extern m0acarglst_t m0acarglst_nil () ;
-extern m0acarglst_t m0acarglst_cons (m0acarg_t, m0acarglst_t) ;
 
 typedef ats_ptr_type m0acdef_t ;
 typedef ats_ptr_type m0acdeflst_t ;
@@ -957,10 +963,8 @@ extern guad0ec_t guad0ec_cons (e0xp_t, d0eclst_t, srpifkindtok_t, guad0ec_t) ;
 
 extern d0eclst_t d0eclst_nil (void) ;
 extern d0eclst_t d0eclst_cons (d0ec_t, d0eclst_t) ;
-
 extern d0ecllst_t d0ecllst_nil (void) ;
 extern d0ecllst_t d0ecllst_cons (d0ecllst_t, d0ec_t) ;
-
 extern d0eclst_t d0ecllst_reverse (d0ecllst_t) ;
 
 /* ****** ****** */
@@ -1065,8 +1069,6 @@ s0arg_t s0arg ;
 s0arglst_t s0arglst ;
 s0arglstlst_t s0arglstlst ;
 
-impqi0de_t impqi0de ;
-
 /* ****** ****** */
 
 sp0at_t sp0at ;
@@ -1082,6 +1084,7 @@ labs0explst_t labs0explst ;
 s0expopt_t s0expelt ;
 s0arrind_t s0arrind ;
 t1mps0explstlst_t t1mps0explstlst ;
+impqi0de_t impqi0de ;
 
 /* ****** ****** */
 
@@ -1155,16 +1158,22 @@ d0cstdeclst_t d0cstdeclst ;
 
 /* ****** ****** */
 
+s0vararg_t s0vararg ;
+s0exparg_t s0exparg ;
+
+s0elop_t s0elop ;
+witht0ype_t witht0ype ;
+
+/* ****** ****** */
+
 p0at_t p0at ;
 p0atlst_t p0atlst ;
 labp0atlst_t labp0atlst ;
-s0vararg_t s0vararg ;
 
 f0arg_t f0arg ;
 f0arglst_t f0arglst ;
 
-s0elop_t s0elop ;
-s0exparg_t s0exparg ;
+/* ****** ****** */
 
 d0exp_t d0exp ;
 d0explst_t d0explst ;
@@ -1193,7 +1202,6 @@ initestpost_t initestpost ;
 
 /* ****** ****** */
 
-witht0ype_t witht0ype ;
 v0aldec_t v0aldec ;
 v0aldeclst_t v0aldeclst ;
 f0undec_t f0undec ;
@@ -1548,14 +1556,10 @@ guad0ec_t guad0ec ;
 %type <i0de> tmpi0de
 %type <tmpqi0de> tmpqi0de
 
-%type <s0rtopt> colons0rtopt
-
 %type <s0arg> s0arg
 %type <s0arglst> s0argseq
 %type <s0arglst> commas0argseq
 %type <s0arglstlst> s0argseqseq
-
-%type <impqi0de> impqi0de
 
 %type <s0arglst> decs0argseq
 %type <s0arglst> commadecs0argseq
@@ -1579,6 +1583,8 @@ guad0ec_t guad0ec ;
 %type <s0explst> commat1mps0expseq
 %type <t1mps0explstlst> gtlt_t1mps0expseqseq
 
+%type <impqi0de> impqi0de
+
 %type <s0expopt> s0expelt
 %type <s0arrind> s0arrind
 
@@ -1600,6 +1606,8 @@ guad0ec_t guad0ec ;
 %type <s0tacstlst> ands0tacstseq
 %type <s0tavar> s0tavar
 %type <s0tavarlst> ands0tavarseq
+
+%type <s0rtopt> colons0rtopt
 
 %type <s0expdef> s0expdef
 %type <s0expdeflst> ands0expdefseq
@@ -1645,6 +1653,12 @@ guad0ec_t guad0ec ;
 %type <d0cstdec> d0cstdec
 %type <d0cstdeclst> andd0cstdecseq
 
+%type <s0vararg> s0vararg
+%type <s0exparg> s0exparg
+
+%type <s0elop> s0elop
+%type <witht0ype> witht0ype
+
 %type <p0at> p0at
 %type <p0at> atmp0at
 %type <p0at> argp0at
@@ -1653,15 +1667,11 @@ guad0ec_t guad0ec ;
 %type <p0atlst> commap0atseq
 %type <labp0atlst> labp0atseq
 %type <labp0atlst> commalabp0atseq
-%type <s0vararg> s0vararg
 
 %type <f0arg> f0arg1
 %type <f0arglst> f0arg1seq
 %type <f0arg> f0arg2
 %type <f0arglst> f0arg2seq
-
-%type <s0elop> s0elop
-%type <s0exparg> s0exparg
 
 /*
 %type <s0exp> objc0ls // HX-2010-05-12: the OOP plan is permanently abandoned
@@ -1721,7 +1731,6 @@ guad0ec_t guad0ec ;
 %type <loopi0nv> loopi0nv
 %type <initestpost> initestpost
 
-%type <witht0ype> witht0ype
 %type <v0aldec> v0aldec
 %type <v0aldeclst> andv0aldecseq
 %type <f0undec> f0undec
@@ -2123,6 +2132,11 @@ pi0de /* dynamic pattern identifier */
   | IDENTIFIER_sym                      { $$ = $1 ; }
 ;
 
+fi0de /* dynamic function identifier */
+  : di0de                               { $$ = $1 ; }
+  | OP di0de                            { $$ = $2 ; }
+;
+  
 arri0de /* array identifier */
   : IDENTIFIER_arr                      { $$ = $1 ; }
 ;
@@ -2163,7 +2177,9 @@ s0argseqseq /* static argument sequence sequence */
   | LPAREN s0argseq RPAREN s0argseqseq  { $$ = s0arglstlst_cons($2, $4); }
 ;
 
-/* template argument variables */
+/*
+** template argument variables
+*/
 
 commadecs0argseq
   : /* empty */ %prec TMPSARG           { $$ = s0arglst_nil() ; }
@@ -2186,6 +2202,8 @@ decs0argseqseq
 sp0at /* static pattern */
   : sqi0de LPAREN s0argseq RPAREN       { $$ = sp0at_con($1, $3, $4) ; }
 ;
+
+/* ****** ****** */
 
 atms0exp /* atomic static expression */
   : LITERAL_char                        { $$ = s0exp_char($1) ; }
@@ -2307,7 +2325,9 @@ commalabs0expseq
                                         { $$ = labs0explst_cons($2, $4, $5) ; }
 ;
 
-/* template argument expressions */
+/*
+** template argument expressions
+*/
 
 t0mps0exp
   : atms0exp                            { $$ = $1 ; }
@@ -2335,9 +2355,28 @@ gtlt_t1mps0expseqseq
                                         { $$ = gtlt_t1mps0expseqseq_cons_tok($1, $2, $3) ; }
 ;
 
+impqi0de
+  : dqi0de                              { $$ = impqi0de_make_none($1) ; }
+  | tmpqi0de t1mps0expseq gtlt_t1mps0expseqseq GT
+                                        { $$ = impqi0de_make_some($1, $2, $3, $4) ; }
+;
+
 /* ****** ****** */
 
-/* static declarations */
+/*
+** static declarations
+*/
+
+/* ****** ****** */
+
+s0rtdef /* sort definition */
+  : s0rtid EQ s0rtext                   { $$ = s0rtdef_make($1, $3) ; }
+;
+
+ands0rtdefseq /* additional sort definition sequence */
+  : /* empty */                         { $$ = s0rtdeflst_nil() ; }
+  | AND s0rtdef ands0rtdefseq           { $$ = s0rtdeflst_cons($2, $3) ; }
+;
 
 /* ****** ****** */
 
@@ -2354,17 +2393,6 @@ d0atargseq /* datatype argument sequence */
 commad0atargseq
   : /* empty */                         { $$ = d0atarglst_nil() ; }
   | COMMA d0atarg commad0atargseq       { $$ = d0atarglst_cons($2, $3) ; }
-;
-
-/* ****** ****** */
-
-s0rtdef /* sort definition */
-  : s0rtid EQ s0rtext                   { $$ = s0rtdef_make($1, $3) ; }
-;
-
-ands0rtdefseq /* additional sort definition sequence */
-  : /* empty */                         { $$ = s0rtdeflst_nil() ; }
-  | AND s0rtdef ands0rtdefseq           { $$ = s0rtdeflst_cons($2, $3) ; }
 ;
 
 /* ****** ****** */
@@ -2408,12 +2436,12 @@ ands0tavarseq /* additional static constant sequence */
 
 /* ****** ****** */
 
-/* static definition declaration */
-
 colons0rtopt /* optional sort annotation */
   : /* empty */                         { $$ = s0rtopt_none() ; }
   | COLON s0rt                          { $$ = s0rtopt_some($2) ; }
 ;
+
+/* ****** ****** */
 
 s0expdef /* static definition */
   : si0de s0argseqseq colons0rtopt EQ s0exp
@@ -2534,6 +2562,7 @@ c0lassdec
 /*
 ** dynamic variable with optional type annotation
 */
+
 p0arg
   : pi0de                               { $$ = p0arg_make_none($1) ; }
   | pi0de COLON s0exp                   { $$ = p0arg_make_some($1, $3) ; }
@@ -2581,6 +2610,33 @@ andd0cstdecseq
 
 /* ****** ****** */
 
+s0vararg
+  : DOTDOT                              { $$ = s0vararg_one() ; }
+  | DOTDOTDOT                           { $$ = s0vararg_all() ; }
+  | s0argseq                            { $$ = s0vararg_seq($1) ; }
+;
+
+s0exparg
+  : DOTDOT                              { $$ = s0exparg_one() ; }
+  | DOTDOTDOT                           { $$ = s0exparg_all() ; }
+  | s0expseq                            { $$ = s0exparg_seq($1) ; }
+;
+
+s0elop
+  : DOT                                 { $$ = s0elop_make (0, $1) ; }
+  | MINUSGT                             { $$ = s0elop_make (1, $1) ; }
+;
+
+witht0ype
+  : /* empty */                         { $$ = witht0ype_none() ; }
+  | WITHPROP s0exp                      { $$ = witht0ype_prop($2) ; }
+  | WITHTYPE s0exp                      { $$ = witht0ype_type($2) ; }
+  | WITHVIEW s0exp                      { $$ = witht0ype_view($2) ; }
+  | WITHVIEWTYPE s0exp                  { $$ = witht0ype_viewtype($2) ; }
+;
+
+/* ****** ****** */
+
 /*
 ** patterns
 */
@@ -2605,12 +2661,6 @@ atmp0at
   | ATLBRACE labp0atseq RBRACE          { $$ = p0at_rec(0, $1, $2, $3) ; }
   | QUOTELBRACE labp0atseq RBRACE       { $$ = p0at_rec(1, $1, $2, $3) ; }
   | LBRACKET s0argseq RBRACKET          { $$ = p0at_exist($1, $2, $3) ; }
-;
-
-s0vararg
-  : DOTDOT                              { $$ = s0vararg_one() ; }
-  | DOTDOTDOT                           { $$ = s0vararg_all() ; }
-  | s0argseq                            { $$ = s0vararg_seq($1) ; }
 ;
 
 argp0at
@@ -2679,11 +2729,6 @@ f0arg2
 f0arg2seq
   : /* empty */                         { $$ = f0arglst_nil() ; }
   | f0arg2 f0arg2seq                    { $$ = f0arglst_cons($1, $2) ; }
-;
-
-s0elop
-  : DOT                                 { $$ = s0elop_make (0, $1) ; }
-  | MINUSGT                             { $$ = s0elop_make (1, $1) ; }
 ;
 
 /*
@@ -2788,12 +2833,6 @@ atmd0exp
 
   | LET d0ecseq_dyn IN d0expsemiseq0 END
                                         { $$ = d0exp_let_seq ($1, $2, $3, $4, $5) ; }
-;
-
-s0exparg
-  : DOTDOT                              { $$ = s0exparg_one() ; }
-  | DOTDOTDOT                           { $$ = s0exparg_all() ; }
-  | s0expseq                            { $$ = s0exparg_seq($1) ; }
 ;
 
 s0expdarg
@@ -3071,14 +3110,6 @@ andm0acdefseq
 
 /* ****** ****** */
 
-witht0ype
-  : /* empty */                         { $$ = witht0ype_none() ; }
-  | WITHPROP s0exp                      { $$ = witht0ype_prop($2) ; }
-  | WITHTYPE s0exp                      { $$ = witht0ype_type($2) ; }
-  | WITHVIEW s0exp                      { $$ = witht0ype_view($2) ; }
-  | WITHVIEWTYPE s0exp                  { $$ = witht0ype_viewtype($2) ; }
-;
-
 v0aldec
   : p0at EQ d0exp witht0ype             { $$ = v0aldec_make ($1, $3, $4) ; }
 ;
@@ -3088,11 +3119,8 @@ andv0aldecseq
   | AND v0aldec andv0aldecseq           { $$ = v0aldeclst_cons($2, $3) ; }
 ;
 
-fi0de
-  : di0de                               { $$ = $1 ; }
-  | OP di0de                            { $$ = $2 ; }
-;
-  
+/* ****** ****** */
+
 f0undec
   : fi0de f0arg1seq EQ d0exp witht0ype
                                         { $$ = f0undec_make_none($1, $2, $4, $5) ; }
@@ -3125,12 +3153,6 @@ andv0ardecseq
 ;
 
 /* ****** ****** */
-
-impqi0de
-  : dqi0de                              { $$ = impqi0de_make_none($1) ; }
-  | tmpqi0de t1mps0expseq gtlt_t1mps0expseqseq GT
-                                        { $$ = impqi0de_make_some($1, $2, $3, $4) ; }
-;
 
 i0mpdec
   : impqi0de f0arg2seq colons0expopt EQ d0exp
@@ -3283,7 +3305,7 @@ int yylex () {
   if (yylex_tok0 >= 0) {
     tok = yylex_tok0 ; yylex_tok0 = -1 ;
   } else {
-    tok = ats_lexer_token_get () ;
+    tok = atsopt_lexer_token_get () ;
   } // end of [if]
 /*
   fprintf (stdout, "tok = %i\n", tok) ;
@@ -3331,11 +3353,11 @@ yylval_token_set (t0kn_t val)
   { yylval.t0kn = val ; return ; }
 
 // implemented in [ats_filename.dats]
-extern ats_void_type ats_filename_prerr () ;
+extern ats_void_type atsopt_filename_prerr () ;
 
 void yyerror (char *s) {
   fprintf (stderr, "%s: ", s) ;
-  ats_filename_prerr () ;
+  atsopt_filename_prerr () ;
   fprintf (stderr, ": [") ;
   lexing_prerr_position (lexing_fstpos_get ()) ;
   fprintf (stderr, "]\n") ;

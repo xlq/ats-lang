@@ -36,15 +36,6 @@
 
 (* ****** ****** *)
 
-staload "libats_lex_lexing.sats"
-
-(* ****** ****** *)
-
-staload "ats_posmark.sats"
-staload "ats_location.sats"
-
-(* ****** ****** *)
-
 abst@ype token_t = $extype "ats_int_type"
 
 (* ****** ****** *)
@@ -59,7 +50,7 @@ overload = with eq_token_token
 (* ****** ****** *)
 
 // implemented in [ats_lexer.lats]
-fun MAIN (): token_t = "ats_lexer_token_get"
+fun MAIN (): token_t = "atsopt_lexer_token_get"
 
 // implemented in [ats_lexer.lats]
 fun token_is_valid (t: token_t): bool = "token_is_valid"

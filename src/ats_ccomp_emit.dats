@@ -146,29 +146,29 @@ implement emit_filename (pf | out, fil) =
 
 %{$
 
-extern char *ats_main_ATSHOME ;
-extern int ats_main_ATSHOME_length ;
-extern char *ats_main_ATSHOMERELOC ;
-extern ats_ptr_type ats_filename_full (ats_ptr_type) ;
+extern char *atsopt_ATSHOME ;
+extern int atsopt_ATSHOME_length ;
+extern char *atsopt_ATSHOMERELOC ;
+extern ats_ptr_type atsopt_filename_full (ats_ptr_type) ;
 
 ats_void_type
 ats_ccomp_emit_filename (ats_ptr_type out, ats_ptr_type fil) {
   int sgn ; char *name ;
-  name = ats_filename_full (fil) ;
-
-  if (!ats_main_ATSHOMERELOC) {
+  name = atsopt_filename_full (fil) ;
+//
+  if (!atsopt_ATSHOMERELOC) {
     ats_ccomp_emit_identifier (out, name) ; return ;
   }
-
+//
   sgn = strncmp
-    (ats_main_ATSHOME, name, ats_main_ATSHOME_length) ;
+    (atsopt_ATSHOME, name, atsopt_ATSHOME_length) ;
   if (sgn) {
     ats_ccomp_emit_identifier (out, name) ;
   } else {
-    ats_ccomp_emit_identifier (out, ats_main_ATSHOMERELOC) ;
-    ats_ccomp_emit_identifier (out, (char*)name + ats_main_ATSHOME_length) ;
-  }
-
+    ats_ccomp_emit_identifier (out, atsopt_ATSHOMERELOC) ;
+    ats_ccomp_emit_identifier (out, (char*)name + atsopt_ATSHOME_length) ;
+  } // end of [if]
+//
   return ;
 } /* end of ats_ccomp_emit_filename */
 
@@ -176,7 +176,9 @@ ats_ccomp_emit_filename (ats_ptr_type out, ats_ptr_type fil) {
 
 (* ****** ****** *)
 
-implement emit_d2con (pf | out, d2c) = let
+implement
+emit_d2con
+  (pf | out, d2c) = let
   val fil = d2con_fil_get d2c
   val sym = d2con_sym_get d2c
   val name = $Sym.symbol_name sym
@@ -186,7 +188,8 @@ in
   emit_identifier (pf | out, name)
 end // end of [emit_d2con]
 
-implement emit_d2cst (pf | out, d2c) = let
+implement
+emit_d2cst (pf | out, d2c) = let
   val extdef = d2cst_extdef_get (d2c)
 in
   case+ extdef of
@@ -226,7 +229,8 @@ in
   end // end of [if]
 end // end of [emit_funlab_prefix]
 
-implement emit_funlab (pf | out, fl) = let
+implement
+emit_funlab (pf | out, fl) = let
   val () = case+ funlab_qua_get fl of
     | D2CSTOPTsome d2c => let // global function
         val () = emit_d2cst (pf | out, d2c)
@@ -248,16 +252,20 @@ in
   if funlab_trmck_get fl > 0 then fprint1_string (pf | out, "_trmck")
 end // end of [emit_funlab]
 
-implement emit_tmplab (pf | out, tl) = let
+implement
+emit_tmplab (pf | out, tl) = let
   val () = fprint1_string (pf | out, "__ats_lab_") in
   $Stamp.fprint_stamp (pf | out, tmplab_stamp_get tl)
 end // end of [emit_tmplab]
 
-implement emit_tmplabint (pf | out, tl, i) = begin
+implement
+emit_tmplabint (pf | out, tl, i) = begin
   emit_tmplab (pf | out, tl); fprintf1_exn (pf | out, "_%i", @(i))
 end // end of [emit_tmplabint]
 
-implement emit_tmpvar (pf | out, tmp) = let
+implement
+emit_tmpvar
+  (pf | out, tmp) = let
   val knd = tmpvar_top_get (tmp)
   val () = (case+ 0 of
     | _ when knd = 1(*top(static)*) => let
@@ -303,7 +311,8 @@ in
   // end of [case]
 end // end of [_emit_hityp]
 
-implement emit_hityp (pf | out, hit) =
+implement
+emit_hityp (pf | out, hit) =
   _emit_hityp (pf | out, hityp_decode hit)
 // end of [emit_hityp]
 
@@ -322,7 +331,8 @@ in
   aux (out, 0, hits)
 end // end of [emit_hityplst]
 
-implement emit_hityplst {m} (pf | out, hits) =
+implement
+emit_hityplst {m} (pf | out, hits) =
   _emit_hityplst (pf | out, hityplst_decode hits)
 // end of [emit_hityplst]
 
@@ -352,14 +362,18 @@ extern fun emit_hityp_clofun {m:file_mode} (
   pf: file_mode_lte (m, w) | out: &FILE m, hits_arg: hityplst_t, hit_res: hityp_t
 ) : void
 
-implement emit_hityp_fun (pf | out, hits_arg, hit_res) = begin
+implement
+emit_hityp_fun
+  (pf | out, hits_arg, hit_res) = begin
   emit_hityp (pf | out, hit_res);
   fprint1_string (pf | out, "(*)(");
   emit_hityplst (pf | out, hits_arg);
   fprint1_string (pf | out, ")")
 end // end of [emit_hityp_fun]
 
-implement emit_hityp_clofun (pf | out, hits_arg, hit_res) = let
+implement
+emit_hityp_clofun
+  (pf | out, hits_arg, hit_res) = let
   val () = emit_hityp (pf | out, hit_res)
   val () = fprint1_string (pf | out, "(*)(ats_clo_ptr_type")
   val () = case+ 0 of
@@ -860,7 +874,8 @@ ats_ccomp_emit_valprim_string (
 
 (* ****** ****** *)
 
-implement emit_valprim_tmpvar
+implement
+emit_valprim_tmpvar
   (pf | out, tmp) = emit_tmpvar (pf | out, tmp) where {
   val tmp_root = tmpvar_root_get (tmp)
   val tmp = (case+ tmp_root of
@@ -870,7 +885,8 @@ implement emit_valprim_tmpvar
 
 (* ****** ****** *)
 
-implement emit_valprim (pf | out, vp0) = begin
+implement
+emit_valprim (pf | out, vp0) = begin
   case+ vp0.valprim_node of
   | VParg ind => emit_valprim_arg (pf | out, ind)
   | VParg_ref ind => begin
@@ -963,7 +979,8 @@ implement emit_valprim (pf | out, vp0) = begin
 *)
 end // end of [emit_valprim]
 
-implement emit_valprimlst {m} (pf | out, vps) = let
+implement
+emit_valprimlst {m} (pf | out, vps) = let
   fun aux
     (out: &FILE m, i: int, vps: valprimlst): void = begin
     case+ vps of
@@ -979,7 +996,9 @@ end // end of [emit_valprimlst]
 
 (* ****** ****** *)
 
-implement emit_kont (pf | out, kont) = case+ kont of
+implement
+emit_kont
+  (pf | out, kont) = case+ kont of
   | KONTtmplab tl => begin
       fprint1_string (pf | out, "goto "); emit_tmplab (pf | out, tl)
     end // end of [KONTtmplab]
@@ -1013,7 +1032,8 @@ extern fun emit_patck {m:file_mode} (
   pf: file_mode_lte (m, w) | out: &FILE m, vp: valprim, patck: patck, fail: kont
 ) : void
 
-implement emit_patck
+implement
+emit_patck
   (pf | out, vp, patck, fail) = begin
   case+ patck of
   | PATCKbool b => begin
@@ -1128,7 +1148,9 @@ end (* end of [emit_patck] *)
 extern fun emit_branch {m:file_mode}
   (pf: file_mode_lte (m, w) | out: &FILE m, br: branch): void
 
-implement emit_branch (pf | out, br) = let
+implement
+emit_branch
+  (pf | out, br) = let
   val inss = br.branch_inss
   val () = fprint1_string (pf | out, "/* branch: ")
   val () = emit_tmplab (pf | out, br.branch_lab)
@@ -1143,7 +1165,8 @@ end // end of [emit_branch]
 extern fun emit_branchlst {m:file_mode}
   (pf: file_mode_lte (m, w) | out: &FILE m, brs: branchlst): void
 
-implement emit_branchlst {m} (pf | out, brs) = let
+implement
+emit_branchlst {m} (pf | out, brs) = let
   fun aux (out: &FILE m, i: int, brs: branchlst): void =
     case+ brs of
     | list_cons (br, brs) => let
@@ -1158,7 +1181,8 @@ end // end of [emit_branchlst]
 
 (* ****** ****** *)
 
-implement emit_cloenv {m}
+implement
+emit_cloenv {m}
   (pf | out, map, vtps, i0): int = let
   fn aux_envmap (
       out: &FILE m
@@ -1483,7 +1507,8 @@ end // end of [emit_instr_call]
 
 (* ****** ****** *)
 
-implement emit_instr {m} (pf | out, ins) = let
+implement
+emit_instr {m} (pf | out, ins) = let
   val () = // generating informaion for debugging
     if $Deb.debug_flag_get () > 0 then let
       val () = fprint1_string (pf | out, "/* ")
@@ -1913,7 +1938,8 @@ in
     end // end of [_]
 end // end of [emit_instr]
 
-implement emit_instrlst {m} (pf | out, inss) = let
+implement
+emit_instrlst {m} (pf | out, inss) = let
   fun aux (out: &FILE m, i: int, inss: instrlst)
     : void = begin case+ inss of
     | list_cons (ins, inss) => begin
@@ -1933,7 +1959,8 @@ end // end of [emit_instrlst]
 extern fun emit_funarg {m:file_mode}
   (pf: file_mode_lte (m, w) | out: &FILE m, hits: hityplst_t): void
 
-implement emit_funarg {m} (pf | out, hits) = let
+implement
+emit_funarg {m} (pf | out, hits) = let
   fun loop (out: &FILE m, i: int, hits: hityplst): void =
     case+ hits of
     | list_cons (hit, hits) => let
@@ -1996,8 +2023,10 @@ end // end of [_emit_funenvarg]
 
 in // in of [local]
 
-implement emit_funenvarg (pf | out, vtps) =
+implement
+emit_funenvarg (pf | out, vtps) =
   _emit_funenvarg (pf, view@ out | &out, vtps)
+// end of [emit_funenvarg]
 
 end // end of [local]
 
@@ -2325,16 +2354,20 @@ in // in of [local]
 
 // ------ ------ //
 
-implement emit_closure_type (pf | out, fl, vtps) =
+implement
+emit_closure_type (pf | out, fl, vtps) =
   _emit_closure_type (pf, view@ out | &out, fl, vtps)
 
-implement emit_closure_init (pf | out, fl, vtps) =
+implement
+emit_closure_init (pf | out, fl, vtps) =
   _emit_closure_init (pf, view@ out | &out, fl, vtps)
 
-implement emit_closure_make (pf | out, fl, vtps) =
+implement
+emit_closure_make (pf | out, fl, vtps) =
   _emit_closure_make (pf, view@ out | &out, fl, vtps)
 
-implement emit_closure_clofun (pf | out, fl, vtps) =
+implement
+emit_closure_clofun (pf | out, fl, vtps) =
   _emit_closure_clofun (pf, view@ out | &out, fl, vtps)
 
 end // end of [local]
@@ -2355,7 +2388,8 @@ fn hityplst_nvararg_get
   | list_nil () => ~1
 end // end of [hityplst_nvararg_get]
 
-implement emit_funentry (pf | out, entry) = let
+implement
+emit_funentry (pf | out, entry) = let
   val fl = funentry_lab_get (entry)
 (*
   val () = begin
@@ -2513,7 +2547,9 @@ end // end of [emit_funentry]
 
 (* ****** ****** *)
 
-implement emit_funentry_prototype {m} (pf | out, entry) = let
+implement
+emit_funentry_prototype
+  {m} (pf | out, entry) = let
   val fl = funentry_lab_get (entry)
   val fc = funlab_funclo_get (fl)
   val hits_arg = funlab_typ_arg_get (fl)
@@ -2596,7 +2632,9 @@ end // end of [emit_funentry_prototype]
 
 (* ****** ****** *)
 
-implement emit_mainfun (pf | out, fil) = () where {
+implement
+emit_mainfun
+  (pf | out, fil) = () where {
   val () = fprint1_string (pf | out, "int main (int argc, char *argv[]) {\n")
 //
   val () = fprint1_string (pf | out, "ATS_GC_INIT() ;\n")

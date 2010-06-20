@@ -977,7 +977,7 @@ fn emit_dynload {m:file_mode} (
 //
   // this is used for explicit dynamic loading
   val () = let
-    val name = $Glo.ats_dynloadfun_name_get () // ATS_DYNLOADFUN_NAME
+    val name = $Glo.atsopt_dynloadfun_name_get () // ATS_DYNLOADFUN_NAME
   in
     case+ 0 of
     | _ when stropt_is_some name => let
@@ -1265,7 +1265,7 @@ implement ccomp_main {m}
   val res = ( // defining the dynload function
     if flag > 0 then let
       val dynloadflag = (
-        if mainats_kind >= 0 then 0 else $Glo.ats_dynloadflag_get ()
+        if mainats_kind >= 0 then 0 else $Glo.atsopt_dynloadflag_get ()
       ) : int
       val () = fprint1_string (pf | out, "/* dynamic load function */\n\n")
       val () = emit_dynload

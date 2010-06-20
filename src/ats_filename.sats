@@ -48,9 +48,12 @@ abstype filename_t // boxed type
 
 (* ****** ****** *)
 
-fun theDirsep_get (): char = "ats_filename_theDirsep_get"
-fun theCurdir_get (): string = "ats_filename_theCurdir_get"
-fun thePredir_get (): string = "ats_filename_thePredir_get"
+fun theDirsep_get
+  (): char = "atsopt_filename_theDirsep_get"
+fun theCurdir_get
+  (): string = "atsopt_filename_theCurdir_get"
+fun thePredir_get
+  (): string = "atsopt_filename_thePredir_get"
 
 (* ****** ****** *)
 
@@ -62,10 +65,10 @@ val filename_stdin : filename_t
 //
 
 fun filename_is_exist (name: string): bool
-  = "ats_filename_is_exist"
+  = "atsopt_filename_is_exist"
 fun filename_is_relative (name: string): bool
 fun filename_append (dir: string, bas: string): string
-  = "ats_filename_append"
+  = "atsopt_filename_append"
 
 //
 
@@ -74,7 +77,8 @@ fun filenameopt_make (name: string): Option_vt (filename_t)
 
 //
 
-fun filename_full (f: filename_t): string = "ats_filename_full"
+fun filename_full
+  (f: filename_t): string = "atsopt_filename_full"
 fun filename_full_sym (f: filename_t): $Sym.symbol_t
 
 //
@@ -119,7 +123,7 @@ overload prerr with prerr_filename
 
 fun fprint_filename_base {m:file_mode}
   (pf: file_mode_lte (m, w) | out: &FILE m, f: filename_t): void
-  = "ats_filename_fprint_filename_base"
+  = "atsopt_filename_fprint_filename_base"
 
 fun print_filename_base (f: filename_t): void
 fun prerr_filename_base (f: filename_t): void
@@ -148,8 +152,8 @@ fun the_filenamelst_push_xit (loc0: location_t, f: filename_t): void
 
 (* ****** ****** *)
 
-fun ats_filename_prerr (): void = "ats_filename_prerr"
-fun ats_filename_initialize (): void
+fun atsopt_filename_prerr (): void = "atsopt_filename_prerr"
+fun atsopt_filename_initialize (): void
 
 (* ****** ****** *)
 
