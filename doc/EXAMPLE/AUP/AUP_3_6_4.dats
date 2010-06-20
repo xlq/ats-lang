@@ -110,10 +110,10 @@ fun loop_dir (
       var ent = ent
       val d_name = dirent_d_name_get (ent)
       var stat_entry: stat_t? // uninitialized
-      val (pfopt | rtn) = lstat_err (view@ stat_entry | d_name, &stat_entry)
+      val rtn = lstat_err (d_name, stat_entry)
     in
-      if rtn <> ~1 then let
-        prval stat_v_succ pf = pfopt; prval () = view@ stat_entry := pf 
+      if rtn >= 0 then let
+        prval () = opt_unsome (stat_entry)
       in
         case+ 0 of
         | _ when SAME_INODE (stat, stat_entry) => let
@@ -125,8 +125,7 @@ fun loop_dir (
           end // end of [_ when ...]  
         | _ => loop_dir (ents, stat, lstrs, nent)
       end else let
-        prval stat_v_fail pf = pfopt
-        prval () = view@ stat_entry := pf 
+        prval () = opt_unnone (stat_entry)
         val () = ~ents
       in
         0 (* error *)
@@ -146,11 +145,10 @@ fun getcwdx_main {fd:int} (
       | fd: int fd, stat: &stat_t, lstrs: &pathlist, nent: int, err: &int
       ) : void = let
       var stat_parent: stat_t? // uninitialized
-      val (pfopt | rtn) = lstat_err (view@ stat_parent | "..", &stat_parent)
+      val rtn = lstat_err ("..", stat_parent)
     in
-      if rtn <> ~1 then let
-        prval stat_v_succ pf = pfopt
-        prval () = view@ stat_parent := pf
+      if rtn >= 0 then let
+        prval () = opt_unsome (stat_parent)
         val rtn = chdir_err ".."
         val term = if :(stat_parent: stat_t) => 
           (rtn = ~1  andalso errno_is_ENOENT ()) then true else SAME_INODE (stat, stat_parent)
@@ -177,8 +175,8 @@ fun getcwdx_main {fd:int} (
             end (* end of if *)
           end (* end of [_(*continue*)] *)
       end else let
-        prval stat_v_fail pf = pfopt
-        prval () = view@ stat_parent := pf in
+        prval () = opt_unnone (stat_parent)
+      in
         err := err + 1 // loop exits abnormally
       end // end of [if]  
     end (* end of [loop] *)
@@ -211,14 +209,14 @@ implement getcwdx () = let
 in
   if fd <> ~1 then let
     prval open_v_succ pf_fd = pfopt_fd
-    val (pfopt | rtn) = lstat_err (view@ stat | ".", &stat) 
+    val rtn = lstat_err (".", stat) 
   in
-    if rtn <> ~1 then let
-      prval stat_v_succ pf = pfopt; prval () = view@ stat := pf
+    if rtn >= 0 then let
+      prval () = opt_unsome (stat)
     in
       getcwdx_main (pf_fd | fd, stat)
     end else let
-      prval stat_v_fail pf = pfopt; prval () = view@ stat := pf
+      prval () = opt_unnone (stat)
     in
       close_exn (pf_fd | fd); lstringopt_none ()
     end // end of [if]

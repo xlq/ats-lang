@@ -832,7 +832,7 @@ in
 end // end of [parse_from_stdin]
 
 implement parse_from_file (filename) = let
-  val fileref = open_file (filename, file_mode_r)
+  val fileref = open_file_exn (filename, file_mode_r)
   val () = filename_push (filename) where
     { val filename = filename_make_string (filename) }
   // end of [val]

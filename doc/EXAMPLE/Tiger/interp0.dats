@@ -600,10 +600,9 @@ in
   VALstring (str1 + str2)
 end // end of [vfval_concat]
 
-val vfval_flush = lam (vs: valuelst): value => let
-  val () = fflush (stdout_ref)
-in
-  VALunit ()
+val vfval_flush =
+  lam (vs: valuelst): value => let
+  val () = fflush_exn (stdout_ref) in VALunit ()
 end // end of [vfval_flush]
 
 val vfval_getchar = lam (vs: valuelst): value => let

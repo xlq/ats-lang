@@ -177,7 +177,7 @@ val () = the_labmap_insert (
 ) where {
   val f_pre = lam
     (vs: List v1al): v1al =<cloref1> let
-    val () = fflush (stdout_ref) in v1al_int_0
+    val () = fflush_exn (stdout_ref) in v1al_int_0
   end // end of [val]
 } // end of [val]
 

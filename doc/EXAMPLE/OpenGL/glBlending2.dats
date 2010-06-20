@@ -53,16 +53,16 @@ implement initialize () = let
   val () = glEnable (GL_DEPTH_TEST)
 
   val (pf_sphereLst | sphereLst) = glGenList_exn ()
-  val (pf_list | ()) = glNewList (pf_sphereLst | sphereLst, GL_COMPILE)
+  val (pf_list | sphereLst) = glNewList (pf_sphereLst | sphereLst, GL_COMPILE)
   val () = glutSolidSphere ((GLdouble)0.4, (GLint)20, (GLint)16)
   val () = glEndList (pf_list | (*none*))
-  val () = glListRef_set (pf_sphereLst | sphereLst_ref, sphereLst)
+  val () = glListRef_set (sphereLst_ref, sphereLst)
 
   val (pf_cubeLst | cubeLst) = glGenList_exn ()
-  val (pf_list | ()) = glNewList (pf_cubeLst | cubeLst, GL_COMPILE)
+  val (pf_list | cubeLst) = glNewList (pf_cubeLst | cubeLst, GL_COMPILE)
   val () = glutSolidCube ((GLdouble)0.6)
   val () = glEndList (pf_list | (*none*))
-  val () = glListRef_set (pf_cubeLst | cubeLst_ref, cubeLst)
+  val () = glListRef_set (cubeLst_ref, cubeLst)
 
 in
   // empty

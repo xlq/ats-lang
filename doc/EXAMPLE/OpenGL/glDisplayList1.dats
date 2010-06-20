@@ -79,10 +79,10 @@ val torusLst_ref = glListRef_make ()
 extern fun initialize (): void = "initialize"
 implement initialize () = let
   val (pf_torusLst | torusLst) = glGenList_exn ()
-  val (pf_list | ()) = glNewList (pf_torusLst | torusLst, GL_COMPILE)
+  val (pf_list | torusLst) = glNewList (pf_torusLst | torusLst, GL_COMPILE)
   val () = drawTorus (8, 25)
   val () = glEndList (pf_list | (*none*))
-  val () = glListRef_set (pf_torusLst | torusLst_ref, torusLst)
+  val () = glListRef_set (torusLst_ref, torusLst)
   val () = glShadeModel (GL_FLAT)
   val () = glClearColor (0.0, 0.0, 0.0, 0.0)
 in

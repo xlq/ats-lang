@@ -8,19 +8,19 @@
 *)
 
 (* ****** ****** *)
+//
+// staload "contrib/GL/SATS/gl.sats"
+//
+(* ****** ****** *)
 
 abstype GLlistref
 
 extern fun glListRef_make (): GLlistref = "atsctrb_glListRef_make"
 
 extern fun glListRef_get
-  (r: GLlistref): [n:nat] @(GLlist_v n | uint n)
-  = "atsctrb_glListRef_get"
-
-extern fun glListRef_set {n:nat}
-  (pf: GLlist_v n | r: GLlistref, n: uint n): void
-  = "atsctrb_glListRef_set"
-
+  (r: GLlistref): [n:nat] GLlist n = "atsctrb_glListRef_get"
+extern fun glListRef_set
+  {n:nat} (r: GLlistref, n: GLlist n): void = "atsctrb_glListRef_set"
 extern fun glCallListRef (r: GLlistref): void = "atsctrb_glCallListRef"
 
 %{^
