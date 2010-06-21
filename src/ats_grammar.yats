@@ -3349,16 +3349,19 @@ ats_void_type
 yylval_token_set (t0kn_t val)
   { yylval.t0kn = val ; return ; }
 
-// implemented in [ats_filename.dats]
+// HX: implemented in [ats_filename.dats]
 extern ats_void_type atsopt_filename_prerr () ;
-
+//
+extern ats_ptr_type lexing_fstpos_get () ;
+extern ats_void_type lexing_prerr_position (ats_ptr_type) ;
+//
 void yyerror (char *s) {
   fprintf (stderr, "%s: ", s) ;
   atsopt_filename_prerr () ;
   fprintf (stderr, ": [") ;
   lexing_prerr_position (lexing_fstpos_get ()) ;
   fprintf (stderr, "]\n") ;
-  exit (1) ; // no recovery yet; maybe in future
+  exit (1) ; // HX: no error recovery yet; maybe in future
   return ;
 } /* end of [yyerror] */
 
@@ -3381,14 +3384,15 @@ yyparse_main (
   extern YYSTYPE yyval;
   // fprintf (stderr, "yyparse_main: &yyval = %p\n", &yyval) ;
   ATS_GC_MARKROOT (&yyval, sizeof(YYSTYPE)) ;
-
+//
+  extern YYSTYPE yylval;
   // fprintf (stderr, "yyparse_main: &yylval = %p\n", &yylval) ;
   ATS_GC_MARKROOT (&yylval, sizeof(YYSTYPE)) ;
-
+//
   yylex_tok0 = tok0 ;
-
+//
   yyparse () ;
-
+//
   return yyval.d0eclst ;
 } /* end of [yyparse_main] */
 

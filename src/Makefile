@@ -197,20 +197,18 @@ atsopt: \
 
 ######
 
-ats_main_dats.o: ats_main.dats ats_lexer_lats.dats ats_printf_c_lats.dats
+ats_main_dats.o: \
+  ats_main.dats ats_lexer_lats.dats ats_printf_c_lats.dats
 
 ######
-
-%_lats.dats: %.lats
-	$(ATSLEX) < $< > $@
 
 ats_lexer_lats_dats.o: ats_grammar_yats.h ats_lexer_lats.dats
 
 ######
 
-ats_grammar_yats.c ats_grammar_yats.h: ats_grammar.yats
+ats_grammar_yats.h: ats_grammar_yats.c
+ats_grammar_yats.c: ats_grammar.yats
 	$(YACC) -v -d -o ats_grammar_yats.c ats_grammar.yats
-
 ats_grammar_yats.o: ats_grammar_yats.c
 	$(ATSCC) $(ATSCCFLAGS) -DYYDEBUG -c ats_grammar_yats.c 
 
@@ -235,6 +233,9 @@ libats_lex.o: \
 
 %_dats.o: %.dats
 	$(ATSCC) $(ATSCCFLAGS) -c $<
+
+%_lats.dats: %.lats
+	$(ATSLEX) < $< > $@
 
 ######
 
