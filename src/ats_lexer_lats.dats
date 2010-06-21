@@ -3,10 +3,8 @@
 // preamble
 
 %{^
-
 #include "ats_grammar_yats.h"
-
-%}
+%} // end of ...
 
 (* ****** ****** *)
 
@@ -137,13 +135,12 @@ implement ISSTATIC = $extval (token_t, "ISSTATIC")
 implement ISDYNAMIC = $extval (token_t, "ISDYNAMIC")
 
 %{$
-
-ats_bool_type eq_token_token
+ats_bool_type
+eq_token_token
   (ats_int_type tok1, ats_int_type tok2) {
   return (tok1 == tok2 ? ats_true_bool : ats_false_bool) ;
-}
-
-%}
+} // end of [ats_bool_type eq_token_token]
+%} // end of ...
 
 //
 

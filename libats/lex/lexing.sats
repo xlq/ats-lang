@@ -38,6 +38,18 @@
 
 (* ****** ****** *)
 
+%{#
+#ifndef ATS_LIBATS_LEX_LEXING_SATS
+#define ATS_LIBATS_LEX_LEXING_SATS
+typedef struct {
+  ats_clo_ptr_type free ;
+  ats_clo_ptr_type getc ;
+} ats_infile_t ; // end of [typedef]
+#endif // end of [ATS_LIBATS_LEX_LEXING_SATS]
+%} // end of [%{#]
+
+(* ****** ****** *)
+
 abstype accept_table_t // boxed type
 
 fun accept_table_get
@@ -95,8 +107,10 @@ overload print with print_position
 overload prerr with prerr_position
 
 (* ****** ****** *)
-
-abst@ype infile_t (view) // boxed type for the input file
+//
+// HX: flat type for the input file
+//
+abst@ype infile_t (v:view) = $extype "ats_infile_t"
 
 fun infile_free {v:view}
   (pf: v | f: infile_t v): void = "lexing_infile_free"
@@ -105,9 +119,10 @@ fun infile_getc {v:view}
 
 fun infile_make_string (s: string): [v:view] (v | infile_t v)
 
-fun infile_make_file {m:file_mode} {l:addr}
-  (pf_fil: FILE m @ l, pf_mod: file_mode_lte (m, r) | fil: ptr l)
-  : [v:view] (v | infile_t v)
+fun infile_make_file
+  {m:file_mode} {l:addr} (
+    pf_fil: FILE m @ l, pf_mod: file_mode_lte (m, r) | fil: ptr l
+  ) : [v:view] (v | infile_t v)
 // end of [infile_make_file]
 
 fun infile_make_stdin (): [v:view] (v | infile_t v)

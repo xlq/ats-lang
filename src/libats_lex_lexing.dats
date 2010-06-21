@@ -69,19 +69,13 @@ implement prerr_position (pos) = prerr_mac (fprint_position, pos)
 typedef infile (v:view) = '{
   free= (v | (*none*)) -<cloref1> void
 , getc= (!v | (*none*)) -<cloref1> int
-}
-
+} // end of [infile]
 assume infile_t = infile
 
 //
 
 implement infile_free (pf | infil) = infil.free (pf | (*none*))
 implement infile_getc (pf | infil) = infil.getc (pf | (*none*))
-(*
-  let val c = infil.getc (pf | (*none*)) in
-    printf ("infile_getc: c = %i\n", @(c)); c
-  end
-*)
 
 //
 

@@ -43,9 +43,7 @@
 /* ****** ****** */
 
 #include <inttypes.h>
-
-// for both [size_t]
-#include <stddef.h> // and [ptrdiff_t]
+#include <stddef.h> // for both [size_t] and [ptrdiff_t]
 #include <unistd.h> // for [ssize_t]
 
 /* ****** ****** */

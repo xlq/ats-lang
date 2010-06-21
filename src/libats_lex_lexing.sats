@@ -30,29 +30,26 @@
 *)
 
 (* ****** ****** *)
-
+//
 // Author: Hongwei Xi (hwxi AT cs DOT bu DOT edu)
 // July 2007
-
+//
 (* ****** ****** *)
 
 abstype accept_table_t // boxed type
 
+fun __accept_table_make
+  (nton: int) (nitm: int) (s: string): accept_table_t
+fun __accept_table_free (acctbl: accept_table_t): void
 fun accept_table_get
   (acctbl: accept_table_t, nstate: int): int (* irule *)
-
-fun __accept_table_make (nton: int) (nitm: int) (s: string): accept_table_t
-
-fun __accept_table_free (acctbl: accept_table_t): void
 
 //
 
 abstype transition_table_t // boxed type
 
 fun __transition_table_make (n: int) (s: string): transition_table_t
-
 fun __transition_table_free (transtbl: transition_table_t): void
-
 fun transition_table_get // c >= -1
   (transtbl: transition_table_t, nstate: int, c: int): int (* nstate *)
 
@@ -69,13 +66,11 @@ fun position_toff (p: position_t):<> lint
 
 fun lt_position_position (p1: position_t, p2: position_t):<> bool
 overload < with lt_position_position
-
 fun lte_position_position (p1: position_t, p2: position_t):<> bool
 overload <= with lte_position_position
 
 fun eq_position_position (p1: position_t, p2: position_t):<> bool
 overload = with eq_position_position
-
 fun neq_position_position (p1: position_t, p2: position_t):<> bool
 overload <> with neq_position_position
 
@@ -83,13 +78,10 @@ overload <> with neq_position_position
 
 fun fprint_position {m:file_mode}
   (pf: file_mode_lte (m, w) | fil: &FILE m, pos: position_t): void
-
 overload fprint with fprint_position
-
 fun print_position (pos: position_t): void = "lexing_print_position"
-fun prerr_position (pos: position_t): void = "lexing_prerr_position"
-
 overload print with print_position
+fun prerr_position (pos: position_t): void = "lexing_prerr_position"
 overload prerr with prerr_position
 
 (* ****** ****** *)
@@ -100,13 +92,11 @@ fun infile_free {v:view}
   (pf: v | f: infile_t v): void = "lexing_infile_free"
 fun infile_getc {v:view}
   (pf: !v | f: infile_t v): int = "lexing_infile_getc"
-
 fun infile_make_string (s: string): [v:view] (v | infile_t v)
 
 fun infile_make_file {m:file_mode} {l:addr}
   (pf_fil: FILE m @ l, pf_mod: file_mode_lte (m, r) | fil: ptr l)
   : [v:view] (v | infile_t v)
-
 fun infile_make_stdin (): [v:view] (v | infile_t v)
 
 (* ****** ****** *)

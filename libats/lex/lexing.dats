@@ -43,14 +43,9 @@
 #include "libc/CATS/stdio.cats"
 
 typedef struct {
-  ats_clo_ptr_type free ;
-  ats_clo_ptr_type getc ;
-} infile_t ; // end of [typedef]
-
-typedef struct {
   unsigned char *buf_ptr ;
   int buf_size ;
-  infile_t infile ;
+  ats_infile_t infile ;
   int fstpos ;
   int fstpos_line ; // line number
   int fstpos_loff ; // line offset
@@ -101,7 +96,7 @@ implement prerr_position (pos) = prerr_mac (fprint_position, pos)
 (* ****** ****** *)
 
 typedef infile (v:view) =
-  $extype_struct "infile_t" of {
+  $extype_struct "ats_infile_t" of {
   free= (v | (*none*)) -<cloref1> void
 , getc= (!v | (*none*)) -<cloref1> int
 } // end of [infile]
@@ -111,16 +106,10 @@ assume infile_t = infile
 
 implement
 infile_free (pf | infil) = infil.free (pf | (*none*))
-
 implement
 infile_getc (pf | infil) = infil.getc (pf | (*none*))
-(*
-  let val c = infil.getc (pf | (*none*)) in
-    printf ("infile_getc: c = %i\n", @(c)); c
-  end
-*)
 
-//
+(* ****** ****** *)
 
 implement
 infile_make_string (s) = let
@@ -144,7 +133,7 @@ in
   #[ V | (@(pf_gc, pf_at) | @{ free= _free, getc= _getc }) ]
 end // end of [infile_make_string]
 
-//
+(* ****** ****** *)
 
 local
 
@@ -160,7 +149,7 @@ extern fun fgetc_err {m:file_mode}
 
 extern fun getchar (): int = "atslib_getchar"
 
-in
+in // in of [local]
 
 implement
 infile_make_file {m} {l} (pf_fil, pf_mod | fil) = let
@@ -186,8 +175,10 @@ end // end of [local]
 
 (* ****** ****** *)
 
-implement lexing_engine_lexbuf (lxbf, transtbl, acctbl) = let
-
+implement
+lexing_engine_lexbuf
+  (lxbf, transtbl, acctbl) = let
+//
 fun aux (lxbf: &lexbuf_t, irule: &int, nstate: int):<cloptr1> int =
   if nstate > 0 then let
     val irule_new = accept_table_get (acctbl, nstate)
@@ -216,13 +207,13 @@ fun aux (lxbf: &lexbuf_t, irule: &int, nstate: int):<cloptr1> int =
     irule
   end
 // end of [aux]
-
+//
 var irule = (0: int)
-
+//
 in
-
-  lexbuf_fstpos_set (lxbf); aux (lxbf, irule, 1)
-
+//
+lexbuf_fstpos_set (lxbf); aux (lxbf, irule, 1)
+//
 end // end of [lexing_engine_lexbuf]
 
 
@@ -626,7 +617,7 @@ lexing_curpos_prerr () {
 
 ats_ptr_type
 lexbuf_make_infile (
-  infile_t infile
+  ats_infile_t infile
 ) {
   lexbuf *lxbf ;
   unsigned char *buf_ptr ;

@@ -44,11 +44,8 @@
 
 %{
 
-#include <stdio.h>
-
-#include "ats_memory.h"
-#include "ats_types.h"
-
+#include <stdio.h> // for [fprintf]
+#include "ats_memory.h" // HX: loading [ats_types.h] as well
 #define malloc ats_malloc_ngc
 #define realloc ats_realloc_ngc
 
