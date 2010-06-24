@@ -1759,8 +1759,9 @@ and guad0ec_node =
   | GD0Ccons of (e0xp, d0eclst, srpifkind, guad0ec_node)
 // end of [guad0ec_node]
 
-where d0exp: type = (* type for declaration *)
-  '{ d0exp_loc= loc_t, d0exp_node= d0exp_node }
+where d0exp: type = '{
+  d0exp_loc= loc_t, d0exp_node= d0exp_node
+} // end of [d0exp]
 
 and d0explst: type = List d0exp
 and d0expopt: type = Option d0exp
@@ -1769,7 +1770,7 @@ and d0explstopt: type = Option d0explst
 
 and d0arrind = '{
   d0arrind_loc= loc_t, d0arrind_ind= d0explstlst
-}
+} // end of [d0arrind]
 
 and initestpost = '(d0exp, d0exp, d0exp)
 
@@ -1787,27 +1788,27 @@ and guap0at: type = '{
   guap0at_loc= loc_t
 , guap0at_pat= p0at
 , guap0at_gua= m0atchlst
-}
+} // end of [guap0at]
 
 (* ****** ****** *)
 
 and ifhead: type = '{
   ifhead_tok= t0kn, ifhead_inv= i0nvresstate
-}
+} // end of [ifhead]
 
 and casehead: type = '{
   casehead_tok= t0kn
 , casehead_knd= int
 , casehead_inv= i0nvresstate
-}
+} // end of [casehead]
 
 and loophead: type = '{
   loophead_tok= t0kn, loophead_inv= loopi0nvopt
-}
+} // end of [lookhead]
 
 and tryhead: type = '{
   tryhead_tok= t0kn, tryhead_inv= i0nvresstate
-}
+} // end of [tryhead]
 
 and c0lau: type = '{
   c0lau_loc= loc_t
@@ -1815,7 +1816,7 @@ and c0lau: type = '{
 , c0lau_seq= int
 , c0lau_neg= int
 , c0lau_body= d0exp
-}
+} // end of [c0lau]
 
 and c0laulst: type = List c0lau
 
@@ -1823,7 +1824,7 @@ and sc0lau: type = '{
   sc0lau_loc= loc_t
 , sc0lau_pat= sp0at
 , sc0lau_body= d0exp
-}
+} // end of [sc0lau]
 
 and sc0laulst: type = List sc0lau
 
@@ -1834,7 +1835,7 @@ and v0aldec: type = '{
 , v0aldec_pat= p0at
 , v0aldec_def= d0exp
 , v0aldec_ann= witht0ype
-}
+} // end of [v0aldec]
 
 and v0aldeclst: type = List v0aldec
 
@@ -1849,7 +1850,7 @@ and f0undec = '{
 , f0undec_res= s0expopt
 , f0undec_def= d0exp
 , f0undec_ann= witht0ype
-}
+} // end of [f0undec]
 
 and f0undeclst = List f0undec
 
@@ -1863,7 +1864,7 @@ and v0ardec = '{
 , v0ardec_typ= s0expopt
 , v0ardec_wth= i0deopt
 , v0ardec_ini= d0expopt
-}
+} // end of [v0ardec]
 
 and v0ardeclst = List v0ardec
 
@@ -1874,7 +1875,7 @@ and m0acdef = '{
 , m0acdef_sym= sym_t
 , m0acdef_arg= m0acarglst
 , m0acdef_def= d0exp
-}
+} // end of [m0acdef]
 
 and m0acdeflst = List m0acdef
 
@@ -1890,8 +1891,9 @@ and i0mpdec = '{
 
 (* ****** ****** *)
 
-and d0ec: type = (* type for declaration *)
-  '{ d0ec_loc= loc_t, d0ec_node= d0ec_node }
+and d0ec: type = '{
+  d0ec_loc= loc_t, d0ec_node= d0ec_node
+} // end of [d0ec]
 
 and d0eclst: type = List d0ec
 
