@@ -143,21 +143,38 @@ end : stream_con b) // end of [stream_map2_cloref]
 (* ****** ****** *)
 
 implement{a}
-stream_merge_ord
+stream_ordmerge_fun
   (xs10, xs20, lte) = $delay (begin
   case+ !xs10 of
   | x1 :: xs1 => begin case+ !xs20 of
     | x2 :: xs2 => begin
         if lte (x1, x2) then begin
-          x1 :: stream_merge_ord (xs1, xs20, lte)
+          x1 :: stream_ordmerge_fun (xs1, xs20, lte)
         end else begin
-          x2 :: stream_merge_ord (xs10, xs2, lte)
+          x2 :: stream_ordmerge_fun (xs10, xs2, lte)
         end // end of [if]
       end (* end of [::] *)
     | nil () => x1 :: xs1
     end (* end of [::] *)
   | nil () => !xs20
-end : stream_con a) // end of [stream_merge_ord]
+end : stream_con a) // end of [stream_ordmerge_fun]
+
+implement{a}
+stream_ordmerge_cloref
+  (xs10, xs20, lte) = $delay (begin
+  case+ !xs10 of
+  | x1 :: xs1 => begin case+ !xs20 of
+    | x2 :: xs2 => begin
+        if lte (x1, x2) then begin
+          x1 :: stream_ordmerge_cloref (xs1, xs20, lte)
+        end else begin
+          x2 :: stream_ordmerge_cloref (xs10, xs2, lte)
+        end // end of [if]
+      end (* end of [::] *)
+    | nil () => x1 :: xs1
+    end (* end of [::] *)
+  | nil () => !xs20
+end : stream_con a) // end of [stream_ordmerge_cloref]
 
 (* ****** ****** *)
 

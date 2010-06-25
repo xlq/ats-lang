@@ -77,7 +77,11 @@ fun{a1,a2,b:t@ype} stream_map2_cloref
 
 (* ****** ****** *)
 
-fun{a:t@ype} stream_merge_ord
+fun{a:t@ype} stream_ordmerge_fun
+  (xs1: stream a, xs2: stream a, lte: (a, a) -<1,~ref> bool)
+  :<1,~ref> stream a
+
+fun{a:t@ype} stream_ordmerge_cloref
   (xs1: stream a, xs2: stream a, lte: (a, a) -<cloref1,~ref> bool)
   :<1,~ref> stream a
 

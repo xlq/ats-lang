@@ -1335,6 +1335,16 @@ in
       d2exp_if (loc0, res, d2e_cond, d2e_then, od2e_else)
     end // end of [D2Eif]
   | D2Eint _ => d2e0
+  | D2Elam_dyn (
+      lin, npf, p2ts_arg, d2e_body
+    ) => let
+      val () = alphaenv_push (env)
+      val p2ts_arg = eval1_p2atlst (loc0, env, p2ts_arg)
+      val d2e_body = eval1_d2exp (loc0, ctx, env, d2e_body)
+      val () = alphaenv_pop (env)
+    in
+      d2exp_lam_dyn (loc0, lin, npf, p2ts_arg, d2e_body)
+    end // end of [D2Elam_dyn]
   | D2Elazy_delay (d2e) => let
       val d2e = eval1_d2exp (loc0, ctx, env, d2e)
     in
@@ -1591,19 +1601,19 @@ eval1_d2ec (loc0, ctx, env, d2c0) = begin
       val d2cs = eval1_v2aldeclst (loc0, ctx, env, d2cs)
     in
       d2ec_valdecs (loc0, knd, d2cs)
-    end
+    end // end of [D2Cvaldecs]
   | D2Cvaldecs_rec (d2cs) => let
       val d2cs = eval1_v2aldeclst (loc0, ctx, env, d2cs)
     in
       d2ec_valdecs_rec (loc0, d2cs)
-    end
+    end // end of [D2Cvaldecs_rec]
   | _ => begin
       prerr_loc_errmac loc0;
       prerr ": this form of declaration (";
       prerr d2c0.d2ec_loc;
       prerr ") is not supported in macro expansion."; prerr_newline ();
       $Err.abort {d2ec} ()
-    end
+    end // end of [_]
 end // end of [eval1_d2ec]
 
 implement
