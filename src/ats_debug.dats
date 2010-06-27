@@ -42,18 +42,15 @@ static // no need for marking the variable as it
 ats_int_type the_debug_flag = 0 ; // contains no pointer
 
 ats_int_type
-ats_debug_flag_get () {
-  return the_debug_flag ;
-}
+atsopt_debug_flag_get () { return the_debug_flag ; }
 
 ats_void_type
-ats_debug_flag_set
-  (ats_int_type i) {
-  the_debug_flag = i ; return ;
-}
+atsopt_debug_flag_set
+  (ats_int_type i) { the_debug_flag = i ; return ; }
+// end of [atsopt_debug_flag_set]
 
 ats_void_type
-ats_debug_prerrf (
+atsopt_debug_prerrf (
   ats_ptr_type fmt, ...
 ) {
   int n ;
@@ -68,10 +65,10 @@ ats_debug_prerrf (
   atspre_stderr_view_set() ;
   if (n < 0) ats_exit_errmsg(n, "[prerrf] failed\n") ;
   return ;
-} /* end of [ats_debug_prerrf] */
+} // end of [atsopt_debug_prerrf]
 
 ats_void_type
-ats_debug_printf (
+atsopt_debug_printf (
   ats_ptr_type fmt, ...
 ) {
   int n ;
@@ -86,7 +83,7 @@ ats_debug_printf (
   atspre_stdout_view_set() ;
   if (n < 0) ats_exit_errmsg(n, "[printf] failed\n") ;
   return ;
-} /* end of [ats_debug_printf] */
+} // end of [atsopt_debug_printf]
 
 %} // end of [%{^]
 

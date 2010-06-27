@@ -79,11 +79,11 @@ end // end of [string_make_charlst_rev]
 //
 
 extern fun charlst_is_nil {n:nat} (cs: !charlst_vt n): bool (n == 0) =
-  "ats_charlst_is_nil"
+  "atsopt_charlst_is_nil"
 
 extern fun
 charlst_uncons {n:pos} (cs: &charlst_vt n >> charlst_vt (n-1)): char =
-  "ats_charlst_uncons"
+  "atsopt_charlst_uncons"
 
 implement charlst_is_nil (cs) = case+ cs of
   | CHARLSTcons _ => (fold@ cs; false) | CHARLSTnil _ => (fold@ cs; true)
@@ -98,16 +98,16 @@ implement charlst_uncons (cs) =
 %{^
 
 extern
-ats_char_type ats_charlst_uncons (ats_ref_type) ;
+ats_char_type
+atsopt_charlst_uncons (ats_ref_type) ;
 
 ats_ptr_type
 string_make_charlst_rev_int (
   ats_ptr_type cs, const ats_int_type n
 ) {
   char *s;
-
   s = ATS_MALLOC (n+1) ; s += n ; *s = '\000' ;
-  while (!ats_charlst_is_nil(cs)) { *--s = ats_charlst_uncons(&cs) ; }
+  while (!atsopt_charlst_is_nil(cs)) { *--s = atsopt_charlst_uncons(&cs) ; }
   return s ;
 } // end of [string_make_charlst_rev_int]
 

@@ -54,6 +54,7 @@ CC=gcc
 YACC=byacc # HX: this is the default one
 
 ATSCC="$(ATSHOME)"/bin/atscc
+ATSOPT="$(ATSHOME)"/bin/atsopt
 
 ATSCCFLAGS=-g
 #ATSCCFLAGS=-O0
@@ -279,8 +280,9 @@ cleanall: clean
 
 ######
 
-#depend: ; ./atsopt -dep -s $(SOURCESsta) -d $(SOURCESdyn) >! .depend
-
+#
+#depend:: ; $(ATSOPT) -dep -s $(SOURCESsta) -d $(SOURCESdyn) > .depend
+#
 include .depend
 
 ######

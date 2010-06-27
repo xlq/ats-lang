@@ -61,7 +61,7 @@ overload = with eq_effect_effect
 
 fun fprint_effect {m:file_mode}
   (pf: file_mode_lte (m, w) | out: &FILE m, eff: effect_t): void
-  = "ats_effect_fprint_effect"
+  = "atsopt_fprint_effect"
 overload fprint with fprint_effect
 
 fun fprint_effectlst {m:file_mode}
@@ -92,22 +92,22 @@ overload = with eq_effset_effset
 
 fun fprint_effset {m:file_mode}
   (pf: file_mode_lte (m, w) | out: &FILE m, efs: effset_t): void
-  = "ats_effect_fprint_effset"
+  = "atsopt_fprint_effset"
 
 fun effset_add (efs: effset_t, eff: effect_t): effset_t
-  = "ats_effect_effset_add"
+  = "atsopt_effset_add"
 
 fun effset_del (efs: effset_t, eff: effect_t): effset_t
-  = "ats_effect_effset_del"
+  = "atsopt_effset_del"
 
 fun effset_contain (efs: effset_t, eff: effect_t): bool
-  = "ats_effect_effset_contain"
+  = "atsopt_effset_contain"
 
 fun effset_union (efs1: effset_t, efs2: effset_t): effset_t
-  = "ats_effect_effset_union"
+  = "atsopt_effset_union"
 
 fun effset_subset (efs1: effset_t, efs2: effset_t): bool
-  = "ats_effect_effset_subset"
+  = "atsopt_effset_subset"
 
 (* ****** ****** *)
 

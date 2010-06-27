@@ -30,24 +30,26 @@
 *)
 
 (* ****** ****** *)
-
+//
 // Author: Hongwei Xi (hwxi AT cs DOT bu DOT edu)
 // Time: October 2007
-
+//
 (* ****** ****** *)
 
 (* ats_debug: some functions for debugging *)
 
 (* ****** ****** *)
 
-fun debug_flag_get ():<!ref> int = "ats_debug_flag_get"
-fun debug_flag_set (i: int):<!ref> void = "ats_debug_flag_set"
+fun debug_flag_get ():<!ref> int = "atsopt_debug_flag_get"
+fun debug_flag_set (i: int):<!ref> void = "atsopt_debug_flag_set"
 
-fun debug_prerrf {ts:types} (fmt: printf_c ts, arg: ts):<!exnref> void
-  = "ats_debug_prerrf"
+fun debug_prerrf {ts:types}
+  (fmt: printf_c ts, arg: ts): void = "atsopt_debug_prerrf"
+// end of [debug_prerrf]
 
-fun debug_printf {ts:types} (fmt: printf_c ts, arg: ts):<!exnref> void
-  = "ats_debug_printf"
+fun debug_printf {ts:types}
+  (fmt: printf_c ts, arg: ts): void = "atsopt_debug_printf"
+// end of [debug_printf]
 
 (* ****** ****** *)
 

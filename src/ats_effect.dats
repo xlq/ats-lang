@@ -68,7 +68,7 @@ overload prerr with $Loc.prerr_location
 
 typedef effect = int
 assume $Syn.effect_t = effect
-extern typedef "ats_effect_t" = effect
+extern typedef "atsopt_effect_t" = effect
 
 // the maximal effect number
 #define MAX_EFFECT_NUMBER 3
@@ -127,7 +127,7 @@ implement prerr_effect (eff) = prerr_mac (fprint_effect, eff)
 typedef effset = uint
 
 assume effset_t = effset
-extern typedef "ats_effset_t" = effset
+extern typedef "atsopt_effset_t" = effset
 
 macdef effset_exn = 0x1 // exception
 macdef effset_ntm = 0x2 // nontermination
@@ -152,19 +152,20 @@ implement eq_effset_effset (efs1, efs2) = eq_uint_uint (efs1, efs2)
 #endif
 
 ats_void_type
-ats_effect_fprint_effset
-(ats_ptr_type out, ats_effset_t effs) {
+atsopt_fprint_effset (
+  ats_ptr_type out, atsopt_effset_t effs
+) {
   int i, n ;
   i = 1 ; n = 0 ;
   while (i <= MAX_EFFECT_NUMBER) {
     if (effs & 0x1) {
       if (n > 0) fprintf ((FILE *)out, ",");
-      ats_effect_fprint_effect (out, i) ; ++n ;
+      atsopt_fprint_effect (out, i) ; ++n ;
     }
     ++i ; effs >>= 1 ;
   }
   return ;
-} /* end of [ats_effect_fprint_effset] */
+} /* end of [atsopt_fprint_effset] */
 
 %} // end of [%{]
 
@@ -172,54 +173,68 @@ ats_effect_fprint_effset
 
 %{
 
-ats_effset_t
-ats_effect_effset_add (ats_effset_t efs, ats_effect_t eff) {
+atsopt_effset_t
+atsopt_effset_add (
+  atsopt_effset_t efs, atsopt_effect_t eff
+) {
   unsigned int i = 1 ;
   while (eff > 1) { i <<= 1; --eff ; }
   return (efs | i) ;
-}
+} // end of [atsopt_effset_add]
 
-ats_effset_t
-ats_effect_effset_del (ats_effset_t efs, ats_effect_t eff) {
+atsopt_effset_t
+atsopt_effset_del (
+  atsopt_effset_t efs, atsopt_effect_t eff
+) {
   unsigned int i = 1 ;
   while (eff > 1) { i <<= 1; --eff ; }
   return (efs & ~i) ;
-}
+} // end of [atsopt_effset_del]
 
 ats_bool_type
-ats_effect_effset_contain (ats_effset_t efs, ats_effect_t eff) {
+atsopt_effset_contain (
+  atsopt_effset_t efs, atsopt_effect_t eff
+) {
   unsigned int i = 1 ;
   while (eff > 1) { i <<= 1; --eff ; }
   return (efs & i ? ats_true_bool : ats_false_bool) ;
-}
+} // end of [atsopt_effset_contain]
 
-ats_effset_t
-ats_effect_effset_union (ats_effset_t efs1, ats_effset_t efs2) {
+atsopt_effset_t
+atsopt_effset_union (
+  atsopt_effset_t efs1, atsopt_effset_t efs2
+) {
   return (efs1 | efs2) ;
-}
+} // end of [atsopt_effset_union]
 
 ats_bool_type
-ats_effect_effset_subset (ats_effset_t efs1, ats_effset_t efs2) {
+atsopt_effset_subset (
+  atsopt_effset_t efs1, atsopt_effset_t efs2
+) {
   return (efs1 & ~efs2 ? ats_false_bool : ats_true_bool) ;
-}
+} // end of [atsopt_effset_subset]
 
 %} // end of [%{]
 
 (* ****** ****** *)
 
-implement $Syn.d0exp_effmask_all (t: t0kn) = '{
+implement
+$Syn.d0exp_effmask_all (t: t0kn) = '{
   d0exp_loc= t.t0kn_loc, d0exp_node= $Syn.D0Eeffmask effectlst_all
 }
 
-implement $Syn.d0exp_effmask_exn (t: t0kn) = '{
+implement
+$Syn.d0exp_effmask_exn (t: t0kn) = '{
   d0exp_loc= t.t0kn_loc, d0exp_node= $Syn.D0Eeffmask '[effect_exn]
 }
 
-implement $Syn.d0exp_effmask_ntm (t: t0kn) = '{
+implement
+$Syn.d0exp_effmask_ntm (t: t0kn) = '{
   d0exp_loc= t.t0kn_loc, d0exp_node= $Syn.D0Eeffmask '[effect_ntm]
 }
 
-implement $Syn.d0exp_effmask_ref (t: t0kn) = '{
+implement
+$Syn.d0exp_effmask_ref (t: t0kn) = '{
   d0exp_loc= t.t0kn_loc, d0exp_node= $Syn.D0Eeffmask '[effect_ref]
 }
 
@@ -227,7 +242,8 @@ implement $Syn.d0exp_effmask_ref (t: t0kn) = '{
 
 val effvars_nil: effvarlst = nil ()
 
-fun fprint_effvarlst {m:file_mode} (
+fun fprint_effvarlst
+  {m:file_mode} (
     pf: file_mode_lte (m,w)
   | out: &FILE m
   , evs: effvarlst
@@ -244,7 +260,8 @@ in
   aux (out, 0, evs)
 end // end of [fprint_effvarlst]
 
-implement fprint_effcst (pf | out, efc) = begin case+ efc of
+implement fprint_effcst
+  (pf | out, efc) = begin case+ efc of
   | EFFCSTall () => fprint1_string (pf | out, "all")
   | EFFCSTnil () => fprint1_string (pf | out, "nil")
   | EFFCSTset (es, evs) => begin

@@ -42,8 +42,8 @@
 
 staload Eff = "ats_effect.sats"
 staload Fil = "ats_filename.sats"
-staload Loc = "ats_location.sats"
 staload Lab = "ats_label.sats"
+staload Loc = "ats_location.sats"
 staload Sym = "ats_symbol.sats"
 staload Syn = "ats_syntax.sats"
 

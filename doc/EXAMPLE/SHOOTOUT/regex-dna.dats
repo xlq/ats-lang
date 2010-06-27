@@ -231,7 +231,7 @@ ats_int_type count_pattern_match
   return count ;
 } /* end of [count_pattern_match] */
 
-%}
+%} // end of [%{$]
 
 (* ****** ****** *)
 

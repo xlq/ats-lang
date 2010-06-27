@@ -189,7 +189,8 @@ fun memchr {n:nat}
 // [strerror] is not reentrant
 fun strerror (errno: $ERRNO.errno_t): string = "atslib_strerror"
     
-dataview strerror_v (m:int, l:addr, int(*err*)) =
+dataview strerror_v
+  (m:int, l:addr, int(*err*)) =
   | {n:nat} strerror_succ (m, l, 0) of strbuf (m, n) @ l
   | strerror_fail (m, l, ~1) of b0ytes m @ l
 // end of [strerror_v]
