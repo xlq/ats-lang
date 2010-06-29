@@ -186,4 +186,34 @@ end // end of [stream_nth]
 
 (* ****** ****** *)
 
+implement{a}
+stream_take
+  (xs, n, k) = let
+  fun loop {n,k0:nat} .<n>. (
+      xs: stream a, n: int n
+    , k: &int k0 >> int (k0+k)
+    , res: &List_vt a? >> list_vt (a, k)
+    ) :<> #[k:nat | k <= n] void =
+    if n > 0 then (case+ !xs of
+      | stream_cons (x, xs) => let
+          val () = res := list_vt_cons {a} {0} (x, ?)
+          val list_vt_cons (_, !p_res1) = res
+          val () = k := k+1
+          val () = loop (xs, n-1, k, !p_res1)
+        in
+          fold@ (res)
+        end // end of [stream_cons]
+      | stream_nil () => (res := list_vt_nil ())
+    ) else (
+      res := list_vt_nil ()
+    ) // end of [if]
+  var res: List_vt a // uninitialized
+  val () = k := 0
+  val () = loop (xs, n, k, res)
+in
+  res
+end // end of [stream_take]
+
+(* ****** ****** *)
+
 (* end of [lazy.dats] *)

@@ -46,14 +46,14 @@
 (* ****** ****** *)
 
 (*
-
-// it is correct but too detailed!
+//
+// HX: it is correct but too detailed!
+//
 fun snprintf {ts:types} {m1,m2:nat | m2 <= m1} {l:addr} (
     pf: &b0ytes m1 @ l >> strbuf (m1, n1) @ l
   | p: ptr l, m2: size_t m2, fmt: printf_c ts, arg: ts)
   : #[n1,n2:nat | (m2 > n2 && n1 == n2) || (n2 >= m2 && n1+1 == m2)] int n2
   = "atspre_snprintf"
-
 *)
 
 fun snprintf {ts:types}

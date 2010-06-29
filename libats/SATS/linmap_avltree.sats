@@ -85,28 +85,30 @@ fun{key,itm:t@ype} linmap_height (m: !map (key, itm)):<> Nat
 
 fun{key:t0p;itm:t0p}
 linmap_search (
-  m: !map (key, itm), k0: key, cmp: cmp key, res: &itm? >> opt (itm, b)
-) :<> #[b:bool] bool b
-// end of [linmap_search]
+  m: !map (key, itm)
+, k0: key, cmp: cmp key, res: &itm? >> opt (itm, b)
+) :<> #[b:bool] bool b // end of [linmap_search]
 
 (* ****** ****** *)
 
 //
 // HX-2010-03-25:
-// if [k0] occurs in [m], [x0] replaces the original value associated with [k0]
+// if [k0] occurs in [m], [x0] replaces the original value associated
+// with [k0]
 //
 fun{key:t0p;itm:vt0p}
 linmap_insert (
-    m: &map (key, itm), k0: key, x0: itm, cmp: cmp key, res: &itm? >> opt (itm, b)
-  ) :<> #[b:bool] bool b
-// end of [linmap_insert]
+  m: &map (key, itm)
+, k0: key, x0: itm, cmp: cmp key, res: &itm? >> opt (itm, b)
+) :<> #[b:bool] bool b // end of [linmap_insert]
 
 (* ****** ****** *)
 
 fun{key:t0p;itm:vt0p}
 linmap_takeout (
-  m: &map (key, itm), k0: key, cmp: cmp key, res: &itm? >> opt (itm, b)
-) :<> #[b:bool] bool b
+    m: &map (key, itm)
+  , k0: key, cmp: cmp key, res: &itm? >> opt (itm, b)
+  ) :<> #[b:bool] bool b
 // end of [linmap_takeout]
 
 fun{key:t0p;itm:t0p}
@@ -116,13 +118,20 @@ linmap_remove (m: &map (key, itm), k0: key, cmp: cmp key):<> bool
 (* ****** ****** *)
 
 fun{key:t0p;itm:vt0p}
-linmap_foreach_main {v:view} {vt:viewtype}
-  (pf: !v | m: !map (key, itm), f: (!v | key, &itm, !vt) -<fun> void, env: !vt):<> void
+linmap_foreach_main
+  {v:view} {vt:viewtype} (
+    pf: !v
+  | m: !map (key, itm)
+  , f: (!v | key, &itm, !vt) -<fun> void
+  , env: !vt
+  ) :<> void
 // end of [linmap_foreach_main]
 
 fun{key:t0p;itm:vt0p}
-linmap_foreach_clo {v:view}
-  (pf: !v | m: !map (key, itm), f: &(!v | key, &itm) -<clo> void):<> void
+linmap_foreach_clo {v:view} (
+    pf: !v
+  | m: !map (key, itm), f: &(!v | key, &itm) -<clo> void
+  ) :<> void
 // end of [linmap_foreach_clo]
 
 fun{key:t0p;itm:vt0p}
@@ -135,10 +144,28 @@ linmap_foreach_cloref
 fun{key:t0p;itm:t0p}
 linmap_free (m: map (key, itm)):<> void
 
+//
+// HX: a linear map can be properly freed only if it is empty
+//
 fun{key:t0p;itm:vt0p}
 linmap_free_vt (
-  m: !map (key, itm) >> opt (map (key, itm), b)
-) :<> #[b:bool] bool b(*~freed*)
+    m: !map (key, itm) >> opt (map (key, itm), b)
+  ) :<> #[b:bool] bool b(*~freed*)
+// end of [linmap_free_vt]
+
+(* ****** ****** *)
+
+//
+// HX: listization is done in the in-order manner
+//
+
+fun{key:t0p;itm:t0p}
+linmap_listize (m: !map (key, itm)):<> List_vt @(key, itm)
+// end of [linmap_listize]
+
+fun{key:t0p;itm:vt0p}
+linmap_listize_free (m: map (key, itm)):<> List_vt @(key, itm)
+// end of [linmap_listize_free]
 
 (* ****** ****** *)
 

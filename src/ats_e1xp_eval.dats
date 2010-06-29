@@ -267,7 +267,8 @@ in
   end // end of [if]
 end // end of [e1xp_eval_appid]
 
-and e1xp_eval_defined (loc: loc_t, e: e1xp): v1al = begin
+and e1xp_eval_defined
+  (loc: loc_t, e: e1xp): v1al = begin
   case+ e.e1xp_node of
   | E1XPide id => begin case+ the_e1xpenv_find id of
     | ~Some_vt _ => V1ALint 1 | ~None_vt () => V1ALint 0
@@ -277,7 +278,8 @@ and e1xp_eval_defined (loc: loc_t, e: e1xp): v1al = begin
     end // end of [_]
 end // end of [e1xp_eval_defined]
 
-and e1xp_eval_undefined (loc: loc_t, e: e1xp): v1al = begin
+and e1xp_eval_undefined
+  (loc: loc_t, e: e1xp): v1al = begin
   case+ e.e1xp_node of
   | E1XPide id => begin case+ the_e1xpenv_find id of
     | ~Some_vt _ => V1ALint 0 | ~None_vt () => V1ALint 1
@@ -285,7 +287,7 @@ and e1xp_eval_undefined (loc: loc_t, e: e1xp): v1al = begin
   | _ => begin
       e1xp_eval_opr_errmsg (loc, $Sym.symbol_DEFINED)
     end // end of [_]
-end // end of [e1xp_eval_defined]
+end // end of [e1xp_eval_undefined]
   
 and e1xp_eval_add
   (loc: loc_t, e1: e1xp, e2: e1xp): v1al = let

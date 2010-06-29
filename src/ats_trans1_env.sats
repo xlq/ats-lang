@@ -62,7 +62,7 @@ fun the_fxtyenv_pervasive_add_topenv (): void
 
 (* ****** ******* *)
 
-fun ats_fxtyenv_print (): void // mostly for debugging
+fun atsopt_fxtyenv_print (): void // mostly for debugging
 
 (* ****** ******* *)
 

@@ -124,7 +124,8 @@ end // end of [fxtyenv_pervasive_add_topenv]
 
 (* ****** ****** *)
 
-implement ats_fxtyenv_print () = let
+implement
+atsopt_fxtyenv_print () = let
   val r_m = $SymEnv.symenv_reftop_get the_fxtyenv
   val kis = $SymEnv.symmap_reflist_get (r_m)
   typedef ki = @(sym_t, fxty_t)
@@ -197,7 +198,7 @@ end // end of [trans1_env_restore]
 (* ****** ****** *)
 
 staload HT = "ats_hashtbl.sats"
-staload HASHTBL = "ats_hashtbl.dats"
+staload _(*anon*) = "ats_hashtbl.dats"
 
 local
 

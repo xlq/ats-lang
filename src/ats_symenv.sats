@@ -47,6 +47,7 @@ typedef symmapref (itm: t@ype) = ref (symmap_t itm)
 (* ****** ****** *)
 
 fun symmap_make {itm:t@ype} ():<> symmap_t (itm)
+fun{itm:t@ype} symmap_free (map: symmap_t itm):<> void
 
 (* ****** ****** *)
 

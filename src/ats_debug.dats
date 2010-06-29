@@ -55,15 +55,16 @@ atsopt_debug_prerrf (
 ) {
   int n ;
   va_list ap ;
-
+//
   if (!the_debug_flag) return ;
-
-  atspre_stderr_view_get() ;
+//
   va_start(ap, fmt) ;
-  n = vfprintf(stderr, (char *)fmt, ap) ;
+  n = vfprintf(stderr, (char*)fmt, ap) ;
   va_end(ap) ;
-  atspre_stderr_view_set() ;
-  if (n < 0) ats_exit_errmsg(n, "[prerrf] failed\n") ;
+  if (n < 0) {
+    ats_exit_errmsg(n, "[prerrf] failed\n") ;
+  } // end of [if]
+//
   return ;
 } // end of [atsopt_debug_prerrf]
 
@@ -73,15 +74,16 @@ atsopt_debug_printf (
 ) {
   int n ;
   va_list ap ;
-
+//
   if (!the_debug_flag) return ;
-
-  atspre_stdout_view_get() ;
+//
   va_start(ap, fmt) ;
-  n = vfprintf(stdout, (char *)fmt, ap) ;
+  n = vfprintf(stdout, (char*)fmt, ap) ;
   va_end(ap) ;
-  atspre_stdout_view_set() ;
-  if (n < 0) ats_exit_errmsg(n, "[printf] failed\n") ;
+  if (n < 0) {
+    ats_exit_errmsg(n, "[printf] failed\n") ;
+  } // end of [if]
+//
   return ;
 } // end of [atsopt_debug_printf]
 

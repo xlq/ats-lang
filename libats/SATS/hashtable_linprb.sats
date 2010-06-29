@@ -153,12 +153,12 @@ hashtbl_remove {l:agz} (
 
 fun{key:t@ype;itm:viewt@ype}
 hashtbl_foreach_clo {v:view} {l:agz}
-  (pf: !v | ptbl: !HASHTBLptr (key, itm, l), f: &(!v | key, &itm) -<clo> void):<!ref> void
+  (pf: !v | ptbl: !HASHTBLptr (key, itm, l), f: &(!v | key, &itm) -<clo> void):<> void
 // end of [hashtbl_foreach_clo]
 
 fun{key:t@ype;itm:viewt@ype}
 hashtbl_foreach_cloref {l:agz}
-  (ptbl: !HASHTBLptr (key, itm, l), f: !(key, &itm) -<cloref> void):<!ref> void
+  (ptbl: !HASHTBLptr (key, itm, l), f: !(key, &itm) -<cloref> void):<> void
 // end of [hashtbl_foreach_cloref]
 
 (* ****** ****** *)

@@ -571,31 +571,35 @@ implement{key,itm}
 hashtbl_foreach_clo {v}
   (pf0 | ptbl, f) = () where {
   val (pf, fpf | p) = HASHTBLptr_tblget {key,itm} (ptbl)  
-  val () = $effmask_ref begin
+  val () = begin
     hashtbl_ptr_foreach_clo {v} (pf0, p->pftbl | p->sz, p->pbeg, f)
   end // end of [val]
   prval () = minus_addback (fpf, pf | ptbl)
 } // end of [hashtbl_foreach_clo]
 
 implement{key,itm}
-  hashtbl_foreach_cloref (tbl, f) = let
+hashtbl_foreach_cloref (tbl, f) = let
   val f = __cast (f) where { extern castfn __cast
     (f: (key, &itm) -<cloref> void):<> (!unit_v | key, &itm) -<cloref> void
   } // end of [val]
-  typedef clo_type = (!unit_v | key, &itm) -<clo> void
-  val (vbox pf_f | p_f) = cloref_get_view_ptr {clo_type} (f)
+  typedef T = (!unit_v | key, &itm) -<clo> void
+  val [l:addr] (pfbox | p_f) = cloref_get_view_ptr {T} (f)
+  viewdef V = T @ l
+  prval (pf, fpf) = __assert (pfbox) where {
+    extern prfun __assert (_: vbox V): (V, V -<lin,prf> void)
+  } // end of [prval]
   prval pf0 = unit_v ()
-  val () = $effmask_ref
-    (hashtbl_foreach_clo<key,itm> {unit_v} (pf0 | tbl, !p_f))
+  val () = hashtbl_foreach_clo<key,itm> {unit_v} (pf0 | tbl, !p_f)
   prval unit_v () = pf0
+  prval () = fpf (pf)
 in
   // empty
 end // end of [hashtbl_foreach_cloref]
 
 (* ****** ****** *)
-
-#define HASHTABLE_MINSZ 97 // it is chosen arbitrarily
-
+//
+#define HASHTABLE_MINSZ 97 // HX: it is chosen arbitrarily
+//
 extern
 fun hashtbl_make_hint_tsz
   {key:t@ype;itm:viewt@ype} (

@@ -283,6 +283,9 @@ cleanall: clean
 #
 #depend:: ; $(ATSOPT) -dep -s $(SOURCESsta) -d $(SOURCESdyn) > .depend
 #
+#ATSDEP="$(ATSHOME)"/bin/atsdep
+#depend::
+#	$(ATSDEP) -s $(SOURCESsta) -d $(SOURCESdyn) ats_main.dats > .depend
 include .depend
 
 ######

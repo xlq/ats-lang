@@ -135,12 +135,12 @@ hashtbl_remove {l:agz} (
 
 fun{key:t@ype;itm:viewt@ype}
 hashtbl_foreach_clo {v:view} {l:agz}
-  (pf: !v | ptbl: !HASHTBLptr (key, itm, l), f: &(!v | key, &itm) -<clo> void):<!ref> void
+  (pf: !v | ptbl: !HASHTBLptr (key, itm, l), f: &(!v | key, &itm) -<clo> void):<> void
 // end of [hashtbl_foreach_clo]
 
 fun{key:t@ype;itm:viewt@ype}
 hashtbl_foreach_cloref {l:agz}
-  (ptbl: !HASHTBLptr (key, itm, l), f: !(key, &itm) -<cloref> void):<!ref> void
+  (ptbl: !HASHTBLptr (key, itm, l), f: !(key, &itm) -<cloref> void):<> void
 // end of [hashtbl_foreach_cloref]
 
 (* ****** ****** *)
@@ -169,7 +169,7 @@ fun hashtbl_free
 fun hashtbl_free_null
   {key:t@ype;itm:viewt@ype} (tbl: HASHTBLptr (key, itm, null)): void
   = "atslib_hashtbl_free_null__chain"
-// end of [hashtbl_free_exn]
+// end of [hashtbl_free_null]
 
 //
 // HX-2010-03-21:
@@ -180,6 +180,11 @@ fun hashtbl_free_vt
   (tbl: !HASHTBLptr (key, itm, l) >> opt (HASHTBLptr (key, itm, l), b))
   : #[b:bool] bool b(*~freed*) = "atslib_hashtbl_free_vt__chain"
 // end of [hashtbl_free_vt]
+
+(* ****** ****** *)
+
+fun{key:t@ype;itm:t@ype}
+hashtbl_listize {l:agz} (tbl: !HASHTBLptr (key, itm, l)): List_vt @(key, itm)
 
 (* ****** ****** *)
 

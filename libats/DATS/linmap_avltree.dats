@@ -598,4 +598,47 @@ end // end of [linmap_free]
 
 (* ****** ****** *)
 
+implement{key,itm}
+linmap_listize (m) = let
+  viewtypedef res_t = List_vt @(key, itm)
+  fun aux {h:nat} .<h>.
+    (t: !avltree (key, itm, h), res: res_t):<> res_t =
+    case+ t of
+    | B (_(*h*), k, x, !p_tl, !p_tr) => let
+        val res = aux (!p_tr, res)
+        val res = list_vt_cons ((k, x), res)
+        val res = aux (!p_tl, res)
+        prval () = fold@ (t)
+      in
+        res
+      end // end of [B]
+    | E () => (fold@ (t); res)
+  // end of [aux]
+in
+  aux (m, list_vt_nil)
+end // end of [linmap_listize]
+
+(* ****** ****** *)
+
+implement{key,itm}
+linmap_listize_free (m) = let
+  viewtypedef res_t = List_vt @(key, itm)
+  fun aux {h:nat} .<h>.
+    (t: avltree (key, itm, h), res: res_t):<> res_t =
+    case+ t of
+    | ~B (_(*h*), k, x, tl, tr) => let
+        val res = aux (tr, res)
+        val res = list_vt_cons ((k, x), res)
+        val res = aux (tl, res)
+      in
+        res
+      end // end of [B]
+    | ~E () => res
+  // end of [aux]
+in
+  aux (m, list_vt_nil)
+end // end of [linmap_listize_free]
+
+(* ****** ****** *)
+
 (* end of [linmap_avltree.dats] *)

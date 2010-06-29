@@ -58,10 +58,13 @@ typedef sym_t = $Sym.symbol_t
 
 (* ****** ****** *)
 
-viewtypedef symmap (itm:t@ype) = $Map.map_vt (sym_t, itm)
-viewtypedef symmaplst (itm:t@ype) = [n:nat] list_vt (symmap itm, n)
+viewtypedef
+symmap (itm:t@ype) = $Map.map_vt (sym_t, itm)
+viewtypedef
+symmaplst (itm:t@ype) = [n:nat] list_vt (symmap itm, n)
 
-typedef symenv (itm:t@ype) = '{
+typedef
+symenv (itm:t@ype) = '{
   map= ref (symmap itm)
 , maplst= ref (symmaplst itm)
 , savedlst= ref (List_vt @(symmap itm, symmaplst itm))
@@ -74,24 +77,30 @@ assume symmap_t = symmap
 assume symenv_t = symenv
 
 (* ****** ****** *)
-
-// this one is used in other templates
+//
+// HX: this one is used in other templates
+//
 fn{} prerr_interror () = prerr "INTERNAL ERROR (ats_symenv)"
 
 (* ****** ****** *)
 
-implement{itm} symmap_search (m, k) =
+implement{itm}
+symmap_search (m, k) =
   $Map.map_search<sym_t,itm> (m, k)
+// end of [symmap_search]
 
-implement{itm} symmap_ref_search (r_m, k) = let
+implement{itm}
+symmap_ref_search (r_m, k) = let
   val (vbox pf_m | p_m) = ref_get_view_ptr r_m
 in
   $Map.map_search<sym_t,itm> (!p_m, k)
 end // end of [symmap_ref_search]
 
-implement{itm} symmap_list_get (m) = $Map.map_list_inf m
+implement{itm}
+symmap_list_get (m) = $Map.map_list_inf m
 
-implement{itm} symmap_reflist_get (r_m) = let
+implement{itm}
+symmap_reflist_get (r_m) = let
   val (vbox pf_m | p_m) = ref_get_view_ptr r_m
 in
   $Map.map_list_inf (!p_m)
@@ -99,15 +108,17 @@ end // end of [symmap_ref_list]
 
 (* ****** ****** *)
 
-implement{itm} symmap_insert
-  (m, k, i) = $Map.map_insert (m, k, i) 
+implement{itm}
+symmap_insert (m, k, i) = $Map.map_insert (m, k, i) 
 // end of [symmap_insert]
 
-implement{itm} symmap_remove (m, k) = $Map.map_remove (m, k)
+implement{itm}
+symmap_remove (m, k) = $Map.map_remove (m, k)
 
 (* ****** ****** *)
 
-implement{itm} symmap_list_inf (m) = $Map.map_list_inf<sym_t,itm> (m)
+implement{itm}
+symmap_list_inf (m) = $Map.map_list_inf<sym_t,itm> (m)
 
 (* ****** ****** *)
 
@@ -115,44 +126,24 @@ implement symmap_make {itm} () =
   $Map.map_make {sym_t,itm} ($Sym.compare_symbol_symbol)
 // end of [symmap_make]
 
+implement{itm} symmap_free (map) = $Map.map_free (map)
+
 (* ****** ****** *)
 
-fn{itm:t@ype} symmap_free (m: symmap itm):<> void = $Map.map_free m
-
 fun{itm:t@ype}
-  symmaplst_free {n:nat} .<n>. (ms: list_vt (symmap itm, n)):<> void =
+symmaplst_free {n:nat} .<n>.
+  (ms: list_vt (symmap itm, n)):<> void =
   case+ ms of
-  | ~list_vt_cons (m, ms) => (symmap_free<itm> m; symmaplst_free<itm> ms)
+  | ~list_vt_cons (m, ms) => (
+      symmap_free<itm> m; symmaplst_free<itm> ms
+    ) // end of [list_vt_cons]
   | ~list_vt_nil () => ()
 // end of [symmaplst_free]
 
 (* ****** ****** *)
 
-implement symenv_make {itm} () = '{
-  map= ref_make_elt (symmap_make {itm} ())
-, maplst= ref_make_elt (list_vt_nil ())
-, savedlst= ref_make_elt (list_vt_nil ())
-, pervasive= ref_make_elt (list_vt_nil ())
-} // end of [symenv_make]
-
-(* ****** ****** *)
-
-implement{itm}
-  symenv_insert_fst (env, k, i) = let
-  val (vbox pf_m | p_m) = ref_get_view_ptr env.map in
-  $Map.map_insert (!p_m, k, i)
-end // end of [symenv_insert]
-
-implement{itm}
-  symenv_remove_fst (env, k) = let
-  val (vbox pf_m | p_m) = ref_get_view_ptr env.map in
-  $Map.map_remove (!p_m, k)
-end // end of [symenv_remove]
-
-(* ****** ****** *)
-
 fun{itm:t@ype}
-  symmaplst_search {n:nat} .<n>. (
+symmaplst_search {n:nat} .<n>. (
     ms0: !list_vt (symmap itm, n), k: sym_t
   ) :<> Option_vt itm = begin case+ ms0 of
   | list_vt_cons (!p_m, !p_ms) => let
@@ -168,7 +159,34 @@ fun{itm:t@ype}
   | list_vt_nil () => (fold@ ms0; None_vt ())
 end // end of [symmaplst_search]
 
-implement{itm} symenv_search_all (env, k) = let
+(* ****** ****** *)
+
+implement
+symenv_make {itm} () = '{
+  map= ref_make_elt (symmap_make {itm} ())
+, maplst= ref_make_elt (list_vt_nil ())
+, savedlst= ref_make_elt (list_vt_nil ())
+, pervasive= ref_make_elt (list_vt_nil ())
+} // end of [symenv_make]
+
+(* ****** ****** *)
+
+implement{itm}
+symenv_insert_fst (env, k, i) = let
+  val (vbox pf_m | p_m) = ref_get_view_ptr env.map in
+  $Map.map_insert (!p_m, k, i)
+end // end of [symenv_insert_fst]
+
+implement{itm}
+symenv_remove_fst (env, k) = let
+  val (vbox pf_m | p_m) = ref_get_view_ptr env.map in
+  $Map.map_remove (!p_m, k)
+end // end of [symenv_remove_fst]
+
+(* ****** ****** *)
+
+implement{itm}
+symenv_search_all (env, k) = let
   val ans = let
     val (vbox pf_m | p_m) = ref_get_view_ptr env.map in
     $Map.map_search (!p_m, k)
@@ -185,7 +203,8 @@ in
     end // end of [None_vt]
 end (* end of [symenv_search] *)
 
-implement{itm} symenv_pervasive_search (env, k) = let
+implement{itm}
+symenv_pervasive_search (env, k) = let
   val (vbox pf_ms | p_ms) = ref_get_view_ptr env.pervasive
 in
   symmaplst_search<itm> (!p_ms, k)
@@ -194,7 +213,7 @@ end // end of [symenv_pervasive_search]
 (* ****** ****** *)
 
 fun{itm:t@ype}
-  symmaplst_replace {n:nat} .<n>. (
+symmaplst_replace {n:nat} .<n>. (
     ms0: !list_vt (symmap itm, n), k: sym_t, i: itm
   ) :<> Option_vt itm = begin case+ ms0 of
   | list_vt_cons (!p_m, !p_ms) => let
@@ -211,7 +230,8 @@ fun{itm:t@ype}
   | list_vt_nil () => (fold@ ms0; Some_vt i)
 end // end of [symmaplst_replace]
 
-implement{itm} symenv_pervasive_replace (env, k, i) = let
+implement{itm}
+symenv_pervasive_replace (env, k, i) = let
   val (vbox pf_ms | p_ms) = ref_get_view_ptr env.pervasive
 in
   symmaplst_replace<itm> (!p_ms, k, i)
@@ -219,7 +239,8 @@ end // end of [symenv_pervasive_search]
 
 (* ****** ****** *)
 
-implement{itm} symenv_pop (env) = let
+implement{itm}
+symenv_pop (env) = let
 //
   fn abort (): symmap itm = begin
     prerr_interror ();
@@ -246,7 +267,8 @@ end // end of [symenv_pop]
 
 //
 
-implement symenv_push {itm} (env) = let
+implement
+symenv_push {itm} (env) = let
   val m = let
     val (vbox pf_m | p_m) = ref_get_view_ptr env.map
     val m = !p_m
@@ -260,7 +282,8 @@ end // end of [symenv_push]
 
 //
 
-implement symenv_swap
+implement
+symenv_swap
   {itm} (env, r_m) = () where {
   val (vbox pf1_m | p1_m) = ref_get_view_ptr env.map
   viewtypedef elt = symmap_t itm
@@ -269,7 +292,8 @@ implement symenv_swap
 
 (* ****** ****** *)
 
-implement symenv_save {itm} (env) = let
+implement
+symenv_save {itm} (env) = let
   val m = let
     val (vbox pf_m | p_m) = ref_get_view_ptr env.map
     val m = !p_m
@@ -291,7 +315,8 @@ end // end of [symenv_save]
 
 (* ****** ****** *)
 
-implement{itm} symenv_restore (env) = let
+implement{itm}
+symenv_restore (env) = let
   viewtypedef mms = @(symmap itm, symmaplst itm)
 //
   fn abort (): mms = begin
@@ -329,7 +354,8 @@ end // end of [symenv_restore]
 
 (* ****** ****** *)
 
-implement symenv_top_get (env) = let
+implement
+symenv_top_get (env) = let
   val r_m = env.map
   val (vbox pf_m | p_m) = ref_get_view_ptr r_m
   val m = !p_m
@@ -339,7 +365,10 @@ end // end of [symenv_top]
 
 implement symenv_reftop_get (env) = env.map
 
-implement{itm} symenv_localjoin (env) = let
+(* ****** ****** *)
+
+implement{itm}
+symenv_localjoin (env) = let
 //
   fn abort (): symmap itm = begin
     prerr_interror ();
@@ -380,7 +409,8 @@ end // end of [symenv_localjoin]
 
 (* ****** ****** *)
 
-implement symenv_pervasive_add (env, m) = let
+implement
+symenv_pervasive_add (env, m) = let
   val (pfbox | p_ms) = ref_get_view_ptr env.pervasive
   prval vbox pf_ms = pfbox
 in

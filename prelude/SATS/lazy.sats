@@ -87,7 +87,13 @@ fun{a:t@ype} stream_ordmerge_cloref
 
 (* ****** ****** *)
 
-fun{a:t@ype} stream_nth (xs: stream a, i: Nat):<1,~ref> a
+fun{a:t@ype} stream_nth (xs: stream a, i: Nat):<!exn> a
+
+(* ****** ****** *)
+
+fun{a:t@ype} stream_take {n:nat}
+  (xs: stream a, n: int n, k: &int? >> int k):<fun> #[k:nat | k <= n] list_vt (a, k)
+// end of [stream_take]
 
 (* ****** ****** *)
 
