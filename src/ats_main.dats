@@ -480,8 +480,7 @@ end // end of [do_parse_filename]
 (* ****** ****** *)
 
 fn do_parse_stdin
-  (flag: int, param: param_t)
-  : $Syn.d0eclst = let
+  (flag: int): $Syn.d0eclst = let
   (* no support for position marking *)
   val () = $Fil.the_filenamelst_push $Fil.filename_stdin
   val d0cs = $Par.parse_from_stdin (flag)
@@ -825,7 +824,7 @@ fun loop {i:nat | i <= n} .<i>. (
         val () = if param.prelude = 0 then
           (param.prelude := 1; prelude_load (ATSHOME))
         // end of [val]
-        val d0cs = do_parse_stdin (flag, param)
+        val d0cs = do_parse_stdin (flag)
         val () = begin case+ 0 of
           | _ when param.posmark = 1 => ()
           | _ when $Glo.atsopt_depgenflag_get () > 0 => ()

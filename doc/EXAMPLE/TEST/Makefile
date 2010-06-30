@@ -102,19 +102,19 @@ libats_funarray_braun: libats_funarray_braun.dats
 
 libats_funheap_braun: libats_funheap_braun.dats
 	$(ATSCC) -D_ATS_GCATS -O2 -o libats_funheap_braun libats_funheap_braun.dats \
-	&& ./libats_funheap_braun 1000000
+	&& ./libats_funheap_braun 100000
 
 ######
 
 libats_funmap_avltree: libats_funmap_avltree.dats
 	$(ATSCC) -D_ATS_GCATS -O2 -o libats_funmap_avltree libats_funmap_avltree.dats \
-     && ./libats_funmap_avltree 1000000
+     && ./libats_funmap_avltree 100000
 
 ######
 
 libats_funralist_nested: libats_funralist_nested.dats
 	$(ATSCC) -D_ATS_GCATS -O2 -o libats_funralist_nested libats_funralist_nested.dats \
-	&& ./libats_funralist_nested 1000000
+	&& ./libats_funralist_nested 100000
 
 ######
 
@@ -125,11 +125,11 @@ libats_genarrays: libats_genarrays.dats
 
 libats_hashtable_chain: libats_hashtable_chain.dats
 	$(ATSCC) -D_ATS_GCATS -O2 -o libats_hashtable_chain libats_hashtable_chain.dats \
-     && ./libats_hashtable_chain 1000000
+     && ./libats_hashtable_chain 100000
 
 libats_hashtable_linprb: libats_hashtable_linprb.dats
 	$(ATSCC) -D_ATS_GCATS -O2 -o libats_hashtable_linprb libats_hashtable_linprb.dats \
-     && ./libats_hashtable_linprb 1000000
+     && ./libats_hashtable_linprb 100000
 
 ######
 
@@ -143,17 +143,17 @@ libats_iterint: libats_iterint.dats
 
 libats_linmap_avltree: libats_linmap_avltree.dats
 	$(ATSCC) -D_ATS_GCATS -O2 -o libats_linmap_avltree libats_linmap_avltree.dats \
-     && ./libats_linmap_avltree 1000000
+     && ./libats_linmap_avltree 100000
 
 ######
 
 libats_linqueue_arr: libats_linqueue_arr.dats
 	$(ATSCC) -D_ATS_GCATS -O2 -o libats_linqueue_arr libats_linqueue_arr.dats \
-     && ./libats_linqueue_arr 1000000
+     && ./libats_linqueue_arr 100000
 
 libats_linstack_arr: libats_linstack_arr.dats
 	$(ATSCC) -D_ATS_GCATS -O2 -o libats_linstack_arr libats_linstack_arr.dats \
-     && ./libats_linstack_arr 1000000
+     && ./libats_linstack_arr 100000
 
 ######
 

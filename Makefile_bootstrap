@@ -71,12 +71,12 @@ all::
 
 include ../config.mk
 
-ifdef BOOTSTRAP1
+ifdef BOOTSTRAP0
 CCFLAG=-I$(ATSHOME) -I$(ATSRUNTIME) -O2
 endif
 
-ifdef BOOTSTRAP0
-CCFLAG=-I$(ATSHOME)/bootstrap0 -I$(ATSRUNTIME) -O2
+ifdef BOOTSTRAP1
+CCFLAG=-I$(ATSHOME) -I$(ATSRUNTIME) -O2
 endif
 
 LIBGMP=

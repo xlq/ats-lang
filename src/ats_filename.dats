@@ -398,10 +398,11 @@ in
   !the_filenamelst := fs; !the_filename := f0;
 end // end of [the_filenamelst_push]
 
-implement the_filenamelst_push_xit (loc0, f0) = let
+implement
+the_filenamelst_push_xit (loc0, f0) = let
 (*
   val () = begin
-    print "the_filenamelst_push: f0 = "; print f0; print_newline ()
+    print "the_filenamelst_push_xit: f0 = "; print f0; print_newline ()
   end // end of [val]
 *)
   val loc0 = __cast loc0 where {

@@ -49,33 +49,34 @@ val () = initialize () where {
 %{$
 
 static
-ats_int_type the_ats_dynloadflag = 0 ;
+ats_int_type the_dynloadflag = 0 ;
 
 ats_int_type
 atsopt_dynloadflag_get
-  () { return the_ats_dynloadflag ; }
+  () { return the_dynloadflag ; }
 // end of [atsopt_dynloadflag_get]
 
 ats_void_type
 atsopt_dynloadflag_set
   (ats_int_type flag) {
-  the_ats_dynloadflag = flag ; return ;
+  the_dynloadflag = flag ; return ;
 } // end of [atsopt_dynloadflag_set]
 
 /* ****** ****** */
 
 static
-ats_ptr_type the_ats_dynloadfun_name = (ats_ptr_type)0 ;
+ats_ptr_type
+the_dynloadfun_name = (ats_ptr_type)0 ;
 
 ats_ptr_type
 atsopt_dynloadfun_name_get
-  () { return the_ats_dynloadfun_name ; }
+  () { return the_dynloadfun_name ; }
 // end of ...
 
 ats_void_type
 atsopt_dynloadfun_name_set
   (ats_ptr_type name) {
-  the_ats_dynloadfun_name = name ; return ;
+  the_dynloadfun_name = name ; return ;
 } // end of [atsopt_dynloadfun_name_set]
 
 %} // end of [%{$]
@@ -107,18 +108,16 @@ atsccomp_namespace_set
 %{$
 
 static
-ats_int_type the_ats_depgenflag = 0 ;
+ats_int_type the_depgenflag = 0 ;
 
 ats_int_type
-atsopt_depgenflag_get
-  () { return the_ats_depgenflag ; }
-// end of ...
+atsopt_depgenflag_get () { return the_depgenflag ; }
+// end of [atsopt_depgenflag_get]
 
 ats_void_type
 atsopt_depgenflag_set
-  (ats_int_type flag) {
-  the_ats_depgenflag = flag ; return ;
-} // end of ...
+  (ats_int_type flag) { the_depgenflag = flag ; return ; }
+ // end of [atsopt_depgenflag_set]
 
 %} // end of [%{$]
 
@@ -128,8 +127,8 @@ atsopt_depgenflag_set
 
 ats_void_type
 atsopt_global_initialize () {
+  ATS_GC_MARKROOT (&the_dynloadfun_name, sizeof(ats_ptr_type)) ;
   ATS_GC_MARKROOT (&the_atsccomp_namespace, sizeof(ats_ptr_type)) ;
-  ATS_GC_MARKROOT (&the_ats_dynloadfun_name, sizeof(ats_ptr_type)) ;
   return ;
 } // end of [atsopt_global_initialize]
 

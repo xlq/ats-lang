@@ -73,7 +73,7 @@ staload "ats_trans1.sats"
 
 (* ****** ****** *)
 
-#define THISFILENAME "ats_trans2_sta.dats"
+#define THISFILENAME "ats_trans1_dyn.dats"
 
 (* ****** ****** *)
 
@@ -1454,37 +1454,24 @@ end // end of [i0nclude_tr]
 
 (* ****** ****** *)
 
-extern fun string_is_dats (s: string): bool
-  = "ats_trans1_string_is_dats"
-
-extern fun string_suffix_is_dats (s: string): bool
-  = "ats_trans1_string_suffix_is_dats"
-
 %{^
-
-static inline
-ats_bool_type
-ats_trans1_string_is_dats
-  (ats_ptr_type s0) {
-  char *s = s0 ;
-  s = ++s ; if (*s != 'd') return ats_false_bool ;
-  s = ++s ; if (*s != 'a') return ats_false_bool ;
-  s = ++s ; if (*s != 't') return ats_false_bool ;
-  s = ++s ; if (*s != 's') return ats_false_bool ;
-  s = ++s ; if (*s != '\0') return ats_false_bool ;
-  return ats_true_bool ;
-} // end of [ats_trans1_string_is_dats]
-
-static inline
+//
+static
 ats_bool_type
 ats_trans1_string_suffix_is_dats
   (ats_ptr_type s0) {
   char *s = strrchr (s0, '.') ;
-  if (s) return ats_trans1_string_is_dats (s) ;
-  return ats_false_bool ;
+  if (!s) return ats_false_bool ;
+  if (strcmp (s, ".dats") != 0) return ats_false_bool ;
+  return ats_true_bool ;
 } // end of [ats_trans1_string_suffix_is_dats]
-
+//
 %} // end of [%{^]
+
+extern
+fun string_suffix_is_dats
+  (s: string): bool = "ats_trans1_string_suffix_is_dats"
+// end of [string_suffix_is_dats]
 
 (* ****** ****** *)
 

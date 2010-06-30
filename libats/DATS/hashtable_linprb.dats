@@ -84,8 +84,8 @@ viewtypedef HASHTBL (
 , sz= size_t sz
 , tot= size_t
 , pbeg= ptr l_beg
-, fhash= hash key
-, feq = eq key
+, hash= hash key
+, eqfn = eqfn key
 } // end of [HASHTBL]
 
 viewtypedef HASHTBL (key: t0p, itm: vt0p) =
@@ -200,7 +200,7 @@ hashtbl_ptr_probe_ofs
   {l_beg,l_end:addr} (
     pf: !hashtbl_v (key, itm, sz, l_beg, l_end)
   | pbeg: ptr l_beg
-  , k0: key, eq: eq key, sz: size_t sz, ofs: size_t ofs
+  , k0: key, eqfn: eqfn key, sz: size_t sz, ofs: size_t ofs
   , found: &bool? >> bool
   ) :<> Ptr (* pointing to the found item or where it should be *) = let
   val (pf1, pf2 | p_mid) =
@@ -219,7 +219,7 @@ hashtbl_ptr_probe_ofs
         val k = p1->0
         prval () = Opt_some {keyitm} (!p1)
       in
-        if equal_key_key (k0, k, eq) then
+        if equal_key_key (k0, k, eqfn) then
           (pres := p1; found := true)
         else
           loop (pf2 | p1 + keyitmsz, n-1, pres, found)
@@ -245,11 +245,11 @@ end // end of [hashtbl_ptr_probe_ofs]
 implement{key,itm}
 hashtbl_search_ref (ptbl, k0) = let
   val (pf, fpf | p) = HASHTBLptr_tblget {key,itm} (ptbl)
-  val h = hash_key (k0, p->fhash)
+  val h = hash_key (k0, p->hash)
   val h = size1_of_ulint (h); val ofs = sz1mod (h, p->sz)
   var found: bool // uninitalized
   val [l:addr] pkeyitm =
-    hashtbl_ptr_probe_ofs<key,itm> (p->pftbl | p->pbeg, k0, p->feq, p->sz, ofs, found)
+    hashtbl_ptr_probe_ofs<key,itm> (p->pftbl | p->pbeg, k0, p->eqfn, p->sz, ofs, found)
   prval () = minus_addback (fpf, pf | ptbl)
 in
   if found then let
@@ -268,11 +268,11 @@ end // end of [hashtbl_search_ref]
 implement{key,itm}
 hashtbl_search (ptbl, k0, res) = let
   val (pf, fpf | p) = HASHTBLptr_tblget {key,itm} (ptbl)
-  val h = hash_key (k0, p->fhash)
+  val h = hash_key (k0, p->hash)
   val h = size1_of_ulint (h); val ofs = sz1mod (h, p->sz)
   var found: bool // uninitalized
   val [l:addr] pkeyitm =
-    hashtbl_ptr_probe_ofs<key,itm> (p->pftbl | p->pbeg, k0, p->feq, p->sz, ofs, found)
+    hashtbl_ptr_probe_ofs<key,itm> (p->pftbl | p->pbeg, k0, p->eqfn, p->sz, ofs, found)
   prval () = minus_addback (fpf, pf | ptbl)
 in
   if found then let
@@ -302,7 +302,7 @@ fun{key:t0p;itm:vt0p}
     pf1: !hashtbl_v (key, itm, sz1, l1_beg, l1_end)
   , pf2: !hashtbl_v (key, itm, sz2, l2_beg, l2_end)
   | sz1: size_t sz1, sz2: size_t sz2, p1_beg: ptr l1_beg, p2_beg: ptr l2_beg
-  , fhash: hash key, eqfn: eq key
+  , fhash: hash key, eqfn: eqfn key
   ) :<> void = let
   viewtypedef keyitm = @(key, itm)
 in
@@ -348,7 +348,7 @@ hashtbl_resize {l:agz} {sz_new:pos} (
   val (pf, fpf | p) = HASHTBLptr_tblget {key,itm} (ptbl)
   val (pfgc2, pftbl2 | pbeg2) = hashtbl_ptr_make {key,itm} (sz_new, sizeof<keyitm>)
   val () = hashtbl_ptr_relocate<key,itm>
-    (p->pftbl, pftbl2 | p->sz, sz_new, p->pbeg, pbeg2, p->fhash, p->feq)
+    (p->pftbl, pftbl2 | p->sz, sz_new, p->pbeg, pbeg2, p->hash, p->eqfn)
   val () = hashtbl_ptr_free (p->pfgc, p->pftbl | p->pbeg)
   prval () = p->pfgc := pfgc2
   prval () = p->pftbl := pftbl2
@@ -451,14 +451,14 @@ end // end of [hashtbl_ptr_reinsert]
 implement{key,itm}
 hashtbl_insert (ptbl, k0, i0) = found where {
   val (pf0, fpf0 | p) = HASHTBLptr_tblget {key,itm} (ptbl)
-  val h = hash_key (k0, p->fhash)
+  val h = hash_key (k0, p->hash)
   val h = size1_of_ulint (h)
   val sz = p->sz
   val ofs = sz1mod (h, sz)
   var found: bool // uninitalized
   var doubleTag: int = 0
   val [l:addr] pkeyitm =
-    hashtbl_ptr_probe_ofs<key,itm> (p->pftbl | p->pbeg, k0, p->feq, sz, ofs, found)
+    hashtbl_ptr_probe_ofs<key,itm> (p->pftbl | p->pbeg, k0, p->eqfn, sz, ofs, found)
   val [b:bool] found = bool1_of_bool (found)
   val () = (if :(i0: opt (itm, b)) => found then let
     prval (pf, fpf) = __assert () where {
@@ -507,14 +507,14 @@ hashtbl_remove {l:agz} (
 implement{key,itm}
 hashtbl_remove {l} (ptbl, k0, res) = found where {
   val (pf0, fpf0 | p) = HASHTBLptr_tblget {key,itm} (ptbl)
-  val h = hash_key (k0, p->fhash)
+  val h = hash_key (k0, p->hash)
   val h = size1_of_ulint (h)
   val sz = p->sz
   val ofs = sz1mod (h, sz)
   var found: bool // uninitalized
   // var halfTag: int = 0 // no shrinking
   val [l:addr] pkeyitm =
-    hashtbl_ptr_probe_ofs<key,itm> (p->pftbl | p->pbeg, k0, p->feq, sz, ofs, found)
+    hashtbl_ptr_probe_ofs<key,itm> (p->pftbl | p->pbeg, k0, p->eqfn, sz, ofs, found)
   val [b:bool] found = bool1_of_bool (found)
   val () = (if :(res: opt (itm, b)) => found then let
     val tot = p->tot
@@ -526,7 +526,7 @@ hashtbl_remove {l} (ptbl, k0, res) = found where {
     prval () = fpf (pf)
     prval () = opt_some {itm} (res)
   in
-    hashtbl_ptr_reinsert<key,itm> (p->pftbl | sz, p->pbeg, p->fhash, pkeyitm)
+    hashtbl_ptr_reinsert<key,itm> (p->pftbl | sz, p->pbeg, p->hash, pkeyitm)
   end else let
     prval () = opt_none {itm} (res)
   in
@@ -603,22 +603,22 @@ end // end of [hashtbl_foreach_cloref]
 extern
 fun hashtbl_make_hint_tsz
   {key:t@ype;itm:viewt@ype} (
-  fhash: hash key, feq: eq key, hint: size_t, keyitmsz: sizeof_t @(key,itm)
+  fhash: hash key, eqfn: eqfn key, hint: size_t, keyitmsz: sizeof_t @(key,itm)
 ) : HASHTBLptr1 (key, itm) // tot = 0
   = "atslib_hashtbl_make_hint_tsz__linprb"
 // end of [hashtbl_make_hint_tsz]
 
 implement{key,itm}
-hashtbl_make (_fhash, _feq) = let
+hashtbl_make (_hash, _eqfn) = let
   viewtypedef keyitm = @(key, itm) in
-  hashtbl_make_hint_tsz {key,itm} (_fhash, _feq, 0, sizeof<keyitm>)
+  hashtbl_make_hint_tsz {key,itm} (_hash, _eqfn, 0, sizeof<keyitm>)
 end // end of [hashtbl_make]
 
 implement{key,itm}
 hashtbl_make_hint
-  (_fhash, _feq, hint) = let
+  (_hash, _eqfn, hint) = let
   viewtypedef keyitm = @(key, itm) in
-  hashtbl_make_hint_tsz {key,itm} (_fhash, _feq, hint, sizeof<keyitm>)
+  hashtbl_make_hint_tsz {key,itm} (_hash, _eqfn, hint, sizeof<keyitm>)
 end // end of [hashtbl_make_hint]
 
 (* ****** ****** *)
@@ -663,8 +663,8 @@ atslib_hashtbl_ptr_free__linprb
 
 ats_ptr_type
 atslib_hashtbl_make_hint_tsz__linprb (
-  ats_clo_ref_type fhash
-, ats_clo_ref_type feq
+  ats_clo_ref_type hash
+, ats_clo_ref_type eqfn
 , ats_size_type hint
 , ats_size_type keyitmsz
 ) {
@@ -677,8 +677,8 @@ atslib_hashtbl_make_hint_tsz__linprb (
   ptbl->atslab_sz = sz ;
   ptbl->atslab_tot = 0 ;
   ptbl->atslab_pbeg = pbeg ;
-  ptbl->atslab_fhash = fhash ;
-  ptbl->atslab_feq = feq ;
+  ptbl->atslab_hash = hash ;
+  ptbl->atslab_eqfn = eqfn ;
   return ptbl ;
 } // end of [atslib_hashtbl_make_hint_tsz__linprb]
 

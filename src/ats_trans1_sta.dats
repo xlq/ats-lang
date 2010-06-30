@@ -36,8 +36,11 @@
 
 (* ****** ****** *)
 
-(* The first translation mainly resolves the issue of operator fixity *)
-
+(* 
+** HX:
+** The first translation mainly resolves the issue of operator fixity
+*)
+ 
 (* ****** ****** *)
 
 staload Deb = "ats_debug.sats"

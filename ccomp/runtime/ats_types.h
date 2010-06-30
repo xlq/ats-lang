@@ -38,7 +38,10 @@
 
 /* ****** ****** */
 
-#include "config.h" /* automatically generated in $(ATSHOME) */
+//
+// HX: [config.h] automatically generated in $(ATSHOME)
+//
+#include "config.h"
 
 /* ****** ****** */
 

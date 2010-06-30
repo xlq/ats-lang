@@ -54,7 +54,7 @@
 (* ****** ****** *)
 
 typedef hash (key: t@ype) = (key) -<cloref> ulint
-typedef eq (key: t@ype) = (key, key) -<cloref> bool
+typedef eqfn (key: t@ype) = (key, key) -<cloref> bool
 
 absviewtype HASHTBLptr (key:t@ype, itm:viewt@ype+, l:addr)
 viewtypedef HASHTBLptr0
@@ -70,12 +70,29 @@ overload ptr_of with ptr_of_HASHTBLptr
 
 (* ****** ****** *)
 
+abstype
+HASHTBLref (key:t@ype, itm:viewt@ype)
+
+castfn HASHTBLref_make_ptr
+{key:t@ype;itm:viewt@ype} {l:agz}
+  (x: HASHTBLptr (key, itm, l)):<> HASHTBLref (key, itm)
+// end of [HASHTBLref_make_ptr]
+
+castfn HASHTBLref_takeout_ptr
+{key:t@ype;itm:viewt@ype} (
+  x: HASHTBLref (key, itm)
+) :<!ref> [l:agz] (
+  HASHTBLptr (key, itm, l) -<lin,prf> void | HASHTBLptr (key, itm, l)
+) // end of [HASHTBLref_takeout_ptr]
+
+(* ****** ****** *)
+
 fun{key:t@ype}
 hash_key (x: key, fhash: hash key):<> ulint
 // end of [hash_key]
 
 fun{key:t@ype}
-equal_key_key (x1: key, x2: key, eqfn: eq key):<> bool
+equal_key_key (x1: key, x2: key, eqfn: eqfn key):<> bool
 // end of [equal_key_key]
 
 (* ****** ****** *)
@@ -146,11 +163,11 @@ hashtbl_foreach_cloref {l:agz}
 (* ****** ****** *)
 
 fun hashtbl_make {key:t@ype;itm:viewt@ype}
-  (fhash: hash key, eqfn: eq key): HASHTBLptr1 (key, itm)
+  (fhash: hash key, eqfn: eqfn key): HASHTBLptr1 (key, itm)
 // end of [hashtbl_make]
 
 fun hashtbl_make_hint {key:t@ype;itm:viewt@ype}
-  (fhash: hash key, eqfn: eq key, hint: size_t): HASHTBLptr1 (key, itm)
+  (fhash: hash key, eqfn: eqfn key, hint: size_t): HASHTBLptr1 (key, itm)
   = "atslib_hashtbl_make_hint__chain"
 // end of [hashtbl_make_hint]
 
