@@ -274,7 +274,8 @@ in
   loop (pf | xs0, f, env)
 end // end of [list_vt_foreach__main]
 
-implement{a} list_vt_foreach_fun
+implement{a}
+list_vt_foreach_fun
   {n} {f:eff} (xs, f) = let
   typedef fun0_t = (&a) -<fun,f> void
   typedef fun1_t = (!unit_v | &a, !ptr) -<fun,f> void
@@ -286,7 +287,9 @@ in
   // nothing
 end // end of [list_vt_foreach_fun]
 
-implement{a} list_vt_foreach_clo {v} {n} {f:eff} (pf1 | xs, f) = let
+implement{a}
+list_vt_foreach_clo
+  {v} {n} {f:eff} (pf1 | xs, f) = let
   typedef clo_t = (!v | &a) -<clo,f> void
   stavar l_f: addr; val p_f: ptr l_f = &f
   viewdef V = (v, clo_t @ l_f)
@@ -304,7 +307,8 @@ end // end of [list_vt_foreach_clo]
 
 (* ****** ****** *)
 
-implement{a} list_vt_iforeach__main
+implement{a}
+list_vt_iforeach__main
   {v} {vt} {n} {f} (pf | xs0, f, env) = let
   viewtypedef fun_t = (!v | natLt n, &a, !vt) -<f> void
   fun loop {i:nat | i <= n} .<n-i>.
@@ -319,7 +323,9 @@ in
   loop (pf | 0, xs0, f, env)
 end // end of [list_vt_iforeach__main]
 
-implement{a} list_vt_iforeach_fun {n} {f:eff} (xs, f) = let
+implement{a}
+list_vt_iforeach_fun
+  {n} {f:eff} (xs, f) = let
   typedef fun0_t = (natLt n, &a) -<fun,f> void
   typedef fun1_t = (!unit_v | natLt n, &a, !ptr) -<fun,f> void
   val f = __cast (f) where { extern castfn __cast (f: fun0_t):<> fun1_t }
@@ -330,7 +336,9 @@ in
   // nothing
 end // end of [list_vt_iforeach_fun]
 
-implement{a} list_vt_iforeach_clo {v} {n} {f:eff} (pf1 | xs, f) = let
+implement{a}
+list_vt_iforeach_clo
+  {v} {n} {f:eff} (pf1 | xs, f) = let
   typedef clo_t = (!v | natLt n, &a) -<clo,f> void
   stavar l_f: addr; val p_f: ptr l_f = &f
   viewdef V = (v, clo_t @ l_f)

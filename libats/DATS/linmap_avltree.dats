@@ -598,6 +598,10 @@ end // end of [linmap_free]
 
 (* ****** ****** *)
 
+(*
+//
+// HX: if needed, it can be implemented based on [foreach]
+//
 implement{key,itm}
 linmap_listize (m) = let
   viewtypedef res_t = List_vt @(key, itm)
@@ -617,6 +621,7 @@ linmap_listize (m) = let
 in
   aux (m, list_vt_nil)
 end // end of [linmap_listize]
+*)
 
 (* ****** ****** *)
 

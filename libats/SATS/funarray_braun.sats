@@ -148,16 +148,16 @@ funarray_hirem_get (* O(log(n)) *)
 *)
 
 fun{a:t@ype} funarray_foreach_clo {v:view} {n:nat}
- (pf: !v | A: array (a, n), n: int n, f: &(!v | a) -<clo> void):<> void
+  (pf: !v | A: array (a, n), n: int n, f: &(!v | a) -<clo> void):<> void
 
 fun{a:t@ype} funarray_foreach_cloref {n:nat}
- (A: array (a, n), n: int n, f: a -<cloref> void):<!ref> void
+  (A: array (a, n), n: int n, f: a -<cloref> void):<!ref> void
 
 fun{a:t@ype} funarray_iforeach_clo {v:view} {n:nat}
- (pf: !v | A: array (a, n), n: int n, f: &(!v | natLt n, a) -<clo> void):<> void
+  (pf: !v | A: array (a, n), n: int n, f: &(!v | natLt n, a) -<clo> void):<> void
 
 fun{a:t@ype} funarray_iforeach_cloref {n:nat}
- (A: array (a, n), n: int n, f:  (natLt n, a) -<cloref> void):<!ref> void
+  (A: array (a, n), n: int n, f:  (natLt n, a) -<cloref> void):<!ref> void
 
 (* ****** ****** *)
 

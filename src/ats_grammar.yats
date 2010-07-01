@@ -1458,13 +1458,14 @@ guad0ec_t guad0ec ;
 %nonassoc PATAS PATFREE
 
 %nonassoc SEXPLAM DEXPLAM DEXPFIX
-%right COLON /* <d0exp> : <s0exp> : <s0rt> */
 %nonassoc CLAUS
-%nonassoc WHERE
 %nonassoc DEXPCASE DEXPIF
 %nonassoc DEXPRAISE DEXPTRY
 %nonassoc DEXPFOR DEXPWHILE
 %nonassoc ELSE
+%nonassoc WHERE
+
+%right COLON /* <d0exp> : <s0exp> : <s0rt> */
 
 %nonassoc BARCLAUSSEQNONE
 %nonassoc BAR

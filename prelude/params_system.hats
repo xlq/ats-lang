@@ -38,7 +38,6 @@
 //
 // some system parameters
 //
-
 #define NBIT_PER_BYTE 8 (* 8 bits in each byte *)
 
 //
@@ -46,7 +45,9 @@
 // #define NBYTE_PER_WORD // 4 or 8 bytes in each word
 //
 
+//
 // The following one is OS-dependent!
+//
 #define OPERATING_SYSTEM_IS_UNIX_LIKE 1
 
 (* ****** ****** *)

@@ -89,6 +89,7 @@ overload intinf_make with intinf_make_double
 
 fun intinf_free {l:addr}
   (pf_gc: free_gc_v (Intinf, l), pf_at: Intinf @ l | p: ptr l): void
+// end of [intinf_free]
 
 (* ****** ****** *)
 
@@ -100,6 +101,7 @@ fun intinf_get_int // this is unsafe because of potential
 
 fun fprint_intinf {m:file_mode} {i:int}
   (pf: file_mode_lte (m, w) | fil: &FILE m, intinf: &intinf i): void
+// end of [fprint_intinf]
 
 fun print_intinf {i:int} (intinf: &intinf i): void
 overload print with print_intinf

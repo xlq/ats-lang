@@ -215,4 +215,15 @@ fun hashtbl_free_vt
 
 (* ****** ****** *)
 
+(*
+//
+// HX-2010-07-01: it can be readily implemented based on [foreach]
+//
+fun{key:t@ype;itm:t@ype}
+hashtbl_listize {l:agz} (tbl: !HASHTBLptr (key, itm, l)): List_vt @(key, itm)
+// end of [hashtbl_listize]
+*)
+
+(* ****** ****** *)
+
 (* end of [hashtable_linprb.sats] *)

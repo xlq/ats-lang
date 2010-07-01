@@ -60,7 +60,7 @@ sortdef t0p = t@ype and vt0p = viewt@ype
 // on the spot for gaining some efficiency
 //
 implement{key} hash_key (x, hash) = hash (x)
-implement{key} equal_key_key (x1, x2, eq) = eq (x1, x2)
+implement{key} equal_key_key (x1, x2, eqfn) = eqfn (x1, x2)
 
 (* ****** ****** *)
 
@@ -603,7 +603,10 @@ end // end of [hashtbl_foreach_cloref]
 extern
 fun hashtbl_make_hint_tsz
   {key:t@ype;itm:viewt@ype} (
-  fhash: hash key, eqfn: eqfn key, hint: size_t, keyitmsz: sizeof_t @(key,itm)
+  hash: hash key
+, eqfn: eqfn key
+, hint: size_t
+, keyitmsz: sizeof_t @(key,itm)
 ) : HASHTBLptr1 (key, itm) // tot = 0
   = "atslib_hashtbl_make_hint_tsz__linprb"
 // end of [hashtbl_make_hint_tsz]
@@ -623,8 +626,30 @@ end // end of [hashtbl_make_hint]
 
 (* ****** ****** *)
 
-%{$
+(*
+//
+// HX-2010-07-01: is this really needed?
+//
+implement{key,itm}
+hashtbl_listize (ptbl) = let
+  typedef keyitm = @(key, itm)
+  var res: List_vt keyitm = list_vt_nil ()
+  viewdef V = List_vt keyitm @ res
+  var !p_clo = @lam (
+    pf: !V | k: key, x: &itm
+  ) : void =<clo>
+    (res := list_vt_cons ((k, x), res))
+  // end of [var]
+  val () = hashtbl_foreach_clo<key,itm> {V} (view@ res | ptbl, !p_clo)
+in
+  res
+end // end of [hashtbl_listize]
+*)
 
+(* ****** ****** *)
+
+%{$
+//
 ats_ptr_type
 atslib_hashtbl_ptr_make__linprb
   (ats_size_type sz, ats_size_type keyitmsz) {
@@ -633,34 +658,33 @@ atslib_hashtbl_ptr_make__linprb
   pbeg = ATS_CALLOC(sz, keyitmsz) ;
   return pbeg ;
 } // end of [atslib_hashtbl_ptr_make__linprb]
-
 //
 // declared in [string.h]
 //
 extern void *memset (void *buf, int chr, size_t n) ;
-
+//
 ats_void_type
 atslib_hashtbl_ptr_clear__linprb (
   ats_ptr_type ptbl, ats_size_type sz, ats_size_type keyitmsz
 ) {
   memset (ptbl, 0, sz * keyitmsz) ; return ;
 } // end of [atslib_hashtbl_clear__linprb]
-
+//
 ats_void_type
 atslib_hashtbl_ptr_free__linprb
   (ats_ptr_type pbeg) { ATS_FREE(pbeg) ; return ; }
 // end of [atslib_hashtbl_ptr_free__linprb]
-
+//
 %} // end of [%{$]
 
 (* ****** ****** *)
 
 %{$
-
-// shortcuts? yes. worth it? probably.
-
+//
+// HX: shortcuts? yes. worth it? probably.
+//
 #define HASHTABLE_MINSZ 97 // it is chosen arbitrarily
-
+//
 ats_ptr_type
 atslib_hashtbl_make_hint_tsz__linprb (
   ats_clo_ref_type hash
@@ -681,22 +705,22 @@ atslib_hashtbl_make_hint_tsz__linprb (
   ptbl->atslab_eqfn = eqfn ;
   return ptbl ;
 } // end of [atslib_hashtbl_make_hint_tsz__linprb]
-
+//
 ats_int_type
 atslib_hashtbl_free__linprb (ats_ptr_type ptbl) {
   ATS_FREE(((HASHTBL*)ptbl)->atslab_pbeg) ; ATS_FREE(ptbl) ; return ;
 } // end of [atslib_hashtbl_free__linprb]
-
+//
 ats_void_type
 atslib_hashtbl_free_null__linprb (ats_ptr_type ptbl) { return ; }
 // end of [atslib_hashtbl_free_null__linprb]
-
+//
 ats_int_type
 atslib_hashtbl_free_vt__linprb (ats_ptr_type ptbl) {
   if (((HASHTBL*)ptbl)->atslab_tot != 0) return 1 ;
   ATS_FREE(((HASHTBL*)ptbl)->atslab_pbeg) ; ATS_FREE(ptbl) ; return 0 ;
 } // end of [atslib_hashtbl_free_vt__linprb]
-
+//
 %} // end of [%{$]
 
 (* ****** ****** *)

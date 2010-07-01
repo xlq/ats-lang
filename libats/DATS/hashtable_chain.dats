@@ -56,11 +56,12 @@ sortdef t0p = t@ype and vt0p = viewt@ype
 (* ****** ****** *)
 
 implement{key} hash_key (x, hash) = hash (x)
-implement{key} equal_key_key (x1, x2, eq) = eq (x1, x2)
+implement{key} equal_key_key (x1, x2, eqfn) = eqfn (x1, x2)
 
 (* ****** ****** *)
 
-dataviewtype chain (key:t@ype, itm:viewt@ype+, int) =
+dataviewtype chain
+  (key:t@ype, itm:viewt@ype+, int) =
   | {n:nat} CHAINcons (key, itm, n+1) of (key, itm, chain (key, itm, n))
   | CHAINnil (key, itm, 0)
 // end of [chain]
@@ -102,8 +103,9 @@ chain_search {n:nat} .<n>. (
 (* ****** ****** *)
 
 fn{key:t0p;itm:vt0p}
-chain_insert {n:nat}
-  (kis: &chain (key,itm,n) >> chain (key,itm,n+1), k: key, i: itm):<> void =
+chain_insert {n:nat} (
+  kis: &chain (key,itm,n) >> chain (key,itm,n+1), k: key, i: itm
+) :<> void =
   kis := CHAINcons (k, i, kis)
 // end of [chain_insert]
 
@@ -138,9 +140,9 @@ fun{key:t0p;itm:vt0p} chain_remove {n:nat} .<n>. (
 end // end of [chain_remove]
 
 fun{key:t0p;itm:vt0p}
-  chain_foreach_clo {v:view} {n:nat} {f:eff} .<n>. (
-    pf: !v | kis: !chain (key, itm, n), f: &(!v | key, &itm) -<clo,f> void
-  ) :<f> void = begin case+ kis of
+chain_foreach_clo {v:view} {n:nat} {f:eff} .<n>. (
+  pf: !v | kis: !chain (key, itm, n), f: &(!v | key, &itm) -<clo,f> void
+) :<f> void = begin case+ kis of
   | CHAINcons (k, !i, !kis1) => begin
       f (pf | k, !i); chain_foreach_clo (pf | !kis1, f); fold@ kis
     end // end of [cons]
@@ -183,13 +185,15 @@ castfn HASHTBLptr_tblget
 
 (* ****** ****** *)
 
-implement hashtbl_size {key,itm} (ptbl) = sz where {
+implement
+hashtbl_size {key,itm} (ptbl) = sz where {
   val (pf, fpf | p) = HASHTBLptr_tblget {key,itm} (ptbl)
   val sz = p->sz
   prval () = minus_addback (fpf, pf | ptbl)
 } // end of [hashtbl_size]  
 
-implement hashtbl_total {key,itm} (ptbl) = tot where {
+implement
+hashtbl_total {key,itm} (ptbl) = tot where {
   val (pf, fpf | p) = HASHTBLptr_tblget {key,itm} (ptbl)
   val tot = p->tot
   prval () = minus_addback (fpf, pf | ptbl)
@@ -198,10 +202,10 @@ implement hashtbl_total {key,itm} (ptbl) = tot where {
 (* ****** ****** *)
 
 fun{key:t0p;itm:t0p}
-  hashtbl_ptr_clear
-    {sz,tot:nat} {l_beg,l_end:addr} .<sz>. (
-    pf: !hashtbl_v (key, itm, sz, tot, l_beg, l_end)
-          >> hashtbl_v (key, itm, sz, 0(*tot*), l_beg, l_end)
+hashtbl_ptr_clear
+  {sz,tot:nat} {l_beg,l_end:addr} .<sz>. (
+     pf: !hashtbl_v (key, itm, sz, tot, l_beg, l_end)
+           >> hashtbl_v (key, itm, sz, 0(*tot*), l_beg, l_end)
   | sz: size_t sz, p_beg: ptr l_beg
   ) :<> void = begin
   if sz > 0 then let
@@ -591,36 +595,59 @@ end // end of [hashtbl_foreach_cloref]
 
 implement
 hashtbl_make {key,itm}
-  (hash, eq) = hashtbl_make_hint {key,itm} (hash, eq, 0)
+  (hash, eqfn) = hashtbl_make_hint {key,itm} (hash, eqfn, 0)
 // end of [hashtbl_make]
 
 (* ****** ****** *)
 
-%{$
+(*
+implement{key,itm}
+hashtbl_listize (ptbl) = let
+  typedef keyitm = @(key, itm)
+  var res: List_vt keyitm = list_vt_nil ()
+  viewdef V = List_vt keyitm @ res
+  var !p_clo = @lam (
+    pf: !V | k: key, x: &itm
+  ): void =<clo>
+    (res := list_vt_cons ((k, x), res))
+  // end of [var]
+  val () = hashtbl_foreach_clo<key,itm> {V} (view@ res | ptbl, !p_clo)
+in
+  list_vt_reverse (res) // list-reversing for the shadowing semantics
+end // end of [hashtbl_listize]
+*)
 
+(* ****** ****** *)
+
+%{$
+//
 ats_ptr_type
-atslib_hashtbl_ptr_make__chain (ats_size_type sz) {
+atslib_hashtbl_ptr_make__chain
+  (ats_size_type sz) {
   ats_ptr_type pbeg ;
-  /* zeroing the allocated memory is mandatory! */
+/*
+** HX:
+** it is mandatory to initialize with zeros!
+*/
   pbeg = ATS_CALLOC(sz, sizeof(chain0)) ;
   return pbeg ;
 } // end of [atslib_hashtbl_ptr_make__chain]
-
+//
 ats_void_type
 atslib_hashtbl_ptr_free__chain
   (ats_ptr_type pbeg) { ATS_FREE(pbeg) ; return ; }
 // end of [atslib_hashtbl_ptr_free__chain]
-
+//
 %} // end of [%{$]
 
 (* ****** ****** *)
 
 %{$
-
-// shortcuts? yes. worth it? probably.
-
+//
+// HX: shortcuts? yes. worth it? probably.
+//
 #define HASHTABLE_MINSZ 97 // it is chosen arbitrarily
-
+//
 ats_ptr_type
 atslib_hashtbl_make_hint__chain (
   ats_clo_ref_type hash, ats_clo_ref_type eqfn, ats_size_type hint
@@ -638,34 +665,38 @@ atslib_hashtbl_make_hint__chain (
   ptbl->atslab_eqfn = eqfn ;
   return ptbl ;
 } // end of [atslib_hashtbl_make_hint__chain]
-
+//
 ats_ptr_type
-atslib_hashtbl_make_null__chain () { return (void*)0; }
+atslib_hashtbl_make_null__chain
+  (/*argumentless*/) { return (void*)0; }
 // end of [atslib_hashtbl_make_null__chain]
-
+//
 %} // end of [%{$]
 
 (* ****** ****** *)
 
 %{$
-
+//
 ats_int_type
-atslib_hashtbl_free__chain (ats_ptr_type ptbl) {
+atslib_hashtbl_free__chain
+  (ats_ptr_type ptbl) {
   ATS_FREE(((HASHTBL*)ptbl)->atslab_pbeg) ; ATS_FREE(ptbl) ; return ;
 } // end of [atslib_hashtbl_free__chain]
-
+//
 ats_void_type
-atslib_hashtbl_free_null__chain (ats_ptr_type ptbl) { return ; }
+atslib_hashtbl_free_null__chain
+  (ats_ptr_type ptbl) { return ; }
 // end of [atslib_hashtbl_free_null__chain]
-
+//
 ats_int_type
-atslib_hashtbl_free_vt__chain (ats_ptr_type ptbl) {
+atslib_hashtbl_free_vt__chain
+  (ats_ptr_type ptbl) {
   if (((HASHTBL*)ptbl)->atslab_tot != 0)
     return ats_true_bool ;
   ATS_FREE(((HASHTBL*)ptbl)->atslab_pbeg) ; ATS_FREE(ptbl) ;
   return ats_false_bool ;
 } // end of [atslib_hashtbl_free_vt__chain]
-
+//
 %} // end of [%{$]
 
 (* ****** ****** *)

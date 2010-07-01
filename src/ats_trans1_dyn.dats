@@ -69,10 +69,6 @@ staload "ats_trans1.sats"
 
 (* ****** ****** *)
 
-#include "prelude/params_system.hats"
-
-(* ****** ****** *)
-
 #define THISFILENAME "ats_trans1_dyn.dats"
 
 (* ****** ****** *)
@@ -88,8 +84,8 @@ typedef fil_t = $Fil.filename_t
 
 (* ****** ****** *)
 
-overload prerr with $Sym.prerr_symbol
 overload = with $Sym.eq_symbol_symbol
+macdef prerr_symbol = $Sym.prerr_symbol
 
 (* ****** ****** *)
 
@@ -146,7 +142,7 @@ fun aux1 (xs: p0arglst): s1explst = begin
       end // end of [Some]
     | None () => begin
         prerr_loc_error1 (x.p0arg_loc);
-        prerr ": unascribed variable: ["; prerr x.p0arg_sym; prerr "]";
+        prerr ": unascribed variable: ["; prerr_symbol x.p0arg_sym; prerr "].";
         prerr_newline ();
         $Err.abort ()
       end // end of [None]
@@ -1048,9 +1044,9 @@ fun aux_item (d0e0: d0exp): d1expitm = let
       $Fix.ITEMatm (d1exp_list (loc0, d1es))
     end // end of [D0Elist]
   | D0Elist2 (d0es1, d0es2) => let
-      val s1es1 = d0explst_tr d0es1 and s1es2 = d0explst_tr d0es2
+      val d1es1 = d0explst_tr d0es1 and d1es2 = d0explst_tr d0es2
     in
-      $Fix.ITEMatm (d1exp_list2 (loc0, s1es1, s1es2))
+      $Fix.ITEMatm (d1exp_list2 (loc0, d1es1, d1es2))
     end // end of [D0Elist2]
   | D0Eloopexn (i(*brk/cont*)) => $Fix.ITEMatm (d1exp_loopexn (loc0, i))
   | D0Elst (lin, os0e_elt, d0es_elt) => let
@@ -1781,7 +1777,7 @@ implement finalize () = () where {
           end // end of [V1ALstring]
         | _ => begin
             prerr_loc_error1 e1xp.e1xp_loc;
-            prerr ": a string definition is required for [ATSCCOMP_NAMESPACE]";
+            prerr ": a string definition is required for [ATSCCOMP_NAMESPACE].";
             prerr_newline ();
             $Err.abort {void} ()
           end // end of [_]
@@ -1817,7 +1813,7 @@ implement finalize () = () where {
             end // end of [V1ALstring]
           | _ => begin
               prerr_loc_error1 e1xp.e1xp_loc;
-              prerr ": a string definition is required for [ATS_DYNLOADFUN_NAME]";
+              prerr ": a string definition is required for [ATS_DYNLOADFUN_NAME].";
               prerr_newline ();
               $Err.abort {void} ()
             end // end of [_]

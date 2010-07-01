@@ -33,7 +33,7 @@
 
 (*
 **
-** A array-based queue implementation
+** An array-based queue implementation
 **
 ** Contributed by Hongwei Xi (hwxi AT cs DOT bu DOT edu)
 ** Time: March, 2010 // based on a version done in October, 2008

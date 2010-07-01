@@ -105,11 +105,17 @@ fun hashtbl_total // the total number of elements present in the hashtable
   {key:t@ype;itm:viewt@ype} {l:agz} (tbl: !HASHTBLptr (key, itm, l)):<> size_t
 // end of [hashtbl_total]
 
-fun{key:t@ype;itm:t@ype} // clear the hashtable: all the chains are freed
+//
+// HX: clear the hashtable: all the chains are freed
+//
+fun{key:t@ype;itm:t@ype}
 hashtbl_clear {l:agz} (ptbl: !HASHTBLptr (key, itm, l)):<> void
 // end of [hashtbl_clear]
 
-fun{key:t@ype;itm:t@ype} // clear the hashtable: all the chains are freed
+//
+// HX: clear the hashtable: all the chains are freed
+//
+fun{key:t@ype;itm:t@ype}
 hashtbl_clear_vt
   {l:agz} (ptbl: !HASHTBLptr (key, itm, l), f: (&itm >> itm?) -<> void):<> void
 // end of [hashtbl_clear_vt]
@@ -151,14 +157,15 @@ hashtbl_remove {l:agz} (
 (* ****** ****** *)
 
 fun{key:t@ype;itm:viewt@ype}
-hashtbl_foreach_clo {v:view} {l:agz}
-  (pf: !v | ptbl: !HASHTBLptr (key, itm, l), f: &(!v | key, &itm) -<clo> void):<> void
-// end of [hashtbl_foreach_clo]
+hashtbl_foreach_clo {v:view} {l:agz} (
+  pf: !v
+| ptbl: !HASHTBLptr (key, itm, l), f: &(!v | key, &itm) -<clo> void
+) :<> void // end of [hashtbl_foreach_clo]
 
 fun{key:t@ype;itm:viewt@ype}
-hashtbl_foreach_cloref {l:agz}
-  (ptbl: !HASHTBLptr (key, itm, l), f: !(key, &itm) -<cloref> void):<> void
-// end of [hashtbl_foreach_cloref]
+hashtbl_foreach_cloref {l:agz} (
+  ptbl: !HASHTBLptr (key, itm, l), f: !(key, &itm) -<cloref> void
+) :<> void // end of [hashtbl_foreach_cloref]
 
 (* ****** ****** *)
 
@@ -179,29 +186,36 @@ fun hashtbl_make_null
 (* ****** ****** *)
 
 fun hashtbl_free
-  {key:t@ype;itm:t@ype} {l:agz} (tbl: HASHTBLptr (key, itm, l)): void
+  {key:t@ype;itm:t@ype} {l:agz}
+  (tbl: HASHTBLptr (key, itm, l)):<> void
   = "atslib_hashtbl_free__chain"
 // end of [hashtbl_free]
 
 fun hashtbl_free_null
-  {key:t@ype;itm:viewt@ype} (tbl: HASHTBLptr (key, itm, null)): void
+  {key:t@ype;itm:viewt@ype}
+  (tbl: HASHTBLptr (key, itm, null)):<> void
   = "atslib_hashtbl_free_null__chain"
 // end of [hashtbl_free_null]
 
 //
 // HX-2010-03-21:
-// [hashtbl_clear_vt] may need to be called first to clear up the hashtable
+// [hashtbl_clear_vt] may need to be called first to clear up
 //
 fun hashtbl_free_vt
-  {key:t@ype;itm:viewt@ype} {l:agz}
-  (tbl: !HASHTBLptr (key, itm, l) >> opt (HASHTBLptr (key, itm, l), b))
-  : #[b:bool] bool b(*~freed*) = "atslib_hashtbl_free_vt__chain"
+  {key:t@ype;itm:viewt@ype} {l:agz} (
+  tbl: !HASHTBLptr (key, itm, l) >> opt (HASHTBLptr (key, itm, l), b)
+) :<> #[b:bool] bool b(*~freed*) = "atslib_hashtbl_free_vt__chain"
 // end of [hashtbl_free_vt]
 
 (* ****** ****** *)
 
+(*
+//
+// HX-2010-07-01: it can be readily implemented based on [foreach]
+//
 fun{key:t@ype;itm:t@ype}
 hashtbl_listize {l:agz} (tbl: !HASHTBLptr (key, itm, l)): List_vt @(key, itm)
+*)
 
 (* ****** ****** *)
 

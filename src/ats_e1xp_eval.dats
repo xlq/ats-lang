@@ -285,7 +285,7 @@ and e1xp_eval_undefined
     | ~Some_vt _ => V1ALint 0 | ~None_vt () => V1ALint 1
     end
   | _ => begin
-      e1xp_eval_opr_errmsg (loc, $Sym.symbol_DEFINED)
+      e1xp_eval_opr_errmsg (loc, $Sym.symbol_UNDEFINED)
     end // end of [_]
 end // end of [e1xp_eval_undefined]
   

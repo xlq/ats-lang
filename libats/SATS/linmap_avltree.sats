@@ -117,6 +117,10 @@ linmap_remove (m: &map (key, itm), k0: key, cmp: cmp key):<> bool
 
 (* ****** ****** *)
 
+//
+// HX: note the [foreach] can be used as [clear]
+//
+
 fun{key:t0p;itm:vt0p}
 linmap_foreach_main
   {v:view} {vt:viewtype} (
@@ -129,10 +133,9 @@ linmap_foreach_main
 
 fun{key:t0p;itm:vt0p}
 linmap_foreach_clo {v:view} (
-    pf: !v
-  | m: !map (key, itm), f: &(!v | key, &itm) -<clo> void
-  ) :<> void
-// end of [linmap_foreach_clo]
+  pf: !v
+| m: !map (key, itm), f: &(!v | key, &itm) -<clo> void
+) :<> void // end of [linmap_foreach_clo]
 
 fun{key:t0p;itm:vt0p}
 linmap_foreach_cloref
@@ -149,19 +152,24 @@ linmap_free (m: map (key, itm)):<> void
 //
 fun{key:t0p;itm:vt0p}
 linmap_free_vt (
-    m: !map (key, itm) >> opt (map (key, itm), b)
-  ) :<> #[b:bool] bool b(*~freed*)
-// end of [linmap_free_vt]
+  m: !map (key, itm) >> opt (map (key, itm), b)
+) :<> #[b:bool] bool b(*~freed*) // end of [linmap_free_vt]
 
 (* ****** ****** *)
 
 //
-// HX: listization is done in the in-order manner
+// HX: listization is done in the in-order fashion
 //
 
+(*
+//
+// HX-2010-07-01:
+// this one can be readily implemented based on [foreach]
+//
 fun{key:t0p;itm:t0p}
 linmap_listize (m: !map (key, itm)):<> List_vt @(key, itm)
 // end of [linmap_listize]
+*)
 
 fun{key:t0p;itm:vt0p}
 linmap_listize_free (m: map (key, itm)):<> List_vt @(key, itm)
