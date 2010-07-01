@@ -40,22 +40,19 @@
 (* ****** ****** *)
 
 #if VERBOSE_PRELUDE #then
-
 #print "Loading [slseg.sats] starts!\n"
-
 #endif
 
 (* ****** ****** *)
 
 %{#
-
 #include "prelude/CATS/slseg.cats"
-
-%}
+%} // end of [%{#]
 
 (* ****** ****** *)
 
-dataview slseg_v (a:viewt@ype+, addr, addr, int) =
+dataview slseg_v
+  (a:viewt@ype+, addr, addr, int) =
   | {n:nat} {l1,l2,l3:addr}
     slseg_v_cons (a, l1, l3, n+1) of (
       free_gc_v (@(a, ptr), l1), (a, ptr l2) @ l1, slseg_v (a, l2, l3, n)
@@ -67,45 +64,66 @@ viewdef sllst_v (a: viewt@ype, l:addr, n:int) = slseg_v (a, l, null, n)
   
 (* ****** ****** *)
 
-prfun slseg_v_extend {a:viewt@ype} {l1,l2,l3:addr} {n:nat}
-  (pf_seg: slseg_v (a, l1, l2, n), pf_gc: free_gc_v (@(a, ptr), l2), pf_at: (a, ptr l3) @ l2)
-  :<prf> slseg_v (a, l1, l3, n+1)
+prfun slseg_v_extend
+{a:viewt@ype} {l1,l2,l3:addr} {n:nat} (
+  pf_sl: slseg_v (a, l1, l2, n)
+, pf_gc: free_gc_v (@(a, ptr), l2)
+, pf_at: (a, ptr l3) @ l2
+) :<prf> slseg_v (a, l1, l3, n+1)
+// end of [slseg_v_extend]
 
 (* ****** ****** *)
 
-prfun slseg_v_append {a:viewt@ype} {l1,l2,l3:addr} {n1,n2:nat}
-  (pf1_seg: slseg_v (a, l1, l2, n1), pf2_seg: slseg_v (a, l2, l3, n2))
-  :<prf> slseg_v (a, l1, l3, n1+n2)
+prfun slseg_v_append
+{a:viewt@ype} {l1,l2,l3:addr} {n1,n2:nat} (
+  pf1_sl: slseg_v (a, l1, l2, n1), pf2_sl: slseg_v (a, l2, l3, n2)
+) :<prf> slseg_v (a, l1, l3, n1+n2) // end of [slseg_v_append]
 
 (* ****** ****** *)
 
-fun{a:t@ype} slseg_free {l1,l2:addr} {n:nat}
-  (pf_seg: slseg_v (a, l1, l2, n) | p: ptr l1, n: int n):<> void
+fun{a:t@ype}
+slseg_free {l1,l2:addr} {n:nat}
+  (pf_sl: slseg_v (a, l1, l2, n) | p: ptr l1, n: int n):<> void
+// end of [slseg_free]
 
 (* ****** ****** *)
 
-fun{a:viewt@ype} slseg_foreach_clo
-   {v:view} {l1,l2:addr} {n:nat} {f:eff} (
-    pf: !v, pf_seg: !slseg_v (a, l1, l2, n)
-  | p: ptr l1, n: int n, f: &(!v | &a) -<clo,f> void
-  ) :<f> void
+fun{a:viewt@ype}
+slseg_length
+{l1,l2:addr} {n:nat} (
+  pf_sl: !slseg_v (a, l1, l2, n) | p1: ptr l1, p2: ptr l2
+) :<> size_t (n) // end of [slseg_length]
 
 (* ****** ****** *)
 
-fun list_vt_of_sllst {a:viewt@ype} {n:nat} {l:addr}
-  (pf_seg: sllst_v (a, l, n) | p: ptr l):<> list_vt (a, n)
+fun{a:viewt@ype}
+slseg_foreach_clo
+{v:view} {l1,l2:addr} {n:nat} (
+  pf: !v, pf_sl: !slseg_v (a, l1, l2, n) | p: ptr l1, n: int n, f: &(!v | &a) -<clo> void
+) :<> void // end of [slseg_foreach_clo]
+
+(* ****** ****** *)
+
+//
+// HX: these are really cast functions
+//
+
+fun list_vt_of_sllst
+{a:viewt@ype} {n:nat} {l:addr}
+  (pf: sllst_v (a, l, n) | p: ptr l):<> list_vt (a, n)
   = "atspre_list_vt_of_sllst"
+// end of [list_vt_of_sllst]
 
-fun sllst_of_list_vt {a:viewt@ype} {n:nat} {l:addr}
+fun sllst_of_list_vt
+{a:viewt@ype} {n:nat} {l:addr}
   (xs: list_vt (a, n)):<> [l:addr] (sllst_v (a, l, n) | ptr l)
   = "atspre_sllst_list_vt_of"
+// end of [sllst_of_list_vt]
 
 (* ****** ****** *)
 
 #if VERBOSE_PRELUDE #then
-
 #print "Loading [slseg_v.sats] finishes!\n"
-
 #endif
 
-(* end of [slseg_v.sats] *)
+(* end of [slseg.sats] *)

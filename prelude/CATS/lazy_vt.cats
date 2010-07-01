@@ -50,7 +50,7 @@
   ATS_FREE (vp_lazy) ; \
 } while (0) /* end of [do ... while ...] */
 
-static inline
+ATSinline()
 ats_void_type
 ats_lazy_vt_free (ats_ptr_type vp_lazy) {
   ((void (*)(ats_ptr_type, ats_bool_type))ats_closure_fun(vp_lazy))(vp_lazy, ats_false_bool) ;

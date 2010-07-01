@@ -445,10 +445,14 @@ prval unit_v_elim : unit_v -<prf> void
 (* ****** ****** *)
 
 (*
+//
+// HX: DEPRECATED!!!
+// it is now supported internally; see [lazy.cats] and [lazy_vt.cats]
+//
 
-// it is now supported internally; see [lazy.cats]
-
-// for lazy call-by-need evaluation
+//
+// for lazy (i.e., call-by-need) evaluation
+//
 
 // nonlinear version
 dataviewtype thunkvalue (a:t@ype+) =

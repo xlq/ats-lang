@@ -210,6 +210,10 @@ libats/DATS/linmap_avltree.dats
 libats/SATS/linqueue_arr.sats
 libats/DATS/linqueue_arr.dats
 
+/* linear list-based queue implementation */
+libats/SATS/linqueue_lst.sats
+libats/DATS/linqueue_lst.dats
+
 /* linear array-based stack implementation */
 libats/SATS/linstack_arr.sats
 libats/DATS/linstack_arr.dats
