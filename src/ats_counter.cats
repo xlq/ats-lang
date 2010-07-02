@@ -56,117 +56,119 @@
 
 /* ****** ****** */
 
-typedef ats_int64_type ats_counter_count_type ;
+typedef ats_int64_type atsopt_count_type ;
 /*
-typedef ats_counter_count_type *ats_counter_counter_type ;
+typedef atsopt_count_type *atsopt_counter_type ;
 */
 
-static inline
+ATSinline()
 ats_ptr_type
-ats_counter_counter_make () {
+atsopt_counter_make () {
   ats_ptr_type cntr ;
-  cntr = ATS_MALLOC (sizeof(ats_counter_count_type)) ;
-  *(ats_counter_count_type*)cntr = 0 ; return cntr ;
-}
+  cntr = ATS_MALLOC (sizeof(atsopt_count_type)) ;
+  *(atsopt_count_type*)cntr = 0 ; return cntr ;
+} // end of [atsopt_counter_make]
 
-static inline
+ATSinline()
 ats_void_type
-ats_counter_counter_inc (ats_ptr_type cntr) {
-  *(ats_counter_count_type*)cntr += 1 ; return ;
-}
-
-static inline
-ats_counter_count_type
-ats_counter_counter_get (ats_ptr_type cntr) {
-  return *(ats_counter_count_type*)cntr ;
-}
-
-static inline
-ats_void_type
-ats_counter_counter_set
-  (ats_ptr_type cntr, ats_counter_count_type cnt)
-{
- *(ats_counter_count_type*)cntr = cnt ; return ;
-}
-
-static inline
-ats_void_type
-ats_counter_counter_reset
+atsopt_counter_inc
   (ats_ptr_type cntr) {
-  *(ats_counter_count_type*)cntr = 0 ; return ;
-}
+  *(atsopt_count_type*)cntr += 1 ; return ;
+} // end of [atsopt_counter_inc]
 
-static inline
-ats_counter_count_type
-ats_counter_counter_get_and_inc
+ATSinline()
+atsopt_count_type
+atsopt_counter_get
+  (ats_ptr_type cntr) {
+  return *(atsopt_count_type*)cntr ;
+} // end of [atsopt_counter_get]
+
+ATSinline()
+ats_void_type
+atsopt_counter_set (
+  ats_ptr_type cntr, atsopt_count_type cnt
+) {
+ *(atsopt_count_type*)cntr = cnt ; return ;
+} // end of [atsopt_counter_set]
+
+ATSinline()
+ats_void_type
+atsopt_counter_reset
+  (ats_ptr_type cntr) {
+  *(atsopt_count_type*)cntr = 0 ; return ;
+} // end of [atsopt_counter_reset]
+
+ATSinline()
+atsopt_count_type
+atsopt_counter_get_and_inc
   (ats_ptr_type cntr) { 
-  ats_counter_count_type cnt ;
-  cnt = *(ats_counter_count_type*)cntr ;
-  *(ats_counter_count_type*)cntr += 1 ;
+  atsopt_count_type cnt ;
+  cnt = *(atsopt_count_type*)cntr ;
+  *(atsopt_count_type*)cntr += 1 ;
   return cnt ;
-}
+} // end of [atsopt_counter_get_and_inc]
 
-static inline
-ats_counter_count_type
-ats_counter_counter_inc_and_get
+ATSinline()
+atsopt_count_type
+atsopt_counter_inc_and_get
   (ats_ptr_type cntr) { 
-  *((ats_counter_count_type*)cntr) += 1 ;
-  return *(ats_counter_count_type*)cntr ;
-} // end of [ats_counter_counter_inc_and_get]
+  *((atsopt_count_type*)cntr) += 1 ;
+  return *(atsopt_count_type*)cntr ;
+} // end of [atsopt_counter_inc_and_get]
 
 /* ****** ****** */
 
-static inline
+ATSinline()
 ats_int_type
-ats_counter_compare_count_count
-  (ats_counter_count_type cnt1, ats_counter_count_type cnt2) {
+atsopt_compare_count_count
+  (atsopt_count_type cnt1, atsopt_count_type cnt2) {
   if (cnt1 < cnt2) return -1 ;
   if (cnt1 > cnt2) return  1 ;
   return 0 ;
-}
+} // end of [atsopt_compare_count_count]
 
 /* ****** ****** */
 
-static inline
+ATSinline()
 ats_uint_type
-ats_counter_count_hash (
-  ats_counter_count_type cnt
+atsopt_count_hash (
+  atsopt_count_type cnt
 ) {
   /* 2654435761 is the golden ration of 2^32 */
   return (2654435761UL * (ats_uint_type)cnt) ;
-}
+} // end of [atsopt_count_hash]
 
 /* ****** ****** */
 
-static inline
+ATSinline()
 ats_void_type
-ats_counter_fprint_count (
-  ats_ptr_type out, ats_counter_count_type cnt
+atsopt_fprint_count (
+  ats_ptr_type out, atsopt_count_type cnt
 ) {
   fprintf ((FILE*)out, "%lli", (ats_llint_type)cnt) ; return ;
-} // end of [ats_counter_fprint_count]
+} // end of [atsopt_fprint_count]
 
 /* ****** ****** */
 
 extern ats_ptr_type atspre_tostringf (ats_ptr_type format, ...) ;
 
-static inline
+ATSinline()
 ats_ptr_type
-ats_counter_tostring_count
-  (ats_counter_count_type cnt) {
+atsopt_tostring_count
+  (atsopt_count_type cnt) {
   return atspre_tostringf ("%lli", (ats_llint_type)cnt) ;
-}
+} // end of [atsopt_tostring_count]
 
-static inline
+ATSinline()
 ats_ptr_type
-ats_counter_tostring_count_prefix (
-  ats_ptr_type pre, ats_counter_count_type cnt
+atsopt_tostring_prefix_count (
+  ats_ptr_type pre, atsopt_count_type cnt
 ) {
   return atspre_tostringf ("%s%lli", (char*)pre, (ats_llint_type)cnt) ;
-} // end of [ats_counter_tostring_count_prefix]
+} // end of [atsopt_tostring_prefix_count]
 
 /* ****** ****** */
 
 #endif // ATS_SRC_COUNTER_CATS
 
-/* end of [ats_counter.cats] */
+/* end of [atsopt.cats] */

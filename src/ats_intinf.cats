@@ -65,166 +65,188 @@
 
 static inline
 ats_int_type
-ats_intinf_get_int (ats_mpz_ptr_type x) {
+atsopt_get_int (
+  ats_mpz_ptr_type x
+) {
   return mpz_get_si ((mpz_ptr)x) ;
-}
+} // end of [atsopt_get_int]
 
 /* ****** ****** */
 
 static inline
 ats_bool_type
-ats_intinf_lt_intinf_int
-  (ats_mpz_ptr_type x, ats_int_type y) {
+atsopt_lt_intinf_int (
+  ats_mpz_ptr_type x, ats_int_type y
+) {
   if (mpz_cmp_si((mpz_ptr)x, y) < 0) return ats_true_bool ;
   return ats_false_bool ;
-}
+} // end of [atsopt_lt_intinf_int]
 
 static inline
 ats_bool_type
-ats_intinf_lte_intinf_int
-  (ats_mpz_ptr_type x, ats_int_type y) {
+atsopt_lt_intinf_intinf (
+  ats_mpz_ptr_type x, ats_mpz_ptr_type y
+) {
+  if (mpz_cmp((mpz_ptr)x, (mpz_ptr)y) < 0) return ats_true_bool ;
+  return ats_false_bool ;
+} // end of [atsopt_lt_intinf_intinf]
+
+static inline
+ats_bool_type
+atsopt_lte_intinf_int (
+  ats_mpz_ptr_type x, ats_int_type y
+) {
   if (mpz_cmp_si((mpz_ptr)x, y) <= 0) return ats_true_bool ;
   return ats_false_bool ;
-}
+} // end of [atsopt_lte_intinf_int]
 
 static inline
 ats_bool_type
-ats_intinf_gt_intinf_int
-  (ats_mpz_ptr_type x, ats_int_type y) {
-  if (mpz_cmp_si((mpz_ptr)x, y) > 0) return ats_true_bool ;
+atsopt_lte_intinf_intinf (
+  ats_mpz_ptr_type x, ats_mpz_ptr_type y
+) {
+  if (mpz_cmp((mpz_ptr)x, (mpz_ptr)y) <= 0) return ats_true_bool ;
   return ats_false_bool ;
-}
-
-static inline
-ats_bool_type
-ats_intinf_gte_intinf_int
-  (ats_mpz_ptr_type x, ats_int_type y) {
-  if (mpz_cmp_si((mpz_ptr)x, y) >= 0) return ats_true_bool ;
-  return ats_false_bool ;
-}
-
-static inline
-ats_bool_type
-ats_intinf_eq_intinf_int
-  (ats_mpz_ptr_type x, ats_int_type y) {
-  if (mpz_cmp_si((mpz_ptr)x, (int)y) == 0) return ats_true_bool ;
-  return ats_false_bool ;
-}
-
-static inline
-ats_bool_type
-ats_intinf_eq_int_intinf
-  (ats_int_type x, ats_mpz_ptr_type y) {
-  if (mpz_cmp_si((mpz_ptr)y, (int)x) == 0) return ats_true_bool ;
-  return ats_false_bool ;
-}
-
-static inline
-ats_bool_type
-ats_intinf_neq_intinf_int
-  (ats_mpz_ptr_type x, ats_int_type y) {
-  if (mpz_cmp_si((mpz_ptr)x, (int)y) != 0) return ats_true_bool ;
-  return ats_false_bool ;
-}
+} // end of [atsopt_lte_intinf_intinf]
 
 /* ****** ****** */
 
 static inline
 ats_bool_type
-ats_intinf_lt_intinf_intinf
-  (ats_mpz_ptr_type x, ats_mpz_ptr_type y) {
-  if (mpz_cmp((mpz_ptr)x, (mpz_ptr)y) < 0) return ats_true_bool ;
+atsopt_gt_intinf_int (
+  ats_mpz_ptr_type x, ats_int_type y
+) {
+  if (mpz_cmp_si((mpz_ptr)x, y) > 0) return ats_true_bool ;
   return ats_false_bool ;
-}
+} // end of [atsopt_gt_intinf_int]
 
 static inline
 ats_bool_type
-ats_intinf_lte_intinf_intinf
-  (ats_mpz_ptr_type x, ats_mpz_ptr_type y) {
-  if (mpz_cmp((mpz_ptr)x, (mpz_ptr)y) <= 0) return ats_true_bool ;
-  return ats_false_bool ;
-}
-
-static inline
-ats_bool_type
-ats_intinf_gt_intinf_intinf
-  (ats_mpz_ptr_type x, ats_mpz_ptr_type y) {
+atsopt_gt_intinf_intinf (
+  ats_mpz_ptr_type x, ats_mpz_ptr_type y
+) {
   if (mpz_cmp((mpz_ptr)x, (mpz_ptr)y) > 0) return ats_true_bool ;
   return ats_false_bool ;
-}
+} // end of [atsopt_gt_intinf_intinf]
 
 static inline
 ats_bool_type
-ats_intinf_gte_intinf_intinf
-  (ats_mpz_ptr_type x, ats_mpz_ptr_type y) {
+atsopt_gte_intinf_int (
+  ats_mpz_ptr_type x, ats_int_type y
+) {
+  if (mpz_cmp_si((mpz_ptr)x, y) >= 0) return ats_true_bool ;
+  return ats_false_bool ;
+} // end of [atsopt_gte_intinf_int]
+
+static inline
+ats_bool_type
+atsopt_gte_intinf_intinf (
+  ats_mpz_ptr_type x, ats_mpz_ptr_type y
+) {
   if (mpz_cmp((mpz_ptr)x, (mpz_ptr)y) >= 0) return ats_true_bool ;
   return ats_false_bool ;
-}
+} // end of [atsopt_gte_intinf_intinf]
+
+/* ****** ****** */
 
 static inline
 ats_bool_type
-ats_intinf_eq_intinf_intinf
-  (ats_mpz_ptr_type x, ats_mpz_ptr_type y) {
+atsopt_eq_intinf_int (
+  ats_mpz_ptr_type x, ats_int_type y
+) {
+  if (mpz_cmp_si((mpz_ptr)x, (int)y) == 0) return ats_true_bool ;
+  return ats_false_bool ;
+} // end of [atsopt_eq_intinf_int]
+
+static inline
+ats_bool_type
+atsopt_eq_int_intinf (
+  ats_int_type x, ats_mpz_ptr_type y
+) {
+  if (mpz_cmp_si((mpz_ptr)y, (int)x) == 0) return ats_true_bool ;
+  return ats_false_bool ;
+} // end of [atsopt_eq_int_intinf]
+
+static inline
+ats_bool_type
+atsopt_eq_intinf_intinf (
+  ats_mpz_ptr_type x, ats_mpz_ptr_type y
+) {
   if (mpz_cmp((mpz_ptr)x, (mpz_ptr)y) == 0) return ats_true_bool ;
   return ats_false_bool ;
-}
+} // end of [atsopt_eq_intinf_intinf]
 
 static inline
 ats_bool_type
-ats_intinf_neq_intinf_intinf
-  (ats_mpz_ptr_type x, ats_mpz_ptr_type y) {
+atsopt_neq_intinf_int (
+  ats_mpz_ptr_type x, ats_int_type y
+) {
+  if (mpz_cmp_si((mpz_ptr)x, (int)y) != 0) return ats_true_bool ;
+  return ats_false_bool ;
+} // end of [atsopt_neq_intinf_int]
+
+static inline
+ats_bool_type
+atsopt_neq_intinf_intinf (
+  ats_mpz_ptr_type x, ats_mpz_ptr_type y
+) {
   if (mpz_cmp((mpz_ptr)x, (mpz_ptr)y) != 0) return ats_true_bool ;
   return ats_false_bool ;
-}
+} // end of [atsopt_neq_intinf_intinf]
+
+/* ****** ****** */
 
 static inline
 ats_int_type
-ats_intinf_compare_intinf_intinf
+atsopt_compare_intinf_intinf
   (ats_mpz_ptr_type x, ats_mpz_ptr_type y) {
   return mpz_cmp((mpz_ptr)x, (mpz_ptr)y) ;
-}
+} // end of [atsopt_compare_intinf_intinf]
 
 /* ****** ****** */
 
 static inline
 ats_mpz_ptr_type
-ats_intinf_neg_intinf
+atsopt_neg_intinf
   (ats_mpz_ptr_type x) {
   mpz_ptr ans = ATS_MALLOC (sizeof(ats_mpz_viewt0ype));
   mpz_init((mpz_ptr)ans);
   mpz_neg (ans, (mpz_ptr)x) ;
   return ans ;
-}
+} // end of [atsopt_neg_intinf]
 
 static inline
 ats_mpz_ptr_type
-ats_intinf_add_intinf_intinf
-  (ats_mpz_ptr_type x, ats_mpz_ptr_type y) {
+atsopt_add_intinf_intinf (
+  ats_mpz_ptr_type x, ats_mpz_ptr_type y
+) {
   mpz_ptr ans = ATS_MALLOC (sizeof(ats_mpz_viewt0ype)) ;
   mpz_init((mpz_ptr)ans) ;
   mpz_add ((mpz_ptr)ans, (mpz_ptr)x, (mpz_ptr)y) ;
   return ans ;
-}
+} // end of [atsopt_add_intinf_intinf]
 
 static inline
 ats_mpz_ptr_type
-ats_intinf_sub_intinf_intinf
-  (ats_mpz_ptr_type x, ats_mpz_ptr_type y) {
+atsopt_sub_intinf_intinf (
+  ats_mpz_ptr_type x, ats_mpz_ptr_type y
+) {
   mpz_ptr ans = ATS_MALLOC (sizeof(ats_mpz_viewt0ype)) ;
   mpz_init((mpz_ptr)ans) ;
   mpz_sub ((mpz_ptr)ans, (mpz_ptr)x, (mpz_ptr)y) ;
   return ans ;
-}
+} // end of [atsopt_sub_intinf_intinf]
 
 static inline
 ats_mpz_ptr_type
-ats_intinf_mul_intinf_intinf
-  (ats_mpz_ptr_type x, ats_mpz_ptr_type y) {
+atsopt_mul_intinf_intinf (
+  ats_mpz_ptr_type x, ats_mpz_ptr_type y
+) {
   mpz_ptr ans = ATS_MALLOC (sizeof(ats_mpz_viewt0ype)) ;
   mpz_init((mpz_ptr)ans) ;
   mpz_mul ((mpz_ptr)ans, (mpz_ptr)x, (mpz_ptr)y) ;
   return ans;
-}
+} // end of [atsopt_mul_intinf_intinf]
 
 /* ****** ****** */
 
@@ -233,7 +255,8 @@ extern ats_ptr_type atspre_tostring_llint (ats_llint_type i) ;
 
 static inline
 ats_ptr_type
-ats_intinf_tostring_intinf (ats_mpz_ptr_type x) {
+atsopt_tostring_intinf
+  (ats_mpz_ptr_type x) {
 #ifdef HAVE_GMP_H
   return mpz_get_str((char*)0, 10/*base*/, (mpz_ptr)x) ;
 #else
@@ -243,7 +266,7 @@ ats_intinf_tostring_intinf (ats_mpz_ptr_type x) {
 */
   return atspre_tostring_llint (*(mpz_ptr)x) ;
 #endif
-}
+} // end of [atsopt_tostring_intinf]
 
 /* ****** ****** */
 

@@ -54,92 +54,88 @@ fun intinf_get_int (i: intinf_t): int
 
 (* ****** ****** *)
 
-fun lt_intinf_int (_: intinf_t, _: int): bool
-  = "ats_intinf_lt_intinf_int"
-
-fun lte_intinf_int (_: intinf_t, _: int): bool
-  = "ats_intinf_lte_intinf_int"
-
+fun lt_intinf_int
+  (_: intinf_t, _: int): bool = "atsopt_lt_intinf_int"
 overload < with lt_intinf_int
+
+fun lte_intinf_int
+  (_: intinf_t, _: int): bool = "atsopt_lte_intinf_int"
 overload <= with lte_intinf_int
 
-fun gt_intinf_int (_: intinf_t, _: int): bool
-  = "ats_intinf_gt_intinf_int"
+fun lt_intinf_intinf
+  (_: intinf_t, _: intinf_t): bool = "atsopt_lt_intinf_intinf"
+overload < with lt_intinf_intinf
 
-fun gte_intinf_int (_: intinf_t, _: int): bool
-  = "ats_intinf_gte_intinf_int"
-
-overload > with gt_intinf_int
-overload >= with gte_intinf_int
-
-//
-
-fun eq_int_intinf (_: int, _: intinf_t): bool
-  = "ats_intinf_eq_int_intinf"
-overload = with eq_int_intinf
-
-fun eq_intinf_intinf (_: intinf_t, _: intinf_t): bool
-  = "ats_intinf_eq_intinf_intinf"
-overload = with eq_intinf_intinf
-
-fun neq_intinf_int (_: intinf_t, _: int): bool
-  = "ats_intinf_neq_intinf_int"
-overload <> with neq_intinf_int
+fun lte_intinf_intinf
+  (_: intinf_t, _: intinf_t): bool = "atsopt_lte_intinf_intinf"
+overload <= with lte_intinf_intinf
 
 (* ****** ****** *)
 
-fun lt_intinf_intinf (_: intinf_t, _: intinf_t): bool
-  = "ats_intinf_lt_intinf_intinf"
+fun gt_intinf_int
+  (_: intinf_t, _: int): bool = "atsopt_gt_intinf_int"
+overload > with gt_intinf_int
 
-fun lte_intinf_intinf (_: intinf_t, _: intinf_t): bool
-  = "ats_intinf_lte_intinf_intinf"
+fun gte_intinf_int
+  (_: intinf_t, _: int): bool = "atsopt_gte_intinf_int"
+overload >= with gte_intinf_int
 
-overload < with lt_intinf_intinf
-overload <= with lte_intinf_intinf
-
-fun gt_intinf_intinf (_: intinf_t, _: intinf_t): bool
-  = "ats_intinf_gt_intinf_intinf"
-
-fun gte_intinf_intinf (_: intinf_t, _: intinf_t): bool
-  = "ats_intinf_gte_intinf_intinf"
-
+fun gt_intinf_intinf
+  (_: intinf_t, _: intinf_t): bool = "atsopt_gt_intinf_intinf"
 overload > with gt_intinf_intinf
+
+fun gte_intinf_intinf
+  (_: intinf_t, _: intinf_t): bool = "atsopt_gte_intinf_intinf"
 overload >= with gte_intinf_intinf
 
-fun eq_intinf_int (_: intinf_t, _: int): bool
-  = "ats_intinf_eq_intinf_int"
+(* ****** ****** *)
+
+fun eq_int_intinf
+  (_: int, _: intinf_t): bool = "atsopt_eq_int_intinf"
+overload = with eq_int_intinf
+
+fun eq_intinf_int
+  (_: intinf_t, _: int): bool = "atsopt_eq_intinf_int"
 overload = with eq_intinf_int
 
-fun neq_intinf_intinf (_: intinf_t, _: intinf_t): bool
-  = "ats_intinf_neq_intinf_intinf"
+fun eq_intinf_intinf
+  (_: intinf_t, _: intinf_t): bool = "atsopt_eq_intinf_intinf"
+overload = with eq_intinf_intinf
+
+fun neq_intinf_int
+  (_: intinf_t, _: int): bool = "atsopt_neq_intinf_int"
+overload <> with neq_intinf_int
+
+fun neq_intinf_intinf
+  (_: intinf_t, _: intinf_t): bool = "atsopt_neq_intinf_intinf"
 overload <> with neq_intinf_intinf
 
-fun compare_intinf_intinf (_: intinf_t, _: intinf_t): Sgn
-  = "ats_intinf_compare_intinf_intinf"
+(* ****** ****** *)
+
+fun compare_intinf_intinf
+  (_: intinf_t, _: intinf_t): Sgn = "atsopt_compare_intinf_intinf"
 overload compare with compare_intinf_intinf
 
 (* ****** ****** *)
 
-fun neg_intinf (_: intinf_t): intinf_t
-  = "ats_intinf_neg_intinf"
-
+fun neg_intinf
+  (_: intinf_t): intinf_t = "atsopt_neg_intinf"
 overload ~ with neg_intinf
 
-fun add_intinf_intinf (_: intinf_t, _: intinf_t): intinf_t
-  = "ats_intinf_add_intinf_intinf"
-
-fun sub_intinf_intinf (_: intinf_t, _: intinf_t): intinf_t
-  = "ats_intinf_sub_intinf_intinf"
-
-fun mul_intinf_intinf (_: intinf_t, _: intinf_t): intinf_t
-  = "ats_intinf_mul_intinf_intinf"
-
-fun div_intinf_intinf (_: intinf_t, _: intinf_t): intinf_t
-  = "ats_intinf_div_intinf_intinf"
-
+fun add_intinf_intinf
+  (_: intinf_t, _: intinf_t): intinf_t = "atsopt_add_intinf_intinf"
 overload + with add_intinf_intinf
+
+fun sub_intinf_intinf
+  (_: intinf_t, _: intinf_t): intinf_t = "atsopt_sub_intinf_intinf"
 overload - with sub_intinf_intinf
+
+fun mul_intinf_intinf
+  (_: intinf_t, _: intinf_t): intinf_t = "atsopt_mul_intinf_intinf"
 overload * with mul_intinf_intinf
+
+fun div_intinf_intinf
+  (_: intinf_t, _: intinf_t): intinf_t = "atsopt_div_intinf_intinf"
 overload / with div_intinf_intinf
 
 (* ****** ****** *)
@@ -149,15 +145,15 @@ fun fprint_intinf {m:file_mode}
 overload fprint with fprint_intinf
 
 fun print_intinf (i: intinf_t): void
-fun prerr_intinf (i: intinf_t): void
-
 overload print with print_intinf
+fun prerr_intinf (i: intinf_t): void
 overload prerr with prerr_intinf
 
 (* ****** ****** *)
 
-fun tostring_intinf (i: intinf_t): string
-  = "ats_intinf_tostring_intinf"
+fun tostring_intinf
+  (i: intinf_t): string = "atsopt_tostring_intinf"
+overload tostring with tostring_intinf
 
 (* ****** ****** *)
 

@@ -59,9 +59,8 @@ atsopt_solver_fm_i0nt_of_int
 ATSinline()
 ats_int_type
 atsopt_solver_fm_i0nt_of_intinf
-  (ats_mpz_ptr_type i) {
-  return ats_intinf_get_int (i) ;
-} // end of [atsopt_solver_fm_i0nt_of_intinf]
+  (ats_mpz_ptr_type i) { return atsopt_get_int (i) ; }
+// end of [atsopt_solver_fm_i0nt_of_intinf]
 
 /* ****** ****** */
 

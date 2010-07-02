@@ -71,13 +71,13 @@ val s2var_name_counter = $Cnt.counter_make ()
 fn s2var_name_make (): sym_t = let
   val n = $Cnt.counter_get_and_inc s2var_name_counter
 in
-  $Sym.symbol_make_string ($Cnt.tostring_prefix ("$", n))
+  $Sym.symbol_make_string ($Cnt.tostring_prefix_count ("$", n))
 end // end of [s2var_name_make]
 
 fn s2var_name_make_prefix (pre: string): sym_t = let
   val n = $Cnt.counter_get_and_inc s2var_name_counter
 in
-  $Sym.symbol_make_string (pre + $Cnt.tostring_prefix ("$", n))
+  $Sym.symbol_make_string (pre + $Cnt.tostring_prefix_count ("$", n))
 end // end of [s2var_name_make_prefix]
 
 in // in of [local]

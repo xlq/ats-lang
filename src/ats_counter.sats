@@ -46,7 +46,7 @@
 
 (* ****** ****** *)
 
-abst@ype count_t = $extype "ats_counter_count_type"
+abst@ype count_t = $extype "atsopt_count_type"
 abstype counter_t // ref (count_t)
 
 (* ****** ****** *)
@@ -70,19 +70,19 @@ overload = with eq_count_count
 overload <> with neq_count_count
 
 fun compare_count_count (c1: count_t, c2: count_t):<> Sgn
-  = "ats_counter_compare_count_count"
+  = "atsopt_compare_count_count"
 
 overload compare with compare_count_count
 
 (* ****** ****** *)
 
-fun count_hash (c: count_t):<> uInt = "ats_counter_count_hash"
+fun count_hash (c: count_t):<> uInt = "atsopt_count_hash"
 
 (* ****** ****** *)
 
 fun fprint_count {m:file_mode}
   (pf: file_mode_lte (m, w) | out: &FILE m, c: count_t): void
-  = "ats_counter_fprint_count"
+  = "atsopt_fprint_count"
 
 overload fprint with fprint_count
 
@@ -95,32 +95,31 @@ overload prerr with prerr_count
 (* ****** ****** *)
 
 fun tostring_count (cnt: count_t): string
-  = "ats_counter_tostring_count"
-
-fun tostring_prefix (pre: string, cnt: count_t): string
-  = "ats_counter_tostring_count_prefix"
+  = "atsopt_tostring_count"
+fun tostring_prefix_count (pre: string, cnt: count_t): string
+  = "atsopt_tostring_prefix_count"
 
 (* ****** ****** *)
 //
 // the following functions are implemented in [ats_counter.cats]
 //
 fun counter_make (): counter_t
-  = "ats_counter_counter_make"
+  = "atsopt_counter_make"
 
 fun counter_inc (cntr: counter_t): void
-  = "ats_counter_counter_inc"
+  = "atsopt_counter_inc"
 
 fun counter_get (cntr: counter_t): count_t
-  = "ats_counter_counter_get"
+  = "atsopt_counter_get"
 fun counter_set (cntr: counter_t, cnt: count_t): void
-  = "ats_counter_counter_set"
+  = "atsopt_counter_set"
 fun counter_reset (cntr: counter_t): void
-  = "ats_counter_counter_reset"
+  = "atsopt_counter_reset"
 
 fun counter_get_and_inc (cntr: counter_t): count_t
-  = "ats_counter_counter_get_and_inc"
+  = "atsopt_counter_get_and_inc"
 fun counter_inc_and_get (cntr: counter_t): count_t
-  = "ats_counter_counter_inc_and_get"
+  = "atsopt_counter_inc_and_get"
 
 (* ****** ****** *)
 
