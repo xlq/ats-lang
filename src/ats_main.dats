@@ -418,7 +418,12 @@ val the_input_filename = ref_make_elt<fil_t> ($Fil.filename_stdin)
 
 in // in of [local]
 
-fn input_filename_get (): fil_t = !the_input_filename
+fn input_filename_get
+  (): fil_t = let
+  val inp = !the_input_filename in
+  !the_input_filename := $Fil.filename_none; inp
+end // end of [input_filename_get]
+
 fn input_filename_set (fil: fil_t) = (!the_input_filename := fil)
 
 end // end of [local]
@@ -431,7 +436,12 @@ val the_output_filename = ref_make_elt<Stropt> (stropt_none)
 
 in // in of [local]
 
-fn output_filename_get (): Stropt = !the_output_filename
+fn output_filename_get
+  (): Stropt = let
+  val out = !the_output_filename in
+  !the_output_filename := stropt_none; out
+end // end of [output_filename_get]
+
 fn output_filename_set (name: Stropt) = (!the_output_filename := name)
 
 end // end of [local]
