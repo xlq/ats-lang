@@ -238,8 +238,10 @@ fn atsopt_usage (cmd: string): void = begin
   print "  --pervasive filenames (for pervasively loading (many) <filenames>)\n";
   print "  -o filename (output into <filename>)\n";
   print "  --output filename (output into <filename>)\n";
-  print "  -dep (for generating dependency lists)\n";
-  print "  --depgen (for generating dependency lists)\n";
+  print "  -dep1 (for generating dependencies only)\n";
+  print "  --depgen=1 (for generating dependencices only)\n";
+  print "  -dep2 (for generating dependencies and then compiling)\n";
+  print "  --depgen=2 (for generating dependencies and then compiling)\n";
   print "  -tc (for typechecking only)\n";
   print "  --typecheck (for typechecking only)\n";
   print "  --posmark_html (for generating a html file depicting colored concrete syntax)\n";
@@ -401,6 +403,7 @@ typedef param_t = @{
 , wait= int
 , prelude= int
 , depgen= int
+, depgenout= Stropt
 , posmark= int
 , posmark_html= int
 , typecheck_only= int
@@ -482,28 +485,6 @@ fn do_parse_filename (
     val () = $PM.posmark_pop ()
   in
     // empty
-  end // end of [val]
-//
-  val () = if param.depgen > 0 then let
-    val () = $Syn.depgen_d0eclst (d0cs)
-    prval pf_mod = file_mode_lte_w_w
-    val outname = output_filename_get ()
-  in
-    case+ 0 of
-    | _ when stropt_is_some (outname) => let
-        val outname = stropt_unsome (outname)
-        val (pf_out | p_out) =
-          fopen_exn (outname, file_mode_a) // for appending
-        val () = $Syn.fprint_depgen (pf_mod | !p_out, basename)
-        val () = fclose_exn (pf_out | p_out)
-      in
-        // nothing
-      end // end of [stropt_is_some]
-    | _ => () where {
-        val (pf_stdout | p_stdout) = stdout_get ()
-        val () = $Syn.fprint_depgen (pf_mod | !p_stdout, basename)
-        val () = stdout_view_set (pf_stdout | (*none*))
-      } // end of [_]
   end // end of [val]
 //
 in
@@ -710,13 +691,18 @@ fun loop {i:nat | i <= n} .<i>. (
             end // end of ["-d"]
           | "-o" => begin
               param.comkind := COMKINDoutput ()
-            end
+            end // end of ["-o"]
           | "-tc" => (param.typecheck_only := 1)
           | "-h" => begin
               param.comkind := COMKINDnone (); atsopt_usage (argv.[0])
             end // end of ["-h"]
           | "-v" => atsopt_version ()
-          | "-dep" => (param.depgen := 1)
+          | "-dep1" => (
+               param.depgen := 1; param.depgenout := output_filename_get ()
+             ) // end of ["-dep1"]
+          | "-dep2" => (
+               param.depgen := 2; param.depgenout := output_filename_get ()
+             ) // end of ["-dep2"]
           | _ when is_IATS_flag str => let
               val dir = IATS_extract str
             in
@@ -727,6 +713,7 @@ fun loop {i:nat | i <= n} .<i>. (
               end // end of [if]
             end (* end of [_ when ...] *)
           | _ => ()
+        // end of [val]
       in
         loop (ATSHOME, argv, param, arglst)
       end (* end of [COMARGkey (1, _)] *)
@@ -745,7 +732,12 @@ fun loop {i:nat | i <= n} .<i>. (
           | "--output" => begin
               param.comkind := COMKINDoutput ()
             end // end of ["--output"]
-          | "--depgen" => (param.depgen := 1)
+          | "--depgen=1" => (
+              param.depgen := 1; param.depgenout := output_filename_get ()
+            ) // end of ["--depgen=1"]
+          | "--depgen=2" => (
+              param.depgen := 2; param.depgenout := output_filename_get ()
+            ) // end of ["--depgen=2"]
           | "--typecheck" => (param.typecheck_only := 1)
           | "--posmark_html" => begin
               param.posmark := 1; param.posmark_html := 1
@@ -777,7 +769,29 @@ fun loop {i:nat | i <= n} .<i>. (
         val COMARGkey (_(*n*), basename) = arg
         val d0cs = do_parse_filename (flag, param, basename)
         val () = begin case+ 0 of
-          | _ when param.depgen > 0 => ()
+          | _ when param.depgen >= 1 => let
+              val () = $Syn.depgen_d0eclst (d0cs)
+              prval pf_mod = file_mode_lte_w_w
+              val outname = param.depgenout
+              val () = (case+ 0 of
+                | _ when stropt_is_some (outname) => let
+                    val outname = stropt_unsome (outname)
+                    val (pf_out | p_out) =
+                      fopen_exn (outname, file_mode_a) // for appending
+                    val () = $Syn.fprint_depgen (pf_mod | !p_out, basename)
+                    val () = fclose_exn (pf_out | p_out)
+                  in
+                    // nothing
+                  end // end of [stropt_is_some]
+                | _ => () where {
+                    val (pf_stdout | p_stdout) = stdout_get ()
+                    val () = $Syn.fprint_depgen (pf_mod | !p_stdout, basename)
+                    val () = stdout_view_set (pf_stdout | (*none*))
+                  } // end of [_]
+              ) : void // end of [val]
+            in
+              if (param.depgen >= 2) then do_trans1234 (param, flag, basename, d0cs)
+            end // end of [val]
           | _ when param.posmark_html = 1 => let
               val outname = output_filename_get ()
               val () = $PM.posmark_file_make_htm (basename, outname)
@@ -868,6 +882,7 @@ var param: param_t = @{
 , wait= 0
 , prelude= 0
 , depgen= 0
+, depgenout= stropt_none // output filename for depgen
 , posmark= 0
 , posmark_html= 0
 , typecheck_only= 0

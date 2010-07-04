@@ -286,8 +286,8 @@ cleanall: clean
 #
 depend::
 	rm -f .depend
-	$(ATSOPT) -o .depend -dep -s $(SOURCESsta) -d $(SOURCESdyn)
-	$(ATSOPT) -o .depend -dep -d ats_main.dats
+	$(ATSOPT) -o .depend -dep1 -s $(SOURCESsta) -d $(SOURCESdyn)
+	$(ATSOPT) -o .depend -dep1 -d ats_main.dats
 include .depend
 
 ######

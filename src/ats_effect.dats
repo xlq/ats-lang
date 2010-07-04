@@ -89,7 +89,8 @@ implement eq_effect_effect
   (eff1, eff2) = eq_int_int (eff1, eff2)
 // end of [eq_effect_effect]
 
-implement fprint_effect
+implement
+fprint_effect
   (pf | out, eff) = begin
   if eq_int_int (eff, EFFexn) then
     fprint1_string (pf | out, "exn")
@@ -104,7 +105,9 @@ implement fprint_effect
   end (* end of [if] *)
 end // end of [fprint_effect]
 
-implement fprint_effectlst {m} (pf | out, effs) = let
+implement
+fprint_effectlst
+  {m} (pf | out, effs) = let
   fun aux (i: int, out: &FILE m, effs: effectlst): void =
     case+ effs of
     | list_cons (eff, effs) => begin
@@ -221,22 +224,22 @@ atsopt_effset_subset (
 implement
 $Syn.d0exp_effmask_all (t: t0kn) = '{
   d0exp_loc= t.t0kn_loc, d0exp_node= $Syn.D0Eeffmask effectlst_all
-}
+} // end of [d0exp_effmask_all]
 
 implement
 $Syn.d0exp_effmask_exn (t: t0kn) = '{
   d0exp_loc= t.t0kn_loc, d0exp_node= $Syn.D0Eeffmask '[effect_exn]
-}
+} // end of [d0exp_effmask_exn]
 
 implement
 $Syn.d0exp_effmask_ntm (t: t0kn) = '{
   d0exp_loc= t.t0kn_loc, d0exp_node= $Syn.D0Eeffmask '[effect_ntm]
-}
+} // end of [d0exp_effmask_ntm]
 
 implement
 $Syn.d0exp_effmask_ref (t: t0kn) = '{
   d0exp_loc= t.t0kn_loc, d0exp_node= $Syn.D0Eeffmask '[effect_ref]
-}
+} // end of [d0exp_effmask_ref]
 
 (* ****** ****** *)
 
@@ -260,7 +263,8 @@ in
   aux (out, 0, evs)
 end // end of [fprint_effvarlst]
 
-implement fprint_effcst
+implement
+fprint_effcst
   (pf | out, efc) = begin case+ efc of
   | EFFCSTall () => fprint1_string (pf | out, "all")
   | EFFCSTnil () => fprint1_string (pf | out, "nil")
@@ -275,8 +279,10 @@ end // end of [fprint_effcst]
 
 (* ****** ****** *)
 
-implement print_effcst (efc) = print_mac (fprint_effcst, efc)
-implement prerr_effcst (efc) = prerr_mac (fprint_effcst, efc)
+implement
+print_effcst (efc) = print_mac (fprint_effcst, efc)
+implement
+prerr_effcst (efc) = prerr_mac (fprint_effcst, efc)
 
 (* ****** ****** *)
 
