@@ -2748,23 +2748,16 @@ implement d0ec_dynload (s) = '{
 
 //
 
-fn filename_dep_process
-  (name: string): void = begin case+ 0 of
-  | _ when $Glo.atsopt_depgenflag_get () > 0 => begin
-      print " "; print name
-    end // end of [filename_dep_process]
-  | _ => ()
-end // end of [filename_dep_process]
-
-implement d0ec_staload_none (s) = let
-  val name = s.s0tring_val; val () = filename_dep_process (name)
+implement
+d0ec_staload_none (s) = let
+  val name = s.s0tring_val // filename
 in '{
-  d0ec_loc= s.s0tring_loc
-, d0ec_node= D0Cstaload (None, name)
+  d0ec_loc= s.s0tring_loc, d0ec_node= D0Cstaload (None, name)
 } end // end of [d0ec_staload_none]
 
-implement d0ec_staload_some (id, s) = let
-  val name = s.s0tring_val; val () = filename_dep_process (name)
+implement
+d0ec_staload_some (id, s) = let
+  val name = s.s0tring_val // filename
   val loc = combine (id.i0de_loc, s.s0tring_loc)
 in '{
   d0ec_loc= loc, d0ec_node= D0Cstaload (Some id.i0de_sym, name)

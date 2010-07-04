@@ -73,7 +73,7 @@ fun filename_append (dir: string, bas: string): string
 //
 
 fun filename_make_absolute (fullname: string): filename_t
-fun filenameopt_make (name: string): Option_vt (filename_t)
+fun filenameopt_make_relative (name: string): Option_vt (filename_t)
 
 //
 

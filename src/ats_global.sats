@@ -64,11 +64,4 @@ fun atsopt_dynloadfun_name_set
 
 (* ****** ****** *)
 
-fun atsopt_depgenflag_get
-  (): int = "atsopt_depgenflag_get"
-fun atsopt_depgenflag_set
-  (flag: int): void = "atsopt_depgenflag_set"
-
-(* ****** ****** *)
-
 (* end of [ats_global.sats] *)

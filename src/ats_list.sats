@@ -106,7 +106,8 @@ fun list_vt_free__boxed {a:type} {n:nat} (xs: list_vt (a, n)):<> void
 
 (* ****** ****** *)
 
-fun{a:viewt@ype} list_vt_length {n:nat} (xs: !list_vt (a, n)):<> int n
+fun{a:viewt@ype}
+list_vt_length {n:nat} (xs: !list_vt (a, n)):<> int n
 fun list_vt_length__boxed {a:viewtype} {n:nat} (xs: !list_vt (a, n)):<> int n
 
 (* ****** ****** *)

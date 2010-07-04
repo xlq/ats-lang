@@ -2453,4 +2453,11 @@ fun d0eclst_posmark (d0cs: d0eclst): void
 
 (* ****** ****** *)
 
+fun depgen_d0eclst (ds: d0eclst): void
+fun fprint_depgen {m:file_mode}
+  (pf: file_mode_lte (m, w) | out: &FILE m, basename: string): void
+// end of [fprint_depgen]
+
+(* ****** ****** *)
+
 (* end of [ats_syntax.sats] *)

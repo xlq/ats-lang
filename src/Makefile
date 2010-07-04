@@ -103,7 +103,8 @@ SOURCES := \
   ats_reference.sats ats_reference.dats \
   ats_set_fun.sats ats_set_fun.dats \
   ats_parser.sats ats_parser.dats \
-  ats_syntax.sats ats_syntax.dats ats_syntax_posmark.dats \
+  ats_syntax.sats ats_syntax.dats \
+  ats_syntax_depgen.dats ats_syntax_posmark.dats \
   ats_staexp1.sats ats_staexp1.dats ats_staexp1_print.dats \
   ats_dynexp1.sats ats_dynexp1.dats ats_dynexp1_print.dats \
   ats_trans1_env.sats ats_trans1_env.dats \
@@ -281,11 +282,12 @@ cleanall: clean
 ######
 
 #
-#depend:: ; $(ATSOPT) -dep -s $(SOURCESsta) -d $(SOURCESdyn) > .depend
+# HX: '-o .depend' means appending instead of overwriting
 #
-#ATSDEP="$(ATSHOME)"/bin/atsdep
-#depend::
-#	$(ATSDEP) -s $(SOURCESsta) -d $(SOURCESdyn) ats_main.dats > .depend
+depend::
+	rm -f .depend
+	$(ATSOPT) -o .depend -dep -s $(SOURCESsta) -d $(SOURCESdyn)
+	$(ATSOPT) -o .depend -dep -d ats_main.dats
 include .depend
 
 ######

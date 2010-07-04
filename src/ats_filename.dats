@@ -455,7 +455,8 @@ in '{
 , filename_full_sym= fullname_sym
 } end // end of [filename_make_absolute]
 
-implement filenameopt_make (basename) = let
+implement
+filenameopt_make_relative (basename) = let
   val basename = string1_of_string basename
   fun aux_try (paths: pathlst, basename: String): Stropt =
     case+ paths of

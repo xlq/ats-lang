@@ -65,7 +65,7 @@ end // end of [intinf_make_int]
 
 extern fun intinf_set_string
   (x: &mpz_vt? >> mpz_vt, s: string): void
-  = "ats_intinf_set_string"
+  = "atsopt_intinf_set_string"
 
 implement intinf_make_string (s: string) = let
   val (pf_gc, pf | p) = ptr_alloc_tsz {mpz_vt} (sizeof<mpz_vt>)
@@ -78,7 +78,7 @@ end // end of [intinf_make_string]
 
 extern fun intinf_set_stringsp
   (x: &mpz_vt? >> mpz_vt, s: string): void
-  = "ats_intinf_set_stringsp"
+  = "atsopt_intinf_set_stringsp"
 
 implement intinf_make_stringsp (s: string) = let
   val (pf_gc, pf | p) = ptr_alloc_tsz {mpz_vt} (sizeof<mpz_vt>)
@@ -91,7 +91,8 @@ end // end of [intinf_make_stringsp]
 
 (* ****** ****** *)
 
-implement fprint_intinf (pf | out, r) = let
+implement
+fprint_intinf (pf | out, r) = let
   val (vbox pf_mpz | p) = ref_get_view_ptr r
 in
   $effmask_ref (fprint_mpz (pf | out, !p))
@@ -103,7 +104,7 @@ implement prerr_intinf (r) = prerr_mac (fprint_intinf, r)
 (* ****** ****** *)
 
 val () = intinf_initialize () where {
-  extern fun intinf_initialize (): void = "ats_intinf_initialize"
+  extern fun intinf_initialize (): void = "atsopt_intinf_initialize"
 } // end of [val]
 
 (* ****** ****** *)
@@ -111,7 +112,7 @@ val () = intinf_initialize () where {
 %{$
 
 ats_void_type
-ats_intinf_set_string (
+atsopt_intinf_set_string (
   ats_mpz_ptr_type x, ats_ptr_type s0
 ) {
   char *s, *si, c0, c1 ;
@@ -120,7 +121,7 @@ ats_intinf_set_string (
   s = s0 ; c0 = s[0] ;
 
   if (c0 == '\000') {
-    atspre_exit_prerrf(1, "exit(ATS): ats_intinf_set_str(%s)\n", s) ;
+    atspre_exit_prerrf(1, "exit(ATS): atsopt_intinf_set_str(%s)\n", s) ;
   } // end of [if]
 
   i = 0 ; base = 10 ;
@@ -151,12 +152,12 @@ ats_intinf_set_string (
   // mpz_out_str(stdout, 10, (mpz_ptr)x) ; fprintf (stdout, "\n") ;
 
   return ;
-} /* end of [ats_intinf_set_string] */
+} /* end of [atsopt_intinf_set_string] */
 
 /* ****** ****** */
 
 ats_void_type
-ats_intinf_set_stringsp (
+atsopt_intinf_set_stringsp (
   ats_mpz_ptr_type x, ats_ptr_type s0
 ) {
   char c, *s ;
@@ -166,45 +167,47 @@ ats_intinf_set_stringsp (
 
   if (c) {
     *s = '\000' ;
-    ats_intinf_set_string (x, s0) ;
+    atsopt_intinf_set_string (x, s0) ;
     *s = c ;
   } else {
-    ats_intinf_set_string (x, s0) ;
+    atsopt_intinf_set_string (x, s0) ;
   } // end of [if]
 
   return ;
-} /* end of [ats_intinf_set_stringsp] */
+} /* end of [atsopt_intinf_set_stringsp] */
 
 /* ****** ****** */
-
+//
 // This is necessary to prevent memory leak
-
+//
 static
-void* ats_intinf_malloc
+void* atsopt_intinf_malloc
   (size_t sz) { return ATS_MALLOC (sz) ; }
-// end of [ats_intinf_malloc]
+// end of [atsopt_intinf_malloc]
 
 static
-void ats_intinf_free
+void atsopt_intinf_free
   (void* ptr, size_t sz) { ATS_FREE (ptr) ; return ; }
-// end of [ats_intinf_free]
+// end of [atsopt_intinf_free]
 
 static
-void* ats_intinf_realloc (
+void* atsopt_intinf_realloc (
   void* ptr, size_t sz_old, size_t sz_new
 ) {
   return ATS_REALLOC (ptr, sz_new) ;
-} // end of [ats_intinf_realloc]
+} // end of [atsopt_intinf_realloc]
 
 ats_void_type
-ats_intinf_initialize () { mp_set_memory_functions (
-    &ats_intinf_malloc, &ats_intinf_realloc, &ats_intinf_free
-  ) ;
+atsopt_intinf_initialize
+  (/*argumentless*/) {
+  mp_set_memory_functions (
+    &atsopt_intinf_malloc, &atsopt_intinf_realloc, &atsopt_intinf_free
+  ) ; // end of [mp_set_memory_functions]
   return ;
-} // end of [ats_intinf_initialize]
+} // end of [atsopt_intinf_initialize]
 
 %} // end of [%{$]
 
 (* ****** ****** *)
 
-(* end of [ats_intinf.sats] *)
+(* end of [ats_intinf.dats] *)

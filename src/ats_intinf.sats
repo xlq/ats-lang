@@ -141,7 +141,7 @@ overload / with div_intinf_intinf
 (* ****** ****** *)
 
 fun fprint_intinf {m:file_mode}
-  (pf: file_mode_lte (m, w) | out: &FILE m, s2t: intinf_t): void
+  (pf: file_mode_lte (m, w) | out: &FILE m, i: intinf_t): void
 overload fprint with fprint_intinf
 
 fun print_intinf (i: intinf_t): void

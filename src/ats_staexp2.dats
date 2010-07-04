@@ -288,8 +288,11 @@ implement s2exp_cst (s2c) = '{
 
 (* ****** ****** *)
 
-implement s2exp_cstapp (s2c_fun, s2es_arg) = let
-  val s2t_fun = s2cst_srt_get s2c_fun and s2e_fun = s2exp_cst s2c_fun
+implement
+s2exp_cstapp
+  (s2c_fun, s2es_arg) = let
+  val s2t_fun = s2cst_srt_get s2c_fun
+  and s2e_fun = s2exp_cst s2c_fun
 in
   case+ un_s2rt_fun s2t_fun of
   | ~Some_vt s2ts_arg_s2t_res => begin
@@ -308,15 +311,19 @@ end // end of [s2exp_cstapp]
 
 (* ****** ****** *)
 
-implement s2exp_datconptr (d2c, s2es_arg) = let
+implement
+s2exp_datconptr (d2c, s2es_arg) = let
   val arity_real = d2con_arity_real_get d2c; val s2t =
     (if arity_real > 0 then s2rt_viewtype else s2rt_type): s2rt
 in '{
   s2exp_srt= s2t, s2exp_node= S2Edatconptr (d2c, s2es_arg)
 } end // end of [s2exp_datconptr]
 
-// [s2es_arg] cannot be empty!
-implement s2exp_datcontyp (d2c, s2es_arg) = '{
+//
+// HX: [s2es_arg] cannot be empty!
+//
+implement
+s2exp_datcontyp (d2c, s2es_arg) = '{
   s2exp_srt= s2rt_viewtype, s2exp_node= S2Edatcontyp (d2c, s2es_arg)
 } // end of [s2exp_datcontyp]
 
@@ -326,11 +333,13 @@ implement s2exp_eff (s2fe): s2exp = '{
   s2exp_srt= s2rt_eff, s2exp_node= S2Eeff s2fe
 } // end of [s2exp_eff]
 
-implement s2exp_eqeq (s2e1, s2e2) = '{
+implement
+s2exp_eqeq (s2e1, s2e2) = '{
   s2exp_srt= s2rt_bool, s2exp_node= S2Eeqeq (s2e1, s2e2)
 } // end of [s2exp_eqeq]
 
-implement s2exp_exi
+implement
+s2exp_exi
   (s2vs, s2ps, s2e_scope) = begin
   case+ (s2vs, s2ps) of
   | (nil (), nil ()) => s2e_scope
@@ -340,7 +349,8 @@ implement s2exp_exi
     } // end of [s2exp_exi]
 end // end of [s2exp_exi]
 
-implement s2exp_extype_srt (s2t, name) = '{
+implement
+s2exp_extype_srt (s2t, name) = '{
   s2exp_srt= s2t, s2exp_node= S2Eextype name
 } // end of [s2exp_extype_srt]
 
@@ -393,11 +403,13 @@ in '{
   s2exp_srt= s2t, s2exp_node= S2Eread (s2e_v, s2e)
 } end // end of [s2exp_read]
 
-implement s2exp_read_srt (s2t, s2e_v, s2e) = '{
+implement
+s2exp_read_srt (s2t, s2e_v, s2e) = '{
   s2exp_srt= s2t, s2exp_node= S2Eread (s2e_v, s2e)
 } // end of [s2exp_read_srt]
 
-implement un_s2exp_read (s2e) = begin
+implement
+un_s2exp_read (s2e) = begin
   case+ s2e.s2exp_node of
   | S2Eread (s2e_v, s2e_vt) => Some_vt @(s2e_v, s2e_vt)
   | _ => None_vt ()
@@ -405,56 +417,68 @@ end // end of [un_s2exp_read]
 
 (* ****** ****** *)
 
-implement s2exp_refarg (refval, s2e) = '{
+implement
+s2exp_refarg (refval, s2e) = '{
   s2exp_srt= s2e.s2exp_srt, s2exp_node= S2Erefarg (refval, s2e)
 } // end of [s2exp_refarg]
 
-implement un_s2exp_refarg_arg (s2e) =
+implement
+un_s2exp_refarg_arg (s2e) =
   case+ s2e.s2exp_node of S2Erefarg (_, s2e_arg) => s2e_arg | _ => s2e
 // end of [un_s2exp_refarg_arg]
 
-implement s2exp_sel_srt (s2t, s2e, i) = '{
+implement
+s2exp_sel_srt (s2t, s2e, i) = '{
   s2exp_srt= s2t, s2exp_node= S2Esel (s2e, i)
 } // end of [s2exp_sel_srt]
 
-implement s2exp_size (s2ze) = '{
+implement
+s2exp_size (s2ze) = '{
   s2exp_srt= s2rt_int, s2exp_node= S2Esize s2ze
 } // end of [s2exp_size]
 
-implement s2exp_sizeof (s2e) = '{
+implement
+s2exp_sizeof (s2e) = '{
   s2exp_srt= s2rt_int, s2exp_node= S2Esizeof s2e
 } // end of [s2exp_sizeof]
 
-implement s2exp_top_srt (s2t, knd, s2e) = '{
+implement
+s2exp_top_srt (s2t, knd, s2e) = '{
   s2exp_srt= s2t, s2exp_node= S2Etop (knd, s2e)
 } // end of [s2exp_top_srt]
 
-implement s2exp_tup_srt (s2t, s2es) = '{
+implement
+s2exp_tup_srt (s2t, s2es) = '{
   s2exp_srt= s2t, s2exp_node= S2Etup s2es
 } // end of [s2exp_tup_srt]
 
-implement s2exp_tyarr (s2e_elt, s2ess_dim) = let
+implement
+s2exp_tyarr (s2e_elt, s2ess_dim) = let
   val s2t: s2rt =
     if s2exp_is_linear s2e_elt then s2rt_viewt0ype else s2rt_t0ype
 in '{
   s2exp_srt= s2t, s2exp_node= S2Etyarr (s2e_elt, s2ess_dim)
 } end // end of [s2exp_tyarr]
 
-implement s2exp_tyleq (knd, s2e1, s2e2) = '{
+implement
+s2exp_tyleq (knd, s2e1, s2e2) = '{
   s2exp_srt= s2rt_bool, s2exp_node= S2Etyleq (knd, s2e1, s2e2)
 } // end of [s2exp_tyleq]
 
 (* s2exp_list: [s2es] consists of types (not viewtypes) *)
-implement s2exp_tylst (s2es) = '{
+implement
+s2exp_tylst (s2es) = '{
   s2exp_srt= s2rt_types, s2exp_node= S2Etylst s2es
 } // end of [s2exp_tylst]
 
-implement s2exp_tyrec_srt
+implement
+s2exp_tyrec_srt
   (s2t, k, npf, ls2es) = '{
   s2exp_srt= s2t, s2exp_node= S2Etyrec (k, npf, ls2es)
 } // end of [s2exp_tyrec_srt]
 
-implement s2exp_uni
+implement
+s2exp_uni
   (s2vs, s2ps, s2e_scope) = begin
   case+ (s2vs, s2ps) of
   | (nil (), nil ()) => s2e_scope
@@ -464,37 +488,45 @@ implement s2exp_uni
     } // end of [s2exp_uni]
 end // end of [s2exp_uni]
 
-implement s2exp_union_srt (s2t, stamp, s2i, ls2es) = '{
+implement
+s2exp_union_srt (s2t, stamp, s2i, ls2es) = '{
   s2exp_srt= s2t, s2exp_node= S2Eunion (stamp, s2i, ls2es)
 } // end of [s2exp_union_srt]
 
-implement s2exp_Var (s2V) = '{
+implement
+s2exp_Var (s2V) = '{
   s2exp_srt= s2Var_srt_get s2V, s2exp_node= S2EVar s2V
 } // end of [s2exp_Var]
 
-implement s2exp_var (s2v) = '{
+implement
+s2exp_var (s2v) = '{
   s2exp_srt= s2var_srt_get s2v, s2exp_node= S2Evar s2v
 } // end of [s2exp_var]
 
-implement s2exp_vararg (s2e_arg) = '{
+implement
+s2exp_vararg (s2e_arg) = '{
   s2exp_srt= s2rt_t0ype, s2exp_node= S2Evararg s2e_arg
 } // end of [s2exp_vararg]
 
-implement s2exp_wth (s2e, wths2es) = '{
+implement
+s2exp_wth (s2e, wths2es) = '{
   s2exp_srt= s2e.s2exp_srt, s2exp_node= S2Ewth (s2e, wths2es)
 } // end of [s2exp_wth]
 
 (* ****** ****** *)
 
-implement s2exparg_one (loc) = '{
+implement
+s2exparg_one (loc) = '{
   s2exparg_loc= loc, s2exparg_node= S2EXPARGone ()
 } // end of [s2exparg_one]
 
-implement s2exparg_all (loc) = '{
+implement
+s2exparg_all (loc) = '{
   s2exparg_loc= loc, s2exparg_node= S2EXPARGall ()
 } // end of [s2exparg_all]
 
-implement s2exparg_seq (loc, s2es) = '{
+implement
+s2exparg_seq (loc, s2es) = '{
   s2exparg_loc= loc, s2exparg_node= S2EXPARGseq (s2es)
 } // end of [s2exparg_seq]
 
@@ -503,19 +535,19 @@ implement s2exparg_seq (loc, s2es) = '{
 extern typedef "s2exp_t" = s2exp
 
 %{$
-
+//
 ats_void_type
 atsopt_s2exp_srt_set
   (ats_ptr_type s2e, ats_ptr_type s2t) {
   ((s2exp_t)s2e)->atslab_s2exp_srt = s2t ; return ;
 } /* end of [atsopt_s2exp_srt_set] */
-
+//
 ats_bool_type
 atsopt_eqref_s2exp_s2exp
   (ats_ptr_type s2e1, ats_ptr_type s2e2) {
   return (s2e1 == s2e2 ? ats_true_bool : ats_false_bool) ;
 } /* end of [atsopt_eqref_s2exp_s2exp] */
-
+//
 %} // end of [%{$]
 
 (* ****** ****** *)

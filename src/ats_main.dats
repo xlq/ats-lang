@@ -107,6 +107,7 @@ dynload "ats_stamp.dats"
 dynload "ats_symenv.dats"
 dynload "ats_symtbl.dats"
 dynload "ats_syntax.dats"
+dynload "ats_syntax_depgen.dats"
 dynload "ats_syntax_posmark.dats"
 
 dynload "ats_parser.dats"
@@ -399,6 +400,7 @@ typedef param_t = @{
   comkind= comkind
 , wait= int
 , prelude= int
+, depgen= int
 , posmark= int
 , posmark_html= int
 , typecheck_only= int
@@ -420,6 +422,19 @@ end // end of [local]
 
 (* ****** ****** *)
 
+local
+
+val the_output_filename = ref_make_elt<Stropt> (stropt_none)
+
+in // in of [local]
+
+fn output_filename_get (): Stropt = !the_output_filename
+fn output_filename_set (name: Stropt) = (!the_output_filename := name)
+
+end // end of [local]
+
+(* ****** ****** *)
+
 fn do_parse_filename (
     flag: int, param: param_t, basename: string
   ) : $Syn.d0eclst = let
@@ -432,7 +447,8 @@ fn do_parse_filename (
   in
     print "cwd = "; print cwd; print_newline ()
   end // end of [if]
-  val filename = (case+ $Fil.filenameopt_make basename of
+  val filename = (case+
+    $Fil.filenameopt_make_relative basename of
     | ~Some_vt filename => filename | ~None_vt () => begin
         prerr "error(ATS)";
         prerr ": the filename ["; prerr basename; prerr "] is not available.";
@@ -441,10 +457,6 @@ fn do_parse_filename (
       end // end of [None_vt]
   ) : $Fil.filename_t
   val () = input_filename_set (filename)
-  val depgen = $Glo.atsopt_depgenflag_get ()
-  val () = begin
-    if depgen > 0 then (print_string basename; print_string ":")
-  end // end of [val]
 //
   val () = if param.posmark > 0 then $PM.posmark_enable ()
 //
@@ -472,7 +484,28 @@ fn do_parse_filename (
     // empty
   end // end of [val]
 //
-  val () = if depgen > 0 then print_newline ()
+  val () = if param.depgen > 0 then let
+    val () = $Syn.depgen_d0eclst (d0cs)
+    prval pf_mod = file_mode_lte_w_w
+    val outname = output_filename_get ()
+  in
+    case+ 0 of
+    | _ when stropt_is_some (outname) => let
+        val outname = stropt_unsome (outname)
+        val (pf_out | p_out) =
+          fopen_exn (outname, file_mode_a) // for appending
+        val () = $Syn.fprint_depgen (pf_mod | !p_out, basename)
+        val () = fclose_exn (pf_out | p_out)
+      in
+        // nothing
+      end // end of [stropt_is_some]
+    | _ => () where {
+        val (pf_stdout | p_stdout) = stdout_get ()
+        val () = $Syn.fprint_depgen (pf_mod | !p_stdout, basename)
+        val () = stdout_view_set (pf_stdout | (*none*))
+      } // end of [_]
+  end // end of [val]
+//
 in
   d0cs // the return value
 end // end of [do_parse_filename]
@@ -491,26 +524,13 @@ end // end of [do_parse_stdin]
 
 (* ****** ****** *)
 
-local
-
-val the_output_filename = ref_make_elt<Stropt> (stropt_none)
-
-in // in of [local]
-
-fn output_filename_get (): Stropt = !the_output_filename
-fn output_filename_set (name: Stropt) = (!the_output_filename := name)
-
-end // end of [local]
-
-(* ****** ****** *)
-
 fn do_trans12 (
     param: param_t
   , basename: string
   , d0cs: $Syn.d0eclst
   ) : $DEXP2.d2eclst = let
   val debug_flag = $Deb.debug_flag_get ()
-
+//
   val () = $Trans1.initialize ()
   val d1cs = $Trans1.d0eclst_tr d0cs
   val () = $Trans1.finalize ()
@@ -520,7 +540,7 @@ fn do_trans12 (
     print "] is successfully completed!";
     print_newline ()
   end // end of [if]
-
+//
   val () = if param.posmark_html = 2 then $PM.posmark_enable ()
   val d2cs = $Trans2.d1eclst_tr d1cs
   val () = if param.posmark_html = 2 then $PM.posmark_disable ()
@@ -691,12 +711,12 @@ fun loop {i:nat | i <= n} .<i>. (
           | "-o" => begin
               param.comkind := COMKINDoutput ()
             end
-          | "-dep" => $Glo.atsopt_depgenflag_set (1)
           | "-tc" => (param.typecheck_only := 1)
           | "-h" => begin
               param.comkind := COMKINDnone (); atsopt_usage (argv.[0])
             end // end of ["-h"]
           | "-v" => atsopt_version ()
+          | "-dep" => (param.depgen := 1)
           | _ when is_IATS_flag str => let
               val dir = IATS_extract str
             in
@@ -725,7 +745,7 @@ fun loop {i:nat | i <= n} .<i>. (
           | "--output" => begin
               param.comkind := COMKINDoutput ()
             end // end of ["--output"]
-          | "--depgen" => $Glo.atsopt_depgenflag_set (1)
+          | "--depgen" => (param.depgen := 1)
           | "--typecheck" => (param.typecheck_only := 1)
           | "--posmark_html" => begin
               param.posmark := 1; param.posmark_html := 1
@@ -757,6 +777,7 @@ fun loop {i:nat | i <= n} .<i>. (
         val COMARGkey (_(*n*), basename) = arg
         val d0cs = do_parse_filename (flag, param, basename)
         val () = begin case+ 0 of
+          | _ when param.depgen > 0 => ()
           | _ when param.posmark_html = 1 => let
               val outname = output_filename_get ()
               val () = $PM.posmark_file_make_htm (basename, outname)
@@ -767,7 +788,7 @@ fun loop {i:nat | i <= n} .<i>. (
               print basename; print "] is successfully completed!";
               print_newline ()
 *)
-            end // end of [_]
+            end // end of [_ when ...]
           | _ when param.posmark_html = 2 => let
               val _(*d2cs*) = do_trans12 (param, basename, d0cs)
               val outname = output_filename_get ()
@@ -780,7 +801,6 @@ fun loop {i:nat | i <= n} .<i>. (
               print_newline ()              
 *)
             end // end of [_ when ...]
-          | _ when $Glo.atsopt_depgenflag_get () > 0 => ()
           | _ when param.typecheck_only > 0 => let
               val _(*d3cs*) = do_trans123 (param, basename, d0cs)
             in
@@ -826,8 +846,8 @@ fun loop {i:nat | i <= n} .<i>. (
         // end of [val]
         val d0cs = do_parse_stdin (flag)
         val () = begin case+ 0 of
+          | _ when param.depgen > 0 => ()
           | _ when param.posmark = 1 => ()
-          | _ when $Glo.atsopt_depgenflag_get () > 0 => ()
           | _ when param.typecheck_only > 0 => let
               val _(*d3cs*) = do_trans123 (param, "stdin", d0cs)
             in
@@ -847,6 +867,7 @@ var param: param_t = @{
   comkind= COMKINDnone ()
 , wait= 0
 , prelude= 0
+, depgen= 0
 , posmark= 0
 , posmark_html= 0
 , typecheck_only= 0

@@ -886,9 +886,12 @@ fun aux_item (d0e0: d0exp): d1expitm = let
       $Fix.ITEMopr ($Fix.OPERpre ($Fix.delay_prec_dyn, f))
     end // end of [D0Edelay]
   | D0Edynload () => let
-      fn f (d1e: d1exp):<cloref1> d1expitm = case+ d1e.d1exp_node of
+      fn f (d1e: d1exp)
+        :<cloref1> d1expitm =
+        case+ d1e.d1exp_node of
         | D1Estring (name, _) => let
-            val fil = case+ $Fil.filenameopt_make name of
+            val fil = (case+
+              $Fil.filenameopt_make_relative name of
               | ~Some_vt fil => fil
               | ~None_vt () => begin
                   prerr_loc_error1 d1e.d1exp_loc;
@@ -897,16 +900,17 @@ fun aux_item (d0e0: d0exp): d1expitm = let
                   prerr_newline ();
                   $Err.abort {fil_t} ()
                 end
+            ) : fil_t // end of [val]
             val loc0 = $Loc.location_combine (loc0, d1e.d1exp_loc)
           in
             $Fix.ITEMatm (d1exp_dynload (loc0, fil))
-          end
+          end // end of [D1Estring]
         | _ => begin
             prerr_loc_error1 d1e.d1exp_loc;
             prerr ": the dynamic expression must be a string constant";
             prerr_newline ();
             $Err.abort {d1expitm} ()
-          end
+          end // end of [_]
         // end of [case]
     in
       $Fix.ITEMopr ($Fix.OPERpre ($Fix.dynload_prec_dyn, f))
@@ -916,6 +920,7 @@ fun aux_item (d0e0: d0exp): d1expitm = let
         let val loc0 = $Loc.location_combine (loc0, d1e.d1exp_loc) in
           $Fix.ITEMatm (d1exp_effmask (loc0, effs, d1e))
         end
+      // end of [fn f]
     in
       $Fix.ITEMopr ($Fix.OPERpre ($Fix.delay_prec_dyn, f))
     end // end of [D0Eeffmask]
@@ -1029,12 +1034,12 @@ fun aux_item (d0e0: d0exp): d1expitm = let
       $Fix.ITEMatm (d1e_lam)
     end // end of [D0Elam]
   | D0Elet (d0cs, d0e) => let
-      val (pf | ()) = trans1_level_inc ()
       val () = trans1_env_push ()
+      val (pf | ()) = trans1_level_inc ()
       val d1cs = d0eclst_tr d0cs
       val d1e = d0exp_tr d0e
-      val () = trans1_env_pop ()
       val () = trans1_level_dec (pf | (*none*))
+      val () = trans1_env_pop ()
     in
       $Fix.ITEMatm (d1exp_let (loc0, d1cs, d1e))
     end // end of [D0Elet]
@@ -1171,13 +1176,13 @@ fun aux_item (d0e0: d0exp): d1expitm = let
       $Fix.ITEMopr ($Fix.OPERpre ($Fix.viewat_prec_dyn, f))
     end // end of [D0Eviewat]
   | D0Ewhere (d0e, d0cs) => let
-      val (pf | ()) = trans1_level_inc ()
       val () = trans1_env_push ()
       // declarations are translated first!
+      val (pf | ()) = trans1_level_inc ()
       val d1cs = d0eclst_tr d0cs
       val d1e = d0exp_tr d0e
-      val () = trans1_env_pop ()
       val () = trans1_level_dec (pf | (*none*))
+      val () = trans1_env_pop ()
     in
       $Fix.ITEMatm (d1exp_where (loc0, d1e, d1cs))
     end // end of [D0Ewhere]
@@ -1690,7 +1695,8 @@ implement d0ec_tr d0c0 = begin
       d1ec_impdec (d0c0.d0ec_loc, i1mparg, i0mpdec_tr d0c)
     end // end of [D0Cimpdec]
   | D0Cdynload (name) => let
-      val filename: fil_t = case+ $Fil.filenameopt_make name of
+      val filename = (case+
+        $Fil.filenameopt_make_relative name of
         | ~Some_vt filename => filename | ~None_vt () => begin
             prerr_loc_error1 d0c0.d0ec_loc;
             prerr ": the file [";
@@ -1699,12 +1705,13 @@ implement d0ec_tr d0c0 = begin
             prerr_newline ();
             $Err.abort {fil_t} ()
           end // end of [None_vt]
-      // end of [val]
+      ) : fil_t // end of [val]
     in
       d1ec_dynload (d0c0.d0ec_loc, filename)
     end // end of [D0Cdynload]
   | D0Cstaload (idopt, name) => let
-      val filename: fil_t = case+ $Fil.filenameopt_make name of
+      val filename = (case+
+        $Fil.filenameopt_make_relative name of
         | ~Some_vt filename => filename
         | ~None_vt () => begin
             prerr_loc_error1 d0c0.d0ec_loc;
@@ -1714,12 +1721,13 @@ implement d0ec_tr d0c0 = begin
             prerr_newline ();
             $Err.abort {fil_t} ()
           end // end of [None_vt]
+      ) : fil_t // end of [val]
     in
       s0taload_tr (d0c0.d0ec_loc, idopt, filename)
     end // end of [D0Cstaload]
   | D0Clocal (d0cs_head, d0cs_body) => let
-      val (pf | ()) = trans1_level_inc ()
       val () = trans1_env_push ()
+      val (pf | ()) = trans1_level_inc ()
       val d1cs_head = d0eclst_tr d0cs_head
       val () = trans1_level_dec (pf | (*none*))
       val () = trans1_env_push ()
@@ -1732,7 +1740,8 @@ implement d0ec_tr d0c0 = begin
       d1ec_list (d0c0.d0ec_loc, guad0ec_tr (knd, gd0c))
     end // end of [D0Cguadec]
   | D0Cinclude (stadyn, name) => let
-      val filename: fil_t = case+ $Fil.filenameopt_make name of
+      val filename = (case+
+        $Fil.filenameopt_make_relative name of
         | ~Some_vt filename => filename
         | ~None_vt () => begin
             prerr_loc_error1 d0c0.d0ec_loc;
@@ -1742,6 +1751,7 @@ implement d0ec_tr d0c0 = begin
             prerr_newline ();
             $Err.abort {fil_t} ()
           end // end of [None_vt]
+      ) : fil_t // end of [val]
     in
       i0nclude_tr (d0c0.d0ec_loc, stadyn, filename)
     end // end of [D0Cinclude]

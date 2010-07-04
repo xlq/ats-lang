@@ -107,24 +107,6 @@ atsccomp_namespace_set
 
 %{$
 
-static
-ats_int_type the_depgenflag = 0 ;
-
-ats_int_type
-atsopt_depgenflag_get () { return the_depgenflag ; }
-// end of [atsopt_depgenflag_get]
-
-ats_void_type
-atsopt_depgenflag_set
-  (ats_int_type flag) { the_depgenflag = flag ; return ; }
- // end of [atsopt_depgenflag_set]
-
-%} // end of [%{$]
-
-(* ****** ****** *)
-
-%{$
-
 ats_void_type
 atsopt_global_initialize () {
   ATS_GC_MARKROOT (&the_dynloadfun_name, sizeof(ats_ptr_type)) ;
