@@ -207,7 +207,7 @@ s2cst_supcls_add (s2c, sup) = let
   val (vbox pf | p) = s2c; val sups = p->s2cst_supcls
 in
   p->s2cst_supcls := list_cons (sup, sups)
-end // end of [s2cst_supcls]
+end // end of [s2cst_supcls_add]
 
 (* ****** ****** *)
 

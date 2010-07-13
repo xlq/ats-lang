@@ -1897,7 +1897,7 @@ local
         end else begin
           y :: aux2 (lte, xs, ys', env)
         end
-      end
+      end // end of [::, ::]
     | (xs, nil ()) => xs
     | (nil (), ys) => ys
   end // end of [aux2]

@@ -742,15 +742,13 @@ fun{a1,a2:t@ype} list_unzip {n:nat}
 (* ****** ****** *)
 
 fun{a:t@ype}
-list_mergesort {env:viewtype} {n:nat} {lte:eff}
-  (xs: list (a, n), lte: (a, a, !env) -<fun,lte> bool, env: !env)
-  :<lte> list (a, n)
+list_mergesort {env:viewtype} {n:nat}
+  (xs: list (a, n), lte: (a, a, !env) -<fun> bool, env: !env):<> list (a, n)
 // end of [list_mergesort]
 
 fun{a:t@ype}
-list_quicksort {env:viewtype} {n:nat} {lte:eff}
-  (xs: list (a, n), lte: (a, a, !env) -<fun,lte> bool, env: !env)
-  :<lte> list (a, n)
+list_quicksort {env:viewtype} {n:nat}
+  (xs: list (a, n), lte: (a, a, !env) -<fun> bool, env: !env):<> list (a, n)
 // end of [list_quicksort]
 
 (* ****** ****** *)

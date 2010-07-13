@@ -161,26 +161,20 @@ fun{a:viewt@ype} list_vt_iforeach_clo {v:view} {n:nat} {f:eff}
 
 (* ****** ****** *)
 
-local
-//
-typedef cmp (a:viewt@ype) = (&a, &a) -<fun> Sgn
-//
-in // in of [local]
-
 fun{a:viewt@ype}
 list_vt_mergesort {n:nat}
-  (xs: list_vt (a, n), cmp: cmp a):<> list_vt (a, n)
+  (xs: list_vt (a, n), cmp: &(&a, &a) -<clo> Sgn):<> list_vt (a, n)
 // end of [list_vt_mergesort]
 
+//
 // note that [libc/CATS/stdlib.cats] is needed
 // this one essentially copies a given list into an array;
 // then it sorts the array and copies it back into the list;
 // then it frees up the array.
+//
 fun{a:viewt@ype}
-list_vt_quicksort {n:nat} (xs: !list_vt (a, n), cmp: cmp a):<> void
+list_vt_quicksort {n:nat} (xs: !list_vt (a, n), cmp: (&a, &a) -<fun> Sgn):<> void
 // end of [list_vt_quicksort]
-
-end // end of [local]
 
 (* ****** ****** *)
 

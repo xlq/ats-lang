@@ -510,6 +510,9 @@ end (* end of [s1explst_bind_svarlst] *)
 
 (* ****** ****** *)
 
+//
+// HX: [s2e0] is assumed to be in WHNF
+//
 fun d1exp_tr_ann (
     d1e0: d1exp, s2e0: s2exp
   ) : d2exp = begin case+ s2e0.s2exp_node of
@@ -990,11 +993,14 @@ fn i1mpdec_tr
         (loc_id, t1mparg, decarg, s2e, out_tmparg, out_tmpgua)
     | nil () => s2e
   ) : s2exp        
-  // val out_imp = $Lst.list_reverse (out_imp) // a serious bug!!!
+(*
+// val out_imp = $Lst.list_reverse (out_imp) // HX: a serious bug!!!
+*)
   val out_imp = s2qualst_reverse (out_imp)
   val () = s2qualst_tmplev_set (out_imp, template_level_get ())
   val out_tmparg = $Lst.list_reverse (out_tmparg: s2explstlst)
   val out_tmpgua = $Lst.list_reverse (out_tmpgua: s2explstlst)
+  val s2e = s2exp_whnf (s2e)
   val d2e = d1exp_tr_ann (d1c.i1mpdec_def, s2e)
   val () = begin
     case+ decarg of cons _ => template_level_dec () | nil _ => ()

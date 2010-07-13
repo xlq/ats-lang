@@ -22,6 +22,7 @@ checkall:: compall cleanall
 compall:: \
   GameOf24 \
   gtkcairoclock \
+  gtkcairopascal \
 
 ######
 
@@ -41,15 +42,15 @@ gtkcairoclock: gtkcairoclock.dats
 
 ######
 
-gtkcairofdraw: gtkcairofdraw.dats
-	$(ATSCC) -o $@ gtkcairofdraw.dats $(GTKFLAGS)
+gtkcairopascal: gtkcairopascal.dats
+	$(ATSCC) -D_ATS_GCATS -o $@ gtkcairopascal.dats $(GTKFLAGS) -lm
 
 ######
 
 html::
 	$(ATSOPT) --posmark_html -d GameOf24.dats > GameOf24_dats.html
 	$(ATSOPT) --posmark_html -d gtkcairoclock.dats > gtkcairoclock_dats.html
-	$(ATSOPT) --posmark_html -d gtkcairofdraw.dats > gtkcairofdraw_dats.html
+	$(ATSOPT) --posmark_html -d gtkcairopascal.dats > gtkcairopascal_dats.html
 
 ######
 
@@ -61,7 +62,7 @@ cleanall:: clean
 	rm -f GameOf24_dats.html
 	rm -f gtkcairoclock
 	rm -f gtkcairoclock_dats.html
-	rm -f gtkcairofdraw
-	rm -f gtkcairofdraw_dats.html
+	rm -f gtkcairopascal
+	rm -f gtkcairopascal_dats.html
 
 ###### end of [Makefile] ######

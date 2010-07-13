@@ -768,6 +768,10 @@ stadef FILEref = FILEref_type
 absviewtype
 FILEptr_viewtype (addr)
 stadef FILEptr = FILEptr_viewtype
+(*
+castfn FILEptr_encode : {l:addr} (FILE @ l | ptr l) -<> FILEptr l
+castfn FILEptr_decode : {l:addr} FILEptr l -<> (FILE @ l | ptr l)
+*)
 
 (* ****** ****** *)
 

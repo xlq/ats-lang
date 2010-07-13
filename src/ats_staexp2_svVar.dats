@@ -242,16 +242,16 @@ implement s2var_is_boxed (s2v) =
 
 implement s2var_is_unboxed (s2v) = ~(s2var_is_boxed s2v)
 
-end // end of [local] (for assuming s2var_t)
+end // end of [local] // for assuming [s2var_t]
 
 (* ****** ****** *)
 
-implement fprint_s2var (pf_out | out, s2v) = let
-  val () = $Sym.fprint_symbol (pf_out | out, s2var_sym_get s2v)
+implement fprint_s2var (pf | out, s2v) = let
+  val () = $Sym.fprint_symbol (pf | out, s2var_sym_get s2v)
 // (*
-  val () = fprint_string (pf_out | out, "(")
-  val () = $Stamp.fprint_stamp (pf_out | out, s2var_stamp_get s2v)
-  val () = fprint_string (pf_out | out, ")")
+  val () = fprint_string (pf | out, "(")
+  val () = $Stamp.fprint_stamp (pf | out, s2var_stamp_get s2v)
+  val () = fprint_string (pf | out, ")")
 // *)
 in
   // empty
@@ -291,19 +291,19 @@ assume s2varset_t = $Set.set_t (s2var_t)
 fn cmp (s2v1: s2var_t, s2v2: s2var_t):<> Sgn =
   $effmask_all (compare_s2var_s2var (s2v1, s2v2))
 
-fn fprint_s2varset_ptr {m:file_mode} {l:addr} (
+fn fprint_s2varset_ptr
+  {m:file_mode} {l:addr} (
     pf_mod: file_mode_lte (m, w)
   , pf_out: !FILE m @ l
   | p: ptr l, svs: s2varset_t
   ) : void = let
-
+//
 typedef ptrint = (ptr l, int)
-
 var pi: ptrint; val () = pi.0 := p; val () = pi.1 := 0
-
 viewdef V = @(FILE m @ l, ptrint @ pi)
-
-fn pr (pf: !V | s2v: s2var_t, pi: !ptr pi): void = let
+//
+fn pr
+  (pf: !V | s2v: s2var_t, pi: !ptr pi): void = let
   prval pf_out = pf.0
   prval pf_at = pf.1; val p = pi->0; val i = pi->1
 in
@@ -313,14 +313,14 @@ in
   pf.0 := pf_out;
   pf.1 := pf_at;
 end // end of [pr]
-
+//
 prval pf = @(pf_out, view@ pi)
 val () = $Set.set_foreach_main {V} {ptr pi} (pf | svs, pr, &pi)
-
+//
 in // in of [let]
-
+//
 pf_out := pf.0; view@ pi := pf.1
-
+//
 end // end of [fprint_s2varset_ptr]
 
 in // in of [local]
@@ -346,7 +346,7 @@ implement s2varset_union (svs1, svs2) = $Set.set_union (svs1, svs2, cmp)
 
 implement s2varset_ismem (svs, s2v) = $Set.set_member (svs, s2v, cmp)
 
-end // end of [local] (for assuming s2varset)
+end // end of [local] // for assuming [s2varset]
 
 (* ****** ****** *)
 
@@ -380,7 +380,7 @@ implement s2Varbound_loc_get (s2Vb) =
 implement s2Varbound_val_get (s2Vb) =
   let val (vbox pf | p) = s2Vb in p->s2Varbound_val end
 
-end // end of [local] (for assuming s2Varbound_t)
+end // end of [local] // for assuming [s2Varbound_t]
 
 (* ****** ****** *)
 
@@ -559,12 +559,12 @@ end // end of [compare_s2Var_s2Var]
 
 (* ****** ****** *)
 
-end // end of [local] (for assuming s2Var_t)
+end // end of [local] // for assuming [s2Var_t]
 
 (* ****** ****** *)
 
-implement fprint_s2Var (pf_out | out, s2V) =
-  $Cnt.fprint_count (pf_out | out, s2Var_cnt_get s2V)
+implement fprint_s2Var (pf | out, s2V) =
+  $Cnt.fprint_count (pf | out, s2Var_cnt_get s2V)
 // end of [fprint_s2Var]
 
 implement fprint_s2Varlst {m} (pf | out, s2Vs) = let
@@ -603,20 +603,20 @@ fn cmp (s2V1: s2Var_t, s2V2: s2Var_t):<> Sgn =
 
 in // in of [local]
 
-fn fprint_s2Varset_ptr {m:file_mode} {l:addr} (
+fn fprint_s2Varset_ptr
+  {m:file_mode} {l:addr} (
     pf_mod: file_mode_lte (m, w)
   , pf_out: !FILE m @ l
   | p: ptr l
   , sVs: s2Varset_t
   ) : void = let
-
+//
   typedef ptrint = (ptr l, int)
-
   var pi: ptrint; val () = pi.0 := p; val () = pi.1 := 0
-
   viewdef V = @(FILE m @ l, ptrint @ pi)
-
-  fn pr (pf: !V | s2V: s2Var_t, pi: !ptr pi): void = let
+//
+  fn pr
+    (pf: !V | s2V: s2Var_t, pi: !ptr pi): void = let
     prval pf_out = pf.0
     prval pf_at = pf.1; val p = pi->0; val i = pi->1
   in
@@ -626,14 +626,14 @@ fn fprint_s2Varset_ptr {m:file_mode} {l:addr} (
     pf.0 := pf_out;
     pf.1 := pf_at;
   end // end of [pr]
-
+//
   prval pf = @(pf_out, view@ pi)
   val () = $Set.set_foreach_main {V} {ptr pi} (pf | sVs, pr, &pi)
-
+//
 in // in of [let]
-
-  pf_out := pf.0; view@ pi := pf.1
-
+//
+pf_out := pf.0; view@ pi := pf.1
+//
 end // end of [fprint_s2Varset_ptr]
 
 implement fprint_s2Varset (pf | out, sVs) = 
@@ -641,21 +641,25 @@ implement fprint_s2Varset (pf | out, sVs) =
 
 implement s2Varset_nil = $Set.set_nil
 
-implement s2Varset_add (sVs, s2V) = $Set.set_insert (sVs, s2V, cmp)
+implement
+s2Varset_add (sVs, s2V) = $Set.set_insert (sVs, s2V, cmp)
 implement s2Varset_adds (sVs, s2Vs) = case+ s2Vs of
   | list_cons (s2V, s2Vs) => s2Varset_adds (s2Varset_add (sVs, s2V), s2Vs)
   | list_nil () => sVs
+// end of [s2Varset_adds]
 
-implement s2Varset_del (sVs, s2V) = $Set.set_remove (sVs, s2V, cmp)
+implement
+s2Varset_del (sVs, s2V) = $Set.set_remove (sVs, s2V, cmp)
 implement s2Varset_dels (sVs, s2Vs) = case+ s2Vs of
   | list_cons (s2V, s2Vs) => s2Varset_dels (s2Varset_del (sVs, s2V), s2Vs)
   | list_nil () => sVs
+// end of [s2Varset_dels]
 
 implement s2Varset_union (sVs1, sVs2) = $Set.set_union (sVs1, sVs2, cmp)
 
 implement s2Varset_ismem (sVs, s2V) = $Set.set_member (sVs, s2V, cmp)
 
-end // end of [local] (for assuming s2Varset_t)
+end // end of [local] // for assuming [s2Varset_t]
 
 (* ****** ****** *)
 
