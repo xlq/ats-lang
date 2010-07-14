@@ -13,7 +13,7 @@ GTKFLAGS=`pkg-config gtk+-2.0 --cflags --libs`
 ######
 
 .PHONY: all
-all: checkall
+all:: checkall
 
 ######
 
@@ -33,12 +33,12 @@ compall:: \
 #
 LIBATSGTK=$(ATSHOME)/contrib/GTK/atsctrb_GTK.o
 GameOf24: GameOf24.dats
-	$(ATSCC) -D_ATS_GCATS -o $@ $(GTKFLAGS) GameOf24.dats $(LIBATSGTK)
+	$(ATSCC) -D_ATS_GCATS -o $@ $(GTKFLAGS) GameOf24.dats $(LIBATSGTK) -lm
 
 ######
 
 gtkcairoclock: gtkcairoclock.dats
-	$(ATSCC) -o $@ gtkcairoclock.dats $(GTKFLAGS)
+	$(ATSCC) -o $@ gtkcairoclock.dats $(GTKFLAGS) -lm
 
 ######
 

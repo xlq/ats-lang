@@ -265,7 +265,7 @@ implement main (argc, argv) = let
     dna_of_string dna_three where {
     extern castfn dna_of_string (str: string): dna_t
   }
-  val eqfn = $extval ($H.eq symbol_t, "0")
+  val eqfn = $extval ($H.eqfn symbol_t, "0")
   val fhash = $extval ($H.hash symbol_t, "0")
   val tbl = $H.hashtbl_make_hint (fhash, eqfn, 98317)
 in

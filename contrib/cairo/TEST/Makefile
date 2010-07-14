@@ -60,15 +60,15 @@ test2: cairo-test2.dats
      && ./test2
 
 test3: cairo-test3.dats
-	$(ATSCC) -o test3 $(XRFLAGS) cairo-test3.dats \
+	$(ATSCC) -o test3 $(XRFLAGS) cairo-test3.dats -lm \
      && ./test3
 
 test4: cairo-test4.dats
-	$(ATSCC) -o test4 $(XRFLAGS) cairo-test4.dats \
+	$(ATSCC) -o test4 $(XRFLAGS) cairo-test4.dats -lm \
      && ./test4
 
 test5: cairo-test5.dats
-	$(ATSCC) -o test5 $(XRFLAGS) cairo-test5.dats \
+	$(ATSCC) -o test5 $(XRFLAGS) cairo-test5.dats -lm \
      && ./test5
 
 test6: cairo-test6.dats
@@ -87,15 +87,15 @@ test7-2: cairo-test7-2.dats
 ######
 
 test8-1: cairo-test8-1.dats
-	$(ATSCC) -o test8-1 $(XRFLAGS) cairo-test8-1.dats \
+	$(ATSCC) -o test8-1 $(XRFLAGS) cairo-test8-1.dats -lm \
      && ./test8-1
 
 test8-2: cairo-test8-2.dats
-	$(ATSCC) -o test8-2 $(XRFLAGS) cairo-test8-2.dats -lX11 \
+	$(ATSCC) -o test8-2 $(XRFLAGS) cairo-test8-2.dats -lX11 -lm \
      # && ./test8-2
 
 test8-3: cairo-test8-3.dats
-	$(ATSCC) -o test8-3 $(GTKFLAGS) cairo-test8-3.dats -lX11 \
+	$(ATSCC) -o test8-3 $(GTKFLAGS) cairo-test8-3.dats -lX11 -lm \
      # && ./test8-3
 
 ######

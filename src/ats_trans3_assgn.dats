@@ -61,7 +61,8 @@ overload prerr with $Loc.prerr_location
 
 (* ****** ****** *)
 
-implement s2exp_addr_slablst_assgn
+implement
+s2exp_addr_slablst_assgn
   (loc0, s2e0, s2ls0, s2e_new) = let
   val @(s2r0, s2ls0_ft) = s2exp_addr_normalize s2e0
   val s2ls0 = $Lst.list_append (s2ls0_ft, s2ls0)
@@ -128,7 +129,8 @@ end // end of [s2exp_addr_slablst_assgn]
 
 (* ****** ****** *)
 
-implement d2var_lin_slablst_assgn (loc0, d2v, s2ls, s2e_new) = let
+implement
+d2var_lin_slablst_assgn (loc0, d2v, s2ls, s2e_new) = let
 (*
   val () = begin
     print "d2var_lin_slablst_assgn: d2v = "; print d2v; print_newline ()
@@ -167,7 +169,8 @@ end // end of [d2var_lin_slablst_assgn]
 
 (* ****** ****** *)
 
-implement d2var_mut_slablst_assgn
+implement
+d2var_mut_slablst_assgn
   (loc0, d2v, s2ls, s2e_new) = let
   val s2e_addr = (case+ d2var_addr_get d2v of
     | Some s2e => s2e

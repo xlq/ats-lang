@@ -32,7 +32,7 @@ compall:: \
 ######
 
 blurring: blurring.dats blur_image_surface.o
-	$(ATSCC) -o $@ blurring.dats blur_image_surface.o $(GTKCLFLAGS)
+	$(ATSCC) -o $@ blurring.dats blur_image_surface.o $(GTKCLFLAGS) -lm
 
 blur_image_surface.o: blur_image_surface.dats
 	$(ATSCC) -c -o $@ blur_image_surface.dats $(XRCFLAGS)
@@ -55,15 +55,15 @@ stroke-image: stroke-image.dats
 ######
 
 testcairo: testcairo.dats
-	$(ATSCC) -o $@ testcairo.dats $(GTKCLFLAGS)
+	$(ATSCC) -o $@ testcairo.dats $(GTKCLFLAGS) -lm
 
 ######
 
 text-rotate: text-rotate.dats
-	$(ATSCC) -o $@ text-rotate.dats $(GTKCLFLAGS)
+	$(ATSCC) -o $@ text-rotate.dats $(GTKCLFLAGS) -lm
 
 text-transform: text-transform.dats
-	$(ATSCC) -o $@ text-transform.dats $(GTKCLFLAGS)
+	$(ATSCC) -o $@ text-transform.dats $(GTKCLFLAGS) -lm
 
 ######
 

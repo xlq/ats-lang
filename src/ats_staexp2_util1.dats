@@ -1022,7 +1022,9 @@ fun s2cst_root_get (s2c: s2cst_t): s2cst_t = begin
   | S2CSTLSTcons (s2c, _) => s2cst_root_get s2c | S2CSTLSTnil () => s2c
 end // end of [s2cst_root_get]
 
-fn s2zexp_make_s2cst (s2c: s2cst_t): s2zexp = S2ZEcst s2c
+fn s2zexp_make_s2cst
+  (s2c: s2cst_t): s2zexp = S2ZEcst s2c
+// end of [s2zexp_make_s2cst]
 
 implement s2zexp_make_s2exp (s2e0) = let
   fun aux_s2exp (
@@ -1032,7 +1034,12 @@ implement s2zexp_make_s2exp (s2e0) = let
       | S2Eapp (s2e_fun, s2es_arg) =>
           aux_s2exp_app (s2vss, s2e0.s2exp_srt, s2e_fun, s2es_arg)
         // end of [S2Eapp]
-      | S2Ecst s2c => s2zexp_make_s2cst (s2cst_root_get s2c)
+//
+      | S2Ecst s2c => let
+          val isabs = s2cst_isabs_get (s2c) in case+ isabs of
+          | Some (Some s2e) => aux_s2exp (s2vss, s2e) | _ => s2zexp_make_s2cst (s2c)
+        end // end of [S2Ecst]
+//
       | S2Eclo (knd, _) => if knd <> 0 then S2ZEword 1 else S2ZEbot ()
       | S2Edatconptr (d2c, _) => s2zexp_make_s2cst (d2con_scst_get d2c)
       | S2Edatcontyp (d2c, _) => s2zexp_make_s2cst (d2con_scst_get d2c)
@@ -1065,20 +1072,17 @@ implement s2zexp_make_s2exp (s2e0) = let
   and aux_s2exp_app ( // [s2e_fun] is normalized
       s2vss: s2varlstlst, s2t: s2rt, s2e_fun: s2exp, s2es_arg: s2explst
     ) : s2zexp =
-    case+ 0 of
-    | _ when s2rt_is_boxed s2t =>
-        aux_s2exp (s2vss, s2e_fun) // should it be replaced with S2ZEWORD (1) ?
-      // end of [_ when ...] // boxed type
-    | _ => begin case+ s2e_fun.s2exp_node of
-      | S2Ecst s2c => let
-          val isabs = s2cst_isabs_get (s2c) in case+ isabs of
-            | Some (Some s2e_fun) => let
-                val s2e = s2exp_app_srt (s2t, s2e_fun, s2es_arg) in aux_s2exp (s2vss, s2e)
-              end // end of [Some (Some _)]
-            | _ => s2zexp_make_s2cst (s2cst_root_get s2c) // incorrect for certain constructors
-        end (* end of [S2Ecst] *)
-      | _ => S2ZEbot () (* ??? *)
-     end (* end of [_] *)
+    case+ s2e_fun.s2exp_node of
+    | S2Ecst s2c => let
+        val isabs = s2cst_isabs_get (s2c)
+      in
+        case+ isabs of
+        | Some (Some s2e_fun) => let
+            val s2e = s2exp_app_srt (s2t, s2e_fun, s2es_arg) in aux_s2exp (s2vss, s2e)
+          end // end of [Some (Some _)]
+        | _ => s2zexp_make_s2cst (s2cst_root_get s2c) // incorrect for certain constructors
+      end (* end of [S2Ecst] *)
+    | _ => S2ZEbot () (* HX: ??? *)
   // end of [aux_s2exp_app]
   
   and aux_s2explst

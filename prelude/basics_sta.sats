@@ -766,12 +766,8 @@ stadef FILEref = FILEref_type
 // HX-2010-06-12:
 //
 absviewtype
-FILEptr_viewtype (addr)
+FILEptr_viewtype (addr) = ptr
 stadef FILEptr = FILEptr_viewtype
-(*
-castfn FILEptr_encode : {l:addr} (FILE @ l | ptr l) -<> FILEptr l
-castfn FILEptr_decode : {l:addr} FILEptr l -<> (FILE @ l | ptr l)
-*)
 
 (* ****** ****** *)
 

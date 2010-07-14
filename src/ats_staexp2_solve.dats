@@ -254,7 +254,8 @@ tyreckind_equal_solve_err (loc, knd1, knd2, err) =
 
 (* ****** ****** *)
 
-implement s2exp_out_void_solve (loc0, s2e) = let
+implement
+s2exp_out_void_solve (loc0, s2e) = let
   var err: int = 0
   val s2e = s2exp_whnf s2e
   val () = case+ s2e.s2exp_node of
@@ -281,7 +282,8 @@ in
   end // end of [if]
 end // end of [s2exp_out_or_void_solve]
 
-implement s2exp_out_void_solve_at (loc0, s2e_at) = begin
+implement
+s2exp_out_void_solve_at (loc0, s2e_at) = begin
   case+ un_s2exp_at_viewt0ype_addr_view s2e_at of
   | ~Some_vt s2ts2a => s2exp_out_void_solve (loc0, s2ts2a.0)
   | ~None_vt () => begin
@@ -355,7 +357,8 @@ fn s2exp_equal_solve_appvar_err (
 
 (* ****** ****** *)
 
-implement s2exp_equal_solve (loc0, s2e10, s2e20) = let
+implement
+s2exp_equal_solve (loc0, s2e10, s2e20) = let
   var err: int = 0
   val () = s2exp_equal_solve_err (loc0, s2e10, s2e20, err)
 in
@@ -364,7 +367,8 @@ in
   end // end of [if]
 end (* end of [s2exp_equal_solve] *)
 
-implement s2exp_equal_solve_err (loc0, s2e10, s2e20, err) = let
+implement
+s2exp_equal_solve_err (loc0, s2e10, s2e20, err) = let
   val err0 = err
   val s2e10 = s2exp_whnf s2e10 and s2e20 = s2exp_whnf s2e20
 (*
@@ -461,7 +465,8 @@ in
   // nothing
 end // end of [s2exp_equal_solve_err]
 
-implement s2explst_equal_solve_err
+implement
+s2explst_equal_solve_err
   (loc0, s2es10, s2es20, err) = let
   fun aux ( // tail-recursive
       s2es1: s2explst, s2es2: s2explst, err: &int
@@ -479,7 +484,9 @@ in
   aux (s2es10, s2es20, err)
 end // end of [s2explst_equal_solve_err]
 
-implement labs2explst_equal_solve_err (loc0, ls2es10, ls2es20, err) = let
+implement
+labs2explst_equal_solve_err
+  (loc0, ls2es10, ls2es20, err) = let
   fun aux (
       ls2es1: labs2explst
     , ls2es2: labs2explst
@@ -500,7 +507,8 @@ in
   aux (ls2es10, ls2es20, err)
 end // end of [labs2explst_equal_solve_err]
 
-implement wths2explst_equal_solve_err
+implement
+wths2explst_equal_solve_err
   (loc0, wths2es10, wths2es20, err) = let
   fun aux (
       wths2es1: wths2explst
@@ -527,7 +535,8 @@ in
   aux (wths2es10, wths2es20, err)
 end // end of [wths2explst_equal_solve_err]
 
-implement s2explstlst_equal_solve_err
+implement
+s2explstlst_equal_solve_err
   (loc0, s2ess10, s2ess20, err) = let
   fun aux (
       s2ess1: s2explstlst, s2ess2: s2explstlst, err: &int
@@ -547,7 +556,7 @@ end // end of [s2explstlst_equal_solve_err]
 (* ****** ****** *)
 
 implement
-  s2exp_size_equal_solve_err
+s2exp_size_equal_solve_err
     (loc0, s2e10, s2e20, err) = let
   val s2ze10 = s2zexp_make_s2exp s2e10
   and s2ze20 = s2zexp_make_s2exp s2e20
@@ -560,7 +569,7 @@ end (* end of [s2exp_size_equal_solve_err] *)
 (* ****** ****** *)
 
 implement
-  s2exp_tyleq_solve_err (loc0, s2e10, s2e20, err) = let
+s2exp_tyleq_solve_err (loc0, s2e10, s2e20, err) = let
   val err0 = err
   val s2e10 = s2exp_whnf s2e10 and s2e20 = s2exp_whnf s2e20
 //
@@ -840,7 +849,9 @@ in
   // nothing
 end // end of [s2exp_tyleq_solve_err]
 
-implement s2explst_tyleq_solve_err (loc0, s2es10, s2es20, err) = let
+implement
+s2explst_tyleq_solve_err
+  (loc0, s2es10, s2es20, err) = let
   fun aux (s2es1: s2explst, s2es2: s2explst, err: &int)
     :<cloptr1> void = begin case+ (s2es1, s2es2) of
     | (s2e1 :: s2es1, s2e2 :: s2es2) => begin
@@ -855,8 +866,10 @@ in
   aux (s2es10, s2es20, err)
 end // end of [s2explst_tyleq_solve_err]
 
-implement s2explst_tyleq_solve_argvarlst_err
-  (loc0, s2es1, s2es2, argvarlst, err) = begin case+ argvarlst of
+implement
+s2explst_tyleq_solve_argvarlst_err
+  (loc0, s2es1, s2es2, argvarlst, err) = begin
+  case+ argvarlst of
   | cons (argvar, argvarlst) => begin case+ (s2es1, s2es2) of
     | (s2e1 :: s2es1, s2e2 :: s2es2) => let
         val pol = argvar.2
@@ -881,7 +894,9 @@ implement s2explst_tyleq_solve_argvarlst_err
   | nil () => ()
 end // end of [s2explst_tyleq_solve_argvarlst_err]
 
-implement labs2explst_tyleq_solve_err (loc0, ls2es10, ls2es20, err) = let
+implement
+labs2explst_tyleq_solve_err
+  (loc0, ls2es10, ls2es20, err) = let
   fun aux (ls2es1: labs2explst, ls2es2: labs2explst, err: &int)
     :<cloptr1> void = begin case+ (ls2es1, ls2es2) of
     | (LABS2EXPLSTcons (l1, s2e1, ls2es1),
@@ -898,7 +913,8 @@ in
   aux (ls2es10, ls2es20, err)
 end // end of [labs2explst_tyleq_solve_err]
 
-implement wths2explst_tyleq_solve_err
+implement
+wths2explst_tyleq_solve_err
   (loc0, wths2es10, wths2es20, err) = let
   fun aux (wths2es1: wths2explst, wths2es2: wths2explst, err: &int)
     :<cloptr1> void = begin case+ (wths2es1, wths2es2) of
@@ -923,7 +939,8 @@ end // end of [wths2explst_tyleq_solve_err]
 
 //
 
-implement s2eff_leq_solve (loc0, s2fe1, s2fe2) = let
+implement
+s2eff_leq_solve (loc0, s2fe1, s2fe2) = let
   var err: int = 0
   val () = s2eff_leq_solve_err (loc0, s2fe1, s2fe2, err)
 in
@@ -939,7 +956,8 @@ in
   end // end of [if]
 end // end of [s2eff_leq_solve]
 
-implement s2eff_leq_solve_err (loc0, s2fe1, s2fe2, err) = let
+implement
+s2eff_leq_solve_err (loc0, s2fe1, s2fe2, err) = let
 (*
   val () = begin
     print "s2eff_leq_solve_err: s2fe1 = "; print s2fe1; print_newline ();
@@ -999,7 +1017,8 @@ fun s2exp_tyleq_solve_ubs_err
   | nil () => ()
 // end of [s2exp_tyleq_solve_ubs_err]
 
-implement s2exp_equal_solve_Var_err (loc0, s2V1, s2e1, s2e2, err) = let
+implement
+s2exp_equal_solve_Var_err (loc0, s2V1, s2e1, s2e2, err) = let
 (*
   val () = begin
     print "s2exp_equal_solve_Var_err: s2V1 = "; print s2V1; print_newline ();
@@ -1150,7 +1169,8 @@ end // end of [s2exp_tyleq_solve_Var_r_err]
 
 (* ****** ****** *)
 
-implement s2exp_tyleq_solve (loc0, s2e10, s2e20) = let
+implement
+s2exp_tyleq_solve (loc0, s2e10, s2e20) = let
   var err: int = 0
   val () = s2exp_tyleq_solve_err (loc0, s2e10, s2e20, err)
 in
@@ -1159,7 +1179,8 @@ in
   end // end of [if]
 end (* end of [s2exp_tyleq_solve] *)
 
-implement s2explst_arg_tyleq_solve (loc0, s2es10, s2es20) = let
+implement
+s2explst_arg_tyleq_solve (loc0, s2es10, s2es20) = let
   fun aux {n:nat}
     (loc0: loc_t, s2es1: list (s2exp, n), s2es2: list (s2exp, n))
     : void = case+ s2es1 of
@@ -1218,7 +1239,8 @@ in
   end
 end // end of [s2exp_hypo_equal_solve_con]
 
-implement s2exp_hypo_equal_solve (loc0, s2e1, s2e2) = let
+implement
+s2exp_hypo_equal_solve (loc0, s2e1, s2e2) = let
   val s2e1 = s2exp_whnf s2e1 and s2e2 = s2exp_whnf s2e2
 (*
   val () = begin
@@ -1284,7 +1306,8 @@ in
   | (_, _) => trans3_env_hypo_add_eqeq (loc0, s2e1, s2e2)
 end // end of [s2exp_hypo_equal_solve]
 
-implement s2explst_hypo_equal_solve (loc0, s2es1, s2es2) =
+implement
+s2explst_hypo_equal_solve (loc0, s2es1, s2es2) =
   case+ (s2es1, s2es2) of
   | (cons (s2e1, s2es1), cons (s2e2, s2es2)) => begin
       s2exp_hypo_equal_solve (loc0, s2e1, s2e2);

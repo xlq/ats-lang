@@ -122,24 +122,30 @@ end // end of [s2var_copy]
 
 implement s2var_sym_get (s2v) =
   let val (vbox pf | p) = s2v in p->s2var_sym end
+// end of [s2var_sym_get]
 
 implement s2var_srt_get (s2v) =
   let val (vbox pf | p) = s2v in p->s2var_srt end
+// end of [s2var_srt_get]
 
 implement s2var_tmplev_get (s2v) =
   let val (vbox pf | p) = s2v in p->s2var_tmplev end
+// end of [s2var_tmplev_get]
 
 implement s2var_tmplev_set (s2v, lev) =
   let val (vbox pf | p) = s2v in p->s2var_tmplev := lev end
+// end of [s2var_tmplev_set]
 
 implement s2var_sVarset_get (s2v) =
   let val (vbox pf | p) = s2v in p->s2var_sVarset end
+// end of [s2var_sVarset_get]
 
 implement s2var_sVarset_set (s2v, sVs) =
   let val (vbox pf | p) = s2v in p->s2var_sVarset := sVs end
 // end of [s2var_sVarset_get]
 
-implement s2varlst_sVarset_set (s2vs, sVs) = let
+implement
+s2varlst_sVarset_set (s2vs, sVs) = let
   fun loop (s2vs: s2varlst, sVs: s2Varset_t): void =
     case+ s2vs of
     | list_cons (s2v, s2vs) => (
@@ -466,49 +472,64 @@ end // end of [s2Var_make_var]
 
 implement s2Var_loc_get (s2V) =
   let val (vbox pf | p) = s2V in p->s2Var_loc end
+// end of [s2Var_loc_get]
 
 implement s2Var_cnt_get (s2V) =
   let val (vbox pf | p) = s2V in p->s2Var_cnt end
+// end of [s2Var_cnt_get]
 
 implement s2Var_srt_get (s2V) =
   let val (vbox pf | p) = s2V in p->s2Var_srt end
+// end of [s2Var_srt_get]
 
 implement s2Var_srt_set (s2V, s2t) =
   let val (vbox pf | p) = s2V in p->s2Var_srt := s2t end
+// end of [s2Var_srt_set]
 
 implement s2Var_svar_get (s2V) =
   let val (vbox pf | p) = s2V in p->s2Var_svar end
+// end of [s2Var_svar_get]
 
 implement s2Var_link_get (s2V) =
   let val (vbox pf | p) = s2V in p->s2Var_link end
+// end of [s2Var_link_get]
 
 implement s2Var_link_set (s2V, os2e) =
   let val (vbox pf | p) = s2V in p->s2Var_link := os2e end
+// end of [s2Var_link_set]
 
 implement s2Var_lbs_get (s2V) =
   let val (vbox pf | p) = s2V in p->s2Var_lbs end
+// end of [s2Var_lbs_get]
 
 implement s2Var_lbs_set (s2V, lbs) =
   let val (vbox pf | p) = s2V in p->s2Var_lbs := lbs end
+// end of [s2Var_lbs_set]
 
 implement s2Var_ubs_get (s2V) =
   let val (vbox pf | p) = s2V in p->s2Var_ubs end
+// end of [s2Var_ubs_get]
 
 implement s2Var_ubs_set (s2V, ubs) =
   let val (vbox pf | p) = s2V in p->s2Var_ubs := ubs end
+// end of [s2Var_ubs_set]
 
 implement s2Var_sVarset_get (s2V) =
   let val (vbox pf | p) = s2V in p->s2Var_sVarset end
+// end of [s2Var_sVarset_get]
 
 implement s2Var_sVarset_set (s2V, sVs) =
   let val (vbox pf | p) = s2V in p->s2Var_sVarset := sVs end
+// end of [s2Var_sVarset_set]
 
 implement s2Var_stamp_get (s2V) =
   let val (vbox pf | p) = s2V in p->s2Var_stamp end
+// end of [s2Var_stamp_get]
 
 (* ****** ****** *)
 
-implement lt_s2Var_s2Var (s2V1, s2V2) = let
+implement
+lt_s2Var_s2Var (s2V1, s2V2) = let
   val stamp1 =
     let val (vbox pf1 | p1) = s2V1 in p1->s2Var_stamp end
   val stamp2 =
@@ -517,7 +538,8 @@ in
   $Stamp.lt_stamp_stamp (stamp1, stamp2)
 end // end of [lt_s2Var_s2Var]
 
-implement lte_s2Var_s2Var (s2V1, s2V2) = let
+implement
+lte_s2Var_s2Var (s2V1, s2V2) = let
   val stamp1 =
     let val (vbox pf1 | p1) = s2V1 in p1->s2Var_stamp end
   val stamp2 =
@@ -526,7 +548,8 @@ in
   $Stamp.lte_stamp_stamp (stamp1, stamp2)
 end // end of [lte_s2Var_s2Var]
 
-implement eq_s2Var_s2Var (s2V1, s2V2) = let
+implement
+eq_s2Var_s2Var (s2V1, s2V2) = let
   val stamp1 =
     let val (vbox pf1 | p1) = s2V1 in p1->s2Var_stamp end
   val stamp2 =
@@ -535,7 +558,8 @@ in
   $Stamp.eq_stamp_stamp (stamp1, stamp2)
 end // end of [eq_s2Var_s2Var]
 
-implement neq_s2Var_s2Var (s2V1, s2V2) = let
+implement
+neq_s2Var_s2Var (s2V1, s2V2) = let
   val stamp1 =
     let val (vbox pf1 | p1) = s2V1 in p1->s2Var_stamp end
   // end of [val]
@@ -546,7 +570,8 @@ in
   $Stamp.neq_stamp_stamp (stamp1, stamp2)
 end // end of [neq_s2Var_s2Var]
 
-implement compare_s2Var_s2Var (s2V1, s2V2) = let
+implement
+compare_s2Var_s2Var (s2V1, s2V2) = let
   val stamp1 =
     let val (vbox pf1 | p1) = s2V1 in p1->s2Var_stamp end
   // end of [val]
@@ -567,6 +592,11 @@ implement fprint_s2Var (pf | out, s2V) =
   $Cnt.fprint_count (pf | out, s2Var_cnt_get s2V)
 // end of [fprint_s2Var]
 
+implement print_s2Var (s2V) = print_mac (fprint_s2Var, s2V)
+implement prerr_s2Var (s2V) = prerr_mac (fprint_s2Var, s2V)
+
+(* ****** ****** *)
+
 implement fprint_s2Varlst {m} (pf | out, s2Vs) = let
   fun aux (out: &FILE m, i: int, s2Vs: s2Varlst)
     : void = begin case+ s2Vs of
@@ -579,9 +609,6 @@ implement fprint_s2Varlst {m} (pf | out, s2Vs) = let
 in
   aux (out, 0, s2Vs)
 end // end of [fprint_s2Varlst]
-
-implement print_s2Var (s2V) = print_mac (fprint_s2Var, s2V)
-implement prerr_s2Var (s2V) = prerr_mac (fprint_s2Var, s2V)
 
 implement print_s2Varlst (s2Vs) = print_mac (fprint_s2Varlst, s2Vs)
 implement prerr_s2Varlst (s2Vs) = prerr_mac (fprint_s2Varlst, s2Vs)
