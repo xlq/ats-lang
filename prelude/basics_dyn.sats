@@ -128,7 +128,6 @@ val SubscriptException : exn = "SubscriptException"
 (* ****** ****** *)
 
 val{elt:viewt@ype} sizeof : size_t (sizeof elt)
-val{elt:viewt@ype} junkof : elt?
 
 (* ****** ****** *)
 
