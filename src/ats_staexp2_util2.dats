@@ -47,6 +47,7 @@ staload Deb = "ats_debug.sats"
 staload Err = "ats_error.sats"
 staload IntInf = "ats_intinf.sats"
 staload Lab = "ats_label.sats"
+staload Loc = "ats_location.sats"
 staload Lst = "ats_list.sats"
 
 (* ****** ****** *)
@@ -68,7 +69,6 @@ staload "ats_trans3_env.sats"
 (* ****** ****** *)
 
 overload = with $Lab.eq_label_label
-
 overload prerr with $Lab.prerr_label
 overload prerr with $Loc.prerr_location
 
@@ -113,7 +113,8 @@ in
   | _ => s2e0
 end (* end of [s2exp_link_remove_flag] *)
 
-implement s2exp_link_remove (s2e0) = let
+implement
+s2exp_link_remove (s2e0) = let
   var flag: int = 0 in s2exp_link_remove_flag (s2e0, flag)
 end // end of [s2exp_link_remove]
 
@@ -131,7 +132,8 @@ fun labs2explst_readize
   | LABS2EXPLSTnil () => LABS2EXPLSTnil ()
 end // end of [labs2explst_readize]
 
-implement s2exp_readize (_v, s2e) = let
+implement
+s2exp_readize (_v, s2e) = let
   val s2t_s2e = s2e.s2exp_srt
 in
   if s2rt_is_linear s2t_s2e then let
@@ -153,7 +155,8 @@ in
   end // end of [if]
 end (* end of [s2exp_readize] *)
 
-implement s2expopt_readize (_v, os2e) = begin
+implement
+s2expopt_readize (_v, os2e) = begin
   case+ os2e of
   | Some s2e => if s2exp_is_linear s2e
       then Some (s2exp_readize (_v, s2e)) else os2e
@@ -174,7 +177,8 @@ fun labs2explst_topize
   | LABS2EXPLSTnil () => LABS2EXPLSTnil ()
 end (* end of [labs2explst_topize] *)
 
-implement s2exp_topize (knd, s2e) = let
+implement
+s2exp_topize (knd, s2e) = let
   val s2t = s2e.s2exp_srt
   val isdone = (
     if knd > 0 (*typization*) then
@@ -415,12 +419,13 @@ and s2explst_whnf_flag
   | nil () => nil ()
 end // end of [s2explst_whnf_flag]
 
-implement s2exp_whnf (s2e) = begin
+implement
+s2exp_whnf (s2e) = begin
   let var flag: int = 0 in s2exp_whnf_flag (s2e, flag) end
 end // end of [s2exp_whnf]
 
-implement s2explst_whnf (s2es) =
-  $Lst.list_map_fun (s2es, s2exp_whnf)
+implement
+s2explst_whnf (s2es) = $Lst.list_map_fun (s2es, s2exp_whnf)
 // end of [s2explst_whnf]
 
 (* ****** ****** *)
@@ -506,11 +511,13 @@ and labs2explst_nfapp_flag
   | LABS2EXPLSTnil () => LABS2EXPLSTnil ()
 // end of [labs2explst_nfapp_flag]
 
-implement s2exp_nfapp (s2e0) = let
+implement
+s2exp_nfapp (s2e0) = let
   var flag: int = 0 in s2exp_nfapp_flag (s2e0, flag)
 end // end of [s2exp_nfapp]
 
-implement s2explst_nfapp (s2es0) = let
+implement
+s2explst_nfapp (s2es0) = let
   var flag: int = 0 in s2explst_nfapp_flag (s2es0, flag)
 end // end of [s2explst_nfapp]
 
@@ -539,7 +546,8 @@ fun labs2explst_syneq
   | (_, _) => false
 end // end of [labs2explst_syneq]
 
-implement s2exp_syneq (s2e10, s2e20) = let
+implement
+s2exp_syneq (s2e10, s2e20) = let
   val s2e10 = s2exp_whnf s2e10 and s2e20 = s2exp_whnf s2e20
 (*
   val () = begin
@@ -693,7 +701,8 @@ in
   | _ => false (* test accuracy may be increased ... *)
 end // end of [s2exp_syneq]
 
-implement s2explst_syneq (s2es10, s2es20) = begin
+implement
+s2explst_syneq (s2es10, s2es20) = begin
   case+ (s2es10, s2es20) of
   | (s2e1 :: s2es1, s2e2 :: s2es2) => begin
       s2exp_syneq (s2e1, s2e2) andalso s2explst_syneq (s2es1, s2es2)
@@ -702,7 +711,8 @@ implement s2explst_syneq (s2es10, s2es20) = begin
   | (_, _) => false
 end // end of [s2explst_syneq]
 
-implement s2explstlst_syneq (s2ess10, s2ess20) = begin
+implement
+s2explstlst_syneq (s2ess10, s2ess20) = begin
   case+ (s2ess10, s2ess20) of
   | (s2es1 :: s2ess1, s2es2 :: s2ess2) => begin
       s2explst_syneq (s2es1, s2es2) andalso s2explstlst_syneq (s2ess1, s2ess2)
@@ -735,7 +745,8 @@ fun s2zexplst_syneq (s2zes1: s2zexplst, s2zes2: s2zexplst): bool =
   | (nil (), nil ()) => true
   | (_, _) => false
 
-implement s2zexp_syneq (s2ze10, s2ze20) = begin
+implement
+s2zexp_syneq (s2ze10, s2ze20) = begin
   case+ s2ze10 of
   | S2ZEapp (s2ze1, s2zes1) => begin case+ s2ze20 of
     | S2ZEapp (s2ze2, s2zes2) => begin
@@ -779,12 +790,14 @@ end // end of [s2zexp_syneq]
 
 (* ****** ****** *)
 
-implement s2exp_projlst (s2e, s2ls) = begin case+ s2ls of
+implement
+s2exp_projlst (s2e, s2ls) = begin case+ s2ls of
   | cons (s2l, s2ls) => s2exp_projlst (s2exp_proj (s2e, s2l), s2ls)
   | nil () => s2e
 end // end of [s2exp_projlst]
 
-implement s2exp_addr_normalize (s2e0) = let
+implement
+s2exp_addr_normalize (s2e0) = let
   fun aux
     (s2e0: s2exp, s2ls: s2lablst): @(s2exp, s2lablst) =
     case+ s2e0.s2exp_node of
@@ -890,7 +903,8 @@ end // end of [labs2explst_prenexing]
 
 (* ****** ****** *)
 
-implement s2exp_absuni (s2e) = let
+implement
+s2exp_absuni (s2e) = let
   var flag: int = 0
   var s2vs_r: s2varlst = nil () and s2ps_r: s2explst = nil ()
   val s2e = s2exp_prenexing (false(*isexi*), s2e, s2vs_r, s2ps_r, flag)
@@ -898,7 +912,8 @@ in
   ($Lst.list_reverse s2vs_r, $Lst.list_reverse s2ps_r, s2e)
 end // end of [s2exp_absuni]
 
-implement s2exp_opnexi (s2e) = let
+implement
+s2exp_opnexi (s2e) = let
   var flag: int = 0
   var s2vs_r: s2varlst = nil () and s2ps_r: s2explst = nil ()
   val s2e = s2exp_prenexing (true(*isexi*), s2e, s2vs_r, s2ps_r, flag)
@@ -906,7 +921,8 @@ in
   ($Lst.list_reverse s2vs_r, $Lst.list_reverse s2ps_r, s2e)
 end // end of [s2exp_opnexi]
 
-implement s2explst_opnexi (s2es) = let
+implement
+s2explst_opnexi (s2es) = let
   var flag: int = 0
   var s2vs_r: s2varlst = nil () and s2ps_r: s2explst = nil ()
   val s2es = s2explst_prenexing (true(*isexi*), s2es, s2vs_r, s2ps_r, flag)
@@ -916,7 +932,8 @@ end // end of [s2explst_opnexi]
 
 (* ****** ****** *)
 
-implement labs2explst_lab_get (ls2es, l0) = let
+implement
+labs2explst_lab_get (ls2es, l0) = let
   fun aux_get (ls2es: labs2explst):<cloref1> s2expopt_vt =
     case+ ls2es of
     | LABS2EXPLSTcons (l, s2e, ls2es) => begin
@@ -928,7 +945,8 @@ in
   aux_get ls2es
 end // end of [labs2explst_lab_get]
 
-implement labs2explst_lab_set (ls2es, l0, s2e0) = let
+implement
+labs2explst_lab_set (ls2es, l0, s2e0) = let
   fun aux_set
     (ls2es: labs2explst, s2e0: s2exp)
     :<cloref1> Option_vt labs2explst = begin
@@ -949,7 +967,8 @@ end // end of [labs2explst_lab_set]
 
 (* ****** ****** *)
 
-implement labs2zexplst_lab_get (ls2zes, l0) = let
+implement
+labs2zexplst_lab_get (ls2zes, l0) = let
   fun aux_get
     (ls2zes: labs2zexplst):<cloref1> s2zexpopt_vt =
     case+ ls2zes of
@@ -1007,7 +1026,8 @@ end // end of [labs2explst_lab_set_ind]
 
 (* ****** ****** *)
 
-implement s2exp_lab_get_restlin_cstr
+implement
+s2exp_lab_get_restlin_cstr
   (loc0, s2e0, l0, restlin, cstr) = let
   val s2e0 = s2exp_whnf s2e0
   fn err1 (loc0: loc_t, s2e0: s2exp, l0: lab_t): s2exp = begin
@@ -1066,7 +1086,8 @@ end (* end of [s2exp_lab_get_restlin_cstr] *)
 
 (* ****** ****** *)
 
-implement s2exp_slablst_get_restlin_cstr
+implement
+s2exp_slablst_get_restlin_cstr
   (loc0, s2e0, s2ls, restlin, cstr) = let
   fun aux {i,j:nat} .<i>. (
       s2e0: s2exp
@@ -1189,7 +1210,7 @@ fn array_ind_dim_check_err (
 (* ****** ****** *)
 
 implement // [s2e0] must be normalized!
-  s2exp_lab_linget_cstr (loc0, s2e0, l0, cstr) = let
+s2exp_lab_linget_cstr (loc0, s2e0, l0, cstr) = let
 //
   val s2e0 = s2exp_whnf s2e0
 //
@@ -1266,7 +1287,8 @@ in
 end (* end of [s2exp_lab_linget_cstr] *)
 
 // [s2e0] must be normalized!
-implement s2exp_ind_linget_cstr
+implement
+s2exp_ind_linget_cstr
   (loc0, s2e0, s2ess_ind, cstr) = begin
   case+ s2e0.s2exp_node of
   | S2Etyarr (s2e_elt, s2ess_dim) => let
@@ -1291,7 +1313,8 @@ end (* end of [s2exp_ind_linget_cstr] *)
 (* ****** ****** *)
 
 // [s2e0] is assumed to have been normalized
-implement s2exp_slab_linget_cstr
+implement
+s2exp_slab_linget_cstr
   (loc0, s2e0, s2l, cstr) = begin case+ s2l of
   | S2LAB0lab l => let
       val s2e_prj = s2exp_lab_linget_cstr (loc0, s2e0, l, cstr)
@@ -1318,7 +1341,8 @@ end (* end of [s2exp_slab_linget_cstr] *)
 (* ****** ****** *)
 
 // [s2e0] is assumed to have been normalized
-implement s2exp_lab_linset (loc0, s2e0, l0, s2e_new) = let
+implement
+s2exp_lab_linset (loc0, s2e0, l0, s2e_new) = let
   fn err {a:type} (loc0: loc_t): a = begin
     prerr_loc_interror loc0; prerr ": s2exp_slab_set"; prerr_newline ();
     $Err.abort {a} ()
@@ -1434,7 +1458,8 @@ end // end of [s2exp_slablst_linget_cstr]
 
 (* ****** ****** *)
 
-implement s2exp_slablst_linset_cstr
+implement
+s2exp_slablst_linset_cstr
   (loc0, s2e0, s2ls, s2e_new, cstr) = let
   fun aux {n:nat} (
       loc0: loc_t
@@ -1475,7 +1500,9 @@ end // end of [s2exp_slablst_linset_cstr]
 
 (* ****** ****** *)
 
-implement s2exp_slablst_lindel_cstr (loc0, s2e0, s2ls, cstr) = let
+implement
+s2exp_slablst_lindel_cstr
+  (loc0, s2e0, s2ls, cstr) = let
   fun aux {n:nat} (
       loc0: loc_t
     , s2e0: s2exp
