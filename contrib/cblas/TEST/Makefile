@@ -25,8 +25,7 @@ test: cblas_test.dats
 ######
 
 html::
-	$(ATSOPT) -IATS .. \
-           --posmark_html -d cblas_test.dats > cblas_test_dats.html
+	$(ATSOPT) --posmark_html -d cblas_test.dats > cblas_test_dats.html
 
 ######
 

@@ -185,7 +185,7 @@ local (*empty*) in #include "contrib/cblas/HATS/cblas.hats" end
 extern fun{a:t@ype} rotg_test () : void
 
 implement{t}
-  rotg_test (): void = () where {
+rotg_test (): void = () where {
   var a = of_double<t> 1.0
   var b = of_double<t> 1.0
   var c : t
@@ -206,7 +206,7 @@ implement{t}
 extern fun{a:t@ype} rot_test () : void
 
 implement{a}
-  rot_test () : void = () where {
+rot_test () : void = () where {
   #define M 17
   #define N 19
   val (pf_MN | MN) = M imul2 N
@@ -288,7 +288,7 @@ implement{a}
 extern fun{a:t@ype} rotm_test (): void
 
 implement{a}
-  rotm_test (): void = () where {
+rotm_test (): void = () where {
   #define M 7
   #define N 100
   val (pf_MN | MN) = M imul2 N
@@ -351,7 +351,7 @@ implement{a}
 extern fun{a1,a2:t@ype} asum_test (): void
 
 implement{a,ar} // ar = |a|
-  asum_test (): void = () where {
+asum_test (): void = () where {
   #define M 7
   #define N 100
   val (pf_MN | MN) = M imul2 N
@@ -395,7 +395,7 @@ implement{a,ar} // ar = |a|
 extern fun{a:t@ype} iamax_test (): void
 
 implement{a}
-  iamax_test (): void = () where {
+iamax_test (): void = () where {
   #define M 7
   #define N 10
   val (pf_MN | MN) = M imul2 N
@@ -454,7 +454,7 @@ implement{a}
 extern fun{a:t@ype} dot_test (): void
 
 implement{a}
-  dot_test (): void = () where {
+dot_test (): void = () where {
   #define M 7 // needs to be a positive number
   #define N 100 // needs to be a positive number
   val (pf_MN | MN) = op imul2 (M, N) // this should not be moved out!
@@ -506,7 +506,7 @@ implement{a}
 extern fun{a:t@ype} dotu_test (): void
 
 implement{a}
-  dotu_test (): void = () where {
+dotu_test (): void = () where {
   #define M 7 // needs to be a positive number
   #define N 100 // needs to be a positive number
   val (pf_MN | MN) = op imul2 (M, N) // this should not be moved out!
@@ -558,7 +558,7 @@ implement{a}
 extern fun{a:t@ype} dotc_test (): void
 
 implement{a}
-  dotc_test (): void = () where {
+dotc_test (): void = () where {
   #define M 7 // needs to be a positive number
   #define N 100 // needs to be a positive number
   val (pf_MN | MN) = op imul2 (M, N) // this should not be moved out!
@@ -610,7 +610,7 @@ implement{a}
 extern fun{a,ar:t@ype} swap_test (): void
 
 implement{a,ar} // ar = |a|
-  swap_test (): void = () where {
+swap_test (): void = () where {
   #define M 7 // needs to be a positive number
   #define N 100 // needs to be a positive number
   val (pf_MN | MN) = op imul2 (M, N) // this should not be moved out!
@@ -677,7 +677,7 @@ implement{a,ar} // ar = |a|
 extern fun{a,ar:t@ype} copy_test (): void
 
 implement{a,ar} // ar = |a|
-  copy_test (): void = () where {
+copy_test (): void = () where {
   #define M 7 // needs to be a positive number
   #define N 100 // needs to be a positive number
   val (pf_MN | MN) = op imul2 (M, N) // this should not be moved out!
@@ -731,7 +731,7 @@ implement{a,ar} // ar = |a|
 extern fun{a,ar:t@ype} axpy_test (): void
 
 implement{a,ar} // ar = |a|
-  axpy_test (): void = () where {
+axpy_test (): void = () where {
   #define M 7 // needs to be a positive number
   #define N 100 // needs to be a positive number
   val (pf_MN | MN) = op imul2 (M, N) // this should not be moved out!
@@ -795,7 +795,7 @@ implement{a,ar} // ar = |a|
 extern fun{a,a2,ar:t@ype} scal_test (): void
 
 implement{a,a2,ar} // ar = |a|
-  scal_test (): void = () where {
+scal_test (): void = () where {
   #define M 7 // needs to be a positive number
   #define N 100 // needs to be a positive number
   val (pf_MN | MN) = op imul2 (M, N) // this should not be moved out!
@@ -873,7 +873,7 @@ extern fun{a,ar:t@ype} gemv_test (): void
 //
 
 implement{a,ar} // ar = |a|
-  gemv_test (): void = () where {
+gemv_test (): void = () where {
   #define M 19 // needs to be a positive number
   #define K 100 // needs to be a positive number
   #define N 1 // needs to be a positive number
@@ -966,7 +966,7 @@ implement{a,ar} // ar = |a|
 extern fun{a,ar:t@ype} gbmv_test (): void
 
 implement{a,ar} // ar = |a|
-  gbmv_test (): void = () where {
+gbmv_test (): void = () where {
   #define M 100
   #define K 70
   #define KU 5
@@ -1077,7 +1077,7 @@ implement{a,ar} // ar = |a|
 extern fun{a,ar:t@ype} trmv_trsv_test (): void
 
 implement{a,ar} // ar = |a|
-  trmv_trsv_test (): void = () where {
+trmv_trsv_test (): void = () where {
   #define M 100
 //
   val (pf_MM | MM) = M imul2 M
@@ -1163,7 +1163,7 @@ implement{a,ar} // ar = |a|
 extern fun{a,ar:t@ype} tbmv_tbsv_test (): void
 
 implement{a,ar} // ar = |a|
-  tbmv_tbsv_test (): void = () where {
+tbmv_tbsv_test (): void = () where {
   #define N 100
   #define K 7
 //
@@ -1256,7 +1256,7 @@ implement{a,ar} // ar = |a|
 extern fun{a,ar:t@ype} tpmv_tpsv_test (): void
 
 implement{a,ar} // ar = |a|
-  tpmv_tpsv_test (): void = () where {
+tpmv_tpsv_test (): void = () where {
   #define M 100
   #define L ((M * (M+1))/2)
 //
@@ -1339,7 +1339,7 @@ extern fun{a,ar:t@ype} symv_test (): void
 //
 
 implement{a,ar} // ar = |a|
-  symv_test (): void = () where {
+symv_test (): void = () where {
   #define M 100 // needs to be a positive number
   #define K 100 // needs to be a positive number
   #define N 1 // needs to be a positive number
@@ -1669,6 +1669,7 @@ gerc_test (): void = () where {
   prval (pfy_inc, pfy_gev, fpfy_gem) = GEMAT_v_uncons_row (pfy_gem)
   // incy = 1
   val incy = MATVECINC_get (pfy_inc | ORDERrow, ORDERcol, K)
+  val incy_i = sz2i incy
 //
   val () = loop (pfy_gev | N, py_arr, incy) where {
     fun loop {n:nat} {d:inc} {l:addr} .<n>.
@@ -1686,9 +1687,12 @@ gerc_test (): void = () where {
       end (* end of [if] *)
     // end of [loop]
   }
-  val incy = sz2i incy
+//
+// HX-2010-07-15: if removed, a gcc optimization bug occurs!!!
+//
+  val incy_i = sz2i incy
   val () = cblas_gerc<a> (
-    CblasColMajor, M, N, neg1, !px_arr, incx, !py_arr, incy, !p1_arr, M 
+    CblasColMajor, M, N, neg1, !px_arr, incx, !py_arr, incy_i, !p1_arr, M 
   )
 //
   prval () = pfx_gem := fpfx_gem (pfx_gev)
@@ -1728,7 +1732,7 @@ extern fun{a,ar:t@ype} hemv_test (): void
 //
 
 implement{a,ar} // ar = |a|
-  hemv_test (): void = () where {
+hemv_test (): void = () where {
   #define M 100 // needs to be a positive number
   #define K 100 // needs to be a positive number
   #define N 1 // needs to be a positive number
@@ -1829,7 +1833,7 @@ extern prfun HBMAT_v_of_fmatrix_v
 // end of [HBMAT_v_of_fmatrix_v]
 
 implement{a,ar} // ar = |a|
-  hbmv_test (): void = () where {
+hbmv_test (): void = () where {
   #define M 100
   #define K 5
   #define R (1+K)
@@ -1939,7 +1943,7 @@ extern prfun HPMAT_v_of_array_v
 // end of [HPMAT_v_of_array_v]
 
 implement{a,ar} // ar = |a|
-  hpmv_test (): void = () where {
+hpmv_test (): void = () where {
   #define M 100
   #define L ((M * (M+1)) / 2)
 //
@@ -2100,7 +2104,7 @@ where
 *)
 
 implement{a,ar} // ar = |a|
-  her_her2_test (): void = () where {
+her_her2_test (): void = () where {
   #define M 100
   val (pfA_gc, pf_MM, pfA_fmat | pA_arr) = randgen_fmat<a> (M, M)
   val () = loop_diag (!pA_arr, 0) where { // real diag for HEMAT
@@ -2285,7 +2289,7 @@ implement{a,ar} // ar = |a|
 extern fun{a,ar:t@ype} hpr_hpr2_test (): void
 
 implement{a,ar} // ar = |a|
-  hpr_hpr2_test (): void = () where {
+hpr_hpr2_test (): void = () where {
   #define M 100
   #define L ((M * (M+1))/2)
   val (pfA_gc, pfA_arr | pA_arr) = randgen_arr<a> (L)
@@ -2473,7 +2477,7 @@ extern fun{a,ar:t@ype} gemm_test (): void
 // checking the identity A * B = (B^T * A^T)^T
 //
 implement{a,ar} // ar = |a|
-  gemm_test (): void = () where {
+gemm_test (): void = () where {
   #define M 13 // needs to be a positive number
   #define K 29 // needs to be a positive number
   #define N 17 // needs to be a positive number
@@ -2566,7 +2570,7 @@ extern fun{a,ar:t@ype} syrk_test (): void
 // checking the identity A * A' = (A')' * A'
 //
 implement{a,ar} // ar = |a|
-  syrk_test (): void = () where {
+syrk_test (): void = () where {
   #define N 17 // needs to be a positive number
   #define K 29 // needs to be a positive number
 //
@@ -2652,7 +2656,7 @@ extern fun{a,ar:t@ype} syr2k_test (): void
 // checking the identity A * B' + B * A' = A' * B'' + B' * A''
 //
 implement{a,ar} // ar = |a|
-  syr2k_test (): void = () where {
+syr2k_test (): void = () where {
   #define N 17 // needs to be a positive number
   #define K 29 // needs to be a positive number
 //
@@ -2749,7 +2753,7 @@ extern fun{a,ar:t@ype} symm_test (): void
 // checking the identity A * B = (B^T * A^T)^T
 //
 implement{a,ar} // ar = |a|
-  symm_test (): void = () where {
+symm_test (): void = () where {
   #define M 13 // needs to be a positive number
   #define K 13 // needs to be a positive number
   #define N 17 // needs to be a positive number
@@ -2846,7 +2850,7 @@ extern fun{a,ar:t@ype} trmm_trsm_test (): void
 // checking the identity: B = A^{-1} A B
 //
 implement{a,ar} // ar = |a|
-  trmm_trsm_test (): void = () where {
+trmm_trsm_test (): void = () where {
   #define M 13 // needs to be a positive number
   #define K 13 // needs to be a positive number
   #define N 17 // needs to be a positive number
@@ -2922,7 +2926,7 @@ extern fun{a,ar:t@ype} hemm_test (): void
 // checking the identity A * B = (B^T * A^T)^T
 //
 implement{a,ar} // ar = |a|
-  hemm_test (): void = () where {
+hemm_test (): void = () where {
   #define M 13 // needs to be a positive number
   #define K 13 // needs to be a positive number
   #define N 17 // needs to be a positive number
@@ -3019,7 +3023,7 @@ extern fun{a,ar:t@ype} herk_test (): void
 // checking the identity A * A' = (A')' * A'
 //
 implement{a,ar} // ar = |a|
-  herk_test (): void = () where {
+herk_test (): void = () where {
   #define N 17 // needs to be a positive number
   #define K 29 // needs to be a positive number
 //
@@ -3109,7 +3113,7 @@ extern fun{a,ar:t@ype} her2k_test (): void
 // checking the identity A * B' + B * A' = A' * B'' + B' * A''
 //
 implement{a,ar} // ar = |a|
-  her2k_test (): void = () where {
+her2k_test (): void = () where {
   #define N 17 // needs to be a positive number
   #define K 29 // needs to be a positive number
 //
