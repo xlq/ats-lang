@@ -36,7 +36,11 @@
 (* ****** ****** *)
 
 //
-// [array0] is a persistent array with size information attached.
+// HX:
+// Note that [array0] is a persistent array with size information attached.
+// This package is mostly for a beginner who is unfamiliar with ATS. After
+// some exposure to dependent types and linear types, the programmer is
+// recommended to use functions declared in [array.sats] instead.
 //
 
 (* ****** ****** *)
@@ -46,10 +50,8 @@
 (* ****** ****** *)
 
 #if VERBOSE_PRELUDE #then
-
 #print "Loading [array0.sats] starts!\n"
-
-#endif
+#endif // end of [VERBOSE_PRELUDE]
 
 (* ****** ****** *)
 
@@ -59,11 +61,11 @@
 
 (* ****** ****** *)
 
-fun array0_make_arraysize {a:viewt@ype}
+fun array0_make_arrsz {a:viewt@ype}
   {n:nat} (arrsz: arraysize (a, n)):<> array0 (a)
-// end of [array0_make_arraysize]
+// end of [array0_make_arrsz]
 
-macdef array0 (x) = array0_make_arraysize ,(x)
+macdef array0 (x) = array0_make_arrsz ,(x)
 
 fun array0_get_arraysize_ref
   {a:viewt@ype} (A: array0 a):<> ref (Arraysize a)
@@ -72,7 +74,7 @@ fun array0_get_arraysize_ref
 (* ****** ****** *)
 
 fun{a:t@ype}
-  array0_make_elt (asz: size_t, x: a):<> array0 a
+array0_make_elt (asz: size_t, x: a):<> array0 a
 // end of [array0_make_elt]
 
 fun{a:t@ype} array0_make_lst (xs: list0 a):<> array0 a
@@ -83,12 +85,12 @@ fun array0_size {a:t@ype} (A: array0 a):<!ref> size_t
 
 (* ****** ****** *)
 
-fun{a:t@ype} array0_get_elt_at
-  (A: array0 a, i: size_t):<!exnref> a
+fun{a:t@ype}
+array0_get_elt_at (A: array0 a, i: size_t):<!exnref> a
 overload [] with array0_get_elt_at
 
-fun{a:t@ype} array0_set_elt_at
-  (A: array0 a, i: size_t, x: a):<!exnref> void
+fun{a:t@ype}
+array0_set_elt_at (A: array0 a, i: size_t, x: a):<!exnref> void
 overload [] with array0_set_elt_at
 
 (* ****** ****** *)
@@ -120,9 +122,7 @@ fun{a:t@ype} array0_tabulate
 (* ****** ****** *)
 
 #if VERBOSE_PRELUDE #then
-
 #print "Loading [array0.sats] finishes!\n"
-
-#endif
+#endif // end of [VERBOSE_PRELUDE]
 
 (* end of [array0.sats] *)

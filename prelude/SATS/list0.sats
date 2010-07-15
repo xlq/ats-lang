@@ -36,6 +36,7 @@
 (* ****** ****** *)
 
 (* 
+** HX:
 ** Note that the functions declared in this file are for supporting list
 ** processing in ML-like manner. Many more functions are available in the
 ** following file:

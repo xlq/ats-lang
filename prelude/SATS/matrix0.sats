@@ -36,7 +36,14 @@
 (* ****** ****** *)
 
 //
-// [matrix0] is a persistent array with row/column information attached.
+// HX:
+//
+// Note that [matrix0] is a persistent array with row/column information
+// attached.
+//
+// This package is mostly for a beginner who is unfamiliar with ATS. After
+// some exposure to dependent types and linear types, the programmer is
+// strongly recommended to use functions declared in [matrix.sats] instead.
 //
 
 (* ****** ****** *)
@@ -46,10 +53,8 @@
 (* ****** ****** *)
 
 #if VERBOSE_PRELUDE #then
-
 #print "Loading [matrix0.sats] starts!\n"
-
-#endif
+#endif // end of [VERBOSE_PRELUDE]
 
 (* ****** ****** *)
 
@@ -59,17 +64,17 @@
 
 (* ****** ****** *)
 
-fun matrix0_make_arraysize
+fun matrix0_make_arrsz
   {a:viewt@ype} {m,n:nat} {mn:int} (
     pf_mul: MUL (m, n, mn)
   | m: size_t m, n: size_t n, arrsz: arraysize (a, mn)
   ) :<> matrix0 (a)
-// end of [matrix0_make_arraysize]
+// end of [matrix0_make_arrsz]
 
 (* ****** ****** *)
 
 fun{a:t@ype}
-  matrix0_make_elt (row: size_t, col: size_t, x: a):<> matrix0 a
+matrix0_make_elt (row: size_t, col: size_t, x: a):<> matrix0 a
 // end of [matrix0_make_elt]
 
 (* ****** ****** *)
@@ -99,12 +104,12 @@ overload [] with matrix0_set_elt_at__intsz
 
 (* ****** ****** *)
 
-// it is done row-by-row
+// HX: it is done row-by-row
 fun{a:t@ype} matrix0_foreach
   (M: matrix0 a, f: (&a) -<cloref> void):<!ref> void
 // end of [matrix0_foreach]
 
-// it is done row-by-row
+// HX: it is done row-by-row
 fun{a:t@ype} matrix0_iforeach
   (M: matrix0 a, f: (size_t, size_t, &a) -<cloref> void):<!ref> void
 // end of [matrix0_iforeach]
@@ -119,9 +124,7 @@ fun{a:t@ype} matrix0_tabulate // M[i,j] := f(i, j)
 (* ****** ****** *)
 
 #if VERBOSE_PRELUDE #then
-
 #print "Loading [matrix0.sats] finishes!\n"
-
-#endif
+#endif // end of [VERBOSE_PRELUDE]
 
 (* end of [matrix0.sats] *)

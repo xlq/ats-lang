@@ -58,11 +58,12 @@ assume matrix0_viewt0ype_type
 
 (* ****** ****** *)
 
-implement matrix0_make_arraysize
+implement
+matrix0_make_arrsz
   {a} {m,n} {mn} (pf_mul | m, n, arrsz) = let
 in
   ref @(pf_mul, arrsz.0, arrsz.1 | arrsz.2, m, n)
-end (* end of [matrix0_make_arraysize] *)
+end (* end of [matrix0_make_arrsz] *)
 
 (* ****** ****** *)
 
@@ -76,7 +77,7 @@ implement{a} matrix0_make_elt (row, col, x0) = let
   var ini: a = x0
   val () = array_ptr_initialize_elt_tsz {a} (!p_arr, asz, ini, tsz)
 in
-  matrix0_make_arraysize {a} {m,n} {mn} (pf_mul | row, col, @(pf_gc, pf_arr | p_arr, asz))
+  matrix0_make_arrsz {a} {m,n} {mn} (pf_mul | row, col, @(pf_gc, pf_arr | p_arr, asz))
 end // end of [matrix0_make_elt]
 
 (* ****** ****** *)
@@ -264,7 +265,7 @@ implement{a} matrix0_tabulate (row, col, f) = let
   // end of [loop]
   val () = loop (pf_arr | p_arr, mn, 0, n, 0, f)
 in
-  matrix0_make_arraysize {a} {m,n} {mn} (pf_mn | m, n, @(pf_gc, pf_arr | p_arr, mn))
+  matrix0_make_arrsz {a} {m,n} {mn} (pf_mn | m, n, @(pf_gc, pf_arr | p_arr, mn))
 end // end of [array0_tabulate]
 
 (* ****** ****** *)

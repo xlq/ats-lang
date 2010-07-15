@@ -24,7 +24,7 @@ implement main () = let
     val (pf_mul | _(*asz*)) = op imul2 (row, col)
     prval () = mul_elim (pf_mul)
 //
-    val M = matrix0_make_arraysize {int} {row,col} {asz}
+    val M = matrix0_make_arrsz {int} {row,col} {asz}
       (pf_mul | row, col, $arrsz (0, 1, 2, 3, 4, 5, 6, 7, 8, 9))
 //
     var i: int and j: int // uninitialized
@@ -66,7 +66,7 @@ implement main () = let
     #define row1 2; #define col1 5
     val (pf_mul | _(*asz*)) = op imul2 (row1, col1)
     prval () = mul_elim (pf_mul)
-    val M = matrix0_make_arraysize {int} {row1,col1} {asz}
+    val M = matrix0_make_arrsz {int} {row1,col1} {asz}
       (pf_mul | row1, col1, $arrsz (0, 1, 2, 3, 4, 5, 6, 7, 8, 9))
     val f = lam (i: size_t, j: size_t, x: &int)
       : void =<cloref> let

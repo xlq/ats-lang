@@ -57,7 +57,7 @@ assume array0_viewt0ype_type
 
 (* ****** ****** *)
 
-implement array0_make_arraysize (arrsz) = ref_make_elt (arrsz)
+implement array0_make_arrsz (arrsz) = ref_make_elt (arrsz)
 implement array0_get_arraysize_ref (A) = A
 
 (* ****** ****** *)
@@ -69,7 +69,7 @@ implement{a} array0_make_elt (asz, x0) = let
   var ini: a = x0
   val () = array_ptr_initialize_elt_tsz {a} (!p_arr, asz, ini, tsz)
 in
-  array0_make_arraysize {a} {n} @(pf_gc, pf_arr | p_arr, asz)
+  array0_make_arrsz {a} {n} @(pf_gc, pf_arr | p_arr, asz)
 end // end of [array0_make_elt]
 
 (* ****** ****** *)
@@ -81,7 +81,7 @@ implement{a} array0_make_lst (xs) = let
   val (pf_gc, pf_arr | p_arr) = array_ptr_alloc_tsz {a} (asz, sizeof<a>)
   val () = array_ptr_initialize_lst<a> (!p_arr, xs)
 in
-  array0_make_arraysize {a} {n} @(pf_gc, pf_arr | p_arr, asz)
+  array0_make_arrsz {a} {n} @(pf_gc, pf_arr | p_arr, asz)
 end // end of [array_make_lst]
 
 (* ****** ****** *)
@@ -211,7 +211,7 @@ implement{a} array0_tabulate (asz, f) = let
   // end of [loop]
   val () = loop (pf_arr | p_arr, asz, 0, f)
 in
-  array0_make_arraysize {a} {n0} @(pf_gc, pf_arr | p_arr, asz)
+  array0_make_arrsz {a} {n0} @(pf_gc, pf_arr | p_arr, asz)
 end // end of [array0_tabulate]
 
 (* ****** ****** *)
