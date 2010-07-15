@@ -310,7 +310,8 @@ end // end of [GEVEC_ptr_iforeach_clo_tsz]
 
 (* ****** ****** *)
 
-implement MATVECINC_get (pf | x1, x2, ld) =
+implement
+MATVECINC_get (pf | x1, x2, ld) =
   case+ (x1, x2) of
   | (ORDERrow (), ORDERrow ()) => let
       prval MATVECINCrowrow () = pf in 1 end
