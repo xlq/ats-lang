@@ -71,7 +71,7 @@ typedef b0ytes (n:int) = @[byte?][n]
 //
 
 viewdef FILE_v (m:fm, l:addr) = FILE m @ l
-viewdef FILE_opt_v (m:fm, l:addr) = option_v (FILE m @ l, l <> null)
+viewdef FILEopt_v (m:fm, l:addr) = option_v (FILE m @ l, l <> null)
 
 //
 
@@ -388,7 +388,7 @@ ing sequences (Additional characters may follow these sequences.):
 *)
 
 fun fopen_err {m:fm}
-  (path: string, m: file_mode m):<!ref> [l:addr] (FILE_opt_v (m, l) | ptr l)
+  (path: string, m: file_mode m):<!ref> [l:addr] (FILEopt_v (m, l) | ptr l)
   = "atslib_fopen_err"
 // end of [fopen_err]
 
@@ -539,7 +539,7 @@ overload freopen_err with freopen0_err
 
 fun freopen1_err {m_old,m_new:fm} {l_file:addr}
   (pf: FILE m_old @ l_file | s: string, m: file_mode m_new, p: ptr l_file)
-  :<!ref> [l:addr | l == null || l == l_file] (FILE_opt_v (m_new, l) | ptr l)
+  :<!ref> [l:addr | l == null || l == l_file] (FILEopt_v (m_new, l) | ptr l)
   = "atslib_freopen_err"
 overload freopen_err with freopen1_err
 
@@ -749,7 +749,7 @@ overload rewind with rewind1
 // ------------------------------------------------
 
 fun tmpfile_err
-  () :<!ref> [l:addr] (FILE_opt_v (rw, l) | ptr l) = "atslib_tmpfile_err"
+  () :<!ref> [l:addr] (FILEopt_v (rw, l) | ptr l) = "atslib_tmpfile_err"
 // end of [tmpfile_err]
 
 fun tmpfile_exn

@@ -124,20 +124,43 @@ end // end of [slseg_length]
 (* ****** ****** *)
 
 implement{a}
-slseg_foreach_clo
-  {v} {l1,l2} {n} (pf, pf_sl | p, n, f) = let
+slseg_foreach_main
+  {v} {vt} {l1,l2} {n} (pf, pf_sl | p, n, f, env) = let
   fun loop {l1,l2:addr} {n:nat} .<n>. (
       pf: !v, pf_sl: !slseg_v (a, l1, l2, n)
-    | p: ptr l1, n: int n, f: &(!v | &a) -<clo> void
+    | p: ptr l1, n: int n, f: (!v | &a, !vt) -<fun> void, env: !vt
     ) :<> void =
   if n > 0 then let
     prval slseg_v_cons (pf_gc, pf_at, pf1_sl) = pf_sl
-    val () = f (pf | p->0); val () = loop (pf, pf1_sl | p->1, n-1, f)
+    val () = f (pf | p->0, env); val () = loop (pf, pf1_sl | p->1, n-1, f, env)
   in
     pf_sl := slseg_v_cons (pf_gc, pf_at, pf1_sl)
   end // end of [if]
 in
-  loop (pf, pf_sl | p, n, f)
+  loop (pf, pf_sl | p, n, f, env)
+end // end of [slseg_foreach_main]
+
+implement{a}
+slseg_foreach_clo
+  {v} {l1,l2} {n} (pf, pf_sl | p, n, f) = let
+  stavar l_f: addr
+  val p_f: ptr l_f = &f
+  typedef clo_t = (!v | &a) -<clo> void
+  typedef vt = ptr l_f
+  viewdef v1 = (v, clo_t @ l_f)
+  fn app (pf1: !v1 | x: &a, p_f: !vt):<> void = let
+    prval pf11 = pf1.1
+    val () = !p_f (pf1.0 | x)
+    prval () = pf1.1 := pf11
+  in
+    // nothing
+  end // end of [app]
+  val pf1 = (pf, view@ f)
+  val () = slseg_foreach_main<a> {v1} {vt} (pf1, pf_sl | p, n, app, p_f)
+  prval () = pf := pf1.0
+  prval () = view@ f := pf1.1
+in
+  // nothing
 end // end of [slseg_foreach_clo]
   
 (* ****** ****** *)

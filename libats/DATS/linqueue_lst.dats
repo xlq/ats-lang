@@ -91,7 +91,7 @@ extern
 prfun slseg1_v_decode1
 {a:viewt@ype} {l1,l2:addr | l1 > null} {n:int}
   (pf: slseg1_v (a, l1, l2, n))
-:<> [n>0] (
+:<> [n > 0] (
   slseg_v (a, l1, l2, n-1), free_gc_v (@(a, ptr), l2), (a, ptr?) @ l2
 ) // end of [slseg_v_decode1]
 
@@ -238,6 +238,63 @@ in
     x
   end // end of [if]
 end // end of [queue_remove]
+
+(* ****** ****** *)
+
+implement{a}
+queue_foreach_main
+  {v} {vt} {n} (pf | q, f, env) = let
+  val p1 = q.ptr1
+in
+  if p1 > null then let
+    val p2 = q.ptr2
+    prval (pf_sl, pf_gc, pf_at) = slseg1_v_decode1 {a} (q.pf)
+    val () = loop (pf, pf_sl | p1, p2, f, env) where {
+      fun loop {l1,l2:addr} {n:nat} .<n>. (
+          pf: !v, pf_sl: !slseg_v (a, l1, l2, n)
+        | p1: ptr l1, p2: ptr l2, f: (!v | &a, !vt) -<fun> void, env: !vt
+        ) :<> void =
+        if (p1 <> p2) then let
+          prval slseg_v_cons (pf1_gc, pf1_at, pf1_sl) = pf_sl
+          val () = f (pf | p1->0, env)
+          val p1_nxt = p1->1
+          val () = loop (pf, pf1_sl | p1_nxt, p2, f, env)
+          prval () = pf_sl := slseg_v_cons (pf1_gc, pf1_at, pf1_sl)
+        in
+          // nothing
+        end // end of [if]
+    } // end of [val]
+    val () = f (pf | p2->0, env)
+    prval () = q.pf := slseg1_v_encode1 {a} (pf_sl, pf_gc, pf_at)
+  in
+    // nothing
+  end (* end of [if] *)
+end // end of [queue_foreach_main]
+
+(* ****** ****** *)
+
+implement{a}
+queue_foreach_clo
+  {v} {n} (pf | q, f) = let
+  stavar l_f: addr
+  val p_f: ptr l_f = &f
+  typedef clo_t = (!v | &a) -<clo> void
+  typedef vt = ptr l_f
+  viewdef v1 = (v, clo_t @ l_f)
+  fn app (pf1: !v1 | x: &a, p_f: !vt):<> void = let
+    prval pf11 = pf1.1
+    val () = !p_f (pf1.0 | x)
+    prval () = pf1.1 := pf11
+  in
+    // nothing
+  end // end of [app]
+  val pf1 = (pf, view@ f)
+  val () = queue_foreach_main<a> {v1} {vt} (pf1 | q, app, p_f)
+  prval () = pf := pf1.0
+  prval () = view@ f := pf1.1
+in
+  // nothing
+end // end of [queue_foreach_clo]
 
 (* ****** ****** *)
 
