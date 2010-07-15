@@ -98,7 +98,8 @@ queue_remove (*first*)
 fun{a:viewt@ype}
 queue_foreach_main
   {v:view} {vt:viewtype} {n:nat} (
-    pf: !v | q: &QUEUE (a, n), f: (!v | &a, !vt) -<fun> void, env: !vt
+    pf: !v
+  | q: &QUEUE (a, n), f: (!v | &a, !vt) -<fun> void, env: !vt
   ) :<> void
 // end of [queue_foreach_clo]
 

@@ -258,7 +258,7 @@ in
           prval slseg_v_cons (pf1_gc, pf1_at, pf1_sl) = pf_sl
           val () = f (pf | p1->0, env)
           val p1_nxt = p1->1
-          val () = loop (pf, pf1_sl | p1_nxt, p2, f, env)
+          val () = loop (pf, pf1_sl | p1_nxt, p2, f, env) // HX: tail-call
           prval () = pf_sl := slseg_v_cons (pf1_gc, pf1_at, pf1_sl)
         in
           // nothing

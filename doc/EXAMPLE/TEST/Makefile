@@ -41,6 +41,7 @@ compall:: \
   libats_iterint \
   libats_linmap_avltree \
   libats_linqueue_arr \
+  libats_linqueue_lst \
   libats_linstack_arr \
   libats_regexp \
   libats_parworkshop \
@@ -149,11 +150,19 @@ libats_linmap_avltree: libats_linmap_avltree.dats
 
 libats_linqueue_arr: libats_linqueue_arr.dats
 	$(ATSCC) -D_ATS_GCATS -O2 -o libats_linqueue_arr libats_linqueue_arr.dats \
-     && ./libats_linqueue_arr 100000
+     && ./libats_linqueue_arr 1000000
+
+######
+
+libats_linqueue_lst: libats_linqueue_lst.dats
+	$(ATSCC) -D_ATS_GCATS -O2 -o libats_linqueue_lst libats_linqueue_lst.dats \
+     && ./libats_linqueue_lst 1000000
+
+######
 
 libats_linstack_arr: libats_linstack_arr.dats
 	$(ATSCC) -D_ATS_GCATS -O2 -o libats_linstack_arr libats_linstack_arr.dats \
-     && ./libats_linstack_arr 100000
+     && ./libats_linstack_arr 1000000
 
 ######
 

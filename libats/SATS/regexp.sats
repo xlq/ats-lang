@@ -41,14 +41,11 @@
 
 (* ****** ****** *)
 
-absviewtype REGEXPptr (l:addr)
+absviewtype REGEXPptr (l:addr) = ptr
 viewtypedef REGEXPptr0 = [l:agez] REGEXPptr l
 viewtypedef REGEXPptr1 = [l:addr | l > null] REGEXPptr l
-//
 castfn ptr_of_REGEXPptr {l:addr} (x: !REGEXPptr l): ptr l
 overload ptr_of with ptr_of_REGEXPptr
-//
-abstype REGEXPref // = ref (REGEXP)
 
 (* ****** ****** *)
 
@@ -70,10 +67,6 @@ fun regexp_free
 
 (* ****** ****** *)
 
-fun regexp_ref_make {l:agz} (p: REGEXPptr l): REGEXPref
-
-(* ****** ****** *)
-
 fun test_regexp_match_str {l:agz}
   (re: !REGEXPptr l, str: string): bool
 
@@ -89,8 +82,11 @@ overload test_regexp_match with test_regexp_match_str_len_ofs
 
 (* ****** ****** *)
 
-fun string_split_regexp
-  (str: string, re: REGEXPref): stream string
+abstype REGEXPref // = ref (REGEXP)
+
+castfn regexp_ref_make_ptr {l:agz} (p: REGEXPptr l):<> REGEXPref
+
+fun string_split_regexp (str: string, re: REGEXPref): stream string
   = "atslib_string_split_regexp"
 // end of [string_split_regexp]
 

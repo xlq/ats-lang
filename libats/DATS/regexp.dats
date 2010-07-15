@@ -81,7 +81,8 @@ end // end of [regexp_compile_exn]
 
 (* ****** ****** *)
 
-implement test_regexp_match_str (re, str) = let
+implement
+test_regexp_match_str (re, str) = let
   val str = string1_of_string (str)
   val len = string_length (str); val len = sz2i (len)
 in
@@ -146,12 +147,16 @@ atslib_string_split_regexp_search (
 
 %} // end of [%{^]
 
-implement string_split_regexp (str, re) = let
-  extern fun search {n,i:nat | i < n} {l:addr} (
+implement
+string_split_regexp (str, re) = let
+//
+  extern fun search
+    {n,i:nat | i < n} {l:addr} (
       pf_arr: ! @[int?][3] @ l >> @[int][3] @ l
     | re: REGEXPref, s0: string n, n: int n, i: int i, p: ptr l
     ) :<1,~ref> int
     = "atslib_string_split_regexp_search"
+  // end of [extern]
 //
   fun loop {n,i:nat | i <= n} {l:addr} (
       pf_gc: free_gc_v (int, 3, l), pf_arr: @[int?][3] @ l
