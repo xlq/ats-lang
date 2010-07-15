@@ -87,7 +87,8 @@ if (nsaved >= 0) then let
       val () = topenv_textview_source_update_statusbar ()
 //
       val _err = fclose_err (pf_fil | p_fil)
-      val () = assert_errmsg (_err = 0, #LOCATION + ": [fclose] failed")
+      val () = assert_prerrf_bool1 (_err = 0, "%s: %s", @(#LOCATION, "[fclose] failed"))
+      prval None_v () = pf_fil
       val () = $SWL.srcwin_set_nsaved (srcwin, nsaved + 1)
     in
       // nothing

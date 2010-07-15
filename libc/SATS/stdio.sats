@@ -126,7 +126,7 @@ fun fclose0_err
 
 fun fclose1_err
   {m:fm} {l:addr} (
-    pf: !FILE_v (m, l) >> option_v (FILE_v (m, l), i == 0) | p: ptr l
+    pf: !FILE_v (m, l) >> option_v (FILE_v (m, l), i < 0) | p: ptr l
   ) :<> #[i:int | i <= 0] int i
   = "atslib_fclose_err"
 // end of [fclose1_err]

@@ -97,4 +97,3 @@ fun gtk_text_buffer_store_file
 (* ****** ****** *)
 
 (* end of [atsui_util.sats] *)
-

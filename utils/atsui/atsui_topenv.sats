@@ -176,6 +176,7 @@ fun cb_textview_source_modified_changed (): gboolean
 fun cb_textview_source_expose_event_linenumber
   {c:cls | c <= GtkTextView} {l:agz}
   (tv: !gobjref (c, l), event: &GdkEventExpose) : gboolean
+// end of [cb_textview_source_expose_event_linenumber]
 
 (* ****** ****** *)
 

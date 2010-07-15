@@ -146,7 +146,8 @@ and dialog_saveas_main {l:agz} (
     prval () = minus_addback (fpf_tb, tb | tv)
     prval () = fpf_tv (tv)
     val _err = fclose_err (pf_fil | p_fil)
-    val () = assert_errmsg (_err = 0, #LOCATION + ": [fclose] failed")
+    val () = assert_prerrf_bool1 (_err = 0, "%s: %s", @(#LOCATION, "[fclose] failed"))
+    prval None_v () = pf_fil
   in
     // nothing
   end else let

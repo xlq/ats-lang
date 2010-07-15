@@ -117,7 +117,8 @@ fun dialog_openfile_first
     val () = $SWL.srcwin_set_nsaved (srcwin, 0) // the default is -1
     val () = $SWL.the_srcwinlst_append (srcwin)
     val _err = fclose_err (pf_fil | p_fil)
-    // val () = assert_errmsg (_err = 0, #LOCATION + ": [fclose] failed")
+    val () = assert_prerrf_bool1 (_err = 0, "%s: %s", @(#LOCATION, "[fclose] failed"))
+    prval None_v () = pf_fil
     prval () = fpf_tv (tv)
   in
     // nothing
