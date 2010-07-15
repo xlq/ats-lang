@@ -172,15 +172,14 @@ and labs2kexplst =
 and s2zexp =
   | S2ZEapp of (s2zexp, s2zexplst)
   | S2ZEbot
-  | S2ZEbyte of int
   | S2ZEcst of s2cst_t
   | S2ZEextype of string (* external type *)
+  | S2ZEptr of () (* pointer size *)
   | S2ZEtyarr of // array size
       (s2zexp (*element size*), s2explstlst (*dimension*))
   | S2ZEtyrec of (tyreckind, labs2zexplst)
   | S2ZEunion of (stamp_t, labs2zexplst)
   | S2ZEvar of s2var_t
-  | S2ZEword of int
 // end of [s2zexp]
 
 and labs2zexplst =
@@ -1076,9 +1075,12 @@ fun s2exp_eqeq (s2e1: s2exp, s2e2: s2exp): s2exp
 fun s2exp_exi (s2vs: s2varlst, s2ps: s2explst, s2e: s2exp): s2exp
 fun s2exp_extype_srt (s2t: s2rt, name: string): s2exp
 
-fun s2exp_fun_srt
-   (s2t: s2rt, fc: $Syn.funclo, lin: int, s2fe: s2eff,
-    npf: int, s2es_arg: s2explst, s2e_res: s2exp): s2exp
+fun s2exp_fun_srt (
+    s2t: s2rt
+  , fc: $Syn.funclo, lin: int, s2fe: s2eff, npf: int
+  , s2es_arg: s2explst, s2e_res: s2exp
+  ) : s2exp
+// end of [s2exp_fun_srt]
 
 fun s2exp_int (i: int): s2exp
 val s2exp_int_0 : s2exp and s2exp_int_1 : s2exp

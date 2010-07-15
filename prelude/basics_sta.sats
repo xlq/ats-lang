@@ -762,13 +762,6 @@ stadef FILE = FILE_viewt0ype
 abstype FILEref_type
 stadef FILEref = FILEref_type
 
-//
-// HX-2010-06-12:
-//
-absviewtype
-FILEptr_viewtype (addr) = ptr
-stadef FILEptr = FILEptr_viewtype
-
 (* ****** ****** *)
 
 // some common datatypes

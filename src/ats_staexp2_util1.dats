@@ -1017,16 +1017,18 @@ end // end of [s2kexp_match_fun_arg]
 
 (* ****** ****** *)
 
-fun s2cst_root_get (s2c: s2cst_t): s2cst_t = begin
-  case+ s2cst_sup_get s2c of
+fun s2cst_root_get
+  (s2c: s2cst_t): s2cst_t = case+ s2cst_sup_get s2c of
   | S2CSTLSTcons (s2c, _) => s2cst_root_get s2c | S2CSTLSTnil () => s2c
-end // end of [s2cst_root_get]
+// end of [s2cst_root_get]
 
 fn s2zexp_make_s2cst
   (s2c: s2cst_t): s2zexp = S2ZEcst s2c
 // end of [s2zexp_make_s2cst]
 
-implement s2zexp_make_s2exp (s2e0) = let
+implement
+s2zexp_make_s2exp (s2e0) = let
+//
   fun aux_s2exp (
       s2vss: s2varlstlst, s2e0: s2exp
     ) : s2zexp = let
@@ -1036,16 +1038,17 @@ implement s2zexp_make_s2exp (s2e0) = let
         // end of [S2Eapp]
 //
       | S2Ecst s2c => let
-          val isabs = s2cst_isabs_get (s2c) in case+ isabs of
+          val isabs = s2cst_isabs_get (s2c) in
+          case+ isabs of
           | Some (Some s2e) => aux_s2exp (s2vss, s2e) | _ => s2zexp_make_s2cst (s2c)
         end // end of [S2Ecst]
 //
-      | S2Eclo (knd, _) => if knd <> 0 then S2ZEword 1 else S2ZEbot ()
+      | S2Eclo (knd, _) => if knd <> 0 then S2ZEptr () else S2ZEbot ()
       | S2Edatconptr (d2c, _) => s2zexp_make_s2cst (d2con_scst_get d2c)
       | S2Edatcontyp (d2c, _) => s2zexp_make_s2cst (d2con_scst_get d2c)
       | S2Eexi (s2vs, _(*s2ps*), s2e) => aux_s2exp (s2vs :: s2vss, s2e)
       | S2Eextype name => S2ZEextype name
-      | S2Efun _ => S2ZEword 1
+      | S2Efun _ => S2ZEptr ()
 (*
       | S2Eout s2e => S2ZEout (s2zexp_make_s2exp s2e)
 *)
@@ -1057,7 +1060,7 @@ implement s2zexp_make_s2exp (s2e0) = let
           S2ZEtyarr (aux_s2exp (s2vss, s2e_elt), s2ess_dim)
         end // end of [S2Etyarr]
       | S2Etyrec (knd, npf, ls2es) => begin case+ knd of
-        | TYRECKINDbox () => S2ZEword 1
+        | TYRECKINDbox () => S2ZEptr ()
         | _ => S2ZEtyrec (knd, aux_labs2explst (s2vss, ls2es))
         end // end of [S2Etyrec]
       | S2Euni (s2vs, _(*s2ps*), s2e) => aux_s2exp (s2vs :: s2vss, s2e)
@@ -1068,14 +1071,13 @@ implement s2zexp_make_s2exp (s2e0) = let
       | S2EVar s2V => aux_s2Var (s2vss, s2V)
       | _ => S2ZEbot ()
   end // end of [aux_s2exp]
-
+//
   and aux_s2exp_app ( // [s2e_fun] is normalized
       s2vss: s2varlstlst, s2t: s2rt, s2e_fun: s2exp, s2es_arg: s2explst
     ) : s2zexp =
     case+ s2e_fun.s2exp_node of
     | S2Ecst s2c => let
-        val isabs = s2cst_isabs_get (s2c)
-      in
+        val isabs = s2cst_isabs_get (s2c) in
         case+ isabs of
         | Some (Some s2e_fun) => let
             val s2e = s2exp_app_srt (s2t, s2e_fun, s2es_arg) in aux_s2exp (s2vss, s2e)
@@ -1084,7 +1086,7 @@ implement s2zexp_make_s2exp (s2e0) = let
       end (* end of [S2Ecst] *)
     | _ => S2ZEbot () (* HX: ??? *)
   // end of [aux_s2exp_app]
-  
+//  
   and aux_s2explst
     (s2vss: s2varlstlst, s2es: s2explst): s2zexplst = case+ s2es of
     | list_cons (s2e, s2es) => let
@@ -1092,7 +1094,7 @@ implement s2zexp_make_s2exp (s2e0) = let
       end // end of [S2EXPLSTcons]
     | list_nil () => list_nil ()
   // end of [aux_s2explst]
-
+//
   and aux_labs2explst (s2vss: s2varlstlst, ls2es: labs2explst)
     : labs2zexplst = case+ ls2es of
     | LABS2EXPLSTcons (l, s2e, ls2es) => let
@@ -1102,7 +1104,7 @@ implement s2zexp_make_s2exp (s2e0) = let
       end // end of [LABS2EXPLSTcons]
     | LABS2EXPLSTnil () => LABS2ZEXPLSTnil ()
   // end of [aux_labs2explst]
-
+//
   and aux_s2var (s2vss: s2varlstlst, s2v0: s2var_t): s2zexp =
     case+ s2vss of
     | list_cons (s2vs, s2vss) => let
@@ -1115,7 +1117,7 @@ implement s2zexp_make_s2exp (s2e0) = let
       end // end of [list_cons]
     | list_nil () => S2ZEvar s2v0
   // end of [aux_s2var]
-  
+//
   and aux_s2Var
     (s2vss: s2varlstlst, s2V0: s2Var_t): s2zexp = let
     val lbs = s2Var_lbs_get s2V0
@@ -1640,9 +1642,9 @@ and s2zexp_subst_flag
       if flag > flag0 then S2ZEapp (s2ze_fun, s2zes_arg) else s2ze0
     end
   | S2ZEbot _ => s2ze0
-  | S2ZEbyte _ => s2ze0
   | S2ZEcst _  => s2ze0
   | S2ZEextype _ => s2ze0
+  | S2ZEptr () => s2ze0
   | S2ZEtyarr (s2ze_elt, s2ess_ind) => let
       val flag0 = flag
       val s2ze_elt = s2zexp_subst_flag (sub, s2ze_elt, flag)
@@ -1667,7 +1669,6 @@ and s2zexp_subst_flag
       | ~Some_vt s2e => (flag := flag + 1; s2zexp_make_s2exp s2e)
       | ~None_vt () => s2ze0
     end // end of [S2ZEvar]
-  | S2ZEword _ => s2ze0
 end // end of [s2zexp_subst_flag]
 
 and s2zexplst_subst_flag
@@ -1878,25 +1879,26 @@ and aux_s2Var
     end // end of [None]
 // end of [aux_s2Var]
 
-and aux_s2zexp (s2ze: s2zexp, fvs: &s2varset_t): void = begin
+and aux_s2zexp
+  (s2ze: s2zexp, fvs: &s2varset_t): void =
   case+ s2ze of
   | S2ZEapp (s2ze, s2zes) => begin
       aux_s2zexp (s2ze, fvs); aux_s2zexplst (s2zes, fvs)
     end // end of [S2ZEapp]
   | S2ZEbot () => ()
-  | S2ZEbyte _ => ()
   | S2ZEcst _ => ()
   | S2ZEextype _ => ()
+  | S2ZEptr () => ()
   | S2ZEtyarr (s2ze_elt, s2ess_dim) => begin
       aux_s2zexp (s2ze_elt, fvs); aux_s2explstlst (s2ess_dim, fvs)
     end // end of [S2ZEtyarr]
   | S2ZEtyrec (_(*knd*), ls2zes) => aux_labs2zexplst (ls2zes, fvs)
   | S2ZEunion (_(*stamp*), ls2zes) => aux_labs2zexplst (ls2zes, fvs)
   | S2ZEvar s2v => (fvs := s2varset_add (fvs, s2v))
-  | S2ZEword _ => ()
-end // end of [aux_s2zexp]
+// end of [aux_s2zexp]
 
-and aux_s2zexplst (s2zes: s2zexplst, fvs: &s2varset_t): void =
+and aux_s2zexplst
+  (s2zes: s2zexplst, fvs: &s2varset_t): void =
   case+ s2zes of
   | list_cons (s2ze, s2zes) => begin
       aux_s2zexp (s2ze, fvs); aux_s2zexplst (s2zes, fvs)
@@ -1904,7 +1906,8 @@ and aux_s2zexplst (s2zes: s2zexplst, fvs: &s2varset_t): void =
   | list_nil () => ()
 // end of [aux_s2zexplst]
 
-and aux_labs2zexplst (ls2zes: labs2zexplst, fvs: &s2varset_t): void =
+and aux_labs2zexplst
+  (ls2zes: labs2zexplst, fvs: &s2varset_t): void =
   case+ ls2zes of
   | LABS2ZEXPLSTcons (_(*lab*), s2ze, ls2zes) => begin
       aux_s2zexp (s2ze, fvs); aux_labs2zexplst (ls2zes, fvs)
@@ -2138,9 +2141,9 @@ and aux_s2zexp (
       aux_s2zexplst (s2V0, s2zes_arg, ans, s2cs, s2vs)
     end
   | S2ZEbot () => ()
-  | S2ZEbyte _ => ()
   | S2ZEcst _ => ()
   | S2ZEextype _ => ()
+  | S2ZEptr () => ()
   | S2ZEtyarr (s2ze_elt, s2ess_dim) => begin
       aux_s2zexp (s2V0, s2ze_elt, ans, s2cs, s2vs);
       aux_s2explstlst (s2V0, s2ess_dim, ans, s2cs, s2vs)
@@ -2152,7 +2155,6 @@ and aux_s2zexp (
       aux_labs2zexplst (s2V0, ls2zes, ans, s2cs, s2vs)
     end
   | S2ZEvar s2v => aux_s2var (s2V0, s2v, ans, s2cs, s2vs)
-  | S2ZEword _ => ()
 end // end of [aux_s2zexp]
 
 and aux_s2zexplst

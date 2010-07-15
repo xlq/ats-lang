@@ -748,11 +748,13 @@ overload rewind with rewind1
 
 // ------------------------------------------------
 
-fun tmpfile_err ():<!ref> [l:addr] (FILE_opt_v (rw, l) | ptr l)
-  = "atslib_tmpfile_err"
+fun tmpfile_err
+  () :<!ref> [l:addr] (FILE_opt_v (rw, l) | ptr l) = "atslib_tmpfile_err"
+// end of [tmpfile_err]
 
-fun tmpfile_exn ():<!exnref> [l:addr] (FILE_v (rw, l) | ptr l)
-  = "atslib_tmpfile_exn"
+fun tmpfile_exn
+  () :<!exnref> [l:addr] (FILE_v (rw, l) | ptr l) = "atslib_tmpfile_exn"
+// end of [tmpfile_exn]
 
 fun tmpfile_ref_exn ():<!exnref> FILEref = "atslib_tmpfile_exn"
 
@@ -766,12 +768,14 @@ returned in reverse order; only one pushback is guaranteed.
 
 *)
 
-fun ungetc0_err (c: char, f: FILEref):<> int
-  = "atslib_ungetc_err"
+fun ungetc0_err
+  (c: char, f: FILEref):<> int = "atslib_ungetc_err"
+// end of [ungetc0_err]
 
 fun ungetc1_err {m:fm}
   (c: char, f: &FILE m):<> [i:int | i <= UCHAR_MAX] int i
   = "atslib_ungetc_err"
+// end of [ungetc1_err]
 
 symintr ungetc_err
 overload ungetc_err with ungetc0_err

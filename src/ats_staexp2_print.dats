@@ -625,7 +625,7 @@ prerr_wths2explst (wths2es) =
 (* ****** ****** *)
 
 implement
-fprint_s2lab (pf | out, s2l): void = let
+fprint_s2lab (pf | out, s2l) = let
   macdef prstr (s) = fprint1_string (pf | out, ,(s))
 in
   case+ s2l of
@@ -770,12 +770,7 @@ in
       fprint_s2zexplst (pf | out, s2zes_arg);
       prstr ")"
     end // end of [S2ZEapp]
-  | S2ZEbot () => begin
-      fprint1_string (pf | out, "S2ZEbot()")
-    end // end of [S2ZEbot]
-  | S2ZEbyte n => begin
-      prstr "S2ZEbyte("; fprint1_int (pf | out, n); prstr ")"
-    end // end of [S2ZEbyte]
+  | S2ZEbot () => prstr "S2ZEbot()"
   | S2ZEcst s2c => begin
       prstr "S2ZEcst("; fprint_s2cst (pf | out, s2c); prstr ")"
     end // end of [S2ZEcst]
@@ -789,6 +784,7 @@ in
       prstr ")")
     end // end of [S2ZEout]
 *)
+  | S2ZEptr () => prstr "S2ZEptr()"
   | S2ZEtyarr (s2ze, s2ess_dim) => begin
       prstr "S2ZEtyarr(";
       fprint_s2zexp (pf | out, s2ze);
@@ -809,9 +805,6 @@ in
   | S2ZEvar s2v => begin
       prstr "S2ZEvar("; fprint_s2var (pf | out, s2v); prstr ")"
     end // end of [S2ZEvar]
-  | S2ZEword n => begin
-      prstr "S2ZEword("; fprint1_int (pf | out, n); prstr ")"
-    end // end of [S2ZEword]
 end (* end of [fprint_s2zexp] *)
 
 (* ****** ****** *)

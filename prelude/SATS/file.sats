@@ -35,7 +35,7 @@
 
 (* ****** ****** *)
 //
-// HX:
+// HX: Attention!
 //
 // The functions declared here are mostly done for the sake of convenience.
 // Please turn on GC if functions like [input_line] and [output_line] are
@@ -48,14 +48,13 @@
 #include "prelude/params.hats"
 
 (* ****** ****** *)
-
+//
 // some basic IO operations
+//
 
 #if VERBOSE_PRELUDE #then
-
 #print "Loading [file.sats] starts!\n"
-
-#endif
+#endif // end of [VERBOSE_PRELUDE]
 
 (* ****** ****** *)
 
@@ -158,9 +157,7 @@ fun line_stream_vt_make_file {m:file_mode} {l:addr}
 (* ****** ****** *)
 
 #if VERBOSE_PRELUDE #then
-
 #print "Loading [file.sats] finishes!\n"
-
-#endif
+#endif // end of [VERBOSE_PRELUDE]
 
 (* end of [file.sats] *)

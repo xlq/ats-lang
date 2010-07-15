@@ -38,7 +38,7 @@
 
 %{^
 #include "ats_counter.cats" /* only needed for [ATS/Geizella] */
-%}
+%} // end of [%{^]
 
 (* ****** ****** *)
 

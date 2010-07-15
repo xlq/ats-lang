@@ -745,15 +745,13 @@ implement s2zexp_syneq (s2ze10, s2ze20) = begin
     | _ => false
     end // end of [S2ZEapp]
   | S2ZEbot () => false // [S2ZEbot <> S2ZEbot]!
-  | S2ZEbyte i1 => begin case+ s2ze20 of
-    | S2ZEbyte i2 => (i1 = i2) | _ => false
-    end // end of [S2ZEbyte]
   | S2ZEcst s2c1 => begin case+ s2ze20 of
     | S2ZEcst s2c2 => eq_s2cst_s2cst (s2c1, s2c2) | _ => false
     end // end of [S2ZEcst]
   | S2ZEextype name1 => begin case+ s2ze20 of
     | S2ZEextype name2 => (name1 = name2) | _ => false
     end // end of [S2ZEextype]
+  | S2ZEptr () => (case+ s2ze20 of S2ZEptr () => true | _ => false)
   | S2ZEtyarr (s2ze1_elt, s2ess1_dim) => begin case+ s2ze20 of
     | S2ZEtyarr (s2ze2_elt, s2ess2_dim) => begin
         s2zexp_syneq (s2ze1_elt, s2ze2_elt) andalso
@@ -777,9 +775,6 @@ implement s2zexp_syneq (s2ze10, s2ze20) = begin
   | S2ZEvar s2v1 => begin case+ s2ze20 of
     | S2ZEvar s2v2 => eq_s2var_s2var (s2v1, s2v2) | _ => false
     end // end of [S2ZEvar]
-  | S2ZEword i1 => begin case+ s2ze20 of
-    | S2ZEword i2 => (i1 = i2) | _ => false
-    end // end of [S2ZEword]
 end // end of [s2zexp_syneq]
 
 (* ****** ****** *)
