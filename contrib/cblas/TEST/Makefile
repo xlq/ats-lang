@@ -39,6 +39,12 @@ symm_test: symm_test.dats
 
 ######
 
+lu_test: lu_test.dats
+	$(ATSCC) $(LIBFLAGS) -O2 -o $@ lu_test.dats $(ATSCTRB) -lcblas -lm \
+     && ./lu_test
+
+######
+
 html::
 	$(ATSOPT) --posmark_html -d cblas_test.dats > cblas_test_dats.html
 
@@ -52,6 +58,7 @@ cleanall: clean
 	rm -f gemm_test1
 	rm -f gemm_test2
 	rm -f symm_test
+	rm -f lu_test
 	rm -f *_?ats.html
 
 

@@ -150,10 +150,10 @@ fun{a:t@ype} GEVEC_ptr_set_elt_at {n:nat}
 
 (* ****** ****** *)
 
-fun{a:t@ype} GEVEC_ptr_initialize_elt {m:nat} {d:inc} (
-    X: &GEVEC (a?, m, d) >> GEVEC (a, m, d), m: size_t m, inc: size_t d, alpha: a
-  ) :<> void
-// end of [GEVEC_ptr_initialize_elt]
+fun{a:t@ype}
+GEVEC_ptr_initialize_elt {m:nat} {d:inc} (
+  X: &GEVEC (a?, m, d) >> GEVEC (a, m, d), m: size_t m, inc: size_t d, alpha: a
+) :<> void // end of [GEVEC_ptr_initialize_elt]
 
 (* ****** ****** *)
 

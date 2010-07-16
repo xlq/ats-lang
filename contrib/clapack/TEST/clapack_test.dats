@@ -81,7 +81,6 @@ end // end of [zrandgen_elt]
 (* ****** ****** *)
 
 extern fun{t:t@ype} randgen_elt ():<!ref> t
-
 implement randgen_elt<real>          () = srandgen_elt ()
 implement randgen_elt<doublereal>    () = drandgen_elt ()
 implement randgen_elt<complex>       () = crandgen_elt ()
