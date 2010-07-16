@@ -19,6 +19,17 @@
 
 (* ****** ****** *)
 
+staload C = "libc/SATS/complex.sats"
+typedef ccmplx = $C.ccmplx
+typedef zcmplx = $C.zcmplx
+
+(* ****** ****** *)
+
+staload "libats/SATS/genarrays.sats"
+staload "contrib/cblas/SATS/cblas.sats"
+
+(* ****** ****** *)
+
 //
 // BLAS level 1
 //

@@ -11,10 +11,17 @@
 
 (* ****** ****** *)
 
+local #include "prelude/HATS/number.hats" in (*empty*) end
+local #include "contrib/cblas/HATS/cblas.hats" in (*empty*) end
+
+(* ****** ****** *)
+
 staload M = "libc/SATS/math.sats"
 macdef M_PI = $M.M_PI
 
 staload C = "libc/SATS/complex.sats"
+typedef ccmplx = $C.ccmplx
+typedef zcmplx = $C.zcmplx
 
 (* ****** ****** *)
 
@@ -27,7 +34,8 @@ staload _(*anonymous*) = "prelude/DATS/array.dats"
 (* ****** ****** *)
 
 staload NUM = "prelude/SATS/number.sats"
-local (*empty*) in #include "prelude/HATS/number.hats" end
+macdef sin = $NUM.sin
+macdef cos = $NUM.cos
 
 (* ****** ****** *)
 
@@ -174,7 +182,6 @@ end // end of [randgen_fmat]
 (* ****** ****** *)
 
 staload "contrib/cblas/SATS/cblas.sats"
-local (*empty*) in #include "contrib/cblas/HATS/cblas.hats" end
 
 (* ****** ****** *)
 
@@ -3405,7 +3412,9 @@ fn level3_test (): void = () where {
 (* ****** ****** *)
 
 implement main () = () where {
-  // val () = srand48_with_time () // hard for debugging
+// (*
+  val () = srand48_with_time () // this makes it really hard for debugging
+// *)
   val () = level1_test ()
   val () = level2_test ()
   val () = level3_test ()
