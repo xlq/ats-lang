@@ -13,7 +13,12 @@ ATSCTRB="$(ATSHOME)"/contrib/cblas/atsctrb_cblas.o
 
 ######
 
-checkall: test cleanall
+checkall: \
+  test \
+  gemm_test1 gemm_test2 \
+  symm_test \
+  lu_test \
+  cleanall
 
 ######
 
