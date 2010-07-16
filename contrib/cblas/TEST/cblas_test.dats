@@ -55,7 +55,7 @@ fn{a:t@ype} print_elt (x: a): void = $NUM.print_elt<a> (x)
 local
 
 fn{a:t@ype}
-  macheps_get ():<> a = let
+macheps_get ():<> a = let
   val one = of_double<a> 1.0
   val two = of_double<a> 2.0
   fun guess (x: a):<cloref,!ntm> a =
@@ -113,10 +113,10 @@ fn crandgen_elt ():<!ref> ccmplx =
   val x = float_of_double x and y = float_of_double y
 } // end of [crandgen_elt]
 
-fn zrandgen_elt ():<!ref> zcmplx =
-  $C.zcmplx_make_cart (x, y) where {
-  val x = drand48 () and y = drand48 ()
-} // end of [zrandgen_elt]
+fn zrandgen_elt ():<!ref> zcmplx = let
+  val x = drand48 () and y = drand48 () in
+  $C.zcmplx_make_cart (x, y)
+end // end of [zrandgen_elt]
 
 extern fun{a:t@ype} randgen_elt ():<!ref> a
 
@@ -163,7 +163,8 @@ staload _(*anonymous*) = "libats/DATS/genarrays.dats"
 staload "libats/SATS/fmatrix.sats"
 staload _(*anonymous*) = "libats/DATS/fmatrix.dats"
 
-fun{a:t@ype} randgen_fmat
+fun{a:t@ype}
+randgen_fmat
   {m,n:nat} (m: int m, n: int n)
   : [mn:int] [l:addr] (
     free_gc_v (a, mn, l)
