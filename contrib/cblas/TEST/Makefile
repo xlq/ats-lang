@@ -18,9 +18,8 @@ checkall: test cleanall
 ######
 
 test: cblas_test.dats
-	$(ATSCC) $(LIBFLAGS) -O3 -o test \
-          cblas_test.dats $(ATSCTRB) -lcblas -lm \
-        && ./test
+	$(ATSCC) $(LIBFLAGS) -O2 -o test cblas_test.dats $(ATSCTRB) -lcblas -lm \
+     && ./test
 
 ######
 

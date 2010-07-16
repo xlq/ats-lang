@@ -27,7 +27,7 @@ staload _(*anonymous*) = "prelude/DATS/array.dats"
 (* ****** ****** *)
 
 staload NUM = "prelude/SATS/number.sats"
-local (* empty *) in #include "prelude/HATS/number.hats" end
+local (*empty*) in #include "prelude/HATS/number.hats" end
 
 (* ****** ****** *)
 
@@ -1672,8 +1672,9 @@ gerc_test (): void = () where {
   val incy_i = sz2i incy
 //
   val () = loop (pfy_gev | N, py_arr, incy) where {
-    fun loop {n:nat} {d:inc} {l:addr} .<n>.
-      (pf: !GEVEC_v (a, n, d, l) | n: size_t n, p: ptr l, inc: size_t d): void =
+    fun loop {n:nat} {d:inc} {l:addr} .<n>. (
+        pf: !GEVEC_v (a, n, d, l) | n: size_t n, p: ptr l, inc: size_t d
+      ) : void =
       if n > 0 then let
         prval pf_mul = mul_istot {d, sizeof a} ()
         prval (pf_at, pf1) = GEVEC_v_uncons {a} (pf_mul, pf)
@@ -1686,14 +1687,14 @@ gerc_test (): void = () where {
         // nothing
       end (* end of [if] *)
     // end of [loop]
-  }
+  } // end of [val]
 //
 // HX-2010-07-15: if removed, a gcc optimization bug occurs!!!
 //
   val incy_i = sz2i incy
   val () = cblas_gerc<a> (
     CblasColMajor, M, N, neg1, !px_arr, incx, !py_arr, incy_i, !p1_arr, M 
-  )
+  ) // end of [cblas_gerc]
 //
   prval () = pfx_gem := fpfx_gem (pfx_gev)
   prval () = pfy_gem := fpfy_gem (pfy_gev)

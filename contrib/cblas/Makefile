@@ -16,13 +16,17 @@ all: atsctrb_cblas.o clean
 
 ######
 
-atsctrb_cblas.o: cblas_dats.o
-	ld -r -o $@ cblas_dats.o
+atsctrb_cblas.o: \
+  cblas_dats.o cblas_extra_dats.o
+	ld -r -o $@ cblas_dats.o cblas_extra_dats.o
 
 ######
 
 cblas_dats.o: DATS/cblas.dats
 	$(ATSCC) $(LIBFLAGS) -o $@ -c DATS/cblas.dats
+
+cblas_extra_dats.o: DATS/cblas_extra.dats
+	$(ATSCC) $(LIBFLAGS) -o $@ -c DATS/cblas_extra.dats
 
 ######
 
