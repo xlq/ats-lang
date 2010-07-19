@@ -78,6 +78,14 @@ fun the_deplst_push
   val () = !p := list_vt_cons (dep, !p)
 } // end of [the_deplst_push]
 
+(* ****** ****** *)
+
+extern // HX-2010-07-19: for ATS/GEIZELLA only
+fun string_index_of_char_from_right
+  {n:nat} (str: string n, c: char):<> ssizeBtw (~1, n)
+  = "atspre_string_index_of_char_from_right"
+// end of [string_index_of_char_from_right]
+
 fun fprint_target {m:file_mode} (
     pf: file_mode_lte (m, w) | out: &FILE m, basename: string
   ) : void = let

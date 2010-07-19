@@ -756,7 +756,7 @@ stadef FILE = FILE_viewt0ype
 
 //
 // HX-2010-05-02:
-// this is unsafe and should probably be deprecated:
+// this is easy to use but unsafe and should probably be DEPRECATED?
 //
 // [FILEref_type] is [ref (FILE m)] for some [m]
 abstype FILEref_type

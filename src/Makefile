@@ -68,7 +68,6 @@ ATSCCFLAGS=-g
 #GCFLAGS=-D_ATS_GC
 GCFLAGS=-D_ATS_GCATS
 GC_o=gc_o
-
 #GCFLAGS=-D_ATS_GCATS -pthread
 #GC_o=gc_mt_o
 

@@ -37,10 +37,8 @@
 (* ****** ****** *)
 
 %{^
-
 #include "ats_counter.cats" /* only needed for [ATS/Geizella] */
-
-%}
+%} // end of [%{^]
 
 (* ****** ****** *)
 
@@ -56,21 +54,22 @@ assume stamp_t = $Cnt.count_t
 
 (* ****** ****** *)
 
-implement lt_stamp_stamp (s1, s2) =
-  $Cnt.lt_count_count (s1, s2)
-implement lte_stamp_stamp (s1, s2) =
-  $Cnt.lte_count_count (s1, s2)
-implement eq_stamp_stamp (s1, s2) =
-  $Cnt.eq_count_count (s1, s2)
-implement neq_stamp_stamp (s1, s2) =
-  $Cnt.neq_count_count (s1, s2)
-implement compare_stamp_stamp (s1, s2) =
-  $Cnt.compare_count_count (s1, s2)
+implement
+lt_stamp_stamp (s1, s2) = $Cnt.lt_count_count (s1, s2)
+implement
+lte_stamp_stamp (s1, s2) = $Cnt.lte_count_count (s1, s2)
+
+implement
+eq_stamp_stamp (s1, s2) = $Cnt.eq_count_count (s1, s2)
+implement
+neq_stamp_stamp (s1, s2) = $Cnt.neq_count_count (s1, s2)
+
+implement
+compare_stamp_stamp (s1, s2) = $Cnt.compare_count_count (s1, s2)
 
 (* ****** ****** *)
 
 implement fprint_stamp (pf | out, s) = $Cnt.fprint_count (pf | out, s)
-
 implement print_stamp (s) = print_mac (fprint_stamp, s)
 implement prerr_stamp (s) = prerr_mac (fprint_stamp, s)
 
