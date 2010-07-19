@@ -344,9 +344,9 @@ s2rt_readize (s2t) =
 
 #define CLO 0; #define CLOPTR 1; #define CLOREF ~1
 
-// implemented in [ats_staexp2_util1.dats]
 implement
-s2rt_prf_lin_fc (loc0, isprf, islin, fc) = begin
+s2rt_prf_lin_fc
+  (loc0, isprf, islin, fc) = begin
   if isprf then begin
     (if islin then s2rt_view else s2rt_prop)
   end else begin case+ islin of

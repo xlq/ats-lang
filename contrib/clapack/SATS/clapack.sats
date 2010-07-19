@@ -123,7 +123,8 @@ macdef ClapackNonUnit = $extval (CLAPACK_DIAG_t nonunit, "'N'")
 (* ****** ****** *)
 
 abst@ype CLAPACK_NORM_t (char) = char
-typedef CLAPACK_NORM_t = [c:char] CLAPACK_NORM_t (c)
+typedef
+CLAPACK_NORM_t = [c:char] CLAPACK_NORM_t (c)
 
 macdef ClapackNormMax = $extval (CLAPACK_NORM_t 'M', "'M'") // max of elt
 
@@ -230,7 +231,8 @@ dataview langework_v (t:t@ype+, c:char, m:int, l:addr) =
 // end of [lange_v]
 
 // |t1| = t2
-typedef lange_type (t1:t@ype, t2:t@ype) =
+typedef
+lange_type (t1:t@ype, t2:t@ype) =
   {c:char} {m,n:nat} {lda:inc}
   {m1:pos | m <= m1} {l_work:addr} (
     (*pf: *) !langework_v (t2, c, m1, l_work)
@@ -294,7 +296,8 @@ int dlacpy_(
 
 *)
 
-typedef lacpy_type (t:t@ype) =
+typedef
+lacpy_type (t:t@ype) =
   {m,n:nat} {lda,ldb:inc} (
     (*uln:*) CLAPACK_UPLO_OPT_t
   , (*m:*) integer m, (*n:*) integer n
@@ -358,7 +361,8 @@ int dgelqf_(
 
 *)
 
-typedef gelqf_type (t:t@ype) =
+typedef
+gelqf_type (t:t@ype) =
   {m,n:nat} {mn:int | mn==min(m,n)} {lda:inc} {la,ltau:addr}
   {lwork:pos | lwork >= m} (
     GEMAT (t, m, n, lda) @ la    // a
@@ -433,7 +437,8 @@ int cunmlq_(
 
 *)
 
-typedef unmlq_type (t:t@ype) =
+typedef
+unmlq_type (t:t@ype) =
   {m,n,k:nat}
   {ma,na:int} // k <= min(ma,na)
   {lda,ldc:inc}
@@ -547,7 +552,8 @@ int dgeqlf_(
 
 *)
 
-typedef geqlf_type (t:t@ype) =
+typedef
+geqlf_type (t:t@ype) =
   {m,n:nat} {mn:int | mn==min(m,n)} {lda:inc} {la,ltau:addr}
   {lwork:pos | lwork >= n} (
     (*a:*) GEMAT (t, m, n, lda) @ la
@@ -606,7 +612,8 @@ int cunmql_(
 
 *)
 
-typedef unmql_type (t:t@ype) =
+typedef
+unmql_type (t:t@ype) =
   {m,n,k:nat}
   {ma,na:int} // k <= min (ma,na)
   {lda,ldc:inc}
@@ -704,7 +711,8 @@ int dgeqrf_(
 
 *)
 
-typedef geqrf_type (t:t@ype) =
+typedef
+geqrf_type (t:t@ype) =
   {m,n:nat} {mn:int | mn==min(m,n)} {lda:inc} {la,ltau:addr}
   {lwork:pos | lwork >= n} (
     GEMAT (t, m, n, lda) @ la    // a
@@ -744,7 +752,8 @@ fun{t:t@ype} geqrf_work_query {m,n:nat}
 
 (* ****** ****** *)
 
-typedef unmqr_type (t:t@ype) =
+typedef
+unmqr_type (t:t@ype) =
   {m,n,k:nat}
   {ma,na:int} // k <= min (ma, na)
   {lda,ldc:inc}
@@ -865,7 +874,8 @@ int dgerqf_(
 
 *)
 
-typedef gerqf_type (t:t@ype) =
+typedef
+gerqf_type (t:t@ype) =
   {m,n:nat} {mn:int | mn==min(m,n)} {lda:inc} {la,ltau:addr}
   {lwork:pos | lwork >= m} (
     (*a*) GEMAT (t, m, n, lda) @ la
@@ -923,7 +933,8 @@ int cunmrq_(
 
 *)
 
-typedef unmrq_type (t:t@ype) =
+typedef
+unmrq_type (t:t@ype) =
   {m,n,k:nat}
   {ma,na:int} // na >= k
   {lda,ldc:inc}
@@ -1006,7 +1017,8 @@ prfun lemma_gels_lwork {tr:transpose} // implemented in [clapack.dats]
   : gels_lwork_p (tr, m, n, nrhs, lwork)
 // end of [lemma_gels_lwork]
 
-typedef gels_type (t:t@ype) =
+typedef
+gels_type (t:t@ype) =
   {tr:transpose}
   {m,n:nat} {nrhs:nat} {lda,ldb:inc}
   {lwork:pos} (
@@ -1053,7 +1065,8 @@ int dtrtrs_(
 
 *)
   
-typedef trtrs_type (t:t@ype) =
+typedef
+trtrs_type (t:t@ype) =
   {ul:uplo}
   {tr:transpose}
   {dg:diag}
@@ -1138,7 +1151,8 @@ int dgetrf_(
 
 *)
 
-typedef getrf_type (t:t@ype) =
+typedef
+getrf_type (t:t@ype) =
   {m,n:nat} {mn:int | mn==min(m,n)} {lda:inc} {la:addr} (
     (*a*) GEMAT (t, m, n, lda) @ la
   | (*m:*) integer m, (*n:*) integer n
@@ -1185,7 +1199,8 @@ int dlaswp_(
 
 *)
 
-typedef laswp_type (t:t@ype) =
+typedef
+laswp_type (t:t@ype) =
   {m,n:nat} {lda:inc}
   {k1,k2:nat | k1 <= k2 && k2 <= m}
   {k:nat | k2 <= k} {incx:int | incx == 1 || incx == ~1} (
@@ -1222,7 +1237,8 @@ int dgesv_ (
 
 *)
 
-typedef gesv_type (t:t@ype) =
+typedef
+gesv_type (t:t@ype) =
   {n,nrhs:nat} {lda,ldb:inc} (
     (*n:*) integer n, (*nrhs:*) integer nrhs
   , (*a:*) &GEMAT (t, n, n, lda), (*lda:*) integer lda
@@ -1265,7 +1281,8 @@ int dgesvd_(
 ** lwork >= 3*min(m,n) + n
 ** lwork >= 5*min(m,n)
 *)
-absprop gesvd_lwork_p (m:int, n:int, lwork:int) // implemented in [clapack.dats]
+absprop
+gesvd_lwork_p (m:int, n:int, lwork:int)
 
 prfun lemma_gesvd_lwork // implemented in [clapack.dats]
   { m, n, lwork : nat
@@ -1280,7 +1297,8 @@ prfun lemma_gesvd_lwork // implemented in [clapack.dats]
 ** Full SVD
 *)
 
-typedef gesvd_type (t1:t@ype, t2:t@ype) =
+typedef
+gesvd_type (t1:t@ype, t2:t@ype) =
   {m,n:nat} {mn:int | mn==min(m,n)} {lda,ldu,ldvt:inc} {lwork:pos} (
     (*pf_lwork:*) gesvd_lwork_p (m, n, lwork)
   | (*m:*)        integer m
@@ -1299,8 +1317,9 @@ typedef gesvd_type (t1:t@ype, t2:t@ype) =
 
 fun{t1,t2:t@ype} gesvd: gesvd_type (t1, t2)
 
-fun{t1,t2:t@ype} gesvd_work_query {m,n:pos}
-  (m: integer m, n: integer n)
+fun{t1,t2:t@ype}
+gesvd_work_query
+  {m,n:pos} (m: integer m, n: integer n)
   :<> [lwork:pos] (gesvd_lwork_p (m, n, lwork) | integer lwork)
 // end of [gesvd_work_query]
 
@@ -1310,7 +1329,8 @@ fun{t1,t2:t@ype} gesvd_work_query {m,n:pos}
 ** Econonmy SVD
 *)
 
-typedef gesvd_econ_type (t1:t@ype, t2:t@ype) =
+typedef
+gesvd_econ_type (t1:t@ype, t2:t@ype) =
   {m,n:nat} {mn:int | mn==min(m,n)} {lda,ldu,ldvt:inc} {lwork:pos} (
     (*pf_lwork:*) gesvd_lwork_p (m, n, lwork)
   | (*m:*)        integer m
@@ -1329,8 +1349,9 @@ typedef gesvd_econ_type (t1:t@ype, t2:t@ype) =
 
 fun{t1,t2:t@ype} gesvd_econ: gesvd_econ_type (t1, t2)
 
-fun{t1,t2:t@ype} gesvd_econ_work_query {m,n:pos}
-  (m: integer m, n: integer n)
+fun{t1,t2:t@ype}
+gesvd_econ_work_query
+  {m,n:pos} (m: integer m, n: integer n)
   :<> [lwork:pos] (gesvd_lwork_p (m, n, lwork) | integer lwork)
 // end of [gesvd_econ_work_query]
 
@@ -1340,7 +1361,8 @@ fun{t1,t2:t@ype} gesvd_econ_work_query {m,n:pos}
 ** Singular values only
 *)
 
-typedef gesvd_sing_type (t1:t@ype, t2:t@ype) =
+typedef
+gesvd_sing_type (t1:t@ype, t2:t@ype) =
   {m,n:nat} {mn:int | mn==min(m,n)} {lda:inc} {lwork:pos} (
     (*pf_lwork:*) gesvd_lwork_p (m, n, lwork)
   | (*m:*)        integer m
@@ -1355,8 +1377,9 @@ typedef gesvd_sing_type (t1:t@ype, t2:t@ype) =
 
 fun{t1,t2:t@ype} gesvd_sing: gesvd_sing_type (t1, t2)
 
-fun{t1,t2:t@ype} gesvd_sing_work_query {m,n:pos}
-  (m: integer m, n: integer n)
+fun{t1,t2:t@ype}
+gesvd_sing_work_query
+  {m,n:pos} (m: integer m, n: integer n)
   :<> [lwork:pos] (gesvd_lwork_p (m, n, lwork) | integer lwork)
 // end of [gesvd_sing_work_query]
 
@@ -1366,7 +1389,8 @@ fun{t1,t2:t@ype} gesvd_sing_work_query {m,n:pos}
 ** Singular values and left singular vectors only: A -> U
 *)
 
-typedef gesvd_left_type (t1:t@ype, t2:t@ype) =
+typedef
+gesvd_left_type (t1:t@ype, t2:t@ype) =
   {m,n:nat | m >= n} {lda:inc} {lwork:pos} (
     (*pf_lwork:*) gesvd_lwork_p (m, n, lwork)
   | (*m:*)        integer m
@@ -1381,8 +1405,9 @@ typedef gesvd_left_type (t1:t@ype, t2:t@ype) =
 
 fun{t1,t2:t@ype} gesvd_left: gesvd_left_type (t1, t2)
 
-fun{t1,t2:t@ype} gesvd_left_work_query {m,n:pos}
-  (m: integer m, n: integer n)
+fun{t1,t2:t@ype}
+gesvd_left_work_query
+  {m,n:pos} (m: integer m, n: integer n)
   :<> [lwork:pos] (gesvd_lwork_p (m, n, lwork) | integer lwork)
 // end of [gesvd_left_work_query]
 
@@ -1392,7 +1417,8 @@ fun{t1,t2:t@ype} gesvd_left_work_query {m,n:pos}
 ** Singular values and right singular vectors only: A -> VT
 *)
 
-typedef gesvd_right_type (t1:t@ype, t2:t@ype) =
+typedef
+gesvd_right_type (t1:t@ype, t2:t@ype) =
   {m,n:nat | m <= n} {lda:inc} {lwork:pos} (
     (*pf_lwork:*) gesvd_lwork_p (m, n, lwork)
   | (*m:*)        integer m
@@ -1407,8 +1433,9 @@ typedef gesvd_right_type (t1:t@ype, t2:t@ype) =
 
 fun{t1,t2:t@ype} gesvd_right: gesvd_right_type (t1, t2)
 
-fun{t1,t2:t@ype} gesvd_right_work_query {m,n:pos}
-  (m: integer m, n: integer n)
+fun{t1,t2:t@ype}
+gesvd_right_work_query
+  {m,n:pos} (m: integer m, n: integer n)
   :<> [lwork:pos] (gesvd_lwork_p (m, n, lwork) | integer lwork)
 // end of [gesvd_right_work_query]
 
@@ -1418,7 +1445,8 @@ fun{t1,t2:t@ype} gesvd_right_work_query {m,n:pos}
 ** Economy SVD of skinny matrices: A -> U
 *)
 
-typedef gesvd_skinny_type (t1:t@ype, t2:t@ype) =
+typedef
+gesvd_skinny_type (t1:t@ype, t2:t@ype) =
   {m,n:nat | m >= n} {lda,ldvt:inc} {lwork:pos} (
     (*pf_lwork:*) gesvd_lwork_p (m, n, lwork)
   | (*m:*)        integer m
@@ -1435,8 +1463,9 @@ typedef gesvd_skinny_type (t1:t@ype, t2:t@ype) =
 
 fun{t1,t2:t@ype} gesvd_skinny: gesvd_skinny_type (t1, t2)
 
-fun{t1,t2:t@ype} gesvd_skinny_work_query {m,n:pos}
-  (m: integer m, n: integer n)
+fun{t1,t2:t@ype}
+gesvd_skinny_work_query
+  {m,n:pos} (m: integer m, n: integer n)
   :<> [lwork:pos] (gesvd_lwork_p (m, n, lwork) | integer lwork)
 // end of [gesvd_skinny_work_query]
 
@@ -1446,7 +1475,8 @@ fun{t1,t2:t@ype} gesvd_skinny_work_query {m,n:pos}
 ** Economy SVD of fat matrices: A -> VT
 *)
 
-typedef gesvd_fat_type (t1:t@ype, t2:t@ype) =
+typedef
+gesvd_fat_type (t1:t@ype, t2:t@ype) =
   {m,n:nat | m <= n} {lda,ldu:inc} {lwork:pos} (
     (*pf_lwork:*) gesvd_lwork_p (m, n, lwork)
   | (*m:*)        integer m
@@ -1463,7 +1493,8 @@ typedef gesvd_fat_type (t1:t@ype, t2:t@ype) =
 
 fun{t1,t2:t@ype} gesvd_fat: gesvd_fat_type (t1, t2)
 
-fun{t1,t2:t@ype} gesvd_fat_work_query {m,n:pos}
+fun{t1,t2:t@ype}
+gesvd_fat_work_query {m,n:pos}
   (m: integer m, n: integer n)
   :<> [lwork:pos] (gesvd_lwork_p (m, n, lwork) | integer lwork)
 // end of [gesvd_fat_work_query]

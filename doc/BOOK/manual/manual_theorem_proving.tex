@@ -106,7 +106,9 @@ rejected immediately as it is nonlinear. In order to avoid nonlinear
 constraints, the following implementation of $g$ makes use of a proof
 function ${\it lemma\_i\_mul\_i\_gte\_0}$:
 \begin{verbatim}
-extern prfun lemma_i_x_i_gte_0 {i,ii:int} (pf: MUL (i, i, ii)): [ii>=0] void
+extern prfun lemma_i_mul_i_gte_0
+  {i,ii:int} (pf: MUL (i, i, ii)): [ii>=0] void
+// end of [lemma_i_mul_i_gte_0]
 
 fun g {i:int} (i: int i) = let
   val (pf | ii) = i imul2 i; prval () = lemma_i_mul_i_gte_0 (pf)
@@ -136,7 +138,7 @@ the following types:
 \end{array}\]
 In other words, the following is established by these proof functions:
 \[\begin{array}{rcl}
-{\it aux1} & {\rm proves} & \forall{m:\snat}.\forall{n:\sint}.~m*(n-1)=m*n - 1 \\
+{\it aux1} & {\rm proves} & \forall{m:\snat}.\forall{n:\sint}.~m*(n-1)=m*n - m \\
 {\it aux2} & {\rm proves} & \forall{m:\snat}.\forall{n:\sint}.~m*(-n)=-(m*n) \\
 {\it aux3} & {\rm proves} & \forall{n:\snat}.n*n\geq 0 \\
 \end{array}\]
@@ -169,7 +171,7 @@ As linear constraints are handled automatically in ATS,
 this theorem is equivalent to the following one,
 \[\begin{array}{l}
 \forall m:\snat.\forall n:\snat.\forall i:\snat.~
-(i<m\land j<n)\limplies (i\cdot n + n \leq m\cdot n)
+(i<m)\limplies (i\cdot n + n \leq m\cdot n)
 \end{array}\]
 which is encoded and proven in Figure~\ref{figure:lemma_for_matrix_subscripting}.
 

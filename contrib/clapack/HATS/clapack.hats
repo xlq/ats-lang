@@ -19,7 +19,8 @@
 
 (* ****** ****** *)
 
-staload F2C = "contrib/clapack/SATS/f2c.sats"
+staload
+F2C = "contrib/clapack/SATS/f2c.sats"
 typedef integer (i:int) =  $F2C.integer (i)
 typedef integer =  $F2C.integer
 typedef real = $F2C.real
@@ -1121,12 +1122,12 @@ zgesvd_dummy: gesvd_c_dummy_type (zcmplx, double) = "atsctrb_clapack_zgesvd"
 implement gesvd_dummy<float,float>
   (jobu, jobvt, m, n, a, lda, s, u, ldu, vt, ldvt, work, lwork) =
   sgesvd_dummy (jobu, jobvt, m, n, a, lda, s, u, ldu, vt, ldvt, work, lwork)
-// end of ...
+// end of [gesvd_dummy<float,float>]
 
 implement gesvd_dummy<double,double>
   (jobu, jobvt, m, n, a, lda, s, u, ldu, vt, ldvt, work, lwork) =
   dgesvd_dummy (jobu, jobvt, m, n, a, lda, s, u, ldu, vt, ldvt, work, lwork)
-// end of ...
+// end of [gesvd_dummy<double,double>]
 
 implement gesvd_dummy<ccmplx,float>
   (jobu, jobvt, m, n, a, lda, s, u, ldu, vt, ldvt, work, lwork) = let
@@ -1149,12 +1150,12 @@ end // end of [gesvd_dummy<zcmplx,double>]
 implement gesvd_c_dummy<ccmplx,float>
   (jobu, jobvt, m, n, a, lda, s, u, ldu, vt, ldvt, work, lwork, rwork) =
   cgesvd_dummy (jobu, jobvt, m, n, a, lda, s, u, ldu, vt, ldvt, work, lwork, rwork)
-// end of ...
+// end of [gesvd_c_dummy<ccmplx,float>]
 
 implement gesvd_c_dummy<zcmplx,double>
   (jobu, jobvt, m, n, a, lda, s, u, ldu, vt, ldvt, work, lwork, rwork) =
   zgesvd_dummy (jobu, jobvt, m, n, a, lda, s, u, ldu, vt, ldvt, work, lwork, rwork)
-// end of ...
+// end of [gesvd_c_dummy<zcmplx,double>]
 
 (* ****** ****** *)
 

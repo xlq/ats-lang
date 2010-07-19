@@ -59,8 +59,8 @@ fun CBLAS_ORDER_of_ORDER {ord:order}
 (*
 // implemented in [clbas.dats]
 fun OrderOfCblasOrder {ord:order}
-  (x: CBLAS_ORDER_t ord):<> ORDER ord
-  = "atsctrb_OrderOfCblasOrder"
+  (x: CBLAS_ORDER_t ord):<> ORDER ord = "atsctrb_OrderOfCblasOrder"
+// end of [OrderOfCblasOrder]
 *)
 
 (* ****** ****** *)
@@ -83,8 +83,7 @@ overload = with eq_CBLAS_UPLO_UPLO
 *)
 
 // implemented in [clbas.dats]
-fun CBLAS_UPLO_of_UPLO {ul:uplo}
-  (x: UPLO ul):<> CBLAS_UPLO_t ul
+fun CBLAS_UPLO_of_UPLO {ul:uplo} (x: UPLO ul):<> CBLAS_UPLO_t ul
 
 (* ****** ****** *)
 
