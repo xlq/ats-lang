@@ -21,6 +21,7 @@ datasort tm = TMunit
             | TMlam of (tm -> tm)
             | TMapp of (tm, tm)
             | TMfix of (tm -> tm)
+// end of [datasort]
 
 datasort tms = TMSnil | TMScons of (tm, tms)
 
@@ -171,7 +172,8 @@ dataprop ADDCTX(ctx,ctx,int) =
       ADDCTXshi(CTXcons(t,T,G),CTXcons(t,T,G'),n+1) of ADDCTX(G,G',n)
 //
 
-prfun weaken {G,G':ctx} {t,t':tm} {T,T':tp} {n1,n2:nat} .<n1,n2>.
+prfun weaken
+  {G,G':ctx} {t,t':tm} {T,T':tp} {n1,n2:nat} .<n1,n2>.
   (der: DER(G,t,T,n1), pf:ADDCTX(G,G',n2)): DER(G',t,T,n1) =
   $effmask_exn begin case der of
   | DERvar i => begin case+ pf of
@@ -196,7 +198,8 @@ end // end of [weaken]
 
 //
 
-prfun exch {G,G':ctx} {t:tm} {T:tp} {n1,n2:nat} .<n1,n2>.
+prfun exch
+  {G,G':ctx} {t:tm} {T:tp} {n1,n2:nat} .<n1,n2>.
   (der: DER(G,t,T,n1), pf:FLIPCTX (G,G',n2)): DER(G',t,T,n1) =
   $effmask_exn begin case der of
   | DERvar(i) => begin case+ pf of
@@ -227,7 +230,8 @@ end // end of [exch]
 
 //
 
-prfun subst {G:ctx} {t,t':tm} {T,T':tp} {n1,n2:nat} .<n1>. 
+prfun subst
+  {G:ctx} {t,t':tm} {T,T':tp} {n1,n2:nat} .<n1>. 
   (der1:DER (CTXcons(t,T,G),t',T',n1), der2:DER (G,t,T,n2)) 
   : DER0 (G,t',T') = $effmask_exn begin case der1 of
   | DERvar i => (case+ i of INCTXone () => der2 | INCTXshi i' => DERvar i')
@@ -253,29 +257,31 @@ prfn fixLemma {f:tm->tm} {T:tp} {m:nat}
   case+ der of
     | DERfix (derf) => subst (derf {TMfix f}, der)
     | DERvar (inctx) =/=> (case+ inctx of INCTXone() => () | INCTXshi _ => ())
+// end of [fixLemma]
 
 fun evalVar {ts:tms} {t:tm} {T:tp} {n0,n:nat}
    (i: IN (t, ts, n), der: DER0(CTXnil, t, T) |  env: ENV (ts,n0), n: int n)
   : [v:tm] (EVAL0(t,v), DER0(CTXnil, v, T) | VAL v) =
-  if n ieq 0 then
-    let prval INone () = i in 
-       case+ env of
-         | ENVlamcons(pf | _, v) => (lemma01 pf, der | v) 
-         | ENVfixcons(env', tf) => 
-           let
-              prval INone() = i
-              prval der = fixLemma der
-              val (pf, der | v) = eval (der | tf{...}, env)
-	   in
-              (EVALfix pf, der | v)
-           end
-    end
-  else
-    let prval INshi i = i  in 
-       case+ env of
-         | ENVlamcons(_ | env, _) => evalVar (i, der | env, n isub 1)
-         | ENVfixcons(env, termf) => evalVar (i, der | env, n isub 1)
-    end
+  if n ieq 0 then let
+    prval INone () = i
+  in 
+    case+ env of
+    | ENVlamcons(pf | _, v) => (lemma01 pf, der | v) 
+    | ENVfixcons(env', tf) => let
+        prval INone() = i
+        prval der = fixLemma der
+        val (pf, der | v) = eval (der | tf{...}, env)
+      in
+        (EVALfix pf, der | v)
+      end
+  end else let
+    prval INshi i = i
+  in 
+    case+ env of
+    | ENVlamcons(_ | env, _) => evalVar (i, der | env, n isub 1)
+    | ENVfixcons(env, termf) => evalVar (i, der | env, n isub 1)
+  end // end of [if]
+(* end of [evalVar] *)
 
 and eval {ts:tms} {t:tm} {T:tp}
   (der: DER0 (CTXnil,t,T) | e: TERM0 (ts,t), env: ENV0 ts)

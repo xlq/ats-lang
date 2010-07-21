@@ -55,4 +55,4 @@ __ATS(#define ATSCTRB_GLIB_VERSION 1000 * (1000 * GLIB_MAJOR_VERSION + GLIB_MINO
 
 /* ****** ****** */
 
-/* end of [glibconfig.hats] */
+/* end of [glibconfig] */
