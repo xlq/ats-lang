@@ -13,7 +13,7 @@
 extern
 ats_void_type
 mainats (ats_int_type argc, ats_ptr_type argv) ;
-%}
+%} // end of [%{^]
 
 (* ****** ****** *)
 

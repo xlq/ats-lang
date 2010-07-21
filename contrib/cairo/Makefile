@@ -16,13 +16,17 @@ all: atsctrb_cairo.o clean
 
 ######
 
-atsctrb_cairo.o: cairo_dats.o
-	ld -r -o $@ cairo_dats.o
+atsctrb_cairo.o: \
+  cairo_dats.o cairo_extra_dats.o
+	ld -r -o $@ $?
 
 ######
 
 cairo_dats.o: DATS/cairo.dats
 	$(ATSCC) $(XRCFLAGS) -o $@ -c DATS/cairo.dats
+
+cairo_extra_dats.o: DATS/cairo_extra.dats
+	$(ATSCC) $(XRCFLAGS) -o $@ -c DATS/cairo_extra.dats
 
 ######
 

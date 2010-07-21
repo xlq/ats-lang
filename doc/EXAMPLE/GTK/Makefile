@@ -48,8 +48,9 @@ gtkcairopascal: gtkcairopascal.dats
 
 ######
 
+ATSCTRB=$(ATSHOME)/contrib/cairo/atsctrb_cairo.o
 gtkcairodisc: gtkcairodisc.dats
-	$(ATSCC) -D_ATS_GCATS -o $@ gtkcairodisc.dats $(GTKFLAGS) -lm
+	$(ATSCC) -D_ATS_GCATS $(ATSCTRB) -o $@ gtkcairodisc.dats $(GTKFLAGS) -lm
 
 ######
 

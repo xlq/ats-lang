@@ -23,41 +23,12 @@ staload "libc/SATS/random.sats"
 (* ****** ****** *)
 
 staload "contrib/cairo/SATS/cairo.sats"
+staload "contrib/cairo/SATS/cairo_extra.sats"
 
 (* ****** ****** *)
 
 stadef dbl = double
 stadef cr = cairo_ref
-
-(* ****** ****** *)
-
-fun show_text_at_origin {l:agz} (
-    cr: !cr l, W:dbl, H:dbl, utf8: string
-  ) : void = () where {
-//
-  val (pf | ()) = cairo_save (cr)
-  #define FONTSIZE 1
-  val () = cairo_select_font_face
-    (cr, "Georgia", CAIRO_FONT_SLANT_NORMAL, CAIRO_FONT_WEIGHT_BOLD)
-  val () = cairo_set_font_size (cr, (double_of)FONTSIZE)
-//
-  val () = () where {
-    var te : cairo_text_extents_t
-//
-    val MN = min (W, H)
-    val () = cairo_text_extents (cr, utf8, te)
-    val alpha = (1.0 * MN / te.width) // this is just an estimate
-    val () = cairo_scale (cr, alpha, alpha)
-//
-    val () = cairo_text_extents (cr, utf8, te)
-    val w = te.width and h = te.height
-    val x_base = w / 2 + te.x_bearing and y_base = ~te.y_bearing / 2
-    val () = cairo_move_to (cr, ~x_base, y_base)
-    val () = cairo_set_source_rgb (cr, 0.25, 0.25, 0.25) // dark gray
-    val () = cairo_show_text (cr, utf8)
-  } // end of [val]
-  val () = cairo_restore (pf | cr)
-} // end of [show_text_at_origin]
 
 (* ****** ****** *)
 
@@ -77,14 +48,18 @@ fn draw_disc {l:agz}
   val x = d.x and y = d.y
   val r = d.r
   val rad = sqrt (x*x + y*y)
-  val r1 = r/2 + r/2 * (1 - rad / theRadius)
+  val r1 = r/5 + 4*r/5 * (1 - rad / theRadius)
   val (pf | ()) = cairo_save (cr)
   val () = cairo_translate (cr, x, y)
   val () = cairo_arc (cr, 0.0, 0.0, r1, 0.0, 2*PI)
   val () = cairo_fill (cr)
   val w = 1.6*r1 and h = 1.6*r1
   val txt = d.txt
-  val () = if txt <> "" then show_text_at_origin (cr, w, h, txt)
+  val () = if txt <> "" then let
+    val () = cairo_set_source_rgb (cr, 0.0, 0.5, 0.5) // dark gray
+  in
+    show_text_inbox (cr, w, h, txt)
+  end // end of [val]
   val () = cairo_restore (pf | cr)
 in
   // nothing
