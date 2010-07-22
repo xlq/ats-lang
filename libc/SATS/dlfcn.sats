@@ -78,21 +78,31 @@ void *dlopen(const char *filename, int flag);
 *)
 fun dlopen
   (filename: string, flag: dlopen_flag_t)
-  : [l:addr] (option_v (dlopen_v l, l <> null) | ptr l)
+  :<> [l:addr] (option_v (dlopen_v l, l <> null) | ptr l)
   = "#atslib_dlopen"
 // end of [dlopen]
 
 fun dlopen_exn
   (filename: string, flag: dlopen_flag_t)
-  : [l:addr] (dlopen_v l | ptr l)
+  :<!exn> [l:agz] (dlopen_v l | ptr l)
   = "atslib_dlopen_exn" // this is a function
 // end of [dlopen_exn]
 
+(* ****** ****** *)
+
 // success/failure: err = 0/1
-fun dlclose {l:addr}
-  (pf: dlopen_v l | handle: ptr l): int(*err*)
+fun dlclose {l:agz} (
+    pf: !dlopen_v l >> option_v (dlopen_v l, i > 0) | handle: ptr l
+  ) :<> #[i:int | i >= 0] int(i) (*err*)
   = "#atslib_dlclose"
 // end of [dlclose]
+
+fun dlclose_exn
+  {l:agz} (pf: dlopen_v l | handle: ptr l):<!exn> void
+  = "atslib_dlclose_exn" // this is a function
+// end of [dlclose_exn]
+
+(* ****** ****** *)
 
 // for reporting error; there is no error if the
 fun dlerror (): Stropt = "#atslib_dlerror" // return is null

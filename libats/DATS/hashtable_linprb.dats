@@ -102,19 +102,22 @@ castfn HASHTBLptr_tblget
 
 (* ****** ****** *)
 
-implement hashtbl_size {key,itm} (ptbl) = sz where {
+implement
+hashtbl_size {key,itm} (ptbl) = sz where {
   val (pf, fpf | p) = HASHTBLptr_tblget {key,itm} (ptbl)
   val sz = p->sz
   prval () = minus_addback (fpf, pf | ptbl)
 } // end of [hashtbl_size]  
 
-implement hashtbl_total {key,itm} (ptbl) = tot where {
+implement
+hashtbl_total {key,itm} (ptbl) = tot where {
   val (pf, fpf | p) = HASHTBLptr_tblget {key,itm} (ptbl)
   val tot = p->tot
   prval () = minus_addback (fpf, pf | ptbl)
 } // end of [hashtbl_total]
 
-implement{key,itm} hashtbl_clear (ptbl) = () where {
+implement{key,itm}
+hashtbl_clear (ptbl) = () where {
   viewtypedef keyitm = @(key, itm)
   val (pf, fpf | p) = HASHTBLptr_tblget {key,itm} (ptbl)
   val () = __clear (p->pbeg, p->sz, sizeof<keyitm>) where {

@@ -43,7 +43,7 @@
 
 /* ****** ****** */
 
-static inline
+ATSinline()
 ats_int_type
 atslib_lor_dlopen_flag_dlopen_flagext
   (ats_int_type flag, ats_int_type ext) { return (flag | ext) ;
@@ -53,7 +53,7 @@ atslib_lor_dlopen_flag_dlopen_flagext
 
 #define atslib_dlopen dlopen
 
-static inline
+ATSinline()
 ats_ptr_type
 atslib_dlopen_exn (
   ats_ptr_type filename, ats_int_type flag
@@ -61,7 +61,7 @@ atslib_dlopen_exn (
   void *p ; char *msg ;
   p = dlopen ((char*)filename, (int)flag) ;
   if (!p) {
-    msg = dlerror () ;
+    msg = dlerror () ; // HX: [msg] cannot be null
     fprintf (stderr, (ats_ptr_type)"exit(ATS): %s\n", msg) ;
     exit (1) ;
   } // end of [if]
@@ -71,6 +71,23 @@ atslib_dlopen_exn (
 /* ****** ****** */
 
 #define atslib_dlclose dlclose
+
+ATSinline()
+ats_void_type
+atslib_dlclose_exn
+  (ats_ptr_type handle) {
+  int err ; char *msg ;
+  err = dlclose ((void*)handle) ;
+  if (err != 0) {
+    msg = dlerror () ; // HX: [msg] cannot be null
+    fprintf (stderr, (ats_ptr_type)"exit(ATS): %s\n", msg) ;
+    exit (1) ;
+  } // end of [if]
+  return ;
+} // end of [atslib_dlclose_exn]
+
+/* ****** ****** */
+
 #define atslib_dlerror dlerror
 #define atslib_dlsym dlsym
 
