@@ -70,7 +70,9 @@ end // end of [prerr_loc_interror]
 
 (* ****** ****** *)
 
-implement s2exp_addr_viewat_slablst_try (loc0, s2e0_addr, s2ls0) = let
+implement
+s2exp_addr_viewat_slablst_try
+  (loc0, s2e0_addr, s2ls0) = let
   val (s2r0, s2ls0_ft) = s2exp_addr_normalize s2e0_addr
   val s2ls0 = $Lst.list_append (s2ls0_ft, s2ls0)
 in
@@ -99,7 +101,9 @@ end // end of [s2exp_addr_viewat_slablst_try]
 
 (* ****** ****** *)
 
-implement s2exp_addr_viewat_slablst_get (loc0, s2e0_addr, s2ls0) = let
+implement
+s2exp_addr_viewat_slablst_get
+  (loc0, s2e0_addr, s2ls0) = let
   val (s2r0, s2ls0_ft) = s2exp_addr_normalize s2e0_addr
   val s2ls0 = $Lst.list_append (s2ls0_ft, s2ls0)
 in
@@ -136,7 +140,8 @@ end // end of [s2exp_addr_viewat_slablst_get]
 
 (* ****** ****** *)
 
-implement s2exp_addr_viewat_slablst_set
+implement
+s2exp_addr_viewat_slablst_set
   (loc0, s2e0_addr, s2ls0, s2e_new_at) = let
   val @(s2e_new, s2e_new_addr): @(s2exp, s2exp) =
     case+ un_s2exp_at_viewt0ype_addr_view s2e_new_at of
@@ -265,7 +270,8 @@ fun s2lab0lst_of_d3lab1lst {n:nat} .<n>.
 
 (* ****** ****** *)
 
-implement d3exp_lval_typ_set (loc0, refval, d3e0, s2e_new, err) = let
+implement
+d3exp_lval_typ_set (loc0, refval, d3e0, s2e_new, err) = let
 (*
   val () = begin
     print "d3exp_lval_typ_set: d3e0 = "; print d3e0; print_newline ()
@@ -349,7 +355,8 @@ in
   // end of [case]
 end (* end of [d3exp_lval_typ_set] *)
 
-fn s2exp_fun_is_freeptr (s2e: s2exp): bool = begin case+ s2e.s2exp_node of
+fn s2exp_fun_is_freeptr
+  (s2e: s2exp): bool = begin case+ s2e.s2exp_node of
   | S2Efun (fc, lin, _(*s2fe*), _(*npf*), _(*arg*), _(*res*)) => begin
     case+ fc of
     | $Syn.FUNCLOclo knd when knd <> 0 => if lin > 0 then false else true
@@ -358,7 +365,8 @@ fn s2exp_fun_is_freeptr (s2e: s2exp): bool = begin case+ s2e.s2exp_node of
   | _ => false
 end // end of [s2exp_fun_is_freeptr]
 
-implement d3exp_lval_typ_set_arg (refval, d3e0, s2e_new) = let
+implement
+d3exp_lval_typ_set_arg (refval, d3e0, s2e_new) = let
   val loc0 = d3e0.d3exp_loc; var err: int = 0
   val flag = (
     if refval = 0 then
@@ -382,7 +390,8 @@ in
   freeknd // a linear value must be freed (freeknd = 1) if it cannot be returned
 end (* end of [d3exp_lval_typ_set_arg] *)
 
-implement d3exp_lval_typ_set_pat (d3e0, p3t) = begin
+implement
+d3exp_lval_typ_set_pat (d3e0, p3t) = begin
   case+ p3t.p3at_typ_lft of
   | Some s2e => let
       val loc0 = d3e0.d3exp_loc; var err: int = 0

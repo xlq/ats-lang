@@ -83,8 +83,7 @@ implement{a} tabulate (asz, f) = let
   val () = array_ptr_initialize_clo_tsz {a} {unit_v} {n} (pf | !p_arr, asz, !p_clo, sizeof<a>)
   prval unit_v () = pf
   prval () = free_gc_elim (pf_gc)
-  val (pfbox | ()) = vbox_make_view_ptr (pf_arr | p_arr)
-  val A = array_make_view_ptr (pfbox | p_arr)
+  val A = array_make_view_ptr (pf_arr | p_arr)
 in
   '(A, asz)
 end // end of [tabulate]

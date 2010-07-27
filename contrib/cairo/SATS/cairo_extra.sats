@@ -59,9 +59,9 @@ typedef rgba = @{
 //
 // HX-2010-07-21: showing text in the middle of a given box
 //
-fun show_text_inbox {l:agz} (
+fun cairo_show_text_inbox {l:agz} (
   cr: !cairo_ref l, width :double, height :double, utf8: string
-) : void // end of [show_text_inbox]
+) : void // end of [cairo_show_text_inbox]
 
 (* ****** ****** *)
 

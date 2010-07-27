@@ -1,6 +1,6 @@
 (*
 ** some testing code for functions declared in
-** libats/SATS/regexp.sats
+** libats/SATS/genarrays.sats
 *)
 
 //

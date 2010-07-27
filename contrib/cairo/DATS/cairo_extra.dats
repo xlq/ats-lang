@@ -48,7 +48,7 @@ staload "contrib/cairo/SATS/cairo_extra.sats"
 (* ****** ****** *)
 
 implement
-show_text_inbox
+cairo_show_text_inbox
   (cr, W, H, utf8) = () where {
   val (pf | ()) = cairo_save (cr)
   #define FONTSIZE 1
@@ -69,7 +69,7 @@ show_text_inbox
     val () = cairo_show_text (cr, utf8)
   } // end of [val]
   val () = cairo_restore (pf | cr)
-} // end of [show_text_inbox]
+} // end of [cairo_show_text_inbox]
 
 (* ****** ****** *)
 

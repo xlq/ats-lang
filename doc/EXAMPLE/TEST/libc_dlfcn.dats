@@ -51,7 +51,12 @@ implement main () = () where {
   val cos60 = fcos (PI / 3)
   val () = (print "cos60 = "; print cos60; print_newline ())
 //
+(*
   val () = dlclose_exn (pf_lib | p_lib)
+*)
+  val err = dlclose (pf_lib | p_lib)
+  val () = assert_errmsg (err = 0, #LOCATION)
+  prval None_v () = pf_lib
 } // end of [main]
 
 (* ****** ****** *)

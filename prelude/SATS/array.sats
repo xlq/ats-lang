@@ -545,11 +545,13 @@ array_ptr_to_list {n:nat}
 
 (* ****** ****** *)
 
-castfn array_make_view_ptr {a:viewt@ype} {n:nat} {l:addr}
-  (pf: vbox (array_v (a, n, l)) | p: ptr l):<> array (a, n)
+castfn array_make_view_ptr
+  {a:viewt@ype} {n:nat} {l:addr}
+  (pf: array_v (a, n, l) | p: ptr l):<> array (a, n)
 // end of [array_make_view_ptr]
 
-castfn array_get_view_ptr {a:viewt@ype} {n:nat}
+castfn array_get_view_ptr
+  {a:viewt@ype} {n:nat}
   (A: array (a, n)):<> [l:addr] (vbox (array_v (a, n, l)) | ptr l)
 // end of [array_get_view_ptr]
 
@@ -606,7 +608,7 @@ fun array_make_clo_tsz
 ** template
 *)
 fun{a:viewt@ype}
-  array_make_cloref {n:nat} (
+array_make_cloref {n:nat} (
     asz: size_t n
   , f: (sizeLt n, &(a?) >> a) -<cloref> void
   ) :<fun> array (a, n)

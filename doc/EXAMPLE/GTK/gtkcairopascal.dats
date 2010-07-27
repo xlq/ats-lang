@@ -281,7 +281,7 @@ mainats (ats_int_type argc, ats_ptr_type argv) ;
 
 (* ****** ****** *)
 
-fun on_expose_event
+fun fexpose
   {c:cls | c <= GtkDrawingArea} {l:agz}
   (darea: !gobjref (c, l), event: &GdkEvent): gboolean = let
   prval () = clstrans {c,GtkDrawingArea,GtkWidget} ()
@@ -295,7 +295,7 @@ fun on_expose_event
   val () = cairo_destroy (cr)
 in
   GFALSE // HX: what does this mean?
-end // end of [on_expose_event]
+end // end of [fexpose]
 
 (* ****** ****** *)
 
@@ -333,7 +333,7 @@ implement main1 () = () where {
   val () = the_drawingarea_set (darea)
   val () = gtk_box_pack_start (vbox0, darea, GTRUE, GTRUE, (guint)0)
   val _sid = g_signal_connect
-    (darea, (gsignal)"expose-event", G_CALLBACK (on_expose_event), (gpointer)null)
+    (darea, (gsignal)"expose-event", G_CALLBACK (fexpose), (gpointer)null)
   val () = g_object_unref (darea)
 //
   val hsep = gtk_hseparator_new ()

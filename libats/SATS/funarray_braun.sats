@@ -55,7 +55,7 @@ stadef array = array_t0ype_type
 
 //
 // HX-2010-04-04:
-// staloading at run-time is needed!
+// this means staloading at run-time is needed!
 //
 exception SubscriptException of ()
 

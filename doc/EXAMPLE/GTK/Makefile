@@ -54,6 +54,12 @@ gtkcairodisc: gtkcairodisc.dats
 
 ######
 
+ATSCTRB=$(ATSHOME)/contrib/cairo/atsctrb_cairo.o
+demo_bsearch: demo_bsearch.dats
+	$(ATSCC) -D_ATS_GCATS $(ATSCTRB) -o $@ demo_bsearch.dats $(GTKFLAGS) -lm
+
+######
+
 html::
 	$(ATSOPT) --posmark_html -d GameOf24.dats > GameOf24_dats.html
 	$(ATSOPT) --posmark_html -d gtkcairoclock.dats > gtkcairoclock_dats.html
@@ -70,5 +76,6 @@ cleanall:: clean
 	rm -f gtkcairoclock gtkcairoclock_dats.html
 	rm -f gtkcairopascal gtkcairopascal_dats.html
 	rm -f gtkcairodisc gtkcairodisc_dats.html
+	rm -f demo_bsearch demo_bsearch_dats.html
 
 ###### end of [Makefile] ######

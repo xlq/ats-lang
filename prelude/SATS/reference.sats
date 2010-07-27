@@ -44,10 +44,8 @@
 (* ****** ****** *)
 
 #if VERBOSE_PRELUDE #then
-
 #print "Loading [reference.sats] starts!\n"
-
-#endif
+#endif // end of [VERBOSE_PRELUDE]
 
 (* ****** ****** *)
 
@@ -64,7 +62,7 @@ fun{a:viewt@ype} ref_make_elt (x: a):<> ref a
 // this is really an identity function; it is
 // implemented in [prelude/CATS/reference.cats]
 fun ref_make_view_ptr
-  {a:viewt@ype} {l:addr} (pf: vbox (a @ l) | p: ptr l):<> ref a
+  {a:viewt@ype} {l:addr} (pf: a @ l | p: ptr l):<> ref a
   = "atspre_ref_make_view_ptr"
 // end of [ref_make_view_ptr]
 
@@ -141,9 +139,7 @@ fun refopt_is_none {a:viewt@ype}
 (* ****** ****** *)
 
 #if VERBOSE_PRELUDE #then
-
 #print "Loading [reference.sats] finishes!\n"
-
-#endif
+#endif // end of [VERBOSE_PRELUDE]
 
 (* end of [reference.sats] *)

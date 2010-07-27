@@ -58,7 +58,7 @@ fn draw_disc {l:agz}
   val () = if txt <> "" then let
     val () = cairo_set_source_rgb (cr, 0.0, 0.5, 0.5) // dark gray
   in
-    show_text_inbox (cr, w, h, txt)
+    cairo_show_text_inbox (cr, w, h, txt)
   end // end of [val]
   val () = cairo_restore (pf | cr)
 in
@@ -269,7 +269,8 @@ end // end of [fexpose]
 
 (* ****** ****** *)
 
-fn ftimeout (_: gpointer) = let
+fn ftimeout
+  (_: gpointer): gboolean = let
   val (fpf_darea | darea) = the_drawingarea_get ()
   val (fpf_win | win) = gtk_widget_get_window (darea)
 in

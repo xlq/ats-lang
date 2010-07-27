@@ -1057,6 +1057,7 @@ end // end of [local]
 
 extern fun d2exp_viewat_assgn_tr_up
   (loc0: loc_t, d2e_l: d2exp, d2e_r: d2exp): d3exp
+// end of [d2exp_viewat_assgn_tr_up]
 
 fn d2exp_assgn_tr_up
   (loc0: loc_t, d2e_l: d2exp, d2e_r: d2exp): d3exp = let

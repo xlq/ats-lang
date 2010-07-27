@@ -409,13 +409,13 @@ overload mpz_mul with mpz_mul_mpz_1
 **   or other special forms.
 *)
 fun mpz_mul_2exp
-  (res: &mpz_vt, arg1: &mpz_vt, arg2: int):<> void
-  = "atslib_mpz_mul_2exp"
+  (res: &mpz_vt, arg1: &mpz_vt, arg2: int):<> void = "atslib_mpz_mul_2exp"
+// end of [mpz_mul_2exp]
 
 (* ****** ****** *)
-
+//
 // truncate division
-
+//
 symintr mpz_tdiv_qr
 
 // (q, r) = n / d
@@ -455,9 +455,9 @@ fun mpz_tdiv_q_ulint_2
 overload mpz_tdiv_q with mpz_tdiv_q_ulint_2
 
 (* ****** ****** *)
-
+//
 // floor division
-
+//
 (*
 ** Function: mpz_fdiv_qr
 ** Input: dividend, divisor
@@ -467,7 +467,7 @@ overload mpz_tdiv_q with mpz_tdiv_q_ulint_2
 **   Set quot and rem so that dividend = quot * divisor + rem
 **   Rounds quot down towards negative infinity, and rem will
 **   have the same sign as divisor, and 0 <= |rem| < |divisor|.
-**   The f stands for "floor". e.g. 5 = (-2) * (-3) + (-1); -5 = 1 * (-3) + (-2)
+**   'f' stands for "floor". e.g. 5 = (-2) * (-3) + (-1); -5 = 1 * (-3) + (-2)
 ** Remarks:
 **   The same object cannot be passed for both quot and rem, or the result will be
 **   unpredictable. No other constraints on the pass of other arguments, e.g. the same
@@ -573,7 +573,7 @@ fun mpz_sgn (x: &mpz_vt):<> Sgn = "atslib_mpz_sgn" // function!
 
 (* ****** ****** *)
 
-fun fprint0_mpz {m:file_mode}
+fun fprint0_mpz
   (out: FILEref, x: &mpz_vt):<!exnref> void = "atslib_fprint_mpz"
 overload fprint with fprint0_mpz
 
