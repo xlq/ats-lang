@@ -23,20 +23,24 @@ typedef b0ytes (n: int) = @[byte?][n]
 (* ****** ****** *)
 
 // implemented in C
-extern fun getline {m:pos} {l:addr}
+extern
+fun getline {m:pos} {l:addr}
   (pf_buf: b0ytes m @ l | p_buf: ptr l, m: int m)
   : [n:nat | n < m] (strbuf (m, n) @ l  | int n)
-  = "getline"
+  = "__getline"
+// end of [getline]
 
 (* ****** ****** *)
 
 // implemented in C
-extern fun copy {m,n:nat | n < m} {l_to,l_from:addr} (
+extern
+fun copy {m,n:nat | n < m} {l_to,l_from:addr} (
     pf_to: !b0ytes m @ l_to >> strbuf (m, n) @ l_to
   , pf_from: !strbuf (m, n) @ l_from
   | p_to: ptr l_to, p_from: ptr l_from
   ) : void
-  = "copy"
+  = "__copy"
+// end of [copy]
 
 (* ****** ****** *)
 
@@ -101,23 +105,29 @@ end // end of [main]
 
 %{$
 
-int getline (ats_ptr_type s0, ats_int_type lim) {
+ats_int_type
+__getline (
+  ats_ptr_type s0, ats_int_type lim
+) {
   int c, i; char *s = (char*)s0 ;
   for (i = 0; i < lim-1 && (c=getchar()) != EOF && c!='\n'; ++i)
     s[i] = c;
   if (c == '\n') { s[i] = c; ++i; }
   s[i] = '\0';
   return i;
-}
+} // end of [__getline]
 
-void copy (ats_ptr_type to, ats_ptr_type from) {
+ats_void_type
+__copy (
+  ats_ptr_type to, ats_ptr_type from
+) {
   int i;
   i = 0;
   while ((((char*)to)[i] = ((char*)from)[i]) != '\0') ++i;
   return ;
-}
+} // end of [__copy]
 
-%}
+%} // end of [%{$]
 
 (* ****** ****** *)
 

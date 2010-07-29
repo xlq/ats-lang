@@ -592,5 +592,22 @@ fun tostring_mpz (x: &mpz_vt):<> String = "atslib_tostring_mpz"
 overload tostring with tostring_mpz
 
 (* ****** ****** *)
+//
+// HX: [mpf_set_default_prec] is used to make sure that
+//
+sta mpf_set_default_prec : bool // [mpf_set_default_prec] is called
+fun mpf_set_default_prec
+  (prec: ulint): [mpf_set_default_prec] void = "#atslib_mpf_set_default_prec"
+// end of [mpf_set_default_prec]
+
+(* ****** ****** *)
+//
+// HX: [mpf_init] must be called after [mpf_set_default_prec] is called
+//
+fun mpf_init {mpf_set_default_prec}
+  (x: &mpf_vt? >> mpf_vt):<> void = "#atslib_mpf_init"
+// end of [mpf_init]
+
+(* ****** ****** *)
 
 (* end of [gmp.sats] *)

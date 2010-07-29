@@ -13,11 +13,8 @@ staload "libc/sys/SATS/types.sats"
 (* ****** ****** *)
 
 %{^
-
 #define MAXPATHLEN 1024
-
-%}
-
+%} // end of [%{^]
 #define MAXPATHLEN 1024
 
 
@@ -38,24 +35,23 @@ end // end of [main]
 (* ****** ****** *)
 
 implement fsize (name) = let
-  var stbuf: stat_t with pf0 // uninitialized
-  val (pf1 | err) = stat_err (pf0 | name, &stbuf)
+  var stbuf: stat_t? // uninitialized
+  val err = stat_err (name, stbuf)
 in
-  if :(pf0: stat_t? @ stbuf) => err >= 0 then let
-    prval stat_v_succ (pf2) = pf1
+  if err >= 0 then let
+    prval () = opt_unsome (stbuf)
     val mode = stat_st_mode_get (stbuf)
   in
-    if S_ISDIR (mode) then let
-      prval () = pf0 := pf2 in dirwalk (name, fsize)
-    end else let
+    if S_ISDIR (mode) then
+      dirwalk (name, fsize)
+    else let
       val sz_off = stat_st_size_get (stbuf)
       val sz_lint = lint_of_off (sz_off)
-      prval () = pf0 := pf2
     in
       printf ("%8ld %s\n", @(sz_lint, name))
     end // end of [if]
   end else let
-    prval stat_v_fail (pf2) =  pf1; prval () = pf0 := pf2
+    prval () = opt_unnone {stat_t} (stbuf)
   in
     // empty
   end // end of [if]
@@ -71,7 +67,7 @@ extern fun dirent_is_parent (dp: &dirent_t):<> bool
 
 %{^
 
-static inline
+ATSinline()
 ats_bool_type
 atslib_dirent_is_self (ats_ref_type dp) {
   int cmp = strcmp (((ats_dirent_type*)dp)->d_name, ".") ;
@@ -79,7 +75,7 @@ atslib_dirent_is_self (ats_ref_type dp) {
   return ats_false_bool ;
 } /* end of [atslib_dirent_is_self] */
 
-static inline
+ATSinline()
 ats_bool_type
 atslib_dirent_is_parent (ats_ref_type dp) {
   int cmp = strcmp (((ats_dirent_type*)dp)->d_name, "..") ;

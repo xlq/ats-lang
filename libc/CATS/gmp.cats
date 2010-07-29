@@ -593,4 +593,12 @@ atslib_tostring_mpz (
 
 /* ****** ****** */
 
+#define atslib_mpf_set_default_prec mpf_set_default_prec
+
+/* ****** ****** */
+
+#define atslib_mpf_init mpf_init
+
+/* ****** ****** */
+
 #endif /* ATS_LIBC_GMP_CATS */
