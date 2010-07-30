@@ -564,32 +564,30 @@ val d3e0 = case+ d2e0.d2exp_node of
       | S2Efun (
           fc_fun, lin_fun, s2fe_fun, npf_fun, s2es_fun_arg, s2e_fun_res
         ) => let
-          val () = // linearity check
-            if lin <> lin_fun then begin
-              prerr_loc_error3 loc0;
-              if lin > lin_fun then
-                prerr " linear function is given a nonlinear type .";
-              if lin < lin_fun then
-                prerr " nonlinear function is given a linear type .";
-              prerr_newline ();
-              $Err.abort {void} ()
-            end // end of [if]
-          val () = // pfarity check
-            if npf <> npf_fun then begin
-              prerr_loc_error3 loc0;
-              prerr ": this function is expected to have";
-              if npf > npf_fun then prerr " less proof arguments.";
-              if npf < npf_fun then prerr " more proof arguments.";
-              prerr_newline ();
-              $Err.abort {void} ()
-            end // end of [if]
+          val () = if lin <> lin_fun then begin // linearity check
+            prerr_loc_error3 loc0;
+            if lin > lin_fun then
+              prerr " linear function is given a nonlinear type .";
+            if lin < lin_fun then
+              prerr " nonlinear function is given a linear type .";
+            prerr_newline ();
+            $Err.abort {void} ()
+          end // end of [if]
+          val () = if npf <> npf_fun then begin // pfarity check
+            prerr_loc_error3 loc0;
+            prerr ": this function is expected to have";
+            if npf > npf_fun then prerr " less proof arguments.";
+            if npf < npf_fun then prerr " more proof arguments.";
+            prerr_newline ();
+            $Err.abort {void} ()
+          end // end of [if]
           val () = trans3_env_push_sta ()
           var ofc: funcloopt_vt
           val d2e_body = d2exp_funclo_opt_of_d2exp (d2e_body, ofc)
           val () = case+ ofc of
             | ~Some_vt fc => begin
                 $SOL.funclo_equal_solve (loc0, fc, fc_fun)
-              end
+              end // end of [Some_vt]
             | ~None_vt () => ()
           var os2fe: s2effopt_vt
           val d2e_body = d2exp_s2eff_opt_of_d2exp (d2e_body, os2fe)
@@ -619,15 +617,16 @@ val d3e0 = case+ d2e0.d2exp_node of
 (*
           val () = begin
             print "d2exp_tr_dn: D2Elam_dyn: p2tcss = "; print p2tcss; print_newline ()
-          end
+          end // end of [val]
 *)
+//
           val cmplt = (
             case+ p2tcss of cons _ => 0(*incomplete*) | nil _ => 1
           ) : int
           val () = if cmplt = 0 then begin
             trans3_env_add_p2atcstlstlst_false (loc0, 1(*casknd*), p2tcss, s2es_fun_arg)
-          end
-
+          end // end of [val]
+//
           val p3ts_arg = p2atlst_arg_tr_dn (npf, p2ts_arg, s2es_fun_arg)
           val (pf_lamloop | ()) = the_lamloop_env_push_lam (p3ts_arg)
           val d3e_body = d2exp_tr_dn (d2e_body, s2e_fun_res)

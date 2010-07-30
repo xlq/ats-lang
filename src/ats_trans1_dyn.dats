@@ -220,9 +220,12 @@ fn aux3 (
   var oefc: efcopt = None ()
   val () = case+ otags of
     | Some tags => let
-        val (fc1, lin1, prf1, efc1) = $Eff.e0fftaglst_tr (fc, tags)
+        val (ofc1, lin1, prf1, efc1) = $Eff.e0fftaglst_tr (tags)
+        val () = case+ ofc1 of
+          | Some fc1 => fc := fc1 | None () => ()
+        // end of [val]
       in
-        fc := fc1; lin := lin1; prf := prf + prf1; oefc := Some efc1
+        lin := lin1; prf := prf + prf1; oefc := Some efc1
       end // end of [Some]
     | None () => ()
   // end of [val]
@@ -938,11 +941,10 @@ fun aux_item (d0e0: d0exp): d1expitm = let
   | D0Efix (id, args, res, otags, body) => let
       val (ofc, lin, oefc) = (case+ otags of
         | Some tags => let
-            val fc = $Syn.FUNCLOfun () // default is [function]
-            val (fc, lin, prf, efc) = $Eff.e0fftaglst_tr (fc, tags)
+            val (ofc, lin, prf, efc) = $Eff.e0fftaglst_tr (tags)
           in
-            (Some fc, lin, Some efc)
-          end
+            (ofc, lin, Some efc)
+          end // end of [Some]
         | None () => (None () (*ofc*), 0 (*lin*), None () (*oefc*))
       ) : (Option funclo, int, efcopt)
       val d1e_fun = d0exp_lams_dyn_tr
@@ -1016,14 +1018,12 @@ fun aux_item (d0e0: d0exp): d1expitm = let
         | LAMKINDllam _ => 1 | LAMKINDatllam _ => 1
         | LAMKINDfix () => 0
       ) : int // end of [val]
-      val (ofc, lin, oefc) = (
-        case+ otags of
+      val (ofc, lin, oefc) = (case+ otags of
         | Some tags => let
-            val fc = $Syn.FUNCLOfun () // default is [function]
-            val (fc, lin, prf, efc) = $Eff.e0fftaglst_tr (fc, tags)
+            val (ofc, lin, prf, efc) = $Eff.e0fftaglst_tr (tags)
             val lin = (if lin0 > 0 then 1 else lin): int
           in
-            (Some fc, lin, Some efc)
+            (ofc, lin, Some efc)
           end // end of [Some]
         | None () => (None (), lin0, None ())
       ) : (Option funclo, int, efcopt)
@@ -1293,9 +1293,8 @@ fn f0undec_tr
   val loc = d.f0undec_loc
   val otags = d.f0undec_eff
   val (ofc, oefc) = (case+ otags of
-    | Some tags => (Some fc, Some efc) where {
-        val fc0 = $Syn.FUNCLOfun () // default is [function]
-        val (fc, lin, prf, efc) = $Eff.e0fftaglst_tr (fc0, tags)
+    | Some tags => (ofc, Some efc) where {
+        val (ofc, lin, prf, efc) = $Eff.e0fftaglst_tr (tags)
       } // end of [Some]
     | None () => (None(*ofc*), Some efc) where {
         val efc = (

@@ -685,8 +685,10 @@ implement s0exp_tr s0e0 = let
           | ~Some_vt f => s1exp_make_opr (s1e, f) | ~None_vt () => $Fix.ITEMatm s1e
       end // end of [S0Eide]
     | S0Eimp tags => let
-        val fc = $Syn.FUNCLOfun () // default is [function]
-        val (fc, lin, prf, efc) = $Eff.e0fftaglst_tr (fc, tags)
+        val (ofc, lin, prf, efc) = $Eff.e0fftaglst_tr (tags)
+        val fc = (case+ ofc of
+          | Some fc => fc | None => $Syn.FUNCLOfun () // default is [function]
+        ) : $Syn.funclo // end of [val]
 (*
         val () = begin
           print "s0exp_tr: S0Eimp: efc = "; $Eff.print_effcst efc; print_newline ()

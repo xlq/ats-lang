@@ -58,6 +58,7 @@ staload "ats_effect.sats"
 
 typedef t0kn = $Syn.t0kn
 typedef funclo = $Syn.funclo
+typedef funcloopt = $Syn.funcloopt
 typedef loc_t = $Loc.location_t
 
 (* ****** ****** *)
@@ -337,15 +338,14 @@ fn loop_err (loc: loc_t, name: string): void = begin
 end // end of [loop_err]
 
 fun loop (
-    fc: &funclo
+    ofc: &funcloopt
   , lin: &int
   , prf: &int
   , efs: &effset
   , evs: &effvarlst
   , tags: $Syn.e0fftaglst
   ) : void = begin case+ tags of
-  | cons (tag, tags) =>
-      loop (fc, lin, prf, efs, evs, tags) where {
+  | cons (tag, tags) => let
       val () = case+ tag.e0fftag_node of
       | $Syn.E0FFTAGvar ev => evs := cons (ev, evs)
       | $Syn.E0FFTAGcst (isneg, name)
@@ -409,7 +409,7 @@ fun loop (
       | $Syn.E0FFTAGfun
           (uln, i(*nil/all*)) => let
           val () = if (uln >= 0) then lin := uln
-          val () = fc := $Syn.FUNCLOfun ()
+          val () = ofc := Some ($Syn.FUNCLOfun ())
         in
           if i > 0 then (efs := effset_all; evs := effvars_nil)
         end // end of [E0FFTAGfun]
@@ -418,22 +418,25 @@ fun loop (
           (uln, knd, i) => let
           // knd : 1/~1:ptr/ref; i : nil/all
           val () = if (uln >= 0) then lin := uln
-          val () = fc := $Syn.FUNCLOclo (knd)
+          val () = ofc := Some ($Syn.FUNCLOclo (knd))
         in
           if i > 0 then (efs := effset_all; evs := effvars_nil)
         end // end of [E0FFTAGclo]
 //
-    } // end of [where] // end of [cons]
+    in
+      loop (ofc, lin, prf, efs, evs, tags)
+    end // end of [let] // end of [cons]
   | nil () => () // end of [nil]
 end // end of [loop]
 
 in // in of [local]
 
-implement e0fftaglst_tr (fc0, tags) = let
-  var fc: funclo = fc0
+implement
+e0fftaglst_tr (tags) = let
+  var ofc: funcloopt = None()
   var lin: int = 0 and prf: int = 0
   var efs: effset = effset_nil and evs: effvarlst = effvars_nil
-  val () = loop (fc, lin, prf, efs, evs, tags)
+  val () = loop (ofc, lin, prf, efs, evs, tags)
   val efc = (case+ 0 of
     | _ when eq_effset_effset (efs, effset_all) => EFFCSTall ()
     | _ when eq_effset_effset (efs, effset_nil) => begin
@@ -442,7 +445,7 @@ implement e0fftaglst_tr (fc0, tags) = let
     | _ => EFFCSTset (efs, evs)
   ) : effcst
 in
-  @(fc, lin, prf, efc)
+  @(ofc, lin, prf, efc)
 end // end of [e0fftaglst_tr]
 
 end // end of [local]

@@ -80,7 +80,7 @@ staload "ats_trans2.sats"
 
 typedef loc_t = $Loc.location_t
 typedef funclo = $Syn.funclo
-typedef funcloopt = Option funclo
+typedef funcloopt = $Syn.funcloopt
 typedef efc = $Eff.effcst
 typedef efcopt = Option efc
 typedef sym_t = $Sym.symbol_t

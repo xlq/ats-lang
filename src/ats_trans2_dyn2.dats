@@ -739,11 +739,13 @@ end // end of [m1acdeflst_tr]
 
 viewtypedef d2cstlst_vt = List_vt d2cst_t
 
-fun d1exp_arity_check (d1e: d1exp, ns: List int): bool = let
+fun d1exp_arity_check
+  (d1e: d1exp, ns: List int): bool = let
+//
   fn* aux1 (d1e: d1exp, ns: List int): bool = begin
     case+ ns of list_cons (n, ns) => aux2 (d1e, n, ns) | list_nil () => true
   end // end of [aux1]
-
+//
   and aux2 (d1e: d1exp, n: int, ns: List int): bool = begin
 (*
     print "d1exp_arith_check: n = "; print n; print_newline ();
@@ -762,6 +764,7 @@ fun d1exp_arity_check (d1e: d1exp, ns: List int): bool = let
     | D1Elam_sta_syn (_(*loc*), _(*s1qs*), d1e) => aux2 (d1e, n, ns)
     | _ => false
   end // end of [aux2]
+//
 in
   aux1 (d1e, ns)
 end // end of [d1exp_arity_check]

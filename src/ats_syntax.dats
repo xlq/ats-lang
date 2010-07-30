@@ -588,11 +588,17 @@ implement d0atsrtdeclst_cons (x, xs) = cons (x, xs)
 
 (* ****** ****** *)
 
-implement fprint_funclo (pf | out, fc) = case+ fc of
+implement
+fprint_funclo (pf | out, fc) = case+ fc of
   | FUNCLOclo (knd) => fprintf1_exn (pf | out, "clo(%i)", @(knd))
   | FUNCLOfun () => fprint1_string (pf | out, "fun")
+// end of [fprint_funclo]
 
-implement eq_funclo_funclo (fc1, fc2) = begin
+implement print_funclo (fc) = print_mac (fprint_funclo, fc)
+implement prerr_funclo (fc) = prerr_mac (fprint_funclo, fc)
+
+implement
+eq_funclo_funclo (fc1, fc2) = begin
   case+ (fc1, fc2) of
   | (FUNCLOclo (knd1), FUNCLOclo (knd2)) => (knd1 = knd2)
   | (FUNCLOfun (), FUNCLOfun ()) => true
@@ -601,10 +607,11 @@ end // end of [eq_funclo_funclo]
 
 (* ****** ****** *)
 
-implement e0fftag_cst (i, id) = 
-  let val name = $Sym.symbol_name (id.i0de_sym) in
-    '{ e0fftag_loc= id.i0de_loc, e0fftag_node= E0FFTAGcst (i, name) }
-  end
+implement e0fftag_cst (i, id) = let
+  val name = $Sym.symbol_name (id.i0de_sym)
+in '{
+  e0fftag_loc= id.i0de_loc, e0fftag_node= E0FFTAGcst (i, name)
+} end // end of [e0fftag_cst]
 
 local
 
@@ -715,7 +722,8 @@ implement s0taq_make
   (loc, node) = '{ s0taq_loc= loc, s0taq_node= node }
 // end of [s0taq]
 
-implement fprint_s0taq (pf | out, q) = case+ q.s0taq_node of
+implement
+fprint_s0taq (pf | out, q) = case+ q.s0taq_node of
   | S0TAQnone () => ()
   | S0TAQfildot fil => begin
       fprint1_char (pf | out, '$');

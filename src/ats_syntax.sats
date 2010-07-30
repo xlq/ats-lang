@@ -526,14 +526,16 @@ fun d0atsrtdeclst_cons (x: d0atsrtdec, xs: d0atsrtdeclst): d0atsrtdeclst
 datatype funclo = (* function or closure *)
   | FUNCLOclo of int(*knd*) (* ATS closure: knd=1/0/~1: ptr/clo/ref *)
   | FUNCLOfun (* ATS function *)
+typedef funcloopt = Option funclo
 
 fun fprint_funclo {m:file_mode}
   (pf: file_mode_lte (m, w) | out: &FILE m, _: funclo): void
-
 overload fprint with fprint_funclo
 
-fun eq_funclo_funclo (fc1: funclo, fc2: funclo): bool 
+fun print_funclo (_: funclo): void
+fun prerr_funclo (_: funclo): void
 
+fun eq_funclo_funclo (fc1: funclo, fc2: funclo): bool 
 overload = with eq_funclo_funclo
 
 (* ****** ****** *)
@@ -591,9 +593,7 @@ fun fprint_s0taq {m:file_mode}
 overload fprint with fprint_s0taq
 
 fun print_s0taq (_: s0taq): void
-overload print with print_s0taq
 fun prerr_s0taq (_: s0taq): void
-overload prerr with prerr_s0taq
 
 //
 

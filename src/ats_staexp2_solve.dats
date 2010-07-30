@@ -137,8 +137,10 @@ end // end of [local]
 fn prerr_staerr_funclo_equal
   (loc: loc_t, fc1: funclo, fc2: funclo): void = begin
   prerr_loc_error3 (loc);
-  prerr ": function/closure mismatch."; prerr_newline ();
-end // end of ...
+  prerr ": function/closure mismatch:\n";
+  prerr "The needed funclo kind is: "; $Syn.prerr_funclo fc2; prerr_newline ();
+  prerr "The actual funclo kind is: "; $Syn.prerr_funclo fc1; prerr_newline ();
+end // end of [prerr_staerr_funclo_equal]
 
 fn prerr_staerr_s2exp_tyleq
   (loc: loc_t, s2e1: s2exp, s2e2: s2exp): void = begin

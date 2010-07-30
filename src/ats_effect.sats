@@ -113,12 +113,10 @@ fun effset_subset (efs1: effset_t, efs2: effset_t): bool
 
 fun fprint_effcst {m:file_mode}
   (pf: file_mode_lte (m, w) | out: &FILE m, effc: effcst): void
-
 overload fprint with fprint_effcst
 
 fun print_effcst (efc: effcst): void
 overload print with print_effcst
-
 fun prerr_effcst (efc: effcst): void
 overload prerr with prerr_effcst
 
@@ -129,8 +127,8 @@ fun effcst_contain_ntm (efc: effcst): bool
 
 (* ****** ****** *)
 
-fun e0fftaglst_tr (fc0: $Syn.funclo, tags: $Syn.e0fftaglst)
-  : @($Syn.funclo, int, int, effcst)
+fun e0fftaglst_tr
+  (tags: $Syn.e0fftaglst): @($Syn.funcloopt, int, int, effcst)
 // end of [e0fftaglst_tr]
 
 (* ****** ****** *)
