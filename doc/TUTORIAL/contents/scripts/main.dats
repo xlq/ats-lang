@@ -252,6 +252,7 @@ in
     end // end of ["-one"]
   | "-many" => let
       val oname = DIR_OUTPUT + "tutorial_all.html"
+      val oname = string1_of_strbuf (oname)
     in
       copy_many (oname, argv, argc, 2)
     end // end of ["-many"]

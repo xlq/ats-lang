@@ -37,6 +37,7 @@ tutorial_all:
           dataviewtypes.html \
           pattern-matching.html \
           exceptions.html \
+          higher-order-functions.html \
           lazy-evaluation.html \
           llazy-evaluation.html \
           input-and-output.html \
@@ -82,6 +83,7 @@ ones::
 	$(FPROC) -one dataviewtypes.html
 	$(FPROC) -one pattern-matching.html
 	$(FPROC) -one exceptions.html
+	$(FPROC) -one higher-order-functions.html
 	$(FPROC) -one lazy-evaluation.html
 	$(FPROC) -one llazy-evaluation.html
 	$(FPROC) -one input-and-output.html
@@ -239,6 +241,11 @@ pattern-matching::
 exceptions::
 	$(FPROC) -one exceptions.html
 	scp $(OUTPUT)/exceptions.html \
+          ats-hwxi,ats-lang@web.sourceforge.net:htdocs/TUTORIAL/contents/
+
+higher-order-functions::
+	$(FPROC) -one higher-order-functions.html
+	scp $(OUTPUT)/higher-order-functions.html \
           ats-hwxi,ats-lang@web.sourceforge.net:htdocs/TUTORIAL/contents/
 
 lazy-evaluation::

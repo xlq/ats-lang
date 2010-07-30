@@ -6,8 +6,8 @@
 
 (* ****** ****** *)
 
-fn find_root (f: !int -<cloptr1> int): int = let
-  fun aux (f: !int -<cloptr1> int, n: int): int =
+fn find_root (f: int -<cloref1> int): int = let
+  fun aux (f: int -<cloref1> int, n: int): int =
     if f (n) = 0 then n else begin
       if n <= 0 then aux (f, ~n + 1) else aux (f, ~n)
     end
@@ -32,13 +32,13 @@ val epsilon = 1E-6 (* precision *)
 // Newton-Raphson's method for finding roots
 // [f1] is a derivative of [f]
 fn newton_raphson (
-    f: !double -<cloptr1> double
-  , f1: !double -<cloptr1> double
+    f: double -<cloref1> double
+  , f1: double -<cloref1> double
   , x0: double
   ) : double = let
   fun loop (
-      f: !double -<cloptr1> double
-    , f1: !double -<cloptr1> double
+      f: double -<cloref1> double
+    , f1: double -<cloref1> double
     , x0: double
     ): double = let
     val y0 = f x0
