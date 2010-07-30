@@ -23,14 +23,14 @@ stadef strcon = stream_con
 // pi/4 = 1/1 - 1/3 + 1/5 - 1/7 + ...
 
 fun pi_stream_con
-  (c: double, sum: double, n: Pos):<1,~ref> strcon double =
+  (c: double, sum: double, n: Pos):<!laz> strcon double =
   sum :: pi_stream (~c, sum + (c / double_of n), n+2)
 
-and pi_stream (c: double, sum: double, n: Pos):<1,~ref> stream double =
+and pi_stream (c: double, sum: double, n: Pos):<!laz> stream double =
   $delay (pi_stream_con (c, sum, n))
 
 fun euler_trans_con
-  (xs0: stream double):<1,~ref> strcon double = let
+  (xs0: stream double):<!laz> strcon double = let
   val- x0 :: xs1 = !xs0
   val- x1 :: xs2 = !xs1
   val- x2 :: xs3 = !xs2
@@ -39,7 +39,7 @@ in
   (x2 - x21 * x21 / (x21 + x01)) :: euler_trans xs1
 end // end of [euler_trans_con]
 
-and euler_trans (xs0: stream double):<1,~ref> stream double =
+and euler_trans (xs0: stream double):<!laz> stream double =
   $delay (euler_trans_con xs0)
 
 fn pi_compute {n:nat} (n: int n): double = let

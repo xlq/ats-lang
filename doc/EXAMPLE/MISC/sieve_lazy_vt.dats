@@ -1,9 +1,9 @@
 (*
-
 // Implementing Erathosthene's sieve in linear-lazy style
-
-// author: Hongwei Xi (February, 2008)
-
+//
+// Author: Hongwei Xi (hwxi AT cs DOT bu DOT edu)
+// Time: February, 2008)
+//
 *)
 
 (* ****** ****** *)
@@ -37,15 +37,17 @@ end // end of [stream_vt_nth]
 (* ****** ****** *)
 
 fun from_con {n:int} (n: int n)
-  :<1,~ref> stream_vt_con (intGte n) = n :: from (n+1)
+  :<!laz> stream_vt_con (intGte n) = n :: from (n+1)
 and from {n:int} (n: int n)
-  :<1,~ref> stream_vt (intGte n) = $delay_vt (from_con n)
+  :<!laz> stream_vt (intGte n) = $delay_vt (from_con n)
 
 //
 
 typedef Nat2 = intGte 2
 
-fun sieve_con (ns: stream_vt Nat2):<1,~ref> stream_vt_con (Nat2) = let
+fun sieve_con
+  (ns: stream_vt Nat2)
+  :<!laz> stream_vt_con (Nat2) = let
 (*
      val () = begin
        print "sieve_con: enter"; print_newline ()
@@ -56,16 +58,18 @@ fun sieve_con (ns: stream_vt Nat2):<1,~ref> stream_vt_con (Nat2) = let
 (*
      val () = begin
        print "sieve_con: n = "; print n; print_newline ()
-     end
+     end // end of [val]
 *)
      val ns = !p_ns
      val () = (!p_ns := sieve (stream_vt_filter_cloptr<Nat2> (ns, lam x => x nmod1 n > 0)))
   in
      fold@ ns_con; ns_con
   end
+// end of [sieve_con]
 
 and sieve (ns: stream_vt Nat2)
-  :<1,~ref> stream_vt (Nat2) = $delay_vt (sieve_con ns, ~ns)
+  :<!laz> stream_vt (Nat2) = $delay_vt (sieve_con ns, ~ns)
+// end of [sieve]
 
 //
 
@@ -74,8 +78,8 @@ fn prime (n: Nat): Nat = stream_vt_nth (primes (), n)
 
 //
 
-implement main (argc, argv) = begin
-
+implement
+main (argc, argv) = begin
 //printf ("prime 1000 = %i\n", @(prime 1000)) ; // 7927
 //printf ("prime 5000 = %i\n", @(prime 5000)) ; // 48619
 printf ("prime 10000 = %i\n", @(prime 10000)) ; // 104743

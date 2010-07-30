@@ -74,8 +74,8 @@ end // end of [lazy_force_crypt]
 
 fun{a:t@ype}
 stream_filter_fun_con
-  (xs: stream a, p: a -<fun1,~ref> bool)
-  :<1,~ref> stream_con a = begin case+ !xs of
+  (xs: stream a, p: a -<fun,!laz> bool)
+  :<!laz> stream_con a = begin case+ !xs of
   | stream_cons (x, xs) => begin
       if p x then stream_cons (x, stream_filter_fun<a> (xs, p))
       else stream_filter_fun_con (xs, p)
@@ -90,8 +90,8 @@ stream_filter_fun (xs, p) =
   
 fun{a:t@ype}
 stream_filter_cloref_con
-  (xs: stream a, p: a -<cloref1,~ref> bool)
-  :<1,~ref> stream_con a = begin case+ !xs of
+  (xs: stream a, p: a -<cloref,!laz> bool)
+  :<!laz> stream_con a = begin case+ !xs of
   | stream_cons (x, xs) => begin
       if p x then stream_cons (x, stream_filter_cloref<a> (xs, p))
       else stream_filter_cloref_con (xs, p)

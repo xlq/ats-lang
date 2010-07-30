@@ -22,7 +22,7 @@ fn lte (x: Nat, y: Nat):<fun> bool = x <= y
 
 (*
 fn scale
-  (S: stream Nat, n: Nat):<1,~ref> stream Nat =
+  (S: stream Nat, n: Nat):<!laz> stream Nat =
   stream_map_cloref<Nat,Nat> (S, lam x => n nmul x)
 // end of [scale]
 *)
@@ -34,8 +34,8 @@ val rec S: stream Nat = $delay (
   1 :: stream_ordmerge_fun (stream_ordmerge_fun (scale (S, 2), scale (S, 3), lte), scale (S, 5), lte)
 ) // end of [$delay]
 
-fun remove_dup (S0: stream Nat):<1,~ref> stream_con Nat = let
-  fun rmv (n: Nat, S0: stream Nat):<1,~ref> stream_con Nat = begin
+fun remove_dup (S0: stream Nat):<!laz> stream_con Nat = let
+  fun rmv (n: Nat, S0: stream Nat):<!laz> stream_con Nat = begin
     case+ !S0 of
     | x :: S =>
        if (n < x) then n :: $delay (rmv (x, S)) else rmv (n, S)

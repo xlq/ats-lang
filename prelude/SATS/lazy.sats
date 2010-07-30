@@ -40,50 +40,68 @@
 (* ****** ****** *)
 
 #if VERBOSE_PRELUDE #then
-
 #print "Loading [lazy.sats] starts!\n"
-
-#endif
+#endif // end of [VERBOSE_PRELUDE]
 
 (* ****** ****** *)
 
 exception StreamSubscriptException of ()
 
 (* ****** ****** *)
+//
+// HX-2010-07-31: please note that !laz is defined to be (1,~ref)
+//
+(* ****** ****** *)
 
-fun{a:t@ype} stream_filter_fun
-  (xs: stream a, p: a -<1,~ref> bool):<1,~ref> stream a
+fun{a:t@ype}
+stream_filter_fun
+  (xs: stream a, p: a -<!laz> bool):<!laz> stream a
+// end of [stream_filter_fun]
 
-fun{a:t@ype} stream_filter_cloref
-  (xs: stream a, p: a -<cloref1,~ref> bool):<1,~ref> stream a
+fun{a:t@ype}
+stream_filter_cloref
+  (xs: stream a, p: a -<cloref,!laz> bool):<!laz> stream a
+// end of [stream_filter_cloref]
 
 (* ****** ****** *)
 
-fun{a,b:t@ype} stream_map_fun
-  (xs: stream a, f: a -<1,~ref> b):<1,~ref> stream b
+fun{a,b:t@ype}
+stream_map_fun
+  (xs: stream a, f: a -<!laz> b):<!laz> stream b
+// end of [stream_map_fun]
 
-fun{a,b:t@ype} stream_map_cloref
-  (xs: stream a, f: a -<cloref1,~ref> b):<1,~ref> stream b
-
-(* ****** ****** *)
-
-fun{a1,a2,b:t@ype} stream_map2_fun
-  (xs1: stream a1, xs2: stream a2, f: (a1, a2) -<1,~ref> b)
-  :<1,~ref> stream b
-
-fun{a1,a2,b:t@ype} stream_map2_cloref
-  (xs1: stream a1, xs2: stream a2, f: (a1, a2) -<cloref1,~ref> b)
-  :<1,~ref> stream b
+fun{a,b:t@ype}
+stream_map_cloref
+  (xs: stream a, f: a -<cloref,!laz> b):<!laz> stream b
+// end of [stream_map_cloref]
 
 (* ****** ****** *)
 
-fun{a:t@ype} stream_ordmerge_fun
-  (xs1: stream a, xs2: stream a, lte: (a, a) -<1,~ref> bool)
-  :<1,~ref> stream a
+fun{a1,a2,b:t@ype}
+stream_map2_fun
+  (xs1: stream a1, xs2: stream a2, f: (a1, a2) -<!laz> b)
+  :<!laz> stream b
+// end of [stream_map2_fun]
 
-fun{a:t@ype} stream_ordmerge_cloref
-  (xs1: stream a, xs2: stream a, lte: (a, a) -<cloref1,~ref> bool)
-  :<1,~ref> stream a
+fun{a1,a2,b:t@ype}
+stream_map2_cloref
+  (xs1: stream a1, xs2: stream a2, f: (a1, a2) -<cloref,!laz> b)
+  :<!laz> stream b
+// end of [stream_map2_cloref]
+
+(* ****** ****** *)
+
+fun{a:t@ype}
+stream_ordmerge_fun
+  (xs1: stream a, xs2: stream a, lte: (a, a) -<!laz> bool)
+  :<!laz> stream a
+// end of [stream_ordmerge_fun]
+
+fun{a:t@ype}
+stream_ordmerge_cloref
+  (xs1: stream a, xs2: stream a, lte: (a, a) -<cloref,!laz> bool)
+  :<!laz> stream a
+// end of [stream_ordmerge_cloref]
 
 (* ****** ****** *)
 
@@ -91,16 +109,15 @@ fun{a:t@ype} stream_nth (xs: stream a, i: Nat):<!exn> a
 
 (* ****** ****** *)
 
-fun{a:t@ype} stream_take {n:nat}
+fun{a:t@ype}
+stream_take {n:nat}
   (xs: stream a, n: int n):<fun> [k:nat | k <= n] list_vt (a, k)
 // end of [stream_take]
 
 (* ****** ****** *)
 
 #if VERBOSE_PRELUDE #then
-
 #print "Loading [lazy.sats] finishes!\n"
-
-#endif
+#endif // end of [VERBOSE_PRELUDE]
 
 (* end of [lazy.sats] *)

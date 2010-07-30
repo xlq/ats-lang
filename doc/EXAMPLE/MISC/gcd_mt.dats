@@ -1,5 +1,5 @@
 //
-// A multithreaded implementation of GCD
+// A multithreaded implementation of GCD in coroutine-style
 //
 // Author: Hongwei Xi (hwxi AT cs DOT bu DOT edu)
 // Time: March 10, 2008

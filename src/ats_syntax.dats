@@ -669,7 +669,10 @@ in // in of [local]
 
 implement e0fftag_var (id) = let
   val name = $Sym.symbol_name (id.i0de_sym)
-  val node: e0fftag_node = case+ name of
+  val node = (case+ name of
+//
+    | _ when name_is_prf name => E0FFTAGprf
+//
     | _ when name_is_clo0 name => E0FFTAGclo (~1(*u*), CLO, 0)
     | _ when name_is_clo1 name => E0FFTAGclo (~1(*u*), CLO, 1)
     | _ when name_is_linclo0 name => E0FFTAGclo (1(*l*), CLO, 0)
@@ -691,9 +694,9 @@ implement e0fftag_var (id) = let
     | _ when name_is_lin0 name => E0FFTAGlin 0
     | _ when name_is_lin1 name => E0FFTAGlin 1
 //
-    | _ when name_is_prf name => E0FFTAGprf
-//
     | _ => E0FFTAGvar id
+   ) : e0fftag_node // end of [val]
+//
 in '{
   e0fftag_loc= id.i0de_loc, e0fftag_node= node
 } end // end of [e0fftag_var]

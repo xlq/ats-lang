@@ -225,10 +225,11 @@ doublereal dlange_(
 
 *)
 
-dataview langework_v (t:t@ype+, c:char, m:int, l:addr) =
+dataview langework_v
+  (t:t@ype+, c:char, m:int, l:addr) =
   | {c == 'I'} langework_v_some (t, c, m, l) of array_v (t?, m, l)
   | {c <> 'I'} langework_v_none (t, c, m, l) of ()
-// end of [lange_v]
+// end of [langework_v]
 
 // |t1| = t2
 typedef

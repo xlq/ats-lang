@@ -307,24 +307,23 @@ fn name_is_exn (name: string): bool =
 
 fn name_is_exnref (name: string): bool = name = "exnref"
 
-fn name_is_gc (name: string): bool = name = "gc"
-
-fn name_is_heap (name: string): bool =
-  if name = "hp" then true else name = "heap"
-
 fn name_is_ntm (name: string): bool =
   if name = "ntm" then true else name = "nonterm"
 
 fn name_is_ref (name:string): bool =
   if name = "ref" then true else name = "reference"
 
-fn name_is_term (name: string): bool =
-  name = "term"
+fn name_is_term (name: string): bool = name = "term"
 
 (*
 fn name_is_wrt (name: string): bool =
   if name = "wrt" then true else name = "write"
 *)
+
+//
+// HX-2010-07-31: !laz = 1,~ref
+//
+fn name_is_lazy (name: string): bool = name = "laz"
 
 (* ****** ****** *)
 
@@ -348,16 +347,27 @@ fun loop (
   | cons (tag, tags) => let
       val () = case+ tag.e0fftag_node of
       | $Syn.E0FFTAGvar ev => evs := cons (ev, evs)
+//
       | $Syn.E0FFTAGcst (isneg, name)
           when name_is_all name => begin
-          if isneg > 0 then efs := effset_nil else efs := effset_all;
-          evs := effvars_nil
+          evs := effvars_nil;
+          if isneg > 0 then efs := effset_nil else efs := effset_all
         end // end of [E0FFTAGcst when ...]
       | $Syn.E0FFTAGcst (isneg, name)
           when name_is_emp name => begin
-          if isneg > 0 then efs := effset_all else efs := effset_nil;
-          evs := effvars_nil
+          evs := effvars_nil;
+          if isneg > 0 then efs := effset_all else efs := effset_nil
         end // end of [E0FFTAGcst when ...]
+      | $Syn.E0FFTAGcst (isneg, name)
+          when name_is_lazy name => begin
+          evs := effvars_nil;
+          if isneg > 0 then
+            efs := effset_add (effset_nil, EFFref) // HX: a pathological case
+          else
+            efs := effset_del (effset_all, EFFref) // HX: !laz = 1,~ref
+          // end of [if]
+        end // end of [E0FFTAGcst when ...]
+//
       | $Syn.E0FFTAGcst (isneg, name) => begin case+ name of
         | _ when name_is_exn name => begin
             if isneg > 0 then

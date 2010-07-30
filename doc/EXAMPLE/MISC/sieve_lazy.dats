@@ -17,14 +17,14 @@ staload "prelude/DATS/lazy.dats"
 
 (* ****** ****** *)
 
-fun from {n:int} (n: int n):<1,~ref> stream (intGte n) =
+fun from {n:int} (n: int n):<!laz> stream (intGte n) =
   $delay (n :: from (n+1))
 
 //
 
 typedef Nat2 = intGte 2
 
-fun sieve (ns: stream Nat2):<1,~ref> stream (Nat2) = $delay (let
+fun sieve (ns: stream Nat2):<!laz> stream (Nat2) = $delay (let
   val- n :: ns = !ns
 in
   n :: sieve (stream_filter_cloref<Nat2> (ns, lam x => x nmod n > 0))
