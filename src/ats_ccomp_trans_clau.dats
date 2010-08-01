@@ -84,7 +84,7 @@ extern fun matpnt_make (k: kont, xs: tmpmovlst): matpnt_t
 
 extern fun matpnt_tmpmovlst_get (mpt: matpnt_t): tmpmovlst
 extern fun matpnt_tmpmovlst_set (mpt: matpnt_t, _: tmpmovlst): void
-  = "ats_ccomp_matpnt_tmpmovlst_set"
+  = "atsccomp_matpnt_tmpmovlst_set"
 
 local
 
@@ -624,18 +624,18 @@ end // end of [local]
 %{$
 
 ats_void_type
-ats_ccomp_matpnt_kont_set
+atsccomp_matpnt_kont_set
   (ats_ptr_type mpt, ats_ptr_type kont) {
   ((matpnt_t)mpt)->atslab_matpnt_kont = kont ;
   return ;
-} // end of [ats_ccomp_matpnt_kont_set]
+} // end of [atsccomp_matpnt_kont_set]
 
 ats_void_type
-ats_ccomp_matpnt_tmpmovlst_set
+atsccomp_matpnt_tmpmovlst_set
   (ats_ptr_type mpt, ats_ptr_type tmpmovlst) {
   ((matpnt_t)mpt)->atslab_matpnt_tmpmovlst = tmpmovlst ;
   return ;
-} // end of [ats_ccomp_matpnt_tmpmovlst_set]
+} // end of [atsccomp_matpnt_tmpmovlst_set]
 
 %} // end of [%{$]
 

@@ -62,7 +62,7 @@ fun freeitmlst_length {l:addr} (xs: !freeitmlst_vt l):<> int
 
 fun freeitmlst_is_nil {l:addr} (xs: !freeitmlst_vt l):<> bool (l==null)
   = "gcats2_freeitmlst_isnil"
-fun freeitmlst_is_cons {l:addr} (xs: !freeitmlst_vt l):<> bool (l <> null)
+fun freeitmlst_is_cons {l:addr} (xs: !freeitmlst_vt l):<> bool (l > null)
   = "gcats2_freeitmlst_iscons"
 
 fun freeitmlst_cons {l1,l2:addr}
@@ -70,7 +70,7 @@ fun freeitmlst_cons {l1,l2:addr}
   = "gcats2_freeitmlst_cons"
 // end of [freeitmlst_cons]
 
-fun freeitmlst_uncons {l:anz} (
+fun freeitmlst_uncons {l:agz} (
     xs: &freeitmlst_vt l >> freeitmlst_vt l_new
   ) :<> #[l_new:addr] (freeitm_t @ l | ptr l)
   = "gcats2_freeitmlst_uncons"
@@ -167,7 +167,7 @@ fun the_manmemlst_insert {l:addr}
 // end of ...
 
 fun the_manmemlst_remove // [p] must be in the_manmemlst!
-  (pf: !the_manmemlst_v | p_data: ptr):<> [l:addr] (manmem_vt @ l | ptr l)
+  (pf: !the_manmemlst_v | p_data: ptr):<> [l:agez] (manmem_vt @ l | ptr l)
   = "gcats2_the_manmemlst_remove"
 // end of ...
 
@@ -190,12 +190,12 @@ fun the_chunkpagelst_insert {l:addr} // inserting one page
 // end of [...]
 
 fun the_chunkpagelst_remove // taking out one page
-  (pf: !the_chunkpagelst_v | (*none*)):<> [l:anz] (freepage @ l | ptr l)
+  (pf: !the_chunkpagelst_v | (*none*)):<> [l:agz] (freepage @ l | ptr l)
   = "gcats2_the_chunkpagelst_remove" // implemented in ATS
 // end of [...]
 
 fun the_chunkpagelst_remove_opt // taking out one page
-  (pf: !the_chunkpagelst_v | (*none*)):<> [l:addr] (ptropt_v (freepage, l) | ptr l)
+  (pf: !the_chunkpagelst_v | (*none*)):<> [l:agez] (ptropt_v (freepage, l) | ptr l)
   = "gcats2_the_chunkpagelst_remove_opt" // implemented in C
 // end of [...]
 
@@ -232,21 +232,21 @@ fun fprint_chunk {l:addr} (out: FILEref, p_chunk: !chunkptr_vt l): void
 // implemented in [gcats2_chunk.dats]
 fun chunk_make_norm {i:nat} (
     pf: !the_chunkpagelst_v | itmwsz: size_t, itmwsz_log: int i
-  ) :<> [l:anz] chunkptr_vt l
+  ) :<> [l:agz] chunkptr_vt l
   = "gcats2_chunk_make_norm"
 
 // implemented in [gcats2_chunk.dats]
-fun chunk_free_norm {l:anz} (
+fun chunk_free_norm {l:agz} (
     pf: !the_chunkpagelst_v | p_chunk: chunkptr_vt l
   ) :<> void
   = "gcats2_chunk_free_norm"
 
 // implemented in [gcats2_chunk.dats]
-fun chunk_make_large (itmwsz: size_t):<> [l:anz] chunkptr_vt l
+fun chunk_make_large (itmwsz: size_t):<> [l:agz] chunkptr_vt l
   = "gcats2_chunk_make_large"
 
 // implemented in [gcats2_chunk.dats]
-fun chunk_free_large {l:anz} (p_chunk: chunkptr_vt l):<> void
+fun chunk_free_large {l:agz} (p_chunk: chunkptr_vt l):<> void
   = "gcats2_chunk_free_large"
 
 // implemented in [gcats2.cats]
@@ -265,7 +265,7 @@ fun the_totwsz_add_chunk {l:addr}
   (pf: !the_totwsz_v | p_chunk: !chunkptr_vt l, itmwsz_log: int):<> void
   = "gcats2_the_totwsz_add_chunk"
 
-fun the_freeitmlstarr_add_chunk {l:anz} // chunk is consumed
+fun the_freeitmlstarr_add_chunk {l:agz} // chunk is consumed
   {i:nat | i < FREEITMLST_ARRAYSIZE} (p_chunk: chunkptr_vt l, itmwsz_log: int i):<> void
   = "gcats2_the_freeitmlstarr_add_chunk"
 // end of ...
@@ -282,7 +282,7 @@ fun the_sweeplstarr_clear
 // implemented in C in [gcats2_top.dats]
 fun the_sweeplstarr_get_chunk
   {i:nat | i < FREEITMLST_ARRAYSIZE}
-  (pf: !the_sweeplstarr_v | itmwsz_log: int i):<> [l:addr] chunkptr_vt l
+  (pf: !the_sweeplstarr_v | itmwsz_log: int i):<> [l:agez] chunkptr_vt l
   = "gcats2_the_sweeplstarr_get_chunk"
 
 (* ****** ****** *)
@@ -311,7 +311,7 @@ fun the_nbotsegtbl_alloc_get ():<> lint // for gathering statistics
 
 fun the_topsegtbl_takeout {i:nat} (
     pf: the_topsegtbl_v | i: topseg i
-  ) :<> [l:addr] (
+  ) :<> [l:agez] (
     botsegtblptr_vt @ l, botsegtblptr_vt @ l -<lin> the_topsegtbl_v | ptr l
   ) = "gcats2_the_topsegtbl_takeout"
 // end of [the_topsegtbl_takeout]
@@ -330,7 +330,7 @@ fun the_topsegtbl_insert_chunkptr // succ/fail: 0/1
 ** note that [ptr==p_chunk->chunk_data] where [p_chunk] is to be removed
 *)
 fun the_topsegtbl_remove_chunkptr
-  (pf: !the_topsegtbl_v | ptr: ptr):<> [l:addr] chunkptr_vt l // notfound: l = null
+  (pf: !the_topsegtbl_v | ptr: ptr):<> [l:agez] chunkptr_vt l // notfound: l = null
   = "gcats2_the_topsegtbl_remove_chunkptr"
 // end of ...
 
@@ -338,7 +338,7 @@ fun the_topsegtbl_remove_chunkptr
 
 fun ptr_isvalid ( // implemented in C in [gcats2_point.dats]
     pf: the_topsegtbl_v | ptr: ptr, nitm: &int? >> opt (int, l <> null)
-  ) :<> #[l:addr] (
+  ) :<> #[l:agez] (
     chunkptr_vt l -<prf> the_topsegtbl_v | chunkptr_vt l
   ) = "gcats2_ptr_isvalid"
 // end of [ptr_isvalid]
@@ -352,7 +352,7 @@ fun fprint_the_topsegtbl (out: FILEref): void
 fun the_topsegtbl_foreach_chunkptr
   {v:view} {vt:viewtype} (
     pf1: !the_topsegtbl_v, pf2: !v // or assuming [the_topsegtbl_v <= v]
-  | f: {l:anz} (!the_topsegtbl_v, !v | !chunkptr_vt l, !vt) -<fun> void, env: !vt
+  | f: {l:agz} (!the_topsegtbl_v, !v | !chunkptr_vt l, !vt) -<fun> void, env: !vt
   ) :<> void
   = "gcats2_the_topsegtbl_foreach_chunkptr"
 // end of ...

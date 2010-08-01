@@ -51,7 +51,8 @@ staload "gcats2.sats"
 (*
 ** this implementation is mostly for testing purpose
 *)
-implement freeitmlst_length {l} (xs0) = n where {
+implement
+freeitmlst_length {l} (xs0) = n where {
   var xs = __cast (xs0) where {
     extern castfn __cast (xs0: !freeitmlst_vt l):<> freeitmlst_vt l
   }
@@ -62,9 +63,9 @@ implement freeitmlst_length {l} (xs0) = n where {
       prval () = __leak (pf) where { extern prfun __leak {v:view} (pf: v): void }
     in
       loop (xs, res + 1)
-    end else
-      res // loop exits
-    // end of [if]
+    end else let
+      prval () = addr_is_gtez {l} () in res // loop exits
+    end // end of [if]
   // end of [loop]
   val n = $effmask_ntm (loop (xs, 0))
   val _(*null*) = freeitmlst_free_null (xs)

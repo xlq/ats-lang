@@ -52,8 +52,9 @@ implement the_chunkpagelst_remove
   (pf | (*none*)) = let
   #define NBATCH 1024 // it is arbitrarily chosen!
   val (pfopt | p) = the_chunkpagelst_remove_opt (pf | (*none*))
+  prval () = ptr_is_gtez (p)
 in
-  if (p <> null) then let
+  if (p > null) then let
     prval Some_v pf = pfopt in (pf | p)
   end else let
     prval None_v () = pfopt
@@ -76,7 +77,7 @@ end // end of [...]
 implement the_topsegtbl_clear_mrkbits
   (pf_tbl | (*none*)) = let
   prval pf = unit_v ()
-  val f = lam {l:anz} (
+  val f = lam {l:agz} (
       pf_tbl: !the_topsegtbl_v, pf: !unit_v | p_chunk: !chunkptr_vt l, env: !ptr
     ) : void =<fun> let
     val (pf_chunk | p) = chunkptr_unfold (p_chunk)
@@ -326,7 +327,7 @@ gcats2_chunk_make_norm (
 } /* end of [gcats2_chunk_make_norm] */
 
 /*
-fun chunk_free_norm {l:anz}
+fun chunk_free_norm {l:agz}
   (pf: !the_chunkpagelst_v | p_chunk: chunkptr_vt l):<> void
 */
 ats_void_type

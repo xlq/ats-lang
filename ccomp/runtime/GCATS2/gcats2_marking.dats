@@ -53,7 +53,7 @@ implement the_topsegtbl_mark
   var overflow: int = 0
   viewdef V = (the_markstack_v, int @ overflow)
   viewtypedef VT = ptr overflow
-  val f = lam {l:anz} (
+  val f = lam {l:agz} (
       pf1: !the_topsegtbl_v, pf2: !V | p_chunk: !chunkptr_vt l, env: !VT
     ) : void =<fun> let
     val (pf_chunk | p) = chunkptr_unfold (p_chunk)

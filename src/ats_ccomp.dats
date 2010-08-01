@@ -139,7 +139,7 @@ implement tmpvar_make (hit) = let
 } end // end of [tmpvar_make]
 
 extern fun tmpvar_ret_set (tmp: tmpvar, ret: int): void
-  = "ats_ccomp_tmpvar_ret_set"
+  = "atsccomp_tmpvar_ret_set"
 
 implement tmpvar_make_ret (hit) = let
   val tmp = tmpvar_make (hit)
@@ -149,7 +149,7 @@ in
 end // end of [tmpvar_make_ret]
 
 extern fun tmpvar_root_set (tmp: tmpvar, otmp: tmpvaropt): void
-  = "ats_ccomp_tmpvar_root_set"
+  = "atsccomp_tmpvar_root_set"
 
 implement tmpvar_make_root (tmp) = let
   val otmp = (case+ tmp.tmpvar_root of
@@ -387,7 +387,8 @@ end // end of [local]
 
 (* ****** ****** *)
 
-implement valprim_is_const (vp) = begin
+implement
+valprim_is_const (vp) =
   case+ vp.valprim_node of
   | VPbool _ => true
   | VPcastfn (_d2c, vp) => valprim_is_const (vp)
@@ -401,89 +402,107 @@ implement valprim_is_const (vp) = begin
   | VPtop _ => true
   | VPvoid _ => true
   | _ => false
-end (* end of [valprim_is_const] *)
+// end of [valprim_is_const]
 
 (* ****** ****** *)
 
-implement valprim_is_mutable (vp) = begin
+implement
+valprim_is_mutable (vp) = begin
   case+ vp.valprim_node of
   | VParg_ref _ => true | VPtmp_ref _ => true | _ => false
 end // end of [valprim_is_mutable]
 
 (* ****** ****** *)
 
-implement valprim_arg (n, hit) = '{
+implement
+valprim_arg (n, hit) = '{
   valprim_node= VParg (n), valprim_typ= hit
-}
+} // end of [valprim_arg]
 
-implement valprim_arg_ref (n, hit) = '{
+implement
+valprim_arg_ref (n, hit) = '{
   valprim_node= VParg_ref (n), valprim_typ= hit
-}
+} // end of [valprim_arg_ref]
 
-implement valprim_bool (b) = '{
+implement
+valprim_bool (b) = '{
   valprim_node= VPbool b, valprim_typ= hityp_encode (hityp_bool)
 } // end of [valprim_bool]
 
-implement valprim_castfn (d2c, vp, hit) = '{
+implement
+valprim_castfn (d2c, vp, hit) = '{
   valprim_node= VPcastfn (d2c, vp), valprim_typ= hit
-}
+} // end of [valprim_castfn]
 
-implement valprim_char (c) = '{
+implement
+valprim_char (c) = '{
   valprim_node= VPchar c, valprim_typ= hityp_encode (hityp_char)
 } // end of [valprim_char]
 
-implement valprim_cst (d2c, hit) = '{
+implement
+valprim_cst (d2c, hit) = '{
   valprim_node= VPcst (d2c), valprim_typ= hit
-}
+} // end of [valprim_cst]
 
-implement valprim_cstsp (loc, cst, hit) = '{
+implement
+valprim_cstsp (loc, cst, hit) = '{
   valprim_node= VPcstsp (loc, cst), valprim_typ= hit
-}
+} // end of [valprim_cstsp]
 
-implement valprim_env (vt, hit) = '{
+implement
+valprim_env (vt, hit) = '{
   valprim_node= VPenv vt, valprim_typ= hit
-}
+} // end of [valprim_env]
 
-implement valprim_ext (code, hit) = '{
+implement
+valprim_ext (code, hit) = '{
   valprim_node= VPext code, valprim_typ= hit
-}
+} // end of [valprim_ext]
 
-implement valprim_float f(*string*) = '{
+implement
+valprim_float f(*string*) = '{
   valprim_node= VPfloat f, valprim_typ= hityp_encode (hityp_double)
 } // end of [valprim_float]
 
-implement valprim_floatsp (f, hit) = '{
+implement
+valprim_floatsp (f, hit) = '{
   valprim_node= VPfloatsp f, valprim_typ= hit
 } // end of [valprim_floatsp]
 
-implement valprim_clo (knd, fl, env) = let
+implement
+valprim_clo (knd, fl, env) = let
   val hit = (if knd <> 0 then hityp_ptr else hityp_clo): hityp
 in '{
   valprim_node= VPclo (knd, fl, env), valprim_typ= hityp_encode hit
 } end // end of [valprim_clo]
 
-implement valprim_fun (funlab) = '{
+implement
+valprim_fun (funlab) = '{
   valprim_node= VPfun funlab, valprim_typ= funlab_typ_get funlab
 } // end of [valprim_fun]
 
 (* ****** ****** *)
 
-implement valprim_int (int) = '{
+implement
+valprim_int (int) = '{
   valprim_node= VPint (int), valprim_typ= hityp_encode (hityp_int)
 } // end of [valprim_int]
 
-implement valprim_intsp (str, int, hit) = '{
+implement
+valprim_intsp (str, int, hit) = '{
   // [valprim_typ] is incorrect
   valprim_node= VPintsp (str, int), valprim_typ= hit
 } // end of [valprim_intsp]
 
 (* ****** ****** *)
 
-implement valprim_ptrof (vp) = '{
+implement
+valprim_ptrof (vp) = '{
   valprim_node= VPptrof vp, valprim_typ= hityp_encode (hityp_ptr)
 } // end of [valprim_ptrof]
 
-implement valprim_ptrof_ptr_offs
+implement
+valprim_ptrof_ptr_offs
   (vp, offs) = begin case+ offs of
   | list_cons _ => '{
       valprim_node= VPptrof_ptr_offs (vp, offs)
@@ -492,7 +511,8 @@ implement valprim_ptrof_ptr_offs
   | list_nil () => valprim_ptrof (vp)
 end // end of [valprim_ptrof_ptr_offs]
 
-implement valprim_ptrof_var_offs
+implement
+valprim_ptrof_var_offs
   (vp, offs) = begin case+ offs of
   | list_cons _ => '{
       valprim_node= VPptrof_var_offs (vp, offs)
@@ -503,104 +523,137 @@ end // end of [valprim_ptrof_var_offs]
 
 (* ****** ****** *)
 
-implement valprim_sizeof (hit) = '{
+implement
+valprim_sizeof (hit) = '{
   valprim_node= VPsizeof hit
 , valprim_typ= hityp_encode (hityp_int)
-}
+} // end of [valprim_sizeof]
 
-implement valprim_string (str, len) = '{
+implement
+valprim_string (str, len) = '{
   valprim_node= VPstring (str, len)
 , valprim_typ= hityp_encode (hityp_string)
-}
+} // end of [valprim_string]
 
-implement valprim_tmp (tmp) = '{
+implement
+valprim_tmp (tmp) = '{
   valprim_node= VPtmp tmp, valprim_typ= tmpvar_typ_get tmp
-}
+} // end of [valprim_tmp]
 
-implement valprim_tmp_ref (tmp) = '{
+implement
+valprim_tmp_ref (tmp) = '{
   valprim_node= VPtmp_ref tmp, valprim_typ= tmpvar_typ_get tmp
-}
+} // end of [valprim_tmp_ref]
 
-implement valprim_top (hit) = '{
+implement
+valprim_top (hit) = '{
   valprim_node= VPtop (), valprim_typ= hit
-}
+} // end of [valprim_top]
 
-implement valprim_void () = '{
+implement
+valprim_void () = '{
   valprim_node= VPvoid (), valprim_typ= hityp_encode (hityp_void)
-}
+} // end of [valprim_void]
 
 (* ****** ****** *)
 
-implement valprim_is_void (vp) = begin
+implement
+valprim_is_void (vp) = begin
   hityp_is_void (hityp_decode vp.valprim_typ)
 end // end of [valprim_is_void]
 
 (* ****** ****** *)
 
-implement instr_add_arr_heap (res, tmp_res, asz, hit_elt) = begin
+implement
+instr_add_arr_heap
+  (res, tmp_res, asz, hit_elt) = begin
   res := list_vt_cons (INSTRarr_heap (tmp_res, asz, hit_elt), res)
 end // end of [instr_add_arr_heap]
 
-implement instr_add_arr_stack
+implement
+instr_add_arr_stack
   (res, tmp_res, level, vp_asz, hit_elt) = begin
   res := list_vt_cons (INSTRarr_stack (tmp_res, level, vp_asz, hit_elt), res)
 end // end of [instr_add_arr_stack]
 
 //
 
-implement instr_add_assgn_arr
+implement
+instr_add_assgn_arr
   (res, vp_arr, vp_asz, tmp_elt, vp_tsz) = res :=
   list_vt_cons (INSTRassgn_arr (vp_arr, vp_asz, tmp_elt, vp_tsz), res)
 // end of [instr_add_assgn_arr]
 
-implement instr_add_assgn_clo (res, vp_clo, fl, env) =
+implement
+instr_add_assgn_clo
+  (res, vp_clo, fl, env) =
   res := list_vt_cons (INSTRassgn_clo (vp_clo, fl, env), res)
 // end of [instr_add_assgn_clo]
 
 //
 
-implement instr_add_call
+implement
+instr_add_call
   (res, tmp_res, hit_fun, vp_fun, vps_arg) = begin
   res := list_vt_cons (INSTRcall (tmp_res, hit_fun, vp_fun, vps_arg), res)
 end // end of [instr_add_call]
 
-implement instr_add_call_tail (res, fl) =
+implement
+instr_add_call_tail (res, fl) =
   res := list_vt_cons (INSTRcall_tail fl, res)
+// end of [instr_add_call_tail]
 
 //
 
-implement instr_add_define_clo (res, d2c, fl) =
+implement
+instr_add_define_clo (res, d2c, fl) =
   res := list_vt_cons (INSTRdefine_clo (d2c, fl), res)
+// end of [instr_add_define_clo]
 
-implement instr_add_define_fun (res, d2c, fl) =
+implement
+instr_add_define_fun (res, d2c, fl) =
   res := list_vt_cons (INSTRdefine_fun (d2c, fl), res)
+// end of [instr_add_define_fun]
 
-implement instr_add_define_val (res, d2c, vp) =
+implement
+instr_add_define_val (res, d2c, vp) =
   res := list_vt_cons (INSTRdefine_val (d2c, vp), res)
+// end of [instr_add_define_val]
 
 //
 
-implement instr_add_extval (res, name, vp) =
+implement
+instr_add_extval (res, name, vp) =
   res := list_vt_cons (INSTRextval (name, vp), res)
+// end of [instr_add_extval]
 
-implement instr_add_freeptr (res, vp) =
+implement
+instr_add_freeptr (res, vp) =
   res := list_vt_cons (INSTRfreeptr (vp), res)
+// end of [instr_add_freeptr]
 
-implement instr_add_patck (res, vp, patck, fail) =
+implement
+instr_add_patck (res, vp, patck, fail) =
   res := list_vt_cons (INSTRpatck (vp, patck, fail), res)
+// end of [instr_add_patck]
 
 //
 
-implement instr_add_dynload_file (res, fil) =
+implement
+instr_add_dynload_file (res, fil) =
   res := list_vt_cons (INSTRdynload_file fil, res)
+// end of [instr_add_dynload_file]
 
 //
 
-implement instr_add_load_ptr (res, tmp, vp) = begin
+implement
+instr_add_load_ptr (res, tmp, vp) = begin
   res := list_vt_cons (INSTRload_ptr (tmp, vp), res)
 end (* end of [instr_add_load_ptr] *)
 
-implement instr_add_load_ptr_offs (res, tmp, vp, offs) = let
+implement
+instr_add_load_ptr_offs
+  (res, tmp, vp, offs) = let
   val ins = case+ offs of
     | list_cons _ => INSTRload_ptr_offs (tmp, vp, offs)
     | list_nil () => INSTRload_ptr (tmp, vp)
@@ -608,7 +661,9 @@ in
   res := list_vt_cons (ins, res)
 end (* end of [instr_add_load_ptr_offs] *)
 
-implement instr_add_load_var_offs (res, tmp, vp, offs) = let
+implement
+instr_add_load_var_offs
+  (res, tmp, vp, offs) = let
   val ins = case+ offs of
     | list_cons _ => INSTRload_var_offs (tmp, vp, offs)
     | list_nil () => INSTRload_var (tmp, vp)
@@ -618,7 +673,8 @@ end (* end of [instr_add_load_var_offs] *)
 
 //
 
-implement instr_add_loop (
+implement
+instr_add_loop (
     res
   , lab_init, lab_fini, lab_cont
   , inss_init
@@ -633,33 +689,42 @@ in
   res := list_vt_cons (ins, res)
 end // end of [instr_add_loop]
 
-implement instr_add_loopexn (res, knd, tl) = 
+implement
+instr_add_loopexn (res, knd, tl) = 
   res := list_vt_cons (INSTRloopexn (knd, tl), res)
 // end of [instr_add_loopexn]
 
 //
 
-implement instr_add_move_arg (res, arg, vp) =
+implement
+instr_add_move_arg (res, arg, vp) =
   res := list_vt_cons (INSTRmove_arg (arg, vp), res)
 // end of [instr_add_move_arg]
 
-implement instr_add_move_con (res, tmp_res, hit_sum, d2c, vps_arg) =
+implement
+instr_add_move_con
+  (res, tmp_res, hit_sum, d2c, vps_arg) =
   res := list_vt_cons (INSTRmove_con (tmp_res, hit_sum, d2c, vps_arg), res)
 // end of [instr_add_move_con]
 
 //
 
-implement instr_add_move_lazy_delay (res, tmp_res, lin, hit_body, vp_clo) =
+implement
+instr_add_move_lazy_delay
+  (res, tmp_res, lin, hit_body, vp_clo) =
   res := list_vt_cons (INSTRmove_lazy_delay (tmp_res, lin, hit_body, vp_clo), res)
 // end of [instr_add_move_lazy_delay]
 
-implement instr_add_move_lazy_force (res, tmp_res, lin, hit_val, vp_lazy) =
+implement
+instr_add_move_lazy_force
+  (res, tmp_res, lin, hit_val, vp_lazy) =
   res := list_vt_cons (INSTRmove_lazy_force (tmp_res, lin, hit_val, vp_lazy), res)
 // end of [instr_add_move_lazy_force]
 
 //
 
-implement instr_add_move_rec
+implement
+instr_add_move_rec
   (res, tmp_res, recknd, hit_rec, lvps) = let
   val ins = (case+ 0 of
     | _ when recknd = 0 => INSTRmove_rec_flt (tmp_res, hit_rec, lvps)
@@ -674,37 +739,47 @@ in
   res := list_vt_cons (ins, res)
 end // end of [instr_add_move_rec]
 
-implement instr_add_move_ref (res, tmp_res, vp) =
+implement
+instr_add_move_ref (res, tmp_res, vp) =
   res := list_vt_cons (INSTRmove_ref (tmp_res, vp), res)
 // end of [instr_add_move_ref]
 
-implement instr_add_move_val (res, tmp_res, vp) =
+implement
+instr_add_move_val (res, tmp_res, vp) =
   res := list_vt_cons (INSTRmove_val (tmp_res, vp), res)
 // end of [instr_add_move_val]
 
 //
 
-implement instr_add_raise (res, tmp_res, vp_exn) =
+implement
+instr_add_raise (res, tmp_res, vp_exn) =
   res := list_vt_cons (INSTRraise (tmp_res, vp_exn), res)
 // end of [instr_add_raise]
 
 //
 
-implement instr_add_select (res, tmp_res, vp_root, offs) =
+implement
+instr_add_select 
+  (res, tmp_res, vp_root, offs) =
   res := list_vt_cons (INSTRselect (tmp_res, vp_root, offs), res)
 // end of [instr_add_select]
 
-implement instr_add_selcon (res, tmp_res, vp_sum, hit_sum, i) =
+implement
+instr_add_selcon
+  (res, tmp_res, vp_sum, hit_sum, i) =
   res := list_vt_cons (INSTRselcon (tmp_res, vp_sum, hit_sum, i), res)
 // end of [instr_add_selcon]
 
-implement instr_add_selcon_ptr (res, tmp_res, vp_sum, hit_sum, i) =
+implement
+instr_add_selcon_ptr
+  (res, tmp_res, vp_sum, hit_sum, i) =
   res := list_vt_cons (INSTRselcon_ptr (tmp_res, vp_sum, hit_sum, i), res)
 // end of [instr_add_selcon_ptr]
 
 //
 
-implement instr_add_store_ptr_offs
+implement
+instr_add_store_ptr_offs
   (res, vp_ptr, offs, vp_val) = let
   val ins = case+ offs of
     | list_cons _ => INSTRstore_ptr_offs (vp_ptr, offs, vp_val)
@@ -713,7 +788,8 @@ in
   res := list_vt_cons (ins, res)
 end // end of [instr_add_store_ptr_offs]
 
-implement instr_add_store_var_offs
+implement
+instr_add_store_var_offs
   (res, vp_mut, offs, vp_val) = let
   val ins = (case+ offs of
     | list_cons _ => INSTRstore_var_offs (vp_mut, offs, vp_val)
@@ -725,19 +801,24 @@ end // end of [instr_add_store_var_offs]
 
 //
 
-implement instr_add_switch (res, brs) =
+implement
+instr_add_switch (res, brs) =
   res := list_vt_cons (INSTRswitch brs, res)
 // end of [instr_add_switch]
 
-implement instr_add_tmplabint (res, tl, i) =
+implement
+instr_add_tmplabint (res, tl, i) =
   res := list_vt_cons (INSTRtmplabint (tl, i), res)
 // end of [instr_add_tmplabint]
 
-implement instr_add_trywith (res, res_try, tmp_exn, brs) =
+implement
+instr_add_trywith
+  (res, res_try, tmp_exn, brs) =
   res := list_vt_cons (INSTRtrywith (res_try, tmp_exn, brs), res)
 // end of [instr_add_trywith]
 
-implement instr_add_vardec (res, tmp) =
+implement
+instr_add_vardec (res, tmp) =
   res := list_vt_cons (INSTRvardec tmp, res)
 // end of [instr_add_vardec]
 
@@ -746,40 +827,40 @@ implement instr_add_vardec (res, tmp) =
 %{$
 
 ats_void_type
-ats_ccomp_funlab_qua_set
+atsccomp_funlab_qua_set
   (ats_ptr_type fl, ats_ptr_type od2c) {
   ((funlab_t)fl)->atslab_funlab_qua = od2c ; return ;
-}
+} // end of [atsccomp_funlab_qua_set]
 
 ats_void_type
-ats_ccomp_funlab_entry_set
+atsccomp_funlab_entry_set
   (ats_ptr_type fl, ats_ptr_type entry) {
   ((funlab_t)fl)->atslab_funlab_entry = entry ; return ;
-}
+} // end of [atsccomp_funlab_entry_set]
 
 ats_void_type
-ats_ccomp_funlab_tailjoined_set
+atsccomp_funlab_tailjoined_set
   (ats_ptr_type fl, ats_ptr_type tmps) {
   ((funlab_t)fl)->atslab_funlab_tailjoined = tmps ; return ;
-}
+} // end of [atsccomp_funlab_tailjoined_set]
 
 ats_void_type
-ats_ccomp_tmpvar_ret_set
+atsccomp_tmpvar_ret_set
   (ats_ptr_type tmp, ats_int_type ret) {
   ((tmpvar_t)tmp)->atslab_tmpvar_ret = ret ; return ;
-}
+} // end of [atsccomp_tmpvar_ret_set]
 
 ats_void_type
-ats_ccomp_tmpvar_top_set
+atsccomp_tmpvar_top_set
   (ats_ptr_type tmp, ats_int_type top) {
   ((tmpvar_t)tmp)->atslab_tmpvar_top = top ; return ;
-}
+} // end of [atsccomp_tmpvar_top_set]
 
 ats_void_type
-ats_ccomp_tmpvar_root_set
+atsccomp_tmpvar_root_set
   (ats_ptr_type tmp, ats_ptr_type root) {
   ((tmpvar_t)tmp)->atslab_tmpvar_root = root ; return ;
-}
+} // end of [atsccomp_tmpvar_root_set]
 
 %} // end of [%{$]
 

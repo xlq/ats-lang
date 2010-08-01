@@ -96,7 +96,8 @@ praxi eqsize_char_uchar (): [sizeof char == sizeof uchar] void
 //
 // HX-2010-04-18: there are no negative addresses
 //
-praxi ptr_is_gtez {l:addr} (p: ptr l):<> [l >= null] void
+praxi addr_is_gtez {l:addr} ():<> [l >= null] void
+prfun ptr_is_gtez {l:addr} (p: ptr l):<> [l >= null] void
 
 (* ****** ****** *)
 
@@ -130,11 +131,18 @@ val SubscriptException : exn = "SubscriptException"
 val{elt:viewt@ype} sizeof : size_t (sizeof elt)
 
 (* ****** ****** *)
-
-// note that sizeof(empty) = 0 and sizeof(void) = 1
+//
+// HX: note that sizeof(empty) = 0 and sizeof(void) = 1
+//
 val empval : empty = "ats_empty_value" // the empty value in ATS
 
+(* ****** ****** *)
+//
+// HX: [true] is mapped to [1] and [false] to [0].
+//
 val true : bool (true) and false : bool (false)
+
+(* ****** ****** *)
 
 fun exit {a:viewt@ype} (status: int):<!exn> a
   = "ats_exit"

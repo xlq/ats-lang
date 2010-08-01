@@ -87,12 +87,12 @@ fn prerr_loc_errorccomp (loc: loc_t): void =
 
 extern fun emit_identifier {m:file_mode}
   (pf: file_mode_lte (m, w) | out: &FILE m, name: string): void
-  = "ats_ccomp_emit_identifier"
+  = "atsccomp_emit_identifier"
 
 %{$
 
 ats_void_type
-ats_ccomp_emit_identifier (
+atsccomp_emit_identifier (
   ats_ptr_type out, ats_ptr_type name
 ) {
   char c, *s ;
@@ -123,7 +123,7 @@ ats_ccomp_emit_identifier (
     fprintf ((FILE*)out, "%.2x", (unsigned char)c);
   } /* end of [while] */
   return ;
-} /* ats_ccomp_emit_identifier */
+} /* atsccomp_emit_identifier */
 
 %}
 
@@ -152,25 +152,25 @@ extern char *atsopt_ATSHOMERELOC ;
 extern ats_ptr_type atsopt_filename_full (ats_ptr_type) ;
 
 ats_void_type
-ats_ccomp_emit_filename (ats_ptr_type out, ats_ptr_type fil) {
+atsccomp_emit_filename (ats_ptr_type out, ats_ptr_type fil) {
   int sgn ; char *name ;
   name = atsopt_filename_full (fil) ;
 //
   if (!atsopt_ATSHOMERELOC) {
-    ats_ccomp_emit_identifier (out, name) ; return ;
+    atsccomp_emit_identifier (out, name) ; return ;
   }
 //
   sgn = strncmp
     (atsopt_ATSHOME, name, atsopt_ATSHOME_length) ;
   if (sgn) {
-    ats_ccomp_emit_identifier (out, name) ;
+    atsccomp_emit_identifier (out, name) ;
   } else {
-    ats_ccomp_emit_identifier (out, atsopt_ATSHOMERELOC) ;
-    ats_ccomp_emit_identifier (out, (char*)name + atsopt_ATSHOME_length) ;
+    atsccomp_emit_identifier (out, atsopt_ATSHOMERELOC) ;
+    atsccomp_emit_identifier (out, (char*)name + atsopt_ATSHOME_length) ;
   } // end of [if]
 //
   return ;
-} /* end of ats_ccomp_emit_filename */
+} /* end of atsccomp_emit_filename */
 
 %} // end of [%{$]
 
@@ -544,17 +544,17 @@ end // end of [emit_valprim_clo_make]
 
 %{^
 ats_void_type
-ats_ccomp_emit_valprim_float
+atsccomp_emit_valprim_float
   (ats_ptr_type out, ats_ptr_type f) {
   char *s = f ;
   if (*s == '~') { fputc ('-', (FILE*)out) ; s += 1 ; }
   fputs (s, (FILE*)out) ;
   return ;
-} /* ats_ccomp_emit_valprim_float */
+} /* atsccomp_emit_valprim_float */
 %} // end of [%{^]
 extern fun emit_valprim_float {m:file_mode}
   (pf: file_mode_lte (m, w) | out: &FILE m, f: string): void
-  = "ats_ccomp_emit_valprim_float"
+  = "atsccomp_emit_valprim_float"
 // end of [emit_valprim_float]
 
 (* ****** ****** *)
@@ -836,12 +836,12 @@ end // end of [emit_valprim_select_ptr]
 
 extern fun emit_valprim_string {m:file_mode}
   (pf: file_mode_lte (m, w) | out: &FILE m, str: string, len: size_t): void
-  = "ats_ccomp_emit_valprim_string"
+  = "atsccomp_emit_valprim_string"
 
 %{$
 
 ats_void_type
-ats_ccomp_emit_valprim_string (
+atsccomp_emit_valprim_string (
   ats_ptr_type out, ats_ptr_type str, ats_size_type len
 ) {
   char *s = str; int i; char c;
@@ -868,7 +868,7 @@ ats_ccomp_emit_valprim_string (
   fputc ('"', (FILE*)out);
 //
   return ;
-} // end of [ats_ccomp_emit_valprim_string]
+} // end of [atsccomp_emit_valprim_string]
 
 %} // end of [%{$]
 

@@ -51,8 +51,6 @@ staload "ats_stadyncst2.sats"
 
 (* ****** ****** *)
 
-overload prerr with $Loc.prerr_location
-
 overload = with $Sym.eq_symbol_symbol
 overload prerr with $Sym.prerr_symbol
 

@@ -128,15 +128,15 @@ fun funlab_funclo_get (fl: funlab_t): $Syn.funclo
 
 fun funlab_qua_get (fl: funlab_t): d2cstopt
 fun funlab_qua_set (fl: funlab_t, _: d2cstopt): void
-  = "ats_ccomp_funlab_qua_set"
+  = "atsccomp_funlab_qua_set"
 
 fun funlab_tailjoined_get (fl: funlab_t): tmpvarlst
 fun funlab_tailjoined_set (fl: funlab_t, tmps: tmpvarlst): void
-  = "ats_ccomp_funlab_tailjoined_set"
+  = "atsccomp_funlab_tailjoined_set"
 
 fun funlab_entry_get (fl: funlab_t): funentryopt
 fun funlab_entry_set (fl: funlab_t, _: funentryopt): void
-  = "ats_ccomp_funlab_entry_set"
+  = "atsccomp_funlab_entry_set"
 
 fun funlab_entry_get_some (fl: funlab_t): funentry_t
 
@@ -383,7 +383,7 @@ overload fprint with fprint_kontlst
 
 fun matpnt_kont_get (mpt: matpnt_t): kont
 fun matpnt_kont_set (mpt: matpnt_t, _: kont): void
-  = "ats_ccomp_matpnt_kont_set"
+  = "atsccomp_matpnt_kont_set"
 
 (* ****** ****** *)
 
@@ -715,7 +715,7 @@ fun emit_label {m:file_mode}
 
 fun emit_filename {m:file_mode}
   (pf: file_mode_lte (m, w) | out: &FILE m, fil: $Fil.filename_t): void
-  = "ats_ccomp_emit_filename"
+  = "atsccomp_emit_filename"
 
 fun emit_d2con {m:file_mode}
   (pf: file_mode_lte (m, w) | out: &FILE m, d2c: d2con_t): void

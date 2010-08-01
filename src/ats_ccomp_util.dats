@@ -83,7 +83,9 @@ local
 
 assume tmpvarmap_vt = tmpvarmap
 
-dataviewtype ENV (l:addr, i:addr) = ENVcon (l, i) of (ptr l, ptr i, int)
+dataviewtype ENV
+  (l:addr, i:addr) = ENVcon (l, i) of (ptr l, ptr i, int)
+// end of [ENV]
 
 fn _emit_tmpvarmap_dec {m:file_mode} {l:addr} (
     pf_mod: file_mode_lte (m, w)
@@ -99,7 +101,7 @@ fn _emit_tmpvarmap_dec {m:file_mode} {l:addr} (
     val+ ENVcon (p_l, p_i, knd)= env
 //
     extern fun tmpvar_top_set
-      (tmp: tmpvar_t, top: int): void = "ats_ccomp_tmpvar_top_set"
+      (tmp: tmpvar_t, top: int): void = "atsccomp_tmpvar_top_set"
     val () = if knd = 1 then tmpvar_top_set (tmp, 1) // static tmpvar
 //
     val () = (!p_i := !p_i + 1)
@@ -183,7 +185,10 @@ implement tmpvarmap_nil () =
 
 implement tmpvarmap_free (tmps) = $Map.map_free (tmps)
 
-implement instr_tmpvarmap_add (m, ins) = let
+(* ****** ****** *)
+
+implement
+instr_tmpvarmap_add (m, ins) = let
   fun aux_branchlst (m: &tmpvarmap, brs: branchlst)
     : void = begin case+ brs of
     | list_cons (br, brs) => let
@@ -246,27 +251,32 @@ in
   | _ => ()
 end // end of [instr_tmpvarmap_add]
 
-implement instrlst_tmpvarmap_add (m, inss) = case+ inss of
+implement
+instrlst_tmpvarmap_add (m, inss) = case+ inss of
   | list_cons (ins, inss) => begin
       instr_tmpvarmap_add (m, ins); instrlst_tmpvarmap_add (m, inss)
     end // end of [list_cons]
   | list_nil () => ()
 // end of [instrlst_tmpvarmap_add]
 
-//
+(* ****** ****** *)
 
-implement emit_tmpvarmap_dec_local (pf | out, tmps) =
+implement
+emit_tmpvarmap_dec_local (pf | out, tmps) =
   _emit_tmpvarmap_dec (pf, view@ out | &out, 0(*local*), tmps)
 // end of [emit_tmpvarmap_dec_local]
 
-implement emit_tmpvarmap_dec_static (pf | out, tmps) =
+implement
+emit_tmpvarmap_dec_static (pf | out, tmps) =
   _emit_tmpvarmap_dec (pf, view@ out | &out, 1(*static*), tmps)
 // end of [emit_tmpvarmap_dec_static]
 
 //
 
-implement emit_tmpvarmap_markroot (pf | out, tmps) =
+implement
+emit_tmpvarmap_markroot (pf | out, tmps) =
   _emit_tmpvarmap_markroot (pf, view@ out | &out, tmps)
+// end of [emit_tmpvarmap_markroot]
 
 //
 
@@ -274,6 +284,8 @@ implement funentry_tmpvarmap_add (tmps, entry) = () where {
   val () = instrlst_tmpvarmap_add (tmps, funentry_body_get entry)
   val () = tmpvarmap_add_root (tmps, funentry_ret_get entry)
 } // end of [funentry_tmpvarmap_add]
+
+(* ****** ****** *)
 
 implement tailjoinlst_tmpvarmap_add
   (tmps, tjs) = loop (tmps, tjs) where {

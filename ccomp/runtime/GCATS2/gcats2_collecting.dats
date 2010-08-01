@@ -71,7 +71,7 @@ implement the_topsegtbl_sweeplst_build
   extern fun chunk_sweeplst_build
     (pf1: !tbl_v, pf2: !V | chk: &chunk_vt):<> void
     = "gcats2_chunk_sweeplst_build"
-  val f = lam {l:anz} (
+  val f = lam {l:agz} (
       pf1: !tbl_v, pf2: !V | p_chunk: !chunkptr_vt l, env: !ptr
     ) : void =<fun> let
     val (pf_chunk | p) = chunkptr_unfold (p_chunk)

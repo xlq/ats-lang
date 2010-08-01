@@ -135,7 +135,8 @@ end // end of [dyncstuseloc_posmark]
 
 (* ****** ****** *)
 
-fun s2exp_arity_list (s2e: s2exp): List int = begin
+fun s2exp_arity_list
+  (s2e: s2exp): List int = begin
   case+ s2e.s2exp_node of
   | S2Efun (_, _, _, _, s2es, s2e) => begin
       cons ($Lst.list_length s2es, s2exp_arity_list s2e)
@@ -221,32 +222,42 @@ end // end of [d2con_select_arity_err_none]
 
 (* ****** ****** *)
 
-fun p1at_make_p1at (p1t: p1at): p1at = begin
+fun p1at_make_p1at
+  (p1t: p1at): p1at = begin
   case+ p1t.p1at_node of
-  | P1Tqid (q, id) => begin
-    case+ the_d2expenv_find_qua (q, id) of
-    | ~Some_vt d2i => begin case+ d2i of
-      | D2ITEMe1xp e1xp => begin
-          p1at_make_p1at (p1at_make_e1xp (p1t.p1at_loc, e1xp))
-        end
-      | _ => p1t
-      end // end of [Some_vt]
-    | ~None_vt () => p1t
-    end
+  | P1Tqid (q, id) => let
+      val ans = the_d2expenv_find_qua (q, id)
+    in
+      case+ ans of
+      | ~Some_vt d2i => begin case+ d2i of
+        | D2ITEMe1xp e1xp => let
+            val p1t = p1at_make_e1xp (p1t.p1at_loc, e1xp)
+          in
+            p1at_make_p1at (p1t)
+          end // end of [D2ITEMe1xp]
+        | _ => p1t // end of [_]
+        end // end of [Some_vt]
+      | ~None_vt () => p1t
+    end // end of [P2Tqid]
   | _ => p1t
 end // end of [p1at_make_p1at]
 
-fun d1exp_make_d1exp (d1e: d1exp): d1exp = begin
+fun d1exp_make_d1exp
+  (d1e: d1exp): d1exp = begin
   case+ d1e.d1exp_node of
-  | D1Eqid (q, id) => begin
-    case+ the_d2expenv_find_qua (q, id) of
-    | ~Some_vt d2i => begin case+ d2i of
-      | D2ITEMe1xp e1xp => begin
-          d1exp_make_d1exp (d1exp_make_e1xp (d1e.d1exp_loc, e1xp))
-        end // end of [D2ITEMe1xp]
-      | _ => d1e // end of [_]
-      end // end of [Some_vt]
-    | ~None_vt () => d1e
+  | D1Eqid (q, id) => let
+      val ans = the_d2expenv_find_qua (q, id)
+    in
+      case+ ans of
+      | ~Some_vt d2i => begin case+ d2i of
+        | D2ITEMe1xp e1xp => let
+            val d1e = d1exp_make_e1xp (d1e.d1exp_loc, e1xp)
+          in
+            d1exp_make_d1exp (d1e)
+          end // end of [D2ITEMe1xp]
+        | _ => d1e // end of [_]
+        end // end of [Some_vt]
+      | ~None_vt () => d1e // end of [_]
     end // end of [D1Eqid]
   | _ => d1e
 end // end of [d1exp_make_d1exp]
@@ -399,12 +410,12 @@ fn p1at_qid_app_dyn_tr (
       end // end of [Some_vt]
     | ~None_vt () => err2 (loc_id, q, id)
   end // end of [val]
-  val is_arg_omit: bool = begin case+ p1ts of
+  val is_arg_omit = (case+ p1ts of
     | cons (p1t, nil ()) => begin
         case+ p1t.p1at_node of P1Tanys () => true | _ => false
       end // end of [cons (_, nil)]
     | _ => false
-  end // end of [val]
+  ) : bool // end of [val]
   val np1ts = $Lst.list_length p1ts
   val d2cs = (
     if is_arg_omit then d2cs else d2con_select_arity (d2cs, np1ts)
@@ -484,19 +495,21 @@ end // end of [p1at_free_tr]
 
 (* ****** ****** *)
 
-fn qid_is_vbox (q: $Syn.d0ynq, id: sym_t): bool = begin
+fn qid_is_vbox
+  (q: $Syn.d0ynq, id: sym_t): bool = begin
   case+ q.d0ynq_node of
   | $Syn.D0YNQnone () => id = $Sym.symbol_VBOX | _ => false
 end // end of [qid_is_vbox]
 
 fn p1at_vbox_tr (loc: loc_t, npf: int, p1ts: p1atlst): p2at = let
+//
   fn err {a:viewt@ype} (loc: loc_t): a = begin
     prerr_loc_error2 loc;
     prerr ": the [vbox] pattern is syntactically incorrect.";
     prerr_newline ();
     $Err.abort {a} ()
   end // end of [err]
-
+//
   val () = if npf <> 0 then err {void} (loc) else ()
   val p1t = (
     case+ p1ts of cons (p1t, nil ()) => p1t | _ => err {p1at} (loc)
@@ -511,10 +524,10 @@ end // end of [p2at_vbox_tr]
 (* ****** ****** *)
 
 implement p1at_tr (p1t0) = let
-
+//
 val loc0 = p1t0.p1at_loc
 var linearity_check: int = 0
-
+//
 val p2t0 = (
   case+ p1t0.p1at_node of
   | P1Tann (p1t, s1e) => let
@@ -585,6 +598,18 @@ val p2t0 = (
         | D2ITEMe1xp e1xp => begin
             let val p1t = p1at_make_e1xp (loc0, e1xp) in p1at_tr p1t end
           end // end of [D2ITEMe1xp]
+(*
+//
+// HX-2010-08-01: for handling [true] and [false]
+//
+        | D2ITEMcst d2c => let
+            val sym = d2cst_sym_get d2c in case+ 0 of
+            | _ when sym = $Sym.symbol_TRUE => p2at_bool (loc0, true)
+            | _ when sym = $Sym.symbol_FALSE => p2at_bool (loc0, false)
+            | _ => p2at_var (loc0, 0(*refknd*), d2var_make (loc0, id))
+          end // end of [D2ITEMcst]
+//
+*)
         | _ => p2at_var (loc0, 0(*refknd*), d2var_make (loc0, id))
         end // end of [Some_vt]
       | ~None_vt () => p2at_var (loc0, 0(*refknd*), d2var_make (loc0, id))
@@ -632,24 +657,26 @@ val p2t0 = (
       p2at_tup (loc0, tupknd, npf, p1atlst_tr p1ts)
     end // end of [P1Ttup]
 ) : p2at // end of [val]
-
+//
 in // in of [p1at_tr]
-
+//
 if linearity_check >= 1 then begin
   s2varlstord_linearity_test (loc0, p2t0.p2at_svs);
 end;
-
+//
 if linearity_check >= 2 then begin
   d2varlstord_linearity_test (loc0, p2t0.p2at_dvs);
 end;
-
-p2t0
-
+//
+p2t0 // the return value
+//
 end // end of [p1at_tr]
 
-implement p1atlst_tr (p1ts) = $Lst.list_map_fun (p1ts, p1at_tr)
+implement
+p1atlst_tr (p1ts) = $Lst.list_map_fun (p1ts, p1at_tr)
 
-implement labp1atlst_tr (lp1ts) = begin
+implement
+labp1atlst_tr (lp1ts) = begin
   case+ lp1ts of
   | LABP1ATLSTcons (l0, p1t, lp1ts) => begin
       LABP2ATLSTcons (l0.l0ab_lab, p1at_tr p1t, labp1atlst_tr lp1ts)
@@ -660,7 +687,9 @@ end // end of [labp1atlst_tr]
 
 (* ****** ****** *)
 
-implement p1at_arg_tr (p1t0, wths1es) = begin
+implement
+p1at_arg_tr
+  (p1t0, wths1es) =
   case+ p1t0.p1at_node of
   | P1Tann (p1t, s1e) => let
       val p2t = p1at_tr p1t
@@ -674,9 +703,10 @@ implement p1at_arg_tr (p1t0, wths1es) = begin
       p2at_list (p1t0.p1at_loc, npf, p2ts)
     end // end of [P1Tlist]
   | _ => p1at_tr p1t0
-end // end of [p1at_arg_tr]
+// end of [p1at_arg_tr]
 
-implement p1atlst_arg_tr
+implement
+p1atlst_arg_tr
   (p1ts, wths1es) = case+ p1ts of
   | list_cons (p1t, p1ts) => let
       val p2t = p1at_arg_tr (p1t, wths1es)
@@ -689,7 +719,8 @@ implement p1atlst_arg_tr
 
 (* ****** ****** *)
 
-fn d2sym_lrbrackets (loc: loc_t): d2sym = let
+fn d2sym_lrbrackets
+  (loc: loc_t): d2sym = let
   val id = $Sym.symbol_LRBRACKETS
   var d2is0: d2itemlst = list_nil () and err: int = 0
   val () = begin case+ the_d2expenv_find (id) of
@@ -718,7 +749,8 @@ end // end of [d1exp_arrsub_tr]
 
 (* ****** ****** *)
 
-fn d1exp_assgn_tr (loc0: loc_t, d1es: d1explst): d2exp = begin
+fn d1exp_assgn_tr
+  (loc0: loc_t, d1es: d1explst): d2exp = begin
   case+ d1es of
   | cons (d1e1, cons (d1e2, nil ())) => begin
       d2exp_assgn (loc0, d1exp_tr d1e1, d1exp_tr d1e2)
@@ -766,7 +798,9 @@ in
   end (* end of [if] *)
 end (* end of [macro_def_check] *)
 
-fn macro_var_check (loc0: loc_t, id: sym_t): void = let
+fn macro_var_check (
+    loc0: loc_t, id: sym_t
+  ) : void = let
   val level = macro_level_get ()
 in
   if level > 0 then begin
@@ -782,13 +816,14 @@ end // end of [macro_var_check]
 
 dataviewtype specdynid = SPDIDassgn | SPDIDderef | SPDIDnone
 
-fn specdynid_of_qid (q: d0ynq, id: sym_t): specdynid = begin
+fn specdynid_of_qid
+  (q: d0ynq, id: sym_t): specdynid = begin
   case+ q.d0ynq_node of
   | $Syn.D0YNQnone () => begin
       if id = $Sym.symbol_COLONEQ then SPDIDassgn ()
       else if id = $Sym.symbol_BANG then SPDIDderef ()
       else SPDIDnone ()        
-    end
+    end // end of [D0YNQnone]
   | _ => SPDIDnone ()
 end // end of [specdynid_of_qid]
 
@@ -806,7 +841,7 @@ fn d1exp_qid_tr (
           | D2CONLSTcons (d2c, d2cs) => begin case+ d2cs of
             | D2CONLSTcons _ => begin
                 d2con_select_arity_err_some (loc0, q, id, 0)
-              end
+              end // end of [D2CONLSTcons]
             | _ => d2c
             end // end of [D2CONLSTcons]
           | _ => begin
