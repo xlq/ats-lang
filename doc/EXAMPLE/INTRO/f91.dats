@@ -15,9 +15,11 @@
 fun f91 {i:int} .<max(101-i,0)>. (N: int i)
   :<> [j:int | (i <= 100 && j == 91) || (i > 100 && j == i-10)] int j =
   if N > 100 then N-10 else f91 (f91 (N+11))
+// end of [f91]
 
-fn f91_usage (cmd: string): void =
+fun f91_usage (cmd: string): void =
   prerrf ("Usage: %s [integer]\n", @(cmd)) // print an error message
+// end of [f91_usage]
 
 implement main (argc, argv) = let
   val () = if argc <> 2 then (f91_usage (argv.[0]); exit (1))

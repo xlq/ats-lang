@@ -1,6 +1,6 @@
 #
 #
-# Some introductory examples 
+# Some introductory examples written in ATS
 #
 #
 

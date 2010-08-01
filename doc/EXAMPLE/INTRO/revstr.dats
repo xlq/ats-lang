@@ -9,8 +9,10 @@
 
 extern fun revstr {m,n:nat} {l:addr}
   (pf: !strbuf (m, n) @ l | p: ptr l):<> void
+// end of [revstr]
 
-implement revstr {m,n} {l} (pf | p) =
+implement
+revstr {m,n} {l} (pf | p) =
   loop (pf | p, 0, n) where {
   val n = strbuf_length (!p)
   fun loop {i,j:nat | i <= n; i + j == n} .<n-i>.
@@ -27,7 +29,8 @@ implement revstr {m,n} {l} (pf | p) =
     end // end of [if]
 } // end of [revstr]
 
-implement main (argc, argv) = let
+implement
+main (argc, argv) = let
   val () = assert (argc >= 2)
   val str = argv.[1]
   val str = string1_of_string (str)
