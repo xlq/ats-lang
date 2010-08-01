@@ -76,7 +76,7 @@ end // end of [pthread_create_detached_exn]
 
 implement
 pthread_create_detached_cloptr (f) = let
-  fun app (f: () -<lin,cloptr1> void): void = (f (); cloptr_free (f))
+  fun app (f: () -<lincloptr1> void): void = (f (); cloptr_free (f))
 in
   pthread_create_detached_exn (app, f)
 end // end of [pthread_create_detached_cloptr]
