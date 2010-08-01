@@ -2,6 +2,10 @@
 // K&R, 2nd edition, page 46
 //
 
+//
+// Translated into ATS by Hongwei Xi (hwxi AT cs DOT bu DOT edu)
+//
+
 (*
 
 unsigned long int next = 1 ;

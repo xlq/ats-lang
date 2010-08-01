@@ -2,18 +2,21 @@
 // K&R, 2nd edition, page 39
 //
 
-(*
+//
+// Translated into ATS by Hongwei Xi (hwxi AT cs DOT bu DOT edu)
+//
 
+(*
 int strlen (char s[]) {
   int i ;
   i = 0 ;
   while (s[i] != '\0') ++i ;
   return i ;
 } /* end of [strlen] */
-
 *)
 
-extern fun strlen {m,n:nat} (buf: &strbuf (m, n)):<> size_t n
+extern
+fun strlen {m,n:nat} (buf: &strbuf (m, n)):<> size_t n
 
 implement strlen {m,n} (buf) = loop (buf, 0) where {
   fun loop {i:nat | i <= n} .<n-i>.

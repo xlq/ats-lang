@@ -2,7 +2,9 @@
 // K&R, 2nd edition, page 18
 //
 
-// Translated to ATS by Hongwei Xi (hwxi AT cs DOT bu DOT edu)
+//
+// Translated into ATS by Hongwei Xi (hwxi AT cs DOT bu DOT edu)
+//
 
 staload "libc/SATS/stdio.sats"
 
@@ -22,7 +24,7 @@ implement main () = let
   val nc = loop (0.0) where {
     fun loop (nc: double): double =
       if getchar () <> EOF then loop (nc + 1.0) else nc
-  }
+  } // end of [where]
 in
   printf ("%.0f\n", @(nc))
 end // end of [main]

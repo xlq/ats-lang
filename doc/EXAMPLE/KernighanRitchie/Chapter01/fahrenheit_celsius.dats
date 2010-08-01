@@ -2,7 +2,9 @@
 // K&R, 2nd edition, page 15
 //
 
-// Translated to ATS by Hongwei Xi (hwxi AT cs DOT bu DOT edu)
+//
+// Translated into ATS by Hongwei Xi (hwxi AT cs DOT bu DOT edu)
+//
 
 #define LOWER 0
 #define UPPER 300

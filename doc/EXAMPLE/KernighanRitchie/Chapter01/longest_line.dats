@@ -2,7 +2,9 @@
 // K&R, 2nd edition, page 29
 //
 
-// Translated to ATS by Hongwei Xi (hwxi AT cs DOT bu DOT edu)
+//
+// Translated into ATS by Hongwei Xi (hwxi AT cs DOT bu DOT edu)
+//
 
 (*
 ** Handling C strings (byte sequences ending with the null byte)
