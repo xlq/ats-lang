@@ -39,6 +39,7 @@ compall:: \
   libats_hashtable_linprb \
   libats_intinf \
   libats_iterint \
+  libats_linbitvec \
   libats_linmap_avltree \
   libats_linqueue_arr \
   libats_linqueue_lst \
@@ -142,6 +143,11 @@ libats_iterint: libats_iterint.dats
 
 ######
 
+libats_linbitvec: libats_linbitvec.dats
+	$(ATSCC) -O2 -o libats_linbitvec libats_linbitvec.dats && ./libats_linbitvec
+
+######
+
 libats_linmap_avltree: libats_linmap_avltree.dats
 	$(ATSCC) -D_ATS_GCATS -O2 -o libats_linmap_avltree libats_linmap_avltree.dats \
      && ./libats_linmap_avltree 100000
@@ -228,6 +234,7 @@ cleanall: clean
 	rm -f libats_hashtable_linprb
 	rm -f libats_intinf
 	rm -f libats_iterint
+	rm -f libats_linbitvec
 	rm -f libats_linmap_avltree
 	rm -f libats_linqueue_arr
 	rm -f libats_linstack_arr

@@ -1,9 +1,11 @@
-###### beginning of [README] ######
-
-Time: July 2007.
-Author: Hongwei Xi (* hwxi AT cs DOT bu DOT edu *)
-
 //
+// A lexer implemented in ATS and for ATS
+//
+
+Author: Hongwei Xi (* hwxi AT cs DOT bu DOT edu *)
+Time: July 2007.
+
+###### beg of [README] ######
 
 This is a plain implementation of a lexer.  Except for a few minor changes,
 the algorithm used in the implementation basically follows the one given in

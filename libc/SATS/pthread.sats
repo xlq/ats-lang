@@ -82,7 +82,7 @@ fun pthread_create_detached_exn {vt:viewtype}
 // [$ATSHOME/libc/DATS/pthread.dats]
 //
 fun pthread_create_detached_cloptr
-  (f: () -<lin,cloptr1> void): void // closure must be freed to avoid leak!
+  (f: () -<lincloptr1> void): void // closure must be freed to avoid leak!
 // end of [pthread_create_detached_cloptr]
 
 //

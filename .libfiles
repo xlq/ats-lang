@@ -202,6 +202,10 @@ libats/DATS/intinf.dats
 libats/SATS/iterint.sats
 libats/DATS/iterint.dats
 
+/* linear bit vector implementation */
+libats/SATS/linbitvec.sats
+libats/DATS/linbitvec.dats
+
 /* linear map implementation based on AVL trees */
 libats/SATS/linmap_avltree.sats
 libats/DATS/linmap_avltree.dats
