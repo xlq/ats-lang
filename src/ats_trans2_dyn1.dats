@@ -598,9 +598,8 @@ val p2t0 = (
         | D2ITEMe1xp e1xp => begin
             let val p1t = p1at_make_e1xp (loc0, e1xp) in p1at_tr p1t end
           end // end of [D2ITEMe1xp]
-(*
 //
-// HX-2010-08-01: for handling [true] and [false]
+// HX-2010-08-01: for handling [true] and [false] patterns
 //
         | D2ITEMcst d2c => let
             val sym = d2cst_sym_get d2c in case+ 0 of
@@ -609,7 +608,6 @@ val p2t0 = (
             | _ => p2at_var (loc0, 0(*refknd*), d2var_make (loc0, id))
           end // end of [D2ITEMcst]
 //
-*)
         | _ => p2at_var (loc0, 0(*refknd*), d2var_make (loc0, id))
         end // end of [Some_vt]
       | ~None_vt () => p2at_var (loc0, 0(*refknd*), d2var_make (loc0, id))
