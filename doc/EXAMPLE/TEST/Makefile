@@ -22,6 +22,7 @@ ATSOPT=$(or $(ATSHOME), "/usr")/bin/atsopt
 compall:: \
   prelude_array \
   prelude_array0 \
+  prelude_bool \
   prelude_list \
   prelude_list_vt \
   prelude_matrix \
@@ -60,6 +61,9 @@ prelude_array: prelude_array.dats
 
 prelude_array0: prelude_array0.dats
 	$(ATSCC) -O2 -o prelude_array0 prelude_array0.dats && ./prelude_array0
+
+prelude_bool: prelude_bool.dats
+	$(ATSCC) -O2 -o prelude_bool prelude_bool.dats && ./prelude_bool
 
 prelude_list: prelude_list.dats
 	$(ATSCC) -O2 -o prelude_list prelude_list.dats && ./prelude_list
@@ -216,6 +220,7 @@ clean::
 cleanall: clean
 	rm -f prelude_array
 	rm -f prelude_array0
+	rm -f prelude_bool
 	rm -f prelude_list
 	rm -f prelude_list_vt
 	rm -f prelude_matrix

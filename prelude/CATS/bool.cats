@@ -45,121 +45,131 @@
 
 ATSinline()
 ats_bool_type
-atspre_bool1_of_bool(const ats_bool_type b) { return b ; }
-
-/* ****** ****** */
-
-ATSinline()
-ats_bool_type
-atspre_neg_bool(const ats_bool_type b) {
+atspre_neg_bool
+  (const ats_bool_type b) {
   return (b ? ats_false_bool : ats_true_bool) ;
-}
+} // end of [atspre_neg_bool]
 
 /* ****** ****** */
 
 ATSinline()
 ats_bool_type
-atspre_add_bool_bool
-  (const ats_bool_type b1, const ats_bool_type b2) {
+atspre_add_bool_bool (
+  const ats_bool_type b1, const ats_bool_type b2
+) {
   if (b1) { return ats_true_bool ; } else { return b2 ; }
-}
+} // end of [atspre_add_bool_bool]
 
 ATSinline()
 ats_bool_type
-atspre_mul_bool_bool
-  (const ats_bool_type b1, const ats_bool_type b2) {
+atspre_mul_bool_bool (
+  const ats_bool_type b1, const ats_bool_type b2
+) {
   if (b1) { return b2 ; } else { return ats_false_bool ; }
-}
+} // end of [atspre_mul_bool_bool]
 
 /* ****** ****** */
 
 ATSinline()
 ats_bool_type
-atspre_lt_bool_bool
-  (const ats_bool_type b1, const ats_bool_type b2) {
+atspre_lt_bool_bool (
+  const ats_bool_type b1
+, const ats_bool_type b2
+) {
   return (!b1 && b2) ;
-}
+} // end of [atspre_lt_bool_bool]
 
 ATSinline()
 ats_bool_type
-atspre_lte_bool_bool
-  (const ats_bool_type b1, const ats_bool_type b2) {
+atspre_lte_bool_bool (
+  const ats_bool_type b1
+, const ats_bool_type b2
+) {
   return (!b1 || b2) ;
-}
+} // end of [atspre_lte_bool_bool]
 
 ATSinline()
 ats_bool_type
-atspre_gt_bool_bool
-  (const ats_bool_type b1, const ats_bool_type b2) {
+atspre_gt_bool_bool (
+  const ats_bool_type b1
+, const ats_bool_type b2
+) {
   return (b1 && !b2) ;
-}
+} // end of [atspre_gt_bool_bool]
 
 ATSinline()
 ats_bool_type
-atspre_gte_bool_bool
-  (const ats_bool_type b1, const ats_bool_type b2) {
+atspre_gte_bool_bool (
+  const ats_bool_type b1
+, const ats_bool_type b2
+) {
   return (b1 || !b2) ;
-}
+} // end of [atspre_gte_bool_bool]
 
 ATSinline()
 ats_bool_type
-atspre_eq_bool_bool
-  (const ats_bool_type b1, const ats_bool_type b2) {
+atspre_eq_bool_bool (
+  const ats_bool_type b1
+, const ats_bool_type b2
+) {
   if (b1) { return b2 ; } else { return !b2 ; }
-}
+} // end of [atspre_eq_bool_bool]
 
 ATSinline()
 ats_bool_type
 atspre_neq_bool_bool
   (const ats_bool_type b1, const ats_bool_type b2) {
   if (b1) { return !b2 ; } else { return b2 ; }
-}
+} // end of [atspre_neq_bool_bool]
 
 // print functions
 
 ATSinline()
 ats_void_type
-atspre_fprint_bool (const ats_ptr_type out, const ats_bool_type b) {
+atspre_fprint_bool (
+  const ats_ptr_type out, const ats_bool_type b
+) {
   int n ;
-
   if (b) {
     n = fprintf ((FILE *)out, "true") ;
   } else {
     n = fprintf ((FILE *)out, "false") ;
   }
-
   if (n < 0) {
     ats_exit_errmsg(n, (ats_ptr_type)"Exit: [fprint_bool] failed.\n") ;
   }
-
   return ;
-}
+} // end of [atspre_fprint_bool]
 
 ATSinline()
 ats_void_type
-atspre_print_bool(const ats_bool_type b) {
+atspre_print_bool
+  (const ats_bool_type b) {
   atspre_stdout_view_get() ;
   atspre_fprint_bool ((ats_ptr_type)stdout, b) ;
   atspre_stdout_view_set() ;
   return ;
-}
+} // end of [atspre_print_bool]
 
 ATSinline()
 ats_void_type
-atspre_prerr_bool(const ats_bool_type b) {
+atspre_prerr_bool
+  (const ats_bool_type b) {
   atspre_stderr_view_get() ;
   atspre_fprint_bool ((ats_ptr_type)stderr, b) ;
   atspre_stderr_view_set() ;
   return ;
-}
+} // end of [atspre_prerr_bool]
 
-// stringization
-
+//
+// HX: stringization
+//
 ATSinline()
 ats_ptr_type
-atspre_tostring_bool(const ats_bool_type b) {
+atspre_tostring_bool
+  (const ats_bool_type b) {
   return (b ? (ats_ptr_type)"true" : (ats_ptr_type)"false") ;
-}
+} // end of [atspre_tostring_bool]
 
 /* ****** ****** */
 
@@ -173,6 +183,8 @@ atspre_tostring_bool(const ats_bool_type b) {
 #define atspre_gte_bool1_bool1 atspre_gte_bool_bool
 #define atspre_eq_bool1_bool1 atspre_eq_bool_bool
 #define atspre_neq_bool1_bool1 atspre_neq_bool_bool
+
+#define atspre_compare_bool1_bool1 atspre_compare_bool_bool
 
 /* ****** ****** */
 
