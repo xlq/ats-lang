@@ -1,6 +1,6 @@
 (*
 ** some testing code for functions declared in
-** prelude/SATS/string.sats
+** prelude/SATS/bool.sats
 *)
 
 //

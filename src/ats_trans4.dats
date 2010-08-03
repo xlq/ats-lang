@@ -491,7 +491,10 @@ extern fun d3explst_funarg_tr
   (isvararg: bool, npf: int, arg: d3explst): hiexplst
 // end of [d3explst_funarg_tr]
 
-implement d3explst_funarg_tr (isvararg, npf, d3es) = let
+implement
+d3explst_funarg_tr
+  (isvararg, npf, d3es) = let
+//
   fun aux0 (
       hies: hiexplst_vt
     , ld3es: labd3explst
@@ -503,46 +506,56 @@ implement d3explst_funarg_tr (isvararg, npf, d3es) = let
       end // end of [LABD3EXPLSTcons]
     | LABD3EXPLSTnil () => $Lst.list_vt_reverse_list (hies)
   // end of [aux0]
+//
   fun aux1 (
       hies: hiexplst_vt
     , d3e: d3exp
     , d3es: d3explst
-    ) :<cloptr1> hiexplst = case+ d3es of
-    | cons (d3e1, d3es1) => let
+    ) :<cloref1> hiexplst =
+    case+ d3es of
+    | list_cons (d3e1, d3es1) => let
         val hie = d3exp_tr d3e; val hies = list_vt_cons (hie, hies)
       in
         aux1 (hies, d3e1, d3es1)
-      end // end of [cons]
-    | nil () => let
+      end // end of [list_cons]
+    | list_nil () => let
         val d3e = loop (d3e) where {
           fun loop // for a case like ,(`(@(1,2,3)))
             (d3e: d3exp): d3exp = case+ d3e.d3exp_node of
-            | D3Eseq (cons (d3e, nil ())) => loop (d3e) | _ => d3e
+            | D3Eseq (list_cons (d3e, list_nil)) => loop (d3e) | _ => d3e
           // end of [loop]  
-        }
+        } // end of [val]
       in  
-        if isvararg then (case+ d3e.d3exp_node of
+        if isvararg then (
+          case+ d3e.d3exp_node of
           | D3Erec (_, _, ld3es) => aux0 (hies, ld3es)
-          | _ => begin
-            $Lst.list_vt_free__boxed (hies);
-            prerr_interror ();
-            prerr ": d3explst_funarg_tr: aux1: d3e = "; prerr_d3exp d3e;
-            prerr_newline ();
-            $Err.abort {hiexplst} ()
-          end (* end of [_] *)
+          | _ => let
+              val () = $Lst.list_vt_free__boxed (hies)
+              val () = prerr_loc_error4 (d3e.d3exp_loc)
+              val () = $Deb.debug_prerrf (": [%s]: d3explst_funarg_tr", @(THISFILENAME))
+              val () = prerr ": the expression is expected to be a record of the form @(...) but it is not."
+              val () = prerr_newline ()
+            in
+               $Err.abort {hiexplst} ()
+            end (* end of [_] *)
         ) else let
           val hie = d3exp_tr d3e; val hies = list_vt_cons (hie, hies)
         in
           $Lst.list_vt_reverse_list (hies)
         end // end of [if]
-      end (* end of [nil] *)
+      end (* end of [list_nil] *)
   // end of [aux1]
-  fun aux2 (i: int, d3es: d3explst):<cloptr1> hiexplst = case+ d3es of
+//
+  fun aux2 (
+      i: int, d3es: d3explst
+    ) :<cloref1> hiexplst =
+    case+ d3es of
     | cons (d3e, d3es) => begin
         if i > 0 then aux2 (i-1, d3es) else aux1 (list_vt_nil (), d3e, d3es)
       end // end of [cons]
-    | nil () => nil ()
+    | nil () => nil () // end of [nil]
   // end of [aux2]
+//
 in
   aux2 (npf, d3es)
 end // end of [d3explst_funarg_tr]
@@ -743,8 +756,7 @@ extern fun // this function is implemented in [ats_ccomp_env.dats]
 (* ****** ****** *)
 
 implement d3exp_tr (d3e0) = let
-  val loc0 = d3e0.d3exp_loc
-  val s2e0 = d3e0.d3exp_typ
+  val loc0 = d3e0.d3exp_loc and s2e0 = d3e0.d3exp_typ
 (*
   val () = begin
     print "d3exp_tr: s2e0 = "; print_s2exp s2e0; print_newline ();
@@ -1339,9 +1351,7 @@ end // end of [f3undec_tr]
 
 fn f3undeclst_tr
   (decarg: s2qualst, d3cs: f3undeclst): hifundeclst =
-  $Lst.list_map_cloptr (
-     d3cs, lam d3c =<cloptr1> f3undec_tr (decarg, d3c)
-  )
+  $Lst.list_map_cloptr (d3cs, lam d3c =<cloptr1> f3undec_tr (decarg, d3c))
 // end of [f3undeclst_tr]
 
 fun f3undeclst_prf_tr

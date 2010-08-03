@@ -40,10 +40,8 @@
 (* ****** ****** *)
 
 #if VERBOSE_PRELUDE #then
-
 #print "Loading [char.sats] starts!\n"
-
-#endif
+#endif // end of [VERBOSE_PRELUDE]
 
 (* ****** ****** *)
 
@@ -64,16 +62,18 @@ castfn uchar_of_char (c: char):<> uchar
 
 (* ****** ****** *)
 
-fun char_of_int (i: int):<> char
-  = "atspre_char_of_int"
+fun char_of_int
+  (i: int):<> char = "atspre_char_of_int"
+// end of [char_of_int]
 
 fun char_of_int1
   {i: nat | i <= UCHAR_MAX} (i: int i):<> char
   = "atspre_char_of_int"
 // end of [char_of_int1]
 
-fun char_of_uint (u: uint):<> char
-  = "atspre_char_of_uint"
+fun char_of_uint
+  (u: uint):<> char = "atspre_char_of_uint"
+// end of [char_of_uint]
 
 fun char_of_uint1
   {i: nat | i <= UCHAR_MAX} (u: uint i):<> char
@@ -82,16 +82,18 @@ fun char_of_uint1
 
 (* ****** ****** *)
 
-fun schar_of_int (i: int):<> schar
-  = "atspre_char_of_int"
+fun schar_of_int
+  (i: int):<> schar = "atspre_char_of_int"
+// end of [schar_of_int]
 
 fun schar_of_int1
   {i: nat | i <= UCHAR_MAX} (i: int i):<> schar
   = "atspre_char_of_int"
 // end of [schar_of_int1]
 
-fun schar_of_uint (u: uint):<> schar
-  = "atspre_char_of_uint"
+fun schar_of_uint
+  (u: uint):<> schar = "atspre_char_of_uint"
+// end of [schar_of_uint]
 
 fun schar_of_uint1
   {i: nat | i <= UCHAR_MAX} (u: uint i):<> schar
@@ -100,16 +102,18 @@ fun schar_of_uint1
 
 (* ****** ****** *)
 
-fun uchar_of_int (i: int):<> uchar
-  = "atspre_char_of_int"
+fun uchar_of_int
+  (i: int):<> uchar = "atspre_char_of_int"
+// end of [uchar_of_int]
 
 fun uchar_of_int1
   {i: nat | i <= UCHAR_MAX} (i: int i):<> uchar
   = "atspre_char_of_int"
 // end of [uchar_of_int1]
 
-fun uchar_of_uint (u: uint):<> uchar
-  = "atspre_char_of_uint"
+fun uchar_of_uint
+  (u: uint):<> uchar = "atspre_char_of_uint"
+// end of [uchar_of_uint]
 
 fun uchar_of_uint1
   {i: nat | i <= UCHAR_MAX} (u: uint i):<> uchar
@@ -118,20 +122,21 @@ fun uchar_of_uint1
 
 (* ****** ****** *)
 
-// also declared in [integer.sats]
-fun int_of_char (c: char):<> int
-  = "atspre_int_of_char"
+// HX: also declared in [integer.sats]
+fun int_of_char
+  (c: char):<> int = "atspre_int_of_char"
+// end of [int_of_char]
 
-// also declared in [integer.sats]
+// HX: also declared in [integer.sats]
 fun int1_of_char (c: char)
   :<> [i:int | CHAR_MIN <= i; i <= CHAR_MAX] int i
   = "atspre_int_of_char"
 // end of [int1_of_char]
 
-// also declared in [integer.sats]
+// HX: also declared in [integer.sats]
 fun int_of_uchar (c: uchar):<> int = "atspre_int_of_uchar"
 
-// also declared in [integer.sats]
+// HX: also declared in [integer.sats]
 fun int1_of_uchar (c: uchar)
   :<> [i:nat | i <= UCHAR_MAX] int i = "atspre_int_of_uchar"
 // end of [int1_of_uchar]
@@ -157,37 +162,35 @@ fun uint1_of_uchar (c: uchar)
 
 (* ****** ****** *)
 
-fun sub_char_char (c1: char, c2: char):<> int
-  = "atspre_sub_char_char"
+fun sub_char_char
+  (c1: char, c2: char):<> int = "atspre_sub_char_char"
 overload - with sub_char_char
 
 (* ****** ****** *)
 
-fun lt_char_char (c1: char, c2: char):<> bool
-  = "atspre_lt_char_char"
-and lte_char_char (c1: char, c2: char):<> bool
-  = "atspre_lte_char_char"
-and gt_char_char (c1: char, c2: char):<> bool
-  = "atspre_gt_char_char"
-and gte_char_char (c1: char, c2: char):<> bool
-  = "atspre_gte_char_char"
-
+fun lt_char_char
+  (c1: char, c2: char):<> bool = "atspre_lt_char_char"
+and lte_char_char
+  (c1: char, c2: char):<> bool = "atspre_lte_char_char"
 overload < with lt_char_char
 overload <= with lte_char_char
+
+fun gt_char_char
+  (c1: char, c2: char):<> bool = "atspre_gt_char_char"
+and gte_char_char
+  (c1: char, c2: char):<> bool = "atspre_gte_char_char"
 overload > with gt_char_char
 overload >= with gte_char_char
 
-fun eq_char_char (c1: char, c2: char):<> bool
-  = "atspre_eq_char_char"
-
-and neq_char_char (c1: char, c2: char):<> bool
-  = "atspre_neq_char_char"
-
+fun eq_char_char
+  (c1: char, c2: char):<> bool = "atspre_eq_char_char"
+and neq_char_char
+  (c1: char, c2: char):<> bool = "atspre_neq_char_char"
 overload = with eq_char_char
 overload <> with neq_char_char
 
-fun compare_char_char (c1: char, c2: char):<> Sgn
-  = "atspre_compare_char_char"
+fun compare_char_char
+  (c1: char, c2: char):<> Sgn = "atspre_compare_char_char"
 overload compare with compare_char_char
 
 (* ****** ****** *)
@@ -241,7 +244,9 @@ and char_isupper (c: char):<> bool = "atspre_char_isupper"
 and char_isxdigit (c: char):<> bool // whether the char is a hex digit
   = "atspre_char_isxdigit"
 
-and char_tolower (c: char):<> char = "atspre_char_tolower"
+(* ****** ****** *)
+
+fun char_tolower (c: char):<> char = "atspre_char_tolower"
 and char_toupper (c: char):<> char = "atspre_char_toupper"
 
 (* ****** ****** *)
@@ -251,17 +256,16 @@ and char_toupper (c: char):<> char = "atspre_char_toupper"
 (* ****** ****** *)
 
 castfn char1_of_char (c: char):<> [c:char] char c
-(*
-  = "atspre_char1_of_char"
-*)
 
 (* ****** ****** *)
 
-fun char1_of_int (i: int):<> [c:char] char c
-  = "atspre_char1_of_int"
+fun char1_of_int
+  (i: int):<> [c:char] char c = "atspre_char1_of_int"
+// end of [char1_of_int]
 
-fun char1_of_uint (u: uint):<> [c:char] char c
-  = "atspre_char1_of_uint"
+fun char1_of_uint
+  (u: uint):<> [c:char] char c = "atspre_char1_of_uint"
+// end of [char1_of_uint]
 
 (* ****** ****** *)
 
@@ -275,41 +279,34 @@ overload -  with sub_char1_char1
 fun lt_char1_char1 {c1,c2:char}
   (c1: char c1, c2: char c2):<> bool (c1 < c2)
   = "atspre_lt_char_char"
-
-fun lte_char1_char1 {c1,c2:char}
+and lte_char1_char1 {c1,c2:char}
   (c1: char c1, c2: char c2):<> bool (c1 <= c2)
   = "atspre_lte_char_char"
+overload < with lt_char1_char1
+overload <= with lte_char1_char1
 
 fun gt_char1_char1 {c1,c2:char}
   (c1: char c1, c2: char c2):<> bool (c1 > c2)
   = "atspre_gt_char_char"
-
-fun gte_char1_char1 {c1,c2:char}
+and gte_char1_char1 {c1,c2:char}
   (c1: char c1, c2: char c2):<> bool (c1 >= c2)
   = "atspre_gte_char_char"
-
-overload < with lt_char1_char1
-overload <= with lte_char1_char1
 overload > with gt_char1_char1
 overload >= with gte_char1_char1
 
 fun eq_char1_char1 {c1,c2:char}
   (c1: char c1, c2: char c2):<> bool (c1 == c2)
   = "atspre_eq_char_char"
-
 and neq_char1_char1 {c1,c2:char}
   (c1: char c1, c2: char c2):<> bool (c1 <> c2)
   = "atspre_neq_char_char"
-
 overload = with eq_char1_char1
 overload <> with neq_char1_char1
 
 (* ****** ****** *)
 
 #if VERBOSE_PRELUDE #then
-
 #print "Loading [char.sats] finishes!\n"
-
-#endif
+#endif // end of [VERBOSE_PRELUDE]
 
 (* end of [char.sats] *)
