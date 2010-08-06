@@ -44,9 +44,9 @@
 #endif // end of [VERBOSE_PRELUDE]
 
 (* ****** ****** *)
-
+//
 // some common functions on floating point numbers
-
+//
 (* ****** ****** *)
 
 typedef lint = int_long_t0ype
@@ -64,9 +64,9 @@ abst@ype double_long_t0ype = $extype "ats_ldouble_type"
 stadef ldouble = double_long_t0ype
 
 (* ****** ****** *)
-
+//
 // floating point numbers of single precision
-
+//
 (* ****** ****** *)
 
 fun int_of_float
@@ -225,7 +225,6 @@ overload fprint with fprint_float
 
 fun print_float (f: float):<!ref> void = "atspre_print_float"
 and prerr_float (f: float):<!ref> void = "atspre_prerr_float"
-
 overload print with print_float
 overload prerr with prerr_float
 
@@ -295,7 +294,9 @@ fun double_of_float (f: float):<> double
   = "atspre_double_of_float"
 overload double_of with double_of_float
 
-// This function is based on [atof] in [stdlib.h]
+//
+// HX: this function is based on [atof] in [stdlib.h]
+//
 fun double_of_string
   (s: string):<> double = "atspre_double_of_string"
 overload double_of with double_of_string
@@ -569,6 +570,7 @@ overload pow with pow_ldouble_int1
 //
 // print functions for floats of long double precision
 //
+(* ****** ****** *)
 
 symintr fprint_ldouble
 

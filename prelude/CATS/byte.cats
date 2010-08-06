@@ -52,11 +52,11 @@
 
 // these are now casting functions:
 
-static inline
+ATSinline()
 ats_byte_type
 atspre_byte_of_char (ats_char_type c) { return c ; }
 
-static inline
+ATSinline()
 ats_char_type
 atspre_char_of_byte (ats_byte_type b) { return b ; }
 
@@ -64,21 +64,21 @@ atspre_char_of_byte (ats_byte_type b) { return b ; }
 
 /* ****** ****** */
 
-static inline
+ATSinline()
 ats_byte_type
 atspre_byte_of_int (ats_int_type i) { return i ; }
 
-static inline
+ATSinline()
 ats_int_type
 atspre_int_of_byte (ats_byte_type b) { return b ; }
 
 /* ****** ****** */
 
-static inline
+ATSinline()
 ats_byte_type
 atspre_byte_of_uint (ats_uint_type u) { return u ; }
 
-static inline
+ATSinline()
 ats_uint_type
 atspre_uint_of_byte (ats_byte_type b) { return b ; }
 
@@ -86,33 +86,33 @@ atspre_uint_of_byte (ats_byte_type b) { return b ; }
 
 // arithmetic operations
 
-static inline
+ATSinline()
 ats_byte_type
 atspre_succ_byte(ats_byte_type i) { return (i + 1) ; }
 
-static inline
+ATSinline()
 ats_byte_type
 atspre_pred_byte(ats_byte_type i) { return (i - 1) ; }
 
-static inline
+ATSinline()
 ats_byte_type
 atspre_add_byte_byte(ats_byte_type i1, ats_byte_type i2) {
   return (i1 + i2) ;
 }
 
-static inline
+ATSinline()
 ats_byte_type
 atspre_sub_byte_byte(ats_byte_type i1, ats_byte_type i2) {
   return (i1 - i2) ;
 }
 
-static inline
+ATSinline()
 ats_byte_type
 atspre_mul_byte_byte(ats_byte_type i1, ats_byte_type i2) {
   return (i1 * i2) ;
 }
 
-static inline
+ATSinline()
 ats_byte_type
 atspre_div_byte_byte(ats_byte_type i1, ats_byte_type i2) {
   return (i1 / i2) ;
@@ -120,37 +120,37 @@ atspre_div_byte_byte(ats_byte_type i1, ats_byte_type i2) {
 
 /* ****** ****** */
 
-static inline
+ATSinline()
 ats_bool_type
 atspre_lt_byte_byte(ats_byte_type b1, ats_byte_type b2) {
   return (b1 < b2) ;
 }
 
-static inline
+ATSinline()
 ats_bool_type
 atspre_lte_byte_byte(ats_byte_type b1, ats_byte_type b2) {
   return (b1 <= b2) ;
 }
 
-static inline
+ATSinline()
 ats_bool_type
 atspre_gt_byte_byte(ats_byte_type b1, ats_byte_type b2) {
   return (b1 > b2) ;
 }
 
-static inline
+ATSinline()
 ats_bool_type
 atspre_gte_byte_byte(ats_byte_type b1, ats_byte_type b2) {
   return (b1 >= b2) ;
 }
 
-static inline
+ATSinline()
 ats_bool_type
 atspre_eq_byte_byte(ats_byte_type b1, ats_byte_type b2) {
   return (b1 == b2) ;
 }
 
-static inline
+ATSinline()
 ats_bool_type
 atspre_neq_byte_byte(ats_byte_type b1, ats_byte_type b2) {
   return (b1 != b2) ;
@@ -158,35 +158,35 @@ atspre_neq_byte_byte(ats_byte_type b1, ats_byte_type b2) {
 
 // bitwise operations
 
-static inline
+ATSinline()
 ats_byte_type
 atspre_lnot_byte(ats_byte_type b) { return (~b) ; }
 
-static inline
+ATSinline()
 ats_byte_type
 atspre_land_byte_byte(ats_byte_type b1, ats_byte_type b2) {
   return (b1 & b2) ;
 }
 
-static inline
+ATSinline()
 ats_byte_type
 atspre_lor_byte_byte(ats_byte_type b1, ats_byte_type b2) {
   return (b1 | b2) ;
 }
 
-static inline
+ATSinline()
 ats_byte_type
 atspre_lxor_byte_byte(ats_byte_type b1, ats_byte_type b2) {
   return (b1 ^ b2) ;
 }
 
-static inline
+ATSinline()
 ats_byte_type
 atspre_lsl_byte_int1(ats_byte_type b, ats_int_type n) {
   return (b << n) ;
 }
 
-static inline
+ATSinline()
 ats_byte_type
 atspre_lsr_byte_int1(ats_byte_type b, ats_int_type n) {
   return (b >> n) ;
@@ -194,7 +194,7 @@ atspre_lsr_byte_int1(ats_byte_type b, ats_int_type n) {
 
 // print functions
 
-static inline
+ATSinline()
 ats_void_type
 atspre_fprint_byte (
   const ats_ptr_type out, const ats_byte_type b
@@ -204,25 +204,27 @@ atspre_fprint_byte (
     ats_exit_errmsg (n, (ats_ptr_type)"Exit: [fprint_byte] failed.\n") ;
   }
   return ;
-}
+} // end of [atspre_fprint_byte]
 
-static inline
+ATSinline()
 ats_void_type
-atspre_print_byte(const ats_byte_type c) {
+atspre_print_byte
+  (const ats_byte_type c) {
   atspre_stdout_view_get () ;
   atspre_fprint_byte((ats_ptr_type)stdout, c) ;
   atspre_stdout_view_set () ;
   return ;
-}
+} // end of [atspre_print_byte]
 
-static inline
+ATSinline()
 ats_void_type
-atspre_prerr_byte(const ats_byte_type c) {
+atspre_prerr_byte
+  (const ats_byte_type c) {
   atspre_stderr_view_get () ;
   atspre_fprint_byte((ats_ptr_type)stderr, c) ;
   atspre_stderr_view_set () ;
   return ;
-}
+} // end of [atspre_prerr_byte]
 
 /* ****** ****** */
 
