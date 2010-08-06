@@ -220,8 +220,8 @@ overload prerr with prerr_char
 
 // stringize
 
-fun tostring_char (c: char):<> string (1)
-  = "atspre_tostring_char"
+fun tostring_char
+  (c: char):<> string (1) = "atspre_tostring_char"
 overload tostring with tostring_char
 
 (* ****** ****** *)
@@ -250,9 +250,9 @@ fun char_tolower (c: char):<> char = "atspre_char_tolower"
 and char_toupper (c: char):<> char = "atspre_char_toupper"
 
 (* ****** ****** *)
-
-// indexed char type
-
+//
+// HX: indexed char type
+//
 (* ****** ****** *)
 
 castfn char1_of_char (c: char):<> [c:char] char c
@@ -270,8 +270,7 @@ fun char1_of_uint
 (* ****** ****** *)
 
 fun sub_char1_char1 {c1,c2:char}
-  (c1: char c1, c2: char c2):<> int (c1-c2)
-  = "atspre_sub_char_char"
+  (c1: char c1, c2: char c2):<> int (c1-c2) = "atspre_sub_char_char"
 overload -  with sub_char1_char1
 
 (* ****** ****** *)
@@ -308,5 +307,7 @@ overload <> with neq_char1_char1
 #if VERBOSE_PRELUDE #then
 #print "Loading [char.sats] finishes!\n"
 #endif // end of [VERBOSE_PRELUDE]
+
+(* ****** ****** *)
 
 (* end of [char.sats] *)

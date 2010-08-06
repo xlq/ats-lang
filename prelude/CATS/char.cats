@@ -52,19 +52,19 @@
 
 // these are now casting functions:
 
-static inline
+ATSinline()
 ats_char_type
 atspre_char_of_schar (const ats_schar_type c) { return c ; }
 
-static inline
+ATSinline()
 ats_schar_type
 atspre_schar_of_char (const ats_char_type c) { return c ; }
 
-static inline
+ATSinline()
 ats_char_type
 atspre_char_of_uchar (const ats_uchar_type c) { return c ; }
 
-static inline
+ATSinline()
 ats_uchar_type
 atspre_uchar_of_char (const ats_char_type c) { return c ; }
 
@@ -72,11 +72,11 @@ atspre_uchar_of_char (const ats_char_type c) { return c ; }
 
 /* ****** ****** */
 
-static inline
+ATSinline()
 ats_char_type
 atspre_char_of_int (const ats_int_type i) { return i ; }
 
-static inline
+ATSinline()
 ats_char_type
 atspre_char_of_uint (const ats_uint_type u) { return u ; }
 
@@ -88,7 +88,7 @@ atspre_char_of_uint (const ats_uint_type u) { return u ; }
 
 /* ****** ****** */
 
-static inline
+ATSinline()
 ats_int_type
 atspre_sub_char_char (
   const ats_char_type c1
@@ -99,49 +99,49 @@ atspre_sub_char_char (
 
 /* ****** ****** */
 
-static inline
+ATSinline()
 ats_bool_type
 atspre_lt_char_char
   (const ats_char_type c1, const ats_char_type c2) {
   return (c1 < c2) ;
 }
 
-static inline
+ATSinline()
 ats_bool_type
 atspre_lte_char_char
   (const ats_char_type c1, const ats_char_type c2) {
   return (c1 <= c2) ;
 }
 
-static inline
+ATSinline()
 ats_bool_type
 atspre_gt_char_char
   (const ats_char_type c1, const ats_char_type c2) {
   return (c1 > c2) ;
 }
 
-static inline
+ATSinline()
 ats_bool_type
 atspre_gte_char_char
   (const ats_char_type c1, const ats_char_type c2) {
   return (c1 >= c2) ;
 }
 
-static inline
+ATSinline()
 ats_bool_type
 atspre_eq_char_char
   (const ats_char_type c1, const ats_char_type c2) {
   return (c1 == c2) ;
 }
 
-static inline
+ATSinline()
 ats_bool_type
 atspre_neq_char_char
   (const ats_char_type c1, const ats_char_type c2) {
   return (c1 != c2) ;
 }
 
-static inline
+ATSinline()
 ats_int_type
 atspre_compare_char_char
   (const ats_char_type c1, const ats_char_type c2) {
@@ -153,7 +153,7 @@ atspre_compare_char_char
 
 // print functions
 
-static inline
+ATSinline()
 ats_void_type
 atspre_fprint_char (const ats_ptr_type out, const ats_char_type c) {
   int n = fputc ((unsigned char)c, (FILE *)out) ;
@@ -163,7 +163,7 @@ atspre_fprint_char (const ats_ptr_type out, const ats_char_type c) {
   return ;
 }
 
-static inline
+ATSinline()
 ats_void_type
 atspre_print_char (const ats_char_type c) {
   atspre_stdout_view_get () ;
@@ -172,7 +172,7 @@ atspre_print_char (const ats_char_type c) {
   return ;
 }
 
-static inline
+ATSinline()
 ats_void_type
 atspre_prerr_char (const ats_char_type c) {
   atspre_stderr_view_get () ;
@@ -183,7 +183,7 @@ atspre_prerr_char (const ats_char_type c) {
 
 // stringization
 
-static inline
+ATSinline()
 ats_ptr_type
 atspre_tostring_char (const ats_char_type c) {
   char *p ;
@@ -193,15 +193,15 @@ atspre_tostring_char (const ats_char_type c) {
 
 /* ****** ****** */
 
-static inline
+ATSinline()
 ats_bool_type
 atspre_char_isalnum (ats_char_type c) { return isalnum(c) ; }
 
-static inline
+ATSinline()
 ats_bool_type
 atspre_char_isalpha (ats_char_type c) { return isalpha(c) ; }
 
-static inline
+ATSinline()
 ats_bool_type
 atspre_char_isascii (ats_char_type c) { return isascii(c) ; }
 
@@ -211,55 +211,61 @@ atspre_char_isascii (ats_char_type c) { return isascii(c) ; }
 extern int isblank(int c) ; // declared in ctype.h
 #endif
 
-static inline
+ATSinline()
 ats_bool_type
 atspre_char_isblank (ats_char_type c) { return isblank(c) ; }
 
 /* ****** ****** */
 
-static inline
+ATSinline()
 ats_bool_type
 atspre_char_iscntrl (ats_char_type c) { return iscntrl(c) ; }
 
-static inline
+ATSinline()
 ats_bool_type
 atspre_char_isdigit (ats_char_type c) { return isdigit(c) ; }
 
-static inline
+ATSinline()
 ats_bool_type
 atspre_char_isgraph (ats_char_type c) { return isgraph(c) ; }
 
-static inline
+ATSinline()
 ats_bool_type
 atspre_char_islower (ats_char_type c) { return islower(c) ; }
 
-static inline
+ATSinline()
+ats_bool_type
+atspre_char_isnull (ats_char_type c) {
+  return (c == '\000' ? ats_true_bool : ats_false_bool) ;
+} // end of [atspre_char_isnull]
+
+ATSinline()
 ats_bool_type
 atspre_char_isprint (ats_char_type c) { return isprint(c) ; }
 
-static inline
+ATSinline()
 ats_bool_type
 atspre_char_ispunct (ats_char_type c) { return ispunct(c) ; }
 
-static inline
+ATSinline()
 ats_bool_type
 atspre_char_isspace (ats_char_type c) { return isspace(c) ; }
 
-static inline
+ATSinline()
 ats_bool_type
 atspre_char_isupper (ats_char_type c) { return isupper(c) ; }
 
-static inline
+ATSinline()
 ats_bool_type
 atspre_char_isxdigit (ats_char_type c) { return isxdigit(c) ; }
 
 /* ****** ****** */
 
-static inline
+ATSinline()
 ats_char_type
 atspre_char_tolower (ats_char_type c) { return tolower(c) ; }
 
-static inline
+ATSinline()
 ats_char_type
 atspre_char_toupper (ats_char_type c) { return toupper(c) ; }
 

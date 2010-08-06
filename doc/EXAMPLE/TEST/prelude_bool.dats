@@ -10,7 +10,7 @@
 
 (* ****** ****** *)
 //
-// HX: testing boolean patterns
+// HX: testing the recently added support for boolean patterns
 //
 fn not1 {b:bool}
   (b: bool b):<> bool (~b) =

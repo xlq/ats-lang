@@ -23,6 +23,8 @@ compall:: \
   prelude_array \
   prelude_array0 \
   prelude_bool \
+  prelude_char \
+  prelude_float \
   prelude_list \
   prelude_list_vt \
   prelude_matrix \
@@ -64,6 +66,12 @@ prelude_array0: prelude_array0.dats
 
 prelude_bool: prelude_bool.dats
 	$(ATSCC) -O2 -o prelude_bool prelude_bool.dats && ./prelude_bool
+
+prelude_char: prelude_char.dats
+	$(ATSCC) -O2 -o prelude_char prelude_char.dats && ./prelude_char
+
+prelude_float: prelude_float.dats
+	$(ATSCC) -O2 -o prelude_float prelude_float.dats && ./prelude_float
 
 prelude_list: prelude_list.dats
 	$(ATSCC) -O2 -o prelude_list prelude_list.dats && ./prelude_list
@@ -221,6 +229,8 @@ cleanall: clean
 	rm -f prelude_array
 	rm -f prelude_array0
 	rm -f prelude_bool
+	rm -f prelude_char
+	rm -f prelude_float
 	rm -f prelude_list
 	rm -f prelude_list_vt
 	rm -f prelude_matrix
@@ -242,6 +252,7 @@ cleanall: clean
 	rm -f libats_linbitvec
 	rm -f libats_linmap_avltree
 	rm -f libats_linqueue_arr
+	rm -f libats_linqueue_lst
 	rm -f libats_linstack_arr
 	rm -f libats_regexp
 	rm -f libats_parworkshop

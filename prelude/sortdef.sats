@@ -37,11 +37,11 @@
 
 #include "prelude/params.hats"
 
+(* ****** ****** *)
+
 #if VERBOSE_PRELUDE #then
-
 #print "Loading [sortdef.sats] starts!\n"
-
-#endif
+#endif // end of [VERBOSE_PRELUDE]
 
 (* ****** ****** *)
 
@@ -75,16 +75,17 @@ sortdef agz = {a:addr | a > null}
     and agez = {a:addr | a >= null}
 
 (* ****** ****** *)
-
+//
+// HX-2009:
 // should parameterized subset sorts be suported?
 // sortdef intbtw (l: int, u: int) = {a: int | l <= a; a < u}
-
+//
 (* ****** ****** *)
 
 #if VERBOSE_PRELUDE #then
-
 #print "Loading [sortdef.sats] finishes!\n"
+#endif // end of [VERBOSE_PRELUDE]
 
-#endif
+(* ****** ****** *)
 
 (* end of [sortdef.ats] *)
