@@ -30,7 +30,8 @@ staload _(*anon*) = "libats/DATS/linstack_arr.dats"
 
 (* ****** ****** *)
 
-implement main () = () where {
+implement main () = let
+//
   typedef itm = int
   var q: STACK0 (itm)
   val () = $Q.stack_initialize<itm> (q, N)
@@ -58,9 +59,9 @@ implement main () = () where {
 //
   val () = $Q.stack_uninitialize_vt {itm} (q)
 //
-  val () = print "[libats_linstack_arr.dats] testing passes!\n"
-//
-} // end of [main]
+in
+  print "[libats_linstack_arr.dats] testing passes!\n"
+end // end of [main]
 
 (* ****** ****** *)
 

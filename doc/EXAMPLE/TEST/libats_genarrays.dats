@@ -21,7 +21,7 @@ extern
 fun{a:t@ype} fprint_elt (out: FILEref, x: a): void
 
 fn{a:t@ype}
-  GEMAT_fprint {ord:order} {m,n:nat} {ld:pos} (
+GEMAT_fprint {ord:order} {m,n:nat} {ld:pos} (
     out: FILEref
   , ord: ORDER ord
   , M: &GEMAT (a, m, n, ord, ld), m: size_t m, n: size_t n, ld: size_t ld
@@ -54,7 +54,7 @@ implement fprint_elt<T> (out, x) = fprintf (out, "%2i", @(x))
 
 #define sz2i int1_of_size1
 
-implement main () = () where {
+implement main () = let
   #define X 10
   val (pf1_mat | p1, fp1) = GEMAT_row_ptr_allocfree<T> (X, X)
 //
@@ -100,7 +100,10 @@ implement main () = () where {
 //
   val () = fp1 (pf1_mat | p1) // freeing M1
   val () = fp2 (pf2_mat | p2) // freeing M2
-} // end of [main]
+//
+in
+  print "[libats_genarrays.dats] testing passes!\n"
+end // end of [main]
 
 (* ****** ****** *)
 

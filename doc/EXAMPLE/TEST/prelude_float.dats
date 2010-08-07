@@ -11,7 +11,7 @@
 (* ****** ****** *)
 
 implement
-main () = () where {
+main () = let
 //
   val () = assert (float_of (123456789) = float_of "123456789")
   val () = assert (double_of (123456789) = double_of "123456789")
@@ -29,7 +29,9 @@ main () = () where {
   val () = assert (max (x, y) - min (x, y) = abs (x - y))
   val () = assert (max (x, y) * min (x, y) = x * y)
 //
-} // end of [main]
+in
+  print "[prelude_float.dats] testing passes!\n"
+end // end of [main]
 
 (* ****** ****** *)
 

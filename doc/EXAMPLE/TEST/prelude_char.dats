@@ -11,7 +11,7 @@
 (* ****** ****** *)
 
 implement
-main () = () where {
+main () = let
   val () = assert (char_isalpha 'a')
   val () = assert (~char_isalpha '0')
 //
@@ -67,7 +67,10 @@ main () = () where {
   val () = assert ('9' - '0' = 9)
   val () = assert ('z' - 'a' = 25)
   val () = assert ('Z' - 'A' = 25)
-} // end of [main]
+//
+in
+  print "[prelude_char.dats] testing passes!\n"
+end // end of [main]
 
 (* ****** ****** *)
 

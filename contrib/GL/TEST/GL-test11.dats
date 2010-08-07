@@ -4,7 +4,7 @@
 ** 
 **
 ** Author: Hongwei Xi (hwxi AT cs DOT bu DOT edu)
-** Time: January, 2010
+** Time: June, 2010
 **
 *)
 

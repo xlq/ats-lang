@@ -20,7 +20,7 @@ fn not1 {b:bool}
 (* ****** ****** *)
 
 implement
-main () = () where {
+main () = let
   val b1 = true and b2 = false
 //
   val () = assert (not1 b1 = ~b1)
@@ -32,7 +32,10 @@ main () = () where {
   val b1 = false and b2 = true
   val () = assert (~(b1 || b2) = (~b1 && ~b2))
   val () = assert (~(b1 && b2) = (~b1 || ~b2))
-} // end of [main]
+//
+in
+  print "[prelude_bool.dats] testing passes!\n"
+end // end of [main]
 
 (* ****** ****** *)
 

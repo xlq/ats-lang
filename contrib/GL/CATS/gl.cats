@@ -152,9 +152,8 @@ atsctrb_GLclampf_of_double (double x) { return x ; }
 ATSinline()
 ats_GLbitfield_type
 atsctrb_lor_GLbitfield_GLbitfield
-  (GLbitfield b1, GLbitfield b2) {
-  return (b1 | b2) ;
-} // end of [atsctrb_lor_GLbitfield_GLbitfield]
+  (GLbitfield b1, GLbitfield b2) { return (b1 | b2) ; }
+// end of [atsctrb_lor_GLbitfield_GLbitfield]
 
 /* ****** ****** */
 
@@ -335,6 +334,8 @@ atsctrb_glGenList_exn () {
   } // end of [if]
   return lst ;
 } // end of [atsctrb_glGenList_exn]
+
+#define atsctrb_glGenLists glGenLists
 
 ATSinline()
 GLuint

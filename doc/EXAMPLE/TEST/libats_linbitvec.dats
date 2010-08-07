@@ -135,7 +135,9 @@ val () = assert (bitvec_equal (!p0_vec, !p21_vec, N))
 
 (* ****** ****** *)
 
-implement main () = ()
+implement main () = () where {
+  val () = print "[prelude_linbitvec.dats] testing passes!\n"
+} // end of [main]
 
 (* ****** ****** *)
 
