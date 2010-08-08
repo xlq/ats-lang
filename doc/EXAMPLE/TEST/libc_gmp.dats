@@ -21,18 +21,26 @@ staload "libc/SATS/gmp.sats"
 
 fun mpz_test
   (): void = () where {
-  #define PI 31415927
-  #define SQRT2 141421
+  macdef PI = 31415927U
+  macdef SQRT2 = 141421UL
 //
   var x: mpz_vt
   val () = mpz_init (x)
   val () = mpz_set (x, PI)
-  val () = assert (mpz_get_int (x) = PI)
+  val () = assert (mpz_sgn (x) = 1)
+  val () = assert (mpz_get_uint (x) = PI)
+//
+  val () = mpz_set_str_exn (x, "31415927", 10)
+  val () = assert (mpz_cmp (x, PI) = 0)
+//
+  val () = mpz_neg (x)
+  val () = assert (mpz_sgn (x) = ~1)
+  val () = assert (mpz_cmpabs (x, PI) = 0)
   val () = mpz_clear (x)
 //
   val (pfx_gc, pfx | px) = ptr_alloc<mpz_vt> ()
   val () = mpz_init2 (!px, 64UL); val () = mpz_set (!px, SQRT2)
-  val () = assert (mpz_get_int (!px) = SQRT2)
+  val () = assert (mpz_get_ulint (!px) = SQRT2)
   val () = mpz_clear (!px)
   val () = ptr_free (pfx_gc, pfx | px)
 //
@@ -52,21 +60,49 @@ fun mpf_test
   val () = mpf_init (x)
   val () = assert (mpf_get_prec (x) = 128UL)
   val () = mpf_set_prec (x, 128UL)
+//
+  val () = mpf_set_str_exn (x, "3.1415926535898", 10)
+  val fx = mpf_get_d (x)
+  // val () = assert (fx <> fPI) // HX: yes, they are different
+  val () = assert (abs (fx - fPI) < 1E-8)
+//
+  val () = mpf_random2 (x, (mp_size_t)100, (mp_exp_t)10)
+  val () = print "x = "
+  val () = fprint (stdout_ref, x, 16)
+  val () = print_newline ()
+  val () = mpf_random2 (x, (mp_size_t)~100, (mp_exp_t)10)
+  val () = print "x = "
+  val () = fprint (stdout_ref, x, 16)
+  val () = print_newline ()
+//
   val () = mpf_set_d (x, fPI)
+  val () = assert (mpf_sgn (x) = 1)
+  val () = assert (mpf_get_d (x) = fPI)
+//
+  val () = mpf_neg (x)
+  val () = assert (mpf_sgn (x) = ~1)
+  val () = assert (mpf_get_d (x) = ~fPI)
+  val () = mpf_abs (x)
   val () = assert (mpf_get_d (x) = fPI)
 //
   val () = mpf_init2 (y, 256UL)
   val () = mpf_set_d (y, 4*fPI)
+  val () = assert (mpf_cmp_si (y, 12L) > 0)
+  val () = assert (mpf_cmp_ui (y, 13UL) < 0)
+  val () = assert (mpf_cmp_d (y, 12.56) > 0)
   val () = assert (mpf_get_d (y) = 4*fPI)
 //
   val () = mpf_init_set (z, y)
-  val () = mpf_add2 (z, 123456789UL)
-  val () = mpf_sub2 (z, 123456789UL)
+  val () = mpf_add (z, 123456789UL)
+  val () = mpf_sub (z, 123456789UL)
+  val () = assert (mpf_get_d (y) = mpf_get_d (z))
+  val () = mpf_ui_sub2 (z, 123456789UL)
+  val () = mpf_ui_sub2 (z, 123456789UL)
   val () = assert (mpf_get_d (y) = mpf_get_d (z))
 //
-  val () = mpf_add3 (z, x, y)
-  val () = mpf_mul3 (x, z, y)
-  val () = mpf_div3 (z, x, y)
+  val () = mpf_add (z, x, y)
+  val () = mpf_mul (x, z, y)
+  val () = mpf_div (z, x, y)
   val () = mpf_sqrt (y, x)
 (*
   val () = printf (

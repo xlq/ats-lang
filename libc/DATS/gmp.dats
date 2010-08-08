@@ -36,7 +36,44 @@
 
 (* ****** ****** *)
 
-// HX: currently empty
+#define ATS_DYNLOADFLAG 0 // there is no need for dynloading at run-time
+
+(* ****** ****** *)
+
+staload "libc/SATS/gmp.sats"
+
+(* ****** ****** *)
+
+%{
+
+ats_void_type
+atslib_mpz_out_str_exn (
+  ats_ptr_type file
+, ats_int_type base
+, const ats_mpz_ptr_type x
+) {
+  size_t n = mpz_out_str((FILE*)file, base, (mpz_ptr)x) ;
+  if (n == 0) {
+    ats_exit_errmsg (1, "exit(ATS): [mpz_out_str] failed.\n") ;
+  } // end of [if]
+  return ;
+} // end of [atslib_mpz_out_str_exn]
+
+ats_void_type
+atslib_mpf_out_str_exn (
+  ats_ptr_type file
+, ats_int_type base
+, ats_size_type ndigit
+, const ats_mpf_ptr_type x
+) {
+  size_t n = mpf_out_str((FILE*)file, base, ndigit, (mpf_ptr)x) ;
+  if (n == 0) {
+    ats_exit_errmsg (1, "exit(ATS): [mpf_out_str] failed.\n") ;
+  } // end of [if]
+  return ;
+} // end of [atslib_mpf_out_str_exn]
+
+%} // end of [%{]
 
 (* ****** ****** *)
 

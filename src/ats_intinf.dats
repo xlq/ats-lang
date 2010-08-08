@@ -54,6 +54,26 @@ assume intinf_t = ref (mpz_vt)
 
 (* ****** ****** *)
 
+%{^
+
+ats_void_type
+atslib_mpz_out_str_exn (
+  ats_ptr_type file
+, ats_int_type base
+, const ats_mpz_ptr_type x
+) {
+  size_t n = mpz_out_str((FILE*)file, base, (mpz_ptr)x) ;
+  if (n == 0) {
+    ats_exit_errmsg (1, "exit(ATS): [mpz_out_str] failed.\n") ;
+  } // end of [if]
+  return ;
+} // end of [atslib_mpz_out_str_exn]
+
+%} // end of [%{]
+
+
+(* ****** ****** *)
+
 implement
 intinf_make_int (i: int) = let
   val (pf_gc, pf_at | p) = ptr_alloc_tsz {mpz_vt} (sizeof<mpz_vt>)
