@@ -341,6 +341,10 @@ fun mpz_sub3_ulint
   (x: &mpz_vt, y: &mpz_vt, z: ulint):<> void = "#atslib_mpz_sub3_ulint"
 overload mpz_sub with mpz_sub3_ulint  
 
+fun mpz_ui_sub3
+  (dst: &mpz_vt, src1: ulint, src2: &mpz_vt): void = "#atslib_mpz_ui_sub3"
+// end of [mpz_ui_sub3] // HX: no overloading for this one
+
 //
 
 // [x] := [x] - [y]
@@ -973,11 +977,58 @@ overload fprint with fprint1_mpf
 
 (* ****** ****** *)
 //
+// random number generators for MPZ, MPQ and MPF
+//
+(* ****** ****** *)
+
+absviewt@ype gmp_randstate_vt = $extype "ats_gmp_randstate_viewt0ype"
+
+fun gmp_randclear
+  (state: &gmp_randstate_vt >> gmp_randstate_vt?): void = "#atslib_gmp_randclear"
+// end of [gmp_randclear]
+
+fun gmp_randinit_default
+  (state: &gmp_randstate_vt? >> gmp_randstate_vt): void = "#atslib_gmp_randinit_default"
+// end of [gmp_randinit_default]
+
+fun gmp_randinit_lc_2exp
+  (state: &gmp_randstate_vt? >> gmp_randstate_vt, a: &mpz_vt, c: ulint, m2exp: ulint): void
+  = "#atslib_gmp_randinit_lc_2exp"
+// end of [gmp_randinit_lc_2exp]
+
+fun gmp_randinit_lc_2exp_size
+  (state: &gmp_randstate_vt? >> gmp_randstate_vt, _size: ulint): int(*err*)
+  = "#atslib_gmp_randinit_lc_2exp_size"
+// end of [gmp_randinit_lc_2exp_size]
+
+(* ****** ****** *)
+
+fun mpz_urandomb
+  (dst: &mpz_vt, state: &gmp_randstate_vt, nbit: ulint): void = "#atslib_mpz_urandomb"
+// end of [mpz_urandomb]
+
+fun mpz_urandomm // each generated X belongs to [0, range)
+  (dst: &mpz_vt, state: &gmp_randstate_vt, range: &mpz_vt): void = "#atslib_mpz_urandomm"
+// end of [mpz_urandomm]
+
+fun mpz_rrandomb
+  (dst: &mpz_vt, state: &gmp_randstate_vt, nbit: ulint): void = "#atslib_mpz_rrandomb"
+// end of [mpz_rrandomb]
+
+fun mpz_random (dst: &mpz_vt, max_size: mp_size_t): void = "#atslib_mpz_random"
+fun mpz_random2 (dst: &mpz_vt, max_size: mp_size_t): void = "#atslib_mpz_random2"
+
+(* ****** ****** *)
+//
 // HX-2010-08-08: a negative number is generated if [max_size] is negative
 //
 fun mpf_random2
   (dst: &mpf_vt, max_size: mp_size_t, exp: mp_exp_t): void = "#atslib_mpf_random2"
 // end of [mpf_random2]
+
+fun mpf_urandomb
+  (dst: &mpf_vt, state: &gmp_randstate_vt, nbit: ulint): void = "#atslib_mpf_urandomb"
+// end of [mpf_urandomb]
 
 (* ****** ****** *)
 

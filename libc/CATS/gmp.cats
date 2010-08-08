@@ -55,13 +55,13 @@ typedef unsigned long int ulint ;
 
 /* ****** ****** */
 
-// mpz_t is one element array of __mpz_struct
+// [mpz_t] is one-element array of [__mpz_struct]
 typedef __mpz_struct ats_mpz_viewt0ype ;
 
-// mpq_t is one element array of __mpq_struct
+// [mpq_t] is one-element array of [__mpq_struct]
 typedef __mpq_struct ats_mpq_viewt0ype ;
 
-// mpf_t is one element array of __mpf_struct
+// [mpf_t] is one-element array of [__mpf_struct]
 typedef __mpf_struct ats_mpf_viewt0ype ;
 
 // [mpz_ptr] is defined in [gmp.h]
@@ -70,6 +70,14 @@ typedef __mpf_struct ats_mpf_viewt0ype ;
 typedef ats_ref_type ats_mpz_ptr_type ;
 typedef ats_ref_type ats_mpq_ptr_type ;
 typedef ats_ref_type ats_mpf_ptr_type ;
+
+/* ****** ****** */
+
+//
+// [gmp_randstate_t] is
+// one-element array of [__gmp_randstate_struct]
+//
+typedef __gmp_randstate_struct ats_gmp_randstate_viewt0ype ;
 
 /* ****** ****** */
 
@@ -232,7 +240,7 @@ atslib_mpz_add3_int (
 
 ATSinline()
 ats_void_type
-atslib_mpz3_add_lint
+atslib_mpz_add3_lint
   (ats_mpz_ptr_type x, ats_mpz_ptr_type y, ats_lint_type z) {
   if (z >= 0) {
     mpz_add_ui ((mpz_ptr)x, (mpz_ptr)y, (ulint)z) ;
@@ -331,6 +339,9 @@ atslib_mpz_sub3_lint (
 } // end of [atslib_mpz_sub3_lint]
 
 #define atslib_mpz_sub3_ulint mpz_sub_ui
+
+#define atslib_mpz_ui_sub3 mpz_ui_sub
+
 
 ATSinline()
 ats_void_type
@@ -857,7 +868,22 @@ atslib_fprint_mpf (
 
 /* ****** ****** */
 
+//
+// random number generators for MPZ, MPQ and MPF
+//
+#define atslib_gmp_randclear gmp_randclear
+#define atslib_gmp_randinit_default gmp_randinit_default
+#define atslib_gmp_randinit_lc_2exp gmp_randinit_lc_2exp
+#define atslib_gmp_randinit_lc_2exp_size gmp_randinit_lc_2exp_size
+//
+#define atslib_mpz_urandomb mpz_urandomb
+#define atslib_mpz_urandomm mpz_urandomm
+#define atslib_mpz_rrandomb mpz_rrandomb
+#define atslib_mpz_random mpz_random
+#define atslib_mpz_random2 mpz_random2
+//
 #define atslib_mpf_random2 mpf_random2
+#define atslib_mpf_urandomb mpf_urandomb
 
 /* ****** ****** */
 
