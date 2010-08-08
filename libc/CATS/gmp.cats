@@ -51,6 +51,10 @@
 
 /* ****** ****** */
 
+typedef unsigned long int ulint ;
+
+/* ****** ****** */
+
 // mpz_t is one element array of __mpz_struct
 typedef __mpz_struct ats_mpz_viewt0ype ;
 
@@ -79,11 +83,9 @@ typedef ats_ref_type ats_mpf_ptr_type ;
 #define atslib_mpz_realloc2 mpz_realloc2
 
 /* ****** ****** */
-
 //
-// various get and set functions
+// HX: integral number operations
 //
-
 /* ****** ****** */
 
 //
@@ -179,25 +181,27 @@ atslib_mpz_init_set_str_exn
 // negation
 //
 
-#define atslib_mpz_neg_2 mpz_neg
+#define atslib_mpz_neg2 mpz_neg
 
 ATSinline()
 ats_void_type
-atslib_mpz_neg_1 (ats_mpz_ptr_type x) {
+atslib_mpz_neg1
+  (ats_mpz_ptr_type x) {
   mpz_neg((mpz_ptr)x, (mpz_ptr)x) ; return ;
-}
+} // end of [atslib_mpz_neg1]
 
 //
 // absolute value
 //
 
-#define atslib_mpz_abs_2 mpz_abs
+#define atslib_mpz_abs2 mpz_abs
 
 ATSinline()
 ats_void_type
-atslib_mpz_abs_1 (ats_mpz_ptr_type x) {
+atslib_mpz_abs1
+  (ats_mpz_ptr_type x) {
   mpz_abs((mpz_ptr)x, (mpz_ptr)x) ; return ;
-}
+} // end of [atslib_mpz_abs1]
 
 /* ****** ****** */
 
@@ -211,11 +215,11 @@ atslib_mpz_abs_1 (ats_mpz_ptr_type x) {
 // addition
 //
 
-#define atslib_mpz_add_mpz_3 mpz_add
+#define atslib_mpz_add3_mpz mpz_add
 
 ATSinline()
 ats_void_type
-atslib_mpz_add_int_3 (
+atslib_mpz_add3_int (
   ats_mpz_ptr_type x, ats_mpz_ptr_type y, ats_int_type z
 ) {
   if (z >= 0) {
@@ -224,13 +228,13 @@ atslib_mpz_add_int_3 (
     mpz_sub_ui ((mpz_ptr)x, (mpz_ptr)y, -z) ;
   }
   return ;
-} // end of [atslib_mpz_add_int_3]
+} // end of [atslib_mpz_add3_int]
 
-#define atslib_mpz_add_uint_3 mpz_add_ui
+#define atslib_mpz_add3_uint mpz_add_ui
 
 ATSinline()
 ats_void_type
-atslib_mpz_add_lint_3
+atslib_mpz3_add_lint
   (ats_mpz_ptr_type x, ats_mpz_ptr_type y, ats_lint_type z) {
   if (z >= 0) {
     mpz_add_ui ((mpz_ptr)x, (mpz_ptr)y, z) ;
@@ -238,23 +242,23 @@ atslib_mpz_add_lint_3
     mpz_sub_ui ((mpz_ptr)x, (mpz_ptr)y, -z) ;
   }
   return ;
-} // end of [atslib_mpz_add_lint_3]
+} // end of [atslib_mpz_add3_lint]
 
-#define atslib_mpz_add_ulint_3 mpz_add_ui
+#define atslib_mpz_add3_ulint mpz_add_ui
 
 //
 
 ATSinline()
 ats_void_type
-atslib_mpz_add_mpz_2 (
+atslib_mpz_add2_mpz (
   ats_mpz_ptr_type x, ats_mpz_ptr_type y
 ) {
   mpz_add ((mpz_ptr)x, (mpz_ptr)x, (mpz_ptr)y) ; return ;
-} // end of [atslib_mpz_add_mpz_2]
+} // end of [atslib_mpz_add2_mpz]
 
 ATSinline()
 ats_void_type
-atslib_mpz_add_int_2 (
+atslib_mpz_add2_int (
   ats_mpz_ptr_type x, ats_int_type y
 ) {
   if (y >= 0) {
@@ -263,11 +267,11 @@ atslib_mpz_add_int_2 (
     mpz_sub_ui ((mpz_ptr)x, (mpz_ptr)x, -y) ;
   }
   return ;
-} // end of [atslib_mpz_add_int_2]
+} // end of [atslib_mpz_add2_int]
 
 ATSinline()
 ats_void_type
-atslib_mpz_add_uint_2 (
+atslib_mpz_add2_uint (
   ats_mpz_ptr_type x, ats_uint_type y
 ) {
   mpz_add_ui ((mpz_ptr)x, (mpz_ptr)x, y) ; return ;
@@ -275,7 +279,7 @@ atslib_mpz_add_uint_2 (
 
 ATSinline()
 ats_void_type
-atslib_mpz_add_lint_2 (
+atslib_mpz_add2_lint (
   ats_mpz_ptr_type x, ats_lint_type y
 ) {
   if (y >= 0) {
@@ -284,25 +288,25 @@ atslib_mpz_add_lint_2 (
     mpz_sub_ui ((mpz_ptr)x, (mpz_ptr)x, -y) ;
   }
   return ;
-} // end of [atslib_mpz_add_lint_2]
+} // end of [atslib_mpz_add2_lint]
 
 ATSinline()
 ats_void_type
-atslib_mpz_add_ulint_2 (
+atslib_mpz_add2_ulint (
   ats_mpz_ptr_type x, ats_ulint_type y
 ) {
   mpz_add_ui ((mpz_ptr)x, (mpz_ptr)x, y) ; return ;
-}
+} // end of [atslib_mpz_add2_ulint]
 
 //
 // subtraction
 //
 
-#define atslib_mpz_sub_mpz_3 mpz_sub
+#define atslib_mpz_sub3_mpz mpz_sub
 
 ATSinline()
 ats_void_type
-atslib_mpz_sub_int_3 (
+atslib_mpz_sub3_int (
   ats_mpz_ptr_type x, ats_mpz_ptr_type y, ats_int_type z
 ) {
   if (z >= 0) {
@@ -311,13 +315,13 @@ atslib_mpz_sub_int_3 (
     mpz_add_ui ((mpz_ptr)x, (mpz_ptr)y, -z) ;
   }
   return ;
-} // end of [atslib_mpz_sub_int_3]
+} // end of [atslib_mpz_sub3_int]
 
-#define atslib_mpz_sub_uint_3 mpz_sub_ui
+#define atslib_mpz_sub3_uint mpz_sub_ui
 
 ATSinline()
 ats_void_type
-atslib_mpz_sub_lint_3 (
+atslib_mpz_sub3_lint (
   ats_mpz_ptr_type x, ats_mpz_ptr_type y, ats_lint_type z
 ) {
   if (z >= 0) {
@@ -326,21 +330,21 @@ atslib_mpz_sub_lint_3 (
     mpz_add_ui ((mpz_ptr)x, (mpz_ptr)y, -z) ;
   }
   return ;
-} // end of [atslib_mpz_sub_lint_3]
+} // end of [atslib_mpz_sub3_lint]
 
-#define atslib_mpz_sub_ulint_3 mpz_sub_ui
+#define atslib_mpz_sub3_ulint mpz_sub_ui
 
 ATSinline()
 ats_void_type
-atslib_mpz_sub_mpz_2 (
+atslib_mpz_sub2_mpz (
   ats_mpz_ptr_type x, ats_mpz_ptr_type y
 ) {
   mpz_sub ((mpz_ptr)x, (mpz_ptr)x, (mpz_ptr)y) ; return ;
-} // end of [atslib_mpz_sub_mpz_2]
+} // end of [atslib_mpz_sub2_mpz]
 
 ATSinline()
 ats_void_type
-atslib_mpz_sub_int_2 (
+atslib_mpz_sub2_int (
   ats_mpz_ptr_type x, ats_int_type y
 ) {
   if (y >= 0) {
@@ -349,19 +353,19 @@ atslib_mpz_sub_int_2 (
     mpz_add_ui ((mpz_ptr)x, (mpz_ptr)x, -y) ;
   }
   return ;
-} // end of [atslib_mpz_sub_int_2]
+} // end of [atslib_mpz_sub2_int]
 
 ATSinline()
 ats_void_type
-atslib_mpz_sub_uint_2 (
+atslib_mpz_sub2_uint (
   ats_mpz_ptr_type x, ats_uint_type y
 ) {
   mpz_sub_ui ((mpz_ptr)x, (mpz_ptr)x, y) ; return ;
-} // end of [atslib_mpz_sub_uint_2]
+} // end of [atslib_mpz_sub2_uint]
 
 ATSinline()
 ats_void_type
-atslib_mpz_sub_lint_2 (
+atslib_mpz_sub2_lint (
   ats_mpz_ptr_type x, ats_lint_type y
 ) {
   if (y >= 0) {
@@ -370,72 +374,72 @@ atslib_mpz_sub_lint_2 (
     mpz_add_ui ((mpz_ptr)x, (mpz_ptr)x, -y) ;
   }
   return ;
-} // end of [atslib_mpz_sub_lint_2]
+} // end of [atslib_mpz_sub2_lint]
 
 ATSinline()
 ats_void_type
-atslib_mpz_sub_ulint_2 (
+atslib_mpz_sub2_ulint (
   ats_mpz_ptr_type x, ats_ulint_type y
 ) {
   mpz_sub_ui ((mpz_ptr)x, (mpz_ptr)x, y) ; return ;
-} // end of [atslib_mpz_sub_ulint_2]
+} // end of [atslib_mpz_sub2_ulint]
 
 //
 // multiplication
 //
 
-#define atslib_mpz_mul_mpz_3 mpz_mul
-#define atslib_mpz_mul_int_3 mpz_mul_si
-#define atslib_mpz_mul_uint_3 mpz_mul_ui
-#define atslib_mpz_mul_lint_3 mpz_mul_si
-#define atslib_mpz_mul_ulint_3 mpz_mul_ui
+#define atslib_mpz_mul3_mpz mpz_mul
+#define atslib_mpz_mul3_int mpz_mul_si
+#define atslib_mpz_mul3_uint mpz_mul_ui
+#define atslib_mpz_mul3_lint mpz_mul_si
+#define atslib_mpz_mul3_ulint mpz_mul_ui
 
 ATSinline()
 ats_void_type
-atslib_mpz_mul_mpz_2 (
+atslib_mpz_mul2_mpz (
   ats_mpz_ptr_type x, ats_mpz_ptr_type y
 ) {
   mpz_mul ((mpz_ptr)x, (mpz_ptr)x, (mpz_ptr)y) ; return ;
-}
+} // end of [atslib_mpz_mul2_mpz]
 
 ATSinline()
 ats_void_type
-atslib_mpz_mul_int_2 (
+atslib_mpz_mul2_int (
   ats_mpz_ptr_type x, ats_int_type y
 ) {
   mpz_mul_si ((mpz_ptr)x, (mpz_ptr)x, y) ; return ;
-} // end of [atslib_mpz_mul_int_2]
+} // end of [atslib_mpz_mul2_int]
 
 ATSinline()
 ats_void_type
-atslib_mpz_mul_uint_2 (
+atslib_mpz_mul2_uint (
   ats_mpz_ptr_type x, ats_uint_type y
 ) {
   mpz_mul_ui ((mpz_ptr)x, (mpz_ptr)x, y) ; return ;
-} // end of [atslib_mpz_mul_uint_2]
+} // end of [atslib_mpz_mul2_uint]
 
 ATSinline()
 ats_void_type
-atslib_mpz_mul_lint_2 (
+atslib_mpz_mul2_lint (
   ats_mpz_ptr_type x, ats_lint_type y
 ) {
   mpz_mul_si ((mpz_ptr)x, (mpz_ptr)x, y) ; return ;
-} // end of [atslib_mpz_mul_lint_2]
+} // end of [atslib_mpz_mul2_lint]
 
 ATSinline()
 ats_void_type
-atslib_mpz_mul_ulint_2 (
+atslib_mpz_mul2_ulint (
   ats_mpz_ptr_type x, ats_ulint_type y
 ) {
   mpz_mul_ui ((mpz_ptr)x, (mpz_ptr)x, y) ; return ;
-} // end of [atslib_mpz_mul_ulint_2]
+} // end of [atslib_mpz_mul2_ulint]
 
 ATSinline()
 ats_void_type
-atslib_mpz_mul_mpz_1
+atslib_mpz_mul1_mpz
   (ats_mpz_ptr_type x) {
   mpz_mul ((mpz_ptr)x, (mpz_ptr)x, (mpz_ptr)x) ; return ;
-} // end of [atslib_mpz_mul_mpz_1]
+} // end of [atslib_mpz_mul1_mpz]
 
 ATSinline()
 ats_void_type
@@ -451,27 +455,27 @@ atslib_mpz_mul_2exp ( // x = y * 2^n
 // truncate division
 //
 
-#define atslib_mpz_tdiv_qr_mpz_4 mpz_tdiv_qr
-#define atslib_mpz_tdiv_qr_ulint_4 mpz_tdiv_qr_ui
+#define atslib_mpz_tdiv4_qr_mpz mpz_tdiv_qr
+#define atslib_mpz_tdiv4_qr_ulint mpz_tdiv_qr_ui
 
-#define atslib_mpz_tdiv_q_mpz_3 mpz_tdiv_q
-#define atslib_mpz_tdiv_q_ulint_3 mpz_tdiv_q_ui
+#define atslib_mpz_tdiv3_q_mpz mpz_tdiv_q
+#define atslib_mpz_tdiv3_q_ulint mpz_tdiv_q_ui
 
 ATSinline()
 ats_void_type
-atslib_mpz_tdiv_q_mpz_2 (
+atslib_mpz_tdiv2_q_mpz (
   ats_mpz_ptr_type x, ats_mpz_ptr_type d
 ) {
   mpz_tdiv_q ((mpz_ptr)x, (mpz_ptr)x, (mpz_ptr)d) ; return ;
-} // end of [atslib_mpz_tdiv_q_mpz_2]
+} // end of [atslib_mpz_tdiv2_q_mpz]
 
 ATSinline()
 ats_void_type
-atslib_mpz_tdiv_q_ulint_2 (
+atslib_mpz_tdiv2_q_ulint (
   ats_mpz_ptr_type x, ats_ulint_type d
 ) {
   mpz_tdiv_q_ui ((mpz_ptr)x, (mpz_ptr)x, d) ; return ;
-} // end of [atslib_mpz_tdiv_q_ulint_2]
+} // end of [atslib_mpz_tdiv2_q_ulint]
 
 /* ****** ****** */
 
@@ -479,41 +483,41 @@ atslib_mpz_tdiv_q_ulint_2 (
 // floor division
 //
 
-#define atslib_mpz_fdiv_qr_mpz_4 mpz_fdiv_qr
-#define atslib_mpz_fdiv_qr_ulint_4 mpz_fdiv_qr_ui
+#define atslib_mpz_fdiv4_qr_mpz mpz_fdiv_qr
+#define atslib_mpz_fdiv4_qr_ulint mpz_fdiv_qr_ui
 
-#define atslib_mpz_fdiv_q_mpz_3 mpz_fdiv_q
-#define atslib_mpz_fdiv_q_ulint_3 mpz_fdiv_q_ui
+#define atslib_mpz_fdiv3_q_mpz mpz_fdiv_q
+#define atslib_mpz_fdiv3_q_ulint mpz_fdiv_q_ui
 
 ATSinline()
 ats_void_type
-atslib_mpz_fdiv_q_mpz_2 (
+atslib_mpz_fdiv2_q_mpz (
   ats_mpz_ptr_type x, ats_mpz_ptr_type d
 ) {
   mpz_fdiv_q ((mpz_ptr)x, (mpz_ptr)x, (mpz_ptr)d) ; return ;
-} // end of [atslib_mpz_fdiv_q_mpz_2]
+} // end of [atslib_mpz_fdiv2_q_mpz]
 
 ATSinline()
 ats_void_type
-atslib_mpz_fdiv_q_ulint_2 (
+atslib_mpz_fdiv2_q_ulint (
   ats_mpz_ptr_type x, ats_ulint_type d
 ) {
   mpz_fdiv_q_ui ((mpz_ptr)x, (mpz_ptr)x, d) ; return ;
-} // end of [atslib_mpz_fdiv_q_ulint_2]
+} // end of [atslib_mpz_fdiv2_q_ulint]
 
 /* ****** ****** */
 
-#define atslib_mpz_mod_mpz_3 mpz_mod
-#define atslib_mpz_mod_ulint_3 mpz_mod_ui
+#define atslib_mpz_mod3_mpz mpz_mod
+#define atslib_mpz_mod3_ulint mpz_mod_ui
 
 /* ****** ****** */
 
 // addmul and submul compibination
 
-#define atslib_mpz_addmul_mpz_3  mpz_addmul
-#define atslib_mpz_addmul_uint_3 mpz_addmul_ui
-#define atslib_mpz_submul_mpz_3 mpz_submul
-#define atslib_mpz_submul_uint_3 mpz_submul_ui
+#define atslib_mpz_addmul3_mpz  mpz_addmul
+#define atslib_mpz_addmul3_uint mpz_addmul_ui
+#define atslib_mpz_submul3_mpz mpz_submul
+#define atslib_mpz_submul3_uint mpz_submul_ui
 
 /* ****** ****** */
 
@@ -592,12 +596,159 @@ atslib_tostring_mpz (
 } // end of [atslib_tostring_mpz]
 
 /* ****** ****** */
+//
+// HX: floating number operations
+//
+/* ****** ****** */
 
+#define atslib_mpf_get_default_prec mpf_get_default_prec
 #define atslib_mpf_set_default_prec mpf_set_default_prec
 
 /* ****** ****** */
 
 #define atslib_mpf_init mpf_init
+#define atslib_mpf_init2 mpf_init2
+#define atslib_mpf_clear mpf_clear
+
+#define atslib_mpf_get_prec mpf_get_prec
+#define atslib_mpf_set_prec mpf_set_prec
+#define atslib_mpf_set_prec_raw mpf_set_prec_raw
+
+#define atslib_mpf_get_d mpf_get_d
+#define atslib_mpf_get_d_2exp mpf_get_d_2exp
+#define atslib_mpf_get_si mpf_get_si
+#define atslib_mpf_get_ui mpf_get_ui
+
+#define atslib_mpf_set_mpf mpf_set
+#define atslib_mpf_set_si mpf_set_si
+#define atslib_mpf_set_ui mpf_set_ui
+#define atslib_mpf_set_d mpf_set_d
+#define atslib_mpf_set_z mpf_set_z
+#define atslib_mpf_set_q mpf_set_q
+#define atslib_mpf_set_str mpf_set_str
+
+#define atslib_mpf_init_set_mpf mpf_init_set
+#define atslib_mpf_init_set_si mpf_init_set_si
+#define atslib_mpf_init_set_ui mpf_init_set_ui
+#define atslib_mpf_init_set_d mpf_init_set_d
+
+#define atslib_mpf_swap mpf_swap
+
+/* ****** ****** */
+
+#define atslib_mpf_ceil mpf_ceil
+#define atslib_mpf_floor mpf_floor
+#define atslib_mpf_trunc mpf_trunc
+#define atslib_mpf_integer_p mpf_integer_p
+
+/* ****** ****** */
+
+#define abslib_mpf_neg2 mpf_neg2
+
+ATSinline()
+ats_void_type
+atslib_mpf_neg1 (ats_ref_type x) {
+  mpf_neg ((mpf_ptr)x, (mpf_ptr)x) ; return ;
+} // end of [atslib_mpf_neg1]
+
+#define abslib_mpf_abs2 mpf_abs2
+
+ATSinline()
+ats_void_type
+atslib_mpf_abs1 (ats_ref_type x) {
+  mpf_abs ((mpf_ptr) x, (mpf_ptr) x) ; return ;
+} // end of [atslib_mpf_abs1]
+
+/* ****** ****** */
+
+#define atslib_mpf_add3_mpf mpf_add
+#define atslib_mpf_add3_mpf_ui mpf_add_ui
+
+ATSinline()
+ats_void_type
+atslib_mpf_add2_mpf (
+  ats_ref_type rop, ats_ref_type lop2
+) {
+  mpf_add ((mpf_ptr)rop, (mpf_ptr) rop, (mpf_ptr)lop2); return ;
+} // end of [atslib_mpf_add2_mpf]
+
+ATSinline()
+ats_void_type
+atslib_mpf_add2_ui (
+  ats_ref_type rop, ats_ulint_type lop2
+) {
+  mpf_add_ui ((mpf_ptr)rop, (mpf_ptr)rop, (ulint)lop2) ; return ;
+} // end of [atslib_mpf_add2_ui]
+
+/* ****** ****** */
+
+#define atslib_mpf_sub3_mpf mpf_sub
+#define atslib_mpf_sub3_ui mpf_sub_ui
+#define atslib_mpf_ui_sub3 mpf_ui_sub
+
+ATSinline()
+ats_void_type
+atslib_mpf_sub2_mpf (
+  ats_ref_type rop, ats_ref_type lop2
+) {
+  mpf_sub ((mpf_ptr) rop, (mpf_ptr) rop, (mpf_ptr) lop2) ; return ;
+} // end of [atslib_mpf_sub2_mpf]
+
+
+ATSinline()
+ats_void_type
+atslib_mpf_sub2_ui (
+  ats_ref_type rop, ats_ulint_type lop2
+) {
+  mpf_sub_ui ((mpf_ptr)rop, (mpf_ptr)rop, (ulint)lop2) ; return ;
+} // end of [atslib_mpf_sub2_ui]
+
+/* ****** ****** */
+
+#define atslib_mpf_mul3_mpf mpf_mul
+#define atslib_mpf_mul3_ui mpf_mul_ui
+
+ATSinline()
+ats_void_type
+my_mpf_mul2 (
+  ats_ref_type rop, ats_ref_type lop1
+) {
+  mpf_mul ((mpf_ptr)rop, (mpf_ptr)rop, (mpf_ptr)lop1) ; return ;
+} // end of [my_mpf_mul2]
+
+ATSinline()
+ats_void_type
+my_mpf_mul2_ui (
+  ats_ref_type rop, ats_ulint_type lop2
+) {
+  mpf_mul_ui ((mpf_ptr)rop, (mpf_ptr)rop, (ulint)lop2) ; return ;
+} // end of [my_mpf_mul2_ui]
+
+/* ****** ****** */
+
+#define atslib_mpf_div3_mpf mpf_div
+#define atslib_mpf_div3_ui mpf_div_ui
+#define atslib_mpf_ui_div3 mpf_ui_div
+
+ATSinline()
+ats_void_type
+atslib_mpf_div2_mpf
+(ats_ref_type rop, ats_ref_type lop1) {
+  mpf_div ((mpf_ptr)rop, (mpf_ptr)rop, (mpf_ptr)lop1) ; return ;
+} // end of [atslib_mpf_div2_mpf]
+
+ATSinline()
+ats_void_type
+atslib_mpf_div2_ui (
+  ats_ref_type rop, ats_ulint_type lop2
+) {
+  mpf_div_ui ((mpf_ptr)rop, (mpf_ptr)rop, (ulint)lop2) ; return ;
+} // end of [atslib_mpf_div2_ui]
+
+/* ****** ****** */
+
+#define atslib_mpf_sqrt_mpf mpf_sqrt
+#define atslib_mpf_sqrt_ui mpf_sqrt_ui
 
 /* ****** ****** */
 

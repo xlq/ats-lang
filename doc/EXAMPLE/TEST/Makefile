@@ -32,6 +32,7 @@ compall:: \
   prelude_string \
   libc_dirent \
   libc_dlfcn \
+  libc_gmp \
   libc_sched \
   libc_stdlib \
   libats_funarray_braun \
@@ -95,6 +96,11 @@ libc_dirent: libc_dirent.dats
 
 libc_dlfcn: libc_dlfcn.dats
 	$(ATSCC) -rdynamic -O2 -o libc_dlfcn libc_dlfcn.dats -ldl && ./libc_dlfcn "."
+
+######
+
+libc_gmp: libc_gmp.dats
+	$(ATSCC) -D_GNU_SOURCE -O2 -o libc_gmp libc_gmp.dats -lgmp && ./libc_gmp
 
 ######
 
@@ -238,6 +244,7 @@ cleanall: clean
 	rm -f prelude_string
 	rm -f libc_dirent
 	rm -f libc_dlfcn
+	rm -f libc_gmp
 	rm -f libc_sched
 	rm -f libc_stdlib
 	rm -f libats_funarray_braun
