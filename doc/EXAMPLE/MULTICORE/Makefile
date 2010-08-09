@@ -50,6 +50,11 @@ qsort_mt_int: qsort_mt_int.dats
 
 ######
 
+randcompec_mt: randcompec_mt.dats
+	$(ATSCC) -o randcompec_mt -O3 -D_ATS_MULTITHREAD randcompec_mt.dats -lpthread
+
+######
+
 clean::
 	rm -f *_dats.c *_sats.c *~
 
@@ -61,5 +66,6 @@ cleanall: clean
 	rm -f partial-sums_mt
 	rm -f qsort_mt_flt
 	rm -f qsort_mt_int
+	rm -f randcompec_mt
 
 ###### end of [Makefile] ######
