@@ -73,6 +73,10 @@ castfn mp_size_t_of_lint (x: lint):<> mp_size_t
 overload mp_size_t with mp_size_t_of_lint
 
 (* ****** ****** *)
+
+abst@ype mp_base_t = intBtw (2, 36+1) // for outputing MP numbers
+
+(* ****** ****** *)
 //
 // HX: integral number operations
 //
@@ -119,8 +123,7 @@ fun mpz_get_double (x: &mpz_vt):<> double = "#atslib_mpz_get_double"
 overload mpz_get with mpz_get_double
 
 fun mpz_get_str
-  {i:int | 2 <= i; i <= 36} (base: int i, x: &mpz_vt): Strbufptr_gc
-  = "atslib_mpz_get_str" // function!
+  (base: mp_base_t, x: &mpz_vt): Strbufptr_gc = "atslib_mpz_get_str" // function!
 // end of [mpz_get_str]
 
 (* ****** ****** *)
@@ -164,12 +167,12 @@ overload mpz_set with mpz_set_mpf
 //
 // HX: the function returns 0 if the string is valid, or -1 otherwise.
 //
-fun mpz_set_str {i:int | 2 <= i; i <= 36}
-  (x: &mpz_vt, s: string, base: int i):<> int = "#atslib_mpz_set_str" // macro
+fun mpz_set_str
+  (x: &mpz_vt, s: string, base: mp_base_t):<> int = "#atslib_mpz_set_str" // macro
 // end of [mpz_set_str]
 
-fun mpz_set_str_exn {i:int | 2 <= i; i <= 36}
-  (x: &mpz_vt, s: string, base: int i):<> void = "atslib_mpz_set_str_exn" // function!
+fun mpz_set_str_exn
+  (x: &mpz_vt, s: string, base: mp_base_t):<> void = "atslib_mpz_set_str_exn" // fun!
 // end of [mpz_set_str_exn]
 
 (* ****** ****** *)
@@ -220,13 +223,13 @@ overload mpz_init_set with mpz_init_set_mpf
 // the function returns 0 if the string is valid, or -1 otherwise.
 //
 fun mpz_init_set_str
-  {i:int | 2 <= i; i <= 36} (x: &mpz_vt? >> mpz_vt, s: string, base: int i):<> int
-  = "#atslib_mpz_init_set_str" // macro
+  (x: &mpz_vt? >> mpz_vt, s: string, base: mp_base_t):<> int
+  = "#atslib_mpz_init_set_str" // macro!
 // end of [// end of [mpz_init_set_str]
 
 // the function exits the string is invalid.
 fun mpz_init_set_str_exn
-  {i:int | 2 <= i; i <= 36} (x: &mpz_vt? >> mpz_vt, s: string, base: int i):<> void
+  (x: &mpz_vt? >> mpz_vt, s: string, base: mp_base_t):<> void
   = "atslib_mpz_init_set_str_exn" // function!
 // end of [mpz_init_set_str_exn]
 

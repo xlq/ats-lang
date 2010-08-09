@@ -106,15 +106,13 @@ fun fprint_intinf {m:file_mode} {i:int}
 fun print_intinf {i:int} (intinf: &intinf i): void
 overload print with print_intinf
 
-#define sixtythree 63
-
 fun fprint_intinf_base {m:file_mode} {i:int} (
-    pf: file_mode_lte (m, w)
-  | fil: &FILE m, b: intBtw (2, sixtythree), intinf: &intinf i
+    pf: file_mode_lte (m, w) | fil: &FILE m, b: intBtw (2, 36+1), intinf: &intinf i
   ) : void
+// end of [fprint_intinf_base]
 
-fun print_intinf_base {i:int}
-  (b: intBtw (2, sixtythree), intinf: &intinf i): void
+fun print_intinf_base
+  {i:int} (b: intBtw (2, 36+1), intinf: &intinf i): void
 overload print with print_intinf_base
 
 (* ****** ****** *)
