@@ -1069,8 +1069,13 @@ castfn llint_of_ullint (u: ullint):<> llint
 
 //
 
-fun ullint_of_int (i: int):<> ullint
-  = "atspre_ullint_of_int"
+fun ullint_of_int
+  (i: int):<> ullint = "atspre_ullint_of_int"
+overload ullint_of with ullint_of_int
+
+fun ullint_of_uint
+  (u: uint):<> ullint = "atspre_ullint_of_uint"
+overload ullint_of with ullint_of_uint
 
 (* ****** ****** *)
 

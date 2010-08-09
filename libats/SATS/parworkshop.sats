@@ -54,7 +54,13 @@ viewtypedef WORKSHOPptr (a:viewt@ype) =
 // end of [WORKSHOPptr]
 
 (* ****** ****** *)
-
+//
+// HX-2010-03:
+// the meaning of the return status of [fwork]:
+// return status >  0 : the worker is to continue
+// return status =  0 : the worker is to quit
+// return status = ~1 : the worker is to pause // this is uncommon
+//
 fun{a:viewt@ype}
 workshop_make {n:pos} (
   qsz: size_t n

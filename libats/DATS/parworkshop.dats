@@ -322,6 +322,7 @@ workshop_ref {a} {l} (ws) = ws where {
 extern
 fun workshop_unref
   {a:viewt@ype} {l:addr} (ws: WORKSHOPptr (a, l)):<!ref> void
+// end of [workshop_unref]
 
 implement
 workshop_unref {a} {l} (ws) = () where {

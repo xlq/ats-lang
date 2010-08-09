@@ -37,8 +37,7 @@ dataviewtype ans =
 
 fun finalize (t: ans): double =
   case+ t of
-  | ~D (t1, t2) => finalize t1 + finalize t2
-  | ~S sum => sum
+  | ~D (t1, t2) => finalize t1 + finalize t2 | ~S sum => sum
 // end of [finalize]
 
 (* ****** ****** *)
@@ -103,7 +102,7 @@ end // end of [loop_split]
 
 (* ****** ****** *)
 
-// dynload "libats/DATS/parworkshop.dats" // unnecessary
+// dynload "libats/DATS/parworkshop.dats" // this no longer necessary
 
 (* ****** ****** *)
 
