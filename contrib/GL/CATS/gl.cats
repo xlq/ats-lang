@@ -552,10 +552,16 @@ atsctrb_glDeleteList
 // Raster functions
 //
 
+#define atsctrb_glPixelZoom glPixelZoom
+
 #define atsctrb_glPixelStoref glPixelStoref
 #define atsctrb_glPixelStorei glPixelStorei
 
 #define atsctrb_glBitmap glBitmap
+
+#define atsctrb_glReadPixels glReadPixels
+#define atsctrb_glDrawPixels glDrawPixels
+#define atsctrb_glCopyPixels glCopyPixels
 
 /* ****** ****** */
 

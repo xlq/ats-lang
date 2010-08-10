@@ -1,7 +1,6 @@
 (*
 **
 ** A simple OpenGL example: defining and using a complete font
-** 
 **
 ** Author: Hongwei Xi (hwxi AT cs DOT bu DOT edu)
 ** Time: August, 2010

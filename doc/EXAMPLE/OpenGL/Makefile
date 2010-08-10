@@ -40,7 +40,7 @@ glDoubleBuffer: glDoubleBuffer.dats
 	$(ATSCC) -o glDoubleBuffer glDoubleBuffer.dats $(ATSCTRB) -lGL -lglut
 
 glIcosahedron: glIcosahedron.dats
-	$(ATSCC) -D_ATS_GCATS -o glIcosahedron glIcosahedron.dats $(ATSCTRB) -lGL -lglut
+	$(ATSCC) -D_ATS_GCATS -o glIcosahedron glIcosahedron.dats $(ATSCTRB) -lGL -lglut -lm
 
 glClipping: glClipping.dats
 	$(ATSCC) -o glClipping glClipping.dats $(ATSCTRB) -lGL -lglut
@@ -52,7 +52,7 @@ glPlanet: glPlanet.dats
 	$(ATSCC) -o glPlanet glPlanet.dats $(ATSCTRB) -lGL -lglut
 
 glColoredTriangle: glColoredTriangle.dats
-	$(ATSCC) -o glColoredTriangle glColoredTriangle.dats $(ATSCTRB) -lGL -lglut
+	$(ATSCC) -o glColoredTriangle glColoredTriangle.dats $(ATSCTRB) -lGL -lglut -lm
 
 glLitSphere: glLitSphere.dats
 	$(ATSCC) -o glLitSphere glLitSphere.dats $(ATSCTRB) -lGL -lglut
@@ -70,19 +70,19 @@ glBlending2: glBlending2.dats
 	$(ATSCC) -o glBlending2 glBlending2.dats $(ATSCTRB) -lGL -lglut
 
 glDisplayList1: glDisplayList1.dats
-	$(ATSCC) -o glDisplayList1 glDisplayList1.dats $(ATSCTRB) -lGL -lglut
+	$(ATSCC) -o glDisplayList1 glDisplayList1.dats $(ATSCTRB) -lGL -lglut -lm
 
 #
 # A little bit animation for fun
 #
 glFaces: glFaces.dats
-	$(ATSCC) -o glFaces glFaces.dats $(ATSCTRB) -lGL -lglut
+	$(ATSCC) -o glFaces glFaces.dats $(ATSCTRB) -lGL -lglut -lm
 
 #
 # A simple game of Tetris implemented in ATS
 #
 glTetrix: glTetrix.dats
-	$(ATSCC) -O2 -o glTetrix glTetrix.dats $(ATSCTRB) -lGL -lglut
+	$(ATSCC) -O2 -o glTetrix glTetrix.dats $(ATSCTRB) -lGL -lglut -lm
 
 ######
 

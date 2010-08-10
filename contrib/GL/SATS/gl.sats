@@ -96,14 +96,16 @@ abst@ype GLushort = $extype "ats_GLushort_type"
 
 abst@ype GLint (n:int) = $extype "ats_GLint_type" // 4-byte signed
 typedef GLint = [n:int] GLint (n)
-castfn GLint_of_int {n:int} (x: int n):<> GLint n
-castfn int_of_GLint {n:int} (x: GLint n):<> int n
+castfn GLint_of_int (x: int):<> GLint
+castfn GLint_of_int1 {n:int} (x: int n):<> GLint n
+castfn int1_of_GLint {n:int} (x: GLint n):<> int n
 castfn GLint_of_GLenum (x: GLenum):<> GLint
 
 abst@ype GLuint (n:int) = $extype "ats_GLuint_type" // 4-byte unsigned
 typedef GLuint = [n:nat] GLuint (n)
-castfn GLuint_of_uint {n:int} (x: uint n):<> GLuint n
-castfn uint_of_GLuint {n:int} (x: GLuint n):<> uint n
+castfn GLuint_of_uint (x: uint):<> GLuint
+castfn GLuint_of_uint1 {n:int} (x: uint n):<> GLuint n
+castfn uint1_of_GLuint {n:int} (x: GLuint n):<> uint n
 
 (* ****** ****** *)
 
@@ -143,7 +145,7 @@ fun GLshort_of_int (x: int):<> GLshort = "atsctrb_GLshort_of_int"
 fun GLushort_of_int (x: int):<> GLushort = "atsctrb_GLushort_of_int"
 fun GLushort_of_uint (x: uint):<> GLushort = "atsctrb_GLushort_of_uint"
 
-fun GLsizei_of_int {i:int} (x: int i): GLsizei i = "atsctrb_GLsizei_of_int"
+fun GLsizei_of_int1 {i:int} (x: int i): GLsizei i = "atsctrb_GLsizei_of_int"
 
 fun GLdouble_of_int (x: int):<> GLdouble = "atsctrb_GLdouble_of_int"
 
@@ -165,11 +167,13 @@ overload GLushort with GLushort_of_uint
 
 symintr GLint GLuint
 overload GLint with GLint_of_int // castfn
+overload GLint with GLint_of_int1 // castfn
 overload GLint with GLint_of_GLenum // castfn
 overload GLuint with GLuint_of_uint // castfn
+overload GLuint with GLuint_of_uint1 // castfn
 
 symintr GLsizei
-overload GLsizei with GLsizei_of_int
+overload GLsizei with GLsizei_of_int1
 
 symintr GLdouble GLclampd
 overload GLdouble with GLdouble_of_int
@@ -1737,6 +1741,12 @@ fun glColorMaterial (face: GLenum, mode: GLenum): void = "#atsctrb_glColorMateri
 
 (* ****** ****** *)
 
+fun glPixelZoom
+  (xfactor: GLfloat, yfactor: GLfloat): void = "#atsctrb_glPixelZoom"
+// end of [glPixelZoom]
+
+(* ****** ****** *)
+
 typedef glPixelStore_type (a:t@ype) =
   (GLenum(*pname*), a(*param*)) -<fun1> void
 // end of [glPixelStore_type]
@@ -1757,6 +1767,28 @@ fun glBitmap {w8:nat}
 
 (* ****** ****** *)
 
+fun glReadPixels
+  {a:t@ype} {w,h:nat} {n:nat} (
+    x: GLint, y: GLint
+  , w: GLsizei w, h: GLsizei h
+  , fmt: GLenum_format n, type: GLenum_type a, pixels: &GLarray3 (a, w, h, n)
+  ) : void = "#atsctrb_glReadPixels"
+// end of [glReadPixels]
+
+fun glDrawPixels
+  {a:t@ype} {w,h:nat} {n:nat} (
+    w: GLsizei w, h: GLsizei h
+  , fmt: GLenum_format n, type: GLenum_type a, pixels: &GLarray3 (a, w, h, n)
+  ) : void = "#atsctrb_glDrawPixels"
+// end of [glDrawPixels]
+
+fun glCopyPixels {w,h:nat} (
+    x: GLint, y: GLint, w: GLsizei w, h: GLsizei h, type: GLenum
+  ) : void = "#atsctrb_glCopyPixels"
+// end of [glCopyPixels]
+
+(* ****** ****** *)
+
 //
 // Texture mapping
 //
@@ -1765,7 +1797,8 @@ typedef glTexParameter_type (a:t@ype) =
   (GLenum(*target*), GLenum(*pname*), a(*param*)) -<fun1> void
 // end of [glTexParameter_type]
 
-fun glTexParameterf : glTexParameter_type (GLfloat) = "#atsctrb_glTexParameterf"
+fun glTexParameterf
+  : glTexParameter_type (GLfloat) = "#atsctrb_glTexParameterf"
 fun glTexParameteri : glTexParameter_type (GLint) = "#atsctrb_glTexParameteri"
 
 typedef glTexEnv_type (a:t@ype) =
