@@ -199,7 +199,7 @@ implement stringlst_concat (ss) = let
   } // end of [val]
   val () = loop2 (!p_sb, n0, 0, ss)
 in
-  #[n0+1,n0,l | (pf_gc, pf_sb | p_sb)]
+  strptr_of_strbuf @(pf_gc, pf_sb | p_sb)
 end // end of [stringlst_concat]
 
 (* ****** ****** *)

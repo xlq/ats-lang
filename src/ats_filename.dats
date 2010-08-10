@@ -296,13 +296,15 @@ fun path_normalize (s0: path): path = let
   val s0 = string1_of_string s0; val n0 = string_length s0
   val () = loop1 (dirsep, s0, n0, 0, dirs)
   val () = dirs := dirs_process (curdir, predir, 0, dirs, list_vt_nil ())
-  val fullname = stringlst_concat (__cast dirs) where {
+  val fullname =
+    stringlst_concat (__cast dirs) where {
     extern castfn __cast (x: !List_vt string): List string
-  }
+  } // end of [val]
   val () = list_vt_free (dirs)
+  val fullname = string_of_strptr (fullname)
 //
 in
-  string1_of_strbuf (fullname)
+  string1_of_string (fullname)
 end // end of [path_normalize]
 
 (* ****** ****** *)
