@@ -80,7 +80,7 @@ fn test__string_append () = () where {
 fn test__stringlst_concat () = () where {
   val abcdef = $lst {string} ("a", "bc", "def")
   val s = stringlst_concat (abcdef)
-  val s = sbp2str (s)
+  val s = string_of_strptr (s)
   val () = assert_errmsg (s = "abcdef", #LOCATION)
 } // end of [test__stringlst_concat]
 

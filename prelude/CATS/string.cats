@@ -48,13 +48,13 @@
 
 /* ****** ****** */
 
-static inline
+ATSinline()
 ats_void_type
 atspre_strbuf_bytes_trans (ats_ptr_type p) {
   return ;
 } /* end of [atspre_strbuf_bytes_trans] */
 
-static inline
+ATSinline()
 ats_void_type
 atspre_bytes_strbuf_trans
   (ats_ptr_type p, ats_size_type n) {
@@ -63,13 +63,13 @@ atspre_bytes_strbuf_trans
 
 /* ****** ****** */
 
-static inline
+ATSinline()
 ats_void_type
 atspre_strbufptr_free (ats_ptr_type base) { ATS_FREE(base); return ; }
 
 /* ****** ****** */
 
-static inline
+ATSinline()
 ats_bool_type
 atspre_lt_string_string
   (const ats_ptr_type s1, const ats_ptr_type s2) {
@@ -77,7 +77,7 @@ atspre_lt_string_string
   return (i < 0 ? ats_true_bool : ats_false_bool) ;
 } /* end of [atspre_lt_string_string] */
 
-static inline
+ATSinline()
 ats_bool_type
 atspre_lte_string_string
   (const ats_ptr_type s1, const ats_ptr_type s2) {
@@ -85,7 +85,7 @@ atspre_lte_string_string
   return (i <= 0 ? ats_true_bool : ats_false_bool) ;
 } /* end of [atspre_lte_string_string] */
 
-static inline
+ATSinline()
 ats_bool_type
 atspre_gt_string_string
   (const ats_ptr_type s1, const ats_ptr_type s2) {
@@ -93,7 +93,7 @@ atspre_gt_string_string
   return (i > 0 ? ats_true_bool : ats_false_bool) ;
 } /* end of [atspre_gt_string_string] */
 
-static inline
+ATSinline()
 ats_bool_type
 atspre_gte_string_string
   (const ats_ptr_type s1, const ats_ptr_type s2) {
@@ -101,7 +101,7 @@ atspre_gte_string_string
   return (i >= 0 ? ats_true_bool : ats_false_bool) ;
 } /* end of [atspre_gte_string_string] */
 
-static inline
+ATSinline()
 ats_bool_type
 atspre_eq_string_string
   (const ats_ptr_type s1, const ats_ptr_type s2) {
@@ -113,7 +113,7 @@ atspre_eq_string_string
   return (i == 0 ? ats_true_bool : ats_false_bool) ;
 } /* end of [atspre_eq_string_string] */
 
-static inline
+ATSinline()
 ats_bool_type
 atspre_neq_string_string
   (const ats_ptr_type s1, const ats_ptr_type s2) {
@@ -121,7 +121,7 @@ atspre_neq_string_string
   return (i != 0 ? ats_true_bool : ats_false_bool) ;
 } /* end of [atspre_neq_string_string] */
 
-static inline
+ATSinline()
 ats_int_type
 atspre_compare_string_string
   (const ats_ptr_type s1, const ats_ptr_type s2) {
@@ -133,7 +133,7 @@ atspre_compare_string_string
 
 // print functions
 
-static inline
+ATSinline()
 ats_void_type
 atspre_fprint_string
   (const ats_ptr_type out, const ats_ptr_type s) {
@@ -144,7 +144,7 @@ atspre_fprint_string
   return ;
 } /* end of [atspre_fprint_string] */
 
-static inline
+ATSinline()
 ats_void_type
 atspre_print_string (const ats_ptr_type s) {
   atspre_stdout_view_get() ;
@@ -153,7 +153,7 @@ atspre_print_string (const ats_ptr_type s) {
   return ;
 } /* end of [atspre_print_string] */
 
-static inline
+ATSinline()
 ats_void_type
 atspre_prerr_string (const ats_ptr_type s) {
   atspre_stderr_view_get() ;
@@ -164,14 +164,14 @@ atspre_prerr_string (const ats_ptr_type s) {
 
 /* ****** ****** */
 
-static inline
+ATSinline()
 ats_char_type
 atspre_string_get_char_at
   (const ats_ptr_type s, ats_size_type offset) {
   return *((char*)s + offset) ;
 } /* end of [atspre_string_get_char_at] */
 
-static inline
+ATSinline()
 ats_char_type
 atspre_string_get_char_at__intsz (
   const ats_ptr_type s, ats_int_type offset
@@ -179,7 +179,7 @@ atspre_string_get_char_at__intsz (
   return *((char*)s + offset) ;
 } /* end of [atspre_string_get_char_at__intsz] */
 
-static inline
+ATSinline()
 ats_void_type
 atspre_strbuf_set_char_at (
   ats_ptr_type s, ats_size_type offset, ats_char_type c
@@ -192,7 +192,7 @@ atspre_strbuf_set_char_at (
   *((char*)s + offset) = c ; return ;
 } /* end of [atspre_strbuf_set_char_at] */
 
-static inline
+ATSinline()
 ats_void_type
 atspre_strbuf_set_char_at__intsz (
   ats_ptr_type s, ats_int_type offset, ats_char_type c
@@ -200,7 +200,7 @@ atspre_strbuf_set_char_at__intsz (
   *((char*)s + offset) = c ; return ;
 } /* end of [atspre_strbuf_set_char_at__intsz] */
 
-static inline
+ATSinline()
 ats_char_type
 atspre_string_test_char_at (
   const ats_ptr_type s, ats_size_type offset
@@ -208,7 +208,7 @@ atspre_string_test_char_at (
   return *((char*)s + offset) ;
 } /* end of [atspre_string_test_char_at] */
 
-static inline
+ATSinline()
 ats_char_type
 atspre_string_test_char_at__intsz (
   const ats_ptr_type s, ats_int_type offset
@@ -218,7 +218,7 @@ atspre_string_test_char_at__intsz (
 
 /* ****** ****** */
 
-static inline
+ATSinline()
 ats_void_type
 atspre_strbuf_initialize_substring (
   ats_ptr_type p_buf
@@ -230,7 +230,7 @@ atspre_strbuf_initialize_substring (
 
 /* ****** ****** */
 
-static inline
+ATSinline()
 ats_ptr_type
 atspre_string_append
   (ats_ptr_type s1, ats_ptr_type s2) {
@@ -245,7 +245,7 @@ atspre_string_append
 
 /* ****** ****** */
 
-static inline
+ATSinline()
 ats_bool_type
 atspre_string_contains
   (ats_ptr_type s0, ats_char_type c) {
@@ -255,7 +255,7 @@ atspre_string_contains
 
 /* ****** ****** */
 
-static inline
+ATSinline()
 ats_size_type
 atspre_string_length
   (ats_ptr_type s) { return (strlen((char*)s)) ; }
@@ -263,13 +263,13 @@ atspre_string_length
 
 /* ****** ****** */
 
-static inline
+ATSinline()
 ats_bool_type
 atspre_string_is_empty
   (ats_ptr_type s) { return (*((char*)s) == '\000') ; }
 // end of [atspre_string_is_empty]
 
-static inline
+ATSinline()
 ats_bool_type
 atspre_string_isnot_empty
   (ats_ptr_type s) { return (*((char*)s) != '\000') ; }
@@ -277,7 +277,7 @@ atspre_string_isnot_empty
 
 /* ****** ****** */
 
-static inline
+ATSinline()
 ats_bool_type
 atspre_string_is_at_end (
   ats_ptr_type s, ats_size_type i
@@ -285,7 +285,7 @@ atspre_string_is_at_end (
   return (*((char*)s + i) == '\000' ? ats_true_bool : ats_false_bool) ;
 } // end of [atspre_string_is_at_end]
 
-static inline
+ATSinline()
 ats_bool_type
 atspre_string_isnot_at_end (
   ats_ptr_type s, ats_size_type i
@@ -295,7 +295,7 @@ atspre_string_isnot_at_end (
 
 /* ****** ****** */
 
-static inline
+ATSinline()
 ats_ssize_type
 atspre_string_index_of_char_from_left
   (const ats_ptr_type s, const ats_char_type c) {
@@ -305,7 +305,7 @@ atspre_string_index_of_char_from_left
   return (-1) ;
 } // end of [atspre_string_index_of_char_from_left]
 
-static inline
+ATSinline()
 ats_ssize_type
 atspre_string_index_of_char_from_right
   (const ats_ptr_type s, const ats_char_type c) {
@@ -317,7 +317,7 @@ atspre_string_index_of_char_from_right
 
 /* ****** ****** */
 
-static inline
+ATSinline()
 ats_ssize_type
 atspre_string_index_of_string
   (const ats_ptr_type s1, const ats_ptr_type s2) {
@@ -334,7 +334,7 @@ atspre_string_make_char (
   ats_size_type n, const ats_char_type c
 ) ; // implemented in [prelude/DATS/string.dats]
 
-static inline
+ATSinline()
 ats_ptr_type
 atspre_string_singleton
   (ats_char_type c) {
@@ -348,17 +348,25 @@ atspre_string_singleton
 static
 ats_ptr_type atspre_stropt_none = (ats_ptr_type)0 ;
 
-static inline
+ATSinline()
 ats_bool_type
 atspre_stropt_is_none
   (ats_ptr_type s) { return (s == (ats_ptr_type)0) ;
 } // end of [atspre_stropt_is_none]
 
-static inline
+ATSinline()
 ats_bool_type
 atspre_stropt_is_some
   (ats_ptr_type s) { return (s != (ats_ptr_type)0) ;
 } // end of [atspre_stropt_is_some]
+
+/* ****** ****** */
+
+ATSinline()
+ats_void_type
+atspre_strptr_free
+  (ats_ptr_type s) { if (s) ATS_FREE (s) ; return ; }
+// end of [atspre_strptr_free]
 
 /* ****** ****** */
 

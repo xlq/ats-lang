@@ -601,6 +601,8 @@ stadef string = string_int_type
 stadef string = string_type
 stadef stropt = stropt_int_type
 stadef strptr = strptr_addr_viewtype // for linear strings
+stadef strptr0 = [l:addr] strptr (l)
+stadef strptr1 = [l:addr | l > null] strptr (l)
 
 (* ****** ****** *)
 

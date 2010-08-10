@@ -60,6 +60,30 @@ atslib_mpz_out_str_exn (
 } // end of [atslib_mpz_out_str_exn]
 
 ats_void_type
+atslib_mpz_inp_str_exn (
+  ats_mpz_ptr_type x
+, ats_ptr_type file
+, ats_int_type base
+) {
+  size_t n = mpz_inp_str(x, (FILE*)file, base) ;
+  if (n == 0) {
+    ats_exit_errmsg (1, "exit(ATS): [mpz_inp_str] failed.\n") ;
+  } // end of [if]
+  return ;
+} // end of [atslib_mpz_inp_str_exn]
+
+%} // end of [%{]
+
+(* ****** ****** *)
+
+implement print_mpz (x) = print_mac (fprint1_mpz, x)
+implement prerr_mpz (x) = prerr_mac (fprint1_mpz, x)
+
+(* ****** ****** *)
+
+%{
+
+ats_void_type
 atslib_mpf_out_str_exn (
   ats_ptr_type file
 , ats_int_type base
@@ -72,6 +96,19 @@ atslib_mpf_out_str_exn (
   } // end of [if]
   return ;
 } // end of [atslib_mpf_out_str_exn]
+
+ats_void_type
+atslib_mpf_inp_str_exn (
+  ats_mpf_ptr_type x
+, ats_ptr_type file
+, ats_int_type base
+) {
+  size_t n = mpf_inp_str(x, (FILE*)file, base) ;
+  if (n == 0) {
+    ats_exit_errmsg (1, "exit(ATS): [mpf_inp_str] failed.\n") ;
+  } // end of [if]
+  return ;
+} // end of [atslib_mpf_inp_str_exn]
 
 %} // end of [%{]
 

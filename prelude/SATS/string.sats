@@ -44,9 +44,7 @@
 (* ****** ****** *)
 
 #if VERBOSE_PRELUDE #then
-
 #print "Loading [string.sats] starts!\n"
-
 #endif // end of [VERBOSE_PRELUDE]
 
 (* ****** ****** *)
@@ -264,14 +262,10 @@ symintr fprint_string
 
 fun fprint0_string (out: FILEref, x: string):<!exnref> void
   = "atspre_fprint_string"
-// end of [fprint0_string]
-
+overload fprint_string with fprint0_string
 fun fprint1_string {m:file_mode}
   (pf: file_mode_lte (m, w) | out: &FILE m, x: string):<!exnref> void
   = "atspre_fprint_string"
-// end of [fprint1_string]
-
-overload fprint_string with fprint0_string
 overload fprint_string with fprint1_string
 overload fprint with fprint_string
 
@@ -284,7 +278,6 @@ fun fprint1_string__main {v:view} {l:addr}
 
 fun print_string (b: string):<!ref> void = "atspre_print_string"
 and prerr_string (b: string):<!ref> void = "atspre_prerr_string"
-
 overload print with print_string
 overload prerr with prerr_string
 
@@ -444,14 +437,14 @@ fun string_compare
 
 (* ****** ****** *)
 
-fun stringlst_concat (xs: List string):<> Strbufptr_gc
-  = "atspre_stringlst_concat"
+fun stringlst_concat
+  (xs: List string):<> strptr1 = "atspre_stringlst_concat"
 // end of [stringlst_concat]
 
 (* ****** ****** *)
 
-fun string_contains (str: string, c: char):<> bool
-  = "atspre_string_contains"
+fun string_contains
+  (str: string, c: char):<> bool = "atspre_string_contains"
 // end of [string_contains]
 
 (* ****** ****** *)
@@ -660,26 +653,47 @@ viewtypedef Stropt_gc = [m,n:nat] stropt_gc (m, n)
 // [tostringf] and [sprintf] are declared in [printf.sats]
 //
 
-fun tostringf__bufptr {ts:types}
-  (fmt: printf_c ts, arg: ts):<> Strbufptr_gc = "atspre_tostringf"
-// end of [tostringf__bufptr]
-
 fun sprintf__bufptr {ts:types}
-  (fmt: printf_c ts, arg: ts):<> Strbufptr_gc = "atspre_tostringf"
+  (fmt: printf_c ts, arg: ts):<> strptr1 = "atspre_tostringf"
 // end of [sprintf__bufptr]
+
+fun tostringf__bufptr {ts:types}
+  (fmt: printf_c ts, arg: ts):<> strptr1 = "atspre_tostringf"
+// end of [tostringf__bufptr]
 
 (* ****** ****** *)
 
-castfn strptr_of_string (x: string)
-  : [l:agz] (strptr l -<lin,prf> void | strptr l)
-// end of [strptr_of_string]
+//
+// HX-2010-08-10: linear strings
+//
+
+castfn string_of_strptr (x: strptr1):<> string
+castfn strptr_of_string (x: string) // non-reentrant!
+  :<> [l:agz] (strptr l -<lin,prf> void | strptr l)
+castfn strptr_of_strbuf (x: Strbufptr_gc):<> strptr1
+castfn strbuf_of_strptr (x: strptr1):<> Strbufptr_gc
+
+fun strptr_free {l:addr} (x: strptr l):<> void = "atspre_strptr_free"
+
+symintr fprint_strptr
+fun fprint0_strptr {l:addr} (out: FILEref, x: !strptr l): void
+  = "atspre_fprint_strptr"
+overload fprint_strptr with fprint0_strptr
+fun fprint1_strptr {l:addr} {m:file_mode}
+  (pf: file_mode_lte (m, w) | out: &FILE m, x: !strptr l): void
+  = "atspre_fprint_strptr"
+overload fprint_strptr with fprint1_strptr
+overload fprint with fprint_strptr
+
+fun print_strptr {l:addr} (x: !strptr l): void = "atspre_print_string"
+and prerr_strptr {l:addr} (x: !strptr l): void = "atspre_prerr_string"
+overload print with print_strptr
+overload prerr with prerr_strptr
 
 (* ****** ****** *)
 
 #if VERBOSE_PRELUDE #then
-
 #print "Loading [string.sats] finishes!\n"
-
 #endif // end of [VERBOSE_PRELUDE]
 
 (* end of [string.sats] *)

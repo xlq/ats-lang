@@ -31,8 +31,8 @@
 
 (* ****** ****** *)
 
-(* Author: Hongwei Xi (hwxi AT cs DOT bu DOT edu) *) // integral OPs
-(* Author: Shivkumar Chandrasekaran (shiv AT ece DOT ucsb DOT edu) *) // floating OPs
+(* Author: Hongwei Xi (hwxi AT cs DOT bu DOT edu) *) // MPZ
+(* Author: Shivkumar Chandrasekaran (shiv AT ece DOT ucsb DOT edu) *) // MPF
 
 (* ****** ****** *)
 
@@ -74,7 +74,7 @@ overload mp_size_t with mp_size_t_of_lint
 
 (* ****** ****** *)
 
-abst@ype mp_base_t = intBtw (2, 36+1) // for outputing MP numbers
+typedef mp_base_t = intBtw (2, 36+1) // for outputing MP numbers
 
 (* ****** ****** *)
 //
@@ -123,7 +123,7 @@ fun mpz_get_double (x: &mpz_vt):<> double = "#atslib_mpz_get_double"
 overload mpz_get with mpz_get_double
 
 fun mpz_get_str
-  (base: mp_base_t, x: &mpz_vt): Strbufptr_gc = "atslib_mpz_get_str" // function!
+  (base: mp_base_t, x: &mpz_vt): strptr1 = "atslib_mpz_get_str" // function!
 // end of [mpz_get_str]
 
 (* ****** ****** *)
@@ -232,20 +232,6 @@ fun mpz_init_set_str_exn
   (x: &mpz_vt? >> mpz_vt, s: string, base: mp_base_t):<> void
   = "atslib_mpz_init_set_str_exn" // function!
 // end of [mpz_init_set_str_exn]
-
-(* ****** ****** *)
-
-fun mpz_out_str {m:file_mode}
-  {i:int | 2 <= i; i <= 36} (
-    pf_mode: file_mode_lte (m, w) | file: &FILE m, base: int i, x: &mpz_vt
-  ) : size_t = "#atslib_mpz_out_str"
-// end of [mpz_out_str]
-
-fun mpz_out_str_exn {m:file_mode}
-  {i:int | 2 <= i; i <= 36} (
-    pf_mode: file_mode_lte (m, w) | file: &FILE m, base: int i, x: &mpz_vt
-  ) : void = "atslib_mpz_out_str_exn"
-// end of [mpz_out_str_exn]
 
 (* ****** ****** *)
 
@@ -615,26 +601,52 @@ fun mpz_sgn (x: &mpz_vt):<> Sgn = "#atslib_mpz_sgn"
 
 (* ****** ****** *)
 
+fun mpz_inp_str {m:file_mode} (
+    pf_mode: file_mode_lte (m, r) | x: &mpz_vt, file: &FILE m, base: mp_base_t
+  ) : size_t = "#atslib_mpz_inp_str"
+// end of [mpz_inp_str]
+
+(* ****** ****** *)
+
+fun mpz_out_str {m:file_mode} (
+    pf_mode: file_mode_lte (m, w) | file: &FILE m, base: mp_base_t, x: &mpz_vt
+  ) : size_t = "#atslib_mpz_out_str"
+// end of [mpz_out_str]
+
 fun fprint0_mpz
-  (out: FILEref, x: &mpz_vt):<!exnref> void = "atslib_fprint_mpz"
+  (out: FILEref, x: &mpz_vt): void = "atslib_fprint_mpz"
 overload fprint with fprint0_mpz
 
 fun fprint1_mpz {m:file_mode}
-  (pf: file_mode_lte (m, w) | out: &FILE m, x: &mpz_vt):<!exnref> void
+  (pf: file_mode_lte (m, w) | out: &FILE m, x: &mpz_vt): void
   = "atslib_fprint_mpz"
 overload fprint with fprint1_mpz
 
-fun print_mpz (x: &mpz_vt) :<!ref> void = "atslib_print_mpz"
+fun print_mpz (x: &mpz_vt) : void
 overload print with print_mpz
-fun prerr_mpz (x: &mpz_vt) :<!ref> void = "atslib_prerr_mpz"
+fun prerr_mpz (x: &mpz_vt) : void
 overload prerr with prerr_mpz
 
 fun tostring_mpz (x: &mpz_vt):<> String = "atslib_tostring_mpz"
 overload tostring with tostring_mpz
 
 (* ****** ****** *)
+
+fun mpz_inp_raw {m:file_mode} (
+    pf_mode: file_mode_lte (m, r) | x: &mpz_vt, file: &FILE m
+  ) : size_t = "#atslib_mpz_inp_raw" // returns 0 for error
+// end of [mpz_inp_raw]
+
+fun mpz_out_raw {m:file_mode} (
+    pf_mode: file_mode_lte (m, w) | file: &FILE m, x: &mpz_vt
+  ) : size_t = "#atslib_mpz_out_raw" // returns 0 for error
+// end of [mpz_out_raw]
+
+(* ****** ****** *)
+//
 //
 // HX: floating number operations
+//
 //
 (* ****** ****** *)
 //
@@ -682,6 +694,11 @@ fun mpf_get_d_2exp
   (exp: &lint, src: &mpf_vt): double = "#atslib_mpf_get_d_2exp"
 fun mpf_get_si (src: &mpf_vt): lint = "#atslib_mpf_get_si"
 fun mpf_get_ui (src: &mpf_vt): ulint = "#atslib_mpf_get_ui"
+
+fun mpf_get_str (
+    exp: &mp_exp_t? >> mp_exp_t, base: mp_base_t, ndigit: size_t, x: &mpf_vt
+  ) : strptr1 = "atslib_mpf_get_str" // function!
+// end of [mpf_get_str]
 
 (* ****** ****** *)
 
@@ -962,25 +979,32 @@ fun mpf_reldiff
 
 (* ****** ****** *)
 
-fun mpf_out_str {m:file_mode}
-  {i:int | 2 <= i; i <= 36} (
+fun mpf_inp_str {m:file_mode} (
+    pf_mode: file_mode_lte (m, r) | x: &mpf_vt, file: &FILE m, base: mp_base_t
+  ) : size_t = "#atslib_mpf_inp_str"
+// end of [mpf_inp_str]
+
+(* ****** ****** *)
+
+fun mpf_out_str {m:file_mode} (
     pf_mode: file_mode_lte (m, w)
-  | file: &FILE m, base: int i, ndigit: size_t, x: &mpf_vt
+  | file: &FILE m, base: mp_base_t, ndigit: size_t, x: &mpf_vt
   ) : size_t = "#atslib_mpf_out_str"
 // end of [mpf_out_str]
 
 fun fprint0_mpf
-  (out: FILEref, x: &mpf_vt, ndigit: size_t):<!exnref> void = "atslib_fprint_mpf"
-overload fprint with fprint0_mpf
-
+  (out: FILEref, x: &mpf_vt, ndigit: size_t): void = "atslib_fprint_mpf"
 fun fprint1_mpf {m:file_mode}
-  (pf: file_mode_lte (m, w) | out: &FILE m, x: &mpf_vt, ndigit: size_t):<!exnref> void
+  (pf: file_mode_lte (m, w) | out: &FILE m, x: &mpf_vt, ndigit: size_t): void
   = "atslib_fprint_mpf"
-overload fprint with fprint1_mpf
+fun print_mpf (x: &mpf_vt, ndigit: size_t) : void = "atslib_print_mpf"
+fun prerr_mpf (x: &mpf_vt, ndigit: size_t) : void = "atslib_prerr_mpf"
 
 (* ****** ****** *)
 //
+//
 // random number generators for MPZ, MPQ and MPF
+//
 //
 (* ****** ****** *)
 

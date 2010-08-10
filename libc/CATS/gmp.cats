@@ -548,8 +548,9 @@ atslib_mpz_fdiv2_q_ulint (
 
 /* ****** ****** */
 //
-// HX: output/print functions
+// HX: input/output/print functions
 //
+#define atslib_mpz_inp_str mpz_inp_str
 #define atslib_mpz_out_str mpz_out_str
 
 extern
@@ -566,23 +567,8 @@ atslib_fprint_mpz (
   atslib_mpz_out_str_exn (file, 10/*base*/, x) ; return ;
 } // end of [atslib_fprint_mpz]
 
-ATSinline()
-ats_void_type
-atslib_print_mpz (
-  const ats_mpz_ptr_type x
-) {
-  atspre_stdout_view_get() ; atslib_fprint_mpz(stdout, x) ; atspre_stdout_view_set() ;
-  return ;
-} // end of [atslib_print_mpz]
-
-ATSinline()
-ats_void_type
-atslib_prerr_mpz (
-  const ats_mpz_ptr_type x
-) {
-  atspre_stderr_view_get() ; atslib_fprint_mpz(stderr, x) ; atspre_stderr_view_set() ;
-  return ;
-} // end of [atslib_prerr_mpz]
+#define atslib_mpz_inp_raw mpz_inp_raw
+#define atslib_mpz_out_raw mpz_out_raw
 
 /* ****** ****** */
 
@@ -619,6 +605,18 @@ atslib_tostring_mpz (
 #define atslib_mpf_get_d_2exp mpf_get_d_2exp
 #define atslib_mpf_get_si mpf_get_si
 #define atslib_mpf_get_ui mpf_get_ui
+
+ATSinline()
+ats_ptr_type
+atslib_mpf_get_str (
+  ats_ptr_type exp
+, ats_int_type base, ats_size_type ndigit
+, ats_mpf_ptr_type x
+) {
+  return mpf_get_str((char*)0, (mp_exp_t*)exp, base, ndigit, (mpf_ptr)x) ;
+} // end of [atslib_mpf_get_str]
+
+/* ****** ****** */
 
 #define atslib_mpf_set_mpf mpf_set
 #define atslib_mpf_set_d mpf_set_d
@@ -849,12 +847,13 @@ atslib_mpf_div2_2exp (
 #define atslib_mpf_reldiff mpf_reldiff
 
 /* ****** ****** */
-
+//
+// HX: input/output/print functions
+//
 #define atslib_mpf_out_str mpf_out_str
+#define atslib_mpf_inp_str mpf_inp_str
 
-extern
-ats_void_type
-atslib_mpf_out_str_exn (
+extern ats_void_type atslib_mpf_out_str_exn (
   ats_ptr_type, ats_int_type, ats_size_type, ats_mpf_ptr_type
 ) ; // end of [extern]
 
@@ -865,6 +864,22 @@ atslib_fprint_mpf (
 ) {
   atslib_mpf_out_str_exn (file, 10/*base*/, ndigit, x) ; return ;
 } // end of [atslib_fprint_mpf]
+
+ATSinline()
+ats_void_type
+atslib_print_mpf (
+  const ats_mpz_ptr_type x, ats_size_type ndigit
+) {
+  atslib_mpf_out_str_exn (stdout, 10/*base*/, ndigit, x) ; return ;
+} // end of [atslib_print_mpz]
+
+ATSinline()
+ats_void_type
+atslib_prerr_mpf (
+  const ats_mpz_ptr_type x, ats_size_type ndigit
+) {
+  atslib_mpf_out_str_exn (stderr, 10/*base*/, ndigit, x) ; return ;
+} // end of [atslib_prerr_mpz]
 
 /* ****** ****** */
 

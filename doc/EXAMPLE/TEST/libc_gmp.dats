@@ -69,26 +69,33 @@ fun mpf_test
   var state: gmp_randstate_vt
   val () = gmp_randinit_default (state)
   val () = mpf_urandomb (x, state, 100UL)
-  val () = (print "x = "; fprint (stdout_ref, x, 16); print_newline ())
+  val () = (print "x = "; print_mpf (x, 16); print_newline ())
   val () = gmp_randclear (state)
 //
   var a: mpz_vt
   val () = mpz_init_set (a, 141421)
   val () = gmp_randinit_lc_2exp (state, a, 29UL(*c*), 5UL(*m2exp*))
   val () = mpf_urandomb (x, state, 100UL)
-  val () = (print "x = "; fprint (stdout_ref, x, 16); print_newline ())
+  val () = (print "x = "; print_mpf (x, 16); print_newline ())
   val () = mpz_clear (a)
   val () = gmp_randclear (state)
 //
   val _err = gmp_randinit_lc_2exp_size (state, 100UL)
   val () = mpf_urandomb (x, state, 100UL)
-  val () = (print "x = "; fprint (stdout_ref, x, 16); print_newline ())
+  val () = (print "x = "; print_mpf (x, 16); print_newline ())
   val () = gmp_randclear (state)
 //
   val () = mpf_random2 (x, (mp_size_t)100, (mp_exp_t)10)
-  val () = (print "x = "; fprint (stdout_ref, x, 16); print_newline ())
+  val () = (print "x = "; print_mpf (x, 16); print_newline ())
+  var exp: mp_exp_t
+  val str = mpf_get_str (exp, 10, 16, x)
+  val () = (print "str = "; print str; print_newline ())
+  val () = strptr_free (str)
   val () = mpf_random2 (x, (mp_size_t)~100, (mp_exp_t)10)
-  val () = (print "x = "; fprint (stdout_ref, x, 16); print_newline ())
+  val () = (print "x = "; print_mpf (x, 16); print_newline ())
+  val str = mpf_get_str (exp, 10, 00, x)
+  val () = (print "str = "; print str; print_newline ())
+  val () = strptr_free (str)
 //
   val () = mpf_set_d (x, fPI)
   val () = assert (mpf_sgn (x) = 1)

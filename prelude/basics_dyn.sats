@@ -356,7 +356,7 @@ stadef <= = file_mode_lte
 
 (* standard I/O channels *)
 
-// standard input
+// standard input/output/error
 
 sta stdin_addr : addr
 macdef stdin = $extval (ptr stdin_addr, "stdin")
@@ -364,17 +364,14 @@ macdef stdin = $extval (ptr stdin_addr, "stdin")
 fun stdin_get ():<!exnref> (FILE r @ stdin_addr | ptr stdin_addr)
   = "atspre_stdin_get"
 // end of [stdin_get]
-fun stdin_view_get ():<!exnref> (FILE r @ stdin_addr | void)
-  = "atspre_stdin_view_get"
+fun stdin_view_get ()
+  :<!exnref> (FILE r @ stdin_addr | void) = "atspre_stdin_view_get"
 // end of [stdin_view_get]
 and stdin_view_set (pf: FILE r @ stdin_addr | (*none*)):<!exnref> void
   = "atspre_stdin_view_set"
 // end of [stdin_view_set]
 
-// standard output
-
 sta stdout_addr : addr
-
 macdef stdout = $extval (ptr stdout_addr, "stdout")
 
 fun stdout_get ()
@@ -383,18 +380,13 @@ fun stdout_get ()
 // end of [stdout_get]
 
 fun stdout_view_get ()
-  :<!exnref> (FILE w @ stdout_addr | void)
-  = "atspre_stdout_view_get"
+  :<!exnref> (FILE w @ stdout_addr | void) = "atspre_stdout_view_get"
 // end of [stdout_view_get]
-and stdout_view_set
-  (pf: FILE w @ stdout_addr | (*none*)):<!exnref> void
+and stdout_view_set (pf: FILE w @ stdout_addr | (*none*)):<!exnref> void
   = "atspre_stdout_view_set"
 // end of [stdout_view_set]
 
-// standard error
-
 sta stderr_addr : addr
-
 macdef stderr = $extval (ptr stderr_addr, "stderr")
 
 fun stderr_get ()
@@ -403,44 +395,49 @@ fun stderr_get ()
 // end of [stderr_get]
 
 fun stderr_view_get ()
-  :<!exnref> (FILE w @ stderr_addr | void)
-  = "atspre_stderr_view_get"
+  :<!exnref> (FILE w @ stderr_addr | void) = "atspre_stderr_view_get"
 // end of [stderr_view_get]
-and stderr_view_set
-  (pf: FILE w @ stderr_addr | (*none*)):<!exnref> void
+and stderr_view_set (pf: FILE w @ stderr_addr | (*none*)):<!exnref> void
   = "atspre_stderr_view_set"
 // end of [stderr_view_set]
 
 (* ****** ****** *)
-
+//
 // print functions for various type of data
-
+//
 typedef
 fprint_t0ype_type (a:t@ype) = {m:file_mode}
   (file_mode_lte (m, w) | &FILE m, a) -<fun,!exnref> void
-
 typedef
 fprint_viewt0ype_type (a:viewt@ype) = {m:file_mode}
   (file_mode_lte (m, w) | &FILE m, !a) -<fun,!exnref> void
 
+(* ****** ****** *)
+//
 // print functions for newlines
-
+//
 symintr fprint_newline
-
-fun fprint0_newline (out: FILEref):<!ref> void
-  = "atspre_fprint_newline"
-
+fun fprint0_newline
+  (out: FILEref):<!ref> void = "atspre_fprint_newline"
 fun fprint1_newline {m:file_mode}
   (pf: file_mode_lte (m, w) | out: &FILE m):<!ref> void
   = "atspre_fprint_newline"
-
 overload fprint_newline with fprint0_newline
 overload fprint_newline with fprint1_newline
 
-(* ****** ****** *)
-
 fun print_newline ():<!ref> void = "atspre_print_newline"
 and prerr_newline ():<!ref> void = "atspre_prerr_newline"
+
+(* ****** ****** *)
+//
+// HX-2010-08-10:
+// the mode information is simply asserted and can be incorrect!
+//
+castfn FILEref_get_ref
+  {m:file_mode} (x: FILEref):<> ref (FILE m)
+castfn FILEref_get_view_ptr {m:file_mode} // non-reentrant!
+  (x: FILEref):<> [l:addr] (FILE m @ l, FILE m @ l -<lin,prf> void | ptr l)
+// end of [FILEref_get_view_ptr]
 
 (* ****** ****** *)
 
