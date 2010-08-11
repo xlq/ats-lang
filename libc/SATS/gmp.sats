@@ -125,7 +125,7 @@ fun mpz_get_str // HX: a special case of the original namesake in GMP
 
 symintr mpz_set
 
-// [x] := [y]
+// x := y
 fun mpz_set_mpz
   (x: &mpz_vt, y: &mpz_vt):<> void = "#atslib_mpz_set_mpz"
 overload mpz_set with mpz_set_mpz
@@ -159,7 +159,7 @@ fun mpz_set_str_exn
 
 symintr mpz_init_set
 
-// [x] := [y]
+// x := y
 fun mpz_init_set_mpz (x: &mpz_vt? >> mpz_vt, y: &mpz_vt):<> void
   = "#atslib_mpz_init_set_mpz"
 overload mpz_init_set with mpz_init_set_mpz
@@ -224,10 +224,10 @@ fun mpz_sizeinbase (src: &mpz_vt, base: int): size_t = "#atslib_mpz_sizeinbase"
 
 symintr mpz_neg
 
-// [x] := -[y]
+// x := -y
 fun mpz_neg2 (x: &mpz_vt, y: &mpz_vt):<> void = "#atslib_mpz_neg2"
 overload mpz_neg with mpz_neg2
-// [x] := -[x]
+// x := -x
 fun mpz_neg1 (x: &mpz_vt):<> void = "atslib_mpz_neg1" // function!
 overload mpz_neg with mpz_neg1
 
@@ -235,10 +235,10 @@ overload mpz_neg with mpz_neg1
 
 symintr mpz_abs
 
-// [x] := | [y] |
+// x := | y |
 fun mpz_abs2 (x: &mpz_vt, y: &mpz_vt):<> void = "#atslib_mpz_abs2"
 overload mpz_abs with mpz_abs2
-// [x] := | [x] |
+// x := | x |
 fun mpz_abs1 (x: &mpz_vt):<> void = "atslib_mpz_abs1" // function!
 overload mpz_abs with mpz_abs1
 
@@ -246,12 +246,12 @@ overload mpz_abs with mpz_abs1
 
 symintr mpz_add
 
-// [x] := [y] + [z]
+// x := y + z
 fun mpz_add3_mpz
   (x: &mpz_vt, y: &mpz_vt, z: &mpz_vt):<> void = "#atslib_mpz_add3_mpz"
 overload mpz_add with mpz_add3_mpz
 fun mpz_add3_int
-  (x: &mpz_vt, y: &mpz_vt, z: int):<> void = "atslib_mpz_add3_int" // fun!
+  (x: &mpz_vt, y: &mpz_vt, z: int):<> void = "#atslib_mpz_add3_int"
 overload mpz_add with mpz_add3_int
 fun mpz_add3_uint
   (x: &mpz_vt, y: &mpz_vt, z: uint):<> void = "#atslib_mpz_add3_uint"
@@ -263,15 +263,15 @@ fun mpz_add3_ulint
   (x: &mpz_vt, y: &mpz_vt, z: ulint):<> void = "#atslib_mpz_add3_ulint"
 overload mpz_add with mpz_add3_ulint
 
-// [x] := [x] + [y]
+// x := x + y
 fun mpz_add2_mpz
   (x: &mpz_vt, y: &mpz_vt):<> void = "atslib_mpz_add2_mpz"
 overload mpz_add with mpz_add2_mpz
 fun mpz_add2_int
-  (x: &mpz_vt, y: int):<> void = "atslib_mpz_add2_int"
+  (x: &mpz_vt, y: int):<> void = "#atslib_mpz_add2_int" // !macro
 overload mpz_add with mpz_add2_int
 fun mpz_add2_uint
-  (x: &mpz_vt, y: uint):<> void = "atslib_mpz_add2_uint"
+  (x: &mpz_vt, y: uint):<> void = "#atslib_mpz_add2_uint" // !macro
 overload mpz_add with mpz_add2_uint
 fun mpz_add2_lint
   (x: &mpz_vt, y: lint):<> void = "atslib_mpz_add2_lint"
@@ -284,12 +284,12 @@ overload mpz_add with mpz_add2_ulint
 
 symintr mpz_sub
 
-// [x] := [y] - [z]
+// x := y - z
 fun mpz_sub3_mpz
   (x: &mpz_vt, y: &mpz_vt, z: &mpz_vt):<> void = "#atslib_mpz_sub3_mpz"
 overload mpz_sub with mpz_sub3_mpz  
 fun mpz_sub3_int
-  (x: &mpz_vt, y: &mpz_vt, z: int):<> void = "atslib_mpz_sub3_int" // fun!
+  (x: &mpz_vt, y: &mpz_vt, z: int):<> void = "#atslib_mpz_sub3_int"
 overload mpz_sub with mpz_sub3_int
 fun mpz_sub3_uint
   (x: &mpz_vt, y: &mpz_vt, z: uint):<> void = "#atslib_mpz_sub3_uint"
@@ -304,15 +304,15 @@ fun mpz_ui_sub3
   (dst: &mpz_vt, src1: ulint, src2: &mpz_vt): void = "#atslib_mpz_ui_sub3"
 // end of [mpz_ui_sub3] // HX: no overloading for this one
 
-// [x] := [x] - [y]
+// x := x - y
 fun mpz_sub2_mpz
   (x: &mpz_vt, y: &mpz_vt):<> void = "atslib_mpz_sub2_mpz"
 overload mpz_sub with mpz_sub2_mpz
 fun mpz_sub2_int
-  (x: &mpz_vt, y: int):<> void = "atslib_mpz_sub2_int"
+  (x: &mpz_vt, y: int):<> void = "#atslib_mpz_sub2_int" // !macro
 overload mpz_sub with mpz_sub2_int
 fun mpz_sub2_uint
-  (x: &mpz_vt, y: uint):<> void = "atslib_mpz_sub2_uint"
+  (x: &mpz_vt, y: uint):<> void = "#atslib_mpz_sub2_uint" // !macro
 overload mpz_sub with mpz_sub2_uint
 fun mpz_sub2_lint
   (x: &mpz_vt, y: lint):<> void = "atslib_mpz_sub2_lint"
@@ -327,7 +327,7 @@ overload mpz_sub with mpz_sub2_ulint
 
 symintr mpz_mul
 
-// [x] := [y] * [z]
+// x := y * z
 fun mpz_mul3_mpz
   (x: &mpz_vt, y: &mpz_vt, z: &mpz_vt):<> void = "#atslib_mpz_mul3_mpz"
 overload mpz_mul with mpz_mul3_mpz
@@ -344,20 +344,20 @@ fun mpz_mul3_ulint
   (x: &mpz_vt, y: &mpz_vt, z: ulint):<> void = "#atslib_mpz_mul3_ulint"
 overload mpz_mul with mpz_mul3_ulint
 
-// [x] := [x] * [y]
+// x := x * y
 fun mpz_mul2_mpz
   (x: &mpz_vt, y: &mpz_vt):<> void = "atslib_mpz_mul2_mpz"
 overload mpz_mul with mpz_mul2_mpz
-fun mpz_mul2_int (x: &mpz_vt, y: int):<> void = "atslib_mpz_mul2_int"
+fun mpz_mul2_int (x: &mpz_vt, y: int):<> void = "#atslib_mpz_mul2_int" // !mac
 overload mpz_mul with mpz_mul2_int
-fun mpz_mul2_uint (x: &mpz_vt, y: uint):<> void = "atslib_mpz_mul2_uint"
+fun mpz_mul2_uint (x: &mpz_vt, y: uint):<> void = "#atslib_mpz_mul2_uint" // !mac
 overload mpz_mul with mpz_mul2_uint
 fun mpz_mul2_lint (x: &mpz_vt, y: lint):<> void = "atslib_mpz_mul2_lint"
 overload mpz_mul with mpz_mul2_lint
 fun mpz_mul2_ulint (x: &mpz_vt, y: ulint):<> void = "atslib_mpz_mul2_ulint"
 overload mpz_mul with mpz_mul2_ulint
 
-// [x] := [x] * [x]
+// x := x * x
 fun mpz_mul1_mpz (x: &mpz_vt):<> void = "atslib_mpz_mul1_mpz"
 overload mpz_mul with mpz_mul1_mpz
 
@@ -413,13 +413,11 @@ fun mpz_tdiv3_q_ulint
 overload mpz_tdiv_q with mpz_tdiv3_q_ulint
 
 // [q] := [q] / [d]
-fun mpz_tdiv2_q_mpz
-  (q: &mpz_vt, d: &mpz_vt):<> void = "atslib_mpz_tdiv2_q_mpz"
+fun mpz_tdiv2_q_mpz (q: &mpz_vt, d: &mpz_vt):<> void = "atslib_mpz_tdiv2_q_mpz"
 overload mpz_tdiv_q with mpz_tdiv2_q_mpz
 
 // [q] := [q] / [d]
-fun mpz_tdiv2_q_ulint
-  (q: &mpz_vt, d: ulint):<> void = "atslib_mpz_tdiv2_q_ulint"
+fun mpz_tdiv2_q_ulint (q: &mpz_vt, d: ulint):<> void = "atslib_mpz_tdiv2_q_ulint"
 overload mpz_tdiv_q with mpz_tdiv2_q_ulint
 
 (* ****** ****** *)
@@ -547,9 +545,12 @@ symintr mpz_addmul
 fun mpz_addmul3_mpz
   (x: &mpz_vt, y: &mpz_vt, z: &mpz_vt):<> void = "#atslib_mpz_addmul3_mpz"
 overload mpz_addmul with mpz_addmul3_mpz
-fun mpz_addmul3_ui
-  (x: &mpz_vt, y: &mpz_vt, z: ulint):<> void = "#atslib_mpz_addmul3_ui"
-overload mpz_addmul with mpz_addmul3_ui
+fun mpz_addmul3_uint
+  (x: &mpz_vt, y: &mpz_vt, z: uint):<> void = "#atslib_mpz_addmul3_uint"
+overload mpz_addmul with mpz_addmul3_uint
+fun mpz_addmul3_ulint
+  (x: &mpz_vt, y: &mpz_vt, z: ulint):<> void = "#atslib_mpz_addmul3_ulint"
+overload mpz_addmul with mpz_addmul3_ulint
 
 // sub/mul combination
 
@@ -557,9 +558,12 @@ symintr mpz_submul
 fun mpz_submul3_mpz
   (x: &mpz_vt, y: &mpz_vt, z: &mpz_vt):<> void = "#atslib_mpz_submul3_mpz"
 overload mpz_submul with mpz_submul3_mpz
-fun mpz_submul3_ui
-  (x: &mpz_vt, y: &mpz_vt, z: ulint):<> void = "#atslib_mpz_submul3_ui"
-overload mpz_submul with mpz_submul3_ui
+fun mpz_submul3_uint
+  (x: &mpz_vt, y: &mpz_vt, z: uint):<> void = "#atslib_mpz_submul3_uint"
+overload mpz_submul with mpz_submul3_uint
+fun mpz_submul3_ulint
+  (x: &mpz_vt, y: &mpz_vt, z: ulint):<> void = "#atslib_mpz_submul3_ulint"
+overload mpz_submul with mpz_submul3_ulint
 
 (* ****** ****** *)
 
@@ -754,11 +758,11 @@ fun mpq_set_den (dst: &mpq_vt, src: &mpz_vt):<> void = "#atslib_mpq_set_den"
 
 symintr mpq_neg
 
-// [x] := -[y]
+// x := -y
 fun mpq_neg2 (x: &mpq_vt, y: &mpq_vt):<> void = "#atslib_mpq_neg2"
 overload mpq_neg with mpq_neg2
 
-// [x] := -[x]
+// x := -x
 fun mpq_neg1 (x: &mpq_vt):<> void = "atslib_mpq_neg1" // function!
 overload mpq_neg with mpq_neg1
 
@@ -766,10 +770,10 @@ overload mpq_neg with mpq_neg1
 
 symintr mpq_inv
 
-// [x] := -[y]
+// x := -y
 fun mpq_inv2 (x: &mpq_vt, y: &mpq_vt):<> void = "#atslib_mpq_inv2"
 overload mpq_inv with mpq_inv2
-// [x] := -[x]
+// x := -x
 fun mpq_inv1 (x: &mpq_vt):<> void = "atslib_mpq_inv1" // function!
 overload mpq_inv with mpq_inv1
 
@@ -810,6 +814,14 @@ overload mpq_div with mpq_div2_mpq
 (* ****** ****** *)
 
 // HX-2010-08-11: implemented in ATS
+// x := x + p/q
+fun mpq_incby (x: &mpq_vt, p: ulint, q: ulint): void
+// x := x - p/q
+fun mpq_decby (x: &mpq_vt, p: ulint, q: ulint): void
+
+(* ****** ****** *)
+
+// HX-2010-08-11: implemented in ATS
 symintr mpq_pow_ui
 fun mpq_pow3_ui (dst: &mpq_vt, src1: &mpq_vt, src2: ulint): void
 overload mpq_pow_ui with mpq_pow3_ui
@@ -825,8 +837,10 @@ fun mpq_equal
 symintr mpq_cmp
 fun mpq_cmp_mpq (x: &mpq_vt, y: &mpq_vt):<> int = "#atslib_mpq_cmp_mpq"
 overload mpq_cmp with mpq_cmp_mpq
-fun mpq_cmp_ui (x: &mpq_vt, y: ulint):<> int = "#atslib_mpq_cmp_ui"
-overload mpq_cmp with mpq_cmp_ui
+fun mpq_cmp_uint (x: &mpq_vt, y: uint):<> int = "#atslib_mpq_cmp_uint"
+overload mpq_cmp with mpq_cmp_uint
+fun mpq_cmp_ulint (x: &mpq_vt, y: ulint):<> int = "#atslib_mpq_cmp_ulint"
+overload mpq_cmp with mpq_cmp_ulint
 
 (* ****** ****** *)
 

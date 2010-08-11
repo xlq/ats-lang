@@ -41,10 +41,8 @@
 (* ****** ****** *)
 
 #if VERBOSE_PRELUDE #then
-
 #print "Loading [printf.sats] starts!\n"
-
-#endif
+#endif // end of [VERBOSE_PRELUDE]
 
 (* ****** ****** *)
 
@@ -98,18 +96,14 @@ overload assert_prerrf with assert_prerrf_bool1
 (* ****** ****** *)
 
 fun tostringf_size {ts:types}
-  (guess: Nat, fmt: printf_c ts, arg: ts):<> String
+  (guess: Nat, fmt: printf_c ts, arg: ts):<> strptr1
   = "atspre_tostringf_size"
 
 fun tostringf {ts:types}
-  (fmt: printf_c ts, arg: ts):<> String = "atspre_tostringf"
+  (fmt: printf_c ts, arg: ts):<> strptr1 = "atspre_tostringf"
 
 fun sprintf {ts:types}
-  (fmt: printf_c ts, arg: ts):<> String = "atspre_tostringf"
-
-//
-// [tostringf__bufptr] and [sprintf__bufptr] are declared in [string.sats]
-//
+  (fmt: printf_c ts, arg: ts):<> strptr1 = "atspre_tostringf"
 
 (* ****** ****** *)
 
@@ -118,9 +112,7 @@ fun sprintf {ts:types}
 (* ****** ****** *)
 
 #if VERBOSE_PRELUDE #then
-
 #print "Loading [printf.sats] finishes!\n"
-
-#endif
+#endif // end of [VERBOSE_PRELUDE]
 
 (* end of [printf.sats] *)

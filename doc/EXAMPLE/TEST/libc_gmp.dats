@@ -105,35 +105,6 @@ fn compec1
 } // end of [compec1]
 
 (* ****** ****** *)
-
-fun mpq_incby_ui (
-    x: &mpq_vt, p: ulint, q: ulint
-  ) : void = let
-  val (pf_xp, fpf_xp | p_xp) = mpq_numref (x)
-  val (pf_xq, fpf_xq | p_xq) = mpq_denref (x)
-  val () = mpz_mul (!p_xp, q)
-  val () = mpz_addmul (!p_xp, !p_xq, p)
-  val () = mpz_mul (!p_xq, q)
-  prval () = fpf_xp (pf_xp)
-  prval () = fpf_xq (pf_xq)
-in
-  mpq_canonicalize (x)
-end // end of [mpq_incby_ui]
-
-fun mpq_decby_ui (
-    x: &mpq_vt, p: ulint, q: ulint
-  ) : void = let
-  val (pf_xp, fpf_xp | p_xp) = mpq_numref (x)
-  val (pf_xq, fpf_xq | p_xq) = mpq_denref (x)
-  val () = mpz_mul (!p_xp, q)
-  val () = mpz_submul (!p_xp, !p_xq, p)
-  val () = mpz_mul (!p_xq, q)
-  prval () = fpf_xp (pf_xp)
-  prval () = fpf_xq (pf_xq)
-in
-  mpq_canonicalize (x)
-end // end of [mpq_decby_ui]
-
 //
 // e = 1/lim_{n->oo} (1-1/n)^n
 //
@@ -141,7 +112,7 @@ fn compec2
   (n: ulint): double = e where {
   var x: mpq_vt; val () = mpq_init (x)
   val () = mpq_set_ui (x, 1UL, 1UL)
-  val () = mpq_decby_ui (x, 1UL, n)
+  val () = mpq_decby (x, 1UL, n)
   val () = mpq_pow_ui (x, n)
   val () = mpq_inv (x)
   val e = mpq_get_d (x)

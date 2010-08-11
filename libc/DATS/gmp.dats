@@ -86,28 +86,62 @@ end // end of [tostring_mpz]
 (* ****** ****** *)
 
 implement
-mpq_pow3_ui (res, x, n) = let
-  val (pf_resp, fpf_resp | p_resp) = mpq_numref (res)
-  val (pf_resq, fpf_resq | p_resq) = mpq_denref (res)
+mpq_incby (x, p, q) = let
   val (pf_xp, fpf_xp | p_xp) = mpq_numref (x)
   val (pf_xq, fpf_xq | p_xq) = mpq_denref (x)
-  val () = mpz_pow_ui (!p_resp, !p_xp, n)
-  val () = mpz_pow_ui (!p_resq, !p_xq, n)
+  val () = mpz_mul (!p_xp, q)
+  val () = mpz_addmul (!p_xp, !p_xq, p)
+  val () = mpz_mul (!p_xq, q)
   prval () = fpf_xp (pf_xp)
   prval () = fpf_xq (pf_xq)
-  prval () = fpf_resp (pf_resp)
-  prval () = fpf_resq (pf_resq)
 in
-  // nothing
+  mpq_canonicalize (x)
+end // end of [mpq_incby]
+
+implement
+mpq_decby (x, p, q) = let
+  val (pf_xp, fpf_xp | p_xp) = mpq_numref (x)
+  val (pf_xq, fpf_xq | p_xq) = mpq_denref (x)
+  val () = mpz_mul (!p_xp, q)
+  val () = mpz_submul (!p_xp, !p_xq, p)
+  val () = mpz_mul (!p_xq, q)
+  prval () = fpf_xp (pf_xp)
+  prval () = fpf_xq (pf_xq)
+in
+  mpq_canonicalize (x)
+end // end of [mpq_decby]
+
+(* ****** ****** *)
+
+implement
+mpq_pow3_ui (res, x, n) = let
+//
+  val (pf_resp, fpf_resp | p_resp) = mpq_numref (res)
+  val (pf_xp, fpf_xp | p_xp) = mpq_numref (x)
+  val () = mpz_pow_ui (!p_resp, !p_xp, n)
+  prval () = fpf_xp (pf_xp)
+  prval () = fpf_resp (pf_resp)
+//
+  val (pf_resq, fpf_resq | p_resq) = mpq_denref (res)
+  val (pf_xq, fpf_xq | p_xq) = mpq_denref (x)
+  val () = mpz_pow_ui (!p_resq, !p_xq, n)
+  prval () = fpf_xq (pf_xq)
+  prval () = fpf_resq (pf_resq)
+//
+in
+  // no need for cannonicalizing
 end // end of [mpq_pow3_ui]
 
 implement mpq_pow2_ui (x, n) = let
+//
   val (pf_xp, fpf_xp | p_xp) = mpq_numref (x)
-  val (pf_xq, fpf_xq | p_xq) = mpq_denref (x)
   val () = mpz_pow_ui (!p_xp, n)
-  val () = mpz_pow_ui (!p_xq, n)
   prval () = fpf_xp (pf_xp)
+//
+  val (pf_xq, fpf_xq | p_xq) = mpq_denref (x)
+  val () = mpz_pow_ui (!p_xq, n)
   prval () = fpf_xq (pf_xq)
+//
 in
   // no need for cannonicalizing
 end // end of [mpq_pow2_ui]

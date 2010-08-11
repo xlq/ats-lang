@@ -85,16 +85,22 @@ end // end of [gcc_libfile_err]
 #define i2u uint_of_int
 #define sbp2str string1_of_strbuf
 
-fn char_identifize (c: char):<cloptr1> String =
+fn char_identifize
+  (c: char):<cloptr1> String =
   if char_isalnum c then tostring c
   else let
     val i = uint_of_char c
     val c1 = i / i2u 16 and c2 = i mod i2u 16
+    val ptr = tostringf_size (4, "_%x%x", @(c1, c2))
+    val str = string_of_strptr (ptr)
   in
-    tostringf_size (4, "_%x%x", @(c1, c2))
+    string1_of_string (str)
   end // end of [if]
+// end of [char_identifize]
 
-implement ccomp_gcc_ar_libfile (param_rev, infile, libfile) = let
+implement
+ccomp_gcc_ar_libfile
+  (param_rev, infile, libfile) = let
   val sfx = suffix_of_filename infile
   val flag_stadyn = (
     if stropt_is_none sfx then begin
@@ -112,7 +118,7 @@ implement ccomp_gcc_ar_libfile (param_rev, infile, libfile) = let
 //
   val infull = (
     if filename_is_local infile then
-      tostringf_size (64, "%s/%s", @(getcwd (), infile))
+      string_of_strptr (tostringf_size (64, "%s/%s", @(getcwd (), infile)))
     else infile
   ) : string
 //

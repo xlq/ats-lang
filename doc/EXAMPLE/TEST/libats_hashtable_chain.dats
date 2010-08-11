@@ -117,8 +117,9 @@ implement main (argc, argv) = let
   val k10000 = 10000
   val () = find (ptbl, k10000, res)
 //
+  #define p2s string_of_strptr
   var !p_f = @lam
-    (pf: !unit_v | k: key, i: &itm): void =<clo> i := sprintf ("%i", @(k+k+1))
+    (pf: !unit_v | k: key, i: &itm): void =<clo> i := p2s (sprintf ("%i", @(k+k+1)))
   // end of [var]
   prval pf = unit_v ()
   val () = $H.hashtbl_foreach_clo<key,itm> {unit_v} (pf | ptbl, !p_f)

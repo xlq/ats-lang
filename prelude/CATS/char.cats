@@ -185,11 +185,12 @@ atspre_prerr_char (const ats_char_type c) {
 
 ATSinline()
 ats_ptr_type
-atspre_tostring_char (const ats_char_type c) {
+atspre_tostrptr_char
+  (const ats_char_type c) {
   char *p ;
   p = (char *)ATS_MALLOC(2) ; *p = (char)c ; *(p+1) = '\000' ;
   return (ats_ptr_type)p ;
-}
+} // end of [atspre_tostrptr_char]
 
 /* ****** ****** */
 

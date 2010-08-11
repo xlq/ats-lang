@@ -62,6 +62,18 @@
 
 /* ****** ****** */
 
+//
+// HX-2010-05-24:
+// if TLS is not supported, then please compile with the flag -D_ATSTLS_NONE
+//
+#define ATSthreadlocalstorage() __thread
+#ifdef _ATSTLS_NONE
+#undef ATSthreadlocalstorage
+#define ATSthreadlocalstorage()
+#endif // end of [_ATSTLS_NONE]
+
+/* ****** ****** */
+
 #define ATSdeadcode() \
   do { \
     fprintf ( \
@@ -144,8 +156,8 @@ extern void mainats_prelude () ;
 ** functions for handling match failures
 ** the implementation is given in [ats_prelude.c]
 */
-extern void ats_caseof_failure_handle (char *loc) ;
-extern void ats_funarg_match_failure_handle (char *loc) ;
+extern void ats_caseof_failure_handle (const char *loc) ;
+extern void ats_funarg_match_failure_handle (const char *loc) ;
 
 /* ****** ****** */
 

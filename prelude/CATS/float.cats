@@ -329,10 +329,10 @@ atspre_prerr_float (const ats_float_type f) {
 
 ATSinline()
 ats_ptr_type
-atspre_tostring_float
+atspre_tostrptr_float
   (const ats_float_type f) {
   return atspre_tostringf ((ats_ptr_type)"%f", f) ;
-}
+} // end of [atspre_tostrptr_float]
 
 /* ****** ****** */
 
@@ -654,10 +654,10 @@ atspre_prerr_double
 
 ATSinline()
 ats_ptr_type
-atspre_tostring_double
+atspre_tostrptr_double
   (const ats_double_type f) {
   return atspre_tostringf ((ats_ptr_type)"%f", f) ;
-} // end of [atspre_tostring_double]
+} // end of [atspre_tostrptr_double]
 
 /* ****** ****** */
 
@@ -909,10 +909,10 @@ atspre_prerr_ldouble
 
 ATSinline()
 ats_ptr_type
-atspre_tostring_ldouble
+atspre_tostrptr_ldouble
   (const ats_ldouble_type f) {
   return atspre_tostringf ((ats_ptr_type)"%Lf", f) ;
-} // end of [atspre_tostring_ldouble]
+} // end of [atspre_tostrptr_ldouble]
 
 /* ****** ****** */
 

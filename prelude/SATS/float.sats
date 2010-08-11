@@ -232,10 +232,10 @@ overload prerr with prerr_float
 //
 // stringization
 //
-(* ****** ****** *)
-
-fun tostring_float
-  (f: float):<> string = "atspre_tostring_float"
+fun tostrptr_float
+  (f: float):<> strptr1 = "atspre_tostrptr_float"
+overload tostrptr with tostrptr_float
+fun tostring_float (f: float):<> string = "atspre_tostrptr_float"
 overload tostring with tostring_float
 
 (* ****** ****** *)
@@ -425,10 +425,10 @@ overload prerr with prerr_double
 //
 // stringization
 //
-(* ****** ****** *)
-
-fun tostring_double (d: double):<> string
-  = "atspre_tostring_double"
+fun tostrptr_double
+  (d: double):<> strptr1 = "atspre_tostrptr_double"
+overload tostrptr with tostrptr_double
+fun tostring_double (d: double):<> string = "atspre_tostrptr_double"
 overload tostring with tostring_double
 
 (* ****** ****** *)
@@ -594,10 +594,10 @@ overload prerr with prerr_ldouble
 //
 // stringization
 //
-(* ****** ****** *)
-
-fun tostring_ldouble (ld: ldouble):<> string
- = "atspre_tostring_ldouble"
+fun tostrptr_ldouble
+  (ld: ldouble):<> strptr1 = "atspre_tostrptr_ldouble"
+overload tostrptr with tostrptr_ldouble
+fun tostring_ldouble (ld: ldouble):<> string = "atspre_tostrptr_ldouble"
 overload tostring with tostring_ldouble
 
 (* ****** ****** *)

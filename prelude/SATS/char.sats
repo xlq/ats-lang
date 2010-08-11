@@ -218,10 +218,15 @@ and prerr_char (c: char):<!ref> void = "atspre_prerr_char"
 overload print with print_char
 overload prerr with prerr_char
 
-// stringize
+//
+// stringization
+//
 
+fun tostrptr_char
+  (c: char):<> strptr1 = "atspre_tostrptr_char"
+overload tostrptr with tostrptr_char
 fun tostring_char
-  (c: char):<> string (1) = "atspre_tostring_char"
+  (c: char):<> string (1) = "atspre_tostrptr_char"
 overload tostring with tostring_char
 
 (* ****** ****** *)

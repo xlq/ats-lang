@@ -650,20 +650,6 @@ viewtypedef Stropt_gc = [m,n:nat] stropt_gc (m, n)
 (* ****** ****** *)
 
 //
-// [tostringf] and [sprintf] are declared in [printf.sats]
-//
-
-fun sprintf__bufptr {ts:types}
-  (fmt: printf_c ts, arg: ts):<> strptr1 = "atspre_tostringf"
-// end of [sprintf__bufptr]
-
-fun tostringf__bufptr {ts:types}
-  (fmt: printf_c ts, arg: ts):<> strptr1 = "atspre_tostringf"
-// end of [tostringf__bufptr]
-
-(* ****** ****** *)
-
-//
 // HX-2010-08-10: linear strings
 //
 

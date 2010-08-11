@@ -507,11 +507,14 @@ and prerr_int32 (i: int32):<!ref> void = "atspre_prerr_int32"
 overload print with print_int32
 overload prerr with prerr_int32
 
+(* ****** ****** *)
+//
 // stringization
-
-fun tostring_int32 (i: int32):<> string
-  = "atspre_tostring_int32"
-
+//
+fun tostrptr_int32
+  (i: int32):<> strptr1 = "atspre_tostrptr_int32"
+overload tostrptr with tostrptr_int32
+fun tostring_int32 (i: int32):<> string = "atspre_tostrptr_int32"
 overload tostring with tostring_int32
 
 (* ****** ****** *)
@@ -688,12 +691,13 @@ overload print with print_int64
 overload prerr with prerr_int64
 
 (* ****** ****** *)
-
+//
 // stringization
-
-fun tostring_int64 (i: int64):<> string
-  = "atspre_tostring_int64"
-
+//
+fun tostrptr_int64
+  (i: int64):<> strptr1 = "atspre_tostrptr_int64"
+overload tostrptr with tostrptr_int64
+fun tostring_int64 (i: int64):<> string = "atspre_tostrptr_int64"
 overload tostring with tostring_int64
 
 (* ****** ****** *)

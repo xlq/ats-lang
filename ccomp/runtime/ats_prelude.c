@@ -44,6 +44,7 @@
 /* ****** ****** */
 
 #include "ats_types.h"
+#include "ats_basics.h"
 #include "ats_memory.h"
 
 /* ****** ****** */
@@ -73,7 +74,7 @@ int ats_stderr_view_lock = 1 ;
 */
 
 #ifdef _ATS_MULTITHREAD
-__thread // thread-local storage
+ATSthreadlocalstorage() // thread-local storage
 #endif // end of [_ATS_MULTITHREAD]
 ats_ptr_type *the_ats_exception_stack = NULL ;
 
@@ -126,21 +127,19 @@ ats_uncaught_exception_handle (
 ** functions for handling match failures
 */
 
-ats_void_type
+void
 ats_caseof_failure_handle (
-  const ats_ptr_type loc // location of the failure
+  const char *loc // location of the failure
 ) {
-  fprintf(stderr, "exit(ATS): %s: match failure.\n", (char*)loc) ; exit(1) ;
+  fprintf(stderr, "exit(ATS): %s: match failure.\n", loc) ; exit(1) ;
   return ; // deadcode
 } /* end of [ats_caseof_failure_handle] */
 
-ats_void_type
+void
 ats_funarg_match_failure_handle (
-  const ats_ptr_type loc // location of the failure
+  const char *loc // location of the failure
 ) {
-  fprintf(
-    stderr, "exit(ATS): %s: funarg match failure.\n", (char*)loc
-  ) ; exit(1) ;
+  fprintf(stderr, "exit(ATS): %s: funarg match failure.\n", loc) ; exit(1) ;
   return ; // deadcode
 } /* end of [ats_funarg_match_failure_handle] */
 

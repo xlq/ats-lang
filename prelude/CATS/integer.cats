@@ -48,8 +48,9 @@
 
 /* ****** ****** */
 
-extern ats_ptr_type atspre_tostring_llint (ats_llint_type i) ;
-extern ats_ptr_type atspre_tostring_ullint (ats_ullint_type u) ;
+// HX: implemented in $ATSHOME/prelude/DATS/integer.dats
+extern ats_ptr_type atspre_tostrptr_llint (ats_llint_type i) ;
+extern ats_ptr_type atspre_tostrptr_ullint (ats_ullint_type u) ;
 
 /* ****** ****** */
 
@@ -59,55 +60,42 @@ extern ats_ptr_type atspre_tostring_ullint (ats_ullint_type u) ;
 
 ATSinline()
 ats_int_type
-atspre_int_of_char (ats_char_type c) {
-  return c ;
-}
+atspre_int_of_char (ats_char_type c) { return c ; }
 
 ATSinline()
 ats_int_type
-atspre_int_of_schar (ats_schar_type c) {
-  return c ;
-}
+atspre_int_of_schar (ats_schar_type c) { return c ; }
 
 ATSinline()
 ats_int_type
-atspre_int_of_uchar (ats_uchar_type c) {
-  return c ;
-}
+atspre_int_of_uchar (ats_uchar_type c) { return c ; }
 
 //
 
 ATSinline()
 ats_int_type
-atspre_int_of_string
-  (ats_ptr_type s) { return atoi((char*)s) ; }
+atspre_int_of_string (ats_ptr_type s) { return atoi((char*)s) ; }
 /* end of [atspre_int_of_string] */
 
 //
 
 ATSinline()
 ats_int_type
-atspre_abs_int (ats_int_type i) {
-  return (i >= 0 ? i : -i) ;
-}
+atspre_abs_int
+  (ats_int_type i) { return (i >= 0 ? i : -i) ; }
+// end of [atspre_abs_int]
 
 ATSinline()
 ats_int_type
-atspre_neg_int (ats_int_type i) {
-  return (-i) ;
-}
+atspre_neg_int (ats_int_type i) { return (-i) ; }
 
 ATSinline()
 ats_int_type
-atspre_succ_int (ats_int_type i) {
-  return (i + 1) ;
-}
+atspre_succ_int (ats_int_type i) { return (i + 1) ; }
 
 ATSinline()
 ats_int_type
-atspre_pred_int (ats_int_type i) {
-  return (i - 1) ;
-}
+atspre_pred_int (ats_int_type i) { return (i - 1) ; }
 
 ATSinline()
 ats_int_type
@@ -299,9 +287,9 @@ atspre_fscan_int_exn (ats_ptr_type inp, ats_ref_type r) {
 
 ATSinline()
 ats_ptr_type
-atspre_tostring_int (ats_int_type i) {
-  return atspre_tostring_llint (i) ;
-}
+atspre_tostrptr_int
+  (ats_int_type i) { return atspre_tostrptr_llint (i) ; }
+// end of [atspre_tostrptr_int]
 
 /* ****** ****** */
 
@@ -505,11 +493,9 @@ atspre_prerr_uint (
 
 ATSinline()
 ats_ptr_type
-atspre_tostring_uint (
-  ats_uint_type u
-) {
-  return atspre_tostring_ullint (u) ;
-} /* end of [atspre_tostring_uint] */
+atspre_tostrptr_uint
+  (ats_uint_type u) { return atspre_tostrptr_ullint (u) ; }
+// end of [atspre_tostrptr_uint]
 
 /* ****** ****** */
 
@@ -754,10 +740,9 @@ atspre_prerr_lint (ats_lint_type i) {
 
 ATSinline()
 ats_ptr_type
-atspre_tostring_lint
-  (ats_lint_type i) {
-  return atspre_tostring_llint (i) ;
-}
+atspre_tostrptr_lint
+  (ats_lint_type i) { return atspre_tostrptr_llint (i) ; }
+// end of [atspre_tostrptr_lint]
 
 /* ****** ****** */
 
@@ -961,10 +946,9 @@ atspre_prerr_ulint
 
 ATSinline()
 ats_ptr_type
-atspre_tostring_ulint
-  (ats_ulint_type i) {
-  return atspre_tostring_ullint (i) ;
-} // end of [atspre_tostring_ulint]
+atspre_tostrptr_ulint
+  (ats_ulint_type i) { return atspre_tostrptr_ullint (i) ; }
+// end of [atspre_tostrptr_ulint]
 
 /* ****** ****** */
 

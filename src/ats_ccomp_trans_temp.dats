@@ -401,10 +401,11 @@ implement template_cst_name_make (d2c, hitss) = let
   val extdef = d2cst_extdef_get d2c; val base = (case+ extdef of
     | $Syn.DCSTEXTDEFnone () => let
         val sym = d2cst_sym_get d2c; val stamp = d2cst_stamp_get d2c
-      in
-        tostringf (
+        val name = tostringf (
           "%s$%s", @($Sym.symbol_name sym, $Stamp.tostring_stamp stamp)
         ) // end of [tostringf]
+      in
+        string_of_strptr (name)
       end // end of [if]
     | $Syn.DCSTEXTDEFsome_fun name => name
     | $Syn.DCSTEXTDEFsome_mac _name => begin
@@ -417,11 +418,13 @@ in
   template_name_make (base, hitss)
 end // end of [template_cst_name_make]
 
-implement template_var_name_make (d2v, hitss) = let
+implement
+template_var_name_make (d2v, hitss) = let
   val sym = d2var_sym_get d2v and stamp = d2var_stamp_get d2v
   val basename = tostringf (
     "%s$%s", @($Sym.symbol_name sym, $Stamp.tostring_stamp stamp)
   ) // end of [tostringf]
+  val basename = string_of_strptr (basename)
 in
   template_name_make (basename, hitss)
 end // end of [template_var_name_make]

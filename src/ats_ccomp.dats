@@ -302,6 +302,7 @@ implement funlab_make_var_typ (d2v, hit) = let
   val stamp = $Stamp.funlab_stamp_make ()
   val stamp_name = $Stamp.tostring_stamp stamp
   val name = tostringf ("%s_%s", @(d2v_name, stamp_name))
+  val name = string_of_strptr (name)
 in
   _funlab_make (name, level, hit, stamp, 0(*trmck*))
 end // end of [funlab_make_var_typ]

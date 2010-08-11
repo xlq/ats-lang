@@ -48,7 +48,7 @@
 // stringization
 
 ats_ptr_type
-atspre_tostring_llint
+atspre_tostrptr_llint
   (ats_llint_type i0) {
   ats_llint_type i, i1 ; int n ; char *res ;
 
@@ -61,12 +61,12 @@ atspre_tostring_llint
   }
   if (i0 < 0) *--res = '-' ; if (i0 == 0) *--res = '0' ;
   return res ;
-} // end of [atspre_tostring_llint]
+} // end of [atspre_tostrptr_llint]
 
 /* ****** ****** */
 
 ats_ptr_type
-atspre_tostring_ullint
+atspre_tostrptr_ullint
   (ats_ullint_type i0) {
   ats_ullint_type i; int n ; char *res ;
 
@@ -78,7 +78,7 @@ atspre_tostring_ullint
   }
   if (i0 == 0) *--res = '0' ;
   return res ;
-} // end of [atspre_tostring_ullint]
+} // end of [atspre_tostrptr_ullint]
 
 %} // end of [%{$]
 

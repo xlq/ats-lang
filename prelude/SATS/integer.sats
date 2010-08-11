@@ -206,10 +206,13 @@ fun fscan1_int_exn {m:file_mode}
 overload fscan_int_exn with fscan1_int_exn
 
 (* ****** ****** *)
-
+//
 // stringization
-
-fun tostring_int (i: int):<> string = "atspre_tostring_int"
+//
+fun tostrptr_int
+  (i: int):<> strptr1 = "atspre_tostrptr_int"
+overload tostrptr with tostrptr_int
+fun tostring_int (i: int):<> string = "atspre_tostrptr_int"
 overload tostring with tostring_int
 
 (* ****** ****** *)
@@ -370,12 +373,13 @@ overload print with print_uint
 overload prerr with prerr_uint
 
 (* ****** ****** *)
-
+//
 // stringization
-
-fun tostring_uint (u: uint):<> string
-  = "atspre_tostring_uint"
-
+//
+fun tostrptr_uint
+  (u: uint):<> strptr1 = "atspre_tostrptr_uint"
+overload tostrptr with tostrptr_uint
+fun tostring_uint (u: uint):<> string = "atspre_tostrptr_uint"
 overload tostring with tostring_uint
 
 (* ****** ****** *)
@@ -718,9 +722,13 @@ fun prerr_lint (li: lint):<!ref> void = "atspre_prerr_lint"
 overload prerr with prerr_lint
 
 (* ****** ****** *)
-
+//
 // stringization
-fun tostring_lint (i: lint):<> string = "atspre_tostring_lint"
+//
+fun tostrptr_lint
+  (i: lint):<> strptr1 = "atspre_tostrptr_lint"
+overload tostrptr with tostrptr_lint
+fun tostring_lint (i: lint):<> string = "atspre_tostrptr_lint"
 overload tostring with tostring_lint
 
 (* ****** ****** *)
@@ -915,11 +923,13 @@ fun prerr_ulint (lu: ulint):<!ref> void
 overload prerr with prerr_ulint
 
 (* ****** ****** *)
-
+//
 // stringization
-
-fun tostring_ulint (i: ulint):<> string
-  = "atspre_tostring_ulint"
+//
+fun tostrptr_ulint
+  (i: ulint):<> strptr1 = "atspre_tostrptr_ulint"
+overload tostrptr with tostrptr_ulint
+fun tostring_ulint (i: ulint):<> string = "atspre_tostrptr_ulint"
 overload tostring with tostring_ulint
 
 (* ****** ****** *)
@@ -1047,11 +1057,13 @@ fun prerr_llint (lli: llint):<!ref> void
 overload prerr with prerr_llint
 
 (* ****** ****** *)
-
+//
 // stringization
-
-fun tostring_llint (i: llint):<> string
-  = "atspre_tostring_llint"
+//
+fun tostrptr_llint
+  (i: llint):<> strptr1 = "atspre_tostrptr_llint"
+overload tostrptr with tostrptr_llint
+fun tostring_llint (i: llint):<> string = "atspre_tostrptr_llint"
 overload tostring with tostring_llint
 
 (* ****** ****** *)
@@ -1180,11 +1192,13 @@ overload print with print_ullint
 overload prerr with prerr_ullint
 
 (* ****** ****** *)
-
+//
 // stringization
-
-fun tostring_ullint (i: ullint):<> string
-  = "atspre_tostring_ullint"
+//
+fun tostrptr_ullint
+  (i: ullint):<> strptr1 = "atspre_tostrptr_ullint"
+overload tostrptr with tostrptr_ullint
+fun tostring_ullint (i: ullint):<> string = "atspre_tostrptr_ullint"
 overload tostring with tostring_ullint
 
 (* ****** ****** *)

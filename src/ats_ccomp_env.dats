@@ -225,11 +225,13 @@ implement typdefmap_add_rec (tk) = let
     val prfx = $Glo.atsccomp_namespace_get ()
   in
     if stropt_is_some prfx then let
-      val prfx = stropt_unsome prfx in
-      tostringf ("%s%s_rec_%i", @(prfx, base, n))
-    end else
-      tostringf ("%s_rec_%i", @(base, n))    
-    // end of [if]
+      val prfx = stropt_unsome prfx
+      val name = tostringf ("%s%s_rec_%i", @(prfx, base, n)) in
+      string_of_strptr (name)
+    end else let
+      val name = tostringf ("%s_rec_%i", @(base, n)) in
+      string_of_strptr (name)
+    end // end of [if]
   end // end of [val]
   val () = let
     val (pfbox | p) = ref_get_view_ptr (the_typdefmap)
@@ -248,11 +250,13 @@ implement typdefmap_add_sum (tk) = let
     val prfx = $Glo.atsccomp_namespace_get ()
   in
     if stropt_is_some prfx then let
-      val prfx = stropt_unsome prfx in
-      tostringf ("%s%s_sum_%i", @(prfx, base, n))
-    end else
-      tostringf ("%s_sum_%i", @(base, n))    
-    // end of [if]
+      val prfx = stropt_unsome prfx
+      val name = tostringf ("%s%s_sum_%i", @(prfx, base, n)) in
+      string_of_strptr (name)
+    end else let
+      val name = tostringf ("%s_sum_%i", @(base, n)) in
+      string_of_strptr (name)
+    end // end of [if]
   end // end of [val]
   val () = let
     val (pfbox | p) = ref_get_view_ptr (the_typdefmap)
@@ -271,11 +275,13 @@ implement typdefmap_add_uni (tk) = let
     val prfx = $Glo.atsccomp_namespace_get ()
   in
     if stropt_is_some prfx then let
-      val prfx = stropt_unsome prfx in
-      tostringf ("%s%s_uni_%i", @(prfx, base, n))
-    end else
-      tostringf ("%s_uni_%i", @(base, n))    
-    // end of [if]
+      val prfx = stropt_unsome prfx
+      val name = tostringf ("%s%s_uni_%i", @(prfx, base, n)) in
+      string_of_strptr (name)
+    end else let
+      val name = tostringf ("%s_uni_%i", @(base, n)) in
+      string_of_strptr (name)
+    end // end of [if]
   end // end of [val]
   val () = let
     val (pfbox | p) = ref_get_view_ptr (the_typdefmap)
