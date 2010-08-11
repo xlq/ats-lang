@@ -165,7 +165,8 @@ end // end of [string_make_list_int]
 
 (* ****** ****** *)
 
-implement stringlst_concat (ss) = let
+implement
+stringlst_concat (ss) = let
   val n0 = aux (ss, i2sz 0) where {
     fun aux {k:nat} .<k>.
       (ss: list (string, k), n: size_t):<> size_t = case+ ss of

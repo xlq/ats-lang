@@ -65,7 +65,9 @@ atspre_bytes_strbuf_trans
 
 ATSinline()
 ats_void_type
-atspre_strbufptr_free (ats_ptr_type base) { ATS_FREE(base); return ; }
+atspre_strbufptr_free
+  (ats_ptr_type base) { ATS_FREE(base); return ; }
+// end of [atspre_strbufptr_free]
 
 /* ****** ****** */
 
@@ -365,7 +367,7 @@ atspre_stropt_is_some
 ATSinline()
 ats_void_type
 atspre_strptr_free
-  (ats_ptr_type s) { if (s) ATS_FREE (s) ; return ; }
+  (ats_ptr_type base) { if (base) ATS_FREE (base) ; return ; }
 // end of [atspre_strptr_free]
 
 /* ****** ****** */

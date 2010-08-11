@@ -30,6 +30,10 @@ fun mpz_test
   val () = assert (mpz_sgn (x) = 1)
   val () = assert (mpz_get_uint (x) = PI)
 //
+  val str = mpz_get_str (10, x)
+  val () = (print "str = "; print str; print_newline ())
+  val () = strptr_free (str)
+//
   val () = mpz_set_str_exn (x, "31415927", 10)
   val () = assert (mpz_cmp (x, PI) = 0)
 //
@@ -43,6 +47,35 @@ fun mpz_test
   val () = assert (mpz_get_ulint (!px) = SQRT2)
   val () = mpz_clear (!px)
   val () = ptr_free (pfx_gc, pfx | px)
+//
+  var fac10: mpz_vt
+  val () = mpz_init (fac10)
+  val () = mpz_fac_ui (fac10, 10UL)
+  val () = (print "fac10 = "; print fac10; print_newline ())
+  val () = mpz_clear (fac10)
+//
+  var fib10: mpz_vt
+  val () = mpz_init (fib10)
+  val () = mpz_fib_ui (fib10, 10UL)
+  var fib11: mpz_vt and fib12: mpz_vt
+  val () = mpz_init (fib11) and () = mpz_init (fib12)
+  val () = mpz_fib2_ui (fib11, fib12, 12UL)
+  val () = mpz_swap (fib11, fib12)
+  val () = assert (mpz_get_int fib10 + mpz_get_int fib11 = mpz_get_int fib12)
+//
+  var nprime: mpz_vt
+  val () = mpz_init (nprime)
+  val () = mpz_nextprime2 (nprime, fib12)
+  val () = (print "nprime = "; print nprime; print_newline ())
+//
+  val nbit = mpz_size (nprime)
+  val () = (print "nbit = "; print nbit; print_newline ())
+  val ndigit = mpz_sizeinbase (nprime, 10)
+  val () = (print "ndigit = "; print ndigit; print_newline ())
+//
+  val () = mpz_clear (fib10)
+  val () = mpz_clear (fib11) and () = mpz_clear (fib12)
+  val () = mpz_clear (nprime)
 //
 } // end of [mpz_test]
 
@@ -86,6 +119,9 @@ fun mpf_test
   val () = gmp_randclear (state)
 //
   val () = mpf_random2 (x, (mp_size_t)100, (mp_exp_t)10)
+  val () = (print "x = "; print_mpf (x, 16); print_newline ())
+  val () = mpf_sqrt (x)
+  val () = mpf_pow (x, 2UL)
   val () = (print "x = "; print_mpf (x, 16); print_newline ())
   var exp: mp_exp_t
   val str = mpf_get_str (exp, 10, 16, x)
@@ -131,9 +167,9 @@ fun mpf_test
     "x = %g, y = %g, z = %g\n", @(mpf_get_d (x), mpf_get_d (y), mpf_get_d (z))
   ) // end of [val]
 *)
-  val () = mpf_clear (z)
-  val () = mpf_clear (y)
   val () = mpf_clear (x)
+  val () = mpf_clear (y)
+  val () = mpf_clear (z)
 } // end of [mpf_test]
 
 (* ****** ****** *)

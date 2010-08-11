@@ -88,17 +88,22 @@ implement intinf_free (pf_gc, pf_at | p) =
 
 (* ****** ****** *)
 
-implement fprint_intinf
-  (pf | fil, intinf) = mpz_out_str_exn (pf | fil, 10, intinf)
+implement
+fprint_intinf
+  (pf | fil, intinf) = fprint_intinf_base (pf | fil, 10, intinf)
 // end of [fprint_intinf]
 
 implement print_intinf (intinf) = print_mac (fprint_intinf, intinf)
 
-implement fprint_intinf_base
-  (pf | fil, base, intinf) = mpz_out_str_exn (pf | fil, base, intinf)
-// end of [fprint_intinf_base]
+implement
+fprint_intinf_base
+  (pf | fil, base, intinf) = () where {
+  val n = mpz_out_str (pf | fil, base, intinf)
+  val () = assert_errmsg (n > 0, "exit(ATS): [fprint_intinf_base] failed.\n")
+} // end of [fprint_intinf_base]
 
-implement print_intinf_base (base, intinf) = let
+implement
+print_intinf_base (base, intinf) = let
   val (pf_stdout | p_stdout) = stdout_get ()
   val () = fprint_intinf_base
     (file_mode_lte_w_w | !p_stdout, base, intinf)

@@ -235,6 +235,25 @@ fun mpz_init_set_str_exn
 
 (* ****** ****** *)
 
+fun mpz_swap (dst1: &mpz_vt, dst2: &mpz_vt): void = "#atslib_mpz_swap"
+
+(* ****** ****** *)
+
+fun mpz_odd_p (src: &mpz_vt):<> bool = "#atslib_mpz_odd_p"
+fun mpz_even_p (src: &mpz_vt):<> bool = "#atslib_mpz_even_p"
+
+fun mpz_fits_int_p (src: &mpz_vt):<> bool = "#atslib_mpz_fits_int_p"
+fun mpz_fits_uint_p (src: &mpz_vt):<> bool = "#atslib_mpz_fits_uint_p"
+fun mpz_fits_lint_p (src: &mpz_vt):<> bool = "#atslib_mpz_fits_lint_p"
+fun mpz_fits_ulint_p (src: &mpz_vt):<> bool = "#atslib_mpz_fits_ulint_p"
+fun mpz_fits_sint_p (src: &mpz_vt):<> bool = "#atslib_mpz_fits_sint_p"
+fun mpz_fits_usint_p (src: &mpz_vt):<> bool = "#atslib_mpz_fits_usint_p"
+
+fun mpz_size (src: &mpz_vt): size_t = "#atslib_mpz_size"
+fun mpz_sizeinbase (src: &mpz_vt, base: int): size_t = "#atslib_mpz_sizeinbase"
+
+(* ****** ****** *)
+
 // negation
 
 symintr mpz_neg
@@ -601,6 +620,65 @@ fun mpz_sgn (x: &mpz_vt):<> Sgn = "#atslib_mpz_sgn"
 
 (* ****** ****** *)
 
+symintr mpz_gcd
+
+fun mpz_gcd3_mpf
+  (dst: &mpz_vt, src1: &mpz_vt, src2: &mpz_vt): void = "#atslib_mpz_gcd3_mpf"
+overload mpz_gcd with mpz_gcd3_mpf
+fun mpz_gcd3_ui
+  (dst: &mpz_vt, src1: &mpz_vt, src2: ulint): ulint = "#atslib_mpz_gcd3_ui"
+overload mpz_gcd with mpz_gcd3_ui
+
+fun mpz_gcdext // for given a and b, g, s and t are computed s.t. g = a*s + b*t
+  (g: &mpz_vt, s: &mpz_vt, t: &mpz_vt, a: &mpz_vt, b: &mpz_vt) : void = "#atslib_mpz_gcdext"
+// end of [mpz_gcdext]
+
+(* ****** ****** *)
+
+symintr mpz_lcm
+
+fun mpz_lcm3_mpf
+  (dst: &mpz_vt, src1: &mpz_vt, src2: &mpz_vt): void = "#atslib_mpz_lcm3_mpf"
+overload mpz_lcm with mpz_lcm3_mpf
+fun mpz_lcm3_ui
+  (dst: &mpz_vt, src1: &mpz_vt, src2: ulint): void = "#atslib_mpz_lcm3_ui"
+overload mpz_lcm with mpz_lcm3_ui
+
+(* ****** ****** *)
+
+fun mpz_invert3
+  (dst: &mpz_vt, src1: &mpz_vt, src2: &mpz_vt): int = "#atslib_mpz_invert3"
+// end of [mpz_invert3]
+
+(* ****** ****** *)
+
+fun mpz_nextprime2
+  (dst: &mpz_vt, src: &mpz_vt): void = "#atslib_mpz_nextprime2"
+// end of [mpz_nextprime2]
+
+// HX: Note that jacobi (a, b) is only defined for b that is odd
+fun mpz_jacobi (a: &mpz_vt, b: &mpz_vt): int = "#atslib_mpz_jacobi"
+fun mpz_legendre (a: &mpz_vt, b: &mpz_vt): int = "#atslib_mpz_legendre"
+
+symintr mpz_kronecker
+fun mpz_kronecker_mpf (a: &mpz_vt, b: &mpz_vt): int = "#atslib_mpz_kronecker_mpf"
+overload mpz_kronecker with mpz_kronecker_mpf
+fun mpz_kronecker_si (a: &mpz_vt, b: lint): int = "#atslib_mpz_kronecker_si"
+overload mpz_kronecker with mpz_kronecker_si
+fun mpz_kronecker_ui (a: &mpz_vt, b: ulint): int = "#atslib_mpz_kronecker_ui"
+overload mpz_kronecker with mpz_kronecker_ui
+fun mpz_si_kronecker (a: lint, b: &mpz_vt): int = "#atslib_mpz_kronecker_si"
+fun mpz_ui_kronecker (a: ulint, b: &mpz_vt): int = "#atslib_mpz_kronecker_ui"
+
+fun mpz_fac_ui (x: &mpz_vt, n: ulint): void = "#atslib_mpz_fac_ui"
+fun mpz_fib_ui (x: &mpz_vt, n: ulint): void = "#atslib_mpz_fib_ui"
+fun mpz_fib2_ui (x1: &mpz_vt, x2: &mpz_vt, n: ulint): void = "#atslib_mpz_fib2_ui"
+
+(* ****** ****** *)
+//
+// some MPZ input/output/print functions
+//
+
 fun mpz_inp_str {m:file_mode} (
     pf_mode: file_mode_lte (m, r) | x: &mpz_vt, file: &FILE m, base: mp_base_t
   ) : size_t = "#atslib_mpz_inp_str"
@@ -781,12 +859,12 @@ fun mpf_ulint_p (src: &mpf_vt):<> bool = "#atslib_mpf_ulint_p"
 fun mpf_sint_p (src: &mpf_vt):<> bool = "#atslib_mpf_sint_p"
 fun mpf_usint_p (src: &mpf_vt):<> bool = "#atslib_mpf_usint_p"
 
-fun mpf_fits_int_p (lop: &mpf_vt):<> bool = "#atslib_mpf_fits_int_p"
-fun mpf_fits_uint_p (lop: &mpf_vt):<> bool = "#atslib_mpf_fits_uint_p"
-fun mpf_fits_lint_p (lop: &mpf_vt):<> bool = "#atslib_mpf_fits_lint_p"
-fun mpf_fits_ulint_p (lop: &mpf_vt):<> bool = "#atslib_mpf_fits_ulint_p"
-fun mpf_fits_sint_p (lop: &mpf_vt):<> bool = "#atslib_mpf_fits_sint_p"
-fun mpf_fits_usint_p (lop: &mpf_vt):<> bool = "#atslib_mpf_fits_usint_p"
+fun mpf_fits_int_p (src: &mpf_vt):<> bool = "#atslib_mpf_fits_int_p"
+fun mpf_fits_uint_p (src: &mpf_vt):<> bool = "#atslib_mpf_fits_uint_p"
+fun mpf_fits_lint_p (src: &mpf_vt):<> bool = "#atslib_mpf_fits_lint_p"
+fun mpf_fits_ulint_p (src: &mpf_vt):<> bool = "#atslib_mpf_fits_ulint_p"
+fun mpf_fits_sint_p (src: &mpf_vt):<> bool = "#atslib_mpf_fits_sint_p"
+fun mpf_fits_usint_p (src: &mpf_vt):<> bool = "#atslib_mpf_fits_usint_p"
 
 (* ****** ****** *)
 
@@ -906,12 +984,14 @@ fun mpf_ui_div2 (dst: &mpf_vt, src1: ulint): void = "atslib_mpf_ui_div2" // !fun
 symintr mpf_sqrt
 
 // dst := sqrt (src)
-fun mpf_sqrt_mpf
-  (dst: &mpf_vt, src: &mpf_vt): void = "#atslib_mpf_sqrt_mpf"
-overload mpf_sqrt with mpf_sqrt_mpf
-  
-fun mpf_sqrt_ui (dst: &mpf_vt, src: ulint): void = "#atslib_mpf_sqrt_ui"
-overload mpf_sqrt with mpf_sqrt_ui
+fun mpf_sqrt2_mpf
+  (dst: &mpf_vt, src: &mpf_vt): void = "#atslib_mpf_sqrt2_mpf"
+overload mpf_sqrt with mpf_sqrt2_mpf
+fun mpf_sqrt2_ui (dst: &mpf_vt, src: ulint): void = "#atslib_mpf_sqrt2_ui"
+overload mpf_sqrt with mpf_sqrt2_ui
+
+fun mpf_sqrt1_mpf (dst: &mpf_vt): void = "atslib_mpf_sqrt1_mpf" // !fun
+overload mpf_sqrt with mpf_sqrt1_mpf
 
 (* ****** ****** *)
 
@@ -920,7 +1000,6 @@ symintr mpf_pow
 fun mpf_pow3_ui
   (dst: &mpf_vt, src1: &mpf_vt, src2: ulint): void = "#atslib_mpf_pow3_ui"
 overload mpf_pow with mpf_pow3_ui
-
 fun mpf_pow2_ui (dst: &mpf_vt, src2: ulint): void = "atslib_mpf_pow2_ui" // !fun
 overload mpf_pow with mpf_pow2_ui
 
@@ -931,7 +1010,6 @@ symintr mpf_mul_2exp
 fun mpf_mul3_2exp
   (dst: &mpf_vt, src1: &mpf_vt, src2: ulint): void = "#atslib_mpf_mul3_2exp"
 overload mpf_mul_2exp with mpf_mul3_2exp
-
 fun mpf_mul2_2exp (dst: &mpf_vt, src2: ulint): void = "atslib_mpf_mul2_2exp" // !fun
 overload mpf_mul_2exp with mpf_mul2_2exp
 
@@ -942,7 +1020,6 @@ symintr mpf_div_2exp
 fun mpf_div3_2exp
   (dst: &mpf_vt, src1: &mpf_vt, src2: ulint): void = "#atslib_mpf_div3_2exp"
 overload mpf_div_2exp with mpf_div3_2exp
-
 fun mpf_div2_2exp (dst: &mpf_vt, src2: ulint): void = "atslib_mpf_div2_2exp" // !fun
 overload mpf_div_2exp with mpf_div2_2exp
 

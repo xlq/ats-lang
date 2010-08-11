@@ -98,7 +98,7 @@ end // end of [str]
 
 implement concat (ss) = let
   val ss = list1_of_list0 (ss); val sbp = stringlst_concat (ss) in
-  string1_of_strbuf sbp
+  string_of_strptr (sbp)
 end // end of [concat]
 
 implement concatWith (sep, ss) = let
@@ -133,7 +133,7 @@ in
       } // end of [val]
       val () = list_vt_free (lss_sep)
     in
-      string1_of_strbuf (sbp)
+      string_of_strptr (sbp)
     end // end of [list_cons]  
   | list_nil () => ""
 end // end of [concatWith]
@@ -210,7 +210,7 @@ implement translate (f, s) = let
   } // end of [val]
   val () = list_vt_free (res)
 in
-  string1_of_strbuf (sbp)
+  string_of_strptr (sbp)
 end (* end of [translate] *)
 
 (* ****** ****** *)

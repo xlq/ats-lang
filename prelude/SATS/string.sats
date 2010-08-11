@@ -667,14 +667,19 @@ fun tostringf__bufptr {ts:types}
 // HX-2010-08-10: linear strings
 //
 
+castfn ptr_of_strptr {l:addr} (x: !strptr l):<> ptr l
+overload ptr_of with ptr_of_strptr
+//
 castfn string_of_strptr (x: strptr1):<> string
-castfn strptr_of_string (x: string) // non-reentrant!
-  :<> [l:agz] (strptr l -<lin,prf> void | strptr l)
-castfn strptr_of_strbuf (x: Strbufptr_gc):<> strptr1
-castfn strbuf_of_strptr (x: strptr1):<> Strbufptr_gc
-
+castfn string_takeout_ptr // non-reentrant! 
+  (x: string) :<> [l:agz] (strptr l -<lin,prf> void | strptr l)
+castfn strbuf_of_strptr {l:agz}
+  (x: strptr l):<> [m,n:nat] strbufptr_gc (m, n, l)
+castfn strptr_of_strbuf
+  {m,n:int} {l:addr} (x: strbufptr_gc (m, n, l)):<> [l > null] strptr l
+//
 fun strptr_free {l:addr} (x: strptr l):<> void = "atspre_strptr_free"
-
+//
 symintr fprint_strptr
 fun fprint0_strptr {l:addr} (out: FILEref, x: !strptr l): void
   = "atspre_fprint_strptr"
@@ -684,12 +689,11 @@ fun fprint1_strptr {l:addr} {m:file_mode}
   = "atspre_fprint_strptr"
 overload fprint_strptr with fprint1_strptr
 overload fprint with fprint_strptr
-
 fun print_strptr {l:addr} (x: !strptr l): void = "atspre_print_string"
 and prerr_strptr {l:addr} (x: !strptr l): void = "atspre_prerr_string"
 overload print with print_strptr
 overload prerr with prerr_strptr
-
+//
 (* ****** ****** *)
 
 #if VERBOSE_PRELUDE #then

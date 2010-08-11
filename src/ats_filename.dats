@@ -101,7 +101,8 @@ end // end of [local]
 
 #define THISFILENAME "ats_filename.dats"
 
-implement filename_is_relative (name) = let
+implement
+filename_is_relative (name) = let
   val name = string1_of_string name
   fn aux {n,i:nat | i <= n}
     (name: string n, i: size_t i, dirsep: char): bool =
@@ -301,10 +302,9 @@ fun path_normalize (s0: path): path = let
     extern castfn __cast (x: !List_vt string): List string
   } // end of [val]
   val () = list_vt_free (dirs)
-  val fullname = string_of_strptr (fullname)
 //
 in
-  string1_of_string (fullname)
+  string_of_strptr (fullname)
 end // end of [path_normalize]
 
 (* ****** ****** *)

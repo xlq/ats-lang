@@ -183,6 +183,25 @@ atslib_mpz_init_set_str_exn (
 
 /* ****** ****** */
 
+#define atslib_mpz_swap mpz_swap
+
+/* ****** ****** */
+
+#define atslib_mpz_odd_p mpz_odd_p
+#define atslib_mpz_even_p mpz_even_p
+
+#define atslib_mpz_fits_int_p mpz_fits_int_p
+#define atslib_mpz_fits_uint_p mpz_fits_uint_p
+#define atslib_mpz_fits_lint_p mpz_fits_long_p
+#define atslib_mpz_fits_ulint_p mpz_fits_ulong_p
+#define atslib_mpz_fits_sint_p mpz_fits_sshort_p
+#define atslib_mpz_fits_usint_p mpz_fits_ushort_p
+
+#define atslib_mpz_size mpz_size
+#define atslib_mpz_sizeinbase mpz_sizeinbase
+
+/* ****** ****** */
+
 //
 // negation
 //
@@ -547,6 +566,35 @@ atslib_mpz_fdiv2_q_ulint (
 #define atslib_mpz_sgn mpz_sgn
 
 /* ****** ****** */
+
+#define atslib_mpz_gcd3_mpf mpz_gcd
+#define atslib_mpz_gcd3_ui mpz_gcd_ui
+
+#define atslib_mpz_gcdext mpz_gcdext
+
+#define atslib_mpz_lcm3_mpf mpz_lcm
+#define atslib_mpz_lcm3_ui mpz_lcm_ui
+
+#define atslib_mpz_invert3 mpz_invert
+
+/* ****** ****** */
+
+#define atslib_mpz_nextprime2 mpz_nextprime
+
+#define atslib_mpz_jacobi mpz_jacobi
+#define atslib_mpz_legendre mpz_legendre
+
+#define atslib_mpz_kronecker_mpf mpz_kronecker
+#define atslib_mpz_kronecker_si mpz_kronecker_si
+#define atslib_mpz_kronecker_ui mpz_kronecker_ui
+#define atslib_mpz_si_kronecker mpz_si_kronecker
+#define atslib_mpz_ui_kronecker mpz_ui_kronecker
+
+#define atslib_mpz_fac_ui mpz_fac_ui
+#define atslib_mpz_fib_ui mpz_fib_ui
+#define atslib_mpz_fib2_ui mpz_fib2_ui
+
+/* ****** ****** */
 //
 // HX: input/output/print functions
 //
@@ -665,10 +713,10 @@ atslib_mpf_set_str_exn (
 
 #define atslib_mpf_fits_int_p mpf_fits_int_p
 #define atslib_mpf_fits_uint_p mpf_fits_uint_p
-#define atslib_mpf_fits_lint_p mpf_fits_lint_p
-#define atslib_mpf_fits_ulint_p mpf_fits_ulint_p
-#define atslib_mpf_fits_sint_p mpf_fits_sint_p
-#define atslib_mpf_fits_usint_p mpf_fits_usint_p
+#define atslib_mpf_fits_lint_p mpf_fits_long_p
+#define atslib_mpf_fits_ulint_p mpf_fits_ulong_p
+#define atslib_mpf_fits_sint_p mpf_fits_sshort_p
+#define atslib_mpf_fits_usint_p mpf_fits_ushort_p
 
 /* ****** ****** */
 
@@ -792,8 +840,15 @@ atslib_mpf_ui_div2 (
 
 /* ****** ****** */
 
-#define atslib_mpf_sqrt_mpf mpf_sqrt
-#define atslib_mpf_sqrt_ui mpf_sqrt_ui
+#define atslib_mpf_sqrt2_mpf mpf_sqrt
+#define atslib_mpf_sqrt2_ui mpf_sqrt_ui
+
+ATSinline()
+ats_void_type
+atslib_mpf_sqrt1_mpf
+  (ats_ref_type dst) {
+  mpf_sqrt ((mpf_ptr)dst, (mpf_ptr)dst) ; return ;
+} // end of [atslib_mpf_pow1_ui]
 
 /* ****** ****** */
 
@@ -868,18 +923,18 @@ atslib_fprint_mpf (
 ATSinline()
 ats_void_type
 atslib_print_mpf (
-  const ats_mpz_ptr_type x, ats_size_type ndigit
+  const ats_mpf_ptr_type x, ats_size_type ndigit
 ) {
   atslib_mpf_out_str_exn (stdout, 10/*base*/, ndigit, x) ; return ;
-} // end of [atslib_print_mpz]
+} // end of [atslib_print_mpf]
 
 ATSinline()
 ats_void_type
 atslib_prerr_mpf (
-  const ats_mpz_ptr_type x, ats_size_type ndigit
+  const ats_mpf_ptr_type x, ats_size_type ndigit
 ) {
   atslib_mpf_out_str_exn (stderr, 10/*base*/, ndigit, x) ; return ;
-} // end of [atslib_prerr_mpz]
+} // end of [atslib_prerr_mpf]
 
 /* ****** ****** */
 

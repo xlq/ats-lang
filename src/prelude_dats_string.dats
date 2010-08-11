@@ -56,7 +56,8 @@ _string_alloc (const ats_size_type n) {
 
 (* ****** ****** *)
 
-implement stringlst_concat (ss) = let
+implement
+stringlst_concat (ss) = let
   val n0 = aux (ss, size1_of_int1 0) where {
     fun aux {k:nat} .<k>.
       (ss: list (string, k), n: size_t):<> size_t = case+ ss of
