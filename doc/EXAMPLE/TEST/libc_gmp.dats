@@ -80,6 +80,75 @@ fun mpz_test
 } // end of [mpz_test]
 
 (* ****** ****** *)
+//
+// e = 1/0! + 1/1! + 1/2! + 1/3! + ...
+//
+fn compec1
+  (N: ulint): double = e where {
+  var res: mpq_vt; val () = mpq_init (res)
+  var nfac: mpz_vt; val () = mpz_init (nfac)
+  var n: ulint
+  var nfacinv: mpq_vt; val () = mpq_init (nfacinv)
+  val () = mpq_set_ui (nfacinv, 1UL, 1UL)
+  val () = for
+    (n := 0UL; n < N; n := n + 1UL) let
+    val () = mpz_fac_ui (nfac, n)
+    val () = mpq_set_den (nfacinv, nfac)
+    val () = mpq_add (res, nfacinv)
+  in
+    // nothing
+  end // end of [val]
+  val e = mpq_get_d (res)
+  val () = mpq_clear (res)
+  val () = mpz_clear (nfac)
+  val () = mpq_clear (nfacinv)
+} // end of [compec1]
+
+(* ****** ****** *)
+
+fun mpq_incby_ui (
+    x: &mpq_vt, p: ulint, q: ulint
+  ) : void = let
+  val (pf_xp, fpf_xp | p_xp) = mpq_numref (x)
+  val (pf_xq, fpf_xq | p_xq) = mpq_denref (x)
+  val () = mpz_mul (!p_xp, q)
+  val () = mpz_addmul (!p_xp, !p_xq, p)
+  val () = mpz_mul (!p_xq, q)
+  prval () = fpf_xp (pf_xp)
+  prval () = fpf_xq (pf_xq)
+in
+  mpq_canonicalize (x)
+end // end of [mpq_incby_ui]
+
+fun mpq_decby_ui (
+    x: &mpq_vt, p: ulint, q: ulint
+  ) : void = let
+  val (pf_xp, fpf_xp | p_xp) = mpq_numref (x)
+  val (pf_xq, fpf_xq | p_xq) = mpq_denref (x)
+  val () = mpz_mul (!p_xp, q)
+  val () = mpz_submul (!p_xp, !p_xq, p)
+  val () = mpz_mul (!p_xq, q)
+  prval () = fpf_xp (pf_xp)
+  prval () = fpf_xq (pf_xq)
+in
+  mpq_canonicalize (x)
+end // end of [mpq_decby_ui]
+
+//
+// e = 1/lim_{n->oo} (1-1/n)^n
+//
+fn compec2
+  (n: ulint): double = e where {
+  var x: mpq_vt; val () = mpq_init (x)
+  val () = mpq_set_ui (x, 1UL, 1UL)
+  val () = mpq_decby_ui (x, 1UL, n)
+  val () = mpq_pow_ui (x, n)
+  val () = mpq_inv (x)
+  val e = mpq_get_d (x)
+  val () = mpq_clear (x)
+} // end of [compec2]
+
+(* ****** ****** *)
 
 fun mpq_test
   (): void = () where {
@@ -96,6 +165,13 @@ fun mpq_test
   val () = (print "den = "; print (!p_den); print_newline ())
   prval () = fpf_den (pf_den)
   val () = mpq_clear (x) and () = mpq_clear (y)
+//
+  val e = compec1 (16UL) // quite accurate
+  val () = printf ("Euler's constant (e) = %.10f\n", @(e))
+//
+  val e = compec2 (1024UL) // not quite accurate
+  val () = printf ("Euler's constant (e) = %.10f\n", @(e))
+//
 } // end of [mpq_test]
 
 (* ****** ****** *)
@@ -140,7 +216,7 @@ fun mpf_test
   val () = mpf_random2 (x, (mp_size_t)100, (mp_exp_t)10)
   val () = (print "x = "; print_mpf (x, 16); print_newline ())
   val () = mpf_sqrt (x)
-  val () = mpf_pow (x, 2UL)
+  val () = mpf_pow_ui (x, 2UL)
   val () = (print "x = "; print_mpf (x, 16); print_newline ())
   var exp: mp_exp_t
   val str = mpf_get_str (exp, 10, 16, x)

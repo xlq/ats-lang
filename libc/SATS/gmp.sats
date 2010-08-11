@@ -78,7 +78,7 @@ typedef mp_base_t = intBtw (2, 36+1) // for outputing MP numbers
 
 (* ****** ****** *)
 //
-// HX: integral number operations
+// integral number operations
 //
 (* ****** ****** *)
 
@@ -109,21 +109,16 @@ symintr mpz_get
 
 fun mpz_get_int (x: &mpz_vt):<> int = "#atslib_mpz_get_int"
 overload mpz_get with mpz_get_int
-
 fun mpz_get_uint (x: &mpz_vt):<> uint = "#atslib_mpz_get_uint"
 overload mpz_get with mpz_get_uint
-
 fun mpz_get_lint (x: &mpz_vt):<> lint = "#atslib_mpz_get_lint"
 overload mpz_get with mpz_get_lint
-
 fun mpz_get_ulint (x: &mpz_vt):<> ulint = "#atslib_mpz_get_ulint"
 overload mpz_get with mpz_get_ulint
-
 fun mpz_get_double (x: &mpz_vt):<> double = "#atslib_mpz_get_double"
 overload mpz_get with mpz_get_double
-
-fun mpz_get_str
-  (base: mp_base_t, x: &mpz_vt): strptr1 = "atslib_mpz_get_str" // function!
+fun mpz_get_str // HX: a special case of the original namesake in GMP
+  (base: mp_base_t, x: &mpz_vt):<> strptr1 = "atslib_mpz_get_str" // fun!
 // end of [mpz_get_str]
 
 (* ****** ****** *)
@@ -134,33 +129,19 @@ symintr mpz_set
 fun mpz_set_mpz
   (x: &mpz_vt, y: &mpz_vt):<> void = "#atslib_mpz_set_mpz"
 overload mpz_set with mpz_set_mpz
-
-// [x] := [y]
 fun mpz_set_int (x: &mpz_vt, y: int):<> void = "#atslib_mpz_set_int"
 overload mpz_set with mpz_set_int
-
-// [x] := [y]
 fun mpz_set_uint (x: &mpz_vt, y: uint):<> void = "#atslib_mpz_set_uint"
 overload mpz_set with mpz_set_uint
-
-// [x] := [y]
 fun mpz_set_lint (x: &mpz_vt, y: lint):<> void = "#atslib_mpz_set_lint"
 overload mpz_set with mpz_set_lint
-
-// [x] := [y]
 fun mpz_set_ulint (x: &mpz_vt, y: ulint):<> void = "#atslib_mpz_set_ulint"
 overload mpz_set with mpz_set_ulint
-
-// [x] := [y]
 fun mpz_set_double
   (x: &mpz_vt, y: double):<> void = "#atslib_mpz_set_double"
 overload mpz_set with mpz_set_double
-
-// [x] := [y]
 fun mpz_set_mpq (x: &mpz_vt, y: &mpq_vt):<> void = "#atslib_mpz_set_mpq"
 overload mpz_set with mpz_set_mpq
-
-// [x] := [y]
 fun mpz_set_mpf (x: &mpz_vt, y: &mpf_vt):<> void = "#atslib_mpz_set_mpf"
 overload mpz_set with mpz_set_mpf
 
@@ -170,7 +151,6 @@ overload mpz_set with mpz_set_mpf
 fun mpz_set_str
   (x: &mpz_vt, s: string, base: mp_base_t):<> int = "#atslib_mpz_set_str" // macro
 // end of [mpz_set_str]
-
 fun mpz_set_str_exn
   (x: &mpz_vt, s: string, base: mp_base_t):<> void = "atslib_mpz_set_str_exn" // fun!
 // end of [mpz_set_str_exn]
@@ -183,38 +163,24 @@ symintr mpz_init_set
 fun mpz_init_set_mpz (x: &mpz_vt? >> mpz_vt, y: &mpz_vt):<> void
   = "#atslib_mpz_init_set_mpz"
 overload mpz_init_set with mpz_init_set_mpz
-
-// [x] := [y]
 fun mpz_init_set_int (x: &mpz_vt? >> mpz_vt, y: int):<> void
   = "#atslib_mpz_init_set_int"
 overload mpz_init_set with mpz_init_set_int
-
-// [x] := [y]
 fun mpz_init_set_uint (x: &mpz_vt? >> mpz_vt, y: uint):<> void
   = "#atslib_mpz_init_set_uint"
 overload mpz_init_set with mpz_init_set_uint
-
-// [x] := [y]
 fun mpz_init_set_lint (x: &mpz_vt? >> mpz_vt, y: lint):<> void
   = "#atslib_mpz_init_set_lint"
 overload mpz_init_set with mpz_init_set_lint
-
-// [x] := [y]
 fun mpz_init_set_ulint (x: &mpz_vt? >> mpz_vt, y: ulint):<> void
   = "#atslib_mpz_init_set_ulint"
 overload mpz_init_set with mpz_init_set_ulint
-
-// [x] := [y]
 fun mpz_init_set_double (x: &mpz_vt? >> mpz_vt, y: double):<> void
   = "#atslib_mpz_init_set_double"
 overload mpz_init_set with mpz_init_set_double
-
-// [x] := [y]
 fun mpz_init_set_mpq
   (x: &mpz_vt? >> mpz_vt, y: &mpq_vt):<> void = "atslib_mpz_init_set_mpq" // fun!
 overload mpz_init_set with mpz_init_set_mpq
-
-// [x] := [y]
 fun mpz_init_set_mpf
   (x: &mpz_vt? >> mpz_vt, y: &mpf_vt):<> void = "atslib_mpz_init_set_mpf" // fun!
 overload mpz_init_set with mpz_init_set_mpf
@@ -261,7 +227,6 @@ symintr mpz_neg
 // [x] := -[y]
 fun mpz_neg2 (x: &mpz_vt, y: &mpz_vt):<> void = "#atslib_mpz_neg2"
 overload mpz_neg with mpz_neg2
-
 // [x] := -[x]
 fun mpz_neg1 (x: &mpz_vt):<> void = "atslib_mpz_neg1" // function!
 overload mpz_neg with mpz_neg1
@@ -273,7 +238,6 @@ symintr mpz_abs
 // [x] := | [y] |
 fun mpz_abs2 (x: &mpz_vt, y: &mpz_vt):<> void = "#atslib_mpz_abs2"
 overload mpz_abs with mpz_abs2
-
 // [x] := | [x] |
 fun mpz_abs1 (x: &mpz_vt):<> void = "atslib_mpz_abs1" // function!
 overload mpz_abs with mpz_abs1
@@ -286,19 +250,15 @@ symintr mpz_add
 fun mpz_add3_mpz
   (x: &mpz_vt, y: &mpz_vt, z: &mpz_vt):<> void = "#atslib_mpz_add3_mpz"
 overload mpz_add with mpz_add3_mpz
-
 fun mpz_add3_int
   (x: &mpz_vt, y: &mpz_vt, z: int):<> void = "atslib_mpz_add3_int" // fun!
 overload mpz_add with mpz_add3_int
-
 fun mpz_add3_uint
   (x: &mpz_vt, y: &mpz_vt, z: uint):<> void = "#atslib_mpz_add3_uint"
 overload mpz_add with mpz_add3_uint
-
 fun mpz_add3_lint
   (x: &mpz_vt, y: &mpz_vt, z: lint):<> void = "atslib_mpz_add3_lint" // fun!
 overload mpz_add with mpz_add3_lint
-
 fun mpz_add3_ulint
   (x: &mpz_vt, y: &mpz_vt, z: ulint):<> void = "#atslib_mpz_add3_ulint"
 overload mpz_add with mpz_add3_ulint
@@ -307,19 +267,15 @@ overload mpz_add with mpz_add3_ulint
 fun mpz_add2_mpz
   (x: &mpz_vt, y: &mpz_vt):<> void = "atslib_mpz_add2_mpz"
 overload mpz_add with mpz_add2_mpz
-
 fun mpz_add2_int
   (x: &mpz_vt, y: int):<> void = "atslib_mpz_add2_int"
 overload mpz_add with mpz_add2_int
-
 fun mpz_add2_uint
   (x: &mpz_vt, y: uint):<> void = "atslib_mpz_add2_uint"
 overload mpz_add with mpz_add2_uint
-
 fun mpz_add2_lint
   (x: &mpz_vt, y: lint):<> void = "atslib_mpz_add2_lint"
 overload mpz_add with mpz_add2_lint
-
 fun mpz_add2_ulint
   (x: &mpz_vt, y: ulint):<> void = "atslib_mpz_add2_ulint"
 overload mpz_add with mpz_add2_ulint
@@ -332,46 +288,35 @@ symintr mpz_sub
 fun mpz_sub3_mpz
   (x: &mpz_vt, y: &mpz_vt, z: &mpz_vt):<> void = "#atslib_mpz_sub3_mpz"
 overload mpz_sub with mpz_sub3_mpz  
-
 fun mpz_sub3_int
   (x: &mpz_vt, y: &mpz_vt, z: int):<> void = "atslib_mpz_sub3_int" // fun!
 overload mpz_sub with mpz_sub3_int
-
 fun mpz_sub3_uint
   (x: &mpz_vt, y: &mpz_vt, z: uint):<> void = "#atslib_mpz_sub3_uint"
 overload mpz_sub with mpz_sub3_uint
-
 fun mpz_sub3_lint
   (x: &mpz_vt, y: &mpz_vt, z: lint):<> void = "atslib_mpz_sub3_lint" // fun!
 overload mpz_sub with mpz_sub3_lint  
-
 fun mpz_sub3_ulint
   (x: &mpz_vt, y: &mpz_vt, z: ulint):<> void = "#atslib_mpz_sub3_ulint"
 overload mpz_sub with mpz_sub3_ulint  
-
 fun mpz_ui_sub3
   (dst: &mpz_vt, src1: ulint, src2: &mpz_vt): void = "#atslib_mpz_ui_sub3"
 // end of [mpz_ui_sub3] // HX: no overloading for this one
-
-//
 
 // [x] := [x] - [y]
 fun mpz_sub2_mpz
   (x: &mpz_vt, y: &mpz_vt):<> void = "atslib_mpz_sub2_mpz"
 overload mpz_sub with mpz_sub2_mpz
-
 fun mpz_sub2_int
   (x: &mpz_vt, y: int):<> void = "atslib_mpz_sub2_int"
 overload mpz_sub with mpz_sub2_int
-
 fun mpz_sub2_uint
   (x: &mpz_vt, y: uint):<> void = "atslib_mpz_sub2_uint"
 overload mpz_sub with mpz_sub2_uint
-
 fun mpz_sub2_lint
   (x: &mpz_vt, y: lint):<> void = "atslib_mpz_sub2_lint"
 overload mpz_sub with mpz_sub2_lint
-
 fun mpz_sub2_ulint
   (x: &mpz_vt, y: ulint):<> void = "atslib_mpz_sub2_ulint"
 overload mpz_sub with mpz_sub2_ulint
@@ -382,45 +327,33 @@ overload mpz_sub with mpz_sub2_ulint
 
 symintr mpz_mul
 
-//
-
 // [x] := [y] * [z]
 fun mpz_mul3_mpz
   (x: &mpz_vt, y: &mpz_vt, z: &mpz_vt):<> void = "#atslib_mpz_mul3_mpz"
 overload mpz_mul with mpz_mul3_mpz
-
 fun mpz_mul3_int
   (x: &mpz_vt, y: &mpz_vt, z: int):<> void = "#atslib_mpz_mul3_int"
 overload mpz_mul with mpz_mul3_int
-
 fun mpz_mul3_uint
   (x: &mpz_vt, y: &mpz_vt, z: uint):<> void = "#atslib_mpz_mul3_uint"
 overload mpz_mul with mpz_mul3_uint
-
 fun mpz_mul3_lint
   (x: &mpz_vt, y: &mpz_vt, z: lint):<> void = "#atslib_mpz_mul3_lint"
 overload mpz_mul with mpz_mul3_lint
-
 fun mpz_mul3_ulint
   (x: &mpz_vt, y: &mpz_vt, z: ulint):<> void = "#atslib_mpz_mul3_ulint"
 overload mpz_mul with mpz_mul3_ulint
-
-//
 
 // [x] := [x] * [y]
 fun mpz_mul2_mpz
   (x: &mpz_vt, y: &mpz_vt):<> void = "atslib_mpz_mul2_mpz"
 overload mpz_mul with mpz_mul2_mpz
-
 fun mpz_mul2_int (x: &mpz_vt, y: int):<> void = "atslib_mpz_mul2_int"
 overload mpz_mul with mpz_mul2_int
-
 fun mpz_mul2_uint (x: &mpz_vt, y: uint):<> void = "atslib_mpz_mul2_uint"
 overload mpz_mul with mpz_mul2_uint
-
 fun mpz_mul2_lint (x: &mpz_vt, y: lint):<> void = "atslib_mpz_mul2_lint"
 overload mpz_mul with mpz_mul2_lint
-
 fun mpz_mul2_ulint (x: &mpz_vt, y: ulint):<> void = "atslib_mpz_mul2_ulint"
 overload mpz_mul with mpz_mul2_ulint
 
@@ -431,6 +364,9 @@ overload mpz_mul with mpz_mul1_mpz
 (* ****** ****** *)
 
 (*
+**
+** Author: Zhiqiang Ren (aren AT cs DOT bu DOT edu)
+**
 ** Function: mpz_mul_2exp
 ** Input: arg1, arg2
 ** Output: res
@@ -448,7 +384,7 @@ fun mpz_mul_2exp
 
 (* ****** ****** *)
 //
-// truncate division
+// integer truncate division
 //
 symintr mpz_tdiv_qr
 
@@ -463,8 +399,6 @@ fun mpz_tdiv4_qr_ulint
   (q: &mpz_vt, r: &mpz_vt, n: &mpz_vt, d: ulint):<> void = "#atslib_mpz_tdiv4_qr_ulint"
 // end of [mpz_tdiv4_qr_ulint]
 overload mpz_tdiv_qr with mpz_tdiv4_qr_ulint
-
-//
 
 symintr mpz_tdiv_q
 
@@ -490,9 +424,12 @@ overload mpz_tdiv_q with mpz_tdiv2_q_ulint
 
 (* ****** ****** *)
 //
-// floor division
+// integer floor division
 //
 (*
+**
+** Author: Zhiqiang Ren (aren AT cs DOT bu DOT edu)
+**
 ** Function: mpz_fdiv_qr
 ** Input: dividend, divisor
 ** Output: quot, rem
@@ -508,21 +445,16 @@ overload mpz_tdiv_q with mpz_tdiv2_q_ulint
 **   object can be passed to both quot and dividend.
 *)
 
-//
-
 symintr mpz_fdiv_qr
 
 fun mpz_fdiv4_qr_mpz
   (quot: &mpz_vt, rem: &mpz_vt, dividend: &mpz_vt, divisor: &mpz_vt):<> void
   = "#atslib_mpz_fdiv4_qr_mpz"
 overload mpz_fdiv_qr with mpz_fdiv4_qr_mpz
-
 fun mpz_fdiv4_qr_ulint
   (quot: &mpz_vt, rem: &mpz_vt, dividend: &mpz_vt, divisor: ulint):<> void
   = "#atslib_mpz_fdiv4_qr_ulint"
 overload mpz_fdiv_qr with mpz_fdiv4_qr_ulint
-
-//
 
 symintr mpz_fdiv_q
 
@@ -530,18 +462,12 @@ symintr mpz_fdiv_q
 fun mpz_fdiv3_q_mpz
   (q: &mpz_vt, n: &mpz_vt, d: &mpz_vt):<> void = "#atslib_mpz_fdiv3_q_mpz"
 overload mpz_fdiv_q with mpz_fdiv3_q_mpz
-
-// [q] := [n] / [d]
 fun mpz_fdiv3_q_ulint
   (q: &mpz_vt, n: &mpz_vt, d: ulint):<> void = "#atslib_mpz_fdiv3_q_ulint"
 overload mpz_fdiv_q with mpz_fdiv3_q_ulint
-
-// [q] := [q] / [d]
 fun mpz_fdiv2_q_mpz
   (q: &mpz_vt, d: &mpz_vt):<> void = "atslib_mpz_fdiv2_q_mpz"
 overload mpz_fdiv_q with mpz_fdiv2_q_mpz
-
-// [q] := [q] / [d]
 fun mpz_fdiv2_q_ulint
   (q: &mpz_vt, d: ulint):<> void = "atslib_mpz_fdiv2_q_ulint"
 overload mpz_fdiv_q with mpz_fdiv2_q_ulint
@@ -549,45 +475,95 @@ overload mpz_fdiv_q with mpz_fdiv2_q_ulint
 (* ****** ****** *)
 
 symintr mpz_mod
-
 fun mpz_mod3_mpz
   (r: &mpz_vt, n: &mpz_vt, d: &mpz_vt):<> void = "#atslib_mpz_mod3_mpz"
 overload mpz_mod with mpz_mod3_mpz
-
 fun mpz_mod3_ulint
   (r: &mpz_vt, n: &mpz_vt, d: ulint):<> void = "#atslib_mpz_mod3_ulint"
 overload mpz_mod with mpz_mod3_ulint
+
+(* ****** ****** *)
+//
+// HX-2010-08-11:
+// this one is much faster but it needs a proof that n is a multiple of d
+//
+symintr mpz_divexact
+fun mpz_divexact3_mpz // q := n/d
+  (q: &mpz_vt, n: &mpz_vt, d: &mpz_vt):<> void = "#atslib_mpz_divexact3_mpz"
+overload mpz_divexact with mpz_divexact3_mpz
+
+(* ****** ****** *)
+
+symintr mpz_tdiv_q_2exp
+fun mpz_tdiv3_q_2exp
+  (dst: mpz_vt, src1: mpz_vt, src2: ulint): void = "#atslib_tdiv3_q_2exp"
+overload mpz_tdiv_q_2exp with mpz_tdiv3_q_2exp
+
+symintr mpz_tdiv_r_2exp
+fun mpz_tdiv3_r_2exp
+  (dst: mpz_vt, src1: mpz_vt, src2: ulint): void = "#atslib_tdiv3_r_2exp"
+overload mpz_tdiv_r_2exp with mpz_tdiv3_r_2exp
+
+symintr mpz_fdiv_q_2exp
+fun mpz_fdiv3_q_2exp
+  (dst: mpz_vt, src1: mpz_vt, src2: ulint): void = "#atslib_fdiv3_q_2exp"
+overload mpz_fdiv_q_2exp with mpz_fdiv3_q_2exp
+
+symintr mpz_fdiv_r_2exp
+fun mpz_fdiv3_r_2exp
+  (dst: mpz_vt, src1: mpz_vt, src2: ulint): void = "#atslib_fdiv3_r_2exp"
+overload mpz_fdiv_r_2exp with mpz_fdiv3_r_2exp
+
+(* ****** ****** *)
+
+symintr mpz_sqrt
+fun mpz_sqrt2 // dst := sqrt (src)
+  (dst: &mpz_vt, src: &mpz_vt): void = "#atslib_mpz_sqrt2"
+overload mpz_sqrt with mpz_sqrt2
+fun mpz_sqrt1 (dst: &mpz_vt): void = "atslib_mpz_sqrt1" // !function
+overload mpz_sqrt with mpz_sqrt1
+
+symintr mpz_sqrtrem
+fun mpz_sqrtrem3
+  (dst1: &mpz_vt, dst2: &mpz_vt, src: &mpz_vt): void = "#atslib_mpz_sqrtrem3"
+overload mpz_sqrtrem with mpz_sqrtrem3
+
+fun mpz_perfect_square_p (src: &mpz_vt): int = "#atslib_mpz_perfect_square_p"
+
+(* ****** ****** *)
+
+symintr mpz_pow_ui
+fun mpz_pow3_ui
+  (dst: &mpz_vt, src1: &mpz_vt, src2: ulint): void = "#atslib_mpz_pow3_ui"
+overload mpz_pow_ui with mpz_pow3_ui
+fun mpz_pow2_ui (dst: &mpz_vt, src2: ulint): void = "atslib_mpz_pow2_ui" // !fun
+overload mpz_pow_ui with mpz_pow2_ui
 
 (* ****** ****** *)
 
 // add/mul combination
 
 symintr mpz_addmul
-
 fun mpz_addmul3_mpz
   (x: &mpz_vt, y: &mpz_vt, z: &mpz_vt):<> void = "#atslib_mpz_addmul3_mpz"
 overload mpz_addmul with mpz_addmul3_mpz
-
-fun mpz_addmul3_uint
-  (x: &mpz_vt, y: &mpz_vt, z: uint):<> void = "#atslib_mpz_addmul3_uint"
-overload mpz_addmul with mpz_addmul3_uint
+fun mpz_addmul3_ui
+  (x: &mpz_vt, y: &mpz_vt, z: ulint):<> void = "#atslib_mpz_addmul3_ui"
+overload mpz_addmul with mpz_addmul3_ui
 
 // sub/mul combination
 
 symintr mpz_submul
-
 fun mpz_submul3_mpz
   (x: &mpz_vt, y: &mpz_vt, z: &mpz_vt):<> void = "#atslib_mpz_submul3_mpz"
 overload mpz_submul with mpz_submul3_mpz
-
-fun mpz_submul3_uint
-  (x: &mpz_vt, y: &mpz_vt, z: uint):<> void = "#atslib_mpz_submul3_uint"
-overload mpz_submul with mpz_submul3_uint
+fun mpz_submul3_ui
+  (x: &mpz_vt, y: &mpz_vt, z: ulint):<> void = "#atslib_mpz_submul3_ui"
+overload mpz_submul with mpz_submul3_ui
 
 (* ****** ****** *)
 
 symintr mpz_cmp
-
 fun mpz_cmp_mpz (x: &mpz_vt, y: &mpz_vt):<> int = "#atslib_mpz_cmp_mpz"
 overload mpz_cmp with mpz_cmp_mpz
 fun mpz_cmp_int (x: &mpz_vt, y: int):<> int = "#atslib_mpz_cmp_int"
@@ -604,7 +580,6 @@ overload mpz_cmp with mpz_cmp_double
 (* ****** ****** *)
 
 symintr mpz_cmpabs
-
 fun mpz_cmpabs_mpz (x: &mpz_vt, y: &mpz_vt):<> int = "#atslib_mpz_cmpabs_mpz"
 overload mpz_cmpabs with mpz_cmpabs_mpz
 fun mpz_cmpabs_uint (x: &mpz_vt, y: uint):<> int = "#atslib_mpz_cmpabs_uint"
@@ -621,7 +596,6 @@ fun mpz_sgn (x: &mpz_vt):<> Sgn = "#atslib_mpz_sgn"
 (* ****** ****** *)
 
 symintr mpz_gcd
-
 fun mpz_gcd3_mpf
   (dst: &mpz_vt, src1: &mpz_vt, src2: &mpz_vt): void = "#atslib_mpz_gcd3_mpf"
 overload mpz_gcd with mpz_gcd3_mpf
@@ -636,7 +610,6 @@ fun mpz_gcdext // for given a and b, g, s and t are computed s.t. g = a*s + b*t
 (* ****** ****** *)
 
 symintr mpz_lcm
-
 fun mpz_lcm3_mpf
   (dst: &mpz_vt, src1: &mpz_vt, src2: &mpz_vt): void = "#atslib_mpz_lcm3_mpf"
 overload mpz_lcm with mpz_lcm3_mpf
@@ -646,9 +619,11 @@ overload mpz_lcm with mpz_lcm3_ui
 
 (* ****** ****** *)
 
+symintr mpz_invert
 fun mpz_invert3
   (dst: &mpz_vt, src1: &mpz_vt, src2: &mpz_vt): int = "#atslib_mpz_invert3"
 // end of [mpz_invert3]
+overload mpz_invert with mpz_invert3
 
 (* ****** ****** *)
 
@@ -684,8 +659,6 @@ fun mpz_inp_str {m:file_mode} (
   ) : size_t = "#atslib_mpz_inp_str"
 // end of [mpz_inp_str]
 
-(* ****** ****** *)
-
 fun mpz_out_str {m:file_mode} (
     pf_mode: file_mode_lte (m, w) | file: &FILE m, base: mp_base_t, x: &mpz_vt
   ) : size_t = "#atslib_mpz_out_str"
@@ -705,7 +678,9 @@ overload print with print_mpz
 fun prerr_mpz (x: &mpz_vt) : void
 overload prerr with prerr_mpz
 
-fun tostring_mpz (x: &mpz_vt):<> String = "atslib_tostring_mpz"
+fun tostrptr_mpz (x: &mpz_vt):<> strptr1
+overload tostrptr with tostrptr_mpz
+fun tostring_mpz (x: &mpz_vt):<> string
 overload tostring with tostring_mpz
 
 (* ****** ****** *)
@@ -728,8 +703,7 @@ fun mpz_out_raw {m:file_mode} (
 //
 (* ****** ****** *)
 
-fun mpq_cannonicalize
-  (x: &mpq_vt):<> void = "#atslib_mpq_cannonicalize"
+fun mpq_canonicalize (x: &mpq_vt):<> void = "#atslib_mpq_canonicalize"
 
 (* ****** ****** *)
 
@@ -762,20 +736,17 @@ symintr mpq_set
 fun mpq_set_mpq
   (dst: &mpq_vt, src: &mpq_vt): void = "#atslib_mpq_set_mpq"
 overload mpq_set with mpq_set_mpq
-
 fun mpq_set_mpz
   (dst: &mpq_vt, src: &mpz_vt): void = "#atslib_mpq_set_mpz"
 overload mpq_set with mpq_set_mpz
-
 fun mpq_set_si
   (dst: &mpq_vt, src1: lint, src2: ulint): void = "#atslib_mpq_set_si"
 overload mpq_set with mpq_set_si
-
 fun mpq_set_ui
   (dst: &mpq_vt, src1: ulint, src2: ulint): void = "#atslib_mpq_set_ui"
 overload mpq_set with mpq_set_ui
 
-// HX: may need to call [mpq_cannonicalize]
+// HX: may need to call [mpq_canonicalize]
 fun mpq_set_num (dst: &mpq_vt, src: &mpz_vt):<> void = "#atslib_mpq_set_num"
 fun mpq_set_den (dst: &mpq_vt, src: &mpz_vt):<> void = "#atslib_mpq_set_den"
 
@@ -798,7 +769,6 @@ symintr mpq_inv
 // [x] := -[y]
 fun mpq_inv2 (x: &mpq_vt, y: &mpq_vt):<> void = "#atslib_mpq_inv2"
 overload mpq_inv with mpq_inv2
-
 // [x] := -[x]
 fun mpq_inv1 (x: &mpq_vt):<> void = "atslib_mpq_inv1" // function!
 overload mpq_inv with mpq_inv1
@@ -806,40 +776,45 @@ overload mpq_inv with mpq_inv1
 (* ****** ****** *)
 
 symintr mpq_add
-
 fun mpq_add3_mpq (dst: &mpq_vt, src1: &mpq_vt, src2: &mpq_vt): void
   = "#atslib_mpq_add3_mpq"
 overload mpq_add with mpq_add3_mpq
-fun mpq_add2_mpq
-  (dst: &mpq_vt, src: &mpq_vt): void = "atslib_mpq_add2_mpq" // fun!
+fun mpq_add2_mpq // dst := dst + src2
+  (dst: &mpq_vt, src2: &mpq_vt): void = "atslib_mpq_add2_mpq" // fun!
 overload mpq_add with mpq_add2_mpq
 
 symintr mpq_sub
-
 fun mpq_sub3_mpq (dst: &mpq_vt, src1: &mpq_vt, src2: &mpq_vt): void
   = "#atslib_mpq_sub3_mpq"
 overload mpq_sub with mpq_sub3_mpq
-fun mpq_sub2_mpq
-  (dst: &mpq_vt, src: &mpq_vt): void = "atslib_mpq_sub2_mpq" // fun!
+fun mpq_sub2_mpq // dst := dst - src2
+  (dst: &mpq_vt, src2: &mpq_vt): void = "atslib_mpq_sub2_mpq" // fun!
 overload mpq_sub with mpq_sub2_mpq
 
 symintr mpq_mul
-
 fun mpq_mul3_mpq (dst: &mpq_vt, src1: &mpq_vt, src2: &mpq_vt): void
   = "#atslib_mpq_mul3_mpq"
 overload mpq_mul with mpq_mul3_mpq
-fun mpq_mul2_mpq
-  (dst: &mpq_vt, src: &mpq_vt): void = "atslib_mpq_mul2_mpq" // fun!
+fun mpq_mul2_mpq // dst := dst * src2
+  (dst: &mpq_vt, src2: &mpq_vt): void = "atslib_mpq_mul2_mpq" // fun!
 overload mpq_mul with mpq_mul2_mpq
 
 symintr mpq_div
-
 fun mpq_div3_mpq (dst: &mpq_vt, src1: &mpq_vt, src2: &mpq_vt): void
   = "#atslib_mpq_div3_mpq"
 overload mpq_div with mpq_div3_mpq
-fun mpq_div2_mpq
-  (dst: &mpq_vt, src: &mpq_vt): void = "atslib_mpq_div2_mpq" // fun!
+fun mpq_div2_mpq // dst := dst / src2
+  (dst: &mpq_vt, src2: &mpq_vt): void = "atslib_mpq_div2_mpq" // fun!
 overload mpq_div with mpq_div2_mpq
+
+(* ****** ****** *)
+
+// HX-2010-08-11: implemented in ATS
+symintr mpq_pow_ui
+fun mpq_pow3_ui (dst: &mpq_vt, src1: &mpq_vt, src2: ulint): void
+overload mpq_pow_ui with mpq_pow3_ui
+fun mpq_pow2_ui (dst: &mpq_vt, src2: ulint): void
+overload mpq_pow_ui with mpq_pow2_ui
 
 (* ****** ****** *)
 
@@ -848,7 +823,6 @@ fun mpq_equal
 // end of [mpq_equal]
 
 symintr mpq_cmp
-
 fun mpq_cmp_mpq (x: &mpq_vt, y: &mpq_vt):<> int = "#atslib_mpq_cmp_mpq"
 overload mpq_cmp with mpq_cmp_mpq
 fun mpq_cmp_ui (x: &mpq_vt, y: ulint):<> int = "#atslib_mpq_cmp_ui"
@@ -861,7 +835,7 @@ fun mpq_sgn (x: &mpq_vt):<> Sgn = "#atslib_mpq_sgn"
 (* ****** ****** *)
 //
 //
-// HX: floating number operations
+// floating number operations
 //
 //
 (* ****** ****** *)
@@ -899,7 +873,7 @@ fun mpf_get_prec (x: &mpf_vt): ulint = "#atslib_mpf_get_prec"
 
 fun mpf_set_prec (x: &mpf_vt, prec: ulint): void = "#atslib_mpf_set_prec"
 
-fun mpf_set_prec_raw
+fun mpf_set_prec_raw // HX: a low-level function
   (dst: &mpf_vt, prec: ulint): void = "#atslib_mpf_set_prec_raw"
 // end of [mpf_set_prec_raw]
 
@@ -911,7 +885,7 @@ fun mpf_get_d_2exp
 fun mpf_get_si (src: &mpf_vt): lint = "#atslib_mpf_get_si"
 fun mpf_get_ui (src: &mpf_vt): ulint = "#atslib_mpf_get_ui"
 
-fun mpf_get_str (
+fun mpf_get_str ( // HX: a special case of the original namesake in GMP
     exp: &mp_exp_t? >> mp_exp_t, base: mp_base_t, ndigit: size_t, x: &mpf_vt
   ) : strptr1 = "atslib_mpf_get_str" // function!
 // end of [mpf_get_str]
@@ -923,22 +897,17 @@ symintr mpf_set
 fun mpf_set_mpf
   (dst: &mpf_vt, src: &mpf_vt): void = "#atslib_mpf_set_mpf"
 overload mpf_set with mpf_set_mpf
-
 fun mpf_set_mpz
   (dst: &mpf_vt, src: &mpz_vt): void = "#atslib_mpf_set_mpz"
 overload mpf_set with mpf_set_mpz
-
 fun mpf_set_mpq
   (dst: &mpf_vt, src: &mpq_vt): void = "#atslib_mpf_set_mpq"
 overload mpf_set with mpf_set_mpq
-
 fun mpf_set_si (dst: &mpf_vt, src: lint): void = "#atslib_mpf_set_si"
 overload mpf_set with mpf_set_si
-
 fun mpf_set_ui
   (dst: &mpf_vt, src: ulint): void = "#atslib_mpf_set_ui"
 overload mpf_set with mpf_set_ui
-
 fun mpf_set_d (dst: &mpf_vt, src: double): void = "#atslib_mpf_set_d"
 overload mpf_set with mpf_set_d
 
@@ -961,19 +930,15 @@ symintr mpf_init_set
 fun mpf_init_set_mpf {mpf_set_default_prec}
   (dst: &mpf_vt? >> mpf_vt, src: &mpf_vt): void = "#atslib_mpf_init_set_mpf"
 overload mpf_init_set with mpf_init_set_mpf
-
 fun mpf_init_set_si {mpf_set_default_prec}
   (dst: &mpf_vt? >> mpf_vt, src: lint): void = "#atslib_mpf_init_set_si"
 overload mpf_init_set with mpf_init_set_si
-
 fun mpf_init_set_ui {mpf_set_default_prec}
   (dst: &mpf_vt? >> mpf_vt, src: ulint): void = "#atslib_mpf_init_set_ui"
 overload mpf_init_set with mpf_init_set_ui
-
 fun mpf_init_set_d {mpf_set_default_prec}
   (dst: &mpf_vt? >> mpf_vt, src: double): void = "#atslib_mpf_init_set_d"
 overload mpf_init_set with mpf_init_set_d
-
 fun mpf_init_set_str {mpf_set_default_prec}
   (rop: &mpf_vt? >> mpf_vt, str: string, base: int): int(*err*)
   = "#atslib_mpf_init_set_str" // macro
@@ -1011,7 +976,6 @@ symintr mpf_neg
 // x := -y
 fun mpf_neg2 (x: &mpf_vt, y: &mpf_vt): void = "#atslib_mpf_neg2"
 overload mpf_neg with mpf_neg2
-
 // x := -x
 fun mpf_neg1 (x: &mpf_vt): void = "atslib_mpf_neg1" // !function
 overload mpf_neg with mpf_neg1
@@ -1023,7 +987,6 @@ symintr mpf_abs
 // x := |y|
 fun mpf_abs2 (x: &mpf_vt, y: &mpf_vt): void = "#atslib_mpf_abs2"
 overload mpf_abs with mpf_abs2
-
 // x := |x|
 fun mpf_abs1 (x: &mpf_vt): void = "atslib_mpf_abs1" // !function
 overload mpf_abs with mpf_abs1
@@ -1035,7 +998,6 @@ symintr mpf_add
 fun mpf_add3_mpf (dst: &mpf_vt, src1: &mpf_vt, src2: &mpf_vt): void
   = "#atslib_mpf_add3_mpf"
 overload mpf_add with mpf_add3_mpf
-
 fun mpf_add3_ui
   (dst: &mpf_vt, src1: &mpf_vt, src2: ulint): void = "#atslib_mpf_add3_ui"
 overload mpf_add with mpf_add3_ui
@@ -1043,7 +1005,6 @@ overload mpf_add with mpf_add3_ui
 fun mpf_add2_mpf
   (dst: &mpf_vt, src: &mpf_vt): void = "atslib_mpf_add2_mpf" // fun!
 overload mpf_add with mpf_add2_mpf
-
 fun mpf_add2_ui (dst: &mpf_vt, src: ulint): void = "atslib_mpf_add2_ui" // fun!
 overload mpf_add with mpf_add2_ui
 
@@ -1054,18 +1015,15 @@ symintr mpf_sub
 fun mpf_sub3_mpf (dst: &mpf_vt, src1: &mpf_vt, src2: &mpf_vt): void
   = "#atslib_mpf_sub_mpf"
 overload mpf_sub with mpf_sub3_mpf
-
 fun mpf_sub3_ui
   (dst: &mpf_vt, src1: &mpf_vt, src2: ulint): void = "#atslib_mpf_sub3_ui"
 overload mpf_sub with mpf_sub3_ui
-
 fun mpf_ui_sub3
   (dst: &mpf_vt, src1: ulint, src2: &mpf_vt): void = "#atslib_mpf_ui_sub3"
 // end of [mpf_ui_sub3]
 
 fun mpf_sub2_mpf (dst: &mpf_vt, src2: &mpf_vt): void = "atslib_mpf_sub2" // !fun
 overload mpf_sub with mpf_sub2_mpf
-
 fun mpf_sub2_ui (dst: &mpf_vt, src2: ulint): void = "atslib_mpf_sub2_ui" // !fun
 overload mpf_sub with mpf_sub2_ui
 
@@ -1075,42 +1033,33 @@ fun mpf_ui_sub2 (dst: &mpf_vt, src1: ulint): void = "atslib_mpf_ui_sub2" // !fun
 (* ****** ****** *)
 
 symintr mpf_mul
-
 fun mpf_mul3_mpf
   (dst: &mpf_vt, src1: &mpf_vt, src2: &mpf_vt): void = "#atslib_mpf_mul3_mpf"
 overload mpf_mul with mpf_mul3_mpf
-
 fun mpf_mul3_ui
   (dst: &mpf_vt, src1: &mpf_vt, src2: ulint): void = "#atslib_mpf_mul3_ui"
 overload mpf_mul with mpf_mul3_ui
-
 fun mpf_mul2_mpf
   (dst: &mpf_vt, src: &mpf_vt): void = "atslib_mpf_mul2_mpf" // !function
 overload mpf_mul with mpf_mul2_mpf
-
 fun mpf_mul2_ui (dst: &mpf_vt, src: &mpf_vt): void = "atslib_mpf_mul2_ui" // !fun
 overload mpf_mul with mpf_mul2_ui
 
 (* ****** ****** *)
 
 symintr mpf_div
-
 fun mpf_div3_mpf (dst: &mpf_vt, src1: &mpf_vt, src2: &mpf_vt): void
   = "#atslib_mpf_div3_mpf"
 overload mpf_div with mpf_div3_mpf
-
 fun mpf_div3_ui
   (dst: &mpf_vt, src1: &mpf_vt, src2: ulint): void = "#atslib_mpf_div3_ui"
 overload mpf_div with mpf_div3_ui
-
 fun mpf_ui_div3
   (dst: &mpf_vt, src1: ulint, src2: &mpf_vt): void = "#atslib_mpf_ui_div3"
 // end of [mpf_ui_div3]
-
 fun mpf_div2_mpf
   (dst: &mpf_vt, src2: &mpf_vt): void = "atslib_mpf_div2" // !function
 overload mpf_div with mpf_div2_mpf
-
 fun mpf_div2_ui (dst: &mpf_vt, src2: ulint): void = "atslib_mpf_div2_ui" // !fun
 overload mpf_div with mpf_div2_ui
 
@@ -1120,31 +1069,28 @@ fun mpf_ui_div2 (dst: &mpf_vt, src1: ulint): void = "atslib_mpf_ui_div2" // !fun
 (* ****** ****** *)
 
 symintr mpf_sqrt
-
-// dst := sqrt (src)
-fun mpf_sqrt2_mpf
+fun mpf_sqrt2_mpf // dst := sqrt (src)
   (dst: &mpf_vt, src: &mpf_vt): void = "#atslib_mpf_sqrt2_mpf"
 overload mpf_sqrt with mpf_sqrt2_mpf
 fun mpf_sqrt2_ui (dst: &mpf_vt, src: ulint): void = "#atslib_mpf_sqrt2_ui"
 overload mpf_sqrt with mpf_sqrt2_ui
-
+// dst := sqrt (dst)
 fun mpf_sqrt1_mpf (dst: &mpf_vt): void = "atslib_mpf_sqrt1_mpf" // !fun
 overload mpf_sqrt with mpf_sqrt1_mpf
 
 (* ****** ****** *)
 
-symintr mpf_pow
-
-fun mpf_pow3_ui
+symintr mpf_pow_ui
+fun mpf_pow3_ui // dst := src1^^src2
   (dst: &mpf_vt, src1: &mpf_vt, src2: ulint): void = "#atslib_mpf_pow3_ui"
-overload mpf_pow with mpf_pow3_ui
+overload mpf_pow_ui with mpf_pow3_ui
+// dst := src1^^src2
 fun mpf_pow2_ui (dst: &mpf_vt, src2: ulint): void = "atslib_mpf_pow2_ui" // !fun
-overload mpf_pow with mpf_pow2_ui
+overload mpf_pow_ui with mpf_pow2_ui
 
 (* ****** ****** *)
 
 symintr mpf_mul_2exp
-
 fun mpf_mul3_2exp
   (dst: &mpf_vt, src1: &mpf_vt, src2: ulint): void = "#atslib_mpf_mul3_2exp"
 overload mpf_mul_2exp with mpf_mul3_2exp
@@ -1154,7 +1100,6 @@ overload mpf_mul_2exp with mpf_mul2_2exp
 (* ****** ****** *)
 
 symintr mpf_div_2exp
-
 fun mpf_div3_2exp
   (dst: &mpf_vt, src1: &mpf_vt, src2: ulint): void = "#atslib_mpf_div3_2exp"
 overload mpf_div_2exp with mpf_div3_2exp
@@ -1168,17 +1113,13 @@ fun mpf_eq
 // end of [mpf_eq]
 
 symintr mpf_cmp
-
 fun mpf_cmp_mpf
   (src1: &mpf_vt, src2: &mpf_vt):<> int = "#atslib_mpf_cmp_mpf"
 overload mpf_cmp with mpf_cmp_mpf
-
 fun mpf_cmp_d (src1: &mpf_vt, src2: double):<> int = "#atslib_mpf_cmp_d"
 overload mpf_cmp with mpf_cmp_d
-
 fun mpf_cmp_ui (src1: &mpf_vt, src2: ulint):<> int = "#atslib_mpf_cmp_ui"
 overload mpf_cmp with mpf_cmp_ui
-
 fun mpf_cmp_si (src1: &mpf_vt, src2: lint):<> int = "#atslib_mpf_cmp_si"
 overload mpf_cmp with mpf_cmp_si
 
@@ -1193,13 +1134,14 @@ fun mpf_reldiff
 // end of [mpf_reldiff]
 
 (* ****** ****** *)
+//
+// some MPF input/output/print functions
+//
 
 fun mpf_inp_str {m:file_mode} (
     pf_mode: file_mode_lte (m, r) | x: &mpf_vt, file: &FILE m, base: mp_base_t
   ) : size_t = "#atslib_mpf_inp_str"
 // end of [mpf_inp_str]
-
-(* ****** ****** *)
 
 fun mpf_out_str {m:file_mode} (
     pf_mode: file_mode_lte (m, w)

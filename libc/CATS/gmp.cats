@@ -538,14 +538,48 @@ atslib_mpz_fdiv2_q_ulint (
 #define atslib_mpz_mod3_mpz mpz_mod
 #define atslib_mpz_mod3_ulint mpz_mod_ui
 
+#define atslib_mpz_divexact3 mpz_divexact
+
+#define atslib_tdiv3_q_2exp tdiv_q_2exp
+#define atslib_tdiv3_r_2exp tdiv_r_2exp
+#define atslib_fdiv3_q_2exp fdiv_q_2exp
+#define atslib_fdiv3_r_2exp fdiv_r_2exp
+
+/* ****** ****** */
+
+#define atslib_mpz_sqrt2 mpz_sqrt
+
+ATSinline()
+ats_void_type
+atslib_mpz_sqrt1
+  (ats_ref_type dst) {
+  mpz_sqrt ((mpz_ptr)dst, (mpz_ptr)dst) ; return ;
+} // end of [atslib_mpz_sqrt1]
+
+#define atslib_mpz_sqrtrem3 mpz_sqrtrem
+
+#define atslib_mpz_perfect_square_p mpz_perfect_square_p
+
+/* ****** ****** */
+
+#define atslib_mpz_pow3_ui mpz_pow_ui
+
+ATSinline()
+ats_void_type
+atslib_mpz_pow2_ui (
+  ats_ref_type dst, ats_ulint_type src2
+) {
+  mpz_pow_ui ((mpz_ptr)dst, (mpz_ptr)dst, (ulint)src2) ; return ;
+} // end of [atslib_mpz_pow2_ui]
+
 /* ****** ****** */
 
 // addmul and submul compibination
 
 #define atslib_mpz_addmul3_mpz  mpz_addmul
-#define atslib_mpz_addmul3_uint mpz_addmul_ui
+#define atslib_mpz_addmul3_ui mpz_addmul_ui
 #define atslib_mpz_submul3_mpz mpz_submul
-#define atslib_mpz_submul3_uint mpz_submul_ui
+#define atslib_mpz_submul3_ui mpz_submul_ui
 
 /* ****** ****** */
 
@@ -619,18 +653,6 @@ atslib_fprint_mpz (
 #define atslib_mpz_out_raw mpz_out_raw
 
 /* ****** ****** */
-
-// stringization
-
-ATSinline()
-ats_ptr_type
-atslib_tostring_mpz (
-  const ats_mpz_ptr_type x
-) {
-  return mpz_get_str((char*)0, 10, (mpz_ptr)x) ;
-} // end of [atslib_tostring_mpz]
-
-/* ****** ****** */
 //
 //
 // HX: rational number operations
@@ -638,7 +660,7 @@ atslib_tostring_mpz (
 //
 /* ****** ****** */
 
-#define atslib_mpq_cannonicalize mpq_cannonicalize
+#define atslib_mpq_canonicalize mpq_canonicalize
 
 #define atslib_mpq_init mpq_init
 #define atslib_mpq_clear mpq_clear
@@ -647,8 +669,16 @@ atslib_tostring_mpz (
 #define atslib_mpq_get_num mpq_get_num
 #define atslib_mpq_get_den mpq_get_den
 
-#define atslib_mpq_numref mpq_numref
-#define atslib_mpq_denref mpq_denref
+ATSinline()
+ats_ptr_type
+atslib_mpq_numref
+  (ats_ptr_type x) { return mpq_numref ((mpq_ptr)x) ; }
+// end of [atslib_mpq_numref]
+ATSinline()
+ats_ptr_type
+atslib_mpq_denref
+  (ats_ptr_type x) { return mpq_denref ((mpq_ptr)x) ; }
+// end of [atslib_mpq_denref]
 
 #define atslib_mpq_set_mpq mpq_set
 #define atslib_mpq_set_mpz mpq_set_z
@@ -950,11 +980,11 @@ ats_void_type
 atslib_mpf_sqrt1_mpf
   (ats_ref_type dst) {
   mpf_sqrt ((mpf_ptr)dst, (mpf_ptr)dst) ; return ;
-} // end of [atslib_mpf_pow1_ui]
+} // end of [atslib_mpf_sqrt1]
 
 /* ****** ****** */
 
-#define atslib_mpf_pow3_ui mpf_pow3_ui
+#define atslib_mpf_pow3_ui mpf_pow_ui
 
 ATSinline()
 ats_void_type
