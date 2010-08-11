@@ -319,7 +319,8 @@ implement prerr_d2exparglst (args) = prerr_mac (fprint_d2exparglst, args)
 
 (* ****** ****** *)
 
-implement fprint_d2exp (pf | out, d2e0) = let
+implement
+fprint_d2exp (pf | out, d2e0) = let
   macdef prstr (s) = fprint1_string (pf | out, ,(s))
 in
   case+ d2e0.d2exp_node of
@@ -626,9 +627,6 @@ in
       fprint_d2exp (pf | out, d2e_else);
       prstr ")"
     end // end of [D2Esif]
-  | D2Espawn d2e => begin
-      prstr "D2Espawn("; fprint_d2exp (pf | out, d2e); prstr ")"
-    end // end of [D2Espawn]
   | D2Estring (str, len) => begin
       fprintf1_exn (pf | out, "D2Estring(\"%s\", %i)", @(str, len))
     end // end of [D2Estring]

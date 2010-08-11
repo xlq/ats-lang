@@ -1127,14 +1127,6 @@ fun aux_item (d0e0: d0exp): d1expitm = let
     in
       $Fix.ITEMatm (d1e_sif)        
     end // end of [D0Esif]
-  | D0Espawn () => let
-      fn f (d1e: d1exp):<cloref1> d1expitm =
-        let val loc0 = $Loc.location_combine (loc0, d1e.d1exp_loc) in
-          $Fix.ITEMatm (d1exp_spawn (loc0, d1e))
-        end
-    in
-      $Fix.ITEMopr ($Fix.OPERpre ($Fix.spawn_prec_dyn, f))
-    end // end of [D0Espawn]
   | D0Estring (str, len) => begin
       $Fix.ITEMatm (d1exp_string (loc0, str, len))
     end

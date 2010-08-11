@@ -85,7 +85,6 @@ val dynload_prec_dyn : prec_t
 
 val exist_prec_dyn : prec_t
 val ptrof_prec_dyn : prec_t
-val spawn_prec_dyn : prec_t
 
 val foldat_prec_dyn : prec_t
 val freeat_prec_dyn : prec_t

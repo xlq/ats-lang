@@ -2100,10 +2100,6 @@ in '{
   d0exp_loc= loc, d0exp_node= D0Esif (hd, s0e_cond, d0e_then, d0e_else)
 } end // end of [d0exp_sif]
 
-implement d0exp_spawn (t_spawn) = '{
-  d0exp_loc= t_spawn.t0kn_loc, d0exp_node= D0Espawn ()
-} // end of [d0exp_spawn]
-
 implement d0exp_string (s) = '{
   d0exp_loc= s.s0tring_loc
 , d0exp_node= D0Estring (s.s0tring_val, s.s0tring_len)

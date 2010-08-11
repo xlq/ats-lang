@@ -662,8 +662,6 @@ and d2exp_node =
       d2explst
   | D2Esif of (* static conditional *)
       (i2nvresstate, s2exp, d2exp, d2exp)
-  | D2Espawn of (* spawned evaluation *)
-      d2exp
   | D2Estruct of (* dynamic structure *)
       labd2explst
   | D2Estring of (* dynamic string *)
@@ -1137,8 +1135,6 @@ fun d2exp_sif (
   , _else: d2exp
   ) : d2exp
 // end of [d2exp_sif]
-
-fun d2exp_spawn (_: loc_t, _: d2exp): d2exp
 
 fun d2exp_string (_: loc_t, _: string, _: int): d2exp
 fun d2exp_struct (_: loc_t, _: labd2explst): d2exp

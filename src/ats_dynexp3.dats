@@ -712,12 +712,6 @@ in '{
 , d3exp_node= D3Esif (s2e_cond, d3e_then, d3e_else)
 } end // end of [d3exp_if]
 
-implement d3exp_spawn (loc, s2e, d3e) =  '{
-  d3exp_loc= loc
-, d3exp_eff= S2EFFnil (), d3exp_typ= s2e
-, d3exp_node= D3Espawn (d3e)
-} // end of [d3exp_spawn]
-
 implement d3exp_string (loc, s2e, str, len) = '{
   d3exp_loc= loc
 , d3exp_eff= S2EFFnil (), d3exp_typ= s2e

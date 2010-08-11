@@ -594,18 +594,6 @@ in
       fprint_valprim (pf | out, vp);
       prstr ")"
     end // end of [INSTRmove_ref]
-  | INSTRpar_spawn (tmp_ret, vp_fun) => begin
-      prstr "INSTRpar_spawn(";
-      fprint_tmpvar (pf | out, tmp_ret);
-      prstr "; ";
-      fprint_valprim (pf | out, vp_fun);
-      prstr ")"
-    end // end of [INSTRpar_spawn]
-  | INSTRpar_synch (tmp_ret) => begin
-      prstr "INSTRpar_synch(";
-      fprint_tmpvar (pf | out, tmp_ret);
-      prstr ")"
-    end // end of [INSTRpar_synch]
   | INSTRpatck (vp, patck, k_fail) => begin
       prstr "INSTRpatck(";
       fprint_valprim (pf | out, vp);

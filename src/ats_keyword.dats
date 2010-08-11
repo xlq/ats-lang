@@ -247,7 +247,6 @@ keyval_insert("$lst_vt", DLRLST_VT) ;
 keyval_insert("$raise", DLRRAISE) ;
 keyval_insert("$rec_t", DLRREC_T) ;
 keyval_insert("$rec_vt", DLRREC_VT) ;
-keyval_insert("$spawn", DLRSPAWN) ;
 keyval_insert("$tup_t", DLRTUP_T) ;
 keyval_insert("$tup_vt", DLRTUP_VT) ;
 keyval_insert("$typeof", DLRTYPEOF) ;

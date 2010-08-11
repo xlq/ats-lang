@@ -239,8 +239,10 @@ in
   | INSTRselect (tmp, _, _) => tmpvarmap_add_root (m, tmp)
   | INSTRselcon (tmp, _, _, _) => tmpvarmap_add_root (m, tmp)
   | INSTRselcon_ptr (tmp, _, _, _) => tmpvarmap_add_root (m, tmp)
+(*
   | INSTRpar_spawn (tmp, _) => tmpvarmap_add_root (m, tmp)
   | INSTRpar_synch (tmp) => tmpvarmap_add_root (m, tmp)
+*)
   | INSTRswitch (brs) => aux_branchlst (m, brs)
   | INSTRtrywith (inss_try, tmp_exn, brs) => let
       val () = instrlst_tmpvarmap_add (m, inss_try)

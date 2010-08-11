@@ -467,9 +467,6 @@ in
       fprint_d3exp (pf | out, d3e_else);
       prstr ")"
     end // end of [sif]
-  | D3Espawn (d3e) => begin
-      prstr "D3Espawn("; fprint_d3exp (pf | out, d3e); prstr ")"
-    end // end of [D3Espawn]
   | D3Estring (str, len) => begin
       fprint1_string (pf | out, "D3Estring(...)")
     end // end of [D3Estring]

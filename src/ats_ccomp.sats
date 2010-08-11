@@ -453,12 +453,13 @@ datatype instr =
       (tmpvar_t, hityp_t, labvalprimlst(*arg*))
   | INSTRmove_ref of (tmpvar_t, valprim)
   | INSTRmove_val of (tmpvar_t, valprim)
-
+(*
+// HX-2010-08-10: forever removed!!!
   | INSTRpar_spawn of // parallel spawning
       (tmpvar_t(*ret*), valprim(*clo*))
   | INSTRpar_synch of // parallel synchronization
       tmpvar_t (*ret*)
-
+*)
   | INSTRpatck of (valprim, patck, kont) // pattern check
   
   | INSTRraise of (tmpvar_t(*uninitialized*), valprim) // raising an exception

@@ -285,7 +285,6 @@ macdef DLREXIT = $extval (token_t, "DLREXIT")
 macdef DLREXTERN = $extval (token_t, "DLREXTERN")
 macdef DLRFOLD = $extval (token_t, "DLRFOLD")
 macdef DLRRAISE = $extval (token_t, "DLRRAISE")
-macdef DLRSPAWN = $extval (token_t, "DLRSPAWN")
 macdef DLRUNFOLD = $extval (token_t, "DLRUNFOLD")
 
 // #-keywords

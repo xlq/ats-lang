@@ -1670,7 +1670,6 @@ datatype d0exp_node =
       s0exparg
   | D0Esif of (* static conditionals *)
       (ifhead, s0exp, d0exp, d0exp)
-  | D0Espawn (* spawned evaluation *)
   | D0Estring of (* dynamic strings *)
       (string, int(*length*))
   | D0Estruct of (* structure *)
@@ -2101,8 +2100,6 @@ fun d0exp_sif
   = "d0exp_sif"
 
 //
-
-fun d0exp_spawn (t_spawn: t0kn): d0exp = "d0exp_spawn"
 
 fun d0exp_string (s: s0tring): d0exp = "d0exp_string"
 

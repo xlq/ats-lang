@@ -531,9 +531,6 @@ in
   | HIEsizeof (hit) => begin
       prstr "HIEsizeof("; fprint_hityp (pf | out, hit); prstr ")"
     end // end of [HIEsizeof]
-  | HIEspawn (hie) => begin
-      prstr "HIEspawn("; fprint_hiexp (pf | out,  hie); prstr ")"
-    end // end of [HIEspawn]
   | HIEstring (str, len) => begin
       fprint1_string (pf | out, "HIEstring(...)")
     end // end of [HIEstring]

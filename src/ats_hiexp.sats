@@ -387,8 +387,6 @@ and hiexp_node =
       (hiexp(*then*), hiexp(*else*))
   | HIEsizeof of (* size of type *)
       hityp
-  | HIEspawn of (* spawned evaluation *)
-      hiexp
   | HIEstring of (* string constant *)
       (string, int(*length*))
   | HIEtmpcst of (* template constant *)
@@ -679,8 +677,6 @@ fun hiexp_sif
   (_: loc_t, _: hityp, _: hiexp(*then*), _: hiexp(*else*)): hiexp
 
 fun hiexp_sizeof (_: loc_t, _: hityp, _arg: hityp): hiexp
-
-fun hiexp_spawn (_: loc_t, _: hityp, _: hiexp): hiexp
 
 fun hiexp_string (_: loc_t, _: hityp, _: string, _: int): hiexp
 

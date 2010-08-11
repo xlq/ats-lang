@@ -128,7 +128,6 @@ implement uni_prec_sta = 0
 
 implement delay_prec_dyn = 0
 implement exist_prec_dyn = 0 (* for dynamic patterns *)
-implement spawn_prec_dyn = 0
 
 //
 

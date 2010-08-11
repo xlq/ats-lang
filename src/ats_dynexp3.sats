@@ -280,8 +280,6 @@ and d3exp_node =
       d3explst
   | D3Esif of (* static conditional dynamic expression *)
       (s2exp, d3exp, d3exp)
-  | D3Espawn of (* spawned evaluation *)
-      d3exp
   | D3Estring of (* dynamic string *)
       (string, int(*length*))
   | D3Estruct of labd3explst (* dynamic structure *)
@@ -618,8 +616,6 @@ fun d3exp_seq (_: loc_t, _: s2exp, _: d3explst): d3exp
 
 fun d3exp_sif
   (_: loc_t, _: s2exp, _cond: s2exp, _then: d3exp, _else: d3exp): d3exp
-
-fun d3exp_spawn (_: loc_t, _: s2exp, _: d3exp): d3exp
 
 fun d3exp_string (_: loc_t, _: s2exp, _: string, _: int): d3exp
 

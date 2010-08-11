@@ -352,8 +352,6 @@ and d1exp_node =
       s1exparg
   | D1Esif of (* conditional proof expression *)
       (i1nvresstate, s1exp, d1exp, d1exp)
-  | D1Espawn of (* spawned evaluation *)
-      d1exp
   | D1Estring of (* dynamic string *)
       (string, int(*length*))
   | D1Estruct of (* dynamic structure *)
@@ -804,8 +802,6 @@ fun d1exp_sexparg (_: loc_t, _: s1exparg): d1exp
 fun d1exp_sif
   (_: loc_t, res: i1nvresstate, _cond: s1exp, _then: d1exp, _else: d1exp)
   : d1exp
-
-fun d1exp_spawn (_: loc_t, _: d1exp): d1exp
 
 fun d1exp_string (_: loc_t, _: string, _: int): d1exp
 

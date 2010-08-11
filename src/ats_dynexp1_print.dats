@@ -522,9 +522,6 @@ in
       fprint_d1exp (pf | out, d1e_else);
       prstr ")"
     end // end of [D1Esif]
-  | D1Espawn d1e => begin
-      prstr "D1Espawn("; fprint_d1exp (pf | out, d1e); prstr ")"
-    end // end of [D1Espawn]
   | D1Estring (str, len) => begin
       fprintf1_exn (pf | out, "D1Estring(\"%s\", %i)", @(str, len))
     end // end of [D1Estring]

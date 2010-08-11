@@ -815,17 +815,15 @@ implement d2exp_sif
 , d2exp_typ= None ()
 } // end of [d2exp_sif]
 
-implement d2exp_spawn (loc, d2e) = '{
-  d2exp_loc= loc, d2exp_node= D2Espawn (d2e), d2exp_typ= None ()
-}
-
-implement d2exp_string (loc, str, len) = '{
+implement
+d2exp_string (loc, str, len) = '{
   d2exp_loc= loc
 , d2exp_node= D2Estring (str, len)
 , d2exp_typ= None ()
 }
 
-implement d2exp_struct (loc, ld2es) = '{
+implement
+d2exp_struct (loc, ld2es) = '{
   d2exp_loc= loc
 , d2exp_node= D2Estruct (ld2es)
 , d2exp_typ= None ()

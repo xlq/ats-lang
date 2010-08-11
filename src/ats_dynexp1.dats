@@ -432,10 +432,6 @@ in '{
   d1exp_node = D1Esif (inv, s1e_cond, d1e_then, d1e_else)
 } end // end of [d1exp_sif]
 
-implement d1exp_spawn (loc, d1e) = '{
-  d1exp_loc= loc, d1exp_node= D1Espawn d1e
-}
-
 implement d1exp_string (loc, str, len) = '{
   d1exp_loc= loc, d1exp_node= D1Estring (str, len)
 }

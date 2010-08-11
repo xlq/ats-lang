@@ -1089,12 +1089,6 @@ in
     in
       hiexp_sif (loc0, hityp_void, hie_then, hie_else)
     end // end of [D3Esif]
-  | D3Espawn (d3e) => let
-      val hit0 = s2exp_tr (loc0, 0(*deep*), s2e0)
-      val hie = d3exp_tr d3e
-    in
-      hiexp_spawn (loc0, hit0, hie)
-    end // end of [D3Espawn]
   | D3Estring (str, len) => let
       val hit0 = s2exp_tr (loc0, 0(*deep*), s2e0)
     in
