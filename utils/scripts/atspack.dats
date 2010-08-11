@@ -156,9 +156,9 @@ end // end of [ATSPACKAGE_VERSION_get]
 val ATSPACKAGE_VERSION: string = ATSPACKAGE_VERSION_get ()
 
 val DSTROOT: string = let
-  val sbp =
+  val sp =
     stringlst_concat '[ATSPACKAGE_NAME, "-", ATSPACKAGE_VERSION, "/"] in
-  string1_of_strbuf (sbp)
+  string_of_strptr (sp)
 end // end of [DSTROOT]
 
 (* ****** ****** *)

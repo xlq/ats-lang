@@ -723,6 +723,64 @@ fun mpz_out_raw {m:file_mode} (
 (* ****** ****** *)
 //
 //
+// HX: rational number operations
+//
+//
+(* ****** ****** *)
+
+// [x] is initialized with 0
+fun mpq_init
+  (x: &mpq_vt? >> mpq_vt):<> void = "#atslib_mpq_init" // macro!
+// end of [mpq_init]
+
+fun mpq_clear (x: &mpq_vt >> mpq_vt?): void = "#atslib_mpq_clear"
+
+(* ****** ****** *)
+
+symintr mpq_set
+
+fun mpq_set_mpq
+  (dst: &mpq_vt, src: &mpq_vt): void = "#atslib_mpq_set_mpq"
+overload mpq_set with mpq_set_mpq
+
+fun mpq_set_mpz
+  (dst: &mpq_vt, src: &mpz_vt): void = "#atslib_mpq_set_mpz"
+overload mpq_set with mpq_set_mpz
+
+fun mpq_set_si (dst: &mpq_vt, src: lint): void = "#atslib_mpq_set_si"
+overload mpq_set with mpq_set_si
+
+fun mpq_set_ui
+  (dst: &mpq_vt, src: ulint): void = "#atslib_mpq_set_ui"
+overload mpq_set with mpq_set_ui
+
+(* ****** ****** *)
+
+symintr mpq_neg
+
+// [x] := -[y]
+fun mpq_neg2 (x: &mpq_vt, y: &mpq_vt):<> void = "#atslib_mpq_neg2"
+overload mpq_neg with mpq_neg2
+
+// [x] := -[x]
+fun mpq_neg1 (x: &mpq_vt):<> void = "atslib_mpq_neg1" // function!
+overload mpq_neg with mpq_neg1
+
+(* ****** ****** *)
+
+symintr mpq_inv
+
+// [x] := -[y]
+fun mpq_inv2 (x: &mpq_vt, y: &mpq_vt):<> void = "#atslib_mpq_inv2"
+overload mpq_inv with mpq_inv2
+
+// [x] := -[x]
+fun mpq_inv1 (x: &mpq_vt):<> void = "atslib_mpq_inv1" // function!
+overload mpq_inv with mpq_inv1
+
+(* ****** ****** *)
+//
+//
 // HX: floating number operations
 //
 //

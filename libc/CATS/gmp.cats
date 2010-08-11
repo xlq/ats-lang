@@ -632,7 +632,47 @@ atslib_tostring_mpz (
 
 /* ****** ****** */
 //
+//
+// HX: rational number operations
+//
+//
+/* ****** ****** */
+
+#define atslib_mpq_init mpq_init
+#define atslib_mpq_clear mpq_clear
+
+#define atslib_mpq_set_mpq mpq_set
+#define atslib_mpq_set_mpz mpq_set_z
+#define atslib_mpq_set_si mpq_set_si
+#define atslib_mpq_set_ui mpq_set_ui
+
+/* ****** ****** */
+
+#define atslib_mpq_neg2 mpq_neg
+
+ATSinline()
+ats_void_type
+atslib_mpq_neg1
+  (ats_mpq_ptr_type x) {
+  mpq_neg((mpq_ptr)x, (mpq_ptr)x) ; return ;
+} // end of [atslib_mpq_neg1]
+
+/* ****** ****** */
+
+#define atslib_mpq_inv2 mpq_inv
+
+ATSinline()
+ats_void_type
+atslib_mpq_inv1
+  (ats_mpq_ptr_type x) {
+  mpq_inv((mpq_ptr)x, (mpq_ptr)x) ; return ;
+} // end of [atslib_mpq_inv1]
+
+/* ****** ****** */
+//
+//
 // HX: floating number operations
+//
 //
 /* ****** ****** */
 
