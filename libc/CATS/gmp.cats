@@ -638,13 +638,24 @@ atslib_tostring_mpz (
 //
 /* ****** ****** */
 
+#define atslib_mpq_cannonicalize mpq_cannonicalize
+
 #define atslib_mpq_init mpq_init
 #define atslib_mpq_clear mpq_clear
+
+#define atslib_mpq_get_d mpq_get_d
+#define atslib_mpq_get_num mpq_get_num
+#define atslib_mpq_get_den mpq_get_den
+
+#define atslib_mpq_numref mpq_numref
+#define atslib_mpq_denref mpq_denref
 
 #define atslib_mpq_set_mpq mpq_set
 #define atslib_mpq_set_mpz mpq_set_z
 #define atslib_mpq_set_si mpq_set_si
 #define atslib_mpq_set_ui mpq_set_ui
+#define atslib_mpq_set_num mpq_set_num
+#define atslib_mpq_set_den mpq_set_den
 
 /* ****** ****** */
 
@@ -667,6 +678,57 @@ atslib_mpq_inv1
   (ats_mpq_ptr_type x) {
   mpq_inv((mpq_ptr)x, (mpq_ptr)x) ; return ;
 } // end of [atslib_mpq_inv1]
+
+/* ****** ****** */
+
+#define atslib_mpq_add3_mpq mpq_add
+
+ATSinline()
+ats_void_type
+atslib_mpq_add2_mpq (
+  ats_ref_type dst, ats_ref_type src2
+) {
+  mpq_add ((mpq_ptr)dst, (mpq_ptr) dst, (mpq_ptr)src2); return ;
+} // end of [atslib_mpq_add2_mpq]
+
+#define atslib_mpq_sub3_mpq mpq_sub
+
+ATSinline()
+ats_void_type
+atslib_mpq_sub2_mpq (
+  ats_ref_type dst, ats_ref_type src2
+) {
+  mpq_sub ((mpq_ptr)dst, (mpq_ptr) dst, (mpq_ptr)src2); return ;
+} // end of [atslib_mpq_sub2_mpq]
+
+#define atslib_mpq_mul3_mpq mpq_mul
+
+ATSinline()
+ats_void_type
+atslib_mpq_mul2_mpq (
+  ats_ref_type dst, ats_ref_type src2
+) {
+  mpq_mul ((mpq_ptr)dst, (mpq_ptr) dst, (mpq_ptr)src2); return ;
+} // end of [atslib_mpq_mul2_mpq]
+
+#define atslib_mpq_div3_mpq mpq_div
+
+ATSinline()
+ats_void_type
+atslib_mpq_div2_mpq (
+  ats_ref_type dst, ats_ref_type src2
+) {
+  mpq_div ((mpq_ptr)dst, (mpq_ptr) dst, (mpq_ptr)src2); return ;
+} // end of [atslib_mpq_div2_mpq]
+
+/* ****** ****** */
+
+#define atslib_mpq_equal mpq_equal
+
+#define atslib_mpq_cmp_mpq mpq_cmp
+#define atslib_mpq_cmp_ui mpq_cmp_ui
+
+#define atslib_mpq_sgn mpq_sgn
 
 /* ****** ****** */
 //

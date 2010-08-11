@@ -31,7 +31,7 @@
 
 (* ****** ****** *)
 
-(* Author: Hongwei Xi (hwxi AT cs DOT bu DOT edu) *) // MPZ
+(* Author: Hongwei Xi (hwxi AT cs DOT bu DOT edu) *) // MPZ and MPQ
 (* Author: Shivkumar Chandrasekaran (shiv AT ece DOT ucsb DOT edu) *) // MPF
 
 (* ****** ****** *)
@@ -728,12 +728,32 @@ fun mpz_out_raw {m:file_mode} (
 //
 (* ****** ****** *)
 
+fun mpq_cannonicalize
+  (x: &mpq_vt):<> void = "#atslib_mpq_cannonicalize"
+
+(* ****** ****** *)
+
 // [x] is initialized with 0
 fun mpq_init
   (x: &mpq_vt? >> mpq_vt):<> void = "#atslib_mpq_init" // macro!
 // end of [mpq_init]
 
 fun mpq_clear (x: &mpq_vt >> mpq_vt?): void = "#atslib_mpq_clear"
+
+(* ****** ****** *)
+
+fun mpq_get_d (src: &mpq_vt): double = "#atslib_mpq_get_d"
+fun mpq_get_num (dst: &mpz_vt, src: &mpq_vt):<> void = "#atslib_mpq_get_num"
+fun mpq_get_den (dst: &mpz_vt, src: &mpq_vt):<> void = "#atslib_mpq_get_den"
+
+(* ****** ****** *)
+
+fun mpq_numref (dst: &mpq_vt)
+  :<> [l:addr] (mpz_vt @ l, mpz_vt @ l -<lin,prf> void | ptr l)
+  = "#atslib_mpq_numref"
+fun mpq_denref (dst: &mpq_vt)
+  :<> [l:addr] (mpz_vt @ l, mpz_vt @ l -<lin,prf> void | ptr l)
+  = "#atslib_mpq_denref"
 
 (* ****** ****** *)
 
@@ -747,12 +767,17 @@ fun mpq_set_mpz
   (dst: &mpq_vt, src: &mpz_vt): void = "#atslib_mpq_set_mpz"
 overload mpq_set with mpq_set_mpz
 
-fun mpq_set_si (dst: &mpq_vt, src: lint): void = "#atslib_mpq_set_si"
+fun mpq_set_si
+  (dst: &mpq_vt, src1: lint, src2: ulint): void = "#atslib_mpq_set_si"
 overload mpq_set with mpq_set_si
 
 fun mpq_set_ui
-  (dst: &mpq_vt, src: ulint): void = "#atslib_mpq_set_ui"
+  (dst: &mpq_vt, src1: ulint, src2: ulint): void = "#atslib_mpq_set_ui"
 overload mpq_set with mpq_set_ui
+
+// HX: may need to call [mpq_cannonicalize]
+fun mpq_set_num (dst: &mpq_vt, src: &mpz_vt):<> void = "#atslib_mpq_set_num"
+fun mpq_set_den (dst: &mpq_vt, src: &mpz_vt):<> void = "#atslib_mpq_set_den"
 
 (* ****** ****** *)
 
@@ -777,6 +802,61 @@ overload mpq_inv with mpq_inv2
 // [x] := -[x]
 fun mpq_inv1 (x: &mpq_vt):<> void = "atslib_mpq_inv1" // function!
 overload mpq_inv with mpq_inv1
+
+(* ****** ****** *)
+
+symintr mpq_add
+
+fun mpq_add3_mpq (dst: &mpq_vt, src1: &mpq_vt, src2: &mpq_vt): void
+  = "#atslib_mpq_add3_mpq"
+overload mpq_add with mpq_add3_mpq
+fun mpq_add2_mpq
+  (dst: &mpq_vt, src: &mpq_vt): void = "atslib_mpq_add2_mpq" // fun!
+overload mpq_add with mpq_add2_mpq
+
+symintr mpq_sub
+
+fun mpq_sub3_mpq (dst: &mpq_vt, src1: &mpq_vt, src2: &mpq_vt): void
+  = "#atslib_mpq_sub3_mpq"
+overload mpq_sub with mpq_sub3_mpq
+fun mpq_sub2_mpq
+  (dst: &mpq_vt, src: &mpq_vt): void = "atslib_mpq_sub2_mpq" // fun!
+overload mpq_sub with mpq_sub2_mpq
+
+symintr mpq_mul
+
+fun mpq_mul3_mpq (dst: &mpq_vt, src1: &mpq_vt, src2: &mpq_vt): void
+  = "#atslib_mpq_mul3_mpq"
+overload mpq_mul with mpq_mul3_mpq
+fun mpq_mul2_mpq
+  (dst: &mpq_vt, src: &mpq_vt): void = "atslib_mpq_mul2_mpq" // fun!
+overload mpq_mul with mpq_mul2_mpq
+
+symintr mpq_div
+
+fun mpq_div3_mpq (dst: &mpq_vt, src1: &mpq_vt, src2: &mpq_vt): void
+  = "#atslib_mpq_div3_mpq"
+overload mpq_div with mpq_div3_mpq
+fun mpq_div2_mpq
+  (dst: &mpq_vt, src: &mpq_vt): void = "atslib_mpq_div2_mpq" // fun!
+overload mpq_div with mpq_div2_mpq
+
+(* ****** ****** *)
+
+fun mpq_equal
+  (src1: &mpq_vt, src2: &mpq_vt):<> bool = "#atslib_mpq_equal"
+// end of [mpq_equal]
+
+symintr mpq_cmp
+
+fun mpq_cmp_mpq (x: &mpq_vt, y: &mpq_vt):<> int = "#atslib_mpq_cmp_mpq"
+overload mpq_cmp with mpq_cmp_mpq
+fun mpq_cmp_ui (x: &mpq_vt, y: ulint):<> int = "#atslib_mpq_cmp_ui"
+overload mpq_cmp with mpq_cmp_ui
+
+(* ****** ****** *)
+
+fun mpq_sgn (x: &mpq_vt):<> Sgn = "#atslib_mpq_sgn"
 
 (* ****** ****** *)
 //

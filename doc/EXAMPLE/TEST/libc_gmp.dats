@@ -81,8 +81,27 @@ fun mpz_test
 
 (* ****** ****** *)
 
+fun mpq_test
+  (): void = () where {
+  var x: mpq_vt and y: mpq_vt
+  val () = mpq_init (x) and () = mpq_init (y)
+  val () = mpq_set_si (x, 6L, 23UL)
+  val () = mpq_inv (y, x)
+  val () = mpq_add (x, y)
+  val () = mpq_sub (x, y)
+  val (pf_num, fpf_num | p_num) = mpq_numref (x)
+  val () = (print "num = "; print (!p_num); print_newline ())
+  prval () = fpf_num (pf_num)
+  val (pf_den, fpf_den | p_den) = mpq_denref (x)
+  val () = (print "den = "; print (!p_den); print_newline ())
+  prval () = fpf_den (pf_den)
+  val () = mpq_clear (x) and () = mpq_clear (y)
+} // end of [mpq_test]
+
+(* ****** ****** *)
+
 fun mpf_test
-  () = () where {
+  () : void = () where {
 //
   #define fPI 3.1415926535898
 //
@@ -178,6 +197,8 @@ implement
 main () = () where {
 //
   val () = mpz_test ()
+//
+  val () = mpq_test ()
 //
   val () = mpf_test ()
 //
