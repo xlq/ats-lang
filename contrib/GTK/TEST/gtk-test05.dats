@@ -78,11 +78,11 @@ fun make_box (
   val () = gtk_widget_show (button)
   val () = g_object_unref (button)
 //
-  val (pf_gc, pf_str | p) = tostringf__bufptr ("%u)", @((uint_of)padding))
+  val p = tostringf ("%u)", @((uint_of)padding))
   val button = gtk_button_new_with_label0 (label1) where {
-    extern castfn __cast {l:addr} (p: ptr l):<> string; val label1 = __cast p
-  }
-  val () = strbufptr_free @(pf_gc, pf_str | p)
+    extern castfn __cast {l:addr} (p: !strptr l):<> string; val label1 = __cast p
+  } // end of [val]
+  val () = strptr_free (p)
   val () = gtk_box_pack_start (box, button, expand, fill, padding)
   val () = gtk_widget_show (button)
   val () = g_object_unref (button)

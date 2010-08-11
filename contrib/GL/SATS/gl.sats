@@ -97,6 +97,7 @@ abst@ype GLushort = $extype "ats_GLushort_type"
 abst@ype GLint (n:int) = $extype "ats_GLint_type" // 4-byte signed
 typedef GLint = [n:int] GLint (n)
 castfn GLint_of_int (x: int):<> GLint
+castfn int_of_GLint (x: GLint):<> int
 castfn GLint_of_int1 {n:int} (x: int n):<> GLint n
 castfn int1_of_GLint {n:int} (x: GLint n):<> int n
 castfn GLint_of_GLenum (x: GLenum):<> GLint
@@ -104,6 +105,7 @@ castfn GLint_of_GLenum (x: GLenum):<> GLint
 abst@ype GLuint (n:int) = $extype "ats_GLuint_type" // 4-byte unsigned
 typedef GLuint = [n:nat] GLuint (n)
 castfn GLuint_of_uint (x: uint):<> GLuint
+castfn uint_of_GLuint (x: GLuint):<> uint
 castfn GLuint_of_uint1 {n:int} (x: uint n):<> GLuint n
 castfn uint1_of_GLuint {n:int} (x: GLuint n):<> uint n
 

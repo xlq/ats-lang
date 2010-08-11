@@ -95,6 +95,11 @@ overload assert_prerrf with assert_prerrf_bool1
 
 (* ****** ****** *)
 
+//
+// HX-2010-08-11:
+// Note that linear strings are returned by these functions
+//
+
 fun tostringf_size {ts:types}
   (guess: Nat, fmt: printf_c ts, arg: ts):<> strptr1
   = "atspre_tostringf_size"
@@ -102,12 +107,14 @@ fun tostringf_size {ts:types}
 fun tostringf {ts:types}
   (fmt: printf_c ts, arg: ts):<> strptr1 = "atspre_tostringf"
 
-fun sprintf {ts:types}
+fun sprintf {ts:types} // HX: the same as [tostringf]
   (fmt: printf_c ts, arg: ts):<> strptr1 = "atspre_tostringf"
 
 (* ****** ****** *)
 
-(* [fprintf_ats] is to be implemented as a macro if there is a need. *)
+(*
+// HX: [fprintf_ats] is to be implemented as a macro if there is a need.
+*)
 
 (* ****** ****** *)
 

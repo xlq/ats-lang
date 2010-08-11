@@ -3,7 +3,7 @@
 
 let 
     type any = {any : int}
-    var buffer := getchar()
+    var buffer := "" /* a dummy value */
 
     function readint(any: any) : int =
       let
@@ -51,12 +51,18 @@ let
       if l=nil then print("\n")
       else (printint(l.first); print(" "); printlist(l.rest))
 
-   var list1 := readlist()
-   var list2 := (buffer:=getchar(); readlist())
+   var list1: list := nil
+   var list2: list := nil
 
 in
    /* BODY OF MAIN PROGRAM */
+   print ("Please input a list of integers (ending with ctrl^D)\n");
+   list1 := (buffer:=getchar(); readlist());
+   print ("Please input another list of integers (ending with ctrl^D)\n");
+   list2 := (buffer:=getchar(); readlist());
    printlist (merge(list1,list2))
 end
 
+/* ****** ****** */
 
+/* end of [merge.tig] */
