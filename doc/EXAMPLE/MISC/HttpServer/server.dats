@@ -333,10 +333,11 @@ val dt = doctype_of_filename filename
 
 in
 
-sprintf (
+string_of_strptr (sprintf (
 "HTTP/1.0 200 OK\r\nServer: ATS/Vanilla\r\nContent-length: %li\r\nContent-type: %s\r\n\r\n",
 @(sz, dt)
-)
+) // end of [sprintf]
+) // end of [string_of_strptr]
 
 end // end of [msg200_of_filename]
 
@@ -557,13 +558,15 @@ implement directory_send_loop (pf_conn | fd, parent, ents): void =
         case+ ft of
         | 0 => let
             val msg = sprintf ("<A HREF=\"%s\">%s</A><BR>", @(ent, ent))
-            val len = string_length msg
+            val msg = string1_of_strptr (msg)
+            val len = string_length (msg)
           in
             socket_write_substring_all (pf_conn | fd, msg, 0, len);
             directory_send_loop (pf_conn | fd, parent, ents)
           end
         | 1 => let
             val msg = tostringf ("<A HREF=\"%s/\">%s/</A><BR>", @(ent, ent))
+            val msg = string1_of_strptr (msg)
           in
             socket_write_substring_all (pf_conn | fd, msg, 0, string_length msg);
             directory_send_loop (pf_conn | fd, parent, ents)

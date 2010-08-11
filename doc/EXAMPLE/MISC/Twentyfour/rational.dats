@@ -145,8 +145,9 @@ implement prerr_rat r = prerr_mac (fprint_rat, r)
 
 implement tostring_rat r =
   if r.denom <> 1 then
-    tostringf ("%i/%i", @(r.numer, r.denom))
+    string_of_strptr (tostringf ("%i/%i", @(r.numer, r.denom)))
   else tostring r.numer
+// end of [tostring_rat]
 
 (* ****** ****** *)
 

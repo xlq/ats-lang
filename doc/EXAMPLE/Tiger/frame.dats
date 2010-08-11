@@ -183,14 +183,17 @@ extern typedef "frame_t" = frame
 
 (* ****** ****** *)
 
-implement instr_make_mem_read (acc, tmp) = case+ acc of
+#define p2s string_of_strptr
+
+implement
+instr_make_mem_read (acc, tmp) = case+ acc of
   | InFrame (ofs) => 
      $AS.INSTRoper (asm, src, dst, jump) where {
 #if (MARCH == "SPIM") #then
-      val asm = sprintf ("lw `d0, %i(`s0)", @(ofs))
+      val asm = p2s (sprintf ("lw `d0, %i(`s0)", @(ofs)))
 #endif // MARCH == "SPIM"
 #if (MARCH == "x86_32") #then
-      val asm = sprintf ("movl %i(`s0), `d0", @(ofs))
+      val asm = p2s (sprintf ("movl %i(`s0), `d0", @(ofs)))
 #endif // MARCH == "x86_32"
       val src = '[FP] and dst = '[tmp]; val jump = None ()
     } // end of [INSTRoper]
@@ -200,15 +203,16 @@ implement instr_make_mem_read (acc, tmp) = case+ acc of
     end // end of [InReg]
 // end of [instr_make_mem_read]
 
-implement instr_make_mem_write (acc, tmp) = case+ acc of
+implement
+instr_make_mem_write (acc, tmp) = case+ acc of
   | InFrame (ofs) => 
      $AS.INSTRoper (asm, src, dst, jump) where {
 #if (MARCH == "SPIM") #then
-      val asm = sprintf ("sw `s1, %i(`s0)", @(ofs))
-#endif
+      val asm = p2s (sprintf ("sw `s1, %i(`s0)", @(ofs)))
+#endif // MARCH == "SPIM"
 #if (MARCH == "x86_32") #then
-      val asm = sprintf ("movl `s1, %i(`s0)", @(ofs))
-#endif
+      val asm = p2s (sprintf ("movl `s1, %i(`s0)", @(ofs)))
+#endif // MARCH == "x86_32"
       val src = '[FP, tmp] and dst = '[]; val jump = None ()
     } // end of [INSTRoper]
   | InReg _ => begin
@@ -550,7 +554,7 @@ implement procEntryExit1_exit (frm, inss) = let
     val () = inss := list_vt_cons (ins, inss)
   } // end of [val]
   val () = () where {
-    val asm = sprintf ("addi `d0, `s0, %i", @(WORDSIZE))
+    val asm = p2s (sprintf ("addi `d0, `s0, %i", @(WORDSIZE)))
     val src = '[SP] and dst = '[SP]; val jump = None ()
     val ins = $AS.INSTRoper (asm, src, dst, jump)
     val () = inss := list_vt_cons (ins, inss)

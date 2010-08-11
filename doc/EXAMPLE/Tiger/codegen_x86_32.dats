@@ -48,6 +48,10 @@ viewtypedef instrlst_vt = $AS.instrlst_vt
 
 (* ****** ****** *)
 
+#define p2s string_of_strptr
+
+(* ****** ****** *)
+
 (*
 // it is impractical to achieve decent instruction selection
 // by a manual approach; some kind of tool is clearly needed.
@@ -100,7 +104,7 @@ fn instrlst_add_stm
         val () = case+ e2 of
           | EXPconst i2 => emit
               (res, $AS.INSTRoper (asm, src, dst, jump)) where {
-              val asm = sprintf ("cmpl $%i, `s0", @(i2))
+              val asm = p2s (sprintf ("cmpl $%i, `s0", @(i2)))
               val src = '[s0] and dst = '[]; val jump = None ()
             } // end of [val]
           | _ => () where {
@@ -114,7 +118,7 @@ fn instrlst_add_stm
         val () = emit
           (res, $AS.INSTRoper (asm, src, dst, jump)) where {
           val tname = $TL.label_name_get tlab
-          val asm = sprintf ("%s .%s", @(opcode, tname))
+          val asm = p2s (sprintf ("%s .%s", @(opcode, tname)))
           val src = '[] and dst = '[]; val jump = Some '[tlab, flab]
         } // end of [val]
       } (* end of [STMcjump] *)
@@ -130,7 +134,7 @@ fn instrlst_add_stm
               | EXPconst i2 => () where {
                   val () = emit
                     (res, $AS.INSTRoper (asm, src, dst, jump)) where {
-                    val asm = sprintf ("movl $%i, %i(`s0)", @(i2, ofs))
+                    val asm = p2s (sprintf ("movl $%i, %i(`s0)", @(i2, ofs)))
                     val src = '[s0] and dst = '[]; val jump= None ()
                   } // end of [val]
                 } (* end of [EXPconst] *)
@@ -138,7 +142,7 @@ fn instrlst_add_stm
                   val () = emit
                     (res, $AS.INSTRoper (asm, src, dst, jump)) where {
                     val name = $TL.label_name_get (lab2)
-                    val asm = sprintf ("movl $.%s, %i(`s0)", @(name, ofs))
+                    val asm = p2s (sprintf ("movl $.%s, %i(`s0)", @(name, ofs)))
                     val src = '[s0] and dst = '[]; val jump= None ()
                   } // end of [val]              
                 } (* end of [EXPname] *)
@@ -146,7 +150,7 @@ fn instrlst_add_stm
                   val s1 = auxexp (res, e2)
                   val () = emit
                     (res, $AS.INSTRoper (asm, src, dst, jump)) where {
-                    val asm = sprintf ("movl `s1, %i(`s0)", @(ofs))
+                    val asm = p2s (sprintf ("movl `s1, %i(`s0)", @(ofs)))
                     val src = '[s0, s1] and dst = '[]; val jump= None ()
                   } // end of [val]
                 } (* end of [_] *)
@@ -158,7 +162,7 @@ fn instrlst_add_stm
               | EXPconst i2 => () where {
                   val () = emit
                     (res, $AS.INSTRoper (asm, src, dst, jump)) where {
-                    val asm = sprintf ("movl $%i, 0(`s0)", @(i2))
+                    val asm = p2s (sprintf ("movl $%i, 0(`s0)", @(i2)))
                     val src = '[s0] and dst = '[]; val jump = None ()
                   } // end of [val]
                 } (* end of [EXPconst] *)
@@ -166,7 +170,7 @@ fn instrlst_add_stm
                   val () = emit
                     (res, $AS.INSTRoper (asm, src, dst, jump)) where {
                     val name = $TL.label_name_get (lab2)
-                    val asm = sprintf ("movl $.%s, 0(`s0)", @(name))
+                    val asm = p2s (sprintf ("movl $.%s, 0(`s0)", @(name)))
                     val src = '[s0] and dst = '[]; val jump = None ()
                   } // end of [val]
                 } (* end of [EXPname] *)
@@ -187,7 +191,7 @@ fn instrlst_add_stm
           | EXPconst i2 => () where {
               val () = emit
                 (res, $AS.INSTRoper (asm, src, dst, jump)) where {
-                val asm = sprintf ("movl $%i, `d0", @(i2))
+                val asm = p2s (sprintf ("movl $%i, `d0", @(i2)))
                 val src = '[] and dst = '[t1]; val jump = None ()
               } // end of [val]
             } (* end of [EXPconst] *)
@@ -195,7 +199,7 @@ fn instrlst_add_stm
               val () = emit
                 (res, $AS.INSTRoper (asm, src, dst, jump)) where {
                 val name = $TL.label_name_get (lab2)
-                val asm = sprintf ("movl $.%s, `d0", @(name))
+                val asm = p2s (sprintf ("movl $.%s, `d0", @(name)))
                 val src = '[] and dst = '[t1]; val jump = None ()
               } // end of [val]          
             } (* end of [EXPname] *)
@@ -209,7 +213,7 @@ fn instrlst_add_stm
       } (* end of [STMmove (EXPtemp, _)] *)
     | STMlabel lab => () where {
         val name = $TL.label_name_get lab
-        val asm = sprintf (".%s:", @(name))
+        val asm = p2s (sprintf (".%s:", @(name)))
         val () = emit (res, $AS.INSTRlabel (asm, lab))
       } // end of [STMlabel]
     | STMexp e => begin
@@ -240,7 +244,7 @@ fn instrlst_add_stm
 //
     | EXPconst i => d0 where {
         val d0 = $TL.temp_make_new ()
-        val asm = sprintf ("movl $%i, `d0", @(i))
+        val asm = p2s (sprintf ("movl $%i, `d0", @(i)))
         val src = '[] and dst = '[d0]; val jump = None ()
         val () = emit (res, $AS.INSTRoper (asm, src, dst, jump))
       } (* end of [EXPconst] *)
@@ -248,7 +252,7 @@ fn instrlst_add_stm
     | EXPname lab => d0 where {
         val d0 = $TL.temp_make_new ()
         val name = $TL.label_name_get (lab)
-        val asm = sprintf ("movl $.%s, `d0", @(name))
+        val asm = p2s (sprintf ("movl $.%s, `d0", @(name)))
         val src = '[] and dst = '[d0]; val jump = None ()
         val () = emit (res, $AS.INSTRoper (asm, src, dst, jump))
       } (* end of [EXPconst] *)
@@ -283,7 +287,7 @@ fn instrlst_add_stm
             } // end of [val]
             val () = emit
               (res, $AS.INSTRoper (asm, src, dst, jump)) where {
-              val asm = sprintf ("%s $%i, `d0", @(opcode, i2))
+              val asm = p2s (sprintf ("%s $%i, `d0", @(opcode, i2)))
               val src = '[d0] and dst = '[d0]; val jump = None ()
             } // end of [val]
           } (* end of [EXPcons] *)
@@ -363,7 +367,7 @@ fn instrlst_add_stm
             val s0 = auxexp (res, e_base)
             val () = emit
               (res, $AS.INSTRoper (asm, src, dst, jump)) where {
-              val asm = sprintf ("movl %i(`s0), `d0", @(ofs))
+              val asm = p2s (sprintf ("movl %i(`s0), `d0", @(ofs)))
               val src = '[s0] and dst = '[d0]; val jump = None ()
             } // end of [val]
           } (* end of [EXPbinop _(*additive*), _, EXPconst)] *)
@@ -389,7 +393,7 @@ fn instrlst_add_stm
               val () = emit
                 (res, $AS.INSTRoper (asm, src, dst, jump)) where {
                 val name = $TL.label_name_get (lab_fun)
-                val asm = sprintf ("call %s", @(name))
+                val asm = p2s (sprintf ("call %s", @(name)))
                 val src = fars and dst = calldefs; val jump = None ()
               } // end of [val]
             } (* end of [_] *)
@@ -407,7 +411,7 @@ fn instrlst_add_stm
         ) : int (*nargsz*) // end of [val]
         val () = emit
           (res, $AS.INSTRoper (asm, src, dst, jump)) where {
-          val asm = sprintf ("addl $%i, `s0", @(nargsz))
+          val asm = p2s (sprintf ("addl $%i, `s0", @(nargsz)))
           val s0 = $F.SP; val src = '[s0] and dst = '[s0]; val jump = None ()
         } // end of [val]
         val () = emit
@@ -446,7 +450,7 @@ fn instrlst_add_stm
     val fars = list_of_list_vt (list_vt_reverse rev_fars)
     val () = emit
       (res, $AS.INSTRoper (asm, src, dst, jump)) where {
-      val asm = sprintf ("subl $%i, `s0", @(nargsz))
+      val asm = p2s (sprintf ("subl $%i, `s0", @(nargsz)))
       val s0 = $F.SP; val src = '[s0] and dst = '[s0]; val jump = None ()
     } // end of [val]
     val () = loop (res, es, fars, 0(*ofs*)) where {
@@ -467,7 +471,7 @@ fn instrlst_add_stm
             | list_nil () => let
                 val () = emit
                   (res, $AS.INSTRoper (asm, src, dst, jump)) where  {
-                  val asm = sprintf ("movl `s0, %i(`s1)", @(ofs));
+                  val asm = p2s (sprintf ("movl `s0, %i(`s1)", @(ofs)))
                   val src = '[s0, $F.SP] and dst = '[]; val jump = None ()
                 } // end of [val]
               in

@@ -116,7 +116,9 @@ end // end of [label_make_new]
 implement label_make_str_new () = let
   val ind = !the_label_str_count
   val () = !the_label_str_count := ind + 1
-  val name = sprintf ("LC%i_TIGERATS", @(ind)) in
+  val name = sprintf ("LC%i_TIGERATS", @(ind))
+  val name = string_of_strptr (name)
+in
   LABname (name)
 end // end of [label_make_str_new]
 
@@ -124,7 +126,9 @@ implement label_make_fun_new (fsym) = let
   val ind = !the_label_fun_count
   val () = !the_label_fun_count := ind + 1
   val fnam = $Sym.symbol_name_get fsym
-  val name = sprintf ("LF%i_TIGERATS_%s", @(ind, fnam)) in
+  val name = sprintf ("LF%i_TIGERATS_%s", @(ind, fnam))
+  val name = string_of_strptr (name)
+in
   LABname (name)
 end // end of [label_make_fun_new]
 
@@ -132,8 +136,11 @@ implement label_make_name (name) = LABname (name)
 
 (* ****** ****** *)
 
-implement label_name_get (lab) = case+ lab of
-  | LABint ind => sprintf ("L%i_TIGERATS", @(ind))
+implement
+label_name_get (lab) = case+ lab of
+  | LABint ind => let
+      val ptr = sprintf ("L%i_TIGERATS", @(ind)) in string_of_strptr (ptr)
+    end // end of [LABint]
   | LABname name => name
 // end of [label_name_get]
 

@@ -274,8 +274,6 @@ fun fprint1_string__main {v:view} {l:addr}
   = "atspre_fprint_string"
 // end of [fprint1_string__main]
 
-(* ****** ****** *)
-
 fun print_string (b: string):<!ref> void = "atspre_print_string"
 and prerr_string (b: string):<!ref> void = "atspre_prerr_string"
 overload print with print_string
@@ -294,11 +292,13 @@ fun string_get_char_at {n:nat} {i:nat | i < n}
 overload [] with string_get_char_at
 
 //
+// HX:
 // these functions are present mostly for convenience as a programmer
 // ofter uses values of the type int as array indices:
 //
 
-fun strbuf_get_char_at__intsz {m,n:nat} {i:nat | i < n}
+fun strbuf_get_char_at__intsz
+  {m,n:nat} {i:nat | i < n}
   (sbf: &strbuf (m, n), i: int i):<> [c:char | c <> NUL] char c
   = "atspre_string_get_char_at__intsz"
 overload [] with strbuf_get_char_at__intsz
@@ -345,11 +345,14 @@ fun strbuf_test_char_at {m,n:nat}
   {i:nat | i <= n} (sbf: &strbuf (m, n), i: size_t i)
   :<> [c:char | (c <> NUL && i < n) || (c == NUL && i >= n)] char c
   = "atspre_string_test_char_at"
+// end of [strbuf_test_char_at]
 
 fun string_test_char_at {n:nat}
   {i:nat | i <= n} (str: string n, i: size_t i)
   :<> [c:char | (c <> NUL && i < n) || (c == NUL && i >= n)] char c
   = "atspre_string_test_char_at"
+// end of [string_test_char_at]
+
 
 //
 // these functions are present mostly for convenience as a programmer
@@ -374,6 +377,7 @@ fun strbuf_initialize_substring {bsz:int}
   | p: ptr l, str: string n, st: size_t st, ln: size_t ln
   ) : void
   = "atspre_strbuf_initialize_substring"
+// end of [strbuf_initialize_substring]
 
 (* ****** ****** *)
 
@@ -386,12 +390,14 @@ fun string_make_char {n:nat}
 fun string_make_list_int
   {n:nat} (cs: list (char, n), n: int n):<> strbufptr_gc n
   = "atspre_string_make_list_int"
+// end of [string_make_list_int]
 
 (* ****** ****** *)
 
 fun string_make_list_rev_int
   {n:nat} (cs: list (char, n), n: int n):<> strbufptr_gc n
   = "atspre_string_make_list_rev_int"
+// end of [string_make_list_rev_int]
 
 (* ****** ****** *)
 
@@ -399,6 +405,7 @@ fun string_make_substring
   {n:int} {st,ln:nat | st + ln <= n}
   (str: string n, st: size_t st, ln: size_t ln):<> strbufptr_gc ln
   = "atspre_string_make_substring"
+// end of [string_make_substring]
 
 fun string_make_substring__main {v:view}
   {m,n:int} {st,ln:nat | st+ln <= n} {l:addr} (
@@ -446,6 +453,9 @@ fun stringlst_concat
 fun string_contains
   (str: string, c: char):<> bool = "atspre_string_contains"
 // end of [string_contains]
+fun strptr_contains
+  {l:agz} (str: !strptr l, c: char):<> bool = "atspre_string_contains"
+// end of [strptr_contains]
 
 (* ****** ****** *)
 
@@ -466,6 +476,10 @@ overload string_length with string0_length
 fun string1_length
   {n:nat} (str: string n):<> size_t n = "atspre_string_length"
 overload string_length with string1_length
+
+fun strptr_length
+  {l:agz} (str: !strptr l):<> size_t = "atspre_string_length"
+// end of [strptr_length]
 
 (* ****** ****** *)
 
@@ -511,13 +525,15 @@ fun string_is_at_end {n,i:nat | i <= n}
 
 (* ****** ****** *)
 
-fun strbuf_isnot_at_end {m,n,i:nat | i <= n}
-  (sbf: &strbuf (m, n), i: size_t i):<> bool (i <> n)
+fun strbuf_isnot_at_end
+  {m,n,i:nat | i <= n} (sbf: &strbuf (m, n), i: size_t i):<> bool (i <> n)
   = "atspre_string_isnot_at_end"
+// end of [strbuf_isnot_at_end]
 
-fun string_isnot_at_end {n,i:nat | i <= n}
-  (str: string n, i: size_t i):<> bool (i <> n)
+fun string_isnot_at_end
+  {n,i:nat | i <= n} (str: string n, i: size_t i):<> bool (i <> n)
   = "atspre_string_isnot_at_end"
+// end of [string_isnot_at_end]
 
 (* ****** ****** *)
 
@@ -569,6 +585,7 @@ fun string_singleton (c: char):<> strbufptr_gc 1 = "atspre_string_singleton"
 // implemented in [prelude/DATS/string.dats]
 fun string_foreach__main {v:view} {vt:viewtype} {n:nat} {f:eff}
   (pf: !v | str: string n, f: (!v | c1har, !vt) -<f> void, env: !vt) :<f> void
+// end of [string_foreach__main]
 
 (* ****** ****** *)
 
@@ -657,12 +674,17 @@ castfn ptr_of_strptr {l:addr} (x: !strptr l):<> ptr l
 overload ptr_of with ptr_of_strptr
 //
 castfn string_of_strptr (x: strptr1):<> string
+castfn string1_of_strptr (x: strptr1):<> String
 castfn string_takeout_ptr // non-reentrant! 
   (x: string) :<> [l:agz] (strptr l -<lin,prf> void | strptr l)
+//
 castfn strbuf_of_strptr {l:agz}
   (x: strptr l):<> [m,n:nat] strbufptr_gc (m, n, l)
 castfn strptr_of_strbuf
   {m,n:int} {l:addr} (x: strbufptr_gc (m, n, l)):<> [l > null] strptr l
+//
+castfn string_of_strbuf
+  {m,n:int} {l:addr} (x: strbufptr_gc (m, n, l)):<> string n
 //
 fun strptr_free {l:addr} (x: strptr l):<> void = "atspre_strptr_free"
 //
