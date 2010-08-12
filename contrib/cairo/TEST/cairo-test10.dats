@@ -262,15 +262,13 @@ implement main () = () where {
   val () = cairo_set_source_rgb (cr, 0.0, 0.0, 1.0)
   val title = "Zoe's Multiplication Table"
   var txtexts : cairo_text_extents_t
-  val (fpf_x | p_x) = string_takeout_ptr (title)
-  val () = cairo_text_extents (cr, p_x, txtexts)
-  prval () = fpf_x (p_x)
 //
+  val pfx = string_takeout_ptr (title)
+  val () = cairo_text_extents (cr, pfx.1, txtexts)
   val x_title = (wsf-txtexts.width)/2
   val () = cairo_move_to (cr, x_title, 272.0/768*hsf)
-  val (fpf_x | p_x) = string_takeout_ptr (title)
-  val () = cairo_show_text (cr, p_x)
-  prval () = fpf_x (p_x)
+  val () = cairo_show_text (cr, pfx.1)
+  prval () = pfx.0 (pfx.1)
 //
   val m_table = 72.0 // margin
   val x_table = m_table

@@ -47,9 +47,9 @@ implement main () = () where {
   val () = cairo_set_font_size (cr, 32.0)
   val () = cairo_set_source_rgb (cr, 0.0, 0.0, 1.0)
   val () = cairo_move_to (cr, 10.0, 50.0)
-  val (fpf_x | x) = string_takeout_ptr ("Hello, world!")
-  val () = cairo_show_text (cr, x)
-  prval () = fpf_x (x)
+//
+  val pfx = string_takeout_ptr ("Hello, world!")
+  val () = cairo_show_text (cr, pfx.1); prval () = pfx.0 (pfx.1)
 //
   val status = cairo_surface_write_to_png (surface, "cairo-test1-1.png")
   val () = cairo_surface_destroy (surface)

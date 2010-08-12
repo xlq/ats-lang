@@ -912,11 +912,15 @@ implement glTetrix_finalize () = let
   val str_gameover = "Game Over!"
   val level = theGameLevel_get ()
   val score = theTotalScore_get ()
-  val str_level = sprintf ("The final level of the game is %i.", @(level))
-  val str_score = sprintf ("The final score of the game is %i.", @(score))
+//
+  #define p2s string1_of_strptr
+  val str_level = p2s (sprintf ("The final level of the game is %i.", @(level)))
+  val str_score = p2s (sprintf ("The final score of the game is %i.", @(score)))
+//
   abstype FONTref // a reference
   fun show_string {n:nat}
-    (ft: FONTref, str: string n): void = loop (ft, str, 0) where {
+    (ft: FONTref, str: string n)
+    : void = loop (ft, str, 0) where {
     extern fun glutBitmapCharacter (ft: FONTref, c: char): void
       = "glTetrix_glutBitmapCharacter"
     fun loop {i:nat | i <= n} .<n-i>.

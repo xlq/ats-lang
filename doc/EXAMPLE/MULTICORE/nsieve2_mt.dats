@@ -209,7 +209,7 @@ fn nsieve_mt {lws:agz}
   }
 //
   val () = workshop_wait_blocked_all (ws)  
-  val nworker = workshop_nworker_get (ws)
+  val nworker = workshop_get_nworker (ws)
   var i: Nat = 0
   val () = while (i < nworker) let
     val _quit = $extval (work, "(void*)0")

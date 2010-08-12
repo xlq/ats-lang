@@ -33,9 +33,11 @@ fun draw_intarray
       val (pf | ()) = cairo_save (cr)
       val () = cairo_translate (cr, x + w/2, 0.0)
       val () = cairo_set_source_rgb (cr, 0.25, 0.25, 0.25)
+//
       val txt = sprintf ("%2.2i", @(A[i]))
       val () = cairo_show_text_inbox (cr, w, H, txt)
       val () = strptr_free (txt)
+//
       val () = cairo_restore (pf | cr)
     in
       loop (cr, x+w, i+1)
@@ -207,9 +209,11 @@ implement draw_main
   val h = double_of (height)
   val (pf | ()) = cairo_save (cr)
   val () = cairo_translate (cr, w0/2, h/3)
+//
   val txt = sprintf ("searching for key = %i", @(key0))
   val () = cairo_show_text_inbox (cr, w0/2, 2*h/3, txt)
   val () = strptr_free (txt)
+//
   val () = cairo_restore (pf | cr)
   val (pf | ()) = cairo_save (cr)
   val () = cairo_translate (cr, w0/2, h/2)

@@ -109,7 +109,7 @@ main (argc, argv) = let
     val _ = workshop_add_worker(ws) in ncpu := ncpu + 1
   end // end of [val]
 // 
-  val nworker = workshop_nworker_get(ws)
+  val nworker = workshop_get_nworker(ws)
 //
   var !p_arr with pf_arr = @[ulint][NCPU](0UL)
 //

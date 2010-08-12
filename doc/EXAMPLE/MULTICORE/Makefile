@@ -21,6 +21,7 @@ compall:: \
   partial-sums_mt \
   qsort_mt_flt \
   qsort_mt_int \
+  randcompec_mt \
 
 ######
 

@@ -147,10 +147,10 @@ workshop_make (qsz, f) = workshop_make_tsz (qsz, f, sizeof<a>)
 (* ****** ****** *)
 
 extern
-fun workshop_fwork_get {a:viewt@ype} {l:addr}
+fun workshop_get_fwork {a:viewt@ype} {l:addr}
   (ws: !WORKSHOPptr (a, l)):<> (!WORKSHOPptr (a, l), &a >> a?) -<fun> int
-  = "atslib_parworkshop_workshop_fwork_get"
-// end of [workshop_fwork_get]
+  = "atslib_parworkshop_workshop_get_fwork"
+// end of [workshop_get_fwork]
 
 (* ****** ****** *)
 
@@ -198,95 +198,95 @@ workshop_release {a:viewt@ype} {l:addr}
 (* ****** ****** *)
 
 extern fun
-workshop_WSmut_get
+workshop_get_WSmut
   {a:viewt@ype} {l:addr} (pf: !WORKSHOP (a) @ l | p: ptr l)
   :<> [l_mut:addr] (
     mutex (WORKSHOP a @ l) @ l_mut, minus (ptr l, mutex (WORKSHOP a @ l) @ l_mut)
   | ptr l_mut
-  ) = "atslib_parworkshop_workshop_WSmut_get"
-// end of [workshop_WSmut_get]
+  ) = "atslib_parworkshop_workshop_get_WSmut"
+// end of [workshop_get_WSmut]
 
 extern fun
-workshop_WQemp_get
+workshop_get_WQemp
   {a:viewt@ype} {l:addr}
   (pf: !WORKSHOP (a) @ l | p: ptr l)
   :<> [l_emp:addr] (
     cond @ l_emp, minus (ptr l, cond @ l_emp) | ptr l_emp
-  ) = "atslib_parworkshop_workshop_WQemp_get"
-// end of [workshop_WQemp_get]
+  ) = "atslib_parworkshop_workshop_get_WQemp"
+// end of [workshop_get_WQemp]
 
 extern fun
-workshop_WQful_get
+workshop_get_WQful
   {a:viewt@ype} {l:addr}
   (pf: !WORKSHOP (a) @ l | p: ptr l)
   :<> [l_ful:addr] (
     cond @ l_ful, minus (ptr l, cond @ l_ful) | ptr l_ful
-  ) = "atslib_parworkshop_workshop_WQful_get"
-// end of [workshop_WQful_get]
+  ) = "atslib_parworkshop_workshop_get_WQful"
+// end of [workshop_get_WQful]
 
 (* ****** ****** *)
 
 extern fun
-workshop_WSisz_get
+workshop_get_WSisz
   {a:viewt@ype} {l:addr}
   (pf: !WORKSHOP (a) @ l | p: ptr l)
   :<> [l_isz:addr] (
     cond @ l_isz, minus (ptr l, cond @ l_isz) | ptr l_isz
-  ) = "atslib_parworkshop_workshop_WSisz_get"
-// end of [workshop_WSisz_get]
+  ) = "atslib_parworkshop_workshop_get_WSisz"
+// end of [workshop_get_WSisz]
 
 extern fun
-workshop_WSpaused_get
+workshop_get_WSpaused
   {a:viewt@ype} {l:addr}
   (pf: !WORKSHOP (a) @ l | p: ptr l)
   :<> [l_pau:addr] (
     cond @ l_pau, minus (ptr l, cond @ l_pau) | ptr l_pau
-  ) = "atslib_parworkshop_workshop_WSpaused_get"
-// end of [workshop_WSpaused_get]
+  ) = "atslib_parworkshop_workshop_get_WSpaused"
+// end of [workshop_get_WSpaused]
 
 extern fun
-workshop_WSequ1_get
+workshop_get_WSequ1
   {a:viewt@ype} {l:addr}
   (pf: !WORKSHOP (a) @ l | p: ptr l)
   :<> [l_equ:addr] (
     cond @ l_equ, minus (ptr l, cond @ l_equ) | ptr l_equ
-  ) = "atslib_parworkshop_workshop_WSequ1_get"
-// end of [workshop_WSequ1_get]
+  ) = "atslib_parworkshop_workshop_get_WSequ1"
+// end of [workshop_get_WSequ1]
 
 extern fun
-workshop_WSequ2_get
+workshop_get_WSequ2
   {a:viewt@ype} {l:addr}
   (pf: !WORKSHOP (a) @ l | p: ptr l)
   :<> [l_equ:addr] (
     cond @ l_equ, minus (ptr l, cond @ l_equ) | ptr l_equ
-  ) = "atslib_parworkshop_workshop_WSequ2_get"
-// end of [workshop_WSequ2_get]
+  ) = "atslib_parworkshop_workshop_get_WSequ2"
+// end of [workshop_get_WSequ2]
 
 (* ****** ****** *)
 
 implement
-workshop_nworker_get
+workshop_get_nworker
   (ws) = nworker where {
   val (pf_ws | p_ws) = workshop_acquire (ws)
   val nworker = p_ws->nworker
   val () = workshop_release (pf_ws | p_ws)
-} // end of [workshop_nworker_get]
+} // end of [workshop_get_nworker]
 
 implement
-workshop_npaused_get
+workshop_get_npaused
   (ws) = npaused where {
   val (pf_ws | p_ws) = workshop_acquire (ws)
   val npaused = p_ws->npaused
   val () = workshop_release (pf_ws | p_ws)
-} // end of [workshop_npaused_get]
+} // end of [workshop_get_npaused]
 
 implement
-workshop_nblocked_get
+workshop_get_nblocked
   (ws) = nblocked where {
   val (pf_ws | p_ws) = workshop_acquire (ws)
   val nblocked = p_ws->nblocked
   val () = workshop_release (pf_ws | p_ws)
-} // end of [workshop_nblocked_get]
+} // end of [workshop_get_nblocked]
 
 (* ****** ****** *)
 
@@ -348,7 +348,7 @@ workshop_add_worker
   viewtypedef env = WORKSHOPptr (a, l)
   fun worker (ws: env): void = let
     var wk = workshop_remove_work<a> (ws)
-    val fwork = workshop_fwork_get (ws)
+    val fwork = workshop_get_fwork (ws)
     val status = fwork (ws, wk)
   in
     case+ 0 of
@@ -378,9 +378,9 @@ workshop_add_worker
           $PTHREAD.pthread_cond_broadcast (p_ws->WSequ1)
         // end of [val]
         val [l_mut:addr] (pf_mut, fpf_mut | p_mut) =
-          workshop_WSmut_get {a} {l} (pf_ws | p_ws)
+          workshop_get_WSmut {a} {l} (pf_ws | p_ws)
         val [l_pau:addr] (pf_pau, fpf_pau | p_pau) = 
-          workshop_WSpaused_get {a} {l} (pf_ws | p_ws)
+          workshop_get_WSpaused {a} {l} (pf_ws | p_ws)
         val () = $PTHREAD.pthread_cond_wait_mutex {V_ws} (pf_ws | !p_pau, !p_mut)
         prval () = minus_addback (fpf_mut, pf_mut | p_ws)
         prval () = minus_addback (fpf_pau, pf_pau | p_ws)
@@ -442,9 +442,9 @@ workshop_insert_work {l} (ws, wk) = let
   in    
     if isful then let
       val [l_mut:addr] (pf_mut, fpf_mut | p_mut) =
-        workshop_WSmut_get {a} {l} (pf_ws | p_ws)
+        workshop_get_WSmut {a} {l} (pf_ws | p_ws)
       val [l_ful:addr] (pf_ful, fpf_ful | p_ful) = 
-        workshop_WQful_get {a} {l} (pf_ws | p_ws)
+        workshop_get_WQful {a} {l} (pf_ws | p_ws)
       viewdef V_mut = mutex (WORKSHOP a @ l) @ l_mut
       val () = $PTHREAD.pthread_cond_wait_mutex {V_ws} (pf_ws | !p_ful, !p_mut)
       prval () = minus_addback (fpf_mut, pf_mut | p_ws)
@@ -461,7 +461,7 @@ workshop_insert_work {l} (ws, wk) = let
         val () = p_ws->nblocked := 0
 //
         val [l_emp:addr] (pf_emp, fpf_emp | p_emp) = 
-          workshop_WQemp_get {a} {l} (pf_ws | p_ws)
+          workshop_get_WQemp {a} {l} (pf_ws | p_ws)
         val () = $PTHREAD.pthread_cond_broadcast (!p_emp)
         prval () = minus_addback (fpf_emp, pf_emp | p_ws)
       in
@@ -495,9 +495,9 @@ workshop_remove_work {l} (ws) = let
       // end of [val]
 //
       val [l_mut:addr] (pf_mut, fpf_mut | p_mut) =
-        workshop_WSmut_get {a} {l} (pf_ws | p_ws)
+        workshop_get_WSmut {a} {l} (pf_ws | p_ws)
       val [l_emp:addr] (pf_emp, fpf_emp | p_emp) = 
-        workshop_WQemp_get {a} {l} (pf_ws | p_ws)
+        workshop_get_WQemp {a} {l} (pf_ws | p_ws)
       viewdef V_mut = mutex (WORKSHOP a @ l) @ l_mut
       val () = $PTHREAD.pthread_cond_wait_mutex {V_ws} (pf_ws | !p_emp, !p_mut)
       prval () = minus_addback (fpf_mut, pf_mut | p_ws)
@@ -511,7 +511,7 @@ workshop_remove_work {l} (ws) = let
       val wk = $LQ.queue_remove<a> (p_ws->WQ)
       val () = if isful then let
         val [l_ful:addr] (pf_ful, fpf_ful | p_ful) = 
-          workshop_WQful_get {a} {l} (pf_ws | p_ws)
+          workshop_get_WQful {a} {l} (pf_ws | p_ws)
         val () = $PTHREAD.pthread_cond_broadcast (!p_ful)
         prval () = minus_addback (fpf_ful, pf_ful | p_ws)
       in
@@ -539,8 +539,8 @@ workshop_wait_quit_all
     val nworker = p_ws->nworker
   in
     if nworker > 0 then let
-      val (pf_mut, fpf_mut | p_mut) = workshop_WSmut_get (pf_ws | p_ws)
-      val (pf_isz, fpf_isz | p_isz) = workshop_WSisz_get (pf_ws | p_ws)
+      val (pf_mut, fpf_mut | p_mut) = workshop_get_WSmut (pf_ws | p_ws)
+      val (pf_isz, fpf_isz | p_isz) = workshop_get_WSisz (pf_ws | p_ws)
       val () = $PTHREAD.pthread_cond_wait_mutex {V_ws} (pf_ws | !p_isz, !p_mut)
       prval () = minus_addback (fpf_mut, pf_mut | p_ws)
       prval () = minus_addback (fpf_isz, pf_isz | p_ws)
@@ -564,8 +564,8 @@ workshop_wait_paused_all
     val npaused = p_ws->npaused
   in
     if nworker > npaused then let
-      val (pf_mut, fpf_mut | p_mut) = workshop_WSmut_get (pf_ws | p_ws)
-      val (pf_equ, fpf_equ | p_equ) = workshop_WSequ1_get (pf_ws | p_ws)
+      val (pf_mut, fpf_mut | p_mut) = workshop_get_WSmut (pf_ws | p_ws)
+      val (pf_equ, fpf_equ | p_equ) = workshop_get_WSequ1 (pf_ws | p_ws)
       val () = $PTHREAD.pthread_cond_wait_mutex {V_ws} (pf_ws | !p_equ, !p_mut)
       prval () = minus_addback (fpf_mut, pf_mut | p_ws)
       prval () = minus_addback (fpf_equ, pf_equ | p_ws)
@@ -600,8 +600,8 @@ workshop_wait_blocked_all
     val nblocked = p_ws->nblocked
   in
     if nworker > nblocked then let
-      val (pf_mut, fpf_mut | p_mut) = workshop_WSmut_get (pf_ws | p_ws)
-      val (pf_equ, fpf_equ | p_equ) = workshop_WSequ2_get (pf_ws | p_ws)
+      val (pf_mut, fpf_mut | p_mut) = workshop_get_WSmut (pf_ws | p_ws)
+      val (pf_equ, fpf_equ | p_equ) = workshop_get_WSequ2 (pf_ws | p_ws)
       val () = $PTHREAD.pthread_cond_wait_mutex {V_ws} (pf_ws | !p_equ, !p_mut)
       prval () = minus_addback (fpf_mut, pf_mut | p_ws)
       prval () = minus_addback (fpf_equ, pf_equ | p_ws)

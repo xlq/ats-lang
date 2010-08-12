@@ -23,9 +23,11 @@ staload "contrib/cairo/SATS/cairo.sats"
 (* ****** ****** *)
 
 extern
-fun cairo_show_text {l:agz}
+fun cairo_show_text0 {l:agz}
   (cr: !cairo_ref l, utf8: string): void = "#atsctrb_cairo_show_text"
 // end of [cairo_show_text]
+
+(* ****** ****** *)
 
 fun draw_text {l:agz}
   (cr: !cairo_ref l): void = () where {
@@ -38,7 +40,7 @@ fun draw_text {l:agz}
   val () = cairo_set_font_matrix (cr, tm)
   val () = cairo_new_path (cr)
   val () = cairo_move_to (cr, 50., SIZE-PAD)
-  val () = cairo_show_text (cr, "A")
+  val () = cairo_show_text0 (cr, "A")
 //
 // rotate and scale
 //
@@ -48,7 +50,7 @@ fun draw_text {l:agz}
 //
   val () = cairo_new_path (cr)
   val () = cairo_move_to (cr, PAD, PAD + 25)
-  val () = cairo_show_text (cr, "A")
+  val () = cairo_show_text0 (cr, "A")
 //
   val () = cairo_matrix_init_rotate (tm, M_PI / 2)
   val () = cairo_matrix_scale (tm, FONT_SIZE * 2.0, FONT_SIZE)
@@ -56,7 +58,7 @@ fun draw_text {l:agz}
 //
   val () = cairo_new_path (cr)
   val () = cairo_move_to (cr, PAD, PAD + 50)
-  val () = cairo_show_text (cr, "A")
+  val () = cairo_show_text0 (cr, "A")
 //
 } // end of [draw_text]
 

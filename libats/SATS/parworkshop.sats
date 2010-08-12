@@ -81,26 +81,26 @@ fun workshop_make_tsz {a:viewt@ype} {n:pos} (
 //
 // locking/unlocking
 //
-fun workshop_nworker_get
+fun workshop_get_nworker
   {a:viewt@ype} {l:agz} (ws: !WORKSHOPptr (a, l)):<> int
-  = "atslib_parworkshop_workshop_nworker_get"
-// end of [workshop_nworker_get]
+  = "atslib_parworkshop_workshop_get_nworker"
+// end of [workshop_get_nworker]
 
 //
 // locking/unlocking
 //
-fun workshop_npaused_get
+fun workshop_get_npaused
   {a:viewt@ype} {l:agz} (ws: !WORKSHOPptr (a, l)):<> int
-  = "atslib_parworkshop_workshop_npaused_get"
-// end of [workshop_npaused_get]
+  = "atslib_parworkshop_workshop_get_npaused"
+// end of [workshop_get_npaused]
 
 //
 // locking/unlocking
 //
-fun workshop_nblocked_get
+fun workshop_get_nblocked
   {a:viewt@ype} {l:agz} (ws: !WORKSHOPptr (a, l)):<> int
-  = "atslib_parworkshop_workshop_nblocked_get"
-// end of [workshop_nblocked_get]
+  = "atslib_parworkshop_workshop_get_nblocked"
+// end of [workshop_get_nblocked]
 
 (* ****** ****** *)
 

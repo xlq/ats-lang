@@ -70,65 +70,65 @@ typedef struct {
 
 ATSinline()
 ats_fun_ptr_type
-atslib_parworkshop_workshop_fwork_get
+atslib_parworkshop_workshop_get_fwork
   (ats_ptr_type ws) {
   return ((atslib_parworkshop_WORKSHOP*)ws)->fwork ;
-} // end of [atslib_parworkshop_workshop_fwork_get]
+} // end of [atslib_parworkshop_workshop_get_fwork]
 
 /* ****** ****** */
 
 ATSinline()
 ats_ptr_type
-atslib_parworkshop_workshop_WSmut_get
+atslib_parworkshop_workshop_get_WSmut
   (ats_ptr_type ws) {
   return &((atslib_parworkshop_WORKSHOP*)ws)->WSmut ;
-} // end of [atslib_parworkshop_workshop_WSmut_get]
+} // end of [atslib_parworkshop_workshop_get_WSmut]
 
 /* ****** ****** */
 
 ATSinline()
 ats_ptr_type
-atslib_parworkshop_workshop_WQemp_get
+atslib_parworkshop_workshop_get_WQemp
   (ats_ptr_type ws) {
   return &((atslib_parworkshop_WORKSHOP*)ws)->WQemp ;
-} // end of [atslib_parworkshop_workshop_WQemp_get]
+} // end of [atslib_parworkshop_workshop_get_WQemp]
 
 ATSinline()
 ats_ptr_type
-atslib_parworkshop_workshop_WQful_get
+atslib_parworkshop_workshop_get_WQful
   (ats_ptr_type ws) {
   return &((atslib_parworkshop_WORKSHOP*)ws)->WQful ;
-} // end of [atslib_parworkshop_workshop_WQful_get]
+} // end of [atslib_parworkshop_workshop_get_WQful]
 
 /* ****** ****** */
 
 ATSinline()
 ats_ptr_type
-atslib_parworkshop_workshop_WSisz_get
+atslib_parworkshop_workshop_get_WSisz
   (ats_ptr_type ws) {
   return &((atslib_parworkshop_WORKSHOP*)ws)->WSisz ;
-} // end of [atslib_parworkshop_workshop_WSisz_get]
+} // end of [atslib_parworkshop_workshop_get_WSisz]
 
 ATSinline()
 ats_ptr_type
-atslib_parworkshop_workshop_WSpaused_get
+atslib_parworkshop_workshop_get_WSpaused
   (ats_ptr_type ws) {
   return &((atslib_parworkshop_WORKSHOP*)ws)->WSpaused ;
-} // end of [atslib_parworkshop_workshop_WSpaused_get]
+} // end of [atslib_parworkshop_workshop_get_WSpaused]
 
 ATSinline()
 ats_ptr_type
-atslib_parworkshop_workshop_WSequ1_get
+atslib_parworkshop_workshop_get_WSequ1
   (ats_ptr_type ws) {
   return &((atslib_parworkshop_WORKSHOP*)ws)->WSequ1 ;
-} // end of [atslib_parworkshop_workshop_WSequ1_get]
+} // end of [atslib_parworkshop_workshop_get_WSequ1]
 
 ATSinline()
 ats_ptr_type
-atslib_parworkshop_workshop_WSequ2_get
+atslib_parworkshop_workshop_get_WSequ2
   (ats_ptr_type ws) {
   return &((atslib_parworkshop_WORKSHOP*)ws)->WSequ2 ;
-} // end of [atslib_parworkshop_workshop_WSequ2_get]
+} // end of [atslib_parworkshop_workshop_get_WSequ2]
 
 /* ****** ****** */
 

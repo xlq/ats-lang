@@ -1891,7 +1891,9 @@ fun cairo_ps_get_levels
   = "#atsctrb_cairo_ps_get_levels"
 // end of [cairo_ps_get_levels]
 
-// a null string is returned if [level] is invalid
+//
+// HX: a null string is returned if [level] is invalid
+//
 fun cairo_ps_level_to_string (level: cairo_ps_level_t): Stropt
 *)
 

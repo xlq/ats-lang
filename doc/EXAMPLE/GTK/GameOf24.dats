@@ -249,7 +249,7 @@ fun answering
   val () = (case+ xs of
     | list_cons _ => let
 //
-        val (fpf_x | x) = (gstring_of_string)"Solution(s) found:"
+        val (fpf_x | x) = (gs)"Solution(s) found:"
         val frame = gtk_frame_new (x)
         prval () = fpf_x (x)
         val () = gtk_box_pack_start (hbox1, frame, GTRUE, GFALSE, guint(10))
@@ -284,7 +284,7 @@ fun answering
         // nothing
       end // end of [if]
     | list_nil _ => let
-        val (fpf_x | x) = (gstring_of_string)"No solution found!"
+        val (fpf_x | x) = (gs)"No solution found!"
         val label_ans = gtk_label_new (x)
         prval () = fpf_x (x)
         val () = gtk_box_pack_start (hbox1, label_ans, GTRUE, GFALSE, guint(10))
@@ -491,13 +491,13 @@ implement main1 () = () where {
     (window_, (gsignal)"destroy", G_CALLBACK(gtk_widget_destroy), (gpointer)null)
   val _sig = g_signal_connect1
     (window, (gsignal)"delete_event", G_CALLBACK(quitapp), (gpointer)null)
-  val (fpf_x | x) = (gstring_of_string)"Game-of-24"
+  val (fpf_x | x) = (gs)"Game-of-24"
   val () = gtk_window_set_title (window, x)
   prval () = fpf_x (x)
 //
   val vbox0 = gtk_vbox_new (GFALSE(*homo*), (gint)0)
 //
-  val (fpf_x | x) = (gstring_of_string)"Game-of-24"
+  val (fpf_x | x) = (gs)"Game-of-24"
   val label_title = gtk_label_new (x)
   prval () = fpf_x (x)
   val () = gtk_box_pack_start (vbox0, label_title, GTRUE, GTRUE, (guint)10)
@@ -519,7 +519,7 @@ implement main1 () = () where {
   val () = gtk_box_pack_start (vbox0, hbox, GTRUE, GTRUE, (guint)10)
 //
   val () = () where { // adding the [input] button
-    val (fpf_x | x) = (gstring_of_string)"Random Input"
+    val (fpf_x | x) = (gs)"Random Input"
     val button = gtk_button_new_with_label (x)
     prval () = fpf_x (x)
     val _sid = g_signal_connect
@@ -529,7 +529,7 @@ implement main1 () = () where {
   } // end of [val]
 //
   val () = () where { // adding the [eval] button
-    val (fpf_x | x) = (gstring_of_string)"Eval"
+    val (fpf_x | x) = (gs)"Eval"
     val button = gtk_button_new_with_label (x)
     prval () = fpf_x (x)
     val _sid = g_signal_connect_swapped1
@@ -545,7 +545,7 @@ implement main1 () = () where {
   val () = gtk_widget_show_unref (hsep)
 //
   val hbox = gtk_hbox_new (GFALSE, (gint)0)
-  val (fpf_x | x) = (gstring_of_string)"_Quit"
+  val (fpf_x | x) = (gs)"_Quit"
   val button = gtk_button_new_with_mnemonic (x)
   prval () = fpf_x (x)
   val _sid = g_signal_connect_swapped

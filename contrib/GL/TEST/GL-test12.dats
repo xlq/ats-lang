@@ -200,7 +200,7 @@ end // end of [keyboard]
 
 //
 
-implement main_dummy () = ()
+implement main_dummy () = () // [mainats] is implemented externally
 
 //
 
@@ -225,4 +225,4 @@ ats_void_type mainats (
 
 (* ****** ****** *)
 
-(* end of [GL-test11.dats] *)
+(* end of [GL-test12.dats] *)
