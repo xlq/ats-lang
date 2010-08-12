@@ -22,6 +22,11 @@ staload "contrib/cairo/SATS/cairo.sats"
 
 (* ****** ****** *)
 
+extern
+fun cairo_show_text {l:agz}
+  (cr: !cairo_ref l, utf8: string): void = "#atsctrb_cairo_show_text"
+// end of [cairo_show_text]
+
 fun draw_text {l:agz}
   (cr: !cairo_ref l): void = () where {
   var tm: cairo_matrix_t // unintialized

@@ -1140,8 +1140,8 @@ fun cairo_font_extents {l:agz} (
   ) : void = "#atsctrb_cairo_font_extents"
 // end of [cairo_font_extents]
 
-fun cairo_text_extents {l:agz} (
-    cr: !cairo_ref l, utf8: string
+fun cairo_text_extents {l1,l2:agz} (
+    cr: !cairo_ref l1, utf8: !strptr l2
   , extents: &cairo_text_extents_t? >> cairo_text_extents_t
   ) : void = "#atsctrb_cairo_text_extents"
 // end of [cairo_text_extents]
@@ -1156,8 +1156,8 @@ fun cairo_glyph_extents
 
 (* ****** ****** *)
 
-fun cairo_text_path {l:agz}
-  (cr: !cairo_ref l, text: string): void = "#atsctrb_cairo_text_path"
+fun cairo_text_path {l1,l2:agz}
+  (cr: !cairo_ref l1, text: !strptr l2): void = "#atsctrb_cairo_text_path"
 // end of [cairo_text_path]
 
 fun cairo_glyph_path
@@ -1168,8 +1168,8 @@ fun cairo_glyph_path
 
 (* ****** ****** *)
 
-fun cairo_show_text
-  {l:agz} (cr: !cairo_ref l, utf8: string): void = "#atsctrb_cairo_show_text"
+fun cairo_show_text {l1,l2:agz}
+  (cr: !cairo_ref l1, utf8: !strptr l2): void = "#atsctrb_cairo_show_text"
 // end of [cairo_show_text]
 
 fun cairo_show_glyphs
@@ -1367,9 +1367,9 @@ fun cairo_scaled_font_extents {l:agz} (
   ) : void = "#atsctrb_cairo_scaled_font_extents"
 // end of [cairo_scaled_font_extents]
 
-fun cairo_scaled_font_text_extents {l:agz} (
-    font: !cairo_scaled_font_ref l
-  , utf8: string, extents: &cairo_text_extents_t? >> cairo_text_extents_t
+fun cairo_scaled_font_text_extents {l1,l2:agz} (
+    font: !cairo_scaled_font_ref l1
+  , utf8: !strptr l2, extents: &cairo_text_extents_t? >> cairo_text_extents_t
   ) : void = "#atsctrb_cairo_scaled_font_text_extents"
 // end of [cairo_scaled_font_text_extents]
 
@@ -1777,6 +1777,7 @@ fun cairo_image_surface_create_from_png_stream
   , env: !vt
   ) : cairo_surface_ref1
   = "#atsctrb_cairo_image_surface_create_from_png"
+// end of [cairo_image_surface_create_from_png_stream]
 
 fun cairo_surface_write_to_png
   {l:agz} (sf: !cairo_surface_ref l, filename: string): cairo_status_t
@@ -2157,7 +2158,9 @@ fun cairo_matrix_transform_point (
 // error handling
 //
 
-// all error strings are statically allocated
+//
+// HX: all error strings are statically allocated
+//
 fun cairo_status_to_string
   (status: cairo_status_t):<> string = "#atsctrb_cairo_status_to_string"
 // end of [cairo_status_to_string]

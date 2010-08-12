@@ -682,6 +682,8 @@ castfn strbuf_of_strptr {l:agz}
   (x: strptr l):<> [m,n:nat] strbufptr_gc (m, n, l)
 castfn strptr_of_strbuf
   {m,n:int} {l:addr} (x: strbufptr_gc (m, n, l)):<> [l > null] strptr l
+castfn strbuf_takeout_ptr {m,n:int} {l:addr}
+  (pf: !strbuf_v (m, n, l) | x: ptr l):<> (strptr l -<lin,prf> void | strptr l)
 //
 castfn string_of_strbuf
   {m,n:int} {l:addr} (x: strbufptr_gc (m, n, l)):<> string n

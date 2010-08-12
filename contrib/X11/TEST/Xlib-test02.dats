@@ -49,7 +49,7 @@ end // end of [load_font]
 fun getGC {l:agz} (
     display: !Display_ptr l
   , screen_num: int
-  , win: Window, gc: &GCptr? >> GCptr1, font_info: &XFontStruct
+  , win: Window, gc: &ptr? >> GCptr1, font_info: &XFontStruct
   ) : void = () where {
   val valuemask = 0UL // Ignore XGCvalues and use defaults
   var values: XGCValues

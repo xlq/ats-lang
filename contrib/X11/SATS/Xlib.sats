@@ -124,7 +124,7 @@ viewtypedef Visual_ptr1 = [l:addr | l > null] Visual_ptr l
 (* ****** ****** *)
 
 // it is just a pointer; it is not reference counted
-absviewtype GCptr (l:addr)  = $extype "GC" // *GC = _XGC
+absviewtype GCptr (l:addr) = ptr // $extype "GC" // *GC = _XGC
 viewtypedef GCptr0 = [l:agez] GCptr l
 viewtypedef GCptr1 = [l:addr | l > null] GCptr l
 abstype GCref = $extype "GC" // this one should never be freed!

@@ -143,7 +143,9 @@ fn draw_table {l:agz}
   val () = for
     (i := 1; i < 10; i := i+1) let
     val () = cairo_move_to (cr, x, y)
-    val () = cairo_show_text (cr, tostring i)
+    val txt = tostrptr (i)
+    val () = cairo_show_text (cr, txt)
+    val () = strptr_free (txt)
     val () = x := x + xdelta
   in
     // nothing
@@ -154,7 +156,9 @@ fn draw_table {l:agz}
   val () = for
     (i := 1; i < 10; i := i+1) let
     val () = cairo_move_to (cr, x, y)
-    val () = cairo_show_text (cr, tostring i)
+    val txt = tostrptr (i)
+    val () = cairo_show_text (cr, txt)
+    val () = strptr_free (txt)
     val () = y := y + ydelta
   in
     // nothing
@@ -171,10 +175,14 @@ fn draw_table {l:agz}
       val d1 = ij / 10
       val d2 = ij mod 10
       val () = cairo_move_to (cr, x, y)
-      val () = cairo_show_text (cr, tostring d2)
+      val txt = tostrptr (d2)
+      val () = cairo_show_text (cr, txt)
+      val () = strptr_free (txt)
       val () = if d1 > 0 then let
         val () = cairo_move_to (cr, x - 0.60 * fntsz, y)
-        val () = cairo_show_text (cr, tostring d1)
+        val txt = tostrptr (d1)
+        val () = cairo_show_text (cr, txt)
+        val () = strptr_free (txt)
       in
         // nothing
       end // end of [val]
@@ -254,11 +262,15 @@ implement main () = () where {
   val () = cairo_set_source_rgb (cr, 0.0, 0.0, 1.0)
   val title = "Zoe's Multiplication Table"
   var txtexts : cairo_text_extents_t
-  val () = cairo_text_extents (cr, title, txtexts)
+  val (fpf_x | p_x) = string_takeout_ptr (title)
+  val () = cairo_text_extents (cr, p_x, txtexts)
+  prval () = fpf_x (p_x)
 //
   val x_title = (wsf-txtexts.width)/2
   val () = cairo_move_to (cr, x_title, 272.0/768*hsf)
-  val () = cairo_show_text (cr, title)
+  val (fpf_x | p_x) = string_takeout_ptr (title)
+  val () = cairo_show_text (cr, p_x)
+  prval () = fpf_x (p_x)
 //
   val m_table = 72.0 // margin
   val x_table = m_table

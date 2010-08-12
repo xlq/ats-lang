@@ -42,7 +42,7 @@ fun test () = () where {
     !p_array
   , (gint)SIZE
   , sizeof<guint32>
-  , lam (x, y, _env) => gint (if x < y then ~1 else 1: Int)
+  , lam (x, y, _env) => gint ((if x < y then ~1 else 1): Int)
   , null
   ) // end of [val]
   val () = $effmask_ref begin

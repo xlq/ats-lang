@@ -39,10 +39,17 @@ implement main () = () where {
     (cr, "Sans", CAIRO_FONT_SLANT_NORMAL, CAIRO_FONT_WEIGHT_BOLD)
   val () = cairo_set_font_size (cr, 90.0)
   val () = cairo_move_to (cr, 10.0, 135.0)
-  val () = cairo_show_text (cr, "Hello")
+//
+  val (fpf_x | x) = string_takeout_ptr ("Hello")
+  val () = cairo_show_text (cr, x)
+  prval () = fpf_x (x)
 //
   val () = cairo_move_to (cr, 70.0, 165.0)
-  val () = cairo_text_path (cr, "void")
+//
+  val (fpf_x | x) = string_takeout_ptr ("void")
+  val () = cairo_text_path (cr, x)
+  prval () = fpf_x (x)
+//
   val () = cairo_set_source_rgb (cr, 0.5, 0.5, 1.0)
   val () = cairo_fill_preserve (cr)
   val () = cairo_set_source_rgb (cr, 0.0, 0.0, 0.0)

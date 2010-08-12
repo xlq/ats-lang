@@ -30,15 +30,13 @@ fun draw_intarray
       val () = cairo_rel_line_to (cr, 0.0, H)
       val () = cairo_set_source_rgb (cr, 0.0, 0.0, 0.0)
       val () = cairo_stroke (cr)
-      val txt = sprintf ("%2.2i", @(A[i]))
       val (pf | ()) = cairo_save (cr)
       val () = cairo_translate (cr, x + w/2, 0.0)
       val () = cairo_set_source_rgb (cr, 0.25, 0.25, 0.25)
+      val txt = sprintf ("%2.2i", @(A[i]))
       val () = cairo_show_text_inbox (cr, w, H, txt)
+      val () = strptr_free (txt)
       val () = cairo_restore (pf | cr)
-      val () = __free (txt) where {
-        extern fun __free (txt: string): void = "atspre_strbufptr_free"
-      } // end of [val]
     in
       loop (cr, x+w, i+1)
     end else let
@@ -184,16 +182,13 @@ draw_trace
     val m = int1_of_int (m)
     val () = assert (m >= 0 && m < ASZ)
     val m = size1_of_int1 (m)
-    val txt = sprintf ("%2.2i", @(A0[m]))
     val (pf | ()) = cairo_save (cr)
     val () = cairo_translate (cr, x + nw/2, 0.0)
     val () = cairo_set_source_rgb (cr, 0.25, 0.25, 0.25)
+    val txt = sprintf ("%2.2i", @(A0[m]))
     val () = cairo_show_text_inbox (cr, nw, nh, txt)
+    val () = strptr_free (txt)
     val () = cairo_restore (pf | cr)
-//
-    val () = __free (txt) where {
-      extern fun __free (txt: string): void = "atspre_strbufptr_free"
-    } // end of [val]
   in
     // nothing
   end // end of [val]
@@ -214,6 +209,7 @@ implement draw_main
   val () = cairo_translate (cr, w0/2, h/3)
   val txt = sprintf ("searching for key = %i", @(key0))
   val () = cairo_show_text_inbox (cr, w0/2, 2*h/3, txt)
+  val () = strptr_free (txt)
   val () = cairo_restore (pf | cr)
   val (pf | ()) = cairo_save (cr)
   val () = cairo_translate (cr, w0/2, h/2)

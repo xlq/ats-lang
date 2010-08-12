@@ -42,8 +42,8 @@ fun draw_time {l:agz} (
   val () = () where {
     var !p_buf with pf_buf = @[byte][32]()
     val _ = strftime (pf_buf | p_buf, 32, "%I:%M:%S %p", tm)
-    val utf8 = __cast (p_buf) where { extern castfn __cast (_: ptr p_buf): string }
     var extents: cairo_text_extents_t
+    val (fpf_utf8 | utf8) = strbuf_takeout_ptr (pf_buf | p_buf)
     val () = cairo_text_extents (cr, utf8, extents)
     val xc = (wd - extents.width) / 2
 (*
@@ -60,6 +60,7 @@ fun draw_time {l:agz} (
     val () = cairo_move_to (cr, xc - extents.x_bearing, yc - extents.y_bearing)
     val () = cairo_set_source_rgb (cr, 0.0, 0.0, 1.0)
     val () = cairo_show_text (cr, utf8)
+    prval () = fpf_utf8 (utf8)
     prval () = pf_buf := bytes_v_of_strbuf_v (pf_buf)
   } // end of [val]
 //
