@@ -86,27 +86,37 @@ end // end of [insert_all]
 
 (* ****** ****** *)
 
-#define NCPU0 2
+#define NCPU0 1
 #define ITER0 1000000
 
 implement
 main (argc, argv) = let 
 //
-  var NCPU: int = NCPU0 // default
-  val () = if (argc >= 2) then NCPU := int_of (argv.[1])
-  val NCPU = int1_of_int (NCPU)
-  val () = assert_prerrf_bool1 (NCPU >= 1, "%s: NCPU = %i\n", @(#LOCATION, NCPU))
+  val () = if (argc = 1) then (
+    prerr ("The command format: randcompec_mt <integer> <ncore>\n"); exit(1)
+  ) // end of [val]
 //
   var ITER: int = ITER0 // default
-  val () = if (argc >= 3) then ITER := int_of (argv.[2])
+  val () = if (argc >= 2) then ITER := int_of (argv.[1])
   val ITER = int1_of_int (ITER)
+//
+  var NCPU: int = NCPU0 // default
+  val () = if (argc >= 3) then NCPU := int_of (argv.[2])
+  val NCPU = int1_of_int (NCPU)
+//
+  val () = assert_prerrf_bool1 (NCPU >= 1, "%s: NCPU = %i\n", @(#LOCATION, NCPU))
   val () = assert_prerrf_bool1 (ITER >= NCPU, "%s: NCPU = %i\n", @(#LOCATION, ITER))
 //
   val NCPUsz = size1_of_int1 (NCPU)
   val ws = workshop_make<work>(NCPUsz, fwork)
   var ncpu: int = 0
   val () = while (ncpu < NCPU) let
-    val _ = workshop_add_worker(ws) in ncpu := ncpu + 1
+    val _err = workshop_add_worker(ws)
+    val () = assert_prerrf_bool
+      (_err = 0, "%s: [workshop_add_worker] failed\n", @(#LOCATION))
+    // end of [val]
+  in
+    ncpu := ncpu + 1
   end // end of [val]
 // 
   val nworker = workshop_get_nworker(ws)

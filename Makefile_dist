@@ -189,7 +189,7 @@ lib64files: .libfiles_local
 	"$(ATSHOME)"/bin/atslib $(ATS_TERMINATION_CHECK) -m64 -O2 --libats_lex
 	"$(ATSHOME)"/bin/atslib $(ATS_TERMINATION_CHECK) -m64 -O2 --libats_smlbas
 
-.libfiles_mt_local: .libfiles ; $(CC) -E -P -x c -o $@ $<
+.libfiles_mt_local: .libfiles_mt ; $(CC) -E -P -x c -o $@ $<
 libfiles_mt: .libfiles_mt_local
 	"$(ATSHOME)"/bin/atslib $(ATS_TERMINATION_CHECK) -D_ATS_MULTITHREAD -O2 --libats_mt
 

@@ -60,7 +60,6 @@ clean::
 	rm -f *_dats.c *_sats.c *~
 
 cleanall: clean
-	rm -f a.out
 	rm -f fib_mt
 	rm -f nsieve_mt
 	rm -f nsieve2_mt

@@ -2458,11 +2458,12 @@ val d3e0 = (case+ d2e0.d2exp_node of
   | D2Ewhile (lpi2nv, d2e_test, d2e_body) => d2exp_loop_tr_up
       (loc0, lpi2nv, None(*init*), d2e_test, None(*post*), d2e_body)
     // end of [D2Ewhile]
+//
+// HX: what kind of errors can occur at this point?
+//
   | _ => begin
       $Loc.prerr_location loc0;
-      prerr ": d2exp_tr_up: not implemented yet: d2e0 = ";
-      prerr_d2exp d2e0;
-      prerr_newline ();
+      prerr ": d2exp_tr_up: not implemented yet: d2e0 = "; prerr_d2exp d2e0; prerr_newline ();
       $Err.abort {d3exp} ()
     end // end of [_]
 ) : d3exp // end of [val]

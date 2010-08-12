@@ -24,6 +24,7 @@ compall:: \
   gtkcairoclock \
   gtkcairopascal \
   gtkcairodisc \
+  demo_bsearch \
 
 ######
 
@@ -65,6 +66,7 @@ html::
 	$(ATSOPT) --posmark_html -d gtkcairoclock.dats > gtkcairoclock_dats.html
 	$(ATSOPT) --posmark_html -d gtkcairopascal.dats > gtkcairopascal_dats.html
 	$(ATSOPT) --posmark_html -d gtkcairopascal.dats > gtkcairopascal_dats.html
+	$(ATSOPT) --posmark_html -d demo_bsearch.dats > demo_bsearch_dats.html
 
 ######
 

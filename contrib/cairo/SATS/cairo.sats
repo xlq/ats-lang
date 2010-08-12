@@ -1103,6 +1103,9 @@ typedef cairo_text_cluster_t =
   $extype_struct "cairo_text_cluster_t" of { num_bytes= int, num_glyphs= int }
 // end of [cairo_text_cluster_t]
 
+(*
+// HX: note that these viewtypes contain views needed for freeing
+*)
 absviewtype cairo_glyph_arrptr (n:int,l:addr) // = cairo_glyph_t*  
 absviewtype cairo_cluster_arrptr (n:int,l:addr) // = cairo_cluster_t*
 
@@ -1168,8 +1171,9 @@ fun cairo_glyph_path
 
 (* ****** ****** *)
 
-fun cairo_show_text {l1,l2:agz}
-  (cr: !cairo_ref l1, utf8: !strptr l2): void = "#atsctrb_cairo_show_text"
+fun cairo_show_text
+  {l1,l2:agz} (cr: !cairo_ref l1, utf8: !strptr l2): void
+  = "#atsctrb_cairo_show_text"
 // end of [cairo_show_text]
 
 fun cairo_show_glyphs

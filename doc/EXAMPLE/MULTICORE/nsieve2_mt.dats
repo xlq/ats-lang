@@ -5,7 +5,7 @@
 
 //
 // Erastothene's sieve
-// This is an excellent example showing the issue of memory bottleneck!
+// This is an excellent example showing the issue of memory bottleneck!!!
 //
 
 (*

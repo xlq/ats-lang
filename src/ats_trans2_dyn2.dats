@@ -509,7 +509,6 @@ in
 end (* end of [s1explst_bind_svarlst] *)
 
 (* ****** ****** *)
-
 //
 // HX: [s2e0] is assumed to be in WHNF
 //
@@ -584,7 +583,7 @@ and d1exp_arg_body_tr_ann (
   // end of [val]
   val () = if lin1 <> lin2 then begin
     prerr_loc_error2 d1e0.d1exp_loc;
-    $Deb.debug_prerrf (": %s: d1exp_tr_ann", @(THISFILENAME));
+    $Deb.debug_prerrf (": %s: d1exp_arg_body_tr_ann", @(THISFILENAME));
     if lin1 < lin2 then prerr ": linear function is given a nonlinear type.";
     if lin1 > lin2 then prerr ": nonlinear function is given a linear type.";
     prerr_newline ();
@@ -598,7 +597,7 @@ and d1exp_arg_body_tr_ann (
       prerr ": the function argument cannot be ascribed refval types.";
       prerr_newline ();
       $Err.abort {void} ()
-    end
+    end (* end of [if] *)
   // end of [val]
   var npf2: int = 0
   val p2ts_arg = (
@@ -650,7 +649,26 @@ and d1exp_arg_body_tr_ann (
     the_d2expenv_add_dvarlst d2vs
   end // end of [val]
   val (pf_level | ()) = d2var_current_level_inc ()
-  val d2e_body = d1exp_tr_ann (d1e_body, s2e_res)
+//
+  var annerr: int = 0
+  val () = (case+
+    d1e_body.d1exp_node of
+    | D1Eann_funclo _ => (annerr := annerr + 1)
+    | D1Eann_effc _ => (annerr := annerr + 1) // less likely
+    | _ => ()
+  ) : void // end of [val]
+  val () = if (annerr > 0) then let
+    val () = prerr_loc_error2 (d1e0.d1exp_loc)
+    val () = prerr ": the [funclo/effect] annonation is redundant."
+    val () = prerr_newline ()
+  in
+    $Err.abort () // redundant annotation is treated as an error
+  end // end of [val]
+//
+  val d2e_body = let
+    val s2e_res = s2exp_whnf (s2e_res) in d1exp_tr_ann (d1e_body, s2e_res)
+  end // end of [val]
+//
   val () = d2var_current_level_dec (pf_level | (*none*))
   val () = trans2_env_pop (pf_env2 | (*none*))
   val loc_body = d2e_body.d2exp_loc

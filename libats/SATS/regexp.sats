@@ -49,12 +49,9 @@ overload ptr_of with ptr_of_REGEXPptr
 
 (* ****** ****** *)
 
-// implemented in C
-fun regexp_compile (pattern: string): REGEXPptr0
-  = "atslib_regexp_compile"
+fun regexp_compile // implemented in C
+  (pattern: string): REGEXPptr0 = "atslib_regexp_compile"
 // end of [regexp_compile]
-
-// implemented in ATS
 fun regexp_compile_exn (pattern: string): REGEXPptr1
 
 (* ****** ****** *)
@@ -62,13 +59,14 @@ fun regexp_compile_exn (pattern: string): REGEXPptr1
 castfn regexp_free_null (p: REGEXPptr null): ptr(*null*)
 
 fun regexp_free
-  {l:agz} (p: REGEXPptr l): void = "atslib_regexp_free"
+  {l:agz} (p: REGEXPptr l): void = "atslib_regexp_free" // !fun
 // end of [regexp_free]
 
 (* ****** ****** *)
 
-fun test_regexp_match_str {l:agz}
-  (re: !REGEXPptr l, str: string): bool
+fun test_regexp_match_str
+  {l:agz} (re: !REGEXPptr l, str: string): bool
+// end of [test_regexp_match_str]
 
 fun test_regexp_match_str_len_ofs
   {l:agz} {n,i:int | 0 <= i; i <= n }
