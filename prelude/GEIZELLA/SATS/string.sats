@@ -450,8 +450,9 @@ fun string_compare
 
 (* ****** ****** *)
 
-fun stringlst_concat (xs: List string):<> Strbufptr_gc
-  = "atspre_stringlst_concat"
+fun stringlst_concat
+  (xs: List string):<> strptr1 = "atspre_stringlst_concat"
+// end of [stringlst_concat]
 
 (* ****** ****** *)
 
@@ -623,15 +624,12 @@ fun stropt_is_some {i:int} (stropt: stropt i):<> bool (i >= 0)
 
 (* ****** ****** *)
 
-//
-// [tostringf] and [sprintf] are declared in [printf.sats]
-//
+castfn string_of_strptr (x: strptr1):<> string
+castfn string1_of_strptr (x: strptr1):<> String
 
-fun tostringf__bufptr {ts:types}
-  (fmt: printf_c ts, arg: ts):<> Strbufptr_gc = "atspre_tostringf"
-
-fun sprintf__bufptr {ts:types}
-  (fmt: printf_c ts, arg: ts):<> Strbufptr_gc = "atspre_tostringf"
+castfn strptr_of_strbuf
+  {m,n:int} {l:addr} (x: strbufptr_gc (m, n, l)):<> [l > null] strptr l
+// end of [strptr_of_strbuf]
 
 (* ****** ****** *)
 

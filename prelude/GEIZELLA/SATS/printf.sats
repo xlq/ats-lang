@@ -41,10 +41,8 @@
 (* ****** ****** *)
 
 #if VERBOSE_PRELUDE #then
-
 #print "Loading [printf.sats] starts!\n"
-
-#endif
+#endif // end of [VERBOSE_PRELUDE]
 
 (* ****** ****** *)
 
@@ -106,10 +104,10 @@ fun tostringf_size {ts:types}
   = "atspre_tostringf_size"
 
 fun tostringf {ts:types}
-  (fmt: printf_c ts, arg: ts):<> String = "atspre_tostringf"
+  (fmt: printf_c ts, arg: ts):<> strptr1 = "atspre_tostringf"
 
 fun sprintf {ts:types}
-  (fmt: printf_c ts, arg: ts):<> String = "atspre_tostringf"
+  (fmt: printf_c ts, arg: ts):<> strptr1 = "atspre_tostringf"
 
 (* ****** ****** *)
 
@@ -118,9 +116,7 @@ fun sprintf {ts:types}
 (* ****** ****** *)
 
 #if VERBOSE_PRELUDE #then
-
 #print "Loading [printf.sats] finishes!\n"
-
-#endif
+#endif // end of [VERBOSE_PRELUDE]
 
 (* end of [printf.sats] *)

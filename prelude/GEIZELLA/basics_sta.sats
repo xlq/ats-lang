@@ -421,10 +421,12 @@ abst@ype ptrdiff_int_t0ype (i:int) = $extype "ats_ptrdiff_type"
 
 abstype ptr_addr_type (addr)
 
+(* ****** ****** *)
+
 abstype string_int_type (int)
 abstype stropt_int_type (int)
-
 abst@ype strbuf_int_int_t0ype (max: int, len: int) (* variable size *)
+absviewtype strptr_addr_viewtype (addr) // for linear strings
 
 (* ****** ****** *)
 
@@ -556,6 +558,9 @@ stadef strbuf (bsz:int) = [len:int] strbuf (bsz, len)
 stadef string = string_int_type
 stadef string = string_type
 stadef stropt = stropt_int_type
+stadef strptr = strptr_addr_viewtype // for linear strings
+stadef strptr0 = [l:addr] strptr (l)
+stadef strptr1 = [l:addr | l > null] strptr (l)
 
 (* ****** ****** *)
 

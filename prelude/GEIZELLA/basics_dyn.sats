@@ -60,7 +60,8 @@ symintr foreach // foreach without index
 symintr iforeach (* foreach with index *)
 symintr fprint print prerr
 symintr length (* array_length, list_length, string_length, etc. *)
-symintr ofstring tostring
+symintr ofstring ofstrptr
+symintr tostring tostrptr
 
 symintr liftmac evalmac
 

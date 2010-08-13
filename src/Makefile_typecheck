@@ -39,8 +39,8 @@
 CC=gcc
 CCFLAG=-I"$(ATSHOME)" -I"$(ATSHOME)/CCOMP/runtime" -g
 ATSOPT="$(ATSHOME)"/bin/atsopt
-#OPTFLAG=
-OPTFLAG=--posmark_html --typecheck
+#ATSOPT="$(ATSHOME)"/bootstrap0-geizella/atsopt
+OPTFLAG= --typecheck
 #OPTFLAG=
 
 ######
@@ -118,7 +118,8 @@ typecheck: \
 	$(ATSOPT) $(OPTFLAG) -d ats_trans1_sta.dats
 	$(ATSOPT) $(OPTFLAG) -d ats_trans1_dyn.dats
 	$(ATSOPT) $(OPTFLAG) -d ats_trans1_env.dats
-	$(ATSOPT) $(OPTFLAG) -d ats_trans2_dyn.dats
+	$(ATSOPT) $(OPTFLAG) -d ats_trans2_dyn1.dats
+	$(ATSOPT) $(OPTFLAG) -d ats_trans2_dyn2.dats
 	$(ATSOPT) $(OPTFLAG) -d ats_trans2_env.dats
 	$(ATSOPT) $(OPTFLAG) -d ats_trans2_sta.dats
 	$(ATSOPT) $(OPTFLAG) -d ats_trans3_assgn.dats

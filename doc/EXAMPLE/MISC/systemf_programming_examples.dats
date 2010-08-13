@@ -237,10 +237,6 @@ end // end of [val]
 
 (* ****** ****** *)
 
-implement main () = ()
-
-(* ****** ****** *)
-
 //
 // Implementing generic trees in System F
 //
@@ -395,6 +391,10 @@ val () = begin
   print_string "The size of t3 = "; print s; print_newline ();
   print_string "The height of t3 = "; print h; print_newline ();
 end // end of [val]
+
+(* ****** ****** *)
+
+implement main () = ()
 
 (* ****** ****** *)
 

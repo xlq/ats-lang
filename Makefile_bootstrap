@@ -72,11 +72,11 @@ all::
 include ../config.mk
 
 ifdef BOOTSTRAP0
-CCFLAG=-I$(ATSHOME) -I$(ATSRUNTIME) -O2
+CCFLAG=-I$(ATSHOME) -I$(ATSRUNTIME) -g -O2
 endif
 
 ifdef BOOTSTRAP1
-CCFLAG=-I$(ATSHOME) -I$(ATSRUNTIME) -O2
+CCFLAG=-I$(ATSHOME) -I$(ATSRUNTIME) -g -O2
 endif
 
 LIBGMP=
@@ -222,8 +222,10 @@ OBJECTS += \
 
 ######
 
-COMPILE = $(CC) $(CPPFLAGS) $(CFLAGS) $(CCFLAG) -o $@
-CLINK = $(CC) $(CPPFLAGS) $(CFLAGS) $(CCFLAG) $(LDFLAGS) -o $@
+COMPILE = $(CC) $(CCFLAG) -o $@
+#COMPILE = $(CC) $(CPPFLAGS) $(CFLAGS) $(CCFLAG) -o $@
+CLINK = $(CC) $(CCFLAG) $(LDFLAGS) -o $@
+#CLINK = $(CC) $(CPPFLAGS) $(CFLAGS) $(CCFLAG) $(LDFLAGS) -o $@
 
 ######
 

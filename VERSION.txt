@@ -46,6 +46,10 @@ clapack (joint work with Shivkumar Chandrasekaran)
 
 </pre>
 
+ATS-0.2.1 bootstrapping times:
+ats-geizella:	72.160u 17.609s 1:45.82 84.8% 0+0k 32048+379480io 0pf+0w
+ats-anairiats:  38.721u 20.408s 1:17.87 75.9% 0+0k 35056+396960io 0pf+0w
+
 ######
 
 0.2.0

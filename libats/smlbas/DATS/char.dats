@@ -111,6 +111,7 @@ implement toUpper (c) = char_toupper (c)
 
 (* ****** ****** *)
 
+#define p2s string_of_strptr
 implement toCString (c) = case+ c of
   | '\\' => "\\\\"
   | '\"' => "\\\""
@@ -134,7 +135,7 @@ implement toCString (c) = case+ c of
       val u = u >> 3
       val u1 = u land 0x7U
     in
-      sprintf ("\\%o%o%o", @(u1,u2,u3))
+      p2s (sprintf ("\\%o%o%o", @(u1,u2,u3)))
     end // end of [_]
 // end of [toCString]
 
