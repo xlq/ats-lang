@@ -31,10 +31,10 @@ fn pair_get_snd {X,Y:type} '(_: X, y: Y):<> Y = y
 
 (* ****** ****** *)
 
-typedef int = intptr
-val _0 = intptr_of_int (0)
-val _1 = intptr_of_int (1)
-#define isucc succ_intptr
+typedef int = uintptr
+val _0 = uintptr_of_uint (0U)
+val _1 = uintptr_of_uint (1U)
+#define isucc succ_uintptr
 fun print_nat_f (n: nat_f): void = print (n {int} (lam x => isucc x) (_0))
 
 (* ****** ****** *)
@@ -173,10 +173,10 @@ val list_reverse =
 
 // condef :: = cons // HX: 2010-08-12: this is what it was
 #define :: cons
-#define ipred pred_intptr
+#define ipred pred_uintptr
 
-fun gen_list_f (i: int): list_f (int) =
-  if i = _0 then Nil else Cons (i, gen_list_f (ipred i))
+fun gen_list_f (i: Nat): list_f (int) =
+  if i = 0 then Nil else Cons (uintptr_of_int1 i, gen_list_f (i - 1))
 // end of [gen_list_f]
 
 typedef intlst = list0 int
@@ -204,8 +204,7 @@ end // end of [print_list]
 (* ****** ****** *)
 
 val () = let
-  val _5 = intptr_of_int (5)
-  val xs = gen_list_f (_5)
+  val xs = gen_list_f (5)
   val xs' = list_reverse xs
   val xsxs = list_append (xs, xs)
   val xsxs' = list_reverse xsxs
@@ -310,7 +309,7 @@ end // end of [btree_isperfect]
 
 (* ****** ****** *)
 
-fn left_child_btree
+fn btree_left
   (t: btree):<> btree = let
   typedef X = '(btree, btree)
   val e = '(E, E): X
@@ -325,7 +324,7 @@ in
   pair_get_snd (t {X} (e, b))
 end // end of [left_child_tree]
 
-fn right_child_btree
+fn btree_right
   (t: btree):<> btree = let
   typedef X = '(btree, btree)
   val e = '(E, E): X
@@ -372,28 +371,29 @@ end // end of [val]
 
 (* ****** ****** *)
 
-val t31: btree = left_child_btree (t3)
+val isperfect = btree_isperfect (t1)
+val () = (print "isperfect(t1) = "; print isperfect; print_newline ())
+val isperfect = btree_isperfect (t3)
+val () = (print "isperfect(t3) = "; print isperfect; print_newline ())
+
+(* ****** ****** *)
+
+val t31: btree = btree_left (t3)
+val t32: btree = btree_right (t3)
 
 val () = begin
-  print_string "The left subtree of t3 = "; print_btree t31; print_newline ()
-end // end of [val]
-
-val t32: btree = right_child_btree (t3)
-
-val () = begin
-  print_string "The right subtree of t3 = "; print_btree t32; print_newline ()
+  print_string "The left subtree of t3 = "; print_btree t31; print_newline ();
+  print_string "The right subtree of t3 = "; print_btree t32; print_newline ();
 end // end of [val]
 
 (* ****** ****** *)
 
-val n: int = btree_size (t3)
-val () = begin
-  print_string "The size of t3 = "; print n; print_newline ()
-end // end of [val]
+val s: int = btree_size (t3)
+val h: int = btree_height (t3)
 
-val n: int = btree_height (t3)
 val () = begin
-  print_string "The height of t3 = "; print n; print_newline ()
+  print_string "The size of t3 = "; print s; print_newline ();
+  print_string "The height of t3 = "; print h; print_newline ();
 end // end of [val]
 
 (* ****** ****** *)

@@ -57,20 +57,14 @@
 
 // size type // unindexed
 
-fun int_of_size (sz: size_t):<> int
-  = "atspre_int_of_size"
+fun int_of_size (sz: size_t):<> int = "atspre_int_of_size"
+fun uint_of_size (sz: size_t):<> uint = "atspre_uint_of_size"
 
 fun size_of_int1
   {i:nat} (i: int i):<> size_t = "atspre_size_of_int1"
 // end of [size_of_int1]
 
-fun uint_of_size
-  (sz: size_t):<> uint = "atspre_uint_of_size"
-// end of [uint_of_size]
-
-fun size_of_uint
-  (u: uint):<> size_t = "atspre_size_of_uint"
-// end of [size_of_uint]
+fun size_of_uint (u: uint):<> size_t = "atspre_size_of_uint"
 
 castfn size_of_lint (i: lint):<> size_t
 castfn size_of_ulint (u: ulint):<> size_t

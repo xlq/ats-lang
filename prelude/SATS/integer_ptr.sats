@@ -265,12 +265,14 @@ fun uint_of_uintptr
   (u: uintptr):<> uint = "atspre_uint_of_uintptr"
 // end of [uint_of_uintptr]
 
-fun uintptr_of_uint
-  (u: uint):<> uintptr = "atspre_uintptr_of_uint"
+fun uintptr_of_int1
+  {i:nat} (i: int i):<> uintptr = "atspre_uintptr_of_int1"
+overload uintptr_of with uintptr_of_int1
+
+fun uintptr_of_uint (u: uint):<> uintptr = "atspre_uintptr_of_uint"
 overload uintptr_of with uintptr_of_uint
 
-fun uintptr_of_ptr
-  (p: ptr):<> uintptr = "atspre_uintptr_of_ptr"
+fun uintptr_of_ptr (p: ptr):<> uintptr = "atspre_uintptr_of_ptr"
 overload uintptr_of with uintptr_of_ptr
 
 (* ****** ****** *)

@@ -273,7 +273,11 @@ atspre_prerr_intptr (ats_intptr_type i) {
 
 /* ****** ****** */
 
+//
 // uintptr_t: unsigned integers of one word size
+//
+
+/* ****** ****** */
 
 ATSinline()
 ats_uint_type
@@ -281,6 +285,12 @@ atspre_uint_of_uintptr
   (ats_uintptr_type u) {
   return (ats_uint_type)(uintptr_t)u ;
 } // end of [atspre_uint_of_uintptr]
+
+ATSinline()
+ats_uintptr_type
+atspre_uintptr_of_int1 (ats_int_type i) {
+  return (ats_uintptr_type)(uintptr_t)i ;
+}
 
 ATSinline()
 ats_uintptr_type
@@ -298,15 +308,17 @@ atspre_uintptr_of_ptr (ats_ptr_type p) {
 
 ATSinline()
 ats_ulint_type
-atspre_ulint_of_uintptr (ats_uintptr_type u) {
+atspre_ulint_of_uintptr
+  (ats_uintptr_type u) {
   return (ats_ulint_type)(uintptr_t)u ;
-}
+} // end of [atspre_ulint_of_uintptr]
 
 ATSinline()
 ats_uintptr_type
-atspre_uintptr_of_ulint (ats_ulint_type u) {
+atspre_uintptr_of_ulint
+  (ats_ulint_type u) {
   return (ats_uintptr_type)(uintptr_t)u ;
-}
+} // end of [atspre_uintptr_of_ulint]
 
 // ------ ------
 
