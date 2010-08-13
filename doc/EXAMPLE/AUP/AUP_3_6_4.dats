@@ -22,54 +22,7 @@ staload "libc/SATS/unistd.sats"
 
 (* ****** ****** *)
 
-absviewtype lstring
-
-extern castfn lstring_make {m,n:nat} {l:addr}
-  (pf_gc: free_gc_v (m, l), pf_buf: strbuf (m, n) @ l | p: ptr l) :<> lstring
-// end of [lstring_make]
-
-%{^
-
-ats_void_type
-lstring_free (ats_ptr_type s) { ATS_FREE(s); return ; }
-// end of [lstring_free]
-
-%}
-
-extern fun lstring_free (s: lstring): void = "lstring_free"
-
-(* ****** ****** *)
-
-absviewtype lstringopt (bool)
-
-%{^
-
-ats_ptr_type lstringopt_none () { return (ats_ptr_type)0 ; }
-
-ats_void_type lstringopt_unnone (ats_ptr_type lstropt) { return ; }
-
-ats_bool_type 
-lstringopt_is_some (ats_ptr_type lstropt) {
-  return (lstropt ? ats_true_bool : ats_false_bool) ;
-}
-
-%}
-
-extern fun lstringopt_none (): lstringopt (false)
-  = "lstringopt_none"
-
-extern fun lstringopt_unnone (lstropt: lstringopt (false)): void
-  = "lstringopt_unnone"
-
-extern castfn lstringopt_some (lstr: lstring): lstringopt (true)
-extern castfn lstringopt_unsome (lstropt: lstringopt (true)): lstring
-
-extern fun lstringopt_is_some {b:bool} (lstropt: !lstringopt b): bool (b)
-  = "lstringopt_is_some"
-  
-(* ****** ****** *)
-
-viewtypedef pathlist = List_vt (lstring)
+viewtypedef pathlist = List_vt (strptr0)
 
 (* ****** ****** *)
 
@@ -78,19 +31,19 @@ fun push_pathlist
   val name = string1_of_string name
   val n = string1_length (name)
   val (pf_gc, pf_buf | p) = string_make_substring (name, 0, n)
-  val lstr = lstring_make (pf_gc, pf_buf | p)
+  val lstr = strptr_of_strbuf @(pf_gc, pf_buf | p)
 in
-  lstrs := list_vt_cons {lstring} (lstr, lstrs)
+  lstrs := list_vt_cons {strptr0} (lstr, lstrs)
 end (* end of [push_pathlist] *)
 
 fun free_pathlist (ps: pathlist): void = case+ ps of
-  | ~list_vt_cons (p, ps) => (lstring_free p; free_pathlist ps)
+  | ~list_vt_cons (p, ps) => (strptr_free p; free_pathlist ps)
   | ~list_vt_nil () => ()
 // end of [free_pathlist]
 
 (* ****** ****** *)
 
-extern fun getcwdx (): [b:bool] lstringopt (b)
+extern fun getcwdx (): strptr0
 
 (* ****** ****** *)
 
@@ -136,7 +89,7 @@ fun loop_dir (
 
 fun getcwdx_main {fd:int} (
     pf_fd: fildes_v (fd, open_flag_rd) | fd: int fd, stat: &stat_t
-  ) : [b:bool] lstringopt (b) = let
+  ) : strptr0 = let
   var err: int = 0
   var lstrs: pathlist = list_vt_nil ()
   val () = loop (pf_fd | fd, stat, lstrs, 0(*nent*), err) where {
@@ -189,16 +142,15 @@ in
   case+ lstrs of
   | list_vt_cons _ => let
       val () = fold@ lstrs
-      val (pf_gc, pf_buf | p_path) =
-      stringlst_concat (__cast lstrs) where {
+      val path =
+        stringlst_concat (__cast lstrs) where {
         extern castfn __cast (lstrs: !pathlist): List string
       } // end of [val]
       val () = free_pathlist (lstrs)
-      val path = lstring_make (pf_gc, pf_buf | p_path)
     in
-      lstringopt_some (path)
+      path
     end // end of [list_vt_cons]
-  | ~list_vt_nil () => lstringopt_none ()
+  | ~list_vt_nil () => strptr_null (null)
 end // end of [getcwdx_main]
 
 (* ****** ****** *)
@@ -218,30 +170,29 @@ in
     end else let
       prval () = opt_unnone (stat)
     in
-      close_exn (pf_fd | fd); lstringopt_none ()
+      close_exn (pf_fd | fd); strptr_null (null)
     end // end of [if]
   end else let
-    prval open_v_fail () = pfopt_fd in lstringopt_none ()
+    prval open_v_fail () = pfopt_fd in strptr_null (null)
   end // end of [if]  
 end (* end of [getcwdx] *)
 
 (* ****** ****** *)
 
 implement main () = let
-  val pathopt = getcwdx () in
-  if lstringopt_is_some pathopt then let
-    val path = lstringopt_unsome (pathopt)
+  val [l:addr] path = getcwdx ()
+  prval () = addr_is_gtez {l} ()
+in
+  if strptr_isnot_null path then let
     val () =
       printf ("%s\n", @(__cast path)) where {
-      extern castfn __cast (lstr: !lstring): string 
+      extern castfn __cast {l:agz} (x: !strptr l): string
     }
-    val () = lstring_free (path)
+    val () = strptr_free (path)
   in
     exit (EXIT_SUCCESS)
   end else let
-    val () = lstringopt_unnone (pathopt)
-  in
-    exit (EXIT_FAILURE)
+    val _null = strptr_free_null (path) in exit (EXIT_FAILURE)
   end // end of [if] 
 end (* end of [main] *)
 

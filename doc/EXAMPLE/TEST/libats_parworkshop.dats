@@ -46,17 +46,17 @@ implement main () = () where {
 //
   val status = workshop_add_worker (ws)
   val () = (print "status = "; print status; print_newline ())
-  val nworker = workshop_nworker_get (ws)
+  val nworker = workshop_get_nworker (ws)
   val () = (print "nworker = "; print nworker; print_newline ())
 //
   val status = workshop_add_worker (ws)
   val () = (print "status = "; print status; print_newline ())
-  val nworker = workshop_nworker_get (ws)
+  val nworker = workshop_get_nworker (ws)
   val () = (print "nworker = "; print nworker; print_newline ())
 //
   val status = workshop_add_worker (ws)
   val () = (print "status = "; print status; print_newline ())
-  val nworker = workshop_nworker_get (ws)
+  val nworker = workshop_get_nworker (ws)
   val () = (print "nworker = "; print nworker; print_newline ())
 //
   var i: Nat = 0
@@ -67,7 +67,7 @@ implement main () = () where {
   end // end of [val]
 //
   val () = workshop_wait_blocked_all (ws)
-  val nblocked = workshop_nblocked_get (ws)
+  val nblocked = workshop_get_nblocked (ws)
   val () = (print "nblocked = "; print nblocked; print_newline ())
 //
   val () = workshop_insert_work (ws, ~2)
@@ -82,7 +82,7 @@ implement main () = () where {
     print "workshop_wait_paused_all(aft)"; print_newline ()
   end // end of [val]
 //
-  val npaused = workshop_npaused_get (ws)
+  val npaused = workshop_get_npaused (ws)
   val () = (print "npaused = "; print npaused; print_newline ())
 //
   val () = workshop_resume_paused_all (ws)

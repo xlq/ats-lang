@@ -109,7 +109,7 @@ fn testlock (): void = loop (1) where {
   #define N 4
   #define NAME "accounts"
   fun loop (i: natLte N): void = let
-    val status = if lock (NAME) then let
+    val status = (if lock (NAME) then let
       val pid = getpid ()
       val () = printf ("Process %ld acquired the lock\n", @(lint_of_pid pid))
       val _(*int*) = sleep (randint 5 + 1); // work on the accounts
@@ -127,7 +127,7 @@ fn testlock (): void = loop (1) where {
       end else (prerr "Exit: [testlock] failed"; exit 1)
     in
       0(* fail *)
-    end : natLte 2 // end of [val]
+    end) : natLte 2 // end of [val]
     val _(*int*) = sleep (randint 5 + 5) // work on somthing else
     val i = i + status
   in

@@ -670,6 +670,13 @@ viewtypedef Stropt_gc = [m,n:nat] stropt_gc (m, n)
 // HX-2010-08-10: linear strings
 //
 
+//
+castfn strptr_null (x: ptr null): strptr (null)
+fun strptr_is_null
+  {l:addr} (x: !strptr l):<> bool (l==null) = "#atspre_ptr_is_null"
+fun strptr_isnot_null
+  {l:addr} (x: !strptr l):<> bool (l > null) = "#atspre_ptr_isnot_null"
+//
 castfn ptr_of_strptr {l:addr} (x: !strptr l):<> ptr l
 overload ptr_of with ptr_of_strptr
 //
@@ -688,6 +695,7 @@ castfn strbuf_takeout_ptr {m,n:int} {l:addr}
 castfn string_of_strbuf
   {m,n:int} {l:addr} (x: strbufptr_gc (m, n, l)):<> string n
 //
+castfn strptr_free_null (x: strptr null):<> ptr null
 fun strptr_free {l:addr} (x: strptr l):<> void = "atspre_strptr_free"
 //
 symintr fprint_strptr
