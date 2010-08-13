@@ -212,7 +212,35 @@ atspre_neq_intptr_intptr (ats_intptr_type i1, ats_intptr_type i2) {
   return ((intptr_t)i1 != (intptr_t)i2) ;
 }
 
+//
+// compare, max and min
+//
+
+ATSinline()
+ats_int_type
+atspre_compare_intptr_intptr (
+  ats_intptr_type i1, ats_intptr_type i2
+) {
+  if (i1 < i2) return (-1) ;
+  else if (i1 > i2) return ( 1) ;
+  else return (0) ;
+} // end of [atspre_compare_intptr_intptr]
+
+ATSinline()
+ats_intptr_type
+atspre_max_intptr_intptr (ats_intptr_type i1, ats_intptr_type i2) {
+  return (i1 >= i2) ? i1 : i2 ;
+}
+
+ATSinline()
+ats_intptr_type
+atspre_min_intptr_intptr (ats_intptr_type i1, ats_intptr_type i2) {
+  return (i1 <= i2) ? i1 : i2 ;
+}
+
+//
 // print functions
+//
 
 ATSinline()
 ats_void_type
@@ -402,7 +430,35 @@ atspre_neq_uintptr_uintptr (ats_uintptr_type i1, ats_uintptr_type i2) {
   return ((uintptr_t)i1 != (uintptr_t)i2) ;
 }
 
+//
+// compare, max and min
+//
+
+ATSinline()
+ats_int_type
+atspre_compare_uintptr_uintptr (
+  ats_uintptr_type i1, ats_uintptr_type i2
+) {
+  if (i1 < i2) return (-1) ;
+  else if (i1 > i2) return ( 1) ;
+  else return (0) ;
+} // end of [atspre_compare_uintptr_uintptr]
+
+ATSinline()
+ats_uintptr_type
+atspre_max_uintptr_uintptr (ats_uintptr_type i1, ats_uintptr_type i2) {
+  return (i1 >= i2 ? i1 : i2) ;
+}
+
+ATSinline()
+ats_uintptr_type
+atspre_min_uintptr_uintptr (ats_uintptr_type i1, ats_uintptr_type i2) {
+  return (i1 <= i2 ? i1 : i2) ;
+}
+
+//
 // bitwise operations
+//
 
 ATSinline()
 ats_uintptr_type

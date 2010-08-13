@@ -397,7 +397,9 @@ atspre_neq_uint_uint (ats_uint_type i1, ats_uint_type i2) {
   return (i1 != i2) ;
 }
 
+//
 // compare, max and min
+//
 
 ATSinline()
 ats_int_type
@@ -419,7 +421,9 @@ atspre_min_uint_uint (ats_uint_type i1, ats_uint_type i2) {
   return (i1 <= i2 ? i1 : i2) ;
 }
 
+//
 // bitwise operations
+//
 
 ATSinline()
 ats_uint_type

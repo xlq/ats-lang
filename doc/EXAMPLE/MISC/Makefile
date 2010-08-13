@@ -26,7 +26,9 @@ compall: AutoDiff coin_flip \
      queens queens_appel queens_lazy_vt \
      longestline passwdgen pi_lazy \
      sieve sieve_lazy sieve_lazy_vt \
-     strmat sumup tetrix wc
+     strmat sumup \
+     systemf_programming_examples \
+     tetrix wc \
 
 # automatic differentiation
 AutoDiff: AutoDiff.dats
@@ -119,6 +121,10 @@ sieve_lazy_vt: sieve_lazy_vt.dats
 # a simple implementation of string match in CPS-style
 strmat: strmat.dats; $(ATSCC) -o strmat strmat.dats
 
+systemf_programming_examples: \
+  systemf_programming_examples.dats
+	$(ATSCC) -O3 -o $@ $< && ./systemf_programming_examples
+
 # a simple example of programming with theorem-proving
 sumup: sumup.dats; $(ATSCC) -O3 -o sumup sumup.dats && ./sumup
 
@@ -187,8 +193,9 @@ cleanall:: clean
 	rm -f strmat
 	rm -f sieve_lazy
 	rm -f sieve_lazy_vt
-	rm -f tetrix
 	rm -f sumup
+	rm -f systemf_programming_examples
+	rm -f tetrix
 	rm -f wc
 
 ###### end of [Makefile] ######

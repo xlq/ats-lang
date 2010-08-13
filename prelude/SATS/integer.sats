@@ -571,9 +571,7 @@ overload / with udiv
 overload mod with umod
 
 fun uimod {j:nat | j > 0}
-  (i: uint, j: int j):<> [r:nat | r < j] int r
-  = "atspre_uimod"
-
+  (i: uint, j: int j):<> [r:nat | r < j] int r = "atspre_uimod"
 overload mod with uimod
 
 fun ult {i,j:nat} (i: uint i, j: uint j):<> bool (i < j)

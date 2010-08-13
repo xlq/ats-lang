@@ -2,6 +2,7 @@
 # API for clapack in ATS
 #
 # Author: Hongwei Xi (hwxi AT cs DOT bu DOT edu)
+# Author: Shivkumar Chandrasekaran (shiv AT ece DOT ucsb DOT edu)
 # Time: July, 2010
 #
 
