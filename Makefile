@@ -247,7 +247,6 @@ package::
 	bin/atspack --source
 
 precompiled::
-	/bin/bash -r ./ATSHOMERELOC_check.sh
 	bin/atspack --precompiled
 	rm -fr usr/share/atshome
 	mv ats-lang-anairiats-* usr/share/atshome

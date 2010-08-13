@@ -1178,6 +1178,7 @@ implement atspack_precompiled () = let
   val () = cp "config.h"
   val () = bin_dir_copy (PACKNDprecompiled)
   val () = ccomp_dir_copy (PACKNDprecompiled)
+  val () = doc_dir_copy ()
   val () = prelude_dir_copy ()
   val () = libc_dir_copy ()
   val () = libats_dir_copy ()

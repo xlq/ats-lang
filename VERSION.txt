@@ -3,14 +3,16 @@
 <pre>
 ats-lang-anairiats-0.2.1:
 
-As usual, this release contains many bug fixes.
+As usual, this release contains many bug fixes. Also, many
+new coding examples are added.
 
 1. The support for 'atsopt --depgen' is revamped.
 2. The support for boolean patterns is made available.
 3. Most string-generating functions now return linear strings
-   (strptr). This is a change that can incur pervasive impact.
+   (strptr). This is a change that can have pervasive impact.
 4. Some support for GMP/MPQ and GMP/MPF functions are added. See
-   libc/SATS/gmp.sat
+   libc/SATS/gmp.sat for details.
+5. Overhauling the ATS building system.
 
 The following packages are available in ATS/libats:
 
@@ -47,8 +49,10 @@ clapack (joint work with Shivkumar Chandrasekaran)
 </pre>
 
 ATS-0.2.1 bootstrapping times:
-ats-geizella:	72.160u 17.609s 1:45.82 84.8% 0+0k 32048+379480io 0pf+0w
-ats-anairiats:  38.721u 20.408s 1:17.87 75.9% 0+0k 35056+396960io 0pf+0w
+machine: wildwest@bu.edu
+model name: Intel(R) Xeon(R) CPU X5570 @ 2.93GHz
+ats-geizella:  106.902u 21.036s 3:18.53 64.4% 0+0k 42568+441192io 0pf+0w
+ats-anairiats: 109.940u 29.698s 3:39.33 63.6% 0+0k 57656+568048io 0pf+0w
 
 ######
 
