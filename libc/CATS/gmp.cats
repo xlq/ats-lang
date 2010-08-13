@@ -544,7 +544,9 @@ atslib_mpz_pow2_ui (
 #define atslib_mpz_invert3 mpz_invert
 
 /* ****** ****** */
-
+//
+// various number-theoretic functions
+//
 #define atslib_mpz_nextprime2 mpz_nextprime
 
 #define atslib_mpz_jacobi mpz_jacobi
@@ -560,10 +562,22 @@ atslib_mpz_pow2_ui (
 #define atslib_mpz_fib_ui mpz_fib_ui
 #define atslib_mpz_fib2_ui mpz_fib2_ui
 
+#define atslib_mpz_remove3 mpz_remove
+
+ATSinline()
+ats_void_type
+atslib_mpz_remove2 (
+  ats_ptr_type dst, ats_ptr_type src2
+) {
+  mpz_remove ((mpz_ptr)dst, (mpz_ptr)dst, (mpz_ptr)src2); return ;
+} // end of [atslib_mpz_remove2]
+
 /* ****** ****** */
+
 //
-// HX: input/output/print functions
+// some MPZ input/output/print functions
 //
+
 #define atslib_mpz_inp_str mpz_inp_str
 #define atslib_mpz_out_str mpz_out_str
 
@@ -598,6 +612,15 @@ atslib_fprint_mpz (
 #define atslib_mpq_clear mpq_clear
 
 #define atslib_mpq_get_d mpq_get_d
+
+ATSinline()
+ats_ptr_type
+atslib_mpq_get_str (
+  ats_int_type base, ats_mpq_ptr_type x
+) {
+  return mpq_get_str((char*)0, base, (mpq_ptr)x) ;
+} // end of [atslib_mpq_get_str]
+
 #define atslib_mpq_get_num mpq_get_num
 #define atslib_mpq_get_den mpq_get_den
 
@@ -616,6 +639,8 @@ atslib_mpq_denref
 #define atslib_mpq_set_mpz mpq_set_z
 #define atslib_mpq_set_si mpq_set_si
 #define atslib_mpq_set_ui mpq_set_ui
+#define atslib_mpq_set_d mpq_set_d
+#define atslib_mpq_set_mpf mpq_set_f
 #define atslib_mpq_set_num mpq_set_num
 #define atslib_mpq_set_den mpq_set_den
 
@@ -693,6 +718,29 @@ atslib_mpq_div2_mpq (
 #define atslib_mpq_sgn mpq_sgn
 
 /* ****** ****** */
+
+//
+// some MPQ input/output/print functions
+//
+
+#define atslib_mpq_inp_str mpq_inp_str
+#define atslib_mpq_out_str mpq_out_str
+
+extern
+ats_void_type
+atslib_mpq_out_str_exn (
+  ats_ptr_type, ats_int_type, ats_mpf_ptr_type
+) ; // end of [extern]
+
+ATSinline()
+ats_void_type
+atslib_fprint_mpq (
+  ats_ptr_type file, const ats_mpq_ptr_type x
+) {
+  atslib_mpq_out_str_exn (file, 10/*base*/, x) ; return ;
+} // end of [atslib_fprint_mpq]
+
+/* ****** ****** */
 //
 //
 // HX: floating number operations
@@ -731,11 +779,11 @@ atslib_mpf_get_str (
 /* ****** ****** */
 
 #define atslib_mpf_set_mpf mpf_set
-#define atslib_mpf_set_d mpf_set_d
 #define atslib_mpf_set_si mpf_set_si
 #define atslib_mpf_set_ui mpf_set_ui
 #define atslib_mpf_set_mpz mpf_set_z
 #define atslib_mpf_set_mpq mpf_set_q
+#define atslib_mpf_set_d mpf_set_d
 #define atslib_mpf_set_str mpf_set_str
 
 ATSinline()
@@ -1009,6 +1057,9 @@ atslib_prerr_mpf (
 #define atslib_gmp_randinit_default gmp_randinit_default
 #define atslib_gmp_randinit_lc_2exp gmp_randinit_lc_2exp
 #define atslib_gmp_randinit_lc_2exp_size gmp_randinit_lc_2exp_size
+//
+#define atslib_gmp_randseed_mpz gmp_randseed
+#define atslib_gmp_randseed_ui gmp_randseed_ui
 //
 #define atslib_mpz_urandomb mpz_urandomb
 #define atslib_mpz_urandomm mpz_urandomm

@@ -77,6 +77,13 @@ fun mpz_test
   val () = mpz_clear (fib11) and () = mpz_clear (fib12)
   val () = mpz_clear (nprime)
 //
+  var x: mpz_vt; val () = mpz_init_set (x, 100UL)
+  var f: mpz_vt; val () = mpz_init_set (f, 2UL)
+  val () = mpz_remove (x, f) // removing from x every factor of 2 
+  val () = (print "x(25) = "; print x; print_newline ())
+  val () = mpz_clear (x)
+  val () = mpz_clear (f)
+//
 } // end of [mpz_test]
 
 (* ****** ****** *)
@@ -129,18 +136,28 @@ fun mpq_test
   val () = mpq_inv (y, x)
   val () = mpq_add (x, y)
   val () = mpq_sub (x, y)
+//
   val (pf_num, fpf_num | p_num) = mpq_numref (x)
   val () = (print "num = "; print (!p_num); print_newline ())
   prval () = fpf_num (pf_num)
   val (pf_den, fpf_den | p_den) = mpq_denref (x)
   val () = (print "den = "; print (!p_den); print_newline ())
   prval () = fpf_den (pf_den)
+  val () = (print "x(num/den) = "; print x; print_newline ())
+  val str = mpq_get_str (10, x)
+  val () = (print "x(num/den) = "; print str; print_newline ())
+  val () = strptr_free (str)
+//
+  val () = mpq_set (x, 3.1415926535898)
+  val () = (print "x(num/den) = "; print x; print_newline ())
+  val () = printf ("x = %10.8f\n", @(mpq_get_d x))
+//
   val () = mpq_clear (x) and () = mpq_clear (y)
 //
   val e = compec1 (16UL) // quite accurate
   val () = printf ("Euler's constant (e) = %.10f\n", @(e))
 //
-  val e = compec2 (1024UL) // not quite accurate
+  val e = compec2 (1024UL) // still not quite accurate
   val () = printf ("Euler's constant (e) = %.10f\n", @(e))
 //
 } // end of [mpq_test]

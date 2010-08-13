@@ -56,6 +56,11 @@ stadef mpf_vt = mpf_viewt0ype
 
 (* ****** ****** *)
 
+abst@ype mp_limb_t = $extype "mp_limb_t"
+abst@ype mp_limb_signed_t = $extype "mp_limb_signed_t"
+
+(* ****** ****** *)
+
 abst@ype mp_exp_t = $extype "mp_exp_t" // int or lint
 
 symintr mp_exp_t
@@ -630,6 +635,9 @@ fun mpz_invert3
 overload mpz_invert with mpz_invert3
 
 (* ****** ****** *)
+//
+// various number-theoretic functions
+//
 
 fun mpz_nextprime2
   (dst: &mpz_vt, src: &mpz_vt): void = "#atslib_mpz_nextprime2"
@@ -652,6 +660,13 @@ fun mpz_ui_kronecker (a: ulint, b: &mpz_vt): int = "#atslib_mpz_kronecker_ui"
 fun mpz_fac_ui (x: &mpz_vt, n: ulint): void = "#atslib_mpz_fac_ui"
 fun mpz_fib_ui (x: &mpz_vt, n: ulint): void = "#atslib_mpz_fib_ui"
 fun mpz_fib2_ui (x1: &mpz_vt, x2: &mpz_vt, n: ulint): void = "#atslib_mpz_fib2_ui"
+
+symintr mpz_remove
+fun mpz_remove3
+  (dst: &mpz_vt, src1: &mpz_vt, src2: &mpz_vt): void = "#atslib_mpz_remove3"
+overload mpz_remove with mpz_remove3
+fun mpz_remove2 (dst: &mpz_vt, src2: &mpz_vt): void = "atslib_mpz_remove2" // !fun
+overload mpz_remove with mpz_remove2
 
 (* ****** ****** *)
 //
@@ -723,6 +738,9 @@ fun mpq_clear (x: &mpq_vt >> mpq_vt?): void = "#atslib_mpq_clear"
 fun mpq_get_d (src: &mpq_vt): double = "#atslib_mpq_get_d"
 fun mpq_get_num (dst: &mpz_vt, src: &mpq_vt):<> void = "#atslib_mpq_get_num"
 fun mpq_get_den (dst: &mpz_vt, src: &mpq_vt):<> void = "#atslib_mpq_get_den"
+fun mpq_get_str // HX: a special case of the original namesake in GMP
+  (base: mp_base_t, x: &mpq_vt):<> strptr1 = "atslib_mpq_get_str" // fun!
+// end of [mpq_get_str]
 
 (* ****** ****** *)
 
@@ -749,6 +767,12 @@ overload mpq_set with mpq_set_si
 fun mpq_set_ui
   (dst: &mpq_vt, src1: ulint, src2: ulint): void = "#atslib_mpq_set_ui"
 overload mpq_set with mpq_set_ui
+fun mpq_set_d
+  (dst: &mpq_vt, src: double): void = "#atslib_mpq_set_d"
+overload mpq_set with mpq_set_d
+fun mpq_set_mpf
+  (dst: &mpq_vt, src: &mpf_vt): void = "#atslib_mpq_set_mpf"
+overload mpq_set with mpq_set_mpf
 
 // HX: may need to call [mpq_canonicalize]
 fun mpq_set_num (dst: &mpq_vt, src: &mpz_vt):<> void = "#atslib_mpq_set_num"
@@ -847,6 +871,36 @@ overload mpq_cmp with mpq_cmp_ulint
 fun mpq_sgn (x: &mpq_vt):<> Sgn = "#atslib_mpq_sgn"
 
 (* ****** ****** *)
+
+//
+// some MPQ input/output/print functions
+//
+
+fun mpq_inp_str {m:file_mode} (
+    pf_mode: file_mode_lte (m, r) | x: &mpq_vt, file: &FILE m, base: mp_base_t
+  ) : size_t = "#atslib_mpq_inp_str"
+// end of [mpq_inp_str]
+
+fun mpq_out_str {m:file_mode} (
+    pf_mode: file_mode_lte (m, w) | file: &FILE m, base: mp_base_t, x: &mpq_vt
+  ) : size_t = "#atslib_mpq_out_str"
+// end of [mpq_out_str]
+
+fun fprint0_mpq
+  (out: FILEref, x: &mpq_vt): void = "atslib_fprint_mpq"
+overload fprint with fprint0_mpq
+
+fun fprint1_mpq {m:file_mode}
+  (pf: file_mode_lte (m, w) | out: &FILE m, x: &mpq_vt): void
+  = "atslib_fprint_mpq"
+overload fprint with fprint1_mpq
+
+fun print_mpq (x: &mpq_vt) : void
+overload print with print_mpq
+fun prerr_mpq (x: &mpq_vt) : void
+overload prerr with prerr_mpq
+
+(* ****** ****** *)
 //
 //
 // floating number operations
@@ -914,14 +968,14 @@ overload mpf_set with mpf_set_mpf
 fun mpf_set_mpz
   (dst: &mpf_vt, src: &mpz_vt): void = "#atslib_mpf_set_mpz"
 overload mpf_set with mpf_set_mpz
-fun mpf_set_mpq
-  (dst: &mpf_vt, src: &mpq_vt): void = "#atslib_mpf_set_mpq"
-overload mpf_set with mpf_set_mpq
 fun mpf_set_si (dst: &mpf_vt, src: lint): void = "#atslib_mpf_set_si"
 overload mpf_set with mpf_set_si
 fun mpf_set_ui
   (dst: &mpf_vt, src: ulint): void = "#atslib_mpf_set_ui"
 overload mpf_set with mpf_set_ui
+fun mpf_set_mpq
+  (dst: &mpf_vt, src: &mpq_vt): void = "#atslib_mpf_set_mpq"
+overload mpf_set with mpf_set_mpq
 fun mpf_set_d (dst: &mpf_vt, src: double): void = "#atslib_mpf_set_d"
 overload mpf_set with mpf_set_d
 
@@ -1009,8 +1063,8 @@ overload mpf_abs with mpf_abs1
 
 symintr mpf_add
 
-fun mpf_add3_mpf (dst: &mpf_vt, src1: &mpf_vt, src2: &mpf_vt): void
-  = "#atslib_mpf_add3_mpf"
+fun mpf_add3_mpf
+  (dst: &mpf_vt, src1: &mpf_vt, src2: &mpf_vt): void = "#atslib_mpf_add3_mpf"
 overload mpf_add with mpf_add3_mpf
 fun mpf_add3_ui
   (dst: &mpf_vt, src1: &mpf_vt, src2: ulint): void = "#atslib_mpf_add3_ui"
@@ -1174,6 +1228,14 @@ fun prerr_mpf (x: &mpf_vt, ndigit: size_t) : void = "atslib_prerr_mpf"
 (* ****** ****** *)
 //
 //
+// low-level MPN functions
+//
+// HX-2010-08-13:
+// These low-level functions should probably be supported. Any volunteer?
+//
+(* ****** ****** *)
+//
+//
 // random number generators for MPZ, MPQ and MPF
 //
 //
@@ -1198,6 +1260,16 @@ fun gmp_randinit_lc_2exp_size
   (state: &gmp_randstate_vt? >> gmp_randstate_vt, _size: ulint): int(*err*)
   = "#atslib_gmp_randinit_lc_2exp_size"
 // end of [gmp_randinit_lc_2exp_size]
+
+(* ****** ****** *)
+
+symintr gmp_randseed
+fun gmp_randseed_mpz
+  (state: &gmp_randstate_vt, seed: &mpz_vt): void = "#atslib_gmp_randseed_mpz"
+overload gmp_randseed with gmp_randseed_mpz
+fun gmp_randseed_ui
+  (state: &gmp_randstate_vt, seed: ulint): void = "#atslib_gmp_randseed_ui"
+overload gmp_randseed with gmp_randseed_ui
 
 (* ****** ****** *)
 

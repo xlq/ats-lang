@@ -73,8 +73,6 @@ atslib_mpz_out_str_exn (
 
 %} // end of [%{]
 
-(* ****** ****** *)
-
 implement print_mpz (x) = print_mac (fprint1_mpz, x)
 implement prerr_mpz (x) = prerr_mac (fprint1_mpz, x)
 
@@ -145,6 +143,41 @@ implement mpq_pow2_ui (x, n) = let
 in
   // no need for cannonicalizing
 end // end of [mpq_pow2_ui]
+
+(* ****** ****** *)
+
+%{
+
+ats_void_type
+atslib_mpq_inp_str_exn (
+  ats_mpq_ptr_type x
+, ats_ptr_type file
+, ats_int_type base
+) {
+  size_t n = mpq_inp_str(x, (FILE*)file, base) ;
+  if (n == 0) {
+    ats_exit_errmsg (1, "exit(ATS): [mpq_inp_str] failed.\n") ;
+  } // end of [if]
+  return ;
+} // end of [atslib_mpq_inp_str_exn]
+
+ats_void_type
+atslib_mpq_out_str_exn (
+  ats_ptr_type file
+, ats_int_type base
+, const ats_mpq_ptr_type x
+) {
+  size_t n = mpq_out_str((FILE*)file, base, (mpq_ptr)x) ;
+  if (n == 0) {
+    ats_exit_errmsg (1, "exit(ATS): [mpq_out_str] failed.\n") ;
+  } // end of [if]
+  return ;
+} // end of [atslib_mpq_out_str_exn]
+
+%} // end of [%{]
+
+implement print_mpq (x) = print_mac (fprint1_mpq, x)
+implement prerr_mpq (x) = prerr_mac (fprint1_mpq, x)
 
 (* ****** ****** *)
 

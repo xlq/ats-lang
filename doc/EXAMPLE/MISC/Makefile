@@ -60,7 +60,7 @@ GaussElim: GaussElim.dats
 
 # a multithreaded implementation of GCD
 gcd_mt: gcd_mt.dats
-	atscc -o gcd_mt -O3 -D_ATS_MULTITHREAD gcd_mt.dats -lpthread -lats_mt \
+	$(ATSCC) -o gcd_mt -O3 -D_ATS_MULTITHREAD gcd_mt.dats -lpthread -lats_mt \
      && ./gcd_mt 12345 67890
 
 # hamming in lazy style
