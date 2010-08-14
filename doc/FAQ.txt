@@ -134,4 +134,25 @@ A. Each of the following expressions gives a single precision float point
 
 ------
 
+Q. What is the difference between the following declarations:
+
+   fun id1 {a:type} (x: a): a = x // [a] is a boxed type
+   fun{a:t@ype} id2 (x: a): a = x // [a] is of unknown size
+
+A. [id1] is a polymorphic function in ATS, and it can be type-checked and
+   compiled. However, [id1] can only be applied to a value of some boxed
+   type.  [id2] is a function template in ATS, and it can be type-checked
+   but not compiled immediately. Just like function templates in C++, only
+   instances of [id2] are compiled. If one defined a polymorphic function
+   as follows:
+
+   fun id3 {a:t@ype} (x:a ): a = x // [a] is of unknown size
+
+   then this function can be type-checked and compiled. However, the C code
+   generated from this function contains a type (ats_abs_type) of unknown size,
+   and it results in some error when further compiled by a C compiler. Thus,
+   [id3] cannot really be used in practice.
+
+------
+
 ###### end of [FAQ.txt] ######

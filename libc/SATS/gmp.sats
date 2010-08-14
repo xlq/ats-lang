@@ -572,6 +572,8 @@ overload mpz_submul with mpz_submul3_ulint
 
 (* ****** ****** *)
 
+// comparison functions
+
 symintr mpz_cmp
 fun mpz_cmp_mpz (x: &mpz_vt, y: &mpz_vt):<> int = "#atslib_mpz_cmp_mpz"
 overload mpz_cmp with mpz_cmp_mpz
@@ -585,8 +587,6 @@ fun mpz_cmp_ulint (x: &mpz_vt, y: ulint):<> int = "#atslib_mpz_cmp_ulint"
 overload mpz_cmp with mpz_cmp_ulint
 fun mpz_cmp_double (x: &mpz_vt, y: double):<> int = "#atslib_mpz_cmp_double"
 overload mpz_cmp with mpz_cmp_double
-
-(* ****** ****** *)
 
 symintr mpz_cmpabs
 fun mpz_cmpabs_mpz (x: &mpz_vt, y: &mpz_vt):<> int = "#atslib_mpz_cmpabs_mpz"
@@ -648,7 +648,8 @@ fun mpz_jacobi (a: &mpz_vt, b: &mpz_vt): int = "#atslib_mpz_jacobi"
 fun mpz_legendre (a: &mpz_vt, b: &mpz_vt): int = "#atslib_mpz_legendre"
 
 symintr mpz_kronecker
-fun mpz_kronecker_mpf (a: &mpz_vt, b: &mpz_vt): int = "#atslib_mpz_kronecker_mpf"
+fun mpz_kronecker_mpf
+  (a: &mpz_vt, b: &mpz_vt): int = "#atslib_mpz_kronecker_mpf"
 overload mpz_kronecker with mpz_kronecker_mpf
 fun mpz_kronecker_si (a: &mpz_vt, b: lint): int = "#atslib_mpz_kronecker_si"
 overload mpz_kronecker with mpz_kronecker_si
@@ -717,7 +718,7 @@ fun mpz_out_raw {m:file_mode} (
 (* ****** ****** *)
 //
 //
-// HX: rational number operations
+// rational number operations
 //
 //
 (* ****** ****** *)
