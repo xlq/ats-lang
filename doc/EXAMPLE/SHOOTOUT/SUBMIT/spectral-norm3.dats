@@ -6,7 +6,7 @@
 ** contributed by Zhiqiang Ren
 **
 ** compilation command:
-**   atscc -D_GNU_SOURCE -D_ATS_MULTITHREAD -O3 -msse2 spectral-norm2_smp.dats -o spectral-norm2_smp -lm -lpthread
+**   atscc -D_GNU_SOURCE -D_ATS_MULTITHREAD -O3 -msse2 spectral-norm3.dats -o spectral-norm3 -lm -lpthread
 **
 *)
 

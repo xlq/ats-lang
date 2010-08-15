@@ -8,7 +8,13 @@ ATSCC=$(or $(ATSHOME), "/usr")/bin/atscc
 ATSOPT="$(ATSHOME)"/bin/atsopt
 CC=$(HOME)/gcc-4.3.2/bin/gcc
 
-all: \
+######
+
+checkall: compall cleanall
+
+######
+
+compall: \
   binary-trees \
   binary-trees2 \
   binary-trees2_smp \
