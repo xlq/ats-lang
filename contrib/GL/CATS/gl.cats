@@ -591,7 +591,7 @@ ats_void_type
 atsctrb_glGenTexture
   (ats_ref_type texture) {
   glGenTextures(1, (GLuint*)texture) ; return ;
-}
+} // end of [atsctrb_glGenTexture]
 
 #define atsctrb_glGenTextures glGenTextures
 
@@ -600,11 +600,18 @@ ats_void_type
 atsctrb_glDeleteTexture
   (ats_GLuint_type texture) {
   glDeleteTextures(1, (GLuint*)&texture) ; return ;
-}
+} // end of [atsctrb_glDeleteTexture]
 
 #define atsctrb_glDeleteTextures glDeleteTextures
 
 #define atsctrb_glBindTexture glBindTexture
+
+/* ****** ****** */
+
+#define atsctrb_glFogf glFogf
+#define atsctrb_glFogi glFogi
+#define atsctrb_glFogfv glFogfv
+#define atsctrb_glFogiv glFogiv
 
 /* ****** ****** */
 

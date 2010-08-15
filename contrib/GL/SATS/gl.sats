@@ -52,13 +52,14 @@ typedef GLvoid = void
 // typedef GLenum = uint
 abst@ype GLenum = $extype "ats_GLenum_type"
 fun int_of_GLenum (x: GLenum): int = "atsctrb_int_of_GLenum"
+overload int_of with int_of_GLenum
 
-fun eq_GLenum_GLenum (x1: GLenum, x2: GLenum):<> bool
-  = "atsctrb_eq_GLenum_GLenum"
+fun eq_GLenum_GLenum
+  (x1: GLenum, x2: GLenum):<> bool = "atsctrb_eq_GLenum_GLenum"
 overload = with eq_GLenum_GLenum
 
-fun neq_GLenum_GLenum (x1: GLenum, x2: GLenum):<> bool
-  = "atsctrb_neq_GLenum_GLenum"
+fun neq_GLenum_GLenum
+  (x1: GLenum, x2: GLenum):<> bool = "atsctrb_neq_GLenum_GLenum"
 overload <> with neq_GLenum_GLenum
 
 abst@ype GLenum_type (a:t@ype) = GLenum
@@ -1671,11 +1672,9 @@ typedef glGetLightv_type (a:t@ype, n:int) = (
 ) -<fun1> void
 // end of [glGetLightv_type]
 
-fun glGetLightfv : {n:nat} glGetLightv_type (GLfloat, n)
-  = "#atsctrb_glGetLightfv"
-
-fun glGetLightiv : {n:nat} glGetLightv_type (GLint, n)
-  = "#atsctrb_glGetLightiv"
+fun glGetLightfv
+  : {n:nat} glGetLightv_type (GLfloat, n) = "#atsctrb_glGetLightfv"
+fun glGetLightiv : {n:nat} glGetLightv_type (GLint, n) = "#atsctrb_glGetLightiv"
 
 (* ****** ****** *)
 
@@ -1725,11 +1724,9 @@ typedef glGetMaterialv_type (a:t@ype, n:int) =
   (GLenum(*face*), GLenum(*pname*), &(@[a?][n]) >> @[a][n]) -<fun1> void
 // end of [glGetMaterialv_type]
 
-fun glGetMaterialfv : {n:nat} glGetMaterialv_type (GLfloat, n)
-  = "#atsctrb_glGetMaterialfv"
-
-fun glGetMaterialiv : {n:nat} glGetMaterialv_type (GLint, n)
-  = "#atsctrb_glGetMaterialiv"
+fun glGetMaterialfv
+  : {n:nat} glGetMaterialv_type (GLfloat, n) = "#atsctrb_glGetMaterialfv"
+fun glGetMaterialiv : {n:nat} glGetMaterialv_type (GLint, n) = "#atsctrb_glGetMaterialiv"
 
 (* ****** ****** *)
 
@@ -1868,6 +1865,19 @@ fun glDeleteTextures {n:pos}
 fun glBindTexture {i:int}
   (target: GLenum, texture: !GLtexture i): void = "#atsctrb_glBindTexture"
 // end of [glBindTexture]
+
+(* ****** ****** *)
+
+typedef glFog_type
+  (a:t@ype) = (GLenum(*pname*), a(*param*)) -<fun1> void
+typedef glFogv_type
+  (a:t@ype) = {n:nat} (GLenum(*pname*), &(@[a][n])(*params*)) -<fun1> void
+// end of [glFogv_type]
+
+fun glFogf : glFog_type (GLfloat) = "#atsctrb_glFogf"
+fun glFogi : glFog_type (GLint) = "#atsctrb_glFogi"
+fun glFogfv : glFogv_type (GLfloat) = "#atsctrb_glFogfv"
+fun glFogiv : glFogv_type (GLint) = "#atsctrb_glFogiv"
 
 (* ****** ****** *)
 

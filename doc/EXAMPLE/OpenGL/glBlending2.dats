@@ -159,6 +159,7 @@ implement reshape (w, h) = let
       in
         glOrtho (~1.5 * wh, 1.5 * wh, ~1.5, 1.5, ~10.0, 10.0)
       end
+  // end of [val]
   val () = glMatrixMode (GL_MODELVIEW)
   val () = glLoadIdentity ()
 in

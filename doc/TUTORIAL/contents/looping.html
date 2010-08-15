@@ -170,7 +170,8 @@ point of the loop.
 Annotating loops with invariants correctly can be difficult, sometimes. If
 complex loop invariants are needed, we recommend that the programmer avoid
 constructing loops directly. Instead, the programmer can implement
-tail-recursive functions in place of loops.
+tail-recursive functions in place of loops. Note that each tail-recursive
+function in ATS is guaranteed to be compiled into a loop.
 <P>
 
 <HR SIZE=1 ALIGN=LEFT><P>

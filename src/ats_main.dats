@@ -722,7 +722,7 @@ fun loop {i:nat | i <= n} .<i>. (
                 IATS_wait_set ()
               end // end of [if]
             end (* end of [_ when ...] *)
-          | _ => ()
+          | _ => warning (str)
         // end of [val]
       in
         loop (ATSHOME, argv, param, arglst)

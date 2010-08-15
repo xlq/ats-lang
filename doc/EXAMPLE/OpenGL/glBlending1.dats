@@ -40,6 +40,7 @@ end // end of [initialize]
 (* ****** ****** *)
 
 fn drawLeftTriangle () = let
+// drawing a yellow triangle on LHS
   val (pf | ()) = glBegin (GL_TRIANGLES)
   val () = glColor4d (1.0, 1.0, 0.0, 0.75) // yellow
   val () = glVertex3d (0.1, 0.9, 0.0)
@@ -51,6 +52,7 @@ in
 end // end of [drawleftTriangle]
 
 fn drawRightTriangle () = let
+// drawing a cyan triangle on RHS
   val (pf | ()) = glBegin (GL_TRIANGLES)
   val () = glColor4d (0.0, 1.0, 1.0, 0.75) // cyan
   val () = glVertex3d (0.9, 0.9, 0.0)
@@ -95,6 +97,7 @@ implement reshape (w, h) = let
       in
         gluOrtho2D (0.0, 1.0 * wh, 0.0, 1.0)
       end
+  // end of [val]
 in
   // empty
 end // end of [reshape]

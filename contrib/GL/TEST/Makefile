@@ -29,6 +29,7 @@ compall:: \
   test12 \
   test13 \
   test14 \
+  test15 \
 
 test01: GL-test01.dats
 	$(ATSCC) -o test01 GL-test01.dats $(ATSCTRB) -lGL -lGLU -lglut
@@ -77,6 +78,9 @@ test13: GL-test13.dats
 test14: GL-test14.dats
 	$(ATSCC) -g -o test14 GL-test14.dats $(ATSCTRB) -lGL -lGLU -lglut
 
+test15: GL-test15.dats
+	$(ATSCC) -g -o test15 GL-test15.dats $(ATSCTRB) -lGL -lGLU -lglut
+
 ######
 
 clean:
@@ -97,5 +101,6 @@ cleanall: clean
 	rm -f test12
 	rm -f test13
 	rm -f test14
+	rm -f test15
 
 ###### end of [Makefile] ######
