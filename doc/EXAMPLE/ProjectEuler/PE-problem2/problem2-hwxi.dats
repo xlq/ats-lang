@@ -40,6 +40,7 @@ implement main () = () where {
   var sum: mpz_vt; val () = mpz_init_set (sum, 0UL)
   macdef N = 4000000UL
   val () = loop (N, 2UL, ifib, sum) // starting from the 2nd Fib number
+  val () = assert_errmsg (mpz_get_ulint (sum) = 4613732UL, #LOCATION)
   val () = (print "The sum of all even Fibonacci numbers <= 4 million = "; print sum; print_newline ())
   val () = mpz_clear (ifib)
   val () = mpz_clear (sum)

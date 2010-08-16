@@ -25,7 +25,7 @@ extern prfun divmod_ft {n:nat}
 
 (* ****** ****** *)
 
-absprop PRIME (n:int) // n is a prime
+absprop PRIME (n:int) // n is a prime for each n >= 2
 
 dataprop por (A: prop, B: prop) =
   | inl (A, B) of A
@@ -37,8 +37,17 @@ extern prfun prime_ft1 {n:nat} {p:nat} {n1,n2:nat}
 
 (* ****** ****** *)
 
+//
+// P3aux1 (n, p) means
+// 1. if p = 1 then n is a prime
+// 2. if p >= 2 then p divides n evenly
+// 3. if p >= 2 and p | n, then p * p <= n
+//
 absprop P3aux1 (n:int, p:int)
 
+//
+// HX: we assume these simple facts on P3aux1
+//
 extern prfun P3aux1_ft1 {n:nat} (pf: P3aux1 (n, 1)): PRIME n
 extern prfun P3aux1_ft2 {n:nat}
   {p:int | p >= 2} (pf: P3aux1 (n, p)): (PRIME p, MOD (n, p, 0))
@@ -47,9 +56,14 @@ extern prfun P3aux1_ft3 {n:nat}
   {p:int | p >= 2} (pf: P3aux1 (n, p)): [p2:int | p2 <= n] MUL (p, p, p2)
 // end of [P3aux1_ft3]
 
+(* ****** ****** *)
+
+//
+// HX: we assume that for each [n] there exists p such that P3aux(n, p) holds
+//
 extern fun P3aux1_fun
-  {n:nat | n >=2} (n: &intinf n): [p:pos] (P3aux1 (n, p) | int p)
-  = "P3aux1_fun"
+  {n:nat | n >= 2 }
+  (n: &intinf n): [p:pos] (P3aux1 (n, p) | int p) = "P3aux1_fun"
 // end of [P3aux1_fun]
 
 (* ****** ****** *)
@@ -70,7 +84,7 @@ end // end of [P3aux1_fun_dummy]
 (* ****** ****** *)
 
 //
-// P3(n, p) means that [p] is the largest compositor of [n]
+// HX: P3(n, p) means that [p] is the largest compositor of [n]
 //
 propdef P3 (n:int, p:int) = (
   () -> [n>=2] void
@@ -155,16 +169,18 @@ implement main () = () where {
   prval () = __assert () where { extern prfun __assert (): [n2 >= 2] void }
   val (pf_N21_gc, pf_N21 | p_N21) = intinf_make_llint (N21)
   val (pf_P3 | p) = P3main (!p_N21)
+  val () = assert_errmsg (p = 6857, #LOCATION)
   val () = begin
     print ("The largest prime factor of ["); print N2; print "] is ["; print p; print "]."; print_newline ()
   end // end of [val]
 //
-// (*
+(*
   val [_:int] (pf_mul | N3obj) = square (!p_N21)
-// *)
+*)
+//
   val () = intinf_free (pf_N21_gc, pf_N21 | p_N21)
 //
-// (*
+(*
   // HX-2010-02-06: I added this one
   val (pf_N3_gc, pf_N3 | p_N3) = N3obj
   val N4obj = !p_N3 - 1
@@ -176,7 +192,7 @@ implement main () = () where {
     print ("The largest prime factor of ["); print !p_N4; print "] is ["; print p; print "]."; print_newline ()
   end // end of [val]
   val () = intinf_free (pf_N4_gc, pf_N4 | p_N4)
-// *)
+*)
 } // end of [main]
 
 (* ****** ****** *)

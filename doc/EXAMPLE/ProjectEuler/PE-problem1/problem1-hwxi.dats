@@ -72,6 +72,7 @@ implement main () = () where {
   ) // end of [val]
   val N = 1000
   val (_pf | ans) = sum35 (N-1)
+  val () = assert_errmsg (ans = 233168, #LOCATION)
   val () = (
     printf ("The sum of all the natural numbers < %i that are multiples of 3 or 5 = ", @(N));
     print ans;
