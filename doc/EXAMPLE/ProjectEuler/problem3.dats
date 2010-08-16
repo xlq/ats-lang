@@ -1,5 +1,6 @@
 //
 // ProjectEuler: Problem 3
+// Finding the largest prime factor of a composite number
 //
 
 (* ****** ****** *)
@@ -68,6 +69,9 @@ end // end of [P3aux1_fun_dummy]
 
 (* ****** ****** *)
 
+//
+// P3(n, p) means that [p] is the largest compositor of [n]
+//
 propdef P3 (n:int, p:int) = (
   () -> [n>=2] void
 , PRIME p
