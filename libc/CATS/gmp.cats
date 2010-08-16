@@ -187,8 +187,17 @@ atslib_mpz_init_set_str_exn (
 
 /* ****** ****** */
 
-#define atslib_mpz_odd_p mpz_odd_p
-#define atslib_mpz_even_p mpz_even_p
+ATSinline()
+ats_bool_type
+atslib_mpz_odd_p (ats_ref_type x) {
+  return mpz_odd_p((mpz_ptr)x) ? ats_true_bool : ats_false_bool ;
+} // end of [atslib_mpz_odd_p]
+
+ATSinline()
+ats_bool_type
+atslib_mpz_even_p (ats_ref_type x) {
+  return mpz_even_p((mpz_ptr)x) ? ats_true_bool : ats_false_bool ;
+} // end of [atslib_mpz_even_p]
 
 #define atslib_mpz_fits_int_p mpz_fits_int_p
 #define atslib_mpz_fits_uint_p mpz_fits_uint_p
@@ -518,11 +527,20 @@ atslib_mpz_pow2_ui (
 // comparison functions
 
 #define atslib_mpz_cmp_mpz mpz_cmp
-#define atslib_mpz_cmp_int mpz_cmp_si
-#define atslib_mpz_cmp_uint mpz_cmp_ui
-#define atslib_mpz_cmp_lint mpz_cmp_si
-#define atslib_mpz_cmp_ulint mpz_cmp_ui
-#define atslib_mpz_cmp_double mpz_cmp_d
+
+#define atslib_mpz_cmp_lint(x, y) mpz_cmp_si((mpz_ptr)x, y)
+#define atslib_mpz_cmp_ulint(x, y) mpz_cmp_ui((mpz_ptr)x, y)
+
+#define atslib_mpz_cmp_int atslib_mpz_cmp_lint
+#define atslib_mpz_cmp_uint atslib_mpz_cmp_uint
+
+ATSinline()
+ats_int_type
+atslib_mpz_cmp_double (
+  ats_ref_type x, ats_double_type y
+) {
+  return mpz_cmp_d((mpz_ptr)x, y) ;
+} // end of [atslib_mpz_cmp_double]
 
 #define atslib_mpz_cmpabs_mpz mpz_cmpabs
 #define atslib_mpz_cmpabs_uint mpz_cmpabs_ui

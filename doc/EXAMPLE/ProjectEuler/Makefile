@@ -7,11 +7,13 @@ ATSCC=$(or $(ATSHOME), "/usr")/bin/atscc
 checkall: compall cleanall
 compall:: \
   problem1 \
+  problem2 \
   problem3 \
 
 ######
 
 problem1: problem1.dats; $(ATSCC) -o $@ problem1.dats -lgmp && ./problem1
+problem2: problem2.dats; $(ATSCC) -o $@ problem2.dats -lgmp && ./problem2
 problem3: problem3.dats; $(ATSCC) -o $@ problem3.dats -lgmp && ./problem3
 
 ######
@@ -21,6 +23,7 @@ clean::
 
 cleanall: clean
 	rm -f problem1
+	rm -f problem2
 	rm -f problem3
 
 ###### end of [Makefile] ######
