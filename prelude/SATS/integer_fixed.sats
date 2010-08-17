@@ -40,10 +40,8 @@
 (* ****** ****** *)
 
 #if VERBOSE_PRELUDE #then
-
 #print "Loading [integer_fixed.sats] starts!\n"
-
-#endif
+#endif // end of [VERBOSE_PRELUDE]
 
 (* ****** ****** *)
 
@@ -130,16 +128,13 @@ symintr fprint_int8
 
 fun fprint0_int8 (out: FILEref, x: int8):<!exnref> void
   = "atspre_fprint_int8"
-
+overload fprint_int8 with fprint0_int8
 fun fprint1_int8 {m:file_mode}
   (pf: file_mode_lte (m, w) | out: &FILE m, x: int8):<!exnref> void
   = "atspre_fprint_int8"
-
-overload fprint_int8 with fprint0_int8
 overload fprint_int8 with fprint1_int8
-overload fprint with fprint_int8
 
-(* ****** ****** *)
+overload fprint with fprint_int8
 
 fun print_int8 (i: int8):<!ref> void = "atspre_print_int8"
 and prerr_int8 (i: int8):<!ref> void = "atspre_prerr_int8"
@@ -221,16 +216,13 @@ symintr fprint_uint8
 
 fun fprint0_uint8 (out: FILEref, x: uint8):<!exnref> void
   = "atspre_fprint_uint8"
-
+overload fprint_uint8 with fprint0_uint8
 fun fprint1_uint8 {m:file_mode}
   (pf: file_mode_lte (m, w) | out: &FILE m, x: uint8):<!exnref> void
   = "atspre_fprint_uint8"
-
-overload fprint_uint8 with fprint0_uint8
 overload fprint_uint8 with fprint1_uint8
-overload fprint with fprint_uint8
 
-(* ****** ****** *)
+overload fprint with fprint_uint8
 
 fun print_uint8 (i: uint8):<!ref> void = "atspre_print_uint8"
 and prerr_uint8 (i: uint8):<!ref> void = "atspre_prerr_uint8"
@@ -320,16 +312,13 @@ symintr fprint_int16
 
 fun fprint0_int16 (out: FILEref, x: int16):<!exnref> void
   = "atspre_fprint_int16"
-
+overload fprint_int16 with fprint0_int16
 fun fprint1_int16 {m:file_mode}
   (pf: file_mode_lte (m, w) | out: &FILE m, x: int16):<!exnref> void
   = "atspre_fprint_int16"
-
-overload fprint_int16 with fprint0_int16
 overload fprint_int16 with fprint1_int16
-overload fprint with fprint_int16
 
-(* ****** ****** *)
+overload fprint with fprint_int16
 
 fun print_int16 (i: int16):<!ref> void = "atspre_print_int16"
 and prerr_int16 (i: int16):<!ref> void = "atspre_prerr_int16"
@@ -491,16 +480,14 @@ symintr fprint_int32
 
 fun fprint0_int32 (out: FILEref, x: int32):<!exnref> void
   = "atspre_fprint_int32"
+overload fprint_int32 with fprint0_int32
 
 fun fprint1_int32 {m:file_mode}
   (pf: file_mode_lte (m, w) | out: &FILE m, x: int32):<!exnref> void
   = "atspre_fprint_int32"
-
-overload fprint_int32 with fprint0_int32
 overload fprint_int32 with fprint1_int32
-overload fprint with fprint_int32
 
-(* ****** ****** *)
+overload fprint with fprint_int32
 
 fun print_int32 (i: int32):<!ref> void = "atspre_print_int32"
 and prerr_int32 (i: int32):<!ref> void = "atspre_prerr_int32"
@@ -590,11 +577,38 @@ overload min with min_uint32_uint32
 
 (* ****** ****** *)
 
+symintr fprint_uint32
+
+fun fprint0_uint32 (out: FILEref, x: uint32):<!exnref> void
+  = "atspre_fprint_uint32"
+overload fprint_uint32 with fprint0_uint32
+
+fun fprint1_uint32 {m:file_mode}
+  (pf: file_mode_lte (m, w) | out: &FILE m, x: uint32):<!exnref> void
+  = "atspre_fprint_uint32"
+overload fprint_uint32 with fprint1_uint32
+
+overload fprint with fprint_uint32
+
+fun print_uint32 (i: uint32):<!ref> void = "atspre_print_uint32"
+and prerr_uint32 (i: uint32):<!ref> void = "atspre_prerr_uint32"
+overload print with print_uint32
+overload prerr with prerr_uint32
+
+(* ****** ****** *)
+
 // signed integer of size 64bit
 
 typedef int64 = int64_t0ype
 
+symintr int64_of
 fun int64_of_int (i: int):<> int64 = "atspre_int64_of_int"
+overload int64_of with int64_of_int
+fun int64_of_lint (i: lint):<> int64 = "atspre_int64_of_lint"
+overload int64_of with int64_of_lint
+fun int64_of_llint (i: llint):<> int64 = "atspre_int64_of_llint"
+overload int64_of with int64_of_llint
+
 fun int_of_int64 (i: int64):<> int = "atspre_int_of_int64"
 
 // ------ ------
@@ -674,16 +688,14 @@ symintr fprint_int64
 
 fun fprint0_int64 (out: FILEref, x: int64):<!exnref> void
   = "atspre_fprint_int64"
+overload fprint_int64 with fprint0_int64
 
 fun fprint1_int64 {m:file_mode}
   (pf: file_mode_lte (m, w) | out: &FILE m, x: int64):<!exnref> void
   = "atspre_fprint_int64"
-
-overload fprint_int64 with fprint0_int64
 overload fprint_int64 with fprint1_int64
-overload fprint with fprint_int64
 
-(* ****** ****** *)
+overload fprint with fprint_int64
 
 fun print_int64 (i: int64):<!ref> void = "atspre_print_int64"
 and prerr_int64 (i: int64):<!ref> void = "atspre_prerr_int64"
@@ -706,7 +718,17 @@ overload tostring with tostring_int64
 
 typedef uint64 = uint64_t0ype
 
+symintr uint64_of
+fun uint64_of_int1 {i:nat}
+  (i: int i):<> uint64 = "atspre_uint64_of_int1"
+overload uint64_of with uint64_of_int1
 fun uint64_of_uint (i: uint):<> uint64 = "atspre_uint64_of_uint"
+overload uint64_of with uint64_of_uint
+fun uint64_of_ulint (i: ulint):<> uint64 = "atspre_uint64_of_ulint"
+overload uint64_of with uint64_of_ulint
+fun uint64_of_ullint (i: ullint):<> uint64 = "atspre_uint64_of_ullint"
+overload uint64_of with uint64_of_ullint
+
 fun uint_of_uint64 (i: uint64):<> uint = "atspre_uint_of_uint64"
 
 // ------ ------
@@ -773,10 +795,28 @@ overload min with min_uint64_uint64
 
 (* ****** ****** *)
 
+symintr fprint_uint64
+
+fun fprint0_uint64 (out: FILEref, x: uint64):<!exnref> void
+  = "atspre_fprint_uint64"
+overload fprint_uint64 with fprint0_uint64
+
+fun fprint1_uint64 {m:file_mode}
+  (pf: file_mode_lte (m, w) | out: &FILE m, x: uint64):<!exnref> void
+  = "atspre_fprint_uint64"
+overload fprint_uint64 with fprint1_uint64
+
+overload fprint with fprint_uint64
+
+fun print_uint64 (i: uint64):<!ref> void = "atspre_print_uint64"
+and prerr_uint64 (i: uint64):<!ref> void = "atspre_prerr_uint64"
+overload print with print_uint64
+overload prerr with prerr_uint64
+
+(* ****** ****** *)
+
 #if VERBOSE_PRELUDE #then
-
 #print "Loading [integer_fixed.sats] finishes!\n"
-
-#endif
+#endif // end of [VERBOSE_PRELUDE]
 
 (* end of [integer_fixed.sats] *)

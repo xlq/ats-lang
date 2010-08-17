@@ -9,7 +9,6 @@
 (* ****** ****** *)
 
 staload "prelude/DATS/lazy_vt.dats"
-staload "prelude/DATS/reference.dats"
 
 (* ****** ****** *)
 

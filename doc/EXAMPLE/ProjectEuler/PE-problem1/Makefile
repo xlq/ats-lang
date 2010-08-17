@@ -1,6 +1,6 @@
 ######
 #
-# A simple Make file
+# A simple Makefile
 #
 ######
 

@@ -1,6 +1,6 @@
 ######
 #
-# A simple Make file
+# A simple Makefile
 #
 ######
 
@@ -15,7 +15,7 @@ compall:: \
 ######
 
 problem7-hwxi: problem7-hwxi.dats
-	$(ATSCC) -o $@ problem7-hwxi.dats -lgmp && ./problem7-hwxi
+	$(ATSCC) -O2 -o $@ problem7-hwxi.dats -lgmp && ./problem7-hwxi
 
 ######
 

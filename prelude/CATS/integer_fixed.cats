@@ -999,15 +999,17 @@ atspre_prerr_uint32 (ats_uint32_type i) {
 
 ATSinline()
 ats_int64_type
-atspre_int64_of_int (ats_int_type i) {
-  return (i) ;
-}
+atspre_int64_of_int (ats_int_type i) { return (i) ; }
+ATSinline()
+ats_int64_type
+atspre_int64_of_lint (ats_lint_type i) { return (i) ; }
+ATSinline()
+ats_int64_type
+atspre_int64_of_llint (ats_llint_type i) { return (i) ; }
 
 ATSinline()
 ats_int_type
-atspre_int_of_int64 (ats_int64_type i) {
-  return i ;
-}
+atspre_int_of_int64 (ats_int64_type i) { return i ; }
 
 // ------ ------
 
@@ -1162,29 +1164,32 @@ atspre_tostrptr_int64
 
 ATSinline()
 ats_uint64_type
-atspre_uint64_of_uint (ats_uint_type i) {
-  return i ;
-}
+atspre_uint64_of_int1 (ats_int_type i) { return (uint)i ; }
+ATSinline()
+ats_uint64_type
+atspre_uint64_of_uint (ats_uint_type i) { return i ; }
+ATSinline()
+ats_uint64_type
+atspre_uint64_of_ulint (ats_ulint_type i) { return i ; }
+ATSinline()
+ats_uint64_type
+atspre_uint64_of_ullint (ats_ullint_type i) { return i ; }
 
 ATSinline()
 ats_uint_type
-atspre_uint_of_uint64 (ats_uint64_type i) {
-  return i ;
-}
+atspre_uint_of_uint64 (ats_uint64_type i) { return i ; }
 
-// ------ ------
+/* ****** ****** */
 
 ATSinline()
 ats_uint64_type
-atspre_succ_uint64 (ats_uint64_type i) {
-  return (i + 1) ;
-}
+atspre_succ_uint64 (ats_uint64_type i) { return (i + 1) ; }
 
 ATSinline()
 ats_uint64_type
-atspre_pred_uint64 (ats_uint64_type i) {
-  return (i - 1) ;
-}
+atspre_pred_uint64 (ats_uint64_type i) { return (i - 1) ; }
+
+/* ****** ****** */
 
 ATSinline()
 ats_uint64_type
@@ -1216,7 +1221,7 @@ atspre_mod_uint64_uint64 (ats_uint64_type i1, ats_uint64_type i2) {
   return (i1 % i2) ;
 }
 
-// ------ ------
+/* ****** ****** */
 
 // comparison operations
 

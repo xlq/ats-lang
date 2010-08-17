@@ -639,9 +639,13 @@ overload mpz_invert with mpz_invert3
 // various number-theoretic functions
 //
 
+symintr mpz_nextprime
+fun mpz_nextprime1
+  (dst: &mpz_vt): void = "#atslib_mpz_nextprime1" // !mac
+overload mpz_nextprime with mpz_nextprime1
 fun mpz_nextprime2
   (dst: &mpz_vt, src: &mpz_vt): void = "#atslib_mpz_nextprime2"
-// end of [mpz_nextprime2]
+overload mpz_nextprime with mpz_nextprime2
 
 // HX: Note that jacobi (a, b) is only defined for b that is odd
 fun mpz_jacobi (a: &mpz_vt, b: &mpz_vt): int = "#atslib_mpz_jacobi"

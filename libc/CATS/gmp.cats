@@ -565,6 +565,13 @@ atslib_mpz_cmp_double (
 //
 // various number-theoretic functions
 //
+
+ATSinline()
+ats_void_type
+atslib_mpz_nextprime1
+  (ats_ref_type dst) {
+  mpz_nextprime((mpz_ptr)dst, (mpz_ptr)dst); return ;
+} // end of [atslib_mpz_nextprime1]
 #define atslib_mpz_nextprime2 mpz_nextprime
 
 #define atslib_mpz_jacobi mpz_jacobi
