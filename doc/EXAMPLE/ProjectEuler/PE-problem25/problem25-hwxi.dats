@@ -1,6 +1,6 @@
 //
-// ProjectEuler: Problem 2
-// Finding the sum of all even Fibonacci numbers not exceeding 4M
+// ProjectEuler: Problem 25
+// Finding the first Fibonacci term containing at least 1000 digits
 //
 
 (* ****** ****** *)

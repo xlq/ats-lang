@@ -1,6 +1,6 @@
 //
 // ProjectEuler: Problem 2
-// Finding the sum of all even Fibonacci numbers not exceeding 4M
+// Finding the sum of all the digits of 2^1000
 //
 
 (* ****** ****** *)
