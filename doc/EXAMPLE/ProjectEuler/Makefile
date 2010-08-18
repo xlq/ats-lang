@@ -9,21 +9,43 @@ compall:: \
   problem1 \
   problem2 \
   problem3 \
+  problem7 \
+  problem20 \
+  problem25 \
+  problem56 \
 
 ######
 
-problem1: problem1.dats; $(ATSCC) -o $@ problem1.dats -lgmp && ./problem1
-problem2: problem2.dats; $(ATSCC) -o $@ problem2.dats -lgmp && ./problem2
-problem3: problem3.dats; $(ATSCC) -o $@ problem3.dats -lgmp && ./problem3
+problem1::
+	make -C PE-problem1 compall
+
+problem2::
+	make -C PE-problem2 compall
+
+problem3::
+	make -C PE-problem3 compall
+
+problem7::
+	make -C PE-problem7 compall
+
+problem20::
+	make -C PE-problem20 compall
+
+problem25::
+	make -C PE-problem25 compall
+
+problem56::
+	make -C PE-problem56 compall
 
 ######
 
-clean::
-	rm -f *~ *_?ats.c *_?ats.o
-
-cleanall: clean
-	rm -f problem1
-	rm -f problem2
-	rm -f problem3
+cleanall::
+	make -C PE-problem1 cleanall
+	make -C PE-problem2 cleanall
+	make -C PE-problem3 cleanall
+	make -C PE-problem7 cleanall
+	make -C PE-problem20 cleanall
+	make -C PE-problem25 cleanall
+	make -C PE-problem56 cleanall
 
 ###### end of [Makefile] ######

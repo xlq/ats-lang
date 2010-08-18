@@ -1,5 +1,5 @@
 //
-// ProjectEuler: Problem 2
+// ProjectEuler: Problem 16
 // Finding the sum of all the digits of 2^1000
 //
 
@@ -16,7 +16,7 @@ staload "libc/SATS/gmp.sats"
 
 (* ****** ****** *)
 
-fun sumdigits
+fun digitsum
   (x: &mpz_vt): int = let
   val str = mpz_get_str (10, x)
   val @(pf_gc, pf | p) = strbuf_of_strptr (str)
@@ -31,7 +31,7 @@ fun sumdigits
   val () = strptr_free (str)
 in
   sum
-end // end of [sumdigits]
+end // end of [digitsum]
 
 
 (* ****** ****** *)
@@ -40,13 +40,13 @@ implement main () = () where {
 //
   var p15: mpz_vt; val () = mpz_init_set (p15, 2)
   val () = mpz_pow_ui (p15, 15UL)
-  val sum15 = sumdigits (p15)
+  val sum15 = digitsum (p15)
   val () = mpz_clear (p15)
   val () = (print "sum15 = "; print sum15; print_newline ())
 //
   var p1000: mpz_vt; val () = mpz_init_set (p1000, 2)
   val () = mpz_pow_ui (p1000, 1000UL)
-  val sum1000 = sumdigits (p1000)
+  val sum1000 = digitsum (p1000)
   val () = mpz_clear (p1000)
   val () = assert_errmsg (sum1000 = 1366, #LOCATION)
   val () = (print "the sum of all the digits of 2^1000 is "; print sum1000; print_newline ())

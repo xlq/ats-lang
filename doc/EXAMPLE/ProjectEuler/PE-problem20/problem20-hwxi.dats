@@ -16,7 +16,7 @@ staload "libc/SATS/gmp.sats"
 
 (* ****** ****** *)
 
-fun sumdigits
+fun digitsum
   (x: &mpz_vt): int = let
   val str = mpz_get_str (10, x)
   val @(pf_gc, pf | p) = strbuf_of_strptr (str)
@@ -31,7 +31,7 @@ fun sumdigits
   val () = strptr_free (str)
 in
   sum
-end // end of [sumdigits]
+end // end of [digitsum]
 
 
 (* ****** ****** *)
@@ -40,7 +40,7 @@ implement main () = () where {
 //
   var f100: mpz_vt; val () = mpz_init (f100)
   val () = mpz_fac_ui (f100, 100UL)
-  val sum100 = sumdigits (f100)
+  val sum100 = digitsum (f100)
   val () = mpz_clear (f100)
   val () = assert_errmsg (sum100 = 648, #LOCATION)
   val () = (print "the sum of all the digits of 100! is "; print sum100; print_newline ())
