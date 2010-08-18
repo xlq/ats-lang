@@ -33,7 +33,6 @@ in
   sum
 end // end of [digitsum]
 
-
 (* ****** ****** *)
 
 implement main () = () where {
