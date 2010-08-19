@@ -48,4 +48,4 @@ implement main () = () where {
 
 (* ****** ****** *)
 
-(* end of [problem20.dats] *)
+(* end of [problem20-hwxi.dats] *)

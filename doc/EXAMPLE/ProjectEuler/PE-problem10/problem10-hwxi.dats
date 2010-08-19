@@ -64,4 +64,4 @@ main (argc, argv) = () where {
 
 (* ****** ****** *)
 
-(* end of [problem10.dats] *)
+(* end of [problem10-hwxi.dats] *)

@@ -66,4 +66,4 @@ implement main () = () where {
 
 (* ****** ****** *)
 
-(* end of [problem26.dats] *)
+(* end of [problem26-hwxi.dats] *)
