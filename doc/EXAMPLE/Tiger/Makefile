@@ -314,7 +314,7 @@ ATSOPT=$(or $(ATSHOME), "/usr")/bin/atsopt
 
 xref::
 	$(ATSOPT) --posmark_xref=XREF \
-          -d ats_prelude_xref.dats > /dev/null
+          -d $(ATSHOME)/utils/xref/ats_prelude_xref.dats > /dev/null
 	$(ATSOPT) --posmark_xref=XREF \
           -d tigerats_main.dats > tigerats_main_dats.html
 	$(ATSOPT) --posmark_xref=XREF -d error.dats > error_dats.html
@@ -393,8 +393,8 @@ tar:: cleanall
 	cp params.hats Tigerats
 	cp tiger_prelude.c Tigerats
 	cp tiger_prelude_spim.s Tigerats
-	cp Examples/*.tig Tigerats/Examples
-	cp Examples/Makefile Tigerats/Examples
+	cp EXAMPLE/*.tig Tigerats/EXAMPLE
+	cp EXAMPLE/Makefile Tigerats/EXAMPLE
 	tar vcfz Tigerats.tar.gz Tigerats/
 
 ######
