@@ -437,11 +437,11 @@ atslib_mpz_tdiv2_q_mpz (
 } // end of [atslib_mpz_tdiv2_q_mpz]
 
 ATSinline()
-ats_void_type
+ats_ulint_type
 atslib_mpz_tdiv2_q_ulint (
   ats_mpz_ptr_type x, ats_ulint_type d
 ) {
-  mpz_tdiv_q_ui ((mpz_ptr)x, (mpz_ptr)x, d) ; return ;
+  return mpz_tdiv_q_ui ((mpz_ptr)x, (mpz_ptr)x, d) ;
 } // end of [atslib_mpz_tdiv2_q_ulint]
 
 /* ****** ****** */
@@ -465,17 +465,19 @@ atslib_mpz_fdiv2_q_mpz (
 } // end of [atslib_mpz_fdiv2_q_mpz]
 
 ATSinline()
-ats_void_type
+ats_ulint_type
 atslib_mpz_fdiv2_q_ulint (
   ats_mpz_ptr_type x, ats_ulint_type d
 ) {
-  mpz_fdiv_q_ui ((mpz_ptr)x, (mpz_ptr)x, d) ; return ;
+  return mpz_fdiv_q_ui ((mpz_ptr)x, (mpz_ptr)x, d) ;
 } // end of [atslib_mpz_fdiv2_q_ulint]
 
 /* ****** ****** */
 
 #define atslib_mpz_mod3_mpz mpz_mod
+#define atslib_mpz_mod2_mpz(n, d) mpz_mod((mpz_ptr)n, (mpz_ptr)n, (mpz_ptr)d)
 #define atslib_mpz_mod3_ulint mpz_mod_ui
+#define atslib_mpz_mod2_ulint(n, d) mpz_mod_ui((mpz_ptr)n, (mpz_ptr)n, (mpz_ptr)d)
 
 #define atslib_mpz_divexact3 mpz_divexact
 
@@ -532,7 +534,7 @@ atslib_mpz_pow2_ui (
 #define atslib_mpz_cmp_ulint(x, y) mpz_cmp_ui((mpz_ptr)x, y)
 
 #define atslib_mpz_cmp_int atslib_mpz_cmp_lint
-#define atslib_mpz_cmp_uint atslib_mpz_cmp_uint
+#define atslib_mpz_cmp_uint atslib_mpz_cmp_ulint
 
 ATSinline()
 ats_int_type

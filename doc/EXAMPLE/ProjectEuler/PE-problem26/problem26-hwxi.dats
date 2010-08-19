@@ -1,6 +1,6 @@
 //
 // ProjectEuler: Problem 26
-// Finding the longest recurring cycle of 1/d for d < 1000
+// Finding the integer d < 1000 such that 1/d has the longest recurring cycle
 //
 
 (* ****** ****** *)

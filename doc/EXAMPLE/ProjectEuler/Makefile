@@ -10,6 +10,7 @@ compall:: \
   problem2 \
   problem3 \
   problem7 \
+  problem8 \
   problem9 \
   problem16 \
   problem20 \
@@ -25,6 +26,7 @@ problem1::; make -C PE-problem1 compall
 problem2::; make -C PE-problem2 compall
 problem3::; make -C PE-problem3 compall
 problem7::; make -C PE-problem7 compall
+problem8::; make -C PE-problem8 compall
 problem9::; make -C PE-problem9 compall
 problem16::; make -C PE-problem16 compall
 problem20::; make -C PE-problem20 compall
@@ -41,6 +43,7 @@ cleanall::
 	make -C PE-problem2 cleanall
 	make -C PE-problem3 cleanall
 	make -C PE-problem7 cleanall
+	make -C PE-problem8 cleanall
 	make -C PE-problem9 cleanall
 	make -C PE-problem16 cleanall
 	make -C PE-problem20 cleanall

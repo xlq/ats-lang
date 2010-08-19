@@ -455,7 +455,7 @@ fun mpz_fdiv4_qr_mpz
   = "#atslib_mpz_fdiv4_qr_mpz"
 overload mpz_fdiv_qr with mpz_fdiv4_qr_mpz
 fun mpz_fdiv4_qr_ulint
-  (quot: &mpz_vt, rem: &mpz_vt, dividend: &mpz_vt, divisor: ulint):<> void
+  (quot: &mpz_vt, rem: &mpz_vt, dividend: &mpz_vt, divisor: ulint):<> ulint
   = "#atslib_mpz_fdiv4_qr_ulint"
 overload mpz_fdiv_qr with mpz_fdiv4_qr_ulint
 
@@ -466,24 +466,30 @@ fun mpz_fdiv3_q_mpz
   (q: &mpz_vt, n: &mpz_vt, d: &mpz_vt):<> void = "#atslib_mpz_fdiv3_q_mpz"
 overload mpz_fdiv_q with mpz_fdiv3_q_mpz
 fun mpz_fdiv3_q_ulint
-  (q: &mpz_vt, n: &mpz_vt, d: ulint):<> void = "#atslib_mpz_fdiv3_q_ulint"
+  (q: &mpz_vt, n: &mpz_vt, d: ulint):<> ulint = "#atslib_mpz_fdiv3_q_ulint"
 overload mpz_fdiv_q with mpz_fdiv3_q_ulint
 fun mpz_fdiv2_q_mpz
   (q: &mpz_vt, d: &mpz_vt):<> void = "atslib_mpz_fdiv2_q_mpz"
 overload mpz_fdiv_q with mpz_fdiv2_q_mpz
 fun mpz_fdiv2_q_ulint
-  (q: &mpz_vt, d: ulint):<> void = "atslib_mpz_fdiv2_q_ulint"
+  (q: &mpz_vt, d: ulint):<> ulint = "atslib_mpz_fdiv2_q_ulint"
 overload mpz_fdiv_q with mpz_fdiv2_q_ulint
 
 (* ****** ****** *)
 
 symintr mpz_mod
+
 fun mpz_mod3_mpz
   (r: &mpz_vt, n: &mpz_vt, d: &mpz_vt):<> void = "#atslib_mpz_mod3_mpz"
 overload mpz_mod with mpz_mod3_mpz
+fun mpz_mod2_mpz (n: &mpz_vt, d: &mpz_vt):<> void = "#atslib_mpz_mod2_mpz"
+overload mpz_mod with mpz_mod2_mpz
+
 fun mpz_mod3_ulint
-  (r: &mpz_vt, n: &mpz_vt, d: ulint):<> void = "#atslib_mpz_mod3_ulint"
+  (r: &mpz_vt, n: &mpz_vt, d: ulint):<> ulint = "#atslib_mpz_mod3_ulint"
 overload mpz_mod with mpz_mod3_ulint
+fun mpz_mod2_ulint (n: &mpz_vt, d: ulint):<> ulint = "#atslib_mpz_mod2_ulint"
+overload mpz_mod with mpz_mod2_ulint
 
 (* ****** ****** *)
 //

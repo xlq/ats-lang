@@ -205,7 +205,7 @@ implement fdiv_intinf_int {m,n} (intinf, i) = let
   } // end of [prval]
   val @(pf_gc, pf_at | p) = ptr_alloc_tsz {mpz_vt} (sizeof<mpz_vt>)
   val () = mpz_init (!p)
-  val ui = ulint_of_int i; val () = mpz_fdiv_q (!p, intinf, ui)
+  val ui = ulint_of_int i; val _(*remainder*) = mpz_fdiv_q (!p, intinf, ui)
 in
   #[q,r | @(pf_mul | @(pf_gc, pf_at | p))]
 end // end of [fdiv_intinf_int]
@@ -218,7 +218,7 @@ implement fmod_intinf_int {m,n} (intinf, i) = let
   } // end of [prval]
   val @(pf_gc, pf_at | p) = ptr_alloc_tsz {mpz_vt} (sizeof<mpz_vt>)
   val () = mpz_init (!p)
-  val ui = ulint_of_int i; val () = mpz_mod (!p, intinf, ui)
+  val ui = ulint_of_int i; val _(*remainder*) = mpz_mod (!p, intinf, ui)
   val r = mpz_get_int (!p)
   val [r1:int] r = int1_of_int r
   prval () = __assert () where { extern prfun __assert (): [r==r1] void }

@@ -662,7 +662,7 @@ fn doc_dir_copy () = let
     val () = cp "prelude_string.dats"
     val () = cp "libc_dlfcn.dats"
     val () = cp "libc_dirent.dats"
-    val () = cp "libc_gmp"
+    val () = cp "libc_gmp.dats"
     val () = cp "libc_sched.dats"
     val () = cp "libc_stdlib.dats"  
   //
@@ -951,6 +951,9 @@ fn contrib_dir_copy
     val () = mkdir_exn (DSTROOTcontrib_glib_CATS_glib, DIRmode)
     val () = dir_copy (
       SRCROOTcontrib ++ "glib/CATS/glib/", DSTROOTcontrib_glib_CATS_glib, name_is_cats
+    ) // end of [val]
+    val () = fcopy_exn (
+      SRCROOTcontrib ++ "glib/HATS/glibconfig", DSTROOTcontrib ++ "glib/HATS/glibconfig"
     ) // end of [val]
   } // end of [where]
 //
