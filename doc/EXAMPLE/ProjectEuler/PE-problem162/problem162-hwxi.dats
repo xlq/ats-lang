@@ -1,6 +1,6 @@
 //
 // ProjectEuler: Problem 162
-// How many numbers are there that ats at most 16 hexdigit-long and these hexdigits
+// How many numbers are there that are at most 16 hexdigit-long and these hexdigits
 // contain at least one occurrence of each of 0, 1, and A.
 //
 
