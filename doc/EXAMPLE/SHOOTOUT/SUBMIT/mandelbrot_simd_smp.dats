@@ -69,10 +69,10 @@ absview nthread_v (int)
 extern fun thread_v_return
   (pf: thread_v | (*none*)): void = "thread_v_return"
 
-extern prfun nthread_v_take {n:pos}
+extern praxi nthread_v_take {n:pos}
   (pf: !nthread_v n >> nthread_v (n-1)): thread_v
 
-extern prfun nthread_v_elim (pf: nthread_v 0):<> void
+extern praxi nthread_v_elim (pf: nthread_v 0):<> void
 
 extern fun nticket_get
   (pf: !thread_v | (*none*)): int = "nticket_get"
@@ -242,7 +242,7 @@ fun output_worker (
     pf_thread: thread_v, pf_A: bytearr @ l0
   | h: int, w: int, h_r: double, w_r: double, w8: int, p_A: ptr l0
   ) : void = let
-  extern prfun bytearr_v_elim (pf_A: bytearr @ l0): void
+  extern praxi bytearr_v_elim (pf_A: bytearr @ l0): void
   val y = nticket_get (pf_thread | (*none*))
 in
   case+ 0 of
@@ -266,8 +266,8 @@ val () = output_all (pf_nthread, pf0_A | NTHREAD) where {
     if n > 0 then let
       prval pf_thread = nthread_v_take (pf_nthread)
       prval pf_A = bytearr_v_copy (pf0_A) where {
-        extern prfun bytearr_v_copy (pf0_A: !bytearr @ l0): bytearr @ l0
-      }
+        extern praxi bytearr_v_copy (pf0_A: !bytearr @ l0): bytearr @ l0
+      } // end of [prval]
       val () = pthread_create_detached_cloptr (
          lam () =<lin,cloptr1> output_worker (pf_thread, pf_A | h, w, h_r, w_r, w8, p_A)
       ) // end of [pthread_create_detached_cloptr]

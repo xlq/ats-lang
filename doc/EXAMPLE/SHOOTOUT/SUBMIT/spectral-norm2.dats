@@ -116,7 +116,7 @@ fn eval_A_times_u {N:nat} {l: addr}
   in
     if i < N then let
       prval (pf1, fpf2) = __cast (pf) where {
-        extern prfun __cast (pf: darr N @ l): (V2, V2 -<lin,prf> V1)
+        extern praxi __cast (pf: darr N @ l): (V2, V2 -<lin,prf> V1)
       }
       var sum: v2df = v2df_0_0
       val () = if flag = 0 then

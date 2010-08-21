@@ -128,8 +128,8 @@ implement main (argc, argv) = let
   val (pf | ()) = lock_acquire (0)
   val ans = the_answer_get (pf | (*nil*))
   prval () = __leak (pf) where {
-    extern prfun __leak (pf: ticket_v): void
-  }
+    extern praxi __leak (pf: ticket_v): void
+  } // end of [prval]
 in
   print ans; print_newline ()
 end // end of [main]

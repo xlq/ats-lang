@@ -148,8 +148,8 @@ end // end of [fwork]
 
 fun loop_depths {lws:agz}
   (ws: !WSptr lws, d: Nat, max_depth: Nat, res: &CONT? >> CONT): void = let
-  extern prfun __ref {v:view} (pf: !v): v
-  extern prfun __unref {v:view} (pf: v): void
+  extern praxi __ref {v:view} (pf: !v): v
+  extern praxi __unref {v:view} (pf: v): void
 in
   if d <= max_depth then let
     val () = res := CONTcons (0, 0, 0, ?)

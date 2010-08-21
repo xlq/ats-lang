@@ -173,10 +173,10 @@ absview thread_v; absview nthread_v (int)
 extern fun thread_v_return
   (pf: thread_v | (*none*)): void = "thread_v_return"
 
-extern prfun nthread_v_take {n:pos}
+extern praxi nthread_v_take {n:pos}
   (pf: !nthread_v n >> nthread_v (n-1)): thread_v
 
-extern prfun nthread_v_elim (pf: nthread_v 0):<> void
+extern praxi nthread_v_elim (pf: nthread_v 0):<> void
 
 extern fun nticket_get
   (pf: !thread_v | (*none*)): Nat = "nticket_get"
@@ -213,7 +213,7 @@ fn eval_A_times_u_knd {N:nat}
         worker (pf_thread, pf_u, pf_Au | knd, N, p_u, p_Au)
       end
     | _ => let
-        extern prfun darray_v_elim {l:addr} (pf: darray N @ l): void
+        extern praxi darray_v_elim {l:addr} (pf: darray N @ l): void
         prval () = darray_v_elim (pf_u)
         prval () = darray_v_elim (pf_Au)
       in
@@ -224,7 +224,7 @@ fn eval_A_times_u_knd {N:nat}
   fun worker_gen {n:nat}
     (pf_nthread: nthread_v n | n: int n):<cloref1> void =
     if n > 0 then let
-      extern prfun darray_v_copy {l:addr} (p: ptr l): darray N @ l
+      extern praxi darray_v_copy {l:addr} (p: ptr l): darray N @ l
       prval pf_u = darray_v_copy (p_u)
       prval pf_Au = darray_v_copy (p_Au)
       prval pf_thread = nthread_v_take (pf_nthread)

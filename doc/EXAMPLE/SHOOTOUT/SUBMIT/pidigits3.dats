@@ -46,8 +46,8 @@ prval pf_all = @(
 )
 prval pfbox_all =
   vbox_make {v_all} (pf_all) where {
-  extern prfun vbox_make {v:view} (pf: v): vbox (v)
-} // end of [val]
+  extern praxi vbox_make {v:view} (pf: v): vbox (v)
+} // end of [prval]
 
 (* ****** ****** *)
 

@@ -134,7 +134,7 @@ in
     val [l_itm:addr] p_itm = $H.hashtbl_search_ref<symbol_t,int> (tbl, sym)
     val () = if p_itm <> null then let
       prval (fpf, pf) = __assert () where {
-        extern prfun __assert (): (int@l_itm -<prf> void, int@l_itm)
+        extern praxi __assert (): (int@l_itm -<prf> void, int@l_itm)
       } // end of [prval]
       val () = !p_itm := !p_itm + 1
       prval () = fpf (pf)

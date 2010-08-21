@@ -39,13 +39,13 @@ typedef keyitm = @(symbol_t, int)
 implement
 $H.keyitem_isnot_null<keyitm> (ki) = let
   prval () = __assert (ki) where {
-    extern prfun __assert (x: !($H.Opt keyitm) >> keyitm):<> void
+    extern praxi __assert (x: !($H.Opt keyitm) >> keyitm):<> void
   } // end of [prval]
   val i = ki.1
   val res = (i <> 0)
   val [b:bool] res = bool1_of_bool (res)
   prval () = __assert (ki) where {
-    extern prfun __assert (x: &keyitm >> opt (keyitm, b)):<> void
+    extern praxi __assert (x: &keyitm >> opt (keyitm, b)):<> void
   } // end of [prval]
 in
   res
@@ -153,7 +153,7 @@ in
     val [l_itm:addr] p_itm = $H.hashtbl_search_ref<symbol_t,int> (tbl, sym)
     val () = if p_itm <> null then let
       prval (fpf, pf) = __assert () where {
-        extern prfun __assert (): (int@l_itm -<prf> void, int@l_itm)
+        extern praxi __assert (): (int@l_itm -<prf> void, int@l_itm)
       } // end of [prval]
       val () = !p_itm := !p_itm + 1
       prval () = fpf (pf)

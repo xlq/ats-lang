@@ -112,8 +112,8 @@ fun random_char {n:pos} {l:addr} (
 in
   if prob >= p_tbl->p then let
     prval () = __meta_info () where {
-      extern prfun __meta_info (): [n > 1] void // a piece of meta information
-    }
+      extern praxi __meta_info (): [n > 1] void // a piece of meta information
+    } // end of [prval]
     val ans = random_char (pf2 | p_tbl + sizeof<amino>, n - 1, prob)
     prval () = pf_tbl := array_v_cons {amino} (pf1, pf2)
   in

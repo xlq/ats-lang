@@ -57,9 +57,9 @@ extern fun fwrite_byte {bsz,n:nat | n <= bsz} {l:addr}
   = "fasta_fwrite_byte"
 
 // no proofs are provided for the following two theorems:
-extern prfun bytes_v_split {n,i:nat | i <= n}
+extern praxi bytes_v_split {n,i:nat | i <= n}
   {l:addr} (pf: bytes (n) @ l): @(bytes (i) @ l, bytes (n-i) @ l+i)
-extern prfun bytes_v_unsplit {n1,n2:nat}
+extern praxi bytes_v_unsplit {n1,n2:nat}
   {l:addr} (pf1: bytes(n1) @ l, pf2: bytes(n2) @ l+n1): bytes (n1+n2) @ l
 
 (* ****** ****** *)

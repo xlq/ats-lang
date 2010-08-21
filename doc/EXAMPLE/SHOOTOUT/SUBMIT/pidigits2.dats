@@ -39,8 +39,8 @@ viewdef v_all = @(v_tmp, v_acc, v_num, v_den)
 prval pf_all = @(pf_tmp, pf_acc, pf_num, pf_den)
 prval pfbox_all =
   vbox_make {v_all} (pf_all) where {
-  extern prfun vbox_make {v:view} (pf: v): vbox (v)
-} // end of [val]
+  extern praxi vbox_make {v:view} (pf: v): vbox (v)
+} // end of [prval]
 
 (* ****** ****** *)
 

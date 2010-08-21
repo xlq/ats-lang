@@ -141,8 +141,8 @@ fn eval_A_times_u {lws:agz} {N:nat} {l:addr} (
   in
     if i < i1 then let
       prval (pf1, fpf2) = __cast (pf) where {
-        extern prfun __cast (pf: darr N @ l): (V2, V2 -<lin,prf> V1)
-      }
+        extern praxi __cast (pf: darr N @ l): (V2, V2 -<lin,prf> V1)
+      } // end of [prval]
       var sum: v2df = v2df_0_0
       val () = if flag = 0 then
         loop2_0 (pf1 | p_u, sum, i, 0) else loop2_1 (pf1 | p_u, sum, i, 0)
@@ -156,8 +156,8 @@ fn eval_A_times_u {lws:agz} {N:nat} {l:addr} (
   end // end of [loop1]
   fun loop1_ {i,i1:nat| i <= i1; i1 <= N} {l,l_tmp:addr}
     (i: int i, i1: int i1, p_u: ptr l, p_tmp: ptr l_tmp):<cloref1> void = let
-    extern prfun __vintr {v:view} (): v
-    extern prfun __velim {v:view} (pf: v): void
+    extern praxi __vintr {v:view} (): v
+    extern praxi __velim {v:view} (pf: v): void
     prval pf = __vintr {darr N @ l} ()
     prval pf_tmp = __vintr {darr N @ l_tmp} ()
     val () = loop1 (pf | i, i1, p_u, !p_tmp)

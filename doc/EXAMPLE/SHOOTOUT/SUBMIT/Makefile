@@ -198,7 +198,8 @@ reverse-complement3: reverse-complement3.dats
 spectral-norm: spectral-norm.dats
 	$(ATSCC) -O3 -fomit-frame-pointer -msse2 spectral-norm.dats -o spectral-norm -lm
 spectral-norm_smp: spectral-norm_smp.dats
-	$(ATSCC) -D_ATS_MULTITHREAD -O3 -fomit-frame-pointer -msse2 spectral-norm_smp.dats -o spectral-norm_smp -lm -lpthread
+	$(ATSCC) -D_ATS_PROOFCHECK -D_ATS_MULTITHREAD \
+          -O3 -fomit-frame-pointer -msse2 spectral-norm_smp.dats -o spectral-norm_smp -lm -lpthread
 
 spectral-norm1: spectral-norm1.dats
 	$(ATSCC) -O3 -fomit-frame-pointer -msse2 spectral-norm1.dats -o spectral-norm1 -lm
@@ -207,7 +208,7 @@ spectral-norm1_simd: spectral-norm1_simd.dats
 
 # SIMD
 spectral-norm2: spectral-norm2.dats
-	$(ATSCC) -O3 -fomit-frame-pointer -msse3 spectral-norm2.dats -o spectral-norm2 -lm
+	$(ATSCC) -D_ATS_PROOFCHECK -O3 -fomit-frame-pointer -msse3 spectral-norm2.dats -o spectral-norm2 -lm
 
 # SIMD and SMP
 spectral-norm3: spectral-norm3.dats

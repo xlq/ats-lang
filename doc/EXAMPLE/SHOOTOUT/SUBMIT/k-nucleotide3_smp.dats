@@ -138,7 +138,7 @@ in
     val [l_itm:addr] p_itm = $H.hashtbl_search_ref<symbol_t,int> (tbl, sym)
     val () = if p_itm <> null then let
       prval (fpf, pf) = __assert () where {
-        extern prfun __assert (): (int@l_itm -<prf> void, int@l_itm)
+        extern praxi __assert (): (int@l_itm -<prf> void, int@l_itm)
       } // end of [prval]
       val () = !p_itm := !p_itm + 1
       prval () = fpf (pf)
@@ -203,7 +203,7 @@ fn dna_count {lws:agz} {n:pos;k:pos} {N:pos} (
   val INC = ((n + N - 1) / N): size_t
   val [inc:int] INC = size1_of_size (INC)
   prval () = __assert () where {
-    extern prfun __assert (): [inc > 0] void
+    extern praxi __assert (): [inc > 0] void
   }
   fun split {n1,n2:nat} (
       ws: !WSptr lws, n1: size_t n1, n2: size_t n2
@@ -215,7 +215,7 @@ fn dna_count {lws:agz} {n:pos;k:pos} {N:pos} (
       val tbl1 = __ref (tbl)
       val f = lam (): void =<lincloptr1> () where {
         val () = dna_count_one (tbl1, dna, n1, n11)
-        prval () = __unref tbl1 where { extern prfun __unref (x: symtbl l): void }
+        prval () = __unref tbl1 where { extern praxi __unref (x: symtbl l): void }
       } // end of [val]
       val () = workshop_insert_work (ws, f)
     in
@@ -243,7 +243,7 @@ implement symtbls_merge (xs) = let
           val [l_itm:addr] p_itm = $H.hashtbl_search_ref<symbol_t,int> (x, k)
           val () = if p_itm <> null then let
             prval (fpf, pf) = __assert () where {
-              extern prfun __assert (): (int@l_itm -<prf> void, int@l_itm)
+              extern praxi __assert (): (int@l_itm -<prf> void, int@l_itm)
             } // end of [prval]
             val () = !p_itm := !p_itm + i
             prval () = fpf (pf)
@@ -251,8 +251,8 @@ implement symtbls_merge (xs) = let
             // nothing
           end else $H.hashtbl_insert (x, k, i)
           prval () = __unref (x) where {
-            extern prfun __unref (x: symtbl l): void
-          }
+            extern praxi __unref (x: symtbl l): void
+          } // end of [prval]
         in
           // nothing
         end // end of [var]

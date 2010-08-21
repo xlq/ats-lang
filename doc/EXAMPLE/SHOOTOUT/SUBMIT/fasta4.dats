@@ -142,8 +142,8 @@ fun fill_lookuparr {n0:pos} (
         {j:nat | j < n0} (j: int j): (j: natLt n0) =>
         (aminoarr.[j].cprob_lookup < fi) let
         prval () = _meta_info () where {
-          extern prfun _meta_info (): [j+1 < n0] void
-        }
+          extern praxi _meta_info (): [j+1 < n0] void
+        } // end of [prval]
       in
         j := j + 1
       end // end of [val]
@@ -198,8 +198,8 @@ implement randomize
     val ri = int_of_float (r)
     val [ri:int] ri = int1_of_int (ri)
     prval () = _meta_info () where {
-      extern prfun _meta_info (): [0 <= ri && ri < LOOKUP_SIZE] void
-    }
+      extern praxi _meta_info (): [0 <= ri && ri < LOOKUP_SIZE] void
+    } // end of [prval]
 //
     typedef T = amino_acid
     var u: ptr = p_lookuparr->[ri]

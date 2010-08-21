@@ -200,32 +200,32 @@ bin/atspack:
 
 ###### library ######
 
-ATS_TERMINATION_CHECK=
-#
-# ATS_TERMINATION_CHECK=-D_ATS_TERMINATION_CHECK # it should be turned on from time to time
+ATS_PROOFCHECK=
+# ATS_PROOFCHECK=-D_ATS_PROOFCHECK # it should be turned on from time to time
+
 #
 # [CC -E] for preprocessing
 #
 
 .libfiles_local: .libfiles ; $(CC) -E -P -x c -o $@ $<
 libfiles: .libfiles_local
-	"$(ATSHOME)"/bin/atslib $(ATS_TERMINATION_CHECK) -O2 --libats
-	"$(ATSHOME)"/bin/atslib $(ATS_TERMINATION_CHECK) -O2 --libats_lex
-	"$(ATSHOME)"/bin/atslib $(ATS_TERMINATION_CHECK) -O2 --libats_smlbas
+	"$(ATSHOME)"/bin/atslib $(ATS_PROOFCHECK) -O2 --libats
+	"$(ATSHOME)"/bin/atslib $(ATS_PROOFCHECK) -O2 --libats_lex
+	"$(ATSHOME)"/bin/atslib $(ATS_PROOFCHECK) -O2 --libats_smlbas
 
 lib32files: .libfiles_local
-	"$(ATSHOME)"/bin/atslib $(ATS_TERMINATION_CHECK) -m32 -O2 --libats
-	"$(ATSHOME)"/bin/atslib $(ATS_TERMINATION_CHECK) -m32 -O2 --libats_lex
-	"$(ATSHOME)"/bin/atslib $(ATS_TERMINATION_CHECK) -m32 -O2 --libats_smlbas
+	"$(ATSHOME)"/bin/atslib $(ATS_PROOFCHECK) -m32 -O2 --libats
+	"$(ATSHOME)"/bin/atslib $(ATS_PROOFCHECK) -m32 -O2 --libats_lex
+	"$(ATSHOME)"/bin/atslib $(ATS_PROOFCHECK) -m32 -O2 --libats_smlbas
 
 lib64files: .libfiles_local
-	"$(ATSHOME)"/bin/atslib $(ATS_TERMINATION_CHECK) -m64 -O2 --libats
-	"$(ATSHOME)"/bin/atslib $(ATS_TERMINATION_CHECK) -m64 -O2 --libats_lex
-	"$(ATSHOME)"/bin/atslib $(ATS_TERMINATION_CHECK) -m64 -O2 --libats_smlbas
+	"$(ATSHOME)"/bin/atslib $(ATS_PROOFCHECK) -m64 -O2 --libats
+	"$(ATSHOME)"/bin/atslib $(ATS_PROOFCHECK) -m64 -O2 --libats_lex
+	"$(ATSHOME)"/bin/atslib $(ATS_PROOFCHECK) -m64 -O2 --libats_smlbas
 
 .libfiles_mt_local: .libfiles_mt ; $(CC) -E -P -x c -o $@ $<
 libfiles_mt: .libfiles_mt_local
-	"$(ATSHOME)"/bin/atslib $(ATS_TERMINATION_CHECK) -D_ATS_MULTITHREAD -O2 --libats_mt
+	"$(ATSHOME)"/bin/atslib $(ATS_PROOFCHECK) -D_ATS_MULTITHREAD -O2 --libats_mt
 
 ###### a lexer for ATS ######
 

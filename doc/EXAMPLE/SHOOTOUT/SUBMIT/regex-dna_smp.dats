@@ -236,9 +236,9 @@ absview thread_v; absview nthread_v (int)
 
 extern fun thread_v_return
   (pf: thread_v | (*none*)): void = "thread_v_return"
-extern prfun nthread_v_take {n:pos}
+extern praxi nthread_v_take {n:pos}
   (pf: !nthread_v n >> nthread_v (n-1)): thread_v
-extern prfun nthread_v_elim (pf: nthread_v 0):<> void
+extern praxi nthread_v_elim (pf: nthread_v 0):<> void
 extern fun nticket_get
   (pf: !thread_v | (*none*)): Nat = "nticket_get"
   
@@ -258,7 +258,7 @@ staload "libc/SATS/pthread.sats"
 
 fun count_worker {n:nat} {l:addr}
   (pf1: thread_v, pf2: bytes n @ l | n: int n, p: ptr l): void = let
-  extern prfun bytes_v_elim (pf: bytes n @ l): void
+  extern praxi bytes_v_elim (pf: bytes n @ l): void
   val i = nticket_get (pf1 | (*none*))
 in
   case+ 0 of
@@ -276,7 +276,7 @@ end // end of [count_one]
 
 fun count_all {n:nat} {l:addr}
   (pf: !bytes n @ l | n: int n, p: ptr l): void = let
-  extern prfun bytes_v_make (): bytes n @ l
+  extern praxi bytes_v_make (): bytes n @ l
   fun workerlst_gen {t:nat}
     (pf_nthread: nthread_v t | t: int t):<cloref1> void =
     if t > 0 then let
