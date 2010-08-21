@@ -28,7 +28,9 @@ compall:: \
   problem57 \
   problem63 \
   problem65 \
+  problem97 \
   problem145 \
+  problem164 \
 
 ######
 
@@ -54,7 +56,9 @@ problem56::; make -C PE-problem56 compall
 problem57::; make -C PE-problem57 compall
 problem63::; make -C PE-problem63 compall
 problem65::; make -C PE-problem65 compall
+problem97::; make -C PE-problem97 compall
 problem145::; make -C PE-problem145 compall
+problem164::; make -C PE-problem164 compall
 
 ######
 
@@ -81,6 +85,8 @@ cleanall::
 	make -C PE-problem57 cleanall
 	make -C PE-problem63 cleanall
 	make -C PE-problem65 cleanall
+	make -C PE-problem97 cleanall
 	make -C PE-problem145 cleanall
+	make -C PE-problem164 cleanall
 
 ###### end of [Makefile] ######

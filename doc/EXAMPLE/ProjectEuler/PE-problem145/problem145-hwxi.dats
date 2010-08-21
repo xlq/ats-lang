@@ -1,6 +1,6 @@
 //
 // ProjectEuler: Problem 145
-// How may reversible numbers are below one-billion?
+// How many reversible numbers are below one-billion?
 //
 
 (* ****** ****** *)
