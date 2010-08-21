@@ -18,10 +18,12 @@ fact (n) = n * fact (n-1) ; if n > 0
 (* ****** ****** *)
 
 extern
-prval mul_equal {m1,m2:int} {n1,n2:int} (): [m1*n1==m2*n2] void
-
+praxi mul_equal
+  {m1,m2:int} {n1,n2:int} (): [m1*n1==m2*n2] void
+// end of [mul_equal]
 extern
 praxi mul_assoc {p,q,r:int} (): [(p*q)*r==p*(q*r)] void
+// end of [mul_assoc]
 
 (* ****** ****** *)
 

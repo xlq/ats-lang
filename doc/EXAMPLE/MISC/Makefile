@@ -95,7 +95,7 @@ Peano: Peano.dats; $(ATSCC) -o Peano Peano.dats
 pi_lazy: pi_lazy.dats; $(ATSCC) -o pi_lazy pi_lazy.dats && ./pi_lazy
 
 quicksort_list: quicksort_list.dats
-	$(ATSCC) -o quicksort_list quicksort_list.dats
+	$(ATSCC) -D_ATS_PROOFCHECK -o quicksort_list quicksort_list.dats
 
 # the n-queen problem
 queens: queens.dats
@@ -126,7 +126,7 @@ systemf_programming_examples: \
 	$(ATSCC) -O3 -o $@ $< && ./systemf_programming_examples
 
 # a simple example of programming with theorem-proving
-sumup: sumup.dats; $(ATSCC) -O3 -o sumup sumup.dats && ./sumup
+sumup: sumup.dats; $(ATSCC) -D_ATS_PROOFCHECK -O3 -o sumup sumup.dats && ./sumup
 
 # a poor man's game of tetrix
 tetrix: tetrix.dats; $(ATSCC) -O3 -o tetrix tetrix.dats

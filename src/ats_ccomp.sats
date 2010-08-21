@@ -113,7 +113,7 @@ fun funlab_make_var_typ (d2v: d2var_t, hit: hityp_t): funlab_t
 
 //
 
-fun funlab_make_cst_trmck (d2c: d2cst_t): funlab_t
+fun funlab_make_cst_prfck (d2c: d2cst_t): funlab_t
 
 //
 
@@ -140,7 +140,7 @@ fun funlab_entry_set (fl: funlab_t, _: funentryopt): void
 
 fun funlab_entry_get_some (fl: funlab_t): funentry_t
 
-fun funlab_trmck_get (fl: funlab_t): int
+fun funlab_prfck_get (fl: funlab_t): int
 
 (* ****** ****** *)
 
@@ -483,11 +483,11 @@ datatype instr =
       (valprim(*var*), offsetlst, valprim(*val*))
 
   | INSTRtmplabint of (tmplab_t, int)
-
-  | INSTRtrmck_beg of d2cst_t // beg of termination check
-  | INSTRtrmck_end of d2cst_t // end of termination check
-  | INSTRtrmck_tst of d2cst_t // test a given dynamic constant
-
+//
+  | INSTRprfck_beg of d2cst_t // beg of proof check
+  | INSTRprfck_end of d2cst_t // end of proof check
+  | INSTRprfck_tst of d2cst_t // test a given dynamic constant
+//
   | INSTRtrywith of (instrlst, tmpvar_t, branchlst)
 
   | INSTRvardec of tmpvar_t

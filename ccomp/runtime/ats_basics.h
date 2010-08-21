@@ -127,7 +127,7 @@
 /* ****** ****** */
 
 /* for proof checking at run-time */
-#define ats_termcheck_beg_mac(dyncst) \
+#define ats_proofcheck_beg_mac(dyncst) \
   static int dyncst ## _flag = 0 ; \
   do { \
     if (dyncst ## _flag > 0) return ; \
@@ -137,9 +137,9 @@
     } \
     dyncst ## _flag = -1 ; \
   } while (0) ;
-/* end of [ats_termcheck_beg_mac] */
+/* end of [ats_proofcheck_beg_mac] */
 
-#define ats_termcheck_end_mac(dyncst) { dyncst ## _flag =  1 ; }
+#define ats_proofcheck_end_mac(dyncst) { dyncst ## _flag =  1 ; }
 
 /* ****** ****** */
 

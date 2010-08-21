@@ -36,10 +36,10 @@ fact2: fact2.dats
 	$(ATSCC) -o fact2 fact2.dats && ./fact2 10
 
 fact3: fact3.dats
-	$(ATSCC) -o fact3 fact3.dats -lats -lgmp && ./fact3 100
+	$(ATSCC) -D_ATS_PROOFCHECK -o fact3 fact3.dats -lats -lgmp && ./fact3 100
 
 fact4: fact4.dats
-	$(ATSCC) -o fact4 fact4.dats -lats -lgmp && ./fact4 10
+	$(ATSCC) -D_ATS_PROOFCHECK -o fact4 fact4.dats -lats -lgmp && ./fact4 10
 
 fact_in_c: fact_in_c.dats
 	$(ATSCC) -o fact_in_c fact_in_c.dats && ./fact_in_c 10

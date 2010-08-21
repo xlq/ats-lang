@@ -683,15 +683,17 @@ in
       fprint1_int (pf | out, i);
       prstr ")"
     end // end of [INSTRtmplabint]
-  | INSTRtrmck_beg (d2c) => begin
-      prstr "INSTRtrmck_beg("; fprint_d2cst (pf | out, d2c); prstr ")"
-    end // end of [INSTRtrmck_beg]
-  | INSTRtrmck_end (d2c) => begin
-      prstr "INSTRtrmck_end("; fprint_d2cst (pf | out, d2c); prstr ")"
-    end // end of [INSTRtrmck_end]
-  | INSTRtrmck_tst (d2c) => begin
-      prstr "INSTRtrmck_tst("; fprint_d2cst (pf | out, d2c); prstr ")"
-    end // end of [INSTRtrmck_tst]
+//
+  | INSTRprfck_beg (d2c) => begin
+      prstr "INSTRprfck_beg("; fprint_d2cst (pf | out, d2c); prstr ")"
+    end // end of [INSTRprfck_beg]
+  | INSTRprfck_end (d2c) => begin
+      prstr "INSTRprfck_end("; fprint_d2cst (pf | out, d2c); prstr ")"
+    end // end of [INSTRprfck_end]
+  | INSTRprfck_tst (d2c) => begin // HX: test
+      prstr "INSTRprfck_tst("; fprint_d2cst (pf | out, d2c); prstr ")"
+    end // end of [INSTRprfck_tst]
+//
   | INSTRtrywith _ => begin
       fprint1_string (pf | out, "INSTRtrywith(...)")
     end // end of [INSTRtrywith]

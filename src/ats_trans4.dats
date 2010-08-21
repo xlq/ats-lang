@@ -548,10 +548,14 @@ d3explst_funarg_tr
 //
   fun aux2 (
       i: int, d3es: d3explst
-    ) :<cloref1> hiexplst =
+    ) :<cloref1> hiexplst = // HX: skipping proof args
     case+ d3es of
     | cons (d3e, d3es) => begin
-        if i > 0 then aux2 (i-1, d3es) else aux1 (list_vt_nil (), d3e, d3es)
+        if i > 0 then let
+          val () = d3exp_prf_tr (d3e) in aux2 (i-1, d3es)
+        end else
+          aux1 (list_vt_nil (), d3e, d3es) // HX: no more proof args
+        // end of [if]
       end // end of [cons]
     | nil () => nil () // end of [nil]
   // end of [aux2]

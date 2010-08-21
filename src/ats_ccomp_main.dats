@@ -510,7 +510,7 @@ in
     end // end of [_]
 end // end of [emit_d2cst_dec]
 
-fn emit_d2cst_dec_trmck {m:file_mode} // for terminating constants
+fn emit_d2cst_dec_prfck {m:file_mode} // for terminating constants
   (pf: file_mode_lte (m, w)| out: &FILE m, d2c: d2cst_t): void = let
   val hit0 = d2cst_hityp_get_some (d2c); val hit1 = hityp_decode (hit0)
   macdef f_isprf_mac () = begin
@@ -518,7 +518,7 @@ fn emit_d2cst_dec_trmck {m:file_mode} // for terminating constants
     emit_hityp (pf | out, hityp_t_void);
     fprint1_char (pf | out, ' ');
     emit_d2cst (pf | out, d2c);
-    fprint1_string (pf | out, "_trmck (");
+    fprint1_string (pf | out, "_prfck (");
     fprint1_string (pf | out, ") ;\n")
   end // end of [macdef]
 in
@@ -568,9 +568,9 @@ fn emit_dyncstset {m:file_mode}
   (pf: file_mode_lte (m, w) | out: &FILE m, d2cs: dyncstset_t): int =
   _emit_dyncstset_proc (pf, view@ out | &out, d2cs, emit_d2cst_dec)
 
-fn emit_dyncstset_trmck {m:file_mode}
+fn emit_dyncstset_prfck {m:file_mode}
   (pf: file_mode_lte (m, w) | out: &FILE m, d2cs: dyncstset_t): int =
-  _emit_dyncstset_proc (pf, view@ out | &out, d2cs, emit_d2cst_dec_trmck)
+  _emit_dyncstset_proc (pf, view@ out | &out, d2cs, emit_d2cst_dec_prfck)
 
 (* ****** ****** *)
 
@@ -601,15 +601,15 @@ fun emit_funentry_lablst {m:file_mode}
   (pf: file_mode_lte (m, w) | out: &FILE m, fls0: !funlablst_vt)
   : void = begin case+ fls0 of
   | list_vt_cons (fl, !fls) => let
-      val trmck = funlab_trmck_get fl
+      val prfck = funlab_prfck_get fl
       val entry = funlab_entry_get_some fl
-      val () = if trmck > 0 then
-        fprint1_string (pf | out, "#ifdef _ATS_TERMINATION_CHECK\n")
+      val () = if prfck > 0 then
+        fprint1_string (pf | out, "#ifdef _ATS_PROOFCHECK\n")
       // end of [if]
       val () = emit_funentry (pf | out, entry)
       val () = fprint1_string (pf | out, "\n")
-      val () = if trmck > 0 then
-        fprint1_string (pf | out, "#endif /* _ATS_TERMINATION_CHECK */\n")
+      val () = if prfck > 0 then
+        fprint1_string (pf | out, "#endif /* _ATS_PROOFCHECK */\n")
       // end of [if]
       val () = fprint1_string (pf | out, "\n")
       val () = emit_funentry_lablst (pf | out, !fls)
@@ -939,7 +939,7 @@ fn emit_dynload {m:file_mode} (
   val () = fprint1_string (pf | out, "__staload () ;\n")
 //
   // code for termination checking
-  val () = fprint1_string (pf | out, "#ifdef _ATS_TERMINATION_CHECK\n")
+  val () = fprint1_string (pf | out, "#ifdef _ATS_PROOFCHECK\n")
   stavar l_out: addr; val p_out: ptr l_out = &out
   val () = dyncstset_foreach_main {FILE m @ l_out} {ptr l_out}
     (view@ out | the_dyncstset_get (), f, p_out) where {
@@ -947,10 +947,10 @@ fn emit_dynload {m:file_mode} (
       val () = begin case+ 0 of
         | _ when d2cst_is_praxi (d2c) => ()
         | _ when d2cst_is_prfun (d2c) => begin
-            emit_d2cst (pf | !p_out, d2c); fprint1_string (pf | !p_out, "_trmck () ;\n")
+            emit_d2cst (pf | !p_out, d2c); fprint1_string (pf | !p_out, "_prfck () ;\n")
           end // end of [_]
         | _ when d2cst_is_prval (d2c) => begin
-            emit_d2cst (pf | !p_out, d2c); fprint1_string (pf | !p_out, "_trmck () ;\n")
+            emit_d2cst (pf | !p_out, d2c); fprint1_string (pf | !p_out, "_prfck () ;\n")
           end // end of [_]
         | _ => () // should nonproof terminating functions be checked as well?
       end // end of [val]
@@ -958,7 +958,7 @@ fn emit_dynload {m:file_mode} (
       // empty
     end // end of [f]
   } // end of [where]
-  val () = fprint1_string (pf | out, "#endif /* _ATS_TERMINATION_CHECK */\n")
+  val () = fprint1_string (pf | out, "#endif /* _ATS_PROOFCHECK */\n")
 //
   // code marking GC roots
   val () = fprint1_string
@@ -1164,10 +1164,10 @@ implement ccomp_main {m}
   val () = if (flag > 0) then let // declaration for dynamic terminating constants
     val () = fprint1_string
       (pf | out, "/* external dynamic terminating constant declarations */\n")
-    val () = fprint1_string (pf | out, "#ifdef _ATS_TERMINATION_CHECK\n")
-    val n = emit_dyncstset_trmck (pf | out, the_dyncstset_get ())
+    val () = fprint1_string (pf | out, "#ifdef _ATS_PROOFCHECK\n")
+    val n = emit_dyncstset_prfck (pf | out, the_dyncstset_get ())
     val () = if n = 0 then fprint1_string (pf | out, "/* empty */\n")
-    val () = fprint1_string (pf | out, "#endif /* _ATS_TERMINATION_CHECK */\n\n")
+    val () = fprint1_string (pf | out, "#endif /* _ATS_PROOFCHECK */\n\n")
   in
     // empty
   end // end of [val]

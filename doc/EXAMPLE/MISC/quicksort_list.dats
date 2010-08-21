@@ -57,10 +57,10 @@ dataprop UB (intlst, int) =
 
 (* ****** ****** *)
 
-extern prfun LB_MSET_lemma {x:nat} {xs1,xs2:intlst} {n:nats}
+extern praxi LB_MSET_lemma {x:nat} {xs1,xs2:intlst} {n:nats}
   (_: MSET (xs1, n), _: MSET (xs2, n), _lb: LB (x, xs1)):<prf> LB (x, xs2)
 
-extern prfun UB_MSET_lemma {x:nat} {xs1,xs2:intlst} {n:nats}
+extern praxi UB_MSET_lemma {x:nat} {xs1,xs2:intlst} {n:nats}
   (_: MSET (xs1, n), _: MSET (xs2, n), _ub: UB (xs1, x)):<prf> UB (xs2, x)
 
 (* ****** ****** *)

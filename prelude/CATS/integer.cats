@@ -521,6 +521,8 @@ atspre_tostrptr_uint
 
 #define atspre_nmul atspre_mul_int_int
 #define atspre_ndiv atspre_div_int_int
+#define atspre_ndiv2 atspre_div_int_int
+
 #define atspre_nmod atspre_mod_int_int
 #define atspre_nmod1 atspre_mod_int_int
 

@@ -1,6 +1,7 @@
 //
 // ProjectEuler: Problem 164
-// How may reversible numbers are below one-billion?
+// How many 20-digit long numbers are there such that the sum of any 3 digits
+// in a row does not exceed 9.
 //
 
 (* ****** ****** *)

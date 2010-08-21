@@ -1,6 +1,7 @@
 //
 // ProjectEuler: Problem 162
-// How may reversible numbers are below one-billion?
+// How many numbers are there that ats at most 16 hexdigit-long and these hexdigits
+// contain at least one occurrence of each of 0, 1, and A.
 //
 
 (* ****** ****** *)
@@ -17,6 +18,21 @@ staload "libc/SATS/gmp.sats"
 (* ****** ****** *)
 
 #define NDIGIT 16
+
+(* ****** ****** *)
+// Suppose we have N letters and each word is sequence of these letters.
+//
+// f0 (n) = the number of words of length at most n
+// f1 (n) = the number of words of length at most n containing 1 given letter
+// f2 (n) = the number of words of length at most n containing 2 given distinct letters
+// f3 (n) = the number of words of length at most n containing 3 given distinct letters
+//
+// f0(n) = 1+N^1+...+N^n = (N^(n+1)-1)/(N-1)
+// f1(n) = f0(n-1) + (N-1)*f1(n-1)
+// f2(n) = 2*f1(n-1) + (N-2)*f2(n-1)
+// f3(n) = 3*f2(n-1) + (N-3)*f3(n-1)
+//
+// The answer = 2*f2(15) + 13*f3(15) // leading 0's are not allowed
 
 (* ****** ****** *)
 

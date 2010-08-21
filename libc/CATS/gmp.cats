@@ -480,6 +480,7 @@ atslib_mpz_fdiv2_q_ulint (
 #define atslib_mpz_mod2_ulint(n, d) mpz_mod_ui((mpz_ptr)n, (mpz_ptr)n, (mpz_ptr)d)
 
 #define atslib_mpz_divexact3 mpz_divexact
+#define atslib_mpz_divexact2(n, d) mpz_divexact((mpz_ptr)n, (mpz_ptr)n, (mpz_ptr)d)
 
 #define atslib_tdiv3_q_2exp tdiv_q_2exp
 #define atslib_tdiv3_r_2exp tdiv_r_2exp
@@ -500,6 +501,11 @@ atslib_mpz_sqrt1
 #define atslib_mpz_sqrtrem3 mpz_sqrtrem
 
 #define atslib_mpz_perfect_square_p mpz_perfect_square_p
+
+/* ****** ****** */
+
+#define atslib_mpz_powm4_mpz mpz_powm
+#define atslib_mpz_powm4_ui mpz_powm_ui
 
 /* ****** ****** */
 
@@ -553,13 +559,19 @@ atslib_mpz_cmp_double (
 
 /* ****** ****** */
 
-#define atslib_mpz_gcd3_mpf mpz_gcd
+#define atslib_mpz_gcd3_mpz mpz_gcd
+#define atslib_mpz_gcd2_mpz(dst, src2) \
+  mpz_gcd((mpz_ptr)dst, (mpz_ptr)dst, (mpz_ptr)src2)
 #define atslib_mpz_gcd3_ui mpz_gcd_ui
+#define atslib_mpz_gcd2_ui(dst, src2) mpz_gcd_ui((mpz_ptr)dst, (mpz_ptr)dst, src2)
 
 #define atslib_mpz_gcdext mpz_gcdext
 
-#define atslib_mpz_lcm3_mpf mpz_lcm
+#define atslib_mpz_lcm3_mpz mpz_lcm
+#define atslib_mpz_lcm2_mpz(dst, src2) \
+  mpz_lcm((mpz_ptr)dst, (mpz_ptr)dst, (mpz_ptr)src2)
 #define atslib_mpz_lcm3_ui mpz_lcm_ui
+#define atslib_mpz_lcm2_ui(dst, src2) mpz_lcm_ui((mpz_ptr)dst, (mpz_ptr)dst, src2)
 
 #define atslib_mpz_invert3 mpz_invert
 
@@ -579,7 +591,7 @@ atslib_mpz_nextprime1
 #define atslib_mpz_jacobi mpz_jacobi
 #define atslib_mpz_legendre mpz_legendre
 
-#define atslib_mpz_kronecker_mpf mpz_kronecker
+#define atslib_mpz_kronecker_mpz mpz_kronecker
 #define atslib_mpz_kronecker_si mpz_kronecker_si
 #define atslib_mpz_kronecker_ui mpz_kronecker_ui
 #define atslib_mpz_si_kronecker mpz_si_kronecker

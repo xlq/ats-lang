@@ -249,7 +249,7 @@ emit_funlab (pf | out, fl) = let
       end // end of [D2CSTOPTnone]
   // end of [val]
 in
-  if funlab_trmck_get fl > 0 then fprint1_string (pf | out, "_trmck")
+  if funlab_prfck_get fl > 0 then fprint1_string (pf | out, "_prfck")
 end // end of [emit_funlab]
 
 implement
@@ -1891,23 +1891,25 @@ in
   | INSTRtmplabint (tl, i) => begin
       emit_tmplabint (pf | out, tl, i); fprint1_char (pf | out, ':')
     end // end of [INSTRtmplabint]
-  | INSTRtrmck_beg (d2c) => let
-      val () = fprint1_string (pf | out, "ats_termcheck_beg_mac(")
+//
+  | INSTRprfck_beg (d2c) => let
+      val () = fprint1_string (pf | out, "ats_proofcheck_beg_mac(")
       val () = emit_d2cst (pf | out, d2c)
       val () = fprint1_string (pf | out, ") ;")
     in
       // empty
-    end // end of [INSTRtrmck_beg]
-  | INSTRtrmck_end (d2c) => let
-      val () = fprint1_string (pf | out, "ats_termcheck_end_mac(")
+    end // end of [INSTRprfck_beg]
+  | INSTRprfck_end (d2c) => let
+      val () = fprint1_string (pf | out, "ats_proofcheck_end_mac(")
       val () = emit_d2cst (pf | out, d2c)
       val () = fprint1_string (pf | out, ") ;")
     in
       // empty
-    end // end of [INSTRtrmck_end]
-  | INSTRtrmck_tst (d2c) => begin
-      emit_d2cst (pf | out, d2c); fprint1_string (pf | out, "_trmck () ;")
-    end // end of [INSTRtrmck_end]
+    end // end of [INSTRprfck_end]
+  | INSTRprfck_tst (d2c) => begin
+      emit_d2cst (pf | out, d2c); fprint1_string (pf | out, "_prfck () ;")
+    end // end of [INSTRprfck_end]
+//
   | INSTRtrywith (res_try, tmp_exn, brs) => let
       val () = fprint1_string (pf | out, "ATS_TRYWITH_TRY(")
       val () = emit_valprim_tmpvar (pf | out, tmp_exn)

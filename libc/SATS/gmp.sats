@@ -221,7 +221,7 @@ fun mpz_fits_sint_p (src: &mpz_vt):<> bool = "#atslib_mpz_fits_sint_p"
 fun mpz_fits_usint_p (src: &mpz_vt):<> bool = "#atslib_mpz_fits_usint_p"
 
 fun mpz_size (src: &mpz_vt): size_t = "#atslib_mpz_size"
-fun mpz_sizeinbase (src: &mpz_vt, base: int): size_t = "#atslib_mpz_sizeinbase"
+fun mpz_sizeinbase (src: &mpz_vt, base: mp_base_t): size_t = "#atslib_mpz_sizeinbase"
 
 (* ****** ****** *)
 
@@ -500,6 +500,9 @@ symintr mpz_divexact
 fun mpz_divexact3_mpz // q := n/d
   (q: &mpz_vt, n: &mpz_vt, d: &mpz_vt):<> void = "#atslib_mpz_divexact3_mpz"
 overload mpz_divexact with mpz_divexact3_mpz
+fun mpz_divexact2_mpz // n := n/d
+  (n: &mpz_vt, d: &mpz_vt):<> void = "#atslib_mpz_divexact2_mpz"
+overload mpz_divexact with mpz_divexact2_mpz
 
 (* ****** ****** *)
 
@@ -538,6 +541,17 @@ fun mpz_sqrtrem3
 overload mpz_sqrtrem with mpz_sqrtrem3
 
 fun mpz_perfect_square_p (src: &mpz_vt): int = "#atslib_mpz_perfect_square_p"
+
+(* ****** ****** *)
+
+symintr mpz_powm
+fun mpz_powm4_mpz
+  (dst: &mpz_vt, base: &mpz_vt, exp: &mpz_vt, mod: &mpz_vt): void
+  = "#atslib_mpz_powm4_mpz"
+overload mpz_powm with mpz_powm4_mpz
+fun mpz_powm4_ui
+  (dst: &mpz_vt, base: &mpz_vt, exp: ulint, mod: &mpz_vt): void = "#atslib_mpz_powm4_ui"
+overload mpz_powm with mpz_powm4_ui
 
 (* ****** ****** *)
 
@@ -611,12 +625,16 @@ fun mpz_sgn (x: &mpz_vt):<> Sgn = "#atslib_mpz_sgn"
 (* ****** ****** *)
 
 symintr mpz_gcd
-fun mpz_gcd3_mpf
-  (dst: &mpz_vt, src1: &mpz_vt, src2: &mpz_vt): void = "#atslib_mpz_gcd3_mpf"
-overload mpz_gcd with mpz_gcd3_mpf
+fun mpz_gcd3_mpz
+  (dst: &mpz_vt, src1: &mpz_vt, src2: &mpz_vt): void = "#atslib_mpz_gcd3_mpz"
+overload mpz_gcd with mpz_gcd3_mpz
+fun mpz_gcd2_mpz (dst: &mpz_vt, src2: &mpz_vt): void = "#atslib_mpz_gcd2_mpz"
+overload mpz_gcd with mpz_gcd2_mpz
 fun mpz_gcd3_ui
   (dst: &mpz_vt, src1: &mpz_vt, src2: ulint): ulint = "#atslib_mpz_gcd3_ui"
 overload mpz_gcd with mpz_gcd3_ui
+fun mpz_gcd2_ui (dst: &mpz_vt, src2: ulint): ulint = "#atslib_mpz_gcd2_ui"
+overload mpz_gcd with mpz_gcd2_ui
 
 fun mpz_gcdext // for given a and b, g, s and t are computed s.t. g = a*s + b*t
   (g: &mpz_vt, s: &mpz_vt, t: &mpz_vt, a: &mpz_vt, b: &mpz_vt) : void = "#atslib_mpz_gcdext"
@@ -625,12 +643,16 @@ fun mpz_gcdext // for given a and b, g, s and t are computed s.t. g = a*s + b*t
 (* ****** ****** *)
 
 symintr mpz_lcm
-fun mpz_lcm3_mpf
-  (dst: &mpz_vt, src1: &mpz_vt, src2: &mpz_vt): void = "#atslib_mpz_lcm3_mpf"
-overload mpz_lcm with mpz_lcm3_mpf
+fun mpz_lcm3_mpz
+  (dst: &mpz_vt, src1: &mpz_vt, src2: &mpz_vt): void = "#atslib_mpz_lcm3_mpz"
+overload mpz_lcm with mpz_lcm3_mpz
+fun mpz_lcm2_mpz (dst: &mpz_vt, src2: &mpz_vt): void = "#atslib_mpz_lcm2_mpz"
+overload mpz_lcm with mpz_lcm2_mpz
 fun mpz_lcm3_ui
   (dst: &mpz_vt, src1: &mpz_vt, src2: ulint): void = "#atslib_mpz_lcm3_ui"
 overload mpz_lcm with mpz_lcm3_ui
+fun mpz_lcm2_ui (dst: &mpz_vt, src2: ulint): void = "#atslib_mpz_lcm2_ui"
+overload mpz_lcm with mpz_lcm2_ui
 
 (* ****** ****** *)
 
@@ -658,9 +680,9 @@ fun mpz_jacobi (a: &mpz_vt, b: &mpz_vt): int = "#atslib_mpz_jacobi"
 fun mpz_legendre (a: &mpz_vt, b: &mpz_vt): int = "#atslib_mpz_legendre"
 
 symintr mpz_kronecker
-fun mpz_kronecker_mpf
-  (a: &mpz_vt, b: &mpz_vt): int = "#atslib_mpz_kronecker_mpf"
-overload mpz_kronecker with mpz_kronecker_mpf
+fun mpz_kronecker_mpz
+  (a: &mpz_vt, b: &mpz_vt): int = "#atslib_mpz_kronecker_mpz"
+overload mpz_kronecker with mpz_kronecker_mpz
 fun mpz_kronecker_si (a: &mpz_vt, b: lint): int = "#atslib_mpz_kronecker_si"
 overload mpz_kronecker with mpz_kronecker_si
 fun mpz_kronecker_ui (a: &mpz_vt, b: ulint): int = "#atslib_mpz_kronecker_ui"

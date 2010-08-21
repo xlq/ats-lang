@@ -419,41 +419,39 @@ overload pred with ipred
 
 fun iadd {i,j:int} (i: int i, j: int j):<> int (i+j)
   = "atspre_iadd"
-
 and isub {i,j:int} (i: int i, j: int j):<> int (i-j)
   = "atspre_isub"
+overload + with iadd
+overload - with isub
 
-and imul {i,j:int}
+fun imul {i,j:int}
   (i: int i, j: int j):<> int (i*j) // [j] must be a constant!
   = "atspre_imul"
-
 and idiv {i,j:int | j <> 0}
   (i: int i, j: int j):<> int (i/j) // [j] must be a constant!
   = "atspre_idiv"
-
-and igcd {i,j:int}
-  (i: int i, j: int j):<> [r:int | r >= 0] int r
-  = "atspre_igcd"
-
-overload + with iadd
-overload - with isub
 overload * with imul
 overload / with idiv
+
+fun igcd {i,j:int}
+  (i: int i, j: int j):<> [r:int | r >= 0] int r = "atspre_igcd"
 overload gcd with igcd
 
-fun imul1 (i: Int, j: Int):<> Int = "atspre_imul1"
+//
 
-fun idiv1 {j:int | j <> 0} (i: Int, j: int j):<> Int
-  = "atspre_idiv1"
-
+fun imul1
+  (i: Int, j: Int):<> Int = "atspre_imul1"
+and idiv1 {j:int | j <> 0}
+  (i: Int, j: int j):<> Int = "atspre_idiv1"
 fun igcd1 {i,j:int}
-  (i: int i, j: int j):<> [r:int | r >= 0] int r
-  = "atspre_igcd1"
+  (i: int i, j: int j):<> [r:int | r >= 0] int r = "atspre_igcd1"
+// end of [igcd1]
+
+//
 
 fun imul2 {i,j:int}
   (i: int i, j: int j):<> [p:int] (MUL (i, j, p) | int p)
   = "atspre_imul2"
-
 fun igcd2 {i,j:int}
   (i: int i, j: int j):<> [r:int] (GCD (i, j, r) | int r)
   = "atspre_igcd2"
@@ -461,17 +459,22 @@ fun igcd2 {i,j:int}
 //
 
 fun nmul (i: Nat, j: Nat):<> Nat = "atspre_nmul"
-and ndiv (i: Nat, j: Pos):<> Nat = "atspre_ndiv"
+fun ndiv (i: Nat, j: Pos):<> Nat = "atspre_ndiv"
+// HX: there is no [ndiv1]
+fun ndiv2 {i:nat;j:pos}
+  (i: int i, j: int j):<> [q,r:nat | r < j] (MUL (q, j, i-r) | int q)
+  = "atspre_ndiv2"
+// end of [ndiv2]
+
+//
 
 fun nmod {i,j:int | i >= 0; j > 0} // [j] must be a constant!
   (i: int i, j: int j) :<> [q,r:nat | r < j; i == q*j + r] int r
   = "atspre_nmod"
-
 fun nmod1 {i,j:int | i >= 0; j > 0} (i: int i, j: int j):<> natLt j
   = "atspre_nmod1"
-
 fun nmod2 {i,j:int | i >= 0; j > 0}
-  (i: int i, j: int j):<> [q,r:int | 0 <= r; r < j] (MUL (q, j, i-r) | int r)
+  (i: int i, j: int j):<> [q,r:nat | r < j] (MUL (q, j, i-r) | int r)
   = "atspre_nmod1"
 
 (* ****** ****** *)

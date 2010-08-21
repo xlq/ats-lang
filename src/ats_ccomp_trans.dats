@@ -2579,14 +2579,14 @@ end // end of [ccomp_impdec]
 (* ****** ****** *)
 
 // [d2c] is a terminating constant
-fn ccomp_impdec_trmck
+fn ccomp_impdec_prfck
   (loc: loc_t, d2c: d2cst_t, d2cs: dyncstset_t): void = let
 (*
   val () = begin
-    print "ccomp_impdec_trmck: d2c = "; print d2c; print_newline ()
+    print "ccomp_impdec_prfck: d2c = "; print d2c; print_newline ()
   end // end of [val]
 *)
-  val fl = funlab_make_cst_trmck (d2c)
+  val fl = funlab_make_cst_prfck (d2c)
   val vp_fun = valprim_funclo_make (fl)
   val (pf_funlab_mark | ()) = funlab_push (fl)
   val () = funentry_lablst_add (fl)
@@ -2595,7 +2595,7 @@ fn ccomp_impdec_trmck
   ) where {
     val tmp_ret = tmpvar_make_ret (hityp_t_void)
     var res: instrlst_vt = list_vt_nil ()
-    val () = res := list_vt_cons (INSTRtrmck_beg d2c, res)
+    val () = res := list_vt_cons (INSTRprfck_beg d2c, res)
     val () = dyncstset_foreach_main
       {V} {T} (view@ res | d2cs, f, &res) where {
       viewdef V = instrlst_vt @ res; typedef T = ptr res
@@ -2603,14 +2603,14 @@ fn ccomp_impdec_trmck
         case+ 0 of
         | _ when d2cst_is_praxi d2c => ()
         | _ when d2cst_is_prfun d2c => begin
-            !p_res := list_vt_cons (INSTRtrmck_tst d2c, !p_res)
+            !p_res := list_vt_cons (INSTRprfck_tst d2c, !p_res)
           end // end of [_ when ...]
         | _ when d2cst_is_prval d2c => begin
-            !p_res := list_vt_cons (INSTRtrmck_tst d2c, !p_res)
+            !p_res := list_vt_cons (INSTRprfck_tst d2c, !p_res)
           end // end of [_ when ...]
         | _ => ()
     } // end of [val]
-    val () = res := list_vt_cons (INSTRtrmck_end d2c, res)
+    val () = res := list_vt_cons (INSTRprfck_end d2c, res)
     val inss = $Lst.list_vt_reverse_list (res)
   } // end of [val]
   val () = funentry_associate (entry)
@@ -2618,7 +2618,7 @@ fn ccomp_impdec_trmck
   val () = the_topcstctx_add (d2c, vp_fun)
 in
   // empty
-end // end of [ccomp_impdec_trmck]
+end // end of [ccomp_impdec_prfck]
 
 (* ****** ****** *)
 
@@ -2684,7 +2684,7 @@ in
 (*
       // should this be done now?
       val d2cs = impdec.hiimpdec_cstset
-      val () = ccomp_impdec_trmck (hid0.hidec_loc, d2c, d2cs)
+      val () = ccomp_impdec_prfck (hid0.hidec_loc, d2c, d2cs)
 *)
     in
       ccomp_impdec (res, impdec)
@@ -2692,7 +2692,7 @@ in
   | HIDimpdec_prf (impdec_prf) => let
       val d2c = impdec_prf.hiimpdec_prf_cst
       val d2cs = impdec_prf.hiimpdec_prf_cstset
-      val () = ccomp_impdec_trmck (hid0.hidec_loc, d2c, d2cs)
+      val () = ccomp_impdec_prfck (hid0.hidec_loc, d2c, d2cs)
     in
       // empty
     end // end of [HIDimpdec_prf]
