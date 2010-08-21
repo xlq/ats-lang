@@ -16,17 +16,10 @@
 // f(x) = the number of difference ways in which x can be expressed as the sum
 // of 2's powers such that each power can occur at most 2 times.
 //
-// g1(x) = the numer of such ways where 1 occurs 1 time
-// g2(x) = the numer of such ways where 1 occurs 2 times
-// g(x) = g1(x) + g2(x)
-//
-// So we have
 // f(2x+1) = f(x)
-// f(2x+2) = f(x+1) + g2(2x+2)
-// g(2x+1) = f(x)
-// g(2x+2) = g(x+1) + g2(x)
-// g2(2x+1) = 0
-// g2(2x+2) = g(x+1) + g2(x)
+// f(2x+2) = f(x+1) + f(x)
+//
+// f(2^k(x)) = f(x) + k*f(x-1)
 //
 (* ****** ****** *)
 
