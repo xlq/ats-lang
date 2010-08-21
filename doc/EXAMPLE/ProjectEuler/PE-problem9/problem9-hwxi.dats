@@ -1,6 +1,6 @@
 //
 // ProjectEuler: Problem 9
-// Finding the sum of all numbers below 1000 that is a multiple of 3 or 5
+// Finding the only Pythagorean triplet (a,b,c) such that a+b+c=1000
 //
 
 (* ****** ****** *)
