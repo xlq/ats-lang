@@ -1,6 +1,6 @@
 //
 // ProjectEuler: Problem 40
-// Finding digits in the fractional part of a given irrational number
+// Finding nth digit in the fractional part of a given irrational number
 //
 
 (* ****** ****** *)
@@ -52,6 +52,7 @@ val d10000 = find2 (10000)
 val d100000 = find2 (100000)
 val d1000000 = find2 (1000000)
 val ans = d1 * d10 * d100 * d1000 * d10000 * d100000 * d1000000
+val () = assert_errmsg (ans = 210, #LOCATION)
 val () = (print "ans = "; print ans; print_newline ())
 
 (* ****** ****** *)
