@@ -33,8 +33,6 @@ fun facdigitsum (n: int): int =
 
 (* ****** ****** *)
 
-(* ****** ****** *)
-
 implement main () = () where {
   #define N theBound
   var sum: int = 0

@@ -30,18 +30,20 @@
 *)
 
 (* ****** ****** *)
-
+//
 // Author: Hongwei Xi (hwxi AT cs DOT bu DOT edu)
-// November 2007
-
+// Time: November, 2007
+//
+// Modification by Guillaume Brunerie (guillaume DOT brunerie AT gmail DOT com)
+// for XHTML conformity
+// Time: August, 2008
+//
 (* ****** ****** *)
 
 %{^
-
 #include "libc/CATS/stdio.cats"
 #include "libc/CATS/stdlib.cats"
-
-%}
+%} // end of [%{^]
 
 // staload "libc/SATS/stdio.sats"
 
@@ -106,11 +108,11 @@ datatype posmark = // 0/1 : begin/end
   | PMdyncstdec of (int, loc_t(*dec*))
   | PMdyncstimp of (int, loc_t(*dec*))
   | PMdyncstuse of (int, loc_t(*dec*))
+// end of [posmark]
 
 (* ****** ****** *)
 
 #define NPOSMARK1 100
-#define NPOSMARK2 200
 // please make sure that the values assigned to closing tags
 // (i=1) are less than the values assigned opening tags (i=0)
 fn int_of_posmark (pm: posmark): int =
@@ -120,13 +122,13 @@ fn int_of_posmark (pm: posmark): int =
   | PMextern  i => if i > 0 then 2 else NPOSMARK1-2
   | PMkeyword i => if i > 0 then 3 else NPOSMARK1-3
   | PMneuexp  i => if i > 0 then 4 else NPOSMARK1-4
-  | PMstaexp  i => if i > 0 then 5 else NPOSMARK1-5
-  | PMprfexp  i => if i > 0 then 6 else NPOSMARK1-6
-  | PMstacstdec (i, _) => if i > 0 then 10 else NPOSMARK2-10
-  | PMstacstuse (i, _) => if i > 0 then 11 else NPOSMARK2-11
-  | PMdyncstdec (i, _) => if i > 0 then 20 else NPOSMARK2-20
-  | PMdyncstimp (i, _) => if i > 0 then 21 else NPOSMARK2-21
-  | PMdyncstuse (i, _) => if i > 0 then 22 else NPOSMARK2-22
+  | PMstacstdec (i, _) => if i > 0 then 5 else NPOSMARK1-5
+  | PMstacstuse (i, _) => if i > 0 then 6 else NPOSMARK1-6
+  | PMstaexp  i => if i > 0 then 7 else NPOSMARK1-7
+  | PMprfexp  i => if i > 0 then 8 else NPOSMARK1-8
+  | PMdyncstdec (i, _) => if i > 0 then 20 else NPOSMARK1-20
+  | PMdyncstimp (i, _) => if i > 0 then 21 else NPOSMARK1-21
+  | PMdyncstuse (i, _) => if i > 0 then 22 else NPOSMARK1-22
 // end of [int_of_posmark]
 
 fn compare_posmark_posmark
@@ -239,21 +241,20 @@ end // end of [local]
 
 (* ****** ****** *)
 
-implement posmark_insert_comment_beg (p) =
-  the_posmarklst_insert (p, PMcomment 0)
+implement
+posmark_insert_comment_beg (p) = the_posmarklst_insert (p, PMcomment 0)
+implement
+posmark_insert_comment_end (p) = the_posmarklst_insert (p, PMcomment 1)
 
-implement posmark_insert_comment_end (p) =
-  the_posmarklst_insert (p, PMcomment 1)
-
-implement posmark_insert_extern_beg (p) =
-  the_posmarklst_insert (p, PMextern 0)
-
-implement posmark_insert_extern_end (p) =
-  the_posmarklst_insert (p, PMextern 1)
+implement
+posmark_insert_extern_beg (p) = the_posmarklst_insert (p, PMextern 0)
+implement
+posmark_insert_extern_end (p) = the_posmarklst_insert (p, PMextern 1)
 
 //
 
-implement posmark_insert_keyword_beg (p) = let
+implement
+posmark_insert_keyword_beg (p) = let
 (*
   val () = begin
     print "posmark_insert_keyword_beg"; print_newline ()
@@ -263,7 +264,8 @@ in
   the_posmarklst_insert (p, PMkeyword 0)
 end // end of [posmark_insert_keyword_beg]
 
-implement posmark_insert_keyword_end (p) = let
+implement
+posmark_insert_keyword_end (p) = let
 (*
   val () = begin
     print "posmark_insert_keyword_end"; print_newline ()
@@ -277,19 +279,16 @@ end // end of [posmark_insert_keyword_end]
 
 implement posmark_insert_neuexp_beg (p) =
   the_posmarklst_insert (p, PMneuexp 0)
-
 implement posmark_insert_neuexp_end (p) =
   the_posmarklst_insert (p, PMneuexp 1)
 
 implement posmark_insert_staexp_beg (p) =
   the_posmarklst_insert (p, PMstaexp 0)
-
 implement posmark_insert_staexp_end (p) =
   the_posmarklst_insert (p, PMstaexp 1)
 
 implement posmark_insert_prfexp_beg (p) =
   the_posmarklst_insert (p, PMprfexp 0)
-
 implement posmark_insert_prfexp_end (p) =
   the_posmarklst_insert (p, PMprfexp 1)
 
@@ -297,13 +296,11 @@ implement posmark_insert_prfexp_end (p) =
 
 implement posmark_insert_stacstdec_beg (p, loc) =
   the_posmarklst_insert (p, PMstacstdec (0, loc))
-
 implement posmark_insert_stacstdec_end (p, loc) =
   the_posmarklst_insert (p, PMstacstdec (1, loc))
 
 implement posmark_insert_stacstuse_beg (p, loc) =
   the_posmarklst_insert (p, PMstacstuse (0, loc))
-
 implement posmark_insert_stacstuse_end (p, loc) =
   the_posmarklst_insert (p, PMstacstuse (1, loc))
 
@@ -311,19 +308,16 @@ implement posmark_insert_stacstuse_end (p, loc) =
 
 implement posmark_insert_dyncstdec_beg (p, loc) =
   the_posmarklst_insert (p, PMdyncstdec (0, loc))
-
 implement posmark_insert_dyncstdec_end (p, loc) =
   the_posmarklst_insert (p, PMdyncstdec (1, loc))
 
 implement posmark_insert_dyncstimp_beg (p, loc) =
   the_posmarklst_insert (p, PMdyncstimp (0, loc))
-
 implement posmark_insert_dyncstimp_end (p, loc) =
   the_posmarklst_insert (p, PMdyncstimp (1, loc))
 
 implement posmark_insert_dyncstuse_beg (p, loc) =
   the_posmarklst_insert (p, PMdyncstuse (0, loc))
-
 implement posmark_insert_dyncstuse_end (p, loc) =
   the_posmarklst_insert (p, PMdyncstuse (1, loc))
 
@@ -406,32 +400,36 @@ local
 // #define HTM_POSMARK_FILE_END "</PRE></BODY>"
 
 #define HTM_POSMARK_FILE_BEG "\
-<HTML>\n\
-<HEAD>\n\
-<STYLE TYPE=\"text/css\">\n\
-span.comment {color:787878;font-style:italic}\n\
-span.extern  {color:A52A2A}\n\
-span.keyword {color:000000;font-weight:bold}\n\
-span.neuexp  {color:800080}\n\
-span.staexp  {color:0000FF}\n\
-span.dynexp  {color:E80000}\n\
-span.prfexp  {color:009000}\n\
-span.stacstdec  {text-decoration:none}\n\
-span.stacstuse  {color:0000CF;text-decoration:underline}\n\
-span.dyncstdec  {text-decoration:none}\n\
-span.dyncstimp  {color:B80000;text-decoration:underline}\n\
-span.dyncstuse  {color:B80000;text-decoration:underline}\n\
-</STYLE>\n\
-</HEAD>\n\
-\n\
-<BODY BGCOLOR=\"#E0E0E0\" TEXT=\"#E80000\">\n\
-<PRE>\n\
+<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Strict//EN\"\n\
+\"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd\">\n\
+<html xmlns=\"http://www.w3.org/1999/xhtml\">\n\
+<head>\n\
+  <title></title>\n\
+  <meta http-equiv=\"Content-Type\" content=\"text/html;charset=utf-8\"/>\n\
+  <style type=\"text/css\">\n\
+    span.comment {color:#787878;font-style:italic}\n\
+    span.extern  {color:#A52A2A}\n\
+    span.keyword {color:#000000;font-weight:bold}\n\
+    span.neuexp  {color:#800080}\n\
+    span.staexp  {color:#0000FF}\n\
+    span.dynexp  {color:#E80000}\n\
+    span.prfexp  {color:#009000}\n\
+    span.stacstdec  {text-decoration:none}\n\
+    span.stacstuse  {color:#0000CF;text-decoration:underline}\n\
+    span.dyncstdec  {text-decoration:none}\n\
+    span.dyncstimp  {color:#B80000;text-decoration:underline}\n\
+    span.dyncstuse  {color:#B80000;text-decoration:underline}\n\
+    body          {color:#E80000;background-color:#E0E0E0}\n\
+  </style>\n\
+</head>\n\
+<body>\n\
+<pre>\n\
 "
 
 #define HTM_POSMARK_FILE_END "\
-</PRE>\n\
-</BODY>\n\
-</HTML>\n\
+</pre>\n\
+</body>\n\
+</html>\n\
 "
 (* ****** ****** *)
 
@@ -618,7 +616,7 @@ in
       fprint1_string (pf_mod | fil_d, HTM_PRFEXP_FONT_END)
     end // end of [PMprfexp]
   | PMstacstdec (i, loc(*dec*)) => if i = 0 then let
-      val () = fprint1_string (pf_mod | fil_d, "<A name=\"")
+      val () = fprint1_string (pf_mod | fil_d, "<a name=\"")
       val () = fprint1_lint (pf_mod | fil_d, ofs) where {
         val ofs = $Loc.location_begpos_toff (loc)
       } // end of [val]
@@ -627,10 +625,10 @@ in
       fprint1_string (pf_mod | fil_d, HTM_STACSTDEC_FONT_BEG)
     end else begin
       fprint1_string (pf_mod | fil_d, HTM_STACSTDEC_FONT_END);
-      fprint1_string (pf_mod | fil_d, "</A>")
+      fprint1_string (pf_mod | fil_d, "</a>")
     end // end of [PMdyncstdec]
   | PMstacstuse (i, loc(*dec*)) => if i = 0 then let
-      val () = fprint1_string (pf_mod | fil_d, "<A href=\"")
+      val () = fprint1_string (pf_mod | fil_d, "<a href=\"")
       val () = fprint_stadyncstpos (pf_mod | fil_d, name) where {
         val fil = $Loc.location_get_filename loc
         val name = $Fil.filename_full (fil)
@@ -644,10 +642,10 @@ in
       fprint1_string (pf_mod | fil_d, HTM_STACSTUSE_FONT_BEG)
     end else begin
       fprint1_string (pf_mod | fil_d, HTM_STACSTUSE_FONT_END);
-      fprint1_string (pf_mod | fil_d, "</A>")
+      fprint1_string (pf_mod | fil_d, "</a>")
     end // end of [PMstacstuse]
   | PMdyncstdec (i, loc(*dec*)) => if i = 0 then let
-      val () = fprint1_string (pf_mod | fil_d, "<A name=\"")
+      val () = fprint1_string (pf_mod | fil_d, "<a name=\"")
       val () = fprint1_lint (pf_mod | fil_d, ofs) where {
         val ofs = $Loc.location_begpos_toff (loc)
       } // end of [val]
@@ -656,10 +654,10 @@ in
       fprint1_string (pf_mod | fil_d, HTM_DYNCSTDEC_FONT_BEG)
     end else begin
       fprint1_string (pf_mod | fil_d, HTM_DYNCSTDEC_FONT_END);
-      fprint1_string (pf_mod | fil_d, "</A>")
+      fprint1_string (pf_mod | fil_d, "</a>")
     end // end of [PMdyncstdec]
   | PMdyncstimp (i, loc(*dec*)) => if i = 0 then let
-      val () = fprint1_string (pf_mod | fil_d, "<A href=\"")
+      val () = fprint1_string (pf_mod | fil_d, "<a href=\"")
       val () = fprint_stadyncstpos (pf_mod | fil_d, name) where {
         val fil = $Loc.location_get_filename loc
         val name = $Fil.filename_full (fil)
@@ -672,10 +670,10 @@ in
       fprint1_string (pf_mod | fil_d, HTM_DYNCSTIMP_FONT_BEG)
     end else begin
       fprint1_string (pf_mod | fil_d, HTM_DYNCSTIMP_FONT_END);
-      fprint1_string (pf_mod | fil_d, "</A>")
+      fprint1_string (pf_mod | fil_d, "</a>")
     end // end of [PMdyncstimp]
   | PMdyncstuse (i, loc(*dec*)) => if i = 0 then let
-      val () = fprint1_string (pf_mod | fil_d, "<A href=\"")
+      val () = fprint1_string (pf_mod | fil_d, "<a href=\"")
       val () = fprint_stadyncstpos (pf_mod | fil_d, name) where {
         val fil = $Loc.location_get_filename loc
         val name = $Fil.filename_full (fil)
@@ -689,7 +687,7 @@ in
       fprint1_string (pf_mod | fil_d, HTM_DYNCSTUSE_FONT_BEG)
     end else begin
       fprint1_string (pf_mod | fil_d, HTM_DYNCSTUSE_FONT_END);
-      fprint1_string (pf_mod | fil_d, "</A>")
+      fprint1_string (pf_mod | fil_d, "</a>")
     end // end of [PMdyncstuse]
 end // end of [posmark_process_htm]
 
