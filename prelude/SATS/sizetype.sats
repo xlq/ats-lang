@@ -307,7 +307,8 @@ fun mul_size1_size1
   = "atspre_mul_size1_size1"
 overload * with mul_size1_size1
 
-symintr szmul1 szmul2; infixl ( * ) szmul1 szmul2
+symintr szmul1 szmul2
+infixl ( * ) szmul1 szmul2
 
 fun mul1_size1_size1
   {i,j:nat} (i: size_t i, j: size_t j):<> [p:nat] size_t p

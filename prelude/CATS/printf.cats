@@ -83,7 +83,7 @@ atspre_printf_exn (
   atspre_stdout_view_set() ;
   if (n < 0) ats_exit_errmsg(n, (ats_ptr_type)"[printf] failed\n") ;
   return ;
-}
+} // end of [atspre_prerrf_exn]
 
 static
 ats_void_type
@@ -99,7 +99,7 @@ atspre_prerrf_exn (
   atspre_stderr_view_set() ;
   if (n < 0) ats_exit_errmsg(n, (ats_ptr_type)"[prerrf] failed\n") ;
   return ;
-}
+} // end of [atspre_prerrf_exn]
 
 /* ****** ****** */
 

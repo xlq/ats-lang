@@ -39,11 +39,22 @@
 
 (* ****** ****** *)
 
+staload "libc/SATS/stdarg.sats"
+
+(* ****** ****** *)
+
+%{^
+#define ATSPRE_SPRINTF_GUESS 16
+%} // end of [%{]
+
+(* ****** ****** *)
+
 %{
 
-ats_void_type atspre_exit_prerrf
-  (const ats_int_type status, const ats_ptr_type fmt, ...)
-{
+ats_void_type
+atspre_exit_prerrf (
+  const ats_int_type status, const ats_ptr_type fmt, ...
+) {
   va_list ap ;
   va_start(ap, fmt) ; vfprintf(stderr, (char*)fmt, ap) ; va_end(ap) ;
 /*
@@ -53,8 +64,10 @@ ats_void_type atspre_exit_prerrf
   return ; // deadcode
 } /* end of [atspre_exit_prerrf] */
 
-ats_void_type atspre_assert_prerrf
-  (ats_bool_type assertion, ats_ptr_type fmt, ...) {
+ats_void_type
+atspre_assert_prerrf (
+  ats_bool_type assertion, ats_ptr_type fmt, ...
+) {
   int err ;
   va_list ap ;
 
@@ -80,18 +93,17 @@ ats_void_type atspre_assert_prerrf
 
 %{
 
-// functions for sprintf
-
-static
-ats_ptr_type __tostringf_size
-  (const ats_int_type guess, const ats_ptr_type fmt, va_list ap0)
-{
+ats_ptr_type
+atspre_vsprintf_size (
+  const ats_size_type guess
+, const ats_ptr_type fmt, ats_ref_type ap0
+) {
   int n, sz ; char *res ; va_list ap ;
-
+//
   sz = guess ;
-
+//
   while (1) {
-    va_copy (ap, ap0) ;
+    va_copy (ap, *(va_list*)ap0) ;
     res = ATS_MALLOC(sz) ;
     n = vsnprintf(res, sz, (char*)fmt, ap) ;
     if (n >= 0) {
@@ -101,44 +113,43 @@ ats_ptr_type __tostringf_size
       return ((ats_ptr_type)0) ;
     } // end of [if]
   } // end of [while]
-
+//
   return (ats_ptr_type)0 ; // deadcode
+//
+} /* end of [atspre_vsprintf_size] */
 
-} /* end of [__tostringf_size] */
-
-ats_ptr_type atspre_tostringf_size
-  (const ats_int_type guess, const ats_ptr_type fmt, ...)
-{
-  char *res ;
-  va_list ap ;
-
-  va_start(ap, fmt);
-  res = (char*)__tostringf_size (guess, fmt, ap);
-  va_end(ap);
-  if (!res) {
-    ats_exit_errmsg (1, "Exit: [ats_tostringf_size] failed.\n") ;
-  }
-  return res ;
-} /* end of [atspre_tostringf_size] */
-
-#define __TOSTRINGF_GUESS 16
 ats_ptr_type
-atspre_tostringf (ats_ptr_type fmt, ...) {
-  char *res ;
-  va_list ap ;
-
-  va_start(ap, fmt);
-  res = (char*)__tostringf_size (__TOSTRINGF_GUESS, fmt, ap);
-  va_end(ap);
-
+atspre_vsprintf (
+  const ats_ptr_type fmt, ats_ref_type ap0
+) {
+  char *res = (char*)atspre_vsprintf_size (ATSPRE_SPRINTF_GUESS, fmt, ap0) ;
   if (!res) {
-    ats_exit_errmsg (1, "Exit: [ats_tostringf] failed.\n") ;
-  }
-
+    ats_exit_errmsg (1, "exit(ATS): [atspre_vsprintf] failed.\n") ;
+  } // end of [if]
   return res ;
-} /* end of [atspre_tostringf] */
+} // end of [atspre_vsprintf]
 
-%}
+%} // end of [%{]
+
+(* ****** ****** *)
+
+implement
+tostringf_size (guess, fmt, arg) = let
+  // [va_start (arg, fmt)] is emitted by atsopt
+  val str = vsprintf_size (guess, fmt, arg) // [str] may be null
+  val () = va_end (arg)
+in
+  str
+end // end of [tostringf_size]
+
+implement
+tostringf (fmt, arg) = let
+  // [va_start (arg, fmt)] is emitted by atsopt
+  val str = vsprintf (fmt, arg) // [str] cannot be null
+  val () = va_end (arg)
+in
+  str
+end // end of [tostringf]
 
 (* ****** ****** *)
 

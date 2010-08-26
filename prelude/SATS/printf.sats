@@ -97,18 +97,34 @@ overload assert_prerrf with assert_prerrf_bool1
 
 //
 // HX-2010-08-11:
-// Note that linear strings are returned by these functions
+// Note that linear strings are returned by these functions, which
+// are implemented in $ATSHOME/prelude/DATS/printf.dats
 //
 
 fun tostringf_size {ts:types}
-  (guess: Nat, fmt: printf_c ts, arg: ts):<> strptr1
-  = "atspre_tostringf_size"
+  (guess: size_t, fmt: printf_c ts, arg: ts):<> strptr0
 
 fun tostringf {ts:types}
   (fmt: printf_c ts, arg: ts):<> strptr1 = "atspre_tostringf"
 
 fun sprintf {ts:types} // HX: the same as [tostringf]
   (fmt: printf_c ts, arg: ts):<> strptr1 = "atspre_tostringf"
+
+(* ****** ****** *)
+//
+// HX-2010-08-26:
+// Note that it is by design that [vsprintf_size] returns a strptr0
+// while [vsprintf] returns a strptr1
+//
+fun vsprintf_size {ts:types}
+  (guess: size_t, fmt: printf_c ts, arg: &va_list (ts) >> va_list):<> strptr0
+  = "atspre_vsprintf_size"
+// end of [vsprintf]
+
+fun vsprintf {ts:types}
+  (fmt: printf_c ts, arg: &va_list (ts) >> va_list):<> strptr1
+  = "atspre_vsprintf"
+// end of [vsprintf]
 
 (* ****** ****** *)
 

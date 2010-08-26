@@ -45,9 +45,9 @@
 
 #if (0)
 //
-// [snprintf] is now implemented in $ATSHOME/libc/DATS/printf.dats
+// HX: [snprintf] is now implemented in $ATSHOME/libc/DATS/printf.dats
 //
-static inline
+ATSinline()
 ats_int_type
 atslib_snprintf (
   ats_ptr_type buf
@@ -62,9 +62,11 @@ atslib_snprintf (
   va_end(ap) ;
   return ntot ;
 } /* end of [atslib_snprintf] */
-#endif
+#endif // end of [#if (0)]
 
-static inline
+/* ****** ****** */
+
+ATSinline()
 ats_int_type
 atslib_vsnprintf (
   ats_ptr_type buf
