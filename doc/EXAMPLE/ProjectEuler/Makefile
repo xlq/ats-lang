@@ -34,6 +34,7 @@ compall:: \
   problem92 \
   problem97 \
   problem145 \
+  problem157 \
   problem162 \
   problem164 \
   problem169 \
@@ -68,6 +69,7 @@ problem65::; make -C PE-problem65 compall
 problem92::; make -C PE-problem92 compall
 problem97::; make -C PE-problem97 compall
 problem145::; make -C PE-problem145 compall
+problem157::; make -C PE-problem157 compall
 problem162::; make -C PE-problem162 compall
 problem164::; make -C PE-problem164 compall
 problem169::; make -C PE-problem169 compall
@@ -103,6 +105,7 @@ cleanall::
 	make -C PE-problem92 cleanall
 	make -C PE-problem97 cleanall
 	make -C PE-problem145 cleanall
+	make -C PE-problem157 cleanall
 	make -C PE-problem162 cleanall
 	make -C PE-problem164 cleanall
 	make -C PE-problem169 cleanall

@@ -1,3 +1,18 @@
+//
+// ProjectEuler: Problem 2
+// Finding the solutions to the Diophantine equation 1/a+1/b = p/10^n,
+// where n ranges from 1 to 9
+//
+
+(* ****** ****** *)
+
+//
+// Author: Hongwei Xi (hwxi AT cs DOT bu DOT edu)
+// Time: August, 2010
+//
+
+(* ****** ****** *)
+
 fun pow (x: int, n: int): int =
   if n > 0 then x * pow (x, n-1) else 1
 // end of [pow]
