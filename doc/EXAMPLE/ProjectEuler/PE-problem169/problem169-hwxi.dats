@@ -18,27 +18,8 @@
 //
 // f(2x+1) = f(x)
 // f(2x+2) = f(x+1) + f(x)
-//
 // f(2^k(x)) = f(x) + k*f(x-1)
 //
-(* ****** ****** *)
-
-staload "libc/SATS/gmp.sats"
-
-(* ****** ****** *)
-
-(*
-fun f (x: int): int =
-  if x >= 2 then let
-    val r = x mod 2; val x2 = x/2
-  in
-    if r > 0 then f (x2) else f (x2) + f (x2-1)
-  end else 1 // end of [if]
-// end of [f]
-val ans = f (1000000000) // ans = 73411
-val () = (print "ans = "; print ans; print_newline ())
-*)
-
 (* ****** ****** *)
 
 fun pow5 (n: int): ullint = let
@@ -49,39 +30,21 @@ in
   loop (n, 1ULL)
 end // end of [pow5]
 
+(* ****** ****** *)
+
 fun f (x: ullint): ullint =
   if x >= 2ULL then let
     val r = x mod 2ULL; val x2 = x/2ULL
   in
-    if r > 0ULL then f (x2) else f (x2) + f (x2-1ULL)
+    if r > 0ULL then f (x2) else f2 (x2, 1U)
   end else 1ULL // end of [if]
 // end of [f]
 
-(*
-fun f
-  (x: &mpz_vt): ulint = let
-  val sgn = mpz_cmp (x, 2UL)
+and f2 (x: ullint, k: uint): ullint = let
+  val r = x mod 2ULL
 in
-  if sgn >= 0 then let
-    val _r = mpz_fdiv_q (x, 2UL)
-  in
-    if mpz_odd_p (x) then f (x)
-    else let
-      var x2: mpz_vt
-      val () = mpz_init (x2)
-      val () = mpz_sub (x2, x, 1UL)
-      val n2 = f (x2)
-      val () = mpz_clear (x2)
-    in
-      f (x) + n2
-    end // end of [if]
-  end else 1UL
-end // end of [f]
-*)
-
-(* ****** ****** *)
-
-staload "libc/SATS/gmp.sats"
+  if r > 0ULL then f (x) + ullint_of(k) * f (x-1ULL) else f2 (x/2ULL, k+1U)
+end // end of [f2]
 
 (* ****** ****** *)
 
