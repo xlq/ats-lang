@@ -64,7 +64,7 @@ implement ar_s_exn (libfile) = let
   // end of [val]
 in
   if (status <> 0) then
-    exit_prerrf {void} (status, "Exit: [ar_s(%s)] failed\n", @(libfile))
+    exit_prerrf {void} (status, "exit(ATS): [ar_s(%s)] failed\n", @(libfile))
   // end of [if]
 end // end of [ar_s_exn]
 
@@ -74,7 +74,8 @@ extern fun gcc_libfile_exec
   (param_rev: Strlst, infile: string, outfile: string): void
   = "gcc_libfile_exec"
 
-implement gcc_libfile_err (param_rev, infile, outfile) = let
+implement
+gcc_libfile_err (param_rev, infile, outfile) = let
   val cmd = lam (): void =<cloptr1> gcc_libfile_exec (param_rev, infile, outfile)
 in
   fork_exec_and_wait_cloptr_exn (cmd)
@@ -84,6 +85,11 @@ end // end of [gcc_libfile_err]
 
 #define i2u uint_of_int
 #define sbp2str string1_of_strbuf
+
+extern
+fun tostringf_size {ts:types}
+  (guess: size_t, fmt: printf_c ts, arg: ts):<> strptr1 = "atspre_tostringf_size"
+// end of [tostringf_size]
 
 fn char_identifize
   (c: char):<cloptr1> String =
@@ -105,21 +111,23 @@ ccomp_gcc_ar_libfile
   val flag_stadyn = (
     if stropt_is_none sfx then begin
       exit_prerrf {int} (
-        1, "Exit: [%s]: no filename extension\n.", @(infile)
-      )
+        1, "exit(ATS): [%s]: no filename extension\n.", @(infile)
+      ) // end of [exit_prerrf]
     end else begin case+ stropt_unsome sfx of
       | "sats" => 0
       | "dats" => 1
       | _ => exit_prerrf {int} (
-          1, "Exit: [%s]: unsupported filename extension\n.", @(infile)
-        )
+          1, "exit(ATS): [%s]: unsupported filename extension\n.", @(infile)
+        ) // end of [exit_prerrf]
     end // end of [if]
   ) : int
 //
   val infull = (
-    if filename_is_local infile then
-      string_of_strptr (tostringf_size (64, "%s/%s", @(getcwd (), infile)))
-    else infile
+    if filename_is_local infile then let
+      val str = tostringf_size (64, "%s/%s", @(getcwd (), infile))
+    in
+      string_of_strptr (str)
+    end else infile // end of [if]
   ) : string
 //
   val outbase = string_trans (infull, char_identifize)
@@ -129,16 +137,16 @@ ccomp_gcc_ar_libfile
   val status = ccomp_file_to_file_err
     (flag_stadyn, STRLSTnil(*param_ats*), infile, outfile_c)
   val () = if (status <> 0) then exit_prerrf {void}
-    (status, "Exit: [ccomp_gcc_ar_libfile(%s)] failed: ccomp\n", @(infile))
+    (status, "exit(ATS): [ccomp_gcc_ar_libfile(%s)] failed: ccomp\n", @(infile))
   // end of [val]
   val outfile_o = sbp2str (outfile + ".o")
   val status = gcc_libfile_err (param_rev, outfile_c, outfile_o)
   val () = if (status <> 0) then begin exit_prerrf {void}
-    (status, "Exit: [ccomp_gcc_ar_libfile(%s)] failed: gcc\n", @(infile))
+    (status, "exit(ATS): [ccomp_gcc_ar_libfile(%s)] failed: gcc\n", @(infile))
   end // end of [val]
   val status = ar_r_err (libfile, outfile_o)
   val () = if (status <> 0) then exit_prerrf {void}
-    (status, "Exit: [ccomp_gcc_ar_libfile(%s)] failed: ar\n", @(infile))
+    (status, "exit(ATS): [ccomp_gcc_ar_libfile(%s)] failed: ar\n", @(infile))
   // end of [val]
 in
   printf ("The file [%s] has been compiled and archived.\n", @(infile))
@@ -321,7 +329,7 @@ ats_string_type fget_line (ats_ptr_type file) {
   char *buf0, *buf1, *p;
 
   if (feof((FILE *)file)) {
-    ats_exit_errmsg(1, (ats_string_type)"Exit: [fget_line] failed: EOF\n");
+    ats_exit_errmsg(1, (ats_string_type)"exit(ATS): [fget_line] failed: EOF\n");
   }
 
   sz = INCSZ;

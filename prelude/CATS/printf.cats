@@ -53,7 +53,7 @@ atspre_fprintf_err
   n = vfprintf((FILE *)file, (char *)fmt, ap) ;
   va_end(ap) ;
   return n ; 
-}
+} // end of [atspre_fprintf_err]
 
 static
 ats_void_type
@@ -65,7 +65,7 @@ atspre_fprintf_exn(ats_ptr_type file, ats_ptr_type fmt, ...) {
   va_end(ap) ;
   if (n < 0) ats_exit_errmsg(n, (ats_ptr_type)"Exit: [fprintf] failed\n") ;
   return ;
-}
+} // end of [atspre_fprintf_exn]
 
 /* ****** ****** */
 
