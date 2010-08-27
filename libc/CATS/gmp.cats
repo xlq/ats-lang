@@ -598,6 +598,12 @@ atslib_mpz_nextprime1
 #define atslib_mpz_ui_kronecker mpz_ui_kronecker
 
 #define atslib_mpz_fac_ui mpz_fac_ui
+
+#define atslib_mpz_bin3_ui mpz_bin_ui
+#define atslib_mpz_bin2_ui(n, k) \
+  mpz_bin_ui ((mpz_ptr)n, (mpz_ptr)n, (mpz_ptr)k)
+#define atslib_mpz_bin_uiui mpz_bin_uiui
+
 #define atslib_mpz_fib_ui mpz_fib_ui
 #define atslib_mpz_fib2_ui mpz_fib2_ui
 

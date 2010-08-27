@@ -691,6 +691,14 @@ fun mpz_si_kronecker (a: lint, b: &mpz_vt): int = "#atslib_mpz_kronecker_si"
 fun mpz_ui_kronecker (a: ulint, b: &mpz_vt): int = "#atslib_mpz_kronecker_ui"
 
 fun mpz_fac_ui (x: &mpz_vt, n: ulint): void = "#atslib_mpz_fac_ui"
+
+symintr mpz_bin_ui
+fun mpz_bin3_ui (dst: &mpz_vt, n: &mpz_vt, k: ulint): void = "#atslib_mpz_bin3_ui"
+overload mpz_bin_ui with mpz_bin3_ui
+fun mpz_bin2_ui (dst: &mpz_vt, n: &mpz_vt, k: ulint): void = "#atslib_mpz_bin2_ui"
+overload mpz_bin_ui with mpz_bin2_ui
+fun mpz_bin_uiui (dst: &mpz_vt, n: ulint, k: ulint): void = "#atslib_mpz_bin_uiui"
+
 fun mpz_fib_ui (x: &mpz_vt, n: ulint): void = "#atslib_mpz_fib_ui"
 fun mpz_fib2_ui (x1: &mpz_vt, x2: &mpz_vt, n: ulint): void = "#atslib_mpz_fib2_ui"
 
