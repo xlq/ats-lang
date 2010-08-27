@@ -4,6 +4,7 @@ ats-lang-anairiats-0.2.2:
 
 1. -D_ATS_TERMINATION_CHECK is changed to -D_ATS_PROOFCHECK; fixing a
    related bug in [d3explst_funarg_tr].k
+2. Fixing a bug involving type-checking variadic functions
 
 ########################################################################
 

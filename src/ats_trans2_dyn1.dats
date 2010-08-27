@@ -1333,6 +1333,7 @@ fn lamvararg_proc
         end // end of [_]
       end // end of [list_cons]
     | list_nil () => list_nil ()
+  // end of [proc]
   var flag: int = 0
 in
   proc (p2ts, flag)
@@ -1371,7 +1372,9 @@ fn d1exp_arg_body_tr
   end : d2exp // end of [val]
   val () = d2var_current_level_dec (pf_level | (*none*))
   val () = trans2_env_pop (pf_env | (*none*))
+//
   val p2ts_arg = lamvararg_proc (p2ts_arg) // HX-2010-08-26: for handling variadic functions
+//
 in
   @(npf, p2ts_arg, d2e_body)
 end // end of [d1exp_arg_body_tr]

@@ -12,6 +12,10 @@
 //
 
 (* ****** ****** *)
+
+staload "libc/SATS/gmp.sats"
+
+(* ****** ****** *)
 //
 // HX: the answer = choose (20/40)
 //
