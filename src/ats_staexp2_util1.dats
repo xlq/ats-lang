@@ -598,6 +598,7 @@ implement s2exp_is_nonlin (s2e) =
   if s2rt_is_linear s2e.s2exp_srt then false else true
 // end of [s2exp_is_nonlin]
 implement s2exp_is_impredicative (s2e) = s2rt_is_impredicative (s2e.s2exp_srt)
+implement s2exp_is_types (s2e) = s2rt_is_types (s2e.s2exp_srt)
 
 (* ****** ****** *)
 
@@ -1078,6 +1079,9 @@ s2zexp_make_s2exp (s2e0) = let
   fun aux_s2exp (
       s2vss: s2varlstlst, s2e0: s2exp
     ) : s2zexp = let
+(*
+    val () = (print "s2zexp_make_s2exp: aux_s2exp: s2e0 = "; print s2e0; print_newline ())
+*)
     val s2e0 = s2exp_whnf s2e0 in case+ s2e0.s2exp_node of
       | S2Eapp (s2e_fun, s2es_arg) =>
           aux_s2exp_app (s2vss, s2e0.s2exp_srt, s2e_fun, s2es_arg)

@@ -899,14 +899,15 @@ fn s1exp_arrow_tr_up // arrow is a special type constructor
             | S2RTbas s2tb => begin case+ s2tb of
               | S2RTBASimp (id, _, _) => begin
                   imp := 1; if id = $Sym.symbol_TYPES then types := 1
-                end
-              | _ => ()
+                end // end of [S2RTBASimp]
+              | _ => () // end of [_]
               end
             | _ => ()
         in
           case+ 0 of
           | _ when types > 0 => begin case+ s1es of
-            | nil () => cons (s2exp_vararg s2e, nil ()) | cons _ => begin
+            | nil () => cons (s2exp_vararg s2e, nil ())
+            | cons _ => begin
                 prerr_loc_error2 s1e.s1exp_loc;
                 $Deb.debug_prerrf (": %s: s1exp_arrow_tr_up", @(THISFILENAME));
                 prerr ": this static expression must be the last argument.";

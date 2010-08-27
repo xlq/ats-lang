@@ -44,6 +44,7 @@
 
 staload Lst = "ats_list.sats"
 staload Stamp = "ats_stamp.sats"
+macdef print_stamp = $Stamp.print_stamp
 
 (* ****** ****** *)
 
@@ -273,6 +274,10 @@ fn _eq_s2cst_s2cst
   val stamp2 =
     let val (vbox pf2 | p2) = s2c2 in p2->s2cst_stamp end
   // end of [val]
+(*
+  val () = (print "_eq_s2cst_s2cst: stamp1 = "; print_stamp stamp1; print_newline ())
+  val () = (print "_eq_s2cst_s2cst: stamp2 = "; print_stamp stamp2; print_newline ())
+*)
 in
   $Stamp.eq_stamp_stamp (stamp1, stamp2)
 end // end of [_eq_s2cst_s2cst]

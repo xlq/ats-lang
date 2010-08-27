@@ -1299,6 +1299,45 @@ end // end of [sc2laulst_covercheck]
 
 (* ****** ****** *)
 
+fn lamvararg_proc
+  (p2ts: p2atlst): p2atlst = let
+  fun proc (p2ts: p2atlst, flag: &int): p2atlst =
+    case+ p2ts of
+    | list_cons (p2t, p2ts1) => begin case+ p2t.p2at_node of
+      | P2Tann (p2t1, s2e1) => (case+ 0 of
+          | _ when s2exp_is_types (s2e1) => begin case+ p2ts1 of
+            | list_nil () => let
+                val p2t = p2at_ann (p2t.p2at_loc, p2t1, s2exp_vararg s2e1)
+                val () = flag := flag + 1
+              in
+                list_cons (p2t, list_nil ())
+              end // end of [list_nil]
+            | list_cons _ => begin
+                prerr_loc_error2 p2t.p2at_loc;
+                $Deb.debug_prerrf (": %s: lamvararg_proc: proc", @(THISFILENAME));
+                prerr ": this function argument must be the last one.";
+                prerr_newline ();
+                $Err.abort ()
+              end // end of [list_cons]
+            end // end of [_ when ...]
+          | _ => let
+              val flag0 = flag; val p2ts1 = proc (p2ts1, flag)
+            in
+              if flag > flag0 then list_cons (p2t, p2ts1) else p2ts
+            end // end of [_]
+        ) // end of [P2Tann]
+      | _ => let
+          val flag0 = flag; val p2ts1 = proc (p2ts1, flag)
+        in
+          if flag > flag0 then list_cons (p2t, p2ts1) else p2ts
+        end // end of [_]
+      end // end of [list_cons]
+    | list_nil () => list_nil ()
+  var flag: int = 0
+in
+  proc (p2ts, flag)
+end // end of [lamvararg_proc]
+
 fn d1exp_arg_body_tr
   (p1t_arg: p1at, d1e_body: d1exp)
   : @(int, p2atlst, d2exp) = let
@@ -1332,6 +1371,7 @@ fn d1exp_arg_body_tr
   end : d2exp // end of [val]
   val () = d2var_current_level_dec (pf_level | (*none*))
   val () = trans2_env_pop (pf_env | (*none*))
+  val p2ts_arg = lamvararg_proc (p2ts_arg) // HX-2010-08-26: for handling variadic functions
 in
   @(npf, p2ts_arg, d2e_body)
 end // end of [d1exp_arg_body_tr]

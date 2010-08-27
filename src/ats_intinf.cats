@@ -30,10 +30,10 @@
 */
 
 /* ****** ****** */
-
+//
 // Author: Hongwei Xi (hwxi AT cs DOT bu DOT edu)
 // July 2007
-
+//
 /* ****** ****** */
 
 #ifndef ATS_SRC_INTINF_CATS
@@ -58,12 +58,12 @@
 #endif
 
 /* ****** ****** */
-
-// [mpz_ptr] is defined in [gmp.h]
-
+//
+// HX: [mpz_ptr] is defined in [gmp.h]
+//
 /* ****** ****** */
 
-static inline
+ATSinline()
 ats_int_type
 atsopt_get_int (
   ats_mpz_ptr_type x
@@ -73,7 +73,7 @@ atsopt_get_int (
 
 /* ****** ****** */
 
-static inline
+ATSinline()
 ats_bool_type
 atsopt_lt_intinf_int (
   ats_mpz_ptr_type x, ats_int_type y
@@ -82,7 +82,7 @@ atsopt_lt_intinf_int (
   return ats_false_bool ;
 } // end of [atsopt_lt_intinf_int]
 
-static inline
+ATSinline()
 ats_bool_type
 atsopt_lt_intinf_intinf (
   ats_mpz_ptr_type x, ats_mpz_ptr_type y
@@ -91,7 +91,7 @@ atsopt_lt_intinf_intinf (
   return ats_false_bool ;
 } // end of [atsopt_lt_intinf_intinf]
 
-static inline
+ATSinline()
 ats_bool_type
 atsopt_lte_intinf_int (
   ats_mpz_ptr_type x, ats_int_type y
@@ -100,7 +100,7 @@ atsopt_lte_intinf_int (
   return ats_false_bool ;
 } // end of [atsopt_lte_intinf_int]
 
-static inline
+ATSinline()
 ats_bool_type
 atsopt_lte_intinf_intinf (
   ats_mpz_ptr_type x, ats_mpz_ptr_type y
@@ -111,7 +111,7 @@ atsopt_lte_intinf_intinf (
 
 /* ****** ****** */
 
-static inline
+ATSinline()
 ats_bool_type
 atsopt_gt_intinf_int (
   ats_mpz_ptr_type x, ats_int_type y
@@ -120,7 +120,7 @@ atsopt_gt_intinf_int (
   return ats_false_bool ;
 } // end of [atsopt_gt_intinf_int]
 
-static inline
+ATSinline()
 ats_bool_type
 atsopt_gt_intinf_intinf (
   ats_mpz_ptr_type x, ats_mpz_ptr_type y
@@ -129,7 +129,7 @@ atsopt_gt_intinf_intinf (
   return ats_false_bool ;
 } // end of [atsopt_gt_intinf_intinf]
 
-static inline
+ATSinline()
 ats_bool_type
 atsopt_gte_intinf_int (
   ats_mpz_ptr_type x, ats_int_type y
@@ -138,7 +138,7 @@ atsopt_gte_intinf_int (
   return ats_false_bool ;
 } // end of [atsopt_gte_intinf_int]
 
-static inline
+ATSinline()
 ats_bool_type
 atsopt_gte_intinf_intinf (
   ats_mpz_ptr_type x, ats_mpz_ptr_type y
@@ -149,7 +149,7 @@ atsopt_gte_intinf_intinf (
 
 /* ****** ****** */
 
-static inline
+ATSinline()
 ats_bool_type
 atsopt_eq_intinf_int (
   ats_mpz_ptr_type x, ats_int_type y
@@ -158,7 +158,7 @@ atsopt_eq_intinf_int (
   return ats_false_bool ;
 } // end of [atsopt_eq_intinf_int]
 
-static inline
+ATSinline()
 ats_bool_type
 atsopt_eq_int_intinf (
   ats_int_type x, ats_mpz_ptr_type y
@@ -167,7 +167,7 @@ atsopt_eq_int_intinf (
   return ats_false_bool ;
 } // end of [atsopt_eq_int_intinf]
 
-static inline
+ATSinline()
 ats_bool_type
 atsopt_eq_intinf_intinf (
   ats_mpz_ptr_type x, ats_mpz_ptr_type y
@@ -176,7 +176,7 @@ atsopt_eq_intinf_intinf (
   return ats_false_bool ;
 } // end of [atsopt_eq_intinf_intinf]
 
-static inline
+ATSinline()
 ats_bool_type
 atsopt_neq_intinf_int (
   ats_mpz_ptr_type x, ats_int_type y
@@ -185,7 +185,7 @@ atsopt_neq_intinf_int (
   return ats_false_bool ;
 } // end of [atsopt_neq_intinf_int]
 
-static inline
+ATSinline()
 ats_bool_type
 atsopt_neq_intinf_intinf (
   ats_mpz_ptr_type x, ats_mpz_ptr_type y
@@ -196,7 +196,7 @@ atsopt_neq_intinf_intinf (
 
 /* ****** ****** */
 
-static inline
+ATSinline()
 ats_int_type
 atsopt_compare_intinf_intinf
   (ats_mpz_ptr_type x, ats_mpz_ptr_type y) {
@@ -205,7 +205,7 @@ atsopt_compare_intinf_intinf
 
 /* ****** ****** */
 
-static inline
+ATSinline()
 ats_mpz_ptr_type
 atsopt_neg_intinf
   (ats_mpz_ptr_type x) {
@@ -215,7 +215,7 @@ atsopt_neg_intinf
   return ans ;
 } // end of [atsopt_neg_intinf]
 
-static inline
+ATSinline()
 ats_mpz_ptr_type
 atsopt_add_intinf_intinf (
   ats_mpz_ptr_type x, ats_mpz_ptr_type y
@@ -226,7 +226,7 @@ atsopt_add_intinf_intinf (
   return ans ;
 } // end of [atsopt_add_intinf_intinf]
 
-static inline
+ATSinline()
 ats_mpz_ptr_type
 atsopt_sub_intinf_intinf (
   ats_mpz_ptr_type x, ats_mpz_ptr_type y
@@ -237,7 +237,7 @@ atsopt_sub_intinf_intinf (
   return ans ;
 } // end of [atsopt_sub_intinf_intinf]
 
-static inline
+ATSinline()
 ats_mpz_ptr_type
 atsopt_mul_intinf_intinf (
   ats_mpz_ptr_type x, ats_mpz_ptr_type y
@@ -249,23 +249,26 @@ atsopt_mul_intinf_intinf (
 } // end of [atsopt_mul_intinf_intinf]
 
 /* ****** ****** */
+//
+// HX: declared in [prelude/CATS/integer.cats]
+//
+extern
+ats_ptr_type
+atspre_tostrptr_llint (ats_llint_type x) ;
 
-// declared in [prelude/CATS/integer.cats]
-extern ats_ptr_type atspre_tostring_llint (ats_llint_type i) ;
-
-static inline
+ATSinline()
 ats_ptr_type
 atsopt_tostring_intinf
   (ats_mpz_ptr_type x) {
 #ifdef HAVE_GMP_H
   return mpz_get_str((char*)0, 10/*base*/, (mpz_ptr)x) ;
-#else
+#else // HAVE_GMP_H
 /*
-  in [ats_gmp.cats]:
-  typedef ats_llint_type mpz ; typedef mpz *mpz_ptr ;
+// HX: the following is in [ats_gmp.cats]:
+// typedef ats_llint_type mpz ; typedef mpz *mpz_ptr ;
 */
-  return atspre_tostring_llint (*(mpz_ptr)x) ;
-#endif
+  return atspre_tostrptr_llint (*(mpz_ptr)x) ;
+#endif // HAVE_GMP_H
 } // end of [atsopt_tostring_intinf]
 
 /* ****** ****** */

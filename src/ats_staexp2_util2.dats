@@ -723,8 +723,9 @@ end // end of [s2explstlst_syneq]
 
 (* ****** ****** *)
 
-fun labs2zexplst_syneq
-  (ls2zes1: labs2zexplst, ls2zes2: labs2zexplst): bool = begin
+fun labs2zexplst_syneq (
+    ls2zes1: labs2zexplst, ls2zes2: labs2zexplst
+  ) : bool = begin
   case+ (ls2zes1, ls2zes2) of
   | (LABS2ZEXPLSTcons (l1, s2ze1, ls2zes1),
      LABS2ZEXPLSTcons (l2, s2ze2, ls2zes2)) => begin
@@ -736,7 +737,8 @@ fun labs2zexplst_syneq
   | (_, _) => false
 end // end of [labs2zexplst_syneq]
 
-fun s2zexplst_syneq (s2zes1: s2zexplst, s2zes2: s2zexplst): bool =
+fun s2zexplst_syneq
+  (s2zes1: s2zexplst, s2zes2: s2zexplst): bool =
   case+ (s2zes1, s2zes2) of
   | (cons (s2ze1, s2zes1), cons (s2ze2, s2zes2)) => begin
       if s2zexp_syneq (s2ze1, s2ze2) then s2zexplst_syneq (s2zes1, s2zes2)
@@ -744,14 +746,22 @@ fun s2zexplst_syneq (s2zes1: s2zexplst, s2zes2: s2zexplst): bool =
     end // end of [cons, cons]
   | (nil (), nil ()) => true
   | (_, _) => false
+// end of [s2zexplst_syneq]
 
 implement
-s2zexp_syneq (s2ze10, s2ze20) = begin
+s2zexp_syneq (s2ze10, s2ze20) = let
+(*
+  val () = begin
+    print "s2zexp_syneq: s2ze10 = "; print_s2zexp s2ze10; print_newline ()
+  end // end of [val]
+*)
+in
   case+ s2ze10 of
   | S2ZEapp (s2ze1, s2zes1) => begin case+ s2ze20 of
     | S2ZEapp (s2ze2, s2zes2) => begin
-        if s2zexp_syneq (s2ze1, s2ze2) then s2zexplst_syneq (s2zes1, s2zes2)
-        else false
+        if s2zexp_syneq (s2ze1, s2ze2)
+          then s2zexplst_syneq (s2zes1, s2zes2) else false
+        // end of [if]
       end // end of [S2ZEapp]
     | _ => false
     end // end of [S2ZEapp]
@@ -773,7 +783,7 @@ s2zexp_syneq (s2ze10, s2ze20) = begin
   | S2ZEtyrec (knd1, ls2zes1) => begin case+ s2ze20 of
     | S2ZEtyrec (knd2, ls2zes2) => begin
         knd1 = knd2 andalso labs2zexplst_syneq (ls2zes1, ls2zes2)
-      end
+      end // end of [S2ZEtyrec]
     | _ => false
     end // end of [S2ZEtyrec]
   | S2ZEunion (s1, ls2zes1) => begin case+ s2ze20 of

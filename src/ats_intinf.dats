@@ -59,18 +59,29 @@ assume intinf_t = ref (mpz_vt)
 ats_void_type
 atslib_mpz_out_str_exn (
   ats_ptr_type file
-, ats_int_type base
+, ats_int_type base // 2 <= base <= 36
 , const ats_mpz_ptr_type x
 ) {
-  size_t n = mpz_out_str((FILE*)file, base, (mpz_ptr)x) ;
+#ifdef HAVE_GMP_H
+  size_t n ;
+  n = mpz_out_str((FILE*)file, base, (mpz_ptr)x) ;
   if (n == 0) {
     ats_exit_errmsg (1, "exit(ATS): [mpz_out_str] failed.\n") ;
   } // end of [if]
+#else // HAVE_GMP_H
+  ats_llint_type i ; int r ; char c ;
+  i = *(mpz_ptr)x ;
+  if (i == 0) fputc ('0', (FILE*)file) ;
+  if (i < 0) { fputc ('-', (FILE*)file) ;  i = -i ; }
+  while (i > 0) {
+    r = i % base ; i = i / base ;
+    c = (r < 10 ? '0' + r : 'a' + (r - 10)) ; fputc (c, (FILE*)file) ;
+  } // end of [while]
+#endif // HAVE_GMP_H
   return ;
 } // end of [atslib_mpz_out_str_exn]
 
 %} // end of [%{]
-
 
 (* ****** ****** *)
 

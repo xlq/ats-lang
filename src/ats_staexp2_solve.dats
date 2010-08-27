@@ -559,13 +559,19 @@ end // end of [s2explstlst_equal_solve_err]
 
 implement
 s2exp_size_equal_solve_err
-    (loc0, s2e10, s2e20, err) = let
+  (loc0, s2e10, s2e20, err) = let
+(*
+  val () = begin
+    print "s2exp_size_equal_solve_err: s2e10 = "; print s2e10; print_newline ();
+    print "s2exp_size_equal_solve_err: s2e20 = "; print s2e20; print_newline ();
+    print "s2exp_size_equal_err: err = "; print err; print_newline ();
+  end // end of [val]
+*)
   val s2ze10 = s2zexp_make_s2exp s2e10
   and s2ze20 = s2zexp_make_s2exp s2e20
+  val test = s2zexp_syneq (s2ze10, s2ze20)
 in
-  if s2zexp_syneq (s2ze10, s2ze20) then () else begin
-    err := err + 1
-  end // end of [if]
+  if test then ((*nothing*)) else (err := err + 1)
 end (* end of [s2exp_size_equal_solve_err] *)
 
 (* ****** ****** *)

@@ -1279,8 +1279,6 @@ fun l2val_make_d2exp (d2e0: d2exp): l2val
 
 fun fprint_l2val {m:file_mode}
   (pf: file_mode_lte (m, w) | out: &FILE m, l2v: l2val): void
-// end of [fprint_l2val]
-
 fun print_l2val (l2v: l2val): void
 fun prerr_l2val (l2v: l2val): void
 

@@ -807,6 +807,9 @@ in
     end // end of [S2ZEvar]
 end (* end of [fprint_s2zexp] *)
 
+implement print_s2zexp (s2ze) = print_mac (fprint_s2zexp, s2ze)
+implement prerr_s2zexp (s2ze) = prerr_mac (fprint_s2zexp, s2ze)
+
 (* ****** ****** *)
 
 implement

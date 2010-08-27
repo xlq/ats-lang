@@ -536,7 +536,8 @@ in
   aux (d23es, s2es)
 end // end of [d23explst_tr_dn]
 
-fun d2explst_arg_tr_up (d2es: d2explst): d23explst = begin case+ d2es of
+fun d2explst_arg_tr_up
+  (d2es: d2explst): d23explst = begin case+ d2es of
   | cons (d2e, d2es) => let
       val d23e = (
         if d2exp_is_varlamcst d2e then D23Ed2exp d2e else D23Ed3exp (d2exp_tr_up d2e)

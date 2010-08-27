@@ -1115,9 +1115,9 @@ implement p2atlst_tr_dn (p2ts, s2es) = case+ p2ts of
 
 implement p2at_arg_tr_up (p2t0) = let
 (*
-   val () = begin
-     print "p2at_arg_tr_up: p2t0 = "; print p2t0; print_newline ();
-   end // end of [val]
+  val () = begin
+    print "p2at_arg_tr_up: p2t0 = "; print p2t0; print_newline ();
+  end // end of [val]
 *)
 in
   case+ p2t0.p2at_node of
@@ -1133,6 +1133,14 @@ in
 end (* end of [p2at_arg_tr_up] *)
 
 implement p2at_arg_tr_dn (p2t0, s2e0) = let
+//
+(*
+  val () = begin
+    print "p2at_arg_tr_dn: p2t0 = "; print p2t0; print_newline ();
+    print "p2at_arg_tr_dn: s2e0 = "; print s2e0; print_newline ();
+  end // end of [val]
+*)
+//
   val s2e0 = s2exp_whnf s2e0 in case+ s2e0.s2exp_node of
   | S2Erefarg (refval, s2e_arg) => let
 (*

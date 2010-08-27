@@ -948,7 +948,8 @@ overload prerr with prerr_s2kexp
 
 fun fprint_s2zexp {m:file_mode}
   (pf: file_mode_lte (m, w) | out: &FILE m, s2ze: s2zexp): void
-overload fprint with fprint_s2zexp
+fun print_s2zexp (s2ze: s2zexp): void
+fun prerr_s2zexp (s2ze: s2zexp): void
 
 fun fprint_s2zexplst {m:file_mode}
   (pf: file_mode_lte (m, w) | out: &FILE m, s2zes: s2zexplst): void
@@ -963,6 +964,7 @@ fun s2exp_is_proof_fun (s2e: s2exp): bool
 fun s2exp_is_linear (s2e: s2exp): bool
 fun s2exp_is_nonlin (s2e: s2exp): bool
 fun s2exp_is_impredicative (s2e: s2exp): bool
+fun s2exp_is_types (s2e: s2exp): bool
 
 fun s2exp_is_abscon (s2e: s2exp): bool
 
