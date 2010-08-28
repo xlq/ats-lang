@@ -157,7 +157,7 @@ val arrsz = $arrsz {string} (
 in // in of [local]
 
 val theKeywordArrSz = arrsz.3
-val theKeywordArray = array_make_arraysize {string} arrsz
+val theKeywordArray = array_make_arrsz {string} arrsz
 
 end // end of [local]
 
