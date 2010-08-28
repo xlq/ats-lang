@@ -193,8 +193,8 @@ overload <= with lte_string_string
 fun lte_string_string__main {v:view} {l1,l2:addr} (
     pf: !v, pf1: vsubr_p (strbuf_v l1, v), pf2: vsubr_p (strbuf_v l2, v)
   | p1: ptr l1, p2: ptr l2
-  ) :<> bool
-  = "atspre_lte_string_string"
+  ) :<> bool = "atspre_lte_string_string"
+// end of [lte_string_string__main]
 
 //
 
@@ -222,8 +222,8 @@ fun gte_string_string__main {v:view} {l1,l2:addr} (
 
 //
 
-fun eq_string_string (s1: string, s2: string):<> bool
-  = "atspre_eq_string_string"
+fun eq_string_string
+  (s1: string, s2: string):<> bool = "atspre_eq_string_string"
 overload = with eq_string_string
 
 fun eq_string_string__main {v:view} {l1,l2:addr} (
@@ -686,7 +686,7 @@ castfn string_takeout_ptr // non-reentrant!
   (x: string) :<> [l:agz] (strptr l -<lin,prf> void | strptr l)
 //
 castfn strbuf_of_strptr {l:agz}
-  (x: strptr l):<> [m,n:nat] strbufptr_gc (m, n, l)
+  (x: strptr l):<> [m,n:int | 0 <= n; n < m] strbufptr_gc (m, n, l)
 castfn strptr_of_strbuf
   {m,n:int} {l:addr} (x: strbufptr_gc (m, n, l)):<> [l > null] strptr l
 castfn strbuf_takeout_ptr {m,n:int} {l:addr}

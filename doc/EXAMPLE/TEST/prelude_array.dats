@@ -19,10 +19,11 @@ staload _(*anonymous*) = "prelude/DATS/array.dats"
 
 (* ****** ****** *)
 
-implement main (argc, argv) = let
+implement
+main (argc, argv) = let
   val () = () where {
     #define asz 10
-    val A = array_make_arraysize {int}
+    val A = array_make_arrsz {int}
       ($arrsz (0, 1, 2, 3, 4, 5, 6, 7, 8, 9))
     prval pf = unit_v ()
     // testing [array_iforeach_fun]

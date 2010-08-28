@@ -19,11 +19,12 @@ staload _(*anonymous*) = "prelude/DATS/matrix.dats"
 
 (* ****** ****** *)
 
-implement main (argc, argv) = let
+implement
+main (argc, argv) = let
   val () = () where {
     #define row 2
     #define col 5
-    val M = matrix_make_arraysize {int}
+    val M = matrix_make_arrsz {int}
       (row, col, $arrsz (0, 1, 2, 3, 4, 5, 6, 7, 8, 9))
     prval pf = unit_v ()
     // testing [matrix_iforeach_fun]

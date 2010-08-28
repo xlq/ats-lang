@@ -78,12 +78,15 @@ assume matrix_viewt0ype_int_int_type
 
 (* ****** ****** *)
 
-extern fun vbox_make_view_ptr_matrix {a:viewt@ype} {m,n:int} {l:addr} 
+extern
+fun vbox_make_view_ptr_matrix
+  {a:viewt@ype} {m,n:int} {l:addr} 
   (pf: matrix_v (a, m, n, l) | p: ptr l):<> (vbox (matrix_v (a, m, n, l)) | void)
   = "atspre_vbox_make_view_ptr"
+// end of [vbox_make_view_ptr_matrix]
 
 implement
-  matrix_make_arraysize__main
+matrix_make_arrsz__main
   {a} (pf_mul | m, n, arrsz) = let
   prval () = free_gc_elim {a} (arrsz.0) // return the certificate to GC
   prval pf_mat = matrix_v_of_array_v (pf_mul, arrsz.1)
@@ -111,24 +114,21 @@ in @{
 
 (* ****** ****** *)
 
-extern fun natdiv {m,n:pos; mn,i:nat | i < mn}
-  (pf: MUL (m, n, mn) | i: size_t i, n: size_t n):<> [d:nat | d < m] size_t d
-  = "atspre_matrix_natdiv"
-
 %{^
-
-static inline
-ats_size_type atspre_matrix_natdiv (ats_size_type i, ats_size_type n) {
-  return (i / n) ;
-}
-
+#define atspre_matrix_szdiv(i, n) (i / n)
 %}
+extern
+fun szdiv {m,n:pos; mn,i:nat | i < mn}
+  (pf: MUL (m, n, mn) | i: size_t i, n: size_t n):<> [d:nat | d < m] size_t d
+  = "#atspre_matrix_szdiv" // macro!
+// end of [szdiv]
 
 (* ****** ****** *)
 
 infixl ( * ) szmul2; infixl ( mod ) szmod1
 
-implement matrix_make_fun_tsz__main
+implement
+matrix_make_fun_tsz__main
   {a} {v} {vt} {m,n} (pf | m, n, f, tsz, env) = let
   val [mn:int] (pf_mul | mn) = m szmul2 n
   prval () = mul_nat_nat_nat pf_mul
@@ -138,7 +138,7 @@ implement matrix_make_fun_tsz__main
     (!v | &(a?) >> a, sizeLt m, natLt n, !vt) -<> void
   var !p_f1 = @lam
     (pf: !v | i: sizeLt mn, x: &(a?) >> a, env: !vt): void =<clo> let
-    val d = natdiv (pf_mul | i, n) and r = i szmod1 n
+    val d = szdiv (pf_mul | i, n) and r = i szmod1 n
   in
     f (pf | d, r, x, env)
   end // end of [f1]
@@ -157,7 +157,7 @@ implement matrix_make_fun_tsz
   typedef fun1_t = (!v | sizeLt m, sizeLt n, &(a?) >> a, !ptr) -<fun> void
   val f = coerce (f) where {
     extern castfn coerce (f: fun_t):<> fun1_t
-  }
+  } // end of [val]
 in
   matrix_make_fun_tsz__main {a} {v} (pf | m, n, f, tsz, null)
 end // end of [matrix_make_fun_tsz]
@@ -199,7 +199,8 @@ in
   end // end of [sif]
 end // end of [lemma_for_matrix_subscripting]
 
-implement{a} matrix_get_elt_at (M, i, n, j) = let
+implement{a}
+matrix_get_elt_at (M, i, n, j) = let
   prval vbox pf_mat = M.view
   prval (pf_mul_mn, pf_arr) = array_v_of_matrix_v (pf_mat)
   val (pf_mul_i_n | i_n) = i szmul2 n
@@ -212,7 +213,8 @@ in
   x // return value
 end // end of [matrix_get_elt_at]
 
-implement{a} matrix_set_elt_at (M, i, n, j, x) = let
+implement{a}
+matrix_set_elt_at (M, i, n, j, x) = let
   prval vbox pf_mat = M.view
   prval (pf_mul_mn, pf_arr) = array_v_of_matrix_v (pf_mat)
   val (pf_mul_i_n | i_n) = i szmul2 n
@@ -227,13 +229,15 @@ end // end of [matrix_set_elt_at]
 
 (* ****** ****** *)
 
-implement{a} matrix_get_elt_at__intsz (M, i, n, j) = let
+implement{a}
+matrix_get_elt_at__intsz (M, i, n, j) = let
   val i = i2sz i; val n = i2sz n; val j = i2sz j
 in
   matrix_get_elt_at<a> (M, i, n, j)
 end // end of [matrix_get_elt_at__intsz]
 
-implement{a} matrix_set_elt_at__intsz (M, i, n, j, x) = let
+implement{a}
+matrix_set_elt_at__intsz (M, i, n, j, x) = let
   val i = i2sz i; val n = i2sz n; val j = i2sz j
 in
   matrix_set_elt_at<a> (M, i, n, j, x)
@@ -241,7 +245,8 @@ end // end of [matrix_set_elt_at__intsz]
 
 (* ****** ****** *)
 
-implement matrix_ptr_takeout_tsz
+implement
+matrix_ptr_takeout_tsz
   {a} {m,n} {i,j} {l0} (pf_mat | base, i, n, j, tsz) = let
   prval (pf_mul_mn, pf_arr) = array_v_of_matrix_v {a} (pf_mat)
   val (pf_mul_i_n | i_n) = i szmul2 n
@@ -323,12 +328,12 @@ in
   // empty
 end // end of [matrix_foreach_clo]
 
-implement{a} matrix_foreach_cloref {m,n} (M, f, m, n) = let
+implement{a}
+matrix_foreach_cloref {m,n} (M, f, m, n) = let
   viewtypedef cloref_t = (&a) -<cloref> void
   fn app (pf: !unit_v | x: &a, f: !cloref_t):<> void = f (x)
   prval pf = unit_v () 
-  val () = matrix_foreach_fun__main<a>
-    {unit_v} {cloref_t} (pf | M, app, m, n, f)
+  val () = matrix_foreach_fun__main<a> {unit_v} {cloref_t} (pf | M, app, m, n, f)
   prval unit_v () = pf
 in
   // empty
@@ -369,17 +374,18 @@ in
   loop1 (pf | M, f, m, n, 0, env)
 end // end of [matrix_iforeach_fun__main]
 
-implement{a} matrix_iforeach_fun
+implement{a}
+matrix_iforeach_fun
   {v} {m,n} (pf | M, f, m, n) = let
   val f = coerce (f) where { extern castfn
-    coerce (f: (!v | sizeLt m, sizeLt n, &a) -<> void)
-      :<> (!v | sizeLt m, sizeLt n, &a, !ptr) -<> void
+    coerce (f: (!v | sizeLt m, sizeLt n, &a) -<> void):<> (!v | sizeLt m, sizeLt n, &a, !ptr) -<> void
   } // end of [where]
 in
   matrix_iforeach_fun__main (pf | M, f, m, n, null)
 end // end of [matrix_iforeach_fun]
 
-implement{a} matrix_iforeach_clo
+implement{a}
+matrix_iforeach_clo
   {v} {m,n} (pf_v | M, f, m, n) = let
   stavar l_f: addr
   val p_f: ptr l_f = &f
@@ -402,7 +408,7 @@ in
 end // end of [matrix_iforeach_clo]
 
 implement{a}
-  matrix_iforeach_cloref {m,n} (M, f, m, n) = let
+matrix_iforeach_cloref {m,n} (M, f, m, n) = let
   viewtypedef cloref_t = (sizeLt m, sizeLt n, &a) -<cloref1> void
   prval pf = unit_v ()
   fn app (
@@ -411,8 +417,7 @@ implement{a}
     ) :<> void = begin
     $effmask_all (f (i, j, x))
   end // end of [app]
-  val () = matrix_iforeach_fun__main<a>
-    {unit_v} {cloref_t} (pf | M, app, m, n, f)
+  val () = matrix_iforeach_fun__main<a> {unit_v} {cloref_t} (pf | M, app, m, n, f)
   prval unit_v () = pf
 in
   // empty

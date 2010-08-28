@@ -20,7 +20,7 @@ fn play {sz: pos} (sz: size_t sz): void = let
       array_ptr_alloc_tsz {T} (sz, sizeof<T>)
     val () = array_ptr_initialize_elt_tsz {T} (!p, sz, x, tsz)
   in
-    array_make_arraysize {T} @(pf_gc, pf | p, sz)
+    array_make_arrsz {T} @(pf_gc, pf | p, sz)
   end // end of [val]
 
   val middlePost = let
@@ -28,7 +28,7 @@ fn play {sz: pos} (sz: size_t sz): void = let
       array_ptr_alloc_tsz {T} (sz, sizeof<T>)
     val () = array_ptr_initialize_elt_tsz {T} (!p, sz, x, tsz)
   in
-    array_make_arraysize {T} @(pf_gc, pf | p, sz)
+    array_make_arrsz {T} @(pf_gc, pf | p, sz)
   end // end of [val]
 
   val rightPost = let
@@ -36,7 +36,7 @@ fn play {sz: pos} (sz: size_t sz): void = let
       array_ptr_alloc_tsz {T} (sz, sizeof<T>)
     val () = array_ptr_initialize_elt_tsz {T} (!p, sz, x, tsz)
   in
-    array_make_arraysize {T} @(pf_gc, pf | p, sz)
+    array_make_arrsz {T} @(pf_gc, pf | p, sz)
   end // end of [val]
 
   fn initialize (post: post_t):<cloptr1> void = let

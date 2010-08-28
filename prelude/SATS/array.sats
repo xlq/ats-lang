@@ -557,11 +557,11 @@ castfn array_get_view_ptr
 
 (* ****** ****** *)
 
-fun array_make_arraysize
+fun array_make_arrsz
   {a:viewt@ype} {n:nat} (arrsz: arraysize (a, n)):<> array (a, n)
-// end of [array_make_arraysize]
+// end of [array_make_arrsz]
 
-macdef array (x) = array_make_arraysize ,(x)
+macdef array (x) = array_make_arrsz ,(x)
 
 (* ****** ****** *)
 

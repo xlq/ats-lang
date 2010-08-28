@@ -345,12 +345,13 @@ arraysize_viewt0ype_int_viewt0ype
 
 *)
 
-implement array_make_arraysize {a} {n} (arrsz) = let
+implement
+array_make_arrsz {a} {n} (arrsz) = let
   prval () = free_gc_elim {a} (arrsz.0) // return the certificate
   val (pfbox | ()) = vbox_make_view_ptr (arrsz.1 | arrsz.2)
 in
   @{ data= arrsz.2, view= pfbox }
-end // end of [array_make_arraysize]
+end // end of [array_make_arrsz]
 
 //
 

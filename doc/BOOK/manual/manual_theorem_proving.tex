@@ -194,7 +194,11 @@ sequence.
 The first proof function {\it int\_intlst\_lte\_lemma} in
 Figure~\ref{figure:intlst_datasort_example} proves that an integer $i$ is
 less than or equal to $x$ for each integer $x$ in a given integer sequence
-if $i\leq j$ and $j\leq x$ for each integer $x$ in the sequence.
+if $i\leq j$ and $j\leq x$ for each integer $x$ in the sequence. Note that
+the termination metric for this proof function is $\langle xs\rangle$,
+where $xs$ ranges over static terms of the sort {\it intlst} that are
+compared according to the substructural ordering: A term is strictly less
+than another term if the former is a proper subterm of the latter.
 
 The next proof function {\it intlst\_lower\_bound\_lemma} in
 Figure~\ref{figure:intlst_datasort_example} proves that for each integer

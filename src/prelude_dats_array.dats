@@ -94,7 +94,8 @@ arraysize_viewt0ype_int_viewt0ype (a: viewt@ype, n:int) =
 
 *)
 
-implement array_make_arraysize {a} {n} (arrsz) = let
+implement
+array_make_arrsz {a} {n} (arrsz) = let
   prval () = free_gc_elim {a} {n} (arrsz.0)
   val (pfbox | ()) = vbox_make_view_ptr (arrsz.1 | arrsz.2)
 in

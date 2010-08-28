@@ -41,7 +41,7 @@ dataprop MSET (intlst, int(*nats*)) =
     MSETcons (cons (x, xs), x + n) of MSET (xs, n)
   | MSETnil (nil, 0)
   
-extern prfun MSET_istot {xs:intlst} (): [n:nats] MSET (xs, n)
+extern praxi MSET_istot {xs:intlst} (): [n:nats] MSET (xs, n)
 
 (* ****** ****** *)
 

@@ -716,7 +716,7 @@ in
   S
 end // end of [shape_6]
 
-val shape_arr: array (shape, 7) = array_make_arraysize $arrsz(
+val shape_arr: array (shape, 7) = array_make_arrsz $arrsz(
   shape_0
 , shape_1
 , shape_2

@@ -40,10 +40,8 @@
 (* ****** ****** *)
 
 #if VERBOSE_PRELUDE #then
-
 #print "Loading [matrix.sats] starts!\n"
-
-#endif
+#endif // end of [VERBOSE_PRELUDE]
 
 (* ****** ****** *)
 
@@ -82,18 +80,18 @@ fun matrix_ptr_takeout_tsz {a:viewt@ype}
 
 (* ****** ****** *)
 
-fun matrix_make_arraysize {a:viewt@ype} {m,n:int}
+fun matrix_make_arrsz {a:viewt@ype} {m,n:int}
   (m: size_t m, n: size_t n, arrsz: arraysize (a, m * n))
   :<> matrix (a, m, n)
-  = "atspre_matrix_make_arraysize__main"
+  = "atspre_matrix_make_arrsz__main"
 
 // implemented in [prelude/DATS/matrix.das]
-fun matrix_make_arraysize__main {a:viewt@ype} {m,n,mn:int}
+fun matrix_make_arrsz__main {a:viewt@ype} {m,n,mn:int}
   (pf: MUL (m, n, mn) | m: size_t m, n: size_t n, arrsz: arraysize (a, mn))
   :<> matrix (a, m, n)
-  = "atspre_matrix_make_arraysize__main"
+  = "atspre_matrix_make_arrsz__main"
 
-macdef matrix (m, n) asz = matrix_make_arraysize (,(m), ,(n), ,(asz))
+macdef matrix (m, n) asz = matrix_make_arrsz (,(m), ,(n), ,(asz))
 
 (* ****** ****** *)
 
@@ -133,7 +131,6 @@ fun{a:t@ype} matrix_get_elt_at {m,n:int} {i,j:nat | i < m; j < n}
   (A: matrix (a, m, n), i: size_t i, n: size_t n, j: size_t j):<!ref> a
 fun{a:t@ype} matrix_set_elt_at {m,n:int} {i,j:nat | i < m; j < n}
   (A: matrix (a, m, n), i: size_t i, n: size_t n, j: size_t j, x: a):<!ref> void
-
 overload [] with matrix_get_elt_at
 overload [] with matrix_set_elt_at
 
@@ -226,9 +223,7 @@ fun{a:viewt@ype}
 (* ****** ****** *)
 
 #if VERBOSE_PRELUDE #then
-
 #print "Loading [matrix.sats] finishes!\n"
-
-#endif
+#endif // end of [VERBOSE_PRELUDE]
 
 (* end of [matrix.sats] *)
