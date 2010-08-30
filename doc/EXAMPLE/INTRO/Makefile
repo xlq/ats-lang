@@ -53,6 +53,9 @@ revarr: revarr.dats
 revstr: revstr.dats
 	$(ATSCC) -o revstr revstr.dats && ./revstr "abcdefghijklmnopqrstuvwxyz"
 
+tally: tally.dats
+	$(ATSCC) -o tally tally.dats -lats && ./tally
+
 ######
 
 html::
@@ -66,6 +69,7 @@ html::
 	$(ATSOPT) --posmark_html -d fibs.dats > fibs_dats.html
 	$(ATSOPT) --posmark_html -d revarr.dats > revarr_dats.html
 	$(ATSOPT) --posmark_html -d revstr.dats > revstr_dats.html
+	$(ATSOPT) --posmark_html -d tally.dats > tally_dats.html
 
 ######
 
@@ -84,5 +88,6 @@ cleanall:: clean
 	if [ -f fibs ] ; then rm fibs ; fi
 	if [ -f revarr ] ; then rm revarr ; fi
 	if [ -f revstr ] ; then rm revstr ; fi
+	if [ -f tally ] ; then rm tally ; fi
 
 ###### end of [Makefile] ######

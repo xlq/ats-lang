@@ -10,6 +10,8 @@
 // atscc -o fact2 fact2.dats
 //
 
+(* ****** ****** *)
+
 typedef Nat = [n:int | n >= 0] int n // type for natural numbers
 fun fact2 {n:nat} (x: int n): Nat = if x > 0 then x nmul fact2 (x-1) else 1
 
@@ -17,6 +19,8 @@ fun fact2 {n:nat} (x: int n): Nat = if x > 0 then x nmul fact2 (x-1) else 1
 // [@(...)] is used in ATS to group arguments for functions of variable arguments
 fn fact2_usage (cmd: string): void =
   prerrf ("Usage: %s [integer]\n", @(cmd)) // print an error message
+
+(* ****** ****** *)
 
 implement main (argc, argv) =
   if argc >= 2 then let

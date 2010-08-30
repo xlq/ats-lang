@@ -47,8 +47,9 @@ staload "top.sats"
 
 (* ****** ****** *)
 
-extern fun ar_r_exec (libfile: string, objfile: string): void
-  = "ar_r_exec"
+extern fun ar_r_exec
+  (libfile: string, objfile: string): void = "ar_r_exec"
+// end of [ar_r_exec]
 
 // archive with replacement
 fn ar_r_err (libfile: string, objfile: string): int = begin

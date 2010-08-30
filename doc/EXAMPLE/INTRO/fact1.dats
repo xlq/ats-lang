@@ -1,5 +1,4 @@
 //
-//
 // Author: Hongwei Xi (August 2007)
 //
 
@@ -8,6 +7,8 @@
 //
 // atscc -o fact1 fact1.dats
 //
+
+(* ****** ****** *)
 
 // [fun] declares a recursive function
 fun fact1 (x: int): int = if x > 0 then x * fact1 (x-1) else 1
@@ -18,6 +19,8 @@ fun fact1 (x: int): int = if x > 0 then x * fact1 (x-1) else 1
 // [@(...)] is used in ATS to group arguments for variadic functions
 fn fact1_usage (cmd: string): void =
   prerrf ("Usage: %s [integer]\n", @(cmd)) // print an error message
+
+(* ****** ****** *)
 
 implement main (argc, argv) = begin
   if argc >= 2 then let

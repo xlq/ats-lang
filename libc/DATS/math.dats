@@ -36,7 +36,11 @@
 
 (* ****** ****** *)
 
-// It is still empty
+#define ATS_DYNLOADFLAG 0 // no dynamic loading
+
+(* ****** ****** *)
+
+// HX: It is currently empty
 
 (* ****** ****** *)
 

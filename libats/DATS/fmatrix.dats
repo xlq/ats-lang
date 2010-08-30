@@ -63,7 +63,8 @@ staload "libats/SATS/fmatrix.sats"
 
 (* ****** ****** *)
 
-implement{a} fmatrix_ptr_alloc (m, n) = let
+implement{a}
+fmatrix_ptr_alloc (m, n) = let
   val (pf_mn | mn) = mul2_size1_size1 (m, n)
   prval () = mul_nat_nat_nat (pf_mn)
   val (pf_gc, pf_arr | p_arr) = array_ptr_alloc_tsz {a} (mn, sizeof<a>)
@@ -74,7 +75,8 @@ end // end of [fmatrix_ptr_alloc]
 
 (* ****** ****** *)
 
-implement fmatrix_ptr_free 
+implement
+fmatrix_ptr_free 
   (pf_gc, pf_mn, pf_fmat | p_fmat) = let
   prval (pf2_mn, pf_arr) = array_v_of_fmatrix_v (pf_fmat)
   prval () = mul_isfun (pf2_mn, pf_mn)
@@ -85,7 +87,8 @@ end // end of [fmatrix_ptr_free]
 
 (* ****** ****** *)
 
-implement{a} fmatrix_ptr_allocfree (m, n) = let
+implement{a}
+fmatrix_ptr_allocfree (m, n) = let
   val (pf_mn | mn) = mul2_size1_size1 (m, n)
   prval () = mul_nat_nat_nat (pf_mn)
   val [l:addr] (pf_gc, pf_arr | p_arr) = array_ptr_alloc_tsz {a} (mn, sizeof<a>)
@@ -104,7 +107,7 @@ in #[l | (
 (* ****** ****** *)
 
 implement{a}
-  fmatrix_ptr_initialize_elt (base, m, n, x) = () where {
+fmatrix_ptr_initialize_elt (base, m, n, x) = () where {
   prval pf_mat = view@ base
   prval (pf_mn1, pf_arr) = array_v_of_fmatrix_v (pf_mat)
   val (pf_mn2 | mn) = mul2_size1_size1 (m, n)
@@ -119,7 +122,7 @@ implement{a}
 
 // initialization is done column by colmun
 implement{a} // worth it???
-  fmatrix_ptr_initialize_clo
+fmatrix_ptr_initialize_clo
   {v} {m,n} (pf | base, m, n, f) = () where {
   prval pf_mat = view@ base
   prval (pf1_mn, pf_arr) = array_v_of_fmatrix_v (pf_mat)
@@ -189,7 +192,10 @@ implement{a} // worth it???
 
 local
 
-extern // implemented in [libats/CATS/fmatrix.cats]
+//
+// HX: implemented in [libats/CATS/fmatrix.cats]
+//
+extern
 fun fmatrix_ptr_takeout_tsz {a:viewt@ype}
   {m,n:int} {i,j:nat | i < m; j < n} {l0:addr} (
     pf_mat: fmatrix_v (a, m, n, l0)
@@ -199,6 +205,7 @@ fun fmatrix_ptr_takeout_tsz {a:viewt@ype}
   , a @ l -<lin,prf> fmatrix_v (a, m, n, l0)
   | ptr l
   ) = "atslib_fmatrix_ptr_takeout_tsz"
+// end of [fmatrix_ptr_takeout_tsz]
 
 in
 
@@ -232,7 +239,7 @@ end // end of [local]
 (* ****** ****** *)
 
 implement{a}
-  fmatrix_ptr_copy {m,n} (A, B, m, n) = let
+fmatrix_ptr_copy {m,n} (A, B, m, n) = let
   val [mn:int] (pf_mn | mn) = mul2_size1_size1 (m, n)
   prval () = mul_nat_nat_nat (pf_mn)
   prval (pf2_mn, pfA_arr) = array_v_of_fmatrix_v {a} {m,n} (view@ A)
@@ -252,7 +259,8 @@ end // end of [fmatrix_ptr_copy]
 (* ****** ****** *)
 
 // loop proceeds column by column
-implement fmatrix_ptr_foreach_fun_tsz__main
+implement
+fmatrix_ptr_foreach_fun_tsz__main
   {a} {v} {vt} {ord} {m,n}
   (pf | M, f, ord, m, n, tsz, env) = if m > 0 then let
   prval (pf_mat, fpf) = GEMAT_v_of_fmatrix_v {a} (view@ M)
@@ -266,7 +274,7 @@ end (* end of [fmatrix_ptr_foreach_fun_tsz__main] *)
 (* ****** ****** *)
 
 implement{a}
-  fmatrix_ptr_foreach_fun {v} (pf | M, f, ord, m, n) = let
+fmatrix_ptr_foreach_fun {v} (pf | M, f, ord, m, n) = let
   val f = coerce (f) where { extern castfn
     coerce (f: (!v | &a) -<> void) :<> (!v | &a, !ptr) -<> void
   } // end of [where]
@@ -277,7 +285,7 @@ end // end of [fmatrix_ptr_foreach_fun]
 (* ****** ****** *)
 
 implement{a}
-  fmatrix_ptr_foreach_clo {v} (pf_v | M, f, ord, m, n) = let
+fmatrix_ptr_foreach_clo {v} (pf_v | M, f, ord, m, n) = let
   stavar l_f: addr
   val p_f: ptr l_f = &f
   typedef clo_t = (!v | &a) -<clo> void
@@ -297,7 +305,8 @@ end // end of [fmatrix_ptr_foreach_clo_tsz]
 (* ****** ****** *)
 
 // loop proceeds column by column
-implement fmatrix_ptr_iforeach_fun_tsz__main
+implement
+fmatrix_ptr_iforeach_fun_tsz__main
   {a} {v} {vt} {ord} {m,n}
   (pf | M, f, ord, m, n, tsz, env) = if m > 0 then let
   prval (pf_mat, fpf) = GEMAT_v_of_fmatrix_v {a} (view@ M)
@@ -310,7 +319,8 @@ end (* end of [fmatrix_ptr_iforeach_fun_tsz__main] *)
 
 (* ****** ****** *)
 
-implement{a} fmatrix_ptr_iforeach_fun {v} {ord} {m,n}
+implement{a}
+fmatrix_ptr_iforeach_fun {v} {ord} {m,n}
   (pf | M, f, ord, m, n) = if m > 0 then let
   prval (pf_mat, fpf) = GEMAT_v_of_fmatrix_v {a} (view@ M)
   val () = GEMAT_ptr_iforeach_fun<a> (pf | ORDERcol, M, f, ord, m, n, m)
@@ -321,7 +331,8 @@ end (* end of [fmatrix_ptr_iforeach_fun] *)
 
 (* ****** ****** *)
 
-implement{a} fmatrix_ptr_iforeach_clo {v} {ord} {m,n}
+implement{a}
+fmatrix_ptr_iforeach_clo {v} {ord} {m,n}
   (pf | M, f, ord, m, n) = if m > 0 then let
   prval (pf_mat, fpf) = GEMAT_v_of_fmatrix_v {a} (view@ M)
   val () = GEMAT_ptr_iforeach_clo<a> (pf | ORDERcol, M, f, ord, m, n, m)

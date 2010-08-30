@@ -172,12 +172,15 @@ fun pthread_cond_create ()
 fun pthread_cond_wait_mutex {v:view}
   (resource: !v | cond: &cond_vt, p: &mutex_vt v) :<> void
   = "atslib_pthread_cond_wait_mutex"
+// end of [pthread_cond_wait_mutex]
 
-fun pthread_cond_signal (cond: &cond_vt):<> void
-  = "atslib_pthread_cond_signal"
+fun pthread_cond_signal
+  (cond: &cond_vt):<> void = "atslib_pthread_cond_signal"
+// end of [pthread_cond_signal]
 
-fun pthread_cond_broadcast (cond: &cond_vt):<> void
-  = "atslib_pthread_cond_broadcast"
+fun pthread_cond_broadcast
+  (cond: &cond_vt):<> void = "atslib_pthread_cond_broadcast"
+// end of [pthread_cond_broadcast]
 
 (* ****** ****** *)
 

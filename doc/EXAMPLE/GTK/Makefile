@@ -40,7 +40,7 @@ GameOf24: GameOf24.dats
 ######
 
 gtkcairoclock: gtkcairoclock.dats
-	$(ATSCC) -o $@ gtkcairoclock.dats $(GTKFLAGS) -lm
+	$(ATSCC) -Wl,-rpath,$(ATSHOME)/ccomp/lib -o $@ gtkcairoclock.dats $(GTKFLAGS) -lm
 
 ######
 

@@ -35,7 +35,7 @@ implement main () = let
         // loop exits
       end // end of [if]
   } // end of [pr]
-  val A = array0_make_arraysize $arrsz {int} (0, 1, 2, 3, 4, 5)
+  val A = array0_make_arrsz $arrsz {int} (0, 1, 2, 3, 4, 5)
   val () = pr A
   val () = print_newline ()
   val () = revarr<int> (A)
@@ -59,6 +59,8 @@ fun{a:t@ype} revarr {n:nat}
     end // end of [if]
 } // end of [revarr]
 
+(* ****** ****** *)
+
 implement main () = let
   fun pr {n:nat}
     (A: array (int, n), n: int n): void = loop (A, n, 0) where {
@@ -71,7 +73,7 @@ implement main () = let
       end // end of [if]
   } // end of [pr]
   val N = 10
-  val A = array_make_arraysize $arrsz {int} (0, 1, 2, 3, 4, 5, 6, 7, 8, 9)
+  val A = array_make_arrsz $arrsz {int} (0, 1, 2, 3, 4, 5, 6, 7, 8, 9)
   val () = pr (A, N)
   val () = print_newline ()
   val () = revarr<int> (A, N)

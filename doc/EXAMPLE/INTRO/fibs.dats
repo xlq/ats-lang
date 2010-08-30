@@ -11,6 +11,8 @@
 // atscc -o fibs fibs.dats -lgmp
 //
 
+(* ****** ****** *)
+
 fun fib1 (x: int): int =
   if x > 1 then fib1 (x-1) + fib1 (x-2) else x
 
@@ -46,8 +48,12 @@ end // end of [fib4]
 
 //
 
+(* ****** ****** *)
+
 staload "libats/SATS/intinf.sats"
 dynload "libats/DATS/intinf.dats"
+
+(* ****** ****** *)
 
 fun fib5 {n:nat}
   (x: int n): [r:int] (FIB (n, r) | intinfptr_gc r) = let
@@ -72,6 +78,8 @@ fun fib5 {n:nat}
 in
   loop (FIB_bas_0 (), FIB_bas_1 () | x, intinf_0, intinf_1)
 end // end of [fib5]
+
+(* ****** ****** *)
 
 implement main (argc, argv) = let
 

@@ -156,6 +156,12 @@ libc/netinet/SATS/in.sats
 
 /* ****** ****** */
 
+/*
+libc/dynloadall.dats
+*/
+
+/* ****** ****** */
+
 /* libats files */
 
 /* FORTRAN matrix: column-major */
@@ -226,6 +232,12 @@ libats/DATS/linstack_arr.dats
 libats/SATS/regexp.sats
 libats/DATS/regexp.dats
 #endif
+
+/* ****** ****** */
+
+/*
+libats/dynloadall.dats
+*/
 
 /* ****** ****** */
 

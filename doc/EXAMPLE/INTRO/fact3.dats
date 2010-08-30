@@ -14,12 +14,18 @@
 // atscc -o fact3 fact3.dats -lgmp
 //
 
+(* ****** ****** *)
+
 //
 #include "prelude/macrodef.sats" // for prerrstarln
 //
 
+(* ****** ****** *)
+
 staload "libats/SATS/intinf.sats"
 dynload "libats/DATS/intinf.dats"
+
+(* ****** ****** *)
 
 // The following dataprop encodes a specification of the factorial function
 dataprop FACT (int, int) =
@@ -46,6 +52,8 @@ fun fact3 {n:nat} .<n>. (n: int n): [r:int] (FACT (n, r) | intinfptr_gc r) =
 // [@(...)] is used in ATS to group arguments for functions of variable arguments
 fn fact3_usage (cmd: string): void =
   prerrstarln @("Usage: ", cmd, " [integer]") // print an error message
+
+(* ****** ****** *)
 
 // is there any doubt :)
 implement main (argc, argv) =

@@ -42,17 +42,11 @@
 
 /* ****** ****** */
 
-static inline
+ATSinline()
 ats_void_type
-atslib_regexp_free (ats_ptr_type re) { pcre_free (re) ; return ; }
+atslib_regexp_free
+  (ats_ptr_type re) { pcre_free (re) ; return ; }
 // end of [atslib_regexp_free]
-
-/* ****** ****** */
-
-static inline
-ats_ptr_type
-atslib_regexp_ref_make (ats_ptr_type re) { return re ; }
-// end of [atslib_regexp_ref_make]
 
 /* ****** ****** */
 

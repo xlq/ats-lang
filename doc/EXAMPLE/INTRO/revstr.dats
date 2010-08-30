@@ -29,6 +29,8 @@ revstr {m,n} {l} (pf | p) =
     end // end of [if]
 } // end of [revstr]
 
+(* ****** ****** *)
+
 implement
 main (argc, argv) = let
   val () = assert (argc >= 2)

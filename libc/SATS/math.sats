@@ -83,9 +83,9 @@ fun fmodf (f1: float, f2: float):<> float = "atslib_fmodf"
 fun fmodl (ld1: ldouble, ld2: ldouble):<> ldouble = "atslib_fmodl"
 
 (* ****** ****** *)
-
-// already available in [prelude/SATS/float.sats]
-
+//
+// HX: already available in [prelude/SATS/float.sats]
+//
 fun sqrt (d: double):<> double = "atslib_sqrt"
 fun sqrtf (f: float):<> float = "atslib_sqrtf"
 fun sqrtl (ld: ldouble):<> ldouble = "atslib_sqrtl"

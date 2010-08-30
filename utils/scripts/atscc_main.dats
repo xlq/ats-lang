@@ -211,9 +211,8 @@ fn* aux {i:nat | i <= n} ( // .<n-i,0>.
     val param_c = (case+ 0 of
       | _ when intref_get is_ATS_GCATS > 0 => let
           val is_mt = intref_get is_ATS_MULTITHREAD > 0
-          val gcobj_local = (
-            if is_mt then "GCATS/gc_mt.o" else "GCATS/gc.o"
-          ) : string
+          val gcobj_local =
+            (if is_mt then "GCATS/gc_mt.o" else "GCATS/gc.o"): string
           val gcobj_global = runtime_global + gcobj_local
         in
           gcobj_global :: param_c
@@ -227,9 +226,6 @@ fn* aux {i:nat | i <= n} ( // .<n-i,0>.
           val () = begin
             prerr "is_ATS_GCBDW = 1"; prerr_newline ()
           end // end of [val]
-*)
-(*
-          val is_mt = intref_get is_ATS_MULTITHREAD > 0
 *)
 // [ATS_PKGCONFIG] is declared in [prelude/params.hats]
 #if (ATS_PKGCONFIG == 1) #then
@@ -262,11 +258,11 @@ fn* aux {i:nat | i <= n} ( // .<n-i,0>.
       if intref_get is_ATS_MULTITHREAD > 0 then
         if intref_get is_lats_mt > 0 then param_c else "-lats_mt" :: param_c
       else param_c
-    ) : Strlst
+    ) : Strlst // end of [val]
 //
     val param_c = (
       if intref_get is_lats > 0 then param_c else "-lats" :: param_c
-    ) : Strlst
+    ) : Strlst // end of [val]
 //
     val param_c = strlst_reverse param_c
     val ats_prelude_c = sbp2str (runtime_global + "ats_prelude.c")
