@@ -71,7 +71,8 @@ implement main_prelude () = ()
 
 (* ****** ****** *)
 
-implement main {n} (argc, argv) = let
+implement
+main {n} (argc, argv) = let
   var param_rev: Strlst = STRLSTnil ()
   fun loop {i:nat | i <= n} .<n-i>. (
       argc: int n

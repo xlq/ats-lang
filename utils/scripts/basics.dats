@@ -167,7 +167,8 @@ end // end of [local]
 
 (* ****** ****** *)
 
-implement basename_of_filename name = let
+implement
+basename_of_filename name = let
   val name = string1_of_string name
   val n = string_length name
   val i = string_index_of_char_from_right (name, dirsep)
@@ -199,7 +200,8 @@ in
   end // end of [if]
 end // end of [suffix_of_filename]
 
-implement filename_is_local name = let
+implement
+filename_is_local name = let
    val name = string1_of_string name
 in
    if string1_isnot_empty (name) then let
@@ -237,15 +239,18 @@ implement strlst_is_nil (ss) =
 implement strlst_head_get (ss) = let val+ s :: _ = ss in s end
 implement strlst_tail_get (ss) = let val+ _ :: ss = ss in ss end
 
-implement strlst_length {n} ss = let
+implement
+strlst_length {n} (ss) = let
   fun aux {i,j:nat | i+j == n} .<i>.
     (ss: strlst i, res: size_t j): size_t n =
     case+ ss of nil () => res | _ :: ss => aux (ss, res+1)
+  // end of [aux]
 in
   aux (ss, size1_of_int1 0)
 end // end of [strlst_length]
 
-implement strlst_reverse {n} ss = let
+implement
+strlst_reverse {n} ss = let
   fun aux {i,j:nat | i+j == n} .<i>.
     (ss: strlst i, res: strlst j): strlst n =
     case+ ss of nil () => res | s :: ss => aux (ss, s :: res)
@@ -257,7 +262,8 @@ end // end of [local]
 
 (* ****** ****** *)
 
-implement lstrlst_reverse (xs0) = let
+implement
+lstrlst_reverse (xs0) = let
   fun revapp {m,n:nat} .<m>.
     (xs: lstrlst m, ys: lstrlst n):<> lstrlst (m+n) =
     case+ xs of
@@ -288,18 +294,18 @@ ats_void_type // also defined in [prelude/DATS/basics.dats]
 ats_exit(const ats_int_type status) { exit(status) ; return ; }
 
 ats_void_type // also defined in [prelude/DATS/basics.dats]
-ats_exit_errmsg
-  (const ats_int_type status, const ats_ptr_type errmsg)
-{
+ats_exit_errmsg (
+  const ats_int_type status, const ats_ptr_type errmsg
+) {
   fprintf(stderr, "%s", (char *)errmsg) ; exit(status) ; return ;
-}
+} // end of [ats_exit_errmsg]
 
 /* ****** ****** */
 
 ats_void_type // also defined in [prelude/DATS/printf.dats]
-atspre_exit_prerrf // [status] should be of the type uint8
-  (const ats_int_type status, const ats_ptr_type fmt, ...)
-{
+atspre_exit_prerrf ( // [status] should be of the type uint8
+  const ats_int_type status, const ats_ptr_type fmt, ...
+) {
   va_list ap ;
   va_start(ap, fmt) ; vfprintf(stderr, (char *)fmt, ap) ; va_end(ap) ;
 /*
@@ -307,17 +313,17 @@ atspre_exit_prerrf // [status] should be of the type uint8
 */
   exit(status) ;
   return ; // deadcode
-} /* end of [atspre_exit_prerrf] */
+} // end of [atspre_exit_prerrf]
 
 //
 
 ats_void_type // also defined in [prelude/DATS/printf.dats]
-atspre_assert_prerrf
-  (ats_bool_type assertion, ats_ptr_type fmt, ...)
-{
+atspre_assert_prerrf (
+  ats_bool_type assertion, ats_ptr_type fmt, ...
+) {
   int err ;
   va_list ap ;
-
+//
   if (!assertion) {
     va_start(ap, fmt) ;
     err = vfprintf(stderr, (char *)fmt, ap) ;
@@ -328,23 +334,23 @@ atspre_assert_prerrf
       (  1, "exit(ATS): [atspre_assert_prerrf]: assert failed\n") ;
     } /* end of [if] */
   } /* end of [if] */
-
+//
   return ;
-} /* end of [atspre_assert_prerrf] */
+} // end of [atspre_assert_prerrf]
 
 //
 
-static // also defined in [prelude/DATS/printf.dats]
+//
+// HX: also defined in [prelude/DATS/printf.dats]
+//
 ats_ptr_type
-__tostringf_size (
-  ats_int_type guess
-, const ats_ptr_type fmt
-, va_list ap0
+atspre_vsprintf_size (
+  ats_int_type guess, const ats_ptr_type fmt, va_list ap0
 ) {
   int n, sz ; char *res ; va_list ap ;
-
+//
   sz = guess ;
-
+//
   while (1) {
     va_copy (ap, ap0) ;
     res = ATS_MALLOC(sz) ;
@@ -356,58 +362,63 @@ __tostringf_size (
       return ((ats_ptr_type)0) ;
     } // end of [if]
   } // end of [while]
-
+//
   return (ats_ptr_type)0 ; // deadcode  
-
-} // end of [__tostringf_size]
+//
+} // end of [atspre_vsprintf_size]
 
 //
-
-ats_ptr_type // also defined in [prelude/DATS/printf.dats]
+// HX: also defined in [prelude/DATS/printf.dats]
+//
+ats_ptr_type
 atspre_tostringf_size (
   ats_int_type guess, const ats_ptr_type fmt, ...
 ) {
   char *res ;
   va_list ap ;
-
+//
   va_start(ap, fmt);
-  res = (char*)__tostringf_size (guess, fmt, ap);
+  res = (char*)atspre_vsprintf_size (guess, fmt, ap);
   va_end(ap);
   if (!res) { ats_exit_errmsg
     (1, "exit(ATS): [atspre_tostringf_size] failed.\n") ;
-  }
+  } // end of [if]
+//
   return res ;
 } // end of [atspre_tostringf_size]
 
 /* ****** ****** */
-
-// also defined in [prelude/DATS/string.dats]
-
+//
+// HX: also defined in [prelude/DATS/string.dats]
+//
 ats_ptr_type
-atspre_string_make_substring
-  (ats_ptr_type src0, ats_size_type start, ats_size_type len)
-{
+atspre_string_make_substring (
+  ats_ptr_type src0, ats_size_type start, ats_size_type len
+) {
   char *des, *src ;
   des = ATS_MALLOC(len+1) ;
   src = ((char*)src0) + start ;
   memcpy(des, src, len) ; des[len] = '\000' ;
   return des ;
-} /* atspre_string_make_substring */
+} // end of [atspre_string_make_substring]
 
 /* ****** ****** */
 
 extern ats_ptr_type atsopt_global ;
 
-ats_bool_type file_is_exec (ats_ptr_type name) {
+ats_bool_type
+file_is_exec (
+  ats_ptr_type name
+) {
   struct stat buf ;
   int ret = stat (name, &buf) ;
-
+//
   if (ret < 0) { atspre_exit_prerrf
     (errno, "exit(ATS): File [%s] does not exist.\n", atsopt_global) ;
-  }
-  
+  } // end of [if]
+//
   return (S_IXUSR & buf.st_mode) ;
-} /* end of file_is_exec */
+} // end of [file_is_exec]
 
 /* ****** ****** */
 
@@ -415,28 +426,26 @@ ats_bool_type file_is_exec (ats_ptr_type name) {
 
 typedef ats_ptr_type ats_intref_type ;
 
-ats_intref_type intref_make (ats_int_type i)
-{
+ats_intref_type
+intref_make (ats_int_type i) {
   int *r ;
-  r = ats_malloc_gc(sizeof(ats_int_type)) ;
-  *r = i ; return r ;
-}
+  r = ats_malloc_gc(sizeof(ats_int_type)) ; // HX: GC is not needed
+  *r = i ;
+  return r ;
+} // end of [intref_make]
 
-ats_int_type intref_get (ats_intref_type r)
-{
-  return *((ats_int_type *)r) ;
-}
-
-ats_void_type intref_set (ats_intref_type r, ats_int_type i)
-{
-  *((ats_int_type *)r) = i ; return ;
-}
+ats_int_type
+intref_get (ats_intref_type r) { return *((ats_int_type*)r) ; }
+// end of [intref_get]
+ats_void_type
+intref_set (ats_intref_type r, ats_int_type i) { *((ats_int_type*)r) = i ; return ; }
+// end of [intref_set]
 
 /* ****** ****** */
 
 ats_int_type
-atslib_fork_exec_and_wait_cloptr_exn (ats_ptr_type f_child)
-{
+atslib_fork_exec_and_wait_cloptr_exn
+  (ats_ptr_type f_child) {
   pid_t pid ;
   int status ;
 
@@ -446,41 +455,42 @@ atslib_fork_exec_and_wait_cloptr_exn (ats_ptr_type f_child)
   }
   if (pid > 0) {
     wait (&status) ; ATS_FREE (f_child) ; return status ;
-  }
+  } // end of [if]
   /* this is the child */
   ((ats_void_type (*)(ats_clo_ptr_type))((ats_clo_ptr_type)f_child)->closure_fun)(f_child) ;
   _exit (0) ; /* no need to flush STDIN, STDOUT and STDERR */
-  return 0 ; /* deadcode */
-} /* atslib_fork_exec_and_wait_cloptr_exn */
+  return 0 ; // deadcode
+} // end of [atslib_fork_exec_and_wait_cloptr_exn]
 
 /* ****** ****** */
 
 extern ats_bool_type strlst_is_nil(ats_ptr_type) ;
-
 extern ats_ptr_type strlst_head_get(ats_ptr_type) ;
 extern ats_ptr_type strlst_tail_get(ats_ptr_type) ;
 
 ats_void_type
-strlst_to_strarr (ats_sum_ptr_type ss, ats_ptr_type p)
-{
+strlst_to_strarr (
+  ats_sum_ptr_type ss, ats_ptr_type p
+) {
   while (1) {
     if (strlst_is_nil(ss)) break ;
     *((ats_ptr_type *)p) = strlst_head_get(ss) ;
     p = ((ats_ptr_type *)p) + 1 ; ss = strlst_tail_get(ss) ;
   } /* end of [while] */
   return ;
-} /* end of [strlst_to_strarr] */
+} // end of [strlst_to_strarr]
 
 #define BUFSZ 64
 
 ats_ptr_type
-string_trans (ats_ptr_type s0, ats_clo_ptr_type f)
-{
+string_trans (
+  ats_ptr_type s0, ats_clo_ptr_type f
+) {
   int i, sz;
   char *buf0, *buf1, *p, c, *s ;
-
+//
   sz = BUFSZ ; buf0 = ats_malloc_gc(sz) ;
-
+//
   i = 0 ; p = buf0 ;
   while (c = *((char *)s0)) {
     s0 = (char *)s0 + 1 ;
@@ -497,23 +507,24 @@ string_trans (ats_ptr_type s0, ats_clo_ptr_type f)
       *p = c ; ++i ; ++p ;
     } /* end of [while] */
   } /* end of [while] */
-
+//
   if (i == sz) {
     buf1 = ats_malloc_gc(sz+1) ;
     memcpy (buf1, buf0, sz) ;
     ats_free_gc (buf0) ; buf0 = buf1 ;
   } /* end of [if] */
-
-  buf0[i] = '\000' ;
-
-  return buf0 ;
+//
+  buf0[i] = '\000' ; return buf0 ;
+//
 } // end of [string_trans]
 
 //
 
-// for the purpose of bootstrapping
-ats_ptr_type // already defined in unistd.dats
-__ats_getcwd () {
+//
+// HX: for the purpose of bootstrapping; it is already defined in unistd.dats
+//
+ats_ptr_type 
+atsutil_getcwd () {
   char *buf, *res ;
   int sz = 64 ;
 
@@ -529,9 +540,9 @@ __ats_getcwd () {
     break ;
   } /* end of [while] */
   return buf ;
-} /* end of [__ats_getcwd] */
+} // end of [atsutil_getcwd]
 
-%}
+%} // end of [%{^]
 
 (* ****** ****** *)
 

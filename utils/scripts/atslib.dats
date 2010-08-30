@@ -59,7 +59,8 @@ end // end of [ar_r_err]
 // this is equivalent to [ranlib]
 extern fun ar_s_exec (libfile: string): void = "ar_s_exec"
 
-implement ar_s_exn (libfile) = let
+implement
+ar_s_exn (libfile) = let
   val status =
     fork_exec_and_wait_cloptr_exn (lam () => ar_s_exec (libfile))
   // end of [val]
@@ -72,8 +73,8 @@ end // end of [ar_s_exn]
 (* ****** ****** *)
 
 extern fun gcc_libfile_exec
-  (param_rev: Strlst, infile: string, outfile: string): void
-  = "gcc_libfile_exec"
+  (param_rev: Strlst, infile: string, outfile: string): void = "gcc_libfile_exec"
+// end of [gcc_libfile_exec]
 
 implement
 gcc_libfile_err (param_rev, infile, outfile) = let
@@ -84,7 +85,6 @@ end // end of [gcc_libfile_err]
 
 (* ****** ****** *)
 
-#define i2u uint_of_int
 #define sbp2str string1_of_strbuf
 
 extern
@@ -97,7 +97,7 @@ fn char_identifize
   if char_isalnum c then tostring c
   else let
     val i = uint_of_char c
-    val c1 = i / i2u 16 and c2 = i mod i2u 16
+    val c1 = i / 16U and c2 = i mod 16U
     val ptr = tostringf_size (4, "_%x%x", @(c1, c2))
     val str = string_of_strptr (ptr)
   in
@@ -156,7 +156,7 @@ end // end of [ccomp_gcc_ar_libfile]
 (* ****** ****** *)
 
 extern fun fget_line {m:fm}
-  (pf: file_mode_lte (m, r) | f: &FILE m): String = "fget_line"
+  (pf: file_mode_lte (m, r) | f: &FILE m): String = "atsutil_fget_line"
 // end of [fget_line]
 
 #define i2sz size1_of_int1
@@ -185,7 +185,8 @@ end // end of [library_make_loop]
 
 (* ****** ****** *)
 
-implement libats_make (param_rev) = let
+implement
+libats_make (param_rev) = let
   val libfiles_local = ATSHOME_dir_append ".libfiles_local"
   val libats_global = libats_global ()
   val (pf_file | p_file) = fopen_exn (libfiles_local, file_mode_r)
@@ -196,7 +197,8 @@ in
   // nothing
 end // end of [libats_make]
 
-implement libats_mt_make (param_rev) = let
+implement
+libats_mt_make (param_rev) = let
   val libfiles_mt_local = ATSHOME_dir_append ".libfiles_mt_local"
   val libats_mt_global = libats_mt_global ()
   val (pf_file | p_file) = fopen_exn (libfiles_mt_local, file_mode_r)
@@ -209,7 +211,8 @@ end // end of [libats_mt_make]
 
 (* ****** ****** *)
 
-implement libats_lex_make (param_rev) = let
+implement
+libats_lex_make (param_rev) = let
   val dir = ATSHOME_dir_append "libats/lex/"
   val libats_lex_local =
     sbp2str (atslib_local () + "libats_lex.a")
@@ -226,7 +229,8 @@ end // end of [libats_lex_make]
 
 (* ****** ****** *)
 
-implement libats_smlbas_make (param_rev) = () where {
+implement
+libats_smlbas_make (param_rev) = () where {
   val smlbas_libfiles = ATSHOME_dir_append "libats/smlbas/.libfiles"
   val (pf_file | p_file) = fopen_exn (smlbas_libfiles, file_mode_r)
   val libats_smlbas_local = sbp2str (atslib_local () + "libats_smlbas.a")
@@ -261,7 +265,7 @@ gcc_libfile_exec (
 ) {
   int err ;
   int n, argc ; char **argv, **argv_p, **argv_p1 ;
-
+//
   argc = n = strlst_length (param_rev) ;
   argc += 1 ; // self(*first*)
   argc += 2 ; // -I runtime_global
@@ -284,11 +288,10 @@ gcc_libfile_exec (
     if (strlst_is_nil (param_rev)) break ;
     argv_p1 -= 1 ; *argv_p1 = (char*)strlst_head_get (param_rev) ;
     param_rev = strlst_tail_get (param_rev) ;
-  }
+  } // end of [while]
   *argv_p = "-c" ; argv_p += 1 ; *argv_p = input_c ; argv_p += 1 ;
   *argv_p = "-o" ; argv_p += 1 ; *argv_p = output_o ; argv_p += 1 ;
   *argv_p = (char*)0 ;
-
 // /*
   fputs (*argv, stderr) ; argv_p = argv + 1 ;
   while (*argv_p) {
@@ -296,13 +299,12 @@ gcc_libfile_exec (
   }
   fputc ('\n', stderr) ;
 // */
-
   err = execvp("gcc", argv) ;
   if (err < 0) perror ("ccomp_file_to_file_exec: [execvp] failed: ") ;
   exit (1) ;
-
+//
   return ;
-}
+} // end of [gcc_libfile_exec]
 
 ats_void_type
 ar_r_exec (ats_string_type lib, ats_string_type output_o) {
@@ -311,7 +313,7 @@ ar_r_exec (ats_string_type lib, ats_string_type output_o) {
 // */
   execlp("ar", "ar", "-r", lib, output_o, (char*)0) ;
   return ;
-}
+} // end of [ar_r_exec]
 
 ats_void_type
 ar_s_exec (ats_string_type lib) {
@@ -320,22 +322,24 @@ ar_s_exec (ats_string_type lib) {
 // */
   execlp("ar", "ar", "-s", lib, (char*)0) ;
   return ;
-}
+} // end of [ar_s_exec]
 
 #define INCSZ 1024
 
-ats_string_type fget_line (ats_ptr_type file) {
+ats_string_type
+atsutil_fget_line
+  (ats_ptr_type file) {
   int c;
   int i, sz;
   char *buf0, *buf1, *p;
-
+//
   if (feof((FILE *)file)) {
     ats_exit_errmsg(1, (ats_string_type)"exit(ATS): [fget_line] failed: EOF\n");
-  }
-
+  } // end of [if]
+//
   sz = INCSZ;
   buf0 = (char*)ats_malloc_gc(sz); p = buf0;
-
+//
   while (1) {
     for (i = 0; i < INCSZ; ++i) {
       c = fgetc ((FILE *)file) ;
@@ -347,12 +351,13 @@ ats_string_type fget_line (ats_ptr_type file) {
     ats_free_gc (buf0) ;    
     buf0 = buf1 ; p = buf0 + sz;
     sz = sz + INCSZ ;
-  }
+  } // end of [while]
+//
+  return (char*)0 ; // deadcode
+//
+} // end of [atsutil_fget_line]
 
-  return (char*)0 ; /* deadcode */
-} /* end of [fget_line] */
-
-%}
+%} // end of [%{^]
 
 (* ****** ****** *)
 

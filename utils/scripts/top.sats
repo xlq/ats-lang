@@ -80,8 +80,8 @@ fun filename_is_local (s: string): Bool
 
 (* ****** ****** *)
 
+fun getcwd () : String = "atsutil_getcwd"
 fun file_is_exec (file: string) : Bool = "file_is_exec"
-fun getcwd () : String = "__ats_getcwd"
 
 (* ****** ****** *)
 
