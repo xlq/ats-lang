@@ -36,8 +36,8 @@
 
 /* ****** ****** */
 
-#ifndef ATSCTRB_SDL_SDL_EVENTS_CATS
-#define ATSCTRB_SDL_SDL_EVENTS_CATS
+#ifndef ATSCTRB_SDL_EVENTS_CATS
+#define ATSCTRB_SDL_EVENTS_CATS
 
 /* ****** ****** */
 
@@ -75,6 +75,6 @@ atsctrb_eq_SDL_EventType_SDL_EventType
 
 /* ****** ****** */
 
-#endif // end of [ATSCTRB_SDL_SDL_EVENTS_CATS]
+#endif // end of [ATSCTRB_SDL_EVENTS_CATS]
 
 /* end of [SDL_events.cats] */

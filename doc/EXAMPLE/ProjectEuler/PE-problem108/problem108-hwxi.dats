@@ -35,7 +35,7 @@ end // end of [n2divisor]
 (* ****** ****** *)
 
 #define N 1000
-#define DELTA %(2*3*5*7) // HX: this is kind of cheating :)
+#define DELTA %(2*3*5*7) // HX: this is kind of cheating :) see PE-problem110
 
 fun search
   (x: int): int = let

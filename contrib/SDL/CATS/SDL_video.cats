@@ -36,8 +36,8 @@
 
 /* ****** ****** */
 
-#ifndef ATSCTRB_SDL_SDL_VIDEO_CATS
-#define ATSCTRB_SDL_SDL_VIDEO_CATS
+#ifndef ATSCTRB_SDL_VIDEO_CATS
+#define ATSCTRB_SDL_VIDEO_CATS
 
 /* ****** ****** */
 
@@ -148,6 +148,6 @@ atsctrb_SDL_ResetVideoMode (
 
 /* ****** ****** */
 
-#endif // end of [ATSCTRB_SDL_SDL_VIDEO_CATS]
+#endif // end of [ATSCTRB_SDL_VIDEO_CATS]
 
 /* end of [SDL_video.cats] */

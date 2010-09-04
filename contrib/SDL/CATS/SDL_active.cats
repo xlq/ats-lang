@@ -36,8 +36,8 @@
 
 /* ****** ****** */
 
-#ifndef ATSCTRB_SDL_SDL_ACTIVE_CATS
-#define ATSCTRB_SDL_SDL_ACTIVE_CATS
+#ifndef ATSCTRB_SDL_ACTIVE_CATS
+#define ATSCTRB_SDL_ACTIVE_CATS
 
 /* ****** ****** */
 
@@ -45,6 +45,6 @@
 
 /* ****** ****** */
 
-#endif // end of [ATSCTRB_SDL_SDL_ACTIVE_CATS]
+#endif // end of [ATSCTRB_SDL_ACTIVE_CATS]
 
 /* end of [SDL_active.cats] */

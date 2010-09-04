@@ -36,8 +36,8 @@
 
 /* ****** ****** */
 
-#ifndef ATSCTRB_SDL_SDL_IMAGE_CATS
-#define ATSCTRB_SDL_SDL_IMAGE_CATS
+#ifndef ATSCTRB_SDL_IMAGE_CATS
+#define ATSCTRB_SDL_IMAGE_CATS
 
 /* ****** ****** */
 
@@ -50,6 +50,6 @@
 
 /* ****** ****** */
 
-#endif // end of [ATSCTRB_SDL_SDL_IMAGE_CATS]
+#endif // end of [ATSCTRB_SDL_IMAGE_CATS]
 
 /* end of [SDL_image.cats] */

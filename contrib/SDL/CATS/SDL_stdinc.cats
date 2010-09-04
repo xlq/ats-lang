@@ -36,8 +36,8 @@
 
 /* ****** ****** */
 
-#ifndef ATSCTRB_SDL_SDL_STDINC_CATS
-#define ATSCTRB_SDL_SDL_STDINC_CATS
+#ifndef ATSCTRB_SDL_STDINC_CATS
+#define ATSCTRB_SDL_STDINC_CATS
 
 /* ****** ****** */
 
@@ -107,6 +107,6 @@ atsctrb_lor_Uint32_Uint32
 
 /* ****** ****** */
 
-#endif // end of [ATSCTRB_SDL_SDL_STDINC_CATS]
+#endif // end of [ATSCTRB_SDL_STDINC_CATS]
 
 /* end of [SDL_stdinc.cats] */

@@ -36,8 +36,8 @@
 
 /* ****** ****** */
 
-#ifndef ATSCTRB_SDL_SDL_THREAD_CATS
-#define ATSCTRB_SDL_SDL_THREAD_CATS
+#ifndef ATSCTRB_SDL_THREAD_CATS
+#define ATSCTRB_SDL_THREAD_CATS
 
 /* ****** ****** */
 
@@ -47,6 +47,6 @@
 
 /* ****** ****** */
 
-#endif // end of [ATSCTRB_SDL_SDL_THREAD_CATS]
+#endif // end of [ATSCTRB_SDL_THREAD_CATS]
 
 /* end of [SDL_thread.cats] */

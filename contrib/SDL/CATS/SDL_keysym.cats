@@ -36,8 +36,8 @@
 
 /* ****** ****** */
 
-#ifndef ATSCTRB_SDL_SDL_KEYSYM_CATS
-#define ATSCTRB_SDL_SDL_KEYSYM_CATS
+#ifndef ATSCTRB_SDL_KEYSYM_CATS
+#define ATSCTRB_SDL_KEYSYM_CATS
 
 /* ****** ****** */
 
@@ -50,6 +50,6 @@ atsctrb_eq_SDLKey_SDLKey
 
 /* ****** ****** */
 
-#endif // end of [ATSCTRB_SDL_SDL_KEYSYM_CATS]
+#endif // end of [ATSCTRB_SDL_KEYSYM_CATS]
 
 /* end of [SDL_keysym.cats] */

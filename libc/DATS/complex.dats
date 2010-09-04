@@ -39,6 +39,10 @@ staload "libc/SATS/complex.sats"
 
 (* ****** ****** *)
 
+#define ATS_DYNLOADFLAG 0 // there is no need for dynloading at run-time
+
+(* ****** ****** *)
+
 %{^
 
 #include "libc/CATS/complex.cats"
@@ -52,8 +56,9 @@ atslib_ccmplx_imag_unit = _Complex_I ;
 ats_dcomplex_type
 atslib_zcmplx_imag_unit = _Complex_I ;
 
-// print function
-
+//
+// print functions
+//
 ats_void_type
 atslib_fprint_ccmplx
   (ats_ptr_type out, ats_fcomplex_type c) {
@@ -82,7 +87,7 @@ atslib_fprint_zcmplx
   return ;
 } // end of [ats_fprint_zcmplx]
 
-%}
+%} // end of [{%^]
 
 (* ****** ****** *)
 
@@ -95,122 +100,3 @@ implement prerr_zcmplx (z) = prerr_mac (fprint_zcmplx, z)
 (* ****** ****** *)
 
 (* end of [complex.dats] *)
-
-////
-
-(* ****** ****** *)
-
-// implemented in complex.cats
-
-staload M = "math.sats"
-staload "complex.sats"
-
-typedef real = double
-assume complex = @{ real= real, imag= real }
-
-implement complex_make_cartesian (x, y) =
-  @{ real= x, imag= x }
-
-implement complex_make_polar (r, t) =
-  @{ real= r * $M.cos t, imag= r * $M.sin t }
-
-//
-
-implement complex_of_double f =  @{ real= f, imag= 0.0 }
-implement complex_imag_unit = @{ real= 0.0, imag= 1.0 }
-
-implement complex_real z = z.real
-implement complex_imag z = z.imag
-
-(* ****** ****** *)
-
-implement neg_complex z =
-  @{ real= ~(z.real), imag= ~(z.imag) }
-
-implement add_complex_complex (z1, z2) =
-  @{ real= z1.real + z2.real, imag= z1.imag + z2.imag }
-
-implement sub_complex_complex (z1, z2) =
-  @{ real= z1.real - z2.real, imag= z1.imag - z2.imag }
-
-implement mul_complex_complex (z1, z2) = @{
-  real= z1.real * z2.real - z1.imag * z2.imag,
-  imag= z1.real * z2.imag + z1.imag * z2.real
-}
-
-implement div_complex_complex (z1, z2) =
-  if abs (z2.real) >= abs (z2.imag) then
-    let
-       val r = z2.imag / z2.real
-       val d = z2.real + r * z2.imag
-    in
-       @{
-          real= (z1.real + r * z1.imag) / d
-        , imag= (z1.imag - r * z1.real) / d
-        }
-    end
-  else // abs (z2.real) < abs (z2.imag)
-    let
-       val r = z2.real / z2.imag
-       val d = r * z2.real + z2.imag
-    in
-       @{
-          real= (r * z1.real + z1.imag) / d
-        , imag= (r * z1.imag - z1.real) / d
-        }
-    end
-
-(* ****** ****** *)
-
-implement magnitude_complex z =
-  let
-     val r = abs (z.real) and i = abs (z.imag)
-  in
-     if r = 0.0 then i
-     else if i = 0.0 then r
-     else if r >= i then
-       r * sqrt (1.0 + square (i / r))
-     else i * sqrt (1.0 + square (r / i))
-  end
-
-implement recip_complex z =
-  div_complex_complex (complex_one, z)
-
-implement conjugate_complex z = 
-  @{ real= z.real, imag= ~(z.imag) }
-
-implement arg_complex z = $M.atan2 (z.imag, z.real)
-
-(* ****** ****** *)
-
-implement square_complex z =
-  let
-     val r = z.real and i = z.imag
-     val rr = r * r
-     val ii = i * i
-     val ri = r * i
-  in
-     @{ real= rr - ii, imag= ri + ri }
-  end
-
-implement cube_complex z =
-  let
-     val r = z.real and i = z.imag
-     val rr = r * r
-     val ii = i * i
-  in
-     @{ real= r * rr - 3.0 * r * ii, imag= 3.0 * i * rr - i * ii }
-  end
-
-implement exp_complex z =
-  let val r = $M.exp z.real in
-     @{ real= r * $M.cos (z.imag), imag= r * $M.sin (z.imag) }
-  end
-
-implement log_complex z =
-  @{ real= $M.log (magnitude_complex z) , imag= $M.atan2 (z.imag, z.real) }
-
-implement pow_complex_complex (z1, z2) =
-  exp_complex (mul_complex_complex (z2,  log_complex z1))
-
-(* ****** ****** *)

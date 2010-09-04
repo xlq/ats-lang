@@ -36,8 +36,8 @@
 
 /* ****** ****** */
 
-#ifndef ATSCTRB_SDL_SDL_CATS
-#define ATSCTRB_SDL_SDL_CATS
+#ifndef ATSCTRB_SDL_CATS
+#define ATSCTRB_SDL_CATS
 
 /* ****** ****** */
 
@@ -83,6 +83,6 @@ atsctrb_SDL_ref_isnot_null
 
 /* ****** ****** */
 
-#endif // end of [ATSCTRB_SDL_SDL_CATS]
+#endif // end of [ATSCTRB_SDL_CATS]
 
 /* end of [SDL.cats] */

@@ -36,8 +36,8 @@
 
 /* ****** ****** */
 
-#ifndef ATSCTRB_SDL_SDL_TIMER_CATS
-#define ATSCTRB_SDL_SDL_TIMER_CATS
+#ifndef ATSCTRB_SDL_TIMER_CATS
+#define ATSCTRB_SDL_TIMER_CATS
 
 /* ****** ****** */
 
@@ -52,6 +52,6 @@
 
 /* ****** ****** */
 
-#endif // end of [ATSCTRB_SDL_SDL_TIMER_CATS]
+#endif // end of [ATSCTRB_SDL_TIMER_CATS]
 
-/* end of [SDL_TIMER.cats] */
+/* end of [SDL_timer.cats] */

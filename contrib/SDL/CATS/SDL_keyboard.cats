@@ -36,8 +36,8 @@
 
 /* ****** ****** */
 
-#ifndef ATSCTRB_SDL_SDL_KEYBOARD_CATS
-#define ATSCTRB_SDL_SDL_KEYBOARD_CATS
+#ifndef ATSCTRB_SDL_KEYBOARD_CATS
+#define ATSCTRB_SDL_KEYBOARD_CATS
 
 /* ****** ****** */
 
@@ -63,6 +63,6 @@ atsctrb_SDL_KeyStateArr_get (
 
 /* ****** ****** */
 
-#endif // end of [ATSCTRB_SDL_SDL_KEYBOARD_CATS]
+#endif // end of [ATSCTRB_SDL_KEYBOARD_CATS]
 
 /* end of [SDL_keyboard.cats] */

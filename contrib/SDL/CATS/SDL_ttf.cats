@@ -36,8 +36,8 @@
 
 /* ****** ****** */
 
-#ifndef ATSCTRB_SDL_SDL_TTF_CATS
-#define ATSCTRB_SDL_SDL_TTF_CATS
+#ifndef ATSCTRB_SDL_TTF_CATS
+#define ATSCTRB_SDL_TTF_CATS
 
 /* ****** ****** */
 
@@ -100,6 +100,6 @@
 
 /* ****** ****** */
 
-#endif // end of [ATSCTRB_SDL_SDL_TTF_CATS]
+#endif // end of [ATSCTRB_SDL_TTF_CATS]
 
 /* end of [SDL_ttf.cats] */
