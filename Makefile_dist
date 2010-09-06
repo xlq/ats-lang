@@ -52,7 +52,7 @@ config.status: configure
 
 $(BUILT_CONFIG_FILES): %: config.status $(filter-out %,$(SRC_CONFIG_FILES))
 	./config.status
-	touch $@
+	touch $(BUILT_CONFIG_FILES)
 
 config.h.in: configure.ac
 	autoheader $<
