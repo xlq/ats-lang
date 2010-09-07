@@ -152,7 +152,7 @@ val A7: array (int, 7) =
   array_make_arrsz ($arrsz{int} (7, 6, 5, 4, 3, 2, 1))
 // end of [val]
 
-fun A7_get () = let
+fun A7_get (): int = let
   fun loop {i:nat | i <= 7}
     (res: int, i: int i): int =
     if i < 7 then loop (10 * res + A7[i], i+1) else res
