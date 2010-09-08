@@ -459,8 +459,10 @@ overload list_forall2 with list_forall2_cloref
 
 (* ****** ****** *)
 
-fun{a:t@ype} list_foreach__main {v:view} {vt:viewtype} {f:eff}
+fun{a:t@ype}
+list_foreach__main {v:view} {vt:viewtype} {f:eff}
   (pf: !v | xs: List a, f: (!v | a, !vt) -<fun,f> void, env: !vt):<f> void
+// end of [list_foreach__main]
 
 fun{a:t@ype} list_foreach_fun {f:eff}
   (xs: List a, f: a -<fun,f> void):<f> void
@@ -574,8 +576,7 @@ fun{a1,a2:t@ype} list_iforeach2_cloref {n:nat} {f:eff} (
 fun{a:t@ype} list_get_elt_at {n:nat} (xs: list (a, n), i: natLt n):<> a
 overload [] with list_get_elt_at
 
-fun{a:t@ype} list_get_elt_at_exn
-  {n:nat} (xs: list (a, n), i: Nat):<!exn> [n>0] a
+fun{a:t@ype} list_get_elt_at_exn {n:nat} (xs: list (a, n), i: Nat):<!exn> [n>0] a
 
 fun{a:t@ype} list_get_elt_at_opt (xs: List a, i: Nat):<> Option_vt a
 
@@ -585,8 +586,9 @@ fun{a:t@ype} list_head {n:pos} (xs: list (a, n)):<> a
 fun{a:t@ype} list_head_exn {n:nat} (xs: list (a, n)):<!exn> [n>0] a
 
 (* ****** ****** *)
-
-// always inline
+//
+// HX: always inlining
+//
 fun{} list_is_empty {a:t@ype} {n:nat} (xs: list (a, n)):<> bool (n == 0)
 fun{} list_isnot_empty {a:t@ype} {n:nat} (xs: list (a, n)):<> bool (n > 0)
 overload ~ with list_isnot_empty
@@ -604,7 +606,7 @@ overload length with list_length
 (* ****** ****** *)
 
 //
-// please try [list_vt_make_elt]
+// HX: please try [list_vt_make_elt]
 // fun{a:t@ype} list_make_elt {n:nat} (x: a, n: int n):<> list (a, n)
 //
 

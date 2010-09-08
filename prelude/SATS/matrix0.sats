@@ -115,8 +115,9 @@ fun{a:t@ype} matrix0_iforeach
 // end of [matrix0_iforeach]
 
 (* ****** ****** *)
-
-// [row] and [col] are assume0 to be nonzero
+//
+// HX: [row] and [col] are assumed to be nonzero
+//
 fun{a:t@ype} matrix0_tabulate // M[i,j] := f(i, j)
   (row: size_t, col: size_t, f: (size_t, size_t) -<cloref> a):<> matrix0 a
 // end of [matrix0_tabulate]
