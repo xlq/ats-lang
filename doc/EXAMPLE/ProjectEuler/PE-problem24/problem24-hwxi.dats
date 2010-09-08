@@ -1,6 +1,6 @@
 //
-// ProjectEuler: Problem 43
-// Finding the largest pandigital prime
+// ProjectEuler: Problem 24
+// Finding the 1000000th permutation of 0123456789
 //
 
 (* ****** ****** *)
@@ -88,68 +88,16 @@ end // end of [DA_get]
 
 (* ****** ****** *)
 
-exception Failed
-
-fun testExn (): void = let
-//
-  val _0 = 1
-  val d = 100 * DA[_0] + 10 * DA[_0+1] + DA[_0+2]
-  val () = if d mod 2 <> 0 then $raise Failed
-//
-  val _0 = 2
-  val d = 100 * DA[_0] + 10 * DA[_0+1] + DA[_0+2]
-  val () = if d mod 3 <> 0 then $raise Failed
-//
-  val _0 = 3
-  val d = 100 * DA[_0] + 10 * DA[_0+1] + DA[_0+2]
-  val () = if d mod 5 <> 0 then $raise Failed
-//
-  val _0 = 4
-  val d = 100 * DA[_0] + 10 * DA[_0+1] + DA[_0+2]
-  val () = if d mod 7 <> 0 then $raise Failed
-//
-  val _0 = 5
-  val d = 100 * DA[_0] + 10 * DA[_0+1] + DA[_0+2]
-  val () = if d mod 11 <> 0 then $raise Failed
-//
-  val _0 = 6
-  val d = 100 * DA[_0] + 10 * DA[_0+1] + DA[_0+2]
-  val () = if d mod 13 <> 0 then $raise Failed
-//
-  val _0 = 7
-  val d = 100 * DA[_0] + 10 * DA[_0+1] + DA[_0+2]
-  val () = if d mod 17 <> 0 then $raise Failed
-//
-in
-  // nothing
-end // end of [test]
-
-fun test (): bool = try testExn (); true with ~Failed () => false
-
-(* ****** ****** *)
-
 implement
 main () = () where {
-  var sum: ullint = 0ULL
-  val () = while (true) let
-    val () = if
-      test() then let
-      val n = DA_get ()
-(*
-      val () = (print "n = "; print n; print_newline ())
-*)
-    in
-      sum := sum + n
-    end // end of [if]
-    val found = DA_next ()
-  in
-    if found = 0 then break
-  end // end of [val]
-  val ans = sum
-  val () = assert_errmsg (ans = 16695334890ULL, #LOCATION)
-  val () = (print "ans = "; print ans; print_newline ())
+  val N = 1000000 // 1M
+  var i: int // uninitialized
+  val () = for (i := 1; i < N; i := i+1) let val _ = DA_next () in (*none*) end
+  val ans = DA_get ()
+  val () = assert_errmsg (ans = 2783915460ULL, #LOCATION)
+  val () = printf ("ans = %10.10llu\n", @(ans))
 } // end of [main]
 
 (* ****** ****** *)
 
-(* end of [problem43-hwxi.dats] *)
+(* end of [problem24-hwxi.dats] *)

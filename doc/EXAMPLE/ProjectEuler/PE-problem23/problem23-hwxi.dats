@@ -1,13 +1,14 @@
 //
 // ProjectEuler: Problem 23
-// Finding the sum of all the amicable pairs under 10000
+// Finding the sum of all the numbers that cannot be represented
+// as the sum of two abundant numbers
 //
 
 (* ****** ****** *)
 
 //
 // Author: Hongwei Xi (hwxi AT cs DOT bu DOT edu)
-// Time: August, 2010
+// Time: September, 2010
 //
 
 (* ****** ****** *)
