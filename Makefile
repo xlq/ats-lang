@@ -32,6 +32,7 @@
 ##
 ## Author: Hongwei Xi (hwxi AT cs DOT bu DOT edu)
 ## Author: Likai Liu (liulk AT cs DOT bu DOT edu)
+## Author: Yuri D'Elia (wavexx AT thregr DOT org)
 ##
 
 .SUFFIXES:

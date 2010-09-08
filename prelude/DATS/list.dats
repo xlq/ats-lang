@@ -1167,7 +1167,7 @@ in
 end // end of [list_foreach2__main]
 
 implement{a1,a2}
-  list_foreach2_fun {n} {f} (xs, ys, f) = let
+list_foreach2_fun {n} {f} (xs, ys, f) = let
   val f = coerce (f) where { extern castfn
     coerce (f: (a1, a2) -<f> void):<> (!unit_v | a1, a2, !ptr) -<f> void
   } // end of [where]
@@ -1210,7 +1210,7 @@ in
 end // end of [list_foreach2_cloptr]
 
 implement{a1,a2}
-  list_foreach2_cloref {n} {f:eff} (xs1, xs2, f) = let
+list_foreach2_cloref {n} {f:eff} (xs1, xs2, f) = let
   typedef cloref_t = (a1, a2) -<cloref,f> void
   fn app (pf: !unit_v | x1: a1, x2: a2, f: !cloref_t):<f> void =
     f (x1, x2)
@@ -1315,7 +1315,7 @@ in
 end // end of [list_iforeach2__main]
 
 implement{a1,a2}
-  list_iforeach2_fun {n} {f} (xs, ys, f) = let
+list_iforeach2_fun {n} {f} (xs, ys, f) = let
   val f = coerce (f) where { extern castfn
     coerce (f: (natLt n, a1, a2) -<f> void)
       :<> (!unit_v | natLt n, a1, a2, !ptr) -<f> void
@@ -1359,7 +1359,7 @@ in
 end // end of [list_iforeach2_cloptr]
 
 implement{a1,a2}
-  list_iforeach2_cloref {n} {f:eff} (xs1, xs2, f) = let
+list_iforeach2_cloref {n} {f:eff} (xs1, xs2, f) = let
   viewtypedef cloref_t = (natLt n, a1, a2) -<cloref,f> void
   fn app (pf: !unit_v | i: natLt n, x1: a1, x2: a2, f: !cloref_t):<f> void =
     f (i, x1, x2)
