@@ -179,24 +179,24 @@ fun{a:t@ype} list_append_vt {i,j:nat}
 
 fun{a1,a2:t@ype}
 list_assoc__main {v:view} {vt: viewtype} {eq:eff}
-  (pf: !v | xs: List @(a1, a2), eq: (!v | a1, a1, !vt) -<fun, eq> bool, x: a1, env: !vt)
+  (pf: !v | xs: List @(a1, a2), eq: (!v | a1, a1, !vt) -<fun,eq> bool, x: a1, env: !vt)
   :<eq> Option_vt a2
 // end of [list_assoc__main]
 
 fun{a1,a2:t@ype} list_assoc_fun {eq:eff}
-  (xs: List @(a1, a2), eq: (a1, a1) -<fun, eq> bool, x: a1)
+  (xs: List @(a1, a2), eq: (a1, a1) -<fun,eq> bool, x: a1)
   :<eq> Option_vt a2
 
 fun{a1,a2:t@ype} list_assoc_clo {v:view} {eq:eff}
-  (pf: !v | xs: List @(a1, a2), eq: &(!v | a1, a1) -<clo, eq> bool, x: a1)
+  (pf: !v | xs: List @(a1, a2), eq: &(!v | a1, a1) -<clo,eq> bool, x: a1)
   :<eq> Option_vt a2
 
 fun{a1,a2:t@ype} list_assoc_cloptr {v:view} {eq:eff}
-  (pf: !v | xs: List @(a1, a2), eq: !(!v | a1, a1) -<cloptr, eq> bool, x: a1)
+  (pf: !v | xs: List @(a1, a2), eq: !(!v | a1, a1) -<cloptr,eq> bool, x: a1)
   :<eq> Option_vt a2
 
 fun{a1,a2:t@ype} list_assoc_cloref {eq:eff}
-  (xs: List @(a1, a2), eq: (a1, a1) -<cloref, eq> bool, x: a1)
+  (xs: List @(a1, a2), eq: (a1, a1) -<cloref,eq> bool, x: a1)
   :<eq> Option_vt a2
 
 (* ****** ****** *)
@@ -220,13 +220,13 @@ fun{a:t@ype} list_exists_fun {p:eff}
   (xs: List a, p: a -<p> bool):<p> bool
 
 fun{a:t@ype} list_exists_clo {v:view} {p:eff}
-  (pf: !v | xs: List a, p: &(!v | a) -<p,clo> bool):<p> bool
+  (pf: !v | xs: List a, p: &(!v | a) -<clo,p> bool):<p> bool
 
 fun{a:t@ype} list_exists_cloptr {v:view} {p:eff}
-  (pf: !v | xs: List a, p: !(!v | a) -<p,cloptr> bool):<p> bool
+  (pf: !v | xs: List a, p: !(!v | a) -<cloptr,p> bool):<p> bool
 
 fun{a:t@ype} list_exists_cloref {p:eff}
-  (xs: List a, p: a -<p,cloref> bool):<p> bool
+  (xs: List a, p: a -<cloref,p> bool):<p> bool
 
 (*
 
@@ -436,16 +436,16 @@ fun{a1,a2:t@ype} list_forall2_fun {n:nat} {p:eff}
   (xs: list (a1, n), ys: list (a2, n), p: (a1, a2) -<p> bool):<p> bool
 
 fun{a1,a2:t@ype} list_forall2_clo {v:view} {n:nat} {p:eff} (
-    pf: !v| xs: list (a1, n), ys: list (a2, n), p: &(!v | a1, a2) -<p,clo> bool
+    pf: !v| xs: list (a1, n), ys: list (a2, n), p: &(!v | a1, a2) -<clo,p> bool
   ) :<p> bool
 
 fun{a1,a2:t@ype} list_forall2_cloptr {v:view} {n:nat} {p:eff} (
     pf: !v
-  | xs: list (a1, n), ys: list (a2, n), p: !(!v | a1, a2) -<p,cloptr> bool
+  | xs: list (a1, n), ys: list (a2, n), p: !(!v | a1, a2) -<cloptr,p> bool
   ) :<p> bool
 
 fun{a1,a2:t@ype} list_forall2_cloref {n:nat} {p:eff}
-  (xs: list (a1, n), ys: list (a2, n), p: (a1, a2) -<p,cloref> bool):<p> bool
+  (xs: list (a1, n), ys: list (a2, n), p: (a1, a2) -<cloref,p> bool):<p> bool
 
 (*
 
