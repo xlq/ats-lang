@@ -1,5 +1,5 @@
 //
-// ProjectEuler: Problem 19
+// ProjectEuler: Problem 21
 // Finding the sum of all the amicable pairs under 10000
 //
 
