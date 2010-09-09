@@ -4,6 +4,10 @@ ATSCC=$(or $(ATSHOME), "/usr")/bin/atscc
 
 ######
 
+all:: checkall
+
+######
+
 checkall: compall cleanall
 compall:: \
   problem1 \
@@ -27,10 +31,13 @@ compall:: \
   problem19 \
   problem20 \
   problem21 \
+  problem22 \
   problem23 \
+  problem24 \
   problem25 \
   problem26 \
   problem28 \
+  problem29 \
   problem30 \
   problem33 \
   problem34 \
@@ -76,10 +83,13 @@ problem18::; make -C PE-problem18 compall
 problem19::; make -C PE-problem19 compall
 problem20::; make -C PE-problem20 compall
 problem21::; make -C PE-problem21 compall
+problem22::; make -C PE-problem22 compall
 problem23::; make -C PE-problem23 compall
+problem24::; make -C PE-problem24 compall
 problem25::; make -C PE-problem25 compall
 problem26::; make -C PE-problem26 compall
 problem28::; make -C PE-problem28 compall
+problem29::; make -C PE-problem29 compall
 problem30::; make -C PE-problem30 compall
 problem33::; make -C PE-problem33 compall
 problem34::; make -C PE-problem34 compall
@@ -126,10 +136,13 @@ cleanall::
 	make -C PE-problem19 cleanall
 	make -C PE-problem20 cleanall
 	make -C PE-problem21 cleanall
+	make -C PE-problem22 cleanall
 	make -C PE-problem23 cleanall
+	make -C PE-problem24 cleanall
 	make -C PE-problem25 cleanall
 	make -C PE-problem26 cleanall
 	make -C PE-problem28 cleanall
+	make -C PE-problem29 cleanall
 	make -C PE-problem30 cleanall
 	make -C PE-problem33 cleanall
 	make -C PE-problem34 cleanall

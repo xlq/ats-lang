@@ -119,4 +119,4 @@ val modifyi ...
 
 (* ****** ****** *)
 
-(* end of [array.sats] *)
+(* end of [array2.sats] *)

@@ -125,5 +125,3 @@ fun realTrunc (r: real): real
 (* ****** ****** *)
 
 (* end of [real.sats] *)
-
-

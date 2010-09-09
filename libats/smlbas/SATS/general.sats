@@ -68,4 +68,4 @@ fun{a:t@ype} ignore (x: a): void
 
 (* ****** ****** *)
 
-(* end of [list.sats] *)
+(* end of [general.sats] *)

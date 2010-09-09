@@ -40,16 +40,14 @@
 (* ****** ****** *)
 
 #if VERBOSE_PRELUDE #then
-
 #print "Loading [list_vt.sats] starts!\n"
-
-#endif
+#endif // end of [VERBOSE_PRELUDE]
 
 (* ****** ****** *)
 
 %{#
 #include "prelude/CATS/list_vt.cats"
-%}
+%} // end of [%{#]
 
 (* ****** ****** *)
 
@@ -166,6 +164,14 @@ list_vt_mergesort {n:nat}
   (xs: list_vt (a, n), cmp: &(&a, &a) -<clo> Sgn):<> list_vt (a, n)
 // end of [list_vt_mergesort]
 
+(*
+// HX: if needed, this one is more general:
+fun{a:viewt@ype}
+list_vt_mergesort {v:view} {n:nat}
+  (pf: !v | xs: list_vt (a, n), cmp: &(!v | &a, &a) -<clo> Sgn):<> list_vt (a, n)
+// end of [list_vt_mergesort]
+*)
+
 //
 // note that [libc/CATS/stdlib.cats] is needed
 // this one essentially copies a given list into an array;
@@ -179,9 +185,7 @@ list_vt_quicksort {n:nat} (xs: !list_vt (a, n), cmp: (&a, &a) -<fun> Sgn):<> voi
 (* ****** ****** *)
 
 #if VERBOSE_PRELUDE #then
-
 #print "Loading [list_vt.sats] finishes!\n"
-
-#endif
+#endif // end of [VERBOSE_PRELUDE]
 
 (* end of [list_vt.sats] *)
