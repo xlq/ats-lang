@@ -1,6 +1,6 @@
 //
 // ProjectEuler: Problem 41
-// Finding the largest pandigit prime
+// Finding the largest pandigital prime
 //
 
 (* ****** ****** *)

@@ -39,11 +39,20 @@ val theInp = "\
 01 70 54 71 83 51 54 69 16 92 33 48 61 43 52 01 89 19 67 48\n\
 " // end of [theInp]
 
-stadef theLen = 1200
+(* ****** ****** *)
+
+local
+stavar theLen : int
+in
 val theLen = string1_length (theInp): size_t (theLen)
+end // end of [local]
+
+(* ****** ****** *)
 
 typedef intlst = List (int)
 typedef intlstlst = List (intlst)
+
+(* ****** ****** *)
 
 fun getLst
   (i0: &Size): intlst = let
@@ -77,14 +86,16 @@ val theLstLst = let
   val res = list_vt_reverse<intlst> (res)
 in
   list_of_list_vt (res)
-end : intlstlst // end of [val]
+end // end of [val]
 
-val theNCOL = list_length<intlst> (theLstLst) : Nat
+val theNCOL = list_length (theLstLst) : Nat
 val theNROW = let
-  val- list_cons (xs, _) = (theLstLst: intlstlst) in list_length xs
+  val- list_cons (xs, _) = theLstLst in list_length<int> {...} (xs)
 end : Nat // end of [val]
+(*
 val () = (print "theNROW = "; print theNROW; print_newline ())
 val () = (print "theNCOL = "; print theNCOL; print_newline ())
+*)
 
 (* ****** ****** *)
 
