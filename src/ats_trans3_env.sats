@@ -205,15 +205,20 @@ fun the_s2Varset_env_pop (): void and the_s2Varset_env_push (): void
 
 (* ****** ****** *)
 
-// absview s2varbindmap_token_v
+fun the_s2varbindmap_initialize (): void
+//
 fun fprint_the_s2varbindmap {m:file_mode}
   (pf: file_mode_lte (m, w) | out: &FILE m): void
 fun print_the_s2varbindmap (): void and prerr_the_s2varbindmap (): void
+//
 fun the_s2varbindmap_add (s2v: s2var_t, s2e: s2exp): void
 fun the_s2varbindmap_find (s2v: s2var_t): s2expopt_vt
+//
+// absview s2varbindmap_token_v
 // fun the_s2varbindmap_pop (): (s2varbindmap_token_v | void)
-fun the_s2varbindmap_pop (): void
 // fun the_s2varbindmap_push (pf: s2varbindmap_token_v | (*none*)): void
+//
+fun the_s2varbindmap_pop (): void
 fun the_s2varbindmap_push (): void
 
 (* ****** ****** *)

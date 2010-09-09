@@ -85,12 +85,12 @@ val theLstLst = let
   val res = aux (i0, list_vt_nil)
   val res = list_vt_reverse<intlst> (res)
 in
-  list_of_list_vt (res)
+  list_of_list_vt {intlst} (res)
 end // end of [val]
 
 val theNCOL = list_length (theLstLst) : Nat
 val theNROW = let
-  val- list_cons (xs, _) = theLstLst in list_length<int> {...} (xs)
+  val- list_cons (xs, _) = theLstLst in list_length<int>  (xs)
 end : Nat // end of [val]
 (*
 val () = (print "theNROW = "; print theNROW; print_newline ())

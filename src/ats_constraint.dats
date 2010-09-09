@@ -43,7 +43,7 @@
 %{^
 #include "ats_counter.cats" /* only needed for [ATS/Geizella] */
 #include "ats_solver_fm.cats"
-%}
+%} // end of [%{^]
 
 (* ****** ****** *)
 
@@ -93,7 +93,8 @@ implement s3aexp_null = S3AEnull ()
 implement s3aexp_cst (s2c) = S3AEcst (s2c)
 implement s3aexp_var (s2v) = S3AEvar (s2v)
 
-implement s3aexp_padd (s3ae1, s3ie2) = begin
+implement
+s3aexp_padd (s3ae1, s3ie2) = begin
   case+ s3ae1 of
   | S3AEpadd (s3ae11, s3ie12) => begin
       s3aexp_padd (s3ae11, s3iexp_iadd (s3ie12, s3ie2))
@@ -101,7 +102,8 @@ implement s3aexp_padd (s3ae1, s3ie2) = begin
   | _ => S3AEpadd (s3ae1, s3ie2)
 end // end of [s3aexp_padd]
 
-implement s3aexp_psub (s3ae1, s3ie2) = begin
+implement
+s3aexp_psub (s3ae1, s3ie2) = begin
   case+ s3ae1 of
   | S3AEpadd (s3ae11, s3ie12) => begin
       s3aexp_padd (s3ae11, s3iexp_isub (s3ie12, s3ie2))
@@ -120,7 +122,8 @@ implement s3bexp_false = S3BEbool (false)
 implement s3bexp_cst (s2c) = S3BEcst (s2c)
 implement s3bexp_var (s2v) = S3BEvar (s2v)
 
-implement s3bexp_bneg (s3be0) = case+ s3be0 of
+implement
+s3bexp_bneg (s3be0) = case+ s3be0 of
   | S3BEbool b => S3BEbool (not b)
   | S3BEbadd (s3be1, s3be2) => S3BEbmul (S3BEbneg s3be1, S3BEbneg s3be2)
   | S3BEbmul (s3be1, s3be2) => S3BEbadd (S3BEbneg s3be1, S3BEbneg s3be2)
@@ -129,7 +132,8 @@ implement s3bexp_bneg (s3be0) = case+ s3be0 of
   | _ => S3BEbneg s3be0
 // end of [s3bexp_bneg]
 
-implement s3bexp_beq (s3be1, s3be2) = begin case+ s3be1 of
+implement
+s3bexp_beq (s3be1, s3be2) = begin case+ s3be1 of
   | S3BEbool b1 => if b1 then s3be2 else s3bexp_bneg s3be2
   | _ => begin case+ s3be2 of
     | S3BEbool b2 => if b2 then s3be1 else s3bexp_bneg s3be1
@@ -141,7 +145,8 @@ implement s3bexp_beq (s3be1, s3be2) = begin case+ s3be1 of
     end // end of [_]
 end // end of [s3bexp_beq]
 
-implement s3bexp_bneq (s3be1, s3be2) = begin case+ s3be1 of
+implement
+s3bexp_bneq (s3be1, s3be2) = begin case+ s3be1 of
   | S3BEbool b1 => if b1 then s3bexp_bneg s3be2 else s3be2
   | _ => begin case+ s3be2 of
     | S3BEbool b2 => if b2 then s3bexp_bneg s3be1 else s3be1
@@ -155,7 +160,8 @@ end // end of [s3bexp_beq]
 
 //
 
-implement s3bexp_badd (s3be1, s3be2) = begin
+implement
+s3bexp_badd (s3be1, s3be2) = begin
   case+ s3be1 of
   | S3BEbool b1 => if b1 then s3bexp_true else s3be2
   | _ => begin case+ s3be2 of
@@ -164,7 +170,8 @@ implement s3bexp_badd (s3be1, s3be2) = begin
     end // end of [_]
 end // end of [s3bexp_badd]
 
-implement s3bexp_bmul (s3be1, s3be2) = begin
+implement
+s3bexp_bmul (s3be1, s3be2) = begin
   case+ s3be1 of
   | S3BEbool b1 => if b1 then s3be2 else s3bexp_false
   | _ => begin case+ s3be2 of
@@ -175,7 +182,8 @@ end // end of [s3bexp_bmul]
 
 //
 
-implement s3bexp_iexp (knd, s3ie) = begin case+ s3ie of
+implement
+s3bexp_iexp (knd, s3ie) = begin case+ s3ie of
   | S3IEint i => begin case+ knd of
     | 2(*gte*) => if i >= 0 then s3bexp_true else s3bexp_false
     | 1(*eq*) => if i = 0 then s3bexp_true else s3bexp_false
@@ -272,7 +280,8 @@ implement s3iexp_int (i) = S3IEint i
 implement s3iexp_intinf (i) = S3IEintinf i
 implement s3iexp_var (s2v) = S3IEvar s2v
 
-implement s3iexp_ineg (s3ie) = begin
+implement
+s3iexp_ineg (s3ie) = begin
   case+ s3ie of
   | S3IEint i => S3IEint (~i)
   | S3IEintinf i => S3IEintinf (~i)
@@ -280,7 +289,8 @@ implement s3iexp_ineg (s3ie) = begin
   | _ => S3IEineg s3ie // end of [_]
 end // end of [s3iexp_ineg]
 
-implement s3iexp_iadd (s3ie1, s3ie2) = begin
+implement
+s3iexp_iadd (s3ie1, s3ie2) = begin
   case+ (s3ie1, s3ie2) of
   | (S3IEint i, _) when i = 0 => s3ie2
   | (_, S3IEint i) when i = 0 => s3ie1
@@ -294,7 +304,8 @@ implement s3iexp_iadd (s3ie1, s3ie2) = begin
   | (_, _) => S3IEiadd (s3ie1, s3ie2)
 end // end of [s3iexp_iadd]
 
-implement s3iexp_isub (s3ie1, s3ie2) = begin
+implement
+s3iexp_isub (s3ie1, s3ie2) = begin
   case+ (s3ie1, s3ie2) of
   | (S3IEint i, _) when i = 0 => s3iexp_ineg s3ie2
   | (_, S3IEint i) when i = 0 => s3ie1
@@ -308,7 +319,8 @@ implement s3iexp_isub (s3ie1, s3ie2) = begin
   | (_, _) => S3IEisub (s3ie1, s3ie2)
 end // end of [s3iexp_isub]
 
-implement s3iexp_imul (s3ie1, s3ie2) = begin
+implement
+s3iexp_imul (s3ie1, s3ie2) = begin
   case+ (s3ie1, s3ie2) of
   | (S3IEint i, _) when i = 0 => s3ie1 // 0
   | (S3IEint i, _) when i = 1 => s3ie2
@@ -329,7 +341,8 @@ implement s3iexp_ipred (s3ie: s3iexp): s3iexp = s3iexp_isub (s3ie, s3iexp_1)
 
 (* ****** ****** *)
 
-fun s2cfdeflst_free (fds: s2cfdeflst_vt): void = begin
+fun s2cfdeflst_free
+  (fds: s2cfdeflst_vt): void = begin
   case+ fds of
   | ~S2CFDEFLSTcons (_, _, _, os3be, fds) => let
       val () = case+ os3be of ~Some_vt _ => () | ~None_vt () => ()
@@ -342,7 +355,8 @@ end // end of [s2cfdeflst_free]
 
 //
 
-fn s2cfdeflst_pop (fds0: &s2cfdeflst_vt): void = let
+fn s2cfdeflst_pop
+  (fds0: &s2cfdeflst_vt): void = let
   fun aux (fds: s2cfdeflst_vt): s2cfdeflst_vt = case+ fds of
     | ~S2CFDEFLSTcons (s2c, s2es, s2v, os3be, fds) => let
         val () = case+ os3be of ~Some_vt _ => () | ~None_vt () => ()
@@ -387,8 +401,9 @@ fun s2cfdeflst_find
 end // end of [s2cfdeflst_find]
 
 (* ****** ****** *)
-
+//
 // for handling a special static function
+//
 fn s2cfdeflst_add
   (s2c: s2cst_t, s2es: s2explst, s2v: s2var_t,
    s2cs: &s2cstlst, fds: &s2cfdeflst_vt): void = let
@@ -408,7 +423,9 @@ in
   fds := S2CFDEFLSTcons (s2c, s2es, s2v, os3be, fds)
 end // end of [s2cfdeflst_add]
 
+//
 // for handling a generic static function
+//
 fn s2cfdeflst_add_none
   (s2c: s2cst_t, s2es: s2explst, s2v: s2var_t,
    s2cs: &s2cstlst, fds: &s2cfdeflst_vt): void = let
@@ -424,8 +441,9 @@ in
 end // end of [s2cfdeflst_add_none]
 
 (* ****** ****** *)
-
+//
 // for handling a special static function
+//
 fn s2cfdeflst_replace (
     s2t: s2rt
   , s2c: s2cst_t, s2es: s2explst
@@ -441,7 +459,9 @@ fn s2cfdeflst_replace (
   | ~Some_vt s2v => s2v // end of [Some_vt]
 // end of [s2cfdeflst_replace]
 
+//
 // for handling a generic static function
+//
 fn s2cfdeflst_replace_none (
     s2t: s2rt
   , s2c: s2cst_t, s2es: s2explst
@@ -465,7 +485,9 @@ fun s3aexp_make_s2cst_s2explst
   : s3aexpopt_vt
 // end of [fun s3aexp_make_s2cst_s2explst]
 
-implement s3aexp_make_s2cst_s2explst (s2c, s2es, s2cs, fds) = let
+implement
+s3aexp_make_s2cst_s2explst
+  (s2c, s2es, s2cs, fds) = let
   fn errmsg (s2c: s2cst_t): s3aexpopt_vt = begin
     prerr_interror ();
     prerr ": s3aexp_make_s2cst_s2explst: s2c = "; prerr s2c; prerr_newline ();
@@ -900,7 +922,9 @@ fun s3iexp_make_s2cst_s2explst
   : s3iexpopt_vt
 // end of [fun s3iexp_make_s2cst_s2explst]
 
-implement s3iexp_make_s2cst_s2explst (s2c, s2es, s2cs, fds) = let
+implement
+s3iexp_make_s2cst_s2explst
+  (s2c, s2es, s2cs, fds) = let
   fn errmsg (s2c: s2cst_t): s3iexpopt_vt = begin
     prerr_interror ();
     prerr ": s3iexp_make_s2cst_s2explst: s2c = "; prerr s2c; prerr_newline ();
@@ -1149,7 +1173,9 @@ in
   if aux (s2cs, s2c0) then s2cs else S2CSTLSTcons (s2c0, s2cs)
 end // end of [s2cstlst_add]
 
-implement s3aexp_make_s2exp (s2e0, s2cs, fds) = let
+implement
+s3aexp_make_s2exp
+  (s2e0, s2cs, fds) = let
   val s2e0 = s2exp_whnf s2e0
 (*
   val () = begin
@@ -1439,7 +1465,8 @@ stadef intvec = $FM.intvec
 
 (* ****** ****** *)
 
-extern fun s3aexp_intvec_update_err {n:pos} {l:addr} (
+extern
+fun s3aexp_intvec_update_err {n:pos} {l:addr} (
     pf_arr: !intvec n @ l
   | loc0: loc_t
   , cim: !s2cst_index_map
@@ -1448,8 +1475,10 @@ extern fun s3aexp_intvec_update_err {n:pos} {l:addr} (
   , coef: i0nt, s3ae0: s3aexp
   , errno: &int
   ) : void
+// end of [s3aexp_intvec_update_err]
 
-extern fun s3bexp_intvec_update_err {n:pos} {l:addr} (
+extern
+fun s3bexp_intvec_update_err {n:pos} {l:addr} (
     pf_arr: !intvec n @ l
   | loc0: loc_t
   , cim: !s2cst_index_map
@@ -1458,8 +1487,10 @@ extern fun s3bexp_intvec_update_err {n:pos} {l:addr} (
   , coef: i0nt, s3be0: s3bexp
   , errno: &int
   ) : void
+// end of [s3bexp_intvec_update_err]
 
-extern fun s3iexp_intvec_update_err {n:pos} {l:addr} (
+extern
+fun s3iexp_intvec_update_err {n:pos} {l:addr} (
     pf_arr: !intvec n @ l
   | loc0: loc_t
   , cim: !s2cst_index_map
@@ -1468,8 +1499,9 @@ extern fun s3iexp_intvec_update_err {n:pos} {l:addr} (
   , coef: i0nt, s3ie0: s3iexp
   , errno: &int
   ) : void
+// end of [s3iexp_intvec_update_err]
 
-//
+(* ****** ****** *)
 
 implement
 s3aexp_intvec_update_err
@@ -1478,7 +1510,7 @@ s3aexp_intvec_update_err
   val () = begin
     print "s3aexp_intvec_update_err: coef = "; print coef; print_newline ();
     print "s3aexp_intvec_update_err: s3ae0 = "; print s3ae0; print_newline ();
-  end
+  end // end of [val]
 *)
 in
   case+ s3ae0 of
@@ -1512,8 +1544,8 @@ s3iexp_intvec_update_err
   (pf_arr | loc0, cim, vim, ivp, n, coef, s3ie0, errno) = let
 (*
   val () = begin
-    print "s3iexp_intvec_update_err: coef = "; print coef; print_newline ();
-    print "s3iexp_intvec_update_err: s3ie0 = "; print s3ie0; print_newline ();
+    print "s3iexp_intvec_update_err: coef = "; print_i0nt coef; print_newline ();
+    print "s3iexp_intvec_update_err: s3ie0 = "; print_s3iexp s3ie0; print_newline ();
   end // end of [val]
 *)
 in
@@ -1587,7 +1619,8 @@ end // end of [s3iexp_intvec_update_err]
 
 (* ****** ****** *)
 
-extern fun s3bexp_icstr_make_err {n:pos} (
+extern
+fun s3bexp_icstr_make_err {n:pos} (
     loc0: loc_t
   , cim: !s2cst_index_map
   , vim: !s2var_index_map
@@ -1595,6 +1628,7 @@ extern fun s3bexp_icstr_make_err {n:pos} (
   , s3be0: s3bexp
   , errno: &int
   ) : $FM.icstr n
+// end of [s3bexp_icstr_make_err]
 
 implement
 s3bexp_icstr_make_err
@@ -1659,7 +1693,8 @@ end // end of [s3bexp_icstr_make_err]
 
 (* ****** ****** *)
 
-extern fun s3bexplst_s2exp_solve_fm (
+extern
+fun s3bexplst_s2exp_solve_fm (
     loc0: loc_t
   , s2vs: s2varlst
   , s3bes: s3bexplst
@@ -1668,6 +1703,7 @@ extern fun s3bexplst_s2exp_solve_fm (
   , fds: &s2cfdeflst_vt
   , errno: &int
   ) : intBtw (~1, 1)
+// end of [s3bexplst_s2exp_solve_fm]
 
 implement
 s3bexplst_s2exp_solve_fm
@@ -1803,7 +1839,8 @@ end // end of [s3bexplst_s2exp_solve_fm]
 
 (* ****** ****** *)
 
-extern fun c3str_solve_main (
+extern
+fun c3str_solve_main (
     s2vs: s2varlst
   , s3bes: s3bexplst
   , c3t: c3str
@@ -1812,8 +1849,10 @@ extern fun c3str_solve_main (
   , unsolved: &uint
   , errno: &int
   ) : intBtw (~1, 1)
+// end of [c3str_solve_main]
 
-extern fun c3str_solve_prop (
+extern
+fun c3str_solve_prop (
     loc0: loc_t
   , s2vs: s2varlst
   , s3bes: s3bexplst
@@ -1822,8 +1861,10 @@ extern fun c3str_solve_prop (
   , fds: &s2cfdeflst_vt
   , errno: &int
   ) : intBtw (~1, 1)
+// end of [c3str_solve_prop]
 
-extern fun c3str_solve_itmlst (
+extern
+fun c3str_solve_itmlst (
     loc0: loc_t
   , s2vs: s2varlst
   , s3bes: s3bexplst
@@ -1833,8 +1874,10 @@ extern fun c3str_solve_itmlst (
   , unsolved: &uint
   , errno: &int
   ) : intBtw (~1, 1)
+// end of [c3str_solve_itmlst]
 
-extern fun c3str_solve_itmlst_disj (
+extern
+fun c3str_solve_itmlst_disj (
     loc0: loc_t
   , s2vs: s2varlst
   , s3bes: s3bexplst
@@ -1845,10 +1888,9 @@ extern fun c3str_solve_itmlst_disj (
   , unsolved: &uint
   , errno: &int
   ) : intBtw (~1, 1)
+// end of [c3str_solve_itmlst_disj]
 
 (* ****** ****** *)
-
-macdef i2u (i) = uint_of_int ,(i)
 
 fn pattern_match_exhaustiveness_msg
   (loc0: loc_t, knd: int, p2tcs: p2atcstlst) = let
@@ -1875,7 +1917,8 @@ in
   | _ => () // ignore
 end // end of [pattern_match_exhaustiveness_msg]
 
-implement c3str_solve_main
+implement
+c3str_solve_main
   (s2vs, s3bes, c3t, s2cs, fds, unsolved, errno) = let
 (*
   val () = begin
@@ -1900,14 +1943,14 @@ implement c3str_solve_main
   val () = s2cfdeflst_pop (fds); val () = s2cs := s2cs0
 //
   fn prerr_c3str_if (unsolved: uint, c3t: c3str): void = begin
-    if (unsolved > i2u 0) then () else (prerr ": "; prerr_c3str c3t)
+    if (unsolved > 0U) then () else (prerr ": "; prerr_c3str c3t)
   end // end of [prerr_c3str_if]
 //
   var ans: intBtw (~1, 1) = ans
   val () = begin case+ ans of
     | _ when ans >= 0 => begin case+ c3t.c3str_kind of
       | C3STRKINDnone () => begin
-          if unsolved > i2u 0 then begin
+          if unsolved > 0U then begin
             // an error message has already been reported
           end else begin
             $Loc.prerr_location loc0; prerr ": error(3)";
@@ -1956,7 +1999,7 @@ implement c3str_solve_main
       end (* end of [ans >= 0] *)
     | _ => ()
     end // end of [case]
-  val () = if ans >= 0 then (unsolved := unsolved + i2u 1)
+  val () = if ans >= 0 then (unsolved := unsolved + 1U)
 in
   ans (* 0: unsolved; ~1: solved *)
 end // end of [c3str_solve_main]
@@ -2059,7 +2102,7 @@ in
   | list_nil () => ~1(*solved*)
 end // end of [c3str_solve_itmlst]
 
-//
+(* ****** ****** *)
 
 implement
 c3str_solve_itmlst_disj
@@ -2089,22 +2132,23 @@ c3str_solve (c3t) = let
     print "c3str_solve: c3t = "; print c3t; print_newline ()
   end // end of [val]
 *)
-(*
-  val () = the_s2varbindmap_initialize () // there is no need for initialization
-*)
+//
+// HX-2010-09-09: this is needed for solving top-level constraints!!!
+  val () = the_s2varbindmap_initialize ()
+//
   val s2vs0 = list_nil () and s3bes0 = list_nil ()
   var s2cs: s2cstlst = S2CSTLSTnil ()
   var fds: s2cfdeflst_vt = S2CFDEFLSTnil ()
-  var unsolved: uint = i2u 0
+  var unsolved: uint = 0U
   var errno: int = 0
   val _(*ans*) = c3str_solve_main
     (s2vs0, s3bes0, c3t, s2cs, fds, unsolved, errno)
   val () = s2cfdeflst_free (fds)
 in
-  if unsolved > i2u 0 then begin
+  if unsolved > 0U then begin
     prerr "type-checking has failed";
-    if unsolved <= i2u 1 then prerr ": there is one unsolved constraint";
-    if unsolved >= i2u 2 then prerr ": there are some unsolved constraints";
+    if unsolved <= 1U then prerr ": there is one unsolved constraint";
+    if unsolved >= 2U then prerr ": there are some unsolved constraints";
     prerr ": please inspect the above reported error message(s) for information.";
     prerr_newline ();
     $Err.abort {void} ()

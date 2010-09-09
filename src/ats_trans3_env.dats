@@ -171,9 +171,10 @@ val the_s2varbindmap = ref_make_elt<s2varbindmap> (
 
 in // in of [local]
 
-fn the_s2varbindmap_initialize () = let
-  val (vbox pf | p) =
-    ref_get_view_ptr (the_s2varbindmap) in
+implement
+the_s2varbindmap_initialize () = let
+  val (vbox pf | p) = ref_get_view_ptr (the_s2varbindmap)
+in
   $Map.map_clean<stamp_t, s2exp> (!p)
 end // end of [the_s2varbindmap_initialize]
 
