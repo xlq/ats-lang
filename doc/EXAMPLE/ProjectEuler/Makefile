@@ -40,6 +40,7 @@ compall:: \
   problem28 \
   problem29 \
   problem30 \
+  problem31 \
   problem33 \
   problem34 \
   problem36 \
@@ -95,6 +96,7 @@ problem27::; make -C PE-problem27 compall
 problem28::; make -C PE-problem28 compall
 problem29::; make -C PE-problem29 compall
 problem30::; make -C PE-problem30 compall
+problem31::; make -C PE-problem31 compall
 problem33::; make -C PE-problem33 compall
 problem34::; make -C PE-problem34 compall
 problem36::; make -C PE-problem36 compall
@@ -151,6 +153,7 @@ cleanall::
 	make -C PE-problem28 cleanall
 	make -C PE-problem29 cleanall
 	make -C PE-problem30 cleanall
+	make -C PE-problem31 cleanall
 	make -C PE-problem33 cleanall
 	make -C PE-problem34 cleanall
 	make -C PE-problem36 cleanall
