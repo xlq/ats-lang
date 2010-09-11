@@ -1771,6 +1771,7 @@ implement initialize () = () where {
 } // end of [initialize]
 
 implement finalize () = () where {
+//
   val () = aux_atsccomp_namespace () where {
     fun aux_atsccomp_namespace (): void = begin
     case+ the_e1xpenv_find ($Sym.symbol_ATSCCOMP_NAMESPACE) of
@@ -1792,7 +1793,7 @@ implement finalize () = () where {
     | ~None_vt () => () // use the default value
     end // end of [aux_atsccomp_namespace]
   } // end of [where]
-
+//
   val () = aux_dynloadflag () where {
     fun aux_dynloadflag (): void = begin
     case+ the_e1xpenv_find ($Sym.symbol_ATS_DYNLOADFLAG) of
@@ -1805,7 +1806,7 @@ implement finalize () = () where {
     | ~None_vt () => () // use the default value
     end // end of [aux_dynloadflag]
   } // end of [where]
-
+//
   val () = aux_dynloadfun_name () where {
     fun aux_dynloadfun_name (): void = let
       val ans = the_e1xpenv_find ($Sym.symbol_ATS_DYNLOADFUN_NAME)
@@ -1828,6 +1829,7 @@ implement finalize () = () where {
       | ~None_vt () => () // use the default value
     end // end of [aux_dynloadfun_name]
   } // end of [where]
+//
 } // end of [finalize]
 
 (* ****** ****** *)

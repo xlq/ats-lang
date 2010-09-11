@@ -8,6 +8,7 @@ ats-lang-anairiats-0.2.2:
 3. Fixing a bug involving solving top-level constraints
 4. $ATSHOME/libc/SATS/complex.sats and $ATSHOME/libc/DATS/complex.dats
    are compiled and then added to libats.a
+5. Adding support for #undef
 
 ########################################################################
 

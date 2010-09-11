@@ -284,9 +284,9 @@ assume s2expenv_token = unit_v
 typedef s2expenv = $SymEnv.symenv_t (s2item)
 
 local
-
+//
 val the_s2expenv: s2expenv = $SymEnv.symenv_make ()
-
+//
 in // in of [local]
 
 implement the_s2expenv_add (id, s2i) = let

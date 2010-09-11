@@ -189,6 +189,7 @@ fn e0xp_tr_errmsg_opr (loc: loc_t): e1xp = begin
 end // end of [e0xp_tr_errmsg_opr]
   
 implement e0xp_tr e0 = let
+//
   fun aux_item (e0: e0xp): e1xpitm = let
     val loc = e0.e0xp_loc in case+ e0.e0xp_node of
     | E0XPapp _ => let
@@ -217,7 +218,7 @@ implement e0xp_tr e0 = let
     | E0XPlist (es) => $Fix.ITEMatm (e1xp_list (loc, e0xplst_tr es))
     | E0XPstring (str, len) => $Fix.ITEMatm (e1xp_string (loc, str, len))
   end // end of [aux_item]
-
+//
   and aux_itemlst (e0: e0xp): e1xpitmlst = let
     fun aux (res: e1xpitmlst, e0: e0xp): e1xpitmlst =
       case+ e0.e0xp_node of
@@ -229,15 +230,15 @@ implement e0xp_tr e0 = let
   in
     aux (nil (), e0)
   end // end of [aux_itemlst]
+//
 in
   case+ aux_item e0 of
     | $Fix.ITEMatm e => e
     | $Fix.ITEMopr _ => e0xp_tr_errmsg_opr e0.e0xp_loc
+  // end of [case]
 end // end of [e0xp_tr]
 
-implement e0xplst_tr es = case+ es of
-  | cons (e, es) => cons (e0xp_tr e, e0xplst_tr es)
-  | nil () => nil ()
+implement e0xplst_tr es = $Lst.list_map_fun (es, e0xp_tr)
 
 (* ****** ****** *)
 
@@ -261,7 +262,8 @@ in
   $Fix.item_app f
 end // end of [app_s1rt_item]
 
-fun s1rt_make_opr (s1t: s1rt, f: $Fix.fxty_t): s1rtitm = begin
+fun s1rt_make_opr
+  (s1t: s1rt, f: $Fix.fxty_t): s1rtitm = begin
   $Fix.oper_make {s1rt} (
     lam x => x.s1rt_loc,
     lam (loc, x, _(*loc_arg*), xs) => s1rt_app (loc, x, xs), s1t, f
@@ -277,14 +279,15 @@ end // end of [s1rtitm_backslash]
 
 (* ****** ****** *)
 
-fn s0rt_tr_errmsg_opr (loc: loc_t): s1rt = begin
+fn s0rt_tr_errmsg_opr
+  (loc: loc_t): s1rt = begin
   prerr_loc_error1 loc;
   prerr ": the operator needs to be applied";
   $Err.abort {s1rt} ()
 end // end of [s0rt_tr_errmsg_opr]
   
 implement s0rt_tr s0t0 = let
-
+//
 fun aux_item (s0t0: s0rt): s1rtitm = let
   val loc0 = s0t0.s0rt_loc in case+ s0t0.s0rt_node of
     | S0RTapp _ => let 
@@ -302,7 +305,7 @@ fun aux_item (s0t0: s0rt): s1rtitm = let
     | S0RTqid (q, id) => $Fix.ITEMatm (s1rt_qid (loc0, q, id))
     | S0RTtup (s0ts) => $Fix.ITEMatm (s1rt_tup (loc0, s0rtlst_tr s0ts))
 end // end of [aux_item]
-
+//
 and aux_itemlst (s0t0: s0rt): s1rtitmlst = let
   fun aux (res: s1rtitmlst, s0t0: s0rt): s1rtitmlst =
     case+ s0t0.s0rt_node of
@@ -315,22 +318,25 @@ and aux_itemlst (s0t0: s0rt): s1rtitmlst = let
 in
   aux (nil (), s0t0)
 end // end of [aux_itemlst]
-
+//
 in
   case+ aux_item s0t0 of
     | $Fix.ITEMatm s1t => s1t
     | $Fix.ITEMopr _ => s0rt_tr_errmsg_opr s0t0.s0rt_loc
+  // end of [case]
 end // end of [s0rt_tr]
 
 implement s0rtlst_tr (s0ts: s0rtlst) = $Lst.list_map_fun (s0ts, s0rt_tr)
 
 implement s0rtopt_tr (os0t: s0rtopt) =
   case+ os0t of Some s0t => Some (s0rt_tr s0t) | None () => None ()
+// end of [s0rtopt_tr]
 
 (* ****** ****** *)
 
 fn s0rtpol_tr (s0tp: s0rtpol): s1rtpol =
   s1rtpol_make (s0tp.s0rtpol_loc, s0rt_tr s0tp.s0rtpol_srt, s0tp.s0rtpol_pol)
+// end of [s0rtpol_tr]
 
 fn s0rtpol_srt_tr (s0tp: s0rtpol): s1rt =
   if s0tp.s0rtpol_pol = 0 then s0rt_tr s0tp.s0rtpol_srt
@@ -358,6 +364,7 @@ fun d0atarglst_tr (d0as: d0atarglst): d1atarglst =
   case+ d0as of
   | cons (d0a, d0as) => cons (d0atarg_tr d0a, d0atarglst_tr d0as)
   | nil () => nil ()
+// end of [d0atarglst_tr]
 
 fun d0atarglst_srtlst_tr (d0as: d0atarglst): s1rtlst = begin
   case+ d0as of
@@ -404,8 +411,9 @@ implement d0ec_nonfix_tr (ids) = let
   fun loop (ids: i0delst): void = case+ ids of
     | cons (id, ids) => begin
         the_fxtyenv_add (id.i0de_sym, $Fix.fxty_non); loop ids
-      end
+      end // end of [cons]
     | nil () => ()
+  // end of [loop]
 in
   loop ids
 end // end of [d0ec_nonfix_tr]
@@ -473,7 +481,7 @@ implement s0tacst_tr (d) = let
   val s1t_res: s1rt = s0rt_tr d.s0tacst_res
 in
   s1tacst_make (d.s0tacst_loc, d.s0tacst_sym, os1ts_arg, s1t_res)
-end
+end // end of [s0tacst_tr]
 
 implement s0tacstlst_tr (ds) = $Lst.list_map_fun (ds, s0tacst_tr)
 
@@ -483,7 +491,7 @@ implement s0tavar_tr (d) = let
   val s1t: s1rt = s0rt_tr d.s0tavar_srt
 in
   s1tavar_make (d.s0tavar_loc, d.s0tavar_sym, s1t)
-end
+end // end of [s0tavar_tr]
 
 implement s0tavarlst_tr (ds) = $Lst.list_map_fun (ds, s0tavar_tr)
 
@@ -912,7 +920,7 @@ end // end of [s0aspdec_tr]
 (* ****** ****** *)
 
 fn d0atcon_tr (d0c: d0atcon): d1atcon = let
-
+//
 val qua = s0qualstlst_tr (d0c.d0atcon_qua)
 var npf_var: int = 0
 val arg = (case+ d0c.d0atcon_arg of
@@ -925,7 +933,7 @@ val arg = (case+ d0c.d0atcon_arg of
     end
   | None () => nil ()
 ) : s1explst
-
+//
 val ind = (case+ d0c.d0atcon_ind of
   | Some s0e => let
       val s1es = case+ s0e.s0exp_node of
@@ -939,7 +947,7 @@ val ind = (case+ d0c.d0atcon_ind of
     end // end of [Some]
   | None () => None () // end of [None]
 ) : s1explstopt
-
+//
 in
   d1atcon_make (d0c.d0atcon_loc, d0c.d0atcon_sym, qua, npf_var, arg, ind)
 end // end of [d0atcon_tr]
