@@ -7,13 +7,14 @@
 
 //
 // Author: Hongwei Xi (hwxi AT cs DOT bu DOT edu)
-// Time: August, 2010
+// Time: August, 2010 // the first solution
 // Time: September, 2010
 //
 
 (* ****** ****** *)
 
 (*
+// HX: this is the first solution
 fn sumf {n:nat}
   (n: int n, f: int -<fun> int):<> int = let
   fun loop {i:nat} .<n+1 nsub i>.
@@ -37,8 +38,12 @@ dataprop SUM2 (int, int) =
   | {n:nat} {s,p:int} SUM2ind (n+1, s+p) of (SUM2 (n, s), MUL (n+1, n+1, p))
 // end of [SUM2]
 
+//
+// HX: this is a specification for the problem
+//
 propdef P6 (n:int, d:int) =
   [s1,s2,p:int | p-s2==d] (SUM1 (n, s1), SUM2 (n, s2), MUL (s1, s1, p))
+// end of [P6]
 
 (* ****** ****** *)
 
@@ -101,12 +106,12 @@ prfun lemma2 {n:nat} {s,p1,p2:int} .<n>.
     prval MULind (pf21) = pf21 // pf21: MUL (n, n, p1-n)
     prval MULind (pf21) = pf21 // pf21: MUL (n-1, n, p1-n-n)
 //
-    prval pf22 = mul_commute (pf22) // pf22: MUL (2*n+1, p1, p2)
-    prval MULind (pf22) = pf22 // pf22: MUL (2*n, p1, p2-p1)
+    prval pf22 = mul_commute (pf22) // pf22: MUL (2n+1, p1, p2)
+    prval MULind (pf22) = pf22 // pf22: MUL (2n, p1, p2-p1)
     prval pf3 = mul_expand_linear {2,0}{~2,0} (pfnn) // 2n*(-2n)=-4nn
-    prval pf22 = mul_distribute (pf22, pf3) // pf22: MUL (2*n, p1-2*n, p2-p1-4nn)
-    prval MULind (pf22) = pf22 // pf22: MUL (2*n-1, p1-2*n, p2-p1-4n^2-p1+2*n)
-    prval pf22 = mul_commute (pf22) // pf22: MUL (p1-2*n, 2*n-1, p2-p1-4n^2-p1+2*n)
+    prval pf22 = mul_distribute (pf22, pf3) // pf22: MUL (2n, p1-2n, p2-p1-4nn)
+    prval MULind (pf22) = pf22 // pf22: MUL (2n-1, p1-2n, p2-p1-4nn-p1+2n)
+    prval pf22 = mul_commute (pf22) // pf22: MUL (p1-2n, 2n-1, p2-p1-4nn-p1+2n)
 //
     prval () = lemma2 {n-1} (pf1, pf21, pf22)
 //

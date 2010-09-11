@@ -196,15 +196,15 @@ atspre_tostrptr_char
 
 ATSinline()
 ats_bool_type
-atspre_char_isalnum (ats_char_type c) { return isalnum(c) ; }
+atspre_char_isalnum (ats_char_type c) { return isalnum((int)c) ; }
 
 ATSinline()
 ats_bool_type
-atspre_char_isalpha (ats_char_type c) { return isalpha(c) ; }
+atspre_char_isalpha (ats_char_type c) { return isalpha((int)c) ; }
 
 ATSinline()
 ats_bool_type
-atspre_char_isascii (ats_char_type c) { return isascii(c) ; }
+atspre_char_isascii (ats_char_type c) { return isascii((int)c) ; }
 
 /* ****** ****** */
 
@@ -214,25 +214,25 @@ extern int isblank(int c) ; // declared in ctype.h
 
 ATSinline()
 ats_bool_type
-atspre_char_isblank (ats_char_type c) { return isblank(c) ; }
+atspre_char_isblank (ats_char_type c) { return isblank((int)c) ; }
 
 /* ****** ****** */
 
 ATSinline()
 ats_bool_type
-atspre_char_iscntrl (ats_char_type c) { return iscntrl(c) ; }
+atspre_char_iscntrl (ats_char_type c) { return iscntrl((int)c) ; }
 
 ATSinline()
 ats_bool_type
-atspre_char_isdigit (ats_char_type c) { return isdigit(c) ; }
+atspre_char_isdigit (ats_char_type c) { return isdigit((int)c) ; }
 
 ATSinline()
 ats_bool_type
-atspre_char_isgraph (ats_char_type c) { return isgraph(c) ; }
+atspre_char_isgraph (ats_char_type c) { return isgraph((int)c) ; }
 
 ATSinline()
 ats_bool_type
-atspre_char_islower (ats_char_type c) { return islower(c) ; }
+atspre_char_islower (ats_char_type c) { return islower((int)c) ; }
 
 ATSinline()
 ats_bool_type
@@ -242,33 +242,33 @@ atspre_char_isnull (ats_char_type c) {
 
 ATSinline()
 ats_bool_type
-atspre_char_isprint (ats_char_type c) { return isprint(c) ; }
+atspre_char_isprint (ats_char_type c) { return isprint((int)c) ; }
 
 ATSinline()
 ats_bool_type
-atspre_char_ispunct (ats_char_type c) { return ispunct(c) ; }
+atspre_char_ispunct (ats_char_type c) { return ispunct((int)c) ; }
 
 ATSinline()
 ats_bool_type
-atspre_char_isspace (ats_char_type c) { return isspace(c) ; }
+atspre_char_isspace (ats_char_type c) { return isspace((int)c) ; }
 
 ATSinline()
 ats_bool_type
-atspre_char_isupper (ats_char_type c) { return isupper(c) ; }
+atspre_char_isupper (ats_char_type c) { return isupper((int)c) ; }
 
 ATSinline()
 ats_bool_type
-atspre_char_isxdigit (ats_char_type c) { return isxdigit(c) ; }
+atspre_char_isxdigit (ats_char_type c) { return isxdigit((int)c) ; }
 
 /* ****** ****** */
 
 ATSinline()
 ats_char_type
-atspre_char_tolower (ats_char_type c) { return tolower(c) ; }
+atspre_char_tolower (ats_char_type c) { return (int)tolower((int)c) ; }
 
 ATSinline()
 ats_char_type
-atspre_char_toupper (ats_char_type c) { return toupper(c) ; }
+atspre_char_toupper (ats_char_type c) { return (int)toupper((int)c) ; }
 
 /* ****** ****** */
 

@@ -48,8 +48,9 @@
 /* ****** ****** */
 
 #ifndef __WORDSIZE
-#error "[__WORDSIZE] is undefined.\n"
-#endif
+#include "config.h"
+#define __WORDSIZE (SIZEOF_VOIDP*NBIT_PER_BYTE)
+#endif // end of [__WORDSIZE]
 
 #if (__WORDSIZE == 32)
 

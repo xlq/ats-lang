@@ -118,7 +118,9 @@ libc/DATS/printf.dats
 libc/SATS/random.sats
 libc/DATS/random.dats
 
+#ifdef HAVE_SCHED_H
 libc/SATS/sched.sats
+#endif
 
 libc/SATS/signal.sats
 

@@ -50,49 +50,6 @@ implement bitvec_notequal (vec1, vec2, n) = ~bitvec_equal (vec1, vec2, n)
 
 %{^
 
-#define NBIT_PER_BYTE 8
-#define NBIT_PER_BYTE_LOG 3
-
-/* ****** ****** */
-
-#ifndef __WORDSIZE
-#error "[__WORDSIZE] is undefined.\n"
-#endif
-
-#if (__WORDSIZE == 32)
-
-#define NBYTE_PER_WORD 4
-#define NBYTE_PER_WORD_LOG 2
-#if (NBYTE_PER_WORD != (1 << NBYTE_PER_WORD_LOG))
-#error "NBYTE_PER_WORD != (1 << NBYTE_PER_WORD_LOG)\n"
-#endif
-
-#elif (__WORDSIZE == 64)
-
-#define NBYTE_PER_WORD 8
-#define NBYTE_PER_WORD_LOG 3
-#if (NBYTE_PER_WORD != (1 << NBYTE_PER_WORD_LOG))
-#error "NBYTE_PER_WORD != (1 << NBYTE_PER_WORD_LOG)\n"
-#endif
-
-#else
-#error "[__WORDSIZE] is not supported.\n"
-#endif
-
-/* ****** ****** */
-
-#define NBIT_PER_WORD (NBIT_PER_BYTE * NBYTE_PER_WORD)
-#define NBIT_PER_WORD_LOG (NBIT_PER_BYTE_LOG + NBYTE_PER_WORD_LOG)
-#if (NBIT_PER_WORD != (1 << NBIT_PER_WORD_LOG))
-#error "NBIT_PER_WORD != (1 << NBIT_PER_WORD_LOG)\n"
-#endif
-
-%}
-
-(* ****** ****** *)
-
-%{^
-
 ats_ptr_type
 atslib_linbitvec_bitvec_make
   (ats_size_type nbit) {
