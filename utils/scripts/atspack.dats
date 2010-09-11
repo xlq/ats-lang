@@ -661,8 +661,10 @@ fn doc_dir_copy () = let
     val () = cp "prelude_matrix.dats"
     val () = cp "prelude_matrix0.dats"
     val () = cp "prelude_string.dats"
-    val () = cp "libc_dlfcn.dats"
+//
+    val () = cp "libc_complex.dats"
     val () = cp "libc_dirent.dats"
+    val () = cp "libc_dlfcn.dats"
     val () = cp "libc_gmp.dats"
     val () = cp "libc_sched.dats"
     val () = cp "libc_stdlib.dats"  

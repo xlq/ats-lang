@@ -1805,10 +1805,6 @@ fn part1_test () = () where {
 
 (* ****** ****** *)
 
-dynload "libc/DATS/complex.dats"
-
-(* ****** ****** *)
-
 dynload "contrib/cblas/DATS/cblas.dats"
 dynload "contrib/cblas/DATS/cblas_extra.dats"
 dynload "contrib/clapack/DATS/clapack.dats"
