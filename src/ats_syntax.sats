@@ -1707,6 +1707,7 @@ and d0ec_node =
       (int(*0:sta/1:dyn*), string(*filename*))
   | D0Csymintr of (* introduction of overloaded symbols *)
       i0delst
+  | D0Ce0xpundef of (sym_t) (* undefinition *)
   | D0Ce0xpdef of (sym_t, e0xpopt)
   | D0Ce0xpact of (e0xpact_kind, e0xp)
   | D0Cdatsrts of (* datasort declaration *)
@@ -2306,6 +2307,7 @@ fun d0ec_include (stadyn: int, name: s0tring): d0ec = "d0ec_include"
 
 fun d0ec_symintr (t: t0kn, ids: i0delst): d0ec = "d0ec_symintr"
 
+fun d0ec_e0xpundef (id: i0de): d0ec = "d0ec_e0xpundef"
 fun d0ec_e0xpdef (id: i0de, def: e0xpopt): d0ec = "d0ec_e0xpdef"
 
 fun d0ec_e0xpact_assert (e: e0xp): d0ec = "d0ec_e0xpact_assert"

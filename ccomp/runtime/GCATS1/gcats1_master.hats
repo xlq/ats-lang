@@ -57,7 +57,7 @@ __include "config.h" // automatically generated in $(ATSHOME)
 /* ****** ****** */
 
 #if _ATS_MULTITHREAD0
-// __undef _ATS_MULTITHREAD // no pthread support
+__undef _ATS_MULTITHREAD // no pthread support
 #endif
 
 #if _ATS_MULTITHREAD1
@@ -65,6 +65,9 @@ __define _ATS_MULTITHREAD // pthreads are supported
 #endif
 
 /* ****** ****** */
+
+__undef NBIT_PER_BYTE
+__undef NBIT_PER_BYTE_LOG
 
 __define NBIT_PER_BYTE 8
 __define NBIT_PER_BYTE_LOG 3
@@ -100,6 +103,11 @@ __if (__WORDSIZE != 64)
 __error "__WORDSIZE is neither 32 nor 64!\n"
 __endif
 __endif
+
+/* ****** ****** */
+
+__undef NBIT_PER_WORD
+__undef NBIT_PER_WORD_LOG
 
 /* ****** ****** */
 

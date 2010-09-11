@@ -92,15 +92,19 @@ implement e1xp_list (loc, es) = '{
   e1xp_loc= loc, e1xp_node= E1XPlist (es: e1xplst)
 }
 
-implement e1xp_none () = let
-  val loc = $Loc.location_none
-in '{
+implement e1xp_none (loc) = '{
   e1xp_loc= loc, e1xp_node= E1XPnone ()
-} end // end of [e1xp_none]
+} // end of [e1xp_none]
 
 implement e1xp_string (loc, str, len) = '{
   e1xp_loc= loc, e1xp_node= E1XPstring (str, len)
 }
+
+implement e1xp_undef (loc) = '{
+  e1xp_loc= loc, e1xp_node= E1XPundef ()
+} // end of [e1xp_undef]
+
+(* ****** ****** *)
 
 implement e1xp_true  (): e1xp = e1xp_int ($Loc.location_none, "1")
 implement e1xp_false (): e1xp = e1xp_int ($Loc.location_none, "0")

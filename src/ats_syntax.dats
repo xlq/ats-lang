@@ -1345,7 +1345,8 @@ implement s0tavarlst_cons (x, xs) = cons (x, xs)
 
 (* ****** ****** *)
 
-implement s0expdef_make (id, arg, res, def) = let
+implement
+s0expdef_make (id, arg, res, def) = let
 
 val loc = combine (id.i0de_loc, def.s0exp_loc)
 
@@ -2515,14 +2516,20 @@ implement d0ec_symintr (t_symintr, ids) = '{
 
 (* ****** ****** *)
 
+implement d0ec_e0xpundef (id) = '{
+  d0ec_loc= id.i0de_loc, d0ec_node= D0Ce0xpundef (id.i0de_sym)
+} // end of [d0ec_e0xpundef]
+
 implement d0ec_e0xpdef (id, oe) = let
   val loc = (case+ oe of
     | Some e => combine (id.i0de_loc, e.e0xp_loc)
     | None () => id.i0de_loc
-  ) : loc_t
+  ) : loc_t // end of [val]
 in '{
   d0ec_loc= loc, d0ec_node= D0Ce0xpdef (id.i0de_sym, oe)
 } end // end of [d0ec_e0xpdef]
+
+(* ****** ****** *)
 
 implement d0ec_e0xpact_assert (e) = '{
   d0ec_loc= e.e0xp_loc, d0ec_node= D0Ce0xpact (E0XPACTassert, e)

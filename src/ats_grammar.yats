@@ -1389,8 +1389,9 @@ guad0ec_t guad0ec ;
 %token <t0kn> SRPIFDEF
 %token <t0kn> SRPIFNDEF
 %token <t0kn> SRPINCLUDE
-%token <t0kn> SRPTHEN
 %token <t0kn> SRPPRINT
+%token <t0kn> SRPTHEN
+%token <t0kn> SRPUNDEF
 
 %token <t0kn> FOLDAT
 %token <t0kn> FREEAT
@@ -3177,6 +3178,7 @@ d0ec
   | POSTFIX p0rec i0deseq               { $$ = d0ec_postfix($1, $2, $3) ; }
   | NONFIX i0deseq                      { $$ = d0ec_nonfix($1, $2) ; }
   | SYMINTR i0deseq                     { $$ = d0ec_symintr($1, $2) ; }
+  | SRPUNDEF i0de                       { $$ = d0ec_e0xpundef($2) ; }
   | SRPDEFINE i0de e0xpopt              { $$ = d0ec_e0xpdef($2, $3) ; }
   | SRPASSERT e0xp                      { $$ = d0ec_e0xpact_assert($2) ; }
   | SRPERROR e0xp                       { $$ = d0ec_e0xpact_error($2) ; }

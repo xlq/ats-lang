@@ -1554,12 +1554,18 @@ implement d0ec_tr d0c0 = begin
     end // end of [D0Cnonfix]
   | D0Csymintr ids => d1ec_symintr (d0c0.d0ec_loc, ids)
   | D0Ce0xpdef (id, def) => let
+      val loc = d0c0.d0ec_loc
       val def = (case+ def of
-        | Some e0xp => e0xp_tr e0xp | None () => e1xp_none ()
+        | Some e0xp => e0xp_tr e0xp | None () => e1xp_none (loc)
       ) : e1xp // end of [val]
     in
-      the_e1xpenv_add (id, def); d1ec_e1xpdef (d0c0.d0ec_loc, id, def)
+      the_e1xpenv_add (id, def); d1ec_e1xpdef (loc, id, def)
     end // end of [D0Ce0xpdef]
+  | D0Ce0xpundef (id) => let
+      val loc = d0c0.d0ec_loc; val def = e1xp_undef (loc)
+    in
+      the_e1xpenv_add (id, def); d1ec_e1xpdef (loc, id, def)
+    end // end of [D0Ce0xpundef]
   | D0Ce0xpact (actkind, e0xp) => let
       val e1xp = e0xp_tr e0xp
 (*

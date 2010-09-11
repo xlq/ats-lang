@@ -127,7 +127,8 @@ fn e1xp_eval_appid_errmsg_opr
   $Err.abort ()
 end // end of [e1xp_eval_appid_errmsg_opr]
 
-fn e1xp_eval_opr_errmsg (loc: loc_t, opr: sym_t): v1al = begin
+fn e1xp_eval_opr_errmsg
+  (loc: loc_t, opr: sym_t): v1al = begin
   prerr loc;
   if is_debug () then prerr ": e1xp_eval";
   prerr ": illegal argument(s) for [";
@@ -136,10 +137,17 @@ fn e1xp_eval_opr_errmsg (loc: loc_t, opr: sym_t): v1al = begin
   $Err.abort ()
 end // end of [e1xp_eval_opr_errmsg]
 
-(* ****** ****** *)
+fn e1xp_eval_errmsg_undef (loc: loc_t): v1al = begin
+  prerr loc;
+  if is_debug () then prerr ": e1xp_eval";
+  prerr ": undefined expression is used here.";
+  prerr_newline ();
+  $Err.abort ()
+end // end of [e1xp_eval_errmsg_undef]
 
+(* ****** ****** *)
 //
-// it is assumed that [s] represents a valid integer
+// HX: it is assumed that [s] represents a valid integer
 //
 fun e1xp_eval_int (s: string): int = let
 (*
@@ -148,6 +156,7 @@ fun e1xp_eval_int (s: string): int = let
   end // end of [val]
 *)
   val [n:int] s = string1_of_string (s) // no-op casting
+//
   fun loop1 {i:nat | i <= n} .<n-i>.
     (sgn: int, s: string n, i: size_t i): int =
     if string_isnot_at_end (s, i) then let
@@ -172,7 +181,7 @@ fun e1xp_eval_int (s: string): int = let
       0 // empty string
     end // end of [if]
   // end of [loop1]
-
+//
   and loop2 {i:nat | i <= n} .<n-i>. (
       base: int, s: string n, i: size_t i, res: int
     ) : int =
@@ -188,7 +197,9 @@ fun e1xp_eval_int (s: string): int = let
       res (* loop2 returns *)
     end // end of [if]
   // end of [loop2]
+//
 in
+//
   if string_isnot_at_end (s, 0) then let
     val c0 = s[0]
   in
@@ -196,6 +207,7 @@ in
   end else begin
     0 // empty string represents 0
   end // end of [if]
+//
 end (* end of [e1xp_eval_int] *)
 
 (* ****** ****** *)
@@ -270,9 +282,12 @@ end // end of [e1xp_eval_appid]
 and e1xp_eval_defined
   (loc: loc_t, e: e1xp): v1al = begin
   case+ e.e1xp_node of
-  | E1XPide id => begin case+ the_e1xpenv_find id of
-    | ~Some_vt _ => V1ALint 1 | ~None_vt () => V1ALint 0
-    end
+  | E1XPide id => V1ALint (i) where {
+      val i = (case+ the_e1xpenv_find id of
+        | ~Some_vt e => (case+ e.e1xp_node of E1XPundef () => 0 | _ => 1)
+        | ~None_vt () => 0
+      ) : int // end of [val]
+    } // end of [E1XPide]
   | _ => begin
       e1xp_eval_opr_errmsg (loc, $Sym.symbol_DEFINED)
     end // end of [_]
@@ -281,9 +296,12 @@ end // end of [e1xp_eval_defined]
 and e1xp_eval_undefined
   (loc: loc_t, e: e1xp): v1al = begin
   case+ e.e1xp_node of
-  | E1XPide id => begin case+ the_e1xpenv_find id of
-    | ~Some_vt _ => V1ALint 0 | ~None_vt () => V1ALint 1
-    end
+  | E1XPide id => V1ALint (i) where {
+      val i = (case+ the_e1xpenv_find id of
+        | ~Some_vt e => (case+ e.e1xp_node of E1XPundef () => 1 | _ => 0)
+        | ~None_vt () => 1
+      ) : int // end of [val]
+    } // end of [E1XPide]
   | _ => begin
       e1xp_eval_opr_errmsg (loc, $Sym.symbol_UNDEFINED)
     end // end of [_]
@@ -536,11 +554,12 @@ implement e1xp_eval (e0) = let
 *)
 in
   case+ e0.e1xp_node of
-  | E1XPapp (e, _(*loc_arg*), es) => begin
-    case+ e.e1xp_node of
-    | E1XPide id => e1xp_eval_appid (e.e1xp_loc, id, es)
-    | _ => e1xp_eval_errmsg_app e.e1xp_loc
-    end // end of [E1XPapp]
+  | E1XPapp (e, _(*loc_arg*), es) => (
+      case+ e.e1xp_node of
+      | E1XPide id =>
+          e1xp_eval_appid (e.e1xp_loc, id, es)
+      | _ => e1xp_eval_errmsg_app e.e1xp_loc
+    ) // end of [E1XPapp]
   | E1XPchar c => V1ALchar c
   | E1XPfloat f(*string*) => V1ALfloat (double_of f)
   | E1XPint (int: string) => V1ALint (e1xp_eval_int int)
@@ -554,6 +573,7 @@ in
     end // end of [E1XPlist]
   | E1XPnone () => V1ALint 0
   | E1XPstring (s, _) => V1ALstring s
+  | E1XPundef () => e1xp_eval_errmsg_undef (e0.e1xp_loc)
 end // end of [e1xp_eval]
 
 (* ****** ****** *)

@@ -40,6 +40,7 @@
 
 (* ****** ****** *)
 
+staload Err = "ats_error.sats"
 staload Lst = "ats_list.sats"
 staload Syn = "ats_syntax.sats"
 
@@ -176,7 +177,12 @@ in '{
 
 (* ****** ****** *)
 
-implement p1at_make_e1xp (loc, e0) = let
+fn prerr_loc_error1 (loc: loc_t): void =
+  ($Loc.prerr_location loc; prerr ": error(1)")
+// end of [prerr_loc_error1]
+
+implement
+p1at_make_e1xp (loc, e0) = let
   fun aux (e0: e1xp):<cloptr1> p1at = case+ e0.e1xp_node of
     | E1XPapp (e1, loc_arg, es2) => begin
         p1at_app_dyn (loc, aux e1, loc_arg, 0(*npf*), auxlst es2)
@@ -188,6 +194,10 @@ implement p1at_make_e1xp (loc, e0) = let
     | E1XPlist es => p1at_list (loc, auxlst es)
     | E1XPnone () => p1at_empty (loc)
     | E1XPstring (str, _(*len*)) => p1at_string (loc, str)
+    | E1XPundef () => begin
+        prerr_loc_error1 (loc); prerr ": incorrect use of undefined value."; prerr_newline ();
+        $Err.abort ()
+      end // end of [E1XPundef]
   // end of [aux]
 
   and auxlst (es0: e1xplst):<cloptr1> p1atlst = case+ es0 of
@@ -478,7 +488,8 @@ implement d1exp_while (loc, inv, test, body) = '{
 
 (* ****** ****** *)
 
-implement d1exp_make_e1xp (loc, e0) = let
+implement
+d1exp_make_e1xp (loc, e0) = let
   fun aux (e0: e1xp):<cloptr1> d1exp = case+ e0.e1xp_node of
     | E1XPapp (e1, loc_arg, es2) => begin
         d1exp_app_dyn (loc, aux e1, loc_arg, 0(*npf*), auxlst es2)
@@ -490,6 +501,10 @@ implement d1exp_make_e1xp (loc, e0) = let
     | E1XPlist es => d1exp_list (loc, auxlst es)
     | E1XPnone () => d1exp_empty (loc)
     | E1XPstring (str, len) => d1exp_string (loc, str, len)
+    | E1XPundef () => begin
+        prerr_loc_error1 (loc); prerr ": incorrect use of undefined value."; prerr_newline ();
+        $Err.abort ()
+      end // end of [E1XPundef]
   // end of [aux]
 
   and auxlst (es0: e1xplst)

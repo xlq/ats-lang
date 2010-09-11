@@ -63,8 +63,9 @@ datatype e1xp_node =
   | E1XPide of sym_t
   | E1XPint of string
   | E1XPlist of e1xplst
-  | E1XPnone
+  | E1XPnone of ()
   | E1XPstring of (string, int(*length*))
+  | E1XPundef of () // a special value for marking undefinition
 // end of [e1xp_node]
 
 where e1xp: type = '{
@@ -94,14 +95,16 @@ overload prerr with prerr_e1xplst
 
 fun e1xp_app
   (loc: loc_t, _fun: e1xp, loc_arg: loc_t, _arg: e1xplst): e1xp
+// end of [e1xp_app]
 
 fun e1xp_char (_: loc_t, _:char): e1xp
 fun e1xp_float (_: loc_t, _:string): e1xp
 fun e1xp_ide (_: loc_t, _: sym_t): e1xp
 fun e1xp_int (_: loc_t, _: string): e1xp
 fun e1xp_list (_: loc_t, _: e1xplst): e1xp
-fun e1xp_none (): e1xp
+fun e1xp_none (_: loc_t): e1xp
 fun e1xp_string (_: loc_t, _: string, _: int): e1xp
+fun e1xp_undef (_: loc_t): e1xp
 
 fun e1xp_true (): e1xp and e1xp_false (): e1xp
 

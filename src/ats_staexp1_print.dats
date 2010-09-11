@@ -98,6 +98,9 @@ in
       fprint1_int (pf | out, len);
       prstr ")"
     end // end of [E1XPstring]
+  | E1XPundef () => begin
+      fprint1_string (pf | out, "E1XPundef()")
+    end // end of [E1XPundef]
 end // end of [fprint_e1xp]
 
 implement fprint_e1xplst {m} (pf | out, es0) = let

@@ -580,6 +580,7 @@ implement d0ec_posmark (d0c0) =
   | D0Cinclude _ => neuexploc_posmark (d0c0.d0ec_loc)
   | D0Csymintr _ => neuexploc_posmark (d0c0.d0ec_loc)
   | D0Ce0xpdef _ => neuexploc_posmark (d0c0.d0ec_loc)
+  | D0Ce0xpundef _ => neuexploc_posmark (d0c0.d0ec_loc)
   | D0Ce0xpact _ => neuexploc_posmark (d0c0.d0ec_loc)
   | D0Cdatsrts _ => staexploc_posmark (d0c0.d0ec_loc)
   | D0Csrtdefs _ => staexploc_posmark (d0c0.d0ec_loc)

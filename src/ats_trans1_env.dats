@@ -77,6 +77,10 @@ implement the_e1xpenv_add (opr, e1xp) = let
     print "e1xp_add: opr = "; print opr; print_newline ()
   end // end of [val]
 *)
+  val ans = $SymEnv.symenv_remove_fst (the_e1xpenv, opr)
+  val () = begin
+    case+ ans of ~Some_vt _ => () | ~None_vt () => ()
+  end // end of [val]
 in
   $SymEnv.symenv_insert_fst (the_e1xpenv, opr, e1xp)
 end // end of [the_e1xpenv_add]

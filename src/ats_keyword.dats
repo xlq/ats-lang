@@ -264,8 +264,9 @@ keyval_insert("#if", SRPIF) ;
 keyval_insert("#ifdef", SRPIFDEF) ;
 keyval_insert("#ifndef", SRPIFNDEF) ;
 keyval_insert("#include", SRPINCLUDE) ;
-keyval_insert("#then", SRPTHEN) ;
 keyval_insert("#print", SRPPRINT) ;
+keyval_insert("#then", SRPTHEN) ;
+keyval_insert("#undef", SRPUNDEF) ;
 //
 keyval_insert("#FILENAME", SRPFILENAME) ;
 keyval_insert("#LOCATION", SRPLOCATION) ;
