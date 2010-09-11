@@ -74,9 +74,6 @@ dnl = check for pcre.h
 AC_CHECK_HEADERS(pcre.h)
 AC_SUBST(HAVE_LIBPCRE, ${ac_cv_header_pcre_h%no})
 
-dnl = check for sched.h
-AC_CHECK_HEADERS(sched.h)
-
 dnl = check for [cairo/cairo]
 dnl = AC_CHECK_HEADERS(cairo/cairo.h)
 

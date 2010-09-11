@@ -111,8 +111,9 @@ fn emit_include_header {m:file_mode}
   (pf: file_mode_lte (m, w) | out: &FILE m): void = let
   val () = fprint1_string (pf | out, "/* include some .h files */\n")
   val () = fprint1_string (pf | out, "#ifndef _ATS_HEADER_NONE\n")
-  val () = fprint1_string (pf | out, "#include \"ats_types.h\"\n")
+  val () = fprint1_string (pf | out, "#include \"ats_config.h\"\n")
   val () = fprint1_string (pf | out, "#include \"ats_basics.h\"\n")
+  val () = fprint1_string (pf | out, "#include \"ats_types.h\"\n")
   val () = fprint1_string (pf | out, "#include \"ats_exception.h\"\n")
   val () = fprint1_string (pf | out, "#include \"ats_memory.h\"\n")
   val () = fprint1_string (pf | out, "#endif /* _ATS_HEADER_NONE */\n")

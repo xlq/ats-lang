@@ -38,13 +38,6 @@
 
 /* ****** ****** */
 
-//
-// HX: [config.h] automatically generated in $(ATSHOME)
-//
-#include "config.h"
-
-/* ****** ****** */
-
 #include <inttypes.h>
 #include <stddef.h> // for both [size_t] and [ptrdiff_t]
 #include <unistd.h> // for [ssize_t]

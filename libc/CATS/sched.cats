@@ -46,6 +46,10 @@
 
 /* ****** ****** */
 
+#ifdef __USE_GNU
+
+/* ****** ****** */
+
 ATSinline()
 ats_size_type
 atslib_cpusetsize_get
@@ -89,6 +93,10 @@ atslib_sched_getaffinity (
 #define atslib_CPU_CLR CPU_CLR
 #define atslib_CPU_SET CPU_SET
 #define atslib_CPU_ISSET CPU_ISSET
+
+/* ****** ****** */
+
+#endif // end of [__USE_GNU]
 
 /* ****** ****** */
 
