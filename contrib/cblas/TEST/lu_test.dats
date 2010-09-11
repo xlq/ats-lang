@@ -482,8 +482,11 @@ fun{a1,a2:t@ype} test
 
 (* ****** ****** *)
 
+(*
+// HX: no longer needed
 dynload "libc/DATS/complex.dats"
 dynload "libats/DATS/genarrays.dats"
+*)
 
 (* ****** ****** *)
 

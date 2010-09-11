@@ -35,17 +35,15 @@
 
 (* ****** ****** *)
 
-staload "libc/SATS/complex.sats"
-
-(* ****** ****** *)
-
 #define ATS_DYNLOADFLAG 0 // there is no need for dynloading at run-time
 
 (* ****** ****** *)
 
-%{^
+staload "libc/SATS/complex.sats"
 
-#include "libc/CATS/complex.cats"
+(* ****** ****** *)
+
+%{^
 
 // ccmplx = ats_fcomplex_type
 // zcmplx = ats_dcomplex_type
@@ -87,7 +85,7 @@ atslib_fprint_zcmplx
   return ;
 } // end of [ats_fprint_zcmplx]
 
-%} // end of [{%^]
+%} // end of [{%{^]
 
 (* ****** ****** *)
 

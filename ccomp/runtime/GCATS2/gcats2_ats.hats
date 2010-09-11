@@ -20,6 +20,8 @@
  #endif
  #endif
  #define __PAGESIZE 4096
+
+
  #define NBIT_PER_WORD __WORDSIZE
  #if (__WORDSIZE == 32)
  #define NBIT_PER_WORD_LOG 5

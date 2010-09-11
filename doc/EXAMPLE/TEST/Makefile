@@ -30,6 +30,7 @@ compall:: \
   prelude_matrix \
   prelude_matrix0 \
   prelude_string \
+  libc_complex \
   libc_dirent \
   libc_dlfcn \
   libc_gmp \
@@ -88,6 +89,11 @@ prelude_matrix0: prelude_matrix0.dats
 
 prelude_string: prelude_string.dats
 	$(ATSCC) -O2 -o prelude_string prelude_string.dats && ./prelude_string
+
+######
+
+libc_complex: libc_complex.dats
+	$(ATSCC) -O2 -o libc_complex libc_complex.dats -lm && ./libc_complex
 
 ######
 
@@ -242,6 +248,7 @@ cleanall: clean
 	rm -f prelude_matrix
 	rm -f prelude_matrix0
 	rm -f prelude_string
+	rm -f libc_complex
 	rm -f libc_dirent
 	rm -f libc_dlfcn
 	rm -f libc_gmp

@@ -3213,7 +3213,6 @@ her2k_test (): void = () where {
 
 (* ****** ****** *)
 
-dynload "libc/DATS/complex.dats"
 (*
 // no longer needed
 dynload "libats/DATS/genarrays.dats"

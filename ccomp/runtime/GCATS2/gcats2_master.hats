@@ -112,6 +112,9 @@ __define __PAGESIZE 4096
 
 /* ****** ****** */
 
+__C(#undef NBIT_PER_WORD)
+__C(#undef NBIT_PER_WORD_LOG)
+
 __define NBIT_PER_WORD __WORDSIZE
 
 __if (__WORDSIZE == 32) // #then

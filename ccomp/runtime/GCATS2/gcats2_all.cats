@@ -37,10 +37,11 @@
 /* ****** ****** */
 
 /* include some .h files */
+#include "ats_config.h"
 #include "ats_basics.h"
+#include "ats_types.h"
 #include "ats_exception.h"
 #include "ats_memory.h"
-#include "ats_types.h"
 
 /* ****** ****** */
 

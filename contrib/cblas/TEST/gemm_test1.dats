@@ -234,9 +234,12 @@ val () = array_ptr_free (pf2_gc, pf2_arr | p2_arr)
 
 (* ****** ****** *)
 
+(*
+// HX: no longer needed
 dynload "libc/DATS/complex.dats"
 dynload "libats/DATS/genarrays.dats"
 dynload "libats/DATS/fmatrix.dats"
+*)
 
 (* ****** ****** *)
 
@@ -244,4 +247,4 @@ implement main () = ()
 
 (* ****** ****** *)
 
-(* end of [gemm_test.dats] *)
+(* end of [gemm_test1.dats] *)

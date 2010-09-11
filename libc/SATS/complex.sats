@@ -58,11 +58,10 @@ symintr ccmplx_of
 fun fprint_ccmplx {m:file_mode}
   (pf: file_mode_lte (m, w) | out: &FILE m, x: ccmplx):<!exnref> void
   = "atslib_fprint_ccmplx"
-
-fun print_ccmplx (c: ccmplx):<!exnref> void = "atslib_print_ccmplx"
-and prerr_ccmplx (c: ccmplx):<!exnref> void = "atslib_prerr_ccmplx"
-
 overload fprint with fprint_ccmplx
+
+fun print_ccmplx (c: ccmplx):<!exnref> void
+and prerr_ccmplx (c: ccmplx):<!exnref> void
 overload print with print_ccmplx
 overload prerr with prerr_ccmplx
 
@@ -90,37 +89,32 @@ fun ccmplx_make_polar (f1: float, f2: float):<> ccmplx
 
 (* ****** ****** *)
 
-fun crealf (c: ccmplx):<> float
-  = "atslib_crealf"
-fun ccmplx_real (c: ccmplx):<> float
-  = "atslib_crealf"
+fun crealf (c: ccmplx):<> float = "atslib_crealf"
+fun ccmplx_real (c: ccmplx):<> float = "atslib_crealf"
 
-fun cimagf (c: ccmplx):<> float
-  = "atslib_cimagf"
-fun ccmplx_imag (c: ccmplx):<> float
-  = "atslib_cimagf"
+fun cimagf (c: ccmplx):<> float = "atslib_cimagf"
+fun ccmplx_imag (c: ccmplx):<> float = "atslib_cimagf"
 
 (* ****** ****** *)
 
-fun neg_ccmplx (c: ccmplx):<> ccmplx
-  = "atslib_neg_ccmplx"
+fun neg_ccmplx
+  (c: ccmplx):<> ccmplx = "atslib_neg_ccmplx"
 overload ~ with neg_ccmplx
 
 fun add_ccmplx_ccmplx (c1: ccmplx, c2: ccmplx):<> ccmplx
   = "atslib_add_ccmplx_ccmplx"
-
-and sub_ccmplx_ccmplx (c1: ccmplx, c2: ccmplx):<> ccmplx
-  = "atslib_sub_ccmplx_ccmplx"
-
-and mul_ccmplx_ccmplx (c1: ccmplx, c2: ccmplx):<> ccmplx
-  = "atslib_mul_ccmplx_ccmplx"
-
-and div_ccmplx_ccmplx (c1: ccmplx, c2: ccmplx):<> ccmplx
-  = "atslib_div_ccmplx_ccmplx"
-
 overload + with add_ccmplx_ccmplx
+
+fun sub_ccmplx_ccmplx (c1: ccmplx, c2: ccmplx):<> ccmplx
+  = "atslib_sub_ccmplx_ccmplx"
 overload - with sub_ccmplx_ccmplx
+
+fun mul_ccmplx_ccmplx (c1: ccmplx, c2: ccmplx):<> ccmplx
+  = "atslib_mul_ccmplx_ccmplx"
 overload * with mul_ccmplx_ccmplx
+
+fun div_ccmplx_ccmplx (c1: ccmplx, c2: ccmplx):<> ccmplx
+  = "atslib_div_ccmplx_ccmplx"
 overload / with div_ccmplx_ccmplx
 
 (* ****** ****** *)
@@ -135,119 +129,86 @@ overload <> with neq_ccmplx_ccmplx
 
 (* ****** ****** *)
 
-fun cabsf (c: ccmplx):<> float
-  = "atslib_cabsf"
-fun abs_ccmplx (c: ccmplx):<> float
-  = "atslib_cabsf"
+fun cabsf (c: ccmplx):<> float = "atslib_cabsf"
+fun abs_ccmplx (c: ccmplx):<> float = "atslib_cabsf"
 overload abs with abs_ccmplx
 
-fun csqrtf (c: ccmplx):<> ccmplx
-  = "atslib_csqrtf"
-fun sqrt_ccmplx (c: ccmplx):<> ccmplx
-  = "atslib_csqrtf"
+fun csqrtf (c: ccmplx):<> ccmplx = "atslib_csqrtf"
+fun sqrt_ccmplx (c: ccmplx):<> ccmplx = "atslib_csqrtf"
 overload sqrt with sqrt_ccmplx
 
 (* ****** ****** *)
 
-fun cargf (c: ccmplx):<> float
-  = "atslib_cargf"
-fun arg_ccmplx (c: ccmplx):<> float
-  = "atslib_cargf"
+fun cargf (c: ccmplx):<> float = "atslib_cargf"
+fun arg_ccmplx (c: ccmplx):<> float = "atslib_cargf"
 
-fun conjf (c: ccmplx):<> ccmplx
-  = "atslib_conjf"
-fun conj_ccmplx (c: ccmplx):<> ccmplx
-  = "atslib_conjf"
+fun conjf (c: ccmplx):<> ccmplx = "atslib_conjf"
+fun conj_ccmplx (c: ccmplx):<> ccmplx = "atslib_conjf"
 
 (* ****** ****** *)
 
-fun csinf (c: ccmplx):<> ccmplx
-  = "atslib_csinf"
-fun sin_ccmplx (c: ccmplx):<> ccmplx
-  = "atslib_csinf"
+fun csinf (c: ccmplx):<> ccmplx = "atslib_csinf"
+fun sin_ccmplx (c: ccmplx):<> ccmplx = "atslib_csinf"
 
-fun ccosf (c: ccmplx):<> ccmplx
-  = "atslib_ccosf"
-fun cos_ccmplx (c: ccmplx):<> ccmplx
-  = "atslib_ccosf"
+fun ccosf (c: ccmplx):<> ccmplx = "atslib_ccosf"
+fun cos_ccmplx (c: ccmplx):<> ccmplx = "atslib_ccosf"
 
-fun ctanf (c: ccmplx):<> ccmplx
-  = "atslib_ctanf"
-fun tan_ccmplx (c: ccmplx):<> ccmplx
-  = "atslib_ctanf"
+fun ctanf (c: ccmplx):<> ccmplx = "atslib_ctanf"
+fun tan_ccmplx (c: ccmplx):<> ccmplx = "atslib_ctanf"
 
 (* ****** ****** *)
 
-fun casinf (c: ccmplx):<> ccmplx
-  = "atslib_casinf"
-fun asin_ccmplx (c: ccmplx):<> ccmplx
-  = "atslib_casinf"
+fun casinf (c: ccmplx):<> ccmplx = "atslib_casinf"
+fun asin_ccmplx (c: ccmplx):<> ccmplx = "atslib_casinf"
 
-fun cacosf (c: ccmplx):<> ccmplx
-  = "atslib_cacosf"
-fun acos_ccmplx (c: ccmplx):<> ccmplx
-  = "atslib_cacosf"
+fun cacosf (c: ccmplx):<> ccmplx = "atslib_cacosf"
+fun acos_ccmplx (c: ccmplx):<> ccmplx = "atslib_cacosf"
 
-fun catanf (c: ccmplx):<> ccmplx
-  = "atslib_catanf"
-fun atan_ccmplx (c: ccmplx):<> ccmplx
-  = "atslib_catanf"
+fun catanf (c: ccmplx):<> ccmplx = "atslib_catanf"
+fun atan_ccmplx (c: ccmplx):<> ccmplx = "atslib_catanf"
 
 (* ****** ****** *)
 
-fun csinhf (c: ccmplx):<> ccmplx
-  = "atslib_csinhf"
-fun sinh_ccmplx (c: ccmplx):<> ccmplx
-  = "atslib_csinhf"
+fun csinhf (c: ccmplx):<> ccmplx = "atslib_csinhf"
+fun sinh_ccmplx (c: ccmplx):<> ccmplx = "atslib_csinhf"
 
-fun ccoshf (c: ccmplx):<> ccmplx
-  = "atslib_ccoshf"
-fun cosh_ccmplx (c: ccmplx):<> ccmplx
-  = "atslib_ccoshf"
+fun ccoshf (c: ccmplx):<> ccmplx = "atslib_ccoshf"
+fun cosh_ccmplx (c: ccmplx):<> ccmplx = "atslib_ccoshf"
 
-fun ctanhf (c: ccmplx):<> ccmplx
-  = "atslib_ctanhf"
-fun tanh_ccmplx (c: ccmplx):<> ccmplx
-  = "atslib_ctanhf"
+fun ctanhf (c: ccmplx):<> ccmplx = "atslib_ctanhf"
+fun tanh_ccmplx (c: ccmplx):<> ccmplx = "atslib_ctanhf"
 
 (* ****** ****** *)
 
-fun casinhf (c: ccmplx):<> ccmplx
-  = "atslib_casinhf"
-fun asinh_ccmplx (c: ccmplx):<> ccmplx
-  = "atslib_casinhf"
+fun casinhf (c: ccmplx):<> ccmplx = "atslib_casinhf"
+fun asinh_ccmplx (c: ccmplx):<> ccmplx = "atslib_casinhf"
 
-fun cacoshf (c: ccmplx):<> ccmplx
-  = "atslib_cacoshf"
-fun acosh_ccmplx (c: ccmplx):<> ccmplx
-  = "atslib_cacoshf"
+fun cacoshf (c: ccmplx):<> ccmplx = "atslib_cacoshf"
+fun acosh_ccmplx (c: ccmplx):<> ccmplx = "atslib_cacoshf"
 
-fun catanhf (c: ccmplx):<> ccmplx
-  = "atslib_catanhf"
-fun atanh_ccmplx (c: ccmplx):<> ccmplx
-  = "atslib_catanhf"
+fun catanhf (c: ccmplx):<> ccmplx = "atslib_catanhf"
+fun atanh_ccmplx (c: ccmplx):<> ccmplx = "atslib_catanhf"
 
 (* ****** ****** *)
 
-fun cexpf (c: ccmplx):<> ccmplx
-  = "atslib_cexpf"
-fun exp_ccmplx (c: ccmplx):<> ccmplx
-  = "atslib_cexpf"
+fun cexpf (c: ccmplx):<> ccmplx = "atslib_cexpf"
+fun exp_ccmplx (c: ccmplx):<> ccmplx = "atslib_cexpf"
 
-fun clogf (c: ccmplx):<> ccmplx
-  = "atslib_clogf"
-fun log_ccmplx (c: ccmplx):<> ccmplx
-  = "atslib_clogf"
+fun clogf (c: ccmplx):<> ccmplx = "atslib_clogf"
+fun log_ccmplx (c: ccmplx):<> ccmplx = "atslib_clogf"
 
 fun cpowf (c1: ccmplx, c2: ccmplx):<> ccmplx
   = "atslib_cpowf"
 fun pow_ccmplx_ccmplx (c1: ccmplx, c2: ccmplx):<> ccmplx
   = "atslib_cpowf"
+overload pow with pow_ccmplx_ccmplx
+fun pow_ccmplx_float (c1: ccmplx, c2: float):<> ccmplx
+  = "#atslib_pow_ccmplx_float" // macro!
+overload pow with pow_ccmplx_float
 
 (* ****** ****** *)
 
-fun cprojf (c: ccmplx):<> float
-  = "atslib_cprojf"
+fun cprojf (c: ccmplx):<> float = "atslib_cprojf"
 
 (* ****** ****** *)
 
@@ -266,11 +227,10 @@ symintr zcmplx_of
 fun fprint_zcmplx {m:file_mode}
   (pf: file_mode_lte (m, w) | out: &FILE m, x: zcmplx):<!exnref> void
   = "atslib_fprint_zcmplx"
-
-fun print_zcmplx (z: zcmplx):<!exnref> void = "atslib_print_zcmplx"
-and prerr_zcmplx (z: zcmplx):<!exnref> void = "atslib_prerr_zcmplx"
-
 overload fprint with fprint_zcmplx
+
+fun print_zcmplx (z: zcmplx):<!exnref> void
+and prerr_zcmplx (z: zcmplx):<!exnref> void
 overload print with print_zcmplx
 overload prerr with prerr_zcmplx
 
@@ -298,37 +258,32 @@ fun zcmplx_make_polar (d1: double, d2: double):<> zcmplx
 
 (* ****** ****** *)
 
-fun creal (z: zcmplx):<> double
-  = "atslib_creal"
-fun zcmplx_real (z: zcmplx):<> double
-  = "atslib_creal"
+fun creal (z: zcmplx):<> double = "atslib_creal"
+fun zcmplx_real (z: zcmplx):<> double = "atslib_creal"
 
-fun cimag (z: zcmplx):<> double
-  = "atslib_cimag"
-fun zcmplx_imag (z: zcmplx):<> double
-  = "atslib_cimag"
+fun cimag (z: zcmplx):<> double = "atslib_cimag"
+fun zcmplx_imag (z: zcmplx):<> double = "atslib_cimag"
 
 (* ****** ****** *)
 
-fun neg_zcmplx (z: zcmplx):<> zcmplx
-  = "atslib_neg_zcmplx"
+fun neg_zcmplx
+  (z: zcmplx):<> zcmplx = "atslib_neg_zcmplx"
 overload ~ with neg_zcmplx
 
 fun add_zcmplx_zcmplx (z1: zcmplx, z2: zcmplx):<> zcmplx
   = "atslib_add_zcmplx_zcmplx"
-
-and sub_zcmplx_zcmplx (z1: zcmplx, z2: zcmplx):<> zcmplx
-  = "atslib_sub_zcmplx_zcmplx"
-
-and mul_zcmplx_zcmplx (z1: zcmplx, z2: zcmplx):<> zcmplx
-  = "atslib_mul_zcmplx_zcmplx"
-
-and div_zcmplx_zcmplx (z1: zcmplx, z2: zcmplx):<> zcmplx
-  = "atslib_div_zcmplx_zcmplx"
-
 overload + with add_zcmplx_zcmplx
+
+fun sub_zcmplx_zcmplx (z1: zcmplx, z2: zcmplx):<> zcmplx
+  = "atslib_sub_zcmplx_zcmplx"
 overload - with sub_zcmplx_zcmplx
+
+fun mul_zcmplx_zcmplx (z1: zcmplx, z2: zcmplx):<> zcmplx
+  = "atslib_mul_zcmplx_zcmplx"
 overload * with mul_zcmplx_zcmplx
+
+fun div_zcmplx_zcmplx (z1: zcmplx, z2: zcmplx):<> zcmplx
+  = "atslib_div_zcmplx_zcmplx"
 overload / with div_zcmplx_zcmplx
 
 (* ****** ****** *)
@@ -343,114 +298,82 @@ overload <> with neq_zcmplx_zcmplx
 
 (* ****** ****** *)
 
-fun cabs (z: zcmplx):<> double
-  = "atslib_cabs"
-fun abs_zcmplx (z: zcmplx):<> double
-  = "atslib_cabs"
+fun cabs (z: zcmplx):<> double = "atslib_cabs"
+fun abs_zcmplx (z: zcmplx):<> double = "atslib_cabs"
 overload abs with abs_zcmplx
 
-fun csqrt (z: zcmplx):<> zcmplx
-  = "atslib_csqrt"
-fun sqrt_zcmplx (z: zcmplx):<> zcmplx
-  = "atslib_csqrt"
+fun csqrt (z: zcmplx):<> zcmplx = "atslib_csqrt"
+fun sqrt_zcmplx (z: zcmplx):<> zcmplx = "atslib_csqrt"
 overload sqrt with sqrt_zcmplx
 
 (* ****** ****** *)
 
-fun carg (z: zcmplx):<> double
-  = "atslib_carg"
-fun arg_zcmplx (z: zcmplx):<> double
-  = "atslib_carg"
+fun carg (z: zcmplx):<> double = "atslib_carg"
+fun arg_zcmplx (z: zcmplx):<> double = "atslib_carg"
 
-fun conj (z: zcmplx):<> zcmplx
-  = "atslib_conj"
-fun conj_zcmplx (z: zcmplx):<> zcmplx
-  = "atslib_conj"
+fun conj (z: zcmplx):<> zcmplx = "atslib_conj"
+fun conj_zcmplx (z: zcmplx):<> zcmplx = "atslib_conj"
 
 (* ****** ****** *)
 
-fun csin (z: zcmplx):<> zcmplx
-  = "atslib_csin"
-fun sin_zcmplx (z: zcmplx):<> zcmplx
-  = "atslib_csin"
+fun csin (z: zcmplx):<> zcmplx = "atslib_csin"
+fun sin_zcmplx (z: zcmplx):<> zcmplx = "atslib_csin"
 
-fun ccos (z: zcmplx):<> zcmplx
-  = "atslib_ccos"
-fun cos_zcmplx (z: zcmplx):<> zcmplx
-  = "atslib_ccos"
+fun ccos (z: zcmplx):<> zcmplx = "atslib_ccos"
+fun cos_zcmplx (z: zcmplx):<> zcmplx = "atslib_ccos"
 
-fun ctan (z: zcmplx):<> zcmplx
-  = "atslib_ctan"
-fun tan_zcmplx (z: zcmplx):<> zcmplx
-  = "atslib_ctan"
+fun ctan (z: zcmplx):<> zcmplx = "atslib_ctan"
+fun tan_zcmplx (z: zcmplx):<> zcmplx = "atslib_ctan"
 
 (* ****** ****** *)
 
-fun casin (z: zcmplx):<> zcmplx
-  = "atslib_casin"
-fun asin_zcmplx (z: zcmplx):<> zcmplx
-  = "atslib_casin"
+fun casin (z: zcmplx):<> zcmplx = "atslib_casin"
+fun asin_zcmplx (z: zcmplx):<> zcmplx = "atslib_casin"
 
-fun cacos (z: zcmplx):<> zcmplx
-  = "atslib_cacos"
-fun acos_zcmplx (z: zcmplx):<> zcmplx
-  = "atslib_cacos"
+fun cacos (z: zcmplx):<> zcmplx = "atslib_cacos"
+fun acos_zcmplx (z: zcmplx):<> zcmplx = "atslib_cacos"
 
-fun catan (z: zcmplx):<> zcmplx
-  = "atslib_catan"
-fun atan_zcmplx (z: zcmplx):<> zcmplx
-  = "atslib_catan"
+fun catan (z: zcmplx):<> zcmplx = "atslib_catan"
+fun atan_zcmplx (z: zcmplx):<> zcmplx = "atslib_catan"
 
 (* ****** ****** *)
 
-fun csinh (z: zcmplx):<> zcmplx
-  = "atslib_csinh"
-fun sinh_zcmplx (z: zcmplx):<> zcmplx
-  = "atslib_csinh"
+fun csinh (z: zcmplx):<> zcmplx = "atslib_csinh"
+fun sinh_zcmplx (z: zcmplx):<> zcmplx = "atslib_csinh"
 
-fun ccosh (z: zcmplx):<> zcmplx
-  = "atslib_ccosh"
-fun cosh_zcmplx (z: zcmplx):<> zcmplx
-  = "atslib_ccosh"
+fun ccosh (z: zcmplx):<> zcmplx = "atslib_ccosh"
+fun cosh_zcmplx (z: zcmplx):<> zcmplx = "atslib_ccosh"
 
-fun ctanh (z: zcmplx):<> zcmplx
-  = "atslib_ctanh"
-fun tanh_zcmplx (z: zcmplx):<> zcmplx
-  = "atslib_ctanh"
+fun ctanh (z: zcmplx):<> zcmplx = "atslib_ctanh"
+fun tanh_zcmplx (z: zcmplx):<> zcmplx = "atslib_ctanh"
 
 (* ****** ****** *)
 
-fun casinh (z: zcmplx):<> zcmplx
-  = "atslib_casinh"
-fun asinh_zcmplx (z: zcmplx):<> zcmplx
-  = "atslib_casinh"
+fun casinh (z: zcmplx):<> zcmplx = "atslib_casinh"
+fun asinh_zcmplx (z: zcmplx):<> zcmplx = "atslib_casinh"
 
-fun cacosh (z: zcmplx):<> zcmplx
-  = "atslib_cacosh"
-fun acosh_zcmplx (z: zcmplx):<> zcmplx
-  = "atslib_cacosh"
+fun cacosh (z: zcmplx):<> zcmplx = "atslib_cacosh"
+fun acosh_zcmplx (z: zcmplx):<> zcmplx = "atslib_cacosh"
 
-fun catanh (z: zcmplx):<> zcmplx
-  = "atslib_catanh"
-fun atanh_zcmplx (z: zcmplx):<> zcmplx
-  = "atslib_catanh"
+fun catanh (z: zcmplx):<> zcmplx = "atslib_catanh"
+fun atanh_zcmplx (z: zcmplx):<> zcmplx = "atslib_catanh"
 
 (* ****** ****** *)
 
-fun cexp (z: zcmplx):<> zcmplx
-  = "atslib_cexp"
-fun exp_zcmplx (z: zcmplx):<> zcmplx
-  = "atslib_cexp"
+fun cexp (z: zcmplx):<> zcmplx = "atslib_cexp"
+fun exp_zcmplx (z: zcmplx):<> zcmplx = "atslib_cexp"
 
-fun clog (z: zcmplx):<> zcmplx
-  = "atslib_clog"
-fun log_zcmplx (z: zcmplx):<> zcmplx
-  = "atslib_clog"
+fun clog (z: zcmplx):<> zcmplx = "atslib_clog"
+fun log_zcmplx (z: zcmplx):<> zcmplx = "atslib_clog"
 
 fun cpow (z1: zcmplx, z2: zcmplx):<> zcmplx
   = "atslib_cpow"
 fun pow_zcmplx_zcmplx (z1: zcmplx, z2: zcmplx):<> zcmplx
   = "atslib_cpow"
+overload pow with pow_zcmplx_zcmplx
+fun pow_zcmplx_double (z1: zcmplx, z2: double):<> zcmplx
+  = "#atslib_pow_zcmplx_double" // macro!
+overload pow with pow_zcmplx_double
 
 (* ****** ****** *)
 

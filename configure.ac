@@ -66,6 +66,9 @@ AC_PROG_MKDIR_P
 AC_PROG_LN_S
 PKG_PROG_PKG_CONFIG
 
+dnl = check for complex.h
+AC_CHECK_HEADERS(complex.h)
+
 dnl = check for gmp.h
 AC_CHECK_HEADERS(gmp.h)
 AC_SUBST(HAVE_LIBGMP, ${ac_cv_header_gmp_h%no})

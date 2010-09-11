@@ -489,10 +489,11 @@ fn ccomp_runtime_dir_copy (knd: packnd): void = let
   )
   val () = mkdir_exn (DSTROOTccomp_runtime, DIRmode)
 in
+  cp "ats_config.h";
   cp "ats_basics.h";
+  cp "ats_types.h";
   cp "ats_exception.h";
   cp "ats_memory.h";
-  cp "ats_types.h";
   cp "ats_bootstrap.c";
   cp "ats_prelude.c";
   cp "ats_prelude_ngc.c";
