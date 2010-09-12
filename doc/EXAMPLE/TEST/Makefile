@@ -197,7 +197,7 @@ libats_linstack_arr: libats_linstack_arr.dats
 ######
 
 libats_regexp: libats_regexp.dats
-	$(ATSCC) -O2 -o libats_regexp libats_regexp.dats -lpcre && ./libats_regexp "12345789"
+	$(ATSCC) -O2 -o libats_regexp libats_regexp.dats -lats -lpcre && ./libats_regexp "12345789"
 
 ######
 

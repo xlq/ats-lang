@@ -22,11 +22,9 @@ compall: \
   HelloWorld f91 fact1 fact2 fact3 fibs revarr revstr
 
 HelloWorld: HelloWorld.dats
-	rm -f HelloWorld
 	$(ATSCC) -o HelloWorld HelloWorld.dats && ./HelloWorld
 
 f91: f91.dats
-	rm -f f91
 	$(ATSCC) -o f91 f91.dats && ./f91 0
 
 fact1: fact1.dats
@@ -74,7 +72,7 @@ html::
 ######
 
 clean::
-	rm -f INTRO/*
+	rm -f ./INTRO/*
 	rm -f *_dats.c *_sats.c *_dats.html *_sats.html *~
 
 cleanall:: clean

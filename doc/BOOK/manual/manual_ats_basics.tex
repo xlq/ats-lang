@@ -179,7 +179,7 @@ postfix (!!) !!!
 This form of fixity declaration obviates the need for remembering the
 actual precedence value assigned to $!!$. If it is needed to assign
 a precedence value to $!!!$ that is 1 higher than the one attached to
-$!!!$, then the following fixity declaration can be used:
+$!!$, then the following fixity declaration can be used:
 \begin{verbatim}
 postfix (!! + 1) !!!
 \end{verbatim}
@@ -189,9 +189,10 @@ constants, and the plus sign can be replaced with the minus sign as well.
 In addition, we may write $e_1~\backslash opr~e_2$ for $opr(e_1, e_2)$,
 where $e_1$ and $e_2$ are two expressions and $opr$ is some operator. More
 precisely, $\backslash opr$ is treated as a non-associative infix operator
-with precedence $0$.  On the other hand, the keyword $\KWop$ can be used to
-suppress the fixity status of an operator: $\KWop~opr$ is treated as an
-operator with no fixity regardless the fixity status of $opr$.
+with precedence value equal to $0$.  On the other hand, the keyword $\KWop$
+can be used to suppress the fixity status of an operator: $\KWop~opr$ is
+treated as an operator with no fixity regardless the fixity status of
+$opr$.
 
 It is also possible to deprive an operator $opr$ of its assigned fixity
 status. For instance, the following declaration makes both $!!$ and $!!!$
