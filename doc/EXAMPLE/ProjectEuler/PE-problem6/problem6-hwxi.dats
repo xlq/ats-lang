@@ -8,7 +8,7 @@
 //
 // Author: Hongwei Xi (hwxi AT cs DOT bu DOT edu)
 // Time: August, 2010 // the first solution
-// Time: September, 2010
+// Time: September, 2010 // the current fully verified solution
 //
 
 (* ****** ****** *)

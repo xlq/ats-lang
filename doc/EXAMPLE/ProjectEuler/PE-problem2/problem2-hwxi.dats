@@ -26,7 +26,7 @@ fun loop (
 *)
   val sgn = mpz_cmp_ulint (ifib, N)
 in
-  if sgn <= 0 then let
+  if sgn < 0 then let
     val () = if mpz_even_p (ifib) then mpz_add (sum, ifib)
   in
     loop (N, i+1UL, ifib, sum)
@@ -41,7 +41,7 @@ implement main () = () where {
   macdef N = 4000000UL
   val () = loop (N, 2UL, ifib, sum) // starting from the 2nd Fib number
   val () = assert_errmsg (mpz_get_ulint (sum) = 4613732UL, #LOCATION)
-  val () = (print "The sum of all even Fibonacci numbers <= 4 million = "; print sum; print_newline ())
+  val () = (print "The sum of all even Fibonacci numbers < 4 million = "; print sum; print_newline ())
   val () = mpz_clear (ifib)
   val () = mpz_clear (sum)
 } // end of [main]
