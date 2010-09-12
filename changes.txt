@@ -9,6 +9,7 @@ ats-lang-anairiats-0.2.2:
 4. $ATSHOME/libc/SATS/complex.sats and $ATSHOME/libc/DATS/complex.dats
    are compiled and then added to libats.a
 5. Adding support for #undef
+6. Fully testing the support for ATS running on Cygwin
 
 ########################################################################
 
@@ -20,7 +21,7 @@ ats-lang-anairiats-0.2.1:
    (strptr). This is a change that can have pervasive impact.
 4. Some support for GMP/MPQ and GMP/MPF functions are added. See
    libc/SATS/gmp.sat for details.
-5. Overhauling the ATS building system.
+5. Overhauling the ATS building system (Yuri D'Elia).
 
 ########################################################################
 
