@@ -11,7 +11,7 @@ extern fun month_name (nmonth: intBtw (1, NMONTH+1)): string
 
 local
 
-val month_name_arr = array_make_arraysize {string} $arrsz(
+val month_name_arr = array_make_arrsz {string} $arrsz(
   "January"
 , "February"
 , "March"

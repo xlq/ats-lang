@@ -89,11 +89,11 @@ main (argc, argv) = () where {
 //
   val p6 = prime (6)
   val () = assert_errmsg (p6 = 13, #LOCATION)
-  val () = printf ("prime 6 = %i\n", @(p6)) ; // 13
+  val () = printf ("prime(6) = %i\n", @(p6)) ; // 13
 //
   val p10001 = prime (10001)
   val () = assert_errmsg (p10001 = 104743, #LOCATION)
-  val () = printf ("prime 10001 = %i\n", @(p10001)) ; // 104743
+  val () = printf ("prime(10001) = %i\n", @(p10001)) ; // 104743
 //
 } // end of [main]
 

@@ -12,10 +12,6 @@
 
 (* ****** ****** *)
 
-staload "libc/SATS/gmp.sats"
-
-(* ****** ****** *)
-
 fun digitsqrsum
   (x: int): int = let
   fun loop (x: int, sum: int): int =

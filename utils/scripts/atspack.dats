@@ -774,8 +774,7 @@ fn doc_dir_copy () = let
   } // end of [val]
 //
 in
-  prerr "The [doc] directory is successfully copied.";
-  prerr_newline ()
+  prerr "The [doc] directory is successfully copied."; prerr_newline ()
 end // end of [doc_dir_copy]
 
 (* ****** ****** *)

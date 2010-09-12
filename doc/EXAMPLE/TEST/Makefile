@@ -106,7 +106,7 @@ libc_dlfcn: libc_dlfcn.dats
 ######
 
 libc_gmp: libc_gmp.dats
-	$(ATSCC) -D_GNU_SOURCE -O2 -o libc_gmp libc_gmp.dats -lgmp && ./libc_gmp
+	$(ATSCC) -D_GNU_SOURCE -O2 -o libc_gmp libc_gmp.dats -lats -lgmp && ./libc_gmp
 
 ######
 
@@ -160,7 +160,7 @@ libats_hashtable_linprb: libats_hashtable_linprb.dats
 ######
 
 libats_intinf: libats_intinf.dats
-	$(ATSCC) -O2 -o libats_intinf libats_intinf.dats -lgmp && ./libats_intinf 10
+	$(ATSCC) -O2 -o libats_intinf libats_intinf.dats -lats -lgmp && ./libats_intinf 10
 
 libats_iterint: libats_iterint.dats
 	$(ATSCC) -O2 -o libats_iterint libats_iterint.dats && ./libats_iterint

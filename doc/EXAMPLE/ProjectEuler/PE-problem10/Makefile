@@ -15,7 +15,7 @@ compall:: \
 ######
 
 problem10-hwxi: problem10-hwxi.dats
-	$(ATSCC) -O2 -o $@ problem10-hwxi.dats -lgmp && ./problem10-hwxi
+	$(ATSCC) -O2 -o $@ problem10-hwxi.dats && ./problem10-hwxi
 
 ######
 

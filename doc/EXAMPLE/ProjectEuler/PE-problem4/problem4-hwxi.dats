@@ -12,10 +12,6 @@
 
 (* ****** ****** *)
 
-staload "libc/SATS/gmp.sats"
-
-(* ****** ****** *)
-
 fun test
   (x: int): bool = let
   fun rev (x: int, res: int): int =
@@ -45,7 +41,7 @@ implement main () = let
   val ans = pmax
   val () = assert_errmsg (ans = 906609, #LOCATION)
 in
-  printf ("ans(%d, %d) = %d\n", @(imax, jmax, ans))
+  printf ("ans(%d * %d) = %d\n", @(imax, jmax, ans))
 end // end of [main]
 
 (* ****** ****** *)
