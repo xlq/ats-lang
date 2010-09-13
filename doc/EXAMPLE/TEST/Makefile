@@ -209,7 +209,7 @@ libats_regexp: libats_regexp.dats
 ######
 
 libats_vector: libats_vector.dats
-	$(ATSCC) -O2 -o libats_vector libats_vector.dats -lats -lpcre && ./libats_vector
+	$(ATSCC) -O2 -o libats_vector libats_vector.dats && ./libats_vector
 
 ######
 

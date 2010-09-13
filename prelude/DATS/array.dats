@@ -472,7 +472,8 @@ implement{a} array_exch (A, i1, i2) =
 
 (* ****** ****** *)
 
-implement array_ptr_foreach_fun_tsz__main
+implement
+array_ptr_foreach_fun_tsz__main
   {a} {v} {vt} {n} (pf | base, f, asz, tsz, env) = let
   fun loop {i:nat | i <= n} {l:addr} .<i>. (
       pf: !v, pf_arr: !array_v (a, i, l) >> array_v (a, i, l)
@@ -500,11 +501,12 @@ end // end of [array_ptr_foreach_fun_tsz__main]
 //
 
 implement{a}
-  array_ptr_foreach_fun (pf_v | A, f, asz) =
+array_ptr_foreach_fun (pf_v | A, f, asz) =
   array_ptr_foreach_fun_tsz {a} (pf_v | A, f, asz, sizeof<a>)
 // end of [implement]
 
-implement array_ptr_foreach_fun_tsz
+implement
+array_ptr_foreach_fun_tsz
   {a} {v} {n} (pf_v | A, f, asz, tsz) = let
   viewtypedef fun0_t = (!v | &a) -<fun> void
   viewtypedef fun1_t = (!v | &a, !ptr) -<fun> void
@@ -518,11 +520,12 @@ end // end of [array_ptr_foreach_fun_tsz]
 //
 
 implement{a}
-  array_ptr_foreach_clo (pf_v | A, f, asz) =
+array_ptr_foreach_clo (pf_v | A, f, asz) =
   array_ptr_foreach_clo_tsz {a} (pf_v | A, f, asz, sizeof<a>)
 // end of [implement]
 
-implement array_ptr_foreach_clo_tsz
+implement
+array_ptr_foreach_clo_tsz
   {a} {v} {n} (pf_v | A, f, asz, tsz) = let
   viewtypedef clo_t = (!v | &a) -<clo> void
   stavar l_f: addr
@@ -542,7 +545,8 @@ end // end of [array_ptr_foreach_clo_tsz]
 
 (* ****** ****** *)
 
-implement array_ptr_iforeach_fun_tsz__main
+implement
+array_ptr_iforeach_fun_tsz__main
   {a} {v} {vt} {n} (pf | base, f, asz, tsz, env) = let
   fun loop {i:nat | i <= n} {l:addr} .<n-i>. (
       pf: !v, pf_arr: !array_v (a, n-i, l) >> array_v (a, n-i, l)
@@ -570,11 +574,12 @@ end // end of [array_ptr_iforeach_fun_tsz__main]
 //
 
 implement{a}
-  array_ptr_iforeach_fun (pf_v | A, f, asz) =
+array_ptr_iforeach_fun (pf_v | A, f, asz) =
   array_ptr_iforeach_fun_tsz {a} (pf_v | A, f, asz, sizeof<a>)
 // end of [implement]
 
-implement array_ptr_iforeach_fun_tsz
+implement
+array_ptr_iforeach_fun_tsz
   {a} {v} {n} (pf_v | A, f, asz, tsz) = let
   viewtypedef fun0_t = (!v | sizeLt n, &a) -<fun> void
   viewtypedef fun1_t = (!v | sizeLt n, &a, !ptr) -<fun> void
@@ -588,11 +593,12 @@ end // end of [array_ptr_foreach_fun_tsz]
 //
 
 implement{a}
-  array_ptr_iforeach_clo (pf_v | A, f, asz) =
+array_ptr_iforeach_clo (pf_v | A, f, asz) =
   array_ptr_iforeach_clo_tsz {a} (pf_v | A, f, asz, sizeof<a>)
 // end of [implement]
 
-implement array_ptr_iforeach_clo_tsz
+implement
+array_ptr_iforeach_clo_tsz
   {a} {v} {n} (pf_v | A, f, asz, tsz) = let
   viewtypedef clo_t = (!v | sizeLt n, &a) -<clo> void
   stavar l_f: addr
@@ -616,7 +622,8 @@ end // end of [array_ptr_iforeach_clo_tsz]
 
 (* ****** ****** *)
 
-implement{a} array_foreach__main
+implement{a}
+array_foreach__main
   {v} {vt} {n} (pf | A, f, asz, env) = let
   typedef fun_t = (!v | &a, !vt) -<> void
   fun loop {i:nat | i <= n} .<n-i>. (
@@ -639,7 +646,8 @@ in
   loop (pf | A, f, asz, 0, env)
 end // end of [array_foreach__main]
 
-implement{a} array_foreach_fun
+implement{a}
+array_foreach_fun
   {v} {n} (pf | A, f, asz) = let
   val f = coerce (f) where { extern castfn
     coerce (f: (!v | &a) -<> void):<> (!v | &a, !ptr) -<> void
@@ -648,7 +656,8 @@ in
   array_foreach__main (pf | A, f, asz, null)
 end // end of [array_foreach_fun]
 
-implement{a} array_foreach_clo
+implement{a}
+array_foreach_clo
   {v} {n} (pf_v | A, f, asz) = let
   stavar l_f: addr
   typedef clo_t = (!v | &a) -<clo> void
@@ -666,7 +675,7 @@ in
 end // end of [array_foreach_clo]
 
 implement{a}
-  array_foreach_cloref {n} (A, f, asz) = let
+array_foreach_cloref {n} (A, f, asz) = let
   viewtypedef cloref_t = (&a) -<cloref> void
   fn app (pf: !unit_v | x: &a, f: !cloref_t):<> void = $effmask_all (f x)
   prval pf = unit_v ()
@@ -678,7 +687,8 @@ end // end of [array_foreach_cloref]
 
 (* ****** ****** *)
 
-implement{a} array_iforeach__main
+implement{a}
+array_iforeach__main
   {v} {vt} {n} (pf | A, f, asz, env) = let
   viewtypedef fun_t = (!v | sizeLt n, &a, !vt) -<fun> void
   fun loop {i:nat | i <= n} .<n-i>. (
@@ -701,7 +711,8 @@ in
   // empty
 end // end of [array_iforeach__main]
 
-implement{a} array_iforeach_fun
+implement{a}
+array_iforeach_fun
   {v} {n} (pf | A, f, asz) = let
   val f = coerce (f) where { extern castfn
     coerce (f: (!v | sizeLt n, &a) -<> void):<> (!v | sizeLt n, &a, !ptr) -<> void
@@ -710,7 +721,8 @@ in
   array_iforeach__main (pf | A, f, asz, null)
 end // end of [array_foreach_fun]
 
-implement{a} array_iforeach_clo
+implement{a}
+array_iforeach_clo
   {v} {n} (pf_v | A, f, asz) = let
   stavar l_f: addr
   typedef clo_t = (!v | sizeLt n, &a) -<clo> void
@@ -729,7 +741,7 @@ in
 end // end of [array_iforeach_clo]
 
 implement{a}
-  array_iforeach_cloref {n} (A, f, asz) = let
+array_iforeach_cloref {n} (A, f, asz) = let
   viewtypedef cloref_t = (sizeLt n, &a) -<cloref> void
   fn app (pf: !unit_v | i: sizeLt n, x: &a, f: !cloref_t):<> void = f (i, x)
   prval pf = unit_v ()
@@ -741,8 +753,9 @@ end // end of [array_iforeach_cloref]
 
 (* ****** ****** *)
 
-implement{a} array_ptr_alloc (n) =
-  array_ptr_alloc_tsz {a} (n, sizeof<a>)
+implement{a}
+array_ptr_alloc (n) = array_ptr_alloc_tsz {a} (n, sizeof<a>)
+// end of [array_ptr_alloc]
 
 (* ****** ****** *)
 

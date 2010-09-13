@@ -92,6 +92,11 @@ prfun VECTOR_decode {a:viewt@ype} {m,n:int} {l:addr}
 
 (* ****** ****** *)
 
+fun vector_get_size {a:viewt@ype} {m,n:int} (V: &VECTOR (a, m, n)):<> size_t n
+fun vector_get_capacity {a:viewt@ype} {m,n:int} (V: &VECTOR (a, m, n)):<> size_t m
+
+(* ****** ****** *)
+
 fun{a:viewt@ype}
 vector_initialize {m:nat} (V: &VSHELL0? >> VECTOR (a, m, 0), m: size_t m):<> void
 
@@ -125,12 +130,32 @@ vector_append {m,n:int | n < m}
   (V: &VECTOR (a, m, n) >> VECTOR (a, m, n+1), x: a):<> void
 // end of [vector_append]
 
+fun{a:viewt@ype}
+vector_prepend {m,n:int | n < m}
+  (V: &VECTOR (a, m, n) >> VECTOR (a, m, n+1), x: a):<> void
+// end of [vector_prepend]
+
 (* ****** ****** *)
 
 fun{a:t@ype}
 vector_resize {m,n:int} {m1:int | n <= m1}
   (V: &VECTOR (a, m, n) >> VECTOR (a, m1, n), m1: size_t m1):<> void
 // end of [vector_resize]
+
+(* ****** ****** *)
+
+fun vector_foreach_fun_tsz__main
+  {a:viewt@ype} {v:view} {vt:viewtype} {m,n:int} (
+    pf: !v
+  | V: &VECTOR (a, m, n)
+  , f: (!v | &a, !vt) -<> void, tsz: sizeof_t a, env: !vt
+  ) :<> void
+// end of [vector_foreach_fun_tsz__main]
+
+fun{a:viewt@ype}
+vector_foreach_clo {v:view} {m,n:int}
+  (pf: !v | V: &VECTOR (a, m, n), f: &(!v | &a) -<clo> void) :<> void
+// end of [vector_foreach_clo]
 
 (* ****** ****** *)
 
