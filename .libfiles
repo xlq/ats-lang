@@ -235,6 +235,10 @@ libats/SATS/regexp.sats
 libats/DATS/regexp.dats
 #endif
 
+/* dynamically resizable array implementation */
+libats/SATS/vector.sats
+libats/DATS/vector.dats
+
 /* ****** ****** */
 
 /*

@@ -269,7 +269,7 @@ prfun array_v_split {a:viewt@ype}
 (* ***** ***** *)
 
 prfun array_v_unsplit {a:viewt@ype}
-  {n1,n2:nat} {l:addr} {ofs:int} (
+  {n1,n2:int} {l:addr} {ofs:int} (
     pf_mul: MUL (n1, sizeof a, ofs)
   , pf1_arr: array_v (a, n1, l), pf2_arr: array_v (a, n2, l+ofs)
   ) :<prf> array_v (a, n1+n2, l)

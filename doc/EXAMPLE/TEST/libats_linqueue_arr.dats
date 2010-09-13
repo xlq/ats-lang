@@ -10,10 +10,6 @@ staload RAND = "libc/SATS/random.sats"
 
 (* ****** ****** *)
 
-staload _(*anon*) = "prelude/DATS/reference.dats"
-
-(* ****** ****** *)
-
 staload Q = "libats/SATS/linqueue_arr.sats"
 stadef QUEUE = $Q.QUEUE
 stadef QUEUE0 = $Q.QUEUE0

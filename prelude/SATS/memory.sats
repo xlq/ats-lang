@@ -40,9 +40,7 @@
 (* ****** ****** *)
 
 #if VERBOSE_PRELUDE #then
-
 #print "Loading [memory.sats] starts!\n"
-
 #endif // end of [VERBOSE_PRELUDE]
 
 (* ****** ****** *)
@@ -152,9 +150,7 @@ fun realloc_ngc {n0,n:nat} {l0:addr} (
 (* ****** ****** *)
 
 #if VERBOSE_PRELUDE #then
-
 #print "Loading [memory.sats] finishes!\n"
-
 #endif // end of [VERBOSE_PRELUDE]
 
 (* end of [memory.sats] *)

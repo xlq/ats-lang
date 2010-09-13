@@ -62,6 +62,10 @@ implement array_v_split {a} (pf_mul, pf_arr) = split (pf_mul, pf_arr) where {
 
 implement array_v_unsplit {a}
   (pf_mul, pf1_arr, pf2_arr) = unsplit (pf_mul, pf1_arr, pf2_arr) where {
+//
+  extern praxi lemma {n:int} {l:addr} (pf: !array_v (a, n, l)): [n>=0] void
+  prval () = lemma (pf1_arr) and () = lemma (pf2_arr) 
+//
   prfun unsplit {n1,n2:nat} {l:addr} {ofs:int} .<n1>.
     (pf_mul: MUL (n1, sizeof a, ofs), pf1_arr: array_v (a, n1, l), pf2_arr: array_v (a, n2, l+ofs))
     : array_v (a, n1+n2, l) =
