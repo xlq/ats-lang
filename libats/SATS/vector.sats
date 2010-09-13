@@ -137,6 +137,18 @@ vector_prepend {m,n:int | n < m}
 
 (* ****** ****** *)
 
+fun{a:viewt@ype}
+vector_insert_at {m,n:int | n < m}
+  {i:nat | i <= n} (V: &VECTOR (a, m, n) >> VECTOR (a, m, n+1), i: size_t i, x: a):<> void
+// end of [vector_insert]
+
+fun{a:viewt@ype}
+vector_remove_at {m,n:int | n > 0}
+  {i:nat | i < n} (V: &VECTOR (a, m, n) >> VECTOR (a, m, n-1), i: size_t i):<> void
+// end of [vector_remove]
+
+(* ****** ****** *)
+
 fun{a:t@ype}
 vector_resize {m,n:int} {m1:int | n <= m1}
   (V: &VECTOR (a, m, n) >> VECTOR (a, m1, n), m1: size_t m1):<> void
@@ -156,6 +168,21 @@ fun{a:viewt@ype}
 vector_foreach_clo {v:view} {m,n:int}
   (pf: !v | V: &VECTOR (a, m, n), f: &(!v | &a) -<clo> void) :<> void
 // end of [vector_foreach_clo]
+
+(* ****** ****** *)
+
+fun vector_iforeach_fun_tsz__main
+  {a:viewt@ype} {v:view} {vt:viewtype} {m,n:int} (
+    pf: !v
+  | V: &VECTOR (a, m, n)
+  , f: (!v | sizeLt n, &a, !vt) -<> void, tsz: sizeof_t a, env: !vt
+  ) :<> void
+// end of [vector_iforeach_fun_tsz__main]
+
+fun{a:viewt@ype}
+vector_iforeach_clo {v:view} {m,n:int}
+  (pf: !v | V: &VECTOR (a, m, n), f: &(!v | sizeLt n, &a) -<clo> void) :<> void
+// end of [vector_iforeach_clo]
 
 (* ****** ****** *)
 

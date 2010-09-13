@@ -9,7 +9,8 @@ ats-lang-anairiats-0.2.2:
 4. $ATSHOME/libc/SATS/complex.sats and $ATSHOME/libc/DATS/complex.dats
    are compiled and then added to libats.a
 5. Adding support for #undef
-6. Fully testing the support for ATS running on Cygwin
+6. Thoroughly testing the support for ATS running on Cygwin
+7. Implementing libats/vector (dynamically resizable vectors)
 
 ########################################################################
 

@@ -160,6 +160,18 @@ end // end of [vector_get_elt_at]
 
 (* ****** ****** *)
 
+(*
+//
+// HX: this is a bit less efficient
+//
+implement{a}
+vector_append {m,n} (V, x) = let
+  prval () = __assert () where { extern prfun __assert (): [n>=0] void }
+  val n = vector_get_size (V)
+in
+  vector_insert_at<a> (V, n, x)
+end // end of [vector_append]
+*)
 implement{a}
 vector_append (V, x) = let
   prval pf = VECTOR_decode {a} (V)
@@ -184,19 +196,38 @@ end // end of [vector_append]
 
 implement{a}
 vector_prepend {m,n} (V, x) = let
-  prval pf = VECTOR_decode {a} (V)
-  val n = V.n
-  prval () = __assert (n) where {
-    extern prfun __assert {n:int} (_: size_t n): [n>=0] void
+  prval () = __assert () where { extern prfun __assert (): [n>=0] void }
+in
+  vector_insert_at<a> (V, 0, x)
+end // end of [vector_prepend]
+
+(* ****** ****** *)
+
+implement{a}
+vector_insert_at
+  {m,n} {i} (V, i, x) = let
+  prval () = __assert () where {
+    extern prfun __assert (): [n>=0] void
   } // end of [val]
+  prval pf = VECTOR_decode {a} (V)
+//
+  stavar l0:addr
+  val p0 : ptr l0 = V.ptr
+  val [ofs1:int] (pfmul1 | ofs1) = mul2_size1_size1 (i, sizeof<a>)
+  val n = V.n
   val [ofs:int] (pfmul | ofs) = mul2_size1_size1 (n, sizeof<a>)
+//
   prval (pf1, pf2) = vector_v_decode {a} (pfmul, pf)
-  prval (pf21, pf22) = array_v_uncons {a?} (pf2)
-  stavar l:addr
-  val p : ptr l = V.ptr
-  prval pf3 = array_v_nil {a} {l+ofs+sizeof a} ()
-  val (pf11, pf12 | ()) =
-    loop (pfmul, pf1, pf21, pf3 | p+ofs, n) where {
+  prval (pf11, pf12) = array_v_split {a} {n,i} (pfmul1, pf1)
+  prval (pf21, pf22) = array_v_uncons {a?} (pf2)  
+  prval pf3 = array_v_nil {a} {l0+ofs+sizeof a} ()
+//
+  prval pfmul2 = mul_commute (
+    mul_distribute (mul_commute (pfmul), mul_commute (mul_negate (pfmul1)))
+  ) // end of [prval]
+//
+  val (pfr1, pfr2 | ()) =
+    loop (pfmul2, pf12, pf21, pf3 | p0+ofs, n-i) where {
     fun loop {n1,n2:nat} {l:addr} {ofs:int} .<n1>. (
         pfmul: MUL (n1, sizeof a, ofs)
       , pf1: array_v (a, n1, l), pf2: a? @ (l+ofs), pf3: array_v (a, n2, l+ofs+sizeof a)
@@ -217,15 +248,16 @@ vector_prepend {m,n} (V, x) = let
       end // end of [if]
     // end of [loop]
   } // end of [val]
-  val () = !p := x
-  prval pf1 = array_v_cons {a} (pf11, pf12)
+  val p = p0 + ofs1; val () = !p := x
+  prval pf12 = array_v_cons {a} (pfr1, pfr2)
+  prval pf1 = array_v_unsplit {a} (pfmul1, pf11, pf12)
   prval pfmul = MULind (pfmul)
   prval pf = vector_v_encode {a} (pfmul, pf1, pf22)
   val () = V.n := n + 1
   prval () = VECTOR_encode {a} (pf | V)
 in
   // nothing
-end // end of [vector_prepend]  
+end // end of [vector_insert_at]  
 
 (* ****** ****** *)
 
@@ -288,6 +320,47 @@ vector_foreach_clo
 in
   // empty
 end // end of [vector_foreach_clo]
+
+(* ****** ****** *)
+
+implement
+vector_iforeach_fun_tsz__main
+  {a} {v} {vt} {m,n}
+  (pf | V, f, tsz, env) = let
+  prval () = __assert () where {
+    extern praxi __assert (): [m>=n;n>=0] void
+  } // end of [prval]
+  prval pf0 = VECTOR_decode {a} (V)
+  prval pfmul = mul_istot {n,sizeof a} ()
+  prval (pf1, pf2) = vector_v_decode {a} (pfmul, pf0)
+  val p = V.ptr
+  val () = array_ptr_iforeach_fun_tsz__main (pf | !p, f, V.n, tsz, env)
+  prval pf0 = vector_v_encode {a} (pfmul, pf1, pf2)
+  prval () = VECTOR_encode {a} (pf0 | V)
+in
+  // nothing
+end // end of [vector_iforeach_fun_tsz__main]
+
+(* ****** ****** *)
+
+implement{a}
+vector_iforeach_clo
+  {v} {m,n} (pf_v | A, f) = let
+  viewtypedef clo_t = (!v | sizeLt n, &a) -<clo> void
+  stavar l_f: addr
+  val p_f: ptr l_f = &f
+  viewdef V = @(v, clo_t @ l_f)
+  fn app (pf: !V | i: sizeLt n, x: &a, p_f: !ptr l_f):<> void = let
+    prval (pf1, pf2) = pf; val () = !p_f (pf1 | i, x) in pf := (pf1, pf2)
+  end // end of [app]
+  prval pf = (pf_v, view@ f)
+  val () = vector_iforeach_fun_tsz__main
+    {a} {V} {ptr l_f} (pf | A, app, sizeof<a>, p_f)
+  prval (pf1, pf2) = pf
+  prval () = (pf_v := pf1; view@ f := pf2)
+in
+  // empty
+end // end of [vector_iforeach_clo_tsz]
 
 (* ****** ****** *)
 

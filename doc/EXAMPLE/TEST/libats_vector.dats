@@ -63,13 +63,16 @@ implement main () = () where {
     // end of [loop]
   } // end of [val]
 //
-  var i: int = 0
-  viewdef V = int@i
-  val () = $V.vector_foreach_clo<T>
-    {V} (view@ i | V, !p_clo) where {
-    var !p_clo = @lam (pf: !int@i | x: &T)
-      : void =<> $effmask_all (printf ("V[%i] = %.1f\n", @(i,x)); i:=i+1)
+  viewdef V = unit_v
+  prval pfu = unit_v
+  val () = $V.vector_iforeach_clo<T>
+    {V} (pfu | V, !p_clo) where {
+    var !p_clo = @lam (pf: !V | i: sizeLt N, x: &T)
+      : void =<> $effmask_all let
+        val i = int1_of_size1(i) in printf ("V[%i] = %.1f\n", @(i,x))
+      end // end of [@lam]
   } // end of [val]
+  prval unit_v () = pfu
 //
   val () = $V.vector_uninitialize (V)
 //
