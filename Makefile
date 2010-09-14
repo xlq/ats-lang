@@ -73,6 +73,11 @@ DESTDIR :=
 
 export ATSHOME
 export ATSHOMERELOC
+export ATSHOMEQ
+
+######
+
+ATSHOMEBIN = $(ATSHOMEQ)/bin
 
 ######
 
@@ -166,13 +171,13 @@ bootstrapping:: ; cd src; $(MAKE) -f ./Makefile_srcbootstrap all
 
 atsopt1::
 	$(MAKE) -C bootstrap1 -f ../Makefile_bootstrap BOOTSTRAP1=1 atsopt
-	cp bootstrap1/atsopt $(ATSHOME)/bin/atsopt
+	cp bootstrap1/atsopt $(ATSHOMEBIN)/atsopt
 
 ###### with GC ######
 
 atsopt1_gc::
 	$(MAKE) -C bootstrap1 -f ../Makefile_bootstrap BOOTSTRAP1=1 atsopt_gc
-	cp bootstrap1/atsopt_gc $(ATSHOME)/bin/atsopt
+	cp bootstrap1/atsopt_gc $(ATSHOMEBIN)/atsopt
 
 ###### contrib libraries ######
 
@@ -192,12 +197,12 @@ endif
 ###### some toplevel commands ######
 
 bin/atscc bin/atslib:
-	cd utils/scripts; $(MAKE) atscc; cp atscc $(ATSHOME)/bin
-	cd utils/scripts; $(MAKE) atslib; cp atslib $(ATSHOME)/bin
+	cd utils/scripts; $(MAKE) atscc; cp atscc $(ATSHOMEBIN)
+	cd utils/scripts; $(MAKE) atslib; cp atslib $(ATSHOMEBIN)
 	cd utils/scripts; $(MAKE) clean
 
 bin/atspack:
-	cd utils/scripts; $(MAKE) atspack; cp atspack $(ATSHOME)/bin
+	cd utils/scripts; $(MAKE) atspack; cp atspack $(ATSHOMEBIN)
 
 ###### library ######
 
@@ -208,7 +213,7 @@ ATS_PROOFCHECK=
 # [CC -E] for preprocessing
 #
 
-ATSLIB=$(ATSHOME)/bin/atslib
+ATSLIB=$(ATSHOMEBIN)/atslib
 
 .libfiles_local: .libfiles ; $(CC) -E -P -x c -o $@ $<
 libfiles: .libfiles_local
@@ -233,7 +238,7 @@ libfiles_mt: .libfiles_mt_local
 ###### a lexer for ATS ######
 
 bin/atslex:
-	cd utils/atslex; $(MAKE) atslex; cp atslex $(ATSHOME)/bin
+	cd utils/atslex; $(MAKE) atslex; cp atslex $(ATSHOMEBIN)
 	cd utils/atslex; $(MAKE) clean
 
 ###### GC runtime ######

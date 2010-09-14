@@ -33,13 +33,14 @@
 
 ######
 
-ATSOPT=$(ATSHOME)/bin/atsopt
-ATSRUNTIME=$(ATSHOME)/ccomp/runtime
-ATSLIBC=$(ATSHOME)/libc
-ATSCC=$(ATSHOME)/bin/atscc
+#ATSHOMEQ="$(ATSHOME)"
+ATSOPT=$(ATSHOMEQ)/bin/atsopt
+ATSRUNTIME=$(ATSHOMEQ)/ccomp/runtime
+ATSLIBC=$(ATSHOMEQ)/libc
+ATSCC=$(ATSHOMEQ)/bin/atscc
 
 CC=gcc
-INCLUDES=-I$(ATSHOME) -I$(ATSRUNTIME)
+INCLUDES=-I$(ATSHOMEQ) -I$(ATSRUNTIME)
 CCFLAGS=-O2 -g
 
 ######
