@@ -7,8 +7,9 @@
 
 ######
 
-ATSCC=$(ATSHOME)/bin/atscc
-PANGOCFLAGS = `pkg-config pango --cflags`
+ATSHOMEQ="$(ATSHOME)"
+ATSCC=$(ATSHOMEQ)/bin/atscc
+PANGOCFLAGS=`pkg-config pango --cflags`
 
 ######
 

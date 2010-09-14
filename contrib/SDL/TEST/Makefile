@@ -4,14 +4,17 @@
 #
 #
 
-ATSCC="$(ATSHOME)"/bin/atscc
+######
+
+ATSHOMEQ="$(ATSHOME)"
+ATSCC=$(ATSHOMEQ)/bin/atscc
 ATSCTRB=\
-  "$(ATSHOME)"/contrib/SDL/atsctrb_SDL.o
+  $(ATSHOMEQ)/contrib/SDL/atsctrb_SDL.o
 ATSCTRB_GL=\
-  "$(ATSHOME)"/contrib/GL/atsctrb_GL.o
+  $(ATSHOMEQ)/contrib/GL/atsctrb_GL.o
 ATSCTRB_xr=\
-  "$(ATSHOME)"/contrib/X11/atsctrb_X11.o \
-  "$(ATSHOME)"/contrib/cairo/atsctrb_cairo.o
+  $(ATSHOMEQ)/contrib/X11/atsctrb_X11.o \
+  $(ATSHOMEQ)/contrib/cairo/atsctrb_cairo.o
 SDLCFLAGS=`sdl-config --cflags`
 CAIROCFLAGS=`pkg-config cairo --cflags`
 

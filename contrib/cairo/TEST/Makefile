@@ -10,8 +10,9 @@
 
 ######
 
-ATSCC=$(ATSHOME)/bin/atscc
-ATSCTRB=$(ATSHOME)/contrib/cairo/atsctrb_cairo.o
+ATSHOMEQ="$(ATSHOME)"
+ATSCC=$(ATSHOMEQ)/bin/atscc
+ATSCTRB=$(ATSHOMEQ)/contrib/cairo/atsctrb_cairo.o
 XRFLAGS=`pkg-config cairo --cflags --libs`
 GTKFLAGS=`pkg-config gtk+-2.0 --cflags --libs`
 

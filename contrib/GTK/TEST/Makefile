@@ -4,9 +4,10 @@
 
 ######
 
-ATSCC=$(ATSHOME)/bin/atscc
+ATSHOMEQ="$(ATSHOME)"
+ATSCC=$(ATSHOMEQ)/bin/atscc
 GTKFLAGS=`pkg-config gtk+-2.0 --cflags --libs`
-ATSGTKLIB=$(ATSHOME)/contrib/GTK/atsctrb_GTK.o
+ATSGTKLIB=$(ATSHOMEQ)/contrib/GTK/atsctrb_GTK.o
 
 ######
 

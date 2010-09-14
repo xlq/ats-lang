@@ -6,7 +6,11 @@
 
 ######
 
-ATSCC=$(ATSHOME)/bin/atscc
+ATSHOMEQ="$(ATSHOME)"
+ATSCC=$(ATSHOMEQ)/bin/atscc
+ATSCTRB=$(ATSHOMEQ)/contrib/glib/atsctrb_glib.o
+
+######
 
 GLIBINC=/usr/lib/glib-2.0/include
 #GLIBINC=/usr/lib64/glib-2.0/include
@@ -18,8 +22,6 @@ INCLUDES= \
 INCLUDES_ATS= \
   -IATS $(GLIBINC) \
   -IATS /usr/include/glib-2.0 \
-
-ATSCTRB=$(ATSHOME)/contrib/glib/atsctrb_glib.o
 
 ######
 

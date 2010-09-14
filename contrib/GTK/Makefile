@@ -7,7 +7,8 @@
 
 ######
 
-ATSCC=$(ATSHOME)/bin/atscc -Wall
+ATSHOMEQ="$(ATSHOME)"
+ATSCC=$(ATSHOMEQ)/bin/atscc -Wall
 GTKCFLAGS = `pkg-config gtk+-2.0 --cflags`
 
 ######

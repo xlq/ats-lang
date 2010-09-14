@@ -4,8 +4,11 @@
 #
 #
 
-ATSCC="$(ATSHOME)"/bin/atscc
-ATSCTRB="$(ATSHOME)"/contrib/X11/atsctrb_X11.o
+######
+
+ATSHOMEQ="$(ATSHOME)"
+ATSCC="$(ATSHOMEQ)"/bin/atscc
+ATSCTRB="$(ATSHOMEQ)"/contrib/X11/atsctrb_X11.o
 
 ######
 

@@ -6,8 +6,12 @@
 
 ######
 
-ATSCC=$(or $(ATSHOME), "/usr")/bin/atscc
-ATSOPT=$(or $(ATSHOME), "/usr")/bin/atsopt
+ATSHOMEQ=$(or "$(ATSHOME)", "/usr")
+ATSCC=$(ATSHOMEQ)/bin/atscc
+ATSOPT=$(ATSHOMEQ)/bin/atsopt
+
+######
+
 XRCFLAGS=`pkg-config cairo --cflags`
 GTKCLFLAGS=`pkg-config gtk+-2.0 --cflags --libs`
 

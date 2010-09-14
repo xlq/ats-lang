@@ -1,8 +1,14 @@
 #
 #
-# Some examples in ATS/LF
+# Makefile for some examples in ATS/LF
 #
 #
+
+######
+
+ATSHOMEQ=$(or "$(ATSHOME)", "/usr")
+ATSCC=$(ATSHOMEQ)/bin/atscc
+ATSOPT=$(ATSHOMEQ)/bin/atsopt
 
 ######
 
@@ -10,30 +16,42 @@ DIR=/home/fac2/hwxi/public_html/ATS/EXAMPLE/LF
 
 ######
 
-all: ATS \
-     CallByValue \
-     ClosureConv \
-     CPS \
-     CutElimIL \
-     CutElimILL \
-     HilbertCalculus \
-     infprime \
-     irrationality-of-sqrt2 \
-     ITPT \
-     KolmogorovTrans \
-     mini-ML \
-     naive-set.dats \
-     pigeonhole \
-     PyTri \
-     STLC-foas \
-     STLC-hoas \
-     STLC-SN-foas \
-     STLC-SN-hoas \
+all:: \
+#  ATS \
 
-######
+all:: \
+#  CallByValue \
 
-ATSCC=$(or $(ATSHOME), "/usr")/bin/atscc
-ATSOPT=$(or $(ATSHOME), "/usr")/bin/atsopt
+all:: \
+  ClosureConv \
+  CPS \
+
+all:: \
+#  CutElimIL \
+
+all:: \
+  CutElimILL \
+  HilbertCalculus \
+  infprime \
+  irrationality-of-sqrt2 \
+  ITPT \
+  KolmogorovTrans \
+
+all:: \
+#  mini-ML \
+ 
+all:: \
+  naive-set.dats \
+  pigeonhole \
+  PyTri \
+  STLC-foas \
+
+all:: \
+#  STLC-hoas \
+
+all:: \
+  STLC-SN-foas \
+  STLC-SN-hoas \
 
 ######
 
@@ -59,29 +77,6 @@ STLC-foas: ; $(ATSCC) $(ATSCCFLAG) STLC-foas.dats
 STLC-hoas: ; $(ATSCC) $(ATSCCFLAG) STLC-hoas.dats
 STLC-SN-foas: ; $(ATSCC) $(ATSCCFLAG) STLC-SN-foas.dats
 STLC-SN-hoas: ; $(ATSCC) $(ATSCCFLAG) STLC-SN-hoas.dats
-
-######
-
-typecheck::
-#	$(ATSCC) $(ATSCCFLAG) ATS.dats
-	$(ATSCC) $(ATSCCFLAG) BinaryTree.dats
-#	$(ATSCC) $(ATSCCFLAG) CallByValue.dats
-	$(ATSCC) $(ATSCCFLAG) ClosureConv.dats
-	$(ATSCC) $(ATSCCFLAG) CPS.dats
-#	$(ATSCC) $(ATSCCFLAG) CutElimIL.dats
-	$(ATSCC) $(ATSCCFLAG) CutElimILL.dats
-	$(ATSCC) $(ATSCCFLAG) HilbertCalculus.dats
-	$(ATSCC) $(ATSCCFLAG) irrationality-of-sqrt2.dats
-	$(ATSCC) $(ATSCCFLAG) ITPT.dats
-	$(ATSCC) $(ATSCCFLAG) KolmogorovTrans.dats
-#	$(ATSCC) $(ATSCCFLAG) mini-ML.dats
-	$(ATSCC) $(ATSCCFLAG) naive-set.dats
-	$(ATSCC) $(ATSCCFLAG) pigeonhole.dats
-	$(ATSCC) $(ATSCCFLAG) infprime.dats
-	$(ATSCC) $(ATSCCFLAG) STLC-foas.dats
-#	$(ATSCC) $(ATSCCFLAG) STLC-hoas.dats
-	$(ATSCC) $(ATSCCFLAG) STLC-SN-foas.dats
-	$(ATSCC) $(ATSCCFLAG) STLC-SN-hoas.dats
 
 ######
 
@@ -141,5 +136,4 @@ clean::
 cleanall: clean
 	rm -f *_?ats.html
 
-######
-
+###### end of [Makefile] ######

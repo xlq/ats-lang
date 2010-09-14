@@ -6,12 +6,13 @@
 
 ######
 
-ATSCC=$(ATSHOME)/bin/atscc
-ATSOPT=$(ATSHOME)/bin/atsopt
+ATSHOMEQ="$(ATSHOME)"
+ATSCC=$(ATSHOMEQ)/bin/atscc
+ATSOPT=$(ATSHOMEQ)/bin/atsopt
 LIBFLAGS=-L/usr/lib/atlas -L/usr/lib64/atlas
 ATSCTRB=\
-  $(ATSHOME)/contrib/cblas/atsctrb_cblas.o \
-  $(ATSHOME)/contrib/clapack/atsctrb_clapack.o \
+  $(ATSHOMEQ)/contrib/cblas/atsctrb_cblas.o \
+  $(ATSHOMEQ)/contrib/clapack/atsctrb_clapack.o \
 
 ######
 

@@ -7,7 +7,8 @@
 
 ######
 
-ATSCC=$(ATSHOME)/bin/atscc -Wall
+ATSHOMEQ="$(ATSHOME)"
+ATSCC=$(ATSHOMEQ)/bin/atscc -Wall
 XRCFLAGS=`pkg-config cairo --cflags`
 
 ######

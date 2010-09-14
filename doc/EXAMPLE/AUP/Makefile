@@ -12,13 +12,16 @@
 
 ######
 
-ATSCC=$(or $(ATSHOME), "/usr")/bin/atscc
-ATSOPT=$(or $(ATSHOME), "/usr")/bin/atsopt
+ATSHOMEQ = $(or $(ATSHOME), "/usr")
+ATSCC=$(ATSHOMEQ)/bin/atscc
+ATSOPT=$(ATSHOMEQ)/bin/atsopt
 
 ######
 
 .PHONY: all
 all: checkall
+
+######
 
 checkall: compall cleanall
 

@@ -7,9 +7,10 @@
 
 ######
 
-GCC=gcc
+ATSHOMEQ="$(ATSHOME)"
 ATSCC=$(ATSHOME)/bin/atscc -Wall
 
+GCC=gcc
 GLIBINC=/usr/lib/glib-2.0/include
 #GLIBINC=/usr/lib64/glib-2.0/include
 

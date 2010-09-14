@@ -3,15 +3,16 @@
 ##
 
 ######
+  
+ATSHOMEQ=$(or "$(ATSHOME)", "/usr")
+ATSCC=$(ATSHOMEQ)/bin/atscc
+
+######
 
 #GCFLAG=-D_ATS_gc // no longer in use
 #GCFLAG=-D_ATS_gcats // no longer in use
 GCFLAG=-D_ATS_GCATS
 #GCFLAG=-D_ATS_GCBDW
-
-######
-
-ATSCC=$(or $(ATSHOME), "/usr")/bin/atscc
 
 ######
 

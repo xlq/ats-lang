@@ -4,8 +4,14 @@
 #
 #
 
-ATSCC=$(or $(ATSHOME), "/usr")/bin/atscc
+######
+
+ATSHOMEQ=$(or "$(ATSHOME)", "/usr")
+ATSCC=$(ATSHOMEQ)/bin/atscc
 ATSOPT=$(ATSHOME)/bin/atsopt
+
+######
+
 #CC=$(HOME)/gcc-4.3.2/bin/gcc
 
 ######

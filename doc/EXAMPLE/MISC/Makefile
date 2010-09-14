@@ -4,12 +4,14 @@
 #
 ######
 
+ATSHOMEQ=$(or "$(ATSHOME)", "/usr")
+ATSCC=$(or $(ATSHOMEQ), "/usr")/bin/atscc
+ATSOPT=$(or $(ATSHOMEQ), "/usr")/bin/atsopt
+
+######
+
 .PHONY: all
 all: checkall
-
-ATSCC=$(or $(ATSHOME), "/usr")/bin/atscc
-ATSOPT=$(or $(ATSHOME), "/usr")/bin/atsopt
-
 
 ######
 

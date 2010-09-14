@@ -7,6 +7,14 @@
 ##
 ##
 
+######
+
+ATSHOMEQ=$(or "$(ATSHOME)", "/usr")
+ATSCC=$(ATSHOMEQ)/bin/atscc
+ATSOPT=$(ATSHOMEQ)/bin/atsopt
+
+######
+
 .PHONY: all
 all:  tigcomp
 
@@ -54,7 +62,7 @@ tigcomp: \
   hashtable_dats.o \
   linmap_randbst_dats.o \
 
-	atscc $(GCFLAG) -o tigcomp \
+	$(ATSCC) $(GCFLAG) -o tigcomp \
   tigerats_main_dats.o \
   error_sats.o error_dats.o \
   stamp_sats.o stamp_dats.o \
@@ -89,228 +97,226 @@ tigcomp: \
 ######
 
 tigerats_main_dats.o: tigerats_main.dats
-	atscc $(CCFLAGS) -c -o tigerats_main_dats.o tigerats_main.dats
+	$(ATSCC) $(CCFLAGS) -c -o tigerats_main_dats.o tigerats_main.dats
 
 ######
 
 error_sats.o: error.sats
-	atscc $(CCFLAGS) -o error_sats.o -c error.sats
+	$(ATSCC) $(CCFLAGS) -o error_sats.o -c error.sats
 
 error_dats.o: error.dats
-	atscc $(CCFLAGS) -o error_dats.o -c error.dats
+	$(ATSCC) $(CCFLAGS) -o error_dats.o -c error.dats
 
 ######
 
 stamp_sats.o: stamp.sats
-	atscc $(CCFLAGS) -o stamp_sats.o -c stamp.sats
+	$(ATSCC) $(CCFLAGS) -o stamp_sats.o -c stamp.sats
 
 stamp_dats.o: stamp.dats
-	atscc $(CCFLAGS) -o stamp_dats.o -c stamp.dats
+	$(ATSCC) $(CCFLAGS) -o stamp_dats.o -c stamp.dats
 
 ######
 
 symbol_sats.o: symbol.sats
-	atscc $(CCFLAGS) -c -o symbol_sats.o symbol.sats
+	$(ATSCC) $(CCFLAGS) -c -o symbol_sats.o symbol.sats
 
 symbol_dats.o: symbol.dats
-	atscc $(CCFLAGS) -c -o symbol_dats.o symbol.dats
+	$(ATSCC) $(CCFLAGS) -c -o symbol_dats.o symbol.dats
 
 ######
 
 types_sats.o: types.sats
-	atscc $(CCFLAGS) -c -o types_sats.o types.sats
+	$(ATSCC) $(CCFLAGS) -c -o types_sats.o types.sats
 
 types_dats.o: types.dats
-	atscc $(CCFLAGS) -c -o types_dats.o types.dats
+	$(ATSCC) $(CCFLAGS) -c -o types_dats.o types.dats
 
 ######
 
 absyn_sats.o: absyn.sats
-	atscc $(CCFLAGS) -c -o absyn_sats.o absyn.sats
+	$(ATSCC) $(CCFLAGS) -c -o absyn_sats.o absyn.sats
 
 absyn_dats.o: absyn.dats
-	atscc $(CCFLAGS) -c -o absyn_dats.o absyn.dats
+	$(ATSCC) $(CCFLAGS) -c -o absyn_dats.o absyn.dats
 
 ######
 
 fixity_sats.o: fixity.sats
-	atscc $(CCFLAGS) -c -o fixity_sats.o fixity.sats
+	$(ATSCC) $(CCFLAGS) -c -o fixity_sats.o fixity.sats
 
 fixity_dats.o: fixity.dats
-	atscc $(CCFLAGS) -c -o fixity_dats.o fixity.dats
+	$(ATSCC) $(CCFLAGS) -c -o fixity_dats.o fixity.dats
 
 ######
 
 parser_sats.o: parser.sats
-	atscc $(CCFLAGS) -o parser_sats.o -c parser.sats
+	$(ATSCC) $(CCFLAGS) -o parser_sats.o -c parser.sats
 
 parser_dats.o: parser.dats
-	atscc $(CCFLAGS) -IATS PARCOMB -o parser_dats.o -c parser.dats
+	$(ATSCC) $(CCFLAGS) -IATS PARCOMB -o parser_dats.o -c parser.dats
 
 ######
 
 tychecker_sats.o: tychecker.sats
-	atscc $(CCFLAGS) -o tychecker_sats.o -c tychecker.sats
+	$(ATSCC) $(CCFLAGS) -o tychecker_sats.o -c tychecker.sats
 
 tychecker_dats.o: tychecker.dats
-	atscc $(CCFLAGS) -o tychecker_dats.o -c tychecker.dats
+	$(ATSCC) $(CCFLAGS) -o tychecker_dats.o -c tychecker.dats
 
 ######
 
 interp0_sats.o: interp0.sats
-	atscc $(CCFLAGS) -o interp0_sats.o -c interp0.sats
+	$(ATSCC) $(CCFLAGS) -o interp0_sats.o -c interp0.sats
 
 interp0_dats.o: interp0.dats
-	atscc $(CCFLAGS) -IATS LIB -o interp0_dats.o -c interp0.dats
+	$(ATSCC) $(CCFLAGS) -IATS LIB -o interp0_dats.o -c interp0.dats
 
 ######
 
 templab_sats.o: templab.sats
-	atscc $(CCFLAGS) -o templab_sats.o -c templab.sats
+	$(ATSCC) $(CCFLAGS) -o templab_sats.o -c templab.sats
 
 templab_dats.o: templab.dats
-	atscc $(CCFLAGS) -o templab_dats.o -c templab.dats
+	$(ATSCC) $(CCFLAGS) -o templab_dats.o -c templab.dats
 
 ######
 
 irtree_sats.o: irtree.sats
-	atscc $(CCFLAGS) -o irtree_sats.o -c irtree.sats
+	$(ATSCC) $(CCFLAGS) -o irtree_sats.o -c irtree.sats
 
 irtree_dats.o: irtree.dats
-	atscc $(CCFLAGS) -o irtree_dats.o -c irtree.dats
+	$(ATSCC) $(CCFLAGS) -o irtree_dats.o -c irtree.dats
 
 ######
 
 frame_sats.o: frame.sats
-	atscc $(CCFLAGS) -o frame_sats.o -c frame.sats
+	$(ATSCC) $(CCFLAGS) -o frame_sats.o -c frame.sats
 
 frame_dats.o: frame.dats
-	atscc $(CCFLAGS) -o frame_dats.o -c frame.dats
+	$(ATSCC) $(CCFLAGS) -o frame_dats.o -c frame.dats
 
 ######
 
 translate_sats.o: translate.sats
-	atscc $(CCFLAGS) -o translate_sats.o -c translate.sats
+	$(ATSCC) $(CCFLAGS) -o translate_sats.o -c translate.sats
 
 translate_dats.o: translate.dats
-	atscc $(CCFLAGS) -o translate_dats.o -c translate.dats
+	$(ATSCC) $(CCFLAGS) -o translate_dats.o -c translate.dats
 
 ######
 
 canonical_sats.o: canonical.sats
-	atscc $(CCFLAGS) -o canonical_sats.o -c canonical.sats
+	$(ATSCC) $(CCFLAGS) -o canonical_sats.o -c canonical.sats
 
 canonical_dats.o: canonical.dats
-	atscc $(CCFLAGS) -o canonical_dats.o -c canonical.dats
+	$(ATSCC) $(CCFLAGS) -o canonical_dats.o -c canonical.dats
 
 ######
 
 interp1_sats.o: interp1.sats
-	atscc $(CCFLAGS) -o interp1_sats.o -c interp1.sats
+	$(ATSCC) $(CCFLAGS) -o interp1_sats.o -c interp1.sats
 
 interp1_dats.o: interp1.dats
-	atscc $(CCFLAGS) -IATS LIB -o interp1_dats.o -c interp1.dats
+	$(ATSCC) $(CCFLAGS) -IATS LIB -o interp1_dats.o -c interp1.dats
 
 ######
 
 assem_sats.o: assem.sats
-	atscc $(CCFLAGS) -o assem_sats.o -c assem.sats
+	$(ATSCC) $(CCFLAGS) -o assem_sats.o -c assem.sats
 
 assem_dats.o: assem.dats
-	atscc $(CCFLAGS) -o assem_dats.o -c assem.dats
+	$(ATSCC) $(CCFLAGS) -o assem_dats.o -c assem.dats
 
 ######
 
 codegen_sats.o: codegen.sats
-	atscc $(CCFLAGS) -o codegen_sats.o -c codegen.sats
+	$(ATSCC) $(CCFLAGS) -o codegen_sats.o -c codegen.sats
 
 codegen_dats.o: codegen.dats \
         codegen_spim.dats codegen_x86_32.dats
-	atscc $(CCFLAGS) -o codegen_dats.o -c codegen.dats
+	$(ATSCC) $(CCFLAGS) -o codegen_dats.o -c codegen.dats
 
 ######
 
 fgnode_sats.o: fgnode.sats
-	atscc $(CCFLAGS) -o fgnode_sats.o -c fgnode.sats
+	$(ATSCC) $(CCFLAGS) -o fgnode_sats.o -c fgnode.sats
 
 fgnode_dats.o: fgnode.dats
-	atscc $(CCFLAGS) -o fgnode_dats.o -c fgnode.dats
+	$(ATSCC) $(CCFLAGS) -o fgnode_dats.o -c fgnode.dats
 
 ######
 
 tempset_sats.o: tempset.sats
-	atscc $(CCFLAGS) -o tempset_sats.o -c tempset.sats
+	$(ATSCC) $(CCFLAGS) -o tempset_sats.o -c tempset.sats
 
 tempset_dats.o: tempset.dats
-	atscc $(CCFLAGS) -o tempset_dats.o -c tempset.dats
+	$(ATSCC) $(CCFLAGS) -o tempset_dats.o -c tempset.dats
 
 ######
 
 fgraph_sats.o: fgraph.sats
-	atscc $(CCFLAGS) -o fgraph_sats.o -c fgraph.sats
+	$(ATSCC) $(CCFLAGS) -o fgraph_sats.o -c fgraph.sats
 
 fgraph_dats.o: fgraph.dats
-	atscc $(CCFLAGS) -o fgraph_dats.o -c fgraph.dats
+	$(ATSCC) $(CCFLAGS) -o fgraph_dats.o -c fgraph.dats
 
 ######
 
 igraph_sats.o: igraph.sats
-	atscc $(CCFLAGS) -o igraph_sats.o -c igraph.sats
+	$(ATSCC) $(CCFLAGS) -o igraph_sats.o -c igraph.sats
 
 igraph_dats.o: igraph.dats
-	atscc $(CCFLAGS) -o igraph_dats.o -c igraph.dats
+	$(ATSCC) $(CCFLAGS) -o igraph_dats.o -c igraph.dats
 
 ######
 
 liveness_dats.o: liveness.dats
-	atscc $(CCFLAGS) -o liveness_dats.o -c liveness.dats
+	$(ATSCC) $(CCFLAGS) -o liveness_dats.o -c liveness.dats
 
 ######
 
 regalloc_sats.o: regalloc.sats
-	atscc $(CCFLAGS) -o regalloc_sats.o -c regalloc.sats
+	$(ATSCC) $(CCFLAGS) -o regalloc_sats.o -c regalloc.sats
 
 regalloc_dats.o: regalloc.dats
-	atscc $(CCFLAGS) -o regalloc_dats.o -c regalloc.dats
+	$(ATSCC) $(CCFLAGS) -o regalloc_dats.o -c regalloc.dats
 
 ######
 
 posloc_sats.o: PARCOMB/posloc.sats
-	atscc $(CCFLAGS) -c -o posloc_sats.o PARCOMB/posloc.sats
+	$(ATSCC) $(CCFLAGS) -c -o posloc_sats.o PARCOMB/posloc.sats
 
 posloc_dats.o: PARCOMB/posloc.dats
-	atscc $(CCFLAGS) -IATS PARCOMB -c -o posloc_dats.o PARCOMB/posloc.dats
+	$(ATSCC) $(CCFLAGS) -IATS PARCOMB -c -o posloc_dats.o PARCOMB/posloc.dats
 
 parcomb_sats.o: PARCOMB/parcomb.sats
-	atscc $(CCFLAGS) -c -o parcomb_sats.o PARCOMB/parcomb.sats
+	$(ATSCC) $(CCFLAGS) -c -o parcomb_sats.o PARCOMB/parcomb.sats
 
 parcomb_dats.o: PARCOMB/parcomb.dats
-	atscc $(CCFLAGS) -IATS PARCOMB -c -o parcomb_dats.o PARCOMB/parcomb.dats
+	$(ATSCC) $(CCFLAGS) -IATS PARCOMB -c -o parcomb_dats.o PARCOMB/parcomb.dats
 
 tokenize_sats.o: PARCOMB/tokenize.sats
-	atscc $(CCFLAGS) -IATS PARCOMB -c -o tokenize_sats.o PARCOMB/tokenize.sats
+	$(ATSCC) $(CCFLAGS) -IATS PARCOMB -c -o tokenize_sats.o PARCOMB/tokenize.sats
 
 tokenize_dats.o: PARCOMB/tokenize.dats
-	atscc $(CCFLAGS) -IATS PARCOMB -c -o tokenize_dats.o PARCOMB/tokenize.dats
+	$(ATSCC) $(CCFLAGS) -IATS PARCOMB -c -o tokenize_dats.o PARCOMB/tokenize.dats
 
 ######
 
 funmap_avltree_dats.o: LIB/funmap_avltree.dats
-	atscc $(CCFLAGS) -IATS LIB -c -o funmap_avltree_dats.o LIB/funmap_avltree.dats
+	$(ATSCC) $(CCFLAGS) -IATS LIB -c -o funmap_avltree_dats.o LIB/funmap_avltree.dats
 
 ######
 
 hashtable_dats.o: LIB/hashtable.dats
-	atscc $(CCFLAGS) -IATS LIB -c -o hashtable_dats.o LIB/hashtable.dats
+	$(ATSCC) $(CCFLAGS) -IATS LIB -c -o hashtable_dats.o LIB/hashtable.dats
 
 ######
 
 linmap_randbst_dats.o: LIB/linmap_randbst.dats
-	atscc $(CCFLAGS) -IATS LIB -c -o linmap_randbst_dats.o LIB/linmap_randbst.dats
+	$(ATSCC) $(CCFLAGS) -IATS LIB -c -o linmap_randbst_dats.o LIB/linmap_randbst.dats
 
 ######
-
-ATSOPT=$(or $(ATSHOME), "/usr")/bin/atsopt
 
 xref::
 	$(ATSOPT) --posmark_xref=XREF \

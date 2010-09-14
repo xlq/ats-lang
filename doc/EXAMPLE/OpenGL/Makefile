@@ -7,8 +7,11 @@
 .PHONY: all
 all:  compall
 
-ATSCC=$(or $(ATSHOME), "/usr")/bin/atscc
-ATSCTRB=$(ATSHOME)/contrib/GL/atsctrb_GL.o
+######
+
+ATSHOMEQ=$(or "$(ATSHOME)", "/usr")
+ATSCC=$(ATSHOMEQ)/bin/atscc
+ATSCTRB=$(ATSHOMEQ)/contrib/GL/atsctrb_GL.o
 
 ######
 
