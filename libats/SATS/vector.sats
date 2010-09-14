@@ -102,8 +102,14 @@ vector_initialize {m:nat} (V: &VSHELL0? >> VECTOR (a, m, 0), m: size_t m):<> voi
 
 (* ****** ****** *)
 
-fun{a:t@ype}
-vector_clear {m,n:int} (V: &VECTOR (a, m, n) >> VECTOR (a, m, 0)):<> void
+fun vector_clear {a:t@ype}
+  {m,n:int} (V: &VECTOR (a, m, n) >> VECTOR (a, m, 0)):<> void
+// end of [vector_clear]
+
+fun{a:viewt@ype}
+vector_clear_vt {v:view} {m,n:int} (
+  pf: !v | V: &VECTOR (a, m, n) >> VECTOR (a, m, 0), f: &(!v | &a >> a?) -<clo> void
+) :<> void // end of [vector_clear_vt]
 
 (* ****** ****** *)
 

@@ -650,7 +650,9 @@ fn doc_dir_copy () = let
     macdef cp (name) = fcopy_exn (
       SRCROOTdoc_EXAMPLE_TEST ++ ,(name), DSTROOTdoc_EXAMPLE_TEST ++ ,(name)
     )
+//
     val () = cp "Makefile"
+//
     val () = cp "prelude_array.dats"
     val () = cp "prelude_array0.dats"
     val () = cp "prelude_bool.dats"
@@ -668,7 +670,7 @@ fn doc_dir_copy () = let
     val () = cp "libc_gmp.dats"
     val () = cp "libc_sched.dats"
     val () = cp "libc_stdlib.dats"  
-  //
+//
     val () = cp "libats_funarray_braun.dats"
     val () = cp "libats_funheap_braun.dats"
     val () = cp "libats_funmap_avltree.dats"
@@ -685,7 +687,8 @@ fn doc_dir_copy () = let
     val () = cp "libats_linstack_arr.dats"
     val () = cp "libats_regexp.dats"
     val () = cp "libats_parworkshop.dats"  
-  //
+    val () = cp "libats_vector.dats"
+//
     val () = cp "libats_smlbas_array.dats"
     val () = cp "libats_smlbas_array2.dats"
     val () = cp "libats_smlbas_char.dats"

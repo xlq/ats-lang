@@ -45,9 +45,8 @@ getcwdx: AUP_3_6_4.dats
 ######
 
 clean::
-	rm -f a.out
-	rm -f *_?ats.c *_?ats.o
 	rm -f *~
+	rm -f *_?ats.c *_?ats.o
 
 cleanall: clean
 	rm -f testlock

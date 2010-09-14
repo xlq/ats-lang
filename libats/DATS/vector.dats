@@ -97,6 +97,47 @@ end // end of [vector_initialize]
 
 (* ****** ****** *)
 
+implement
+vector_clear
+  {a} {m,n} (V) = let
+  prval pf = VECTOR_decode {a} (V)
+  prval pfmul = mul_istot {n,sizeof a} ()
+  prval (pf1, pf2) = vector_v_decode {a} (pfmul, pf)
+  prval pf = array_v_unsplit {a?} (pfmul, pf1, pf2)
+  prval pf = vector_v_encode01 {a} (pf)
+  val () = V.n := (size1_of_int1)0
+  prval () = VECTOR_encode {a} (pf | V)
+in
+  // nothing  
+end // end of [vector_clear]
+
+(* ****** ****** *)
+
+implement{a}
+vector_clear_vt
+  {v} {m,n} (pf | V, f) = let
+  prval () = __assert () where { extern prfun __assert (): [m>=n;n>=0] void }
+  prval pf0 = VECTOR_decode {a} (V)
+//
+  prval pfmul = mul_istot {n,sizeof a} ()
+  prval (pf1, pf2) = vector_v_decode {a} (pfmul, pf0)
+//
+  val n = V.n
+  val p = V.ptr
+  val () = array_ptr_clear_clo_tsz {a} {v} (pf | !p, n, f, sizeof<a>)
+//
+  prval pf = array_v_unsplit {a?} (pfmul, pf1, pf2)
+//
+  prval pf = vector_v_encode01 {a} (pf)
+//
+  val () = V.n := (size1_of_int1)0
+  prval () = VECTOR_encode {a} (pf | V)
+in
+  // nothing  
+end // end of [vector_clear_vt]
+
+(* ****** ****** *)
+
 implement{a}
 vector_uninitialize {m,n} (V) = let
   prval pf = VECTOR_decode {a} (V)
