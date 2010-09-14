@@ -135,6 +135,10 @@ in
   aux (pf1, pf2)
 end // end of [mul_distribute]
 
+implement mul_distribute2 (pf1, pf2) =
+  mul_commute (mul_distribute (mul_commute pf1, mul_commute pf2))
+// end of [mul_distribute2]
+
 (* ****** ****** *)
 
 implement mul_associate {x,y,z}

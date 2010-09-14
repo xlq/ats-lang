@@ -62,7 +62,7 @@ staload "prelude/DATS/reference.dats"
 #define NMAX12 81 // NMAX1 * NMAX1
 
 val the_digits: array (int, NMAX) =
-  array_make_arraysize $arrsz (0, 0, 0, 0, 0, 0, 0, 0, 0, 0)
+  array_make_arrsz $arrsz (0, 0, 0, 0, 0, 0, 0, 0, 0, 0)
 
 fn digits_initialize () = let
   fun loop (i: natLte NMAX): void =
@@ -71,10 +71,10 @@ fn digits_initialize () = let
     loop 0
   end // end of [loop]
 
-val the_labels: array (string, 10) = array_make_arraysize
+val the_labels: array (string, 10) = array_make_arrsz
   $arrsz ("", "1", "2", "3", "4", "5", "6", "7", "8", "9")
 
-val the_ulabels: array (string, 10) = array_make_arraysize
+val the_ulabels: array (string, 10) = array_make_arrsz
   $arrsz ("", "_1", "_2", "_3", "_4", "_5", "_6", "_7", "_8", "_9")
 
 typedef digit = [i:nat | i < NMAX] int i
@@ -392,16 +392,18 @@ end
 
 (* ****** ****** *)
 
+#define p2s string_of_strptr
+
 fn button_verify_make (): [l:addr] (gobj GtkButton @ l | ptr l) =
   let
     fn msg_gen (loc: string, ans: int, err: int): string =
       if err > 0 then begin
-        tostringf ("The %s(%i) is incorrect: repeated entry(%i)", @(loc, ans, err))
+        p2s (tostringf ("The %s(%i) is incorrect: repeated entry(%i)", @(loc, ans, err)))
       end else let
          val xpos = (ans - 1) / NMAX1
          val ypos = (ans - 1) - xpos * NMAX1
       in
-         tostringf ("The %s(%i,%i) is unfinished", @(loc, xpos+1, ypos+1))
+         p2s (tostringf ("The %s(%i,%i) is unfinished", @(loc, xpos+1, ypos+1)))
       end
 
     fn action {c:gcls} (wid: &gobj GtkButton, data: &void): void =

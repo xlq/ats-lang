@@ -221,9 +221,7 @@ vector_insert_at
   prval (pf21, pf22) = array_v_uncons {a?} (pf2)  
   prval pf3 = array_v_nil {a} {l0+ofs+sizeof a} ()
 //
-  prval pfmul2 = mul_commute (
-    mul_distribute (mul_commute (pfmul), mul_commute (mul_negate (pfmul1)))
-  ) // end of [prval]
+  prval pfmul2 = mul_distribute2 (pfmul, mul_negate (pfmul1))
 //
   val (pfr1, pfr2 | ()) =
     loop (pfmul2, pf12, pf21, pf3 | p0+ofs, n-i) where {
@@ -274,7 +272,7 @@ vector_remove_at {m,n} {i} (V, i, x) = let
   val p0 : ptr l0 = V.ptr
   val [ofs1:int] (pfmul1 | ofs1) = mul2_size1_size1 (i, sizeof<a>)
   prval pfmul = mul_istot {n,tsz} ()
-  prval pfmul2 = mul_commute (mul_distribute(mul_commute(pfmul), mul_commute(mul_negate(pfmul1))))
+  prval pfmul2 = mul_distribute2 (pfmul, mul_negate (pfmul1))
   prval pfmul2 = mul_add_const {~1} (pfmul2)
 //
   prval (pf1, pf2) = vector_v_decode {a} (pfmul, pf)

@@ -897,6 +897,7 @@ extern d0ec_t d0ec_postfix (t0kn_t, p0rec_t, i0delst_t) ;
 extern d0ec_t d0ec_nonfix (t0kn_t, i0delst_t) ;
 extern d0ec_t d0ec_symintr (t0kn_t, i0delst_t) ;
 extern d0ec_t d0ec_include (int/*0:sta/1:dyn*/, s0tring_t) ;
+extern d0ec_t d0ec_e0xpundef (i0de_t) ;
 extern d0ec_t d0ec_e0xpdef (i0de_t, e0xpopt_t) ;
 extern d0ec_t d0ec_e0xpact_assert (e0xp_t) ;
 extern d0ec_t d0ec_e0xpact_error (e0xp_t) ;
