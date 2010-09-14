@@ -48,10 +48,18 @@ implement main () = () where {
     (V: VECTOR (T, N, N)) => (i := 0; i < N; i := i+1)
     (printf ("V[%i] = %.1f\n", @(i, $V.vector_get_elt_at (V, (size1)i))))
 //
-  val () = $V.vector_uninitialize (V)
+  val () = loop (V, 0) where {
+    fun loop {m,n:int}
+      {i:nat | i <= N; N <= n+i} .<N-i>. (
+        V: &VECTOR (T, m, n) >> VECTOR (T, m, n-N+i), i: size_t i
+      ) :<> void =
+      if i < N then let
+        var x: T // uninitialized
+        val () = $V.vector_remove_at<T> (V, 0, x) in loop (V, i+1)
+      end // end of [if]
+    // end of [loop]
+  } // end of [val]
 //
-  var V: VSHELL0 // unintialized
-  val () = $V.vector_initialize<double> (V, N)
   val () = loop (V, 0) where {
     fun loop {m,n:int}
       {i:nat | i <= N; n+N <= m+i} .<N-i>. (

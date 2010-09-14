@@ -138,13 +138,13 @@ vector_prepend {m,n:int | n < m}
 (* ****** ****** *)
 
 fun{a:viewt@ype}
-vector_insert_at {m,n:int | n < m}
-  {i:nat | i <= n} (V: &VECTOR (a, m, n) >> VECTOR (a, m, n+1), i: size_t i, x: a):<> void
+vector_insert_at {m,n:int | n < m} {i:nat | i <= n}
+  (V: &VECTOR (a, m, n) >> VECTOR (a, m, n+1), i: size_t i, x: &a >> a?!):<> void
 // end of [vector_insert]
 
 fun{a:viewt@ype}
-vector_remove_at {m,n:int | n > 0}
-  {i:nat | i < n} (V: &VECTOR (a, m, n) >> VECTOR (a, m, n-1), i: size_t i):<> void
+vector_remove_at {m,n:int} {i:nat | i < n}
+  (V: &VECTOR (a, m, n) >> VECTOR (a, m, n-1), i: size_t i, x: &a? >> a ):<> void
 // end of [vector_remove]
 
 (* ****** ****** *)

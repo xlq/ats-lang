@@ -197,6 +197,7 @@ end // end of [vector_append]
 implement{a}
 vector_prepend {m,n} (V, x) = let
   prval () = __assert () where { extern prfun __assert (): [n>=0] void }
+  var x: a = x
 in
   vector_insert_at<a> (V, 0, x)
 end // end of [vector_prepend]
@@ -206,9 +207,7 @@ end // end of [vector_prepend]
 implement{a}
 vector_insert_at
   {m,n} {i} (V, i, x) = let
-  prval () = __assert () where {
-    extern prfun __assert (): [n>=0] void
-  } // end of [val]
+  prval () = __assert () where { extern prfun __assert (): [m>=n;n>=0] void }
   prval pf = VECTOR_decode {a} (V)
 //
   stavar l0:addr
@@ -253,11 +252,75 @@ vector_insert_at
   prval pf1 = array_v_unsplit {a} (pfmul1, pf11, pf12)
   prval pfmul = MULind (pfmul)
   prval pf = vector_v_encode {a} (pfmul, pf1, pf22)
+//
   val () = V.n := n + 1
   prval () = VECTOR_encode {a} (pf | V)
+//
 in
   // nothing
 end // end of [vector_insert_at]  
+
+(* ****** ****** *)
+
+implement{a}
+vector_remove_at {m,n} {i} (V, i, x) = let
+//
+  stadef tsz = sizeof (a)
+//
+  prval () = __assert () where { extern prfun __assert (): [m>=n;n>=0] void }
+  prval pf = VECTOR_decode {a} (V)
+//
+  stavar l0:addr
+  val p0 : ptr l0 = V.ptr
+  val [ofs1:int] (pfmul1 | ofs1) = mul2_size1_size1 (i, sizeof<a>)
+  prval pfmul = mul_istot {n,tsz} ()
+  prval pfmul2 = mul_commute (mul_distribute(mul_commute(pfmul), mul_commute(mul_negate(pfmul1))))
+  prval pfmul2 = mul_add_const {~1} (pfmul2)
+//
+  prval (pf1, pf2) = vector_v_decode {a} (pfmul, pf)
+  prval (pf11, pf12) = array_v_split {a} {n,i} (pfmul1, pf1)
+  prval (pf121, pf122) = array_v_uncons {a} (pf12)
+  val p = p0 + ofs1; val () = x := !p
+//
+  val n = V.n
+  val (pf11, pf12 | ()) = loop (
+    pfmul1, pfmul2, pf11, pf121, pf122 | p, n-i-1
+  ) where {
+    fun loop {n1,n2:nat} {ofs1,ofs2:int} .<n2>. (
+        pfmul1: MUL (n1, tsz, ofs1)
+      , pfmul2: MUL (n2, tsz, ofs2)
+      , pf1: array_v (a, n1, l0)
+      , pf21: a? @ (l0+ofs1)
+      , pf22: array_v (a, n2, l0+ofs1+tsz)
+      | p: ptr (l0+ofs1), n2: size_t (n2)
+    ) :<> (array_v (a, n1+n2, l0), a? @ (l0+ofs1+ofs2) | void) =
+      if n2 > 0 then let
+        prval (pf221, pf222) = array_v_uncons {a} (pf22)
+        val p1 = p+sizeof<a>; val () = !p := !p1
+        prval pf1 = array_v_extend {a} (pfmul1, pf1, pf21)
+        prval pfmul1 = mul_add_const {1} (pfmul1)
+        prval pfmul2 = mul_add_const {~1} (pfmul2)
+      in
+        loop (pfmul1, pfmul2, pf1, pf221, pf222 | p1, n2-1)
+      end else let
+        prval () = array_v_unnil (pf22)
+        prval () = mul_elim {0,tsz} (pfmul2)
+      in
+        (pf1, pf21 | ())
+      end // end of [if]
+    // end of [loop]
+  } // end of [val]
+//
+  prval pf2 = array_v_cons {a?} (pf12, pf2)
+  prval MULind (pfmul) = pfmul
+  prval pf = vector_v_encode {a} (pfmul, pf11, pf2)
+//
+  val () = V.n := n - 1
+  prval () = VECTOR_encode {a} (pf | V)
+//
+in
+  // nothing
+end // end of [vector_remove_at]
 
 (* ****** ****** *)
 
