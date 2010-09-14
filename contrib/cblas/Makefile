@@ -8,7 +8,7 @@
 
 ######
 
-ATSCC="$(ATSHOME)"/bin/atscc -Wall
+ATSCC=$(ATSHOME)/bin/atscc -Wall
 LIBFLAGS=-L/usr/lib/atlas
 
 ######

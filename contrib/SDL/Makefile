@@ -3,7 +3,7 @@
 # Time: January, 2010
 #
 
-ATSCC="$(ATSHOME)"/bin/atscc -Wall
+ATSCC=$(ATSHOME)/bin/atscc -Wall
 SDLCFLAGS=`sdl-config --cflags`
 
 ######

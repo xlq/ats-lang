@@ -37,8 +37,8 @@
 #
 ######
 
-ATSCC="$(ATSHOME)"/bin/atscc
-ATSLEX="$(ATSHOME)"/bin/atslex
+ATSCC=$(ATSHOME)/bin/atscc
+ATSLEX=$(ATSHOME)/bin/atslex
 
 ######
 

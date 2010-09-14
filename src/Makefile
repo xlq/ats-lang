@@ -53,8 +53,8 @@ CC=gcc
 #YACC=bison # HX: this one does not work
 YACC=byacc # HX: this is the default one
 
-ATSCC="$(ATSHOME)"/bin/atscc
-ATSOPT="$(ATSHOME)"/bin/atsopt
+ATSCC=$(ATSHOME)/bin/atscc
+ATSOPT=$(ATSHOME)/bin/atsopt
 
 ATSCCFLAGS=-g
 #ATSCCFLAGS=-O0
@@ -71,7 +71,7 @@ GC_o=gc_o
 #GCFLAGS=-D_ATS_GCATS -pthread
 #GC_o=gc_mt_o
 
-ATSLEX="$(ATSHOME)"/bin/atslex
+ATSLEX=$(ATSHOME)/bin/atslex
 
 ######
 
@@ -241,10 +241,10 @@ libats_lex.o: \
 ######
 
 gc_o:
-	cd "$(ATSHOME)"/ccomp/runtime/GCATS; $(MAKE) gc.o; $(MAKE) clean
+	cd $(ATSHOME)/ccomp/runtime/GCATS; $(MAKE) gc.o; $(MAKE) clean
 
 gc_mt_o:
-	cd "$(ATSHOME)"/ccomp/runtime/GCATS; $(MAKE) gc_mt.o; $(MAKE) clean
+	cd $(ATSHOME)/ccomp/runtime/GCATS; $(MAKE) gc_mt.o; $(MAKE) clean
 
 ######
 

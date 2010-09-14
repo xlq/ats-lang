@@ -8,7 +8,7 @@
 all:  compall
 
 ATSCC=$(or $(ATSHOME), "/usr")/bin/atscc
-ATSCTRB="$(ATSHOME)"/contrib/GL/atsctrb_GL.o
+ATSCTRB=$(ATSHOME)/contrib/GL/atsctrb_GL.o
 
 ######
 

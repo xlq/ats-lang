@@ -39,8 +39,8 @@
 
 LIB=LIB
 
-ATSCC="$(ATSHOME)"/bin/atscc
-ATSLEX="$(ATSHOME)"/bin/atslex
+ATSCC=$(ATSHOME)/bin/atscc
+ATSLEX=$(ATSHOME)/bin/atslex
 
 GCFLAG=
 GCFLAG=-D_ATS_GCATS

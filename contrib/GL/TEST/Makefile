@@ -4,8 +4,8 @@
 #
 #
 
-ATSCC="$(ATSHOME)"/bin/atscc
-ATSCTRB="$(ATSHOME)"/contrib/GL/atsctrb_GL.o
+ATSCC=$(ATSHOME)/bin/atscc
+ATSCTRB=$(ATSHOME)/contrib/GL/atsctrb_GL.o
 
 ######
 

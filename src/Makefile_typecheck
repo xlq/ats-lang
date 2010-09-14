@@ -37,9 +37,9 @@
 ## ###### ###### ##
 
 CC=gcc
-CCFLAG=-I"$(ATSHOME)" -I"$(ATSHOME)/CCOMP/runtime" -g
-ATSOPT="$(ATSHOME)"/bin/atsopt
-#ATSOPT="$(ATSHOME)"/bootstrap0-geizella/atsopt
+CCFLAG=-I$(ATSHOME) -I"$(ATSHOME)/CCOMP/runtime" -g
+ATSOPT=$(ATSHOME)/bin/atsopt
+#ATSOPT=$(ATSHOME)/bootstrap0-geizella/atsopt
 OPTFLAG= --typecheck
 #OPTFLAG=
 

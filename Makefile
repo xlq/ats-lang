@@ -192,12 +192,12 @@ endif
 ###### some toplevel commands ######
 
 bin/atscc bin/atslib:
-	cd utils/scripts; $(MAKE) atscc; cp atscc "$(ATSHOME)"/bin
-	cd utils/scripts; $(MAKE) atslib; cp atslib "$(ATSHOME)"/bin
+	cd utils/scripts; $(MAKE) atscc; cp atscc $(ATSHOME)/bin
+	cd utils/scripts; $(MAKE) atslib; cp atslib $(ATSHOME)/bin
 	cd utils/scripts; $(MAKE) clean
 
 bin/atspack:
-	cd utils/scripts; $(MAKE) atspack; cp atspack "$(ATSHOME)"/bin
+	cd utils/scripts; $(MAKE) atspack; cp atspack $(ATSHOME)/bin
 
 ###### library ######
 
@@ -208,30 +208,32 @@ ATS_PROOFCHECK=
 # [CC -E] for preprocessing
 #
 
+ATSLIB=$(ATSHOME)/bin/atslib
+
 .libfiles_local: .libfiles ; $(CC) -E -P -x c -o $@ $<
 libfiles: .libfiles_local
-	"$(ATSHOME)"/bin/atslib $(ATS_PROOFCHECK) -O2 --libats
-	"$(ATSHOME)"/bin/atslib $(ATS_PROOFCHECK) -O2 --libats_lex
-	"$(ATSHOME)"/bin/atslib $(ATS_PROOFCHECK) -O2 --libats_smlbas
+	$(ATSLIB) $(ATS_PROOFCHECK) -O2 --libats
+	$(ATSLIB) $(ATS_PROOFCHECK) -O2 --libats_lex
+	$(ATSLIB) $(ATS_PROOFCHECK) -O2 --libats_smlbas
 
 lib32files: .libfiles_local
-	"$(ATSHOME)"/bin/atslib $(ATS_PROOFCHECK) -m32 -O2 --libats
-	"$(ATSHOME)"/bin/atslib $(ATS_PROOFCHECK) -m32 -O2 --libats_lex
-	"$(ATSHOME)"/bin/atslib $(ATS_PROOFCHECK) -m32 -O2 --libats_smlbas
+	$(ATSLIB) $(ATS_PROOFCHECK) -m32 -O2 --libats
+	$(ATSLIB) $(ATS_PROOFCHECK) -m32 -O2 --libats_lex
+	$(ATSLIB) $(ATS_PROOFCHECK) -m32 -O2 --libats_smlbas
 
 lib64files: .libfiles_local
-	"$(ATSHOME)"/bin/atslib $(ATS_PROOFCHECK) -m64 -O2 --libats
-	"$(ATSHOME)"/bin/atslib $(ATS_PROOFCHECK) -m64 -O2 --libats_lex
-	"$(ATSHOME)"/bin/atslib $(ATS_PROOFCHECK) -m64 -O2 --libats_smlbas
+	$(ATSLIB) $(ATS_PROOFCHECK) -m64 -O2 --libats
+	$(ATSLIB) $(ATS_PROOFCHECK) -m64 -O2 --libats_lex
+	$(ATSLIB) $(ATS_PROOFCHECK) -m64 -O2 --libats_smlbas
 
 .libfiles_mt_local: .libfiles_mt ; $(CC) -E -P -x c -o $@ $<
 libfiles_mt: .libfiles_mt_local
-	"$(ATSHOME)"/bin/atslib $(ATS_PROOFCHECK) -D_ATS_MULTITHREAD -O2 --libats_mt
+	$(ATSLIB) $(ATS_PROOFCHECK) -D_ATS_MULTITHREAD -O2 --libats_mt
 
 ###### a lexer for ATS ######
 
 bin/atslex:
-	cd utils/atslex; $(MAKE) atslex; cp atslex "$(ATSHOME)"/bin
+	cd utils/atslex; $(MAKE) atslex; cp atslex $(ATSHOME)/bin
 	cd utils/atslex; $(MAKE) clean
 
 ###### GC runtime ######

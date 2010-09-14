@@ -37,7 +37,7 @@
 ######
 
 MAKE=make
-ATSCC="$(ATSHOME)"/bin/atscc
+ATSCC=$(ATSHOME)/bin/atscc
 ATSCCFLAGS=-g
 
 GTKLIBS=`pkg-config gtk+-2.0 --libs`

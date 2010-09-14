@@ -3,7 +3,7 @@
 # Time: December, 2009
 #
 
-ATSCC="$(ATSHOME)"/bin/atscc
+ATSCC=$(ATSHOME)/bin/atscc
 
 ######
 
