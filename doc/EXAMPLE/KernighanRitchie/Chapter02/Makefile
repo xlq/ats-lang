@@ -1,11 +1,20 @@
-all: \
-  strlen \
-  rand \
+#
+#
+# Makefile for K&R examples in Chapter 2
+#
+#
 
 ######
 
-ATSCC=$(or $(ATSHOME), "/usr")/bin/atscc
-ATSOPT=$(or $(ATSHOME), "/usr")/bin/atsopt
+ATSHOMEQ=$(or "$(ATSHOME)", "/usr")
+ATSCC=$(ATSHOMEQ)/bin/atscc
+ATSOPT=$(ATSHOMEQ)/bin/atsopt
+
+######
+
+all: \
+  strlen \
+  rand \
 
 ######
 

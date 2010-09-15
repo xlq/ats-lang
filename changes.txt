@@ -11,6 +11,7 @@ ats-lang-anairiats-0.2.2:
 5. Adding support for #undef
 6. Thoroughly testing the support for ATS running on Cygwin
 7. Implementing libats/vector (dynamically resizable vectors)
+8. $ATSHOME may now contain the space character (' ').
 
 ########################################################################
 

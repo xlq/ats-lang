@@ -48,6 +48,12 @@
 
 (* ****** ****** *)
 
+%{#
+#include "libats/CATS/vector.cats"
+%} // end of [%{#]
+
+(* ****** ****** *)
+
 absview vector_v (a:viewt@ype+, m: int, n: int, l:addr)
 
 prfun vector_v_encode

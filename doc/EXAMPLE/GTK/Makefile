@@ -37,14 +37,14 @@ compall:: \
 #   cd $ATSHOME/contrib/GTK; make atsctrb_GTK.o
 # if "atsctrb_GTK.o" is not available
 #
-LIBATSGTK=$(ATSHOME)/contrib/GTK/atsctrb_GTK.o
+LIBATSGTK=$(ATSHOMEQ)/contrib/GTK/atsctrb_GTK.o
 GameOf24: GameOf24.dats
-	$(ATSCC) -D_ATS_GCATS -o $@ $(GTKFLAGS) GameOf24.dats $(LIBATSGTK) -lm
+	$(ATSCC) -D_ATS_GCATS -o $@ GameOf24.dats $(LIBATSGTK) $(GTKFLAGS) -lm
 
 ######
 
 gtkcairoclock: gtkcairoclock.dats
-	$(ATSCC) -Wl,-rpath,$(ATSHOME)/ccomp/lib -o $@ gtkcairoclock.dats $(GTKFLAGS) -lm
+	$(ATSCC) -Wl,-rpath,$(ATSHOMEQ)/ccomp/lib -o $@ gtkcairoclock.dats $(GTKFLAGS) -lm
 
 ######
 
@@ -53,13 +53,13 @@ gtkcairopascal: gtkcairopascal.dats
 
 ######
 
-ATSCTRB=$(ATSHOME)/contrib/cairo/atsctrb_cairo.o
+ATSCTRB=$(ATSHOMEQ)/contrib/cairo/atsctrb_cairo.o
 gtkcairodisc: gtkcairodisc.dats
 	$(ATSCC) -D_ATS_GCATS $(ATSCTRB) -o $@ gtkcairodisc.dats $(GTKFLAGS) -lm
 
 ######
 
-ATSCTRB=$(ATSHOME)/contrib/cairo/atsctrb_cairo.o
+ATSCTRB=$(ATSHOMEQ)/contrib/cairo/atsctrb_cairo.o
 demo_bsearch: demo_bsearch.dats
 	$(ATSCC) -D_ATS_GCATS $(ATSCTRB) -o $@ demo_bsearch.dats $(GTKFLAGS) -lm
 

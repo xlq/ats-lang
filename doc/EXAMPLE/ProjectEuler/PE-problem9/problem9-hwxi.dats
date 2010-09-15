@@ -11,12 +11,14 @@
 //
 
 (* ****** ****** *)
+// gcd(p,q) = 1
+// a = k(2pq)
+// b = k(p^2 - q^2) // p >= q
+// c = k(p^2 + q^2)
+// a+b+c = k(2p(p+q)) = 1000
 
-// a = 2pq
-// b = p^2 - q^2 // p >= q
-// c = p^2 + q^2
-// a+b+c = 2p(p+q) = 1000
-// p(p+q) = 500 => p = 20 and q = 5
+// k = 25
+// p(p+q) = 500 => p = 4 and q = 1
 
 implement main () = () where {
   val a = 200

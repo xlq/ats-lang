@@ -1,3 +1,9 @@
+#
+#
+# Makefile for some K&R examples
+#
+#
+
 ######
 
 .PHONY: all
@@ -8,9 +14,6 @@ all:: checkall
 checkall:: \
   compall \
   Chapter01 Chapter02 Chapter03 Chapter04 Chapter05 Chapter06 Chapter07 Chapter08 
-
-ATSCC=$(or $(ATSHOME), "/usr")/bin/atscc
-ATSOPT=$(or $(ATSHOME), "/usr")/bin/atsopt
 
 ######
 

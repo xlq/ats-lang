@@ -1,12 +1,21 @@
+#
+#
+# Makefile for K&R examples in Chapter 7
+#
+#
+
+######
+
+ATSHOMEQ=$(or "$(ATSHOME)", "/usr")
+ATSCC=$(ATSHOMEQ)/bin/atscc
+ATSOPT=$(ATSHOMEQ)/bin/atsopt
+
+######
+
 all: \
   lower \
   fgets \
   filecopy \
-
-######
-
-ATSCC=$(or $(ATSHOME), "/usr")/bin/atscc
-ATSOPT=$(or $(ATSHOME), "/usr")/bin/atsopt
 
 ######
 

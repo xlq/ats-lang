@@ -1,3 +1,17 @@
+#
+#
+# Makefile for K&R examples in Chapter 1
+#
+#
+
+######
+
+ATSHOMEQ=$(or "$(ATSHOME)", "/usr")
+ATSCC=$(ATSHOMEQ)/bin/atscc
+ATSOPT=$(ATSHOMEQ)/bin/atsopt
+
+######
+
 all: \
   hello \
   fahrenheit_celsius \
@@ -9,11 +23,6 @@ all: \
   power \
   longest_line \
   longest_line_alt \
-
-######
-
-ATSCC=$(or $(ATSHOME), "/usr")/bin/atscc
-ATSOPT=$(or $(ATSHOME), "/usr")/bin/atsopt
 
 ######
 

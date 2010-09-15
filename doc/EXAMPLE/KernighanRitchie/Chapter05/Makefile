@@ -1,3 +1,17 @@
+#
+#
+# Makefile for K&R examples in Chapter 5
+#
+#
+
+######
+
+ATSHOMEQ=$(or "$(ATSHOME)", "/usr")
+ATSCC=$(ATSHOMEQ)/bin/atscc
+ATSOPT=$(ATSHOMEQ)/bin/atsopt
+
+######
+
 all: \
   getint \
   strlen \
@@ -6,11 +20,6 @@ all: \
   strcmp_alt \
   month_name \
   month_day \
-
-######
-
-ATSCC=$(or $(ATSHOME), "/usr")/bin/atscc
-ATSOPT=$(or $(ATSHOME), "/usr")/bin/atsopt
 
 ######
 

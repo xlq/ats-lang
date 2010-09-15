@@ -143,6 +143,7 @@ implement mul_distribute2 (pf1, pf2) =
 
 implement mul_associate {x,y,z}
   (pf_xy, pf_yz, pf_xy_z, pf_x_yz) = let
+//
   prfn dist {x1,x2:int;y:int} {x1y,x2y:int}
     (pf1: MUL (x1, y, x1y), pf2: MUL (x2, y, x2y))
     :<prf> MUL (x1+x2, y, x1y+x2y) = let
@@ -152,7 +153,7 @@ implement mul_associate {x,y,z}
   in
     mul_commute (pf3_)
   end // end of [dist]
-
+//
   prfun assoc {x:nat;y,z:int} {xy,yz,xy_z,x_yz:int} .<x>. (
     pf_xy: MUL (x, y, xy)
   , pf_yz: MUL (y, z, yz)
@@ -176,7 +177,9 @@ implement mul_associate {x,y,z}
       // empty
     end
   end // end of [assoc]
+//
 in
+//
   sif x >= 0 then begin
     assoc (pf_xy, pf_yz, pf_xy_z, pf_x_yz)
   end else let
@@ -186,6 +189,7 @@ in
   in
     assoc (pf_xy, pf_yz, pf_xy_z, pf_x_yz)
   end // end of [sif]
+//
 end // end of [mul_associate]
 
 (* ****** ****** *)

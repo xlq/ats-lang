@@ -295,33 +295,38 @@ looping::
 
 ######
 
+ATSHOMEQ="$(ATSHOME)"
+ATSCC=$(ATSHOMEQ)/bin/atscc
+
+######
+
 typecheck::
-	atscc  basics.dats -lm
-	atscc  ats-main.dats
-	atscc  tail-recursive-functions.dats
-	atscc  termination-metrics.dats
-	atscc  -tc templates.dats
-	atscc  -tc lists.dats
-	atscc  -tc val-and-var.dats
-	atscc  -tc pointers.dats
-	atscc  references.dats
-	atscc  arrays-and-matrices.dats
-	atscc  linear-arrays.dats
-	atscc  -tc strings.dats
-	atscc  -tc dataprops.dats
-	atscc  datatypes.dats
-	atscc  -tc dataviews.dats
-	atscc  -tc dataviewtypes.dats
-	atscc  variadicity.dats
-	atscc  -tc pattern-matching.dats
-	atscc  lazy-evaluation.dats
-	atscc  -tc llazy-evaluation.dats
-	atscc  input-and-output.dats
-	atscc  ATS-and-C.dats
-	atscc  programming-with-theorem-proving.dats
-	atscc  -tc casting-functions.dats
-	atscc  stack-allocation.dats
-	atscc  -tc looping.dats
+	$(ATSCC)  basics.dats -lm
+	$(ATSCC)  ats-main.dats
+	$(ATSCC)  tail-recursive-functions.dats
+	$(ATSCC)  termination-metrics.dats
+	$(ATSCC)  -tc templates.dats
+	$(ATSCC)  -tc lists.dats
+	$(ATSCC)  -tc val-and-var.dats
+	$(ATSCC)  -tc pointers.dats
+	$(ATSCC)  references.dats
+	$(ATSCC)  arrays-and-matrices.dats
+	$(ATSCC)  linear-arrays.dats
+	$(ATSCC)  -tc strings.dats
+	$(ATSCC)  -tc dataprops.dats
+	$(ATSCC)  datatypes.dats
+	$(ATSCC)  -tc dataviews.dats
+	$(ATSCC)  -tc dataviewtypes.dats
+	$(ATSCC)  variadicity.dats
+	$(ATSCC)  -tc pattern-matching.dats
+	$(ATSCC)  lazy-evaluation.dats
+	$(ATSCC)  -tc llazy-evaluation.dats
+	$(ATSCC)  input-and-output.dats
+	$(ATSCC)  ATS-and-C.dats
+	$(ATSCC)  programming-with-theorem-proving.dats
+	$(ATSCC)  -tc casting-functions.dats
+	$(ATSCC)  stack-allocation.dats
+	$(ATSCC)  -tc looping.dats
 
 ######
 

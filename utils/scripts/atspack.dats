@@ -551,6 +551,9 @@ fn doc_dir_copy () = let
     val SRCROOTdoc_TUTORIAL_contents = SRCROOTdoc_TUTORIAL ++ "contents/"
     val DSTROOTdoc_TUTORIAL_contents = DSTROOTdoc_TUTORIAL ++ "contents/"
     val () = mkdir_exn (DSTROOTdoc_TUTORIAL_contents, DIRmode)
+    val () = fcopy_exn (
+      SRCROOTdoc_TUTORIAL_contents ++ "Makefile", DSTROOTdoc_TUTORIAL_contents ++ "Makefile"
+    )
     val () = dir_copy (
       SRCROOTdoc_TUTORIAL_contents, DSTROOTdoc_TUTORIAL_contents, name_is_html
     )
