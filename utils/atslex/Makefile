@@ -33,7 +33,7 @@
 
 ######
 
-#ATSHOMEQ="$(ATSHOME)"
+ATSHOMEQ="$(ATSHOME)"
 ATSCC=$(ATSHOMEQ)/bin/atscc
 #ATSCCFLAGS=-D_ATS_gc
 #ATSCCFLAGS=-D_ATS_gcats

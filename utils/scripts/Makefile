@@ -33,7 +33,7 @@
 
 ######
 
-#ATSHOMEQ="$(ATSHOME)"
+ATSHOMEQ="$(ATSHOME)"
 ATSOPT=$(ATSHOMEQ)/bin/atsopt
 ATSRUNTIME=$(ATSHOMEQ)/ccomp/runtime
 ATSLIBC=$(ATSHOMEQ)/libc

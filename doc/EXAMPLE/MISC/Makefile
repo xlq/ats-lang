@@ -5,8 +5,8 @@
 ######
 
 ATSHOMEQ=$(or "$(ATSHOME)", "/usr")
-ATSCC=$(or $(ATSHOMEQ), "/usr")/bin/atscc
-ATSOPT=$(or $(ATSHOMEQ), "/usr")/bin/atsopt
+ATSCC=$(ATSHOMEQ)/bin/atscc
+ATSOPT=$(ATSHOMEQ)/bin/atsopt
 
 ######
 

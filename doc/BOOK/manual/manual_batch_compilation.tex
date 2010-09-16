@@ -160,14 +160,14 @@ collection (GC). If executables need to be generated that run with GC being
 turned on, the flag \verb`-D_ATS_GCATS` should be present.  For instance,
 the follow command line generates such an executable named {\it foo}:
 \begin{verbatim}
-atscc -o foo foo.dats foo.sats -D_ATS_GCATS
+atscc -D_ATS_GCATS -o foo foo.dats foo.sats
 \end{verbatim}
 Note that the flag \verb`-D_ATS_GCATS` should only be used when {\it atscc}
 is called to generate executables.
 
 \subsection{Directories for File Search}
 The use of \verb`-IATS` by {\it atscc} is analogous to \verb`-I` by {\it gcc}.
-By default, {\it atscc} searches for files only in the directory \ATSHOME
+By default, {\it atscc} searches for files only in the directory {\ATSHOME}
 and the current directory. If more directories need to be searched, it can
 be added as follows:
 \begin{verbatim}

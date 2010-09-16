@@ -8,7 +8,7 @@
 ######
 
 ATSHOMEQ="$(ATSHOME)"
-ATSCC=$(ATSHOME)/bin/atscc -Wall
+ATSCC=$(ATSHOMEQ)/bin/atscc -Wall
 
 GCC=gcc
 GLIBINC=/usr/lib/glib-2.0/include

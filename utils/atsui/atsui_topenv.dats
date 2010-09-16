@@ -296,10 +296,10 @@ fun the_drawarea_welcome_cairodraw {l:agz}
 //
   val W = (double_of)width and H = (double_of)height
   val () = () where {
-    val utf8 = "ATS: Unleashing the potential of types!"
+    val (fpf_utf8 | utf8) = string_takeout_ptr ("ATS: Unleashing the potential of types!")
     var te : cairo_text_extents_t
-//
     val () = cairo_text_extents (cr, utf8, te)
+//
     val alpha = (1.0 * W / te.width) // this is just an estimate
     val () = cairo_translate (cr, W/2, 2*H/5)
     val () = cairo_scale (cr, alpha, alpha)
@@ -310,6 +310,9 @@ fun the_drawarea_welcome_cairodraw {l:agz}
     val () = cairo_move_to (cr, ~x_base, y_base)
     val () = cairo_set_source_rgb (cr, 0.25, 0.25, 0.25) // dark gray
     val () = cairo_show_text (cr, utf8)
+//
+    prval () = fpf_utf8 (utf8)
+//
   } // end of [val]
 //
 // val () = (print "the_drawarea_welcome_cairodraw: Welcome!"; print_newline ())

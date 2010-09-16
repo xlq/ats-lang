@@ -6,14 +6,6 @@
 
 (* ****** ****** *)
 
-staload RAND = "libc/SATS/random.sats"
-
-(* ****** ****** *)
-
-staload _(*anon*) = "prelude/DATS/array.dats"
-
-(* ****** ****** *)
-
 staload V = "libats/SATS/vector.sats"
 stadef VSHELL = $V.VSHELL
 stadef VSHELL0 = $V.VSHELL0

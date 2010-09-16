@@ -424,7 +424,7 @@ fn prerulerhs_process (
   val xs = rhs.0 and prec = rhs.1 and ext = rhs.2
   val nsym = list_vt_length<token> (xs)
   val asz = size1_of_int1 nsym // array size
-  val symarr = array_make_arraysize {T}
+  val symarr = array_make_arrsz {T}
     @(pf_gc, pf_arr | p_arr, asz) where {
     typedef T = symbol
     val (pf_gc, pf_arr | p_arr) =

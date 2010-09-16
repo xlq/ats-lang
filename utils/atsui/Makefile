@@ -37,8 +37,14 @@
 ######
 
 MAKE=make
-ATSCC=$(ATSHOME)/bin/atscc
+
+######
+
+ATSHOMEQ="$(ATSHOME)"
+ATSCC=$(ATSHOMEQ)/bin/atscc
 ATSCCFLAGS=-g
+
+######
 
 GTKLIBS=`pkg-config gtk+-2.0 --libs`
 GTKCFLAGS=`pkg-config gtk+-2.0 --cflags`
@@ -88,7 +94,7 @@ atsui: \
 
 ######
 
-ATSGTKLIB=$(ATSHOME)/contrib/GTK/atsctrb_GTK.o
+ATSGTKLIB=$(ATSHOMEQ)/contrib/GTK/atsctrb_GTK.o
 atsui_main_dats.o: atsui_main.dats
 	$(ATSCC) $(ATSCCFLAGS) $(CCFLAGS) -c atsui_main.dats
 

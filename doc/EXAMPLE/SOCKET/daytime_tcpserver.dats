@@ -4,7 +4,7 @@
 **
 ** The following code implements a server socket that responds to a request by
 ** sending out a string representation of the current time. This is a concurrent
-** version (in contrast to an iterativet version). The use of the function [fork]
+** version (in contrast to an iterative version). The use of the function [fork]
 ** and the type assigned to it should serve as an interesting example for future
 ** reference.
 
