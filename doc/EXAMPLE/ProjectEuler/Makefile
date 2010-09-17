@@ -77,6 +77,7 @@ compall:: \
   problem162 \
   problem164 \
   problem169 \
+  problem301 \
 
 ######
 
@@ -140,6 +141,7 @@ problem157::; make -C PE-problem157 compall
 problem162::; make -C PE-problem162 compall
 problem164::; make -C PE-problem164 compall
 problem169::; make -C PE-problem169 compall
+problem301::; make -C PE-problem301 compall
 
 ######
 
@@ -204,5 +206,6 @@ cleanall::
 	make -C PE-problem162 cleanall
 	make -C PE-problem164 cleanall
 	make -C PE-problem169 cleanall
+	make -C PE-problem301 cleanall
 
 ###### end of [Makefile] ######
