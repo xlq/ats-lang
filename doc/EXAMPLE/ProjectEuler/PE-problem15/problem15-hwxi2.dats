@@ -75,7 +75,7 @@ typedef mfun_t = {x,y:nat}
 // end of [mfun_t]
 
 //
-// HX: this one is correct, but hopelessly inefficient!
+// HX: this one makes use of memoization
 //
 fun f2 {x,y:nat}
   (x: int x, y: int y, m: mfun_t): T (x, y) = let
