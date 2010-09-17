@@ -68,10 +68,10 @@ praxi mul_expand_linear {a,b:int} {c,d:int} // a,b,c,d: constants!
 
 (* ****** ****** *)
 
+prfun mul_istot {m,n:int} ():<prf> [p:int] MUL (m, n, p)
+
 prfun mul_isfun {m,n:int} {p1,p2:int}
   (pf1: MUL (m, n, p1), pf2: MUL (m, n, p2)):<prf> [p1==p2] void
-
-prfun mul_istot {m,n:int} ():<prf> [p:int] MUL (m, n, p)
 
 (* ****** ****** *)
 

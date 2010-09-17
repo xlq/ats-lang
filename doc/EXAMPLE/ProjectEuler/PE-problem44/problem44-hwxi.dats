@@ -18,7 +18,6 @@ staload M = "libc/SATS/math.sats"
 (* ****** ****** *)
 
 fun isqrt (x: int): int = int_of ($M.sqrt (x + 0.5))
-fun isSquare (x: int): bool = let val p = isqrt (x) in p * p = x end
 
 (* ****** ****** *)
 //
