@@ -29,8 +29,15 @@ dataprop PATHS(int, int, int) =
 
 (* ****** ****** *)
 
+//
+// HX: A representation good for 64-bit unsigned integers
+//
 abst@ype ullint1 (i: int) = ullint
-extern castfn ullint1 {i:nat} (x: int i):<> ullint1 i
+//
+symintr ullint1
+extern castfn ullint1_int {i:nat} (x: int i):<> ullint1 i
+overload ullint1 with ullint1_int
+//
 extern fun print_ullint1
   {i:nat} (x: ullint1 i): void = "atspre_print_ullint"
 extern fun add_ullint1_ullint1
@@ -140,6 +147,8 @@ implement theMemoTable_set0 (x, y, res) =
 
 (* ****** ****** *)
 
+extern castfn ullint_of_ullint1 {i:nat} (x: ullint1 i):<> ullint
+
 implement
 main () = () where {
 (*
@@ -151,7 +160,7 @@ main () = () where {
 *)
   #define N 20
   val (_pf | z) = f2 (N, N, mfun)
-  val () = assert_errmsg (z = 137846528820, #LOCATION)
+  val () = assert_errmsg (ullint_of_ullint1(z) = 137846528820ULL, #LOCATION)
   val () = printf ("f (%i, %i) = ", @(N, N))
   val () = (print_ullint1 z; print_newline ())
 } // end of [main]

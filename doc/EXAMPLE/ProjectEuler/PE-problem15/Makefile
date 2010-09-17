@@ -12,6 +12,7 @@ ATSCC=$(or $(ATSHOMEQ), "/usr")/bin/atscc
 checkall: compall cleanall
 compall:: \
   problem15-hwxi \
+  problem15-hwxi2 \
 
 ######
 
