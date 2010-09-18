@@ -20,7 +20,7 @@ problem2-hwxi: problem2-hwxi.dats
 	$(ATSCC) -o $@ problem2-hwxi.dats -lats -lgmp && ./problem2-hwxi
 
 problem2-hwxi2: problem2-hwxi2.dats
-	$(ATSCC) -o $@ problem2-hwxi2.dats -lats && ./problem2-hwxi2
+	$(ATSCC) -D_ATS_PROOFCHECK -o $@ problem2-hwxi2.dats -lats && ./problem2-hwxi2
 
 ######
 

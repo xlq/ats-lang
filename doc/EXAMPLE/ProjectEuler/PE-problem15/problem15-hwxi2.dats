@@ -19,7 +19,8 @@ staload _(*anon*) = "prelude/DATS/matrix.dats"
 (* ****** ****** *)
 
 //
-// HX-2010-09-17: this one is taken from Matthias Berndt:
+// HX-2010-09-17:
+// this one is taken from Matthias Berndt (matthias_berndt AT gmx DOT de)
 //
 dataprop PATHS(int, int, int) =
   | {y: nat} PATHSbas1(0, y, 1)
