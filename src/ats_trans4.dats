@@ -30,10 +30,10 @@
 *)
 
 (* ****** ****** *)
-
+//
 // Author: Hongwei Xi (hwxi AT cs DOT bu DOT edu)
 // Time: March 2008
-
+//
 (* ****** ****** *)
 
 staload Deb = "ats_debug.sats"
@@ -301,7 +301,8 @@ fun s2explstlst_tr
 
 (* ****** ****** *)
 
-implement s2explst_arg_tr
+implement
+s2explst_arg_tr
   (loc0, npf, s2es) = let
   fun aux1 (loc0: loc_t, s2es: s2explst): hityplst =
     case+ s2es of
@@ -397,7 +398,8 @@ fn labp3atlst_arg_tr
 
 (* ****** ****** *)
 
-implement p3at_tr (p3t0): hipat = let
+implement
+p3at_tr (p3t0): hipat = let
   val loc0 = p3t0.p3at_loc
   val hit0 = s2exp_tr (loc0, 0(*deep*), p3t0.p3at_typ)
 (*
@@ -630,8 +632,7 @@ end // end of [d3exp_cst_tr]
 (* ****** ****** *)
 
 fn d3exp_seq_tr (
-    loc0: loc_t
-  , hit0: hityp, d3es: d3explst
+    loc0: loc_t, hit0: hityp, d3es: d3explst
   ) : hiexp = let
   val hies = d3explst_tr d3es in hiexp_seq_simplify (loc0, hit0, hies)
 end // end of [d3exp_seq_tr]
@@ -735,7 +736,8 @@ in
   hiclau_make (loc0, hips, gua, body)
 end // end of [c3lau_tr]
 
-fn c3laulst_tr (c3ls: c3laulst): hiclaulst = let
+fn c3laulst_tr
+  (c3ls: c3laulst): hiclaulst = let
   fun aux // tail-recursive function
     (c3ls: c3laulst, res: &hiclaulst? >> hiclaulst)
     : void = begin case+ c3ls of
@@ -771,7 +773,8 @@ extern fun // this function is implemented in [ats_ccomp_env.dats]
 
 (* ****** ****** *)
 
-implement d3exp_tr (d3e0) = let
+implement
+d3exp_tr (d3e0) = let
   val loc0 = d3e0.d3exp_loc and s2e0 = d3e0.d3exp_typ
 (*
   val () = begin
@@ -1179,9 +1182,11 @@ in
 *)
 end // end of [d3exp_tr]
 
-implement d3explst_tr (d3es) = $Lst.list_map_fun (d3es, d3exp_tr)
+implement
+d3explst_tr (d3es) = $Lst.list_map_fun (d3es, d3exp_tr)
 
-implement d3expopt_tr (od3e) = begin case+ od3e of
+implement
+d3expopt_tr (od3e) = begin case+ od3e of
   | Some d3e => Some (d3exp_tr d3e) | None () => None ()
 end // end of [d3expopt_tr]
 
@@ -1202,7 +1207,8 @@ in
   $Lst.list_foreach_fun (c3ls,  f)
 end // end of [c3laulst_prf_tr]
 
-implement d3exp_prf_tr (d3e0) = let
+implement
+d3exp_prf_tr (d3e0) = let
 (*
   val () = begin
     print "d3exp_prf_tr: d3e0 = " print d3e0; print_newline ();
@@ -1340,7 +1346,9 @@ implement d3explst_prf_tr (d3es) = $Lst.list_foreach_fun (d3es, d3exp_prf_tr)
 
 (* ****** ****** *)
 
-fn f3undec_tr (decarg: s2qualst, d3c: f3undec): hifundec = let
+fn f3undec_tr (
+    decarg: s2qualst, d3c: f3undec
+  ) : hifundec = let
   val loc = d3c.f3undec_loc
   val d2v_fun = d3c.f3undec_var
   val hie_def = d3exp_tr d3c.f3undec_def
@@ -1440,7 +1448,8 @@ end // end of [i3mpdec_tr]
 
 (* ****** ****** *)
 
-implement d3eclst_tr (d3cs0) = res where {
+implement
+d3eclst_tr (d3cs0) = res where {
 // [aux0] and [aux1] are mutually tail-recursive
   fn* aux0 (
       d3cs: d3eclst
@@ -1600,7 +1609,8 @@ implement d3eclst_tr (d3cs0) = res where {
 
 (* ****** ****** *)
 
-implement d3eclst_prf_tr
+implement
+d3eclst_prf_tr
   (d3cs0) = aux (d3cs0) where {
   fun aux (d3cs: d3eclst): void = begin case+ d3cs of
     | list_cons (d3c, d3cs) => begin case+ d3c.d3ec_node of

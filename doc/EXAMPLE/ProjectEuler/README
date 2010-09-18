@@ -3,6 +3,15 @@ The set of problems are taken from the following site:
 http://projecteuler.net
 
 ######
+#
+# If you have a verified solution to one of the PE problems that is
+# implemented in ATS, please consider sharing it with the ATS users.
+# If you send it to me (hwxi AT cs DOT bu DOT edu), I will post it after
+# testing it successfully.
+#
+######
+
+######
 
 Problem1:
 Solution is fully verified:
@@ -104,6 +113,5 @@ Problem169:
 Problem301:
 
 ######
-
 
 ###### end of [README] ######

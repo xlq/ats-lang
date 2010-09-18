@@ -70,6 +70,10 @@ fun add_intlst_intlst {ds1,ds2:intlst} {n1,n2:int}
   (pf1: REP (ds1, n1), pf2: REP (ds2, n2) | ds1: intlst (ds1), ds2: intlst (ds2)):<>
   [ds:intlst] (REP (ds, n1+n2) | intlst (ds)) = "add_intlst_intlst"
 
+//
+// HX-2010-09-18:
+// this implementation is not tail-recursive but it is good enough to get the job done
+//
 implement add_intlst_intlst
   (pf1, pf2 | ds1, ds2) = aux2 (pf1, pf2 | 0, ds1, ds2) where {
   fun aux1 {ds:intlst} {n:int} .<ds>.
