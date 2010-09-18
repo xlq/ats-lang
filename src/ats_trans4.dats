@@ -326,7 +326,8 @@ in
   aux2 (loc0, npf, s2es)
 end // end of [s2explst_arg_tr]
 
-implement labs2explst_arg_tr
+implement
+labs2explst_arg_tr
   (loc0, npf, ls2es) = let
   fun aux1
     (loc0: loc_t, ls2es: labs2explst): labhityplst =
@@ -387,7 +388,7 @@ fn labp3atlst_arg_tr
           if p3at_is_proof p3t then aux (0, lp3ts)
           else begin
             LABHIPATLSTcons (l, p3at_tr p3t, aux (0, lp3ts))
-          end
+          end (* end of [if] *)
         end // end of [if]
     | LABP3ATLSTdot () => LABHIPATLSTdot ()
     | LABP3ATLSTnil () => LABHIPATLSTnil ()
@@ -564,19 +565,23 @@ in
   aux2 (npf, d3es)
 end // end of [d3explst_funarg_tr]
 
-fn d3explst_arg_tr
-  (npf: int, d3es: d3explst): hiexplst = let
-  fun aux
-    (i: int, d3es: d3explst): hiexplst = begin
+fn d3explst_arg_tr (
+    npf: int, d3es: d3explst
+  ) : hiexplst = let
+  fun aux (
+      i: int, d3es: d3explst
+    ) : hiexplst = begin
     case+ d3es of
     | cons (d3e, d3es) => begin case+ i of
-      | _ when i > 0 => aux (i-1, d3es)
+      | _ when i > 0 => let
+          val () = d3exp_prf_tr d3e in aux (i-1, d3es)
+        end // end of [i > 0]
       | _ => begin
-          if d3exp_is_proof d3e then begin
-            aux (i-1, d3es)
+          if d3exp_is_proof d3e then let
+            val () = d3exp_prf_tr d3e in aux (i-1, d3es)
           end else begin
             cons (d3exp_tr d3e, aux (i-1, d3es))
-          end
+          end (* end of [if] *)
         end // end of [_]
       end // end of [cons]
     | nil () => nil ()
@@ -585,30 +590,36 @@ in
   aux (npf, d3es)
 end // end of [d3explst_arg_tr]
 
-fn labd3explst_arg_tr
-  (npf: int, ld3es: labd3explst): labhiexplst = let
-  fun aux (i: int, ld3es: labd3explst): labhiexplst =
+fn labd3explst_arg_tr (
+    npf: int, ld3es: labd3explst
+  ) : labhiexplst = let
+  fun aux (
+      i: int, ld3es: labd3explst
+    ) : labhiexplst = begin
     case+ ld3es of
     | LABD3EXPLSTcons (l, d3e, ld3es) => begin case+ i of
-      | _ when i > 0 => aux (i-1, ld3es)
+      | _ when i > 0 => let
+          val () = d3exp_prf_tr d3e in aux (i-1, ld3es)
+        end // end of [i > 0]
       | _ => begin
-          if d3exp_is_proof d3e then begin
-            aux (i-1, ld3es)
+          if d3exp_is_proof d3e then let
+             val () = d3exp_prf_tr d3e in aux (i-1, ld3es)
           end else begin
             LABHIEXPLSTcons (l, d3exp_tr d3e, aux (i-1, ld3es))
-          end
+          end (* end of [if] *)
         end
       end // end of [LABHIEXPLSTcons]
     | LABD3EXPLSTnil () => LABHIEXPLSTnil ()
-  // end of [aux]
+  end // end of [aux]
 in
   aux (npf, ld3es)
 end // end of [labd3explst_arg_tr]
 
 (* ****** ****** *)
 
-fn d3exp_cst_tr
-  (loc0: loc_t, hit0: hityp, d2c: d2cst_t): hiexp = let
+fn d3exp_cst_tr (
+    loc0: loc_t, hit0: hityp, d2c: d2cst_t
+  ) : hiexp = let
   val sym = d2cst_sym_get d2c in
   case+ sym of
   | _ when sym = $Sym.symbol_TRUE => hiexp_bool (loc0, hit0, true)
@@ -618,10 +629,11 @@ end // end of [d3exp_cst_tr]
 
 (* ****** ****** *)
 
-fn d3exp_seq_tr
-  (loc0: loc_t, hit0: hityp, d3es: d3explst): hiexp = let
-  val hies = d3explst_tr d3es in
-  hiexp_seq_simplify (loc0, hit0, hies)
+fn d3exp_seq_tr (
+    loc0: loc_t
+  , hit0: hityp, d3es: d3explst
+  ) : hiexp = let
+  val hies = d3explst_tr d3es in hiexp_seq_simplify (loc0, hit0, hies)
 end // end of [d3exp_seq_tr]
 
 //
@@ -844,7 +856,7 @@ in
       val hies = d3explst_tr d3es
 (*
       val () = begin
-        print "d3exp_tr: D2Ecase: c3ls = "; print c3ls; print_newline ()
+        print "d3exp_tr: D3Ecaseof: c3ls = "; print c3ls; print_newline ()
       end // end of [val]
 *)
       val hicls = c3laulst_tr c3ls
@@ -875,7 +887,7 @@ in
       val hit_sum = hityp_tysumtemp (d2c, hits_arg)
     in
       hiexp_con (loc0, hit0, hit_sum, d2c, hies_arg)
-    end // end of [D2Econ]
+    end // end of [D3Econ]
   | D3Ecst d2c => let (* d2c is external *)
       val () = the_dyncstset_add_if (d2c)
       val hit0 = s2exp_tr (loc0, 0(*deep*), s2e0)
@@ -1175,7 +1187,8 @@ end // end of [d3expopt_tr]
 
 (* ****** ****** *)
 
-fun labd3explst_prf_tr (ld3es: labd3explst): void =
+fun labd3explst_prf_tr
+  (ld3es: labd3explst): void =
   case+ ld3es of
   | LABD3EXPLSTcons (l, d3e, ld3es) => begin
       d3exp_prf_tr d3e; labd3explst_prf_tr ld3es
@@ -1202,7 +1215,7 @@ in
       val () = d3exp_prf_tr d3e_fun
       val () = d3explst_prf_tr d3es_arg
     in
-      // empty
+      (* empty *)
     end // end of [D3Eapp_dyn]
   | D3Eapp_sta d3e => d3exp_prf_tr d3e
   | D3Eassgn_ptr (d3e_ptr, d3ls, d3e_val) => let
@@ -1229,7 +1242,7 @@ in
       val () = d3explst_prf_tr (d3es_arg)
     in
       // empty
-    end // end of [D2Econ]
+    end // end of [D3Econ]
   | D3Ecst d2c => let (* d2c is external as it is used *)
       val () = the_dyncstset_add_if (d2c)
     in

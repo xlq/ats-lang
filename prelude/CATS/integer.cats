@@ -967,16 +967,25 @@ atspre_tostrptr_ulint
 ATSinline()
 ats_llint_type
 atspre_llint_of_int
-  (ats_int_type i) {
-  return ((ats_llint_type)i) ;
-} // end of [atspre_llint_of_int]
+  (ats_int_type i) { return ((ats_llint_type)i) ; }
+// end of [atspre_llint_of_int]
+
+#if (0)
+//
+// HX: defined in $ATSHOME/prelude/CATS/float.cats
+//
+ATSinline()
+ats_llint_type
+atspre_llint_of_double
+  (ats_double_type d) { return ((ats_llint_type)d) ; }
+// end of [atspre_llint_of_double]
+#endif // end of [#if 0]
 
 ATSinline()
 ats_llint_type
 atspre_llint_of_string
-  (ats_ptr_type s) {
-  return atoll ((char*)s) ;
-} // end of [atspre_llint_of_string]
+  (ats_ptr_type s) { return atoll ((char*)s) ; }
+// end of [atspre_llint_of_string]
 
 //
 // arithmetic functions and comparison functions
@@ -1150,6 +1159,19 @@ ats_ullint_type
 atspre_ullint_of_uint
   (ats_uint_type u) { return ((ats_ullint_type)u) ; }
 // end of [atspre_ullint_of_uint]
+
+#if (0)
+//
+// HX: defined in $ATSHOME/prelude/CATS/float.cats
+//
+ATSinline()
+ats_ullint_type
+atspre_ullint_of_double
+  (ats_double_type d) { return ((ats_ullint_type)d) ; }
+// end of [atspre_ullint_of_double]
+#endif // end of [#if 0]
+
+/* ****** ****** */
 
 ATSinline()
 ats_ullint_type

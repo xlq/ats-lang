@@ -71,151 +71,126 @@ atspre_llint_of_float (ats_float_type f) { return f ; }
 
 ATSinline()
 ats_float_type
-atspre_float_of_int (const ats_int_type i) {
-  return (ats_float_type)i ;
-}
+atspre_float_of_int (ats_int_type i) { return (ats_float_type)i ; }
 
 ATSinline()
 ats_float_type
-atspre_float_of_uint (const ats_uint_type u) {
-  return (ats_float_type)u ;
-}
+atspre_float_of_uint (ats_uint_type u) { return (ats_float_type)u ; }
 
 //
 
 ATSinline()
 ats_float_type
-atspre_float_of_lint (const ats_lint_type i) {
-  return (ats_float_type)i ;
-}
+atspre_float_of_lint (ats_lint_type i) { return (ats_float_type)i ; }
 
 ATSinline()
 ats_float_type
-atspre_float_of_ulint (const ats_ulint_type u) {
-  return (ats_float_type)u ;
-}
+atspre_float_of_ulint (ats_ulint_type u) { return (ats_float_type)u ; }
 
 //
 
 ATSinline()
 ats_float_type
-atspre_float_of_llint (const ats_llint_type i) {
-  return (ats_float_type)i ;
-}
+atspre_float_of_llint (ats_llint_type i) { return (ats_float_type)i ; }
 
 ATSinline()
 ats_float_type
-atspre_float_of_ullint (const ats_ullint_type u) {
-  return (ats_float_type)u ;
-}
+atspre_float_of_ullint (ats_ullint_type u) { return (ats_float_type)u ; }
 
 //
 
 ATSinline()
 ats_float_type
-atspre_float_of_size (const ats_size_type sz) {
-  return (ats_float_type)sz ;
-}
+atspre_float_of_size (ats_size_type sz) { return (ats_float_type)sz ; }
 
 //
 
 ATSinline()
 ats_float_type
-atspre_float_of_double (const ats_double_type d) {
-  return (ats_float_type)d ;
-}
+atspre_float_of_double
+  (ats_double_type d) { return (ats_float_type)d ; }
+// end of [atspre_float_of_double]
 
 ATSinline()
 ats_float_type
-atspre_float_of_string (const ats_ptr_type s) {
-  return (ats_float_type)(atof ((char *)s)) ;
-}
+atspre_float_of_string
+  (const ats_ptr_type s) { return (ats_float_type)(atof ((char *)s)) ; }
+// end of [atspre_float_of_string]
+
+/* ****** ****** */
+
+ATSinline()
+ats_float_type
+atspre_abs_float
+  (ats_float_type f) { return (f >= 0.0 ? f : -f) ; }
+// end of [atspre_abs_float]
+
+ATSinline()
+ats_float_type
+atspre_neg_float (ats_float_type f) { return (-f) ; }
+
+ATSinline()
+ats_float_type
+atspre_succ_float (ats_float_type f) { return (f + 1.0) ; }
+
+ATSinline()
+ats_float_type
+atspre_pred_float (ats_float_type f) { return (f - 1.0) ; }
 
 //
-
-ATSinline()
-ats_float_type
-atspre_abs_float (const ats_float_type f) {
-  return (f >= 0.0 ? f : -f) ;
-}
-
-ATSinline()
-ats_float_type
-atspre_neg_float (const ats_float_type f) {
-  return (-f) ;
-}
-
-ATSinline()
-ats_float_type
-atspre_succ_float (const ats_float_type f) {
-  return (f + 1.0) ;
-}
-
-ATSinline()
-ats_float_type
-atspre_pred_float (const ats_float_type f) {
-  return (f - 1.0) ;
-}
 
 ATSinline()
 ats_float_type
 atspre_add_float_float
-  (const ats_float_type f1, const ats_float_type f2) {
+  (ats_float_type f1, ats_float_type f2) {
   return (f1 + f2) ;
-}
+} // end of [atspre_add_float_float]
 
 ATSinline()
 ats_float_type
 atspre_sub_float_float
-  (const ats_float_type f1, const ats_float_type f2) {
+  (ats_float_type f1, ats_float_type f2) {
   return (f1 - f2) ;
-}
+} // end of [atspre_sub_float_float]
 
 //
 
 ATSinline()
 ats_float_type
 atspre_mul_float_float
-  (const ats_float_type f1, const ats_float_type f2) {
-  return (f1 * f2) ;
-} // end of [atspre_mul_float_float]
+  (ats_float_type f1, ats_float_type f2) { return (f1 * f2) ; }
+// end of [atspre_mul_float_float]
 
 ATSinline()
 ats_float_type
 atspre_mul_int_float
-  (const ats_int_type i1, const ats_float_type f2) {
-  return ((float)i1 * f2) ;
-} // end of [atspre_mul_int_float]
+  (ats_int_type i1, ats_float_type f2) { return ((float)i1 * f2) ; }
+// end of [atspre_mul_int_float]
 
 ATSinline()
 ats_float_type
 atspre_mul_float_int
-  (const ats_float_type f1, const ats_int_type i2) {
-  return ((float)f1 * i2) ;
-} // end of [atspre_mul_float_int]
+  (ats_float_type f1, ats_int_type i2) { return (f1 * (float)i2) ; }
+// end of [atspre_mul_float_int]
 
 //
 
 ATSinline()
 ats_float_type
 atspre_div_float_float
-  (const ats_float_type f1, const ats_float_type f2) {
-  return (f1 / f2) ;
-}
+  (ats_float_type f1, ats_float_type f2) { return (f1 / f2) ; }
+// end of [atspre_div_float_float]
 
 ATSinline()
 ats_float_type
 atspre_div_float_int
-  (const ats_float_type f1, const ats_int_type i2) {
-  return (f1 / (float)i2) ;
-}
-
-//
+  (ats_float_type f1, ats_int_type i2) { return (f1 / (float)i2) ; }
+// end of [atspre_div_float_int]
 
 ATSinline()
 ats_bool_type
 atspre_lt_float_float (
-  const ats_float_type f1, const ats_float_type f2
+  ats_float_type f1, ats_float_type f2
 ) {
   return (f1 < f2 ? ats_true_bool : ats_false_bool) ;
 } // end of [atspre_lt_float_float]
@@ -223,7 +198,7 @@ atspre_lt_float_float (
 ATSinline()
 ats_bool_type
 atspre_lte_float_float (
-  const ats_float_type f1, const ats_float_type f2
+  ats_float_type f1, ats_float_type f2
 ) {
   return (f1 <= f2 ? ats_true_bool : ats_false_bool) ;
 } // end of [atspre_lte_float_float]
@@ -231,7 +206,7 @@ atspre_lte_float_float (
 ATSinline()
 ats_bool_type
 atspre_gt_float_float (
-  const ats_float_type f1, const ats_float_type f2
+  ats_float_type f1, ats_float_type f2
 ) {
   return (f1 > f2 ? ats_true_bool : ats_false_bool) ;
 } // end of [atspre_gt_float_float]
@@ -239,7 +214,7 @@ atspre_gt_float_float (
 ATSinline()
 ats_bool_type
 atspre_gte_float_float (
-  const ats_float_type f1, const ats_float_type f2
+  ats_float_type f1, ats_float_type f2
 ) {
   return (f1 >= f2 ? ats_true_bool : ats_false_bool) ;
 } // end of [atspre_gte_float_float]
@@ -247,7 +222,7 @@ atspre_gte_float_float (
 ATSinline()
 ats_bool_type
 atspre_eq_float_float (
-  const ats_float_type f1, const ats_float_type f2
+  ats_float_type f1, ats_float_type f2
 ) {
   return (f1 == f2 ? ats_true_bool : ats_false_bool) ;
 } // end of [atspre_eq_float_float]
@@ -255,7 +230,7 @@ atspre_eq_float_float (
 ATSinline()
 ats_bool_type
 atspre_neq_float_float (
-  const ats_float_type f1, const ats_float_type f2
+  ats_float_type f1, ats_float_type f2
 ) {
   return (f1 != f2 ? ats_true_bool : ats_false_bool) ;
 } // end of [atspre_neq_float_float]
@@ -265,7 +240,7 @@ atspre_neq_float_float (
 ATSinline()
 ats_int_type
 atspre_compare_float_float
-  (const ats_float_type f1, const ats_float_type f2) {
+  (ats_float_type f1, ats_float_type f2) {
   if (f1 < f2) return (-1) ;
   if (f1 > f2) return ( 1) ;
   return 0 ;
@@ -274,14 +249,14 @@ atspre_compare_float_float
 ATSinline()
 ats_float_type
 atspre_max_float_float
-  (const ats_float_type f1, const ats_float_type f2) {
+  (ats_float_type f1, ats_float_type f2) {
   return (f1 >= f2) ? f1 : f2 ;
 }
 
 ATSinline()
 ats_float_type
 atspre_min_float_float
-  (const ats_float_type f1, const ats_float_type f2) {
+  (ats_float_type f1, ats_float_type f2) {
   return (f1 <= f2) ? f1 : f2 ;
 }
 
@@ -289,18 +264,16 @@ atspre_min_float_float
 
 ATSinline()
 ats_float_type
-atspre_square_float (const ats_float_type f) {
-  return (f * f) ;
-}
+atspre_square_float (ats_float_type f) { return (f * f) ; }
 
 // print function
 
 ATSinline()
 ats_void_type
 atspre_fprint_float (
-  const ats_ptr_type out, const ats_float_type f
+  ats_ptr_type out, ats_float_type f
 ) {
-  int n = fprintf ((FILE *)out, "%f", f) ;
+  int n = fprintf ((FILE*)out, "%f", f) ;
   if (n < 0) {
     ats_exit_errmsg (n, (ats_ptr_type)"exit(ATS): [fprint_float] failed.\n") ;
   }
@@ -309,7 +282,7 @@ atspre_fprint_float (
 
 ATSinline()
 ats_void_type
-atspre_print_float (const ats_float_type f) {
+atspre_print_float (ats_float_type f) {
   atspre_stdout_view_get () ;
   atspre_fprint_float ((ats_ptr_type)stdout, f) ;
   atspre_stdout_view_set () ;
@@ -318,7 +291,7 @@ atspre_print_float (const ats_float_type f) {
 
 ATSinline()
 ats_void_type
-atspre_prerr_float (const ats_float_type f) {
+atspre_prerr_float (ats_float_type f) {
   atspre_stderr_view_get () ;
   atspre_fprint_float ((ats_ptr_type)stderr, f) ;
   atspre_stderr_view_set () ;
@@ -330,7 +303,7 @@ atspre_prerr_float (const ats_float_type f) {
 ATSinline()
 ats_ptr_type
 atspre_tostrptr_float
-  (const ats_float_type f) {
+  (ats_float_type f) {
   return atspre_tostringf ((ats_ptr_type)"%f", f) ;
 } // end of [atspre_tostrptr_float]
 
@@ -342,206 +315,169 @@ atspre_tostrptr_float
 
 ATSinline()
 ats_int_type
-atspre_int_of_double (ats_double_type d) { return d ; }
+atspre_int_of_double (ats_double_type d) { return (ats_int_type)d ; }
 
 ATSinline()
 ats_lint_type
-atspre_lint_of_double (ats_double_type d) { return d ; }
+atspre_lint_of_double (ats_double_type d) { return (ats_lint_type)d ; }
 
 ATSinline()
 ats_llint_type
-atspre_llint_of_double (ats_double_type d) { return d ; }
+atspre_llint_of_double (ats_double_type d) { return (ats_llint_type)d ; }
+// end of [atspre_llint_of_double]
 
-//
+ATSinline()
+ats_ullint_type
+atspre_ullint_of_double (ats_double_type d) { return ((ats_ullint_type)d) ; }
+// end of [atspre_ullint_of_double]
+
+/* ****** ****** */
 
 ATSinline()
 ats_double_type
-atspre_double_of_int (const ats_int_type i) {
-  return (ats_double_type)i ;
-}
+atspre_double_of_int (ats_int_type i) { return (ats_double_type)i ; }
+// end of [atspre_double_of_int]
 
 ATSinline()
 ats_double_type
-atspre_double_of_uint (const ats_uint_type u) {
-  return (ats_double_type)u ;
-}
-
-//
+atspre_double_of_uint (ats_uint_type u) { return (ats_double_type)u ; }
+// end of [atspre_double_of_uint]
 
 ATSinline()
 ats_double_type
-atspre_double_of_lint (const ats_lint_type i) {
-  return (ats_double_type)i ;
-}
+atspre_double_of_lint (ats_lint_type i) { return (ats_double_type)i ; }
+// end of [atspre_double_of_lint]
 
 ATSinline()
 ats_double_type
-atspre_double_of_ulint (const ats_ulint_type u) {
-  return (ats_double_type)u ;
-}
-
-//
+atspre_double_of_ulint (ats_ulint_type u) { return (ats_double_type)u ; }
+// end of [atspre_double_of_ulint]
 
 ATSinline()
 ats_double_type
-atspre_double_of_llint (const ats_llint_type i) {
-  return (ats_double_type)i ;
-}
+atspre_double_of_llint (ats_llint_type i) { return (ats_double_type)i ; }
+// end of [atspre_double_of_llint]
 
 ATSinline()
 ats_double_type
-atspre_double_of_ullint (const ats_ullint_type u) {
-  return (ats_double_type)u ;
-}
-
-//
+atspre_double_of_ullint (ats_ullint_type u) { return (ats_double_type)u ; }
+// end of [atspre_double_of_ullint]
 
 ATSinline()
 ats_double_type
-atspre_double_of_size (const ats_size_type sz) {
-  return (ats_double_type)sz ;
-}
-
-//
+atspre_double_of_size (ats_size_type sz) { return (ats_double_type)sz ; }
+// end of [atspre_double_of_size]
 
 ATSinline()
 ats_double_type
-atspre_double_of_float (const ats_float_type f) {
-  return (ats_double_type)f ;
-}
-
-//
+atspre_double_of_float (ats_float_type f) { return (ats_double_type)f ; }
+// end of [atspre_double_of_float]
 
 ATSinline()
 ats_double_type
-atspre_double_of_string (const ats_ptr_type s) {
-  return (ats_double_type)(atof ((char *)s)) ;
-}
+atspre_double_of_string
+  (const ats_ptr_type s) { return (ats_double_type)(atof ((char*)s)) ; }
+// end of [atspre_double_of_string]
 
-//
-
-ATSinline()
-ats_double_type
-atspre_abs_double (const ats_double_type f) {
-  return (f >= 0.0 ? f : -f) ;
-}
+/* ****** ****** */
 
 ATSinline()
 ats_double_type
-atspre_neg_double (const ats_double_type f) {
-  return (-f) ;
-}
+atspre_abs_double
+  (ats_double_type f) { return (f >= 0.0 ? f : -f) ; }
+// end of [atspre_abs_double]
 
 ATSinline()
 ats_double_type
-atspre_succ_double (const ats_double_type f) {
-  return (f + 1.0) ;
-}
+atspre_neg_double (ats_double_type f) { return (-f) ; }
 
 ATSinline()
 ats_double_type
-atspre_pred_double (const ats_double_type f) {
-  return (f - 1.0) ;
-}
+atspre_succ_double (ats_double_type f) { return (f + 1.0) ; }
 
-//
+ATSinline()
+ats_double_type
+atspre_pred_double (ats_double_type f) { return (f - 1.0) ; }
+
+/* ****** ****** */
 
 ATSinline()
 ats_double_type
 atspre_add_double_double
-  (const ats_double_type f1, const ats_double_type f2) {
-  return (f1 + f2) ;
-}
+  (ats_double_type f1, ats_double_type f2) { return (f1 + f2) ; }
+// end of [atspre_add_double_double]
 
 ATSinline()
 ats_double_type
 atspre_add_double_int
-  (const ats_double_type f1, const ats_int_type i2) {
-  return (f1 + i2) ;
-}
+  (ats_double_type f1, ats_int_type i2) { return (f1 + i2) ; }
+// end of [atspre_add_double_int]
 
 ATSinline()
 ats_double_type
 atspre_add_int_double
-  (const ats_int_type i1, const ats_double_type f2) {
-  return (i1 + f2) ;
-}
-
-//
+  (ats_int_type i1, ats_double_type f2) { return (i1 + f2) ; }
+// end of [atspre_add_int_double]
 
 ATSinline()
 ats_double_type
 atspre_sub_double_double
-  (const ats_double_type f1, const ats_double_type f2) {
-  return (f1 - f2) ;
-}
+  (ats_double_type f1, ats_double_type f2) { return (f1 - f2) ; }
+// end of [atspre_sub_double_double]
 
 ATSinline()
 ats_double_type
 atspre_sub_double_int
-  (const ats_double_type f1, const ats_int_type i2) {
+  (ats_double_type f1, ats_int_type i2) {
   return (f1 - i2) ;
 }
 
 ATSinline()
 ats_double_type
 atspre_sub_int_double
-  (const ats_int_type i1, const ats_double_type f2) {
-  return (i1 - f2) ;
-}
-
-//
+  (ats_int_type i1, ats_double_type f2) { return (i1 - f2) ; }
+// end of [atspre_sub_int_double]
 
 ATSinline()
 ats_double_type
 atspre_mul_double_double
-  (const ats_double_type d1, const ats_double_type d2) {
-  return (d1 * d2) ;
-}
+  (ats_double_type d1, ats_double_type d2) { return (d1 * d2) ; }
+// end of [atspre_mul_double_double]
 
 ATSinline()
 ats_double_type
 atspre_mul_double_int
-  (const ats_double_type d1, const ats_int_type i2) {
-  return (d1 * (double)i2) ;
-}
+  (ats_double_type d1, ats_int_type i2) { return (d1 * (double)i2) ; }
+// end of [atspre_mul_double_int]
 
 ATSinline()
 ats_double_type
 atspre_mul_int_double
-  (const ats_int_type i1, const ats_double_type d2) {
-  return ((double)i1 * d2) ;
-}
-
-//
+  (ats_int_type i1, ats_double_type d2) { return ((double)i1 * d2) ; }
+// end of [atspre_mul_int_double]
 
 ATSinline()
 ats_double_type
 atspre_div_double_double
-  (const ats_double_type d1, const ats_double_type d2) {
-  return (d1 / d2) ;
-}
+  (ats_double_type d1, ats_double_type d2) { return (d1 / d2) ; }
+// end of [atspre_div_double_double]
 
 ATSinline()
 ats_double_type
 atspre_div_double_int
-  (const ats_double_type d1, const ats_int_type i2) {
-  return (d1 / (double)i2) ;
-}
+  (ats_double_type d1, ats_int_type i2) { return (d1 / (double)i2) ; }
+// end of [atspre_div_double_int]
 
 ATSinline()
 ats_double_type
 atspre_div_int_double
-  (const ats_int_type i1, const ats_double_type d2) {
-  return ((double)i1 / d2) ;
-}
-
-//
+  (ats_int_type i1, ats_double_type d2) { return ((double)i1 / d2) ; }
+// end of [atspre_div_int_double]
 
 ATSinline()
 ats_bool_type
 atspre_lt_double_double (
-  const ats_double_type d1, const ats_double_type d2
+  ats_double_type d1, ats_double_type d2
 ) {
   return (d1 < d2 ? ats_true_bool : ats_false_bool) ;
 } // end of [atspre_lt_double_double]
@@ -549,7 +485,7 @@ atspre_lt_double_double (
 ATSinline()
 ats_bool_type
 atspre_lte_double_double (
-  const ats_double_type d1, const ats_double_type d2
+  ats_double_type d1, ats_double_type d2
 ) {
   return (d1 <= d2 ? ats_true_bool : ats_false_bool) ;
 } // end of [atspre_lte_double_double]
@@ -557,28 +493,28 @@ atspre_lte_double_double (
 ATSinline()
 ats_bool_type
 atspre_gt_double_double
-  (const ats_double_type d1, const ats_double_type d2) {
+  (ats_double_type d1, ats_double_type d2) {
   return (d1 > d2 ? ats_true_bool : ats_false_bool) ;
 } // end of [atspre_gt_double_double]
 
 ATSinline()
 ats_bool_type
 atspre_gte_double_double
-  (const ats_double_type d1, const ats_double_type d2) {
+  (ats_double_type d1, ats_double_type d2) {
   return (d1 >= d2 ? ats_true_bool : ats_false_bool) ;
 } // end of [atspre_gte_double_double]
 
 ATSinline()
 ats_bool_type
 atspre_eq_double_double
-  (const ats_double_type d1, const ats_double_type d2) {
+  (ats_double_type d1, ats_double_type d2) {
   return (d1 == d2 ? ats_true_bool : ats_false_bool) ;
 } // end of [atspre_eq_double_double]
 
 ATSinline()
 ats_bool_type
 atspre_neq_double_double
-  (const ats_double_type d1, const ats_double_type d2) {
+  (ats_double_type d1, ats_double_type d2) {
   return (d1 != d2 ? ats_true_bool : ats_false_bool) ;
 } // end of [atspre_neq_double_double]
 
@@ -589,7 +525,7 @@ atspre_neq_double_double
 ATSinline()
 ats_int_type
 atspre_compare_double_double
-  (const ats_double_type d1, const ats_double_type d2) {
+  (ats_double_type d1, ats_double_type d2) {
   if (d1 < d2) return (-1) ;
   else if (d1 > d2) return ( 1) ;
   else return 0 ;
@@ -598,14 +534,14 @@ atspre_compare_double_double
 ATSinline()
 ats_double_type
 atspre_max_double_double
-  (const ats_double_type d1, const ats_double_type d2) {
+  (ats_double_type d1, ats_double_type d2) {
   return (d1 >= d2) ? d1 : d2 ;
 } // end of [atspre_max_double_double]
 
 ATSinline()
 ats_double_type
 atspre_min_double_double
-  (const ats_double_type d1, const ats_double_type d2) {
+  (ats_double_type d1, ats_double_type d2) {
   return (d1 <= d2) ? d1 : d2 ;
 } // end of [atspre_min_double_double]
 
@@ -613,7 +549,7 @@ atspre_min_double_double
 
 ATSinline()
 ats_double_type
-atspre_square_double (const ats_double_type d) {
+atspre_square_double (ats_double_type d) {
   return (d * d) ;
 } // end of [atspre_square_double]
 
@@ -622,7 +558,7 @@ atspre_square_double (const ats_double_type d) {
 ATSinline()
 ats_void_type
 atspre_fprint_double
-  (const ats_ptr_type out, const ats_double_type f) {
+  (ats_ptr_type out, ats_double_type f) {
   int n = fprintf ((FILE *)out, "%f", f) ;
   if (n < 0) {
     ats_exit_errmsg (n, (ats_ptr_type)"exit(ATS): [fprint_double] failed.\n") ;
@@ -633,7 +569,7 @@ atspre_fprint_double
 ATSinline()
 ats_void_type
 atspre_print_double
-  (const ats_double_type f) {
+  (ats_double_type f) {
   atspre_stdout_view_get () ;
   atspre_fprint_double ((ats_ptr_type)stdout, f) ;
   atspre_stdout_view_set () ;
@@ -643,7 +579,7 @@ atspre_print_double
 ATSinline()
 ats_void_type
 atspre_prerr_double
-  (const ats_double_type f) {
+  (ats_double_type f) {
   atspre_stderr_view_get () ;
   atspre_fprint_double ((ats_ptr_type)stderr, f) ;
   atspre_stderr_view_set () ;
@@ -655,7 +591,7 @@ atspre_prerr_double
 ATSinline()
 ats_ptr_type
 atspre_tostrptr_double
-  (const ats_double_type f) {
+  (ats_double_type f) {
   return atspre_tostringf ((ats_ptr_type)"%f", f) ;
 } // end of [atspre_tostrptr_double]
 
@@ -681,73 +617,66 @@ atspre_llint_of_ldouble (ats_ldouble_type ld) { return ld ; }
 
 ATSinline()
 ats_ldouble_type
-atspre_ldouble_of_int (const ats_int_type i) {
-  return ((ats_ldouble_type)i) ;
-}
+atspre_ldouble_of_int
+  (ats_int_type i) { return ((ats_ldouble_type)i) ; }
+// end of [atspre_ldouble_of_int]
 
 ATSinline()
 ats_ldouble_type
-atspre_ldouble_of_lint (const ats_lint_type li) {
-  return (ats_ldouble_type)li ;
-} // end of [atspre_ldouble_of_lint]
+atspre_ldouble_of_lint
+  (ats_lint_type li) { return (ats_ldouble_type)li ; }
+// end of [atspre_ldouble_of_lint]
 
 ATSinline()
 ats_ldouble_type
-atspre_ldouble_of_llint (const ats_llint_type lli) {
-  return (ats_ldouble_type)lli ;
-} // end of [atspre_ldouble_of_llint]
+atspre_ldouble_of_llint
+  (ats_llint_type lli) { return (ats_ldouble_type)lli ; }
+// end of [atspre_ldouble_of_llint]
 
 //
 
 ATSinline()
 ats_ldouble_type
-atspre_ldouble_of_float (const ats_float_type f) {
-  return ((ats_ldouble_type)f) ;
-} // end of [atspre_ldouble_of_float]
+atspre_ldouble_of_float
+  (ats_float_type f) { return ((ats_ldouble_type)f) ; }
+// end of [atspre_ldouble_of_float]
 
 ATSinline()
 ats_ldouble_type
-atspre_ldouble_of_double (const ats_double_type d) {
-  return ((ats_ldouble_type)d) ;
-} // end of [atspre_ldouble_of_double]
+atspre_ldouble_of_double
+  (ats_double_type d) { return ((ats_ldouble_type)d) ; }
+// end of [atspre_ldouble_of_double]
 
 //
 
 ATSinline()
 ats_ldouble_type
-atspre_abs_ldouble (const ats_ldouble_type f) {
-  return (f >= 0.0 ? f : -f) ;
-}
+atspre_abs_ldouble
+  (ats_ldouble_type f) { return (f >= 0.0 ? f : -f) ; }
 
 ATSinline()
 ats_ldouble_type
-atspre_neg_ldouble (const ats_ldouble_type f) {
-  return (-f) ;
-}
+atspre_neg_ldouble (ats_ldouble_type f) { return (-f) ; }
 
 ATSinline()
 ats_ldouble_type
-atspre_succ_ldouble (const ats_ldouble_type f) {
-  return (f + 1.0) ;
-}
+atspre_succ_ldouble (ats_ldouble_type f) { return (f + 1.0) ; }
 
 ATSinline()
 ats_ldouble_type
-atspre_pred_ldouble (const ats_ldouble_type f) {
-  return (f - 1.0) ;
-}
+atspre_pred_ldouble (ats_ldouble_type f) { return (f - 1.0) ; }
 
 ATSinline()
 ats_ldouble_type
 atspre_add_ldouble_ldouble
-  (const ats_ldouble_type f1, const ats_ldouble_type f2) {
+  (ats_ldouble_type f1, ats_ldouble_type f2) {
   return (f1 + f2) ;
 } // end of [atspre_add_ldouble_ldouble]
 
 ATSinline()
 ats_ldouble_type
 atspre_sub_ldouble_ldouble
-  (const ats_ldouble_type f1, const ats_ldouble_type f2) {
+  (ats_ldouble_type f1, ats_ldouble_type f2) {
   return (f1 - f2) ;
 } // end of [atspre_sub_ldouble_ldouble]
 
@@ -756,21 +685,21 @@ atspre_sub_ldouble_ldouble
 ATSinline()
 ats_ldouble_type
 atspre_mul_ldouble_ldouble
-  (const ats_ldouble_type ld1, const ats_ldouble_type ld2) {
+  (ats_ldouble_type ld1, ats_ldouble_type ld2) {
   return (ld1 * ld2) ;
 } // end of [atspre_mul_ldouble_ldouble]
 
 ATSinline()
 ats_ldouble_type
 atspre_mul_int_ldouble
-  (const ats_int_type i1, const ats_ldouble_type ld2) {
+  (ats_int_type i1, ats_ldouble_type ld2) {
   return ((long double)i1 * ld2) ;
 } // end of [atspre_mul_int_ldouble]
 
 ATSinline()
 ats_ldouble_type
 atspre_mul_ldouble_int
-  (const ats_ldouble_type ld1, const ats_int_type i2) {
+  (ats_ldouble_type ld1, ats_int_type i2) {
   return (ld1 * (long double)i2) ;
 } // end of [atspre_mul_ldouble_int]
 
@@ -780,7 +709,7 @@ atspre_mul_ldouble_int
 ATSinline()
 ats_ldouble_type
 atspre_div_ldouble_ldouble (
-  const ats_ldouble_type ld1, const ats_ldouble_type ld2
+  ats_ldouble_type ld1, ats_ldouble_type ld2
 ) {
   return (ld1 / ld2) ;
 } // end of [atspre_div_ldouble_ldouble]
@@ -788,7 +717,7 @@ atspre_div_ldouble_ldouble (
 ATSinline()
 ats_ldouble_type
 atspre_div_ldouble_int
-  (const ats_ldouble_type ld1, const ats_int_type i2) {
+  (ats_ldouble_type ld1, ats_int_type i2) {
   return (ld1 / (long double)i2) ;
 } // end of [atspre_div_ldouble_int]
 
@@ -797,35 +726,35 @@ atspre_div_ldouble_int
 ATSinline()
 ats_bool_type
 atspre_lt_ldouble_ldouble
-  (const ats_ldouble_type ld1, const ats_ldouble_type ld2) {
+  (ats_ldouble_type ld1, ats_ldouble_type ld2) {
   return (ld1 == ld2 ? ats_true_bool : ats_false_bool) ;
 } // end of [atspre_lt_ldouble_ldouble]
 
 ATSinline()
 ats_bool_type
 atspre_lte_ldouble_ldouble
-  (const ats_ldouble_type ld1, const ats_ldouble_type ld2) {
+  (ats_ldouble_type ld1, ats_ldouble_type ld2) {
   return (ld1 <= ld2 ? ats_true_bool : ats_false_bool) ;
 } // end of [atspre_lte_ldouble_ldouble]
 
 ATSinline()
 ats_bool_type
 atspre_gt_ldouble_ldouble
-  (const ats_ldouble_type ld1, const ats_ldouble_type ld2) {
+  (ats_ldouble_type ld1, ats_ldouble_type ld2) {
   return (ld1 > ld2 ? ats_true_bool : ats_false_bool) ;
 } // end of [atspre_gt_ldouble_ldouble]
 
 ATSinline()
 ats_bool_type
 atspre_gte_ldouble_ldouble
-  (const ats_ldouble_type ld1, const ats_ldouble_type ld2) {
+  (ats_ldouble_type ld1, ats_ldouble_type ld2) {
   return (ld1 >= ld2 ? ats_true_bool : ats_false_bool) ;
 } // end of [atspre_gte_ldouble_ldouble]
 
 ATSinline()
 ats_bool_type
 atspre_eq_ldouble_ldouble (
-  const ats_ldouble_type ld1, const ats_ldouble_type ld2
+  ats_ldouble_type ld1, ats_ldouble_type ld2
 ) {
   return (ld1 == ld2 ? ats_true_bool : ats_false_bool) ;
 } // end of [atspre_eq_ldouble_ldouble]
@@ -833,7 +762,7 @@ atspre_eq_ldouble_ldouble (
 ATSinline()
 ats_bool_type
 atspre_neq_ldouble_ldouble (
-  const ats_ldouble_type ld1, const ats_ldouble_type ld2
+  ats_ldouble_type ld1, ats_ldouble_type ld2
 ) {
   return (ld1 != ld2 ? ats_true_bool : ats_false_bool) ;
 } // end of [atspre_neq_ldouble_ldouble]
@@ -843,7 +772,7 @@ atspre_neq_ldouble_ldouble (
 ATSinline()
 ats_int_type
 atspre_compare_ldouble_ldouble
-  (const ats_ldouble_type ld1, const ats_ldouble_type ld2) {
+  (ats_ldouble_type ld1, ats_ldouble_type ld2) {
   if (ld1 < ld2) return (-1) ;
   else if (ld1 > ld2) return ( 1) ;
   else return 0 ;
@@ -852,14 +781,14 @@ atspre_compare_ldouble_ldouble
 ATSinline()
 ats_ldouble_type
 atspre_max_ldouble_ldouble
-  (const ats_ldouble_type ld1, const ats_ldouble_type ld2) {
+  (ats_ldouble_type ld1, ats_ldouble_type ld2) {
   return (ld1 >= ld2) ? ld1 : ld2 ;
 } // end of [atspre_max_ldouble_ldouble]
 
 ATSinline()
 ats_ldouble_type
 atspre_min_ldouble_ldouble
-  (const ats_ldouble_type ld1, const ats_ldouble_type ld2) {
+  (ats_ldouble_type ld1, ats_ldouble_type ld2) {
   return (ld1 <= ld2) ? ld1 : ld2 ;
 } // end of [atspre_min_ldouble_ldouble]
 
@@ -867,7 +796,7 @@ atspre_min_ldouble_ldouble
 
 ATSinline()
 ats_ldouble_type
-atspre_square_ldouble (const ats_ldouble_type ld) {
+atspre_square_ldouble (ats_ldouble_type ld) {
   return (ld * ld) ;
 }
 
@@ -876,7 +805,7 @@ atspre_square_ldouble (const ats_ldouble_type ld) {
 ATSinline()
 ats_void_type
 atspre_fprint_ldouble (
-  const ats_ptr_type out, const ats_ldouble_type f
+  ats_ptr_type out, ats_ldouble_type f
 ) {
   int n = fprintf ((FILE *)out, "%Lf", f) ;
   if (n < 0) { ats_exit_errmsg
@@ -888,7 +817,7 @@ atspre_fprint_ldouble (
 ATSinline()
 ats_void_type
 atspre_print_ldouble
-  (const ats_ldouble_type f) {
+  (ats_ldouble_type f) {
   atspre_stdout_view_get () ;
   atspre_fprint_ldouble ((ats_ptr_type)stdout, f) ;
   atspre_stdout_view_set () ;
@@ -898,7 +827,7 @@ atspre_print_ldouble
 ATSinline()
 ats_void_type
 atspre_prerr_ldouble
-  (const ats_ldouble_type f) {
+  (ats_ldouble_type f) {
   atspre_stderr_view_get () ;
   atspre_fprint_ldouble ((ats_ptr_type)stderr, f) ;
   atspre_stderr_view_set () ;
@@ -910,7 +839,7 @@ atspre_prerr_ldouble
 ATSinline()
 ats_ptr_type
 atspre_tostrptr_ldouble
-  (const ats_ldouble_type f) {
+  (ats_ldouble_type f) {
   return atspre_tostringf ((ats_ptr_type)"%Lf", f) ;
 } // end of [atspre_tostrptr_ldouble]
 

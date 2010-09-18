@@ -949,6 +949,10 @@ fun llint_of_int (i: int):<> llint
   = "atspre_llint_of_int"
 overload llint_of with llint_of_int
 
+fun llint_of_double (d: double):<> llint
+  = "atspre_llint_of_double"
+overload llint_of with llint_of_double
+
 // This function is based on [atoll] in [stdlib.h]
 fun llint_of_string (s: string):<> llint
   = "atspre_llint_of_string"
@@ -1073,7 +1077,8 @@ overload tostring with tostring_llint
 
 (* ****** ****** *)
 
-typedef ullint = uint_long_long_t0ype
+stadef ullint = ullint_int_t0ype // indexed
+typedef ullint = uint_long_long_t0ype // unindexed
 
 //
 
@@ -1089,6 +1094,10 @@ overload ullint_of with ullint_of_int
 fun ullint_of_uint
   (u: uint):<> ullint = "atspre_ullint_of_uint"
 overload ullint_of with ullint_of_uint
+
+fun ullint_of_double (d: double):<> ullint
+  = "atspre_ullint_of_double"
+overload ullint_of with ullint_of_double
 
 (* ****** ****** *)
 
