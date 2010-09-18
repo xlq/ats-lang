@@ -41,7 +41,7 @@ implement main () = () where {
   val () = mpz_pow_ui (p15, 15UL)
   val sum15 = digitsum (p15)
   val () = mpz_clear (p15)
-  val () = (print "sum15 = "; print sum15; print_newline ())
+  val () = assert_errmsg (sum15 = 26, #LOCATION)
 //
   var p1000: mpz_vt; val () = mpz_init_set (p1000, 2)
   val () = mpz_pow_ui (p1000, 1000UL)
