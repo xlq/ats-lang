@@ -11,12 +11,12 @@ ATSCC=$(or $(ATSHOMEQ), "/usr")/bin/atscc
 
 checkall: compall cleanall
 compall:: \
-  problem48-hwxi \
+  problem49-hwxi \
 
 ######
 
-problem48-hwxi: problem48-hwxi.dats
-	$(ATSCC) -O2 -o $@ problem48-hwxi.dats -lats -lgmp && ./problem48-hwxi
+problem49-hwxi: problem49-hwxi.dats
+	$(ATSCC) -O2 -o $@ problem49-hwxi.dats && ./problem49-hwxi
 
 ######
 
@@ -24,6 +24,6 @@ clean::
 	rm -f *~ *_?ats.c *_?ats.o
 
 cleanall: clean
-	rm -f problem48-hwxi
+	rm -f problem49-hwxi
 
 ###### end of [Makefile] ######

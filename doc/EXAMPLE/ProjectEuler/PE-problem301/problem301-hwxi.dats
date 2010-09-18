@@ -12,6 +12,8 @@
 
 (* ****** ****** *)
 //
+// HX:
+//
 // Given p, q, r, let
 // p = a1 ... an (binary rep.)
 // q = b1 ... bn (binary rep.)
@@ -19,6 +21,8 @@
 // it is easy to prove that
 // X (p, q, r) = 0 if and only if
 // ai+bi+ci = 0 or 2 for any 1 <= i <= n
+//
+// This strategy easily generalizes to n heaps for each n >= 2
 //
 (* ****** ****** *)
 

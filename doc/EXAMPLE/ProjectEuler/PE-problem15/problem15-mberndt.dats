@@ -7,9 +7,10 @@
 (* ****** ****** *)
 
 dataprop PATHS(int, int, int) =
-  | {y: nat} PATHSbas1(0, y, 1)
-  | {x: nat} PATHSbas2(x, 0, 1)
-  | {x, y, z1, z2: nat} PATHSind(x+1, y+1, z1+z2) of (PATHS(x, y+1, z1), PATHS(x+1, y, z2))
+  | {y:nat} PATHSbas1(0, y, 1)
+  | {x:nat} PATHSbas2(x, 0, 1)
+  | {x,y,z1,z2:nat}
+    PATHSind(x+1, y+1, z1+z2) of (PATHS(x, y+1, z1), PATHS(x+1, y, z2))
 // end of [PATHS]
 
 datasort ilst = 
@@ -17,22 +18,25 @@ datasort ilst =
 // end of [ilst]
 
 dataprop LENGTH (ilst, int) =
-  | {x:int} {xs:ilst} {n:nat} LENGTHcons (ilst_cons (x, xs), n+1) of LENGTH (xs, n)
   | LENGTHnil (ilst_nil, 0)
+  | {x:int} {xs:ilst} {n:nat}
+    LENGTHcons (ilst_cons (x, xs), n+1) of LENGTH (xs, n)
 // end of [LENGTH]
 
 (*
-If PATHS_LIST(zs, y) holds, then zs constains numbers z_n, ..., z_2, z_1
-such that PATHS(n, y, z_n), ..., PATHS(2, y, z_2), PATHS(1, y, z_1) hold
+// MB:
+// If PATHS_LIST(zs, y) holds, then zs constains numbers z_n, ..., z_2, z_1
+// such that PATHS(n, y, z_n), ..., PATHS(2, y, z_2), PATHS(1, y, z_1) hold
 *)
 dataprop PATHS_LIST(ilst, int (*y*)) = 
-  | {y: nat} PATHS_LISTbas(ilst_nil, y)
-  | {x, y, z: nat} {zs: ilst} PATHS_LISTind(ilst_cons(z, zs), y) of (LENGTH(zs, x), PATHS(x, y, z), PATHS_LIST(zs, y))
-// endof [PATHS_LIST]
+  | {y:nat} PATHS_LISTbas(ilst_nil, y)
+  | {x,y,z:nat} {zs:ilst}
+    PATHS_LISTind(ilst_cons(z, zs), y) of (LENGTH(zs, x), PATHS(x, y, z), PATHS_LIST(zs, y))
+// end of [PATHS_LIST]
 
 dataprop SUM (ilst, int) =
   | SUMbas (ilst_nil, 0)
-  | {x: int} {xs: ilst} {sum:int} SUMind(ilst_cons(x,xs), x+sum) of SUM(xs, sum)
+  | {x:int} {xs:ilst} {sum:int} SUMind(ilst_cons(x,xs), x+sum) of SUM(xs, sum)
 // end of [SUM]
 
 (* 
@@ -52,7 +56,9 @@ dataprop PSUMS(ilst (*xs*), ilst (*sums*)) =
     PSUMSind(ilst_cons(x, xs), ilst_cons(x+sum, sums)) of (PSUMS(xs, sums), SUM (xs, sum))
 // end of [PSUMS]
 
-(* If PSUMS(xs, sums) holds, then xs and sums have the same length *)
+(*
+// MB: If PSUMS(xs, sums) holds, then xs and sums have the same length
+*)
 prfun PSUMS_same_length {xs,sums:ilst} {n:nat} .<xs>.
   (pf1: PSUMS (xs, sums), pf2: LENGTH (xs, n)): LENGTH (sums, n) =
   scase xs of
@@ -66,7 +72,7 @@ prfun PSUMS_same_length {xs,sums:ilst} {n:nat} .<xs>.
     end // end of [ilst_nil]
 // end of [PSUMS_same_length]
 
-(* every list has a length *)
+(* LENGTH is a total relation *)
 prfun LENGTHistot
   {xs:ilst} .<xs>. (): [n:nat] LENGTH (xs, n) =
   scase xs of
@@ -93,7 +99,7 @@ prfun LENGTHisfun {xs:ilst} {n1,n2:int} .<xs>.
 (* ****** ****** *)
 
 //
-// HX: A representation good for 64-bit unsigned integers
+// HX: A representation good enough for 64-bit unsigned integers
 //
 abst@ype ullint1 (i: int) = ullint
 //
@@ -121,7 +127,9 @@ datatype ilist (ilst) =
 
 (* ****** ****** *)
 
-(* calculate the list of partial sums for any given list. *)
+(*
+// MB: calculate the list of partial sums for any given list.
+*)
 fun psums {xs:ilst} .<xs>.
   (xs: ilist (xs)):<> [sums: ilst] (PSUMS(xs, sums) | ilist sums) =
   case+ xs of 
@@ -140,14 +148,15 @@ fun psums {xs:ilst} .<xs>.
     end
 // end of [psums]
 
+(* ****** ****** *)
+
 extern
 prfun PATHS_LIST_PSUMS_lemma1 {xs1,xs2:ilst}
-  {k: nat} (pf1: PATHS_LIST(xs1, k), pf2: PSUMS(xs1, xs2)): PATHS_LIST(xs2, k+1)
-// end of [PATHS_LIST}
+  {k:nat} (pf1: PATHS_LIST(xs1, k), pf2: PSUMS(xs1, xs2)): PATHS_LIST(xs2, k+1)`
 
 fun paths_list {len,y:nat} .<len+y>.
   (len: int len, y: int y)
-  :<> [zs: ilst] ((PATHS_LIST(zs, y), LENGTH(zs, len)) | ilist zs) = 
+  :<> [zs:ilst] ((PATHS_LIST(zs, y), LENGTH(zs, len)) | ilist zs) = 
   case+ y of
   | 0 => (case+ len of
      | 0 => ((PATHS_LISTbas(), LENGTHnil()) | nil())
@@ -161,8 +170,9 @@ fun paths_list {len,y:nat} .<len+y>.
       val+ ((pf_paths_list, pf_len_xs) | xs) = paths_list(len, y-1)
       val+ (pf_psums | sums) = psums (xs)
       prval pf_len_sums = PSUMS_same_length(pf_psums, pf_len_xs)
+      prval pfres = (PATHS_LIST_PSUMS_lemma1(pf_paths_list, pf_psums), PSUMS_same_length(pf_psums, pf_len_xs))
     in
-      ((PATHS_LIST_PSUMS_lemma1(pf_paths_list, pf_psums), PSUMS_same_length(pf_psums, pf_len_xs)) | sums)
+      (pfres | sums)
     end // end of [y > 0]
 // end of [paths_list]
 
@@ -193,4 +203,4 @@ end // end of [main]
 
 (* ****** ****** *)
 
-(* end of [problem15-mberndt] *)
+(* end of [problem15-mberndt.dats] *)

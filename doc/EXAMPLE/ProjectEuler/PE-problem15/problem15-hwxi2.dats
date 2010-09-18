@@ -33,22 +33,21 @@ dataprop PATHS(int, int, int) =
 //
 // HX: A representation good for 64-bit unsigned integers
 //
-abst@ype ullint1 (i: int) = ullint
-//
 symintr ullint1
-extern castfn ullint1_int {i:nat} (x: int i):<> ullint1 i
+extern castfn ullint1_int {i:nat} (x: int i):<> ullint (i)
 overload ullint1 with ullint1_int
 //
 extern fun print_ullint1
-  {i:nat} (x: ullint1 i): void = "atspre_print_ullint"
+  {i:nat} (x: ullint i): void = "atspre_print_ullint"
+overload print with print_ullint1
 extern fun add_ullint1_ullint1
-  {z1,z2:nat} (z1: ullint1 z1, z2: ullint1 z2):<> ullint1 (z1+z2)
+  {z1,z2:nat} (z1: ullint z1, z2: ullint z2):<> ullint (z1+z2)
   = "atspre_add_ullint_ullint"
 overload + with add_ullint1_ullint1
 
 (* ****** ****** *)
 
-typedef T (x: int, y: int) = [z:nat] (PATHS (x, y, z) | ullint1 z)
+typedef T (x: int, y: int) = [z:nat] (PATHS (x, y, z) | ullint z)
 
 (* ****** ****** *)
 
@@ -148,22 +147,21 @@ implement theMemoTable_set0 (x, y, res) =
 
 (* ****** ****** *)
 
-extern castfn ullint_of_ullint1 {i:nat} (x: ullint1 i):<> ullint
-
 implement
 main () = () where {
 (*
   #define N 10
   val (_pf | z) = f1 (N, N)
   val () = assert_errmsg (z = 184756, #LOCATION)
-  val () = printf ("f (%i, %i) = ", @(N, N))
-  val () = (print_ullint1 z; print_newline ())
+  val () = (printf ("f (%i, %i) = ", @(N, N)); print z; print_newline ())
 *)
   #define N 20
   val (_pf | z) = f2 (N, N, mfun)
-  val () = assert_errmsg (ullint_of_ullint1(z) = 137846528820ULL, #LOCATION)
-  val () = printf ("f (%i, %i) = ", @(N, N))
-  val () = (print_ullint1 z; print_newline ())
+//
+extern castfn of_ullint1 {i:nat} (x: ullint i):<> ullint
+//
+  val () = assert_errmsg (of_ullint1(z) = 137846528820ULL, #LOCATION)
+  val () = (printf ("f (%i, %i) = ", @(N, N)); print z; print_newline ())
 } // end of [main]
 
 (* ****** ****** *)

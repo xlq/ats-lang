@@ -1,5 +1,5 @@
 //
-// ProjectEuler: Problem 2
+// ProjectEuler: Problem 157
 // Finding the solutions to the Diophantine equation 1/a+1/b = p/10^n,
 // where n ranges from 1 to 9
 //

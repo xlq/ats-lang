@@ -16,14 +16,6 @@ staload "libc/SATS/gmp.sats"
 
 (* ****** ****** *)
 
-%{^
-ATSinline()
-ats_ullint_type
-atspre_ullint_of_double (ats_double_type x) { return (ats_ullint_type)x ; }
-
-%}
-extern fun ullint_of_double (x: double): ullint = "atspre_ullint_of_double"
-
 implement
 main () = () where {
   macdef N = 10000000000ULL

@@ -4,11 +4,15 @@ http://projecteuler.net
 
 ######
 
-Problem1: Solution is fully verified
+Problem1:
+Solution is fully verified:
+problem1-hwxi.dats
 
 ######
 
-Problem2: Solution is fully verified (problem2-hwxi2)
+Problem2:
+Solution is fully verified:
+problem2-hwxi2.dats
 
 ######
 
@@ -18,9 +22,10 @@ Problem5:
 
 ######
 
-Problem6: Solution is fully verified. In particular, the following
-equations are verified:
-
+Problem6:
+Solution is fully verified:
+problem6-hwxi.dats:
+In particular, the following equations are proved:
 1+...+n = n(n+1)/2
 1^2+...+n^2 = n(n+1)(2n+1)/6
 
@@ -37,7 +42,10 @@ Problem14:
 
 ######
 
-Problem15: Solution is fully verified (problem15-hwxi2)
+Problem15:
+Solution is fully verified:
+problem15-hwxi2.dats
+problem15-mberndt.dats
 
 ######
 
@@ -63,6 +71,7 @@ Problem34:
 Problem35:
 Problem36:
 Problem37:
+Problem38:
 Problem39:
 Problem40:
 Problem41:
@@ -71,6 +80,7 @@ Problem44:
 Problem45:
 Problem46:
 Problem48:
+Problem49:
 Problem50:
 Problem56:
 Problem57:
