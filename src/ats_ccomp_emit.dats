@@ -30,17 +30,15 @@
 *)
 
 (* ****** ****** *)
-
+//
 // Author: Hongwei Xi (hwxi AT cs DOT bu DOT edu)
 // Time: March 2008
-
+//
 (* ****** ****** *)
 
 %{^
-
 #include "ats_counter.cats" /* only needed for [ATS/Geizella] */
-
-%}
+%} // end of [%{^]
 
 (* ****** ****** *)
 
@@ -545,8 +543,8 @@ end // end of [emit_valprim_clo_make]
 %{^
 ats_void_type
 atsccomp_emit_valprim_float
-  (ats_ptr_type out, ats_ptr_type f) {
-  char *s = f ;
+  (ats_ptr_type out, ats_ptr_type str) {
+  char *s = str ;
   if (*s == '~') { fputc ('-', (FILE*)out) ; s += 1 ; }
   fputs (s, (FILE*)out) ;
   return ;
@@ -564,6 +562,23 @@ fn emit_valprim_int {m:file_mode}
   : void = begin
   $IntInf.fprint_intinf (pf | out, int)
 end // end of [emit_valprim_int]
+
+(* ****** ****** *)
+
+%{^
+ats_void_type
+atsccomp_emit_valprim_intsp
+  (ats_ptr_type out, ats_ptr_type str) {
+  char *s = str ;
+  if (*s == '~') { fputc ('-', (FILE*)out) ; s += 1 ; }
+  fputs (s, (FILE*)out) ;
+  return ;
+} /* atsccomp_emit_valprim_intsp */
+%} // end of [%{^]
+extern fun emit_valprim_intsp {m:file_mode}
+  (pf: file_mode_lte (m, w) | out: &FILE m, f: string): void
+  = "atsccomp_emit_valprim_intsp"
+// end of [emit_valprim_intsp]
 
 (* ****** ****** *)
 
@@ -937,14 +952,14 @@ emit_valprim (pf | out, vp0) = begin
         end // end of [_]
     end // end of [VPenv]
   | VPext code => fprint1_string (pf | out, code)
-  | VPfloat f => emit_valprim_float (pf | out, f)
-  | VPfloatsp f => emit_valprim_float (pf | out, f)
+  | VPfloat str => emit_valprim_float (pf | out, str)
+  | VPfloatsp str => emit_valprim_float (pf | out, str)
   | VPfun fl => begin
       fprint1_string (pf | out, "&"); emit_funlab (pf | out, fl)
     end // end of [VPfun]
   | VPint (int) =>
       $IntInf.fprint_intinf (pf | out, int)
-  | VPintsp (str, _(*int*)) => fprint1_string (pf | out, str)
+  | VPintsp (str, _(*int*)) => emit_valprim_intsp (pf | out, str)
   | VPptrof vp => emit_valprim_ptrof (pf | out, vp)
   | VPptrof_ptr_offs (vp, offs) => begin
       fprint1_char (pf | out, '&');

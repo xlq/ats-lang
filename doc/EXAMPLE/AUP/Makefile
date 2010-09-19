@@ -29,6 +29,7 @@ checkall: compall cleanall
 
 compall: \
   testlock \
+  backward \
   backward2 \
   getcwdx \
 
@@ -36,6 +37,10 @@ compall: \
 
 testlock: AUP_2_4_3.dats
 	$(ATSCC) -o testlock AUP_2_4_3.dats
+
+backward: AUP_2_13_0.dats
+	$(ATSCC) -o backward AUP_2_13_0.dats \
+     && ./backward "AUP_2_13_0.dats"
 
 backward2: AUP_2_14_0.dats
 	$(ATSCC) -o backward2 AUP_2_14_0.dats \
@@ -53,6 +58,7 @@ clean::
 
 cleanall: clean
 	rm -f testlock
+	rm -f backward
 	rm -f backward2
 	rm -f getcwdx
 

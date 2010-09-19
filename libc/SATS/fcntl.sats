@@ -53,6 +53,7 @@ datasort open_flag =
   | open_flag_rd (* read *)
   | open_flag_wr (* write *)
   | open_flag_rdwr (* read and write *)
+// end of [open_flag]
 
 stadef rd = open_flag_rd
 stadef wr = open_flag_wr
@@ -112,6 +113,7 @@ absview fildes_v (int, open_flag) // file descriptor view
 dataview open_v (int, open_flag) =
   | {i:nat} {f:open_flag} open_v_succ (i, f) of fildes_v (i, f)
   | {f:open_flag} open_v_fail (~1, f) of ()
+// end of [open_v]
 
 fun open_flag_err {f:open_flag}
   (path: string, flag: flag_t f): [i: int] (open_v (i, f) | int i)
@@ -131,6 +133,7 @@ fun open_flag_mode_exn {f:open_flag}
 dataview close_v (fd: int, flag: open_flag, int) =
   | close_v_succ (fd, flag,  0) of ()
   | close_v_fail (fd, flag, ~1) of fildes_v (fd, flag)
+// end of [close_v]
 
 fun close_err {fd:int} {flag: open_flag}
   (pf: fildes_v (fd, flag) | fd: int fd)
@@ -164,7 +167,7 @@ fun fildes_read_err
 fun fildes_read_exn
   {fd:int} {flag:open_flag} {n,sz:nat | n <= sz} (
     pf1: open_flag_lte (flag, rd), pf2: !fildes_v (fd, flag)
-  | fd: int fd, buf: &bytes sz, ntotal: int n
+  | fd: int fd, buf: &bytes sz, ntotal: size_t n
   ) : sizeLte n
   = "atslib_fildes_read_exn"
 

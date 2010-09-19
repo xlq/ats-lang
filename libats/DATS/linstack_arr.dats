@@ -62,20 +62,21 @@ absview STACKarr_v
 
 extern prfun
 STACKarr_v_encode
-  {a:viewt@ype} {m:nat} {l_beg:addr} (pfarr: array_v (a?, m, l_beg))
-  :<prf> STACKarr_v (a, m, 0, l_beg, l_beg:addr)
+  {a:viewt@ype} {m:int} {l_beg:addr} (pfarr: array_v (a?, m, l_beg))
+  :<prf> STACKarr_v (a, m, 0, l_beg, l_beg)
 // end of [STACKarr_v_encode]
 
 extern prfun
 STACKarr_v_decode
-  {a:viewt@ype} {m:nat} {l_beg,l_cur:addr}
+  {a:viewt@ype} {m:int} {l_beg,l_cur:addr}
   (pf: STACKarr_v (a, m, 0, l_beg, l_cur)):<prf> array_v (a?, m, l_beg)
 // end of [STACKarr_v_decode]
 
 extern prfun
 STACKarr_v_clear {a:t@ype}
-  {m,n:nat} {l_beg,l_cur:addr}
-  (pfarr: STACKarr_v (a, m, n, l_beg, l_cur)):<prf> STACKarr_v (a, m, 0, l_beg, l_beg)
+  {m:int} {n1,n2:nat | n1 >= n2} {l_beg,l_cur:addr} {ofs:int} (
+  pfmul: MUL (n2, sizeof a, ofs), pfarr: STACKarr_v (a, m, n1, l_beg, l_cur)
+) :<prf> STACKarr_v (a, m, n2, l_beg, l_beg+ofs)
 // end of [STACKarr_v_clear]
 
 (* ****** ****** *)
@@ -121,8 +122,8 @@ assume STACK (a:viewt@ype, m:int, n:int) =
 
 (* ****** ****** *)
 
-implement stack_cap (s) = s.cap
-implement stack_size (s) = s.nitm
+implement stack_get_cap (s) = s.cap
+implement stack_get_size (s) = s.nitm
 
 implement stack_is_empty (s) = (s.nitm = 0)
 implement stack_isnot_empty (s) = (s.nitm > 0)
@@ -178,10 +179,22 @@ stack_remove (s) = x where {
 
 (* ****** ****** *)
 
+implement{a}
+stack_clear {m} {n1,n2} (s, n2) = () where {
+  val (pfmul | ofs) = mul2_size1_size1 (n2, sizeof<a>)
+  prval pfsarr = STACKarr_v_clear {a} {m} {n1,n2} (pfmul, s.pfsarr)
+  val () = s.nitm := n2
+  val () = s.sarr_cur := s.sarr_beg + ofs
+  prval () = s.pfsarr := pfsarr
+} // end of [stack_clear]
+
+(* ****** ****** *)
+
 implement
 stack_uninitialize
   {a} {m,n} (s) = () where {
-  prval pfsarr = STACKarr_v_clear (s.pfsarr)
+  prval pfmul = mul_make {0,sizeof(a)} ()
+  prval pfsarr = STACKarr_v_clear {a} {m} {n,0} (pfmul, s.pfsarr)
   prval pfarr = STACKarr_v_decode (pfsarr)
   val () = array_ptr_free (s.pfsarr_gc, pfarr | s.sarr_beg)
   prval () = __assert (s) where {

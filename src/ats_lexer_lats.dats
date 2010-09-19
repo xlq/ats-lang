@@ -711,7 +711,7 @@ end // end of [process_literal_floatsp]
 %{$
 
 ats_bool_type
-ats_lexer_literal_int_check
+ats_lexer_literal_int_check // HX: checking octal numbers
   (ats_ptr_type s0, ats_ptr_type err) {
   char c, *s = s0 ;
 //
@@ -720,7 +720,7 @@ ats_lexer_literal_int_check
   ++s ; c = *s ;
   while (1) {
     if (isdigit (c)) {
-      if (c >= '8') { *((char *)err) = c; return ats_false_bool ; }
+      if (c >= '8') { *((char*)err) = c; return ats_false_bool ; }
     } else {
       return ats_true_bool ;
     } // end of [if]
@@ -730,10 +730,12 @@ ats_lexer_literal_int_check
   return ats_true_bool ;
 } /* end of [ats_lexer_literal_int_check] */
 
-%}
+%} // end of [...]
 
-extern fun process_literal_int_check (_: string, err: &char): bool
-  = "ats_lexer_literal_int_check"
+extern
+fun process_literal_int_check // HX: checking octal numbers
+  (_: string, err: &char): bool = "ats_lexer_literal_int_check"
+// end of [process_literal_int_check]
 
 fn process_literal_int (): void = let
   val str = lexeme_string ()
@@ -754,8 +756,10 @@ in
   yylval_int_set ($Syn.i0nt_make (loc, str))
 end // end of [process_literal_int]
 
-extern fun process_literal_intsp_check (_: string, err: &char): bool
-  = "ats_lexer_literal_int_check"
+extern
+fun process_literal_intsp_check // HX: checking octal numbers
+  (_: string, err: &char): bool = "ats_lexer_literal_int_check"
+// end of [process_literal_intsp_check]
 
 fn process_literal_intsp (): void = let
   val str = lexeme_string (); val loc = location_get ()

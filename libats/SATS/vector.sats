@@ -98,8 +98,8 @@ prfun VECTOR_decode {a:viewt@ype} {m,n:int} {l:addr}
 
 (* ****** ****** *)
 
+fun vector_get_cap {a:viewt@ype} {m,n:int} (V: &VECTOR (a, m, n)):<> size_t m
 fun vector_get_size {a:viewt@ype} {m,n:int} (V: &VECTOR (a, m, n)):<> size_t n
-fun vector_get_capacity {a:viewt@ype} {m,n:int} (V: &VECTOR (a, m, n)):<> size_t m
 
 (* ****** ****** *)
 

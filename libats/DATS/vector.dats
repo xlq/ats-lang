@@ -57,18 +57,18 @@ staload "libats/SATS/vector.sats"
 (* ****** ****** *)
 
 implement
+vector_get_cap
+  {a} (V) = m where {
+  prval pf = VECTOR_decode {a} (V)
+  val m = V.m
+  prval () = VECTOR_encode {a} (pf | V)
+} // end of[ vector_get_cap]
+
+implement
 vector_get_size
   {a} (V) = n where {
   prval pf = VECTOR_decode {a} (V)
   val n = V.n
-  prval () = VECTOR_encode {a} (pf | V)
-} // end of[ vector_get_size]
-
-implement
-vector_get_capacity
-  {a} (V) = m where {
-  prval pf = VECTOR_decode {a} (V)
-  val m = V.m
   prval () = VECTOR_encode {a} (pf | V)
 } // end of[ vector_get_size]
 

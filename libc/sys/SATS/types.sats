@@ -97,7 +97,6 @@ macdef SEEK_END = $extval (whence_t, "SEEK_END")
 (* ****** ****** *)
 
 abst@ype off_t = $extype "ats_off_type" // file size in bytes
-
 fun off_of_lint (li: lint):<> off_t = "atslib_off_of_lint"
 fun lint_of_off (off: off_t):<> lint = "atslib_lint_of_off"
 

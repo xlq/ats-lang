@@ -21,10 +21,8 @@ staload "libc/SATS/unistd.sats"
 #define LOCKDIR "/tmp/"
 
 %{^
-
 #define LOCKDIR "/tmp/"
-
-%}
+%} // end of [%{^]
 
 (* ****** ****** *)
 

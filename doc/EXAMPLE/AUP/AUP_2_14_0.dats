@@ -4,9 +4,11 @@
 //
 
 (* ****** ****** *)
-
+//
 // book: AUP (2nd edition), pages 108 - 110
-
+//
+// section: 2.14: pready and pwrite system calls
+//
 (* ****** ****** *)
 
 staload TYPES = "libc/sys/SATS/types.sats"
@@ -26,13 +28,11 @@ extern fun backward2 (path: string): void
 
 (* ****** ****** *)
 
-%{
-
+%{^
 ats_ptr_type __buf_tail
   (ats_ptr_type p_buf, ats_int_type n) { return ((char*)p_buf) + n ; }
 /* end of [__buf_tail] */
-
-%}
+%} // end of [__buf_tail]
 
 (* ****** ****** *)
 
