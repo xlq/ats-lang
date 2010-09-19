@@ -4,12 +4,14 @@
 //
 
 (* ****** ****** *)
-
 //
 // Author: Hongwei Xi (hwxi AT cs DOT bu DOT edu)
 // Time: September, 2010
 //
-
+(* ****** ****** *)
+//
+// HX-2010-09-18: this is a fully verified solution!
+//
 (* ****** ****** *)
 
 datasort intlst =

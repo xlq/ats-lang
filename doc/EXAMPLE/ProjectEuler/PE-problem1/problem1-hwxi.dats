@@ -11,6 +11,10 @@
 //
 
 (* ****** ****** *)
+//
+// HX-2010-08: this is a fully verified solution!
+//
+(* ****** ****** *)
 
 absprop MOD (n:int, p:int, r:int) // n mod p = r
 
@@ -21,7 +25,6 @@ extern fun mod {n:nat} {p:pos}
 // end of [mod]
 
 (* ****** ****** *)
-
 //
 // SUM35 (n, t) = sum of i <= n such that i mod 3 = 0 or i mod 5 = 0
 //

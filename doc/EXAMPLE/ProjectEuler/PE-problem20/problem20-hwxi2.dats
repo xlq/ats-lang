@@ -4,12 +4,14 @@
 //
 
 (* ****** ****** *)
-
 //
 // Author: Hongwei Xi (hwxi AT cs DOT bu DOT edu)
 // Time: September, 2010
 //
-
+(* ****** ****** *)
+//
+// HX-2010-09-19: this is a fully verified solution!
+//
 (* ****** ****** *)
 
 datasort intlst =
@@ -149,10 +151,18 @@ fun fact {n:nat} .<n>. (n: int n)
 
 (* ****** ****** *)
 
+fun p20 {n:nat} .<>. (n: int n)
+  :<> [t:int;r:int;ds:intlst] (FACT (n, r), REP (ds, r), SUM (ds, t) | int t) = let
+  val (pffac, pfrep | ds) = fact (n); val (pfsum | t) = sum (ds)
+in
+  (pffac, pfrep, pfsum | t)
+end // end of [p20]
+
+(* ****** ****** *)
+
 implement main () = () where {
 //
-  val (_, _ | ds) = fact (100)
-  val (_ | ans) = sum (ds)
+  val (_, _, _ | ans) = p20 (100)
   val () = assert_errmsg (ans = 648, #LOCATION)
   val () = (print "the sum of all the digits of 100! is "; print ans; print_newline ())
 //

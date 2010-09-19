@@ -4,12 +4,10 @@
 //
 
 (* ****** ****** *)
-
 //
 // Author: Hongwei Xi (hwxi AT cs DOT bu DOT edu)
 // Time: August, 2010
 //
-
 (* ****** ****** *)
 
 staload "libc/SATS/gmp.sats"

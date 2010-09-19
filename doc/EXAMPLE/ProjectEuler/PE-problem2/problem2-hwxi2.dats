@@ -4,12 +4,14 @@
 //
 
 (* ****** ****** *)
-
 //
 // Author: Hongwei Xi (hwxi AT cs DOT bu DOT edu)
 // Time: September, 2010
 //
-
+(* ****** ****** *)
+//
+// HX-2010-09: this is a fully verified solution!
+//
 (* ****** ****** *)
 
 dataprop FIB (int, int) =
@@ -51,7 +53,7 @@ end // end of [p2]
 implement main () = () where {
   val (_pf | ans) = p2 (_4M)
   val () = assert_errmsg (ans = 4613732, #LOCATION)
-  val () = (print "ans = "; print ans; print_newline ())
+  val () = (print "The sum of all even Fibonacci numbers < 4 million = "; print ans; print_newline ())
 } // end of [main]
 
 (* ****** ****** *)

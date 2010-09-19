@@ -33,7 +33,7 @@ Problem5:
 
 Problem6:
 Solution is fully verified:
-problem6-hwxi.dats:
+problem6-hwxi2.dats:
 In particular, the following equations are proved:
 1+...+n = n(n+1)/2
 1^2+...+n^2 = n(n+1)(2n+1)/6
@@ -80,7 +80,15 @@ Problem21:
 Problem22:
 Problem23:
 Problem24:
+
+######
+
 Problem25:
+Solution is fully verified:
+problem25-hwxi2.dats
+
+######
+
 Problem26:
 Problem27:
 Problem28:
