@@ -12,10 +12,6 @@
 
 (* ****** ****** *)
 
-staload "libc/SATS/gmp.sats"
-
-(* ****** ****** *)
-
 datasort intlst =
   | intlst_cons of (int, intlst) | intlst_nil of ()
 // end of [intlst]
@@ -29,13 +25,6 @@ datatype intlst (intlst) =
 // end of [intlst]
 
 macdef intlst_sing (x) = intlst_cons (,(x), intlst_nil)
-
-(* ****** ****** *)
-
-datatype POW2 (int, int) =
-  | POW2bas (0, 1)
-  | {n:nat} {p:int} POW2ind (n+1, 2*p) of POW2 (n, p)
-// end of [POW2]
 
 (* ****** ****** *)
 
@@ -127,6 +116,11 @@ implement add_intlst_intlst
 } // end of [add_intlst_intlst]
 
 (* ****** ****** *)
+
+datatype POW2 (int, int) =
+  | POW2bas (0, 1)
+  | {n:nat} {p:int} POW2ind (n+1, 2*p) of POW2 (n, p)
+// end of [POW2]
 
 fun pow2 {n:nat} .<n>. (n: int n)
   :<> [ds:intlst;p:int] (POW2 (n, p), REP (ds, p) | intlst ds) =

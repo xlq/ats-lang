@@ -5,7 +5,7 @@ http://projecteuler.net
 ######
 #
 # If you have a verified solution to one of the PE problems that is
-# implemented in ATS, please consider sharing it with the ATS users.
+# implemented in ATS, please consider sharing it with other ATS users.
 # If you send it to me (hwxi AT cs DOT bu DOT edu), I will post it after
 # testing it successfully.
 #
@@ -67,7 +67,15 @@ problem16-hwxi2.dats
 Problem17:
 Problem18:
 Problem19:
+
+######
+
 Problem20:
+Solution is fully verified:
+problem20-hwxi2.dats
+
+######
+
 Problem21:
 Problem22:
 Problem23:
