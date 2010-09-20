@@ -4,12 +4,14 @@
 //
 
 (* ****** ****** *)
-
 //
 // Author: Hongwei Xi (hwxi AT cs DOT bu DOT edu)
 // Time: August, 2010
 //
-
+(* ****** ****** *)
+//
+// HX: Please note that gcd (n, n+1) = 1
+//
 (* ****** ****** *)
 
 fun count (n: int) = let

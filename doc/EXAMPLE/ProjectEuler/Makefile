@@ -67,6 +67,7 @@ compall:: \
   problem48 \
   problem49 \
   problem50 \
+  problem52 \
   problem56 \
   problem57 \
   problem63 \
@@ -142,6 +143,7 @@ problem48::; make -C PE-problem48 compall
 problem49::; make -C PE-problem49 compall
 problem50::; make -C PE-problem50 compall
 
+problem52::; make -C PE-problem52 compall
 problem56::; make -C PE-problem56 compall
 problem57::; make -C PE-problem57 compall
 
@@ -222,6 +224,7 @@ cleanall::
 	make -C PE-problem48 cleanall
 	make -C PE-problem49 cleanall
 	make -C PE-problem50 cleanall
+	make -C PE-problem52 cleanall
 	make -C PE-problem56 cleanall
 	make -C PE-problem57 cleanall
 	make -C PE-problem63 cleanall

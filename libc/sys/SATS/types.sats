@@ -110,10 +110,20 @@ fun lint_of_pid (pid: pid_t):<> lint = "atslib_lint_of_pid"
 
 (* ****** ****** *)
 
+(*
+//
+// HX-2010-09-19:
+// [size_t0ype] and [ssize_t0ype] are declared in $ATSHOME/prelude/basic_sta.sats
+//
 abst@ype size_t = $extype "ats_size_type" // for sizes of objects
 abst@ype ssize_t = $extype "ats_ssize_type" // for sizes or error indication
+*)
+
+(******* ****** *)
 
 abst@ype time_t = $extype "ats_time_type" // for time in seconds
+
+(******* ****** *)
 
 abst@ype timer_t = $extype "ats_timer_type" // for timers returned by timer_create ()
 
