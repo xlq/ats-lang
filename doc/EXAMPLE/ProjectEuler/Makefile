@@ -58,10 +58,12 @@ compall:: \
   problem39 \
   problem40 \
   problem41 \
+  problem42 \
   problem43 \
   problem44 \
   problem45 \
   problem46 \
+  problem47 \
   problem48 \
   problem49 \
   problem50 \
@@ -70,6 +72,7 @@ compall:: \
   problem63 \
   problem65 \
   problem92 \
+  problem94 \
   problem97 \
   problem104 \
   problem108 \
@@ -93,6 +96,7 @@ problem7::; make -C PE-problem7 compall
 problem8::; make -C PE-problem8 compall
 problem9::; make -C PE-problem9 compall
 problem10::; make -C PE-problem10 compall
+
 problem11::; make -C PE-problem11 compall
 problem12::; make -C PE-problem12 compall
 problem13::; make -C PE-problem13 compall
@@ -103,6 +107,7 @@ problem17::; make -C PE-problem17 compall
 problem18::; make -C PE-problem18 compall
 problem19::; make -C PE-problem19 compall
 problem20::; make -C PE-problem20 compall
+
 problem21::; make -C PE-problem21 compall
 problem22::; make -C PE-problem22 compall
 problem23::; make -C PE-problem23 compall
@@ -113,6 +118,7 @@ problem27::; make -C PE-problem27 compall
 problem28::; make -C PE-problem28 compall
 problem29::; make -C PE-problem29 compall
 problem30::; make -C PE-problem30 compall
+
 problem31::; make -C PE-problem31 compall
 problem32::; make -C PE-problem32 compall
 problem33::; make -C PE-problem33 compall
@@ -123,20 +129,28 @@ problem37::; make -C PE-problem37 compall
 problem38::; make -C PE-problem38 compall
 problem39::; make -C PE-problem39 compall
 problem40::; make -C PE-problem40 compall
+
 problem41::; make -C PE-problem41 compall
+problem42::; make -C PE-problem42 compall
 problem43::; make -C PE-problem43 compall
 problem44::; make -C PE-problem44 compall
 problem45::; make -C PE-problem45 compall
 problem46::; make -C PE-problem46 compall
+problem47::; make -C PE-problem47 compall
 problem48::; make -C PE-problem48 compall
 problem49::; make -C PE-problem49 compall
 problem50::; make -C PE-problem50 compall
+
 problem56::; make -C PE-problem56 compall
 problem57::; make -C PE-problem57 compall
+
 problem63::; make -C PE-problem63 compall
 problem65::; make -C PE-problem65 compall
+
 problem92::; make -C PE-problem92 compall
+problem94::; make -C PE-problem94 compall
 problem97::; make -C PE-problem97 compall
+
 problem104::; make -C PE-problem104 compall
 problem108::; make -C PE-problem108 compall
 problem110::; make -C PE-problem110 compall
@@ -145,7 +159,13 @@ problem157::; make -C PE-problem157 compall
 problem162::; make -C PE-problem162 compall
 problem164::; make -C PE-problem164 compall
 problem169::; make -C PE-problem169 compall
+
 problem301::; make -C PE-problem301 compall
+
+######
+
+srclines::
+	wc -l PE-problem*/*.?ats
 
 ######
 
@@ -191,10 +211,12 @@ cleanall::
 	make -C PE-problem39 cleanall
 	make -C PE-problem40 cleanall
 	make -C PE-problem41 cleanall
+	make -C PE-problem42 cleanall
 	make -C PE-problem43 cleanall
 	make -C PE-problem44 cleanall
 	make -C PE-problem45 cleanall
 	make -C PE-problem46 cleanall
+	make -C PE-problem47 cleanall
 	make -C PE-problem48 cleanall
 	make -C PE-problem49 cleanall
 	make -C PE-problem50 cleanall
@@ -203,6 +225,7 @@ cleanall::
 	make -C PE-problem63 cleanall
 	make -C PE-problem65 cleanall
 	make -C PE-problem92 cleanall
+	make -C PE-problem94 cleanall
 	make -C PE-problem97 cleanall
 	make -C PE-problem104 cleanall
 	make -C PE-problem108 cleanall
