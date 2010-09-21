@@ -477,7 +477,7 @@ atslib_mpz_fdiv2_q_ulint (
 #define atslib_mpz_mod3_mpz mpz_mod
 #define atslib_mpz_mod2_mpz(n, d) mpz_mod((mpz_ptr)n, (mpz_ptr)n, (mpz_ptr)d)
 #define atslib_mpz_mod3_ulint mpz_mod_ui
-#define atslib_mpz_mod2_ulint(n, d) mpz_mod_ui((mpz_ptr)n, (mpz_ptr)n, (mpz_ptr)d)
+#define atslib_mpz_mod2_ulint(n, d) mpz_mod_ui((mpz_ptr)n, (mpz_ptr)n, d)
 
 #define atslib_mpz_divexact3 mpz_divexact
 #define atslib_mpz_divexact2(n, d) mpz_divexact((mpz_ptr)n, (mpz_ptr)n, (mpz_ptr)d)

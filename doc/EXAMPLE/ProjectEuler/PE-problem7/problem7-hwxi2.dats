@@ -24,6 +24,13 @@ absprop PRIME (p: int, b: bool)
 // PRIME (p, false): [p] is not a prime
 
 (* ****** ****** *)
+//
+// HX-2010-09-20: not sure how to handle this one yet
+//
+extern
+fun isprime {n:nat} (n: int n):<> [b:bool] (PRIME (n, b) | bool b) = "isprime"
+
+(* ****** ****** *)
 
 dataprop NPRIME (int, int) =
   | NPRIMEbas (0, 0) of ()
@@ -32,13 +39,6 @@ dataprop NPRIME (int, int) =
   | {n:nat} {np:nat}
     NPRIMEind1 (n+1, np+1) of (NPRIME (n, np), PRIME (n, true))
 // end of [NPRIME]
-
-(* ****** ****** *)
-//
-// HX-2010-09-20: not sure how to handle this one yet
-//
-extern
-fun isprime {n:nat} (n: int n):<> [b:bool] (PRIME (n, b) | bool b) = "isprime"
 
 (* ****** ****** *)
 

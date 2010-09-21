@@ -11,15 +11,19 @@
 //
 
 (* ****** ****** *)
+//
+// HX: here is the reasoning:
+//
 // gcd(p,q) = 1
 // a = k(2pq)
 // b = k(p^2 - q^2) // p >= q
 // c = k(p^2 + q^2)
-// a+b+c = k(2p(p+q)) = 1000
-
+// a+b+c = k(2p(p+q)) = 1000 = (2^3)(5^3)
+//
+// kp(p+q) = (2^2)(5^3)
 // k = 25
-// p(p+q) = 500 => p = 4 and q = 1
-
+// p(p+q) = 40 => p = 4 and q = 1
+//
 implement main () = () where {
   val a = 200
   val b = 375
