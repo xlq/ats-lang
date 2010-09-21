@@ -75,7 +75,7 @@ implement main () = () where {
     i := i + 1
   end // end of [val]
   val ans = cnt
-  // val () = assert_errmsg (ans = , #LOCATION)
+  val () = assert_errmsg (ans = 249, #LOCATION)
   val () = (print "ans = "; print ans; print_newline ())
 } // end of [main]
 

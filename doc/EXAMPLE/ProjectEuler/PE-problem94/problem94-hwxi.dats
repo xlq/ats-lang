@@ -55,7 +55,7 @@ fun test1 {k:nat} (k: int k): bool =
 fun test2 {k:nat} (k: int k): bool =
   if k mod 2 = 0 then begin
     if isSquare(k+1) then isSquare(3*k+1) else false
-  end else false // end if
+  end else false // end of [if]
 // end of [test2]
 
 (* ****** ****** *)

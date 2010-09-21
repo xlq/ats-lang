@@ -15,7 +15,7 @@
 // phi(n) = n*(1-1/p1)*...*(1-1/pk); so n/phi(n) = 1/(1-1/p1)...(1-1/pk)
 // so maximizing n/phi(n) is equivalent to minimizing (1-1/p1)...(1-1/pk)
 //
-// The the answer to this question is 2*3*5*7*...*p where p is the larget
+// The the answer to this question is 2*3*5*7*...*p where p is the largest
 // prime number satisfying 2*3*5*7*...*p <= 1M
 //
 (* ****** ****** *)
