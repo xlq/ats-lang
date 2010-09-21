@@ -230,6 +230,10 @@ libats/DATS/linqueue_lst.dats
 libats/SATS/linstack_arr.sats
 libats/DATS/linstack_arr.dats
 
+/* rarray (reversed array) implementation */
+libats/SATS/rarray.sats
+libats/DATS/rarray.dats
+
 #ifdef HAVE_PCRE_H
 libats/SATS/regexp.sats
 libats/DATS/regexp.dats

@@ -6,13 +6,12 @@
 (* ****** ****** *)
 //
 // book: AUP (2nd edition), pages 108 - 110
-//
 // section: 2.14: pready and pwrite system calls
 //
 (* ****** ****** *)
 
-staload TYPES = "libc/sys/SATS/types.sats"
-typedef off_t = $TYPES.off_t
+staload T = "libc/sys/SATS/types.sats"
+typedef off_t = $T.off_t
 
 staload STDIO = "libc/SATS/stdio.sats"
 
@@ -46,7 +45,7 @@ fun loop_main {fd:int} {flag:open_flag} (
   , ofs: lint
   , err: &int
   ) : void = if ofs >= 0L then let
-  val nread = fildes_pread_err (pf_lte, pf_fil | fd, bufc, 1, $TYPES.off_of_lint ofs)
+  val nread = fildes_pread_err (pf_lte, pf_fil | fd, bufc, 1, $T.off_of_lint ofs)
   val nread = int1_of_ssize1 (nread)
 in
   case+ 0 of
@@ -88,9 +87,9 @@ implement backward2 (path) = let
   var !p_bufc with pf_bufc = @[byte][1]()
   prval () = pf_bufc := bytes_v_of_b0ytes_v (pf_bufc)
   val () = p_buf->[BUFSZ-1] := byte_of_int (0)
-  val ofs0 = $TYPES.off_of_lint (0L)
-  val fsize = fildes_lseek_exn (pf_fil | fd, ofs0, $TYPES.SEEK_END)
-  val fsize1 = $TYPES.lint_of_off (fsize) - 1L
+  val ofs0 = $T.off_of_lint (0L)
+  val fsize = fildes_lseek_exn (pf_fil | fd, ofs0, $T.SEEK_END)
+  val fsize1 = $T.lint_of_off (fsize) - 1L
   var err: int = 0
   val () = loop_main (open_flag_lte_rd_rd, pf_fil | fd, !p_buf, BUFSZ-1, !p_bufc, fsize1, err)
 // (*

@@ -11,6 +11,7 @@
 // Author: Hongwei Xi (hwxi AT cs DOT bu DOT edu)
 // Time: February, 2008)
 //
+// This is an extremely inefficient implementation!!!
 *)
 
 (* ****** ****** *)
@@ -29,7 +30,7 @@ fun{a:t@ype}
 (*
   val () = begin
     print "stream_vt_nth: before: i = "; print i; print_newline ()
-  end
+  end // end of [val]
 *)
   val xs0_con = !xs0
 in

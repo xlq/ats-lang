@@ -6,12 +6,12 @@
 (* ****** ****** *)
 //
 // book: AUP (2nd edition), pages 106 - 107
-//
 // section 2.13: lseek system call
 //
 (* ****** ****** *)
 
 staload T = "libc/sys/SATS/types.sats"
+staload "libc/SATS/errno.sats"
 staload "libc/SATS/fcntl.sats"
 staload "libc/SATS/unistd.sats"
 
@@ -77,7 +77,9 @@ implement backward (path) = let
 //
     val () = if :(S: T0) => (c = '\n') then print_stack (S)
     val nitm = $S.stack_get_size (S)
-    val () = if :(S: T0) => (nitm < BUFSZ) then $S.stack_insert<itm> (S, c) else ()
+    val () = if :(S: T0) => (nitm < BUFSZ)
+      then $S.stack_insert<itm> (S, c) else errno_set (E2BIG) // line too long
+    // end of [val]
 //
   in
     if off <= 0L then break

@@ -148,6 +148,7 @@ end // end of [p16]
 
 implement main () = () where {
   val (_, _, _ | ans) = p16 (1000)
+  val () = assert_errmsg (ans = 1366, #LOCATION)
   val () = (print "the sum of all the digits of 2^1000 is "; print ans; print_newline ())
 } // end of [main]
 

@@ -51,6 +51,7 @@ compall:: \
   libats_linqueue_lst \
   libats_linstack_arr \
   libats_parworkshop \
+  libats_rarray \
   libats_regexp \
   libats_vector \
   libats_smlbas_array \
@@ -204,6 +205,11 @@ libats_parworkshop: libats_parworkshop.dats
 
 ######
 
+libats_rarray: libats_rarray.dats
+	$(ATSCC) -O2 -o libats_rarray libats_rarray.dats && ./libats_rarray
+
+######
+
 libats_regexp: libats_regexp.dats
 	$(ATSCC) -O2 -o libats_regexp libats_regexp.dats -lats -lpcre && ./libats_regexp "12345789"
 
@@ -275,6 +281,7 @@ cleanall: clean
 	rm -f libats_linqueue_arr
 	rm -f libats_linqueue_lst
 	rm -f libats_linstack_arr
+	rm -f libats_rarray
 	rm -f libats_regexp
 	rm -f libats_parworkshop
 	rm -f libats_vector

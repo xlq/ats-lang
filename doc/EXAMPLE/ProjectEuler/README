@@ -41,6 +41,11 @@ In particular, the following equations are proved:
 ######
 
 Problem7:
+Solution is fully verified IF a primality test is ASSUMED to be correct:
+problem7-hwxi2.dats
+
+######
+
 Problem8:
 Problem9:
 Problem10:
@@ -113,6 +118,7 @@ Problem47:
 Problem48:
 Problem49:
 Problem50:
+Problem51:
 Problem52:
 Problem56:
 Problem57:
@@ -122,6 +128,7 @@ Problem69:
 Problem92:
 Problem94:
 Problem97:
+Problem100:
 Problem104:
 Problem108:
 Problem110:

@@ -10,7 +10,7 @@
 //
 (* ****** ****** *)
 //
-// Given N(N-1)=2x(x-1), we have the follow equation
+// Given N(N-1)=2x(x-1), we have the following equation
 // 2N(N-1) + 1 = 4x(x-1) + 1
 // So: N^2 + (N-1)^2 = (2x-1)^2
 // Clearly, N and N-1 are co-primes.

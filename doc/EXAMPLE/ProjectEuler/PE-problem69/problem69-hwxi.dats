@@ -18,7 +18,6 @@
 // The the answer to this question is 2*3*5*7*...*p where p is the larget
 // prime number satisfying 2*3*5*7*...*p <= 1M
 //
-
 (* ****** ****** *)
 
 fun isqrt

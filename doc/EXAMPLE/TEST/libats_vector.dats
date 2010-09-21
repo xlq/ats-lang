@@ -13,6 +13,7 @@ stadef VECTOR = $V.VECTOR
 
 (* ****** ****** *)
 
+staload _(*anon*) = "prelude/DATS/array.dats"
 staload _(*anon*) = "libats/DATS/vector.dats"
 
 (* ****** ****** *)

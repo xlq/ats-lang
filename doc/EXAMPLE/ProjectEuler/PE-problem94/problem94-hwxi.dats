@@ -74,8 +74,14 @@ main () = () where {
   var k: Nat // uninitialized
   val () = for
     (k := 2; k <= Nk; k := k+1) let
-    val () = if test1 (k) then (print "test1: k = "; print k; print_newline (); sum := sum + (6*k+4))
-    val () = if test2 (k) then (print "test2: k = "; print k; print_newline (); sum := sum + (6*k+2))
+    val () = if test1 (k) then let
+      // val () = (print "test1: k = "; print k; print_newline ())
+      in sum := sum + (6*k+4)
+    end // end of [val]
+    val () = if test2 (k) then let
+      // val () = (print "test2: k = "; print k; print_newline ())
+      in sum := sum + (6*k+2)
+    end // end of [val]
   in
     // nothing
   end // end of [val]

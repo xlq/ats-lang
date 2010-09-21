@@ -4,9 +4,10 @@
 //
 
 (* ****** ****** *)
-
+//
 // book: AUP (2nd edition), pages 170 - 174
-
+// section 3.6.4: Implementing getcwd (walking up the tree)
+//
 (* ****** ****** *)
 
 staload "libc/sys/SATS/stat.sats"

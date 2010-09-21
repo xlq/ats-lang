@@ -40,9 +40,7 @@
 (* ****** ****** *)
 
 #if VERBOSE_PRELUDE #then
-
 #print "Loading [array.sats] starts!\n"
-
 #endif // end of [VERBOSE_PRELUDE]
 
 (* ****** ****** *)
@@ -668,7 +666,9 @@ fun{a:viewt@ype} array_exch {n:nat}
 (*
 ** implemented in ATS (prelude/DATS/array.dats)
 *)
-fun{a:viewt@ype} array_foreach__main {v:view} {vt:viewtype} {n:nat} (
+fun{a:viewt@ype}
+array_foreach__main
+  {v:view} {vt:viewtype} {n:nat} (
     pf: !v
   | A: array (a, n)
   , f: (!v | &a, !vt) -<> void, asz: size_t n, env: !vt
@@ -699,7 +699,9 @@ fun{a:viewt@ype} array_foreach_cloref {n:nat} (
 (*
 ** implemented in ATS (prelude/DATS/array.dats)
 *)
-fun{a:viewt@ype} array_iforeach__main {v:view} {vt:viewtype} {n:nat} (
+fun{a:viewt@ype}
+array_iforeach__main
+  {v:view} {vt:viewtype} {n:nat} (
     pf: !v
   | A: array (a, n)
   , f: (!v | sizeLt n, &a, !vt) -<> void
@@ -726,9 +728,7 @@ fun{a:viewt@ype} array_iforeach_cloref {n:nat} (
 (* ****** ****** *)
 
 #if VERBOSE_PRELUDE #then
-
 #print "Loading [array.sats] finishes!\n"
-
 #endif // end of [VERBOSE_PRELUDE]
 
 (* end of [array.sats] *)

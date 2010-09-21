@@ -688,6 +688,7 @@ fn doc_dir_copy () = let
     val () = cp "libats_linqueue_arr.dats"
     val () = cp "libats_linqueue_lst.dats"
     val () = cp "libats_linstack_arr.dats"
+    val () = cp "libats_rarray.dats"
     val () = cp "libats_regexp.dats"
     val () = cp "libats_parworkshop.dats"  
     val () = cp "libats_vector.dats"

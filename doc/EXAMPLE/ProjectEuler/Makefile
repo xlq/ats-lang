@@ -67,6 +67,7 @@ compall:: \
   problem48 \
   problem49 \
   problem50 \
+  problem51 \
   problem52 \
   problem56 \
   problem57 \
@@ -76,6 +77,7 @@ compall:: \
   problem92 \
   problem94 \
   problem97 \
+  problem100 \
   problem104 \
   problem108 \
   problem110 \
@@ -143,6 +145,7 @@ problem48::; make -C PE-problem48 compall
 problem49::; make -C PE-problem49 compall
 problem50::; make -C PE-problem50 compall
 
+problem51::; make -C PE-problem51 compall
 problem52::; make -C PE-problem52 compall
 problem56::; make -C PE-problem56 compall
 problem57::; make -C PE-problem57 compall
@@ -154,6 +157,7 @@ problem69::; make -C PE-problem69 compall
 problem92::; make -C PE-problem92 compall
 problem94::; make -C PE-problem94 compall
 problem97::; make -C PE-problem97 compall
+problem100::; make -C PE-problem100 compall
 
 problem104::; make -C PE-problem104 compall
 problem108::; make -C PE-problem108 compall
@@ -184,6 +188,7 @@ cleanall::
 	make -C PE-problem8 cleanall
 	make -C PE-problem9 cleanall
 	make -C PE-problem10 cleanall
+cleanall::
 	make -C PE-problem11 cleanall
 	make -C PE-problem12 cleanall
 	make -C PE-problem13 cleanall
@@ -194,6 +199,7 @@ cleanall::
 	make -C PE-problem18 cleanall
 	make -C PE-problem19 cleanall
 	make -C PE-problem20 cleanall
+cleanall::
 	make -C PE-problem21 cleanall
 	make -C PE-problem22 cleanall
 	make -C PE-problem23 cleanall
@@ -204,6 +210,7 @@ cleanall::
 	make -C PE-problem28 cleanall
 	make -C PE-problem29 cleanall
 	make -C PE-problem30 cleanall
+cleanall::
 	make -C PE-problem31 cleanall
 	make -C PE-problem32 cleanall
 	make -C PE-problem33 cleanall
@@ -214,6 +221,7 @@ cleanall::
 	make -C PE-problem38 cleanall
 	make -C PE-problem39 cleanall
 	make -C PE-problem40 cleanall
+cleanall::
 	make -C PE-problem41 cleanall
 	make -C PE-problem42 cleanall
 	make -C PE-problem43 cleanall
@@ -224,6 +232,8 @@ cleanall::
 	make -C PE-problem48 cleanall
 	make -C PE-problem49 cleanall
 	make -C PE-problem50 cleanall
+cleanall::
+	make -C PE-problem51 cleanall
 	make -C PE-problem52 cleanall
 	make -C PE-problem56 cleanall
 	make -C PE-problem57 cleanall
@@ -233,6 +243,8 @@ cleanall::
 	make -C PE-problem92 cleanall
 	make -C PE-problem94 cleanall
 	make -C PE-problem97 cleanall
+cleanall::
+	make -C PE-problem100 cleanall
 	make -C PE-problem104 cleanall
 	make -C PE-problem108 cleanall
 	make -C PE-problem110 cleanall
