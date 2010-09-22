@@ -384,7 +384,7 @@ overload mpz_mul with mpz_mul1_mpz
 **   or other special forms.
 *)
 fun mpz_mul_2exp
-  (res: &mpz_vt, arg1: &mpz_vt, arg2: int):<> void = "atslib_mpz_mul_2exp"
+  (res: &mpz_vt, arg1: &mpz_vt, arg2: ulint):<> void = "#atslib_mpz_mul_2exp"
 // end of [mpz_mul_2exp]
 
 (* ****** ****** *)
@@ -475,6 +475,20 @@ fun mpz_fdiv2_q_ulint
   (q: &mpz_vt, d: ulint):<> ulint = "atslib_mpz_fdiv2_q_ulint"
 overload mpz_fdiv_q with mpz_fdiv2_q_ulint
 
+symintr mpz_fdiv_r
+fun mpz_fdiv3_r_mpz
+  (r: &mpz_vt, n: &mpz_vt, d: &mpz_vt):<> void = "#atslib_mpz_fdiv3_r_mpz"
+overload mpz_fdiv_r with mpz_fdiv3_r_mpz
+fun mpz_fdiv3_r_ulint
+  (r: &mpz_vt, n: &mpz_vt, d: ulint):<> ulint = "#atslib_mpz_fdiv3_r_ulint"
+overload mpz_fdiv_r with mpz_fdiv3_r_ulint
+fun mpz_fdiv2_r_mpz
+  (r: &mpz_vt, d: &mpz_vt):<> void = "atslib_mpz_fdiv2_r_mpz"
+overload mpz_fdiv_r with mpz_fdiv2_r_mpz
+fun mpz_fdiv2_r_ulint
+  (r: &mpz_vt, d: ulint):<> ulint = "atslib_mpz_fdiv2_r_ulint"
+overload mpz_fdiv_r with mpz_fdiv2_r_ulint
+
 (* ****** ****** *)
 
 symintr mpz_mod
@@ -505,26 +519,53 @@ fun mpz_divexact2_mpz // n := n/d
 overload mpz_divexact with mpz_divexact2_mpz
 
 (* ****** ****** *)
+//
+// HX: n = 0 mod (d)
+//
+fun mpz_divisible_p
+  (n: &mpz_vt, d: &mpz_vt):<> int = "#atslib_mpz_divisible_p"
+fun mpz_divisible_ui_p
+  (n: &mpz_vt, d: ulint):<> int = "#atslib_mpz_divisible_ui_p"
+
+//
+// HX: n = c mod (d)
+//
+fun mpz_congruent_p
+  (n: &mpz_vt, c: &mpz_vt, d: &mpz_vt):<> int = "#atslib_mpz_congruent_p"
+fun mpz_congruent_ui_p
+  (n: &mpz_vt, c: ulint, d: ulint):<> int = "#atslib_mpz_congruent_ui_p"
+
+(* ****** ****** *)
 
 symintr mpz_tdiv_q_2exp
-fun mpz_tdiv3_q_2exp
+fun mpz_tdiv3_q_2exp // dst = src1 tdiv src2
   (dst: mpz_vt, src1: mpz_vt, src2: ulint): void = "#atslib_tdiv3_q_2exp"
 overload mpz_tdiv_q_2exp with mpz_tdiv3_q_2exp
 
 symintr mpz_tdiv_r_2exp
-fun mpz_tdiv3_r_2exp
+fun mpz_tdiv3_r_2exp // dst = src1 tmod src2
   (dst: mpz_vt, src1: mpz_vt, src2: ulint): void = "#atslib_tdiv3_r_2exp"
 overload mpz_tdiv_r_2exp with mpz_tdiv3_r_2exp
 
 symintr mpz_fdiv_q_2exp
-fun mpz_fdiv3_q_2exp
+fun mpz_fdiv3_q_2exp // dst := src1 fdiv src2
   (dst: mpz_vt, src1: mpz_vt, src2: ulint): void = "#atslib_fdiv3_q_2exp"
 overload mpz_fdiv_q_2exp with mpz_fdiv3_q_2exp
 
 symintr mpz_fdiv_r_2exp
-fun mpz_fdiv3_r_2exp
+fun mpz_fdiv3_r_2exp // dst := src1 fmod src2
   (dst: mpz_vt, src1: mpz_vt, src2: ulint): void = "#atslib_fdiv3_r_2exp"
 overload mpz_fdiv_r_2exp with mpz_fdiv3_r_2exp
+
+(* ****** ****** *)
+
+fun mpz_divisible_ui_2exp_p // n = 0 mod (2^b)
+  (n: &mpz_vt, b: ulint):<> int = "#atslib_mpz_divisible_ui_2exp_p"
+// end of [mpz_divisible_ui_2exp_p]
+
+fun mpz_congruent_ui_2exp_p // n = c mod (2^b)
+  (n: &mpz_vt, c: &mpz_vt, b: ulint):<> int = "#atslib_mpz_congruent_ui_2exp_p"
+// end of [mpz_congruent_ui_2exp_p]
 
 (* ****** ****** *)
 

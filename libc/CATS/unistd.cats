@@ -56,7 +56,7 @@ ats_exit_errmsg(ats_int_type n, ats_ptr_type msg) ;
 
 /* ****** ****** */
 
-static inline
+ATSinline()
 ats_pid_type
 atslib_fork_exn () {
   pid_t pid ;
@@ -70,7 +70,11 @@ atslib_fork_exn () {
 
 /* ****** ****** */
 
-static inline
+#define atslib_getcwd getcwd
+
+/* ****** ****** */
+
+ATSinline()
 ats_pid_type
 atslib_wait_with_status (
   ats_ptr_type p // for storing status
@@ -78,18 +82,18 @@ atslib_wait_with_status (
   return wait((int*)p) ;
 } // end of [atslib_wait_with_status]
 
-static inline
+ATSinline()
 ats_pid_type
 atslib_wait_without_status () { return wait((int*)0) ; }
 // end of [atslib_wait_without_status]
 
 /* ****** ****** */
 
-static inline
+ATSinline()
 ats_int_type // n >= 0
 atslib_sleep (ats_int_type n) { return sleep (n) ; }
 
-static inline
+ATSinline()
 ats_void_type // n >= 0
 atslib_usleep (ats_int_type n) { usleep (n) ; return ; }
 
@@ -105,11 +109,13 @@ atslib_usleep (ats_int_type n) { usleep (n) ; return ; }
 #define atslib_getuid getuid
 #define atslib_geteuid geteuid
 
+#define atslib_getlogin getlogin
+
 /* ****** ****** */
 
 #define atslib_chdir_err chdir
 
-static inline
+ATSinline()
 ats_void_type
 atslib_chdir_exn (
   ats_ptr_type path
@@ -124,7 +130,7 @@ atslib_chdir_exn (
 
 #define atslib_fchdir_err fchdir
 
-static inline
+ATSinline()
 ats_void_type
 atslib_fchdir_exn
   (ats_int_type fd) {
@@ -140,7 +146,7 @@ atslib_fchdir_exn
 
 #define atslib_link_err link
 
-static inline
+ATSinline()
 ats_void_type
 atslib_link_exn (
   ats_ptr_type src, ats_ptr_type dst
@@ -158,7 +164,7 @@ atslib_link_exn (
 
 #define atslib_unlink_err unlink
 
-static inline
+ATSinline()
 ats_void_type
 atslib_unlink_exn (ats_ptr_type path) { 
   int err ;
@@ -172,7 +178,7 @@ atslib_unlink_exn (ats_ptr_type path) {
 
 /* ****** ****** */
 
-static inline
+ATSinline()
 ats_off_type
 atslib_fildes_lseek_err (
   ats_int_type fd
@@ -182,7 +188,7 @@ atslib_fildes_lseek_err (
   return lseek(fd, ofs, whence) ;
 } /* end of [atslib_fildes_lseek_err] */
 
-static inline
+ATSinline()
 ats_off_type
 atslib_fildes_lseek_exn (
   ats_int_type fd
@@ -200,7 +206,7 @@ atslib_fildes_lseek_exn (
 
 /* ****** ****** */
 
-static inline
+ATSinline()
 ats_ssize_type
 atslib_fildes_pread_err (
   ats_int_type fd
@@ -211,7 +217,7 @@ atslib_fildes_pread_err (
   return pread(fd, buf, cnt, ofs) ;
 } /* end of [atslib_fildes_pread_err] */
 
-static inline
+ATSinline()
 ats_ssize_type
 atslib_fildes_pwrite_err (
   ats_int_type fd
@@ -224,20 +230,14 @@ atslib_fildes_pwrite_err (
 
 /* ****** ****** */
 
-static inline
-ats_void_type
-atslib_sync () { sync () ; return ; }
-// end of [atslib_sync]
+#define atslib_sync sync
+#define atslib_fsync fsync
+#define atslib_fdatasync fdatasync
 
-static inline
-ats_int_type
-atslib_fsync (ats_int_type fd) { return fsync (fd) ; }
-// end of [atslib_fsync]
+/* ****** ****** */
 
-static inline
-ats_int_type
-atslib_fdatasync (ats_int_type fd) { return fdatasync (fd) ; }
-// end of [atslib_fdatasync]
+#define atslib_pathconf pathconf
+#define atslib_fpathconf fpathconf
 
 /* ****** ****** */
 

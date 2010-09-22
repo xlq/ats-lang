@@ -117,6 +117,8 @@ libc/DATS/math.dats
 libc/SATS/printf.sats
 libc/DATS/printf.dats
 
+libc/SATS/pwd.sats
+
 libc/SATS/random.sats
 libc/DATS/random.dats
 

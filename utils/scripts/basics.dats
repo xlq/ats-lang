@@ -524,7 +524,7 @@ string_trans (
 // HX: for the purpose of bootstrapping; it is already defined in unistd.dats
 //
 ats_ptr_type 
-atsutil_getcwd () {
+atsutil_getcwd0 () {
   char *buf, *res ;
   int sz = 64 ;
 
@@ -540,7 +540,7 @@ atsutil_getcwd () {
     break ;
   } /* end of [while] */
   return buf ;
-} // end of [atsutil_getcwd]
+} // end of [atsutil_getcwd0]
 
 %} // end of [%{^]
 

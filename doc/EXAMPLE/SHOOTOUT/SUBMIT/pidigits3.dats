@@ -53,7 +53,7 @@ prval pfbox_all =
 
 extern
 fun mpz_mul_2exp (
-    _: &mpz_vt, _: &mpz_vt, _: int
+    _: &mpz_vt, _: &mpz_vt, _: ulint
   ) :<> void = "__mpz_mul_2exp"
 
 extern
@@ -70,7 +70,7 @@ ats_void_type
 __mpz_mul_2exp (
   ats_mpz_ptr_type x
 , ats_mpz_ptr_type y
-, ats_int_type n
+, ats_ulint_type n
 ) {
   mpz_mul_2exp((mpz_ptr)x, (mpz_ptr)y, n) ; return ;
 } // end of [atslib_mpz_mul_2exp]
@@ -102,7 +102,7 @@ in
   case+ 0 of
   | _ when sgn > 0 => ~1
   | _ => let
-      val () = mpz_mul_2exp (tmp1, numer, 1)
+      val () = mpz_mul_2exp (tmp1, numer, 1UL)
       val () = mpz_add (tmp1, numer)
       val () = mpz_add (tmp1, accum)
       val () = mpz_fdiv_qr (tmp1, tmp2, &tmp1, denom) where {
@@ -125,7 +125,7 @@ fn next_term (
   | k: uint
   ) :<> void = let
   val y2 = 2U * k + 1U
-  val () = mpz_mul_2exp (tmp1, numer, 1)
+  val () = mpz_mul_2exp (tmp1, numer, 1UL)
   val () = mpz_add (accum, tmp1)
   val () = mpz_mul (accum, y2)
   val () = mpz_mul (numer, k)

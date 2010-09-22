@@ -55,14 +55,10 @@ typedef whence_t = $TYPES.whence_t
 (* ****** ****** *)
 
 staload FCNTL = "libc/SATS/fcntl.sats"
-
 sortdef open_flag = $FCNTL.open_flag
-
 stadef open_flag_lte = $FCNTL.open_flag_lte
-
 stadef rd = $FCNTL.open_flag_rd
 stadef wr = $FCNTL.open_flag_wr
-
 stadef fildes_v = $FCNTL.fildes_v
 
 (* ****** ****** *)
@@ -116,34 +112,45 @@ fun fork_exec_and_wait_cloptr_exn (proc: () -<cloptr1> void): Int
 
 (* ****** ****** *)
 
-// implemented in [$ATSHOME/libc/DATS/unistd.dats]
-fun getcwd (): String = "atslib_getcwd"
+dataview getcwd_v (m:int, l:addr, addr) =
+  | {l>null} {n:nat} getcwd_v_succ (m, l, l) of strbuf_v (m, n, l)
+  | getcwd_v_fail (m, l, null) of b0ytes (m) @ l
+// end of [getcwd_v]
 
+fun getcwd {m:nat} {l:addr}
+  (pf: !b0ytes (m) @ l >> getcwd_v (m, l, l1) | p: ptr l, m: size_t m)
+  : #[l1:addr] ptr l1 = "#atslib_getcwd"
+// end of [getcwd]
+
+(* ****** ****** *)
+//
+// HX: implemented in [$ATSHOME/libc/DATS/unistd.dats]
+//
+fun getcwd0 (): strptr1 = "atslib_getcwd0"
+//
+// HX:
+// [get_current_dir_name] is available if _GNU_SOURCE is on
+//
 (* ****** ****** *)
 
 symintr wait
 fun wait_with_status {l:addr}
-  (pf: !int? @ l >> int @ l | p: ptr l): pid_t
-  = "atslib_wait_with_status"
-
-and wait_without_status (): pid_t
-  = "atslib_wait_without_status"
-
+  (pf: !int? @ l >> int @ l | p: ptr l): pid_t = "atslib_wait_with_status"
 overload wait with wait_with_status
+fun wait_without_status (): pid_t = "atslib_wait_without_status"
 overload wait with wait_without_status
 
 (* ****** ****** *)
 
 // [sleep] may be implemented using SIGARM
-fun sleep {i:nat} (t: int i): [j:nat | j <= i] int j
-  = "atslib_sleep"
+fun sleep {i:nat} (t: int i): [j:nat | j <= i] int j = "atslib_sleep"
 
 (* ****** ****** *)
 
 #define MILLION 1000000
 // some systems require that the argument of usleep <= 1 million
-fun usleep (n: natLte MILLION (* microseconds *)): void
-  = "atslib_usleep"
+fun usleep
+  (n: natLte MILLION (* microseconds *)): void = "atslib_usleep"
 
 (* ****** ****** *)
 
@@ -158,6 +165,22 @@ fun getppid (): pid_t = "#atslib_getppid" // macro
 
 fun getuid ():<> uid_t = "#atslib_getuid" // macro
 fun geteuid ():<> uid_t = "#atslib_geteuid" // macro
+
+(* ****** ****** *)
+
+// HX: non-reentrant version
+fun getlogin ()
+  :<!ref> [l:addr] (strptr l -<prf> void | strptr l)
+  = "#atslib_getlogin" // macro
+// end of [getlogin]
+
+dataview getlogin_v (m:int, l:addr, int) =
+  | {n:nat} getlogin_v_succ (m, l, 0) of strbuf_v (m, n, l)
+  | {i:int | i <> 0} getlogin_v_fail (m, l, i) of b0ytes (m) @ l
+fun getlogin_r {m:int} {l:addr}
+  (pf: !b0ytes (m) @ l >> getlogin_v (m, l, i) | p: ptr l, n: size_t)
+  : #[i:int] int i // 0/!0: succ/fail
+// end of [getlogin_r]
 
 (* ****** ****** *)
 
@@ -212,18 +235,54 @@ fun fildes_pwrite_err
 
 (* ****** ****** *)
 
-fun sync (): void = "atslib_sync"
+fun sync (): void = "#atslib_sync"
 
 // [fsync] returns 0 on success or -1 on error
 fun fsync_err {fd:int} {flag:open_flag} // (sets errno)
-  (pf: !fildes_v (fd, flag) | fd: int fd): int
-  = "atslib_fsync"
+  (pf: !fildes_v (fd, flag) | fd: int fd): int = "#atslib_fsync"
+// end of [fsync]
 
 // [fdatasync] returns 0 on success or -1 on error
 fun fdatasync_err {fd:int} {flag:open_flag} // (sets errno)
-  (pf: !fildes_v (fd, flag) | fd: int fd): int
-  = "atslib_fdatasync"
-  
+  (pf: !fildes_v (fd, flag) | fd: int fd): int = "#atslib_fdatasync"
+// end of [fdatasync]
+
+(* ****** ****** *)
+
+abst@ype pathconfname_t = int
+macdef _PC_LINK_MAX = $extval (pathconfname_t, "_PC_LINK_MAX")
+macdef _PC_MAX_CANON = $extval (pathconfname_t, "_PC_MAX_CANON")
+macdef _PC_MAX_INPUT = $extval (pathconfname_t, "_PC_MAX_INPUT")
+macdef _PC_NAME_MAX = $extval (pathconfname_t, "_PC_NAME_MAX")
+macdef _PC_PATH_MAX = $extval (pathconfname_t, "_PC_PATH_MAX")
+macdef _PC_PIPE_BUF = $extval (pathconfname_t, "_PC_PIPE_BUF")
+macdef _PC_CHOWN_RESTRICTED = $extval (pathconfname_t, "_PC_CHOWN_RESTRICTED")
+macdef _PC_NO_TRUNC = $extval (pathconfname_t, "_PC_NO_TRUNC")
+macdef _PC_VDISABLE = $extval (pathconfname_t, "_PC_VDISABLE")
+macdef _PC_SYNC_IO = $extval (pathconfname_t, "_PC_SYNC_IO")
+macdef _PC_ASYNC_IO = $extval (pathconfname_t, "_PC_ASYNC_IO")
+macdef _PC_PRIO_IO = $extval (pathconfname_t, "_PC_PRIO_IO")
+macdef _PC_SOCK_MAXBUF = $extval (pathconfname_t, "_PC_SOCK_MAXBUF")
+macdef _PC_FILESIZEBITS = $extval (pathconfname_t, "_PC_FILESIZEBITS")
+macdef _PC_REC_INCR_XFER_SIZE = $extval (pathconfname_t, "_PC_REC_INCR_XFER_SIZE")
+macdef _PC_REC_MAX_XFER_SIZE = $extval (pathconfname_t, "_PC_REC_MAX_XFER_SIZE")
+macdef _PC_REC_MIN_XFER_SIZE = $extval (pathconfname_t, "_PC_REC_MIN_XFER_SIZE")
+macdef _PC_REC_XFER_ALIGN = $extval (pathconfname_t, "_PC_REC_XFER_ALIGN")
+macdef _PC_ALLOC_SIZE_MIN = $extval (pathconfname_t, "_PC_ALLOC_SIZE_MIN")
+macdef _PC_SYMLINK_MAX = $extval (pathconfname_t, "_PC_SYMLINK_MAX")
+macdef _PC_2_SYMLINK = $extval (pathconfname_t, "_PC_2_SYMLINK")
+
+fun pathconf_err
+  (path: string, name: pathconfname_t): lint = "#atslib_pathconf"
+// end of [pathconf_err]
+
+//
+// HX-2010-09-21: for simplicity, [fd] assumed to be valid
+//
+fun fpathconf_err {fd:int}
+  (fd: int fd, name: pathconfname_t): lint = "#atslib_fpathconf"
+// end of [fpathconf_err]
+
 (* ****** ****** *)
 
 (* end of [unistd.sats] *)

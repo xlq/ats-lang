@@ -283,7 +283,9 @@ val dir_msg31_str = let
   #define THIRTYTWO 32
   val (pf_gc, pf_buf | p_buf) = malloc_gc (THIRTYTWO)
   var ntick = time_get ()
-  val _(*p_buf*) = ctime_r (pf_buf | ntick, p_buf) // reentrant function
+  val p1 = ctime_r (pf_buf | ntick, p_buf) // reentrant function
+  val () = assert_errmsg (p1 > null, #LOCATION)
+  prval ctime_v_succ (pf_buf) = pf_buf
 in
   string1_of_strbuf @(pf_gc, pf_buf | p_buf)
 end // end of [val]

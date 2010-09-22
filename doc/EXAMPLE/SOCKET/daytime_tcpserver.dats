@@ -57,11 +57,20 @@ implement main (argc, argv) = let
         prval @(pf_sock_s, pf_sock_c) = pf
         val () = socket_close_exn (pf_sock_s | fd_s)
         var ntick = time_get ()
-        val time_str = ctime ntick // ctime is non-reentrant
-        val time_str = string1_of_string (time_str)
-        val time_str_len = string1_length (time_str)
-        val _ = socket_write_substring_exn (pf_sock_c | fd_c, time_str, 0, time_str_len)
-        val () = socket_close_exn (pf_sock_c | fd_c)
+//
+        val [l:addr] (fpf_pstr | pstr) = ctime ntick // ctime is non-reentrant
+        val () = assert (strptr_isnot_null(pstr))
+        val () = () where {
+          val str = __cast (pstr) where {
+            extern castfn __cast {l>null} (x: !strptr l): string
+          } // end of [val]
+          val str = string1_of_string (str)
+          val strlen = string1_length (str)
+          val _ = socket_write_substring_exn (pf_sock_c | fd_c, str, 0, strlen)
+          val () = socket_close_exn (pf_sock_c | fd_c)
+        } // end of [val]
+        prval () = fpf_pstr (pstr)
+//
       in
         // empty
       end // f_child

@@ -120,13 +120,19 @@ overload time with time_get_and_set
 (* ****** ****** *)
 
 // non-reentrant
-fun ctime (t: &time_t):<!ref> string = "atslib_ctime"
+fun ctime (t: &time_t):<!ref>
+  [l:addr] (strptr l -<prf> void | strptr l) = "atslib_ctime"
+// end of [ctime]
 
 #define CTIME_BUFLEN 26
-fun ctime_r {n:nat | n >= CTIME_BUFLEN} {l:addr} ( // reentrant
-    pf: ! @[byte?][n] @ l >> strbuf (n, CTIME_BUFLEN - 1) @ l
+dataview ctime_v (m:int, l:addr, addr) =
+  | {l>null} ctime_v_succ (m, l, l) of strbuf (m, CTIME_BUFLEN - 1) @ l
+  | ctime_v_fail (m, l, null) of b0ytes (m) @ l
+fun ctime_r // reentrant
+  {m:int | m >= CTIME_BUFLEN} {l:addr} (
+    pf: ! b0ytes (m) @ l >> ctime_v (m, l, l1)
   | t: &time_t, p_buf: ptr l
-  ) :<> ptr l = "atslib_ctime_r"
+  ) :<> #[l1:addr] ptr l1 = "atslib_ctime_r"
 // end of [ctime_r]
 
 (* ****** ****** *)
@@ -138,12 +144,16 @@ fun difftime
 (* ****** ****** *)
 
 // [localtime] is non-reentrant
-fun localtime (time: &time_t):<!ref> ref (tm_struct)
-  = "atslib_localtime"
+fun localtime (time: &time_t):<!ref> [l:addr] (
+    option_v ((tm_struct @ l, tm_struct @ l -<prf> void), l>null) | ptr l
+  ) = "atslib_localtime"
+// end of [localtime]
 
 // [localtime_r] is reentrant
-fun localtime_r (time: &time_t, tm: &tm_struct? >> tm_struct): void
-  = "atslib_localtime_r"
+fun localtime_r (
+    time: &time_t, tm: &tm_struct? >> opt (tm_struct, l > null)
+  ) :<> #[l:addr] ptr l = "atslib_localtime_r"
+// end of [localtime_r]
 
 (* ****** ****** *)
 

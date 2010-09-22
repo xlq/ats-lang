@@ -843,7 +843,7 @@ option_view_bool_view (a:view+, bool) =
   | Some_v (a, true) of a | None_v (a, false)
 // end of [option_view_bool_view]
 stadef option_v = option_view_bool_view
-viewdef ptropt_v (a:viewt@ype, l:addr) = option_v (a @ l, l <> null)
+viewdef ptropt_v (a:viewt@ype, l:addr) = option_v (a @ l, l > null)
 
 //
 

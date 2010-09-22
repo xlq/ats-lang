@@ -40,12 +40,12 @@ implement fsize (name) = let
 in
   if err >= 0 then let
     prval () = opt_unsome (stbuf)
-    val mode = stat_st_mode_get (stbuf)
+    val mode = stat_get_st_mode (stbuf)
   in
     if S_ISDIR (mode) then
       dirwalk (name, fsize)
     else let
-      val sz_off = stat_st_size_get (stbuf)
+      val sz_off = stat_get_st_size (stbuf)
       val sz_lint = lint_of_off (sz_off)
     in
       printf ("%8ld %s\n", @(sz_lint, name))

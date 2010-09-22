@@ -7,26 +7,25 @@
 /************************************************************************/
 
 /*
- * ATS - Unleashing the Potential of Types!
- *
- * Copyright (C) 2002-2008 Hongwei Xi.
- *
- * ATS is  free software;  you can redistribute it and/or modify it under
- * the  terms of the  GNU General Public License as published by the Free
- * Software Foundation; either version 2.1, or (at your option) any later
- * version.
- * 
- * ATS is distributed in the hope that it will be useful, but WITHOUT ANY
- * WARRANTY; without  even  the  implied  warranty  of MERCHANTABILITY or
- * FITNESS FOR A PARTICULAR PURPOSE.  See the  GNU General Public License
- * for more details.
- * 
- * You  should  have  received  a  copy of the GNU General Public License
- * along  with  ATS;  see the  file COPYING.  If not, please write to the
- * Free Software Foundation,  51 Franklin Street, Fifth Floor, Boston, MA
- * 02110-1301, USA.
- *
- */
+** ATS - Unleashing the Potential of Types!
+**
+** Copyright (C) 2002-2008 Hongwei Xi.
+**
+** ATS is  free software;  you can redistribute it and/or modify it under
+** the  terms of the  GNU General Public License as published by the Free
+** Software Foundation; either version 2.1, or (at your option) any later
+** version.
+** 
+** ATS is distributed in the hope that it will be useful, but WITHOUT ANY
+** WARRANTY; without  even  the  implied  warranty  of MERCHANTABILITY or
+** FITNESS FOR A PARTICULAR PURPOSE.  See the  GNU General Public License
+** for more details.
+** 
+** You  should  have  received  a  copy of the GNU General Public License
+** along  with  ATS;  see the  file COPYING.  If not, please write to the
+** Free Software Foundation,  51 Franklin Street, Fifth Floor, Boston, MA
+** 02110-1301, USA.
+*/
 
 /* ****** ****** */
 
@@ -53,57 +52,57 @@ typedef struct tm ats_tm_struct_type ;
 
 /* ****** ****** */
 
-static inline
+ATSinline()
 ats_lint_type
 atslib_lint_of_time (time_t t) { return t ; }
 
-static inline
+ATSinline()
 ats_double_type
 atslib_double_of_time (time_t t) { return t ; }
 
 /* ****** ****** */
 
-static inline
+ATSinline()
 ats_int_type atslib_tm_sec_get (ats_ptr_type tm) {
   return ((struct tm *)tm)->tm_sec ;
 }
 
-static inline
+ATSinline()
 ats_int_type atslib_tm_min_get (ats_ptr_type tm) {
   return ((struct tm *)tm)->tm_min ;
 }
 
-static inline
+ATSinline()
 ats_int_type atslib_tm_hour_get (ats_ptr_type tm) {
   return ((struct tm *)tm)->tm_hour ;
 }
 
-static inline
+ATSinline()
 ats_int_type atslib_tm_mday_get (ats_ptr_type tm) {
   return ((struct tm *)tm)->tm_mday ;
 }
 
-static inline
+ATSinline()
 ats_int_type atslib_tm_mon_get (ats_ptr_type tm) {
   return ((struct tm *)tm)->tm_mon ;
 }
 
-static inline
+ATSinline()
 ats_int_type atslib_tm_year_get (ats_ptr_type tm) {
   return ((struct tm *)tm)->tm_year ;
 }
 
-static inline
+ATSinline()
 ats_int_type atslib_tm_wday_get (ats_ptr_type tm) {
   return ((struct tm *)tm)->tm_wday ;
 }
 
-static inline
+ATSinline()
 ats_int_type atslib_tm_yday_get (ats_ptr_type tm) {
   return ((struct tm *)tm)->tm_yday ;
 }
 
-static inline
+ATSinline()
 ats_int_type atslib_tm_isdst_get (ats_ptr_type tm) {
   return ((struct tm *)tm)->tm_isdst ;
 }
@@ -112,11 +111,11 @@ ats_int_type atslib_tm_isdst_get (ats_ptr_type tm) {
 
 /* ****** ****** */
 
-static inline
+ATSinline()
 ats_time_type
 atslib_time_get () { return time((time_t*)0) ; }
 
-static inline
+ATSinline()
 ats_time_type
 atslib_time_get_and_set (ats_ref_type p) {
   return time((time_t*)p) ;
@@ -124,7 +123,7 @@ atslib_time_get_and_set (ats_ref_type p) {
 
 /* ****** ****** */
 
-static inline
+ATSinline()
 ats_double_type
 atslib_difftime (time_t finish, time_t start) {
   return difftime(finish, start) ;
@@ -132,29 +131,37 @@ atslib_difftime (time_t finish, time_t start) {
 
 /* ****** ****** */
 
-static inline
+ATSinline()
 ats_ptr_type // this function is not reentrant
-atslib_ctime (ats_ref_type ntick) { return ctime((time_t*)ntick) ; }
+atslib_ctime
+  (ats_ref_type ntick) { return ctime((time_t*)ntick) ; }
+// end of [atslib_ctime]
 
-static inline
+ATSinline()
 ats_ptr_type // this function is reentrant
-atslib_ctime_r (ats_ref_type ntick, ats_ptr_type p_buf) {
+atslib_ctime_r (
+  ats_ref_type ntick, ats_ptr_type p_buf
+) {
   return ctime_r ((time_t*)ntick, (char*)p_buf) ;
-}
+} // end of [ctime_r]
 
 /* ****** ****** */
 
-static inline
+ATSinline()
 ats_ref_type
-atslib_localtime (ats_ptr_type time) {
+atslib_localtime
+  (ats_ptr_type time) {
   return localtime ((time_t *)time) ;
 }
 
-static inline
-ats_void_type
-atslib_localtime_r (ats_ptr_type time, ats_ptr_type tm) {
-  localtime_r ((time_t *)time, (struct tm *)tm) ; return ;
-}
+ATSinline()
+ats_ptr_type
+atslib_localtime_r (
+  ats_ptr_type time, ats_ptr_type tm
+) {
+  void *p_tm = localtime_r ((time_t *)time, (struct tm *)tm) ;
+  return p_tm ;
+} // end of [atslib_localtime_r]
 
 /* ****** ****** */
 
@@ -162,17 +169,17 @@ atslib_localtime_r (ats_ptr_type time, ats_ptr_type tm) {
 
 /* ****** ****** */
 
-static inline
+ATSinline()
 ats_lint_type
 atslib_lint_of_clock (clock_t t) { return t ; }
 
-static inline
+ATSinline()
 ats_double_type
 atslib_double_of_clock (clock_t t) { return t ; }
 
 /* ****** ****** */
 
-static inline
+ATSinline()
 ats_clock_type
 atslib_clock (void) { return clock (); }
 

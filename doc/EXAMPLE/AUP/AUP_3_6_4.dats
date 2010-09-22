@@ -48,9 +48,10 @@ extern fun getcwdx (): strptr0
 
 (* ****** ****** *)
 
-fn SAME_INODE (s1: &stat_t, s2: &stat_t): bool =
-  (stat_st_dev_get s1 = stat_st_dev_get s2) andalso
-  (stat_st_ino_get s1 = stat_st_ino_get s2)
+fun SAME_INODE .<>.
+  (s1: &stat_t, s2: &stat_t): bool =
+  (stat_get_st_dev s1 = stat_get_st_dev s2) andalso
+  (stat_get_st_ino s1 = stat_get_st_ino s2)
 // end of [SAME_INODE]
 
 (* ****** ****** *)

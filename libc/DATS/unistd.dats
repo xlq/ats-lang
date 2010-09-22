@@ -89,21 +89,27 @@ atslib_fork_exec_and_wait_cloptr_exn (ats_ptr_type f_child) {
 
 #define __GETCWD_BUFSZ 64
 
-ats_ptr_type atslib_getcwd () {
+ats_ptr_type
+atslib_getcwd0 () {
   char *buf, *res ;
   int sz = __GETCWD_BUFSZ ;
-
+//
   buf = (char*)ats_malloc_gc(__GETCWD_BUFSZ) ;
+//
+// HX: this strategy may not be so attractive;
+// an alternative is to use pathconf to get the maximum pathname length
+//
   while (1) {
     res = getcwd (buf, sz) ;
     if (!res) {
       ATS_FREE (buf) ; sz = sz + sz ; buf = ATS_MALLOC (sz) ;
       continue ;
-    }
+    } // end of [if]
     break ;
-  }
+  } // end of [while]
+//
   return buf ;
-}
+} // end of [atslib_getcwd0]
 
 %} // end of [%{^ ... %}]
 

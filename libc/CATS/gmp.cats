@@ -411,7 +411,7 @@ atslib_mpz_mul1_mpz
 ATSinline()
 ats_void_type
 atslib_mpz_mul_2exp ( // x = y * 2^n
-  ats_mpz_ptr_type x, ats_mpz_ptr_type y, ats_int_type n
+  ats_mpz_ptr_type x, ats_mpz_ptr_type y, ats_ulint_type n
 ) {
   mpz_mul_2exp((mpz_ptr)x, (mpz_ptr)y, n) ; return ;
 } // end of [atslib_mpz_mul_2exp]
@@ -472,6 +472,33 @@ atslib_mpz_fdiv2_q_ulint (
   return mpz_fdiv_q_ui ((mpz_ptr)x, (mpz_ptr)x, d) ;
 } // end of [atslib_mpz_fdiv2_q_ulint]
 
+#define atslib_mpz_fdiv3_r_mpz mpz_fdiv_r
+#define atslib_mpz_fdiv3_r_ulint mpz_fdiv_r_ui
+
+ATSinline()
+ats_void_type
+atslib_mpz_fdiv2_r_mpz (
+  ats_mpz_ptr_type x, ats_mpz_ptr_type d
+) {
+  mpz_fdiv_r ((mpz_ptr)x, (mpz_ptr)x, (mpz_ptr)d) ; return ;
+} // end of [atslib_mpz_fdiv2_r_mpz]
+
+ATSinline()
+ats_ulint_type
+atslib_mpz_fdiv2_r_ulint (
+  ats_mpz_ptr_type x, ats_ulint_type d
+) {
+  return mpz_fdiv_r_ui ((mpz_ptr)x, (mpz_ptr)x, d) ;
+} // end of [atslib_mpz_fdiv2_r_ulint]
+
+/* ****** ****** */
+
+#define atslib_mpz_divisible_p mpz_divisible_p
+#define atslib_mpz_divisible_ui_p mpz_divisible_ui_p
+
+#define atslib_mpz_congruent_p mpz_congruent_p
+#define atslib_mpz_congruent_ui_p mpz_congruent_ui_p
+
 /* ****** ****** */
 
 #define atslib_mpz_mod3_mpz mpz_mod
@@ -486,6 +513,9 @@ atslib_mpz_fdiv2_q_ulint (
 #define atslib_tdiv3_r_2exp tdiv_r_2exp
 #define atslib_fdiv3_q_2exp fdiv_q_2exp
 #define atslib_fdiv3_r_2exp fdiv_r_2exp
+
+#define atslib_mpz_divisible_ui_2exp_p mpz_divisible_ui_2exp_p
+#define atslib_mpz_congruent_ui_2exp_p mpz_congruent_ui_2exp_p
 
 /* ****** ****** */
 

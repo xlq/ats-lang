@@ -125,7 +125,12 @@ ccomp_gcc_ar_libfile
 //
   val infull = (
     if filename_is_local infile then let
-      val str = tostringf_size (64, "%s/%s", @(getcwd (), infile))
+      val cwd = getcwd0 ()
+      val str = tostringf_size
+        (64, "%s/%s", @(__cast cwd, infile)) where {
+        extern castfn __cast {l:agz} (x: !strptr l): string
+      } // end of [val]
+      val () = strptr_free (cwd)
     in
       string_of_strptr (str)
     end else infile // end of [if]

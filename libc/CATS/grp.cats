@@ -33,48 +33,25 @@
 
 /* ****** ****** */
 
-#ifndef ATS_LIBC_ERRNO_CATS
-#define ATS_LIBC_ERRNO_CATS
+#ifndef ATS_LIBC_GRP_CATS
+#define ATS_LIBC_GRP_CATS
 
 /* ****** ****** */
 
-#include <errno.h>
+#include <sys/types.h>
+#include <grp.h>
 
 /* ****** ****** */
 
-ATSinline()
-ats_int_type
-atslib_errno_get () { return errno ; }
-// end of [atslib_errno_get]
-
-ATSinline()
-ats_void_type
-atslib_errno_set (ats_int_type n) { errno = n ; return ; }
-// end of [atslib_errno_set]
-
-ATSinline()
-ats_void_type
-atslib_errno_reset () { errno = 0/*ENONE*/ ; return ; }
-// end of [atslib_errno_reset]
+typedef struct group ats_group_type ;
 
 /* ****** ****** */
 
-ATSinline()
-ats_bool_type
-atslib_eq_errno_errno
-  (ats_int_type n1, ats_int_type n2) {
-  return (n1 == n2 ? ats_true_bool : ats_false_bool) ;
-}
-
-ATSinline()
-ats_bool_type
-atslib_neq_errno_errno
-  (ats_int_type n1, ats_int_type n2) {
-  return (n1 != n2 ? ats_true_bool : ats_false_bool) ;
-}
+#define atslib_getgrnam getgrnam
+#define atslib_getgrgid getgrgid
 
 /* ****** ****** */
 
-#endif /* ATS_LIBC_ERRNO_CATS */
+#endif /* ATS_LIBC_GRP_CATS */
 
-/* end of [errno.cats] */
+/* end of [grp.cats] */

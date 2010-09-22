@@ -37,14 +37,14 @@
 (* ****** ****** *)
 
 %{#
-
 #include "libc/CATS/errno.cats"
-
-%}
+%} // end of [%{#]
 
 (* ****** ****** *)
 
 abst@ype errno_t = $extype "ats_int_type"
+castfn int_of_errno (e: errno_t):<> int
+castfn errno_of_int (n: int):<> errno_t
 
 (* ****** ****** *)
 
@@ -131,15 +131,14 @@ fun errno_reset (): void = "atslib_errno_reset"
 
 (* ****** ****** *)
 
-fun eq_errno_errno (n1: errno_t, n2: errno_t): bool
-  = "atslib_eq_errno_errno"
-
-fun neq_errno_errno (n1: errno_t, n2: errno_t): bool
-  = "atslib_neq_errno_errno"
-
+fun eq_errno_errno
+  (n1: errno_t, n2: errno_t): bool = "atslib_eq_errno_errno"
 overload = with eq_errno_errno
+
+fun neq_errno_errno
+  (n1: errno_t, n2: errno_t): bool = "atslib_neq_errno_errno"
 overload <> with neq_errno_errno
 
 (* ****** ****** *)
 
-(* end of [error.sats] *)
+(* end of [errno.sats] *)

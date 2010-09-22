@@ -35,7 +35,17 @@
 
 (* ****** ****** *)
 
-staload "libc/sys/SATS/types.sats"
+staload T = "libc/sys/SATS/types.sats"
+typedef dev_t = $T.dev_t
+typedef ino_t = $T.ino_t
+typedef mode_t = $T.mode_t
+typedef nlink_t = $T.nlink_t
+typedef off_t = $T.off_t
+
+(* ****** ****** *)
+
+typedef gid_t = $T.gid_t
+typedef uid_t = $T.uid_t
 
 (* ****** ****** *)
 
@@ -49,17 +59,45 @@ abst@ype stat_t = $extype "ats_stat_type"
 
 (* ****** ****** *)
 
-fun stat_st_dev_get (stbuf: &stat_t):<> dev_t
-  = "atslib_stat_st_dev_get"
+fun stat_get_st_dev
+  (stbuf: &stat_t):<> dev_t = "atslib_stat_get_st_dev"
+// end of [stat_get_st_dev]
 
-fun stat_st_ino_get (stbuf: &stat_t):<> ino_t
-  = "atslib_stat_st_ino_get"
+fun stat_get_st_ino
+  (stbuf: &stat_t):<> ino_t = "atslib_stat_get_st_ino"
+// end of [stat_get_st_ino]
 
-fun stat_st_mode_get (stbuf: &stat_t):<> mode_t
-  = "atslib_stat_st_mode_get"
+fun stat_get_st_mode
+  (stbuf: &stat_t):<> mode_t = "atslib_stat_get_st_mode"
+// end of [stat_get_st_mode]
 
-fun stat_st_size_get (stbuf: &stat_t):<> off_t
-  = "atslib_stat_st_size_get"
+fun stat_get_st_nlink
+  (stbuf: &stat_t):<> nlink_t = "atslib_stat_get_st_nlink"
+
+fun stat_get_st_size
+  (stbuf: &stat_t):<> off_t = "atslib_stat_get_st_size"
+// end of [stat_get_st_size]
+
+fun stat_get_st_gid
+  (stbuf: &stat_t):<> gid_t = "atslib_stat_get_st_gid"
+// end of [stat_get_st_gid]
+
+fun stat_get_st_uid
+  (stbuf: &stat_t):<> uid_t = "atslib_stat_get_st_uid"
+// end of [stat_get_st_uid]
+
+(* ****** ****** *)
+//
+// HX: bit masks and values
+//
+macdef S_IFMT = $extval (mode_t, "S_IFMT")
+macdef S_IFBLK = $extval (mode_t, "S_IFBLK")
+macdef S_IFCHR = $extval (mode_t, "S_IFCHR")
+macdef S_IFDIR = $extval (mode_t, "S_IFDIR")
+macdef S_IFIFO = $extval (mode_t, "S_IFIFO")
+macdef S_IFLNK = $extval (mode_t, "S_IFLNK")
+macdef S_IFREG = $extval (mode_t, "S_IFREG")
+macdef S_IFSOCK = $extval (mode_t, "S_IFSOCK")
 
 (* ****** ****** *)
 
@@ -83,7 +121,9 @@ macdef S_ISGID = $extval (mode_t, "S_ISGID")
 macdef S_ISVTX = $extval (mode_t, "S_ISVTX")
 
 (* ****** ****** *)
-
+//
+// HX: macros
+//
 fun S_ISBLK (m: mode_t): bool = "atslib_S_ISBLK"
 fun S_ISCHR (m: mode_t): bool = "atslib_S_ISCHR"
 fun S_ISDIR (m: mode_t): bool = "atslib_S_ISDIR"

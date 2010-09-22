@@ -31,6 +31,7 @@ compall: \
   testlock \
   backward \
   backward2 \
+  pathnames \
   getcwdx \
 
 ######
@@ -46,6 +47,14 @@ backward2: AUP_2_14_0.dats
 	$(ATSCC) -o backward2 AUP_2_14_0.dats \
      && ./backward2 "AUP_2_14_0.dats"
 
+pathnames: AUP_3_4.dats
+	$(ATSCC) -o pathnames AUP_3_4.dats \
+     && ./pathnames
+
+longls: AUP_3_5.dats
+	$(ATSCC) -o longls AUP_3_5.dats \
+     && ./longls
+
 getcwdx: AUP_3_6_4.dats
 	$(ATSCC) -o getcwdx AUP_3_6_4.dats \
      && ./getcwdx
@@ -60,6 +69,8 @@ cleanall: clean
 	rm -f testlock
 	rm -f backward
 	rm -f backward2
+	rm -f pathnames
+	rm -f longls
 	rm -f getcwdx
 
 ###### end of [Makefile] ######

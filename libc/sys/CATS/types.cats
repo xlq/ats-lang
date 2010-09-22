@@ -88,10 +88,32 @@ typedef key_t ats_key_type ; // for XSI interprocess communication
 typedef mode_t ats_mode_type ; // file mode
 
 ATSinline()
-ats_mode_type atslib_lor_mode_mode
+ats_bool_type
+atslib_eq_mode_mode
+  (ats_mode_type m1, ats_mode_type m2) {
+  return (m1 == m2 ? ats_true_bool : ats_false_bool) ;
+} // end of [atslib_eq_mode_mode]
+
+ATSinline()
+ats_bool_type
+atslib_neq_mode_mode
+  (ats_mode_type m1, ats_mode_type m2) {
+  return (m1 != m2 ? ats_true_bool : ats_false_bool) ;
+} // end of [atslib_neq_mode_mode]
+
+ATSinline()
+ats_mode_type
+atslib_lor_mode_mode
   (ats_mode_type m1, ats_mode_type m2) {
   return (m1 | m2) ;
-}
+} // end of [atslib_lor_mode_mode]
+
+ATSinline()
+ats_mode_type
+atslib_land_mode_mode
+  (ats_mode_type m1, ats_mode_type m2) {
+  return (m1 & m2) ;
+} // end of [atslib_land_mode_mode]
 
 /* ****** ****** */
 
@@ -101,34 +123,30 @@ typedef nlink_t ats_nlink_type ; // number of hard links to a file
 
 typedef off_t ats_off_type ; // file size in bytes
 
+#if (0)
 ATSinline()
-ats_lint_type atslib_lint_of_off (ats_off_type off) {
-  return off ;
-}
-
+ats_lint_type
+atslib_lint_of_off (ats_off_type off) { return off ; }
 ATSinline()
-ats_off_type atslib_off_of_lint (ats_lint_type li) {
-  return li ;
-}
+ats_off_type
+atslib_off_of_lint (ats_lint_type li) { return li ; }
+#endif // end of [if(0)]
 
 /* ****** ****** */
 
 typedef pid_t ats_pid_type ; // for process IDs // signed integer type
 
+#if (0)
 ATSinline()
 ats_pid_type
 atslib_pid_of_int (ats_int_type i) { return (i) ; }
-/* end of [atslib_pid_of_int] */
-
 ATSinline()
 ats_int_type
 atslib_int_of_pid (ats_pid_type p) { return (p) ; }
-/* end of [atslib_int_of_pid] */
-
 ATSinline()
 ats_lint_type
 atslib_lint_of_pid (ats_pid_type p) { return (p) ; }
-/* end of [atslib_lint_of_pid] */
+#endif // end of [if(0)]
 
 /* ****** ****** */
 
@@ -146,15 +164,14 @@ typedef time_t ats_time_type ; // for time in seconds
 
 typedef uid_t ats_uid_type ;
 
+#if (0)
 ATSinline()
 ats_int_type
 atslib_int_of_uid (ats_uid_type u) { return u ; }
-/* end of [atslist_int_of_uid] */
-
 ATSinline()
 ats_uid_type
 atslib_uid_of_int (ats_int_type i) { return i ; }
-/* end of [atslist_uid_of_int] */
+#endif // end of [if(0)]
 
 /* ****** ****** */
 
