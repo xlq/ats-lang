@@ -1609,7 +1609,7 @@ abst@ype XEvent_rest // unknown quantity
 typedef XEvent =
   $extype_struct "XEvent" of {
   type= EventType_t // the type of the event
-, _rest= XEvent_rest // this field is abstract and cannot be accessed
+, _rest= XEvent_rest // this abstract field cannot be accessed
 } // end of [XEvent]
 
 propdef XEvent_castdn_t (a:t@ype) = {l:addr}

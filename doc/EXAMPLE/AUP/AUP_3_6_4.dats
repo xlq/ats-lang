@@ -50,8 +50,7 @@ extern fun getcwdx (): strptr0
 
 fun SAME_INODE .<>.
   (s1: &stat_t, s2: &stat_t): bool =
-  (stat_get_st_dev s1 = stat_get_st_dev s2) andalso
-  (stat_get_st_ino s1 = stat_get_st_ino s2)
+  (s1.st_dev = s2.st_dev) andalso (s1.st_ino = s2.st_ino)
 // end of [SAME_INODE]
 
 (* ****** ****** *)
@@ -80,7 +79,7 @@ fun loop_dir (
           end // end of [_ when ...]  
         | _ => loop_dir (ents, stat, lstrs, nent)
       end else let
-        prval () = opt_unnone (stat_entry)
+        prval () = opt_unnone {stat_t} (stat_entry)
         val () = ~ents
       in
         0 (* error *)
@@ -130,7 +129,7 @@ fun getcwdx_main {fd:int} (
             end (* end of if *)
           end (* end of [_(*continue*)] *)
       end else let
-        prval () = opt_unnone (stat_parent)
+        prval () = opt_unnone {stat_t} (stat_parent)
       in
         err := err + 1 // loop exits abnormally
       end // end of [if]  
@@ -170,7 +169,7 @@ in
     in
       getcwdx_main (pf_fd | fd, stat)
     end else let
-      prval () = opt_unnone (stat)
+      prval () = opt_unnone {stat_t} (stat)
     in
       close_exn (pf_fd | fd); strptr_null (null)
     end // end of [if]

@@ -145,7 +145,7 @@ fun difftime
 
 // [localtime] is non-reentrant
 fun localtime (time: &time_t):<!ref> [l:addr] (
-    option_v ((tm_struct @ l, tm_struct @ l -<prf> void), l>null) | ptr l
+    option_v (@(tm_struct @ l, tm_struct @ l -<prf> void), l>null) | ptr l
   ) = "#atslib_localtime"
 // end of [localtime]
 

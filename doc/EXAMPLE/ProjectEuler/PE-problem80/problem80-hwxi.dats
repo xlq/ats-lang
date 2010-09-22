@@ -47,7 +47,10 @@ in
 end // end of [digitsum2]
 
 (* ****** ****** *)
-
+//
+// HX: the implementation is lengthy but it is memory-clean;
+// the run-time footprint of this implementation is tiny!
+//
 fun qsqrt (
   N: intGte 2, prec: intGte 0, res: &mpq_vt
 ) : void = let

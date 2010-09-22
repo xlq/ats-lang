@@ -32,6 +32,7 @@ compall: \
   backward \
   backward2 \
   pathnames \
+  longls \
   getcwdx \
 
 ######

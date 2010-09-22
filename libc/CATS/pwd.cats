@@ -9,7 +9,7 @@
 /*
 ** ATS - Unleashing the Potential of Types!
 **
-** Copyright (C) 2002-2008 Hongwei Xi.
+** Copyright (C) 2002-2010 Hongwei Xi.
 **
 ** ATS is  free software;  you can redistribute it and/or modify it under
 ** the  terms of the  GNU General Public License as published by the Free
@@ -44,6 +44,43 @@
 /* ****** ****** */
 
 typedef struct passwd ats_passwd_type ;
+
+/* ****** ****** */
+
+ATSinline()
+ats_ptr_type
+atslib_passwd_get_pw_name
+  (ats_ptr_type pw) {
+  return ((ats_passwd_type*)pw)->pw_name ;
+} // end of [passwd_get_pw_name]
+
+ATSinline()
+ats_ptr_type
+atslib_passwd_get_pw_passwd
+  (ats_ptr_type pw) {
+  return ((ats_passwd_type*)pw)->pw_passwd ;
+} // end of [passwd_get_pw_passwd]
+
+ATSinline()
+ats_ptr_type
+atslib_passwd_get_pw_gecos
+  (ats_ptr_type pw) {
+  return ((ats_passwd_type*)pw)->pw_gecos ;
+} // end of [passwd_get_pw_gecos]
+
+ATSinline()
+ats_ptr_type
+atslib_passwd_get_pw_dir
+  (ats_ptr_type pw) {
+  return ((ats_passwd_type*)pw)->pw_dir ;
+} // end of [passwd_get_pw_dir]
+
+ATSinline()
+ats_ptr_type
+atslib_passwd_get_pw_shell
+  (ats_ptr_type pw) {
+  return ((ats_passwd_type*)pw)->pw_shell ;
+} // end of [passwd_get_pw_shell]
 
 /* ****** ****** */
 

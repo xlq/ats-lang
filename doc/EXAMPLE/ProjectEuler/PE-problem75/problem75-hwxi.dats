@@ -30,7 +30,12 @@ staload "libc/SATS/math.sats"
 //
 // for some p and q satisfying gcd (p, q) = 1
 //
+// if a+b+c = a'+b'+c' and c=c' then
+// 1) a=a' and b=b'
+// 2) a=b' and b=a'
+//
 (* ****** ****** *)
+
 
 #define N 1500000
 val N1 = size1_of_int1 (N+1)

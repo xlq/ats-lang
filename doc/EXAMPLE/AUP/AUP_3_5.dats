@@ -21,10 +21,10 @@ staload "libc/sys/SATS/types.sats"
 
 fun print_mode .<>.
   (st: &stat_t): void = let
-  val st_mode = stat_get_st_mode (st)
+  val mode = st.st_mode
 //
-  macdef TYPE(b) = ,(b) = (st_mode land S_IFMT)
-  macdef MODE(b) = ,(b) = (st_mode land ,(b))
+  macdef TYPE(b) = ,(b) = (mode land S_IFMT)
+  macdef MODE(b) = ,(b) = (mode land ,(b))
 //
   val () = case+ 0 of
     | _ when TYPE(S_IFBLK) => print 'b'
@@ -72,31 +72,30 @@ end // end of [print_mode]
 
 fun print_nlink .<>.
   (st: &stat_t): void = let
-  val n = stat_get_st_nlink (st)
-  val n = lint_of_nlink (n)
+  val nlink = st.st_nlink
+  val nlink = lint_of_nlink (nlink)
 in
-  printf ("%5ld", @(n))
+  printf ("%5ld", @(nlink))
 end // end of [print_nlink]
 
 (* ****** ****** *)
 
-%{^
-#define passwd_get_pw_name(x) (((ats_passwd_type*)x)->pw_name)
-%}
-extern
-fun passwd_get_pw_name (pwd: &passwd_t): string = "#passwd_get_pw_name"
-
 fun print_owner .<>.
   (st: &stat_t): void = let
-  val uid = stat_get_st_uid (st)
+  val uid = st.st_uid
   val (pfopt| p) = getpwuid (uid)
 in
   if p > null then let
     prval Some_v @(pf, fpf) = pfopt
-    val name = passwd_get_pw_name (!p)
+    val (fpf_x | x) = passwd_get_pw_name (!p)
     prval () = fpf (pf)
+    val () = assert_errmsg (strptr_isnot_null x, #LOCATION)
+    val () = printf (" %-8s", @(__cast x)) where {
+      extern castfn __cast {l:addr} (x: !strptr l):<> string
+    }
+    prval () = fpf_x (x)
   in
-    printf (" %-8s", @(name))
+    // nothing
   end else let
     prval None_v () = pfopt
     val uid = lint_of_uid (uid)
@@ -107,23 +106,22 @@ end (* end of [print_owner] *)
 
 (* ****** ****** *)
 
-%{^
-#define group_get_gr_name(x) (((ats_group_type*)x)->gr_name)
-%}
-extern
-fun group_get_gr_name (grp: &group_t): string = "#group_get_gr_name"
-
 fun print_group .<>.
   (st: &stat_t): void = let
-  val gid = stat_get_st_gid (st)
+  val gid = st.st_gid
   val (pfopt| p) = getgrgid (gid)
 in
   if p > null then let
     prval Some_v @(pf, fpf) = pfopt
-    val name = group_get_gr_name (!p)
+    val (fpf_x | x) = group_get_gr_name (!p)
     prval () = fpf (pf)
+    val () = assert_errmsg (strptr_isnot_null x, #LOCATION)
+    val () = printf (" %-8s", @(__cast x)) where {
+      extern castfn __cast {l:addr} (x: !strptr l):<> string
+    }
+    prval () = fpf_x (x)
   in
-    printf (" %-8s", @(name))
+    // nothing
   end else let
     prval None_v () = pfopt
     val gid = lint_of_gid (gid)

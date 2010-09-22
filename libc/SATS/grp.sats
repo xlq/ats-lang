@@ -47,7 +47,39 @@ typedef gid_t = $T.gid_t
 
 (* ****** ****** *)
 
-abst@ype group_t = $extype "ats_group_type"
+(*
+struct group {
+  char *gr_name;		/* Group name.	*/
+  char *gr_passwd;		/* Password.	*/
+  __gid_t gr_gid;		/* Group ID.	*/
+  char **gr_mem;		/* Member list.	*/ // null-terminated
+};
+*)
+abst@ype group_t_rest // unknown quantity
+typedef group_t =
+$extype_struct "ats_group_type" of {
+  gr_gid= gid_t
+, _rest= group_t_rest
+} // end of [group_t]
+
+(* ****** ****** *)
+
+fun group_get_gr_name
+  (grp: &group_t): [l:addr] (strptr l -<prf> void | strptr l)
+  = "atslib_group_get_gr_name" // fun!
+// end of [group_get_gr_name]
+
+fun group_get_gr_passwd
+  (grp: &group_t): [l:addr] (strptr l -<prf> void | strptr l)
+  = "atslib_group_get_gr_passwd" // fun!
+// end of [group_get_gr_passwd]
+
+//
+// HX: please use with caution!
+//
+fun group_get_gr_mem
+  (grp: &group_t): ptr = "atslib_group_get_gr_mem" // fun!
+// end of [group_get_gr_mem]
 
 (* ****** ****** *)
 

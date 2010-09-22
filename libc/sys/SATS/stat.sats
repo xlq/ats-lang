@@ -40,12 +40,16 @@ typedef dev_t = $T.dev_t
 typedef ino_t = $T.ino_t
 typedef mode_t = $T.mode_t
 typedef nlink_t = $T.nlink_t
-typedef off_t = $T.off_t
-
-(* ****** ****** *)
-
+//
 typedef gid_t = $T.gid_t
 typedef uid_t = $T.uid_t
+//
+typedef off_t = $T.off_t
+//
+typedef blkcnt_t = $T.blkcnt_t
+typedef blksize_t = $T.blksize_t
+//
+typedef time_t = $T.time_t
 
 (* ****** ****** *)
 
@@ -55,38 +59,27 @@ typedef uid_t = $T.uid_t
 
 (* ****** ****** *)
 
-abst@ype stat_t = $extype "ats_stat_type"
+abst@ype stat_t_rest // unknown quantity
+typedef stat_t =
+$extype_struct "ats_stat_type" of {
+  st_dev= dev_t // device
+, st_ino= ino_t // 32-bit file serial number
+, st_mode= mode_t // file mode
+, st_nlink= nlink_t // link count
+, st_uid= uid_t // user ID of the file's owner
+, st_gid= gid_t // group ID of the file's group
+, st_rdev= dev_t // device number if device
+, st_size= off_t // size of file in bytes
+, st_blksize= blksize_t // optimal block size for I/O
+, st_blocks= blkcnt_t // number 512-byte blocks allocated
+, st_atime= time_t // time of last access
+, st_mtime= time_t // time of last modification
+, st_ctime= time_t // time of last status change
+, _rest= stat_t_rest // this abstract field cannot be accessed
+} // end of [stat_t]
 
 (* ****** ****** *)
 
-fun stat_get_st_dev
-  (stbuf: &stat_t):<> dev_t = "atslib_stat_get_st_dev"
-// end of [stat_get_st_dev]
-
-fun stat_get_st_ino
-  (stbuf: &stat_t):<> ino_t = "atslib_stat_get_st_ino"
-// end of [stat_get_st_ino]
-
-fun stat_get_st_mode
-  (stbuf: &stat_t):<> mode_t = "atslib_stat_get_st_mode"
-// end of [stat_get_st_mode]
-
-fun stat_get_st_nlink
-  (stbuf: &stat_t):<> nlink_t = "atslib_stat_get_st_nlink"
-
-fun stat_get_st_size
-  (stbuf: &stat_t):<> off_t = "atslib_stat_get_st_size"
-// end of [stat_get_st_size]
-
-fun stat_get_st_gid
-  (stbuf: &stat_t):<> gid_t = "atslib_stat_get_st_gid"
-// end of [stat_get_st_gid]
-
-fun stat_get_st_uid
-  (stbuf: &stat_t):<> uid_t = "atslib_stat_get_st_uid"
-// end of [stat_get_st_uid]
-
-(* ****** ****** *)
 //
 // HX: bit masks and values
 //

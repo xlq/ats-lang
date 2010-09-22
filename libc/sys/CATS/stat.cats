@@ -61,63 +61,6 @@ ats_exit_errmsg(ats_int_type n, ats_ptr_type msg) ;
 /* ****** ****** */
 
 ATSinline()
-ats_dev_type
-atslib_stat_get_st_dev
-  (ats_ptr_type buf) {
-  return ((ats_stat_type*)buf)->st_dev ;
-} // end of [atslib_stat_get_st_dev]
-
-ATSinline()
-ats_ino_type
-atslib_stat_get_st_ino
-  (ats_ptr_type buf) {
-  return ((ats_stat_type*)buf)->st_ino ;
-} // end of [atslib_stat_get_st_ino]
-
-/* ****** ****** */
-
-ATSinline()
-ats_mode_type
-atslib_stat_get_st_mode
-  (ats_ptr_type buf) {
-  return ((ats_stat_type*)buf)->st_mode ;
-} // end of [atslib_stat_get_st_mode]
-
-/* ****** ****** */
-
-ATSinline()
-ats_nlink_type
-atslib_stat_get_st_nlink
-  (ats_ptr_type buf) {
-  return ((ats_stat_type*)buf)->st_nlink ;
-} // end of [atslib_stat_get_st_nlink]
-
-ATSinline()
-ats_off_type
-atslib_stat_get_st_size
-  (ats_ptr_type buf) {
-  return ((ats_stat_type*)buf)->st_size ;
-} // end of [atslib_stat_get_st_size]
-
-/* ****** ****** */
-
-ATSinline()
-ats_uid_type
-atslib_stat_get_st_gid
-  (ats_ptr_type buf) {
-  return ((ats_stat_type*)buf)->st_gid ;
-} // end of [atslib_stat_get_st_gid]
-
-ATSinline()
-ats_uid_type
-atslib_stat_get_st_uid
-  (ats_ptr_type buf) {
-  return ((ats_stat_type*)buf)->st_uid ;
-} // end of [atslib_stat_get_st_uid]
-
-/* ****** ****** */
-
-ATSinline()
 ats_bool_type
 atslib_S_ISBLK (ats_mode_type m) { return S_ISBLK(m) ; }
 

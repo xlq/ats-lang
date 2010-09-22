@@ -37,6 +37,7 @@ main (argc, argv) = () where {
     (d := 4; d <= DENOM; d := d+1) cnt := cnt + test (d)
   // end of [val]
   val ans = cnt
+  val () = assert_errmsg (ans = 7295372, #LOCATION)
   val () = (print "ans = "; print ans; print_newline ())
 } // end of [main]
 

@@ -49,7 +49,9 @@ implement main (argc, argv) = let
   val () = bind_ipv4_exn (pf_sock_s | fd_s, servaddr)
   val () = listen_exn (pf_sock_s | fd_s, LISTENQ) 
   val () = loop (pf_sock_s | fd_s) where {
-    fun loop (pf_sock_s: !socket_v (fd_s, listen) | fd_s: int fd_s): void = let
+    fun loop (
+        pf_sock_s: !socket_v (fd_s, listen) | fd_s: int fd_s
+      ) : void = let
       val [fd_c:int] (pf_sock_c | fd_c) = accept_null_exn (pf_sock_s | fd_s)
       viewdef V = @(socket_v (fd_s, listen), socket_v (fd_c, conn))
       prval pf = @(pf_sock_s, pf_sock_c)
