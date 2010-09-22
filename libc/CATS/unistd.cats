@@ -241,4 +241,8 @@ atslib_fildes_pwrite_err (
 
 /* ****** ****** */
 
+#define atslib_readlink readlink
+
+/* ****** ****** */
+
 #endif /* ATS_LIBC_UNISTD_CATS */

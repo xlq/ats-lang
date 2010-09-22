@@ -13,6 +13,7 @@
 staload "libc/SATS/errno.sats"
 staload "libc/SATS/grp.sats"
 staload "libc/SATS/pwd.sats"
+staload "libc/SATS/time.sats"
 staload "libc/SATS/unistd.sats"
 staload "libc/sys/SATS/stat.sats"
 staload "libc/sys/SATS/types.sats"
@@ -132,17 +133,139 @@ end (* end of [print_group] *)
 
 (* ****** ****** *)
 
-implement
-main (argc, argv) = () where {
-  val path = (if argc >= 2 then argv.[1] else "."): string
+fun print_size .<>.
+  (st: &stat_t): void = let
+  val mode = st.st_mode
 //
-  var stat: stat_t? // uinitialized
-  val () = lstat_exn (path, stat) 
-  val () = print_mode (stat)
-  val () = print_nlink (stat)
-  val () = print_owner (stat)
-  val () = print_group (stat)
+  macdef TYPE(b) = ,(b) = (mode land S_IFMT)
+  macdef MODE(b) = ,(b) = (mode land ,(b))
+//
+in
+  case+ 0 of
+  | _ when (TYPE(S_IFCHR) orelse TYPE(S_IFBLK)) => let
+      val rdev = st.st_rdev
+      val rdev = int_of_dev (rdev)
+      val rdev = uint_of (rdev)
+      val u1 = rdev >> 8
+      val u2 = rdev land 0xFFU
+    in
+      printf ("%4u,%4u", @(u1, u2))
+    end // end of [_ when ...]
+  | _ => let
+      val off = st.st_size
+      val off = lint_of_off (off)
+      val off = ulint_of (off)
+    in
+      printf ("%9lu", @(off))
+    end (* end of [_] *)
+end // end of [print_size]
+
+(* ****** ****** *)
+
+fun print_date .<>.
+  (st: &stat_t): void = let
+  val now = time_get ()
+in
+//
+if (lint_of)now >= 0L then let
+  val diff = difftime (now, st.st_mtime)
+  val (pfopt | p) = localtime (st.st_mtime)
+  val () = assert_errmsg (p > null, #LOCATION)
+  prval Some_v @(pf, fpf) = pfopt
+  var !p_buf with pf_buf = @[byte][64]()
+  val fmt = (
+    if (diff < 0.0 orelse diff > 60*60*24*182.5 (*6months*)) then "%b %e  %Y" else "%b %e %H:%M"
+  ) : string
+  val _n = strftime (pf_buf | p_buf, 64, fmt, !p)
+  prval () = fpf (pf)
+  val str = __cast (p_buf) where {
+    extern castfn __cast (x: ptr): string // cutting a corner
+  } // end of [val]
+  prval () = pf_buf := bytes_v_of_strbuf_v (pf_buf)
+in
+  printf (" %s", @(str))
+end else begin
+  printf (" ????????????", @())
+end // end of [if]
+//
+end // end of [print_date]
+
+(* ****** ****** *)
+
+fun print_name .<>.
+  (st: &stat_t, name: string): void = let
+  // nothing
+in
+  case+ 0 of
+  | _ when S_ISLNK
+      (st.st_mode) => let
+      val n = lint_of_off (st.st_size)
+      val n = n + 1L
+      val n = size_of_lint (n)
+      val n = size1_of_size (n)
+      val (pfgc, pf | p) = malloc_gc (n)
+      val n1 = readlink (pf | name, p, n)
+      val () = if (n1 >= 0) then let
+        val n1 = size1_of_ssize1 (n1)
+        val () = assert_errmsg (n1 < n, #LOCATION)
+        val () = bytes_strbuf_trans (pf | p, n1)
+        val () = printf (" %s -> %s", @(name, __cast p)) where {
+          extern castfn __cast (x: ptr): string // cutting a corner
+        } // end of [val]
+        prval () = pf := bytes_v_of_strbuf_v (pf)
+      in
+        // nothing
+      end else
+        printf (" %s -> [can't read link]", @(name))
+      // end of [val]
+    in
+      free_gc (pfgc, pf | p)
+    end // end of [_ when ...]
+  | _ => printf (" %s", @(name))
+end // end of [print_name]
+
+(* ****** ****** *)
+
+fun longls .<>.
+  (st: &stat_t, path: string): void = let
+  val () = print_mode (st)
+  val () = print_nlink (st)
+  val () = print_owner (st)
+  val () = print_group (st)
+  val () = print_size (st)
+  val () = print_date (st)
+  val () = print_name (st, path)
   val () = print_newline ()
+in
+  // nothing
+end // end of [longls]
+
+(* ****** ****** *)
+
+implement
+main {n} (argc, argv) = () where {
+//
+  var i: natLte n
+  var st: stat_t? // uninitialized
+//
+  val () = for
+    (i := 1; i < argc; i := i+1) let
+    val path = argv.[i]
+    val _err = lstat_err (path, st)
+    val () = if _err >= 0 then let
+      prval () = opt_unsome {stat_t} (st)
+      val () = longls (st, path)
+    in
+      // nothing
+    end else let
+      prval () = opt_unnone {stat_t} (st)
+      val () = printf ("longls: cannot access [%s]: No such file or directory\n", @(path))
+    in
+      // nothing
+    end // end of [if]
+  in
+    // nothing
+  end // end of [val]
 //
 } // end of [main]
 

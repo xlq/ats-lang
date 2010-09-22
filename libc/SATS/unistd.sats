@@ -285,4 +285,11 @@ fun fpathconf_err {fd:int}
 
 (* ****** ****** *)
 
+fun readlink {n:nat} {l:addr} (
+  pf: !b0ytes(n) @ l >> bytes(n) @ l | path: string(*const*), p: ptr l, n: size_t n
+) : [n1:int | n1 <= n] ssize_t (n1) = "#atslib_readlink"
+// end of [readlink]
+
+(* ****** ****** *)
+
 (* end of [unistd.sats] *)

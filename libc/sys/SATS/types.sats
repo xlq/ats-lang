@@ -50,6 +50,7 @@ abst@ype clockid_t = $extype "ats_clockid_type" // for clock ID type
 (* ****** ****** *)
 
 abst@ype dev_t = $extype "ats_dev_type" // for device IDs
+castfn int_of_dev (x: dev_t):<> int
 fun eq_dev_dev (x1: dev_t, x2: dev_t): bool = "atslib_eq_dev_dev"
 overload = with eq_dev_dev
 
@@ -61,6 +62,7 @@ abst@ype fsfilcnt_t = $extype "ats_fsfilcnt_type" // file system file counts
 (* ****** ****** *)
 
 abst@ype ino_t = $extype "ats_ino_type" // for file serial numbers
+castfn int_of_ino (x: ino_t):<> int
 fun eq_ino_ino (x1: ino_t, x2: ino_t): bool = "atslib_eq_ino_ino"
 overload = with eq_ino_ino
 

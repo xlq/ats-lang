@@ -769,33 +769,28 @@ overload compare with compare_lint1_lint1
 // unsigned long integers (unindexed)
 //
 (* ****** ****** *)
-
+//
 stadef ulint = ulint_int_t0ype // indexed
 typedef ulint = uint_long_t0ype // unindexed
-
 //
-
 castfn ulint1_of_ulint (x: ulint):<> [i:nat] ulint i
 castfn ulint1_of_lint1 {i:nat} (x: lint i):<> ulint i
-
 //
-
-castfn ulint_of_lint (x: lint):<> ulint
 castfn lint_of_ulint (x: ulint):<> lint
-
+overload lint_of with lint_of_ulint
 //
-
+castfn ulint_of_lint (x: lint):<> ulint
+overload ulint_of with ulint_of_lint
+//
 fun ulint_of_int (i: int):<> ulint = "atspre_ulint_of_int"
 overload ulint_of with ulint_of_int
-
 //
-
 fun ulint_of_uint (u: uint):<> ulint = "atspre_ulint_of_uint"
 overload ulint_of with ulint_of_uint
-
+//
 fun uint_of_ulint (ul: ulint):<> uint = "atspre_uint_of_ulint"
 overload uint_of with uint_of_ulint
-
+//
 (* ****** ****** *)
 
 // arithmetic functions and comparison functions
