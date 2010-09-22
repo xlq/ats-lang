@@ -37,10 +37,8 @@
 (* ****** ****** *)
 
 %{^
-
-#include "libc/CATS/time.cats"
-
-%}
+#include "libc/CATS/time.cats" // only needed for ATS/Geizella
+%} // end of [%{^]
 
 (* ****** ****** *)
 
@@ -84,12 +82,17 @@ fn prerr_interror () = prerr "INTERNAL ERROR (ats_ccomp_main)"
 fn emit_time_stamp {m:file_mode}
   (pf: file_mode_lte (m, w) | out: &FILE m): void = let
   var time: $TM.time_t = $TM.time_get ()
-  var tm: $TM.tm_struct; val () = $TM.localtime_r (time, tm)
-  val tm_min = $TM.tm_min_get (tm)
-  val tm_hour = $TM.tm_hour_get (tm)
-  val tm_mday = $TM.tm_mday_get (tm)
-  val tm_mon = 1 + $TM.tm_mon_get (tm)
-  val tm_year = 1900 + $TM.tm_year_get (tm)
+  val (pfopt | p_tm) = $TM.localtime (time)
+in
+//
+if p_tm > null then let
+  prval Some_v @(pf1, fpf1) = pfopt
+  val tm_min = $TM.tm_min_get (!p_tm)
+  val tm_hour = $TM.tm_hour_get (!p_tm)
+  val tm_mday = $TM.tm_mday_get (!p_tm)
+  val tm_mon = 1 + $TM.tm_mon_get (!p_tm)
+  val tm_year = 1900 + $TM.tm_year_get (!p_tm)
+  prval () = fpf1 (pf1)
 in
   fprint1_string (pf | out, "/*\n");
   fprint1_string (pf | out, "**\n");
@@ -103,6 +106,12 @@ in
   );
   fprint1_string (pf | out, "**\n");
   fprint1_string (pf | out, "*/\n\n");
+end else let
+  prval None_v () = pfopt
+in
+  // nothing
+end (* end of [if] *)
+//
 end // end of [emit_time_stamp]
 
 (* ****** ****** *)

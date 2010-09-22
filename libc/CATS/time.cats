@@ -147,21 +147,8 @@ atslib_ctime_r (
 
 /* ****** ****** */
 
-ATSinline()
-ats_ref_type
-atslib_localtime
-  (ats_ptr_type time) {
-  return localtime ((time_t *)time) ;
-}
-
-ATSinline()
-ats_ptr_type
-atslib_localtime_r (
-  ats_ptr_type time, ats_ptr_type tm
-) {
-  void *p_tm = localtime_r ((time_t *)time, (struct tm *)tm) ;
-  return p_tm ;
-} // end of [atslib_localtime_r]
+#define atslib_localtime localtime
+#define atslib_localtime_r localtime_r
 
 /* ****** ****** */
 

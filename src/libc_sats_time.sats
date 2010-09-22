@@ -35,6 +35,12 @@
 
 (* ****** ****** *)
 
+%{#
+#include "libc/CATS/time.cats"
+%} // end of [%{#]
+
+(* ****** ****** *)
+
 //
 
 abst@ype time_t = $extype "ats_time_type"
@@ -95,14 +101,14 @@ fun difftime (finish: time_t, start: time_t):<> double
   = "atslib_difftime"
 
 (* ****** ****** *)
-
+//
+// HX: [localtime_r] is not reentrant
+//
 // [localtime] is non-reentrant
-fun localtime (time: &time_t):<!ref> ref (tm_struct)
-  = "atslib_localtime"
-
-// [localtime_r] is reentrant
-fun localtime_r (time: &time_t, tm: &tm_struct? >> tm_struct): void
-  = "atslib_localtime_r"
+fun localtime (time: &time_t):<!ref> [l:addr] (
+    option_v ((tm_struct @ l, tm_struct @ l -<prf> void), l>null) | ptr l
+  ) = "#atslib_localtime"
+// end of [localtime]
 
 (* ****** ****** *)
 

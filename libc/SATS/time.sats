@@ -35,13 +35,13 @@
 
 (* ****** ****** *)
 
-staload TYPES = "libc/sys/SATS/types.sats"
-
-(* ****** ****** *)
-
 %{#
 #include "libc/CATS/time.cats"
 %} // end of [%{#]
+
+(* ****** ****** *)
+
+staload TYPES = "libc/sys/SATS/types.sats"
 
 (* ****** ****** *)
 
@@ -146,13 +146,13 @@ fun difftime
 // [localtime] is non-reentrant
 fun localtime (time: &time_t):<!ref> [l:addr] (
     option_v ((tm_struct @ l, tm_struct @ l -<prf> void), l>null) | ptr l
-  ) = "atslib_localtime"
+  ) = "#atslib_localtime"
 // end of [localtime]
 
 // [localtime_r] is reentrant
 fun localtime_r (
     time: &time_t, tm: &tm_struct? >> opt (tm_struct, l > null)
-  ) :<> #[l:addr] ptr l = "atslib_localtime_r"
+  ) :<> #[l:addr] ptr l = "#atslib_localtime_r"
 // end of [localtime_r]
 
 (* ****** ****** *)
