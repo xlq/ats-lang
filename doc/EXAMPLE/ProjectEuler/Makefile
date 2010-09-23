@@ -81,6 +81,7 @@ compall:: \
   problem75 \
   problem76 \
   problem77 \
+  problem78 \
   problem80 \
   problem92 \
   problem94 \
@@ -89,6 +90,8 @@ compall:: \
   problem104 \
   problem108 \
   problem110 \
+  problem120 \
+  problem125 \
   problem145 \
   problem157 \
   problem162 \
@@ -169,6 +172,7 @@ problem73::; make -C PE-problem73 compall
 problem75::; make -C PE-problem75 compall
 problem76::; make -C PE-problem76 compall
 problem77::; make -C PE-problem77 compall
+problem78::; make -C PE-problem78 compall
 problem80::; make -C PE-problem80 compall
 
 problem92::; make -C PE-problem92 compall
@@ -179,6 +183,8 @@ problem100::; make -C PE-problem100 compall
 problem104::; make -C PE-problem104 compall
 problem108::; make -C PE-problem108 compall
 problem110::; make -C PE-problem110 compall
+problem120::; make -C PE-problem120 compall
+problem125::; make -C PE-problem125 compall
 problem145::; make -C PE-problem145 compall
 problem157::; make -C PE-problem157 compall
 problem162::; make -C PE-problem162 compall
@@ -265,6 +271,7 @@ cleanall::
 	make -C PE-problem75 cleanall
 	make -C PE-problem76 cleanall
 	make -C PE-problem77 cleanall
+	make -C PE-problem78 cleanall
 	make -C PE-problem80 cleanall
 	make -C PE-problem92 cleanall
 	make -C PE-problem94 cleanall
@@ -274,6 +281,8 @@ cleanall::
 	make -C PE-problem104 cleanall
 	make -C PE-problem108 cleanall
 	make -C PE-problem110 cleanall
+	make -C PE-problem120 cleanall
+	make -C PE-problem125 cleanall
 	make -C PE-problem145 cleanall
 	make -C PE-problem157 cleanall
 	make -C PE-problem162 cleanall

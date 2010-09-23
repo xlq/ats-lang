@@ -26,7 +26,7 @@ staload _(*anon*) = "prelude/DATS/matrix.dats"
 
 (* ****** ****** *)
 
-#define N 100
+#define N 101
 #define N1 %(N+1)
 val theTable = matrix_make_elt<llint> (N1, N, ~1LL) // ~1 is a placeholder
 
@@ -51,7 +51,7 @@ fun f {n:int;k:nat | n < N1; k < N} .<max(n,0)+k>. (
   end // end of [if]
 // end of [f]
 
-val () = assert_errmsg (f (5, 4) = 6LL, #LOCATION)
+val () = assert_errmsg (f(5,4) = 6LL, #LOCATION)
 
 (* ****** ****** *)
 
