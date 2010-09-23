@@ -1477,7 +1477,8 @@ gesvd_skinny_work_query
 ** Only S and VT of skinny matrix
 *)
 
-fun{t1,t2:t@ype} gesvd_skinny_right
+fun{t1,t2:t@ype}
+gesvd_skinny_right
   {m,n:nat | m >= n} {lda,ldvt:inc} {lwork:pos} (
   pf_lwork: gesvd_lwork_p (m, n, lwork)
 | m: integer m
@@ -1534,7 +1535,8 @@ gesvd_fat_work_query
 ** Only U and S of fat matrix
 *)
 
-fun{t1,t2:t@ype} gesvd_fat_left
+fun{t1,t2:t@ype}
+gesvd_fat_left
   {m,n:nat | m <= n} {lda,ldu:inc} {lwork:pos} (
   pf_lwork: gesvd_lwork_p (m, n, lwork)
 | m: integer m

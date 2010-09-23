@@ -138,7 +138,7 @@ end // end of [gesvd]
 //
 
 implement{t1,t2} // |t1| = t2
-  gesvd_work_query {m,n} (m, n) = let
+gesvd_work_query {m,n} (m, n) = let
 //
   extern
   fun{t1,t2:t@ype} __gesvd
@@ -207,7 +207,7 @@ end // end of [gesvd_econ]
 //
 
 implement{t1,t2} // |t1| = t2
-  gesvd_econ_work_query {m,n} (m, n) = let
+gesvd_econ_work_query {m,n} (m, n) = let
 //
   extern
   fun{t1,t2:t@ype} __gesvd
@@ -280,7 +280,7 @@ end // end of [gesvd_sing]
 //
 
 implement{t1,t2} // |t1| = t2
-  gesvd_sing_work_query {m,n} (m, n) = let
+gesvd_sing_work_query {m,n} (m, n) = let
 //
   extern
   fun{t1,t2:t@ype} __gesvd
@@ -352,7 +352,7 @@ end // end of [gesvd_left]
 //
 
 implement{t1,t2} // |t1| = t2
-  gesvd_left_work_query {m,n} (m, n) = let
+gesvd_left_work_query {m,n} (m, n) = let
 //
   extern
   fun{t1,t2:t@ype} __gesvd
@@ -424,7 +424,7 @@ end // end of [gesvd_right]
 //
 
 implement{t1,t2} // |t1| = t2
-  gesvd_right_work_query {m,n} (m, n) = let
+gesvd_right_work_query {m,n} (m, n) = let
 //
   extern
   fun{t1,t2:t@ype} __gesvd
@@ -496,7 +496,7 @@ end // end of [gesvd_skinny]
 //
 
 implement{t1,t2} // |t1| = t2
-  gesvd_skinny_work_query {m,n} (m, n) = let
+gesvd_skinny_work_query {m,n} (m, n) = let
 //
   extern
   fun{t1,t2:t@ype} __gesvd
@@ -533,7 +533,8 @@ end // end of [gesvd_skinny_work_query]
 
 (* ****** ****** *)
 
-implement{t1,t2} gesvd_skinny_right
+implement{t1,t2}
+gesvd_skinny_right
   (pf_lwork | m, n, a, lda, s, vt, ldvt, work, lwork) = let
 //
   extern
@@ -568,7 +569,7 @@ end // end of [gesvd_skinny_right]
 //
 
 implement{t1,t2} // |t1| = t2
-  gesvd_skinny_right_work_query {m,n} (m, n) = let
+gesvd_skinny_right_work_query {m,n} (m, n) = let
 //
   extern
   fun{t1,t2:t@ype} __gesvd
@@ -641,7 +642,7 @@ end // end of [gesvd_fat]
 //
 
 implement{t1,t2} // |t1| = t2
-  gesvd_fat_work_query {m,n} (m, n) = let
+gesvd_fat_work_query {m,n} (m, n) = let
 //
   extern
   fun{t1,t2:t@ype} __gesvd
@@ -678,7 +679,8 @@ end // end of [gesvd_fat_work_query]
 
 (* ****** ****** *)
 
-implement{t1,t2} gesvd_fat_left
+implement{t1,t2}
+gesvd_fat_left
   (pf_lwork | m, n, a, lda, s, u, ldu, work, lwork) = let
 //
   extern
@@ -713,7 +715,8 @@ end // end of [gesvd_fat_left]
 //
 
 implement{t1,t2} // |t1| = t2
-  gesvd_fat_left_work_query {m,n} (m, n) = let
+gesvd_fat_left_work_query
+  {m,n} (m, n) = let
 //
   extern
   fun{t1,t2:t@ype} __gesvd
@@ -750,8 +753,9 @@ end // end of [gesvd_fat_left_work_query]
 
 (* ****** ****** *)
 
-implement{t} gelqf_work_query {m,n}
-  (m, n) = let
+implement{t}
+gelqf_work_query
+  {m,n} (m, n) = let
 //
   extern fun{t:t@ype} __gelqf (
     m: integer m, n: integer n
@@ -776,7 +780,9 @@ end // of [gelqf_work_query]
 
 (* ****** ****** *)
 
-implement{t} ormlq_work_query {m,n,k} {na} {lr} {tr}
+implement{t}
+ormlq_work_query
+  {m,n,k} {na} {lr} {tr}
   (pf | side, trans, m, n, k) = let
 //
   extern fun{t:t@ype} __ormlq (
@@ -804,7 +810,9 @@ in
   lwork
 end // end of [ormlq_work_query]
 
-implement{t} unmlq_work_query {m,n,k} {na} {lr} {tr}
+implement{t}
+unmlq_work_query
+  {m,n,k} {na} {lr} {tr}
   (pf | side, trans, m, n, k) = let
 //
   extern fun{t:t@ype} __unmlq (
@@ -835,7 +843,7 @@ end // end of [unmlq_work_query]
 (* ****** ****** *)
 
 implement{a}
-  TRMAT_of_QLMAT (pf_qlmat | m, n, pa) = let
+TRMAT_of_QLMAT (pf_qlmat | m, n, pa) = let
   val mn = sub_integer_integer (m, n)
   val mn = size1_of_integer (mn)
   val [ofs:int] (pf_mul | ofs) = mul2_size1_size1 (mn, sizeof<a>)
@@ -844,8 +852,9 @@ in
   (pf_trmat, fpf_qlmat | pa + ofs)
 end // end of [TRMAT_of_QLMAT]
 
-implement{t} geqlf_work_query {m,n}
-  (m, n) = let
+implement{t}
+geqlf_work_query
+  {m,n} (m, n) = let
 //
   extern fun{t:t@ype} __geqlf (
     m: integer m, n: integer n
@@ -868,7 +877,9 @@ in
   lwork
 end // of [geqlf_work_query]
 
-implement{t} ormql_work_query {m,n,k} {ma} {lr} {tr}
+implement{t}
+ormql_work_query
+  {m,n,k} {ma} {lr} {tr}
   (pf | side, trans, m, n, k) = let
 //
   extern fun{t:t@ype} __ormql (
@@ -896,7 +907,9 @@ in
   lwork
 end // end of [ormql_work_query]
 
-implement{t} unmql_work_query {m,n,k} {ma} {lr} {tr}
+implement{t}
+unmql_work_query
+  {m,n,k} {ma} {lr} {tr}
   (pf | side, trans, m, n, k) = let
 //
   extern fun{t:t@ype} __unmql (
@@ -926,8 +939,9 @@ end // end of [unmql_work_query]
 
 (* ****** ****** *)
 
-implement{t} geqrf_work_query {m,n}
-  (m, n) = let
+implement{t}
+geqrf_work_query
+  {m,n} (m, n) = let
 //
   extern fun{t:t@ype} __geqrf (
     m: integer m, n: integer n
@@ -950,7 +964,9 @@ in
   lwork
 end // of [geqrf_work_query]
 
-implement{t} ormqr_work_query {m,n,k} {ma} {lr} {tr}
+implement{t}
+ormqr_work_query
+  {m,n,k} {ma} {lr} {tr}
   (pf | side, trans, m, n, k) = let
 //
   extern fun{t:t@ype} __ormqr (
@@ -978,7 +994,9 @@ in
   lwork
 end // end of [ormqr_work_query]
 
-implement{t} unmqr_work_query {m,n,k} {ma} {lr} {tr}
+implement{t}
+unmqr_work_query
+  {m,n,k} {ma} {lr} {tr}
   (pf | side, trans, m, n, k) = let
 //
   extern fun{t:t@ype} __unmqr (
@@ -1009,7 +1027,8 @@ end // end of [unmqr_work_query]
 (* ****** ****** *)
 
 implement{a}
-  TRMAT_of_RQMAT (pf_rqmat | m, n, lda, pa) = let
+TRMAT_of_RQMAT
+  (pf_rqmat | m, n, lda, pa) = let
   val nm = sub_integer_integer (n, m)
   val nm = size1_of_integer (nm)
   val lda_ = size1_of_integer (lda)
@@ -1023,8 +1042,9 @@ in
   (pf_trmat, fpf_rqmat | pa + ofs)
 end // end of [TRMAT_of_RQMAT]
 
-implement{t} gerqf_work_query {m,n}
-  (m, n) = let
+implement{t}
+gerqf_work_query
+  {m,n} (m, n) = let
 //
   extern fun{t:t@ype} __gerqf (
     m: integer m, n: integer n
@@ -1047,7 +1067,9 @@ in
   lwork
 end // of [gerqf_work_query]
 
-implement{t} ormrq_work_query {m,n,k} {na} {lr} {tr}
+implement{t}
+ormrq_work_query
+  {m,n,k} {na} {lr} {tr}
   (pf | side, trans, m, n, k) = let
 //
   extern fun{t:t@ype} __ormrq (
@@ -1075,7 +1097,9 @@ in
   lwork
 end // end of [ormrq_work_query]
 
-implement{t} unmrq_work_query {m,n,k} {na} {lr} {tr}
+implement{t}
+unmrq_work_query
+  {m,n,k} {na} {lr} {tr}
   (pf | side, trans, m, n, k) = let
 //
   extern fun{t:t@ype} __unmrq (
