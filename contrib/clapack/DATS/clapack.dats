@@ -533,6 +533,79 @@ end // end of [gesvd_skinny_work_query]
 
 (* ****** ****** *)
 
+implement{t1,t2} gesvd_skinny_right
+  (pf_lwork | m, n, a, lda, s, vt, ldvt, work, lwork) = let
+//
+  extern
+  fun{t1,t2:t@ype} __gesvd
+    {m,n:nat}
+    {lda,ldvt:pos}
+    {lwork:pos} (
+      pf_lwork: gesvd_lwork_p (m, n, lwork)
+    | jobu: char 'N'
+    , jobvt: char 'A'
+    , m: integer m, n: integer n
+    , a: &(GEMAT (t1, m, n, lda)) >> GEMAT (t1?, m, n, lda)
+    , lda: integer lda
+    , s: &(@[t2?][n]) >> @[t2][n]
+    , u: ptr null
+    , ldu: integer
+    , vt: &(GEMAT (t1?, n, n, ldvt)) >> GEMAT (t1, n, n, ldvt)
+    , ldvt: integer ldvt
+    , work: &(@[t1?][lwork]), lwork: integer lwork
+    ) :<> int
+    = "atsctrb_clapack_gesvd"
+//
+in
+  __gesvd<t1,t2> (
+        pf_lwork
+      | 'N', 'A', m, n, a, lda, s
+      , null(*u*), integer_of_int1 1(*ldu*)
+      , vt, ldvt
+      , work, lwork)
+end // end of [gesvd_skinny_right]
+
+//
+
+implement{t1,t2} // |t1| = t2
+  gesvd_skinny_right_work_query {m,n} (m, n) = let
+//
+  extern
+  fun{t1,t2:t@ype} __gesvd
+    {m,n:pos} (
+      jobu: char 'N', jobvt: char 'A'
+    , m: integer m, n: integer n
+    , a: ptr null, lda: integer // >= m
+    , s: ptr null
+    , u: ptr null, ldu: integer // >= m
+    , vt: ptr null, ldvt: integer // >= 1
+    , work: &t1? >> t1, lwork: integer (~1)
+    ) :<> int
+    = "atsctrb_clapack_gesvd"
+//
+  val lda = m and ldu = integer_of_int1 1 and ldvt = n
+  var work: t1 // uninitialized
+  val lwork = integer_of_int1 (~1)
+  val info = __gesvd<t1,t2> (
+    'N', 'A', m, n
+  , null(*a*), lda, null(*s*), null(*u*), ldu, null(*vt*), ldvt
+  , work, lwork
+  )  // end of [val]
+  val () = if info < 0 then $effmask_all (
+    prerr "exit(ATS/CLAPACK): [gesvd_skinny_right_work_query]: failed\n";
+    exit (1)
+  ) // end of [val]
+//
+  val [lwork:int] lwork = to_integer (work)
+  prval pf_lwork = lemma () where { // assume that [clapack_gesvd] is
+    extern prfun lemma (): [lwork>0] gesvd_lwork_p (m, n, lwork) // correct
+  } // end of [prval]
+in
+  (pf_lwork | lwork)
+end // end of [gesvd_skinny_right_work_query]
+
+(* ****** ****** *)
+
 implement{t1,t2} gesvd_fat
   (pf_lwork | m, n, a, lda, s, u, ldu, work, lwork) = let
 //
@@ -602,6 +675,78 @@ implement{t1,t2} // |t1| = t2
 in
   (pf_lwork | lwork)
 end // end of [gesvd_fat_work_query]
+
+(* ****** ****** *)
+
+implement{t1,t2} gesvd_fat_left
+  (pf_lwork | m, n, a, lda, s, u, ldu, work, lwork) = let
+//
+  extern
+  fun{t1,t2:t@ype} __gesvd
+    {m,n:nat}
+    {lda,ldu:pos}
+    {lwork:pos} (
+      pf_lwork: gesvd_lwork_p (m, n, lwork)
+    | jobu: char 'A'
+    , jobvt: char 'N'
+    , m: integer m, n: integer n
+    , a: &(GEMAT (t1, m, n, lda)) >> GEMAT (t1?, m, n, lda)
+    , lda: integer lda
+    , s: &(@[t2?][m]) >> @[t2][m]
+    , u: &(GEMAT (t1?, m, m, ldu)) >> GEMAT (t1, m, m, ldu)
+    , ldu: integer ldu
+    , vt: ptr null
+    , ldvt: integer
+    , work: &(@[t1?][lwork]), lwork: integer lwork
+    ) :<> int
+    = "atsctrb_clapack_gesvd"
+//
+in
+  __gesvd<t1,t2> (
+        pf_lwork
+      | 'A', 'N', m, n, a, lda, s
+      , u, ldu
+      , null(*vt*), integer_of_int1 1(*ldvt*)
+      , work, lwork)
+end // end of [gesvd_fat_left]
+
+//
+
+implement{t1,t2} // |t1| = t2
+  gesvd_fat_left_work_query {m,n} (m, n) = let
+//
+  extern
+  fun{t1,t2:t@ype} __gesvd
+    {m,n:pos} (
+      jobu: char 'A', jobvt: char 'N'
+    , m: integer m, n: integer n
+    , a: ptr null, lda: integer // >= m
+    , s: ptr null
+    , u: ptr null, ldu: integer // >= m
+    , vt: ptr null, ldvt: integer // >= 1
+    , work: &t1? >> t1, lwork: integer (~1)
+    ) :<> int
+    = "atsctrb_clapack_gesvd"
+//
+  val lda = m and ldu = m and ldvt = n
+  var work: t1 // uninitialized
+  val lwork = integer_of_int1 (~1)
+  val info = __gesvd<t1,t2> (
+    'A', 'N', m, n
+  , null(*a*), lda, null(*s*), null(*u*), ldu, null(*vt*), ldvt
+  , work, lwork
+  )  // end of [val]
+  val () = if info < 0 then $effmask_all (
+    prerr "exit(ATS/CLAPACK): [gesvd_fat_left_work_query]: failed\n"; exit (1)
+  ) // end of [val]
+//
+  val [lwork:int] lwork = to_integer (work)
+  prval pf_lwork = lemma () where { // assume that [clapack_gesvd] is
+    extern prfun lemma (): [lwork>0] gesvd_lwork_p (m, n, lwork) // correct
+  } // end of [prval]
+in
+  (pf_lwork | lwork)
+end // end of [gesvd_fat_left_work_query]
 
 (* ****** ****** *)
 

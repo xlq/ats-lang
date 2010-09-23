@@ -1040,7 +1040,8 @@ fun dgels : gels_type (doublereal) = "atsctrb_clapack_dgels"
 fun cgels : gels_type (complex) = "atsctrb_clapack_cgels"
 fun zgels : gels_type (doublecomplex) = "atsctrb_clapack_zgels"
 
-fun{t:t@ype} gels_work_query {tr:transpose} {m,n:pos} {nrhs:nat} (
+fun{t:t@ype}
+gels_work_query {tr:transpose} {m,n:pos} {nrhs:nat} (
   trans: CLAPACK_TRANSPOSE_t tr, m: integer m, n: integer n, nrhs: integer nrhs
 ) :<> [lwork:pos] (
   gels_lwork_p (tr, m, n, nrhs, lwork) | integer lwork
@@ -1466,9 +1467,36 @@ fun{t1,t2:t@ype} gesvd_skinny: gesvd_skinny_type (t1, t2)
 
 fun{t1,t2:t@ype}
 gesvd_skinny_work_query
-  {m,n:pos} (m: integer m, n: integer n)
+  {m,n:pos | m >= n} (m: integer m, n: integer n)
   :<> [lwork:pos] (gesvd_lwork_p (m, n, lwork) | integer lwork)
 // end of [gesvd_skinny_work_query]
+
+(* ****** ****** *)
+
+(*
+** Only S and VT of skinny matrix
+*)
+
+fun{t1,t2:t@ype} gesvd_skinny_right
+  {m,n:nat | m >= n} {lda,ldvt:inc} {lwork:pos} (
+  pf_lwork: gesvd_lwork_p (m, n, lwork)
+| m: integer m
+, n: integer n
+, a: &(GEMAT (t1, m, n, lda)) >> GEMAT (t1?, m, n, lda)
+, lda: integer lda
+, s: &(@[t2?][n]) >> @[t2][n]
+, vt: &(GEMAT (t1?, n, n, ldvt)) >> GEMAT (t1, n, n, ldvt)
+, ldvt: integer ldvt
+, work: &(@[t1?][lwork])
+, lwork: integer lwork
+) :<> int
+// end of [gesvd_skinny_right]
+
+fun{t1,t2:t@ype}
+gesvd_skinny_right_work_query
+  {m,n:pos} (m: integer m, n: integer n)
+  :<> [lwork:pos] (gesvd_lwork_p (m, n, lwork) | integer lwork)
+// end of [gesvd_skinny_right_work_query]
 
 (* ****** ****** *)
 
@@ -1495,10 +1523,37 @@ gesvd_fat_type (t1:t@ype, t2:t@ype) =
 fun{t1,t2:t@ype} gesvd_fat: gesvd_fat_type (t1, t2)
 
 fun{t1,t2:t@ype}
-gesvd_fat_work_query {m,n:pos}
-  (m: integer m, n: integer n)
+gesvd_fat_work_query
+  {m,n:pos} (m: integer m, n: integer n)
   :<> [lwork:pos] (gesvd_lwork_p (m, n, lwork) | integer lwork)
 // end of [gesvd_fat_work_query]
+
+(* ****** ****** *)
+
+(*
+** Only U and S of fat matrix
+*)
+
+fun{t1,t2:t@ype} gesvd_fat_left
+  {m,n:nat | m <= n} {lda,ldu:inc} {lwork:pos} (
+  pf_lwork: gesvd_lwork_p (m, n, lwork)
+| m: integer m
+, n: integer n
+, a: &(GEMAT (t1, m, n, lda)) >> GEMAT (t1?, m, n, lda)
+, lda: integer lda
+, s: &(@[t2?][m]) >> @[t2][m]
+, u: &(GEMAT (t1?, m, m, ldu)) >> GEMAT (t1, m, m, ldu)
+, ldu: integer ldu
+, work: &(@[t1?][lwork])
+, lwork: integer lwork
+) :<> int
+// end of [gesvd_fat_left]
+
+fun{t1,t2:t@ype}
+gesvd_fat_left_work_query
+  {m,n:pos | m <= n} (m: integer m, n: integer n)
+  :<> [lwork:pos] (gesvd_lwork_p (m, n, lwork) | integer lwork)
+// end of [gesvd_fat_left_work_query]
 
 (* ****** ****** *)
 
