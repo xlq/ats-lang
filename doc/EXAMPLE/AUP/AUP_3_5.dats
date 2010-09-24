@@ -9,6 +9,10 @@
 // section: 3.5: Accessing and Displaying File Metadata
 //
 (* ****** ****** *)
+//
+// implementing a command [longls], which is kind of like [ls -l]
+//
+(* ****** ****** *)
 
 staload "libc/SATS/errno.sats"
 staload "libc/SATS/grp.sats"
@@ -45,7 +49,7 @@ fun print_mode .<>.
        if MODE(S_IXUSR) then print 's' else print 'S'
     | _ => 
        if MODE(S_IXUSR) then print 'x' else print '-'
-   // end of [val]
+  // end of [val]
 //
   val () = if MODE(S_IRGRP) then print 'r' else print '-'
   val () = if MODE(S_IWGRP) then print 'w' else print '-'
@@ -63,7 +67,7 @@ fun print_mode .<>.
        if MODE(S_IXOTH) then print 't' else print 'T'
     | _ => 
        if MODE(S_IXOTH) then print 'x' else print '-'
-   // end of [val]
+  // end of [val]
 //
 in
   // nothing

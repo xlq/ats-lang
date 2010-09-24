@@ -121,7 +121,7 @@ overload time with time_get_and_set
 
 // non-reentrant
 fun ctime (t: &time_t):<!ref>
-  [l:addr] (strptr l -<prf> void | strptr l) = "atslib_ctime"
+  [l:addr] (strptr l -<lin,prf> void | strptr l) = "#atslib_ctime"
 // end of [ctime]
 
 #define CTIME_BUFLEN 26
@@ -132,7 +132,7 @@ fun ctime_r // reentrant
   {m:int | m >= CTIME_BUFLEN} {l:addr} (
     pf: ! b0ytes (m) @ l >> ctime_v (m, l, l1)
   | t: &time_t, p_buf: ptr l
-  ) :<> #[l1:addr] ptr l1 = "atslib_ctime_r"
+  ) :<> #[l1:addr] ptr l1 = "#atslib_ctime_r"
 // end of [ctime_r]
 
 (* ****** ****** *)
@@ -144,9 +144,8 @@ fun difftime
 (* ****** ****** *)
 
 // [localtime] is non-reentrant
-fun localtime (time: &time_t):<!ref> [l:addr] (
-    option_v (@(tm_struct @ l, tm_struct @ l -<prf> void), l>null) | ptr l
-  ) = "#atslib_localtime"
+fun localtime (time: &time_t):<!ref>
+  [l:addr] (ptroutopt (tm_struct, l) | ptr l) = "#atslib_localtime"
 // end of [localtime]
 
 // [localtime_r] is reentrant

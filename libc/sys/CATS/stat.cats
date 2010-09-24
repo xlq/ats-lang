@@ -90,53 +90,39 @@ atslib_S_ISSOCK (ats_mode_type m) { return S_ISSOCK(m) ; }
 
 /* ****** ****** */
 
-ATSinline()
-ats_int_type
-atslib_chmod_err (
-  ats_ptr_type path, ats_mode_type mode
-) {
-  return chmod ((char*)path, mode) ;
-} /* end of [atslib_chmod_err] */
+#define atslib_chmod_err chmod
 
 ATSinline()
 ats_void_type
 atslib_chmod_exn (
   ats_ptr_type path, ats_mode_type mode
 ) {
-  int err = chmod ((char*)path, mode) ; if (err < 0) {
+  int err = chmod ((char*)path, mode) ;
+  if (err < 0) {
     perror ("chmod"); ats_exit_errmsg (1, "exit(ATS): [chmod] failed.\n") ;
-  }
+  } // end of [if]
   return ;
 } /* end of [atslib_chmod_exn] */
 
 /* ****** ****** */
 
-ATSinline()
-ats_int_type
-atslib_mkdir_err (
-  ats_ptr_type path, ats_mode_type mode
-) {
-   return mkdir ((char*)path, mode) ;
-} /* end of [atslib_mkdir_err] */
+#define atslib_mkdir_err mkdir
 
 ATSinline()
 ats_void_type
-atslib_mkdir_exn (ats_ptr_type path, ats_mode_type mode) {
-  int err = mkdir ((char*)path, mode) ; if (err < 0) {
+atslib_mkdir_exn (
+  ats_ptr_type path, ats_mode_type mode
+) {
+  int err = mkdir ((char*)path, mode) ;
+  if (err < 0) {
     perror ("mkdir"); ats_exit_errmsg (1, "exit(ATS): [mkdir] failed.\n") ;
-  }
+  } // end of [if]
   return ;
 } /* end of [atslib_mkdir_exn] */
 
 /* ****** ****** */
 
-ATSinline()
-ats_int_type
-atslib_stat_err (
-  ats_ptr_type name, ats_ptr_type buf
-) {
-  return stat ((char*)name, (ats_stat_type*)buf) ;
-} /* end of [atslib_stat_err] */
+#define atslib_stat_err stat
 
 ATSinline()
 ats_void_type
@@ -144,29 +130,27 @@ atslib_stat_exn (
   ats_ptr_type name, ats_ptr_type buf
 ) {
   int err ;
-  err = stat ((char*)name, (ats_stat_type*)buf) ; if (err < 0) {
+  err = stat ((char*)name, (ats_stat_type*)buf) ;
+  if (err < 0) {
     perror ("stat"); ats_exit_errmsg (1, "exit(ATS): [stat] failed.\n") ;
-  }
+  } // end of [if]
   return ;
 } /* end of [atslib_stat_exn] */
 
 /* ****** ****** */
 
-ATSinline()
-ats_int_type
-atslib_lstat_err (
-  ats_ptr_type name, ats_ptr_type buf
-) {
-  return lstat ((char*)name, (ats_stat_type*)buf) ;
-} /* end of [atslib_lstat_err] */
+#define atslib_lstat_err lstat
 
 ATSinline()
 ats_void_type
-atslib_lstat_exn (ats_ptr_type name, ats_ptr_type buf) {
+atslib_lstat_exn (
+  ats_ptr_type name, ats_ptr_type buf
+) {
   int err ;
-  err = lstat ((char*)name, (ats_stat_type*)buf) ; if (err < 0) {
+  err = lstat ((char*)name, (ats_stat_type*)buf) ;
+  if (err < 0) {
     perror ("lstat"); ats_exit_errmsg (1, "exit(ATS): [lstat] failed.\n") ;
-  }
+  } // end of [if]
   return ;
 } /* end of [atslib_lstat_exn] */
 

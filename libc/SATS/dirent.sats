@@ -9,7 +9,7 @@
 (*
 ** ATS - Unleashing the Potential of Types!
 **
-** Copyright (C) 2002-2008 Hongwei Xi, Boston University
+** Copyright (C) 2002-2010 Hongwei Xi, Boston University
 **
 ** All rights reserved
 **
@@ -36,7 +36,6 @@
 (* ****** ****** *)
 
 staload TYPES = "libc/sys/SATS/types.sats" // for [off_t]
-
 typedef off_t = $TYPES.off_t
 
 (* ****** ****** *)
@@ -59,38 +58,32 @@ fun dirent_d_name_get (ent: &dirent_t): string
 (* ****** ****** *)
 
 fun closedir_err {l_dir:addr} (pf: DIR @ l_dir | p: ptr l_dir):<> int
-  = "atslib_closedir_err"
+  = "#atslib_closedir_err" // macro!
 
 fun closedir_exn {l_dir:addr} (pf: DIR @ l_dir | p: ptr l_dir):<!exn> void
-  = "atslib_closedir_exn"
+  = "atslib_closedir_exn" // function!
 
 (* ****** ****** *)
 
 fun opendir_err (s: string)
-  : [l_dir:addr] (option_v (DIR @ l_dir, l_dir <> null) | ptr l_dir)
-  = "atslib_opendir_err"
+  : [l_dir:addr] (option_v (DIR @ l_dir, l_dir > null) | ptr l_dir)
+  = "#atslib_opendir_err" // macro!
 
 fun opendir_exn (s: string)
-  : [l_dir:addr] (DIR @ l_dir | ptr l_dir)
-  = "atslib_opendir_exn"
+  : [l_dir:addr] (DIR @ l_dir | ptr l_dir) = "atslib_opendir_exn"
+// end of [opendir_exn] // function!
 
 (* ****** ****** *)
 
-fun readdir_err (dir: &DIR)
-  :<> [l_ent:addr] (option_v (vbox (dirent_t @ l_ent), l_ent <> null) | ptr l_ent)
-  = "atslib_readdir_err"
-
-// this function is nonreentrant
-fun readdir_exn (dir: &DIR):<!exn> [l_ent:addr] (vbox (dirent_t @ l_ent) | ptr l_ent)
-  = "atslib_readdir_exn"
+fun readdir (dir: &DIR) :<>
+  [l_ent:addr] (ptroutopt (dirent_t, l_ent) | ptr l_ent) = "#atslib_readdir"
+// end of [readdir]
 
 (* ****** ****** *)
 
-fun rewinddir (dir: &DIR): void = "atslib_rewinddir"
-
-fun telldir (dir: &DIR): off_t = "atslib_telldir"
-
-fun seekdir (dir: &DIR, off: off_t): void = "atslib_seekdir"
+fun rewinddir (dir: &DIR): void = "#atslib_rewinddir"
+fun telldir (dir: &DIR): off_t = "#atslib_telldir"
+fun seekdir (dir: &DIR, off: off_t): void = "#atslib_seekdir"
 
 (* ****** ****** *)
 

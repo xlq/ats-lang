@@ -43,7 +43,8 @@ staload "libc/SATS/dirent.sats"
 
 (* ****** ****** *)
 
-implement dirent_stream_vt_make_DIR
+implement
+dirent_stream_vt_make_DIR
   {l_dir:addr} (pf_dir | p_dir) = $delay_vt (
   res where {
     var res: stream_vt_con dirent_t ; val () = f (pf_dir | p_dir, res)
@@ -77,7 +78,8 @@ implement dirent_stream_vt_make_DIR
 
 (* ****** ****** *)
 
-implement direntptr_stream_vt_make_DIR
+implement
+direntptr_stream_vt_make_DIR
   {l_dir:addr} (pf_dir | p_dir) = $delay_vt (
   res where {
     var res: stream_vt_con dirent_t ; val () = f (pf_dir | p_dir, res)

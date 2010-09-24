@@ -17,7 +17,7 @@ staload "libc/SATS/unistd.sats"
 
 fun get_max_pathname
   (path: string): lint = let
-  var maxlen: lint = pathconf_err (path, _PC_PATH_MAX)
+  var maxlen: lint = pathconf (path, _PC_PATH_MAX)
   val () = if (maxlen < 0L) then
     if errno_get () = (errno_of_int)0 then maxlen := 4096L else ()
   // end of [val]

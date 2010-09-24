@@ -103,7 +103,7 @@ fun getcwdx_main {fd:int} (
     in
       if rtn >= 0 then let
         prval () = opt_unsome (stat_parent)
-        val rtn = chdir_err ".."
+        val rtn = chdir ".."
         val term = if :(stat_parent: stat_t) => 
           (rtn = ~1  andalso errno_is_ENOENT ()) then true else SAME_INODE (stat, stat_parent)
         // end of [val]
@@ -114,7 +114,7 @@ fun getcwdx_main {fd:int} (
         | _ (*continue*) => let
             val (pfopt_dir | p_dir) = opendir_err (".")
           in
-            if p_dir <> null then let
+            if p_dir > null then let
               prval Some_v pf_dir = pfopt_dir
               val ents = dirent_stream_vt_make_DIR (pf_dir | p_dir)
               val found = loop_dir (ents, stat, lstrs, nent)
@@ -135,7 +135,8 @@ fun getcwdx_main {fd:int} (
       end // end of [if]  
     end (* end of [loop] *)
   } // end of [val]
-  val () = fchdir_exn (pf_fd | fd)
+  val _err = fchdir (pf_fd | fd)
+  val () = assert_errmsg (_err <> ~1, #LOCATION)
   val () = close_exn (pf_fd | fd)
   val () = if (err > 0) then (free_pathlist lstrs; lstrs := list_vt_nil)
   val lstrs = lstrs

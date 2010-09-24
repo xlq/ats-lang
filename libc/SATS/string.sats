@@ -36,14 +36,13 @@
 (* ****** ****** *)
 
 %{#
-
 #include "libc/CATS/string.cats"
-
-%}
+%} // end of [%{#]
 
 (* ****** ****** *)
 
 staload ERRNO = "libc/SATS/errno.sats"
+typedef errno_t = $ERRNO.errno_t
 
 (* ****** ****** *)
 
@@ -112,23 +111,21 @@ fun strcat
   = "atslib_strcat"
 
 (*
-
 char *strncat(char *dst, const char *src, size_t n):
 note that there is really no need for this function given that [strcat] is safe!
-
 *)
 
 (* ****** ****** *)
 
 (*
-
 char *strpbrk(const char *str, const char *accept);
-
 *)
 
-dataprop strpbrk_p (l:addr, n:int, l_ret:addr) =
+dataprop
+strpbrk_p (l:addr, n:int, l_ret:addr) =
   | {i:nat | i < n} {l_ret == l+i} strpbrk_p_some (l, n, l_ret)
   | {l_ret == null} strpbrk_p_none (l, n, l_ret)
+// end of [strpbrk_p]
 
 fun strpbrk {m,n:nat} {l:addr}
   (pf: !strbuf (m, n) @ l | p: ptr l, accept: string)
@@ -172,7 +169,8 @@ fun memset {n:nat}
 
 (* ****** ****** *)
 
-dataprop memchr_p (l:addr, n:int, l_ret:addr) =
+dataprop
+memchr_p (l:addr, n:int, l_ret:addr) =
   | {i:nat | i < n} {l_ret == l+i} memchr_p_some (l, n, l_ret)
   | {l_ret == null} memchr_p_none (l, n, l_ret)
 // end of [memchr_p]
@@ -189,15 +187,15 @@ fun memchr {n:nat}
 // [strerror] is not reentrant
 fun strerror (errno: $ERRNO.errno_t): string = "atslib_strerror"
     
-dataview strerror_v
-  (m:int, l:addr, int(*err*)) =
+dataview
+strerror_v (m:int, l:addr, int(*err*)) =
   | {n:nat} strerror_succ (m, l, 0) of strbuf (m, n) @ l
   | strerror_fail (m, l, ~1) of b0ytes m @ l
 // end of [strerror_v]
 
 // [strerror_r] is reentrant // this is the POSIX version
 fun strerror_r {m:nat} {l:addr} (
-    pf: b0ytes m @ l | errno: $ERRNO.errno_t, p_buf: ptr l, m: size_t m
+    pf: b0ytes m @ l | errno: errno_t, p_buf: ptr l, m: size_t m
   ) : [i:int] @(strerror_v (m, l, i) | int i)
   = "atslib_strerror_r"
 // end of [strerror_r]

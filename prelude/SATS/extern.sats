@@ -48,6 +48,15 @@
 
 (* ****** ****** *)
 
+viewdef ptrout
+  (a:viewt@ype, l:addr) = (a @ l, a @ l -<lin,prf> void)
+// end of [ptrout]
+viewdef ptroutopt
+  (a:viewt@ype, l:addr) = option_v (ptrout (a, l), l > null)
+// end of [ptroutopt]
+
+(* ****** ****** *)
+
 //
 // HX: note that (vt1 \minus v2) roughly means that a ticket of
 // [v2] is taken from [vt1]; the ticket must be returned before

@@ -95,7 +95,7 @@ implement unlock (name) = let
 in
   if ans then let
     val path = stropt_unsome (path)
-    val err = unlink_err (path)
+    val err = unlink (path)
   in
     if err <> ~1 then true else false
   end else false

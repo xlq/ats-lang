@@ -788,9 +788,10 @@ end // end of [doc_dir_copy]
 
 fn file_isexi
   (name: string): bool = let
-  var st : $STAT.stat_t
+  typedef T = $STAT.stat_t 
+  var st : T
   val err = $STAT.stat_err (name, st)
-  prval () = opt_clear (st)
+  prval () = opt_clear {T} (st)
 in
   if (err = 0) then true else false
 end // end of [file_isexi]

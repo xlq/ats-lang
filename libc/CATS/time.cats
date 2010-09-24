@@ -131,19 +131,8 @@ atslib_difftime (time_t finish, time_t start) {
 
 /* ****** ****** */
 
-ATSinline()
-ats_ptr_type // this function is not reentrant
-atslib_ctime
-  (ats_ref_type ntick) { return ctime((time_t*)ntick) ; }
-// end of [atslib_ctime]
-
-ATSinline()
-ats_ptr_type // this function is reentrant
-atslib_ctime_r (
-  ats_ref_type ntick, ats_ptr_type p_buf
-) {
-  return ctime_r ((time_t*)ntick, (char*)p_buf) ;
-} // end of [ctime_r]
+#define atslib_ctime ctime
+#define atslib_ctime_r ctime_r
 
 /* ****** ****** */
 

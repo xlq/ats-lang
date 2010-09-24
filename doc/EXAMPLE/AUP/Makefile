@@ -6,8 +6,8 @@
 ######
 
 #
-# Time: Summer, 2009
 # Author: Hongwei Xi (hwxi AT cs DOT bu DOT edu)
+# Start Time: Summer, 2009
 #
 
 ######
@@ -60,6 +60,10 @@ getcwdx: AUP_3_6_4.dats
 	$(ATSCC) -o getcwdx AUP_3_6_4.dats \
      && ./getcwdx
 
+test42: AUP_4_2.dats
+	$(ATSCC) -o test42 AUP_4_2.dats \
+     && ./test42
+
 ######
 
 clean::
@@ -73,6 +77,7 @@ cleanall: clean
 	rm -f pathnames
 	rm -f longls
 	rm -f getcwdx
+	rm -f test42
 
 ###### end of [Makefile] ######
  

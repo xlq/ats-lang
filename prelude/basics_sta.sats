@@ -375,7 +375,8 @@ typedef Refopt (a: viewt@ype) = [b:bool] refopt (a, b)
 (* ****** ****** *)
 
 // for taking out a component in a record
-abst@ype without_viewt0ype_t0ype (viewt@ype)
+abst@ype
+without_viewt0ype_t0ype (viewt@ype)
 stadef without = without_viewt0ype_t0ype
 
 // sta vbox_view_prop : view -> prop

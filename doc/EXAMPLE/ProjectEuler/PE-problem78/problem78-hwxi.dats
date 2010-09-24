@@ -17,7 +17,7 @@
 // then the coefficient of x^n in g(x) is the p(n)
 // 1/g(x) = 1-x-x^2+x^5+x^7-x^12-x^15+...
 // Let q(n) = n(3n-1)/2 // q(0) = 0; q(1) = 1; q(-1) = 2; q(2) = 5; q(-2) = 7
-// 1/g(x) = Sigma_n (-1)^n x^{q(n)} // Euler's Pentagon number theorem
+// 1/g(x) = Sigma_n (-1)^n x^{q(n)} // Euler's Pentagonal number theorem
 //
 // So p(n) = p(n-1) + p(n-2) - p(n-5) - p(n-7) + p (n-12) + p (n-15) - ...
 //
@@ -47,7 +47,7 @@ fun p (n: int): int = let
     val () = (print "p: loop: k = "; print k; print_newline ())
 *)
     val pk = pentagon (k)
-    val pk1 = pentagon (~k)
+    val pk1 = pk + k // = pentagon (~k)
   in
     if n >= pk then let
       val res = res + sgn * (p (n-pk) + p (n-pk1))
@@ -97,4 +97,4 @@ main () = () where {
 
 (* ****** ****** *)
 
-(* end of [problem76-hwxi.dats] *)
+(* end of [problem78-hwxi.dats] *)

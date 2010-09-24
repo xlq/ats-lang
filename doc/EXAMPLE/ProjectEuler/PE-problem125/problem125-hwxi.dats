@@ -93,6 +93,10 @@ in
   loop (0)
 end // end of [eval]
 
+(*
+//
+// HX: this is used for testing
+//
 val () = let
   var n: int // unintialized
   val () = !theList := list_nil
@@ -106,6 +110,7 @@ val () = let
 in
   // nothing
 end // end of [val]
+*)
 
 (* ****** ****** *)
 

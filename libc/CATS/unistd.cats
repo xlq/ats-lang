@@ -89,9 +89,7 @@ atslib_wait_without_status () { return wait((int*)0) ; }
 
 /* ****** ****** */
 
-ATSinline()
-ats_int_type // n >= 0
-atslib_sleep (ats_int_type n) { return sleep (n) ; }
+#define atslib_sleep sleep
 
 ATSinline()
 ats_void_type // n >= 0
@@ -113,80 +111,17 @@ atslib_usleep (ats_int_type n) { usleep (n) ; return ; }
 
 /* ****** ****** */
 
-#define atslib_chdir_err chdir
-
-ATSinline()
-ats_void_type
-atslib_chdir_exn (
-  ats_ptr_type path
-) {
-  int err ;
-  err = chdir ((char*)path) ;
-  if (err == -1) {
-    perror ("chdir") ;
-    ats_exit_errmsg (1, "exit(ATS): [chdir] failed\n") ;
-  } // end of [if]
-} /* end of [atslib_chdir_exn] */
-
-#define atslib_fchdir_err fchdir
-
-ATSinline()
-ats_void_type
-atslib_fchdir_exn
-  (ats_int_type fd) {
-  int err ;
-  err = fchdir (fd) ;
-  if (err == -1) {
-    perror ("fchdir") ;
-    ats_exit_errmsg (1, "exit(ATS): [fchdir] failed\n") ;
-  } // end of [if]
-} /* end of [atslib_fchdir_exn] */
+#define atslib_chdir chdir
+#define atslib_fchdir fchdir
 
 /* ****** ****** */
 
-#define atslib_link_err link
-
-ATSinline()
-ats_void_type
-atslib_link_exn (
-  ats_ptr_type src, ats_ptr_type dst
-) { 
-  int err ;
-  err = link ((char*)src, (char*)dst) ;
-  if (err == -1) {
-    perror ("link") ;
-    ats_exit_errmsg (1, "exit(ATS): [link] failed\n") ;
-  } // end of [if]
-  return ;
-} /* end of [atslib_link_exn] */
+#define atslib_link link
+#define atslib_unlink unlink
 
 /* ****** ****** */
 
-#define atslib_unlink_err unlink
-
-ATSinline()
-ats_void_type
-atslib_unlink_exn (ats_ptr_type path) { 
-  int err ;
-  err = unlink ((char*)path) ;
-  if (err == -1) {
-    perror ("unlink") ;
-    ats_exit_errmsg (1, "exit(ATS): [unlink] failed\n") ;
-  } // end of [if]
-  return ;
-} /* end of [atslib_unlink_exn] */
-
-/* ****** ****** */
-
-ATSinline()
-ats_off_type
-atslib_fildes_lseek_err (
-  ats_int_type fd
-, ats_off_type ofs
-, ats_int_type whence
-) {
-  return lseek(fd, ofs, whence) ;
-} /* end of [atslib_fildes_lseek_err] */
+#define atslib_fildes_lseek_err lseek
 
 ATSinline()
 ats_off_type
@@ -206,27 +141,8 @@ atslib_fildes_lseek_exn (
 
 /* ****** ****** */
 
-ATSinline()
-ats_ssize_type
-atslib_fildes_pread_err (
-  ats_int_type fd
-, ats_ptr_type buf
-, ats_size_type cnt
-, ats_off_type ofs
-) {
-  return pread(fd, buf, cnt, ofs) ;
-} /* end of [atslib_fildes_pread_err] */
-
-ATSinline()
-ats_ssize_type
-atslib_fildes_pwrite_err (
-  ats_int_type fd
-, ats_ptr_type buf
-, ats_size_type cnt
-, ats_off_type ofs
-) {
-  return pwrite(fd, buf, cnt, ofs) ;
-} /* end of [atslib_fildes_pwrite_err] */
+#define atslib_fildes_pread pread
+#define atslib_fildes_pwrite pwrite
 
 /* ****** ****** */
 

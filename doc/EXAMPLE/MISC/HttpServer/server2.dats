@@ -600,6 +600,7 @@ extern fun directory_send {fd: int}
 implement directory_send {fd}
   (pf_conn | fd, dirname): void = let
   val (pf_dir_opt | p_dir) = opendir_err (dirname)
+  prval () = ptr_is_gtez (p_dir)
 in
   if (p_dir = null) then
     let prval None_v () = pf_dir_opt in msg404_send (pf_conn | fd) end

@@ -64,7 +64,7 @@ atspre_exit_prerrf(ats_int_type code, ats_ptr_type fmt, ...) ;
 
 /* ****** ****** */
 
-static inline
+ATSinline()
 ats_ptr_type
 atslib_dirent_d_name_get
   (ats_ptr_type dir) { return ((ats_dirent_type*)dir)->d_name ; }
@@ -72,13 +72,9 @@ atslib_dirent_d_name_get
 
 /* ****** ****** */
 
-static inline
-ats_int_type
-atslib_closedir_err (ats_ptr_type dir) {
-  return closedir (dir) ;
-}
+#define atslib_closedir_err closedir
 
-static inline
+ATSinline()
 ats_void_type
 atslib_closedir_exn (ats_ptr_type dir) {
   int err = closedir (dir) ; if (err < 0) {
@@ -90,11 +86,9 @@ atslib_closedir_exn (ats_ptr_type dir) {
 
 /* ****** ****** */
 
-static inline
-ats_ptr_type
-atslib_opendir_err (ats_ref_type path) { return opendir (path) ; }
+#define atslib_opendir_err opendir
 
-static inline
+ATSinline()
 ats_ptr_type
 atslib_opendir_exn (ats_ref_type path) {
   DIR* ret = opendir (path) ; if (!ret) {
@@ -106,32 +100,13 @@ atslib_opendir_exn (ats_ref_type path) {
 
 /* ****** ****** */
 
-static inline
-ats_ptr_type
-atslib_readdir_err (ats_ptr_type dir) { return readdir ((DIR*)dir) ; }
-
-static inline
-ats_ptr_type
-atslib_readdir_exn (ats_ptr_type dir) {
-  struct dirent *ret = readdir ((DIR*)dir) ;
-  if (!ret) {
-    perror ("readdir") ;
-    atspre_exit_prerrf (errno, "Exit: [readdir] failed.\n") ;
-  }
-  return ret ;
-} /* end of [atslib_readdir_exn] */
+#define atslib_readdir readdir
 
 /* ****** ****** */
 
-static inline
-ats_int_type
-atslib_readdir_r_err
-  (ats_ptr_type dir, ats_ref_type ent, ats_ref_type ret) {
-  int err = readdir_r (
-    (DIR*)dir, (ats_dirent_type*)ent, (ats_dirent_type**)ret
-  ) ;
-  return err ;
-} /* end of [atslib_readdir_r_err] */
+#define atslib_rewinddir rewinddir 
+#define atslib_seekdir seekdir
+#define atslib_telldir telldir
 
 /* ****** ****** */
 

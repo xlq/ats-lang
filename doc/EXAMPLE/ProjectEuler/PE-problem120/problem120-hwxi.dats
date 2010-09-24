@@ -1,5 +1,5 @@
 //
-// ProjectEuler: Problem 123
+// ProjectEuler: Problem 120
 // Find the maximum remainder of (a-1)^n+(a+1)^n divided by a^2
 //
 
@@ -36,4 +36,4 @@ main () = () where {
 
 (* ****** ****** *)
 
-(* end of [problem123-hwxi.dats] *)
+(* end of [problem120-hwxi.dats] *)

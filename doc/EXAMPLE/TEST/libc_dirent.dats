@@ -67,7 +67,7 @@ fn prerr_usage (cmd: string): void =
 fn ls (dirname: string): void = let
   val (pfopt_dir | p_dir) = opendir_err (dirname)
 in
-  if (p_dir <> null) then let
+  if (p_dir > null) then let
     prval Some_v (pf_dir) = pfopt_dir
     val ents = direntptr_stream_vt_make_DIR (pf_dir | p_dir)
     val [n:int] (nent, ents) = list_vt_of_stream_vt<direntptr_gc> (ents)

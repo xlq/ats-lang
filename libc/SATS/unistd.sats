@@ -63,44 +63,50 @@ stadef fildes_v = $FCNTL.fildes_v
 
 (* ****** ****** *)
 
-sta stdin_int : int
-sta stdout_int : int
-sta stderr_int : int
+sta STDIN_FILENO : int
+sta STDOUT_FILENO : int
+sta STDERR_FILENO : int
 
-macdef STDIN_FILENO = $extval (int stdin_int, "STDIN_FILENO")
-macdef STDOUT_FILENO = $extval (int stdout_int, "STDOUT_FILENO")
-macdef STDERR_FILENO = $extval (int stderr_int, "STDERR_FILENO")
+macdef STDIN_FILENO = $extval (int STDIN_FILENO, "STDIN_FILENO")
+macdef STDOUT_FILENO = $extval (int STDOUT_FILENO, "STDOUT_FILENO")
+macdef STDERR_FILENO = $extval (int STDERR_FILENO, "STDERR_FILENO")
 
 (* ****** ****** *)
-
+//
 // implemented in [$ATSHOME/prelude/CATS/basics.cats]
-
-fun stdin_fildes_view_get (): (fildes_v (stdin_int, rd) | void)
+//
+fun stdin_fildes_view_get
+  (): (fildes_v (STDIN_FILENO, rd) | void)
   = "atspre_stdin_view_get"
 
-fun stdin_fildes_view_set (pf: fildes_v (stdin_int, rd) | (*none*)): void
+fun stdin_fildes_view_set
+  (pf: fildes_v (STDIN_FILENO, rd) | (*none*)): void
   = "atspre_stdin_view_set"
 
 //
 
-fun stdout_fildes_view_get (): (fildes_v (stdout_int, wr) | void)
+fun stdout_fildes_view_get
+  (): (fildes_v (STDOUT_FILENO, wr) | void)
   = "atspre_stdout_view_get"
 
-fun stdout_fildes_view_set (pf: fildes_v (stdout_int, wr) | (*none*)): void
+fun stdout_fildes_view_set
+  (pf: fildes_v (STDOUT_FILENO, wr) | (*none*)): void
   = "atspre_stdout_view_set"
 
 //
 
-fun stderr_fildes_view_get (): (fildes_v (stderr_int, wr) | void)
+fun stderr_fildes_view_get
+  (): (fildes_v (STDERR_FILENO, wr) | void)
   = "atspre_stderr_view_get"
 
-fun stderr_fildes_view_set (pf: fildes_v (stderr_int, wr) | (*none*)): void
+fun stderr_fildes_view_set
+  (pf: fildes_v (STDERR_FILENO, wr) | (*none*)): void
   = "atspre_stderr_view_set"
 
 (* ****** ****** *)
-
+//
 // implemented in [$ATSHOME/libc/DATS/unistd.dats]
-
+//
 fun fork_exn (): pid_t = "atslib_fork_exn"
   
 fun fork_exec_cloptr_exn {v:view}
@@ -143,14 +149,17 @@ overload wait with wait_without_status
 (* ****** ****** *)
 
 // [sleep] may be implemented using SIGARM
-fun sleep {i:nat} (t: int i): [j:nat | j <= i] int j = "atslib_sleep"
+fun sleep {i:nat}
+  (t: int i): [j:nat | j <= i] int j = "#atslib_sleep"
+// end of [sleep]
 
 (* ****** ****** *)
 
 #define MILLION 1000000
 // some systems require that the argument of usleep <= 1 million
 fun usleep
-  (n: natLte MILLION (* microseconds *)): void = "atslib_usleep"
+  (n: natLte MILLION (* microseconds *)): void = "atslib_usleep" // !fun
+// end of [usleep]
 
 (* ****** ****** *)
 
@@ -170,7 +179,7 @@ fun geteuid ():<> uid_t = "#atslib_geteuid" // macro
 
 // HX: non-reentrant version
 fun getlogin ()
-  :<!ref> [l:addr] (strptr l -<prf> void | strptr l)
+  :<!ref> [l:addr] (strptr l -<lin,prf> void | strptr l)
   = "#atslib_getlogin" // macro
 // end of [getlogin]
 
@@ -184,28 +193,15 @@ fun getlogin_r {m:int} {l:addr}
 
 (* ****** ****** *)
 
-fun chdir_err (path: string): int(*err*) = "#atslib_chdir_err"
-fun chdir_exn (path: string): void = "atslib_chdir_exn" // function
-
-fun fchdir_err {fd:int} {flag:open_flag}
-  (pf: !fildes_v (fd, flag) | fd: int): int(*err*) = "#atslib_fchdir_err"
-// end of [fchdir_err]
-
-fun fchdir_exn {fd:int} {flag:open_flag}
-  (pf: !fildes_v (fd, flag) | fd: int): void = "atslib_fchdir_exn" // fun
-// end of [fchdir_exn]
+fun chdir (path: string): int(*err*) = "#atslib_chdir"
+fun fchdir {fd:int} {flag:open_flag}
+  (pf: !fildes_v (fd, flag) | fd: int): int(*err*) = "#atslib_fchdir"
+// end of [fchdir]
 
 (* ****** ****** *)
 
-fun link_err
-  (src: string, dst: string): int = "#atslib_link_err" // macro
-// end of [link_err]
-fun link_exn
-  (src: string, dst: string): void = "atslib_link_exn" // function
-// end of [link_exn]
-
-fun unlink_err (path: string): int = "#atslib_unlink_err" // macro
-fun unlink_exn (path: string): void = "atslib_unlink_exn" // function
+fun link (src: string, dst: string): int = "#atslib_link"
+fun unlink (path: string): int = "#atslib_unlink" // macro
 
 (* ****** ****** *)
 
@@ -219,31 +215,31 @@ fun fildes_lseek_exn {fd:int} {flag:open_flag}
 
 (* ****** ****** *)
 
-fun fildes_pread_err
+fun fildes_pread
   {fd:int} {flag:open_flag} {n,sz:nat | n <= sz} (
     pf1: open_flag_lte (flag, rd), pf2: !fildes_v (fd, flag)
   | fd: int fd, buf: &bytes sz, ntotal: size_t n, ofs: off_t
   ) : ssizeBtw(~1, n+1)
-  = "atslib_fildes_pread_err"
+  = "atslib_fildes_pread"
 
-fun fildes_pwrite_err
+fun fildes_pwrite
   {fd:int} {flag:open_flag} {n,sz:nat | n <= sz} (
     pf1: open_flag_lte (flag, wr), pf2: !fildes_v (fd, flag)
   | fd: int fd, buf: &bytes sz, ntotal: size_t n, ofs: off_t
   ) : ssizeBtw(~1, n+1)
-  = "atslib_fildes_pwrite_err"
+  = "atslib_fildes_pwrite"
 
 (* ****** ****** *)
 
 fun sync (): void = "#atslib_sync"
 
 // [fsync] returns 0 on success or -1 on error
-fun fsync_err {fd:int} {flag:open_flag} // (sets errno)
+fun fsync {fd:int} {flag:open_flag} // (sets errno)
   (pf: !fildes_v (fd, flag) | fd: int fd): int = "#atslib_fsync"
 // end of [fsync]
 
 // [fdatasync] returns 0 on success or -1 on error
-fun fdatasync_err {fd:int} {flag:open_flag} // (sets errno)
+fun fdatasync {fd:int} {flag:open_flag} // (sets errno)
   (pf: !fildes_v (fd, flag) | fd: int fd): int = "#atslib_fdatasync"
 // end of [fdatasync]
 
@@ -272,16 +268,16 @@ macdef _PC_ALLOC_SIZE_MIN = $extval (pathconfname_t, "_PC_ALLOC_SIZE_MIN")
 macdef _PC_SYMLINK_MAX = $extval (pathconfname_t, "_PC_SYMLINK_MAX")
 macdef _PC_2_SYMLINK = $extval (pathconfname_t, "_PC_2_SYMLINK")
 
-fun pathconf_err
+fun pathconf
   (path: string, name: pathconfname_t): lint = "#atslib_pathconf"
-// end of [pathconf_err]
+// end of [pathconf]
 
 //
 // HX-2010-09-21: for simplicity, [fd] assumed to be valid
 //
-fun fpathconf_err {fd:int}
+fun fpathconf {fd:int}
   (fd: int fd, name: pathconfname_t): lint = "#atslib_fpathconf"
-// end of [fpathconf_err]
+// end of [fpathconf]
 
 (* ****** ****** *)
 

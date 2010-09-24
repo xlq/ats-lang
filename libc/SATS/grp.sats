@@ -65,12 +65,12 @@ $extype_struct "ats_group_type" of {
 (* ****** ****** *)
 
 fun group_get_gr_name
-  (grp: &group_t): [l:addr] (strptr l -<prf> void | strptr l)
+  (grp: &group_t): [l:addr] (strptr l -<lin,prf> void | strptr l)
   = "atslib_group_get_gr_name" // fun!
 // end of [group_get_gr_name]
 
 fun group_get_gr_passwd
-  (grp: &group_t): [l:addr] (strptr l -<prf> void | strptr l)
+  (grp: &group_t): [l:addr] (strptr l -<lin,prf> void | strptr l)
   = "atslib_group_get_gr_passwd" // fun!
 // end of [group_get_gr_passwd]
 
@@ -84,15 +84,13 @@ fun group_get_gr_mem
 (* ****** ****** *)
 
 // HX: non-reentrant
-fun getgrnam (nam: string):<!ref> [l:addr]
-  (option_v ((group_t @ l, group_t @ l -<prf> void), l > null) | ptr l)
-  = "#atslib_getgrnam"
+fun getgrnam (nam: string):<!ref>
+  [l:addr] (ptroutopt (group_t, l) | ptr l) = "#atslib_getgrnam"
 // end of [getgrnam]
 
 // HX: non-reentrant
-fun getgrgid (gid: gid_t):<!ref> [l:addr]
-  (option_v ((group_t @ l, group_t @ l -<prf> void), l > null) | ptr l)
-  = "#atslib_getgrgid"
+fun getgrgid (gid: gid_t):<!ref>
+  [l:addr] (ptroutopt (group_t, l) | ptr l) = "#atslib_getgrgid"
 // end of [getgrgid]
 
 (* ****** ****** *)

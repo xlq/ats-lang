@@ -99,16 +99,14 @@ implement dirwalk (dirname, f) = let
   val () = pf_name := bytes_v_of_b0ytes_v (pf_name)
   val (pfopt_dir | p_dir) = opendir_err (dirname)
 in
-  if (p_dir <> null) then let
+  if (p_dir > null) then let
     prval Some_v pf_dir = pfopt_dir
     fun loop (buf: &buf_t, dir: &DIR):<cloref1> void = let
-      val (pfboxopt | p_ent) = readdir_err (dir)
+      val (pfopt | p_ent) = readdir (dir)
     in
-      if (p_ent <> null) then let
-        prval Some_v pfbox = pfboxopt
-        prval vbox pf = pfbox
-      in
-        case+ 0 of
+      if (p_ent > null) then let
+        prval Some_v @(pf, fpf) = pfopt
+        val () = case+ 0 of
         | _ when dirent_is_self (!p_ent) =>
             $effmask_ref (loop (buf, dir))
         | _ when dirent_is_parent (!p_ent) =>
@@ -128,8 +126,11 @@ in
           in
             $effmask_ref (loop (buf, dir))
           end // end of [_]
+        prval () = fpf (pf)
+      in
+        // nothing
       end else let
-        prval None_v () = pfboxopt
+        prval None_v () = pfopt
       in
         // loop exists
       end // end of [if]

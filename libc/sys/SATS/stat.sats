@@ -128,32 +128,32 @@ fun S_ISSOCK (m: mode_t): bool = "atslib_S_ISSOCK"
 (* ****** ****** *)
 
 fun chmod_err (path: string, mode: mode_t): int
-  = "atslib_chmod_err"
+  = "#atslib_chmod_err" // !macro
 fun chmod_exn (path: string, mode: mode_t): void
-  = "atslib_chmod_exn"
+  = "atslib_chmod_exn" // !function
 
 (* ****** ****** *)
 
 fun mkdir_err (path: string, mode: mode_t): int
-  = "atslib_mkdir_err"
+  = "#atslib_mkdir_err" // !macro
 fun mkdir_exn (path: string, mode: mode_t): void
-  = "atslib_mkdir_exn"
+  = "atslib_mkdir_exn" // !function
 
 (* ****** ****** *)
 
 fun stat_err {l:addr} (
     name: string, st: &stat_t? >> opt (stat_t, i==0)
   ) : #[i:int | i <= 0] int i
-  = "atslib_stat_err"
+  = "#atslib_stat_err" // !macro
 fun stat_exn (name: string, st: &stat_t? >> stat_t): void
-  = "atslib_stat_exn"
+  = "atslib_stat_exn" // !function
 
 fun lstat_err {l:addr} (
     name: string, st: &stat_t? >> opt (stat_t, i==0)
   ) : #[i:int | i <= 0] int i
-  = "atslib_lstat_err"
+  = "#atslib_lstat_err" // !macro
 fun lstat_exn (name: string, buf: &stat_t? >> stat_t): void
-  = "atslib_lstat_exn"
+  = "atslib_lstat_exn" // !function
 
 (* ****** ****** *)
 
