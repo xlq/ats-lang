@@ -1,7 +1,7 @@
 //
 // ProjectEuler: Problem 125
 // Finding palindrome numbers that can be represented as the sum of
-// at least two consecutive squares
+// two or more consecutive squares
 //
 
 (* ****** ****** *)
