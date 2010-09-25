@@ -62,9 +62,15 @@ praxi mul_add_const {i:int}
   {m,n:int} {p:int} (pf: MUL (m, n, p)):<prf> MUL (m+i, n, p+i*n)
 // end of [mul_add_const]
 
-praxi mul_expand_linear {a,b:int} {c,d:int} // a,b,c,d: constants!
-  {m,n:int} {p:int} (pf: MUL (m, n, p)):<prf> MUL (a*m+b, c*n+d, a*c*p+a*d*m+b*c*n+b*d)
+praxi mul_expand_linear {a1,b1:int} {a2,b2:int} // a1,b1,a2,b2: constants!
+  {x,y:int} {p:int} (pf: MUL (x, y, p)):<prf> MUL (a1*x+b1, a2*y+b2, a1*a2*p+a1*b2*x+a2*b1*y+b1*b2)
 // end of [mul_expand_linear]
+
+praxi mul_expand2_linear
+  {a1,b1,c1:int} {a2,b2,c2:int} {x,y:int} {xx,xy,yy:int} // a1,b1,c1,a2,b2,c2: constants!
+  (pf: MUL (x, x, xx), pfxy: MUL (x, y, xy), pfyy: MUL (y, y, yy)):<prf>
+  MUL (a1*x+b1*y+c1, a2*x+b2*y+c2, a1*a2*xx+(a1*b2+a2*b1)*xy+b1*b2*yy+(a1*c2+a2*c1)*x+(b1*c2+b2*c1)*y+c1*c2)
+// end of [mul_expand2_linear]
 
 (* ****** ****** *)
 

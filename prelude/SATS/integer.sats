@@ -450,11 +450,11 @@ fun igcd1 {i,j:int}
 //
 
 fun imul2 {i,j:int}
-  (i: int i, j: int j):<> [p:int] (MUL (i, j, p) | int p)
-  = "atspre_imul2"
+  (i: int i, j: int j)
+  :<> [p:int] (MUL (i, j, p) | int p) = "atspre_imul2"
 fun igcd2 {i,j:int}
-  (i: int i, j: int j):<> [r:int] (GCD (i, j, r) | int r)
-  = "atspre_igcd2"
+  (i: int i, j: int j)
+  :<> [r:int] (GCD (i, j, r) | int r) = "atspre_igcd2"
 
 //
 
@@ -462,8 +462,8 @@ fun nmul (i: Nat, j: Nat):<> Nat = "atspre_nmul"
 fun ndiv (i: Nat, j: Pos):<> Nat = "atspre_ndiv"
 // HX: there is no [ndiv1]
 fun ndiv2 {i:nat;j:pos}
-  (i: int i, j: int j):<> [q,r:nat | r < j] (MUL (q, j, i-r) | int q)
-  = "atspre_ndiv2"
+  (i: int i, j: int j)
+  :<> [q,r:nat | r < j] (MUL (q, j, i-r) | int q) = "atspre_ndiv2"
 // end of [ndiv2]
 
 //

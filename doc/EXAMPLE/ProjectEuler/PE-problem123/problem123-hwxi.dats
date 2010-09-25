@@ -41,7 +41,6 @@ fun nextprime (n: int): int =
 //
 // HX: starting from: search (5, 11)
 //
-
 fun search {k:nat}
   (n: int(2*k+1), pn: int, rmax: double): int = let
   val fpn = double_of (pn)
