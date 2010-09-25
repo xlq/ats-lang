@@ -70,9 +70,9 @@ atslib_clearerr(ats_ptr_type fil) {
 
 ATSinline()
 ats_int_type
-atslib_fclose_err(ats_ptr_type fil) {
-  return fclose((FILE*)fil) ;
-}
+atslib_fclose_err
+  (ats_ptr_type fil) { return fclose((FILE*)fil) ; }
+// end of [atslib_fclose_err]
 
 ATSinline()
 ats_void_type
@@ -240,7 +240,7 @@ atslib_fputc_err (
   ats_char_type c, ats_ptr_type fil
 ) {
   return fputc((unsigned char)c, (FILE*)fil) ;
-}
+} // end of [atslib_fputc_err]
 
 ATSinline()
 ats_void_type
@@ -253,7 +253,7 @@ atslib_fputc_exn (
     atspre_exit_prerrf (1, "exit(ATS): [fputc(%c)] failed\n", c) ;
   }
   return ;
-}
+} // end of [atslib_fputc_exn]
 
 /* --------------------------------------- */
 
@@ -263,7 +263,7 @@ atslib_fputs_err(
   ats_ptr_type s, ats_ptr_type fil
 ) {
   return fputs ((char*)s, (FILE*)fil) ;
-}
+} // end of [atslib_fputs_err]
 
 ATSinline()
 ats_void_type
@@ -276,7 +276,7 @@ atslib_fputs_exn(
     atspre_exit_prerrf (1, "exit(ATS): [fputs(%s)] failed\n", s) ;
   }
   return ;
-}
+} // end of [atslib_fputs_exn]
 
 /* --------------------------------------- */
 
@@ -287,10 +287,9 @@ atslib_fread (
 , ats_size_type sz
 , ats_size_type n
 , ats_ptr_type fil
-)
-{
+) {
   return fread ((void*)buf, sz, n, (FILE*)fil) ;
-}
+} // end of [atslib_fread]
 
 ATSinline()
 ats_size_type
@@ -300,7 +299,7 @@ atslib_fread_byte (
 , ats_ptr_type fil
 ) {
   return fread ((void*)buf, 1, n, (FILE*)fil) ;
-}
+} // end of [atslib_fread_byte]
 
 ATSinline()
 ats_void_type
@@ -316,7 +315,7 @@ atslib_fread_byte_exn (
     ats_exit_errmsg (1, (ats_ptr_type)"exit(ATS): [fread] failed\n") ;
   }
   return ;
-}
+} // end of [atslib_fread_byte_exn]
 
 /* --------------------------------------- */
 
@@ -344,7 +343,7 @@ atslib_freopen_exn(
     ) ;
   }
   return ;
-}
+} // end of [atslib_freopen_exn]
 
 /* --------------------------------------- */
 
@@ -362,7 +361,7 @@ atslib_freopen_stdin
   }
   atspre_stdin_view_set() ;
   return ;
-}
+} // end of [atslib_freopen_stdin]
 
 ATSinline()
 ats_void_type
@@ -378,7 +377,7 @@ atslib_freopen_stdout
   }
   atspre_stdout_view_set () ;
   return ;
-}
+} // end of [atslib_freopen_stdout]
 
 ATSinline()
 ats_void_type
@@ -394,7 +393,7 @@ atslib_freopen_stderr
   }
   atspre_stderr_view_set() ;
   return ;
-}
+} // end of [atslib_freopen_stderr]
 
 /* --------------------------------------- */
 
@@ -406,7 +405,7 @@ atslib_fseek_err (
 , ats_int_type whence
 ) {
   return fseek ((FILE*)fil, offset, whence) ;
-} /* atslib_fseek_err */
+} // end of [atslib_fseek_err]
 
 ATSinline()
 ats_void_type
@@ -422,7 +421,7 @@ atslib_fseek_exn (
     ats_exit_errmsg (1, (ats_ptr_type)"exit(ATS): [fseek] failed\n") ;
   }
   return ;
-} /* end of [atslib_fseek_exn] */
+} // end of [atslib_fseek_exn]
 
 /* --------------------------------------- */
 
@@ -445,7 +444,7 @@ atslib_ftell_exn(
     ats_exit_errmsg (1, (ats_ptr_type)"exit(ATS): [ftell] failed\n") ;
   }
   return ret ;
-}
+} // end of [atslib_ftell_exn]
 
 /* --------------------------------------- */
 
@@ -458,7 +457,7 @@ atslib_fwrite (
 , ats_ptr_type fil
 ) {
   return fwrite((void*)buf, sz, n, (FILE*)fil) ;
-} /* atslib_fwrite */
+} /* end of [atslib_fwrite] */
 
 ATSinline()
 ats_size_type
@@ -468,7 +467,7 @@ atslib_fwrite_byte (
 , ats_ptr_type fil
 ) {
   return fwrite((void*)buf, 1, n, (FILE*)fil) ;
-} /* atslib_fwrite_byte */
+} /* end of [atslib_fwrite_byte] */
 
 ATSinline()
 ats_void_type
@@ -497,7 +496,7 @@ atslib_perror(
   perror ((char*)msg) ;
   atspre_stderr_view_set () ;
   return ;
-}
+} // end of [atslib_perror]
 
 /* --------------------------------------- */
 
@@ -564,21 +563,21 @@ atslib_remove_exn(
     ats_exit_errmsg (1, (ats_ptr_type)"exit(ATS): [remove] failed\n") ;
   }
   return ;
-}
+} // end of [atslib_remove_exn]
 
 /* --------------------------------------- */
 
 ATSinline()
 ats_int_type
-atslib_rename_err (
+atslib_rename_err(
   ats_ptr_type oldpath, ats_ptr_type newpath
 ) {
   return rename((char*)oldpath, (char*)newpath) ;
-}
+} // end of [atslib_rename_err]
 
 ATSinline()
 ats_void_type
-atslib_rename_exn (
+atslib_rename_exn(
   ats_ptr_type oldpath, ats_ptr_type newpath
 ) {
   int err = rename((char*)oldpath, (char*)newpath) ;
@@ -587,7 +586,7 @@ atslib_rename_exn (
     ats_exit_errmsg (1, (ats_ptr_type)"exit(ATS): [rename] failed\n") ;   
   }
   return ;
-}
+} // end of [atslib_rename_exn]
 
 /* --------------------------------------- */
 
@@ -597,7 +596,7 @@ atslib_rewind (
   ats_ptr_type fil
 ) {
   rewind((FILE*)fil) ; return ;
-}
+} // end of [atslib_rewind]
 
 /* --------------------------------------- */
 
@@ -624,7 +623,7 @@ atslib_ungetc_err (
   ats_char_type c, ats_ptr_type fil
 ) {
   return ungetc((unsigned char)c, (FILE*)fil) ;
-}
+} // end of [atslib_ungetc_err]
 
 ATSinline()
 ats_void_type

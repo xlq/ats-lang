@@ -69,12 +69,13 @@ datasort status = init | bind | listen | conn
 
 absview socket_v (int, status)
 
-dataview socket_opt_v (int) = 
-  | socket_none (~1)
-  | {fd:nat} socket_some (fd) of socket_v (fd, init)
+dataview socketopt_v (int) = 
+  | socketopt_v_none (~1)
+  | {fd:nat} socketopt_v_some (fd) of socket_v (fd, init)
+// end of [socketopt_v]
 
 fun socket_family_type_err
-  (af: address_family_t, t: socket_type_t): [fd:int] (socket_opt_v fd | int fd)
+  (af: address_family_t, t: socket_type_t): [fd:int] (socketopt_v fd | int fd)
   = "atslib_socket_family_type_err"
 
 fun socket_family_type_exn
@@ -86,14 +87,15 @@ fun socket_family_type_exn
 fun sockaddr_ipv4_init (
     sa: &sockaddr_in_struct_t? >> sockaddr_in_struct_t
   , af: address_family_t, inp: in_addr_nbo_t, port: in_port_nbo_t
-  ) :<> void
-  = "atslib_sockaddr_ipv4_init"
+  ) :<> void = "atslib_sockaddr_ipv4_init"
+// end of [sockaddr_ipv4_init]
 
 (* ****** ****** *)
 
 dataview connect_v (fd: int, int) =
-  | connect_fail (fd, ~1) of socket_v (fd, init)
-  | connect_succ (fd,  0) of socket_v (fd, conn)
+  | connect_v_fail (fd, ~1) of socket_v (fd, init)
+  | connect_v_succ (fd,  0) of socket_v (fd, conn)
+// end of [connect_v]
 
 fun connect_ipv4_err {fd:int} (
   pf_sock: socket_v (fd, init) | fd: int fd, servaddr: &sockaddr_in_struct_t
@@ -103,14 +105,15 @@ fun connect_ipv4_err {fd:int} (
 fun connect_ipv4_exn {fd:int} (
     pf: !socket_v (fd, init) >> socket_v (fd, conn)
   | fd: int fd, servaddr: &sockaddr_in_struct_t
-  ) : void
-  = "atslib_connect_ipv4_exn"
+  ) : void = "atslib_connect_ipv4_exn"
+// end of [connect_ipv4_exn]
 
 (* ****** ****** *)
 
 dataview bind_v (fd:int, int) = 
-  | bind_fail (fd, ~1) of socket_v (fd, init)
-  | bind_succ (fd,  0) of socket_v (fd, bind)
+  | bind_v_fail (fd, ~1) of socket_v (fd, init)
+  | bind_v_succ (fd,  0) of socket_v (fd, bind)
+// end of [bind_v]
 
 fun bind_ipv4_err {fd:int}
   (pf_sock: socket_v (fd, init) | fd: int fd, servaddr: &sockaddr_in_struct_t)
@@ -120,31 +123,33 @@ fun bind_ipv4_err {fd:int}
 fun bind_ipv4_exn {fd:int} (
     pf_sock: !socket_v (fd, init) >> socket_v (fd, bind)
   | fd: int fd, servaddr: &sockaddr_in_struct_t
-  ) : void
-  = "atslib_bind_ipv4_exn"
+  ) : void = "atslib_bind_ipv4_exn"
+// end of [bind_ipv4_exn]
 
 (* ****** ****** *)
 
 dataview listen_v (fd: int, int) = 
-  | listen_fail (fd, ~1) of socket_v (fd, bind) 
-  | listen_succ (fd,  0) of socket_v (fd, listen)
+  | listen_v_fail (fd, ~1) of socket_v (fd, bind) 
+  | listen_v_succ (fd,  0) of socket_v (fd, listen)
+// end of [listen_v]
 
 fun listen_err {fd:int}
   (pf_sock: socket_v (fd, bind) | fd: int fd, backlog: Pos)
   : [i:int] (listen_v (fd, i) | int i)
   = "atslib_listen_err"
+// end of [listen_err]
 
 fun listen_exn {fd:int} (
     pf_sock: !socket_v (fd, bind) >> socket_v (fd, listen)
   | fd: int fd, backlog: Pos // [backlog = 0] is not supported on all systems
-  ) : void
-  = "atslib_listen_exn"
+  ) : void  = "atslib_listen_exn"
+// end of [listen_exn]
 
 (* ****** ****** *)
 
 dataview accept_v (int) = 
-  | {fd:nat} accept_succ (fd) of socket_v (fd, conn)
-  | accept_fail (~1)
+  | {fd:nat} accept_v_succ (fd) of socket_v (fd, conn)
+  | accept_v_fail (~1)
 // end of [accept_v]
 
 fun accept_null_err {fd_s:int}
@@ -208,15 +213,13 @@ fun socket_read_exn {fd:int} {n,sz:nat | n <= sz} (
 // implemented in [libc/DATS/fcntl.dats]
 fun socket_read_loop_err {fd:int} {n,sz:nat | n <= sz} (
     pf_sock: !socket_v (fd, conn) | fd: int fd, buf: &bytes sz, ntotal: size_t n
-  ) : ssizeBtw (~1, n+1)
-  = "atslib_fildes_read_loop_err"
+  ) : ssizeBtw (~1, n+1) = "atslib_fildes_read_loop_err"
 // end of [socket_read_loop_err]
 
 // implemented in [libc/sys/DATSsocket.dats]
 fun socket_read_loop_exn {fd:int} {n,sz:nat | n <= sz} (
     pf_sock: !socket_v (fd, conn) | fd: int fd, buf: &bytes sz, ntotal: size_t n
-  ) : sizeLte n
-  = "atslib_socket_read_loop_exn"
+  ) : sizeLte n = "atslib_socket_read_loop_exn"
 // end of [socket_read_loop_exn]
 
 (* ****** ****** *)
@@ -224,15 +227,13 @@ fun socket_read_loop_exn {fd:int} {n,sz:nat | n <= sz} (
 // implemented in [libc/CATS/fcntl.cats]
 fun socket_write_err {fd:int} {n,sz:nat | n <= sz} (
     pf_sock: !socket_v (fd, conn) | fd: int fd, buf: &bytes sz, ntotal: size_t n
-  ) : ssizeBtw(~1, n+1)
-  = "atslib_fildes_write_err"
+  ) : ssizeBtw(~1, n+1) = "atslib_fildes_write_err"
 // end of [socket_write_err]
 
 // implemented in [libc/sys/CATS/socket.cats]
 fun socket_write_exn {fd:int} {n,sz:nat | n <= sz} (
     pf_sock: !socket_v (fd, conn) | fd: int fd, buf: &bytes sz, ntotal: size_t n
-  ) : sizeLte n
-  = "atslib_socket_write_exn"
+  ) : sizeLte n = "atslib_socket_write_exn"
 // end of [socket_write_exn]
 
 (* ****** ****** *)
@@ -240,8 +241,7 @@ fun socket_write_exn {fd:int} {n,sz:nat | n <= sz} (
 // implemented in [libc/DATS/fcntl.dats]
 fun socket_write_loop_err {fd:int} {n,sz:nat | n <= sz} (
     pf_sock: !socket_v (fd, conn) | fd: int fd, buf: &bytes sz, ntotal: size_t n
-  ) : ssizeBtw(~1, n+1)
-  = "atslib_fildes_write_loop_err"
+  ) : ssizeBtw(~1, n+1) = "atslib_fildes_write_loop_err"
 // end of [socket_write_loop_err]
 
 // implemented in [libc/sys/DATS/socket.dats]

@@ -117,17 +117,13 @@ atslib_time_get () { return time((time_t*)0) ; }
 
 ATSinline()
 ats_time_type
-atslib_time_get_and_set (ats_ref_type p) {
-  return time((time_t*)p) ;
-}
+atslib_time_get_and_set
+  (ats_ref_type p) { return time((time_t*)p) ; }
+// end of [atslib_time_get_and_set]
 
 /* ****** ****** */
 
-ATSinline()
-ats_double_type
-atslib_difftime (time_t finish, time_t start) {
-  return difftime(finish, start) ;
-}
+#define atslib_difftime difftime
 
 /* ****** ****** */
 

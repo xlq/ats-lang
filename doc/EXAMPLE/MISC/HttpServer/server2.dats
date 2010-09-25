@@ -692,7 +692,7 @@ implement main_loop
 in
   if fd_c >= 0 then let
     val () = the_nrequest_inc ()
-    prval accept_succ pf_conn = pf_accept
+    prval accept_v_succ pf_conn = pf_accept
     val pid = fork_exn (); val ipid = int_of_pid (pid)
   in
     case+ 0 of
@@ -738,7 +738,7 @@ in
       } (* end of [_] *)
     // end of [case]
   end else let
-    prval accept_fail () = pf_accept
+    prval accept_v_fail () = pf_accept
     val () = (prerr "Error: [accept] failed!"; prerr_newline ())
   in
     main_loop (pf_list, pf_buf | fd_s, p_buf)

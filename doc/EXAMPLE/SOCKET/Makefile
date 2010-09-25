@@ -24,6 +24,7 @@ compall: \
   daytime_tcpserver \
   echo_tcpclient \
   echo_tcpserver \
+  echo_preforking \
 
 ######
 

@@ -15,6 +15,10 @@ staload "libc/SATS/unistd.sats"
 
 (* ****** ****** *)
 
+#include "prelude/HATS/lmacrodef.hats"
+
+(* ****** ****** *)
+
 fun getln {n:pos} (
     s: &bytes(n), nmax: size_t n, iseof: &bool >> bool
   ) : bool = let
@@ -52,6 +56,7 @@ main () = () where {
   var !p_buf with pf_buf = @[byte][BUFSZ]()
   prval () = pf_buf := bytes_v_of_b0ytes_v (pf_buf)
   var iseof: bool = false
+  val () = println "Please input:"
   val () = while (true) let
     val err = getln (!p_buf, BUFSZ, iseof)
     val () = if ~err then break

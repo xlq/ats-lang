@@ -102,6 +102,17 @@ atslib_opendir_exn (ats_ref_type path) {
 
 #define atslib_readdir readdir
 
+ATSinline()
+ats_int_type
+atslib_readdir_r_err (
+  ats_ptr_type dir, ats_ref_type ent, ats_ref_type ret
+) {
+  int err = readdir_r (
+    (DIR*)dir, (ats_dirent_type*)ent, (ats_dirent_type**)ret
+  ) ;
+  return err ;
+} /* end of [atslib_readdir_r_err] */
+
 /* ****** ****** */
 
 #define atslib_rewinddir rewinddir 

@@ -663,7 +663,7 @@ implement main_loop
   val (pf_accept | fd_c) = accept_null_err(pf_list | fd_s)
 in
   if fd_c >= 0 then let
-    prval accept_succ pf_conn = pf_accept
+    prval accept_v_succ pf_conn = pf_accept
     val n = socket_read_exn
       (pf_conn | fd_c, !p_buf, BUFSZ)
     val (pf_gc, pf_sb | p) = strbuf_make_bytes (!p_buf, 0, n)
@@ -680,7 +680,7 @@ in
         main_loop (pf_list, pf_buf | fd_s, p_buf)
       end // end of [_]
   end else let
-    prval accept_fail () = pf_accept
+    prval accept_v_fail () = pf_accept
     val () = prerr "Error: [accept] failed!\n"
   in
     main_loop (pf_list, pf_buf | fd_s, p_buf)

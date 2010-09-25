@@ -10,6 +10,10 @@
 // Time: September, 2010
 //
 (* ****** ****** *)
+//
+// HX: the search take about 20 seconds on wildwest.bu.edu; a bit too long :(
+//
+(* ****** ****** *)
 
 staload _(*anon*) = "prelude/DATS/array.dats"
 staload _(*anon*) = "prelude/DATS/list.dats"

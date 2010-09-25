@@ -152,12 +152,9 @@ overload fclose_exn with fclose1_exn
 
 //
 
-fun fclose_stdin ():<!exnref> void
-  = "atslib_fclose_stdin"
-fun fclose_stdout ():<!exnref> void
-  = "atslib_fclose_stdout"
-fun fclose_stderr ():<!exnref> void
-  = "atslib_fclose_stderr"
+fun fclose_stdin ():<!exnref> void = "atslib_fclose_stdin"
+fun fclose_stdout ():<!exnref> void = "atslib_fclose_stdout"
+fun fclose_stderr ():<!exnref> void = "atslib_fclose_stderr"
 
 // ------------------------------------------------
 

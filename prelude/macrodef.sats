@@ -35,16 +35,16 @@
 
 (* ****** ****** *)
 
-(* some coommonly used macro definitions *)
+(* some commonly used macro definitions *)
 
 (* ****** ****** *)
 
 #include "prelude/params.hats"
 
+(* ****** ****** *)
+
 #if VERBOSE_PRELUDE #then
-
 #print "Loading [macrodef.ats] starts!\n"
-
 #endif // end of [VERBOSE_PRELUDE]
 
 (* ****** ****** *)
@@ -88,12 +88,12 @@ end // end of [prerr_mac]
 
 (* ****** ****** *)
 
-macdef println (str) = begin
-  print ,(str); print_newline ()
+macdef println (x) = begin
+  print ,(x); print_newline ()
 end // end of [println]
 
-macdef prerrln (str) = begin
-  prerr ,(str); prerr_newline ()
+macdef prerrln (x) = begin
+  prerr ,(x); prerr_newline ()
 end // end of [prerrln]
 
 (* ****** ****** *)
@@ -135,11 +135,9 @@ end // end of [local]
 (* ****** ****** *)
 
 #if VERBOSE_PRELUDE #then
-
 #print "Loading [macrodef.ats] finishes!\n"
-
 #endif // end of [VERBOSE_PRELUDE]
 
 (* ****** ****** *)
 
-(* end of [macrodef.ats] *)
+(* end of [macrodef.sats] *)

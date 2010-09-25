@@ -138,7 +138,7 @@ fun ctime_r // reentrant
 (* ****** ****** *)
 
 fun difftime
-  (finish: time_t, start: time_t):<> double = "atslib_difftime"
+  (finish: time_t, start: time_t):<> double = "#atslib_difftime"
 // end of [difftime]
 
 (* ****** ****** *)

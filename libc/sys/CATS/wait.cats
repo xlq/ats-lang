@@ -33,8 +33,8 @@
 
 /* ****** ****** */
 
-#ifndef _LIBC_SYS_WAIT_CATS
-#define _LIBC_SYS_WAIT_CATS
+#ifndef ATS_LIBC_SYS_WAIT_CATS
+#define ATS_LIBC_SYS_WAIT_CATS
 
 #include <sys/types.h>
 #include <sys/wait.h>
@@ -63,12 +63,12 @@
 
 /* ****** ****** */
 
-static inline
+ATSinline()
 ats_int_type
 atslib_WIFEXITED (ats_int_type status) { return WIFEXITED(status) ; }
 // end of [atslib_WIFEXITED]
 
-static inline
+ATSinline()
 ats_int_type
 atslib_WEXITSTATUS
   (ats_int_type status) { return WEXITSTATUS(status) ; }
@@ -76,12 +76,12 @@ atslib_WEXITSTATUS
 
 /* ****** ****** */
 
-static inline
+ATSinline()
 ats_int_type
 atslib_WIFSIGNALED (ats_int_type status) { return WIFSIGNALED(status) ; }
 // end of [atslib_WIFSIGNALED]
 
-static inline
+ATSinline()
 ats_int_type
 atslib_WTERMSIG
   (ats_int_type status) { return WTERMSIG(status) ; }
@@ -89,12 +89,12 @@ atslib_WTERMSIG
 
 /* ****** ****** */
 
-static inline
+ATSinline()
 ats_int_type
 atslib_WIFSTOPPED (ats_int_type status) { return WIFSTOPPED(status) ; }
 // end of [atslib_WIFSTOPPED]
 
-static inline
+ATSinline()
 ats_int_type
 atslib_WSTOPSIG
   (ats_int_type status) { return WSTOPSIG(status) ; }
@@ -102,13 +102,13 @@ atslib_WSTOPSIG
 
 /* ****** ****** */
 
-static inline
+ATSinline()
 ats_pid_type
 atslib_wait
   (ats_ref_type status) { return wait ((int*)status) ; }
 /* end of [atslib_wait] */
 
-static inline
+ATSinline()
 ats_pid_type
 atslib_waitpid (
   ats_pid_type chldpid
@@ -120,6 +120,6 @@ atslib_waitpid (
 
 /* ****** ****** */
 
-#endif /* end of [_LIBC_SYS_WAIT_CATS] */
+#endif /* end of [ATS_LIBC_SYS_WAIT_CATS] */
 
 /* end of [wait.cats] */

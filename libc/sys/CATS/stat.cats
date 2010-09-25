@@ -33,8 +33,8 @@
 
 /* ****** ****** */
 
-#ifndef _LIBC_SYS_STAT_CATS
-#define _LIBC_SYS_STAT_CATS
+#ifndef ATS_LIBC_SYS_STAT_CATS
+#define ATS_LIBC_SYS_STAT_CATS
 
 /* ****** ****** */
 
@@ -158,12 +158,14 @@ atslib_lstat_exn (
 
 ATSinline()
 ats_mode_type
-atslib_umask (ats_mode_type mask_new) {
+atslib_umask (
+  ats_mode_type mask_new
+) {
   return umask (mask_new) ; /* the original mask is returned */
 } /* end of [atslib_umask] */
 
 /* ****** ****** */
 
-#endif /* end of [_LIBC_SYS_STAT_CATS] */
+#endif /* end of [ATS_LIBC_SYS_STAT_CATS] */
 
 /* end of [stat.cats] */

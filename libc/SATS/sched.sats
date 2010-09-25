@@ -7,7 +7,6 @@
 (***********************************************************************)
 
 (*
-**
 ** ATS - Unleashing the Potential of Types!
 **
 ** Copyright (C) 2002-2010 Hongwei Xi, Boston University

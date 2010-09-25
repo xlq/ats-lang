@@ -111,6 +111,8 @@ libc/SATS/gmp.sats
 libc/DATS/gmp.dats
 #endif
 
+libc/SATS/grp.sats
+
 libc/SATS/math.sats
 libc/DATS/math.dats
 

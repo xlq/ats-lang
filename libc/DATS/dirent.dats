@@ -51,9 +51,9 @@ dirent_stream_vt_make_DIR
   } // end of [where]
 , $effmask_exn (closedir_exn (pf_dir | p_dir))
 ) where {
-  extern fun readdir_r_err
+  extern fun readdir_r
     (_: &DIR, _: &dirent_t? >> dirent_t, _: &ptr? >> Ptr):<> int
-    = "atslib_readdir_r_err"
+    = "#atslib_readdir_r"
   fn f (
       pf_dir: DIR @ l_dir
     | p_dir: ptr l_dir, res: &stream_vt_con dirent_t? >> stream_vt_con dirent_t
@@ -61,7 +61,7 @@ dirent_stream_vt_make_DIR
     var ret: ptr // uninitialized
     val () = (res := stream_vt_cons {dirent_t} (?, ?))
     val+ stream_vt_cons (!p_x, !p_xs) = res
-    val err = readdir_r_err (!p_dir, !p_x, ret)
+    val err = readdir_r (!p_dir, !p_x, ret)
     val islast = if (err <> 0) then true else (ret = null)
   in
     if islast then let
@@ -86,9 +86,9 @@ direntptr_stream_vt_make_DIR
   } // end of [where]
 , $effmask_exn (closedir_exn (pf_dir | p_dir))
 ) where {
-  extern fun readdir_r_err
+  extern fun readdir_r
     (_: &DIR, _: &dirent_t? >> dirent_t, _: &ptr? >> Ptr):<> int
-    = "atslib_readdir_r_err"
+    = "#atslib_readdir_r"
   fn f (
       pf_dir: DIR @ l_dir
     | p_dir: ptr l_dir
@@ -96,7 +96,7 @@ direntptr_stream_vt_make_DIR
     ) :<1,~ref> void = let
     var ret: ptr // uninitialized
     val (pf_ent_gc, pf_ent | p_ent) = ptr_alloc_tsz {dirent_t} (sizeof<dirent_t>)
-    val err = readdir_r_err (!p_dir, !p_ent, ret)
+    val err = readdir_r (!p_dir, !p_ent, ret)
     val islast = if (err <> 0) then true else (ret = null)
   in
     if islast then let

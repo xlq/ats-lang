@@ -391,8 +391,8 @@ fun curl_global_init
 
 (* ****** ****** *)
 
-fun curl_global_cleanup (pf: CURLglobal_v 0 | (*none*)): void
-  = "#atsctrb_curl_global_cleanup"
+fun curl_global_cleanup
+  (pf: CURLglobal_v 0 | (*none*)): void = "#atsctrb_curl_global_cleanup"
 // end of [curl_global_cleanup]
 
 (* ****** ****** *)
