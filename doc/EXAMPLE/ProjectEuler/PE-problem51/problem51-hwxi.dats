@@ -34,7 +34,7 @@ fun isprime
       (if x mod p = 0 then false else loop (p+1))
     else true // end of [if]
 in
-  loop (2)
+  if x >= 2 then loop (2) else false
 end // end of [isprime]
 
 (* ****** ****** *)
