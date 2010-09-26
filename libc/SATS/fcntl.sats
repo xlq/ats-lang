@@ -47,47 +47,24 @@ typedef mode_t = $TYPES.mode_t
 
 (* ****** ****** *)
 
-datasort open_flag =
-  | open_flag_rd (* read *)
-  | open_flag_wr (* write *)
-  | open_flag_rdwr (* read and write *)
-// end of [open_flag]
+abst@ype flag_t = int
+castfn int_of_flag (f: flag_t):<> int
 
-stadef rd = open_flag_rd
-stadef wr = open_flag_wr
-stadef rdwr = open_flag_rdwr
+macdef O_RDONLY = $extval (flag_t, "O_RDONLY")
+macdef O_WRONLY = $extval (flag_t, "O_WRONLY")
+macdef O_RDWR   = $extval (flag_t, "O_RDWR")
 
-(* ****** ****** *)
+abst@ype disjflag_t = int // for [lor]
+abst@ype conjflag_t = int // for [land]
 
-absprop open_flag_lte (open_flag, open_flag)
+macdef O_CREAT = $extval (disjflag_t, "O_CREAT")
+macdef O_APPEND = $extval (disjflag_t, "O_APPEND")
 
-praxi open_flag_lte_refl {f:open_flag} (): open_flag_lte (f, f)
-
-prval open_flag_lte_rd_rd : open_flag_lte (rd, rd)
-prval open_flag_lte_wr_wr : open_flag_lte (wr, wr)
-prval open_flag_lte_rdwr_rdwr : open_flag_lte (rdwr, rdwr)
-
-praxi open_flag_lte_rd_rdwr (): open_flag_lte (rdwr, rd)
-praxi open_flag_lte_wr_rdwr (): open_flag_lte (rdwr, wr)
-
-(* ****** ****** *)
-
-abst@ype flag_t (open_flag) = $extype "ats_int_type"
-
-macdef O_RDONLY = $extval (flag_t rd, "O_RDONLY")
-macdef O_WRONLY = $extval (flag_t wr, "O_WRONLY")
-macdef O_RDWR   = $extval (flag_t rdwr, "O_RDWR")
-
-abst@ype orflag_t = $extype "ats_int_type"
-
-macdef O_CREAT = $extval (orflag_t, "O_CREAT")
-macdef O_APPEND = $extval (orflag_t, "O_APPEND")
-
-macdef O_EXCL = $extval (orflag_t, "O_EXCL")
-macdef O_NOCTTY = $extval (orflag_t, "O_NOCTTY")
-macdef O_NONBLOCK = $extval (orflag_t, "O_NONBLOCK")
-macdef O_SYNC = $extval (orflag_t, "O_SYNC")
-macdef O_TRUNC = $extval (orflag_t, "O_TRUNC")
+macdef O_EXCL = $extval (disjflag_t, "O_EXCL")
+macdef O_NOCTTY = $extval (disjflag_t, "O_NOCTTY")
+macdef O_NONBLOCK = $extval (disjflag_t, "O_NONBLOCK")
+macdef O_SYNC = $extval (disjflag_t, "O_SYNC")
+macdef O_TRUNC = $extval (disjflag_t, "O_TRUNC")
 
 (*
 macdef O_NDELAY
@@ -98,144 +75,159 @@ macdef O_ASYNC
 macdef O_LARGEFILE
 *)
 
-fun lor_flag_orflag {f:open_flag}
-  (f: flag_t f, orf: orflag_t): flag_t f = "atslib_lor_flag_orflag"
-overload lor with lor_flag_orflag
+fun lnot_disjflag
+  (df: disjflag_t): conjflag_t = "atslib_lnot_disjflag"
+overload ~ with lnot_disjflag
+
+fun lor_flag_disjflag
+  (f: flag_t, df: disjflag_t): flag_t = "atslib_lor_flag_disjflag"
+overload lor with lor_flag_disjflag
+
+fun land_flag_conjflag
+  (f: flag_t, cf: conjflag_t): flag_t = "atslib_land_flag_conjflag"
+overload land with land_flag_conjflag
 
 (* ****** ****** *)
 
-absview fildes_v (int, open_flag) // file descriptor view
+absview fildes_v (int) // file descriptor view
 
 (* ****** ****** *)
 
-dataview open_v (int, open_flag) =
-  | {i:nat} {f:open_flag} open_v_succ (i, f) of fildes_v (i, f)
-  | {f:open_flag} open_v_fail (~1, f) of ()
+dataview open_v (int) =
+  | {i:nat} open_v_succ (i) of fildes_v (i) | open_v_fail (~1) of ()
 // end of [open_v]
 
-fun open_flag_err {f:open_flag}
-  (path: string, flag: flag_t f): [i: int] (open_v (i, f) | int i)
+fun open_flag_err
+  (path: string, flag: flag_t): [i: int] (open_v (i) | int i)
   = "atslib_open_flag_err"
 
-fun open_flag_exn {f:open_flag}
-  (path: string, flag: flag_t f): [i: int] (fildes_v (i, f) | int i)
+fun open_flag_exn
+  (path: string, flag: flag_t): [i: int] (fildes_v i | int i)
   = "atslib_open_flag_exn"
 
-fun open_flag_mode_exn {f:open_flag}
-  (path: string, flag: flag_t f, mode: mode_t)
-  : [i: int] (fildes_v (i, f) | int i)
+fun open_flag_mode_exn
+  (path: string, flag: flag_t, mode: mode_t)
+  : [i: int] (fildes_v (i) | int i)
   = "atslib_open_flag_mode_exn"
 
 (* ****** ****** *)
 
-dataview close_v (fd: int, flag: open_flag, int) =
-  | close_v_succ (fd, flag,  0) of ()
-  | close_v_fail (fd, flag, ~1) of fildes_v (fd, flag)
+dataview close_v (fd: int, int) =
+  | close_v_succ (fd,  0) of () | close_v_fail (fd, ~1) of fildes_v (fd)
 // end of [close_v]
 
-fun close_err {fd:int} {flag: open_flag}
-  (pf: fildes_v (fd, flag) | fd: int fd)
-  : [i:int] (close_v (fd, flag, i) | int i)
+fun close_err {fd:int}
+  (pf: fildes_v (fd) | fd: int fd)
+  : [i:int] (close_v (fd, i) | int i)
   = "atslib_close_err"
 
-fun close_exn {fd:int} {flag: open_flag}
-  (pf: fildes_v (fd, flag) | fd: int fd): void
-  = "atslib_close_exn"
+fun close_exn {fd:int}
+  (pf: fildes_v (fd) | fd: int fd): void = "atslib_close_exn"
+// end of [close_exn]
 
 // implemented in [libc/DATS/fcntl.dats]
-fun close_loop_err {fd:int} {flag: open_flag}
-  (pf: fildes_v (fd, flag) | fd: int fd)
-  :<> [i:int] (close_v (fd, flag, i) | int i)
+fun close_loop_err {fd:int}
+  (pf: fildes_v (fd) | fd: int fd)
+  :<> [i:int] (close_v (fd, i) | int i)
+// end of [close_loop_err]
 
 // implemented in [libc/DATS/fcntl.dats]
-fun close_loop_exn {fd:int} {flag: open_flag}
-  (pf: fildes_v (fd, flag) | fd: int fd): void
+fun close_loop_exn {fd:int}
+  (pf: fildes_v (fd) | fd: int fd): void
+// end of [close_loop_exn]
 
 (* ****** ****** *)
-
-// implemented in [libc/CATS/fcntl.cats]
-
+//
+// HX: implemented in [libc/CATS/fcntl.cats]
+//
 fun fildes_read_err
-  {fd:int} {flag:open_flag} {n,sz:nat | n <= sz} (
-    pf1: open_flag_lte (flag, rd), pf2: !fildes_v (fd, flag)
-  | fd: int fd, buf: &bytes sz, ntotal: size_t n
-  ) : ssizeBtw(~1, n+1)
-  = "atslib_fildes_read_err"
+  {fd:int} {n,sz:nat | n <= sz} (
+    pf: !fildes_v (fd) | fd: int fd, buf: &bytes sz, ntotal: size_t n
+  ) : ssizeBtw(~1, n+1) = "atslib_fildes_read_err"
+// end of [fildes_read_err]
 
 fun fildes_read_exn
-  {fd:int} {flag:open_flag} {n,sz:nat | n <= sz} (
-    pf1: open_flag_lte (flag, rd), pf2: !fildes_v (fd, flag)
-  | fd: int fd, buf: &bytes sz, ntotal: size_t n
+  {fd:int} {n,sz:nat | n <= sz} (
+    pf: !fildes_v (fd) | fd: int fd, buf: &bytes sz, ntotal: size_t n
   ) : sizeLte n
   = "atslib_fildes_read_exn"
+// end of [fildes_read_exn]
 
-// implemented in [libc/DATS/fcntl.dats]
-
+//
+// HX: implemented in [libc/DATS/fcntl.dats]
+//
 fun fildes_read_loop_err
-  {fd:int} {flag:open_flag} {n,sz:nat | n <= sz} (
-    pf1: open_flag_lte (flag, rd), pf2: !fildes_v (fd, flag)
-  | fd: int fd, buf: &bytes sz, ntotal: size_t n
-  ) : ssizeBtw (~1, n+1)
-  = "atslib_fildes_read_loop_err"
+  {fd:int} {n,sz:nat | n <= sz} (
+    pf: !fildes_v (fd) | fd: int fd, buf: &bytes sz, ntotal: size_t n
+  ) : ssizeBtw (~1, n+1) = "atslib_fildes_read_loop_err"
+// end of [fildes_read_loop_err]
 
 fun fildes_read_loop_exn
-  {fd:int} {flag:open_flag} {n,sz:nat | n <= sz} (
-    pf1: open_flag_lte (flag, rd), pf2: !fildes_v (fd, flag)
-  | fd: int fd, buf: &bytes sz, ntotal: size_t n
-  ) : sizeLte n
-  = "atslib_fildes_read_loop_exn"
+  {fd:int} {n,sz:nat | n <= sz} (
+    pf: !fildes_v (fd) | fd: int fd, buf: &bytes sz, ntotal: size_t n
+  ) : sizeLte n = "atslib_fildes_read_loop_exn"
+// end of [fildes_read_loop_exn]
 
 (* ****** ****** *)
-
-// implemented in [libc/CATS/fcntl.cats]
-
+//
+// HX: implemented in [libc/CATS/fcntl.cats]
+//
 fun fildes_write_err
-  {fd:int} {flag:open_flag} {n,sz:nat | n <= sz} (
-    pf1: open_flag_lte (flag, wr), pf2: !fildes_v (fd, flag)
-  | fd: int fd, buf: &bytes sz, ntotal: size_t n
-  ) : ssizeBtw(~1, n+1)
-  = "atslib_fildes_write_err"
+  {fd:int} {n,sz:nat | n <= sz} (
+    pf: !fildes_v (fd) | fd: int fd, buf: &bytes sz, ntotal: size_t n
+  ) : ssizeBtw(~1, n+1) = "atslib_fildes_write_err"
+// end of [fildes_write_err]
 
 fun fildes_write_exn
-  {fd:int} {flag:open_flag} {n,sz:nat | n <= sz} (
-    pf1: open_flag_lte (flag, wr), pf2: !fildes_v (fd, flag)
-  | fd: int fd, buf: &bytes sz, ntotal: size_t n
-  ) : sizeLte n
-  = "atslib_fildes_write_exn"
+  {fd:int} {n,sz:nat | n <= sz} (
+    pf: !fildes_v (fd) | fd: int fd, buf: &bytes sz, ntotal: size_t n
+  ) : sizeLte n = "atslib_fildes_write_exn"
+// end of [fildes_write_exn]
 
-// implemented in [libc/DATS/fcntl.dats]
-
+//
+// HX: implemented in [libc/DATS/fcntl.dats]
+//
 fun fildes_write_loop_err
-  {fd:int} {flag:open_flag} {n,sz:nat | n <= sz} (
-    pf1: open_flag_lte (flag, wr), pf2: !fildes_v (fd, flag)
-  | fd: int fd, buf: &bytes sz, ntotal: size_t n
-  ) : ssizeBtw(~1, n+1)
-  = "atslib_fildes_write_loop_err"
+  {fd:int} {n,sz:nat | n <= sz} (
+    pf: !fildes_v (fd) | fd: int fd, buf: &bytes sz, ntotal: size_t n
+  ) : ssizeBtw(~1, n+1) = "atslib_fildes_write_loop_err"
+// end of [fildes_write_loop_err]
 
 fun fildes_write_loop_exn
-  {fd:int} {flag:open_flag} {n,sz:nat | n <= sz} (
-    pf1: open_flag_lte (flag, wr), pf2: !fildes_v (fd, flag)
-  | fd: int fd, buf: &bytes sz, ntotal: size_t n
+  {fd:int} {n,sz:nat | n <= sz} (
+    pf: !fildes_v (fd) | fd: int fd, buf: &bytes sz, ntotal: size_t n
   ) : void // all bytes must be written if this function returns
   = "atslib_fildes_write_loop_exn"
+// end of [fildes_write_loop_exn]
 
 (* ****** ****** *)
-
-// implemented in [libc/CATS/fcntl.cats]
-
+//
+// HX: implemented in [libc/CATS/fcntl.cats]
+//
 fun fildes_write_substring_err
-  {fd:int} {flag:open_flag} {i,n,sz:nat | i+n <= sz} (
-    pf1: open_flag_lte (flag, wr), pf2: !fildes_v (fd, flag)
+  {fd:int} {i,n,sz:nat | i+n <= sz} (
+    pf: !fildes_v (fd)
   | fd: int fd, str: string sz, start: size_t i, n: size_t n
   ) : ssizeBtw(~1, n+1)
   = "atslib_fildes_write_substring_err"
+// end of [fildes_write_substring_err]
 
 fun fildes_write_substring_exn
-  {fd:int} {flag:open_flag} {i,n,sz:nat | i+n <= sz} (
-    pf1: open_flag_lte (flag, wr), pf2: !fildes_v (fd, flag)
+  {fd:int} {i,n,sz:nat | i+n <= sz} (
+    pf: !fildes_v (fd)
   | fd: int fd, str: string sz, start: size_t i, n: size_t n
-  ) : sizeLte n
-  = "atslib_fildes_write_substring_exn"
+  ) : sizeLte n = "atslib_fildes_write_substring_exn"
+// end of [fildes_write_substring_exn]
+
+(* ****** ****** *)
+
+fun fcntl_getfl {fd:int}
+  (fd: int fd): flag_t = "atslib_fcntl_getfl"
+// end of [fcntl_getfl]
+
+fun fcntl_setfl {fd:int}
+  (fd: int fd, flags: flag_t): int = "atslib_fcntl_setfl"
+// end of [fcntl_setfl]
 
 (* ****** ****** *)
 

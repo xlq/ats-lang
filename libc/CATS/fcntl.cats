@@ -59,37 +59,59 @@ ats_exit_errmsg(ats_int_type n, ats_ptr_type msg) ;
 
 /* ****** ****** */
 
-static inline
-ats_int_type
-atslib_lor_flag_orflag
-  (ats_int_type flag, ats_int_type orflag) {
-  return (flag | orflag) ;
-} /* end of [atslib_lor_flag_orflag] */
+typedef ats_int_type ats_flag_type ;
+typedef ats_int_type ats_orflag_type ;
 
 /* ****** ****** */
 
-static inline
+ATSinline()
+ats_int_type
+atslib_lnot_disjflag
+  (ats_flag_type df) { return (~df) ; }
+// end of [atslib_lnot_disjflag]
+
+ATSinline()
+ats_int_type
+atslib_lor_flag_disjflag (
+  ats_flag_type f, ats_flag_type df
+) {
+  return (f | df) ;
+} /* end of [atslib_lor_flag_disjflag] */
+
+ATSinline()
+ats_int_type
+atslib_land_flag_conjflag (
+  ats_flag_type f, ats_flag_type cf
+) {
+  return (f & cf) ;
+} /* end of [atslib_lor_flag_conjflag] */
+
+/* ****** ****** */
+
+ATSinline()
 ats_int_type
 atslib_open_flag_err
-  (ats_ptr_type path, ats_int_type flag)
+  (ats_ptr_type path, ats_flag_type flag)
 {
   return open((char*)path, flag) ;
 } /* end of [atslib_open_flag_err] */
 
-static inline
+ATSinline()
 ats_int_type
-atslib_open_flag_mode_err
-  (ats_ptr_type path, ats_int_type flag, ats_int_type mode)
-{
+atslib_open_flag_mode_err (
+  ats_ptr_type path
+, ats_flag_type flag
+, ats_mode_type mode
+) {
   return open((char*)path, flag, mode) ;
 } /* end of [atslib_open_flag_mode_err] */
 
 /* ****** ****** */
 
-static inline
+ATSinline()
 ats_int_type
 atslib_open_flag_exn
-  (ats_ptr_type path, ats_int_type flag)
+  (ats_ptr_type path, ats_flag_type flag)
 {
   int fd = open((char*)path, flag) ;
   if (fd < 0) {
@@ -99,11 +121,13 @@ atslib_open_flag_exn
   return fd ;
 } /* end of [atslib_open_flag_exn] */
 
-static inline
+ATSinline()
 ats_int_type
-atslib_open_flag_mode_exn
-  (ats_ptr_type path, ats_int_type flag, ats_mode_type mode)
-{
+atslib_open_flag_mode_exn (
+  ats_ptr_type path
+, ats_flag_type flag
+, ats_mode_type mode
+) {
   int fd = open((char*)path, flag, mode) ;
   if (fd < 0) {
     perror ("open") ;
@@ -114,11 +138,11 @@ atslib_open_flag_mode_exn
 
 /* ****** ****** */
 
-static inline
+ATSinline()
 ats_int_type
 atslib_close_err (ats_int_type fd) { return close(fd) ; }
 
-static inline
+ATSinline()
 ats_void_type
 atslib_close_exn (ats_int_type fd) {
   int err = close(fd) ;
@@ -131,14 +155,14 @@ atslib_close_exn (ats_int_type fd) {
 
 /* ****** ****** */
 
-static inline
+ATSinline()
 ats_ssize_type
 atslib_fildes_read_err
   (ats_int_type fd, ats_ptr_type buf, ats_size_type cnt) {
   return read(fd, buf, cnt) ;
 } /* atslib_fildes_read_err */
 
-static inline
+ATSinline()
 ats_size_type
 atslib_fildes_read_exn
   (ats_int_type fd, ats_ptr_type buf, ats_size_type cnt) {
@@ -152,14 +176,14 @@ atslib_fildes_read_exn
 
 /* ****** ****** */
 
-static inline
+ATSinline()
 ats_ssize_type
 atslib_fildes_write_err
   (ats_int_type fd, ats_ptr_type buf, ats_size_type cnt) {
   return write(fd, buf, cnt) ;
 } /* atslib_fildes_write_err */
 
-static inline
+ATSinline()
 ats_size_type
 atslib_fildes_write_exn
   (ats_int_type fd, ats_ptr_type buf, ats_size_type cnt) {
@@ -173,7 +197,7 @@ atslib_fildes_write_exn
 
 /* ****** ****** */
 
-static inline
+ATSinline()
 ats_ssize_type
 atslib_fildes_write_substring_err
   (ats_int_type fd, ats_ptr_type str, ats_size_type start, ats_size_type n)
@@ -181,7 +205,7 @@ atslib_fildes_write_substring_err
   return write(fd, ((char*)str)+start, n) ;
 }
 
-static inline
+ATSinline()
 ats_size_type
 atslib_fildes_write_substring_exn
   (ats_int_type fd, ats_ptr_type str, ats_size_type start, ats_size_type n)
@@ -190,9 +214,23 @@ atslib_fildes_write_substring_exn
   res = write(fd, ((char*)str)+start, n) ;
   if (res < 0) {
     perror("write") ; ats_exit_errmsg(1, "exit(ATS): [fildes_write] failed.\n") ;
-  }
+  } // end of [if]
   return res ;
 } /* ats_fildes_write_substring_exn */
+
+/* ****** ****** */
+
+ATSinline()
+ats_flag_type
+atslib_fcntl_getfl (ats_int_type fd) { return fcntl(fd, F_GETFL) ; }
+
+ATSinline()
+ats_int_type
+atslib_fcntl_setfl (
+  ats_int_type fd, ats_flag_type flag
+) {
+  return fcntl(fd, F_SETFL, flag) ;
+} // end of [atslib_fcntl_setfl]
 
 /* ****** ****** */
 

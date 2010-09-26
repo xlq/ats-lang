@@ -55,10 +55,6 @@ typedef whence_t = $TYPES.whence_t
 (* ****** ****** *)
 
 staload FCNTL = "libc/SATS/fcntl.sats"
-sortdef open_flag = $FCNTL.open_flag
-stadef open_flag_lte = $FCNTL.open_flag_lte
-stadef rd = $FCNTL.open_flag_rd
-stadef wr = $FCNTL.open_flag_wr
 stadef fildes_v = $FCNTL.fildes_v
 
 (* ****** ****** *)
@@ -76,31 +72,31 @@ macdef STDERR_FILENO = $extval (int STDERR_FILENO, "STDERR_FILENO")
 // implemented in [$ATSHOME/prelude/CATS/basics.cats]
 //
 fun stdin_fildes_view_get
-  (): (fildes_v (STDIN_FILENO, rd) | void)
+  (): (fildes_v (STDIN_FILENO) | void)
   = "atspre_stdin_view_get"
 
 fun stdin_fildes_view_set
-  (pf: fildes_v (STDIN_FILENO, rd) | (*none*)): void
+  (pf: fildes_v (STDIN_FILENO) | (*none*)): void
   = "atspre_stdin_view_set"
 
 //
 
 fun stdout_fildes_view_get
-  (): (fildes_v (STDOUT_FILENO, wr) | void)
+  (): (fildes_v (STDOUT_FILENO) | void)
   = "atspre_stdout_view_get"
 
 fun stdout_fildes_view_set
-  (pf: fildes_v (STDOUT_FILENO, wr) | (*none*)): void
+  (pf: fildes_v (STDOUT_FILENO) | (*none*)): void
   = "atspre_stdout_view_set"
 
 //
 
 fun stderr_fildes_view_get
-  (): (fildes_v (STDERR_FILENO, wr) | void)
+  (): (fildes_v (STDERR_FILENO) | void)
   = "atspre_stderr_view_get"
 
 fun stderr_fildes_view_set
-  (pf: fildes_v (STDERR_FILENO, wr) | (*none*)): void
+  (pf: fildes_v (STDERR_FILENO) | (*none*)): void
   = "atspre_stderr_view_set"
 
 (* ****** ****** *)
@@ -194,8 +190,8 @@ fun getlogin_r {m:int} {l:addr}
 (* ****** ****** *)
 
 fun chdir (path: string): int(*err*) = "#atslib_chdir"
-fun fchdir {fd:int} {flag:open_flag}
-  (pf: !fildes_v (fd, flag) | fd: int): int(*err*) = "#atslib_fchdir"
+fun fchdir {fd:int}
+  (pf: !fildes_v (fd) | fd: int): int(*err*) = "#atslib_fchdir"
 // end of [fchdir]
 
 (* ****** ****** *)
@@ -205,26 +201,26 @@ fun unlink (path: string): int = "#atslib_unlink" // macro
 
 (* ****** ****** *)
 
-fun fildes_lseek_err {fd:int} {flag:open_flag}
-  (pf: !fildes_v (fd, flag) | fd: int fd, ofs: off_t, whence: whence_t): off_t
+fun fildes_lseek_err {fd:int}
+  (pf: !fildes_v (fd) | fd: int fd, ofs: off_t, whence: whence_t): off_t
   = "atslib_fildes_lseek_err"
 
-fun fildes_lseek_exn {fd:int} {flag:open_flag}
-  (pf: !fildes_v (fd, flag) | fd: int fd, ofs: off_t, whence: whence_t): off_t
+fun fildes_lseek_exn {fd:int}
+  (pf: !fildes_v (fd) | fd: int fd, ofs: off_t, whence: whence_t): off_t
   = "atslib_fildes_lseek_exn"
 
 (* ****** ****** *)
 
 fun fildes_pread
-  {fd:int} {flag:open_flag} {n,sz:nat | n <= sz} (
-    pf1: open_flag_lte (flag, rd), pf2: !fildes_v (fd, flag)
+  {fd:int} {n,sz:nat | n <= sz} (
+    pf: !fildes_v (fd)
   | fd: int fd, buf: &bytes sz, ntotal: size_t n, ofs: off_t
   ) : ssizeBtw(~1, n+1)
   = "atslib_fildes_pread"
 
 fun fildes_pwrite
-  {fd:int} {flag:open_flag} {n,sz:nat | n <= sz} (
-    pf1: open_flag_lte (flag, wr), pf2: !fildes_v (fd, flag)
+  {fd:int} {n,sz:nat | n <= sz} (
+    pf: !fildes_v (fd)
   | fd: int fd, buf: &bytes sz, ntotal: size_t n, ofs: off_t
   ) : ssizeBtw(~1, n+1)
   = "atslib_fildes_pwrite"
@@ -234,13 +230,13 @@ fun fildes_pwrite
 fun sync (): void = "#atslib_sync"
 
 // [fsync] returns 0 on success or -1 on error
-fun fsync {fd:int} {flag:open_flag} // (sets errno)
-  (pf: !fildes_v (fd, flag) | fd: int fd): int = "#atslib_fsync"
+fun fsync {fd:int} // (sets errno)
+  (pf: !fildes_v (fd) | fd: int fd): int = "#atslib_fsync"
 // end of [fsync]
 
 // [fdatasync] returns 0 on success or -1 on error
-fun fdatasync {fd:int} {flag:open_flag} // (sets errno)
-  (pf: !fildes_v (fd, flag) | fd: int fd): int = "#atslib_fdatasync"
+fun fdatasync {fd:int} // (sets errno)
+  (pf: !fildes_v (fd) | fd: int fd): int = "#atslib_fdatasync"
 // end of [fdatasync]
 
 (* ****** ****** *)

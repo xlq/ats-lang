@@ -42,7 +42,6 @@
 (* ****** ****** *)
 
 staload FCNTL = "libc/SATS/fcntl.sats" // for [mkstemp]
-stadef open_flag_rdwr = $FCNTL.open_flag_rdwr
 stadef open_v = $FCNTL.open_v
 
 (* ****** ****** *)
@@ -80,7 +79,7 @@ fun system_err (cmd: string): int = "#atslib_system_err"
 (* ****** ****** *)
 
 fun mkstemp_err {m,n:nat}
-  (buf: &strbuf (m, n)): [i: int] (open_v (i, open_flag_rdwr) | int i)
+  (buf: &strbuf (m, n)): [i: int] (open_v (i) | int i)
   = "#atslib_mkstemp_err" // macro
 // end of [mkstemp]
 
