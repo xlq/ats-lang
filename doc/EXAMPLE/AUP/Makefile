@@ -34,19 +34,22 @@ compall: \
   pathnames \
   longls \
   getcwdx \
+  test421 \
+  test4221 \
+  test4222 \
 
 ######
 
 testlock: AUP_2_4_3.dats
 	$(ATSCC) -o testlock AUP_2_4_3.dats
 
-backward: AUP_2_13_0.dats
-	$(ATSCC) -o backward AUP_2_13_0.dats \
-     && ./backward "AUP_2_13_0.dats"
+backward: AUP_2_13.dats
+	$(ATSCC) -o backward AUP_2_13.dats \
+     && ./backward "AUP_2_13.dats"
 
-backward2: AUP_2_14_0.dats
-	$(ATSCC) -o backward2 AUP_2_14_0.dats \
-     && ./backward2 "AUP_2_14_0.dats"
+backward2: AUP_2_14.dats
+	$(ATSCC) -o backward2 AUP_2_14.dats \
+     && ./backward2 "AUP_2_14.dats"
 
 pathnames: AUP_3_4.dats
 	$(ATSCC) -o pathnames AUP_3_4.dats \
@@ -60,9 +63,14 @@ getcwdx: AUP_3_6_4.dats
 	$(ATSCC) -o getcwdx AUP_3_6_4.dats \
      && ./getcwdx
 
-test42: AUP_4_2.dats
-	$(ATSCC) -o test42 AUP_4_2.dats \
-     && ./test42
+test421: AUP_4_2_1.dats
+	$(ATSCC) -o test421 AUP_4_2_1.dats \
+
+test4221: AUP_4_2_2_1.dats
+	$(ATSCC) -o test4221 AUP_4_2_2_1.dats
+
+test4222: AUP_4_2_2_2.dats
+	$(ATSCC) -o test4222 AUP_4_2_2_2.dats
 
 ######
 
@@ -77,7 +85,9 @@ cleanall: clean
 	rm -f pathnames
 	rm -f longls
 	rm -f getcwdx
-	rm -f test42
+	rm -f test421
+	rm -f test4221
+	rm -f test4222
 
 ###### end of [Makefile] ######
  

@@ -89,13 +89,13 @@ fun loop_dir (
 // end of [loop_dir]
 
 fun getcwdx_main {fd:int} (
-    pf_fd: fildes_v (fd, open_flag_rd) | fd: int fd, stat: &stat_t
+    pf_fd: fildes_v (fd) | fd: int fd, stat: &stat_t
   ) : strptr0 = let
   var err: int = 0
   var lstrs: pathlist = list_vt_nil ()
   val () = loop (pf_fd | fd, stat, lstrs, 0(*nent*), err) where {
-    fun loop {fd:int} {flag:open_flag} (
-        pf_fd: !fildes_v (fd, flag)
+    fun loop {fd:int} (
+        pf_fd: !fildes_v (fd)
       | fd: int fd, stat: &stat_t, lstrs: &pathlist, nent: int, err: &int
       ) : void = let
       var stat_parent: stat_t? // uninitialized

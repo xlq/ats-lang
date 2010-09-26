@@ -160,13 +160,15 @@ end // end of [search2]
 
 (* ****** ****** *)
 
-implement main () = () where {
+implement
+main () = () where {
 //
 // 13 + 5197 + 5701 + 6733 + 8389 = 26033
 //
-val ans = search (1 << 15, nil, 0, 0)
-val () = assert_errmsg (ans = 26033, #LOCATION)
-val () = (print "ans = "; print ans; print_newline ())
+  val ans = search (1 << 15, nil, 0, 0)
+  val () = assert_errmsg (ans = 26033, #LOCATION)
+  val () = (print "ans = "; print ans; print_newline ())
+//
 } // end of [main]
 
 (* ****** ****** *)
