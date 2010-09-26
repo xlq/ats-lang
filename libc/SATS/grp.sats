@@ -53,24 +53,26 @@ struct group {
   char *gr_passwd;		/* Password.	*/
   __gid_t gr_gid;		/* Group ID.	*/
   char **gr_mem;		/* Member list.	*/ // null-terminated
-};
+} ;
 *)
-abst@ype group_t_rest // unknown quantity
-typedef group_t =
+abst@ype
+group_rest // unknown quantity
+typedef group_struct =
 $extype_struct "ats_group_type" of {
   gr_gid= gid_t
-, _rest= group_t_rest
-} // end of [group_t]
+, _rest= group_rest
+} // end of [group]
+typedef group = group_struct
 
 (* ****** ****** *)
 
 fun group_get_gr_name
-  (grp: &group_t): [l:addr] (strptr l -<lin,prf> void | strptr l)
+  (grp: &group): [l:addr] (strptr l -<lin,prf> void | strptr l)
   = "atslib_group_get_gr_name" // fun!
 // end of [group_get_gr_name]
 
 fun group_get_gr_passwd
-  (grp: &group_t): [l:addr] (strptr l -<lin,prf> void | strptr l)
+  (grp: &group): [l:addr] (strptr l -<lin,prf> void | strptr l)
   = "atslib_group_get_gr_passwd" // fun!
 // end of [group_get_gr_passwd]
 
@@ -78,19 +80,19 @@ fun group_get_gr_passwd
 // HX: please use with caution!
 //
 fun group_get_gr_mem
-  (grp: &group_t): ptr = "atslib_group_get_gr_mem" // fun!
+  (grp: &group): ptr = "atslib_group_get_gr_mem" // fun!
 // end of [group_get_gr_mem]
 
 (* ****** ****** *)
 
 // HX: non-reentrant
 fun getgrnam (nam: string):<!ref>
-  [l:addr] (ptroutopt (group_t, l) | ptr l) = "#atslib_getgrnam"
+  [l:addr] (ptroutopt (group, l) | ptr l) = "#atslib_getgrnam"
 // end of [getgrnam]
 
 // HX: non-reentrant
 fun getgrgid (gid: gid_t):<!ref>
-  [l:addr] (ptroutopt (group_t, l) | ptr l) = "#atslib_getgrgid"
+  [l:addr] (ptroutopt (group, l) | ptr l) = "#atslib_getgrgid"
 // end of [getgrgid]
 
 (* ****** ****** *)

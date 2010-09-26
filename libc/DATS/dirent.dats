@@ -47,19 +47,19 @@ implement
 dirent_stream_vt_make_DIR
   {l_dir:addr} (pf_dir | p_dir) = $delay_vt (
   res where {
-    var res: stream_vt_con dirent_t ; val () = f (pf_dir | p_dir, res)
+    var res: stream_vt_con dirent ; val () = f (pf_dir | p_dir, res)
   } // end of [where]
 , $effmask_exn (closedir_exn (pf_dir | p_dir))
 ) where {
   extern fun readdir_r
-    (_: &DIR, _: &dirent_t? >> dirent_t, _: &ptr? >> Ptr):<> int
+    (_: &DIR, _: &dirent? >> dirent, _: &ptr? >> Ptr):<> int
     = "#atslib_readdir_r"
   fn f (
       pf_dir: DIR @ l_dir
-    | p_dir: ptr l_dir, res: &stream_vt_con dirent_t? >> stream_vt_con dirent_t
+    | p_dir: ptr l_dir, res: &stream_vt_con dirent? >> stream_vt_con dirent
     ) :<1,~ref> void = let
     var ret: ptr // uninitialized
-    val () = (res := stream_vt_cons {dirent_t} (?, ?))
+    val () = (res := stream_vt_cons {dirent} (?, ?))
     val+ stream_vt_cons (!p_x, !p_xs) = res
     val err = readdir_r (!p_dir, !p_x, ret)
     val islast = if (err <> 0) then true else (ret = null)
@@ -67,7 +67,7 @@ dirent_stream_vt_make_DIR
     if islast then let
       val () = $effmask_exn (closedir_exn (pf_dir | p_dir))
     in
-      free@ {dirent_t} res; res := stream_vt_nil ()
+      free@ {dirent} res; res := stream_vt_nil ()
     end else let
       val () = !p_xs := dirent_stream_vt_make_DIR (pf_dir | p_dir)
     in
@@ -82,12 +82,12 @@ implement
 direntptr_stream_vt_make_DIR
   {l_dir:addr} (pf_dir | p_dir) = $delay_vt (
   res where {
-    var res: stream_vt_con dirent_t ; val () = f (pf_dir | p_dir, res)
+    var res: stream_vt_con dirent ; val () = f (pf_dir | p_dir, res)
   } // end of [where]
 , $effmask_exn (closedir_exn (pf_dir | p_dir))
 ) where {
   extern fun readdir_r
-    (_: &DIR, _: &dirent_t? >> dirent_t, _: &ptr? >> Ptr):<> int
+    (_: &DIR, _: &dirent? >> dirent, _: &ptr? >> Ptr):<> int
     = "#atslib_readdir_r"
   fn f (
       pf_dir: DIR @ l_dir
@@ -95,12 +95,12 @@ direntptr_stream_vt_make_DIR
     , res: &stream_vt_con direntptr_gc? >> stream_vt_con direntptr_gc
     ) :<1,~ref> void = let
     var ret: ptr // uninitialized
-    val (pf_ent_gc, pf_ent | p_ent) = ptr_alloc_tsz {dirent_t} (sizeof<dirent_t>)
+    val (pf_ent_gc, pf_ent | p_ent) = ptr_alloc_tsz {dirent} (sizeof<dirent>)
     val err = readdir_r (!p_dir, !p_ent, ret)
     val islast = if (err <> 0) then true else (ret = null)
   in
     if islast then let
-      val () = ptr_free {dirent_t} (pf_ent_gc, pf_ent | p_ent)
+      val () = ptr_free (pf_ent_gc, pf_ent | p_ent)
       val () = $effmask_exn (closedir_exn (pf_dir | p_dir))
     in
       res := stream_vt_nil ()

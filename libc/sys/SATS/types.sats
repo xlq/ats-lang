@@ -154,6 +154,7 @@ abst@ype timer_t = $extype "ats_timer_type" // for timers returned by timer_crea
 (******* ****** *)
 
 abst@ype useconds_t = $extype "ats_useconds_type" // for time in microseconds
+abst@ype suseconds_t = $extype "ats_suseconds_type" // for time in microseconds
 
 (* ****** ****** *)
 

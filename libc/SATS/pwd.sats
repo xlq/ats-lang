@@ -58,40 +58,42 @@ struct passwd
   char *pw_gecos;		/* Real name.  */
   char *pw_dir;			/* Home directory.  */
   char *pw_shell;		/* Shell program.  */
-};
+} ;
 *)
-abst@ype passwd_t_rest // unknown quantity
-typedef passwd_t =
+abst@ype
+passwd_rest // unknown quantity
+typedef passwd_struct =
 $extype_struct "ats_passwd_type" of {
   pw_uid= uid_t
 , pw_gid= gid_t
-, _rest= passwd_t_rest
-} // end of [passwd_t]
+, _rest= passwd_rest
+} // end of [passwd]
+typedef passwd = passwd_struct
 
 (* ****** ****** *)
 
 fun passwd_get_pw_name
-  (pwd: &passwd_t): [l:addr] (strptr l -<lin,prf> void | strptr l)
+  (pwd: &passwd): [l:addr] (strptr l -<lin,prf> void | strptr l)
   = "atslib_passwd_get_pw_name" // fun!
 // end of [passwd_get_pw_name]
 
 fun passwd_get_pw_passwd
-  (pwd: &passwd_t): [l:addr] (strptr l -<lin,prf> void | strptr l)
+  (pwd: &passwd): [l:addr] (strptr l -<lin,prf> void | strptr l)
   = "atslib_passwd_get_pw_passwd" // fun!
 // end of [passwd_get_pw_passwd]
 
 fun passwd_get_pw_gecos
-  (pwd: &passwd_t): [l:addr] (strptr l -<lin,prf> void | strptr l)
+  (pwd: &passwd): [l:addr] (strptr l -<lin,prf> void | strptr l)
   = "atslib_passwd_get_pw_gecos" // fun!
 // end of [passwd_get_pw_gecos]
 
 fun passwd_get_pw_dir
-  (pwd: &passwd_t): [l:addr] (strptr l -<lin,prf> void | strptr l)
+  (pwd: &passwd): [l:addr] (strptr l -<lin,prf> void | strptr l)
   = "atslib_passwd_get_pw_dir" // fun!
 // end of [passwd_get_pw_dir]
 
 fun passwd_get_pw_shell
-  (pwd: &passwd_t): [l:addr] (strptr l -<lin,prf> void | strptr l)
+  (pwd: &passwd): [l:addr] (strptr l -<lin,prf> void | strptr l)
   = "atslib_passwd_get_pw_shell" // fun!
 // end of [passwd_get_pw_shell]
 
@@ -99,12 +101,12 @@ fun passwd_get_pw_shell
 
 // HX: non-reentrant
 fun getpwnam (nam: string):<!ref>
-  [l:addr] (ptroutopt (passwd_t, l) | ptr l) = "#atslib_getpwnam"
+  [l:addr] (ptroutopt (passwd, l) | ptr l) = "#atslib_getpwnam"
 // end of [getpwnam]
 
 // HX: non-reentrant
 fun getpwuid (uid: uid_t):<!ref>
-  [l:addr] (ptroutopt (passwd_t, l) | ptr l) = "#atslib_getpwuid"
+  [l:addr] (ptroutopt (passwd, l) | ptr l) = "#atslib_getpwuid"
 // end of [getpwuid]
 
 (* ****** ****** *)

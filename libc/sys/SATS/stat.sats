@@ -9,7 +9,7 @@
 (*
 ** ATS - Unleashing the Power of Types!
 **
-** Copyright (C) 2002-2008 Hongwei Xi, Boston University
+** Copyright (C) 2002-2010 Hongwei Xi, Boston University
 **
 ** All rights reserved
 **
@@ -35,6 +35,12 @@
 
 (* ****** ****** *)
 
+%{#
+#include "libc/sys/CATS/stat.cats"
+%} // end of [%{#]
+
+(* ****** ****** *)
+
 staload T = "libc/sys/SATS/types.sats"
 typedef dev_t = $T.dev_t
 typedef ino_t = $T.ino_t
@@ -53,14 +59,9 @@ typedef time_t = $T.time_t
 
 (* ****** ****** *)
 
-%{#
-#include "libc/sys/CATS/stat.cats"
-%} // end of [%{#]
-
-(* ****** ****** *)
-
-abst@ype stat_t_rest // unknown quantity
-typedef stat_t =
+abst@ype
+stat_rest // unknown quantity
+typedef stat_struct =
 $extype_struct "ats_stat_type" of {
   st_dev= dev_t // device
 , st_ino= ino_t // 32-bit file serial number
@@ -75,8 +76,9 @@ $extype_struct "ats_stat_type" of {
 , st_atime= time_t // time of last access
 , st_mtime= time_t // time of last modification
 , st_ctime= time_t // time of last status change
-, _rest= stat_t_rest // this abstract field cannot be accessed
+, _rest= stat_rest // this abstract field cannot be accessed
 } // end of [stat_t]
+typedef stat = stat_struct
 
 (* ****** ****** *)
 
@@ -142,22 +144,22 @@ fun mkdir_exn (path: string, mode: mode_t): void
 (* ****** ****** *)
 
 fun stat_err {l:addr} (
-    name: string, st: &stat_t? >> opt (stat_t, i==0)
+    name: string, st: &stat? >> opt (stat, i==0)
   ) : #[i:int | i <= 0] int i
   = "#atslib_stat_err" // !macro
-fun stat_exn (name: string, st: &stat_t? >> stat_t): void
+fun stat_exn (name: string, st: &stat? >> stat): void
   = "atslib_stat_exn" // !function
 
 fun lstat_err {l:addr} (
-    name: string, st: &stat_t? >> opt (stat_t, i==0)
+    name: string, st: &stat? >> opt (stat, i==0)
   ) : #[i:int | i <= 0] int i
   = "#atslib_lstat_err" // !macro
-fun lstat_exn (name: string, buf: &stat_t? >> stat_t): void
+fun lstat_exn (name: string, buf: &stat? >> stat): void
   = "atslib_lstat_exn" // !function
 
 (* ****** ****** *)
 
-fun umask (mask_new: mode_t): mode_t(*mask_old*) = "atslib_umask"
+fun umask (mask_new: mode_t): mode_t(*oldval*) = "atslib_umask"
 
 (* ****** ****** *)
 

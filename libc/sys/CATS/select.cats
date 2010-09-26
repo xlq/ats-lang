@@ -7,7 +7,7 @@
 /************************************************************************/
 
 /*
-** ATS - Unleashing the Potential of Types!
+** ATS - Unleashing the Power of Types!
 **
 ** Copyright (C) 2002-2010 Hongwei Xi.
 **
@@ -29,79 +29,61 @@
 
 /* ****** ****** */
 
-//
-// Author: Hongwei Xi (hwxi AT cs DOT bu DOT edu)
-// Time: April, 2010
-//
+/* author: Hongwei Xi (hwxi AT cs DOT bu DOT edu) */
 
 /* ****** ****** */
 
-#ifndef ATS_LIBC_SCHED_CATS
-#define ATS_LIBC_SCHED_CATS
+#ifndef ATS_LIBC_SYS_SELECT_CATS
+#define ATS_LIBC_SYS_SELECT_CATS
+
+#include <sys/select.h>
 
 /* ****** ****** */
 
-#include <sched.h>
-#include "libc/sys/CATS/types.cats"
-
-/* ****** ****** */
-
-typedef struct sched_param ats_sched_param_type ;
-
-/* ****** ****** */
-
-#ifdef __USE_GNU
+typedef fd_set ats_fd_set_type ;
+typedef struct timeval ats_timeval_type ;
 
 /* ****** ****** */
 
 ATSinline()
-ats_size_type
-atslib_cpusetsize_get
-  (ats_ref_type mask) { return sizeof(cpu_set_t) ; }
-// end of [atslib_cpusetsize_get]
+ats_void_type
+atslib_FD_ZERO (
+  ats_ref_type fdset
+) {
+  FD_ZERO ((fd_set*)fdset) ; return ;
+} // end of [atslib_FD_ZERO]
 
-/* ****** ****** */
+ATSinline()
+ats_void_type
+atslib_FD_SET (
+  ats_int_type fd, ats_ref_type fdset
+) {
+  FD_SET (fd, (fd_set*)fdset) ; return ;
+} // end of [atslib_FD_SET]
 
-/*
-fun sched_setaffinity {n:nat}
-  (pid: pid_t, n: size_t n, mask: &cpu_set_t n): int(*err*)
-  = "atslib_sched_setaffinity"
-*/
+ATSinline()
+ats_void_type
+atslib_FD_CLR (
+  ats_int_type fd, ats_ref_type fdset
+) {
+  FD_CLR (fd, (fd_set*)fdset) ; return ;
+} // end of [atslib_FD_CLR]
 
 ATSinline()
 ats_int_type
-atslib_sched_setaffinity (
-  ats_pid_type pid, ats_size_type n, ats_ref_type mask
+atslib_FD_ISSET (
+  ats_int_type fd, ats_ref_type fdset
 ) {
-  return sched_setaffinity (pid, n, (cpu_set_t*)mask) ;
-} // end of [atslib_sched_setaffinity]
-
-/*
-fun sched_getaffinity {n:nat} (
-    pid: pid_t, n: size_t n, cs: &cpu_set_t n? >> opt (cpu_set_t n, i==0)
-  ) : #[i:int | i <= 0] int i(*err*) = "atslib_sched_getaffinity"
-// end of [sched_getaffinity]
-*/
-
-ATSinline()
-ats_int_type
-atslib_sched_getaffinity (
-  ats_pid_type pid, ats_size_type n, ats_ref_type mask
-) {
-  return sched_getaffinity (pid, n, (cpu_set_t*)mask) ;
-} // end of [atslib_sched_getaffinity]
+  return FD_ISSET (fd, (fd_set*)fdset) ;
+} // end of [atslib_FD_ISSET]
 
 /* ****** ****** */
 
-#define atslib_CPU_ZERO CPU_ZERO
-#define atslib_CPU_CLR CPU_CLR
-#define atslib_CPU_SET CPU_SET
-#define atslib_CPU_ISSET CPU_ISSET
+#define atslib_select select
+#define atslib_pselect pselect
 
 /* ****** ****** */
 
-#endif // end of [__USE_GNU]
+#endif /* end of [ATS_LIBC_SYS_SELECT_CATS] */
 
-/* ****** ****** */
-
-#endif /* ATS_LIBC_SCHED_CATS */
+/* end of [select.cats] */

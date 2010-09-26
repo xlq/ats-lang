@@ -10,7 +10,7 @@
 **
 ** ATS - Unleashing the Potential of Types!
 **
-** Copyright (C) 2002-2008 Hongwei Xi, Boston University
+** Copyright (C) 2002-2010 Hongwei Xi, Boston University
 **
 ** All rights reserved
 **
@@ -60,7 +60,8 @@ macdef errno_is_EINTR () = (errno_get () = EINTR)
 
 (* ****** ****** *)
 
-implement close_loop_err
+implement
+close_loop_err
   {fd} (pf_fd | fd) =
   $effmask_all (loop (pf_fd | fd)) where {
   fun loop
@@ -76,7 +77,8 @@ implement close_loop_err
   end (* end of [loop] *)
 } // end of [close_loop_err]
 
-implement close_loop_exn (pf_fd | fd) = let
+implement
+close_loop_exn (pf_fd | fd) = let
   val (pf_err | i) = close_loop_err (pf_fd | fd)
 in
   if (i >= 0) then let
@@ -94,19 +96,22 @@ end // end of [close_loop_exn]
 
 extern praxi bytes_v_split {n,i:nat | i <= n}
   {l:addr} (pf: bytes n @ l): @(bytes i @ l, bytes (n-i) @ l + i)
-
 extern praxi bytes_v_unsplit {n1,n2:nat}
   {l:addr} (pf1: bytes n1 @ l, pf2: bytes n2 @ l + n1): bytes (n1+n2) @ l
 
-implement fildes_read_loop_err
-  {fd} {n,sz} (pf_fd | fd, buf, ntotal) = let
+(* ****** ****** *)
+
+implement
+read_loop_err
+  {fd} {n,sz}
+  (pf_fd | fd, buf, ntotal) = let
   fun loop {nleft:nat | nleft <= n} {l:addr} (
       pf_fd: !fildes_v (fd)
     , pf_buf: !bytes (sz-n+nleft) @ l
     | fd: int fd, p_buf: ptr l, nleft: size_t nleft, err: &int
     ) : sizeLte n =
     if nleft > 0 then let
-      val [nread:int] nread = fildes_read_err (pf_fd | fd, !p_buf, nleft)
+      val [nread:int] nread = read_err (pf_fd | fd, !p_buf, nleft)
     in
       if nread > 0 then let
         val nread = ssz2sz nread
@@ -127,29 +132,35 @@ implement fildes_read_loop_err
       i2sz 0 // all bytes are read
     end // end of [if]
   // end of [loop]
-  var err: int = 0; val nleft = loop (pf_fd, view@ buf | fd, &buf, ntotal, err)
+  var err: int = 0
+  val nleft = loop (pf_fd, view@ buf | fd, &buf, ntotal, err)
 in
   if err = 0 then sz2ssz (ntotal - nleft) else i2ssz (~1)
-end // end of [fildes_read_loop_err]
+end // end of [read_loop_err]
 
-implement fildes_read_loop_exn
+implement
+read_loop_exn
   (pf_fd | fd, buf, ntotal) = let
-  val nread = fildes_read_loop_err (pf_fd | fd, buf, ntotal)
+  val nread = read_loop_err (pf_fd | fd, buf, ntotal)
 in
-  if nread >= 0 then ssz2sz (nread) else (perror "fildes_read: "; exit 1)
-end // end of [fildes_read_loop_exn]
+  if nread >= 0 then ssz2sz (nread) else let
+    val () = perror "fcntl: read_loop: " in exit (1)
+  end (* end of [if] *)
+end // end of [read_loop_exn]
 
 (* ****** ****** *)
 
-implement fildes_write_loop_err
-  {fd} {n,sz} (pf_fd | fd, buf, ntotal) = let
+implement
+write_loop_err
+  {fd} {n,sz}
+  (pf_fd | fd, buf, ntotal) = let
   fun loop {nleft:nat | nleft <= n} {l:addr} (
       pf_fd: !fildes_v (fd)
     , pf_buf: !bytes (sz-n+nleft) @ l
     | fd: int fd, p_buf: ptr l, nleft: size_t nleft, err: &int
     ) : sizeLte n =
     if nleft > 0 then let
-      val [nwrit:int] nwrit = fildes_write_err (pf_fd | fd, !p_buf, nleft)
+      val [nwrit:int] nwrit = write_err (pf_fd | fd, !p_buf, nleft)
     in
       if nwrit > 0 then let
         val nwrit = ssz2sz (nwrit)
@@ -167,23 +178,27 @@ implement fildes_write_loop_err
       i2sz 0 // all bytes are written
     end // end of [if]
   // end of [loop]
-  var err: int = 0; val nleft = loop (pf_fd, view@ buf | fd, &buf, ntotal, err)
+  var err: int = 0
+  val nleft = loop (pf_fd, view@ buf | fd, &buf, ntotal, err)
 in
   if err = 0 then sz2ssz (ntotal - nleft) else i2ssz (~1)
-end // end of [fildes_write_loop_err]
+end // end of [write_loop_err]
 
 //
 
-implement fildes_write_loop_exn
+implement
+write_loop_exn
   (pf_fd | fd, buf, ntotal) = let
-  var err: int = 1
-  val nwrit = fildes_write_loop_err (pf_fd | fd, buf, ntotal)
+  var err: int = 0
+  val nwrit = write_loop_err (pf_fd | fd, buf, ntotal)
   val () = if nwrit >= 0 then let
-    val nwrit = ssz2sz (nwrit) in if nwrit = ntotal then (err := 0)
+    val nwrit = ssz2sz (nwrit) in if nwrit < ntotal then (err := 1)
   end // end of [val]
 in  
-  if err > 0 then (perror "fildes_write: "; exit 1)
-end // end of [fildes_write_loop_exn]
+  if err > 0 then let
+    val () = perror "fcntl: write_loop: " in exit (1)
+  end (* end of [if] *)
+end // end of [write_loop_exn]
 
 (* ****** ****** *)
 

@@ -34,9 +34,9 @@
 (* author: Hongwei Xi (hwxi AT cs DOT bu DOT edu) *)
 
 (* ****** ****** *)
-
+//
 // some random number generators
-
+//
 (* ****** ****** *)
 
 %{#
@@ -44,60 +44,62 @@
 %} // end of [%{#]
 
 (* ****** ****** *)
-
-// typedef lint = long_int_t0ype
-
+//
+// typedef lint = long_int_t0ype // already defined elsewhere
+//
 // a seeding function
 fun srand48 (li: lint): void = "atslib_srand48"
-
 // using epoch time for the seed
 fun srand48_with_time (): void = "atslib_srand48_with_time"
 // using microsecond for the seed
 fun srand48_with_gettimeofday (): void = "atslib_srand48_with_gettimeofday"
 
 (* ****** ****** *)
+//
+// HX: the range of [drand48] is supposed to be [0.0, 1.0)
+// However, it is actually [0.0, 1.0] // try 10 million times !!!
+//
+fun drand48 ():<!ref> double = "atslib_drand48"
 
-fun drand48 ():<!ref> double // inside [0.0, 1.0) // actually, it is [0.0, 1.0] (try 10 million times)!!!
-  = "atslib_drand48"
+fun lrand48 ():<!ref> lint = "atslib_lrand48" // signed [0, 2^31)
 
-fun lrand48 ():<!ref> lint // signed [0, 2^31)
-  = "atslib_lrand48"
-
-fun mrand48 ():<!ref> lint // signed [-2^31, 2^31)
-  = "atslib_mrand48"
+fun mrand48 ():<!ref> lint = "atslib_mrand48" // signed [-2^31, 2^31)
 
 (* ****** ****** *)
 
 abst@ype drand48_data = $extype "ats_drand48_data_type"
 
 fun srand48_r // the return is always 0
-  (seed: lint, buf: &drand48_data? >> drand48_data):<> int
-  = "atslib_srand48_r"
+  (seed: lint, buf: &drand48_data? >> drand48_data):<> int = "atslib_srand48_r"
+// end of [srand48_r]
 
 (* ****** ****** *)
 
 fun drand48_r // the return is always 0
-  (buf: &drand48_data, result: &double? >> double):<> int
-  = "atslib_drand48_r"
+  (buf: &drand48_data, result: &double? >> double):<> int = "atslib_drand48_r"
+// end of [drand48_r]
 
 fun lrand48_r // the return is always 0
-  (buf: &drand48_data, result: &lint? >> lint):<> int
-  = "atslib_lrand48_r"
+  (buf: &drand48_data, result: &lint? >> lint):<> int = "atslib_lrand48_r"
+// end of [lrand48_r]
 
 fun mrand48_r // the return is always 0
-  (buf: &drand48_data, result: &lint? >> lint):<> int
-  = "atslib_mrand48_r"
+  (buf: &drand48_data, result: &lint? >> lint):<> int = "atslib_mrand48_r"
+// end of [mrand48_r]
 
 (* ****** ****** *)
+//
+// HX: non-reentrant
+//
+fun randint {n:pos} (n: int n):<!ref> natLt n = "atslib_randint"
 
-// non-reentrant
-fun randint {n:pos} (n: int n):<!ref> natLt n
-  = "atslib_randint"
-
-// this one is reentrant
+//
+// HX: this one is reentrant
+//
 fun randint_r {n:pos}
   (buf: &drand48_data, n: int n, res: &int? >> natLt n):<> void
   = "atslib_randint_r"
+// end of [randint]
 
 (* ****** ****** *)
 

@@ -155,11 +155,12 @@ atslib_lint_of_pid (ats_pid_type p) { return (p) ; }
 // typedef ssize_t ats_ssize_type ; // for sizes or error indication
 
 typedef time_t ats_time_type ; // for time in seconds
-
+//
 // not supported on Mac OSX ?
 // typedef timer_t ats_timer_type ; // for timers returned by timer_create ()
 // typedef useconds_t ats_useconds_type ; // for time in microseconds
-
+// typedef suseconds_t ats_suseconds_type ; // for time in microseconds
+//
 /* ****** ****** */
 
 typedef uid_t ats_uid_type ;

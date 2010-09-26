@@ -51,10 +51,11 @@ typedef pid_t = $TYPES.pid_t
 
 (* ****** ****** *)
 
-typedef sched_param =
-  $extype_struct "sched_param_struc" of {
+typedef sched_param_struct =
+$extype_struct "ats_sched_param_type" of {
   sched_priority= int
 } // end of [sched_param]
+typedef sched_param = sched_param_struct
 
 (* ****** ****** *)
 

@@ -9,7 +9,7 @@
 /*
 ** ATS - Unleashing the Power of Types!
 **
-** Copyright (C) 2002-2008 Hongwei Xi.
+** Copyright (C) 2002-2010 Hongwei Xi.
 **
 ** ATS is  free software;  you can redistribute it and/or modify it under
 ** the  terms of the  GNU General Public License as published by the Free
@@ -38,25 +38,19 @@
 
 /* ****** ****** */
 
-#include <sys/types.h>
 #include <sys/stat.h>
-#include <stdio.h> // for [perror]
-
-/* ****** ****** */
-
-#include "libc/sys/CATS/types.cats"
-
-/* ****** ****** */
-
-// [struct stat] is declared in <bits/stat.h>
 typedef struct stat ats_stat_type ;
 
 /* ****** ****** */
+
+extern
+void perror (const char *msg) ; // declared in [stdio.h]
+
 //
 // HX: implemented in [prelude/DATS/basics.dats]
 //
-extern ats_void_type
-ats_exit_errmsg(ats_int_type n, ats_ptr_type msg) ;
+extern
+ats_void_type ats_exit_errmsg(ats_int_type n, ats_ptr_type msg) ;
 
 /* ****** ****** */
 

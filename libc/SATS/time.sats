@@ -62,6 +62,7 @@ typedef tm_struct =
 
 typedef time_t = $TYPES.time_t
 typedef clock_t = $TYPES.clock_t
+macdef CLOCKS_PER_SEC = $extval (clock_t, "CLOCKS_PER_SEC")
 
 (* ****** ****** *)
 
@@ -172,12 +173,6 @@ overload lint_of with lint_of_clock
 fun double_of_clock
   (c: clock_t):<> double_t0ype = "atslib_double_of_clock"
 overload double_of with double_of_clock
-
-//
-
-macdef CLOCKS_PER_SEC = $extval (clock_t, "CLOCKS_PER_SEC")
-
-//
 
 fun clock (): clock_t = "atslib_clock"
 

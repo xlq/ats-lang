@@ -10,7 +10,7 @@
 **
 ** ATS - Unleashing the Potential of Types!
 **
-** Copyright (C) 2002-2008 Hongwei Xi, Boston University
+** Copyright (C) 2002-2010 Hongwei Xi, Boston University
 **
 ** All rights reserved
 **
@@ -47,15 +47,17 @@ typedef mode_t = $TYPES.mode_t
 
 (* ****** ****** *)
 
-abst@ype flag_t = int
+abst@ype
+flag_t = $extype "ats_fcntlflag_type"
 castfn int_of_flag (f: flag_t):<> int
+abst@ype disjflag_t = flag_t // for [lor]
+abst@ype conjflag_t = flag_t // for [land] // for masks
+
+(* ****** ****** *)
 
 macdef O_RDONLY = $extval (flag_t, "O_RDONLY")
 macdef O_WRONLY = $extval (flag_t, "O_WRONLY")
 macdef O_RDWR   = $extval (flag_t, "O_RDWR")
-
-abst@ype disjflag_t = int // for [lor]
-abst@ype conjflag_t = int // for [land]
 
 macdef O_CREAT = $extval (disjflag_t, "O_CREAT")
 macdef O_APPEND = $extval (disjflag_t, "O_APPEND")
@@ -100,15 +102,17 @@ dataview open_v (int) =
 fun open_flag_err
   (path: string, flag: flag_t): [i: int] (open_v (i) | int i)
   = "atslib_open_flag_err"
+// end of [open_flag_err]
 
 fun open_flag_exn
   (path: string, flag: flag_t): [i: int] (fildes_v i | int i)
   = "atslib_open_flag_exn"
+// end of [open_flag_exn]
 
 fun open_flag_mode_exn
   (path: string, flag: flag_t, mode: mode_t)
-  : [i: int] (fildes_v (i) | int i)
-  = "atslib_open_flag_mode_exn"
+  : [i: int] (fildes_v (i) | int i) = "atslib_open_flag_mode_exn"
+// end of [open_flag_mode_exn]
 
 (* ****** ****** *)
 
@@ -120,18 +124,23 @@ fun close_err {fd:int}
   (pf: fildes_v (fd) | fd: int fd)
   : [i:int] (close_v (fd, i) | int i)
   = "atslib_close_err"
+// end of [close_err]
 
 fun close_exn {fd:int}
   (pf: fildes_v (fd) | fd: int fd): void = "atslib_close_exn"
 // end of [close_exn]
 
-// implemented in [libc/DATS/fcntl.dats]
+//
+// HX: implemented in [libc/DATS/fcntl.dats]
+//
 fun close_loop_err {fd:int}
   (pf: fildes_v (fd) | fd: int fd)
   :<> [i:int] (close_v (fd, i) | int i)
 // end of [close_loop_err]
 
-// implemented in [libc/DATS/fcntl.dats]
+//
+// HX: implemented in [libc/DATS/fcntl.dats]
+//
 fun close_loop_exn {fd:int}
   (pf: fildes_v (fd) | fd: int fd): void
 // end of [close_loop_exn]
@@ -140,93 +149,95 @@ fun close_loop_exn {fd:int}
 //
 // HX: implemented in [libc/CATS/fcntl.cats]
 //
-fun fildes_read_err
+fun read_err
   {fd:int} {n,sz:nat | n <= sz} (
     pf: !fildes_v (fd) | fd: int fd, buf: &bytes sz, ntotal: size_t n
   ) : ssizeBtw(~1, n+1) = "atslib_fildes_read_err"
-// end of [fildes_read_err]
+// end of [read_err]
 
-fun fildes_read_exn
+fun read_exn
   {fd:int} {n,sz:nat | n <= sz} (
     pf: !fildes_v (fd) | fd: int fd, buf: &bytes sz, ntotal: size_t n
-  ) : sizeLte n
-  = "atslib_fildes_read_exn"
-// end of [fildes_read_exn]
+  ) : sizeLte n = "atslib_fildes_read_exn"
+// end of [read_exn]
 
+(* ****** ****** *)
 //
 // HX: implemented in [libc/DATS/fcntl.dats]
 //
-fun fildes_read_loop_err
+fun read_loop_err
   {fd:int} {n,sz:nat | n <= sz} (
     pf: !fildes_v (fd) | fd: int fd, buf: &bytes sz, ntotal: size_t n
   ) : ssizeBtw (~1, n+1) = "atslib_fildes_read_loop_err"
-// end of [fildes_read_loop_err]
+// end of [read_loop_err]
 
-fun fildes_read_loop_exn
+fun read_loop_exn
   {fd:int} {n,sz:nat | n <= sz} (
     pf: !fildes_v (fd) | fd: int fd, buf: &bytes sz, ntotal: size_t n
   ) : sizeLte n = "atslib_fildes_read_loop_exn"
-// end of [fildes_read_loop_exn]
+// end of [read_loop_exn]
 
 (* ****** ****** *)
 //
 // HX: implemented in [libc/CATS/fcntl.cats]
 //
-fun fildes_write_err
+fun write_err
   {fd:int} {n,sz:nat | n <= sz} (
     pf: !fildes_v (fd) | fd: int fd, buf: &bytes sz, ntotal: size_t n
   ) : ssizeBtw(~1, n+1) = "atslib_fildes_write_err"
-// end of [fildes_write_err]
+// end of [write_err]
 
-fun fildes_write_exn
+fun write_exn
   {fd:int} {n,sz:nat | n <= sz} (
     pf: !fildes_v (fd) | fd: int fd, buf: &bytes sz, ntotal: size_t n
   ) : sizeLte n = "atslib_fildes_write_exn"
-// end of [fildes_write_exn]
+// end of [write_exn]
 
+(* ****** ****** *)
 //
 // HX: implemented in [libc/DATS/fcntl.dats]
 //
-fun fildes_write_loop_err
+fun write_loop_err
   {fd:int} {n,sz:nat | n <= sz} (
     pf: !fildes_v (fd) | fd: int fd, buf: &bytes sz, ntotal: size_t n
   ) : ssizeBtw(~1, n+1) = "atslib_fildes_write_loop_err"
-// end of [fildes_write_loop_err]
+// end of [write_loop_err]
 
-fun fildes_write_loop_exn
+// 
+// HX: all bytes must be written if this function returns
+//
+fun write_loop_exn
   {fd:int} {n,sz:nat | n <= sz} (
     pf: !fildes_v (fd) | fd: int fd, buf: &bytes sz, ntotal: size_t n
-  ) : void // all bytes must be written if this function returns
-  = "atslib_fildes_write_loop_exn"
-// end of [fildes_write_loop_exn]
+  ) : void = "atslib_fildes_write_loop_exn"
+// end of [write_loop_exn]
 
 (* ****** ****** *)
 //
 // HX: implemented in [libc/CATS/fcntl.cats]
 //
-fun fildes_write_substring_err
+fun write_substring_err
   {fd:int} {i,n,sz:nat | i+n <= sz} (
     pf: !fildes_v (fd)
   | fd: int fd, str: string sz, start: size_t i, n: size_t n
-  ) : ssizeBtw(~1, n+1)
-  = "atslib_fildes_write_substring_err"
-// end of [fildes_write_substring_err]
+  ) : ssizeBtw(~1, n+1) = "atslib_fildes_write_substring_err"
+// end of [write_substring_err]
 
-fun fildes_write_substring_exn
+fun write_substring_exn
   {fd:int} {i,n,sz:nat | i+n <= sz} (
     pf: !fildes_v (fd)
   | fd: int fd, str: string sz, start: size_t i, n: size_t n
   ) : sizeLte n = "atslib_fildes_write_substring_exn"
-// end of [fildes_write_substring_exn]
+// end of [write_substring_exn]
 
 (* ****** ****** *)
 
 fun fcntl_getfl {fd:int}
-  (fd: int fd): flag_t = "atslib_fcntl_getfl"
+  (pf: !fildes_v (fd) | fd: int fd): flag_t = "atslib_fcntl_getfl"
 // end of [fcntl_getfl]
 
 fun fcntl_setfl {fd:int}
-  (fd: int fd, flags: flag_t): int = "atslib_fcntl_setfl"
+  (pf: !fildes_v (fd) | fd: int fd, flag: flag_t): int = "atslib_fcntl_setfl"
 // end of [fcntl_setfl]
 
 (* ****** ****** *)
