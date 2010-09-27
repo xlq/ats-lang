@@ -66,13 +66,9 @@ macdef CLOCKS_PER_SEC = $extval (clock_t, "CLOCKS_PER_SEC")
 
 (* ****** ****** *)
 
-fun lint_of_time
-  (t: time_t):<> int_long_t0ype = "atslib_lint_of_time"
-overload lint_of with lint_of_time
-
-fun double_of_time
-  (t: time_t):<> double_t0ype = "atslib_double_of_time"
-overload double_of with double_of_time
+fun difftime
+  (finish: time_t, start: time_t):<> double = "#atslib_difftime"
+// end of [difftime]
 
 (* ****** ****** *)
 
@@ -114,7 +110,7 @@ symintr time
 fun time_get (): time_t = "atslib_time_get"
 overload time with time_get
 
-fun time_get_and_set
+fun time_get_and_set // HX:  this is not really useful!!!
   (p: &time_t? >> time_t): time_t = "atslib_time_get_and_set"
 overload time with time_get_and_set
 
@@ -138,12 +134,6 @@ fun ctime_r // reentrant
 
 (* ****** ****** *)
 
-fun difftime
-  (finish: time_t, start: time_t):<> double = "#atslib_difftime"
-// end of [difftime]
-
-(* ****** ****** *)
-
 // [localtime] is non-reentrant
 fun localtime (time: &time_t):<!ref>
   [l:addr] (ptroutopt (tm_struct, l) | ptr l) = "#atslib_localtime"
@@ -157,12 +147,69 @@ fun localtime_r (
 
 (* ****** ****** *)
 
+// [gmtime] is non-reentrant
+fun gmtime (time: &time_t):<!ref>
+  [l:addr] (ptroutopt (tm_struct, l) | ptr l) = "#atslib_gmtime"
+// end of [gmtime]
+
+// [gmtime_r] is reentrant
+fun gmtime_r (
+    time: &time_t, tm: &tm_struct? >> opt (tm_struct, l > null)
+  ) :<> #[l:addr] ptr l = "#atslib_gmtime_r"
+// end of [gmtime_r]
+
+(* ****** ****** *)
+
+fun mktime (tm: &tm_struct): time_t = "#atslib_mktime" // returns -1 on error
+
+(* ****** ****** *)
+
+fun asctime (tm: &tm_struct):<!ref>
+  [l:addr] (strptr l -<lin,prf> void | strptr l) = "#atslib_asctime"
+// end of [asctime]
+
+(* ****** ****** *)
+
 fun strftime {m:pos} {l:addr} (
     pf: !b0ytes m @ l >> strbuf (m, n) @ l
   | p: ptr l, m: size_t m, fmt: string, tm: &tm_struct
   ) :<> #[n:nat | n < m] size_t n
   = "#atslib_strftime" // this a macro!
 // end of [strftime]
+
+(* ****** ****** *)
+
+(*
+//
+// HX-2010-09-26:
+// the function is not in FreeBSD or Darwin;
+// [getdate] sets [getdate_err] if an error occurs
+//
+fun getdate_err_get ():<> int = "atslib_getdate_err_get"
+fun getdate_err_set (x: int):<> void = "atslib_getdate_err_set"
+fun getdate (str: string):<!ref>
+  [l:addr] (ptroutopt (tm_struct, l) | ptr l) = "#atslib_getdate"
+// end of [getdate]
+*)
+
+//
+// -D_XOPEN_SOURCE
+//
+fun strptime (
+    str: string
+  , fmt: string
+  , tm: &tm_struct? >> opt (tm_struct, l > null)
+  ) : #[l:addr] ptr l = "#atslib_strptime" // HX: it returns NULL on error
+// end of [strptime]
+
+(* ****** ****** *)
+
+(*
+extern int daylight ; // not in FreeBSD or Darwin
+extern long int timezone ; // not in FreeBSD or Darwin
+extern char *tzname[2] ; // not in FreeBSD or Darwin
+*)
+fun tzsset ():<!ref> void = "#atslib_tzset"
 
 (* ****** ****** *)
 
@@ -174,7 +221,16 @@ fun double_of_clock
   (c: clock_t):<> double_t0ype = "atslib_double_of_clock"
 overload double_of with double_of_clock
 
-fun clock (): clock_t = "atslib_clock"
+fun clock (): clock_t = "atslib_clock" // HX: it returns -1 on error
+
+(* ****** ****** *)
+
+typedef timespec_struct =
+$extype_struct "ats_timespec_type" of {
+  tv_sec= time_t (*seconds*)
+, tv_nsec= lint (*nanoseconds*)
+} // end of [timespec_struct]
+typedef timespec = timespec_struct
 
 (* ****** ****** *)
 

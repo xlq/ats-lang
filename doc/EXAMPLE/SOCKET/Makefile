@@ -54,7 +54,7 @@ html::
 	$(ATSOPT) --posmark_html -d daytime_tcpserver.dats > daytime_tcpserver_dats.html
 	$(ATSOPT) --posmark_html -d echo_tcpserver.dats > echo_tcpclient_dats.html
 	$(ATSOPT) --posmark_html -d echo_tcpserver.dats > echo_tcpserver_dats.html
-	$(ATSOPT) --posmark_html -d echo_tcpserver.dats > echo_preforking_dats.html
+	$(ATSOPT) --posmark_html -d echo_preforking.dats > echo_preforking_dats.html
 
 ######
 

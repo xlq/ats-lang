@@ -89,7 +89,12 @@ implement main () = () where {
   val () = g_string_free_true (gstring)
 //
 #if ATSCTRB_GLIB_VERSION >= 2014000 // since glib-2.14
-  val gstring = g_string_new_init ("Hello  world!")
+  val gstring = gstring where {
+    val (fpf_cs | cs) =
+      (gs)"Hello  world!"
+    val gstring = g_string_new_init (cs)
+    prval () = fpf_cs (cs)
+  } // end of [val]
   val n = string1_length "Hello"
   val _ptr = g_string_overwrite (gstring, (gssize)n, ", ")
   val _ptr = g_string_append_c (gstring, (gchar)'\n')

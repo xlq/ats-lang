@@ -39,6 +39,7 @@
 /* ****** ****** */
 
 #include <sys/stat.h>
+#include "libc/sys/CATS/types.cats"
 typedef struct stat ats_stat_type ;
 
 /* ****** ****** */
@@ -50,7 +51,8 @@ void perror (const char *msg) ; // declared in [stdio.h]
 // HX: implemented in [prelude/DATS/basics.dats]
 //
 extern
-ats_void_type ats_exit_errmsg(ats_int_type n, ats_ptr_type msg) ;
+ats_void_type
+ats_exit_errmsg(ats_int_type n, ats_ptr_type msg) ;
 
 /* ****** ****** */
 

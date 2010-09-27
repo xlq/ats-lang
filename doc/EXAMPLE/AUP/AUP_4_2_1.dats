@@ -11,7 +11,8 @@
 (* ****** ****** *)
 
 staload "libc/SATS/errno.sats"
-staload "libc/SATS/fcntl.sats"
+staload F = "libc/SATS/fcntl.sats"
+macdef fildes_read_err = $F.read_err
 staload "libc/SATS/unistd.sats"
 
 (* ****** ****** *)

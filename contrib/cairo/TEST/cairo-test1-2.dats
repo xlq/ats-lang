@@ -37,7 +37,9 @@ fun draw_time {l:agz} (
   var time: time_t
   val _ = time_get_and_set (time)
   var tm: tm_struct
-  val () = localtime_r (time, tm)
+  val _ptr = localtime_r (time, tm)
+  val () = assert_errmsg (_ptr > null, #LOCATION)
+  prval () = opt_unsome {tm_struct} (tm)
 //
   val () = () where {
     var !p_buf with pf_buf = @[byte][32]()

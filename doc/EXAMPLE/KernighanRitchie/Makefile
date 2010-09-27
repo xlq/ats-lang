@@ -11,51 +11,43 @@ all:: checkall
 
 ######
 
-checkall:: \
-  compall \
-  Chapter01 Chapter02 Chapter03 Chapter04 Chapter05 Chapter06 Chapter07 Chapter08 
-
-######
-
-Chapter01::
-	cd Chapter01; make html
-
-Chapter02::
-	cd Chapter02; make html
-
-Chapter03::
-	cd Chapter03; make html
-
-Chapter04::
-	cd Chapter04; make html
-
-Chapter05::
-	cd Chapter05; make html
-
-Chapter06::
-	cd Chapter06; make html
-
-Chapter07::
-	cd Chapter07; make html
-
-Chapter08::
-	cd Chapter08; make html
+checkall::
+	cd Chapter01; make checkall
+	cd Chapter02; make checkall
+	cd Chapter03; make checkall
+	cd Chapter04; make checkall
+	cd Chapter05; make checkall
+	cd Chapter06; make checkall
+	cd Chapter07; make checkall
+	cd Chapter08; make checkall
 
 ######
 
 compall:
-	cd Chapter01; make all
-	cd Chapter02; make all
-	cd Chapter03; make all
-	cd Chapter04; make all
-	cd Chapter05; make all
-	cd Chapter06; make all
-	cd Chapter07; make all
-	cd Chapter08; make all
+	cd Chapter01; make compall
+	cd Chapter02; make compall
+	cd Chapter03; make compall
+	cd Chapter04; make compall
+	cd Chapter05; make compall
+	cd Chapter06; make compall
+	cd Chapter07; make compall
+	cd Chapter08; make compall
 
 ######
 
-updateall:: update01 update02 update03 update04 update05 update06 update07 update08
+html::
+	cd Chapter01; make html
+	cd Chapter02; make html
+	cd Chapter03; make html
+	cd Chapter04; make html
+	cd Chapter05; make html
+	cd Chapter06; make html
+	cd Chapter07; make html
+	cd Chapter08; make html  
+
+######
+
+update:: update01 update02 update03 update04 update05 update06 update07 update08
 
 update01::
 	scp Chapter01/*.dats Chapter01/*_dats.html \

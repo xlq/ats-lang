@@ -146,6 +146,10 @@ abst@ype ssize_t = $extype "ats_ssize_type" // for sizes or error indication
 (******* ****** *)
 
 abst@ype time_t = $extype "ats_time_type" // for time in seconds
+castfn lint_of_time (t: time_t):<> lint
+overload lint_of with lint_of_time
+fun double_of_time (t: time_t):<> double_t0ype = "atslib_double_of_time"
+overload double_of with double_of_time
 
 (******* ****** *)
 
@@ -154,7 +158,12 @@ abst@ype timer_t = $extype "ats_timer_type" // for timers returned by timer_crea
 (******* ****** *)
 
 abst@ype useconds_t = $extype "ats_useconds_type" // for time in microseconds
+castfn lint_of_useconds (x: useconds_t):<> lint
+overload lint_of with lint_of_useconds
+
 abst@ype suseconds_t = $extype "ats_suseconds_type" // for time in microseconds
+castfn lint_of_suseconds (x: suseconds_t):<> lint
+overload lint_of with lint_of_suseconds
 
 (* ****** ****** *)
 

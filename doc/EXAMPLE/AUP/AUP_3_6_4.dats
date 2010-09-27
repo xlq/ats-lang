@@ -2,7 +2,6 @@
 // Author: Hongwei Xi (hwxi AT cs DOT bu DOT edu)
 // Time: Summer, 2009
 //
-
 (* ****** ****** *)
 //
 // book: AUP (2nd edition), pages 170 - 174
@@ -49,7 +48,7 @@ extern fun getcwdx (): strptr0
 (* ****** ****** *)
 
 fun SAME_INODE .<>.
-  (s1: &stat_t, s2: &stat_t): bool =
+  (s1: &stat, s2: &stat): bool =
   (s1.st_dev = s2.st_dev) andalso (s1.st_ino = s2.st_ino)
 // end of [SAME_INODE]
 
@@ -58,12 +57,12 @@ fun SAME_INODE .<>.
 macdef errno_is_ENOENT () = (errno_get () = ENOENT)
 
 fun loop_dir (
-    ents: stream_vt dirent_t, stat: &stat_t, lstrs: &pathlist, nent: int
+    ents: stream_vt dirent, stat: &stat, lstrs: &pathlist, nent: int
   ) : int = case+ !ents of
   | ~stream_vt_cons (ent, ents) => let
       var ent = ent
       val d_name = dirent_d_name_get (ent)
-      var stat_entry: stat_t? // uninitialized
+      var stat_entry: stat? // uninitialized
       val rtn = lstat_err (d_name, stat_entry)
     in
       if rtn >= 0 then let
@@ -79,7 +78,7 @@ fun loop_dir (
           end // end of [_ when ...]  
         | _ => loop_dir (ents, stat, lstrs, nent)
       end else let
-        prval () = opt_unnone {stat_t} (stat_entry)
+        prval () = opt_unnone {stat} (stat_entry)
         val () = ~ents
       in
         0 (* error *)
@@ -89,22 +88,22 @@ fun loop_dir (
 // end of [loop_dir]
 
 fun getcwdx_main {fd:int} (
-    pf_fd: fildes_v (fd) | fd: int fd, stat: &stat_t
+    pf_fd: fildes_v (fd) | fd: int fd, stat: &stat
   ) : strptr0 = let
   var err: int = 0
   var lstrs: pathlist = list_vt_nil ()
   val () = loop (pf_fd | fd, stat, lstrs, 0(*nent*), err) where {
     fun loop {fd:int} (
         pf_fd: !fildes_v (fd)
-      | fd: int fd, stat: &stat_t, lstrs: &pathlist, nent: int, err: &int
+      | fd: int fd, stat: &stat, lstrs: &pathlist, nent: int, err: &int
       ) : void = let
-      var stat_parent: stat_t? // uninitialized
+      var stat_parent: stat? // uninitialized
       val rtn = lstat_err ("..", stat_parent)
     in
       if rtn >= 0 then let
         prval () = opt_unsome (stat_parent)
         val rtn = chdir ".."
-        val term = if :(stat_parent: stat_t) => 
+        val term = if :(stat_parent: stat) => 
           (rtn = ~1  andalso errno_is_ENOENT ()) then true else SAME_INODE (stat, stat_parent)
         // end of [val]
       in
@@ -129,7 +128,7 @@ fun getcwdx_main {fd:int} (
             end (* end of if *)
           end (* end of [_(*continue*)] *)
       end else let
-        prval () = opt_unnone {stat_t} (stat_parent)
+        prval () = opt_unnone {stat} (stat_parent)
       in
         err := err + 1 // loop exits abnormally
       end // end of [if]  
@@ -158,19 +157,19 @@ end // end of [getcwdx_main]
 (* ****** ****** *)
 
 implement getcwdx () = let
-  var stat: stat_t? // uinitialized
+  var st: stat? // uinitialized
   val (pfopt_fd | fd) = open_flag_err (".", O_RDONLY)
 in
   if fd <> ~1 then let
     prval open_v_succ pf_fd = pfopt_fd
-    val rtn = lstat_err (".", stat) 
+    val rtn = lstat_err (".", st) 
   in
     if rtn >= 0 then let
-      prval () = opt_unsome (stat)
+      prval () = opt_unsome (st)
     in
-      getcwdx_main (pf_fd | fd, stat)
+      getcwdx_main (pf_fd | fd, st)
     end else let
-      prval () = opt_unnone {stat_t} (stat)
+      prval () = opt_unnone {stat} (st)
     in
       close_exn (pf_fd | fd); strptr_null (null)
     end // end of [if]

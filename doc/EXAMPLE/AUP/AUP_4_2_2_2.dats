@@ -2,11 +2,10 @@
 // Author: Hongwei Xi (hwxi AT cs DOT bu DOT edu)
 // Time: September, 2010
 //
-
 (* ****** ****** *)
 //
 // book: AUP (2nd edition), pages 208 - 213
-// section: 4.2: Nonblocking Input
+// section 4.2.2: Nonblocking Input
 //
 (* ****** ****** *)
 
@@ -20,12 +19,16 @@ staload "libc/SATS/unistd.sats"
 fun setblock {fd:int} (
     fd: int fd, block: bool
   ) : bool = let
-  val f = fcntl_getfl (fd)
+  val f = __getfl (fd) where {
+    extern fun __getfl (fd: int): flag_t = "atslib_fcntl_getfl"
+  }
   val i = int_of_flag (f)
 in
   if i >= 0 then let
     val f = if block then (f land ~O_NONBLOCK) else (f lor O_NONBLOCK)
-    val err = fcntl_setfl (fd, f)
+    val err = __setfl (fd, f) where {
+      extern fun __setfl (fd: int, f: flag_t): int = "atslib_fcntl_setfl"
+    } // end of [val]
   in
     if err >= 0 then true else false
   end else false
@@ -99,7 +102,8 @@ fun test_readany () = let
   end // end of [val]
   prval () = __leak (pf)
   val () = p_fds->[0] := fd
-  val (pf | fd) = open_flag_err ("/dev/pts/5", O_RDWR)
+  val path = "/dev/pts/3" // HX: change may be needed
+  val (pf | fd) = open_flag_err (path, O_RDWR)
   val () = if fd < 0 then let
     val () = prerr "test_readany: open: 1\n" in err := err + 1
   end // end of [val]

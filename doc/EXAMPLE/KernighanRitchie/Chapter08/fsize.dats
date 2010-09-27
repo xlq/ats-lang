@@ -35,11 +35,11 @@ end // end of [main]
 (* ****** ****** *)
 
 implement fsize (name) = let
-  var stbuf: stat_t? // uninitialized
+  var stbuf: stat? // uninitialized
   val err = stat_err (name, stbuf)
 in
   if err >= 0 then let
-    prval () = opt_unsome {stat_t} (stbuf)
+    prval () = opt_unsome {stat} (stbuf)
     val mode = stbuf.st_mode
   in
     if S_ISDIR (mode) then
@@ -51,7 +51,7 @@ in
       printf ("%8ld %s\n", @(sz_lint, name))
     end // end of [if]
   end else let
-    prval () = opt_unnone {stat_t} (stbuf)
+    prval () = opt_unnone {stat} (stbuf)
   in
     // empty
   end // end of [if]
@@ -59,11 +59,10 @@ end // end of [fsize]
 
 (* ****** ****** *)
 
-extern fun dirent_is_self (dp: &dirent_t):<> bool
-  = "atslib_dirent_is_self"
-
-extern fun dirent_is_parent (dp: &dirent_t):<> bool
-  = "atslib_dirent_is_parent"
+extern
+fun dirent_is_self (dp: &dirent):<> bool = "atslib_dirent_is_self"
+extern
+fun dirent_is_parent (dp: &dirent):<> bool = "atslib_dirent_is_parent"
 
 %{^
 
@@ -115,7 +114,7 @@ in
             val direntnameopt =
               direntnameopt_make (buf, dirname, !p_ent) where {
               extern fun direntnameopt_make (
-                buf: &buf_t, dir: string, ent: &dirent_t
+                buf: &buf_t, dir: string, ent: &dirent
               ) :<> Stropt = "direntnameopt_make" 
             }
             val () = begin

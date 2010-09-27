@@ -42,16 +42,15 @@
 
 /* ****** ****** */
 
-static inline
+ATSinline()
 ats_int_type
 atslib_strcmp (
-  ats_ptr_type str1
-, ats_ptr_type str2
+  ats_ptr_type str1, ats_ptr_type str2
 ) {
   return strcmp(str1, str2) ;
 } /* end of [atslib_strcmp] */
 
-static inline
+ATSinline()
 ats_int_type
 atslib_substrcmp (
   ats_ptr_type str1, ats_size_type i1
@@ -62,129 +61,140 @@ atslib_substrcmp (
 
 /* ****** ****** */
 
-static inline
+ATSinline()
 ats_int_type
-atslib_strncmp (ats_ptr_type str1, ats_ptr_type str2, ats_size_type n) {
+atslib_strncmp (
+  ats_ptr_type str1, ats_ptr_type str2, ats_size_type n
+) {
   return strncmp(str1, str2, n) ;
 } /* end of [atslib_strncmp] */
 
-static inline
+ATSinline()
 ats_int_type
 atslib_substrncmp (
   ats_ptr_type str1, ats_size_type i1
 , ats_ptr_type str2, ats_size_type i2
 , ats_size_type n) {
   return strncmp((char*)str1+i1, (char*)str2+i2, n) ;
-} /* end of [atslib_substrncmp] */
+} // end of [atslib_substrncmp]
 
 /* ****** ****** */
 
-static inline
+ATSinline()
 ats_size_type
-atslib_strlen (ats_ptr_type str) { return strlen ((char*)str) ; }
-/* end of [atslib_strspn] */
+atslib_strlen
+  (ats_ptr_type str) { return strlen((char*)str) ; }
+// end of [atslib_strspn]
 
 /* ****** ****** */
 
-static inline
+ATSinline()
 ats_size_type
-atslib_strspn (ats_ptr_type str, ats_ptr_type cs) {
-  return strspn ((char*)str, (char*)cs) ;
+atslib_strspn (
+  ats_ptr_type str, ats_ptr_type cs
+) {
+  return strspn((char*)str, (char*)cs) ;
 } /* end of [atslib_strspn] */
 
-static inline
+ATSinline()
 ats_size_type
-atslib_strcspn (ats_ptr_type str, ats_ptr_type cs) {
-  return strcspn ((char*)str, (char*)cs) ;
-} /* end of [atslib_strcspn] */
+atslib_strcspn (
+  ats_ptr_type str, ats_ptr_type cs
+) {
+  return strcspn((char*)str, (char*)cs) ;
+} // end of [atslib_strcspn]
 
 /* ****** ****** */
 
-static inline
+ATSinline()
 ats_ptr_type
-atslib_strcpy
-  (ats_ptr_type dst, ats_ptr_type src) {
-  return strcpy ((char*)dst, (char*)src) ;
-} /* end of [atslib_strcpy] */
+atslib_strcpy (
+  ats_ptr_type dst, ats_ptr_type src
+) {
+  return strcpy((char*)dst, (char*)src) ;
+} // end of [atslib_strcpy]
 
 /* ****** ****** */
 
-static inline
+ATSinline()
 ats_ptr_type
-atslib_strcat
-  (ats_ptr_type dst, ats_ptr_type src) {
-  return strcat ((char*)dst, (char*)src) ;
-} /* end of [atslib_strcat] */
+atslib_strcat (
+  ats_ptr_type dst, ats_ptr_type src
+) {
+  return strcat((char*)dst, (char*)src) ;
+} // end of [atslib_strcat]
 
 /* ****** ****** */
 
-static inline
+ATSinline()
 ats_ptr_type
 atslib_strpbrk (
-  ats_ptr_type buf, ats_ptr_type accept) {
-  return strpbrk ((char*)buf, (char*)accept) ;
-} /* end of [atslib_strpbrk] */
+  ats_ptr_type buf, ats_ptr_type accept
+) {
+  return strpbrk((char*)buf, (char*)accept) ;
+} // end of [atslib_strpbrk]
 
 /* ****** ****** */
 
-static inline
+ATSinline()
 ats_ptr_type
 atslib_memchr (
   ats_ptr_type buf, ats_int_type chr, ats_size_type n
 ) {
-  return memchr ((void*)buf, (int)chr, (size_t)n) ;
-} /* end of [atslib_memchr] */
+  return memchr((void*)buf, (int)chr, (size_t)n) ;
+} // end of [atslib_memchr]
 
 /* ****** ****** */
 
-static inline
+ATSinline()
 ats_int_type
 atslib_memcmp (
   ats_ptr_type buf1, ats_ptr_type buf2, ats_size_type n
 ) {
-  return memcmp ((void*)buf1, (void*)buf2, (size_t)n) ;
-} /* end of [atslib_memcmp] */
+  return memcmp((void*)buf1, (void*)buf2, (size_t)n) ;
+} // end of [atslib_memcmp]
 
 /* ****** ****** */
 
-static inline
+ATSinline()
 ats_ptr_type
-atslib_memcpy
-  (ats_ptr_type dst, ats_ptr_type src, ats_size_type n)
-{
-  return memcpy ((void*)dst, (void*)src, (size_t)n) ;
-} /* end of [atslib_memcpy] */
+atslib_memcpy (
+  ats_ptr_type dst, ats_ptr_type src, ats_size_type n
+) {
+  return memcpy((void*)dst, (void*)src, (size_t)n) ;
+} // end of [atslib_memcpy]
 
 /* ****** ****** */
 
-static inline
+ATSinline()
 ats_ptr_type
-atslib_memset
-  (ats_ptr_type buf, ats_int_type chr, ats_size_type n)
-{
-  return memset ((void*)buf, (int)chr, (size_t)n) ;
-} /* end of [atslib_memcpy] */
+atslib_memset (
+  ats_ptr_type buf, ats_int_type chr, ats_size_type n
+) {
+  return memset((void*)buf, (int)chr, (size_t)n) ;
+} // end of [atslib_memset]
 
 /* ****** ****** */
 
-static inline
+ATSinline()
 ats_ptr_type
-atslib_strerror (ats_int_type errno) { return strerror (errno) ; }
-/* end of [atslib_strerror] */
+atslib_strerror
+  (ats_int_type errno) { return strerror(errno) ; }
+// end of [atslib_strerror]
 
-#if 0 // this one is commented out
+#if (0) // this one is commented out
 
-static inline
+ATSinline()
 ats_int_type
 atslib_strerror_r (
   ats_int_type errno
 , ats_ptr_type buf
 , ats_size_type bsz
 ) {
-  return strerror_r (errno, (char*)buf, bsz) ;
-} /* end of [atslib_strerror_r] */
+  return strerror_r(errno, (char*)buf, bsz) ;
+} // end of [atslib_strerror_r]
 
-#endif 
+#endif // end of [#if(0)]
 
 /* ****** ****** */
 

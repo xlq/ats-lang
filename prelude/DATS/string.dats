@@ -294,6 +294,18 @@ end // end of [local]
 
 (* ****** ****** *)
 
+implement strptr_dup (p) = let
+  val str = __cast (p) where {
+    extern castfn __cast {l:agz} (p: !strptr l): String
+  } // end of [val]
+  val n = string1_length (str)
+  val str2 = string_make_substring (str, 0, n)
+in
+  strptr_of_strbuf (str2)
+end // end of [strptr_dup]
+
+(* ****** ****** *)
+
 %{$
 
 // a commonly used simple hash function
@@ -330,7 +342,7 @@ atspre_string_make_char (
   } ;
   p = ATS_MALLOC(n+1) ; memset (p, c, n) ; p[n] = '\000' ;
   return p ;
-} /* atspre_string_make_char */
+} // end of [atspre_string_make_char]
 
 /* ****** ****** */
 
@@ -343,7 +355,7 @@ atspre_string_make_substring (
   src = ((char*)src0) + start ;
   memcpy(des, src, len) ; des[len] = '\000' ;
   return des ;
-} /* atspre_string_make_substring */
+} // end of [atspre_string_make_substring]
 
 /* ****** ****** */
 
@@ -353,7 +365,7 @@ atspre_strbuf_tolower
   int c ; char *p = (char*)p0 ;
   while (c = *p) { *p = tolower (c) ; ++p ; }
   return ;
-}
+} // end of [atspre_strbuf_tolower]
 
 ats_void_type
 atspre_strbuf_toupper
@@ -361,7 +373,7 @@ atspre_strbuf_toupper
   int c ; char *p = (char*)p0 ;
   while (c = *p) { *p = toupper (c) ; ++p ; }
   return ;
-}
+} // end of [atspre_strbuf_toupper]
 
 /* ****** ****** */
 

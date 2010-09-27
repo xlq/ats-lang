@@ -2,7 +2,6 @@
 // Author: Hongwei Xi (hwxi AT cs DOT bu DOT edu)
 // Time: September, 2010
 //
-
 (* ****** ****** *)
 //
 // book: AUP (2nd edition), pages 106 - 107

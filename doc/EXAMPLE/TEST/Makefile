@@ -37,6 +37,7 @@ compall:: \
   libc_gmp \
   libc_sched \
   libc_stdlib \
+  libc_time \
   libats_funarray_braun \
   libats_funheap_braun \
   libats_funmap_avltree \
@@ -120,6 +121,11 @@ libc_sched: libc_sched.dats
 
 libc_stdlib: libc_stdlib.dats
 	$(ATSCC) -O2 -o libc_stdlib libc_stdlib.dats && ./libc_stdlib
+
+######
+
+libc_time: libc_time.dats
+	$(ATSCC) -D_XOPEN_SOURCE -O2 -o libc_time libc_time.dats && ./libc_time
 
 ######
 
@@ -267,6 +273,7 @@ cleanall: clean
 	rm -f libc_gmp
 	rm -f libc_sched
 	rm -f libc_stdlib
+	rm -f libc_time
 	rm -f libats_funarray_braun
 	rm -f libats_funheap_braun
 	rm -f libats_funmap_avltree

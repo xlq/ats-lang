@@ -672,7 +672,8 @@ fn doc_dir_copy () = let
     val () = cp "libc_dlfcn.dats"
     val () = cp "libc_gmp.dats"
     val () = cp "libc_sched.dats"
-    val () = cp "libc_stdlib.dats"  
+    val () = cp "libc_stdlib.dats"
+    val () = cp "libc_time.dats"
 //
     val () = cp "libats_funarray_braun.dats"
     val () = cp "libats_funheap_braun.dats"
@@ -788,7 +789,7 @@ end // end of [doc_dir_copy]
 
 fn file_isexi
   (name: string): bool = let
-  typedef T = $STAT.stat_t 
+  typedef T = $STAT.stat 
   var st : T
   val err = $STAT.stat_err (name, st)
   prval () = opt_clear {T} (st)

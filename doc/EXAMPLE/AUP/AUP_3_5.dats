@@ -2,11 +2,10 @@
 // Author: Hongwei Xi (hwxi AT cs DOT bu DOT edu)
 // Time: September, 2010
 //
-
 (* ****** ****** *)
 //
 // book: AUP (2nd edition), pages 147 - 158
-// section: 3.5: Accessing and Displaying File Metadata
+// section 3.5: Accessing and Displaying File Metadata
 //
 (* ****** ****** *)
 //
@@ -25,7 +24,7 @@ staload "libc/sys/SATS/types.sats"
 (* ****** ****** *)
 
 fun print_mode .<>.
-  (st: &stat_t): void = let
+  (st: &stat): void = let
   val mode = st.st_mode
 //
   macdef TYPE(b) = ,(b) = (mode land S_IFMT)
@@ -76,7 +75,7 @@ end // end of [print_mode]
 (* ****** ****** *)
 
 fun print_nlink .<>.
-  (st: &stat_t): void = let
+  (st: &stat): void = let
   val nlink = st.st_nlink
   val nlink = lint_of_nlink (nlink)
 in
@@ -86,7 +85,7 @@ end // end of [print_nlink]
 (* ****** ****** *)
 
 fun print_owner .<>.
-  (st: &stat_t): void = let
+  (st: &stat): void = let
   val uid = st.st_uid
   val (pfopt| p) = getpwuid (uid)
 in
@@ -112,7 +111,7 @@ end (* end of [print_owner] *)
 (* ****** ****** *)
 
 fun print_group .<>.
-  (st: &stat_t): void = let
+  (st: &stat): void = let
   val gid = st.st_gid
   val (pfopt| p) = getgrgid (gid)
 in
@@ -138,7 +137,7 @@ end (* end of [print_group] *)
 (* ****** ****** *)
 
 fun print_size .<>.
-  (st: &stat_t): void = let
+  (st: &stat): void = let
   val mode = st.st_mode
 //
   macdef TYPE(b) = ,(b) = (mode land S_IFMT)
@@ -167,7 +166,7 @@ end // end of [print_size]
 (* ****** ****** *)
 
 fun print_date .<>.
-  (st: &stat_t): void = let
+  (st: &stat): void = let
   val now = time_get ()
 in
 //
@@ -197,7 +196,7 @@ end // end of [print_date]
 (* ****** ****** *)
 
 fun print_name .<>.
-  (st: &stat_t, name: string): void = let
+  (st: &stat, name: string): void = let
   // nothing
 in
   case+ 0 of
@@ -231,7 +230,7 @@ end // end of [print_name]
 (* ****** ****** *)
 
 fun longls .<>.
-  (st: &stat_t, path: string): void = let
+  (st: &stat, path: string): void = let
   val () = print_mode (st)
   val () = print_nlink (st)
   val () = print_owner (st)
@@ -250,19 +249,19 @@ implement
 main {n} (argc, argv) = () where {
 //
   var i: natLte n
-  var st: stat_t? // uninitialized
+  var st: stat? // uninitialized
 //
   val () = for
     (i := 1; i < argc; i := i+1) let
     val path = argv.[i]
     val _err = lstat_err (path, st)
     val () = if _err >= 0 then let
-      prval () = opt_unsome {stat_t} (st)
+      prval () = opt_unsome {stat} (st)
       val () = longls (st, path)
     in
       // nothing
     end else let
-      prval () = opt_unnone {stat_t} (st)
+      prval () = opt_unnone {stat} (st)
       val () = printf ("longls: cannot access [%s]: No such file or directory\n", @(path))
     in
       // nothing

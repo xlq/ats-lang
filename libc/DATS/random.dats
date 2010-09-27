@@ -9,7 +9,7 @@
 (*
 ** ATS - Unleashing the Potential of Types!
 **
-** Copyright (C) 2002-2008 Hongwei Xi, Boston University
+** Copyright (C) 2002-2010 Hongwei Xi, Boston University
 **
 ** All rights reserved
 **
@@ -39,25 +39,63 @@
 
 (* ****** ****** *)
 
+staload "libc/sys/SATS/time.sats" // for gettimeofday
+staload "libc/sys/SATS/types.sats" // for several lint_of* functions
+
+(* ****** ****** *)
+
 staload "libc/SATS/random.sats"
 
 (* ****** ****** *)
 
-%{^
+implement
+srand48_with_gettimeofday () = let
+  var tv: timeval?
+  val err = gettimeofday (tv)
+  val () = if err = 0 then let
+    prval () = opt_unsome {timeval} (tv)
+    val seed = (lint_of)tv.tv_sec * 1000000L + (lint_of)tv.tv_usec
+    val () = srand48 (seed)
+  in
+    // nothing
+  end else let
+    prval () = opt_unnone {timeval} (tv)
+  in
+    // nothing
+  end // end of [if]
+in
+  err (* 0/-1 : succ/fail *)
+end // end of [srand48_with_gettimeofday]
 
-/* ****** ****** */
+(* ****** ****** *)
 
-ats_void_type // [n] is assumed to be positive!
-atslib_randint_r (
-  ats_ref_type buf, ats_int_type n, ats_ref_type i
-) {
-  ats_lint_type tmp ;
-  atslib_lrand48_r ((ats_drand48_data_type*)buf, &tmp) ; // the return is 0
-  *(ats_int_type*)i = tmp % n ;
-  return ;
-} /* end of [atslib_randint_r] */
+implement
+randint {n} (n) = let
+  val d01 = drand48 ()
+  val r = int_of(d01 * n)
+  val [r:int] r = int1_of (r)
+  prval () = __assert () where {
+    extern prfun __assert (): [0 <= r; r <= n] void
+  } // end of [prval]
+in
+  if r < n then r else 0
+end // end of [randint]
 
-%} // end of [%{^ ... %}]
+(* ****** ****** *)
+
+implement
+randint_r {n}
+  (buf, n, res) = let
+  var d01: double
+  val _0 = drand48_r (buf, d01)
+  val r = int_of(d01 * n)
+  val [r:int] r = int1_of (r)
+  prval () = __assert () where {
+    extern prfun __assert (): [0 <= r; r <= n] void
+  } // end of [prval]
+in
+  if r < n then res := r else res := 0
+end // end of [randint_r]
 
 (* ****** ****** *)
 

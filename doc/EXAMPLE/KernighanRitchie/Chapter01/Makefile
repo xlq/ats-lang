@@ -12,7 +12,11 @@ ATSOPT=$(ATSHOMEQ)/bin/atsopt
 
 ######
 
-all: \
+checkall: compall cleanall
+
+######
+
+compall: \
   hello \
   fahrenheit_celsius \
   echo \

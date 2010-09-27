@@ -1164,7 +1164,7 @@ atspre_tostrptr_int64
 
 ATSinline()
 ats_uint64_type
-atspre_uint64_of_int1 (ats_int_type i) { return (uint)i ; }
+atspre_uint64_of_int1 (ats_int_type i) { return i ; }
 ATSinline()
 ats_uint64_type
 atspre_uint64_of_uint (ats_uint_type i) { return i ; }

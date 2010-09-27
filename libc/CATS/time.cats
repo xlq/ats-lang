@@ -43,7 +43,6 @@
 /* ****** ****** */
 
 #include "ats_types.h"
-
 typedef struct tm ats_tm_struct_type ;
 
 /* ****** ****** */
@@ -52,13 +51,7 @@ typedef struct tm ats_tm_struct_type ;
 
 /* ****** ****** */
 
-ATSinline()
-ats_lint_type
-atslib_lint_of_time (time_t t) { return t ; }
-
-ATSinline()
-ats_double_type
-atslib_double_of_time (time_t t) { return t ; }
+#define atslib_difftime difftime
 
 /* ****** ****** */
 
@@ -123,10 +116,6 @@ atslib_time_get_and_set
 
 /* ****** ****** */
 
-#define atslib_difftime difftime
-
-/* ****** ****** */
-
 #define atslib_ctime ctime
 #define atslib_ctime_r ctime_r
 
@@ -135,9 +124,37 @@ atslib_time_get_and_set
 #define atslib_localtime localtime
 #define atslib_localtime_r localtime_r
 
+#define atslib_gmtime gmtime
+#define atslib_gmtime_r gmtime_r
+
 /* ****** ****** */
 
+#define atslib_mktime mktime
+
+/* ****** ****** */
+
+#define atslib_asctime asctime
 #define atslib_strftime strftime
+
+/* ****** ****** */
+
+extern int getdate_err ;
+
+ATSinline()
+ats_int_type
+atslib_getdate_err_get() { return getdate_err ;}
+//
+ATSinline()
+ats_void_type
+atslib_getdate_err_set(ats_int_type n) { getdate_err = n ; return ; }
+//
+#define atslib_getdate getdate
+
+#define atslib_strptime strptime
+
+/* ****** ****** */
+
+#define atslib_tzset tzset
 
 /* ****** ****** */
 
@@ -152,8 +169,7 @@ atslib_double_of_clock (clock_t t) { return t ; }
 /* ****** ****** */
 
 ATSinline()
-ats_clock_type
-atslib_clock (void) { return clock (); }
+ats_clock_type atslib_clock (void) { return clock (); }
 
 /* ****** ****** */
 

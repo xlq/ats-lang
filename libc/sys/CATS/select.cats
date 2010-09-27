@@ -36,10 +36,9 @@
 #ifndef ATS_LIBC_SYS_SELECT_CATS
 #define ATS_LIBC_SYS_SELECT_CATS
 
-#include <sys/select.h>
-
 /* ****** ****** */
 
+#include <sys/select.h>
 typedef fd_set ats_fd_set_type ;
 typedef struct timeval ats_timeval_type ;
 

@@ -9,7 +9,7 @@
 (*
 ** ATS - Unleashing the Potential of Types!
 **
-** Copyright (C) 2002-2008 Hongwei Xi, Boston University
+** Copyright (C) 2002-2010 Hongwei Xi, Boston University
 **
 ** All rights reserved
 **
@@ -35,61 +35,61 @@
 
 (* ****** ****** *)
 
-(* some commonly used macro definitions *)
+(* some commonly used _local_ macro definitions *)
+
+(* ****** ****** *)
+//
+symintr is_nil
+symintr is_cons
+//
+symintr tup_head
+symintr tup_tail
+//
+(* ****** ****** *)
+
+macdef min (x, y) = if ,(x) <= ,(y) then ,(x) else ,(y)
+macdef max (x, y) = if ,(x) <= ,(y) then ,(y) else ,(x)
 
 (* ****** ****** *)
 
-#include "prelude/params.hats"
+macdef println (x) = (print ,(x); print_newline ())
+macdef prerrln (x) = (prerr ,(x); prerr_newline ())
 
 (* ****** ****** *)
 
-#if VERBOSE_PRELUDE #then
-#print "Loading [macrodef.ats] starts!\n"
-#endif // end of [VERBOSE_PRELUDE]
+local
 
-(* ****** ****** *)
-
-(* macros in short form *)
-// [orelse] and [andalso] are not defined in the curried
-// form as they are infix operators
-macdef orelse (x, y) = if ,(x) then true else ,(y)
-macdef andalso (x, y) = if ,(x) then ,(y) else false
-
-(* ****** ****** *)
-
-(* only a macro in long form can be defined recursively *)
 macrodef
-rec power_mac x(*base:code*) n(*exponent:int*) =
-  if n > 1 then `(,(x) * ,(power_mac x (n-1))) else (if n > 0 then x else `(1))
-// end of [power_mac]
+rec
+printstar_rec args =
+  if is_nil args then `() else `(
+    print ,(tup_head args) ; ,(printstar_rec (tup_tail args))
+  ) // end of [if]
+// end of [printstar_rec]
 
-macdef
-square_mac (x) = ,(power_mac x 2) and cube_mac (x)  = ,(power_mac x 3)
+macrodef
+rec
+prerrstar_rec args =
+  if is_nil args then `() else `(
+    prerr ,(tup_head args) ; ,(prerrstar_rec (tup_tail args))
+  ) // end of [if]
+// end of [prerrstar_rec]
+
+in // in of [local]
+
+//
+// for instance, we can write something like:
+//
+// printstarln @("x+y = ", x+y, "and x*y = ", x*y)
+//
+macdef printstar args = ,(printstar_rec args)
+macdef printstarln args = begin ,(printstar_rec args); print_newline () end
+
+macdef prerrstar args = ,(prerrstar_rec args)
+macdef prerrstarln args = begin ,(prerrstar_rec args); prerr_newline () end
+
+end // end of [local]
 
 (* ****** ****** *)
 
-macdef
-print_mac (fprint, x) = let
-  val (pf_stdout | ptr_stdout) = stdout_get ()
-in
-  ,(fprint) (file_mode_lte_w_w | !ptr_stdout, ,(x));
-  stdout_view_set (pf_stdout | (*none*))
-end // end of [print_mac]
-
-macdef
-prerr_mac (fprint, x) = let
-  val (pf_stderr | ptr_stderr) = stderr_get ()
-in
-  ,(fprint) (file_mode_lte_w_w | !ptr_stderr, ,(x));
-  stderr_view_set (pf_stderr | (*none*))
-end // end of [prerr_mac]
-
-(* ****** ****** *)
-
-#if VERBOSE_PRELUDE #then
-#print "Loading [macrodef.ats] finishes!\n"
-#endif // end of [VERBOSE_PRELUDE]
-
-(* ****** ****** *)
-
-(* end of [macrodef.sats] *)
+(* end of [lmacrodef.hats] *)

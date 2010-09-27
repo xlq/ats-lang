@@ -2,30 +2,37 @@
 // Author: Hongwei Xi (hwxi AT cs DOT bu DOT edu)
 // Time: September, 2010
 //
-
 (* ****** ****** *)
 //
 // book: AUP (2nd edition), pages 208 - 213
-// section: 4.2: Nonblocking Input
+// section 4.2.2: Nonblocking Input
 //
 (* ****** ****** *)
 
 staload "libc/SATS/errno.sats"
+//
 staload "libc/SATS/fcntl.sats"
+//
 staload "libc/SATS/time.sats"
 staload "libc/SATS/unistd.sats"
+//
+staload "libc/sys/SATS/types.sats"
 
 (* ****** ****** *)
 
 fun setblock {fd:int} (
     fd: int fd, block: bool
   ) : bool = let
-  val f = fcntl_getfl (fd)
+  val f = __getfl (fd) where {
+    extern fun __getfl (fd: int): flag_t = "atslib_fcntl_getfl"
+  }
   val i = int_of_flag (f)
 in
   if i >= 0 then let
     val f = if block then (f land ~O_NONBLOCK) else (f lor O_NONBLOCK)
-    val err = fcntl_setfl (fd, f)
+    val err = __setfl (fd, f) where {
+      extern fun __setfl (fd: int, f: flag_t): int = "atslib_fcntl_setfl"
+    } // end of [val]
   in
     if err >= 0 then true else false
   end else false
@@ -60,7 +67,7 @@ if err = 0 then let
     val () = if (lint_of)tnow < 0L then err := err + 1
     val () = if err > 0 then break
     val () = printf ("Waiting for input: (%.0f sec.) ...\n", @(difftime (tnow, tstart)))
-    val n = fildes_read_err (pf_fd | STDIN_FILENO, !p_buf, BUFSZ1)
+    val n = read_err (pf_fd | STDIN_FILENO, !p_buf, BUFSZ1)
     val n = int1_of_ssize1 (n)
   in
     case+ 0 of

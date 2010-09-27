@@ -148,7 +148,9 @@ implement draw_main
   var t: time_t // unintialized
   val _(*ignored*) = time_get_and_set (t)
   var tm: tm_struct // unintialized
-  val () = localtime_r (t, tm)
+  val _ptr = localtime_r (t, tm)
+  val () = assert_errmsg (_ptr > null, #LOCATION)
+  prval () = opt_unsome {tm_struct} (tm)
   val hr = tm.tm_hour and mt = tm.tm_min and sd = tm.tm_sec
   val hr = int1_of_int (hr)
   val () = assert (0 <= hr && hr < 24)
@@ -252,7 +254,9 @@ fun sec_changed
   var t: time_t // unintialized
   val _(*ignored*) = time_get_and_set (t)
   var tm: tm_struct // unintialized
-  val () = localtime_r (t, tm)
+  val _ptr = localtime_r (t, tm)
+  val () = assert_errmsg (_ptr > null, #LOCATION)
+  prval () = opt_unsome {tm_struct} (tm)
   val sd = tm.tm_sec
   val sd_old = !theLastSec
 in

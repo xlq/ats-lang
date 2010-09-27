@@ -9,7 +9,7 @@
 (*
 ** ATS - Unleashing the Potential of Types!
 **
-** Copyright (C) 2002-2008 Hongwei Xi, Boston University
+** Copyright (C) 2002-2010 Hongwei Xi, Boston University
 **
 ** All rights reserved
 **
@@ -52,7 +52,7 @@ fun srand48 (li: lint): void = "atslib_srand48"
 // using epoch time for the seed
 fun srand48_with_time (): void = "atslib_srand48_with_time"
 // using microsecond for the seed
-fun srand48_with_gettimeofday (): void = "atslib_srand48_with_gettimeofday"
+fun srand48_with_gettimeofday (): int (*err*) // 0/-1: succ/fail
 
 (* ****** ****** *)
 //

@@ -714,6 +714,10 @@ overload prerr with prerr_strptr
 //
 (* ****** ****** *)
 
+fun strptr_dup {l:agz} (x: !strptr l): strptr1
+
+(* ****** ****** *)
+
 #if VERBOSE_PRELUDE #then
 #print "Loading [string.sats] finishes!\n"
 #endif // end of [VERBOSE_PRELUDE]

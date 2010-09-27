@@ -27,13 +27,15 @@ print_dirent_d_name (ats_ref_type p_ent) {
 
 %}
 
-extern fun print_dirent_d_name
-  (ent: &dirent_t): void = "print_dirent_d_name"
-
-extern fun print_direntptr
-  (p: &direntptr_gc): void = "print_direntptr"
+extern
+fun print_dirent_d_name
+  (ent: &dirent): void = "print_dirent_d_name"
+// end of [print_dirent_d_name]
+extern
+fun print_direntptr (p: &direntptr_gc): void = "print_direntptr"
   
-implement print_direntptr (p) = let
+implement
+print_direntptr (p) = let
   prval pf_ent = p.1 // p = (pf_gc, pf | p_ent)
   val () = print_dirent_d_name !(p.2)
 in
@@ -116,7 +118,7 @@ in
       {direntptr_gc} (pf | !p_arr, nent_sz, !p_f, sizeof<direntptr_gc>) where {
       var !p_f = @lam
         (pf: !unit_v | p: &direntptr_gc >> direntptr_gc?)
-        : void =<clo> ptr_free {dirent_t} (p.0, p.1 | p.2)
+        : void =<clo> ptr_free (p.0, p.1 | p.2)
     } // end of [val]
     prval unit_v () = pf
   in

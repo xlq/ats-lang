@@ -9,7 +9,7 @@
 /*
 ** ATS - Unleashing the Potential of Types!
 **
-** Copyright (C) 2002-2008 Hongwei Xi.
+** Copyright (C) 2002-2010 Hongwei Xi.
 **
 ** ATS is  free software;  you can redistribute it and/or modify it under
 ** the  terms of the  GNU General Public License as published by the Free
@@ -50,50 +50,36 @@ typedef struct drand48_data ats_drand48_data_type ;
 
 /* ****** ****** */
 
-static inline
+ATSinline()
 ats_void_type
 atslib_srand48
-(ats_lint_type seed) {
+  (ats_lint_type seed) {
   srand48 ((long int)seed) ; return ;
-}
+} // end of [atslib_srand48]
 
-static inline
+ATSinline()
 ats_void_type
 atslib_srand48_with_time () {
   srand48 ((long int)(time ((time_t*)0))) ; return ;
-}
-
-static inline
-ats_void_type
-atslib_srand48_with_gettimeofday () {
-  int err ; struct timeval tv ;
-  err = gettimeofday (&tv, (struct timezone*)0) ;
-/*
-  if (err != 0) {
-    fprintf (stderr, "atslib_srand48_with_gettimeofday: err = %i\n", err) ; exit (1) ;
-  } // end of [if]
-*/
-  srand48 ((long int)(tv.tv_sec * 1000000 + tv.tv_usec)) ;
-  return ;
-}
+} // end of [atslib_srand48_with_time]
 
 /* ****** ****** */
 
-static inline
+ATSinline()
 ats_double_type
 atslib_drand48 () { return drand48() ; }
 
-static inline
+ATSinline()
 ats_lint_type
 atslib_lrand48 () { return lrand48() ; }
 
-static inline
+ATSinline()
 ats_lint_type
 atslib_mrand48 () { return mrand48() ; }
 
 /* ****** ****** */
 
-static inline
+ATSinline()
 ats_int_type
 atslib_srand48_r
   (ats_lint_type seed, ats_ref_type buf) {
@@ -102,38 +88,24 @@ atslib_srand48_r
 
 /* ****** ****** */
 
-static inline
+ATSinline()
 ats_int_type
 atslib_drand48_r (ats_ref_type buf, ats_ref_type res) {
   return drand48_r ((ats_drand48_data_type*)buf, (ats_double_type*)res) ;
 } // end of [drand48_r]
 
-static inline
+ATSinline()
 ats_int_type
 atslib_lrand48_r (ats_ref_type buf, ats_ref_type res) {
   return lrand48_r ((ats_drand48_data_type*)buf, (ats_lint_type*)res) ;
 } // end of [lrand48_r]
 
-static inline
+ATSinline()
 ats_int_type
 atslib_mrand48_r (ats_ref_type buf, ats_ref_type res) {
   return mrand48_r ((ats_drand48_data_type*)buf, (ats_lint_type*)res) ;
 } // end of [lrand48_r]
 
-
-/* ****** ****** */
-
-/*
-static inline
-ats_int_type // [n] is assumed to be positive!
-atslib_randint (ats_int_type n) { return (lrand48 () % n) ; }
-*/
-
-static inline
-ats_int_type // [n] is assumed to be positive!
-atslib_randint (ats_int_type n) { // much better than the previous one
-  int r = n * drand48 () ; return (r < n) ? r : 0 ;
-}
 
 /* ****** ****** */
 

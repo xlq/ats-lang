@@ -33,29 +33,33 @@
 
 /* ****** ****** */
 
-#ifndef ATS_LIBC_SYS_TIME_CATS
-#define ATS_LIBC_SYS_TIME_CATS
+#ifndef ATS_LIBC_SYS_POLL_CATS
+#define ATS_LIBC_SYS_POLL_CATS
 
 /* ****** ****** */
 
-#include <sys/time.h>
+#include <sys/poll.h>
+typedef struct pollfd ats_pollfd_type ;
 
 /* ****** ****** */
 
-typedef struct timeval ats_timeval_type ;
-typedef struct timezone ats_timezone_type ;
+ATSinline()
+ats_int_type
+atslib_poll (
+  ats_ref_type fds
+, ats_int_type nfds // cast to nfds_t (unsigned long)
+, ats_int_type timeout
+) {
+  return poll((ats_pollfd_type*)fds, nfds, timeout) ;
+} // end of [atslib_poll]
 
 /* ****** ****** */
 
-#define atslib_gettimeofday_tv(tv) gettimeofday(tv, NULL)
-#define atslib_gettimeofday_tz(tz) gettimeofday(NULL, tz)
-
-#define atslib_settimeofday_tv(tv) settimeofday(tv, NULL)
-#define atslib_settimeofday_tz(tz) settimeofday(NULL, tz)
-#define atslib_settimeofday_tvtz(tv, tz) settimeofday(tv, tz)
+#define atslib_poll poll
+#define atslib_ppoll ppoll
 
 /* ****** ****** */
 
-#endif /* end of [ATS_LIBC_SYS_TIME_CATS] */
+#endif /* end of [ATS_LIBC_SYS_POLL_CATS] */
 
-/* end of [time.cats] */
+/* end of [poll.cats] */
