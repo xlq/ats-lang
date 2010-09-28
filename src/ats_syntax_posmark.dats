@@ -59,7 +59,8 @@ typedef loc_t = $Loc.location_t
 
 (* ****** ****** *)
 
-fn externloc_posmark (loc: loc_t): void = let
+fn externloc_posmark
+  (loc: loc_t): void = let
   val loc_begoff = $Loc.location_begpos_toff loc
   val loc_endoff = $Loc.location_endpos_toff loc
 in
@@ -67,7 +68,8 @@ in
   $PM.posmark_insert_extern_end loc_endoff;
 end // end of [externloc_posmark]
 
-fn neuexploc_posmark (loc: loc_t): void = let
+fn neuexploc_posmark
+  (loc: loc_t): void = let
   val loc_begoff = $Loc.location_begpos_toff loc
   val loc_endoff = $Loc.location_endpos_toff loc
 in
@@ -75,7 +77,8 @@ in
   $PM.posmark_insert_neuexp_end loc_endoff;
 end // end of [neuexploc_posmark]
 
-fn staexploc_posmark (loc: loc_t): void = let
+fn staexploc_posmark
+  (loc: loc_t): void = let
   val loc_begoff = $Loc.location_begpos_toff loc
   val loc_endoff = $Loc.location_endpos_toff loc
 in
@@ -83,7 +86,8 @@ in
   $PM.posmark_insert_staexp_end loc_endoff;
 end // end of [staexploc_posmark]
 
-fn prfexploc_posmark (loc: loc_t): void = let
+fn prfexploc_posmark
+  (loc: loc_t): void = let
   val loc_begoff = $Loc.location_begpos_toff loc
   val loc_endoff = $Loc.location_endpos_toff loc
 in

@@ -453,9 +453,9 @@ fn do_parse_filename (
   ) : $Syn.d0eclst = let
   val debug_flag = $Deb.debug_flag_get ()
   val () = if debug_flag > 0 then let
-    val cwd = getcwd () where { // [atslib_getcwd]
+    val cwd = getcwd0 () where { // [atslib_getcwd]
       // is defined in the file "libc/SATS/unistd.sats"
-      extern fun getcwd (): String = "atslib_getcwd"
+      extern fun getcwd0 (): String = "atslib_getcwd0"
     } // end of [val]
   in
     print "cwd = "; print cwd; print_newline ()

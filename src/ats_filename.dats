@@ -88,7 +88,7 @@ in
 //
 // staload "libc/SATS/unistd.sats"
 //
-extern fun getcwd (): String = "atslib_getcwd"
+extern fun getcwd0 (): String = "atslib_getcwd0"
 
 implement theDirsep_get () = theDirsep
 implement theCurdir_get () = theCurdir
@@ -333,7 +333,9 @@ end // end of [the_pathlst_pop]
 
 implement the_pathlst_push (dirname) = let
   val dirname_full = (case+ 0 of
-    | _ when filename_is_relative dirname => filename_append (getcwd (), dirname)
+    | _ when filename_is_relative dirname => let
+        val cwd = getcwd0 () in filename_append (cwd, dirname)
+      end // end of [_ when ...]
     | _ => dirname
   ) : string
   val dirname_full = path_normalize (dirname_full)
@@ -482,7 +484,7 @@ filenameopt_make_relative (basename) = let
     case+ 0 of
     | _ when stropt_is_some fullnameopt => fullnameopt
     | _ when filename_is_exist basename => let
-        val cwd = getcwd ()
+        val cwd = getcwd0 ()
         val fullname = filename_append (cwd, basename)
         val fullname = string1_of_string fullname
       in

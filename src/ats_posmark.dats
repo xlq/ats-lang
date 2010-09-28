@@ -36,7 +36,7 @@
 //
 // Modification by Guillaume Brunerie (guillaume DOT brunerie AT gmail DOT com)
 // for XHTML conformity
-// Time: August, 2008
+// Time: August, 2010
 //
 (* ****** ****** *)
 
@@ -114,7 +114,7 @@ datatype posmark = // 0/1 : begin/end
 
 #define NPOSMARK1 100
 // please make sure that the values assigned to closing tags
-// (i=1) are less than the values assigned opening tags (i=0)
+// (i=1) are less than the values assigned to opening tags (i=0)
 fn int_of_posmark (pm: posmark): int =
   case+ pm of
   | PMnone () => 0
@@ -435,9 +435,9 @@ local
 
 fn posmarklst_sort
   (ppms: lintposmarklst): lintposmarklst = let
-
+//
   typedef ppm = lintposmark
-
+//
   fn cmp
     (x1: &ppm, x2: &ppm): Sgn = let
     val x10 = x1.0 and x20 = x2.0 in
@@ -445,7 +445,7 @@ fn posmarklst_sort
       (if x10 > x20 then 1 else compare_posmark_posmark (x1.1, x2.1))
     end // end of [if]
   end // end of [cmp]
-
+//
   fun loop {n,i:int | 0 <= i + 1; i + 1 <= n}
     (A: &(@[ppm][n]), i: int i, res: list_vt (ppm, n-i-1))
     : list_vt (ppm, n) =
@@ -455,13 +455,14 @@ fn posmarklst_sort
       res // return value
     end // end of [if]
   // end of [loop]
-
+//
   val n = $Lst.list_vt_length<ppm> (ppms)
   val (pf_gc, pf_arr | p_arr) =
     $Arr.array_ptr_make_lst_vt<ppm> (n, ppms)
   val () = qsort {ppm} (!p_arr, size1_of_int1 n, sizeof<ppm>, cmp)
   val res = loop (!p_arr, n-1, list_vt_nil ())
   val () = array_ptr_free {ppm} (pf_gc, pf_arr | p_arr)
+//
 in
   res
 end // end of [posmarklst_sort]
@@ -473,9 +474,9 @@ fn posmark_file_file (
   , fputchr: (char, &FILE w) -<fun1> void
   , fil_s: &FILE r, fil_d: &FILE w
   ) : void = let
-
+//
   typedef ppm =  lintposmark
-
+//
   fun lpfin1 (
       fil_s: &FILE r
     , fil_d: &FILE w
@@ -489,7 +490,7 @@ fn posmark_file_file (
         lpfin1 (fil_s, fil_d, ppm.0, ppm.1, ppms)
     | ~list_vt_nil () => ()
   end // end of [lpfin1]
-
+//
   fun lpfin2 (fil_s: &FILE r, fil_d: &FILE w):<cloref1> void = let
     val c = fgetc_err (file_mode_lte_r_r | fil_s)
   in
@@ -497,7 +498,7 @@ fn posmark_file_file (
       fputchr (char_of_int c, fil_d); lpfin2 (fil_s, fil_d)
     end // end of [if]
   end // end of [lpfin2]
-
+//
   fn* loop1
     (fil_s: &FILE r, fil_d: &FILE w,
      i: lint, p: lint, pm: posmark, ppms: List_vt ppm)
@@ -510,7 +511,7 @@ fn posmark_file_file (
       lpfin1 (fil_s, fil_d, p, pm, ppms)
     end // end of [if]
   end (* end of [loop1] *)
-
+//
   and loop2
     (fil_s: &FILE r, fil_d: &FILE w,
      i: lint, p: lint, pm: posmark, ppms: List_vt ppm, c: int)
@@ -531,14 +532,15 @@ fn posmark_file_file (
         end // end of [list_vt_nil]
     end // end of [if]
   end (* end of [loop2] *)
-
+//
   val lint0 = lint_of_int 0 // 0L
   val ppms = posmarklst_sort (the_posmarklst_get ())
-
+//
   prval pf_mod = file_mode_lte_w_w
   val () = fprint1_string (pf_mod | fil_d, HTM_POSMARK_FILE_BEG);
   val () = loop1 (fil_s, fil_d, lint0, lint0, PMnone (), ppms)
   val () = fprint1_string (pf_mod | fil_d, HTM_POSMARK_FILE_END);
+//
 in
   // empty
 end // end of [posmark_file_file]
@@ -821,19 +823,19 @@ posmark_htmlfilename_make (ats_ptr_type basename) {
 static char* the_ats_posmark_xref_flag = 0 ;
 
 ats_ptr_type
-ats_posmark_xref_flag_get () {
-  return the_ats_posmark_xref_flag ;
-}
+ats_posmark_xref_flag_get () { return the_ats_posmark_xref_flag ; }
 
 ats_void_type
-ats_posmark_xref_flag_set (ats_ptr_type flag) {
+ats_posmark_xref_flag_set
+  (ats_ptr_type flag) {
   the_ats_posmark_xref_flag = flag ; return ;
-}
+} // end of [ats_posmark_xref_flag_set]
 
-ats_void_type ats_posmark_initialize () {
+ats_void_type
+ats_posmark_initialize () {
   ATS_GC_MARKROOT (&the_ats_posmark_xref_flag, sizeof(ats_ptr_type)) ;
   return ;
-}
+} // end of [ats_posmark_initialize]
 
 %} // end of [%{$]
 

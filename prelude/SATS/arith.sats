@@ -58,6 +58,9 @@ dataprop MUL (int, int, int) =
 praxi mul_make : {m,n:int} () -<prf> MUL (m, n, m*n)
 praxi mul_elim : {m,n:int} {p:int} MUL (m, n, p) -<prf> [p == m*n] void
 
+//
+// HX: (m+i)*n = m*n+i*n
+//
 praxi mul_add_const {i:int}
   {m,n:int} {p:int} (pf: MUL (m, n, p)):<prf> MUL (m+i, n, p+i*n)
 // end of [mul_add_const]
