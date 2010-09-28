@@ -36,11 +36,8 @@
 (* ****** ****** *)
 
 %{#
-
-#include "libc/sys/CATS/types.cats" // for [pid_t]
 #include "libc/CATS/unistd.cats"
-
-%}
+%} // end of [%{#]
 
 (* ****** ****** *)
 
@@ -201,11 +198,11 @@ fun unlink (path: string): int = "#atslib_unlink" // macro
 
 (* ****** ****** *)
 
-fun fildes_lseek_err {fd:int}
+fun lseek_err {fd:int}
   (pf: !fildes_v (fd) | fd: int fd, ofs: off_t, whence: whence_t): off_t
   = "atslib_fildes_lseek_err"
 
-fun fildes_lseek_exn {fd:int}
+fun lseek_exn {fd:int}
   (pf: !fildes_v (fd) | fd: int fd, ofs: off_t, whence: whence_t): off_t
   = "atslib_fildes_lseek_exn"
 
@@ -271,7 +268,7 @@ fun pathconf
 //
 // HX-2010-09-21: for simplicity, [fd] assumed to be valid
 //
-fun fpathconf {fd:int}
+fun fpathconf {fd:nat}
   (fd: int fd, name: pathconfname_t): lint = "#atslib_fpathconf"
 // end of [fpathconf]
 
@@ -281,6 +278,28 @@ fun readlink {n:nat} {l:addr} (
   pf: !b0ytes(n) @ l >> bytes(n) @ l | path: string(*const*), p: ptr l, n: size_t n
 ) : [n1:int | n1 <= n] ssize_t (n1) = "#atslib_readlink"
 // end of [readlink]
+
+(* ****** ****** *)
+
+fun setsid (): pid_t = "#atslib_setsid" // -1 is returned on error
+fun getsid (pid: pid_t): pid_t = "#atslib_getsid" // -1 is returned on error
+
+fun setpgid (
+  pid: pid_t, pgid: pid_t
+) : int = "#atslib_setpgid" // 0/-1 : succ/fail
+fun getpgid (pid: pid_t): pid_t = "#atslib_getpgid" // -1 is returned on error
+
+(* ****** ****** *)
+
+//
+// HX-2010-09-27: for simplicity, [fd] assumed to be valid
+//
+fun tcsetpgrp {fd:nat}
+  (fd: int fd, pgid: pid_t): int = "#atslib_tcsetpgrp" // 0/-1 : succ/fail
+// end of [tcsetpgrp]
+fun tcgetpgrp {fd:nat}
+  (fd: int fd): pid_t = "#atslib_tcgetpgrp" // -1 is returned on error
+// end of [tcgetpgrp]
 
 (* ****** ****** *)
 

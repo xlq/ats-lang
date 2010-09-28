@@ -33,38 +33,15 @@
 
 /* ****** ****** */
 
-#ifndef ATS_LIBC_SIGNAL_CATS
-#define ATS_LIBC_SIGNAL_CATS
+#ifndef ATS_LIBC_TERMIOS_CATS
+#define ATS_LIBC_TERMIOS_CATS
 
 /* ****** ****** */
 
-#include <signal.h>
+#define atslib_tcgetsid tcgetsid
 
 /* ****** ****** */
 
-typedef ats_int_type signum_t ;
-typedef void (*sighandler_t)(signum_t) ;
+#endif /* ATS_LIBC_UNISTD_CATS */
 
-/* ****** ****** */
-
-/*
-//
-// HX-2010-09-27:
-// these two are now cast functions
-//
-ATSinline()
-ats_ptr_type
-atslib_fun_of_sighandler (ats_ptr_type f) { return f ; }
-
-ATSinline()
-ats_ptr_type
-atslib_sighandler_of_fun (ats_ptr_type f) { return f ; }
-*/
-
-/* ****** ****** */
-
-#define atslib_signal signal
-
-/* ****** ****** */
-
-#endif /* ATS_LIBC_SIGNAL_CATS */
+/* end of [termios.cats] */

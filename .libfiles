@@ -144,6 +144,8 @@ libc/SATS/strings.sats
 
 libc/SATS/time.sats
 
+libc/SATS/termios.sats
+
 libc/SATS/unistd.sats
 libc/DATS/unistd.dats
 

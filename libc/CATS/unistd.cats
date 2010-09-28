@@ -45,8 +45,7 @@
 
 /* ****** ****** */
 
-#include "ats_types.h"
-// typedef pid_t ats_pid_type ;
+#include "libc/sys/CATS/types.cats" // for [pid_t]
 
 /* ****** ****** */
 
@@ -60,13 +59,17 @@ ATSinline()
 ats_pid_type
 atslib_fork_exn () {
   pid_t pid ;
+//
   pid = fork () ;
+//
   if (pid < 0) {
     perror ("fork") ;
-    ats_exit_errmsg (errno, "exit(ATS): [fork] failed.\n") ;
+    ats_exit_errmsg (errno, (ats_ptr_type)"exit(ATS): [fork] failed.\n") ;
+    // end of [ats_exit_errmsg]
   } // end of [if]
+//
   return pid ;
-} /* end of [atslib_fork_exn] */
+} // end of [atslib_fork_exn]
 
 /* ****** ****** */
 
@@ -161,4 +164,18 @@ atslib_fildes_lseek_exn (
 
 /* ****** ****** */
 
+#define atslib_setsid setsid
+#define atslib_getsid getsid
+#define atslib_setpgid setpgid
+#define atslib_getpgid getpgid
+
+/* ****** ****** */
+
+#define atslib_tcsetpgrp tcsetpgrp
+#define atslib_tcgetpgrp tcgetpgrp
+
+/* ****** ****** */
+
 #endif /* ATS_LIBC_UNISTD_CATS */
+
+/* end of [unistd.cats] */

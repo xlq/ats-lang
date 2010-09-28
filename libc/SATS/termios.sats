@@ -27,7 +27,6 @@
 ** along  with  ATS;  see the  file COPYING.  If not, please write to the
 ** Free Software Foundation,  51 Franklin Street, Fifth Floor, Boston, MA
 ** 02110-1301, USA.
-**
 *)
 
 (* ****** ****** *)
@@ -37,53 +36,49 @@
 (* ****** ****** *)
 
 %{#
-#include "libc/CATS/signal.cats"
+#include "libc/CATS/termios.cats"
 %} // end of [%{#]
 
 (* ****** ****** *)
 
-// defined in [libc/CATS/signal.cats]
-abst@ype signum_t = $extype "signum_t"
+staload TYPES = "libc/sys/SATS/types.sats"
+typedef pid_t = $TYPES.pid_t
 
-macdef SIGHUP =  $extval (signum_t, "SIGHUP") // 1
-macdef SIGINT =  $extval (signum_t, "SIGINT") // 2
-macdef SIGQUIT = $extval (signum_t, "SIGQUIT") // 3
-macdef SIGILL = $extval (signum_t, "SIGILL") // 4
-macdef SIGABRT = $extval (signum_t, "SIGABRT") // 6
-macdef SIGFPE = $extval (signum_t, "SIGFPE") // 8
-macdef SIGKILL = $extval (signum_t, "SIGKILL") // 9
-macdef SIGSEGV = $extval (signum_t, "SIGSEGV") // 11
-macdef SIGPIPE = $extval (signum_t, "SIGPIPE") // 13
-macdef SIGALRM = $extval (signum_t, "SIGALRM") // 14
-macdef SIGTERM = $extval (signum_t, "SIGTERM") // 15
-macdef SIGUSR1 = $extval (signum_t, "SIGUSR1")
-macdef SIGUSR2 = $extval (signum_t, "SIGUSR2")
-macdef SIGCHLD = $extval (signum_t, "SIGCHLD")
-macdef SIGCONT = $extval (signum_t, "SIGCONT")
-macdef SIGSTOP = $extval (signum_t, "SIGSTOP")
-macdef SIGTSTP = $extval (signum_t, "SIGTSTP")
-macdef SIGTTIN = $extval (signum_t, "SIGTTIN")
-macdef SIGTTOU = $extval (signum_t, "SIGTTOU")
+(* ****** ****** *)
 
-macdef SIGBUS = $extval (signum_t, "SIGBUS")
-macdef SIGTRAP = $extval (signum_t, "SIGTRAP") // 5
+sta NCCS: int
+abst@ype cc_t
+abst@ype tcflag_t
+abst@ype termios_rest
+typedef termios_struct =
+$extype_struct "ats_termios_type" of {
+  c_iflag= tcflag_t
+, c_oflag= tcflag_t
+, c_cflag= tcflag_t
+, c_lflag= tcflag_t
+, c_cc= @[cc_t][NCCS]
+, _rest= termios_rest // unknown quantity
+} // end of [termios_struct]
+typedef termios = termios_struct
 
-macdef SIGIO = $extval (signum_t, "SIGIO")
+(* ****** ****** *)
+
+fun tcgetattr {fd:nat} // 0/-1 : succ/fail // set errno
+  (fd: int, tp: &termios): int = "#atslib_tcgetattr"
+// end of [tcgetattr]
+
+fun tcsetattr {fd:nat} // 0/-1 : succ/fail // set errno
+  (fd: int fd, actions: int, tp: &termios): int = "#atslib_tcsetattr"
+// end of [tcsetattr]
 
 (* ****** ****** *)
 //
-// HX: typedef sighandler_t = (signum_t) -<fun> void
+// HX-2010-09-27: only available on SUS systems; not on FreeBSD
 //
-abstype sighandler_t // boxed type
-castfn sighandler_of_fun (f: signum_t -<fun> void): sighandler_t
-castfn fun_of_sighandler (f: sighandler_t): signum_t -<fun> void
+fun tcgetsid {fd:nat}
+  (fd: int fd): pid_t = "#atslib_tcgetsid" // -1 is returned on error
+// end of [tcgetsid]
 
 (* ****** ****** *)
 
-fun signal
-  (signum: signum_t, f: sighandler_t): sighandler_t = "#atslib_signal"
-// end of [signal]
-
-(* ****** ****** *)
-
-(* end of [signal.sats] *)
+(* end of [termios.sats] *)
