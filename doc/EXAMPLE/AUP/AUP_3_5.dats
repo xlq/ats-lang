@@ -170,7 +170,7 @@ fun print_date .<>.
   val now = time_get ()
 in
 //
-if (lint_of)now >= 0L then let
+if (lint_of_time)now >= 0L then let
   val diff = difftime (now, st.st_mtime)
   val (pfopt | p) = localtime (st.st_mtime)
   val () = assert_errmsg (p > null, #LOCATION)

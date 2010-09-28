@@ -16,8 +16,6 @@ staload "libc/SATS/fcntl.sats"
 staload "libc/SATS/time.sats"
 staload "libc/SATS/unistd.sats"
 //
-staload "libc/sys/SATS/types.sats"
-
 (* ****** ****** *)
 
 fun setblock {fd:int} (
