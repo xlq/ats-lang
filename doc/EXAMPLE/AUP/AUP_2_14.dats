@@ -87,7 +87,7 @@ implement backward2 (path) = let
   prval () = pf_bufc := bytes_v_of_b0ytes_v (pf_bufc)
   val () = p_buf->[BUFSZ-1] := byte_of_int (0)
   val ofs0 = $T.off_of_lint (0L)
-  val fsize = fildes_lseek_exn (pf_fd | fd, ofs0, $T.SEEK_END)
+  val fsize = lseek_exn (pf_fd | fd, ofs0, $T.SEEK_END)
   val fsize1 = $T.lint_of_off (fsize) - 1L
   var err: int = 0
   val () = loop_main (pf_fd | fd, !p_buf, BUFSZ-1, !p_bufc, fsize1, err)
@@ -112,4 +112,4 @@ end // end of [main]
 
 (* ****** ****** *)
 
-(* end of [AUP_2_14_0.dats] *)
+(* end of [AUP_2_14.dats] *)

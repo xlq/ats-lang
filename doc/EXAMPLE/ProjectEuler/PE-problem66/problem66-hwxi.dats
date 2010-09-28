@@ -100,43 +100,6 @@ val () = assert_errmsg (x61 = 1766319049, #LOCATION)
 
 (* ****** ****** *)
 
-macdef ullint (x) = ullint_of_int ,(x)
-
-fun gcd (u1: ullint, u2: ullint): ullint =
-  if u2 = 0ULL then u1 else gcd (u2, u1 mod u2)
-// end of [gcd]
-
-(*
-fun test (
-    D: int, x: ullint, y: ullint
-  ) : bool = let
-//
-(*
-  val () = (print "test: D = "; print D; print_newline ())
-  val () = (print "test: x = "; print x; print_newline ())
-*)
-//
-  fun issqu
-    (u: ullint): bool = let
-    val u = double_of (u)
-    val u2 = floor (sqrt (u + 0.5))
-  in
-    u2 * u2 >= u
-  end // end of [issqu]
-//
-  var u: ullint = x+1ULL
-  var v: ullint = x-1ULL
-  val () = if u mod 2ULL = 0ULL then (u := u/2ULL; v := u-1ULL)
-  val d1 = gcd (u, (ullint)D)
-  val () = u := u / d1
-in
-  if issqu (u) then let
-    val d2 = (ullint)D / d1 in
-    if v mod d2 = 0ULL then issqu (v / d2) else false
-  end else false
-end // end of [test]
-*)
-
 staload "libc/SATS/gmp.sats"
 
 fun test (
@@ -269,7 +232,8 @@ end // end of [search]
 
 (* ****** ****** *)
 
-implement main () = () where {
+implement
+main () = () where {
   #define N 1000
   var Dmax: int = 0
 //

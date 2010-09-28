@@ -53,7 +53,7 @@ implement backward (path) = let
   prval open_v_succ (pf_fd) = pf_fd
 //
   val _pos1 = ($T.off_of_lint)1L
-  val off = fildes_lseek_err (pf_fd | fd, _pos1, $T.SEEK_END)
+  val off = lseek_err (pf_fd | fd, _pos1, $T.SEEK_END)
   val off = $T.lint_of_off(off)
   val () = assert_errmsg (off <> ~1L, #LOCATION)
 //
@@ -61,7 +61,7 @@ implement backward (path) = let
   val () = while*
     (S: T0) => (true) let
     var c: char
-    val off = fildes_lseek_err (pf_fd | fd, _neg2, $T.SEEK_CUR)
+    val off = lseek_err (pf_fd | fd, _neg2, $T.SEEK_CUR)
     val off = $T.lint_of_off (off)
 (*
     val () = (print "while: off = "; print off; print_newline ())
@@ -103,4 +103,4 @@ implement main
 
 (* ****** ****** *)
 
-(* end of [AUP_2_13_0.dats] *)
+(* end of [AUP_2_13.dats] *)
