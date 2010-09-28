@@ -46,9 +46,20 @@ typedef pid_t = $TYPES.pid_t
 
 (* ****** ****** *)
 
-sta NCCS: int
-abst@ype cc_t
-abst@ype tcflag_t
+sta NCCS: int // = 32?
+//
+abst@ype cc_t = $extype "ats_cc_type"
+castfn char_of_cc (x: cc_t):<> char
+castfn cc_of_char (x: char):<> cc_t
+//
+abst@ype tcflag_t = $extype "ats_tcflag_type"
+castfn uint_of_tcflag (x: tcflag_t):<> uint
+castfn tcflag_of_uint (x: uint):<> tcflag_t
+//
+abst@ype speed_t = $extype "ats_speed_type"
+castfn speed_of_uint (x: uint):<> speed_t
+castfn uint_of_speed (x: speed_t):<> uint
+//
 abst@ype termios_rest
 typedef termios_struct =
 $extype_struct "ats_termios_type" of {
@@ -56,7 +67,10 @@ $extype_struct "ats_termios_type" of {
 , c_oflag= tcflag_t
 , c_cflag= tcflag_t
 , c_lflag= tcflag_t
+, c_line= cc_t
 , c_cc= @[cc_t][NCCS]
+, c_ispeed= speed_t
+, c_ospeed= speed_t
 , _rest= termios_rest // unknown quantity
 } // end of [termios_struct]
 typedef termios = termios_struct

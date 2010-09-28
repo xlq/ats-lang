@@ -123,7 +123,7 @@ end // end of [test]
 // where D is square-free
 //
 // For Pell's equations of the form x^2 - D*y^2 = -1, the approach is the same.
-// but there is no guarantee of a solution.
+// However, there is no guarantee of a solution in this case.
 //
 // a(0) = int(sqrt(D))
 // P(0) = 0

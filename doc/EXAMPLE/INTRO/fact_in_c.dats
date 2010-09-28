@@ -1,26 +1,26 @@
 //
 //
+// This example shows how C code can be included in ATS programs
 // Author: Hongwei Xi (August 2007)
 //
-// This example shows how C code can be included in ATS programs
-//
 //
 
+(* ****** ****** *)
 //
 // How to compile:
+//   atscc -o fact_in_c -O3 fact_in_c.dats
+// How to test:
+//   ./fact_in_c
 //
-// atscc -o fact_in_c -O3 fact_in_c.dats
-//
+(* ****** ****** *)
 
 %{
-
 ats_int_type
 fact_in_c (ats_int_type n) {
   int res = 1;
   while (n > 0) res *= n-- ;
   return res ;
 }
-
 %}
 
 extern fun fact {n:nat} (n: int n): Nat = "fact_in_c"

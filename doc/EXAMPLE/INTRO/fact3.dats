@@ -8,16 +8,17 @@
 // implmentation of the factioral function is given.
 //
 
+(* ****** ****** *)
 //
 // How to compile:
+//   atscc -o fact3 fact3.dats -lgmp
+// How to test:
+//   ./fact3 100
 //
-// atscc -o fact3 fact3.dats -lgmp
-//
-
 (* ****** ****** *)
 
 //
-#include "prelude/macrodef.sats" // for prerrstarln
+#include "prelude/HATS/lmacrodef.hats" // for prerrstarln
 //
 
 (* ****** ****** *)

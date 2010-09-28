@@ -1,15 +1,15 @@
 //
-//
+// A naive implementation of the factorial function (2)
 // Author: Hongwei Xi (August 2007)
 //
-//
 
+(* ****** ****** *)
 //
 // How to compile:
+//   atscc -o fact2 fact2.dats
+// How to test:
+//   ./fact2
 //
-// atscc -o fact2 fact2.dats
-//
-
 (* ****** ****** *)
 
 typedef Nat = [n:int | n >= 0] int n // type for natural numbers

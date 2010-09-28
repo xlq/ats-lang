@@ -1,13 +1,15 @@
 //
+// A naive implementation of the factorial function (1)
 // Author: Hongwei Xi (August 2007)
 //
 
+(* ****** ****** *)
 //
 // How to compile:
+//   atscc -o fact1 fact1.dats
+// How to test:
+//   ./fact1
 //
-// atscc -o fact1 fact1.dats
-//
-
 (* ****** ****** *)
 
 // [fun] declares a recursive function

@@ -1148,3 +1148,5 @@ atslib_prerr_mpf (
 /* ****** ****** */
 
 #endif /* ATS_LIBC_GMP_CATS */
+
+/* end of [gmp.cats] */

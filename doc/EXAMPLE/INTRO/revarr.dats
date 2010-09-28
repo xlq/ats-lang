@@ -2,10 +2,21 @@
 // A simple example for illustrating some benefits of dependent types
 //
 
+(* ****** ****** *)
+
 //
 // Author: Hongwei Xi (hwxi AT cs DOT bu DOT edu)
 // Time: Spring, 2009
 //
+
+(* ****** ****** *)
+//
+// How to compile:
+//   atscc -o revarr revarr.dats
+// How to test:
+//   ./revarr
+//
+(* ****** ****** *)
 
 (*
 
@@ -46,6 +57,8 @@ in
 end // end of [main]
 
 *)
+
+(* ****** ****** *)
 
 staload _(*anonymous*) = "prelude/DATS/array.dats"
 

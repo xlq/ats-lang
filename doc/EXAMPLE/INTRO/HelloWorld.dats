@@ -1,10 +1,13 @@
 //
 // Author: Hongwei Xi (August 2007)
 //
-
-// compilation command:
+(* ****** ****** *)
+//
+// How to compile:
 //   atscc -o HelloWorld HelloWorld.dats
-
+// How to test:
+//   ./HelloWorld
+//
 (* ****** ****** *)
 
 implement main () = begin

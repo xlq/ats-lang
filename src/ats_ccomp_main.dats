@@ -87,11 +87,11 @@ in
 //
 if p_tm > null then let
   prval Some_v @(pf1, fpf1) = pfopt
-  val tm_min = $TM.tm_min_get (!p_tm)
-  val tm_hour = $TM.tm_hour_get (!p_tm)
-  val tm_mday = $TM.tm_mday_get (!p_tm)
-  val tm_mon = 1 + $TM.tm_mon_get (!p_tm)
-  val tm_year = 1900 + $TM.tm_year_get (!p_tm)
+  val tm_min = $TM.tm_get_min (!p_tm)
+  val tm_hour = $TM.tm_get_hour (!p_tm)
+  val tm_mday = $TM.tm_get_mday (!p_tm)
+  val tm_mon = 1 + $TM.tm_get_mon (!p_tm)
+  val tm_year = 1900 + $TM.tm_get_year (!p_tm)
   prval () = fpf1 (pf1)
 in
   fprint1_string (pf | out, "/*\n");

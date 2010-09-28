@@ -61,8 +61,13 @@ typedef tm_struct =
 (* ****** ****** *)
 
 typedef time_t = $TYPES.time_t
-typedef clock_t = $TYPES.clock_t
-macdef CLOCKS_PER_SEC = $extval (clock_t, "CLOCKS_PER_SEC")
+//
+// HX: these are implemented in libc/sys/CATS/types.cats
+//
+fun lint_of_time (t: time_t):<> lint = "atslib_lint_of_time"
+overload lint_of with lint_of_time
+fun double_of_time (t: time_t):<> double = "atslib_double_of_time"
+overload double_of with double_of_time
 
 (* ****** ****** *)
 
@@ -76,32 +81,24 @@ fun difftime
 ** HX (2010-01-15):
 ** These functions are now kept for backward compatibility
 *)
-fun tm_sec_get (tm: &tm_struct): int
-  = "atslib_tm_sec_get"
-
-fun tm_min_get (tm: &tm_struct): int
-  = "atslib_tm_min_get"
-
-fun tm_hour_get (tm: &tm_struct): int
-  = "atslib_tm_hour_get"
-
-fun tm_mday_get (tm: &tm_struct): int
-  = "atslib_tm_mday_get"
-
-fun tm_mon_get (tm: &tm_struct): int
-  = "atslib_tm_mon_get"
-
-fun tm_year_get (tm: &tm_struct): int
-  = "atslib_tm_year_get"
-
-fun tm_wday_get (tm: &tm_struct): int
-  = "atslib_tm_wday_get"
-
-fun tm_yday_get (tm: &tm_struct): int
-  = "atslib_tm_yday_get"
-
-fun tm_isdst_get (tm: &tm_struct): int
-  = "atslib_tm_isdst_get"
+fun tm_get_sec
+  (tm: &tm_struct): int = "atslib_tm_get_sec"
+fun tm_get_min
+  (tm: &tm_struct): int = "atslib_tm_get_min"
+fun tm_get_hour
+  (tm: &tm_struct): int = "atslib_tm_get_hour"
+fun tm_get_mday
+  (tm: &tm_struct): int = "atslib_tm_get_mday"
+fun tm_get_mon
+  (tm: &tm_struct): int = "atslib_tm_get_mon"
+fun tm_get_year
+  (tm: &tm_struct): int = "atslib_tm_get_year"
+fun tm_get_wday
+  (tm: &tm_struct): int = "atslib_tm_get_wday"
+fun tm_get_yday
+  (tm: &tm_struct): int = "atslib_tm_get_yday"
+fun tm_get_isdst
+  (tm: &tm_struct): int = "atslib_tm_get_isdst"
 
 (* ****** ****** *)
 
@@ -213,14 +210,17 @@ fun tzsset ():<!ref> void = "#atslib_tzset"
 
 (* ****** ****** *)
 
-fun lint_of_clock
-  (c: clock_t):<> int_long_t0ype = "atslib_lint_of_clock"
+typedef clock_t = $TYPES.clock_t
+//
+macdef CLOCKS_PER_SEC = $extval (clock_t, "CLOCKS_PER_SEC")
+//
+// HX: these are implemented in libc/sys/CATS/types.cats
+//
+fun lint_of_clock (c: clock_t):<> lint = "atslib_lint_of_clock"
 overload lint_of with lint_of_clock
-
-fun double_of_clock
-  (c: clock_t):<> double_t0ype = "atslib_double_of_clock"
+fun double_of_clock (c: clock_t):<> double = "atslib_double_of_clock"
 overload double_of with double_of_clock
-
+//
 fun clock (): clock_t = "atslib_clock" // HX: it returns -1 on error
 
 (* ****** ****** *)

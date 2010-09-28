@@ -2,10 +2,21 @@
 // A simple example for illustrating some benefits of dependent types
 //
 
+(* ****** ****** *)
+
 //
 // Author: Hongwei Xi (hwxi AT cs DOT bu DOT edu)
 // Time: Spring, 2009
 //
+
+(* ****** ****** *)
+//
+// How to compile:
+//   atscc -o revstr revstr.dats
+// How to test:
+//   ./revstr <string>
+//
+(* ****** ****** *)
 
 extern fun revstr {m,n:nat} {l:addr}
   (pf: !strbuf (m, n) @ l | p: ptr l):<> void

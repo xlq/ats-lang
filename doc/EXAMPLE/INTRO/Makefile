@@ -44,7 +44,7 @@ fact_in_c: fact_in_c.dats
 	$(ATSCC) -o fact_in_c fact_in_c.dats && ./fact_in_c 10
 
 fibs: fibs.dats
-	$(ATSCC) -o fibs fibs.dats -lats -lgmp && ./fibs 40
+	$(ATSCC) -o fibs fibs.dats -lats -lgmp && ./fibs 20
 
 revarr: revarr.dats
 	$(ATSCC) -o revarr revarr.dats && ./revarr

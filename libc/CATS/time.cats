@@ -56,49 +56,67 @@ typedef struct tm ats_tm_struct_type ;
 /* ****** ****** */
 
 ATSinline()
-ats_int_type atslib_tm_sec_get (ats_ptr_type tm) {
-  return ((struct tm *)tm)->tm_sec ;
-}
+ats_int_type
+atslib_tm_get_sec
+  (ats_ptr_type tm) {
+  return ((struct tm*)tm)->tm_sec ;
+} // end of [atslib_tm_get_sec]
 
 ATSinline()
-ats_int_type atslib_tm_min_get (ats_ptr_type tm) {
-  return ((struct tm *)tm)->tm_min ;
-}
+ats_int_type
+atslib_tm_get_min
+  (ats_ptr_type tm) {
+  return ((struct tm*)tm)->tm_min ;
+} // end of [atslib_tm_get_min]
 
 ATSinline()
-ats_int_type atslib_tm_hour_get (ats_ptr_type tm) {
-  return ((struct tm *)tm)->tm_hour ;
-}
+ats_int_type
+atslib_tm_get_hour
+  (ats_ptr_type tm) {
+  return ((struct tm*)tm)->tm_hour ;
+} // end of [atslib_tm_get_hour]
 
 ATSinline()
-ats_int_type atslib_tm_mday_get (ats_ptr_type tm) {
-  return ((struct tm *)tm)->tm_mday ;
-}
+ats_int_type
+atslib_tm_get_mday
+  (ats_ptr_type tm) {
+  return ((struct tm*)tm)->tm_mday ;
+} // end of [atslib_tm_get_mday]
 
 ATSinline()
-ats_int_type atslib_tm_mon_get (ats_ptr_type tm) {
-  return ((struct tm *)tm)->tm_mon ;
-}
+ats_int_type
+atslib_tm_get_mon
+  (ats_ptr_type tm) {
+  return ((struct tm*)tm)->tm_mon ;
+} // end of [atslib_tm_get_mon]
 
 ATSinline()
-ats_int_type atslib_tm_year_get (ats_ptr_type tm) {
-  return ((struct tm *)tm)->tm_year ;
-}
+ats_int_type
+atslib_tm_get_year
+  (ats_ptr_type tm) {
+  return ((struct tm*)tm)->tm_year ;
+} // end of [atslib_tm_get_year]
 
 ATSinline()
-ats_int_type atslib_tm_wday_get (ats_ptr_type tm) {
-  return ((struct tm *)tm)->tm_wday ;
-}
+ats_int_type
+atslib_tm_get_wday
+  (ats_ptr_type tm) {
+  return ((struct tm*)tm)->tm_wday ;
+} // end of [atslib_tm_get_wday]
 
 ATSinline()
-ats_int_type atslib_tm_yday_get (ats_ptr_type tm) {
-  return ((struct tm *)tm)->tm_yday ;
-}
+ats_int_type
+atslib_tm_get_yday
+  (ats_ptr_type tm) {
+  return ((struct tm*)tm)->tm_yday ;
+} // end of [atslib_tm_get_yday]
 
 ATSinline()
-ats_int_type atslib_tm_isdst_get (ats_ptr_type tm) {
-  return ((struct tm *)tm)->tm_isdst ;
-}
+ats_int_type
+atslib_tm_get_isdst
+  (ats_ptr_type tm) {
+  return ((struct tm*)tm)->tm_isdst ;
+} // end of [atslib_tm_get_isdst]
 
 //
 
@@ -155,16 +173,6 @@ atslib_getdate_err_set(ats_int_type n) { getdate_err = n ; return ; }
 /* ****** ****** */
 
 #define atslib_tzset tzset
-
-/* ****** ****** */
-
-ATSinline()
-ats_lint_type
-atslib_lint_of_clock (clock_t t) { return t ; }
-
-ATSinline()
-ats_double_type
-atslib_double_of_clock (clock_t t) { return t ; }
 
 /* ****** ****** */
 

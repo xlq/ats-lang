@@ -62,10 +62,11 @@ atslib_fork_and_exec_and_wait
 
 #define __GETCWD_BUFSZ 64
 
-ats_ptr_type atslib_getcwd () {
+ats_ptr_type
+atslib_getcwd0 () {
   char *buf, *res ;
   int sz = __GETCWD_BUFSZ ;
-
+//
   buf = (char*)ATS_MALLOC (__GETCWD_BUFSZ) ;
   while (1) {
     res = getcwd (buf, sz) ;
@@ -76,8 +77,9 @@ ats_ptr_type atslib_getcwd () {
     }
     break ;
   } // end of [while]
+//
   return buf ;
-}
+} // end of [atslib_getcwd0]
 
 %} // end of [%{^}
 

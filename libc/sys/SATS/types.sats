@@ -44,7 +44,16 @@
 abst@ype blksize_t = $extype "ats_blksize_type" // I/O block size
 abst@ype blkcnt_t = $extype "ats_blkcnt_type" // number of blocks allowed
 
+(* ****** ****** *)
+
 abst@ype clock_t = $extype "ats_clock_type" // for CLOCKS_PER_SEC
+fun lint_of_clock (c: clock_t):<> lint = "atslib_lint_of_clock"
+overload lint_of with lint_of_clock
+fun double_of_clock (c: clock_t):<> double = "atslib_double_of_clock"
+overload double_of with double_of_clock
+
+(* ****** ****** *)
+
 abst@ype clockid_t = $extype "ats_clockid_type" // for clock ID type
 
 (* ****** ****** *)

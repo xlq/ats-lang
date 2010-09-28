@@ -41,54 +41,44 @@
 
 (* ****** ****** *)
 
-//
-
 abst@ype time_t = $extype "ats_time_type"
-abst@ype tm_struct = $extype "ats_tm_struct_type"
-abst@ype clock_t = $extype "ats_clock_type"
 
-//
-
-fun lint_of_time_t (t: time_t):<> int_long_t0ype
-  = "atslib_lint_of_time_t"
+fun lint_of_time_t
+  (t: time_t):<> int_long_t0ype = "atslib_lint_of_time_t"
 overload lint_of with lint_of_time_t
 
-fun double_of_time_t (t: time_t):<> double_t0ype
-  = "atslib_double_of_time_t"
+fun double_of_time_t
+  (t: time_t):<> double_t0ype = "atslib_double_of_time_t"
 overload double_of with double_of_time_t
 
-//
+(* ****** ****** *)
 
-symintr time
-
-fun tm_sec_get (tm: &tm_struct): int
-  = "atslib_tm_sec_get"
-
-fun tm_min_get (tm: &tm_struct): int
-  = "atslib_tm_min_get"
-
-fun tm_hour_get (tm: &tm_struct): int
-  = "atslib_tm_hour_get"
-
-fun tm_mday_get (tm: &tm_struct): int
-  = "atslib_tm_mday_get"
-
-fun tm_mon_get (tm: &tm_struct): int
-  = "atslib_tm_mon_get"
-
-fun tm_year_get (tm: &tm_struct): int
-  = "atslib_tm_year_get"
-
-fun tm_wday_get (tm: &tm_struct): int
-  = "atslib_tm_wday_get"
-
-fun tm_yday_get (tm: &tm_struct): int
-  = "atslib_tm_yday_get"
-
-fun tm_isdst_get (tm: &tm_struct): int
-  = "atslib_tm_isdst_get"
+abst@ype tm_struct = $extype "ats_tm_struct_type"
 
 (* ****** ****** *)
+
+fun tm_get_sec
+  (tm: &tm_struct): int = "atslib_tm_get_sec"
+fun tm_get_min
+  (tm: &tm_struct): int = "atslib_tm_get_min"
+fun tm_get_hour
+  (tm: &tm_struct): int = "atslib_tm_get_hour"
+fun tm_get_mday
+  (tm: &tm_struct): int = "atslib_tm_get_mday"
+fun tm_get_mon
+  (tm: &tm_struct): int = "atslib_tm_get_mon"
+fun tm_get_year
+  (tm: &tm_struct): int = "atslib_tm_get_year"
+fun tm_get_wday
+  (tm: &tm_struct): int = "atslib_tm_get_wday"
+fun tm_get_yday
+  (tm: &tm_struct): int = "atslib_tm_get_yday"
+fun tm_get_isdst
+  (tm: &tm_struct): int = "atslib_tm_get_isdst"
+
+(* ****** ****** *)
+
+symintr time
 
 fun time_get (): time_t = "atslib_time_get"
 fun time_get_and_set {l:addr}
@@ -112,21 +102,17 @@ fun localtime (time: &time_t):<!ref> [l:addr] (
 
 (* ****** ****** *)
 
-fun lint_of_clock_t (c: clock_t):<> int_long_t0ype
-  = "atslib_lint_of_clock_t"
-
-overload lint_of with lint_of_clock_t
-
-fun double_of_clock_t (c: clock_t):<> double_t0ype
-  = "atslib_double_of_clock_t"
-
-overload double_of with double_of_clock_t
-
-//
+abst@ype clock_t = $extype "ats_clock_type"
 
 macdef CLOCKS_PER_SEC = $extval (clock_t, "CLOCKS_PER_SEC")
 
-//
+fun lint_of_clock_t
+  (c: clock_t):<> int_long_t0ype = "atslib_lint_of_clock_t"
+overload lint_of with lint_of_clock_t
+
+fun double_of_clock_t
+  (c: clock_t):<> double_t0ype = "atslib_double_of_clock_t"
+overload double_of with double_of_clock_t
 
 fun clock (): clock_t = "atslib_clock"
 

@@ -38,10 +38,25 @@
 
 /* ****** ****** */
 
+#include <termios.h>
+
+/* ****** ****** */
+
+typedef cc_t ats_cc_type ;
+typedef tcflag_t ats_tcflag_type ;
+typedef speed_t ats_speed_type ;
+
+/* ****** ****** */
+
+#define atslib_tcgetattr tcgetattr
+#define atslib_tcsetattr tcsetattr
+
+/* ****** ****** */
+
 #define atslib_tcgetsid tcgetsid
 
 /* ****** ****** */
 
-#endif /* ATS_LIBC_UNISTD_CATS */
+#endif /* ATS_LIBC_TERMIOS_CATS */
 
 /* end of [termios.cats] */
