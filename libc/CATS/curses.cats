@@ -33,45 +33,50 @@
 
 /* ****** ****** */
 
-#ifndef ATS_LIBC_TERMIOS_CATS
-#define ATS_LIBC_TERMIOS_CATS
+#ifndef ATS_LIBC_CURSES_CATS
+#define ATS_LIBC_CURSES_CATS
 
 /* ****** ****** */
 
-#include <termios.h>
+#include <curses.h>
 
 /* ****** ****** */
 
-typedef cc_t ats_cc_type ;
-typedef tcflag_t ats_tcflag_type ;
-typedef speed_t ats_speed_type ;
+#define atslib_initscr initscr
+#define atslib_endwin endwin
+#define atslib_isendwin isendwin
 
 /* ****** ****** */
 
-#define atslib_tcgetattr tcgetattr
-#define atslib_tcsetattr tcsetattr
+#define atslib_raw raw
+#define atslib_noraw noraw
 
 /* ****** ****** */
 
-#define atslib_cfgetispeed cfgetispeed
-#define atslib_cfsetispeed cfsetispeed
-
-#define atslib_cfgetospeed cfgetospeed
-#define atslib_cfsetospeed cfsetospeed
-
-/* ****** ****** */
-
-#define atslib_tcflow tcflow
-#define atslib_tcdrain tcdrain
-#define atslib_tcflush tcflush
-#define atslib_tcsendbreak tcsendbreak
+#define atslib_clear clear
+#define atslib_clrtobot clrtobot
+#define atslib_clrtoeol clrtoeol
+#define atslib_erase erase
 
 /* ****** ****** */
 
-#define atslib_tcgetsid tcgetsid
+#define atslib_beep beep
+#define atslib_flush flush
 
 /* ****** ****** */
 
-#endif /* ATS_LIBC_TERMIOS_CATS */
+#define atslib_addstr addstr
+#define atslib_addnstr addnstr
+#define atslib_mvaddstr mvaddstr
+#define atslib_mvaddnstr mvaddnstr
 
-/* end of [termios.cats] */
+/* ****** ****** */
+
+#define atslib_refresh refresh
+#define atslib_doupdate doupdate
+
+/* ****** ****** */
+
+#endif /* ATS_LIBC_CURSES_CATS */
+
+/* end of [curses.cats] */

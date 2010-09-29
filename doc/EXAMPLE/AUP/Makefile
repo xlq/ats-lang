@@ -40,6 +40,7 @@ compall: \
   test423 \
   test435 \
   test47 \
+  test48 \
 
 ######
 
@@ -84,6 +85,9 @@ test435: AUP_4_3_5.dats
 test47: AUP_4_7.dats
 	$(ATSCC) -o test47 AUP_4_7.dats && ./test47
 
+test48: AUP_4_8.dats
+	$(ATSCC) -o test48 AUP_4_8.dats -lcurses
+
 #######
 
 clean::
@@ -103,5 +107,6 @@ cleanall: clean
 	rm -f test423
 	rm -f test435
 	rm -f test47
+	rm -f test48
 
 ###### end of [Makefile] ######

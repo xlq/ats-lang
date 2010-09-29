@@ -9,7 +9,7 @@
 (*
 ** ATS - Unleashing the Potential of Types!
 **
-** Copyright (C) 2002-2008 Hongwei Xi, Boston University
+** Copyright (C) 2002-2010 Hongwei Xi, Boston University
 **
 ** All rights reserved
 **
@@ -36,76 +36,54 @@
 (* ****** ****** *)
 
 %{#
-#include "libc/CATS/stdlib.cats"
+#include "libc/CATS/curses.cats"
 %} // end of [%{#]
 
 (* ****** ****** *)
 
-staload FCNTL = "libc/SATS/fcntl.sats" // for [mkstemp]
-stadef open_v = $FCNTL.open_v
+typedef strcst = string
 
 (* ****** ****** *)
 
-macdef EXIT_SUCCESS = $extval (int, "EXIT_SUCCESS")
-macdef EXIT_FAILURE = $extval (int, "EXIT_FAILURE")
+macdef OK = $extval (int, "OK") // OK = 0
+macdef ERR = $extval (int, "ERR") // ERR = -1
 
 (* ****** ****** *)
 
-fun atoi (s: string):<> int = "#atslib_atoi"
-fun atof (s: string):<> double = "#atslib_atof"
-fun atol (s: string):<> lint = "#atslib_atol"
-fun atoll (s: string):<> llint = "#atslib_atoll"
+fun initscr ()
+  : ptr = "#atslib_initscr" // the return value pointing to stdscr
+fun endwin (): int = "#atslib_endwin"
+fun isendwin (): bool = "#atslib_isendwin"
 
 (* ****** ****** *)
 
-fun getenv (name: string)
-  : [l:addr] (strptr l -<lin,prf> void | strptr l) = "#atslib_getenv"
-// end of [atslib_getenv]
-
-fun setenv // HX: memory leak!!!
-  (name: string, value: string, overwrite: int): int = "#atslib_setenv"
-// end of [atslib_setenv]
+fun raw (): int = "#atslib_raw"
+fun noraw (): int = "#atslib_noraw"
 
 (* ****** ****** *)
 
-fun atexit_err (f: () -> void): int = "#atslib_atexit_err" // !macro
-fun atexit_exn (f: () -> void): void = "atslib_atexit_exn" // !function
+fun clear (): int = "#atslib_clear"
+fun clrtobot (): int = "#atslib_clrtobot"
+fun clrtoeol (): int = "#atslib_clrtoeol"
+fun erase (): int = "#atslib_erase"
 
 (* ****** ****** *)
 
-fun system (cmd: string): int = "#atslib_system"
+fun beep (): int = "#atslib_beep"
+fun flush (): int = "#atslib_flush"
 
 (* ****** ****** *)
 
-fun mkstemp {m,n:nat}
-  (path: string): [i: int] (open_v (i) | int i) = "#atslib_mkstemp"
-// end of [mkstemp]
-
-(* ****** ****** *)
-//
-// HX: this one returns an integer (not a pointer)!
-//
-fun bsearch {a:viewt@ype} {n:nat} (
-    key: &a
-  , base: &(@[a][n]), nmemb: size_t n, size: sizeof_t a
-  , compar: (&a, &a) -<fun> int
-  ) :<> intBtw (~1, n)
-  = "atslib_bsearch" // function!
-// end of [bsearch]
-
-(* ****** ****** *)
-//
-// HX: a generic quicksort function
-//
-fun qsort
-  {a:viewt@ype} {n:nat} (
-    base: &(@[a][n])
-  , nmemb: size_t n, size: sizeof_t a
-  , compar: (&a, &a) -<fun> int
-  ) :<> void
-  = "atslib_qsort" // function!
-// end of [qsort]
+fun addstr (str: strcst): int = "#atslib_addstr"
+fun addnstr (str: strcst, n: int): int = "#atslib_addnstr"
+fun mvaddstr (y: int, x: int, str: strcst): int = "#atslib_mvaddstr"
+fun mvaddnstr (y: int, x: int, str: strcst, n: int): int = "#atslib_mvaddnstr"
 
 (* ****** ****** *)
 
-(* end of [stdlib.sats] *)
+fun refresh (): int = "#atslib_refresh"
+fun doupdate (): int = "#atslib_doupdate"
+
+(* ****** ****** *)
+
+(* end of [curses.sats] *)

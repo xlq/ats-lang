@@ -98,12 +98,19 @@ dirent_name_get(ats_ptr_type dir) {
 
 (* ****** ****** *)
 
-fn getenv_exn (name: string): String = let
-  val stropt = getenv_opt name
+fn getenv_exn
+  (name: string): String = let
+  val (fpf_x | x) = getenv name
 in
-  if stropt_is_some stropt then
-    string1_of_string (stropt_unsome stropt)
-  else begin
+  if strptr_isnot_null (x) then let
+    val x1 = strptr_dup (x)
+    prval () = fpf_x (x)
+    val x1 = string_of_strptr (x1)
+  in
+    string1_of_string (x1)
+  end else let
+    prval () = fpf_x (x)
+  in
     prerr "The environment variable ["; prerr name; prerr "] is undefined!\n" ;
     exit (1)
   end (* end of [if] *)

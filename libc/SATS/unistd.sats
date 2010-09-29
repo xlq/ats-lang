@@ -59,14 +59,18 @@ stadef fildes_v = $FCNTL.fildes_v
 sta STDIN_FILENO : int
 sta STDOUT_FILENO : int
 sta STDERR_FILENO : int
-
+//
+praxi STDIN_FILENO_gtez (): [STDIN_FILENO >= 0] void
+praxi STDOUT_FILENO_gtez (): [STDOUT_FILENO >= 0] void
+praxi STDERR_FILENO_gtez (): [STDERR_FILENO >= 0] void
+//
 macdef STDIN_FILENO = $extval (int STDIN_FILENO, "STDIN_FILENO")
 macdef STDOUT_FILENO = $extval (int STDOUT_FILENO, "STDOUT_FILENO")
 macdef STDERR_FILENO = $extval (int STDERR_FILENO, "STDERR_FILENO")
 
 (* ****** ****** *)
 //
-// implemented in [$ATSHOME/prelude/CATS/basics.cats]
+// HX: implemented in [$ATSHOME/prelude/CATS/basics.cats]
 //
 fun stdin_fildes_view_get
   (): (fildes_v (STDIN_FILENO) | void)
@@ -275,7 +279,7 @@ fun fpathconf {fd:nat}
 (* ****** ****** *)
 
 fun readlink {n:nat} {l:addr} (
-  pf: !b0ytes(n) @ l >> bytes(n) @ l | path: string(*const*), p: ptr l, n: size_t n
+  pf: !b0ytes(n) @ l >> bytes(n) @ l | path: string, p: ptr l, n: size_t n
 ) : [n1:int | n1 <= n] ssize_t (n1) = "#atslib_readlink"
 // end of [readlink]
 
@@ -291,15 +295,38 @@ fun getpgid (pid: pid_t): pid_t = "#atslib_getpgid" // -1 is returned on error
 
 (* ****** ****** *)
 
-//
-// HX-2010-09-27: for simplicity, [fd] assumed to be valid
-//
 fun tcsetpgrp {fd:nat}
   (fd: int fd, pgid: pid_t): int = "#atslib_tcsetpgrp" // 0/-1 : succ/fail
 // end of [tcsetpgrp]
 fun tcgetpgrp {fd:nat}
   (fd: int fd): pid_t = "#atslib_tcgetpgrp" // -1 is returned on error
 // end of [tcgetpgrp]
+
+(* ****** ****** *)
+
+fun ttyname {fd:nat} (fd: int fd)
+  :<!ref> [l:addr] (strptr l -<lin,prf> void | strptr l)
+  = "#atslib_ttyname"
+// end of [ttyname]
+
+dataview
+ttyname_v (m:int, l:addr, int) =
+  | {n:nat | m > n}
+    ttyname_v_succ (m, l, 0) of strbuf_v (m, n, l)
+  | {i:int | i < 0} ttyname_v_fail (m, l, i) of b0ytes m @ l
+fun ttyname_r
+  {fd:nat} {m:nat} {l:addr} (
+    pf: b0ytes m @ l
+  | fd: int fd, p: ptr l, m: size_t m
+  ) :<> [i:int | i <= 0] (ttyname_v (m, l, i) | int i)
+  = "#atslib_ttyname_r" // if it fails, errno is returned
+// end of [ttyname_r]
+
+(* ****** ****** *)
+
+fun isatty {fd:nat}
+  (fd: int fd): int = "#atslib_isatty" // 1/0 : yes/no
+// end of [isatty]
 
 (* ****** ****** *)
 

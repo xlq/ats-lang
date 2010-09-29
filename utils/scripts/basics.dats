@@ -117,17 +117,23 @@ local
 in // in of [local]
 
 fn ATSHOME_get (): String = let
-  val ATSHOME_opt = $STDLIB.getenv_opt ATSHOME_var
+  val (fpf_x | x) = $STDLIB.getenv ATSHOME_var
 in
-  if stropt_is_some ATSHOME_opt then
-    string1_of_string (stropt_unsome ATSHOME_opt)
-  else begin
+  if strptr_isnot_null (x) then let
+    val x1 = strptr_dup (x)
+    prval () = fpf_x (x)
+    val x1 = string_of_strptr (x1)
+  in
+    string1_of_string (x1)
+  end else let
+    prval () = fpf_x (x)
+  in
     prerr "The environment variable [";
     prerr ATSHOME_var;
     prerr "] is undefined!";
     prerr_newline ();
     $raise (Fatal "ATSHOME_get")
-  end
+  end (* end of [if] *)
 end // end of [ATSHOME_get]
 
 end // end of [local]
@@ -141,12 +147,25 @@ in
   else begin
     prerr "The variable [ATSHOME] is empty!\n" ;
     $raise (Fatal "ATSHOME")
-  end
+  end (* end of [if] *)
 end // end of [ATSHOME]
 
 implement ATSHOME_dir_append basename =
   sbp2str (ATSHOME_dir + (string1_of_string basename))
 // end of [ATSHOME_dir_append]
+
+(* ****** ****** *)
+
+implement
+strptr_dup (p) = let
+  val str = __cast (p) where {
+    extern castfn __cast {l:agz} (p: !strptr l): String
+  } // end of [val]
+  val n = string1_length (str)
+  val str2 = string_make_substring (str, 0, n)
+in
+  strptr_of_strbuf (str2)
+end // end of [strptr_dup]
 
 (* ****** ****** *)
 
@@ -158,9 +177,17 @@ local
 in // in of [local]
 
 implement ATSCCOMP_gcc = let
-  val def = $STDLIB.getenv_opt ATSCCOMP_var
+  val (fpf_x | x) = $STDLIB.getenv ATSCCOMP_var
 in
-  if stropt_is_some def then stropt_unsome (def) else ATSCCOMP_def
+  if strptr_isnot_null (x) then let
+    val x1 = strptr_dup (x)
+    prval () = fpf_x (x)
+    val x1 = string_of_strptr (x1)
+  in
+    (string1_of_string)x1
+  end else let
+    prval () = fpf_x (x) in ATSCCOMP_def
+  end (* end of [if] *)
 end // end of [ATSCCOMP_gcc]
 
 end // end of [local]

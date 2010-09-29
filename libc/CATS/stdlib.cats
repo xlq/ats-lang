@@ -60,47 +60,14 @@ atspre_exit_prerrf(ats_int_type code, ats_ptr_type fmt, ...) ;
 
 /* ****** ****** */
 
-static inline
-ats_ptr_type
-atslib_getenv_opt (ats_ptr_type name) { return getenv(name) ; }
-
-static inline
-ats_ptr_type
-atslib_getenv_exn (const ats_ptr_type name) {
-  char *res = getenv(name) ;
-  if (!name) {
-    atspre_exit_prerrf (1, "exit(ATS): [getenv(%s)] failed.\n", name) ;
-  }
-  return res ;
-} /* end of [atslib_getenv_exn] */
-
-/* ****** ****** */
-
-static inline
-ats_int_type
-atslib_setenv_err
-  (ats_ptr_type name, ats_ptr_type value, ats_int_type overwrite) {
-  return setenv((char*)name, (char*)value, (int)overwrite) ;
-} /* end of [atslib_setenv_err] */
-
-static inline
-ats_void_type
-atslib_setenv_exn
-  (ats_ptr_type name, ats_ptr_type value, ats_int_type overwrite) {
-  int ret = setenv((char*)name, (char*)value, (int)overwrite) ;
-  if (ret != 0) {
-    perror ("setenv"); atspre_exit_prerrf (
-      1, "exit(ATS): [setenv(%s, %s, %i)] failed.\n", name, value, overwrite
-    ) ; // end of [atspre_exit_prerrf]
-  } /* end of [if] */
-  return ;
-} /* end of [atslib_setenv_exn] */
+#define atslib_getenv getenv 
+#define atslib_setenv setenv 
 
 /* ****** ****** */
 
 #define atslib_atexit_err atexit
 
-static inline
+ATSinline()
 ats_void_type
 atslib_atexit_exn (ats_ptr_type fcn) {
   int err ;
@@ -111,15 +78,17 @@ atslib_atexit_exn (ats_ptr_type fcn) {
 
 /* ****** ****** */
 
-#define atslib_system_err system
+#define atslib_system system
 
 /* ****** ****** */
 
 #define atslib_mkstemp mkstemp
 
 /* ****** ****** */
-
-static inline
+//
+// HX: [atslib_bsearch] is slightly different from [bsearch]
+//
+ATSinline()
 ats_int_type
 atslib_bsearch (
   ats_ref_type key,
@@ -135,11 +104,10 @@ atslib_bsearch (
 } /* end of [atslib_bsearch] */
 
 /* ****** ****** */
-
 //
-// #define atslib_qsort qsort
+// HX: [atslib_qsort] is the same as [qsort]
 //
-static inline
+ATSinline()
 ats_void_type
 atslib_qsort (
   ats_ref_type base,

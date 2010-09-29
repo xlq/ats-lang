@@ -96,6 +96,8 @@ libc/SATS/complex.sats
 libc/DATS/complex.dats
 #endif
 
+libc/SATS/curses.sats
+
 libc/SATS/dirent.sats
 libc/DATS/dirent.dats
 

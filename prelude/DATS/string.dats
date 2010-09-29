@@ -294,7 +294,8 @@ end // end of [local]
 
 (* ****** ****** *)
 
-implement strptr_dup (p) = let
+implement
+strptr_dup (p) = let
   val str = __cast (p) where {
     extern castfn __cast {l:agz} (p: !strptr l): String
   } // end of [val]

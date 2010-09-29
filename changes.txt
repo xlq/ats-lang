@@ -16,7 +16,9 @@ ats-lang-anairiats-0.2.2:
    (ats_trans4)
 10. Fixing a bug involving mishandling negative long integers
 11. Adding rarray (reversed array) implementation
-12. Adding libc/pwd and libc/grp, which correspond to pwd.h and grp.h
+12. Adding libc/pwd, which correspond to pwd.h
+13. Adding libc/grp, which correspond to grp.h
+14. Adding libc/termios, which corresponds to termios.h
 
 ########################################################################
 

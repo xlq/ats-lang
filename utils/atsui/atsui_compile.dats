@@ -107,7 +107,7 @@ fun cb_compile_clicked
     extern castfn __cast {l:agz} (x: !gstring l): string
     val cmd = g_strdup_printf
       ("atscc --typecheck %s >& %s", @(__cast name, ATSUIccompoutput))
-    val _err = $STDLIB.system_err (__cast cmd)
+    val _err = $STDLIB.system (__cast cmd)
     val () = gstring_free (cmd)
     prval () = minus_addback (fpf_name, name | x)
     val () = load_compile_output (ATSUIccompoutput)

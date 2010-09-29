@@ -176,6 +176,13 @@ atslib_fildes_lseek_exn (
 
 /* ****** ****** */
 
+#define atslib_ttyname ttyname
+#define atslib_ttyname_r ttyname_r
+
+#define atslib_isatty isatty
+
+/* ****** ****** */
+
 #endif /* ATS_LIBC_UNISTD_CATS */
 
 /* end of [unistd.cats] */
