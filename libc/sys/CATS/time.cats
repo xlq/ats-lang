@@ -56,6 +56,12 @@ typedef struct timezone ats_timezone_type ;
 
 /* ****** ****** */
 
+#define atslib_utimes utimes
+#define atslib_futimes futimes
+#define atslib_futimesat futimesat
+
+/* ****** ****** */
+
 #endif /* end of [ATS_LIBC_SYS_TIME_CATS] */
 
 /* end of [time.cats] */

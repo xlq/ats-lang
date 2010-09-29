@@ -41,6 +41,9 @@
 
 (* ****** ****** *)
 
+staload FCNTL = "libc/SATS/fcntl.sats"
+viewdef fildes_v (fd: int) = $FCNTL.fildes_v (fd)
+
 staload TYPES = "libc/sys/SATS/types.sats"
 typedef time_t = $TYPES.time_t
 typedef suseconds_t = $TYPES.suseconds_t
@@ -101,6 +104,21 @@ fun settimeofday_tvtz
   (tv: &timeval, tz: &timezone):<> [i:int | i <= 0] int i = "#atslib_settimeofday_tvtz"
 overload settimeofday with settimeofday_tvtz
 //
+(* ****** ****** *)
+
+fun utimes // -1 on error // errno set
+  (path: string, buf: &(@[timeval][2])): int = "#atslib_utimes"
+// end of [utimes]
+
+fun futimes {fd:int} // -1 on error // errno set
+  (pf: fildes_v fd | fd: int fd, buf: &(@[timeval][2])): int
+  = "#atslib_futimes"
+// end of [futimes]
+
+fun futimesat // -1 on error // errno set
+  (dirfd: int, path: string, buf: &(@[timeval][2])): int = "#atslib_futimesat"
+// end of [futimesat]
+
 (* ****** ****** *)
 
 (* end of [time.sats] *)
