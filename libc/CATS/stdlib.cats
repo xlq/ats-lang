@@ -61,7 +61,9 @@ atspre_exit_prerrf(ats_int_type code, ats_ptr_type fmt, ...) ;
 /* ****** ****** */
 
 #define atslib_getenv getenv 
-#define atslib_setenv setenv 
+#define atslib_putenv putenv
+#define atslib_setenv setenv
+#define atslib_unsetenv unsetenv
 
 /* ****** ****** */
 

@@ -62,9 +62,23 @@ fun getenv (name: string)
   : [l:addr] (strptr l -<lin,prf> void | strptr l) = "#atslib_getenv"
 // end of [atslib_getenv]
 
-fun setenv // HX: memory leak!!!
+//
+// HX-201-09-29:
+// [nameval] is copied and put into the environment.
+// potential memory leak!!! 
+//
+fun putenv {l:agz} (nameval: !strptr l): int // 0/nz : succ/fail
+
+//
+// HX-2010-09-29:
+// [name] and [value] are copied into the environment
+// also note that the original value may be leaked out!!!
+//
+fun setenv // 0/-1 : succ/fail
   (name: string, value: string, overwrite: int): int = "#atslib_setenv"
 // end of [atslib_setenv]
+
+fun unsetenv (name: string): int = "#atslib_unsetenv" // 0/-1: succ/fail
 
 (* ****** ****** *)
 
