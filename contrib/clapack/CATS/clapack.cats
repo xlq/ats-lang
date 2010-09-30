@@ -36,7 +36,7 @@ extern
 // F2Creal slamch_ (char *cmach) ;
 F2Cdoublereal slamch_t (char *cmach) ; // CLAPACK says it!
 
-static inline
+ATSinline()
 F2Creal atsctrb_clapack_slamch
   (ats_char_type cmach) { return slamch_(&cmach) ; }
 // end of [atsctrb_clapack_slamch]
@@ -44,7 +44,7 @@ F2Creal atsctrb_clapack_slamch
 extern
 F2Cdoublereal dlamch_ (char *cmach) ;
 
-static inline
+ATSinline()
 F2Cdoublereal atsctrb_clapack_dlamch
   (ats_char_type cmach) { return dlamch_(&cmach) ; }
 // end of [atsctrb_clapack_dlamch]
@@ -74,7 +74,7 @@ F2Creal slange_(
 , F2Creal *work
 ) ;
 
-static inline
+ATSinline()
 F2Creal atsctrb_clapack_slange (
   ats_char_type norm
 , F2Cinteger m, F2Cinteger n
@@ -97,7 +97,7 @@ F2Cdoublereal dlange_(
 , F2Cdoublereal *work
 ) ;
 
-static inline
+ATSinline()
 F2Cdoublereal atsctrb_clapack_dlange (
   ats_char_type norm
 , F2Cinteger m, F2Cinteger n
@@ -120,7 +120,7 @@ F2Creal clange_(
 , F2Ccomplex *work
 ) ;
 
-static inline
+ATSinline()
 F2Creal atsctrb_clapack_clange (
   ats_char_type norm
 , F2Cinteger m, F2Cinteger n
@@ -143,7 +143,7 @@ F2Cdoublereal zlange_(
 , F2Cdoublecomplex *work
 ) ;
 
-static inline
+ATSinline()
 F2Cdoublereal atsctrb_clapack_zlange (
   ats_char_type norm
 , F2Cinteger m, F2Cinteger n
@@ -168,7 +168,7 @@ extern int slacpy_(
 , F2Creal *b, F2Cinteger *ldb
 ) ;
 
-static inline
+ATSinline()
 ats_void_type
 atsctrb_clapack_slacpy (
   ats_char_type uln
@@ -188,7 +188,7 @@ extern int dlacpy_(
 , F2Cdoublereal *b, F2Cinteger *ldb
 ) ;
 
-static inline
+ATSinline()
 ats_void_type
 atsctrb_clapack_dlacpy (
   ats_char_type uln
@@ -208,7 +208,7 @@ extern int clacpy_(
 , F2Ccomplex *b, F2Cinteger *ldb
 ) ;
 
-static inline
+ATSinline()
 ats_void_type
 atsctrb_clapack_clacpy (
   ats_char_type uln
@@ -228,7 +228,7 @@ extern int zlacpy_(
 , F2Cdoublecomplex *b, F2Cinteger *ldb
 ) ;
 
-static inline
+ATSinline()
 ats_void_type
 atsctrb_clapack_zlacpy (
   ats_char_type uln
@@ -252,7 +252,7 @@ extern int sgelqf_(
 , F2Cinteger *lwork, F2Cinteger *info
 ) ;
 
-static inline
+ATSinline()
 ats_int_type
 atsctrb_clapack_sgelqf (
   F2Cinteger m, F2Cinteger n
@@ -275,7 +275,7 @@ extern int dgelqf_(
 , F2Cinteger *info
 ) ;
 
-static inline
+ATSinline()
 ats_int_type
 atsctrb_clapack_dgelqf (
   F2Cinteger m, F2Cinteger n
@@ -298,7 +298,7 @@ int cgelqf_(
 , F2Cinteger *info
 ) ;
 
-static inline
+ATSinline()
 ats_int_type
 atsctrb_clapack_cgelqf (
   F2Cinteger m, F2Cinteger n
@@ -321,7 +321,7 @@ extern int zgelqf_(
 , F2Cinteger *info
 ) ;
 
-static inline
+ATSinline()
 ats_int_type
 atsctrb_clapack_zgelqf (
   F2Cinteger m, F2Cinteger n
@@ -351,7 +351,7 @@ extern int sormlq_(
 , F2Cinteger *info
 ) ;
 
-static inline
+ATSinline()
 ats_int_type
 atsctrb_clapack_sormlq (
   ats_char_type side
@@ -379,7 +379,7 @@ extern int dormlq_(
 , F2Cinteger *info
 ) ;
 
-static inline
+ATSinline()
 ats_int_type
 atsctrb_clapack_dormlq (
   ats_char_type side
@@ -409,7 +409,7 @@ extern int cunmlq_(
 , F2Cinteger *info
 ) ;
 
-static inline
+ATSinline()
 ats_int_type
 atsctrb_clapack_cunmlq (
   ats_char_type side
@@ -438,7 +438,7 @@ extern int zunmlq_(
 , F2Cinteger *info
 ) ;
 
-static inline
+ATSinline()
 ats_int_type
 atsctrb_clapack_zunmlq (
   ats_char_type side
@@ -469,7 +469,7 @@ extern int sgeqlf_(
 , F2Cinteger *info
 ) ;
 
-static inline
+ATSinline()
 ats_int_type
 atsctrb_clapack_sgeqlf (
   F2Cinteger m, F2Cinteger n
@@ -492,7 +492,7 @@ extern int dgeqlf_(
 , F2Cinteger *info
 ) ;
 
-static inline
+ATSinline()
 ats_int_type
 atsctrb_clapack_dgeqlf (
   F2Cinteger m, F2Cinteger n
@@ -515,7 +515,7 @@ extern int cgeqlf_(
 , F2Cinteger *info
 ) ;
 
-static inline
+ATSinline()
 ats_int_type
 atsctrb_clapack_cgeqlf (
   F2Cinteger m, F2Cinteger n
@@ -538,7 +538,7 @@ extern int zgeqlf_(
 , F2Cinteger *info
 ) ;
 
-static inline
+ATSinline()
 ats_int_type
 atsctrb_clapack_zgeqlf (
   F2Cinteger m, F2Cinteger n
@@ -568,7 +568,7 @@ extern int sormql_(
 , F2Cinteger *info
 ) ;
 
-static inline
+ATSinline()
 ats_int_type
 atsctrb_clapack_sormql (
   ats_char_type side
@@ -597,7 +597,7 @@ extern int dormql_(
 , F2Cinteger *info
 ) ;
 
-static inline
+ATSinline()
 ats_int_type
 atsctrb_clapack_dormql (
   ats_char_type side
@@ -625,7 +625,7 @@ extern int cunmql_(
 , F2Cinteger *info
 ) ;
 
-static inline
+ATSinline()
 ats_int_type
 atsctrb_clapack_cunmql (
   ats_char_type side
@@ -654,7 +654,7 @@ extern int zunmql_(
 , F2Cinteger *info
 ) ;
 
-static inline
+ATSinline()
 ats_int_type
 atsctrb_clapack_zunmql (
   ats_char_type side
@@ -685,7 +685,7 @@ extern int sgeqrf_(
 , F2Cinteger *info
 ) ;
 
-static inline
+ATSinline()
 ats_int_type
 atsctrb_clapack_sgeqrf (
   F2Cinteger m, F2Cinteger n
@@ -708,7 +708,7 @@ extern int dgeqrf_(
 , F2Cinteger *info
 ) ;
 
-static inline
+ATSinline()
 ats_int_type
 atsctrb_clapack_dgeqrf (
   F2Cinteger m, F2Cinteger n
@@ -731,7 +731,7 @@ extern int cgeqrf_(
 , F2Cinteger *info
 ) ;
 
-static inline
+ATSinline()
 ats_int_type
 atsctrb_clapack_cgeqrf (
   F2Cinteger m, F2Cinteger n
@@ -754,7 +754,7 @@ extern int zgeqrf_(
 , F2Cinteger *info
 ) ;
 
-static inline
+ATSinline()
 ats_int_type
 atsctrb_clapack_zgeqrf (
   F2Cinteger m, F2Cinteger n
@@ -784,7 +784,7 @@ extern int sormqr_(
 , F2Cinteger *info
 ) ;
 
-static inline
+ATSinline()
 ats_int_type
 atsctrb_clapack_sormqr (
   ats_char_type side
@@ -796,8 +796,10 @@ atsctrb_clapack_sormqr (
 , ats_ref_type work, F2Cinteger lwork
 ) {
   F2Cinteger info ;
+  char transp = trans;
+  if (transp == 'C' || transp == 'c') transp = 'T';
   sormqr_(
-    &side, &trans, &m, &n, &k, a, &lda, tau, c, &ldc, work, &lwork, &info
+    &side, &transp, &m, &n, &k, a, &lda, tau, c, &ldc, work, &lwork, &info
   ) ; return info ;
 } /* end of [atsctrb_clapack_sormqr] */
 
@@ -813,7 +815,7 @@ extern int dormqr_(
 , F2Cinteger *info
 ) ;
 
-static inline
+ATSinline()
 ats_int_type
 atsctrb_clapack_dormqr (
   ats_char_type side
@@ -825,8 +827,10 @@ atsctrb_clapack_dormqr (
 , ats_ref_type work, F2Cinteger lwork
 ) {
   F2Cinteger info ;
+  char transp = trans;
+  if (transp == 'C' || transp == 'c') transp = 'T';
   dormqr_(
-    &side, &trans, &m, &n, &k, a, &lda, tau, c, &ldc, work, &lwork, &info
+    &side, &transp, &m, &n, &k, a, &lda, tau, c, &ldc, work, &lwork, &info
   ) ; return info ;
 } /* end of [atsctrb_clapack_dormqr] */
 
@@ -843,7 +847,7 @@ extern int cunmqr_(
 , F2Cinteger *info
 ) ;
 
-static inline
+ATSinline()
 ats_int_type
 atsctrb_clapack_cunmqr (
   ats_char_type side
@@ -872,7 +876,7 @@ extern int zunmqr_(
 , F2Cinteger *info
 ) ;
 
-static inline
+ATSinline()
 ats_int_type
 atsctrb_clapack_zunmqr (
   ats_char_type side
@@ -902,7 +906,7 @@ extern int sgerqf_(
 , F2Cinteger *lwork, F2Cinteger *info
 ) ;
 
-static inline
+ATSinline()
 ats_int_type
 atsctrb_clapack_sgerqf (
   F2Cinteger m, F2Cinteger n
@@ -925,7 +929,7 @@ extern int dgerqf_(
 , F2Cinteger *info
 ) ;
 
-static inline
+ATSinline()
 ats_int_type
 atsctrb_clapack_dgerqf (
   F2Cinteger m, F2Cinteger n
@@ -948,7 +952,7 @@ int cgerqf_(
 , F2Cinteger *info
 ) ;
 
-static inline
+ATSinline()
 ats_int_type
 atsctrb_clapack_cgerqf (
   F2Cinteger m, F2Cinteger n
@@ -971,7 +975,7 @@ extern int zgerqf_(
 , F2Cinteger *info
 ) ;
 
-static inline
+ATSinline()
 ats_int_type
 atsctrb_clapack_zgerqf (
   F2Cinteger m, F2Cinteger n
@@ -1001,7 +1005,7 @@ extern int cunmrq_(
 , F2Cinteger *info
 ) ;
 
-static inline
+ATSinline()
 ats_int_type
 atsctrb_clapack_cunmrq (
   ats_char_type side
@@ -1030,7 +1034,7 @@ extern int zunmrq_(
 , F2Cinteger *info
 ) ;
 
-static inline
+ATSinline()
 ats_int_type
 atsctrb_clapack_zunmrq (
   ats_char_type side
@@ -1058,7 +1062,7 @@ extern int sormrq_(
 , F2Cinteger *info
 ) ;
 
-static inline
+ATSinline()
 ats_int_type
 atsctrb_clapack_sormrq (
   ats_char_type side
@@ -1087,7 +1091,7 @@ extern int dormrq_(
 , F2Cinteger *info
 ) ;
 
-static inline
+ATSinline()
 ats_int_type
 atsctrb_clapack_dormrq (
   ats_char_type side
@@ -1118,7 +1122,7 @@ extern int sgels_(
 , F2Cinteger *info
 ) ;
 
-static inline
+ATSinline()
 ats_int_type
 atsctrb_clapack_sgels (
   ats_char_type trans
@@ -1146,7 +1150,7 @@ extern int dgels_(
 , F2Cinteger *info
 ) ;
 
-static inline
+ATSinline()
 ats_int_type
 atsctrb_clapack_dgels (
   ats_char_type trans
@@ -1173,7 +1177,7 @@ extern int cgels_(
 , F2Cinteger *info
 ) ;
 
-static inline
+ATSinline()
 ats_int_type
 atsctrb_clapack_cgels (
   ats_char_type trans
@@ -1200,7 +1204,7 @@ extern int zgels_(
 , F2Cinteger *info
 ) ;
 
-static inline
+ATSinline()
 ats_int_type
 atsctrb_clapack_zgels (
   ats_char_type trans
@@ -1230,7 +1234,7 @@ extern int strtrs_(
 , F2Cinteger *info
 ) ;
 
-static inline
+ATSinline()
 ats_int_type
 atsctrb_clapack_strtrs (
   ats_char_type uplo
@@ -1258,7 +1262,7 @@ extern int dtrtrs_(
 , F2Cinteger *info
 ) ;
 
-static inline
+ATSinline()
 ats_int_type
 atsctrb_clapack_dtrtrs (
   ats_char_type uplo
@@ -1286,7 +1290,7 @@ extern int ctrtrs_(
 , F2Cinteger *info
 ) ;
 
-static inline
+ATSinline()
 ats_int_type
 atsctrb_clapack_ctrtrs (
   ats_char_type uplo
@@ -1314,7 +1318,7 @@ extern int ztrtrs_(
 , F2Cinteger *info
 ) ;
 
-static inline
+ATSinline()
 ats_int_type
 atsctrb_clapack_ztrtrs (
   ats_char_type uplo
@@ -1340,7 +1344,7 @@ extern int sgetrf_(
 , F2Cinteger *info
 ) ;
 
-static inline
+ATSinline()
 ats_int_type
 atsctrb_clapack_sgetrf (
   F2Cinteger m, F2Cinteger n
@@ -1361,7 +1365,7 @@ extern int dgetrf_(
 , F2Cinteger *info
 ) ;
 
-static inline
+ATSinline()
 ats_int_type
 atsctrb_clapack_dgetrf (
   F2Cinteger m, F2Cinteger n
@@ -1382,7 +1386,7 @@ extern int cgetrf_(
 , F2Cinteger *info
 ) ;
 
-static inline
+ATSinline()
 ats_int_type
 atsctrb_clapack_cgetrf (
   F2Cinteger m, F2Cinteger n
@@ -1403,7 +1407,7 @@ extern int zgetrf_(
 , F2Cinteger *info
 ) ;
 
-static inline
+ATSinline()
 ats_int_type
 atsctrb_clapack_zgetrf (
   F2Cinteger m, F2Cinteger n
@@ -1428,7 +1432,7 @@ extern int dgesv_ (
 , F2Cinteger *info
 ) ;
 
-static inline
+ATSinline()
 ats_int_type
 atsctrb_clapack_dgesv (
   F2Cinteger n, F2Cinteger nrhs
@@ -1450,7 +1454,7 @@ extern int sgesv_ (
 , F2Cinteger *info
 ) ;
 
-static inline
+ATSinline()
 ats_int_type
 atsctrb_clapack_sgesv (
   F2Cinteger n, F2Cinteger nrhs
@@ -1472,7 +1476,7 @@ extern int cgesv_ (
 , F2Cinteger *info
 ) ;
 
-static inline
+ATSinline()
 ats_int_type
 atsctrb_clapack_cgesv (
   F2Cinteger n, F2Cinteger nrhs
@@ -1494,7 +1498,7 @@ extern int zgesv_ (
 , F2Cinteger *info
 ) ;
 
-static inline
+ATSinline()
 ats_int_type
 atsctrb_clapack_zgesv (
   F2Cinteger n, F2Cinteger nrhs
@@ -1523,7 +1527,7 @@ extern int sgesvd_(
 , F2Cinteger *info
 ) ;
 
-static inline
+ATSinline()
 ats_int_type
 atsctrb_clapack_sgesvd (
   char jobu, char jobvt
@@ -1551,7 +1555,7 @@ extern int dgesvd_(
 , F2Cinteger *info
 ) ;
 
-static inline
+ATSinline()
 ats_int_type
 atsctrb_clapack_dgesvd (
   char jobu, char jobvt
@@ -1580,7 +1584,7 @@ extern int cgesvd_(
 , F2Cinteger *info
 ) ;
 
-static inline
+ATSinline()
 ats_int_type
 atsctrb_clapack_cgesvd (
   char jobu, char jobvt
@@ -1610,7 +1614,7 @@ extern int zgesvd_(
 , F2Cinteger *info
 ) ;
 
-static inline
+ATSinline()
 ats_int_type
 atsctrb_clapack_zgesvd (
   char jobu, char jobvt
@@ -1638,7 +1642,7 @@ extern int slaswp_ (
 , F2Cinteger *incx
 ) ;
 
-static inline
+ATSinline()
 ats_void_type
 atsctrb_clapack_slaswp (
   F2Cinteger n
@@ -1660,7 +1664,7 @@ extern int dlaswp_ (
 , F2Cinteger *incx
 ) ;
 
-static inline
+ATSinline()
 ats_void_type
 atsctrb_clapack_dlaswp (
   F2Cinteger n
@@ -1682,7 +1686,7 @@ extern int claswp_ (
 , F2Cinteger *incx
 ) ;
 
-static inline
+ATSinline()
 ats_void_type
 atsctrb_clapack_claswp (
   F2Cinteger n
@@ -1704,7 +1708,7 @@ extern int zlaswp_ (
 , F2Cinteger *incx
 ) ;
 
-static inline
+ATSinline()
 ats_void_type
 atsctrb_clapack_zlaswp (
   F2Cinteger n

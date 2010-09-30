@@ -38,7 +38,7 @@
 
 #if (0)
 
-static inline
+ATSinline()
 ats_bool_type
 atsctrb_eq_CBLAS_ORDER_ORDER (
   ats_int_type x1, ats_int_type x2
@@ -46,7 +46,7 @@ atsctrb_eq_CBLAS_ORDER_ORDER (
   return (x1 == x2 ? ats_true_bool : ats_false_bool) ;
 } /* end of [atsctrb_eq_CBLAS_ORDER_ORDER] */
 
-static inline
+ATSinline()
 ats_bool_type
 atsctrb_eq_CBLAS_UPLO_UPLO (
   ats_int_type x1, ats_int_type x2
@@ -54,7 +54,7 @@ atsctrb_eq_CBLAS_UPLO_UPLO (
   return (x1 == x2 ? ats_true_bool : ats_false_bool) ;
 } /* end of [atsctrb_eq_CBLAS_UPLO_UPLO] */
 
-static inline
+ATSinline()
 ats_bool_type
 atsctrb_eq_CBLAS_DIAG_DIAG (
   ats_int_type x1, ats_int_type x2
@@ -64,7 +64,7 @@ atsctrb_eq_CBLAS_DIAG_DIAG (
 
 /* ****** ****** */
 
-static inline
+ATSinline()
 ats_bool_type
 atsctrb_eq_CBLAS_TRANSPOSE_TRANSPOSE (
   ats_int_type x1, ats_int_type x2
@@ -72,7 +72,7 @@ atsctrb_eq_CBLAS_TRANSPOSE_TRANSPOSE (
   return (x1 == x2 ? ats_true_bool : ats_false_bool) ;
 } /* end of [atsctrb_eq_CBLAS_TRANSPOSE_TRANSPOSE] */
 
-static inline
+ATSinline()
 ats_bool_type
 atsctrb_eq_CBLAS_SIDE_SIDE (
   ats_int_type x1, ats_int_type x2
@@ -80,7 +80,7 @@ atsctrb_eq_CBLAS_SIDE_SIDE (
   return (x1 == x2 ? ats_true_bool : ats_false_bool) ;
 } /* end of [atsctrb_eq_CBLAS_SIDE_SIDE] */
 
-#endif
+#endif // end of [#if(0)]
 
 /* ****** ****** */
 

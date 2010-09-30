@@ -1089,8 +1089,11 @@ implement gesv<zcmplx>
 
 (* ****** ****** *)
 
-typedef gesvd_dummy_type (t1:t@ype,t2:t@ype) = {m,n:nat} (
-  (*jobu:*) char, (*jobvt:*) char, (*m:*) integer m, (*n:*) integer n
+typedef
+gesvd_dummy_type
+  (t1:t@ype,t2:t@ype) = {m,n:nat} (
+  (*jobu:*) char, (*jobvt:*) char
+, (*m:*) integer m, (*n:*) integer n
 , (*a:*) ptr, (*lda:*) integer, (*s:*) ptr
 , (*u:*) ptr, (*ldu:*) integer, (*vt:*) ptr, (*ldvt:*) integer
 , (*work:*) ptr, (*lwork:*) integer
@@ -1100,8 +1103,11 @@ extern
 fun{t1,t2:t@ype}
 gesvd_dummy: gesvd_dummy_type (t1, t2) = "atsctrb_clapack_gesvd"
 
-typedef gesvd_c_dummy_type (t1:t@ype,t2:t@ype) = {m,n:nat} (
-  (*jobu:*) char, (*jobvt:*) char, (*m:*) integer m, (*n:*) integer n
+typedef
+gesvd_c_dummy_type
+  (t1:t@ype,t2:t@ype) = {m,n:nat} (
+  (*jobu:*) char, (*jobvt:*) char
+, (*m:*) integer m, (*n:*) integer n
 , (*a:*) ptr, (*lda:*) integer, (*s:*) ptr
 , (*u:*) ptr, (*ldu:*) integer, (*vt:*) ptr, (*ldvt:*) integer
 , (*work:*) ptr, (*lwork:*) integer, (*rwork*) ptr
