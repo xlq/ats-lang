@@ -7,9 +7,9 @@
 /************************************************************************/
 
 /*
-** ATS - Unleashing the Potential of Types!
+** ATS - Unleashing the Power of Types!
 **
-** Copyright (C) 2002-2008 Hongwei Xi.
+** Copyright (C) 2002-2010 Hongwei Xi.
 **
 ** ATS is  free software;  you can redistribute it and/or modify it under
 ** the  terms of the  GNU General Public License as published by the Free
@@ -33,53 +33,22 @@
 
 /* ****** ****** */
 
-#ifndef ATS_LIBC_ERRNO_CATS
-#define ATS_LIBC_ERRNO_CATS
+#ifndef ATS_LIBC_SYS_STATVFS_CATS
+#define ATS_LIBC_SYS_STATVFS_CATS
 
 /* ****** ****** */
 
-#include <errno.h>
+#include <sys/statvfs.h>
+#include "libc/sys/CATS/types.cats"
+typedef struct statvfs ats_statvfs_type ;
 
 /* ****** ****** */
 
-#define ENONE 0 // indicating no error
+#define atslib_statvfs statvfs
+#define atslib_fstatvfs fstatvfs
 
 /* ****** ****** */
 
-ATSinline()
-ats_int_type
-atslib_errno_get () { return errno ; }
-// end of [atslib_errno_get]
+#endif /* end of [ATS_LIBC_SYS_STATVFS_CATS] */
 
-ATSinline()
-ats_void_type
-atslib_errno_set
-  (ats_int_type n) { errno = n ; return ; }
-// end of [atslib_errno_set]
-
-ATSinline()
-ats_void_type
-atslib_errno_reset () { errno = 0/*ENONE*/ ; return ; }
-// end of [atslib_errno_reset]
-
-/* ****** ****** */
-
-ATSinline()
-ats_bool_type
-atslib_eq_errno_errno
-  (ats_int_type n1, ats_int_type n2) {
-  return (n1 == n2 ? ats_true_bool : ats_false_bool) ;
-} // end of [atslib_eq_errno_errno]
-
-ATSinline()
-ats_bool_type
-atslib_neq_errno_errno
-  (ats_int_type n1, ats_int_type n2) {
-  return (n1 != n2 ? ats_true_bool : ats_false_bool) ;
-} // end of [atslib_neq_errno_errno]
-
-/* ****** ****** */
-
-#endif /* ATS_LIBC_ERRNO_CATS */
-
-/* end of [errno.cats] */
+/* end of [statvfs.cats] */

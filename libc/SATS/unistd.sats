@@ -313,12 +313,12 @@ dataview
 ttyname_v (m:int, l:addr, int) =
   | {n:nat | m > n}
     ttyname_v_succ (m, l, 0) of strbuf_v (m, n, l)
-  | {i:int | i < 0} ttyname_v_fail (m, l, i) of b0ytes m @ l
+  | {i:int | i > 0} ttyname_v_fail (m, l, i) of b0ytes m @ l
 fun ttyname_r
   {fd:nat} {m:nat} {l:addr} (
     pf: b0ytes m @ l
   | fd: int fd, p: ptr l, m: size_t m
-  ) :<> [i:int | i <= 0] (ttyname_v (m, l, i) | int i)
+  ) :<> [i:int | i >= 0] (ttyname_v (m, l, i) | int i)
   = "#atslib_ttyname_r" // if it fails, errno is returned
 // end of [ttyname_r]
 

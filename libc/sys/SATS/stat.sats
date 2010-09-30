@@ -143,23 +143,33 @@ fun mkdir_exn (path: string, mode: mode_t): void
 
 (* ****** ****** *)
 
-fun stat_err {l:addr} (
+fun stat_err (
     name: string, st: &stat? >> opt (stat, i==0)
   ) : #[i:int | i <= 0] int i
   = "#atslib_stat_err" // !macro
-fun stat_exn (name: string, st: &stat? >> stat): void
-  = "atslib_stat_exn" // !function
+fun stat_exn
+  (name: string, st: &stat? >> stat): void = "atslib_stat_exn"
+// end of [stat_exn]
 
-fun lstat_err {l:addr} (
+fun fstat_err {fd:nat} (
+    fd: int fd, st: &stat? >> opt (stat, i==0)
+  ) : #[i:int | i <= 0] int i
+  = "#atslib_fstat_err" // !macro
+fun fstat_exn {fd:nat}
+  (fd: int fd, st: &stat? >> stat): void = "atslib_fstat_exn"
+// end of [fstat_exn]
+
+fun lstat_err (
     name: string, st: &stat? >> opt (stat, i==0)
   ) : #[i:int | i <= 0] int i
   = "#atslib_lstat_err" // !macro
-fun lstat_exn (name: string, buf: &stat? >> stat): void
-  = "atslib_lstat_exn" // !function
+fun lstat_exn
+  (name: string, buf: &stat? >> stat): void = "atslib_lstat_exn"
+// end of [lstat_exn]
 
 (* ****** ****** *)
 
-fun umask (mask_new: mode_t): mode_t(*oldval*) = "atslib_umask"
+fun umask (mask_new: mode_t(*new*)): mode_t(*old*) = "atslib_umask"
 
 (* ****** ****** *)
 

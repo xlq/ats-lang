@@ -7,7 +7,7 @@
 (***********************************************************************)
 
 (*
-** ATS - Unleashing the Potential of Types!
+** ATS - Unleashing the Power of Types!
 **
 ** Copyright (C) 2002-2010 Hongwei Xi, Boston University
 **
@@ -24,66 +24,59 @@
 ** for more details.
 ** 
 ** You  should  have  received  a  copy of the GNU General Public License
-** along  with  ATS;  see the  file COPYING.  If not, please write to the
-** Free Software Foundation,  51 Franklin Street, Fifth Floor, Boston, MA
+** along  with  ATS;  see  the  file  COPYING.  If not, write to the Free
+** Software Foundation, 51  Franklin  Street,  Fifth  Floor,  Boston,  MA
 ** 02110-1301, USA.
 *)
 
 (* ****** ****** *)
 
-(* author: Hongwei Xi (hwxi AT cs DOT bu DOT edu) *)
+(* author: Hongwei Xi (hwxi AT cs DOT bu DOT edu)  *)
 
 (* ****** ****** *)
 
 %{#
-#include "libc/CATS/curses.cats"
+#include "libc/sys/CATS/statvfs.cats"
 %} // end of [%{#]
 
 (* ****** ****** *)
 
-typedef strcst = string
+staload T = "libc/sys/SATS/types.sats"
+typedef fsblkcnt_t = $T.fsblkcnt_t
+typedef fsfilcnt_t = $T.fsfilcnt_t
 
 (* ****** ****** *)
 
-macdef OK = $extval (int, "OK") // OK = 0
-macdef ERR = $extval (int, "ERR") // ERR = -1
+abst@ype statvs_rest
+typedef
+statvfs_struct =
+$extype_struct "ats_statvfs_type" of {
+  f_bsize= ulint
+, f_frsize= ulint 
+, f_blocks= fsblkcnt_t
+, f_bfree= fsblkcnt_t
+, f_bavail= fsblkcnt_t
+, f_files= fsfilcnt_t
+, f_ffree= fsfilcnt_t
+, f_favail= fsfilcnt_t
+, f_fsid= ulint
+, f_flag= ulint
+, f_namemax= ulint
+, _rest = statvs_rest // unknown quantity
+} // end of [statvfs]
 
 (* ****** ****** *)
 
-fun initscr ()
-  : ptr = "#atslib_initscr" // the return value points to stdscr
-fun endwin (): int = "#atslib_endwin"
-fun isendwin (): bool = "#atslib_isendwin"
+fun statvfs ( // -1 on error // errno set
+    path: string, buf: &statvfs? >> opt (statvfs, i==0)
+) : #[i:int | i <= 0] int i = "#atslib_statvfs"
+// end of [statvfs]
+
+fun fstatvfs {fd:nat} ( // -1 on error // errno set
+    fd: int fd, buf: &statvfs? >> opt (statvfs, i==0)
+) : #[i:int | i <= 0] int i = "#atslib_fstatvfs"
+// end of [fstatvfs]
 
 (* ****** ****** *)
 
-fun raw (): int = "#atslib_raw"
-fun noraw (): int = "#atslib_noraw"
-
-(* ****** ****** *)
-
-fun clear (): int = "#atslib_clear"
-fun clrtobot (): int = "#atslib_clrtobot"
-fun clrtoeol (): int = "#atslib_clrtoeol"
-fun erase (): int = "#atslib_erase"
-
-(* ****** ****** *)
-
-fun beep (): int = "#atslib_beep"
-fun flush (): int = "#atslib_flush"
-
-(* ****** ****** *)
-
-fun addstr (str: strcst): int = "#atslib_addstr"
-fun addnstr (str: strcst, n: int): int = "#atslib_addnstr"
-fun mvaddstr (y: int, x: int, str: strcst): int = "#atslib_mvaddstr"
-fun mvaddnstr (y: int, x: int, str: strcst, n: int): int = "#atslib_mvaddnstr"
-
-(* ****** ****** *)
-
-fun refresh (): int = "#atslib_refresh"
-fun doupdate (): int = "#atslib_doupdate"
-
-(* ****** ****** *)
-
-(* end of [curses.sats] *)
+(* end of [statvfs.sats] *)

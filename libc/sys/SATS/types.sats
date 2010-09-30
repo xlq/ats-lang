@@ -66,7 +66,9 @@ overload = with eq_dev_dev
 (* ****** ****** *)
 
 abst@ype fsblkcnt_t = $extype "ats_fsblkcnt_type" // file system block counts
+castfn ulint_of_fsblkcnt (x: fsblkcnt_t): ulint
 abst@ype fsfilcnt_t = $extype "ats_fsfilcnt_type" // file system file counts
+castfn ulint_of_fsfilcnt (x: fsfilcnt_t): ulint
 
 (* ****** ****** *)
 

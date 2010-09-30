@@ -47,7 +47,9 @@ castfn int_of_errno (e: errno_t):<> int
 castfn errno_of_int (n: int):<> errno_t
 
 (* ****** ****** *)
-
+//
+macdef ENONE = $extval (errno_t, "ENONE") // = 0
+//
 macdef E2BIG = $extval (errno_t, "E2BIG")
 macdef EACCES = $extval (errno_t, "EACCES")
 macdef EADDRINUSE = $extval (errno_t, "EADDRINUSE")
