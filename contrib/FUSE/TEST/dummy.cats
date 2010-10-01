@@ -1,1 +1,0 @@
-#define FUSE_USE_VERSION 26

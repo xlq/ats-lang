@@ -1,7 +1,12 @@
 (* ****** ****** *)
 
 %{#
-#include "dummy.cats"
+#define FUSE_USE_VERSION 26
+#include "prelude/CATS/char.cats"
+#include "prelude/CATS/integer.cats"
+#include "prelude/CATS/pointer.cats"
+#include "prelude/CATS/sizetype.cats"
+#include "prelude/CATS/string.cats"
 %}
 
 (* ****** ****** *)
