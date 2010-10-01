@@ -194,9 +194,9 @@ fun compare_char_char
 overload compare with compare_char_char
 
 (* ****** ****** *)
-
-// print functions for characters
-
+//
+// HX: print functions for characters
+//
 symintr fprint_char
 
 fun fprint0_char (out: FILEref, x: char):<!exnref> void

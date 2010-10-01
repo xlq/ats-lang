@@ -53,8 +53,9 @@ extern ssize_t read  (int fd, void *buf, size_t cnt) ;
 extern ssize_t write  (int fd, const void *buf, size_t cnt) ;
 
 /* ****** ****** */
-
-// implemented in [prelude/DATS/basics.dats]
+//
+// HX: implemented in [prelude/DATS/basics.dats]
+//
 extern ats_void_type
 ats_exit_errmsg(ats_int_type n, ats_ptr_type msg) ;
 

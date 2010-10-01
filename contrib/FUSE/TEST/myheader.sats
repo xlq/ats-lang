@@ -15,4 +15,4 @@
 
 (* ****** ****** *)
 
-(* end of [dummy.sats] *)
+(* end of [myheader.sats] *)

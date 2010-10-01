@@ -96,6 +96,8 @@ libc/SATS/complex.sats
 libc/DATS/complex.dats
 #endif
 
+libc/SATS/ctype.sats
+
 libc/SATS/curses.sats
 
 libc/SATS/dirent.sats
@@ -138,6 +140,7 @@ libc/DATS/stdarg.dats
 libc/SATS/stdio.sats
 
 libc/SATS/stdlib.sats
+libc/DATS/stdlib.dats
 
 libc/SATS/string.sats
 libc/DATS/string.dats
@@ -151,12 +154,17 @@ libc/SATS/termios.sats
 libc/SATS/unistd.sats
 libc/DATS/unistd.dats
 
+libc/SATS/utime.sats
+
 libc/sys/SATS/select.sats
 
 libc/sys/SATS/socket.sats
 libc/sys/DATS/socket.dats
 
 libc/sys/SATS/stat.sats
+libc/sys/DATS/stat.dats
+
+libc/sys/SATS/statvfs.sats
 
 libc/sys/SATS/time.sats
 

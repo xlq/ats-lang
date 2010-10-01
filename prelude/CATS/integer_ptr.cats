@@ -66,7 +66,8 @@ atspre_int_of_intptr
 
 ATSinline()
 ats_intptr_type
-atspre_intptr_of_int (ats_int_type i) {
+atspre_intptr_of_int
+  (ats_int_type i) {
   return (ats_intptr_type)(intptr_t)i ;
 }
 
@@ -80,97 +81,120 @@ atspre_intptr_of_ptr (ats_ptr_type p) {
 
 ATSinline()
 ats_intptr_type
-atspre_abs_intptr (ats_intptr_type i) {
-  return (i >= 0 ? i : (ats_intptr_type)(-(intptr_t)i)) ;
-}
+atspre_abs_intptr
+  (ats_intptr_type i) {
+  return ((intptr_t)i >= 0 ? i : (ats_intptr_type)(-(intptr_t)i)) ;
+} // end of [atspre_abs_intptr]
 
 ATSinline()
 ats_intptr_type
-atspre_neg_intptr (ats_intptr_type i) {
+atspre_neg_intptr
+  (ats_intptr_type i) {
   return (ats_intptr_type)(-(intptr_t)i) ;
-}
+} // end of [atspre_neg_intptr]
 
 ATSinline()
 ats_intptr_type
-atspre_succ_intptr (ats_intptr_type i) {
+atspre_succ_intptr
+  (ats_intptr_type i) {
   return (ats_intptr_type)((intptr_t)i + 1) ;
-}
+} // end of [atspre_succ_intptr]
 
 ATSinline()
 ats_intptr_type
-atspre_pred_intptr (ats_intptr_type i) {
+atspre_pred_intptr
+  (ats_intptr_type i) {
   return (ats_intptr_type)((intptr_t)i - 1) ;
-}
+} // end of [atspre_pred_intptr]
 
 //
 
 ATSinline()
 ats_intptr_type
-atspre_add_intptr_int (ats_intptr_type i1, ats_int_type i2) {
-  return (ats_intptr_type)((intptr_t)i1 + (ats_int_type)i2) ;
-}
+atspre_add_intptr_int (
+  ats_intptr_type i1, ats_int_type i2
+) {
+  return (ats_intptr_type)((intptr_t)i1 + (int)i2) ;
+} // end of [atspre_add_intptr_int]
 
 ATSinline()
 ats_intptr_type
-atspre_add_intptr_intptr (ats_intptr_type i1, ats_intptr_type i2) {
+atspre_add_intptr_intptr (
+  ats_intptr_type i1, ats_intptr_type i2
+) {
   return (ats_intptr_type)((intptr_t)i1 + (intptr_t)i2) ;
-}
+} // end of [atspre_add_intptr_intptr]
 
 //
 
 ATSinline()
 ats_intptr_type
-atspre_sub_intptr_int (ats_intptr_type i1, ats_int_type i2) {
-  return (ats_intptr_type)((intptr_t)i1 - (ats_int_type)i2) ;
-}
+atspre_sub_intptr_int (
+  ats_intptr_type i1, ats_int_type i2
+) {
+  return (ats_intptr_type)((intptr_t)i1 - (int)i2) ;
+} // end of [atspre_sub_intptr_int]
 
 ATSinline()
 ats_intptr_type
-atspre_sub_intptr_intptr (ats_intptr_type i1, ats_intptr_type i2) {
+atspre_sub_intptr_intptr (
+  ats_intptr_type i1, ats_intptr_type i2
+) {
   return (ats_intptr_type)((intptr_t)i1 - (intptr_t)i2) ;
-}
+} // end of [atspre_sub_intptr_intptr]
 
 //
 
 ATSinline()
 ats_intptr_type
-atspre_mul_intptr_int (ats_intptr_type i1, ats_int_type i2) {
-  return (ats_intptr_type)((intptr_t)i1 * (ats_int_type)i2) ;
-}
+atspre_mul_intptr_int (
+  ats_intptr_type i1, ats_int_type i2
+) {
+  return (ats_intptr_type)((intptr_t)i1 * (int)i2) ;
+} // end of [atspre_mul_intptr_int]
 
 ATSinline()
 ats_intptr_type
-atspre_mul_intptr_intptr (ats_intptr_type i1, ats_intptr_type i2) {
+atspre_mul_intptr_intptr (
+  ats_intptr_type i1, ats_intptr_type i2
+) {
   return (ats_intptr_type)((intptr_t)i1 * (intptr_t)i2) ;
-}
+} // end of [atspre_mul_intptr_intptr]
 
 //
 
 ATSinline()
 ats_intptr_type
-atspre_div_intptr_int (ats_intptr_type i1, ats_int_type i2) {
-  return (ats_intptr_type)((intptr_t)i1 / (ats_int_type)i2) ;
-}
+atspre_div_intptr_int (
+  ats_intptr_type i1, ats_int_type i2
+) {
+  return (ats_intptr_type)((intptr_t)i1 / (int)i2) ;
+} // end of [atspre_div_intptr_int]
 
 ATSinline()
 ats_intptr_type
-atspre_div_intptr_intptr (ats_intptr_type i1, ats_intptr_type i2) {
+atspre_div_intptr_intptr (
+  ats_intptr_type i1, ats_intptr_type i2
+) {
   return (ats_intptr_type)((intptr_t)i1 / (intptr_t)i2) ;
-}
+} // end of [atspre_div_intptr_intptr]
 
 //
 
 ATSinline()
 ats_intptr_type
-atspre_mod_intptr_int (ats_intptr_type i1, ats_int_type i2) {
-  return (ats_intptr_type)((intptr_t)i1 % (ats_int_type)i2) ;
-}
+atspre_mod_intptr_int (
+  ats_intptr_type i1, ats_int_type i2) {
+  return (ats_intptr_type)((intptr_t)i1 % (int)i2) ;
+} // end of [atspre_mod_intptr_int]
 
 ATSinline()
 ats_intptr_type
-atspre_mod_intptr_intptr (ats_intptr_type i1, ats_intptr_type i2) {
+atspre_mod_intptr_intptr (
+  ats_intptr_type i1, ats_intptr_type i2
+) {
   return (ats_intptr_type)((intptr_t)i1 % (intptr_t)i2) ;
-}
+} // end of [atspre_mod_intptr_intptr]
 
 /* ****** ****** */
 
@@ -178,39 +202,63 @@ atspre_mod_intptr_intptr (ats_intptr_type i1, ats_intptr_type i2) {
 
 ATSinline()
 ats_bool_type
-atspre_lt_intptr_intptr (ats_intptr_type i1, ats_intptr_type i2) {
-  return ((intptr_t)i1 < (intptr_t)i2) ;
-}
+atspre_lt_intptr_intptr (
+  ats_intptr_type i1, ats_intptr_type i2
+) {
+  return (
+    (intptr_t)i1 < (intptr_t)i2 ? ats_true_bool : ats_false_bool
+  ) ; // end of [return]
+} // end of [atspre_lt_intptr_intptr]
 
 ATSinline()
 ats_bool_type
-atspre_lte_intptr_intptr (ats_intptr_type i1, ats_intptr_type i2) {
-  return ((intptr_t)i1 <= (intptr_t)i2) ;
-}
+atspre_lte_intptr_intptr (
+  ats_intptr_type i1, ats_intptr_type i2
+) {
+  return (
+    (intptr_t)i1 <= (intptr_t)i2 ? ats_true_bool : ats_false_bool
+  ) ; // end of [return]
+} // end of [atspre_lte_intptr_intptr]
 
 ATSinline()
 ats_bool_type
-atspre_gt_intptr_intptr (ats_intptr_type i1, ats_intptr_type i2) {
-  return ((intptr_t)i1 > (intptr_t)i2) ;
-}
+atspre_gt_intptr_intptr (
+  ats_intptr_type i1, ats_intptr_type i2
+) {
+  return (
+    (intptr_t)i1 > (intptr_t)i2 ? ats_true_bool : ats_false_bool
+  ) ; // end of [return]
+} // end of [atspre_gt_intptr_intptr]
 
 ATSinline()
 ats_bool_type
-atspre_gte_intptr_intptr (ats_intptr_type i1, ats_intptr_type i2) {
-  return ((intptr_t)i1 >= (intptr_t)i2) ;
-}
+atspre_gte_intptr_intptr (
+  ats_intptr_type i1, ats_intptr_type i2
+) {
+  return (
+    (intptr_t)i1 >= (intptr_t)i2 ? ats_true_bool : ats_false_bool
+  ) ; // end of [return]
+} // end of [atspre_gte_intptr_intptr]
 
 ATSinline()
 ats_bool_type
-atspre_eq_intptr_intptr (ats_intptr_type i1, ats_intptr_type i2) {
-  return ((intptr_t)i1 == (intptr_t)i2) ;
-}
+atspre_eq_intptr_intptr (
+  ats_intptr_type i1, ats_intptr_type i2
+) {
+  return (
+    (intptr_t)i1 == (intptr_t)i2 ? ats_true_bool : ats_false_bool
+  ) ; // end of [return]
+} // end of [atspre_eq_intptr_intptr]
 
 ATSinline()
 ats_bool_type
-atspre_neq_intptr_intptr (ats_intptr_type i1, ats_intptr_type i2) {
-  return ((intptr_t)i1 != (intptr_t)i2) ;
-}
+atspre_neq_intptr_intptr (
+  ats_intptr_type i1, ats_intptr_type i2
+) {
+  return (
+    (intptr_t)i1 != (intptr_t)i2 ? ats_true_bool : ats_false_bool
+  ) ; // end of [return]
+} // end of [atspre_neq_intptr_intptr]
 
 //
 // compare, max and min
@@ -228,15 +276,19 @@ atspre_compare_intptr_intptr (
 
 ATSinline()
 ats_intptr_type
-atspre_max_intptr_intptr (ats_intptr_type i1, ats_intptr_type i2) {
-  return (i1 >= i2) ? i1 : i2 ;
-}
+atspre_max_intptr_intptr (
+  ats_intptr_type i1, ats_intptr_type i2
+) {
+  return ((i1 >= i2) ? i1 : i2) ;
+} // end of [atspre_max_intptr_intptr]
 
 ATSinline()
 ats_intptr_type
-atspre_min_intptr_intptr (ats_intptr_type i1, ats_intptr_type i2) {
-  return (i1 <= i2) ? i1 : i2 ;
-}
+atspre_min_intptr_intptr (
+  ats_intptr_type i1, ats_intptr_type i2
+) {
+  return ((i1 <= i2) ? i1 : i2) ;
+} // end of [atspre_min_intptr_intptr]
 
 //
 // print functions
@@ -244,14 +296,16 @@ atspre_min_intptr_intptr (ats_intptr_type i1, ats_intptr_type i2) {
 
 ATSinline()
 ats_void_type
-atspre_fprint_intptr (ats_ptr_type out, ats_intptr_type i) {
+atspre_fprint_intptr (
+  ats_ptr_type out, ats_intptr_type i
+) {
   int n ;
   n = fprintf ((FILE*)out, "%lli", (ats_llint_type)(intptr_t)i) ;
   if (n < 0) {
     ats_exit_errmsg (n, (ats_ptr_type)"exit(ATS): [fprint_intptr] failed.\n") ;
   }
   return ;
-}
+} // end of [atspre_fprint_intptr]
 
 ATSinline()
 ats_void_type
@@ -288,19 +342,22 @@ atspre_uint_of_uintptr
 
 ATSinline()
 ats_uintptr_type
-atspre_uintptr_of_int1 (ats_int_type i) {
+atspre_uintptr_of_int1
+  (ats_int_type i) {
   return (ats_uintptr_type)(uintptr_t)i ;
 }
 
 ATSinline()
 ats_uintptr_type
-atspre_uintptr_of_uint (ats_uint_type u) {
+atspre_uintptr_of_uint
+  (ats_uint_type u) {
   return (ats_uintptr_type)(uintptr_t)u ;
 }
 
 ATSinline()
 ats_uintptr_type
-atspre_uintptr_of_ptr (ats_ptr_type p) {
+atspre_uintptr_of_ptr
+  (ats_ptr_type p) {
   return (ats_uintptr_type)(uintptr_t)p ;
 }
 
@@ -324,13 +381,15 @@ atspre_uintptr_of_ulint
 
 ATSinline()
 ats_uintptr_type
-atspre_succ_uintptr (ats_uintptr_type i) {
+atspre_succ_uintptr
+  (ats_uintptr_type i) {
   return (ats_uintptr_type)((uintptr_t)i + 1) ;
 }
 
 ATSinline()
 ats_uintptr_type
-atspre_pred_uintptr (ats_uintptr_type i) {
+atspre_pred_uintptr
+  (ats_uintptr_type i) {
   return (ats_uintptr_type)((uintptr_t)i - 1) ;
 }
 
@@ -338,13 +397,15 @@ atspre_pred_uintptr (ats_uintptr_type i) {
 
 ATSinline()
 ats_uintptr_type
-atspre_add_uintptr_uint (ats_uintptr_type i1, ats_uint_type i2) {
-  return (ats_uintptr_type)((uintptr_t)i1 + (ats_uint_type)i2) ;
+atspre_add_uintptr_uint
+  (ats_uintptr_type i1, ats_uint_type i2) {
+  return (ats_uintptr_type)((uintptr_t)i1 + i2) ;
 }
 
 ATSinline()
 ats_uintptr_type
-atspre_add_uintptr_uintptr (ats_uintptr_type i1, ats_uintptr_type i2) {
+atspre_add_uintptr_uintptr
+  (ats_uintptr_type i1, ats_uintptr_type i2) {
   return (ats_uintptr_type)((uintptr_t)i1 + (uintptr_t)i2) ;
 }
 
@@ -352,13 +413,16 @@ atspre_add_uintptr_uintptr (ats_uintptr_type i1, ats_uintptr_type i2) {
 
 ATSinline()
 ats_uintptr_type
-atspre_sub_uintptr_uint (ats_uintptr_type i1, ats_uint_type i2) {
-  return (ats_uintptr_type)((uintptr_t)i1 - (ats_uint_type)i2) ;
+atspre_sub_uintptr_uint
+  (ats_uintptr_type i1, ats_uint_type i2) {
+  return (ats_uintptr_type)((uintptr_t)i1 - i2) ;
 }
 
 ATSinline()
 ats_uintptr_type
-atspre_sub_uintptr_uintptr (ats_uintptr_type i1, ats_uintptr_type i2) {
+atspre_sub_uintptr_uintptr (
+  ats_uintptr_type i1, ats_uintptr_type i2
+) {
   return (ats_uintptr_type)((uintptr_t)i1 - (uintptr_t)i2) ;
 }
 
@@ -366,13 +430,17 @@ atspre_sub_uintptr_uintptr (ats_uintptr_type i1, ats_uintptr_type i2) {
 
 ATSinline()
 ats_uintptr_type
-atspre_mul_uintptr_uint (ats_uintptr_type i1, ats_uint_type i2) {
-  return (ats_uintptr_type)((uintptr_t)i1 * (ats_uint_type)i2) ;
+atspre_mul_uintptr_uint (
+  ats_uintptr_type i1, ats_uint_type i2
+) {
+  return (ats_uintptr_type)((uintptr_t)i1 * i2) ;
 }
 
 ATSinline()
 ats_uintptr_type
-atspre_mul_uintptr_uintptr (ats_uintptr_type i1, ats_uintptr_type i2) {
+atspre_mul_uintptr_uintptr (
+  ats_uintptr_type i1, ats_uintptr_type i2
+) {
   return (ats_uintptr_type)((uintptr_t)i1 * (uintptr_t)i2) ;
 }
 
@@ -380,13 +448,17 @@ atspre_mul_uintptr_uintptr (ats_uintptr_type i1, ats_uintptr_type i2) {
 
 ATSinline()
 ats_uintptr_type
-atspre_div_uintptr_uint (ats_uintptr_type i1, ats_uint_type i2) {
-  return (ats_uintptr_type)((uintptr_t)i1 / (ats_uint_type)i2) ;
+atspre_div_uintptr_uint (
+  ats_uintptr_type i1, ats_uint_type i2
+) {
+  return (ats_uintptr_type)((uintptr_t)i1 / i2) ;
 }
 
 ATSinline()
 ats_uintptr_type
-atspre_div_uintptr_uintptr (ats_uintptr_type i1, ats_uintptr_type i2) {
+atspre_div_uintptr_uintptr (
+  ats_uintptr_type i1, ats_uintptr_type i2
+) {
   return (ats_uintptr_type)((uintptr_t)i1 / (uintptr_t)i2) ;
 }
 
@@ -394,52 +466,68 @@ atspre_div_uintptr_uintptr (ats_uintptr_type i1, ats_uintptr_type i2) {
 
 ATSinline()
 ats_uintptr_type
-atspre_mod_uintptr_uint (ats_uintptr_type i1, ats_uint_type i2) {
-  return (ats_uintptr_type)((uintptr_t)i1 % (ats_uint_type)i2) ;
+atspre_mod_uintptr_uint (
+  ats_uintptr_type i1, ats_uint_type i2
+) {
+  return (ats_uintptr_type)((uintptr_t)i1 % i2) ;
 }
 
 ATSinline()
 ats_uintptr_type
-atspre_mod_uintptr_uintptr (ats_uintptr_type i1, ats_uintptr_type i2) {
+atspre_mod_uintptr_uintptr (
+  ats_uintptr_type i1, ats_uintptr_type i2
+) {
   return (ats_uintptr_type)((uintptr_t)i1 % (uintptr_t)i2) ;
 }
 
+//
 // comparison operations on uintpr
+//
 
 ATSinline()
 ats_bool_type
-atspre_lt_uintptr_uintptr (ats_uintptr_type i1, ats_uintptr_type i2) {
-  return ((uintptr_t)i1 < (uintptr_t)i2) ;
+atspre_lt_uintptr_uintptr (
+  ats_uintptr_type i1, ats_uintptr_type i2
+) {
+  return ((uintptr_t)i1 < (uintptr_t)i2 ? ats_true_bool : ats_false_bool) ;
 }
 
 ATSinline()
 ats_bool_type
-atspre_lte_uintptr_uintptr (ats_uintptr_type i1, ats_uintptr_type i2) {
-  return ((uintptr_t)i1 <= (uintptr_t)i2) ;
+atspre_lte_uintptr_uintptr (
+  ats_uintptr_type i1, ats_uintptr_type i2
+) {
+  return ((uintptr_t)i1 <= (uintptr_t)i2 ? ats_true_bool : ats_false_bool) ;
 }
 
 ATSinline()
 ats_bool_type
 atspre_gt_uintptr_uintptr (ats_uintptr_type i1, ats_uintptr_type i2) {
-  return ((uintptr_t)i1 > (uintptr_t)i2) ;
+  return ((uintptr_t)i1 > (uintptr_t)i2 ? ats_true_bool : ats_false_bool) ;
 }
 
 ATSinline()
 ats_bool_type
-atspre_gte_uintptr_uintptr (ats_uintptr_type i1, ats_uintptr_type i2) {
-  return ((uintptr_t)i1 >= (uintptr_t)i2) ;
+atspre_gte_uintptr_uintptr (
+  ats_uintptr_type i1, ats_uintptr_type i2
+) {
+  return ((uintptr_t)i1 >= (uintptr_t)i2 ? ats_true_bool : ats_false_bool) ;
 }
 
 ATSinline()
 ats_bool_type
-atspre_eq_uintptr_uintptr (ats_uintptr_type i1, ats_uintptr_type i2) {
-  return ((uintptr_t)i1 == (uintptr_t)i2) ;
+atspre_eq_uintptr_uintptr (
+  ats_uintptr_type i1, ats_uintptr_type i2
+) {
+  return ((uintptr_t)i1 == (uintptr_t)i2 ? ats_true_bool : ats_false_bool) ;
 }
 
 ATSinline()
 ats_bool_type
-atspre_neq_uintptr_uintptr (ats_uintptr_type i1, ats_uintptr_type i2) {
-  return ((uintptr_t)i1 != (uintptr_t)i2) ;
+atspre_neq_uintptr_uintptr (
+  ats_uintptr_type i1, ats_uintptr_type i2
+) {
+  return ((uintptr_t)i1 != (uintptr_t)i2 ? ats_true_bool : ats_false_bool) ;
 }
 
 //
@@ -458,13 +546,17 @@ atspre_compare_uintptr_uintptr (
 
 ATSinline()
 ats_uintptr_type
-atspre_max_uintptr_uintptr (ats_uintptr_type i1, ats_uintptr_type i2) {
+atspre_max_uintptr_uintptr (
+  ats_uintptr_type i1, ats_uintptr_type i2
+) {
   return (i1 >= i2 ? i1 : i2) ;
 }
 
 ATSinline()
 ats_uintptr_type
-atspre_min_uintptr_uintptr (ats_uintptr_type i1, ats_uintptr_type i2) {
+atspre_min_uintptr_uintptr (
+  ats_uintptr_type i1, ats_uintptr_type i2
+) {
   return (i1 <= i2 ? i1 : i2) ;
 }
 
@@ -531,7 +623,8 @@ atspre_fprint_uintptr (
 
 ATSinline()
 ats_void_type
-atspre_print_uintptr (ats_uintptr_type u) {
+atspre_print_uintptr
+  (ats_uintptr_type u) {
   atspre_stdout_view_get () ;
   atspre_fprint_uintptr ((ats_ptr_type)stdout, u) ;
   atspre_stdout_view_set () ;
@@ -540,7 +633,8 @@ atspre_print_uintptr (ats_uintptr_type u) {
 
 ATSinline()
 ats_void_type
-atspre_prerr_uintptr (ats_uintptr_type u) {
+atspre_prerr_uintptr
+  (ats_uintptr_type u) {
   atspre_stderr_view_get () ;
   atspre_fprint_uintptr ((ats_ptr_type)stderr, u) ;
   atspre_stderr_view_set () ;

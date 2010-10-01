@@ -39,7 +39,7 @@ fun print_ttyname
 fun print_ttyname_r
   (): int = status where {
   prval () = STDIN_FILENO_gtez ()
-  #define BUFSZ 1024 // big enough?
+  #define BUFSZ 1024 // big enough?  
   var !p_buf with pf_buf = @[byte][BUFSZ]()
   val (pfopt | err) =
     ttyname_r (pf_buf | STDIN_FILENO, p_buf, BUFSZ)

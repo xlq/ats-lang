@@ -22,7 +22,7 @@ mainats (ats_int_type argc, ats_ptr_type argv) ;
 
 (* ****** ****** *)
 
-staload "dummy.sats"
+staload "myheader.sats"
 staload "libc/SATS/errno.sats"
 staload "libc/SATS/fcntl.sats"
 staload "libc/SATS/stdio.sats"

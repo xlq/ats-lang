@@ -47,6 +47,8 @@ typedef off_t = $TYPES.off_t
 typedef pid_t = $TYPES.pid_t
 typedef uid_t = $TYPES.uid_t
 
+typedef mode_t = $TYPES.mode_t
+
 typedef whence_t = $TYPES.whence_t
 
 (* ****** ****** *)
@@ -188,6 +190,15 @@ fun getlogin_r {m:int} {l:addr}
   : #[i:int] int i // 0/!0: succ/fail
 // end of [getlogin_r]
 
+(* ****** ****** *)
+//
+macdef R_OK = $extval (uint, "R_OK") // test for read permission
+macdef W_OK = $extval (uint, "W_OK") // test for write permission
+macdef X_OK = $extval (uint, "X_OK") // test for execute permission
+macdef F_OK = $extval (uint, "F_OK") // test for existence
+//
+fun access (path: string, mode: uint): int = "#atslib_access"
+//
 (* ****** ****** *)
 
 fun chdir (path: string): int(*err*) = "#atslib_chdir"

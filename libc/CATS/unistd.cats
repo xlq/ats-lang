@@ -114,6 +114,10 @@ atslib_usleep (ats_int_type n) { usleep (n) ; return ; }
 
 /* ****** ****** */
 
+#define atslib_access access
+
+/* ****** ****** */
+
 #define atslib_chdir chdir
 #define atslib_fchdir fchdir
 

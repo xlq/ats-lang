@@ -9,7 +9,7 @@
 /*
 ** ATS - Unleashing the Potential of Types!
 **
-** Copyright (C) 2002-2009 Hongwei Xi.
+** Copyright (C) 2002-2010 Hongwei Xi.
 **
 ** ATS is  free software;  you can redistribute it and/or modify it under
 ** the  terms of the  GNU General Public License as published by the Free
@@ -33,24 +33,31 @@
 
 /* ****** ****** */
 
-#ifndef ATS_LIBC_STRINGS_CATS
-#define ATS_LIBC_STRINGS_CATS
+#ifndef ATS_LIBC_CTYPE_CATS
+#define ATS_LIBC_CTYPE_CATS
 
 /* ****** ****** */
 
-#include <strings.h>
+#include <ctype.h>
 
 /* ****** ****** */
 
-#define atslib_ffs ffs
+#define atslib_isalnum isalnum
+#define atslib_isalpha isalpha
+#define atslib_isascii isascii
+#define atslib_isblank isblank
+#define atslib_iscntrl iscntrl
+#define atslib_isdigit isdigit
+#define atslib_isgraph isgraph
+#define atslib_islower islower
+#define atslib_isprint isprint
+#define atslib_ispunct ispunct
+#define atslib_isspace isspace
+#define atslib_isupper isupper
+#define atslib_isxdigit isxdigit
 
 /* ****** ****** */
 
-#define atslib_strcasecmp strcasecmp
-#define atslib_strncasecmp strncasecmp
+#endif /* ATS_LIBC_CTYPE_CATS */
 
-/* ****** ****** */
-
-#endif /* ATS_LIBC_STRINGS_CATS */
-
-/* end of [strings.cats] */
+/* end of [ctype.cats] */

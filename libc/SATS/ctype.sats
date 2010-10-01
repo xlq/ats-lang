@@ -7,7 +7,7 @@
 (***********************************************************************)
 
 (*
-** ATS - Unleashing the Power of Types!
+** ATS - Unleashing the Potential of Types!
 **
 ** Copyright (C) 2002-2010 Hongwei Xi, Boston University
 **
@@ -24,60 +24,37 @@
 ** for more details.
 ** 
 ** You  should  have  received  a  copy of the GNU General Public License
-** along  with  ATS;  see  the  file  COPYING.  If not, write to the Free
-** Software Foundation, 51  Franklin  Street,  Fifth  Floor,  Boston,  MA
+** along  with  ATS;  see the  file COPYING.  If not, please write to the
+** Free Software Foundation,  51 Franklin Street, Fifth Floor, Boston, MA
 ** 02110-1301, USA.
 *)
 
 (* ****** ****** *)
 
-(* author: Hongwei Xi (hwxi AT cs DOT bu DOT edu)  *)
+(* author: Hongwei Xi (hwxi AT cs DOT bu DOT edu) *)
 
 (* ****** ****** *)
 
 %{#
-#include "libc/sys/CATS/statvfs.cats"
+#include "libc/CATS/ctype.cats"
 %} // end of [%{#]
 
 (* ****** ****** *)
 
-staload T = "libc/sys/SATS/types.sats"
-typedef fsblkcnt_t = $T.fsblkcnt_t
-typedef fsfilcnt_t = $T.fsfilcnt_t
+fun isalnum (c: int):<> int = "#atslib_isalnum"
+fun isalpha (c: int):<> int = "#atslib_isalpha"
+fun isascii (c: int):<> int = "#atslib_isascii"
+fun isblank (c: int):<> int = "#atslib_isblank"
+fun iscntrl (c: int):<> int = "#atslib_iscntrl"
+fun isdigit (c: int):<> int = "#atslib_isdigit"
+fun isgraph (c: int):<> int = "#atslib_isgraph"
+fun islower (c: int):<> int = "#atslib_islower"
+fun isprint (c: int):<> int = "#atslib_isprint"
+fun ispunct (c: int):<> int = "#atslib_ispunct"
+fun isspace (c: int):<> int = "#atslib_isspace"
+fun isupper (c: int):<> int = "#atslib_isupper"
+fun isxdigit (c: int):<> int = "#atslib_isxdigit"
 
 (* ****** ****** *)
 
-abst@ype statvs_rest
-typedef
-statvfs_struct =
-$extype_struct "ats_statvfs_type" of {
-  f_bsize= ulint
-, f_frsize= ulint 
-, f_blocks= fsblkcnt_t
-, f_bfree= fsblkcnt_t
-, f_bavail= fsblkcnt_t
-, f_files= fsfilcnt_t
-, f_ffree= fsfilcnt_t
-, f_favail= fsfilcnt_t
-, f_fsid= ulint
-, f_flag= ulint
-, f_namemax= ulint
-, _rest = statvs_rest // unknown quantity
-} // end of [statvfs]
-typedef statvfs = statvfs_struct
-
-(* ****** ****** *)
-
-fun statvfs ( // -1 on error // errno set
-    path: string, buf: &statvfs? >> opt (statvfs, i==0)
-) : #[i:int | i <= 0] int i = "#atslib_statvfs"
-// end of [statvfs]
-
-fun fstatvfs {fd:nat} ( // -1 on error // errno set
-    fd: int fd, buf: &statvfs? >> opt (statvfs, i==0)
-) : #[i:int | i <= 0] int i = "#atslib_fstatvfs"
-// end of [fstatvfs]
-
-(* ****** ****** *)
-
-(* end of [statvfs.sats] *)
+(* end of [ctype.sats] *)

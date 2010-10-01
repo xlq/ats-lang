@@ -41,6 +41,7 @@ compall: \
   test435 \
   test47 \
   test48 \
+  test52 \
 
 ######
 
@@ -67,8 +68,10 @@ getcwdx: AUP_3_6_4.dats
 	$(ATSCC) -o getcwdx AUP_3_6_4.dats \
      && ./getcwdx
 
+#######
+
 test421: AUP_4_2_1.dats
-	$(ATSCC) -o test421 AUP_4_2_1.dats \
+	$(ATSCC) -o test421 AUP_4_2_1.dats
 
 test4221: AUP_4_2_2_1.dats
 	$(ATSCC) -o test4221 AUP_4_2_2_1.dats
@@ -83,10 +86,17 @@ test435: AUP_4_3_5.dats
 	$(ATSCC) -o test435 AUP_4_3_5.dats
 
 test47: AUP_4_7.dats
-	$(ATSCC) -o test47 AUP_4_7.dats && ./test47
+	$(ATSCC) -o test47 AUP_4_7.dats \
+     && ./test47
 
 test48: AUP_4_8.dats
 	$(ATSCC) -o test48 AUP_4_8.dats -lcurses
+
+#######
+
+test52: AUP_5_2.dats
+	$(ATSCC) -o test52 AUP_5_2.dats \
+     && ./test52
 
 #######
 
@@ -108,5 +118,6 @@ cleanall: clean
 	rm -f test435
 	rm -f test47
 	rm -f test48
+	rm -f test52
 
 ###### end of [Makefile] ######

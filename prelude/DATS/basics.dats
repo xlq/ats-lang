@@ -62,13 +62,13 @@ implement file_mode_lte_w_w = file_mode_lte_refl {w} ()
 
 ats_void_type // external
 ats_exit
-  (const ats_int_type status) { exit(status) ; return ; }
+  (ats_int_type status) { exit(status) ; return ; }
 // end of [ats_exit]
 
 ats_void_type // external
 ats_exit_errmsg (
-  const ats_int_type status
-, const ats_ptr_type errmsg
+  ats_int_type status
+, ats_ptr_type errmsg
 ) {
   fprintf(stderr, "%s", (char*)errmsg) ; exit(status) ;
   return ; // deadcode
@@ -86,7 +86,7 @@ ats_exit_errmsg (
 
 ats_void_type
 atspre_assert (
-  const ats_bool_type assertion
+  ats_bool_type assertion
 ) {
   if (!assertion) {
     fprintf (stderr, "exit(ATS): [assert] failed\n") ; exit(1) ;
@@ -96,7 +96,7 @@ atspre_assert (
 
 ats_void_type
 atspre_assert_errmsg (
-  const ats_bool_type assertion, const ats_ptr_type errmsg
+  ats_bool_type assertion, ats_ptr_type errmsg
 ) {
   if (!assertion) {
     fprintf (stderr, "exit(ATS)%s\n", (char*)errmsg) ; exit(1) ;
