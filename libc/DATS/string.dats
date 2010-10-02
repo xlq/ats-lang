@@ -53,14 +53,6 @@ in
   @(pf_gc, pf_buf | p_buf)
 end // end of [strdup_gc]
 
-implement strdup_ngc (str) = let
-  val n = strlen (str)
-  val (pf_ngc, pf_buf | p_buf) = malloc_ngc (n + 1)
-  val p_buf = strcpy (pf_buf | p_buf, str)
-in
-  @(pf_ngc, pf_buf | p_buf)
-end // end of [strdup_ngc]
-
 (* ****** ****** *)
 
 (* end of string.dats] *)

@@ -45,38 +45,38 @@
 #include <gc/gc.h> // interface file for [Boehm-Demers-Weiser GC]
 #else
 #error "Boehm-Demers-Weiser GC version 7.1 or later must be installed first."
-#endif
+#endif // end of [HAVE_GCBDW]
 
 /* ****** ****** */
 
 ats_void_type
 ats_gc_init () { GC_INIT() ; return ; }
-/* end of [ats_gc_init] */
+// end of [ats_gc_init]
 
 ats_void_type
 ats_gc_markroot (
   const ats_ptr_type p, ats_size_type bsz
 ) {
   return ;
-} /* end of [ats_gc_markroot] */
+} // end of [ats_gc_markroot]
 
 ats_int_type
 ats_gc_chunk_count_limit_get () { return 0 ; }
-/* end of [ats_gc_chunk_count_limit_get] */
+// end of [ats_gc_chunk_count_limit_get]
 
 ats_void_type
 ats_gc_chunk_count_limit_set
   (ats_int_type nchunk) { return ; }
-/* end of [ats_gc_chunk_count_limit_set] */
+// end of [ats_gc_chunk_count_limit_set]
 
 ats_int_type
 ats_gc_chunk_count_limit_max_get () { return 0 ; }
-/* end of [ats_gc_chunk_count_limit_max_get] */
+// end of [ats_gc_chunk_count_limit_max_get]
 
 ats_void_type
 ats_gc_chunk_count_limit_max_set
   (ats_int_type nchunk) { return ; }
-/* end of [ats_gc_chunk_count_limit_max_set] */
+// end of [ats_gc_chunk_count_limit_max_set]
 
 /* ****** ****** */
 
@@ -85,7 +85,7 @@ ats_malloc_gc (
   ats_size_type nbytes
 ) { 
   return GC_MALLOC(nbytes) ; // allocated memory is cleared
-} /* end of [ats_malloc_ngc] */
+} // end of [ats_malloc_gc]
 
 ats_ptr_type
 ats_calloc_gc (
@@ -93,11 +93,12 @@ ats_calloc_gc (
 , ats_size_type bsz
 ) {
   return GC_MALLOC(nitm * bsz) ; // allocated memory is cleared
-} /* end of [ats_calloc_ngc] */
+} // end of [ats_calloc_gc]
 
 ats_void_type
-ats_free_gc (ats_ptr_type p) { GC_FREE(p) ; return ; }
-/* end of [ats_free_gc] */
+ats_free_gc
+  (ats_ptr_type p) { GC_FREE(p) ; return ; }
+// end of [ats_free_gc]
 
 ats_ptr_type
 ats_realloc_gc (
@@ -105,7 +106,7 @@ ats_realloc_gc (
 , ats_size_type nbytes_new
 ) {
   return GC_REALLOC(p_old, nbytes_new) ;
-} /* end of [ats_realloc_gc] */
+} // end of [ats_realloc_gc]
 
 /* ****** ****** */
 
@@ -114,7 +115,7 @@ ats_malloc_ngc (
   ats_size_type nbytes
 ) { 
   return GC_MALLOC_UNCOLLECTABLE(nbytes) ; // allocated memory is cleared
-} /* end of [ats_malloc_ngc] */
+} // end of [ats_malloc_ngc]
 
 ats_ptr_type
 ats_calloc_ngc (
@@ -122,11 +123,11 @@ ats_calloc_ngc (
 , ats_size_type bsz
 ) {
   return GC_MALLOC_UNCOLLECTABLE(nitm * bsz) ; // allocated memory is cleared
-} /* end of [ats_calloc_ngc] */
+} // end of [ats_calloc_ngc]
 
 ats_void_type
 ats_free_ngc (ats_ptr_type p) { GC_FREE (p) ; return ; }
-/* end of [ats_free_ngc] */
+// end of [ats_free_ngc]
 
 ats_ptr_type
 ats_realloc_ngc (
@@ -134,7 +135,7 @@ ats_realloc_ngc (
 , ats_size_type nbytes_new
 ) {
   return GC_REALLOC (p_old, nbytes_new) ;
-} /* end of [ats_realloc_ngc] */
+} // end of [ats_realloc_ngc]
 
 /* ****** ****** */
 

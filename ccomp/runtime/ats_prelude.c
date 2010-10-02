@@ -119,7 +119,7 @@ ats_uncaught_exception_handle (
     "exit(ATS): uncaught exception: %s(%d)\n", exn->name, exn->tag
   ) ; exit(1) ;
   return ; // deadcode
-} /* end of [ats_uncaught_exception_handle] */
+} // end of [ats_uncaught_exception_handle]
 
 /* ****** ****** */
 
@@ -133,7 +133,7 @@ ats_caseof_failure_handle (
 ) {
   fprintf(stderr, "exit(ATS): %s: match failure.\n", loc) ; exit(1) ;
   return ; // deadcode
-} /* end of [ats_caseof_failure_handle] */
+} // end of [ats_caseof_failure_handle]
 
 void
 ats_funarg_match_failure_handle (
@@ -141,7 +141,7 @@ ats_funarg_match_failure_handle (
 ) {
   fprintf(stderr, "exit(ATS): %s: funarg match failure.\n", loc) ; exit(1) ;
   return ; // deadcode
-} /* end of [ats_funarg_match_failure_handle] */
+} // end of [ats_funarg_match_failure_handle]
 
 /* ****** ****** */
 
@@ -194,7 +194,7 @@ ats_pthread_create_detached (
   ret = pthread_create (&pid, &attr, f, env) ;
 #endif // end of [#ifdef]
   return ret ;
-} /* end of [ats_pthread_create_detached] */
+} // end of [ats_pthread_create_detached]
 
 /* ****** ****** */
 
@@ -207,6 +207,8 @@ ats_pthread_exit () {
 #endif
   return ;
 } // end of [ats_pthread_exit]
+
+/* ****** ****** */
 
 #endif /* [ifdef _ATS_MULTITHREAD] */
 

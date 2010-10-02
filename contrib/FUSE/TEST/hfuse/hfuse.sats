@@ -15,6 +15,11 @@
 
 (* ****** ****** *)
 
+staload TYPES = "libc/sys/SATS/types.sats"
+typedef mode_t = $TYPES.mode_t
+
+(* ****** ****** *)
+
 staload "contrib/FUSE/SATS/fuse.sats"
 
 (* ****** ****** *)
@@ -47,14 +52,21 @@ fun hfuse_open (path: string, fi: &fuse_file_info): int = "hfuse_open"
 (* ****** ****** *)
 
 fun hfuse_read
-  {n:nat} {l:addr} (
-    pf: !bytes n @ l
-  | path: string, p_buf: ptr l, n: size_t n, ofs: off_t, fi: &fuse_file_info
-) : ssize_t = "hfuse_read"
+  {n1,n2:nat | n2 <= n1} {l:addr} (
+    pf: !bytes n1 @ l
+  | path: string, p_buf: ptr l, size: size_t n2, ofs: off_t, fi: &fuse_file_info
+) : int = "hfuse_read"
 
 (* ****** ****** *)
 
-fun hfuse_release (path: string, fi: &fuse_file_info): int = "hfuse_release"
+fun hfuse_release
+  (path: string, fi: &fuse_file_info): int = "hfuse_release"
+
+(* ****** ****** *)
+
+fun hfuse_create
+  (path: string, mode: mode_t, fi: &fuse_file_info): int = "hfuse_create"
+// end of [hfuse_create]
 
 (* ****** ****** *)
 

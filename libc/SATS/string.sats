@@ -133,23 +133,20 @@ fun strpbrk {m,n:nat} {l:addr}
   = "atslib_strpbrk"
 
 (* ****** ****** *)
-
-// implemented in [string.dats]
+//
+// HX: implemented in [string.dats]
+//
 fun strdup_gc {n:nat} (str: string n)
   :<> [l:addr] (free_gc_v (n+1, l), strbuf (n+1, n) @ l | ptr l)
   = "atslib_strdup_gc"
 
-fun strdup_ngc {n:nat} (str: string n)
-  :<> [l:addr] (free_ngc_v (n+1, l), strbuf (n+1, n) @ l | ptr l)
-  = "atslib_strdup_ngc"
-
 (* ****** ****** *)
 
 fun memcmp {n:nat}
-  {n1,n2:nat | n <= n1; n <= n2} (
-    buf1: &bytes n1, buf2: &bytes n2, n: size_t n
-  ) :<> int
+  {n1,n2:nat | n <= n1; n <= n2}
+  (buf1: &bytes n1, buf2: &bytes n2, n: size_t n):<> int
   = "atslib_memcmp"
+// end of [memcmp]
 
 (* ****** ****** *)
 
@@ -183,8 +180,9 @@ fun memchr {n:nat}
 // end of [memchr]
 
 (* ****** ****** *)
-
-// [strerror] is not reentrant
+//
+// HX: [strerror] is not reentrant
+//
 fun strerror (errno: $ERRNO.errno_t): string = "atslib_strerror"
     
 dataview

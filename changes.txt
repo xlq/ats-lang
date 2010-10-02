@@ -23,6 +23,7 @@ ats-lang-anairiats-0.2.2:
 16. Adding libc/utime, which corresponds to utime.h
 17. Adding libc/sys/statvfs, which corresponds to sys/statvfs.h
 18. Adding libc/ctype, which corresponds to ctype
+19. Adding libc/DATS/stdio.dats
 
 ########################################################################
 

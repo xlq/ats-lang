@@ -145,19 +145,15 @@ and false : bool (false) = "#ats_false_bool"
 
 (* ****** ****** *)
 
-fun exit {a:viewt@ype} (status: int):<!exn> a
-  = "ats_exit"
-// end of [exit]
+fun exit {a:viewt@ype} (status: int):<!exn> a = "ats_exit"
 
-fun exit_main {a:viewt@ype}
-  {v_in:view} {v_out:view}
-  (pf: !v_in >> v_out | status: int):<!exn> a
-  = "ats_exit"
+fun exit_main
+  {a:viewt@ype} {v_in:view} {v_out:view}
+  (pf: !v_in >> v_out | status: int):<!exn> a = "ats_exit"
 // end of [exit_main]
 
 fun exit_errmsg {a:viewt@ype}
-  (status: int, msg: string):<!exnref> a
-  = "ats_exit_errmsg"
+  (status: int, msg: string):<!exnref> a = "ats_exit_errmsg"
 // end of [exit_errmsg]
 
 fun exit_prerrf {a:viewt@ype} {ts:types}
@@ -166,16 +162,24 @@ fun exit_prerrf {a:viewt@ype} {ts:types}
 // end of [exit_prerrf]
 
 (* ****** ****** *)
+//
+// HX-2010-10-02: 
+// the function should be used in a position
+// where it is deadcode!
+//
+fun assertfalse ():<> [false] void = "atspre_assertfalse"
 
-fun assert_bool (assertion: bool):<!exn> void
-  = "atspre_assert"
+(* ****** ****** *)
+
+fun assert_bool
+  (assertion: bool):<!exn> void = "atspre_assert"
 overload assert with assert_bool
 
-fun assert_bool1 {b:bool} (assertion: bool b):<!exn> [b] void
-  = "atspre_assert"
+fun assert_bool1 {b:bool}
+  (assertion: bool b):<!exn> [b] void = "atspre_assert"
 overload assert with assert_bool1
 
-//
+(* ****** ****** *)
 
 fun assert_errmsg_bool
   (assertion: bool, msg: string):<!exn> void
@@ -187,16 +191,14 @@ fun assert_errmsg_bool1 {b:bool}
   = "atspre_assert_errmsg"
 overload assert_errmsg with assert_errmsg_bool1
 
-//
+(* ****** ****** *)
 
 fun assert_errmsg_bool_string1
-  (assertion: bool, msg: String):<!exn> void
-  = "atspre_assert_errmsg"
+  (assertion: bool, msg: String):<!exn> void = "atspre_assert_errmsg"
 overload assert_errmsg with assert_errmsg_bool_string1
 
 fun assert_errmsg_bool1_string1 {b:bool}
-  (assertion: bool b, msg: String):<!exn> [b] void
-  = "atspre_assert_errmsg"
+  (assertion: bool b, msg: String):<!exn> [b] void = "atspre_assert_errmsg"
 overload assert_errmsg with assert_errmsg_bool1_string1
 
 (* ****** ****** *)

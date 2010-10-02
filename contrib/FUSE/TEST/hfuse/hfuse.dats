@@ -226,13 +226,17 @@ static int hfuse_read(const char *path, char *buf, size_t size, off_t offset,
   return res;
 }
 */
-
 extern
 fun F_SIZE {l1,l2:addr} (b: !strptr l1, r: !strptr l2): int
 extern
-fun F_READ {n:nat} {l:addr} (
-  pfbuf: !bytes(n) @ l
-| b: !strptr0, rest: !strptr0, pbuf: ptr l, ofs: off_t, len: size_t
+fun F_READ {n1,n2:nat | n2 <= n1} {l:addr} (
+  pfbuf: !bytes(n1) @ l
+| b: !strptr0, rest: !strptr0, pbuf: ptr l, ofs: off_t, nbyte: size_t n2
+) : int
+extern
+fun F_WRITE {n1,n2:nat | n2 <= n1} {l:addr} (
+  pfbuf: !bytes(n1) @ l
+| b: !strptr0, rest: !strptr0, pbuf: ptr l, nbyte: size_t n2
 ) : int
 implement
 hfuse_read (
@@ -250,13 +254,13 @@ hfuse_read (
   val () = hfuselog_unlock (pflock | (*none*))
 //
   val [n:int] path = string1_of_string (path)
-//
   val () =
 //
 while (true) let
   val n = string1_length (path)
-  val () = if (n = 0) then (res := (int_of_errno)EINVAL; break)
-  val () = assert (n > 0)
+  val () = (if (n = 0) then
+    (res := ~(int_of)EINVAL; break; assertfalse())
+  ) : [n>0] void
   var b: strptr0 and rest: strptr0
   val () = parts (path, n, b, rest)
   val () =
@@ -275,8 +279,16 @@ in
   break
 end // end of [while]
 //
+  val () = if res >= 0 then let
+    val (pflock | ()) = hfuselog_lock ()
+    val _err = tfprintf(pflock | "read success: res = %i\n", @(res))
+    val _err = dologtime (pflock | (*none*))
+    val () = hfuselog_unlock (pflock | (*none*))
+  in
+    // nothing
+  end // end of [val]
 in
-  ssize_of_int(~1)
+  res
 end // end of [hfuse_read]
 
 (* ****** ****** *)
@@ -296,6 +308,95 @@ hfuse_release
   val () = hfuselog_unlock (pflock | (*none*))
 //
 } // end of [hfuse_release]
+
+(* ****** ****** *)
+
+/*
+static int hfuse_create(const char *path, mode_t mode,
+			struct fuse_file_info *fi)
+{
+  char *b = NULL;
+  char *rest = NULL;
+  char  dum;
+  int   res;
+
+  tfprintf("create(%s, 0%o)\n", path, mode);
+  dologtime();
+  res = parts(path, &b, &rest);
+  if ( res < 0 )
+    return res;
+  res = (*f_writep)(b, rest, &dum, 0);
+  if ( b != NULL )
+    free((void *)b);
+  if ( rest != NULL )
+    free((void *)rest);
+  if ( res < 0 )
+    {
+      tfprintf("create failed with code %d\n", res);
+      return res;
+    }
+// GAGNON: change the acl
+  res = hfuse_open(path, fi);
+  if ( res >= 0 )
+    {
+      tfprintf("create success\n");
+      dologtime();
+    }
+  return res;
+}
+*/
+implement
+hfuse_create
+  (path, mode, fi) = let
+  var res: int = 0
+//
+  val (pflock | ()) = hfuselog_lock ()
+  val _err = tfprintf
+    (pflock | "create(%s, 0%o)\n", @(path, _mode)) where {
+    val _mode = uint_of_mode (mode)
+  } // end of [val]
+  val _err = dologtime (pflock | (*none*))
+  val () = hfuselog_unlock (pflock | (*none*))
+//
+  val [n:int] path = string1_of_string (path)
+//
+  val () =
+while (true) let
+  val n = string1_length (path)
+  val () = (if (n = 0) then
+    (res := ~(int_of)EINVAL; break; assertfalse())
+  ) : [n>0] void
+  var b: strptr0 and rest: strptr0
+  val () = parts (path, n, b, rest)
+  val _0 = byte_of_int (0)
+  var !p_dummy with pf_dummy = @[byte][0](_0)
+  val () = res := F_WRITE (pf_dummy | b, rest, p_dummy, 0)
+  val () =
+//
+while (true) let
+  val () = if res < 0 then break
+  val () = res := hfuse_open (path, fi)
+in
+  break
+end // end of [val]
+//
+  val () = strptr_free (b) and () = strptr_free (rest)
+in
+  break
+end // end of [val]
+//
+  val () = if res >= 0 then let
+    val (pflock | ()) = hfuselog_lock ()
+    val _err = tfprintf(pflock | "create success\n", @())
+    val _err = dologtime (pflock | (*none*))
+    val () = hfuselog_unlock (pflock | (*none*))
+  in
+    // nothing
+  end // end of [val]
+//
+in
+  res
+end // end of [hfuse_create]
 
 (* ****** ****** *)
 

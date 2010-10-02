@@ -95,6 +95,12 @@ ats_exit_errmsg (
 */
 
 ats_void_type
+atspre_assertfalse () {
+  fprintf (stderr, "[assertfalse] executed\n") ;
+  return (void)*((int*)0) ; // HX: a segfault occurs if it is executed
+} // end of [atspre_asertfasle]
+
+ats_void_type
 atspre_assert (
   ats_bool_type assertion
 ) {

@@ -85,6 +85,9 @@ abst@ype key_t = $extype "ats_key_type" // for XSI interprocess communication
 
 abst@ype mode_t = $extype "ats_mode_type" // file mode
 //
+castfn uint_of_mode (x: mode_t):<> uint
+castfn mode_of_uint (x: uint):<> mode_t
+//
 fun eq_mode_mode
   (m1: mode_t, m2: mode_t):<> bool = "atslib_eq_mode_mode"
 overload = with eq_mode_mode
