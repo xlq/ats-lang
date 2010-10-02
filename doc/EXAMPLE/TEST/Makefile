@@ -35,6 +35,7 @@ compall:: \
   libc_dirent \
   libc_dlfcn \
   libc_gmp \
+  libc_printf \
   libc_sched \
   libc_stdlib \
   libc_time \
@@ -111,6 +112,11 @@ libc_dlfcn: libc_dlfcn.dats
 
 libc_gmp: libc_gmp.dats
 	$(ATSCC) -D_GNU_SOURCE -O2 -o libc_gmp libc_gmp.dats -lats -lgmp && ./libc_gmp
+
+######
+
+libc_printf: libc_printf.dats
+	$(ATSCC) -o libc_printf libc_printf.dats && ./libc_printf
 
 ######
 
@@ -271,6 +277,7 @@ cleanall: clean
 	rm -f libc_dirent
 	rm -f libc_dlfcn
 	rm -f libc_gmp
+	rm -f libc_printf
 	rm -f libc_sched
 	rm -f libc_stdlib
 	rm -f libc_time

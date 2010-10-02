@@ -126,19 +126,21 @@ macdef EWOULDBLOCK = $extval (errno_t, "EWOULDBLOCK")
 macdef EXDEV = $extval (errno_t, "EXDEV")
 
 (* ****** ****** *)
-
-fun errno_get (): errno_t = "atslib_errno_get"
-fun errno_set (n: errno_t): void = "atslib_errno_set"
-fun errno_reset (): void = "atslib_errno_reset"
+//
+// HX: due to some special treatment for [errno]
+//
+fun errno_get ():<> errno_t = "atslib_errno_get"
+fun errno_set (n: errno_t):<> void = "atslib_errno_set"
+fun errno_reset ():<> void = "atslib_errno_reset"
 
 (* ****** ****** *)
 
 fun eq_errno_errno
-  (n1: errno_t, n2: errno_t): bool = "atslib_eq_errno_errno"
+  (n1: errno_t, n2: errno_t):<> bool = "atslib_eq_errno_errno"
 overload = with eq_errno_errno
 
 fun neq_errno_errno
-  (n1: errno_t, n2: errno_t): bool = "atslib_neq_errno_errno"
+  (n1: errno_t, n2: errno_t):<> bool = "atslib_neq_errno_errno"
 overload <> with neq_errno_errno
 
 (* ****** ****** *)

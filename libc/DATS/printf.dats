@@ -47,13 +47,35 @@ staload "libc/SATS/printf.sats"
 
 (* ****** ****** *)
 
+implement 
+printf (fmt, arg) = let
+  // [va_start (arg, fmt)] is emitted by 'atsopt'
+  val ntot = vprintf (fmt, arg)
+  val () = va_end (arg)
+in
+  ntot (* the number of bytes output by the call *)
+end // end of [fprintf]
+
+(* ****** ****** *)
+
+implement fprintf
+  (pfmod | out, fmt, arg) = let
+  // [va_start (arg, fmt)] is emitted by 'atsopt'
+  val ntot = vfprintf (pfmod | out, fmt, arg)
+  val () = va_end (arg)
+in
+  ntot (* the number of bytes output by the call *)
+end // end of [fprintf]
+
+(* ****** ****** *)
+
 implement snprintf
   (pf_buf | p_buf, m2, fmt, arg) = let
-  // [va_start (arg, fmt)] is emitted by atsopt
+  // [va_start (arg, fmt)] is emitted by 'atsopt'
   val ntot = vsnprintf (pf_buf | p_buf, m2, fmt, arg)
   val () = va_end (arg)
 in
-  ntot
+  ntot (* the number of bytes should be output by the call *)
 end // end of [snprintf]
 
 (* ****** ****** *)

@@ -35,6 +35,13 @@
 (* author: Hongwei Xi (hwxi AT cs DOT bu DOT edu) *)
 
 (* ****** ****** *)
+//
+// HX-2010-10-1:
+// Note that there are also several
+// printf-functions and vprintf-functions declared in
+// $ATSHOME/libc/SATS/stdarg.sats
+//
+(* ****** ****** *)
 
 #include "prelude/params.hats"
 
@@ -46,20 +53,23 @@
 
 (* ****** ****** *)
 
-fun fprintf_err {m:file_mode} {ts:types} (
+fun fprintf_err
+  {m:file_mode} {ts:types} (
     pf: file_mode_lte (m, w)
   | out: &FILE m
   , fmt: printf_c ts
   , arg: ts
   ) :<!ref> int
   = "atspre_fprintf_err"
+// end of [fprintf_err]
+
+(* ****** ****** *)
 
 symintr fprintf
 
 fun fprintf0_exn {ts:types}
   (out: FILEref, fmt: printf_c ts, arg: ts):<!exnref> void
   = "atspre_fprintf_exn"
-
 fun fprintf1_exn {m:file_mode} {ts:types} (
     pf: file_mode_lte (m, w)
   | out: &FILE m
@@ -67,7 +77,6 @@ fun fprintf1_exn {m:file_mode} {ts:types} (
   , arg: ts
   ) :<!exnref> void
   = "atspre_fprintf_exn"
-
 overload fprintf with fprintf0_exn
 overload fprintf with fprintf1_exn
 
@@ -75,7 +84,6 @@ overload fprintf with fprintf1_exn
 
 fun printf {ts:types} (fmt: printf_c ts, arg: ts):<!exnref> void
   = "atspre_printf_exn"
-
 fun prerrf {ts:types} (fmt: printf_c ts, arg: ts):<!exnref> void
   = "atspre_prerrf_exn"
 

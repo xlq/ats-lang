@@ -78,13 +78,13 @@ atspre_ptr_free_null (ats_ptr_type p) { return ; }
 
 ATSinline()
 ats_ptr_type
-atspre_psucc (const ats_ptr_type p) {
+atspre_psucc (ats_ptr_type p) {
   return (ats_ptr_type)((ats_byte_type*)p + 1) ;
 }
 
 ATSinline()
 ats_ptr_type
-atspre_ppred (const ats_ptr_type p) {
+atspre_ppred (ats_ptr_type p) {
   return (ats_ptr_type)((ats_byte_type*)p - 1) ;
 }
 
@@ -93,7 +93,7 @@ atspre_ppred (const ats_ptr_type p) {
 ATSinline()
 ats_ptr_type
 atspre_padd_int (
-  const ats_ptr_type p, ats_int_type n
+  ats_ptr_type p, ats_int_type n
 ) {
   return (ats_ptr_type)((ats_byte_type*)p + n) ;
 } // end of [atspre_padd_int]
@@ -101,7 +101,7 @@ atspre_padd_int (
 ATSinline()
 ats_ptr_type
 atspre_padd_size (
-  const ats_ptr_type p, const ats_size_type n
+  ats_ptr_type p, ats_size_type n
 ) {
   return (ats_ptr_type)((ats_byte_type*)p + n) ;
 } // end of [atspre_padd_size]
@@ -109,7 +109,7 @@ atspre_padd_size (
 ATSinline()
 ats_ptr_type
 atspre_psub_int (
-  const ats_ptr_type p, ats_int_type n
+  ats_ptr_type p, ats_int_type n
 ) {
   return (ats_ptr_type)((ats_byte_type*)p - n) ;
 } // end of [atspre_psub_int]
@@ -117,7 +117,7 @@ atspre_psub_int (
 ATSinline()
 ats_ptr_type
 atspre_psub_size (
-  const ats_ptr_type p, ats_size_type n
+  ats_ptr_type p, ats_size_type n
 ) {
   return (ats_ptr_type)((ats_byte_type*)p - n) ;
 } // end of [atspre_psub_size]
@@ -125,7 +125,7 @@ atspre_psub_size (
 ATSinline()
 ats_ptrdiff_type
 atspre_pdiff (
-  const ats_ptr_type p1, const ats_ptr_type p2
+  ats_ptr_type p1, ats_ptr_type p2
 ) {
   return ((ats_byte_type*)p1 - (ats_byte_type*)p2) ;
 }
@@ -134,44 +134,44 @@ atspre_pdiff (
 
 ATSinline()
 ats_bool_type
-atspre_plt (const ats_ptr_type p1, const ats_ptr_type p2) {
+atspre_plt (ats_ptr_type p1, ats_ptr_type p2) {
   return (p1 < p2) ;
 }
 
 ATSinline()
 ats_bool_type
-atspre_plte (const ats_ptr_type p1, const ats_ptr_type p2) {
+atspre_plte (ats_ptr_type p1, ats_ptr_type p2) {
   return (p1 <= p2) ;
 }
 
 ATSinline()
 ats_bool_type
-atspre_pgt (const ats_ptr_type p1, const ats_ptr_type p2) {
+atspre_pgt (ats_ptr_type p1, ats_ptr_type p2) {
   return (p1 > p2) ;
 }
 
 ATSinline()
 ats_bool_type
-atspre_pgte (const ats_ptr_type p1, const ats_ptr_type p2) {
+atspre_pgte (ats_ptr_type p1, ats_ptr_type p2) {
   return (p1 >= p2) ;
 }
 
 ATSinline()
 ats_bool_type
-atspre_peq (const ats_ptr_type p1, const ats_ptr_type p2) {
+atspre_peq (ats_ptr_type p1, ats_ptr_type p2) {
   return (p1 == p2) ;
 }
 
 ATSinline()
 ats_bool_type
-atspre_pneq (const ats_ptr_type p1, const ats_ptr_type p2) {
+atspre_pneq (ats_ptr_type p1, ats_ptr_type p2) {
   return (p1 != p2) ;
 }
 
 ATSinline()
 ats_int_type
 atspre_compare_ptr_ptr (
-  const ats_ptr_type p1, const ats_ptr_type p2
+  ats_ptr_type p1, ats_ptr_type p2
 ) {
   if (p1 < p2) return (-1) ;
   else if (p1 > p2) return ( 1) ;
@@ -185,7 +185,7 @@ atspre_compare_ptr_ptr (
 ATSinline()
 ats_void_type
 atspre_fprint_ptr (
-  const ats_ptr_type out, const ats_ptr_type p
+  ats_ptr_type out, ats_ptr_type p
 ) {
   int n = fprintf ((FILE *)out, "%p", p) ;
   if (n < 0) {
@@ -196,7 +196,7 @@ atspre_fprint_ptr (
 
 ATSinline()
 ats_void_type
-atspre_print_ptr(const ats_ptr_type p) {
+atspre_print_ptr(ats_ptr_type p) {
   atspre_stdout_view_get() ;
   atspre_fprint_ptr ((ats_ptr_type)stdout, p) ;
   atspre_stdout_view_set() ;
@@ -205,7 +205,7 @@ atspre_print_ptr(const ats_ptr_type p) {
 
 ATSinline()
 ats_void_type
-atspre_prerr_ptr(const ats_ptr_type p) {
+atspre_prerr_ptr(ats_ptr_type p) {
   atspre_stderr_view_get() ;
   atspre_fprint_ptr ((ats_ptr_type)stderr, p) ;
   atspre_stderr_view_set() ;
@@ -217,17 +217,25 @@ atspre_prerr_ptr(const ats_ptr_type p) {
 ATSinline()
 ats_ptr_type
 atspre_ptr_alloc_tsz
-  (const ats_size_type tsz) {
+  (ats_size_type tsz) {
   ats_ptr_type p ; p = ATS_MALLOC(tsz) ; return (ats_ptr_type)p ;
-}
+} // end of [atspre_ptr_alloc_tsz]
 
 ATSinline()
 ats_void_type
-atspre_ptr_free(const ats_ptr_type ptr) { ATS_FREE(ptr) ; return ; }
+atspre_ptr_free(ats_ptr_type ptr) { ATS_FREE(ptr) ; return ; }
 
 /* ****** ****** */
 
-// for both [ptr_move_t_tsz] and [ptr_move_vt_tsz]
+ATSinline()
+ats_void_type
+atspre_ptr_zero_tsz
+  (ats_ref_type p, ats_size_type tsz) { memset (p, 0, tsz) ; return ; }
+// end of [atspre_ptr_zero]
+
+/* ****** ****** */
+
+// HX: for both [ptr_move_t_tsz] and [ptr_move_vt_tsz]
 
 ATSinline()
 ats_void_type

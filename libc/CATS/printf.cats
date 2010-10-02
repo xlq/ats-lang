@@ -38,8 +38,32 @@
 
 /* ****** ****** */
 
-#include <stdarg.h>
 #include <stdio.h>
+
+/* ****** ****** */
+
+#include <stdarg.h>
+
+/* ****** ****** */
+
+ATSinline()
+ats_int_type
+atslib_vprintf (
+  ats_ptr_type fmt
+, ats_ref_type arg
+) {
+  return vprintf ((char*)fmt, *(va_list*)arg) ;
+} /* end of [atslib_vprintf] */
+
+ATSinline()
+ats_int_type
+atslib_vfprintf (
+  ats_ptr_type out
+, ats_ptr_type fmt
+, ats_ref_type arg
+) {
+  return vfprintf ((FILE*)out, (char*)fmt, *(va_list*)arg) ;
+} /* end of [atslib_vfprintf] */
 
 /* ****** ****** */
 
@@ -62,7 +86,7 @@ atslib_snprintf (
   va_end(ap) ;
   return ntot ;
 } /* end of [atslib_snprintf] */
-#endif // end of [#if (0)]
+#endif // end of [#if(0)]
 
 /* ****** ****** */
 

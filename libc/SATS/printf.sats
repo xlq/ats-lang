@@ -44,6 +44,37 @@
 %} // end of [%{#]
 
 (* ****** ****** *)
+//
+// HX: [printf] and [fprintf] are
+// implemented in $ATSHOME/libc/DATS/printf.dats
+// based on [vprintf] and [vfprintf]
+//
+
+fun printf
+  {ts:types} (fmt: printf_c ts, arg: ts): int
+// end of [prinf]
+
+fun fprintf
+  {m:file_mode} {ts:types} (
+    pf_mod: file_mode_lte (m, w)
+  | out: &FILE m, fmt: printf_c ts, arg: ts
+  ) : int
+// end of [vfprinf]
+
+(* ****** ****** *)
+
+fun vprintf {ts:types}
+  (fmt: printf_c ts, arg: &va_list (ts) >> va_list): int
+  = "atslib_vprintf" // function!
+
+fun vfprintf
+  {m:file_mode} {ts:types} (
+    pf_mod: file_mode_lte (m, w)
+  | out: &FILE m, fmt: printf_c ts, arg: &va_list (ts) >> va_list
+  ) : int = "atslib_vfprintf" // function!
+// end of [vfprinf]
+
+(* ****** ****** *)
 
 (*
 //
@@ -64,6 +95,7 @@ fun snprintf {ts:types}
   | p: ptr l, m2: size_t m2, fmt: printf_c ts, arg: ts
   ) :<> #[n1:nat | n1 < m2] [n2:nat] int n2
   = "atslib_snprintf"
+// end of [snprintf]
 
 (* ****** ****** *)
 //
@@ -76,6 +108,7 @@ fun vsnprintf {ts:types}
   , fmt: printf_c ts, arg: &va_list (ts) >> va_list
   ) :<> #[n1:nat | n1 < m2] [n2:nat] int n2
   = "atslib_vsnprintf"
+// end of [vsnprintf]
 
 (* ****** ****** *)
 

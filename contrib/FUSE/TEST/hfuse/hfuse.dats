@@ -53,7 +53,9 @@ if p > null then let
   prval Some_v (pf) = pfopt
   // [va_start (arg, fmt)] is emitted by 'atsopt'
   val ntot = vfprintf (file_mode_lte_rw_w | !p, fmt, arg)
-  val () = fclose_exn (pf | p)
+//
+  val _err = fclose1_loop (pf | p) // HX: error is ignored if there is one
+//
 in
   ntot
 end else let

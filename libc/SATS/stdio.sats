@@ -35,12 +35,12 @@
 
 (* ****** ****** *)
 //
-// This is essentially the first example of the its kind:
+// This is essentially the first example of its kind:
 // building API for C functions
 //
 (* ****** ****** *)
 //
-// HX-07-13-2010:
+// HX-2010-07-13:
 // There are really two versions here: version-0 and version-1; the former
 // is unsafe and prone to resource-leaks; it should be avoided once the programmer
 // becomes comfortable with linear types in ATS.
@@ -62,18 +62,12 @@ macdef SEEK_END = $TYPES.SEEK_END
 (* ****** ****** *)
 
 sortdef fm = file_mode
-
-//
-
 typedef bytes (n:int) = @[byte][n]
 typedef b0ytes (n:int) = @[byte?][n]
-
-//
-
 viewdef FILE_v (m:fm, l:addr) = FILE m @ l
-viewdef FILEopt_v (m:fm, l:addr) = option_v (FILE m @ l, l <> null)
+viewdef FILEopt_v (m:fm, l:addr) = option_v (FILE m @ l, l > null)
 
-//
+(* ****** ****** *)
 
 praxi stdin_isnot_null : [stdin_addr > null] void
 praxi stdout_isnot_null : [stdout_addr > null] void
@@ -120,37 +114,40 @@ in undefined behaviour.
 
 *)
 
+symintr fclose_err
+
 fun fclose0_err
   (r: FILEref):<> int = "atslib_fclose_err"
-// end of [fclose0_err]
-
+overload fclose_err with fclose0_err
 fun fclose1_err
   {m:fm} {l:addr} (
     pf: !FILE_v (m, l) >> option_v (FILE_v (m, l), i < 0) | p: ptr l
   ) :<> #[i:int | i <= 0] int i
   = "atslib_fclose_err"
-// end of [fclose1_err]
-
-symintr fclose_err
-overload fclose_err with fclose0_err
 overload fclose_err with fclose1_err
 
-//
+symintr fclose_exn
 
 fun fclose0_exn
   (r: FILEref):<!exn> void = "atslib_fclose_exn"
-// end of [fclose0_exn]
-
+overload fclose_exn with fclose0_exn
 fun fclose1_exn
   {m:fm} {l:addr} (pf: FILE m @ l | p: ptr l):<!exn> void
   = "atslib_fclose_exn"
-// end of [fclose1_exn]
-
-symintr fclose_exn
-overload fclose_exn with fclose0_exn
 overload fclose_exn with fclose1_exn
 
+// ------------------------------------------------
+
 //
+// HX-2010-10-02:
+// This one ignores all errors except EINTR, which forces
+// a retry.
+//
+fun fclose1_loop // implemented in $ATSHOME/libc/DATS/stdio.dats
+  {m:fm} {l:addr} (pf: FILE m @ l | p: ptr l):<> int // 0/neg : succ/fail
+// end of [fclose1_loop]
+
+// ------------------------------------------------
 
 fun fclose_stdin ():<!exnref> void = "atslib_fclose_stdin"
 fun fclose_stdout ():<!exnref> void = "atslib_fclose_stdout"
@@ -302,7 +299,7 @@ dataview
 fgets_v (sz:int, addr, addr) =
   | {l_buf:addr}
     fgets_v_fail (sz, l_buf, null) of b0ytes (sz) @ l_buf
-  | {n:nat | n < sz} {l_buf:addr | l_buf <> null}
+  | {n:nat | n < sz} {l_buf:addr | l_buf > null}
     fgets_v_succ (sz, l_buf, l_buf) of strbuf (sz, n) @ l_buf
 // end of [fgets_v]
 

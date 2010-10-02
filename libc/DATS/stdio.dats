@@ -9,14 +9,14 @@
 (*
 ** ATS - Unleashing the Potential of Types!
 **
-** Copyright (C) 2002-2008 Hongwei Xi, Boston University
+** Copyright (C) 2002-2010 Hongwei Xi, Boston University
 **
 ** All rights reserved
 **
 ** ATS is free software;  you can  redistribute it and/or modify it under
-** the terms of the GNU LESSER GENERAL PUBLIC LICENSE as published by the
-** Free Software Foundation; either version 2.1, or (at your option)  any
-** later version.
+** the  terms of the  GNU General Public License as published by the Free
+** Software Foundation; either version 2.1, or (at your option) any later
+** version.
 ** 
 ** ATS is distributed in the hope that it will be useful, but WITHOUT ANY
 ** WARRANTY; without  even  the  implied  warranty  of MERCHANTABILITY or
@@ -35,45 +35,36 @@
 
 (* ****** ****** *)
 
-//
-// some common pointer operations
-//
+staload "libc/SATS/errno.sats"
 
 (* ****** ****** *)
 
-#define ATS_DYNLOADFLAG 0 // loaded by [ats_main_prelude]
+staload "libc/SATS/stdio.sats"
 
 (* ****** ****** *)
 
-implement{a} ptr_alloc () = ptr_alloc_tsz {a} (sizeof<a>)
+implement
+fclose1_loop (pf | p) = let
+  val err = fclose1_err (pf | p)
+in
+  if err = 0 then let
+    prval None_v () = pf in 0
+  end else let
+    prval Some_v pf = pf
+    val errno = errno_get ()
+  in
+    if (errno = EINTR) then
+      fclose1_loop (pf | p)
+    else let
+      prval () = __assert (pf) where {
+        extern prfun __assert {v:view} (pf: v): void
+      } // end of [prval]
+    in
+      err
+    end // end of [if]
+  end // end of [if]
+end // end of [if]
 
 (* ****** ****** *)
 
-implement{a} ptr_zero (x) = ptr_zero_tsz {a} (x, sizeof<a>)
-
-(* ****** ****** *)
-
-implement{a} ptr_get_t (pf | p) = !p
-implement{a} ptr_set_t (pf | p, x) = (!p := x)
-implement{a} ptr_move_t (pf1, pf2 | p1, p2) = (!p2 := !p1)
-
-(* ****** ****** *)
-
-implement{a} ptr_get_vt (pf | p) = !p
-implement{a} ptr_set_vt (pf | p, x) = (!p := x)
-implement{a} ptr_move_vt (pf1, pf2 | p1, p2) = (!p2 := !p1)
-
-(* ****** ****** *)
-
-implement{a} ptr_get_inv (pf | p) = !p
-implement{a} ptr_set_inv (pf | p, x) = (!p := x)
-
-(* ****** ****** *)
-
-implement ptr_view_conversion {a1,a2} (pf) = begin
-  pf := ptr_of_b0ytes_v {a2} (ptr_to_b0ytes_v {a1} (pf))
-end // end of [ptr_view_conversion]
-
-(* ****** ****** *)
-
-(* end of [pointer.dats] *)
+(* end of [stdio.dats] *)

@@ -40,9 +40,7 @@
 #include "prelude/params.hats"
 
 #if VERBOSE_PRELUDE #then
-
 #print "Loading [basics_dyn.sats] starts!\n"
-
 #endif // end of [VERBOSE_PRELUDE]
 
 (* ****** ****** *)
@@ -441,13 +439,17 @@ castfn FILEref_get_view_ptr {m:file_mode} // non-reentrant!
 // end of [FILEref_get_view_ptr]
 
 (* ****** ****** *)
-
-// implemented in libats/basics.dats
+//
+// HX: implemented in prelude/DATS/basics.dats
+//
 prval option_v_unsome : {v:view} option_v (v, true) -<prf> v
 prval option_v_unnone : {v:view} option_v (v, false) -<prf> void
 
-// implemented in stdlib/basics.dats
-prval unit_v_elim : unit_v -<prf> void
+(* ****** ****** *)
+//
+// HX: implemented in prelude/DATS/basics.dats
+//
+prfun unit_v_elim (pf: unit_v): void
 
 (* ****** ****** *)
 
@@ -483,16 +485,14 @@ macdef lazy_vt_force (x) = lazy_vt_force_crypt ($encrypt ,(x))
 
 *)
 
-fun lazy_vt_free {a:viewt@ype} (x: lazy_vt a):<1,~ref> void
-  = "ats_lazy_vt_free"
+fun lazy_vt_free
+  {a:viewt@ype} (x: lazy_vt a):<1,~ref> void = "ats_lazy_vt_free"
 overload ~ with lazy_vt_free
 
 (* ****** ****** *)
 
 #if VERBOSE_PRELUDE #then
-
 #print "Loading [basics_dyn.ats] finishes!\n"
-
 #endif // end of [VERBOSE_PRELUDE]
 
 (* end of [basics_dyn.sats] *)

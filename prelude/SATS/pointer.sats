@@ -44,10 +44,8 @@
 (* ****** ****** *)
 
 #if VERBOSE_PRELUDE #then
-
 #print "Loading [pointer.sats] starts!\n"
-
-#endif
+#endif // end of [VERBOSE_PRELUDE]
 
 (* ****** ****** *)
 
@@ -90,7 +88,7 @@ overload <> with neq_ptr_ptr
 (* ****** ****** *)
 
 (*
-// declared in [integer_ptr.sats]
+// HX: declared in [integer_ptr.sats]
 castfn ptr_of_uintptr (u: uintptr): ptr // = "atspre_ptr_of_uintptr"
 castfn uintptr_of_ptr (p: ptr): uintptr // = "atspre_uintptr_of_ptr"
 *)
@@ -193,17 +191,16 @@ overload compare with compare_ptr_ptr
 fun fprint_ptr {m:file_mode}
   (pf: file_mode_lte (m, w) | out: !FILE m, x: ptr):<!exnref> void
   = "atspre_fprint_ptr"
+overload fprint with fprint_ptr
 
 fun print_ptr (p: ptr):<!ref> void = "atspre_print_ptr"
 and prerr_ptr (p: ptr):<!ref> void = "atspre_prerr_ptr"
-
-overload fprint with fprint_ptr
 overload print with print_ptr
 overload prerr with prerr_ptr
 
 // stringization
 
-fun tostring_ptr (p: ptr):<> string = "atspre_tostring_ptr"
+fun tostring_ptr (p: ptr):<> strptr1 = "atspre_tostring_ptr"
 overload tostring with tostring_ptr
 
 (* ****** ****** *)
@@ -217,6 +214,7 @@ praxi free_gc_viewt0ype_addr_trans
 
 fun{a:viewt@ype} ptr_alloc ()
   :<> [l:addr | l > null] (free_gc_v (a, l), a? @ l | ptr l)
+// end of [ptr_alloc]
 
 fun ptr_alloc_tsz {a:viewt@ype} (tsz: sizeof_t a)
   :<> [l:addr | l > null] (free_gc_v (a, l), a? @ l | ptr l)
@@ -225,6 +223,13 @@ fun ptr_alloc_tsz {a:viewt@ype} (tsz: sizeof_t a)
 fun ptr_free {a:viewt@ype} {l:addr}
   (_: free_gc_v (a, l), _: a? @ l | _: ptr l):<> void = "atspre_ptr_free"
 // end of [ptr_free]
+
+(* ****** ****** *)
+
+fun{a:viewt@ype} ptr_zero (x: &a? >> a):<> void
+fun ptr_zero_tsz {a:viewt@ype}
+  (x: &a? >> a, tsz: sizeof_t a):<> void = "atspre_ptr_zero_tsz"
+// end of [ptr_zero_tsz]
 
 (* ****** ****** *)
 
@@ -324,9 +329,7 @@ fun{a:t@ype} ptr_get_read
 (* ****** ****** *)
 
 #if VERBOSE_PRELUDE #then
-
 #print "Loading [pointer.sats] finishes!\n"
-
-#endif
+#endif // end of [#if VERBOSE_PRELUDE]
 
 (* end of [pointer.sats] *)

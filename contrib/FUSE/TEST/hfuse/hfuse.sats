@@ -11,6 +11,10 @@
 
 (* ****** ****** *)
 
+#define ATS_STALOADFLAG 0 // no need for staloading at run-time
+
+(* ****** ****** *)
+
 staload "contrib/FUSE/SATS/fuse.sats"
 
 (* ****** ****** *)
@@ -33,7 +37,7 @@ fun dologtime(pf: !hfuselog_v | (*none*)): void  = "dologtime"
 
 fun parts {n:pos} (
   path: string n, n: size_t n
-, bname: &strptr? >> strptr0, rname: &strptr? >> strptr0
+, bname: &strptr0? >> strptr0, rname: &strptr0? >> strptr0
 ) : void = "parts"
 
 (* ****** ****** *)

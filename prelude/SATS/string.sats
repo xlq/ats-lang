@@ -552,6 +552,7 @@ fun string_implode {n:nat} (cs: list (char, n)):<> strbufptr_gc n
 //
 // This function is based on [strchr] in [string.h]
 // the NULL character at the end of a string is considered in the string
+// So we do not allow to search for the NULL character!!!
 //
 // locate a character from left
 fun string_index_of_char_from_left
@@ -561,6 +562,7 @@ fun string_index_of_char_from_left
 //
 // This function is based on [strrchr] in [string.h]
 // the NULL character at the end of a string is considered in the string
+// So we do not allow to search for the NULL character!!!
 //
 // locate a character from right
 fun string_index_of_char_from_right

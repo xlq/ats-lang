@@ -40,26 +40,37 @@
 (* ****** ****** *)
 
 // this is a casting function
-implement option_of_option_vt (ov) = case+ ov of
+implement
+option_of_option_vt (ov) = case+ ov of
   | ~Some_vt (v) => Some (v) | ~None_vt () => None ()
 // end of [option_of_option_vt]
 
 (* ****** ****** *)
 
-implement option_is_none (ov) = case+ ov of
-  | None () => true | Some _ => false
+implement
+option_is_none (ov) =
+  case+ ov of None () => true | Some _ => false
+// end of [option_is_none]
 
-implement option_is_some (ov) = case+ ov of
-  | Some _ => true | None () => false
+implement
+option_is_some (ov) =
+  case+ ov of Some _ => true | None () => false
+// end of [option_is_some]
+
+(* ****** ****** *)
 
 implement{a} option_some v = Some v
 implement{a} option_unsome ov = let val Some v = ov in v end
 
-implement{a} option_app (ov, f) =
+implement{a}
+option_app (ov, f) =
   case+ ov of Some v => f v | None () => ()
+// end of [option_app]
 
-implement{a,b} option_map (ov, f) =
+implement{a,b}
+option_map (ov, f) =
   case+ ov of Some v => Some (f v) | None () => None
+// end of [option_map]
 
 (* ****** ****** *)
 

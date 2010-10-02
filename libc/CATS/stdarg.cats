@@ -42,25 +42,25 @@
 
 /* ****** ****** */
 
-static inline
+ATSinline()
 ats_bool_type
 atslib_va_arg_bool (ats_ref_type ap)
   { return va_arg(*(va_list*)ap, ats_int_type) ; }
 // end of ...
 
-static inline
+ATSinline()
 ats_char_type // note the need for alignment
 atslib_va_arg_char (ats_ref_type ap)
   { return va_arg(*(va_list*)ap, ats_int_type) ; }
 // end of ...
 
-static inline
+ATSinline()
 ats_int_type
 atslib_va_arg_int (ats_ref_type ap)
   { return va_arg(*(va_list*)ap, ats_int_type) ; }
 // end of ...
 
-static inline
+ATSinline()
 ats_ptr_type
 atslib_va_arg_ptr (ats_ref_type ap)
   { return va_arg(*(va_list*)ap, ats_ptr_type) ; }
@@ -68,13 +68,13 @@ atslib_va_arg_ptr (ats_ref_type ap)
 
 /* ****** ****** */
 
-static inline
+ATSinline()
 ats_void_type
 atslib_va_end (ats_ref_type ap) { va_end(*(va_list*)ap) ; return ; }
 
 /* ****** ****** */
 
-static inline
+ATSinline()
 ats_void_type
 atslib_va_copy (ats_ref_type dst, va_list src) {
   va_copy(*(va_list*)dst, src) ; return ; // do dst and src share?

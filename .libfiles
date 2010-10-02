@@ -138,6 +138,7 @@ libc/DATS/stdarg.dats
 */
 
 libc/SATS/stdio.sats
+libc/DATS/stdio.dats
 
 libc/SATS/stdlib.sats
 libc/DATS/stdlib.dats

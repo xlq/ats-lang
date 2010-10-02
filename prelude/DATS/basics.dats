@@ -54,6 +54,16 @@ implement file_mode_lte_w_w = file_mode_lte_refl {w} ()
 
 (* ****** ****** *)
 
+implement option_v_unnone (pfopt) =
+  let prval None_v () = pfopt in (*nothing *) end
+implement option_v_unsome (pfopt) = let prval Some_v (pf) = pfopt in pf end
+
+(* ****** ****** *)
+
+implement unit_v_elim (pf) = let prval unit_v () = pf in (*nothing*) end
+
+(* ****** ****** *)
+
 %{^
 
 /*

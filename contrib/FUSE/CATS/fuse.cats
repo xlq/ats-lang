@@ -27,6 +27,7 @@
 /* ****** ****** */
 
 typedef struct fuse ats_fuse_type ;
+typedef struct fuse_file_info ats_fuse_file_info_type ;
 
 /* ****** ****** */
 
