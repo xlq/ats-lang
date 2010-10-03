@@ -45,6 +45,11 @@
 // is unsafe and prone to resource-leaks; it should be avoided once the programmer
 // becomes comfortable with linear types in ATS.
 //
+// HX-2010-10-03:
+// This design is overly complicated mostly for historic reasons; 
+// it is _not_ suggested that this one be used as an example for learning how to
+// set up interfaces for C functions
+//
 (* ****** ****** *)
 
 %{#
@@ -87,12 +92,10 @@ The function [clearerr] clears the end-of-file and error indicators for
 the stream pointed to by stream.
 
 *)
-
-fun clearerr0 (f: FILEref):<> void = "atslib_clearerr"
-fun clearerr1 {m:fm} (f: &FILE m):<> void = "atslib_clearerr"
-
 symintr clearerr
+fun clearerr0 (f: FILEref):<> void = "atslib_clearerr"
 overload clearerr with clearerr0
+fun clearerr1 {m:fm} (f: &FILE m):<> void = "atslib_clearerr"
 overload clearerr with clearerr1
 
 // ------------------------------------------------
@@ -164,11 +167,10 @@ stream has been reached.
 
 *)
 
-fun feof0 (f: FILEref):<> int = "atslib_feof"
-fun feof1 {m:fm} (f: &FILE m):<> int = "atslib_feof"
-
 symintr feof
+fun feof0 (f: FILEref):<> int = "atslib_feof"
 overload feof with feof0
+fun feof1 {m:fm} (f: &FILE m):<> int = "atslib_feof"
 overload feof with feof1
 
 // ------------------------------------------------
@@ -183,11 +185,10 @@ reset by the [clearerr] function.
 
 *)
 
-fun ferror0 (f: FILEref):<> int = "atslib_ferror"
-fun ferror1 {m:fm} (f: &FILE m):<> int = "atslib_ferror"
-
 symintr ferror
+fun ferror0 (f: FILEref):<> int = "atslib_ferror"
 overload ferror with ferror0
+fun ferror1 {m:fm} (f: &FILE m):<> int = "atslib_ferror"
 overload ferror with ferror1
 
 // ------------------------------------------------
@@ -205,29 +206,23 @@ the global variable errno is set to indicate the error.
 
 *)
 
-fun fflush0_err
-  (f: FILEref):<> int = "atslib_fflush_err"
-// end of [fflush0_err]
-
+symintr fflush_err
+fun fflush0_err (f: FILEref):<> int = "atslib_fflush_err"
+overload fflush_err with fflush0_err
 fun fflush1_err {m:fm}
   (pf: file_mode_lte (m, w) | f: &FILE m):<> [i:int | i <= 0] int i
   = "atslib_fflush_err"
-
-symintr fflush_err
-overload fflush_err with fflush0_err
 overload fflush_err with fflush1_err
 
 //
 
-fun fflush0_exn (f: FILEref):<!exn> void
-  = "atslib_fflush_exn"
+symintr fflush_exn
 
+fun fflush0_exn (f: FILEref):<!exn> void = "atslib_fflush_exn"
+overload fflush_exn with fflush0_exn
 fun fflush1_exn {m:fm}
   (pf: file_mode_lte (m, w) | f: &FILE m):<!exn> void
   = "atslib_fflush_exn"
-
-symintr fflush_exn
-overload fflush_exn with fflush0_exn
 overload fflush_exn with fflush1_exn
 
 fun fflush_stdout ():<!exnref> void = "atslib_fflush_stdout"
@@ -243,16 +238,12 @@ unsigned char cast to an int, or EOF on end of file or error.
 
 *)
 
+symintr fgetc_err
 fun fgetc0_err (f: FILEref):<> int = "atslib_fgetc_err"
-
-// [EOF] must be a negative number!
-fun fgetc1_err
+overload fgetc_err with fgetc0_err
+fun fgetc1_err // [EOF] must be a negative number!
   {m:fm} (pf: file_mode_lte (m, r) | f: &FILE m):<> [i:int | i <= UCHAR_MAX] int i
   = "atslib_fgetc_err"
-// end of [fgetc1_err]
-
-symintr fgetc_err
-overload fgetc_err with fgetc0_err
 overload fgetc_err with fgetc1_err
 
 // ------------------------------------------------
@@ -274,8 +265,6 @@ abst@ype fpos_t = $extype "ats_fpos_type"
 dataview fgetpos_v (addr, int) =
   | {l:addr} fgetpos_v_succ (l, 0) of fpos_t @ l
   | {l:addr} {i:int | i < 0} fgetpos_v_fail (l, i) of fpos_t? @ l
-// end of [fgetpos_v]
-
 fun fgetpos {m:fm} {l_pos:addr}
   (pf: fpos_t? @ l_pos | f: &FILE m, p: ptr l_pos)
   :<> [i:int | i <= 0] (fgetpos_v (l_pos, i) | int i)
@@ -313,7 +302,7 @@ fun fgets_err
 // end of [fgets_err]
 
 //
-// this function returns an empty strbuf in the case where
+// HX: this function returns an empty strbuf in the case where
 // EOF is reached but no character is read
 //
 fun fgets_exn
@@ -338,11 +327,10 @@ it must return -1 and set errno to EBADF.
 
 (* the type of the function indicates that it should not fail! *)
 
-fun fileno0 (f: FILEref):<> int = "atslib_fileno"
-fun fileno1 {m:fm} (f: &FILE m):<> int = "atslib_fileno"
-
 symintr fileno
+fun fileno0 (f: FILEref):<> int = "atslib_fileno"
 overload fileno with fileno0
+fun fileno1 {m:fm} (f: &FILE m):<> int = "atslib_fileno"
 overload fileno with fileno1
 
 // ------------------------------------------------
@@ -408,32 +396,23 @@ which case the return value is EOF.
 
 *)
 
+symintr fputc_err
 fun fputc0_err
   (c: char, f: FILEref):<> int = "atslib_fputc_err"
-// end of [fputc0_err]
-
+overload fputc_err with fputc0_err
 fun fputc1_err {m:fm}
   (pf: file_mode_lte (m, w) | c: char, f: &FILE m)
   :<> [i:int | i <= UCHAR_MAX] int i
   = "atslib_fputc_err"
-
-symintr fputc_err
-overload fputc_err with fputc0_err
 overload fputc_err with fputc1_err
 
-//
-
+symintr fputc_exn
 fun fputc0_exn
   (c: char, f: FILEref):<!exn> void = "atslib_fputc_exn"
-// end of [fputc0_exn]
-
+overload fputc_exn with fputc0_exn
 fun fputc1_exn {m:fm}
   (pf: file_mode_lte (m, w) | c: char, f: &FILE m):<!exn> void
   = "atslib_fputc_exn"
-// end of [fputc1_exn]
-
-symintr fputc_exn
-overload fputc_exn with fputc0_exn
 overload fputc_exn with fputc1_exn
 
 // ------------------------------------------------
@@ -448,27 +427,21 @@ number on success, or EOF on error.
 *)
 
 symintr fputs_err
-
 fun fputs0_err
   (str: string, fil: FILEref):<> int = "atslib_fputs_err"
 overload fputs_err with fputs0_err
-
 fun fputs1_err {m:fm}
   (pf: file_mode_lte (m, w) | str: string, f: &FILE m):<> int
   = "atslib_fputs_err"
 overload fputs_err with fputs1_err
 
+symintr fputs_exn
 fun fputs0_exn
   (str: string, fil: FILEref):<!exn> void = "atslib_fputs_exn"
-// end of [fputs0_exn]
-
+overload fputs_exn with fputs0_exn
 fun fputs1_exn {m:fm}
   (pf: file_mode_lte (m, w) | str: string, f: &FILE m):<!exn> void
   = "atslib_fputs_exn"
-// end of [fputs1_exn]
-
-symintr fputs_exn
-overload fputs_exn with fputs0_exn
 overload fputs_exn with fputs1_exn
 
 // ------------------------------------------------
@@ -525,43 +498,33 @@ file associated with a standard text stream (stderr, stdin, or stdout).
 *)
 
 symintr freopen_err
-
 fun freopen0_err {m_new:fm}
   (path: string, m_new: file_mode m_new, f: FILEref):<!ref> void
   = "atslib_freopen_err"
 overload freopen_err with freopen0_err
-
 fun freopen1_err {m_old,m_new:fm} {l_file:addr}
   (pf: FILE m_old @ l_file | s: string, m: file_mode m_new, p: ptr l_file)
   :<!ref> [l:addr | l == null || l == l_file] (FILEopt_v (m_new, l) | ptr l)
   = "atslib_freopen_err"
 overload freopen_err with freopen1_err
 
-//
-
 symintr freopen_exn
-
 fun freopen0_exn {m_new:fm}
   (path: string, m_new: file_mode m_new, f: FILEref):<!exnref> void
   = "atslib_freopen_exn"
 overload freopen_exn with freopen0_exn
-
 fun freopen1_exn {m_old,m_new:fm} {l_file:addr}
   (pf: FILE m_old @ l_file | path: string, m: file_mode m_new, p: ptr l_file)
   :<!exnref> (FILE m_new @ l_file | void)
   = "atslib_freopen_exn"
 overload freopen_exn with freopen1_exn
 
-//
-
 fun freopen_stdin {m:fm}
   (s: string):<!exnref> void = "atslib_freopen_stdin"
 // end of [freopen_stdin]
-
 fun freopen_stdout {m:fm}
   (s: string):<!exnref> void = "atslib_freopen_stdout"
 // end of [freopen_stdout]
-
 fun freopen_stderr {m:fm}
   (s: string):<!exnref> void = "atslib_freopen_stderr"
 // end of [freopen_stderr]
@@ -585,23 +548,17 @@ it returns -1.
 *)
 
 symintr fseek_err
-
 fun fseek0_err
   (f: FILEref, offset: lint, whence: whence_t):<> int = "atslib_fseek_err"
 overload fseek_err with fseek0_err
-
 fun fseek1_err {m:fm}
   (f: &FILE m, offset: lint, whence: whence_t):<> int = "atslib_fseek_err"
 overload fseek_err with fseek1_err
 
-//
-
 symintr fseek_exn
-
 fun fseek0_exn
   (f: FILEref, offset: lint, whence: whence_t):<!exn> void = "atslib_fseek_exn"
 overload fseek_exn with fseek0_exn
-
 fun fseek1_exn {m:fm}
   (f: &FILE m, offset: lint, whence: whence_t):<!exn> void = "atslib_fseek_exn"
 overload fseek_exn with fseek1_exn
@@ -634,20 +591,14 @@ indicate the error.
 *)
 
 symintr ftell_err
-
 fun ftell0_err (f: FILEref):<> lint = "atslib_ftell_err"
 overload ftell_err with ftell0_err
-
 fun ftell1_err {m:fm} (f: &FILE m):<> lint = "atslib_ftell_err"
 overload ftell_err with ftell1_err
 
-//
-
 symintr ftell_exn
-
 fun ftell0_exn (f: FILEref):<!exn> lint = "atslib_ftell_exn"
 overload ftell_exn with ftell0_exn
-
 fun ftell1_exn {m:fm} (f: &FILE m):<!exn> lint = "atslib_ftell_exn"
 overload ftell_exn with ftell1_exn
 
@@ -725,6 +676,8 @@ fun puts_exn (s: string):<!exn> void = "atslib_puts_exn"
 fun remove_err (s: string):<!ref> int = "atslib_remove_err"
 fun remove_exn (s: string):<!exnref> void = "atslib_remove_exn"
 
+// ------------------------------------------------
+
 fun rename_err (oldpath: string, newpath: string):<!ref> int
   = "atslib_rename_err"
 fun rename_exn (oldpath: string, newpath: string):<!exnref> void
@@ -732,24 +685,21 @@ fun rename_exn (oldpath: string, newpath: string):<!exnref> void
 
 // ------------------------------------------------
 
-// [rewind] generates no error
-fun rewind0 {m:fm} (fil: FILEref):<> void = "atslib_rewind"
-fun rewind1 {m:fm} (fil: &FILE m):<> void = "atslib_rewind"
-
+//
+// HX: [rewind] generates no error
+//
 symintr rewind
+fun rewind0 {m:fm} (fil: FILEref):<> void = "atslib_rewind"
 overload rewind with rewind0
+fun rewind1 {m:fm} (fil: &FILE m):<> void = "atslib_rewind"
 overload rewind with rewind1
 
 // ------------------------------------------------
 
 fun tmpfile_err
   () :<!ref> [l:addr] (FILEopt_v (rw, l) | ptr l) = "atslib_tmpfile_err"
-// end of [tmpfile_err]
-
 fun tmpfile_exn
   () :<!exnref> [l:addr] (FILE_v (rw, l) | ptr l) = "atslib_tmpfile_exn"
-// end of [tmpfile_exn]
-
 fun tmpfile_ref_exn ():<!exnref> FILEref = "atslib_tmpfile_exn"
 
 // ------------------------------------------------
@@ -765,22 +715,18 @@ returned in reverse order; only one pushback is guaranteed.
 *)
 
 symintr ungetc_err
-
 fun ungetc0_err
   (c: char, f: FILEref):<> int = "atslib_ungetc_err"
 overload ungetc_err with ungetc0_err
-
 fun ungetc1_err {m:fm}
   (c: char, f: &FILE m):<> [i:int | i <= UCHAR_MAX] int i
   = "atslib_ungetc_err"
 overload ungetc_err with ungetc1_err
 
 symintr ungetc_exn
-
 fun ungetc0_exn (c: char, f: FILEref):<!exn> void
   = "atslib_ungetc_exn"
 overload ungetc_exn with ungetc0_exn
-
 fun ungetc1_exn {m:fm} (c: char, f: &FILE m):<!exn> void
   = "atslib_ungetc_exn"
 overload ungetc_exn with ungetc1_exn
@@ -796,35 +742,50 @@ macdef _IOFBF = $extval (bufmode_t, "_IOFBF") // fully buffered
 macdef _IOLBF = $extval (bufmode_t, "_IOLBF") // line buffered
 macdef _IONBF = $extval (bufmode_t, "_IONBF") // no buffering
 
+symintr setbuf_null
 fun setbuf0_null (f: FILEref): void = "atslib_setbuf_null"
+overload setbuf_null with setbuf0_null
 fun setbuf1_null {m:fm} (f: &FILE m): void = "atslib_setbuf_null"
+overload setbuf_null with setbuf1_null
 
 //
 // HX-2010-10-03:
 // the buffer can be freed only after it is no longer used by
 // the stream to which it is attached!!!
 //
+symintr setbuffer
 fun setbuffer0 {n1,n2:nat | n2 <= n1} {l:addr}
   (pf_buf: !b0ytes n1 @ l | f: FILEref, p_buf: ptr l, n2: size_t n2): void
   = "#atslib_setbuffer"
+overload setbuffer with setbuffer0
 fun setbuffer1 {m:fm} {n1,n2:nat | n2 <= n1} {l:addr}
   (pf_buf: !b0ytes n1 @ l | f: &FILE m, p_buf: ptr l, n2: size_t n2): void
   = "#atslib_setbuffer"
+overload setbuffer with setbuffer1
 
+symintr setlinebuf
 fun setlinebuf0 (f: FILEref): void = "#atslib_setlinebuf"
+overload setlinebuf with setlinebuf0
 fun setlinebuf1 {m:fm} (f: &FILE m): void = "#atslib_setlinebuf"
+overload setlinebuf with setlinebuf1
 
+symintr setvbuf_null
 fun setvbuf0_null
   (f: FILEref, mode: bufmode_t): int = "atslib_setvbuf_null"
+overload setvbuf_null with setvbuf0_null
 fun setvbuf1_null {m:fm}
   (f: &FILE m, mode: bufmode_t): int = "atslib_setvbuf_null"
+overload setvbuf_null with setvbuf1_null
 
+symintr setvbuf
 fun setvbuf0 {n1,n2:nat | n2 <= n1} {l:addr}
   (pf_buf: !b0ytes(n1) @ l | fil: FILEref, mode: bufmode_t, n2: size_t n2): int
   = "#ats_setvbuf"
+overload setvbuf with setvbuf0
 fun setvbuf1 {m:fm} {n1,n2:nat | n2 <= n1} {l:addr}
   (pf_buf: !b0ytes(n1) @ l | fil: &FILE m, mode: bufmode_t, n2: size_t n2): int
   = "#ats_setvbuf"
+overload setvbuf with setvbuf1
 
 // ------------------------------------------------
 
