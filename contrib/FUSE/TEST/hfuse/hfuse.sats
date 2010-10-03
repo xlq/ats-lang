@@ -16,6 +16,7 @@
 (* ****** ****** *)
 
 staload TYPES = "libc/sys/SATS/types.sats"
+typedef dev_t = $TYPES.dev_t
 typedef mode_t = $TYPES.mode_t
 
 (* ****** ****** *)
@@ -61,12 +62,23 @@ fun hfuse_read
 
 fun hfuse_release
   (path: string, fi: &fuse_file_info): int = "hfuse_release"
+// end of [hfuse_release]
 
 (* ****** ****** *)
 
 fun hfuse_create
   (path: string, mode: mode_t, fi: &fuse_file_info): int = "hfuse_create"
 // end of [hfuse_create]
+
+(* ****** ****** *)
+
+fun hfuse_mknod
+  (path: string, mode: mode_t, dev: dev_t): int = "hfuse_mknod"
+// end of [hfuse_mknod]
+
+(* ****** ****** *)
+
+fun hfuse_unlink (path: string): int = "hfuse_unlink"
 
 (* ****** ****** *)
 

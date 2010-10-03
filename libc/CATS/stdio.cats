@@ -9,7 +9,7 @@
 /*
 ** ATS - Unleashing the Potential of Types!
 **
-** Copyright (C) 2002-2008 Hongwei Xi.
+** Copyright (C) 2002-2010 Hongwei Xi.
 **
 ** ATS is  free software;  you can redistribute it and/or modify it under
 ** the  terms of the  GNU General Public License as published by the Free
@@ -625,7 +625,7 @@ atslib_tmpfile_exn () {
     ats_exit_errmsg (1, (ats_ptr_type)"exit(ATS): [tmpfile] failed\n") ;
   }
   return fil ;
-} /* end of [atslib_tmpfile_exn] */
+} // end of [atslib_tmpfile_exn]
 
 /* --------------------------------------- */
 
@@ -648,7 +648,31 @@ atslib_ungetc_exn (
     ats_exit_errmsg (1, (ats_ptr_type)"exit(ATS): [ungetc] failed\n") ;
   } // end of [if]
   return ;
-} /* end of [atslib_ungetc_exn] */
+} // end of [atslib_ungetc_exn]
+
+/* --------------------------------------- */
+
+ATSinline()
+ats_void_type
+atslib_setbuf_null (
+  ats_ptr_type fil
+) {
+  setbuf((FILE*)fil, NULL) ; return ;
+} // end of [atslib_setbuf_null]
+
+#define atslib_setbuffer setbuffer
+#define atslib_setlinebuf setlinebuf
+
+ATSinline()
+ats_int_type
+atslib_setvbuf_null (
+  ats_ptr_type fil
+, ats_int_type mode
+) {
+  return setvbuf((FILE*)fil, NULL, mode, 0) ;
+} // end of [atslib_setbuf_null]
+
+#define atslib_setvbuf setvbuf
 
 /* --------------------------------------- */
 

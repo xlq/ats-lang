@@ -23,6 +23,33 @@ staload "hfuse.sats"
 
 (* ****** ****** *)
 
+%{^
+#define F_SIZE (*f_sizep)
+#define F_READ (*f_readp)
+#define F_WRITE (*f_writep)
+#define F_UNLINK (*f_unlinkp)
+%} // end of [%{^]
+
+extern
+fun F_SIZE {l1,l2:addr}
+  (b: !strptr l1, r: !strptr l2): int = "#F_SIZE"
+extern
+fun F_READ {n1,n2:nat | n2 <= n1} {l:addr} (
+  pfbuf: !bytes(n1) @ l
+| b: !strptr0, rest: !strptr0, pbuf: ptr l, ofs: off_t, nbyte: size_t n2
+) : int = "#F_READ"
+extern
+fun F_WRITE {n1,n2:nat | n2 <= n1} {l:addr} (
+  pfbuf: !bytes(n1) @ l
+| b: !strptr0, rest: !strptr0, pbuf: ptr l, nbyte: size_t n2
+) : int = "#F_WRITE"
+extern
+fun F_UNLINK
+  (b: !strptr0, rest: !strptr0): int = "#F_UNLINK"
+// end of [F_UNLINK]
+
+(* ****** ****** *)
+
 /*
 static int tfprintf(const char *fmt, ...)
 {
@@ -226,23 +253,10 @@ static int hfuse_read(const char *path, char *buf, size_t size, off_t offset,
   return res;
 }
 */
-extern
-fun F_SIZE {l1,l2:addr} (b: !strptr l1, r: !strptr l2): int
-extern
-fun F_READ {n1,n2:nat | n2 <= n1} {l:addr} (
-  pfbuf: !bytes(n1) @ l
-| b: !strptr0, rest: !strptr0, pbuf: ptr l, ofs: off_t, nbyte: size_t n2
-) : int
-extern
-fun F_WRITE {n1,n2:nat | n2 <= n1} {l:addr} (
-  pfbuf: !bytes(n1) @ l
-| b: !strptr0, rest: !strptr0, pbuf: ptr l, nbyte: size_t n2
-) : int
 implement
 hfuse_read (
   pfbuf | path, pbuf, size, ofs, fi
 ) = let
-  var res: int = 0
 //
   val (pflock | ()) = hfuselog_lock ()
   val _err = tfprintf
@@ -253,6 +267,7 @@ hfuse_read (
   val _err = dologtime (pflock | (*none*))
   val () = hfuselog_unlock (pflock | (*none*))
 //
+  var res: int = 0
   val [n:int] path = string1_of_string (path)
   val () =
 //
@@ -348,7 +363,6 @@ static int hfuse_create(const char *path, mode_t mode,
 implement
 hfuse_create
   (path, mode, fi) = let
-  var res: int = 0
 //
   val (pflock | ()) = hfuselog_lock ()
   val _err = tfprintf
@@ -358,9 +372,10 @@ hfuse_create
   val _err = dologtime (pflock | (*none*))
   val () = hfuselog_unlock (pflock | (*none*))
 //
+  var res: int = 0
   val [n:int] path = string1_of_string (path)
-//
   val () =
+//
 while (true) let
   val n = string1_length (path)
   val () = (if (n = 0) then
@@ -397,6 +412,156 @@ end // end of [val]
 in
   res
 end // end of [hfuse_create]
+
+(* ****** ****** *)
+
+/*
+static int hfuse_mknod(const char *path, mode_t mode, dev_t dev)
+{
+  char *b = NULL;
+  char *rest = NULL;
+  char  dum;
+  int   res;
+
+  tfprintf("mknod(%s, 0%o, 0%o)\n", path, mode, dev);
+  dologtime();
+  res = parts(path, &b, &rest);
+  if ( res < 0 )
+    return res;
+  res = (*f_writep)(b, rest, &dum, 0);
+  // GAGNON: change modes
+  if ( b != NULL )
+    free((void *)b);
+  if ( rest != NULL )
+    free((void *)rest);
+  if ( res < 0 )
+    tfprintf("mknod failed with code %d\n", res);
+  else
+    {
+      tfprintf("mknod success\n");
+      dologtime();
+    }
+  return res;
+}
+*/
+implement
+hfuse_mknod (path, mode, dev) = let
+  val (pflock | ()) = hfuselog_lock ()
+  val _err = tfprintf
+    (pflock | "mknod(%s, 0%o, 0%o)\n", @(path, _mode, _dev)) where {
+    val _dev = uint_of_dev (dev)
+    val _mode = uint_of_mode (mode)
+  } // end of [val]
+  val _err = dologtime (pflock | (*none*))
+  val () = hfuselog_unlock (pflock | (*none*))
+//
+  var res: int = 0
+  val [n:int] path = string1_of_string (path)
+  val () =
+//
+while (true) let
+  val n = string1_length (path)
+  val () = (if (n = 0) then
+    (res := ~(int_of)EINVAL; break; assertfalse())
+  ) : [n>0] void
+  var b: strptr0 and rest: strptr0
+  val () = parts (path, n, b, rest)
+//
+  val _0 = byte_of_int (0)
+  var !p_dummy with pf_dummy = @[byte][0](_0)
+  val () = res := F_WRITE (pf_dummy | b, rest, p_dummy, 0)
+//
+  val () = strptr_free (b) and () = strptr_free (rest)
+in
+  break
+end // end of [while]
+//
+  val (pflock | ()) = hfuselog_lock ()
+  val () = if res >= 0 then let
+    val _err = tfprintf(pflock | "mknod success\n", @())
+    val _err = dologtime(pflock | (*none*))
+  in
+    // nothing
+  end else let
+    val _err = tfprintf(pflock | "mknod failed with code %d\n", @(res))
+  in
+    // nothing
+  end // end of [val]
+  val () = hfuselog_unlock (pflock | (*none*))
+in
+  res
+end // end of [hfuse_mknod]
+
+(* ****** ****** *)
+
+/*
+static int hfuse_unlink(const char *path)
+{
+  char *b = NULL;
+  char *rest = NULL;
+  int   res;
+
+  tfprintf("unlink(%s)\n", path);
+  dologtime();
+  res = parts(path, &b, &rest);
+  if ( res < 0 )
+    return res;
+  if ( b == NULL || rest == NULL ) // trying to unlink a directory
+    return -EISDIR;
+  res = (*f_unlinkp)(b, rest);
+  free((void *)b);
+  free((void *)rest);
+  if ( res >= 0 )
+    {
+      tfprintf("unlink success\n");
+      dologtime();
+    }
+  return res;
+}
+*/
+implement
+hfuse_unlink (path) = let
+  val (pflock | ()) = hfuselog_lock ()
+  val _err = tfprintf (pflock | "unlink(%s)\n", @(path))
+  val _err = dologtime (pflock | (*none*))
+  val () = hfuselog_unlock (pflock | (*none*))
+//
+  var res: int = 0
+  val [n:int] path = string1_of_string (path)
+  val () =
+//
+while (true) let
+  val n = string1_length (path)
+  val () = (if (n = 0) then
+    (res := ~(int_of)EINVAL; break; assertfalse())
+  ) : [n>0] void
+  var b: strptr0 and rest: strptr0
+  val () = parts (path, n, b, rest)  
+  val isdir = strptr_is_null (b) orelse strptr_is_null (rest)
+  val () = if isdir then res := ~(int_of)EISDIR
+  val () = res := F_UNLINK (b, rest)
+//
+  val () = strptr_free (b) and () = strptr_free (rest)
+in
+  break
+end // end of [while]
+//
+  val (pflock | ()) = hfuselog_lock ()
+  val () = if res >= 0 then let
+    val _err = tfprintf(pflock | "unlink success\n", @())
+    val _err = dologtime(pflock | (*none*))
+  in
+    // nothing
+  end else let
+    val _err = tfprintf(pflock | "unlink failed with code %d\n", @(res))
+  in
+    // nothing
+  end // end of [val]
+  val () = hfuselog_unlock (pflock | (*none*))
+//
+in
+  res
+end // end of [hfuse_unlink]
 
 (* ****** ****** *)
 

@@ -38,6 +38,7 @@ compall:: \
   libc_printf \
   libc_sched \
   libc_stdlib \
+  libc_stdio \
   libc_time \
   libats_funarray_braun \
   libats_funheap_braun \
@@ -127,6 +128,9 @@ libc_sched: libc_sched.dats
 
 libc_stdlib: libc_stdlib.dats
 	$(ATSCC) -O2 -o libc_stdlib libc_stdlib.dats && ./libc_stdlib
+
+libc_stdio: libc_stdio.dats
+	$(ATSCC) -O2 -o libc_stdio libc_stdio.dats && ./libc_stdio
 
 ######
 
@@ -280,6 +284,7 @@ cleanall: clean
 	rm -f libc_printf
 	rm -f libc_sched
 	rm -f libc_stdlib
+	rm -f libc_stdio
 	rm -f libc_time
 	rm -f libats_funarray_braun
 	rm -f libats_funheap_braun

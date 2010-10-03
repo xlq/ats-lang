@@ -59,7 +59,7 @@ abst@ype clockid_t = $extype "ats_clockid_type" // for clock ID type
 (* ****** ****** *)
 
 abst@ype dev_t = $extype "ats_dev_type" // for device IDs
-castfn int_of_dev (x: dev_t):<> int
+castfn uint_of_dev (x: dev_t):<> uint
 fun eq_dev_dev (x1: dev_t, x2: dev_t): bool = "atslib_eq_dev_dev"
 overload = with eq_dev_dev
 

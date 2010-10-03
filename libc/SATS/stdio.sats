@@ -9,7 +9,7 @@
 (*
 ** ATS - Unleashing the Potential of Types!
 **
-** Copyright (C) 2002-2008 Hongwei Xi, Boston University
+** Copyright (C) 2002-2010 Hongwei Xi, Boston University
 **
 ** All rights reserved
 **
@@ -75,7 +75,7 @@ praxi stderr_isnot_null : [stderr_addr > null] void
 
 // ------------------------------------------------
 
-macdef EOF = $extval (int, "EOF")
+macdef EOF = $extval (int, "EOF") // HX: it must be -1
 
 // ------------------------------------------------
 
@@ -752,6 +752,8 @@ fun tmpfile_exn
 
 fun tmpfile_ref_exn ():<!exnref> FILEref = "atslib_tmpfile_exn"
 
+// ------------------------------------------------
+
 (*
 
 // int ungetc(int c, FILE *stream);
@@ -762,30 +764,67 @@ returned in reverse order; only one pushback is guaranteed.
 
 *)
 
+symintr ungetc_err
+
 fun ungetc0_err
   (c: char, f: FILEref):<> int = "atslib_ungetc_err"
-// end of [ungetc0_err]
+overload ungetc_err with ungetc0_err
 
 fun ungetc1_err {m:fm}
   (c: char, f: &FILE m):<> [i:int | i <= UCHAR_MAX] int i
   = "atslib_ungetc_err"
-// end of [ungetc1_err]
-
-symintr ungetc_err
-overload ungetc_err with ungetc0_err
 overload ungetc_err with ungetc1_err
 
-//
+symintr ungetc_exn
 
 fun ungetc0_exn (c: char, f: FILEref):<!exn> void
   = "atslib_ungetc_exn"
+overload ungetc_exn with ungetc0_exn
 
 fun ungetc1_exn {m:fm} (c: char, f: &FILE m):<!exn> void
   = "atslib_ungetc_exn"
-
-symintr ungetc_exn
-overload ungetc_exn with ungetc0_exn
 overload ungetc_exn with ungetc1_exn
+
+// ------------------------------------------------
+
+sta BUFSIZ : int
+praxi BUFSIZ_gtez (): [BUFSIZ >= 0] void
+macdef BUFSIZ = $extval (int(BUFSIZ), "BUFSIZ")
+
+abst@ype bufmode_t = int
+macdef _IOFBF = $extval (bufmode_t, "_IOFBF") // fully buffered
+macdef _IOLBF = $extval (bufmode_t, "_IOLBF") // line buffered
+macdef _IONBF = $extval (bufmode_t, "_IONBF") // no buffering
+
+fun setbuf0_null (f: FILEref): void = "atslib_setbuf_null"
+fun setbuf1_null {m:fm} (f: &FILE m): void = "atslib_setbuf_null"
+
+//
+// HX-2010-10-03:
+// the buffer can be freed only after it is no longer used by
+// the stream to which it is attached!!!
+//
+fun setbuffer0 {n1,n2:nat | n2 <= n1} {l:addr}
+  (pf_buf: !b0ytes n1 @ l | f: FILEref, p_buf: ptr l, n2: size_t n2): void
+  = "#atslib_setbuffer"
+fun setbuffer1 {m:fm} {n1,n2:nat | n2 <= n1} {l:addr}
+  (pf_buf: !b0ytes n1 @ l | f: &FILE m, p_buf: ptr l, n2: size_t n2): void
+  = "#atslib_setbuffer"
+
+fun setlinebuf0 (f: FILEref): void = "#atslib_setlinebuf"
+fun setlinebuf1 {m:fm} (f: &FILE m): void = "#atslib_setlinebuf"
+
+fun setvbuf0_null
+  (f: FILEref, mode: bufmode_t): int = "atslib_setvbuf_null"
+fun setvbuf1_null {m:fm}
+  (f: &FILE m, mode: bufmode_t): int = "atslib_setvbuf_null"
+
+fun setvbuf0 {n1,n2:nat | n2 <= n1} {l:addr}
+  (pf_buf: !b0ytes(n1) @ l | fil: FILEref, mode: bufmode_t, n2: size_t n2): int
+  = "#ats_setvbuf"
+fun setvbuf1 {m:fm} {n1,n2:nat | n2 <= n1} {l:addr}
+  (pf_buf: !b0ytes(n1) @ l | fil: &FILE m, mode: bufmode_t, n2: size_t n2): int
+  = "#ats_setvbuf"
 
 // ------------------------------------------------
 

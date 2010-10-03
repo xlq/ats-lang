@@ -35,10 +35,11 @@
 
 (* ****** ****** *)
 
-staload "libc/SATS/errno.sats"
+#define ATS_DYNLOADFLAG 0 // no dynamic loading
 
 (* ****** ****** *)
 
+staload "libc/SATS/errno.sats"
 staload "libc/SATS/stdio.sats"
 
 (* ****** ****** *)

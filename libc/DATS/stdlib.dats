@@ -35,6 +35,10 @@
 
 (* ****** ****** *)
 
+#define ATS_DYNLOADFLAG 0 // no dynamic loading
+
+(* ****** ****** *)
+
 staload "libc/SATS/string.sats"
 staload "libc/SATS/stdlib.sats"
 
@@ -53,22 +57,26 @@ in
         pf: !b0ytes (n+1) @ l1 >> strbuf (n+1, n) @ l1 | p: ptr l1, name: !strptr l
       ) :<> void = "#atslib_strcpy"
     } // end of [val]
-    prval () = __assert (pfngc) where {
-      extern prfun __assert {v:view} (pf: v):<> void
-    } // end of [prval]
-    val err = __putenv (pfbuf | p) where {
+    val (pfopt | err) = __putenv (pfbuf | p) where {
       extern fun __putenv {m,n:int} {l:addr}
-        (pf: strbuf (n+1, n) @ l1 | p: ptr l1): int = "#putenv"
+        (pfbuf: strbuf (n+1, n) @ l1 | p: ptr l1)
+        : [i:int] (option_v (bytes(n+1) @ l1, i <> 0) | int i)= "#putenv"
     } // end of [val]
-    val () = let
-      extern fun __free (p: ptr): void = "atspre_free_ngc" // in case ...
+    val () = if err = 0 then let
+      prval None_v () = pfopt
+      prval () = __assert (pfngc) where {
+        extern prfun __assert {v:view} (pf: v):<> void
+      } // end of [prval]
     in
-      if (err <> 0) then __free (p) // [putenv] failed
-    end // end of [val]
+      // nothing
+    end else let // err <> 0
+      prval Some_v (pfbuf) = pfopt
+      val () = free_ngc (pfngc, pfbuf | p) in // nothing
+    end // end of [if]
   in
     err
   end else let
-    prval malloc_v_fail () = pfopt in ~1 // HX: [ENOMEM] should be set
+    prval malloc_v_fail () = pfopt in ~1 // HX: [ENOMEM] should already be set
   end (* end of [if] *)
 end // end of [putenv]
 

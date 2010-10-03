@@ -15,9 +15,9 @@ demonstrating a means to achieve it in ATS.
 \end{figure}
 \section{Nonlinear Constraint Avoidance}
 A function template {\it concat} is implemented in
-Figure~\ref{figure:list_concat_function}, Given a list ${\it xss}$ of length
-$m$ in which each element is of type $\tlist(T,n)$, ${\it
-concat}\langle{T}\rangle({\it xss})$ constructs a list of type
+Figure~\ref{figure:list_concat_function}. Given a list ${\it xss}$ of
+length $m$ in which each element is of type $\tlist(T,n)$, ${\it
+  concat}\langle{T}\rangle({\it xss})$ constructs a list of type
 $\tlist(T,m*n)$. When the first pattern matching clause in the code for
 ${\it concat}$ is typechecked, a constraint is generated that is
 essentially like the following one:
