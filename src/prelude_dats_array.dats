@@ -54,9 +54,9 @@ typedef unsigned char byte ;
 ats_void_type
 atspre_array_ptr_initialize_elt_tsz (
    ats_ptr_type A
- , ats_int_type asz 
+ , ats_size_type asz 
  , ats_ptr_type ini
- , ats_int_type tsz
+ , ats_size_type tsz
  )  {
   int i, itsz ; int left ; ats_ptr_type p ;
   if (asz == 0) return ;

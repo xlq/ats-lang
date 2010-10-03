@@ -48,6 +48,12 @@
 
 /* ****** ****** */
 
+extern
+ats_void_type
+ats_exit_errmsg(ats_int_type n, ats_ptr_type msg) ;
+
+/* ****** ****** */
+
 /*
 
 // these are now casting functions:
@@ -202,7 +208,7 @@ atspre_fprint_byte (
   int n = fputc (b, (FILE *)out) ;
   if (n < 0) {
     ats_exit_errmsg (n, (ats_ptr_type)"Exit: [fprint_byte] failed.\n") ;
-  }
+  } // end of [if]
   return ;
 } // end of [atspre_fprint_byte]
 
@@ -210,9 +216,9 @@ ATSinline()
 ats_void_type
 atspre_print_byte
   (const ats_byte_type c) {
-  atspre_stdout_view_get () ;
+//  atspre_stdout_view_get () ;
   atspre_fprint_byte((ats_ptr_type)stdout, c) ;
-  atspre_stdout_view_set () ;
+//  atspre_stdout_view_set () ;
   return ;
 } // end of [atspre_print_byte]
 
@@ -220,9 +226,9 @@ ATSinline()
 ats_void_type
 atspre_prerr_byte
   (const ats_byte_type c) {
-  atspre_stderr_view_get () ;
+//  atspre_stderr_view_get () ;
   atspre_fprint_byte((ats_ptr_type)stderr, c) ;
-  atspre_stderr_view_set () ;
+//  atspre_stderr_view_set () ;
   return ;
 } // end of [atspre_prerr_byte]
 

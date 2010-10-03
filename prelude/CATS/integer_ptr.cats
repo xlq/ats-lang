@@ -55,6 +55,12 @@ typedef ats_ptr_type ats_uintptr_type ;
 
 /* ****** ****** */
 
+extern
+ats_void_type
+ats_exit_errmsg(ats_int_type n, ats_ptr_type msg) ;
+
+/* ****** ****** */
+
 // intptr_t: integers of one word size
 
 ATSinline()
@@ -310,18 +316,18 @@ atspre_fprint_intptr (
 ATSinline()
 ats_void_type
 atspre_print_intptr (ats_intptr_type i) {
-  atspre_stdout_view_get () ;
+//  atspre_stdout_view_get () ;
   atspre_fprint_intptr ((ats_ptr_type)stdout, i) ;
-  atspre_stdout_view_set () ;
+//  atspre_stdout_view_set () ;
   return ;
 }
 
 ATSinline()
 ats_void_type
 atspre_prerr_intptr (ats_intptr_type i) {
-  atspre_stderr_view_get () ;
+//  atspre_stderr_view_get () ;
   atspre_fprint_intptr ((ats_ptr_type)stderr, i) ;
-  atspre_stderr_view_set () ;
+//  atspre_stderr_view_set () ;
   return ;
 }
 
@@ -625,9 +631,9 @@ ATSinline()
 ats_void_type
 atspre_print_uintptr
   (ats_uintptr_type u) {
-  atspre_stdout_view_get () ;
+//  atspre_stdout_view_get () ;
   atspre_fprint_uintptr ((ats_ptr_type)stdout, u) ;
-  atspre_stdout_view_set () ;
+//  atspre_stdout_view_set () ;
   return ;
 }
 
@@ -635,9 +641,9 @@ ATSinline()
 ats_void_type
 atspre_prerr_uintptr
   (ats_uintptr_type u) {
-  atspre_stderr_view_get () ;
+//  atspre_stderr_view_get () ;
   atspre_fprint_uintptr ((ats_ptr_type)stderr, u) ;
-  atspre_stderr_view_set () ;
+//  atspre_stderr_view_set () ;
   return ;
 }
 

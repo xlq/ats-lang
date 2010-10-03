@@ -56,7 +56,8 @@
 implement{a} array_ptr_get_elt_at (A, i) = A.[i]
 implement{a} array_ptr_set_elt_at (A, i, x) = (A.[i] := x)
 
-implement{a} array_ptr_xch_elt_at (A, i, x) = let
+implement{a}
+array_ptr_xch_elt_at (A, i, x) = let
   var tmp: a // uninitialized
   val (pf, fpf | p) = array_ptr_takeout_tsz (view@ A | &A, i, sizeof<a>)
   val () = (tmp := !p; !p := x); prval () = view@ A := fpf pf
@@ -64,7 +65,8 @@ in
   x := tmp
 end // end of [array_ptr_xch_elt_at]
 
-implement{a} array_ptr_exch (A, i, j) = let
+implement{a}
+array_ptr_exch (A, i, j) = let
   var tmp: a // uninitialized
   extern prfun __copy {l:addr} (pf: !a @ l): a @ l  
   val (pf, fpf | pi) = array_ptr_takeout_tsz (view@ A | &A, i, sizeof<a>)
@@ -87,27 +89,29 @@ end // end of [array_ptr_exch]
 // These functions are present solely for notational convenience:
 //
 
-implement{a} array_ptr_get_elt_at__intsz
-  (A, i) = let val i = i2sz i in A.[i] end
+implement{a}
+array_ptr_get_elt_at__intsz (A, i) = let val i = i2sz i in A.[i] end
 
-implement{a} array_ptr_set_elt_at__intsz
-  (A, i, x) = let val i = i2sz i in A.[i] := x end
+implement{a}
+array_ptr_set_elt_at__intsz (A, i, x) = let val i = i2sz i in A.[i] := x end
 
-implement{a} array_ptr_xch_elt_at__intsz (A, i, x) = let
+implement{a}
+array_ptr_xch_elt_at__intsz (A, i, x) = let
   val i = i2sz i in array_ptr_xch_elt_at<a> (A, i, x)
 end // end of [array_ptr_xch_elt_at__intsz]
 
 (* ****** ****** *)
 
-implement{a} array_ptr_alloc (asz) =
-  array_ptr_alloc_tsz {a} (asz, sizeof<a>)
+implement{a}
+array_ptr_alloc (asz) = array_ptr_alloc_tsz {a} (asz, sizeof<a>)
 
 (* ****** ****** *)
 
-implement{a} array_ptr_allocfree (asz) =
-  array_ptr_allocfree_tsz {a} (asz, sizeof<a>)
+implement{a}
+array_ptr_allocfree (asz) = array_ptr_allocfree_tsz {a} (asz, sizeof<a>)
 
-implement array_ptr_allocfree_tsz {a} (asz, tsz) = let
+implement
+array_ptr_allocfree_tsz {a} (asz, tsz) = let
   val [l:addr] (pf_gc, pf_arr | p_arr) = array_ptr_alloc_tsz {a} (asz, tsz)
 in #[l | (
   pf_arr | p_arr
@@ -116,7 +120,8 @@ in #[l | (
 
 (* ****** ****** *)
 
-implement{a} array_ptr_initialize_elt (A0, n0, x0) = let
+implement{a}
+array_ptr_initialize_elt (A0, n0, x0) = let
   fun loop {n:nat} {l:addr} .<n>.
     (pf: array_v (a?, n, l) | p: ptr l, n: size_t n, x0: a)
     :<> (array_v (a, n, l) | void) =
@@ -139,7 +144,8 @@ end // end of [array_ptr_initialize_elt]
 
 (* ****** ****** *)
 
-implement{a} array_ptr_initialize_lst (A0, xs0) = let
+implement{a}
+array_ptr_initialize_lst (A0, xs0) = let
   fun loop {n:nat} {l:addr} .<n>. (
       pf: array_v (a?, n, l) | p: ptr l, xs: list (a, n)
     ) :<> (
@@ -161,9 +167,10 @@ in
   view@ A0 := pf
 end // end of [array_ptr_initialize_lst]
 
-//
+(* ****** ****** *)
 
-implement{a} array_ptr_initialize_lst_vt (A0, xs0) = let
+implement{a}
+array_ptr_initialize_lst_vt (A0, xs0) = let
   fun loop {n:nat} {l:addr} .<n>. (
       pf: array_v (a?, n, l) | p: ptr l, xs: list_vt (a, n)
     ) :<> (
@@ -187,7 +194,8 @@ end // end of [array_ptr_initialize_lst_vt]
 
 (* ****** ****** *)
 
-implement array_ptr_initialize_fun_tsz__main
+implement
+array_ptr_initialize_fun_tsz__main
   {a} {v} {vt} {n} (pf | base, asz, f, tsz, env) = let
   fun loop {i:nat | i <= n} {l:addr} .<n-i>. (
       pf: !v, pf_arr: !array_v (a?, n-i, l) >> array_v (a, n-i, l)
@@ -212,7 +220,8 @@ in
   loop (pf, view@ base | &base, asz, 0, f, tsz, env)
 end // end of [array_ptr_initialize_fun_tsz__main]
 
-implement array_ptr_initialize_fun_tsz
+implement
+array_ptr_initialize_fun_tsz
   {a} {v} {n} (pf | base, asz, f, tsz) = let
   typedef funptr_t = (!v | sizeLt n, &(a?) >> a) -<> void
   typedef funptr1_t = (!v | sizeLt n, &(a?) >> a, !ptr) -<> void
@@ -227,7 +236,8 @@ end // end of [array_ptr_initialize_fun_tsz]
 
 (* ****** ****** *)
 
-implement array_ptr_initialize_clo_tsz__main
+implement
+array_ptr_initialize_clo_tsz__main
   {a} {v} {vt} {n} (pf | base, asz, f, tsz, env) = let
   fun loop {i:nat | i <= n} {l:addr} .<n-i>. (
       pf: !v, pf_arr: !array_v (a?, n-i, l) >> array_v (a, n-i, l)
@@ -252,7 +262,8 @@ in
   loop (pf, view@ base | &base, asz, 0, f, tsz, env)
 end // end of [array_ptr_initialize_clo_tsz__main]
 
-implement array_ptr_initialize_clo_tsz
+implement
+array_ptr_initialize_clo_tsz
   {a} {v} {n} (pf | base, asz, f, tsz) = let
   val p_f = &f; prval pf_f = view@ f
   viewtypedef clo_t = (!v | sizeLt n, &(a?) >> a) -<clo> void
@@ -272,7 +283,8 @@ end // end of [array_ptr_initialize_clo_tsz]
 
 (* ****** ****** *)
 
-implement array_ptr_clear_clo_tsz
+implement
+array_ptr_clear_clo_tsz
   {a} {v} {n} (pf | base, asz, f, tsz) = let
   fun clear {n:nat} {l:addr} .<n>. (
       pf: !v,
@@ -298,13 +310,15 @@ end // end of [array_ptr_clear_clo_tsz]
 
 (* ****** ****** *)
 
-implement{a} array_ptr_split (pf | A, i) =
+implement{a}
+array_ptr_split (pf | A, i) =
   array_ptr_split_tsz {a} (pf | A, i, sizeof<a>)
 // end of [array_ptr_split]
 
 (* ****** ****** *)
 
-implement{a} array_ptr_takeout (pf | A, i) =
+implement{a}
+array_ptr_takeout (pf | A, i) =
   array_ptr_takeout_tsz {a} (pf | A, i, sizeof<a>)
 // end of [array_ptr_takeout]
 
@@ -312,11 +326,13 @@ implement{a} array_ptr_takeout (pf | A, i) =
 
 infixl ( * ) szmul2
 
-implement{a} array_ptr_takeout2 (pf | A, i1, i2) =
+implement{a}
+array_ptr_takeout2 (pf | A, i1, i2) =
   array_ptr_takeout2_tsz {a} (pf | A, i1, i2, sizeof<a> )
 // end of [array_ptr_takeout2]
 
-implement array_ptr_takeout2_tsz
+implement
+array_ptr_takeout2_tsz
   {a} {n, i1, i2} {l0} (pf | A, i1, i2, tsz) = let
   val [off1:int] (pf1_mul | off1) = i1 szmul2 tsz
   val [off2:int] (pf2_mul | off2) = i2 szmul2 tsz
@@ -355,7 +371,8 @@ end // end of [array_make_arrsz]
 
 //
 
-implement{a} array_make_elt (asz, x) = let
+implement{a}
+array_make_elt (asz, x) = let
   val (pf_gc, pf_arr | p_arr) = array_ptr_alloc_tsz {a} (asz, sizeof<a>)
   prval () = free_gc_elim {a} (pf_gc) // return the certificate to GC
   val () = array_ptr_initialize_elt<a> (!p_arr, asz, x)
@@ -364,7 +381,8 @@ in
   @{ data= p_arr, view= pfbox }
 end // end of [array_make_elt]
 
-implement{a} array_make_lst (asz, xs) = let
+implement{a}
+array_make_lst (asz, xs) = let
   val (pf_gc, pf_arr | p_arr) = array_ptr_alloc_tsz {a} (asz, sizeof<a>)
   prval () = free_gc_elim {a} (pf_gc) // return the certificate to GC
   val () = array_ptr_initialize_lst<a> (!p_arr, xs)
@@ -375,11 +393,13 @@ end // end of [array_make_lst]
 
 (* ****** ****** *)
 
-implement{a} array_make_clo (pf | asz, f) =
+implement{a}
+array_make_clo (pf | asz, f) =
   array_make_clo_tsz {a} (pf | asz, f, sizeof<a>)
 // end of ...
 
-implement array_make_clo_tsz {a} (pf | asz, f, tsz) = let
+implement
+array_make_clo_tsz {a} (pf | asz, f, tsz) = let
   val (pf_gc, pf_arr | p_arr) = array_ptr_alloc_tsz {a} (asz, tsz)
   prval () = free_gc_elim {a} (pf_gc) // return the certificate to GC
   val () = array_ptr_initialize_clo_tsz {a} (pf | !p_arr, asz, f, tsz)
@@ -390,11 +410,13 @@ end // end of [array_make_clo_tsz]
 
 (* ****** ****** *)
 
-implement{a} array_make_cloref
+implement{a}
+array_make_cloref
   (asz, f) = array_make_cloref_tsz {a} (asz, f, sizeof<a>)
 // end of ...
 
-implement array_make_cloref_tsz {a} {n} (asz, f, tsz) = let
+implement
+array_make_cloref_tsz {a} {n} (asz, f, tsz) = let
   val (pf_gc, pf_arr | p_arr) = array_ptr_alloc_tsz {a} (asz, tsz)
   prval () = free_gc_elim {a} (pf_gc) // return the certificate to GC
   prval pf = unit_v ()
@@ -422,15 +444,18 @@ implement array_get_view_ptr (A) = @(A.view | A.data)
 
 (* ****** ****** *)
 
-implement{a} array_get_elt_at (A, i) = let
+implement{a}
+array_get_elt_at (A, i) = let
   val A_data = A.data; prval vbox pf = A.view in !A_data.[i]
 end // end of [array_get_elt]
 
-implement{a} array_set_elt_at (A, i, x) = let
+implement{a}
+array_set_elt_at (A, i, x) = let
   val A_data = A.data; prval vbox pf = A.view in !A_data.[i] := x
 end // end of [array_set_elt_at]
 
-implement{a} array_xch_elt_at (A, i, x) = let
+implement{a}
+array_xch_elt_at (A, i, x) = let
   val A_data = A.data; prval vbox pf = A.view
 in
   array_ptr_xch_elt_at<a> (!A_data, i, x)
@@ -438,19 +463,22 @@ end // end of [array_xch_elt_at]
 
 (* ****** ****** *)
 
-implement{a} array_get_elt_at__intsz (A, i) = let
+implement{a}
+array_get_elt_at__intsz (A, i) = let
   val i = i2sz i; val A_data = A.data; prval vbox pf = A.view
 in
   !A_data.[i]
 end // end of [array_get_elt]
 
-implement{a} array_set_elt_at__intsz (A, i, x) = let
+implement{a}
+array_set_elt_at__intsz (A, i, x) = let
   val i = i2sz i; val A_data = A.data; prval vbox pf = A.view
 in
   !A_data.[i] := x
 end // end of [array_set_elt_at]
 
-implement{a} array_xch_elt_at__intsz (A, i, x) = let
+implement{a}
+array_xch_elt_at__intsz (A, i, x) = let
   val i = i2sz i; val A_data = A.data; prval vbox pf = A.view
 in
   array_ptr_xch_elt_at<a> (!A_data, i, x)
@@ -458,7 +486,8 @@ end // end of [array_xch_elt_at]
 
 (* ****** ****** *)
 
-implement{a} array_exch (A, i1, i2) =
+implement{a}
+array_exch (A, i1, i2) =
   if i1 <> i2 then let
     val A_data = A.data; prval vbox pf = A.view
   in
@@ -780,11 +809,11 @@ extern void *memcpy (void *dst, const void* src, size_t n) ;
 
 ats_void_type
 atspre_array_ptr_initialize_elt_tsz (
-   ats_ptr_type A
+  ats_ptr_type A
 , ats_size_type asz
 , ats_ptr_type ini
 , ats_size_type tsz
- )  {
+)  {
   int i, itsz ; int left ; ats_ptr_type p ;
   if (asz == 0) return ;
   memcpy (A, ini, tsz) ;

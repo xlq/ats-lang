@@ -47,7 +47,11 @@
 /* ****** ****** */
 
 extern
-ats_ptr_type atspre_tostringf (ats_ptr_type fmt, ...) ;
+ats_ptr_type
+atspre_tostringf (ats_ptr_type fmt, ...) ;
+extern
+ats_void_type
+ats_exit_errmsg(ats_int_type n, ats_ptr_type msg) ;
 
 /* ****** ****** */
 
@@ -276,25 +280,25 @@ atspre_fprint_float (
   int n = fprintf ((FILE*)out, "%f", f) ;
   if (n < 0) {
     ats_exit_errmsg (n, (ats_ptr_type)"exit(ATS): [fprint_float] failed.\n") ;
-  }
+  } // end of [if]
   return ;
 } /* end of [atspre_fprint_float] */
 
 ATSinline()
 ats_void_type
 atspre_print_float (ats_float_type f) {
-  atspre_stdout_view_get () ;
+//  atspre_stdout_view_get () ;
   atspre_fprint_float ((ats_ptr_type)stdout, f) ;
-  atspre_stdout_view_set () ;
+//  atspre_stdout_view_set () ;
   return ;
 }
 
 ATSinline()
 ats_void_type
 atspre_prerr_float (ats_float_type f) {
-  atspre_stderr_view_get () ;
+//  atspre_stderr_view_get () ;
   atspre_fprint_float ((ats_ptr_type)stderr, f) ;
-  atspre_stderr_view_set () ;
+//  atspre_stderr_view_set () ;
   return ;
 }
 
@@ -562,7 +566,7 @@ atspre_fprint_double
   int n = fprintf ((FILE *)out, "%f", f) ;
   if (n < 0) {
     ats_exit_errmsg (n, (ats_ptr_type)"exit(ATS): [fprint_double] failed.\n") ;
-  }
+  } // end of [if]
   return ;
 } /* end of [atspre_fprint_double] */
 
@@ -570,9 +574,9 @@ ATSinline()
 ats_void_type
 atspre_print_double
   (ats_double_type f) {
-  atspre_stdout_view_get () ;
+//  atspre_stdout_view_get () ;
   atspre_fprint_double ((ats_ptr_type)stdout, f) ;
-  atspre_stdout_view_set () ;
+//  atspre_stdout_view_set () ;
   return ;
 } // end of [atspre_print_double]
 
@@ -580,9 +584,9 @@ ATSinline()
 ats_void_type
 atspre_prerr_double
   (ats_double_type f) {
-  atspre_stderr_view_get () ;
+//  atspre_stderr_view_get () ;
   atspre_fprint_double ((ats_ptr_type)stderr, f) ;
-  atspre_stderr_view_set () ;
+//  atspre_stderr_view_set () ;
   return ;
 } // end of [atspre_prerr_double]
 
@@ -810,7 +814,7 @@ atspre_fprint_ldouble (
   int n = fprintf ((FILE *)out, "%Lf", f) ;
   if (n < 0) { ats_exit_errmsg
     (n, (ats_ptr_type)"exit(ATS): [fprint_ldouble] failed.\n") ;
-  }
+  } // end of [if]
   return ;
 } /* end of [atspre_fprint_ldouble] */
 
@@ -818,9 +822,9 @@ ATSinline()
 ats_void_type
 atspre_print_ldouble
   (ats_ldouble_type f) {
-  atspre_stdout_view_get () ;
+//  atspre_stdout_view_get () ;
   atspre_fprint_ldouble ((ats_ptr_type)stdout, f) ;
-  atspre_stdout_view_set () ;
+//  atspre_stdout_view_set () ;
   return ;
 } // end of [atspre_print_ldouble]
 
@@ -828,9 +832,9 @@ ATSinline()
 ats_void_type
 atspre_prerr_ldouble
   (ats_ldouble_type f) {
-  atspre_stderr_view_get () ;
+//  atspre_stderr_view_get () ;
   atspre_fprint_ldouble ((ats_ptr_type)stderr, f) ;
-  atspre_stderr_view_set () ;
+//  atspre_stderr_view_set () ;
   return ;
 } // end of [atspre_prerr_ldouble]
 

@@ -52,12 +52,14 @@ typedef FILE ats_FILE_viewtype ;
 //
 // HX: implemented in [prelude/DATS/basics.dats]
 //
-extern ats_void_type
+extern
+ats_void_type
 ats_exit_errmsg(ats_int_type n, ats_ptr_type msg) ;
 //
 // HX: implemented in [prelude/CATS/printf.cats]
 //
-extern ats_void_type
+extern
+ats_void_type
 atspre_exit_prerrf(ats_int_type code, ats_ptr_type fmt, ...) ;
 
 /* --------------------------------------- */

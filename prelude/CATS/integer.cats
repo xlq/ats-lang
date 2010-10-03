@@ -255,18 +255,18 @@ atspre_fprint_int (ats_ptr_type out, ats_int_type i) {
 ATSinline()
 ats_void_type
 atspre_print_int (ats_int_type i) {
-  atspre_stdout_view_get () ;
+//  atspre_stdout_view_get () ;
   atspre_fprint_int ((ats_ptr_type)stdout, i) ;
-  atspre_stdout_view_set () ;
+//  atspre_stdout_view_set () ;
   return ;
 }
 
 ATSinline()
 ats_void_type
 atspre_prerr_int (ats_int_type i) {
-  atspre_stderr_view_get () ;
+//  atspre_stderr_view_get () ;
   atspre_fprint_int ((ats_ptr_type)stderr, i) ;
-  atspre_stderr_view_set () ;
+//  atspre_stderr_view_set () ;
   return ;
 }
 
@@ -274,7 +274,9 @@ atspre_prerr_int (ats_int_type i) {
 
 ATSinline()
 ats_void_type
-atspre_fscan_int_exn (ats_ptr_type inp, ats_ref_type r) {
+atspre_fscan_int_exn (
+  ats_ptr_type inp, ats_ref_type r
+) {
   int n ;
   n = fscanf ((FILE*)inp, "%d", (int*)r) ;
   if (n < 1) {
@@ -299,103 +301,95 @@ atspre_tostrptr_int
 
 ATSinline()
 ats_uint_type
-atspre_uint_of_char (ats_char_type c) {
-  return ((unsigned char)c) ;
-}
+atspre_uint_of_char
+  (ats_char_type c) { return ((unsigned char)c) ; }
+// end of [atspre_uint_of_char]
 
 ATSinline()
 ats_uint_type
-atspre_uint_of_uchar (ats_uchar_type c) {
-  return ((unsigned char)c) ;
-}
-
-//
+atspre_uint_of_uchar
+  (ats_uchar_type c) { return ((unsigned char)c) ; }
+// end of [atspre_uint_of_uchar]
 
 ATSinline()
 ats_uint_type
-atspre_uint_of_double (ats_double_type d) {
-  return (ats_uint_type)d ;
-}
-
-//
+atspre_uint_of_double
+  (ats_double_type d) { return (ats_uint_type)d ; }
+// end of [atspre_uint_of_double]
 
 ATSinline()
 ats_uint_type
-atspre_succ_uint (ats_uint_type i) {
-  return (i + 1) ;
-}
+atspre_succ_uint (ats_uint_type i) { return (i + 1) ; }
 
 ATSinline()
 ats_uint_type
-atspre_pred_uint (ats_uint_type i) {
-  return (i - 1) ;
-}
+atspre_pred_uint (ats_uint_type i) { return (i - 1) ; }
 
 ATSinline()
 ats_uint_type
 atspre_add_uint_uint (ats_uint_type i1, ats_uint_type i2) {
   return (i1 + i2) ;
-}
+} // end of [atspre_add_uint_uint]
 
 ATSinline()
 ats_uint_type
 atspre_sub_uint_uint (ats_uint_type i1, ats_uint_type i2) {
   return (i1 - i2) ;
-}
+} // end of [atspre_sub_uint_uint]
 
 ATSinline()
 ats_uint_type
 atspre_mul_uint_uint (ats_uint_type i1, ats_uint_type i2) {
   return (i1 * i2) ;
-}
+} // end of [atspre_mul_uint_uint]
 
 ATSinline()
 ats_uint_type
 atspre_div_uint_uint (ats_uint_type i1, ats_uint_type i2) {
   return (i1 / i2) ;
-}
+} // end of [atspre_div_uint_uint]
 
 ATSinline()
 ats_uint_type
 atspre_mod_uint_uint (ats_uint_type i1, ats_uint_type i2) {
   return (i1 % i2) ;
-}
+} // end of [atspre_mod_uint_uint]
 
 ATSinline()
 ats_bool_type
 atspre_lt_uint_uint (ats_uint_type i1, ats_uint_type i2) {
   return (i1 < i2) ;
-}
+} // end of [atspre_lt_uint_uint]
 
 ATSinline()
 ats_bool_type
 atspre_lte_uint_uint (ats_uint_type i1, ats_uint_type i2) {
   return (i1 <= i2) ;
-}
+} // end of [atspre_lte_uint_uint]
 
 ATSinline()
 ats_bool_type
 atspre_gt_uint_uint (ats_uint_type i1, ats_uint_type i2) {
   return (i1 > i2) ;
-}
+} // end of [atspre_gt_uint_uint]
 
 ATSinline()
 ats_bool_type
 atspre_gte_uint_uint (ats_uint_type i1, ats_uint_type i2) {
   return (i1 >= i2) ;
-}
+} // end of [atspre_gte_uint_uint]
 
 ATSinline()
 ats_bool_type
 atspre_eq_uint_uint (ats_uint_type i1, ats_uint_type i2) {
   return (i1 == i2) ;
-}
+} // end of [atspre_eq_uint_uint]
 
 ATSinline()
 ats_bool_type
 atspre_neq_uint_uint (ats_uint_type i1, ats_uint_type i2) {
   return (i1 != i2) ;
-}
+} // end of [atspre_neq_uint_uint]
 
 //
 // compare, max and min
@@ -476,9 +470,9 @@ ats_void_type
 atspre_print_uint (
   ats_uint_type u
 ) {
-  atspre_stdout_view_get () ;
+//  atspre_stdout_view_get () ;
   atspre_fprint_uint((ats_ptr_type)stdout, u) ;
-  atspre_stdout_view_set () ;
+//  atspre_stdout_view_set () ;
   return ;
 } /* end of [atspre_print_uint] */
 
@@ -487,9 +481,9 @@ ats_void_type
 atspre_prerr_uint (
   ats_uint_type u
 ) {
-  atspre_stderr_view_get () ;
+//  atspre_stderr_view_get () ;
   atspre_fprint_uint((ats_ptr_type)stderr, u) ;
-  atspre_stderr_view_set () ;
+//  atspre_stderr_view_set () ;
   return ;
 } /* end of [atspre_prerr_uint] */
 
@@ -727,18 +721,18 @@ atspre_fprint_lint (ats_ptr_type out, ats_lint_type i) {
 ATSinline()
 ats_void_type
 atspre_print_lint (ats_lint_type i) {
-  atspre_stdout_view_get () ;
+//  atspre_stdout_view_get () ;
   atspre_fprint_lint ((ats_ptr_type)stdout, i) ;
-  atspre_stdout_view_set () ;
+//  atspre_stdout_view_set () ;
   return ;
 }
 
 ATSinline()
 ats_void_type
 atspre_prerr_lint (ats_lint_type i) {
-  atspre_stderr_view_get () ;
+//  atspre_stderr_view_get () ;
   atspre_fprint_lint ((ats_ptr_type)stderr, i) ;
-  atspre_stderr_view_set () ;
+//  atspre_stderr_view_set () ;
   return ;
 }
 
@@ -932,9 +926,9 @@ ATSinline()
 ats_void_type
 atspre_print_ulint
   (ats_ulint_type i) {
-  atspre_stdout_view_get () ;
+//  atspre_stdout_view_get () ;
   atspre_fprint_ulint ((ats_ptr_type)stdout, i) ;
-  atspre_stdout_view_set () ;
+//  atspre_stdout_view_set () ;
   return ;
 } // end of [atspre_print_ulint]
 
@@ -942,9 +936,9 @@ ATSinline()
 ats_void_type
 atspre_prerr_ulint
   (ats_ulint_type i) {
-  atspre_stderr_view_get () ;
+//  atspre_stderr_view_get () ;
   atspre_fprint_ulint ((ats_ptr_type)stderr, i) ;
-  atspre_stderr_view_set () ;
+//  atspre_stderr_view_set () ;
   return ;
 } // end of [atspre_prerr_ulint]
 
@@ -1124,9 +1118,9 @@ ATSinline()
 ats_void_type
 atspre_print_llint
   (ats_llint_type lli) {
-  atspre_stdout_view_get () ;
+//  atspre_stdout_view_get () ;
   atspre_fprint_llint ((ats_ptr_type)stdout, lli) ;
-  atspre_stdout_view_set () ;
+//  atspre_stdout_view_set () ;
   return ;
 } // end of [atspre_print_llint]
 
@@ -1134,9 +1128,9 @@ ATSinline()
 ats_void_type
 atspre_prerr_llint
   (ats_llint_type lli) {
-  atspre_stderr_view_get () ;
+//  atspre_stderr_view_get () ;
   atspre_fprint_llint ((ats_ptr_type)stderr, lli) ;
-  atspre_stderr_view_set () ;
+//  atspre_stderr_view_set () ;
   return ;
 } // end of [atspre_prerr_llint]
 
@@ -1296,9 +1290,9 @@ ATSinline()
 ats_void_type
 atspre_print_ullint
   (ats_ullint_type i) {
-  atspre_stdout_view_get () ;
+//  atspre_stdout_view_get () ;
   atspre_fprint_ullint ((ats_ptr_type)stdout, i) ;
-  atspre_stdout_view_set () ;
+//  atspre_stdout_view_set () ;
   return ;
 } // end of [atspre_print_ullint]
 
@@ -1306,9 +1300,9 @@ ATSinline()
 ats_void_type
 atspre_prerr_ullint
   (ats_ullint_type i) {
-  atspre_stderr_view_get () ;
+//  atspre_stderr_view_get () ;
   atspre_fprint_ullint ((ats_ptr_type)stderr, i) ;
-  atspre_stderr_view_set () ;
+//  atspre_stderr_view_set () ;
   return ;
 } // end of [atspre_prerr_ullint]
 

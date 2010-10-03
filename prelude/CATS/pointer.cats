@@ -197,18 +197,18 @@ atspre_fprint_ptr (
 ATSinline()
 ats_void_type
 atspre_print_ptr(ats_ptr_type p) {
-  atspre_stdout_view_get() ;
+//  atspre_stdout_view_get() ;
   atspre_fprint_ptr ((ats_ptr_type)stdout, p) ;
-  atspre_stdout_view_set() ;
+//  atspre_stdout_view_set() ;
   return ;
 }
 
 ATSinline()
 ats_void_type
 atspre_prerr_ptr(ats_ptr_type p) {
-  atspre_stderr_view_get() ;
+//  atspre_stderr_view_get() ;
   atspre_fprint_ptr ((ats_ptr_type)stderr, p) ;
-  atspre_stderr_view_set() ;
+//  atspre_stderr_view_set() ;
   return ;
 }
 

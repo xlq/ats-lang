@@ -11,6 +11,7 @@
 
 (* ****** ****** *)
 
+staload "myheader.sats"
 staload "libc/SATS/errno.sats"
 staload "libc/SATS/printf.sats"
 staload "libc/SATS/stdarg.sats"
@@ -24,28 +25,29 @@ staload "hfuse.sats"
 (* ****** ****** *)
 
 %{^
-#define F_SIZE (*f_sizep)
-#define F_READ (*f_readp)
-#define F_WRITE (*f_writep)
-#define F_UNLINK (*f_unlinkp)
+#include "personality.h"
+#define F_SIZEval (*f_sizep)
+#define F_READval (*f_readp)
+#define F_WRITEval (*f_writep)
+#define F_UNLINKval (*f_unlinkp)
 %} // end of [%{^]
 
 extern
 fun F_SIZE {l1,l2:addr}
-  (b: !strptr l1, r: !strptr l2): int = "#F_SIZE"
+  (b: !strptr l1, r: !strptr l2): int = "#F_SIZEval"
 extern
 fun F_READ {n1,n2:nat | n2 <= n1} {l:addr} (
   pfbuf: !bytes(n1) @ l
 | b: !strptr0, rest: !strptr0, pbuf: ptr l, ofs: off_t, nbyte: size_t n2
-) : int = "#F_READ"
+) : int = "#F_READval"
 extern
 fun F_WRITE {n1,n2:nat | n2 <= n1} {l:addr} (
   pfbuf: !bytes(n1) @ l
 | b: !strptr0, rest: !strptr0, pbuf: ptr l, nbyte: size_t n2
-) : int = "#F_WRITE"
+) : int = "#F_WRITEval"
 extern
 fun F_UNLINK
-  (b: !strptr0, rest: !strptr0): int = "#F_UNLINK"
+  (b: !strptr0, rest: !strptr0): int = "#F_UNLINKval"
 // end of [F_UNLINK]
 
 (* ****** ****** *)

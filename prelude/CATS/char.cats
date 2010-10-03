@@ -47,6 +47,14 @@
 #include "ats_types.h"
 
 /* ****** ****** */
+//
+// HX: implemented in [prelude/DATS/basics.dats]
+//
+extern
+ats_void_type
+ats_exit_errmsg(ats_int_type n, ats_ptr_type msg) ;
+
+/* ****** ****** */
 
 /*
 
@@ -54,19 +62,19 @@
 
 ATSinline()
 ats_char_type
-atspre_char_of_schar (const ats_schar_type c) { return c ; }
+atspre_char_of_schar (ats_schar_type c) { return c ; }
 
 ATSinline()
 ats_schar_type
-atspre_schar_of_char (const ats_char_type c) { return c ; }
+atspre_schar_of_char (ats_char_type c) { return c ; }
 
 ATSinline()
 ats_char_type
-atspre_char_of_uchar (const ats_uchar_type c) { return c ; }
+atspre_char_of_uchar (ats_uchar_type c) { return c ; }
 
 ATSinline()
 ats_uchar_type
-atspre_uchar_of_char (const ats_char_type c) { return c ; }
+atspre_uchar_of_char (ats_char_type c) { return c ; }
 
 */
 
@@ -74,11 +82,11 @@ atspre_uchar_of_char (const ats_char_type c) { return c ; }
 
 ATSinline()
 ats_char_type
-atspre_char_of_int (const ats_int_type i) { return i ; }
+atspre_char_of_int (ats_int_type i) { return i ; }
 
 ATSinline()
 ats_char_type
-atspre_char_of_uint (const ats_uint_type u) { return u ; }
+atspre_char_of_uint (ats_uint_type u) { return u ; }
 
 /* ****** ****** */
 
@@ -91,8 +99,8 @@ atspre_char_of_uint (const ats_uint_type u) { return u ; }
 ATSinline()
 ats_int_type
 atspre_sub_char_char (
-  const ats_char_type c1
-, const ats_char_type c2
+  ats_char_type c1
+, ats_char_type c2
 ) {
   return (c1 - c2) ;
 } /* end of [atspre_sub_char_char] */
@@ -102,49 +110,49 @@ atspre_sub_char_char (
 ATSinline()
 ats_bool_type
 atspre_lt_char_char
-  (const ats_char_type c1, const ats_char_type c2) {
+  (ats_char_type c1, ats_char_type c2) {
   return (c1 < c2) ;
-}
+} // end of [atspre_lt_char_char]
 
 ATSinline()
 ats_bool_type
 atspre_lte_char_char
-  (const ats_char_type c1, const ats_char_type c2) {
+  (ats_char_type c1, ats_char_type c2) {
   return (c1 <= c2) ;
-}
+} // end of [atspre_lte_char_char]
 
 ATSinline()
 ats_bool_type
 atspre_gt_char_char
-  (const ats_char_type c1, const ats_char_type c2) {
+  (ats_char_type c1, ats_char_type c2) {
   return (c1 > c2) ;
-}
+} // end of [atspre_gt_char_char]
 
 ATSinline()
 ats_bool_type
 atspre_gte_char_char
-  (const ats_char_type c1, const ats_char_type c2) {
+  (ats_char_type c1, ats_char_type c2) {
   return (c1 >= c2) ;
-}
+} // end of [atspre_gte_char_char]
 
 ATSinline()
 ats_bool_type
 atspre_eq_char_char
-  (const ats_char_type c1, const ats_char_type c2) {
+  (ats_char_type c1, ats_char_type c2) {
   return (c1 == c2) ;
-}
+} // end of [atspre_eq_char_char]
 
 ATSinline()
 ats_bool_type
 atspre_neq_char_char
-  (const ats_char_type c1, const ats_char_type c2) {
+  (ats_char_type c1, ats_char_type c2) {
   return (c1 != c2) ;
-}
+} // end of [atspre_neq_char_char]
 
 ATSinline()
 ats_int_type
 atspre_compare_char_char
-  (const ats_char_type c1, const ats_char_type c2) {
+  (ats_char_type c1, ats_char_type c2) {
   int i = c1 - c2 ;
   if (i > 0) return  1 ;
   if (i < 0) return -1 ;
@@ -155,29 +163,33 @@ atspre_compare_char_char
 
 ATSinline()
 ats_void_type
-atspre_fprint_char (const ats_ptr_type out, const ats_char_type c) {
+atspre_fprint_char (
+  ats_ptr_type out, ats_char_type c
+) {
   int n = fputc ((unsigned char)c, (FILE *)out) ;
   if (n < 0) {
     ats_exit_errmsg (n, (ats_ptr_type)"Exit: [fprint_char] failed.\n") ;
-  }
+  } // end of [if]
   return ;
-}
+} // end of [atspre_fprint_char]
 
 ATSinline()
 ats_void_type
-atspre_print_char (const ats_char_type c) {
-  atspre_stdout_view_get () ;
+atspre_print_char
+  (ats_char_type c) {
+//  atspre_stdout_view_get () ;
   atspre_fprint_char((ats_ptr_type)stdout, c) ;
-  atspre_stdout_view_set () ;
+//  atspre_stdout_view_set () ;
   return ;
 }
 
 ATSinline()
 ats_void_type
-atspre_prerr_char (const ats_char_type c) {
-  atspre_stderr_view_get () ;
+atspre_prerr_char
+  (ats_char_type c) {
+//  atspre_stderr_view_get () ;
   atspre_fprint_char((ats_ptr_type)stderr, c) ;
-  atspre_stderr_view_set () ;
+//  atspre_stderr_view_set () ;
   return ;
 }
 
@@ -186,7 +198,7 @@ atspre_prerr_char (const ats_char_type c) {
 ATSinline()
 ats_ptr_type
 atspre_tostrptr_char
-  (const ats_char_type c) {
+  (ats_char_type c) {
   char *p ;
   p = (char *)ATS_MALLOC(2) ; *p = (char)c ; *(p+1) = '\000' ;
   return (ats_ptr_type)p ;

@@ -47,17 +47,17 @@
 
 /* ****** ****** */
 
-static inline
+ATSinline()
 ats_ptr_type
 atspre_array0_of_array1 (ats_ptr_type A) { return A ; }
 
-static inline
+ATSinline()
 ats_ptr_type
 atspre_array1_of_array0 (ats_ptr_type A) { return A ; }
 
 /* ****** ****** */
 
-static inline
+ATSinline()
 ats_ptr_type
 atspre_array_ptr_alloc_tsz (
 ats_size_type n, ats_size_type tsz
@@ -65,7 +65,7 @@ ats_size_type n, ats_size_type tsz
   return ATS_MALLOC(n * tsz) ;
 } /* end of [atspre_array_ptr_alloc_tsz] */
 
-static inline
+ATSinline()
 ats_void_type
 atspre_array_ptr_free (ats_ptr_type base) { 
   ATS_FREE(base); return ;
@@ -73,7 +73,22 @@ atspre_array_ptr_free (ats_ptr_type base) {
 
 /* ****** ****** */
 
-static inline
+//
+// HX: implemented in
+// $ATSHOME/prelude/DATS/array.dats
+//
+extern
+ats_void_type
+atspre_array_ptr_initialize_elt_tsz (
+  ats_ptr_type A
+, ats_size_type asz
+, ats_ptr_type ini
+, ats_size_type tsz
+)  ;
+
+/* ****** ****** */
+
+ATSinline()
 ats_ptr_type
 atspre_array_ptr_split_tsz (
   ats_ptr_type base
@@ -85,7 +100,7 @@ atspre_array_ptr_split_tsz (
 
 /* ****** ****** */
 
-static inline
+ATSinline()
 ats_ptr_type
 atspre_array_ptr_takeout_tsz (
   ats_ptr_type base
@@ -97,7 +112,7 @@ atspre_array_ptr_takeout_tsz (
 
 /* ****** ****** */
 
-static inline
+ATSinline()
 ats_void_type
 atspre_array_ptr_copy_tsz (
    ats_ptr_type p1
@@ -108,7 +123,7 @@ atspre_array_ptr_copy_tsz (
   memcpy (p2, p1, asz * tsz) ; return ;
 } /* end of [atspre_array_ptr_copy_tsz] */
 
-static inline
+ATSinline()
 ats_void_type
 atspre_array_ptr_move_tsz (
   ats_ptr_type p1
