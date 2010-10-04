@@ -105,7 +105,9 @@ overload land with land_mode_mode
 (* ****** ****** *)
 
 abst@ype nlink_t = $extype "ats_nlink_type" // number of hard links to a file
+castfn nlink_of_int (x: int): nlink_t
 castfn int_of_nlink (x: nlink_t): int
+castfn nlink_of_lint (x: lint): nlink_t
 castfn lint_of_nlink (x: nlink_t): lint
 
 (* ****** ****** *)
@@ -120,6 +122,7 @@ macdef SEEK_END = $extval (whence_t, "SEEK_END")
 abst@ype off_t = $extype "ats_off_type" // file size in bytes
 castfn off_of_lint (li: lint):<> off_t
 castfn lint_of_off (off: off_t):<> lint
+castfn off_of_size (sz: size_t):<> off_t
 
 (* ****** ****** *)
 

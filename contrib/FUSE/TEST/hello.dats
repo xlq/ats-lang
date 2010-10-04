@@ -25,6 +25,8 @@ mainats (ats_int_type argc, ats_ptr_type argv) ;
 staload "myheader.sats"
 staload "libc/SATS/errno.sats"
 staload "libc/SATS/fcntl.sats"
+staload "libc/SATS/printf.sats"
+staload "libc/SATS/stdarg.sats"
 staload "libc/SATS/stdio.sats"
 staload "libc/SATS/string.sats"
 staload "libc/sys/SATS/stat.sats"
@@ -43,30 +45,90 @@ extern val hello_path : string = "#hello_path"
 
 (* ****** ****** *)
 
-(*
-#define LOGFILENAME "/tmp/hello_log"
-extern fun log_int (msg: int): void = "log_int"
-implement log_int (msg) = let
-  val fil = fopen_ref_exn (LOGFILENAME, file_mode_aa)
-  val () = fprint_int (fil, msg)
-  val () = fprint_newline (fil)
-  val () = fclose_exn (fil)
-in
-  // nothing
-end // end of [log_int]
-extern fun log_string (msg: string): void = "log_string"
-implement log_string (msg) = let
-  val fil = fopen_ref_exn (LOGFILENAME, file_mode_aa)
-  val () = fprint_string (fil, msg)
-  val () = fclose_exn (fil)
-in
-  // nothing
-end // end of [log_string]
-*)
+absview hellolog_v
+
+%{^
+ats_void_type
+hellolog_lock () {
+  return ;
+}
+ats_void_type
+hellolog_unlock () {
+  return ;
+}
+%} // end of [{%{^]
+extern
+fun hellolog_lock ():<> (hellolog_v | void) = "#hellolog_lock"
+extern
+fun hellolog_unlock (pf: hellolog_v | (*none*)):<> void = "#hellolog_unlock"
 
 (* ****** ****** *)
 
-%{^
+#define LOGFILENAME "/tmp/hello_log"
+
+extern
+fun hellolog_reset
+  (pflock: !hellolog_v | (*none*)): int = "hellolog_reset"
+implement
+hellolog_reset
+  (pflock | (*none*)) = let
+  var res: int = 0
+  val (pfopt | p) = fopen_err (LOGFILENAME, file_mode_w)
+  val () = (
+//
+if p > null then let
+  prval Some_v (pf) = pfopt
+  val _err = fclose1_loop (pf | p) // HX: error is ignored if there is one
+in
+  // nothing
+end else let
+  prval None_v () = pfopt
+  val () = res := ~1
+in
+  // nothing
+end // end of [if]
+//
+  ) : void // end of [val]
+in
+  res
+end // end of [hellolog_reset]
+
+(* ****** ****** *)
+
+extern
+fun tfprintf {ts:types}
+  (pf: !hellolog_v | fmt: printf_c (ts), arg: ts): int = "tfprintf"
+implement
+tfprintf
+  (pflock | fmt, arg) = let
+  val (pfopt | p) = fopen_err (LOGFILENAME, file_mode_aa)
+  val ntot = (
+//
+if p > null then let
+  prval Some_v (pf) = pfopt
+  // [va_start (arg, fmt)] is emitted by 'atsopt'
+  val ntot = vfprintf (file_mode_lte_rw_w | !p, fmt, arg)
+//
+  val _err = fclose1_loop (pf | p) // HX: error is ignored if there is one
+//
+in
+  ntot
+end else let
+  prval None_v () = pfopt
+  prval () = va_clear (arg)
+in
+  0 // nothing is output
+end // end of [if]
+//
+  ) : int // end of [val]
+  val () = va_end (arg)
+in
+  ntot // the number of bytes in the output
+end // end of [tfprintf]
+
+(* ****** ****** *)
+
+/*
 static
 int hello_getattr (
   const char *path, struct stat *stbuf
@@ -88,11 +150,45 @@ int hello_getattr (
 //
     return res;
 } // end of [hello_getattr]
-%} // end of [%{^]
+*/
 extern
 fun hello_getattr (
-  path: string, buf: &stat? >> opt (stat, i==0)
-) : #[i:int | i <= 0] int i = "#hello_getattr"
+  path: string, stbuf: &stat? >> opt (stat, i==0)
+) : #[i:int | i <= 0] int i = "hello_getattr"
+implement
+hello_getattr
+  (path, stbuf) = let
+  var res: int = 0
+  val () = ptr_zero_tsz {stat} (stbuf, sizeof<stat>)
+in
+  case+ 0 of
+  | _ when (
+      path = "/"
+    ) => res where {
+      val _0755 = mode_of_uint (0755U)
+      val () = stbuf.st_mode := (S_IFDIR lor _0755)
+      val _2 = nlink_of_int (2)
+      val () = stbuf.st_nlink := _2
+      prval () = opt_some {stat} (stbuf)
+    } // end of [_ when ...]
+  | _ when (
+      path = hello_path
+    )  => res where {
+      val _0444 = mode_of_uint (0444U)
+      val () = stbuf.st_mode := (S_IFREG lor _0444) ;
+      val _1 = nlink_of_int (1)
+      val () = stbuf.st_nlink := _1
+      val () = stbuf.st_size := off_of_size (string_length hello_str)
+      prval () = opt_some {stat} (stbuf)
+    } // end of [_ when ...]
+  | _ => res where {
+      val () = res := ~int_of(ENOENT)
+      prval () = __assert (res) where {
+        extern prfun __assert {i:int} (x: int i): [i < 0] void
+      } // end of [prval]
+      prval () = opt_none {stat} (stbuf)
+    } // end of [_]
+end // end of [hello_getattr]
 
 (* ****** ****** *)
 
@@ -126,9 +222,11 @@ implement
 hello_readdir (
   path, buf, filler, ofs, fi
 ) = let
-(*
-  val () = log_string "hello_readdir(bef)\n"
-*)
+//
+  val (pflock | ()) = hellolog_lock ()
+  val _err = tfprintf (pflock | "hello_readdir: path = \"%s\"\n", @(path))
+  val () = hellolog_unlock (pflock | (*none*))
+//
   var res: int = 0
   val () = while (true) let
     val test = (path = "/")
@@ -148,9 +246,11 @@ hello_readdir (
   in
     break
   end // end of [val]
-(*
-  val () = log_string "hello_readdir(aft)\n"
-*)
+//
+  val (pflock | ()) = hellolog_lock ()
+  val _err = tfprintf (pflock | "hello_readdir: res = %i\n", @(res))
+  val () = hellolog_unlock (pflock | (*none*))
+//
 in
   res (* 0/neg : succ/fail *)
 end // end of [hello_readdir]
@@ -300,6 +400,7 @@ ats_void_type
 mainats (
   ats_int_type argc, ats_ptr_type argv
 ) {
+  (void)hellolog_reset () ;
   fuse_main (argc, (char**)argv, &hello_oper, NULL) ;
   return ;
 } // end of [mainats]
