@@ -260,7 +260,8 @@ non-zero value upon failure.
 
 *)
 
-abst@ype fpos_t = $extype "ats_fpos_type"
+abst@ype
+fpos_t = $extype "ats_fpos_type"
 
 dataview fgetpos_v (addr, int) =
   | {l:addr} fgetpos_v_succ (l, 0) of fpos_t @ l
@@ -293,7 +294,8 @@ fgets_v (sz:int, addr, addr) =
 // end of [fgets_v]
 
 fun fgets_err
-  {n,sz:int | 0 < n; n <= sz} {m:fm} {l_buf:addr} (
+  {sz,n:int | 0 < n; n <= sz}
+  {m:fm} {l_buf:addr} (
     pf_mod: file_mode_lte (m, r)
   , pf_buf: b0ytes (sz) @ l_buf
   | p: ptr l_buf, n: int n, f: &FILE m
@@ -302,11 +304,12 @@ fun fgets_err
 // end of [fgets_err]
 
 //
-// HX: this function returns an empty strbuf in the case where
-// EOF is reached but no character is read
+// HX:
+// this function returns an empty strbuf
+// if EOF is reached but no character is read
 //
 fun fgets_exn
-  {n0,sz:int | 0 < n0; n0 <= sz}
+  {sz,n0:int | 0 < n0; n0 <= sz}
   {m:fm} {l_buf:addr} (
     pf_mod: file_mode_lte (m, r),
     pf_buf: !b0ytes (sz) @ l_buf >>

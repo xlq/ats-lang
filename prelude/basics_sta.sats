@@ -462,7 +462,10 @@ abstype ptr_addr_type (addr)
 
 abstype string_int_type (int)
 abstype stropt_int_type (int)
-abst@ype strbuf_int_int_t0ype (bsz: int, len: int) (* variable size *)
+abst@ype
+strbuf_int_int_t0ype (bsz: int, len: int) // of variable size
+absviewtype
+strptr_addr_int_viewtype (addr, int) // for linear strings
 absviewtype strptr_addr_viewtype (addr) // for linear strings
 
 (* ****** ****** *)
@@ -604,6 +607,7 @@ stadef stropt = stropt_int_type
 stadef strptr = strptr_addr_viewtype // for linear strings
 stadef strptr0 = [l:addr] strptr (l)
 stadef strptr1 = [l:addr | l > null] strptr (l)
+stadef strptrlen = strptr_addr_int_viewtype // for linear strings with length
 
 (* ****** ****** *)
 

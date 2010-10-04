@@ -42,6 +42,7 @@ compall: \
   test47 \
   test48 \
   test52 \
+  aupsh0 \
 
 ######
 
@@ -100,9 +101,17 @@ test52: AUP_5_2.dats
 
 #######
 
+getargs.o: getargs.c
+	$(ATSCC) -Wall -c -o $@ getargs.c
+aupsh0: AUP_5_2.dats getargs.o
+	$(ATSCC) -o aupsh0 AUP_5_4.dats getargs.o \
+
+#######
+
 clean::
 	rm -f *~
 	rm -f *_?ats.c *_?ats.o
+	rm -f getargs.o
 
 cleanall: clean
 	rm -f testlock
@@ -119,5 +128,6 @@ cleanall: clean
 	rm -f test47
 	rm -f test48
 	rm -f test52
+	rm -f aupsh0
 
 ###### end of [Makefile] ######

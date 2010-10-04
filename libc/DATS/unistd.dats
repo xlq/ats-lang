@@ -40,15 +40,20 @@
 (* ****** ****** *)
 
 %{^
-
 #include <errno.h>
 #include <unistd.h>
+extern char **environ ; // in [unistd.h]
+extern void _exit (int status) ; // in [unistd.h]
+extern pid_t wait (int*) ; // in [sys/wait.h]
+%} // end of [%{^]
 
 /* ****** ****** */
 
-void _exit (int status) ; // declared in [unistd.h]
+%{^
 
-ats_void_type atslib_fork_exec_cloptr_exn (ats_ptr_type f_child) {
+ats_void_type
+atslib_fork_exec_cloptr_exn
+  (ats_ptr_type f_child) {
   pid_t pid ;
   pid = fork () ;
 
@@ -68,7 +73,8 @@ ats_void_type atslib_fork_exec_cloptr_exn (ats_ptr_type f_child) {
 /* ****** ****** */
 
 ats_int_type
-atslib_fork_exec_and_wait_cloptr_exn (ats_ptr_type f_child) {
+atslib_fork_exec_and_wait_cloptr_exn
+  (ats_ptr_type f_child) {
   pid_t pid ;
   int status ;
 
@@ -85,16 +91,20 @@ atslib_fork_exec_and_wait_cloptr_exn (ats_ptr_type f_child) {
   return 0 ; /* deadcode */
 } /* atslib_fork_exec_and_wait_cloptr_exn */
 
+%} // end of [%{^]
+
 /* ****** ****** */
 
-#define __GETCWD_BUFSZ 64
+%{^
+
+#define atslib_GETCWD_BUFSZ 64
 
 ats_ptr_type
 atslib_getcwd0 () {
   char *buf, *res ;
-  int sz = __GETCWD_BUFSZ ;
+  int sz = atslib_GETCWD_BUFSZ ;
 //
-  buf = (char*)ats_malloc_gc(__GETCWD_BUFSZ) ;
+  buf = (char*)ats_malloc_gc(atslib_GETCWD_BUFSZ) ;
 //
 // HX: this strategy may not be so attractive;
 // an alternative is to use pathconf to get the maximum pathname length
@@ -111,7 +121,21 @@ atslib_getcwd0 () {
   return buf ;
 } // end of [atslib_getcwd0]
 
-%} // end of [%{^ ... %}]
+%} // end of [%{^]
+
+(* ****** ****** *)
+
+%{^
+
+ats_ptr_type
+atslib_environ_get_arrsz
+  (size_t *sizep) {
+  size_t i = 0 ;
+  for (i = 0; environ[i] != (char*)0; i += 1) ; *sizep = i ;
+  return &environ[0] ;
+} // end of [atslib_environ_get_arrsz]
+
+%} // end of [%{^]
 
 (* ****** ****** *)
 

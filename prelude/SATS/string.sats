@@ -683,8 +683,6 @@ castfn string_takeout_ptr // non-reentrant!
 //
 castfn strbuf_of_strptr {l:agz}
   (x: strptr l):<> [m,n:int | 0 <= n; n < m] strbufptr_gc (m, n, l)
-castfn strptr_of_strbuf
-  {m,n:int} {l:addr} (x: strbufptr_gc (m, n, l)):<> [l > null] strptr l
 castfn strbuf_takeout_ptr {m,n:int} {l:addr}
   (pf: !strbuf_v (m, n, l) | x: ptr l):<> (strptr l -<lin,prf> void | strptr l)
 //
@@ -708,9 +706,23 @@ and prerr_strptr {l:addr} (x: !strptr l): void = "atspre_prerr_string"
 overload print with print_strptr
 overload prerr with prerr_strptr
 //
+symintr strptr_of
+castfn strptr_of_strbuf {m,n:int}
+  {l:addr} (x: strbufptr_gc (m, n, l)):<> [l > null] strptr l
+overload strptr_of with strptr_of_strbuf
+castfn strptr_of_strptrlen
+  {l:addr} {n:int} (x: strptrlen (l, n)):<> [l > null] strptr l
+overload strptr_of with strptr_of_strptrlen
+//
 (* ****** ****** *)
 
 fun strptr_dup {l:agz} (x: !strptr l): strptr1
+fun string_tail
+  {n,i:nat | i <= n} (
+  x: string n, i: size_t i
+) :<> [l:addr] (strptr l -<lin,prf> void | strptrlen (l, n-i))
+  = "atspre_padd_size"
+// end pf [string_tail]
 
 (* ****** ****** *)
 

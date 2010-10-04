@@ -73,7 +73,7 @@ implement main {n} (argc, argv) = let
           val name = argv.[i]
           val (pfopt | p_ifp) = fopen_err (name, file_mode_r)
         in
-          if p_ifp <> null then let
+          if p_ifp > null then let
             prval Some_v (pf) = pfopt
             val (pf_stdout | p_stdout) = stdout_get ()
             val _(*err*) = filecopy_err

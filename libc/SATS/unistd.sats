@@ -40,17 +40,17 @@
 %} // end of [%{#]
 
 (* ****** ****** *)
-
+//
 staload TYPES = "libc/sys/SATS/types.sats"
-
+//
 typedef off_t = $TYPES.off_t
 typedef pid_t = $TYPES.pid_t
 typedef uid_t = $TYPES.uid_t
-
+//
 typedef mode_t = $TYPES.mode_t
-
+//
 typedef whence_t = $TYPES.whence_t
-
+//
 (* ****** ****** *)
 
 staload FCNTL = "libc/SATS/fcntl.sats"
@@ -338,6 +338,14 @@ fun ttyname_r
 fun isatty {fd:nat}
   (fd: int fd): int = "#atslib_isatty" // 1/0 : yes/no
 // end of [isatty]
+
+(* ****** ****** *)
+
+fun environ_get_arrsz
+  (n: &size_t? >> size_t n):<!ref> #[n:nat] [l:addr] (
+  array_v (string, n, l), array_v (string, n, l) -<lin,prf> void | ptr l
+) = "atslib_environ_get_arrsz"
+// end of [environ_get_arrsz]
 
 (* ****** ****** *)
 
