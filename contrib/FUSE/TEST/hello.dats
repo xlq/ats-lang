@@ -43,6 +43,29 @@ extern val hello_path : string = "#hello_path"
 
 (* ****** ****** *)
 
+(*
+#define LOGFILENAME "/tmp/hello_log"
+extern fun log_int (msg: int): void = "log_int"
+implement log_int (msg) = let
+  val fil = fopen_ref_exn (LOGFILENAME, file_mode_aa)
+  val () = fprint_int (fil, msg)
+  val () = fprint_newline (fil)
+  val () = fclose_exn (fil)
+in
+  // nothing
+end // end of [log_int]
+extern fun log_string (msg: string): void = "log_string"
+implement log_string (msg) = let
+  val fil = fopen_ref_exn (LOGFILENAME, file_mode_aa)
+  val () = fprint_string (fil, msg)
+  val () = fclose_exn (fil)
+in
+  // nothing
+end // end of [log_string]
+*)
+
+(* ****** ****** *)
+
 %{^
 static
 int hello_getattr (
@@ -73,6 +96,7 @@ fun hello_getattr (
 
 (* ****** ****** *)
 
+/*
 %{^
 static
 int hello_readdir (
@@ -82,25 +106,59 @@ int hello_readdir (
 , off_t offset
 , struct fuse_file_info *fi
 ) {
-    (void) offset; (void) fi;
-//
-    if (strcmp(path, "/") != 0) return -ENOENT;
-//
-    filler (buf, ".", NULL, 0) ;
-    filler (buf, "..", NULL, 0) ;
-    filler (buf, hello_path + 1, NULL, 0) ;
-//
-    return 0;
+  (void)offset; (void)fi;
+  if (strcmp(path, "/") != 0) return -ENOENT;
+  filler (buf, ".", NULL, 0) ;
+  filler (buf, "..", NULL, 0) ;
+  filler (buf, hello_path + 1, NULL, 0) ;
+  return 0;
 } // end of [hello_readdir]
-%} // end of [%{^]
+%}
+*/
 extern
 fun hello_readdir (
-  path: string, buf: ptr, filler: fuse_fill_dir_t, offset: off_t
-) : int // 0/1: succ/fail
+  path: string
+, buf: ptr, filler: fuse_fill_dir_t, ofs: off_t
+, fi: &fuse_file_info
+) : int = "hello_readdir" // 0/1: succ/fail
+// (*
+implement
+hello_readdir (
+  path, buf, filler, ofs, fi
+) = let
+(*
+  val () = log_string "hello_readdir(bef)\n"
+*)
+  var res: int = 0
+  val () = while (true) let
+    val test = (path = "/")
+    val () = if ~test then
+      (res := ~int_of(ENOENT); break)
+    val filler = __cast (filler) where {
+      // HX: [off_t] cannot be changed to [int]!!!
+      extern castfn __cast (x: fuse_fill_dir_t): (ptr, string, ptr, off_t) -> int
+    } // end of [val]
+    val _0 = (off_of_lint)0L
+    val _err = filler (buf, ".", null, _0)
+    val _err = filler (buf, "..", null, _0)
+    val hpath1 = __tail (hello_path) where {
+      extern fun __tail (x: string):<> string = "atspre_psucc"
+    } // end of [val]
+    val _err = filler (buf, hpath1, null, _0)
+  in
+    break
+  end // end of [val]
+(*
+  val () = log_string "hello_readdir(aft)\n"
+*)
+in
+  res (* 0/neg : succ/fail *)
+end // end of [hello_readdir]
+// *)
 
 (* ****** ****** *)
 
-%{^
+/*
 static
 int hello_open (
   const char *path
@@ -114,16 +172,29 @@ int hello_open (
     return 0;
 //
 } // end of [hello_open]
-%} // end of [%{^]
+*/
 extern
 fun hello_open
-  (path: string, fi: &fuse_file_info): int = "#hello_open"
+  (path: string, fi: &fuse_file_info): int = "hello_open"
 // end of [hello_open]
+implement
+hello_open (path, fi) = let
+  var res: int = 0
+  val () = while (true) let
+    val test =  path = hello_path
+    val () = if ~test then (res := ~(int_of)ENOENT; break)
+    val test = ((fi.flags land 0x3U) = (uint_of)O_RDONLY)
+    val () = if ~test then (res := ~(int_of)EACCES; break)
+  in
+    break
+  end // end of [val]
+in
+  res (* 0/neg : succ/fail *)
+end // end of [hello_open]
 
 (* ****** ****** *)
 
-(*
-%{^
+/*
 static
 int hello_read (
   const char *path
@@ -147,8 +218,7 @@ int hello_read (
 //
     return size;
 } // end of [hello_read]
-%} // end of [%{^]
-*)
+*/
 //
 // HX-2010-09-30:
 // this is really an overkill, but the idea is demonstrated ...
@@ -191,7 +261,7 @@ extern
 fun hello_read {n:nat} {l:addr} (
     pf: !bytes n @ l
   | path: string, p_buf: ptr l, n: size_t n, ofs: off_t, fi: &fuse_file_info
-) : ssize_t = "hello_read"
+) : int = "hello_read"
 implement hello_read
   (pf | path, p_buf, n, ofs, fi) = let
   var res: errno_t = ENONE
@@ -205,8 +275,8 @@ implement hello_read
   val ofs = size1_of_size (ofs)
 in
   if res = ENONE then
-    ssize_of_size(hello_read_main (pf | path, p_buf, n, ofs, fi))
-  else ssize_of_int(~int_of_errno(res))
+    int_of_size(hello_read_main (pf | path, p_buf, n, ofs, fi))
+  else ~int_of_errno(res)
 end // end of [hello_read]
 
 (* ****** ****** *)
@@ -221,9 +291,9 @@ static
 struct fuse_operations
 hello_oper = {
   .getattr= hello_getattr,
-  .readdir= hello_readdir,
-  .open= hello_open,
-  .read= hello_read,
+  .readdir= (fuse_readdir_t)hello_readdir,
+  .open= (fuse_open_t)hello_open,
+  .read= (fuse_read_t)hello_read,
 } ; // end of [fuse_operations]
 
 ats_void_type

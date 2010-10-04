@@ -49,7 +49,8 @@ typedef mode_t = $TYPES.mode_t
 
 abst@ype
 flag_t = $extype "ats_fcntlflag_type"
-castfn int_of_flag (f: flag_t):<> int
+castfn uint_of_flag (f: flag_t):<> uint
+overload uint_of with uint_of_flag
 abst@ype disjflag_t = flag_t // for [lor]
 abst@ype conjflag_t = flag_t // for [land] // for masks
 

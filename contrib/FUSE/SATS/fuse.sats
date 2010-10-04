@@ -45,8 +45,7 @@ viewtypedef fuse = fuse_struct
 (* ****** ****** *)
 
 typedef
-fuse_fill_dir_t =
-  (ptr, string, &stat, off_t) -<fun1> int
+fuse_fill_dir_t = (ptr, string, &stat, off_t) -> int
 // end of [fuse_fill_dir_t]
 
 (* ****** ****** *)

@@ -24,7 +24,7 @@ fun setblock {fd:int} (
   val f = __getfl (fd) where {
     extern fun __getfl (fd: int): flag_t = "atslib_fcntl_getfl"
   }
-  val i = int_of_flag (f)
+  val u = uint_of_flag (f); val i = int_of_uint (u)
 in
   if i >= 0 then let
     val f = if block then (f land ~O_NONBLOCK) else (f lor O_NONBLOCK)

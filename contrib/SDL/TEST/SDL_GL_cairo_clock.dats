@@ -35,7 +35,9 @@ fn drawClock {l:agz}
   var t: time_t // unintialized
   val _(*ignored*) = time_get_and_set (t)
   var tm: tm_struct // unintialized
-  val () = localtime_r (t, tm)
+  val _ptr = localtime_r (t, tm)
+  val () = assert_errmsg (_ptr > null, #LOCATION)
+  prval () = opt_unsome {tm_struct} (tm)
   val ss = tm.tm_sec * PI / 30
   val ms = tm.tm_min * PI / 30 // + ss / 60
   val hs = tm.tm_hour * PI / 6 + ms / 12

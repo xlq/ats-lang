@@ -385,8 +385,8 @@ while (true) let
   ) : [n>0] void
   var b: strptr0 and rest: strptr0
   val () = parts (path, n, b, rest)
-  val _0 = byte_of_int (0)
-  var !p_dummy with pf_dummy = @[byte][0](_0)
+  var !p_dummy with pf_dummy = @[byte][0]()
+  val () = pf_dummy := bytes_v_of_b0ytes_v (pf_dummy)
   val () = res := F_WRITE (pf_dummy | b, rest, p_dummy, 0)
   val () =
 //

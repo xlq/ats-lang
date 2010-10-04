@@ -147,8 +147,7 @@ in
   case+ 0 of
   | _ when (TYPE(S_IFCHR) orelse TYPE(S_IFBLK)) => let
       val rdev = st.st_rdev
-      val rdev = int_of_dev (rdev)
-      val rdev = uint_of (rdev)
+      val rdev = uint_of_dev (rdev)
       val u1 = rdev >> 8
       val u2 = rdev land 0xFFU
     in

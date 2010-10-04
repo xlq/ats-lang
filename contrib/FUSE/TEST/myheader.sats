@@ -2,6 +2,8 @@
 
 %{#
 #define FUSE_USE_VERSION 26
+#include "prelude/CATS/basics.cats"
+#include "prelude/CATS/bool.cats"
 #include "prelude/CATS/char.cats"
 #include "prelude/CATS/integer.cats"
 #include "prelude/CATS/pointer.cats"
