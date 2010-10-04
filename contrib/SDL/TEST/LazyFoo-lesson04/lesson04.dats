@@ -56,7 +56,7 @@ implement apply_surface
 // HX: I hate this style!
 //
 var screen
-  : SDL_Surface_ref0 = SDL_Surface_ref_null (null)
+  : SDL_Surface_ref0 = SDL_Surface_ref_null ()
 // end of [screen]
 
 extern
@@ -95,7 +95,7 @@ end // end of [init]
 // HX: I hate this style!
 //
 var image
-  : SDL_Surface_ref0 = SDL_Surface_ref_null (null)
+  : SDL_Surface_ref0 = SDL_Surface_ref_null ()
 // end of [image]
 
 extern
@@ -128,7 +128,7 @@ implement clean_up (pf | (*none*)) = let
   val _image = image
   val () = assert (ref_isnot_null _image)
   val () = SDL_FreeSurface (_image)
-  val () = image := SDL_Surface_ref_null (null)
+  val () = image := SDL_Surface_ref_null ()
 in
   SDL_Quit ()
 end // end of [clean_up]

@@ -45,14 +45,23 @@
 
 /* ****** ****** */
 
-static inline
+ATSinline
+ats_ptr_type
+atsctrb_SDL_ref_null() { return ((ats_ptr_type)0) ; }
+
+ATSinline()
+ats_void_type atsctrb_SDL_ref_free_null () { return ; }
+
+/* ****** ****** */
+
+ATSinline()
 ats_bool_type
 atsctrb_SDL_ref_is_null
   (ats_ref_type p) {
   return (p == (ats_ptr_type)0 ? ats_true_bool : ats_false_bool) ;
 } // end of [atsctrb_SDL_is_null]
 
-static inline
+ATSinline()
 ats_bool_type
 atsctrb_SDL_ref_isnot_null
   (ats_ref_type p) {

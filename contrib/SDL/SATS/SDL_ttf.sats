@@ -51,15 +51,16 @@ staload "contrib/SDL/SATS/SDL.sats"
 (* ****** ****** *)
 
 //
-// is this type refcounted?
+// HX-2010-jan: is this type refcounted?
 //
 absviewtype TTF_Font_ref (l:addr) // TTF_Font* or null
 viewtypedef TTF_Font_ref0 = [l:agez] TTF_Font_ref l
 viewtypedef TTF_Font_ref1 = [l:addr | l <> null] TTF_Font_ref l
 
-castfn TTF_Font_ref_null (p: ptr null): TTF_Font_ref null
-
-castfn TTF_Font_ref_free_null (sf: TTF_Font_ref null): ptr
+fun TTF_Font_ref_null
+  ():<> TTF_Font_ref null = "atsctrb_SDL_ref_null"
+fun TTF_Font_ref_free_null
+  (sf: TTF_Font_ref null):<> void = "atsctrb_SDL_ref_free_null"
 // overload ref_free_null with TTF_Font_ref_free_null
 
 fun TTF_Font_ref_is_null

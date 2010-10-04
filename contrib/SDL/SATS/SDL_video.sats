@@ -87,9 +87,10 @@ absviewtype SDL_Surface_ref (l:addr) // SDL_Surface* or null
 viewtypedef SDL_Surface_ref0 = [l:agez] SDL_Surface_ref l
 viewtypedef SDL_Surface_ref1 = [l:addr | l > null] SDL_Surface_ref l
 
-castfn SDL_Surface_ref_null (p: ptr null): SDL_Surface_ref null
-
-castfn SDL_Surface_ref_free_null (sf: SDL_Surface_ref null): ptr
+fun SDL_Surface_ref_null
+  ():<> SDL_Surface_ref null = "atsctrb_SDL_ref_null"
+fun SDL_Surface_ref_free_null
+  (sf: SDL_Surface_ref null):<> void = "atsctrb_SDL_ref_free_null"
 overload ref_free_null with SDL_Surface_ref_free_null
 
 fun SDL_Surface_ref_is_null
