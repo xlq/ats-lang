@@ -362,7 +362,7 @@ implement file_send (pf_conn | fd, filename) = let
 *)
   val [l_fil:addr] (pf_fil_opt | p_fil) = fopen_err (filename, file_mode_r)
 in
-  if (p_fil <> null) then let
+  if (p_fil > null) then let
     prval Some_v pf_fil = pf_fil_opt
     val () = file_send_main (pf_conn | fd, !p_fil, filename)
   in

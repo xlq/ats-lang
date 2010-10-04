@@ -52,6 +52,28 @@ fun F_UNLINK
 
 (* ****** ****** *)
 
+%{^
+#include <pthread.h>
+static pthread_mutex_t
+theMutex_hfuselog = PTHREAD_MUTEX_INITIALIZER ;
+ats_void_type
+hfuselog_lock () {
+  (void)pthread_mutex_lock (&theMutex_hfuselog) ; return ;
+} // end of [hfuselog_lock]
+ats_void_type
+hfuselog_unlock () {
+  (void)pthread_mutex_unlock (&theMutex_hfuselog) ; return ;
+} // end of [hfuselog_unlock]
+%} // end of [{%{^]
+(*
+extern
+fun hfuselog_lock ():<> (hfuselog_v | void) = "#hfuselog_lock"
+extern
+fun hfuselog_unlock (pf: hfuselog_v | (*none*)):<> void = "#hfuselog_unlock"
+*)
+
+(* ****** ****** *)
+
 /*
 static int tfprintf(const char *fmt, ...)
 {
@@ -167,14 +189,14 @@ in
       end else let (* not found *)
         val sbuf = string_make_substring (path1, 0, n1)
         val () = bname := strptr_of_strbuf (sbuf)
-        val () = rname := strptr_null (null)
+        val () = rname := strptr_null ()
       in
         // nothing
       end // end of [if]
     end // end of [_ when ...]
   | _ (*n = 1*) => let
-      val () = bname := strptr_null (null)
-      val () = rname := strptr_null (null)
+      val () = bname := strptr_null ()
+      val () = rname := strptr_null ()
     in
       // nothing
     end // end of [_]

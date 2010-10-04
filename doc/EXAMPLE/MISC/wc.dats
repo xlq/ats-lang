@@ -75,7 +75,9 @@ end // end of [wc_aux_2]
 
 fun wc (filename: string): (Nat, Nat, Nat) = let
   val (pf_fil | ptr_fil) = fopen_exn (filename, file_mode_r)
-  val (pf_ngc, pf_buf | p_buf) = malloc_ngc (BUFSZ)
+  val (pfopt | p_buf) = malloc_ngc (BUFSZ)
+  val () = assert_errmsg (p_buf > null, #LOCATION)
+  prval malloc_v_succ (pf_ngc, pf_buf) = pfopt
   prval () = pf_buf := bytes_v_of_b0ytes_v (pf_buf)
   var lc: Nat = 0
   and wc: Nat = 0

@@ -151,7 +151,7 @@ in
     in
       path
     end // end of [list_vt_cons]
-  | ~list_vt_nil () => strptr_null (null)
+  | ~list_vt_nil () => strptr_null ()
 end // end of [getcwdx_main]
 
 (* ****** ****** *)
@@ -171,10 +171,10 @@ in
     end else let
       prval () = opt_unnone {stat} (st)
     in
-      close_exn (pf_fd | fd); strptr_null (null)
+      close_exn (pf_fd | fd); strptr_null ()
     end // end of [if]
   end else let
-    prval open_v_fail () = pfopt_fd in strptr_null (null)
+    prval open_v_fail () = pfopt_fd in strptr_null ()
   end // end of [if]  
 end (* end of [getcwdx] *)
 

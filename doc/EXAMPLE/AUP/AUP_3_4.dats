@@ -42,7 +42,7 @@ in
     in
       strptr_of_strbuf @(pfgc, pf | p)
     end // end of [_ when ...]
-  | _ (*maxlen = -1L*) => strptr_null (null)
+  | _ (*maxlen = -1L*) => strptr_null ()
 end // end of [mygetcwd]
 
 (* ****** ****** *)

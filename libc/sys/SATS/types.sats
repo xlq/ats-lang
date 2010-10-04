@@ -59,6 +59,7 @@ abst@ype clockid_t = $extype "ats_clockid_type" // for clock ID type
 (* ****** ****** *)
 
 abst@ype dev_t = $extype "ats_dev_type" // for device IDs
+castfn dev_of_uint (x: uint):<> dev_t
 castfn uint_of_dev (x: dev_t):<> uint
 fun eq_dev_dev (x1: dev_t, x2: dev_t): bool = "atslib_eq_dev_dev"
 overload = with eq_dev_dev
@@ -85,8 +86,10 @@ abst@ype key_t = $extype "ats_key_type" // for XSI interprocess communication
 
 abst@ype mode_t = $extype "ats_mode_type" // file mode
 //
-castfn uint_of_mode (x: mode_t):<> uint
+castfn mode_of_int (x: int):<> mode_t
+castfn int_of_mode (x: mode_t):<> int
 castfn mode_of_uint (x: uint):<> mode_t
+castfn uint_of_mode (x: mode_t):<> uint
 //
 fun eq_mode_mode
   (m1: mode_t, m2: mode_t):<> bool = "atslib_eq_mode_mode"

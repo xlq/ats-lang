@@ -127,7 +127,7 @@ implement main (argc, argv) = let
 
 macdef GT = byte_of_char '>' 
 fun loop {pos,bsz:nat | bsz > 0} {l_buf:addr} (
-    pf_ngc: free_ngc_v (bsz, l_buf), pf_buf: bytes (bsz) @ l_buf
+    pf_gc: free_gc_v (bsz, l_buf), pf_buf: bytes (bsz) @ l_buf
   | inp: &FILE r, p_buf: ptr l_buf, bsz: size_t bsz, pos: size_t pos
   ) : void = begin
   if pos + LINE <= bsz then let
@@ -141,9 +141,9 @@ fun loop {pos,bsz:nat | bsz > 0} {l_buf:addr} (
         val () = fwrite_buf (pf_buf | p_buf, pos, pos_new-pos, stdout_ref)
         val () = fputc ('\n', stdout_ref)
       in
-        loop (pf_ngc, pf_buf | inp, p_buf, bsz, 0)
+        loop (pf_gc, pf_buf | inp, p_buf, bsz, 0)
       end else begin
-        loop (pf_ngc, pf_buf | inp, p_buf, bsz, pos_new)
+        loop (pf_gc, pf_buf | inp, p_buf, bsz, pos_new)
       end (* end of [if] *)
     end else let
       val () = if pos > 0 then let
@@ -152,26 +152,26 @@ fun loop {pos,bsz:nat | bsz > 0} {l_buf:addr} (
       in
         // empty
       end // end of [val]
-      val () = free_ngc (pf_ngc, pf_buf | p_buf)
+      val () = free_gc (pf_gc, pf_buf | p_buf)
     in
       // empty
     end (* end of [if] *)
   end else let
     val bsz = bsz + bsz
-    val (pf_ngc, pf_buf | p_buf) = realloc_ngc (pf_ngc, pf_buf | p_buf, bsz)
+    val (pf_gc, pf_buf | p_buf) = realloc_gc (pf_gc, pf_buf | p_buf, bsz)
     prval pf_buf = bytes_v_of_b0ytes_v pf_buf
   in
-    loop (pf_ngc, pf_buf | inp, p_buf, bsz, pos)
+    loop (pf_gc, pf_buf | inp, p_buf, bsz, pos)
   end // end of [if]
 end (* end of [loop] *)
 
 val () = iubcmpltarr_initialize () where {
   extern fun iubcmpltarr_initialize (): void = "iubcmpltarr_initialize"
 }
-val (pf_ngc, pf_buf | p_buf) = malloc_ngc (BUFSZ)
+val (pf_gc, pf_buf | p_buf) = malloc_gc (BUFSZ)
 prval pf_buf = bytes_v_of_b0ytes_v pf_buf
 val (pf_stdin | p_stdin) = stdin_get ()
-val () = loop (pf_ngc, pf_buf | !p_stdin, p_buf, BUFSZ, 0)
+val () = loop (pf_gc, pf_buf | !p_stdin, p_buf, BUFSZ, 0)
 val () = stdin_view_set (pf_stdin | (*none*))
 
 in

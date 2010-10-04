@@ -345,7 +345,10 @@ fun file_send_main {fd: int}
   (pf_conn: !socket_v (fd, conn) |
    fd: int fd, file: &FILE r, filename: string): void = let
 
-val [l_buf:addr] (pf_ngc, pf_buf | p_buf) = malloc_ngc (BUFSZ)
+val [l_buf:addr]
+  (pfopt | p_buf) = malloc_ngc (BUFSZ)
+val () = assert_errmsg (p_buf > null, #LOCATION)
+prval malloc_v_succ (pf_ngc, pf_buf) = pfopt
 prval () = pf_buf := bytes_v_of_b0ytes_v (pf_buf)
 val msg200_str = msg200_of_filename filename
 val msg200_str = string1_of_string msg200_str
@@ -380,7 +383,7 @@ val [l_file:addr] (pf_file_opt | file) = fopen_err (filename, file_mode_r)
 
 in
 
-if (file <> null) then let
+if (file > null) then let
   prval Some_v pf_file = pf_file_opt
 in
   file_send_main (pf_conn | fd, !file, filename);
@@ -718,12 +721,14 @@ implement main (argc, argv) = let
   val () = sockaddr_ipv4_init (servaddr, AF_INET, in4add_any, servport)
   val () = bind_ipv4_exn (pf_sock | fd, servaddr)
   val () = listen_exn (pf_sock | fd, BACKLOG)
-  val (pf_ngc, pf_buf | buf) = malloc_ngc (BUFSZ)
+  val (pfopt | p_buf) = malloc_ngc (BUFSZ)
+  val () = assert_errmsg (p_buf > null, #LOCATION)
+  prval malloc_v_succ (pf_ngc, pf_buf) = pfopt
   val () = sigpipe_ignore () // prevent server crash due to broken pipe
   prval () = pf_buf := bytes_v_of_b0ytes_v (pf_buf)
-  val () = main_loop(pf_sock, pf_buf | fd, buf)
+  val () = main_loop(pf_sock, pf_buf | fd, p_buf)
   val () = socket_close_exn (pf_sock | fd)
-  val () = free_ngc (pf_ngc, pf_buf | buf)
+  val () = free_ngc (pf_ngc, pf_buf | p_buf)
 in
   // empty
 end // end of [main]

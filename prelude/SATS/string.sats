@@ -463,18 +463,16 @@ fun string_equal (s1: string, s2: string):<> bool = "atspre_eq_string_string"
 
 (* ****** ****** *)
 
-symintr string_length
-
 fun strbuf_length {m,n:nat}
   (sbf: &strbuf (m, n)):<> size_t n = "atspre_string_length"
 // end of [strbuf_length]
 
+symintr string_length
 fun string0_length
   (str: string):<> size_t = "atspre_string_length"
-overload string_length with string0_length
-
 fun string1_length
   {n:nat} (str: string n):<> size_t n = "atspre_string_length"
+overload string_length with string0_length
 overload string_length with string1_length
 
 fun strptr_length
@@ -483,32 +481,27 @@ fun strptr_length
 
 (* ****** ****** *)
 
+fun strbuf_is_empty {m,n:int}
+  (sbf: &strbuf (m, n)):<> bool (n==0) = "atspre_string_is_empty"
+// end of [strbuf_is_empty]
+
 symintr string_is_empty
-
-fun strbuf_is_empty
-  {m,n:nat} (sbf: &strbuf (m, n)):<> bool (n==0)
-  = "atspre_string_is_empty"
-
 fun string0_is_empty
   (str: string):<> bool = "atspre_string_is_empty"
 overload string_is_empty with string0_is_empty
-
 fun string1_is_empty {n:nat}
   (str: string n):<> bool (n==0) = "atspre_string_is_empty"
 overload string_is_empty with string1_is_empty
 
 (* ****** ****** *)
 
+fun strbuf_isnot_empty {m,n:int}
+  (sbf: &strbuf (m, n)):<> bool (n > 0) = "atspre_string_isnot_empty"
+
 symintr string_isnot_empty
-
-fun strbuf_isnot_empty {m,n:nat}
-  (sbf: &strbuf (m, n)):<> bool (n > 0)
-  = "atspre_string_isnot_empty"
-
 fun string0_isnot_empty
   (str: string):<> bool = "atspre_string_isnot_empty"
 overload string_isnot_empty with string0_isnot_empty
-
 fun string1_isnot_empty {n:nat} (str: string n):<> bool (n > 0)
   = "atspre_string_isnot_empty"
 overload string_isnot_empty with string1_isnot_empty
@@ -518,21 +511,20 @@ overload string_isnot_empty with string1_isnot_empty
 fun strbuf_is_at_end {m,n,i:nat | i <= n}
   (sbf: &strbuf (m, n), i: size_t i):<> bool (i == n)
   = "atspre_string_is_at_end"
-
 fun string_is_at_end {n,i:nat | i <= n}
-  (str: string n, i: size_t i):<> bool (i == n)
-  = "atspre_string_is_at_end"
+  (str: string n, i: size_t i):<> bool (i == n) = "atspre_string_is_at_end"
+// end of [string_is_at_end]
 
 (* ****** ****** *)
 
 fun strbuf_isnot_at_end
-  {m,n,i:nat | i <= n} (sbf: &strbuf (m, n), i: size_t i):<> bool (i <> n)
+  {m,n:int} {i:nat | i <= n}
+  (sbf: &strbuf (m, n), i: size_t i):<> bool (i <> n)
   = "atspre_string_isnot_at_end"
 // end of [strbuf_isnot_at_end]
 
-fun string_isnot_at_end
-  {n,i:nat | i <= n} (str: string n, i: size_t i):<> bool (i <> n)
-  = "atspre_string_isnot_at_end"
+fun string_isnot_at_end {n,i:nat | i <= n}
+  (str: string n, i: size_t i):<> bool (i <> n) = "atspre_string_isnot_at_end"
 // end of [string_isnot_at_end]
 
 (* ****** ****** *)
@@ -542,10 +534,11 @@ fun string_explode {n:nat}
 // end of [string_explode]
 
 (* ****** ****** *)
-
-// alias of [string_make_list]
-fun string_implode {n:nat} (cs: list (char, n)):<> strbufptr_gc n
-  = "atspre_string_implode"
+//
+// HX: this is an alias of [string_make_list]
+//
+fun string_implode {n:nat}
+  (cs: list (char, n)):<> strbufptr_gc n = "atspre_string_implode"
 // end of [string_implode]
 
 (* ****** ****** *)
@@ -570,41 +563,42 @@ fun string_index_of_char_from_right
   = "atspre_string_index_of_char_from_right"
 
 (* ****** ****** *)
-
+//
 // This function is based on [strstr] in [string.h]
 // Note that the NULL character is not compared
+//
 fun string_index_of_string // locate a substring from left
   {n1,n2:nat} (haystack: string n1, needle: string n2):<> ssizeBtw (~1, n1)
   = "atspre_string_index_of_string"
 
 (* ****** ****** *)
-
-// implemented in [prelude/CATS/string.cats]
+//
+// HX: implemented in [prelude/CATS/string.cats]
+//
 fun string_singleton (c: char):<> strbufptr_gc 1 = "atspre_string_singleton"
 
 (* ****** ****** *)
-
-// implemented in [prelude/DATS/string.dats]
+//
+// HX: implemented in [prelude/DATS/string.dats]
+//
 fun string_foreach__main {v:view} {vt:viewtype} {n:nat} {f:eff}
   (pf: !v | str: string n, f: (!v | c1har, !vt) -<f> void, env: !vt) :<f> void
 // end of [string_foreach__main]
 
 (* ****** ****** *)
-
-// implemented in [prelude/DATS/string.dats]
-fun strbuf_tolower {m,n:nat} (buf: &strbuf (m, n)): void
-  = "atspre_strbuf_tolower"
-
-// implemented in [prelude/DATS/string.dats]
+//
+// HX: implemented in [prelude/DATS/string.dats]
+//
+fun strbuf_tolower
+  {m,n:nat} (buf: &strbuf (m, n)): void = "atspre_strbuf_tolower"
 fun string_tolower {n:nat} (str: string n):<> strbufptr_gc n
 
 (* ****** ****** *)
-
-// implemented in [prelude/DATS/string.dats]
-fun strbuf_toupper {m,n:nat} (buf: &strbuf (m, n)): void
-  = "atspre_strbuf_toupper"
-
-// implemented in [prelude/DATS/string.dats]
+//
+// HX: implemented in [prelude/DATS/string.dats]
+//
+fun strbuf_toupper
+  {m,n:nat} (buf: &strbuf (m, n)): void = "atspre_strbuf_toupper"
 fun string_toupper {n:nat} (str: string n):<> strbufptr_gc n
 
 (* ****** ****** *)
@@ -617,10 +611,12 @@ fun string_hash_33 (str: string):<> ulint = "atspre_string_hash_33"
 (* ****** ****** *)
 
 //
-// functions for optional strings
+// HX: functions for optional strings
 //
 
-// extval (ats_ptr_type, "0")
+//
+// HX: stropt_none = $extval (ats_ptr_type, "0")
+//
 val stropt_none : stropt (~1) = "atspre_stropt_none"
 
 castfn stropt_some {n:nat} (str: string n):<> stropt n
@@ -636,14 +632,15 @@ fun stropt_is_some {i:int} (stropt: stropt i):<> bool (i >= 0)
 (* ****** ****** *)
 
 //
-// functions for linear optional strings
+// HX: functions for linear optional strings
+// HX-2010-10-04: Given the availability of strptr, the demand for
+// linear optional strings has drastically reduced
 //
 
 absviewtype stropt_gc (m:int, n:int)
 
 castfn stropt_gc_none
   (_: ptr null): stropt_gc (0, 0)
-
 castfn stropt_gc_unnone
   {n:int} (x: stropt_gc (0, n)):<> ptr (null)
 
@@ -651,7 +648,6 @@ castfn stropt_gc_some
   {m,n:nat} {l:addr} (x: strbufptr_gc (m,n,l))
   :<> stropt_gc (m, n)
   = "atspre_stropt_some"
-
 castfn stropt_gc_unsome {m,n:nat | m > 0} // [m > n]
   (x: stropt_gc (m, n)):<> [l:addr] strbufptr_gc (m, n, l)
   = "atspre_stropt_unsome"
@@ -659,7 +655,6 @@ castfn stropt_gc_unsome {m,n:nat | m > 0} // [m > n]
 fun stropt_gc_is_none
   {m,n:nat} (s: !stropt_gc (m,n)):<> bool (m == 0)
   = "atspre_stropt_is_none"
-
 fun stropt_gc_is_some
   {m,n:nat} (s: !stropt_gc (m,n)):<> bool (m >= 1)
   = "atspre_stropt_is_some"
@@ -671,9 +666,8 @@ viewtypedef Stropt_gc = [m,n:nat] stropt_gc (m, n)
 //
 // HX-2010-08-10: linear strings
 //
-
+fun strptr_null ():<> strptr (null) = "#atspre_strptr_null"
 //
-castfn strptr_null (x: ptr null): strptr (null)
 fun strptr_is_null
   {l:addr} (x: !strptr l):<> bool (l==null) = "#atspre_ptr_is_null"
 fun strptr_isnot_null
@@ -701,8 +695,8 @@ castfn strptr_free_null (x: strptr null):<> ptr null
 fun strptr_free {l:addr} (x: strptr l):<> void = "atspre_strptr_free"
 //
 symintr fprint_strptr
-fun fprint0_strptr {l:addr} (out: FILEref, x: !strptr l): void
-  = "atspre_fprint_strptr"
+fun fprint0_strptr {l:addr}
+  (out: FILEref, x: !strptr l): void = "atspre_fprint_strptr"
 overload fprint_strptr with fprint0_strptr
 fun fprint1_strptr {l:addr} {m:file_mode}
   (pf: file_mode_lte (m, w) | out: &FILE m, x: !strptr l): void

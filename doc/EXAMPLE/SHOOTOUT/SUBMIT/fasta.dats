@@ -183,13 +183,13 @@ fn random_fasta {sz:nat} {l_tbl:addr}
       // empty
     end // end of [loop]
   val () = make_cumulative (pf_tbl | tbl, sz)
-  val (pf_ngc, pf_buf | p_buf) = malloc_ngc (WIDTH1) where {
+  val (pf_gc, pf_buf | p_buf) = malloc_gc (WIDTH1) where {
     val WIDTH1 = size1_of_int1 (WIDTH + 1)
   }
   prval pf_buf = bytes_v_of_b0ytes_v (pf_buf)
   val () = p_buf->[WIDTH] := byte_of_char '\n'
   val () = loop (pf_tbl, pf_buf | file, p_buf, n)
-  val () = free_ngc (pf_ngc, pf_buf | p_buf)
+  val () = free_gc (pf_gc, pf_buf | p_buf)
 in
   // empty
 end // end of [random_fasta]

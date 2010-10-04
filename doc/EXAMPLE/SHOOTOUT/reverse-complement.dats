@@ -99,7 +99,7 @@ extern fun fread_buf_line
 implement main (argc, argv) = let
 
 fun loop {pos,bsz:nat | bsz > 0} {l_buf:addr} (
-    pf_ngc: free_ngc_v (bsz, l_buf)
+    pf_gc: free_gc_v (bsz, l_buf)
   , pf_buf: bytes bsz @ l_buf
   | inp: &FILE r
   , p_buf: ptr l_buf
@@ -121,38 +121,38 @@ fun loop {pos,bsz:nat | bsz > 0} {l_buf:addr} (
           stdout_view_set (pf_stdout | (*none*))
         end;
 
-        loop (pf_ngc, pf_buf | inp, p_buf, bsz, 0)
+        loop (pf_gc, pf_buf | inp, p_buf, bsz, 0)
       end else begin
-        loop (pf_ngc, pf_buf | inp, p_buf, bsz, pos_new)
+        loop (pf_gc, pf_buf | inp, p_buf, bsz, pos_new)
       end
     else begin
       if pos > 0 then begin
         reverse_buf (!p_buf, pos);
         print_fasta (!p_buf, pos);
-        free_ngc (pf_ngc, pf_buf | p_buf)
+        free_gc (pf_gc, pf_buf | p_buf)
       end else begin
-        free_ngc (pf_ngc, pf_buf | p_buf)
+        free_gc (pf_gc, pf_buf | p_buf)
       end
     end
   end else let
     val bsz = bsz + bsz
-    val (pf_ngc, pf_buf | p_buf) =
-      realloc_ngc (pf_ngc, pf_buf | p_buf, bsz) where {
+    val (pf_gc, pf_buf | p_buf) =
+      realloc_gc (pf_gc, pf_buf | p_buf, bsz) where {
       val bsz = size1_of_int1 bsz
     } // end of [val]
     prval () = pf_buf := bytes_v_of_b0ytes_v (pf_buf)
   in
-    loop (pf_ngc, pf_buf | inp, p_buf, bsz, pos)
+    loop (pf_gc, pf_buf | inp, p_buf, bsz, pos)
   end // end of [if]
 end // end of [loop]
 
 val () = buildIubComplement ()
 val (pf_stdin | stdin) = stdin_get ()
-val (pf_ngc, pf_buf | buf) = malloc_ngc (BUFSZ)
+val (pf_gc, pf_buf | buf) = malloc_gc (BUFSZ)
 prval () = pf_buf := bytes_v_of_b0ytes_v (pf_buf)
 
 in
-  loop (pf_ngc, pf_buf | !stdin, buf, BUFSZ, 0);
+  loop (pf_gc, pf_buf | !stdin, buf, BUFSZ, 0);
   stdin_view_set (pf_stdin | (*none*))
 end // end of [main]
 

@@ -48,14 +48,17 @@ extern val hello_path : string = "#hello_path"
 absview hellolog_v
 
 %{^
+#include <pthread.h>
+static pthread_mutex_t
+theMutex_hellolog = PTHREAD_MUTEX_INITIALIZER ;
 ats_void_type
 hellolog_lock () {
-  return ;
-}
+  (void)pthread_mutex_lock (&theMutex_hellolog) ; return ;
+} // end of [hellolog_lock]
 ats_void_type
 hellolog_unlock () {
-  return ;
-}
+  (void)pthread_mutex_unlock (&theMutex_hellolog) ; return ;
+} // end of [hellolog_unlock]
 %} // end of [{%{^]
 extern
 fun hellolog_lock ():<> (hellolog_v | void) = "#hellolog_lock"
@@ -175,10 +178,11 @@ in
       path = hello_path
     )  => res where {
       val _0444 = mode_of_uint (0444U)
-      val () = stbuf.st_mode := (S_IFREG lor _0444) ;
+      val () = stbuf.st_mode := (S_IFREG lor _0444)
       val _1 = nlink_of_int (1)
       val () = stbuf.st_nlink := _1
-      val () = stbuf.st_size := off_of_size (string_length hello_str)
+      val n = string0_length (hello_str)
+      val () = stbuf.st_size := off_of_size (n)
       prval () = opt_some {stat} (stbuf)
     } // end of [_ when ...]
   | _ => res where {
@@ -217,7 +221,6 @@ fun hello_readdir (
 , buf: ptr, filler: fuse_fill_dir_t, ofs: off_t
 , fi: &fuse_file_info
 ) : int = "hello_readdir" // 0/1: succ/fail
-// (*
 implement
 hello_readdir (
   path, buf, filler, ofs, fi
@@ -254,7 +257,6 @@ hello_readdir (
 in
   res (* 0/neg : succ/fail *)
 end // end of [hello_readdir]
-// *)
 
 (* ****** ****** *)
 
@@ -390,7 +392,7 @@ implement main_dummy () = ()
 static
 struct fuse_operations
 hello_oper = {
-  .getattr= hello_getattr,
+  .getattr= (fuse_getattr_t)hello_getattr,
   .readdir= (fuse_readdir_t)hello_readdir,
   .open= (fuse_open_t)hello_open,
   .read= (fuse_read_t)hello_read,

@@ -364,6 +364,8 @@ atspre_stropt_is_some
 
 /* ****** ****** */
 
+#define atspre_strptr_null() ((ats_ptr_type)0)
+
 ATSinline()
 ats_void_type
 atspre_strptr_free

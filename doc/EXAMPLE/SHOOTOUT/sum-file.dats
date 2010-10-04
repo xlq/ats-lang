@@ -68,9 +68,9 @@ implement main (argc, argv) = let
 #if FGETINT #then
   val sum = loop (!p_stdin, 0)
 #else
-  val (pf_ngc, pf_buf | buf) = malloc_ngc (BUFSZ)
+  val (pf_gc, pf_buf | buf) = malloc_gc (BUFSZ)
   val sum = loop (pf_buf | !p_stdin, buf, 0)
-  val () = free_ngc (pf_ngc, pf_buf | buf)
+  val () = free_gc (pf_gc, pf_buf | buf)
 #endif
   val () = stdin_view_set (pf_stdin | (*none*))
 in
