@@ -8,7 +8,7 @@
 
 //
 // How to compile:
-//   atscc -o listquicksort listquicksort.dats
+//   atscc -o quicksort_list quicksort_list.dats
 //
 *)
 
@@ -32,44 +32,49 @@ This is finally done now in ATS, which succeeds DML as well as extends it.
 
 (* ****** ****** *)
 
+staload "libats/SATS/ilistp.sats"
+stadef nil = ilist_nil
+stadef cons = ilist_cons
+
+(* ****** ****** *)
+
 sortdef nats = nat
-
-datasort intlst = nil | cons of (int, intlst)
-
-dataprop MSET (intlst, int(*nats*)) = 
-  | {x:nat} {xs:intlst} {n:nats}
+dataprop MSET (ilist, int(*nats*)) = 
+  | {x:nat} {xs:ilist} {n:nats}
     MSETcons (cons (x, xs), x + n) of MSET (xs, n)
   | MSETnil (nil, 0)
-  
-extern praxi MSET_istot {xs:intlst} (): [n:nats] MSET (xs, n)
+// end of [MSET]
+
+extern praxi MSET_istot {xs:ilist} (): [n:nats] MSET (xs, n)
 
 (* ****** ****** *)
 
-dataprop LB (int, intlst) =
-  | {l:nat} {x:nat | l <= x} {xs: intlst}
+dataprop LB (int, ilist) =
+  | {l:nat} {x:nat | l <= x} {xs: ilist}
     LBcons (l, cons (x, xs)) of LB (l, xs)
   | {l:nat} LBnil (l, nil)
+// end of [LB]
 
-dataprop UB (intlst, int) =
-  | {u:nat} {x:nat | x <= u} {xs: intlst}
+dataprop UB (ilist, int) =
+  | {u:nat} {x:nat | x <= u} {xs: ilist}
     UBcons (cons (x, xs), u) of UB (xs, u)
   | {u:nat} UBnil (nil, u)
+// end of [UB]
 
 (* ****** ****** *)
 
-extern praxi LB_MSET_lemma {x:nat} {xs1,xs2:intlst} {n:nats}
+extern praxi LB_MSET_lemma {x:nat} {xs1,xs2:ilist} {n:nats}
   (_: MSET (xs1, n), _: MSET (xs2, n), _lb: LB (x, xs1)):<prf> LB (x, xs2)
-
-extern praxi UB_MSET_lemma {x:nat} {xs1,xs2:intlst} {n:nats}
+extern praxi UB_MSET_lemma {x:nat} {xs1,xs2:ilist} {n:nats}
   (_: MSET (xs1, n), _: MSET (xs2, n), _ub: UB (xs1, x)):<prf> UB (xs2, x)
 
 (* ****** ****** *)
 
 extern prfun LB_lemma_monotone
-  {l1,l2:nat | l1 <= l2} {xs: intlst} (pf: LB (l2, xs)):<prf> LB (l1, xs)
+  {l1,l2:nat | l1 <= l2} {xs: ilist} (pf: LB (l2, xs)):<prf> LB (l1, xs)
 
 implement LB_lemma_monotone {l1,l2} (xs) = let
-  prfun aux {xs:intlst} .<xs>.
+  prfun aux {xs:ilist} .<xs>.
     (pf: LB (l2, xs)): LB (l1, xs) = begin
     case+ pf of LBcons (pf) => LBcons (aux pf) | LBnil () => LBnil ()
   end
@@ -80,10 +85,9 @@ end // end of [LB_lemma_monotone]
 (* ****** ****** *)
 
 extern prfun UB_lemma_monotone
-  {u1,u2:nat | u1 >= u2} {xs: intlst} (pf: UB (xs, u2)):<prf> UB (xs, u1)
-
+  {u1,u2:nat | u1 >= u2} {xs: ilist} (pf: UB (xs, u2)):<prf> UB (xs, u1)
 implement UB_lemma_monotone {u1,u2} (xs) = let
-  prfun aux {xs:intlst} .<xs>.
+  prfun aux {xs:ilist} .<xs>.
     (pf: UB (xs, u2)): UB (xs, u1) = begin
     case+ pf of UBcons (pf) => UBcons (aux pf) | UBnil () => UBnil ()
   end
@@ -93,21 +97,25 @@ end // end of [UB_lemma_monotone]
 
 (* ****** ****** *)
 
-dataprop ISORD (intlst) =
+dataprop ISORD (ilist) =
   | ISORDnil (nil)
-  | {x:nat} {xs:intlst} ISORDcons (cons (x, xs)) of (LB (x, xs), ISORD xs)
+  | {x:nat} {xs:ilist} ISORDcons (cons (x, xs)) of (LB (x, xs), ISORD xs)
+// end of [ISORD]
 
-dataprop APPEND (intlst, intlst, intlst) =
-  | {x:nat} {xs,ys,zs:intlst}
+dataprop APPEND (ilist, ilist, ilist) =
+  | {x:nat} {xs,ys,zs:ilist}
     APPENDcons (cons (x, xs), ys, cons (x, zs)) of APPEND (xs, ys, zs)
-  | {ys:intlst} APPENDnil (nil, ys, ys)
+  | {ys:ilist} APPENDnil (nil, ys, ys)
+// end of [APPEND]
 
-extern prfun APPEND_MSET_lemma {xs,ys,zs:intlst} {n1,n2:nats}
+(* ****** ****** *)
+
+extern prfun APPEND_MSET_lemma {xs,ys,zs:ilist} {n1,n2:nats}
   (pf1: MSET (xs, n1), pf2: MSET (ys, n2), pf3: APPEND (xs, ys, zs))
   :<prf> MSET (zs, n1 + n2)
 
 implement APPEND_MSET_lemma (pf1, pf2, pf3) = let
-  prfun aux {xs,ys,zs:intlst} {n1,n2:nats} .<xs>.
+  prfun aux {xs,ys,zs:ilist} {n1,n2:nats} .<xs>.
     (pf1: MSET (xs, n1), pf2: MSET (ys, n2), pf3: APPEND (xs, ys, zs))
     : MSET (zs, n1 + n2) = begin case+ pf3 of
     | APPENDcons (pf3) => let
@@ -119,7 +127,9 @@ in
   aux (pf1, pf2, pf3)
 end // end of [APPEND_MSET_lemma]
 
-extern prfun APPEND_ISORD_lemma {xs1,xs2,xs:intlst} {x:nat} (
+(* ****** ****** *)
+
+extern prfun APPEND_ISORD_lemma {xs1,xs2,xs:ilist} {x:nat} (
     pf1: ISORD xs1
   , pf2: ISORD xs2
   , pf3: UB (xs1, x)
@@ -128,7 +138,7 @@ extern prfun APPEND_ISORD_lemma {xs1,xs2,xs:intlst} {x:nat} (
 ) :<prf> ISORD (xs)
 
 implement APPEND_ISORD_lemma (pf1, pf2, pf3, pf4, pf5) = let
-  prfun aux {x0:nat} {xs1,xs2,xs:intlst} {x:nat | x0 <= x} .<xs1>. (
+  prfun aux {x0:nat} {xs1,xs2,xs:ilist} {x:nat | x0 <= x} .<xs1>. (
       pf1: ISORD xs1
     , pf2: ISORD xs2
     , pf3: UB (xs1, x)
@@ -167,19 +177,21 @@ abst@ype T (int) = double
 extern fun lte_elt_elt {x,y:nat} (x: T x, y: T y):<> bool (x <= y)
 overload <= with lte_elt_elt
 
-datatype list (intlst) =
-  | {x:pos} {xs:intlst} cons (cons (x, xs)) of (T (x), list (xs))
+datatype list (ilist) =
+  | {x:pos} {xs:ilist} cons (cons (x, xs)) of (T (x), list (xs))
   | nil (nil)
-  
-typedef list = [xs:intlst] list (xs)
+// end of [list]  
 
-extern fun append {xs,ys:intlst}
-  (xs: list (xs), ys: list (ys)):<> [zs:intlst] (APPEND (xs, ys, zs) | list zs)
+typedef list = [xs:ilist] list (xs)
 
+(* ****** ****** *)
+
+extern fun append {xs,ys:ilist}
+  (xs: list (xs), ys: list (ys)):<> [zs:ilist] (APPEND (xs, ys, zs) | list zs)
 implement append (xs, ys) = let
-  fun aux {xs,ys:intlst} .<xs>.
+  fun aux {xs,ys:ilist} .<xs>.
     (xs: list xs, ys: list ys)
-    :<> [zs:intlst] (APPEND (xs, ys, zs) | list zs) = begin
+    :<> [zs:ilist] (APPEND (xs, ys, zs) | list zs) = begin
     case+ xs of
     | cons (x, xs) => let
         val (pf | zs) = aux (xs, ys) in (APPENDcons pf | cons (x, zs))
@@ -192,13 +204,9 @@ end // end of [append]
 
 (* ****** ****** *)
 
-extern fun quicksort
-  {xs:intlst} {n:nats} (pf: MSET (xs, n) | xs: list xs)
-  :<> [xs: intlst] (MSET (xs, n), ISORD (xs) | list xs)
-  
-fun qsrt {xs:intlst} {n:nats} .<n,0>.
+fun qsrt {xs:ilist} {n:nats} .<n,0>.
   (pf: MSET (xs, n) | xs: list xs)
-  :<> [xs: intlst] (MSET (xs, n), ISORD (xs) | list xs) = begin
+  :<> [xs: ilist] (MSET (xs, n), ISORD (xs) | list xs) = begin
   case+ xs of
   | cons (x, xs) => let
       prval MSETcons pf = pf in part (
@@ -209,14 +217,14 @@ fun qsrt {xs:intlst} {n:nats} .<n,0>.
     end
 end // end of [qsrt]
 
-and part {x:pos} {xs0,xs1,xs2:intlst} {n0,n1,n2:nats} .<n0+n1+n2,n0+1>. (
+and part {x:pos} {xs0,xs1,xs2:ilist} {n0,n1,n2:nats} .<n0+n1+n2,n0+1>. (
     pf0: MSET (xs0, n0)
   , pf1: MSET (xs1, n1)
   , pf2: MSET (xs2, n2)
   , pf_ub: UB (xs1, x)
   , pf_lb: LB (x, xs2)
   | x: T x, xs0: list xs0, xs1: list xs1, xs2: list xs2
-  ) :<> [xs: intlst] (MSET (xs, x+n0+n1+n2), ISORD (xs) | list xs) = begin
+  ) :<> [xs: ilist] (MSET (xs, x+n0+n1+n2), ISORD (xs) | list xs) = begin
   case+ xs0 of
   | cons (x0, xs0) => let
       prval MSETcons (pf0) = pf0
@@ -246,6 +254,11 @@ and part {x:pos} {xs0,xs1,xs2:intlst} {n0,n1,n2:nats} .<n0+n1+n2,n0+1>. (
     end
 end // end of [part]
 
+(* ****** ****** *)
+
+extern fun quicksort
+  {xs:ilist} {n:nats} (pf: MSET (xs, n) | xs: list xs)
+  :<> [xs: ilist] (MSET (xs, n), ISORD (xs) | list xs)
 implement quicksort (pf | xs) = qsrt (pf | xs)
 
 (* ****** ****** *)
@@ -288,13 +301,13 @@ implement main () = let
   :: T 2.0 :: T 1.0 :: T 4.0 :: T 3.0 :: T 6.0 :: T 5.0
   :: T 2.0 :: T 1.0 :: T 4.0 :: T 3.0 :: T 6.0 :: T 5.0
   :: nil ()
-  val (_(*pf_set*), _(*pf_ord*) | xs_sorted) = quicksort (MSET_istot () | xs)
+  val (_(*pf_set*), _(*pf_ord*) | ys) = quicksort (MSET_istot () | xs)
 in
   print "xs = "; print_list xs; print_newline ();
   // is there any doubt :)
-  print "xs_sorted = "; print_list xs_sorted; print_newline ();
+  print "ys = "; print_list ys; print_newline ();
 end // end of [main]
 
 (* ****** ****** *)
 
-(* end of [listquicksort.dats] *)
+(* end of [quicksort_list.dats] *)

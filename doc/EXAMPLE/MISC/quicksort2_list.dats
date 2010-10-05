@@ -7,6 +7,10 @@
 // Author: Hongwei Xi (hwxi AT cs DOT bu DOT edu)
 // Time: Tuesday, October 5, 2010
 //
+//
+// How to compile:
+//   atscc -o quicksort2_list quicksort2_list.dats
+//
 *)
 
 (* ****** ****** *)
@@ -15,7 +19,7 @@ staload "libats/SATS/ilistp.sats"
 
 (* ****** ****** *)
 
-abst@ype T (x:int)
+abst@ype T (x:int) = double
 
 extern
 fun lte_elt_elt {x,y:nat} (x: T x, y: T y):<> bool (x <= y)
@@ -25,6 +29,8 @@ datatype list (ilist) =
   | nil (ilist_nil)
   | {x:pos} {xs: ilist} cons (ilist_cons (x, xs)) of (T (x), list (xs))
 // end of [list]
+
+typedef list = [xs:ilist] list (xs)
 
 (* ****** ****** *)
 
@@ -91,11 +97,11 @@ fun qsrt {xs:ilist}
       (fpf | ys)
     end // end of [cons]
   | nil () => (permute_refl {ilist_nil} () | nil ())
-// end // end of [qsrt]
+// end of [qsrt]
 
 and part {x:pos} {xs,xs1,xs2:ilist} (
-  x: T x, xs: list xs, xs1: list xs1, xs2: list xs2
-) : [ys:ilist] (PART (x, xs, xs1, xs2, ys) | list ys) =
+    x: T x, xs: list xs, xs1: list xs1, xs2: list xs2
+  ) : [ys:ilist] (PART (x, xs, xs1, xs2, ys) | list ys) =
   case xs of
   | cons (x_, xs_) => (
       if (x_ <= x) then let
@@ -145,6 +151,52 @@ and part {x:pos} {xs,xs1,xs2:ilist} (
 (* ****** ****** *)
 
 implement quicksort (xs) = qsrt (xs)
+
+(* ****** ****** *)
+
+local
+
+assume T (n:int) = double
+
+in
+
+implement lte_elt_elt {x,y} (x, y) = let
+  extern castfn __cast (_: bool):<> bool (x <= y)
+in
+  __cast (lte_double_double (x, y))
+end // end of [lte_elt_elt]
+
+fn print_list (xs: list): void = let
+  fun aux (xs: list, i: int): void = begin case+ xs of
+    | cons (x, xs) => begin
+        if i > 0 then print ", "; printf ("%.1f", @(x)); aux (xs, i+1)
+      end // end of [cons]
+    | nil () => ()
+  end // end of [aux]
+in
+  aux (xs, 0)
+end // end of [print_list]
+
+castfn T .<>. (f: double):<> [x:pos] T (x) = #[1 | f]
+
+end // end of [local]
+
+(* ****** ****** *)
+
+#define :: cons
+
+implement main () = let
+  val xs: list =
+     T 2.0 :: T 1.0 :: T 4.0 :: T 3.0 :: T 6.0 :: T 5.0
+  :: T 2.0 :: T 1.0 :: T 4.0 :: T 3.0 :: T 6.0 :: T 5.0
+  :: T 2.0 :: T 1.0 :: T 4.0 :: T 3.0 :: T 6.0 :: T 5.0
+  :: T 2.0 :: T 1.0 :: T 4.0 :: T 3.0 :: T 6.0 :: T 5.0
+  :: nil ()
+  val (_fpf | ys) = quicksort (xs)
+in
+  print "xs = "; print_list xs; print_newline ();
+  print "ys = "; print_list ys; print_newline ();
+end // end of [main]
 
 (* ****** ****** *)
 
