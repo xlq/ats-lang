@@ -1,0 +1,140 @@
+(***********************************************************************)
+(*                                                                     *)
+(*                         Applied Type System                         *)
+(*                                                                     *)
+(*                              Hongwei Xi                             *)
+(*                                                                     *)
+(***********************************************************************)
+
+(*
+** ATS - Unleashing the Power of Types!
+**
+** Copyright (C) 2002-2010 Hongwei Xi, Boston University
+**
+** All rights reserved
+**
+** ATS is free software;  you can  redistribute it and/or modify it under
+** the terms of the GNU LESSER GENERAL PUBLIC LICENSE as published by the
+** Free Software Foundation; either version 2.1, or (at your option)  any
+** later version.
+** 
+** ATS is distributed in the hope that it will be useful, but WITHOUT ANY
+** WARRANTY; without  even  the  implied  warranty  of MERCHANTABILITY or
+** FITNESS FOR A PARTICULAR PURPOSE.  See the  GNU General Public License
+** for more details.
+** 
+** You  should  have  received  a  copy of the GNU General Public License
+** along  with  ATS;  see the  file COPYING.  If not, please write to the
+** Free Software Foundation,  51 Franklin Street, Fifth Floor, Boston, MA
+** 02110-1301, USA.
+*)
+
+(* ****** ****** *)
+//
+// Author: Hongwei Xi (hwxi AT cs DOT bu DOT edu)
+// Time: October, 2010
+//
+(* ****** ****** *)
+//
+// HX: reasoning about integer sequences and multisets
+//
+(* ****** ****** *)
+
+#define ATS_DYNLOADFLAG 0 // loaded by [ats_main_prelude]
+
+(* ****** ****** *)
+
+staload "libats/SATS/ilistp.sats"
+
+(* ****** ****** *)
+
+implement
+length_istot
+  () = istot () where {
+  prfun istot {xs:ilist} .<xs>.
+    (): [n:nat] LENGTH (xs, n) =
+    scase xs of
+    | ilist_cons (x, xs) => LENGTHcons (length_istot {xs} ())
+    | ilist_nil () => LENGTHnil ()
+  // end of [prfun]
+} // end of [length_istot]
+
+implement
+length_isfun (pf1, pf2) = let
+  prfun isfun {xs:ilist} {n1,n2:int} .<xs>. (
+    pf1: LENGTH (xs, n1), pf2: LENGTH (xs, n2)
+  ) : [n1==n2] void =
+    scase xs of
+    | ilist_cons (x, xs) => let
+        prval LENGTHcons (pf1) = pf1 and LENGTHcons (pf2) = pf2
+        prval () = isfun {xs} (pf1, pf2)
+      in
+        // nothing
+      end // end of [ilist_cons]
+    | ilist_nil () => let
+        prval LENGTHnil () = pf1 and LENGTHnil () = pf2 in (*nothing*)
+      end // end of [ilist_nil]
+  // end of [isfun]
+in
+  isfun (pf1, pf2)
+end // end of [length_isfun]
+
+(* ****** ****** *)
+
+implement
+msetcnt_istot
+  {x0} {xs} () = let
+  prfun istot {xs:ilist} .<xs>.
+    (): [n:nat] MSETCNT (x0, xs, n) =
+    scase xs of
+    | ilist_cons (x, xs) => MSETCNTcons (istot {xs} ())
+    | ilist_nil () => MSETCNTnil ()
+  // end of [istot]
+in
+  istot {xs} ()
+end // end of [msetcnt_istot]
+
+implement
+msetcnt_isfun
+  {x0} (pf1, pf2) = let
+  prfun isfun {xs:ilist} {n1,n2:int} .<xs>. (
+    pf1: MSETCNT (x0, xs, n1), pf2: MSETCNT (x0, xs, n2)
+  ) : [n1==n2] void =
+    scase xs of
+    | ilist_cons (x, xs) => let
+        prval MSETCNTcons pf1 = pf1 and MSETCNTcons pf2 = pf2
+        prval () = isfun (pf1, pf2)
+      in
+        // nothing
+      end // end of [ilist_cons]
+    | ilist_nil () => let
+        prval MSETCNTnil () = pf1 and MSETCNTnil () = pf2 in (* nothing *)
+      end // end of [ilist_nil]
+  // end of [isfun]
+in
+  isfun (pf1, pf2)
+end // end of [msetcnt_isfun]
+
+(* ****** ****** *)
+
+implement permute_refl () = lam pf => pf
+
+implement
+permute_symm
+  {xs1,xs2} (fpf) =
+lam {x0:int} {n:nat} (
+  pf: MSETCNT (x0, xs2, n)
+) : MSETCNT (x0, xs1, n) =<prf> let
+  prval pf1 = msetcnt_istot {x0} {xs1} ()
+  prval pf2 = fpf (pf1)
+  prval () = msetcnt_isfun (pf, pf2)
+in
+  pf1
+end // end of [permute_symm]
+
+implement
+permute_trans (fpf1, fpf2) = lam pf => fpf2 (fpf1 (pf))
+
+(* ****** ****** *)
+
+(* end of [ilistp.dats] *)
