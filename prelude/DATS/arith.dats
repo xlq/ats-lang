@@ -9,7 +9,7 @@
 (*
 ** ATS - Unleashing the Power of Types!
 **
-** Copyright (C) 2002-2008 Hongwei Xi, Boston University
+** Copyright (C) 2002-2010 Hongwei Xi, Boston University
 **
 ** All rights reserved
 **

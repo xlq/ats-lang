@@ -34,18 +34,18 @@
 (* author: Hongwei Xi (hwxi AT cs DOT bu DOT edu) *)
 
 (* ****** ****** *)
-
-// some proofs involving view containment.
-
+//
+// HX: some proof functions involving view containment.
+//
 (* ****** ****** *)
 
 #include "prelude/params.hats"
 
+(* ****** ****** *)
+
 #if VERBOSE_PRELUDE #then
-
-#print "Loading [vcontain.sats] starts!\n"
-
-#endif
+#print "Loading [vsubrw.sats] starts!\n"
+#endif // end of [VERBOSE_PRELUDE]
 
 (* ****** ****** *)
 
@@ -94,9 +94,9 @@ prval vsubw_array_subarray :
 (* ****** ****** *)
 
 #if VERBOSE_PRELUDE #then
+#print "Loading [vsubrw.sats] starts!\n"
+#endif // end of [VERBOSE_PRELUDE]
 
-#print "Loading [vsubrw.dats] starts!\n"
-
-#endif
+(* ****** ****** *)
 
 (* end of [vsubrw.sats] *)
