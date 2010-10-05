@@ -36,6 +36,7 @@ compall:: \
   libc_dlfcn \
   libc_gmp \
   libc_printf \
+  libc_random \
   libc_sched \
   libc_stdlib \
   libc_stdio \
@@ -118,6 +119,11 @@ libc_gmp: libc_gmp.dats
 
 libc_printf: libc_printf.dats
 	$(ATSCC) -o libc_printf libc_printf.dats && ./libc_printf
+
+######
+
+libc_random: libc_random.dats
+	$(ATSCC) -O2 -o libc_random libc_random.dats && ./libc_random
 
 ######
 
@@ -282,6 +288,7 @@ cleanall: clean
 	rm -f libc_dlfcn
 	rm -f libc_gmp
 	rm -f libc_printf
+	rm -f libc_random
 	rm -f libc_sched
 	rm -f libc_stdlib
 	rm -f libc_stdio

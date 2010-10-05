@@ -679,6 +679,7 @@ fn doc_dir_copy () = let
     val () = cp "libc_dlfcn.dats"
     val () = cp "libc_gmp.dats"
     val () = cp "libc_printf.dats"
+    val () = cp "libc_random.dats"
     val () = cp "libc_sched.dats"
     val () = cp "libc_stdlib.dats"
     val () = cp "libc_stdio.dats"

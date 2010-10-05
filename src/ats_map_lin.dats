@@ -128,10 +128,13 @@ extern fun dice {m,n:int | m > 0; n > 0} (m: int m, n: int n):<> bool
 
 %{^
 
-ats_bool_type ats_map_lin_dice (ats_int_type m, ats_int_type n) {
+ats_bool_type
+ats_map_lin_dice (
+  ats_int_type m, ats_int_type n
+) {
   double r = drand48 ();
   return ((m + n) * r < m) ? ats_true_bool : ats_false_bool ;
-}
+} // end of [ats_map_lin_dice]
 
 %} // end of [%{^]
 

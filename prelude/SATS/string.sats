@@ -678,11 +678,17 @@ overload ptr_of with ptr_of_strptr
 //
 castfn string_of_strptr (x: strptr1):<> string
 castfn string1_of_strptr (x: strptr1):<> String
+castfn string1_of_strptrlen
+  {l:addr} {n:nat} (x: strptrlen (l, n)):<> string n
+//
 castfn string_takeout_ptr // non-reentrant! 
   (x: string) :<> [l:agz] (strptr l -<lin,prf> void | strptr l)
 //
 castfn strbuf_of_strptr {l:agz}
   (x: strptr l):<> [m,n:int | 0 <= n; n < m] strbufptr_gc (m, n, l)
+castfn strbuf_of_strptrlen {l:addr} {n:nat}
+  (x: strptrlen (l, n)):<> [m:int | n < m] strbufptr_gc (m, n, l)
+//
 castfn strbuf_takeout_ptr {m,n:int} {l:addr}
   (pf: !strbuf_v (m, n, l) | x: ptr l):<> (strptr l -<lin,prf> void | strptr l)
 //

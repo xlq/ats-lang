@@ -60,9 +60,7 @@ fun srand48_with_gettimeofday (): int (*err*) // 0/-1: succ/fail
 // However, it is actually [0.0, 1.0] // try 10 million times !!!
 //
 fun drand48 ():<!ref> double = "atslib_drand48"
-
 fun lrand48 ():<!ref> lint = "atslib_lrand48" // signed [0, 2^31)
-
 fun mrand48 ():<!ref> lint = "atslib_mrand48" // signed [-2^31, 2^31)
 
 (* ****** ****** *)
