@@ -115,6 +115,67 @@ in
   isfun (pf1, pf2)
 end // end of [msetcnt_isfun]
 
+implement
+msetcnt_first {x} {xs} () = let
+  prval pf = msetcnt_istot {x} {xs} () in MSETCNTcons (pf)
+end // end of [msetcnt_first]
+
+(* ****** ****** *)
+
+implement
+nth_msetcnt_lemma {x} (pf) = let
+  prfun lemma {xs:ilist} {i:nat} .<xs>.
+    (pf: NTH (x, xs, i)): [n:pos] MSETCNT (x, xs, n) =
+    case+ pf of
+    | NTHind (pf) => MSETCNTcons (lemma (pf))
+    | NTHbas () => msetcnt_first ()
+  // end of [lemma]
+in
+  lemma (pf)
+end // end of [nth_msetcnt_lemma]
+
+implement
+msetcnt_nth_lemma {x} (pf) = let
+  prfun lemma {xs:ilist} {n:pos} .<xs>.
+    (pf: MSETCNT (x, xs, n)): [i:nat] NTH (x, xs, i) = let
+    prval MSETCNTcons {..} {x1} {xs1} (pf1) = pf
+  in
+    sif x == x1 then NTHbas () else NTHind (lemma (pf1))
+  end // end of [lemma]
+in
+  lemma (pf)
+end // end of [msetcnt_nth_lemma]
+
+
+(* ****** ****** *)
+
+implement
+insert_length_lemma {x0} (pf1, pf2) = let
+  prfun lemma
+    {xs:ilist} {i:int} {ys:ilist} {n:nat} .<xs>.
+    (pf1: INSERT (x0, xs, i, ys), pf2: LENGTH (xs, n)): LENGTH (ys, n+1) =
+    case+ pf1 of
+    | INSERTbas () => LENGTHcons (pf2)
+    | INSERTind (pf1) => let
+        prval LENGTHcons pf2 = pf2 in LENGTHcons (lemma (pf1, pf2))
+      end // end of [INSERTind]
+  // end of [lemma]
+in
+  lemma (pf1, pf2)
+end // end of [insert_length_lemma]
+
+implement
+nth_insert_lemma {x} (pf) = let
+  prfun lemma {xs:ilist} {n:nat} .<xs>.
+    (pf: NTH (x, xs, n)): [ys:ilist] INSERT (x, ys, n, xs) =
+    case+ pf of
+    | NTHind (pf) => INSERTind (lemma (pf))
+    | NTHbas {..} {xs1} () => INSERTbas {x} {xs1} ()
+  // end of [lemma]
+in
+  lemma (pf)
+end // end of [nth_insert_lemma]
+
 (* ****** ****** *)
 
 implement permute_refl () = lam pf => pf

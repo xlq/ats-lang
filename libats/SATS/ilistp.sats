@@ -48,6 +48,24 @@ datasort ilist =
   | ilist_nil of () | ilist_cons of (int, ilist)
 // end of [ilist]
 
+dataprop ilisteq (ilist, ilist) =
+  | ilisteq_nil (ilist_nil, ilist_nil) of ()
+  | {x:int} {xs1,xs2:ilist}
+    ilisteq_cons (
+      ilist_cons (x, xs1), ilist_cons (x, xs2)
+    ) of
+      ilisteq (xs1, xs2)
+    // end of [ilisteq_cons]
+// end of [ilisteq]
+
+(* ****** ****** *)
+
+dataprop NTH (x0:int, ilist, int) =
+  | {xs:ilist} NTHbas (x0, ilist_cons (x0, xs), 0)
+  | {x:int} {xs:ilist} {n:nat}
+    NTHind (x0, ilist_cons (x, xs), n+1) of NTH (x0, xs, n)
+// end of [NTH]
+
 (* ****** ****** *)
 
 dataprop
@@ -84,6 +102,37 @@ prfun msetcnt_isfun
     pf1: MSETCNT (x0, xs, n1), pf2: MSETCNT (x0, xs, n2)
   ) : [n1==n2] void
 // end of [msetcnt_isfun]
+prfun msetcnt_first
+  {x:int} {xs:ilist} (): [n:pos] MSETCNT (x, ilist_cons (x, xs), n)
+// end of [msetcnt_first]
+
+(* ****** ****** *)
+
+prfun nth_msetcnt_lemma
+  {x:int} {xs:ilist} {i:nat} (pf: NTH (x, xs, i)): [n:pos] MSETCNT (x, xs, n)
+// end of [nth_msetcnt_lemma]
+prfun msetcnt_nth_lemma
+  {x:int} {xs:ilist} {n:pos} (pf: MSETCNT (x, xs, n)): [i:nat] NTH (x, xs, i)
+// end of [msetcnt_nth_lemma]
+
+(* ****** ****** *)
+
+dataprop
+INSERT (x0:int, ilist, int, ilist) =
+  | {xs:ilist} INSERTbas (x0, xs, 0, ilist_cons (x0, xs)) of ()
+  | {x:int} {xs:ilist} {i:nat} {ys:ilist}
+    INSERTind (x0, ilist_cons (x, xs), i+1, ilist_cons (x, ys)) of INSERT (x0, xs, i, ys)
+// end of [INSERT]
+
+prfun insert_length_lemma
+  {x0:int} {xs:ilist} {i:int} {ys:ilist} {n:nat}
+  (pf1: INSERT (x0, xs, i, ys), pf2: LENGTH (xs, n)): LENGTH (ys, n+1)
+// end of [insert_length_lemma]
+
+prfun nth_insert_lemma
+  {x:int} {xs:ilist} {n:nat}
+  (pf: NTH (x, xs, n)): [ys:ilist] INSERT (x, ys, n, xs)
+// end of [nth_insert_lemma]
 
 (* ****** ****** *)
 
@@ -97,6 +146,11 @@ prfun permute_symm
   {xs1,xs2:ilist} (pf: PERMUTE (xs1, xs2)): PERMUTE (xs2, xs1)
 prfun permute_trans {xs1,xs2,xs3:ilist}
   (pf1: PERMUTE (xs1, xs2), pf2: PERMUTE (xs2, xs3)): PERMUTE (xs1, xs3)
+
+prfun permute_insert_lemma
+  {x:int} {xs:ilist} {ys:ilist}
+  (pf: PERMUTE (ilist_cons (x, xs), ys)): [ys1:ilist] [i:nat] INSERT (x, ys1, i, ys)
+// end of [permute_insert_lemma]
 
 prfun permute_length_lemma
   {xs1,xs2:ilist} {n:nat}
