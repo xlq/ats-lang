@@ -86,6 +86,20 @@ prfun length_isfun {xs:ilist} {n1,n2:int}
 
 (* ****** ****** *)
 
+dataprop
+APPEND (ilist, ilist, ilist) =
+  | {ys:ilist} APPENDnil (ilist_nil, ys, ys) of ()
+  | {x:int} {xs:ilist} {ys:ilist} {zs:ilist}
+    APPENDcons (ilist_cons (x, xs), ys, ilist_cons (x, zs)) of APPEND (xs, ys, zs)
+// end of [APPEND]
+
+prfun append_istot {xs,ys:ilist} (): [zs:ilist] APPEND (xs, ys, zs)
+prfun append_isfun {xs,ys:ilist} {zs1,zs2:ilist}
+  (pf1: APPEND (xs, ys, zs1), pf2: APPEND (xs, ys, zs2)): ilisteq (zs1, zs2)
+// end of [append_isfun]
+
+(* ****** ****** *)
+
 stadef b2i = int_of_bool
 
 (* ****** ****** *)
@@ -181,6 +195,43 @@ MSUBSET (xs1:ilist, xs2:ilist) =
   {x0:int} {n1,n2:nat}
   (MSETCNT (x0, xs1, n1), MSETCNT (x0, xs1, n2)) -<prf> [n1 <= n2] void
 // end of [MSUBSET]
+
+(* ****** ****** *)
+
+(*
+dataprop
+MSETALL (P: int -> prop, ilist) =
+  | MSETALLnil (P, ilist_nil) of ()
+  | {x:int} {xs:ilist}
+    MSETALLcons (P, ilist_cons (x, xs)) of (P x, MSETALL (P, xs))
+// end of [MSETALL]
+
+prfun msetall_trans
+  {P1:int->prop} {P2:int->prop} {xs:ilist}
+  (pf: MSETALL (P1, xs), fpf: {x:int} P1 x -<prf> P2 x): MSETALL (P2, xs)
+// end of [msetall_trans]
+*)
+
+(* ****** ****** *)
+
+(*
+propdef LT (x0:int) (x:int) = [x0 < x] void
+propdef LTB (x0:int, xs:ilist) = MSETALL (LT x0, xs)
+propdef LTE (x0:int) (x:int) = [x0 <= x] void
+propdef LTEB (x0:int, xs:ilist) = MSETALL (LTE x0, xs)
+
+propdef GT (x0:int) (x:int) = [x0 > x] void
+propdef GTB (x0:int, xs:ilist) = MSETALL (GT x0, xs)
+propdef GTE (x0:int) (x:int) = [x0 >= x] void
+propdef GTEB (x0:int, xs:ilist) = MSETALL (GTE x0, xs)
+
+dataprop
+ISORD (ilist) =
+  | ISORDnil (ilist_nil) of ()
+  | {x:int} {xs:ilist}
+    ISORDcons (ilist_cons (x, xs)) of (ISORD xs, LTEB (x, xs))
+// end of [ISORD]
+*)
 
 (* ****** ****** *)
 

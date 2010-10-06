@@ -96,6 +96,7 @@ Peano: Peano.dats; $(ATSCC) -o Peano Peano.dats
 # Euler's transform in lazy style
 pi_lazy: pi_lazy.dats; $(ATSCC) -o pi_lazy pi_lazy.dats && ./pi_lazy
 
+# Verified quicksort implementations
 quicksort_list: quicksort_list.dats
 	$(ATSCC) -D_ATS_PROOFCHECK -o quicksort_list quicksort_list.dats
 quicksort2_list: quicksort2_list.dats
@@ -191,6 +192,7 @@ cleanall:: clean
 	rm -f Peano
 	rm -f pi_lazy
 	rm -f quicksort_list
+	rm -f quicksort2_list
 	rm -f queens
 	rm -f queens_appel
 	rm -f queens_lazy_vt

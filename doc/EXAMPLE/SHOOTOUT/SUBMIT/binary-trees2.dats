@@ -5,7 +5,7 @@
 ** contributed by Hongwei Xi (hwxi AT cs DOT bu DOT edu)
 **
 ** compilation command:
-**   atscc -O3 binary-trees2.dats -o binary-trees2 -D_ATS_GCATS
+**   atscc -D_ATS_GCATS -O3 -o binary-trees2 binary-trees2.dats
 *)
 
 (* ****** ****** *)

@@ -68,11 +68,11 @@ fun pthread_uplockopt_unsome
   = "atslib_pthread_uplockopt_unsome"
 
 fun pthread_uplockopt_is_none {v:view}
-  {i:two} (lockopt: !uplockopt (i, v)): bool (i==0)
+  {i:int} (lockopt: !uplockopt (i, v)): bool (i==0)
   = "atslib_pthread_uplockopt_is_none"
 
 fun pthread_uplockopt_is_some {v:view}
-  {i:two} (lockopt: !uplockopt (i, v)): bool (i==1)
+  {i:int} (lockopt: !uplockopt (i, v)): bool (i==1)
   = "atslib_pthread_uplockopt_is_some"
 
 (* ****** ****** *)

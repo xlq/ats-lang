@@ -5,7 +5,7 @@
 ** contributed by Hongwei Xi (hwxi AT cs DOT bu DOT edu)
 **
 ** compilation command:
-**   atscc -D_ATS_MULTITHREAD -O3 binary-trees_smp.dats -o binary-trees_smp -lpthread -D_ATS_GCATS
+**   atscc -D_ATS_MULTITHREAD -O3 -o binary-trees2_smp binary-trees2_smp.dats -lpthread -D_ATS_GCATS
 *)
 
 (* ****** ****** *)
@@ -21,6 +21,7 @@ staload _(*anonymous*) = "prelude/DATS/reference.dats"
 
 dataviewtype tree (int) =
   Nil(0) | {n1,n2:two} Node(1) of (tree n1, int, tree n2)
+// end of [tree]
 
 viewtypedef Tree = [n:two] tree n
 
@@ -191,4 +192,4 @@ end // end of [main]
 
 (* ****** ****** *)
 
-(* end of [binary-tree.dats] *)
+(* end of [binary-tree2_smp.dats] *)

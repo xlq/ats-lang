@@ -23,6 +23,7 @@ compall:: \
   qsort_mt_flt \
   qsort_mt_int \
   randcompec_mt \
+  randcompec2_mt \
 
 ######
 
@@ -55,6 +56,9 @@ qsort_mt_int: qsort_mt_int.dats
 randcompec_mt: randcompec_mt.dats
 	$(ATSCC) -o randcompec_mt -O3 -D_ATS_MULTITHREAD randcompec_mt.dats -lpthread
 
+randcompec2_mt: randcompec2_mt.dats
+	$(ATSCC) -o randcompec2_mt -O3 -D_ATS_MULTITHREAD randcompec2_mt.dats -lpthread
+
 ######
 
 clean::
@@ -68,5 +72,6 @@ cleanall: clean
 	rm -f qsort_mt_flt
 	rm -f qsort_mt_int
 	rm -f randcompec_mt
+	rm -f randcompec2_mt
 
 ###### end of [Makefile] ######
