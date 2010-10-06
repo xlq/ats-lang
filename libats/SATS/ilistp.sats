@@ -48,7 +48,8 @@ datasort ilist =
   | ilist_nil of () | ilist_cons of (int, ilist)
 // end of [ilist]
 
-dataprop ilisteq (ilist, ilist) =
+dataprop
+ilisteq (ilist, ilist) =
   | ilisteq_nil (ilist_nil, ilist_nil) of ()
   | {x:int} {xs1,xs2:ilist}
     ilisteq_cons (
@@ -60,7 +61,8 @@ dataprop ilisteq (ilist, ilist) =
 
 (* ****** ****** *)
 
-dataprop NTH (x0:int, ilist, int) =
+dataprop
+NTH (x0:int, ilist, int) =
   | {xs:ilist} NTHbas (x0, ilist_cons (x0, xs), 0)
   | {x:int} {xs:ilist} {n:nat}
     NTHind (x0, ilist_cons (x, xs), n+1) of NTH (x0, xs, n)
@@ -118,10 +120,17 @@ prfun msetcnt_nth_lemma
 (* ****** ****** *)
 
 dataprop
-INSERT (x0:int, ilist, int, ilist) =
-  | {xs:ilist} INSERTbas (x0, xs, 0, ilist_cons (x0, xs)) of ()
+INSERT (
+  x0:int, ilist, int, ilist
+) = // INSERT (x0, xs, i, ys): insert x0 in xs at i = ys
+  | {xs:ilist}
+    INSERTbas (
+      x0, xs, 0, ilist_cons (x0, xs)
+    ) of () // end of [INSERTbas]
   | {x:int} {xs:ilist} {i:nat} {ys:ilist}
-    INSERTind (x0, ilist_cons (x, xs), i+1, ilist_cons (x, ys)) of INSERT (x0, xs, i, ys)
+    INSERTind (
+      x0, ilist_cons (x, xs), i+1, ilist_cons (x, ys)
+    ) of INSERT (x0, xs, i, ys) // end of [INSERTind]
 // end of [INSERT]
 
 prfun insert_length_lemma
