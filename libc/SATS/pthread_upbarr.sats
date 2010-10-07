@@ -36,7 +36,7 @@
 (* ****** ****** *)
 
 %{#
-#include "libc/CATS/pthread_uplock.cats"
+#include "libc/CATS/pthread_upbarr.cats"
 %} // end of [%{#]
 
 (* ****** ****** *)
@@ -45,44 +45,56 @@
 
 (* ****** ****** *)
 //
-// linear lock for uploading
+// linear barrier for uploading
 //
-absviewtype uplock0_viewtype
-stadef uplock0 = uplock0_viewtype
-absviewtype uplock_view_viewtype (v:view)
-stadef uplock = uplock_view_viewtype
+absviewtype upbarr_view_viewtype (v:view)
+stadef upbarr = upbarr_view_viewtype
 absviewtype upticket_view_viewtype (v:view)
 stadef upticket = upticket_view_viewtype
 
 (* ****** ****** *)
 
-fun pthread_uplock_create
-  (): uplock0 = "atslib_pthread_uplock_create"
-// end of [pthread_uplock_create]
+prfun pthread_upbarr_trans
+  {v1:view} {v2:view}
+  (f: v1 -<prf> v2 | barr: !upbarr (v1) >> upbarr (v2)): void
+// end of [pthread_upbarr_trans]
 
-fun pthread_uplock_download
-  {v:view} (lock: !uplock (v) >> uplock0): (v | void)
-  = "atslib_pthread_uplock_download"
-// end of [pthread_uplock_download]
+prfun pthread_upbarr_elimunit
+  {v:view} (barr: !upbarr @(unit_v, v) >> upbarr (v)): void
+// end of [pthread_upbarr_elimunit]
 
-fun pthread_uplock_destroy (lock: uplock0): void
-  = "atslib_pthread_uplock_destroy"
-// end of [pthread_uplock_destroy]
+(* ****** ****** *)
 
-fun pthread_uplock_download_and_destroy {v:view} (lock: uplock v): (v | void)
+viewtypedef upbarr0 = upbarr (unit_v)
+
+fun pthread_upbarr_create
+  (): upbarr (unit_v) = "atslib_pthread_upbarr_create"
+// end of [pthread_upbarr_create]
+
+fun pthread_upbarr_download
+  {v:view} (barr: !upbarr (v) >> upbarr0): (v | void)
+  = "atslib_pthread_upbarr_download"
+// end of [pthread_upbarr_download]
+
+fun pthread_upbarr_destroy (barr: upbarr0): void
+  = "atslib_pthread_upbarr_destroy"
+// end of [pthread_upbarr_destroy]
+
+fun pthread_upbarr_download_and_destroy {v:view} (barr: upbarr (v)): (v | void)
 
 (* ****** ****** *)
 
 fun pthread_upticket_create
-  {v:view} (lock: !uplock0 >> uplock (v)): upticket (v)
-  = "atslib_pthread_uplock_upticket_create"
+  {v1:view} {v2:view}
+  (barr: !upbarr (v1) >> upbarr @(v1, v2)): upticket (v2)
+  = "atslib_pthread_upbarr_upticket_create"
 // end of [pthread_upticket_create]
 
 fun pthread_upticket_upload_and_destroy
   {v:view} (pf: v | ticket: upticket v): void
-  = "atslib_pthread_uplock_upticket_upload_and_destroy"
+  = "atslib_pthread_upbarr_upticket_upload_and_destroy"
 // end of [pthread_upticket_upload_and_destroy]
 
 (* ****** ****** *)
 
-(* end of [pthread_uplock.sats] *)
+(* end of [pthread_upbarr.sats] *)

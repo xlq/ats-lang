@@ -35,7 +35,7 @@
 
 (* ****** ****** *)
 
-staload "libc/SATS/pthread_uplock.sats"
+staload "libc/SATS/pthread_upbarr.sats"
 
 (* ****** ****** *)
 
@@ -44,12 +44,21 @@ staload "libc/SATS/pthread_uplock.sats"
 (* ****** ****** *)
 
 implement
-pthread_uplock_download_and_destroy
-  (lock) = (pf | ()) where {
-  val (pf | ()) = pthread_uplock_download (lock)
-  val () = pthread_uplock_destroy (lock)
-} // end of [pthread_uplock_download_and_destroy]
+pthread_upbarr_elimunit {v} (barr) = let
+  prfn fpf (pf: @(unit_v, v)): v = let prval unit_v () = pf.0 in pf.1 end
+in
+  pthread_upbarr_trans (fpf | barr)
+end // end of [pthread_upbarr_elimunit]
 
 (* ****** ****** *)
 
-(* end of [pthread_uplock.dats] *)
+implement
+pthread_upbarr_download_and_destroy
+  (barr) = (pf | ()) where {
+  val (pf | ()) = pthread_upbarr_download (barr)
+  val () = pthread_upbarr_destroy (barr)
+} // end of [pthread_upbarr_download_and_destroy]
+
+(* ****** ****** *)
+
+(* end of [pthread_upbarr.dats] *)

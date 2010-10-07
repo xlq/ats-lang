@@ -8,17 +8,17 @@
 
 (* ****** ****** *)
 //
-// HX-2010-10-06:
-// Per Shiv's request, I modified Chris Double's code to present
-// a simple method for passing proofs of views between a parent thread
-// and it single child.
+// HX-2010-10-07:
+// I modified Chris Double's code to present
+// a typical method for passing proofs of views between a parent thread
+// and its multiple children.
 //
 (* ****** ****** *)
 
 staload _(*anon*) = "prelude/DATS/array.dats"
 
 staload "libc/SATS/pthread.sats"
-staload "libc/SATS/pthread_uplock.sats"
+staload "libc/SATS/pthread_upbarr.sats"
 staload "libc/SATS/random.sats"
 staload "libc/SATS/unistd.sats"
 staload "libats/SATS/parworkshop.sats"
@@ -70,34 +70,45 @@ fun fwork {l:addr}
 
 (* ****** ****** *)
 
-fun insert_all_and_wait
+fun insert_all
   {l,l2:agz} {n0:pos} (
-    pf_arr: !array_v(ulint, n0, l2)
+    pf_arr: array_v(ulint, n0, l2)
   | ws: !WORKSHOPptr(work, l)
   , p_arr: ptr l2, n0: int n0, iterations0: int
-  ) : void = let
+  ) : upbarr (array_v(ulint, n0, l2)) = let
   typedef T = ulint
-  fun aux {l,l2:agz} {n:nat} .<n>. ( // HX: not tail-recursive
-      pf: !array_v(ulint, n, l2)
-    | ws: !WORKSHOPptr(work, l), p: ptr l2, n: int n, iterations: int
-    ) : void =
+  fun loop {v:view} {l,l2:agz} {n:nat} .<n>. (
+      pf: array_v(ulint, n, l2)
+    | ws: !WORKSHOPptr(work, l)
+    , barr: !upbarr (v) >> upbarr @(v, array_v(ulint, n, l2)), p: ptr l2, n: int n, iterations: int
+    ) : void = let
+     viewdef V = array_v (ulint, n, l2)
+  in
     if n > 0 then let
-      viewdef V = ulint @ l2
+      viewdef V1 = ulint @ l2
+      viewdef V2 = array_v (ulint, n-1, l2+sizeof(T))
+      viewdef v1 = @(v, V1)
       prval (pf1, pf2) = array_v_uncons{T}(pf)
-      val lock = pthread_uplock_create ()
-      val ticket = pthread_upticket_create {V} (lock)
+      val ticket = pthread_upticket_create {v} {V1} (barr)
       val () = workshop_insert_work(ws, Compute (pf1 | p, iterations, ticket))
-      val () = aux (pf2 | ws, p + sizeof<T>, n - 1, iterations)
-      val (pf1 | ()) = pthread_uplock_download {V} (lock)
-      val () = pthread_uplock_destroy (lock)
-      prval () = pf := array_v_cons{T}(pf1, pf2)
+      val () = loop {v1} (pf2 | ws, barr, p + sizeof<T>, n - 1, iterations)
+      prval fpf = lam (pf: @(v1, V2)): (v, V) =<prf> ((pf.0).0, array_v_cons{T} ((pf.0).1, pf.1))
+      prval () = pthread_upbarr_trans (fpf | barr)
+    in
+      // nothing
+    end else let
+      prval () = array_v_unnil (pf)
+      prval () = pthread_upbarr_trans {v} {(v,V)} (lam (pf) => (pf, array_v_nil {T} ()) | barr)
     in
       // nothing
     end // end of [if]
-  // end of [aux]
+  end // end of [loop]
+  val barr = pthread_upbarr_create ()
+  val () = loop (pf_arr | ws, barr, p_arr, n0, iterations0 / n0)
+  prval () = pthread_upbarr_elimunit (barr)
 in
-  aux (pf_arr | ws, p_arr, n0, iterations0 / n0)
-end // end of [insert_all_and_wait]
+  barr
+end // end of [insert_all]
 
 (* ****** ****** *)
 
@@ -138,7 +149,9 @@ main (argc, argv) = let
 //
   var !p_arr with pf_arr = @[ulint][NCPU](0UL)
 //
-  val () = insert_all_and_wait (pf_arr | ws, p_arr, NCPU, ITER)
+  val barr = insert_all (pf_arr | ws, p_arr, NCPU, ITER)
+  val (pf | ()) = pthread_upbarr_download_and_destroy (barr)
+  prval () = pf_arr := pf
 //
   var k: Nat = 0
   var total: ulint = 0UL
@@ -164,4 +177,4 @@ end // end of [main]
 
 (* ****** ****** *)
 
-(* end of [randomcompec2_mt.dats] *)
+(* end of [randomcompec3_mt.dats] *)

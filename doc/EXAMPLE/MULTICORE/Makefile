@@ -18,12 +18,14 @@ checkall:: compall cleanall
 
 compall:: \
   fib_mt \
-  nsieve_mt nsieve2_mt \
+  nsieve_mt \
+  nsieve2_mt \
   partial-sums_mt \
   qsort_mt_flt \
   qsort_mt_int \
   randcompec_mt \
   randcompec2_mt \
+  randcompec3_mt \
 
 ######
 
@@ -59,6 +61,9 @@ randcompec_mt: randcompec_mt.dats
 randcompec2_mt: randcompec2_mt.dats
 	$(ATSCC) -o randcompec2_mt -O3 -D_ATS_MULTITHREAD randcompec2_mt.dats -lpthread
 
+randcompec3_mt: randcompec3_mt.dats
+	$(ATSCC) -o randcompec3_mt -O3 -D_ATS_MULTITHREAD randcompec3_mt.dats -lpthread
+
 ######
 
 clean::
@@ -73,5 +78,6 @@ cleanall: clean
 	rm -f qsort_mt_int
 	rm -f randcompec_mt
 	rm -f randcompec2_mt
+	rm -f randcompec3_mt
 
 ###### end of [Makefile] ######
