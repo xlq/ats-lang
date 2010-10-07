@@ -1,6 +1,5 @@
 //
-// LazyFoo-lesson20 _translated_ into ATS
-// See http://lazyfoo.net/SDL_tutorials/lesson20
+// A simple timer
 //
 
 (* ****** ****** *)
@@ -52,4 +51,4 @@ fun Timer_is_paused (obj: &Timer):<> bool
 
 (* ****** ****** *)
 
-(* end of [LazyFoo-timer.sats] *)
+(* end of [timer.sats] *)

@@ -1,6 +1,5 @@
 //
-// LazyFoo-lesson20 _translated_ into ATS
-// See http://lazyfoo.net/SDL_tutorials/lesson20
+// A simple timer
 //
 
 (* ****** ****** *)
@@ -89,4 +88,4 @@ implement Timer_is_paused (obj) = obj.private.paused
 
 (* ****** ****** *)
 
-(* end of [LazyFoo-timer.sats] *)
+(* end of [timer.dats] *)
