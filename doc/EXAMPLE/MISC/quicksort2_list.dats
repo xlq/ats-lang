@@ -54,7 +54,7 @@ extern
 fun quicksort {xs:ilist}
   (xs: list (xs)): [ys:ilist] (ISORD (ys), PERMUTE (xs, ys) | list (ys))
 // end of [quicksort]
-
+////
 (* ****** ****** *)
 
 extern

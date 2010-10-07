@@ -102,12 +102,6 @@ dataprop ISORD (ilist) =
   | {x:nat} {xs:ilist} ISORDcons (cons (x, xs)) of (LB (x, xs), ISORD xs)
 // end of [ISORD]
 
-dataprop APPEND (ilist, ilist, ilist) =
-  | {x:nat} {xs,ys,zs:ilist}
-    APPENDcons (cons (x, xs), ys, cons (x, zs)) of APPEND (xs, ys, zs)
-  | {ys:ilist} APPENDnil (nil, ys, ys)
-// end of [APPEND]
-
 (* ****** ****** *)
 
 extern prfun APPEND_MSET_lemma {xs,ys,zs:ilist} {n1,n2:nats}

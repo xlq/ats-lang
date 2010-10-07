@@ -73,30 +73,6 @@ typedef ats_pthread_uplock_t ats_pthread_upticket_t ;
 /* ****** ****** */
 
 ATSinline()
-ats_void_type
-atslib_pthread_uplockopt_unnone (ats_ptr_type p) { return ; }
-
-ATSinline()
-ats_ptr_type
-atslib_pthread_uplockopt_unsome (ats_ptr_type p) { return p ; }
-
-ATSinline()
-ats_bool_type
-atslib_pthread_uplockopt_is_none
-  (ats_ptr_type p) {
-  return (p ? ats_false_bool : ats_true_bool) ;
-} // end of [atslib_pthread_uplockopt_is_none]
-
-ATSinline()
-ats_bool_type
-atslib_pthread_uplockopt_is_some
-  (ats_ptr_type p) {
-  return (p ? ats_true_bool : ats_false_bool) ;
-} // end of [atslib_pthread_uplockopt_is_some]
-
-/* ****** ****** */
-
-ATSinline()
 ats_ptr_type
 atslib_pthread_uplock_create () {
   ats_pthread_uplock_t *p ;
@@ -126,10 +102,17 @@ ats_void_type
 atslib_pthread_uplock_download
   (ats_ptr_type p) {
   pthread_mutex_lock (&((ats_pthread_uplock_t*)p)->mutex_res) ;
-  pthread_mutex_destroy (&((ats_pthread_uplock_t*)p)->mutex_res) ;
-  ATS_FREE(p) ;
+  pthread_mutex_unlock (&((ats_pthread_upticket_t*)p)->mutex_res) ;
   return ;
 } // end of [atslib_pthread_uplock_download]
+
+ATSinline()
+ats_void_type
+atslib_pthread_destroy
+  (ats_ptr_type p) {
+  pthread_mutex_destroy (&((ats_pthread_uplock_t*)p)->mutex_res) ;
+  ATS_FREE(p) ;
+} // end of [atslib_pthread_destroy]
 
 /* ****** ****** */
 

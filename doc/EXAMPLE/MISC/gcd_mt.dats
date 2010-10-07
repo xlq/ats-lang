@@ -154,17 +154,19 @@ fun gcd_mt {x0,y0:pos} {z:int}
       gcd_worker (ticket, flag)
     end
   end // end of [gcd_worker]
-  val uplock1 = pthread_uplock_create {void} ()
+  val uplock1 = pthread_uplock_create ()
   val upticket1 = pthread_upticket_create {void} (uplock1)
   val () = pthread_create_detached_cloptr (llam () => gcd_worker (upticket1,  1))
 
-  val uplock2 = pthread_uplock_create {void} ()
+  val uplock2 = pthread_uplock_create ()
   val upticket2 = pthread_upticket_create {void} (uplock2)
   val () = pthread_create_detached_cloptr (llam () => gcd_worker (upticket2, ~1))
-
+//
   val (_(*void*) | ()) = pthread_uplock_download {void} (uplock1)
+  val () = pthread_uplock_destroy (uplock1)
   val (_(*void*) | ()) = pthread_uplock_download {void} (uplock2)
-
+  val () = pthread_uplock_destroy (uplock2)
+//
   val (pf_ticket, pf_at | ptr) = pthread_mutexref_lock (mut)
   prval @(pfa, pfb, pfgcd) = ptr->0
   prval () = view@ x := pfa

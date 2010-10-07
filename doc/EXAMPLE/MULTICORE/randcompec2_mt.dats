@@ -84,11 +84,12 @@ fun insert_all_and_wait
     if n > 0 then let
       viewdef V = ulint @ l2
       prval (pf1, pf2) = array_v_uncons{T}(pf)
-      val lock = pthread_uplock_create {V} ()
+      val lock = pthread_uplock_create ()
       val ticket = pthread_upticket_create {V} (lock)
       val () = workshop_insert_work(ws, Compute (pf1 | p, iterations, ticket))
       val () = loop(pf2 | ws, p + sizeof<T>, n - 1, iterations)
       val (pf1 | ()) = pthread_uplock_download {V} (lock)
+      val () = pthread_uplock_destroy (lock)
       prval () = pf := array_v_cons{T}(pf1, pf2)
     in
       // nothing
