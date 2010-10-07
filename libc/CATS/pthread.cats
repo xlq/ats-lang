@@ -42,22 +42,14 @@
 /* ****** ****** */
 
 #ifdef _ATS_MULTITHREAD
-
-// #define THREAD_SAFE ???
-
 //
-
+// #define THREAD_SAFE // HX: what is this?
+//
 #include <stdio.h>
 #include <unistd.h>
 #include <stdlib.h>
 #include <pthread.h>
-
 //
-
-#include "ats_basics.h"
-
-//
-
 /* ****** ****** */
 
 #define atslib_pthread_self pthread_self
@@ -65,97 +57,42 @@
 /* ****** ****** */
 
 ATSinline()
-ats_void_type
-atslib_pthread_mutex_init_locked
-  (ats_ptr_type p) {
-  pthread_mutex_init ((pthread_mutex_t*)p, NULL) ;
-  pthread_mutex_lock ((pthread_mutex_t*)p) ;
-  return ;
-} // end of [atslib_pthread_mutex_init_locked]
-
-ATSinline()
-ats_void_type
+ats_int_type
 atslib_pthread_mutex_init_unlocked
   (ats_ptr_type p) {
-  pthread_mutex_init ((pthread_mutex_t*)p, NULL) ; return ;
+  int err = pthread_mutex_init ((pthread_mutex_t*)p, NULL) ;
+  return err ;
 } // end of [atslib_pthread_mutex_init_unlocked]
 
 /* ****** ****** */
 
-ATSinline()
-ats_ptr_type
-atslib_pthread_mutex_create_locked () {
-  pthread_mutex_t *p ;
-  p = (pthread_mutex_t*)ATS_MALLOC(sizeof (pthread_mutex_t)) ;
-  pthread_mutex_init_locked (p, NULL) ;
-  return p ;
-} // end of [atslib_pthread_mutex_create_locked]
-
-ATSinline()
-ats_ptr_type
-atslib_pthread_mutex_create_unlocked () {
-  pthread_mutex_t *p ;
-  p = (pthread_mutex_t*)ATS_MALLOC(sizeof (pthread_mutex_t)) ;
-  pthread_mutex_init_unlocked (p, NULL) ;
-  return p ;
-} // end of [atslib_pthread_mutex_create_unlocked]
-
-/* ****** ****** */
-
-ATSinline()
-ats_void_type
-atslib_pthread_mutex_lock
-  (ats_ptr_type mutex) {
-  pthread_mutex_lock ((pthread_mutex_t*)mutex) ; return ;
-} // end of [atslib_pthread_mutex_lock]
-
-ATSinline()
-ats_void_type
-atslib_pthread_mutex_unlock
-  (ats_ptr_type mutex) {
-  pthread_mutex_unlock ((pthread_mutex_t*)mutex) ; return ;
-} // end of [atslib_pthread_mutex_unlock]
+#define atslib_pthread_mutex_lock pthread_mutex_lock
+#define atslib_pthread_mutex_unlock pthread_mutex_unlock
 
 /* ****** ****** */
 
 ATSinline()
 ats_ptr_type
 atslib_pthread_cond_create () {
-  pthread_cond_t *p ;
+  int err ; pthread_cond_t *p ;
   p = (pthread_cond_t*)ATS_MALLOC(sizeof (pthread_cond_t)) ;
-  pthread_cond_init (p, NULL) ;
+  err = pthread_cond_init (p, NULL) ;
+  if (err) {
+    ATS_FREE(p) ; return (pthread_cond_t*)0 ;
+  } // end of [if]
   return p ;
 } // end of [atslib_pthread_cond_create]
 
-ATSinline()
-ats_void_type
-atslib_pthread_cond_wait_mutex (
-  ats_ptr_type cond, ats_ptr_type mutex
-) {
-  pthread_cond_wait ((pthread_cond_t*)cond, (pthread_mutex_t*)mutex) ;
-  return ;
-} // end of [atslib_pthread_cond_wait_mutex]
-
-ATSinline()
-ats_void_type
-atslib_pthread_cond_signal
-  (ats_ptr_type cond) {
-  pthread_cond_signal ((pthread_cond_t*)cond) ; return ;
-} // end of [atslib_pthread_cond_signal]
-
-ATSinline()
-ats_void_type
-atslib_pthread_cond_broadcast
-  (ats_ptr_type cond) {
-  pthread_cond_broadcast ((pthread_cond_t*)cond) ; return ;
-} // end of [atslib_pthread_cond_broadcast]
+#define atslib_pthread_cond_wait pthread_cond_wait
+#define atslib_pthread_cond_signal pthread_cond_signal
+#define atslib_pthread_cond_broadcast pthread_cond_broadcast
 
 /* ****** ****** */
 
-#endif /* [ifdef _ATS_MULTITHREAD] */
+#endif // end of [_ATS_MULTITHREAD]
 
 /* ****** ****** */
 
-#endif /* ATS_LIBC_PTHREAD_CATS */
+#endif // end of [ATS_LIBC_PTHREAD_CATS]
 
 /* end of [pthread.cats] */

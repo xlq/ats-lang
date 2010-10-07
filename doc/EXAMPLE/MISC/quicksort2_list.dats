@@ -52,9 +52,9 @@ dataprop ISORD (ilist) =
 
 extern
 fun quicksort {xs:ilist}
-  (xs: list (xs)): [ys:ilist] (ISORD (ys), PERMUTE (xs, ys) | list (ys))
+  (xs: list (xs)): [ys:ilist] (PERMUTE (xs, ys) | list (ys))
 // end of [quicksort]
-////
+
 (* ****** ****** *)
 
 extern
@@ -64,7 +64,7 @@ fun append {xs1,xs2:ilist}
 // end of [append]
 
 implement
-append {xs1, xs2}
+append {xs1,xs2}
   (xs1, xs2) = case+ xs1 of
   | cons {x1} (x1, xs11) => let
       val [xs31:ilist] (pf1 | xs31) = append (xs11, xs2)

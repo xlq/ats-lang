@@ -83,4 +83,49 @@ end // end of [pthread_create_detached_cloptr]
 
 (* ****** ****** *)
 
+%{^
+
+ats_int_type
+atslib_pthread_mutex_init
+  (ats_ptr_type p) {
+  int err ;
+  err = pthread_mutex_init ((pthread_mutex_t*)p, NULL) ;
+  if (err) return err ;
+  pthread_mutex_lock ((pthread_mutex_t*)p) ;
+  if (err) {
+     pthread_mutex_destroy ((pthread_mutex_t*)p) ; return err ;
+  } // end of [if]
+  return 0 ;
+} // end of [atslib_pthread_mutex_init]
+
+/* ****** ****** */
+
+ats_ptr_type
+atslib_pthread_mutex_create () {
+  int err ; pthread_mutex_t *p ;
+  p = (pthread_mutex_t*)ATS_MALLOC(sizeof (pthread_mutex_t)) ;
+  err = pthread_mutex_init (p, NULL) ;
+  if (err) {
+    ATS_FREE(p) ; return (pthread_mutex_t*)0 ;
+  } // end of [if]
+  return p ;
+} // end of [atslib_pthread_mutex_create]
+
+ats_ptr_type
+atslib_pthread_mutex_create_unlocked () {
+  int err ; pthread_mutex_t *p ;
+  p = (pthread_mutex_t*)ATS_MALLOC(sizeof (pthread_mutex_t)) ;
+  err = pthread_mutex_init_unlocked (p, NULL) ;
+  if (err) {
+    ATS_FREE(p) ; return (pthread_mutex_t*)0 ;
+  } // end of [if]
+  return p ;
+} // end of [atslib_pthread_mutex_create_unlocked]
+
+/* ****** ****** */
+
+%} // end of [%{^]
+
+(* ****** ****** *)
+
 (* end of [pthread.dats] *)

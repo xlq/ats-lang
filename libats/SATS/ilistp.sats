@@ -77,8 +77,6 @@ LENGTH (ilist, int) =
     LENGTHcons (ilist_cons (x, xs), n+1) of LENGTH (xs, n)
 // end of [LENGTH]
 
-(* ****** ****** *)
-
 prfun length_istot {xs:ilist} (): [n:nat] LENGTH (xs, n)
 prfun length_isfun {xs:ilist} {n1,n2:int}
   (pf1: LENGTH (xs, n1), pf2: LENGTH (xs, n2)): [n1==n2] void

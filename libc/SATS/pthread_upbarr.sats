@@ -49,6 +49,9 @@
 //
 absviewtype upbarr_view_viewtype (v:view)
 stadef upbarr = upbarr_view_viewtype
+//
+// HX: [upticket] is declared in pthread_uplock.sats as well
+//
 absviewtype upticket_view_viewtype (v:view)
 stadef upticket = upticket_view_viewtype
 
