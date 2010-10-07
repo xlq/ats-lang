@@ -73,42 +73,6 @@ typedef ats_pthread_uplock_t ats_pthread_upticket_t ;
 /* ****** ****** */
 
 ATSinline()
-ats_ptr_type
-atslib_pthread_uplock_create () {
-  ats_pthread_uplock_t *p ;
-  p = (ats_pthread_uplock_t*)ATS_MALLOC(sizeof(ats_pthread_uplock_t)) ;
-  pthread_mutex_init (&p->mutex_res, NULL) ;
-  return p ;
-} // end of [atslib_pthread_uplock_create]
-
-ATSinline()
-ats_ptr_type
-atslib_pthread_uplock_upticket_create
-  (ats_ptr_type p) {
-  pthread_mutex_lock (&((ats_pthread_upticket_t*)p)->mutex_res) ;
-  return p ;
-} // end of [atslib_pthread_uplock_upticket_create]
-
-ATSinline()
-ats_void_type
-atslib_pthread_uplock_upticket_upload_and_destroy
-  (ats_ptr_type p) {
-  pthread_mutex_unlock (&((ats_pthread_upticket_t*)p)->mutex_res) ;
-  return ;
-} // end of [atslib_pthread_uplock_upticket_upload_and_destroy]
-
-/* ****** ****** */
-
-ATSinline()
-ats_void_type
-atslib_pthread_uplock_download
-  (ats_ptr_type p) {
-  pthread_mutex_lock (&((ats_pthread_uplock_t*)p)->mutex_res) ;
-  pthread_mutex_unlock (&((ats_pthread_upticket_t*)p)->mutex_res) ;
-  return ;
-} // end of [atslib_pthread_uplock_download]
-
-ATSinline()
 ats_void_type
 atslib_pthread_uplock_destroy
   (ats_ptr_type p) {

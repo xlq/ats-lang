@@ -3,7 +3,7 @@
 //
 // Author: Hongwei Xi (hwxi AT cs DOT bu DOT edu)
 //   modifying code by Chris Double (chris DOT double AT double DOT co DOT nz)
-// Time: the 6th of October, 2010
+// Time: Thursday, the 7th of October, 2010
 //
 
 (* ****** ****** *)
@@ -80,7 +80,8 @@ fun insert_all
   fun loop {v:view} {l,l2:agz} {n:nat} .<n>. (
       pf: array_v(ulint, n, l2)
     | ws: !WORKSHOPptr(work, l)
-    , barr: !upbarr (v) >> upbarr @(v, array_v(ulint, n, l2)), p: ptr l2, n: int n, iterations: int
+    , barr: !upbarr (v) >> upbarr @(v, array_v(ulint, n, l2))
+    , p: ptr l2, n: int n, iterations: int
     ) : void = let
      viewdef V = array_v (ulint, n, l2)
   in
@@ -92,7 +93,9 @@ fun insert_all
       val ticket = pthread_upticket_create {v} {V1} (barr)
       val () = workshop_insert_work(ws, Compute (pf1 | p, iterations, ticket))
       val () = loop {v1} (pf2 | ws, barr, p + sizeof<T>, n - 1, iterations)
-      prval fpf = lam (pf: @(v1, V2)): (v, V) =<prf> ((pf.0).0, array_v_cons{T} ((pf.0).1, pf.1))
+      prval fpf = lam
+        (pf: @(v1,V2)): (v,V) =<prf> ((pf.0).0, array_v_cons{T} ((pf.0).1, pf.1))
+      // end of [prval]
       prval () = pthread_upbarr_trans (fpf | barr)
     in
       // nothing
@@ -105,7 +108,7 @@ fun insert_all
   end // end of [loop]
   val barr = pthread_upbarr_create ()
   val () = loop (pf_arr | ws, barr, p_arr, n0, iterations0 / n0)
-  prval () = pthread_upbarr_elimunit (barr)
+  prval () = pthread_upbarr_elimunit (barr) // HX: a convenience proof function
 in
   barr
 end // end of [insert_all]

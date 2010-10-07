@@ -67,11 +67,15 @@ pthread_upbarr_download_and_destroy
 
 ats_ptr_type
 atslib_pthread_upbarr_create () {
+  int err = 0 ;
   ats_pthread_upbarr_t *p ;
   p = (ats_pthread_upbarr_t*)ATS_MALLOC(sizeof(ats_pthread_upbarr_t)) ;
   p->count = 0 ;
-  pthread_cond_init (&p->cond_eqz, NULL) ;
-  pthread_mutex_init (&p->mutex_res, NULL) ;
+  err += pthread_cond_init (&p->cond_eqz, NULL) ;
+  err += pthread_mutex_init (&p->mutex_res, NULL) ;
+  if (err) {
+    ATS_FREE(p) ; ats_segfault() ;
+  } // end of [if]
   return p ;
 } // end of [atslib_pthread_upbarr_create]
 
@@ -80,9 +84,13 @@ atslib_pthread_upbarr_create () {
 ats_ptr_type
 atslib_pthread_upbarr_upticket_create
   (ats_ptr_type p) {
-  pthread_mutex_lock (&((ats_pthread_upticket_t*)p)->mutex_res) ;
+  if (pthread_mutex_lock(&((ats_pthread_upticket_t*)p)->mutex_res))
+    ats_segfault() ;
+  // end of [if]
   ((ats_pthread_upticket_t*)p)->count += 1 ;
-  pthread_mutex_unlock (&((ats_pthread_upticket_t*)p)->mutex_res) ;
+  if (pthread_mutex_unlock(&((ats_pthread_upticket_t*)p)->mutex_res))
+    ats_segfault() ;
+  // end of [if]
   return p ;
 } // end of [atslib_pthread_upbarr_upticket_create]
 
@@ -95,15 +103,15 @@ atslib_pthread_upbarr_download
   pthread_cond_t *eqz = &((ats_pthread_upbarr_t*)p)->cond_eqz ;
   pthread_mutex_t *res = &((ats_pthread_upbarr_t*)p)->mutex_res ;
 //
-  pthread_mutex_lock (res) ;
+  if (pthread_mutex_lock(res)) ats_segfault() ;
 //
   while (1) {
     count = ((ats_pthread_upbarr_t*)p)->count ;
     if (count == 0) break ;
-    pthread_cond_wait (eqz, res) ;
+    if (pthread_cond_wait (eqz, res)) ats_segfault() ;
   } // end of [while]
 //
-  pthread_mutex_unlock (res) ;
+  if (pthread_mutex_unlock(res)) ats_segfault() ;
 //
   return ;
 } // end of [atslib_pthread_upbarr_download]
@@ -125,13 +133,19 @@ atslib_pthread_upbarr_upticket_upload_and_destroy
   (ats_ptr_type p) {
   int count1 ;
 //
-  pthread_mutex_lock (&((ats_pthread_upticket_t*)p)->mutex_res) ;
+  if (pthread_mutex_lock(&((ats_pthread_upticket_t*)p)->mutex_res))
+    ats_segfault() ;
+  // end of [if]
   count1 = ((ats_pthread_upticket_t*)p)->count - 1 ;
   ((ats_pthread_upticket_t*)p)->count = count1 ;
-  pthread_mutex_unlock (&((ats_pthread_upticket_t*)p)->mutex_res) ;
+  if (pthread_mutex_unlock(&((ats_pthread_upticket_t*)p)->mutex_res))
+    ats_segfault() ;
+  // end of [if]
 //
   if (count1 == 0) {
-    pthread_cond_signal (&((ats_pthread_upticket_t*)p)->cond_eqz) ;
+    if (pthread_cond_signal(&((ats_pthread_upticket_t*)p)->cond_eqz))
+      ats_segfault() ;
+    // end of [if]
   } // end of [if]
 //
   return ;

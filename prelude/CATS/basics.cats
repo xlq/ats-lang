@@ -247,7 +247,7 @@ atspre_fprint_newline (
   const ats_ptr_type out
 ) {
   int n1, n2 ;
-  n1 = fprintf((FILE *)out, "\n") ; n2 = fflush((FILE *)out) ;
+  n1 = fprintf((FILE*)out, "\n") ; n2 = fflush((FILE*)out) ;
   if (n1 + n2 < 0) { ats_exit_errmsg
     (1, (ats_ptr_type)"exit(ATS): [fprint_newline] failed.\n") ;
   } // end of [if]

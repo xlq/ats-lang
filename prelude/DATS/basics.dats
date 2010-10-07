@@ -65,6 +65,15 @@ implement unit_v_elim (pf) = let prval unit_v () = pf in (*nothing*) end
 (* ****** ****** *)
 
 %{^
+ats_void_type
+ats_segfault () {
+  (void)*((int*)0) ; return ; // HX: for debugging
+} // end of [ats_segfault]
+%} // end of [%{^]
+
+(* ****** ****** *)
+
+%{^
 
 /*
 ** various functions for exits

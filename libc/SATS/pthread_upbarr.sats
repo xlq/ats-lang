@@ -40,6 +40,10 @@
 %} // end of [%{#]
 
 (* ****** ****** *)
+//
+// HX: no consideration for errors: any pthread-error leads to SEGFAULTS
+//
+(* ****** ****** *)
 
 #define ATS_STALOADFLAG 0 // no need for static loading at run-time
 

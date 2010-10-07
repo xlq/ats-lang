@@ -52,4 +52,56 @@ pthread_uplock_download_and_destroy
 
 (* ****** ****** *)
 
+%{^
+
+/* ****** ****** */
+
+ats_ptr_type
+atslib_pthread_uplock_create () {
+  ats_pthread_uplock_t *p ;
+  p = (ats_pthread_uplock_t*)ATS_MALLOC(sizeof(ats_pthread_uplock_t)) ;
+  if (pthread_mutex_init(&p->mutex_res, NULL))
+    { ATS_FREE(p) ; ats_segfault() ; }
+  // end of [if]
+  return p ;
+} // end of [atslib_pthread_uplock_create]
+
+ats_ptr_type
+atslib_pthread_uplock_upticket_create
+  (ats_ptr_type p) {
+  if (pthread_mutex_lock(&((ats_pthread_upticket_t*)p)->mutex_res))
+    ats_segfault() ;
+  // end of [if]
+  return p ;
+} // end of [atslib_pthread_uplock_upticket_create]
+
+ats_void_type
+atslib_pthread_uplock_upticket_upload_and_destroy
+  (ats_ptr_type p) {
+  if (pthread_mutex_unlock(&((ats_pthread_upticket_t*)p)->mutex_res))
+    ats_segfault() ;
+  // end of [if]
+  return ;
+} // end of [atslib_pthread_uplock_upticket_upload_and_destroy]
+
+/* ****** ****** */
+
+ats_void_type
+atslib_pthread_uplock_download
+  (ats_ptr_type p) {
+  if (pthread_mutex_lock(&((ats_pthread_uplock_t*)p)->mutex_res))
+    ats_segfault() ;
+  // end of [if]
+  if (pthread_mutex_unlock(&((ats_pthread_upticket_t*)p)->mutex_res))
+    ats_segfault() ;
+  // end of [if]
+  return ;
+} // end of [atslib_pthread_uplock_download]
+
+/* ****** ****** */
+
+%} // end of [%{^]
+
+(* ****** ****** *)
+
 (* end of [pthread_uplock.dats] *)
