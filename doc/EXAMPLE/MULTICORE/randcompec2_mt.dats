@@ -3,7 +3,7 @@
 //
 // Author: Hongwei Xi (hwxi AT cs DOT bu DOT edu)
 //   modifying code by Chris Double (chris DOT double AT double DOT co DOT nz)
-// Time: October, 2010
+// Time: the 6th of October, 2010
 //
 
 (* ****** ****** *)
@@ -96,7 +96,7 @@ fun insert_all_and_wait
   // end of [loop]
 in
   loop(pf_arr | ws, p_arr, n0, iterations0 / n0)
-end // end of [insert_all]
+end // end of [insert_all_and_wait]
 
 (* ****** ****** *)
 

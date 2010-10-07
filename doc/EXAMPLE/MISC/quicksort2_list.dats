@@ -34,9 +34,25 @@ typedef list = [xs:ilist] list (xs)
 
 (* ****** ****** *)
 
+dataprop LB (x0:int, ilist) =
+  | LBnil (x0, ilist_nil) of ()
+  | {x:int | x0 <= x} {xs:ilist} LBcons (x0, ilist_cons (x, xs)) of LB (x0, xs)
+
+dataprop UB (x0:int, ilist) =
+  | UBnil (x0, ilist_nil) of ()
+  | {x:int | x0 >= x} {xs:ilist} UBcons (x0, ilist_cons (x, xs)) of UB (x0, xs)
+
+dataprop ISORD (ilist) =
+  | ISORDnil (ilist_nil) of ()
+  | {x:int} {xs:ilist}
+    ISORDcons (ilist_cons (x, xs)) of (LB (x, xs), ISORD (xs))
+// end of [ISORD]
+
+(* ****** ****** *)
+
 extern
 fun quicksort {xs:ilist}
-  (xs: list (xs)): [ys:ilist] (PERMUTE (xs, ys) | list (ys))
+  (xs: list (xs)): [ys:ilist] (ISORD (ys), PERMUTE (xs, ys) | list (ys))
 // end of [quicksort]
 
 (* ****** ****** *)
@@ -44,33 +60,18 @@ fun quicksort {xs:ilist}
 extern
 fun append {xs1,xs2:ilist}
   (xs1: list xs1, xs2: list xs2)
-  : [xs3: ilist] (MUNION (xs1, xs2, xs3) | list xs3)
+  : [xs3: ilist] (APPEND (xs1, xs2, xs3) | list xs3)
 // end of [append]
 
 implement
 append {xs1, xs2}
   (xs1, xs2) = case+ xs1 of
   | cons {x1} (x1, xs11) => let
-      val [xs31:ilist] (fpf1 | xs31) = append (xs11, xs2)
-      stadef xs3 = ilist_cons (x1, xs31)
-      prval fpf = lam {x0:int} {n1,n2:nat} (
-        pf1: MSETCNT (x0, xs1, n1), pf2: MSETCNT (x0, xs2, n2)
-      ) : MSETCNT (x0, xs3, n1+n2) =<prf> let
-        prval MSETCNTcons (pf11) = pf1 in MSETCNTcons (fpf1 (pf11, pf2))
-      end // end of [prval]
+      val [xs31:ilist] (pf1 | xs31) = append (xs11, xs2)
     in
-      (fpf | cons (x1, xs31))
+      (APPENDcons (pf1) | cons (x1, xs31))
     end // end of [cons]
-  | nil () => let
-      stadef xs3 = xs2
-      prval fpf = lam {x0:int} {n1,n2:nat} (
-        pf1: MSETCNT (x0, xs1, n1), pf2: MSETCNT (x0, xs2, n2)
-      ) : MSETCNT (x0, xs3, n1+n2) =<prf> let
-        prval MSETCNTnil () = pf1 in pf2
-      end // end of [prval]
-    in
-      (fpf | xs2)
-    end // end of [nil]
+  | nil () => (APPENDnil () | xs2)
 // end of [append]  
 
 (* ****** ****** *)
@@ -133,7 +134,8 @@ and part {x:pos} {xs,xs1,xs2:ilist} (
   | nil () => let
       val [ys1:ilist] (fpf1 | ys1) = qsrt (xs1)
       val [ys2:ilist] (fpf2 | ys2) = qsrt (xs2)
-      val [ys:ilist] (fpf3 | ys) = append (ys1, cons (x, ys2))
+      val [ys:ilist] (pf3 | ys) = append (ys1, cons (x, ys2))
+      prval fpf3 = append_munion_lemma (pf3)
       prval fpf = lam {x0:int} {n0,n1,n2:nat}
         (pf0: MSETCNT (x0, xs, n0), pf1: MSETCNT (x0, xs1, n1), pf2: MSETCNT (x0, xs2, n2))
         : MSETCNT (x0, ys, n0+n1+n2+b2i(x0==x)) =<prf> let

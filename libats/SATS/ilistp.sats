@@ -190,6 +190,12 @@ MUNION (xs1:ilist, xs2:ilist, xs3:ilist) =
 
 (* ****** ****** *)
 
+prfun append_munion_lemma
+  {xs,ys,zs:ilist} (pf: APPEND (xs,ys,zs)): MUNION (xs, ys, zs)
+// end of [append_munion_lemma]
+
+(* ****** ****** *)
+
 propdef
 MSUBSET (xs1:ilist, xs2:ilist) =
   {x0:int} {n1,n2:nat}
