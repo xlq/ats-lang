@@ -35,7 +35,7 @@ fun getargs {n0:nat} {l:addr} (
 (* ****** ****** *)
 
 fun printenv {n:pos} (
-  argc: int n, argc: &(@[string][n])
+  argc: int n, argv: &(@[string][n])
 ) : void = let
   var m: size_t // uninitialized
   val (pf, fpf | p) = environ_get_arrsz (m)
@@ -50,6 +50,30 @@ fun printenv {n:pos} (
 in
   // nothing
 end // end of [printenv]
+
+(* ****** ****** *)
+
+fun assgnenv {n:pos}
+  (argc: int n, argv: &(@[string][n])): void = let
+  var err: int = 0
+  val () = while (true) let
+    val () = (
+      if argc <= 2 then (err := 1; break; assertfalse())
+    ) : [n >= 3] void
+    val () = if (setenv (argv.[1], argv.[2], 1(*overwritten*)) < 0) then
+      err := 2
+    // end of [val]
+  in
+    break
+  end // end of [val]
+  val () = (case+ err of
+    | 1 => printf ("Incorrect command format for <assgn>\n", @())
+    | 2 => printf ("[setenv] failed\n", @())
+    | _ => ()
+  ) : void // end of [val]
+in
+  // nothing
+end // end of [assgnenv]
 
 (* ****** ****** *)
 
@@ -80,7 +104,8 @@ while (true) let
     prval getargs_v_succ (pf, fpf) = pfargs
     val () = if (argc > 0) then let
       val arg0 = pargv->[0] in case+ 0 of
-      | _ when arg0 = "set" => printenv (argc, !pargv)
+      | _ when arg0 = "print" => printenv (argc, !pargv)
+      | _ when arg0 = "assgn" => assgnenv (argc, !pargv)
       | _ => execute (argc, !pargv)
     end // end of [val]
     prval () = pfargv := fpf (pf)
