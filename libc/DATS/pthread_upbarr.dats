@@ -74,7 +74,7 @@ atslib_pthread_upbarr_create () {
   if (pthread_mutex_init (&p->mutex_res, NULL)) goto FAIL ;
   return p ;
   FAIL: {
-    ATS_FREE(p) ; ats_segfault() ; return (ats_ptr_type)0 ;
+    ATS_FREE(p) ; ats_fatalerror() ; return (ats_ptr_type)0 ;
   } // end of [if]
 } // end of [atslib_pthread_upbarr_create]
 
@@ -84,11 +84,11 @@ ats_ptr_type
 atslib_pthread_upbarr_upticket_create
   (ats_ptr_type p) {
   if (pthread_mutex_lock(&((ats_pthread_upticket_t*)p)->mutex_res))
-    ats_segfault() ;
+    ats_fatalerror() ;
   // end of [if]
   ((ats_pthread_upticket_t*)p)->count += 1 ;
   if (pthread_mutex_unlock(&((ats_pthread_upticket_t*)p)->mutex_res))
-    ats_segfault() ;
+    ats_fatalerror() ;
   // end of [if]
   return p ;
 } // end of [atslib_pthread_upbarr_upticket_create]
@@ -102,15 +102,15 @@ atslib_pthread_upbarr_download
   pthread_cond_t *eqz = &((ats_pthread_upbarr_t*)p)->cond_eqz ;
   pthread_mutex_t *res = &((ats_pthread_upbarr_t*)p)->mutex_res ;
 //
-  if (pthread_mutex_lock(res)) ats_segfault() ;
+  if (pthread_mutex_lock(res)) ats_fatalerror() ;
 //
   while (1) {
     count = ((ats_pthread_upbarr_t*)p)->count ;
     if (count == 0) break ;
-    if (pthread_cond_wait (eqz, res)) ats_segfault() ;
+    if (pthread_cond_wait (eqz, res)) ats_fatalerror() ;
   } // end of [while]
 //
-  if (pthread_mutex_unlock(res)) ats_segfault() ;
+  if (pthread_mutex_unlock(res)) ats_fatalerror() ;
 //
   return ;
 } // end of [atslib_pthread_upbarr_download]
@@ -133,17 +133,17 @@ atslib_pthread_upbarr_upticket_upload_and_destroy
   int count1 ;
 //
   if (pthread_mutex_lock(&((ats_pthread_upticket_t*)p)->mutex_res))
-    ats_segfault() ;
+    ats_fatalerror() ;
   // end of [if]
   count1 = ((ats_pthread_upticket_t*)p)->count - 1 ;
   ((ats_pthread_upticket_t*)p)->count = count1 ;
   if (pthread_mutex_unlock(&((ats_pthread_upticket_t*)p)->mutex_res))
-    ats_segfault() ;
+    ats_fatalerror() ;
   // end of [if]
 //
   if (count1 == 0) {
     if (pthread_cond_signal(&((ats_pthread_upticket_t*)p)->cond_eqz))
-      ats_segfault() ;
+      ats_fatalerror() ;
     // end of [if]
   } // end of [if]
 //

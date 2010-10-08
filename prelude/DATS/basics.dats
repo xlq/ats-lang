@@ -9,7 +9,7 @@
 (*
 ** ATS - Unleashing the Potential of Types!
 **
-** Copyright (C) 2002-2008 Hongwei Xi, Boston University
+** Copyright (C) 2002-2010 Hongwei Xi, Boston University
 **
 ** All rights reserved
 **
@@ -40,16 +40,18 @@
 (* ****** ****** *)
 
 (*
-** prfun verify_constraint {p:bool | p} (): [p] void // verify and add
+// HX: this is declared in $ATSHOME/prelude/basic_dyn.sats:
+// prfun verify_constraint {p:bool | p} (): [p] void // verify and add
 *)
 implement verify_constraint () = ()
 
 (* ****** ****** *)
-
-// file_mode_lte_r_r : declared in basic_dyn.ats
+//
+// HX:
+// file_mode_lte_r_r and file_mode_lte_w_w
+// are declared in $ATSHOME/prelude/basic_dyn.ats
+//
 implement file_mode_lte_r_r = file_mode_lte_refl {r} ()
-
-// file_mode_lte_w_w : declared in basic_dyn.ats
 implement file_mode_lte_w_w = file_mode_lte_refl {w} ()
 
 (* ****** ****** *)
@@ -66,9 +68,9 @@ implement unit_v_elim (pf) = let prval unit_v () = pf in (*nothing*) end
 
 %{^
 ats_void_type
-ats_segfault () {
-  (void)*((int*)0) ; return ; // HX: for debugging
-} // end of [ats_segfault]
+ats_fatalerror () {
+  (void)*((int*)0) ; return ; // HX: for the purpose of debugging
+} // end of [ats_fatalerror]
 %} // end of [%{^]
 
 (* ****** ****** *)
@@ -76,7 +78,7 @@ ats_segfault () {
 %{^
 
 /*
-** various functions for exits
+** HX: various functions for exits
 */
 
 ats_void_type // external
@@ -100,7 +102,7 @@ ats_exit_errmsg (
 %{^
 
 /*
-** various functions for asserts
+** HX: various functions for asserts
 */
 
 ats_void_type
@@ -129,7 +131,7 @@ atspre_assert_errmsg (
   return ;
 } /* end of [atspre_assert_errmsg] */
 
-%} // end of [%{]
+%} // end of [%{^]
 
 (* ****** ****** *)
 

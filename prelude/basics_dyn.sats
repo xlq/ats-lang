@@ -138,10 +138,18 @@ val empval : empty = "ats_empty_value" // the empty value in ATS
 (* ****** ****** *)
 //
 // HX: In $ATSHOME/ccomp/runtime:
-// [ats_true_bool] and [ats_true_false] are mapped to [1] and [0], respectively
+// ats_true_bool/ats_true_false are mapped to 1/0, respectively
 //
 val true  : bool (true)  = "#ats_true_bool"
 and false : bool (false) = "#ats_false_bool"
+
+(* ****** ****** *)
+//
+// HX: this function results in a FATAL irrecoverable error
+//
+fun fatalerror
+  (): void = "ats_fatalerror" // implemented in [prelude/DATS/basics.dats]
+// end of [fatalerror]
 
 (* ****** ****** *)
 
