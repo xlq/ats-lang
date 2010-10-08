@@ -67,16 +67,15 @@ pthread_upbarr_download_and_destroy
 
 ats_ptr_type
 atslib_pthread_upbarr_create () {
-  int err = 0 ;
   ats_pthread_upbarr_t *p ;
   p = (ats_pthread_upbarr_t*)ATS_MALLOC(sizeof(ats_pthread_upbarr_t)) ;
   p->count = 0 ;
-  err += pthread_cond_init (&p->cond_eqz, NULL) ;
-  err += pthread_mutex_init (&p->mutex_res, NULL) ;
-  if (err) {
-    ATS_FREE(p) ; ats_segfault() ;
-  } // end of [if]
+  if (pthread_cond_init (&p->cond_eqz, NULL)) goto FAIL ;
+  if (pthread_mutex_init (&p->mutex_res, NULL)) goto FAIL ;
   return p ;
+  FAIL: {
+    ATS_FREE(p) ; ats_segfault() ; return (ats_ptr_type)0 ;
+  } // end of [if]
 } // end of [atslib_pthread_upbarr_create]
 
 /* ****** ****** */

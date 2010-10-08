@@ -100,11 +100,13 @@ pthread_mutex_view_viewt0ype
 stadef mutex_vt = pthread_mutex_view_viewt0ype
 
 (* ****** ****** *)
-
-fun pthread_mutex_init
+//
+// HX: this one does initialization and locking
+//
+fun pthread_mutex_init_locked
   {v:view} (mut: &mutex_vt? >> opt (mutex_vt(v), i==0)): #[i:int] int i
-  = "atslib_pthread_mutex_init"
-// end of [pthread_mutex_init]
+  = "atslib_pthread_mutex_init_locked"
+// end of [pthread_mutex_init_locked]
 
 fun pthread_mutex_init_unlocked {v:view} (
     pf: !v >> option_v (v, i > 0)
@@ -114,9 +116,9 @@ fun pthread_mutex_init_unlocked {v:view} (
 
 (* ****** ****** *)
 
-fun pthread_mutex_create {v:view} {l:addr}
+fun pthread_mutex_create_locked {v:view} {l:addr}
   (): [l:addr] (option_v ((free_gc_v l, mutex_vt v @ l), l > null) | ptr l)
-  = "atslib_pthread_mutex_create"
+  = "atslib_pthread_mutex_create_locked"
 
 fun pthread_mutex_create_unlocked {v:view} {l:addr}
   (pf: !v >> option_v (v, l==null) | (*none*))

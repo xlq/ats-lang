@@ -56,32 +56,10 @@
 
 /* ****** ****** */
 
-ATSinline()
-ats_int_type
-atslib_pthread_mutex_init_unlocked
-  (ats_ptr_type p) {
-  int err = pthread_mutex_init ((pthread_mutex_t*)p, NULL) ;
-  return err ;
-} // end of [atslib_pthread_mutex_init_unlocked]
-
-/* ****** ****** */
-
 #define atslib_pthread_mutex_lock pthread_mutex_lock
 #define atslib_pthread_mutex_unlock pthread_mutex_unlock
 
 /* ****** ****** */
-
-ATSinline()
-ats_ptr_type
-atslib_pthread_cond_create () {
-  int err ; pthread_cond_t *p ;
-  p = (pthread_cond_t*)ATS_MALLOC(sizeof (pthread_cond_t)) ;
-  err = pthread_cond_init (p, NULL) ;
-  if (err) {
-    ATS_FREE(p) ; return (pthread_cond_t*)0 ;
-  } // end of [if]
-  return p ;
-} // end of [atslib_pthread_cond_create]
 
 #define atslib_pthread_cond_wait pthread_cond_wait
 #define atslib_pthread_cond_signal pthread_cond_signal
