@@ -41,7 +41,7 @@
 
 (* ****** ****** *)
 //
-// HX: no consideration for errors: any pthread-error leads to SEGFAULTS
+// HX: any pthread-error leads to CRASH: [ats_crash] is called
 //
 (* ****** ****** *)
 
@@ -78,13 +78,12 @@ fun pthread_upbarr_create
   (): upbarr (unit_v) = "atslib_pthread_upbarr_create"
 // end of [pthread_upbarr_create]
 
-fun pthread_upbarr_download
-  {v:view} (barr: !upbarr (v) >> upbarr0): (v | void)
-  = "atslib_pthread_upbarr_download"
+fun pthread_upbarr_download {v:view}
+  (barr: !upbarr (v) >> upbarr0): (v | void) = "atslib_pthread_upbarr_download"
 // end of [pthread_upbarr_download]
 
-fun pthread_upbarr_destroy (barr: upbarr0): void
-  = "atslib_pthread_upbarr_destroy"
+fun pthread_upbarr_destroy
+  (barr: upbarr0): void = "atslib_pthread_upbarr_destroy"
 // end of [pthread_upbarr_destroy]
 
 fun pthread_upbarr_download_and_destroy {v:view} (barr: upbarr (v)): (v | void)
@@ -92,8 +91,7 @@ fun pthread_upbarr_download_and_destroy {v:view} (barr: upbarr (v)): (v | void)
 (* ****** ****** *)
 
 fun pthread_upticket_create
-  {v1:view} {v2:view}
-  (barr: !upbarr (v1) >> upbarr @(v1, v2)): upticket (v2)
+  {v1:view} {v2:view} (barr: !upbarr (v1) >> upbarr @(v1, v2)): upticket (v2)
   = "atslib_pthread_upbarr_upticket_create"
 // end of [pthread_upticket_create]
 
