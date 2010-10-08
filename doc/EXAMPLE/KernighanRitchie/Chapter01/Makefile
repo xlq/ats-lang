@@ -76,20 +76,24 @@ longest_line_alt: longest_line_alt.dats
 
 ######
 
+RMF = rm -f
+
+######
+
 clean::
-	rm -f a.out *_dats.c *.o *~
+	$(RMF) a.out *_dats.c *.o *~
 
 cleanall: clean
-	rm -f *_dats.html 
-	rm -f hello
-	rm -f fahrenheit_celsius
-	rm -f echo
-	rm -f charcnt
-	rm -f linecnt
-	rm -f wc
-	rm -f dsocnt
-	rm -f power
-	rm -f longest_line
-	rm -f longest_line_alt
+	$(RMF) *_dats.html 
+	$(RMF) hello
+	$(RMF) fahrenheit_celsius
+	$(RMF) echo
+	$(RMF) charcnt
+	$(RMF) linecnt
+	$(RMF) wc
+	$(RMF) dsocnt
+	$(RMF) power
+	$(RMF) longest_line
+	$(RMF) longest_line_alt
 
 ###### end of [Makefile] ######

@@ -128,13 +128,20 @@ fun string_trans (s: string, f: char -<cloptr1> String): String
 (* ****** ****** *)
 
 fun ccomp_file_to_file_err
-  (flag_stadyn: int, param_ats: Strlst, infile: string, outfile: string): Int
+  (flag_stadyn: int, param_ats: Strlst, infile: string, outfile: string): int
+// end of [ccomp_file_to_file_err]
 
 fun ccomp_file_to_file
   (flag_stadyn: int, param_ats: Strlst, infile: string, outfile: string): void
+// end of [ccomp_file_to_file]
+
+(* ****** ****** *)
 
 fun typecheck_file
   (flag_stadyn: int, param_ats: Strlst, infile: string): void
+// end of [typecheck_file]
+
+(* ****** ****** *)
 
 fun atscc_version (): void
 

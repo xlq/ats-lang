@@ -5,7 +5,7 @@
 (* ****** ****** *)
 //
 // book: AUP (2nd edition), pages 292 - 296
-// section 5.4: Implementing a Shell (Version I)
+// section 5.4: Implementing a Shell (Version 1)
 //
 (* ****** ****** *)
 

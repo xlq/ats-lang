@@ -4,7 +4,9 @@
 
 (*
 
-/* itoa: convert n t characters in s */
+/*
+** itoa: convert [n] to characters
+*/
 void itoa (int n, char s[]) {
   int i, sgn ;
   if ((sgn = n) < 0) n = -n ;
@@ -22,14 +24,17 @@ void itoa (int n, char s[]) {
 
 (* ****** ****** *)
 
-dataview itoa_v (bsz:int, l:addr, int) =
+dataview
+itoa_v (bsz:int, l:addr, int) =
   | itoa_v_succ (bsz, l, 0) of strbuf bsz @ l
   | itoa_v_fail (bsz, l, ~1) of b0ytes bsz @ l
+// end of [itoa_v]
 
-// [itoa_err] reports an error if the buffer is no long enough
+// [itoa_err] reports an error if the buffer is not long enough
 extern fun itoa_err {bsz:pos} {l:addr}
   (pf_buf: b0ytes bsz @ l | n: int, p_buf: ptr l, bsz: int bsz)
   :<> [p:int] (itoa_v (bsz, l, p) | int p)
+// end of [itoa_err]
 
 (* ****** ****** *)
 
@@ -37,35 +42,34 @@ typedef chars (n:int) = @[char][n]
 
 (* ****** ****** *)
 
-extern fun char_of_digit (d: natLt 10):<> char = "char_of_digit"
-
 %{^
-
-ats_char_type char_of_digit (ats_int_type i) { return (i + '0') ; }
-
+ats_char_type
+char_of_digit (ats_int_type i) { return (i + '0') ; }
 %}
+extern fun char_of_digit (d: natLt 10):<> char = "char_of_digit"
 
 (* ****** ****** *)
 
-extern fun strbuf_reverse
-  {m,n:nat | n < m} (s: &strbuf (m, n)):<> void
-  = "strbuf_reverse"
-
 %{^
-
-ats_void_type strbuf_reverse (ats_ptr_type s0) {
+ats_void_type
+strbuf_reverse (ats_ptr_type s0) {
   char *s = (char*)s0 ; int c, i, j ;
   for (i = 0, j = strlen(s) - 1; i < j; i++, j--) {
     c = s[i]; s[i] = s[j]; s[j] = c;
   }
   return ;
 } /* end of [strbuf_reverse] */
-
 %}
+extern
+fun strbuf_reverse {m,n:nat | n < m}
+  (s: &strbuf (m, n)):<> void = "strbuf_reverse"
+// end of [strbuf_reverse]
 
 (* ****** ****** *)
   
-implement itoa_err {bsz} {l} (pf_buf | n, p_buf, bsz) = let
+implement
+itoa_err {bsz} {l}
+  (pf_buf | n, p_buf, bsz) = let
   fun loop
     (n: Nat, buf: &chars bsz, bsz: int bsz, i: &Nat): void =
     if i < bsz then begin

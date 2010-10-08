@@ -82,12 +82,12 @@ fun unsetenv (name: string): int = "#atslib_unsetenv" // 0/-1: succ/fail
 
 (* ****** ****** *)
 
-fun atexit_err (f: () -> void): int = "#atslib_atexit_err" // !macro
-fun atexit_exn (f: () -> void): void = "atslib_atexit_exn" // !function
+fun system (cmd: string): int = "#atslib_system" // !macro
 
 (* ****** ****** *)
 
-fun system (cmd: string): int = "#atslib_system"
+fun _Exit (status: int): void = "#atslib__Exit" // !macro
+fun atexit (f: () -> void): int = "#atslib_atexit" // !macro
 
 (* ****** ****** *)
 

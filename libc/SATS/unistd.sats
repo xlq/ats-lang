@@ -75,45 +75,64 @@ macdef STDERR_FILENO = $extval (int STDERR_FILENO, "STDERR_FILENO")
 // HX: implemented in [$ATSHOME/prelude/CATS/basics.cats]
 //
 fun stdin_fildes_view_get
-  (): (fildes_v (STDIN_FILENO) | void)
-  = "atspre_stdin_view_get"
-
+  (): (fildes_v (STDIN_FILENO) | void) = "atspre_stdin_view_get"
 fun stdin_fildes_view_set
-  (pf: fildes_v (STDIN_FILENO) | (*none*)): void
-  = "atspre_stdin_view_set"
-
-//
+  (pf: fildes_v (STDIN_FILENO) | (*none*)): void = "atspre_stdin_view_set"
+// end of [stdin_fildes_view_set]
 
 fun stdout_fildes_view_get
-  (): (fildes_v (STDOUT_FILENO) | void)
-  = "atspre_stdout_view_get"
-
+  (): (fildes_v (STDOUT_FILENO) | void) = "atspre_stdout_view_get"
 fun stdout_fildes_view_set
-  (pf: fildes_v (STDOUT_FILENO) | (*none*)): void
-  = "atspre_stdout_view_set"
-
-//
+  (pf: fildes_v (STDOUT_FILENO) | (*none*)): void = "atspre_stdout_view_set"
+// end of [stdout_fildes_view_set]
 
 fun stderr_fildes_view_get
-  (): (fildes_v (STDERR_FILENO) | void)
-  = "atspre_stderr_view_get"
-
+  (): (fildes_v (STDERR_FILENO) | void) = "atspre_stderr_view_get"
 fun stderr_fildes_view_set
-  (pf: fildes_v (STDERR_FILENO) | (*none*)): void
-  = "atspre_stderr_view_set"
+  (pf: fildes_v (STDERR_FILENO) | (*none*)): void = "atspre_stderr_view_set"
+// end of [stderr_fildes_view_get]
+
+(* ****** ****** *)
+
+fun _exit (status: int): void = "#atslib__exit" // !macro
 
 (* ****** ****** *)
 //
-// implemented in [$ATSHOME/libc/DATS/unistd.dats]
+// HX:
+// strarr: array of strings followed by a null pointer
 //
-fun fork_exn (): pid_t = "atslib_fork_exn"
-  
-fun fork_exec_cloptr_exn {v:view}
- (pf: !v | f: (v | (*none*)) -<cloptr1> void): void
- = "atslib_fork_exec_cloptr_exn"
+abst@ype strarr
+//
+fun execv (path: string, argv: &strarr): int = "#atslib_execv"
+fun execvp (path: string, argv: &strarr): int = "#atslib_execvp"
 
-fun fork_exec_and_wait_cloptr_exn (proc: () -<cloptr1> void): Int
-  = "atslib_fork_exec_and_wait_cloptr_exn"
+(* ****** ****** *)
+
+fun fork_err (): pid_t = "atslib_fork_err" // = fork
+
+(* ****** ****** *)
+
+//
+// HX-2010-10-08:
+// these functions, which are implemented in [$ATSHOME/libc/DATS/unistd.dats],
+// are now kept for historic reasons.
+//
+fun fork_exn (): pid_t = "atslib_fork_exn" // function!
+
+//
+// HX: the parent returns immediately
+//
+fun fork_exec_cloptr_exn
+  {v:view} (pf: !v | f: (v | (*none*)) -<cloptr1> void): void
+ = "atslib_fork_exec_cloptr_exn"
+// end of [fork_exec_cloptr_exn]
+
+//
+// HX: the parent waits until the (only) child finishes
+//
+fun fork_exec_and_wait_cloptr_exn
+  (proc: () -<cloptr1> void): int = "atslib_fork_exec_and_wait_cloptr_exn"
+// end of [fork_exec_and_wait_cloptr_exn]
 
 (* ****** ****** *)
 

@@ -27,6 +27,7 @@ ats-lang-anairiats-0.2.2:
 20. Modifying the types for malloc_ngc and free_ngc
 21. Clearing up libc/pthread and libc/pthread_uplock
 22. Implementing lib/pthread_upbarr
+23. Incorporating [parcomb] into $ATSHOME/contrib
 
 ########################################################################
 

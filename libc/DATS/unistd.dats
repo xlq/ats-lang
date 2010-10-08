@@ -40,12 +40,34 @@
 (* ****** ****** *)
 
 %{^
-#include <errno.h>
-#include <unistd.h>
 extern char **environ ; // in [unistd.h]
 extern void _exit (int status) ; // in [unistd.h]
 extern pid_t wait (int*) ; // in [sys/wait.h]
 %} // end of [%{^]
+
+(* ****** ****** *)
+
+staload TYPES = "libc/sys/SATS/types.sats"
+
+(* ****** ****** *)
+
+staload "libc/SATS/errno.sats"
+staload "libc/SATS/stdio.sats"
+staload "libc/SATS/unistd.sats"
+
+(* ****** ****** *)
+
+implement
+fork_exn () = pid where {
+  val pid = fork_err ()
+  val iserr = $TYPES.int_of_pid(pid) < 0
+  val () = if iserr then let
+    val errno = int_of (errno_get ())
+    val () = perror ("fork")
+  in
+    exit_errmsg (errno, "exit(ATS): [fork] failed.\n")
+  end // end of [val]
+} // end of [atslib_fork_exn]
 
 /* ****** ****** */
 
@@ -56,17 +78,18 @@ atslib_fork_exec_cloptr_exn
   (ats_ptr_type f_child) {
   pid_t pid ;
   pid = fork () ;
-
+//
   if (pid < 0) {
-    ats_exit_errmsg (errno, "Exit: [fork] failed.\n") ;
-  }
-
+    ats_exit_errmsg (errno, "exit(ATS): [fork] failed.\n") ;
+  } // end of [if]
+//
   /* this is the parent */
   if (pid > 0) { ATS_FREE (f_child) ; return ; }
-  
+//  
   /* this is the child */
   ((ats_void_type (*)(ats_clo_ptr_type))((ats_clo_ptr_type)f_child)->closure_fun)(f_child) ;
   _exit (0) ; /* no need to flush STDIN, STDOUT and STDERR */
+//
   return ; /* deadcode */
 } /* end of [atslib_fork_exec_cloptr] */
 
@@ -77,17 +100,23 @@ atslib_fork_exec_and_wait_cloptr_exn
   (ats_ptr_type f_child) {
   pid_t pid ;
   int status ;
-
+//
   pid = fork () ;
+//
   if (pid < 0) {
-    ats_exit_errmsg (errno, "Exit: [fork] failed.\n") ;
-  }
+    ats_exit_errmsg (errno, "exit(ATS): [fork] failed.\n") ;
+  } // end of [if]
+//
   if (pid > 0) {
-    wait (&status) ; ATS_FREE (f_child) ; return status ;
-  }
+    ATS_FREE (f_child) ;
+    if (wait (&status) < 0) return -1 ;
+    return status ;
+  } // end of [if]
+//
   /* this is the child */
   ((ats_void_type (*)(ats_clo_ptr_type))((ats_clo_ptr_type)f_child)->closure_fun)(f_child) ;
   _exit (0) ; /* no need to flush STDIN, STDOUT and STDERR */
+//
   return 0 ; /* deadcode */
 } /* atslib_fork_exec_and_wait_cloptr_exn */
 

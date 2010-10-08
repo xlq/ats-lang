@@ -67,16 +67,8 @@ atspre_exit_prerrf(ats_int_type code, ats_ptr_type fmt, ...) ;
 
 /* ****** ****** */
 
-#define atslib_atexit_err atexit
-
-ATSinline()
-ats_void_type
-atslib_atexit_exn (ats_ptr_type fcn) {
-  int err ;
-  err = atexit ((void(*)(void))fcn) ;
-  if (err != 0) atspre_exit_prerrf (1, "exit(ATS): [atexit] failed.\n") ;
-  return ;
-} /* end of [atslib_atexit_exn] */
+#define atslib__Exit _Exit
+#define atslib_atexit atexit
 
 /* ****** ****** */
 

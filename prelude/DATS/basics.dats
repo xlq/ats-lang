@@ -68,9 +68,9 @@ implement unit_v_elim (pf) = let prval unit_v () = pf in (*nothing*) end
 
 %{^
 ats_void_type
-ats_fatalerror () {
+ats_crash () {
   (void)*((int*)0) ; return ; // HX: for the purpose of debugging
-} // end of [ats_fatalerror]
+} // end of [ats_crash]
 %} // end of [%{^]
 
 (* ****** ****** *)

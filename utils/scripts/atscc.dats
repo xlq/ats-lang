@@ -66,6 +66,7 @@ implement typecheck_file
   val cmd = lam (): void =<cloptr1>
     typecheck_file_exec (flag_stadyn, param_rev, infile)
   val status = fork_exec_and_wait_cloptr_exn (cmd)
+  val status = int1_of_int (status)
   val (pf_ifexited | ifexited) = WIFEXITED (status)
   val () = if ifexited <> 0 then let
     val code = WEXITSTATUS (pf_ifexited | status) in
@@ -96,6 +97,7 @@ implement ccomp_file_to_file
   val status = begin
     ccomp_file_to_file_err (flag_stadyn, param_rev, infile, outfile)
   end // end of [val]
+  val status = int1_of_int (status)
   val (pf_ifexited | ifexited) = WIFEXITED (status)
   val () = if ifexited <> 0 then let
     val code = WEXITSTATUS (pf_ifexited | status) in
@@ -110,11 +112,14 @@ implement ccomp_file_to_file
 
 (* ****** ****** *)
 
-extern fun atscc_version_exec (): void = "atscc_version_exec"
+extern
+fun atscc_version_exec (): void = "atscc_version_exec"
 
-implement atscc_version () = () where { val status =
+implement
+atscc_version () = () where { val status =
     fork_exec_and_wait_cloptr_exn (lam () => atscc_version_exec ())
   // end of [val]
+  val status = int1_of_int (status)
   val (pf_ifexited | ifexited) = WIFEXITED (status)
   val () = if ifexited <> 0 then let
     val code = WEXITSTATUS (pf_ifexited | status) in

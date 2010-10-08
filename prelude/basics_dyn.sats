@@ -147,9 +147,9 @@ and false : bool (false) = "#ats_false_bool"
 //
 // HX: this function results in a FATAL irrecoverable error
 //
-fun fatalerror
-  (): void = "ats_fatalerror" // implemented in [prelude/DATS/basics.dats]
-// end of [fatalerror]
+fun crash // crash() = (void)*(int*)0
+  (): void = "ats_crash" // implemented in [prelude/DATS/basics.dats]
+// end of [crash]
 
 (* ****** ****** *)
 

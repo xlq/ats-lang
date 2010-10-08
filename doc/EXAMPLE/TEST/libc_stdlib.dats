@@ -64,7 +64,8 @@ main (argc, argv) = let
   val () = print_array<double> (!p_arr, ASZ, lam x => printf ("%.2f", @(x)))
   val () = print_newline ()
 //
-  val () = atexit_exn (lam () => printf ("Bye, bye!\n", @()))
+  val _err = atexit (lam () => printf ("Bye, bye!\n", @()))
+  val () = assert_errmsg (_err = 0, #LOCATION)
 in
   // empty
 end // end of [main]

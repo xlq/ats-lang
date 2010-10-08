@@ -10,7 +10,8 @@
 //
 // How to compile:
 //   atscc -o quicksort2_list quicksort2_list.dats
-//
+// How to test:
+//   ./quicksort2_list
 *)
 
 (* ****** ****** *)
@@ -34,19 +35,24 @@ typedef list = [xs:ilist] list (xs)
 
 (* ****** ****** *)
 
+(*
+//
+// HX-2010-10-08:
+// if you want to show that the output of quicksort is always a ordered list,
+// please be my guest :)
+//
 dataprop LB (x0:int, ilist) =
   | LBnil (x0, ilist_nil) of ()
   | {x:int | x0 <= x} {xs:ilist} LBcons (x0, ilist_cons (x, xs)) of LB (x0, xs)
-
 dataprop UB (x0:int, ilist) =
   | UBnil (x0, ilist_nil) of ()
   | {x:int | x0 >= x} {xs:ilist} UBcons (x0, ilist_cons (x, xs)) of UB (x0, xs)
-
 dataprop ISORD (ilist) =
   | ISORDnil (ilist_nil) of ()
   | {x:int} {xs:ilist}
     ISORDcons (ilist_cons (x, xs)) of (LB (x, xs), ISORD (xs))
 // end of [ISORD]
+*)
 
 (* ****** ****** *)
 

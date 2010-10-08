@@ -48,28 +48,24 @@
 #include "libc/sys/CATS/types.cats" // for [pid_t]
 
 /* ****** ****** */
-
-// implemented in [prelude/DATS/basics.dats]
+//
+// HX: implemented in [prelude/DATS/basics.dats]
+//
 extern ats_void_type
 ats_exit_errmsg(ats_int_type n, ats_ptr_type msg) ;
 
 /* ****** ****** */
 
-ATSinline()
-ats_pid_type
-atslib_fork_exn () {
-  pid_t pid ;
-//
-  pid = fork () ;
-//
-  if (pid < 0) {
-    perror ("fork") ;
-    ats_exit_errmsg (errno, (ats_ptr_type)"exit(ATS): [fork] failed.\n") ;
-    // end of [ats_exit_errmsg]
-  } // end of [if]
-//
-  return pid ;
-} // end of [atslib_fork_exn]
+#define atslib__exit _exit // equivalent to _Exit in stdlib
+
+/* ****** ****** */
+
+#define atslib_execv execv
+#define atslib_execvp execvp
+
+/* ****** ****** */
+
+#define atslib_fork_err fork
 
 /* ****** ****** */
 
