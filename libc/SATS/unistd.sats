@@ -46,6 +46,7 @@ staload TYPES = "libc/sys/SATS/types.sats"
 typedef off_t = $TYPES.off_t
 typedef pid_t = $TYPES.pid_t
 typedef uid_t = $TYPES.uid_t
+typedef gid_t = $TYPES.gid_t
 //
 typedef mode_t = $TYPES.mode_t
 //
@@ -190,17 +191,53 @@ fun getpagesize ():<> int = "#atslib_getpagesize" // macro
 
 (* ****** ****** *)
 
-fun getpid (): pid_t = "#atslib_getpid" // macro
-fun getppid (): pid_t = "#atslib_getppid" // macro
+fun getuid ():<> uid_t = "#atslib_getuid" // !macro // user
+fun geteuid ():<> uid_t = "#atslib_geteuid" // !macro // effective user
+// 
+// HX: for superuser // 0/-1 : succ/fail
+//
+fun setuid (uid: uid_t):<> int = "#atslib_setuid" // !macro
+fun seteuid (uid: uid_t):<> int = "#atslib_seteuid" // 0/-1 : succ/fail
 
 (* ****** ****** *)
 
-fun getuid ():<> uid_t = "#atslib_getuid" // macro
-fun geteuid ():<> uid_t = "#atslib_geteuid" // macro
+fun getgid ():<> gid_t = "#atslib_getgid" // !macro // group
+fun getegid ():<> gid_t = "#atslib_getegid" // !macro // effective group
+// 
+// HX: for superuser // 0/-1 : succ/fail
+//
+fun setgid (gid: gid_t):<> int = "#atslib_setgid" // !macro
+fun setegid (gid: gid_t):<> int = "#atslib_setegid" // 0/-1 : succ/fail
 
 (* ****** ****** *)
 
+fun getpid (): pid_t = "#atslib_getpid" // !macro // process ID
+fun getppid (): pid_t = "#atslib_getppid" // !macro // parent process ID
+
+(* ****** ****** *)
+//
+// HX: session IDs
+//
+fun setsid (): pid_t = "#atslib_setsid" // -1 is returned on error
+fun getsid (pid: pid_t): pid_t = "#atslib_getsid" // -1 is returned on error
+
+(* ****** ****** *)
+//
+// HX: process group IDs
+//
+fun setpgid (
+  pid: pid_t, pgid: pid_t
+) : int = "#atslib_setpgid" // 0/-1 : succ/fail
+fun getpgid (pid: pid_t): pid_t = "#atslib_getpgid" // -1 is returned on error
+
+fun getpgrp
+  (): pid_t = "#atslib_getpgrp" // = getpgid (0) // no error
+fun setpgrp (): int = "#atslib_setpgrp" // = setpgid (0, 0)
+
+(* ****** ****** *)
+//
 // HX: non-reentrant version
+//
 fun getlogin ()
   :<!ref> [l:addr] (strptr l -<lin,prf> void | strptr l)
   = "#atslib_getlogin" // macro
@@ -225,10 +262,22 @@ fun access (path: string, mode: uint): int = "#atslib_access"
 //
 (* ****** ****** *)
 
+fun chroot
+  (path: string): int = "#atslib_chroot" // 0/-1 : succ/fail
+// end of [chroot]
+
+(* ****** ****** *)
+
 fun chdir (path: string): int(*err*) = "#atslib_chdir"
 fun fchdir {fd:int}
   (pf: !fildes_v (fd) | fd: int): int(*err*) = "#atslib_fchdir"
 // end of [fchdir]
+
+(* ****** ****** *)
+
+fun nice
+  (incr: int): int = "#atslib_nice" // NZERO/-1 : succ/fail // errno set
+// end of [nice]
 
 (* ****** ****** *)
 
@@ -240,26 +289,29 @@ fun unlink (path: string): int = "#atslib_unlink" // macro
 fun lseek_err {fd:int}
   (pf: !fildes_v (fd) | fd: int fd, ofs: off_t, whence: whence_t): off_t
   = "atslib_fildes_lseek_err"
-
+// end of [lseek_err]
 fun lseek_exn {fd:int}
   (pf: !fildes_v (fd) | fd: int fd, ofs: off_t, whence: whence_t): off_t
   = "atslib_fildes_lseek_exn"
+// end of [lseek_exn]
 
 (* ****** ****** *)
 
-fun fildes_pread
+fun pread
   {fd:int} {n,sz:nat | n <= sz} (
     pf: !fildes_v (fd)
   | fd: int fd, buf: &bytes sz, ntotal: size_t n, ofs: off_t
   ) : ssizeBtw(~1, n+1)
   = "atslib_fildes_pread"
+// end of [fildes_pread]
 
-fun fildes_pwrite
+fun pwrite
   {fd:int} {n,sz:nat | n <= sz} (
     pf: !fildes_v (fd)
   | fd: int fd, buf: &bytes sz, ntotal: size_t n, ofs: off_t
   ) : ssizeBtw(~1, n+1)
   = "atslib_fildes_pwrite"
+// end of [fildes_pwrite]
 
 (* ****** ****** *)
 
@@ -317,16 +369,6 @@ fun readlink {n:nat} {l:addr} (
   pf: !b0ytes(n) @ l >> bytes(n) @ l | path: string, p: ptr l, n: size_t n
 ) : [n1:int | n1 <= n] ssize_t (n1) = "#atslib_readlink"
 // end of [readlink]
-
-(* ****** ****** *)
-
-fun setsid (): pid_t = "#atslib_setsid" // -1 is returned on error
-fun getsid (pid: pid_t): pid_t = "#atslib_getsid" // -1 is returned on error
-
-fun setpgid (
-  pid: pid_t, pgid: pid_t
-) : int = "#atslib_setpgid" // 0/-1 : succ/fail
-fun getpgid (pid: pid_t): pid_t = "#atslib_getpgid" // -1 is returned on error
 
 (* ****** ****** *)
 

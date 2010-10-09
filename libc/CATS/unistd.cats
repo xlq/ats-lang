@@ -95,11 +95,24 @@ atslib_usleep (ats_int_type n) { usleep (n) ; return ; }
 
 /* ****** ****** */
 
+#define atslib_getuid getuid
+#define atslib_geteuid geteuid
+
+#define atslib_getgid getgid
+#define atslib_getegid getegid
+
+/* ****** ****** */
+
 #define atslib_getpid getpid
 #define atslib_getppid getppid
 
-#define atslib_getuid getuid
-#define atslib_geteuid geteuid
+#define atslib_setsid setsid
+#define atslib_getsid getsid
+
+#define atslib_setpgid setpgid
+#define atslib_getpgid getpgid
+
+/* ****** ****** */
 
 #define atslib_getlogin getlogin
 
@@ -109,8 +122,16 @@ atslib_usleep (ats_int_type n) { usleep (n) ; return ; }
 
 /* ****** ****** */
 
+#define atslib_chroot chroot
+
+/* ****** ****** */
+
 #define atslib_chdir chdir
 #define atslib_fchdir fchdir
+
+/* ****** ****** */
+
+#define atslib_nice nice
 
 /* ****** ****** */
 
@@ -156,13 +177,6 @@ atslib_fildes_lseek_exn (
 /* ****** ****** */
 
 #define atslib_readlink readlink
-
-/* ****** ****** */
-
-#define atslib_setsid setsid
-#define atslib_getsid getsid
-#define atslib_setpgid setpgid
-#define atslib_getpgid getpgid
 
 /* ****** ****** */
 

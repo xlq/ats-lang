@@ -115,8 +115,9 @@ ats_exit_errmsg (
 
 ats_void_type
 atspre_assertfalse () {
-  fprintf (stderr, "[assertfalse] executed\n") ;
-  return (void)*((int*)0) ; // HX: a segfault occurs if it is executed
+  fprintf(stderr, "[assertfalse] executed\n") ;
+  ats_crash() ; // HX: this likely causes a core dump!
+  return ;
 } // end of [atspre_asertfasle]
 
 ats_void_type
@@ -124,7 +125,8 @@ atspre_assert (
   ats_bool_type assertion
 ) {
   if (!assertion) {
-    fprintf (stderr, "exit(ATS): [assert] failed\n") ; exit(1) ;
+    fprintf (stderr, "exit(ATS): [assert] failed\n") ;
+    exit(EXIT_FAILURE) ;
   } // end of [if]
   return ;
 } /* end of [atspre_assert] */
@@ -134,7 +136,8 @@ atspre_assert_errmsg (
   ats_bool_type assertion, ats_ptr_type errmsg
 ) {
   if (!assertion) {
-    fprintf (stderr, "exit(ATS)%s\n", (char*)errmsg) ; exit(1) ;
+    fprintf (stderr, "exit(ATS)%s\n", (char*)errmsg) ;
+    exit(EXIT_FAILURE) ;
   } // end of [if]
   return ;
 } /* end of [atspre_assert_errmsg] */

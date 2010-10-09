@@ -44,7 +44,7 @@ fun loop_main {fd:int} (
   , ofs: lint
   , err: &int
   ) : void = if ofs >= 0L then let
-  val nread = fildes_pread (pf_fd | fd, bufc, 1, $T.off_of_lint ofs)
+  val nread = pread (pf_fd | fd, bufc, 1, $T.off_of_lint ofs)
   val nread = int1_of_ssize1 (nread)
 in
   case+ 0 of

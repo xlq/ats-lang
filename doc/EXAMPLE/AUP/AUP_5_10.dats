@@ -1,11 +1,11 @@
 //
 // Author: Hongwei Xi (hwxi AT cs DOT bu DOT edu)
-// Time: September, 2010
+// Time: October, 2010
 //
 (* ****** ****** *)
 //
-// book: AUP (2nd edition), pages 300 - 301
-// section 5.4: Implementing a Shell (Version 2)
+// book: AUP (2nd edition), pages 314 - 315
+// section 5.10: Implementing a Shell (Version 3)
 //
 (* ****** ****** *)
 
@@ -173,4 +173,4 @@ end // end of [main]
 
 (* ****** ****** *)
 
-(* end of [AUP_5_4.dats] *)
+(* end of [AUP_5_10.dats] *)
