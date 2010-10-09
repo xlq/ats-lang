@@ -42,6 +42,20 @@
 
 /* ****** ****** */
 
+typedef struct rlimit ats_rlimit_type ;
+typedef struct rusage ats_rusage_type ;
+
+/* ****** ****** */
+
+#define atslib_getrlimit getrlimit
+#define atslib_setrlimit setrlimit
+
+/* ****** ****** */
+
+#define atslib_getrusage getrusage
+
+/* ****** ****** */
+
 #define atslib_getpriority getpriority
 #define atslib_setpriority setpriority
 

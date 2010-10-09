@@ -97,16 +97,14 @@ test48: AUP_4_8.dats
 
 #######
 
-test511: AUP_5_11.dats
-	$(ATSCC) -o test511 AUP_5_11.dats \
-     && ./test511
+test52: AUP_5_2.dats
+	$(ATSCC) -o test52 AUP_5_2.dats \
+     && ./test52
 
 #######
 
 getargs.o: utils/getargs.c
 	$(ATSCC) -Wall -c -o $@ $<
-
-#######
 
 aupsh1: AUP_5_4.dats getargs.o
 	$(ATSCC) -o aupsh1 $< getargs.o
@@ -119,9 +117,14 @@ aupsh3: AUP_5_10.dats getargs.o
 
 #######
 
-test52: AUP_5_2.dats
-	$(ATSCC) -o test52 AUP_5_2.dats \
-     && ./test52
+test511: AUP_5_11.dats
+	$(ATSCC) -Wall -o test511 AUP_5_11.dats \
+     && ./test511
+
+#######
+
+aupnice: AUP_5_15.dats
+	$(ATSCC) -Wall -o aupnice $<
 
 #######
 
@@ -149,5 +152,6 @@ cleanall: clean
 	rm -f aupsh2
 	rm -f aupsh3
 	rm -f test511
+	rm -f aupnice
 
 ###### end of [Makefile] ######

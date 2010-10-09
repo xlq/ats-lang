@@ -67,12 +67,13 @@ fun substrncmp
 
 (* ****** ****** *)
 
-fun strlen {n:nat} (str: string n):<> size_t n = "atslib_strlen"
+fun strlen {n:nat}
+  (str: string n):<> size_t n = "#atslib_strlen" // !mac
+// end of [strlen]
 
 (* ****** ****** *)
 
 (*
-
 char *strchr(const char*, int):
 please use [string_index_of_char_from_left] in [prelude/SATS/string.sats]
 
@@ -81,24 +82,23 @@ please use [string_index_of_char_from_right] in [prelude/SATS/string.sats]
 
 char *strstr(const char*, const char* ): 
 please use [string_index_of_string] in [prelude/SATS/string.sats]
-
 *)
 
 (* ****** ****** *)
 
 fun strspn {n:nat} (str: string n, accept: string):<> sizeLte n
-  = "atslob_strspn"
+  = "#atslib_strspn" // macro!
 
 fun strcspn {n:nat} (str: string n, reject: string):<> sizeLte n
-  = "atslob_strcspn"
+  = "#atslib_strcspn" // macro!
 
 (* ****** ****** *)
 
 fun strcpy
   {m,n:nat | n < m} {l:addr} {ofs:int} (
     pf_buf: !b0ytes m @ l >> strbuf (m, n) @ l | sbf: ptr l, str: string n
-  ) :<> ptr l
-  = "atslib_strcpy"
+  ) :<> ptr l = "#atslib_strcpy" // mac!
+// end of [strcpy]
 
 (* ****** ****** *)
 
@@ -107,8 +107,8 @@ fun strcat
     pf_mul: MUL (n1, sizeof char, ofs)
   , pf_buf: !strbuf (m, n1) @ l >> strbuf (m, n1+n2) @ l
   | sbf: ptr l, str: string n2
-  ) :<> ptr l
-  = "atslib_strcat"
+  ) :<> ptr l = "#atslib_strcat" // mac!
+// end of [strcat]
 
 (*
 char *strncat(char *dst, const char *src, size_t n):
@@ -131,14 +131,17 @@ fun strpbrk {m,n:nat} {l:addr}
   (pf: !strbuf (m, n) @ l | p: ptr l, accept: string)
   :<> [l_ret:addr] (strpbrk_p (l, n, l_ret) | ptr l_ret)
   = "atslib_strpbrk"
+// end of [strpbrk]
 
 (* ****** ****** *)
 //
 // HX: implemented in [string.dats]
 //
-fun strdup_gc {n:nat} (str: string n)
+fun strdup_gc
+  {n:nat} (str: string n)
   :<> [l:addr] (free_gc_v (n+1, l), strbuf (n+1, n) @ l | ptr l)
   = "atslib_strdup_gc"
+// end of [strdup_gc]
 
 (* ****** ****** *)
 

@@ -80,49 +80,24 @@ atslib_substrncmp (
 
 /* ****** ****** */
 
-ATSinline()
-ats_size_type
-atslib_strlen
-  (ats_ptr_type str) { return strlen((char*)str) ; }
-// end of [atslib_strspn]
+#define atslib_strlen strlen
 
 /* ****** ****** */
 
-ATSinline()
-ats_size_type
-atslib_strspn (
-  ats_ptr_type str, ats_ptr_type cs
-) {
-  return strspn((char*)str, (char*)cs) ;
-} /* end of [atslib_strspn] */
-
-ATSinline()
-ats_size_type
-atslib_strcspn (
-  ats_ptr_type str, ats_ptr_type cs
-) {
-  return strcspn((char*)str, (char*)cs) ;
-} // end of [atslib_strcspn]
+#define atslib_strchr strchr // HX: no interface in ATS
+#define atslib_strrchr strrchr // HX: no interface in ATS
+#define atslib_strstr strstr // HX: no interface in ATS
 
 /* ****** ****** */
 
-ATSinline()
-ats_ptr_type
-atslib_strcpy (
-  ats_ptr_type dst, ats_ptr_type src
-) {
-  return strcpy((char*)dst, (char*)src) ;
-} // end of [atslib_strcpy]
+#define atslib_strspn strspn
+#define atslib_strcspn strcspn
 
 /* ****** ****** */
 
-ATSinline()
-ats_ptr_type
-atslib_strcat (
-  ats_ptr_type dst, ats_ptr_type src
-) {
-  return strcat((char*)dst, (char*)src) ;
-} // end of [atslib_strcat]
+#define atslib_strcpy strcpy
+#define atslib_strcat strcat
+#define atslib_strncat strncat // HX: no interface in ATS
 
 /* ****** ****** */
 
