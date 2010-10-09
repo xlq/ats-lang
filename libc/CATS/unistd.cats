@@ -60,6 +60,16 @@ ats_exit_errmsg(ats_int_type n, ats_ptr_type msg) ;
 
 /* ****** ****** */
 
+ATSinline()
+ats_ptr_type
+atslib_strarr_get (
+  ats_ptr_type A, ats_size_type i
+) {
+ return ((char**)A)[i] ;
+} // end of [atslib_strarr_get]
+
+/* ****** ****** */
+
 #define atslib_execv execv
 #define atslib_execvp execvp
 
@@ -70,21 +80,6 @@ ats_exit_errmsg(ats_int_type n, ats_ptr_type msg) ;
 /* ****** ****** */
 
 #define atslib_getcwd getcwd
-
-/* ****** ****** */
-
-ATSinline()
-ats_pid_type
-atslib_wait_with_status (
-  ats_ptr_type p // for storing status
-) {
-  return wait((int*)p) ;
-} // end of [atslib_wait_with_status]
-
-ATSinline()
-ats_pid_type
-atslib_wait_without_status () { return wait((int*)0) ; }
-// end of [atslib_wait_without_status]
 
 /* ****** ****** */
 

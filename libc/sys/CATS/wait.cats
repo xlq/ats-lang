@@ -105,7 +105,7 @@ atslib_WSTOPSIG
 
 ATSinline()
 ats_pid_type
-wait_null () { return wait((int*)0) ; }
+atslib_wait_null () { return wait((int*)0) ; }
 
 #define atslib_wait wait
 #define atslib_waitpid waitpid

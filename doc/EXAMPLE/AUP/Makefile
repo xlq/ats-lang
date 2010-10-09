@@ -43,6 +43,8 @@ compall: \
   test48 \
   test52 \
   aupsh1 \
+  aupsh2 \
+  aupsh3 \
 
 ######
 
@@ -112,6 +114,9 @@ aupsh1: AUP_5_4.dats getargs.o
 aupsh2: AUP_5_6.dats getargs.o
 	$(ATSCC) -o aupsh2 $< getargs.o
 
+aupsh3: AUP_5_10.dats getargs.o
+	$(ATSCC) -o aupsh3 $< getargs.o
+
 #######
 
 clean::
@@ -136,5 +141,6 @@ cleanall: clean
 	rm -f test52
 	rm -f aupsh1
 	rm -f aupsh2
+	rm -f aupsh3
 
 ###### end of [Makefile] ######

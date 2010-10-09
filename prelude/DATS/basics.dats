@@ -67,11 +67,19 @@ implement unit_v_elim (pf) = let prval unit_v () = pf in (*nothing*) end
 (* ****** ****** *)
 
 %{^
-ats_void_type
-ats_crash () {
-  (void)*((int*)0) ; return ; // HX: for the purpose of debugging
-} // end of [ats_crash]
+ats_int_type
+ats_crash_int () {
+  return *((int*)0) ; // HX: for the purpose of debugging
+} // end of [ats_crash_int]
 %} // end of [%{^]
+implement crash () = let
+  val status = crash_int () where {
+    extern fun crash_int (): int = "ats_crash_int"
+  } // end of [val]
+  val () = exit (status)
+in
+  // nothing
+end // end of [crash]
 
 (* ****** ****** *)
 

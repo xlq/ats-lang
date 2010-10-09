@@ -14,14 +14,13 @@ staload "libc/SATS/unistd.sats" // for environ_get_arrsz
 
 (* ****** ****** *)
 
-typedef strarr (n:int) = @[string][n]
 typedef strarr0 (n:int) = @[string?][n]
 
 dataview
 getargs_v (n0:int, l:addr, int) =
-  | {n:nat | n <= n0}
+  | {n:nat | n < n0}
     getargs_v_succ (n0, l, n) of (
-      strarr (n) @ l, strarr0 (n) @ l -<lin,prf> strarr0 (n0) @ l
+      strarr (n) @ l, strarr (n) @ l -<lin,prf> strarr0 (n0) @ l
     ) // end of [getargs_v_succ]
   | getargs_v_fail (n0, l, ~1) of (strarr0 (n0) @ l)
 // end of [getargs_v]
@@ -102,12 +101,14 @@ while (true) let
 //
   val () = if argc >= 0 then let
     prval getargs_v_succ (pf, fpf) = pfargs
+    prval (pf1, fpf1) = strarr_takeout (pf)
     val () = if (argc > 0) then let
       val arg0 = pargv->[0] in case+ 0 of
       | _ when arg0 = "print" => printenv (argc, !pargv)
       | _ when arg0 = "assgn" => assgnenv (argc, !pargv)
       | _ => execute (argc, !pargv)
     end // end of [val]
+    prval () = pf := fpf1 (pf1)
     prval () = pfargv := fpf (pf)
   in
     // nothing

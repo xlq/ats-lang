@@ -45,43 +45,60 @@ staload "libc/sys/SATS/types.sats"
 
 (* ****** ****** *)
 
-absprop WIFEXITED_p (s: int, i: int)
+absprop WIFEXITED_p (s:int, b:bool)
 
 fun WIFEXITED {s:int}
-  (status: int s): [i:nat] (WIFEXITED_p (s, i) | int i)
+  (status: int s): [b:bool] (WIFEXITED_p (s, b) | bool b)
   = "atslib_WIFEXITED"
 // end of [WIFEXITED]
 
-fun WEXITSTATUS {s:int} {i:int | i > 0}
-  (pf: WIFEXITED_p (s, i) | status: int s): int = "atslib_WEXITSTATUS"
+fun WEXITSTATUS {s:int}
+  (pf: WIFEXITED_p (s, true) | status: int s): int = "atslib_WEXITSTATUS"
 // end of [WEXITSTATUS]
 
 (* ****** ****** *)
 
-absprop WIFSIGNALED_p (s: int, i: int)
+absprop WIFSIGNALED_p (s:int, b:bool)
 
 fun WIFSIGNALED {s:int}
-  (status: int s): [i:int] (WIFSIGNALED_p (s, i) | int i)
+  (status: int s): [b:bool] (WIFSIGNALED_p (s, b) | bool b)
   = "atslib_WIFSIGNALED"
 // end of [WIFSIGNALED]
 
-fun WTERMSIG {s:int} {i:int | i > 0}
-  (pf: WIFSIGNALED_p (s, i) | status: int s): int = "atslib_WTERMSIG"
+fun WTERMSIG {s:int}
+  (pf: WIFSIGNALED_p (s, true) | status: int s): int = "atslib_WTERMSIG"
 // end of [WTERMSIG]
 
 (* ****** ****** *)
 
-absprop WIFSTOPPED_p (s: int, i: int)
+absprop WIFSTOPPED_p (s:int, b:bool)
 
 fun WIFSTOPPED {s:int}
-  (status: int s): [i:nat] (WIFSTOPPED_p (s, i) | int i)
+  (status: int s): [b:bool] (WIFSTOPPED_p (s, b) | bool b)
   = "atslib_WIFSTOPPED"
 // end of [WIFSTOPPED]
 
 fun WSTOPSIG {s:int}
-  {i:int | i > 0} (pf: WIFSTOPPED_p (s, i) | status: int s): int
+  (pf: WIFSTOPPED_p (s, true) | status: int s): int
   = "atslib_WSTOPSIG"
 // end of [WSTOPSIG]
+
+(* ****** ****** *)
+
+absprop WIFCONTINUED_p (s:int, b:bool)
+
+fun WIFCONTINUED {s:int}
+  (status: int s): [b:bool] (WIFCONTINUED_p (s, b) | bool b)
+  = "atslib_WIFCONTINUED"
+// end of [WIFCONTINUED]
+
+(* ****** ****** *)
+
+absprop WCOREDUMP_p (s:int, b:bool)
+
+fun WCOREDUMP {s:int}
+  (status: int s): [b:bool] (WCOREDUMP_p (s, b) | bool b)
+// end of [WCOREDUMP]
 
 (* ****** ****** *)
 
@@ -93,17 +110,18 @@ fun wait (status: &int? >> int): pid_t = "#atslib_wait" // !macro
 abst@ype waitopt_t = $extype "ats_int_type"
 macdef WNOHANG = $extval (waitopt_t, "WNOHANG")
 macdef WUNTRACED = $extval (waitopt_t, "WUNTRACED")
+macdef WCONTINUED = $extval (waitopt_t, "WCONTINUED")
 macdef WNONE = $extval (waitopt_t, "0") // default value for [waitopt_t]
-
-(* ****** ****** *)
 
 fun lor_waitopt_waitopt
   (opt1: waitopt_t, opt2: waitopt_t): waitopt_t
 overload lor with lor_waitopt_waitopt
 
-fun waitpid
-  (chldpid: pid_t, status: &int? >> int, options: waitopt_t): pid_t
-  = "#atslib_waitpid" // macro!
+(* ****** ****** *)
+
+fun waitpid (
+    chldpid: pid_t, status: &int? >> int, options: waitopt_t
+  ) : pid_t = "#atslib_waitpid" // macro!
 // end of [waitpid]
 
 (* ****** ****** *)

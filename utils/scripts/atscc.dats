@@ -68,13 +68,13 @@ implement typecheck_file
   val status = fork_exec_and_wait_cloptr_exn (cmd)
   val status = int1_of_int (status)
   val (pf_ifexited | ifexited) = WIFEXITED (status)
-  val () = if ifexited <> 0 then let
+  val () = if ifexited then let
     val code = WEXITSTATUS (pf_ifexited | status) in
     if code <> 0 then exit_prerrf {void}
       (code, "exit(ATS): [typecheck_file(%s)] failed.\n", @(infile))
     // end of [if]
   end // end of [val]
-  val () = if ifexited = 0 then begin
+  val () = if ~ifexited then begin
     prerr ("[typecheck_file] is sigtermed\n"); exit (1)
   end // end of [val]
 } (* end of [typecheck_file] *)
@@ -99,13 +99,13 @@ implement ccomp_file_to_file
   end // end of [val]
   val status = int1_of_int (status)
   val (pf_ifexited | ifexited) = WIFEXITED (status)
-  val () = if ifexited <> 0 then let
+  val () = if ifexited then let
     val code = WEXITSTATUS (pf_ifexited | status) in
     if (code <> 0) then exit_prerrf {void} (code,
       "exit(ATS): [ccomp_file_to_file(%s, %s)] failed.\n", @(infile, outfile)
     ) // end of [if]
   end // end of [val]
-  val () = if ifexited = 0 then begin
+  val () = if ~ifexited then begin
     prerr ("[compile_file_to_file] is sigtermed\n"); exit (1)
   end // end of [val]
 } // end of [ccomp_file_to_file]
@@ -121,13 +121,13 @@ atscc_version () = () where { val status =
   // end of [val]
   val status = int1_of_int (status)
   val (pf_ifexited | ifexited) = WIFEXITED (status)
-  val () = if ifexited <> 0 then let
+  val () = if ifexited then let
     val code = WEXITSTATUS (pf_ifexited | status) in
     if code <> 0 then exit_prerrf {void}
       (code, "exit(ATS): [atscc_version] failed.\n", @())
     // end of [if]
   end // end of [val]
-  val () = if ifexited = 0 then begin
+  val () = if ~ifexited then begin
     prerr ("[atscc_version] is sigtermed\n"); exit (1)
   end // end of [val]
 } // end of [atscc_version]

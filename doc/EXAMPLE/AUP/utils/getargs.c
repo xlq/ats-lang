@@ -65,7 +65,7 @@ int getargs (
   } // end of [if]
 //
   FAIL: {
-    fprintf(stderr, "exit(1): [getargs] failed\n"); exit(1);
+    return -1 ;
   } // end of [FAIL]
 } // end of [getargs]
 

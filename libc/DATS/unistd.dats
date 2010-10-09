@@ -69,7 +69,23 @@ fork_exn () = pid where {
   end // end of [val]
 } // end of [atslib_fork_exn]
 
-/* ****** ****** */
+(* ****** ****** *)
+
+%{^
+
+ats_ptr_type
+atslib_strarr_get_arrsz
+  (ats_ptr_type p0) {
+  char **p = (char**)p0 ;
+  size_t i = 0 ;
+  for (i = 0; *p != (char*)0; i += 1) p += 1 ;
+  return i ;
+} // end of [atslib_environ_get_arrsz]
+
+%} // end of [%{^]
+
+(* ****** ****** *)
+
 
 %{^
 
@@ -159,9 +175,8 @@ atslib_getcwd0 () {
 ats_ptr_type
 atslib_environ_get_arrsz
   (size_t *sizep) {
-  size_t i = 0 ;
-  for (i = 0; environ[i] != (char*)0; i += 1) ; *sizep = i ;
-  return &environ[0] ;
+  *sizep = atslib_strarr_get_arrsz (environ) ;
+  return environ;
 } // end of [atslib_environ_get_arrsz]
 
 %} // end of [%{^]
