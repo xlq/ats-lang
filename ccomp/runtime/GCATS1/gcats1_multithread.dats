@@ -140,7 +140,8 @@ typedef threadinfolst1 = [n:pos] threadinfolst (n)
 extern fun gc_mark_threadinfo_freeitmlst
   (itms: freeitmlst0): void = "gc_mark_threadinfo_freeitmlst"
 
-implement gc_mark_threadinfo_freeitmlst (itms) = begin
+implement
+gc_mark_threadinfo_freeitmlst (itms) = begin
   if freeitmlst_is_cons (itms) then let
     val ptr = freeitmlst2ptr itms; var ofs: int = 0
     val chks = gc_ptr_is_valid (ptr, ofs)
@@ -182,14 +183,14 @@ ats_void_type gc_threadinfo_init () {
     fprintf (stderr, "GC Fatal Error: [gc_threadinfo_init]") ;
     fprintf (stderr, ": [malloc] failed: no memory for [the_freeitmlst_array].\n") ;
     exit (1) ;
-  }
+  } // end of [if]
 
   current = (threadinfolst)malloc (sizeof(threadinfo)) ;
   if (!current) { fprintf (
       stderr, "GC Fatal Error: [gc_threadinfo_init]: [malloc] failed.\n"
     ) ; // end of [fprintf]
     exit (1) ;
-  }
+  } // end of [if]
 
   /* thread-local: */ the_threadinfolst_self = current ;
 

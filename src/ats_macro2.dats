@@ -1292,6 +1292,7 @@ in
       d2exp_crypt (loc0, knd, d2e)
     end // end of [D2Ecrypt]
   | D2Ecst _ => d2e0
+  | D2Ecstsp (csp) => d2exp_cstsp (loc0, csp)
   | D2Ederef d2e => let
       val d2e = eval1_d2exp (loc0, ctx, env, d2e)
     in

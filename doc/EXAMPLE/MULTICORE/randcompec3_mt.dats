@@ -148,8 +148,6 @@ main (argc, argv) = let
     ncpu := ncpu + 1
   end // end of [val]
 // 
-  val nworker = workshop_get_nworker(ws)
-//
   var !p_arr with pf_arr = @[ulint][NCPU](0UL)
 //
   val barr = insert_all (pf_arr | ws, p_arr, NCPU, ITER)
@@ -164,10 +162,12 @@ main (argc, argv) = let
   val () = print(avg)
   val () = print_newline ()
 //
-// HX-2010-10-06: the following code is just for cleanup
+// HX-2010-10-07: the following code is just for cleanup
 //
   val () = workshop_wait_blocked_all(ws)
+//
   var j: Nat = 0
+  val nworker = workshop_get_nworker(ws)
   val () = while (j < nworker) let
     val () = workshop_insert_work(ws, Quit ()) in j := j + 1
   end // end of [val]

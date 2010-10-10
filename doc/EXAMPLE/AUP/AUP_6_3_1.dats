@@ -17,8 +17,6 @@ staload "libc/SATS/unistd.sats"
 
 (* ****** ****** *)
 
-#define fork fork_err
-
 fun who2wc (): void = let
   var fd1: int and fd2: int
   val (pfopt | err) = pipe (fd1, fd2)
@@ -28,73 +26,75 @@ fun who2wc (): void = let
 *)
 in
 //
+// HX-2010-10-09:
+// excessive error-checking makes the code difficult to understand!
+//
 if err = 0 then let
   prval Some_v @(pf1, pf2) = pfopt
-  val pid1 = fork ()
+  val pid1 = fork_err ()
   val ipid = int_of_pid (pid1)
   val () = (case+ 0 of
     | _ when ipid > 0 => let
-          val pid2 = fork ()
-          val ipid = int_of_pid (pid2)
-          val () = (case+ 0 of
-            | _ when ipid > 0 => let
-                val () = close_exn (pf1 | fd1)
-                val () = close_exn (pf2 | fd2)
-                var status: int?
-              in 
-                if int_of_pid(waitpid (pid2, status, WNONE)) < 0 then exit (EXIT_FAILURE)
-              end // end of [pid > 0]
-            | _ when ipid = 0 => let
-                prval () = STDIN_FILENO_gtez ()
-                val (pf1_ | ()) = stdin_fildes_view_get ()
-                val [i:int] err = dup2 (pf1, pf1_ | fd1, STDIN_FILENO)
-                val () = if (err < 0) then exit (EXIT_FAILURE) else ()
-                val () = stdin_fildes_view_set (pf1_ | (*none*))
-                val () = close_exn (pf1 | fd1)
-                val () = close_exn (pf2 | fd2)
-                val _ = execlp ("wc", "wc", "-l", null) where {
-                  extern fun execlp
-                    (_: string, _: string, _: string, _: ptr null): int = "#atslib_execlp"
-                  // end of [execl]
-                } // end of [val]
-                val () = exit (EXIT_FAILURE)
-              in
-                // nothing
-              end // end of [pid = 0]
-            | _ (*ipid=-1*) => let
-                val () = close_exn (pf1 | fd1)
-                val () = close_exn (pf2 | fd2)
-              in
-                exit (EXIT_FAILURE)
-              end // end of [_] 
-          ) : void // end of [val]
-          var status: int?
-        in
-          if int_of_pid(waitpid (pid1, status, WNONE)) < 0 then exit (EXIT_FAILURE)
-        end // end of [pid > 0]
-    | _ when ipid = 0 => let
-        prval () = STDOUT_FILENO_gtez ()
-        val (pf2_ | ()) = stdout_fildes_view_get ()
-        val [i:int] err = dup2 (pf2, pf2_ | fd2, STDOUT_FILENO)
-        val () = if (err < 0) then exit (EXIT_FAILURE) else ()
-        val () = stdout_fildes_view_set (pf2_ | (*none*))
-        val () = close_exn (pf1 | fd1)
-        val () = close_exn (pf2 | fd2)
-        val _ = execlp ("who", "who", null) where {
-            extern fun execlp
-              (_: string, _: string, _: ptr null): int = "#atslib_execlp"
-            // end of [execl]
+        val pid2 = fork_err ()
+        val ipid = int_of_pid (pid2)
+        val () = (case+ 0 of
+          | _ when ipid > 0 => let
+              val () = close_exn (pf1 | fd1)
+              val () = close_exn (pf2 | fd2)
+              var status: int?
+            in 
+              if int_of_pid(waitpid (pid2, status, WNONE)) < 0 then exit (EXIT_FAILURE)
+            end // end of [pid > 0]
+          | _ when ipid = 0 => let // child 2
+              prval () = STDIN_FILENO_gtez ()
+              val (pf1_ | ()) = stdin_fildes_view_get ()
+              val [i:int] err = dup2 (pf1, pf1_ | fd1, STDIN_FILENO)
+              val () = if (err < 0) then exit (EXIT_FAILURE) else ()
+              val () = stdin_fildes_view_set (pf1_ | (*none*))
+              val () = close_exn (pf1 | fd1)
+              val () = close_exn (pf2 | fd2)
+              val _ = execlp ("wc", "wc", "-l", null) where {
+                extern fun execlp
+                  (_: string, _: string, _: string, _: ptr null): int = "#atslib_execlp"
+                // end of [execl]
+              } // end of [val]
+              val () = exit (EXIT_FAILURE)
+            in
+              // nothing
+            end // end of [pid = 0]
+          | _ (*ipid=-1*) => let
+              val () = close_exn (pf1 | fd1)
+              val () = close_exn (pf2 | fd2)
+            in
+              exit (EXIT_FAILURE)
+            end // end of [_] 
+        ) : void // end of [val]
+        var status: int?
+      in
+        if int_of_pid(waitpid (pid1, status, WNONE)) < 0 then exit (EXIT_FAILURE)
+      end // end of [pid > 0]
+  | _ when ipid = 0 => let // child 1
+      prval () = STDOUT_FILENO_gtez ()
+      val (pf2_ | ()) = stdout_fildes_view_get ()
+      val [i:int] err = dup2 (pf2, pf2_ | fd2, STDOUT_FILENO)
+      val () = if (err < 0) then exit (EXIT_FAILURE) else ()
+      val () = stdout_fildes_view_set (pf2_ | (*none*))
+      val () = close_exn (pf1 | fd1)
+      val () = close_exn (pf2 | fd2)
+      val _ = execlp ("who", "who", null) where {
+        extern fun execlp
+          (_: string, _: string, _: ptr null): int = "#atslib_execlp"
         } // end of [val]
-        val () = exit (EXIT_FAILURE)
-      in
-        // nothing
-      end // end of [pid = 0]
-    | _ (*ipid=-1*) => let
-        val () = close_exn (pf1 | fd1)
-        val () = close_exn (pf2 | fd2)
-      in
-        exit (EXIT_FAILURE)
-      end // end of [_] 
+      val () = exit (EXIT_FAILURE)
+    in
+      // nothing
+    end // end of [pid = 0]
+  | _ (*ipid=-1*) => let
+      val () = close_exn (pf1 | fd1)
+      val () = close_exn (pf2 | fd2)
+    in
+      exit (EXIT_FAILURE)
+    end // end of [_] 
   ) : void // end of [val]
 in
   // nothing

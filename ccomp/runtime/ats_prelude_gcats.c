@@ -41,21 +41,17 @@
 
 /* ****** ****** */
 
-//
-
 extern
 ats_int_type gc_chunk_count_limit_get () ;
-
 extern
 ats_void_type gc_chunk_count_limit_set (ats_int_type n) ;
 
 extern
 ats_int_type gc_chunk_count_limit_max_get () ;
-
 extern
 ats_void_type gc_chunk_count_limit_max_set (ats_int_type n) ;
 
-//
+/* ****** ****** */
 
 extern
 ats_void_type gc_markroot_bsz (ats_ptr_type ptr, ats_int_type bsz) ;
@@ -64,12 +60,10 @@ ats_void_type gc_markroot_bsz (ats_ptr_type ptr, ats_int_type bsz) ;
 
 extern
 ats_ptr_type gc_aut_malloc_bsz (ats_int_type bsz) ;
-
 extern
 ats_ptr_type gc_aut_calloc_bsz (ats_int_type n, ats_int_type bsz) ;
 
 extern ats_void_type gc_aut_free (ats_ptr_type ptr) ;
-
 extern
 ats_ptr_type gc_aut_realloc_bsz (ats_ptr_type ptr, ats_int_type bsz) ;
 
@@ -77,12 +71,10 @@ ats_ptr_type gc_aut_realloc_bsz (ats_ptr_type ptr, ats_int_type bsz) ;
 
 extern
 ats_ptr_type gc_man_malloc_bsz (ats_int_type bsz) ;
-
 extern
 ats_ptr_type gc_man_calloc_bsz (ats_int_type n, ats_int_type bsz) ;
 
 extern ats_void_type gc_man_free (ats_ptr_type ptr) ;
-
 extern
 ats_ptr_type gc_man_realloc_bsz (ats_ptr_type ptr, ats_int_type bsz) ;
 
@@ -91,6 +83,8 @@ ats_ptr_type gc_man_realloc_bsz (ats_ptr_type ptr, ats_int_type bsz) ;
 extern void gc_init () ;
 ats_void_type ats_gc_init () { gc_init () ; return ; }
 // end of [ats_gc_init]
+
+/* ****** ****** */
 
 ats_void_type
 ats_gc_markroot (const ats_ptr_type p, ats_size_type bsz) {

@@ -29,6 +29,7 @@ ats-lang-anairiats-0.2.2:
 22. Implementing lib/pthread_upbarr
 23. Incorporating [parcomb] into $ATSHOME/contrib
 24. Adding libc/sys/resource, which corresponds to sys/resource.h
+25. Adding [assertloc] macdef
 
 ########################################################################
 

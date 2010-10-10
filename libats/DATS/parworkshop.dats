@@ -396,7 +396,7 @@ workshop_add_worker
   end // end of [val]
   val ws_new = workshop_ref (ws)
   val err = $PT.pthread_create_detached {env} (worker, ws_new)
-  val () = if err <> 0 then let
+  val () = if err > 0 then let
     // no new worker is added
     prval () = opt_unsome {env} (ws_new); val () = workshop_unref (ws_new)
   in

@@ -372,6 +372,8 @@ atspre_strptr_free
   (ats_ptr_type base) { if (base) ATS_FREE (base) ; return ; }
 // end of [atspre_strptr_free]
 
+#define atspre_fprint_strptr atspre_fprint_string
+
 /* ****** ****** */
 
 #endif /* ATS_PRELUDE_STRING_CATS */

@@ -60,18 +60,30 @@ typedef intptr = intptr_type
 
 (* ****** ****** *)
 
-symintr intptr_of
-
 fun int_of_intptr
   (i: intptr):<> int = "atspre_int_of_intptr"
-// end of [int_of_intptr]
+overload int_of with int_of_intptr
+
+fun lint_of_intptr
+  (i: intptr):<> lint = "atspre_lint_of_intptr"
+overload lint_of with lint_of_intptr
+
+(* ****** ****** *)
+
+symintr intptr_of
 
 fun intptr_of_int
   (i: int):<> intptr = "atspre_intptr_of_int"
 overload intptr_of with intptr_of_int
 
-fun intptr_of_ptr
-  (p: ptr):<> intptr = "atspre_intptr_of_ptr"
+fun intptr_of_lint
+  (i: lint):<> intptr = "atspre_intptr_of_lint"
+overload intptr_of with intptr_of_lint
+
+(* ****** ****** *)
+
+castfn ptr_of_intptr (i: intptr):<> ptr // "atspre_ptr_of_intptr"(removed)
+castfn intptr_of_ptr (p: ptr):<> intptr // = "atspre_intptr_of_ptr"(removed)
 overload intptr_of with intptr_of_ptr
 
 (* ****** ****** *)
@@ -263,7 +275,7 @@ symintr uintptr_of
 
 fun uint_of_uintptr
   (u: uintptr):<> uint = "atspre_uint_of_uintptr"
-// end of [uint_of_uintptr]
+overload uint_of with uint_of_uintptr
 
 fun uintptr_of_int1
   {i:nat} (i: int i):<> uintptr = "atspre_uintptr_of_int1"
@@ -272,22 +284,19 @@ overload uintptr_of with uintptr_of_int1
 fun uintptr_of_uint (u: uint):<> uintptr = "atspre_uintptr_of_uint"
 overload uintptr_of with uintptr_of_uint
 
-fun uintptr_of_ptr (p: ptr):<> uintptr = "atspre_uintptr_of_ptr"
-overload uintptr_of with uintptr_of_ptr
-
 (* ****** ****** *)
 
-fun ulint_of_uintptr (u: uintptr):<> ulint
-  = "atspre_ulint_of_uintptr"
+fun ulint_of_uintptr
+  (u: uintptr):<> ulint = "atspre_ulint_of_uintptr"
 
 fun uintptr_of_ulint (u: ulint):<> uintptr
   = "atspre_uintptr_of_ulint"
 overload uintptr_of with uintptr_of_ulint
 
-//
+(* ****** ****** *)
 
-castfn ptr_of_uintptr (u: uintptr):<> ptr // = "atspre_ptr_of_uintptr"
-castfn uintptr_of_ptr (p: ptr):<> uintptr // = "atspre_uintptr_of_ptr"
+castfn ptr_of_uintptr (u: uintptr):<> ptr // = "atspre_ptr_of_uintptr"(removed)
+castfn uintptr_of_ptr (p: ptr):<> uintptr // = "atspre_uintptr_of_ptr"(removed)
 overload uintptr_of with uintptr_of_ptr
 
 (* ****** ****** *)

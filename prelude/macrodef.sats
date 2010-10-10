@@ -57,6 +57,10 @@ macdef andalso (x, y) = if ,(x) then ,(y) else false
 
 (* ****** ****** *)
 
+macdef assertloc (b) = assert_prerrf (,(b), #LOCATION)
+
+(* ****** ****** *)
+
 (* only a macro in long form can be defined recursively *)
 macrodef
 rec power_mac x(*base:code*) n(*exponent:int*) =

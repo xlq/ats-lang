@@ -60,9 +60,9 @@ ats_void_type
 ats_exit_errmsg(ats_int_type n, ats_ptr_type msg) ;
 
 /* ****** ****** */
-
+//
 // intptr_t: integers of one word size
-
+//
 ATSinline()
 ats_int_type
 atspre_int_of_intptr
@@ -71,19 +71,27 @@ atspre_int_of_intptr
 } // end of [atspre_int_of_intptr]
 
 ATSinline()
+ats_lint_type
+atspre_lint_of_intptr
+  (ats_intptr_type i) {
+  return (ats_lint_type)(intptr_t)i ;
+} // end of [atspre_lint_of_intptr]
+
+ATSinline()
 ats_intptr_type
 atspre_intptr_of_int
   (ats_int_type i) {
   return (ats_intptr_type)(intptr_t)i ;
-}
+} // end of [atspre_intptr_of_int]
 
 ATSinline()
 ats_intptr_type
-atspre_intptr_of_ptr (ats_ptr_type p) {
-  return (ats_intptr_type)(intptr_t)p ;
-}
+atspre_intptr_of_lint
+  (ats_lint_type i) {
+  return (ats_intptr_type)(intptr_t)i ;
+} // end of [atspre_intptr_of_lint]
 
-// ------ ------
+/* ****** ****** */
 
 ATSinline()
 ats_intptr_type
@@ -351,21 +359,21 @@ ats_uintptr_type
 atspre_uintptr_of_int1
   (ats_int_type i) {
   return (ats_uintptr_type)(uintptr_t)i ;
-}
+} // end of [atspre_uintptr_of_int1]
 
 ATSinline()
 ats_uintptr_type
 atspre_uintptr_of_uint
   (ats_uint_type u) {
   return (ats_uintptr_type)(uintptr_t)u ;
-}
+} // end of [atspre_uintptr_of_uint]
 
 ATSinline()
 ats_uintptr_type
 atspre_uintptr_of_ptr
   (ats_ptr_type p) {
   return (ats_uintptr_type)(uintptr_t)p ;
-}
+} // end of [atspre_uintptr_of_ptr]
 
 // ------ ------
 

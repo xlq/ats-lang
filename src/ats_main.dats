@@ -54,10 +54,6 @@ extern fun fopen_exn {m:file_mode}
 extern fun fclose_exn {m:file_mode} {l:addr}
   (pf: FILE m @ l | p: ptr l):<!exnref> void = "atslib_fclose_exn"
 
-// staload "libc/SATS/stdlib.sats"
-
-extern fun getenv_opt (s: string):<!ref> Stropt = "atslib_getenv_opt"
-
 (* ****** ****** *)
 
 staload "ats_reference.sats"
@@ -212,22 +208,9 @@ staload Trans4 = "ats_trans4.sats"
 staload CC = "ats_ccomp.sats"
 
 (* ****** ****** *)
-
-fn getenv_exn
-  (name: string): String = let
-  val stropt = getenv_opt name in
-  if stropt_is_some stropt then
-    string1_of_string (stropt_unsome stropt)
-  else let
-    val () = prerrf
-      ("The environment variable [%s] is undefined!\n", @(name))
-    // end of [val]
-  in
-    exit (1)
-  end // end of [if]
-end (* end of [getenv_exn] *)
-
-// this is primarily for ATS developers
+//
+// HX: this is primarily for ATS developers
+//
 fn atsopt_usage (cmd: string): void = begin
   printf ("usage: %s <command> ... <command>\n\n", @(cmd));
   print "where a <command> is of one of the following forms:\n\n";

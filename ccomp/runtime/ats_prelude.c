@@ -165,6 +165,8 @@ ats_funarg_match_failure_handle (
 
 #ifdef _ATS_MULTITHREAD
 
+/* ****** ****** */
+
 ats_int_type
 ats_pthread_create_detached (
   ats_ptr_type f // f(ats_ptr_type): void
@@ -200,12 +202,7 @@ ats_pthread_create_detached (
 
 ats_void_type
 ats_pthread_exit () {
-#ifdef _ATS_GCATS
-  pthread_exit (NULL) ; // this is clearly problematic!!!
-#else
-  pthread_exit (NULL) ;
-#endif
-  return ;
+  pthread_exit (NULL) ; // HX: this may cause memory leak if not used properly
 } // end of [ats_pthread_exit]
 
 /* ****** ****** */

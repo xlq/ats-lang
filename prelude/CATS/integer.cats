@@ -579,21 +579,19 @@ atspre_uimod (
 
 ATSinline()
 ats_lint_type
-atspre_lint_of_int (ats_int_type i) {
-  return i ;
-}
+atspre_lint_of_int (ats_int_type i) { return i ; }
 
 ATSinline()
 ats_int_type
 atspre_int_of_lint (ats_lint_type li) { return li ; }
 
-//
+/* ****** ****** */
 
 ATSinline()
 ats_lint_type
-atspre_lint_of_string (ats_ptr_type s) {
-  return atol ((char*)s) ;
-}
+atspre_lint_of_string
+  (ats_ptr_type s) { return atol ((char*)s) ; }
+// end of [atspre_lint_of_string]
 
 // arithmetic functions and comparison functions
 

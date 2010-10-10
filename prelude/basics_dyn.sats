@@ -153,20 +153,20 @@ fun crash // crash() = (void)*(int*)0
 
 (* ****** ****** *)
 
-fun exit {a:viewt@ype} (status: int):<!exn> a = "ats_exit"
+fun exit {a:viewt@ype} (status: int):<!exn> a = "#ats_exit"
 
 fun exit_main
   {a:viewt@ype} {v_in:view} {v_out:view}
-  (pf: !v_in >> v_out | status: int):<!exn> a = "ats_exit"
+  (pf: !v_in >> v_out | status: int):<!exn> a = "#ats_exit"
 // end of [exit_main]
 
 fun exit_errmsg {a:viewt@ype}
-  (status: int, msg: string):<!exnref> a = "ats_exit_errmsg"
+  (status: int, msg: string):<!exnref> a = "#ats_exit_errmsg"
 // end of [exit_errmsg]
 
 fun exit_prerrf {a:viewt@ype} {ts:types}
   (status: int, fmt: printf_c ts, args: ts):<!exnref> a
-  = "atspre_exit_prerrf"
+  = "#atspre_exit_prerrf"
 // end of [exit_prerrf]
 
 (* ****** ****** *)
