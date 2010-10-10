@@ -10,8 +10,8 @@
 //
 // HX-2010-10-07:
 // I modified Chris Double's code to present
-// a typical method for passing proofs of views between a parent thread
-// and its multiple children.
+// a typical method (barrier) for passing proofs of views between
+// a parent thread and its (multiple) children.
 //
 (* ****** ****** *)
 

@@ -45,6 +45,8 @@ compall: \
   aupsh1 \
   aupsh2 \
   aupsh3 \
+  test5173 \
+  test631 \
 
 ######
 
@@ -128,30 +130,46 @@ aupnice: AUP_5_15.dats
 
 #######
 
+test5173: AUP_5_17_3.dats
+	$(ATSCC) -D_ATS_MULTITHREAD -Wall -o test5173 AUP_5_17_3.dats -lpthread \
+     && ./test5173
+
+#######
+
+test631: AUP_6_3_1.dats; $(ATSCC) -Wall -o test631 $< && ./test631
+
+#######
+
+RMF = rm -f
+
+#######
+
 clean::
-	rm -f *~
-	rm -f *_?ats.c *_?ats.o
-	rm -f getargs.o
+	$(RMF) *~
+	$(RMF) *_?ats.c *_?ats.o
+	$(RMF) getargs.o
 
 cleanall: clean
-	rm -f testlock
-	rm -f backward
-	rm -f backward2
-	rm -f pathnames
-	rm -f longls
-	rm -f getcwdx
-	rm -f test421
-	rm -f test4221
-	rm -f test4222
-	rm -f test423
-	rm -f test435
-	rm -f test47
-	rm -f test48
-	rm -f test52
-	rm -f aupsh1
-	rm -f aupsh2
-	rm -f aupsh3
-	rm -f test511
-	rm -f aupnice
+	$(RMF) testlock
+	$(RMF) backward
+	$(RMF) backward2
+	$(RMF) pathnames
+	$(RMF) longls
+	$(RMF) getcwdx
+	$(RMF) test421
+	$(RMF) test4221
+	$(RMF) test4222
+	$(RMF) test423
+	$(RMF) test435
+	$(RMF) test47
+	$(RMF) test48
+	$(RMF) test52
+	$(RMF) aupsh1
+	$(RMF) aupsh2
+	$(RMF) aupsh3
+	$(RMF) test511
+	$(RMF) aupnice
+	$(RMF) test5173
+	$(RMF) test631
 
 ###### end of [Makefile] ######
