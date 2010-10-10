@@ -68,7 +68,7 @@ pthread_upbarr_download_and_destroy
 ats_ptr_type
 atslib_pthread_upbarr_create () {
   ats_pthread_upbarr_t *p ;
-  p = (ats_pthread_upbarr_t*)ATS_MALLOC(sizeof(ats_pthread_upbarr_t)) ;
+  p = ATS_MALLOC(sizeof(ats_pthread_upbarr_t)) ;
   p->count = 0 ;
   if (pthread_cond_init (&p->cond_eqz, NULL)) goto FAIL ;
   if (pthread_mutex_init (&p->mutex_res, NULL)) goto FAIL ;

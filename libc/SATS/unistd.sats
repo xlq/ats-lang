@@ -95,6 +95,25 @@ fun stderr_fildes_view_set
 
 (* ****** ****** *)
 
+fun dup {fd:int}
+  (pf: !fildes_v fd | fd: int fd)
+  : [fd1: int] (option_v (fildes_v fd1, fd1 >= 0) | int fd1) = "#atslib_dup"
+// end of [dup]
+
+symintr dup2
+
+fun dup2_exi {fd:int;fd2:nat}
+  (pf1: !fildes_v fd, pf2: !fildes_v (fd2) | fd: int fd, fd2: int fd2)
+  : [i:int | i <= 0] int i = "#atslib_dup2"
+overload dup2 with dup2_exi
+
+fun dup2_noexi {fd:int;fd2:nat}
+  (pf: !fildes_v fd | fd: int fd, fd2: int fd2)
+  : [i:int | i <= 0] (option_v (fildes_v fd2, i == 0) | int i) = "#atslib_dup2"
+overload dup2 with dup2_noexi
+
+(* ****** ****** *)
+
 fun _exit (status: int): void = "#atslib__exit" // !macro
 
 (* ****** ****** *)
@@ -116,6 +135,8 @@ fun strarr_get_arrsz
   {n:nat} {l:addr} (pf: strarr(n) @  l | argv: ptr l):<> [n:nat] size_t n
   = "atslib_strarr_get" // function!
 //
+(* ****** ****** *)
+
 fun execv {n:pos}
   (path: string, argv: &strarr(n)): int = "#atslib_execv"
 fun execvp {n:pos}
@@ -357,7 +378,7 @@ fun pathconf
 // end of [pathconf]
 
 //
-// HX-2010-09-21: for simplicity, [fd] assumed to be valid
+// HX-2010-09-21: for simplicity, [fd] is assumed to be valid
 //
 fun fpathconf {fd:nat}
   (fd: int fd, name: pathconfname_t): lint = "#atslib_fpathconf"
@@ -369,6 +390,15 @@ fun readlink {n:nat} {l:addr} (
   pf: !b0ytes(n) @ l >> bytes(n) @ l | path: string, p: ptr l, n: size_t n
 ) : [n1:int | n1 <= n] ssize_t (n1) = "#atslib_readlink"
 // end of [readlink]
+
+(* ****** ****** *)
+
+fun pipe (
+  fd1: &int? >> int fd1, fd2: &int? >> int fd2
+) : #[fd1,fd2:int] [i:int | i <= 0]
+  (option_v ((fildes_v fd1, fildes_v fd2), i==0) | int i)
+  = "atslib_pipe" // function!
+// end of [pipe]
 
 (* ****** ****** *)
 

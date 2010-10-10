@@ -56,6 +56,11 @@ ats_exit_errmsg(ats_int_type n, ats_ptr_type msg) ;
 
 /* ****** ****** */
 
+#define atslib_dup dup
+#define atslib_dup2 dup2
+
+/* ****** ****** */
+
 #define atslib__exit _exit // equivalent to _Exit in stdlib
 
 /* ****** ****** */
@@ -72,6 +77,9 @@ atslib_strarr_get (
 
 #define atslib_execv execv
 #define atslib_execvp execvp
+
+#define atslib_execl execl // HX: no interface in ATS
+#define atslib_execlp execlp // HX: no interface in ATS
 
 /* ****** ****** */
 

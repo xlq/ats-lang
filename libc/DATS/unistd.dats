@@ -73,7 +73,7 @@ fork_exn () = pid where {
 
 %{^
 
-ats_ptr_type
+ats_size_type
 atslib_strarr_get_arrsz
   (ats_ptr_type p0) {
   char **p = (char**)p0 ;
@@ -165,6 +165,25 @@ atslib_getcwd0 () {
 //
   return buf ;
 } // end of [atslib_getcwd0]
+
+%} // end of [%{^]
+
+(* ****** ****** *)
+
+%{^
+
+ats_int_type
+atslib_pipe (
+  ats_ptr_type pfd1, ats_ptr_type pfd2
+) {
+  int err ;
+  int pfd[2] ;
+  err = pipe(pfd) ;
+  if (err==0) {
+    *(int*)pfd1 = pfd[0] ; *(int*)pfd2 = pfd[1] ;
+  } // end of [if]
+  return err ;
+} // end of [atslib_pipe]
 
 %} // end of [%{^]
 

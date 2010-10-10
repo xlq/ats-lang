@@ -9,7 +9,7 @@
 (*
 ** ATS - Unleashing the Potential of Types!
 **
-** Copyright (C) 2002-2008 Hongwei Xi, Boston University
+** Copyright (C) 2002-2010 Hongwei Xi, Boston University
 **
 ** All rights reserved
 **
@@ -61,11 +61,51 @@ fun pthread_self (): pthread_t = "#atslib_pthread_self"
 
 (* ****** ****** *)
 
+absviewt@ype pthread_attr_t = $extype "pthread_attr_t"
+
+fun pthread_attr_init
+  (attr: &pthread_attr_t? >> opt (pthread_attr_t, i == 0)): #[i:nat] int i
+  = "#atslib_pthread_attr_init"
+// end of [pthread_attr_init]
+
+fun pthread_attr_destroy // HX: this function does not fail?
+  (attr: &pthread_attr_t >> opt (pthread_attr_t, i > 0)): #[i:nat] int i
+  = "#atslib_pthread_attr_destroy"
+// end of [pthread_attr_destroy]
+
+//
+// HX: possible failure: ENOMEM, which is remote
+//
+fun pthread_attr_init_exn
+  (attr: &pthread_attr_t? >> pthread_attr_t): void
+  = "atslib_pthread_attr_init_exn"
+// end of [pthread_attr_init_exn]
+
+fun pthread_attr_destroy_exn
+  (attr: &pthread_attr_t >> pthread_attr_t?): void
+  = "atslib_pthread_attr_destroy_exn"
+// end of [pthread_attr_destroy_exn]
+
+(* ****** ****** *)
+
+fun pthread_create (
+    tid: &pthread_t? >> pthread_t
+  , attr: &pthread_attr_t, fthread: ptr -> ptr, arg: ptr
+  ) : int = "#atslib_pthread_create"
+// end of [pthread_create]
+
+(* ****** ****** *)
+
+fun pthread_join
+  (tid: pthread_t, status: &ptr? >> ptr): int = "#atslib_pthread_join"
+// end of [pthread_join]
+
+(* ****** ****** *)
 //
 // HX: this one is implemented in [$ATSHOME/ccomp/runtime/ats_prelude.c]
 //
 fun pthread_create_detached {vt:viewtype}
-  (f: (vt) -<fun1> void, env: !vt >> opt (vt, i <> 0)): #[i:int] int i
+  (f: (vt) -<fun1> void, env: !vt >> opt (vt, i > 0)): #[i:nat] int i
   = "ats_pthread_create_detached"
 // end of [pthread_create_detached]
 
@@ -82,14 +122,37 @@ fun pthread_create_detached_exn {vt:viewtype}
 // [$ATSHOME/libc/DATS/pthread.dats]
 //
 fun pthread_create_detached_cloptr
-  (f: () -<lincloptr1> void): void // closure must be freed to avoid leak!
+  (f: () -<lincloptr1> void): void // HX: closure is freed to avoid leak!
 // end of [pthread_create_detached_cloptr]
 
+(* ****** ****** *)
 //
-// this function does not return to the caller
-// implemented in [$ATSHOME/ccomp/runtime/ats_prelude.c]
+// HX: [pval] is used for supporting [pthread_join]
 //
-fun pthread_exit (): void = "ats_pthread_exit" // end of [pthread_exit]
+fun pthread_exit
+  (pval: ptr): void = "#atslib_pthread_exit" // macro!
+// end of [pthread_exit]
+
+(* ****** ****** *)
+
+fun pthread_cancel
+  (tid: pthread_t): int = "#atslib_pthread_cancel" // macro!
+// end of [pthread_cancel]
+
+fun pthread_testcancel (): void = "#atslib_pthread_testcancel" // macro!
+
+(* ****** ****** *)
+
+absview pthread_cleanup_v
+
+fun pthread_cleanup_push
+  {vt:viewtype} (handler: (vt) -> void, arg: vt)
+  : (pthread_cleanup_v | void) = "#atslib_pthread_cleanup_push"
+// end of [pthread_cleanup_push]
+
+fun pthread_cleanup_pop
+  (pf: pthread_cleanup_v | execute: int): void = "#atslib_pthread_cleanup_pop"
+// end of [pthread_cleanup_pop]
 
 (* ****** ****** *)
 
@@ -104,14 +167,14 @@ stadef mutex_vt = pthread_mutex_view_viewt0ype
 // HX: this one does initialization and locking
 //
 fun pthread_mutex_init_locked
-  {v:view} (mut: &mutex_vt? >> opt (mutex_vt(v), i==0)): #[i:int] int i
+  {v:view} (mut: &mutex_vt? >> opt (mutex_vt(v), i==0)): #[i:nat] int i
   = "atslib_pthread_mutex_init_locked"
 // end of [pthread_mutex_init_locked]
 
 fun pthread_mutex_init_unlocked {v:view} (
     pf: !v >> option_v (v, i > 0)
   | mut: &mutex_vt? >> opt (mutex_vt(v), i==0)
-  ) : #[i:int] int i = "atslib_pthread_mutex_init_unlocked"
+  ) : #[i:nat] int i = "atslib_pthread_mutex_init_unlocked"
 // end of [pthread_mutex_init_unlocked]
 
 (* ****** ****** *)
@@ -119,11 +182,13 @@ fun pthread_mutex_init_unlocked {v:view} (
 fun pthread_mutex_create_locked {v:view} {l:addr}
   (): [l:addr] (option_v ((free_gc_v l, mutex_vt v @ l), l > null) | ptr l)
   = "atslib_pthread_mutex_create_locked"
+// end of [pthread_mutex_create_locked]
 
 fun pthread_mutex_create_unlocked {v:view} {l:addr}
   (pf: !v >> option_v (v, l==null) | (*none*))
   : [l:addr] (option_v ((free_gc_v l, mutex_vt v @ l), l > null) | ptr l)
   = "atslib_pthread_mutex_create_unlocked"
+// end of [pthread_mutex_create_unlocked]
 
 (* ****** ****** *)
 
@@ -131,19 +196,22 @@ fun pthread_mutex_create_unlocked {v:view} {l:addr}
 // HX-2010-03-14:
 // it should be called 'uninitialize' or 'clear' in ATS
 //
-fun pthread_mutex_destroy {v:view} {l:addr}
-  (p: &mutex_vt(v) >> opt (mutex_vt(v), i > 0)): #[i:int] (option_v (v, i==0) | int i)
-  = "atslib_pthread_mutex_destroy"
+fun pthread_mutex_destroy
+  {v:view} {l:addr} (p: &mutex_vt(v) >> opt (mutex_vt(v), i > 0))
+  : #[i:nat] (option_v (v, i==0) | int i) = "atslib_pthread_mutex_destroy"
 // end of [pthread_mutex_destroy]
 
 (* ****** ****** *)
 
 fun pthread_mutex_lock
-  {v:view} (mutex: &mutex_vt v):<> [i:int] (option_v (v, i==0) | int i)
+  {v:view} (mutex: &mutex_vt v):<> [i:nat] (option_v (v, i==0) | int i)
   = "#atslib_pthread_mutex_lock" // macro!
+// end of [pthread_mutex_lock]
+
 fun pthread_mutex_unlock {v:view}
-  (resource: v | mutex: &mutex_vt v):<> [i:int] (option_v (v, i > 0) | int i)
+  (resource: v | mutex: &mutex_vt v):<> [i:nat] (option_v (v, i > 0) | int i)
   = "#atslib_pthread_mutex_unlock" // macro!
+// end of [pthread_mutex_unlock]
 
 (* ****** ****** *)
 

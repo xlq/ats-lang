@@ -184,7 +184,7 @@ in
   if err = 0 then sz2ssz (ntotal - nleft) else i2ssz (~1)
 end // end of [write_loop_err]
 
-//
+(* ****** ****** *)
 
 implement
 write_loop_exn
@@ -199,6 +199,24 @@ in
     val () = perror "fcntl: write_loop: " in exit (1)
   end (* end of [if] *)
 end // end of [write_loop_exn]
+
+(* ****** ****** *)
+
+%{$
+
+ats_void_type
+atslib_close_exn
+  (ats_int_type fd) {
+  int err = close(fd) ;
+  if (err < 0) {
+    perror ("close") ;
+    fprintf (stderr, "exit(ATS): [close(%li)] failed\n", (fd)) ;
+    exit (1) ;
+  } // end of [atslib_close_exn]
+  return ;
+} // end of [atslib_close_exn]
+
+%} // end of [%{$]
 
 (* ****** ****** *)
 

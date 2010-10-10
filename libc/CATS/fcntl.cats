@@ -143,17 +143,6 @@ ATSinline()
 ats_int_type
 atslib_close_err (ats_int_type fd) { return close(fd) ; }
 
-ATSinline()
-ats_void_type
-atslib_close_exn (ats_int_type fd) {
-  int err = close(fd) ;
-  if (err < 0) {
-    perror ("close") ;
-    ats_exit_errmsg (1, "exit(ATS): [close] failed\n") ;
-  }
-  return ;
-} // end of [atslib_close_exn]
-
 /* ****** ****** */
 
 ATSinline()
