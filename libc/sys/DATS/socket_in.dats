@@ -9,7 +9,7 @@
 (*
 ** ATS - Unleashing the Power of Types!
 **
-** Copyright (C) 2002-2008 Hongwei Xi, Boston University
+** Copyright (C) 2002-2010 Hongwei Xi, Boston University
 **
 ** All rights reserved
 **
@@ -35,13 +35,17 @@
 
 (* ****** ****** *)
 
-staload "libc/SATS/errno.sats" // for [errno_get]
 staload "libc/SATS/stdio.sats" // for [perror]
 staload "libc/SATS/stdlib.sats" // for [EXIT_FAILURE]
 
 (* ****** ****** *)
 
 staload "libc/sys/SATS/socket.sats"
+staload "libc/netinet/SATS/in.sats"
+
+(* ****** ****** *)
+
+staload "libc/sys/SATS/socket_in.sats"
 
 (* ****** ****** *)
 
@@ -50,62 +54,51 @@ staload "libc/sys/SATS/socket.sats"
 (* ****** ****** *)
 
 implement
-socket_close_exn (pfsock | fd) = let
-  val (pfopt | i) = socket_close_err (pfsock | fd)
+connect_in_exn
+  (pfsock | sfd, servaddr) = let
+  prval () = sockaddr_in_trans (view@ servaddr)
+  val (pfopt | err) = connect_err (pfsock | sfd, servaddr, socklen_in)
+  prval () = sockaddr_trans_in (view@ servaddr)
 in
-  if i >= 0 then let
-    prval socket_close_v_succ () = pfopt in (*nothing*)
+  if err >= 0 then let
+    prval connect_v_succ (pf) = pfopt
+    prval () = pfsock := pf
+  in
+    // nothing
   end else let
-    prval socket_close_v_fail (pfsock) = pfopt
+    prval connect_v_fail (pf) = pfopt
+    prval () = pfsock := pf
+    val () = perror ("connect")
+    val () = exit (EXIT_FAILURE)
   in
-    if (errno_get () = EINTR) then
-      socket_close_exn (pfsock | fd)
-    else let
-      val () = perror "close"
-      val () = prerrf ("exit(ATS): [socket_close] failed.\n", @())
-      val () = exit_main {void} {..} {unit_v} (pfsock | EXIT_FAILURE)
-      prval unit_v () = pfsock
-    in
-      // nothing
-    end // end of [if]
+    connect_in_exn (pfsock | sfd, servaddr) // HX: this is deadcode
   end // end of [if]
-end // end of [socket_close_exn]
-
-(* ****** ****** *)
-
-implement socket_read_exn
-  (pf_sock | fd, buf, ntotal) = let
-  val nread = socket_read_err (pf_sock | fd, buf, ntotal)
-in
-  if nread >= 0 then
-    size1_of_ssize1 (nread)
-  else let
-    val () = perror "socket_read"
-  in
-    exit_errmsg (EXIT_FAILURE, "[socket_read] failed.\n")
-  end // end of [if]
-end // end of [socket_read_exn]
+end // end of [connect_in_exn]
 
 (* ****** ****** *)
 
 implement
-socket_write_loop_exn
-  (pf_sock | fd, buf, ntotal) = let
-  var err: int = 1
-  val nwrit = socket_write_loop_err (pf_sock | fd, buf, ntotal)
-  val () = if nwrit >= 0 then let
-    val nwrit = size1_of_ssize1 (nwrit)
-  in
-    if (nwrit = ntotal) then (err := 0)
-  end // end of [if]
+bind_in_exn
+  (pfsock | sfd, servaddr) = let
+  prval () = sockaddr_in_trans (view@ servaddr)
+  val (pfopt | err) = bind_err (pfsock | sfd, servaddr, socklen_in)
+  prval () = sockaddr_trans_in (view@ servaddr)
 in
-  if err > 0 then let
-    val () = perror "socket_write"
+  if err >= 0 then let
+    prval bind_v_succ (pf) = pfopt
+    prval () = pfsock := pf
   in
-    exit_errmsg (EXIT_FAILURE, "[socket_write_loop] failed.\n")
-  end (* end of [if] *)
-end // end of [socket_write_loop_exn]
+    // nothing
+  end else let
+    prval bind_v_fail (pf) = pfopt
+    prval () = pfsock := pf
+    val () = perror ("bind")
+    val () = exit (EXIT_FAILURE)
+  in
+    bind_in_exn (pfsock | sfd, servaddr) // HX: this is deadcode
+  end // end of [if]
+end // end of [bind_in_exn]
 
 (* ****** ****** *)
 
-(* end of [socket.dats] *)
+(* end of [socket_in.dats] *)

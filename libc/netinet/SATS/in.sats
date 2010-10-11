@@ -41,19 +41,23 @@
 
 (* ****** ****** *)
 
-abst@ype address_family_t = $extype "ats_int_type"
-macdef AF_INET = $extval (address_family_t, "AF_INET")
-macdef AF_INET6 = $extval (address_family_t, "AF_INET6")
-macdef AF_UNIX = $extval (address_family_t, "AF_UNIX")
-macdef AF_UNSPEC = $extval (address_family_t, "AF_UNSPEC")
+staload SA = "libc/sys/SATS/sockaddr.sats"
+typedef sa_family_t = $SA.sa_family_t
+stadef socklen_t = $SA.socklen_t // int: length of a sockaddr
+stadef sockaddr_struct = $SA.sockaddr_struct
 
 (* ****** ****** *)
 
-#define INET_ADDRSTRLEN 16 // for IPv4 dotted-decimal string
-#define INET6_ADDRSTRLEN 46 // for IPv6 hex string
+(*
+macdef INET_ADDRSTRLEN = 16 // for IPv4 dotted-decimal string
+macdef INET6_ADDRSTRLEN = 46 // for IPv6 hex string
+*)
 
 (* ****** ****** *)
 
+(*
+abst@ype in_port_t = $extype "in_port_t"
+*)
 abst@ype in_port_nbo_t = $extype "in_port_t"
 
 fun in_port_nbo_of_int
@@ -62,25 +66,17 @@ fun in_port_nbo_of_int
 
 (* ****** ****** *)
 
+(*
 abst@ype in_addr_t = $extype "in_addr_t"
+*)
 abst@ype in_addr_hbo_t = $extype "in_addr_t"
 abst@ype in_addr_nbo_t = $extype "in_addr_t"
 
-(*
-note that [struct in_addr] and  [in_addr_t] are really the same:
-struct in_addr { in_addr_t s_addr; }; // defined in [netinet/in.h]
-*)
-typedef
-in_addr_struct =
-$extype_struct
-  "ats_in_addr_type" of {
-  s_addr= in_addr_t // unsigned long int
-} // end of [in_addr_struct]
-
 (* ****** ****** *)
 
-fun in_addr_nbo_of_hbo (n: in_addr_hbo_t): in_addr_nbo_t
-  = "atslib_in_addr_nbo_of_hbo"
+fun in_addr_nbo_of_hbo
+  (n: in_addr_hbo_t): in_addr_nbo_t = "atslib_in_addr_nbo_of_hbo"
+// end of [in_addr_nbo_of_hbo]
 
 (* constant addresses in host-byte-order *)
 
@@ -115,12 +111,6 @@ macdef INADDR_MAX_LOCAL_GROUP = $extval (in_addr_hbo_t, "INADDR_MAX_LOCAL_GROUP"
 
 (* ****** ****** *)
 
-fun in_addr_struct_get_s_addr
-  (inp: in_addr_struct): in_addr_nbo_t = "atslib_in_addr_struct_get_s_addr"
-// end of [in_addr_struct_get_s_addr]
-
-(* ****** ****** *)
-
 abst@ype uint16_t0ype_netbyteord = uint16_t0ype
 typedef uint16_nbo = uint16_t0ype_netbyteord
 fun htons (i: uint16_t0ype): uint16_t0ype_netbyteord = "atslib_htons"
@@ -130,6 +120,65 @@ abst@ype uint32_t0ype_netbyteord = uint32_t0ype
 typedef uint32_nbo = uint32_t0ype_netbyteord
 fun htonl (i: uint32_t0ype): uint32_t0ype_netbyteord = "atslib_htonl"
 fun ntohl (i: uint32_t0ype_netbyteord): uint32_t0ype = "atslib_ntohl"
+
+(* ****** ****** *)
+
+typedef
+in_addr_struct =
+$extype_struct "ats_in_addr_type" of {
+  s_addr= in_addr_nbo_t // IPv4 address of ulint
+} // end of [in_addr_struct]
+
+fun in_addr_struct_get_s_addr
+  (inp: in_addr_struct): in_addr_nbo_t = "atslib_in_addr_struct_get_s_addr"
+// end of [in_addr_struct_get_s_addr]
+
+(* ****** ****** *)
+
+typedef sockaddr_in_struct =
+$extype_struct "ats_sockaddr_in_type" of {
+  sin_family= sa_family_t
+, sin_port= in_port_nbo_t // uint16
+, sin_addr= in_addr_struct
+} // end of [sockaddr_in_struct]
+
+sta socklen_in : int // length of [sockaddr_in]
+abst@ype sockaddr_in_struct = $extype "ats_sockaddr_in_type"
+macdef socklen_in = $extval (socklen_t(socklen_in), "atslib_socklen_in")
+praxi socklen_lte_in (): [socklen_in <= $SA.socklen_max] void
+praxi sockaddr_in_trans {l:addr}
+  (pf: !sockaddr_in_struct @ l >> sockaddr_struct(socklen_in) @ l): void
+praxi sockaddr_trans_in {l:addr}
+  (pf: !sockaddr_struct(socklen_in) @ l >> sockaddr_in_struct @ l): void
+
+(* ****** ****** *)
+
+typedef
+in6_addr_struct =
+$extype_struct
+"ats_in_addr_type" of {
+  s6_addr= @[uint8][16] // IPv6 address of 16 bytes
+} // end of [in6_addr_struct]
+
+(* ****** ****** *)
+
+typedef sockaddr_in6_struct =
+$extype_struct "ats_sockaddr_in6_type" of {
+  sin6_family= sa_family_t
+, sin6_port= in_port_nbo_t // uint16
+, sin6_flowinfo= uint32
+, sin6_addr= in6_addr_struct
+, sin6_scope_id= uint32
+} // end of [sockaddr_in_struct]
+
+sta socklen_in6 : int // length of [sockaddr_in6]
+abst@ype sockaddr_in6_struct = $extype "ats_sockaddr_in6_type"
+macdef socklen_in6 = $extval (socklen_t(socklen_in6), "atslib_socklen_in6")
+praxi socklen_lte_in6 (): [socklen_in6 <= $SA.socklen_max] void
+praxi sockaddr_in6_trans {l:addr}
+  (pf: !sockaddr_in6_struct @ l >> sockaddr_struct(socklen_in6) @ l): void
+praxi sockaddr_trans_in6 {l:addr}
+  (pf: !sockaddr_struct(socklen_in6) @ l >> sockaddr_in6_struct @ l): void
 
 (* ****** ****** *)
 

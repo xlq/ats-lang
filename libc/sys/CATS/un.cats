@@ -33,49 +33,20 @@
 
 /* ****** ****** */
 
-#ifndef ATS_LIBC_NETINET_IN_CATS
-#define ATS_LIBC_NETINET_IN_CATS
+#ifndef ATS_LIBC_SYS_UN_CATS
+#define ATS_LIBC_SYS_UN_CATS
 
 /* ****** ****** */
 
-#include <netinet/in.h>
+#include <sys/un.h>
 
 /* ****** ****** */
 
-typedef struct sockaddr_in ats_sockaddr_in_type ;
-#define atslib_socklen_in (sizeof(ats_sockaddr_in_type))
-
-typedef struct sockaddr_in6 ats_sockaddr_in6_type ;
-#define atslib_socklen_in6 (sizeof(ats_sockaddr_in6_type))
+typedef struct sockaddr_un ats_sockaddr_un_type ;
+#define atslib_socklen_un (sizeof(ats_sockaddr_un_type))
 
 /* ****** ****** */
 
-ATSinline()
-in_port_t // in_port_nbo_t
-atslib_in_port_nbo_of_int
-  (ats_int_type n) { in_port_t nport = n ; return htons (nport) ; }
-/* end of [atslib_in_port_nbo_of_int] */
+#endif /* end of [ATS_LIBC_SYS_UN_CATS] */
 
-/* ****** ****** */
-
-ATSinline()
-in_addr_t // in_addr_nbo_t
-atslib_in_addr_nbo_of_hbo
-  (in_addr_t addr_hbo) { return htonl (addr_hbo) ; }
-/* end of [atslib_in_addr_nbo_of_hbo] */
-
-/* ****** ****** */
-
-typedef struct in_addr ats_in_addr_type ;
-
-ATSinline()
-in_addr_t // in_addr_nbo_t
-atslib_in_addr_struct_get_s_addr
-  (ats_in_addr_type inp) { return (inp.s_addr) ; }
-/* end of [atslib_in_addr_struct_get_s_addr] */
-
-/* ****** ****** */
-
-#endif /* end of [ATS_LIBC_NETINET_IN_CATS] */
-
-/* end of [in.cats] */
+/* end of [un.cats] */

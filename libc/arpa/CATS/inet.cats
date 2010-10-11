@@ -89,19 +89,8 @@ atslib_inet_aton_exn (
 
 /* ****** ****** */
 
-#define atslib_inet_pton_err inet_pton
-
-ATSinline()
-ats_void_type
-atslib_inet_pton_exn (
-  ats_int_type af, ats_ptr_type cp, ats_ref_type inp
-) {
-  int rtn = inet_pton(af, (char*)cp, (ats_in_addr_type*)inp) ;
-  if (rtn <= 0) {
-    ats_exit_errmsg(EXIT_FAILURE, "exit(ATS): [inet_pton] failed.\n") ;
-  } // end of [if]
-  return ;
-} /* end of [atslib_inet_pton_exn] */
+#define atslib_inet4_pton(cp, inp) inet_pton(AF_INET4, cp, inp)
+#define atslib_inet6_pton(cp, inp) inet_pton(AF_INET6, cp, inp)
 
 /* ****** ****** */
 

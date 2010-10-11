@@ -159,8 +159,13 @@ libc/SATS/utime.sats
 
 libc/sys/SATS/select.sats
 
+libc/sys/SATS/sockaddr.sats
+
 libc/sys/SATS/socket.sats
 libc/sys/DATS/socket.dats
+
+libc/sys/SATS/socket_in.sats
+libc/sys/DATS/socket_in.dats
 
 libc/sys/SATS/stat.sats
 libc/sys/DATS/stat.dats

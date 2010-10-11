@@ -17,7 +17,9 @@ staload "libc/SATS/stdio.sats"
 staload "libc/SATS/unistd.sats"
 staload "libc/sys/SATS/types.sats"
 staload "libc/sys/SATS/socket.sats"
+staload "libc/sys/SATS/sockaddr.sats"
 staload "libc/netinet/SATS/in.sats"
+staload "libc/sys/SATS/socket_in.sats"
 staload "libc/arpa/SATS/inet.sats"
 
 (* ****** ****** *)

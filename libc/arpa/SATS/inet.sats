@@ -95,16 +95,17 @@ fun inet_netof
 
 (* ****** ****** *)
 
-fun inet_pton_err (
-    af: address_family_t, cp: string
+fun inet4_pton (
+    cp: string // af=AF_INET
   , inp: &in_addr_struct? >> opt (in_addr_struct, i > 0)
-  ) : #[i:int] int (i) = "#atslib_inet_pton_err"
-// end of [inet_pton_err]
+  ) : #[i:int] int (i) = "#atslib_inet4_pton"
+// end of [inet4_pton]
 
-fun inet_pton_exn (
-    af: address_family_t, cp: string, inp: &in_addr_struct? >> in_addr_struct
-  ) :<!exn> void = "atslib_inet_pton_exn"
-// end of [inet_pton_exn]
+fun inet6_pton (
+    cp: string // af= AF_INET6
+  , inp: &in_addr_struct? >> opt (in_addr_struct, i > 0)
+  ) : #[i:int] int (i) = "#atslib_inet6_pton"
+// end of [inet6_pton]
 
 (* ****** ****** *)
 

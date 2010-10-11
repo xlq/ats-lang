@@ -53,13 +53,6 @@
 
 /* ****** ****** */
 
-typedef struct sockaddr_in ats_sockaddr_in_type ;
-#define atslib_socklen_in (sizeof(ats_sockaddr_in_type))
-typedef struct sockaddr_un ats_sockaddr_un_type ;
-#define atslib_socklen_un (sizeof(ats_sockaddr_un_type))
-
-/* ****** ****** */
-
 // HX: [memset] is in [string.h]
 extern void *memset(void *s, int c, size_t n);
 // HX: implemented in [prelude/DATS/basics.dats]

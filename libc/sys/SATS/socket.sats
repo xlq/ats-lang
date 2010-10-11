@@ -41,6 +41,11 @@
 
 (* ****** ****** *)
 
+staload SA = "libc/sys/SATS/sockaddr.sats"
+typedef sa_family_t = $SA.sa_family_t
+
+(* ****** ****** *)
+
 staload "libc/netinet/SATS/in.sats"
 
 (* ****** ****** *)
@@ -53,31 +58,6 @@ macdef SOCK_STREAM = $extval (socket_type_t, "SOCK_STREAM")
 
 abst@ype socket_protocol_t = $extype "ats_int_type"
 
-(* ****** ****** *)
-
-abst@ype socklen_t(n:int) = $extype "socklen_t"
-castfn socklen_of_int {n:nat} (n: int n): socklen_t n
-
-(* ****** ****** *)
-//
-abst@ype sockaddr_struct(n:int) // a generic type
-//
-sta socklen_in : int // length
-abst@ype sockaddr_in_struct = $extype "ats_sockaddr_in_type"
-macdef socklen_in = $extval (socklen_t(socklen_in), "atslib_socklen_in")
-praxi sockaddr_in_trans {l:addr}
-  (pf: !sockaddr_in_struct @ l >> sockaddr_struct(socklen_in) @ l): void
-praxi sockaddr_trans_in {l:addr}
-  (pf: !sockaddr_struct(socklen_in) @ l >> sockaddr_in_struct @ l): void
-//
-sta socklen_un : int // length
-abst@ype sockaddr_un_struct = $extype "ats_sockaddr_un_type"
-macdef socklen_un = $extval (socklen_t(socklen_un), "atslib_socklen_un")
-praxi sockaddr_un_trans
-  (pf: !sockaddr_un_struct >> sockaddr_struct(socklen_un)): void
-praxi sockaddr_trans_un
-  (pf: !sockaddr_struct(socklen_un) >> sockaddr_un_struct): void
-//
 (* ****** ****** *)
 //
 // HX:
@@ -94,12 +74,12 @@ dataview socketopt_v (int) =
 // end of [socketopt_v]
 
 fun socket_family_type_err
-  (af: address_family_t, t: socket_type_t): [fd:int] (socketopt_v fd | int fd)
+  (af: sa_family_t, t: socket_type_t): [fd:int] (socketopt_v fd | int fd)
   = "atslib_socket_family_type_err"
 // end of [socket_family_type_err]
 
 fun socket_family_type_exn
-  (af: address_family_t, t: socket_type_t): [fd:int] (socket_v (fd, init) | int fd)
+  (af: sa_family_t, t: socket_type_t): [fd:int] (socket_v (fd, init) | int fd)
   = "atslib_socket_family_type_exn"
 // end of [socket_family_type_exn]
 
@@ -107,7 +87,7 @@ fun socket_family_type_exn
 
 fun sockaddr_ipv4_init (
     sa: &sockaddr_in_struct? >> sockaddr_in_struct
-  , af: address_family_t, inp: in_addr_nbo_t, port: in_port_nbo_t
+  , af: sa_family_t, inp: in_addr_nbo_t, port: in_port_nbo_t
   ) :<> void = "atslib_sockaddr_ipv4_init"
 // end of [sockaddr_ipv4_init]
 
@@ -128,14 +108,6 @@ fun connect_err
 
 (* ****** ****** *)
 
-fun connect_in_exn {fd:int} (
-    pf: !socket_v (fd, init) >> socket_v (fd, conn)
-  | fd: int fd, servaddr: &sockaddr_in_struct // len=sizeof(sockaddr_in_struct)
-  ) : void
-// end of [connect_in_exn]
-
-(* ****** ****** *)
-
 dataview bind_v (fd:int, int) = 
   | bind_v_fail (fd, ~1) of socket_v (fd, init)
   | bind_v_succ (fd,  0) of socket_v (fd, bind)
@@ -147,14 +119,6 @@ fun bind_err
   | fd: int fd, servaddr: &sockaddr_struct(n1), salen: socklen_t(n2)
   ) : [i:int] (bind_v (fd, i) | int i) = "#atslib_bind_err"
 // end of [bind_err]
-
-(* ****** ****** *)
-
-fun bind_in_exn {fd:int} (
-    pf_sock: !socket_v (fd, init) >> socket_v (fd, bind)
-  | fd: int fd, servaddr: &sockaddr_in_struct // len=sizeof(sockaddr_in_struct)
-  ) : void
-// end of [bind_in_exn]
 
 (* ****** ****** *)
 
