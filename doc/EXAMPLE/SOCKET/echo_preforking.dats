@@ -102,7 +102,7 @@ fun make_server_socket (port: int)
   val servport = in_port_nbo_of_int (port);
   val in4addr = in_addr_nbo_of_hbo (INADDR_ANY);
   val () = sockaddr_ipv4_init (servaddr, AF_INET, in4addr, servport);
-  val () = bind_ipv4_exn (pf_sock_s | sockfd, servaddr);
+  val () = bind_in_exn (pf_sock_s | sockfd, servaddr);
   val () = listen_exn (pf_sock_s | sockfd, 10);
 in
   (pf_sock_s | sockfd)

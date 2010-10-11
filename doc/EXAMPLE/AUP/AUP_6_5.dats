@@ -148,7 +148,7 @@ in
 if (err > 0) then let
   val () = close_exn (pfin1 | fdin1)
 in
-  errptexit (EXIT_FAILURE)
+  errptexit (EXIT_FAILURE) // HX: open ("datafile") failed
 end else let
   var err: int = 0
   val (pf_stdout | ()) = stdout_fildes_view_get ()

@@ -786,7 +786,7 @@ implement main (argc, argv) = let
   val servport = in_port_nbo_of_int (port)
   val in4add_any = in_addr_nbo_of_hbo (INADDR_ANY)
   val () = sockaddr_ipv4_init (servaddr, AF_INET, in4add_any, servport)
-  val () = bind_ipv4_exn (pf_sock | fd, servaddr)
+  val () = bind_in_exn (pf_sock | fd, servaddr)
   val () = listen_exn (pf_sock | fd, BACKLOG)
   var! p_buf with pf_buf = @[byte][BUFSZ]()
   prval () = pf_buf := bytes_v_of_b0ytes_v (pf_buf)

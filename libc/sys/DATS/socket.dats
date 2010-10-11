@@ -50,6 +50,54 @@ staload "libc/sys/SATS/socket.sats"
 (* ****** ****** *)
 
 implement
+connect_in_exn
+  (pfsock | sfd, servaddr) = let
+  prval () = sockaddr_in_trans (view@ servaddr)
+  val (pfopt | err) = connect_err (pfsock | sfd, servaddr, socklen_in)
+  prval () = sockaddr_trans_in (view@ servaddr)
+in
+  if err >= 0 then let
+    prval connect_v_succ (pf) = pfopt
+    prval () = pfsock := pf
+  in
+    // nothing
+  end else let
+    prval connect_v_fail (pf) = pfopt
+    prval () = pfsock := pf
+    val () = perror ("connect")
+    val () = exit (EXIT_FAILURE)
+  in
+    connect_in_exn (pfsock | sfd, servaddr) // HX: this is deadcode
+  end // end of [if]
+end // end of [connect_in_exn]
+
+(* ****** ****** *)
+
+implement
+bind_in_exn
+  (pfsock | sfd, servaddr) = let
+  prval () = sockaddr_in_trans (view@ servaddr)
+  val (pfopt | err) = bind_err (pfsock | sfd, servaddr, socklen_in)
+  prval () = sockaddr_trans_in (view@ servaddr)
+in
+  if err >= 0 then let
+    prval bind_v_succ (pf) = pfopt
+    prval () = pfsock := pf
+  in
+    // nothing
+  end else let
+    prval bind_v_fail (pf) = pfopt
+    prval () = pfsock := pf
+    val () = perror ("bind")
+    val () = exit (EXIT_FAILURE)
+  in
+    bind_in_exn (pfsock | sfd, servaddr) // HX: this is deadcode
+  end // end of [if]
+end // end of [bind_in_exn]
+
+(* ****** ****** *)
+
+implement
 socket_close_exn (pfsock | fd) = let
   val (pfopt | i) = socket_close_err (pfsock | fd)
 in
@@ -62,7 +110,7 @@ in
       socket_close_exn (pfsock | fd)
     else let
       val () = perror "close"
-      val () = prerrf ("exit(ATS): [socket_close] failed\n", @())
+      val () = prerrf ("exit(ATS): [socket_close] failed.\n", @())
       val () = exit_main {void} {..} {unit_v} (pfsock | EXIT_FAILURE)
       prval unit_v () = pfsock
     in
@@ -82,7 +130,7 @@ in
   else let
     val () = perror "socket_read"
   in
-    exit_errmsg (EXIT_FAILURE, "[socket_read] failed\n")
+    exit_errmsg (EXIT_FAILURE, "[socket_read] failed.\n")
   end // end of [if]
 end // end of [socket_read_exn]
 
@@ -102,7 +150,7 @@ in
   if err > 0 then let
     val () = perror "socket_write"
   in
-    exit_errmsg (EXIT_FAILURE, "[socket_write_loop] failed\n")
+    exit_errmsg (EXIT_FAILURE, "[socket_write_loop] failed.\n")
   end (* end of [if] *)
 end // end of [socket_write_loop_exn]
 

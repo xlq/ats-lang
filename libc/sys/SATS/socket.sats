@@ -55,9 +55,29 @@ abst@ype socket_protocol_t = $extype "ats_int_type"
 
 (* ****** ****** *)
 
-abst@ype socklen_t = $extype "socklen_t"
-abst@ype sockaddr_in_struct = $extype "ats_sockaddr_in_type"
+abst@ype socklen_t(n:int) = $extype "socklen_t"
+castfn socklen_of_int {n:nat} (n: int n): socklen_t n
 
+(* ****** ****** *)
+//
+abst@ype sockaddr_struct(n:int) // a generic type
+//
+sta socklen_in : int // length
+abst@ype sockaddr_in_struct = $extype "ats_sockaddr_in_type"
+macdef socklen_in = $extval (socklen_t(socklen_in), "atslib_socklen_in")
+praxi sockaddr_in_trans {l:addr}
+  (pf: !sockaddr_in_struct @ l >> sockaddr_struct(socklen_in) @ l): void
+praxi sockaddr_trans_in {l:addr}
+  (pf: !sockaddr_struct(socklen_in) @ l >> sockaddr_in_struct @ l): void
+//
+sta socklen_un : int // length
+abst@ype sockaddr_un_struct = $extype "ats_sockaddr_un_type"
+macdef socklen_un = $extval (socklen_t(socklen_un), "atslib_socklen_un")
+praxi sockaddr_un_trans
+  (pf: !sockaddr_un_struct >> sockaddr_struct(socklen_un)): void
+praxi sockaddr_trans_un
+  (pf: !sockaddr_struct(socklen_un) >> sockaddr_un_struct): void
+//
 (* ****** ****** *)
 //
 // HX:
@@ -98,17 +118,21 @@ dataview connect_v (fd: int, int) =
   | connect_v_fail (fd, ~1) of socket_v (fd, init)
 // end of [connect_v]
 
-fun connect_ipv4_err {fd:int} (
-  pf_sock: socket_v (fd, init) | fd: int fd, servaddr: &sockaddr_in_struct
-) : [i:int] (connect_v (fd, i) | int i)
-  = "atslib_connect_ipv4_err"
-// end of [connect_ipv4_err
+fun connect_err
+  {fd:int} {n1,n2:int | n2 <= n1} (
+    pf_sock: socket_v (fd, init)
+  | fd: int fd, servaddr: &sockaddr_struct(n1), salen: socklen_t(n2)
+  ) : [i:int] (connect_v (fd, i) | int i)
+  = "#atslib_connect_err"
+// end of [connect_err]
 
-fun connect_ipv4_exn {fd:int} (
+(* ****** ****** *)
+
+fun connect_in_exn {fd:int} (
     pf: !socket_v (fd, init) >> socket_v (fd, conn)
-  | fd: int fd, servaddr: &sockaddr_in_struct
-  ) : void = "atslib_connect_ipv4_exn"
-// end of [connect_ipv4_exn]
+  | fd: int fd, servaddr: &sockaddr_in_struct // len=sizeof(sockaddr_in_struct)
+  ) : void
+// end of [connect_in_exn]
 
 (* ****** ****** *)
 
@@ -117,17 +141,20 @@ dataview bind_v (fd:int, int) =
   | bind_v_succ (fd,  0) of socket_v (fd, bind)
 // end of [bind_v]
 
-fun bind_ipv4_err {fd:int}
-  (pf_sock: socket_v (fd, init) | fd: int fd, servaddr: &sockaddr_in_struct)
-  : [i:int] (bind_v (fd, i) | int i)
-  = "atslib_bind_ipv4_err"
-// end of [bind_ipv4_err]
+fun bind_err
+  {fd:int} {n1,n2:int | n2 <= n1} (
+    pf_sock: socket_v (fd, init)
+  | fd: int fd, servaddr: &sockaddr_struct(n1), salen: socklen_t(n2)
+  ) : [i:int] (bind_v (fd, i) | int i) = "#atslib_bind_err"
+// end of [bind_err]
 
-fun bind_ipv4_exn {fd:int} (
+(* ****** ****** *)
+
+fun bind_in_exn {fd:int} (
     pf_sock: !socket_v (fd, init) >> socket_v (fd, bind)
-  | fd: int fd, servaddr: &sockaddr_in_struct
-  ) : void = "atslib_bind_ipv4_exn"
-// end of [bind_ipv4_exn]
+  | fd: int fd, servaddr: &sockaddr_in_struct // len=sizeof(sockaddr_in_struct)
+  ) : void
+// end of [bind_in_exn]
 
 (* ****** ****** *)
 
@@ -150,35 +177,26 @@ fun listen_exn {fd:int} (
 
 (* ****** ****** *)
 
-dataview accept_v (int) = 
+dataview
+accept_v (int) = 
   | {fd:nat} accept_v_succ (fd) of socket_v (fd, conn)
-  | accept_v_fail (~1)
+  | accept_v_fail (~1) // HX: the server socket is unaffected
 // end of [accept_v]
 
-fun accept_null_err {fd_s:int}
-  (pf_sock: !socket_v (fd_s, listen) | fd_s: int fd_s)
-  : [fd_c:int] (accept_v fd_c | int fd_c)
-  = "atslib_accept_null_err"
+fun accept_null_err {sfd:int}
+  (pf_sock: !socket_v (sfd, listen) | sfd: int sfd)
+  : [cfd:int] (accept_v cfd | int cfd) = "atslib_accept_null_err"
 // end of [accept_null_err]
 
-fun accept_null_exn {fd_s:int}
-  (pf_sock: !socket_v (fd_s, listen) | fd_s: int fd_s)
-  : [fd_c:int] (socket_v (fd_c, conn) | int fd_c)
-  = "atslib_accept_null_exn"
+fun accept_null_exn {sfd:int}
+  (pf_sock: !socket_v (sfd, listen) | sfd: int sfd)
+  : [cfd:int] (socket_v (cfd, conn) | int cfd) = "atslib_accept_null_exn"
 // end of [accept_null_exn]
-
-fun accept_ipv4_exn {fd_s:int} (
-    pf_sock: !socket_v (fd_s, listen)
-  | fd_s: int fd_s
-  , cliaddr: &sockaddr_in_struct? >> sockaddr_in_struct
-  , addrlen: &socklen_t? >> socklen_t
-  ) : [fd_c:int] (socket_v (fd_c, conn) | int fd_c)
-  = "atslib_accept_ipv4_exn"
-// end of [accept_ipv4_exn]
 
 (* ****** ****** *)
 
-dataview socket_close_v (fd: int, s: status, int) =
+dataview
+socket_close_v (fd: int, s: status, int) =
   | socket_close_v_fail (fd, s, ~1) of socket_v (fd, s)
   | socket_close_v_succ (fd, s, 0)
 // end of [socket_close_v]
@@ -186,21 +204,23 @@ dataview socket_close_v (fd: int, s: status, int) =
 fun socket_close_err {fd:int} {s:status}
   (pf_sock: socket_v (fd, s) | fd: int fd)
   : [i:int] (socket_close_v (fd, s, i) | int i)
-  = "atslib_socket_close_err"
+  = "#atslib_socket_close_err" // = atslib_close_err
 // end of [socket_close_err]
 
+//
+// HX: this one is like [fildes_close_loop_exn]
+//
 fun socket_close_exn {fd:int} {s:status}
   (pf_sock: socket_v (fd, s) | fd: int fd): void
-  = "atslib_socket_close_exn"
 // end of [socket_close_exn]
 
 (* ****** ****** *)
 //
-// HX: implemented in [libc/CATS/fcntl.cats]
+// HX: actually implemented in [libc/CATS/fcntl.cats]
 //
 fun socket_read_err {fd:int} {n,sz:nat | n <= sz} (
     pf_sock: !socket_v (fd, conn) | fd: int fd, buf: &bytes sz, ntotal: size_t n
-  ) : ssizeBtw(~1, n+1) = "atslib_fildes_read_err"
+  ) : ssizeBtw(~1, n+1) = "#atslib_socket_read_err" // = atslib_fildes_read_err
 // end of [socket_read_err]
 //
 // HX: implemented in [libc/sys/DATSsocket.dats]
@@ -212,35 +232,37 @@ fun socket_read_exn {fd:int} {n,sz:nat | n <= sz} (
 
 (* ****** ****** *)
 //
+// HX: actually implemented in [libc/CATS/fcntl.cats]
+//
+fun socket_write_err {fd:int} {n,sz:nat | n <= sz} (
+    pf_sock: !socket_v (fd, conn) | fd: int fd, buf: &bytes sz, ntotal: size_t n
+  ) : ssizeBtw(~1, n+1) = "#atslib_socket_write_err" // = atslib_fildes_write_err
+// end of [socket_write_err]
+//
+// HX: [socket_write_exn]: plesae use [socket_write_loop_exn] instead
+//
+(* ****** ****** *)
+//
 // HX:
-// this one is implemented in [libc/DATS/fcntl.dats]
+// this one is actually implemented in [libc/DATS/fcntl.dats]
 // note that it is used only when it is known ahead how many bytes are expected;
 // otherwise, there is the risk of forever blocking!!!
 //
 fun socket_read_loop_err {fd:int} {n,sz:nat | n <= sz} (
     pf_sock: !socket_v (fd, conn) | fd: int fd, buf: &bytes sz, ntotal: size_t n
-  ) : ssizeBtw (~1, n+1) = "atslib_fildes_read_loop_err"
+  ) : ssizeBtw (~1, n+1) = "#atslib_socket_read_loop_err" // = atslib_fildes_read_loop_err
 // end of [socket_read_loop_err]
 
 (* ****** ****** *)
 //
-// HX: implemented in [libc/CATS/fcntl.cats]
-//
-fun socket_write_err {fd:int} {n,sz:nat | n <= sz} (
-    pf_sock: !socket_v (fd, conn) | fd: int fd, buf: &bytes sz, ntotal: size_t n
-  ) : ssizeBtw(~1, n+1) = "atslib_fildes_write_err"
-// end of [socket_write_err]
-
-(* ****** ****** *)
-//
-// HX: implemented in [libc/DATS/fcntl.dats]
+// HX: this one is actually implemented in [libc/DATS/fcntl.dats]
 //
 fun socket_write_loop_err {fd:int} {n,sz:nat | n <= sz} (
     pf_sock: !socket_v (fd, conn) | fd: int fd, buf: &bytes sz, ntotal: size_t n
-  ) : ssizeBtw(~1, n+1) = "atslib_fildes_write_loop_err"
+  ) : ssizeBtw(~1, n+1) = "#atslib_socket_write_loop_err" // = atslib_fildes_write_loop_err
 // end of [socket_write_loop_err]
 //
-// HX: implemented in [libc/sys/DATS/socket.dats]
+// HX: this one is implemented in [libc/sys/DATS/socket.dats]
 //
 fun socket_write_loop_exn {fd:int} {n,sz:nat | n <= sz} (
     pf_sock: !socket_v (fd, conn) | fd: int fd, buf: &bytes sz, ntotal: size_t n

@@ -27,10 +27,12 @@ staload "libc/arpa/SATS/inet.sats"
 implement main (argc, argv) = let
   val servname = (
     if argc > 1 then argv.[1] else TIME_SERVER_NAME_DEFAULT
-  ) : string
+  ) : string // end of [servname]
+  val () = (print "servname = "; print servname; print_newline ())
   val nport = (
     if argc > 2 then int_of_string (argv.[2]) else TIME_SERVER_PORT_DEFAULT
-  ) : int
+  ) : int // end of [nport]
+  val () = (print "nport = "; print nport; print_newline ())
   val servport = in_port_nbo_of_int (nport)
   var inp: in_addr_struct // uninitialized
   // turning a name into an ipv4 address in the network-byte-order
@@ -43,8 +45,8 @@ implement main (argc, argv) = let
     (servaddr, AF_INET, in_addr_struct_get_s_addr inp, servport)
   // [socket_family_type_exn] creates a socket of a given family and a given type
   val [fd:int] (pf_sock | sockfd) = socket_family_type_exn (AF_INET, SOCK_STREAM)
-  // [connect_ipv4_exn] connects to a server assigned an ipv4 socket address
-  val () = connect_ipv4_exn (pf_sock | sockfd, servaddr)
+  // [connect_in_exn] connects to a server assigned an ipv4 socket address
+  val () = connect_in_exn (pf_sock | sockfd, servaddr)
   typedef buf_t = @[byte][MAXLINE]
   val b0 = byte_of_int (0)
   var !p_buf = @[byte][MAXLINE](b0) // allocation on stack

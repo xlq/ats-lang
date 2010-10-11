@@ -28,15 +28,14 @@ staload "libc/arpa/SATS/inet.sats"
 #define TIME_SERVER_PORT 13000 // default value
 
 (*
-
+//
+// HX-2008: some ideas:
+//
 absprop forkdup_p (v: view)
-
 extern praxi forkdup_socket
   {fd:int} {st:status} (): forkdup_p (socket_v (fd, st))
-
 extern praxi forkdup_pair {v1,v2:view}
  (pf1: forkdup_p (v1), pf2: forkdup_p (v2)): forkdup_p @(v1, v2) 
-
 *)
 
 implement main (argc, argv) = let
@@ -46,7 +45,7 @@ implement main (argc, argv) = let
   val servport = in_port_nbo_of_int (nport)
   val in4addr_any = in_addr_nbo_of_hbo (INADDR_ANY)
   val () = sockaddr_ipv4_init (servaddr, AF_INET, in4addr_any, servport)
-  val () = bind_ipv4_exn (pf_sock_s | fd_s, servaddr)
+  val () = bind_in_exn (pf_sock_s | fd_s, servaddr)
   val () = listen_exn (pf_sock_s | fd_s, LISTENQ) 
   val () = loop (pf_sock_s | fd_s) where {
     fun loop (

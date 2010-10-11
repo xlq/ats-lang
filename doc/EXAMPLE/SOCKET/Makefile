@@ -58,15 +58,20 @@ html::
 
 ######
 
+RMF = rm -f
+
+######
+
 clean::
-	rm -f a.out *_dats.c *_dats.o *~
+	$(RMF) *~
+	$(RMF) *_dats.c *_dats.o
 
 cleanall: clean
-	rm -f *_?ats.html
-	rm -f daytime_tcpserver
-	rm -f daytime_tcpclient
-	rm -f echo_tcpserver
-	rm -f echo_tcpclient
-	rm -f echo_preforking
+	$(RMF) *_?ats.html
+	$(RMF) daytime_tcpserver
+	$(RMF) daytime_tcpclient
+	$(RMF) echo_tcpserver
+	$(RMF) echo_tcpclient
+	$(RMF) echo_preforking
 
 ###### end of [Makefile] ######

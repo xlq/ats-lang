@@ -33,30 +33,36 @@
 
 /* ****** ****** */
 
-#ifndef _LIBC_SOCKET_CATS
-#define _LIBC_SOCKET_CATS
+#ifndef ATS_LIBC_SOCKET_CATS
+#define ATS_LIBC_SOCKET_CATS
 
 /* ****** ****** */
 
 #include <errno.h>
-
+#include <stdio.h> // for [perror]
 #include <netinet/in.h>
+#include <sys/un.h>
+
+/* ****** ****** */
+
 #include <sys/socket.h>
 
-#include <stdio.h> // for [perror]
+/* ****** ****** */
+
+#include "libc/CATS/fcntl.cats"
 
 /* ****** ****** */
 
 typedef struct sockaddr_in ats_sockaddr_in_type ;
+#define atslib_socklen_in (sizeof(ats_sockaddr_in_type))
+typedef struct sockaddr_un ats_sockaddr_un_type ;
+#define atslib_socklen_un (sizeof(ats_sockaddr_un_type))
 
 /* ****** ****** */
 
-// [memset] is in [string.h]
+// HX: [memset] is in [string.h]
 extern void *memset(void *s, int c, size_t n);
-
-/* ****** ****** */
-
-// implemented in [prelude/DATS/basics.dats]
+// HX: implemented in [prelude/DATS/basics.dats]
 extern ats_void_type
 ats_exit_errmsg(ats_int_type n, ats_ptr_type msg) ;
 
@@ -110,65 +116,33 @@ atslib_sockaddr_ipv4_init (
 
 /* ****** ****** */
 
-ATSinline()
-ats_int_type
-atslib_connect_ipv4_err (
-  ats_int_type fd, ats_ref_type servaddr
-) {
-  return connect(fd, (struct sockaddr*)servaddr, sizeof(struct sockaddr_in)) ;
-} // end of [atslib_connect_ipv4_err]
-
-ATSinline()
-ats_void_type
-atslib_connect_ipv4_exn (
-  ats_int_type fd, ats_ref_type servaddr
-) {
-  int err ;
-  err = connect(fd, (struct sockaddr*)servaddr, sizeof(struct sockaddr_in)) ;
-  if (err < 0) {
-    perror("connect") ;
-    ats_exit_errmsg(
-      EXIT_FAILURE, (ats_ptr_type)"exit(ATS): [connect] failed.\n"
-    ) ;
-  } // end of [if]
-  return ;
-} // end of [atslib_connect_ipv4_exn]
+#define atslib_connect_err connect
 
 /* ****** ****** */
 
-ATSinline()
-ats_int_type
-atslib_bind_ipv4_err (
-  ats_int_type fd, ats_ref_type servaddr
-) {
-  return bind(fd, (struct sockaddr *)servaddr, sizeof(struct sockaddr_in));
-} // end of [atslib_bind_ipv4_err]
+#define atslib_bind_err bind
 
 ATSinline()
 ats_void_type
-atslib_bind_ipv4_exn (
-  ats_int_type fd, ats_ref_type servaddr
+atslib_bind_exn (
+  ats_int_type fd
+, ats_ref_type servaddr
+, socklen_t salen
 ) {
   int err ;
-  err = bind(fd, (struct sockaddr *)servaddr, sizeof(struct sockaddr_in));
+  err = bind(fd, (struct sockaddr*)servaddr, salen);
   if (err < 0) {
     perror("bind");
-    ats_exit_errmsg(
+    ats_exit_errmsg (
       EXIT_FAILURE, (ats_ptr_type)"exit(ATS): [bind] failed.\n"
-    ) ;
+    ) ; // end of [ats_exit_errmsg]
   } // end of [if]
   return ;
-} // end of [atslib_bind_ipv4_exn]
+} // end of [atslib_bind_exn]
 
 /* ****** ****** */
 
-ATSinline()
-ats_int_type
-atslib_listen_err (
-  ats_int_type fd, ats_int_type backlog
-) {
-  return listen (fd, backlog) ;
-} // end of [atslib_listen_err]
+#define atslib_listen_err listen
 
 ATSinline()
 ats_void_type atslib_listen_exn (
@@ -177,9 +151,9 @@ ats_void_type atslib_listen_exn (
   int err = listen (fd, backlog) ;
   if (err < 0) {
     perror("listen") ;
-    ats_exit_errmsg(
+    ats_exit_errmsg (
       EXIT_FAILURE, (ats_ptr_type)"exit(ATS): [listen] failed.\n"
-    ) ;
+    ) ; // end of [ats_exit_errmsg]
   } // end of [if]
   return ;
 } // end of [atslib_listen_exn]
@@ -188,73 +162,37 @@ ats_void_type atslib_listen_exn (
 
 ATSinline()
 ats_int_type
-atslib_accept_null_err (
-  ats_int_type fd_s
-) {
-  return accept(fd_s, (struct sockaddr *)0, (socklen_t *)0) ;
+atslib_accept_null_err
+  (ats_int_type sfd) {
+  return accept(sfd, (struct sockaddr*)0, (socklen_t*)0) ;
 } // end of [atslib_accept_null_err]
 
 ATSinline()
 ats_int_type
-atslib_accept_null_exn (ats_int_type fd_s) {
-  int fd_c ;
-  fd_c = accept(fd_s, (struct sockaddr *)0, (socklen_t *)0) ;
-  if (fd_c < 0) {
+atslib_accept_null_exn (ats_int_type sfd) {
+  int cfd ;
+  cfd = accept(sfd, (struct sockaddr*)0, (socklen_t*)0) ;
+  if (cfd < 0) {
     perror("accept");
     ats_exit_errmsg(
       EXIT_FAILURE, (ats_ptr_type)"exit(ATS): [accept] failed.\n"
-    ) ;
+    ) ; // end of [ats_exit_errmsg]
   } // end of [if]
-  return fd_c;
+  return cfd;
 } // end of [atslib_accept_null_exn]
 
-//
+/* ****** ****** */
 
-ATSinline()
-ats_int_type atslib_accept_ipv4_exn (
-  ats_int_type fd_s, ats_ref_type cliaddr, ats_ref_type addrlen
-) {
-  int fd_c ;
-  *(socklen_t *)addrlen = sizeof (struct sockaddr_in) ;
-  fd_c = accept(fd_s, (struct sockaddr *)cliaddr, (socklen_t *)addrlen) ;
-  if (fd_c < 0) {
-    perror("accept");
-    ats_exit_errmsg(
-      EXIT_FAILURE, (ats_ptr_type)"exit(ATS): [accept] failed.\n"
-    ) ;
-  } // end of [if]
-  return fd_c;
-} // end of [atslib_accept_ipv4_exn]
+#define atslib_socket_close_err atslib_close_err
 
 /* ****** ****** */
 
-ATSinline()
-ats_int_type
-atslib_socket_close_err(ats_int_type fd) { return close(fd) ; }
+#define atslib_socket_read_err atslib_fildes_read_err
+#define atslib_socket_write_err atslib_fildes_write_err
+#define atslib_socket_write_loop_err atslib_fildes_write_loop_err
 
 /* ****** ****** */
 
-ATSinline()
-ats_ssize_type
-atslib_socket_read_err (
-  ats_int_type fd, ats_ptr_type buf, ats_size_type cnt
-) {
-  return read(fd, buf, cnt) ;
-} // end of [atslib_socket_read_err]
-
-/* ****** ****** */
-
-ATSinline()
-ats_ssize_type
-atslib_socket_write_substring_err (
-  ats_int_type fd, ats_ptr_type str
-, ats_size_type start, ats_size_type len
-) {
-  return write(fd, ((char*)str)+start, len) ;
-} // end of [atslib_socket_write_substring_err]
-
-/* ****** ****** */
-
-#endif /* _LIBC_SOCKET_CATS */
+#endif /* ATS_LIBC_SOCKET_CATS */
 
 /* end of [socket.cats] */

@@ -91,7 +91,7 @@ implement main (argc, argv) = let
   val () = sockaddr_ipv4_init
     (servaddr, AF_INET, in_addr_struct_get_s_addr inp, in_port_nbo_of_int servport)
   val [fd:int] (pf_sock | sockfd) = socket_family_type_exn (AF_INET, SOCK_STREAM)
-  val () = connect_ipv4_exn (pf_sock | sockfd, servaddr)
+  val () = connect_in_exn (pf_sock | sockfd, servaddr)
   val () = client_loop (pf_sock | sockfd)
   val () = socket_close_exn (pf_sock | sockfd)
 in
