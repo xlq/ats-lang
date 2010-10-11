@@ -176,6 +176,8 @@ libc/sys/SATS/time.sats
 
 libc/sys/SATS/types.sats
 
+libc/sys/SATS/utsname.sats
+
 libc/sys/SATS/wait.sats
 
 libc/arpa/SATS/inet.sats

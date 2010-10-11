@@ -33,20 +33,34 @@
 
 /* ****** ****** */
 
-#ifndef ATS_LIBC_SYS_UN_CATS
-#define ATS_LIBC_SYS_UN_CATS
+#ifndef ATS_LIBC_SYS_UTSNAME_CATS
+#define ATS_LIBC_SYS_UTSNAME_CATS
 
 /* ****** ****** */
 
-#include <sys/un.h>
+#include <sys/utsname.h>
 
 /* ****** ****** */
 
-typedef struct sockaddr_un ats_sockaddr_un_type ;
-#define atslib_socklen_un (sizeof(ats_sockaddr_un_type))
+typedef struct utsname ats_utsname_type ;
 
 /* ****** ****** */
 
-#endif /* end of [ATS_LIBC_SYS_UN_CATS] */
+#define atslib_utsname_get_sysname(x) (&(((ats_utsname_type*)x)->sysname[0]))
+#define atslib_utsname_get_nodename(x) (&(((ats_utsname_type*)x)->nodename[0]))
+#define atslib_utsname_get_release(x) (&(((ats_utsname_type*)x)->release[0]))
+#define atslib_utsname_get_version(x) (&(((ats_utsname_type*)x)->version[0]))
+#define atslib_utsname_get_machine(x) (&(((ats_utsname_type*)x)->machine[0]))
+#ifdef _GNU_SOURCE
+#define atslib_utsname_get_domainname(x) (&(((ats_utsname_type*)x)->domainname[0]))
+#endif // end of [_GNU_SOURCE]
 
-/* end of [un.cats] */
+/* ****** ****** */
+
+#define atslib_uname uname
+
+/* ****** ****** */
+
+#endif /* end of [ATS_LIBC_SYS_UTSNAME_CATS] */
+
+/* end of [utsname.cats] */

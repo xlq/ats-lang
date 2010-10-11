@@ -200,7 +200,33 @@ atslib_fildes_lseek_exn (
 
 /* ****** ****** */
 
-#define atslib_gethostname gethostname
+ATSinline()
+ats_int_type
+atslib_gethostname (
+  ats_ptr_type bufp, ats_size_type len
+) {
+  int rtn ;
+  rtn = gethostname((char*)bufp, len) ;
+  if (rtn == 0) ((char*)bufp)[len] = '\0' ; // HX: force it to be null terminated!
+  return rtn ;
+} // end of [atslib_gethostname]
+
+#define atslib_sethostname sethostname
+
+/* ****** ****** */
+
+ATSinline()
+ats_int_type
+atslib_getdomainname (
+  ats_ptr_type bufp, ats_size_type len
+) {
+  int rtn ;
+  rtn = getdomainname((char*)bufp, len) ;
+  if (rtn == 0) ((char*)bufp)[len] = '\0' ; // HX: force it to be null terminated!
+  return rtn ;
+} // end of [atslib_getdomainname]
+
+#define atslib_setdomainname setdomainname
 
 /* ****** ****** */
 

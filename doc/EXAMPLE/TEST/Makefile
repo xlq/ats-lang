@@ -42,6 +42,7 @@ compall:: \
   libc_stdlib \
   libc_time \
   libc_unistd \
+  libc_sys_utsname \
   libats_funarray_braun \
   libats_funheap_braun \
   libats_funmap_avltree \
@@ -148,6 +149,11 @@ libc_time: libc_time.dats
 
 libc_unistd: libc_unistd.dats
 	$(ATSCC) -O2 -o $@ $< && ./libc_unistd
+
+######
+
+libc_sys_utsname: libc_sys_utsname.dats
+	$(ATSCC) -O2 -o $@ $< && ./libc_sys_utsname
 
 ######
 
@@ -300,6 +306,7 @@ cleanall: clean
 	rm -f libc_stdlib
 	rm -f libc_time
 	rm -f libc_unistd
+	rm -f libc_sys_utsname
 	rm -f libats_funarray_braun
 	rm -f libats_funheap_braun
 	rm -f libats_funmap_avltree

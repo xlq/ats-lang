@@ -452,8 +452,32 @@ gethostname_v (m:int, l:addr, int) =
     gethostname_v_succ (m, l,  0) of strbuf_v (m, n, l)
 fun gethostname {m:pos} {l:addr}
   (pf: b0ytes(m) @ l | p: ptr l, m: size_t m): [i:nat] (gethostname_v (m, l, i) | int i)
-  = "#atslib_gethostname"
+  = "atslib_gethostname" // function!
 // end of [gethostname]
+//
+// HX: [m] should most likely be [n+1].
+//
+fun sethostname {m,n:nat | n < m}
+  (name: string n, m: size_t m): int = "#atslib_sethostname"
+// end of [sethostname]
+
+(* ****** ****** *)
+
+dataview
+getdomainname_v (m:int, l:addr, int) =
+  | getdomainname_v_fail (m, l, ~1) of (b0ytes m @ l)
+  | {n:nat | n < m}
+    getdomainname_v_succ (m, l,  0) of strbuf_v (m, n, l)
+fun getdomainname {m:pos} {l:addr}
+  (pf: b0ytes(m) @ l | p: ptr l, m: size_t m): [i:nat] (getdomainname_v (m, l, i) | int i)
+  = "atslib_getdomainname" // function!
+// end of [getdomainname]
+//
+// HX: [m] should most likely be [n+1].
+//
+fun setdomainname {m,n:nat | n < m}
+  (name: string n, m: size_t m): int = "#atslib_setdomainname"
+// end of [setdomainname]
 
 (* ****** ****** *)
 
