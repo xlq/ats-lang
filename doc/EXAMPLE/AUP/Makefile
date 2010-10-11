@@ -47,6 +47,7 @@ compall: \
   aupsh3 \
   test5173 \
   test631 \
+  test65 \
 
 ######
 
@@ -136,7 +137,12 @@ test5173: AUP_5_17_3.dats
 
 #######
 
-test631: AUP_6_3_1.dats; $(ATSCC) -Wall -o test631 $< && ./test631
+errinfo.o: utils/errinfo.sats utils/errinfo.dats
+	$(ATSCC) -IATS utils -I utils -Wall -c -o $@ utils/errinfo.dats
+
+test631: AUP_6_3_1.dats; $(ATSCC) -I utils -Wall -o test631 $< errinfo.o && ./test631
+
+test65: AUP_6_5.dats; $(ATSCC) -I utils -Wall -o test65 $< errinfo.o && ./test65
 
 #######
 
@@ -171,5 +177,6 @@ cleanall: clean
 	$(RMF) aupnice
 	$(RMF) test5173
 	$(RMF) test631
+	$(RMF) test65
 
 ###### end of [Makefile] ######
