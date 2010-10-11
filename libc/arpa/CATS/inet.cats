@@ -43,9 +43,8 @@
 #include <stdio.h> // for [perror]
 
 /* ****** ****** */
-
 //
-// implemented in [prelude/DATS/basics.dats]
+// HX: implemented in [prelude/DATS/basics.dats]
 //
 extern
 ats_void_type ats_exit_errmsg(ats_int_type n, ats_ptr_type msg) ;
@@ -53,18 +52,56 @@ ats_void_type ats_exit_errmsg(ats_int_type n, ats_ptr_type msg) ;
 /* ****** ****** */
 
 ATSinline()
+ats_bool_type
+atslib_inet_aton_err (
+  ats_ptr_type cp, ats_ref_type inp
+) {
+  int rtn ;
+  rtn = inet_aton((char*)cp, (ats_in_addr_type*)inp) ;
+  return (rtn ? ats_true_bool : ats_false_bool) ;
+} // end of [atslib_inet_aton_err]
+
+ATSinline()
 ats_void_type
 atslib_inet_aton_exn (
   ats_ptr_type cp, ats_ref_type inp
 ) {
-  int err = inet_aton((char*)cp, (in_addr_struct_t*)inp) ;
-  if (err < 0) {
-    perror ("inet_aton"); ats_exit_errmsg(1, "exit(ATS): [inet_aton] failed.\n");
+  int rtn ;
+  rtn = inet_aton((char*)cp, (ats_in_addr_type*)inp) ;
+  if (rtn == 0) {
+    ats_exit_errmsg(EXIT_FAILURE, "exit(ATS): [inet_aton] failed.\n") ;
   } // end of [if]
   return ;
 } /* end of [atslib_inet_aton_exn] */
 
+/* ****** ****** */
+
+#define atslib_inet_addr inet_addr
+#define atslib_inet_network inet_network
+
+/* ****** ****** */
+
+#define atslib_inet_makeaddr inet_makeaddr
+
+/* ****** ****** */
+
 #define atslib_inet_ntoa inet_ntoa
+
+/* ****** ****** */
+
+#define atslib_inet_pton_err inet_pton
+
+ATSinline()
+ats_void_type
+atslib_inet_pton_exn (
+  ats_int_type af, ats_ptr_type cp, ats_ref_type inp
+) {
+  int rtn = inet_pton(af, (char*)cp, (ats_in_addr_type*)inp) ;
+  if (rtn <= 0) {
+    ats_exit_errmsg(EXIT_FAILURE, "exit(ATS): [inet_pton] failed.\n") ;
+  } // end of [if]
+  return ;
+} /* end of [atslib_inet_pton_exn] */
 
 /* ****** ****** */
 

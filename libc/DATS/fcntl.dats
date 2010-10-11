@@ -38,6 +38,7 @@
 
 staload "libc/SATS/errno.sats"
 staload "libc/SATS/stdio.sats"
+staload "libc/SATS/stdlib.sats"
 
 (* ****** ****** *)
 
@@ -85,7 +86,9 @@ in
     prval close_v_succ () = pf_err in (*empty*)
   end else let
     prval close_v_fail pf_fd = pf_err
-    val () = exit_main {void} {..} {unit_v} (pf_fd | 1)
+    val () = perror ("close")
+    val () = prerrf ("exit(ATS): [close_loop] failed\n", @())
+    val () = exit_main {void} {..} {unit_v} (pf_fd | EXIT_FAILURE)
     prval unit_v () = pf_fd
   in
     // empty
@@ -143,8 +146,11 @@ read_loop_exn
   (pf_fd | fd, buf, ntotal) = let
   val nread = read_loop_err (pf_fd | fd, buf, ntotal)
 in
-  if nread >= 0 then ssz2sz (nread) else let
-    val () = perror "fcntl: read_loop: " in exit (1)
+  if nread >= 0 then ssz2sz (nread)
+  else let
+    val () = perror "read"
+  in
+    exit_errmsg (EXIT_FAILURE, "exit(ATS): [read_loop] failed\n")
   end (* end of [if] *)
 end // end of [read_loop_exn]
 
@@ -172,7 +178,9 @@ write_loop_err
       end else let
         val retry = (if nwrit < 0 then errno_is_EINTR () else true): bool
       in
-        if retry then loop (pf_fd, pf_buf | fd, p_buf, nleft, err) else (err := 1; nleft)
+        if retry then
+          loop (pf_fd, pf_buf | fd, p_buf, nleft, err)
+        else (err := err + 1; nleft)
       end // end of [if]
     end else begin
       i2sz 0 // all bytes are written
@@ -192,11 +200,13 @@ write_loop_exn
   var err: int = 0
   val nwrit = write_loop_err (pf_fd | fd, buf, ntotal)
   val () = if nwrit >= 0 then let
-    val nwrit = ssz2sz (nwrit) in if nwrit < ntotal then (err := 1)
-  end // end of [val]
+    val nwrit = ssz2sz (nwrit) in if nwrit < ntotal then (err := err + 1)
+  end else (err := err + 1) // end of [if]
 in  
   if err > 0 then let
-    val () = perror "fcntl: write_loop: " in exit (1)
+    val () = perror "write"
+  in
+    exit_errmsg (EXIT_FAILURE, "exit(ATS): [write_loop]: failed\n")
   end (* end of [if] *)
 end // end of [write_loop_exn]
 
@@ -211,7 +221,7 @@ atslib_close_exn
   if (err < 0) {
     perror ("close") ;
     fprintf (stderr, "exit(ATS): [close(%li)] failed\n", (fd)) ;
-    exit (1) ;
+    exit (EXIT_FAILURE) ;
   } // end of [atslib_close_exn]
   return ;
 } // end of [atslib_close_exn]

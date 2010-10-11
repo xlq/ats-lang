@@ -96,24 +96,24 @@ in
       val (pf_ | ()) = stdin_fildes_view_get ()
       val [i:int] err = dup2 (pfout1, pf_ | fdout1, STDIN_FILENO)
       val () = stdin_fildes_view_set (pf_ | (*none*))
-      val () = (if (err < 0) then errptexit (EXIT_FAILURE) else ()): void
       val () = close_exn (pfout1 | fdout1)
       val () = close_exn (pfout2 | fdout2)
+      val () = (if (err < 0) then errptexit (EXIT_FAILURE) else ()): void
 //
       val (pf_ | ()) = stdout_fildes_view_get ()
       val [i:int] err = dup2 (pfin2, pf_ | fdin2, STDOUT_FILENO)
       val () = stdout_fildes_view_set (pf_ | (*none*))
-      val () = (if (err < 0) then errptexit (EXIT_FAILURE) else ()): void
       val () = close_exn (pfin1 | fdin1)
       val () = close_exn (pfin2 | fdin2)
+      val () = (if (err < 0) then errptexit (EXIT_FAILURE) else ()): void
       val _int = execlp ("sort", "sort", null) where {
         extern fun execlp (_: string, _: string, _: ptr null): int = "#atslib_execlp"
       } // end of [val]
 //
     in
-      errptexit (EXIT_FAILURE)
+      errptexit (EXIT_FAILURE) // HX: if execution reaches here, [execlp] has failed
     end // end of [ipid = 0]
-  | _ when ipid > 0 => let // parend
+  | _ when ipid > 0 => let // parent
       #define BUFSZ 512
       var !p_buf with pf_buf = @[byte][BUFSZ]()
       prval () = pf_buf := bytes_v_of_b0ytes_v (pf_buf)

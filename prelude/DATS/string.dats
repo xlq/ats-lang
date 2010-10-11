@@ -294,6 +294,9 @@ end // end of [local]
 
 (* ****** ****** *)
 
+implement print_strptr (p) = fprint_strptr (stdout_ref, p)
+implement prerr_strptr (p) = fprint_strptr (stderr_ref, p)
+
 implement
 strptr_dup (p) = let
   val str = __cast (p) where {
@@ -308,22 +311,25 @@ end // end of [strptr_dup]
 (* ****** ****** *)
 
 %{$
-
-// a commonly used simple hash function
-
+//
+// HX: a commonly used simple hash function
+//
 ats_ulint_type
 atspre_string_hash_33 (ats_ptr_type s0) {
   unsigned long int hash_val ; unsigned char *s; int c;
   hash_val = 3141593UL ;
-
+//
   s = (unsigned char*)s0 ;
   while (1) {
     c = *s ;
-    if (!c) return hash_val ; // the end of string is reached
+    if (!c) break ; // the end of string is reached
     hash_val = ((hash_val << 5) + hash_val) + c ; // hash_val = 33 * hash_val + c
     s += 1 ;
-  }
-} /* atspre_string_hash_33 */
+  } // end of [while]
+//
+  return hash_val ;
+//
+} // end of [atspre_string_hash_33]
 
 %} // end of [%{$]
 
@@ -339,8 +345,8 @@ atspre_string_make_char (
 ) {
   char *p ; 
   if (!c) { ats_exit_errmsg
-    (1, "exit(ATS): [string_make_char] failed: null char.\n") ;
-  } ;
+    (EXIT_FAILURE, "exit(ATS): [string_make_char] failed: null char.\n") ;
+  } ; // end of [if]
   p = ATS_MALLOC(n+1) ; memset (p, c, n) ; p[n] = '\000' ;
   return p ;
 } // end of [atspre_string_make_char]
@@ -364,7 +370,7 @@ ats_void_type
 atspre_strbuf_tolower
   (ats_ptr_type p0) {
   int c ; char *p = (char*)p0 ;
-  while (c = *p) { *p = tolower (c) ; ++p ; }
+  while (c = *p) { *p = tolower (c) ; p += 1 ; }
   return ;
 } // end of [atspre_strbuf_tolower]
 
@@ -372,7 +378,7 @@ ats_void_type
 atspre_strbuf_toupper
   (ats_ptr_type p0) {
   int c ; char *p = (char*)p0 ;
-  while (c = *p) { *p = toupper (c) ; ++p ; }
+  while (c = *p) { *p = toupper (c) ; p += 1 ; }
   return ;
 } // end of [atspre_strbuf_toupper]
 

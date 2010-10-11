@@ -186,15 +186,16 @@ fun memchr {n:nat}
 //
 // HX: [strerror] is not reentrant
 //
-fun strerror (errno: $ERRNO.errno_t): string = "atslib_strerror"
+fun strerror (errno: $ERRNO.errno_t): string = "#atslib_strerror"
     
 dataview
 strerror_v (m:int, l:addr, int(*err*)) =
   | {n:nat} strerror_succ (m, l, 0) of strbuf (m, n) @ l
   | strerror_fail (m, l, ~1) of b0ytes m @ l
 // end of [strerror_v]
-
-// [strerror_r] is reentrant // this is the POSIX version
+//
+// HX: [strerror_r] is reentrant // this is the POSIX version
+//
 fun strerror_r {m:nat} {l:addr} (
     pf: b0ytes m @ l | errno: errno_t, p_buf: ptr l, m: size_t m
   ) : [i:int] @(strerror_v (m, l, i) | int i)

@@ -56,20 +56,26 @@ macdef AF_UNSPEC = $extval (address_family_t, "AF_UNSPEC")
 
 abst@ype in_port_nbo_t = $extype "in_port_t"
 
-fun in_port_nbo_of_int (n: int): in_port_nbo_t
-  = "atslib_in_port_nbo_of_int"
+fun in_port_nbo_of_int
+  (n: int): in_port_nbo_t = "atslib_in_port_nbo_of_int"
+// end of [in_port_nbo_of_int]
 
 (* ****** ****** *)
 
-(*
-[struct in_addr] and  [in_addr_t] are really the same:
-struct in_addr { in_addr_t s_addr; }; // defined in [netinet/in.h]
-*)
-
+abst@ype in_addr_t = $extype "in_addr_t"
 abst@ype in_addr_hbo_t = $extype "in_addr_t"
 abst@ype in_addr_nbo_t = $extype "in_addr_t"
 
-abst@ype in_addr_struct_t = $extype "in_addr_struct_t"
+(*
+note that [struct in_addr] and  [in_addr_t] are really the same:
+struct in_addr { in_addr_t s_addr; }; // defined in [netinet/in.h]
+*)
+typedef
+in_addr_struct =
+$extype_struct
+  "ats_in_addr_type" of {
+  s_addr= in_addr_t // unsigned long int
+} // end of [in_addr_struct]
 
 (* ****** ****** *)
 
@@ -109,18 +115,20 @@ macdef INADDR_MAX_LOCAL_GROUP = $extval (in_addr_hbo_t, "INADDR_MAX_LOCAL_GROUP"
 
 (* ****** ****** *)
 
-fun in_addr_struct_s_addr_get (inp: in_addr_struct_t): in_addr_nbo_t
-  = "atslib_in_addr_struct_s_addr_get"
+fun in_addr_struct_get_s_addr
+  (inp: in_addr_struct): in_addr_nbo_t = "atslib_in_addr_struct_get_s_addr"
+// end of [in_addr_struct_get_s_addr]
 
 (* ****** ****** *)
 
 abst@ype uint16_t0ype_netbyteord = uint16_t0ype
-abst@ype uint32_t0ype_netbyteord = uint32_t0ype
-
+typedef uint16_nbo = uint16_t0ype_netbyteord
 fun htons (i: uint16_t0ype): uint16_t0ype_netbyteord = "atslib_htons"
-fun htonl (i: uint32_t0ype): uint32_t0ype_netbyteord = "atslib_htonl"
-
 fun ntohs (i: uint16_t0ype_netbyteord): uint16_t0ype = "atslib_ntohs"
+
+abst@ype uint32_t0ype_netbyteord = uint32_t0ype
+typedef uint32_nbo = uint32_t0ype_netbyteord
+fun htonl (i: uint32_t0ype): uint32_t0ype_netbyteord = "atslib_htonl"
 fun ntohl (i: uint32_t0ype_netbyteord): uint32_t0ype = "atslib_ntohl"
 
 (* ****** ****** *)

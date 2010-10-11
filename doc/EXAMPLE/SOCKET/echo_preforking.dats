@@ -98,7 +98,7 @@ end // end of [fchild]
 fun make_server_socket (port: int)
   : [fd:int] (socket_v(fd,listen) | int fd) = let
   val (pf_sock_s | sockfd) = socket_family_type_exn (AF_INET, SOCK_STREAM);
-  var servaddr: sockaddr_in_struct_t;
+  var servaddr: sockaddr_in_struct
   val servport = in_port_nbo_of_int (port);
   val in4addr = in_addr_nbo_of_hbo (INADDR_ANY);
   val () = sockaddr_ipv4_init (servaddr, AF_INET, in4addr, servport);

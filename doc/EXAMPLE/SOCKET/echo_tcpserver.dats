@@ -127,7 +127,7 @@ extern fun sig_chld (signum: signum_t):<fun> void = "sig_chld"
 implement main (argc, argv) = let
   val nport = (if argc > 1 then int_of argv.[1] else SERVPORT_DEFAULT): int
   val [fd_s:int] (pf_sock_s | fd_s) = socket_family_type_exn (AF_INET, SOCK_STREAM)
-  var servaddr: sockaddr_in_struct_t // uninitialized
+  var servaddr: sockaddr_in_struct // uninitialized
   val servport = in_port_nbo_of_int (nport)
   val in4addr_any = in_addr_nbo_of_hbo (INADDR_ANY)
   val () = sockaddr_ipv4_init (servaddr, AF_INET, in4addr_any, servport)

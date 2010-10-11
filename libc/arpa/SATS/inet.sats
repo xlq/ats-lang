@@ -45,22 +45,64 @@ staload "libc/netinet/SATS/in.sats"
 
 (* ****** ****** *)
 
-fun inet_aton_exn
-  (cp: string, inp: &in_addr_struct_t? >> in_addr_struct_t) :<!exn> void
-  = "atslib_inet_aton_exn"
+fun inet_aton_err (
+  cp: string
+, inp: &in_addr_struct? >> opt (in_addr_struct, b)
+) : #[b:bool] bool b = "atslib_inet_aton_err"
+// end of [inet_aton_err]
+
+fun inet_aton_exn (
+  cp: string, inp: &in_addr_struct? >> in_addr_struct
+) :<!exn> void = "atslib_inet_aton_exn"
 // end of [inet_aton_exn]
+
+(* ****** ****** *)
+//
+// HX: note that this one cannot tell
+// -1 from 255.255.255.255 (a valid address)
+//
+fun inet_addr
+  (cp: string): in_addr_nbo_t = "#atslib_inet_addr"
+fun inet_network
+  (cp: string): in_addr_hbo_t = "#atslib_inet_network"
+
+(* ****** ****** *)
+
+fun inet_makeaddr
+  (net: int, host: int): in_addr_struct = "#atslib_inet_makeaddr"
+// end of [inet_makeaddr]
 
 (* ****** ****** *)
 
 //
 // HX: this function is not reentrant
 //
-fun inet_ntoa (inp: in_addr_struct_t):<!ref> string = "#atslib_inet_ntoa"
+fun inet_ntoa
+  (inp: in_addr_struct)
+  :<!ref> [l:agz] (strptr l -<lin,prf> void | strptr l)
+  = "#atslib_inet_ntoa"
+// end of [inet_ntoa]
 
 (* ****** ****** *)
 
+fun inet_lnaof
+  (addr: in_addr_struct): in_addr_hbo_t = "#atslib_inet_lnaof"
+// end of [inet_lnaof]
+
+fun inet_netof
+  (addr: in_addr_struct): in_addr_hbo_t = "#atslib_inet_netof"
+// end of [inet_netof]
+
+(* ****** ****** *)
+
+fun inet_pton_err (
+    af: address_family_t, cp: string
+  , inp: &in_addr_struct? >> opt (in_addr_struct, i > 0)
+  ) : #[i:int] int (i) = "#atslib_inet_pton_err"
+// end of [inet_pton_err]
+
 fun inet_pton_exn (
-    af: address_family_t, cp: string, inp: &in_addr_struct_t? >> in_addr_struct_t
+    af: address_family_t, cp: string, inp: &in_addr_struct? >> in_addr_struct
   ) :<!exn> void = "atslib_inet_pton_exn"
 // end of [inet_pton_exn]
 

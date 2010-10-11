@@ -375,8 +375,7 @@ fun strbuf_initialize_substring {bsz:int}
   {n:int} {st,ln:nat | st+ln <= n; ln < bsz} {l:addr} (
     pf: !b0ytes bsz @ l >> strbuf (bsz, ln) @ l
   | p: ptr l, str: string n, st: size_t st, ln: size_t ln
-  ) : void
-  = "atspre_strbuf_initialize_substring"
+  ) : void = "atspre_strbuf_initialize_substring"
 // end of [strbuf_initialize_substring]
 
 (* ****** ****** *)
@@ -400,6 +399,13 @@ fun string_make_list_rev_int
 // end of [string_make_list_rev_int]
 
 (* ****** ****** *)
+
+fun string_takeout_bufptr
+  {n:int} {st:nat} {ln:nat | st+ln <= n}
+  (x: string n, st: size_t st)
+  :<!ref> [l:addr] (bytes(ln) @ l, bytes(ln) @ l -<lin,prf> void | ptr l)
+  = "#atspre_padd_size"
+// end of [string_takeout_bufptr]
 
 fun string_make_substring
   {n:int} {st,ln:nat | st + ln <= n}
@@ -682,7 +688,7 @@ castfn string1_of_strptrlen
   {l:addr} {n:nat} (x: strptrlen (l, n)):<> string n
 //
 castfn string_takeout_ptr // non-reentrant! 
-  (x: string) :<> [l:agz] (strptr l -<lin,prf> void | strptr l)
+  (x: string) :<!ref> [l:agz] (strptr l -<lin,prf> void | strptr l)
 //
 castfn strbuf_of_strptr {l:agz}
   (x: strptr l):<> [m,n:int | 0 <= n; n < m] strbufptr_gc (m, n, l)
@@ -707,9 +713,10 @@ fun fprint1_strptr {l:addr} {m:file_mode}
   = "atspre_fprint_strptr"
 overload fprint_strptr with fprint1_strptr
 overload fprint with fprint_strptr
-fun print_strptr {l:addr} (x: !strptr l): void = "atspre_print_string"
-and prerr_strptr {l:addr} (x: !strptr l): void = "atspre_prerr_string"
+//
+fun print_strptr {l:addr} (x: !strptr l): void
 overload print with print_strptr
+fun prerr_strptr {l:addr} (x: !strptr l): void
 overload prerr with prerr_strptr
 //
 symintr strptr_of

@@ -19,11 +19,9 @@
 (* ****** ****** *)
 
 %{^
-
 #include <signal.h>
 #include <sys/stat.h>
-
-%}
+%} // end of [%{^]
 
 (* ****** ****** *)
 
@@ -47,7 +45,31 @@ staload _(*anonymous*) = "prelude/DATS/reference.dats"
 
 (* ****** ****** *)
 
+extern
+fun socket_write_substring
+  {fd:int} {n:int} {st,ln:nat | st+ln <= n} (
+    pf_sock: !socket_v (fd, conn) | fd: int fd, str: string n, st: size_t st, ln: size_t ln
+  ) : void // all bytes must be written if this function returns
+// end of [socket_write_substring]
+
+(* ****** ****** *)
+
+implement
+socket_write_substring
+  {fd} {n} {st,ln}
+  (pfsock | fd, str, st, ln) = let
+  val (pf, fpf | p) =
+    string_takeout_bufptr {n} {st} {ln} (str, st)
+  val () = socket_write_loop_exn (pfsock | fd, !p, ln)
+  prval () = fpf (pf)
+in
+  // nothing
+end // end of [socket_write_substring]
+
+(* ****** ****** *)
+
 //
+// HX:
 // I don't even know what these strings really mean :)
 // I copied them from a previous implementation by Rui Shi.
 //
@@ -212,7 +234,7 @@ in // in of [local]
 
 fun msg404_send {fd:int}
   (pf_conn: !socket_v (fd, conn) | socket_id: int fd): void = () where {
-  val _(*n*) = socket_write_substring_exn (pf_conn | socket_id, msg404_str, 0, msg404_len)
+  val _(*n*) = socket_write_substring (pf_conn | socket_id, msg404_str, 0, msg404_len)
 } // end of [msg404_send]
 
 end // end of [local]
@@ -606,11 +628,11 @@ in
     let prval None_v () = pf_dir_opt in msg404_send (pf_conn | fd) end
   else let
     prval Some_v pf_dir = pf_dir_opt
-    val _ = socket_write_substring_exn (pf_conn | fd, dir_msg1_str, 0, dir_msg1_len)
-    val _ = socket_write_substring_exn (pf_conn | fd, dir_msg2_str, 0, dir_msg2_len)
-    val _ = socket_write_substring_exn (pf_conn | fd, dir_msg30_str, 0, dir_msg30_len)
-    val _ = socket_write_substring_exn (pf_conn | fd, dir_msg31_str, 0, dir_msg31_len)
-    val _ = socket_write_substring_exn (pf_conn | fd, dir_msg32_str, 0, dir_msg32_len)
+    val _ = socket_write_substring (pf_conn | fd, dir_msg1_str, 0, dir_msg1_len)
+    val _ = socket_write_substring (pf_conn | fd, dir_msg2_str, 0, dir_msg2_len)
+    val _ = socket_write_substring (pf_conn | fd, dir_msg30_str, 0, dir_msg30_len)
+    val _ = socket_write_substring (pf_conn | fd, dir_msg31_str, 0, dir_msg31_len)
+    val _ = socket_write_substring (pf_conn | fd, dir_msg32_str, 0, dir_msg32_len)
 //
     #define MSGSZ 64
     var! p_msg with pf_msg = @[byte][MSGSZ]()
@@ -623,7 +645,7 @@ in
     prval () = pf_msg := bytes_v_of_strbuf_v (pf_msg)
     val _ = socket_write_loop_exn (pf_conn | fd, !p_msg, len)
 //
-    val _ = socket_write_substring_exn (pf_conn | fd, dir_msg50_str, 0, dir_msg50_len)
+    val _ = socket_write_substring (pf_conn | fd, dir_msg50_str, 0, dir_msg50_len)
     var asz: size_t 0? // unintialized
     val (pf_gc, pf_arr | p_arr) = dirent_name_get_all (!p_dir, asz)
     val () = closedir_exn (pf_dir | p_dir)
@@ -760,7 +782,7 @@ implement main (argc, argv) = let
   val () = assert_prerrf_bool1
     (port >= 1024, "The given port <%i> is not supported.\n", @(port))
   val (pf_sock | fd) = socket_family_type_exn (AF_INET, SOCK_STREAM)
-  var servaddr: sockaddr_in_struct_t // uninitialized
+  var servaddr: sockaddr_in_struct // uninitialized
   val servport = in_port_nbo_of_int (port)
   val in4add_any = in_addr_nbo_of_hbo (INADDR_ANY)
   val () = sockaddr_ipv4_init (servaddr, AF_INET, in4add_any, servport)

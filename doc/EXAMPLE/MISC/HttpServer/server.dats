@@ -9,15 +9,13 @@
 // are clearly memory leaks!
 //
 
-// June 2007:
 // Author: Hongwei Xi (hwxi AT cs DOT bu DOT edu)
+// June 2007:
 
 %{^
-
 #include <signal.h>
 #include <sys/stat.h>
-
-%}
+%} // end of [%{^]
 
 //
 
@@ -250,21 +248,21 @@ end // end of [doctype_of_filename]
 
 extern fun socket_write_all {fd:int} {n,sz:nat | n <= sz}
   (pf_socket: !socket_v (fd, conn) | fd: int fd, buf: &bytes sz, n: size_t n)
-  : void
-  = "socket_write_all"
+  : void = "socket_write_all"
 
 extern fun socket_write_substring_all
-  {fd:int} {i,n,sz:nat | i+n <= sz}
-    (pf_socket: !socket_v (fd, conn) |
-     socket_id: int fd, s: string sz, start: size_t i, n: size_t n): void
-  = "socket_write_substring_all"
+  {fd:int} {i,n,sz:nat | i+n <= sz} (
+    pf_socket: !socket_v (fd, conn) | socket_id: int fd, s: string sz, start: size_t i, n: size_t n
+  ) : void = "socket_write_substring_all"
+// end of [socket_write_substring_all]
 
 %{^
 
 static inline
 ats_void_type
-socket_write_all(ats_int_type fd, ats_ref_type buf, ats_size_type cnt)
-{
+socket_write_all (
+  ats_int_type fd, ats_ref_type buf, ats_size_type cnt
+) {
   ssize_t res ;
 
   while (cnt) {
@@ -277,18 +275,18 @@ socket_write_all(ats_int_type fd, ats_ref_type buf, ats_size_type cnt)
     cnt = cnt - res ;
   }
   return ;
-}
+} // end of [socket_write_all]
 
 static inline
 ats_void_type
-socket_write_substring_all
-  (ats_int_type fd, ats_ptr_type buf, ats_size_type start, ats_size_type cnt)
-{
+socket_write_substring_all (
+  ats_int_type fd, ats_ptr_type buf, ats_size_type start, ats_size_type cnt
+) {
   socket_write_all(fd, ((char*)buf)+start, cnt) ;
   return ;
-}
+} // end of [socket_write_substring_all]
 
-%}
+%} // end of [%{^]
 
 //
 
@@ -715,7 +713,7 @@ implement main (argc, argv) = let
   val () = assert_prerrf_bool1
     (port >= 1024, "The given port <%i> is not supported.\n", @(port))
   val (pf_sock | fd) = socket_family_type_exn (AF_INET, SOCK_STREAM)
-  var servaddr: sockaddr_in_struct_t // uninitialized
+  var servaddr: sockaddr_in_struct // uninitialized
   val servport = in_port_nbo_of_int (port)
   val in4add_any = in_addr_nbo_of_hbo (INADDR_ANY)
   val () = sockaddr_ipv4_init (servaddr, AF_INET, in4add_any, servport)

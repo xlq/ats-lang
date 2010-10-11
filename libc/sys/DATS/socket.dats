@@ -35,7 +35,9 @@
 
 (* ****** ****** *)
 
+staload "libc/SATS/errno.sats"
 staload "libc/SATS/stdio.sats" // for [perror]
+staload "libc/SATS/stdlib.sats" // for [EXIT_FAILURE]
 
 (* ****** ****** *)
 
@@ -47,18 +49,47 @@ staload "libc/sys/SATS/socket.sats"
 
 (* ****** ****** *)
 
-implement socket_read_loop_exn
+implement
+socket_close_exn (pfsock | fd) = let
+  val (pfopt | i) = socket_close_err (pfsock | fd)
+in
+  if i >= 0 then let
+    prval socket_close_v_succ () = pfopt in (*nothing*)
+  end else let
+    prval socket_close_v_fail (pfsock) = pfopt
+  in
+    if (errno_get () = EINTR) then
+      socket_close_exn (pfsock | fd)
+    else let
+      val () = perror "close"
+      val () = prerrf ("exit(ATS): [socket_close] failed\n", @())
+      val () = exit_main {void} {..} {unit_v} (pfsock | EXIT_FAILURE)
+      prval unit_v () = pfsock
+    in
+      // nothing
+    end // end of [if]
+  end // end of [if]
+end // end of [socket_close_exn]
+
+(* ****** ****** *)
+
+implement socket_read_exn
   (pf_sock | fd, buf, ntotal) = let
-  val nread = socket_read_loop_err (pf_sock | fd, buf, ntotal)
+  val nread = socket_read_err (pf_sock | fd, buf, ntotal)
 in
   if nread >= 0 then
     size1_of_ssize1 (nread)
-  else begin
-    perror "socket_read: "; exit 1
+  else let
+    val () = perror "socket_read"
+  in
+    exit_errmsg (EXIT_FAILURE, "[socket_read] failed\n")
   end // end of [if]
-end // end of [socket_read_loop]
+end // end of [socket_read_exn]
 
-implement socket_write_loop_exn
+(* ****** ****** *)
+
+implement
+socket_write_loop_exn
   (pf_sock | fd, buf, ntotal) = let
   var err: int = 1
   val nwrit = socket_write_loop_err (pf_sock | fd, buf, ntotal)
@@ -68,8 +99,12 @@ implement socket_write_loop_exn
     if (nwrit = ntotal) then (err := 0)
   end // end of [if]
 in
-  if err > 0 then (perror "socket_write: "; exit 1) else ()
-end // end of [socket_write_loop]
+  if err > 0 then let
+    val () = perror "socket_write"
+  in
+    exit_errmsg (EXIT_FAILURE, "[socket_write_loop] failed\n")
+  end (* end of [if] *)
+end // end of [socket_write_loop_exn]
 
 (* ****** ****** *)
 

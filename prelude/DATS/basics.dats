@@ -136,7 +136,7 @@ atspre_assert_errmsg (
   ats_bool_type assertion, ats_ptr_type errmsg
 ) {
   if (!assertion) {
-    fprintf (stderr, "exit(ATS)%s\n", (char*)errmsg) ;
+    fprintf (stderr, "exit(ATS): [assert] failed: %s\n", (char*)errmsg) ;
     exit(EXIT_FAILURE) ;
   } // end of [if]
   return ;

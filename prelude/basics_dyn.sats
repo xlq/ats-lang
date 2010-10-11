@@ -35,9 +35,9 @@
 
 (* ****** ****** *)
 
-// some built-in dynamic constants
-
 #include "prelude/params.hats"
+
+(* ****** ****** *)
 
 #if VERBOSE_PRELUDE #then
 #print "Loading [basics_dyn.sats] starts!\n"
@@ -160,13 +160,14 @@ fun exit_main
   (pf: !v_in >> v_out | status: int):<!exn> a = "#ats_exit"
 // end of [exit_main]
 
-fun exit_errmsg {a:viewt@ype}
-  (status: int, msg: string):<!exnref> a = "#ats_exit_errmsg"
+(* ****** ****** *)
+
+fun exit_errmsg
+  {a:viewt@ype} (status: int, msg: string): a = "#ats_exit_errmsg"
 // end of [exit_errmsg]
 
 fun exit_prerrf {a:viewt@ype} {ts:types}
-  (status: int, fmt: printf_c ts, args: ts):<!exnref> a
-  = "#atspre_exit_prerrf"
+  (status: int, fmt: printf_c ts, args: ts): a = "#atspre_exit_prerrf"
 // end of [exit_prerrf]
 
 (* ****** ****** *)
@@ -219,32 +220,29 @@ overload assert_errmsg with assert_errmsg_bool1_string1
 prval main_dummy (): void
 
 (* ****** ****** *)
-
 //
-// for internal use: [main_prelude] is called before [main]
+// HX: for internal use:
+// [main_prelude] is called before [main]
 // it is implemented in "$ATSHOME/ats_main_prelude.dats"
 //
-
-// note that the difference in names
+// HX: please note that the difference in names
+//
 fun main_prelude (): void = "mainats_prelude"
 
 (* ****** ****** *)
 
 (*
-
-fun main {n:int | n >= 1} (argc: int n, argv: &(@[string][n])): void
-  = "mainats"
-
+fun main {n:int | n >= 1}
+  (argc: int n, argv: &(@[string][n])): void = "mainats"
+// end of [main]
 *)
 
 symintr main
 
 fun main_void (): void = "mainats"
-fun main_argc_argv
-  {n:int | n >= 1} (argc: int n, argv: &(@[string][n])): void
-  = "mainats"
-
 overload main with main_void
+fun main_argc_argv {n:int | n >= 1}
+  (argc: int n, argv: &(@[string][n])): void = "mainats"
 overload main with main_argc_argv
 
 (* ****** ****** *)
@@ -253,21 +251,18 @@ symintr free_gc_elim
 
 praxi free_gc_addr_elim // return the certificate to the GC
   {l:addr} (pf: free_gc_v l):<> void
-
+overload free_gc_elim with free_gc_addr_elim
 praxi free_gc_t0ype_addr_elim // return the certificate to the GC
   {a:viewt@ype} {l:addr} (pf: free_gc_v (a, l)):<> void
-
+overload free_gc_elim with free_gc_t0ype_addr_elim
 praxi free_gc_t0ype_int_addr_elim // return the certificate to the GC
   {a:viewt@ype} {n:int} {l:addr} (pf: free_gc_v (a, n, l)):<> void
-
-overload free_gc_elim with free_gc_addr_elim
-overload free_gc_elim with free_gc_t0ype_addr_elim
 overload free_gc_elim with free_gc_t0ype_int_addr_elim
 
 (* ****** ****** *)
-
-// implemented in [basics.cats]
-
+//
+// HX: implemented in [basics.cats]
+//
 castfn cloptr_get_view_ptr {a:viewt@ype}
   (x: cloptr a):<> [l:addr] (free_gc_v l, clo a @ l | ptr l)
   = "atspre_cloptr_get_view_ptr"

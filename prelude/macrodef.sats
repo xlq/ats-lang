@@ -57,7 +57,7 @@ macdef andalso (x, y) = if ,(x) then ,(y) else false
 
 (* ****** ****** *)
 
-macdef assertloc (b) = assert_prerrf (,(b), #LOCATION)
+macdef assertloc (b) = assert_errmsg (,(b), #LOCATION)
 
 (* ****** ****** *)
 

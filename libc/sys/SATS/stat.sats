@@ -169,7 +169,15 @@ fun lstat_exn
 
 (* ****** ****** *)
 
-fun umask (mask_new: mode_t(*new*)): mode_t(*old*) = "atslib_umask"
+fun umask // this one *always* succeeds
+  (mask_new: mode_t(*new*)): mode_t(*old*) = "#atslib_umask"
+// end of [umask]
+
+(* ****** ****** *)
+
+fun mkfifo // 0/-1 : succ/fail // errno set
+  (path: string, perm: mode_t): int = "#atslib_mkfifo"
+// end of [mkfifo]
 
 (* ****** ****** *)
 

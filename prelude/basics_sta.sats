@@ -39,10 +39,10 @@
 
 #include "prelude/params.hats"
 
+(* ****** ****** *)
+
 #if VERBOSE_PRELUDE #then
-
 #print "Loading [basic_sta.sats] starts!\n"
-
 #endif // end of [VERBOSE_PRELUDE]
 
 (* ****** ****** *)
@@ -386,17 +386,13 @@ stadef vbox = vbox_view_prop
 (* ****** ****** *)
 
 (*
-
 absviewt@ype opt_viewt0ype_int_viewt0ype
   (a:viewt@ype+, i:int) = union (i) { value= a }
 stadef opt = value_viewt0ype_int_viewt0ype
-
 *)
 
 absviewt@ype
-  opt_viewt0ype_bool_viewt0ype (a:viewt@ype+, opt:bool) = a
-// end of [absviewt@ype]
-
+opt_viewt0ype_bool_viewt0ype (a:viewt@ype+, opt:bool) = a
 stadef opt = opt_viewt0ype_bool_viewt0ype
 //
 // HX-2010-03-23: resulting in incorrect erasure
@@ -406,31 +402,26 @@ stadef opt = opt_viewt0ype_bool_viewt0ype
 (* ****** ****** *)
 
 (*
-
+// HX-2008:
 // this not yet supported and it may never
 datasort stamp = (* abstract *) // be supported
-
 // sta vfrac : (stamp, view, rat) -> view
 absview vfrac (stamp, view, rat)
-
 // sta vtfrac : (stamp, viewtype, rat) -> viewtype
 absviewtype vtfrac (stamp, viewtype, rat)
-
 *)
 
 (* ****** ****** *)
-
-// build-in dependent type constructors
-
+//
+// HX: build-in dependent type constructors
+//
 abstype
 array0_viewt0ype_type (elt:viewt@ype)
-
 abstype
 array_viewt0ype_int_type (elt:viewt@ype, sz:int)
 
 abstype
 matrix0_viewt0ype_type (elt:viewt@ype)
-
 abstype
 matrix_viewt0ype_int_int_type (elt:viewt@ype, nrow:int, ncol:int)
 
@@ -901,9 +892,7 @@ where stream_vt (a:viewt@ype) = lazy_vt (stream_vt_con a)
 (* ****** ****** *)
 
 #if VERBOSE_PRELUDE #then
-
 #print "Loading [basic_sta.sats] finishes!\n"
-
 #endif // end of [VERBOSE_PRELUDE]
 
 (* end of [basics_sta.sats] *)

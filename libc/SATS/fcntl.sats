@@ -164,7 +164,10 @@ fun read_exn
 
 (* ****** ****** *)
 //
-// HX: implemented in [libc/DATS/fcntl.dats]
+// HX:
+// this one is implemented in [libc/DATS/fcntl.dats]
+// note that it is used only when it is known ahead how many bytes are expected;
+// otherwise, there is the risk of forever blocking!!!
 //
 fun read_loop_err
   {fd:int} {n,sz:nat | n <= sz} (
@@ -203,9 +206,8 @@ fun write_loop_err
     pf: !fildes_v (fd) | fd: int fd, buf: &bytes sz, ntotal: size_t n
   ) : ssizeBtw(~1, n+1) = "atslib_fildes_write_loop_err"
 // end of [write_loop_err]
-
 // 
-// HX: all bytes must be written if this function returns
+// HX: all bytes must have been written if this function returns
 //
 fun write_loop_exn
   {fd:int} {n,sz:nat | n <= sz} (

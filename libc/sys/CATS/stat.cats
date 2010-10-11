@@ -104,6 +104,10 @@ atslib_S_ISSOCK (ats_mode_type m) { return S_ISSOCK(m) ; }
 
 /* ****** ****** */
 
+#define atslib_mkfifo mkfifo
+
+/* ****** ****** */
+
 #endif /* end of [ATS_LIBC_SYS_STAT_CATS] */
 
 /* end of [stat.cats] */

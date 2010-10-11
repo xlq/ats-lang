@@ -58,13 +58,13 @@ atslib_in_addr_nbo_of_hbo
 
 /* ****** ****** */
 
-typedef struct in_addr in_addr_struct_t ;
+typedef struct in_addr ats_in_addr_type ;
 
 ATSinline()
 in_addr_t // in_addr_nbo_t
-atslib_in_addr_struct_s_addr_get
-  (in_addr_struct_t inp) { return (inp.s_addr) ; }
-/* end of [atslib_in_addr_struct_s_addr_get] */
+atslib_in_addr_struct_get_s_addr
+  (ats_in_addr_type inp) { return (inp.s_addr) ; }
+/* end of [atslib_in_addr_struct_get_s_addr] */
 
 /* ****** ****** */
 

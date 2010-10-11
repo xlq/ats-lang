@@ -151,11 +151,7 @@ atslib_memset (
 
 /* ****** ****** */
 
-ATSinline()
-ats_ptr_type
-atslib_strerror
-  (ats_int_type errno) { return strerror(errno) ; }
-// end of [atslib_strerror]
+#define atslib_strerror strerror
 
 #if (0) // this one is commented out
 

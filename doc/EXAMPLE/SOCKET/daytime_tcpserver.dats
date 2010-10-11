@@ -42,7 +42,7 @@ extern praxi forkdup_pair {v1,v2:view}
 implement main (argc, argv) = let
   val nport = (if argc > 1 then int_of argv.[1] else TIME_SERVER_PORT): int
   val [fd_s:int] (pf_sock_s | fd_s) = socket_family_type_exn (AF_INET, SOCK_STREAM)
-  var servaddr: sockaddr_in_struct_t // uninitialized
+  var servaddr: sockaddr_in_struct // uninitialized
   val servport = in_port_nbo_of_int (nport)
   val in4addr_any = in_addr_nbo_of_hbo (INADDR_ANY)
   val () = sockaddr_ipv4_init (servaddr, AF_INET, in4addr_any, servport)
@@ -68,7 +68,13 @@ implement main (argc, argv) = let
           } // end of [val]
           val str = string1_of_string (str)
           val strlen = string1_length (str)
-          val _ = socket_write_substring_exn (pf_sock_c | fd_c, str, 0, strlen)
+//
+          extern castfn __cast {n:nat}
+            (s: string n): [l:addr] (bytes n @ l, bytes n @ l -<lin,prf> void | ptr l)
+          val (pf, fpf | p) = __cast (str)
+          val _ = socket_write_loop_exn (pf_sock_c | fd_c, !p, strlen)
+          prval () = fpf (pf)
+//
           val () = socket_close_exn (pf_sock_c | fd_c)
         } // end of [val]
         prval () = fpf_pstr (pstr)

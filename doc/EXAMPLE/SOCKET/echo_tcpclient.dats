@@ -53,7 +53,7 @@ implement client_loop {fd:int} (pf_sock | sockfd) = let
       val nsend = strbuf_length (!p_buf_send)
       prval () = pf_buf_send := bytes_v_of_strbuf_v (pf_buf_send1)
       val () = socket_write_loop_exn (pf_sock | sockfd, !p_buf_send, nsend)
-      val nread = socket_read_loop_exn (pf_sock | sockfd, !p_buf_recv, nsend)
+      val nread = socket_read_exn (pf_sock | sockfd, !p_buf_recv, nsend)
       val (pf_stdout | p_stdout) = stdout_get ()
       val () = fwrite_byte_exn (file_mode_lte_w_w | !p_buf_recv, nread, !p_stdout)
       val () = stdout_view_set (pf_stdout | (*none*))
@@ -85,11 +85,11 @@ implement main (argc, argv) = let
   val servport = (
     if argc >= 3 then int_of argv.[2] else SERVPORT_DEFAULT
   ) : int
-  var inp: in_addr_struct_t // uninitialized
+  var inp: in_addr_struct // uninitialized
   val () = inet_aton_exn (servname, inp)
-  var servaddr: sockaddr_in_struct_t // uninitialized
+  var servaddr: sockaddr_in_struct // uninitialized
   val () = sockaddr_ipv4_init
-    (servaddr, AF_INET, in_addr_struct_s_addr_get inp, in_port_nbo_of_int servport)
+    (servaddr, AF_INET, in_addr_struct_get_s_addr inp, in_port_nbo_of_int servport)
   val [fd:int] (pf_sock | sockfd) = socket_family_type_exn (AF_INET, SOCK_STREAM)
   val () = connect_ipv4_exn (pf_sock | sockfd, servaddr)
   val () = client_loop (pf_sock | sockfd)
