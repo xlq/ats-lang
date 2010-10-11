@@ -126,7 +126,7 @@ praxi strbuf_v_uncons
    )
 // end of [strbuf_v_uncons]
 
-//
+(* ****** ****** *)
 
 prfun strbuf_v_split
   {m,n:nat} {i:nat | i <= n} {l:addr} {ofs:int} (
@@ -150,8 +150,20 @@ fun bytes_strbuf_trans {m,n:nat | n < m} {l:addr}
 
 (* ****** ****** *)
 
-// val string_empty : string 0 // this not really necessary
+symintr fprint_strbuf
+fun fprint0_strbuf {m,n:int}
+  (out: FILEref, buf: &strbuf (m, n)): void = "atspre_fprint_string"
+overload fprint_strbuf with fprint0_strbuf
 
+fun print_strbuf {m,n:int} (buf: &strbuf (m, n)): void
+// overload print with print_strbuf
+fun prerr_strbuf {m,n:int} (buf: &strbuf (m, n)): void
+// overload print with prerr_strbuf
+
+(* ****** ****** *)
+//
+// val string_empty : string 0 // this not really necessary
+//
 (* ****** ****** *)
 
 //

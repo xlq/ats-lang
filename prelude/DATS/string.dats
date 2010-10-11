@@ -88,6 +88,11 @@ implement strbuf_v_unsplit
 
 (* ****** ****** *)
 
+implement print_strbuf (buf) = fprint0_strbuf (stdout_ref, buf)
+implement prerr_strbuf (buf) = fprint0_strbuf (stderr_ref, buf)
+
+(* ****** ****** *)
+
 %{^
 static inline
 ats_ptr_type

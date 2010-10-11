@@ -38,9 +38,10 @@ compall:: \
   libc_printf \
   libc_random \
   libc_sched \
-  libc_stdlib \
   libc_stdio \
+  libc_stdlib \
   libc_time \
+  libc_unistd \
   libats_funarray_braun \
   libats_funheap_braun \
   libats_funmap_avltree \
@@ -132,16 +133,21 @@ libc_sched: libc_sched.dats
 
 ######
 
-libc_stdlib: libc_stdlib.dats
-	$(ATSCC) -O2 -o libc_stdlib libc_stdlib.dats && ./libc_stdlib
-
 libc_stdio: libc_stdio.dats
-	$(ATSCC) -O2 -o libc_stdio libc_stdio.dats && ./libc_stdio
+	$(ATSCC) -O2 -o $@ $< && ./libc_stdio
+
+libc_stdlib: libc_stdlib.dats
+	$(ATSCC) -O2 -o $@ $< && ./libc_stdlib
 
 ######
 
 libc_time: libc_time.dats
-	$(ATSCC) -D_XOPEN_SOURCE -O2 -o libc_time libc_time.dats && ./libc_time
+	$(ATSCC) -D_XOPEN_SOURCE -O2 -o $@ $< && ./libc_time
+
+######
+
+libc_unistd: libc_unistd.dats
+	$(ATSCC) -O2 -o $@ $< && ./libc_unistd
 
 ######
 
@@ -290,9 +296,10 @@ cleanall: clean
 	rm -f libc_printf
 	rm -f libc_random
 	rm -f libc_sched
-	rm -f libc_stdlib
 	rm -f libc_stdio
+	rm -f libc_stdlib
 	rm -f libc_time
+	rm -f libc_unistd
 	rm -f libats_funarray_braun
 	rm -f libats_funheap_braun
 	rm -f libats_funmap_avltree

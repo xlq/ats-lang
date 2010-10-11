@@ -200,6 +200,10 @@ atslib_fildes_lseek_exn (
 
 /* ****** ****** */
 
+#define atslib_gethostname gethostname
+
+/* ****** ****** */
+
 #endif /* ATS_LIBC_UNISTD_CATS */
 
 /* end of [unistd.cats] */

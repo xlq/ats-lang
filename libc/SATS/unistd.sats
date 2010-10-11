@@ -445,4 +445,16 @@ fun environ_get_arrsz
 
 (* ****** ****** *)
 
+dataview
+gethostname_v (m:int, l:addr, int) =
+  | gethostname_v_fail (m, l, ~1) of (b0ytes m @ l)
+  | {n:nat | n < m}
+    gethostname_v_succ (m, l,  0) of strbuf_v (m, n, l)
+fun gethostname {m:pos} {l:addr}
+  (pf: b0ytes(m) @ l | p: ptr l, m: size_t m): [i:nat] (gethostname_v (m, l, i) | int i)
+  = "#atslib_gethostname"
+// end of [gethostname]
+
+(* ****** ****** *)
+
 (* end of [unistd.sats] *)
