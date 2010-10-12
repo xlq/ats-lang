@@ -70,7 +70,7 @@ absview socket_v (int, status)
 
 fun socket_family_type_err
   (af: sa_family_t, t: socket_type_t)
-  : [fd:int | fd <= 0] (option_v (socket_v (fd, init), fd==0) | int fd)
+  : [fd:int] (option_v (socket_v (fd, init), fd >= 0) | int fd)
   = "atslib_socket_family_type_err"
 // end of [socket_family_type_err]
 
@@ -89,7 +89,7 @@ fun connect_err
   {fd:int} {n1,n2:int | n2 <= n1} (
     pfskt: socket_v (fd, init)
   | fd: int fd, servaddr: &sockaddr_struct(n1), salen: socklen_t(n2)
-  ) : [i:int] (connect_v (fd, i) | int i)
+  ) : [i:int | i <= 0] (connect_v (fd, i) | int i)
   = "#atslib_connect_err"
 // end of [connect_err]
 
@@ -109,6 +109,8 @@ fun bind_err
 // end of [bind_err]
 
 (* ****** ****** *)
+
+macdef SOMAXCONN = $extval (Pos, "SOMAXCONN")
 
 dataview listen_v (fd: int, int) = 
   | listen_v_fail (fd, ~1) of socket_v (fd, bind) 

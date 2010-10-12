@@ -7,7 +7,7 @@
 (***********************************************************************)
 
 (*
-** ATS - Unleashing the Potential of Types!
+** ATS - Unleashing the Power of Types!
 **
 ** Copyright (C) 2002-2010 Hongwei Xi, Boston University
 **
@@ -34,36 +34,44 @@
 (* author: Hongwei Xi (hwxi AT cs DOT bu DOT edu)  *)
 
 (* ****** ****** *)
+//
+// HX: some convenience functions
+//
+(* ****** ****** *)
 
 %{#
-#include "libc/sys/CATS/un.cats"
+#include "libc/sys/CATS/socket_un.cats"
 %} // end of [%{#]
 
 (* ****** ****** *)
 
-staload SA = "libc/sys/SATS/sockaddr.sats"
-typedef sa_family_t = $SA.sa_family_t
-stadef socklen_t = $SA.socklen_t // int: length of a sockaddr
-stadef sockaddr_struct = $SA.sockaddr_struct
+staload "libc/sys/SATS/un.sats"
+staload "libc/sys/SATS/socket.sats"
 
 (* ****** ****** *)
 
-typedef sockaddr_un_struct =
-$extype_struct "ats_sockaddr_un_type" of {
-  sun_family= sa_family_t
-, sun_path= @[byte][0] // @[byte][X] for X <= 100; X is implementation-dependent
-} // end of [sockaddr_un_struct]
-typedef sockaddr_un = sockaddr_un_struct
-//
-sta socklen_un : int // length of [sockaddr_un]
-macdef socklen_un = $extval (socklen_t(socklen_un), "atslib_socklen_un")
-//
-praxi socklen_lte_un (): [socklen_un <= $SA.socklen_max] void
-praxi sockaddr_un_trans {l:addr}
-  (pf: !sockaddr_un_struct @ l >> sockaddr_struct(socklen_un) @ l): void
-praxi sockaddr_trans_un {l:addr}
-  (pf: !sockaddr_struct(socklen_un) @ l >> sockaddr_un_struct @ l): void
-//
+fun sockaddr_un_init (
+    sa: &sockaddr_un_struct? >> sockaddr_un_struct
+  , af: sa_family_t, name: string
+  ) :<> void = "atslib_sockaddr_un_init"
+// end of [sockaddr_un_init]
+
 (* ****** ****** *)
 
-(* end of [un.sats] *)
+fun connect_un_exn {fd:int} (
+    pf: !socket_v (fd, init) >> socket_v (fd, conn)
+  | fd: int fd, servaddr: &sockaddr_un_struct // len=sizeof(sockaddr_un_struct)
+  ) : void
+// end of [connect_un_exn]
+
+(* ****** ****** *)
+
+fun bind_un_exn {fd:int} (
+    pf_sock: !socket_v (fd, init) >> socket_v (fd, bind)
+  | fd: int fd, servaddr: &sockaddr_un_struct // len=sizeof(sockaddr_un_struct)
+  ) : void
+// end of [bind_un_exn]
+
+(* ****** ****** *)
+
+(* end of [socket_un.sats] *)

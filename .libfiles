@@ -169,6 +169,9 @@ libc/sys/DATS/socket.dats
 libc/sys/SATS/socket_in.sats
 libc/sys/DATS/socket_in.dats
 
+libc/sys/SATS/socket_un.sats
+libc/sys/DATS/socket_un.dats
+
 libc/sys/SATS/stat.sats
 libc/sys/DATS/stat.dats
 

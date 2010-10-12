@@ -141,9 +141,9 @@ $extype_struct "ats_sockaddr_in_type" of {
 , sin_port= in_port_nbo_t // uint16
 , sin_addr= in_addr_struct
 } // end of [sockaddr_in_struct]
+typedef sockaddr_in = sockaddr_in_struct
 
 sta socklen_in : int // length of [sockaddr_in]
-abst@ype sockaddr_in_struct = $extype "ats_sockaddr_in_type"
 macdef socklen_in = $extval (socklen_t(socklen_in), "atslib_socklen_in")
 praxi socklen_lte_in (): [socklen_in <= $SA.socklen_max] void
 praxi sockaddr_in_trans {l:addr}
@@ -170,16 +170,18 @@ $extype_struct "ats_sockaddr_in6_type" of {
 , sin6_addr= in6_addr_struct
 , sin6_scope_id= uint32
 } // end of [sockaddr_in_struct]
+typedef sockaddr_in6 = sockaddr_in6_struct
 
 sta socklen_in6 : int // length of [sockaddr_in6]
 abst@ype sockaddr_in6_struct = $extype "ats_sockaddr_in6_type"
 macdef socklen_in6 = $extval (socklen_t(socklen_in6), "atslib_socklen_in6")
+//
 praxi socklen_lte_in6 (): [socklen_in6 <= $SA.socklen_max] void
 praxi sockaddr_in6_trans {l:addr}
   (pf: !sockaddr_in6_struct @ l >> sockaddr_struct(socklen_in6) @ l): void
 praxi sockaddr_trans_in6 {l:addr}
   (pf: !sockaddr_struct(socklen_in6) @ l >> sockaddr_in6_struct @ l): void
-
+//
 (* ****** ****** *)
 
 (* end of [in.sats] *)

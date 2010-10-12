@@ -8,6 +8,7 @@
 #
 # Author: Hongwei Xi (hwxi AT cs DOT bu DOT edu)
 # Start Time: Summer, 2009
+# Second Time: Fall, 2010
 #
 
 ######
@@ -48,60 +49,61 @@ compall: \
   test5173 \
   test631 \
   test65 \
+  test811 \
 
 ######
 
 testlock: AUP_2_4_3.dats
-	$(ATSCC) -o testlock AUP_2_4_3.dats
+	$(ATSCC) -o $@ AUP_2_4_3.dats
 
 backward: AUP_2_13.dats
-	$(ATSCC) -o backward AUP_2_13.dats \
+	$(ATSCC) -o $@ AUP_2_13.dats \
      && ./backward "AUP_2_13.dats"
 
 backward2: AUP_2_14.dats
-	$(ATSCC) -o backward2 AUP_2_14.dats \
+	$(ATSCC) -o $@ AUP_2_14.dats \
      && ./backward2 "AUP_2_14.dats"
 
 pathnames: AUP_3_4.dats
-	$(ATSCC) -o pathnames AUP_3_4.dats \
+	$(ATSCC) -o $@ AUP_3_4.dats \
      && ./pathnames
 
 longls: AUP_3_5.dats
-	$(ATSCC) -o longls AUP_3_5.dats \
+	$(ATSCC) -o $@ AUP_3_5.dats \
      && ./longls
 
 getcwdx: AUP_3_6_4.dats
-	$(ATSCC) -o getcwdx AUP_3_6_4.dats \
+	$(ATSCC) -o $@ AUP_3_6_4.dats \
      && ./getcwdx
 
 #######
 
 test421: AUP_4_2_1.dats
-	$(ATSCC) -o test421 AUP_4_2_1.dats
+	$(ATSCC) -o $@ AUP_4_2_1.dats
 
 test4221: AUP_4_2_2_1.dats
-	$(ATSCC) -o test4221 AUP_4_2_2_1.dats
+	$(ATSCC) -o $@ AUP_4_2_2_1.dats
 
 test4222: AUP_4_2_2_2.dats
-	$(ATSCC) -o test4222 AUP_4_2_2_2.dats
+	$(ATSCC) -o $@ AUP_4_2_2_2.dats
 
 test423: AUP_4_2_3.dats
-	$(ATSCC) -o test423 AUP_4_2_3.dats
+	$(ATSCC) -o $@ AUP_4_2_3.dats
 
 test435: AUP_4_3_5.dats
-	$(ATSCC) -o test435 AUP_4_3_5.dats
+	$(ATSCC) -o $@ AUP_4_3_5.dats
 
 test47: AUP_4_7.dats
-	$(ATSCC) -o test47 AUP_4_7.dats \
+	$(ATSCC) -o $@ AUP_4_7.dats \
      && ./test47
 
 test48: AUP_4_8.dats
-	$(ATSCC) -o test48 AUP_4_8.dats -lcurses
+	$(ATSCC) -o $@ AUP_4_8.dats -lcurses
 
 #######
 
 test52: AUP_5_2.dats
-	$(ATSCC) -o test52 AUP_5_2.dats \
+	$(ATSCC) -o $@ AUP_5_2.dats \
      && ./test52
 
 #######
@@ -110,29 +112,29 @@ getargs.o: utils/getargs.c
 	$(ATSCC) -Wall -c -o $@ $<
 
 aupsh1: AUP_5_4.dats getargs.o
-	$(ATSCC) -o aupsh1 $< getargs.o
+	$(ATSCC) -o $@ $< getargs.o
 
 aupsh2: AUP_5_6.dats getargs.o
-	$(ATSCC) -o aupsh2 $< getargs.o
+	$(ATSCC) -o $@ $< getargs.o
 
 aupsh3: AUP_5_10.dats getargs.o
-	$(ATSCC) -o aupsh3 $< getargs.o
+	$(ATSCC) -o $@ $< getargs.o
 
 #######
 
 test511: AUP_5_11.dats
-	$(ATSCC) -Wall -o test511 AUP_5_11.dats \
+	$(ATSCC) -Wall -o $@ AUP_5_11.dats \
      && ./test511
 
 #######
 
 aupnice: AUP_5_15.dats
-	$(ATSCC) -Wall -o aupnice $<
+	$(ATSCC) -Wall -o $@ $<
 
 #######
 
 test5173: AUP_5_17_3.dats
-	$(ATSCC) -D_ATS_MULTITHREAD -Wall -o test5173 AUP_5_17_3.dats -lpthread \
+	$(ATSCC) -D_ATS_MULTITHREAD -Wall -o $@ AUP_5_17_3.dats -lpthread \
      && ./test5173
 
 #######
@@ -140,9 +142,13 @@ test5173: AUP_5_17_3.dats
 errinfo.o: utils/errinfo.sats utils/errinfo.dats
 	$(ATSCC) -IATS utils -I utils -Wall -c -o $@ utils/errinfo.dats
 
-test631: AUP_6_3_1.dats; $(ATSCC) -I utils -Wall -o test631 $< errinfo.o && ./test631
+test631: AUP_6_3_1.dats; $(ATSCC) -I utils -Wall -o $@ $< errinfo.o && ./test631
 
-test65: AUP_6_5.dats; $(ATSCC) -I utils -Wall -o test65 $< errinfo.o && ./test65
+test65: AUP_6_5.dats; $(ATSCC) -I utils -Wall -o $@ $< errinfo.o && ./test65
+
+#######
+
+test811: AUP_8_1_1.dats; $(ATSCC) -I utils -Wall -o $@ $< && ./test811
 
 #######
 
@@ -156,7 +162,7 @@ clean::
 	$(RMF) errinfo.o
 	$(RMF) getargs.o
 
-cleanall: clean
+cleanall:: clean
 	$(RMF) testlock
 	$(RMF) backward
 	$(RMF) backward2
@@ -179,5 +185,6 @@ cleanall: clean
 	$(RMF) test5173
 	$(RMF) test631
 	$(RMF) test65
+	$(RMF) test811
 
 ###### end of [Makefile] ######

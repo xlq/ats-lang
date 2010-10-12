@@ -40,12 +40,12 @@ staload "libc/SATS/stdlib.sats" // for [EXIT_FAILURE]
 
 (* ****** ****** *)
 
-staload "libc/netinet/SATS/in.sats"
+staload "libc/sys/SATS/un.sats"
 staload "libc/sys/SATS/socket.sats"
 
 (* ****** ****** *)
 
-staload "libc/sys/SATS/socket_in.sats"
+staload "libc/sys/SATS/socket_un.sats"
 
 (* ****** ****** *)
 
@@ -54,11 +54,11 @@ staload "libc/sys/SATS/socket_in.sats"
 (* ****** ****** *)
 
 implement
-connect_in_exn
+connect_un_exn
   (pfsock | sfd, servaddr) = let
-  prval () = sockaddr_in_trans (view@ servaddr)
-  val (pfopt | err) = connect_err (pfsock | sfd, servaddr, socklen_in)
-  prval () = sockaddr_trans_in (view@ servaddr)
+  prval () = sockaddr_un_trans (view@ servaddr)
+  val (pfopt | err) = connect_err (pfsock | sfd, servaddr, socklen_un)
+  prval () = sockaddr_trans_un (view@ servaddr)
 in
   if err >= 0 then let
     prval connect_v_succ (pf) = pfopt
@@ -71,18 +71,18 @@ in
     val () = perror ("connect")
     val () = exit (EXIT_FAILURE)
   in
-    connect_in_exn (pfsock | sfd, servaddr) // HX: this is deadcode
+    connect_un_exn (pfsock | sfd, servaddr) // HX: this is deadcode
   end // end of [if]
-end // end of [connect_in_exn]
+end // end of [connect_un_exn]
 
 (* ****** ****** *)
 
 implement
-bind_in_exn
+bind_un_exn
   (pfsock | sfd, servaddr) = let
-  prval () = sockaddr_in_trans (view@ servaddr)
-  val (pfopt | err) = bind_err (pfsock | sfd, servaddr, socklen_in)
-  prval () = sockaddr_trans_in (view@ servaddr)
+  prval () = sockaddr_un_trans (view@ servaddr)
+  val (pfopt | err) = bind_err (pfsock | sfd, servaddr, socklen_un)
+  prval () = sockaddr_trans_un (view@ servaddr)
 in
   if err >= 0 then let
     prval bind_v_succ (pf) = pfopt
@@ -95,10 +95,10 @@ in
     val () = perror ("bind")
     val () = exit (EXIT_FAILURE)
   in
-    bind_in_exn (pfsock | sfd, servaddr) // HX: this is deadcode
+    bind_un_exn (pfsock | sfd, servaddr) // HX: this is deadcode
   end // end of [if]
-end // end of [bind_in_exn]
+end // end of [bind_un_exn]
 
 (* ****** ****** *)
 
-(* end of [socket_in.dats] *)
+(* end of [socket_un.dats] *)
