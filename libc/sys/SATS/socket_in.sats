@@ -39,15 +39,21 @@
 //
 (* ****** ****** *)
 
-staload "libc/sys/SATS/socket.sats"
+%{#
+#include "libc/sys/CATS/socket_in.cats"
+%} // end of [%{#]
+
+(* ****** ****** *)
+
 staload "libc/netinet/SATS/in.sats"
+staload "libc/sys/SATS/socket.sats"
 
 (* ****** ****** *)
 
 fun sockaddr_in_init (
     sa: &sockaddr_in_struct? >> sockaddr_in_struct
   , af: sa_family_t, inp: in_addr_nbo_t, port: in_port_nbo_t
-  ) :<> void = "atslib_sockaddr_ipv4_init"
+  ) :<> void = "atslib_sockaddr_in_init"
 // end of [sockaddr_in_init]
 
 (* ****** ****** *)

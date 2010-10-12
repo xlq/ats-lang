@@ -22,8 +22,10 @@
 staload "libc/SATS/dirent.sats"
 staload "libc/SATS/stdio.sats"
 staload "libc/SATS/stdlib.sats"
-staload "libc/netinet/SATS/in.sats"
+staload "libc/sys/SATS/sockaddr.sats"
 staload "libc/sys/SATS/socket.sats"
+staload "libc/netinet/SATS/in.sats"
+staload "libc/sys/SATS/socket_in.sats"
 
 staload _(*anonymous*) = "prelude/DATS/array.dats"
 staload _(*anonymous*) = "prelude/DATS/list_vt.dats"
@@ -660,31 +662,31 @@ extern fun strbuf_make_bytes
   = "atspre_string_make_substring"
 
 implement main_loop
-  (pf_list, pf_buf | fd_s, p_buf): void = let
-  val (pf_accept | fd_c) = accept_null_err(pf_list | fd_s)
+  (pf_list, pf_buf | sfd, p_buf): void = let
+  val (pf_accept | cfd) = accept_null_err(pf_list | sfd)
 in
-  if fd_c >= 0 then let
-    prval accept_v_succ pf_conn = pf_accept
+  if cfd >= 0 then let
+    prval Some_v (pf_conn) = pf_accept
     val n = socket_read_exn
-      (pf_conn | fd_c, !p_buf, BUFSZ)
+      (pf_conn | cfd, !p_buf, BUFSZ)
     val (pf_gc, pf_sb | p) = strbuf_make_bytes (!p_buf, 0, n)
     val msg = string1_of_strbuf @(pf_gc, pf_sb | p)
   in
     case+ msg of // [msg] is leaked out if not reclaimed!!!
     | _ when request_is_get (msg) => begin
-        main_loop_get (pf_conn, pf_buf | fd_c, p_buf, msg, n);
-        main_loop (pf_list, pf_buf | fd_s, p_buf)
+        main_loop_get (pf_conn, pf_buf | cfd, p_buf, msg, n);
+        main_loop (pf_list, pf_buf | sfd, p_buf)
       end // end of [_ when ...]
     | _ => begin
-        socket_close_exn (pf_conn | fd_c);
+        socket_close_exn (pf_conn | cfd);
         prerrf ("main_loop: unsupported request: %s\n", @(msg));
-        main_loop (pf_list, pf_buf | fd_s, p_buf)
+        main_loop (pf_list, pf_buf | sfd, p_buf)
       end // end of [_]
   end else let
-    prval accept_v_fail () = pf_accept
+    prval None_v () = pf_accept
     val () = prerr "Error: [accept] failed!\n"
   in
-    main_loop (pf_list, pf_buf | fd_s, p_buf)
+    main_loop (pf_list, pf_buf | sfd, p_buf)
   end // end of [if]
 end (* end of [main_loop] *)
 
@@ -716,7 +718,7 @@ implement main (argc, argv) = let
   var servaddr: sockaddr_in_struct // uninitialized
   val servport = in_port_nbo_of_int (port)
   val in4add_any = in_addr_nbo_of_hbo (INADDR_ANY)
-  val () = sockaddr_ipv4_init (servaddr, AF_INET, in4add_any, servport)
+  val () = sockaddr_in_init (servaddr, AF_INET, in4add_any, servport)
   val () = bind_in_exn (pf_sock | fd, servaddr)
   val () = listen_exn (pf_sock | fd, BACKLOG)
   val (pfopt | p_buf) = malloc_ngc (BUFSZ)

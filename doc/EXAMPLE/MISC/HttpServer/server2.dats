@@ -32,8 +32,10 @@ staload STDLIB = "libc/SATS/stdlib.sats"
 staload "libc/SATS/string.sats"
 staload "libc/SATS/time.sats"
 staload "libc/SATS/unistd.sats"
-staload "libc/netinet/SATS/in.sats"
+staload "libc/sys/SATS/sockaddr.sats"
 staload "libc/sys/SATS/socket.sats"
+staload "libc/netinet/SATS/in.sats"
+staload "libc/sys/SATS/socket_in.sats"
 staload "libc/sys/SATS/types.sats"
 staload "libc/sys/SATS/wait.sats"
 
@@ -60,7 +62,7 @@ socket_write_substring
   (pfsock | fd, str, st, ln) = let
   val (pf, fpf | p) =
     string_takeout_bufptr {n} {st} {ln} (str, st)
-  val () = socket_write_loop_exn (pfsock | fd, !p, ln)
+  val () = socket_write_all_exn (pfsock | fd, !p, ln)
   prval () = fpf (pf)
 in
   // nothing
@@ -361,12 +363,12 @@ fn file_send_main {fd: int} (
     val n = fread_byte (file_mode_lte_r_r | !p_buf, BUFSZ, file)
   in
     if n > 0 then let
-      val () = socket_write_loop_exn (pf_conn | fd, !p_buf, n) in
+      val () = socket_write_all_exn (pf_conn | fd, !p_buf, n) in
       loop (pf_conn, pf_buf | fd, file)
     end // end of [if]
   end (* end of [loop] *)
   prval () = pf_msg := bytes_v_of_strbuf_v (pf_msg)
-  val () = socket_write_loop_exn (pf_conn | fd, !p_msg, msg200_len)
+  val () = socket_write_all_exn (pf_conn | fd, !p_msg, msg200_len)
 in
   loop (pf_conn, pf_buf | fd, file)
 end // end of [file_send_main]
@@ -579,7 +581,7 @@ in
           val () = strbufptr_free (ent)
           val len = strbuf_length !p_msg
           prval () = pf_msg := bytes_v_of_strbuf_v (pf_msg)
-          val _ =  socket_write_loop_exn (pf_conn | fd, !p_msg, len)
+          val _ =  socket_write_all_exn (pf_conn | fd, !p_msg, len)
         in
           // empty
         end // end of [0]
@@ -643,7 +645,7 @@ in
     } // end of [val]
     val len = strbuf_length (!p_msg)
     prval () = pf_msg := bytes_v_of_strbuf_v (pf_msg)
-    val _ = socket_write_loop_exn (pf_conn | fd, !p_msg, len)
+    val _ = socket_write_all_exn (pf_conn | fd, !p_msg, len)
 //
     val _ = socket_write_substring (pf_conn | fd, dir_msg50_str, 0, dir_msg50_len)
     var asz: size_t 0? // unintialized
@@ -709,12 +711,12 @@ extern fun main_loop {fd:int} {l_buf:addr} (
 // end of [extern]
 
 implement main_loop
-  (pf_list, pf_buf | fd_s, p_buf): void = let
-  val (pf_accept | fd_c) = accept_null_err (pf_list | fd_s)
+  (pf_list, pf_buf | sfd, p_buf): void = let
+  val (pf_accept | cfd) = accept_null_err (pf_list | sfd)
 in
-  if fd_c >= 0 then let
+  if cfd >= 0 then let
     val () = the_nrequest_inc ()
-    prval accept_v_succ pf_conn = pf_accept
+    prval Some_v (pf_conn) = pf_accept
     val pid = fork_exn (); val ipid = int_of_pid (pid)
   in
     case+ 0 of
@@ -722,18 +724,18 @@ in
 (*
         val () = (prerr "parent: ipid = "; prerr ipid; prerr_newline ())
 *)
-        val () = socket_close_exn (pf_conn | fd_c)
+        val () = socket_close_exn (pf_conn | cfd)
         var status: int // uninitialized
         val _(*pid*) = waitpid (pid, status, WNONE)
       in
-         main_loop (pf_list, pf_buf | fd_s, p_buf)
+         main_loop (pf_list, pf_buf | sfd, p_buf)
       end // end of [_ when ...]
     | _ (* child: ipid = 0 *) => exit (0) where {
 (*
         val () = (prerr "child: ipid = "; prerr ipid; prerr_newline ())
 *)
-        val () = socket_close_exn (pf_list | fd_s)
-        val n = socket_read_exn (pf_conn | fd_c, !p_buf, BUFSZ)
+        val () = socket_close_exn (pf_list | sfd)
+        val n = socket_read_exn (pf_conn | cfd, !p_buf, BUFSZ)
         var! p_msg with pf_msg = @[byte][n+1]()
         prval () = pf_msg := bytes_v_of_b0ytes_v pf_msg
         val _(*p_msg*) = memcpy (pf_msg | p_msg, !p_buf, n)
@@ -741,10 +743,10 @@ in
         val () = case+ 0 of
           | _ when request_is_get (!p_msg) => let
               val n = strbuf_length (!p_msg)
-              val () = main_loop_get (pf_conn, pf_buf | fd_c, p_buf, !p_msg, n)
+              val () = main_loop_get (pf_conn, pf_buf | cfd, p_buf, !p_msg, n)
               prval () = pf_msg := bytes_v_of_strbuf_v (pf_msg)
             in
-              socket_close_exn (pf_conn | fd_c)
+              socket_close_exn (pf_conn | cfd)
             end // end of [_ when ...]
           | _ => let
 (*
@@ -755,15 +757,15 @@ in
 *)
               prval () = pf_msg := bytes_v_of_strbuf_v (pf_msg)
             in
-              socket_close_exn (pf_conn | fd_c)
+              socket_close_exn (pf_conn | cfd)
             end // end of [val]
       } (* end of [_] *)
     // end of [case]
   end else let
-    prval accept_v_fail () = pf_accept
+    prval None_v () = pf_accept
     val () = (prerr "Error: [accept] failed!"; prerr_newline ())
   in
-    main_loop (pf_list, pf_buf | fd_s, p_buf)
+    main_loop (pf_list, pf_buf | sfd, p_buf)
   end // end of [if]
 end (* end of [main_loop] *)
 
@@ -785,7 +787,7 @@ implement main (argc, argv) = let
   var servaddr: sockaddr_in_struct // uninitialized
   val servport = in_port_nbo_of_int (port)
   val in4add_any = in_addr_nbo_of_hbo (INADDR_ANY)
-  val () = sockaddr_ipv4_init (servaddr, AF_INET, in4add_any, servport)
+  val () = sockaddr_in_init (servaddr, AF_INET, in4add_any, servport)
   val () = bind_in_exn (pf_sock | fd, servaddr)
   val () = listen_exn (pf_sock | fd, BACKLOG)
   var! p_buf with pf_buf = @[byte][BUFSZ]()

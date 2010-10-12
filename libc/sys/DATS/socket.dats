@@ -9,7 +9,7 @@
 (*
 ** ATS - Unleashing the Power of Types!
 **
-** Copyright (C) 2002-2008 Hongwei Xi, Boston University
+** Copyright (C) 2002-2010 Hongwei Xi, Boston University
 **
 ** All rights reserved
 **
@@ -50,13 +50,30 @@ staload "libc/sys/SATS/socket.sats"
 (* ****** ****** *)
 
 implement
+socket_family_type_exn (af, socktp) = let
+  val (pfopt | fd) = socket_family_type_err (af, socktp)
+in
+  if fd >= 0 then let
+    prval Some_v (pf) = pfopt in (pf | fd)
+  end else let
+    prval None_v () = pfopt
+    val () = perror "socket"
+    val () = exit_errmsg (EXIT_FAILURE, "exit(ATS): [socket] failed\n")
+  in
+    socket_family_type_exn (af, socktp)
+  end // end of [if]
+end // end of [socket_family_type_exn]
+
+(* ****** ****** *)
+
+implement
 socket_close_exn (pfskt | fd) = let
   val (pfopt | i) = socket_close_err (pfskt | fd)
 in
   if i >= 0 then let
-    prval socket_close_v_succ () = pfopt in (*nothing*)
+    prval None_v () = pfopt in (*nothing*)
   end else let
-    prval socket_close_v_fail (pfskt) = pfopt
+    prval Some_v (pfskt) = pfopt
   in
     if (errno_get () = EINTR) then
       socket_close_exn (pfskt | fd)
@@ -74,18 +91,56 @@ end // end of [socket_close_exn]
 (* ****** ****** *)
 
 implement
+listen_exn (pfskt | fd, nbacklog) = let
+  val (pfopt | err) = listen_err (pfskt | fd, nbacklog)
+in
+  if (err >= 0) then let
+    prval listen_v_succ (pf) = pfopt
+    prval () = pfskt := pf
+  in
+    // nothing
+  end else let
+    prval listen_v_fail (pf) = pfopt
+    prval () = pfskt := pf    
+    val () = perror "listen"
+    val () = exit_errmsg (EXIT_FAILURE, "exit(ATS): [listen] failed\n")
+  in
+    listen_exn (pfskt | fd, nbacklog) // HX: this is deadcode
+  end // end of [if]
+end // end of [listen_exn]
+
+(* ****** ****** *)
+
+implement
+accept_null_exn (pfskt | sfd) = let
+  val (pfopt | cfd) = accept_null_err (pfskt | sfd)
+in
+  if (cfd >= 0) then let
+    prval Some_v (pfconn) = pfopt in (pfconn | cfd)
+  end else let
+    prval None_v () = pfopt
+    val () = perror "accept"
+    val () = exit_errmsg (EXIT_FAILURE, "exit(ATS): [accept] failed\n")
+  in
+    accept_null_exn (pfskt | sfd) // HX: this is deadcode
+  end // end of [if]
+end // end of [accept_null_exn]
+
+(* ****** ****** *)
+
+implement
 shutdown_exn (pfskt | fd, how) = let
   val (pfopt | err)  = shutdown_err (pfskt | fd, how)
 in
   if err >= 0 then let
-    prval shutdown_v_succ () = pfopt in (*nothing*)
+    prval None_v () = pfopt in (*nothing*)
   end else let
-    prval shutdown_v_fail (pf) = pfopt
+    prval Some_v (pf) = pfopt
+    prval () = pfskt := pf
     val () = perror "shutdown"
-    val () = exit_main {void} {..} {unit_v} (pf | EXIT_FAILURE)
-    prval unit_v () = pf
+    val () = exit_errmsg (EXIT_FAILURE, "exit(ATS): [shutdown] failed\n")
   in
-    // nothing
+    shutdown_exn (pfskt | fd, how) // HX: this is deadcode
   end (* end of [if] *)
 end // end of [shutdown_exn]
 

@@ -43,20 +43,20 @@
 
 staload SA = "libc/sys/SATS/sockaddr.sats"
 typedef sa_family_t = $SA.sa_family_t
+stadef socklen_t = $SA.socklen_t
+stadef sockaddr_struct = $SA.sockaddr_struct
 
 (* ****** ****** *)
 
-staload "libc/netinet/SATS/in.sats"
-
-(* ****** ****** *)
-
-abst@ype socket_type_t = $extype "ats_int_type"
+abst@ype socket_type_t = int
 macdef SOCK_DGRAM = $extval (socket_type_t, "SOCK_DGRAM")
 macdef SOCK_RAW = $extval (socket_type_t, "SOCK_RAW")
 macdef SOCK_SEQPACKET = $extval (socket_type_t, "SOCK_SEQPACKET")
 macdef SOCK_STREAM = $extval (socket_type_t, "SOCK_STREAM")
 
-abst@ype socket_protocol_t = $extype "ats_int_type"
+(* ****** ****** *)
+
+abst@ype socket_protocol_t = int
 
 (* ****** ****** *)
 //
@@ -68,19 +68,14 @@ datasort status = init | bind | listen | conn
 
 absview socket_v (int, status)
 
-dataview socketopt_v (int) = 
-  | socketopt_v_none (~1)
-  | {fd:nat} socketopt_v_some (fd) of socket_v (fd, init)
-// end of [socketopt_v]
-
 fun socket_family_type_err
-  (af: sa_family_t, t: socket_type_t): [fd:int] (socketopt_v fd | int fd)
+  (af: sa_family_t, t: socket_type_t)
+  : [fd:int | fd <= 0] (option_v (socket_v (fd, init), fd==0) | int fd)
   = "atslib_socket_family_type_err"
 // end of [socket_family_type_err]
 
 fun socket_family_type_exn
-  (af: sa_family_t, t: socket_type_t): [fd:int] (socket_v (fd, init) | int fd)
-  = "atslib_socket_family_type_exn"
+  (af: sa_family_t, t: socket_type_t): [fd:nat] (socket_v (fd, init) | int fd)
 // end of [socket_family_type_exn]
 
 (* ****** ****** *)
@@ -108,7 +103,8 @@ dataview bind_v (fd:int, int) =
 fun bind_err
   {fd:int} {n1,n2:int | n2 <= n1} (
     pfskt: socket_v (fd, init)
-  | fd: int fd, servaddr: &sockaddr_struct(n1), salen: socklen_t(n2)
+  | fd: int fd
+  , servaddr: &sockaddr_struct(n1), salen: socklen_t(n2)
   ) : [i:int] (bind_v (fd, i) | int i) = "#atslib_bind_err"
 // end of [bind_err]
 
@@ -128,38 +124,28 @@ fun listen_err {fd:int}
 fun listen_exn {fd:int} (
     pfskt: !socket_v (fd, bind) >> socket_v (fd, listen)
   | fd: int fd, backlog: Pos // [backlog = 0] is not supported on all systems
-  ) : void  = "atslib_listen_exn"
+  ) : void
 // end of [listen_exn]
 
 (* ****** ****** *)
 
-dataview
-accept_v (int) = 
-  | {fd:nat} accept_v_succ (fd) of socket_v (fd, conn)
-  | accept_v_fail (~1) // HX: the server socket is unaffected
-// end of [accept_v]
-
 fun accept_null_err {sfd:int}
   (pfskt: !socket_v (sfd, listen) | sfd: int sfd)
-  : [cfd:int] (accept_v cfd | int cfd) = "atslib_accept_null_err"
+  : [cfd:int] (option_v (socket_v (cfd, conn), cfd >= 0) | int cfd)
+  = "atslib_accept_null_err"
 // end of [accept_null_err]
 
-fun accept_null_exn {sfd:int}
-  (pfskt: !socket_v (sfd, listen) | sfd: int sfd)
-  : [cfd:int] (socket_v (cfd, conn) | int cfd) = "atslib_accept_null_exn"
+fun accept_null_exn {sfd:int} (
+  pfskt: !socket_v (sfd, listen) | sfd: int sfd
+) : [cfd:nat] (socket_v (cfd, conn) | int cfd) // for client side
 // end of [accept_null_exn]
 
 (* ****** ****** *)
 
-dataview
-socket_close_v (fd: int, s: status, int) =
-  | socket_close_v_fail (fd, s, ~1) of socket_v (fd, s)
-  | socket_close_v_succ (fd, s, 0)
-// end of [socket_close_v]
-
-fun socket_close_err {fd:int} {s:status}
-  (pfskt: socket_v (fd, s) | fd: int fd)
-  : [i:int] (socket_close_v (fd, s, i) | int i)
+fun socket_close_err
+  {fd:int} {s:status} (
+  pfskt: socket_v (fd, s) | fd: int fd
+) : [i:int | i <= 0] (option_v (socket_v (fd, s), i < 0) | int i)
   = "#atslib_socket_close_err" // = atslib_close_err
 // end of [socket_close_err]
 
@@ -177,16 +163,11 @@ macdef SHUT_RD = $extval (shutkind_t, "SHUT_RD")
 macdef SHUT_WR = $extval (shutkind_t, "SHUT_WR")
 macdef SHUT_RDWR = $extval (shutkind_t, "SHUT_RDWR")
 
-dataview shutdown_v
-  (fd: int, int) =
-  | shutdown_v_fail (fd, ~1) of socket_v (fd, conn)
-  | shutdown_v_succ (fd, 0)
-// end of [shutdown_v]
-
 fun shutdown_err // HX: what error can occur?
   {fd:int} // 0/-1 : succ/fail // errno set
   (pfskt: socket_v (fd, conn) | fd: int fd, how: shutkind_t)
-  : [i:int] (shutdown_v (fd, i) | int i) = "#atslib_shutdown_err"
+  : [i:int | i <= 0] (option_v (socket_v (fd, conn), i < 0) | int i)
+  = "#atslib_shutdown_err"
 // end of [shutdown_err]
 
 fun shutdown_exn // HX: this one is preferred!

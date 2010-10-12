@@ -9,7 +9,7 @@
 /*
 ** ATS - Unleashing the Power of Types!
 **
-** Copyright (C) 2002-2010 Hongwei Xi.
+** Copyright (C) 2002-2008 Hongwei Xi.
 **
 ** ATS is  free software;  you can redistribute it and/or modify it under
 ** the  terms of the  GNU General Public License as published by the Free
@@ -33,82 +33,33 @@
 
 /* ****** ****** */
 
-#ifndef ATS_LIBC_SYS_SOCKET_CATS
-#define ATS_LIBC_SYS_SOCKET_CATS
+#ifndef ATS_LIBC_SYS_SOCKET_IN_CATS
+#define ATS_LIBC_SYS_SOCKET_IN_CATS
 
 /* ****** ****** */
 
-#include <errno.h>
-#include <stdio.h> // for [perror]
-
-/* ****** ****** */
-
+#include <netinet/in.h>
 #include <sys/socket.h>
 
 /* ****** ****** */
 
-#include "libc/CATS/fcntl.cats"
-
-/* ****** ****** */
-
-typedef int ats_socket_type ;
-
-/* ****** ****** */
-
 ATSinline()
-ats_int_type
-atslib_socket_family_type_err (
-  sa_family_t af, ats_socket_type st
+ats_void_type
+atslib_sockaddr_in_init (
+  ats_ptr_type sa0
+, sa_family_t af
+, in_addr_t inp
+, in_port_t port
 ) {
-  return socket(af, st, 0) ;
-} // end of [atslib_socket_family_type_err]
+  struct sockaddr_in *sa = sa0 ;
+  memset(sa, 0, sizeof (struct sockaddr_in)) ;
+  sa->sin_family = af ;
+  sa->sin_addr.s_addr = inp ;
+  sa->sin_port = port ;
+} // end of [sockaddr_in_init]
 
 /* ****** ****** */
 
-#define atslib_connect_err connect
+#endif /* ATS_LIBC_SYS_SOCKET_IN_CATS */
 
-/* ****** ****** */
-
-#define atslib_bind_err bind
-
-/* ****** ****** */
-
-#define atslib_listen_err listen
-
-/* ****** ****** */
-
-ATSinline()
-ats_int_type
-atslib_accept_null_err
-  (ats_int_type sfd) {
-  return accept(sfd, (struct sockaddr*)0, (socklen_t*)0) ;
-} // end of [atslib_accept_null_err]
-
-#define atslib_accept_err accept
-
-/* ****** ****** */
-
-#define atslib_socket_close_err atslib_close_err
-
-/* ****** ****** */
-
-#define atslib_shutdown_err shutdown
-
-/* ****** ****** */
-
-#define atslib_socket_read_err atslib_fildes_read_err
-#define atslib_socket_write_err atslib_fildes_write_err
-#define atslib_socket_read_all_err atslib_fildes_read_all_err
-#define atslib_socket_write_all_err atslib_fildes_write_all_err
-
-/* ****** ****** */
-//
-// HX: [fdopen] is declared in stdio.h
-//
-#define atslib_socket_fdopen_err fdopen
-
-/* ****** ****** */
-
-#endif /* ATS_LIBC_SYS_SOCKET_CATS */
-
-/* end of [socket.cats] */
+/* end of [socket_in.cats] */

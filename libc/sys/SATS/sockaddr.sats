@@ -35,10 +35,11 @@
 
 (* ****** ****** *)
 
-abst@ype sa_family_t = $extype "ats_int_type"
+abst@ype sa_family_t = $extype "sa_family_t"
 macdef AF_INET = $extval (sa_family_t, "AF_INET")
 macdef AF_INET6 = $extval (sa_family_t, "AF_INET6")
 macdef AF_UNIX = $extval (sa_family_t, "AF_UNIX")
+macdef AF_X25 = $extval (sa_family_t, "AF_X25")
 macdef AF_UNSPEC = $extval (sa_family_t, "AF_UNSPEC")
 
 (* ****** ****** *)
