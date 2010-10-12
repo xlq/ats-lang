@@ -56,7 +56,7 @@ fun readany2 {n:nat} (
       val fd = int1_of_int (fd)
       val () = assert (fd >= 0)
     in
-      if FD_ISSET (fd, fdset_rd) > 0 then let
+      if FD_ISSET (fd, fdset_rd) then let
         val () = c := '\0'
 //
 extern fun read1 (fd: int, c: &char): ssize_t = "#atslib_read1"

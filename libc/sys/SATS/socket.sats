@@ -235,6 +235,16 @@ fun socket_write_all_exn {fd:int} {n,sz:nat | n <= sz} (
 
 (* ****** ****** *)
 
+fun socket_write_substring
+  {fd:int} {n:int}
+  {st,ln:nat | st+ln <= n} (
+    pf_sock: !socket_v (fd, conn)
+  | fd: int fd, str: string n, st: size_t st, ln: size_t ln
+  ) : void // all bytes must be written if this function returns
+// end of [socket_write_substring]
+
+(* ****** ****** *)
+
 dataview socket_fdopen_v
   (fd: int, m: file_mode, addr) =
   | socket_fdopen_v_fail (fd, m, null) of socket_v (fd, conn)

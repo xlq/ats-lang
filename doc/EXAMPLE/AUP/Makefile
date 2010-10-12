@@ -142,13 +142,16 @@ test5173: AUP_5_17_3.dats
 errinfo.o: utils/errinfo.sats utils/errinfo.dats
 	$(ATSCC) -IATS utils -I utils -Wall -c -o $@ utils/errinfo.dats
 
-test631: AUP_6_3_1.dats; $(ATSCC) -I utils -Wall -o $@ $< errinfo.o && ./test631
+test631: AUP_6_3_1.dats errinfo.o
+	$(ATSCC) -I utils -Wall -o $@ $< errinfo.o && ./test631
 
-test65: AUP_6_5.dats; $(ATSCC) -I utils -Wall -o $@ $< errinfo.o && ./test65
+test65: AUP_6_5.dats errinfo.o
+	$(ATSCC) -I utils -Wall -o $@ $< errinfo.o && ./test65
 
 #######
 
 test811: AUP_8_1_1.dats; $(ATSCC) -I utils -Wall -o $@ $< && ./test811
+test813: AUP_8_1_3.dats; $(ATSCC) -I utils -Wall -o $@ $<
 
 #######
 
@@ -186,5 +189,6 @@ cleanall:: clean
 	$(RMF) test631
 	$(RMF) test65
 	$(RMF) test811
+	$(RMF) test813
 
 ###### end of [Makefile] ######

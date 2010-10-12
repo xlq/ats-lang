@@ -56,7 +56,7 @@ fun FD_CLR {fd:nat}
   (fd: int fd, fdset: &fd_set):<> void = "atslib_FD_CLR"
 
 fun FD_ISSET {fd:nat}
-  (fd: int fd, fdset: &fd_set):<> [i:two] int i = "atslib_FD_ISSET"
+  (fd: int fd, fdset: &fd_set):<> bool = "atslib_FD_ISSET"
 // end of [FD_ISSET]
 
 (* ****** ****** *)

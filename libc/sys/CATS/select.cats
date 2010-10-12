@@ -69,7 +69,7 @@ atslib_FD_CLR (
 } // end of [atslib_FD_CLR]
 
 ATSinline()
-ats_int_type
+ats_bool_type
 atslib_FD_ISSET (
   ats_int_type fd, ats_ref_type fdset
 ) {

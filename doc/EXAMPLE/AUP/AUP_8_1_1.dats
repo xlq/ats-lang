@@ -13,6 +13,10 @@
 
 (* ****** ****** *)
 
+staload _(*anon*) = "prelude/DATS/array.dats"
+
+(* ****** ****** *)
+
 staload "libc/SATS/errno.sats"
 staload "libc/SATS/stdio.sats"
 staload "libc/SATS/stdlib.sats"
@@ -28,43 +32,28 @@ staload "libc/sys/SATS/socket_un.sats"
 
 (* ****** ****** *)
 
-macdef ignore (x) = let val _ = ,(x) in (*nothing*) end
-
-(* ****** ****** *)
-
-extern
-fun socket_write_substring
-  {fd:int} {n:int} {st,ln:nat | st+ln <= n} (
-    pf_sock: !socket_v (fd, conn) | fd: int fd, str: string n, st: size_t st, ln: size_t ln
-  ) : void // all bytes must be written if this function returns
-// end of [socket_write_substring]
-
-implement
-socket_write_substring
-  {fd} {n} {st,ln}
-  (pfsock | fd, str, st, ln) = let
-  val (pf, fpf | p) =
-    string_takeout_bufptr {n} {st} {ln} (str, st)
-  val () = socket_write_all_exn (pfsock | fd, !p, ln)
-  prval () = fpf (pf)
+fun fprint_bytes_size
+  {n1,n2:nat | n2 <= n1} 
+  (out: FILEref, buf: &(@[byte][n1]), n2: size_t n2): void = let
+  val p_buf = &buf
+  prval () = eqsize_byte_one () // sizeof byte == 1
+  prval pfmul = mul_make {n2,sizeof(byte)} ()
+  prval () = mul_elim {n2,1} (pfmul)
+  prval (pf1, pf2) = array_v_split {byte} {n1,n2} (pfmul, view@ (buf))
+  prval pfu = unit_v ()
+  typedef env = FILEref
+  val () = array_ptr_foreach_fun_tsz__main {byte} {unit_v} {env}
+    (pfu | !p_buf, lam (pf | x, out) =<> $effmask_ref (fprint_byte (out, x)), n2, sizeof<byte>, out)
+  prval unit_v () = pfu
+  prval () = view@ (buf) := array_v_unsplit {byte} {n2,n1-n2} (pfmul, pf1, pf2)
 in
   // nothing
-end // end of [socket_write_substring]
-
-(* ****** ****** *)
-
-fun print_buf_size
-  {n1,n2:nat | n2 <= n1} 
-  (buf: &(@[byte][n1]), n2: size_t n2): void = let
-  fun loop {i:nat | i <= n2} .<n2-i>.
-    (buf: &(@[byte][n1]), n2: size_t n2, i: size_t i): void =
-    if i < n2 then let
-      val () = print buf.[i] in loop (buf, n2, i+1)
-    end // end of [if]
-  // end of [loop]
-in
-  loop (buf, n2, 0)
 end // end of [print_buf_size]
+
+fun print_bytes_size
+  {n1,n2:nat | n2 <= n1} 
+  (buf: &(@[byte][n1]), n2: size_t n2): void = fprint_bytes_size (stdout_ref, buf, n2)
+// end of [print_bytes_size]
 
 (* ****** ****** *)
 
@@ -109,7 +98,7 @@ main () = () where {
         var !p_buf with pf_buf = @[byte][64]()
         prval () = pf_buf := bytes_v_of_b0ytes_v (pf_buf)
         val nread = socket_read_exn (pfskt | fd, !p_buf, 64)        
-        val () = (print "Client got: "; print_buf_size (!p_buf, nread); print_newline ())
+        val () = (print "Client got: "; print_bytes_size (!p_buf, nread); print_newline ())
         val () = socket_close_exn (pfskt | fd)
       in
         exit (EXIT_SUCCESS)
@@ -122,17 +111,15 @@ main () = () where {
         var !p_buf with pf_buf = @[byte][64]()
         prval () = pf_buf := bytes_v_of_b0ytes_v (pf_buf)
         val nread = socket_read_exn (pfskt_c | fd_c, !p_buf, 64)
-        val () = (print "Server got: "; print_buf_size (!p_buf, nread); print_newline ())
+        val () = (print "Server got: "; print_bytes_size (!p_buf, nread); print_newline ())
         val () = socket_write_substring (pfskt_c | fd_c, "Goodbye!", 0, 8)
         val () = socket_close_exn (pfskt | fd)
         val () = socket_close_exn (pfskt_c | fd_c)
       in
         exit (EXIT_SUCCESS)
       end // end of [ipid > 0]
-    | _ => let
-        val () = perror ("fork")
-      in
-        exit (EXIT_FAILURE)
+    | _ => let // [fork] failed
+        val () = perror ("fork") in exit (EXIT_FAILURE)
       end // end of [val]
 } // end of [main]
 

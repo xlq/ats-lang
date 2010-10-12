@@ -182,4 +182,18 @@ end // end of [socket_write_all_exn]
 
 (* ****** ****** *)
 
+implement
+socket_write_substring
+  {fd} {n} {st,ln}
+  (pfsock | fd, str, st, ln) = let
+  val (pf, fpf | p) =
+    string_takeout_bufptr {n} {st} {ln} (str, st)
+  val () = socket_write_all_exn (pfsock | fd, !p, ln)
+  prval () = fpf (pf)
+in
+  // nothing
+end // end of [socket_write_substring]
+
+(* ****** ****** *)
+
 (* end of [socket.dats] *)

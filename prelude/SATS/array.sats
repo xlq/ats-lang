@@ -452,7 +452,8 @@ array_ptr_foreach_fun {v:view} {n:nat} (
   ) :<> void
 // end of [array_ptr_foreach_fun]
 
-fun array_ptr_foreach_fun_tsz {a:viewt@ype} {v:view} {n:nat} (
+fun array_ptr_foreach_fun_tsz
+  {a:viewt@ype} {v:view} {n:nat} (
     pf: !v
   | base: &(@[a][n]), f: (!v | &a) -<fun> void, asz: size_t n, tsz: sizeof_t a
   ) :<> void

@@ -58,7 +58,7 @@ fun fprintf
   {m:file_mode} {ts:types} (
     pf_mod: file_mode_lte (m, w)
   | out: &FILE m, fmt: printf_c ts, arg: ts
-  ) : int
+  ) : int // HX: [fprintf] is implemented in ATS
 // end of [vfprinf]
 
 (* ****** ****** *)
@@ -66,6 +66,7 @@ fun fprintf
 fun vprintf {ts:types}
   (fmt: printf_c ts, arg: &va_list (ts) >> va_list): int
   = "atslib_vprintf" // function!
+// end of [vprintf]
 
 fun vfprintf
   {m:file_mode} {ts:types} (
@@ -81,7 +82,7 @@ fun vfprintf
 // HX: it is correct but too detailed!
 //
 fun snprintf {ts:types} {m1,m2:nat | m2 <= m1} {l:addr} (
-    pf: &b0ytes m1 @ l >> strbuf (m1, n1) @ l
+    pf: &(b0ytes m1 @ l) >> strbuf (m1, n1) @ l
   | p: ptr l, m2: size_t m2, fmt: printf_c ts, arg: ts)
   : #[n1,n2:nat | (m2 > n2 && n1 == n2) || (n2 >= m2 && n1+1 == m2)] int n2
   = "atspre_snprintf"
@@ -91,7 +92,7 @@ fun snprintf {ts:types} {m1,m2:nat | m2 <= m1} {l:addr} (
 //
 fun snprintf {ts:types}
   {m1,m2:nat | m2 <= m1} {l:addr} (
-    pf: ! @[byte?][m1] @ l >> strbuf (m1, n1) @ l
+    pf: !array_v(byte?, m1, l) >> strbuf (m1, n1) @ l
   | p: ptr l, m2: size_t m2, fmt: printf_c ts, arg: ts
   ) :<> #[n1:nat | n1 < m2] [n2:nat] int n2
   = "atslib_snprintf"
@@ -103,7 +104,7 @@ fun snprintf {ts:types}
 //
 fun vsnprintf {ts:types}
   {m1,m2:nat | m2 <= m1} {l:addr} (
-    pf: ! @[byte?][m1] @ l >> strbuf (m1, n1) @ l
+    pf: !array_v (byte?, m1, l) >> strbuf (m1, n1) @ l
   | p: ptr l, m2: size_t m2
   , fmt: printf_c ts, arg: &va_list (ts) >> va_list
   ) :<> #[n1:nat | n1 < m2] [n2:nat] int n2

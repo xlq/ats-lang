@@ -56,8 +56,9 @@ ats_exit_errmsg(ats_int_type n, ats_ptr_type msg) ;
 
 /*
 
-// these are now casting functions:
-
+//
+// HX: these are now casting functions:
+//
 ATSinline()
 ats_byte_type
 atspre_byte_of_char (ats_char_type c) { return c ; }
@@ -131,38 +132,39 @@ ats_bool_type
 atspre_lt_byte_byte(ats_byte_type b1, ats_byte_type b2) {
   return (b1 < b2) ;
 }
-
 ATSinline()
 ats_bool_type
 atspre_lte_byte_byte(ats_byte_type b1, ats_byte_type b2) {
   return (b1 <= b2) ;
 }
-
 ATSinline()
 ats_bool_type
 atspre_gt_byte_byte(ats_byte_type b1, ats_byte_type b2) {
   return (b1 > b2) ;
 }
-
 ATSinline()
 ats_bool_type
 atspre_gte_byte_byte(ats_byte_type b1, ats_byte_type b2) {
   return (b1 >= b2) ;
 }
 
-ATSinline()
-ats_bool_type
-atspre_eq_byte_byte(ats_byte_type b1, ats_byte_type b2) {
-  return (b1 == b2) ;
-}
+/* ****** ****** */
 
 ATSinline()
 ats_bool_type
-atspre_neq_byte_byte(ats_byte_type b1, ats_byte_type b2) {
-  return (b1 != b2) ;
-}
+atspre_eq_byte_byte
+  (ats_byte_type b1, ats_byte_type b2) { return (b1 == b2) ; }
+// end of [atspre_eq_byte_byte]
 
+ATSinline()
+ats_bool_type
+atspre_neq_byte_byte
+  (ats_byte_type b1, ats_byte_type b2) { return (b1 != b2) ; }
+// end of [atspre_neq_byte_byte]\
+
+//
 // bitwise operations
+//
 
 ATSinline()
 ats_byte_type
@@ -170,46 +172,50 @@ atspre_lnot_byte(ats_byte_type b) { return (~b) ; }
 
 ATSinline()
 ats_byte_type
-atspre_land_byte_byte(ats_byte_type b1, ats_byte_type b2) {
-  return (b1 & b2) ;
-}
+atspre_land_byte_byte
+  (ats_byte_type b1, ats_byte_type b2) { return (b1 & b2) ; }
+// end of [atspre_land_byte_byte]
 
 ATSinline()
 ats_byte_type
-atspre_lor_byte_byte(ats_byte_type b1, ats_byte_type b2) {
-  return (b1 | b2) ;
-}
+atspre_lor_byte_byte
+  (ats_byte_type b1, ats_byte_type b2) { return (b1 | b2) ; }
+// end of [atspre_lor_byte_byte]
 
 ATSinline()
 ats_byte_type
-atspre_lxor_byte_byte(ats_byte_type b1, ats_byte_type b2) {
-  return (b1 ^ b2) ;
-}
+atspre_lxor_byte_byte
+  (ats_byte_type b1, ats_byte_type b2) { return (b1 ^ b2) ; }
+// end of [atspre_lxor_byte_byte]
 
 ATSinline()
 ats_byte_type
-atspre_lsl_byte_int1(ats_byte_type b, ats_int_type n) {
-  return (b << n) ;
-}
+atspre_lsl_byte_int1
+  (ats_byte_type b, ats_int_type n) { return (b << n) ; }
+// end of [atspre_lsl_byte_int1]
 
 ATSinline()
 ats_byte_type
-atspre_lsr_byte_int1(ats_byte_type b, ats_int_type n) {
-  return (b >> n) ;
-}
+atspre_lsr_byte_int1
+  (ats_byte_type b, ats_int_type n) { return (b >> n) ; }
+// end of [atspre_lsr_byte_int1]
 
+//
 // print functions
+//
 
 ATSinline()
 ats_void_type
 atspre_fprint_byte (
   const ats_ptr_type out, const ats_byte_type b
 ) {
+/*
   int n = fputc (b, (FILE *)out) ;
   if (n < 0) {
     ats_exit_errmsg (n, (ats_ptr_type)"Exit: [fprint_byte] failed.\n") ;
   } // end of [if]
-  return ;
+*/
+  (void)fputc (b, (FILE *)out) ; return ;
 } // end of [atspre_fprint_byte]
 
 ATSinline()

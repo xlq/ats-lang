@@ -83,10 +83,11 @@ praxi cleanup_top {a:viewt@ype} (x: a?):<> void
 (* ****** ****** *)
 
 //
-// should this be assumed?
-// praxi eqsize_byte_one (): [sizeof byte == 1] void
+// HX: should this be assumed?
+// HX-2010-10-12: of course, it should
 //
-
+praxi eqsize_byte_one (): [sizeof byte == 1] void
+//
 praxi eqsize_byte_char (): [sizeof byte == sizeof char] void
 praxi eqsize_int_uint (): [sizeof int == sizeof uint] void
 praxi eqsize_char_schar (): [sizeof char == sizeof schar] void

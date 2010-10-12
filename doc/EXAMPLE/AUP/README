@@ -39,4 +39,9 @@ AUP_5_17_3: Thread Synchronization (Mutexes)
 AUP_6_3_1: dup and dup2 System Calls
 AUP_6_5: Two-Way Communication with Unidirectional Pipes
 
+######
+
+AUP_8_1_1: How Sockets Work
+AUP_8_1_3: Handling Multiple Clients
+
 ###### end of [README] ######
