@@ -153,6 +153,7 @@ RMF = rm -f
 clean::
 	$(RMF) *~
 	$(RMF) *_?ats.c *_?ats.o
+	$(RMF) errinfo.o
 	$(RMF) getargs.o
 
 cleanall: clean

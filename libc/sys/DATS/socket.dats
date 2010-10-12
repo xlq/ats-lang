@@ -108,10 +108,10 @@ end // end of [socket_read_exn]
 (* ****** ****** *)
 
 implement
-socket_write_loop_exn
+socket_write_all_exn
   (pfskt | fd, buf, ntot) = let
   var err: int = 1
-  val nwrit = socket_write_loop_err (pfskt | fd, buf, ntot)
+  val nwrit = socket_write_all_err (pfskt | fd, buf, ntot)
   val () = if nwrit >= 0 then let
     val nwrit = size1_of_ssize1 (nwrit)
   in
@@ -121,9 +121,9 @@ in
   if err > 0 then let
     val () = perror "socket_write"
   in
-    exit_errmsg (EXIT_FAILURE, "[socket_write_loop] failed.\n")
+    exit_errmsg (EXIT_FAILURE, "[socket_write_all] failed.\n")
   end (* end of [if] *)
-end // end of [socket_write_loop_exn]
+end // end of [socket_write_all_exn]
 
 (* ****** ****** *)
 

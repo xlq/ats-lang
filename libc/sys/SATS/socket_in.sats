@@ -34,6 +34,10 @@
 (* author: Hongwei Xi (hwxi AT cs DOT bu DOT edu)  *)
 
 (* ****** ****** *)
+//
+// HX: some convenience functions
+//
+(* ****** ****** *)
 
 staload "libc/sys/SATS/socket.sats"
 staload "libc/netinet/SATS/in.sats"

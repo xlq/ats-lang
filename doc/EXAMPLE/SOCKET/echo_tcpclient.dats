@@ -31,17 +31,17 @@ end // end of [print_usage]
 (* ****** ****** *)
 
 extern fun client_loop {fd:int}
-  (pf_sock: !socket_v (fd, conn) | sockfd: int fd): void
+  (pfskt: !socket_v (fd, conn) | sockfd: int fd): void
 
 (* ****** ****** *)
 
-implement client_loop {fd:int} (pf_sock | sockfd) = let
+implement client_loop {fd:int} (pfskt | sockfd) = let
   #define M MAXLINE
   val b0 = byte_of_int (0)
   var !p_buf_send = @[byte][M](b0) // allocation on stack
   and !p_buf_recv = @[byte][M](b0) // allocation on stack
   fun loop {m:file_mode} {l_buf_send,l_buf_recv:addr} (
-      pf_sock: !socket_v (fd, conn)
+      pfskt: !socket_v (fd, conn)
     , pf_buf_send: !b0ytes M @ l_buf_send
     , pf_buf_recv: !bytes M @ l_buf_recv
     , pf_mod: file_mode_lte (m, r)
@@ -54,13 +54,13 @@ implement client_loop {fd:int} (pf_sock | sockfd) = let
       prval fgets_v_succ (pf_buf_send1) = pf_fgets
       val nsend = strbuf_length (!p_buf_send)
       prval () = pf_buf_send := bytes_v_of_strbuf_v (pf_buf_send1)
-      val () = socket_write_loop_exn (pf_sock | sockfd, !p_buf_send, nsend)
-      val nread = socket_read_exn (pf_sock | sockfd, !p_buf_recv, nsend)
+      val () = socket_write_all_exn (pfskt | sockfd, !p_buf_send, nsend)
+      val nread = socket_read_exn (pfskt | sockfd, !p_buf_recv, nsend)
       val (pf_stdout | p_stdout) = stdout_get ()
       val () = fwrite_byte_exn (file_mode_lte_w_w | !p_buf_recv, nread, !p_stdout)
       val () = stdout_view_set (pf_stdout | (*none*))
     in
-      loop (pf_sock, pf_buf_send, pf_buf_recv, pf_mod | fil, p_buf_send, p_buf_recv)
+      loop (pfskt, pf_buf_send, pf_buf_recv, pf_mod | fil, p_buf_send, p_buf_recv)
     end else let
       prval fgets_v_fail (pf_buf_send1) = pf_fgets
       prval () = pf_buf_send := pf_buf_send1
@@ -70,7 +70,7 @@ implement client_loop {fd:int} (pf_sock | sockfd) = let
   end // end of [loop]
   val (pf_stdin | p_stdin) = stdin_get ()
   val () = loop (
-    pf_sock, view@ !p_buf_send, view@ !p_buf_recv, file_mode_lte_r_r
+    pfskt, view@ !p_buf_send, view@ !p_buf_recv, file_mode_lte_r_r
   | !p_stdin, p_buf_send, p_buf_recv
   )
   val () = stdin_view_set (pf_stdin | (*none*))
@@ -92,10 +92,10 @@ implement main (argc, argv) = let
   var servaddr: sockaddr_in_struct // uninitialized
   val () = sockaddr_in_init
     (servaddr, AF_INET, in_addr_struct_get_s_addr inp, in_port_nbo_of_int servport)
-  val [fd:int] (pf_sock | sockfd) = socket_family_type_exn (AF_INET, SOCK_STREAM)
-  val () = connect_in_exn (pf_sock | sockfd, servaddr)
-  val () = client_loop (pf_sock | sockfd)
-  val () = socket_close_exn (pf_sock | sockfd)
+  val [fd:int] (pfskt | sockfd) = socket_family_type_exn (AF_INET, SOCK_STREAM)
+  val () = connect_in_exn (pfskt | sockfd, servaddr)
+  val () = client_loop (pfskt | sockfd)
+  val () = socket_close_exn (pfskt | sockfd)
 in
   exit (0) // normal exit
 end // end of [main]

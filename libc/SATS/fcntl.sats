@@ -169,17 +169,17 @@ fun read_exn
 // note that it is used only when it is known ahead how many bytes are expected;
 // otherwise, there is the risk of forever blocking!!!
 //
-fun read_loop_err
+fun read_all_err
   {fd:int} {n,sz:nat | n <= sz} (
     pf: !fildes_v (fd) | fd: int fd, buf: &bytes sz, ntotal: size_t n
-  ) : ssizeBtw (~1, n+1) = "atslib_fildes_read_loop_err"
-// end of [read_loop_err]
+  ) : ssizeBtw (~1, n+1) = "atslib_fildes_read_all_err"
+// end of [read_all_err]
 
-fun read_loop_exn
+fun read_all_exn
   {fd:int} {n,sz:nat | n <= sz} (
     pf: !fildes_v (fd) | fd: int fd, buf: &bytes sz, ntotal: size_t n
-  ) : sizeLte n = "atslib_fildes_read_loop_exn"
-// end of [read_loop_exn]
+  ) : sizeLte n = "atslib_fildes_read_all_exn"
+// end of [read_all_exn]
 
 (* ****** ****** *)
 //
@@ -201,19 +201,19 @@ fun write_exn
 //
 // HX: implemented in [libc/DATS/fcntl.dats]
 //
-fun write_loop_err
+fun write_all_err
   {fd:int} {n,sz:nat | n <= sz} (
     pf: !fildes_v (fd) | fd: int fd, buf: &bytes sz, ntotal: size_t n
-  ) : ssizeBtw(~1, n+1) = "atslib_fildes_write_loop_err"
-// end of [write_loop_err]
+  ) : ssizeBtw(~1, n+1) = "atslib_fildes_write_all_err"
+// end of [write_all_err]
 // 
 // HX: all bytes must have been written if this function returns
 //
-fun write_loop_exn
+fun write_all_exn
   {fd:int} {n,sz:nat | n <= sz} (
     pf: !fildes_v (fd) | fd: int fd, buf: &bytes sz, ntotal: size_t n
-  ) : void = "atslib_fildes_write_loop_exn"
-// end of [write_loop_exn]
+  ) : void = "atslib_fildes_write_all_exn"
+// end of [write_all_exn]
 
 (* ****** ****** *)
 //

@@ -105,7 +105,7 @@ extern praxi bytes_v_unsplit {n1,n2:nat}
 (* ****** ****** *)
 
 implement
-read_loop_err
+read_all_err
   {fd} {n,sz}
   (pf_fd | fd, buf, ntotal) = let
   fun loop {nleft:nat | nleft <= n} {l:addr} (
@@ -139,25 +139,25 @@ read_loop_err
   val nleft = loop (pf_fd, view@ buf | fd, &buf, ntotal, err)
 in
   if err = 0 then sz2ssz (ntotal - nleft) else i2ssz (~1)
-end // end of [read_loop_err]
+end // end of [read_all_err]
 
 implement
-read_loop_exn
+read_all_exn
   (pf_fd | fd, buf, ntotal) = let
-  val nread = read_loop_err (pf_fd | fd, buf, ntotal)
+  val nread = read_all_err (pf_fd | fd, buf, ntotal)
 in
   if nread >= 0 then ssz2sz (nread)
   else let
     val () = perror "read"
   in
-    exit_errmsg (EXIT_FAILURE, "exit(ATS): [read_loop] failed\n")
+    exit_errmsg (EXIT_FAILURE, "exit(ATS): [read_all] failed\n")
   end (* end of [if] *)
-end // end of [read_loop_exn]
+end // end of [read_all_exn]
 
 (* ****** ****** *)
 
 implement
-write_loop_err
+write_all_err
   {fd} {n,sz}
   (pf_fd | fd, buf, ntotal) = let
   fun loop {nleft:nat | nleft <= n} {l:addr} (
@@ -190,15 +190,15 @@ write_loop_err
   val nleft = loop (pf_fd, view@ buf | fd, &buf, ntotal, err)
 in
   if err = 0 then sz2ssz (ntotal - nleft) else i2ssz (~1)
-end // end of [write_loop_err]
+end // end of [write_all_err]
 
 (* ****** ****** *)
 
 implement
-write_loop_exn
+write_all_exn
   (pf_fd | fd, buf, ntotal) = let
   var err: int = 0
-  val nwrit = write_loop_err (pf_fd | fd, buf, ntotal)
+  val nwrit = write_all_err (pf_fd | fd, buf, ntotal)
   val () = if nwrit >= 0 then let
     val nwrit = ssz2sz (nwrit) in if nwrit < ntotal then (err := err + 1)
   end else (err := err + 1) // end of [if]
@@ -206,9 +206,9 @@ in
   if err > 0 then let
     val () = perror "write"
   in
-    exit_errmsg (EXIT_FAILURE, "exit(ATS): [write_loop]: failed\n")
+    exit_errmsg (EXIT_FAILURE, "exit(ATS): [write_all]: failed\n")
   end (* end of [if] *)
-end // end of [write_loop_exn]
+end // end of [write_all_exn]
 
 (* ****** ****** *)
 

@@ -119,7 +119,7 @@ in
       prval () = pf_buf := bytes_v_of_b0ytes_v (pf_buf)
       val () = close_exn (pfin2 | fdin2)
       val () = close_exn (pfout1 | fdout1)
-      val (pfopt | fd) = open_flag_err ("datafile", O_RDONLY)
+      val (pfopt | fd) = open_flag_err ("data/fruits.txt", O_RDONLY)
       var err: int = 0
       val () = if (fd < 0) then let
         prval open_v_fail () = pfopt in err := err+1

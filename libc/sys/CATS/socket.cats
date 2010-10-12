@@ -186,7 +186,14 @@ atslib_accept_null_exn (ats_int_type sfd) {
 
 #define atslib_socket_read_err atslib_fildes_read_err
 #define atslib_socket_write_err atslib_fildes_write_err
-#define atslib_socket_write_loop_err atslib_fildes_write_loop_err
+#define atslib_socket_read_all_err atslib_fildes_read_all_err
+#define atslib_socket_write_all_err atslib_fildes_write_all_err
+
+/* ****** ****** */
+//
+// HX: [fdopen] is declared in stdio.h
+//
+#define atslib_socket_fdopen_err fdopen
 
 /* ****** ****** */
 

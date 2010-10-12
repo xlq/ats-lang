@@ -219,7 +219,7 @@ fun socket_write_err {fd:int} {n,sz:nat | n <= sz} (
   ) : ssizeBtw(~1, n+1) = "#atslib_socket_write_err" // = atslib_fildes_write_err
 // end of [socket_write_err]
 //
-// HX: [socket_write_exn]: plesae use [socket_write_loop_exn] instead
+// HX: [socket_write_exn]: plesae use [socket_write_all_exn] instead
 //
 (* ****** ****** *)
 //
@@ -228,27 +228,38 @@ fun socket_write_err {fd:int} {n,sz:nat | n <= sz} (
 // note that it is used only when it is known ahead how many bytes are expected;
 // otherwise, there is the risk of forever blocking!!!
 //
-fun socket_read_loop_err {fd:int} {n,sz:nat | n <= sz} (
+fun socket_read_all_err {fd:int} {n,sz:nat | n <= sz} (
     pfskt: !socket_v (fd, conn) | fd: int fd, buf: &bytes sz, ntotal: size_t n
-  ) : ssizeBtw (~1, n+1) = "#atslib_socket_read_loop_err" // = atslib_fildes_read_loop_err
-// end of [socket_read_loop_err]
+  ) : ssizeBtw (~1, n+1) = "#atslib_socket_read_all_err" // = atslib_fildes_read_all_err
+// end of [socket_read_all_err]
 
 (* ****** ****** *)
 //
 // HX: this one is actually implemented in [libc/DATS/fcntl.dats]
 //
-fun socket_write_loop_err {fd:int} {n,sz:nat | n <= sz} (
+fun socket_write_all_err {fd:int} {n,sz:nat | n <= sz} (
     pfskt: !socket_v (fd, conn) | fd: int fd, buf: &bytes sz, ntotal: size_t n
-  ) : ssizeBtw(~1, n+1) = "#atslib_socket_write_loop_err" // = atslib_fildes_write_loop_err
-// end of [socket_write_loop_err]
+  ) : ssizeBtw(~1, n+1) = "#atslib_socket_write_all_err" // = atslib_fildes_write_all_err
+// end of [socket_write_all_err]
 //
 // HX: this one is implemented in [libc/sys/DATS/socket.dats]
 //
-fun socket_write_loop_exn {fd:int} {n,sz:nat | n <= sz} (
+fun socket_write_all_exn {fd:int} {n,sz:nat | n <= sz} (
     pfskt: !socket_v (fd, conn) | fd: int fd, buf: &bytes sz, ntotal: size_t n
   ) : void // all bytes must be written if this function returns
-  = "atslib_socket_write_loop_exn"
-// end of [socket_write_loop_exn]
+  = "atslib_socket_write_all_exn"
+// end of [socket_write_all_exn]
+
+(* ****** ****** *)
+
+dataview socket_fdopen_v
+  (fd: int, m: file_mode, addr) =
+  | socket_fdopen_v_fail (fd, m, null) of socket_v (fd, conn)
+  | {l:agz} socket_fdopen_v_succ (fd, m, l) of FILE m @ l
+fun socket_fdopen_err {fd:int} {m:file_mode}
+  (pf: socket_v (fd, conn) | fd: int fd, m: file_mode m)
+  : [l:addr] (socket_fdopen_v (fd, m, l) | ptr l) = "#atslib_socket_fdopen_err"
+// end of [socket_fdopen_err]
 
 (* ****** ****** *)
 

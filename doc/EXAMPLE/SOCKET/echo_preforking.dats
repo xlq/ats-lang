@@ -21,6 +21,7 @@
 
 staload "libc/SATS/signal.sats"
 staload "libc/SATS/stdio.sats"
+staload "libc/SATS/stdlib.sats" // for EXIT_FAILURE
 staload "libc/SATS/unistd.sats"
 staload "libc/sys/SATS/wait.sats"
 staload "libc/sys/SATS/types.sats"
@@ -33,23 +34,6 @@ staload "libc/arpa/SATS/inet.sats"
 (* ****** ****** *)
 
 staload _ = "prelude/DATS/array.dats"
-
-(* ****** ****** *)
-
-%{
-ats_ptr_type
-fdopen_exn (
-  ats_int_type id, ats_ptr_type mode
-) {
-  FILE *fil = fdopen((int)id, (char*)mode) ;
-  if (!fil) {
-    perror ("fdopen") ;
-    atspre_exit_prerrf (
-      1, "exit(ATS): [fdopen(\"%d\", \"%s\")] failed\n", id, mode) ;
-  }
-  return fil ;
-}
-%} // end of [%{^]
 
 (* ****** ****** *)
 
@@ -66,19 +50,24 @@ in
   end else pid
 end // end of [fork_child]
 
-// HX: no longer needed after ATS-0.2.0:
-macdef file_mode_rr = $extval (file_mode rw, "\"r+\"")
-//
 extern fun fchild {fd:int}
   (pf_sock: !socket_v(fd,listen) | fd: int fd, pid: pid_t):<fun1> void
 implement fchild {fd} (pf_sock | fd, pid) = let
   val (pf_client | client) = accept_null_exn (pf_sock | fd)
-  val (pf_fil | p_fil) = // [pf_client] gets absorbed int [pf_fil]
-    fdopen (pf_client | client, file_mode_rr) where {
-    extern fun fdopen {fd:int} {m:fm}
-      (pf: socket_v (fd, conn) | fd: int fd, m: file_mode m)
-      : [l:addr] (FILE m @ l | ptr l) = "fdopen_exn"
-  } // end of [val]
+  val [l:addr] (pfopt | p_fil) = // [pf_client] gets absorbed into [pf_fil]
+    socket_fdopen_err (pf_client | client, file_mode_rr)
+  prval () = ptr_is_gtez (p_fil)
+  val () =
+//
+if (p_fil = null) then let
+  prval socket_fdopen_v_fail (pf) = pfopt
+  val () = perror "socket_fdopen"
+  val () = socket_close_exn (pf | client)
+  val () = exit (EXIT_FAILURE)
+in
+  // nothing    
+end else let // end of [val]
+  prval socket_fdopen_v_succ (pf_fil) = pfopt
   val () = fprintf (file_mode_lte_rw_w | !p_fil, "Child %d echo> ", @((int)pid))
   val () = fflush_exn(file_mode_lte_rw_w | !p_fil)
   #define BUFSZ 1024
@@ -95,8 +84,11 @@ implement fchild {fd} (pf_sock | fd, pid) = let
   // val () = socket_close_exn (pf_client_c | client) // HX: alreay closed at this point
 in
   fchild (pf_sock | fd, pid)
+end // end of [val]
+//
+in
+  // nothing
 end // end of [fchild]
-
 fun make_server_socket (port: int)
   : [fd:int] (socket_v(fd,listen) | int fd) = let
   val (pf_sock_s | sockfd) = socket_family_type_exn (AF_INET, SOCK_STREAM);
