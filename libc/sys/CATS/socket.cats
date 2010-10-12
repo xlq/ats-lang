@@ -180,6 +180,10 @@ atslib_accept_null_exn (ats_int_type sfd) {
 
 /* ****** ****** */
 
+#define atslib_shutdown_err shutdown
+
+/* ****** ****** */
+
 #define atslib_socket_read_err atslib_fildes_read_err
 #define atslib_socket_write_err atslib_fildes_write_err
 #define atslib_socket_write_loop_err atslib_fildes_write_loop_err

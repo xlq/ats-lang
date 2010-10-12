@@ -687,6 +687,8 @@ fn doc_dir_copy () = let
     val () = cp "libc_time.dats"
     val () = cp "libc_unistd.dats"
 //
+    val () = cp "libc_sys_utsname.dats"
+//
     val () = cp "libats_funarray_braun.dats"
     val () = cp "libats_funheap_braun.dats"
     val () = cp "libats_funmap_avltree.dats"

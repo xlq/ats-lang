@@ -81,7 +81,9 @@ fun utsname_get_domainname
 // end of [utsname_get_domainname]
 
 (* ****** ****** *)
-
+//
+// HX: 0/-1 : succ/fail // errno set
+//
 fun uname (
   x: &utsname? >> opt (utsname, i==0)
 ) : #[i:int | i <= 0] int i = "#atslib_uname"

@@ -157,6 +157,8 @@ libc/DATS/unistd.dats
 
 libc/SATS/utime.sats
 
+/* ****** ****** */
+
 libc/sys/SATS/select.sats
 
 libc/sys/SATS/sockaddr.sats
@@ -176,9 +178,13 @@ libc/sys/SATS/time.sats
 
 libc/sys/SATS/types.sats
 
+libc/sys/SATS/un.sats
+
 libc/sys/SATS/utsname.sats
 
 libc/sys/SATS/wait.sats
+
+/* ****** ****** */
 
 libc/arpa/SATS/inet.sats
 

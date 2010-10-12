@@ -46,7 +46,7 @@ implement main (argc, argv) = let
   var servaddr: sockaddr_in_struct // uninitialized
   val servport = in_port_nbo_of_int (nport)
   val in4addr_any = in_addr_nbo_of_hbo (INADDR_ANY)
-  val () = sockaddr_ipv4_init (servaddr, AF_INET, in4addr_any, servport)
+  val () = sockaddr_in_init (servaddr, AF_INET, in4addr_any, servport)
   val () = bind_in_exn (pf_sock_s | fd_s, servaddr)
   val () = listen_exn (pf_sock_s | fd_s, LISTENQ) 
   val () = loop (pf_sock_s | fd_s) where {

@@ -90,7 +90,7 @@ implement main (argc, argv) = let
   var inp: in_addr_struct // uninitialized
   val () = inet_aton_exn (servname, inp)
   var servaddr: sockaddr_in_struct // uninitialized
-  val () = sockaddr_ipv4_init
+  val () = sockaddr_in_init
     (servaddr, AF_INET, in_addr_struct_get_s_addr inp, in_port_nbo_of_int servport)
   val [fd:int] (pf_sock | sockfd) = socket_family_type_exn (AF_INET, SOCK_STREAM)
   val () = connect_in_exn (pf_sock | sockfd, servaddr)

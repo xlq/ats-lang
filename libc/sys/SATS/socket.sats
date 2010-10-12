@@ -85,14 +85,6 @@ fun socket_family_type_exn
 
 (* ****** ****** *)
 
-fun sockaddr_ipv4_init (
-    sa: &sockaddr_in_struct? >> sockaddr_in_struct
-  , af: sa_family_t, inp: in_addr_nbo_t, port: in_port_nbo_t
-  ) :<> void = "atslib_sockaddr_ipv4_init"
-// end of [sockaddr_ipv4_init]
-
-(* ****** ****** *)
-
 dataview connect_v (fd: int, int) =
   | connect_v_succ (fd,  0) of socket_v (fd, conn)
   | connect_v_fail (fd, ~1) of socket_v (fd, init)
@@ -100,7 +92,7 @@ dataview connect_v (fd: int, int) =
 
 fun connect_err
   {fd:int} {n1,n2:int | n2 <= n1} (
-    pf_sock: socket_v (fd, init)
+    pfskt: socket_v (fd, init)
   | fd: int fd, servaddr: &sockaddr_struct(n1), salen: socklen_t(n2)
   ) : [i:int] (connect_v (fd, i) | int i)
   = "#atslib_connect_err"
@@ -115,7 +107,7 @@ dataview bind_v (fd:int, int) =
 
 fun bind_err
   {fd:int} {n1,n2:int | n2 <= n1} (
-    pf_sock: socket_v (fd, init)
+    pfskt: socket_v (fd, init)
   | fd: int fd, servaddr: &sockaddr_struct(n1), salen: socklen_t(n2)
   ) : [i:int] (bind_v (fd, i) | int i) = "#atslib_bind_err"
 // end of [bind_err]
@@ -128,13 +120,13 @@ dataview listen_v (fd: int, int) =
 // end of [listen_v]
 
 fun listen_err {fd:int}
-  (pf_sock: socket_v (fd, bind) | fd: int fd, backlog: Pos)
+  (pfskt: socket_v (fd, bind) | fd: int fd, backlog: Pos)
   : [i:int] (listen_v (fd, i) | int i)
   = "atslib_listen_err"
 // end of [listen_err]
 
 fun listen_exn {fd:int} (
-    pf_sock: !socket_v (fd, bind) >> socket_v (fd, listen)
+    pfskt: !socket_v (fd, bind) >> socket_v (fd, listen)
   | fd: int fd, backlog: Pos // [backlog = 0] is not supported on all systems
   ) : void  = "atslib_listen_exn"
 // end of [listen_exn]
@@ -148,12 +140,12 @@ accept_v (int) =
 // end of [accept_v]
 
 fun accept_null_err {sfd:int}
-  (pf_sock: !socket_v (sfd, listen) | sfd: int sfd)
+  (pfskt: !socket_v (sfd, listen) | sfd: int sfd)
   : [cfd:int] (accept_v cfd | int cfd) = "atslib_accept_null_err"
 // end of [accept_null_err]
 
 fun accept_null_exn {sfd:int}
-  (pf_sock: !socket_v (sfd, listen) | sfd: int sfd)
+  (pfskt: !socket_v (sfd, listen) | sfd: int sfd)
   : [cfd:int] (socket_v (cfd, conn) | int cfd) = "atslib_accept_null_exn"
 // end of [accept_null_exn]
 
@@ -166,7 +158,7 @@ socket_close_v (fd: int, s: status, int) =
 // end of [socket_close_v]
 
 fun socket_close_err {fd:int} {s:status}
-  (pf_sock: socket_v (fd, s) | fd: int fd)
+  (pfskt: socket_v (fd, s) | fd: int fd)
   : [i:int] (socket_close_v (fd, s, i) | int i)
   = "#atslib_socket_close_err" // = atslib_close_err
 // end of [socket_close_err]
@@ -175,22 +167,46 @@ fun socket_close_err {fd:int} {s:status}
 // HX: this one is like [fildes_close_loop_exn]
 //
 fun socket_close_exn {fd:int} {s:status}
-  (pf_sock: socket_v (fd, s) | fd: int fd): void
+  (pfskt: socket_v (fd, s) | fd: int fd): void
 // end of [socket_close_exn]
+
+(* ****** ****** *)
+
+abst@ype shutkind_t = int
+macdef SHUT_RD = $extval (shutkind_t, "SHUT_RD")
+macdef SHUT_WR = $extval (shutkind_t, "SHUT_WR")
+macdef SHUT_RDWR = $extval (shutkind_t, "SHUT_RDWR")
+
+dataview shutdown_v
+  (fd: int, int) =
+  | shutdown_v_fail (fd, ~1) of socket_v (fd, conn)
+  | shutdown_v_succ (fd, 0)
+// end of [shutdown_v]
+
+fun shutdown_err // HX: what error can occur?
+  {fd:int} // 0/-1 : succ/fail // errno set
+  (pfskt: socket_v (fd, conn) | fd: int fd, how: shutkind_t)
+  : [i:int] (shutdown_v (fd, i) | int i) = "#atslib_shutdown_err"
+// end of [shutdown_err]
+
+fun shutdown_exn // HX: this one is preferred!
+  {fd:int} // 0/-1 : succ/fail // errno set
+  (pfskt: socket_v (fd, conn) | fd: int fd, how: shutkind_t): void
+// end of [shutdown_exn]
 
 (* ****** ****** *)
 //
 // HX: actually implemented in [libc/CATS/fcntl.cats]
 //
 fun socket_read_err {fd:int} {n,sz:nat | n <= sz} (
-    pf_sock: !socket_v (fd, conn) | fd: int fd, buf: &bytes sz, ntotal: size_t n
+    pfskt: !socket_v (fd, conn) | fd: int fd, buf: &bytes sz, ntotal: size_t n
   ) : ssizeBtw(~1, n+1) = "#atslib_socket_read_err" // = atslib_fildes_read_err
 // end of [socket_read_err]
 //
 // HX: implemented in [libc/sys/DATSsocket.dats]
 //
 fun socket_read_exn {fd:int} {n,sz:nat | n <= sz} (
-    pf_sock: !socket_v (fd, conn) | fd: int fd, buf: &bytes sz, ntotal: size_t n
+    pfskt: !socket_v (fd, conn) | fd: int fd, buf: &bytes sz, ntotal: size_t n
   ) : sizeLte n
 // end of [socket_read_exn]
 
@@ -199,7 +215,7 @@ fun socket_read_exn {fd:int} {n,sz:nat | n <= sz} (
 // HX: actually implemented in [libc/CATS/fcntl.cats]
 //
 fun socket_write_err {fd:int} {n,sz:nat | n <= sz} (
-    pf_sock: !socket_v (fd, conn) | fd: int fd, buf: &bytes sz, ntotal: size_t n
+    pfskt: !socket_v (fd, conn) | fd: int fd, buf: &bytes sz, ntotal: size_t n
   ) : ssizeBtw(~1, n+1) = "#atslib_socket_write_err" // = atslib_fildes_write_err
 // end of [socket_write_err]
 //
@@ -213,7 +229,7 @@ fun socket_write_err {fd:int} {n,sz:nat | n <= sz} (
 // otherwise, there is the risk of forever blocking!!!
 //
 fun socket_read_loop_err {fd:int} {n,sz:nat | n <= sz} (
-    pf_sock: !socket_v (fd, conn) | fd: int fd, buf: &bytes sz, ntotal: size_t n
+    pfskt: !socket_v (fd, conn) | fd: int fd, buf: &bytes sz, ntotal: size_t n
   ) : ssizeBtw (~1, n+1) = "#atslib_socket_read_loop_err" // = atslib_fildes_read_loop_err
 // end of [socket_read_loop_err]
 
@@ -222,14 +238,14 @@ fun socket_read_loop_err {fd:int} {n,sz:nat | n <= sz} (
 // HX: this one is actually implemented in [libc/DATS/fcntl.dats]
 //
 fun socket_write_loop_err {fd:int} {n,sz:nat | n <= sz} (
-    pf_sock: !socket_v (fd, conn) | fd: int fd, buf: &bytes sz, ntotal: size_t n
+    pfskt: !socket_v (fd, conn) | fd: int fd, buf: &bytes sz, ntotal: size_t n
   ) : ssizeBtw(~1, n+1) = "#atslib_socket_write_loop_err" // = atslib_fildes_write_loop_err
 // end of [socket_write_loop_err]
 //
 // HX: this one is implemented in [libc/sys/DATS/socket.dats]
 //
 fun socket_write_loop_exn {fd:int} {n,sz:nat | n <= sz} (
-    pf_sock: !socket_v (fd, conn) | fd: int fd, buf: &bytes sz, ntotal: size_t n
+    pfskt: !socket_v (fd, conn) | fd: int fd, buf: &bytes sz, ntotal: size_t n
   ) : void // all bytes must be written if this function returns
   = "atslib_socket_write_loop_exn"
 // end of [socket_write_loop_exn]

@@ -43,32 +43,32 @@ implement main (argc, argv) = let
   // [sockaddr_ipv4_init] is implemented in [libc/sys/CATS/socket.cats];
   // it initializes an ipv4 socket address with an ipv4 address and a port
   // (represented in the network-byte-order)
-  val () = sockaddr_ipv4_init
+  val () = sockaddr_in_init
     (servaddr, AF_INET, in_addr_struct_get_s_addr inp, servport)
   // [socket_family_type_exn] creates a socket of a given family and a given type
-  val [fd:int] (pf_sock | sockfd) = socket_family_type_exn (AF_INET, SOCK_STREAM)
+  val [fd:int] (pfskt | sockfd) = socket_family_type_exn (AF_INET, SOCK_STREAM)
   // [connect_in_exn] connects to a server assigned an ipv4 socket address
-  val () = connect_in_exn (pf_sock | sockfd, servaddr)
+  val () = connect_in_exn (pfskt | sockfd, servaddr)
   typedef buf_t = @[byte][MAXLINE]
   val b0 = byte_of_int (0)
   var !p_buf = @[byte][MAXLINE](b0) // allocation on stack
-  val () = loop (pf_sock | !p_buf) where {
-    fun loop (pf_sock: !socket_v (fd, conn) | buf: &buf_t)
+  val () = loop (pfskt | !p_buf) where {
+    fun loop (pfskt: !socket_v (fd, conn) | buf: &buf_t)
       :<cloref1> void = let
-      val n = socket_read_exn (pf_sock | sockfd, buf, MAXLINE)
+      val n = socket_read_exn (pfskt | sockfd, buf, MAXLINE)
     in
       if n > 0 then let
         val (pf_stdout | p_stdout) = stdout_get ()
         val () = fwrite_byte_exn (file_mode_lte_w_w | buf, n, !p_stdout)
         val () = stdout_view_set (pf_stdout | (*none*))
       in
-        loop (pf_sock | buf)
+        loop (pfskt | buf)
       end else begin
         // connection is closed by the server
       end // end of [if]
     end // end of [loop]
   } // end of [val]
-  val () = socket_close_exn (pf_sock | sockfd) // closing the socket
+  val () = shutdown_exn (pfskt | sockfd, SHUT_RDWR) // closing the socket
 in
   // empty
 end // end of [main]
