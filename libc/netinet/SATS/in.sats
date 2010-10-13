@@ -111,18 +111,6 @@ macdef INADDR_MAX_LOCAL_GROUP = $extval (in_addr_hbo_t, "INADDR_MAX_LOCAL_GROUP"
 
 (* ****** ****** *)
 
-abst@ype uint16_t0ype_netbyteord = uint16_t0ype
-typedef uint16_nbo = uint16_t0ype_netbyteord
-fun htons (i: uint16_t0ype): uint16_t0ype_netbyteord = "atslib_htons"
-fun ntohs (i: uint16_t0ype_netbyteord): uint16_t0ype = "atslib_ntohs"
-
-abst@ype uint32_t0ype_netbyteord = uint32_t0ype
-typedef uint32_nbo = uint32_t0ype_netbyteord
-fun htonl (i: uint32_t0ype): uint32_t0ype_netbyteord = "atslib_htonl"
-fun ntohl (i: uint32_t0ype_netbyteord): uint32_t0ype = "atslib_ntohl"
-
-(* ****** ****** *)
-
 typedef
 in_addr_struct =
 $extype_struct "ats_in_addr_type" of {
@@ -156,7 +144,7 @@ praxi sockaddr_trans_in {l:addr}
 typedef
 in6_addr_struct =
 $extype_struct
-"ats_in_addr_type" of {
+"ats_in6_addr_type" of {
   s6_addr= @[uint8][16] // IPv6 address of 16 bytes
 } // end of [in6_addr_struct]
 

@@ -331,6 +331,8 @@ overload prerr with prerr_int16
 
 typedef uint16 = uint16_t0ype
 
+fun uint16_of_int (i: int):<> uint16 = "atspre_uint16_of_int"
+fun int_of_uint16 (u: uint16):<> int = "atspre_int_of_uint16"
 fun uint16_of_uint (i: uint):<> uint16 = "atspre_uint16_of_uint"
 fun uint_of_uint16 (i: uint16):<> uint = "atspre_uint_of_uint16"
 

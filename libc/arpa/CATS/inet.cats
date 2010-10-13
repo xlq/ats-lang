@@ -43,12 +43,24 @@
 #include <stdio.h> // for [perror]
 
 /* ****** ****** */
+
+#include "libc/netinet/CATS/in.cats"
+
+/* ****** ****** */
 //
 // HX: implemented in [prelude/DATS/basics.dats]
 //
 extern
 ats_void_type ats_exit_errmsg(ats_int_type n, ats_ptr_type msg) ;
 
+/* ****** ****** */
+//
+#define atslib_htons htons
+#define atslib_ntohs ntohs
+//
+#define atslib_htonl htonl
+#define atslib_ntohl ntohl
+//
 /* ****** ****** */
 
 ATSinline()

@@ -5,7 +5,7 @@
 (* ****** ****** *)
 //
 // book: AUP (2nd edition), pages 527 - 530
-// section 8.1.1: Handling Multiple Clients
+// section 8.1.3: Handling Multiple Clients
 //
 (* ****** ****** *)
 

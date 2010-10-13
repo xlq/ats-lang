@@ -50,6 +50,9 @@ compall: \
   test631 \
   test65 \
   test811 \
+  test813 \
+  test814 \
+  test823 \
 
 ######
 
@@ -151,7 +154,12 @@ test65: AUP_6_5.dats errinfo.o
 #######
 
 test811: AUP_8_1_1.dats; $(ATSCC) -I utils -Wall -o $@ $< && ./test811
+
 test813: AUP_8_1_3.dats; $(ATSCC) -I utils -Wall -o $@ $<
+
+test814: AUP_8_1_4.dats; $(ATSCC) -I utils -Wall -o $@ $< && ./test814
+
+test823: AUP_8_2_3.dats; $(ATSCC) -I utils -Wall -o $@ $< && ./test823
 
 #######
 
@@ -190,5 +198,7 @@ cleanall:: clean
 	$(RMF) test65
 	$(RMF) test811
 	$(RMF) test813
+	$(RMF) test814
+	$(RMF) test823
 
 ###### end of [Makefile] ######

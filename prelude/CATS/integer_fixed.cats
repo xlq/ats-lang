@@ -530,19 +530,23 @@ atspre_prerr_int16 (ats_int16_type i) {
 
 /* ****** ****** */
 
+//
 // unsigned integer of size 16bit
+//
 
 ATSinline()
 ats_uint16_type
-atspre_uint16_of_uint (ats_uint_type i) {
-  return i ;
-}
+atspre_uint16_of_int (ats_int_type i) { return i ; }
+ATSinline()
+ats_int_type
+atspre_int_of_uint16 (ats_uint16_type i) { return i ; }
 
 ATSinline()
+ats_uint16_type
+atspre_uint16_of_uint (ats_uint_type i) { return i ; }
+ATSinline()
 ats_uint_type
-atspre_uint_of_uint16 (ats_uint16_type i) {
-  return i ;
-}
+atspre_uint_of_uint16 (ats_uint16_type i) { return i ; }
 
 // ------ ------
 
@@ -849,19 +853,23 @@ atspre_tostrptr_int32
 
 /* ****** ****** */
 
+//
 // unsigned integer of size 32bit
+//
 
 ATSinline()
 ats_uint32_type
-atspre_uint32_of_uint (ats_uint_type i) {
-  return i ;
-}
+atspre_uint32_of_int (ats_int_type i) { return i ; }
+ATSinline()
+ats_int_type
+atspre_int_of_uint32 (ats_uint32_type i) { return i ; }
 
 ATSinline()
+ats_uint32_type
+atspre_uint32_of_uint (ats_uint_type i) { return i ; }
+ATSinline()
 ats_uint_type
-atspre_uint_of_uint32 (ats_uint32_type i) {
-  return i ;
-}
+atspre_uint_of_uint32 (ats_uint32_type i) { return i ; }
 
 // ------ ------
 

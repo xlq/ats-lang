@@ -38,6 +38,7 @@
 
 /* ****** ****** */
 
+#include <arpa/inet.h>
 #include <netinet/in.h>
 
 /* ****** ****** */
@@ -53,8 +54,9 @@ typedef struct sockaddr_in6 ats_sockaddr_in6_type ;
 ATSinline()
 in_port_t // in_port_nbo_t
 atslib_in_port_nbo_of_int
-  (ats_int_type n) { in_port_t nport = n ; return htons (nport) ; }
-/* end of [atslib_in_port_nbo_of_int] */
+  (ats_int_type n) {
+  in_port_t nport = n ; return htons (nport) ;
+} // end of [atslib_in_port_nbo_of_int]
 
 /* ****** ****** */
 

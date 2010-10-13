@@ -41,7 +41,27 @@
 
 (* ****** ****** *)
 
-staload "libc/netinet/SATS/in.sats"
+staload IN = "libc/netinet/SATS/in.sats"
+typedef in_port_nbo_t = $IN.in_port_nbo_t
+typedef in_addr_hbo_t = $IN.in_addr_hbo_t
+typedef in_addr_nbo_t = $IN.in_addr_nbo_t
+typedef in_addr_struct = $IN.in_addr_struct
+
+(* ****** ****** *)
+
+abst@ype uint16_t0ype_netbyteord = uint16_t0ype
+typedef uint16_nbo = uint16_t0ype_netbyteord
+fun htons (i: uint16_t0ype): uint16_t0ype_netbyteord = "atslib_htons"
+fun ntohs (i: uint16_t0ype_netbyteord): uint16_t0ype = "atslib_ntohs"
+
+abst@ype uint32_t0ype_netbyteord = uint32_t0ype
+typedef uint32_nbo = uint32_t0ype_netbyteord
+fun htonl (i: uint32_t0ype): uint32_t0ype_netbyteord = "atslib_htonl"
+fun ntohl (i: uint32_t0ype_netbyteord): uint32_t0ype = "atslib_ntohl"
+
+(* ****** ****** *)
+
+castfn in_port_nbo_of_uint16_nbo (x: uint16_nbo): in_port_nbo_t
 
 (* ****** ****** *)
 
