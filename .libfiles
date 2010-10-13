@@ -120,6 +120,8 @@ libc/SATS/grp.sats
 libc/SATS/math.sats
 libc/DATS/math.dats
 
+libc/SATS/netdb.sats
+
 libc/SATS/printf.sats
 libc/DATS/printf.dats
 

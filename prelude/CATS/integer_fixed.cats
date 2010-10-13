@@ -654,7 +654,9 @@ atspre_min_uint16_uint16 (ats_uint16_type i1, ats_uint16_type i2) {
   return (i1 <= i2) ? i1 : i2 ;
 }
 
+//
 // print functions
+//
 
 ATSinline()
 ats_void_type

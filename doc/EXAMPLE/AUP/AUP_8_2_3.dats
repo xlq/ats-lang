@@ -5,7 +5,7 @@
 (* ****** ****** *)
 //
 // book: AUP (2nd edition), pages 535 - 537
-// section 8.2.3: Byte Order
+// section 8.2.3: AF_INET Socket Addresses
 //
 (* ****** ****** *)
 
@@ -38,10 +38,10 @@ main () = () where {
   var !p_buf with pf_buf = @[byte][BUFSZ]()
   prval () = pf_buf := bytes_v_of_b0ytes_v (pf_buf)
   val nread = socket_read_err (pfskt | fd, !p_buf, BUFSZ)
-  val () = assertloc (nread >= 0)
+  val () = assertloc (nread >= 1)
   val nread = size1_of_ssize1 (nread)
   val (pfout | ()) = stdout_fildes_view_get ()
-  val _err = write_err (pfout | STDOUT_FILENO, !p_buf, nread)
+  val _err = write_err (pfout | STDOUT_FILENO, !p_buf, nread-1)
   val () = stdout_fildes_view_set (pfout | (*none*))
   val () = socket_close_exn (pfskt | fd)
 } // end of [main]

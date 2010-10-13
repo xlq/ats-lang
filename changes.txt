@@ -30,6 +30,8 @@ ats-lang-anairiats-0.2.2:
 23. Incorporating [parcomb] into $ATSHOME/contrib
 24. Adding libc/sys/resource, which corresponds to sys/resource.h
 25. Adding [assertloc] macdef
+26: Adding libc/sys/socket_in and libc/sys/socket_un
+27: Adding libc/netdb
 
 ########################################################################
 

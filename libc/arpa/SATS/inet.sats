@@ -61,7 +61,8 @@ fun ntohl (i: uint32_t0ype_netbyteord): uint32_t0ype = "atslib_ntohl"
 
 (* ****** ****** *)
 
-castfn in_port_nbo_of_uint16_nbo (x: uint16_nbo): in_port_nbo_t
+castfn in_port_of_uint16_nbo (x: uint16_nbo): in_port_nbo_t
+castfn uint16_of_in_port_nbo (x: in_port_nbo_t): uint16_nbo
 
 (* ****** ****** *)
 

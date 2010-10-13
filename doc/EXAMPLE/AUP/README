@@ -43,5 +43,7 @@ AUP_6_5: Two-Way Communication with Unidirectional Pipes
 
 AUP_8_1_1: How Sockets Work
 AUP_8_1_3: Handling Multiple Clients
+AUP_8_1_4: Byte Order
+AUP_8_2_3: AF_INET Socket Addresses
 
 ###### end of [README] ######

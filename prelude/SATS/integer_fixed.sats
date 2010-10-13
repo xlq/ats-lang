@@ -400,6 +400,25 @@ overload min with min_uint16_uint16
 
 (* ****** ****** *)
 
+symintr fprint_uint16
+
+fun fprint0_uint16 (out: FILEref, x: uint16):<!exnref> void
+  = "atspre_fprint_uint16"
+overload fprint_uint16 with fprint0_uint16
+fun fprint1_uint16 {m:file_mode}
+  (pf: file_mode_lte (m, w) | out: &FILE m, x: uint16):<!exnref> void
+  = "atspre_fprint_uint16"
+overload fprint_uint16 with fprint1_uint16
+
+overload fprint with fprint_uint16
+
+fun print_uint16 (i: uint16):<!ref> void = "atspre_print_uint16"
+and prerr_uint16 (i: uint16):<!ref> void = "atspre_prerr_uint16"
+overload print with print_uint16
+overload prerr with prerr_uint16
+
+(* ****** ****** *)
+
 // signed integer of size 32bit
 
 typedef int32 = int32_t0ype

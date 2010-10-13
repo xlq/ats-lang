@@ -160,7 +160,7 @@ ATSinline()
 ats_bool_type
 atspre_neq_byte_byte
   (ats_byte_type b1, ats_byte_type b2) { return (b1 != b2) ; }
-// end of [atspre_neq_byte_byte]\
+// end of [atspre_neq_byte_byte]
 
 //
 // bitwise operations

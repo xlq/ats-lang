@@ -48,15 +48,19 @@ stadef sockaddr_struct = $SA.sockaddr_struct
 
 (* ****** ****** *)
 
-abst@ype socket_type_t = int
-macdef SOCK_DGRAM = $extval (socket_type_t, "SOCK_DGRAM")
-macdef SOCK_RAW = $extval (socket_type_t, "SOCK_RAW")
-macdef SOCK_SEQPACKET = $extval (socket_type_t, "SOCK_SEQPACKET")
-macdef SOCK_STREAM = $extval (socket_type_t, "SOCK_STREAM")
+abst@ype socktype_t = int
+castfn int_of_socktype (x: socktype_t):<> int
+overload int_of with int_of_socktype
+macdef SOCK_DGRAM = $extval (socktype_t, "SOCK_DGRAM")
+macdef SOCK_RAW = $extval (socktype_t, "SOCK_RAW")
+macdef SOCK_SEQPACKET = $extval (socktype_t, "SOCK_SEQPACKET")
+macdef SOCK_STREAM = $extval (socktype_t, "SOCK_STREAM")
 
 (* ****** ****** *)
 
-abst@ype socket_protocol_t = int
+abst@ype sockprot_t = int
+castfn int_of_sockprot (x: sockprot_t):<> int
+overload int_of with int_of_sockprot
 
 (* ****** ****** *)
 //
@@ -69,13 +73,13 @@ datasort status = init | bind | listen | conn
 absview socket_v (int, status)
 
 fun socket_family_type_err
-  (af: sa_family_t, t: socket_type_t)
+  (af: sa_family_t, t: socktype_t)
   : [fd:int] (option_v (socket_v (fd, init), fd >= 0) | int fd)
   = "atslib_socket_family_type_err"
 // end of [socket_family_type_err]
 
 fun socket_family_type_exn
-  (af: sa_family_t, t: socket_type_t): [fd:nat] (socket_v (fd, init) | int fd)
+  (af: sa_family_t, t: socktype_t): [fd:nat] (socket_v (fd, init) | int fd)
 // end of [socket_family_type_exn]
 
 (* ****** ****** *)
