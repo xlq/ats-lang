@@ -173,6 +173,7 @@ RMF = rm -f
 clean::
 	$(RMF) *~
 	$(RMF) *_?ats.c *_?ats.o
+	$(RMF) MySocket
 	$(RMF) errinfo.o
 	$(RMF) getargs.o
 

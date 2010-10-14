@@ -40,9 +40,7 @@
 (* ****** ****** *)
 
 #if VERBOSE_PRELUDE #then
-
 #print "Loading [arith.sats] starts!\n"
-
 #endif // end of [VERBOSE_PRELUDE]
 
 (* ****** ****** *)
@@ -115,9 +113,14 @@ prfun mul_negate {m,n:int} {p:int} (pf: MUL (m, n, p)):<prf> MUL (~m, n, ~p)
 prfun mul_commute {m,n:int} {p:int} (pf: MUL (m, n, p)):<prf> MUL (n, m, p)
 
 (* ****** ****** *)
-
+//
+// HX: m*(n1+n2) = m*n1+m*n2
+//
 prfun mul_distribute {m,n1,n2:int} {p1,p2:int}
   (pf1: MUL (m, n1, p1), pf2: MUL (m, n2, p2)):<prf> MUL (m, n1+n2, p1+p2)
+//
+// HX: (m1+m2)*n = m1*n + m2*n
+//
 prfun mul_distribute2 {m1,m2,n:int} {p1,p2:int}
   (pf1: MUL (m1, n, p1), pf2: MUL (m2, n, p2)):<prf> MUL (m1+m2, n, p1+p2)
 
@@ -174,9 +177,7 @@ prfun EXP2_mul {n1,n2:nat | n1 <= n2} {p1,p2:nat} {p:int}
 (* ****** ****** *)
 
 #if VERBOSE_PRELUDE #then
-
 #print "Loading [arith.sats] finishes!\n"
-
 #endif // end of [VERBOSE_PRELUDE]
 
 (* end of [arith.sats] *)

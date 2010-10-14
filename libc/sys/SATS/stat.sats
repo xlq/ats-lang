@@ -127,6 +127,13 @@ fun S_ISREG (m: mode_t): bool = "atslib_S_ISREG"
 fun S_ISLNK (m: mode_t): bool = "atslib_S_ISLNK"
 fun S_ISSOCK (m: mode_t): bool = "atslib_S_ISSOCK"
 
+//
+// HX: (0/1/-1 : false/true/error)
+//
+fun isfdtype {fd:nat}
+  (fd: int fd, fdtype: mode_t): int
+// end of [isfdtype]
+
 (* ****** ****** *)
 
 fun chmod_err (path: string, mode: mode_t): int

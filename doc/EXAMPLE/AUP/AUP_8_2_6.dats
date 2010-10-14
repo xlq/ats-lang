@@ -29,6 +29,13 @@ main () = () where {
   val () = hint.ai_socktype := SOCK_STREAM
   var infop: addrinfoptr
   val err = getaddrinfo ("www.yahoo.com", "80", hint, infop)
+  val () = if err < 0 then let
+    val (fpf_str | str) = gai_strerror (err)
+    val () = (print "GAI ERROR: "; print str; print_newline ())
+    prval () = fpf_str (str)
+  in
+    // nothing
+  end // end of [val]
   val () = assertloc (err = 0)
   prval () = opt_unsome {addrinfoptr} (infop)
   val () = loop (infop) where {

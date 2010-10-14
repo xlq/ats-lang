@@ -35,15 +35,15 @@
 
 (* ****** ****** *)
 
+#define ATS_DYNLOADFLAG 0 // no dynamic loading
+
+(* ****** ****** *)
+
 staload "libc/SATS/stdio.sats" // for [perror]
 
 (* ****** ****** *)
 
 staload "libc/sys/SATS/stat.sats"
-
-(* ****** ****** *)
-
-#define ATS_DYNLOADFLAG 0 // no dynamic loading
 
 (* ****** ****** *)
 
@@ -120,6 +120,27 @@ atslib_lstat_exn (
 /* ****** ****** */
 
 %} // end of [%{^]
+
+(* ****** ****** *)
+
+staload T = "libc/sys/SATS/types.sats"
+
+implement
+isfdtype (fd, m0) = let
+  var stbuf: stat?
+  val err = fstat_err (fd, stbuf)
+in
+  if (err >= 0) then let
+    prval () = opt_unsome {stat} (stbuf)
+    val m1 = $T.lor_mode_mode (stbuf.st_mode, S_IFMT)
+  in
+    if $T.eq_mode_mode (m0, m1) then 1 else 0
+  end else let
+    prval () = opt_unnone {stat} (stbuf)
+  in
+    ~1 (* error indication *)
+  end // end of [if]
+end // end of [isfdtype]
 
 (* ****** ****** *)
 

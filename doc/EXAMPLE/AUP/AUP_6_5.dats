@@ -34,7 +34,7 @@ end // end of [errinfo_report]
 //
 // HX-2010-10-10:
 // error-handling in the following code really caused my head to spin. However,
-// I do not have a significant better approach at this moment :(
+// I do not have a significantly better approach at this moment :(
 //
 (* ****** ****** *)
 

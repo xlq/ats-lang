@@ -45,5 +45,6 @@ AUP_8_1_1: How Sockets Work
 AUP_8_1_3: Handling Multiple Clients
 AUP_8_1_4: Byte Order
 AUP_8_2_3: AF_INET Socket Addresses
+AUP_8_2_6: getaddrinfo
 
 ###### end of [README] ######

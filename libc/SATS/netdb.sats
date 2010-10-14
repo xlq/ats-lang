@@ -51,8 +51,11 @@ typedef sockprot_t = $SOCKET.sockprot_t
 
 staload IN = "libc/netinet/SATS/in.sats"
 typedef sockaddr_in = $IN.sockaddr_in_struct
+typedef sockaddr_in6 = $IN.sockaddr_in6_struct
+(*
 staload UN = "libc/sys/SATS/un.sats"
 typedef sockaddr_un = $UN.sockaddr_un_struct
+*)
 
 (* ****** ****** *)
 
@@ -117,16 +120,29 @@ fun addrinfoptr_get_protocol
 // end of [addrinfoptr_get_protocol]
 
 (* ****** ****** *)
-
+//
+// HX: if the info is obtained by setting hint.ai_family = AF_INET
+//
 fun addrinfoptr_get_addr_in {l:agz} (x: !addrinfoptr l)
   :<> [l1:addr] (sockaddr_in @ l1, minus (addrinfoptr l, sockaddr_in @ l1) |  ptr l1)
   = "#atslib_addrinfoptr_get_addr"
 // end of [addrinfoptr_get_addr_in]
 
+//
+// HX: if the info is obtained by setting hint.ai_family = AF_INET6
+//
+fun addrinfoptr_get_addr_in6 {l:agz} (x: !addrinfoptr l)
+  :<> [l1:addr] (sockaddr_in6 @ l1, minus (addrinfoptr l, sockaddr_in6 @ l1) |  ptr l1)
+  = "#atslib_addrinfoptr_get_addr"
+// end of [addrinfoptr_get_addr_in6]
+
+(*
+// HX-2010-10-13: I doubt this is usefull
 fun addrinfoptr_get_addr_un {l:agz} (x: !addrinfoptr l)
   :<> [l1:addr] (sockaddr_un @ l1, minus (addrinfoptr l, sockaddr_un @ l1) |  ptr l1)
   = "#atslib_addrinfoptr_get_addr"
 // end of [addrinfoptr_get_addr_un]
+*)
 
 (* ****** ****** *)
 
