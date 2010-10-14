@@ -20,6 +20,10 @@ staload "libc/arpa/SATS/inet.sats"
 
 (* ****** ****** *)
 
+staload UNSAFE = "prelude/SATS/unsafe.sats"
+
+(* ****** ****** *)
+
 implement
 main () = () where {
   typedef AI = addrinfo(0) 
@@ -43,7 +47,7 @@ main () = () where {
       (infop: !addrinfoptr l): void =
       if addrinfoptr_isnot_null (infop) then let
         val prot = addrinfoptr_get_protocol (infop)
-        val prot = int_of (prot)
+        val prot = $UNSAFE.cast {int} (prot)
         val (pf, fpf | p) = addrinfoptr_get_addr_in (infop)
         val nport = ntohs (uint16_of_in_port_nbo(p->sin_port))
         val (fpf_str | str) = inet_ntoa (p->sin_addr)

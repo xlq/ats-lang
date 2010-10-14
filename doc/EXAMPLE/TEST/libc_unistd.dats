@@ -18,6 +18,29 @@ staload "libc/SATS/unistd.sats"
 implement
 main () = () where {
 //
+  prval () = STDIN_FILENO_gtez ()
+  prval () = STDOUT_FILENO_gtez ()
+  prval () = STDERR_FILENO_gtez ()
+//
+  val ans = isatty (STDIN_FILENO)
+  val () = (print "isatty (STDIN_FILENO) = "; print ans; print_newline ())
+  val ans = isatty (STDOUT_FILENO)
+  val () = (print "isatty (STDOUT_FILENO) = "; print ans; print_newline ())
+  val ans = isatty (STDERR_FILENO)
+  val () = (print "isatty (STDERR_FILENO) = "; print ans; print_newline ())
+//
+  val (fpf_name | name) = ttyname (STDIN_FILENO)
+  val () = (print "ttyname (STDIN_FILENO) = "; print name; print_newline ())
+  prval () = fpf_name (name)
+  val (fpf_name | name) = ttyname (STDOUT_FILENO)
+  val () = (print "ttyname (STDOUT_FILENO) = "; print name; print_newline ())
+  prval () = fpf_name (name)
+  val (fpf_name | name) = ttyname (STDERR_FILENO)
+  val () = (print "ttyname (STDERR_FILENO) = "; print name; print_newline ())
+  prval () = fpf_name (name)
+//
+// testing [gethostname] and [sethostname]
+//
   var !p_buf with pf_buf = @[byte][128]()
   val (pfopt | err) = gethostname (pf_buf | p_buf, 128)
   val () = assertloc (err >= 0)
@@ -29,6 +52,8 @@ main () = () where {
   val () = if (err < 0) then let
     val () = perror "sethostname" in (*none*)
   end // end of [val]
+//
+// testing [getdomainname] and [setdomainname]
 //
   var !p_buf with pf_buf = @[byte][128]()
   val (pfopt | err) = getdomainname (pf_buf | p_buf, 128)

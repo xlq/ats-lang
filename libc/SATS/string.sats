@@ -186,8 +186,10 @@ fun memchr {n:nat}
 //
 // HX: [strerror] is not reentrant
 //
-fun strerror (errno: $ERRNO.errno_t): string = "#atslib_strerror"
-    
+fun strerror (errno: $ERRNO.errno_t)
+  :<!ref> [l:agz] (strptr l -<lin,prf> void | strptr l) = "#atslib_strerror"
+// end of [strerror]
+
 dataview
 strerror_v (m:int, l:addr, int(*err*)) =
   | {n:nat} strerror_succ (m, l, 0) of strbuf (m, n) @ l

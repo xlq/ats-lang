@@ -48,6 +48,70 @@ stadef sockaddr_struct = $SA.sockaddr_struct
 
 (* ****** ****** *)
 
+abst@ype ipproto_t = int
+macdef IPPROTO_IP = $extval (ipproto_t, "IPPROTO_IP")
+macdef IPPROTO_HOPOPTS = $extval (ipproto_t, "IPPROTO_HOPOPTS")
+macdef IPPROTO_ICMP = $extval (ipproto_t, "IPPROTO_ICMP")
+macdef IPPROTO_IGMP = $extval (ipproto_t, "IPPROTO_IGMP")
+macdef IPPROTO_IPIP = $extval (ipproto_t, "IPPROTO_IPIP")
+macdef IPPROTO_TCP = $extval (ipproto_t, "IPPROTO_TCP")
+macdef IPPROTO_EGP = $extval (ipproto_t, "IPPROTO_EGP")
+macdef IPPROTO_PUP = $extval (ipproto_t, "IPPROTO_PUP")
+macdef IPPROTO_UDP = $extval (ipproto_t, "IPPROTO_UDP")
+macdef IPPROTO_IDP = $extval (ipproto_t, "IPPROTO_IDP")
+macdef IPPROTO_TP = $extval (ipproto_t, "IPPROTO_TP")
+macdef IPPROTO_DCCP = $extval (ipproto_t, "IPPROTO_DCCP")
+macdef IPPROTO_IPV6 = $extval (ipproto_t, "IPPROTO_IPV6")
+macdef IPPROTO_ROUTING = $extval (ipproto_t, "IPPROTO_ROUTING")
+macdef IPPROTO_FRAGMENT = $extval (ipproto_t, "IPPROTO_FRAGMENT")
+macdef IPPROTO_RSVP = $extval (ipproto_t, "IPPROTO_RSVP")
+macdef IPPROTO_GRE = $extval (ipproto_t, "IPPROTO_GRE")
+macdef IPPROTO_ESP = $extval (ipproto_t, "IPPROTO_ESP")
+macdef IPPROTO_AH = $extval (ipproto_t, "IPPROTO_AH")
+macdef IPPROTO_ICMPV6 = $extval (ipproto_t, "IPPROTO_ICMPV6")
+macdef IPPROTO_NONE = $extval (ipproto_t, "IPPROTO_NONE")
+macdef IPPROTO_DSTOPTS = $extval (ipproto_t, "IPPROTO_DSTOPTS")
+macdef IPPROTO_MTP = $extval (ipproto_t, "IPPROTO_MTP")
+macdef IPPROTO_ENCAP = $extval (ipproto_t, "IPPROTO_ENCAP")
+macdef IPPROTO_PIM = $extval (ipproto_t, "IPPROTO_PIM")
+macdef IPPROTO_COMP = $extval (ipproto_t, "IPPROTO_COMP")
+macdef IPPROTO_SCTP = $extval (ipproto_t, "IPPROTO_SCTP")
+macdef IPPROTO_UDPLITE = $extval (ipproto_t, "IPPROTO_UDPLITE")
+macdef IPPROTO_RAW = $extval (ipproto_t, "IPPROTO_RAW")
+macdef IPPROTO_MAX = $extval (ipproto_t, "IPPROTO_MAX")
+
+(* ****** ****** *)
+
+abst@ype in_port_t = $extype "in_port_t"
+macdef IPPORT_ECHO = $extval (in_port_t, "IPPORT_ECHO")
+macdef IPPORT_DISCARD = $extval (in_port_t, "IPPORT_DISCARD")
+macdef IPPORT_SYSTAT = $extval (in_port_t, "IPPORT_SYSTAT")
+macdef IPPORT_DAYTIME = $extval (in_port_t, "IPPORT_DAYTIME")
+macdef IPPORT_NETSTAT = $extval (in_port_t, "IPPORT_NETSTAT")
+macdef IPPORT_FTP = $extval (in_port_t, "IPPORT_FTP")
+macdef IPPORT_TELNET = $extval (in_port_t, "IPPORT_TELNET")
+macdef IPPORT_SMTP = $extval (in_port_t, "IPPORT_SMTP")
+macdef IPPORT_TIMESERVER = $extval (in_port_t, "IPPORT_TIMESERVER")
+macdef IPPORT_NAMESERVER = $extval (in_port_t, "IPPORT_NAMESERVER")
+macdef IPPORT_WHOIS = $extval (in_port_t, "IPPORT_WHOIS")
+macdef IPPORT_MTP = $extval (in_port_t, "IPPORT_MTP")
+macdef IPPORT_TFTP = $extval (in_port_t, "IPPORT_TFTP")
+macdef IPPORT_RJE = $extval (in_port_t, "IPPORT_RJE")
+macdef IPPORT_FINGER = $extval (in_port_t, "IPPORT_FINGER")
+macdef IPPORT_TTYLINK = $extval (in_port_t, "IPPORT_TTYLINK")
+macdef IPPORT_SUPDUP = $extval (in_port_t, "IPPORT_SUPDUP")
+macdef IPPORT_EXECSERVER = $extval (in_port_t, "IPPORT_EXECSERVER")
+macdef IPPORT_LOGINSERVER = $extval (in_port_t, "IPPORT_LOGINSERVER")
+macdef IPPORT_CMDSERVER = $extval (in_port_t, "IPPORT_CMDSERVER")
+macdef IPPORT_EFSSERVER = $extval (in_port_t, "IPPORT_EFSSERVER")
+macdef IPPORT_BIFFUDP = $extval (in_port_t, "IPPORT_BIFFUDP")
+macdef IPPORT_WHOSERVER = $extval (in_port_t, "IPPORT_WHOSERVER")
+macdef IPPORT_ROUTESERVER = $extval (in_port_t, "IPPORT_ROUTESERVER")
+macdef IPPORT_RESERVED = $extval (in_port_t, "IPPORT_RESERVED")
+macdef IPPORT_USERRESERVED = $extval (in_port_t, "IPPORT_USERRESERVED")
+
+(* ****** ****** *)
+
 (*
 macdef INET_ADDRSTRLEN = 16 // for IPv4 dotted-decimal string
 macdef INET6_ADDRSTRLEN = 46 // for IPv6 hex string
@@ -55,14 +119,13 @@ macdef INET6_ADDRSTRLEN = 46 // for IPv6 hex string
 
 (* ****** ****** *)
 
-(*
-abst@ype in_port_t = $extype "in_port_t"
-*)
+symintr in_port_nbo_of
 abst@ype in_port_nbo_t = $extype "in_port_t"
-
+castfn in_port_nbo_of_in_port (n: in_port_t): in_port_nbo_t
+overload in_port_nbo_of with in_port_nbo_of_in_port
 fun in_port_nbo_of_int
   (n: int): in_port_nbo_t = "atslib_in_port_nbo_of_int"
-// end of [in_port_nbo_of_int]
+overload in_port_nbo_of with in_port_nbo_of_int
 
 (* ****** ****** *)
 

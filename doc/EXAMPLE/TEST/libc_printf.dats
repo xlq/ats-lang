@@ -18,12 +18,12 @@ implement
 main () = () where {
 //
   val ntot = printf ("%s", @("abcdefghijklmnopqrstuvwxyz\n"))
-  val () = assert_errmsg (ntot = 26+1, #LOCATION)
+  val () = assertloc (ntot = 26+1)
   val () = (print "ntot = "; print ntot; print_newline ())
 //
   val (pfout | pout) = stdout_get ()
   val ntot = fprintf (file_mode_lte_w_w | !pout, "%s", @("ABCDEFGHIJKLMNOPQRSTUVWXYZ\n"))
-  val () = assert_errmsg (ntot = 26+1, #LOCATION)
+  val () = assertloc (ntot = 26+1)
   val () = (print "ntot = "; print ntot; print_newline ())
   val () = stdout_view_set (pfout | (*none*))
 //

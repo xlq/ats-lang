@@ -109,6 +109,37 @@ atslib_accept_null_err
 
 /* ****** ****** */
 
+ATSinline()
+ats_int_type
+atslib_setsockopt (
+  ats_int_type fd
+, ats_int_type level
+, ats_int_type option
+, ats_ref_type value
+, ats_size_type valen
+) {
+  return setsockopt(fd, level, option, (void*)value, (socklen_t)valen) ;
+} // end of [setsockopt]
+
+ATSinline()
+ats_int_type
+atslib_getsockopt_err (
+  ats_int_type fd
+, ats_int_type level
+, ats_int_type option
+, ats_ref_type value
+, ats_size_type valen
+) {
+  socklen_t valen_int = (socklen_t)valen ;
+  int err = getsockopt(fd, level, option, (void*)value, &valen_int) ;
+  if (err == 0) {
+    if (valen_int != (socklen_t)valen) return (-1) ;
+  } // end of [if]
+  return err ;
+} // end of [atslib_getsockopt_err]
+
+/* ****** ****** */
+
 #endif /* ATS_LIBC_SYS_SOCKET_CATS */
 
 /* end of [socket.cats] */

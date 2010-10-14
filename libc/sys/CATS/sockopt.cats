@@ -33,8 +33,8 @@
 
 /* ****** ****** */
 
-#ifndef ATS_LIBC_SYS_SOCKADDR_CATS
-#define ATS_LIBC_SYS_SOCKADDR_CATS
+#ifndef ATS_LIBC_SYS_SOCKOPT_CATS
+#define ATS_LIBC_SYS_SOCKOPT_CATS
 
 /* ****** ****** */
 
@@ -42,10 +42,10 @@
 
 /* ****** ****** */
 
-typedef struct sockaddr_storage ats_sockaddr_storage_type ;
+typedef struct linger ats_linger_type ;
 
 /* ****** ****** */
 
-#endif /* ATS_LIBC_SYS_SOCKADDR_CATS */
+#endif /* ATS_LIBC_SYS_SOCKOPT_CATS */
 
-/* end of [sockaddr.cats] */
+/* end of [sockopt.cats] */

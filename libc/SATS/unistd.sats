@@ -203,7 +203,7 @@ fun sleep {i:nat}
 #define MILLION 1000000
 // some systems require that the argument of usleep <= 1 million
 fun usleep
-  (n: natLte MILLION (* microseconds *)): void = "atslib_usleep" // !fun
+  (n: natLte MILLION (*microseconds*)): void = "atslib_usleep" // !fun
 // end of [usleep]
 
 (* ****** ****** *)
@@ -303,7 +303,7 @@ fun nice
 (* ****** ****** *)
 
 fun link (src: string, dst: string): int = "#atslib_link"
-fun unlink (path: string): int = "#atslib_unlink" // macro
+fun unlink (path: string): int = "#atslib_unlink" // macro!
 
 (* ****** ****** *)
 
@@ -411,8 +411,8 @@ fun tcgetpgrp {fd:nat}
 
 (* ****** ****** *)
 
-fun ttyname {fd:nat} (fd: int fd)
-  :<!ref> [l:addr] (strptr l -<lin,prf> void | strptr l)
+fun ttyname {fd:nat}
+  (fd: int fd) :<!ref> [l:addr] (strptr l -<lin,prf> void | strptr l)
   = "#atslib_ttyname"
 // end of [ttyname]
 

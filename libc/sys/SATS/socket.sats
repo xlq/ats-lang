@@ -49,18 +49,32 @@ stadef sockaddr_struct = $SA.sockaddr_struct
 (* ****** ****** *)
 
 abst@ype socktype_t = int
+(*
 castfn int_of_socktype (x: socktype_t):<> int
 overload int_of with int_of_socktype
+*)
+macdef SOCK_STREAM = $extval (socktype_t, "SOCK_STREAM")
 macdef SOCK_DGRAM = $extval (socktype_t, "SOCK_DGRAM")
 macdef SOCK_RAW = $extval (socktype_t, "SOCK_RAW")
+macdef SOCK_RDM = $extval (socktype_t, "SOCK_RDM")
+macdef SOCK_PACKET = $extval (socktype_t, "SOCK_PACKET")
 macdef SOCK_SEQPACKET = $extval (socktype_t, "SOCK_SEQPACKET")
-macdef SOCK_STREAM = $extval (socktype_t, "SOCK_STREAM")
+macdef SOCK_DCCP = $extval (socktype_t, "SOCK_DCCP")
+
+abst@ype socktype_flag_t = int
+macdef SOCK_CLOEXEC = $extval (socktype_flag_t, "SOCK_CLOEXEC")
+macdef SOCK_NONBLOCK = $extval (socktype_flag_t, "SOCK_NONBLOCK")
+fun lor_socktype_socktype_flag
+  (t: socktype_t, f: socktype_flag_t):<> socktype_t = "atspre_lor_uint_uint"
+overload lor with lor_socktype_socktype_flag
 
 (* ****** ****** *)
 
 abst@ype sockprot_t = int
+(*
 castfn int_of_sockprot (x: sockprot_t):<> int
 overload int_of with int_of_sockprot
+*)
 
 (* ****** ****** *)
 //
@@ -257,6 +271,18 @@ fun socket_fdopen_err {fd:int} {m:file_mode}
   (pf: socket_v (fd, conn) | fd: int fd, m: file_mode m)
   : [l:addr] (socket_fdopen_v (fd, m, l) | ptr l) = "#atslib_socket_fdopen_err"
 // end of [socket_fdopen_err]
+
+(* ****** ****** *)
+
+fun setsockopt {a:t@ype} {fd:nat}
+  (fd: int fd, level: int, option: int, value: &a, valen: sizeof_t a): int
+  = "atslib_setsockopt" // function!
+// end of [setsockopt]
+
+fun getsockopt_err {a:t@ype} {fd:nat} (
+    fd: int fd, level: int, option: int, value: &a? >> opt (a, i==0), valen: sizeof_t a
+  ) : #[i:int | i <= 0] int i = "atslib_getsockopt_err" // function!
+// end of [getsockopt_err]
 
 (* ****** ****** *)
 
