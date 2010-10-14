@@ -189,9 +189,14 @@ fun hostent_get_name (h: &hostent)
 // end of [hostent_get_name]
 
 fun hostent_get_aliases (h: &hostent)
-  :<> [n:nat] [l:agz] (ptrarr n @ l -<lin,prf> void, ptrarr n @ l | ptr l)
-  = "#atslib_hostent_get_name"
-// end of [hostent_get_name]
+  :<> [n:nat] [l:agz] (ptrarr n @ l, ptrarr n @ l -<lin,prf> void | ptr l)
+  = "#atslib_hostent_get_aliases"
+// end of [hostent_get_aliases]
+
+fun hostent_get_addr_list (h: &hostent)
+  :<> [n:nat] [l:agz] (ptrarr n @ l, ptrarr n @ l -<lin,prf> void | ptr l)
+  = "#atslib_hostent_get_addr_list"
+// end of [hostent_get_addr_list]
 
 (* ****** ****** *)
 

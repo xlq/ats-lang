@@ -53,7 +53,7 @@ dataview ptrarr_v (n:int, l:addr) =
 
 (* ****** ****** *)
 
-fun ptrarr_size {n:nat} (x: &ptrarr(n)): size_t = "atspre_ptrarr_size"
+fun ptrarr_size {n:nat} (x: &ptrarr(n)): size_t(n) = "atspre_ptrarr_size"
 
 praxi ptrarr_takeout {vt:viewtype}
   {n:nat} {l:addr} (pf: ptrarr(n) @ l): (

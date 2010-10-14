@@ -72,6 +72,10 @@ typedef struct hostent ats_hostent_type ;
 
 #define atslib_hostent_get_name(h) \
   (((ats_hostent_type*)h)->h_name)
+#define atslib_hostent_get_aliases(h) \
+  (((ats_hostent_type*)h)->h_aliases)
+#define atslib_hostent_get_addr_list(h) \
+  (((ats_hostent_type*)h)->h_addr_list)
 
 #define atslib_sethostent sethostent
 #define atslib_gethostent gethostent

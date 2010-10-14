@@ -46,5 +46,7 @@ AUP_8_1_3: Handling Multiple Clients
 AUP_8_1_4: Byte Order
 AUP_8_2_3: AF_INET Socket Addresses
 AUP_8_2_6: getaddrinfo
+AUP_8_3: Socket Options
+AUP_8_8_1_1: Host Functions
 
 ###### end of [README] ######
