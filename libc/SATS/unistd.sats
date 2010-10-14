@@ -117,30 +117,14 @@ overload dup2 with dup2_noexi
 fun _exit (status: int): void = "#atslib__exit" // !macro
 
 (* ****** ****** *)
-//
-// HX:
-// strarr: array of strings followed by a null pointer
-//
-abst@ype strarr (n:int)
-fun strarr_get
-  {n:nat} (A: &strarr(n), i: natLt n):<> string = "#atslib_strarr_get"
-overload [] with strarr_get
-//
-praxi strarr_takeout
-  {n:nat} {l:addr} (pf: strarr(n) @ l): (
-  array_v (string, n, l), array_v (string, n, l) -<lin,prf> strarr(n) @ l
-) // end of [strarr_takeout]
-//
-fun strarr_get_arrsz
-  {n:nat} {l:addr} (pf: strarr(n) @  l | argv: ptr l):<> [n:nat] size_t n
-  = "atslib_strarr_get" // function!
-//
-(* ****** ****** *)
+
+staload PA = "prelude/SATS/ptrarr.sats"
+stadef ptrarr = $PA.ptrarr
 
 fun execv {n:pos}
-  (path: string, argv: &strarr(n)): int = "#atslib_execv"
+  (path: string, argv: &ptrarr(n)): int = "#atslib_execv"
 fun execvp {n:pos}
-  (path: string, argv: &strarr(n)): int = "#atslib_execvp"
+  (path: string, argv: &ptrarr(n)): int = "#atslib_execvp"
 
 (* ****** ****** *)
 

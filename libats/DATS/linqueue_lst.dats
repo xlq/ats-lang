@@ -52,6 +52,7 @@
 
 (* ****** ****** *)
 
+staload "libats/SATS/slseg.sats"
 staload "libats/SATS/linqueue_lst.sats"
 
 (* ****** ****** *)

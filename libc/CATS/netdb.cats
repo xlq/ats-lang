@@ -44,7 +44,9 @@
 
 /* ****** ****** */
 
-typedef struct addrinfo ats_addrinfo_type ;
+typedef
+struct addrinfo ats_addrinfo_type ;
+typedef struct hostent ats_hostent_type ;
 
 /* ****** ****** */
 //
@@ -65,6 +67,20 @@ typedef struct addrinfo ats_addrinfo_type ;
    getaddrinfo((char*)node, (char*)port, (ats_addrinfo_type*)hint, (ats_addrinfo_type**)res)
 #define atslib_gai_strerror gai_strerror
 #define atslib_freeaddrinfo freeaddrinfo
+
+/* ****** ****** */
+
+#define atslib_hostent_get_name(h) \
+  (((ats_hostent_type*)h)->h_name)
+
+#define atslib_sethostent sethostent
+#define atslib_gethostent gethostent
+#define atslib_endhostent endhostent
+
+/* ****** ****** */
+
+#define atslib_gethostbyname gethostbyname
+#define atslib_gethostbyaddr gethostbyaddr
 
 /* ****** ****** */
 

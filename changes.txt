@@ -32,6 +32,8 @@ ats-lang-anairiats-0.2.2:
 25. Adding [assertloc] macdef
 26: Adding libc/sys/socket_in and libc/sys/socket_un
 27: Adding libc/netdb
+28. Adding libc/sys/sockaddr and libc/sys/sockopt
+29: Adding prelude/SATS/unsafe.sats!!!
 
 ########################################################################
 

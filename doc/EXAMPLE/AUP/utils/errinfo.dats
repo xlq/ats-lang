@@ -43,13 +43,12 @@ implement
 errinfo_set_wloc
   (ei, loc) = let
   val errno = errno_get ()
-  val errstr = strerror (errno)
+  val (fpf_errstr | errstr) = strerror (errno)
   val () = ei.errinfo_loc := loc
   val () = () where {
-    val (fpf_x | x) = string_takeout_ptr (errstr)
-    val () = ei.errinfo_errstr := strptr_dup (x)
-    prval () = fpf_x (x)
+    val () = ei.errinfo_errstr := strptr_dup (errstr)
   } // end of [val]
+  prval () = fpf_errstr (errstr)
   val () = ei.errinfo_errno := errno
 in
   // nothing

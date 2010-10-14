@@ -9,6 +9,10 @@
 //
 (* ****** ****** *)
 
+staload "prelude/SATS/ptrarr.sats"
+
+(* ****** ****** *)
+
 staload "libc/sys/SATS/types.sats"
 staload "libc/sys/SATS/wait.sats"
 staload "libc/SATS/stdlib.sats" // for getenv
@@ -16,20 +20,20 @@ staload "libc/SATS/unistd.sats" // for environ_get_arrsz
 
 (* ****** ****** *)
 
-typedef strarr0 (n:int) = @[string?][n]
+typedef ptrarr0 (n:int) = @[ptr?][n]
 
 dataview
 getargs_v (n0:int, l:addr, int) =
   | {n:nat | n < n0}
     getargs_v_succ (n0, l, n) of (
-      strarr (n) @ l, strarr (n) @ l -<lin,prf> strarr0 (n0) @ l
+      ptrarr (n) @ l, ptrarr (n) @ l -<lin,prf> ptrarr0 (n0) @ l
     ) // end of [getargs_v_succ]
-  | getargs_v_fail (n0, l, ~1) of (strarr0 (n0) @ l)
+  | getargs_v_fail (n0, l, ~1) of (ptrarr0 (n0) @ l)
 // end of [getargs_v]
 
 extern
 fun getargs {n0:nat} {l:addr} (
-  pfargv: strarr0 (n0) @ l | pargv: ptr l, n0: int n0, iseof: &bool? >> bool
+  pfargv: ptrarr0 (n0) @ l | pargv: ptr l, n0: int n0, iseof: &bool? >> bool
 ) : [n:int] (getargs_v (n0, l, n) | int n) = "#getargs"
 // end of [getargs]
 
@@ -95,7 +99,7 @@ end // end of [display_status]
 (* ****** ****** *)
 
 extern
-fun execute3 {n:pos} (argc: int n, argv: &strarr(n)): void
+fun execute3 {n:pos} (argc: int n, argv: &ptrarr(n)): void
 // end of [execute3]
 
 implement
@@ -106,7 +110,10 @@ execute3
 in
   case+ 0 of
   | _ when pid = 0 => let // child
-      val _err = execvp (argv[0], argv)
+      prval (pf1, fpf1) = ptrarr_takeout{string} (view@(argv))
+      val arg0 = argv.[0]
+      prval () = view@(argv) := fpf1 (pf1)
+      val _err = execvp (arg0, argv)
       val () = if _err < 0 then prerr "execute3: child: [execvp] failed\n"
     in
       _exit (EXIT_FAILURE)
@@ -137,7 +144,7 @@ implement
 main () =
 while (true) let
   #define MAXARG 32
-  var !pargv with pfargv = @[string?][MAXARG]()
+  var !pargv with pfargv = @[ptr?][MAXARG]()
   val () = printf ("@ ", @())
   var iseof: bool // uninitialized
   val [n:int] (pfargs | argc) = getargs (pfargv | pargv, MAXARG, iseof)
@@ -145,7 +152,7 @@ while (true) let
   val () = if argc >= 0 then let
     var leftover: bool = false
     prval getargs_v_succ (pf, fpf) = pfargs
-    prval (pf1, fpf1) = strarr_takeout (pf)
+    prval (pf1, fpf1) = ptrarr_takeout{string} (pf)
     val () = if (argc > 0) then let
       val arg0 = pargv->[0] in case+ 0 of
       | _ when arg0 = "quit" => quit (argc, !pargv)

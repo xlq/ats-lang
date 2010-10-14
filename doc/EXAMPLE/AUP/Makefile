@@ -55,6 +55,7 @@ compall: \
   test823 \
   test826 \
   test83 \
+  test881 \
 
 ######
 
@@ -167,6 +168,8 @@ test826: AUP_8_2_6.dats; $(ATSCC) -I utils -Wall -o $@ $< && ./test826
 
 test83: AUP_8_3.dats; $(ATSCC) -Wall -o $@ $< && ./test83
 
+test881: AUP_8_8_1.dats; $(ATSCC) -Wall -o $@ $< && ./test881
+
 #######
 
 RMF = rm -f
@@ -209,5 +212,6 @@ cleanall:: clean
 	$(RMF) test823
 	$(RMF) test826
 	$(RMF) test83
+	$(RMF) test881
 
 ###### end of [Makefile] ######

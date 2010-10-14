@@ -196,4 +196,27 @@ end // end of [socket_write_substring]
 
 (* ****** ****** *)
 
+%{$
+ats_int_type
+atslib_getsockopt_err (
+  ats_int_type fd
+, ats_int_type level
+, ats_int_type option
+, ats_ref_type value
+, ats_size_type valen
+) {
+  socklen_t valen_int = (socklen_t)valen ;
+  int err = getsockopt
+    (fd, level, option, (void*)value, &valen_int) ;
+/*
+  if (err == 0) {
+    if (valen_int != (socklen_t)valen) ats_crash () ;
+  } // end of [if]
+*/
+  return err ;
+} // end of [atslib_getsockopt_err]
+%} // end of [%{$]
+
+(* ****** ****** *)
+
 (* end of [socket.dats] *)

@@ -157,7 +157,6 @@ fn emit_include_cats {m:file_mode}
   val () = fprint1_string (pf | out, "#include \"prelude/CATS/array.cats\"\n")
   val () = fprint1_string (pf | out, "#include \"prelude/CATS/list.cats\"\n")
   val () = fprint1_string (pf | out, "#include \"prelude/CATS/option.cats\"\n")
-  val () = fprint1_string (pf | out, "#include \"prelude/CATS/slseg.cats\"\n")
   val () = fprint1_string (pf | out, "#endif /* _ATS_PRELUDE_NONE */\n")
 in
   // empty

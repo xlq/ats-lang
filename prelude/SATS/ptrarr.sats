@@ -9,7 +9,7 @@
 (*
 ** ATS - Unleashing the Potential of Types!
 **
-** Copyright (C) 2002-2008 Hongwei Xi, Boston University
+** Copyright (C) 2002-2010 Hongwei Xi, Boston University
 **
 ** All rights reserved
 **
@@ -31,47 +31,35 @@
 
 (* ****** ****** *)
 
-(* Author: Hongwei Xi ( hwxi AT cs DOT bu DOT edu ) *)
+(* author: Hongwei Xi (hwxi AT cs DOT bu DOT edu) *)
 
 (* ****** ****** *)
 
-// [main_prelude] is called before [main]
+#define ATS_STALOADFLAG 0 // there is no need for staloading at run-time
 
 (* ****** ****** *)
 
-#define ATS_DYNLOADFLAG 0 // no dynamic loading
-
-(* ****** ****** *)
-
-implement main_prelude () = let
-  (* primary *)
-  val () = $dynload "prelude/DATS/basics.dats"
-  // val () = $dynload "prelude/DATS/file.dats"
-  val () = $dynload "prelude/DATS/float.dats"
-  val () = $dynload "prelude/DATS/pointer.dats"
-  val () = $dynload "prelude/DATS/printf.dats"
-  val () = $dynload "prelude/DATS/reference.dats"
-  val () = $dynload "prelude/DATS/string.dats"
-  (* secondary *)
-  val () = $dynload "prelude/DATS/arith.dats"
-  val () = $dynload "prelude/DATS/array.dats"
-  val () = $dynload "prelude/DATS/array0.dats"
-  val () = $dynload "prelude/DATS/array_v.dats"
-  val () = $dynload "prelude/DATS/lazy.dats"
-  val () = $dynload "prelude/DATS/list.dats"
-  val () = $dynload "prelude/DATS/list_vt.dats"
-  val () = $dynload "prelude/DATS/matrix.dats"
-  val () = $dynload "prelude/DATS/matrix0.dats"
-  val () = $dynload "prelude/DATS/option.dats"
+abst@ype ptrarr (n:int) = array(ptr, n)
+typedef Ptr1 = [l:agz] ptr (l)
 (*
-  val () = begin
-    print ("The prelude library is loaded."); print_newline ()
-  end // end of [val]
+//
+// HX-2010-10-14: this accurately describes [ptrarr]:
+//
+dataview ptrarr_v (n:int, l:addr) =
+  | {l:addr} ptrarr_v_nil (0, l) of ptr(null) @ l
+  | {l:addr} ptrarr_v_cons (n+1, l) of (Ptr1 @ l, ptrarr_v (n, l+sizeof(ptr)))
+// end of [ptrarr_v]
 *)
-in
-  // empty
-end // end of [main_prelude]
 
 (* ****** ****** *)
 
-(* end of [ats_main_prelude.dats] *)
+fun ptrarr_size {n:nat} (x: &ptrarr(n)): size_t = "atspre_ptrarr_size"
+
+praxi ptrarr_takeout {vt:viewtype}
+  {n:nat} {l:addr} (pf: ptrarr(n) @ l): (
+  array_v (vt, n, l), array_v (vt, n, l) -<lin,prf> ptrarr(n) @ l
+) // end of [ptrarr_takeout]
+
+(* ****** ****** *)
+
+(* end of [ptrarr.sats] *)

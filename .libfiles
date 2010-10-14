@@ -82,11 +82,6 @@ prelude/DATS/option_vt.dats
 */
 prelude/SATS/option0.sats
 
-/* linked lists */
-
-prelude/SATS/slseg.sats
-prelude/DATS/slseg.dats
-
 /* ****** ****** */
 
 /* libc files */
@@ -277,6 +272,10 @@ libats/DATS/rarray.dats
 libats/SATS/regexp.sats
 libats/DATS/regexp.dats
 #endif
+
+/* singly-linked list implementation */
+libats/SATS/slseg.sats
+libats/DATS/slseg.dats
 
 /* dynamically resizable array implementation */
 libats/SATS/vector.sats

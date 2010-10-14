@@ -168,4 +168,63 @@ fun freeaddrinfo (infop: addrinfoptr): void = "#atslib_freeaddrinfo"
 
 (* ****** ****** *)
 
+staload PA = "prelude/SATS/ptrarr.sats"
+stadef ptrarr = $PA.ptrarr
+
+typedef
+hostent_struct =
+$extype_struct
+"ats_hostent_type" of {
+  h_addrtype= int // address family
+, h_length= int // length of each address
+// , h_name= string // official hostname
+// , h_aliases= ptr(strarr) // array of alternative names
+// , h_addr_list= ptr(strarr) // array of pointers to network address
+} // end of [hostent_struct]
+typedef hostent = hostent_struct
+
+fun hostent_get_name (h: &hostent)
+  :<> [l:agz] (strptr l -<lin,prf> void | strptr l)
+  = "#atslib_hostent_get_name"
+// end of [hostent_get_name]
+
+fun hostent_get_aliases (h: &hostent)
+  :<> [n:nat] [l:agz] (ptrarr n @ l -<lin,prf> void, ptrarr n @ l | ptr l)
+  = "#atslib_hostent_get_name"
+// end of [hostent_get_name]
+
+(* ****** ****** *)
+
+absview sethostent_v
+
+fun sethostent {b:bool}
+  (stayopen: bool (b)): (sethostent_v | void)
+  = "#atslib_sethostent"
+// end of [sethostent]
+
+fun gethostent
+  (pf: !sethostent_v | (*none*))
+  :<!ref> [l:addr] (hostent @ l, hostent @ l -<lin,prf> void | ptr l)
+  = "#atslib_gethostent"
+// end of [gethostent]
+
+fun endhostent
+  (pf: sethostent_v | (*none*)): void = "#atslib_endhostent"
+// end of [endhostent]
+
+(* ****** ****** *)
+
+fun gethostbyname (name: string)
+  :<!ref> [l:addr] (hostent @ l, hostent @ l -<lin,prf> void | ptr l)
+  = "#atslib_gethostbyname"
+// end of [gethostbyname]
+
+fun gethostbyaddr {n:int}
+  (addr: &sockaddr(n), n: socklen_t(n), af: sa_family_t)
+  :<!ref> [l:addr] (hostent @ l, hostent @ l -<lin,prf> void | ptr l)
+  = "#atslib_gethostbyaddr"
+// end of [gethostbyaddr]
+
+(* ****** ****** *)
+
 (* end of [netdb.sats] *)
