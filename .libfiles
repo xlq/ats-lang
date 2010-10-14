@@ -82,6 +82,9 @@ prelude/DATS/option_vt.dats
 */
 prelude/SATS/option0.sats
 
+prelude/SATS/ptrarr.sats
+prelude/DATS/ptrarr.dats
+
 /* ****** ****** */
 
 /* libc files */

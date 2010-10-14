@@ -178,7 +178,7 @@ atslib_pipe (
 ats_ptr_type
 atslib_environ_get_arrsz
   (size_t *sizep) {
-  *sizep = atslib_strarr_size (environ) ;
+  *sizep = atspre_ptrarr_size (environ) ;
   return environ;
 } // end of [atslib_environ_get_arrsz]
 
