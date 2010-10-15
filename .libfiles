@@ -85,6 +85,9 @@ prelude/SATS/option0.sats
 prelude/SATS/ptrarr.sats
 prelude/DATS/ptrarr.dats
 
+prelude/SATS/unsafe.sats
+prelude/DATS/unsafe.dats
+
 /* ****** ****** */
 
 /* libc files */

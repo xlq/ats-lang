@@ -11,6 +11,7 @@
 
 staload "prelude/SATS/ptrarr.sats"
 staload UNSAFE = "prelude/SATS/unsafe.sats"
+staload _(*UNSAFE*) = "prelude/DATS/unsafe.dats"
 
 (* ****** ****** *)
 
@@ -27,7 +28,7 @@ fun display_hostent
   val (fpf_name | name) = hostent_get_name (h)
   val () = printf (
     "name: %s; type: %d; len: %d\n"
-  , @($UNSAFE.vtcast{string} (name), h.h_addrtype, h.h_length)
+  , @($UNSAFE.castvt{string} (name), h.h_addrtype, h.h_length)
   ) // end of [printf]
   prval () = fpf_name (name)
 //
@@ -45,7 +46,8 @@ fun display_hostent
   prval () = pf := fpf1 (pf1)
   prval () = fpf (pf)
 //
-  val () = if (h.h_addrtype = $UNSAFE.cast2int(AF_INET)) then let
+  val () = if
+    (h.h_addrtype = $UNSAFE.cast2int(AF_INET)) then let
 //
   val (pf, fpf | p) = hostent_get_addr_list (h)
   val n = ptrarr_size (!p)
@@ -55,11 +57,9 @@ fun display_hostent
     fun loop {n,i:nat | i <= n} .<n-i>.
       (A: &(@[Ptr1][n]), n: size_t n, i: size_t i): void =
       if i < n then let
-        val [l:addr] pi = A.[i]
-        prval pfi = $UNSAFE.vcast{in_addr_struct @ l} (unit_v)
-        val (fpf_addr | addr) = inet_ntoa (!pi)
-        prval () = $UNSAFE.vcast2void (pfi)
-        val () = printf ("\t%s\n", @($UNSAFE.vtcast{string}(addr)))
+        val (fpf_addr | addr) = inet_ntoa
+          ($UNSAFE.ptrget<in_addr_struct>(A.[i]))
+        val () = printf ("\t%s\n", @($UNSAFE.castvt{string}(addr)))
         prval () = fpf_addr (addr)
       in
         loop (A, n, i+1)
@@ -74,6 +74,7 @@ fun display_hostent
   end // end of [val]
 //
 in
+  // nothing
 end // end of [display_hostent]
 
 (* ****** ****** *)

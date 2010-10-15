@@ -184,17 +184,17 @@ $extype_struct
 typedef hostent = hostent_struct
 
 fun hostent_get_name (h: &hostent)
-  :<> [l:agz] (strptr l -<lin,prf> void | strptr l)
+  :<!ref> [l:agz] (strptr l -<lin,prf> void | strptr l)
   = "#atslib_hostent_get_name"
 // end of [hostent_get_name]
 
 fun hostent_get_aliases (h: &hostent)
-  :<> [n:nat] [l:agz] (ptrarr n @ l, ptrarr n @ l -<lin,prf> void | ptr l)
+  :<!ref> [n:nat] [l:agz] (ptrarr n @ l, ptrarr n @ l -<lin,prf> void | ptr l)
   = "#atslib_hostent_get_aliases"
 // end of [hostent_get_aliases]
 
 fun hostent_get_addr_list (h: &hostent)
-  :<> [n:nat] [l:agz] (ptrarr n @ l, ptrarr n @ l -<lin,prf> void | ptr l)
+  :<!ref> [n:nat] [l:agz] (ptrarr n @ l, ptrarr n @ l -<lin,prf> void | ptr l)
   = "#atslib_hostent_get_addr_list"
 // end of [hostent_get_addr_list]
 
@@ -219,16 +219,27 @@ fun endhostent
 
 (* ****** ****** *)
 
+//
+// HX: [gethostbyname] does not handle [IPv6] addresses
+//
 fun gethostbyname (name: string)
   :<!ref> [l:addr] (hostent @ l, hostent @ l -<lin,prf> void | ptr l)
   = "#atslib_gethostbyname"
 // end of [gethostbyname]
 
-fun gethostbyaddr {n:int}
-  (addr: &sockaddr(n), n: socklen_t(n), af: sa_family_t)
+//
+// HX: [addr] is often obtained by calling [inet_addr]
+//
+fun gethostbyaddr {a:t@ype}
+  (addr: &a, n: sizeof_t(a), af: sa_family_t)
   :<!ref> [l:addr] (hostent @ l, hostent @ l -<lin,prf> void | ptr l)
   = "#atslib_gethostbyaddr"
 // end of [gethostbyaddr]
+
+(* ****** ****** *)
+
+fun gethostid (): lint = "#atslib_gethostid"
+fun sethostid (id: lint): int = "#atslib_sethostid" // for superuser only
 
 (* ****** ****** *)
 

@@ -40,33 +40,32 @@
 //
 (* ****** ****** *)
 
-#define ATS_STALOADFLAG 0 // there is no need for staloading at run-time
+#define ATS_DYNLOADFLAG 0 // there is no need for staloading at run-time
 
 (* ****** ****** *)
 
-castfn cast2int {a:t@ype} (x: a):<> int
-castfn cast2uint {a:t@ype} (x: a):<> uint
-castfn cast2lint {a:t@ype} (x: a):<> lint
-castfn cast2ulint {a:t@ype} (x: a):<> ulint
-castfn cast2size {a:t@ype} (x: a):<> size_t
-castfn cast2ssize {a:t@ype} (x: a):<> ssize_t
-
-castfn cast {to:t@ype} {from:t@ype} (x: from):<> to
+staload "prelude/SATS/unsafe.sats"
 
 (* ****** ****** *)
 
-praxi castv2void {from:view} (x: from):<> void
-praxi castv {to:view} {from:view} (x: from):<> to
+implement{a}
+ptrget {l} (p) = x where {
+  prval (pf, fpf) = __assert () where {
+    extern praxi __assert (): (a @ l, a? @ l -<lin,prf> void)
+  } // end of [prval]
+  val x = !p
+  prval () = fpf (pf)
+} // end of [ptrget]
+
+implement{a}
+ptrset {l} (p, x) = () where {
+  prval (pf, fpf) = __assert () where {
+    extern praxi __assert (): (a? @ l, a @ l -<lin,prf> void)
+  } // end of [prval]
+  val () = !p := x
+  prval () = fpf (pf)
+} // end of [ptrset]
 
 (* ****** ****** *)
 
-castfn castvt {to:viewt@ype} {from:viewt@ype} (x: !from):<> to
-
-(* ****** ****** *)
-
-fun{a:viewt@ype} ptrget {l:agz} (p: ptr l): a
-fun{a:viewt@ype} ptrset {l:agz} (p: ptr l, x: a): void
-
-(* ****** ****** *)
-
-(* end of [unsafe.sats] *)
+(* end of [unsafe.dats] *)

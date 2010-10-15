@@ -88,6 +88,11 @@ typedef struct hostent ats_hostent_type ;
 
 /* ****** ****** */
 
+#define atslib_gethostid gethostid
+#define atslib_sethostid sethostid
+
+/* ****** ****** */
+
 #endif /* ATS_LIBC_NETDB_CATS */
 
 /* end of [netdb.cats] */
