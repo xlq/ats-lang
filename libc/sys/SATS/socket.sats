@@ -50,6 +50,7 @@ stadef sockaddr_struct = $SA.sockaddr_struct
 
 abst@ype socktype_t = int
 (*
+// HX: using $UNSAFE.cast2int instead
 castfn int_of_socktype (x: socktype_t):<> int
 overload int_of with int_of_socktype
 *)
@@ -61,17 +62,18 @@ macdef SOCK_PACKET = $extval (socktype_t, "SOCK_PACKET")
 macdef SOCK_SEQPACKET = $extval (socktype_t, "SOCK_SEQPACKET")
 macdef SOCK_DCCP = $extval (socktype_t, "SOCK_DCCP")
 
-abst@ype socktype_flag_t = int
-macdef SOCK_CLOEXEC = $extval (socktype_flag_t, "SOCK_CLOEXEC")
-macdef SOCK_NONBLOCK = $extval (socktype_flag_t, "SOCK_NONBLOCK")
-fun lor_socktype_socktype_flag
-  (t: socktype_t, f: socktype_flag_t):<> socktype_t = "atspre_lor_uint_uint"
-overload lor with lor_socktype_socktype_flag
+abst@ype socktypeflag_t = int
+macdef SOCK_CLOEXEC = $extval (socktypeflag_t, "SOCK_CLOEXEC")
+macdef SOCK_NONBLOCK = $extval (socktypeflag_t, "SOCK_NONBLOCK")
+fun lor_socktype_socktypeflag
+  (t: socktype_t, f: socktypeflag_t):<> socktype_t = "atspre_lor_uint_uint"
+overload lor with lor_socktype_socktypeflag
 
 (* ****** ****** *)
 
 abst@ype sockprot_t = int
 (*
+// HX: using $UNSAFE.cast2int instead
 castfn int_of_sockprot (x: sockprot_t):<> int
 overload int_of with int_of_sockprot
 *)
@@ -104,9 +106,10 @@ dataview connect_v (fd: int, int) =
 // end of [connect_v]
 
 fun connect_err
-  {fd:int} {n1,n2:int | n2 <= n1} (
+  {fd:int} {n:int} (
     pfskt: socket_v (fd, init)
-  | fd: int fd, servaddr: &sockaddr_struct(n1), salen: socklen_t(n2)
+  | fd: int fd
+  , servaddr: &sockaddr_struct(n), salen: socklen_t(n)
   ) : [i:int | i <= 0] (connect_v (fd, i) | int i)
   = "#atslib_connect_err"
 // end of [connect_err]
@@ -119,10 +122,10 @@ dataview bind_v (fd:int, int) =
 // end of [bind_v]
 
 fun bind_err
-  {fd:int} {n1,n2:int | n2 <= n1} (
+  {fd:int} {n:int} (
     pfskt: socket_v (fd, init)
   | fd: int fd
-  , servaddr: &sockaddr_struct(n1), salen: socklen_t(n2)
+  , servaddr: &sockaddr_struct(n), salen: socklen_t(n)
   ) : [i:int] (bind_v (fd, i) | int i) = "#atslib_bind_err"
 // end of [bind_err]
 

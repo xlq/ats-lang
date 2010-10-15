@@ -48,13 +48,17 @@ SDL_ttf_sats.o: SATS/SDL_ttf.sats
 
 ######
 
+RMF = rm -f
+
+######
+
 clean::
-	rm -f SDL_sats.c SDL_sats.o
-	rm -f SDL_dats.c SDL_dats.o
-	rm -f SDL_image_sats.c SDL_image_sats.o
-	rm -f SDL_ttf_sats.c SDL_ttf_sats.o
+	$(RMF) SDL_sats.c SDL_sats.o
+	$(RMF) SDL_dats.c SDL_dats.o
+	$(RMF) SDL_image_sats.c SDL_image_sats.o
+	$(RMF) SDL_ttf_sats.c SDL_ttf_sats.o
 
 cleanall: clean
-	rm -f atsctrb_SDL.o
+	$(RMF) atsctrb_SDL.o
 
 ###### end of [Makefile] ######

@@ -45,12 +45,12 @@
 
 /* ****** ****** */
 
-ATSinline
+ATSinline()
 ats_ptr_type
 atsctrb_SDL_ref_null() { return ((ats_ptr_type)0) ; }
-
 ATSinline()
-ats_void_type atsctrb_SDL_ref_free_null () { return ; }
+ats_void_type
+atsctrb_SDL_ref_free_null (ats_ptr_type p) { return ; }
 
 /* ****** ****** */
 
