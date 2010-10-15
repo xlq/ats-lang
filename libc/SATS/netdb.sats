@@ -209,7 +209,7 @@ fun sethostent {b:bool}
 
 fun gethostent
   (pf: !sethostent_v | (*none*))
-  :<!ref> [l:addr] (hostent @ l, hostent @ l -<lin,prf> void | ptr l)
+  :<!ref> [l:addr] (ptroutopt (hostent, l) | ptr l)
   = "#atslib_gethostent"
 // end of [gethostent]
 
@@ -223,8 +223,7 @@ fun endhostent
 // HX: [gethostbyname] does not handle [IPv6] addresses
 //
 fun gethostbyname (name: string)
-  :<!ref> [l:addr] (hostent @ l, hostent @ l -<lin,prf> void | ptr l)
-  = "#atslib_gethostbyname"
+  :<!ref> [l:addr] (ptroutopt (hostent, l) | ptr l) = "#atslib_gethostbyname"
 // end of [gethostbyname]
 
 //
@@ -232,9 +231,32 @@ fun gethostbyname (name: string)
 //
 fun gethostbyaddr {a:t@ype}
   (addr: &a, n: sizeof_t(a), af: sa_family_t)
-  :<!ref> [l:addr] (hostent @ l, hostent @ l -<lin,prf> void | ptr l)
-  = "#atslib_gethostbyaddr"
+  :<!ref> [l:addr] (ptroutopt (hostent, l) | ptr l) = "#atslib_gethostbyaddr"
 // end of [gethostbyaddr]
+
+(* ****** ****** *)
+
+abst@ype niflag_t = int
+macdef NI_ZERO = $extval (niflag_t, "0")
+macdef NI_NUMERICHOST = $extval (niflag_t, "NI_NUMERICHOST")
+macdef NI_NUMERICSERV = $extval (niflag_t, "NI_NUMERICSERV")
+macdef NI_NOFQDN = $extval (niflag_t, "NI_NOFQDN")
+macdef NI_NAMEREQD = $extval (niflag_t, "NI_NAMEREQD")
+macdef NI_DGRAM = $extval (niflag_t, "NI_DGRAM")
+macdef NI_IDN = $extval (niflag_t, "NI_IDN") // HX: -D_GNU_SOUCRCE
+
+//
+// HX: note that [a] should be a [sockaddr]!
+// [nodename] and [servname] are fill with null-terminated strings if
+// a call to [getnameinfo] succeeds
+//
+fun getnameinfo{a:t@ype} {n1,n2:nat} (
+    sa: &a, salen: sizeof_t (a)
+  , nodename: &b0ytes(n1) >> bytes(n1), nodelen: size_t(n1)
+  , servname: &b0ytes(n2) >> bytes(n2), servlen: size_t(n1)
+  , flags: niflag_t
+  ) : [i:int | i <= 0] int (i) = "#atslib_getnameinfo" // 0/neg : succ/fail
+// end of [getnameinfo]
 
 (* ****** ****** *)
 

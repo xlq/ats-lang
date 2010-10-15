@@ -82,14 +82,16 @@ end // end of [display_hostent]
 fun hostdb (): void = let
   val (pf | ()) = sethostent (true)
   val () = while (true) let
-    val (pf, fpf | p) = gethostent (pf | (*none*))
+    val (pfopt | p) = gethostent (pf | (*none*))
   in
     if p > null then let
-      val () = display_hostent (!p); prval () = fpf (pf)
+      prval Some_v @(pf1, fpf1) = pfopt
+      val () = display_hostent (!p)
+      prval () = fpf1 (pf1)
     in
       continue
     end else let
-      prval () = fpf (pf) in break
+      prval None_v () = pfopt in break
     end // end of [if]
   end // end of [while]
   val () = endhostent (pf | (*none*))

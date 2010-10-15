@@ -152,13 +152,15 @@ fun close_loop_exn {fd:int}
 //
 fun read_err
   {fd:int} {n,sz:nat | n <= sz} (
-    pf: !fildes_v (fd) | fd: int fd, buf: &bytes sz, ntotal: size_t n
+    pf: !fildes_v (fd)
+  | fd: int fd, buf: &b0ytes(sz) >> bytes(sz), ntotal: size_t n
   ) : ssizeBtw(~1, n+1) = "atslib_fildes_read_err"
 // end of [read_err]
 
 fun read_exn
   {fd:int} {n,sz:nat | n <= sz} (
-    pf: !fildes_v (fd) | fd: int fd, buf: &bytes sz, ntotal: size_t n
+    pf: !fildes_v (fd)
+  | fd: int fd, buf: &b0ytes(sz) >> bytes(sz), ntotal: size_t n
   ) : sizeLte n = "atslib_fildes_read_exn"
 // end of [read_exn]
 

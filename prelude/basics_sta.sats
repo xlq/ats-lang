@@ -826,17 +826,17 @@ stadef option_vt = option_viewt0ype_bool_viewtype
 viewtypedef Option_vt (a:viewt@ype) = [b:bool] option_vt (a, b)
 
 (* ****** ****** *)
-
-// some useful props and views
-
+//
+// HX: some useful props and views
+//
 dataprop unit_p = unit_p of ()
 dataview unit_v = unit_v of ()
 
 //
 
 dataview
-option_view_bool_view (a:view+, bool) =
-  | Some_v (a, true) of a | None_v (a, false)
+option_view_bool_view
+  (a:view+, bool) = Some_v (a, true) of a | None_v (a, false)
 // end of [option_view_bool_view]
 stadef option_v = option_view_bool_view
 viewdef ptropt_v (a:viewt@ype, l:addr) = option_v (a @ l, l > null)
@@ -844,18 +844,23 @@ viewdef ptropt_v (a:viewt@ype, l:addr) = option_v (a @ l, l > null)
 //
 
 dataview
-disj_view_view_int_view (v0: view, v1: view, int) =
+disj_view_view_int_view
+  (v0: view, v1: view, int) =
   | InsLeft_v (v0, v1, 0) of v0 | InsRight_v (v0, v1, 1) of v1
 // end of [dataview or_view_view_int_view]
 stadef disj_v = disj_view_view_int_view
 
 //
 
-// subview relation that only allows *reading*
+//
+// HX: subview relation that only allows *reading*
+//
 absprop vsubr_p (v1:view+, v2: view-) // v2 -<prf> [v:iew] @(v1, v)
 stadef <= (v1:view, v2:view) = vsubr_p (v1, v2)
 
-// subview relation that allows *reading* and *writing*
+//
+// HX: subview relation that allows *reading* and *writing*
+//
 absprop vsubw_p (v1:view, v2: view) // v2 -<prf> @(v1, v1 -<lin,prf> v2)
 
 (* ****** ****** *)
@@ -864,13 +869,17 @@ absviewt@ype crypt_viewt0ype_viewt0ype (a:viewt@ype) = a
 stadef crypt = crypt_viewt0ype_viewt0ype
 
 (* ****** ****** *)
-
+//
+// HX:
 // [lazy T] : supspended computation with a value of type T
+//
 abstype lazy_t0ype_type (t@ype+) // boxed type
 stadef lazy = lazy_t0ype_type
 
-// [lazy_vt VT] :
-//   supspended computation with a linear value of viewtype VT
+//
+// HX: [lazy_vt VT] :
+// supspended computation with a linear value of viewtype VT
+//
 absviewtype lazy_viewt0ype_viewtype (viewt@ype+) // boxed linear type
 stadef lazy_vt = lazy_viewt0ype_viewtype
 

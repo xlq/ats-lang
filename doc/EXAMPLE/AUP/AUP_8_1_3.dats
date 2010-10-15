@@ -30,7 +30,9 @@ staload "libc/sys/SATS/un.sats"
 staload "libc/sys/SATS/socket_un.sats"
 
 (* ****** ****** *)
-
+//
+// HX: this is really an overkill ...
+//
 fun fprint_bytes_size
   {n1,n2:nat | n2 <= n1} 
   (out: FILEref, buf: &(@[byte][n1]), n2: size_t n2): void = let
