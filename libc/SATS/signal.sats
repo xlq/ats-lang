@@ -42,9 +42,17 @@
 
 (* ****** ****** *)
 
-// defined in [libc/CATS/signal.cats]
-abst@ype signum_t = $extype "signum_t"
+staload TYPES = "libc/sys/SATS/types.sats"
+typedef pid_t = $TYPES.pid_t
+typedef uid_t = $TYPES.uid_t
+typedef clock_t = $TYPES.clock_t
 
+(* ****** ****** *)
+//
+// HX: defined in [libc/CATS/signal.cats]
+//
+abst@ype signum_t = $extype "signum_t"
+//
 macdef SIGHUP =  $extval (signum_t, "SIGHUP") // 1
 macdef SIGINT =  $extval (signum_t, "SIGINT") // 2
 macdef SIGQUIT = $extval (signum_t, "SIGQUIT") // 3
@@ -64,24 +72,128 @@ macdef SIGSTOP = $extval (signum_t, "SIGSTOP")
 macdef SIGTSTP = $extval (signum_t, "SIGTSTP")
 macdef SIGTTIN = $extval (signum_t, "SIGTTIN")
 macdef SIGTTOU = $extval (signum_t, "SIGTTOU")
-
+//
 macdef SIGBUS = $extval (signum_t, "SIGBUS")
 macdef SIGTRAP = $extval (signum_t, "SIGTRAP") // 5
-
+//
 macdef SIGIO = $extval (signum_t, "SIGIO")
 
 (* ****** ****** *)
+
+abstype sighandler_t // this is a boxed type
 //
-// HX: typedef sighandler_t = (signum_t) -<fun> void
+macdef SIG_DFL = $extval (sighandler_t, "SIG_DFL")
+macdef SIG_IGN = $extval (sighandler_t, "SIG_IGN")
 //
-abstype sighandler_t // boxed type
-castfn sighandler_of_fun (f: signum_t -<fun> void): sighandler_t
-castfn fun_of_sighandler (f: sighandler_t): signum_t -<fun> void
+symintr sighandler
+castfn sighandler_of_fun (f: signum_t -<fun1> void): sighandler_t
+overload sighandler with sighandler_of_fun
+
+(* ****** ****** *)
+
+abst@ype sigset_t = $extype "sigset_t"
+fun sigemptyset // 0/-1 : fail/succ // errno set: EINVAL
+  (set: &sigset_t): int = "#atslib_sigemptyset"
+// end of [sigemptyset]
+fun sigfillset  // 0/-1 : fail/succ // errno set: EINVAL
+  (set: &sigset_t): int = "#atslib_sigfillset"
+// end of [sigfillset]
+fun sigaddset   // 0/-1 : fail/succ // errno set: EINVAL
+  (set: &sigset_t, sgn: signum_t): int = "#atslib_sigaddset"
+// end of [sigaddset]
+fun sigdelset   // 0/-1 : fail/succ // errno set: EINVAL
+  (set: &sigset_t, sgn: signum_t): int = "#atslib_sigdelset"
+// end of [sigdelset]
+
+fun sigismember // 0/1/-1 : false/true/error // errno set: EINVAL
+  (set: &sigset_t, sgn: signum_t): int = "#atslib_sigismember"
+// end of [sigismember]
+
+(* ****** ****** *)
+
+abst@ype sigmaskhow_t = int
+
+macdef SIG_BLOCK = $extval (sigmaskhow_t, "SIG_BLOCK")
+macdef SIG_SETMASK = $extval (sigmaskhow_t, "SIG_SETMASK")
+macdef SIG_NONBLOCK = $extval (sigmaskhow_t, "SIG_NONBLOCK")
+
+/* ****** ****** */
+
+fun pthread_sigmask (
+  how: sigmaskhow_t
+, newset: &sigset_t, oldset: &sigset_t? >> opt (sigset_t, i==0)
+) : #[i:int | i <= 0] int (i) = "#atslib_pthread_sigmask"
+fun pthread_sigmask_null
+  (how: sigmaskhow_t, newset: &sigset_t): int = "#atslib_pthread_sigmask"
+// end of [pthread_sigmask_null]
+
+fun sigprocmask (
+  how: sigmaskhow_t
+, newset: &sigset_t, oldset: &sigset_t? >> opt (sigset_t, i==0)
+) : #[i:int | i <= 0] int (i) = "#atslib_sigprocmask"
+fun sigprocmask_null
+  (how: sigmaskhow_t, newset: &sigset_t): int = "#atslib_sigprocmask"
+// end of [sigprocmask_null]
+
+(* ****** ****** *)
+
+abst@ype sigval_t = $extype "sigval_t"
+abst@ype saflag_t = uint
+macdef SA_NOCLDSTOP = $extval (saflag_t, "SA_NOCLDSTOP")
+macdef SA_NOCLDWAIT = $extval (saflag_t, "SA_NOCLDWAIT")
+macdef SA_NODEFER = $extval (saflag_t, "SA_NODEFER")
+macdef SA_ONSTACK = $extval (saflag_t, "SA_ONSTACK")
+macdef SA_RESETHAND = $extval (saflag_t, "SA_RESETHAND")
+macdef SA_RESTART = $extval (saflag_t, "SA_RESTART")
+macdef SA_SIGINFO = $extval (saflag_t, "SA_SIGINFO")
+
+(* ****** ****** *)
+
+typedef siginfo_t =
+$extype_struct "siginfo_t" of {
+  si_signo= int // signal number
+, si_sigerror= int // error value
+, si_code= int // signal code
+, si_trapno= int // trap number that caused HW signal
+, si_pid= pid_t // proc ID of the sending process
+, si_uid= uid_t // real user ID of the sending process
+, si_status= int // exit value or signal
+, si_utime= clock_t // user time consumed
+, si_stime= clock_t // system time consumed
+, si_value= sigval_t // signal value
+, si_int= int // signal (POSIX.1b)
+, si_ptr= ptr // signal (POSIX.1b)
+, si_overrun= int // timer overrun count (POSIX.1b)
+, si_timerid= int // timer ID (POSIX.1b)
+, si_addr= ptr // memory location that caused fault
+, si_band= int // band event
+, si_fd= int // file descriptor
+} // end of [siginfo_t]
+
+(* ****** ****** *)
+
+typedef sigaction_struct =
+$extype_struct "ats_sigaction_type" of {
+  sa_handler= sighandler_t
+, sa_sigaction= (int, &siginfo_t, ptr) -<fun1> void
+, sa_mask= sigset_t
+, sa_flags= saflag_t
+, sa_restorer= () -<fun1> void
+} // end of [sigaction_struct]
+typedef sigaction = sigaction_struct
+
+fun sigaction (
+  sgn: signum_t
+, newact: &sigaction, oldact: &sigaction >> opt (sigaction, i==0)
+) : #[i:int | i <= 0] int i = "#atslib_sigaction" // 0/-1 : succ/fail
+fun sigaction_null
+  (sgn: signum_t, newact: &sigaction): int = "#atslib_sigaction_null"
+// end of [sigaction_null]
 
 (* ****** ****** *)
 
 fun signal
-  (signum: signum_t, f: sighandler_t): sighandler_t = "#atslib_signal"
+  (sn: signum_t, f: sighandler_t): sighandler_t = "#atslib_signal"
 // end of [signal]
 
 (* ****** ****** *)

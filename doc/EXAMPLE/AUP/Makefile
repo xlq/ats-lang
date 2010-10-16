@@ -28,13 +28,15 @@ checkall: compall cleanall
 
 ######
 
-compall: \
+compall:: \
   testlock \
   backward \
   backward2 \
   pathnames \
   longls \
   getcwdx \
+
+compall:: \
   test421 \
   test4221 \
   test4222 \
@@ -42,13 +44,19 @@ compall: \
   test435 \
   test47 \
   test48 \
+
+compall:: \
   test52 \
   aupsh1 \
   aupsh2 \
   aupsh3 \
   test5173 \
+
+compall:: \
   test631 \
   test65 \
+
+compall:: \
   test811 \
   test813 \
   test814 \
@@ -57,6 +65,10 @@ compall: \
   test83 \
   test8811 \
   test8812 \
+
+compall:: \
+  test911 \
+  test917 \
 
 ######
 
@@ -174,6 +186,11 @@ test8812: AUP_8_8_1_2.dats; $(ATSCC) -Wall -o $@ $< && ./test8812
 
 #######
 
+test911: AUP_9_1_1.dats; $(ATSCC) -Wall -o $@ $<
+test917: AUP_9_1_7.dats; $(ATSCC) -Wall -o $@ $<
+
+#######
+
 RMF = rm -f
 
 #######
@@ -186,12 +203,14 @@ clean::
 	$(RMF) getargs.o
 
 cleanall:: clean
+cleanall::
 	$(RMF) testlock
 	$(RMF) backward
 	$(RMF) backward2
 	$(RMF) pathnames
 	$(RMF) longls
 	$(RMF) getcwdx
+cleanall::
 	$(RMF) test421
 	$(RMF) test4221
 	$(RMF) test4222
@@ -199,6 +218,7 @@ cleanall:: clean
 	$(RMF) test435
 	$(RMF) test47
 	$(RMF) test48
+cleanall::
 	$(RMF) test52
 	$(RMF) aupsh1
 	$(RMF) aupsh2
@@ -206,8 +226,10 @@ cleanall:: clean
 	$(RMF) test511
 	$(RMF) aupnice
 	$(RMF) test5173
+cleanall::
 	$(RMF) test631
 	$(RMF) test65
+cleanall::
 	$(RMF) test811
 	$(RMF) test813
 	$(RMF) test814
@@ -216,5 +238,8 @@ cleanall:: clean
 	$(RMF) test83
 	$(RMF) test8811
 	$(RMF) test8812
+cleanall::
+	$(RMF) test911
+	$(RMF) test917
 
 ###### end of [Makefile] ######

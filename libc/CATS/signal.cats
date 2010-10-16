@@ -47,23 +47,32 @@ typedef void (*sighandler_t)(signum_t) ;
 
 /* ****** ****** */
 
-/*
-//
-// HX-2010-09-27:
-// these two are now cast functions
-//
-ATSinline()
-ats_ptr_type
-atslib_fun_of_sighandler (ats_ptr_type f) { return f ; }
-
-ATSinline()
-ats_ptr_type
-atslib_sighandler_of_fun (ats_ptr_type f) { return f ; }
-*/
+typedef struct sigaction ats_sigaction_type ;
 
 /* ****** ****** */
 
 #define atslib_signal signal
+
+/* ****** ****** */
+
+#define atslib_sigaction sigaction
+#define atslib_sigaction_null(signum, act) \
+  sigaction(signum, act, (ats_sigaction_type*)0)
+
+/* ****** ****** */
+
+#define atslib_sigemptyset sigemptyset
+#define atslib_sigfillset sigfillset
+#define atslib_sigaddset sigaddset
+#define atslib_sigdelset sigdelset
+
+/* ****** ****** */
+
+#define atslib_pthread_sigmask pthread_sigmask
+#define atslib_pthread_sigmask_null(how, newset) pthread_sigmask_null (how, newset, NULL)
+
+#define atslib_sigprocmask sigprocmask
+#define atslib_sigprocmask_null(how, newset) sigprocmask_null (how, newset, NULL)
 
 /* ****** ****** */
 
