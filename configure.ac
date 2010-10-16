@@ -98,11 +98,11 @@ dnl = check for [GL/gl.h GL/glut.h]
 dnl = AC_CHECK_HEADERS(GL/gl.h GL/glut.h)
 
 dnl = check for [SDL]
-AM_PATH_SDL(1.0.0, [
-  AC_DEFINE([HAVE_SDL], [1], [Define to 1 if you have SDL-1.0])
-  have_sdl=1
-])
-AC_SUBST(HAVE_LIBSDL, $have_sdl)
+dnl = AM_PATH_SDL(1.0.0, [
+dnl =  AC_DEFINE([HAVE_LIBSDL10], [1], [Define to 1 if you have SDL-1.0])
+dnl =  have_sdl=1
+dnl = ])
+dnl = AC_SUBST(HAVE_LIBSDL10, $have_sdl)
 
 dnl = check for SIZEOF_VOIDP
 AC_CHECK_SIZEOF(void*)

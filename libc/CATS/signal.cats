@@ -72,11 +72,18 @@ typedef struct sigaction ats_sigaction_type ;
 
 /* ****** ****** */
 
-#define atslib_sigwait sigwait
+#define atslib_signal signal
 
 /* ****** ****** */
 
-#define atslib_signal signal
+#define atslib_kill kill
+#define atslib_killpg killpg
+#define atslib_pthread_kill pthread_kill
+#define atslib_raise raise
+
+/* ****** ****** */
+
+#define atslib_sigwait sigwait
 
 /* ****** ****** */
 

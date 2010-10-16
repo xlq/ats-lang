@@ -46,6 +46,8 @@ staload TYPES = "libc/sys/SATS/types.sats"
 typedef pid_t = $TYPES.pid_t
 typedef uid_t = $TYPES.uid_t
 typedef clock_t = $TYPES.clock_t
+staload PTHREAD = "libc/SATS/pthread.sats"
+typedef pthread_t = $PTHREAD.pthread_t
 
 (* ****** ****** *)
 //
@@ -193,8 +195,29 @@ fun sigaction_null
 (* ****** ****** *)
 
 fun signal
-  (sn: signum_t, f: sighandler_t): sighandler_t = "#atslib_signal"
+  (sgn: signum_t, f: sighandler_t): sighandler_t = "#atslib_signal"
 // end of [signal]
+
+(* ****** ****** *)
+
+fun kill // 0/-1 : succ/fail // errno set
+  (proc: pid_t, sgn: signum_t): int = "#atslib_kill"
+// end of [kill]
+//
+// HX: killpg (pgrp, sgn) = kill (-pgrp, sgn)
+//
+fun killpg // 0/-1 : succ/fail // errno set
+  (pgrp: pid_t, sgn: signum_t): int = "#atslib_killpg"
+// end of [killpg]
+fun pthread_kill // 0/errno : succ/fail
+  (tid: pthread_t, sgn: signum_t): int = "#atslib_pthread_kill"
+// end of [pthread_kill]
+//
+// HX: raise(sgn) = pthread_kill (pthread_self, sgn)
+//
+fun raise // 0/errno : succ/fail
+  (sgn: signum_t): int = "#atslib_raise" // 0/nz : succ/fail
+// end of [raise]
 
 (* ****** ****** *)
 

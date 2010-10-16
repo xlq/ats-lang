@@ -86,6 +86,8 @@ fun system (cmd: string): int = "#atslib_system" // !macro
 
 (* ****** ****** *)
 
+fun abort (): void = "#atslib_abort"
+
 fun _Exit (status: int): void = "#atslib__Exit" // !macro
 fun atexit (f: () -> void): int = "#atslib_atexit" // !macro
 

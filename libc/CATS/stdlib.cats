@@ -67,6 +67,7 @@ atspre_exit_prerrf(ats_int_type code, ats_ptr_type fmt, ...) ;
 
 /* ****** ****** */
 
+#define atslib_abort aboirt
 #define atslib__Exit _Exit
 #define atslib_atexit atexit
 
