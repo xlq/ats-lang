@@ -80,7 +80,7 @@ fun readany {n:nat} (
             ) // end of [_]
         end // end of [_ when ...]
       | _ => let
-          val _ = sleep (1) in i := 0
+          val _leftover = sleep (1) in i := 0
         end // end of [_]
     // end of [val]
   in

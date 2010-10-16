@@ -86,7 +86,7 @@ case+ 0 of
         val errno = errno_get ()
       in
         if (errno = ENOENT) then let
-          val _ = sleep (1) in loop (pfskt | fd, sa)
+          val _leftover = sleep (1) in loop (pfskt | fd, sa)
         end else let
           val () = exit (EXIT_FAILURE) in loop (pfskt | fd, sa)
         end // end of [if]

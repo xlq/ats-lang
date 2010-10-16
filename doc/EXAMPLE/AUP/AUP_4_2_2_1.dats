@@ -82,7 +82,7 @@ if err = 0 then let
       end // end of [_ when ...]
     | _ (*nread = -1*) => (
         if errno_get () = EAGAIN then
-          let val _ = sleep(5) in continue end
+          let val _leftover = sleep(5) in continue end
         else (err := err + 1; break)
       ) // end of [_]
   end // end of [val]

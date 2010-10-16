@@ -55,7 +55,7 @@ main () = () where {
   val () = printf ("Type CTRL-C in the next 10 seconds.\n", @())
   val time0 = time_get ()
   val () = assertloc ($UNSAFE.cast2lint(time0) >= 0L)
-  val _err = sleep (10)
+  val _leftover = sleep (10)
   val time1 = time_get ()
   val () = assertloc ($UNSAFE.cast2lint(time1) >= 0L)
   val () = printf ("Slept for %ld seconds.\n", @($UNSAFE.cast2lint(difftime(time1,time0))))
