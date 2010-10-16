@@ -230,6 +230,10 @@ atslib_getdomainname (
 
 /* ****** ****** */
 
+#define atslib_pause pause
+
+/* ****** ****** */
+
 #endif /* ATS_LIBC_UNISTD_CATS */
 
 /* end of [unistd.cats] */

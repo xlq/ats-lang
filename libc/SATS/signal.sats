@@ -198,4 +198,11 @@ fun signal
 
 (* ****** ****** *)
 
+fun sigwait ( // 0/pos : succ/fail
+    set: &sigset_t, sgn: &signum_t? >> opt (signum_t, i==0)
+  ) : #[i:int | i >= 0] int(i) = "#atslib_sigwait"
+// end of [sigwait]
+
+(* ****** ****** *)
+
 (* end of [signal.sats] *)

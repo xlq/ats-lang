@@ -465,4 +465,8 @@ fun setdomainname {m,n:nat | n < m}
 
 (* ****** ****** *)
 
+fun pause (): int = "#atslib_pause" // if it returns, the return value is -1
+
+(* ****** ****** *)
+
 (* end of [unistd.sats] *)

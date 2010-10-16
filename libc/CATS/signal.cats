@@ -51,10 +51,6 @@ typedef struct sigaction ats_sigaction_type ;
 
 /* ****** ****** */
 
-#define atslib_signal signal
-
-/* ****** ****** */
-
 #define atslib_sigaction sigaction
 #define atslib_sigaction_null(signum, act) \
   sigaction(signum, act, (ats_sigaction_type*)0)
@@ -73,6 +69,14 @@ typedef struct sigaction ats_sigaction_type ;
 
 #define atslib_sigprocmask sigprocmask
 #define atslib_sigprocmask_null(how, newset) sigprocmask_null (how, newset, NULL)
+
+/* ****** ****** */
+
+#define atslib_sigwait sigwait
+
+/* ****** ****** */
+
+#define atslib_signal signal
 
 /* ****** ****** */
 
