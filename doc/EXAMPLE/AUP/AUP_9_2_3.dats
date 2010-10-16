@@ -4,7 +4,7 @@
 //
 (* ****** ****** *)
 //
-// book: AUP (2nd edition), pages 615 - 618
+// book: AUP (2nd edition), pages 628 - 634
 // section 9.2.3: sigsuspend System Call
 //
 (* ****** ****** *)
