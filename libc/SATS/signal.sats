@@ -86,6 +86,8 @@ abstype sighandler_t // this is a boxed type
 //
 macdef SIG_DFL = $extval (sighandler_t, "SIG_DFL")
 macdef SIG_IGN = $extval (sighandler_t, "SIG_IGN")
+macdef SIG_HOLD = $extval (sighandler_t, "SIG_HOLD")
+macdef SIG_ERR = $extval (sighandler_t, "SIG_ERR")
 //
 symintr sighandler
 castfn sighandler_of_fun (f: signum_t -<fun1> void): sighandler_t
@@ -95,10 +97,12 @@ overload sighandler with sighandler_of_fun
 
 abst@ype sigset_t = $extype "sigset_t"
 fun sigemptyset // 0/-1 : fail/succ // errno set: EINVAL
-  (set: &sigset_t): int = "#atslib_sigemptyset"
+  (set: &sigset_t? >> opt (sigset_t, i==0))
+  : #[i:int | i <= 0] int (i) = "#atslib_sigemptyset"
 // end of [sigemptyset]
 fun sigfillset  // 0/-1 : fail/succ // errno set: EINVAL
-  (set: &sigset_t): int = "#atslib_sigfillset"
+  (set: &sigset_t? >> opt (sigset_t, i==0))
+  : #[i:int | i <= 0] int (i) = "#atslib_sigfillset"
 // end of [sigfillset]
 fun sigaddset   // 0/-1 : fail/succ // errno set: EINVAL
   (set: &sigset_t, sgn: signum_t): int = "#atslib_sigaddset"
@@ -134,7 +138,7 @@ fun sigprocmask (
 , newset: &sigset_t, oldset: &sigset_t? >> opt (sigset_t, i==0)
 ) : #[i:int | i <= 0] int (i) = "#atslib_sigprocmask"
 fun sigprocmask_null
-  (how: sigmaskhow_t, newset: &sigset_t): int = "#atslib_sigprocmask"
+  (how: sigmaskhow_t, newset: &sigset_t): int = "#atslib_sigprocmask_null"
 // end of [sigprocmask_null]
 
 (* ****** ****** *)
@@ -173,6 +177,27 @@ $extype_struct "siginfo_t" of {
 } // end of [siginfo_t]
 
 (* ****** ****** *)
+//
+// HX: this one is deprecated; please use [sigaction]
+//
+fun signal
+  (sgn: signum_t, act: sighandler_t): sighandler_t = "#atslib_signal"
+// end of [signal]
+
+fun sigset
+  (sgn: signum_t, act: sighandler_t): sighandler_t = "#atslib_sigset"
+// end of [sigset]
+
+// HX: for unblocking a signal
+fun sigrelse (sgn: signum_t): int = "#atslib_sigrelse" // 0/-1 : succ/fail
+
+// HX: sighold(sgn) = sigset (sgn, SIG_HOLD)
+fun sighold (sgn: signum_t): int = "#atslib_sighold" // 0/-1 : succ/fail
+
+// HX: sigignore(sgn) = sigset (sgn, SIG_IGN)
+fun sigignore (sgn: signum_t): int = "#atslib_sigignore" // 0/-1 : succ/fail
+
+(* ****** ****** *)
 
 typedef sigaction_struct =
 $extype_struct "ats_sigaction_type" of {
@@ -191,12 +216,6 @@ fun sigaction (
 fun sigaction_null
   (sgn: signum_t, newact: &sigaction): int = "#atslib_sigaction_null"
 // end of [sigaction_null]
-
-(* ****** ****** *)
-
-fun signal
-  (sgn: signum_t, f: sighandler_t): sighandler_t = "#atslib_signal"
-// end of [signal]
 
 (* ****** ****** *)
 
@@ -221,10 +240,37 @@ fun raise // 0/errno : succ/fail
 
 (* ****** ****** *)
 
-fun sigwait ( // 0/pos : succ/fail
+fun sigwait ( // 0/errno : succ/fail
     set: &sigset_t, sgn: &signum_t? >> opt (signum_t, i==0)
   ) : #[i:int | i >= 0] int(i) = "#atslib_sigwait"
 // end of [sigwait]
+
+(* ****** ****** *)
+
+//
+// HX: deprecated; please use [sigsuspend]
+//
+fun sigpause // -1: fail // errno set
+  (sgn: signum_t): int = "#atslib_pause"
+// end of [sigpause]
+
+//
+// HX: -1: fail // errno set // normally, EINTR is set
+//
+fun sigsuspend (mask: &sigset_t): int = "#atslib_sigsuspend"
+
+(* ****** ****** *)
+
+fun sigpending ( // 0/-1: succ/fail // errno set
+  set: &sigset_t? >> opt (sigset_t, i==0)
+) : #[i:int | i <= 0] int i = "#atslib_sigpending"
+// end of [sigpending]
+
+(* ****** ****** *)
+
+fun siginterrupt // 0/-1 : succ/fail // errno set
+  (sgn: signum_t, flag: int): int = "#atslib_siginterrupt"
+// end of [siginterrupt]
 
 (* ****** ****** *)
 

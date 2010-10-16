@@ -203,21 +203,16 @@ symintr fprint_size
 
 fun fprint0_size (out: FILEref, x: size_t):<!exnref> void
   = "atspre_fprint_size"
-
+overload fprint_size with fprint0_size
 fun fprint1_size {m:file_mode}
   (pf: file_mode_lte (m, w) | out: &FILE m, x: size_t):<!exnref> void
   = "atspre_fprint_size"
-
-overload fprint_size with fprint0_size
 overload fprint_size with fprint1_size
 overload fprint with fprint_size
-
-(* ****** ****** *)
 
 fun print_size
   (sz: size_t):<!ref> void = "atspre_print_size"
 overload print with print_size
-
 fun prerr_size
   (sz: size_t):<!ref> void = "atspre_prerr_size"
 overload prerr with prerr_size
@@ -445,6 +440,26 @@ overload * with sub_ssize_ssize
 fun div_ssize_ssize
   (i: ssize_t, j: ssize_t): ssize_t = "atspre_div_ssize_ssize"
 overload / with sub_ssize_ssize
+
+(* ****** ****** *)
+
+symintr fprint_ssize
+
+fun fprint0_ssize (out: FILEref, x: ssize_t):<!exnref> void
+  = "atspre_fprint_ssize"
+overload fprint_ssize with fprint0_ssize
+fun fprint1_ssize {m:file_mode}
+  (pf: file_mode_lte (m, w) | out: &FILE m, x: ssize_t):<!exnref> void
+  = "atspre_fprint_ssize"
+overload fprint_ssize with fprint1_ssize
+overload fprint with fprint_ssize
+
+fun print_ssize
+  (sz: ssize_t):<!ref> void = "atspre_print_ssize"
+overload print with print_ssize
+fun prerr_ssize
+  (sz: ssize_t):<!ref> void = "atspre_prerr_ssize"
+overload prerr with prerr_ssize
 
 (* ****** ****** *)
 //

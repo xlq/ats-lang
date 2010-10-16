@@ -39,7 +39,22 @@
 
 (* ****** ****** *)
 
-implement array_v_split {a} (pf_mul, pf_arr) = split (pf_mul, pf_arr) where {
+implement
+array_v_sing {a}
+  (pf) = array_v_cons {a} (pf, array_v_nil ())
+// end of [array_v_sing]
+
+implement
+array_v_unsing {a}
+  (pf) = pf1 where {
+  prval (pf1, pf2) = array_v_uncons {a} (pf)
+  prval () = array_v_unnil (pf2)
+} // end of [array_v_unsing]
+
+(* ****** ****** *)
+
+implement array_v_split {a}
+  (pf_mul, pf_arr) = split (pf_mul, pf_arr) where {
   prfun split
     {n,i:nat | i <= n} {l:addr} {ofs:int} .<i>.
     (pf_mul: MUL (i, sizeof a, ofs), pf_arr: array_v (a, n, l))

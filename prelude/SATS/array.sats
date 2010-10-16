@@ -100,11 +100,20 @@ praxi array_v_nil :
 praxi array_v_unnil :
   {a:viewt@ype} {l:addr} array_v (a, 0, l) -<prf> void
 
-praxi array_v_cons : {a:viewt@ype} {n:nat} {l:addr}
+praxi array_v_cons :
+  {a:viewt@ype} {n:nat} {l:addr}
   (a @ l, array_v (a, n, l+sizeof a)) -<prf> array_v (a, n+1, l)
 
-praxi array_v_uncons : {a:viewt@ype} {n:int | n > 0} {l:addr}
+praxi array_v_uncons :
+  {a:viewt@ype} {n:int | n > 0} {l:addr}
   array_v (a, n, l) -<prf> (a @ l, array_v (a, n-1, l+sizeof a))
+
+(* ****** ****** *)
+
+prfun array_v_sing
+  {a:viewt@ype} {l:addr} (pf: a @ l): array_v (a, 1, l)
+prfun array_v_unsing
+  {a:viewt@ype} {l:addr} (pf: array_v (a, 1, l)): a @ l
 
 (* ****** ****** *)
 

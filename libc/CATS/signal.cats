@@ -65,25 +65,37 @@ typedef struct sigaction ats_sigaction_type ;
 /* ****** ****** */
 
 #define atslib_pthread_sigmask pthread_sigmask
-#define atslib_pthread_sigmask_null(how, newset) pthread_sigmask_null (how, newset, NULL)
+#define atslib_pthread_sigmask_null(how, newset) pthread_sigmask(how, newset, NULL)
 
 #define atslib_sigprocmask sigprocmask
-#define atslib_sigprocmask_null(how, newset) sigprocmask_null (how, newset, NULL)
+#define atslib_sigprocmask_null(how, newset) sigprocmask(how, newset, NULL)
 
 /* ****** ****** */
 
 #define atslib_signal signal
+#define atslib_sigset sigset
+
+#define atslib_sighold sighold
+#define atslib_sigignore sigignore
+#define atslib_sigrelse sigrelse
 
 /* ****** ****** */
 
 #define atslib_kill kill
 #define atslib_killpg killpg
 #define atslib_pthread_kill pthread_kill
-#define atslib_raise raise
+#define atslib_raise raies
 
 /* ****** ****** */
 
 #define atslib_sigwait sigwait
+#define atslib_sigsuspend sigsuspend
+#define atslib_sigpause sigpause
+
+/* ****** ****** */
+
+#define atslib_sigpending sigpending
+#define atslib_siginterrupt siginterrupt
 
 /* ****** ****** */
 

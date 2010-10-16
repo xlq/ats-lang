@@ -148,12 +148,10 @@ atspre_lsr_size_int1 (ats_size_type sz, ats_int_type n) {
 
 ATSinline()
 ats_void_type
-atspre_fprint_size (ats_ptr_type out, ats_size_type sz) {
-  int n ;
-  n = fprintf ((FILE*)out, "%lu", (ats_ulint_type)sz) ;
-  if (n < 0) {
-    ats_exit_errmsg (n, (ats_ptr_type)"exit(ATS): [fprint_size] failed.\n") ;
-  } /* end of [if] */
+atspre_fprint_size (
+  ats_ptr_type out, ats_size_type sz
+) {
+  fprintf ((FILE*)out, "%lu", (ats_ulint_type)sz) ;
   return ;
 } // end of [atspre_fprint_size]
 
@@ -518,12 +516,10 @@ atspre_neq_ssize1_ssize1
 
 ATSinline()
 ats_void_type
-atspre_fprint_ssize (ats_ptr_type out, ats_ssize_type ssz) {
-  int n ;
-  n = fprintf ((FILE*)out, "%li", (ats_lint_type)ssz) ;
-  if (n < 0) {
-    ats_exit_errmsg (n, (ats_ptr_type)"exit(ATS): [fprint_ssize] failed.\n") ;
-  } /* end of [if] */
+atspre_fprint_ssize (
+  ats_ptr_type out, ats_ssize_type ssz
+) {
+  fprintf ((FILE*)out, "%li", (ats_lint_type)ssz) ;
   return ;
 } // end of [atspre_fprint_ssize]
 

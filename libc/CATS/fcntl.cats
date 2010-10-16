@@ -159,8 +159,8 @@ atslib_fildes_read_exn
   ats_ssize_type res ;
   res = read(fd, buf, cnt) ;
   if (res < 0) {
-    perror("read") ; ats_exit_errmsg(1, "Exit: [fildes_read] failed.\n") ;
-  }
+    perror("read") ; ats_exit_errmsg(1, "exit(ATS): [fildes_read] failed.\n") ;
+  } // end of [if]
   return res ;
 } // end of [atslib_fildes_read_exn]
 
@@ -180,8 +180,8 @@ atslib_fildes_write_exn
   ats_ssize_type res ;
   res = write(fd, buf, cnt) ;
   if (res < 0) {
-    perror("write") ; ats_exit_errmsg(1, "Exit: [fildes_write] failed.\n") ;
-  }
+    perror("write") ; ats_exit_errmsg(1, "exit(ATS): [fildes_write] failed.\n") ;
+  } // end of [if]
   return res ;
 } // end of [atslib_fildes_write_exn]
 

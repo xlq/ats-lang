@@ -88,7 +88,7 @@ clockDataRef_make (
   if (!p) {
     fprintf (stderr, "clockDataRef_make: failed\n") ;
     exit(1) ;
-  }
+  } // end of [if]
   return p ;
 } // end of [clockDataRef_make]
 
