@@ -121,10 +121,10 @@ fun futimesat // -1 on error // errno set
 
 (* ****** ****** *)
 
-abst@ype itimer_t = int
-macdef ITIMER_REAL = $extval (itimer_t, "ITIMER_REAL")
-macdef ITIMER_VIRTUAL = $extval (itimer_t, "ITIMER_VIRTUAL")
-macdef ITIMER_PROF = $extval (itimer_t, "ITIMER_PROF")
+abst@ype itimerknd_t = int
+macdef ITIMER_REAL = $extval (itimerknd_t, "ITIMER_REAL")
+macdef ITIMER_VIRTUAL = $extval (itimerknd_t, "ITIMER_VIRTUAL")
+macdef ITIMER_PROF = $extval (itimerknd_t, "ITIMER_PROF")
 
 typedef itimerval_struct =
 $extype_struct "ats_itimerval_type" of {
@@ -136,18 +136,18 @@ typedef itimerval = itimerval_struct
 // HX: -1/0 : succ/fail // errno set
 //
 fun getitimer (
-    which: itimer_t, itval: &itimerval? >> opt (itimerval, i==0)
+    which: itimerknd_t, itval: &itimerval? >> opt (itimerval, i==0)
   ) : #[i:int | i <= 0] int(i) = "#atslib_getitimer"
 // end of [getitimer]
 
 fun setitimer (
-    which: itimer_t
+    which: itimerknd_t
   , itval: &itimerval, itval_old: &itimerval? >> opt (itimerval, i==0)
   ) : #[i:int | i <= 0] int(i) = "#atslib_setitimer"
 // end of [setitimer]
 
 fun setitimer_null
-  (which: itimer_t, itval: &itimerval): int = "#atslib_setitimer_null"
+  (which: itimerknd_t, itval: &itimerval): int = "#atslib_setitimer_null"
 // end of [setitimer_null]
 
 (* ****** ****** *)

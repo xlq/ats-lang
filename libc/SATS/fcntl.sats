@@ -151,14 +151,14 @@ fun close_loop_exn {fd:int}
 // HX: implemented in [libc/CATS/fcntl.cats]
 //
 fun read_err
-  {fd:int} {n,sz:nat | n <= sz} (
+  {fd:int} {sz,n:nat | n <= sz} (
     pf: !fildes_v (fd)
   | fd: int fd, buf: &b0ytes(sz) >> bytes(sz), ntotal: size_t n
   ) : ssizeBtw(~1, n+1) = "atslib_fildes_read_err"
 // end of [read_err]
 
 fun read_exn
-  {fd:int} {n,sz:nat | n <= sz} (
+  {fd:int} {sz,n:nat | n <= sz} (
     pf: !fildes_v (fd)
   | fd: int fd, buf: &b0ytes(sz) >> bytes(sz), ntotal: size_t n
   ) : sizeLte n = "atslib_fildes_read_exn"
@@ -172,13 +172,13 @@ fun read_exn
 // otherwise, there is the risk of forever blocking!!!
 //
 fun read_all_err
-  {fd:int} {n,sz:nat | n <= sz} (
+  {fd:int} {sz,n:nat | n <= sz} (
     pf: !fildes_v (fd) | fd: int fd, buf: &bytes sz, ntotal: size_t n
   ) : ssizeBtw (~1, n+1) = "atslib_fildes_read_all_err"
 // end of [read_all_err]
 
 fun read_all_exn
-  {fd:int} {n,sz:nat | n <= sz} (
+  {fd:int} {sz,n:nat | n <= sz} (
     pf: !fildes_v (fd) | fd: int fd, buf: &bytes sz, ntotal: size_t n
   ) : sizeLte n = "atslib_fildes_read_all_exn"
 // end of [read_all_exn]
@@ -188,13 +188,13 @@ fun read_all_exn
 // HX: implemented in [libc/CATS/fcntl.cats]
 //
 fun write_err
-  {fd:int} {n,sz:nat | n <= sz} (
+  {fd:int} {sz,n:nat | n <= sz} (
     pf: !fildes_v (fd) | fd: int fd, buf: &bytes sz, ntotal: size_t n
   ) : ssizeBtw(~1, n+1) = "atslib_fildes_write_err"
 // end of [write_err]
 
 fun write_exn
-  {fd:int} {n,sz:nat | n <= sz} (
+  {fd:int} {sz,n:nat | n <= sz} (
     pf: !fildes_v (fd) | fd: int fd, buf: &bytes sz, ntotal: size_t n
   ) : sizeLte n = "atslib_fildes_write_exn"
 // end of [write_exn]
@@ -204,7 +204,7 @@ fun write_exn
 // HX: implemented in [libc/DATS/fcntl.dats]
 //
 fun write_all_err
-  {fd:int} {n,sz:nat | n <= sz} (
+  {fd:int} {sz,n:nat | n <= sz} (
     pf: !fildes_v (fd) | fd: int fd, buf: &bytes sz, ntotal: size_t n
   ) : ssizeBtw(~1, n+1) = "atslib_fildes_write_all_err"
 // end of [write_all_err]
@@ -212,7 +212,7 @@ fun write_all_err
 // HX: all bytes must have been written if this function returns
 //
 fun write_all_exn
-  {fd:int} {n,sz:nat | n <= sz} (
+  {fd:int} {sz,n:nat | n <= sz} (
     pf: !fildes_v (fd) | fd: int fd, buf: &bytes sz, ntotal: size_t n
   ) : void = "atslib_fildes_write_all_exn"
 // end of [write_all_exn]
@@ -222,14 +222,14 @@ fun write_all_exn
 // HX: implemented in [libc/CATS/fcntl.cats]
 //
 fun write_substring_err
-  {fd:int} {i,n,sz:nat | i+n <= sz} (
+  {fd:int} {sz,i,n:nat | i+n <= sz} (
     pf: !fildes_v (fd)
   | fd: int fd, str: string sz, start: size_t i, n: size_t n
   ) : ssizeBtw(~1, n+1) = "atslib_fildes_write_substring_err"
 // end of [write_substring_err]
 
 fun write_substring_exn
-  {fd:int} {i,n,sz:nat | i+n <= sz} (
+  {fd:int} {sz,i,n:nat | i+n <= sz} (
     pf: !fildes_v (fd)
   | fd: int fd, str: string sz, start: size_t i, n: size_t n
   ) : sizeLte n = "atslib_fildes_write_substring_exn"
