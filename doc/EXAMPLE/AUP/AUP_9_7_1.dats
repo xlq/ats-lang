@@ -63,14 +63,17 @@ main () = () where {
   val () = act.sa_handler := sighandler_of_fun(lam (sgn) => ())
   val err = sigaction_null (SIGALRM, act)
   val () = assertloc (err = 0)
-  val (pf_alarm | _) = alarm_set (5U)
+  macdef NSEC = 5U
+  val () = printf
+    ("You've got %u seconds for input:\n", @(NSEC))
+  val (pf_alarm | _) = alarm_set (NSEC)
   val (pf_stdin | ()) = stdin_fildes_view_get ()
   #define BUFSZ 128
   var err: int = 0
   var !p_buf with pf_buf = @[byte][BUFSZ]()
   prval () = pf_buf := bytes_v_of_b0ytes_v (pf_buf)
   val nread = read_err (pf_stdin  | STDIN_FILENO, !p_buf, BUFSZ)
-  val () = alarm_cancel (pf_alarm | (*none*))
+  val _leftover = alarm_cancel (pf_alarm | (*none*))
   val () = if (nread < 0) then (
     if (errno_get() = EINTR) then
       printf ("Timed out! Please type faster next time.\n", @())

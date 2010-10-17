@@ -70,6 +70,7 @@ compall:: \
   test911 \
   test917 \
   test923 \
+  test971 \
   test972 \
 
 ######
@@ -191,6 +192,7 @@ test8812: AUP_8_8_1_2.dats; $(ATSCC) -Wall -o $@ $< && ./test8812
 test911: AUP_9_1_1.dats; $(ATSCC) -Wall -o $@ $<
 test917: AUP_9_1_7.dats; $(ATSCC) -Wall -o $@ $<
 test923: AUP_9_2_3.dats; $(ATSCC) -Wall -o $@ $< && ./test923
+test971: AUP_9_7_1.dats; $(ATSCC) -Wall -o $@ $<
 test972: AUP_9_7_2.dats; $(ATSCC) -Wall -o $@ $<
 
 #######
@@ -246,6 +248,7 @@ cleanall::
 	$(RMF) test911
 	$(RMF) test917
 	$(RMF) test923
+	$(RMF) test971
 	$(RMF) test972
 
 ###### end of [Makefile] ######

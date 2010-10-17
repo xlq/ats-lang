@@ -39,7 +39,7 @@ fun show {fd:nat} (
       end else let
         prval () = opt_unnone {int} (n)
         val (fpf_str | str) = strerror (errno_get())
-        val () = printf ("%s FAILED (%s)\n", @(name, $UNSAFE.castvt{string} (str)))
+        val () = printf ("%s FAILED (%s)\n", @(name, $UNSAFE.castvwtp{string} (str)))
         prval () = fpf_str (str)
       in
         // nothing
@@ -56,7 +56,7 @@ fun show {fd:nat} (
       end else let
         prval () = opt_unnone {linger} (lg)
         val (fpf_str | str) = strerror (errno_get())
-        val () = printf ("%s FAILED (%s)\n", @(name, $UNSAFE.castvt{string} (str)))
+        val () = printf ("%s FAILED (%s)\n", @(name, $UNSAFE.castvwtp{string} (str)))
         prval () = fpf_str (str)
       in
         // nothing
@@ -75,7 +75,7 @@ fun show {fd:nat} (
       end else let
         prval () = opt_unnone {timeval} (tv)
         val (fpf_str | str) = strerror (errno_get())
-        val () = printf ("%s FAILED (%s)\n", @(name, $UNSAFE.castvt{string} (str)))
+        val () = printf ("%s FAILED (%s)\n", @(name, $UNSAFE.castvwtp{string} (str)))
         prval () = fpf_str (str)
       in
         // nothing
