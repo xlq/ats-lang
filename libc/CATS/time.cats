@@ -42,12 +42,12 @@
 
 /* ****** ****** */
 
-#include "ats_types.h"
-typedef struct tm ats_tm_struct_type ;
+#include "libc/sys/CATS/types.cats"
 
 /* ****** ****** */
 
-#include "libc/sys/CATS/types.cats"
+typedef struct tm ats_tm_struct_type ;
+typedef struct timespec ats_timespec_type ;
 
 /* ****** ****** */
 
@@ -127,10 +127,12 @@ ats_time_type
 atslib_time_get () { return time((time_t*)0) ; }
 
 ATSinline()
-ats_time_type
+ats_int_type
 atslib_time_get_and_set
-  (ats_ref_type p) { return time((time_t*)p) ; }
-// end of [atslib_time_get_and_set]
+  (ats_ref_type p) {
+  time_t err = time((time_t*)p) ;
+  return (err > 0) ? ats_true_bool : ats_false_bool ;
+} // end of [atslib_time_get_and_set]
 
 /* ****** ****** */
 
@@ -182,6 +184,12 @@ atslib_getdate_err_set(ats_int_type n) { getdate_err = n ; return ; }
 
 #define atslib_nanosleep nanosleep
 #define atslib_nanosleep_null(ts) nanosleep_null(ts, NULL)
+
+/* ****** ****** */
+
+#define atslib_clock_gettime clock_gettime
+#define atslib_clock_getres clock_getres
+#define atslib_clock_settime clock_settime
 
 /* ****** ****** */
 

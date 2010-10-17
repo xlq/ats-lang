@@ -34,7 +34,7 @@ ats-lang-anairiats-0.2.2:
 27: Adding libc/netdb
 28. Adding libc/sys/sockaddr and libc/sys/sockopt
 29: Adding prelude/unsafe!!!
-30: Adding prelude/ptrarr (* for arrays ending with a null ptr *)
+30: Adding libats/ptrarr (* for arrays ending with a null ptr *)
 31: SDL is no longer built automatically
 
 ########################################################################

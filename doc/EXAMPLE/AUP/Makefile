@@ -73,6 +73,7 @@ compall:: \
   test971 \
   test972 \
   test974 \
+#  test975 \
 
 ######
 
@@ -196,6 +197,7 @@ test923: AUP_9_2_3.dats; $(ATSCC) -Wall -o $@ $< && ./test923
 test971: AUP_9_7_1.dats; $(ATSCC) -Wall -o $@ $<
 test972: AUP_9_7_2.dats; $(ATSCC) -Wall -o $@ $< && ./test972
 test974: AUP_9_7_4.dats; $(ATSCC) -Wall -o $@ $<
+# test975: AUP_9_7_5.dats; $(ATSCC) -Wall -o $@ $< && ./test975 # no [clock_gettime]
 
 #######
 
@@ -253,5 +255,6 @@ cleanall::
 	$(RMF) test971
 	$(RMF) test972
 	$(RMF) test974
+	$(RMF) test975
 
 ###### end of [Makefile] ######

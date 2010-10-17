@@ -748,6 +748,28 @@ fn doc_dir_copy () = let
   } // end of [val]
 //
   val () = () where {
+    val SRCROOTdoc_EXAMPLE_AUP = SRCROOTdoc_EXAMPLE ++ "AUP/"
+    val DSTROOTdoc_EXAMPLE_AUP = DSTROOTdoc_EXAMPLE ++ "AUP/"
+    val () = mkdir_exn (DSTROOTdoc_EXAMPLE_AUP, DIRmode)
+    macdef cp (name) = fcopy_exn (
+      SRCROOTdoc_EXAMPLE_AUP ++ ,(name), DSTROOTdoc_EXAMPLE_AUP ++ ,(name)
+    ) // end of [macdef]
+    val () = cp "Makefile"
+    val () = cp "README"
+    val () = dir_copy
+      (SRCROOTdoc_EXAMPLE_AUP, DSTROOTdoc_EXAMPLE_AUP, name_is_xats)
+    val () = mkdir_exn (DSTROOTdoc_EXAMPLE_AUP ++ "data", DIRmode)
+    val () = cp "data/fruits.txt"
+    val SRCROOTdoc_EXAMPLE_AUP_utils = SRCROOTdoc_EXAMPLE_AUP ++ "utils/"
+    val DSTROOTdoc_EXAMPLE_AUP_utils = DSTROOTdoc_EXAMPLE_AUP ++ "utils/"
+    val () = mkdir_exn (DSTROOTdoc_EXAMPLE_AUP_utils, DIRmode)
+    val () = dir_copy
+      (SRCROOTdoc_EXAMPLE_AUP_utils, DSTROOTdoc_EXAMPLE_AUP_utils, name_is_c)
+    val () = dir_copy
+      (SRCROOTdoc_EXAMPLE_AUP_utils, DSTROOTdoc_EXAMPLE_AUP_utils, name_is_xats)
+  } // end of [val]
+//
+  val () = () where {
     val SRCROOTdoc_EXAMPLE_MULTICORE = SRCROOTdoc_EXAMPLE ++ "MULTICORE/"
     val DSTROOTdoc_EXAMPLE_MULTICORE = DSTROOTdoc_EXAMPLE ++ "MULTICORE/"
     val () = mkdir_exn (DSTROOTdoc_EXAMPLE_MULTICORE, DIRmode)

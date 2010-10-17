@@ -106,7 +106,7 @@ extern praxi bytes_v_unsplit {n1,n2:nat}
 
 implement
 read_all_err
-  {fd} {n,sz}
+  {fd} {sz,n}
   (pf_fd | fd, buf, ntotal) = let
   fun loop {nleft:nat | nleft <= n} {l:addr} (
       pf_fd: !fildes_v (fd)
@@ -158,7 +158,7 @@ end // end of [read_all_exn]
 
 implement
 write_all_err
-  {fd} {n,sz}
+  {fd} {sz,n}
   (pf_fd | fd, buf, ntotal) = let
   fun loop {nleft:nat | nleft <= n} {l:addr} (
       pf_fd: !fildes_v (fd)

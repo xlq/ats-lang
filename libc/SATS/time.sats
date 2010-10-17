@@ -82,33 +82,35 @@ fun difftime
 ** These functions are now kept for backward compatibility
 *)
 fun tm_get_sec
-  (tm: &tm_struct): int = "atslib_tm_get_sec"
+  (tm: &tm_struct):<> int = "atslib_tm_get_sec"
 fun tm_get_min
-  (tm: &tm_struct): int = "atslib_tm_get_min"
+  (tm: &tm_struct):<> int = "atslib_tm_get_min"
 fun tm_get_hour
-  (tm: &tm_struct): int = "atslib_tm_get_hour"
+  (tm: &tm_struct):<> int = "atslib_tm_get_hour"
 fun tm_get_mday
-  (tm: &tm_struct): int = "atslib_tm_get_mday"
+  (tm: &tm_struct):<> int = "atslib_tm_get_mday"
 fun tm_get_mon
-  (tm: &tm_struct): int = "atslib_tm_get_mon"
+  (tm: &tm_struct):<> int = "atslib_tm_get_mon"
 fun tm_get_year
-  (tm: &tm_struct): int = "atslib_tm_get_year"
+  (tm: &tm_struct):<> int = "atslib_tm_get_year"
 fun tm_get_wday
-  (tm: &tm_struct): int = "atslib_tm_get_wday"
+  (tm: &tm_struct):<> int = "atslib_tm_get_wday"
 fun tm_get_yday
-  (tm: &tm_struct): int = "atslib_tm_get_yday"
+  (tm: &tm_struct):<> int = "atslib_tm_get_yday"
 fun tm_get_isdst
-  (tm: &tm_struct): int = "atslib_tm_get_isdst"
+  (tm: &tm_struct):<> int = "atslib_tm_get_isdst"
 
 (* ****** ****** *)
 
 symintr time
 
+// HX: error-checking is nor forced
 fun time_get (): time_t = "atslib_time_get"
 overload time with time_get
 
-fun time_get_and_set // HX:  this is not really useful!!!
-  (p: &time_t? >> time_t): time_t = "atslib_time_get_and_set"
+fun time_get_and_set // HX: error must be checked!
+  (p: &time_t? >> opt (time_t, b)): #[b:bool] bool (b)
+  = "atslib_time_get_and_set" // function!
 overload time with time_get_and_set
 
 (* ****** ****** *)
@@ -211,7 +213,6 @@ fun tzsset ():<!ref> void = "#atslib_tzset"
 (* ****** ****** *)
 
 typedef clock_t = $TYPES.clock_t
-//
 macdef CLOCKS_PER_SEC = $extval (clock_t, "CLOCKS_PER_SEC")
 //
 // HX: these are implemented in libc/sys/CATS/types.cats
@@ -242,6 +243,39 @@ fun nanosleep (
 // end of [nanosleep]
 
 fun nanosleep_null (nsec: &timespec): int = "#atslib_nanosleep_null"
+
+(* ****** ****** *)
+
+typedef clockid_t = $TYPES.clockid_t
+macdef CLOCK_REALTIME = $extval (clockid_t, "CLOCK_REALTIME")
+macdef CLOCK_MONOTONIC = $extval (clockid_t, "CLOCK_MONOTONIC")
+(*
+macdef CLOCK_THREAD_CPUTIME_ID = $extval (clockid_t, "CLOCK_THREAD_CPUTIME_ID")
+macdef CLOCK_PROCESS_CPUTIME_ID = $extval (clockid_t, "CLOCK_PROCESS_CPUTIME_ID")
+*)
+
+(* ****** ****** *)
+//
+// HX: 0/-1 : succ/fail // errno set
+//
+fun clock_gettime (
+    id: clockid_t
+  , tp: &timespec? >> opt (timespec, i==0)
+  ) : #[i:int | i <= 0] int(i) = "#atslib_clock_gettime"
+// end of [clock_gettime]
+//
+// HX: 0/-1 : succ/fail // errno set
+//
+fun clock_getres (
+    id: clockid_t
+  , tp: &timespec? >> opt (timespec, i==0)
+  ) : #[i:int | i <= 0] int(i) = "#atslib_clock_getres"
+// end of [clock_getres]
+
+// HX: superuser privilege is needed for this one
+fun clock_settime // HX: 0/-1 : succ/fail // errno set
+  (id: clockid_t, tp: &timespec): int = "#atslib_clock_settime"
+// end of [clock_settime]
 
 (* ****** ****** *)
 

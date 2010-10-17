@@ -144,15 +144,15 @@ atsopt1_gc::
 ###### contrib libraries ######
 
 contrib::
-ifdef HAVE_LIBGLIB20
+ifeq ($(HAVE_LIBGLIB20),1)
 	cd contrib/glib; make atsctrb_glib.o; make clean
 endif
-ifdef HAVE_LIBGTK20
+ifeq ($(HAVE_LIBGTK20),1)
 	cd contrib/cairo; make atsctrb_cairo.o; make clean
 	cd contrib/pango; make atsctrb_pango.o; make clean
 	cd contrib/GTK; make atsctrb_GTK.o; make clean
 endif
-ifdef HAVE_LIBSDL
+ifeq ($(HAVE_LIBSDL10),1)
 	cd contrib/SDL; make atsctrb_SDL.o; make clean
 endif
 
