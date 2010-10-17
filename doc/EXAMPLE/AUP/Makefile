@@ -193,7 +193,7 @@ test911: AUP_9_1_1.dats; $(ATSCC) -Wall -o $@ $<
 test917: AUP_9_1_7.dats; $(ATSCC) -Wall -o $@ $<
 test923: AUP_9_2_3.dats; $(ATSCC) -Wall -o $@ $< && ./test923
 test971: AUP_9_7_1.dats; $(ATSCC) -Wall -o $@ $<
-test972: AUP_9_7_2.dats; $(ATSCC) -Wall -o $@ $<
+test972: AUP_9_7_2.dats; $(ATSCC) -Wall -o $@ $< && ./test972
 
 #######
 

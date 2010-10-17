@@ -629,7 +629,8 @@ typedef Neg = intLt 0
 
 typedef Sgn = [i:int | ~1 <= i; i <= 1] int i
 
-typedef Ptr = [l:addr] ptr l
+typedef Ptr = [l:addr] ptr (l)
+typedef Ptr1 = [l:addr | l > null] ptr (l)
 
 typedef String = [n:int | n >= 0] string n
 typedef Stropt = [n:int] stropt n

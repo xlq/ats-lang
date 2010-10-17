@@ -118,9 +118,6 @@ fun _exit (status: int): void = "#atslib__exit" // !macro
 
 (* ****** ****** *)
 
-staload PA = "prelude/SATS/ptrarr.sats"
-stadef ptrarr = $PA.ptrarr
-
 fun execv {n:pos}
   (path: string, argv: &ptrarr(n)): int = "#atslib_execv"
 fun execvp {n:pos}
@@ -175,6 +172,17 @@ fun getcwd0 (): strptr1 = "atslib_getcwd0"
 // HX:
 // [get_current_dir_name] is available if _GNU_SOURCE is on
 //
+(* ****** ****** *)
+
+absview alarm_v (int)
+praxi alarm_v_elim (pf: alarm_v (0)): void
+fun alarm_set {i:nat}
+  (t: uint i): (alarm_v (i) | uInt) = "#atslib_alarm_set"
+// end of [alarm_set]
+fun alarm_cancel {i:int}
+  (pf: alarm_v (i) | (*none*)): uInt = "#atslib_alarm_cancel"
+// end of [alarm_cancel]
+
 (* ****** ****** *)
 
 // [sleep] may be implemented using SIGARM

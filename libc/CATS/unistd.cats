@@ -91,6 +91,11 @@ atslib_strarr_get (
 
 /* ****** ****** */
 
+#define atslib_alarm_set alarm
+#define atslib_alarm_cancel() alarm(0U)
+
+/* ****** ****** */
+
 #define atslib_sleep sleep
 
 ATSinline()

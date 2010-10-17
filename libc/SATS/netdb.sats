@@ -168,9 +168,6 @@ fun freeaddrinfo (infop: addrinfoptr): void = "#atslib_freeaddrinfo"
 
 (* ****** ****** *)
 
-staload PA = "prelude/SATS/ptrarr.sats"
-stadef ptrarr = $PA.ptrarr
-
 typedef
 hostent_struct =
 $extype_struct

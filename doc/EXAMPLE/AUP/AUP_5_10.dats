@@ -9,10 +9,6 @@
 //
 (* ****** ****** *)
 
-staload "prelude/SATS/ptrarr.sats"
-
-(* ****** ****** *)
-
 staload "libc/sys/SATS/types.sats"
 staload "libc/sys/SATS/wait.sats"
 staload "libc/SATS/stdlib.sats" // for getenv

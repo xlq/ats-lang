@@ -103,12 +103,12 @@ end // end of [mysleep1]
 
 implement
 main () = () where {
-  val (pf_alarm | _) = alarm_set (3U)
+  val (pf_alarm | _) = alarm_set (4U)
 //
   val leftover = mysleep1 (2U)
-  val () = (print "leftover = "; print leftover; print_newline ())
+  val () = (print "leftover(0) = "; print leftover; print_newline ())
   val leftover = mysleep1 (3U)
-  val () = (print "leftover = "; print leftover; print_newline ())
+  val () = (print "leftover(1) = "; print leftover; print_newline ())
 //
   val _ = alarm_cancel (pf_alarm | (*none*))
 } // end of [main]

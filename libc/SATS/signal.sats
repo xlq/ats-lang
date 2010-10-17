@@ -211,7 +211,7 @@ typedef sigaction = sigaction_struct
 
 fun sigaction (
   sgn: signum_t
-, newact: &sigaction, oldact: &sigaction >> opt (sigaction, i==0)
+, newact: &sigaction, oldact: &sigaction? >> opt (sigaction, i==0)
 ) : #[i:int | i <= 0] int i = "#atslib_sigaction" // 0/-1 : succ/fail
 fun sigaction_null
   (sgn: signum_t, newact: &sigaction): int = "#atslib_sigaction_null"

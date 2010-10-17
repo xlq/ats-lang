@@ -9,10 +9,6 @@
 //
 (* ****** ****** *)
 
-staload "prelude/SATS/ptrarr.sats"
-
-(* ****** ****** *)
-
 staload "libc/SATS/stdlib.sats" // for getenv
 staload "libc/SATS/unistd.sats" // for environ_get_arrsz
 

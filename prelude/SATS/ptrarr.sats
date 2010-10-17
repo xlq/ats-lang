@@ -39,8 +39,6 @@
 
 (* ****** ****** *)
 
-abst@ype ptrarr (n:int) = array(ptr, n)
-typedef Ptr1 = [l:agz] ptr (l)
 (*
 //
 // HX-2010-10-14: this accurately describes [ptrarr]:
@@ -50,15 +48,18 @@ dataview ptrarr_v (n:int, l:addr) =
   | {l:addr} ptrarr_v_cons (n+1, l) of (Ptr1 @ l, ptrarr_v (n, l+sizeof(ptr)))
 // end of [ptrarr_v]
 *)
-
-(* ****** ****** *)
-
-fun ptrarr_size {n:nat} (x: &ptrarr(n)): size_t(n) = "atspre_ptrarr_size"
+abst@ype ptrarr (n:int) = array(ptr, n)
 
 praxi ptrarr_takeout {vt:viewtype}
   {n:nat} {l:addr} (pf: ptrarr(n) @ l): (
   array_v (vt, n, l), array_v (vt, n, l) -<lin,prf> ptrarr(n) @ l
 ) // end of [ptrarr_takeout]
+
+(* ****** ****** *)
+
+fun ptrarr_size {n:nat}
+  (x: &ptrarr(n)): size_t(n) = "atspre_ptrarr_size"
+// end of [ptrarr_size]
 
 (* ****** ****** *)
 

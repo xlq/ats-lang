@@ -309,9 +309,10 @@ fn prelude_load (ATSHOME: string): void = let
 (*
 ** these are all the .sats files in $ATSHOME/prelude
 *)
+//
   val () = pervasive_load (ATSHOME, "prelude/SATS/arith.sats")
   val () = pervasive_load (ATSHOME, "prelude/SATS/vsubrw.sats")
-
+//
   val () = pervasive_load (ATSHOME, "prelude/SATS/bool.sats")
   val () = pervasive_load (ATSHOME, "prelude/SATS/byte.sats")
   val () = pervasive_load (ATSHOME, "prelude/SATS/char.sats")
@@ -343,6 +344,7 @@ fn prelude_load (ATSHOME: string): void = let
   val () = pervasive_load (ATSHOME, "prelude/SATS/matrix0.sats")
   val () = pervasive_load (ATSHOME, "prelude/SATS/option.sats")
   val () = pervasive_load (ATSHOME, "prelude/SATS/option0.sats")
+  val () = pervasive_load (ATSHOME, "prelude/SATS/ptrarr.sats")
 (*
   // HX-2010-04-09: is this a good idea?
   val () = pervasive_load (ATSHOME, "prelude/SATS/prelude_finish.sats") // miscellaneous

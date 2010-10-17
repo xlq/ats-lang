@@ -55,12 +55,11 @@ castfn cast {to:t@ype} {from:t@ype} (x: from):<> to
 
 (* ****** ****** *)
 
-praxi castv2void {from:view} (x: from):<> void
-praxi castv {to:view} {from:view} (x: from):<> to
+praxi castvw {to:view} {from:view} (x: from):<> to
 
 (* ****** ****** *)
 
-castfn castvt {to:viewt@ype} {from:viewt@ype} (x: !from):<> to
+castfn castvwtp {to:viewt@ype} {from:viewt@ype} (x: !from):<> to
 
 (* ****** ****** *)
 

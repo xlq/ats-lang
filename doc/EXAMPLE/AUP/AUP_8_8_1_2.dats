@@ -9,7 +9,6 @@
 //
 (* ****** ****** *)
 
-staload "prelude/SATS/ptrarr.sats"
 staload UNSAFE = "prelude/SATS/unsafe.sats"
 staload _(*UNSAFE*) = "prelude/DATS/unsafe.dats"
 
@@ -53,7 +52,6 @@ fun display_hostent
 //
   val (pf, fpf | p) = hostent_get_addr_list (h)
   val n = ptrarr_size (!p)
-  typedef Ptr1 = $PA.Ptr1
   prval (pf1 , fpf1) = ptrarr_takeout{Ptr1} (pf)
   val () = loop (!p, n, 0) where {
     fun loop {n,i:nat | i <= n} .<n-i>.
