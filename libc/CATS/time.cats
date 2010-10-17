@@ -176,8 +176,12 @@ atslib_getdate_err_set(ats_int_type n) { getdate_err = n ; return ; }
 
 /* ****** ****** */
 
-ATSinline()
-ats_clock_type atslib_clock (void) { return clock (); }
+#define atslib_clock clock
+
+/* ****** ****** */
+
+#define atslib_nanosleep nanosleep
+#define atslib_nanosleep_null(ts) nanosleep_null(ts, NULL)
 
 /* ****** ****** */
 

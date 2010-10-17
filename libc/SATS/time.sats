@@ -221,7 +221,7 @@ overload lint_of with lint_of_clock
 fun double_of_clock (c: clock_t):<> double = "atslib_double_of_clock"
 overload double_of with double_of_clock
 //
-fun clock (): clock_t = "atslib_clock" // HX: it returns -1 on error
+fun clock (): clock_t = "#atslib_clock" // HX: it returns -1 on error
 
 (* ****** ****** *)
 
@@ -231,6 +231,17 @@ $extype_struct "ats_timespec_type" of {
 , tv_nsec= lint (*nanoseconds*)
 } // end of [timespec_struct]
 typedef timespec = timespec_struct
+
+(* ****** ****** *)
+//
+// HX: 0/-1 : succ/fail // errno set to EINTR
+//
+fun nanosleep (
+    nsec: &timespec, rem: &timespec? >> opt (timespec, i==0)
+  ) : #[i:int | i <= 0] int(i) = "#atslib_nanosleep"
+// end of [nanosleep]
+
+fun nanosleep_null (nsec: &timespec): int = "#atslib_nanosleep_null"
 
 (* ****** ****** *)
 

@@ -100,7 +100,7 @@ pi_lazy: pi_lazy.dats; $(ATSCC) -o pi_lazy pi_lazy.dats && ./pi_lazy
 quicksort_list: quicksort_list.dats
 	$(ATSCC) -D_ATS_PROOFCHECK -o quicksort_list quicksort_list.dats
 quicksort2_list: quicksort2_list.dats
-	$(ATSCC) -D_ATS_PROOFCHECK -o quicksort2_list quicksort2_list.dats
+	$(ATSCC) -o quicksort2_list quicksort2_list.dats
 
 # the n-queen problem
 queens: queens.dats

@@ -103,6 +103,9 @@ end // end of [mysleep1]
 
 implement
 main () = () where {
+  val leftover = mysleep1 (1U)
+  val () = (print "leftover(0) = "; print leftover; print_newline ())
+//
   val (pf_alarm | _) = alarm_set (4U)
 //
   val leftover = mysleep1 (2U)
@@ -116,4 +119,3 @@ main () = () where {
 (* ****** ****** *)
 
 (* end of [AUP_9_7_2.dats] *)
-

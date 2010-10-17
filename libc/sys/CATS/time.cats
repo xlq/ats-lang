@@ -62,6 +62,12 @@ typedef struct timezone ats_timezone_type ;
 
 /* ****** ****** */
 
+#define atslib_getitimer getitimer
+#define atslib_setitimer setitimer
+#define atslib_setitimer_null(which, itval) setitimer_null(which, itval, NULL)
+
+/* ****** ****** */
+
 #endif /* end of [ATS_LIBC_SYS_TIME_CATS] */
 
 /* end of [time.cats] */

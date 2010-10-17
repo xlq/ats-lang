@@ -27,7 +27,6 @@ staload "libc/SATS/stdlib.sats"
 staload "libc/SATS/unistd.sats"
 
 (* ****** ****** *)
-
 //
 // HX: any order printing order is possible: child/parent or parent/child
 //
@@ -112,7 +111,6 @@ in
 end // end of [try4]
 
 (* ****** ****** *)
-
 //
 // this one uses [sigwait]
 //
@@ -152,7 +150,6 @@ in
 end // end of [try5]
 
 (* ****** ****** *)
-
 //
 // this one uses [pipe]
 //
