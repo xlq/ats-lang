@@ -1,7 +1,7 @@
 (*
-typedef int ptrdiff_t;
-typedef unsigned int size_t;
-typedef long int wchar_t;
+typedef long int ptrdiff_t;
+typedef long unsigned int size_t;
+typedef int wchar_t;
 
 typedef signed char gint8;
 typedef unsigned char guint8;
@@ -13,9 +13,6 @@ __extension__ typedef signed long long gint64;
 __extension__ typedef unsigned long long guint64;
 typedef signed int gssize;
 typedef unsigned int gsize;
-typedef gint64 goffset;
-typedef signed int gintptr;
-typedef unsigned int guintptr;
 typedef struct _GStaticMutex GStaticMutex;
 struct _GStaticMutex
 {
@@ -37,18 +34,8 @@ union _GSystemThread
 };
 typedef int GPid;
 
-
-
-
-
-
-
-
 *)
-
-
-
  #define ATSCTRB_GLIB_MAJOR_VERSION 2
- #define ATSCTRB_GLIB_MINOR_VERSION 24
- #define ATSCTRB_GLIB_MICRO_VERSION 1
- #define ATSCTRB_GLIB_VERSION 1000 * (1000 * 2 + 24) + 1
+ #define ATSCTRB_GLIB_MINOR_VERSION 12
+ #define ATSCTRB_GLIB_MICRO_VERSION 3
+ #define ATSCTRB_GLIB_VERSION 1000 * (1000 * 2 + 12) + 3

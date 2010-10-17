@@ -35,7 +35,9 @@ fun draw_time {l:agz} (
   val () = cairo_set_font_size (cr, 32.0)
 //
   var time: time_t
-  val _ = time_get_and_set (time)
+  val yn = time_get_and_set (time)
+  val () = assert_errmsg (yn, #LOCATION)
+  prval () = opt_unsome {time_t} (time)
   var tm: tm_struct
   val _ptr = localtime_r (time, tm)
   val () = assert_errmsg (_ptr > null, #LOCATION)

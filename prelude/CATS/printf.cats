@@ -33,8 +33,8 @@
 
 /* ****** ****** */
 
-#ifndef ATS_PRELUDEPRINTF_CATS
-#define ATS_PRELUDEPRINTF_CATS
+#ifndef ATS_PRELUDE_PRINTF_CATS
+#define ATS_PRELUDE_PRINTF_CATS
 
 /* ****** ****** */
 
@@ -66,14 +66,16 @@ atspre_fprintf_err
 
 static
 ats_void_type
-atspre_fprintf_exn(ats_ptr_type file, ats_ptr_type fmt, ...) {
+atspre_fprintf_exn (
+  ats_ptr_type file, ats_ptr_type fmt, ...
+) {
   int n ;
   va_list ap ;
   va_start(ap, fmt) ;
   n = vfprintf((FILE *)file, (char *)fmt, ap) ;
   va_end(ap) ;
   if (n < 0) {
-    ats_exit_errmsg(n, (ats_ptr_type)"Exit: [fprintf] failed\n") ;
+    ats_exit_errmsg(n, (ats_ptr_type)"exit(ATS): [fprintf] failed\n") ;
   } // end of [if]
   return ;
 } // end of [atspre_fprintf_exn]
@@ -93,10 +95,10 @@ atspre_printf_exn (
   va_end(ap) ;
   atspre_stdout_view_set() ;
   if (n < 0) {
-    ats_exit_errmsg(n, (ats_ptr_type)"[printf] failed\n") ;
+    ats_exit_errmsg(n, (ats_ptr_type)"exit(ATS): [printf] failed\n") ;
   } // end of [if]
   return ;
-} // end of [atspre_prerrf_exn]
+} // end of [atspre_printf_exn]
 
 static
 ats_void_type
@@ -111,13 +113,13 @@ atspre_prerrf_exn (
   va_end(ap) ;
   atspre_stderr_view_set() ;
   if (n < 0) {
-    ats_exit_errmsg(n, (ats_ptr_type)"[prerrf] failed\n") ;
+    ats_exit_errmsg(n, (ats_ptr_type)"exit(ATS): [prerrf] failed\n") ;
   } // end of [if]
   return ;
 } // end of [atspre_prerrf_exn]
 
 /* ****** ****** */
 
-#endif /* ATS_PRELUDEPRINTF_CATS */
+#endif /* ATS_PRELUDE_PRINTF_CATS */
 
 /* end of [printf.cats] */

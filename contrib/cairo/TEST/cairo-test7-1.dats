@@ -119,7 +119,9 @@ implement main () = () where {
   val wd0 = 300 and ht0 = 300  
 //
   var t: time_t // unintialized
-  val _(*ignored*) = time_get_and_set (t)
+  val yn = time_get_and_set (t)
+  val () = assert_errmsg (yn, #LOCATION)
+  prval () = opt_unsome {time_t} (t)
   var tm: tm_struct // unintialized
   val _ptr = localtime_r (t, tm)
   val () = assert_errmsg (_ptr > null, #LOCATION)

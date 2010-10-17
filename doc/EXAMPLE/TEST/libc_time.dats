@@ -18,11 +18,12 @@ implement
 main () = () where {
 //
   var time: time_t
-  val _time = time_get_and_set (time)
-  val () = assert_errmsg ((lint_of)time >= 0L, #LOCATION)
+  val yn = time_get_and_set (time)
+  val () = assertloc (yn)
+  prval () = opt_unsome{time_t} (time)
 //
   val (fpf_p | p) = ctime (time)
-  val () = assert (strptr_isnot_null p)
+  val () = assertloc (strptr_isnot_null p)
   val str = strptr_dup (p)
   prval () = fpf_p (p)
   val () = (print "ctime = "; print str)
@@ -32,12 +33,12 @@ main () = () where {
   val perr = strptime (__cast str, fmt, tm) where {
     extern castfn __cast {l:agz} (x: !strptr l): string
   } // end of [val]
-  val () = assert_errmsg (perr > null, #LOCATION)
+  val () = assertloc (perr > null)
   prval () = opt_unsome {tm_struct} (tm)
   val time2 = mktime (tm)
 //
   val diff = difftime (time, time2)
-  val () = assert_errmsg ((lint_of)diff = 0L, #LOCATION)
+  val () = assertloc ((lint_of)diff = 0L)
 //
   val () = strptr_free (str)
 //

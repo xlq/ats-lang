@@ -21,6 +21,10 @@ OBJECTS := $(patsubst %.sats, %_sats.o, $(OBJECTS))
 
 ######
 
+all:: atsctrb_parcomb.o clean
+
+######
+
 atsctrb_parcomb.o: $(OBJECTS); ld -r -o $@ $(OBJECTS)
 
 ######
