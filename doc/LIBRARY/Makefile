@@ -8,7 +8,10 @@ update:: prelude libc libats
 
 ######
 
-prelude:: prelude_SATS prelude_DATS prelude_CATS
+prelude:: prelude_top prelude_SATS prelude_DATS prelude_CATS
+
+prelude_top:: ; scp $(ATSHOME)/prelude/*.?ats \
+  ats-hwxi@web.sourceforge.net:/home/groups/a/at/ats-lang/htdocs/IMPLEMENTATION/Anairiats/ATS/prelude
 
 prelude_SATS:: ; scp $(ATSHOME)/prelude/SATS/*.sats \
   ats-hwxi@web.sourceforge.net:/home/groups/a/at/ats-lang/htdocs/IMPLEMENTATION/Anairiats/ATS/prelude/SATS
@@ -19,7 +22,7 @@ prelude_DATS:: ; scp $(ATSHOME)/prelude/DATS/*.dats \
 prelude_CATS:: ; scp $(ATSHOME)/prelude/CATS/*.cats \
   ats-hwxi@web.sourceforge.net:/home/groups/a/at/ats-lang/htdocs/IMPLEMENTATION/Anairiats/ATS/prelude/CATS
 
-prelude_HATS:: ; scp $(ATSHOME)/prelude/HATS/*.cats \
+prelude_HATS:: ; scp $(ATSHOME)/prelude/HATS/*.hats \
   ats-hwxi@web.sourceforge.net:/home/groups/a/at/ats-lang/htdocs/IMPLEMENTATION/Anairiats/ATS/prelude/HATS
 
 ######
