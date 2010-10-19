@@ -89,7 +89,7 @@ staload _ = "prelude/SATS/matrix.sats"
 staload _ = "prelude/SATS/matrix0.sats"
 staload _ = "prelude/SATS/option.sats"
 staload _ = "prelude/SATS/option0.sats"
-staload _ = "prelude/SATS/slseg.sats"
+staload _ = "prelude/SATS/unsafe.sats"
 
 (* ****** ****** *)
 

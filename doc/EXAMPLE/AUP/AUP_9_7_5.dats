@@ -19,7 +19,6 @@ staload _(*anon*) = "prelude/DATS/pointer.dats"
 
 staload T = "libc/sys/SATS/types.sats"
 typedef time_t = $T.time_t
-typedef suseconds_t = $T.suseconds_t
 staload "libc/SATS/errno.sats"
 staload "libc/SATS/fcntl.sats"
 staload "libc/SATS/signal.sats"

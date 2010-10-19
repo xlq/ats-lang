@@ -48,6 +48,7 @@
 
 typedef struct tm ats_tm_struct_type ;
 typedef struct timespec ats_timespec_type ;
+typedef struct itimerspec ats_itimerspec_type ;
 
 /* ****** ****** */
 
@@ -190,6 +191,15 @@ atslib_getdate_err_set(ats_int_type n) { getdate_err = n ; return ; }
 #define atslib_clock_gettime clock_gettime
 #define atslib_clock_getres clock_getres
 #define atslib_clock_settime clock_settime
+
+/* ****** ****** */
+
+#define atslib_timer_create timer_create
+#define atslib_timer_create_null(cid, p_tid) timer_create(cid, NULL, p_tid)
+#define atslib_timer_delete timer_delete
+#define atslib_timer_gettime timer_gettime
+#define atslib_timer_settime timer_settime
+#define atslib_timer_getoverrun timer_getoverrun
 
 /* ****** ****** */
 

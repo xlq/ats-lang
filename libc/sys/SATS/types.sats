@@ -173,7 +173,9 @@ overload double_of with double_of_time
 
 (******* ****** *)
 
-abst@ype timer_t = $extype "ats_timer_type" // for timers returned by timer_create ()
+abst@ype timer_t (id:int) =
+  $extype "ats_timer_type" // for timers returned by timer_create ()
+// end of [timer_t]
 
 (******* ****** *)
 

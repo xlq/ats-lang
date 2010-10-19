@@ -121,9 +121,10 @@ fun ctime (t: &time_t):<!ref>
 // end of [ctime]
 
 #define CTIME_BUFLEN 26
-dataview ctime_v (m:int, l:addr, addr) =
-  | {l>null} ctime_v_succ (m, l, l) of strbuf (m, CTIME_BUFLEN - 1) @ l
-  | ctime_v_fail (m, l, null) of b0ytes (m) @ l
+dataview ctime_v (m:int, addr, addr) =
+  | {l:addr | l > null}
+    ctime_v_succ (m, l, l) of strbuf (m, CTIME_BUFLEN - 1) @ l
+  | {l:addr} ctime_v_fail (m, l, null) of b0ytes (m) @ l
 fun ctime_r // reentrant
   {m:int | m >= CTIME_BUFLEN} {l:addr} (
     pf: ! b0ytes (m) @ l >> ctime_v (m, l, l1)
@@ -159,7 +160,9 @@ fun gmtime_r (
 
 (* ****** ****** *)
 
-fun mktime (tm: &tm_struct): time_t = "#atslib_mktime" // returns -1 on error
+fun mktime
+  (tm: &tm_struct): time_t = "#atslib_mktime" // returns -1 on error
+// end of [mktime]
 
 (* ****** ****** *)
 
@@ -226,10 +229,12 @@ fun clock (): clock_t = "#atslib_clock" // HX: it returns -1 on error
 
 (* ****** ****** *)
 
-typedef timespec_struct =
-$extype_struct "ats_timespec_type" of {
-  tv_sec= time_t (*seconds*)
-, tv_nsec= lint (*nanoseconds*)
+typedef
+timespec_struct =
+$extype_struct
+"ats_timespec_type" of {
+  tv_sec= time_t // seconds
+, tv_nsec= lint  // nanoseconds
 } // end of [timespec_struct]
 typedef timespec = timespec_struct
 
@@ -276,6 +281,68 @@ fun clock_getres (
 fun clock_settime // HX: 0/-1 : succ/fail // errno set
   (id: clockid_t, tp: &timespec): int = "#atslib_clock_settime"
 // end of [clock_settime]
+
+(* ****** ****** *)
+
+stadef timer_t = $TYPES.timer_t
+absview timer_v (i:int)
+
+(* ****** ****** *)
+
+typedef
+itimerspec_struct =
+$extype_struct
+"ats_itimerspec_type" of {
+  it_interval= timespec (* reset value *)
+, it_value= timespec    (* current value *)
+} // end of [itimerspec_struct]
+typedef itimerspec = itimerspec_struct
+
+(* ****** ****** *)
+//
+// HX: 0/-1 : succ/fail // errno set
+//
+fun timer_create_null (
+  cid: clockid_t, tid: &timer_t? >> opt (timer_t(id), i==0)
+) : #[i,id:int | i <= 0] (option_v (timer_v(id), i==0) | int(i))
+  = "#atslib_timer_create_null"
+// end of [timer_create_null]
+
+//
+// HX: 0/-1 : succ/fail // errno set
+//
+fun timer_delete {id:int} (
+    pf: !timer_v(id) >> option_v (timer_v(id), i < 0) | tid: timer_t (id)
+  ) : #[i:int | i <= 0] int (i) = "#atslib_timer_delete"
+// end of [timer_delete]
+
+(* ****** ****** *)
+//
+// HX: 0/-1 : succ/fail // errno set
+//
+fun timer_gettime {id:int} (
+    pf: !timer_v (id)
+  | tid: timer_t (id)
+  , itp: &itimerspec? >> opt (itimerspec, i==0)
+  ) : #[i: int | i <= 0] int i = "#atslib_timer_gettime"
+// end of [timer_gettime]
+
+fun timer_settime {id:int} (
+    pf: !timer_v (id)
+  | tid: timer_t (id)
+  , newitp: &itimerspec
+  , olditp: &itimerspec? >> opt (itimerspec, i==0)
+  ) : #[i: int | i <= 0] int i = "#atslib_timer_settime"
+// end of [timer_settime]
+
+(* ****** ****** *)
+//
+// HX: 0/-1 : succ/fail // errno set
+//
+fun timer_getoverrun {id:int}
+  (pf: !timer_v (id) | tid: timer_t (id))
+  : intGte (~1) = "#atslib_timer_getoverrun"
+// end of [timer_getoverrun]
 
 (* ****** ****** *)
 

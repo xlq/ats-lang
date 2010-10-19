@@ -4,7 +4,7 @@
 
 ######
 
-all:: prelude libc libats
+update:: prelude libc libats
 
 ######
 
@@ -19,9 +19,12 @@ prelude_DATS:: ; scp $(ATSHOME)/prelude/DATS/*.dats \
 prelude_CATS:: ; scp $(ATSHOME)/prelude/CATS/*.cats \
   ats-hwxi@web.sourceforge.net:/home/groups/a/at/ats-lang/htdocs/IMPLEMENTATION/Anairiats/ATS/prelude/CATS
 
+prelude_HATS:: ; scp $(ATSHOME)/prelude/HATS/*.cats \
+  ats-hwxi@web.sourceforge.net:/home/groups/a/at/ats-lang/htdocs/IMPLEMENTATION/Anairiats/ATS/prelude/HATS
+
 ######
 
-libc:: libc_SATS libc_DATS libc_CATS
+libc:: libc_SATS libc_DATS libc_CATS libc_sys
 
 libc_SATS:: ; scp $(ATSHOME)/libc/SATS/*.sats \
   ats-hwxi@web.sourceforge.net:/home/groups/a/at/ats-lang/htdocs/IMPLEMENTATION/Anairiats/ATS/libc/SATS
@@ -31,6 +34,39 @@ libc_DATS:: ; scp $(ATSHOME)/libc/DATS/*.dats \
 
 libc_CATS:: ; scp $(ATSHOME)/libc/CATS/*.cats \
   ats-hwxi@web.sourceforge.net:/home/groups/a/at/ats-lang/htdocs/IMPLEMENTATION/Anairiats/ATS/libc/CATS
+
+libc_sys:: libc_sys_SATS libc_sys_DATS libc_sys_CATS
+
+libc_sys_SATS:: ; scp $(ATSHOME)/libc/sys/SATS/*.sats \
+  ats-hwxi@web.sourceforge.net:/home/groups/a/at/ats-lang/htdocs/IMPLEMENTATION/Anairiats/ATS/libc/sys/SATS
+
+libc_sys_DATS:: ; scp $(ATSHOME)/libc/sys/DATS/*.dats \
+  ats-hwxi@web.sourceforge.net:/home/groups/a/at/ats-lang/htdocs/IMPLEMENTATION/Anairiats/ATS/libc/sys/DATS
+
+libc_sys_CATS:: ; scp $(ATSHOME)/libc/sys/CATS/*.cats \
+  ats-hwxi@web.sourceforge.net:/home/groups/a/at/ats-lang/htdocs/IMPLEMENTATION/Anairiats/ATS/libc/sys/CATS
+
+libc_arpa:: libc_arpa_SATS libc_arpa_DATS libc_arpa_CATS
+
+libc_arpa_SATS:: ; scp $(ATSHOME)/libc/arpa/SATS/*.sats \
+  ats-hwxi@web.sourceforge.net:/home/groups/a/at/ats-lang/htdocs/IMPLEMENTATION/Anairiats/ATS/libc/arpa/SATS
+
+libc_arpa_DATS:: ; scp $(ATSHOME)/libc/arpa/DATS/*.dats \
+  ats-hwxi@web.sourceforge.net:/home/groups/a/at/ats-lang/htdocs/IMPLEMENTATION/Anairiats/ATS/libc/arpa/DATS
+
+libc_arpa_CATS:: ; scp $(ATSHOME)/libc/arpa/CATS/*.cats \
+  ats-hwxi@web.sourceforge.net:/home/groups/a/at/ats-lang/htdocs/IMPLEMENTATION/Anairiats/ATS/libc/arpa/CATS
+
+libc_netinet:: libc_netinet_SATS libc_netinet_DATS libc_netinet_CATS
+
+libc_netinet_SATS:: ; scp $(ATSHOME)/libc/netinet/SATS/*.sats \
+  ats-hwxi@web.sourceforge.net:/home/groups/a/at/ats-lang/htdocs/IMPLEMENTATION/Anairiats/ATS/libc/netinet/SATS
+
+libc_netinet_DATS:: ; scp $(ATSHOME)/libc/netinet/DATS/*.dats \
+  ats-hwxi@web.sourceforge.net:/home/groups/a/at/ats-lang/htdocs/IMPLEMENTATION/Anairiats/ATS/libc/netinet/DATS
+
+libc_netinet_CATS:: ; scp $(ATSHOME)/libc/netinet/CATS/*.cats \
+  ats-hwxi@web.sourceforge.net:/home/groups/a/at/ats-lang/htdocs/IMPLEMENTATION/Anairiats/ATS/libc/netinet/CATS
 
 ######
 
