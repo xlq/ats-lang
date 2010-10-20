@@ -69,7 +69,7 @@ typedef struct {
   ats_char_type atslab_0 ; ats_ptr_type atslab_1 ;
 } *charlst ; // end of [typedef]
 
-static inline
+ATSinline()
 ats_ptr_type string_make_charlst_rev
   (ats_int_type sz, ats_ptr_type cs) {
   char *s0, *s ; charlst cs_next ;
@@ -174,7 +174,8 @@ end // end of [output_line]
 
 (* ****** ****** *)
 
-implement char_stream_make_file
+implement
+char_stream_make_file
   (fil) = $delay (let
     val c = fgetc0_err (fil)
   in
@@ -189,7 +190,8 @@ implement char_stream_make_file
 
 (* ****** ****** *)
 
-implement line_stream_make_file
+implement
+line_stream_make_file
   (fil) = $delay (let
     val line = $effmask_ref (input_line fil) in
     if stropt_is_some line then let
@@ -203,7 +205,8 @@ implement line_stream_make_file
 
 (* ****** ****** *)
 
-implement char_stream_vt_make_file
+implement
+char_stream_vt_make_file
   {m} {l} (pf_mod, pf_fil | p_fil) = $delay_vt (let
     val c = fgetc1_err (pf_mod | !p_fil)
   in
@@ -222,7 +225,8 @@ implement char_stream_vt_make_file
 
 (* ****** ****** *)
 
-implement line_stream_vt_make_file
+implement
+line_stream_vt_make_file
   {m} {l} (pf_mod, pf_fil | p_fil) = let
   fun loop {n:nat} (
       pf_fil: FILE m @ l

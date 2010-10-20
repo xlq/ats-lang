@@ -46,8 +46,9 @@
 implement main_prelude () = let
   (* primary *)
   val () = $dynload "prelude/DATS/basics.dats"
-  // val () = $dynload "prelude/DATS/file.dats"
+  val () = $dynload "prelude/DATS/file.dats"
   val () = $dynload "prelude/DATS/float.dats"
+  val () = $dynload "prelude/DATS/integer.dats"
   val () = $dynload "prelude/DATS/pointer.dats"
   val () = $dynload "prelude/DATS/printf.dats"
   val () = $dynload "prelude/DATS/reference.dats"

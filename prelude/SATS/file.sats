@@ -59,8 +59,8 @@
 (* ****** ****** *)
 
 %{#
-#include <sys/stat.h>
 #include "libc/CATS/stdio.cats"
+#include <libc/sys/CATS/stat.cats>
 %} // end of [%{#]
 
 (* ****** ****** *)
@@ -132,11 +132,11 @@ fun output_line (fil: FILEref, line: string): void
 //
 // making a lazy char stream out of a file handle
 //
-fun char_stream_make_file (fil: FILEref):<1,~ref> stream (char)
+fun char_stream_make_file (fil: FILEref):<!laz> stream (char)
 
 // making a lazy line stream out of a file handle
 // note that the newline character at the end of each line is dropped
-fun line_stream_make_file (fil: FILEref):<1,~ref> stream (string)
+fun line_stream_make_file (fil: FILEref):<!laz> stream (string)
 
 (* ****** ****** *)
 //
@@ -144,14 +144,14 @@ fun line_stream_make_file (fil: FILEref):<1,~ref> stream (string)
 //
 fun char_stream_vt_make_file {m:file_mode} {l:addr}
   (pf_mod: file_mode_lte (m, r), pf_fil: FILE m @ l | p_fil: ptr l)
-  :<1,~ref> stream_vt (char)
+  :<!laz> stream_vt (char)
 // end of [char_stream_vt_make_file]
 
 // making a _linear_ lazy line stream out of a file handle
 // note that the newline character at the end of each line is dropped
 fun line_stream_vt_make_file {m:file_mode} {l:addr}
   (pf_mod: file_mode_lte (m, r), pf_fil: FILE m @ l | p_fil: ptr l)
-  :<1,~ref> stream_vt (string)
+  :<!laz> stream_vt (string)
 // end of [line_stream_vt_make_file]
 
 (* ****** ****** *)

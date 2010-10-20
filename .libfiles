@@ -30,8 +30,10 @@ prelude/DATS/basics.dats
 
 prelude/SATS/extern.sats /* for building external API's */
 
-prelude/SATS/file.sats
-prelude/DATS/file.dats
+/*
+prelude/SATS/file.sats -> libats/SATS/filebas.sats
+prelude/DATS/file.dats -> libats/SATS/filebas.dats
+*/
 
 prelude/DATS/float.dats
 prelude/DATS/integer.dats
@@ -205,6 +207,10 @@ libc/dynloadall.dats
 /* ****** ****** */
 
 /* libats files */
+
+/* A basic I/O interface */
+libats/SATS/filebas.sats
+libats/DATS/filebas.dats
 
 /* FORTRAN matrix: column-major */
 libats/SATS/fmatrix.sats
