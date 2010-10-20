@@ -9,6 +9,48 @@
 staload "libats/SATS/ilistp.sats"
 
 (* ****** ****** *)
+//
+// HX-2010-10-19:
+// these functions are already in $ATSHOME/DATS/ilistp.dats;
+// they are included here to make this solution self-contained.
+// 
+extern
+prfun length_istot {xs:ilist} (): [n:nat] LENGTH (xs, n)
+implement
+length_istot
+  () = istot () where {
+  prfun istot {xs:ilist} .<xs>.
+    (): [n:nat] LENGTH (xs, n) =
+    scase xs of
+    | ilist_cons (x, xs) => LENGTHcons (istot {xs} ())
+    | ilist_nil () => LENGTHnil ()
+  // end of [prfun]
+} // end of [length_istot]
+
+extern
+prfun length_isfun {xs:ilist} {n1,n2:int}
+  (pf1: LENGTH (xs, n1), pf2: LENGTH (xs, n2)): [n1==n2] void
+implement
+length_isfun (pf1, pf2) = let
+  prfun isfun {xs:ilist} {n1,n2:int} .<xs>. (
+    pf1: LENGTH (xs, n1), pf2: LENGTH (xs, n2)
+  ) : [n1==n2] void =
+    scase xs of
+    | ilist_cons (x, xs) => let
+        prval LENGTHcons (pf1) = pf1 and LENGTHcons (pf2) = pf2
+        prval () = isfun {xs} (pf1, pf2)
+      in
+        // nothing
+      end // end of [ilist_cons]
+    | ilist_nil () => let
+        prval LENGTHnil () = pf1 and LENGTHnil () = pf2 in (*nothing*)
+      end // end of [ilist_nil]
+  // end of [isfun]
+in
+  isfun (pf1, pf2)
+end // end of [length_isfun]
+
+(* ****** ****** *)
 
 dataprop PATHS(int, int, int) =
   | {y:nat} PATHSbas1(0, y, 1)
@@ -216,9 +258,9 @@ prfun lemma2 {ks:ilist}{k,x,y,z:int}.<ks>. (
       end
     | ilist_cons(kk, kks) => let
         prval () = length_isfun(pf2, pf11)
-        prval () = lemma_paths_gte_0(lemma2(pf13, pf2, pf3))
+        prval () = lemma_paths_gte_0 (lemma2(pf13, pf2, pf3))
       in
-        PATHSind(lemma2(pf13, pf2, pf3),pf12)
+        PATHSind(lemma2 (pf13, pf2, pf3),pf12)
       end
     // end of [scase]
   end // end of [sif]
@@ -236,7 +278,7 @@ prfun PATHS_LIST_PSUMS_lemma1
   | ilist_cons(xx1, xxs1) => let
       prval PATHS_LISTind(pf11, pf12, pf13) = pf1
       prval PSUMSind(pf21, pf22) = pf2
-      prval foo = lemma2(pf1, LENGTHcons(pf11), SUMind(pf22))
+      prval foo = lemma2 (pf1, LENGTHcons(pf11), SUMind(pf22))
       prval bar = PATHS_LIST_PSUMS_lemma1(pf13, pf21)
       prval baz = PSUMS_same_length(pf21, pf11)
       prval () = lemma_paths_gte_0(foo)
@@ -244,6 +286,8 @@ prfun PATHS_LIST_PSUMS_lemma1
       PATHS_LISTind(baz, foo, bar)
     end // end of [ilist_cons]
 // end of [PATHS_LIST_PSUMS_lemma1]
+
+(* ****** ****** *)
 
 fun paths_list {len,y:nat} .<len+y>.
   (len: int len, y: int y)
@@ -272,11 +316,11 @@ fun paths{x,y: nat} .<>.
   case+ y of 
   | 0 => (PATHSbas2() | (ullint1)1)
   | y =>> let
-      val ((pf_paths_list, pf_len) | zs) = paths_list(x+1, y) 
+      val+ ((pf_paths_list, pf_len) | zs) = paths_list(x+1, y) 
       prval LENGTHcons pf1_len = pf_len (* needed for exhaustiveness checks *)
       prval PATHS_LISTind(pf1, pf2, pf3) = pf_paths_list
       prval () = length_isfun (pf1_len, pf1)
-      val z :: _ = zs
+      val+ z :: _ = zs
     in
       (pf2 | z)
     end // end of [y > 0]
