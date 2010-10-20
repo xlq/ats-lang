@@ -152,6 +152,13 @@ implement floor<double> (x) = $MATH.floor (x)
 
 (* ****** ****** *)
 
+implement sqrt<float> (a) = $MATH.sqrtf (a)
+implement sqrt<double> (a) = $MATH.sqrt (a)
+implement sqrt<ccmplx> (a) = $CMPLX.sqrt_ccmplx (a)
+implement sqrt<zcmplx> (a) = $CMPLX.sqrt_zcmplx (a)
+
+(* ****** ****** *)
+
 implement scal<float,float> (x1, x2) = mul_float_float (x1, x2)
 implement scal<float,ccmplx> (x1, x2) = let
   val x2_r = $CMPLX.ccmplx_real (x2) and x2_i = $CMPLX.ccmplx_imag (x2) in

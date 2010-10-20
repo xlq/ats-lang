@@ -13,7 +13,7 @@ checkall: compall cleanall
 compall:: \
   problem15-hwxi \
   problem15-hwxi2 \
-#  problem15-mberndt \
+  problem15-mberndt \
 
 ######
 

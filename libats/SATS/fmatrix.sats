@@ -52,7 +52,7 @@
 
 %{#
 #include "libats/CATS/fmatrix.cats"
-%}
+%} // end of [%{#]
 
 (* ****** ****** *)
 
@@ -61,7 +61,7 @@ staload "libats/SATS/genarrays.sats"
 (* ****** ****** *)
 
 absviewt@ype
-  fmatrix_viewt0ype_int_int_viewt0ype (a:viewt@ype+,row:int,col:int)
+fmatrix_viewt0ype_int_int_viewt0ype (a:viewt@ype+,row:int,col:int)
 // [end of fmatrix_viewt0ype_int_int_viewt0ype]
 
 stadef fmatrix = fmatrix_viewt0ype_int_int_viewt0ype
@@ -86,7 +86,7 @@ prfun fmatrix_v_of_array_v
 (* ****** ****** *)
 
 fun{a:viewt@ype}
-  fmatrix_ptr_alloc {m,n:nat} (m: size_t m, n: size_t n)
+fmatrix_ptr_alloc {m,n:nat} (m: size_t m, n: size_t n)
   :<> [mn:nat] [l:agz] (
     free_gc_v (a, mn, l)
   , MUL (m, n, mn)
@@ -109,7 +109,7 @@ fun fmatrix_ptr_free {a:viewt@ype}
 (* ****** ****** *)
 
 fun{a:viewt@ype}
-  fmatrix_ptr_allocfree {m,n:nat} (m: size_t m, n: size_t n)
+fmatrix_ptr_allocfree {m,n:nat} (m: size_t m, n: size_t n)
   :<> [l:agz] (
     fmatrix_v (a?, m, n, l)
   | ptr l, (fmatrix_v (a?, m, n, l) | ptr l) -<lin> void
@@ -139,7 +139,8 @@ fun{a:viewt@ype} fmatrix_ptr_initialize_clo
 
 (* ****** ****** *)
 
-fun{a:viewt@ype} fmatrix_ptr_takeout
+fun{a:viewt@ype}
+fmatrix_ptr_takeout
   {m,n:int} {i,j:nat | i < m; j < n} {l0:addr} (
     pf_mat: fmatrix_v (a, m, n, l0)
   | base: ptr l0, m: size_t m, i: size_t i, j: size_t j
@@ -152,13 +153,15 @@ fun{a:viewt@ype} fmatrix_ptr_takeout
 
 (* ****** ****** *)
 
-fun{a:t@ype} fmatrix_ptr_get_elt_at
+fun{a:t@ype}
+fmatrix_ptr_get_elt_at
   {m,n:int} {i,j:nat | i < m; j < n} (
     base: &fmatrix (a, m, n), m: size_t m, i: size_t i, j: size_t j
   ) :<> a
 (* end of [fmatrix_ptr_ptr_get_elt_at] *)
 
-fun{a:t@ype} fmatrix_ptr_set_elt_at
+fun{a:t@ype}
+fmatrix_ptr_set_elt_at
   {m,n:int} {i,j:nat | i < m; j < n} (
     base: &fmatrix (a, m, n), m: size_t m, i: size_t i, j: size_t j, x: a
   ) :<> void
@@ -169,7 +172,8 @@ overload [] with fmatrix_ptr_set_elt_at
 
 (* ****** ****** *)
 
-fun{a:t@ype} fmatrix_ptr_copy {m,n:nat} (
+fun{a:t@ype}
+fmatrix_ptr_copy {m,n:nat} (
     A: &fmatrix(a, m, n)
   , B: &fmatrix(a?, m, n) >> fmatrix(a, m, n)
   , m: size_t m, n: size_t n
@@ -253,7 +257,7 @@ fun fmatrix_ptr_foreach_fun_tsz__main
 // end of [fmatrix_foreach_fun_tsz__main]
 
 fun{a:viewt@ype}
-  fmatrix_ptr_foreach_fun {v:view} {ord:order} {m,n:nat} (
+fmatrix_ptr_foreach_fun {v:view} {ord:order} {m,n:nat} (
     pf: !v
   | M: &fmatrix (a, m, n)
   , f: (!v | &a) -<fun> void
@@ -262,7 +266,7 @@ fun{a:viewt@ype}
 // end of [fmatrix_foreach_fun]
 
 fun{a:viewt@ype}
-  fmatrix_ptr_foreach_clo {v:view} {ord:order} {m,n:nat} (
+fmatrix_ptr_foreach_clo {v:view} {ord:order} {m,n:nat} (
     pf: !v
   | M: &fmatrix (a, m, n)
   , f: &(!v | &a) -<clo> void
@@ -286,7 +290,7 @@ fun fmatrix_ptr_iforeach_fun_tsz__main
 // end of [fmatrix_iforeach_fun_tsz__main]
 
 fun{a:viewt@ype}
-  fmatrix_ptr_iforeach_fun {v:view} {ord:order} {m,n:nat} (
+fmatrix_ptr_iforeach_fun {v:view} {ord:order} {m,n:nat} (
     pf: !v
   | M: &fmatrix (a, m, n), f: (!v | sizeLt m, sizeLt n, &a) -<fun> void
   , ord: ORDER ord, m: size_t m, n: size_t n
@@ -294,7 +298,7 @@ fun{a:viewt@ype}
 // end of [fmatrix_iforeach_fun]
 
 fun{a:viewt@ype}
-  fmatrix_ptr_iforeach_clo {v:view} {ord:order} {m,n:nat} (
+fmatrix_ptr_iforeach_clo {v:view} {ord:order} {m,n:nat} (
     pf: !v
   | M: &fmatrix (a, m, n), f: &(!v | sizeLt m, sizeLt n, &a) -<clo> void
   , ord: ORDER ord, m: size_t m, n: size_t n

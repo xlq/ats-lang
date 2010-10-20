@@ -104,6 +104,11 @@ fun{a:t@ype} div (x1: a, x2: a):<> a
 
 (* ****** ****** *)
 
+// S, D, C, Z
+fun{a:t@ype} sqrt (x: a):<> a
+
+(* ****** ****** *)
+
 // S, D
 fun{a:t@ype} ceil (x:a) :<> a
 fun{a:t@ype} floor (x:a) :<> a
