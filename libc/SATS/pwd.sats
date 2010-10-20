@@ -100,7 +100,7 @@ fun passwd_get_pw_shell
 (* ****** ****** *)
 
 // HX: non-reentrant
-fun getpwnam (nam: string):<!ref>
+fun getpwnam (nam: !READ(string)):<!ref>
   [l:addr] (ptroutopt (passwd, l) | ptr l) = "#atslib_getpwnam"
 // end of [getpwnam]
 

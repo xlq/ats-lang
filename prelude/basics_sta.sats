@@ -681,16 +681,19 @@ viewdef free_gc_v (n:int, l:addr) = free_gc_v (byte, n, l)
 viewdef free_ngc_v (n:int, l:addr) = free_ngc_v (byte, n, l)
 
 (* ****** ****** *)
-
+//
+// HX:
 // values of viewtype [junkptr] need to be freed by calling [free];
 // note that the viewtype [junkptr] may be just defined as follows:
 // [a:viewt@ype; l:addr] (free_gc_v (a, 1, l), a? @ l | ptr l)
+//
 absviewtype junkptr_viewtype
 stadef junkptr = junkptr_viewtype
 
 (* ****** ****** *)
-
-// This definition should not be changed!
+//
+// HX: This definition should not be changed!
+//
 viewtypedef
 arraysize_viewt0ype_int_viewt0ype (a:viewt@ype, n:int) =
   [l:addr] (free_gc_v (a, n, l), @[a][n] @ l | ptr l, size_t n)
@@ -703,27 +706,43 @@ viewtypedef Arraysize
 // end of [Arraysize]
 
 (* ****** ****** *)
-
-// closure, closure pointer and closure reference
-absviewt@ype clo_viewt0ype_viewt0ype (viewt@ype+ (*fun*))
+//
+// HX: closure, closure pointer and closure reference
+//
+absviewt@ype
+clo_viewt0ype_viewt0ype (_fun: viewt@ype+)
 stadef clo = clo_viewt0ype_viewt0ype
 
-absviewtype cloptr_viewt0ype_viewtype (viewt@ype+ (*fun*))
+absviewtype
+cloptr_viewt0ype_viewtype (_fun: viewt@ype+)
 stadef cloptr = cloptr_viewt0ype_viewtype
 
 abstype cloref_t0ype_type (t@ype)
 stadef cloref = cloref_t0ype_type
 
 (* ****** ****** *)
+//
+// HX: for handling read-only data
+//
+(*
+absviewt@ype
+READ_viewt0ype_viewt0ype (a: viewt@ype+) = a
+*)
+viewtypedef
+READ_viewt0ype_viewt0ype (a: viewt@ype) = a
+stadef READ = READ_viewt0ype_viewt0ype
 
-// for print-format strings
+(* ****** ****** *)
+//
+// HX: for print-format strings
+//
 abstype printf_c_types_type (types) // boxed type: string
 stadef printf_c = printf_c_types_type
 
 (* ****** ****** *)
-
-// for handling variadic functions
-
+//
+// HX: for handling variadic functions
+//
 absviewt@ype
 va_list_viewt0ype = $extype "ats_va_list_viewtype"
 

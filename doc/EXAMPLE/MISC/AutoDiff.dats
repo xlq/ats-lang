@@ -281,9 +281,10 @@ fun list_nth_set {n:nat} .<n>.
 fn gradient {n:nat}
   (f: dualnumlst n -<cloref1> dualnum, xs: dualnumlst n)
   : dualnumlst n = let
-  fun fi (i: natLt n):<cloptr1> dualnum =
+  val fi = lam (i: natLt n): dualnum =<cloptr1>
     derivative (lam xi => f (list_nth_set (xs, i, xi)), list_nth_get (xs, i))
   val gxs = list_tabulate (fi, list_length xs)
+  val () = cloptr_free (fi)
 (*
   val () = begin
     print "gradient: xs = "; print_dualnumlst xs; print_newline ();
@@ -299,25 +300,33 @@ val PRECISION = Base 1e-5
 fn multivariate_argmin {n:nat}
   (f: dualnumlst n -<cloref1> dualnum, xs: dualnumlst n)
   : dualnumlst n = let
-  fun g (xs: dualnumlst n):<cloptr1> dualnumlst n = gradient (f, xs)
-  fun loop
-    (xs: dualnumlst n, fxs: dualnum, gxs: dualnumlst n, eta: dualnum,i: int)
-    :<cloptr1> dualnumlst n =
+  macdef g (xs) = gradient (f, ,(xs))
+  fun loop (
+      f: dualnumlst n -<cloref1> dualnum
+    , xs: dualnumlst n, fxs: dualnum, gxs: dualnumlst n, eta: dualnum, i: int
+    ) :<fun1> dualnumlst n = let
+    macdef g (xs) = gradient (f, ,(xs))
+  in
     if magnitude gxs <= PRECISION then xs
-    else if i = 10 then loop (xs, fxs, gxs, two_dualnum * eta, 0)
+    else if i = 10 then loop (f, xs, fxs, gxs, two_dualnum * eta, 0)
     else let
       val xs' = vminus (xs, vscale (eta, gxs))
     in
-      if distance (xs, xs') <= PRECISION then xs
+      if distance (xs, xs') <= PRECISION then
+        xs
       else let
         val fxs' = f xs'
       in
-        if fxs' < fxs then loop (xs', fxs', g xs', eta, i+1)
-        else loop (xs, fxs, gxs, eta / two_dualnum, 0)
-      end
-    end
+        if fxs' < fxs then
+          loop (f, xs', fxs', g xs', eta, i+1)
+        else
+          loop (f, xs, fxs, gxs, eta / two_dualnum, 0)
+        // end of [if]
+      end // end of [if]
+    end // end of [if]
+  end // end of [loop
 in
-  loop (xs, f xs, g xs, PRECISION, 0)
+  loop (f, xs, f xs, g xs, PRECISION, 0)
 end // end of [multivariate_argmin]
 
 fn multivariate_argmax {n:nat}
@@ -345,10 +354,10 @@ val xy1_star: dualnumlst2 = let
       val+ list_cons (x2, list_cons (y2, list_nil ())) = xy2
     in
       sum - (x2 * x2 + y2 * y2)
-    end
+    end // end of [f2]
   in
     multivariate_max (f2, start)
-  end
+  end // end of [f1]
 in
   multivariate_argmin (f1, start)
 end // end of [xy1_star]
@@ -361,7 +370,7 @@ val xy2_star: dualnumlst2 = let
     val+ list_cons (x2, list_cons (y2, list_nil ())) = xy2
   in
     sum - (x2 * x2 + y2 * y2)
-  end
+  end // end of [f3]
 in
   multivariate_argmax (f3, start)
 end // end of [xy2_star]
@@ -388,7 +397,7 @@ fn naive_euler (w: dualnum): dualnum = let
   val charge2 = '[ten_dualnum, zero_dualnum]
   val charges: list (dualnumlst2, 2) = '[charge1, charge2]
   fn p (xs: dualnumlst2):<cloref1> dualnum = let
-    fun aux (charges: List dualnumlst2, res: dualnum):<cloptr1> dualnum =
+    fun aux (charges: List dualnumlst2, res: dualnum):<cloref1> dualnum =
       case+ charges of
       | list_cons (charge, charges) =>
           aux (charges, res + recip_dualnum (distance (xs, charge)))
@@ -408,8 +417,8 @@ fn naive_euler (w: dualnum): dualnum = let
       val xs_t_f = vplus (xs, vscale (delta_t_f, xs_dot))
     in
       square (list_nth_get (xs_t_f, 0))
-    end
-  end
+    end // end of [if]
+  end // end of [if]
   val xs_initial: dualnumlst2 = '[zero_dualnum, Base 8.0]
   val xs_dot_initial: dualnumlst2 = '[Base 0.75, zero_dualnum]
 in
@@ -417,12 +426,13 @@ in
 end // end [naive_euler]
 
 val w0 = zero_dualnum
-val ws_star: dualnumlst1 = multivariate_argmin (f, '[w0]) where {
+val ws_star: dualnumlst1 =
+  multivariate_argmin (f, '[w0]) where {
   fn f (ws: dualnumlst1):<cloref1> dualnum = let
     val+ list_cons (w, list_nil ()) = ws
   in
     naive_euler w
-  end
+  end // end of [f]
 } // end of [where]
 
 val list_cons (w_star, list_nil ()) = ws_star

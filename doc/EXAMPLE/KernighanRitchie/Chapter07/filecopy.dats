@@ -6,6 +6,10 @@
 
 (* ****** ****** *)
 
+staload UNSAFE = "prelude/SATS/unsafe.sats"
+
+(* ****** ****** *)
+
 staload "libc/SATS/stdio.sats"
 
 (* ****** ****** *)
@@ -47,6 +51,7 @@ implement main {n} (argc, argv) = let
         if i < argc then let
           val name = argv.[i]
           val (pfopt | p_ifp) = fopen_err (name, file_mode_r)
+          val name = $UNSAFE.castvwtp {string} (name)
         in
           if p_ifp > null then let
             prval Some_v (pf) = pfopt

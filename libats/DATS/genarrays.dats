@@ -205,7 +205,7 @@ GEVEC_ptr_foreach_fun
     coerce (f: (!v | &a) -<> void) :<> (!v | &a, !ptr) -<> void
   } // end of [where]
 in
-  GEVEC_ptr_foreach_fun_tsz__main (pf | base, f, n, inc, sizeof<a>, null)
+  GEVEC_ptr_foreach_fun_tsz__main {a} {v} {ptr} (pf | base, f, n, inc, sizeof<a>, null)
 end // end of [GEVEC_ptr_foreach_fun_tsz]
 
 //
@@ -266,7 +266,7 @@ GEVEC_ptr_iforeach_fun
       :<> (!v | sizeLt n, &a, !ptr) -<> void
   } // end of [where]
 in
-  GEVEC_ptr_iforeach_fun_tsz__main (pf | base, f, n, inc, sizeof<a>, null)
+  GEVEC_ptr_iforeach_fun_tsz__main {a} {v} {ptr} (pf | base, f, n, inc, sizeof<a>, null)
 end // end of [GEVEC_ptr_iforeach_fun_tsz]
 
 (* ****** ****** *)
@@ -780,7 +780,7 @@ GEMAT_ptr_foreach_fun
       (f: (!v | &a) -<> void):<> (!v | &a, !ptr) -<> void
   } // end of [where]
 in
-  GEMAT_ptr_foreach_fun_tsz__main
+  GEMAT_ptr_foreach_fun_tsz__main {a} {v} {ptr}
     (pf | ord1, base, f, ord2, m, n, ld, sizeof<a>, null)
 end // end of [GEMAT_ptr_foreach_fun_tsz]
 
@@ -894,7 +894,7 @@ GEMAT_ptr_iforeach_fun
       :<> (!v | sizeLt m, sizeLt n, &a, !ptr) -<> void
   } // end of [where]
 in
-  GEMAT_ptr_iforeach_fun_tsz__main
+  GEMAT_ptr_iforeach_fun_tsz__main {a} {v} {ptr}
     (pf | ord1, base, f, ord2, m, n, ld, sizeof<a>, null)
 end // end of [GEMAT_ptr_iforeach_fun_tsz]
 

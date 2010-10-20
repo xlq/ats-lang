@@ -46,29 +46,31 @@ typedef errno_t = $ERRNO.errno_t
 
 (* ****** ****** *)
 
-fun strcmp (str1: string, str2: string): int = "atslib_strcmp"
+fun strcmp (str1: !READ(string), str2: !READ(string)): int = "atslib_strcmp"
 
 fun substrcmp
   {n1,i1:nat | i1 <= n1} {n2,i2:nat | i2 <= n2}
-  (str1: string n1, i: size_t i1, str2: string n2, i2: size_t i2): int
+  (str1: !READ(string n1), i: size_t i1, str2: !READ(string n2), i2: size_t i2): int
   = "atslib_substrcmp"
+// end of [substrcmp]
 
 (* ****** ****** *)
 
 fun strncmp {n:nat}
-  (str1: string, str2: string, n: size_t n):<> int
+  (str1: !READ(string), str2: !READ(string), n: size_t n):<> int
   = "atslib_strncmp"
+// end of [strncmp]
 
 fun substrncmp
   {n1,i1:nat | i1 <= n1} {n2,i2:nat | i2 <= n2} {n: nat} (
-    str1: string n1, i1: size_t i1, str2: string n2, i2: size_t i2, n: size_t n
-  ) :<> int
-  = "atslib_substrncmp"
+  str1: !READ(string n1), i1: size_t i1, str2: !READ(string n2), i2: size_t i2, n: size_t n
+) :<> int = "atslib_substrncmp"
+// end of [substrncmp]
 
 (* ****** ****** *)
 
 fun strlen {n:nat}
-  (str: string n):<> size_t n = "#atslib_strlen" // !mac
+  (str: !READ(string n)):<> size_t n = "#atslib_strlen" // !mac
 // end of [strlen]
 
 (* ****** ****** *)
@@ -86,28 +88,32 @@ please use [string_index_of_string] in [prelude/SATS/string.sats]
 
 (* ****** ****** *)
 
-fun strspn {n:nat} (str: string n, accept: string):<> sizeLte n
+fun strspn {n:nat}
+  (str: !READ(string n), accept: !READ(string)):<> sizeLte n
   = "#atslib_strspn" // macro!
+// end of [strspn]
 
-fun strcspn {n:nat} (str: string n, reject: string):<> sizeLte n
+fun strcspn {n:nat}
+  (str: !READ(string n), reject: !READ(string)):<> sizeLte n
   = "#atslib_strcspn" // macro!
+// end of [strcspn]
 
 (* ****** ****** *)
 
 fun strcpy
   {m,n:nat | n < m} {l:addr} {ofs:int} (
-    pf_buf: !b0ytes m @ l >> strbuf (m, n) @ l | sbf: ptr l, str: string n
-  ) :<> ptr l = "#atslib_strcpy" // mac!
+  pf_buf: !b0ytes m @ l >> strbuf (m, n) @ l | sbf: ptr l, str: !READ(string n)
+) :<> ptr l = "#atslib_strcpy" // macro!
 // end of [strcpy]
 
 (* ****** ****** *)
 
 fun strcat
   {m,n1,n2:nat | n1 + n2 < m} {l:addr} {ofs:int} (
-    pf_mul: MUL (n1, sizeof char, ofs)
-  , pf_buf: !strbuf (m, n1) @ l >> strbuf (m, n1+n2) @ l
-  | sbf: ptr l, str: string n2
-  ) :<> ptr l = "#atslib_strcat" // mac!
+  pf_mul: MUL (n1, sizeof char, ofs)
+, pf_buf: !strbuf (m, n1) @ l >> strbuf (m, n1+n2) @ l
+| sbf: ptr l, str: !READ(string n2)
+) :<> ptr l = "#atslib_strcat" // macro!
 // end of [strcat]
 
 (*
@@ -128,7 +134,7 @@ strpbrk_p (l:addr, n:int, l_ret:addr) =
 // end of [strpbrk_p]
 
 fun strpbrk {m,n:nat} {l:addr}
-  (pf: !strbuf (m, n) @ l | p: ptr l, accept: string)
+  (pf: !strbuf (m, n) @ l | p: ptr l, accept: !READ(string))
   :<> [l_ret:addr] (strpbrk_p (l, n, l_ret) | ptr l_ret)
   = "atslib_strpbrk"
 // end of [strpbrk]
@@ -138,7 +144,7 @@ fun strpbrk {m,n:nat} {l:addr}
 // HX: implemented in [string.dats]
 //
 fun strdup_gc
-  {n:nat} (str: string n)
+  {n:nat} (str: !READ(string n))
   :<> [l:addr] (free_gc_v (n+1, l), strbuf (n+1, n) @ l | ptr l)
   = "atslib_strdup_gc"
 // end of [strdup_gc]

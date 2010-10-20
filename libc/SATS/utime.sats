@@ -58,7 +58,7 @@ typedef utimbuf = utimbuf_struct
 (* ****** ****** *)
 
 fun utime // -1 on error and errno is set 
-  (path: string(*const*), buf: &utimbuf(*const*)): int
+  (path: !READ(string), buf: &utimbuf(*const*)): int
   = "#atslib_utime"
 // end of [utime]
 

@@ -92,6 +92,72 @@ libats_CATS:: ; scp $(ATSHOME)/libats/CATS/*.cats \
 
 ######
 
+contrib:: \
+  contrib_cairo \
+  contrib_GL \
+  contrib_X11 \
+  contrib_SDL \
+
+######
+
+contrib_cblas:: contrib_cblas_SATS contrib_cblas_DATS contrib_cblas_CATS contrib_cblas_HATS
+
+contrib_cblas_SATS:: ; scp $(ATSHOME)/contrib/cblas/SATS/*.sats \
+  ats-hwxi@web.sourceforge.net:/home/groups/a/at/ats-lang/htdocs/IMPLEMENTATION/Anairiats/ATS/contrib/cblas/SATS
+
+contrib_cblas_DATS:: ; scp $(ATSHOME)/contrib/cblas/DATS/*.dats \
+  ats-hwxi@web.sourceforge.net:/home/groups/a/at/ats-lang/htdocs/IMPLEMENTATION/Anairiats/ATS/contrib/cblas/DATS
+
+contrib_cblas_CATS:: ; scp $(ATSHOME)/contrib/cblas/CATS/*.cats \
+  ats-hwxi@web.sourceforge.net:/home/groups/a/at/ats-lang/htdocs/IMPLEMENTATION/Anairiats/ATS/contrib/cblas/CATS
+
+contrib_cblas_HATS:: ; scp $(ATSHOME)/contrib/cblas/HATS/*.hats \
+  ats-hwxi@web.sourceforge.net:/home/groups/a/at/ats-lang/htdocs/IMPLEMENTATION/Anairiats/ATS/contrib/cblas/HATS
+
+######
+
+contrib_clapack:: contrib_clapack_SATS contrib_clapack_DATS contrib_clapack_CATS contrib_clapack_HATS
+
+contrib_clapack_SATS:: ; scp $(ATSHOME)/contrib/clapack/SATS/*.sats \
+  ats-hwxi@web.sourceforge.net:/home/groups/a/at/ats-lang/htdocs/IMPLEMENTATION/Anairiats/ATS/contrib/clapack/SATS
+
+contrib_clapack_DATS:: ; scp $(ATSHOME)/contrib/clapack/DATS/*.dats \
+  ats-hwxi@web.sourceforge.net:/home/groups/a/at/ats-lang/htdocs/IMPLEMENTATION/Anairiats/ATS/contrib/clapack/DATS
+
+contrib_clapack_CATS:: ; scp $(ATSHOME)/contrib/clapack/CATS/*.cats \
+  ats-hwxi@web.sourceforge.net:/home/groups/a/at/ats-lang/htdocs/IMPLEMENTATION/Anairiats/ATS/contrib/clapack/CATS
+
+contrib_clapack_HATS:: ; scp $(ATSHOME)/contrib/clapack/HATS/*.hats \
+  ats-hwxi@web.sourceforge.net:/home/groups/a/at/ats-lang/htdocs/IMPLEMENTATION/Anairiats/ATS/contrib/clapack/HATS
+
+######
+
+contrib_cairo:: contrib_cairo_SATS contrib_cairo_DATS contrib_cairo_CATS
+
+contrib_cairo_SATS:: ; scp $(ATSHOME)/contrib/cairo/SATS/*.sats \
+  ats-hwxi@web.sourceforge.net:/home/groups/a/at/ats-lang/htdocs/IMPLEMENTATION/Anairiats/ATS/contrib/cairo/SATS
+
+contrib_cairo_DATS:: ; scp $(ATSHOME)/contrib/cairo/DATS/*.dats \
+  ats-hwxi@web.sourceforge.net:/home/groups/a/at/ats-lang/htdocs/IMPLEMENTATION/Anairiats/ATS/contrib/cairo/DATS
+
+contrib_cairo_CATS:: ; scp $(ATSHOME)/contrib/cairo/CATS/*.cats \
+  ats-hwxi@web.sourceforge.net:/home/groups/a/at/ats-lang/htdocs/IMPLEMENTATION/Anairiats/ATS/contrib/cairo/CATS
+
+######
+
+contrib_GL:: contrib_GL_SATS contrib_GL_DATS contrib_GL_CATS
+
+contrib_GL_SATS:: ; scp $(ATSHOME)/contrib/GL/SATS/*.sats \
+  ats-hwxi@web.sourceforge.net:/home/groups/a/at/ats-lang/htdocs/IMPLEMENTATION/Anairiats/ATS/contrib/GL/SATS
+
+contrib_GL_DATS:: ; scp $(ATSHOME)/contrib/GL/DATS/*.dats \
+  ats-hwxi@web.sourceforge.net:/home/groups/a/at/ats-lang/htdocs/IMPLEMENTATION/Anairiats/ATS/contrib/GL/DATS
+
+contrib_GL_CATS:: ; scp $(ATSHOME)/contrib/GL/CATS/*.cats \
+  ats-hwxi@web.sourceforge.net:/home/groups/a/at/ats-lang/htdocs/IMPLEMENTATION/Anairiats/ATS/contrib/GL/CATS
+
+######
+
 contrib_X11:: contrib_X11_SATS contrib_X11_DATS contrib_X11_CATS
 
 contrib_X11_SATS:: ; scp $(ATSHOME)/contrib/X11/SATS/*.sats \

@@ -341,10 +341,11 @@ string_of_strptr (sprintf (
 
 end // end of [msg200_of_filename]
 
-fun file_send_main {fd: int}
-  (pf_conn: !socket_v (fd, conn) |
-   fd: int fd, file: &FILE r, filename: string): void = let
-
+fun file_send_main {fd: int} (
+    pf_conn: !socket_v (fd, conn)
+  | fd: int fd, file: &FILE r, filename: !READ(string)
+  ) : void = let
+//
 val [l_buf:addr]
   (pfopt | p_buf) = malloc_ngc (BUFSZ)
 val () = assert_errmsg (p_buf > null, #LOCATION)
@@ -353,7 +354,7 @@ prval () = pf_buf := bytes_v_of_b0ytes_v (pf_buf)
 val msg200_str = msg200_of_filename filename
 val msg200_str = string1_of_string msg200_str
 val msg200_len = string1_length msg200_str
-
+//
 fun aux
   (pf_conn: !socket_v (fd, conn),
    pf_buf: !bytes BUFSZ @ l_buf | fd: int fd, file: &FILE r)
@@ -365,24 +366,24 @@ in
     aux (pf_conn, pf_buf | fd, file)
   end
 end // end of [aux]
-
+//
 in
-
+//
 socket_write_substring_all (pf_conn | fd, msg200_str, 0, msg200_len);
 aux (pf_conn, pf_buf | fd, file);
 free_ngc (pf_ngc, pf_buf | p_buf);
-
+//
 end // end of [file_send_main]
 
 extern fun file_send {fd: int}
-  (pf_conn: !socket_v (fd, conn) | fd: int fd, filename: string): void
+  (pf_conn: !socket_v (fd, conn) | fd: int fd, filename: !READ(string)): void
+// end of [file_send]
 
-implement file_send (pf_conn | fd, filename) = let
-
-val [l_file:addr] (pf_file_opt | file) = fopen_err (filename, file_mode_r)
-
+implement file_send
+  (pf_conn | fd, filename) = let
+  val [l_file:addr] (pf_file_opt | file) = fopen_err (filename, file_mode_r)
 in
-
+//
 if (file > null) then let
   prval Some_v pf_file = pf_file_opt
 in
@@ -392,8 +393,8 @@ end else let
   prval None_v () = pf_file_opt
 in
   msg404_send (pf_conn | fd)
-end // end of if
-
+end // end of [if]
+//
 end // end of [file_send]
 
 //

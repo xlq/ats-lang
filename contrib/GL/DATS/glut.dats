@@ -9,7 +9,7 @@
 (*
 ** ATS - Unleashing the Potential of Types!
 **
-** Copyright (C) 2002-2008 Hongwei Xi, Boston University
+** Copyright (C) 2002-2009 Hongwei Xi, Boston University
 **
 ** All rights reserved
 **
@@ -44,7 +44,8 @@ staload "contrib/GL/SATS/glut.sats"
 
 (* ****** ****** *)
 
-implement glutStrokeString (font, s) = let
+implement
+glutStrokeString (font, s) = let
   val [n:int] s = string1_of_string s
   var i: sizeLte n = size1_of_int1 (0)
 in
@@ -55,7 +56,8 @@ end // end of [glutStrokeString]
 
 (* ****** ****** *)
 
-implement glutBitmapString (font, s) = let
+implement
+glutBitmapString (font, s) = let
   val [n:int] s = string1_of_string s
   var i: sizeLte n = size1_of_int1 (0)
 in

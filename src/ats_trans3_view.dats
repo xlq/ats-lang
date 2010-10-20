@@ -271,19 +271,23 @@ fun s2lab0lst_of_d3lab1lst {n:nat} .<n>.
 (* ****** ****** *)
 
 implement
-d3exp_lval_typ_set (loc0, refval, d3e0, s2e_new, err) = let
+d3exp_lval_typ_set
+  (loc0, refval, d3e0, s2e_new, err) = let
 (*
   val () = begin
     print "d3exp_lval_typ_set: d3e0 = "; print d3e0; print_newline ()
   end // end of [val]
 *)
-  fn refval_check (loc0: loc_t, d2v: d2var_t, refval: int): void = 
+  fn refval_check (
+      loc0: loc_t, d2v: d2var_t, refval: int
+    ) : void = 
     if refval > 1 then begin
       prerr_loc_error3 loc0;
       prerr ": the dynamic variable ["; prerr d2v;
       prerr "] is required to be mutable in order to support call-by-reference.";
       $Err.abort {void} ()
     end // end of [if]
+  // end of [refval_check]
 in
   case+ d3e0.d3exp_node of
   | D3Eann_type (d3e, _(*s2e_ann*)) => begin
@@ -322,14 +326,6 @@ in
     in
       (* empty *)
     end // end of [D3Esel_var when d2var_is_mutable]
-  | D3Evar d2v when d2var_is_linear d2v => let
-      val () = refval_check (loc0, d2v, refval)
-      val _(* nil *) = begin
-        d2var_lin_slablst_assgn (loc0, d2v, list_nil (), s2e_new)
-      end // end of [val]
-    in
-      (* empty *)
-    end // end of [D2Evar when d2var_is_linear]
   | D3Evar d2v when d2var_is_mutable d2v => let
       val _ (* nil *) = begin
         d2var_mut_slablst_assgn (loc0, d2v, list_nil (), s2e_new)
@@ -337,6 +333,22 @@ in
     in
       (* empty *)
     end // end of [D2Evar when d2var_is_mutable]
+  | D3Evar d2v when d2var_isfix_get (d2v) => (err := err + 1) 
+(*
+//
+// HX-2010-10-20:
+// there is no need for checking that [d2v] is linear:
+// if [d2v] is not linear, then it cannot be updated!!!
+//
+*)
+  | D3Evar d2v => let
+      val () = refval_check (loc0, d2v, refval)
+      val _(* nil *) = begin
+        d2var_lin_slablst_assgn (loc0, d2v, list_nil (), s2e_new)
+      end // end of [val]
+    in
+      (* empty *)
+    end // end of [D2Evar]
   | D3Eviewat_ptr (d3e, d3ls, d2v_view, s2ls_nt) => let
       val (s2e_old, s2ls) = begin
         d2var_view_viewat_slablst_set (loc0, d2v_view, s2ls_nt, s2e_new)
@@ -366,20 +378,16 @@ fn s2exp_fun_is_freeptr
 end // end of [s2exp_fun_is_freeptr]
 
 implement
-d3exp_lval_typ_set_arg (refval, d3e0, s2e_new) = let
+d3exp_lval_typ_set_arg
+  (refval, d3e0, s2e_new) = let
   val loc0 = d3e0.d3exp_loc; var err: int = 0
-  val flag = (
-    if refval = 0 then
-      (if s2exp_is_linear (d3e0.d3exp_typ) then 1 else 0)
-    else 1
-  ) : int
   var freeknd: int = 0 // free the expression if it is set to 1
   val () = d3exp_lval_typ_set (loc0, refval, d3e0, s2e_new, err)
-  val () = (if err > 0 then begin case+ s2e_new of
-    | _ when flag = 0 => ()
+  val () = (if err > 0 then begin case+ 0 of
+    | _ when s2exp_is_nonlin (s2e_new) => () // HX: safely discarded!
     | _ when s2exp_fun_is_freeptr s2e_new => (freeknd := 1)
       // end of [_ when ...]
-    | _ (*flag > 0*) => begin
+    | _  => begin
         prerr_loc_error3 loc0;
         prerr ": the dynamic expression needs to be a left-value but it is not.";
         prerr_newline ();

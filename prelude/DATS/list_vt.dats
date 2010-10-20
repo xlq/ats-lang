@@ -226,12 +226,13 @@ in
   loop (pf | n, 0, f, env, res); res
 end // end of [list_vt_tabulate__main]
 
-implement{a} list_vt_tabulate_fun {n} {f:eff} (f, n) = let
+implement{a}
+list_vt_tabulate_fun {n} {f:eff} (f, n) = let
   val f = coerce (f) where { extern castfn
-    coerce (f: natLt n -<f> a):<> (!unit_v | natLt n, !Ptr) -<f> a
+    coerce (f: natLt n -<f> a):<> (!unit_v | natLt n, !ptr) -<f> a
   } // end of [where]
   prval pf = unit_v ()
-  val ans = list_vt_tabulate__main (pf | f, n, null)
+  val ans = list_vt_tabulate__main<a> {..} {ptr} (pf | f, n, null)
   prval unit_v () = pf
 in
   ans

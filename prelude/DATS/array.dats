@@ -682,7 +682,7 @@ array_foreach_fun
     coerce (f: (!v | &a) -<> void):<> (!v | &a, !ptr) -<> void
   } // end of [where]
 in
-  array_foreach__main (pf | A, f, asz, null)
+  array_foreach__main {v} {ptr} (pf | A, f, asz, null)
 end // end of [array_foreach_fun]
 
 implement{a}
@@ -747,7 +747,7 @@ array_iforeach_fun
     coerce (f: (!v | sizeLt n, &a) -<> void):<> (!v | sizeLt n, &a, !ptr) -<> void
   } // end of [where]
 in
-  array_iforeach__main (pf | A, f, asz, null)
+  array_iforeach__main {v} {ptr} (pf | A, f, asz, null)
 end // end of [array_foreach_fun]
 
 implement{a}

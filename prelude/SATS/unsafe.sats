@@ -36,11 +36,21 @@
 //
 (* ****** ****** *)
 //
-// HX: these unsafe features must be used with caution!
+// HX: these unsafe features must be used with caution!!!
 //
 (* ****** ****** *)
 
 #define ATS_STALOADFLAG 0 // there is no need for staloading at run-time
+
+(* ****** ****** *)
+//
+// HX: the generic ones:
+//
+castfn cast {to:t@ype} {from:t@ype} (x: from):<> to
+praxi castvw {to:view} {from:view} (x: from):<> to
+praxi castvw1 {to:view} {from:view} (x: !from):<> to
+castfn castvwtp {to:viewt@ype} {from:viewt@ype} (x: from):<> to
+castfn castvwtp1 {to:viewt@ype} {from:viewt@ype} (x: !from):<> to
 
 (* ****** ****** *)
 
@@ -50,16 +60,6 @@ castfn cast2lint {a:t@ype} (x: a):<> lint
 castfn cast2ulint {a:t@ype} (x: a):<> ulint
 castfn cast2size {a:t@ype} (x: a):<> size_t
 castfn cast2ssize {a:t@ype} (x: a):<> ssize_t
-
-castfn cast {to:t@ype} {from:t@ype} (x: from):<> to
-
-(* ****** ****** *)
-
-praxi castvw {to:view} {from:view} (x: from):<> to
-
-(* ****** ****** *)
-
-castfn castvwtp {to:viewt@ype} {from:viewt@ype} (x: !from):<> to
 
 (* ****** ****** *)
 

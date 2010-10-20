@@ -1,5 +1,11 @@
 ########################################################################
 
+ats-lang-anairiats-0.2.3:
+
+1. Adding READ: READ(string) is read-only!
+
+########################################################################
+
 ats-lang-anairiats-0.2.2:
 
 1. -D_ATS_TERMINATION_CHECK is changed to -D_ATS_PROOFCHECK; fixing a

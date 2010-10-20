@@ -63,9 +63,9 @@ in
     val path = stropt_unsome (path)
     val flag = O_WRONLY lor O_CREAT lor O_EXCL
     val err = loop (path, flag, 0) where {
-      fun loop
-        (path: string, flag: flag_t, n: int)
-        : int(*err*) = let
+      fun loop (
+          path: !READ(string), flag: flag_t, n: int
+        ) : int(*err*) = let
         val (pf_fdopt | fd) = open_flag_err (path, flag)
       in
         if (fd >= 0) then let

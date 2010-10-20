@@ -29,7 +29,7 @@ fun display_hostent
   val (fpf_name | name) = hostent_get_name (h)
   val () = printf (
     "name: %s; type: %d; len: %d\n"
-  , @($UNSAFE.castvwtp{string} (name), h.h_addrtype, h.h_length)
+  , @($UNSAFE.castvwtp1{string} (name), h.h_addrtype, h.h_length)
   ) // end of [printf]
   prval () = fpf_name (name)
 //
@@ -59,7 +59,7 @@ fun display_hostent
       if i < n then let
         val (fpf_addr | addr) = inet_ntoa
           ($UNSAFE.ptrget<in_addr_struct>(A.[i]))
-        val () = printf ("\t%s\n", @($UNSAFE.castvwtp{string}(addr)))
+        val () = printf ("\t%s\n", @($UNSAFE.castvwtp1{string}(addr)))
         prval () = fpf_addr (addr)
       in
         loop (A, n, i+1)

@@ -27,12 +27,10 @@
 (* ****** ****** *)
 
 %{^
-
 static inline
 ats_double_type
 double_of_double (ats_double_type x) { return x ; }
-
-%}
+%} // end of [%{^]
 
 (* ****** ****** *)
 

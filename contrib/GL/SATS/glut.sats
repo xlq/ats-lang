@@ -9,7 +9,7 @@
 (*
 ** ATS - Unleashing the Potential of Types!
 **
-** Copyright (C) 2002-2008 Hongwei Xi, Boston University
+** Copyright (C) 2002-2009 Hongwei Xi, Boston University
 **
 ** All rights reserved
 **
@@ -459,8 +459,9 @@ fun glutStrokeWidth (font: GLUTfontref_stroke, c: char): int
   = "#atsctrb_glutStrokeWidth"
 fun glutStrokeLength (font: GLUTfontref_stroke, txt: string): int
   = "#atsctrb_glutStrokeLength"
-  
-// implemented in [glut.dats]
+//
+// HX: implemented in [glut.dats]
+//
 fun glutStrokeString (font: GLUTfontref_stroke, s: string): void
 
 (* ****** ****** *)
@@ -492,8 +493,9 @@ fun glutBitmapWidth (font: GLUTfontref_bitmap, c: char): int
   = "#atsctrb_glutBitmapWidth"
 fun glutBitmapLength (font: GLUTfontref_bitmap, txt: string): int
   = "#atsctrb_glutBitmapLength"
-
-// implemented in [glut.dats]
+//
+// HX: implemented in [glut.dats]
+//
 fun glutBitmapString (font: GLUTfontref_bitmap, s: string): void
 
 (* ****** ****** *)

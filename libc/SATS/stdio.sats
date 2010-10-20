@@ -373,17 +373,19 @@ ing sequences (Additional characters may follow these sequences.):
 *)
 
 fun fopen_err {m:fm}
-  (path: string, m: file_mode m):<!ref> [l:addr] (FILEopt_v (m, l) | ptr l)
+  (path: !READ(string), m: file_mode m)
+  :<!ref> [l:addr] (FILEopt_v (m, l) | ptr l)
   = "atslib_fopen_err"
 // end of [fopen_err]
 
 fun fopen_exn {m:fm}
-  (path: string, m: file_mode m):<!exnref> [l:addr] (FILE m @ l | ptr l)
+  (path: !READ(string), m: file_mode m)
+  :<!exnref> [l:addr] (FILE m @ l | ptr l)
   = "atslib_fopen_exn"
 // end of [fopen_exn]
 
 fun fopen_ref_exn {m:fm}
-  (path: string, m: file_mode m):<!exnref> FILEref
+  (path: !READ(string), m: file_mode m):<!exnref> FILEref
   = "atslib_fopen_exn"
 // end of [fopen_ref_exn]
 
@@ -431,19 +433,19 @@ number on success, or EOF on error.
 
 symintr fputs_err
 fun fputs0_err
-  (str: string, fil: FILEref):<> int = "atslib_fputs_err"
+  (str: !READ(string), fil: FILEref):<> int = "atslib_fputs_err"
 overload fputs_err with fputs0_err
 fun fputs1_err {m:fm}
-  (pf: file_mode_lte (m, w) | str: string, f: &FILE m):<> int
+  (pf: file_mode_lte (m, w) | str: !READ(string), f: &FILE m):<> int
   = "atslib_fputs_err"
 overload fputs_err with fputs1_err
 
 symintr fputs_exn
 fun fputs0_exn
-  (str: string, fil: FILEref):<!exn> void = "atslib_fputs_exn"
+  (str: !READ(string), fil: FILEref):<!exn> void = "atslib_fputs_exn"
 overload fputs_exn with fputs0_exn
 fun fputs1_exn {m:fm}
-  (pf: file_mode_lte (m, w) | str: string, f: &FILE m):<!exn> void
+  (pf: file_mode_lte (m, w) | str: !READ(string), f: &FILE m):<!exn> void
   = "atslib_fputs_exn"
 overload fputs_exn with fputs1_exn
 
@@ -502,34 +504,34 @@ file associated with a standard text stream (stderr, stdin, or stdout).
 
 symintr freopen_err
 fun freopen0_err {m_new:fm}
-  (path: string, m_new: file_mode m_new, f: FILEref):<!ref> void
+  (path: !READ(string), m_new: file_mode m_new, f: FILEref):<!ref> void
   = "atslib_freopen_err"
 overload freopen_err with freopen0_err
 fun freopen1_err {m_old,m_new:fm} {l_file:addr}
-  (pf: FILE m_old @ l_file | s: string, m: file_mode m_new, p: ptr l_file)
+  (pf: FILE m_old @ l_file | s: !READ(string), m: file_mode m_new, p: ptr l_file)
   :<!ref> [l:addr | l == null || l == l_file] (FILEopt_v (m_new, l) | ptr l)
   = "atslib_freopen_err"
 overload freopen_err with freopen1_err
 
 symintr freopen_exn
 fun freopen0_exn {m_new:fm}
-  (path: string, m_new: file_mode m_new, f: FILEref):<!exnref> void
+  (path: !READ(string), m_new: file_mode m_new, f: FILEref):<!exnref> void
   = "atslib_freopen_exn"
 overload freopen_exn with freopen0_exn
 fun freopen1_exn {m_old,m_new:fm} {l_file:addr}
-  (pf: FILE m_old @ l_file | path: string, m: file_mode m_new, p: ptr l_file)
+  (pf: FILE m_old @ l_file | path: !READ(string), m: file_mode m_new, p: ptr l_file)
   :<!exnref> (FILE m_new @ l_file | void)
   = "atslib_freopen_exn"
 overload freopen_exn with freopen1_exn
 
 fun freopen_stdin {m:fm}
-  (s: string):<!exnref> void = "atslib_freopen_stdin"
+  (s: !READ(string)):<!exnref> void = "atslib_freopen_stdin"
 // end of [freopen_stdin]
 fun freopen_stdout {m:fm}
-  (s: string):<!exnref> void = "atslib_freopen_stdout"
+  (s: !READ(string)):<!exnref> void = "atslib_freopen_stdout"
 // end of [freopen_stdout]
 fun freopen_stderr {m:fm}
-  (s: string):<!exnref> void = "atslib_freopen_stderr"
+  (s: !READ(string)):<!exnref> void = "atslib_freopen_stderr"
 // end of [freopen_stderr]
 
 // ------------------------------------------------
@@ -651,7 +653,7 @@ newline.
 
 *)
 
-fun perror (msg: string):<> void = "atslib_perror"
+fun perror (msg: !READ(string)):<> void = "atslib_perror"
 
 // ------------------------------------------------
 
@@ -671,20 +673,25 @@ fun putchar1 (c: char):<> [i:int | i <= UCHAR_MAX] int i
 // ------------------------------------------------
 
 // [puts] puts a newline at the end
-fun puts_err (s: string):<> int = "atslib_puts_err"
-fun puts_exn (s: string):<!exn> void = "atslib_puts_exn"
+fun puts_err (s: !READ(string)):<> int = "atslib_puts_err"
+fun puts_exn (s: !READ(string)):<!exn> void = "atslib_puts_exn"
 
 // ------------------------------------------------
 
-fun remove_err (s: string):<!ref> int = "atslib_remove_err"
-fun remove_exn (s: string):<!exnref> void = "atslib_remove_exn"
+fun remove_err (s: !READ(string)):<!ref> int = "atslib_remove_err"
+fun remove_exn (s: !READ(string)):<!exnref> void = "atslib_remove_exn"
 
 // ------------------------------------------------
 
-fun rename_err (oldpath: string, newpath: string):<!ref> int
+fun rename_err
+  (oldpath: !READ(string), newpath: !READ(string)):<!ref> int
   = "atslib_rename_err"
-fun rename_exn (oldpath: string, newpath: string):<!exnref> void
+// end of [rename_err]
+
+fun rename_exn
+  (oldpath: !READ(string), newpath: !READ(string)):<!exnref> void
   = "atslib_rename_exn"
+// end of [rename_exn]
 
 // ------------------------------------------------
 

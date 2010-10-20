@@ -101,17 +101,17 @@ dataview open_v (int) =
 // end of [open_v]
 
 fun open_flag_err
-  (path: string, flag: flag_t): [i: int] (open_v (i) | int i)
+  (path: !READ(string), flag: flag_t): [i: int] (open_v (i) | int i)
   = "atslib_open_flag_err"
 // end of [open_flag_err]
 
 fun open_flag_exn
-  (path: string, flag: flag_t): [i: int] (fildes_v i | int i)
+  (path: !READ(string), flag: flag_t): [i: int] (fildes_v i | int i)
   = "atslib_open_flag_exn"
 // end of [open_flag_exn]
 
 fun open_flag_mode_exn
-  (path: string, flag: flag_t, mode: mode_t)
+  (path: !READ(string), flag: flag_t, mode: mode_t)
   : [i: int] (fildes_v (i) | int i) = "atslib_open_flag_mode_exn"
 // end of [open_flag_mode_exn]
 
@@ -224,14 +224,14 @@ fun write_all_exn
 fun write_substring_err
   {fd:int} {sz,i,n:nat | i+n <= sz} (
     pf: !fildes_v (fd)
-  | fd: int fd, str: string sz, start: size_t i, n: size_t n
+  | fd: int fd, str: !READ(string sz), start: size_t i, n: size_t n
   ) : ssizeBtw(~1, n+1) = "atslib_fildes_write_substring_err"
 // end of [write_substring_err]
 
 fun write_substring_exn
   {fd:int} {sz,i,n:nat | i+n <= sz} (
     pf: !fildes_v (fd)
-  | fd: int fd, str: string sz, start: size_t i, n: size_t n
+  | fd: int fd, str: !READ(string sz), start: size_t i, n: size_t n
   ) : sizeLte n = "atslib_fildes_write_substring_exn"
 // end of [write_substring_exn]
 

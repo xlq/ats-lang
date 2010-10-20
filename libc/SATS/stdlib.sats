@@ -51,14 +51,14 @@ macdef EXIT_FAILURE = $extval (int, "EXIT_FAILURE")
 
 (* ****** ****** *)
 
-fun atoi (s: string):<> int = "#atslib_atoi"
-fun atof (s: string):<> double = "#atslib_atof"
-fun atol (s: string):<> lint = "#atslib_atol"
-fun atoll (s: string):<> llint = "#atslib_atoll"
+fun atoi (s: !READ(string)):<> int = "#atslib_atoi"
+fun atof (s: !READ(string)):<> double = "#atslib_atof"
+fun atol (s: !READ(string)):<> lint = "#atslib_atol"
+fun atoll (s: !READ(string)):<> llint = "#atslib_atoll"
 
 (* ****** ****** *)
 
-fun getenv (name: string)
+fun getenv (name: !READ(string))
   : [l:addr] (strptr l -<lin,prf> void | strptr l) = "#atslib_getenv"
 // end of [atslib_getenv]
 
@@ -74,15 +74,16 @@ fun putenv {l:agz} (nameval: !strptr l): int // 0/nz : succ/fail
 // [name] and [value] are copied into the environment
 // also note that the original value may be leaked out!!!
 //
-fun setenv // 0/-1 : succ/fail
-  (name: string, value: string, overwrite: int): int = "#atslib_setenv"
+fun setenv ( // 0/-1 : succ/fail
+  name: !READ(string), value: !READ(string), overwrite: int
+  ) : int = "#atslib_setenv"
 // end of [atslib_setenv]
 
-fun unsetenv (name: string): int = "#atslib_unsetenv" // 0/-1: succ/fail
+fun unsetenv (name: !READ(string)): int = "#atslib_unsetenv" // 0/-1: succ/fail
 
 (* ****** ****** *)
 
-fun system (cmd: string): int = "#atslib_system" // !macro
+fun system (cmd: !READ(string)): int = "#atslib_system" // !macro
 
 (* ****** ****** *)
 
@@ -94,7 +95,7 @@ fun atexit (f: () -> void): int = "#atslib_atexit" // !macro
 (* ****** ****** *)
 
 fun mkstemp {m,n:nat}
-  (path: string): [i: int] (open_v (i) | int i) = "#atslib_mkstemp"
+  (path: !READ(string)): [i: int] (open_v (i) | int i) = "#atslib_mkstemp"
 // end of [mkstemp]
 
 (* ****** ****** *)

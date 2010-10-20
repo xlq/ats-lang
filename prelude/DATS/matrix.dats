@@ -159,7 +159,7 @@ implement matrix_make_fun_tsz
     extern castfn coerce (f: fun_t):<> fun1_t
   } // end of [val]
 in
-  matrix_make_fun_tsz__main {a} {v} (pf | m, n, f, tsz, null)
+  matrix_make_fun_tsz__main {a} {v} {ptr} (pf | m, n, f, tsz, null)
 end // end of [matrix_make_fun_tsz]
 
 implement matrix_make_clo_tsz
@@ -308,7 +308,7 @@ matrix_foreach_fun {v} {m,n} (pf_v | M, f, m, n) = let
     coerce (f: (!v | &a) -<> void):<> (!v | &a, !ptr) -<> void
   } // end of [where]
 in
-  matrix_foreach_fun__main<a> (pf_v | M, f, m, n, null)
+  matrix_foreach_fun__main<a> {v} {ptr} (pf_v | M, f, m, n, null)
 end // end of [matrix_foreach_fun]
 
 implement{a}
@@ -381,7 +381,7 @@ matrix_iforeach_fun
     coerce (f: (!v | sizeLt m, sizeLt n, &a) -<> void):<> (!v | sizeLt m, sizeLt n, &a, !ptr) -<> void
   } // end of [where]
 in
-  matrix_iforeach_fun__main (pf | M, f, m, n, null)
+  matrix_iforeach_fun__main<a> {v} {ptr} (pf | M, f, m, n, null)
 end // end of [matrix_iforeach_fun]
 
 implement{a}

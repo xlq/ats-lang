@@ -119,9 +119,9 @@ fun _exit (status: int): void = "#atslib__exit" // !macro
 (* ****** ****** *)
 
 fun execv {n:pos}
-  (path: string, argv: &ptrarr(n)): int = "#atslib_execv"
+  (path: !READ(string), argv: &ptrarr(n)): int = "#atslib_execv"
 fun execvp {n:pos}
-  (path: string, argv: &ptrarr(n)): int = "#atslib_execvp"
+  (path: !READ(string), argv: &ptrarr(n)): int = "#atslib_execvp"
 
 (* ****** ****** *)
 
@@ -271,17 +271,17 @@ macdef W_OK = $extval (uint, "W_OK") // test for write permission
 macdef X_OK = $extval (uint, "X_OK") // test for execute permission
 macdef F_OK = $extval (uint, "F_OK") // test for existence
 //
-fun access (path: string, mode: uint): int = "#atslib_access"
+fun access (path: !READ(string), mode: uint): int = "#atslib_access"
 //
 (* ****** ****** *)
 
 fun chroot
-  (path: string): int = "#atslib_chroot" // 0/-1 : succ/fail
+  (path: !READ(string)): int = "#atslib_chroot" // 0/-1 : succ/fail
 // end of [chroot]
 
 (* ****** ****** *)
 
-fun chdir (path: string): int(*err*) = "#atslib_chdir"
+fun chdir (path: !READ(string)): int(*err*) = "#atslib_chdir"
 fun fchdir {fd:int}
   (pf: !fildes_v (fd) | fd: int): int(*err*) = "#atslib_fchdir"
 // end of [fchdir]
@@ -294,8 +294,8 @@ fun nice
 
 (* ****** ****** *)
 
-fun link (src: string, dst: string): int = "#atslib_link"
-fun unlink (path: string): int = "#atslib_unlink" // macro!
+fun link (src: !READ(string), dst: !READ(string)): int = "#atslib_link"
+fun unlink (path: !READ(string)): int = "#atslib_unlink" // macro!
 
 (* ****** ****** *)
 
@@ -366,7 +366,7 @@ macdef _PC_SYMLINK_MAX = $extval (pathconfname_t, "_PC_SYMLINK_MAX")
 macdef _PC_2_SYMLINK = $extval (pathconfname_t, "_PC_2_SYMLINK")
 
 fun pathconf
-  (path: string, name: pathconfname_t): lint = "#atslib_pathconf"
+  (path: !READ(string), name: pathconfname_t): lint = "#atslib_pathconf"
 // end of [pathconf]
 
 //
@@ -379,7 +379,7 @@ fun fpathconf {fd:nat}
 (* ****** ****** *)
 
 fun readlink {n:nat} {l:addr} (
-  pf: !b0ytes(n) @ l >> bytes(n) @ l | path: string, p: ptr l, n: size_t n
+  pf: !b0ytes(n) @ l >> bytes(n) @ l | path: !READ(string), p: ptr l, n: size_t n
 ) : [n1:int | n1 <= n] ssize_t (n1) = "#atslib_readlink"
 // end of [readlink]
 
@@ -450,7 +450,7 @@ fun gethostname {m:pos} {l:addr}
 // HX: [m] should most likely be [n+1].
 //
 fun sethostname {m,n:nat | n < m}
-  (name: string n, m: size_t m): int = "#atslib_sethostname"
+  (name: !READ(string(n)), m: size_t m): int = "#atslib_sethostname"
 // end of [sethostname]
 
 (* ****** ****** *)
@@ -468,7 +468,7 @@ fun getdomainname {m:pos} {l:addr}
 // HX: [m] should most likely be [n+1].
 //
 fun setdomainname {m,n:nat | n < m}
-  (name: string n, m: size_t m): int = "#atslib_setdomainname"
+  (name: !READ(string(n)), m: size_t m): int = "#atslib_setdomainname"
 // end of [setdomainname]
 
 (* ****** ****** *)

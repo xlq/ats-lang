@@ -58,8 +58,8 @@ Problem14:
 
 Problem15:
 Solution is fully verified:
-problem15-hwxi2.dats
-problem15-mberndt.dats (one lemma is still MISSING!!!)
+problem15-hwxi2.dats // via memoization
+problem15-mberndt.dats // a pure solution
 
 ######
 

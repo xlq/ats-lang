@@ -348,7 +348,7 @@ end // end of [msg200_of_filename]
 
 fn file_send_main {fd: int} (
     pf_conn: !socket_v (fd, conn)
-  | fd: int fd, file: &FILE r, filename: string
+  | fd: int fd, file: &FILE r, filename: !READ(string)
   ) : void = let
   var !p_buf with pf_buf = @[byte][BUFSZ]() // uninitialized
   prval () = pf_buf := bytes_v_of_b0ytes_v (pf_buf)
@@ -375,10 +375,12 @@ end // end of [file_send_main]
 
 (* ****** ****** *)
 
-extern fun file_send {fd: int}
-  (pf_conn: !socket_v (fd, conn) | fd: int fd, filename: string): void
+extern fun file_send {fd: int} (
+  pf_conn: !socket_v (fd, conn) | fd: int fd, filename: !READ(string)
+) : void // end of [file_send]
 
-implement file_send (pf_conn | fd, filename) = let
+implement file_send
+  (pf_conn | fd, filename) = let
 (*
   val () = begin
     prerr "file_send: filename = "; prerr filename; prerr_newline ()

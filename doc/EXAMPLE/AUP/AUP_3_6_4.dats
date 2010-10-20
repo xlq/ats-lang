@@ -68,7 +68,7 @@ fun loop_dir (
       val [l:addr] (fpf_d_name | d_name) = dirent_get_d_name (ent)
       viewtypedef VT = strptr(l)
       var stat_entry: stat? // uninitialized
-      val rtn = lstat_err ($UNSAFE.castvwtp{string}{VT}(d_name), stat_entry)
+      val rtn = lstat_err ($UNSAFE.castvwtp1{string}{VT}(d_name), stat_entry)
       val res = if rtn >= 0 then let
         prval () = opt_unsome (stat_entry)
       in
@@ -76,7 +76,7 @@ fun loop_dir (
         | _ when SAME_INODE (stat, stat_entry) => let
             val () = ~ents
             val () = if nent > 0 then push_pathlist (lstrs, "/")
-            val () = push_pathlist (lstrs, $UNSAFE.castvwtp{string}{VT}(d_name))
+            val () = push_pathlist (lstrs, $UNSAFE.castvwtp1{string}{VT}(d_name))
           in  
             1 // the entry for the current directory is found
           end // end of [_ when ...]  

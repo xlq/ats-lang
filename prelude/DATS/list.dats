@@ -100,7 +100,7 @@ list_app_fun {f:eff} (xs, f) = let
     extern castfn coerce (f: a -<f> void):<> (!unit_v | a, !ptr) -<f> void
   } // end of [where]
   prval pf = unit_v ()
-  val () = list_app__main (pf | xs, f, null)
+  val () = list_app__main<a> {..} {ptr} (pf | xs, f, null)
   prval unit_v () = pf
 in
   ()
@@ -174,7 +174,7 @@ list_app2_fun {n} {f:eff} (xs1, xs2, f) = let
     coerce (f: (a1, a2) -<f> void):<> (!unit_v | a1, a2, !ptr) -<f> void
   } // end of [where]
   prval pf = unit_v ()
-  val () = list_app2__main (pf | xs1, xs2, f, null)
+  val () = list_app2__main<a1,a2> {..} {ptr} (pf | xs1, xs2, f, null)
   prval unit_v () = pf
 in
   // empty
@@ -306,7 +306,7 @@ list_assoc_fun
     coerce (eq: (a1, a1) -<eq> bool):<> (!unit_v | a1, a1, !ptr) -<eq> bool
   } // end of [where]
   prval pf = unit_v ()
-  val ans = list_assoc__main (pf | xys, eq, x0, null)
+  val ans = list_assoc__main<a1,a2> {..} {ptr} (pf | xys, eq, x0, null)
   prval unit_v () = pf
 in
   ans
@@ -412,7 +412,7 @@ list_exists_fun {p:eff} (xs, p) = let
     extern castfn coerce (p: a -<p> bool):<> (!unit_v | a, !ptr) -<p> bool
   } // end of [where]
   prval pf = unit_v ()
-  val ans = list_exists__main (pf | xs, p, null)
+  val ans = list_exists__main<a> {..} {ptr} (pf | xs, p, null)
   prval unit_v () = pf
 in
   ans
@@ -488,7 +488,7 @@ list_exists2_fun {n} {p:eff} (xs1, xs2, p) = let
     coerce (p: (a1, a2) -<p> bool):<> (!unit_v | a1, a2, !ptr) -<p> bool
   } // end of [where]
   prval pf = unit_v ()
-  val ans = list_exists2__main (pf | xs1, xs2, p, null)
+  val ans = list_exists2__main<a1,a2> {..} {ptr} (pf | xs1, xs2, p, null)
   prval unit_v () = pf
 in
   ans
@@ -593,7 +593,7 @@ list_filter_fun {n} {p:eff} (xs, f) = let
     coerce (f: a -<p> bool):<> (!unit_v | a, !ptr) -<p> bool
   } // end of [where]
   prval pf = unit_v ()
-  val ans = list_filter__main (pf | xs, f, null)
+  val ans = list_filter__main<a> {..} {ptr} (pf | xs, f, null)
   prval unit_v () = pf
 in
   ans
@@ -661,7 +661,7 @@ list_find_fun {p:eff} (xs, f) = let
     coerce (f: a -<p> bool):<> (!unit_v | a, !ptr) -<p> bool
   } // end of [where]
   prval pf = unit_v ()
-  val ans = list_find__main (pf | xs, f, null)
+  val ans = list_find__main<a> {..} {ptr} (pf | xs, f, null)
   prval unit_v () = pf
 in
   ans
@@ -743,7 +743,7 @@ list_fold_left_fun {f:eff} (f, res, xs) = let
     coerce (f: (init, a) -<f> init):<> (!unit_v | init, a, !ptr) -<f> init
   } // end of [where]
   prval pf = unit_v ()
-  val ans = list_fold_left__main (pf | f, res, xs, null)
+  val ans = list_fold_left__main<init,a> {..} {ptr} (pf | f, res, xs, null)
   prval unit_v () = pf
 in
   ans
@@ -861,7 +861,7 @@ implement{a,sink} list_fold_right_fun {f:eff} (f, xs, res) = let
     castfn coerce (f: (a, sink) -<f> sink):<> (!unit_v | a, sink, !ptr) -<f> sink
   } // end of [where]
   prval pf = unit_v ()
-  val ans = list_fold_right__main (pf | f, xs, res, null)
+  val ans = list_fold_right__main<a,sink> {..} {ptr} (pf | f, xs, res, null)
   prval unit_v () = pf
 in
   ans
@@ -952,7 +952,7 @@ list_forall_fun {p:eff} (xs, p) = let
     extern castfn coerce (p: a -<p> bool):<> (!unit_v | a, !ptr) -<p> bool
   } // end of [where]
   prval pf = unit_v ()
-  val ans = list_forall__main (pf | xs, p, null)
+  val ans = list_forall__main<a> {..} {ptr} (pf | xs, p, null)
   prval unit_v () = pf
 in
   ans
@@ -1029,7 +1029,7 @@ list_forall2_fun {n} {p:eff} (xs1, xs2, p) = let
     coerce (p: (a1, a2) -<p> bool):<> (!unit_v | a1, a2, !ptr) -<p> bool
   } // end of [where]
   prval pf = unit_v ()
-  val ans = list_forall2__main (pf | xs1, xs2, p, null)
+  val ans = list_forall2__main<a1,a2> {..} {ptr} (pf | xs1, xs2, p, null)
   prval unit_v () = pf
 in
   ans
@@ -1099,7 +1099,7 @@ list_foreach_fun {f:eff} (xs, f) = let
     coerce (f: (a) -<f> void):<> (!unit_v | a, !ptr) -<f> void
   } // end of [where]
   prval pf = unit_v ()
-  val () = list_foreach__main (pf | xs, f, null)
+  val () = list_foreach__main<a> {..} {ptr} (pf | xs, f, null)
   prval unit_v () = pf
 in
   // empty
@@ -1172,7 +1172,7 @@ list_foreach2_fun {n} {f} (xs, ys, f) = let
     coerce (f: (a1, a2) -<f> void):<> (!unit_v | a1, a2, !ptr) -<f> void
   } // end of [where]
   prval pf = unit_v ()
-  val () = list_foreach2__main (pf | xs, ys, f, null)
+  val () = list_foreach2__main<a1,a2> {..} {ptr} (pf | xs, ys, f, null)
   prval unit_v () = pf
 in
   // empty
@@ -1251,7 +1251,7 @@ list_iforeach_fun {n} {f:eff} (xs, f) = let
     coerce (f: (natLt n, a) -<f> void):<> (!unit_v | natLt n, a, !ptr) -<f> void
   } // end of [where]
   prval pf = unit_v ()
-  val () = list_iforeach__main {unit_v} (pf | xs, f, null)
+  val () = list_iforeach__main<a> {unit_v} {ptr} (pf | xs, f, null)
   prval unit_v () = pf
 in
   // empty
@@ -1502,7 +1502,7 @@ list_map_fun {n:int} {f:eff} (xs, f) = let
     extern castfn coerce (f: a -<f> b):<> (!unit_v | a, !ptr) -<f> b
   } // end of [where]
   prval pf = unit_v ()
-  val ys = list_map__main (pf | xs, f, null)
+  val ys = list_map__main<a,b> {..} {ptr} (pf | xs, f, null)
   prval unit_v () = pf
 in
   ys
@@ -1583,7 +1583,7 @@ list_map2_fun {n} {f:eff} (xs, ys, f) = let
     coerce (f: (a1, a2) -<f> b):<> (!unit_v | a1, a2, !ptr) -<f> b
   } // end of [where]
   prval pf = unit_v ()
-  val zs = list_map2__main (pf | xs, ys, f, null)
+  val zs = list_map2__main<a1,a2,b> {..} {ptr} (pf | xs, ys, f, null)
   prval unit_v () = pf
 in
   zs

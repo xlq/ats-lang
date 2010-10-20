@@ -143,7 +143,7 @@ implement main (argc, argv) = let
   val () = assert_errmsg (ind = ~1, #LOCATION)
 //
   prval pf = unit_v ()
-  val () = string_foreach__main
+  val () = string_foreach__main {..} {ptr}
     (pf | "Hello, world!", f, null) where {
     fn f (pf: !unit_v | c: char, _p: !ptr):<1> void = print (c)
   } // end of [val]

@@ -13,6 +13,10 @@
 //
 (* ****** ****** *)
 
+staload UNSAFE = "prelude/SATS/unsafe.sats"
+
+(* ****** ****** *)
+
 staload "libc/SATS/errno.sats"
 staload "libc/SATS/grp.sats"
 staload "libc/SATS/pwd.sats"
@@ -195,7 +199,7 @@ end // end of [print_date]
 (* ****** ****** *)
 
 fun print_name .<>.
-  (st: &stat, name: string): void = let
+  (st: &stat, name: !READ(string)): void = let
   // nothing
 in
   case+ 0 of
@@ -211,19 +215,19 @@ in
         val n1 = size1_of_ssize1 (n1)
         val () = assert_errmsg (n1 < n, #LOCATION)
         val () = bytes_strbuf_trans (pf | p, n1)
-        val () = printf (" %s -> %s", @(name, __cast p)) where {
+        val () = printf (" %s -> %s", @($UNSAFE.castvwtp1{string}(name), __cast p)) where {
           extern castfn __cast (x: ptr): string // cutting a corner
         } // end of [val]
         prval () = pf := bytes_v_of_strbuf_v (pf)
       in
         // nothing
       end else
-        printf (" %s -> [can't read link]", @(name))
+        printf (" %s -> [can't read link]", @($UNSAFE.castvwtp1{string}(name)))
       // end of [val]
     in
       free_gc (pfgc, pf | p)
     end // end of [_ when ...]
-  | _ => printf (" %s", @(name))
+  | _ => printf (" %s", @($UNSAFE.castvwtp1{string}(name)))
 end // end of [print_name]
 
 (* ****** ****** *)

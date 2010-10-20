@@ -86,7 +86,7 @@ fun group_get_gr_mem
 (* ****** ****** *)
 
 // HX: non-reentrant
-fun getgrnam (nam: string):<!ref>
+fun getgrnam (nam: !READ(string)):<!ref>
   [l:addr] (ptroutopt (group, l) | ptr l) = "#atslib_getgrnam"
 // end of [getgrnam]
 

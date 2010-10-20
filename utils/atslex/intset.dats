@@ -126,7 +126,8 @@ in
   aux_union (ns1, ns2)
 end // end of [union_intset_intset]
 
-implement foreach_intset {v} (pf | f, ns): void = let
+implement
+foreach_intset {v} (pf | f, ns): void = let
   viewtypedef cloptr_t = (!v | int) -<cloptr1> void
   fun loop (pf: !v | f: !cloptr_t, ns: intset_t)
     : void = begin case+ ns of

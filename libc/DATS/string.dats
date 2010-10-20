@@ -45,7 +45,8 @@ staload "libc/SATS/string.sats"
 
 (* ****** ****** *)
 
-implement strdup_gc (str) = let
+implement
+strdup_gc (str) = let
   val n = strlen (str)
   val (pf_gc, pf_buf | p_buf) = malloc_gc (n + 1)
   val p_buf = strcpy (pf_buf | p_buf, str)

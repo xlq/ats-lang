@@ -66,16 +66,16 @@ fun ffs (i: int): [n:int | n >= 0] int n = "#atslib_ffs"
 // HX: string comparison like [strcmp] but case is ignored
 //
 fun strcasecmp
-  (str1: string, str2: string): int = "#atslib_strcasecmp"
+  (str1: !READ(string), str2: !READ(string)): int = "#atslib_strcasecmp"
 // end of [strcasecmp]
 
 (* ****** ****** *)
 //
 // HX: string comparison like [strncmp] but case is ignored
 //
-fun strncasecmp {n:nat}
-  (str1: string, str2: string, n: size_t n): int = "#atslib_strncasecmp"
-// end of [strncasecmp]
+fun strncasecmp {n:nat} (
+  str1: !READ(string), str2: !READ(string), n: size_t n
+) : int = "#atslib_strncasecmp" // end of [strncasecmp]
 
 (* ****** ****** *)
 

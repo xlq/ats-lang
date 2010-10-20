@@ -385,8 +385,9 @@ workshop_add_worker
         val [l_pau:addr] (pf_pau, fpf_pau | p_pau) = 
           workshop_get_WSpaused {a} {l} (pf_ws | p_ws)
         val _err = $PT.pthread_cond_wait {V_ws} (pf_ws | !p_pau, !p_mut)
-        prval () = minus_addback (fpf_mut, pf_mut | p_ws)
-        prval () = minus_addback (fpf_pau, pf_pau | p_ws)
+        val p1_ws = p_ws
+        prval () = minus_addback (fpf_mut, pf_mut | p1_ws)
+        prval () = minus_addback (fpf_pau, pf_pau | p1_ws)
         val npaused = p_ws->npaused
         val () = p_ws->npaused := npaused - 1
         val () = workshop_release (pf_ws | p_ws)
@@ -441,6 +442,7 @@ workshop_insert_work {l} (ws, wk) = let
   viewdef V_ws = WORKSHOP a @ l
   fun loop
     (pf_ws: V_ws | p_ws: ptr l, wk: a): void = let
+    val p1_ws = p_ws
     val isful = $LQ.queue_is_full {a} (p_ws->WQ)
   in    
     if isful then let
@@ -450,8 +452,8 @@ workshop_insert_work {l} (ws, wk) = let
         workshop_get_WQful {a} {l} (pf_ws | p_ws)
       viewdef V_mut = mutex (WORKSHOP a @ l) @ l_mut
       val _err = $PT.pthread_cond_wait {V_ws} (pf_ws | !p_ful, !p_mut)
-      prval () = minus_addback (fpf_mut, pf_mut | p_ws)
-      prval () = minus_addback (fpf_ful, pf_ful | p_ws)
+      prval () = minus_addback (fpf_mut, pf_mut | p1_ws)
+      prval () = minus_addback (fpf_ful, pf_ful | p1_ws)
     in
       loop (pf_ws | p_ws, wk)
     end else let
@@ -487,6 +489,7 @@ workshop_remove_work {l} (ws) = let
   viewdef V_ws = WORKSHOP a @ l
   fun loop
     (pf_ws: V_ws | p_ws: ptr l): a = let
+    val p1_ws = p_ws
     val isemp = $LQ.queue_is_empty {a} (p_ws->WQ)
   in    
     if isemp then let
@@ -503,8 +506,8 @@ workshop_remove_work {l} (ws) = let
         workshop_get_WQemp {a} {l} (pf_ws | p_ws)
       viewdef V_mut = mutex (WORKSHOP a @ l) @ l_mut
       val _err = $PT.pthread_cond_wait {V_ws} (pf_ws | !p_emp, !p_mut)
-      prval () = minus_addback (fpf_mut, pf_mut | p_ws)
-      prval () = minus_addback (fpf_emp, pf_emp | p_ws)
+      prval () = minus_addback (fpf_mut, pf_mut | p1_ws)
+      prval () = minus_addback (fpf_emp, pf_emp | p1_ws)
     in
       loop (pf_ws | p_ws)
     end else let

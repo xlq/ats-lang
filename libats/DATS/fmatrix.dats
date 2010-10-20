@@ -279,7 +279,7 @@ fmatrix_ptr_foreach_fun {v} (pf | M, f, ord, m, n) = let
     coerce (f: (!v | &a) -<> void) :<> (!v | &a, !ptr) -<> void
   } // end of [where]
 in
-  fmatrix_ptr_foreach_fun_tsz__main (pf | M, f, ord, m, n, sizeof<a>, null)
+  fmatrix_ptr_foreach_fun_tsz__main {a} {v} {ptr} (pf | M, f, ord, m, n, sizeof<a>, null)
 end // end of [fmatrix_ptr_foreach_fun]
 
 (* ****** ****** *)

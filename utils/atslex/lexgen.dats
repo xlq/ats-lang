@@ -300,7 +300,7 @@ fun followpos {n:nat} (n0: int n, r: regex1)
     case+ r_node of
     | REG1alt (r1, r2) => begin
         aux (pf | A, n0, r1); aux (pf | A, n0, r2)
-      end
+      end // end of [REG1alt]
     | REG1chars (n, cs) => ()
     | REG1end n => ()
     | REG1nil () => ()
@@ -308,8 +308,9 @@ fun followpos {n:nat} (n0: int n, r: regex1)
     | REG1opt r0 => aux (pf | A, n0, r0)
     | REG1plus r0 => let
         val r0_fstpos = r0.fstpos
-        fn f (pf: !array_v (intset_t, n, l) | i: int)
-          :<cloptr1> void = let
+        val f = lam (
+          pf: !array_v (intset_t, n, l) | i: int
+        ) : void =<cloptr1> let
           val i = int1_of_int i
 (*
           val () = prerrf ("followpos: i = %i and n = %i\n", @(i,n))
@@ -319,13 +320,16 @@ fun followpos {n:nat} (n0: int n, r: regex1)
         in
           A[i] := A[i] + r0_fstpos
         end // end of [f]
+        val () = foreach_intset (pf | f, r0.lstpos)
+        val () = cloptr_free (f)
       in
-        foreach_intset (pf | f, r0.lstpos); aux (pf | A, n0, r0)
-      end
+        aux (pf | A, n0, r0)
+      end // end of [REG1plus]
     | REG1seq (r1, r2) => let
         val r2_fstpos = r2.fstpos
-        fn f (pf: !array_v (intset_t, n, l) | i: int)
-          :<cloptr1> void = let
+        val f = lam (
+          pf: !array_v (intset_t, n, l) | i: int
+        ) : void =<cloptr1> let
           val i = int1_of i
 (*
           val () = prerrf ("followpos: i = %i and n = %i\n", @(i,n))
@@ -335,14 +339,16 @@ fun followpos {n:nat} (n0: int n, r: regex1)
         in
           A[i] := A[i] + r2_fstpos
         end // end of [f]
+        val () = foreach_intset (pf | f, r1.lstpos)
+        val () = cloptr_free (f)
       in
-        foreach_intset (pf | f, r1.lstpos);
         aux (pf | A, n0, r1); aux (pf | A, n0, r2);
-      end
+      end // end of [REG1seq]
     | REG1star r0 => let
         val r0_fstpos = r0.fstpos
-        fn f (pf: !array_v (intset_t, n, l) | i: int)
-          :<cloptr1> void = let
+        val f = lam (
+          pf: !array_v (intset_t, n, l) | i: int
+        ) : void =<cloptr1> let
           val i = int1_of i
 (*
           val () = prerrf ("followpos: i = %i and n = %i\n", @(i,n))
@@ -352,9 +358,11 @@ fun followpos {n:nat} (n0: int n, r: regex1)
         in
           A[i] := A[i] + r0_fstpos
         end // end of [f]
+        val () = foreach_intset (pf | f, r0.lstpos)
+        val () = cloptr_free (f)
       in
-        foreach_intset (pf | f, r0.lstpos); aux (pf | A, n0, r0)
-      end
+        aux (pf | A, n0, r0)
+      end // end of [REG1star]
   // end of [aux] and [aux_node]
   val n0_sz = size1_of_int1 n0
   val tsz = sizeof<intset_t>
@@ -418,7 +426,9 @@ fn transition_char {n:nat} {l_csi,l_pos:addr} (
   viewdef V = (
     array_v (CSI, n, l_csi), array_v (intset_t, n, l_pos), intset_t @ st_res
   ) // end of [viewdef]
-  fn f (pf: !V | i: int):<cloptr1> void = let
+  val f = lam (
+    pf: !V | i: int
+  ) : void =<cloptr1> let
     prval (pf1, pf2, pf3) = pf
     val i = int1_of_int i
 (*
@@ -426,12 +436,12 @@ fn transition_char {n:nat} {l_csi,l_pos:addr} (
     val () = (prerr "transition_char: st_res = "; prerr_intset st_res; prerr_newline ())
 *)
     val () = assert (0 <= i); val () = assert (i < n)
-    val () = case+ A_csi[i] of
+    val () = (case+ A_csi[i] of
       | CSI_cs cs => begin
           if charset_is_member (cs, c) then st_res := st_res + A_pos[i]
         end // end of [CSI_cs]
       | _ => ()
-    // end of [val]
+    ) : void // end of [val]
 (*
     val () = (prerr "transition_char: st_res = "; prerr_intset st_res; prerr_newline ())
 *)
@@ -441,6 +451,7 @@ fn transition_char {n:nat} {l_csi,l_pos:addr} (
   prval pf = (pf1, pf2, view@ st_res)
   val () = foreach_intset {V} (pf | f, st)
   prval () = (pf1 := pf.0; pf2 := pf.1; view@ st_res := pf.2)
+  val () = cloptr_free (f)
 in
   st_res
 end // end of [transition_char]
@@ -507,7 +518,8 @@ fun accept_one {n:nat} {l_csi:addr}
    A_csi: ptr l_csi, n: int n, st: intset_t): int = let
   var irule = (0: int)
   viewdef V = (array_v (CSI, n, l_csi), int @ irule)
-  fn f (pf: !V | nst: int):<cloptr1> void = let
+  val f = lam
+    (pf: !V | nst: int): void =<cloptr1> let
     prval (pf1, pf2) = pf
     val nst = int1_of_int nst
 (*
@@ -526,8 +538,10 @@ fun accept_one {n:nat} {l_csi:addr}
   end // end of [f]
   prval pf = (pf1, view@ irule)
   val () = foreach_intset {V} (pf | f, st)
+  prval () = pf1 := pf.0; prval () = view@ irule := pf.1
+  val () = cloptr_free (f)
 in
-  pf1 := pf.0; view@ irule := pf.1; irule
+  irule
 end // end of [accept_one]
 
 fun accept_all {n:nat} {l_csi:addr} (
@@ -535,7 +549,9 @@ fun accept_all {n:nat} {l_csi:addr} (
   ) : acclst = let
   var ans: acclst = acclst_nil ()
   viewdef V = (array_v (CSI, n, l_csi), acclst @ ans)
-  fn f (pf: !V | tag: int, st: intset_t):<cloptr1> void = let
+  val f = lam (
+    pf: !V | tag: int, st: intset_t
+  ) : void =<cloptr1> let
     prval (pf1, pf2) = pf
     val irule = accept_one (pf1 | A_csi, n, st)
     val () = if irule > 0 then ans := acclst_cons (tag, irule, ans)
@@ -544,8 +560,10 @@ fun accept_all {n:nat} {l_csi:addr} (
   end // end of [f]
   prval pf = (pf1, view@ ans)
   val () = states_foreach_and_free {V} (pf | f, sts)
+  prval () = pf1 := pf.0; prval () = view@ ans := pf.1
+  val () = cloptr_free (f)
 in
-  pf1 := pf.0; view@ ans := pf.1; ans
+  ans
 end // end of [accept_all]
 
 (* ****** ****** *)
