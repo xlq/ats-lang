@@ -442,22 +442,6 @@ val dir_msg32_len = string_length dir_msg32_str
 
 //
 
-extern fun dirent_name_get (dir: &DIR): Stropt = "dirent_name_get"
-
-%{$
-
-ats_ptr_type dirent_name_get(ats_ptr_type dir) {
-  struct dirent *ent ;
-  ent = readdir((DIR *)dir) ;
-  if (ent) {
-    return atspre_string_make_substring (ent->d_name, 0, strlen(ent->d_name)) ;
-  } else {
-    return (char *)0 ;
-  }
-}  /* end of [dirent_name_get] */ 
-
-%}
-
 (*
 
 dataviewtype entlst = entlst_nil | entlst_cons of (String, entlst)
@@ -501,6 +485,37 @@ and part {l0,l1:addr} (
 // end of [part]
 
 *)
+
+%{$
+ats_ptr_type
+dirent_get_name(ats_ptr_type dir) {
+  struct dirent *ent ;
+  ent = readdir((DIR*)dir) ;
+  if (ent) {
+    return atspre_string_make_substring (ent->d_name, 0, strlen(ent->d_name)) ;
+  } else {
+    return (char*)0 ;
+  }
+}  /* end of [dirent_get_name_get] */ 
+%}
+
+fun dirent_name_get
+  (dir: &DIR): Stropt = let
+  val (pfopt | p_ent) = readdir (dir)
+in
+  if p_ent > null then let
+    prval Some_v @(pf, fpf) = pfopt
+    val (fpf_str | str) = dirent_get_d_name (!p_ent)
+    val str1 = strptr_dup (str)
+    prval () = fpf_str (str)
+    prval () = fpf (pf)
+    val str1 = string1_of_strptr (str1)
+  in
+    stropt_some (str1)
+  end else let
+    prval None_v () = pfopt in stropt_none
+  end // end of [if]
+end // end of [dirent_name_get]
 
 viewtypedef entlst = List_vt (String)
 #define entlst_nil list_vt_nil; #define entlst_cons list_vt_cons
@@ -603,7 +618,7 @@ in
     val () = closedir_exn (pf_dir | p_dir)
   in
     directory_send_loop (pf_conn | fd, dirname, ents)
-  end
+  end (* end of [if] *)
 end // end of [directory_send]
 
 (* ****** ****** *)
@@ -628,7 +643,9 @@ extern fun main_loop_get {fd:int} {n:nat} {l_buf:addr} (
   | fd: int fd, buf: ptr l_buf, msg: string n, n: size_t n
   ) : void
 
-implement main_loop_get (pf_conn, pf_buf | fd, buf, msg, n) = let
+implement
+main_loop_get
+  (pf_conn, pf_buf | fd, buf, msg, n) = let
 (*
   val () = printf ("main_loop_get: msg = %s\n", @(msg))
 *)

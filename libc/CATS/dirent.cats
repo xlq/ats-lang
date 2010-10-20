@@ -53,36 +53,30 @@ typedef DIR ats_DIR_type ;
 typedef struct dirent ats_dirent_type ;
 
 /* ****** ****** */
-
-// implemented in [prelude/DATS/basics.dats]
-extern ats_void_type
-ats_exit_errmsg(ats_int_type n, ats_ptr_type msg) ;
-
-// implemented in [prelude/CATS/printf.cats]
-extern ats_void_type
-atspre_exit_prerrf(ats_int_type code, ats_ptr_type fmt, ...) ;
+//
+// HX: implemented in [prelude/DATS/basics.dats]
+//
+extern
+ats_void_type
+ats_exit_errmsg
+  (ats_int_type n, ats_ptr_type msg) ;
+// end of [ats_exit_errmsg]
+//
+// HX: implemented in [prelude/CATS/printf.cats]
+//
+extern
+ats_void_type
+atspre_exit_prerrf
+  (ats_int_type code, ats_ptr_type fmt, ...) ;
+// end of [atspre_exit_prerrf]
 
 /* ****** ****** */
 
 ATSinline()
 ats_ptr_type
-atslib_dirent_d_name_get
+atslib_dirent_get_d_name
   (ats_ptr_type dir) { return ((ats_dirent_type*)dir)->d_name ; }
-// end of [atslib_dirent_d_name_get]
-
-/* ****** ****** */
-
-#define atslib_closedir_err closedir
-
-ATSinline()
-ats_void_type
-atslib_closedir_exn (ats_ptr_type dir) {
-  int err = closedir (dir) ; if (err < 0) {
-    perror ("closedir") ;
-    ats_exit_errmsg (errno, "Exit: [closedir] failed.\n") ;
-  }
-  return ;
-} /* end of [atslib_closedir_exn] */
+// end of [atslib_dirent_get_d_name]
 
 /* ****** ****** */
 
@@ -93,10 +87,24 @@ ats_ptr_type
 atslib_opendir_exn (ats_ref_type path) {
   DIR* ret = opendir (path) ; if (!ret) {
     perror ("opendir") ;
-    atspre_exit_prerrf (errno, "Exit: [opendir(%s)] failed.\n", path) ;
-  }
+    atspre_exit_prerrf (errno, "exit(ATS): [opendir(%s)] failed.\n", path) ;
+  } // end of [if]
   return ret ;
 } /* end of [atslib_opendir_exn] */
+
+/* ****** ****** */
+
+#define atslib_closedir_err closedir
+
+ATSinline()
+ats_void_type
+atslib_closedir_exn (ats_ptr_type dir) {
+  int err = closedir (dir) ; if (err < 0) {
+    perror ("closedir") ;
+    ats_exit_errmsg (errno, "exit(ATS): [closedir] failed.\n") ;
+  } // end of [if]
+  return ;
+} /* end of [atslib_closedir_exn] */
 
 /* ****** ****** */
 

@@ -18,14 +18,12 @@ staload _(*anonymous*) = "prelude/DATS/lazy_vt.dats"
 (* ****** ****** *)
 
 %{^
-
-static inline
+ATSinline()
 ats_void_type
 print_dirent_d_name (ats_ref_type p_ent) {
   printf (((ats_dirent_type*)p_ent)->d_name) ; return ;
 } // end of [print_dirent_d_name]
-
-%}
+%} // end of [%{^]
 
 extern
 fun print_dirent_d_name
@@ -45,7 +43,6 @@ end // end of [print_direntptr]
 (* ****** ****** *)
 
 %{^
-
 static inline
 ats_int_type
 compare_direntptr_direntptr (ats_ref_type p1, ats_ref_type p2) {
@@ -53,12 +50,12 @@ compare_direntptr_direntptr (ats_ref_type p1, ats_ref_type p2) {
     (*((ats_dirent_type**)p1))->d_name, (*((ats_dirent_type**)p2))->d_name
   ) ; // end of [return]
 } // end of [print_dirent_d_name]
+%} // end of [%{^]
 
-%}
-
-extern fun compare_direntptr_direntptr
-  (p1: &direntptr_gc, p2: &direntptr_gc):<> int
-  = "compare_direntptr_direntptr"
+extern
+fun compare_direntptr_direntptr
+  (p1: &direntptr_gc, p2: &direntptr_gc):<> int = "compare_direntptr_direntptr"
+// end of [compare_direntptr_direntptr]
 
 (* ****** ****** *)
 

@@ -364,6 +364,14 @@ atspre_stropt_is_some
 
 /* ****** ****** */
 
+#define atspre_stropt_gc_none() ((ats_ptr_type)0)
+
+ATSinline()
+ats_void_type
+atspre_stropt_gc_unnone (ats_ptr_type x) { return ; }
+
+/* ****** ****** */
+
 #define atspre_strptr_null() ((ats_ptr_type)0)
 
 ATSinline()

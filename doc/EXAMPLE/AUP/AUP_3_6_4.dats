@@ -9,6 +9,10 @@
 //
 (* ****** ****** *)
 
+staload UNSAFE = "prelude/SATS/unsafe.sats"
+
+(* ****** ****** *)
+
 staload "libc/sys/SATS/stat.sats"
 staload "libc/sys/SATS/types.sats"
 
@@ -61,18 +65,18 @@ fun loop_dir (
   ) : int = case+ !ents of
   | ~stream_vt_cons (ent, ents) => let
       var ent = ent
-      val d_name = dirent_d_name_get (ent)
+      val [l:addr] (fpf_d_name | d_name) = dirent_get_d_name (ent)
+      viewtypedef VT = strptr(l)
       var stat_entry: stat? // uninitialized
-      val rtn = lstat_err (d_name, stat_entry)
-    in
-      if rtn >= 0 then let
+      val rtn = lstat_err ($UNSAFE.castvwtp{string}{VT}(d_name), stat_entry)
+      val res = if rtn >= 0 then let
         prval () = opt_unsome (stat_entry)
       in
         case+ 0 of
         | _ when SAME_INODE (stat, stat_entry) => let
             val () = ~ents
             val () = if nent > 0 then push_pathlist (lstrs, "/")
-            val () = push_pathlist (lstrs, d_name)
+            val () = push_pathlist (lstrs, $UNSAFE.castvwtp{string}{VT}(d_name))
           in  
             1 // the entry for the current directory is found
           end // end of [_ when ...]  
@@ -83,6 +87,9 @@ fun loop_dir (
       in
         0 (* error *)
       end // end of [if]
+      prval () = fpf_d_name (d_name)
+    in
+      res
     end (* end of [stream_vt_cons] *)
    | ~stream_vt_nil () => 0 (* error *)
 // end of [loop_dir]

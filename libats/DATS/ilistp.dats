@@ -54,7 +54,7 @@ length_istot
   prfun istot {xs:ilist} .<xs>.
     (): [n:nat] LENGTH (xs, n) =
     scase xs of
-    | ilist_cons (x, xs) => LENGTHcons (length_istot {xs} ())
+    | ilist_cons (x, xs) => LENGTHcons (istot {xs} ())
     | ilist_nil () => LENGTHnil ()
   // end of [prfun]
 } // end of [length_istot]

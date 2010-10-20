@@ -151,7 +151,7 @@ fannkuch_v
 
 viewtypedef
 lock (l_a:addr, l_C:addr, l_P:addr, l_S:addr) =
-  uplock (1, fannkuch_v (l_a, l_C, l_P, l_S))
+  uplock (fannkuch_v (l_a, l_C, l_P, l_S))
 
 viewtypedef
 ticket (l_a:addr, l_C:addr, l_P:addr, l_S:addr) =
@@ -195,7 +195,7 @@ fun fannkuch_locklst_gen (sz: int): locklst = let
       val [l_P:addr] (pf_P | p_P) = intarr_make (sz+1)
       val [l_S:addr] (pf_S | p_S) = intarr_make (sz)
       viewdef V = fannkuch_v (l_a, l_C, l_P, l_S)
-      val lock =  pthread_uplock_create {V} ()
+      val lock =  pthread_uplock_create ()
       val tick = pthread_upticket_create {V} (lock)
       val () = pthread_create_detached_cloptr (
          lam () =<lin,cloptr1> fannkuch_worker
@@ -219,7 +219,7 @@ fun fannkuch_locklst_free
   (locks: locklst): int = loop (locks, 0) where {
   fun loop (locks: locklst, max: int): int = case+ locks of
     | ~locklst_cons (p_a, p_C, p_P, p_S, lock, locks) => let
-        val (pf | ()) = pthread_uplock_download (lock)
+        val (pf | ()) = pthread_uplock_download_and_destroy (lock)
         prval pf_a = pf.0
         val ans = !p_a
         val () = int_free (pf_a | p_a)

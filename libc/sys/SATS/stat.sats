@@ -137,23 +137,23 @@ fun isfdtype {fd:nat}
 (* ****** ****** *)
 
 fun chmod_err (path: string, mode: mode_t): int
-  = "#atslib_chmod_err" // !macro
+  = "#atslib_chmod_err" // macro!
 fun chmod_exn (path: string, mode: mode_t): void
-  = "atslib_chmod_exn" // !function
+  = "atslib_chmod_exn" // function!
 
 (* ****** ****** *)
 
 fun mkdir_err (path: string, mode: mode_t): int
-  = "#atslib_mkdir_err" // !macro
+  = "#atslib_mkdir_err" // macro!
 fun mkdir_exn (path: string, mode: mode_t): void
-  = "atslib_mkdir_exn" // !function
+  = "atslib_mkdir_exn" // function!
 
 (* ****** ****** *)
 
 fun stat_err (
     name: string, st: &stat? >> opt (stat, i==0)
   ) : #[i:int | i <= 0] int i
-  = "#atslib_stat_err" // !macro
+  = "#atslib_stat_err" // macro!
 fun stat_exn
   (name: string, st: &stat? >> stat): void = "atslib_stat_exn"
 // end of [stat_exn]
@@ -161,7 +161,7 @@ fun stat_exn
 fun fstat_err {fd:nat} (
     fd: int fd, st: &stat? >> opt (stat, i==0)
   ) : #[i:int | i <= 0] int i
-  = "#atslib_fstat_err" // !macro
+  = "#atslib_fstat_err" // macro!
 fun fstat_exn {fd:nat}
   (fd: int fd, st: &stat? >> stat): void = "atslib_fstat_exn"
 // end of [fstat_exn]
@@ -169,7 +169,7 @@ fun fstat_exn {fd:nat}
 fun lstat_err (
     name: string, st: &stat? >> opt (stat, i==0)
   ) : #[i:int | i <= 0] int i
-  = "#atslib_lstat_err" // !macro
+  = "#atslib_lstat_err" // macro!
 fun lstat_exn
   (name: string, buf: &stat? >> stat): void = "atslib_lstat_exn"
 // end of [lstat_exn]

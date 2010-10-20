@@ -38,6 +38,8 @@ libc_DATS:: ; scp $(ATSHOME)/libc/DATS/*.dats \
 libc_CATS:: ; scp $(ATSHOME)/libc/CATS/*.cats \
   ats-hwxi@web.sourceforge.net:/home/groups/a/at/ats-lang/htdocs/IMPLEMENTATION/Anairiats/ATS/libc/CATS
 
+######
+
 libc_sys:: libc_sys_SATS libc_sys_DATS libc_sys_CATS
 
 libc_sys_SATS:: ; scp $(ATSHOME)/libc/sys/SATS/*.sats \
@@ -49,6 +51,8 @@ libc_sys_DATS:: ; scp $(ATSHOME)/libc/sys/DATS/*.dats \
 libc_sys_CATS:: ; scp $(ATSHOME)/libc/sys/CATS/*.cats \
   ats-hwxi@web.sourceforge.net:/home/groups/a/at/ats-lang/htdocs/IMPLEMENTATION/Anairiats/ATS/libc/sys/CATS
 
+######
+
 libc_arpa:: libc_arpa_SATS libc_arpa_DATS libc_arpa_CATS
 
 libc_arpa_SATS:: ; scp $(ATSHOME)/libc/arpa/SATS/*.sats \
@@ -59,6 +63,8 @@ libc_arpa_DATS:: ; scp $(ATSHOME)/libc/arpa/DATS/*.dats \
 
 libc_arpa_CATS:: ; scp $(ATSHOME)/libc/arpa/CATS/*.cats \
   ats-hwxi@web.sourceforge.net:/home/groups/a/at/ats-lang/htdocs/IMPLEMENTATION/Anairiats/ATS/libc/arpa/CATS
+
+######
 
 libc_netinet:: libc_netinet_SATS libc_netinet_DATS libc_netinet_CATS
 

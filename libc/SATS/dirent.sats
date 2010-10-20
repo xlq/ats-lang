@@ -54,17 +54,10 @@ typedef dirent = dirent_t0ype
 
 (* ****** ****** *)
 
-fun dirent_d_name_get
-  (ent: &dirent): string = "atslib_dirent_d_name_get"
-// end of [dirent_d_name_get]
-
-(* ****** ****** *)
-
-fun closedir_err {l_dir:addr} (pf: DIR @ l_dir | p: ptr l_dir):<> int
-  = "#atslib_closedir_err" // macro!
-
-fun closedir_exn {l_dir:addr} (pf: DIR @ l_dir | p: ptr l_dir):<!exn> void
-  = "atslib_closedir_exn" // function!
+fun dirent_get_d_name
+  (ent: &dirent): [l:agz] (strptr l -<lin,prf> void | strptr l)
+  = "atslib_dirent_get_d_name"
+// end of [dirent_get_d_name]
 
 (* ****** ****** *)
 
@@ -75,6 +68,14 @@ fun opendir_err (s: string)
 fun opendir_exn (s: string)
   : [l_dir:addr] (DIR @ l_dir | ptr l_dir) = "atslib_opendir_exn"
 // end of [opendir_exn] // function!
+
+(* ****** ****** *)
+
+fun closedir_err {l_dir:addr} (pf: DIR @ l_dir | p: ptr l_dir):<> int
+  = "#atslib_closedir_err" // macro!
+
+fun closedir_exn {l_dir:addr} (pf: DIR @ l_dir | p: ptr l_dir):<!exn> void
+  = "atslib_closedir_exn" // function!
 
 (* ****** ****** *)
 

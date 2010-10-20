@@ -463,24 +463,6 @@ filename_extract (ats_ptr_type msg, ats_size_type n) {
 
 (* ****** ****** *)
 
-%{^
-
-extern ats_ptr_type
-atspre_string_make_substring
-  (ats_ptr_type p0, ats_size_type st, ats_size_type ln);
-
-ats_ptr_type dirent_name_get (ats_ptr_type dir) {
-  struct dirent *ent ;
-  ent = readdir((DIR *)dir) ;
-  if (ent) {
-    return atspre_string_make_substring (ent->d_name, 0, strlen(ent->d_name)) ;
-  } else {
-    return (char*)0 ;
-  }
-}  /* end of [dirent_name_get] */ 
-
-%}
-
 (*
 
 dataview strbufopt_v (int, int, addr) =
@@ -493,7 +475,26 @@ viewtypedef strbufoptptr_gc
 
 *)
 
-extern fun dirent_name_get (dir: &DIR): Stropt_gc = "dirent_name_get"
+extern
+fun dirent_name_get
+  (dir: &DIR): Stropt_gc = "dirent_name_get"
+implement
+dirent_name_get (dir) = let
+  val (pfopt | p_ent) = readdir (dir)
+in
+  if p_ent > null then let
+    prval Some_v @(pf, fpf) = pfopt
+    val (fpf_str | str) = dirent_get_d_name (!p_ent)
+    val str1 = strptr_dup (str)
+    prval () = fpf_str (str)
+    prval () = fpf (pf)
+    val strbuf = strbuf_of_strptr (str1)
+  in
+    stropt_gc_some (strbuf)
+  end else let
+    prval None_v () = pfopt in stropt_gc_none ()
+  end // end of [if]
+end // end of [dirent_name_get]
 
 (* ****** ****** *)
 

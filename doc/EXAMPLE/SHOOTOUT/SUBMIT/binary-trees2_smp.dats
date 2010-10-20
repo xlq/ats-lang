@@ -91,7 +91,7 @@ extern fun int_free {l:addr} (pf: int @ l | p: ptr l): void = "int_free"
 viewdef int3_v
   (l_n:addr, l_d:addr, l_c:addr) = @(int @ l_n, int @ l_d, int @ l_c)
 viewtypedef lock
-  (l_n:addr, l_d:addr, l_c:addr) = uplock (1, int3_v (l_n, l_d, l_c))
+  (l_n:addr, l_d:addr, l_c:addr) = uplock (int3_v (l_n, l_d, l_c))
 viewtypedef ticket
   (l_n:addr, l_d:addr, l_c:addr) = upticket (int3_v (l_n, l_d, l_c))
 
@@ -139,7 +139,7 @@ fun loop_depths
     val [l_d:addr] (pf_d | p_d) = int_make ()
     val [l_c:addr] (pf_c | p_c) = int_make ()
     viewdef V = @(int @ l_n, int @ l_d, int @ l_c)
-    val lock = pthread_uplock_create {V} ()
+    val lock = pthread_uplock_create ()
     val tick = pthread_upticket_create {V} (lock)
     val () =
       pthread_create_detached_cloptr (f) where {
@@ -158,7 +158,7 @@ fun loop_depths
 
 fun finishup (locks: locklst): void = case+ locks of
   | ~locklst_cons (p_n, p_d, p_c, lock, locks) => let
-      val (pf | ()) = pthread_uplock_download (lock)
+      val (pf | ()) = pthread_uplock_download_and_destroy (lock)
       prval pf_n = pf.0 and pf_d = pf.1 and pf_c = pf.2
       val () = printf (
         "%i\t trees of depth %i\t check: %i\n", @(2 * !p_n, !p_d, !p_c)

@@ -657,10 +657,17 @@ fun stropt_is_some {i:int} (stropt: stropt i):<> bool (i >= 0)
 
 absviewtype stropt_gc (m:int, n:int)
 
+(*
 castfn stropt_gc_none
   (_: ptr null): stropt_gc (0, 0)
 castfn stropt_gc_unnone
   {n:int} (x: stropt_gc (0, n)):<> ptr (null)
+*)
+fun stropt_gc_none
+  ():<> stropt_gc (0, 0) = "#atspre_stropt_gc_none"
+fun stropt_gc_unnone {n:int}
+  (x: stropt_gc (0, n)):<> void = "#atspre_stropt_gc_unnone"
+// end of [stropt_gc_unnone]
 
 castfn stropt_gc_some
   {m,n:nat} {l:addr} (x: strbufptr_gc (m,n,l))
