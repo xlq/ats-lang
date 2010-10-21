@@ -160,4 +160,4 @@ fun line_stream_vt_make_file {m:file_mode} {l:addr}
 #print "Loading [file.sats] finishes!\n"
 #endif // end of [VERBOSE_PRELUDE]
 
-(* end of [file.sats] *)
+(* end of [filebas.sats] *)

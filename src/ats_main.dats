@@ -319,38 +319,56 @@ fn prelude_load (ATSHOME: string): void = let
 //
   val () = pervasive_load (ATSHOME, "prelude/SATS/extern.sats") // for building external API's
 //
-  val () = pervasive_load (ATSHOME, "prelude/SATS/file.sats")
+  val () = pervasive_load (ATSHOME, "prelude/SATS/filebas.sats")
+//
   val () = pervasive_load (ATSHOME, "prelude/SATS/float.sats")
+//
   val () = pervasive_load (ATSHOME, "prelude/SATS/integer.sats")
   val () = pervasive_load (ATSHOME, "prelude/SATS/integer_fixed.sats")
   val () = pervasive_load (ATSHOME, "prelude/SATS/integer_ptr.sats")
+//
   val () = pervasive_load (ATSHOME, "prelude/SATS/lazy.sats")
   val () = pervasive_load (ATSHOME, "prelude/SATS/lazy_vt.sats")
+//
   val () = pervasive_load (ATSHOME, "prelude/SATS/memory.sats")
+//
   val () = pervasive_load (ATSHOME, "prelude/SATS/pointer.sats")
+//
   val () = pervasive_load (ATSHOME, "prelude/SATS/printf.sats")
+//
   val () = pervasive_load (ATSHOME, "prelude/SATS/reference.sats")
+//
   val () = pervasive_load (ATSHOME, "prelude/SATS/sizetype.sats")
+//
   val () = pervasive_load (ATSHOME, "prelude/SATS/string.sats")
+//
 (*
 ** these are here because they are so commonly needed
 *)
   val () = pervasive_load (ATSHOME, "prelude/SATS/array.sats")
   val () = pervasive_load (ATSHOME, "prelude/SATS/array0.sats")
+//
   val () = pervasive_load (ATSHOME, "prelude/SATS/list.sats")
   val () = pervasive_load (ATSHOME, "prelude/SATS/list0.sats")
   val () = pervasive_load (ATSHOME, "prelude/SATS/list_vt.sats")
+//
   val () = pervasive_load (ATSHOME, "prelude/SATS/matrix.sats")
   val () = pervasive_load (ATSHOME, "prelude/SATS/matrix0.sats")
+//
   val () = pervasive_load (ATSHOME, "prelude/SATS/option.sats")
   val () = pervasive_load (ATSHOME, "prelude/SATS/option0.sats")
+//
   val () = pervasive_load (ATSHOME, "prelude/SATS/ptrarr.sats")
+//
 (*
   // HX-2010-04-09: is this a good idea?
   val () = pervasive_load (ATSHOME, "prelude/SATS/prelude_finish.sats") // miscellaneous
 *)
+//
   val () = $TransEnv2.trans2_env_pervasive_add_topenv ()
-  val () = $TransEnv3.trans3_env_initialize ()
+//
+  val () = $TransEnv3.trans3_env_initialize () // initializing the environment for trans3
+//
 in
   // empty
 end // end of [prelude_load]

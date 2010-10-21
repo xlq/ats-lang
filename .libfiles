@@ -23,17 +23,19 @@ prelude/basics_sta.sats
 prelude/basics_dyn.sats
 prelude/ats_main_prelude.dats
 
-/* prelude files */
+/* ****** ****** */
+
+/* PRELUDE files */
+
+/* ****** ****** */
 
 /* primary */
 prelude/DATS/basics.dats
 
 prelude/SATS/extern.sats /* for building external API's */
 
-/*
-prelude/SATS/file.sats -> libats/SATS/filebas.sats
-prelude/DATS/file.dats -> libats/SATS/filebas.dats
-*/
+prelude/SATS/filebas.sats
+prelude/DATS/filebas.dats
 
 prelude/DATS/float.dats
 prelude/DATS/integer.dats
@@ -92,7 +94,9 @@ prelude/DATS/unsafe.dats
 
 /* ****** ****** */
 
-/* libc files */
+/* LIBC files */
+
+/* ****** ****** */
 
 #ifdef HAVE_COMPLEX_H
 libc/SATS/complex.sats
@@ -206,11 +210,9 @@ libc/dynloadall.dats
 
 /* ****** ****** */
 
-/* libats files */
+/* LIBATS files */
 
-/* A basic I/O interface */
-libats/SATS/filebas.sats
-libats/DATS/filebas.dats
+/* ****** ****** */
 
 /* FORTRAN matrix: column-major */
 libats/SATS/fmatrix.sats

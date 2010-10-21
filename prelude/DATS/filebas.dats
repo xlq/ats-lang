@@ -48,17 +48,17 @@
 
 (* ****** ****** *)
 
-staload "prelude/SATS/file.sats"
+staload "prelude/SATS/filebas.sats"
 
 (* ****** ****** *)
 
 (*
-
-// implemented in [prelude/DATS/basics.dats]
+//
+// HX: implemented in [prelude/DATS/basics.dats]
+//
 implement file_mode_lte_r_r = file_mode_lte_refl {r} ()
 implement file_mode_lte_w_w = file_mode_lte_refl {w} ()
 implement file_mode_lte_rw_rw = file_mode_lte_refl {rw} ()
-
 *)
 
 (* ****** ****** *)
@@ -298,4 +298,4 @@ atspre_test_file_isdir
 
 (* ****** ****** *)
 
-(* end of [file.dats] *)
+(* end of [filebas.dats] *)

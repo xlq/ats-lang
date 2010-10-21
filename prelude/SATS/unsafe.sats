@@ -9,7 +9,7 @@
 (*
 ** ATS - Unleashing the Potential of Types!
 **
-** Copyright (C) 2002-2009 Hongwei Xi, Boston University
+** Copyright (C) 2002-2010 Hongwei Xi, Boston University
 **
 ** All rights reserved
 **
@@ -36,7 +36,9 @@
 //
 (* ****** ****** *)
 //
-// HX: these unsafe features must be used with caution!!!
+// HX:
+// For safety, [unsafe.sats] should not be loaded automatically.
+// The unsafe functions declared here must be used with caution!!!
 //
 (* ****** ****** *)
 
