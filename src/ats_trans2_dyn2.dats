@@ -1121,7 +1121,8 @@ implement overload_d2eclst_tr (d2cs) =
 
 (* ****** ****** *)
 
-implement d1ec_tr (d1c0) = begin
+implement
+d1ec_tr (d1c0) = begin
   case+ d1c0.d1ec_node of
   | D1Cnone () => d2ec_none (d1c0.d1ec_loc)
   | D1Clist d1cs => begin

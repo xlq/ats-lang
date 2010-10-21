@@ -53,6 +53,7 @@ typedef sym_t = $Sym.symbol_t
 
 fun the_e1xpenv_add (id: sym_t, _: e1xp): void
 fun the_e1xpenv_find (id: sym_t): Option_vt e1xp
+fun the_e1xpenv_pervasive_add_topenv (): void
 
 (* ****** ******* *)
 

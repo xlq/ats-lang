@@ -42,6 +42,9 @@ typedef struct sllist_struct {
 } *sllist ;
 </pre>
 where <i>VT</i> refers to some type in C.
+<P>
+We now assume that <i>nil</i> and <i>cons</i> have been introduced as
+shorthands for <i>list_vt_nil</i> and <i>list_vt_cons</i>, respectively.
 
 <H4>Computing the length of a singly-linked list</H4>
 The following code implements a function that computes the length
@@ -68,7 +71,7 @@ following function <i>sllist_length</i> implemented in C:
 <pre>
 int sllist_length (sllist xs) {
   int i = 0 ;
-  while (!xs) { i += 1 ; xs = xs->tail ; }
+  while (xs != NULL) { i += 1 ; xs = xs->tail ; }
   return i ;
 }
 </pre>

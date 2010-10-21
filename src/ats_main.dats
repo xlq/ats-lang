@@ -194,7 +194,10 @@ staload PM = "ats_posmark.sats"
 
 staload "ats_comarg.sats"
 
+staload Loc = "ats_location.sats"
+staload Sym = "ats_symbol.sats"
 staload Syn = "ats_syntax.sats"
+staload SEXP1 = "ats_staexp1.sats"
 staload DEXP1 = "ats_dynexp1.sats"
 staload DEXP2 = "ats_dynexp2.sats"
 staload DEXP3 = "ats_dynexp3.sats"
@@ -255,6 +258,12 @@ end // end of [atsopt_version]
 
 (* ****** ****** *)
 
+fn e1xpenv_load () = () where {
+  val () = $TransEnv1.the_e1xpenv_pervasive_add_topenv ()
+} // end of [e1xpenv_load]
+
+(* ****** ****** *)
+
 // load in built-in fixity declarations
 fn fixity_load (ATSHOME: string): void = let
   val basename = "prelude/fixity.ats"
@@ -298,7 +307,11 @@ in
 end // end of [pervasive_load]
 
 fn prelude_load (ATSHOME: string): void = let
+//
+  val () = e1xpenv_load ()
+//
   val () = fixity_load (ATSHOME)
+//
   val () = pervasive_load (ATSHOME, "prelude/basics_sta.sats")
   val () = pervasive_load (ATSHOME, "prelude/sortdef.sats")
   val () = pervasive_load (ATSHOME, "prelude/basics_dyn.sats")
@@ -658,6 +671,42 @@ extern fun IATS_extract (s: string): Stropt = "atsopt_IATS_extract"
 //
 (* ****** ****** *)
 
+//
+// HX: for processing command-line flag: -DATSXYZ=def or -DATS XYZ=def
+//
+fun process_DATS_def
+  (def: string): void = let
+  val def = string1_of_string (def)
+  #define EQ '='
+  val i = string_index_of_char_from_left (def, EQ)
+in
+  if i >= 0 then let
+    val i = size1_of_ssize1 (i)
+    val part1 = string_make_substring (def, 0, i)
+    val part1 = string_of_strbuf (part1)
+    val n = string1_length (def)
+    val ni = n - (i + 1)
+    val part2 = string_make_substring (def, i+1, ni)
+    val part2 = string_of_strbuf (part2)
+    val sym = $Sym.symbol_make_string (part1)
+    val e1xp = $SEXP1.e1xp_string
+      ($Loc.location_none, part2, (int_of_size)ni)
+  in
+    $TransEnv1.the_e1xpenv_add (sym, e1xp)
+  end else let // EQ is not in [def]
+    val sym = $Sym.symbol_make_string (def)
+    val e1xp = $SEXP1.e1xp_none ($Loc.location_none)
+  in
+    $TransEnv1.the_e1xpenv_add (sym, e1xp)
+  end // end of [if]
+end // end of [process_DATS_def]
+
+(* ****** ****** *)
+
+fun process_IATS_dir (dir: string) = $Fil.the_pathlst_push (dir)
+
+(* ****** ****** *)
+
 implement
 main {n} (argc, argv) = let
 //
@@ -693,13 +742,14 @@ fun loop {i:nat | i <= n} .<i>. (
     | _ when DATS_wait_is_set () => let
         val () = DATS_wait_clear ()
         val COMARGkey (_(*n*), def) = arg
+        val () = process_DATS_def (def)
       in
         loop (ATSHOME, argv, param, arglst)
       end // end of [_ when ...]
     | _ when IATS_wait_is_set () => let
         val () = IATS_wait_clear ()
         val COMARGkey (_(*n*), dir) = arg
-        val () = $Fil.the_pathlst_push dir
+        val () = process_IATS_dir (dir)
       in
         loop (ATSHOME, argv, param, arglst)
       end // end of [_ when ...]
@@ -735,11 +785,16 @@ fun loop {i:nat | i <= n} .<i>. (
              ) // end of ["-dep2"]
           | _ when is_DATS_flag str => let
               val def = DATS_extract (str) in
+              if stropt_is_some def then begin
+                process_DATS_def (stropt_unsome def)
+              end else begin
+                DATS_wait_set ()
+              end // end of [if]
             end (* end of [_ when ...] *)
           | _ when is_IATS_flag str => let
               val dir = IATS_extract (str) in
               if stropt_is_some dir then begin
-                $Fil.the_pathlst_push (stropt_unsome dir)
+                process_IATS_dir (stropt_unsome dir)
               end else begin
                 IATS_wait_set ()
               end // end of [if]

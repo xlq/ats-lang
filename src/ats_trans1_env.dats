@@ -85,15 +85,27 @@ in
   $SymEnv.symenv_insert_fst (the_e1xpenv, opr, e1xp)
 end // end of [the_e1xpenv_add]
 
-implement the_e1xpenv_find (opr) = let
+implement the_e1xpenv_find (id) = let
 (*
   val () = begin
-    print "e1xp_find: opr = "; print opr; print_newline ()
+    print "e1xp_find: id = "; print id; print_newline ()
   end // end of [val]
 *)
+  val ans = $SymEnv.symenv_search_all (the_e1xpenv, id)
 in
-  $SymEnv.symenv_search_all (the_e1xpenv, opr)
+  case+ ans of
+  | Some_vt _ => (fold@ ans; ans)
+  | ~None_vt () => begin
+      $SymEnv.symenv_pervasive_search (the_e1xpenv, id)
+    end // end of [None_vt]
 end // end of [the_e1xpenv_find]
+
+implement
+the_e1xpenv_pervasive_add_topenv () = let
+  val m = $SymEnv.symenv_top_get (the_e1xpenv)
+in
+  $SymEnv.symenv_pervasive_add (the_e1xpenv, m)
+end // end of [e1xpenv_pervasive_add_topenv]
 
 (* ****** ****** *)
 
@@ -101,7 +113,8 @@ typedef fxtyenv = symenv_t (fxty_t)
 
 val the_fxtyenv = $SymEnv.symenv_make {fxty_t} ()
 
-implement the_fxtyenv_add (opr, fxty) = let
+implement
+the_fxtyenv_add (opr, fxty) = let
   val ans = $SymEnv.symenv_remove_fst (the_fxtyenv, opr)
   val () =
     case+ ans of ~Some_vt _ => () | ~None_vt () => ()
@@ -110,17 +123,19 @@ in
   $SymEnv.symenv_insert_fst (the_fxtyenv, opr, fxty)
 end // end of [the_fxtyenv_add]
 
-implement the_fxtyenv_find (opr) = let
+implement
+the_fxtyenv_find (opr) = let
   val ans = $SymEnv.symenv_search_all (the_fxtyenv, opr)
 in
   case+ ans of
+  | Some_vt _ => (fold@ ans; ans)
   | ~None_vt () => begin
       $SymEnv.symenv_pervasive_search (the_fxtyenv, opr)
-    end
-  | Some_vt _ => (fold@ ans; ans)
+    end // end of [None_v]
 end // end of [the_fxtyenv_find]
 
-implement the_fxtyenv_pervasive_add_topenv () = let
+implement
+the_fxtyenv_pervasive_add_topenv () = let
   val m = $SymEnv.symenv_top_get (the_fxtyenv)
 in
   $SymEnv.symenv_pervasive_add (the_fxtyenv, m)

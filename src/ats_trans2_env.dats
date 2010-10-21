@@ -869,7 +869,8 @@ end // end of [local]
 
 assume trans2_env_token = @(unit_v, unit_v, unit_v)
 
-implement trans2_env_pop (pf | (*none*)) = let
+implement
+trans2_env_pop (pf | (*none*)) = let
   val () = $NS.the_namespace_pop ()
   val () = the_s2rtenv_pop (pf.0 | (*none*))
   val () = the_s2expenv_pop (pf.1 | (*none*))
@@ -878,7 +879,8 @@ in
   // empty
 end // end of [trans2_env_pop]
 
-implement trans2_env_push () = let
+implement
+trans2_env_push () = let
   val () = $NS.the_namespace_push ()
   val (pf0 | ()) = the_s2rtenv_push ()
   val (pf1 | ()) = the_s2expenv_push ()
@@ -887,7 +889,8 @@ in
   (@(pf0, pf1, pf2) | ())
 end // end of [trans2_env_push]
 
-implement trans2_env_localjoin (pf1, pf2 | (*none*)) = let
+implement
+trans2_env_localjoin (pf1, pf2 | (*none*)) = let
   val () = $NS.the_namespace_localjoin ()
   val () = the_s2rtenv_localjoin (pf1.0, pf2.0 | (*none*))
   val () = the_s2expenv_localjoin (pf1.1, pf2.1 | (*none*))
@@ -896,33 +899,38 @@ in
   // empty
 end // end of [trans2_env_localjoin]
 
-implement trans2_env_save () = () where {
+implement
+trans2_env_save () = () where {
   val () = $NS.the_namespace_save ()
   val () = the_s2rtenv_save ()
   val () = the_s2expenv_save ()
   val () = the_d2expenv_save ()
 } // end of [trans2_env_save]
 
-implement trans2_env_restore () = () where {
+implement
+trans2_env_restore () = () where {
   val () = $NS.the_namespace_restore ()
   val () = the_s2rtenv_restore ()
   val () = the_s2expenv_restore ()
   val () = the_d2expenv_restore ()
 } // end of [trans2_env_restore]
 
-implement trans2_env_pervasive_add_topenv () = () where {
+implement
+trans2_env_pervasive_add_topenv () = () where {
   val () = the_s2rtenv_pervasive_add_topenv ()
   val () = the_s2expenv_pervasive_add_topenv ()
   val () = the_d2expenv_pervasive_add_topenv ()
 } // end of [trans2_env_pervasive_add_topenv]
 
-implement trans2_env_namespace_add_topenv (id) = () where {
+implement
+trans2_env_namespace_add_topenv (id) = () where {
   val () = the_s2rtenv_namespace_add_topenv (id)
   val () = the_s2expenv_namespace_add_topenv (id)
   val () = the_d2expenv_namespace_add_topenv (id)
 } // end of [trans2_env_namespace_add_topenv]
 
-implement trans2_env_initialize () = begin
+implement
+trans2_env_initialize () = begin
   // sort environment
   the_s2rtenv_add ($Sym.symbol_ADDR, S2TEsrt s2rt_addr);
   the_s2rtenv_add ($Sym.symbol_BOOL, S2TEsrt s2rt_bool);
