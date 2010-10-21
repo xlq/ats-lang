@@ -103,13 +103,14 @@ end // end of [envmap_find]
 implement cloenv_make_dynctx (ctx) = let
   viewtypedef map_vt = $Map.map_vt (d2var_t, valprim)
   var res: map_vt = $Map.map_make {d2var_t, valprim} (compare_d2var_d2var)
-  fn f (pf: !map_vt @ res | d2v: d2var_t, vp: valprim, p_res: !ptr res): void =
+  typedef ptrres = ptr (res)
+  fn f (pf: !map_vt @ res | d2v: d2var_t, vp: valprim, p_res: !ptrres): void =
     if d2var_lev_get (d2v) > 0 then begin
       // [d2v] is recorded only if it is not at the top level
       $Map.map_insert (!p_res, d2v, vp)
     end // end of [if]
   // end of [f]
-  val () = dynctx_foreach_main {map_vt @ res} (view@ res | ctx, f, &res)
+  val () = dynctx_foreach_main {map_vt@res} {ptrres} (view@ res | ctx, f, &res)
 in
   ref_make_elt<map_vt> (res)
 end // end of [cloenv_make_dynctx]

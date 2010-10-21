@@ -717,18 +717,19 @@ the_d2varset_env_find_view (s2e0) = let
     case+ d2var_typ_get d2v of
     | Some s2e => begin
         if s2exp_syneq (env, s2e) then $raise Found (d2v) else ()
-      end
+      end // end of [Some]
     | None => () // this happens if [d2v] is linear and consumed
   end // end of [f]
-  fun loop (pf: !unit_v | ld2vsitems: ld2vsitemlst, env: !env_t)
-    : void = begin case+ ld2vsitems of
+  fun loop (
+      pf: !unit_v | ld2vsitems: ld2vsitemlst, env: !env_t
+    ) : void = begin case+ ld2vsitems of
     | list_cons (ld2vsitem, ld2vsitems) => let
         val () = (case+ ld2vsitem of
           | LD2VSITEMlam () => $raise NotFound ()
           | LD2VSITEMllam _(*r_d2vs*) => () // continue search
           | LD2VSITEMset dvs => begin
               d2varset_foreach_main {unit_v} {env_t} (pf | dvs, f, env)
-            end
+            end // end of [LD2VSITEMset]
         ) : void
       in
         loop (pf | ld2vsitems, env)
@@ -740,7 +741,7 @@ in
     prval pf = unit_v ()
     val () = begin
       d2varset_foreach_main {unit_v} {env_t} (pf | !the_ld2vs, f, env)
-    end
+    end // end of [val]
     val () = loop (pf | !the_ld2vsitems, env)
     prval unit_v () = pf
   in

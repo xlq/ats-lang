@@ -30,12 +30,13 @@
 *)
 
 (* ****** ****** *)
-
+//
 // Author: Hongwei Xi (hwxi AT cs DOT bu DOT edu)
 // Time: Summer 2007
-
+//
 (* ****** ****** *)
 
+staload "libc/SATS/stdlib.sats"
 staload "libc/SATS/unistd.sats"
 staload "libc/sys/SATS/wait.sats"
 
@@ -46,10 +47,10 @@ staload "top.sats"
 (* ****** ****** *)
 
 val () = assert_prerrf_bool (
-  file_is_exec atsopt_global,
-  "The file [%s] is not executable.\n",
-  @(atsopt_global)
-)
+  file_is_exec atsopt_global
+, "The file [%s] is not executable.\n"
+, @(atsopt_global)
+) // end of [val]
 
 fn print_usage_of_ccomp_file (): void =
   print ("Usage: ccomp_file [infile] -output=[outfile]\n")
@@ -57,9 +58,10 @@ fn print_usage_of_ccomp_file (): void =
 
 (* ****** ****** *)
 
-extern fun typecheck_file_exec
-  (flag_stadyn: int, param_rev: Strlst, s: string): void
-  = "typecheck_file_exec"
+extern
+fun typecheck_file_exec (
+  flag_stadyn: int, param_rev: Strlst, s: string
+) : void = "typecheck_file_exec"
 
 implement typecheck_file
   (flag_stadyn, param_rev, infile) = () where {
@@ -75,7 +77,7 @@ implement typecheck_file
     // end of [if]
   end // end of [val]
   val () = if ~ifexited then begin
-    prerr ("[typecheck_file] is sigtermed\n"); exit (1)
+    prerr ("[typecheck_file] is sigtermed\n"); exit(EXIT_FAILURE)
   end // end of [val]
 } (* end of [typecheck_file] *)
 
@@ -106,7 +108,7 @@ implement ccomp_file_to_file
     ) // end of [if]
   end // end of [val]
   val () = if ~ifexited then begin
-    prerr ("[compile_file_to_file] is sigtermed\n"); exit (1)
+    prerr ("[compile_file_to_file] is sigtermed\n"); exit(EXIT_FAILURE)
   end // end of [val]
 } // end of [ccomp_file_to_file]
 
@@ -128,7 +130,7 @@ atscc_version () = () where { val status =
     // end of [if]
   end // end of [val]
   val () = if ~ifexited then begin
-    prerr ("[atscc_version] is sigtermed\n"); exit (1)
+    prerr ("[atscc_version] is sigtermed\n"); exit(EXIT_FAILURE)
   end // end of [val]
 } // end of [atscc_version]
 
@@ -138,11 +140,9 @@ atscc_version () = () where { val status =
 
 #include <errno.h>
 #include <unistd.h>
-
 //
-
 extern ats_ptr_type atsopt_global ;
-
+//
 extern ats_bool_type strlst_is_nil (ats_ptr_type) ;
 extern ats_ptr_type strlst_head_get (ats_ptr_type) ;
 extern ats_ptr_type strlst_tail_get (ats_ptr_type) ;
@@ -155,56 +155,55 @@ ccomp_file_to_file_exec (
 ) {
   int err ; char *flag_stadyn_str ;
   int n, argc ; char **argv, **argv_p, **argv_p1 ;
-
+//
   switch (flag_stadyn) {
     case 0: flag_stadyn_str = "--static" ; break ;
     case 1: flag_stadyn_str = "--dynamic" ; break ;
     default: ats_exit_errmsg (
       1, "[ccomp_file_to_file_exec] failed: wrong flag.\n"
-    ) ;
+    ) ; break ; // end of [default]
   } // end of [switch]
-
+//
   argc = n = strlst_length (param_rev) ;
   argc += 1 ; // self(*first*)
   argc += 2 ; // input */
   if (outfile) argc += 2 ; // output
   argc += 1 ; // nullptr(*last*)
-
-  argv = (char**)malloc (argc * sizeof(ats_ptr_type)) ;
+//
+  argv = (char**)malloc(argc * sizeof(ats_ptr_type)) ;
   if (!argv) {
-    fprintf (stderr, "exit(ATS): ccomp_file_to_file_exec: malloc failed!\n") ;
-    exit (1) ;
+    fprintf(stderr, "exit(ATS): ccomp_file_to_file_exec: malloc failed!\n") ;
+    exit(EXIT_FAILURE) ;
   } // end of [if]
   argv_p = argv ;
   *argv_p = (char*)atsopt_global ; argv_p += 1 ;
-
+//
   // [param_rev] is in the reversed order!!!
   argv_p += n ; argv_p1 = argv_p ; while (1) {
-    if (strlst_is_nil (param_rev)) break ;
-    argv_p1 -= 1 ; *argv_p1 = (char*)strlst_head_get (param_rev) ;
-    param_rev = strlst_tail_get (param_rev) ;
-  }
-
+    if (strlst_is_nil(param_rev)) break ;
+    argv_p1 -= 1 ; *argv_p1 = (char*)strlst_head_get(param_rev) ;
+    param_rev = strlst_tail_get(param_rev) ;
+  } // end of [while]
+//
   if (outfile) {
     *argv_p = "--output" ; argv_p += 1 ; *argv_p = outfile ; argv_p += 1 ;
-  }
-
+  } // end of [if]
+//
   *argv_p = flag_stadyn_str ; argv_p += 1 ; *argv_p = infile ; argv_p += 1 ;
-
   *argv_p = (char*)0 ;
 
 // /*
-  fputs (*argv, stderr) ; argv_p = argv + 1 ;
+  fputs(*argv, stderr) ; argv_p = argv + 1 ;
   while (*argv_p) {
-    fputc (' ', stderr) ; fputs (*argv_p, stderr) ; argv_p += 1 ;
-  }
-  fputc ('\n', stderr) ;
+    fputc(' ', stderr) ; fputs(*argv_p, stderr) ; argv_p += 1 ;
+  } // end of [while]
+  fputc('\n', stderr) ;
 // */
 
   err = execv((char*)atsopt_global, argv) ;
-  if (err < 0) perror ("ccomp_file_to_file_exec: [execv] failed: ") ;
-  exit (1) ;
-
+  if (err < 0) perror("ccomp_file_to_file_exec: [execv] failed: ") ;
+  exit(EXIT_FAILURE) ;
+  return ; // deadcode
 } /* end of [ccomp_file_to_file_exec] */
 
 ats_void_type
@@ -222,8 +221,8 @@ atscc_version_exec () {
   int err = execl (
     (char*)atsopt_global, (char*)atsopt_global, "--version", (ats_ptr_type)0
   ) ;
-  if (err < 0) perror ("atscc_version: [execl] failed: ") ;
-  exit (1) ;
+  if (err < 0) perror("atscc_version: [execl] failed: ") ;
+  exit(EXIT_FAILURE) ;
 } // end of [atscc_version]
 
 %}

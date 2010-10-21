@@ -300,7 +300,7 @@ ATSCC=$(ATSHOMEQ)/bin/atscc
 
 ######
 
-typecheck::
+compall::
 	$(ATSCC)  basics.dats -lm
 	$(ATSCC)  ats-main.dats
 	$(ATSCC)  tail-recursive-functions.dats
@@ -331,7 +331,7 @@ typecheck::
 ######
 
 clean::
-	rm -f a.out *_dats.c *_sats.c *~
+	rm -f *_dats.c *_sats.c *~
 
 cleanall: clean; rm -f *_?ats.html
 

@@ -17,13 +17,11 @@ staload "libc/sys/SATS/types.sats"
 (* ****** ****** *)
 
 extern fun fildescopy
-  {fd1,fd2:int} {flag1,flag2:open_flag} (
-    pf1_lte: open_flag_lte (flag1, rd)
-  , pf2_lte: open_flag_lte (flag2, wr)
-  , pf1_fd: !fildes_v (fd1, flag1), pf2_fd: !fildes_v (fd2, flag2)
-  | fd1: int fd1, fd2: int fd2
-  ) : int (* error *)
-  = "fildescopy"
+  {fd1,fd2:int} (
+  pf1_fd: !fildes_v (fd1), pf2_fd: !fildes_v (fd2)
+| fd1: int fd1, fd2: int fd2
+) : int (*err*) = "fildescopy"
+// end of [fildescopy]
 
 (* ****** ****** *)
 
@@ -75,14 +73,12 @@ fn copy_one (name: string): void = let
   val mode2 = S_IRUSR lor S_IWUSR
   val (pf2_fd | fd2) =
     open_flag_mode_exn (oname, flag2, mode2)
-  val _(*nwrite*) = fildes_write_substring_exn
-    (open_flag_lte_wr_wr, pf2_fd | fd2, PROLOG_one, 0, nPROLOG_one)
+  val _(*nwrite*) = write_substring_exn
+    (pf2_fd | fd2, PROLOG_one, 0, nPROLOG_one)
   // end of [val]
-  val err = fildescopy (
-    open_flag_lte_rd_rd, open_flag_lte_wr_wr, pf1_fd, pf2_fd | fd1, fd2
-  ) // end of [fildescopy]
-  val _(*nwrite*) = fildes_write_substring_exn
-    (open_flag_lte_wr_wr, pf2_fd | fd2, EPILOG_one, 0, nEPILOG_one)
+  val err = fildescopy (pf1_fd, pf2_fd | fd1, fd2)
+  val _(*nwrite*) = write_substring_exn
+    (pf2_fd | fd2, EPILOG_one, 0, nEPILOG_one)
   // end of [val]
   val () = close_loop_exn (pf1_fd | fd1)
   val () = close_loop_exn (pf2_fd | fd2)
@@ -190,18 +186,14 @@ fn copy_many {n:nat} {st:nat | st <= n} (
   ) : void = let
   var err: int = 0
   fun loop {ofd: int} {i:nat | i <= n} (
-      pf_ofd: !fildes_v (ofd, wr)
+      pf_ofd: !fildes_v (ofd)
     | ofd: int ofd, names: &(@[string][n]), n: int n, i: int i, err: &int
     ) : void =
     if i < n then let
       val iname = DIR + names.[i]
       val (pf_ifd | ifd) = open_flag_exn (iname, O_RDONLY)
-      val _(*nwrite*) = fildes_write_substring_exn
-        (open_flag_lte_wr_wr, pf_ofd | ofd, FILESEP, 0, nFILESEP)
-      // end of [val]
-      val () = err := fildescopy (
-        open_flag_lte_rd_rd, open_flag_lte_wr_wr, pf_ifd, pf_ofd | ifd, ofd
-      ) // end of [fildescopy]
+      val _(*nwrite*) = write_substring_exn (pf_ofd | ofd, FILESEP, 0, nFILESEP)
+      val () = err := fildescopy (pf_ifd, pf_ofd | ifd, ofd)
       val () = close_loop_exn (pf_ifd | ifd)
     in
       loop (pf_ofd | ofd, names, n, i+1, err)
@@ -214,12 +206,11 @@ fn copy_many {n:nat} {st:nat | st <= n} (
     val flag = O_WRONLY lor O_CREAT lor O_TRUNC; val mode = S_IRUSR lor S_IWUSR
   } // end of [val]
 
-  val _(*nwrite*) = fildes_write_substring_exn
-    (open_flag_lte_wr_wr, pf_ofd | ofd, PROLOG_many, 0, nPROLOG_many)
-  // end of [val]
+  val _(*nwrite*) =
+    write_substring_exn (pf_ofd | ofd, PROLOG_many, 0, nPROLOG_many)
   val () = loop (pf_ofd | ofd, names, n, st, err)
-  val _(*nwrite*) = fildes_write_substring_exn
-    (open_flag_lte_wr_wr, pf_ofd | ofd, EPILOG_many, 0, nEPILOG_many)
+  val _(*nwrite*) =
+    write_substring_exn (pf_ofd | ofd, EPILOG_many, 0, nEPILOG_many)
   // end of [val]
   val () = close_exn (pf_ofd | ofd)
 in

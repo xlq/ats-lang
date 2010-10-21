@@ -131,6 +131,11 @@ end // end of [s2exp_addr_slablst_assgn]
 
 implement
 d2var_lin_slablst_assgn (loc0, d2v, s2ls, s2e_new) = let
+//
+// HX-2010-10-20:
+// if [d2v] is a nonlinear variable, that is, d2v.dvar_lin = ~1,
+// then [d2v.d2var_lin] is unchanged.
+//
 (*
   val () = begin
     print "d2var_lin_slablst_assgn: d2v = "; print d2v; print_newline ()
@@ -163,8 +168,10 @@ d2var_lin_slablst_assgn (loc0, d2v, s2ls, s2e_new) = let
     prerr_newline ();
     $Err.abort {void} ()
   end // end of [val]
+  val () = if d2var_is_linear (d2v) then d2var_lin_inc (d2v)
+  val () = d2var_typ_set (d2v, Some s2e0)
 in
-  d2var_lin_inc (d2v); d2var_typ_set (d2v, Some s2e0); s2ls
+  s2ls
 end // end of [d2var_lin_slablst_assgn]
 
 (* ****** ****** *)

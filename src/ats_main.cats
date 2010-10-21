@@ -40,8 +40,17 @@
 #define ATS_SRC_MAIN_CATS
 
 /* ****** ****** */
+//
+// HX-2010-10-21: this one seems to be a macro
+//
+#ifndef strncmp
+extern int strncmp (const char *s1, const char *s2, size_t n) ;
+#endif // end of ...
 
-extern ats_void_type
+/* ****** ****** */
+
+extern
+ats_void_type
 ats_posmark_xref_flag_set (ats_ptr_type flag) ;
 
 ATSinline()
@@ -74,7 +83,46 @@ atsopt_is_posmark_xref_prefix (ats_ptr_type s0) {
 
 /* ****** ****** */
 
-static int the_IATS_wait = 0 ;
+static
+int the_DATS_wait = 0 ;
+
+ATSinline()
+ats_void_type
+atsopt_DATS_wait_set () {
+  the_DATS_wait = 1 ; return ;
+} // end of [atsopt_DATS_wait_set]
+
+ATSinline()
+ats_bool_type
+atsopt_DATS_wait_is_set () {
+  return (the_DATS_wait ? ats_true_bool : ats_false_bool) ;
+} // end of [atsopt_DATS_wait_is_set]
+
+ATSinline()
+ats_void_type
+atsopt_DATS_wait_clear () {
+  the_DATS_wait = 0 ; return ;
+} // end of [atsopt_DATS_wait_clear]
+
+ats_bool_type
+atsopt_is_DATS_flag (ats_ptr_type s0) { return (
+  strncmp((char*)s0, "-DATS", 5)==0 ? ats_true_bool : ats_false_bool
+) ; } // end of [atsopt_is_DATS_flag]
+
+ats_ptr_type
+atsopt_DATS_extract (ats_ptr_type s0) {
+  int n ; char* s ;
+  n = strlen ((char*)s0) - 5 ;
+  if (n <= 0) return (ats_ptr_type)0 ;
+  s = (char*)ATS_MALLOC(n + 1) ;
+  memcpy (s, (char*)s0 + 5, n) ; s[n] = '\0' ;
+  return (ats_ptr_type)s ;
+} // end of [atsopt_DATS_extract]
+
+/* ****** ****** */
+
+static
+int the_IATS_wait = 0 ;
 
 ATSinline()
 ats_void_type
@@ -94,28 +142,22 @@ atsopt_IATS_wait_clear () {
   the_IATS_wait = 0 ; return ;
 } // end of [atsopt_IATS_wait_clear]
 
-/* ****** ****** */
-
 ats_bool_type
 atsopt_is_IATS_flag (ats_ptr_type s0) {
-  char *s = (char*)s0 ;
-  if (*s != '-') return ats_false_bool ;
-  ++s ; if (*s != 'I') return ats_false_bool ;
-  ++s ; if (*s != 'A') return ats_false_bool ;
-  ++s ; if (*s != 'T') return ats_false_bool ;
-  ++s ; if (*s != 'S') return ats_false_bool ;
-  return ats_true_bool ; 
-} /* end of [atsopt_is_IATS_flag] */
+  return (
+    strncmp((char*)s0, "-IATS", 5)==0 ? ats_true_bool : ats_false_bool
+  ) ; // end of [return]
+} // end of [atsopt_is_IATS_flag]
 
 ats_ptr_type
 atsopt_IATS_extract (ats_ptr_type s0) {
   int n ; char* s ;
-  n = strlen ((char*)s0) ;
-  n -= 5 ; if (n <= 0) return (ats_ptr_type)0 ;
+  n = strlen ((char*)s0) - 5 ;
+  if (n <= 0) return (ats_ptr_type)0 ;
   s = (char*)ATS_MALLOC(n + 1) ;
   memcpy (s, (char*)s0 + 5, n) ; s[n] = '\0' ;
   return (ats_ptr_type)s ;
-} /* end of [atsopt_IATS_extract] */
+} // end of [atsopt_IATS_extract]
 
 /* ****** ****** */
 

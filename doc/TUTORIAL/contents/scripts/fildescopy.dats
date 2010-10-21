@@ -9,32 +9,31 @@ staload "libc/SATS/fcntl.sats"
 
 (* ****** ****** *) 
 
-extern fun fildescopy
-  {fd1,fd2:int} {flag1,flag2:open_flag} (
-    pf1_lte: open_flag_lte (flag1, rd)
-  , pf2_lte: open_flag_lte (flag2, wr)
-  , pf1_fd: !fildes_v (fd1, flag1), pf2_fd: !fildes_v (fd2, flag2)
-  | fd1: int fd1, fd2: int fd2
-  ) : int (* error *)
-  = "fildescopy"
+extern
+fun fildescopy
+  {fd1,fd2:int} (
+  pf1_fd: !fildes_v (fd1), pf2_fd: !fildes_v (fd2)
+| fd1: int fd1, fd2: int fd2
+) : int(*err*) = "fildescopy"
+// end of [fildescopy]
 
 (* ****** ****** *) 
 
 #define BUFSZ 1024
 
 implement fildescopy
-  {fd1,fd2:int} {flag1,flag2:open_flag}
-  (pf1_lte, pf2_lte, pf1_fd, pf2_fd | fd1, fd2) = let
+  {fd1,fd2:int}
+  (pf1_fd, pf2_fd | fd1, fd2) = let
   var !p_buf with pf_buf = @[byte][BUFSZ]()
   stadef l_buf = p_buf
   prval () = pf_buf := bytes_v_of_b0ytes_v (pf_buf)
   var err: int = 0
   fun loop (
       pf_buf: !bytes BUFSZ @ l_buf
-    , pf1_fd: !fildes_v (fd1, flag1), pf2_fd: !fildes_v (fd2, flag2)
+    , pf1_fd: !fildes_v (fd1), pf2_fd: !fildes_v (fd2)
     | err: &int
     ) :<cloref1> void = let
-    val nread = fildes_read_loop_err (pf1_lte, pf1_fd | fd1, !p_buf, BUFSZ)
+    val nread = read_all_err (pf1_fd | fd1, !p_buf, BUFSZ)
 (*
     val () = (print "fildescopy: nread = "; print nread; print_newline ())
 *)
@@ -42,7 +41,7 @@ implement fildescopy
     if nread >= 0 then
       if nread > 0 then let
         val nread1 = size1_of_ssize1 (nread)
-        val nwrite = fildes_write_loop_err (pf2_lte, pf2_fd | fd2, !p_buf, nread1)
+        val nwrite = write_all_err (pf2_fd | fd2, !p_buf, nread1)
 (*
         val () = (print "fildescopy: nwrite = "; print nwrite; print_newline ())
 *)

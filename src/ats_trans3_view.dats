@@ -326,6 +326,8 @@ in
     in
       (* empty *)
     end // end of [D3Esel_var when d2var_is_mutable]
+//
+  | D3Evar d2v when d2var_isfix_get (d2v) => (err := err + 1) 
   | D3Evar d2v when d2var_is_mutable d2v => let
       val _ (* nil *) = begin
         d2var_mut_slablst_assgn (loc0, d2v, list_nil (), s2e_new)
@@ -333,7 +335,6 @@ in
     in
       (* empty *)
     end // end of [D2Evar when d2var_is_mutable]
-  | D3Evar d2v when d2var_isfix_get (d2v) => (err := err + 1) 
 (*
 //
 // HX-2010-10-20:
@@ -349,6 +350,7 @@ in
     in
       (* empty *)
     end // end of [D2Evar]
+//
   | D3Eviewat_ptr (d3e, d3ls, d2v_view, s2ls_nt) => let
       val (s2e_old, s2ls) = begin
         d2var_view_viewat_slablst_set (loc0, d2v_view, s2ls_nt, s2e_new)

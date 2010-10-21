@@ -53,7 +53,7 @@
 //
 
 #if VERBOSE_PRELUDE #then
-#print "Loading [file.sats] starts!\n"
+#print "Loading [filebas.sats] starts!\n"
 #endif // end of [VERBOSE_PRELUDE]
 
 (* ****** ****** *)
@@ -157,7 +157,7 @@ fun line_stream_vt_make_file {m:file_mode} {l:addr}
 (* ****** ****** *)
 
 #if VERBOSE_PRELUDE #then
-#print "Loading [file.sats] finishes!\n"
+#print "Loading [filebas.sats] finishes!\n"
 #endif // end of [VERBOSE_PRELUDE]
 
 (* end of [filebas.sats] *)

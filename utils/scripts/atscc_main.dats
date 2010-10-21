@@ -78,15 +78,19 @@ fn string_is_flag
 end // end of [string_is_flag]
 
 (* ****** ****** *)
-
+//
+extern fun DATS_wait_set (): void = "DATS_wait_set"
+extern fun DATS_wait_is_set (): bool = "DATS_wait_is_set"
+extern fun DATS_wait_clear (): void = "DATS_wait_clear"
+extern fun DATS_extract (s: string): Stropt = "DATS_extract"
+extern fun flag_is_DATSdef (s: string): bool = "flag_is_DATSdef"
+//
 extern fun IATS_wait_set (): void = "IATS_wait_set"
 extern fun IATS_wait_is_set (): bool = "IATS_wait_is_set"
 extern fun IATS_wait_clear (): void = "IATS_wait_clear"
-
 extern fun IATS_extract (s: string): Stropt = "IATS_extract"
-
 extern fun flag_is_IATSdir (s: string): bool = "flag_is_IATSdir"
-
+//
 (* ****** ****** *)
 
 fn flag_is_m32 (flag: string): bool =
@@ -172,24 +176,25 @@ val is_lats_mt: intref = intref_make 0
 (* ****** ****** *)
 
 extern
-fun atscc_outfile_name_make (basename: string): String
-  = "atscc_outfile_name_make"
+fun atscc_outfile_name_make
+  (basename: string): String = "atscc_outfile_name_make"
+// end of [atscc_outfile_name_make]
 
 (* ****** ****** *)
 
 #define sbp2str string1_of_strbuf
   
-fn atscc_argv_process {n:pos} {l:addr}
-  (pf: !array_v (String, n, l) | n: int n, p: ptr l): Strlst(*param_c*) = let
-
+fn atscc_argv_process
+  {n:pos} {l:addr} (
+  pf: !array_v (String, n, l) | n: int n, p: ptr l
+) : Strlst(*param_c*) = let
+//
 fn* aux {i:nat | i <= n} ( // .<n-i,0>.
     pf: !array_v (String, n, l)
   | param_ats: Strlst, param_c: Strlst, i: int i
   ) :<cloptr1> Strlst(*param_c*) =
   if i < n then let
-    val s = p[i]
-  in
-    case+ 0 of
+    val s = p[i] in case+ 0 of
     | _ when IATS_wait_is_set () => begin
         IATS_wait_clear (); aux (pf | s :: param_ats, param_c, i+1)
       end // end of [_ when ...]
@@ -276,7 +281,7 @@ fn* aux {i:nat | i <= n} ( // .<n-i,0>.
   in
     param_c (* Strlst *)
   end // end of [aux]
-
+//
 and aux_flag {i:nat | i < n} // .<n-i-1,1>.
   (pf: !array_v (String, n, l) |
    param_ats: Strlst, param_c: Strlst, i: int i, flag: String)
@@ -286,67 +291,66 @@ and aux_flag {i:nat | i < n} // .<n-i-1,1>.
       val param_ats = "--typecheck" :: param_ats
     in
       aux (pf | param_ats, param_c, i+1)
-    end
+    end // end of [_ when flag_is_typecheck_only]
   | _ when flag_is_compile_only flag => let
       val () = intref_set (is_compile_only, 1)
     in
       aux (pf | param_ats, param_c, i+1)
-    end
+    end // end of [_ when flag_is_compile_only]
   | _ when flag_is_objcode_only flag => let
       val () = intref_set (is_objcode_only, 1)
     in
       aux (pf | param_ats, flag :: param_c, i+1)
-    end
-  | _ when flag_is_version flag => let
-      val () = atscc_version ()
-    in
-      aux (pf | param_ats, flag :: param_c, i+1)
-    end
-  | _ when flag_is_m32 flag => let
-      val () = wordsize_target_set (4(*bytes*))
-    in
-      aux (pf | param_ats, flag :: param_c, i+1)
-    end
-  | _ when flag_is_m64 flag => let
-      val () = wordsize_target_set (8(*bytes*))
-    in
-      aux (pf | param_ats, flag :: param_c, i+1)
-    end
+    end // end of [_ when flag_is_objcode_only]
+//
   | _ when flag_is_ATS_GCATS flag => let
       val () = intref_set (is_ATS_GCATS, 1)
     in
       aux (pf | param_ats, flag :: param_c, i+1)
-    end
+    end // end of [_ when flag_is_ATS_GCATS]
   | _ when flag_is_ATS_GCATS2 flag => let
       val () = intref_set (is_ATS_GCATS2, 1)
     in
       aux (pf | param_ats, flag :: param_c, i+1)
-    end
+    end // end of [_ when flag_is_ATS_GCATS2]
   | _ when flag_is_ATS_GCBDW flag => let
       val () = intref_set (is_ATS_GCBDW, 1)
     in
       aux (pf | param_ats, flag :: param_c, i+1)
-    end
+    end // end of [_ when flag_is_ATS_GCBDW]
+//
   | _ when flag_is_ATS_MULTITHREAD flag => let
       val () = intref_set (is_ATS_MULTITHREAD, 1)
     in
       aux (pf | param_ats, flag :: param_c, i+1)
-    end
+    end // end of [_ when flag_is_ATS_MULTITHREAD]
+//
   | _ when flag_is_lats flag => let
       val () = intref_set (is_lats, 1)
     in
       aux (pf | param_ats, flag :: param_c, i+1)
-    end
+    end // end of [_ when flag_is_lats]
   | _ when flag_is_lats_mt flag => let
       val () = intref_set (is_lats_mt, 1)
     in
       aux (pf | param_ats, flag :: param_c, i+1)
-    end
+    end // end of [_ when flag_is_lats_mt]
+//
   | _ when flag_is_ATS_DEBUG flag => let
       val param_ats = "--debug=1" :: param_ats
     in
       aux (pf | param_ats, flag :: param_c, i+1)
-    end
+    end // end of [_ when flag_is_ATS_DEBUG]
+//
+  | _ when flag_is_DATSdef flag => let
+      val param_ats = flag :: param_ats
+      val dir = DATS_extract flag; val () = begin
+        if stropt_is_some dir then () else DATS_wait_set ()
+      end // end of [if]
+    in
+      aux (pf | param_ats, param_c, i+1)
+    end // end of [_ when ...]
+//
   | _ when flag_is_IATSdir flag => let
       val param_ats = flag :: param_ats
       val dir = IATS_extract flag; val () = begin
@@ -355,9 +359,27 @@ and aux_flag {i:nat | i < n} // .<n-i-1,1>.
     in
       aux (pf | param_ats, param_c, i+1)
     end // end of [_ when ...]
+//
+  | _ when flag_is_m32 flag => let
+      val () = wordsize_target_set (4(*bytes*))
+    in
+      aux (pf | param_ats, flag :: param_c, i+1)
+    end // end of [_ when flag_is_m32]
+  | _ when flag_is_m64 flag => let
+      val () = wordsize_target_set (8(*bytes*))
+    in
+      aux (pf | param_ats, flag :: param_c, i+1)
+    end // end of [_ when flag_is_m64]
+//
+  | _ when flag_is_version flag => let
+      val () = atscc_version ()
+    in
+      aux (pf | param_ats, flag :: param_c, i+1)
+    end // end of [_ when flag_is_version]
+//
   | _ => aux (pf | param_ats, flag :: param_c, i+1)
 end // end of [aux_flag]
-
+//
 and aux_file {i:nat | i < n} // .<n-i-1,1>.
   (pf: !array_v (String, n, l) |
    param_ats: Strlst, param_c: Strlst, i: int i, file: String)
@@ -387,26 +409,30 @@ in
     aux (pf | param_ats, file :: param_c, i+1)
   end (* end of [if] *)
 end // end of [aux_file]
-
+//
 in
   aux (pf | nil (*param_ats*), nil (*param_c*), 1)
-end // end of [aux]
+end // end of [atscc_argv_process]
 
-extern val "atscc_argv_process" = atscc_argv_process
+(* ****** ****** *)
+
+extern val "atscc_argv_process" = atscc_argv_process // for use in C
 
 (* ****** ****** *)
 
 dynload "basics.dats"
 dynload "atscc.dats"
 
+(* ****** ****** *)
+
 implement main_prelude () = ()
 
 (* ****** ****** *)
 
 extern
-fun atscc_main {n:pos} (argc: int n, argv: &(@[string][n])): void
-  = "atscc_main"
-
+fun atscc_main {n:pos}
+  (argc: int n, argv: &(@[string][n])): void = "atscc_main"
+// end of [atscc_main]
 implement main (argc, argv) = case+ argc of
   | 1 => let val cmd = argv.[0] in do_usage (basename_of_filename cmd) end
   | _ => atscc_main (argc, argv)
@@ -414,70 +440,98 @@ implement main (argc, argv) = case+ argc of
 
 (* ****** ****** *)
 
+
 %{$
 
-static int the_IATS_wait = 0 ;
-
-ats_void_type IATS_wait_set () {
-  the_IATS_wait = 1 ; return ;
+static
+int the_DATS_wait = 0 ;
+ats_void_type
+DATS_wait_set () {
+  the_DATS_wait = 1 ; return ;
 }
-
-ats_bool_type IATS_wait_is_set () {
-  return (the_IATS_wait ? ats_true_bool : ats_false_bool) ;
+ats_bool_type
+DATS_wait_is_set () {
+  return (the_DATS_wait ? ats_true_bool : ats_false_bool) ;
 }
-
-ats_void_type IATS_wait_clear () {
-  the_IATS_wait = 0 ; return ;
+ats_void_type
+DATS_wait_clear () {
+  the_DATS_wait = 0 ; return ;
 }
-
-/* ****** ****** */
 
 ats_bool_type
-flag_is_IATSdir (ats_ptr_type s0) {
-  char *s = (char*)s0 ;
-  if (*s != '-') return ats_false_bool ;
-  ++s ; if (*s != 'I') return ats_false_bool ;
-  ++s ; if (*s != 'A') return ats_false_bool ;
-  ++s ; if (*s != 'T') return ats_false_bool ;
-  ++s ; if (*s != 'S') return ats_false_bool ;
-  return ats_true_bool ; 
-} /* end of [flag_is_IATSdir] */
+flag_is_DATSdef (ats_ptr_type s0) { return (
+  strncmp((char*)s0, "-DATS", 5)==0 ? ats_true_bool : ats_false_bool
+) ; } // end of [flag_is_DATSdef]
 
 ats_ptr_type
-IATS_extract (ats_ptr_type s0) {
+DATS_extract (ats_ptr_type s0) {
   int n ; char* s ;
-  n = strlen ((char*)s0) ;
-  n -= 5 ; if (n <= 0) return (ats_ptr_type)0 ;
+  n = strlen ((char*)s0) - 5 ;
+  if (n <= 0) return (ats_ptr_type)0 ;
   s = ats_malloc_gc (n + 1) ;
   memcpy (s, (char*)s0 + 5, n) ; s[n] = '\0' ;
   return s ;
-} /* end of [IATS_extract] */
+} // end of [DATS_extract]
 
-%}
+%} // end of [%{$]
 
 (* ****** ****** *)
 
 %{$
 
-//
+static
+int the_IATS_wait = 0 ;
+ats_void_type
+IATS_wait_set () {
+  the_IATS_wait = 1 ; return ;
+}
+ats_bool_type
+IATS_wait_is_set () {
+  return (the_IATS_wait ? ats_true_bool : ats_false_bool) ;
+}
+ats_void_type
+IATS_wait_clear () {
+  the_IATS_wait = 0 ; return ;
+}
+
+ats_bool_type
+flag_is_IATSdir (ats_ptr_type s0) { return (
+  strncmp((char*)s0, "-IATS", 5)==0 ? ats_true_bool : ats_false_bool
+) ; } // end of [flag_is_IATSdir]
+
+ats_ptr_type
+IATS_extract (ats_ptr_type s0) {
+  int n ; char* s ;
+  n = strlen ((char*)s0) - 5 ;
+  if (n <= 0) return (ats_ptr_type)0 ;
+  s = ats_malloc_gc (n + 1) ;
+  memcpy (s, (char*)s0 + 5, n) ; s[n] = '\0' ;
+  return s ;
+} // end of [IATS_extract]
+
+%} // end of [%{$]
+
+(* ****** ****** *)
+
+%{$
 
 typedef ats_ptr_type ats_stropt_type ;
 typedef ats_ptr_type ats_string_type ;
-
+//
 extern ats_ptr_type strlst_head_get(ats_ptr_type) ;
 extern ats_ptr_type strlst_tail_get(ats_ptr_type) ;
-
+//
 extern ats_int_type strlst_length(ats_ptr_type) ;
 extern ats_ptr_type strlst_reverse(ats_ptr_type) ;
-
 //
-
 extern ats_intref_type is_compile_only ;
 extern ats_intref_type is_typecheck_only ;
 extern ats_int_type inref_get(ats_intref_type) ;
-
+//
 ats_string_type
-atscc_outfile_name_make (ats_string_type basename) {
+atscc_outfile_name_make (
+  ats_string_type basename
+) {
   int n ; char c, *s ;
   n = strlen((char*)basename) ;
   s = (char*)ats_malloc_gc(n+3) ;
@@ -489,10 +543,13 @@ atscc_outfile_name_make (ats_string_type basename) {
   }
   while (n >= 0) { s[n] = ((char*)basename)[n] ; --n ; }
   return s ;
-} /* end of [atscc_outfile_name_make] */
+} // end of [atscc_outfile_name_make]
 
 ats_void_type
-atscc_main (ats_int_type argc, ats_ptr_type argv) {
+atscc_main (
+  ats_int_type argc
+, ats_ptr_type argv
+) {
   int i, n ;
   ats_sum_ptr_type ss ;
   ats_ptr_type argv_new, p ; pid_t pid ; int status ;
@@ -535,9 +592,9 @@ atscc_main (ats_int_type argc, ats_ptr_type argv) {
     atspre_exit_prerrf (status, "Exit: [%s] failed.\n", gcc) ;
   } /* end of [if] */
   return ;
-} /* end of [atscc_main] */
+} // end of [atscc_main]
 
-%}
+%} // end of [%{$]
 
 (* ****** ****** *)
 

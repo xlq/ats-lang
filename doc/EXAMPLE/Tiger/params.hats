@@ -1,6 +1,6 @@
 /*
 **
-** TIGERATS: a Tiger compiler written in ATS
+** TIGERATS: a compiler for Tiger written in ATS
 **
 ** Author: Hongwei Xi (hwxi AT cs DOT bu DOT edu)
 ** Time: Spring, 2009

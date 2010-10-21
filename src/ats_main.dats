@@ -46,14 +46,15 @@
 %} // end of [%{^]
 
 (* ****** ****** *)
-
+//
 extern fun fopen_exn {m:file_mode}
   (s: string, m: file_mode m): [l:addr] (FILE m @ l | ptr l)
   = "atslib_fopen_exn"
-
-extern fun fclose_exn {m:file_mode} {l:addr}
-  (pf: FILE m @ l | p: ptr l):<!exnref> void = "atslib_fclose_exn"
-
+//
+extern fun fclose_exn
+  {m:file_mode} {l:addr} (pf: FILE m @ l | p: ptr l):<!exnref> void
+  = "atslib_fclose_exn"
+//
 (* ****** ****** *)
 
 staload "ats_reference.sats"
@@ -641,34 +642,43 @@ extern fun is_posmark_xref_prefix
   (s: string): bool = "atsopt_is_posmark_xref_prefix"
 // end of ...
 
+(* ****** ****** *)
+//
+extern fun DATS_wait_set (): void = "atsopt_DATS_wait_set"
+extern fun DATS_wait_is_set (): bool = "atsopt_DATS_wait_is_set"
+extern fun DATS_wait_clear (): void = "atsopt_DATS_wait_clear"
+extern fun is_DATS_flag (s: string): bool = "atsopt_is_DATS_flag"
+extern fun DATS_extract (s: string): Stropt = "atsopt_DATS_extract"
+//
 extern fun IATS_wait_set (): void = "atsopt_IATS_wait_set"
 extern fun IATS_wait_is_set (): bool = "atsopt_IATS_wait_is_set"
 extern fun IATS_wait_clear (): void = "atsopt_IATS_wait_clear"
-
 extern fun is_IATS_flag (s: string): bool = "atsopt_is_IATS_flag"
 extern fun IATS_extract (s: string): Stropt = "atsopt_IATS_extract"
-
+//
 (* ****** ****** *)
 
 implement
 main {n} (argc, argv) = let
-val () = gc_chunk_count_limit_max_set (~1) // [~1]: infinite
+//
 (*
 val () = gc_chunk_count_limit_max_set (0) // for testing GC heavily
 *)
+val () = gc_chunk_count_limit_max_set (~1) // [~1] stands for infinity
+//
 val () = set () where {
   extern fun set (): void = "atsopt_ATSHOMERELOC_set"
 } // end of [val]
-
+//
 val ATSHOME = getenv () where {
   extern fun getenv (): string = "atsopt_ATSHOME_getenv_exn"
 } // end of [val]
-
-val () = $Fil.the_prepathlst_push ATSHOME // for the run-time and lib
+//
+val () = $Fil.the_prepathlst_push ATSHOME // for the run-time and atslib
 val () = $TransEnv2.trans2_env_initialize ()
-
+//
 fn warning (str: string) = begin
-  prerr "Waring(ATS)";
+  prerr "waring(ATS)";
   prerr ": unrecognized command line argument [";
   prerr str; prerr "] is ignored."; prerr_newline ()
 end // end of [warning]
@@ -678,10 +688,18 @@ fun loop {i:nat | i <= n} .<i>. (
   , argv: &(@[string][n]), param: &param_t
   , arglst: arglst i
   ) :<fun1> void = begin case+ arglst of
-  | ~list_vt_cons (arg, arglst) => begin case+ arg of
+  | ~list_vt_cons (arg, arglst) => begin
+    case+ arg of
+    | _ when DATS_wait_is_set () => let
+        val () = DATS_wait_clear ()
+        val COMARGkey (_(*n*), def) = arg
+      in
+        loop (ATSHOME, argv, param, arglst)
+      end // end of [_ when ...]
     | _ when IATS_wait_is_set () => let
+        val () = IATS_wait_clear ()
         val COMARGkey (_(*n*), dir) = arg
-        val () = IATS_wait_clear (); val () = $Fil.the_pathlst_push dir
+        val () = $Fil.the_pathlst_push dir
       in
         loop (ATSHOME, argv, param, arglst)
       end // end of [_ when ...]
@@ -715,9 +733,11 @@ fun loop {i:nat | i <= n} .<i>. (
           | "-dep2" => (
                param.depgen := 2; param.depgenout := output_filename_get ()
              ) // end of ["-dep2"]
+          | _ when is_DATS_flag str => let
+              val def = DATS_extract (str) in
+            end (* end of [_ when ...] *)
           | _ when is_IATS_flag str => let
-              val dir = IATS_extract str
-            in
+              val dir = IATS_extract (str) in
               if stropt_is_some dir then begin
                 $Fil.the_pathlst_push (stropt_unsome dir)
               end else begin
@@ -784,7 +804,7 @@ fun loop {i:nat | i <= n} .<i>. (
           | _ when param.depgen >= 1 => let
               val () = $Syn.depgen_d0eclst (d0cs)
               prval pf_mod = file_mode_lte_w_w
-              val outname = param.depgenout
+              val outname = param.depgenout // name for output file
               val () = (case+ 0 of
                 | _ when stropt_is_some (outname) => let
                     val outname = stropt_unsome (outname)
