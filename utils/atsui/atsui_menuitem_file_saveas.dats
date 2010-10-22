@@ -114,7 +114,7 @@ and dialog_saveas_main {l:agz} (
     extern castfn __cast (x: !gstring1): string
   } // end of [val]
 //
-  val () = if (p_fil <> null) then let
+  val () = if (p_fil > null) then let
     prval Some_v pf_fil = pfopt_fil
     val (fpf_tv | tv) = topenv_get_textview_source ()
     val (fpf_tb | tb) = gtk_text_view_get_buffer (tv)

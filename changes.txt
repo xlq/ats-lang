@@ -4,6 +4,7 @@ ats-lang-anairiats-0.2.3:
 
 1. Adding READ: READ(string) is read-only!
 2. Renaming prelude/?ATS/file.?ats to prelude/?ATS/filebas.?ats
+3. Adding support -DATS flags: -DATSXYZ=12345 or -DATS XYZ=12345
 
 ########################################################################
 

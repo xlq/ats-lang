@@ -92,7 +92,7 @@ fun dialog_openfile_first
     extern castfn __cast {l:agz} (x: !gstring l): string
   } // end of [val]
 //
-  val () = if (p_fil <> null) then let
+  val () = if (p_fil > null) then let
     prval Some_v pf_fil = pfopt_fil
     val (fpf_tv | tv) = topenv_get_textview_source ()
     val () = gtk_text_view_set_editable (tv, GTRUE)

@@ -68,7 +68,7 @@ load_compile_output (filename) = let
 //
 in // in of [let]
 //
-if (p_fil <> null) then let
+if (p_fil > null) then let
   prval Some_v pf_fil = pfopt_fil
   val (fpf_tv | tv) = topenv_get_textview_output ()
   val () = gtk_text_view_set_editable (tv, GFALSE)

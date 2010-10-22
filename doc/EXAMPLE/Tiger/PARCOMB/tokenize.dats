@@ -42,7 +42,6 @@
 
 (* ****** ****** *)
 
-staload "prelude/SATS/file.sats" ;
 staload _(*anonymous*) = "prelude/DATS/list.dats"
 staload _(*anonymous*) = "prelude/DATS/list_vt.dats"
 

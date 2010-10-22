@@ -58,7 +58,7 @@ dynload "atsui_srcwinlst.dats"
 dynload "atsui_compile.dats"
 //
 dynload "atsui_menu_file.dats"
-dynload "atsui_menuitem_file_openfile.dats"
+dynload "atsui_meuitem_file_openfile.dats"
 dynload "atsui_menuitem_file_save.dats"
 dynload "atsui_menuitem_file_saveas.dats"
 dynload "atsui_menuitem_file_quit.dats"

@@ -14,6 +14,10 @@
 //
 
 (* ****** ****** *)
+%{^
+#include "libc/CATS/stdio.cats"
+%} // end of [%{^]
+(* ****** ****** *)
 
 staload "error.sats"
 
@@ -28,8 +32,6 @@ staload "PARCOMB/parcomb.sats" ;
 staload _(*anonymous*) = "PARCOMB/parcomb.dats" ;
 
 (* ****** ****** *)
-
-staload _(*anonymous*) = "prelude/SATS/file.sats" // for [stdio.cats]?
 
 staload _(*anonymous*) = "prelude/DATS/array.dats"
 staload _(*anonymous*) = "prelude/DATS/list.dats"

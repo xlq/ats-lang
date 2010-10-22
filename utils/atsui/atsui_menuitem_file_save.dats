@@ -79,7 +79,7 @@ if (nsaved >= 0) then let
     where {
       extern castfn __cast {l:agz} (x: !gstring l): string
     } // end of [val]
-    val () = if (p_fil <> null) then let
+    val () = if (p_fil > null) then let
       prval Some_v pf_fil = pfopt_fil
 //
       val () = $UT.gtk_text_buffer_store_file (file_mode_lte_w_w | tb, !p_fil)

@@ -22,12 +22,12 @@
 
 /* ****** ****** */
 
-// /*
+/*
 // this one, if uncommented, allows you to generate a compiler
 // for Tiger that spills out x86 assembly for 32-bit machines
 #define MARCH "x86_32" // the emitted code is to be run on an x86
 // 32-bit machine
-// */
+*/
 
 /* ****** ****** */
 
