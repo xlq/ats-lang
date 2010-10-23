@@ -72,11 +72,34 @@ html::
 
 ######
 
+xref::
+	$(ATSOPT) --posmark_xref=XREF -d \
+          $(ATSHOME)/utils/xref/ats_prelude_xref.dats > /dev/null
+	$(ATSOPT) --posmark_xref=XREF -d HelloWorld.dats > HelloWorld_dats.html
+	$(ATSOPT) --posmark_xref=XREF -d f91.dats > f91_dats.html
+	$(ATSOPT) --posmark_xref=XREF -d fact1.dats > fact1_dats.html
+	$(ATSOPT) --posmark_xref=XREF -d fact2.dats > fact2_dats.html
+	$(ATSOPT) --posmark_xref=XREF -d fact3.dats > fact3_dats.html
+	$(ATSOPT) --posmark_xref=XREF -d fact4.dats > fact4_dats.html
+	$(ATSOPT) --posmark_xref=XREF -d fact_in_c.dats > fact_in_c_dats.html
+	$(ATSOPT) --posmark_xref=XREF -d fibs.dats > fibs_dats.html
+	$(ATSOPT) --posmark_xref=XREF -d revarr.dats > revarr_dats.html
+	$(ATSOPT) --posmark_xref=XREF -d revstr.dats > revstr_dats.html
+	$(ATSOPT) --posmark_xref=XREF -d tally.dats > tally_dats.html
+
+######
+
+RMF = rm -f
+
+######
+
 clean::
-	rm -f ./INTRO/*
-	rm -f *_dats.c *_sats.c *_dats.html *_sats.html *~
+	$(RMF) ./INTRO/*
+	$(RMF) *_dats.c *_sats.c *_dats.html *_sats.html *~
 
 cleanall:: clean
+	$(RMF) *_?ats.html
+	$(RMF) XREF/*_?ats.html
 	if [ -f HelloWorld ] ; then rm HelloWorld ; fi
 	if [ -f f91 ] ; then rm f91 ; fi
 	if [ -f fact1 ] ; then rm fact1 ; fi

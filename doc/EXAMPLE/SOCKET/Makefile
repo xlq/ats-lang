@@ -58,6 +58,17 @@ html::
 
 ######
 
+xref::
+	$(ATSOPT) --posmark_xref=XREF -d \
+          $(ATSHOME)/utils/xref/ats_prelude_xref.dats > /dev/null
+	$(ATSOPT) --posmark_xref=XREF -d daytime_tcpclient.dats > daytime_tcpclient_dats.html
+	$(ATSOPT) --posmark_xref=XREF -d daytime_tcpserver.dats > daytime_tcpserver_dats.html
+	$(ATSOPT) --posmark_xref=XREF -d echo_tcpserver.dats > echo_tcpclient_dats.html
+	$(ATSOPT) --posmark_xref=XREF -d echo_tcpserver.dats > echo_tcpserver_dats.html
+	$(ATSOPT) --posmark_xref=XREF -d echo_preforking.dats > echo_preforking_dats.html
+
+######
+
 RMF = rm -f
 
 ######
@@ -65,9 +76,11 @@ RMF = rm -f
 clean::
 	$(RMF) *~
 	$(RMF) *_dats.c *_dats.o
+	$(RMF) ./SOCKET/*
 
-cleanall: clean
+cleanall:: clean
 	$(RMF) *_?ats.html
+	$(RMF) XREF/*_?ats.html
 	$(RMF) daytime_tcpserver
 	$(RMF) daytime_tcpclient
 	$(RMF) echo_tcpserver
