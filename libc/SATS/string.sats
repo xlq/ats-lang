@@ -212,4 +212,16 @@ fun strerror_r {m:nat} {l:addr} (
   
 (* ****** ****** *)
 
+(*
+//
+// HX-2010-10-21:
+// this one is moved into libc/SATS/signal.sats:
+//
+fun strsignal (sgn: signum_t)
+  : [l:addr] (strptr(l) -<lin,prf> void | strptr(l)) = "#atslib_strsignal"
+// end of [strsignal]
+*)
+
+(* ****** ****** *)
+
 (* end of [string.sats] *)

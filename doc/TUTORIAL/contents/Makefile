@@ -234,7 +234,7 @@ dataviewtypes::
           ats-hwxi,ats-lang@web.sourceforge.net:htdocs/TUTORIAL/contents/
 
 pattern-matching::
-	$(FPROC) -one pattern_matching.html
+	$(FPROC) -one pattern-matching.html
 	scp $(OUTPUT)/pattern-matching.html \
           ats-hwxi,ats-lang@web.sourceforge.net:htdocs/TUTORIAL/contents/
 

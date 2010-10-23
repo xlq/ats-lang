@@ -13,7 +13,7 @@
 
 ######
 
-ATSHOMEQ = $(or $(ATSHOME), "/usr")
+ATSHOMEQ = "$(ATSHOME)"
 ATSCC=$(ATSHOMEQ)/bin/atscc
 ATSOPT=$(ATSHOMEQ)/bin/atsopt
 

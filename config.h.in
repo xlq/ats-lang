@@ -3,6 +3,9 @@
 /* Define to 1 if you have the <complex.h> header file. */
 #undef HAVE_COMPLEX_H
 
+/* Define to 1 if you have the <curses.h> header file. */
+#undef HAVE_CURSES_H
+
 /* Informs us the availability of Boehm-Demers-Weiser garbage collection
    installed on the system. */
 #undef HAVE_GCBDW

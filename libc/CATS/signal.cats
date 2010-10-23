@@ -99,4 +99,12 @@ typedef struct sigaction ats_sigaction_type ;
 
 /* ****** ****** */
 
+#define atslib_psignal psignal
+
+extern
+char* strsignal (signum_t sgn) ; // declared in <string.h>
+#define atslib_strsignal strsignal
+
+/* ****** ****** */
+
 #endif /* ATS_LIBC_SIGNAL_CATS */

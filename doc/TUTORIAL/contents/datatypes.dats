@@ -10,34 +10,40 @@ datatype intlst0 = // simple datatype
 
 fun length_intlst0 (xs: intlst0): int =
   case+ xs of // [case+] demands exhaustive pattern matching
-    // the bar (|) in the first clause is optional
-    | INTLST0cons (_, xs) => 1 + length_intlst0 (xs)
-    | INTLST0nil () => 0
+  // the bar (|) in the first clause is optional
+  | INTLST0cons (_, xs) => 1 + length_intlst0 (xs)
+  | INTLST0nil () => 0
+// end of [length_intlst0]
 
 (* ****** ****** *)
 
 datatype intlst1 (int) = // dependent datatype
   | INTLST1nil (0) // the first bar (|) is optional
   | {n:nat} INTLST1cons (n+1) of (int, intlst1 n)
+// end of [intlst1]
 
 fun length_intlst1 {n:nat} (xs: intlst1 n): int n =
   case+ xs of // the bar (|) in the first clause is optional
   // the bar (|) in the first clause is optional
   | INTLST1cons (_, xs) => 1 + length_intlst1 (xs)
   | INTLST1nil () => 0
+// end of [length_intlst1]
 
 // the index is a natural number less than the size of the indexed length
 fun nth_intlst1 {n,i:int | 0 <= i; i < n} (xs: intlst1 n, i: int i): int =
   // [val+] demands exhaustive pattern matching
   let val+ INTLST1cons (x, xs) = xs in
     if i > 0 then nth_intlst1 (xs, i-1) else x
-  end
+  end // end of [let]
+// end of [nth_intlst1]
 
 (* ****** ****** *)
 
-datatype list (a:t@ype+, int) = // polymorphic datatype
+datatype list
+  (a:t@ype+, int) = // polymorphic datatype
   | nil (a, 0)
   | {n:nat} cons (a, n+1) of (a, list (a, n))
+// end of [list]
 
 fun{a:t@ype} append_list {m,n:nat}
   (xs: list (a, m), ys: list (a, n)): list (a, m+n) =

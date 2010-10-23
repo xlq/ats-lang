@@ -93,10 +93,26 @@ libats_CATS:: ; scp $(ATSHOME)/libats/CATS/*.cats \
 ######
 
 contrib:: \
+  contrib_parcomb \
+  contrib_cblas \
+  contrib_clapack \
   contrib_cairo \
   contrib_GL \
   contrib_X11 \
   contrib_SDL \
+
+######
+
+contrib_parcomb:: contrib_parcomb_SATS contrib_parcomb_DATS contrib_parcomb_CATS
+
+contrib_parcomb_SATS:: ; scp $(ATSHOME)/contrib/parcomb/SATS/*.sats \
+  ats-hwxi@web.sourceforge.net:/home/groups/a/at/ats-lang/htdocs/IMPLEMENTATION/Anairiats/ATS/contrib/parcomb/SATS
+
+contrib_parcomb_DATS:: ; scp $(ATSHOME)/contrib/parcomb/DATS/*.dats \
+  ats-hwxi@web.sourceforge.net:/home/groups/a/at/ats-lang/htdocs/IMPLEMENTATION/Anairiats/ATS/contrib/parcomb/DATS
+
+contrib_parcomb_CATS:: ; scp $(ATSHOME)/contrib/parcomb/CATS/*.cats \
+  ats-hwxi@web.sourceforge.net:/home/groups/a/at/ats-lang/htdocs/IMPLEMENTATION/Anairiats/ATS/contrib/parcomb/CATS
 
 ######
 

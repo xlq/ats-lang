@@ -173,8 +173,21 @@ be added as follows:
 \begin{verbatim}
 atscc -IATS barpath1 -IATS barpath2 foo.sats foo.dats
 \end{verbatim}
-where {\it barpath1} and {\it barpath2} represent paths to some existing directories.
-Note that the space following \verb`-IATS` is optional and it can be erased
-if desired.
+where {\it barpath1} and {\it barpath2} represent paths to some existing
+directories.  The space following \verb`-IATS` is optional and it can be
+erased if desired. Note that this command-line feature also applies to the
+command {\it atsopt}.
+
+\subsection{Setting Command-Line Flags}
+The use of \verb`-DATS` by {\it atscc} is analogous to \verb`-D` by {\it gcc}.
+For instance, the following command-line:
+\begin{verbatim}
+atscc -DATS FOO=123 -DATS BAR=xyz foo.sats foo.dats
+\end{verbatim}
+first sets {\it FOO} and {\it BAR} to strings "123" (instead of the integer
+{\it 123}) and "xyz", respectively, and then compiles the files foo.sats
+and foo.dats.  The space following \verb`-DATS` is optional and it can be
+erased if desired.  Note that this command-line feature also applies to the
+command {\it atsopt}.
 
 %%% end of \chapter{BATCH COMPILATION} %%%

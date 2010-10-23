@@ -105,7 +105,9 @@ libc/DATS/complex.dats
 
 libc/SATS/ctype.sats
 
+#ifdef HAVE_CURSES_H
 libc/SATS/curses.sats
+#endif
 
 libc/SATS/dirent.sats
 libc/DATS/dirent.dats

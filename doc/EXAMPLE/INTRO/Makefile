@@ -20,7 +20,7 @@ all: checkall
 checkall: compall cleanall
 
 compall: \
-  HelloWorld f91 fact1 fact2 fact3 fibs revarr revstr
+  HelloWorld f91 fact1 fact2 fact3 fibs revarr revstr tally
 
 HelloWorld: HelloWorld.dats
 	$(ATSCC) -o HelloWorld HelloWorld.dats && ./HelloWorld

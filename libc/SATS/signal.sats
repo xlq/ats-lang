@@ -274,4 +274,13 @@ fun siginterrupt // 0/-1 : succ/fail // errno set
 
 (* ****** ****** *)
 
+// HX: print onto stderr
+fun psignal (sgn: signum_t, msg: !READ(string)): void = "#atslib_psignal"
+
+fun strsignal (sgn: signum_t) // HX: errno set?
+  :<!ref> [l:addr] (strptr(l) -<lin,prf> void | strptr(l)) = "#atslib_strsignal"
+// end of [strsignal]
+
+(* ****** ****** *)
+
 (* end of [signal.sats] *)

@@ -115,8 +115,11 @@ ats_exit_errmsg (
 
 ats_void_type
 atspre_assertfalse () {
+//
+extern void ats_crash() ;
+//
   fprintf(stderr, "[assertfalse] executed\n") ;
-  ats_crash() ; // HX: this likely causes a core dump!
+  ats_crash() ; // HX: this is likely to cause a core dump!
   return ;
 } // end of [atspre_asertfasle]
 
