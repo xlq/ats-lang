@@ -30,10 +30,10 @@
 *)
 
 (* ****** ****** *)
-
+//
 // Author: Hongwei Xi (hwxi AT cs DOT bu DOT edu)
 // Time: January 2008
-
+//
 (* ****** ****** *)
 
 (* Mainly for handling assignments during type-checking *)
@@ -130,7 +130,8 @@ end // end of [s2exp_addr_slablst_assgn]
 (* ****** ****** *)
 
 implement
-d2var_lin_slablst_assgn (loc0, d2v, s2ls, s2e_new) = let
+d2var_lin_slablst_assgn
+  (loc0, d2v, s2ls, s2e_new) = let
 //
 // HX-2010-10-20:
 // if [d2v] is a nonlinear variable, that is, d2v.dvar_lin = ~1,
@@ -159,16 +160,22 @@ d2var_lin_slablst_assgn (loc0, d2v, s2ls, s2e_new) = let
   end // end of [val]
 *)
   val () = trans3_env_add_proplst (loc0, cstr)
-  val () = if s2exp_is_linear s2e_old then begin // linearity checking
-    prerr loc0;
-    prerr ": error(3)";
-    prerr ": a linear value of the type [";
-    prerr s2e_old;
-    prerr "] is abandoned.";
-    prerr_newline ();
-    $Err.abort {void} ()
+  val () = if d2var_is_linear (d2v) then let
+//
+// HX-2010-10-24: [s2e_old] must be nonlinear if [d2v] is nonlinear
+//
+    val () = if s2exp_is_linear s2e_old then begin // linearity checking
+      prerr loc0;
+      prerr ": error(3)";
+      prerr ": a linear value of the type [";
+      prerr s2e_old;
+      prerr "] is abandoned.";
+      prerr_newline ();
+      $Err.abort {void} ()
+    end // end of [val]
+  in
+    d2var_lin_inc (d2v)
   end // end of [val]
-  val () = if d2var_is_linear (d2v) then d2var_lin_inc (d2v)
   val () = d2var_typ_set (d2v, Some s2e0)
 in
   s2ls

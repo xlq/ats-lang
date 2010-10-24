@@ -31,8 +31,6 @@ staload "libc/SATS/unistd.sats"
 
 (* ****** ****** *)
 
-extern fun lockpath (name: string): Stropt = "lockpath"
-
 %{^
 
 static
@@ -43,17 +41,22 @@ ats_ptr_type lockpath (ats_ptr_type name) {
   return path ;
 } // end of [lockpath]
 
-%}
+%} // end of [%{^]
+
+extern
+fun lockpath (name: !READ(string)): Stropt = "lockpath"
 
 (* ****** ****** *)
 
-extern fun lock (name: string): bool
-extern fun unlock (name: string): bool
+extern fun lock (name: !READ(string)): bool
+extern fun unlock (name: !READ(string)): bool
 
 (* ****** ****** *)
 
 macdef errno_is_EAGAIN () = (errno_get () = EAGAIN)
 macdef errno_is_EEXIST () = (errno_get () = EEXIST)
+
+(* ****** ****** *)
 
 implement lock (name) = let
   val path = lockpath (name)
@@ -70,14 +73,14 @@ in
       in
         if (fd >= 0) then let
           prval open_v_succ (pf_fd) = pf_fdopt
+          val () = close_loop_exn (pf_fd | fd)
         in
-          close_loop_exn (pf_fd | fd); 0(*success*)
+          0(*success*)
         end else let
           prval open_v_fail () = pf_fdopt
         in
           if errno_is_EEXIST () then
-            (if n >= MAXTRIES - 1 then (errno_set EAGAIN; ~1)
-                                  else loop (path, flag, n+1))
+            (if n >= MAXTRIES - 1 then (errno_set EAGAIN; ~1) else loop (path, flag, n+1))
           else ~1(*failure*) 
         end (* end of [if] *)
       end // end of [loop]

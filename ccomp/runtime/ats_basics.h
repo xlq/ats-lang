@@ -58,6 +58,7 @@
 
 /* ****** ****** */
 
+#define ATSextfun() extern
 #define ATSinline() static inline
 
 /* ****** ****** */

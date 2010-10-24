@@ -67,13 +67,13 @@ castfn uint16_of_in_port_nbo (x: in_port_nbo_t): uint16_nbo
 (* ****** ****** *)
 
 fun inet_aton_err (
-  cp: string
+  cp: !READ(string)
 , inp: &in_addr_struct? >> opt (in_addr_struct, b)
 ) : #[b:bool] bool b = "atslib_inet_aton_err"
 // end of [inet_aton_err]
 
 fun inet_aton_exn (
-  cp: string, inp: &in_addr_struct? >> in_addr_struct
+  cp: !READ(string), inp: &in_addr_struct? >> in_addr_struct
 ) :<!exn> void = "atslib_inet_aton_exn"
 // end of [inet_aton_exn]
 
@@ -83,9 +83,9 @@ fun inet_aton_exn (
 // -1 from 255.255.255.255 (a valid address)
 //
 fun inet_addr
-  (cp: string): in_addr_nbo_t = "#atslib_inet_addr"
+  (cp: !READ(string)): in_addr_nbo_t = "#atslib_inet_addr"
 fun inet_network
-  (cp: string): in_addr_hbo_t = "#atslib_inet_network"
+  (cp: !READ(string)): in_addr_hbo_t = "#atslib_inet_network"
 
 (* ****** ****** *)
 
@@ -117,13 +117,13 @@ fun inet_netof
 (* ****** ****** *)
 
 fun inet4_pton (
-    cp: string // af=AF_INET
+    cp: !READ(string) // af=AF_INET
   , inp: &in_addr_struct? >> opt (in_addr_struct, i > 0)
   ) : #[i:int] int (i) = "#atslib_inet4_pton"
 // end of [inet4_pton]
 
 fun inet6_pton (
-    cp: string // af= AF_INET6
+    cp: !READ(string) // af= AF_INET6
   , inp: &in_addr_struct? >> opt (in_addr_struct, i > 0)
   ) : #[i:int] int (i) = "#atslib_inet6_pton"
 // end of [inet6_pton]

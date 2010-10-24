@@ -40,13 +40,15 @@ staload "ats_charlst.sats"
 
 (* ****** ****** *)
 
-implement charlst_free (cs) = begin case+ cs of
+implement
+charlst_free (cs) = begin case+ cs of
   | ~CHARLSTcons (c, cs) => charlst_free cs | ~CHARLSTnil () => ()
 end // end of [charlst_free]
 
-//
+(* ****** ****** *)
 
-implement charlst_length (cs) = aux (cs, 0) where {
+implement
+charlst_length (cs) = aux (cs, 0) where {
   fun aux {i,j:nat}
     (cs: !charlst_vt i, j: int j)
     : int (i+j) = begin case+ cs of
@@ -57,9 +59,10 @@ implement charlst_length (cs) = aux (cs, 0) where {
   end // end of [aux]
 } // end of [charlst_length]
 
-//
+(* ****** ****** *)
 
-implement charlst_add_string {m,n}
+implement
+charlst_add_string {m,n}
   (cs, str) = loop (str, 0, cs) where {
   fun loop {m,i:nat | i <= n} .<n-i>.
     (str: string n, i: size_t i, cs: charlst_vt m)
@@ -70,26 +73,34 @@ implement charlst_add_string {m,n}
   // end of [loop]
 } // end of [charlst_add_string]
 
-//
+(* ****** ****** *)
 
-implement string_make_charlst_rev (cs) = begin
+implement
+string_make_charlst_rev (cs) = begin
   string_make_charlst_rev_int (cs, charlst_length cs)
 end // end of [string_make_charlst_rev]
 
-//
+(* ****** ****** *)
 
-extern fun charlst_is_nil {n:nat} (cs: !charlst_vt n): bool (n == 0) =
-  "atsopt_charlst_is_nil"
+extern
+fun charlst_is_nil {n:nat}
+  (cs: !charlst_vt n): bool (n == 0) = "atsopt_charlst_is_nil"
+// end of [fun charlst_is_nil]
 
-extern fun
-charlst_uncons {n:pos} (cs: &charlst_vt n >> charlst_vt (n-1)): char =
-  "atsopt_charlst_uncons"
-
-implement charlst_is_nil (cs) = case+ cs of
+implement
+charlst_is_nil (cs) = case+ cs of
   | CHARLSTcons _ => (fold@ cs; false) | CHARLSTnil _ => (fold@ cs; true)
 // end of [charlst_is_nil]
 
-implement charlst_uncons (cs) =
+(* ****** ****** *)
+
+extern
+fun charlst_uncons {n:pos}
+  (cs: &charlst_vt n >> charlst_vt (n-1)): char = "atsopt_charlst_uncons"
+// end of [fun charlst_uncons]
+
+implement
+charlst_uncons (cs) =
   let val+ ~CHARLSTcons (c, cs_r) = cs in cs := cs_r; c end
 // end of [charlst_uncons]
 
@@ -97,13 +108,12 @@ implement charlst_uncons (cs) =
 
 %{^
 
-extern
-ats_char_type
-atsopt_charlst_uncons (ats_ref_type) ;
+ATSextfun()
+ats_char_type atsopt_charlst_uncons (ats_ref_type) ;
 
 ats_ptr_type
 string_make_charlst_rev_int (
-  ats_ptr_type cs, const ats_int_type n
+  ats_ptr_type cs, ats_int_type n
 ) {
   char *s;
   s = ATS_MALLOC (n+1) ; s += n ; *s = '\000' ;
