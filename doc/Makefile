@@ -40,6 +40,10 @@ IMPLEMENTATION::
 	scp IMPLEMENTATION/implementation.html \
           ats-hwxi@web.sourceforge.net:/home/groups/a/at/ats-lang/htdocs/IMPLEMENTATION/implementation.html
 
+IMPLEMENTATION/ATSOPT::
+	scp -r IMPLEMENTATION/ATSOPT \
+          ats-hwxi@web.sourceforge.net:/home/groups/a/at/ats-lang/htdocs/IMPLEMENTATION
+
 RESOURCE::
 	scp RESOURCE/resource.html \
           ats-hwxi@web.sourceforge.net:/home/groups/a/at/ats-lang/htdocs/RESOURCE/resource.html

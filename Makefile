@@ -165,7 +165,7 @@ atsopt0-geizella::
 
 ###### bootstrapping ######
 
-bootstrapping:: ; cd src; $(MAKE) -f ./Makefile_srcbootstrap all
+bootstrapping:: ; $(MAKE) -C src -f ./Makefile_srcbootstrap all
 
 ###### w/o GC ######
 

@@ -206,8 +206,7 @@ praxi sockaddr_trans_in {l:addr}
 
 typedef
 in6_addr_struct =
-$extype_struct
-"ats_in6_addr_type" of {
+$extype_struct "ats_in6_addr_type" of {
   s6_addr= @[uint8][16] // IPv6 address of 16 bytes
 } // end of [in6_addr_struct]
 

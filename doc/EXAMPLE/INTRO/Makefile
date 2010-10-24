@@ -94,12 +94,13 @@ RMF = rm -f
 ######
 
 clean::
+	$(RMF) ~
 	$(RMF) ./INTRO/*
-	$(RMF) *_dats.c *_sats.c *_dats.html *_sats.html *~
+	$(RMF) *_dats.c *_sats.c
 
 cleanall:: clean
+	$(RMF) ./XREF/*
 	$(RMF) *_?ats.html
-	$(RMF) XREF/*_?ats.html
 	if [ -f HelloWorld ] ; then rm HelloWorld ; fi
 	if [ -f f91 ] ; then rm f91 ; fi
 	if [ -f fact1 ] ; then rm fact1 ; fi

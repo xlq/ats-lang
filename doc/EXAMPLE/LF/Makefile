@@ -135,10 +135,16 @@ xref::
 
 ######
 
+RMF = rm -f
+
+######
+
 clean::
-	rm -f *_dats.c *_sats.c *~
+	$(RMF) *~
+	$(RMF) *_?ats.c *_?ats.o
 
 cleanall: clean
-	rm -f *_?ats.html
+	$(RMF) *_?ats.html
+	$(RMF) XREF/*.html
 
 ###### end of [Makefile] ######

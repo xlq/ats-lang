@@ -74,6 +74,17 @@ GC_o=gc_o
 ATSLEX=$(ATSHOME)/bin/atslex
 
 ######
+#
+# HX: The following files are only needed for BOOTSTRAPPING:
+#
+# prelude_dats_array.dats
+# prelude_dats_basics.dats
+# prelude_dats_file.dats
+# prelude_dats_integer.dats
+# prelude_dats_printf.dats
+# prelude_dats_string.dats
+#
+######
 
 SOURCES := \
   ats_array.sats ats_array.dats \
@@ -171,9 +182,9 @@ SOURCESsta := $(filter %.sats, $(SOURCES))
 SOURCESdyn := $(filter %.dats, $(SOURCES))
 
 OBJECTS := $(SOURCES)
-OBJECTS := $(patsubst %.dats, %_dats.o, $(OBJECTS))
 OBJECTS := $(patsubst %.sats, %_sats.o, $(OBJECTS))
 OBJECTS := $(patsubst %.lats, %_lats_dats.o, $(OBJECTS))
+OBJECTS := $(patsubst %.dats, %_dats.o, $(OBJECTS))
 
 ######
 
@@ -245,6 +256,30 @@ gc_o:
 
 gc_mt_o:
 	cd $(ATSHOME)/ccomp/runtime/GCATS; $(MAKE) gc_mt.o; $(MAKE) clean
+
+######
+
+XREFOBJ := \
+  libats_lex_lexing.dats \
+  libats_lex_tables.dats \
+  libats_lex_lexing.sats \
+  libc_sats_gmp.sats \
+  libc_sats_time.sats \
+  libc_dats_unistd.dats \
+
+XREFOBJ += $(SOURCES)
+
+XREFOBJ := $(patsubst %.sats, %_sats.html, $(XREFOBJ))
+XREFOBJ := $(patsubst %.dats, %_dats.html, $(XREFOBJ))
+
+xref:: $(XREFOBJ)
+	$(ATSOPT) --posmark_xref=XREF -d $(ATSHOME)/utils/xref/ats_prelude_xref.dats > /dev/null
+
+%_sats.html: %.sats
+	$(ATSOPT) --posmark_xref=XREF -s $< > $@
+
+%_dats.html: %.dats
+	$(ATSOPT) --posmark_xref=XREF -d $< > $@
 
 ######
 

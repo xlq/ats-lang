@@ -164,45 +164,85 @@ html::
 	$(ATSOPT) --posmark_html -d sieve_lazy.dats > sieve_lazy_dats.html
 	$(ATSOPT) --posmark_html -d strmat.dats > strmat_dats.html
 	$(ATSOPT) --posmark_html -d sumup.dats > sumup_dats.html
+	$(ATSOPT) --posmark_html -d \
+          systemf_programming_examples.dats > systemf_programming_examples_dats.html
 	$(ATSOPT) --posmark_html -d tetrix.dats > tetrix_dats.html
 	$(ATSOPT) --posmark_html -d wc.dats > wc_dats.html
 
 ######
 
+xref::
+	$(ATSOPT) --posmark_xref=XREF -d \
+          $(ATSHOME)/utils/xref/ats_prelude_xref.dats > /dev/null
+	$(ATSOPT) --posmark_xref=XREF -d AutoDiff.dats > AutoDiff_dats.html
+	$(ATSOPT) --posmark_xref=XREF -d coin_flip.dats > coin_flip_dats.html
+	$(ATSOPT) --posmark_xref=XREF -d curve.dats > curve_dats.html
+	$(ATSOPT) --posmark_xref=XREF -d fft.dats > fft_dats.html
+	$(ATSOPT) --posmark_xref=XREF -d GaussElim.dats > GaussElim_dats.html
+	$(ATSOPT) --posmark_xref=XREF -d GarsiaWachs.dats > GarsiaWachs_dats.html
+	$(ATSOPT) --posmark_xref=XREF -d gcd_mt.dats > gcd_mt_dats.html
+	$(ATSOPT) --posmark_xref=XREF -d hanoi.dats > hanoi_dats.html
+	$(ATSOPT) --posmark_xref=XREF -d isqrt.dats > isqrt_dats.html
+	$(ATSOPT) --posmark_xref=XREF -d kmp.dats > kmp_dats.html
+	$(ATSOPT) --posmark_xref=XREF -d longestline.dats > longestline_dats.html
+	$(ATSOPT) --posmark_xref=XREF -d passwdgen.dats > passwdgen_dats.html
+	$(ATSOPT) --posmark_xref=XREF -d pi_lazy.dats > pi_lazy_dats.html
+	$(ATSOPT) --posmark_xref=XREF -d quicksort_list.dats > quicksort_list_dats.html
+	$(ATSOPT) --posmark_xref=XREF -d quicksort2_list.dats > quicksort2_list_dats.html
+	$(ATSOPT) --posmark_xref=XREF -d queens.dats > queens_dats.html
+	$(ATSOPT) --posmark_xref=XREF -d queens_appel.dats > queens_appel_dats.html
+	$(ATSOPT) --posmark_xref=XREF -d queens_lazy_vt.dats > queens_lazy_vt_dats.html
+	$(ATSOPT) --posmark_xref=XREF -d sieve.dats > sieve_dats.html
+	$(ATSOPT) --posmark_xref=XREF -d sieve_lazy.dats > sieve_lazy_dats.html
+	$(ATSOPT) --posmark_xref=XREF -d strmat.dats > strmat_dats.html
+	$(ATSOPT) --posmark_xref=XREF -d sumup.dats > sumup_dats.html
+	$(ATSOPT) --posmark_xref=XREF -d \
+          systemf_programming_examples.dats > systemf_programming_examples_dats.html
+	$(ATSOPT) --posmark_xref=XREF -d tetrix.dats > tetrix_dats.html
+	$(ATSOPT) --posmark_xref=XREF -d wc.dats > wc_dats.html
+
+######
+
+RMF = rm -f
+
+######
+
 clean::
-	rm -f MISC/*
-	rm -f *_dats.c *_sats.c *_dats.html *_sats.html *~
+	$(RMF) *~
+	$(RMF) ./MISC/*
+	$(RMF) *_dats.c *_sats.c
 
 cleanall:: clean
-	rm -f a.out
-	rm -f AutoDiff
-	rm -f coin_flip
-	rm -f curve
-	rm -f fft
-	rm -f GaussElim
-	rm -f GarsiaWachs
-	rm -f gcd_mt
-	rm -f hamming_lazy
-	rm -f hanoi
-	rm -f isqrt
-	rm -f kmp
-	rm -f longestline
-	rm -f montecarlo
-	rm -f passwdgen
-	rm -f Peano
-	rm -f pi_lazy
-	rm -f quicksort_list
-	rm -f quicksort2_list
-	rm -f queens
-	rm -f queens_appel
-	rm -f queens_lazy_vt
-	rm -f sieve
-	rm -f strmat
-	rm -f sieve_lazy
-	rm -f sieve_lazy_vt
-	rm -f sumup
-	rm -f systemf_programming_examples
-	rm -f tetrix
-	rm -f wc
+	$(RMF) ./XREF/*
+	$(RMF) *_?ats.html
+	$(RMF) AutoDiff
+	$(RMF) coin_flip
+	$(RMF) curve
+	$(RMF) fft
+	$(RMF) GaussElim
+	$(RMF) GarsiaWachs
+	$(RMF) gcd_mt
+	$(RMF) hamming_lazy
+	$(RMF) hanoi
+	$(RMF) isqrt
+	$(RMF) kmp
+	$(RMF) longestline
+	$(RMF) montecarlo
+	$(RMF) passwdgen
+	$(RMF) Peano
+	$(RMF) pi_lazy
+	$(RMF) quicksort_list
+	$(RMF) quicksort2_list
+	$(RMF) queens
+	$(RMF) queens_appel
+	$(RMF) queens_lazy_vt
+	$(RMF) sieve
+	$(RMF) strmat
+	$(RMF) sieve_lazy
+	$(RMF) sieve_lazy_vt
+	$(RMF) sumup
+	$(RMF) systemf_programming_examples
+	$(RMF) tetrix
+	$(RMF) wc
 
 ###### end of [Makefile] ######

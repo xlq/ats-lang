@@ -75,4 +75,4 @@ end // end of [main]
 
 (* ****** ****** *)
 
-(* end of [daytimetcpclient.dats] *)
+(* end of [daytime_tcpclient.dats] *)

@@ -38,34 +38,14 @@
 <MENU>
 
 <LI>
-<A HREF="Proto/">ATS/Proto</A> is the first implementation of ATS.  In this
-implementation, the standard boxed data representation is used to support
-parametric polymorphism. As of now, ATS/Proto is no longer actively
-maintained and its main purpose is to serve as an example for future
-reference.
-<P>
-
-<LI>
 <A
-HREF="http://ats-lang.svn.sourceforge.net/viewvc/ats-lang/bootstrap/geizella">ATS/Geizella</A>
-is a previously released implementation of ATS (written in <A
-HREF="http://www.ocaml.org">Objective Caml</A> and C). In this
-implementation, the native unboxed data representation (as is in C) is
-adopted, and this makes ATS/Geizella particularly well suited for direct
-interaction with C.  As for parametric polymorphism, it is supported in
-ATS/Geizella through the use of templates.  ATS/Geizella is now largely out
-of active use as ATS/Anairiats, a compiler for ATS that is almost entirely
-written in ATS, has been bootstrapped successfully (with the help of
-ATS/Geizella).
-<P>
-
-<LI>
-<A HREF="http://ats-lang.svn.sourceforge.net/viewvc/ats-lang/trunk">ATS/Anairiats</A>
+HREF="http://ats-lang.svn.sourceforge.net/viewvc/ats-lang/trunk">ATS/Anairiats</A>
 is the currently released implementation of ATS. ATS/Anairiats is written
-in ATS itself, consisting of more than 90,000 lines of source code.  When
-compared to ATS/Geizella, ATS/Anairiats is significantly more efficient,
-and in general it issues more informative messages for identifying program
-errors.
+in ATS itself, consisting of more than 90,000 lines of <A
+HREF="ATSOPT/ATSOPT.html">source code</A>.  When compared to ATS/Geizella,
+a previous implementation of ATS, ATS/Anairiats is significantly more
+efficient, and in general it issues more informative messages for
+identifying program errors.
 <P>
 
 <B>Bootstrapping via gcc</B>&nbsp;
@@ -118,6 +98,28 @@ available for bootstrapping, which currently is "0.1.3".  It also works
 
 After this is done, please go into the directory "FOO" and execute the
 command 'aclocal' and then the command 'autoconf' and then do 'make all-geizella'.
+<P>
+
+<LI>
+<A
+HREF="http://ats-lang.svn.sourceforge.net/viewvc/ats-lang/bootstrap/geizella">ATS/Geizella</A>
+is a previously released implementation of ATS (written in <A
+HREF="http://www.ocaml.org">Objective Caml</A> and C). In this
+implementation, the native unboxed data representation (as is in C) is
+adopted, and this makes ATS/Geizella particularly well suited for direct
+interaction with C.  As for parametric polymorphism, it is supported in
+ATS/Geizella through the use of templates.  ATS/Geizella is now largely out
+of active use as ATS/Anairiats, a compiler for ATS that is almost entirely
+written in ATS, has been bootstrapped successfully (with the help of
+ATS/Geizella).
+<P>
+
+<LI>
+<A HREF="Proto/">ATS/Proto</A> is the first implementation of ATS.  In this
+implementation, the standard boxed data representation is used to support
+parametric polymorphism. As of now, ATS/Proto is no longer actively
+maintained and its main purpose is to serve as an example for future
+reference.
 <P>
 
 </MENU>

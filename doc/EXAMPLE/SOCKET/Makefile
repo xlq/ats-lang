@@ -4,6 +4,10 @@
 #
 ######
 
+CFLAGS=-std=gnu99  -pedantic
+
+######
+
 ATSHOMEQ=$(or "$(ATSHOME)", "/usr")
 ATSCC=$(ATSHOMEQ)/bin/atscc
 ATSOPT=$(ATSHOMEQ)/bin/atsopt
@@ -29,23 +33,23 @@ compall: \
 ######
 
 daytime_tcpclient: daytime_tcpclient.dats
-	$(ATSCC) -o daytime_tcpclient daytime_tcpclient.dats
+	$(ATSCC) $(CFLAGS) -o daytime_tcpclient daytime_tcpclient.dats
 
 daytime_tcpserver: daytime_tcpserver.dats
-	$(ATSCC) -o daytime_tcpserver daytime_tcpserver.dats
+	$(ATSCC) $(CFLAGS) -o daytime_tcpserver daytime_tcpserver.dats
 
 ######
 
 echo_tcpclient: echo_tcpclient.dats
-	$(ATSCC) -o echo_tcpclient echo_tcpclient.dats
+	$(ATSCC) $(CFLAGS) -o echo_tcpclient echo_tcpclient.dats
 
 echo_tcpserver: echo_tcpserver.dats
-	$(ATSCC) -o echo_tcpserver echo_tcpserver.dats
+	$(ATSCC) $(CFLAGS) -o echo_tcpserver echo_tcpserver.dats
 
 ######
 
 echo_preforking: echo_preforking.dats
-	$(ATSCC) -o echo_preforking echo_preforking.dats
+	$(ATSCC) $(CFLAGS) -o echo_preforking echo_preforking.dats
 
 ######
 
@@ -75,12 +79,12 @@ RMF = rm -f
 
 clean::
 	$(RMF) *~
-	$(RMF) *_dats.c *_dats.o
+	$(RMF) *_?ats.c *_?ats.o
 	$(RMF) ./SOCKET/*
 
 cleanall:: clean
+	$(RMF) ./XREF/*
 	$(RMF) *_?ats.html
-	$(RMF) XREF/*_?ats.html
 	$(RMF) daytime_tcpserver
 	$(RMF) daytime_tcpclient
 	$(RMF) echo_tcpserver

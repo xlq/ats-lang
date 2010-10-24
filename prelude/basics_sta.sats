@@ -142,19 +142,21 @@ abstype string_type // boxed type
 abst@ype strbuf_t0ype // a type of variable size
 
 (* ****** ****** *)
-
-abst@ype void_t0ype =
-  $extype "ats_void_type" // sizeof (void) = 1
-// end of [void_t0ype]
-
-abst@ype empty_t0ype =
-  $extype "ats_empty_type" // sizeof (empty) = 0
-// end of [empty_t0ype]
+//
+// HX-2010-10-23:
+// sizeof (void) is undefined in the standard but GCC sets it to 1
+// For instance, try to compile with the flags: '-ansi' and '-pedantic'
+//
+abst@ype void_t0ype = $extype "ats_void_type"
+//
+// HX-2010-10-23: [ats_empty_type] is a struct of no fields
+//
+abst@ype empty_t0ype = $extype "ats_empty_type" // sizeof(empty) = 0
 
 (* ****** ****** *)
-
+//
 // some built-in static constants for integer operations
-
+//
 sta neg_int_int : int -> int (* integer negation *)
 stadef ~ = neg_int_int
 
