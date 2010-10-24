@@ -425,4 +425,4 @@ mainats (
 
 (* ****** ****** *)
 
-(* end of [demo_bsearch.dats] *)
+(* end of [bsearch_demo.dats] *)

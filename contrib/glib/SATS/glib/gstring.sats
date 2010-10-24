@@ -87,7 +87,7 @@ fun g_string_new_null
 overload g_string_new with g_string_new_null 
 
 fun g_string_new_init
-  {l:addr} (init: !gstring l): GString_ptr1 = "#atsctrb_g_string_new_init"
+  {l:addr} (init: !READ(gstring(l))): GString_ptr1 = "#atsctrb_g_string_new_init"
 overload g_string_new with g_string_new_init 
 
 (* ****** ****** *)
@@ -116,18 +116,21 @@ fun g_string_assign {l,l1:addr | l > null}
 // end of [g_string_assign]
 
 (* ****** ****** *)
-
-// string = string + _val
+//
+// HX: string = string ++ _val
+//
 fun g_string_append {l,l1:addr | l > null}
   (string: !GString_ptr l, _val: !gstring l1): ptr l = "#atsctrb_g_string_append"
 // end of [g_string_append]
-
-// string = string + c
+//
+// HX: string = string ++ c
+//
 fun g_string_append_c {l:agz}
   (string: !GString_ptr l, c: gchar): ptr l = "#atsctrb_g_string_append_c"
 // end of [g_string_append_c]
-
-// string = string + _val
+//
+// string = string ++ _val
+//
 fun g_string_append_len
   {l,l1:addr | l > null} {n1,n2:nat | n2 <= n1}
   (string: !GString_ptr l, _val: !gchararrptr (l1, n1), n2: gsize n2): ptr l
@@ -140,30 +143,34 @@ fun g_string_append_len
 // the original content in [string] is overwritten
 //
 fun g_string_printf {l:agz} {ts:types}
-  (string: !GString_ptr l, fmt: printf_c ts, arg: ts): void
+  (string: !READ(GString_ptr(l)), fmt: printf_c ts, arg: ts): void
   = "#atsctrb_g_string_printf"
 // end of [g_string_printf]
 
 fun g_string_append_printf {l:agz} {ts:types}
-  (string: !GString_ptr l, fmt: printf_c ts, arg: ts): void
+  (string: !READ(GString_ptr(l)), fmt: printf_c ts, arg: ts): void
   = "#atsctrb_g_string_append_printf"
 // end of [g_string_append_printf]
 
 (* ****** ****** *)
-
-// string = _val + string
+//
+// HX: string = _val ++ string
+//
 fun g_string_prepend {l:agz}
   (string: !GString_ptr l, _val: string): ptr l
   = "#atsctrb_g_string_prepend"
 // end of [g_string_prepend]
-
-// string = c + string
+//
+// HX: string = c ++ string
+//
 fun g_string_prepend_c {l:agz}
   (string: !GString_ptr l, c: gchar): ptr l
   = "#atsctrb_g_string_prepend_c"
 // end of [g_string_prepend_c]
 
-// string = _val + string
+//
+// HX: string = _val ++ string
+//
 fun g_string_prepend_len
   {l,l1:addr | l > null} {n1,n2:nat}
   (string: !GString_ptr l, _val: !gchararrptr (l1, n1), n2: gsize n2): ptr l
@@ -189,14 +196,17 @@ fun g_string_insert_len
 // end of [g_string_insert_len]
 
 (* ****** ****** *)
-
-// since glib-2.14
+//
+// HX: since glib-2.14
+//
 fun g_string_overwrite {l:agz}
   (string: !GString_ptr l, pos: gssize, _val: string): ptr l
   = "#atsctrb_g_string_overwrite"
 // end of [g_string_overwrite]
 
-// since glib-2.14
+//
+// HX: since glib-2.14
+//
 fun g_string_overwrite_len
   {l,l1:addr | l > null} {n1,n2:nat} (
     string: !GString_ptr l, pos: gssize, _val: !gchararrptr (l1, n1), n2: gsize n2
@@ -232,11 +242,11 @@ fun g_string_free_true
 (* ****** ****** *)
 
 fun g_string_hash {l:agz}
-  (string1: !GString_ptr l): guint = "#atsctrb_g_string_hash"
+  (string1: !READ(GString_ptr(l))): guint = "#atsctrb_g_string_hash"
 // end of [g_string_hash]
 
 fun g_string_equal {l1,l2:agz}
-  (string1: !GString_ptr l1, string2: !GString_ptr l2): gboolean
+  (string1: !READ(GString_ptr(l1)), string2: !READ(GString_ptr(l2))): gboolean
   = "#atsctrb_g_string_equal"
 // end of [g_string_equal]
 

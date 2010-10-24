@@ -70,18 +70,36 @@ html::
 	$(ATSOPT) --posmark_html -d gtkcairoclock.dats > gtkcairoclock_dats.html
 	$(ATSOPT) --posmark_html -d gtkcairopascal.dats > gtkcairopascal_dats.html
 	$(ATSOPT) --posmark_html -d gtkcairopascal.dats > gtkcairopascal_dats.html
-	$(ATSOPT) --posmark_html -d demo_bsearch.dats > demo_bsearch_dats.html
+	$(ATSOPT) --posmark_html -d bsearch_demo.dats > bsearch_demo_dats.html
+
+######
+
+xref::
+	$(ATSOPT) --posmark_xref=XREF -d \
+          $(ATSHOME)/utils/xref/ats_prelude_xref.dats > /dev/null
+	$(ATSOPT) --posmark_xref=XREF -d GameOf24.dats > GameOf24_dats.html
+	$(ATSOPT) --posmark_xref=XREF -d gtkcairoclock.dats > gtkcairoclock_dats.html
+	$(ATSOPT) --posmark_xref=XREF -d gtkcairopascal.dats > gtkcairopascal_dats.html
+	$(ATSOPT) --posmark_xref=XREF -d gtkcairopascal.dats > gtkcairopascal_dats.html
+	$(ATSOPT) --posmark_xref=XREF -d bsearch_demo.dats > bsearch_demo_dats.html
+
+######
+
+RMF = rm -f
 
 ######
 
 clean::
-	rm -f *_dats.c *_sats.c *~
+	$(RMF) *~
+	$(RMF) *_?ats.c
 
 cleanall:: clean
-	rm -f GameOf24 GameOf24_dats.html
-	rm -f gtkcairoclock gtkcairoclock_dats.html
-	rm -f gtkcairopascal gtkcairopascal_dats.html
-	rm -f gtkcairodisc gtkcairodisc_dats.html
-	rm -f demo_bsearch demo_bsearch_dats.html
+	$(RMF) ./XREF/*
+	$(RMF) ./*_?ats.html
+	$(RMF) GameOf24
+	$(RMF) gtkcairoclock
+	$(RMF) gtkcairopascal
+	$(RMF) gtkcairodisc
+	$(RMF) bsearch_demo
 
 ###### end of [Makefile] ######

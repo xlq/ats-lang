@@ -82,23 +82,23 @@ fun difftime
 ** These functions are now kept for backward compatibility
 *)
 fun tm_get_sec
-  (tm: &tm_struct):<> int = "atslib_tm_get_sec"
+  (tm: &READ(tm_struct)):<> int = "atslib_tm_get_sec"
 fun tm_get_min
-  (tm: &tm_struct):<> int = "atslib_tm_get_min"
+  (tm: &READ(tm_struct)):<> int = "atslib_tm_get_min"
 fun tm_get_hour
-  (tm: &tm_struct):<> int = "atslib_tm_get_hour"
+  (tm: &READ(tm_struct)):<> int = "atslib_tm_get_hour"
 fun tm_get_mday
-  (tm: &tm_struct):<> int = "atslib_tm_get_mday"
+  (tm: &READ(tm_struct)):<> int = "atslib_tm_get_mday"
 fun tm_get_mon
-  (tm: &tm_struct):<> int = "atslib_tm_get_mon"
+  (tm: &READ(tm_struct)):<> int = "atslib_tm_get_mon"
 fun tm_get_year
-  (tm: &tm_struct):<> int = "atslib_tm_get_year"
+  (tm: &READ(tm_struct)):<> int = "atslib_tm_get_year"
 fun tm_get_wday
-  (tm: &tm_struct):<> int = "atslib_tm_get_wday"
+  (tm: &READ(tm_struct)):<> int = "atslib_tm_get_wday"
 fun tm_get_yday
-  (tm: &tm_struct):<> int = "atslib_tm_get_yday"
+  (tm: &READ(tm_struct)):<> int = "atslib_tm_get_yday"
 fun tm_get_isdst
-  (tm: &tm_struct):<> int = "atslib_tm_get_isdst"
+  (tm: &READ(tm_struct)):<> int = "atslib_tm_get_isdst"
 
 (* ****** ****** *)
 
@@ -116,7 +116,7 @@ overload time with time_get_and_set
 (* ****** ****** *)
 
 // non-reentrant
-fun ctime (t: &time_t):<!ref>
+fun ctime (t: &READ(time_t)):<!ref>
   [l:addr] (strptr l -<lin,prf> void | strptr l) = "#atslib_ctime"
 // end of [ctime]
 
@@ -128,45 +128,45 @@ dataview ctime_v (m:int, addr, addr) =
 fun ctime_r // reentrant
   {m:int | m >= CTIME_BUFLEN} {l:addr} (
     pf: ! b0ytes (m) @ l >> ctime_v (m, l, l1)
-  | t: &time_t, p_buf: ptr l
+  | t: &READ(time_t), p_buf: ptr l
   ) :<> #[l1:addr] ptr l1 = "#atslib_ctime_r"
 // end of [ctime_r]
 
 (* ****** ****** *)
 
 // [localtime] is non-reentrant
-fun localtime (time: &time_t):<!ref>
+fun localtime (time: &READ(time_t)):<!ref>
   [l:addr] (ptroutopt (tm_struct, l) | ptr l) = "#atslib_localtime"
 // end of [localtime]
 
 // [localtime_r] is reentrant
 fun localtime_r (
-    time: &time_t, tm: &tm_struct? >> opt (tm_struct, l > null)
+    time: &READ(time_t), tm: &tm_struct? >> opt (tm_struct, l > null)
   ) :<> #[l:addr] ptr l = "#atslib_localtime_r"
 // end of [localtime_r]
 
 (* ****** ****** *)
 
 // [gmtime] is non-reentrant
-fun gmtime (time: &time_t):<!ref>
+fun gmtime (time: &READ(time_t)):<!ref>
   [l:addr] (ptroutopt (tm_struct, l) | ptr l) = "#atslib_gmtime"
 // end of [gmtime]
 
 // [gmtime_r] is reentrant
 fun gmtime_r (
-    time: &time_t, tm: &tm_struct? >> opt (tm_struct, l > null)
+    time: &READ(time_t), tm: &tm_struct? >> opt (tm_struct, l > null)
   ) :<> #[l:addr] ptr l = "#atslib_gmtime_r"
 // end of [gmtime_r]
 
 (* ****** ****** *)
 
 fun mktime
-  (tm: &tm_struct): time_t = "#atslib_mktime" // returns -1 on error
+  (tm: &READ(tm_struct)): time_t = "#atslib_mktime" // returns -1 on error
 // end of [mktime]
 
 (* ****** ****** *)
 
-fun asctime (tm: &tm_struct):<!ref>
+fun asctime (tm: &READ(tm_struct)):<!ref>
   [l:addr] (strptr l -<lin,prf> void | strptr l) = "#atslib_asctime"
 // end of [asctime]
 
@@ -174,7 +174,7 @@ fun asctime (tm: &tm_struct):<!ref>
 
 fun strftime {m:pos} {l:addr} (
     pf: !b0ytes m @ l >> strbuf (m, n) @ l
-  | p: ptr l, m: size_t m, fmt: string, tm: &tm_struct
+  | p: ptr l, m: size_t m, fmt: !READ(string), tm: &READ(tm_struct)
   ) :<> #[n:nat | n < m] size_t n
   = "#atslib_strftime" // this a macro!
 // end of [strftime]
@@ -189,7 +189,7 @@ fun strftime {m:pos} {l:addr} (
 //
 fun getdate_err_get ():<> int = "atslib_getdate_err_get"
 fun getdate_err_set (x: int):<> void = "atslib_getdate_err_set"
-fun getdate (str: string):<!ref>
+fun getdate (str: !READ(string)):<!ref>
   [l:addr] (ptroutopt (tm_struct, l) | ptr l) = "#atslib_getdate"
 // end of [getdate]
 *)
@@ -198,8 +198,8 @@ fun getdate (str: string):<!ref>
 // -D_XOPEN_SOURCE
 //
 fun strptime (
-    str: string
-  , fmt: string
+    str: !READ(string)
+  , fmt: !READ(string)
   , tm: &tm_struct? >> opt (tm_struct, l > null)
   ) : #[l:addr] ptr l = "#atslib_strptime" // HX: it returns NULL on error
 // end of [strptime]
@@ -243,11 +243,11 @@ typedef timespec = timespec_struct
 // HX: 0/-1 : succ/fail // errno set to EINTR
 //
 fun nanosleep (
-    nsec: &timespec, rem: &timespec? >> opt (timespec, i==0)
-  ) : #[i:int | i <= 0] int(i) = "#atslib_nanosleep"
+  nsec: &READ(timespec), rem: &timespec? >> opt (timespec, i==0)
+) : #[i:int | i <= 0] int(i) = "#atslib_nanosleep"
 // end of [nanosleep]
 
-fun nanosleep_null (nsec: &timespec): int = "#atslib_nanosleep_null"
+fun nanosleep_null (nsec: &READ(timespec)): int = "#atslib_nanosleep_null"
 
 (* ****** ****** *)
 
@@ -264,28 +264,28 @@ macdef CLOCK_PROCESS_CPUTIME_ID = $extval (clockid_t, "CLOCK_PROCESS_CPUTIME_ID"
 // HX: 0/-1 : succ/fail // errno set
 //
 fun clock_gettime (
-    id: clockid_t
-  , tp: &timespec? >> opt (timespec, i==0)
-  ) : #[i:int | i <= 0] int(i) = "#atslib_clock_gettime"
+  id: clockid_t
+, tp: &timespec? >> opt (timespec, i==0)
+) : #[i:int | i <= 0] int(i) = "#atslib_clock_gettime"
 // end of [clock_gettime]
 //
 // HX: 0/-1 : succ/fail // errno set
 //
 fun clock_getres (
-    id: clockid_t
-  , tp: &timespec? >> opt (timespec, i==0)
-  ) : #[i:int | i <= 0] int(i) = "#atslib_clock_getres"
+  id: clockid_t
+, tp: &timespec? >> opt (timespec, i==0)
+) : #[i:int | i <= 0] int(i) = "#atslib_clock_getres"
 // end of [clock_getres]
 
 // HX: superuser privilege is needed for this one
 fun clock_settime // HX: 0/-1 : succ/fail // errno set
-  (id: clockid_t, tp: &timespec): int = "#atslib_clock_settime"
+  (id: clockid_t, tp: &READ(timespec)): int = "#atslib_clock_settime"
 // end of [clock_settime]
 
 (* ****** ****** *)
 
-stadef timer_t = $TYPES.timer_t
 absview timer_v (i:int)
+stadef timer_t = $TYPES.timer_t
 
 (* ****** ****** *)
 
@@ -330,7 +330,7 @@ fun timer_gettime {id:int} (
 fun timer_settime {id:int} (
     pf: !timer_v (id)
   | tid: timer_t (id)
-  , newitp: &itimerspec
+  , newitp: &READ(itimerspec)
   , olditp: &itimerspec? >> opt (itimerspec, i==0)
   ) : #[i: int | i <= 0] int i = "#atslib_timer_settime"
 // end of [timer_settime]
@@ -340,8 +340,7 @@ fun timer_settime {id:int} (
 // HX: 0/-1 : succ/fail // errno set
 //
 fun timer_getoverrun {id:int}
-  (pf: !timer_v (id) | tid: timer_t (id))
-  : intGte (~1) = "#atslib_timer_getoverrun"
+  (pf: !timer_v (id) | tid: timer_t (id)): intGte (~1) = "#atslib_timer_getoverrun"
 // end of [timer_getoverrun]
 
 (* ****** ****** *)
