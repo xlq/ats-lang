@@ -54,6 +54,30 @@ staload "libc/sys/SATS/socket_in.sats"
 (* ****** ****** *)
 
 implement
+bind_in_exn
+  (pfsock | sfd, servaddr) = let
+  prval () = sockaddr_in_trans (view@ servaddr)
+  val (pfopt | err) = bind_err (pfsock | sfd, servaddr, socklen_in)
+  prval () = sockaddr_trans_in (view@ servaddr)
+in
+  if err >= 0 then let
+    prval bind_v_succ (pf) = pfopt
+    prval () = pfsock := pf
+  in
+    // nothing
+  end else let
+    prval bind_v_fail (pf) = pfopt
+    prval () = pfsock := pf
+    val () = perror ("bind")
+    val () = exit (EXIT_FAILURE)
+  in
+    bind_in_exn (pfsock | sfd, servaddr) // HX: this is deadcode
+  end // end of [if]
+end // end of [bind_in_exn]
+
+(* ****** ****** *)
+
+implement
 connect_in_exn
   (pfsock | sfd, servaddr) = let
   prval () = sockaddr_in_trans (view@ servaddr)
@@ -77,27 +101,35 @@ end // end of [connect_in_exn]
 
 (* ****** ****** *)
 
+(*
+fun accept_in_err
+  {sfd:int} (
+    pfskt: !socket_v (sfd, listen)
+  | sfd: int sfd
+  , sa: &sockaddr_in_struct? >> opt (sockaddr_in_struct, cfd >= 0)
+  , salen: &socklen_t(0)? >> socklen_t(n)
+  ) : #[cfd:int;n:nat] (accept_v (sfd, cfd) | int cfd)
+// end of [accept_in_err]
+*)
 implement
-bind_in_exn
-  (pfsock | sfd, servaddr) = let
-  prval () = sockaddr_in_trans (view@ servaddr)
-  val (pfopt | err) = bind_err (pfsock | sfd, servaddr, socklen_in)
-  prval () = sockaddr_trans_in (view@ servaddr)
+accept_in_err
+  (pfskt | sfd, sa, salen) = let
+//
+extern
+prfun trans1 {l:addr}
+  (pf: !sockaddr_in? @ l >> sockaddr_struct(socklen_in)? @ l): void
+extern
+prfun trans2 {b:bool} {l:addr}
+  (pf: !opt (sockaddr_struct(socklen_in), b) @ l >> opt (sockaddr_in, b) @ l): void
+//
+  prval () = trans1 (view@(sa))
+  val () = salen := socklen_in
+  val (pfopt | cfd) = accept_err (pfskt | sfd, sa, salen)
+  prval () = trans2 (view@(sa))
+//
 in
-  if err >= 0 then let
-    prval bind_v_succ (pf) = pfopt
-    prval () = pfsock := pf
-  in
-    // nothing
-  end else let
-    prval bind_v_fail (pf) = pfopt
-    prval () = pfsock := pf
-    val () = perror ("bind")
-    val () = exit (EXIT_FAILURE)
-  in
-    bind_in_exn (pfsock | sfd, servaddr) // HX: this is deadcode
-  end // end of [if]
-end // end of [bind_in_exn]
+  (pfopt | cfd)
+end // end of [accept_in_err]
 
 (* ****** ****** *)
 

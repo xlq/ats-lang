@@ -47,7 +47,7 @@ implement{a} array_ptr_alloc
 (* ****** ****** *)
 
 implement{a}
-  array_ptr_initialize_elt (A0, n0, x0) = let
+array_ptr_initialize_elt (A0, n0, x0) = let
   fun aux {n:nat} {l:addr} .<n>.
     (pf: array_v (a?, n, l) | p: ptr l, n: int n, x: a)
     :<> (array_v (a, n, l) | void) =
@@ -69,7 +69,8 @@ end // end of [array_ptr_initialize_elt]
     
 (* ****** ****** *)
 
-implement{a} array_ptr_make_elt (n, x) = let
+implement{a}
+array_ptr_make_elt (n, x) = let
   val (pf_gc, pf | p) = array_ptr_alloc_tsz {a} (n, sizeof<a>)
   val () = array_ptr_initialize_elt<a> (!p, n, x)
 in
@@ -79,7 +80,7 @@ end // end of [array_ptr_make_elt]
 (* ****** ****** *)
 
 implement{a}
-  array_ptr_initialize_lst (A0, xs0) = let
+array_ptr_initialize_lst (A0, xs0) = let
   fun aux {n:nat} {l:addr} .<n>.
     (pf: array_v (a?, n, l) | p: ptr l, xs: list (a, n))
     :<> (array_v (a, n, l) | void) = begin case+ xs of
@@ -99,7 +100,8 @@ in
   view@ A0 := pf
 end // end of [array_ptr_initialize_lst]
 
-implement{a} array_ptr_make_lst (n, xs) = let
+implement{a}
+array_ptr_make_lst (n, xs) = let
   val (pf_gc, pf | p) = array_ptr_alloc_tsz {a} (n, sizeof<a>)
   val () = array_ptr_initialize_lst<a> (!p, xs)
 in
@@ -109,7 +111,7 @@ end // end of [array_ptr_make_lst]
 (* ****** ****** *)
 
 implement{a} // [xs0] is freed
-  array_ptr_initialize_lst_vt (A0, xs0) = let
+array_ptr_initialize_lst_vt (A0, xs0) = let
   fun aux {n:nat} {l:addr} .<n>. (
       pf: array_v (a?, n, l)
     | p: ptr l, xs: list_vt (a, n)
@@ -130,7 +132,8 @@ in
   view@ A0 := pf
 end // end of [array_ptr_initialize_lst_vt]
 
-implement{a} array_ptr_make_lst_vt (n, xs) = let
+implement{a}
+array_ptr_make_lst_vt (n, xs) = let
   val (pf_gc, pf | p) = array_ptr_alloc_tsz {a} (n, sizeof<a>)
   val () = array_ptr_initialize_lst_vt<a> (!p, xs)
 in

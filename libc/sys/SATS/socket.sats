@@ -133,7 +133,7 @@ fun bind_err
 
 macdef SOMAXCONN = $extval (Pos, "SOMAXCONN")
 
-dataview listen_v (fd: int, int) = 
+dataview listen_v (fd:int, int) = 
   | listen_v_fail (fd, ~1) of socket_v (fd, bind) 
   | listen_v_succ (fd,  0) of socket_v (fd, listen)
 // end of [listen_v]
@@ -149,6 +149,24 @@ fun listen_exn {fd:int} (
   | fd: int fd, backlog: Pos // [backlog = 0] is not supported on all systems
   ) : void
 // end of [listen_exn]
+
+(* ****** ****** *)
+
+dataview
+accept_v (fd:int, int(*err*)) =
+  | accept_v_fail (fd, ~1) of ()
+  | {cfd:nat} accept_v_succ (fd, cfd) of socket_v (cfd, conn)
+// end of [accept_v]
+
+fun accept_err
+  {sfd:int} {n:int} (
+  pfskt: !socket_v (sfd, listen)
+| sfd: int sfd
+, sa: &sockaddr_struct(n)? >> opt (sockaddr_struct(n), cfd >= 0)
+, salen: &socklen_t(n) >> socklen_t(n1)
+) : #[cfd:int;n1:nat] (accept_v (sfd, cfd) | int cfd)
+  = "#atslib_accept_err"
+// end of [accept_err]
 
 (* ****** ****** *)
 

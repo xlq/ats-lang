@@ -87,7 +87,8 @@ sta socklen_max: int // length of [sockaddr_storage]
 (* ****** ****** *)
 
 abst@ype socklen_t(n:int) = $extype "socklen_t"
-castfn socklen_of_int {n:nat} (n: int n): socklen_t n
+castfn socklen_of_int1 {n:nat} (n: int n): socklen_t n
+castfn socklen_of_size1 {n:nat} (n: size_t n): socklen_t n
 
 (* ****** ****** *)
 

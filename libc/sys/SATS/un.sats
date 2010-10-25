@@ -56,6 +56,9 @@ $extype_struct "ats_sockaddr_un_type" of {
 typedef sockaddr_un = sockaddr_un_struct
 //
 sta socklen_un : int // length of [sockaddr_un]
+(*
+stadef socklen_un = sizeof (sockaddr_un_struct)
+*)
 macdef socklen_un = $extval (socklen_t(socklen_un), "atslib_socklen_un")
 //
 praxi socklen_lte_un (): [socklen_un <= $SA.socklen_max] void

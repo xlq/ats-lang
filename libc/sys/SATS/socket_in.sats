@@ -58,6 +58,14 @@ fun sockaddr_in_init (
 
 (* ****** ****** *)
 
+fun bind_in_exn {fd:int} (
+    pf_sock: !socket_v (fd, init) >> socket_v (fd, bind)
+  | fd: int fd, servaddr: &sockaddr_in_struct // len=sizeof(sockaddr_in_struct)
+  ) : void
+// end of [bind_in_exn]
+
+(* ****** ****** *)
+
 fun connect_in_exn {fd:int} (
     pf: !socket_v (fd, init) >> socket_v (fd, conn)
   | fd: int fd, servaddr: &sockaddr_in_struct // len=sizeof(sockaddr_in_struct)
@@ -66,11 +74,14 @@ fun connect_in_exn {fd:int} (
 
 (* ****** ****** *)
 
-fun bind_in_exn {fd:int} (
-    pf_sock: !socket_v (fd, init) >> socket_v (fd, bind)
-  | fd: int fd, servaddr: &sockaddr_in_struct // len=sizeof(sockaddr_in_struct)
-  ) : void
-// end of [bind_in_exn]
+fun accept_in_err
+  {sfd:int} (
+    pfskt: !socket_v (sfd, listen)
+  | sfd: int sfd
+  , sa: &sockaddr_in_struct? >> opt (sockaddr_in_struct, cfd >= 0)
+  , salen: &socklen_t(0)? >> socklen_t(n)
+  ) : #[cfd:int;n:nat] (accept_v (sfd, cfd) | int cfd)
+// end of [accept_in_err]
 
 (* ****** ****** *)
 

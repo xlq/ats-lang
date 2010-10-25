@@ -193,9 +193,14 @@ $extype_struct "ats_sockaddr_in_type" of {
 , sin_addr= in_addr_struct
 } // end of [sockaddr_in_struct]
 typedef sockaddr_in = sockaddr_in_struct
-
+//
 sta socklen_in : int // length of [sockaddr_in]
-macdef socklen_in = $extval (socklen_t(socklen_in), "atslib_socklen_in")
+(*
+stadef socklen_in = sizeof (sockaddr_in_struct)
+*)
+macdef socklen_in =
+  $extval (socklen_t(socklen_in), "atslib_socklen_in")
+//
 praxi socklen_lte_in (): [socklen_in <= $SA.socklen_max] void
 praxi sockaddr_in_trans {l:addr}
   (pf: !sockaddr_in_struct @ l >> sockaddr_struct(socklen_in) @ l): void

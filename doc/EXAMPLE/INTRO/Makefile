@@ -94,7 +94,7 @@ RMF = rm -f
 ######
 
 clean::
-	$(RMF) ~
+	$(RMF) *~
 	$(RMF) ./INTRO/*
 	$(RMF) *_dats.c *_sats.c
 

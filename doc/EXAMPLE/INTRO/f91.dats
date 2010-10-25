@@ -7,8 +7,9 @@
 
 //
 // How to compile:
-//
-// atscc -o f91 f91.dats
+//   atscc -o f91 f91.dats
+// How to test:
+//   ./f91
 //
 
 (* ****** ****** *)
@@ -25,12 +26,13 @@ fun f91_usage (cmd: string): void =
 
 (* ****** ****** *)
 
-implement main (argc, argv) = let
+implement
+main (argc, argv) = let
   val () = if argc <> 2 then (f91_usage (argv.[0]); exit (1))
-  val () = assert (argc = 2)
+  val () = assert (argc = 2) // this is redundant but easy to pass typechecking
   val s = argv.[1]
-  val i = int1_of s
-  val res = f91 i
+  val i = int1_of_string (s)
+  val res = f91 (i)
 in
    printf ("f91(%i) = %i\n", @(i, res))
 end // end of [main]
