@@ -1,0 +1,51 @@
+<bookinfo>
+<title>ATS/Cairo Tutorial</title>
+<subtitle></subtitle>
+
+<authorgroup>
+<author>
+<firstname>Hongwei</firstname>
+<surname>Xi</surname>
+<affiliation><address><email>hwxi AT cs DOT bu DOT edu</email></address></affiliation>
+</author>
+</authorgroup>
+
+<date>2010-04-21</date>
+<releaseinfo>0.0.1</releaseinfo>
+
+<abstract>
+<para>
+
+This document is a tutorial on using the <emphasis>cairo</emphasis> drawing
+package in ATS. The reader is assumed to have already acquired some
+rudimentary knowledge of ATS.
+
+</para>
+</abstract>
+
+<copyright>
+<year>2010-201?</year>
+<holder>Hongwei Xi</holder>
+</copyright>
+
+<legalnotice>
+<para>
+
+Permission is granted to copy, distribute and/or modify this document under
+the terms of the GNU Free Documentation License, Version 1.1 or any later
+version published by the Free Software Foundation; with no Invariant
+Sections, with no Front-Cover texts, and with no Back-Cover Texts. A copy
+of the license is included in the section entitled "GNU Free Documentation
+License".
+
+</para>
+</legalnotice>
+
+<keywordset>
+<keyword>ATS</keyword>
+<keyword>Cairo</keyword>
+<keyword>2D</keyword>
+<keyword>Graphics</keyword>
+</keywordset>
+
+</bookinfo>

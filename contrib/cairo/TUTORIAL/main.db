@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE book PUBLIC "-//OASIS//DTD DocBook XML V4.3//EN"
+"http://www.oasis-open.org/docbook/xml/4.3/docbookx.dtd" [
+<!ENTITY bookinfo SYSTEM "src/bookinfo.db">
+<!ENTITY atscairo_basics SYSTEM "src/atscairo_basics.db">
+<!ENTITY tutprog_hw SYSTEM "src/CODE/tutprog_hw_dats.db">
+]>
+<book id="atscairo-tutorial" lang="en">
+&bookinfo;
+<toc></toc>
+<!-- We are done with the preliminaries, now we can start with the body of the document -->
+&atscairo_basics;
+</book>
