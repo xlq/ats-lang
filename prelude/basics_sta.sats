@@ -893,31 +893,30 @@ stadef crypt = crypt_viewt0ype_viewt0ype
 (* ****** ****** *)
 //
 // HX:
-// [lazy T] : suspended computation with a value of type T
+// [lazy(T)] : suspended computation with a value of type T
 //
 abstype lazy_t0ype_type (t@ype+) // boxed type
 stadef lazy = lazy_t0ype_type
 
 //
-// HX: [lazy_vt VT] :
+// HX: [lazy_vt(VT)] :
 // suspended computation with a linear value of viewtype VT
 //
 absviewtype lazy_viewt0ype_viewtype (viewt@ype+) // boxed linear type
 stadef lazy_vt = lazy_viewt0ype_viewtype
 
 (* ****** ****** *)
-
-// lazy streams
+//
+// HX: lazy streams
+//
 datatype stream_con (a:t@ype+) =
   | stream_nil (a) | stream_cons (a) of (a, stream a)
-
 where stream (a:t@ype) = lazy (stream_con a)
-
-// lazy linear streams
+//
+// HX: lazy linear streams
+//
 dataviewtype stream_vt_con (a:viewt@ype+) =
   | stream_vt_nil (a) | stream_vt_cons (a) of (a, stream_vt a)
-// end of [stream_vt_con]
-
 where stream_vt (a:viewt@ype) = lazy_vt (stream_vt_con a)
 
 (* ****** ****** *)

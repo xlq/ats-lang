@@ -24,13 +24,12 @@ staload _(*anonymous*) = "prelude/DATS/array.dats"
 
 extern fun malloc_atm {n:nat}
   (n: int n): [l:addr] @(bytes n @ l | ptr l) = "malloc_atm"
-
 extern fun free_atm {n:nat} {l:addr}
   (pf: bytes n @ l | p: ptr l): void = "free_atm"
 
 %{^
 
-static inline
+ATSinline()
 ats_ptr_type malloc_atm (ats_int_type n) {
   ats_ptr_type p = malloc (n) ;
   if (!p) {
@@ -39,7 +38,7 @@ ats_ptr_type malloc_atm (ats_int_type n) {
   return p ;
 }
 
-static inline
+ATSinline()
 ats_void_type free_atm (ats_ptr_type p) { free (p) ; return ; }
 
 %}
@@ -191,7 +190,7 @@ val answers: array (int, variants_length) = array_make_elt<int> (variants_length
 // this is all standard and should probably go into a library
 static pthread_mutex_t mutex_fin = PTHREAD_MUTEX_INITIALIZER;
 
-static inline
+ATSinline()
 ats_void_type finlock_lock () {
   pthread_mutex_lock (&mutex_fin) ; return ;
 }
@@ -200,7 +199,7 @@ static the_nticket ; static the_nthread ;
 static pthread_mutex_t mutex_nticket = PTHREAD_MUTEX_INITIALIZER;
 static pthread_mutex_t mutex_nthread = PTHREAD_MUTEX_INITIALIZER;
 
-static inline
+ATSinline()
 ats_void_type thread_v_return () {
   int n ;
   pthread_mutex_lock (&mutex_nthread) ;
@@ -220,12 +219,12 @@ ats_int_type nticket_get () {
   return n ;
 }
 
-static inline
+ATSinline()
 ats_void_type main_init () {
   pthread_mutex_lock (&mutex_fin) ; return ;
 }
 
-static inline
+ATSinline()
 ats_void_type nthread_init (ats_int_type n) {
   the_nticket = 0 ; the_nthread = n ; return ;
 }
@@ -330,7 +329,8 @@ extern typedef "int_ptr_type" = @(void | int, ptr)
 %{$
 
 ats_void_type subst_copy (
-  char *dst, char *src, int nsrc, seglst_cons_pstruct sgs, char *sub, int nsub
+  char *dst, char *src, int nsrc
+, seglst_cons_pstruct sgs, char *sub, int nsub
 ) {
   int ofs, beg, len ; seglst_cons_pstruct sgs_nxt ;
   for (ofs = 0 ; ; ) {
@@ -450,4 +450,4 @@ end // end of [main]
 
 (* ****** ****** *)
 
-(* end of [regex-dna.dats] *)
+(* end of [regex-dna_smp.dats] *)

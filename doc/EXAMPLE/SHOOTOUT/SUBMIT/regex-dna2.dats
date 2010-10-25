@@ -13,9 +13,7 @@
 (* ****** ****** *)
 
 %{^
-
 #include <pcre.h>
-
 %}
 
 (* ****** ****** *)
@@ -29,19 +27,16 @@ viewdef bytes_v (n:int, l:addr) = bytes n @ l
 (* ****** ****** *)
 
 %{^
-
-static inline
+ATSinline()
 ats_ptr_type
 malloc_atm (ats_int_type n) { return malloc (n) ; }
 
-static inline
+ATSinline()
 ats_void_type free_atm (ats_ptr_type p) { free (p) ; return ; }
-
 %}
 
 extern fun malloc_atm {n:nat}
   (n: int n): [l:addr] @(bytes_v (n, l) | ptr l) = "malloc_atm"
-
 extern fun free_atm {n:nat} {l:addr}
   (pf: bytes_v (n, l) | p: ptr l): void = "free_atm"
 
@@ -81,7 +76,7 @@ fread_stdin_block (
   return (sz0 - sz) ;
 } /* end of [fread_stdin_block] */
 
-%}
+%} // end of [%{$]
 
 (* ****** ****** *)
 
@@ -139,7 +134,7 @@ blocklst_concat_and_free
   return res0 ;
 }
 
-%}
+%} // end of [{%$]
 
 (* ****** ****** *)
 
@@ -164,7 +159,7 @@ count_pattern_match
   return count ;
 } /* end of [count_pattern_match] */
 
-%}
+%} // end of [%{$]
 
 (* ****** ****** *)
 
@@ -265,7 +260,7 @@ int_ptr_type subst_pattern_string
   return ans ;
 } /* end of [subst_pattern_string] */
 
-%}
+%} // end of [%{$]
 
 extern fun subst_pattern_string {n:nat} {l:addr}
   (pf: !bytes_v (n, l) | n: int n, p: ptr l, pat: string, sub: string)
