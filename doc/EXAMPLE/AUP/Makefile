@@ -201,6 +201,59 @@ test975: AUP_9_7_5.dats; $(ATSCC) -Wall -o $@ $< && ./test975
 
 #######
 
+xref::
+	$(ATSOPT) --posmark_xref=XREF -d \
+          $(ATSHOME)/utils/xref/ats_prelude_xref.dats > /dev/null
+	$(ATSOPT) --posmark_xref=XREF -d AUP_2_4_3.dats > AUP_2_4_3_dats.html
+	$(ATSOPT) --posmark_xref=XREF -d AUP_2_13.dats > AUP_2_13_dats.html
+	$(ATSOPT) --posmark_xref=XREF -d AUP_2_14.dats > AUP_2_14_dats.html
+	$(ATSOPT) --posmark_xref=XREF -d AUP_3_4.dats > AUP_3_4_dats.html
+	$(ATSOPT) --posmark_xref=XREF -d AUP_3_5.dats > AUP_3_5_dats.html
+	$(ATSOPT) --posmark_xref=XREF -d AUP_3_6_4.dats > AUP_3_6_4_dats.html
+	$(ATSOPT) --posmark_xref=XREF -d AUP_4_2_1.dats > AUP_4_2_1_dats.html
+	$(ATSOPT) --posmark_xref=XREF -d AUP_4_2_2_1.dats > AUP_4_2_2_1_dats.html
+	$(ATSOPT) --posmark_xref=XREF -d AUP_4_2_2_2.dats > AUP_4_2_2_2_dats.html
+	$(ATSOPT) --posmark_xref=XREF -d AUP_4_2_3.dats > AUP_4_2_3_dats.html
+	$(ATSOPT) --posmark_xref=XREF -d AUP_4_3_5.dats > AUP_4_3_5_dats.html
+	$(ATSOPT) --posmark_xref=XREF -d AUP_4_7.dats > AUP_4_7_dats.html
+	$(ATSOPT) --posmark_xref=XREF -d AUP_4_8.dats > AUP_4_8_dats.html
+	$(ATSOPT) --posmark_xref=XREF -d AUP_5_2.dats > AUP_5_2_dats.html
+	$(ATSOPT) --posmark_xref=XREF -d AUP_5_4.dats > AUP_5_4_dats.html
+	$(ATSOPT) --posmark_xref=XREF -d AUP_5_6.dats > AUP_5_6_dats.html
+	$(ATSOPT) --posmark_xref=XREF -d AUP_5_10.dats > AUP_5_10_dats.html
+	$(ATSOPT) --posmark_xref=XREF -d AUP_5_11.dats > AUP_5_11_dats.html
+	$(ATSOPT) --posmark_xref=XREF -d AUP_5_15.dats > AUP_5_15_dats.html
+	$(ATSOPT) --posmark_xref=XREF -d AUP_5_17_3.dats > AUP_5_17_3_dats.html
+	$(ATSOPT) --posmark_xref=XREF -d AUP_6_3_1.dats > AUP_6_3_1_dats.html
+	$(ATSOPT) --posmark_xref=XREF -d AUP_6_5.dats > AUP_6_5_dats.html
+	$(ATSOPT) --posmark_xref=XREF -d AUP_8_1_1.dats > AUP_8_1_1_dats.html
+	$(ATSOPT) --posmark_xref=XREF -d AUP_8_1_3.dats > AUP_8_1_3_dats.html
+	$(ATSOPT) --posmark_xref=XREF -d AUP_8_1_4.dats > AUP_8_1_4_dats.html
+	$(ATSOPT) --posmark_xref=XREF -d AUP_8_2_3.dats > AUP_8_2_3_dats.html
+	$(ATSOPT) --posmark_xref=XREF -d AUP_8_2_6.dats > AUP_8_2_6_dats.html
+	$(ATSOPT) --posmark_xref=XREF -d AUP_8_3.dats > AUP_8_3_dats.html
+	$(ATSOPT) --posmark_xref=XREF -d AUP_8_8_1_1.dats > AUP_8_8_1_1_dats.html
+	$(ATSOPT) --posmark_xref=XREF -d AUP_9_1_1.dats > AUP_9_1_1_dats.html
+	$(ATSOPT) --posmark_xref=XREF -d AUP_9_1_7.dats > AUP_9_1_7_dats.html
+	$(ATSOPT) --posmark_xref=XREF -d AUP_9_2_3.dats > AUP_9_2_3_dats.html
+	$(ATSOPT) --posmark_xref=XREF -d AUP_9_7_1.dats > AUP_9_7_1_dats.html
+	$(ATSOPT) --posmark_xref=XREF -d AUP_9_7_2.dats > AUP_9_7_2_dats.html
+	$(ATSOPT) --posmark_xref=XREF -d AUP_9_7_4.dats > AUP_9_7_4_dats.html
+	$(ATSOPT) --posmark_xref=XREF -d AUP_9_7_5.dats > AUP_9_7_5_dats.html
+
+######
+
+AUP_9_1_1: Introduction to Signals
+AUP_9_1_7: Signal Handlers
+AUP_9_2_3: sigsuspend System Call
+AUP_9_7_1: alarm System Call
+AUP_9_7_2: sleep System Call
+AUP_9_7_4: Baisc Interval-Timer System Calls
+AUP_9_7_5: Realtime Clocks
+
+
+#######
+
 RMF = rm -f
 
 #######
@@ -213,6 +266,8 @@ clean::
 	$(RMF) getargs.o
 
 cleanall:: clean
+	$(RMF) ./*_?ats.html
+	$(RMF) ./XREF/*.html
 cleanall::
 	$(RMF) testlock
 	$(RMF) backward

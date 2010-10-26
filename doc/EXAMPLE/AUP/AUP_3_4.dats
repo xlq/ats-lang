@@ -12,6 +12,7 @@
 
 staload "libc/SATS/errno.sats"
 staload "libc/SATS/unistd.sats"
+staload "libc/SATS/unistd_pathconf.sats"
 
 (* ****** ****** *)
 

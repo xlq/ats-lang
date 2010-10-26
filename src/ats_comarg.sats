@@ -36,13 +36,19 @@
 
 (* ****** ****** *)
 
-(* ats_comarg: handling command line arguments *)
+(*
+** ats_comarg: handling command line arguments
+*)
+
+(* ****** ****** *)
 
 datatype comarg = COMARGkey of (int, string)
 
+(* ****** ****** *)
+
 fun comarg_parse (s: string): comarg
-fun comarglst_parse {n:nat} (argc: int n, argv: &(@[string][n]))
-  : list_vt (comarg, n)
+fun comarglst_parse {n:nat}
+  (argc: int n, argv: &(@[string][n])): list_vt (comarg, n)
 // end of [comarglst_parse]
 
 (* ****** ****** *)
