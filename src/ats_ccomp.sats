@@ -247,34 +247,29 @@ datatype labvalprimlst =
 
 fun fprint_valprim {m:file_mode}
    (pf: file_mode_lte (m, w) | out: &FILE m, vp: valprim): void
-
 fun fprint_valprimlst {m:file_mode}
    (pf: file_mode_lte (m, w) | out: &FILE m, vps: valprimlst): void
-
 fun fprint_labvalprimlst {m:file_mode}
    (pf: file_mode_lte (m, w) | out: &FILE m, lvps: labvalprimlst): void
 
 (* ****** ****** *)
 
-fun fprint_offset {m:file_mode}
-   (pf: file_mode_lte (m, w) | out: &FILE m, off: offset): void
-
-fun fprint_offsetlst {m:file_mode}
-   (pf: file_mode_lte (m, w) | out: &FILE m, offs: offsetlst): void
-
-(* ****** ****** *)
-
 fun print_valprim (vp: valprim): void
-fun prerr_valprim (vp: valprim): void
-
 overload print with print_valprim
+fun prerr_valprim (vp: valprim): void
 overload prerr with prerr_valprim
 
 fun print_valprimlst (vps: valprimlst): void
-fun prerr_valprimlst (vps: valprimlst): void
-
 overload print with print_valprimlst
+fun prerr_valprimlst (vps: valprimlst): void
 overload prerr with prerr_valprimlst
+
+(* ****** ****** *)
+
+fun fprint_offset {m:file_mode}
+   (pf: file_mode_lte (m, w) | out: &FILE m, off: offset): void
+fun fprint_offsetlst {m:file_mode}
+   (pf: file_mode_lte (m, w) | out: &FILE m, offs: offsetlst): void
 
 (* ****** ****** *)
 
@@ -344,6 +339,7 @@ datatype patck =
   | PATCKfloat of string
   | PATCKint of intinf_t
   | PATCKstring of string
+// end of [patch]
 
 typedef patcklst = List patck
 
@@ -370,6 +366,7 @@ datatype kont =
   | KONTfunarg_fail of (loc_t(*for RT errmsg*), funlab_t)
   | KONTraise of valprim
   | KONTmatpnt of matpnt_t
+// end of [kont]
 
 typedef kontlst = List kont
 
@@ -382,8 +379,9 @@ fun fprint_kontlst {m:file_mode}
 overload fprint with fprint_kontlst
 
 fun matpnt_kont_get (mpt: matpnt_t): kont
-fun matpnt_kont_set (mpt: matpnt_t, _: kont): void
-  = "atsccomp_matpnt_kont_set"
+fun matpnt_kont_set
+  (mpt: matpnt_t, _: kont): void = "atsccomp_matpnt_kont_set"
+// end of [matpnt_kont_set]
 
 (* ****** ****** *)
 
@@ -396,38 +394,46 @@ fun emit_matpnt {m:file_mode}
 (* ****** ****** *)
 
 datatype instr =
+//
   | INSTRarr_heap of (* heap array allocation *)
       (tmpvar_t, int(*size*), hityp_t(*element type*))
   | INSTRarr_stack of (* stack array allcation *)
       (tmpvar_t, int(*level*), valprim(*size*), hityp_t(*element type*))
+//
   | INSTRassgn_arr of (* array initialization *)
       (valprim(*arr*), valprim(*asz*), tmpvar_t(*elt*), valprim(*tsz*))
   | INSTRassgn_clo of (* closure initialization *)
       (valprim(*clo*), funlab_t, envmap_t)
+//
   | INSTRcall of (* function call *)
       (tmpvar_t, hityp_t, valprim, valprimlst)
   | INSTRcall_tail of (* function tail-call *)
       funlab_t
+//
   | INSTRcond of (valprim, instrlst, instrlst) // conditional
+//
   | INSTRdefine_clo of (d2cst_t, funlab_t)
   | INSTRdefine_fun of (d2cst_t, funlab_t)
   | INSTRdefine_val of (d2cst_t, valprim)
+//
   | INSTRextern of string // external instruction
   | INSTRextval of (string(*name*), valprim)
+//
   | INSTRfreeptr of valprim
+//
   | INSTRfunction of ( // inlined function
       tmpvar_t(*result*), valprimlst(*arg*), instrlst(*body*), tmpvar_t(*ret*)
     ) // end of [INSTRfunction]
+//
   | INSTRfunlab of funlab_t
-
+//
   | INSTRdynload_file of fil_t
-  
-  // load instructions
+// load instructions
   | INSTRload_ptr of (tmpvar_t, valprim)
   | INSTRload_ptr_offs of (tmpvar_t, valprim, offsetlst)
   | INSTRload_var of (tmpvar_t, valprim)
   | INSTRload_var_offs of (tmpvar_t, valprim, offsetlst)
-
+//
   | INSTRloop of ( // loop
       tmplab_t(*init*)
     , tmplab_t(*fini*)
@@ -439,7 +445,7 @@ datatype instr =
     ) // end of [INSTRloop]
   | INSTRloopexn of
       (int (*0/1: break/continue*), tmplab_t)
-
+//
   | INSTRmove_arg of (int, valprim)
   | INSTRmove_con of
       (tmpvar_t, hityp_t, d2con_t, valprimlst(*arg*))
@@ -461,9 +467,9 @@ datatype instr =
       tmpvar_t (*ret*)
 *)
   | INSTRpatck of (valprim, patck, kont) // pattern check
-  
+//  
   | INSTRraise of (tmpvar_t(*uninitialized*), valprim) // raising an exception
-
+//
   | INSTRselect of // label selection
       (tmpvar_t, valprim, offsetlst)
   | INSTRselcon of // sum value selection
@@ -471,8 +477,7 @@ datatype instr =
   | INSTRselcon_ptr of // sum value selection
       (tmpvar_t, valprim, hityp_t, int)
   | INSTRswitch of branchlst // switch statement
-
-  // store instructions
+// store instructions
   | INSTRstore_ptr of
       (valprim(*ptr*), valprim(*val*))
   | INSTRstore_ptr_offs of
@@ -481,7 +486,7 @@ datatype instr =
       (valprim(*var*), valprim(*val*))
   | INSTRstore_var_offs of
       (valprim(*var*), offsetlst, valprim(*val*))
-
+//
   | INSTRtmplabint of (tmplab_t, int)
 //
   | INSTRprfck_beg of d2cst_t // beg of proof check
@@ -489,7 +494,7 @@ datatype instr =
   | INSTRprfck_tst of d2cst_t // test a given dynamic constant
 //
   | INSTRtrywith of (instrlst, tmpvar_t, branchlst)
-
+//
   | INSTRvardec of tmpvar_t
 // end of [instr]
 
@@ -519,16 +524,16 @@ fun fprint_branch {m:file_mode}
 fun fprint_branchlst {m:file_mode}
    (pf: file_mode_lte (m, w) | out: &FILE m, brs: branchlst): void
 
-fun print_instr (ins: instr): void
-fun prerr_instr (ins: instr): void
+(* ****** ****** *)
 
+fun print_instr (ins: instr): void
 overload print with print_instr
+fun prerr_instr (ins: instr): void
 overload prerr with prerr_instr
 
 fun print_instrlst (inss: instrlst): void
-fun prerr_instrlst (inss: instrlst): void
-
 overload print with print_instrlst
+fun prerr_instrlst (inss: instrlst): void
 overload prerr with prerr_instrlst
 
 (* ****** ****** *)
@@ -545,7 +550,7 @@ fun instr_add_arr_stack (
   , level: int // top: level = 0; inner: level > 0
   , vp_asz: valprim
   , hit_elt: hityp_t
-  ) : void
+  ) : void // end of [instr_add_arr_stack]
 
 (* ****** ****** *)
 
@@ -570,7 +575,7 @@ fun instr_add_call (
 
 fun instr_add_call_tail (res: &instrlst_vt, fl: funlab_t): void
 
-//
+(* ****** ****** *)
 
 fun instr_add_define_clo
   (res: &instrlst_vt, d2c: d2cst_t, fl: funlab_t): void
@@ -589,11 +594,11 @@ fun instr_add_freeptr (res: &instrlst_vt, vp: valprim): void
 fun instr_add_patck
   (res: &instrlst_vt, _: valprim, _: patck, _: kont): void
 
-//
+(* ****** ****** *)
 
 fun instr_add_dynload_file (res: &instrlst_vt, fil: fil_t): void
 
-//
+(* ****** ****** *)
 
 fun instr_add_load_ptr
   (res: &instrlst_vt, tmp: tmpvar_t, vp: valprim): void
@@ -604,7 +609,7 @@ fun instr_add_load_ptr_offs
 fun instr_add_load_var_offs
   (res: &instrlst_vt, tmp: tmpvar_t, vp: valprim, offs: offsetlst): void
 
-//
+(* ****** ****** *)
 
 fun instr_add_loop (
     res: &instrlst_vt
@@ -620,7 +625,7 @@ fun instr_add_loop (
 
 fun instr_add_loopexn (res: &instrlst_vt, knd: int, tl: tmplab_t): void
 
-//
+(* ****** ****** *)
 
 fun instr_add_move_arg (res: &instrlst_vt, arg: int, vp: valprim): void
 
@@ -662,13 +667,13 @@ fun instr_add_move_ref
 fun instr_add_move_val
   (res: &instrlst_vt, tmp_res: tmpvar_t, vp_val: valprim): void
 
-//
+(* ****** ****** *)
 
 fun instr_add_raise
   (res: &instrlst_vt, tmp_res: tmpvar_t, vp_exn: valprim): void
 // end of [instr_add_raise]
 
-//
+(* ****** ****** *)
 
 fun instr_add_select
   (res: &instrlst_vt, tmp_res: tmpvar_t, vp: valprim, offs: offsetlst): void
@@ -679,7 +684,7 @@ fun instr_add_selcon
 fun instr_add_selcon_ptr
   (res: &instrlst_vt, tmp_res: tmpvar_t, vp: valprim, hit: hityp_t, i: int): void
 
-//
+(* ****** ****** *)
 
 fun instr_add_store_ptr_offs
   (res: &instrlst_vt, vp_ptr: valprim, offs: offsetlst, vp_val: valprim): void
@@ -687,7 +692,7 @@ fun instr_add_store_ptr_offs
 fun instr_add_store_var_offs
   (res: &instrlst_vt, vp_mut: valprim, offs: offsetlst, vp_val: valprim): void
 
-//
+(* ****** ****** *)
 
 fun instr_add_switch (res: &instrlst_vt, brs: branchlst): void
 
@@ -830,15 +835,16 @@ fun ccomp_match (
   res: &instrlst_vt, level: int, vp: valprim, hip0: hipat
 ) : void
 
-//
+(* ****** ****** *)
 
 fun ccomp_exp_arg_body_funlab (
-    loc_fun: loc_t, prolog: instrlst
-  , hips_arg: hipatlst, hie_body: hiexp
-  , fl: funlab_t
-  ) : funentry_t
+  loc_fun: loc_t
+, prolog: instrlst
+, hips_arg: hipatlst, hie_body: hiexp
+, fl: funlab_t
+) : funentry_t // end of [ccomp_exp_arg_body_funlab]
 
-//
+(* ****** ****** *)
 
 fun ccomp_exp (res: &instrlst_vt, hie0: hiexp): valprim
 

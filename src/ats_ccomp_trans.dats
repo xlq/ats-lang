@@ -1923,7 +1923,9 @@ end // end of [ccomp_exp_seq_tmpvar]
 
 (* ****** ****** *)
 
-implement ccomp_exp_tmpvar (res, hie0, tmp_res) = let
+implement
+ccomp_exp_tmpvar
+  (res, hie0, tmp_res) = let
 (*
   val () = begin
     print "ccomp_exp_tmpvar: hie0 = "; print hie0; print_newline ();

@@ -14,9 +14,11 @@
 //
 
 (* ****** ****** *)
+
 %{^
 #include "libc/CATS/stdio.cats"
 %} // end of [%{^]
+
 (* ****** ****** *)
 
 staload "error.sats"

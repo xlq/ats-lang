@@ -33,69 +33,20 @@
 
 /* ****** ****** */
 
-#ifndef ATS_LIBC_PWD_CATS
-#define ATS_LIBC_PWD_CATS
+#ifndef ATS_LIBC_UNISTD_PATHCONF_CATS
+#define ATS_LIBC_UNISTD_PATHCONF_CATS
 
 /* ****** ****** */
 
-#include <sys/types.h>
-#include <pwd.h>
+#include <unistd.h>
 
 /* ****** ****** */
 
-typedef struct passwd ats_passwd_type ;
+#define atslib_pathconf pathconf
+#define atslib_fpathconf fpathconf
 
 /* ****** ****** */
 
-ATSinline()
-ats_ptr_type
-atslib_passwd_get_pw_name
-  (ats_ptr_type pw) {
-  return ((ats_passwd_type*)pw)->pw_name ;
-} // end of [passwd_get_pw_name]
+#endif /* ATS_LIBC_UNISTD_PATHCONF_CATS */
 
-ATSinline()
-ats_ptr_type
-atslib_passwd_get_pw_passwd
-  (ats_ptr_type pw) {
-  return ((ats_passwd_type*)pw)->pw_passwd ;
-} // end of [passwd_get_pw_passwd]
-
-ATSinline()
-ats_ptr_type
-atslib_passwd_get_pw_gecos
-  (ats_ptr_type pw) {
-  return ((ats_passwd_type*)pw)->pw_gecos ;
-} // end of [passwd_get_pw_gecos]
-
-ATSinline()
-ats_ptr_type
-atslib_passwd_get_pw_dir
-  (ats_ptr_type pw) {
-  return ((ats_passwd_type*)pw)->pw_dir ;
-} // end of [passwd_get_pw_dir]
-
-ATSinline()
-ats_ptr_type
-atslib_passwd_get_pw_shell
-  (ats_ptr_type pw) {
-  return ((ats_passwd_type*)pw)->pw_shell ;
-} // end of [passwd_get_pw_shell]
-
-/* ****** ****** */
-
-#define atslib_getpwnam getpwnam
-#define atslib_getpwnam_r(nam, pwbuf, buf, n, ppwbuf) \
-  getpwnam_r(nam, (ats_passwd_type*)pwbuf, (char*)buf, n, (ats_passwd_type**)ppwbuf)
-
-/* ****** ****** */
-
-#define atslib_getpwuid getpwuid
-#define atslib_getpwuid_r(uid, pwbuf, buf, n, ppwbuf) \
-  getpwuid_r(uid, (ats_passwd_type*)pwbuf, (char*)buf, n, (ats_passwd_type**)ppwbuf)
-
-/* ****** ****** */
-
-#endif /* ATS_LIBC_PWD_CATS */
-
-/* end of [pwd.cats] */
+/* end of [unistd_pathconf.cats] */

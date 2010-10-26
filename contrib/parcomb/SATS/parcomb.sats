@@ -42,7 +42,7 @@
 (* ****** ****** *)
 
 fun{t:t@ype}
-stream_item_get (tks: &stream t):<> Option_vt (t)
+stream_get_item (tks: &stream t):<> Option_vt (t)
 
 (* ****** ****** *)
 

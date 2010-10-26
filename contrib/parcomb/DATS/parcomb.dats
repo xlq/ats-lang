@@ -45,10 +45,10 @@ staload "contrib/parcomb/SATS/parcomb.sats"
 (* ****** ****** *)
 
 implement{t}
-stream_item_get (tks) = case+ !tks of
+stream_get_item (tks) = case+ !tks of
   | stream_cons (tk1, tks1) => (tks := tks1; Some_vt tk1)
   | stream_nil () => None_vt ()
-// end of [stream_token_get]
+// end of [stream_get_item]
 
 (* ****** ****** *)
 
@@ -459,7 +459,7 @@ end // end of [sat_parser_cloref]
 
 implement{a}
 any_parser () = lam (tks, ncur, nmax) => let
-  val ans = stream_item_get<a> tks in case+ ans of
+  val ans = stream_get_item<a> tks in case+ ans of
   | ~Some_vt v => Okay v where {
       val () = ncur := ncur + 1
       val () = if ncur > nmax then nmax := ncur
@@ -469,7 +469,7 @@ end // end of [any_parser]
 
 implement{a}
 anyopt_parser () = lam (tks, ncur, nmax) => let
-  val ans = stream_item_get<a> tks in case+ ans of
+  val ans = stream_get_item<a> tks in case+ ans of
   | ~Some_vt v => Okay (Some v) where {
       val () = ncur := ncur + 1
       val () = if ncur > nmax then nmax := ncur

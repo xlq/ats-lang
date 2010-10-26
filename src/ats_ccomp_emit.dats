@@ -83,10 +83,6 @@ fn prerr_loc_errorccomp (loc: loc_t): void =
 
 (* ****** ****** *)
 
-extern fun emit_identifier {m:file_mode}
-  (pf: file_mode_lte (m, w) | out: &FILE m, name: string): void
-  = "atsccomp_emit_identifier"
-
 %{$
 
 ats_void_type
@@ -123,7 +119,13 @@ atsccomp_emit_identifier (
   return ;
 } /* atsccomp_emit_identifier */
 
-%}
+%} // end of [%{$]
+
+extern
+fun emit_identifier {m:file_mode} (
+  pf: file_mode_lte (m, w) | out: &FILE m, name: string
+) : void = "atsccomp_emit_identifier"
+// end of [emit_identifier]
 
 (* ****** ****** *)
 

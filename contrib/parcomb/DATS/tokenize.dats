@@ -42,7 +42,12 @@
 
 (* ****** ****** *)
 
-staload "prelude/SATS/file.sats" ;
+%{^
+#include "libc/CATS/stdio.cats"
+%} // end of [%{^]
+
+(* ****** ****** *)
+
 staload _(*anon*) = "prelude/DATS/list.dats"
 staload _(*anon*) = "prelude/DATS/list_vt.dats"
 

@@ -67,20 +67,21 @@ typedef group = group_struct
 (* ****** ****** *)
 
 fun group_get_gr_name
-  (grp: &group): [l:addr] (strptr l -<lin,prf> void | strptr l)
+  (grp: &READ(group)): [l:addr] (strptr l -<lin,prf> void | strptr l)
   = "atslib_group_get_gr_name" // fun!
 // end of [group_get_gr_name]
 
 fun group_get_gr_passwd
-  (grp: &group): [l:addr] (strptr l -<lin,prf> void | strptr l)
+  (grp: &READ(group)): [l:addr] (strptr l -<lin,prf> void | strptr l)
   = "atslib_group_get_gr_passwd" // fun!
 // end of [group_get_gr_passwd]
 
+(* ****** ****** *)
 //
 // HX: please use with caution!
 //
 fun group_get_gr_mem
-  (grp: &group): ptr = "atslib_group_get_gr_mem" // fun!
+  (grp: &READ(group)): ptr = "atslib_group_get_gr_mem" // fun!
 // end of [group_get_gr_mem]
 
 (* ****** ****** *)

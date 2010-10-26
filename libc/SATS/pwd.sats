@@ -73,27 +73,27 @@ typedef passwd = passwd_struct
 (* ****** ****** *)
 
 fun passwd_get_pw_name
-  (pwd: &passwd): [l:addr] (strptr l -<lin,prf> void | strptr l)
+  (pwd: &READ(passwd)): [l:addr] (strptr l -<lin,prf> void | strptr l)
   = "atslib_passwd_get_pw_name" // fun!
 // end of [passwd_get_pw_name]
 
 fun passwd_get_pw_passwd
-  (pwd: &passwd): [l:addr] (strptr l -<lin,prf> void | strptr l)
+  (pwd: &READ(passwd)): [l:addr] (strptr l -<lin,prf> void | strptr l)
   = "atslib_passwd_get_pw_passwd" // fun!
 // end of [passwd_get_pw_passwd]
 
 fun passwd_get_pw_gecos
-  (pwd: &passwd): [l:addr] (strptr l -<lin,prf> void | strptr l)
+  (pwd: &READ(passwd)): [l:addr] (strptr l -<lin,prf> void | strptr l)
   = "atslib_passwd_get_pw_gecos" // fun!
 // end of [passwd_get_pw_gecos]
 
 fun passwd_get_pw_dir
-  (pwd: &passwd): [l:addr] (strptr l -<lin,prf> void | strptr l)
+  (pwd: &READ(passwd)): [l:addr] (strptr l -<lin,prf> void | strptr l)
   = "atslib_passwd_get_pw_dir" // fun!
 // end of [passwd_get_pw_dir]
 
 fun passwd_get_pw_shell
-  (pwd: &passwd): [l:addr] (strptr l -<lin,prf> void | strptr l)
+  (pwd: &READ(passwd)): [l:addr] (strptr l -<lin,prf> void | strptr l)
   = "atslib_passwd_get_pw_shell" // fun!
 // end of [passwd_get_pw_shell]
 
@@ -104,10 +104,32 @@ fun getpwnam (nam: !READ(string)):<!ref>
   [l:addr] (ptroutopt (passwd, l) | ptr l) = "#atslib_getpwnam"
 // end of [getpwnam]
 
+// HX: reentrant
+fun getpwnam_r {n:nat} (
+    nam: !READ(string)
+  , pwbuf: &passwd? >> opt (passwd, i==0)
+  , buf: &b0ytes(n) >> bytes(n), n: size_t (n)
+  , ppwbuf: &ptr? >> ptr
+  ) :<> #[i:int | i >= 0] int (i)
+  = "#atslib_getpwnam_r"
+// end of [getpwnam_r]
+
+(* ****** ****** *)
+
 // HX: non-reentrant
 fun getpwuid (uid: uid_t):<!ref>
   [l:addr] (ptroutopt (passwd, l) | ptr l) = "#atslib_getpwuid"
 // end of [getpwuid]
+
+// HX: reentrant
+fun getpwuid_r {n:nat} (
+    uid: uid_t
+  , pwbuf: &passwd? >> opt (passwd, i==0)
+  , buf: &b0ytes(n) >> bytes(n), n: size_t (n)
+  , ppwbuf: &ptr? >> ptr
+  ) :<> #[i:int | i >= 0] int (i)
+  = "#atslib_getpwuid_r"
+// end of [getpwuid_r]
 
 (* ****** ****** *)
 

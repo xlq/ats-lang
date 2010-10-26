@@ -12,7 +12,12 @@
 
 (* ****** ****** *)
 
-staload "prelude/SATS/file.sats"
+%{^
+#include "libc/CATS/stdio.cats"
+%} // end of [%{^]
+
+(* ****** ****** *)
+
 staload _(*anonymous*) = "prelude/DATS/list_vt.dats"
 
 (* ****** ****** *)
@@ -371,7 +376,7 @@ implement parse_from_stdin () = let
         val () = parse_failure (tks, ncur, nmax) in exit {stm} (1)
       end // end of [Fail_vt]
   ) : stm // end of [val]
-  val otk = stream_item_get<token> (tks)
+  val otk = stream_get_item<token> (tks)
   val () = (case+ otk of
     | ~Some_vt tk => begin
         prerr_location tk.token_loc;

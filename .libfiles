@@ -164,6 +164,8 @@ libc/SATS/time.sats
 libc/SATS/termios.sats
 
 libc/SATS/unistd.sats
+libc/SATS/unistd_pathconf.sats
+libc/SATS/unistd_sysconf.sats
 libc/DATS/unistd.dats
 
 libc/SATS/utime.sats

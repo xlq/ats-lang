@@ -9,7 +9,9 @@
 
 (* ****** ****** *)
 
-staload "prelude/SATS/file.sats"
+%{^
+#include "libc/CATS/stdio.cats"
+%} // end of [%{^]
 
 (* ****** ****** *)
 
@@ -229,7 +231,7 @@ implement main () = let
         val () = parse_failure (tks, ncur, nmax) in exit {term} (1)
       end // end of [None_vt]
   // end of [val]
-  val otk = stream_item_get<token> (tks)  
+  val otk = stream_get_item<token> (tks)  
   val () = (case+ otk of
     | ~Some_vt tk => begin
         prerr_location tk.token_loc;

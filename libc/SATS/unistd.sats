@@ -342,42 +342,6 @@ fun fdatasync {fd:int} // (sets errno)
 
 (* ****** ****** *)
 
-abst@ype pathconfname_t = int
-macdef _PC_LINK_MAX = $extval (pathconfname_t, "_PC_LINK_MAX")
-macdef _PC_MAX_CANON = $extval (pathconfname_t, "_PC_MAX_CANON")
-macdef _PC_MAX_INPUT = $extval (pathconfname_t, "_PC_MAX_INPUT")
-macdef _PC_NAME_MAX = $extval (pathconfname_t, "_PC_NAME_MAX")
-macdef _PC_PATH_MAX = $extval (pathconfname_t, "_PC_PATH_MAX")
-macdef _PC_PIPE_BUF = $extval (pathconfname_t, "_PC_PIPE_BUF")
-macdef _PC_CHOWN_RESTRICTED = $extval (pathconfname_t, "_PC_CHOWN_RESTRICTED")
-macdef _PC_NO_TRUNC = $extval (pathconfname_t, "_PC_NO_TRUNC")
-macdef _PC_VDISABLE = $extval (pathconfname_t, "_PC_VDISABLE")
-macdef _PC_SYNC_IO = $extval (pathconfname_t, "_PC_SYNC_IO")
-macdef _PC_ASYNC_IO = $extval (pathconfname_t, "_PC_ASYNC_IO")
-macdef _PC_PRIO_IO = $extval (pathconfname_t, "_PC_PRIO_IO")
-macdef _PC_SOCK_MAXBUF = $extval (pathconfname_t, "_PC_SOCK_MAXBUF")
-macdef _PC_FILESIZEBITS = $extval (pathconfname_t, "_PC_FILESIZEBITS")
-macdef _PC_REC_INCR_XFER_SIZE = $extval (pathconfname_t, "_PC_REC_INCR_XFER_SIZE")
-macdef _PC_REC_MAX_XFER_SIZE = $extval (pathconfname_t, "_PC_REC_MAX_XFER_SIZE")
-macdef _PC_REC_MIN_XFER_SIZE = $extval (pathconfname_t, "_PC_REC_MIN_XFER_SIZE")
-macdef _PC_REC_XFER_ALIGN = $extval (pathconfname_t, "_PC_REC_XFER_ALIGN")
-macdef _PC_ALLOC_SIZE_MIN = $extval (pathconfname_t, "_PC_ALLOC_SIZE_MIN")
-macdef _PC_SYMLINK_MAX = $extval (pathconfname_t, "_PC_SYMLINK_MAX")
-macdef _PC_2_SYMLINK = $extval (pathconfname_t, "_PC_2_SYMLINK")
-
-fun pathconf
-  (path: !READ(string), name: pathconfname_t): lint = "#atslib_pathconf"
-// end of [pathconf]
-
-//
-// HX-2010-09-21: for simplicity, [fd] is assumed to be valid
-//
-fun fpathconf {fd:nat}
-  (fd: int fd, name: pathconfname_t): lint = "#atslib_fpathconf"
-// end of [fpathconf]
-
-(* ****** ****** *)
-
 fun readlink {n:nat} {l:addr} (
   pf: !b0ytes(n) @ l >> bytes(n) @ l | path: !READ(string), p: ptr l, n: size_t n
 ) : [n1:int | n1 <= n] ssize_t (n1) = "#atslib_readlink"

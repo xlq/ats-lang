@@ -9,7 +9,12 @@
 
 (* ****** ****** *)
 
-staload "prelude/SATS/file.sats"
+%{^
+#include "libc/CATS/stdio.cats"
+%} // end of [%{^]
+
+(* ****** ****** *)
+
 staload _(*anonymous*) = "prelude/DATS/list_vt.dats"
 
 (* ****** ****** *)
@@ -192,7 +197,7 @@ dynload "contrib/parcomb/dynloadall.dats"
 
 implement main () = let
   fun errck (tks: &stream token): void =
-    case+ stream_item_get<token> (tks) of
+    case+ stream_get_item<token> (tks) of
     | ~Some_vt tk => begin
         prerr tk.token_loc; prerr ": error(0)";
         prerr ": there are tokens left unconsumed.";

@@ -9,7 +9,9 @@
 
 (* ****** ****** *)
 
-staload "prelude/SATS/file.sats"
+%{^
+#include "libc/CATS/stdio.cats"
+%} // end of [%{^]
 
 (* ****** ****** *)
 
