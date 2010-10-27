@@ -199,7 +199,7 @@ instr_tmpvarmap_add (m, ins) = let
     | list_nil () => ()
   end // end of [aux_branchlst]
 in
-  case+ ins of
+  case+ ins.instr_node of
   | INSTRarr_heap (tmp, _, _) => tmpvarmap_add_root (m, tmp)
   | INSTRarr_stack (tmp, _, _, _) => tmpvarmap_add_root (m, tmp)
   | INSTRcall (tmp, _, _, _) => tmpvarmap_add_root (m, tmp)

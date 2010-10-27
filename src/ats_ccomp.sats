@@ -36,6 +36,13 @@
 
 (* ****** ****** *)
 
+staload Loc = "ats_location.sats"
+typedef loc_t = $Loc.location_t
+staload Fil = "ats_filename.sats"
+typedef fil_t = $Fil.filename_t
+
+(* ****** ****** *)
+
 staload "ats_staexp2.sats"
 staload "ats_dynexp2.sats"
 
@@ -393,7 +400,8 @@ fun emit_matpnt {m:file_mode}
 
 (* ****** ****** *)
 
-datatype instr =
+datatype
+instr_node =
 //
   | INSTRarr_heap of (* heap array allocation *)
       (tmpvar_t, int(*size*), hityp_t(*element type*))
@@ -498,38 +506,36 @@ datatype instr =
   | INSTRvardec of tmpvar_t
 // end of [instr]
 
-where instrlst = List instr
+where instr = '{
+  instr_loc= loc_t, instr_node= instr_node
+} // end of [instr]
+
+and instrlst = List instr
 
 and instrlst_vt = List_vt instr
 
 and branch = '{
   branch_lab= tmplab_t, branch_inss= instrlst
-}
+} // end of [branch]
 
 and branchlst = List branch
 
-//
+(* ****** ****** *)
 
 fun fprint_instr {m:file_mode}
    (pf: file_mode_lte (m, w) | out: &FILE m, ins: instr): void
 overload fprint with fprint_instr
 
-fun fprint_instrlst {m:file_mode}
-   (pf: file_mode_lte (m, w) | out: &FILE m, inss: instrlst): void
-overload fprint with fprint_instrlst
-
-fun fprint_branch {m:file_mode}
-   (pf: file_mode_lte (m, w) | out: &FILE m, br: branch): void
-
-fun fprint_branchlst {m:file_mode}
-   (pf: file_mode_lte (m, w) | out: &FILE m, brs: branchlst): void
-
-(* ****** ****** *)
-
 fun print_instr (ins: instr): void
 overload print with print_instr
 fun prerr_instr (ins: instr): void
 overload prerr with prerr_instr
+
+(* ****** ****** *)
+
+fun fprint_instrlst {m:file_mode}
+   (pf: file_mode_lte (m, w) | out: &FILE m, inss: instrlst): void
+overload fprint with fprint_instrlst
 
 fun print_instrlst (inss: instrlst): void
 overload print with print_instrlst
@@ -538,14 +544,47 @@ overload prerr with prerr_instrlst
 
 (* ****** ****** *)
 
+fun fprint_branch {m:file_mode}
+   (pf: file_mode_lte (m, w) | out: &FILE m, br: branch): void
+fun fprint_branchlst {m:file_mode}
+   (pf: file_mode_lte (m, w) | out: &FILE m, brs: branchlst): void
+
+(* ****** ****** *)
+
+fun instr_call (
+  loc: loc_t
+, tmp_res: tmpvar_t, hit_fun: hityp_t, vp_fun: valprim, vps_arg: valprimlst
+) : instr // end of [instr_call]
+
+fun instr_call_tail (loc: loc_t, fl: funlab_t): instr
+
+fun instr_cond (
+  loc: loc_t, _test: valprim, _then: instrlst, _else: instrlst
+) : instr // end of [instr_cond]
+
+fun instr_function (
+  loc: loc_t
+, tmp_res: tmpvar_t, vps_arg: valprimlst, _body: instrlst, tmp_ret: tmpvar_t
+) : instr // end of [INSTRfunction]
+
+fun instr_funlab (fl: funlab_t): instr
+
+fun instr_prfck_beg (d2c: d2cst_t):<> instr
+fun instr_prfck_tst (d2c: d2cst_t):<> instr
+fun instr_prfck_end (d2c: d2cst_t):<> instr
+
+(* ****** ****** *)
+
 fun instr_add_arr_heap (
     res: &instrlst_vt
+  , loc: loc_t
   , tmp: tmpvar_t, asz: int
   , hit_elt: hityp_t
-  ) : void
+  ) : void // end of [instr_add_arr_heap]
 
 fun instr_add_arr_stack (
     res: &instrlst_vt
+  , loc: loc_t
   , tmp: tmpvar_t
   , level: int // top: level = 0; inner: level > 0
   , vp_asz: valprim
@@ -556,63 +595,84 @@ fun instr_add_arr_stack (
 
 fun instr_add_assgn_arr (
     res: &instrlst_vt
-  , vp_arr: valprim, vp_asz: valprim, tmp_elt: tmpvar_t, vp_tsz: valprim
-  ) : void
+  , loc: loc_t
+  , vp_arr: valprim
+  , vp_asz: valprim
+  , tmp_elt: tmpvar_t
+  , vp_tsz: valprim
+  ) : void // end of [instr_add_assgn_arr]
 
 fun instr_add_assgn_clo (
-    res: &instrlst_vt, vp_clo: valprim, fl: funlab_t, env: envmap_t
-  ) : void
+    res: &instrlst_vt
+  , loc: loc_t
+  , vp_clo: valprim
+  , fl: funlab_t, env: envmap_t
+  ) : void // end of [instr_add_assgn_clo]
 
 (* ****** ****** *)
 
 fun instr_add_call (
     res: &instrlst_vt
+  , loc: loc_t
   , tmp: tmpvar_t
   , hit_fun: hityp_t
   , vp_fun: valprim
   , vp_arg: valprimlst
-  ) : void
+  ) : void // end of [instr_add_call]
 
-fun instr_add_call_tail (res: &instrlst_vt, fl: funlab_t): void
+fun instr_add_call_tail
+  (res: &instrlst_vt, loc: loc_t, fl: funlab_t): void
+// end of [instr_add_call_tail]
 
 (* ****** ****** *)
 
 fun instr_add_define_clo
-  (res: &instrlst_vt, d2c: d2cst_t, fl: funlab_t): void
-
+  (res: &instrlst_vt, loc: loc_t, d2c: d2cst_t, fl: funlab_t): void
 fun instr_add_define_fun
-  (res: &instrlst_vt, d2c: d2cst_t, fl: funlab_t): void
-
+  (res: &instrlst_vt, loc: loc_t, d2c: d2cst_t, fl: funlab_t): void
 fun instr_add_define_val
-  (res: &instrlst_vt, d2c: d2cst_t, vp: valprim): void
-
-fun instr_add_extval
-  (res: &instrlst_vt, name: string, vp: valprim): void
-
-fun instr_add_freeptr (res: &instrlst_vt, vp: valprim): void
-
-fun instr_add_patck
-  (res: &instrlst_vt, _: valprim, _: patck, _: kont): void
+  (res: &instrlst_vt, loc: loc_t, d2c: d2cst_t, vp: valprim): void
 
 (* ****** ****** *)
 
-fun instr_add_dynload_file (res: &instrlst_vt, fil: fil_t): void
+fun instr_add_extval
+  (res: &instrlst_vt, loc: loc_t, name: string, vp: valprim): void
+
+(* ****** ****** *)
+
+fun instr_add_freeptr
+  (res: &instrlst_vt, loc: loc_t, vp: valprim): void
+// end of [instr_add_freeptr]
+
+fun instr_add_patck
+  (res: &instrlst_vt, loc: loc_t, _: valprim, _: patck, _: kont): void
+// end of [instr_add_patck]
+
+(* ****** ****** *)
+
+fun instr_add_dynload_file
+  (res: &instrlst_vt, loc: loc_t, fil: fil_t): void
+// end of [instr_add_dynload_file]
 
 (* ****** ****** *)
 
 fun instr_add_load_ptr
-  (res: &instrlst_vt, tmp: tmpvar_t, vp: valprim): void
+  (res: &instrlst_vt, loc: loc_t, tmp: tmpvar_t, vp: valprim): void
+// end of [instr_add_load_ptr]
 
-fun instr_add_load_ptr_offs
-  (res: &instrlst_vt, tmp: tmpvar_t, vp: valprim, offs: offsetlst): void
+fun instr_add_load_ptr_offs (
+  res: &instrlst_vt, loc: loc_t, tmp: tmpvar_t, vp: valprim, offs: offsetlst
+) : void // end of [instr_add_load_ptr_offs]
 
-fun instr_add_load_var_offs
-  (res: &instrlst_vt, tmp: tmpvar_t, vp: valprim, offs: offsetlst): void
+fun instr_add_load_var_offs (
+  res: &instrlst_vt, loc: loc_t, tmp: tmpvar_t, vp: valprim, offs: offsetlst
+) : void // end of [instr_add_load_var_offs]
 
 (* ****** ****** *)
 
 fun instr_add_loop (
     res: &instrlst_vt
+  , loc: loc_t
   , lab_init: tmplab_t
   , lab_fini: tmplab_t
   , lab_cont: tmplab_t
@@ -622,95 +682,127 @@ fun instr_add_loop (
   , inss_post: instrlst
   , inss_body: instrlst
   ) : void
+// end of [instr_add_loop]
 
-fun instr_add_loopexn (res: &instrlst_vt, knd: int, tl: tmplab_t): void
+fun instr_add_loopexn
+  (res: &instrlst_vt, loc: loc_t, knd: int, tl: tmplab_t): void
+// end of [instr_add_loopexn]
 
 (* ****** ****** *)
 
-fun instr_add_move_arg (res: &instrlst_vt, arg: int, vp: valprim): void
+fun instr_add_move_arg
+  (res: &instrlst_vt, loc: loc_t, arg: int, vp: valprim): void
+// end of [instr_add_move_arg]
 
 fun instr_add_move_con (
     res: &instrlst_vt
+  , loc: loc_t
   , tmp_res: tmpvar_t
   , hit_sum: hityp_t
   , d2c: d2con_t
   , vps_arg: valprimlst
   ) : void
+// end of [instr_add_move_con]
 
 fun instr_add_move_lazy_delay (
     res: &instrlst_vt
+  , loc: loc_t
   , tmp_res: tmpvar_t
   , lin: int
   , hit_body: hityp_t
   , vp_clo: valprim
   ) : void
+// end of [instr_add_move_lazy_delay]
 
 fun instr_add_move_lazy_force (
     res: &instrlst_vt
+  , loc: loc_t
   , tmp_res: tmpvar_t
   , lin: int
   , hit_elt: hityp_t
   , vp_lazy: valprim
   ) : void
+// end of [instr_add_move_lazy_force]
 
 fun instr_add_move_rec (
     res: &instrlst_vt
+  , loc: loc_t
   , tmp_res: tmpvar_t
   , recknd: int
   , hit_sum: hityp_t
   , lvps: labvalprimlst
   ) : void
+// end of [instr_add_move_rec]
 
-fun instr_add_move_ref
-  (res: &instrlst_vt, tmp_res: tmpvar_t, vp_val: valprim): void
+fun instr_add_move_ref (
+  res: &instrlst_vt, loc: loc_t, tmp_res: tmpvar_t, vp_val: valprim
+): void // end of [instr_add_move_ref]
 
-fun instr_add_move_val
-  (res: &instrlst_vt, tmp_res: tmpvar_t, vp_val: valprim): void
-
-(* ****** ****** *)
-
-fun instr_add_raise
-  (res: &instrlst_vt, tmp_res: tmpvar_t, vp_exn: valprim): void
-// end of [instr_add_raise]
+fun instr_add_move_val (
+  res: &instrlst_vt, loc: loc_t, tmp_res: tmpvar_t, vp_val: valprim
+) : void // end of [instr_add_move_val]
 
 (* ****** ****** *)
 
-fun instr_add_select
-  (res: &instrlst_vt, tmp_res: tmpvar_t, vp: valprim, offs: offsetlst): void
-
-fun instr_add_selcon
-  (res: &instrlst_vt, tmp_res: tmpvar_t, vp: valprim, hit: hityp_t, i: int): void
-
-fun instr_add_selcon_ptr
-  (res: &instrlst_vt, tmp_res: tmpvar_t, vp: valprim, hit: hityp_t, i: int): void
+fun instr_add_raise (
+  res: &instrlst_vt, loc: loc_t, tmp_res: tmpvar_t, vp_exn: valprim
+) : void // end of [instr_add_raise]
 
 (* ****** ****** *)
 
-fun instr_add_store_ptr_offs
-  (res: &instrlst_vt, vp_ptr: valprim, offs: offsetlst, vp_val: valprim): void
+fun instr_add_select (
+  res: &instrlst_vt
+, loc: loc_t, tmp_res: tmpvar_t, vp: valprim, offs: offsetlst
+) : void // end of [instr_add_select]
 
-fun instr_add_store_var_offs
-  (res: &instrlst_vt, vp_mut: valprim, offs: offsetlst, vp_val: valprim): void
+fun instr_add_selcon (
+  res: &instrlst_vt
+, loc: loc_t, tmp_res: tmpvar_t, vp: valprim, hit: hityp_t, i: int
+) : void // end of [instr_add_selcon]
+
+fun instr_add_selcon_ptr (
+  res: &instrlst_vt
+, loc: loc_t, tmp_res: tmpvar_t, vp: valprim, hit: hityp_t, i: int
+) : void // end of [instr_add_selcon_ptr]
 
 (* ****** ****** *)
 
-fun instr_add_switch (res: &instrlst_vt, brs: branchlst): void
+fun instr_add_store_ptr_offs (
+  res: &instrlst_vt
+, loc: loc_t, vp_ptr: valprim, offs: offsetlst, vp_val: valprim
+) : void // end of [instr_add_store_ptr_offs]
 
-fun instr_add_tmplabint (res: &instrlst_vt, tl: tmplab_t, i: int): void
+fun instr_add_store_var_offs (
+  res: &instrlst_vt
+, loc: loc_t, vp_mut: valprim, offs: offsetlst, vp_val: valprim
+) : void // end of [instr_add_store_var_offs]
+
+(* ****** ****** *)
+
+fun instr_add_switch
+  (res: &instrlst_vt, loc: loc_t, brs: branchlst): void
+
+fun instr_add_tmplabint
+  (res: &instrlst_vt, loc: loc_t, tl: tmplab_t, i: int): void
+// end of [instr_add_tmplabint]
 
 fun instr_add_trywith (
     res: &instrlst_vt
+  , loc: loc_t
   , res_try: instrlst
   , tmp_exn: tmpvar_t
   , brs: branchlst
-  ) : void
+  ) : void // end of [instr_add_trywith]
 
-fun instr_add_vardec (res: &instrlst_vt, tmp: tmpvar_t): void
+fun instr_add_vardec
+  (res: &instrlst_vt, loc: loc_t, tmp: tmpvar_t): void
+// end of [instr_add_vardec]
 
 (* ****** ****** *)
-
-// implemented in [ats_ccomp_trans.dats]
-fun instr_add_valprimlst_free (res: &instrlst_vt): void
+//
+// HX: implemented in [ats_ccomp_trans.dats]
+//
+fun instr_add_valprimlst_free (res: &instrlst_vt, loc: loc_t): void
 
 (* ****** ****** *)
 
@@ -865,12 +957,12 @@ fun template_cst_name_make (d2c: d2cst_t, hitss: hityplstlst_t): string
 fun template_var_name_make (d2v: d2var_t, hitss: hityplstlst_t): string
 
 fun ccomp_exp_template_cst (
-  loc: loc_t, res: &instrlst_vt, hit0: hityp_t, d2c: d2cst_t, hitss: hityplstlst
-) : valprim
+  res: &instrlst_vt, loc: loc_t, hit0: hityp_t, d2c: d2cst_t, hitss: hityplstlst
+) : valprim // end of [ccomp_exp_template_cst]
 
 fun ccomp_exp_template_var (
-  loc: loc_t, res: &instrlst_vt, hit0: hityp_t, d2v: d2var_t, hitss: hityplstlst
-) : valprim
+  res: &instrlst_vt, loc: loc_t, hit0: hityp_t, d2v: d2var_t, hitss: hityplstlst
+) : valprim // end of [ccomp_exp_template_var]
 
 (* ****** ****** *)
 
@@ -881,6 +973,7 @@ fun ccomp_hiclaulst (
   , tmp_res: tmpvar_t
   , fail: kont
   ) : branchlst
+// end of [ccomp_hiclaulst]
 
 (* ****** ****** *)
 
@@ -892,13 +985,15 @@ fun ccomp_declst (res: &instrlst_vt, hids: hideclst): void
 
 (* ****** ****** *)
 
-fun ccomp_main {m:file_mode} (
+fun ccomp_main
+  {m:file_mode} (
     pf: file_mode_lte (m, w)
   | flag: int
   , out: &FILE m
   , fil: fil_t
   , hids: hideclst
   ) : void
+// end of [ccomp_main]
 
 (* ****** ****** *)
 

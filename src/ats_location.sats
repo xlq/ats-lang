@@ -30,10 +30,10 @@
 *)
 
 (* ****** ****** *)
-
+//
 // Author: Hongwei Xi (hwxi AT cs DOT bu DOT edu)
 // Time: July 2007
-
+//
 (* ****** ****** *)
 
 (* ats_location: Handling location information. *)
@@ -54,7 +54,7 @@ abstype location_t // boxed type
 
 val location_none : location_t (* nonexistent location *)
 
-//
+(* ****** ****** *)
 
 fun location_make
   (f: $Fil.filename_t, p1: position_t, p2: position_t):<> location_t
@@ -62,7 +62,7 @@ fun location_make
 fun location_end_make (loc: location_t):<> location_t
 fun location_combine (_1: location_t, _2: location_t):<> location_t
 
-//
+(* ****** ****** *)
 
 fun location_get_filename (loc: location_t): $Fil.filename_t
 
@@ -70,22 +70,20 @@ typedef lint = int_long_t0ype
 fun location_begpos_toff (loc: location_t): lint
 fun location_endpos_toff (loc: location_t): lint
 
-//
+(* ****** ****** *)
 
 fun lte_location_location (_1: location_t, _2: location_t):<> bool
 overload <= with lte_location_location
 
-//
+(* ****** ****** *)
 
 fun fprint_location {m:file_mode}
   (pf: file_mode_lte (m, w) | out: &FILE m, loc: location_t): void
-
 overload fprint with fprint_location
 
 fun print_location (loc: location_t): void
-fun prerr_location (loc: location_t): void
-
 overload print with print_location
+fun prerr_location (loc: location_t): void
 overload prerr with prerr_location
 
 (* ****** ****** *)

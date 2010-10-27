@@ -127,8 +127,10 @@ end // end of [local]
 
 (* ****** ****** *)
 
-extern fun ccomp_hiclau (
-  level: int
+extern
+fun ccomp_hiclau (
+  loc0: loc_t
+, level: int
 , branchlst: &branchlst_vt
 , tl: tmplab_t
 , vps: valprimlst
@@ -137,7 +139,8 @@ extern fun ccomp_hiclau (
 ) : @(matpntlst, matpntopt)
 
 implement ccomp_hiclau
-  (level, branchlst, tl, vps, hicl, tmp_res) = let
+  (loc0, level, branchlst, tl, vps, hicl, tmp_res) = let
+//
   fun aux_pat (
       res: &instrlst_vt
     , tl: tmplab_t
@@ -146,7 +149,8 @@ implement ccomp_hiclau
     , hips: hipatlst
     ) : matpntlst = begin case+ (vps, hips) of
     | (list_cons (vp, vps), list_cons (hip, hips)) => let
-        val () = instr_add_tmplabint (res, tl, i)
+        val loc = hip.hipat_loc
+        val () = instr_add_tmplabint (res, loc, tl, i)
         val mpt = matpnt_make (KONTnone (), TMPMOVLSTnil ())
         val () = ccomp_patck (res, vp, hip, kont_matpnt mpt)
         val () = i := i + 1
@@ -156,7 +160,7 @@ implement ccomp_hiclau
       end // end of [list_cons]
     | (_, _) => list_nil ()
   end (* end of [aux_patck] *)
-
+//
   fun aux_mat (
       res: &instrlst_vt
     , level: int
@@ -170,7 +174,7 @@ implement ccomp_hiclau
       end // end of [list_cons _, list_cons _]
     | (_, _) => ()
   end (* end of [aux_mat] *)
-
+//
   fun aux_gua (
       res: &instrlst_vt
     , level: int
@@ -191,17 +195,17 @@ implement ccomp_hiclau
       end // end of [list_cons]
     | list_nil () => ()
   end (* end of [aux_gua] *)
-
+//
   var i: int = 0
   var res: instrlst_vt = list_vt_nil ()
   val hips = hicl.hiclau_pat
   val mpts = aux_pat (res, tl, i, vps, hips)
   val () = begin
-    instr_add_tmplabint (res, tl, i) // [i] = the length of [hicls]
+    instr_add_tmplabint (res, loc0, tl, i) // [i] = the length of [hicls]
   end // end of [val]
-
+//
   val () = aux_mat (res, level, vps, hips)
-
+//
   var ompt: matpntopt = None ()
   val () = let
     val himats = hicl.hiclau_gua
@@ -215,9 +219,9 @@ implement ccomp_hiclau
       end // end of [list_cons]
     | list_nil () => ()
   end // end of [val]
-
-  val () = instr_add_valprimlst_free (res)
-
+//
+  val () = instr_add_valprimlst_free (res, hicl.hiclau_loc)
+//
   val () = ccomp_exp_tmpvar (res, hicl.hiclau_exp, tmp_res)
   val res = $Lst.list_vt_reverse_list res
   val () = branchlst := list_vt_cons (branch_make (tl, res), branchlst)
@@ -602,7 +606,7 @@ implement ccomp_hiclaulst
     | list_cons (hicl, hicls) => let
         val tl = tmplab_make ()
         val xy = ccomp_hiclau
-          (level, branchlst, tl, vps, hicl, tmp_res)
+          (hicl.hiclau_loc, level, branchlst, tl, vps, hicl, tmp_res)
         val xys = auxlst (branchlst, hicls)
       in
         L0STcons (tl, hicl, xy.0, xy.1, xys)

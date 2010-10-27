@@ -1536,7 +1536,7 @@ emit_instr {m} (pf | out, ins) = let
       // empty
     end // end of [if]
 in
-  case+ ins of
+  case+ ins.instr_node of
   | INSTRarr_heap (tmp, asz, hit_elt) => begin
       emit_instr_arr_heap (pf | out, tmp, asz, hit_elt)
     end // end of [INSTRarr_heap]
@@ -2439,7 +2439,7 @@ emit_funentry (pf | out, entry) = let
 *)
   val tmp_ret = funentry_ret_get (entry)
   val () = funentry_varindmap_set (vtps_all)
-
+//
 #if (ATS_CC_VERBOSE_LEVEL >= 1) #then
   // this location information is mostly for the purpose of debugging
   val () = fprint1_string (pf | out, "/*\n")
@@ -2447,8 +2447,9 @@ emit_funentry (pf | out, entry) = let
   val () = $Loc.fprint_location (pf | out, loc_entry)
   val () = fprint1_string (pf | out, "\n*/\n")
 #endif // end of ...
-
-  // function head
+//
+// function head
+//
   val () = begin
      emit_hityp (pf | out, hit_res); fprint1_char (pf | out, '\n')
   end // end of [val]
@@ -2464,11 +2465,13 @@ emit_funentry (pf | out, entry) = let
   val () = begin
     emit_funarg (pf | out, hits_arg); fprint1_string (pf | out, ") {\n")
   end // end of [val]
-
-  // tailjoinlst
+//
+// tailjoinlst
+//
   val tjs = funentry_tailjoin_get (entry)
-
-  // local variable declaration
+//
+// local variable declaration
+//
   val () = let
     val () = fprint1_string (pf | out, "/* local vardec */\n")
     var tmps_local: tmpvarmap_vt = tmpvarmap_nil ()
@@ -2481,8 +2484,9 @@ emit_funentry (pf | out, entry) = let
   in
     tmpvarmap_free (tmps_local)
   end (* end of [val] *)
-
-  // mutual tail-recursion
+//
+// mutual tail-recursion
+//
   val istailjoin = (case+ tjs of
     | TAILJOINLSTcons _ => true | TAILJOINLSTnil () => false
   ) : bool
@@ -2515,13 +2519,16 @@ emit_funentry (pf | out, entry) = let
     // nothing
   end // end of [val]
 //
-  // function body
+// function body
+//
   val () = emit_instrlst (pf | out, funentry_body_get entry)
-
-  // varindmap needs to be reset
+//
+// varindmap needs to be reset
+//
   val () = funentry_varindmap_reset ()
-
-  // return
+//
+// return
+//
   val () = fprint1_string (pf | out, "\nreturn ")
   val () = let
     val is_void = tmpvar_is_void (tmp_ret)
@@ -2536,10 +2543,11 @@ emit_funentry (pf | out, entry) = let
   val () = fprint1_string (pf | out, " ;\n} /* end of [")
   val () = begin
     emit_funlab (pf | out, fl); fprint1_string (pf | out, "] */")
-  end
-
-  // closure_type and closure_make and clofun
-  val () = case+ 0 of
+  end // end of [val]
+//
+// closure_type and closure_make and clofun
+//
+  val () = (case+ 0 of
     | _ when istailjoin => ()
     | _ => begin case+ fc of
       | $Syn.FUNCLOclo knd => let
@@ -2560,6 +2568,8 @@ emit_funentry (pf | out, entry) = let
         end // end of [FUNCLOclo]
       | $Syn.FUNCLOfun _ => ()
       end // end of [_]
+   ) : void // end of [val]
+//
 in
   // empty
 end // end of [emit_funentry]
@@ -2574,7 +2584,7 @@ emit_funentry_prototype
   val hits_arg = funlab_typ_arg_get (fl)
   val hit_res = funlab_typ_res_get (fl)
   val vtps_all = funentry_vtps_get_all (entry)
-
+//
   fn aux_function
     (out: &FILE m):<cloptr1> void = let
     val () = fprint1_string (pf | out, "static\n")
@@ -2592,7 +2602,7 @@ emit_funentry_prototype
   in
     // empty
   end // end of [aux_function]
-
+//
   fn aux_closure_make (out: &FILE m):<cloptr1> void = let
     val () = fprint1_string (pf | out, "static\n")
     val () = fprint1_string (pf | out, "ats_clo_ptr_type ")
@@ -2603,7 +2613,7 @@ emit_funentry_prototype
   in
     // empty
   end // end of [aux_closure_make]
-
+//
   fn aux_closure_clofun (out: &FILE m):<cloptr1> void = let
     val () = fprint1_string (pf | out, "static\n")
     val () = emit_hityp (pf | out, hit_res)
@@ -2619,7 +2629,7 @@ emit_funentry_prototype
   in
     // empty
   end // end of [aux_closure_clofun]
-
+//
 in
   case+ funlab_qua_get (fl) of
   | D2CSTOPTsome _(*d2c*) => begin case+ fc of

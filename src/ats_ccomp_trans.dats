@@ -425,16 +425,17 @@ in
   $Lst.list_vt_reverse (vps)
 end // end of [the_valprimlst_free_get]
 
-implement instr_add_valprimlst_free (res) = let
-  fun aux_free (res: &instrlst_vt, vps: valprimlst_vt)
+implement
+instr_add_valprimlst_free (res, loc) = let
+  fun aux_free (res: &instrlst_vt, loc: loc_t, vps: valprimlst_vt)
     : void = begin case+ vps of
-    | ~list_vt_cons (vp, vps) => begin
-        instr_add_freeptr (res, vp); aux_free (res, vps)
+    | ~list_vt_cons (vp, vps) => let
+        val () = instr_add_freeptr (res, loc, vp) in aux_free (res, loc, vps)
       end // end of [list_vt_cons]
     | ~list_vt_nil () => ()
   end // end of [aux_free]
 in
-  aux_free (res, the_valprimlst_free_get ())
+  aux_free (res, loc, the_valprimlst_free_get ())
 end // end of [instr_add_valprimlst_free]
 
 end // end of [local]
@@ -461,7 +462,10 @@ extern fun ccomp_patck_sum (
 implement ccomp_patck_rec
   (res, vp_rec, lhips, hit_rec, fail) = let
   fun aux (res: &instrlst_vt, l: lab_t, hip: hipat)
-    :<cloref1> void = begin case+ hip.hipat_node of
+    :<cloref1> void = let
+    val loc = hip.hipat_loc
+  in
+    case+ hip.hipat_node of
     | HIPann (hip, _(*ann*)) => aux (res, l, hip)
     | HIPany _ => ()
     | HIPas (_(*knd*), _(*d2v*), hip) => aux (res, l, hip)
@@ -470,7 +474,7 @@ implement ccomp_patck_rec
         val d2v = (
           case+ hip.hipat_asvar of
           | D2VAROPTnone () => let
-              val d2v = d2var_make_any (hip.hipat_loc)
+              val d2v = d2var_make_any (loc)
               val () = hipat_asvar_set (hip, D2VAROPTsome d2v)
             in
               d2v
@@ -480,17 +484,19 @@ implement ccomp_patck_rec
         val hit = hityp_normalize (hip.hipat_typ)
         val tmp = tmpvar_make (hit)
         val off = OFFSETlab (l, hit_rec)
-        val () = instr_add_select (res, tmp, vp_rec, '[off])
+        val () = instr_add_select (res, loc, tmp, vp_rec, '[off])
         val vp = valprim_tmp tmp
         val () = the_dynctx_add (d2v, vp)
       in
         ccomp_patck (res, vp, hip, fail)
       end // end of [_]
   end // end of [aux]
-  fun auxlst (res: &instrlst_vt, lhips: labhipatlst)
-    :<cloref1> void = begin case+ lhips of
-    | LABHIPATLSTcons (l, hip, lhips) =>
-        (aux (res, l, hip); auxlst (res, lhips))
+  fun auxlst (
+    res: &instrlst_vt, lhips: labhipatlst
+  ) :<cloref1> void = begin case+ lhips of
+    | LABHIPATLSTcons (l, hip, lhips) => let
+        val () = aux (res, l, hip) in auxlst (res, lhips)
+      end // end of [LABHIPATLSTcons]
     | _ => () // [LABHIPATLSTdot] and [LABHIPATLSTnil]
   end // end of [auxlst]
 in
@@ -499,8 +505,12 @@ end (* end of [ccomp_patck_rec] *)
 
 implement ccomp_patck_sum
   (res, vp_sum, d2c, hips_arg, hit_sum, fail) = let
-  fun aux (res: &instrlst_vt, hip: hipat, i: int)
-    :<cloref1> void = begin case+ hip.hipat_node of
+  fun aux (
+    res: &instrlst_vt, hip: hipat, i: int
+  ) :<cloref1> void = let
+    val loc = hip.hipat_loc
+  in
+    case+ hip.hipat_node of
     | HIPann (hip, _(*ann*)) => aux (res, hip, i)
     | HIPany _ => ()
     | HIPas (_(*knd*), _(*d2v*), hip) => aux (res, hip, i)
@@ -509,14 +519,14 @@ implement ccomp_patck_sum
         val d2v = (
           case+ hip.hipat_asvar of
           | D2VAROPTnone () => d2v where {
-              val d2v = d2var_make_any (hip.hipat_loc)
+              val d2v = d2var_make_any (loc)
               val () = hipat_asvar_set (hip, D2VAROPTsome d2v)
             } // end of [D2VAROPTnone]
           | D2VAROPTsome d2v => d2v // may happen in template compilation
         ) : d2var_t
         val hit = hityp_normalize (hip.hipat_typ)
         val tmp = tmpvar_make (hit)
-        val () = instr_add_selcon (res, tmp, vp_sum, hit_sum, i)
+        val () = instr_add_selcon (res, loc, tmp, vp_sum, hit_sum, i)
         val vp = valprim_tmp tmp
         val () = the_dynctx_add (d2v, vp)
       in
@@ -536,7 +546,8 @@ end (* end of [ccomp_patck_sum] *)
 
 (* ****** ****** *)
 
-implement ccomp_patck (res, vp0, hip0, fail) = let
+implement
+ccomp_patck (res, vp0, hip0, fail) = let
 (*
   val () = begin
     print "ccomp_patck: vp0 = "; print vp0; print_newline ();
@@ -545,6 +556,7 @@ implement ccomp_patck (res, vp0, hip0, fail) = let
     print "ccomp_patck: hip0.typ = "; print hip0.hipat_typ; print_newline ();
   end // end of [val]
 *)
+  val loc0 = hip0.hipat_loc
 in
   case+ hip0.hipat_node of
   | HIPann (hip, _(*ann*)) => begin
@@ -553,10 +565,10 @@ in
   | HIPany () => ()
   | HIPas (_(*knd*), _(*d2v*), hip) => ccomp_patck (res, vp0, hip, fail)
   | HIPbool b => begin
-      instr_add_patck (res, vp0, PATCKbool b, fail)
+      instr_add_patck (res, loc0, vp0, PATCKbool b, fail)
     end // end of [HIPbool]
   | HIPchar c => begin
-      instr_add_patck (res, vp0, PATCKchar c, fail)
+      instr_add_patck (res, loc0, vp0, PATCKchar c, fail)
     end // end of [HIPchar]
   | HIPcon (_(*freeknd*), d2c, hips_arg, hit_sum) => let
 (*
@@ -567,7 +579,7 @@ in
       val () = the_dynconset_add d2c
       val isexn = d2con_is_exn d2c
       val patck = (if isexn then PATCKexn d2c else PATCKcon d2c): patck
-      val () = instr_add_patck (res, vp0, patck, fail)
+      val () = instr_add_patck (res, loc0, vp0, patck, fail)
       val hit_sum = hityp_normalize hit_sum
     in
       ccomp_patck_sum (res, vp0, d2c, hips_arg, hit_sum, fail)
@@ -579,14 +591,14 @@ in
         if isexn then PATCKexn d2c else PATCKcon d2c
       ) : patck
     in
-      instr_add_patck (res, vp0, patck, fail)
+      instr_add_patck (res, loc0, vp0, patck, fail)
     end // end of [HIPcon_any]
   | HIPfloat f(*string*) => begin
-      instr_add_patck (res, vp0, PATCKfloat f, fail)
+      instr_add_patck (res, loc0, vp0, PATCKfloat f, fail)
     end // end of [HIPfloat]
   | HIPempty () => ()
   | HIPint (str, int) => begin
-      instr_add_patck (res, vp0, PATCKint (int), fail)
+      instr_add_patck (res, loc0, vp0, PATCKint (int), fail)
     end // end of [HIPint]
   | HIPrec (_(*knd*), lhips, hit_rec) => let
       val hit_rec = hityp_normalize (hit_rec)
@@ -594,11 +606,11 @@ in
       ccomp_patck_rec (res, vp0, lhips, hit_rec, fail)
     end // end of [HIPrec]
   | HIPstring str => begin
-      instr_add_patck (res, vp0, PATCKstring str, fail)
+      instr_add_patck (res, loc0, vp0, PATCKstring str, fail)
     end // end of [HIPstring]
   | HIPvar _ => ()
   | _ => begin
-      prerr_interror ();
+      prerr_loc_interror (loc0);
       prerr ": ccomp_patck: hip0 = "; prerr_hipat hip0; prerr_newline ();
       $Err.abort {void} ()
     end // end of [_]
@@ -621,10 +633,11 @@ fn ccomp_match_rec (
         val vp = (
           case+ hip.hipat_asvar of
           | D2VAROPTnone () => let
+              val loc = hip.hipat_loc
               val hit = hityp_normalize (hip.hipat_typ)
               val tmp = tmpvar_make (hit)
               val off = OFFSETlab (l, hit_rec)
-              val () = instr_add_select (res, tmp, vp_rec, '[off])
+              val () = instr_add_select (res, loc, tmp, vp_rec, '[off])
             in
               valprim_tmp tmp
             end // end of [D2VAROPTnone]
@@ -671,6 +684,7 @@ fn ccomp_match_sum (
       print "ccomp_match_sum: aux_var: d2v = "; print_d2var d2v ; print_newline ();
     end // end of [val]
 *)
+    val loc0 = hip0.hipat_loc
     val () = d2var_lev_set (d2v, level)
   in
     case+ 0 of
@@ -678,7 +692,7 @@ fn ccomp_match_sum (
     | _ when refknd > 0 => let
         val hit = hityp_encode (hityp_ptr)
         val tmp_ptr = tmpvar_make (hit)
-        val () = instr_add_selcon_ptr (res, tmp_ptr, vp_sum, hit_sum, i)
+        val () = instr_add_selcon_ptr (res, loc0, tmp_ptr, vp_sum, hit_sum, i)
         val vp_ptr = valprim_tmp (tmp_ptr)
         val () = the_dynctx_add (d2v, vp_ptr)
       in
@@ -687,7 +701,7 @@ fn ccomp_match_sum (
     | _ => let
         val hit = hityp_normalize (hip0.hipat_typ)
         val tmp = tmpvar_make (hit)
-        val () = instr_add_selcon (res, tmp, vp_sum, hit_sum, i)
+        val () = instr_add_selcon (res, loc0, tmp, vp_sum, hit_sum, i)
         val vp = valprim_tmp tmp
         val () = the_dynctx_add (d2v, vp)
       in
@@ -712,9 +726,10 @@ fn ccomp_match_sum (
         val vp0 = the_dynctx_find d2v
         val vp = begin case+ 0 of
           | _ when refknd > 0 => let
+              val loc = hip0.hipat_loc
               val hit = hityp_normalize (hip0.hipat_typ)
               val tmp = tmpvar_make (hit)
-              val () = instr_add_load_ptr (res, tmp, vp0)
+              val () = instr_add_load_ptr (res, loc, tmp, vp0)
             in
               valprim_tmp (tmp)
             end // end of [_ when refknd > 0]
@@ -754,7 +769,8 @@ end (* end of [ccomp_match_sum] *)
 
 (* ****** ****** *)
 
-implement ccomp_match (res, level, vp0, hip0) = let
+implement
+ccomp_match (res, level, vp0, hip0) = let
 (*
   val () = begin
     print "ccomp_match: level = "; print level; print_newline ();
@@ -762,8 +778,12 @@ implement ccomp_match (res, level, vp0, hip0) = let
     print "ccomp_match: hip0 = "; print_hipat hip0; print_newline ();
   end // end [val]
 *)
+//
+  val loc0 = hip0.hipat_loc
+//
   fun aux_var (
       res: &instrlst_vt
+    , loc0: loc_t
     , level: int
     , vp0: valprim
     , d2v: d2var_t
@@ -787,7 +807,7 @@ implement ccomp_match (res, level, vp0, hip0) = let
       in
         if ismove then let
           val tmp = tmpvar_make (vp0.valprim_typ)
-          val () = instr_add_move_val (res, tmp, vp0)
+          val () = instr_add_move_val (res, loc0, tmp, vp0)
           val () = the_dynctx_add (d2v, valprim_tmp tmp)
         in
           // empty
@@ -806,7 +826,7 @@ in
     // end of [HIPann]
   | HIPany _ => ()
   | HIPas (_(*refknd*), d2v, hip) => let
-      val () = aux_var (res, level, vp0, d2v)
+      val () = aux_var (res, loc0, level, vp0, d2v)
     in
       ccomp_match (res, level, vp0, hip)
     end // end of [HIPas]
@@ -832,9 +852,9 @@ in
       ccomp_match_rec (res, level, vp0, lhips, hit_rec)
     end // end of [HIPrec]
   | HIPstring _ => ()
-  | HIPvar (_(*refknd*), d2v) => aux_var (res, level, vp0, d2v)
+  | HIPvar (_(*refknd*), d2v) => aux_var (res, loc0, level, vp0, d2v)
   | _ => begin
-      prerr_loc_interror (hip0.hipat_loc);
+      prerr_loc_interror (loc0);
       prerr ": ccomp_match: hip0 = "; prerr_hipat hip0; prerr_newline ();
       $Err.abort {void} ()
     end // end of [_]
@@ -881,7 +901,7 @@ fn hiexp_refarg_tr (
       } // end of [val]
       val hit = hie.hiexp_typ
       val tmp = tmpvar_make (hityp_normalize hit)
-      val () = instr_add_vardec (res, tmp)
+      val () = instr_add_vardec (res, loc, tmp)
       val vp = valprim_tmp_ref tmp
       val () = (vps_free := list_vt_cons (vp, vps_free))
       val () = the_dynctx_add (d2v_any, vp)
@@ -926,6 +946,7 @@ end // end of [valprim_funclo_make]
 
 fn ccomp_exp_assgn_ptr (
     res: &instrlst_vt
+  , loc0: loc_t
   , hie_ptr: hiexp
   , hils: hilablst
   , hie_val: hiexp)
@@ -934,11 +955,12 @@ fn ccomp_exp_assgn_ptr (
   val offs = ccomp_hilablst (res, hils)
   val vp_val = ccomp_exp (res, hie_val)
 in
-  instr_add_store_ptr_offs (res, vp_ptr, offs, vp_val)
+  instr_add_store_ptr_offs (res, loc0, vp_ptr, offs, vp_val)
 end // end of [ccomp_exp_assgn_ptr]
 
 fn ccomp_exp_assgn_var (
     res: &instrlst_vt
+  , loc0: loc_t
   , d2v_mut: d2var_t
   , hils: hilablst
   , hie_val: hiexp)
@@ -946,16 +968,17 @@ fn ccomp_exp_assgn_var (
   val vp_mut = ccomp_exp_var (d2v_mut)
   val offs = ccomp_hilablst (res, hils)
   val vp_val = ccomp_exp (res, hie_val)
-  val ins = INSTRstore_ptr_offs (vp_mut, offs, vp_val)
 in
-  instr_add_store_var_offs (res, vp_mut, offs, vp_val)
+  instr_add_store_var_offs (res, loc0, vp_mut, offs, vp_val)
 end // end of [ccomp_exp_assgn_var] 
 
 (* ****** ****** *)
 
 fn ccomp_exp_freeat
-  (res: &instrlst_vt, hie: hiexp): void = begin
-  instr_add_freeptr (res, ccomp_exp (res, hie))
+  (res: &instrlst_vt, hie: hiexp): void = let
+  val loc = hie.hiexp_loc
+in
+  instr_add_freeptr (res, loc, ccomp_exp (res, hie))
 end // end of [ats_ccomp_trans]
 
 (* ****** ****** *)
@@ -1097,7 +1120,7 @@ fn ccomp_exp_lam (
   val (pf_tailcallst_mark | ()) = the_tailcallst_mark ()
   val () = the_tailcallst_add (fl, list_nil ())
   val _(*funentry*) = let
-    val prolog = '[INSTRfunlab fl]
+    val ins = instr_funlab (fl); val prolog = '[ins]
   in
     ccomp_exp_arg_body_funlab (loc0, prolog, hips_arg, hie_body, fl)
   end // end of [val]
@@ -1263,6 +1286,7 @@ end // end of [ccomp_exp_var]
 
 fn ccomp_exp_loop (
     res: &instrlst_vt
+  , loc0: loc_t
   , ohie_init: hiexpopt
   , hie_test: hiexp
   , ohie_post: hiexpopt
@@ -1302,7 +1326,10 @@ fn ccomp_exp_loop (
   val () = loopexnlablst_pop ()
 in
   instr_add_loop (
-    res, lab_init, lab_fini, lab_cont, res_init, vp_test, res_test, res_post, res_body
+    res
+  , loc0
+  , lab_init, lab_fini, lab_cont
+  , res_init, vp_test, res_test, res_post, res_body
   ) // end of [instr_add_loop]
 end // end of [ccomp_exp_loop]
 
@@ -1315,15 +1342,16 @@ implement ccomp_exp (res, hie0) = let
     print "ccomp_exp: hit0 = "; print_hityp hie0.hiexp_typ; print_newline ();
   end // end of [val]
 *)
+  val loc0 = hie0.hiexp_loc
 in
   case+ hie0.hiexp_node of
   | HIEassgn_ptr (hie_ptr, hils, hie_val) => let
-      val () = ccomp_exp_assgn_ptr (res, hie_ptr, hils, hie_val)
+      val () = ccomp_exp_assgn_ptr (res, loc0, hie_ptr, hils, hie_val)
     in
       valprim_void ()
     end // end of [HIEassgn_ptr]
   | HIEassgn_var (d2v_mut, hils, hie_val) => let
-      val () = ccomp_exp_assgn_var (res, d2v_mut, hils, hie_val)
+      val () = ccomp_exp_assgn_var (res, loc0, d2v_mut, hils, hie_val)
     in
       valprim_void ()
     end // end of [HIEassgn_var]
@@ -1337,7 +1365,7 @@ in
   | HIEchar c => valprim_char c
   | HIEcst d2c => begin case+ 0 of
     | _ when d2cst_is_proof d2c => begin
-        prerr_loc_ccomp (hie0.hiexp_loc);
+        prerr_loc_ccomp (loc0);
         prerr ": ["; prerr d2c; prerr "] is a proof constant";
         prerr ", which must not occur at run-time.";
         prerr_newline ();
@@ -1353,12 +1381,12 @@ in
       end // end of [_]
     end // end of [HIEcst]
   | HIEcstsp cst => let
-      val loc0 = hie0.hiexp_loc; val hit0 = hityp_normalize (hie0.hiexp_typ)
+      val hit0 = hityp_normalize (hie0.hiexp_typ)
     in
       valprim_cstsp (loc0, cst, hit0)
     end // end of [HIEcstsp]
   | HIEdynload fil => let
-      val () = instr_add_dynload_file (res, fil)
+      val () = instr_add_dynload_file (res, loc0, fil)
     in
       valprim_void ()
     end // end of [HIEdynload]
@@ -1386,7 +1414,7 @@ in
       valprim_intsp (str, int, hit0)
     end // end of [HIEintsp]
   | HIElam (hips_arg, hie_body) => begin
-      ccomp_exp_lam (hie0.hiexp_loc, hie0.hiexp_typ, hips_arg, hie_body)
+      ccomp_exp_lam (loc0, hie0.hiexp_typ, hips_arg, hie_body)
     end // end if [HIElam]
   | HIElet (hids, hie) => let
       val (pf_mark | ()) = the_dynctx_mark ()
@@ -1396,11 +1424,9 @@ in
     in
       vp // the return value
     end // end of [HIElet]
-  | HIEloopexn (knd) => let
-      val () = instr_add_loopexn (res, knd, loopexnlablst_get knd)
-    in
-      valprim_void ()
-    end // end of [HIEloopexn]
+  | HIEloopexn (knd) => valprim_void () where {
+      val () = instr_add_loopexn (res, loc0, knd, loopexnlablst_get knd)
+    } // end of [HIEloopexn]
   | HIEptrof_ptr (hie_ptr, hils) => begin
       ccomp_exp_ptrof_ptr (res, hie_ptr, hils)
     end // end of [HIEptrof_ptr]
@@ -1418,12 +1444,12 @@ in
   | HIEtmpcst (d2c, hitss) => let
       val hit0 = hityp_normalize (hie0.hiexp_typ)
     in
-      ccomp_exp_template_cst (hie0.hiexp_loc, res, hit0, d2c, hitss)
+      ccomp_exp_template_cst (res, loc0, hit0, d2c, hitss)
     end // end of [HIEtmpcst]
   | HIEtmpvar (d2v, hitss) => let
       val hit0 = hityp_normalize (hie0.hiexp_typ)
     in
-      ccomp_exp_template_var (hie0.hiexp_loc, res, hit0, d2v, hitss)
+      ccomp_exp_template_var (res, loc0, hit0, d2v, hitss)
     end // end of [HIEtmpvar]
   | HIEtop () => let
       val hit0 = hityp_normalize (hie0.hiexp_typ)
@@ -1432,7 +1458,7 @@ in
     end // end of [HIEtop]
   | HIEvar d2v => begin case+ 0 of
     | _ when d2var_isprf_get d2v => begin
-        prerr_loc_ccomp (hie0.hiexp_loc);
+        prerr_loc_ccomp (loc0);
         prerr ": ["; prerr d2v; prerr "] is a proof variable";
         prerr ", which must not occur at run-time.";
         prerr_newline ();
@@ -1441,7 +1467,8 @@ in
     | _ => ccomp_exp_var (d2v)
     end // end of [HIEvar]
   | HIEloop (ohie_init, hie_test, ohie_post, hie_body) => let
-      val () = ccomp_exp_loop (res, ohie_init, hie_test, ohie_post, hie_body)
+      val () = ccomp_exp_loop
+        (res, loc0, ohie_init, hie_test, ohie_post, hie_body)
     in
       valprim_void ()
     end // end of [HIEloop]
@@ -1499,108 +1526,123 @@ end // end of [ccomp_labexplst]
 
 (* ****** ****** *)
 
-fun instrlst_add_freeptr
-  (res: &instrlst_vt, vps: valprimlst_vt): void = begin
+fun instrlst_add_freeptr (
+  res: &instrlst_vt, loc: loc_t, vps: valprimlst_vt
+) : void = begin
   case+ vps of
   | ~list_vt_cons (vp, vps) => begin
-      instr_add_freeptr (res, vp); instrlst_add_freeptr (res, vps)
+      instr_add_freeptr (res, loc, vp); instrlst_add_freeptr (res, loc, vps)
     end // end of [list_vt_cons]
   | ~list_vt_nil () => ()
 end // end of [instrlst_add_freeptr]
 
-//
+(* ****** ****** *)
 
 fn tailcall_arg_move (
     res: &instrlst_vt
+  , loc0: loc_t
   , knd: int // 0/1: self/other
   , tmps_arg: tmpvarlst
   , vps_arg: valprimlst
   ) : void = let
 (*
   val () = begin
-    print "tailcall_arg_move: tmps_arg = "; print_tmpvarlst tmps_arg; print_newline ();
-    print "tailcall_arg_move: vps_arg = "; print_valprimlst vps_arg; print_newline ();
+//
+    print "tailcall_arg_move: tmps_arg = ";
+    print_tmpvarlst tmps_arg; print_newline ();
+//
+    print "tailcall_arg_move: vps_arg = ";
+    print_valprimlst vps_arg; print_newline ();
+//
   end // end of [val]
 *)
-  fun valprim_mov
-    (res: &instrlst_vt, vp: valprim): valprim = let
+  fun valprim_mov (
+    res: &instrlst_vt, loc0: loc_t, vp: valprim
+  ) : valprim = let
     val tmp = tmpvar_make (vp.valprim_typ)
-    val () = instr_add_move_val (res, tmp, vp)
+    val () = instr_add_move_val (res, loc0, tmp, vp)
   in
     valprim_tmp (tmp)
   end // end of [valmov]
 //
   fun aux1_arg (
-      res: &instrlst_vt, i: int, vps: valprimlst
+      res: &instrlst_vt
+    , loc0: loc_t, i: int, vps: valprimlst
     ) : valprimlst_vt = begin case+ vps of
     | list_cons (vp, vps) => let
         val vp = (case+ vp.valprim_node of
-          | VParg i_arg when i_arg < i => valprim_mov (res, vp)
+          | VParg i_arg when i_arg < i => valprim_mov (res, loc0, vp)
           | VPptrof vp1 => begin case+ vp1.valprim_node of
-              | VParg_ref i_arg when i_arg < i => valprim_mov (res, vp) | _ => vp
+              | VParg_ref i_arg when i_arg < i => valprim_mov (res, loc0, vp) | _ => vp
             end // end of [VPptrof]
-          | VPclo _ => valprim_mov (res, vp)
+          | VPclo _ => valprim_mov (res, loc0, vp)
           | _ => vp
         ) : valprim
       in
-        list_vt_cons (vp, aux1_arg (res, i+1, vps))
+        list_vt_cons (vp, aux1_arg (res, loc0, i+1, vps))
       end // end of [list_vt_cons]
     | list_nil () => list_vt_nil ()
   end // end of [aux1_arg]
 //
-  fun aux2_arg
-    (res: &instrlst_vt, vps: valprimlst)
-    : valprimlst_vt = begin case+ vps of
+  fun aux2_arg (
+      res: &instrlst_vt
+    , loc0: loc_t
+    , vps: valprimlst
+    ) : valprimlst_vt = begin case+ vps of
     | list_cons (vp, vps) => begin
-        list_vt_cons (vp, aux2_arg (res, vps))
+        list_vt_cons (vp, aux2_arg (res, loc0, vps))
       end // end of [list_cons]
     | list_nil () => list_vt_nil ()
   end // end of [aux2_arg]
 //
   val vps_arg = (
     case+ knd of
-    | 0 => aux1_arg (res, 0, vps_arg) // a call to self
-    | _ => aux2_arg (res, vps_arg)
+    | 0 => aux1_arg (res, loc0, 0, vps_arg) // a call to self
+    | _ => aux2_arg (res, loc0, vps_arg)
   ) : valprimlst_vt
 //
   fun aux1_mov (
       res: &instrlst_vt
+    , loc0: loc_t
     , i: int
     , vps: valprimlst_vt
     ) : void = begin case+ vps of
     | ~list_vt_cons (vp, vps) => let
-        val () = instr_add_move_arg (res, i, vp)
+        val () = instr_add_move_arg (res, loc0, i, vp)
       in
-        aux1_mov (res, i+1, vps)
+        aux1_mov (res, loc0, i+1, vps)
       end // end of [list_vt_cons]
     | ~list_vt_nil () => ()
   end // end of [aux1_mov]
 //
   fun aux2_mov (
       res: &instrlst_vt
+    , loc0: loc_t
     , tmps: tmpvarlst
     , vps: valprimlst_vt
     ) : void = begin case+ vps of
     | ~list_vt_cons (vp, vps) => begin case+ tmps of
       | list_cons (tmp, tmps) => let
-          val () = instr_add_move_val (res, tmp, vp)
+          val () = instr_add_move_val (res, loc0, tmp, vp)
         in
-          aux2_mov (res, tmps, vps)
+          aux2_mov (res, loc0, tmps, vps)
         end // end of [list_cons]
-      | list_nil () => aux2_mov (res, tmps, vps) // deadcode
+      | list_nil () => aux2_mov (res, loc0, tmps, vps) // deadcode
       end // end of [list_vt_cons]
     | ~list_vt_nil () => ()
   end // end of [aux2_mov]
 in
   case+ tmps_arg of
-  | list_cons _ => aux2_mov (res, tmps_arg, vps_arg)
-  | list_nil () => aux1_mov (res, 0, vps_arg)
+  | list_cons _ =>
+      aux2_mov (res, loc0, tmps_arg, vps_arg)
+  | list_nil () => aux1_mov (res, loc0, 0, vps_arg)
 end // end of [tailcall_arg_move]
 
 //
 
 fn ccomp_exp_app_tmpvar (
     res: &instrlst_vt
+  , loc0: loc_t
   , level: int
   , hit_fun: hityp_t
   , hie_fun: hiexp
@@ -1631,9 +1673,9 @@ fn ccomp_exp_app_tmpvar (
   val vps_arg = ccomp_explst (res, hies_arg) where {
     val hies_arg = hiexplst_refarg_tr (res, level, vps_free, hies_arg)
   } // end of [where]
-
+//
   val vps_free = $Lst.list_vt_reverse {valprim} (vps_free)
-
+//
   val ofl = (case+ vp_fun.valprim_node of
     | VPfun fl => Some_vt fl
     | VPclo (_(*knd*), fl, _(*env*)) => Some_vt fl
@@ -1649,7 +1691,7 @@ fn ccomp_exp_app_tmpvar (
       end // end of [VPcst]
     | _ => None_vt ()
   ) : Option_vt (funlab_t)
-
+//
   var istail: int = 0
   var tmps_arg: tmpvarlst = list_nil ()
   val () = begin
@@ -1690,20 +1732,20 @@ fn ccomp_exp_app_tmpvar (
         if istail > 0 then let
           val fl0 = funlab_top (); val knd =
             (if eq_funlab_funlab (fl, fl0) then 0 else 1): int
-          val () = tailcall_arg_move (res, knd, tmps_arg, vps_arg)
+          val () = tailcall_arg_move (res, loc0, knd, tmps_arg, vps_arg)
         in
-          instr_add_call_tail (res, fl)
+          instr_add_call_tail (res, loc0, fl)
         end // end of [list_vt_cons]
       end // end of [Some_vt]
     | ~None_vt () => ()
   end // end of [val]
-
+//
   val () = // handling non-tail-call
     if istail = 0 then begin
-      instr_add_call (res, tmp_res, hit_fun, vp_fun, vps_arg)
+      instr_add_call (res, loc0, tmp_res, hit_fun, vp_fun, vps_arg)
     end // end of [if]
-
-  val () = instrlst_add_freeptr (res, vps_free)
+//
+  val () = instrlst_add_freeptr (res, loc0, vps_free)
 in
   // empty
 end // end of [ccomp_exp_app_tmpvar]
@@ -1715,15 +1757,18 @@ fn ccomp_exp_assgn_arr (
   , vp_arr: valprim, hit_elt: hityp_t
   , hies_elt: hiexplst
   ) : void = let
-  fun aux (res: &instrlst_vt, i: int, hies: hiexplst):<cloref1> void =
+  fun aux (
+    res: &instrlst_vt, i: int, hies: hiexplst
+  ) :<cloref1> void =
     case+ hies of
     | list_cons (hie, hies) => let
+        val loc = hie.hiexp_loc
         val vp = ccomp_exp (res, hie)
         macdef list_sing (x) = list_cons (,(x), list_nil ())
         val int = $IntInf.intinf_make_int (i)
         val ind = list_sing (list_sing (valprim_int int))
         val off = OFFSETind (ind, hit_elt)
-        val () = instr_add_store_ptr_offs (res, vp_arr, '[off], vp)
+        val () = instr_add_store_ptr_offs (res, loc, vp_arr, '[off], vp)
       in
         aux (res, i+1, hies)
       end // end of [aux]
@@ -1737,6 +1782,7 @@ end // end of [ccomp_exp_assgn_arr]
 
 fn ccomp_exp_arrinit_tmpvar (
     res: &instrlst_vt
+  , loc0: loc_t
   , level: int
   , hit_elt: hityp_t
   , ohie_asz: hiexpopt
@@ -1753,7 +1799,7 @@ fn ccomp_exp_arrinit_tmpvar (
       end // end of [None]
   ) : valprim // end of [val]
   val () = instr_add_arr_stack
-    (res, tmp_arr, level, vp_asz, hit_elt)
+    (res, loc0, tmp_arr, level, vp_asz, hit_elt)
   // end of [val]
 in
   case+ ohie_asz of
@@ -1763,7 +1809,7 @@ in
         val () = ccomp_exp_tmpvar (res, hie_elt, tmp_elt)
         val vp_tsz = valprim_sizeof (hit_elt)
       in
-        instr_add_assgn_arr (res, vp_arr, vp_asz, tmp_elt, vp_tsz)
+        instr_add_assgn_arr (res, loc0, vp_arr, vp_asz, tmp_elt, vp_tsz)
       end // end of [list_cons]
     | list_nil () => ()
     end // end of [Some]
@@ -1774,26 +1820,29 @@ end // end of [ccomp_exp_arrinit_tmpvar]
 
 fn ccomp_exp_arrsize_tmpvar (
     res: &instrlst_vt
+  , loc0: loc_t
   , hit_elt: hityp_t
   , hies_elt: hiexplst
   , tmp_res: tmpvar_t
   ) : void = let
   val asz = $Lst.list_length hies_elt
-  val () = instr_add_arr_heap (res, tmp_res, asz, hit_elt)
+  val () = instr_add_arr_heap (res, loc0, tmp_res, asz, hit_elt)
   val tmp_arr = tmpvar_make (hityp_encode hityp_ptr)
   val vp_arr = valprim_tmp (tmp_arr)
   val () = let
     val vp_res = valprim_tmp (tmp_res)
     val hit_arrsz = tmpvar_typ_get tmp_res
 (*
+//
 viewtypedef
-arraysize_viewt0ype_int_viewt0ype (a: viewt@ype, n:int) =
-  [l:addr | l <> null]
-    (free_gc_v (a, n, l), @[a][n] @ l | ptr l(*arr*), int n(*size*))
+arraysize_viewt0ype_int_viewt0ype
+  (a: viewt@ype, n:int) = [l:addr | l > null]
+  (free_gc_v (a, n, l), @[a][n] @ l | ptr l(*arr*), int n(*size*))
+//
 *)
     val off = OFFSETlab ($Lab.label_make_int 2(*arr*), hit_arrsz)
   in
-    instr_add_load_var_offs (res, tmp_arr, vp_res, '[off])
+    instr_add_load_var_offs (res, loc0, tmp_arr, vp_res, '[off])
   end // end of [var]
 in
   ccomp_exp_assgn_arr (res, vp_arr, hit_elt, hies_elt)
@@ -1803,6 +1852,7 @@ end // end of [ccomp_exp_arrsize_tmpvar]
 
 fun ccomp_exp_lst_tmpvar_rest (
     res: &instrlst_vt
+  , loc0: loc_t
   , d2c_nil: d2con_t
   , hit_nil: hityp_t
   , d2c_cons: d2con_t
@@ -1816,23 +1866,26 @@ fun ccomp_exp_lst_tmpvar_rest (
   , vp_nxt: valprim
   ) : void = begin case+ hies of
   | list_cons (hie, hies) => let
+      val loc = hie.hiexp_loc
       val vp = ccomp_exp (res, hie)
       val () = instr_add_move_con
-        (res, tmp_nxt, hit_cons, d2c_cons, '[vp, vp_top])
-      val () = instr_add_store_ptr_offs (res, vp_fst, '[], vp_nxt)
+        (res, loc, tmp_nxt, hit_cons, d2c_cons, '[vp, vp_top])
+      val () = instr_add_store_ptr_offs (res, loc, vp_fst, '[], vp_nxt)
       val () = instr_add_move_val
-        (res, tmp_fst, valprim_ptrof_ptr_offs (vp_nxt, offs))
+        (res, loc, tmp_fst, valprim_ptrof_ptr_offs (vp_nxt, offs))
     in
       ccomp_exp_lst_tmpvar_rest (
         res
+      , loc0
       , d2c_nil, hit_nil, d2c_cons, hit_cons
       , hies, vp_top, offs
       , tmp_fst, vp_fst, tmp_nxt, vp_nxt
       )
     end // end of [list_cons]
   | list_nil () => let
-      val () = instr_add_move_con (res, tmp_nxt, hit_nil, d2c_nil, '[])
-      val () = instr_add_store_ptr_offs (res, vp_fst, '[], vp_nxt)
+      val () = instr_add_move_con
+        (res, loc0, tmp_nxt, hit_nil, d2c_nil, '[])
+      val () = instr_add_store_ptr_offs (res, loc0, vp_fst, '[], vp_nxt)
     in
       // empty
     end // end of [list_nil]
@@ -1840,6 +1893,7 @@ end // end of [ccomp_exp_lst_tmpvar_rest]
 
 fn ccomp_exp_lst_tmpvar (
     res: &instrlst_vt
+  , loc0: loc_t
   , knd: int
   , hit_elt: hityp_t
   , hies: hiexplst
@@ -1854,6 +1908,7 @@ fn ccomp_exp_lst_tmpvar (
 in
   case+ hies of
   | list_cons (hie, hies) => let
+      val loc = hie.hiexp_loc
       val d2conref_cons = (
         if knd > 0 then List_vt_cons else List_cons
       ) : d2conref_t
@@ -1865,7 +1920,7 @@ in
       val hityp_t_ptr = hityp_encode hityp_ptr
       val vp_top = valprim_top (hityp_t_ptr)
       val () = instr_add_move_con
-        (res, tmp_res, hit_cons, d2c_cons, '[vp, vp_top])
+        (res, loc, tmp_res, hit_cons, d2c_cons, '[vp, vp_top])
       val vp_res = valprim_tmp tmp_res
       val hit_cons_flt = let
         val hit_cons = hityp_decode hit_cons
@@ -1877,19 +1932,20 @@ in
       val offs = '[off]
       val tmp_fst = tmpvar_make hityp_t_ptr; val vp_fst = valprim_tmp tmp_fst
       val () = instr_add_move_val (
-        res, tmp_fst, valprim_ptrof_ptr_offs (vp_res, offs)
+        res, loc, tmp_fst, valprim_ptrof_ptr_offs (vp_res, offs)
       )
       val tmp_nxt = tmpvar_make hityp_t_ptr; val vp_nxt = valprim_tmp tmp_nxt
     in
       ccomp_exp_lst_tmpvar_rest (
         res
+      , loc0
       , d2c_nil, hit_nil, d2c_cons, hit_cons
       , hies, vp_top, offs
       , tmp_fst, vp_fst, tmp_nxt, vp_nxt
       )
     end // end of [list_cons]
   | list_nil () => begin
-      instr_add_move_con (res, tmp_res, hit_nil, d2c_nil, '[])
+      instr_add_move_con (res, loc0, tmp_res, hit_nil, d2c_nil, '[])
     end // end of [list_nil]
 end // end of [ccomp_exp_lst_with_tmpvar]
 
@@ -1933,33 +1989,36 @@ ccomp_exp_tmpvar
     print "ccomp_exp_tmpvar: tmp_res = "; print tmp_res; print_newline ();
   end // end of [val]
 *)
+  val loc0 = hie0.hiexp_loc
 in
   case+ hie0.hiexp_node of
   | HIEapp (hit_fun, hie_fun, hies_arg) => let
       val level = d2var_current_level_get ()
       val hit_fun = hityp_normalize (hit_fun)
     in
-      ccomp_exp_app_tmpvar (res, level, hit_fun, hie_fun, hies_arg, tmp_res)
+      ccomp_exp_app_tmpvar (
+        res, loc0, level, hit_fun, hie_fun, hies_arg, tmp_res
+      ) // end of [ccomp_exp_app_tmpvar]
     end // end of [HIEapp]
   | HIEarrsize (hit_elt, hies) => let
       val hit_elt = hityp_normalize (hit_elt)
     in
-      ccomp_exp_arrsize_tmpvar (res, hit_elt, hies, tmp_res)
+      ccomp_exp_arrsize_tmpvar (res, loc0, hit_elt, hies, tmp_res)
     end // end of [HIElst]
   | HIEassgn_ptr (hie_ptr, hils, hie_val) =>
-      ccomp_exp_assgn_ptr (res, hie_ptr, hils, hie_val)
+      ccomp_exp_assgn_ptr (res, loc0, hie_ptr, hils, hie_val)
   | HIEassgn_var (d2v_mut, hils, hie_val) =>
-      ccomp_exp_assgn_var (res, d2v_mut, hils, hie_val)
-  | HIEbool b => instr_add_move_val (res, tmp_res, valprim_bool b)
+      ccomp_exp_assgn_var (res, loc0, d2v_mut, hils, hie_val)
+  | HIEbool b => instr_add_move_val (res, loc0, tmp_res, valprim_bool b)
   | HIEcastfn _ => begin
-      instr_add_move_val (res, tmp_res, ccomp_exp (res, hie0))
+      instr_add_move_val (res, loc0, tmp_res, ccomp_exp (res, hie0))
     end // end of [HIEcastfn]
-  | HIEchar c => instr_add_move_val (res, tmp_res, valprim_char c)
+  | HIEchar c => instr_add_move_val (res, loc0, tmp_res, valprim_char c)
   | HIEcaseof (knd, hies, hicls) => let
       val level = d2var_current_level_get ()
       val vps = ccomp_explst (res, hies)
       val fail = (
-        if knd > 0 then KONTnone () else KONTcaseof_fail (hie0.hiexp_loc)
+        if knd > 0 then KONTnone () else KONTcaseof_fail (loc0)
       ) : kont
       val (pf_mark | ()) = the_dynctx_mark ()
       val branchlst = begin
@@ -1967,7 +2026,7 @@ in
       end // end of [val]
       val () = the_dynctx_unmark (pf_mark | (*none*))
     in
-      instr_add_switch (res, branchlst)
+      instr_add_switch (res, loc0, branchlst)
     end // end of [HIEcaseof]
   | HIEcon (hit_sum, d2c, hies_arg) => let
 (*
@@ -1977,7 +2036,7 @@ in
       end // end of [val]
 *)
       val () = if (d2con_is_proof d2c) then begin
-        prerr_loc_ccomp (hie0.hiexp_loc);
+        prerr_loc_ccomp (loc0);
         prerr ": ["; prerr d2c; prerr "] is a proof constructor";
         prerr ", which must not occur at run-time.";
         prerr_newline ();
@@ -1988,25 +2047,25 @@ in
       val hit_sum = hityp_normalize (hit_sum)
       val vps = ccomp_explst (res, hies_arg)
     in
-      instr_add_move_con (res, tmp_res, hit_sum, d2c, vps)
+      instr_add_move_con (res, loc0, tmp_res, hit_sum, d2c, vps)
     end // end of [HIEcon]
   | HIEcst _ => begin
-      instr_add_move_val (res, tmp_res, ccomp_exp (res, hie0))
+      instr_add_move_val (res, loc0, tmp_res, ccomp_exp (res, hie0))
     end // end of [HIEcst]
-  | HIEdynload fil => instr_add_dynload_file (res, fil)
+  | HIEdynload fil => instr_add_dynload_file (res, loc0, fil)
   | HIEempty () => ()
   | HIEextval code => let
       val hit0 = hityp_normalize (hie0.hiexp_typ)
     in
-      instr_add_move_val (res, tmp_res, valprim_ext (code, hit0))
+      instr_add_move_val (res, loc0, tmp_res, valprim_ext (code, hit0))
     end // end of [HIEextval]
   | HIEfloat f(*string*) => begin
-      instr_add_move_val (res, tmp_res, valprim_float f)
+      instr_add_move_val (res, loc0, tmp_res, valprim_float f)
     end // end of [HIEfloat]
   | HIEfloatsp f(*string*) => let
       val hit0 = hityp_normalize (hie0.hiexp_typ)
     in
-      instr_add_move_val (res, tmp_res, valprim_floatsp (f, hit0))
+      instr_add_move_val (res, loc0, tmp_res, valprim_floatsp (f, hit0))
     end // end of [HIEfloatsp]
   | HIEif (hie_cond, hie_then, hie_else) => let
       val vp_cond = ccomp_exp (res, hie_cond)
@@ -2018,41 +2077,48 @@ in
       val () = ccomp_exp_tmpvar (res_else, hie_else, tmp_res_else)
       val res_then = $Lst.list_vt_reverse_list res_then
       val res_else = $Lst.list_vt_reverse_list res_else
-      val ins = INSTRcond (vp_cond, res_then, res_else)
+      val ins = instr_cond (loc0, vp_cond, res_then, res_else)
     in
       res := list_vt_cons (ins, res)
     end // end of [HIEif]
   | HIEint (_(*str*), int) => begin
-      instr_add_move_val (res, tmp_res, valprim_int int)
+      instr_add_move_val (res, loc0, tmp_res, valprim_int int)
     end // end of [HIEint]
   | HIEintsp (str, int) => let
       val hit0 = hityp_normalize (hie0.hiexp_typ)
     in
-      instr_add_move_val (res, tmp_res, valprim_intsp (str, int, hit0))
+      instr_add_move_val (res, loc0, tmp_res, valprim_intsp (str, int, hit0))
     end // end of [HIEintsp]
   | HIElam (hips_arg, hie_body) => let
       val vp_lam = ccomp_exp_lam
-        (hie0.hiexp_loc, hie0.hiexp_typ, hips_arg, hie_body)
+        (loc0, hie0.hiexp_typ, hips_arg, hie_body)
     in
-      instr_add_move_val (res, tmp_res, vp_lam)
+      instr_add_move_val (res, loc0, tmp_res, vp_lam)
     end // end of [HIElam]
   | HIElazy_delay (hie_eval) => let
-      val hit_eval = hityp_normalize (hie_eval.hiexp_typ)
-      val vp_clo = ccomp_exp_lazy_delay (hie0.hiexp_loc, hie_eval)
+      val hit_eval =
+        hityp_normalize (hie_eval.hiexp_typ)
+      val vp_clo = ccomp_exp_lazy_delay (loc0, hie_eval)
     in
-      instr_add_move_lazy_delay (res, tmp_res, 0(*lin*), hit_eval, vp_clo)
+      instr_add_move_lazy_delay (
+        res, loc0, tmp_res, 0(*lin*), hit_eval, vp_clo
+      ) // end of [instr_add_move_lazy_delay]
     end // end of [HIElazy_delay]
   | HIElazy_vt_delay (hie_eval, hie_free) => let
       val hit_eval = hityp_normalize (hie_eval.hiexp_typ)
-      val vp_clo = ccomp_exp_lazy_vt_delay (hie0.hiexp_loc, hie_eval, hie_free)
+      val vp_clo = ccomp_exp_lazy_vt_delay (loc0, hie_eval, hie_free)
     in
-      instr_add_move_lazy_delay (res, tmp_res, 1(*lin*), hit_eval, vp_clo)
+      instr_add_move_lazy_delay (
+        res, loc0, tmp_res, 1(*lin*), hit_eval, vp_clo
+      ) // end of [instr_add_move_lazy_delay]
     end // end of [HIElazy_vt_delay]
   | HIElazy_force (lin, hie) => let
       val vp_lazy = ccomp_exp (res, hie)
       val hit_val = hityp_normalize (hie0.hiexp_typ)
     in
-      instr_add_move_lazy_force (res, tmp_res, lin, hit_val, vp_lazy)
+      instr_add_move_lazy_force (
+        res, loc0, tmp_res, lin, hit_val, vp_lazy
+      ) // end of [instr_add_move_lazy_force]
     end // end of [HIElazy_force]
   | HIElet (hids, hie) => let
       val (pf_mark | ()) = the_dynctx_mark ()
@@ -2063,75 +2129,78 @@ in
       // empty
     end // end of [HIElet]
   | HIEloop (ohie_init, hie_test, ohie_post, hie_body) => begin
-      ccomp_exp_loop (res, ohie_init, hie_test, ohie_post, hie_body)
+      ccomp_exp_loop (res, loc0, ohie_init, hie_test, ohie_post, hie_body)
     end // end of [HIEloop]
   | HIEloopexn (knd) => begin
-      instr_add_loopexn (res, knd, loopexnlablst_get knd)
+      instr_add_loopexn (res, loc0, knd, loopexnlablst_get knd)
     end // end of [HIEloopexn]
   | HIElst (knd, hit_elt, hies) => let
       val hit_elt = hityp_normalize (hit_elt)
     in
-      ccomp_exp_lst_tmpvar (res, knd, hit_elt, hies, tmp_res)
+      ccomp_exp_lst_tmpvar (res, loc0, knd, hit_elt, hies, tmp_res)
     end // end of [HIElst]
   | HIEptrof_ptr (hie_ptr, hils) => let
       val vp_ptr = ccomp_exp_ptrof_ptr (res, hie_ptr, hils)
     in
-      instr_add_move_val (res, tmp_res, vp_ptr)
+      instr_add_move_val (res, loc0, tmp_res, vp_ptr)
     end // end of [HIEptrof_ptr]
   | HIEptrof_var (d2v_mut, hils) => let
       val vp_ptr = ccomp_exp_ptrof_var (res, d2v_mut, hils)
     in
-      instr_add_move_val (res, tmp_res, vp_ptr)
+      instr_add_move_val (res, loc0, tmp_res, vp_ptr)
     end // end of [HIEptrof_var]
   | HIEraise hie_exn => let
       val vp_exn = ccomp_exp (res, hie_exn)
     in
-      instr_add_raise (res, tmp_res, vp_exn)
+      instr_add_raise (res, loc0, tmp_res, vp_exn)
     end // end of [HIEraise]
   | HIErec (recknd, hit_rec, lhies) => let
       val hit_rec = hityp_normalize (hit_rec)
     in
       case+ lhies of
-      | LABHIEXPLSTcons (l, hie, LABHIEXPLSTnil ())
-          when hityp_t_is_tyrecsin hit_rec => ccomp_exp_tmpvar (res, hie, tmp_res)
+      | LABHIEXPLSTcons (
+          l, hie, LABHIEXPLSTnil ()
+        ) when hityp_t_is_tyrecsin hit_rec =>
+          ccomp_exp_tmpvar (res, hie, tmp_res)
         // end of [LABHIEXPLSTcons (_, LABHIEXPLSTnil ())
       | _ => let
-          val lvps = ccomp_labexplst (res, lhies) in
-          instr_add_move_rec (res, tmp_res, recknd, hit_rec, lvps)
+          val lvps = ccomp_labexplst (res, lhies)
+        in
+          instr_add_move_rec (res, loc0, tmp_res, recknd, hit_rec, lvps)
         end // end of [_]
     end // end of [HIErec]
   | HIErefarg
       (refval, _(*freeknd*), hie) => let
       val vp_refarg = ccomp_exp_refarg (res, refval, hie)
     in
-      instr_add_move_val (res, tmp_res, vp_refarg)
+      instr_add_move_val (res, loc0, tmp_res, vp_refarg)
     end // end of [HIErefarg]
   | HIEsel (hie, hils) => let
       val vp = ccomp_exp (res, hie)
       val offs = ccomp_hilablst (res, hils)
     in
-      instr_add_select (res, tmp_res, vp, offs)
+      instr_add_select (res, loc0, tmp_res, vp, offs)
     end // end of [HIEsel]
   | HIEsel_ptr (hie_ptr, hils) => let
       val vp_ptr = ccomp_exp (res, hie_ptr)
       val offs = ccomp_hilablst (res, hils)
     in
-      instr_add_load_ptr_offs (res, tmp_res, vp_ptr, offs)
+      instr_add_load_ptr_offs (res, loc0, tmp_res, vp_ptr, offs)
     end // end of [HIEsel_ptr]
   | HIEsel_var (d2v_mut, hils) => let
       val vp_mut = ccomp_exp_var (d2v_mut)
       val offs = ccomp_hilablst (res, hils)
     in
-      instr_add_load_var_offs (res, tmp_res, vp_mut, offs)
+      instr_add_load_var_offs (res, loc0, tmp_res, vp_mut, offs)
     end // end of [HIEsel_var]
   | HIEseq (hies) => ccomp_exp_seq_tmpvar (res, hies, tmp_res)      
   | HIEstring (str, len) => begin
-      instr_add_move_val (res, tmp_res, valprim_string (str, len))
+      instr_add_move_val (res, loc0, tmp_res, valprim_string (str, len))
     end // end of [HIEstring]
   | HIEtop () => let
       val hit0 = hityp_normalize (hie0.hiexp_typ)
     in
-      instr_add_move_val (res, tmp_res, valprim_top (hit0))
+      instr_add_move_val (res, loc0, tmp_res, valprim_top (hit0))
     end // end of [HIEtop]
   | HIEtrywith (hie_try, hicls) => let
       val level = d2var_current_level_get ()
@@ -2143,13 +2212,13 @@ in
       val vps = '[vp_exn]; val fail = KONTraise vp_exn
       val brs = ccomp_hiclaulst (level, vps, hicls, tmp_res, fail)
     in
-      instr_add_trywith (res, res_try, tmp_exn, brs)
+      instr_add_trywith (res, loc0, res_try, tmp_exn, brs)
     end // end of [HIEtrywith]
   | HIEvar d2v => begin
-      instr_add_move_val (res, tmp_res, ccomp_exp_var (d2v))
+      instr_add_move_val (res, loc0, tmp_res, ccomp_exp_var (d2v))
     end // end of [HIEvar]
   | _ => begin
-      prerr_loc_interror (hie0.hiexp_loc);
+      prerr_loc_interror (loc0);
       prerr ": ccomp_exp_tmpvar: hie0 = "; prerr_hiexp hie0; prerr_newline ();
       $Err.abort {void} ()
     end // end of [_]
@@ -2157,7 +2226,8 @@ end // end of [ccomp_exp_tmpvar]
 
 (* ****** ****** *)
 
-implement ccomp_hilab (res, hil) = begin
+implement
+ccomp_hilab (res, hil) = begin
   case+ hil.hilab_node of
   | HILind (hiess_ind, hit_elt) => let
       val hit_elt = hityp_normalize (hit_elt)
@@ -2172,7 +2242,8 @@ implement ccomp_hilab (res, hil) = begin
     end
 end // end of [ccomp_hilab]
 
-implement ccomp_hilablst (res, hils) = begin
+implement
+ccomp_hilablst (res, hils) = begin
   case+ hils of
   | list_cons (hil, hils) => let
       val off = ccomp_hilab (res, hil)
@@ -2273,7 +2344,8 @@ fn ccomp_fntdeclst_main {n:nat} (
   val entrylst = auxlst_ccomp (fundecs, fls) where {
     fn aux_ccomp (fundec: hifundec, fl: funlab_t): funentry_t = let
       val loc_dec = fundec.hifundec_loc
-      val prolog = '[INSTRfunlab fl]; val hie_def = fundec.hifundec_def
+      val ins = instr_funlab fl; val prolog = '[ins]
+      val hie_def = fundec.hifundec_def
     in
       case+ hie_def.hiexp_node of
       | HIElam (hips_arg, hie_body) => begin
@@ -2313,11 +2385,12 @@ fun ccomp_fundeclst_main {n:nat} (
       val hie_def = fundec.hifundec_def
       val () = begin case+ hie_def.hiexp_node of
         | HIElam (hips_arg, hie_body) => let
+            val ins = instr_funlab (fl); val prolog = '[ins]
             val (pf_tailcallst_mark | ()) = the_tailcallst_mark ()
             val () = the_tailcallst_add (fl, list_nil ())
-            val prolog = '[INSTRfunlab fl]
             val _(*funentry*) = ccomp_exp_arg_body_funlab
               (fundec.hifundec_loc, prolog, hips_arg, hie_body, fl)
+            // end of [val]
             val () = the_tailcallst_unmark (pf_tailcallst_mark | (*none*))
           in
             // empty
@@ -2346,6 +2419,7 @@ fn ccomp_valdeclst (
   fun aux (res: &instrlst_vt, valdecs: hivaldeclst)
     :<cloref1> void = begin case+ valdecs of
     | list_cons (valdec, valdecs) => let
+        val loc0 = valdec.hivaldec_loc
         val vp = ccomp_exp (res, valdec.hivaldec_def)
         val hip = valdec.hivaldec_pat
         val fail = (case+ valknd of
@@ -2354,7 +2428,7 @@ fn ccomp_valdeclst (
         ) : kont
         val () = ccomp_patck (res, vp, hip, fail)
         val () = ccomp_match (res, level, vp, hip)
-        val () = instr_add_valprimlst_free (res)
+        val () = instr_add_valprimlst_free (res, loc0)
       in
         aux (res, valdecs)
       end // end of [list_cons]
@@ -2367,8 +2441,8 @@ end // end of [ccomp_valdeclst]
 (* ****** ****** *)
 
 fn ccomp_valdeclst_rec (
-    res: &instrlst_vt, level: int, valdecs: hivaldeclst
-  ) : void = () where {
+  res: &instrlst_vt, level: int, valdecs: hivaldeclst
+) : void = () where {
   val tmps = aux1 (res, valdecs) where {
     fun aux1 {n:nat} .<n>.
       (res: &instrlst_vt, valdecs: list (hivaldec, n))
@@ -2413,7 +2487,7 @@ fn ccomp_vardec_sta
   val s2e = d2var_typ_ptr_get d2v
   val hit = s2exp_tr (loc, 0(*deep*), s2e)
   val tmp = tmpvar_make (hityp_normalize hit)
-  val () = instr_add_vardec (res, tmp)
+  val () = instr_add_vardec (res, loc, tmp)
   val () = the_dynctx_add (d2v, valprim_tmp_ref tmp)
 in
   case+ vardec.hivardec_ini of
@@ -2423,29 +2497,34 @@ end // end of [ccomp_vardec_sta]
 fn ccomp_vardec_dyn
   (res: &instrlst_vt, level: int, vardec: hivardec)
   : void = let
-  val loc = vardec.hivardec_loc
+  val loc_var = vardec.hivardec_loc
   val d2v = vardec.hivardec_ptr
   val () = d2var_lev_set (d2v, level)
-  val hit_ptr = s2exp_tr (loc, 0(*deep*), s2e) where {
+  val hit_ptr = s2exp_tr (loc_var, 0(*deep*), s2e) where {
     // [s2e] must a pointer type
     val s2e = d2var_typ_get_some (d2var_loc_get d2v, d2v)
   } // end of [val]
-  val tmp_ptr = tmpvar_make (hityp_normalize hit_ptr)
-  val () = instr_add_vardec (res, tmp_ptr)
+  val tmp_ptr =
+    tmpvar_make (hityp_normalize hit_ptr)
+  val () = instr_add_vardec (res, loc_var, tmp_ptr)
   val () = the_dynctx_add (d2v, valprim_tmp tmp_ptr)
   val hie_ini = (case+ vardec.hivardec_ini of
     | Some hie => hie | None => begin
-        prerr_loc_interror (vardec.hivardec_loc);
+        prerr_loc_interror (loc_var);
         prerr ": ccomp_vardec_dyn: no initialization."; prerr_newline ();
         $Err.abort {hiexp} ()
       end // end of [None]
-  ) : hiexp
+  ) : hiexp // end of [val]
+  val loc_ini = hie_ini.hiexp_loc
 in
   case+ hie_ini.hiexp_node of
-  | HIEarrinit (hit_elt, ohie_asz, hies_elt) => let
+  | HIEarrinit
+      (hit_elt, ohie_asz, hies_elt) => let
       val hit_elt = hityp_normalize hit_elt
     in
-      ccomp_exp_arrinit_tmpvar (res, level, hit_elt, ohie_asz, hies_elt, tmp_ptr)
+      ccomp_exp_arrinit_tmpvar (
+        res, loc_ini, level, hit_elt, ohie_asz, hies_elt, tmp_ptr
+      ) // end of [ccomp_exp_arrinit_tmpvar]
     end // end of [HIEarrinit]
   | HIElaminit (hips_arg, hie_body) => let
       val hit_ini = hityp_normalize (hie_ini.hiexp_typ)
@@ -2453,14 +2532,14 @@ in
       val (pf_tailcallst_mark | ()) = the_tailcallst_mark ()
       val () = the_tailcallst_add (fl, list_nil ())
       val _(*funentry*) = let
-        val loc = hie_ini.hiexp_loc; val prolog = '[INSTRfunlab fl]
+        val ins = instr_funlab (fl); val prolog = '[ins]
       in
-        ccomp_exp_arg_body_funlab (loc, prolog, hips_arg, hie_body, fl)
+        ccomp_exp_arg_body_funlab (loc_ini, prolog, hips_arg, hie_body, fl)
       end // end of [val]
       val () = the_tailcallst_unmark (pf_tailcallst_mark | (*none*))
       val vp_clo = valprim_tmp (tmp_ptr); val env = cloenv_make ()
     in
-      instr_add_assgn_clo (res, vp_clo, fl, env)
+      instr_add_assgn_clo (res, loc_ini, vp_clo, fl, env)
     end // end of [HIElaminit]
   | _ => begin
       prerr_interror ();
@@ -2469,8 +2548,9 @@ in
     end // end of [_]
 end // end of [ccomp_vardec_dyn]
 
-fn ccomp_vardec
-  (res: &instrlst_vt, level: int, vardec: hivardec): void = let
+fn ccomp_vardec (
+  res: &instrlst_vt, level: int, vardec: hivardec
+) : void = let
   val knd = vardec.hivardec_knd
 in
   case+ 0 of
@@ -2504,30 +2584,38 @@ fn ccomp_impdec
   (res: &instrlst_vt, impdec: hiimpdec): void = let
   fun aux (
       res: &instrlst_vt
+    , loc0: loc_t
     , d2c: d2cst_t
     , tmparg: hityplstlst (* not yet normalized *)
     , hie: hiexp
     ) : void = begin case+ hie.hiexp_node of
     | HIElam (hips_arg, hie_body) => let
+//
         val hit = hityp_normalize (hie.hiexp_typ)
         val fl = funlab_make_cst_typ (d2c, tmparg, hit)
         val fc = funlab_funclo_get (fl)
+//
 (*
         val () = begin
           print "ccomp_impdec: aux: fl = "; print fl; print_newline ()
         end // end of [val]
 *)
+//
         val vp_lam = valprim_funclo_make (fl)
         val () = the_topcstctx_add (d2c, vp_lam)
-
+//
         val (pf_tailcallst_mark | ()) = the_tailcallst_mark ()
         val () = the_tailcallst_add (fl, list_nil ())
-        val _(*funentry*) = ccomp_exp_arg_body_funlab
-          (loc, prolog, hips_arg, hie_body, fl) where {
-            val loc = hie.hiexp_loc; val prolog = '[INSTRfunlab fl]
+        val _(*funentry*) =
+          ccomp_exp_arg_body_funlab (
+            loc, prolog, hips_arg, hie_body, fl
+          ) where {
+            val loc = hie.hiexp_loc
+            val ins = instr_funlab (fl); val prolog = '[ins]
           } // end of [where]
+        // end of [val]
         val () = the_tailcallst_unmark (pf_tailcallst_mark | (*none*))
-
+//
         val () = case+ 0 of
           | _ when $Lst.list_is_cons tmparg => let
               val name = funlab_name_get fl in tmpnamtbl_add (name, vp_lam)
@@ -2535,14 +2623,15 @@ fn ccomp_impdec
           | _ => begin case+ d2cst_kind_get d2c of
             | $Syn.DCSTKINDval () => begin case+ fc of
               | $Syn.FUNCLOfun () => begin
-                  the_glocstlst_add_fun d2c; instr_add_define_fun (res, d2c, fl)
+                  the_glocstlst_add_fun d2c; instr_add_define_fun (res, loc0, d2c, fl)
                 end // end of [FUNCLOfun]
               | $Syn.FUNCLOclo _(*knd*) => begin // knd <> 0
-                  the_glocstlst_add_clo d2c; instr_add_define_clo (res, d2c, fl)
+                  the_glocstlst_add_clo d2c; instr_add_define_clo (res, loc0, d2c, fl)
                 end // end of [FUNCLOclo]
               end // end of [FUNCLOfun]
-            | _ => ()
+            | _ => () // end of [_]
           end // end of [_]
+//
       in
         // empty
       end // end of [HIElam]
@@ -2552,14 +2641,14 @@ fn ccomp_impdec
         val vp_cst = valprim_cst (d2c, hit)
         val () = the_dynctx_add (d2v_fix, vp_cst)
       in
-        aux (res, d2c, tmparg, hie_def)
+        aux (res, loc0, d2c, tmparg, hie_def)
       end // end of [HIEfix]
     | _ => let
         val vp = ccomp_exp (res, hie)
         val () = the_topcstctx_add (d2c, vp)
         val () = the_glocstlst_add_val (d2c, vp)
       in
-        instr_add_define_val (res, d2c, vp)
+        instr_add_define_val (res, loc0, d2c, vp)
       end // end of [_]
   end // end of [aux]
   val d2c = impdec.hiimpdec_cst // [d2c] must not be a proof cst!
@@ -2573,8 +2662,10 @@ in
   | _ when d2cst_is_castfn d2c => () // checking is needed!!!
   | _ => begin case+ impdec.hiimpdec_decarg of
     | list_cons _ => () // template is not compiled
-    | list_nil () => begin
-        aux (res, d2c, impdec.hiimpdec_tmparg, impdec.hiimpdec_def)
+    | list_nil () => let
+        val loc0 = impdec.hiimpdec_loc
+      in
+        aux (res, loc0, d2c, impdec.hiimpdec_tmparg, impdec.hiimpdec_def)
       end // end of [list_nil]
   end // end of [if]
 end // end of [ccomp_impdec]
@@ -2598,7 +2689,7 @@ fn ccomp_impdec_prfck
   ) where {
     val tmp_ret = tmpvar_make_ret (hityp_t_void)
     var res: instrlst_vt = list_vt_nil ()
-    val () = res := list_vt_cons (INSTRprfck_beg d2c, res)
+    val () = res := list_vt_cons (instr_prfck_beg d2c, res)
     val () = dyncstset_foreach_main
       {V} {T} (view@ res | d2cs, f, &res) where {
       viewdef V = instrlst_vt @ res; typedef T = ptr res
@@ -2606,14 +2697,14 @@ fn ccomp_impdec_prfck
         case+ 0 of
         | _ when d2cst_is_praxi d2c => ()
         | _ when d2cst_is_prfun d2c => begin
-            !p_res := list_vt_cons (INSTRprfck_tst d2c, !p_res)
+            !p_res := list_vt_cons (instr_prfck_tst d2c, !p_res)
           end // end of [_ when ...]
         | _ when d2cst_is_prval d2c => begin
-            !p_res := list_vt_cons (INSTRprfck_tst d2c, !p_res)
+            !p_res := list_vt_cons (instr_prfck_tst d2c, !p_res)
           end // end of [_ when ...]
         | _ => ()
     } // end of [val]
-    val () = res := list_vt_cons (INSTRprfck_end d2c, res)
+    val () = res := list_vt_cons (instr_prfck_end d2c, res)
     val inss = $Lst.list_vt_reverse_list (res)
   } // end of [val]
   val () = funentry_associate (entry)
@@ -2629,6 +2720,7 @@ implement ccomp_dec (res, hid0) = let
 (*
   val () = (print "ccomp_dec: enter"; print_newline ())
 *)
+  val loc0 = hid0.hidec_loc
 in
   case+ hid0.hidec_node of
   | HIDsaspdec _(*s2aspdec*) => () // run-time checking?
@@ -2649,7 +2741,7 @@ in
   | HIDextval (name, hie_def) => let
       val vp_def = ccomp_exp (res, hie_def)
       val () = the_extvallst_add (name, vp_def)
-      val () = instr_add_extval (res, name, vp_def)
+      val () = instr_add_extval (res, loc0, name, vp_def)
     in
       // empty
     end // end of [extval]
@@ -2662,7 +2754,7 @@ in
           case+ fundecs of
           | list_cons (_, list_cons (_, _)) // mutual recursion
               when $Syn.funkind_is_tailrecur knd => begin
-              ccomp_fntdeclst_main (hid0.hidec_loc, fundecs, fls)
+              ccomp_fntdeclst_main (loc0, fundecs, fls)
             end (* end of [list_cons (_, list_cons (_, _))] *)
           | _ => ccomp_fundeclst_main (fundecs, fls)
         end // end of [list_nil]
@@ -2687,7 +2779,7 @@ in
 (*
       // should this be done now?
       val d2cs = impdec.hiimpdec_cstset
-      val () = ccomp_impdec_prfck (hid0.hidec_loc, d2c, d2cs)
+      val () = ccomp_impdec_prfck (loc0, d2c, d2cs)
 *)
     in
       ccomp_impdec (res, impdec)
@@ -2695,7 +2787,7 @@ in
   | HIDimpdec_prf (impdec_prf) => let
       val d2c = impdec_prf.hiimpdec_prf_cst
       val d2cs = impdec_prf.hiimpdec_prf_cstset
-      val () = ccomp_impdec_prfck (hid0.hidec_loc, d2c, d2cs)
+      val () = ccomp_impdec_prfck (loc0, d2c, d2cs)
     in
       // empty
     end // end of [HIDimpdec_prf]
@@ -2704,15 +2796,17 @@ in
     in
       ccomp_declst (res, hids_body)
     end // end of [HIDlocal]
-  | HIDdynload fil => begin
-      the_dynfilelst_add (fil); instr_add_dynload_file (res, fil)
+  | HIDdynload fil => let
+      val () = the_dynfilelst_add (fil)
+    in
+      instr_add_dynload_file (res, loc0, fil)
     end // end of [HIDdynload]
   | HIDstaload (fil, loadflag) => begin
       the_stafilelst_add (fil, loadflag)
     end // end of [HIDstaload]
   | HIDlist hids => ccomp_declst (res, hids)
   | _ => begin
-      prerr_loc_interror (hid0.hidec_loc);
+      prerr_loc_interror (loc0);
       prerr ": ccomp_dec: not implemented yet."; prerr_newline ();
       $Err.abort {void} ()
     end // end of [_]

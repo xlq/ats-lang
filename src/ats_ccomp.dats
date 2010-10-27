@@ -37,21 +37,21 @@
 (* ****** ****** *)
 
 %{^
-
 #include "ats_counter.cats" /* only needed for [ATS/Geizella] */
-
-%}
+%} // end of [%{^]
 
 (* ****** ****** *)
 
 staload Deb = "ats_debug.sats"
 staload Err = "ats_error.sats"
+staload Loc = "ats_location.sats"
 staload Lst = "ats_list.sats"
 staload Stamp = "ats_stamp.sats"
 staload Syn = "ats_syntax.sats"
 
 (* ****** ****** *)
 
+staload "ats_staexp2.sats"
 staload "ats_dynexp2.sats"
 staload "ats_trans2_env.sats"
 
@@ -566,261 +566,636 @@ end // end of [valprim_is_void]
 (* ****** ****** *)
 
 implement
+instr_call
+  (loc, tmp_res, hit_fun, vp_fun, vps_arg) = '{
+  instr_loc= loc
+, instr_node= INSTRcall (tmp_res, hit_fun, vp_fun, vps_arg)
+} // end of [instr_call]
+
+implement
+instr_call_tail (loc, fl) = '{
+  instr_loc= loc, instr_node= INSTRcall_tail (fl)
+} // end of [instr_call_tail]
+
+(* ****** ****** *)
+
+implement
+instr_cond (loc, _test, _then, _else) = '{
+  instr_loc= loc, instr_node= INSTRcond (_test, _then, _else)
+} // end of [instr_cond]
+
+(* ****** ****** *)
+
+implement
+instr_function
+  (loc, tmp_res, vps_arg, _body, tmp_ret) = '{
+  instr_loc= loc
+, instr_node= INSTRfunction (tmp_res, vps_arg, _body, tmp_ret)
+} // end of [instr_function]
+
+(* ****** ****** *)
+
+implement
+instr_funlab (fl) = '{
+  instr_loc= $Loc.location_none, instr_node= INSTRfunlab (fl)
+} // end of [instr_funlab]
+
+(* ****** ****** *)
+
+implement
+instr_prfck_beg (d2c) = '{
+  instr_loc= $Loc.location_none
+, instr_node= INSTRprfck_beg (d2c)
+}
+implement
+instr_prfck_tst (d2c) = '{
+  instr_loc= $Loc.location_none
+, instr_node= INSTRprfck_tst (d2c)
+}
+implement
+instr_prfck_end (d2c) = '{
+  instr_loc= $Loc.location_none
+, instr_node= INSTRprfck_end (d2c)
+}
+
+(* ****** ****** *)
+
+fun instr_arr_heap (
+  loc: loc_t
+, tmp_res: tmpvar_t, asz: int, hit_elt: hityp_t
+) : instr = '{
+  instr_loc= loc
+, instr_node= INSTRarr_heap (tmp_res, asz, hit_elt)
+} // end of [instr_arr_heap]
+
+implement
 instr_add_arr_heap
-  (res, tmp_res, asz, hit_elt) = begin
-  res := list_vt_cons (INSTRarr_heap (tmp_res, asz, hit_elt), res)
+  (res, loc, tmp_res, asz, hit_elt) = begin
+  res := list_vt_cons (instr_arr_heap (loc, tmp_res, asz, hit_elt), res)
 end // end of [instr_add_arr_heap]
+
+(* ****** ****** *)
+
+fun instr_arr_stack (
+    loc: loc_t
+  , tmp_res: tmpvar_t
+  , level: int // top: level = 0; inner: level > 0
+  , vp_asz: valprim
+  , hit_elt: hityp_t
+  ) : instr = '{
+  instr_loc= loc
+, instr_node= INSTRarr_stack (tmp_res, level, vp_asz, hit_elt)
+} // end of [instr_arr_stack]
 
 implement
 instr_add_arr_stack
-  (res, tmp_res, level, vp_asz, hit_elt) = begin
-  res := list_vt_cons (INSTRarr_stack (tmp_res, level, vp_asz, hit_elt), res)
+  (res, loc, tmp_res, level, vp_asz, hit_elt) = begin
+  res := list_vt_cons (instr_arr_stack (loc, tmp_res, level, vp_asz, hit_elt), res)
 end // end of [instr_add_arr_stack]
 
-//
+(* ****** ****** *)
+
+fun instr_assgn_arr (
+    loc: loc_t
+  , vp_arr: valprim
+  , vp_asz: valprim
+  , tmp_elt: tmpvar_t
+  , vp_tsz: valprim
+  ) : instr = '{
+  instr_loc= loc
+, instr_node= INSTRassgn_arr (vp_arr, vp_asz, tmp_elt, vp_tsz)
+} // end of [instr_assgn_arr]
 
 implement
 instr_add_assgn_arr
-  (res, vp_arr, vp_asz, tmp_elt, vp_tsz) = res :=
-  list_vt_cons (INSTRassgn_arr (vp_arr, vp_asz, tmp_elt, vp_tsz), res)
+  (res, loc, vp_arr, vp_asz, tmp_elt, vp_tsz) = res :=
+  list_vt_cons (instr_assgn_arr (loc, vp_arr, vp_asz, tmp_elt, vp_tsz), res)
 // end of [instr_add_assgn_arr]
+
+(* ****** ****** *)
+
+fun instr_assgn_clo (
+    loc: loc_t
+  , vp_clo: valprim
+  , fl: funlab_t
+  , env: envmap_t
+  ) : instr = '{
+  instr_loc= loc
+, instr_node= INSTRassgn_clo (vp_clo, fl, env)
+} // end of [instr_assgn_clo]
 
 implement
 instr_add_assgn_clo
-  (res, vp_clo, fl, env) =
-  res := list_vt_cons (INSTRassgn_clo (vp_clo, fl, env), res)
+  (res, loc, vp_clo, fl, env) =
+  res := list_vt_cons (instr_assgn_clo (loc, vp_clo, fl, env), res)
 // end of [instr_add_assgn_clo]
 
-//
+(* ****** ****** *)
 
 implement
 instr_add_call
-  (res, tmp_res, hit_fun, vp_fun, vps_arg) = begin
-  res := list_vt_cons (INSTRcall (tmp_res, hit_fun, vp_fun, vps_arg), res)
+  (res, loc, tmp_res, hit_fun, vp_fun, vps_arg) = let
+  val ins = instr_call (loc, tmp_res, hit_fun, vp_fun, vps_arg)
+in
+  res := list_vt_cons (ins, res)
 end // end of [instr_add_call]
 
 implement
-instr_add_call_tail (res, fl) =
-  res := list_vt_cons (INSTRcall_tail fl, res)
+instr_add_call_tail (res, loc, fl) =
+  res := list_vt_cons (instr_call_tail (loc, fl), res)
 // end of [instr_add_call_tail]
 
-//
+(* ****** ****** *)
+
+fun instr_define_clo (
+  loc: loc_t, d2c: d2cst_t, fl: funlab_t
+) : instr = '{
+  instr_loc= loc, instr_node= INSTRdefine_clo (d2c, fl)
+} // end of [instr_define_clo]
 
 implement
-instr_add_define_clo (res, d2c, fl) =
-  res := list_vt_cons (INSTRdefine_clo (d2c, fl), res)
+instr_add_define_clo (res, loc, d2c, fl) =
+  res := list_vt_cons (instr_define_clo (loc, d2c, fl), res)
 // end of [instr_add_define_clo]
 
+fun instr_define_fun (
+  loc: loc_t, d2c: d2cst_t, fl: funlab_t
+) : instr = '{
+  instr_loc= loc, instr_node= INSTRdefine_fun (d2c, fl)
+} // end of [instr_define_fun]
+
 implement
-instr_add_define_fun (res, d2c, fl) =
-  res := list_vt_cons (INSTRdefine_fun (d2c, fl), res)
+instr_add_define_fun (res, loc, d2c, fl) =
+  res := list_vt_cons (instr_define_fun (loc, d2c, fl), res)
 // end of [instr_add_define_fun]
 
+fun instr_define_val (
+  loc: loc_t, d2c: d2cst_t, vp: valprim
+) : instr = '{
+  instr_loc= loc, instr_node= INSTRdefine_val (d2c, vp)
+} // end of [instr_define_val]
+
 implement
-instr_add_define_val (res, d2c, vp) =
-  res := list_vt_cons (INSTRdefine_val (d2c, vp), res)
+instr_add_define_val (res, loc, d2c, vp) =
+  res := list_vt_cons (instr_define_val (loc, d2c, vp), res)
 // end of [instr_add_define_val]
 
-//
+(* ****** ****** *)
+
+fun instr_extval (
+  loc: loc_t, name: string, vp: valprim
+) : instr = '{
+  instr_loc= loc, instr_node= INSTRextval (name, vp)
+} // end of [instr_extval]
 
 implement
-instr_add_extval (res, name, vp) =
-  res := list_vt_cons (INSTRextval (name, vp), res)
+instr_add_extval (res, loc, name, vp) =
+  res := list_vt_cons (instr_extval (loc, name, vp), res)
 // end of [instr_add_extval]
 
+(* ****** ****** *)
+
+fun instr_freeptr
+  (loc: loc_t, vp: valprim): instr = '{
+  instr_loc= loc, instr_node= INSTRfreeptr (vp)
+} // end of [instr_freeptr]
+
 implement
-instr_add_freeptr (res, vp) =
-  res := list_vt_cons (INSTRfreeptr (vp), res)
+instr_add_freeptr (res, loc, vp) =
+  res := list_vt_cons (instr_freeptr (loc, vp), res)
 // end of [instr_add_freeptr]
 
+(* ****** ****** *)
+
+fun instr_patck (
+  loc: loc_t
+, vp: valprim, patck: patck, fail: kont
+) : instr = '{
+  instr_loc= loc, instr_node= INSTRpatck (vp, patck, fail)
+} // end of [instr_patck]
+
 implement
-instr_add_patck (res, vp, patck, fail) =
-  res := list_vt_cons (INSTRpatck (vp, patck, fail), res)
+instr_add_patck (res, loc, vp, patck, fail) =
+  res := list_vt_cons (instr_patck (loc, vp, patck, fail), res)
 // end of [instr_add_patck]
 
-//
+(* ****** ****** *)
+
+fun instr_dynload_file
+  (loc: loc_t, fil: fil_t): instr = '{
+  instr_loc= loc, instr_node= INSTRdynload_file (fil)
+} // end of [instr_dynload]
 
 implement
-instr_add_dynload_file (res, fil) =
-  res := list_vt_cons (INSTRdynload_file fil, res)
+instr_add_dynload_file (res, loc, fil) =
+  res := list_vt_cons (instr_dynload_file (loc, fil), res)
 // end of [instr_add_dynload_file]
 
-//
+(* ****** ****** *)
+
+fun instr_load_ptr (
+  loc: loc_t, tmp: tmpvar_t, vp: valprim
+) : instr = '{
+  instr_loc= loc, instr_node= INSTRload_ptr (tmp, vp)
+} // end of [instr_load_ptr]
+
+fun instr_load_var (
+  loc: loc_t, tmp: tmpvar_t, vp: valprim
+) : instr = '{
+  instr_loc= loc, instr_node= INSTRload_var (tmp, vp)
+} // end of [instr_load_var]
+
+fun instr_load_ptr_offs (
+  loc: loc_t, tmp: tmpvar_t, vp: valprim, offs: offsetlst
+) : instr = '{
+  instr_loc= loc, instr_node= INSTRload_ptr_offs (tmp, vp, offs)
+} // end of [instr_load_ptr_offs]
+
+fun instr_load_var_offs (
+  loc: loc_t, tmp: tmpvar_t, vp: valprim, offs: offsetlst
+) : instr = '{
+  instr_loc= loc, instr_node= INSTRload_var_offs (tmp, vp, offs)
+} // end of [instr_load_var_offs]
 
 implement
-instr_add_load_ptr (res, tmp, vp) = begin
-  res := list_vt_cons (INSTRload_ptr (tmp, vp), res)
+instr_add_load_ptr
+  (res, loc, tmp, vp) = begin
+  res := list_vt_cons (instr_load_ptr (loc, tmp, vp), res)
 end (* end of [instr_add_load_ptr] *)
 
 implement
 instr_add_load_ptr_offs
-  (res, tmp, vp, offs) = let
-  val ins = case+ offs of
-    | list_cons _ => INSTRload_ptr_offs (tmp, vp, offs)
-    | list_nil () => INSTRload_ptr (tmp, vp)
+  (res, loc, tmp, vp, offs) = let
+  val ins = (case+ offs of
+    | list_cons _ =>
+        instr_load_ptr_offs (loc, tmp, vp, offs)
+    | list_nil () => instr_load_ptr (loc, tmp, vp)
+  ) : instr // end of [val]
 in
   res := list_vt_cons (ins, res)
 end (* end of [instr_add_load_ptr_offs] *)
 
 implement
 instr_add_load_var_offs
-  (res, tmp, vp, offs) = let
-  val ins = case+ offs of
-    | list_cons _ => INSTRload_var_offs (tmp, vp, offs)
-    | list_nil () => INSTRload_var (tmp, vp)
+  (res, loc, tmp, vp, offs) = let
+  val ins = (case+ offs of
+    | list_cons _ =>
+        instr_load_var_offs (loc, tmp, vp, offs)
+    | list_nil () => instr_load_var (loc, tmp, vp)
+  ) : instr // end of [val]
 in
   res := list_vt_cons (ins, res)
 end (* end of [instr_add_load_var_offs] *)
 
-//
+(* ****** ****** *)
+
+fun instr_loop (
+  loc: loc_t
+, lab_init: tmplab_t
+, lab_fini: tmplab_t
+, lab_cont: tmplab_t
+, inss_init: instrlst
+, vp_test: valprim
+, inss_test: instrlst
+, inss_post: instrlst
+, inss_body: instrlst
+) : instr = '{
+  instr_loc= loc
+, instr_node= INSTRloop (
+    lab_init, lab_fini, lab_cont, inss_init, vp_test, inss_test, inss_post, inss_body
+  ) // end of [INSTRloop]
+} // end of [instr_loop]
 
 implement
 instr_add_loop (
     res
+  , loc
   , lab_init, lab_fini, lab_cont
   , inss_init
   , vp_test, inss_test
   , inss_post
   , inss_body
   ) = let
-  val ins = INSTRloop (
-    lab_init, lab_fini, lab_cont, inss_init, vp_test, inss_test, inss_post, inss_body
+  val ins = instr_loop (
+    loc, lab_init, lab_fini, lab_cont, inss_init, vp_test, inss_test, inss_post, inss_body
   ) // end of [INSTRloop]
 in
   res := list_vt_cons (ins, res)
 end // end of [instr_add_loop]
 
+fun instr_loopexn (
+  loc: loc_t, knd: int, tl: tmplab_t
+) : instr = '{
+  instr_loc= loc, instr_node= INSTRloopexn (knd, tl)
+} // end of [instr_loopexn]
+
 implement
-instr_add_loopexn (res, knd, tl) = 
-  res := list_vt_cons (INSTRloopexn (knd, tl), res)
+instr_add_loopexn (res, loc, knd, tl) = 
+  res := list_vt_cons (instr_loopexn (loc, knd, tl), res)
 // end of [instr_add_loopexn]
 
-//
+(* ****** ****** *)
+
+fun instr_move_arg (
+  loc: loc_t, arg: int, vp: valprim
+) : instr = '{
+  instr_loc= loc, instr_node= INSTRmove_arg (arg, vp)
+} // end of [instr_move_arg]
 
 implement
-instr_add_move_arg (res, arg, vp) =
-  res := list_vt_cons (INSTRmove_arg (arg, vp), res)
+instr_add_move_arg
+  (res, loc, arg, vp) =
+  res := list_vt_cons (instr_move_arg (loc, arg, vp), res)
 // end of [instr_add_move_arg]
+
+fun instr_move_con (
+  loc: loc_t
+, tmp_res: tmpvar_t
+, hit_sum: hityp_t
+, d2c: d2con_t
+, vps_arg: valprimlst
+) : instr = '{
+  instr_loc= loc, instr_node= INSTRmove_con (tmp_res, hit_sum, d2c, vps_arg)
+} // end of [instr_move_arg]
 
 implement
 instr_add_move_con
-  (res, tmp_res, hit_sum, d2c, vps_arg) =
-  res := list_vt_cons (INSTRmove_con (tmp_res, hit_sum, d2c, vps_arg), res)
+  (res, loc, tmp_res, hit_sum, d2c, vps_arg) =
+  res := list_vt_cons (instr_move_con (loc, tmp_res, hit_sum, d2c, vps_arg), res)
 // end of [instr_add_move_con]
 
-//
+(* ****** ****** *)
+
+fun instr_move_lazy_delay (
+  loc: loc_t
+, tmp_res: tmpvar_t
+, lin: int
+, hit_body: hityp_t
+, vp_clo: valprim
+) : instr = '{
+  instr_loc= loc
+, instr_node= INSTRmove_lazy_delay (tmp_res, lin, hit_body, vp_clo)
+} // end of [instr_add_move_lazy_delay]
 
 implement
 instr_add_move_lazy_delay
-  (res, tmp_res, lin, hit_body, vp_clo) =
-  res := list_vt_cons (INSTRmove_lazy_delay (tmp_res, lin, hit_body, vp_clo), res)
-// end of [instr_add_move_lazy_delay]
+  (res, loc, tmp_res, lin, hit_body, vp_clo) = let
+  val ins = instr_move_lazy_delay (loc, tmp_res, lin, hit_body, vp_clo)
+in
+  res := list_vt_cons (ins, res)
+end // end of [instr_add_move_lazy_delay]
+
+(* ****** ****** *)
+
+fun instr_move_lazy_force (
+  loc: loc_t
+, tmp_res: tmpvar_t
+, lin: int
+, hit_val: hityp_t
+, vp_lazy: valprim
+) : instr = '{
+  instr_loc= loc
+, instr_node= INSTRmove_lazy_force (tmp_res, lin, hit_val, vp_lazy)
+} // end of [instr_move_lazy_force]
 
 implement
 instr_add_move_lazy_force
-  (res, tmp_res, lin, hit_val, vp_lazy) =
-  res := list_vt_cons (INSTRmove_lazy_force (tmp_res, lin, hit_val, vp_lazy), res)
-// end of [instr_add_move_lazy_force]
+  (res, loc, tmp_res, lin, hit_val, vp_lazy) = let
+  val ins = instr_move_lazy_force (loc, tmp_res, lin, hit_val, vp_lazy)
+in
+  res := list_vt_cons (ins, res)
+end // end of [instr_add_move_lazy_force]
 
-//
+(* ****** ****** *)
+
+fun instr_move_rec_flt (
+  loc: loc_t
+, tmp_res: tmpvar_t
+, hit_rec: hityp_t
+, lvps: labvalprimlst
+) : instr = '{
+  instr_loc= loc
+, instr_node= INSTRmove_rec_flt (tmp_res, hit_rec, lvps)
+} // end of [instr_move_rec_flt]
+
+fun instr_move_rec_box (
+  loc: loc_t
+, tmp_res: tmpvar_t
+, hit_rec: hityp_t
+, lvps: labvalprimlst
+) : instr = '{
+  instr_loc= loc
+, instr_node= INSTRmove_rec_box (tmp_res, hit_rec, lvps)
+} // end of [instr_move_rec_box]
 
 implement
 instr_add_move_rec
-  (res, tmp_res, recknd, hit_rec, lvps) = let
+  (res, loc, tmp_res, recknd, hit_rec, lvps) = let
   val ins = (case+ 0 of
-    | _ when recknd = 0 => INSTRmove_rec_flt (tmp_res, hit_rec, lvps)
-    | _ when recknd > 0 => INSTRmove_rec_box (tmp_res, hit_rec, lvps)
+    | _ when recknd = 0 => instr_move_rec_flt (loc, tmp_res, hit_rec, lvps)
+    | _ when recknd > 0 => instr_move_rec_box (loc, tmp_res, hit_rec, lvps)
     | _ => begin
         prerr_interror ();
         prerr ": instr_add_move_rec: recknd = "; prerr recknd; prerr_newline ();
         $Err.abort {instr} ()
       end // end of [_]
-    ) : instr
+    ) : instr // end of [val]
 in
   res := list_vt_cons (ins, res)
 end // end of [instr_add_move_rec]
 
+(* ****** ****** *)
+
+fun instr_move_ref (
+  loc: loc_t, tmp_res: tmpvar_t, vp: valprim
+) : instr = '{
+  instr_loc= loc, instr_node= INSTRmove_ref (tmp_res, vp)
+} // end of [instr_move_ref]
+
 implement
-instr_add_move_ref (res, tmp_res, vp) =
-  res := list_vt_cons (INSTRmove_ref (tmp_res, vp), res)
+instr_add_move_ref (res, loc, tmp_res, vp) =
+  res := list_vt_cons (instr_move_ref (loc, tmp_res, vp), res)
 // end of [instr_add_move_ref]
 
+fun instr_move_val (
+  loc: loc_t, tmp_res: tmpvar_t, vp: valprim
+) : instr = '{
+  instr_loc= loc, instr_node= INSTRmove_val (tmp_res, vp)
+} // end of [instr_move_val]
+
 implement
-instr_add_move_val (res, tmp_res, vp) =
-  res := list_vt_cons (INSTRmove_val (tmp_res, vp), res)
+instr_add_move_val (res, loc, tmp_res, vp) =
+  res := list_vt_cons (instr_move_val (loc, tmp_res, vp), res)
 // end of [instr_add_move_val]
 
-//
+(* ****** ****** *)
+
+fun instr_raise (
+  loc: loc_t, tmp_res: tmpvar_t, vp_exn: valprim
+) : instr = '{
+  instr_loc= loc, instr_node= INSTRraise (tmp_res, vp_exn)
+} // end of [instr_raise]
 
 implement
-instr_add_raise (res, tmp_res, vp_exn) =
-  res := list_vt_cons (INSTRraise (tmp_res, vp_exn), res)
+instr_add_raise (res, loc, tmp_res, vp_exn) =
+  res := list_vt_cons (instr_raise (loc, tmp_res, vp_exn), res)
 // end of [instr_add_raise]
 
-//
+(* ****** ****** *)
+
+fun instr_select (
+  loc: loc_t
+, tmp_res: tmpvar_t
+, vp_root: valprim
+, offs: offsetlst
+) : instr = '{
+  instr_loc= loc
+, instr_node= INSTRselect (tmp_res, vp_root, offs)
+} // end of [instr_select]
 
 implement
 instr_add_select 
-  (res, tmp_res, vp_root, offs) =
-  res := list_vt_cons (INSTRselect (tmp_res, vp_root, offs), res)
+  (res, loc, tmp_res, vp_root, offs) =
+  res := list_vt_cons (instr_select (loc, tmp_res, vp_root, offs), res)
 // end of [instr_add_select]
+
+fun instr_selcon (
+  loc: loc_t
+, tmp_res: tmpvar_t
+, vp_sum: valprim
+, hit_sum: hityp_t
+, ind: int
+) : instr = '{
+  instr_loc= loc
+, instr_node= INSTRselcon (tmp_res, vp_sum, hit_sum, ind)
+} // end of [instr_selcon]
 
 implement
 instr_add_selcon
-  (res, tmp_res, vp_sum, hit_sum, i) =
-  res := list_vt_cons (INSTRselcon (tmp_res, vp_sum, hit_sum, i), res)
+  (res, loc, tmp_res, vp_sum, hit_sum, ind) =
+  res := list_vt_cons (instr_selcon (loc, tmp_res, vp_sum, hit_sum, ind), res)
 // end of [instr_add_selcon]
+
+fun instr_selcon_ptr (
+  loc: loc_t
+, tmp_res: tmpvar_t
+, vp_sum: valprim
+, hit_sum: hityp_t
+, ind: int
+) : instr = '{
+  instr_loc= loc
+, instr_node= INSTRselcon_ptr (tmp_res, vp_sum, hit_sum, ind)
+} // end of [instr_selcon_ptr]
 
 implement
 instr_add_selcon_ptr
-  (res, tmp_res, vp_sum, hit_sum, i) =
-  res := list_vt_cons (INSTRselcon_ptr (tmp_res, vp_sum, hit_sum, i), res)
-// end of [instr_add_selcon_ptr]
+  (res, loc, tmp_res, vp_sum, hit_sum, ind) = let
+  val ins = instr_selcon_ptr (loc, tmp_res, vp_sum, hit_sum, ind)
+in
+  res := list_vt_cons (ins, res)
+end // end of [instr_add_selcon_ptr]
 
-//
+(* ****** ****** *)
+
+fun instr_store_ptr (
+  loc: loc_t, vp_ptr: valprim, vp_all: valprim
+) : instr = '{
+  instr_loc= loc, instr_node= INSTRstore_ptr (vp_ptr, vp_all)
+} // end of [instr_store_ptr]
+
+fun instr_store_ptr_offs (
+  loc: loc_t
+, vp_ptr: valprim, offs: offsetlst, vp_all: valprim
+) : instr = '{
+  instr_loc= loc, instr_node= INSTRstore_ptr_offs (vp_ptr, offs, vp_all)
+} // end of [instr_store_ptr_offs]
 
 implement
 instr_add_store_ptr_offs
-  (res, vp_ptr, offs, vp_val) = let
+  (res, loc, vp_ptr, offs, vp_val) = let
   val ins = case+ offs of
-    | list_cons _ => INSTRstore_ptr_offs (vp_ptr, offs, vp_val)
-    | list_nil () => INSTRstore_ptr (vp_ptr, vp_val)
+    | list_cons _ =>
+        instr_store_ptr_offs (loc, vp_ptr, offs, vp_val)
+    | list_nil () => instr_store_ptr (loc, vp_ptr, vp_val)
 in
   res := list_vt_cons (ins, res)
 end // end of [instr_add_store_ptr_offs]
 
+(* ****** ****** *)
+
+fun instr_store_var (
+  loc: loc_t, vp_mut: valprim, vp_all: valprim
+) : instr = '{
+  instr_loc= loc, instr_node= INSTRstore_var (vp_mut, vp_all)
+} // end of [instr_store_var]
+
+fun instr_store_var_offs (
+  loc: loc_t
+, vp_mut: valprim, offs: offsetlst, vp_all: valprim
+) : instr = '{
+  instr_loc= loc, instr_node= INSTRstore_var_offs (vp_mut, offs, vp_all)
+} // end of [instr_store_var_offs]
+
 implement
 instr_add_store_var_offs
-  (res, vp_mut, offs, vp_val) = let
+  (res, loc, vp_mut, offs, vp_val) = let
   val ins = (case+ offs of
-    | list_cons _ => INSTRstore_var_offs (vp_mut, offs, vp_val)
-    | list_nil () => INSTRstore_var (vp_mut, vp_val)
+    | list_cons _ =>
+        instr_store_var_offs (loc, vp_mut, offs, vp_val)
+    | list_nil () => instr_store_var (loc, vp_mut, vp_val)
   ) : instr // end of [val]
 in
   res := list_vt_cons (ins, res)
 end // end of [instr_add_store_var_offs]
 
-//
+(* ****** ****** *)
+
+fun instr_switch 
+  (loc: loc_t, brs: branchlst): instr = '{
+  instr_loc= loc, instr_node= INSTRswitch (brs)
+} // end of [instr_switch]
 
 implement
-instr_add_switch (res, brs) =
-  res := list_vt_cons (INSTRswitch brs, res)
+instr_add_switch (res, loc, brs) =
+  res := list_vt_cons (instr_switch (loc, brs), res)
 // end of [instr_add_switch]
 
+fun instr_tmplabint
+  (loc: loc_t, tl: tmplab_t, ind: int): instr = '{
+  instr_loc= loc, instr_node= INSTRtmplabint (tl, ind)
+} // end of [instr_tmplabint]
+
 implement
-instr_add_tmplabint (res, tl, i) =
-  res := list_vt_cons (INSTRtmplabint (tl, i), res)
+instr_add_tmplabint (res, loc, tl, ind) =
+  res := list_vt_cons (instr_tmplabint (loc, tl, ind), res)
 // end of [instr_add_tmplabint]
+
+(* ****** ****** *)
+
+fun instr_trywith (
+  loc: loc_t
+, res_try: instrlst
+, tmp_exn: tmpvar_t
+, brs: branchlst
+) : instr = '{
+  instr_loc= loc
+, instr_node= INSTRtrywith (res_try, tmp_exn, brs)
+} // end of [instr_trywith]
 
 implement
 instr_add_trywith
-  (res, res_try, tmp_exn, brs) =
-  res := list_vt_cons (INSTRtrywith (res_try, tmp_exn, brs), res)
+  (res, loc, res_try, tmp_exn, brs) =
+  res := list_vt_cons (instr_trywith (loc, res_try, tmp_exn, brs), res)
 // end of [instr_add_trywith]
 
+fun instr_vardec
+  (loc: loc_t, tmp: tmpvar_t): instr = '{
+  instr_loc= loc, instr_node= INSTRvardec (tmp)
+} // end of [instr_vardec]
+
 implement
-instr_add_vardec (res, tmp) =
-  res := list_vt_cons (INSTRvardec tmp, res)
+instr_add_vardec (res, loc, tmp) =
+  res := list_vt_cons (instr_vardec (loc, tmp), res)
 // end of [instr_add_vardec]
 
 (* ****** ****** *)

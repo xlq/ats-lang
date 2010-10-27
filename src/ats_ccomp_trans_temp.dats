@@ -374,7 +374,7 @@ implement ccomp_tmpdef
   val (pf_tailcallst_mark | ()) = the_tailcallst_mark ()
   val () = the_tailcallst_add (fl, list_nil ())
   val _(*funentry_t*) = let
-    val prolog = '[INSTRfunlab fl]
+    val ins = instr_funlab (fl); val prolog = '[ins]
     val hie = tmpdef_exp_get (tmpdef); val loc_fun = hie.hiexp_loc
   in
     case+ hie.hiexp_node of
@@ -432,7 +432,7 @@ end // end of [template_var_name_make]
 (* ****** ****** *)
 
 implement ccomp_exp_template_cst
-  (loc0, res, hit0, d2c, hitss) = let
+  (res, loc0, hit0, d2c, hitss) = let
   val hitss = hityplstlst_normalize (hitss)
   val fullname = template_cst_name_make (d2c, hitss)
 (*
@@ -471,7 +471,7 @@ end // end of [ccomp_exp_template_cst]
 (* ****** ****** *)
 
 implement ccomp_exp_template_var
-  (loc0, res, hit0, d2v, hitss) = let
+  (res, loc0, hit0, d2v, hitss) = let
   val hitss = hityplstlst_normalize (hitss)
   val fullname = template_var_name_make (d2v, hitss)
 (*

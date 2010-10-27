@@ -366,7 +366,7 @@ end // end of [fprint_kontlst]
 implement fprint_instr (pf | out, ins) = let
   macdef prstr (s) = fprint1_string (pf | out, ,(s))
 in
-  case+ ins of
+  case+ ins.instr_node of
   | INSTRarr_heap (tmp, asz, hit_elt) => begin
       prstr "INSTRarr_heap(";
       fprint_tmpvar (pf | out, tmp);
