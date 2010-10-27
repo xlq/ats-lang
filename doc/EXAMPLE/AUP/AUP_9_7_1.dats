@@ -69,7 +69,7 @@ main () = () where {
   val (pf_alarm | _) = alarm_set (NSEC)
   val (pf_stdin | ()) = stdin_fildes_view_get ()
   #define BUFSZ 128
-  var err: int = 0
+  var nerr: int = 0
   var !p_buf with pf_buf = @[byte][BUFSZ]()
   prval () = pf_buf := bytes_v_of_b0ytes_v (pf_buf)
   val nread = read_err (pf_stdin  | STDIN_FILENO, !p_buf, BUFSZ)
@@ -77,7 +77,7 @@ main () = () where {
   val () = if (nread < 0) then (
     if (errno_get() = EINTR) then
       printf ("Timed out! Please type faster next time.\n", @())
-    else (err := err + 1) // end of [if]
+    else (nerr := nerr + 1) // end of [if]
   ) // end of [val]
   val () = stdin_fildes_view_set (pf_stdin | (*none*))
   val () =
@@ -94,7 +94,7 @@ if nread >= 0 then let
 in
   // nothing
 end // end of [if]
-  val () = if (err > 0) then exit (EXIT_FAILURE)
+  val () = if (nerr > 0) then exit (EXIT_FAILURE)
 } // end of [main]
 
 (* ****** ****** *)

@@ -97,12 +97,12 @@ fun loop_dir (
 fun getcwdx_main {fd:int} (
     pf_fd: fildes_v (fd) | fd: int fd, stat: &stat
   ) : strptr0 = let
-  var err: int = 0
+  var nerr: int = 0
   var lstrs: pathlist = list_vt_nil ()
-  val () = loop (pf_fd | fd, stat, lstrs, 0(*nent*), err) where {
+  val () = loop (pf_fd | fd, stat, lstrs, 0(*nent*), nerr) where {
     fun loop {fd:int} (
         pf_fd: !fildes_v (fd)
-      | fd: int fd, stat: &stat, lstrs: &pathlist, nent: int, err: &int
+      | fd: int fd, stat: &stat, lstrs: &pathlist, nent: int, nerr: &int
       ) : void = let
       var stat_parent: stat? // uninitialized
       val rtn = lstat_err ("..", stat_parent)
@@ -116,7 +116,7 @@ fun getcwdx_main {fd:int} (
       in
         case+ 0 of
         | _ when term => push_pathlist (lstrs, "/") // for leading "/"
-        | _ when rtn = ~1 => (err := err + 1) // loop exists abnormally
+        | _ when rtn = ~1 => (nerr := nerr + 1) // loop exists abnormally
         | _ (*continue*) => let
             val (pfopt_dir | p_dir) = opendir_err (".")
           in
@@ -126,25 +126,25 @@ fun getcwdx_main {fd:int} (
               val found = loop_dir (ents, stat, lstrs, nent)
             in
               if found > 0 then let
-                val () = stat := stat_parent in loop (pf_fd | fd, stat, lstrs, nent+1, err)
+                val () = stat := stat_parent in loop (pf_fd | fd, stat, lstrs, nent+1, nerr)
               end else begin
-                errno_set (ENOENT); err := err + 1
+                errno_set (ENOENT); nerr := nerr + 1
               end // end of [if]
             end else let
-              prval None_v () = pfopt_dir in err := err + 1 // loop exits abnormally 
+              prval None_v () = pfopt_dir in nerr := nerr + 1 // loop exits abnormally 
             end (* end of if *)
           end (* end of [_(*continue*)] *)
       end else let
         prval () = opt_unnone {stat} (stat_parent)
       in
-        err := err + 1 // loop exits abnormally
+        nerr := nerr + 1 // loop exits abnormally
       end // end of [if]  
     end (* end of [loop] *)
   } // end of [val]
   val _err = fchdir (pf_fd | fd)
   val () = assert_errmsg (_err <> ~1, #LOCATION)
   val () = close_exn (pf_fd | fd)
-  val () = if (err > 0) then (free_pathlist lstrs; lstrs := list_vt_nil)
+  val () = if (nerr > 0) then (free_pathlist lstrs; lstrs := list_vt_nil)
   val lstrs = lstrs
 in
   case+ lstrs of

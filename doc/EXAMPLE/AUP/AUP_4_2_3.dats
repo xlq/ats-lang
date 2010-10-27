@@ -41,16 +41,16 @@ fun readany2 {n:nat} (
     // nothing
   end // end of [val]
 //
-  var err: int = 0
+  var nerr: int = 0
 //
   val nfd = select (maxfd + 1, fdset_rd, null, null, null) where {
     extern fun select (_: intGte 1, fdset: &fd_set, _: ptr, _: ptr, _: ptr): int = "#atslib_select"
   } // end of [val]
-  val () = if nfd < 0 then err := err + 1
+  val () = if nfd < 0 then nerr := nerr + 1
 //
   var c: char = '\0'
 //
-  val () = if err = 0 then (
+  val () = if nerr = 0 then (
     for (i := 0; i < n; i := i+1) let
       val fd = fds.[i]
       val fd = int1_of_int (fd)
@@ -65,7 +65,7 @@ extern fun read1 (fd: int, c: &char): ssize_t = "#atslib_read1"
         val nread = int_of_ssize (nread)
         val nread = int1_of_int (nread)
         val () = which := i
-        val () = if (nread < 0) then (err := err + 1)
+        val () = if (nread < 0) then (nerr := nerr + 1)
       in
         break
       end // end of [if]
@@ -73,30 +73,30 @@ extern fun read1 (fd: int, c: &char): ssize_t = "#atslib_read1"
   ) // end of [if]
 //
 in
-  if err > 0 then ~1 else (int_of)c
+  if nerr > 0 then ~1 else (int_of)c
 end // end of [readany2]
 
 (* ****** ****** *)
 
 fun test_readany2 () = let
   var !p_fds = @[int](~1, ~1)
-  var err: int = 0
+  var nerr: int = 0
   extern prfun __leak {v:view} (pf: v): void
   val (pf | fd) = open_flag_err ("/dev/tty", O_RDWR)
   val () = if fd < 0 then let
-    val () = prerr "test_readany: open: 0\n" in err := err + 1
+    val () = prerr "test_readany: open: 0\n" in nerr := nerr + 1
   end // end of [val]
   prval () = __leak (pf)
   val () = p_fds->[0] := fd
   val path = "/dev/pts/5" // HX: change may be needed
   val (pf | fd) = open_flag_err (path, O_RDWR)
   val () = if fd < 0 then let
-    val () = prerr "test_readany: open: 1\n" in err := err + 1
+    val () = prerr "test_readany: open: 1\n" in nerr := nerr + 1
   end // end of [val]
   prval () = __leak (pf)
   val () = p_fds->[1] := fd  
 //
-  val () = if (err = 0) then let
+  val () = if (nerr = 0) then let
     var which: int = ~1
     val () = while (true) let
       val c = readany2 (!p_fds, 2, which)
@@ -108,7 +108,7 @@ fun test_readany2 () = let
         continue
       end // end of [val]
       val () = if (c = 0) then
-        printf ("EOF from terminal %d\n", @(which)) else err := err+1
+        printf ("EOF from terminal %d\n", @(which)) else nerr := nerr+1
       // end of [val]
     in
       break
@@ -126,7 +126,7 @@ fun test_readany2 () = let
     if fd >= 0 then __close (fd)
   end // end of [val]
 //
-  val () = if (err > 0) then prerrf ("test_readany: failed.\n", @())
+  val () = if (nerr > 0) then prerrf ("test_readany: failed.\n", @())
 //
 in
   // nothing

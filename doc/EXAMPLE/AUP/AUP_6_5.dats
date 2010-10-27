@@ -120,9 +120,9 @@ in
       val () = close_exn (pfin2 | fdin2)
       val () = close_exn (pfout1 | fdout1)
       val (pfopt | fd) = open_flag_err ("data/fruits.txt", O_RDONLY)
-      var err: int = 0
+      var nerr: int = 0
       val () = if (fd < 0) then let
-        prval open_v_fail () = pfopt in err := err+1
+        prval open_v_fail () = pfopt in nerr := nerr + 1
       end else let
         prval open_v_succ (pf) = pfopt
         val () = while (true) let
@@ -132,11 +132,11 @@ in
             val nread = size1_of_ssize1 (nread)
             val () = if nread = 0 then break
             val nwrite = write_err (pfout2 | fdout2, !p_buf, nread)
-            val () = if nwrite < 0 then (err := err + 1; break)
+            val () = if nwrite < 0 then (nerr := nerr + 1; break)
           in
             // nothing
           end else let
-            val () = err := err + 1 in break
+            val () = nerr := nerr + 1 in break
           end // end of [if]
         end // end of [while]
         val () = close_exn (pf | fd)
@@ -145,12 +145,12 @@ in
       end // end of [val]
       val () = close_exn (pfout2 | fdout2)
       val () = (
-if (err > 0) then let
+if (nerr > 0) then let
   val () = close_exn (pfin1 | fdin1)
 in
   errptexit (EXIT_FAILURE) // HX: open ("datafile") failed
 end else let
-  var err: int = 0
+  var nerr: int = 0
   val (pf_stdout | ()) = stdout_fildes_view_get ()
   val () = while (true) let
     val nread = read_err (pfin1 | fdin1, !p_buf, BUFSZ)
@@ -160,14 +160,14 @@ end else let
       val () = if nread = 0 then break
       val nwrite = write_err (pf_stdout | STDOUT_FILENO, !p_buf, nread)
     in
-      if nwrite < 0 then (err := err + 1; break)
+      if nwrite < 0 then (nerr := nerr + 1; break)
     end else let
-      val () = err := err + 1 in break
+      val () = nerr := nerr + 1 in break
     end // end of [if]
   end // end of [val]
   val () = stdout_fildes_view_set (pf_stdout | (*none*))
   val () = close_exn (pfin1 | fdin1)
-  val () = if err > 0 then errptexit (EXIT_FAILURE)
+  val () = if nerr > 0 then errptexit (EXIT_FAILURE)
 in
   // nothing
 end // end of [if]

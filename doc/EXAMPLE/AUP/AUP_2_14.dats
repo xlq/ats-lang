@@ -42,7 +42,7 @@ fun loop_main {fd:int} (
   , buf: &bytes BUFSZ, n: natLt BUFSZ
   , bufc: &bytes 1
   , ofs: lint
-  , err: &int
+  , nerr: &int
   ) : void = if ofs >= 0L then let
   val nread = pread (pf_fd | fd, bufc, 1, $T.off_of_lint ofs)
   val nread = int1_of_ssize1 (nread)
@@ -54,9 +54,9 @@ in
       val ofs1 = ofs - 1L
     in
       if c <> '\n' then begin
-        if n = 0 then (errno_set (E2BIG); err := err + 1) 
+        if n = 0 then (errno_set (E2BIG); nerr := nerr + 1) 
         else (
-          buf.[n-1] := b; loop_main (pf_fd | fd, buf, n-1, bufc, ofs1, err)
+          buf.[n-1] := b; loop_main (pf_fd | fd, buf, n-1, bufc, ofs1, nerr)
         ) // end of [if]
       end else let // c = '\n'
         extern fun __buf_tail (buf: &bytes BUFSZ, n: natLt BUFSZ): string
@@ -64,14 +64,14 @@ in
         val () = printf ("%s", @(__buf_tail (buf, n)))
         val n = BUFSZ - 1
       in
-        buf.[n-1] := b; loop_main (pf_fd | fd, buf, n-1, bufc, ofs1, err)
+        buf.[n-1] := b; loop_main (pf_fd | fd, buf, n-1, bufc, ofs1, nerr)
       end // end of [if]
     end (* end of [_ when nread = 1] *)
   | _ when nread = ~1 => begin
-      err := err + 1
+      nerr := nerr + 1
     end // end of [_ when ...] 
   | _ => begin
-      errno_reset (); err := err + 1
+      errno_reset (); nerr := nerr + 1
     end // end of [_]
 end else begin
   // loop exits successfully
@@ -89,11 +89,11 @@ implement backward2 (path) = let
   val ofs0 = $T.off_of_lint (0L)
   val fsize = lseek_exn (pf_fd | fd, ofs0, $T.SEEK_END)
   val fsize1 = $T.lint_of_off (fsize) - 1L
-  var err: int = 0
-  val () = loop_main (pf_fd | fd, !p_buf, BUFSZ-1, !p_bufc, fsize1, err)
+  var nerr: int = 0
+  val () = loop_main (pf_fd | fd, !p_buf, BUFSZ-1, !p_bufc, fsize1, nerr)
 // (*
-  val () = if (err > 0) then begin
-    prerrf ("err = %i\n", @(err)); $STDIO.perror "backward2"; 
+  val () = if (nerr > 0) then begin
+    prerrf ("nerr = %i\n", @(nerr)); $STDIO.perror "backward2"; 
   end // end of [val]  
 // *)
   val () = close_exn (pf_fd | fd)

@@ -38,7 +38,7 @@ end // end of [setblock]
 
 fun msetblock {n:nat}
   (fds: &(@[int][n]), n: int n): int = let
-  var err: int = 0
+  var nerr: int = 0
   var i: natLte n
   val () = for
     (i := 0; i < n; i := i+1) let
@@ -46,10 +46,10 @@ fun msetblock {n:nat}
     val fd = int1_of (fd)
     val res = setblock (fd, false) // inefficient
   in
-    if ~res then err := err + 1
+    if ~res then nerr := nerr + 1
   end // end of [val]
 in
-  err (* 0/neg : succ/fail *)
+  nerr (* 0/neg : succ/fail *)
 end // end of [msetblock]
 
 %{^
@@ -62,7 +62,7 @@ fun readany {n:nat} (
 //
   extern fun read1 (fd: int, c: &char): ssize_t = "#atslib_read1"
 //
-  var err: int = 0
+  var nerr: int = 0
   var i: natLte n = 0
   var c:char = '\0'
   val () = while (true) let
@@ -76,7 +76,7 @@ fun readany {n:nat} (
           case+ 0 of
           | _ when nread >= 0 => (which := i; break)
           | _ (*nread = -1*) => (
-              if (errno_get () = EAGAIN) then (i := i+1; continue) else (err := err+1; break)
+              if (errno_get () = EAGAIN) then (i := i+1; continue) else (nerr := nerr+1; break)
             ) // end of [_]
         end // end of [_ when ...]
       | _ => let
@@ -87,32 +87,32 @@ fun readany {n:nat} (
     // nothing
   end // end of [val]
 in
-  if err > 0 then ~1 else (int_of)c
+  if nerr > 0 then ~1 else (int_of)c
 end // end of [readany]
 
 (* ****** ****** *)
 
 fun test_readany () = let
   var !p_fds = @[int](~1, ~1)
-  var err: int = 0
+  var nerr: int = 0
   extern prfun __leak {v:view} (pf: v): void
   val (pf | fd) = open_flag_err ("/dev/tty", O_RDWR)
   val () = if fd < 0 then let
-    val () = prerr "test_readany: open: 0\n" in err := err + 1
+    val () = prerr "test_readany: open: 0\n" in nerr := nerr + 1
   end // end of [val]
   prval () = __leak (pf)
   val () = p_fds->[0] := fd
   val path = "/dev/pts/3" // HX: change may be needed
   val (pf | fd) = open_flag_err (path, O_RDWR)
   val () = if fd < 0 then let
-    val () = prerr "test_readany: open: 1\n" in err := err + 1
+    val () = prerr "test_readany: open: 1\n" in nerr := nerr + 1
   end // end of [val]
   prval () = __leak (pf)
   val () = p_fds->[1] := fd  
 //
   val _err = msetblock (!p_fds, 2)
 //
-  val () = if (err = 0) then let
+  val () = if (nerr = 0) then let
     var which: int = ~1
     val () = while (true) let
       val c = readany (!p_fds, 2, which)
@@ -124,7 +124,7 @@ fun test_readany () = let
         continue
       end // end of [val]
       val () = if (c = 0) then
-        printf ("EOF from terminal %d\n", @(which)) else err := err+1
+        printf ("EOF from terminal %d\n", @(which)) else nerr := nerr+1
       // end of [val]
     in
       break
@@ -142,7 +142,7 @@ fun test_readany () = let
     if fd >= 0 then __close (fd)
   end // end of [val]
 //
-  val () = if (err > 0) then prerrf ("test_readany: failed.\n", @())
+  val () = if (nerr > 0) then prerrf ("test_readany: failed.\n", @())
 //
 in
   // nothing

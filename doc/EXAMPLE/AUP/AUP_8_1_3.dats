@@ -155,7 +155,7 @@ if sfd >= 0 then let
     {fd:int} (pf: socket_v (fd, conn) | fd: int fd):<> void
   extern prfun __detach {fd:int} (fd: int fd):<> socket_v (fd, conn)
 //
-  var err: int = 0
+  var nerr: int = 0
   val () = FD_SET (sfd, set)
   val () = while (true) let
     val () = read_set := set
@@ -168,7 +168,7 @@ if sfd >= 0 then let
     val () = (print "select: rtn = "; print rtn; print_newline ())
 *)
     val () = if (rtn < 0) then let
-      val () = (perror "select"; err := err + 1; break) in (*nothing*)
+      val () = (perror "select"; nerr := nerr + 1; break) in (*nothing*)
     end // end of [val]
     var fd: Nat // uninitialized
     val () = for* (read_set: fd_set) =>
@@ -186,7 +186,7 @@ if sfd >= 0 then let
           end else let
             prval None_v () = pfopt
           in
-            (perror "accept"; err := err + 1; break)
+            (perror "accept"; nerr := nerr + 1; break)
           end // end of [val]
         end else let
           prval pfconn = __detach (fd)
@@ -213,17 +213,17 @@ if sfd >= 0 then let
           end else let
             prval () = __attach (pfconn | fd)
           in
-            perror "socket read"; err := err + 1; break
+            perror "socket read"; nerr := nerr + 1; break
           end // end of [if]
         end // end of [if]
       ) // end of [if]
     // end of [for] // end of [val]
   in
-    if err > 0 then break
+    if nerr > 0 then break
   end // end of [val]
   val () = socket_close_exn (pfskt | sfd)
 in
-  if err = 0 then true else false
+  if nerr = 0 then true else false
 end else let
   prval None_v () = pfopt
   val () = perror "socket"
@@ -242,25 +242,25 @@ main () = () where {
   val _err = unlink (SOCKETNAME)
   val () = sockaddr_un_init (sa, AF_UNIX, SOCKETNAME)
 //
-  var err: int = 0
+  var nerr: int = 0
 //
   var i: int
   val () = for
     (i := 1; i <= 4; i := i+1) let
     val rtn = run_client (sa)
   in
-    if ~rtn then (err := err + 1; break)
+    if ~rtn then (nerr := nerr + 1; break)
   end // end of [val]
-  val () = if (err = 0) then
+  val () = if (nerr = 0) then
     (print "All the clients have been started"; print_newline ())
 //
-  val () = if (err = 0) then let
-    val rtn = run_server (sa) in if ~rtn then (err := err+1)
+  val () = if (nerr = 0) then let
+    val rtn = run_server (sa) in if ~rtn then (nerr := nerr + 1)
   end // end of [val]
-  val () = if (err = 0) then
+  val () = if (nerr = 0) then
     (print "The server have been started"; print_newline ())
 //
-  val () = if err > 0 then exit (EXIT_FAILURE)
+  val () = if nerr > 0 then exit (EXIT_FAILURE)
 //
   val () = exit (EXIT_SUCCESS)
 //

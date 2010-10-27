@@ -54,18 +54,18 @@ end // end of [printenv]
 
 fun assgnenv {n:pos}
   (argc: int n, argv: &(@[string][n])): void = let
-  var err: int = 0
+  var nerr: int = 0
   val () = while (true) let
     val () = (
-      if argc <= 2 then (err := 1; break; assertfalse())
+      if argc <= 2 then (nerr := 1; break; assertfalse())
     ) : [n >= 3] void
     val () = if (setenv (argv.[1], argv.[2], 1(*overwritten*)) < 0) then
-      err := 2
+      nerr := 2
     // end of [val]
   in
     break
   end // end of [val]
-  val () = (case+ err of
+  val () = (case+ nerr of
     | 1 => printf ("Incorrect command format for <assgn>\n", @())
     | 2 => printf ("[setenv] failed\n", @())
     | _ => ()

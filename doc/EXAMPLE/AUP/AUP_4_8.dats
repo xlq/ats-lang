@@ -45,56 +45,56 @@ fun mainloop (
   | (*none*)
   ) : int(*0/1:succ/fail*) = let
   var c: char = '\000'
-  var err: int = 0
+  var nerr: int = 0
   val () = while (true) let
     val _err = clear ()
-    val () = if _err = ERR then err := err+1
+    val () = if _err = ERR then nerr := nerr+1
 (*
     val () = printf ("[clear] is done\n", @())
 *)
 //
     val _err = mvaddstr (2, 9, "What do you want to do?")
-    val () = if _err = ERR then (err := err+1; break; assertfalse ())
+    val () = if _err = ERR then (nerr := nerr+1; break; assertfalse ())
     val _err = mvaddstr (3, 9, "1. Check out tape/DVD")
-    val () = if _err = ERR then (err := err+1; break; assertfalse ())
+    val () = if _err = ERR then (nerr := nerr+1; break; assertfalse ())
     val _err = mvaddstr (4, 9, "2. Reserve tape/DVD")
-    val () = if _err = ERR then (err := err+1; break; assertfalse ())
+    val () = if _err = ERR then (nerr := nerr+1; break; assertfalse ())
     val _err = mvaddstr (5, 9, "3. Register new member")
-    val () = if _err = ERR then (err := err+1; break; assertfalse ())
+    val () = if _err = ERR then (nerr := nerr+1; break; assertfalse ())
     val _err = mvaddstr (6, 9, "4. Search for title/actor")
-    val () = if _err = ERR then (err := err+1; break; assertfalse ())
+    val () = if _err = ERR then (nerr := nerr+1; break; assertfalse ())
     val _err = mvaddstr (7, 9, "5. Quit")
-    val () = if _err = ERR then (err := err+1; break; assertfalse ())
+    val () = if _err = ERR then (nerr := nerr+1; break; assertfalse ())
     val _err = mvaddstr (9, 9, "(Type item number to continue)")
-    val () = if _err = ERR then (err := err+1; break; assertfalse ())
+    val () = if _err = ERR then (nerr := nerr+1; break; assertfalse ())
     val _err = refresh () // HX: otherwise, nothing is shown
-    val () = if _err = ERR then (err := err+1; break; assertfalse ())
+    val () = if _err = ERR then (nerr := nerr+1; break; assertfalse ())
 //
     val _err = getch (pf | c)
-    val () = if _err = ERR then err := err+1
+    val () = if _err = ERR then nerr := nerr+1
     val () = (case+ 0 of
       | _ when ('1' <= c andalso c <= '4') => let
           val _err = clear ()
-          val () = if _err = ERR then err := err+1
+          val () = if _err = ERR then nerr := nerr+1
           val [l:addr] str = sprintf ("You typed %c", @(c))
           val _err = mvaddstr (4, 9, __cast str) where {
             extern castfn __cast (x: !strptr l):<> string
           } // end of [val]
           val () = strptr_free (str)
-          val () = if _err = ERR then err := err+1
+          val () = if _err = ERR then nerr := nerr+1
           val _err = mvaddstr (9, 9, "(Press any key to continue)")
-          val () = if _err = ERR then err := err+1
+          val () = if _err = ERR then nerr := nerr+1
           val _err = refresh () // HX: otherwise, change is not shown
-          val () = if _err = ERR then err := err+1
+          val () = if _err = ERR then nerr := nerr+1
           val _err = getch (pf | c)
-          val () = if _err = ERR then err := err+1
+          val () = if _err = ERR then nerr := nerr+1
         in
           break
         end // end of [_ when ...]
       | _ when c = '5' => break
       | _ => let
           val _err = beep ()
-          val () = if _err = ERR then err := err+1
+          val () = if _err = ERR then nerr := nerr+1
         in
           // nothing
         end // end of [_]
@@ -106,7 +106,7 @@ fun mainloop (
   val () = (print "_err = "; print _err; print_newline ())
 *)
 in
-  if err > 0 then 1 else 0
+  if nerr > 0 then 1 else 0
 end // end of [mainloop]
 
 (* ****** ****** *)

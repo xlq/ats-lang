@@ -123,7 +123,7 @@ fun test_gethostbyaddr () = () where {
 staload STDIO = "libc/SATS/stdio.sats"
 fun fstrnprint {n:nat}
   (out: FILEref, buf: &bytes(n), n: size_t n): int = let
-  var err: int = 0
+  var nerr: int = 0
   var i: sizeLte n
   val _0 = size1_of_int1 (0)
   val () = for
@@ -131,10 +131,10 @@ fun fstrnprint {n:nat}
     val c = char_of_byte (buf.[i])
   in
     if c = '\000' then break else
-      (if ($STDIO.fputc_err (c, out) < 0) then (err := err + 1; break))
+      (if ($STDIO.fputc_err (c, out) < 0) then (nerr := nerr + 1; break))
   end // end of [val]
 in
-  err
+  nerr
 end // end of [fstrnprint]
 
 (* ****** ****** *)

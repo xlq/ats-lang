@@ -43,17 +43,17 @@ end // end of [setblock]
 #define c2b byte_of_char
 
 fun test_setblock () = let
-  var err: int = 0
+  var nerr: int = 0
   val tstart = time_get ()
-  val () = if (lint_of)tstart < 0L then err := err + 1
+  val () = if (lint_of)tstart < 0L then nerr := nerr + 1
   val res = setblock (STDIN_FILENO, false) // no blocking!
-  val () = if ~res then err := err + 1
+  val () = if ~res then nerr := nerr + 1
 //
   val NUL = (c2b)'\000'
 //
   val () =
 //
-if err = 0 then let
+if nerr = 0 then let
 //
   var !p_buf with pf_buf = @[byte][BUFSZ]()
   prval () = pf_buf := bytes_v_of_b0ytes_v (pf_buf)
@@ -62,8 +62,8 @@ if err = 0 then let
 //
   val () = while (true) let
     val tnow = time_get ()
-    val () = if (lint_of)tnow < 0L then err := err + 1
-    val () = if err > 0 then break
+    val () = if (lint_of)tnow < 0L then nerr := nerr + 1
+    val () = if nerr > 0 then break
     val () = printf ("Waiting for input: (%.0f sec.) ...\n", @(difftime (tnow, tstart)))
     val n = read_err (pf_fd | STDIN_FILENO, !p_buf, BUFSZ1)
     val n = int1_of_ssize1 (n)
@@ -83,7 +83,7 @@ if err = 0 then let
     | _ (*nread = -1*) => (
         if errno_get () = EAGAIN then
           let val _leftover = sleep(5) in continue end
-        else (err := err + 1; break)
+        else (nerr := nerr + 1; break)
       ) // end of [_]
   end // end of [val]
 //
@@ -94,7 +94,7 @@ in
 end // end of [if]
 //
 in
-  if err > 0 then (prerr "test_setblock: failed"; prerr_newline ())
+  if nerr > 0 then (prerr "test_setblock: failed"; prerr_newline ())
 end // end of [test_setblock]
 
 (* ****** ****** *)
