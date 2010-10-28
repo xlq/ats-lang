@@ -153,18 +153,21 @@ end // end of [location_combine]
 
 implement
 location_get_filename (loc) = loc.filename
+implement location_begpos_line (loc) = loc.begpos_line
 implement location_begpos_toff (loc) = loc.begpos_toff
 implement location_endpos_toff (loc) = loc.endpos_toff
 
 (* ****** ****** *)
 
-implement lte_location_location (loc1, loc2) = begin
-  loc1.begpos_toff <= loc2.begpos_toff
-end // end of [lte_location_location]
+implement
+lte_location_location
+  (loc1, loc2) = (loc1.begpos_toff <= loc2.begpos_toff)
+// end of [lte_location_location]
 
 (* ****** ****** *)
 
-implement fprint_location (pf | out, loc) = begin
+implement
+fprint_location (pf | out, loc) = begin
   $Fil.fprint_filename (pf | out, loc.filename);
   fprint1_string (pf | out, ": ");
   fprint1_lint (pf | out, loc.begpos_toff+1L);

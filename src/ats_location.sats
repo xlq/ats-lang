@@ -64,7 +64,11 @@ fun location_combine (_1: location_t, _2: location_t):<> location_t
 
 (* ****** ****** *)
 
-fun location_get_filename (loc: location_t): $Fil.filename_t
+fun location_get_filename
+  (loc: location_t): $Fil.filename_t
+// end of [location_get_filename]
+
+fun location_begpos_line (loc: location_t): int
 
 typedef lint = int_long_t0ype
 fun location_begpos_toff (loc: location_t): lint

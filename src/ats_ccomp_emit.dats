@@ -52,8 +52,8 @@ staload Fil = "ats_filename.sats"
 staload Glo = "ats_global.sats"
 staload IntInf = "ats_intinf.sats"
 staload Lab = "ats_label.sats"
-staload Lst = "ats_list.sats"
 staload Loc = "ats_location.sats"
+staload Lst = "ats_list.sats"
 
 (* ****** ****** *)
 
@@ -1526,8 +1526,25 @@ end // end of [emit_instr_call]
 
 implement
 emit_instr {m} (pf | out, ins) = let
+  val isdeb = $Deb.debug_flag_get ()
+//
+  val () = // generating #line progma for debugging
+    if isdeb > 0 then let
+      val loc = ins.instr_loc
+      val line = $Loc.location_begpos_line (loc)
+      val () = fprint1_string (pf | out, "#line ")
+      val () = fprint1_int (pf | out, line+1) // HX: counting from 1
+      val () = fprint1_string (pf | out, ", \"")
+      val fil = $Loc.location_get_filename (loc)
+      val () = $Fil.fprint_filename_base (pf | out, fil)
+      val () = fprint1_string (pf | out, "\"\n")
+    in
+      // nothing
+    end // end of [if]
+  // end of [val]
+//
   val () = // generating informaion for debugging
-    if $Deb.debug_flag_get () > 0 then let
+    if isdeb > 0 then let
       val () = fprint1_string (pf | out, "/* ")
       val () = fprint_instr (pf | out, ins)
       val () = fprint1_string (pf | out, " */")
@@ -1535,6 +1552,7 @@ emit_instr {m} (pf | out, ins) = let
     in
       // empty
     end // end of [if]
+  // end of [val]
 in
   case+ ins.instr_node of
   | INSTRarr_heap (tmp, asz, hit_elt) => begin

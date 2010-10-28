@@ -55,9 +55,11 @@ fn fact3_usage (cmd: string): void =
   prerrstarln @("Usage: ", cmd, " [integer]") // print an error message
 
 (* ****** ****** *)
-
-// is there any doubt :)
-implement main (argc, argv) =
+//
+// Is there still any doubt :)
+//
+implement
+main (argc, argv) =
   if argc >= 2 then let
     val n0 = int1_of argv.[1] // turning string into integer
     val () = assert_errmsg

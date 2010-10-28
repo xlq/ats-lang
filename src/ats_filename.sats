@@ -124,6 +124,7 @@ overload prerr with prerr_filename
 fun fprint_filename_base {m:file_mode}
   (pf: file_mode_lte (m, w) | out: &FILE m, f: filename_t): void
   = "atsopt_filename_fprint_filename_base"
+// end of [fprint_filename_base]
 
 fun print_filename_base (f: filename_t): void
 fun prerr_filename_base (f: filename_t): void
