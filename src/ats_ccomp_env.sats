@@ -37,6 +37,8 @@
 (* ****** ****** *)
 
 staload Fil = "ats_filename.sats"
+staload Loc = "ats_location.sats"
+typedef loc_t = $Loc.location_t
 staload Set = "ats_set_fun.sats"
 
 (* ****** ****** *)
@@ -219,14 +221,15 @@ fun the_extvallst_add (name: string, vp: valprim): void
 (* ****** ****** *)
 
 dataviewtype extcodelst =
-  | EXTCODELSTcons of (int(*position*), string (*code*), extcodelst)
+  | EXTCODELSTcons of
+      (loc_t, int(*position*), string (*code*), extcodelst)
   | EXTCODELSTnil of ()
 // end of [extcodelst]
 
 fun extcodelst_free (codes: extcodelst): void
 
 fun the_extcodelst_get (): extcodelst
-fun the_extcodelst_add (position: int, code: string): void
+fun the_extcodelst_add (loc: loc_t, pos: int, code: string): void
 
 (* ****** ****** *)
 

@@ -189,4 +189,20 @@ implement prerr_location (loc) = prerr_mac (fprint_location, loc)
 
 (* ****** ****** *)
 
+implement
+fprint_line_pragma
+  (pf | out, loc) = let
+  val line = location_begpos_line (loc)
+  val () = fprint1_string (pf | out, "#line ")
+  val () = fprint1_int (pf | out, line+1) // HX: counting from 1
+  val () = fprint1_string (pf | out, " \"")
+  val fil = location_get_filename (loc)
+  val () = $Fil.fprint_filename_base (pf | out, fil)
+  val () = fprint1_string (pf | out, "\"\n")
+in
+  // nothing
+end // end of [print_line_pragma]
+
+(* ****** ****** *)
+
 (* end of [ats_location.dats] *)

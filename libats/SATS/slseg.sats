@@ -104,11 +104,9 @@ slseg_foreach_clo
 ) :<> void // end of [slseg_foreach_clo]
 
 (* ****** ****** *)
-
 //
-// HX: these are really cast functions
+// HX: [sllst] and [list_vt] are really the same!
 //
-
 castfn list_vt_of_sllst
 {a:viewt@ype} {n:nat} {l:addr}
   (pf: sllst_v (a, l, n) | p: ptr l):<> list_vt (a, n)

@@ -853,8 +853,10 @@ fn extcodelst_reverse
   (xs: extcodelst): extcodelst = let
   fun aux (xs: extcodelst, ys: extcodelst)
     : extcodelst = begin case+ xs of
-    | EXTCODELSTcons (_(*pos*), _(*code*), !xs1) => let
-        val xs1_v = !xs1; val () = (!xs1 := ys; fold@ (xs))
+    | EXTCODELSTcons (
+        _(*loc*), _(*pos*), _(*code*), !p_xs1
+      ) => let
+        val xs1_v = !p_xs1; val () = (!p_xs1 := ys; fold@ (xs))
       in
         aux (xs1_v, xs)
       end
@@ -866,14 +868,16 @@ end // end of [extcodelst_reverse]
 
 in // in of [local]
 
-implement the_extcodelst_add (position, code) = let
+implement
+the_extcodelst_add (loc, pos, code) = let
   val (pfbox | p) = ref_get_view_ptr (the_extcodelst)
   prval vbox pf = pfbox
 in
-  !p := EXTCODELSTcons (position, code, !p)
+  !p := EXTCODELSTcons (loc, pos, code, !p)
 end // end of [the_extcodelst_add]
 
-implement the_extcodelst_get () = let
+implement
+the_extcodelst_get () = let
   val res = let
     val (pfbox | p) = ref_get_view_ptr (the_extcodelst)
     prval vbox pf = pfbox
@@ -885,8 +889,9 @@ in
   extcodelst_reverse (res)
 end // end of [the_extcodelst_get]
 
-implement extcodelst_free (codes) = begin case+ codes of
-  | ~EXTCODELSTcons (_, _, codes) => extcodelst_free (codes)
+implement
+extcodelst_free (codes) = begin case+ codes of
+  | ~EXTCODELSTcons (_, _, _, codes) => extcodelst_free (codes)
   | ~EXTCODELSTnil () => ()
 end // end of [extcodelst_free]
 

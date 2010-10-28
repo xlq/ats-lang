@@ -46,6 +46,7 @@ staload TM = "libc_sats_time.sats"
 
 (* ****** ****** *)
 
+staload Deb = "ats_debug.sats"
 staload Err = "ats_error.sats"
 staload Fil = "ats_filename.sats"
 staload Glo = "ats_global.sats"
@@ -1027,39 +1028,61 @@ end // end of [emit_extypelst_free]
 
 (* ****** ****** *)
 
-fn emit_extcodelst {m:file_mode} (
+fn emit_extcodelst
+  {m:file_mode} (
     pf: file_mode_lte (m, w)
   | out: &FILE m
   , pos0: int (* top(0), mid(1), bot(2) *)
   , xs0: &extcodelst
   ) : int = let
-
-  fn test (pos0: int, pos: int): bool = case+ 0 of
+//
+  fn test (
+     pos0: int, pos: int
+  ) : bool =
+    case+ 0 of
     | _ when pos0 = 0 => pos <= 0 (* pos = ~1 or pos = 0 *)
     | _ when pos0 = 1 => pos = 1
     | _ => true // pos = 2
-  // end of [test]
-
+  (* end of [test] *)
+//
   fun aux_main (
       out: &FILE m
     , pos0: int
     , xs0: &extcodelst
     , i: &int
     ) : void = begin case+ xs0 of
-    | EXTCODELSTcons (pos, code, !xs) => begin
+    | EXTCODELSTcons
+        (loc, pos, code, !p_xs) => let
+        val isdeb = true
+(*
+//
+// HX-2010-10-28:
+// line pragma should always be emitted for external code
+//
+        val isdeb = $Deb.debug_flag_get () > 0
+*)
+        val () = if isdeb then
+          $Loc.fprint_line_pragma (pf | out, loc)
+        // end of [val]
+      in
         if test (pos0, pos) then let
           val () = fprint1_string (pf | out, code)
-          val xs = !xs; val () = free@ (xs0); val () = xs0 := xs
+          val xs = !p_xs; val () = free@ (xs0); val () = xs0 := xs
+          val () = i := i + 1
         in
-          i := i + 1; aux_main (out, pos0, xs0, i)
-        end else begin
-          aux_main (out, pos0, !xs, i); fold@ (xs0)
-        end
+          aux_main (out, pos0, xs0, i)
+        end else let
+          val () = aux_main (out, pos0, !p_xs, i)
+          val () = fold@ (xs0)
+        in
+          // nothing
+        end (* end of [if] *)
       end // end of [EXTCODELSTcons]
     | EXTCODELSTnil () => fold@ (xs0)
   end // end of [aux]
-
+//
   var i: int = 0
+//
 in
   aux_main (out, pos0, xs0, i); i
 end // end of [emit_extcodelst]

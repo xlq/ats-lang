@@ -92,4 +92,10 @@ overload prerr with prerr_location
 
 (* ****** ****** *)
 
+fun fprint_line_pragma {m:file_mode}
+  (pf: file_mode_lte (m, w) | out: &FILE m, loc: location_t): void
+// end of [fprint_line_pragma]
+
+(* ****** ****** *)
+
 (* end of [ats_location.sats] *)

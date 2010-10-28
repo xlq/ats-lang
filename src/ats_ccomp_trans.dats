@@ -2745,7 +2745,9 @@ in
     in
       // empty
     end // end of [extval]
-  | HIDextern (pos, code) => the_extcodelst_add (pos, code)
+  | HIDextern (pos, code) =>
+      the_extcodelst_add (loc0, pos, code) // HX: external code
+    // end of [HIDextern]
   | HIDfundecs (decarg, knd, fundecs) => let
       val level = d2var_current_level_get () in case+ decarg of
       | list_nil () => let

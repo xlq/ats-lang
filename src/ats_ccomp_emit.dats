@@ -533,11 +533,20 @@ fn emit_valprim_clo_make {m:file_mode} (
   val entry = funlab_entry_get_some (fl)
   val vtps = funentry_vtps_get_all (entry)
   val () = emit_funlab (pf | out, fl)
-  val () = fprint1_string (pf | out, "_closure_make (")
-  val _(*int*) = emit_cloenv (pf | out, map, vtps, 0)
-  val () = fprint1_string (pf | out, ")")
 in
-  // empty
+  case+ 0 of
+  | _ when knd <> 0 => let
+      val () = fprint1_string (pf | out, "_closure_make (")
+      val _(*int*) = emit_cloenv (pf | out, map, vtps, 0)
+      val () = fprint1_string (pf | out, ")")
+    in
+      // empty
+    end  // end of [knd <> 0]
+  | _ => let (* knd = 0: a flat closure *)
+      val () = fprint1_string (pf | out, "_closure_error ()")
+    in
+      // empty
+    end // end of [_]
 end // end of [emit_valprim_clo_make]
 
 (* ****** ****** *)
@@ -605,10 +614,17 @@ fn emit_valprim_ptrof {m:file_mode}
     in
       // empty
     end // end of [VPtmp]
-  | _ => begin
-      prerr_interror ();
-      prerr ": emit_valprim_ptrof: vp = "; prerr_valprim vp; prerr_newline ();
-      $Err.abort {void} ()
+  | _ => let
+(*
+      val () = prerr_interror ()
+      val () = (prerr ": emit_valprim_ptrof: vp = "; prerr_valprim vp; prerr_newline ())
+      val () = $Err.abort {void} ()
+*)
+      val () = fprint1_string (pf | out, "ptrof_error(")
+      val () = emit_valprim (pf | out, vp)
+      val () = fprint1_string (pf | out, ")")
+    in
+      // empty
     end // end of [_]
 end // end of [emit_valprim_ptrof]
 
@@ -636,7 +652,8 @@ end // end of [emit_select_lab_ptr]
 
 (* ****** ****** *)
 
-fn emit_array_index  {m:file_mode} (
+fn emit_array_index
+  {m:file_mode} (
     pf: file_mode_lte (m, w)
   | out: &FILE m, vpss: valprimlstlst
   ) : void = let
@@ -828,10 +845,12 @@ in
     in
       // empty
     end // end of [list_cons]
-  | list_nil () => begin
-      prerr_interror ();
-      prerr ": emit_valprim_select_varptr: vp_root = "; prerr vp_root; prerr_newline ();
-      $Err.abort {void} ()
+  | list_nil () => let
+      val () = prerr_interror ()
+      val () = (prerr ": emit_valprim_select_varptr: vp_root = "; prerr vp_root; prerr_newline ())
+      val () = $Err.abort {void} ()
+    in
+      // empty
     end // end of [list_nil]
 end // end of [emit_valprim_select_varptr]
 
@@ -850,10 +869,6 @@ fn emit_valprim_select_ptr {m:file_mode} (
 end // end of [emit_valprim_select_ptr]
 
 (* ****** ****** *)
-
-extern fun emit_valprim_string {m:file_mode}
-  (pf: file_mode_lte (m, w) | out: &FILE m, str: string, len: size_t): void
-  = "atsccomp_emit_valprim_string"
 
 %{$
 
@@ -889,6 +904,12 @@ atsccomp_emit_valprim_string (
 
 %} // end of [%{$]
 
+extern
+fun emit_valprim_string {m:file_mode}
+  (pf: file_mode_lte (m, w) | out: &FILE m, str: string, len: size_t): void
+  = "atsccomp_emit_valprim_string"
+// end of [emit_valprim_string]
+
 (* ****** ****** *)
 
 implement
@@ -910,17 +931,24 @@ emit_valprim (pf | out, vp0) = begin
       emit_valprim_arg_ref (pf | out, ind, vp0.valprim_typ)
     end // end of [VParg_ref]
   | VPbool b => emit_valprim_bool (pf | out, b)
-  | VPcastfn (_d2c, vp_arg) => begin
-      fprint1_string (pf | out, "ats_castfn_mac(");
-      emit_hityp (pf | out, vp0.valprim_typ);
-      fprint1_string (pf | out, ", "); emit_valprim (pf | out, vp_arg);
-      fprint1_string (pf | out, ")")
+  | VPcastfn (_d2c, vp_arg) => let
+      val () = fprint1_string
+        (pf | out, "ats_castfn_mac(")
+      val () = emit_hityp (pf | out, vp0.valprim_typ)
+      val () = fprint1_string (pf | out, ", ")
+      val () = emit_valprim (pf | out, vp_arg)
+      val () = fprint1_string (pf | out, ")")
+    in
+      // nothing
     end // end of [VPcast]
   | VPchar c => emit_valprim_char (pf | out, c)
-  | VPclo (knd, fl, env) => emit_valprim_clo_make (pf | out, knd, fl, env)
+  | VPclo (knd, fl, env) =>
+      emit_valprim_clo_make (pf | out, knd, fl, env)
   | VPcst d2c => begin case+ 0 of
-    | _ when d2cst_is_fun d2c => begin
-        fprint1_char (pf | out, '&'); emit_d2cst (pf | out, d2c)
+    | _ when d2cst_is_fun d2c => let
+        val () = fprint1_char (pf | out, '&')
+      in
+        emit_d2cst (pf | out, d2c) // HX: is '&' mandatory?
       end // end of [_ when ...]
     | _ => emit_d2cst (pf | out, d2c)
     end // end of [VPcst]
@@ -1529,17 +1557,8 @@ emit_instr {m} (pf | out, ins) = let
   val isdeb = $Deb.debug_flag_get ()
 //
   val () = // generating #line progma for debugging
-    if isdeb > 0 then let
-      val loc = ins.instr_loc
-      val line = $Loc.location_begpos_line (loc)
-      val () = fprint1_string (pf | out, "#line ")
-      val () = fprint1_int (pf | out, line+1) // HX: counting from 1
-      val () = fprint1_string (pf | out, ", \"")
-      val fil = $Loc.location_get_filename (loc)
-      val () = $Fil.fprint_filename_base (pf | out, fil)
-      val () = fprint1_string (pf | out, "\"\n")
-    in
-      // nothing
+    if isdeb > 0 then begin
+      $Loc.fprint_line_pragma (pf | out, ins.instr_loc)
     end // end of [if]
   // end of [val]
 //
@@ -2122,7 +2141,7 @@ extern fun emit_closure_clofun {m:file_mode} (
   pf_mod: file_mode_lte (m, w) | out: &FILE m, fl: funlab_t, vtps: vartypset
 ) : void
 
-// ------ ------ //
+(* ****** ****** *)
 
 local
 
@@ -2165,7 +2184,7 @@ in
   // empty
 end // end of [_emit_closure_type]
 
-// ------ ------ //
+(* ****** ****** *)
 
 fn _emit_closure_init {m:file_mode} {l:addr} (
     pf_mod: file_mode_lte (m, w), pf_fil: !FILE m @ l
@@ -2235,7 +2254,7 @@ in
   // empty
 end // end of [_emit_closure_init]
 
-// ------ ------ //
+(* ****** ****** *)
 
 fn _emit_closure_make {m:file_mode} {l:addr} (
     pf_mod: file_mode_lte (m, w), pf_fil: !FILE m @ l
@@ -2301,7 +2320,7 @@ in
   // empty
 end // end of [_emit_closure_make]
 
-// ------ ------ //
+(* ****** ****** *)
 
 fn _emit_closure_clofun {m:file_mode} {l:addr} (
     pf_mod: file_mode_lte (m, w), pf_fil: !FILE m @ l
@@ -2389,23 +2408,27 @@ end // end of [_emit_clofun]
 
 in // in of [local]
 
-// ------ ------ //
+(* ****** ****** *)
 
 implement
 emit_closure_type (pf | out, fl, vtps) =
   _emit_closure_type (pf, view@ out | &out, fl, vtps)
+// end of [emit_closure_type]
 
 implement
 emit_closure_init (pf | out, fl, vtps) =
   _emit_closure_init (pf, view@ out | &out, fl, vtps)
+// end of [emit_closure_init]
 
 implement
 emit_closure_make (pf | out, fl, vtps) =
   _emit_closure_make (pf, view@ out | &out, fl, vtps)
+// end of [emit_closure_make]
 
 implement
 emit_closure_clofun (pf | out, fl, vtps) =
   _emit_closure_clofun (pf, view@ out | &out, fl, vtps)
+// end of [emit_closure_clofun]
 
 end // end of [local]
 
@@ -2621,7 +2644,8 @@ emit_funentry_prototype
     // empty
   end // end of [aux_function]
 //
-  fn aux_closure_make (out: &FILE m):<cloptr1> void = let
+  fn aux_closure_make
+    (out: &FILE m):<cloptr1> void = let
     val () = fprint1_string (pf | out, "static\n")
     val () = fprint1_string (pf | out, "ats_clo_ptr_type ")
     val () = emit_funlab (pf | out, fl)
@@ -2632,7 +2656,8 @@ emit_funentry_prototype
     // empty
   end // end of [aux_closure_make]
 //
-  fn aux_closure_clofun (out: &FILE m):<cloptr1> void = let
+  fn aux_closure_clofun
+    (out: &FILE m):<cloptr1> void = let
     val () = fprint1_string (pf | out, "static\n")
     val () = emit_hityp (pf | out, hit_res)
     val () = fprint1_char (pf | out, ' ')
@@ -2682,13 +2707,16 @@ end // end of [emit_funentry_prototype]
 implement
 emit_mainfun
   (pf | out, fil) = () where {
-  val () = fprint1_string (pf | out, "int main (int argc, char *argv[]) {\n")
+  val () = fprint1_string
+    (pf | out, "int main (int argc, char *argv[]) {\n")
 //
   val () = fprint1_string (pf | out, "ATS_GC_INIT() ;\n")
 //
   val () = fprint1_string (pf | out, "mainats_prelude() ;\n")
-  val () = emit_filename (pf | out, fil); val () = fprint1_string (pf | out, "__dynload() ;\n")
-  val () = fprint1_string (pf | out, "mainats((ats_int_type)argc, (ats_ptr_type)argv) ;\n")
+  val () = emit_filename (pf | out, fil)
+  val () = fprint1_string (pf | out, "__dynload() ;\n")
+  val () = fprint1_string
+    (pf | out, "mainats((ats_int_type)argc, (ats_ptr_type)argv) ;\n")
 //
   val () = fprint1_string (pf | out, "return (0) ;\n")
 //

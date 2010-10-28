@@ -28,7 +28,7 @@ compall:: \
   gtkcairoclock \
   gtkcairopascal \
   gtkcairodisc \
-  demo_bsearch \
+  bsearch_demo \
 
 ######
 
@@ -60,8 +60,8 @@ gtkcairodisc: gtkcairodisc.dats
 ######
 
 ATSCTRB=$(ATSHOMEQ)/contrib/cairo/atsctrb_cairo.o
-demo_bsearch: demo_bsearch.dats
-	$(ATSCC) -D_ATS_GCATS $(ATSCTRB) -o $@ demo_bsearch.dats $(GTKFLAGS) -lm
+bsearch_demo: bsearch_demo.dats
+	$(ATSCC) -D_ATS_GCATS $(ATSCTRB) -o $@ bsearch_demo.dats $(GTKFLAGS) -lm
 
 ######
 
