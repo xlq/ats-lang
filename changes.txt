@@ -7,6 +7,7 @@ ats-lang-anairiats-0.2.3:
 3. Adding support -DATS flags: -DATSXYZ=12345 or -DATS XYZ=12345
 4. Adding support for ATS/Anairiats to output #line pragma in the C code
    its generates
+5. Adding support for compiling fixed-point expressions.
 
 ########################################################################
 

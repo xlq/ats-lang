@@ -638,7 +638,7 @@ fun emit_funentry_lablst_prototype {m:file_mode}
       val n = emit_funentry_lablst_prototype (pf | out, i+1, !fls)
     in
       fold@ (fls0); n
-    end
+    end (* end of [list_vt_cons] *)
   | list_vt_nil () => (fold@ (fls0); i)
 end // end of [emit_funentry_lablst_prototype]
 
@@ -756,8 +756,9 @@ fn emit_staload {m:file_mode} (
   , stafils: stafilelst, s2cs: !datcstlst, d2cs: !exnconlst
   ) : void = let
 //
-  fun aux_staload_dec (out: &FILE m, fils: !stafilelst)
-    : void = begin case+ fils of
+  fun aux_staload_dec (
+    out: &FILE m, fils: !stafilelst
+  ) : void = begin case+ fils of
     | STAFILELSTcons (fil, loadflag, !fils_rest) => let
         val () =
           if (loadflag = 0) then fprint1_string (pf | out, "// ")
@@ -773,8 +774,9 @@ fn emit_staload {m:file_mode} (
     | STAFILELSTnil () => fold@ fils
   end // end of [ats_staload_dec]
 //
-  fun aux_staload_app (out: &FILE m, fils: !stafilelst)
-    : void = begin case+ fils of
+  fun aux_staload_app (
+    out: &FILE m, fils: !stafilelst
+  ) : void = begin case+ fils of
     | STAFILELSTcons (fil, loadflag, !fils_rest) => let
         val () =
           if (loadflag = 0) then fprint1_string (pf | out, "// ")
@@ -884,7 +886,8 @@ end // end of [emit_staload]
 
 (* ****** ****** *)
 
-fn emit_dynload {m:file_mode} (
+fn emit_dynload
+  {m:file_mode} (
     pf: file_mode_lte (m, w)
   | out: &FILE m
   , dynloadflag: int
@@ -998,7 +1001,7 @@ fn emit_dynload {m:file_mode} (
       in
         // empty
       end // end of [_ when ...]
-    | _ => ()
+    | _ => () // end of [_]
   end // end of [val]
 //
 in

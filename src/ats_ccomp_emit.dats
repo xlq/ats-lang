@@ -1474,10 +1474,12 @@ fn emit_instr_call {m:file_mode} (
     | VPfun fl => funlab_fun_is_void (fl)
     | _ => hityp_t_fun_is_void hit_fun
   ) : bool
-  val () = if noret then fprint1_string (pf | out, "/* ")
+  val () = if noret then
+    fprint1_string (pf | out, "/* ")
   val () = emit_valprim_tmpvar (pf | out, tmp)
   val () = fprint1_string (pf | out, " = ");
-  val () = if noret then fprint1_string (pf | out, "*/ ")
+  val () = if noret then
+    fprint1_string (pf | out, "*/ ")
   val hit_fun = hityp_decode (hit_fun)
 in
   case+ vp_fun.valprim_node of
@@ -1555,16 +1557,16 @@ end // end of [emit_instr_call]
 
 implement
 emit_instr {m} (pf | out, ins) = let
-  val isdeb = $Deb.debug_flag_get ()
+  val ndeb = $Deb.debug_flag_get ()
 //
   val () = // generating #line progma for debugging
-    if isdeb > 0 then begin
+    if ndeb > 0 then begin
       $Loc.fprint_line_pragma (pf | out, ins.instr_loc)
     end // end of [if]
   // end of [val]
 //
   val () = // generating informaion for debugging
-    if isdeb > 0 then let
+    if ndeb > 0 then let
       val () = fprint1_string (pf | out, "/* ")
       val () = fprint_instr (pf | out, ins)
       val () = fprint1_string (pf | out, " */")
@@ -2483,11 +2485,17 @@ emit_funentry (pf | out, entry) = let
   val () = funentry_varindmap_set (vtps_all)
 //
 #if (ATS_CC_VERBOSE_LEVEL >= 1) #then
-  // this location information is mostly for the purpose of debugging
+//
+// this location information is mostly for the purpose of debugging
+//
   val () = fprint1_string (pf | out, "/*\n")
   val () = fprint1_string (pf | out, "// ")
   val () = $Loc.fprint_location (pf | out, loc_entry)
   val () = fprint1_string (pf | out, "\n*/\n")
+#endif // end of ...
+//
+#if (ATS_CC_VERBOSE_LEVEL >= 1) #then
+  val () = $Loc.fprint_line_pragma (pf | out, loc_entry) // #line pragma
 #endif // end of ...
 //
 // function head
