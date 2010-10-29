@@ -2075,7 +2075,12 @@ fun d2explst_elt_tr_dn (d2es: d2explst, s2e: s2exp): d3explst =
 (* ****** ****** *)
 
 implement d2exp_tr_up (d2e0) = let
+//
 (*
+val () = begin
+  print "d2exp_tr_up: loc0 = ";
+  $Loc.print_location d2e0.d2exp_loc; print_newline ()
+end // end of [val]
 val () = begin
   print "d2exp_tr_up: d2e0 = "; print d2e0; print_newline ()
 end // end of [val]

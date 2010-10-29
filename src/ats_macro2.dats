@@ -69,7 +69,6 @@ staload "ats_macro2.sats"
 (* ****** ****** *)
 
 overload = with $Sym.eq_symbol_symbol
-overload prerr with $Loc.prerr_location
 
 (* ****** ****** *)
 
@@ -805,7 +804,7 @@ in
     | _ => begin
         prerr_loc_errmac loc0;
         prerr ": the dynamic expression (";
-        prerr d2e.d2exp_loc;
+        $Loc.prerr_location d2e.d2exp_loc;
         prerr ") should be a macro but it is not.";
         prerr_newline ();
         $Err.abort {v2alue} ()
@@ -827,7 +826,7 @@ in
       | _ => begin
           prerr_loc_errmac loc0;
           prerr ": the expansion of the dynamic expression (";
-          prerr d2e_cond.d2exp_loc;
+          $Loc.prerr_location d2e_cond.d2exp_loc;
           prerr ") should return a boolean value but it did not.";
           prerr_newline ();
           $Err.abort {v2alue} ()
@@ -1201,6 +1200,10 @@ implement
 eval1_d2exp (loc0, ctx, env, d2e0) = let
 (*
   val () = begin
+    print "eval1_d2exp: loc0 = ";
+    $Loc.print_location loc0; print_newline ()
+  end (* end of [val] *)
+  val () = begin
     print "eval1_d2exp: d2e0 = "; print_d2exp d2e0; print_newline ()
   end (* end of [val] *)
 *)
@@ -1232,7 +1235,7 @@ in
           end else begin
             prerr_loc_errmac loc0;
             prerr ": the dynamic symbol ["; prerr d2m; prerr "] (";
-            prerr d2e0.d2exp_loc;
+            $Loc.prerr_location d2e0.d2exp_loc;
             prerr ") refers to a macro definition in long form";
             prerr "; it should be called inside the syntax ,(...)";
             prerr_newline ();
@@ -1291,7 +1294,7 @@ in
     in
       d2exp_crypt (loc0, knd, d2e)
     end // end of [D2Ecrypt]
-  | D2Ecst _ => d2e0
+  | D2Ecst d2c => d2exp_cst (loc0, d2c)
   | D2Ecstsp (csp) => d2exp_cstsp (loc0, csp)
   | D2Ederef d2e => let
       val d2e = eval1_d2exp (loc0, ctx, env, d2e)
@@ -1390,7 +1393,7 @@ in
       | V2ALcode d2e_new => d2e_new | _ => begin
           prerr_loc_errmac loc0;
           prerr ": the expansion of this dynamic expression (";
-          prerr d2e.d2exp_loc;
+          $Loc.prerr_location d2e.d2exp_loc;
           prerr ") should return a value representing code (abstract syntax tree)";
           prerr ", but it did not do so."; prerr_newline ();
 (*
@@ -1490,7 +1493,15 @@ in
     end // end of [_]
 *)
 // (*
-  | _ => d2e0 // location is not changed; it should be changed recursively!
+  | _ => let
+(*
+      val () = begin
+        print "eval1_d2exp(aft): d2e0 = "; print_d2exp d2e0; print_newline ()
+      end // end of [val]
+*)
+    in
+      d2e0 // location is not changed; it should be changed recursively!
+    end // end of [_]
 // *)
 end // end of [eval1_d2exp]
 
@@ -1611,7 +1622,7 @@ eval1_d2ec (loc0, ctx, env, d2c0) = begin
   | _ => begin
       prerr_loc_errmac loc0;
       prerr ": this form of declaration (";
-      prerr d2c0.d2ec_loc;
+      $Loc.prerr_location d2c0.d2ec_loc;
       prerr ") is not supported in macro expansion."; prerr_newline ();
       $Err.abort {d2ec} ()
     end // end of [_]
