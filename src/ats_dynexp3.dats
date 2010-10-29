@@ -451,56 +451,74 @@ implement d3exp_cstsp (loc, s2e, cst) = '{
 
 (* ****** ****** *)
 
-implement d3exp_dynload (loc, fil) =  '{
+implement
+d3exp_dynload (loc, fil) =  '{
   d3exp_loc= loc
 , d3exp_eff= S2EFFall (), d3exp_typ= s2exp_void_t0ype ()
 , d3exp_node= D3Edynload (fil)
 }
 
-implement d3exp_effmask (loc, effs, d3e) =  '{
+implement
+d3exp_effmask (loc, effs, d3e) =  '{
   d3exp_loc= loc
 , d3exp_eff= S2EFFnil (), d3exp_typ= d3e.d3exp_typ
 , d3exp_node= D3Eeffmask (effs, d3e)
 }
 
-implement d3exp_empty (loc, s2e) =  '{
+implement
+d3exp_empty (loc, s2e) =  '{
   d3exp_loc= loc
 , d3exp_eff= S2EFFnil (), d3exp_typ= s2e
 , d3exp_node= D3Eempty ()
 }
 
-implement d3exp_extval (loc, s2e, code) =  '{
+implement
+d3exp_extval (loc, s2e, code) =  '{
   d3exp_loc= loc
 , d3exp_eff= S2EFFnil (), d3exp_typ= s2e
 , d3exp_node= D3Eextval (code)
 } // end of [d3exp_extval]
 
-implement d3exp_float (loc, s2e, str) =  '{
+implement
+d3exp_fix
+  (loc, s2e, d2v, d3e_def) = '{
+  d3exp_loc= loc
+, d3exp_eff= S2EFFnil (), d3exp_typ= s2e
+, d3exp_node= D3Efix (d2v, d3e_def)
+} // end of [d3exp_fix]
+
+implement
+d3exp_float (loc, s2e, str) =  '{
   d3exp_loc= loc
 , d3exp_eff= S2EFFnil (), d3exp_typ= s2e
 , d3exp_node= D3Efloat str
 }
 
-implement d3exp_floatsp (loc, s2e, str) =  '{
+implement
+d3exp_floatsp (loc, s2e, str) =  '{
   d3exp_loc= loc
 , d3exp_eff= S2EFFnil (), d3exp_typ= s2e
 , d3exp_node= D3Efloatsp str
 }
 
-implement d3exp_foldat (loc, d3e) =  '{
+implement
+d3exp_foldat (loc, d3e) =  '{
   d3exp_loc= loc
 , d3exp_eff= S2EFFnil (), d3exp_typ= s2exp_void_t0ype ()
 , d3exp_node= D3Efoldat d3e
 }
 
-implement d3exp_freeat (loc, d3e) = '{
+implement
+d3exp_freeat (loc, d3e) = '{
   d3exp_loc= loc
 , d3exp_eff= S2EFFnil (), d3exp_typ= s2exp_void_t0ype ()
 , d3exp_node= D3Efreeat d3e
 }
 
-implement d3exp_if
-  (loc, s2e, d3e_cond, d3e_then, d3e_else) = let
+implement
+d3exp_if (
+  loc, s2e, d3e_cond, d3e_then, d3e_else
+) = let
   val s2fe = d3e_cond.d3exp_eff
   val s2fe = d3exp_eff_union (s2fe, d3e_then)
   val s2fe = d3exp_eff_union (s2fe, d3e_else)
@@ -510,13 +528,15 @@ in '{
 , d3exp_node= D3Eif (d3e_cond, d3e_then, d3e_else)
 } end // end of [d3exp_if]
 
-implement d3exp_int (loc, s2e_int, str, int) = '{
+implement
+d3exp_int (loc, s2e_int, str, int) = '{
   d3exp_loc= loc
 , d3exp_eff= S2EFFnil (), d3exp_typ= s2e_int
 , d3exp_node= D3Eint (str, int)
 } // end of [d3exp_int]
 
-implement d3exp_intsp (loc, s2e_int, str, int) = '{
+implement
+d3exp_intsp (loc, s2e_int, str, int) = '{
   d3exp_loc= loc
 , d3exp_eff= S2EFFnil (), d3exp_typ= s2e_int
 , d3exp_node= D3Eintsp (str, int)

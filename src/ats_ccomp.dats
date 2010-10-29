@@ -525,6 +525,11 @@ end // end of [valprim_ptrof_var_offs]
 (* ****** ****** *)
 
 implement
+valprim_ref (vpr, hit) = '{
+  valprim_node= VPref (vpr), valprim_typ = hit
+} // end of [valprim_ref]
+
+implement
 valprim_sizeof (hit) = '{
   valprim_node= VPsizeof hit
 , valprim_typ= hityp_encode (hityp_int)

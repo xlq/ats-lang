@@ -999,6 +999,7 @@ emit_valprim (pf | out, vp0) = begin
       fprint1_char (pf | out, '&');
       emit_valprim_select_var (pf | out, vp, offs)
     end // end of [VPptrof_var_offs]
+  | VPref (vpr) => emit_valprim (pf | out, !vpr)
   | VPsizeof hit => let
       val () = fprint1_string (pf | out, "sizeof(")
       val () = emit_hityp (pf | out, hit)

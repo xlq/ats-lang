@@ -605,6 +605,8 @@ fun hiexp_intsp
 
 (* ****** ****** *)
 
+fun hiexp_is_lam (hie: hiexp): bool
+
 fun hiexp_lam
   (_: loc_t, _: hityp, _arg: hipatlst, _body: hiexp): hiexp
 // end of [hiexp_lam]

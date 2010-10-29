@@ -530,6 +530,8 @@ fun d3exp_effmask (_: loc_t, effs: $Syn.effectlst, d3e: d3exp): d3exp
 
 fun d3exp_empty (_: loc_t, _: s2exp): d3exp
 
+fun d3exp_fix (_: loc_t, _: s2exp, d2v: d2var_t, _def: d3exp): d3exp
+
 fun d3exp_float (_: loc_t, _: s2exp, f: string): d3exp
 fun d3exp_floatsp (_: loc_t, _: s2exp, f: string): d3exp
 

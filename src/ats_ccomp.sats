@@ -220,6 +220,7 @@ datatype valprim_node =
   | VPptrof of valprim
   | VPptrof_ptr_offs of (valprim, offsetlst)
   | VPptrof_var_offs of (valprim, offsetlst)
+  | VPref of ref (valprim)
   | VPsizeof of hityp_t
   | VPstring of (string, int(*length*))
   | VPtmp of tmpvar_t
@@ -314,6 +315,8 @@ fun valprim_intsp
 fun valprim_ptrof (vp: valprim): valprim
 fun valprim_ptrof_ptr_offs (vp: valprim, offs: offsetlst): valprim
 fun valprim_ptrof_var_offs (vp: valprim, offs: offsetlst): valprim
+
+fun valprim_ref (vpr: ref (valprim), hit: hityp_t): valprim
 
 fun valprim_sizeof (hit: hityp_t): valprim
 fun valprim_string (str: string, len: int): valprim

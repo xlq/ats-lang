@@ -30,10 +30,10 @@
 *)
 
 (* ****** ****** *)
-
+//
 // Author: Hongwei Xi (hwxi AT cs DOT bu DOT edu)
 // Time: December 2007
-
+//
 (* ****** ****** *)
 
 (* Mainly for handling dynamic expressions during type-checking *)
@@ -175,6 +175,8 @@ fn s2eff_of_d2exp (d2e0: d2exp): s2eff =
   | _ => S2EFFall ()
 // end of [s2eff_of_d2exp]
 
+//
+
 fn d2exp_s2eff_of_d2exp
   (d2e0: d2exp, s2fe0: &(s2eff?) >> s2eff): d2exp =
   case+ :(s2fe0: s2eff) => d2e0.d2exp_node of
@@ -227,7 +229,8 @@ fn d2exp_cstsp_typ_syn
   | $Syn.CSTSPlocation () => s2exp_string_type ()
 // end of [d2exp_cstsp_typ_syn]
 
-fn d2exp_seq_typ_syn (d2es: d2explst): s2exp = let
+fn d2exp_seq_typ_syn
+  (d2es: d2explst): s2exp = let
   fun aux (d2e: d2exp, d2es: d2explst): s2exp = case+ d2es of
     | cons (d2e, d2es) => aux (d2e, d2es) | nil () => d2exp_typ_syn d2e
   // end of [aux]
@@ -236,7 +239,8 @@ in
   | cons (d2e, d2es) => aux (d2e, d2es) | nil () => s2exp_void_t0ype ()
 end // end of [d2exp_seq_typ_syn]
 
-implement d2exp_typ_syn (d2e0) = begin
+implement
+d2exp_typ_syn (d2e0) = begin
   case+ d2e0.d2exp_node of
   | D2Eann_type (_, s2e) => s2e
   | D2Eann_seff (d2e, _) => d2exp_typ_syn (d2e)
@@ -288,13 +292,15 @@ end // end of [d2exp_typ_syn]
 
 (* ****** ****** *)
 
-implement d3exp_open_and_add (d3e) = let
+implement
+d3exp_open_and_add (d3e) = let
   val s2e = s2exp_opnexi_and_add (d3e.d3exp_loc, d3e.d3exp_typ)
 in
   d3exp_typ_set (d3e, s2e)
 end // end of [d3exp_open_and_add]
 
-implement d3explst_open_and_add (d3es) = case+ d3es of
+implement
+d3explst_open_and_add (d3es) = case+ d3es of
   | list_cons (d3e, d3es) => begin
       d3exp_open_and_add d3e; d3explst_open_and_add d3es 
     end // end of [list_cons]
@@ -1006,8 +1012,9 @@ end // end of [aux3_app]
 
 in // in of [local]
 
-fn d2exp_apps_sym_tr_up
-  (loc0: loc_t, d2s: d2sym, d2as: d2exparglst): d3exp = let
+fn d2exp_apps_sym_tr_up (
+  loc0: loc_t, d2s: d2sym, d2as: d2exparglst
+) : d3exp = let
 (*
   val () = begin
     print "d2exp_apps_sym_tr_up: d2s = "; print d2s;
@@ -1065,7 +1072,9 @@ fn d2exp_assgn_tr_up
   val l2val = l2val_make_d2exp d2e_l
 in
   case+ l2val of
-  | L2VALarrsub (d2s_brackets, d2e_arr, loc_ind, d2ess_ind) => begin
+  | L2VALarrsub (
+      d2s_brackets, d2e_arr, loc_ind, d2ess_ind
+    ) => begin
     case+ d2ess_ind of
     | cons (d2es_ind, nil ()) => let
         val loc_arg = $Loc.location_combine (d2e_arr.d2exp_loc, d2e_r.d2exp_loc)
@@ -1689,13 +1698,14 @@ end // end of [d2exp_ptrof_tr_up]
 
 (* ****** ****** *)
 
-fn d3exp_nonlin_check (d3e: d3exp): void = begin
+fn d3exp_nonlin_check
+  (d3e: d3exp): void = begin
   if s2exp_is_linear (d3e.d3exp_typ) then begin
     prerr_loc_error3 d3e.d3exp_loc;
     prerr ": the dynamic expression is linear but it should not be.";
     prerr_newline ();
     $Err.abort {void} ()
-  end
+  end (* end of [if] *)
 end // end of [d3exp_sort_check]
 
 fun labd3explst_nonlin_check (ld3es: labd3explst): void = begin
@@ -2169,6 +2179,15 @@ val d3e0 = (case+ d2e0.d2exp_node of
     end // end of [D2Eeffmask]
   | D2Eempty () => d3exp_empty (loc0, s2exp_void_t0ype ())
   | D2Eextval (s2e, code) => d3exp_extval (loc0, s2e, code)
+  | D2Efix (d2v, d2e_def) => let
+      val s2e_def = d2exp_typ_syn (d2e_def)
+      val os2e_def = Some (s2e_def)
+      val () = d2var_mastyp_set (d2v, os2e_def)
+      val () = d2var_typ_set (d2v, os2e_def)
+      val d3e_def = d2exp_tr_up (d2e_def)
+    in
+      d3exp_fix (loc0, s2e_def, d2v, d3e_def)
+    end // end of [D2Efix]
   | D2Efoldat (s2as, d2e_at) => d2exp_foldat_tr_up (loc0, s2as, d2e_at)
   | D2Efor (
       lpi2nv, d2e_init, d2e_test, d2e_post, d2e_body

@@ -456,6 +456,10 @@ hiexp_intsp (loc, hit, str, int) = '{
 
 (* ****** ****** *)
 
+implement hiexp_is_lam (hie) = (
+  case+ hie.hiexp_node of HIElam _ => true | _ => false
+) // end of [hiexp_is_lam]
+
 implement hiexp_lam
   (loc, hit, hips_arg, hie_body) = '{
   hiexp_loc= loc

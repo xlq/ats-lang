@@ -144,7 +144,7 @@ fun labp2atlst_typ_syn
 
 implement
 p2at_typ_syn (p2t0) = let
-  val s2e0 = case+ p2t0.p2at_node of
+  val s2e0 = (case+ p2t0.p2at_node of
     | P2Tann (_, s2e) => s2e
     | P2Tany () => begin
         s2exp_Var_make_srt (p2t0.p2at_loc, s2rt_t0ype)
@@ -186,6 +186,7 @@ p2at_typ_syn (p2t0) = let
       in
         s2exp_vbox_view_prop (s2e)
       end // end of [P2Tvbox]
+  ) : s2exp // end of [val]
 in
   p2at_typ_set (p2t0, Some s2e0); s2e0
 end // end of [p2at_typ_syn]
@@ -243,7 +244,7 @@ fn p2at_any_tr_dn
 *)
   val () = begin
     if s2exp_is_linear s2e then p3at_typ_lft_set (p3t, Some s2e)
-  end
+  end // end of [val]
 in
   p3t
 end // end of [p2at_any_tr_dn]

@@ -93,14 +93,16 @@ assume envmap_t = ref ($Map.map_vt (d2var_t, valprim))
 
 in // in of [local]
 
-implement envmap_find (map, d2v) = let
+implement
+envmap_find (map, d2v) = let
   val (pfbox | p_map) = ref_get_view_ptr (map)
   prval vbox pf = pfbox
 in
   $Map.map_search (!p_map, d2v)
 end // end of [envmap_find]
 
-implement cloenv_make_dynctx (ctx) = let
+implement
+cloenv_make_dynctx (ctx) = let
   viewtypedef map_vt = $Map.map_vt (d2var_t, valprim)
   var res: map_vt = $Map.map_make {d2var_t, valprim} (compare_d2var_d2var)
   typedef ptrres = ptr (res)
@@ -149,7 +151,8 @@ val the_dynmarklst = ref_make_elt<dynmarklst> (DYNMARKLSTnil ())
 
 in // in of [local]
 
-implement the_dynctx_add (d2v, vp) = let
+implement
+the_dynctx_add (d2v, vp) = let
   val () = let
     val (pfbox | p) = ref_get_view_ptr (the_dynctx)
     prval vbox pf = pfbox
@@ -168,7 +171,8 @@ end // end of [the_dynctx_add]
 
 //
 
-implement the_dynctx_mark () = let
+implement
+the_dynctx_mark () = let
   val () = let
     val (pfbox | p) = ref_get_view_ptr (the_dynmarklst)
     prval vbox pf = pfbox
@@ -197,7 +201,8 @@ in
     end // end of [None_vt]
 end // end of [the_dynctx_del]
 
-implement the_dynctx_unmark (pf_mark | (*none*)) = let
+implement
+the_dynctx_unmark (pf_mark | (*none*)) = let
   prval unit_v () = pf_mark
   fun aux (vms: dynmarklst): dynmarklst = begin case+ vms of
     | ~DYNMARKLSTcons (d2v, vms) =>
@@ -220,7 +225,8 @@ end // end of [the_dynctx_unmark]
 
 //
 
-implement the_dynctx_free () = () where {
+implement
+the_dynctx_free () = () where {
   fun aux (vms: dynmarklst): void = begin case+ vms of
     | ~DYNMARKLSTcons (d2v, vms) => (the_dynctx_del d2v; aux vms)
     | ~DYNMARKLSTmark (vms) => aux (vms)
@@ -237,7 +243,8 @@ implement the_dynctx_free () = () where {
 
 //
 
-implement the_dynctx_find (d2v) = let
+implement
+the_dynctx_find (d2v) = let
   val ans = let
     val (pfbox | p) = ref_get_view_ptr (the_dynctx)
     prval vbox pf = pfbox
@@ -255,7 +262,8 @@ end (* end of [the_dynctx_find] *)
 
 //
 
-implement the_dynctx_pop (pf_push | (*none*)) = let
+implement
+the_dynctx_pop (pf_push | (*none*)) = let
   prval unit_v () = pf_push
   var err: int = 0; val x = let
     val (vbox pf | p) = ref_get_view_ptr (the_dynctxlst)
@@ -278,7 +286,8 @@ in
   $Map.map_free (!p); !p := (x: dynctx)
 end // end of [the_dynctx_pop]
 
-implement the_dynctx_push () = let
+implement
+the_dynctx_push () = let
   val x = let
     val (vbox pf | p) = ref_get_view_ptr (the_dynctx)
     val x = !p
@@ -295,13 +304,15 @@ end // end of [the_dynctx_push]
 
 //
 
-implement dynctx_foreach_main
+implement
+dynctx_foreach_main
   (pf | ctx, f, env) = $Map.map_foreach_inf (pf | ctx, f, env)
 // end of [dynctx_foreach_main]
 
 (* ****** ****** *)
 
-implement cloenv_make () = let
+implement
+cloenv_make () = let
   val (pfbox | p) = ref_get_view_ptr (the_dynctx)
   prval vbox pf = pfbox
 in
@@ -342,25 +353,29 @@ end (* end of [glocstlst_reverse] *)
 
 in // in of [local]
 
-implement the_glocstlst_add_clo (d2c) = let
+implement
+the_glocstlst_add_clo (d2c) = let
   val (vbox pf | p) = ref_get_view_ptr (the_glocstlst)
 in
   !p := GLOCSTLSTcons_clo (d2c, !p)
 end // end of [the_glocstlst_add_clo]
 
-implement the_glocstlst_add_fun (d2c) = let
+implement
+the_glocstlst_add_fun (d2c) = let
   val (vbox pf | p) = ref_get_view_ptr (the_glocstlst)
 in
   !p := GLOCSTLSTcons_fun (d2c, !p)
 end // end of [the_glocstlst_add_fun]
 
-implement the_glocstlst_add_val (d2c, vp) = let
+implement
+the_glocstlst_add_val (d2c, vp) = let
   val (vbox pf | p) = ref_get_view_ptr (the_glocstlst)
 in
   !p := GLOCSTLSTcons_val (d2c, vp, !p)
 end // end of [the_glocstlst_add_val]
 
-implement the_glocstlst_get () = let
+implement
+the_glocstlst_get () = let
   val xs = let
     val (vbox pf | p) = ref_get_view_ptr (the_glocstlst)
     val xs = !p
@@ -387,14 +402,16 @@ val the_topcstctx = ref_make_elt<cstctx> (cstctx_nil ())
 
 in // in of [local]
 
-implement the_topcstctx_add (d2c, vp) = let
+implement
+the_topcstctx_add (d2c, vp) = let
   val (pfbox | p) = ref_get_view_ptr (the_topcstctx)
   prval vbox pf = pfbox
 in
   $Map.map_insert (!p, d2c, vp)
 end // end of [the_topcstctx_add]
 
-implement the_topcstctx_find (d2c) = let
+implement
+the_topcstctx_find (d2c) = let
   val (pfbox | p) = ref_get_view_ptr (the_topcstctx)
   prval vbox pf = pfbox
 in
@@ -412,13 +429,15 @@ val the_valprimlst_free =
 
 in // in of [local]
 
-implement the_valprimlst_free_add (vp) = let
+implement
+the_valprimlst_free_add (vp) = let
   val (vbox pf | p) = ref_get_view_ptr (the_valprimlst_free)
 in
   !p := list_vt_cons (vp, !p)
 end // end of [the_valprimlst_free_add]
 
-implement the_valprimlst_free_get () = let
+implement
+the_valprimlst_free_get () = let
   val (vbox pf | p) = ref_get_view_ptr (the_valprimlst_free)
   val vps = !p; val () = !p := list_vt_nil ()
 in
@@ -442,24 +461,27 @@ end // end of [local]
 
 (* ****** ****** *)
 
-extern fun ccomp_patck_rec (
+extern
+fun ccomp_patck_rec (
     res: &instrlst_vt
   , vp: valprim
   , lhips: labhipatlst
   , hit_rec: hityp_t
   , fail: kont
-  ) : void
+  ) : void // end of [ccomp_patck_rec]
 
-extern fun ccomp_patck_sum (
+extern
+fun ccomp_patck_sum (
     res: &instrlst_vt
   , vp: valprim
   , d2c: d2con_t
   , hips: hipatlst
   , hit_sum: hityp_t
   , fail: kont
-  ) : void
+  ) : void // end of [ccomp_patck_sum]
 
-implement ccomp_patck_rec
+implement
+ccomp_patck_rec
   (res, vp_rec, lhips, hit_rec, fail) = let
   fun aux (res: &instrlst_vt, l: lab_t, hip: hipat)
     :<cloref1> void = let
@@ -503,8 +525,10 @@ in
   auxlst (res, lhips)
 end (* end of [ccomp_patck_rec] *)
 
-implement ccomp_patck_sum
-  (res, vp_sum, d2c, hips_arg, hit_sum, fail) = let
+implement
+ccomp_patck_sum (
+  res, vp_sum, d2c, hips_arg, hit_sum, fail
+) = let
   fun aux (
     res: &instrlst_vt, hip: hipat, i: int
   ) :<cloref1> void = let
@@ -936,7 +960,8 @@ end (* end of [hiexplst_refarg_tr] *)
 
 (* ****** ****** *)
 
-implement valprim_funclo_make (fl) = let
+implement
+valprim_funclo_make (fl) = let
   val fc = funlab_funclo_get (fl) in case+ fc of
   | $Syn.FUNCLOclo knd => valprim_clo (knd, fl, cloenv_make ())
   | $Syn.FUNCLOfun () => valprim_fun (fl)
@@ -1043,7 +1068,8 @@ in
   aux_match (res, level, vps_arg, hips_arg)
 end // end of [ccomp_funarg]
 
-implement ccomp_exp_arg_body_funlab
+implement
+ccomp_exp_arg_body_funlab
   (loc_fun, prolog, hips_arg, hie_body, fl) = let
 (*
   val () = begin
@@ -1051,7 +1077,7 @@ implement ccomp_exp_arg_body_funlab
   end // end of [val]
 *)
   var res: instrlst_vt = list_vt_nil ()
-
+//
   val () = aux (res, prolog) where {
     fun aux (res: &instrlst_vt, inss: instrlst)
       : void = begin case+ inss of
@@ -1061,22 +1087,22 @@ implement ccomp_exp_arg_body_funlab
       | list_nil () => ()
     end // end of [aux]
   } // end of [where]
-
+//
   val (pf_level | level) = d2var_current_level_inc_and_get ()
   val () = the_funlabset_push () and () = the_vartypset_push ()
-
+//
   val (pf_dynctx_mark | ()) = the_dynctx_mark ()
-
+//
   val () = ccomp_funarg (res, level, loc_fun, hips_arg, fl)
   val hit_body = hityp_normalize (hie_body.hiexp_typ)
   val tmp_ret = tmpvar_make_ret (hit_body)
-
+//
   val (pf_funlab_mark | ()) = funlab_push (fl)
   val () = ccomp_exp_tmpvar (res, hie_body, tmp_ret)
   val () = funlab_pop (pf_funlab_mark | (*none*))
-
+//
   val () = the_dynctx_unmark (pf_dynctx_mark | (*none*))
-
+//
   val fls = the_funlabset_pop () and vtps = the_vartypset_pop ()
   val level = d2var_current_level_dec_and_get (pf_level | (*none*))
   // function label propogation
@@ -1249,7 +1275,8 @@ end // end of [ccomp_exp_seq]
 
 (* ****** ****** *)
 
-implement ccomp_exp_var (d2v) = let
+implement
+ccomp_exp_var (d2v) = vp where {
   var vp: valprim = the_dynctx_find (d2v)
   val d2v_lev = d2var_lev_get (d2v)
   val level = d2var_current_level_get ()
@@ -1274,13 +1301,11 @@ implement ccomp_exp_var (d2v) = let
             end
         end else begin
           () // [d2v] is at the top level
-        end
+        end (* end of [if] *)
       end // end of [_ when ...]
     | _ => () // [d2v] is at the current level
   // end of [val]
-in
-  vp
-end // end of [ccomp_exp_var]
+} // end of [ccomp_exp_var]
 
 (* ****** ****** *)
 
@@ -1335,7 +1360,8 @@ end // end of [ccomp_exp_loop]
 
 (* ****** ****** *)
 
-implement ccomp_exp (res, hie0) = let
+implement
+ccomp_exp (res, hie0) = let
 (*
   val () = begin
     print "ccomp_exp: hie0 = "; print_hiexp hie0; print_newline ();
@@ -1396,6 +1422,26 @@ in
     in
       valprim_ext (code, hit0)
     end // end of [HIEextval]
+//
+  | HIEfix (d2v_fix, d3e_def) => let
+      val hit0 = hityp_normalize (hie0.hiexp_typ)
+//
+      val vp_null = __cast (null) where {
+        extern castfn __cast (x: ptr null): valprim
+      } // end of [val]
+      val vpr = ref_make_elt<valprim> (vp_null)
+      val vp_fix = valprim_ref (vpr, hit0)
+//
+      val (pf_dynctx_mark | ()) = the_dynctx_mark ()
+      val () = the_dynctx_add (d2v_fix, vp_fix)
+      val vp_def = ccomp_exp (res, d3e_def)
+      val () = the_dynctx_unmark (pf_dynctx_mark | (*none*))
+//
+      val () = !vpr := vp_def
+    in
+      vp_def
+    end // end of [HIEfix]
+//
   | HIEfloat f(*string*) => valprim_float f
   | HIEfloatsp f(*string*) => let
       val hit0 = hityp_normalize (hie0.hiexp_typ)
@@ -1494,7 +1540,8 @@ end // end of [ccomp_exp]
 
 (* ****** ****** *)
 
-implement ccomp_explst (res, hies) = begin
+implement
+ccomp_explst (res, hies) = begin
   case+ hies of
   | list_cons (hie, hies) => let
       val vp = ccomp_exp (res, hie)
@@ -1504,7 +1551,8 @@ implement ccomp_explst (res, hies) = begin
   | list_nil () => list_nil ()
 end // end of [ccomp_explst]
 
-implement ccomp_explstlst (res, hiess) = begin
+implement
+ccomp_explstlst (res, hiess) = begin
   case+ hiess of
   | list_cons (hies, hiess) => let
       val vps = ccomp_explst (res, hies)
@@ -1514,7 +1562,8 @@ implement ccomp_explstlst (res, hiess) = begin
   | list_nil () => list_nil ()
 end // end of [ccomp_explstlst]
 
-implement ccomp_labexplst (res, lhies) = begin
+implement
+ccomp_labexplst (res, lhies) = begin
   case+ lhies of
   | LABHIEXPLSTcons (l, hie, lhies) => let
       val vp = ccomp_exp (res, hie)
@@ -2588,7 +2637,8 @@ fn ccomp_impdec
     , d2c: d2cst_t
     , tmparg: hityplstlst (* not yet normalized *)
     , hie: hiexp
-    ) : void = begin case+ hie.hiexp_node of
+    ) : void = begin
+    case+ hie.hiexp_node of
     | HIElam (hips_arg, hie_body) => let
 //
         val hit = hityp_normalize (hie.hiexp_typ)
@@ -2635,8 +2685,12 @@ fn ccomp_impdec
       in
         // empty
       end // end of [HIElam]
-    | HIEfix (d2v_fix, hie_def) => let
-        // should it require that [tmparg] be empty?
+    | HIEfix (
+        d2v_fix, hie_def
+      ) when hiexp_is_lam (hie_def) => let
+(*
+// HX: should we enforce [tmparg] being empty? this is ignore currently
+*)
         val hit = hityp_normalize (hie.hiexp_typ)
         val vp_cst = valprim_cst (d2c, hit)
         val () = the_dynctx_add (d2v_fix, vp_cst)
@@ -2716,7 +2770,8 @@ end // end of [ccomp_impdec_prfck]
 
 (* ****** ****** *)
 
-implement ccomp_dec (res, hid0) = let
+implement
+ccomp_dec (res, hid0) = let
 (*
   val () = (print "ccomp_dec: enter"; print_newline ())
 *)
@@ -2814,7 +2869,8 @@ in
     end // end of [_]
 end // end of [ccomp_dec]
 
-implement ccomp_declst
+implement
+ccomp_declst
   (res, hids) = case+ hids of
   | list_cons (hid, hids) => begin
       ccomp_dec (res, hid); ccomp_declst (res, hids)

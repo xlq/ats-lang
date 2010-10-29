@@ -103,7 +103,8 @@ implement prerr_funlablst (fls) = prerr_mac (fprint_funlablst, fls)
 
 (* ****** ****** *)
 
-implement fprint_valprim (pf | out, vp) = let
+implement
+fprint_valprim (pf | out, vp) = let
   macdef prstr (s) = fprint1_string (pf | out, ,(s))
 in
   case+ vp.valprim_node of
@@ -177,6 +178,9 @@ in
       fprint_offsetlst (pf | out, offs);
       prstr ")"
     end // end of [VPptrof_var_offs]
+  | VPref vpr => begin
+      prstr "VPref("; fprint_valprim (pf | out, !vpr); prstr ")"
+    end // end of [VPref]
   | VPsizeof hit => begin
       prstr "VPsizeof(";
       fprint_hityp (pf | out, hityp_decode hit);
@@ -208,7 +212,8 @@ end // end of [fprint_valprim]
 
 (* ****** ****** *)
 
-implement fprint_valprimlst {m} (pf | out, vps) = let
+implement
+fprint_valprimlst {m} (pf | out, vps) = let
   fun aux (out: &FILE m, i: int, vps: valprimlst): void =
     case+ vps of
     | list_cons (vp, vps) => begin
