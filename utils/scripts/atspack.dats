@@ -50,23 +50,19 @@
 //
 
 (* ****** ****** *)
-
-staload "prelude/SATS/file.sats"
-
-(* ****** ****** *)
-
+//
 staload "libc/SATS/stdio.sats"
 staload "libc/SATS/stdlib.sats"
-
+//
 staload "libc/SATS/dirent.sats"
-
+//
 staload STAT = "libc/sys/SATS/stat.sats"
 macdef chmod_exn = $STAT.chmod_exn
 macdef mkdir_exn = $STAT.mkdir_exn
-
+//
 staload TYPES = "libc/sys/SATS/types.sats"
 typedef mode_t = $TYPES.mode_t
-
+//
 (* ****** ****** *)
 
 #define ATSPACKAGE_NAME "ats-lang-anairiats"
@@ -589,6 +585,7 @@ fn doc_dir_copy () = let
     val () = cp "fibs.dats"
     val () = cp "revarr.dats"
     val () = cp "revstr.dats"
+    val () = cp "tally.dats"
   } // end of [val]
 //
   val () = () where {
@@ -680,6 +677,7 @@ fn doc_dir_copy () = let
     val () = cp "libc_dlfcn.dats"
     val () = cp "libc_gmp.dats"
     val () = cp "libc_printf.dats"
+    val () = cp "libc_pwd.dats"
     val () = cp "libc_random.dats"
     val () = cp "libc_sched.dats"
     val () = cp "libc_stdio.dats"
