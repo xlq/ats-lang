@@ -72,10 +72,10 @@ fn is_debug (): bool = $Deb.debug_flag_get () > 0
 implement
 v1al_is_true (v) = begin
   case+ v of
-  | V1ALint i => i <> 0
-  | V1ALchar c => c <> '\0'
+  | V1ALint i => i <> 0 // most common
+  | V1ALstring s => string_isnot_empty s // 2nd most common
   | V1ALfloat f => f <> 0.0
-  | V1ALstring s => string_isnot_empty s
+  | V1ALchar c => c <> '\000'
 end // end of [v1al_is_true]
 
 implement v1al_is_false (v) = ~v1al_is_true(v)
@@ -141,7 +141,8 @@ fn e1xp_eval_opr_errmsg
   $Err.abort ()
 end // end of [e1xp_eval_opr_errmsg]
 
-fn e1xp_eval_errmsg_undef (loc: loc_t): v1al = begin
+fn e1xp_eval_errmsg_undef
+  (loc: loc_t): v1al = begin
   prerr loc;
   if is_debug () then prerr ": e1xp_eval";
   prerr ": undefined expression is used here.";

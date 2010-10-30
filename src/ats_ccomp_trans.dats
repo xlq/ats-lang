@@ -1166,9 +1166,9 @@ end // end of [ccomp_exp_lam]
 
 fn ccomp_exp_fixdef (
   res: &instrlst_vt, hie_def: hiexp, vpr: valprimref
-) : valprim =
-  ccomp_exp (res, hie_def)
-// end of [ccomp_exp_fixdef]
+) : valprim = let
+  val vp_def = ccomp_exp (res, hie_def) in !vpr := vp_def; vp_def
+end // end of [ccomp_exp_fixdef]
 
 (* ****** ****** *)
 
@@ -1459,7 +1459,6 @@ in
       val vp_def = ccomp_exp_fixdef (res, hie_def, vpr)
       val () = the_dynctx_unmark (pf_dynctx_mark | (*none*))
 //
-      val () = !vpr := vp_def
     in
       vp_def
     end // end of [HIEfix]
