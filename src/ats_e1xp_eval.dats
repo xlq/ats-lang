@@ -30,10 +30,10 @@
 *)
 
 (* ****** ****** *)
-
-// Time: October 2007
+//
 // Author: Hongwei Xi (hwxi AT cs DOT bu DOT edu)
-
+// Time: October 2007
+//
 (* ****** ****** *)
 
 staload Deb = "ats_debug.sats"
@@ -60,28 +60,30 @@ typedef sym_t = $Sym.symbol_t
 
 (* ****** ****** *)
 
-fn is_debug (): bool = $Deb.debug_flag_get () > 0
-
-(* ****** ****** *)
-
-implement v1al_is_true (v) = begin case+ v of
-  | V1ALchar c => c <> '\0'
-  | V1ALfloat f => f <> 0.0 | V1ALint i => i <> 0
-  | V1ALstring s => let
-      val s = string1_of_string s in string_isnot_empty s
-    end // end of [V1ALstring]
-end // end of [v1al_is_true]
-
-implement v1al_is_false (v) = ~(v1al_is_true v)
-
-(* ****** ****** *)
-
 overload = with $Sym.eq_symbol_symbol
 overload prerr with $Loc.prerr_location
 
 (* ****** ****** *)
 
-fn e1xp_eval_errmsg_app (loc: loc_t): v1al = begin
+fn is_debug (): bool = $Deb.debug_flag_get () > 0
+
+(* ****** ****** *)
+
+implement
+v1al_is_true (v) = begin
+  case+ v of
+  | V1ALint i => i <> 0
+  | V1ALchar c => c <> '\0'
+  | V1ALfloat f => f <> 0.0
+  | V1ALstring s => string_isnot_empty s
+end // end of [v1al_is_true]
+
+implement v1al_is_false (v) = ~v1al_is_true(v)
+
+(* ****** ****** *)
+
+fn e1xp_eval_errmsg_app
+  (loc: loc_t): v1al = begin
   prerr loc;
   if is_debug () then prerr ": e1xp_eval";
   prerr ": an identifier is expected here.";
@@ -89,7 +91,8 @@ fn e1xp_eval_errmsg_app (loc: loc_t): v1al = begin
   $Err.abort ()
 end // end of [e1xp_eval_errmsg_app]
 
-fn e1xp_eval_errmsg_id (loc: loc_t, id: sym_t): v1al = begin
+fn e1xp_eval_errmsg_id
+  (loc: loc_t, id: sym_t): v1al = begin
   prerr loc;
   if is_debug () then prerr ": e1xp_eval";
   prerr ": unrecognized identifier: ";
@@ -98,7 +101,8 @@ fn e1xp_eval_errmsg_id (loc: loc_t, id: sym_t): v1al = begin
   $Err.abort ()
 end // end of [e1xp_eval_errmsg_id]
 
-fn e1xp_eval_errmsg_list (loc: loc_t): v1al = begin
+fn e1xp_eval_errmsg_list
+  (loc: loc_t): v1al = begin
   prerr loc;
   if is_debug () then prerr ": e1xp_eval";
   prerr ": illegal list expression is used here.";
