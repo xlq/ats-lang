@@ -418,8 +418,8 @@ hiexp_extval (loc, hit, code) = '{
 } // end of [hiexp_extval]
 
 implement
-hiexp_fix (loc, hit, d2v, hie) = '{
-  hiexp_loc= loc, hiexp_node= HIEfix (d2v, hie), hiexp_typ= hit
+hiexp_fix (loc, hit, knd, d2v, hie) = '{
+  hiexp_loc= loc, hiexp_node= HIEfix (knd, d2v, hie), hiexp_typ= hit
 } // end of [hiexp_fix]
 
 implement

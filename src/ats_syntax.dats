@@ -203,6 +203,20 @@ implement lamkind_atlam (t) = LAMKINDatlam (t)
 implement lamkind_llam (t) = LAMKINDllam (t)
 implement lamkind_atllam (t) = LAMKINDatllam (t)
 
+implement fixkind_fix (t) = LAMKINDfix (t)
+implement fixkind_atfix (t) = LAMKINDatfix (t)
+
+fun lamkind_loc_get
+  (knd: lamkind): loc_t = case+ knd of
+  | LAMKINDlam tok => tok.t0kn_loc
+  | LAMKINDatlam tok => tok.t0kn_loc
+  | LAMKINDllam tok => tok.t0kn_loc
+  | LAMKINDatllam tok => tok.t0kn_loc
+  | LAMKINDfix tok => tok.t0kn_loc
+  | LAMKINDatfix tok => tok.t0kn_loc
+  | LAMKINDifix loc => loc // HX: implicit FIX
+// end of [lamkind_loc_get]
+
 (* ****** ****** *)
 
 implement srpifkindtok_if (t) = SRPIFKINDTOK (SRPIFKINDif (), t)
@@ -211,7 +225,8 @@ implement srpifkindtok_ifndef (t) = SRPIFKINDTOK (SRPIFKINDifndef (), t)
 
 (* ****** ****** *)
 
-implement fprint_cstsp (pf | out, cst) = case+ cst of
+implement
+fprint_cstsp (pf | out, cst) = case+ cst of
   | CSTSPfilename () => fprint1_string (pf | out, "#FILENAME")
   | CSTSPlocation () => fprint1_string (pf | out, "#LOCATION")
 // end of [fprint_cstsp]
@@ -1836,10 +1851,11 @@ in '{
 } end // end of [d0exp_extval]
 
 implement d0exp_fix
-  (t_fix, id, arg, res, eff, d0e) = let
-  val loc = combine (t_fix.t0kn_loc, d0e.d0exp_loc)
+  (knd, id, arg, res, eff, d0e) = let
+  val loc_knd = lamkind_loc_get (knd)
+  val loc = combine (loc_knd, d0e.d0exp_loc)
 in '{
-  d0exp_loc= loc, d0exp_node= D0Efix (id, arg, res, eff, d0e)
+  d0exp_loc= loc, d0exp_node= D0Efix (knd, id, arg, res, eff, d0e)
 } end // end of [d0exp_fix]
 
 implement d0exp_float (f) = '{
@@ -1931,19 +1947,7 @@ implement d0exp_intsp (i) = '{
 
 implement d0exp_lam
   (knd, arg, res, eff, d0e) = let
-  val loc_knd = case+ knd of
-    | LAMKINDlam tok => tok.t0kn_loc
-    | LAMKINDatlam tok => tok.t0kn_loc
-    | LAMKINDllam tok => tok.t0kn_loc
-    | LAMKINDatllam tok => tok.t0kn_loc
-    | LAMKINDfix () => let
-        val () = begin
-          prerr_interror ();
-          prerr ": d0exp_lam: knd = LAMKINDfix ()"; prerr_newline ()
-        end // end of [val]
-      in
-        exit {loc_t} (1)
-      end // end of [LAMKINDfix]
+  val loc_knd = lamkind_loc_get (knd)
   val loc = combine (loc_knd, d0e.d0exp_loc)
 in '{
   d0exp_loc= loc, d0exp_node= D0Elam (knd, arg, res, eff, d0e)

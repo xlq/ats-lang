@@ -1507,15 +1507,15 @@ in
       d2exp_exist (loc0, s1exparg_tr s1a, d1exp_tr d1e)
   | D1Eextval (s1e, code) =>
       d2exp_extval (loc0, s1exp_tr_dn_viewt0ype s1e, code)
-  | D1Efix (id, d1e) => let
+  | D1Efix (knd, id, d1e_def) => let
       val d2v = d2var_make (id.i0de_loc, id.i0de_sym)
       val () = d2var_isfix_set (d2v, true)
       val (pf_d2expenv | ()) = the_d2expenv_push ()
       val () = the_d2expenv_add_dvar d2v
-      val d2e = d1exp_tr d1e
+      val d2e_def = d1exp_tr (d1e_def)
       val () = the_d2expenv_pop (pf_d2expenv | (*none*))
     in
-      d2exp_fix (loc0, d2v, d2e)
+      d2exp_fix (loc0, knd, d2v, d2e_def)
     end // end of [D1Efix]
   | D1Efloat f(*string*) => d2exp_float (d1e0.d1exp_loc, f)
   | D1Efloatsp f(*string*) => d2exp_floatsp (d1e0.d1exp_loc, f)

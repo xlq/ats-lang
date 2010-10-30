@@ -230,7 +230,7 @@ depgen_d0exp (d0e0) =
 (*
   | D0Eextval _ => ()
 *)
-  | D0Efix (_, _, _, _, d0e) => depgen_d0exp (d0e)
+  | D0Efix (_, _, _, _, _, d0e) => depgen_d0exp (d0e)
 (*
   | D0Efloat _ => ()
   | D0Efloatsp _ => ()

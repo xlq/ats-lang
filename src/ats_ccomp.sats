@@ -212,6 +212,7 @@ datatype valprim_node =
   | VPcstsp of (loc_t, $Syn.cstsp) // special dynamic constant
   | VPenv of vartyp_t
   | VPext of string
+  | VPfix of valprimref
   | VPfloat of string
   | VPfloatsp of string
   | VPfun of funlab_t
@@ -220,11 +221,10 @@ datatype valprim_node =
   | VPptrof of valprim
   | VPptrof_ptr_offs of (valprim, offsetlst)
   | VPptrof_var_offs of (valprim, offsetlst)
-  | VPref of ref (valprim)
   | VPsizeof of hityp_t
   | VPstring of (string, int(*length*))
   | VPtmp of tmpvar_t
-  | VPtmp_ref of tmpvar_t
+  | VPtmpref of tmpvar_t
   | VPtop
   | VPvoid
 // end of [valprim_node]
@@ -237,11 +237,13 @@ and offset =
 where valprim = '{ // primitive values
   valprim_node= valprim_node, valprim_typ= hityp_t // type erasure
 } // end of [valprim]
-
+//
 and valprimlst = List valprim
 and valprimlstlst = List valprimlst
 and valprimlst_vt = List_vt valprim
-
+//
+and valprimref = ref (valprim)
+//
 and offsetlst = List offset
 
 (* ****** ****** *)
@@ -288,43 +290,48 @@ fun valprim_is_mutable (vp: valprim): bool
 
 fun valprim_arg (i: int, hit: hityp_t): valprim
 fun valprim_arg_ref (i: int, hit: hityp_t): valprim
-
+//
 fun valprim_bool (b: bool): valprim
-
+//
 fun valprim_castfn
   (d2c: d2cst_t, vp: valprim, hit: hityp_t): valprim
 // end of [valprim_castfn]
-
+//
 fun valprim_char (c: char): valprim
+//
 fun valprim_clo (knd: int, fl: funlab_t, map: envmap_t): valprim
-
+//
 fun valprim_cst (d2c: d2cst_t, hit: hityp_t): valprim
 fun valprim_cstsp (loc: loc_t, cst: $Syn.cstsp, hit: hityp_t): valprim
-
+//
 fun valprim_env (vtp: vartyp_t, hit: hityp_t): valprim
 fun valprim_ext (code: string, hit: hityp_t): valprim
+//
+fun valprim_fix (vpr: ref (valprim), hit: hityp_t): valprim
+//
 fun valprim_float (f: string): valprim
 fun valprim_floatsp (f: string, hit: hityp_t): valprim
+//
 fun valprim_fun (fl: funlab_t): valprim
-
+//
 fun valprim_int (int: intinf_t): valprim
 fun valprim_intsp
   (str: string, int: intinf_t, hit: hityp_t): valprim
 // end of [valprim_intsp]
-
+//
 fun valprim_ptrof (vp: valprim): valprim
 fun valprim_ptrof_ptr_offs (vp: valprim, offs: offsetlst): valprim
 fun valprim_ptrof_var_offs (vp: valprim, offs: offsetlst): valprim
-
-fun valprim_ref (vpr: ref (valprim), hit: hityp_t): valprim
-
+//
 fun valprim_sizeof (hit: hityp_t): valprim
+//
 fun valprim_string (str: string, len: int): valprim
-
+//
 fun valprim_tmp (tmp: tmpvar_t): valprim
-fun valprim_tmp_ref (tmp: tmpvar_t): valprim
-
+fun valprim_tmpref (tmp: tmpvar_t): valprim
+//
 fun valprim_top (hit: hityp_t): valprim
+//
 fun valprim_void (): valprim
 
 (* ****** ****** *)

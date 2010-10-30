@@ -334,8 +334,8 @@ and hiexp_node =
   | HIEempty (* no operation *)
   | HIEextval of (* external value *)
       string
-  | HIEfix of (* fixed-point expression *)
-      (d2var_t, hiexp)
+  | HIEfix of // dynamic fixed-point expression
+      (int(*knd: 0/1: flat/boxed*), d2var_t, hiexp)
   | HIEfloat of (* double precison floating point *)
       string
   | HIEfloatsp of (* specified floating point *)
@@ -585,8 +585,9 @@ fun hiexp_empty (_: loc_t, _: hityp): hiexp
 
 fun hiexp_extval (_: loc_t, _: hityp, code: string): hiexp
 
-fun hiexp_fix
-  (_: loc_t, _: hityp, _fun: d2var_t, _body: hiexp): hiexp
+fun hiexp_fix (
+  _: loc_t, _: hityp, knd: int, _fun: d2var_t, _body: hiexp
+) : hiexp // end of [hiexp_fix]
 
 fun hiexp_float (_: loc_t, _: hityp, _: string): hiexp
 fun hiexp_floatsp (_: loc_t, _: hityp, _: string): hiexp
@@ -771,6 +772,7 @@ abstype hityplstlst_t // boxed type
 fun hityp_encode (hit: hityp): hityp_t
 fun hityp_decode (hit: hityp_t): hityp
 
+val hityp_t_ptr: hityp_t
 val hityp_t_void: hityp_t
 fun hityp_t_s2var (s2v: s2var_t): hityp_t
 fun hityp_t_name_get (hit: hityp_t): hityp_name

@@ -605,8 +605,8 @@ and d2exp_node =
       (s2exparg, d2exp)
   | D2Eextval of (* external value *)
       (s2exp, string(*code*))
-  | D2Efix of (* dynamic fixed-point expression *)
-      (d2var_t, d2exp)
+  | D2Efix of // dynamic fixed-point expression
+      (int(*knd: 0/1: flat/boxed*), d2var_t, d2exp)
   | D2Efloat of (* dynamic float constant *)
       string
   | D2Efloatsp of (* dynamic specified float constant *)
@@ -1056,7 +1056,9 @@ fun d2exp_effmask (_: loc_t, effs: $Syn.effectlst, d2e: d2exp): d2exp
 fun d2exp_empty (_: loc_t): d2exp
 fun d2exp_exist (_: loc_t, s2a: s2exparg, d2e: d2exp): d2exp
 fun d2exp_extval (_: loc_t, type: s2exp, code: string): d2exp
-fun d2exp_fix (_: loc_t, _fun: d2var_t, _body: d2exp): d2exp
+
+fun d2exp_fix (_: loc_t, knd: int, _fun: d2var_t, _body: d2exp): d2exp
+
 fun d2exp_float (_: loc_t, _: string): d2exp
 fun d2exp_floatsp (_: loc_t, _: string): d2exp
 

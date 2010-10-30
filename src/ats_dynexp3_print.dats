@@ -275,8 +275,10 @@ in
   | D3Eextval (str) => begin
       fprintf1_exn (pf | out, "D3Eextval(\"%s\")", @(str))
     end // end of [D3Eextval]
-  | D3Efix (d2v, d3e) => begin
+  | D3Efix (knd, d2v, d3e) => begin
       prstr "D3Efix(";
+      fprint1_int (pf | out, knd);
+      prstr "; ";
       fprint_d2var (pf | out, d2v);
       prstr "; ";
       fprint_d3exp (pf | out, d3e);

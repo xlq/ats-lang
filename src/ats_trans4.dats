@@ -919,19 +919,20 @@ in
     in
       hiexp_extval (loc0, hit0, code)
     end // end of [D3Eextval]
-  | D3Efix (d2v_fun, d3e_body) => let
+  | D3Efix (knd, d2v_fun, d3e_def) => let
       val hit0 = s2exp_tr (loc0, 0(*deep*), s2e0)
-      val hie_body = d3exp_tr d3e_body
-      val () = // check for valueness of the body
-        if hiexp_is_value hie_body then () else begin
+      val hie_def = d3exp_tr d3e_def
+      val isval = hiexp_is_value (hie_def)
+      val () = // check for valueness of the def
+        if isval then () else begin
           prerr_loc_error4 loc0;
           prerr ": a non-value fixed-point dynamic expression is not supported.";
           prerr_newline ();
           $Err.abort {void} ()
-        end // end of [if]
+        end (* end of [if] *)
       // end of [val]
     in
-      hiexp_fix (loc0, hit0, d2v_fun, hie_body)
+      hiexp_fix (loc0, hit0, knd, d2v_fun, hie_def)
     end // end of [D3Efix]
   | D3Efloat str => let
       val hit0 = s2exp_tr (loc0, 0(*deep*), s2e0)
@@ -987,13 +988,14 @@ in
     end // end of [D3Elaminit_dyn]
   | D3Elam_sta (_(*s2vs*), _(*s2ps*), d3e_body) => let
       val hie_body = d3exp_tr d3e_body
+      val isval = hiexp_is_value (hie_body)
       val () = // check for valueness
-        if hiexp_is_value hie_body then () else begin
+        if isval then () else begin
           prerr_loc_error4 (loc0);
           prerr ": a non-value body for static lambda-abstraction is not supported.";
           prerr_newline ();
           $Err.abort {void} ()
-        end // end of [if]
+        end (* end of [if] *)
     in
       hie_body
     end // end of [D3Elam_sta]
@@ -1258,7 +1260,7 @@ in
   | D3Eeffmask (_, d3e) => d3exp_prf_tr d3e
   | D3Eempty () => ()
   | D3Eextval _(*code*) => ()
-  | D3Efix (d2v_fun, d3e_body) => d3exp_prf_tr d3e_body
+  | D3Efix (knd, d2v_fun, d3e_def) => d3exp_prf_tr (d3e_def)
 (*
   | D3Efloat _(*str*) => ()
   | D3Efloatsp _(*str*) => ()

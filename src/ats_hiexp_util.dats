@@ -214,16 +214,18 @@ fun labhiexplst_is_value (lhies: labhiexplst): bool = begin
   | LABHIEXPLSTnil () => true
 end // end of [labhiexplst_is_value]
 
-implement hiexp_is_value (hie0) = begin
-  case+ hie0.hiexp_node of
+implement
+hiexp_is_value
+  (hie0) = case+ hie0.hiexp_node of
   | HIEbool _ => true
   | HIEchar _ => true
   | HIEcon (_, _, hies) => hiexplst_is_value hies
   | HIEcst _ => true
   | HIEempty _ => true
-  | HIEfix (_, hie) => hiexp_is_value hie
+  | HIEfix (_, _, hie) => hiexp_is_value hie
   | HIEfloat _ => true
   | HIElam _ => true
+  | HIElaminit _ => true
   | HIElst (_, _, hies) => hiexplst_is_value hies
   | HIEint _ => true
   | HIErec (_, _, lhies) => labhiexplst_is_value lhies
@@ -235,7 +237,7 @@ implement hiexp_is_value (hie0) = begin
       if d2var_isfix_get d2v then false else true
     end // end of [HIEvar]
   | _ => false
-end // end of [hiexp_is_value]
+// end of [hiexp_is_value]
 
 (* ****** ****** *)
 
@@ -468,11 +470,15 @@ end
 
 (* ****** ****** *)
 
+(*
+// HX: this file must be loaded after [hityp_void] is defined
+*)
+implement hityp_t_ptr = hityp_ptr
+implement hityp_t_void = hityp_void // so this file must be loaded
+//
 implement hityp_t_s2var (s2v) = hityp_s2var (s2v)
 implement hityp_t_name_get (hit) = hit.hityp_name
-implement hityp_t_void = hityp_void // so this file must be loaded
-// after [hityp_void] is defined
-
+//
 implement hityp_t_is_void (hit) = hityp_is_void (hit)
 implement hityp_t_fun_is_void (hit_fun) = hityp_fun_is_void (hit_fun) 
 implement hityp_t_is_tyrecbox (hit_rec) = hityp_is_tyrecbox (hit_rec)

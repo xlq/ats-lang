@@ -607,7 +607,7 @@ fn emit_valprim_ptrof {m:file_mode}
     in
       fprint1_string (pf | out, "env"); fprint1_int (pf | out, ind)
     end // end of [VPenv]
-  | VPtmp_ref tmp => let
+  | VPtmpref tmp => let
       val () = fprint1_string (pf | out, "(&")
       val () = emit_tmpvar (pf | out, tmp)
       val () = fprint1_string (pf | out, ")")
@@ -982,6 +982,7 @@ emit_valprim (pf | out, vp0) = begin
         end // end of [_]
     end // end of [VPenv]
   | VPext code => fprint1_string (pf | out, code)
+  | VPfix (vpr) => emit_valprim (pf | out, !vpr)
   | VPfloat str => emit_valprim_float (pf | out, str)
   | VPfloatsp str => emit_valprim_float (pf | out, str)
   | VPfun fl => begin
@@ -999,7 +1000,6 @@ emit_valprim (pf | out, vp0) = begin
       fprint1_char (pf | out, '&');
       emit_valprim_select_var (pf | out, vp, offs)
     end // end of [VPptrof_var_offs]
-  | VPref (vpr) => emit_valprim (pf | out, !vpr)
   | VPsizeof hit => let
       val () = fprint1_string (pf | out, "sizeof(")
       val () = emit_hityp (pf | out, hit)
@@ -1013,7 +1013,7 @@ emit_valprim (pf | out, vp0) = begin
       emit_valprim_string (pf | out, str, size1_of_int1 len)
     end // end of [VPstring]
   | VPtmp tmp => emit_valprim_tmpvar (pf | out, tmp)
-  | VPtmp_ref tmp => emit_valprim_tmpvar (pf | out, tmp)
+  | VPtmpref tmp => emit_valprim_tmpvar (pf | out, tmp)
   | VPtop () => fprint1_string (pf | out, "?top") // for debugging
   | VPvoid () => fprint1_string (pf | out, "?void") // for debugging
 (*
@@ -1459,7 +1459,8 @@ fn funlab_fun_is_void
   hityp_t_is_void (funlab_typ_res_get fl)
 end // end of [funlab_fun_is_void]
 
-fn emit_instr_call {m:file_mode} (
+fun emit_instr_call
+  {m:file_mode} (
     pf: file_mode_lte (m, w)
   | out: &FILE m
   , tmp: tmpvar_t
@@ -1467,6 +1468,11 @@ fn emit_instr_call {m:file_mode} (
   , vp_fun: valprim
   , vps_arg: valprimlst
   ) : void = let
+(*
+  val () = (
+    print "emit_instr_call: vp_fun = "; print_valprim vp_fun; print_newline ()
+  ) // end of [val]
+*)
   val noret = (
     case+ vp_fun.valprim_node of
     | VPcst d2c => d2cst_fun_is_void (d2c)
@@ -1474,83 +1480,96 @@ fn emit_instr_call {m:file_mode} (
     | VPfun fl => funlab_fun_is_void (fl)
     | _ => hityp_t_fun_is_void hit_fun
   ) : bool
-  val () = if noret then
-    fprint1_string (pf | out, "/* ")
+  val () = if noret then fprint1_string (pf | out, "/* ")
   val () = emit_valprim_tmpvar (pf | out, tmp)
   val () = fprint1_string (pf | out, " = ");
-  val () = if noret then
-    fprint1_string (pf | out, "*/ ")
-  val hit_fun = hityp_decode (hit_fun)
+  val () = if noret then fprint1_string (pf | out, "*/ ")
 in
-  case+ vp_fun.valprim_node of
-  | VPcst d2c => let
-      val () = emit_d2cst (pf | out, d2c)
-      val isfun = $Syn.dcstkind_is_fun (d2cst_kind_get d2c)
-      val () = if isfun then () else fprint1_string (pf | out, "$fun")
-      val () = fprint1_string (pf | out, " (")
-      val () = emit_valprimlst (pf | out, vps_arg)
-      val () = fprint1_string (pf | out, ") ;")
-    in
-      // empty
-    end // end of [VPcst]
-  | VPclo (knd, fl, envmap) => let
-      val entry = funlab_entry_get_some (fl)
-      val vtps = funentry_vtps_get_all (entry)
-      val () = emit_funlab (pf | out, fl)
-      val () = fprint1_string (pf | out, " (")
-      val n = emit_cloenv (pf | out, envmap, vtps, 0)
-      val () = if n > 0 then begin case+ vps_arg of
-        | list_cons _ => fprint1_string (pf | out, ", ") | _ => ()
-      end // end of [val]
-      val () = emit_valprimlst (pf | out, vps_arg)
-      val () = fprint1_string (pf | out, ") ;")
-    in
-      // empty
-    end // end of [VPclo]
-  | VPfun fl => let
-      val () = emit_funlab (pf | out, fl)
-      val () = fprint1_string (pf | out, " (")
-      val () = emit_valprimlst (pf | out, vps_arg)
-      val () = fprint1_string (pf | out, ") ;")
-    in
-      // empty
-    end // end of [VPfun]
-  | _ (*variable function*) => begin
+//
+case+ vp_fun.valprim_node of
+//
+| VPcst d2c => let
+    val () = emit_d2cst (pf | out, d2c)
+    val isfun = $Syn.dcstkind_is_fun (d2cst_kind_get d2c)
+    val () = if isfun then () else fprint1_string (pf | out, "$fun")
+    val () = fprint1_string (pf | out, " (")
+    val () = emit_valprimlst (pf | out, vps_arg)
+    val () = fprint1_string (pf | out, ") ;")
+  in
+    // empty
+  end // end of [VPcst]
+//
+| VPclo (knd, fl, envmap) => let
+    val entry = funlab_entry_get_some (fl)
+    val vtps = funentry_vtps_get_all (entry)
+    val () = emit_funlab (pf | out, fl)
+    val () = fprint1_string (pf | out, " (")
+    val n = emit_cloenv (pf | out, envmap, vtps, 0)
+    val () = if n > 0 then begin case+ vps_arg of
+      | list_cons _ => fprint1_string (pf | out, ", ") | _ => ()
+    end // end of [val]
+    val () = emit_valprimlst (pf | out, vps_arg)
+    val () = fprint1_string (pf | out, ") ;")
+  in
+    // empty
+  end // end of [VPclo]
+//
+| VPfun fl => let
+    val () = emit_funlab (pf | out, fl)
+    val () = fprint1_string (pf | out, " (")
+    val () = emit_valprimlst (pf | out, vps_arg)
+    val () = fprint1_string (pf | out, ") ;")
+  in
+    // empty
+  end // end of [VPfun]
+//
+  | VPfix (vpr) => emit_instr_call (
+      pf | out, tmp, hit_fun, !vpr, vps_arg
+    ) // end of [VPfix]
+//
+| _ (*variadic function*) => let
+    val hit_fun = hityp_decode (hit_fun)
+  in
     case+ hit_fun.hityp_node of
-    | HITfun (fc, hits_arg, hit_res) => begin case+ fc of
+    | HITfun (fc, hits_arg, hit_res) => begin
+      case+ fc of
       | $Syn.FUNCLOclo _(*knd*) => let
           val hits_arg = hityplst_encode hits_arg
           val hit_res = hityp_encode hit_res
+          val () = fprint1_string (pf | out, "((")
+          val () = emit_hityp_clofun (pf | out, hits_arg, hit_res)
+          val () = fprint1_string (pf | out, ")(ats_closure_fun(")
+          val () = emit_valprim (pf | out, vp_fun)
+          val () = fprint1_string (pf | out, "))) (")
+          val () = emit_valprim (pf | out, vp_fun)
+          val () = if $Lst.list_is_cons (vps_arg) then fprint1_string (pf | out, ", ")
+          val () = emit_valprimlst (pf | out, vps_arg)
+          val () = fprint1_string (pf | out, ") ;")
         in
-          fprint1_string (pf | out, "((");
-          emit_hityp_clofun (pf | out, hits_arg, hit_res);
-          fprint1_string (pf | out, ")(ats_closure_fun(");
-          emit_valprim (pf | out, vp_fun);
-          fprint1_string (pf | out, "))) (");
-          emit_valprim (pf | out, vp_fun);
-          if $Lst.list_is_cons (vps_arg) then fprint1_string (pf | out, ", ");
-          emit_valprimlst (pf | out, vps_arg);
-          fprint1_string (pf | out, ") ;")
-        end // end of [$Syn.FUNCLOclo]
+          // nothing
+        end // end of [FUNCLOclo]
       | $Syn.FUNCLOfun () => let
           val hits_arg = hityplst_encode hits_arg
           val hit_res = hityp_encode hit_res
+          val () = fprint1_string (pf | out, "((")
+          val () = emit_hityp_fun (pf | out, hits_arg, hit_res)
+          val () = fprint1_string (pf | out, ")")
+          val () = emit_valprim (pf | out, vp_fun)
+          val () = fprint1_string (pf | out, ") (")
+          val () = emit_valprimlst (pf | out, vps_arg)
+          val () = fprint1_string (pf | out, ") ;")
         in
-          fprint1_string (pf | out, "((");
-          emit_hityp_fun (pf | out, hits_arg, hit_res);
-          fprint1_string (pf | out, ")");
-          emit_valprim (pf | out, vp_fun);
-          fprint1_string (pf | out, ") (");
-          emit_valprimlst (pf | out, vps_arg);
-          fprint1_string (pf | out, ") ;")
-        end // end of [$Syn.FUNCLOfun]
+          // nothing
+        end // end of [FUNCLOfun]
       end // end of [HITfun]
     | _ => begin
         prerr_interror ();
         prerr ": emit_instr_call: hit_fun = "; prerr_hityp hit_fun; prerr_newline ();
         $Err.abort {void} ()
       end // end of [_]
-    end (* end of [_(*variadic function*)] *)
+    // end of [case]
+  end (* end of [_(*variadic function*)] *)
+// end of [case]
 end // end of [emit_instr_call]
 
 (* ****** ****** *)

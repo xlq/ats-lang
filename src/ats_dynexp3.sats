@@ -222,8 +222,8 @@ and d3exp_node =
   | D3Eempty (* empty expression *)
   | D3Eextval of (* external code *)
       string
-  | D3Efix of (* dynamic fixed-point expression *)
-      (d2var_t, d3exp)
+  | D3Efix of // dynamic fixed-point expression
+      (int(*knd: 0/1: flat/boxed*), d2var_t, d3exp)
   | D3Efloat of string (* dynamic float *)
   | D3Efloatsp of string (* dynamic float *)
   | D3Efoldat of d3exp (* linear datatype folding *)
@@ -530,7 +530,9 @@ fun d3exp_effmask (_: loc_t, effs: $Syn.effectlst, d3e: d3exp): d3exp
 
 fun d3exp_empty (_: loc_t, _: s2exp): d3exp
 
-fun d3exp_fix (_: loc_t, _: s2exp, d2v: d2var_t, _def: d3exp): d3exp
+fun d3exp_fix (
+  _: loc_t, _: s2exp, knd: int, d2v: d2var_t, _def: d3exp
+) : d3exp // end of [d3exp_fix]
 
 fun d3exp_float (_: loc_t, _: s2exp, f: string): d3exp
 fun d3exp_floatsp (_: loc_t, _: s2exp, f: string): d3exp

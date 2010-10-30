@@ -188,17 +188,22 @@ datatype macsynkind =
 (* ****** ****** *)
 
 datatype lamkind =
-  | LAMKINDlam of t0kn
-  | LAMKINDatlam of t0kn
-  | LAMKINDllam of t0kn  
-  | LAMKINDatllam of t0kn
-  | LAMKINDfix of ()
+  | LAMKINDlam of (t0kn)
+  | LAMKINDatlam of (t0kn)
+  | LAMKINDllam of (t0kn)
+  | LAMKINDatllam of (t0kn)
+  | LAMKINDfix of (t0kn)
+  | LAMKINDatfix of (t0kn)
+  | LAMKINDifix of (loc_t) // HX: implicit FIX
 // end of [lamkind]
-
 fun lamkind_lam (t: t0kn): lamkind = "lamkind_lam"
 and lamkind_atlam (t: t0kn): lamkind = "lamkind_atlam"
 and lamkind_llam (t: t0kn): lamkind = "lamkind_llam"
 and lamkind_atllam (t: t0kn): lamkind = "lamkind_atllam"
+
+typedef fixkind = lamkind
+fun fixkind_fix (t: t0kn): fixkind = "fixkind_fix"
+fun fixkind_atfix (t: t0kn): fixkind = "fixkind_atfix"
 
 (* ****** ****** *)
 
@@ -1597,7 +1602,7 @@ datatype d0exp_node =
   | D0Eextval of (* external code *)
       (s0exp (*type*), string (*code*))
   | D0Efix of (* fixed point *)
-      (i0de, f0arglst, s0expopt, e0fftaglstopt, d0exp)
+      (fixkind, i0de, f0arglst, s0expopt, e0fftaglstopt, d0exp)
   | D0Efloat of (* dynamic floats *)
       string
   | D0Efloatsp of (* dynamic specified floats *)
@@ -1972,7 +1977,7 @@ fun d0exp_extval
   = "d0exp_extval"
 
 fun d0exp_fix
-  (t_fix: t0kn, _: i0de,
+  (knd: fixkind, _: i0de,
    arg: f0arglst, res: s0expopt, _: e0fftaglstopt, body: d0exp): d0exp
   = "d0exp_fix"
 

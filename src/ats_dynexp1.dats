@@ -298,8 +298,8 @@ implement d1exp_floatsp (loc, str) = '{
   d1exp_loc= loc, d1exp_node= D1Efloatsp str
 }
 
-implement d1exp_fix (loc, id, d1e) = '{
-  d1exp_loc= loc, d1exp_node= D1Efix (id, d1e)
+implement d1exp_fix (loc, knd, id, d1e) = '{
+  d1exp_loc= loc, d1exp_node= D1Efix (knd, id, d1e)
 }
 
 implement d1exp_foldat (loc, s1as, d1e) = '{

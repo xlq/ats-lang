@@ -40,6 +40,7 @@
 
 (* ****** ****** *)
 
+staload Deb = "ats_debug.sats"
 staload Eff = "ats_effect.sats"
 staload Err = "ats_error.sats"
 staload Loc = "ats_location.sats"
@@ -70,7 +71,17 @@ staload "ats_trans3.sats"
 
 (* ****** ****** *)
 
-fn prerr_interror () = prerr "INTERNAL ERROR (ats_trans3_dec)"
+#define THISFILENAME "ats_trans3_dec.dats"
+
+(* ****** ****** *)
+
+fn prerr_loc_error3 (loc: loc_t): void =
+  ($Loc.prerr_location loc; prerr ": error(3)")
+// end of [prerr_loc_error3]
+
+fn prerr_interror
+ () = prerr "INTERNAL ERROR (ats_trans3_dec)"
+// end of [prerr_interror]
 
 fn prerr_loc_interror (loc: loc_t) = begin
   $Loc.prerr_location loc; prerr ": INTERNAL ERROR (ats_trans3_dec)"
@@ -195,8 +206,7 @@ fun v2aldeclst_rec_tr
             | Some s2e => s2e | None () => p2at_typ_syn (p2t)
           val () = // checking for nonlinearity
             if s2exp_is_linear s2e_pat then begin
-              $Loc.prerr_location p2t.p2at_loc;
-              prerr ": error(3)";
+              prerr_loc_error3 (p2t.p2at_loc);
               prerr ": this pattern can only be assigned a nonlinear type.";
               prerr_newline ();
               $Err.abort {void} () 
@@ -338,8 +348,7 @@ fn f2undeclst_tr
               | (_, _) => false
           in
             if not (compatible) then begin
-              $Loc.prerr_location d2c.f2undec_loc;
-              prerr ": error(3)";
+              prerr_loc_error3 (d2c.f2undec_loc);
               prerr ": incompatible termination metric for this function.";
               prerr_newline ();
               $Err.abort {void} ()
@@ -474,11 +483,14 @@ fn v2ardec_tr_sta (d2c: v2ardec): v3ardec = let
       in
         s2e_elt := s2e_ann; Some d3e_ini
       end // end of [Some, Some]
-    | (None (), None ()) => begin
-        $Loc.prerr_location loc0; prerr ": error(3)";
-        prerr ": the uninitialized dynamic variable ["; prerr d2v_ptr;
-        prerr "] needs to be ascribed a type."; prerr_newline ();
-        s2e_elt := $Err.abort {s2exp} ();
+    | (None (), None ()) => let
+        val () = prerr_loc_error3 (loc0)
+        val () = prerr ": the uninitialized dynamic variable ["
+        val () = prerr d2v_ptr
+        val () = prerr "] needs to be ascribed a type."
+        val () = prerr_newline ()
+        val () = s2e_elt := $Err.abort {s2exp} ()
+      in
         None ()
       end // end of [None, None]
     ) : d3expopt // end of [case]
@@ -486,15 +498,18 @@ in
   v3ardec_make (loc0, 0(*knd*), d2v_ptr, d2v_view, s2e_elt, od3e_ini)
 end // end of [v2ardec_tr_sta]
 
-fun d2exp_is_laminit_dyn (d2e: d2exp): bool =
+fun d2exp_is_laminit
+  (d2e: d2exp): bool =
   case+ d2e.d2exp_node of
   | D2Elaminit_dyn _ => true
-  | D2Elam_sta (_(*s2vs*), _(*s2ps*), d2e) => d2exp_is_laminit_dyn (d2e)
+  | D2Elam_sta (_(*s2vs*), _(*s2ps*), d2e) => d2exp_is_laminit (d2e)
+  | D2Efix (_(*knd*), _(*d2v*), d2e_def) => d2exp_is_laminit (d2e_def)
   | _ => false
-// end of [d2exp_is_laminit_dyn]
+// end of [d2exp_is_laminit]
 
 // [dyn] means allocation at run-time
-fn v2ardec_tr_dyn (d2c: v2ardec): v3ardec = let
+fn v2ardec_tr_dyn
+  (d2c: v2ardec): v3ardec = let
   val loc0 = d2c.v2ardec_loc
   val d2v_ptr = d2c.v2ardec_dvar
 (*
@@ -522,7 +537,7 @@ fn v2ardec_tr_dyn (d2c: v2ardec): v3ardec = let
 
   val d2e_ini = (case+ d2c.v2ardec_ini of
     | Some d2e => d2e | None () => begin
-        $Loc.prerr_location loc0; prerr ": error(3)";
+        prerr_loc_error3 (loc0);
         prerr ": the syntax for allocating memory on stack (alloca) is incorrect.";
         prerr_newline (); $Err.abort {d2exp} ()
       end // end of [None]
@@ -543,12 +558,16 @@ in
               | ~None_vt () => un_s2exp_size_int_t0ype (s2e_asz)
             ) : s2expopt_vt
             val s2e_dim = case+ os2e_dim of
-              | ~Some_vt s2e_dim => s2e_dim | ~None_vt () => begin
-                  $Loc.prerr_location loc_asz; prerr ": error(3)";
-                  prerr ": the dynamic expression is assgined the type [";
-                  prerr_s2exp s2e_asz;
-                  prerr "], but it is expected to be a nonnegative integer.";
-                  prerr_newline (); $Err.abort {s2exp} ()
+              | ~Some_vt s2e_dim => s2e_dim
+              | ~None_vt () => let
+                  val () = prerr_loc_error3 (loc_asz)
+                  val () = $Deb.debug_prerrf (": %s: v2ardec_tr_dyn", @(THISFILENAME))
+                  val () = prerr ": the dynamic expression is assgined the type ["
+                  val () = prerr_s2exp s2e_asz
+                  val () = prerr "], but it is expected to be a nonnegative integer."
+                  val () = prerr_newline ()
+                in
+                  $Err.abort {s2exp} ()
                 end // end of [None]
             // end of [val]
             val () = trans3_env_add_prop (loc_asz, s2p) where {
@@ -587,7 +606,7 @@ in
     in
       v3ardec_make (loc0, 1(*knd*), d2v_ptr, d2v_view, s2e_ann, Some d3e_ini)
     end // end of [D2Earrinit]
-  | _ when d2exp_is_laminit_dyn d2e_ini => let
+  | _ when d2exp_is_laminit (d2e_ini) => let
       val d3e_ini = d2exp_tr_up (d2e_ini)
       val s2e_ini = d3e_ini.d3exp_typ
       val s2e_ini_view = s2exp_at_viewt0ype_addr_view (s2e_ini, s2e_addr)
@@ -600,7 +619,8 @@ in
       v3ardec_make (loc0, 1(*knd*), d2v_ptr, d2v_view, s2e_ini, Some d3e_ini)
     end // end of [D2Elam when ...]
   | _ => begin
-      $Loc.prerr_location loc0; prerr ": error(3)";
+      prerr_loc_error3 (loc0);
+      $Deb.debug_prerrf (": %s: v2ardec_tr_dyn", @(THISFILENAME));
       prerr ": the syntax for allocating memory on stack (alloca) is incorrect.";
       prerr_newline ();
       prerr "d2e_ini = "; prerr_d2exp d2e_ini; prerr_newline ();
@@ -620,7 +640,8 @@ in
   end // end of [if]
 end // end of [v2ardec_tr]
 
-fun v2ardeclst_tr (d2cs: v2ardeclst): v3ardeclst = let
+fun v2ardeclst_tr
+  (d2cs: v2ardeclst): v3ardeclst = let
   val () = aux d2cs where {
     fun aux // add static address variables into the environment
       (d2cs: v2ardeclst): void = case+ d2cs of

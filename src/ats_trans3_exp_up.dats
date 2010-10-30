@@ -251,7 +251,7 @@ d2exp_typ_syn (d2e0) = begin
   | D2Ecstsp cst => d2exp_cstsp_typ_syn (cst)
   | D2Eeffmask (_, d2e) => d2exp_typ_syn (d2e)
   | D2Eempty () => s2exp_void_t0ype ()
-  | D2Efix (_, d2e) => d2exp_typ_syn (d2e)
+  | D2Efix (_, _, d2e) => d2exp_typ_syn (d2e)
   | D2Efloat _ => s2exp_double_t0ype ()
   | D2Efor _ => s2exp_void_t0ype ()
   | D2Eint _ => s2exp_int_t0ype ()
@@ -2184,14 +2184,14 @@ val d3e0 = (case+ d2e0.d2exp_node of
     end // end of [D2Eeffmask]
   | D2Eempty () => d3exp_empty (loc0, s2exp_void_t0ype ())
   | D2Eextval (s2e, code) => d3exp_extval (loc0, s2e, code)
-  | D2Efix (d2v, d2e_def) => let
+  | D2Efix (knd, d2v, d2e_def) => let
       val s2e_def = d2exp_typ_syn (d2e_def)
       val os2e_def = Some (s2e_def)
       val () = d2var_mastyp_set (d2v, os2e_def)
       val () = d2var_typ_set (d2v, os2e_def)
       val d3e_def = d2exp_tr_up (d2e_def)
     in
-      d3exp_fix (loc0, s2e_def, d2v, d3e_def)
+      d3exp_fix (loc0, s2e_def, knd, d2v, d3e_def)
     end // end of [D2Efix]
   | D2Efoldat (s2as, d2e_at) => d2exp_foldat_tr_up (loc0, s2as, d2e_at)
   | D2Efor (

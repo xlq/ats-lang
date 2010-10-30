@@ -1312,13 +1312,13 @@ in
     in
       d2exp_exist (loc0, s2as, d2e)
     end // end of [D2Eexist]
-  | D2Efix (d2v, d2e) => let
+  | D2Efix (knd, d2v, d2e) => let
       val () = alphaenv_push (env)
       val d2v_new = eval1_d2var (loc0, env, d2v)
       val d2e = eval1_d2exp (loc0, ctx, env, d2e)
       val () = alphaenv_pop (env)
     in
-      d2exp_fix (loc0, d2v_new, d2e)
+      d2exp_fix (loc0, knd, d2v_new, d2e)
     end // end of [D2Efix]
   | D2Efoldat (s2as, d2e) => let
       val d2e = eval1_d2exp (loc0, ctx, env, d2e)

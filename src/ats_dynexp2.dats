@@ -641,11 +641,17 @@ implement d2exp_extval (loc, s2e, code) = '{
 , d2exp_typ= None ()
 }
 
-implement d2exp_fix (loc, d2v_fun, d2e_def) = '{
+(* ****** ****** *)
+
+implement
+d2exp_fix
+  (loc, knd, d2v_fun, d2e_def) = '{
   d2exp_loc= loc
-, d2exp_node= D2Efix (d2v_fun, d2e_def)
+, d2exp_node= D2Efix (knd, d2v_fun, d2e_def)
 , d2exp_typ= None ()
 }
+
+(* ****** ****** *)
 
 implement d2exp_float (loc, f(*string*)) = '{
   d2exp_loc= loc, d2exp_node= D2Efloat (f), d2exp_typ= None ()

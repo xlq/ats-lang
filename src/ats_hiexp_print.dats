@@ -362,8 +362,10 @@ in
   | HIEextval code => begin
       prstr "HIEextval("; fprint1_string (pf | out, code); prstr ")"
     end // end of [HIEexval]
-  | HIEfix (d2v_fun, hie_body) => begin
+  | HIEfix (knd, d2v_fun, hie_body) => begin
       prstr "HIEfix(";
+      fprint1_int (pf | out, knd);
+      prstr "; ";
       fprint_d2var (pf | out, d2v_fun);
       prstr "; ";
       fprint_hiexp (pf | out, hie_body);

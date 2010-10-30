@@ -353,11 +353,13 @@ implement d0exp_posmark (d0e0) = case+ d0e0.d0exp_node of
       staexploc_posmark qualoc; d0exp_posmark d0e
     end // end of [D0Eexist]
   | D0Eextval (s0e, _(*code*)) => s0exp_posmark s0e
-  | D0Efix (_(*id*), f0as, os0e, otags, d0e_body) => begin
+  | D0Efix (
+      _(*knd*), _(*id*), f0as, os0e, otags, d0e_body
+    ) => begin
       f0arglst_posmark f0as;
       s0expopt_posmark os0e; e0fftaglstopt_posmark otags;
       d0exp_posmark d0e_body;
-    end
+    end // end of [D0Efix]
   | D0Efor (inv, loc_inv, d0e_ini, d0e_test, d0e_post, d0e_body) => begin
       loopi0nvopt_posmark inv;
       d0exp_posmark d0e_ini; d0exp_posmark d0e_test;

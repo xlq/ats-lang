@@ -480,11 +480,13 @@ d3exp_extval (loc, s2e, code) =  '{
 } // end of [d3exp_extval]
 
 implement
-d3exp_fix
-  (loc, s2e, d2v, d3e_def) = '{
+d3exp_fix (
+  loc, s2e_fix, knd, d2v, d3e_def
+) = '{
   d3exp_loc= loc
-, d3exp_eff= S2EFFnil (), d3exp_typ= s2e
-, d3exp_node= D3Efix (d2v, d3e_def)
+, d3exp_eff= S2EFFnil ()
+, d3exp_typ= s2e_fix
+, d3exp_node= D3Efix (knd, d2v, d3e_def)
 } // end of [d3exp_fix]
 
 implement

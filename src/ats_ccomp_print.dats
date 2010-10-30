@@ -146,6 +146,9 @@ in
   | VPext code => begin
       fprintf1_exn (pf | out, "VPext(\"%s\")", @(code));
     end // end of [VPext]
+  | VPfix vpr => begin
+      prstr "VPfix("; fprint_valprim (pf | out, !vpr); prstr ")"
+    end // end of [VPfix]
   | VPfloat f(*string*) => begin
       fprintf1_exn (pf | out, "VPfloat(%s)", @(f))
     end // end of [VPfloat]
@@ -178,9 +181,6 @@ in
       fprint_offsetlst (pf | out, offs);
       prstr ")"
     end // end of [VPptrof_var_offs]
-  | VPref vpr => begin
-      prstr "VPref("; fprint_valprim (pf | out, !vpr); prstr ")"
-    end // end of [VPref]
   | VPsizeof hit => begin
       prstr "VPsizeof(";
       fprint_hityp (pf | out, hityp_decode hit);
@@ -192,9 +192,9 @@ in
   | VPtmp tmp => begin
       prstr "VPtmp("; fprint_tmpvar (pf | out, tmp); prstr ")"
     end // end of [VPtmp]
-  | VPtmp_ref tmp => begin
-      prstr "VPtmp_ref("; fprint_tmpvar (pf | out, tmp); prstr ")"
-    end // end of [VPtmp_ref]
+  | VPtmpref tmp => begin
+      prstr "VPtmpref("; fprint_tmpvar (pf | out, tmp); prstr ")"
+    end // end of [VPtmpref]
   | VPtop () => begin
       fprint1_string (pf | out, "VPtop()")
     end // end of [VPtop]

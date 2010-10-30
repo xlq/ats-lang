@@ -446,8 +446,9 @@ end // end of [the_valprimlst_free_get]
 
 implement
 instr_add_valprimlst_free (res, loc) = let
-  fun aux_free (res: &instrlst_vt, loc: loc_t, vps: valprimlst_vt)
-    : void = begin case+ vps of
+  fun aux_free (
+    res: &instrlst_vt, loc: loc_t, vps: valprimlst_vt
+  ) : void = begin case+ vps of
     | ~list_vt_cons (vp, vps) => let
         val () = instr_add_freeptr (res, loc, vp) in aux_free (res, loc, vps)
       end // end of [list_vt_cons]
@@ -926,7 +927,7 @@ fn hiexp_refarg_tr (
       val hit = hie.hiexp_typ
       val tmp = tmpvar_make (hityp_normalize hit)
       val () = instr_add_vardec (res, loc, tmp)
-      val vp = valprim_tmp_ref tmp
+      val vp = valprim_tmpref (tmp)
       val () = (vps_free := list_vt_cons (vp, vps_free))
       val () = the_dynctx_add (d2v_any, vp)
       val hie_assgn = hiexp_assgn_var
@@ -1140,9 +1141,17 @@ fn ccomp_exp_lam (
   , hit0: hityp
   , hips_arg: hipatlst
   , hie_body: hiexp
+(*
+  , ovpr: Option_vt (valprimref) // HX: for tail-call optimization
+*)
   ) : valprim = let
   val hit0 = hityp_normalize hit0
   val fl = funlab_make_typ (hit0)
+(*
+  val () = (case+ ovpr of
+    | ~Some_vt (vpr) => !vpr := valprim_fun (fl) | ~None_vt () => ()
+  ) : void // end of [val]
+*)
   val (pf_tailcallst_mark | ()) = the_tailcallst_mark ()
   val () = the_tailcallst_add (fl, list_nil ())
   val _(*funentry*) = let
@@ -1154,6 +1163,12 @@ fn ccomp_exp_lam (
 in
   valprim_funclo_make (fl)
 end // end of [ccomp_exp_lam]
+
+fn ccomp_exp_fixdef (
+  res: &instrlst_vt, hie_def: hiexp, vpr: valprimref
+) : valprim =
+  ccomp_exp (res, hie_def)
+// end of [ccomp_exp_fixdef]
 
 (* ****** ****** *)
 
@@ -1198,10 +1213,17 @@ in
   | list_nil () => vp_ptr
 end // end of [ccomp_exp_ptrof_ptr]
 
-fn ccomp_exp_ptrof_var
-  (res: &instrlst_vt, d2v_mut: d2var_t, hils: hilablst)
-  : valprim = let
+fn ccomp_exp_ptrof_var (
+  res: &instrlst_vt, d2v_mut: d2var_t, hils: hilablst
+) : valprim = let
   var vp_mut: valprim = the_dynctx_find (d2v_mut)
+in
+case+
+vp_mut.valprim_node of
+//
+| VPfix _ => vp_mut // HX: this is solely for handling @fix
+//
+| _ => let  
   val () = let
     val lev_d2v = d2var_lev_get (d2v_mut)
     val level = d2var_current_level_get ()
@@ -1222,13 +1244,15 @@ fn ccomp_exp_ptrof_var
           vp_mut := valprim_env (vtp, hit)
         end else begin
           () // [d2v_mut] is at the top level
-        end
+        end (* end of [if] *)
       end // end of [_ when ...]
     | _ => () // [d2v_mut] is at the current level
   end // end of [val ()]
   val offs = ccomp_hilablst (res, hils)
 in
   valprim_ptrof_var_offs (vp_mut, offs)
+end // end of [_]
+//
 end (* end of [ccomp_exp_ptrof_var] *)
 
 (* ****** ****** *)
@@ -1423,18 +1447,16 @@ in
       valprim_ext (code, hit0)
     end // end of [HIEextval]
 //
-  | HIEfix (d2v_fix, d3e_def) => let
+  | HIEfix (knd, d2v_fix, hie_def) => let
       val hit0 = hityp_normalize (hie0.hiexp_typ)
 //
-      val vp_null = __cast (null) where {
-        extern castfn __cast (x: ptr null): valprim
-      } // end of [val]
-      val vpr = ref_make_elt<valprim> (vp_null)
-      val vp_fix = valprim_ref (vpr, hit0)
+      val vp_void = valprim_void ()
+      val vpr = ref_make_elt<valprim> (vp_void)
+      val vp_fix = valprim_fix (vpr, hit0)
 //
       val (pf_dynctx_mark | ()) = the_dynctx_mark ()
       val () = the_dynctx_add (d2v_fix, vp_fix)
-      val vp_def = ccomp_exp (res, d3e_def)
+      val vp_def = ccomp_exp_fixdef (res, hie_def, vpr)
       val () = the_dynctx_unmark (pf_dynctx_mark | (*none*))
 //
       val () = !vpr := vp_def
@@ -1708,12 +1730,15 @@ fn ccomp_exp_app_tmpvar (
       where {
         val vp = ccomp_exp (res, hie)
         val () = case+ vp.valprim_node of
-          | VPclo _ => () | VPfun _ => () | _ => (
+          | VPclo _ => ()
+          | VPfun _ => ()
+          | VPfix _ => ()
+          | _ => (
               vps_free := list_vt_cons (vp, vps_free)
             )
       } // end of [where]
     | _ => ccomp_exp (res, hie_fun)
-  ) : valprim
+  ) : valprim // end of [val]
 (*
   val () = begin
     print "ccomp_exp_app_tmpvar: vp_fun = "; print vp_fun; print_newline ()
@@ -1738,6 +1763,10 @@ fn ccomp_exp_app_tmpvar (
           end // end of [Some_vt]
         | ~None_vt () => None_vt ()
       end // end of [VPcst]
+    | VPfix vpr => let
+        val vp = !vpr in
+        case+ vp.valprim_node of VPfun fl => Some_vt (fl) | _ => None_vt ()
+      end // end of [VPfix]
     | _ => None_vt ()
   ) : Option_vt (funlab_t)
 //
@@ -1752,9 +1781,11 @@ fn ccomp_exp_app_tmpvar (
         end // end of [val]
 *)
         val () = case+ vps_free of
-          | list_vt_nil _ => begin
-              if tmpvar_ret_get tmp_res > 0 then istail := 1;
-              fold@ vps_free
+          | list_vt_nil _ => let
+              val () = if tmpvar_ret_get tmp_res > 0 then istail := 1
+              val () = fold@ vps_free
+            in
+              // nothing
             end // end of [list_vt_nil]
           | list_vt_cons _ => (fold@ vps_free)
         // end of [val]
@@ -1795,6 +1826,7 @@ fn ccomp_exp_app_tmpvar (
     end // end of [if]
 //
   val () = instrlst_add_freeptr (res, loc0, vps_free)
+//
 in
   // empty
 end // end of [ccomp_exp_app_tmpvar]
@@ -2537,11 +2569,21 @@ fn ccomp_vardec_sta
   val hit = s2exp_tr (loc, 0(*deep*), s2e)
   val tmp = tmpvar_make (hityp_normalize hit)
   val () = instr_add_vardec (res, loc, tmp)
-  val () = the_dynctx_add (d2v, valprim_tmp_ref tmp)
+  val () = the_dynctx_add (d2v, valprim_tmpref (tmp))
 in
   case+ vardec.hivardec_ini of
   | Some hie => ccomp_exp_tmpvar (res, hie, tmp) | None () => ()
 end // end of [ccomp_vardec_sta]
+
+(* ****** ****** *)
+
+fun hiexp_is_laminit
+  (hie: hiexp): bool =
+  case+ hie.hiexp_node of
+  | HIElaminit _ => true
+  | HIEfix (_(*knd*), _(*d2v*), hie_def) => hiexp_is_laminit (hie_def)
+  | _ => false
+// end of [hiexp_is_laminit]
 
 fn ccomp_vardec_dyn
   (res: &instrlst_vt, level: int, vardec: hivardec)
@@ -2549,7 +2591,8 @@ fn ccomp_vardec_dyn
   val loc_var = vardec.hivardec_loc
   val d2v = vardec.hivardec_ptr
   val () = d2var_lev_set (d2v, level)
-  val hit_ptr = s2exp_tr (loc_var, 0(*deep*), s2e) where {
+  val hit_ptr =
+    s2exp_tr (loc_var, 0(*deep*), s2e) where {
     // [s2e] must a pointer type
     val s2e = d2var_typ_get_some (d2var_loc_get d2v, d2v)
   } // end of [val]
@@ -2557,42 +2600,78 @@ fn ccomp_vardec_dyn
     tmpvar_make (hityp_normalize hit_ptr)
   val () = instr_add_vardec (res, loc_var, tmp_ptr)
   val () = the_dynctx_add (d2v, valprim_tmp tmp_ptr)
-  val hie_ini = (case+ vardec.hivardec_ini of
+  val hie_ini = (
+    case+ vardec.hivardec_ini of
     | Some hie => hie | None => begin
         prerr_loc_interror (loc_var);
         prerr ": ccomp_vardec_dyn: no initialization."; prerr_newline ();
         $Err.abort {hiexp} ()
       end // end of [None]
   ) : hiexp // end of [val]
-  val loc_ini = hie_ini.hiexp_loc
+//
+  fun aux_laminit (
+      res: &instrlst_vt
+    , tmp_ptr: tmpvar_t, hie: hiexp
+(*
+    , ovpr: Option_vt (valprimref) // HX: for tail-call optimization
+*)
+    ) : void =
+    case+ hie.hiexp_node of
+    | HIElaminit (hips_arg, hie_body) => let
+        val loc = hie.hiexp_loc
+        val hit = hityp_normalize (hie.hiexp_typ)
+        val fl = funlab_make_typ (hit)
+(*
+        val () = (case+ ovpr of
+          | ~Some_vt vpr => !vpr := valprim_fun (fl) | ~None_vt () => ()
+        ) : void // end of [val]
+*)
+        val (pf_tailcallst_mark | ()) = the_tailcallst_mark ()
+        val () = the_tailcallst_add (fl, list_nil ())
+        val _(*funentry*) = let
+          val ins = instr_funlab (fl); val prolog = '[ins]
+        in
+          ccomp_exp_arg_body_funlab (loc, prolog, hips_arg, hie_body, fl)
+        end // end of [val]
+        val () = the_tailcallst_unmark (pf_tailcallst_mark | (*none*))
+        val vp_clo = valprim_tmp (tmp_ptr)
+        val env = cloenv_make ()
+        val () = instr_add_assgn_clo (res, loc, vp_clo, fl, env)
+      in
+        // nothing
+      end // end of [HIElaminit]
+    | HIEfix (knd, d2v_fix, hie_def) => let
+        val vp_void = valprim_void ()
+        val vpr = ref_make_elt<valprim> (vp_void)
+        val vp_fix = valprim_fix (vpr, hityp_t_ptr)
+        val (pf_dynctx_mark | ()) = the_dynctx_mark ()
+        val () = the_dynctx_add (d2v_fix, vp_fix)
+        val () = aux_laminit (res, tmp_ptr, hie_def)
+        val () = the_dynctx_unmark (pf_dynctx_mark | (*none*))
+      in
+        // nothing
+      end // end of [HIEfix]
+    | _ => $Err.abort () // HX: deadcode
+  // end of [aux_laminit]
+//
 in
   case+ hie_ini.hiexp_node of
   | HIEarrinit
       (hit_elt, ohie_asz, hies_elt) => let
+      val loc_ini = hie_ini.hiexp_loc
       val hit_elt = hityp_normalize hit_elt
     in
       ccomp_exp_arrinit_tmpvar (
         res, loc_ini, level, hit_elt, ohie_asz, hies_elt, tmp_ptr
       ) // end of [ccomp_exp_arrinit_tmpvar]
     end // end of [HIEarrinit]
-  | HIElaminit (hips_arg, hie_body) => let
-      val hit_ini = hityp_normalize (hie_ini.hiexp_typ)
-      val fl = funlab_make_typ (hit_ini)
-      val (pf_tailcallst_mark | ()) = the_tailcallst_mark ()
-      val () = the_tailcallst_add (fl, list_nil ())
-      val _(*funentry*) = let
-        val ins = instr_funlab (fl); val prolog = '[ins]
-      in
-        ccomp_exp_arg_body_funlab (loc_ini, prolog, hips_arg, hie_body, fl)
-      end // end of [val]
-      val () = the_tailcallst_unmark (pf_tailcallst_mark | (*none*))
-      val vp_clo = valprim_tmp (tmp_ptr); val env = cloenv_make ()
+  |  _ when hiexp_is_laminit (hie_ini) => aux_laminit (res, tmp_ptr, hie_ini)
+  | _ => let
+      val () = prerr_interror ()
+      val () = prerr ": ccomp_vardec_dyn: hie_ini = "
+      val () = prerr_hiexp hie_ini
+      val () = prerr_newline ()
     in
-      instr_add_assgn_clo (res, loc_ini, vp_clo, fl, env)
-    end // end of [HIElaminit]
-  | _ => begin
-      prerr_interror ();
-      prerr ": ccomp_vardec_dyn: hie_ini = "; prerr_hiexp hie_ini; prerr_newline ();
       $Err.abort {void} ()
     end // end of [_]
 end // end of [ccomp_vardec_dyn]
@@ -2686,7 +2765,7 @@ fn ccomp_impdec
         // empty
       end // end of [HIElam]
     | HIEfix (
-        d2v_fix, hie_def
+        knd, d2v_fix, hie_def
       ) when hiexp_is_lam (hie_def) => let
 (*
 // HX: should we enforce [tmparg] being empty? this is ignore currently

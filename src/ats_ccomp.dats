@@ -410,7 +410,7 @@ valprim_is_const (vp) =
 implement
 valprim_is_mutable (vp) = begin
   case+ vp.valprim_node of
-  | VParg_ref _ => true | VPtmp_ref _ => true | _ => false
+  | VParg_ref _ => true | VPtmpref _ => true | _ => false
 end // end of [valprim_is_mutable]
 
 (* ****** ****** *)
@@ -460,6 +460,15 @@ valprim_ext (code, hit) = '{
   valprim_node= VPext code, valprim_typ= hit
 } // end of [valprim_ext]
 
+(* ****** ****** *)
+
+implement
+valprim_fix (vpr, hit) = '{
+  valprim_node= VPfix (vpr), valprim_typ = hit
+} // end of [valprim_fix]
+
+(* ****** ****** *)
+
 implement
 valprim_float f(*string*) = '{
   valprim_node= VPfloat f, valprim_typ= hityp_encode (hityp_double)
@@ -469,6 +478,8 @@ implement
 valprim_floatsp (f, hit) = '{
   valprim_node= VPfloatsp f, valprim_typ= hit
 } // end of [valprim_floatsp]
+
+(* ****** ****** *)
 
 implement
 valprim_clo (knd, fl, env) = let
@@ -525,11 +536,6 @@ end // end of [valprim_ptrof_var_offs]
 (* ****** ****** *)
 
 implement
-valprim_ref (vpr, hit) = '{
-  valprim_node= VPref (vpr), valprim_typ = hit
-} // end of [valprim_ref]
-
-implement
 valprim_sizeof (hit) = '{
   valprim_node= VPsizeof hit
 , valprim_typ= hityp_encode (hityp_int)
@@ -547,9 +553,9 @@ valprim_tmp (tmp) = '{
 } // end of [valprim_tmp]
 
 implement
-valprim_tmp_ref (tmp) = '{
-  valprim_node= VPtmp_ref tmp, valprim_typ= tmpvar_typ_get tmp
-} // end of [valprim_tmp_ref]
+valprim_tmpref (tmp) = '{
+  valprim_node= VPtmpref tmp, valprim_typ= tmpvar_typ_get tmp
+} // end of [valprim_tmpref]
 
 implement
 valprim_top (hit) = '{

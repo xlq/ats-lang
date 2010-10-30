@@ -125,6 +125,9 @@ extern lamkind_t lamkind_lam (t0kn_t) ;
 extern lamkind_t lamkind_atlam (t0kn_t) ;
 extern lamkind_t lamkind_llam (t0kn_t) ;
 extern lamkind_t lamkind_atllam (t0kn_t) ;
+typedef lamkind_t fixkind_t ;
+extern fixkind_t fixkind_fix (t0kn_t) ;
+extern fixkind_t fixkind_atfix (t0kn_t) ;
 
 /* ****** ****** */
 
@@ -708,7 +711,7 @@ extern d0exp_t d0exp_exist (t0kn_t, s0exparg_t, t0kn_t, d0exp_t, t0kn_t) ;
 extern d0exp_t d0exp_extval (t0kn_t, s0exp_t, s0tring_t, t0kn_t) ;
 
 extern d0exp_t d0exp_fix
-  (i0de_t, t0kn_t, f0arglst_t, s0expopt_t, e0fftaglstopt_t, d0exp_t) ;
+  (fixkind_t, i0de_t, f0arglst_t, s0expopt_t, e0fftaglstopt_t, d0exp_t) ;
 
 extern d0exp_t d0exp_float (f0loat_t) ;
 extern d0exp_t d0exp_floatsp (f0loatsp_t) ;
@@ -1000,6 +1003,7 @@ funkind_t funkind ;
 //
 
 lamkind_t lamkind ;
+fixkind_t fixkind ;
 
 //
 
@@ -1256,7 +1260,7 @@ guad0ec_t guad0ec ;
 %token <t0kn> AS
 %token <t0kn> ASSUME
 %token <t0kn> AT
-%token <t0kn> ATLAM ATLLAM
+%token <t0kn> ATLAM ATLLAM ATFIX
 %token <t0kn> BEGIN
 %token <t0kn> BREAK
 %token <t0kn> CASE CASEMINUS CASEPLUS
@@ -1496,6 +1500,7 @@ guad0ec_t guad0ec ;
 %type <funkind> funkind
 
 %type <lamkind> lamkind
+%type <fixkind> fixkind
 
 %type <srpifkindtok> srpifkind
 %type <srpifkindtok> srpelifkind
@@ -1842,6 +1847,10 @@ lamkind
   | LLAM                                { $$ = lamkind_llam ($1) ; }
   | ATLLAM                              { $$ = lamkind_atllam ($1) ; }
 ;
+
+fixkind
+  : FIX                                 { $$ = fixkind_fix ($1) ; }
+  | ATFIX                               { $$ = fixkind_atfix ($1) ; }
 
 /* ****** ****** */
 
@@ -2920,7 +2929,7 @@ d0exp
                                         { $$ = d0exp_scaseof($1, $2, $3, $4) ; }
   | lamkind f0arg1seq colons0expopt funarrow d0exp %prec DEXPLAM
                                         { $$ = d0exp_lam($1, $2, $3, $4, $5 ) ; }
-  | FIX di0de f0arg1seq colons0expopt funarrow d0exp %prec DEXPLAM
+  | fixkind di0de f0arg1seq colons0expopt funarrow d0exp %prec DEXPLAM
                                         { $$ = d0exp_fix($1, $2, $3, $4, $5, $6) ; }
   | forhead initestpost d0exp %prec DEXPFOR
                                         { $$ = d0exp_for_itp ($1, $2, $3) ; }

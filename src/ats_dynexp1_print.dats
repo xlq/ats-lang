@@ -333,11 +333,13 @@ in
       prstr "\"";
       prstr ")"
     end // end of [D1Eextval]
-  | D1Efix (id_fun, d1e_body) => begin
+  | D1Efix (knd, id_fun, d1e_def) => begin
       prstr "D1Efix(";
+      fprint1_int (pf | out, knd);
+      prstr "; ";
       $Syn.fprint_i0de (pf | out, id_fun);
       prstr "; ";
-      fprint_d1exp (pf | out, d1e_body);
+      fprint_d1exp (pf | out, d1e_def);
       prstr ")"
     end // end of [D1Efix]
   | D1Efloat f(*string*) => begin
@@ -353,7 +355,9 @@ in
       fprint_d1exp (pf | out, d1e);
       prstr ")"
     end // end of [D1Efoldat]
-  | D1Efor (inv, ini, test, post, body) => begin
+  | D1Efor (
+      inv, ini, test, post, body
+    ) => begin
       fprint1_string (pf | out, "...");
       prstr "; ";
       fprint_d1exp (pf | out, ini);

@@ -463,8 +463,10 @@ in
       prstr "\"";
       prstr ")"
     end // end of [D2Eextval]
-  | D2Efix (d2v_fun, d2e_body) => begin
+  | D2Efix (knd, d2v_fun, d2e_body) => begin
       prstr "D2Efix(";
+      fprint1_int (pf | out, knd);
+      prstr "; ";
       fprint_d2var (pf | out, d2v_fun);
       prstr "; ";
       fprint_d2exp (pf | out, d2e_body);

@@ -289,8 +289,8 @@ and d1exp_node =
       (s1exparg, d1exp)
   | D1Eextval of (* external code *)
       (s1exp (*type*), string (*code*))
-  | D1Efix of (* dynamic fixed-point expression *)
-      ($Syn.i0de, d1exp)
+  | D1Efix of // dynamic fixed-point expression
+      (int(*knd: 0/1: flat/boxed*), $Syn.i0de, d1exp)
   | D1Efloat of (* dynamic floats *)
       string 
   | D1Efloatsp of (* dynamic specified floats *)
@@ -723,7 +723,9 @@ fun d1exp_exist (_: loc_t, s1a: s1exparg, d1e: d1exp): d1exp
 
 fun d1exp_extval (_: loc_t, s1e: s1exp, code: string): d1exp
 
-fun d1exp_fix (_: loc_t, id: $Syn.i0de, d1e: d1exp): d1exp
+fun d1exp_fix
+  (_: loc_t, knd: int, id: $Syn.i0de, d1e: d1exp): d1exp
+// end of [d1exp_fix]
 
 fun d1exp_float (_: loc_t, f: string): d1exp
 fun d1exp_floatsp (_: loc_t, f: string): d1exp
