@@ -957,7 +957,7 @@ fun aux_item (d0e0: d0exp): d1expitm = let
     in
       $Fix.ITEMatm (d1exp_extval (loc0, s1e_typ, code))
     end // end of [D0Eextval]
-  | D0Efix (knd, id, args, res, otags, body) => let
+  | D0Efix (knd, id, args, res, otags, d0e_def) => let
       val (ofc, lin, oefc) = (case+ otags of
         | Some tags => let
             val (ofc, lin, prf, efc) = $Eff.e0fftaglst_tr (tags)
@@ -966,20 +966,24 @@ fun aux_item (d0e0: d0exp): d1expitm = let
           end // end of [Some]
         | None () => (None () (*ofc*), 0 (*lin*), None () (*oefc*))
       ) : (Option funclo, int, efcopt)
-      val d1e_fun =
-        d0exp_lams_dyn_tr (knd, Some loc0, ofc, lin, args, res, oefc, body)
+      val d1e_def =
+        d0exp_lams_dyn_tr (knd, Some loc0, ofc, lin, args, res, oefc, d0e_def)
       // end of [val]
-      val () = termination_metric_check (loc0, false (*met*), oefc)
+//
+      val ismet = d1exp_is_metric (d1e_def)
+      val () = termination_metric_check (loc0, ismet, oefc)
+//
       val isat = lamkind_isat (knd) // HX: fixind = lamkind
+//
     in
-      $Fix.ITEMatm (d1exp_fix (loc0, isat, id, d1e_fun))
+      $Fix.ITEMatm (d1exp_fix (loc0, isat, id, d1e_def))
     end // end of [D0Efix]
   | D0Efloat (str (*float*)) => begin
       $Fix.ITEMatm (d1exp_float (loc0, str))
-    end
+    end // end of [D0Efloat]
   | D0Efloatsp (str (*float*)) => begin
       $Fix.ITEMatm (d1exp_floatsp (loc0, str))
-    end
+    end // end of [D0Efloatsp]
   | D0Efoldat (d0es) => let
       val s1as = s0expdarglst_tr d0es
       fn f (d1e: d1exp):<cloref1> d1expitm =

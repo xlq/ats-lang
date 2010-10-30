@@ -332,13 +332,13 @@ fn f2undeclst_tr
           val s2e = (
             case+ d2c.f2undec_ann of
             | Some s2e_ann => s2e_ann | None () => d2exp_typ_syn d2e_def
-          ) : s2exp
+          ) : s2exp // end of [val]
           val os2tss2e = s2exp_metfn_load (s2e, d2v_fun)
         in
           case+ os2tss2e of
           | ~Some_vt (s2tss2e) => (os2ts := Some s2tss2e.1; s2tss2e.0)
           | ~None_vt () => s2e
-        end
+        end // end of [val]
         val () = // checking metric sorts
           if i > 0 then let
             val compatible: bool =
@@ -498,16 +498,21 @@ in
   v3ardec_make (loc0, 0(*knd*), d2v_ptr, d2v_view, s2e_elt, od3e_ini)
 end // end of [v2ardec_tr_sta]
 
+(* ****** ****** *)
+
 fun d2exp_is_laminit
   (d2e: d2exp): bool =
   case+ d2e.d2exp_node of
   | D2Elaminit_dyn _ => true
   | D2Elam_sta (_(*s2vs*), _(*s2ps*), d2e) => d2exp_is_laminit (d2e)
+  | D2Elam_met (_(*d2vs*), _(*s2es*), d2e) => d2exp_is_laminit (d2e)
   | D2Efix (_(*knd*), _(*d2v*), d2e_def) => d2exp_is_laminit (d2e_def)
   | _ => false
 // end of [d2exp_is_laminit]
 
-// [dyn] means allocation at run-time
+//
+// HX: [dyn] means allocation at run-time
+//
 fn v2ardec_tr_dyn
   (d2c: v2ardec): v3ardec = let
   val loc0 = d2c.v2ardec_loc
