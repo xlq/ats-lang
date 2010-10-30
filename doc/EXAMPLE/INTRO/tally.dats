@@ -31,7 +31,8 @@ implement main () = let
   } // end of [val]
 //
   val ans4 = !p_clo(100) where {
-    var !p_clo = @fix f {n:nat} (n: int n): int =<clo1> if n > 0 then n + f(n-1) else 0
+    var !p_clo = @fix f
+      {n:nat} (n: int n): intGte(0) =<clo1> if n > 0 then n + f(n-1) else 0
   } // end of [val]
 in
   printf ("tally(100) = %i\n", @(ans1));
