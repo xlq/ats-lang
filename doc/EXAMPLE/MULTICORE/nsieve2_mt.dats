@@ -239,7 +239,7 @@ end // end of [nsieve_mt]
 
 (* ****** ****** *)
 
-#define QSZ 1024
+#define QSZ 1024 // HX: arbitrarily choosen; should be >= 1
 #define NWORKER 1
 
 implement main (argc, argv) = let

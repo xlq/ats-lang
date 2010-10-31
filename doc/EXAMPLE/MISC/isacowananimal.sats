@@ -7,6 +7,9 @@
 **
 *)
 
+//
+// HX: note that this is just a specification
+//
 
 (* ****** ****** *)
 //
@@ -89,7 +92,7 @@ absviewtype EATEN (thing)
 prfun eaten_once {x:thing}
   (X: EATEN (x)): void // thing can only be eaten once
 prfun eaten_more {x:thing}
-  (pf: VEGE (x) | X: EATEN (x)): THING (x) // vegetable can be eaten repeatedly
+  (pf: VEGE (x) | X: !EATEN (x) >> THING (x)): void // vegetable can be eaten repeatedly
 
 (* ****** ****** *)
 

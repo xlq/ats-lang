@@ -50,77 +50,71 @@ abst@ype count_t = $extype "atsopt_count_type"
 abstype counter_t // ref (count_t)
 
 (* ****** ****** *)
-
+//
 fun lt_count_count (c1: count_t, c2: count_t):<> bool
-fun lte_count_count (c1: count_t, c2: count_t):<> bool
-
 overload < with lt_count_count
+fun lte_count_count (c1: count_t, c2: count_t):<> bool
 overload <= with lte_count_count
-
+//
 fun gt_count_count (c1: count_t, c2: count_t):<> bool
-fun gte_count_count (c1: count_t, c2: count_t):<> bool
-
 overload > with lt_count_count
+fun gte_count_count (c1: count_t, c2: count_t):<> bool
 overload >= with lte_count_count
-
+//
 fun eq_count_count (c1: count_t, c2: count_t):<> bool
-fun neq_count_count (c1: count_t, c2: count_t):<> bool
-
 overload = with eq_count_count
+fun neq_count_count (c1: count_t, c2: count_t):<> bool
 overload <> with neq_count_count
-
-fun compare_count_count (c1: count_t, c2: count_t):<> Sgn
-  = "atsopt_compare_count_count"
-
+//
+fun compare_count_count
+  (c1: count_t, c2: count_t):<> Sgn = "atsopt_compare_count_count"
 overload compare with compare_count_count
+//
+(* ****** ****** *)
+
+fun count_hash
+  (c: count_t):<> uInt = "atsopt_count_hash"
+// end of [count_hash]
 
 (* ****** ****** *)
 
-fun count_hash (c: count_t):<> uInt = "atsopt_count_hash"
-
-(* ****** ****** *)
-
-fun fprint_count {m:file_mode}
-  (pf: file_mode_lte (m, w) | out: &FILE m, c: count_t): void
-  = "atsopt_fprint_count"
-
+fun fprint_count {m:file_mode} (
+  pf: file_mode_lte (m, w) | out: &FILE m, c: count_t
+) : void = "atsopt_fprint_count"
 overload fprint with fprint_count
 
 fun print_count (c: count_t): void
 overload print with print_count
-
 fun prerr_count (c: count_t): void
 overload prerr with prerr_count
 
 (* ****** ****** *)
 
-fun tostring_count (cnt: count_t): string
-  = "atsopt_tostring_count"
-fun tostring_prefix_count (pre: string, cnt: count_t): string
-  = "atsopt_tostring_prefix_count"
+fun tostring_count
+  (cnt: count_t): string = "atsopt_tostring_count"
+fun tostring_prefix_count
+  (pre: string, cnt: count_t): string = "atsopt_tostring_prefix_count"
 
 (* ****** ****** *)
 //
 // the following functions are implemented in [ats_counter.cats]
 //
-fun counter_make (): counter_t
-  = "atsopt_counter_make"
-
-fun counter_inc (cntr: counter_t): void
-  = "atsopt_counter_inc"
-
-fun counter_get (cntr: counter_t): count_t
-  = "atsopt_counter_get"
-fun counter_set (cntr: counter_t, cnt: count_t): void
-  = "atsopt_counter_set"
-fun counter_reset (cntr: counter_t): void
-  = "atsopt_counter_reset"
-
-fun counter_get_and_inc (cntr: counter_t): count_t
-  = "atsopt_counter_get_and_inc"
-fun counter_inc_and_get (cntr: counter_t): count_t
-  = "atsopt_counter_inc_and_get"
-
+fun counter_make (): counter_t = "atsopt_counter_make"
+//
+fun counter_inc
+  (cntr: counter_t): void = "atsopt_counter_inc"
+fun counter_get
+  (cntr: counter_t): count_t = "atsopt_counter_get"
+fun counter_set
+  (cntr: counter_t, cnt: count_t): void = "atsopt_counter_set"
+fun counter_reset
+  (cntr: counter_t): void = "atsopt_counter_reset"
+//
+fun counter_get_and_inc
+  (cntr: counter_t): count_t = "atsopt_counter_get_and_inc"
+fun counter_inc_and_get
+  (cntr: counter_t): count_t = "atsopt_counter_inc_and_get"
+//
 (* ****** ****** *)
 
 (* end of [ats_counter.sats] *)

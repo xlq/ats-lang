@@ -39,26 +39,32 @@ macdef ff = int8_of_int (0)
 
 typedef two = int8
 
-extern fun sieve_once {m,limit:nat | limit <= m} {i,j:nat} {l:addr}
-  (pf: !array_v (two, m, l) |
-   A: ptr l, limit: int limit, i: int i, j: int j): void
-  = "sieve_once_safe"
+extern fun sieve_once
+  {m,limit:nat | limit <= m} {i,j:nat} {l:addr} (
+  pf: !array_v (two, m, l) | A: ptr l, limit: int limit, i: int i, j: int j
+) : void = "sieve_once_safe"
 
-implement sieve_once (pf | A, limit, i, j) = begin
+implement
+sieve_once
+  (pf | A, limit, i, j) = begin
   if (j < limit) then begin
     (if A[j] <> ff then A[j] := ff; sieve_once (pf | A, limit, i, j+i))
   end // end of [if]
 end // end of [sieve_once]
 
-extern fun sieve_once_unsafe (A: Ptr, limit: int, i: int, j: int): void
-  = "sieve_once_safe"
+extern fun sieve_once_unsafe
+  (A: Ptr, limit: int, i: int, j: int): void = "sieve_once_safe"
+// end of [sieve_once_unsafe]
 
 extern fun sieve_many
   {m,m1,m2:nat | m1 <= m; m2 <= m} {i:nat} {l:addr}
   (pf: !array_v (two, m, l) | A: ptr l, m1: int m1, m2: int m2, i: int i): void
   = "sieve_many_safe"
+// end of [sieve_many]
 
-implement sieve_many (pf | p_A, m1, m2, i) = begin
+implement
+sieve_many
+  (pf | p_A, m1, m2, i) = begin
   if i < m1 then let
     val () = if p_A->[i] = tt then sieve_once (pf | p_A, m2, i, i+i)
   in
@@ -179,7 +185,7 @@ end // end of [nsieve_mt]
 
 (* ****** ****** *)
 
-#define QSZ 1024
+#define QSZ 1024 // HX: arbitrarily choosen; should be >= 1
 #define NWORKER 1
 
 implement main (argc, argv) = let

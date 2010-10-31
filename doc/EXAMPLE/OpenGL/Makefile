@@ -1,8 +1,12 @@
 #
 #
-# Some programs involving OpenGL
+# A simple Makefile for some programs involving OpenGL
+#
+# Author: Hongwei Xi (hwxi AT cs DOT bu DOT edu)
 #
 #
+
+######
 
 .PHONY: all
 all:  compall
@@ -43,43 +47,47 @@ glDoubleBuffer: glDoubleBuffer.dats
 	$(ATSCC) -o glDoubleBuffer glDoubleBuffer.dats $(ATSCTRB) -lGL -lglut
 
 glIcosahedron: glIcosahedron.dats
-	$(ATSCC) -D_ATS_GCATS -o glIcosahedron glIcosahedron.dats $(ATSCTRB) -lGL -lglut -lm
+	$(ATSCC) -D_ATS_GCATS -o glIcosahedron glIcosahedron.dats $(ATSCTRB) -lGL -lGLU -lglut -lm
 
 glClipping: glClipping.dats
-	$(ATSCC) -o glClipping glClipping.dats $(ATSCTRB) -lGL -lglut
+	$(ATSCC) -o glClipping glClipping.dats $(ATSCTRB) -lGL -lGLU -lglut
 
 glCubeView: glCubeView.dats
-	$(ATSCC) -o glCubeView glCubeView.dats $(ATSCTRB) -lGL -lglut
+	$(ATSCC) -o glCubeView glCubeView.dats $(ATSCTRB) -lGL -lGLU -lglut
 
 glPlanet: glPlanet.dats
-	$(ATSCC) -o glPlanet glPlanet.dats $(ATSCTRB) -lGL -lglut
+	$(ATSCC) -o glPlanet glPlanet.dats $(ATSCTRB) -lGL -lGLU -lglut
 
 glColoredTriangle: glColoredTriangle.dats
-	$(ATSCC) -o glColoredTriangle glColoredTriangle.dats $(ATSCTRB) -lGL -lglut -lm
+	$(ATSCC) -o glColoredTriangle glColoredTriangle.dats $(ATSCTRB) -lGL -lGLU -lglut -lm
 
 glLitSphere: glLitSphere.dats
 	$(ATSCC) -o glLitSphere glLitSphere.dats $(ATSCTRB) -lGL -lglut
 
 glLightMove1: glLightMove1.dats
-	$(ATSCC) -o glLightMove1 glLightMove1.dats $(ATSCTRB) -lGL -lglut
+	$(ATSCC) -o glLightMove1 glLightMove1.dats $(ATSCTRB) -lGL -lGLU -lglut
 
 glLightMove2: glLightMove2.dats
-	$(ATSCC) -o glLightMove2 glLightMove2.dats $(ATSCTRB) -lGL -lglut
+	$(ATSCC) -o glLightMove2 glLightMove2.dats $(ATSCTRB) -lGL -lGLU -lglut
 
 glBlending1: glBlending1.dats
-	$(ATSCC) -o glBlending1 glBlending1.dats $(ATSCTRB) -lGL -lglut
+	$(ATSCC) -o glBlending1 glBlending1.dats $(ATSCTRB) -lGL -lGLU -lglut
 
 glBlending2: glBlending2.dats
 	$(ATSCC) -o glBlending2 glBlending2.dats $(ATSCTRB) -lGL -lglut
 
 glDisplayList1: glDisplayList1.dats
-	$(ATSCC) -o glDisplayList1 glDisplayList1.dats $(ATSCTRB) -lGL -lglut -lm
+	$(ATSCC) -o glDisplayList1 glDisplayList1.dats $(ATSCTRB) -lGL -lGLU -lglut -lm
+
+######
 
 #
 # A little bit animation for fun
 #
 glFaces: glFaces.dats
 	$(ATSCC) -o glFaces glFaces.dats $(ATSCTRB) -lGL -lglut -lm
+
+######
 
 #
 # A simple game of Tetris implemented in ATS
