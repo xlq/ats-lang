@@ -2211,10 +2211,12 @@ end // end of [_emit_closure_type]
 
 (* ****** ****** *)
 
-fn _emit_closure_init {m:file_mode} {l:addr} (
+fn _emit_closure_init
+  {m:file_mode} {l:addr} (
     pf_mod: file_mode_lte (m, w), pf_fil: !FILE m @ l
   | p_l: ptr l, fl: funlab_t, vtps: vartypset
   ) : void = let
+//
   dataviewtype ENV (l:addr, i:addr) = ENVcon2 (l, i) of (ptr l, ptr i)
   var i: int // uninitialized
   viewdef V = (FILE m @ l, int @ i)
@@ -2234,7 +2236,7 @@ fn _emit_closure_init {m:file_mode} {l:addr} (
   in
     pf := @(pf_fil, pf_int); fold@ env
   end // end of [f_arg]
-
+//
   fn f_body (pf: !V | vtp: vartyp_t, env: !VT): void = let
     prval @(pf_fil, pf_int) = pf
     val+ ENVcon2 (p_l, p_i) = env
@@ -2244,37 +2246,37 @@ fn _emit_closure_init {m:file_mode} {l:addr} (
   in
     pf := @(pf_fil, pf_int); fold@ env
   end // end of [f_body]
-
-  val () = fprint1_string (pf_mod | !p_l, "static inline\n")
+//
+  val () = fprint1_string (pf_mod | !p_l, "ATSinline()\n")
   val () = fprint1_string (pf_mod | !p_l, "ats_void_type\n")
   val () = emit_funlab (pf_mod | !p_l, fl)
   val () = fprint1_string (pf_mod | !p_l, "_closure_init (")
   val () = emit_funlab (pf_mod | !p_l, fl)
   val () = fprint1_string (pf_mod | !p_l, "_closure_type *p_clo")
-  
+//  
   val env = ENVcon2 (p_l, &i)
-
+//
   val () = i := 0
   prval pf = @(pf_fil, view@ i)
   val () = vartypset_foreach_main {V} {VT} (pf | vtps, f_arg, env)
   prval () = (pf_fil := pf.0; view@ i := pf.1)
-
+//
   val () = fprint1_string (pf_mod | !p_l, ") {\n")
-
+//
   val () = fprint1_string (pf_mod | !p_l, "p_clo->closure_fun = (ats_fun_ptr_type)&")
   val () = emit_funlab (pf_mod | !p_l, fl)
   val () = fprint1_string (pf_mod | !p_l, "_clofun ;\n")
-
+//
   val () = i := 0
   prval pf = @(pf_fil, view@ i)
   val () = vartypset_foreach_main {V} {VT} (pf | vtps, f_body, env)
   prval () = (pf_fil := pf.0; view@ i := pf.1)
-
+//
   val+ ~ENVcon2 (_, _) = env
-
+//
   val () = fprint1_string (pf_mod | !p_l, "return ;\n")
   val () = fprint1_string (pf_mod | !p_l, "} /* end of function */")
-
+//
 in
   // empty
 end // end of [_emit_closure_init]

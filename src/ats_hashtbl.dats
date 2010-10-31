@@ -45,7 +45,16 @@ staload _(*anonymous*) = "ats_reference.dats"
 
 (* ****** ****** *)
 
-dataviewtype chain (key:t@ype,itm:viewt@ype+,int) =
+sortdef t0p = t@ype and vt0p = viewt@ype
+
+(* ****** ****** *)
+
+dataviewtype
+chain (
+  key:t@ype
+, itm:viewt@ype+
+, int (*size*)
+) =
   | {n:nat}
     CHAINcons (key, itm, n+1) of (key, itm, chain (key, itm, n))
   | CHAINnil (key, itm, 0)
@@ -55,12 +64,14 @@ viewtypedef Chain (key: t@ype, itm: viewt@ype) = [n:nat] chain (key, itm, n)
 
 #define nil CHAINnil; #define cons CHAINcons
 
-fun{key:t@ype;itm:t@ype} chain_free
+fun{key:t0p;itm:t0p}
+chain_free
   {n:nat} .<n>. (xs: chain (key, itm, n)):<> void = begin
   case+ xs of ~cons (_, _, xs) => chain_free xs | ~nil () => ()
 end // end of [chain_free]
 
-fun{key:t@ype;itm:t@ype} chain_search {n:nat} .<n>.
+fun{key:t0p;itm:t0p}
+chain_search {n:nat} .<n>.
   (xs0: !chain (key, itm, n), k0: key, eq: (key, key) -<fun> bool)
   :<> Option_vt (itm) = begin case+ xs0 of
   | cons (k, i, !xs) => begin
@@ -73,13 +84,15 @@ fun{key:t@ype;itm:t@ype} chain_search {n:nat} .<n>.
   | nil () => (fold@ xs0; None_vt ()) // end of [nil]
 end // end of [chain_search]
 
-fn{key:t@ype;itm:viewt@ype} chain_insert {n:nat}
+fn{key:t0p;itm:vt0p}
+chain_insert {n:nat}
   (xs: &chain (key, itm, n) >> chain (key, itm, n+1), k: key, i: itm)
   :<> void =
   xs := cons (k, i, xs)
 // end of [chain_insert]
 
-fun{key:t@ype;itm:viewt@ype} chain_remove {n:nat} {l:addr} .<n>.
+fun{key:t0p;itm:vt0p}
+chain_remove {n:nat} {l:addr} .<n>.
   (pf: chain (key, itm, n) @ l | p0: ptr l, k0: key, eq: (key, key) -<fun> bool)
   :<> [n1:nat | n1 <= n] (chain (key, itm, n1) @ l | Option_vt itm) = begin
   case+ !p0 of
@@ -100,9 +113,11 @@ end // end of [chain_remove]
 
 (* ****** ****** *)
 
-viewtypedef table (key: t@ype, itm: viewt@ype, sz: int) = @[Chain(key,itm)][sz]
+viewtypedef
+table (key: t@ype, itm: vt0p, sz: int) = @[Chain(key,itm)][sz]
 
-fn{key:t@ype;itm:t@ype} table_search {sz:nat}
+fn{key:t0p;itm:t0p}
+table_search {sz:nat}
   (tbl: &table (key, itm, sz), off: natLt sz, k0: key, eq: (key, key) -<fun> bool)
   :<> Option_vt itm = let
   viewtypedef elt = Chain(key,itm)
@@ -115,7 +130,8 @@ in
   ans
 end // end of [table_search]
 
-fn{key:t@ype;itm:viewt@ype} table_insert {sz:nat}
+fn{key:t0p;itm:vt0p}
+table_insert {sz:nat}
   (tbl: &table (key, itm, sz), off: natLt sz, k: key, i: itm)
   :<> void = let
   viewtypedef elt = Chain(key,itm)
@@ -128,7 +144,8 @@ in
   // empty
 end // end of [table_insert]
 
-fn{key:t@ype;itm:viewt@ype} table_remove {sz:nat}
+fn{key:t0p;itm:vt0p}
+table_remove {sz:nat}
   (tbl: &table (key, itm, sz), off: sizeLt sz, k: key, eq: (key, key) -<fun> bool)
   :<> Option_vt (itm) = let
   viewtypedef elt = Chain(key,itm)
@@ -141,10 +158,12 @@ in
 end // end of [table_remove]
 
 extern fun table_chain_get
-  {key:t@ype;itm:viewt@ype} {sz,n:nat | n < sz}
+  {key:t0p;itm:vt0p} {sz,n:nat | n < sz}
   (tbl: &table (key, itm, sz), off: int n):<> Chain (key, itm)
+// end of [table_chain_get]
 
-implement table_chain_get {key,itm} (tbl, off) = let
+implement
+table_chain_get {key,itm} (tbl, off) = let
   viewtypedef elt = Chain(key,itm)
   val off_sz = size1_of_int1 (off)
   val (pf1, pf2 | p) =
@@ -160,7 +179,7 @@ end // end of [table_chain_get]
 
 viewtypedef
 hashtbl_struct (
-  key:t@ype, itm:viewt@ype, sz:int
+  key:t0p, itm:vt0p, sz:int
 ) = @{
   hash= key -<fun> uint
 , eq= (key, key) -<fun> bool
@@ -171,24 +190,29 @@ hashtbl_struct (
 
 stadef HT = hashtbl_struct
 
-fn{key:t@ype;itm:t@ype} ht_search {sz:pos}
-  (ht: &HT (key, itm, sz), k0: key):<> Option_vt itm = let
+fn{key:t0p;itm:t0p}
+ht_search {sz:pos} (
+  ht: &HT (key, itm, sz), k0: key
+) :<> Option_vt itm = let
   val off = op uimod (ht.hash k0, ht.size)
 in
   table_search (ht.table, off, k0, ht.eq)
 end // end of [ht_search]
 
-fn{key:t@ype;itm:viewt@ype} ht_insert {sz:pos}
-  (ht: &HT (key, itm, sz), k: key, i: itm):<> void = let
+fn{key:t0p;itm:vt0p}
+ht_insert {sz:pos} (
+  ht: &HT (key, itm, sz), k: key, i: itm
+) :<> void = let
   val off = op uimod (ht.hash k, ht.size)
 in
   table_insert (ht.table, off, k, i); ht.nitm := ht.nitm + 1
 end // end of [ht_insert]
 
-fun{key:t@ype;itm:viewt@ype}
-  ht_insert_chain {sz:pos} {n:nat} .<n>.
-  (ht: &HT (key, itm, sz), kis: chain (key, itm, n))
-  :<> void = begin case+ kis of
+fun{key:t0p;itm:vt0p}
+ht_insert_chain
+  {sz:pos} {n:nat} .<n>. (
+  ht: &HT (key, itm, sz), kis: chain (key, itm, n)
+) :<> void = begin case+ kis of
   | ~cons (k, i, kis) => begin
       ht_insert<key,itm> {sz} (ht, k, i); 
       ht_insert_chain (ht, kis)
@@ -196,8 +220,10 @@ fun{key:t@ype;itm:viewt@ype}
   | ~nil () => () // end of [nil]
 end // end of [ht_insert_chain]
 
-fn{key:t@ype;itm:viewt@ype} ht_remove {sz:pos}
-  (ht: &HT (key, itm, sz), k: key):<> Option_vt itm = let
+fn{key:t0p;itm:vt0p}
+ht_remove {sz:pos} (
+  ht: &HT (key, itm, sz), k: key
+) :<> Option_vt itm = let
   val off = op uimod (ht.hash k, ht.size)
   val off_sz = size1_of_int1 (off)
   val ans = table_remove<key,itm> (ht.table, off_sz, k, ht.eq)
@@ -211,22 +237,24 @@ end // end of [ht_remove]
 
 (* ****** ****** *)
 
-extern fun htp_make {key:t@ype;itm:viewt@ype} {sz:pos}
+extern fun htp_make {key:t0p;itm:vt0p} {sz:pos}
   (hash: key -<fun> uint, eq: (key, key) -<fun> bool, sz: int sz)
   :<> [l:addr | l <> null] (HT (key, itm, sz) @ l | ptr l)
   = "ats_htp_make"
 
-// should only be called if all chains are empty!
+//
+// HX: should only be called if all chains are empty!
+//
 extern fun __htp_free
-  {key:t@ype;itm:viewt@ype} {sz:nat} {l:addr}
+  {key:t0p;itm:vt0p} {sz:nat} {l:addr}
   (pf: HT (key,itm,sz) @ l | p: ptr l):<> void
   = "__ats_htp_free"
 
 extern typedef "hashtbl_struct" =
-  [key:t@ype;itm:viewt@ype] [sz:int] HT (key, itm, sz)
+  [key:t0p;itm:vt0p] [sz:int] HT (key, itm, sz)
+// end of ["hashtbl_struct"]
 extern val "CHAINnil" = CHAINnil ()
-extern typedef "chain" =
-  [key:t@ype;itm:viewt@ype] Chain (key, itm)
+extern typedef "chain" = [key:t0p;itm:vt0p] Chain (key, itm)
 
 %{$
 
@@ -237,7 +265,7 @@ ats_htp_make (
   int n ;
   hashtbl_struct *htp ;
   htp = ATS_MALLOC (sizeof(hashtbl_struct) + sz * sizeof(chain)) ;
-
+//
   htp->atslab_hash = hash ;
   htp->atslab_eq = eq ;
   htp->atslab_size = sz ;
@@ -258,8 +286,8 @@ __ats_htp_free (
 
 (* ****** ****** *)
 
-fn{key:t@ype;itm:t@ype}
-  htp_clear {sz:nat} {l:addr}
+fn{key:t0p;itm:t0p}
+htp_clear {sz:nat} {l:addr}
     (pf: HT (key,itm,sz) @ l | p: ptr l):<> void = let
   val sz = p->size
   fun loop {n:nat | n <= sz} .<sz-n>.
@@ -274,8 +302,8 @@ in
   __htp_free (pf | p)
 end // end of [htp_clear]
 
-fn{key:t@ype;itm:viewt@ype}
-  htp_resize {sz1,sz2:pos} {l1:addr}
+fn{key:t0p;itm:vt0p}
+htp_resize {sz1,sz2:pos} {l1:addr}
     (pf1: HT (key,itm,sz1) @ l1 | p1: ptr l1, sz2: int sz2):<>
     [l2:addr | l2 <> null] (HT (key,itm,sz2) @ l2 | ptr l2) = let
   val sz1 = p1->size
@@ -298,15 +326,17 @@ end // end of [htp_resize]
 
 (* ****** ****** *)
 
-viewtypedef hashtbl_ptr (key:t@ype,itm:viewt@ype) =
+viewtypedef
+hashtbl_ptr (key:t0p,itm:vt0p) =
   [sz:pos] [l:addr] (option_v (HT (key, itm, sz) @ l, l <> null) | ptr l)
 // end of [hashtbl_ptr]
 
-assume hashtbl_t (key:t@ype,itm:viewt@ype) = ref (hashtbl_ptr (key, itm))
+assume hashtbl_t (key:t0p,itm:vt0p) = ref (hashtbl_ptr (key, itm))
 
 (* ****** ****** *)
 
-implement hashtbl_make_hint
+implement
+hashtbl_make_hint
   {key,itm} {sz} (hash, eq, hint) = let
   val [l:addr] (pf_htp | htp) =
     htp_make {key,itm} {sz} (hash, eq, hint)
@@ -317,7 +347,8 @@ in
   ref_make_elt<T> @(pfopt_htp | htp)
 end // end of [hashtbl_make_hint]
 
-implement hashtbl_str_make_hint (hint) = let
+implement
+hashtbl_str_make_hint (hint) = let
   val hashfn = lam (x: string): uint =<fun> uint_of_ulint (string_hash_33 x)
 in
   hashtbl_make_hint (hashfn, eq_string_string, hint)
@@ -326,7 +357,7 @@ end // end of [hashtbl_str_make_hint]
 (* ****** ****** *)
 
 implement{key,itm}
-  hashtbl_clear (hashtbl) = let
+hashtbl_clear (hashtbl) = let
   val (vbox pf | htpp) = ref_get_view_ptr (hashtbl)
   val (pf_htp_opt | htp) = !htpp
 in
@@ -345,7 +376,7 @@ end // end of [hashtbl_clear]
 (* ****** ****** *)
 
 implement{key,itm}
-  hashtbl_search (hashtbl, k) = let
+hashtbl_search (hashtbl, k) = let
   val (vbox pf | htpp) = ref_get_view_ptr (hashtbl)
   val (pf_htp_opt | htp) = !htpp
 in
@@ -368,7 +399,7 @@ end // end of [hashtbl_search]
 #define THRESHOLD 5
 
 implement{key,itm}
-  hashtbl_insert (hashtbl, k, i) = let
+hashtbl_insert (hashtbl, k, i) = let
   val (vbox pf | htpp) = ref_get_view_ptr (hashtbl)
   val (pf_htp_opt | htp) = !htpp
 in
@@ -396,7 +427,7 @@ in
 end // end of [hashtbl_insert]
 
 implement{key,itm}
-  hashtbl_remove (hashtbl, k) = let
+hashtbl_remove (hashtbl, k) = let
   val (vbox pf | htpp) = ref_get_view_ptr (hashtbl)
   val (pf_htp_opt | htp) = !htpp
 in

@@ -71,7 +71,8 @@ typedef e1xpenv = symenv_t (e1xp)
 
 val the_e1xpenv = $SymEnv.symenv_make {e1xp} ()
 
-implement the_e1xpenv_add (opr, e1xp) = let
+implement
+the_e1xpenv_add (opr, e1xp) = let
 (*
   val () = begin
     print "e1xp_add: opr = "; print opr; print_newline ()
@@ -85,7 +86,8 @@ in
   $SymEnv.symenv_insert_fst (the_e1xpenv, opr, e1xp)
 end // end of [the_e1xpenv_add]
 
-implement the_e1xpenv_find (id) = let
+implement
+the_e1xpenv_find (id) = let
 (*
   val () = begin
     print "e1xp_find: id = "; print id; print_newline ()
@@ -175,12 +177,14 @@ in // in of [local]
 
 implement trans1_level_get () = !the_trans1_level
 
-implement trans1_level_dec (pf | (*none*)) = let
+implement
+trans1_level_dec (pf | (*none*)) = let
   prval unit_v () = pf in
   !the_trans1_level := !the_trans1_level - 1
 end // end of [trans1_level_dec]
 
-implement trans1_level_inc () = let
+implement
+trans1_level_inc () = let
   val () = !the_trans1_level := !the_trans1_level + 1 in
   (unit_v () | ())
 end // end of [trans1_level_inc]
@@ -189,27 +193,32 @@ end // end of [local]
 
 (* ****** ******* *)
 
-implement trans1_env_pop () = begin
+implement
+trans1_env_pop () = begin
   $SymEnv.symenv_pop (the_e1xpenv);
   $SymEnv.symenv_pop (the_fxtyenv);
 end // end of [trans1_env_pop]
 
-implement trans1_env_push () = begin
+implement
+trans1_env_push () = begin
   $SymEnv.symenv_push (the_e1xpenv);
   $SymEnv.symenv_push (the_fxtyenv)
 end // end of [trans1_env_push]
 
-implement trans1_env_localjoin () = begin
+implement
+trans1_env_localjoin () = begin
   $SymEnv.symenv_localjoin (the_e1xpenv);
   $SymEnv.symenv_localjoin (the_fxtyenv)
 end // end of [trans1_env_localjoin]
 
-implement trans1_env_save () = begin
+implement
+trans1_env_save () = begin
   $SymEnv.symenv_save (the_e1xpenv);
   $SymEnv.symenv_save (the_fxtyenv)
 end // end of [trans1_env_save]
 
-implement trans1_env_restore () = begin
+implement
+trans1_env_restore () = begin
   $SymEnv.symenv_restore (the_e1xpenv);
   $SymEnv.symenv_restore (the_fxtyenv)
 end // end of [trans1_env_restore]
@@ -229,7 +238,8 @@ end // end of [val]
 
 in // in of [local]
 
-implement staload_file_insert (fullname, flag, d1cs) = let
+implement
+staload_file_insert (fullname, flag, d1cs) = let
   val ans = $HT.hashtbl_insert (theHashTable, fullname, @(flag,d1cs))
 in
   case+ ans of
@@ -241,8 +251,10 @@ in
   | ~None_vt () => ()
 end // end of [staload_file_insert]
 
-implement staload_file_search (fullname) =
+implement
+staload_file_search (fullname) =
   $HT.hashtbl_search (theHashTable, fullname)
+// end of [staload_file_search]
 
 end // end of [local]
 
