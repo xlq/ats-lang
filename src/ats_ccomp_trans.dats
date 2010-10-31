@@ -2584,9 +2584,9 @@ fun hiexp_is_laminit
   | _ => false
 // end of [hiexp_is_laminit]
 
-fn ccomp_vardec_dyn
-  (res: &instrlst_vt, level: int, vardec: hivardec)
-  : void = let
+fn ccomp_vardec_dyn (
+  res: &instrlst_vt, level: int, vardec: hivardec
+) : void = let
   val loc_var = vardec.hivardec_loc
   val d2v = vardec.hivardec_ptr
   val () = d2var_lev_set (d2v, level)
@@ -2638,7 +2638,12 @@ fn ccomp_vardec_dyn
         // nothing
       end // end of [HIElaminit]
     | _ => let
-        val () = case+ ovpr of ~Some_vt _ => () | ~None_vt () => ()
+        val () = (
+          case+ ovpr of ~Some_vt _ => () | ~None_vt () => ()
+        ) : void // end of [val]
+        val () = prerr_interror ()
+        val () = prerr ": aux_laminit: match failure"
+        val () = prerr_newline ()
       in
         $Err.abort () // HX: deadcode
       end // end of [_]
@@ -2646,10 +2651,14 @@ fn ccomp_vardec_dyn
 //
   fn aux_lamfixinit (
       res: &instrlst_vt
-    , tmp_ptr: tmpvar_t, hie:hiexp
+    , tmp_ptr: tmpvar_t, hie: hiexp
     ) : void = case+ hie.hiexp_node of
-    | HIElam _ => aux_laminit (res, tmp_ptr, hie, None_vt ())
-    | HIEfix (knd, d2v_fix, hie_def) => let
+    | HIElaminit _ =>
+        aux_laminit (res, tmp_ptr, hie, None_vt ())
+      // end of [HIElaminit]
+    | HIEfix (
+        knd, d2v_fix, hie_def
+      ) when knd = 0 => let // fixinit
         val vp_void = valprim_void ()
         val vpr = ref_make_elt<valprim> (vp_void)
         val vp_fix = valprim_fix (vpr, hityp_t_ptr)
@@ -2660,8 +2669,14 @@ fn ccomp_vardec_dyn
       in
         // nothing
       end // end of [HIEfix]
-    | _ => $Err.abort () // HX: deadcode
-  // end of [aux_laminit]
+    | _ => let
+        val () = prerr_interror ()
+        val () = prerr ": aux_lamfixinit: match failure"
+        val () = prerr_newline ()
+      in
+        $Err.abort () // HX: deadcode
+      end // end of [_]
+  // end of [aux_lamfixinit]
 //
 in
   case+ hie_ini.hiexp_node of

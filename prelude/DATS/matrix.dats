@@ -36,10 +36,8 @@
 (* ****** ****** *)
 
 %{^
-
 #include "prelude/CATS/array.cats"
-
-%}
+%} // end of [%{^]
 
 (* ****** ****** *)
 
