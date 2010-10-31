@@ -82,16 +82,22 @@ ATSHOMEBIN = $(ATSHOMEQ)/bin
 ######
 
 install:: config.h
-	# recursively install all files in the list except .svn control files.
+#
+# recursively install all files in the list except .svn control files.
+#
 	for d in ccomp/runtime contrib doc libats libc prelude; do \
 	  cd $(abs_top_srcdir) && \
 	  $(INSTALL) -d $(DESTDIR)$(ATSNEWHOME)/"$$d" && \
 	  find "$$d" -name .svn -prune -o -type f \
             -exec $(INSTALL) -m 644 -D \{} $(DESTDIR)$(ATSNEWHOME)/\{} \; \
+	    -print && \
+	  find "$$d" -name .svn -prune -o -type l \
+            -exec cp -d \{} $(DESTDIR)$(ATSNEWHOME)/\{} \; \
 	    -print; \
 	done
-
-	# install specific files in the list as regular files.
+#
+# install specific files in the list as regular files.
+#
 	for f in \
 	    COPYING INSTALL *.txt ccomp/lib/*.a ccomp/lib64/*.a config.h; \
 	do \
@@ -107,8 +113,9 @@ install:: config.h
 	  $(INSTALL) -m 755 -D "$$f" $(DESTDIR)$(ATSNEWHOME)/"$$f" && \
 	  echo "$$f"; \
 	done
-
-	# install multiple copies of wrapper script, for each binary.
+#
+# install multiple copies of wrapper script, for each binary.
+#
 	for f in bin/*; do \
 	  b=`basename "$$f"`; \
 	  cd $(abs_top_srcdir) && \
