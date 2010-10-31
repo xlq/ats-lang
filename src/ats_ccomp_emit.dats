@@ -1575,13 +1575,16 @@ end // end of [emit_instr_call]
 (* ****** ****** *)
 
 implement
-emit_instr {m} (pf | out, ins) = let
+emit_instr {m}
+  (pf | out, ins) = let
+//
   val ndeb = $Deb.debug_flag_get ()
 //
-  val () = // generating #line progma for debugging
-    if ndeb > 0 then begin
-      $Loc.fprint_line_pragma (pf | out, ins.instr_loc)
-    end // end of [if]
+// generating #line progma for debugging
+//
+  val () = if ndeb > 0 then (
+    $Loc.fprint_line_pragma (pf | out, ins.instr_loc)
+  ) // end of [if]
   // end of [val]
 //
   val () = // generating informaion for debugging
@@ -2513,9 +2516,10 @@ emit_funentry (pf | out, entry) = let
   val () = fprint1_string (pf | out, "\n*/\n")
 #endif // end of ...
 //
-#if (ATS_CC_VERBOSE_LEVEL >= 1) #then
-  val () = $Loc.fprint_line_pragma (pf | out, loc_entry) // #line pragma
-#endif // end of ...
+  val ndeb = $Deb.debug_flag_get ()
+  val () = if ndeb >= 1 then (
+    $Loc.fprint_line_pragma (pf | out, loc_entry) // #line pragma
+  ) // end of [val]
 //
 // function head
 //

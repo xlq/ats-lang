@@ -108,7 +108,7 @@ fun insert_all
   end // end of [loop]
   val barr = pthread_upbarr_create ()
   val () = loop (pf_arr | ws, barr, p_arr, n0, iterations0 / n0)
-  prval () = pthread_upbarr_elimunit (barr) // HX: a convenience proof function
+  prval () = pthread_upbarr_unitelim (barr) // HX: a convenience proof function
 in
   barr
 end // end of [insert_all]

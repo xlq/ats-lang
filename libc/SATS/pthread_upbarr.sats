@@ -66,9 +66,9 @@ prfun pthread_upbarr_trans
   (f: v1 -<prf> v2 | barr: !upbarr (v1) >> upbarr (v2)): void
 // end of [pthread_upbarr_trans]
 
-prfun pthread_upbarr_elimunit
+prfun pthread_upbarr_unitelim
   {v:view} (barr: !upbarr @(unit_v, v) >> upbarr (v)): void
-// end of [pthread_upbarr_elimunit]
+// end of [pthread_upbarr_unitelim]
 
 (* ****** ****** *)
 

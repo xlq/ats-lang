@@ -243,17 +243,6 @@ xref::
 
 ######
 
-AUP_9_1_1: Introduction to Signals
-AUP_9_1_7: Signal Handlers
-AUP_9_2_3: sigsuspend System Call
-AUP_9_7_1: alarm System Call
-AUP_9_7_2: sleep System Call
-AUP_9_7_4: Baisc Interval-Timer System Calls
-AUP_9_7_5: Realtime Clocks
-
-
-#######
-
 RMF = rm -f
 
 #######

@@ -6,6 +6,7 @@
 
 ATSHOMEQ=$(or "$(ATSHOME)", "/usr")
 ATSCC=$(ATSHOMEQ)/bin/atscc
+ATSOPT=$(ATSHOMEQ)/bin/atsopt
 
 ######
 
@@ -66,18 +67,42 @@ randcompec3_mt: randcompec3_mt.dats
 
 ######
 
-clean::
-	rm -f *_dats.c *_sats.c *~
+xref::
+	$(ATSOPT) --posmark_xref=XREF -d \
+          $(ATSHOME)/utils/xref/ats_prelude_xref.dats > /dev/null
+	$(ATSOPT) --posmark_xref=XREF -d fib_mt.dats > fib_mt_dats.html
+	$(ATSOPT) --posmark_xref=XREF -d nsieve_mt.dats > nsieve_mt_dats.html
+	$(ATSOPT) --posmark_xref=XREF -d nsieve2_mt.dats > nsieve2_mt_dats.html
+	$(ATSOPT) --posmark_xref=XREF -d partial-sums_mt.dats > partial-sums_mt_dats.html
+	$(ATSOPT) --posmark_xref=XREF -d qsort_mt.dats > qsort_mt_dats.html
+	$(ATSOPT) --posmark_xref=XREF -d qsort_mt_int.dats > qsort_mt_int_dats.html
+	$(ATSOPT) --posmark_xref=XREF -d qsort_mt_flt.dats > qsort_mt_flt_dats.html
+	$(ATSOPT) --posmark_xref=XREF -d randcompec_mt.dats > randcompec_mt_dats.html
+	$(ATSOPT) --posmark_xref=XREF -d randcompec2_mt.dats > randcompec2_mt_dats.html
+	$(ATSOPT) --posmark_xref=XREF -d randcompec3_mt.dats > randcompec3_mt_dats.html
 
-cleanall: clean
-	rm -f fib_mt
-	rm -f nsieve_mt
-	rm -f nsieve2_mt
-	rm -f partial-sums_mt
-	rm -f qsort_mt_flt
-	rm -f qsort_mt_int
-	rm -f randcompec_mt
-	rm -f randcompec2_mt
-	rm -f randcompec3_mt
+######
+
+RMF = rm -f
+
+######
+
+clean::
+	$(RMF) *~
+	$(RMF) *_?ats.c
+
+cleanall:: clean
+	$(RMF) ./*_?ats.html
+	$(RMF) ./XREF/*.html
+cleanall::
+	$(RMF) fib_mt
+	$(RMF) nsieve_mt
+	$(RMF) nsieve2_mt
+	$(RMF) partial-sums_mt
+	$(RMF) qsort_mt_flt
+	$(RMF) qsort_mt_int
+	$(RMF) randcompec_mt
+	$(RMF) randcompec2_mt
+	$(RMF) randcompec3_mt
 
 ###### end of [Makefile] ######

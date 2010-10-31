@@ -2608,23 +2608,21 @@ fn ccomp_vardec_dyn
       end // end of [None]
   ) : hiexp // end of [val]
 //
-  fun aux_laminit (
+  fn aux_laminit (
       res: &instrlst_vt
     , tmp_ptr: tmpvar_t, hie: hiexp
-(*
     , ovpr: Option_vt (valprimref) // HX: for tail-call optimization
-*)
     ) : void =
     case+ hie.hiexp_node of
     | HIElaminit (hips_arg, hie_body) => let
         val loc = hie.hiexp_loc
         val hit = hityp_normalize (hie.hiexp_typ)
         val fl = funlab_make_typ (hit)
-(*
+//
         val () = (case+ ovpr of
           | ~Some_vt vpr => !vpr := valprim_fun (fl) | ~None_vt () => ()
         ) : void // end of [val]
-*)
+//
         val (pf_tailcallst_mark | ()) = the_tailcallst_mark ()
         val () = the_tailcallst_add (fl, list_nil ())
         val _(*funentry*) = let
@@ -2639,13 +2637,25 @@ fn ccomp_vardec_dyn
       in
         // nothing
       end // end of [HIElaminit]
+    | _ => let
+        val () = case+ ovpr of ~Some_vt _ => () | ~None_vt () => ()
+      in
+        $Err.abort () // HX: deadcode
+      end // end of [_]
+  // end of [aux_laminit]
+//
+  fn aux_lamfixinit (
+      res: &instrlst_vt
+    , tmp_ptr: tmpvar_t, hie:hiexp
+    ) : void = case+ hie.hiexp_node of
+    | HIElam _ => aux_laminit (res, tmp_ptr, hie, None_vt ())
     | HIEfix (knd, d2v_fix, hie_def) => let
         val vp_void = valprim_void ()
         val vpr = ref_make_elt<valprim> (vp_void)
         val vp_fix = valprim_fix (vpr, hityp_t_ptr)
         val (pf_dynctx_mark | ()) = the_dynctx_mark ()
         val () = the_dynctx_add (d2v_fix, vp_fix)
-        val () = aux_laminit (res, tmp_ptr, hie_def)
+        val () = aux_laminit (res, tmp_ptr, hie_def, Some_vt (vpr))
         val () = the_dynctx_unmark (pf_dynctx_mark | (*none*))
       in
         // nothing
@@ -2664,7 +2674,7 @@ in
         res, loc_ini, level, hit_elt, ohie_asz, hies_elt, tmp_ptr
       ) // end of [ccomp_exp_arrinit_tmpvar]
     end // end of [HIEarrinit]
-  |  _ when hiexp_is_laminit (hie_ini) => aux_laminit (res, tmp_ptr, hie_ini)
+  |  _ when hiexp_is_laminit (hie_ini) => aux_lamfixinit (res, tmp_ptr, hie_ini)
   | _ => let
       val () = prerr_interror ()
       val () = prerr ": ccomp_vardec_dyn: hie_ini = "

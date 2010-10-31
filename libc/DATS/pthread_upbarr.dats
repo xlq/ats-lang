@@ -44,11 +44,11 @@ staload "libc/SATS/pthread_upbarr.sats"
 (* ****** ****** *)
 
 implement
-pthread_upbarr_elimunit {v} (barr) = let
+pthread_upbarr_unitelim {v} (barr) = let
   prfn fpf (pf: @(unit_v, v)): v = let prval unit_v () = pf.0 in pf.1 end
 in
   pthread_upbarr_trans (fpf | barr)
-end // end of [pthread_upbarr_elimunit]
+end // end of [pthread_upbarr_unitelim]
 
 (* ****** ****** *)
 
