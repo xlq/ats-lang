@@ -974,9 +974,10 @@ fun aux_item (d0e0: d0exp): d1expitm = let
       val () = termination_metric_check (loc0, ismet, oefc)
 //
       val isat = lamkind_isat (knd) // HX: fixind = lamkind
+      val knd = (if isat > 0 then 0 else 1): int
 //
     in
-      $Fix.ITEMatm (d1exp_fix (loc0, isat, id, d1e_def))
+      $Fix.ITEMatm (d1exp_fix (loc0, knd, id, d1e_def))
     end // end of [D0Efix]
   | D0Efloat (str (*float*)) => begin
       $Fix.ITEMatm (d1exp_float (loc0, str))

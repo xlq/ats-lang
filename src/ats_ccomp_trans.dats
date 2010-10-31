@@ -2658,7 +2658,7 @@ fn ccomp_vardec_dyn (
       // end of [HIElaminit]
     | HIEfix (
         knd, d2v_fix, hie_def
-      ) when knd = 0 => let // fixinit
+      ) => let // knd = 0/1: fixinit/fix
         val vp_void = valprim_void ()
         val vpr = ref_make_elt<valprim> (vp_void)
         val vp_fix = valprim_fix (vpr, hityp_t_ptr)
