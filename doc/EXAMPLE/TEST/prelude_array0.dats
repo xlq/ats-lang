@@ -27,7 +27,8 @@ implement main () = let
       ($arrsz (0, 1, 2, 3, 4, 5, 6, 7, 8, 9))
 //
     var i: int // uninitialized
-    val () = for (i := 0; i < asz; i := i + 1) let
+    val () = for
+      (i := 0; i < asz; i := i + 1) let
       val () = if i > 0 then print ", " in print A[i]
     end // end of [val]
     val () = print_newline ()
@@ -36,14 +37,16 @@ implement main () = let
     #define asz 10
     val A = array0_make_elt<int> (asz, 0)
     var i: int // uninitialized
-    val () = for (i := 0; i < asz; i := i + 1) let
+    val () = for
+      (i := 0; i < asz; i := i + 1) let
       val () = if i > 0 then print ", " in print A[i]
     end // end of [val]
     val () = print_newline ()
 //
     val () = for (i := 0; i < asz; i := i + 1) (A[i] := i)
 //
-    val () = for (i := 0; i < asz; i := i + 1) let
+    val () = for
+      (i := 0; i < asz; i := i + 1) let
       val () = if i > 0 then print ", " in print A[i]
     end // end of [val]
     val () = print_newline ()

@@ -207,7 +207,9 @@ keyval_insert("stavar", STAVAR) ;
 /*
 keyval_insert("struct", STRUCT) ;
 */
+/*
 keyval_insert("super", SUPER) ;
+*/
 keyval_insert("symelim", SYMELIM) ;
 keyval_insert("symintr", SYMINTR) ;
 keyval_insert("then", THEN) ;

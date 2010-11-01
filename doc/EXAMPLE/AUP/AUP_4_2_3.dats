@@ -31,20 +31,21 @@ fun readany2 {n:nat} (
   var maxfd: intGte 0 = 0
 //
   val () = for
-    (i := 0; i < n; i := i+1) let
+    (i := 0; i < n; i := i+1) {
     val fd = fds.[i]
     val fd = int1_of_int (fd)
     val () = assert (fd >= 0)
     val () = FD_SET (fd, fdset_rd)
     val () = if fd > maxfd then maxfd := fd
-  in
-    // nothing
-  end // end of [val]
+  } // end of [val]
 //
   var nerr: int = 0
 //
-  val nfd = select (maxfd + 1, fdset_rd, null, null, null) where {
-    extern fun select (_: intGte 1, fdset: &fd_set, _: ptr, _: ptr, _: ptr): int = "#atslib_select"
+  val nfd = select (
+    maxfd + 1, fdset_rd, null, null, null
+  ) where {
+    extern fun select
+      (_: intGte 1, fdset: &fd_set, _: ptr, _: ptr, _: ptr): int = "#atslib_select"
   } // end of [val]
   val () = if nfd < 0 then nerr := nerr + 1
 //

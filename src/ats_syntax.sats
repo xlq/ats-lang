@@ -929,11 +929,11 @@ fun s0exp_tytup2
 fun s0exp_uni (t_beg: t0kn, qua: s0qualst, t_end: t0kn): s0exp
   = "s0exp_uni"
 
-fun s0exp_union
-  (t_union: t0kn, ind: s0exp, _: labs0explst, t_end: t0kn): s0exp
-  = "s0exp_union"
+fun s0exp_union (
+  t_union: t0kn, ind: s0exp, _: labs0explst, t_end: t0kn
+) : s0exp = "s0exp_union"
 
-//
+(* ****** ****** *)
 
 fun s0explst_nil (): s0explst = "s0explst_nil"
 fun s0explst_cons (x: s0exp, xs: s0explst): s0explst = "s0explst_cons"

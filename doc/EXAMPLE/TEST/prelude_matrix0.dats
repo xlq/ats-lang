@@ -28,7 +28,8 @@ implement main () = let
       (pf_mul | row, col, $arrsz (0, 1, 2, 3, 4, 5, 6, 7, 8, 9))
 //
     var i: int and j: int // uninitialized
-    val () = for* (j: int?) => (i := 0; i < row; i := i + 1) let
+    val () = for* (j: int?) =>
+      (i := 0; i < row; i := i + 1) let
       val () = for (j := 0; j < col; j := j + 1) let
         val () = if j > 0 then print ", " in print M[i,j]
       end // end of [val]
@@ -42,11 +43,9 @@ implement main () = let
     val M = matrix0_make_elt<int> (row, col, 0)
     var i: int and j: int // uninitialized
     val () = for*
-      (j: int?) => (i := 0; i < row; i := i + 1) let
+      (j: int?) => (i := 0; i < row; i := i + 1) {
       val () = for (j := 0; j < col; j := j + 1) M[i,j] := i * col + j
-    in
-      // nothing
-    end // end of [val]
+    } // end of [for*]
     val () = loop1 (0) where {
       fun loop1 {i:nat | i <= row} 
         (i: int i):<cloref1> void = if i < row then loop2 (i, 0) else ()

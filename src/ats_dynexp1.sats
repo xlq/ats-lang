@@ -685,17 +685,19 @@ fun d1exp_ann_funclo_opt (_: loc_t, d1e: d1exp, fc: funclo): d1exp
 
 fun d1exp_ann_type (_: loc_t, d1e: d1exp, s1e: s1exp): d1exp
 
-//
+(* ****** ****** *)
 
-fun d1exp_app_dyn
-  (loc: loc_t, d1e: d1exp, loc_arg: loc_t, npf: int, d1es: d1explst): d1exp
+fun d1exp_app_dyn (
+  loc: loc_t, d1e: d1exp, loc_arg: loc_t, npf: int, d1es: d1explst
+) : d1exp // end of [d1exp_app_dyn]
 
 fun d1exp_app_sta (_: loc_t, d1e: d1exp, s1as: s1exparglst): d1exp
 
 (* ****** ****** *)
 
-fun d1exp_arrinit
-  (_: loc_t, s1e_elt: s1exp, od1e_asz: d1expopt, d1es_elt: d1explst): d1exp
+fun d1exp_arrinit (
+  _: loc_t, s1e_elt: s1exp, od1e_asz: d1expopt, d1es_elt: d1explst
+) : d1exp // end of [d1exp_arrinit]
 
 fun d1exp_arrsize
   (_: loc_t, os1e_elt: s1expopt, d1es_elt: d1explst): d1exp
@@ -705,9 +707,9 @@ fun d1exp_arrsub
 
 (* ****** ****** *)
 
-fun d1exp_caseof
-  (_: loc_t, k: int, res: i1nvresstate, d1es: d1explst, c1ls: c1laulst)
-  : d1exp
+fun d1exp_caseof (
+  _: loc_t, k: int, res: i1nvresstate, d1es: d1explst, c1ls: c1laulst
+) : d1exp // end of [d1exp_caseof]
 
 fun d1exp_char (_: loc_t, c: char): d1exp
 
@@ -719,7 +721,9 @@ fun d1exp_decseq (_: loc_t, _: d1eclst): d1exp
 
 fun d1exp_dynload (_: loc_t, _: fil_t): d1exp
 
-fun d1exp_effmask (_: loc_t, effs: $Syn.effectlst, d1e: d1exp): d1exp
+fun d1exp_effmask
+  (_: loc_t, effs: $Syn.effectlst, d1e: d1exp): d1exp
+// end of [d1exp_effmask]
 
 fun d1exp_empty (_: loc_t): d1exp
 
@@ -736,21 +740,26 @@ fun d1exp_floatsp (_: loc_t, f: string): d1exp
 
 fun d1exp_foldat (_: loc_t, _: s1exparglst, _: d1exp): d1exp
 
-fun d1exp_for
-  (_: loc_t, _: loopi1nv, ini: d1exp, test: d1exp, post: d1exp, body: d1exp)
-  : d1exp
+fun d1exp_for (
+  loc: loc_t
+, inv: loopi1nv
+, init: d1exp
+, test: d1exp
+, post: d1exp
+, body: d1exp
+) : d1exp // end of [d1exp_for]
 
 fun d1exp_freeat (_: loc_t, _: s1exparglst, _: d1exp): d1exp
 
 fun d1exp_ide (_: loc_t, _: sym_t): d1exp
 
 fun d1exp_if (
-    _: loc_t
-  , _: i1nvresstate
-  , _cond: d1exp
-  , _then: d1exp
-  , _else: d1expopt
-  ) : d1exp
+  loc: loc_t
+, inv: i1nvresstate
+, _cond: d1exp
+, _then: d1exp
+, _else: d1expopt
+) : d1exp // end of [d1exp_if]
 
 (* ****** ****** *)
 
