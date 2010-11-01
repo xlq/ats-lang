@@ -204,14 +204,18 @@ keyval_insert("stadef", STADEF) ;
 keyval_insert("staif", STAIF) ;
 keyval_insert("staload", STALOAD) ;
 keyval_insert("stavar", STAVAR) ;
+/*
 keyval_insert("struct", STRUCT) ;
+*/
 keyval_insert("super", SUPER) ;
 keyval_insert("symelim", SYMELIM) ;
 keyval_insert("symintr", SYMINTR) ;
 keyval_insert("then", THEN) ;
 keyval_insert("try", TRY) ;
 keyval_insert("typedef", TYPEDEF) ;
+/*
 keyval_insert("union", UNION) ;
+*/
 keyval_insert("val", VAL) ;
 keyval_insert("var", VAR) ;
 keyval_insert("viewdef", VIEWDEF) ;

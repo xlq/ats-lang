@@ -1080,15 +1080,14 @@ fn emit_extcodelst
     ) : void = begin case+ xs0 of
     | EXTCODELSTcons
         (loc, pos, code, !p_xs) => let
-//
-// HX-2010-10-28: line pragma for external code
-//
-        val ndeb = $Deb.debug_flag_get ()
-        val () = if ndeb >= 1 then
-          $Loc.fprint_line_pragma (pf | out, loc)
-        // end of [val]
       in
         if test (pos0, pos) then let
+//
+          val gline = $Deb.gline_flag_get ()
+          val () = if gline >= 1 then
+            $Loc.fprint_line_pragma (pf | out, loc)
+          // end of [val]
+//
           val () = fprint1_string (pf | out, code)
           val xs = !p_xs; val () = free@ (xs0); val () = xs0 := xs
           val () = i := i + 1

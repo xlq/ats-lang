@@ -60,12 +60,12 @@ fn prerr_interror () = prerr "INTERNAL ERROR (ats_stadyncst2)"
 
 (* ****** ****** *)
 
-typedef s2cstref_struct =
-  struct { sym= sym_t, cst= Option s2cst_t }
+typedef s2cstref_struct = @{
+  sym= sym_t, cst= Option s2cst_t
+} // end of [s2cstref_struct]
 
 typedef s2cstref =
   [l:addr] (vbox (s2cstref_struct @ l) | ptr l)
-
 assume s2cstref_t = s2cstref
 
 implement s2cstref_make (name) = let
@@ -392,12 +392,12 @@ implement Lte_cls_cls_bool = s2cstref_make "lte_cls_cls_bool"
 
 local
 
-typedef d2conref_struct =
-  struct { sym= sym_t, con= Option d2con_t }
+typedef d2conref_struct = @{
+  sym= sym_t, con= Option d2con_t
+} // end of [d2conref_struct]
 
 typedef d2conref =
   [l:addr] (vbox (d2conref_struct @ l) | ptr l)
-
 assume d2conref_t = d2conref
 
 in // in of [local]
@@ -476,12 +476,12 @@ implement ThunkValue_vt_value = d2conref_make "thunkvalue_vt_value"
 
 local
 
-typedef d2cstref_struct =
-  struct { sym= sym_t, cst= Option d2cst_t }
+typedef d2cstref_struct = @{
+  sym= sym_t, cst= Option d2cst_t
+} // end of [d2cstref_struct]
 
 typedef d2cstref =
   [l:addr] (vbox (d2cstref_struct @ l) | ptr l)
-
 assume d2cstref_t = d2cstref
 
 in // in of [local]

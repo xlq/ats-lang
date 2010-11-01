@@ -1498,6 +1498,16 @@ in
   | D1Ecrypt (knd, d1e) => begin
       d2exp_crypt (loc0, knd, d1exp_tr d1e)
     end // end of [D1Ecrypt]
+//
+  | D1Edecseq (d1cs) => let
+      val (pf_env | ()) = trans2_env_push ()
+      val d2cs = d1eclst_tr (d1cs)
+      val () = trans2_env_pop (pf_env | (*none*))
+      val d2e = d2exp_empty (loc0)
+    in
+      d2exp_let (loc0, d2cs, d2e)
+    end // end of [D1Edecseq]
+//
   | D1Edynload fil => d2exp_dynload (loc0, fil)
   | D1Eeffmask (effs, d1e) => begin
       d2exp_effmask (loc0, effs, d1exp_tr d1e)

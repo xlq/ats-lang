@@ -233,6 +233,7 @@ fn atsopt_usage (cmd: string): void = begin
   print "  --typecheck (for typechecking only)\n";
   print "  --posmark_html (for generating a html file depicting colored concrete syntax)\n";
   print "  --posmark_xref (for generating a html file depicting some syntactic cross references)\n";
+  print "  --gline (for generating line pragma information on source code)\n";
   print "  --debug=0 (for disabling the generation of debugging information)\n";
   print "  --debug=1 (for enabling the generation of debugging information)\n";
   print "  -h (for printing out the usage)\n";
@@ -842,6 +843,7 @@ fun loop {i:nat | i <= n} .<i>. (
             in
               param.posmark := 1; param.posmark_html := 2
             end // end of ["--posmark_xref"]
+          | "--gline" => $Deb.gline_flag_set (1)
           | "--debug=0" => $Deb.debug_flag_set (0)
           | "--debug=1" => $Deb.debug_flag_set (1)
           | "--help" => begin

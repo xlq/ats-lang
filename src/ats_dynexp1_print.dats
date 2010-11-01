@@ -303,6 +303,13 @@ in
       fprint_d1exp (pf | out, d1e);
       prstr ")"
     end // end of [D1Ecrypt]
+//
+  | D1Edecseq (d1cs) => begin
+      prstr "D1Edecseq(";
+      fprint1_string (pf | out, "...");
+      prstr ")"
+    end // end of [D1Edecseq]
+//
   | D1Edynload (fil) => begin
       prstr "D1Edynload(";
       $Fil.fprint_filename (pf | out, fil);

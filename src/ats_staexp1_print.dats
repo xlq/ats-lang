@@ -335,11 +335,14 @@ in
       fprint_s1exp (pf | out, s1e2);
       prstr ")"
     end // end of [S1Eread]
+(*
+// HX-2010-11-01: simplification
   | S1Estruct ls1es => begin
       prstr "S1Estruct(";
       fprint_labs1explst (pf | out, ls1es);
       prstr ")"
     end // end of [S1Estruct]
+*)
   | S1Etop (knd, s1e) => begin
       prstr "S1Etop(";
       fprint1_int (pf | out, knd);

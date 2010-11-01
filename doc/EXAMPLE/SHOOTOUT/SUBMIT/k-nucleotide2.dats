@@ -24,10 +24,8 @@ staload _(*anonymous*) = "prelude/DATS/list_vt.dats"
 (* ****** ****** *)
 
 %{^
-
 typedef char *symbol_t ;
 typedef struct { symbol_t sym ; int cnt ; } tblent_t ;
-
 %} // end of [%{^]
 
 (* ****** ****** *)
@@ -403,8 +401,6 @@ fun is_three (s: string): bool =
 // end of [is_three]
 
 (* ****** ****** *)
-
-extern fun dna_of_string (s: string): dna_t = "dna_of_string"
 
 implement main (argc, argv) = let
   fun dna_three_get

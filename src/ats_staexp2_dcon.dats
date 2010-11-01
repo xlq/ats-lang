@@ -50,7 +50,7 @@ staload "ats_staexp2.sats"
 
 (* ****** ****** *)
 
-typedef d2con_struct = struct { (* builtin or abstract *)
+typedef d2con_struct = @{ (* builtin or abstract *)
   d2con_loc= loc_t // location
 , d2con_fil= fil_t // filename
 , d2con_sym= sym_t // the name

@@ -1627,15 +1627,15 @@ implement
 emit_instr {m}
   (pf | out, ins) = let
 //
-  val ndeb = $Deb.debug_flag_get ()
-//
 // generating #line progma for debugging
 //
-  val () = if ndeb > 0 then (
+  val gline = $Deb.gline_flag_get ()
+  val () = if gline > 0 then (
     $Loc.fprint_line_pragma (pf | out, ins.instr_loc)
   ) // end of [if]
   // end of [val]
 //
+  val ndeb = $Deb.debug_flag_get ()
   val () = // generating informaion for debugging
     if ndeb > 0 then let
       val () = fprint1_string (pf | out, "/* ")

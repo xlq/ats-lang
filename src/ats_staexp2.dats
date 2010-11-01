@@ -144,7 +144,7 @@ end // end of [s2rt_linearize]
 
 (* ****** ****** *)
 
-typedef s2rtdat_struct = struct {
+typedef s2rtdat_struct = @{
   s2rtdat_sym= sym_t // name
 , s2rtdat_conlst= s2cstlst
 , s2rtdat_stamp= stamp_t // unique stamp

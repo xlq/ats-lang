@@ -745,11 +745,14 @@ implement s0exp_tr s0e0 = let
       end // end of [S0Enamed]
     | S0Eopide id => $Fix.ITEMatm (s1exp_ide (loc0, id))
     | S0Eqid (q, id) => $Fix.ITEMatm (s1exp_qid (loc0, q, id))
+(*
+// HX-2010-11-01: simplification
     | S0Estruct (ls0es) => let
         val ls1es = labs0explst_tr ls0es
       in
         $Fix.ITEMatm (s1exp_struct (loc0, ls1es))
       end // end of [S0Estruct]
+*)
     | S0Etyarr (s0e_elt, s0ess_dim) => let
         val s1e_elt = s0exp_tr s0e_elt
         val s1ess_dim = s0explstlst_tr s0ess_dim

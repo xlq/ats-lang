@@ -43,13 +43,17 @@
 fun debug_flag_get ():<!ref> int = "atsopt_debug_flag_get"
 fun debug_flag_set (i: int):<!ref> void = "atsopt_debug_flag_set"
 
-fun debug_prerrf {ts:types}
-  (fmt: printf_c ts, arg: ts): void = "atsopt_debug_prerrf"
-// end of [debug_prerrf]
+(* ****** ****** *)
+
+fun gline_flag_get ():<!ref> int = "atsopt_gline_flag_get"
+fun gline_flag_set (i: int):<!ref> void = "atsopt_gline_flag_set"
+
+(* ****** ****** *)
 
 fun debug_printf {ts:types}
   (fmt: printf_c ts, arg: ts): void = "atsopt_debug_printf"
-// end of [debug_printf]
+fun debug_prerrf {ts:types}
+  (fmt: printf_c ts, arg: ts): void = "atsopt_debug_prerrf"
 
 (* ****** ****** *)
 

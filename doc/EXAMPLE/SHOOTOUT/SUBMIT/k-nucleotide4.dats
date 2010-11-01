@@ -271,8 +271,6 @@ fun is_three (s: string): bool =
 
 (* ****** ****** *)
 
-extern fun dna_of_string (s: string): dna_t = "dna_of_string"
-
 implement main (argc, argv) = let
   fun dna_three_get
     (n: &size_t? >> size_t n): #[n:nat] string n = let

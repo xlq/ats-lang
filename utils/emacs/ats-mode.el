@@ -4,7 +4,7 @@
 ;; updated and modified by Matthew Danish <mrd@debian.org> 2008
 
 ;; Author: Stefan Monnier <monnier@iro.umontreal.ca>
-;; Keywords: 
+;; Keywords:
 
 ;; This file is free software; you can redistribute it and/or modify
 ;; it under the terms of the GNU General Public License as published by
@@ -55,7 +55,7 @@
     ;; the reverse.  We chose the reverse, which fails more gracefully.
     ;; Oh, and ' is also overloaded for '( '{ and '[  :-(
     (modify-syntax-entry ?\' "_ p" st)
-    ;; 
+    ;;
     (modify-syntax-entry ?\{ "(}" st)
     (modify-syntax-entry ?\} "){" st)
     (modify-syntax-entry ?\[ "(]" st)
@@ -107,7 +107,7 @@
   (let ((st (copy-syntax-table ats-mode-syntax-table)))
     (modify-syntax-entry ?_ "w" st)
     st))
-    
+
 ;; Font-lock.
 
 (defface ats-font-lock-static-face
@@ -142,15 +142,15 @@
   "Use inside a parenthesized expression to find a regexp at the same level."
   (let ((nest-lvl 0) foundp)
     (while (and (not (eobp))
-                (or (null limit) (not (> (point) limit)))
-                (not (minusp nest-lvl))
-                (not (setq foundp
-                           (and (zerop nest-lvl)
-                                (looking-at regexp)))))
+		(or (null limit) (not (> (point) limit)))
+		(not (minusp nest-lvl))
+		(not (setq foundp
+			   (and (zerop nest-lvl)
+				(looking-at regexp)))))
       (cond ((looking-at "(\\|\\[\\|{")
-             (incf nest-lvl))
-            ((looking-at ")\\|\\]\\|}")
-             (decf nest-lvl)))
+	     (incf nest-lvl))
+	    ((looking-at ")\\|\\]\\|}")
+	     (decf nest-lvl)))
       (forward-char 1))
     foundp))
 
@@ -173,98 +173,98 @@
   ;; screwy no matter what.  Not sure what to do about it.
   (setq limit nil)
   (let (begin end)
-    (when (re-search-forward "%{" limit t)
+    (when (re-search-forward "%{[$#^]?" limit t)
       (setq begin (match-beginning 0))
       (when (re-search-forward "%}" limit t)
-        (setq end (match-end 0))
-        (when (and begin end)
-          (store-match-data (list begin end))
-          (point))))))
+	(setq end (match-end 0))
+	(when (and begin end)
+	  (store-match-data (list begin end))
+	  (point))))))
 
 (defun ats-font-lock-static-search (&optional limit)
   (interactive)
   (when (null limit) (setq limit (point-max)))
   (let (foundp begin end (key-begin 0) (key-end 0) pt)
     (flet ((store ()
-             (store-match-data (list begin end key-begin key-end))))
+	     (store-match-data (list begin end key-begin key-end))))
       ;; attempt to find some statics to highlight and store the
       ;; points beginning and ending the region to highlight.  needs
       ;; to be a loop in order to handle cases like ( foo : type )
       ;; where initially it considers ( .. | .. ) but finds no '|'
       ;; char so it must then go inside and look for sub-regions like
-      ;; ": type". 
+      ;; ": type".
       ;;
       ;; Each branch of the cond must be sure to make progress, the
       ;; point must advance, or else infinite-loop bugs may arise.
       (while (and (not foundp) (< (point) limit))
-        (setq key-begin 0 key-end 0)
-        (cond 
-         ((re-search-forward "(\\|:[^=]\\|{\\|[^[:space:].:-]<" limit t)
-          (setq pt (setq begin (match-beginning 0)))
-          (when pt (goto-char pt))
-          (cond 
-           ;; handle { ... }
-           ((looking-at "{")
-            (forward-char 1)
-            (cond 
-             ((save-excursion
-                (forward-word -1)
-                (looking-at "where"))
-              ;; except when preceeded by "where" keyword
-              (setq pt nil))
-             ((re-search-forward "}" limit t)
-              (setq end (match-end 0))
-              (store)
-              (setq pt end)
-              (setq foundp t))
-             (t
-              (setq pt nil))))
-           ;; handle ( ... | ... )
-           ((looking-at "(")
-            (forward-char 1)
-            (incf begin)
-            (cond
-             ((null (ats-context-free-search "|\\|)" limit))
-              (setq pt nil))
-             ((looking-at "|")
-              (setq end (match-end 0))
-              (store)
-              (setq foundp t))
-             ((looking-at ")")
-              (setq pt nil)
-              ;; no | found so scan for other things inside ( )
-              (goto-char (1+ begin)))))
-           ;; handle ... : ...
-           ((looking-at ":[^=]")
-            (forward-char 1)
-            (let ((nest-lvl 0) finishedp)
-              ;; emacs22 only:
-              ;;(ats-context-free-search ")\\|\\_<=\\_>\\|," limit)
-              (ats-context-free-search ")\\|[^=]=[^=]\\|,\\|\n\\|\\]" limit)
-              (setq begin (1+ begin)
-                    end (point)
-                    key-begin (1- begin)
-                    key-end begin)
-              (store)
-              (setq foundp t)))
-           ((looking-at "[^[:space:].:-]<")
-            (forward-char 2)
-            (incf begin)
-            (cond 
-             ((re-search-forward ">" limit t)
-              (setq end (match-end 0))
-              (store)
-              (setq pt end)
-              (setq foundp t))
-             (t
-              (setq pt nil))))
-           (t
-            (setq pt nil)
-            (forward-char 1)
-            (setq foundp t))))
-         (t
-          (setq foundp t)
-          (setq pt nil)))))
+	(setq key-begin 0 key-end 0)
+	(cond
+	 ((re-search-forward "(\\|:[^=]\\|{\\|[^[:space:].:-]<" limit t)
+	  (setq pt (setq begin (match-beginning 0)))
+	  (when pt (goto-char pt))
+	  (cond
+	   ;; handle { ... }
+	   ((looking-at "{")
+	    (forward-char 1)
+	    (cond
+	     ((save-excursion
+		(forward-word -1)
+		(looking-at "where"))
+	      ;; except when preceeded by "where" keyword
+	      (setq pt nil))
+	     ((re-search-forward "}" limit t)
+	      (setq end (match-end 0))
+	      (store)
+	      (setq pt end)
+	      (setq foundp t))
+	     (t
+	      (setq pt nil))))
+	   ;; handle ( ... | ... )
+	   ((looking-at "(")
+	    (forward-char 1)
+	    (incf begin)
+	    (cond
+	     ((null (ats-context-free-search "|\\|)" limit))
+	      (setq pt nil))
+	     ((looking-at "|")
+	      (setq end (match-end 0))
+	      (store)
+	      (setq foundp t))
+	     ((looking-at ")")
+	      (setq pt nil)
+	      ;; no | found so scan for other things inside ( )
+	      (goto-char (1+ begin)))))
+	   ;; handle ... : ...
+	   ((looking-at ":[^=]")
+	    (forward-char 1)
+	    (let ((nest-lvl 0) finishedp)
+	      ;; emacs22 only:
+	      ;;(ats-context-free-search ")\\|\\_<=\\_>\\|," limit)
+	      (ats-context-free-search ")\\|[^=]=[^=]\\|,\\|\n\\|\\]" limit)
+	      (setq begin (1+ begin)
+		    end (point)
+		    key-begin (1- begin)
+		    key-end begin)
+	      (store)
+	      (setq foundp t)))
+	   ((looking-at "[^[:space:].:-]<")
+	    (forward-char 2)
+	    (incf begin)
+	    (cond
+	     ((re-search-forward ">" limit t)
+	      (setq end (match-end 0))
+	      (store)
+	      (setq pt end)
+	      (setq foundp t))
+	     (t
+	      (setq pt nil))))
+	   (t
+	    (setq pt nil)
+	    (forward-char 1)
+	    (setq foundp t))))
+	 (t
+	  (setq foundp t)
+	  (setq pt nil)))))
     pt))
 
 (defvar ats-keywords
@@ -293,15 +293,15 @@
   (append
    '((ats-font-lock-c-code-search (0 'ats-font-lock-c-face t))
      ;; ("%{[[:print:][:cntrl:]]*%}" (0 'ats-font-lock-c-face))
-                                
+
      ;;     ("[^%]\\({[^|}]*|?[^}]*}\\)" (1 'ats-font-lock-static-face))
      ;;     ("[^']\\(\\[[^]|]*|?[^]]*\\]\\)" (1 'ats-font-lock-static-face))
      ("\\.<[^>]*>\\." (0 'ats-font-lock-metric-face))
-     (ats-font-lock-static-search (0 'ats-font-lock-static-face) 
-                                  (1 'ats-font-lock-keyword-face)))
-   
+     (ats-font-lock-static-search (0 'ats-font-lock-static-face)
+				  (1 'ats-font-lock-keyword-face)))
+
    (list (list (mapconcat 'identity ats-keywords "\\|")
-               '(0 'ats-font-lock-keyword-face)))))
+	       '(0 'ats-font-lock-keyword-face)))))
 
 (defvar ats-font-lock-syntactic-keywords
   '(("(\\(/\\)" (1 ". 1b"))             ; (/ does not start a comment.
@@ -316,34 +316,34 @@
   "Major mode to edit C code embedded in ATS code."
   (unless (local-variable-p 'compile-command)
     (set (make-local-variable 'compile-command)
-         (let ((file buffer-file-name))
-           (format "atscc -tc %s" file)))
+	 (let ((file buffer-file-name))
+	   (format "atscc -tc %s" file)))
     (put 'compile-command 'permanent-local t))
   (setq indent-line-function 'c/ats-mode-indent-line))
 
 (defun c/ats-mode-indent-line (&optional arg)
   (let (c-start c-end)
     (save-excursion
-      (if (re-search-backward "%{[^$]?" 0 t)
-          (setq c-start (match-end 0))
-        (setq c-start 0)))
+      (if (re-search-backward "%{[$#^]?" 0 t)
+	  (setq c-start (match-end 0))
+	(setq c-start 0)))
     (save-excursion
       (if (re-search-forward "%}" (point-max) t)
-          (setq c-end (match-beginning 0))
-        (setq c-start (point-max))))
+	  (setq c-end (match-beginning 0))
+	(setq c-start (point-max))))
     (save-restriction
       ;; restrict view of file to only the C code for the benefit of
       ;; the cc-mode indentation engine.
       (narrow-to-region c-start c-end)
       (c-indent-line arg))))
-   
+
 ;;;###autoload
 (define-derived-mode ats-mode fundamental-mode "ATS"
   "Major mode to edit ATS source code."
   (set (make-local-variable 'font-lock-defaults)
        '(ats-font-lock-keywords nil nil ((?_ . "w") (?= . "_")) nil
-         (font-lock-syntactic-keywords . ats-font-lock-syntactic-keywords)
-         (font-lock-mark-block-function . ats-font-lock-mark-block)))
+	 (font-lock-syntactic-keywords . ats-font-lock-syntactic-keywords)
+	 (font-lock-mark-block-function . ats-font-lock-mark-block)))
   (set (make-local-variable 'comment-start) "(*")
   (set (make-local-variable 'comment-continue)  " *")
   (set (make-local-variable 'comment-end) "*)")
@@ -353,26 +353,26 @@
   (local-set-key (kbd "RET") 'newline-and-indent-relative)
   (unless (local-variable-p 'compile-command)
     (set (make-local-variable 'compile-command)
-         (let ((file buffer-file-name))
-           (format "atscc -tc %s" file)))
+	 (let ((file buffer-file-name))
+	   (format "atscc -tc %s" file)))
     (put 'compile-command 'permanent-local t))
   (local-set-key (kbd "C-c C-c") 'compile)
-  (cond 
+  (cond
    ;; Emacs 21
    ((and (< emacs-major-version 22)
-         (not xemacsp)) 
+	 (not xemacsp))
     (pushnew '("\\(syntax error: \\)?\\([^\n:]*\\): \\[?[0-9]*(line=\\([0-9]*\\), offs=\\([0-9]*\\))\\]?" 2 3 4)
-             compilation-error-regexp-alist))
+	     compilation-error-regexp-alist))
    ;; Emacs 22+ has an improved compilation mode
    ((and (>= emacs-major-version 22)
-         (not xemacsp))
+	 (not xemacsp))
     (pushnew '(ats "\\(syntax error: \\)?\\([^\n:]*\\): \\[?[0-9]*(line=\\([0-9]*\\), offs=\\([0-9]*\\))\\]?\\(?: -- [0-9]*(line=\\([0-9]*\\), offs=\\([0-9]*\\))\\)?" 2 (3 . 5) (4 . 6))
-             compilation-error-regexp-alist-alist)
+	     compilation-error-regexp-alist-alist)
     (pushnew 'ats compilation-error-regexp-alist))
    ;; XEmacs has something different, to be contrary
    (xemacsp
     (pushnew '(ats ("\\(syntax error: \\)?\\([^\n:]*\\): \\[?[0-9]*(line=\\([0-9]*\\), offs=\\([0-9]*\\))\\]?" 2 3 4))
-             compilation-error-regexp-alist-alist)
+	     compilation-error-regexp-alist-alist)
     (unless (eql 'all compilation-error-regexp-systems-list)
       (pushnew 'ats compilation-error-regexp-systems-list))
     (compilation-build-compilation-error-regexp-alist)
@@ -383,9 +383,9 @@
   (interactive)
   (newline)
   (indent-to-column (save-excursion
-                      (forward-line -1)
-                      (back-to-indentation)
-                      (current-column))))
+		      (forward-line -1)
+		      (back-to-indentation)
+		      (current-column))))
 
 ;;; ATS Parser
 
@@ -451,7 +451,7 @@
 
 (defvar ats-default-mode (list "ATS" 'ats-mode))
 (defvar ats-second-modes (list
-                      (list "C/ATS" "%{" "%}" 'c/ats-mode)))
+			   (list "C/ATS" "%{[$#^]?" "%}" 'c/ats-mode)))
 
 ;; ----------------
 
@@ -460,18 +460,12 @@
 (defvar ats-two-mode-bool nil)
 (defvar ats-two-mode-mode-delay (/ (float 1) (float 8)))
 
-;; Two mode hook
-(defvar ats-two-mode-hook nil
-  "*Hook called by `two-mode'.")
-(setq ats-two-mode-hook nil)
-
 ;; Mode switching hook
 (defvar ats-two-mode-switch-hook nil
   "*Hook called upon mode switching.")
 (setq ats-two-mode-switch-hook nil)
 
 (defun ats-two-mode-mode-setup ()
-  (make-local-hook 'post-command-hook)
   (add-hook 'post-command-hook 'ats-two-mode-mode-need-update nil t)
   (make-local-variable 'minor-mode-alist)
   (make-local-variable 'ats-two-mode-bool)
@@ -479,18 +473,18 @@
   (when ats-two-mode-mode-idle-timer
     (cancel-timer ats-two-mode-mode-idle-timer))
   (setq ats-two-mode-mode-idle-timer
-	(run-with-idle-timer ats-two-mode-mode-delay t
-			     'ats-two-mode-mode-update-mode))
+    (run-with-idle-timer ats-two-mode-mode-delay t
+      'ats-two-mode-mode-update-mode))
   (or (assq 'ats-two-mode-bool minor-mode-alist)
-      (setq minor-mode-alist
-	    (cons '(ats-two-mode-bool "/C") minor-mode-alist))))
+    (setq minor-mode-alist
+      (cons '(ats-two-mode-bool "/C") minor-mode-alist))))
 
 (defun ats-two-mode-mode-need-update ()
   (setq ats-two-mode-update 1))
 
 (defun ats-two-mode-change-mode (to-mode func)
   (if (string= to-mode mode-name)
-      t
+    t
     (progn
       (funcall func)
       ;; After the mode was set, we reread the "Local Variables" section.
@@ -500,47 +494,44 @@
 
       (ats-two-mode-mode-setup)
       (if ats-two-mode-switch-hook
-	  (run-hooks 'ats-two-mode-switch-hook))
+	(run-hooks 'ats-two-mode-switch-hook))
       (if (eq font-lock-mode t)
-	  (font-lock-fontify-buffer))
+	(font-lock-fontify-buffer))
       (turn-on-font-lock-if-enabled))))
 
 (defun ats-two-mode-mode-update-mode ()
   (when (and ats-two-mode-bool ats-two-mode-update)
     (setq ats-two-mode-update 0)
     (let ((mode-list ats-second-modes)
-	  (flag 0))
+	   (flag 0))
       (while mode-list
 	(let ((mode (car mode-list))
-	      (lm -1)
-	      (rm -1))
-	  (save-excursion 
-	    (if (search-backward (cadr mode) nil t)
-		(setq lm (point))
+	       (lm -1)
+	       (rm -1))
+	  (save-excursion
+	    (if (re-search-backward (cadr mode) nil t)
+	      (setq lm (point))
 	      (setq lm -1)))
 	  (save-excursion
-	    (if (search-backward (car (cddr mode)) nil t)
-		(setq rm (point))
+	    (if (re-search-backward (car (cddr mode)) nil t)
+	      (setq rm (point))
 	      (setq rm -1)))
 	  (if (and (not (and (= lm -1) (= rm -1))) (>= lm rm))
-	      (progn
-		(setq flag 1)
-		(setq mode-list '())
-		(ats-two-mode-change-mode (car mode) (car (cdr (cddr mode)))))))
+	    (progn
+	      (setq flag 1)
+	      (setq mode-list '())
+	      (ats-two-mode-change-mode (car mode) (car (cdr (cddr mode)))))))
 	(setq mode-list (cdr mode-list)))
       (if (= flag 0)
-	  (ats-two-mode-change-mode (car ats-default-mode) (cadr ats-default-mode))))))
+	(ats-two-mode-change-mode (car ats-default-mode) (cadr ats-default-mode))))))
 
-(defun ats-two-mode-mode ()
+;;;###autoload
+(define-derived-mode ats-two-mode-mode ats-mode "ATS"
   "Turn on ats-two-mode-mode"
-  (interactive)
   (funcall (cadr ats-default-mode))
-  (ats-two-mode-mode-setup)
-  (if ats-two-mode-hook
-     (run-hooks 'ats-two-mode-hook)))
+  (ats-two-mode-mode-setup))
 
 ;;;###autoload
 (add-to-list 'auto-mode-alist '("\\.\\(d\\|s\\)ats\\'" . ats-two-mode-mode))
 
 (provide 'ats-two-mode-mode)
-

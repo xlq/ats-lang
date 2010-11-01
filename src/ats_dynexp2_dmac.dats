@@ -61,7 +61,7 @@ staload "ats_dynexp2.sats"
 
 (* ****** ****** *)
 
-typedef d2mac_struct (narg:int) = struct {
+typedef d2mac_struct (narg:int) = @{
   d2mac_loc= loc_t
 , d2mac_sym= sym_t
 , d2mac_kind= int // short/long: 0/1

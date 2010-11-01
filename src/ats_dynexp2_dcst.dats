@@ -65,7 +65,7 @@ staload "ats_dynexp2.sats"
 
 (* ****** ****** *)
 
-typedef d2cst_struct = struct {
+typedef d2cst_struct = @{
   d2cst_loc= loc_t
 , d2cst_fil= fil_t
 , d2cst_sym= sym_t

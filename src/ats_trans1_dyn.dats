@@ -547,13 +547,20 @@ fn s0exparg_tr (loc: loc_t, s0a: s0exparg): s1exparg =
   | S0EXPARGseq (s0as) => s1exparg_seq (loc, s0explst_tr s0as)
 // end of [s0exparg_tr]
 
-fn s0expdarg_tr (d0e: d0exp): s1exparg = let
-  val d1e = d0exp_tr d0e in case+ d1e.d1exp_node of
-    | D1Esexparg s1a => s1a | _ => begin
-        prerr_loc_interror d0e.d0exp_loc;
-        prerr ": d0exp_tr: D0Efoldat"; prerr_newline ();
-        $Err.abort {s1exparg} ()
-      end // end of [_]
+fn s0expdarg_tr (
+  d0e: d0exp
+) : s1exparg = let
+  val d1e = d0exp_tr d0e
+in
+  case+ d1e.d1exp_node of
+  | D1Esexparg s1a => s1a
+  | _ => let
+      val () = prerr_loc_interror (d0e.d0exp_loc)
+      val () = prerr ": d0exp_tr: D0Efoldat"
+      val () = prerr_newline ()
+    in
+      $Err.abort {s1exparg} ()
+    end // end of [_]
 end // end of [s0expdarg_tr]
 
 fun s0expdarglst_tr
@@ -829,7 +836,8 @@ fn sc0laulst_tr (sc0ls: sc0laulst): sc1laulst =
 
 (* ****** ****** *)
 
-fn d0exp_tr_errmsg_opr (loc: loc_t): d1exp = begin
+fn d0exp_tr_errmsg_opr
+  (loc: loc_t): d1exp = begin
   prerr_loc_error1 loc;
   prerr ": the operator needs to be applied";
   prerr_newline ();
@@ -838,8 +846,12 @@ end // end of [d0exp_tr_errmsg_opr]
 
 implement d0exp_tr d0e0 = let
 
-fun aux_item (d0e0: d0exp): d1expitm = let
-  val loc0 = d0e0.d0exp_loc in case+ d0e0.d0exp_node of
+fun aux_item (
+  d0e0: d0exp
+) : d1expitm = let
+  val loc0 = d0e0.d0exp_loc
+in
+  case+ d0e0.d0exp_node of
   | D0Eann (d0e, s0e) => let
       val d1e = d0exp_tr d0e and s1e = s0exp_tr s0e
       val d1e_ann = d1exp_ann_type (loc0, d1e, s1e)
@@ -898,6 +910,17 @@ fun aux_item (d0e0: d0exp): d1expitm = let
     in
       $Fix.ITEMopr ($Fix.OPERpre ($Fix.crypt_prec_dyn, f))
     end // end of [D0Ecrypt]
+//
+  | D0Edecseq (d0cs) => let
+      val () = trans1_env_push ()
+      val (pf | ()) = trans1_level_inc ()
+      val d1cs = d0eclst_tr d0cs
+      val () = trans1_level_dec (pf | (*none*))
+      val () = trans1_env_pop ()
+    in
+      $Fix.ITEMatm (d1exp_decseq (loc0, d1cs))
+    end // end of [D0Edecseq]
+//
   | D0Edelay (lin) => let
       fn f (d1e: d1exp):<cloref1> d1expitm = let
         val loc0 = $Loc.location_combine (loc0, d1e.d1exp_loc)

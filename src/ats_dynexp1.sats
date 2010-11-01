@@ -280,6 +280,8 @@ and d1exp_node =
   | D1Ecstsp of $Syn.cstsp // special constants
   | D1Ecrypt of (* cryption *)
       (int, d1exp) (* 1/-1: encrypt/decrypt *)
+  | D1Edecseq of // decseq as exp
+      d1eclst (* HX: note that there is no [D2Edecseq] *)
   | D1Edynload of (* dynamic loading *)
       fil_t
   | D1Eeffmask of (* effect masking *)
@@ -712,6 +714,8 @@ fun d1exp_char (_: loc_t, c: char): d1exp
 fun d1exp_cstsp (_: loc_t, _: $Syn.cstsp): d1exp
 
 fun d1exp_crypt (_: loc_t, knd: int, _: d1exp): d1exp
+
+fun d1exp_decseq (_: loc_t, _: d1eclst): d1exp
 
 fun d1exp_dynload (_: loc_t, _: fil_t): d1exp
 

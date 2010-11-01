@@ -422,10 +422,6 @@ end // end of [ncore_get]
 
 (* ****** ****** *)
 
-extern fun dna_of_string (s: string): dna_t = "dna_of_string"
-
-(* ****** ****** *)
-
 #define QSZ 1024
 
 implement main (argc, argv) = let

@@ -1080,11 +1080,15 @@ in '{
   s0exp_loc= loc, s0exp_node= S0Eqid(s0q, id.i0de_sym)
 } end // end of [s0exp_qid]
 
-implement s0exp_struct (t_struct, ls0es, t_end) = let
+(*
+// HX-2010-11-01: simplification
+implement
+s0exp_struct (t_struct, ls0es, t_end) = let
   val loc = combine (t_struct.t0kn_loc, t_end.t0kn_loc)
 in '{
   s0exp_loc= loc, s0exp_node= S0Estruct ls0es
 } end // end of [s0exp_struct]
+*)
 
 implement s0exp_tyarr (t_beg, elt, ind) = let
   val loc = combine (t_beg.t0kn_loc, ind.s0arrind_loc)
@@ -1726,28 +1730,41 @@ implement s0elop_make (knd, t) = '{
 
 (* ****** ****** *)
 
-implement d0exp_ann (d0e, s0e) =
-  let val loc = combine (d0e.d0exp_loc, s0e.s0exp_loc) in
-    '{ d0exp_loc= loc, d0exp_node= D0Eann (d0e, s0e) }
-  end
+implement
+d0exp_ann (d0e, s0e) = let
+  val loc = combine
+    (d0e.d0exp_loc, s0e.s0exp_loc)
+in '{
+  d0exp_loc= loc, d0exp_node= D0Eann (d0e, s0e)
+} end // end of [d0exp_ann]
 
-fn d0exp_app (d0e_fun: d0exp, d0e_arg: d0exp): d0exp =
-  let val loc = combine (d0e_fun.d0exp_loc, d0e_arg.d0exp_loc) in
-    '{ d0exp_loc= loc, d0exp_node= D0Eapp (d0e_fun, d0e_arg) }
-  end
+fn d0exp_app (
+  d0e_fun: d0exp, d0e_arg: d0exp
+) : d0exp = let
+  val loc = combine
+    (d0e_fun.d0exp_loc, d0e_arg.d0exp_loc)
+in '{
+  d0exp_loc= loc, d0exp_node= D0Eapp (d0e_fun, d0e_arg)
+} end // end of [d0exp_app]
 
-implement d0exp_apps (d0e_fun, d0es_arg) =
+implement
+d0exp_apps
+  (d0e_fun, d0es_arg) =
   case+ d0es_arg of
-    | cons (d0e_arg, d0es_arg) =>
-      let val d0e_fun = d0exp_app (d0e_fun, d0e_arg) in
-        d0exp_apps (d0e_fun, d0es_arg)
-      end
-    | nil () => d0e_fun
+  | cons (d0e_arg, d0es_arg) => let
+      val d0e_fun = d0exp_app (d0e_fun, d0e_arg)
+    in
+      d0exp_apps (d0e_fun, d0es_arg)
+    end // end of [cons]
+  | nil () => d0e_fun // end of [nil]
+// end of [d0exp_apps]
 
 (* ****** ****** *)
 
-implement d0exp_arrinit
-  (t_beg, s0e_elt, od0e_asz, d0es_elt, t_end) = let
+implement
+d0exp_arrinit (
+  t_beg, s0e_elt, od0e_asz, d0es_elt, t_end
+) = let
   val loc = combine (t_beg.t0kn_loc, t_end.t0kn_loc)
   val () = // checking the syntax for array assignmnet
     case+ od0e_asz of
@@ -1771,26 +1788,30 @@ in '{
   d0exp_loc= loc, d0exp_node= D0Earrinit (s0e_elt, od0e_asz, d0es_elt)
 } end // end of [d0exp_arrinit]
 
-implement d0exp_arrinit_none
+implement
+d0exp_arrinit_none
   (t_beg, s0e_elt, d0es_elt, t_end) =
   d0exp_arrinit (t_beg, s0e_elt, None (), d0es_elt, t_end)
 // end of [d0exp_arrinit_none]
 
-implement d0exp_arrinit_some
+implement
+d0exp_arrinit_some
   (t_beg, s0e_elt, d0e_asz, d0es_elt, t_end) =
   d0exp_arrinit (t_beg, s0e_elt, Some d0e_asz, d0es_elt, t_end)
 // end of [d0exp_arrinit_some]
 
 (* ****** ****** *)
 
-implement d0exp_arrsize
+implement
+d0exp_arrsize
   (t_beg, os0e, d0es, t_end) = let
   val loc = combine (t_beg.t0kn_loc, t_end.t0kn_loc)
 in '{
   d0exp_loc= loc, d0exp_node= D0Earrsize (os0e, d0es)
 } end // end of [d0exp_arrsize]
 
-implement d0exp_arrsub (qid, ind) = let
+implement
+d0exp_arrsub (qid, ind) = let
   val loc_ind = ind.d0arrind_loc
   val loc = combine (qid.arrqi0de_loc, loc_ind)
 in '{
@@ -1800,12 +1821,16 @@ in '{
 
 (* ****** ****** *)
 
-implement d0exp_char (c) = '{
+implement
+d0exp_char (c) = '{
   d0exp_loc= c.c0har_loc, d0exp_node= D0Echar c.c0har_val
 } // end of [d0exp_char]
 
-implement d0exp_caseof (hd, d0e, t_of, c0ls) = let
-  fun aux_loc (t_case: t0kn, c0l: c0lau, c0ls: c0laulst): loc_t =
+implement
+d0exp_caseof (hd, d0e, t_of, c0ls) = let
+  fun aux_loc (
+    t_case: t0kn, c0l: c0lau, c0ls: c0laulst
+  ) : loc_t =
     case+ c0ls of
     | cons (c0l, c0ls) => aux_loc (t_case, c0l, c0ls)
     | nil () => combine (t_case.t0kn_loc, c0l.c0lau_loc)
@@ -1818,23 +1843,38 @@ in
   '{ d0exp_loc= loc, d0exp_node= D0Ecaseof (hd, d0e, c0ls) }
 end // end of [d0exp_caseof]
 
-implement d0exp_crypt (knd(*de/en*), t_crypt) = '{
+implement
+d0exp_crypt (knd(*de/en*), t_crypt) = '{
   d0exp_loc= t_crypt.t0kn_loc, d0exp_node= D0Ecrypt knd
 } // end of [d0exp_crypt]
 
-implement d0exp_delay (lin, t_delay) = '{
+implement
+d0exp_decseq
+  (t_lbrace, d0cs, t_rbrace) = let
+  val loc = combine (
+    t_lbrace.t0kn_loc, t_rbrace.t0kn_loc
+  ) // end of [val]
+in '{
+  d0exp_loc= loc, d0exp_node= D0Edecseq (d0cs)
+} end // end of [d0exp_decseq]
+
+implement
+d0exp_delay (lin, t_delay) = '{
   d0exp_loc= t_delay.t0kn_loc, d0exp_node= D0Edelay (lin)
 } // end of [d0exp_delay]
 
-implement d0exp_dynload (t_delay) = '{
+implement
+d0exp_dynload (t_delay) = '{
   d0exp_loc= t_delay.t0kn_loc, d0exp_node= D0Edynload ()
 } // end of [d0exp_dynload]
 
-implement d0exp_empty (loc) = '{
+implement
+d0exp_empty (loc) = '{
   d0exp_loc= loc, d0exp_node= D0Eempty ()
 } // end of [d0exp_empty]
 
-implement d0exp_exist
+implement
+d0exp_exist
   (t_beg, s0a, t_bar, d0e, t_end) = let
   val loc = combine (t_beg.t0kn_loc, t_end.t0kn_loc)
   val qualoc = combine (t_beg.t0kn_loc, t_bar.t0kn_loc)
@@ -1842,7 +1882,8 @@ in '{
   d0exp_loc= loc, d0exp_node= D0Eexist (qualoc, s0a, d0e)
 } end // end of [d0exp_exist]
 
-implement d0exp_extval
+implement
+d0exp_extval
   (t_beg, s0e, s0tr, t_end) = let
   val loc = combine (t_beg.t0kn_loc, t_end.t0kn_loc)
   val code = s0tr.s0tring_val
@@ -1850,7 +1891,8 @@ in '{
   d0exp_loc= loc, d0exp_node= D0Eextval (s0e, code)
 } end // end of [d0exp_extval]
 
-implement d0exp_fix
+implement
+d0exp_fix
   (knd, id, arg, res, eff, d0e) = let
   val loc_knd = lamkind_loc_get (knd)
   val loc = combine (loc_knd, d0e.d0exp_loc)
@@ -1858,17 +1900,20 @@ in '{
   d0exp_loc= loc, d0exp_node= D0Efix (knd, id, arg, res, eff, d0e)
 } end // end of [d0exp_fix]
 
-implement d0exp_float (f) = '{
+implement
+d0exp_float (f) = '{
   d0exp_loc= f.f0loat_loc, d0exp_node= D0Efloat (f.f0loat_val)
 } // end of [d0exp_float]
 
-implement d0exp_floatsp (f) = '{
+implement
+d0exp_floatsp (f) = '{
   d0exp_loc= f.f0loatsp_loc, d0exp_node= D0Efloatsp (f.f0loatsp_val)
 } // end of [d0exp_floatsp]
 
 (* ****** ****** *)
 
-implement d0exp_foldat (t_foldat, d0es) = let
+implement
+d0exp_foldat (t_foldat, d0es) = let
   fun aux (d0e: d0exp, d0es: d0explst):<cloptr1> loc_t =
     case+ d0es of
     | cons (d0e, d0es) => aux (d0e, d0es)
@@ -1881,7 +1926,8 @@ in '{
 
 (* ****** ****** *)
 
-implement d0exp_for_itp (hd, itp, body) = let
+implement
+d0exp_for_itp (hd, itp, body) = let
   val t_loop = hd.loophead_tok
   val loc_inv = t_loop.t0kn_loc
   val loc = $Loc.location_combine (loc_inv, body.d0exp_loc)
@@ -1898,7 +1944,8 @@ in '{
 
 (* ****** ****** *)
 
-implement d0exp_freeat (t_freeat, d0es) = let
+implement
+d0exp_freeat (t_freeat, d0es) = let
   fun aux (d0e: d0exp, d0es: d0explst):<cloptr1> loc_t =
     case+ d0es of
     | cons (d0e, d0es) => aux (d0e, d0es)
@@ -1921,19 +1968,25 @@ in
   end // end of [if]
 end (* end of [d0exp_ide] *)
 
-implement d0exp_if_none (hd, d0e_cond, d0e_then) = let
+(* ****** ****** *)
+
+implement
+d0exp_if_none (hd, d0e_cond, d0e_then) = let
   val t_if = hd.ifhead_tok
   val loc = combine (t_if.t0kn_loc, d0e_then.d0exp_loc)
 in '{
   d0exp_loc= loc, d0exp_node= D0Eif (hd, d0e_cond, d0e_then, None ())
 } end // end of [d0exp_if_none]
 
-implement d0exp_if_some (hd, d0e_cond, d0e_then, d0e_else) = let
+implement
+d0exp_if_some (hd, d0e_cond, d0e_then, d0e_else) = let
   val t_if = hd.ifhead_tok
   val loc = combine (t_if.t0kn_loc, d0e_else.d0exp_loc)
 in '{
   d0exp_loc= loc, d0exp_node= D0Eif (hd, d0e_cond, d0e_then, Some d0e_else)
 } end // end of [d0exp_if_some]
+
+(* ****** ****** *)
 
 implement d0exp_int (i) = '{
   d0exp_loc= i.i0nt_loc, d0exp_node= D0Eint (i.i0nt_val)

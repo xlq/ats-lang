@@ -270,6 +270,11 @@ implement d1exp_crypt (loc, knd, d1e) = '{
   d1exp_loc= loc, d1exp_node= D1Ecrypt (knd, d1e)
 }
 
+implement
+d1exp_decseq (loc, d1cs) = '{
+  d1exp_loc= loc, d1exp_node= D1Edecseq (d1cs)
+} // end of [d1exp_decseq]
+
 implement d1exp_dynload (loc, fil) = '{
   d1exp_loc= loc, d1exp_node= D1Edynload (fil)
 }

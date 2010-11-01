@@ -95,41 +95,42 @@ extern fun flag_is_IATSdir (s: string): bool = "flag_is_IATSdir"
 
 fn flag_is_m32 (flag: string): bool =
   case+ flag of | "-m32" => true | _ => false
-// end of [flag_is_m32]
-
 fn flag_is_m64 (flag: string): bool =
   case+ flag of | "-m64" => true | _ => false
-// end of [flag_is_m64]
 
 (* ****** ****** *)
 
-fn flag_is_compile_only (flag: string):<fun0> Bool =
+fn flag_is_compile_only
+  (flag: string):<fun0> Bool =
   case+ flag of "-cc" => true | "--compile" => true | _ => false
-
 val is_compile_only: intref = intref_make 0
 extern val "is_compile_only" = is_compile_only
 
-//
+(* ****** ****** *)
 
-fn flag_is_typecheck_only (flag: string):<fun0> Bool = begin
+fn flag_is_typecheck_only
+  (flag: string):<fun0> Bool =
   case+ flag of "-tc" => true | "--typecheck" => true | _ => false
-end // end of [flag_is_typecheck_only]
-
 val is_typecheck_only: intref = intref_make 0
 extern val "is_typecheck_only" = is_typecheck_only
 
-//
+(* ****** ****** *)
 
-fn flag_is_objcode_only (flag: string):<fun0> Bool =
+fn flag_is_objcode_only
+  (flag: string):<fun0> Bool =
   case+ flag of "-c" => true | _ => false
-
 val is_objcode_only: intref = intref_make 0
 extern val "is_objcode_only" = is_objcode_only
 
-//
+(* ****** ****** *)
+
+fn flag_is_debug
+  (flag: string):<fun0> Bool =
+  case+ flag of "-g" => true | _ => false
 
 fn flag_is_version (flag: string):<fun0> Bool =
   case+ flag of "-v" => true | "--version" => true | _ => false
+// end of [flag_is_version]
 
 (* ****** ****** *)
 
@@ -152,7 +153,6 @@ val is_ATS_GCBDW: intref = intref_make 0
 
 fn flag_is_ATS_MULTITHREAD (flag: string): Bool =
   case+ flag of "-D_ATS_MULTITHREAD" => true | _ => false
-
 val is_ATS_MULTITHREAD = intref_make 0
 extern val "is_ATS_MULTITHREAD" = is_ATS_MULTITHREAD
 
@@ -370,6 +370,13 @@ and aux_flag {i:nat | i < n} // .<n-i-1,1>.
     in
       aux (pf | param_ats, flag :: param_c, i+1)
     end // end of [_ when flag_is_m64]
+//
+  | _ when flag_is_debug flag => let
+      val param_c = flag :: param_c
+      val param_ats = "--gline" :: param_ats
+    in
+      aux (pf | param_ats, param_c, i+1)
+    end // end of [_ when flag_is_debug]
 //
   | _ when flag_is_version flag => let
       val () = atscc_version ()

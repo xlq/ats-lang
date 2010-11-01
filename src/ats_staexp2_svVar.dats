@@ -54,7 +54,7 @@ staload "ats_staexp2.sats"
 
 // implementing [s2var_t]
 
-typedef s2var_struct = struct {
+typedef s2var_struct = @{
   s2var_sym= sym_t // the name
 , s2var_srt= s2rt  // the sort
 , s2var_tmplev= int // the template level
@@ -360,7 +360,7 @@ end // end of [local] // for assuming [s2varset]
 
 local
 
-typedef s2Varbound_struct = struct {
+typedef s2Varbound_struct = @{
   s2Varbound_loc= loc_t, s2Varbound_val= s2exp
 }
 
@@ -390,7 +390,7 @@ end // end of [local] // for assuming [s2Varbound_t]
 
 (* ****** ****** *)
 
-typedef s2Var_struct = struct {
+typedef s2Var_struct = @{
   s2Var_loc= loc_t // location
 , s2Var_cnt= count_t // name count
 , s2Var_srt= s2rt // sort may be lowered

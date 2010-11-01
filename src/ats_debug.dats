@@ -30,62 +30,81 @@
 *)
 
 (* ****** ****** *)
-
+//
 // Author: Hongwei Xi (hwxi AT cs DOT bu DOT edu)
 // Time: October 2007
+//
+(* ****** ****** *)
+
+%{^
+// HX: there is no need for marking
+static //  the variable as it contains no pointer
+ats_int_type the_debug_flag = 0 ;
+//
+ats_int_type
+atsopt_debug_flag_get () { return the_debug_flag ; }
+//
+ats_void_type
+atsopt_debug_flag_set
+  (ats_int_type i) { the_debug_flag = i ; return ; }
+// end of [atsopt_debug_flag_set]
+%} // end of [%{^]
+
+(* ****** ****** *)
+
+%{^
+// HX: there is no need for marking
+static //  the variable as it contains no pointer
+ats_int_type the_gline_flag = 0 ;
+//
+ats_int_type
+atsopt_gline_flag_get () { return the_gline_flag ; }
+//
+ats_void_type
+atsopt_gline_flag_set
+  (ats_int_type i) { the_gline_flag = i ; return ; }
+// end of [atsopt_gline_flag_set]
+%} // end of [%{^]
 
 (* ****** ****** *)
 
 %{^
 
-static // no need for marking the variable as it
-ats_int_type the_debug_flag = 0 ; // contains no pointer
-
-ats_int_type
-atsopt_debug_flag_get () { return the_debug_flag ; }
-
 ats_void_type
-atsopt_debug_flag_set
-  (ats_int_type i) { the_debug_flag = i ; return ; }
-// end of [atsopt_debug_flag_set]
-
-ats_void_type
-atsopt_debug_prerrf (
-  ats_ptr_type fmt, ...
+atsopt_debug_vfprintf (
+  ats_ptr_type out
+, ats_ptr_type fmt
+, va_list ap // variadic arguments
 ) {
-  int n ;
-  va_list ap ;
 //
   if (!the_debug_flag) return ;
 //
-  va_start(ap, fmt) ;
-  n = vfprintf(stderr, (char*)fmt, ap) ;
-  va_end(ap) ;
-  if (n < 0) {
-    ats_exit_errmsg(n, "[prerrf] failed\n") ;
-  } // end of [if]
+  (void)vfprintf((FILE*)out, (char*)fmt, ap) ;
 //
   return ;
-} // end of [atsopt_debug_prerrf]
+} // end of [atsopt_debug_printf]
 
 ats_void_type
 atsopt_debug_printf (
   ats_ptr_type fmt, ...
 ) {
-  int n ;
   va_list ap ;
-//
-  if (!the_debug_flag) return ;
-//
   va_start(ap, fmt) ;
-  n = vfprintf(stdout, (char*)fmt, ap) ;
+  atsopt_debug_vfprintf(stdout, (char*)fmt, ap) ;
   va_end(ap) ;
-  if (n < 0) {
-    ats_exit_errmsg(n, "[printf] failed\n") ;
-  } // end of [if]
-//
   return ;
 } // end of [atsopt_debug_printf]
+
+ats_void_type
+atsopt_debug_prerrf (
+  ats_ptr_type fmt, ...
+) {
+  va_list ap ;
+  va_start(ap, fmt) ;
+  atsopt_debug_vfprintf(stderr, (char*)fmt, ap) ;
+  va_end(ap) ;
+  return ;
+} // end of [atsopt_debug_prerrf]
 
 %} // end of [%{^]
 

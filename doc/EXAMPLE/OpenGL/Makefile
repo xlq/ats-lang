@@ -9,7 +9,7 @@
 ######
 
 .PHONY: all
-all:  compall
+all: checkall
 
 ######
 
@@ -97,24 +97,30 @@ glTetrix: glTetrix.dats
 
 ######
 
+RMF = rm -f
+
+######
+
 clean:
-	rm -f *_?ats.c *.o *~
+	$(RMF) *~
+	$(RMF) *.o
+	$(RMF) *_?ats.c
 
 cleanall: clean
-	rm -f glHello
-	rm -f glDoubleBuffer
-	rm -f glIcosahedron
-	rm -f glClipping
-	rm -f glCubeView
-	rm -f glPlanet
-	rm -f glColoredTriangle
-	rm -f glLitSphere
-	rm -f glLightMove1
-	rm -f glLightMove2
-	rm -f glBlending1
-	rm -f glBlending2
-	rm -f glDisplayList1
-	rm -f glFaces
-	rm -f glTetrix
+	$(RMF) glHello
+	$(RMF) glDoubleBuffer
+	$(RMF) glIcosahedron
+	$(RMF) glClipping
+	$(RMF) glCubeView
+	$(RMF) glPlanet
+	$(RMF) glColoredTriangle
+	$(RMF) glLitSphere
+	$(RMF) glLightMove1
+	$(RMF) glLightMove2
+	$(RMF) glBlending1
+	$(RMF) glBlending2
+	$(RMF) glDisplayList1
+	$(RMF) glFaces
+	$(RMF) glTetrix
 
 ###### end of [Makefile] ######

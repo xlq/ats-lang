@@ -123,12 +123,14 @@ implement s1rt_arrow (loc) = '{
 }
 
 (* '->' is a special sort constructor *)
-implement s1rt_is_arrow (s1t): bool =
+implement
+s1rt_is_arrow (s1t): bool =
   case+ s1t.s1rt_node of
   | S1RTqid (q, id) => begin
       if s0rtq_is_none q then id = MINUSGT else false
     end
   | _ => false
+// end of [s1rt_is_arrow]
 
 implement s1rt_app (loc, s1t_fun, s1ts_arg) =
   '{ s1rt_loc= loc, s1rt_node= S1RTapp (s1t_fun, s1ts_arg) }
@@ -270,9 +272,13 @@ in
   | _ => err (loc)
 end // end of [s1exp_read]
 
-implement s1exp_struct (loc, ls1es) = '{
+(*
+// HX-2010-11-01: simplification
+implement
+s1exp_struct (loc, ls1es) = '{
   s1exp_loc= loc, s1exp_node= S1Estruct (ls1es)
-}
+} // end of [s1exp_struct]
+*)
 
 implement s1exp_top (loc, knd, s1e) = '{
   s1exp_loc= loc, s1exp_node= S1Etop (knd, s1e)

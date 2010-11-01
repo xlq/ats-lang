@@ -62,7 +62,7 @@ staload "ats_stadyncst2.sats"
 
 (* ****** ****** *)
 
-typedef d2var_struct = struct {
+typedef d2var_struct = @{
   d2var_loc= loc_t // first location
 , d2var_sym= sym_t // name
 , d2var_lev= int // toplevel: 0

@@ -20,13 +20,11 @@ staload "libc/SATS/stdio.sats"
 (* ****** ****** *)
 
 %{^
-
 // #include "symtbl.hats"
 typedef ats_ptr_type ats_string_type ;
 typedef struct { int beg ; int len ; } symbol_t ;
 typedef struct { symbol_t sym ; int cnt ; } tblent_t ;
-
-%}
+%} // end of [%{^]
 
 (* ****** ****** *)
 
@@ -574,29 +572,32 @@ end // end of [getrest]
 
 (* ****** ****** *)
 
-extern fun dna_of_string (s: string): dna_t = "dna_of_string"
+extern
+castfn dna_of_string (s: string): dna_t
 extern fun is_three (s: string): bool = "is_three"
 
 %{$
 
-ats_ptr_type dna_of_string (ats_string_type s) { return s ; }
-
-ats_bool_type is_three (ats_ptr_type s0) {
+ats_bool_type
+is_three (
+  ats_ptr_type s0
+) {
   char *s = (char*) s0 ;
-
+//
   if ( *s != '>') return ats_false_bool ; ++s ;
   if ( *s != 'T') return ats_false_bool ; ++s ;
   if ( *s != 'H') return ats_false_bool ; ++s ;
   if ( *s != 'R') return ats_false_bool ; ++s ;
   if ( *s != 'E') return ats_false_bool ; ++s ;
   if ( *s != 'E') return ats_false_bool ;
+//
   return ats_true_bool ;
-}
+} // end of [is_three]
 
-%}
+%} // end of [%{$]
 
 implement main (argc, argv) = let
-
+//
   fun dna_three_get (): string_int = let
     val s = getline ()
     val () = assert (s <> "")
@@ -609,36 +610,38 @@ implement main (argc, argv) = let
   in
     if is3 then getrest () else dna_three_get ()
   end // end of [dna_three_get]
-
+//
   val () = gc_chunk_count_limit_max_set (~1) // no max
-  
+//
   val (dna_three, n) = dna_three_get ()
   val dna_three = dna_of_string dna_three
   val dna_table = symtbl_make (dna_three, 0x40000)
   val () = assert (n >= 2)
-
+//
 in
-
+//
 write_frequencies (dna_table, n, 1) ;
 print_newline () ;
-
+//
 write_frequencies (dna_table, n, 2) ;
 print_newline () ;
-
+//
 write_count (dna_table, n, "GGT") ;
 write_count (dna_table, n, "GGTA") ;
 write_count (dna_table, n, "GGTATT") ;
 write_count (dna_table, n, "GGTATTTTAATT") ;
 write_count (dna_table, n, "GGTATTTTAATTTATAGT") ;
-
-end
+//
+end // end of [main]
 
 (* ****** ****** *)
 
 %{$
 
 ats_ptr_type
-dna_count (ats_ptr_type tbl, ats_int_type n, ats_int_type k) {
+dna_count (
+  ats_ptr_type tbl, ats_int_type n, ats_int_type k
+) {
   symbol_t sym ; int i, nk = n - k ;
 
   symtbl_clear (tbl) ;
@@ -648,16 +651,18 @@ dna_count (ats_ptr_type tbl, ats_int_type n, ats_int_type k) {
     symtbl_insert (tbl, sym, 0) ;
   }
   return tbl ;
-}
+} // end of [dna_count]
 
 ats_ptr_type
-string_make_charlst_int (ats_ptr_type cs, const ats_int_type n) {
+string_make_charlst_int (
+  ats_ptr_type cs, const ats_int_type n
+) {
   char *s0, *s;
   s0 = ats_malloc_gc(n+1) ;
   s = s0 + n ; *s = '\0' ; --s ;
   while (!charlst_is_nil(&cs)) { *s = charlst_uncons(&cs) ; --s ; }
   return s0 ;
-}
+} // end of [string_make_charlst_int]
 
 %} // end of [%{$]
 

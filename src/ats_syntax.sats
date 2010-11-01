@@ -789,8 +789,11 @@ datatype s0exp_node =
       sym_t
   | S0Eqid of (* qualified static identifier *)
       (s0taq, sym_t)
+(*
+// HX-2010-11-01: simplification
   | S0Estruct of (* struct type *)
       labs0explst 
+*)
   | S0Etyarr of (* array type *)
       (s0exp (*element*), s0explstlst (*dimension*))
   | S0Etyrec of (* record type *)
@@ -898,8 +901,12 @@ fun s0exp_opide (t_op: t0kn, id: i0de): s0exp = "s0exp_opide"
 
 fun s0exp_qid (q: s0taq, id: i0de): s0exp = "s0exp_qid"
 
-fun s0exp_struct (t_struct: t0kn, _: labs0explst, t_end: t0kn): s0exp
-  = "s0exp_struct"
+(*
+// HX-2010-11-01: simplification
+fun s0exp_struct (
+  t_struct: t0kn, _: labs0explst, t_end: t0kn
+) : s0exp = "s0exp_struct"
+*)
 
 fun s0exp_tyarr (t_beg: t0kn, elt: s0exp, ind: s0arrind): s0exp
   = "s0exp_tyarr"
@@ -1592,6 +1599,9 @@ datatype d0exp_node =
   | D0Ecstsp of cstsp // for special constants
   | D0Ecrypt of (* cryption *)
       int (* 1/-1 : encryptn/decrypt *)
+//
+  | D0Edecseq of d0eclst // decseq as expression
+//
   | D0Edelay of (* lazy evaluation *)
       int(*lin*)
   | D0Edynload (* dynamic loading *)
@@ -1956,11 +1966,21 @@ fun d0exp_caseof
 
 fun d0exp_crypt (knd: int, t_crypt: t0kn): d0exp = "d0exp_crypt"
 
-fun d0exp_delay (lin: int, t_delay: t0kn): d0exp = "d0exp_delay"
+fun d0exp_decseq (
+  t_lbrace: t0kn, d0cs: d0eclst, t_rbrace: t0kn
+) : d0exp = "d0exp_decseq"
 
-fun d0exp_dynload (t_dynload: t0kn): d0exp = "d0exp_dynload"
+fun d0exp_delay
+  (lin: int, t_delay: t0kn): d0exp = "d0exp_delay"
+// end of [d0exp_delay]
 
-// implemented in [ats_effect.dats]
+fun d0exp_dynload
+  (t_dynload: t0kn): d0exp = "d0exp_dynload"
+// end of [d0exp_dynload]
+
+//
+// HX: implemented in [ats_effect.dats]
+//
 fun d0exp_effmask_all (t: t0kn): d0exp = "d0exp_effmask_all"
 fun d0exp_effmask_exn (t: t0kn): d0exp = "d0exp_effmask_exn"
 fun d0exp_effmask_ntm (t: t0kn): d0exp = "d0exp_effmask_ntm"
@@ -1968,30 +1988,41 @@ fun d0exp_effmask_ref (t: t0kn): d0exp = "d0exp_effmask_ref"
 
 fun d0exp_empty (_: loc_t): d0exp = "d0exp_empty"
 
-fun d0exp_exist
-  (t_beg: t0kn, s0a: s0exparg, t_bar: t0kn, d0e: d0exp, t_end: t0kn): d0exp
-  = "d0exp_exist"
+fun d0exp_exist (
+  t_beg: t0kn
+, s0a: s0exparg
+, t_bar: t0kn
+, d0e: d0exp
+, t_end: t0kn
+) : d0exp = "d0exp_exist"
 
-fun d0exp_extval
-  (t_beg: t0kn, type: s0exp, code: s0tring, t_end: t0kn): d0exp
-  = "d0exp_extval"
+fun d0exp_extval (
+  t_beg: t0kn, type: s0exp, code: s0tring, t_end: t0kn
+) : d0exp = "d0exp_extval"
 
-fun d0exp_fix
-  (knd: fixkind, _: i0de,
-   arg: f0arglst, res: s0expopt, _: e0fftaglstopt, body: d0exp): d0exp
-  = "d0exp_fix"
+fun d0exp_fix (
+  knd: fixkind
+, f: i0de
+, arg: f0arglst
+, res: s0expopt
+, efs: e0fftaglstopt
+, body: d0exp
+): d0exp = "d0exp_fix"
 
 fun d0exp_float (_: f0loat): d0exp = "d0exp_float"
 fun d0exp_floatsp (_: f0loatsp): d0exp = "d0exp_floatsp"
 
-fun d0exp_foldat (t_foldat: t0kn, _: d0explst): d0exp
-  = "d0exp_foldat"
+fun d0exp_foldat
+  (t_foldat: t0kn, _: d0explst): d0exp = "d0exp_foldat"
+// end of [d0exp_foldat]
 
-fun d0exp_for_itp (hd: loophead, itp: initestpost, body: d0exp): d0exp
-  = "d0exp_for_itp"
+fun d0exp_for_itp (
+  hd: loophead, itp: initestpost, body: d0exp
+) : d0exp = "d0exp_for_itp"
 
-fun d0exp_freeat (t_freeat: t0kn, _: d0explst): d0exp
-  = "d0exp_freeat"
+fun d0exp_freeat
+  (t_freeat: t0kn, _: d0explst): d0exp = "d0exp_freeat"
+// end of [d0exp_freeat]
 
 (* ****** ****** *)
 
@@ -2000,9 +2031,11 @@ fun d0exp_ide (id: i0de): d0exp = "d0exp_ide"
 fun d0exp_if_none
   (hd: ifhead, d0e_cond: d0exp, d0e_then: d0exp): d0exp
   = "d0exp_if_none"
-fun d0exp_if_some
-  (hd: ifhead, d0e_cond: d0exp, d0e_then: d0exp, d0e_else: d0exp): d0exp
-  = "d0exp_if_some"
+fun d0exp_if_some (
+  hd: ifhead, d0e_cond: d0exp, d0e_then: d0exp, d0e_else: d0exp
+) : d0exp = "d0exp_if_some"
+
+(* ****** ****** *)
 
 fun d0exp_int (i: i0nt): d0exp = "d0exp_int"
 fun d0exp_intsp (i: i0ntsp): d0exp = "d0exp_intsp"
@@ -2010,42 +2043,51 @@ fun d0exp_intsp (i: i0ntsp): d0exp = "d0exp_intsp"
 (* ****** ****** *)
 
 fun d0exp_lam (
-    knd: lamkind, arg: f0arglst, res: s0expopt, eff: e0fftaglstopt, d0e: d0exp
-  ) : d0exp
-  = "d0exp_lam"
+  knd: lamkind
+, arg: f0arglst, res: s0expopt, eff: e0fftaglstopt, d0e: d0exp
+) : d0exp = "d0exp_lam"
 
 (* ****** ****** *)
 
-fun d0exp_let_seq
-  (t_let: t0kn, d0cs: d0eclst, t_in: t0kn, d0e: d0explst, t_end: t0kn): d0exp
-  = "d0exp_let_seq"
+fun d0exp_let_seq (
+  t_let: t0kn, d0cs: d0eclst, t_in: t0kn, d0e: d0explst, t_end: t0kn
+) : d0exp = "d0exp_let_seq"
 
-fun d0exp_list (t_beg: t0kn, d0es: d0explst, t_end: t0kn): d0exp
-  = "d0exp_list"
+(* ****** ****** *)
 
-fun d0exp_list2
-  (t_beg: t0kn, d0es1: d0explst, d0es2: d0explst, t_end: t0kn): d0exp
-  = "d0exp_list2"
+fun d0exp_list (
+  t_beg: t0kn, d0es: d0explst, t_end: t0kn
+) : d0exp = "d0exp_list"
+
+fun d0exp_list2 (
+  t_beg: t0kn, d0es1: d0explst, d0es2: d0explst, t_end: t0kn
+) : d0exp = "d0exp_list2"
+
+(* ****** ****** *)
 
 fun d0exp_loopexn (i: int, t: t0kn): d0exp = "d0exp_loopexn"
 
-fun d0exp_lst
-  (lin: int, t_beg: t0kn, os0e: s0expopt, elts: d0explst, t_end: t0kn): d0exp
-  = "d0exp_lst"
+fun d0exp_lst (
+  lin: int, t_beg: t0kn, os0e: s0expopt, elts: d0explst, t_end: t0kn
+) : d0exp = "d0exp_lst"
 
-fun d0exp_lst_quote (t_beg: t0kn, elts: d0explst, t_end: t0kn): d0exp
-  = "d0exp_lst_quote"
+fun d0exp_lst_quote
+  (t_beg: t0kn, elts: d0explst, t_end: t0kn): d0exp = "d0exp_lst_quote"
+// end of [d0exp_lst_quote]
 
 (* ****** ****** *)
 
-fun d0exp_macsyn_cross (t_beg: t0kn, _: d0exp, t_end: t0kn): d0exp
-  = "d0exp_macsyn_cross"
+fun d0exp_macsyn_cross
+  (t_beg: t0kn, _: d0exp, t_end: t0kn): d0exp = "d0exp_macsyn_cross"
+// end of [d0exp_macsyn_cross]
 
-fun d0exp_macsyn_decode (t_beg: t0kn, _: d0exp, t_end: t0kn): d0exp
-  = "d0exp_macsyn_decode"
+fun d0exp_macsyn_decode
+  (t_beg: t0kn, _: d0exp, t_end: t0kn): d0exp = "d0exp_macsyn_decode"
+// end of [d0exp_macsyn_decode]
 
-fun d0exp_macsyn_encode_seq (t_beg: t0kn, _: d0explst, t_end: t0kn): d0exp
-  = "d0exp_macsyn_encode_seq"
+fun d0exp_macsyn_encode_seq
+  (t_beg: t0kn, _: d0explst, t_end: t0kn): d0exp = "d0exp_macsyn_encode_seq"
+// end of [d0exp_macsyn_encode_seq]
 
 (* ****** ****** *)
 

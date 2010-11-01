@@ -1248,6 +1248,8 @@ end // end of [aux23]
 
 in // in of [local]
 
+(*
+// HX-2010-11-01: simplification
 fn s1exp_struct_tr_up (
    loc0: loc_t, ls1es: labs1explst
   ) : s2exp = let
@@ -1260,6 +1262,7 @@ fn s1exp_struct_tr_up (
 in
   s2exp_tyrec_srt (s2t_rec, TYRECKINDflt1 stamp, 0(*npf*), ls2es)
 end // end of [s1exp_struct_tr_up]
+*)
 
 (* ****** ****** *)
 
@@ -1329,8 +1332,9 @@ fn s1exp_tmpid_tr (
 
 (* ****** ****** *)
 
-fn s1exp_tyrec_tr_up
-  (loc0: loc_t, recknd: int, ls1es: labs1explst): s2exp = begin
+fn s1exp_tyrec_tr_up (
+  loc0: loc_t, recknd: int, ls1es: labs1explst
+) : s2exp = begin
   case+ recknd of
   | _ when 0 <= recknd andalso recknd <= 1 => let
       var lin: int = 0 and prg: int = 0
@@ -1494,9 +1498,12 @@ in
     end // end of [S1Enamed]
   | S1Eqid (q, id) => s1exp_qid_tr_up (s1e0.s1exp_loc, q, id)
   | S1Eread (_v, s1e) => s1exp_read_tr_up (_v, s1e)
+(*
+// HX-2010-11-01: simplification
   | S1Estruct (ls1es) => begin
       s1exp_struct_tr_up (s1e0.s1exp_loc, ls1es)
     end // end of [S1Estruct]
+*)
   | S1Etop (knd, s1e) => s1exp_top_tr_up (knd, s1e)
   | S1Etrans _ => begin
       prerr_loc_error2 s1e0.s1exp_loc;

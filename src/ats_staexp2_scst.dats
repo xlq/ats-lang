@@ -52,7 +52,7 @@ staload "ats_staexp2.sats"
 
 (* ****** ****** *)
 
-typedef s2cst_struct = struct { (* builtin or abstract *)
+typedef s2cst_struct = @{ (* builtin or abstract *)
   s2cst_sym= sym_t // the name
 , s2cst_loc= loc_t // the location of declaration
 , s2cst_srt= s2rt // the sort
