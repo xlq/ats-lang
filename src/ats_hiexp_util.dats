@@ -83,7 +83,8 @@ fn prerr_interror () = prerr "INTERNAL ERROR (ats_ccomp_env)"
 
 (* ****** ****** *)
 
-implement hityp_is_void (hit0) = begin
+implement
+hityp_is_void (hit0) = begin
   case+ hit0.hityp_node of
   | HITextype name => begin case+ 0 of
     | _ when name = ABS_TYPE_NAME => true
@@ -96,7 +97,8 @@ implement hityp_is_void (hit0) = begin
   | _ => false
 end // end of [hityp_is_void]
 
-implement hityp_fun_is_void (hit_fun) = let
+implement
+hityp_fun_is_void (hit_fun) = let
 (*
   val () = begin
     print "hityp_fun_is_void: hit_fun = "; print hit_fun; print_newline ()
@@ -112,11 +114,13 @@ in
     end // end of [_]
 end // end of [hityp_fun_is_void]
 
-implement hityp_is_vararg (hit) = begin
+implement
+hityp_is_vararg (hit) = begin
   case+ hit.hityp_node of HITvararg _ => true | _ => false
 end // end of [hityp_is_vararg]
 
-implement hityp_fun_is_vararg (hit_fun) = let
+implement
+hityp_fun_is_vararg (hit_fun) = let
   fun aux (hit: hityp, hits: hityplst): bool = case+ hits of
     | cons (hit, hits) => aux (hit, hits) | nil () => hityp_is_vararg hit
 in
@@ -131,21 +135,30 @@ in
     end // end of [_]
 end // end of [hityp_fun_is_vararg]
 
-implement hityp_is_tyrecbox (hit_rec) = begin
+implement
+hityp_is_tyarr (hit_rec) = begin
+  case+ hit_rec.hityp_node of HITtyarr _ => true | _ => false
+end // end of [hityp_is_tyarr]
+
+implement
+hityp_is_tyrecbox (hit_rec) = begin
   case+ hit_rec.hityp_node of HITtyrec (knd, _) => knd > 0 | _ => false
 end // end of [hityp_is_tyrecbox]
 
-implement hityp_is_tyrecext (hit_rec) = begin
+implement
+hityp_is_tyrecext (hit_rec) = begin
   case+ hit_rec.hityp_node of HITtyrec (knd, _) => knd < 0 | _ => false
 end // end of [hityp_is_tyrecext]
 
-implement hityp_is_tyrecsin (hit_rec) = begin
+implement
+hityp_is_tyrecsin (hit_rec) = begin
   case+ hit_rec.hityp_node of HITtyrecsin _ => true | _ => false
 end // end of [hityp_is_tyrecsim]
 
 (* ****** ****** *)
 
-implement hipatlst_is_unused (hips) = begin case+ hips of
+implement
+hipatlst_is_unused (hips) = begin case+ hips of
   | list_cons (hip, hips) => begin
     case+ hip.hipat_node of
     | HIPany () => hipatlst_is_unused hips | _ => false
@@ -157,7 +170,8 @@ end // end of [hipatlst_is_unused]
 
 viewtypedef hiexplst_vt = List_vt hiexp
 
-implement hiexp_is_empty (hie0) = begin
+implement
+hiexp_is_empty (hie0) = begin
   case+ hie0.hiexp_node of
   | HIEempty () => true
   | HIErec (
@@ -170,7 +184,8 @@ implement hiexp_is_empty (hie0) = begin
   | _ => false
 end // end of [hiexp_is_empty]
 
-implement hiexp_seq_simplify
+implement
+hiexp_seq_simplify
   (loc0: loc_t, hit0: hityp, hies: hiexplst): hiexp = let
   fun aux (res: &hiexplst_vt, hies: hiexplst): void = begin
     case+ hies of
@@ -260,7 +275,8 @@ fn hiclau_is_bool_snd (hicl: hiclau): Option_vt hiexp = begin
   | _ => None_vt ()
 end // end of [hiclau_is_bool_snd]
 
-implement hiexp_caseof_if
+implement
+hiexp_caseof_if
   (loc0, hit0, knd, hies, hicls) = let
   macdef hiexp_caseof_mac () =
     hiexp_caseof (loc0, hit0, knd, hies, hicls)
@@ -345,7 +361,8 @@ fun hiexp_is_empvar (hie: hiexp): hiempvar = begin
   | _ => HIEMPVARnone ()
 end // end of [hiexp_is_empvar]
 
-implement hiexp_let_simplify
+implement
+hiexp_let_simplify
   (loc0, hit0, hids0, hie0) = let
   macdef hie0_let () = hiexp_let (loc0, hit0, hids0, hie0)
   fun aux_simplify
@@ -452,21 +469,25 @@ implement prerr_hityp_t (hit)=  prerr_hityp (hit)
 
 (* ****** ****** *)
 
-implement hityplst_is_nil (hits) = begin
+implement
+hityplst_is_nil (hits) = begin
   case+ hits of list_cons _ => false | list_nil () => true
-end
+end // end of [hityplst_is_nil]
 
-implement hityplst_is_cons (hits) = begin
+implement
+hityplst_is_cons (hits) = begin
   case+ hits of list_cons _ => true | list_nil () => false
-end
+end // end of [hityplst_is_cons]
 
-implement hityplstlst_is_nil (hitss) = begin
+implement
+hityplstlst_is_nil (hitss) = begin
   case+ hitss of list_cons _ => false | list_nil () => true
-end
+end // end of [hityplstlst_is_nil]
 
-implement hityplstlst_is_cons (hitss) = begin
+implement
+hityplstlst_is_cons (hitss) = begin
   case+ hitss of list_cons _ => true | list_nil () => false
-end
+end // end of [hityplstlst_is_cons]
 
 (* ****** ****** *)
 
@@ -497,7 +518,9 @@ in
     } // end of [where]
 end // end of [hityp_name_get]
 
-implement hityp_tyrec_make (recknd, lhits) = let
+implement
+hityp_tyrec_make
+  (recknd, lhits) = let
   val lnames = aux lhits where {
     fun aux (lhits: labhityplst): labstrlst = case+ lhits of
       | LABHITYPLSTcons (l, hit, lhits) => begin
@@ -512,7 +535,9 @@ in
   hityp_encode (hit_rec)
 end // end of [hityp_tyrec_make]
 
-implement hityp_tysum_make (d2c, hits_arg) = begin
+implement
+hityp_tysum_make
+  (d2c, hits_arg) = begin
   case+ hits_arg of
   | list_cons _ => let
 (*
@@ -622,23 +647,29 @@ end // end of [labhityplst_normalize_flag]
 
 //
 
-implement hityp_normalize (hit) = let
+implement
+hityp_normalize (hit) = let
   var flag: int = 0
 in
   hityp_normalize_flag (hit, flag)
-end
+end // end of [hityp_normalize]
 
-implement hityplst_normalize (hits) =
+implement
+hityplst_normalize (hits) =
   $Lst.list_map_fun (hits, hityp_normalize)
+// end of [hityplst_normalize]
 
-implement hityplstlst_normalize (hitss) =
+implement
+hityplstlst_normalize (hitss) =
   $Lst.list_map_fun (hitss, hityplst_normalize)
+// end of [hityplstlst_normalize]
 
 end // end of [local]
 
 (* ****** ****** *)
 
-implement d2cst_hityp_get_some (d2c) = begin
+implement
+d2cst_hityp_get_some (d2c) = begin
   case+ d2cst_hityp_get d2c of
   | Some hit => hit | None () => begin
       prerr_interror ();
@@ -683,7 +714,8 @@ val the_tmpcstmap = ref_make_elt<tmpcstmap> (tmpcstmap_nil ())
 
 in
 
-implement tmpcstmap_add
+implement
+tmpcstmap_add
   (d2c, decarg, hie_def) = let
   val tmpdef = tmpdef_make (decarg, hie_def)
   val (vbox pf | p) = ref_get_view_ptr (the_tmpcstmap)
@@ -691,7 +723,8 @@ in
   $Map.map_insert (!p, d2c, tmpdef)
 end // end of [tmpcstmap_add]
 
-implement tmpcstmap_find (d2c) = let
+implement
+tmpcstmap_find (d2c) = let
   val (vbox pf | p) = ref_get_view_ptr (the_tmpcstmap)
 in
   $Map.map_search (!p, d2c)
@@ -712,7 +745,8 @@ val the_tmpvarmap = ref_make_elt<tmpvarmap> (tmpvarmap_nil ())
 
 in
 
-implement tmpvarmap_add
+implement
+tmpvarmap_add
   (d2v, decarg, hie_def) = let
   val tmpdef = tmpdef_make (decarg, hie_def)
   val (vbox pf | p) = ref_get_view_ptr (the_tmpvarmap)
@@ -720,7 +754,8 @@ in
   $Map.map_insert (!p, d2v, tmpdef)
 end // end of [tmpvarmap_add]
 
-implement tmpvarmap_find (d2v) = let
+implement
+tmpvarmap_find (d2v) = let
   val (vbox pf | p) = ref_get_view_ptr (the_tmpvarmap)
 in
   $Map.map_search (!p, d2v)

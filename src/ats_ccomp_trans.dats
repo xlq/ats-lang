@@ -1919,7 +1919,9 @@ arraysize_viewt0ype_int_viewt0ype
   (free_gc_v (a, n, l), @[a][n] @ l | ptr l(*arr*), int n(*size*))
 //
 *)
-    val off = OFFSETlab ($Lab.label_make_int 2(*arr*), hit_arrsz)
+    val off = OFFSETlab
+      ($Lab.label_make_int 2(*arr*), hit_arrsz)
+    // end of [val]
   in
     instr_add_load_var_offs (res, loc0, tmp_arr, vp_res, '[off])
   end // end of [var]
@@ -2313,12 +2315,12 @@ ccomp_hilab (res, hil) = begin
       val vpss_ind = ccomp_explstlst (res, hiess_ind)
     in
       OFFSETind (vpss_ind, hit_elt)
-    end
+    end // end of [HILind]
   | HILlab (l, hit_rec) => let
       val hit_rec = hityp_normalize hit_rec
     in
       OFFSETlab (l, hit_rec)
-    end
+    end // end of [HILlab]
 end // end of [ccomp_hilab]
 
 implement

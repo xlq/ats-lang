@@ -678,35 +678,38 @@ end // end of [d3exp_tmpvar_tr]
 
 (* ****** ****** *)
 
-fn d3lab1_tr (d3l: d3lab1): hilab = let
-   val loc0 = d3l.d3lab1_loc
- in
-   case+ d3l.d3lab1_node of
-   | D3LAB1lab (l, s2e_rec) => let
-       val hit_rec = s2exp_tr (loc0, 1(*deep*), s2e_rec)
-     in
-       hilab_lab (loc0, l, hit_rec)
-     end // end of [D3LAB1lab]
-   | D3LAB1ind (d3ess, s2e_elt) => let
-       val hiess: hiexplstlst = $Lst.list_map_fun (d3ess, d3explst_tr)
-       val hit_elt = s2exp_tr (loc0, 0(*deep*), s2e_elt)
-     in
-       hilab_ind (loc0, hiess, hit_elt)
-     end // end of [D3LAB1ind]
- end // end of [d3lab1_tr]
+fn d3lab1_tr
+  (d3l: d3lab1): hilab = let
+  val loc0 = d3l.d3lab1_loc
+in
+  case+ d3l.d3lab1_node of
+  | D3LAB1lab (l, s2e_rec) => let
+      val hit_rec = s2exp_tr (loc0, 1(*deep*), s2e_rec)
+    in
+      hilab_lab (loc0, l, hit_rec)
+    end // end of [D3LAB1lab]
+  | D3LAB1ind (d3ess, s2e_elt) => let
+      val hiess: hiexplstlst = $Lst.list_map_fun (d3ess, d3explst_tr)
+      val hit_elt = s2exp_tr (loc0, 0(*deep*), s2e_elt)
+    in
+      hilab_ind (loc0, hiess, hit_elt)
+    end // end of [D3LAB1ind]
+end // end of [d3lab1_tr]
 
-fn d3lab1lst_tr (d3ls: d3lab1lst): hilablst =
+fn d3lab1lst_tr
+  (d3ls: d3lab1lst): hilablst =
   $Lst.list_map_fun (d3ls, d3lab1_tr)
 // end of [d3lab1lst_tr]
 
-//
+(* ****** ****** *)
 
-fn m3atch_tr (m3at: m3atch): himat = let
+fn m3atch_tr
+  (m3at: m3atch): himat = let
   val hie = d3exp_tr m3at.m3atch_exp
   val ohip = (
     case+ m3at.m3atch_pat of
     | Some p3t => Some (p3at_tr p3t) | None () => None ()
-  ) : hipatopt
+  ) : hipatopt // end of [val]
 in
   himat_make (m3at.m3atch_loc, hie, ohip)
 end // end of [m3atch_tr]
@@ -715,7 +718,7 @@ fn m3atchlst_tr (m3ats: m3atchlst): himatlst =
   $Lst.list_map_fun (m3ats, m3atch_tr)
 // end of [m3atchlst_tr]
 
-//
+(* ****** ****** *)
 
 fn c3lau_tr (c3l: c3lau): hiclau = let
   val loc0 = c3l.c3lau_loc

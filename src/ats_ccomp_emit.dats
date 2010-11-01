@@ -52,6 +52,7 @@ staload Fil = "ats_filename.sats"
 staload Glo = "ats_global.sats"
 staload IntInf = "ats_intinf.sats"
 staload Lab = "ats_label.sats"
+typedef lab_t = $Lab.label_t
 staload Loc = "ats_location.sats"
 staload Lst = "ats_list.sats"
 
@@ -668,6 +669,24 @@ end // end of [emit_array_index]
 
 (* ****** ****** *)
 
+fun label_is_tyarr (
+  hit_rec: hityp_t, lab: lab_t
+) : bool = let
+  val hit_rec = hityp_decode (hit_rec)
+  fun istyarr
+    (lhits: labhityplst, lab: lab_t): bool =
+    case+ lhits of
+    | LABHITYPLSTcons (l, hit, lhits) =>
+        if $Lab.eq_label_label (lab, l)
+          then hityp_is_tyarr(hit) else istyarr (lhits, lab)
+      // end of [if]
+    | LABHITYPLSTnil () => false
+in
+  case+ hit_rec.hityp_node of
+  | HITtyrec (_(*knd*), lhits) => istyarr (lhits, lab)
+  | _ => false
+end // end of [label_is_tyarr]
+
 fn emit_select_clo
   {m:file_mode} (
     pf: fmlte (m, w) |
@@ -678,7 +697,9 @@ fn emit_select_clo
   ) : void = case+ offs of
   | ~list_vt_cons (off, offs) => (
     case+ off of
-    | OFFSETind (vpss_dim, hit_elt) => let
+    | OFFSETind (
+        vpss_dim, hit_elt
+      ) => let
         val () = fprint1_string
           (pf | out, "ats_caselind_mac(")
         val () = emit_hityp (pf | out, hit_elt)
@@ -690,10 +711,15 @@ fn emit_select_clo
       in
         // nothing
       end // end of [OFFSETind]
-    | OFFSETlab (lab, hit_rec) => let
+    | OFFSETlab (
+        lab, hit_rec
+      ) => let
         var isext: bool = false
-        val () = case+ 0 of
+        var istyarr: bool = false
+//
+        val () = (case+ 0 of
         | _ when hityp_t_is_tyrecbox hit_rec => let
+            val istyarr = label_is_tyarr (hit_rec, lab)
             val () = fprint1_string (pf | out, "ats_selbox_mac(")
           in
             // nothing
@@ -704,11 +730,13 @@ fn emit_select_clo
             // nothing
           end // end of [_ when ...]
         | _ => let
+            val istyarr = label_is_tyarr (hit_rec, lab)
             val () = isext := hityp_t_is_tyrecext hit_rec
             val () = fprint1_string (pf | out, "ats_select_mac(")
           in
             // nothing
           end // end of [_]
+        ) : void // end of [val]
 //
         val hit_rec = hityp_decode (hit_rec)
         var iscast: int = 0
@@ -731,6 +759,8 @@ fn emit_select_clo
 //
         val () = fprint1_string (pf | out, ", ")
         val () = emit_labelext (pf | out, isext, lab)
+        val () = if istyarr then
+          fprint1_string (pf | out, "[0]") // HX: label for flat array
         val () = fprint1_string (pf | out, ")")
       in
         // nothing
@@ -786,6 +816,7 @@ fn emit_valprim_select_varptr
       case+ 0 of
       | _ when hityp_t_is_tyrecbox (hit_rec) => let
           val isext = false
+          val istyarr = label_is_tyarr (hit_rec, lab)
           val () = fprint1_string
             (pf | out, "ats_caselptr_mac(")
           val () = emit_hityp_ptr (pf | out, hit_rec)
@@ -793,6 +824,8 @@ fn emit_valprim_select_varptr
           val () = emit_valprim (pf | out, vp_root)
           val () = fprint1_string (pf | out, ", ")
           val () = emit_labelext (pf | out, isext, lab)
+          val () = if istyarr then
+            fprint1_string (pf | out, "[0]") // HX: label for flat array
           val () = fprint1_string (pf | out, ")")
         in
           // nothing
@@ -812,6 +845,7 @@ fn emit_valprim_select_varptr
         end // end of [_ when ...]
       | _ => let // HX: [hit_rec] is flat!
           val isext = hityp_t_is_tyrecext hit_rec
+          val istyarr = label_is_tyarr (hit_rec, lab)
           val () = if knd > 0 then
             fprint1_string (pf | out, "ats_selptr_mac(")
           else
@@ -832,6 +866,8 @@ fn emit_valprim_select_varptr
           end // end of [if]
           val () = fprint1_string (pf | out, ", ")
           val () = emit_labelext (pf | out, isext, lab)
+          val () = if istyarr then
+            fprint1_string (pf | out, "[0]") // HX: label for flat array
           val () = fprint1_string (pf | out, ")")
         in
           // nothing

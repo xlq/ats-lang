@@ -154,6 +154,8 @@ fun hityp_fun_is_void (hit: hityp): bool
 fun hityp_is_vararg (hit: hityp): bool
 fun hityp_fun_is_vararg (hit: hityp): bool
 
+fun hityp_is_tyarr (hit: hityp): bool // (flat) array
+
 fun hityp_is_tyrecbox (hit: hityp): bool // boxed record
 fun hityp_is_tyrecext (hit: hityp): bool // external (flat) record
 fun hityp_is_tyrecsin (hit: hityp): bool // singular (flat) record
