@@ -49,6 +49,7 @@ staload TM = "libc_sats_time.sats"
 staload Deb = "ats_debug.sats"
 staload Err = "ats_error.sats"
 staload Fil = "ats_filename.sats"
+typedef fil_t = $Fil.filename_t
 staload Glo = "ats_global.sats"
 staload Lst = "ats_list.sats"
 staload Syn = "ats_syntax.sats"
@@ -72,7 +73,7 @@ staload "ats_ccomp_env.sats"
 
 (* ****** ****** *)
 
-typedef fil_t = $Fil.filename_t
+stadef fmlte = file_mode_lte
 
 (* ****** ****** *)
 
@@ -81,7 +82,7 @@ fn prerr_interror () = prerr "INTERNAL ERROR (ats_ccomp_main)"
 (* ****** ****** *)
 
 fn emit_time_stamp {m:file_mode}
-  (pf: file_mode_lte (m, w) | out: &FILE m): void = let
+  (pf: fmlte (m, w) | out: &FILE m): void = let
   var time: $TM.time_t = $TM.time_get ()
   val (pfopt | p_tm) = $TM.localtime (time)
 in
@@ -118,7 +119,7 @@ end // end of [emit_time_stamp]
 (* ****** ****** *)
 
 fn emit_include_header {m:file_mode}
-  (pf: file_mode_lte (m, w) | out: &FILE m): void = let
+  (pf: fmlte (m, w) | out: &FILE m): void = let
   val () = fprint1_string (pf | out, "/* include some .h files */\n")
   val () = fprint1_string (pf | out, "#ifndef _ATS_HEADER_NONE\n")
   val () = fprint1_string (pf | out, "#include \"ats_config.h\"\n")
@@ -135,7 +136,7 @@ end // end of [emit_include_header]
 (* ****** ****** *)
 
 fn emit_include_cats {m:file_mode}
-  (pf: file_mode_lte (m, w) | out: &FILE m): void = let
+  (pf: fmlte (m, w) | out: &FILE m): void = let
   val () = fprint1_string (pf | out, "/* include some .cats files */\n")
   val () = fprint1_string (pf | out, "#ifndef _ATS_PRELUDE_NONE\n")
   val () = fprint1_string (pf | out, "#include \"prelude/CATS/array.cats\"\n")
@@ -165,7 +166,8 @@ end // end of [emit_include_cats]
 
 (* ****** ****** *)
 
-fn atarray_name_test (name: string): bool = let
+fn atarray_name_test
+  (name: string): bool = let
   val name = string1_of_string name
 in
   if string_is_at_end (name, 0) then false else
@@ -173,9 +175,9 @@ in
   // end of [if]
 end // end of [atarray_name_test]
 
-fn fprint_atarray_name {m:file_mode}
-  (pf: file_mode_lte (m, w) | out: &FILE m, name: string)
-  : void = let
+fn fprint_atarray_name {m:file_mode} (
+  pf: fmlte (m, w) | out: &FILE m, name: string
+) : void = let
   fun aux {n,i:nat | i <= n}
     (out: &FILE m, name: string n, i: size_t i)
     : void = begin
@@ -193,9 +195,9 @@ in
   if string_is_at_end (name, 0) then () else aux (out, name, 1)
 end // end of [fprint_atarray_name]
 
-fn emit_typdef_rec {m:file_mode} 
-  (pf: file_mode_lte (m, w) | out: &FILE m, lnames: labstrlst)
-  : void = let
+fn emit_typdef_rec {m:file_mode} (
+  pf: fmlte (m, w) | out: &FILE m, lnames: labstrlst
+) : void = let
   fun aux (out: &FILE m, lnames: labstrlst)
     : void = begin case+ lnames of
     | LABSTRLSTcons (l, name, lnames) => let
@@ -227,8 +229,9 @@ in
   fprint1_string (pf | out, "}")
 end // end of [emit_typdef_rec]
 
-fn emit_typdef_sum {m:file_mode} (
-    pf: file_mode_lte (m, w)
+fn emit_typdef_sum
+  {m:file_mode} (
+    pf: fmlte (m, w)
   | out: &FILE m
   , tag: int
   , names: strlst
@@ -272,7 +275,7 @@ in
 end // end of [emit_typdef_sum]
 
 fn emit_typdeflst_free {m:file_mode} (
-    pf: file_mode_lte (m, w) | out: &FILE m, tds: typdeflst
+    pf: fmlte (m, w) | out: &FILE m, tds: typdeflst
   ) : int = let
   fun aux (out: &FILE m, i: int, tds: typdeflst)
     : int = begin case+ tds of
@@ -299,11 +302,13 @@ end // end of [emit_typdeflst_free]
 
 (* ****** ****** *)
 
-fn emit_datcstlst {m:file_mode} (
-    pf: file_mode_lte (m, w)
+fn emit_datcstlst
+  {m:file_mode} (
+    pf: fmlte (m, w)
   | out: &FILE m
   , s2cs: !datcstlst
   ) : int = let
+//
   fun aux_conlst
     (out: &FILE m, d2cs: d2conlst)
     : void = begin case+ d2cs of
@@ -316,13 +321,13 @@ fn emit_datcstlst {m:file_mode} (
       end
     | D2CONLSTnil () => ()
   end // end of [aux_conlst]
-
+//
   fn aux_cst
     (out: &FILE m, s2c: s2cst_t)
     : void = begin case+ s2cst_conlst_get (s2c) of
     | Some d2cs => aux_conlst (out, d2cs) | None () => ()
   end // end of [aux_cst]
-
+//
   fun aux
     (out: &FILE m, i: int, s2cs: !datcstlst): int = begin
     case+ s2cs of
@@ -333,14 +338,16 @@ fn emit_datcstlst {m:file_mode} (
       end
     | DATCSTLSTnil () => (fold@ (s2cs); i)
   end // end of [aux]
+//
 in
   aux (out, 0, s2cs)
 end // end of [emit_datcstlst]
 
 (* ****** ****** *)
 
-fn emit_exnconlst {m:file_mode} (
-    pf: file_mode_lte (m, w)
+fn emit_exnconlst
+  {m:file_mode} (
+    pf: fmlte (m, w)
   | out: &FILE m
   , d2cs: !exnconlst
   ) : int = let
@@ -365,8 +372,9 @@ end // end of [emit_exnconlst]
 
 (* ****** ****** *)
 
-fn emit_free_glocstlst {m:file_mode} (
-    pf: file_mode_lte (m, w)
+fn emit_free_glocstlst
+  {m:file_mode} (
+    pf: fmlte (m, w)
   | out: &FILE m
   , xs: glocstlst
   ) : int = let
@@ -403,8 +411,9 @@ end // end of [emit_free_glocstlst]
 
 (* ****** ****** *)
 
-fn _emit_dynconset {m:file_mode} {l:addr} (
-    pf_mod: file_mode_lte (m, w)
+fn _emit_dynconset
+  {m:file_mode} {l:addr} (
+    pf_mod: fmlte (m, w)
   , pf_fil: !FILE m @ l
   | p_l: ptr l
   , d2cs: dynconset_t
@@ -441,13 +450,13 @@ in
 end // end of [_emit_dynconset]
 
 fn emit_dynconset {m:file_mode}
-  (pf: file_mode_lte (m, w) | out: &FILE m, d2cs: dynconset_t): int =
+  (pf: fmlte (m, w) | out: &FILE m, d2cs: dynconset_t): int =
   _emit_dynconset (pf, view@ out | &out, d2cs)
 
 (* ****** ****** *)
 
 fn emit_d2cst_dec {m:file_mode} // for a non-proof constant
-  (pf: file_mode_lte (m, w)| out: &FILE m, d2c: d2cst_t): void = let
+  (pf: fmlte (m, w)| out: &FILE m, d2c: d2cst_t): void = let
   val hit0 = d2cst_hityp_get_some (d2c); val hit1 = hityp_decode (hit0)
   macdef f_isprf_mac () = begin
     fprint1_string (pf | out, "ATSextern_prf(");
@@ -521,7 +530,7 @@ in
 end // end of [emit_d2cst_dec]
 
 fn emit_d2cst_dec_prfck {m:file_mode} // for terminating constants
-  (pf: file_mode_lte (m, w)| out: &FILE m, d2c: d2cst_t): void = let
+  (pf: fmlte (m, w)| out: &FILE m, d2c: d2cst_t): void = let
   val hit0 = d2cst_hityp_get_some (d2c); val hit1 = hityp_decode (hit0)
   macdef f_isprf_mac () = begin
     fprint1_string (pf | out, "extern\n");
@@ -541,15 +550,16 @@ end // end of [emit_d2cst_dec]
 
 (* ****** ****** *)
 
-fn _emit_dyncstset_proc {m:file_mode} {l:addr} (
-    pf_mod: file_mode_lte (m, w), pf_fil: !FILE m @ l
+fn _emit_dyncstset_proc
+  {m:file_mode} {l:addr} (
+    pf_mod: fmlte (m, w), pf_fil: !FILE m @ l
   | p_l: ptr l, d2cs: dyncstset_t
-  , proc: (file_mode_lte (m, w) | &FILE m, d2cst_t) -> void
+  , proc: (fmlte (m, w) | &FILE m, d2cst_t) -> void
   ) : int = let
   var i: int = 0
   viewdef V = (FILE m @ l, int @ i)
   typedef fun_type (m:file_mode) =
-    (file_mode_lte (m, w) | &FILE m, d2cst_t) -> void
+    (fmlte (m, w) | &FILE m, d2cst_t) -> void
   dataviewtype ENV3 (m: file_mode, l:addr, i:addr) =
     ENV3con (m, l, i) of (ptr l, ptr i, fun_type m)
   viewtypedef VT = ENV3 (m, l, i)
@@ -575,18 +585,21 @@ in
 end // end of [_emit_dyncstset]
 
 fn emit_dyncstset {m:file_mode}
-  (pf: file_mode_lte (m, w) | out: &FILE m, d2cs: dyncstset_t): int =
+  (pf: fmlte (m, w) | out: &FILE m, d2cs: dyncstset_t): int =
   _emit_dyncstset_proc (pf, view@ out | &out, d2cs, emit_d2cst_dec)
+// end of [emit_dyncstset]
 
 fn emit_dyncstset_prfck {m:file_mode}
-  (pf: file_mode_lte (m, w) | out: &FILE m, d2cs: dyncstset_t): int =
+  (pf: fmlte (m, w) | out: &FILE m, d2cs: dyncstset_t): int =
   _emit_dyncstset_proc (pf, view@ out | &out, d2cs, emit_d2cst_dec_prfck)
+// end of [emit_dyncstset_prfck]
 
 (* ****** ****** *)
 
-fn emit_instrlst_vt {m:file_mode}
-  (pf: file_mode_lte (m, w) | out: &FILE m, inss: !instrlst_vt)
-  : void = let
+fn emit_instrlst_vt {m:file_mode} (
+  pf: fmlte (m, w) | out: &FILE m, inss: !instrlst_vt
+) : void = let
+//
   fun aux
     (out: &FILE m, i: int, inss: !instrlst_vt)
     : int = begin case+ inss of
@@ -599,17 +612,20 @@ fn emit_instrlst_vt {m:file_mode}
       end
     | list_vt_nil () => (fold@ inss; i)
   end // end of [aux]
+//
   val n = aux (out, 0, inss)
   val () = if n > 0 then fprint_newline (pf | out)
+//
 in
   // empty
 end // end of [emit_instrlst_vt]
 
 (* ****** ****** *)
 
-fun emit_funentry_lablst {m:file_mode}
-  (pf: file_mode_lte (m, w) | out: &FILE m, fls0: !funlablst_vt)
-  : void = begin case+ fls0 of
+fun emit_funentry_lablst
+  {m:file_mode} (
+  pf: fmlte (m, w) | out: &FILE m, fls0: !funlablst_vt
+) : void = begin case+ fls0 of
   | list_vt_cons (fl, !fls) => let
       val prfck = funlab_prfck_get fl
       val entry = funlab_entry_get_some fl
@@ -629,9 +645,10 @@ fun emit_funentry_lablst {m:file_mode}
   | list_vt_nil () => fold@ (fls0)
 end // end of [emit_funentry_lablst]
 
-fun emit_funentry_lablst_prototype {m:file_mode}
-  (pf: file_mode_lte (m, w) | out: &FILE m, i: int, fls0: !funlablst_vt)
-  : int = begin case+ fls0 of
+fun emit_funentry_lablst_prototype
+  {m:file_mode} (
+  pf: fmlte (m, w) | out: &FILE m, i: int, fls0: !funlablst_vt
+) : int = begin case+ fls0 of
   | list_vt_cons (fl, !fls) => let
       val entry = funlab_entry_get_some fl
       val () = emit_funentry_prototype (pf | out, entry)
@@ -662,9 +679,10 @@ end // end of [instrlst_vt_tmpvarmap_gen]
 
 (* ****** ****** *)
 
-fn emit_extvallst_dec {m:file_mode}
-  (pf: file_mode_lte (m, w) | out: &FILE m, exts: !extvallst)
-  : int = let
+fn emit_extvallst_dec
+  {m:file_mode} (
+  pf: fmlte (m, w) | out: &FILE m, exts: !extvallst
+) : int = let
   fun aux (out: &FILE m, i: int, exts: !extvallst)
     : int = begin case+ exts of
     | EXTVALLSTcons (name, vp, !exts_rest) => let
@@ -680,9 +698,10 @@ in
   aux (out, 0, exts)
 end // end of [emit_extvallst_dec]
 
-fn emit_extvallst_markroot {m:file_mode}
-  (pf: file_mode_lte (m, w) | out: &FILE m, exts: !extvallst)
-  : int = let
+fn emit_extvallst_markroot
+  {m:file_mode} (
+  pf: fmlte (m, w) | out: &FILE m, exts: !extvallst
+) : int = let
   fun aux (out: &FILE m, i: int, exts: !extvallst)
     : int = begin case+ exts of
     | EXTVALLSTcons (name, vp, !exts_rest) => let
@@ -703,9 +722,10 @@ end // end of [emit_extvallst_markroot]
 
 (* ****** ****** *)
 
-fun emit_stafile_extcode {m:file_mode} (
-    pf: file_mode_lte (m, w) | out: &FILE m, fil: fil_t
-  ) : void = let
+fun emit_stafile_extcode
+  {m:file_mode} (
+  pf: fmlte (m, w) | out: &FILE m, fil: fil_t
+) : void = let
   val fil_sym = $Fil.filename_full_sym (fil)
   val od2cs = $TR2Env.d2eclst_namespace_find (fil_sym)
   val d2cs = (case+ od2cs of
@@ -737,9 +757,10 @@ in
   aux (out, d2cs)
 end // end of [emit_stafile_extcode]
 
-fun emit_stafilelst_extcode {m:file_mode}
-  (pf: file_mode_lte (m, w) | out: &FILE m, fils: !stafilelst)
-  : void = begin case+ fils of
+fun emit_stafilelst_extcode
+  {m:file_mode} (
+  pf: fmlte (m, w) | out: &FILE m, fils: !stafilelst
+) : void = begin case+ fils of
   | STAFILELSTcons (fil, loadflag, !fils_rest) => let
      val () = emit_stafile_extcode (pf | out, fil)
      val () = emit_stafilelst_extcode (pf | out, !fils_rest)
@@ -751,10 +772,12 @@ end (* end of [emit_stafilelst_extcode] *)
 
 (* ****** ****** *)
 
-fn emit_staload {m:file_mode} (
-    pf: file_mode_lte (m, w) | out: &FILE m, fil: fil_t
+fn emit_staload
+  {m:file_mode} (
+    pf: fmlte (m, w)
+  | out: &FILE m, fil: fil_t
   , stafils: stafilelst, s2cs: !datcstlst, d2cs: !exnconlst
-  ) : void = let
+) : void = let
 //
   fun aux_staload_dec (
     out: &FILE m, fils: !stafilelst
@@ -888,7 +911,7 @@ end // end of [emit_staload]
 
 fn emit_dynload
   {m:file_mode} (
-    pf: file_mode_lte (m, w)
+    pf: fmlte (m, w)
   | out: &FILE m
   , dynloadflag: int
   , fil: fil_t
@@ -1010,9 +1033,10 @@ end // end of [emit_dynload]
 
 (* ****** ****** *)
 
-fn emit_extypelst_free {m:file_mode}
-  (pf: file_mode_lte (m, w) | out: &FILE m, ets: extypelst)
-  : int = let
+fn emit_extypelst_free
+  {m:file_mode} (
+  pf: fmlte (m, w) | out: &FILE m, ets: extypelst
+) : int = let
   fun aux (out: &FILE m, i: int, ets: extypelst): int =
     case+ ets of
     | ~EXTYPELSTcons (name, hit_def, ets) => let
@@ -1033,7 +1057,7 @@ end // end of [emit_extypelst_free]
 
 fn emit_extcodelst
   {m:file_mode} (
-    pf: file_mode_lte (m, w)
+    pf: fmlte (m, w)
   | out: &FILE m
   , pos0: int (* top(0), mid(1), bot(2) *)
   , xs0: &extcodelst

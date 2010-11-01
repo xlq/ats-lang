@@ -1293,6 +1293,8 @@ in
     in
       // empty
     end // end of [D3Elst]
+  | D3Eptrof_ptr (d3e, _(*labs*)) => d3exp_prf_tr (d3e)
+  | D3Eptrof_var _ => ()
   | D3Erec (_(*knd*), _(*npf*), ld3es) => labd3explst_prf_tr ld3es
   | D3Erefarg _ => ()
   | D3Escaseof (_(*s2e*), sc3ls) => $Lst.list_foreach_fun (sc3ls, f) where {

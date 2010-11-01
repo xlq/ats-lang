@@ -774,10 +774,13 @@ in
   | D3Evar d2v => begin
       fprint_d2var (pf | out, d2v)
     end // end of [D3Evar]
-  | _ => begin
-      fprint1_string (pf | out, "Internal Error: fprint_xyz_root: d3e = ");
-      fprint_d3exp (pf | out, d3e);
-      fprint_newline (pf | out);
+  | _ => let
+      val () = fprint1_string (
+        pf | out, "INTERNAL ERROR (ats_trans3_exp_up): fprint_xyz_root: d3e = "
+      ) // end of [val]
+      val () = fprint_d3exp (pf | out, d3e)
+      val () = fprint_newline (pf | out)
+    in
       $Err.abort ()
     end // end of [_]
   // end of [case]
@@ -1642,7 +1645,7 @@ in
           val s2ls_nt = s2lab0lst_of_d3lab0lst d3ls_nt
           val s2ls = begin
             s2exp_addr_viewat_slablst_try (loc0, s2e_addr, s2ls_nt)
-          end
+          end // end of [val]
           val d3ls = d3lab1lst_of_d3lab0lst_s2lablst (d3ls_nt, s2ls)
           val s2e_prj_addr = s2exp_projlst (s2e_addr, s2ls)
           val s2e_prj_ptr = s2exp_ptr_addr_type (s2e_prj_addr)

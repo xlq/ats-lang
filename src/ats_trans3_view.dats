@@ -143,51 +143,71 @@ end // end of [s2exp_addr_viewat_slablst_get]
 implement
 s2exp_addr_viewat_slablst_set
   (loc0, s2e0_addr, s2ls0, s2e_new_at) = let
-  val @(s2e_new, s2e_new_addr): @(s2exp, s2exp) =
+  val @(s2e_new, s2e_new_addr) = (
     case+ un_s2exp_at_viewt0ype_addr_view s2e_new_at of
     | ~Some_vt (s2ts2a) => s2ts2a
-    | ~None_vt () => begin
-        prerr_loc_error3 loc0;
-        prerr ": the view ["; prerr s2e_new_at;
-        prerr "] is expected to be an @-view"; prerr_newline ();
+    | ~None_vt () => let
+        val () = prerr_loc_error3 loc0
+        val () = prerr ": the view ["
+        val () = prerr s2e_new_at
+        val () = prerr "] is expected to be an @-view"
+        val () = prerr_newline ()
+      in
         $Err.abort ()
-      end
+      end // end of [None_vt]
+  ) : @(s2exp, s2exp) // end of [val]
   val (s2r0, s2ls0_ft) = s2exp_addr_normalize s2e0_addr
   val s2ls0 = $Lst.list_append (s2ls0_ft, s2ls0)
+  val ansopt = the_d2varset_env_find_viewat (s2r0, s2ls0)
 in
-  case+ the_d2varset_env_find_viewat (s2r0, s2ls0) of
-  | ~Some_vt ans => let
-      val @(d2v_view, s2e, s2e_addr, s2ls_ft, s2ls_bk_nt) = ans
-      val _(* is_local_llam *) =
+  case+ ansopt of
+  | ~Some_vt (ans) => let
+      val @(
+        d2v_view, s2e, s2e_addr, s2ls_ft, s2ls_bk_nt
+      ) = ans
+      val _(*is_local_llam*) =
         the_d2varset_env_d2var_is_llam_local (d2v_view)
+      // end of [val]
+//
       var cstr: s2explst = list_nil ()
       val @(s2e_old, s2e, s2ls_bk) = begin
         s2exp_slablst_linset_cstr (loc0, s2e, s2ls_bk_nt, s2e_new, cstr)
-      end
+      end // end of [val]
       val () = trans3_env_add_proplst (loc0, cstr)
-      val () = 
-        if s2exp_syneq (s2e_addr, s2e_new_addr) then () else begin
-          prerr_loc_error3 loc0;
-          prerr ": address mismatch for @-view assignment: [";
-          prerr s2e_addr; prerr "] <> [";
-          prerr_s2exp s2e_new_addr; prerr "].";
-          prerr_newline ();
+//
+      val s2e_old_addr = s2exp_projlst (s2e_addr, s2ls_bk)
+      val () = (
+        if s2exp_syneq (
+           s2e_old_addr, s2e_new_addr
+        ) then () else let
+          val () = prerr_loc_error3 loc0
+          val () = prerr ": address mismatch for @-view assignment: [";
+          val () = prerr_s2exp s2e_old_addr
+          val () = prerr "] <> ["
+          val () = prerr_s2exp s2e_new_addr
+          val () = prerr "]."
+          val () = prerr_newline ()
+        in
           $Err.abort {void} ()
-        end
+        end // end of [if]
+      ) : void // end of [val]
       val s2ls0_bk = begin
         s2lablst_trim_s2lablst_s2lablst (s2ls0_ft, s2ls_ft, s2ls_bk)
-      end
+      end // end of [val]
       val () = d2var_typ_reset_at (d2v_view, s2e, s2e_addr)
       val () = $SOL.s2exp_out_void_solve (loc0, s2e_old)
     in
       s2ls0_bk
     end // end of [Some_vt]
-  | ~None_vt () => begin
-      prerr_loc_error3 loc0;
-      prerr ": the @-view associated with the location [";
-      prerr s2r0; prerr "] cannot be found."; prerr_newline ();
+  | ~None_vt () => let
+      val () = prerr_loc_error3 loc0
+      val () =  prerr ": the @-view associated with the location ["
+      val () = prerr s2r0
+      val () = prerr "] cannot be found."
+      val () = prerr_newline ()
+    in
       $Err.abort {s2lablst} ()
-    end
+    end // end of [None_vt]
 end // end of [s2exp_addr_viewat_slablst_set]
 
 (* ****** ****** *)
