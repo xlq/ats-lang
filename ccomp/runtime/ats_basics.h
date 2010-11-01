@@ -90,8 +90,9 @@
 #define ats_false_bool 0
 
 /* ****** ****** */
-
-// needed for handling [PATCKstring]
+//
+// HX: needed for handling [PATCKstring]
+//
 #define __strcmpats(s1, s2) strcmp((char*)(s1), (char*)(s2))
 
 /* ****** ****** */
@@ -111,13 +112,32 @@
 
 /* ****** ****** */
 
-/* while loop: deprecated!!! */
-#define ats_while_beg_mac(clab) while(ats_true_bool) { clab:
-#define ats_while_end_mac(blab, clab) goto clab ; blab: break ; }
+#define ats_cast_mac(ty, x) ((ty)(x))
+#define ats_castptr_mac(ty, x) ((ty*)(x))
+
+#define ats_selind_mac(x, ind) ((x)ind)
+#define ats_selbox_mac(x, lab) ((x)->lab)
+#define ats_select_mac(x, lab) ((x).lab)
+#define ats_selptr_mac(x, lab) ((x)->lab)
+#define ats_selsin_mac(x, lab) (x)
+
+#define ats_selptrset_mac(ty, x, lab, v) (((ty*)x)->lab = (v))
+
+#define ats_caselind_mac(ty, x, ind) (((ty*)(x))ind)
+#define ats_caselptr_mac(ty, x, lab) (((ty*)(x))->lab)
+
+#define ats_varget_mac(ty, x) (x)
+#define ats_ptrget_mac(ty, x) (*(ty*)(x))
+
+/* ****** ****** */
 
 /* for/while loop */
 #define ats_loop_beg_mac(init) while(ats_true_bool) { init:
 #define ats_loop_end_mac(init, fini) goto init ; fini: break ; }
+
+/* while loop: deprecated!!! */
+#define ats_while_beg_mac(clab) while(ats_true_bool) { clab:
+#define ats_while_end_mac(blab, clab) goto clab ; blab: break ; }
 
 /* ****** ****** */
 
@@ -126,8 +146,9 @@
   do { tmp = ATS_MALLOC (sizeof(hit)) ; *(hit*)tmp = val ; } while (0)
 
 /* ****** ****** */
-
-/* for proof checking at run-time */
+//
+// HX: for proof checking at run-time
+//
 #define ats_proofcheck_beg_mac(dyncst) \
   static int dyncst ## _flag = 0 ; \
   do { \

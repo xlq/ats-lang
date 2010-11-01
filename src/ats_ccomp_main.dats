@@ -1056,15 +1056,11 @@ fn emit_extcodelst
     ) : void = begin case+ xs0 of
     | EXTCODELSTcons
         (loc, pos, code, !p_xs) => let
-        val isdeb = true
-(*
 //
-// HX-2010-10-28:
-// line pragma should always be emitted for external code
+// HX-2010-10-28: line pragma for external code
 //
-        val isdeb = $Deb.debug_flag_get () > 0
-*)
-        val () = if isdeb then
+        val ndeb = $Deb.debug_flag_get ()
+        val () = if ndeb >= 1 then
           $Loc.fprint_line_pragma (pf | out, loc)
         // end of [val]
       in

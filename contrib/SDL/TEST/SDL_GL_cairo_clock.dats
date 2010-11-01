@@ -33,7 +33,10 @@ fn drawClock {l:agz}
   (cr: !cairo_ref l): void = () where {
 //
   var t: time_t // unintialized
-  val _(*ignored*) = time_get_and_set (t)
+  val yesno = time_get_and_set (t)
+  val () = assertloc (yesno)
+  prval () = opt_unsome {time_t} (t)
+//
   var tm: tm_struct // unintialized
   val _ptr = localtime_r (t, tm)
   val () = assert_errmsg (_ptr > null, #LOCATION)

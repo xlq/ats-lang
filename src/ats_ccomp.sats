@@ -203,7 +203,7 @@ abstype envmap_t // boxed type
 
 datatype valprim_node =
   | VParg of int
-  | VParg_ref of int (* call-by-reference *)
+  | VPargref of int (* call-by-reference *)
   | VPbool of bool
   | VPcastfn of (d2cst_t, valprim)
   | VPchar of char
@@ -289,7 +289,7 @@ fun valprim_is_mutable (vp: valprim): bool
 (* ****** ****** *)
 
 fun valprim_arg (i: int, hit: hityp_t): valprim
-fun valprim_arg_ref (i: int, hit: hityp_t): valprim
+fun valprim_argref (i: int, hit: hityp_t): valprim
 //
 fun valprim_bool (b: bool): valprim
 //
@@ -820,6 +820,8 @@ fun instr_add_valprimlst_free (res: &instrlst_vt, loc: loc_t): void
 
 fun emit_label {m:file_mode}
   (pf: file_mode_lte (m, w) | out: &FILE m, l: $Lab.label_t): void
+fun emit_labelext {m:file_mode}
+  (pf: file_mode_lte (m, w) | out: &FILE m, isext: bool, l: $Lab.label_t): void
 
 fun emit_filename {m:file_mode}
   (pf: file_mode_lte (m, w) | out: &FILE m, fil: $Fil.filename_t): void

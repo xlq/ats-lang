@@ -53,12 +53,15 @@ staload "ats_list.sats"
 #define cons list_cons
 #define :: list_cons
 
-implement list_is_cons (xs) =
+implement
+list_is_cons (xs) =
   case+ xs of list_cons _ => true | list_nil _ => false
 // end of [list_is_cons]
 
 (* tail-recursive implementation *)
-implement list_append {a} (xs, ys) = let
+implement
+list_append
+  {a} (xs, ys) = let
   fun aux {n1,n2:nat} .<n1>. (
       xs: list (a, n1)
     , ys: list (a, n2)
@@ -76,28 +79,33 @@ in
   aux (xs, ys, res); res
 end // end of [list_append]
 
-implement list_extend (xs, x) = begin
+implement
+list_extend (xs, x) = begin
   list_append (xs, list_cons (x, list_nil ()))
 end // end of [list_extend]
 
 (* ****** ****** *)
 
-implement list_foreach_main (pf | xs, f, env) = begin case+ xs of
+implement
+list_foreach_main (pf | xs, f, env) = begin case+ xs of
   | cons (x, xs) => (f (pf | x, env); list_foreach_main (pf | xs, f, env))
   | nil () => ()
 end // end of [list_foreach_main]
 
-implement list_foreach_fun (xs, f) = begin case+ xs of
+implement
+list_foreach_fun (xs, f) = begin case+ xs of
   | cons (x, xs) => (f x; list_foreach_fun (xs, f)) | nil () => ()
 end // end of [list_foreach_fun]
 
-implement list_foreach_cloptr (xs, f) = begin case+ xs of
+implement
+list_foreach_cloptr (xs, f) = begin case+ xs of
   | cons (x, xs) => (f x; list_foreach_cloptr (xs, f)) | nil () => ()
 end // end of [list_foreach_cloptr]
 
 (* ****** ****** *)
 
-implement list_length {a} (xs) = let
+implement
+list_length {a} (xs) = let
   fun loop {i,j:nat} .<i>.
     (xs: list (a, i), j: int j):<> int (i+j) =
     case+ xs of  _ :: xs => loop (xs, succ j) | nil () => j
@@ -109,7 +117,8 @@ end // end of [list_length]
 (* ****** ****** *)
 
 (* tail-recursive implementation *)
-implement list_map_main
+implement
+list_map_main
   {a,b} {v} {vt} {n} {f:eff} (pf | xs, f, env) = let
   fun aux {n:nat} .<n>. (
       pf: !v
@@ -131,7 +140,8 @@ in
   aux (pf | xs, f, res, env); res
 end // end of [list_map_main]
 
-implement list_map_fun {a,b} {n} {f:eff} (xs, f) = let
+implement
+list_map_fun {a,b} {n} {f:eff} (xs, f) = let
   val f = fun_coerce_arg_v_vt_res {a} {unit_v} {Ptr} {f} {b} (f)
   prval pf = unit_v ()
   var ptr0 = null
@@ -141,7 +151,8 @@ in
   ans
 end // end of [list_map_fun]
 
-implement list_map_cloptr {a,b} {n} {f:eff} (xs, f) = let
+implement
+list_map_cloptr {a,b} {n} {f:eff} (xs, f) = let
   viewtypedef cloptr_t = a -<cloptr,f> b
   fn app (pf: !unit_v | x: a, f: !cloptr_t):<f> b = f (x)
   prval pf = unit_v ()
@@ -153,15 +164,23 @@ end // end of [list_map_cloptr]
 
 (* ****** ****** *)
 
-implement list_revapp (xs, ys) = case+ xs of
+implement
+list_revapp (xs, ys) = case+ xs of
   | x :: xs => list_revapp (xs, x :: ys) | nil () => ys
-// end of [list_revapp]
 
-implement list_reverse (xs) = list_revapp (xs, nil ())  
+implement list_reverse (xs) = list_revapp (xs, nil ())
+
+implement
+list_reverse_list_vt {a} {n} (xs) = let
+  extern castfn __cast (xs: list (a, n)):<> list_vt (a, n)
+in
+  __cast (list_reverse (xs)) // HX-2010-10-31: cutting a corner!
+end // end of [list_reverse_list_vt]
 
 (* ****** ****** *)
 
-implement list_length_compare (xs1, xs2) = case+ xs1 of
+implement
+list_length_compare (xs1, xs2) = case+ xs1 of
   | _ :: xs1 => begin case+ xs2 of
     | _ :: xs2 => list_length_compare (xs1, xs2) | nil () => 1
     end // end of [::]
@@ -172,7 +191,8 @@ implement list_length_compare (xs1, xs2) = case+ xs1 of
 
 (* ****** ****** *)
 
-implement{a} list_vt_length (xs) = let
+implement{a}
+list_vt_length (xs) = let
   fun aux {i,j:nat} .<i>.
     (xs: !list_vt (a, i), j: int j):<> int (i+j) =
     case+ xs of
@@ -185,7 +205,8 @@ in
   aux (xs, 0)
 end // end of [list_vt_length]
 
-implement list_vt_length__boxed {a} (xs) = list_vt_length<a> (xs)
+implement
+list_vt_length__boxed {a} (xs) = list_vt_length<a> (xs)
 
 (* ****** ****** *)
 
@@ -209,7 +230,8 @@ in
   aux (xs, res); res
 end // end of [list_vt_copy]
 
-implement list_vt_copy__boxed {a} (xs) = list_vt_copy<a> (xs)
+implement
+list_vt_copy__boxed {a} (xs) = list_vt_copy<a> (xs)
 
 (* ****** ****** *)
 
@@ -220,22 +242,24 @@ implement{a} list_vt_free (xs) = begin
   | ~list_vt_nil () => ()
 end // end of [list_vt_free]
 
-implement list_vt_free__boxed {a} (xs) = list_vt_free<a> (xs)
+implement
+list_vt_free__boxed {a} (xs) = list_vt_free<a> (xs)
 
 (* ****** ****** *)
 
 (* tail-recursive implementation *)
-implement list_vt_append {a} (xs0, ys0) = let
-
+implement
+list_vt_append {a} (xs0, ys0) = let
+//
 fun loop {n1,n2:nat} .<n1>.
   (xs0: &list_vt (a, n1) >> list_vt (a, n1+n2), ys0: list_vt (a, n2))
   :<> void = begin case+ xs0 of
   | list_vt_cons (_, !xs) => (loop (!xs, ys0); fold@ xs0)
   | list_vt_nil () => (xs0 := ys0)
 end // end of [loop]
-
+//
 var xs0 = xs0
-
+//
 in
   loop (xs0, ys0); xs0
 end // end of [list_vt_append]
@@ -243,7 +267,8 @@ end // end of [list_vt_append]
 (* ****** ****** *)
 
 (* tail-recursive implementation *)
-implement list_vt_prefix {a} (xs, i) = let
+implement
+list_vt_prefix {a} (xs, i) = let
 
 fun loop {n,i:nat | i <= n} .<i>. (
     xs: &list_vt (a, n) >> list_vt (a, n-i)
@@ -268,20 +293,24 @@ end // end of [list_vt_prefix]
 
 (* ****** ****** *)
 
-implement list_vt_revapp (xs, ys) = case+ xs of
+implement
+list_vt_revapp (xs, ys) = case+ xs of
   | ~list_vt_cons (x, xs) => list_vt_revapp (xs, list_vt_cons (x, ys))
   | ~list_vt_nil () => ys
 
-implement list_vt_reverse (xs) = list_vt_revapp (xs, list_vt_nil ())
+implement
+list_vt_reverse (xs) = list_vt_revapp (xs, list_vt_nil ())
 
 (* ****** ****** *)
 
-implement list_vt_revapp_list (xs, ys) = case+ xs of
+implement
+list_vt_revapp_list (xs, ys) = case+ xs of
   | ~list_vt_cons (x, xs) => list_vt_revapp_list (xs, list_cons (x, ys))
   | ~list_vt_nil () => ys
 // end of [list_vt_revapp_list]
 
-implement list_vt_reverse_list (xs) = list_vt_revapp_list (xs, list_nil ())
+implement
+list_vt_reverse_list (xs) = list_vt_revapp_list (xs, list_nil ())
 
 (* ****** ****** *)
 

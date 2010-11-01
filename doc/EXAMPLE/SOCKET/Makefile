@@ -4,7 +4,7 @@
 #
 ######
 
-CFLAGS=-std=gnu99  -pedantic
+CFLAGS=-std=gnu99 -pedantic
 
 ######
 

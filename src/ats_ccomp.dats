@@ -410,7 +410,7 @@ valprim_is_const (vp) =
 implement
 valprim_is_mutable (vp) = begin
   case+ vp.valprim_node of
-  | VParg_ref _ => true | VPtmpref _ => true | _ => false
+  | VPargref _ => true | VPtmpref _ => true | _ => false
 end // end of [valprim_is_mutable]
 
 (* ****** ****** *)
@@ -421,9 +421,9 @@ valprim_arg (n, hit) = '{
 } // end of [valprim_arg]
 
 implement
-valprim_arg_ref (n, hit) = '{
-  valprim_node= VParg_ref (n), valprim_typ= hit
-} // end of [valprim_arg_ref]
+valprim_argref (n, hit) = '{
+  valprim_node= VPargref (n), valprim_typ= hit
+} // end of [valprim_argref]
 
 implement
 valprim_bool (b) = '{

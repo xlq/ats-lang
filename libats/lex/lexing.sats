@@ -44,7 +44,7 @@
 typedef struct {
   ats_clo_ptr_type free ;
   ats_clo_ptr_type getc ;
-} ats_infile_t ; // end of [typedef]
+} atslex_infile_t ; // end of [typedef]
 #endif // end of [ATS_LIBATS_LEX_LEXING_SATS]
 %} // end of [%{#]
 
@@ -110,7 +110,9 @@ overload prerr with prerr_position
 //
 // HX: flat type for the input file
 //
-abst@ype infile_t (v:view) = $extype "ats_infile_t"
+abst@ype infile_t
+  (v:view) = $extype "atslex_infile_t"
+// end of [infile_t]
 
 fun infile_free {v:view}
   (pf: v | f: infile_t v): void = "lexing_infile_free"

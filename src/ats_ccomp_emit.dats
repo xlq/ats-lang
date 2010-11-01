@@ -73,6 +73,10 @@ staload _(*anonymous*) = "ats_reference.dats"
 
 (* ****** ****** *)
 
+stadef fmlte = file_mode_lte
+
+(* ****** ****** *)
+
 fn prerr_interror () =
   prerr "INTERNAL ERROR (ats_ccomp_emit)"
 // end of [prerr_interror]
@@ -123,13 +127,24 @@ atsccomp_emit_identifier (
 
 extern
 fun emit_identifier {m:file_mode} (
-  pf: file_mode_lte (m, w) | out: &FILE m, name: string
+  pf: fmlte (m, w) | out: &FILE m, name: string
 ) : void = "atsccomp_emit_identifier"
 // end of [emit_identifier]
 
 (* ****** ****** *)
 
-implement emit_label (pf | out, l) = $Lab.fprint_label (pf | out, l)
+implement
+emit_label (pf | out, l) = $Lab.fprint_label (pf | out, l)
+
+implement
+emit_labelext
+  (pf | out, isext, l) = let
+  val () = (
+    if isext then () else fprint1_string (pf | out, "atslab_")
+  ) : void // end of [val]
+in
+  $Lab.fprint_label (pf | out, l)
+end // end of [emit_atslabel]
 
 (* ****** ****** *)
 
@@ -218,7 +233,7 @@ in
 end // end of [emit_d2cst]
 
 fn emit_funlab_prefix {m:file_mode}
-  (pf: file_mode_lte (m, w) | out: &FILE m)
+  (pf: fmlte (m, w) | out: &FILE m)
   : void = let
   val prfx = $Glo.atsccomp_namespace_get ()
 in
@@ -252,16 +267,24 @@ in
   if funlab_prfck_get fl > 0 then fprint1_string (pf | out, "_prfck")
 end // end of [emit_funlab]
 
+(* ****** ****** *)
+
 implement
-emit_tmplab (pf | out, tl) = let
-  val () = fprint1_string (pf | out, "__ats_lab_") in
+emit_tmplab
+  (pf | out, tl) = let
+  val () = fprint1_string (pf | out, "__ats_lab_")
+in
   $Stamp.fprint_stamp (pf | out, tmplab_stamp_get tl)
 end // end of [emit_tmplab]
 
 implement
-emit_tmplabint (pf | out, tl, i) = begin
-  emit_tmplab (pf | out, tl); fprintf1_exn (pf | out, "_%i", @(i))
-end // end of [emit_tmplabint]
+emit_tmplabint
+  (pf | out, tl, i) = () where {
+  val () = emit_tmplab (pf | out, tl)
+  val () = fprintf1_exn (pf | out, "_%i", @(i))
+} // end of [emit_tmplabint]
+
+(* ****** ****** *)
 
 implement
 emit_tmpvar
@@ -291,7 +314,7 @@ end // end of [emit_tmpvar]
 #define PTR_TYPE_NAME "ats_ptr_type"
 
 fn _emit_hityp {m:file_mode}
-  (pf: file_mode_lte (m, w) | out: &FILE m, hit: hityp)
+  (pf: fmlte (m, w) | out: &FILE m, hit: hityp)
   : void = let
   val HITNAM (knd, name) = hit.hityp_name
 (*
@@ -317,7 +340,7 @@ emit_hityp (pf | out, hit) =
 // end of [emit_hityp]
 
 fn _emit_hityplst {m:file_mode}
-  (pf: file_mode_lte (m, w) | out: &FILE m, hits: hityplst)
+  (pf: fmlte (m, w) | out: &FILE m, hits: hityplst)
   : void = let
   fun aux (out: &FILE m, i: int, hits: hityplst)
     : void = begin case+ hits of
@@ -339,7 +362,7 @@ emit_hityplst {m} (pf | out, hits) =
 (* ****** ****** *)
 
 fn _emit_hityp_ptr {m:file_mode}
-  (pf: file_mode_lte (m, w) | out: &FILE m, hit: hityp)
+  (pf: fmlte (m, w) | out: &FILE m, hit: hityp)
   : void = let
   val HITNAM (knd, name) = hit.hityp_name
   val () = fprint_string (pf | out, name)
@@ -355,11 +378,11 @@ implement emit_hityp_ptr (pf | out, hit) =
 (* ****** ****** *)
 
 extern fun emit_hityp_fun {m:file_mode} (
-  pf: file_mode_lte (m, w) | out: &FILE m, hits_arg: hityplst_t, hit_res: hityp_t
+  pf: fmlte (m, w) | out: &FILE m, hits_arg: hityplst_t, hit_res: hityp_t
 ) : void
 
 extern fun emit_hityp_clofun {m:file_mode} (
-  pf: file_mode_lte (m, w) | out: &FILE m, hits_arg: hityplst_t, hit_res: hityp_t
+  pf: fmlte (m, w) | out: &FILE m, hits_arg: hityplst_t, hit_res: hityp_t
 ) : void
 
 implement
@@ -390,7 +413,7 @@ end // end of [emit_hityp_fun]
 (* ****** ****** *)
 
 extern fun emit_cloenv {m:file_mode} (
-  pf: file_mode_lte (m, w) | out: &FILE m, map: envmap_t, vtps: vartypset, i0: int
+  pf: fmlte (m, w) | out: &FILE m, map: envmap_t, vtps: vartypset, i0: int
 ) : int // i0 = 0: without leading comma; i0 = 1: with leading comma
 
 (* ****** ****** *)
@@ -454,39 +477,31 @@ end // end of [local]
 (* ****** ****** *)
 
 fn emit_valprim_arg {m:file_mode} (
-    pf: file_mode_lte (m, w) | out: &FILE m, ind: int
+    pf: fmlte (m, w) | out: &FILE m, ind: int
   ) : void = begin
   case+ funarglst_find ind of
   | ~Some_vt vp => emit_valprim (pf | out, vp)
-  | ~None_vt () => begin
-      fprint1_string (pf | out, "arg"); fprint1_int (pf | out, ind)
-    end // end of [None_vt]
+  | ~None_vt () => fprintf1_exn (pf | out, "arg%i", @(ind))
 end (* end of [emit_valprim_arg] *)
 
-fn emit_valprim_arg_ref {m:file_mode} (
-    pf: file_mode_lte (m, w) | out: &FILE m, ind: int, hit: hityp_t
-  ) : void = begin
-  case+ funarglst_find ind of
-  | ~Some_vt vp => begin
-      fprint1_string (pf | out, "*((");
-      emit_hityp (pf | out, hit);
-      fprint1_string (pf | out, "*)");
-      emit_valprim (pf | out, vp);
-      fprint1_string (pf | out, ")")
-    end // end of [Some_vt]
-  | ~None_vt () => begin
-      fprint1_string (pf | out, "*((");
-      emit_hityp (pf | out, hit);
-      fprint1_string (pf | out, "*)arg");
-      fprint1_int (pf | out, ind);
-      fprint1_string (pf | out, ")")
-    end // end of [None_vt]
-end (* end of [emit_valprim_arg_ref] *)
+fn emit_valprim_argref
+  {m:file_mode} (
+    pf: fmlte (m, w)
+  | out: &FILE m, ind: int, hit: hityp_t
+  ) : void = let
+  val () = fprint1_string (pf | out, "ats_ptrget_mac(");
+  val () = emit_hityp (pf | out, hit)
+  val () = fprint1_string (pf | out, ", ");
+  val () = emit_valprim_arg (pf | out, ind)
+  val () = fprint1_string (pf | out, ")")
+in
+  // nothing
+end (* end of [emit_valprim_argref] *)
 
 (* ****** ****** *)
 
 fn emit_valprim_bool {m:file_mode}
-  (pf: file_mode_lte (m, w) | out: &FILE m, b: bool)
+  (pf: fmlte (m, w) | out: &FILE m, b: bool)
   : void = begin
   if b then begin
     fprint1_string (pf | out, "ats_true_bool")
@@ -498,7 +513,7 @@ end (* end of [emit_valprim_bool] *)
 (* ****** ****** *)
 
 fn emit_valprim_char {m:file_mode}
-  (pf: file_mode_lte (m, w) | out: &FILE m, c: char)
+  (pf: fmlte (m, w) | out: &FILE m, c: char)
   : void = begin case+ c of
   | '\'' => fprint1_string (pf | out, "'\\''")
   | '\n' => fprint1_string (pf | out, "'\\n'")
@@ -511,7 +526,7 @@ end (* end of [emit_valprim_char] *)
 (* ****** ****** *)
 
 fn emit_valprim_clo_init {m:file_mode} (
-    pf: file_mode_lte (m, w)
+    pf: fmlte (m, w)
   | out: &FILE m, knd: int
   , vp_clo: valprim, fl: funlab_t, map: envmap_t
   ) : void = let
@@ -527,7 +542,7 @@ in
 end // end of [emit_valprim_clo_init]
 
 fn emit_valprim_clo_make {m:file_mode} (
-    pf: file_mode_lte (m, w)
+    pf: fmlte (m, w)
   | out: &FILE m, knd: int, fl: funlab_t, map: envmap_t
   ) : void = let
   val entry = funlab_entry_get_some (fl)
@@ -562,14 +577,14 @@ atsccomp_emit_valprim_float
 } /* atsccomp_emit_valprim_float */
 %} // end of [%{^]
 extern fun emit_valprim_float {m:file_mode}
-  (pf: file_mode_lte (m, w) | out: &FILE m, f: string): void
+  (pf: fmlte (m, w) | out: &FILE m, f: string): void
   = "atsccomp_emit_valprim_float"
 // end of [emit_valprim_float]
 
 (* ****** ****** *)
 
 fn emit_valprim_int {m:file_mode}
-  (pf: file_mode_lte (m, w) | out: &FILE m, int: intinf_t)
+  (pf: fmlte (m, w) | out: &FILE m, int: intinf_t)
   : void = begin
   $IntInf.fprint_intinf (pf | out, int)
 end // end of [emit_valprim_int]
@@ -587,21 +602,21 @@ atsccomp_emit_valprim_intsp
 } /* atsccomp_emit_valprim_intsp */
 %} // end of [%{^]
 extern fun emit_valprim_intsp {m:file_mode}
-  (pf: file_mode_lte (m, w) | out: &FILE m, f: string): void
+  (pf: fmlte (m, w) | out: &FILE m, f: string): void
   = "atsccomp_emit_valprim_intsp"
 // end of [emit_valprim_intsp]
 
 (* ****** ****** *)
 
 fn emit_valprim_ptrof {m:file_mode}
-  (pf: file_mode_lte (m, w) | out: &FILE m, vp: valprim)
+  (pf: fmlte (m, w) | out: &FILE m, vp: valprim)
   : void = begin case+ vp.valprim_node of
   | VParg ind => begin
       fprint1_string (pf | out, "(&");
       emit_valprim_arg (pf | out, ind);
       fprint1_string (pf | out, ")")
     end
-  | VParg_ref ind => emit_valprim_arg (pf | out, ind)
+  | VPargref ind => emit_valprim_arg (pf | out, ind)
   | VPenv vtp => let
       val ind = varindmap_find_some (vartyp_var_get vtp)
     in
@@ -630,43 +645,22 @@ end // end of [emit_valprim_ptrof]
 
 (* ****** ****** *)
 
-fn emit_select_lab {m:file_mode} (
-    pf: file_mode_lte (m, w) | out: &FILE m, isext: bool, lab: lab_t
-  ) : void = let
-  val () = if isext then
-    fprint1_string (pf | out, ".") else fprint1_string (pf | out, ".atslab_")
-  // end of [if]
-in
-  emit_label (pf | out, lab)
-end // end of [emit_select_lab]
-
-fn emit_select_lab_ptr {m:file_mode} (
-    pf: file_mode_lte (m, w) | out: &FILE m, isext: bool, lab: lab_t
-  ) : void = let
-  val () = if isext then
-    fprint1_string (pf | out, "->") else fprint1_string (pf | out, "->atslab_")
-  // end of [if]
-in
-  emit_label (pf | out, lab)
-end // end of [emit_select_lab_ptr]
-
-(* ****** ****** *)
-
 fn emit_array_index
   {m:file_mode} (
-    pf: file_mode_lte (m, w)
+    pf: fmlte (m, w)
   | out: &FILE m, vpss: valprimlstlst
   ) : void = let
   fun aux (
       out: &FILE m, vpss: valprimlstlst
     ) : void = begin case+ vpss of
-    | list_cons (vps, vpss) => begin
-        fprint1_string (pf | out, "[");
-        emit_valprimlst (pf | out, vps);
-        fprint1_string (pf | out, "]");
+    | list_cons (vps, vpss) => let
+        val () = fprint1_string (pf | out, "[")
+        val () = emit_valprimlst (pf | out, vps)
+        val () = fprint1_string (pf | out, "]")
+      in
         aux (out, vpss)
       end // end of [list_cons]
-    | list_nil () => ()
+    | list_nil () => () // end of [list_nil]
   end // end of [aux]
 in
   aux (out, vpss)
@@ -674,197 +668,207 @@ end // end of [emit_array_index]
 
 (* ****** ****** *)
 
-stadef fmlte = file_mode_lte
-
-fn emit_valprim_select_bef {m:file_mode} (
-    pf: fmlte (m, w) | out: &FILE m, offs: offsetlst
-  ) : void = let
-  fun aux
-    (out: &FILE m, offs: offsetlst): void = begin
-    case+ offs of
-    | list_cons (off, offs) => let
-        val () = aux (out, offs) in case+ off of
-        | OFFSETind (_(*dim*), hit_elt) => let
-            val () = fprint1_string (pf | out, "(")
-            val () = fprint1_string (pf | out, "(")
-            val () = emit_hityp (pf | out, hit_elt)
-            val () = fprint1_string (pf | out, "*)")
+fn emit_select_clo
+  {m:file_mode} (
+    pf: fmlte (m, w) |
+    out: &FILE m, offs: offsetlst, froot: !(&FILE m) -<cloptr1> void
+) : void = let
+  fun aux (
+    out: &FILE m, offs: List_vt (offset), froot: !(&FILE m) -<cloptr1> void
+  ) : void = case+ offs of
+  | ~list_vt_cons (off, offs) => (
+    case+ off of
+    | OFFSETind (vpss_dim, hit_elt) => let
+        val () = fprint1_string
+          (pf | out, "ats_caselind_mac(")
+        val () = emit_hityp (pf | out, hit_elt)
+        val () = fprint1_string (pf | out, ", ")
+        val () = aux (out, offs, froot)
+        val () = fprint1_string (pf | out, ", ")
+        val () = emit_array_index (pf | out, vpss_dim)
+        val () = fprint1_string (pf | out, ")")
+      in
+        // nothing
+      end // end of [OFFSETind]
+    | OFFSETlab (lab, hit_rec) => let
+        var isext: bool = false
+        val () = case+ 0 of
+        | _ when hityp_t_is_tyrecbox hit_rec => let
+            val () = fprint1_string (pf | out, "ats_selbox_mac(")
           in
             // nothing
-          end // end of [OFFSETind]
-        | OFFSETlab (lab, hit_rec_t) => () where {
-            val hit_rec = hityp_decode (hit_rec_t)
-            val HITNAM (knd, name) = hit_rec.hityp_name
-            val () = fprint1_string (pf | out, "(")
-            val () = (case+ 0 of
-              | _ when knd > 0 (*ptr*) => () where {
-                  val () = fprint1_string (pf | out, "(")
-                  val () = fprint1_string (pf | out, name)
-                  val () = fprint1_string (pf | out, "*)")
-                } // end of [_ when knd > 0]
-              | _ (*nonptr*) => ()  
-            ) : void // end of [val]
-          } // end of [OFFSETlab]
-      end (* end of [list_cons] *)
-    | list_nil () => ()
-  end (* end of [aux] *)
-in
-  aux (out, offs)
-end (* end of [emit_valprim_select_bef] *)
-
-(* ****** ****** *)
-
-fn emit_valprim_select_aft {m:file_mode} (
-    pf: fmlte (m, w) | out: &FILE m, offs: offsetlst
-  ) : void = let
-  fun aux (out: &FILE m, offs: offsetlst)
-    : void = begin case+ offs of
-    | list_cons (off, offs) => begin case+ off of
-      | OFFSETind (vpss, hit_elt) => begin
-          fprint1_string (pf | out, ")");
-          emit_array_index (pf | out, vpss);
-          aux (out, offs)
-        end // end of [OFFSETind]
-      | OFFSETlab (lab, hit_rec) => begin
-        case+ 0 of
-        | _ when hityp_t_is_tyrecbox hit_rec => let
-            val () = fprint1_string (pf | out, ")")
-            val isext = false
-            val () = emit_select_lab_ptr (pf | out, isext, lab)
-          in
-            aux (out, offs)
           end // end of [_ when ...]
         | _ when hityp_t_is_tyrecsin hit_rec => let
-            val () = fprint1_string (pf | out, ")")
+            val () = fprint1_string (pf | out, "ats_selsin_mac(")
           in
-            aux (out, offs)
+            // nothing
           end // end of [_ when ...]
         | _ => let
-            val () = fprint1_string (pf | out, ")")
-            val isext = hityp_t_is_tyrecext hit_rec
-            val () = emit_select_lab (pf | out, isext, lab)
+            val () = isext := hityp_t_is_tyrecext hit_rec
+            val () = fprint1_string (pf | out, "ats_select_mac(")
           in
-            aux (out, offs)
+            // nothing
           end // end of [_]
-        end (* end of [OFFSETlab] *)
-      end (* end of [list_cons] *)
-    | list_nil () => ()
-  end // end of [aux]
+//
+        val hit_rec = hityp_decode (hit_rec)
+        var iscast: int = 0
+        val HITNAM (knd, name) = hit_rec.hityp_name
+        val () = (case+ 0 of
+          | _ when knd > 0 (*ptr*) => let
+              val () = iscast := 1
+              val () = fprint1_string (pf | out, "ats_castptr_mac(")
+              val () = fprint1_string (pf | out, name)
+              val () = fprint1_string (pf | out, ", ")
+            in
+              // nothing
+            end // end of [_ when knd > 0]
+          | _ (*nonptr*) => ()  
+        ) : void // end of [val]
+//
+        val () = aux (out, offs, froot)
+//
+        val () = if iscast > 0 then fprint1_string (pf | out, ")")
+//
+        val () = fprint1_string (pf | out, ", ")
+        val () = emit_labelext (pf | out, isext, lab)
+        val () = fprint1_string (pf | out, ")")
+      in
+        // nothing
+      end // end of [OFFSETlab]
+    ) // end of [list_vt_cons]
+    | ~list_vt_nil () => froot (out)
+  val offs = $Lst.list_reverse_list_vt (offs)
 in
-  aux (out, offs)
-end (* end of [emit_valprim_select_aft] *)
+  aux (out, offs, froot)
+end // end of [emit_select_clo]
 
 (* ****** ****** *)
 
-fn emit_valprim_select {m:file_mode} (
-    pf: file_mode_lte (m, w)
-  | out: &FILE m, vp_root: valprim, offs: offsetlst
-  ) : void = let
-  val () = emit_valprim_select_bef (pf | out, offs)
-  val () = emit_valprim (pf | out, vp_root)
-  val () = emit_valprim_select_aft (pf | out, offs)
-in
-  // empty
-end // end of [emit_valprim_select]
+fn emit_valprim_select
+  {m:file_mode} (
+    pf: fmlte (m, w) |
+    out: &FILE m, vp: valprim, offs: offsetlst
+) : void = emit_select_clo {m}
+  (pf | out, offs, lam (out) => emit_valprim (pf | out, vp))
+// end of [emit_valprim_select]
 
 (* ****** ****** *)
 
-(* 0/1: var/ptr *)
-fn emit_valprim_select_varptr {m:file_mode} (
-    pf: file_mode_lte (m, w)
-  | out: &FILE m, knd: int, vp_root: valprim, offs: offsetlst
+(* knd=0/1: var/ptr *)
+fn emit_valprim_select_varptr
+  {m:file_mode} (
+    pf: fmlte (m, w)
+  | out: &FILE m
+  , knd: int, vp_root: valprim, offs: offsetlst
   ) : void = let
   fn aux_fst (
-      out: &FILE m, knd: int, vp_root: valprim, off: offset
-    ) : void = begin case+ off of
-    | OFFSETind (vpss, hit_elt) => begin
-        fprint1_string (pf | out, "((");
-        emit_hityp (pf | out, hit_elt);
-        fprint1_string (pf | out, "*)");
-        if knd > 0 then begin
+    out: &FILE m, knd: int, vp_root: valprim, off: offset
+  ) : void = begin case+ off of
+    | OFFSETind (vpss, hit_elt) => let
+        val () = fprint1_string
+          (pf | out, "ats_caselind_mac(")
+        val () = emit_hityp (pf | out, hit_elt)
+        val () = fprint1_string (pf | out, ", ")
+//
+        val () = if knd > 0 then begin
           emit_valprim (pf | out, vp_root); // ptr
         end else begin
           emit_valprim_ptrof (pf | out, vp_root); // var
-        end; // end of [if]
-        fprint1_string (pf | out, ")");
-        emit_array_index (pf | out, vpss);
+        end // end of [if]
+//
+        val () = fprint1_string (pf | out, ", ")
+        val () = emit_array_index (pf | out, vpss)
+        val () = fprint1_string (pf | out, ")")
+      in
+        // nothing
       end // end of [OFFSETind]
     | OFFSETlab (lab, hit_rec) => begin
       case+ 0 of
-      | _ when hityp_t_is_tyrecbox hit_rec => let
-          val () = fprint1_string (pf | out, "((")
+      | _ when hityp_t_is_tyrecbox (hit_rec) => let
+          val isext = false
+          val () = fprint1_string
+            (pf | out, "ats_caselptr_mac(")
           val () = emit_hityp_ptr (pf | out, hit_rec)
-          val () = fprint1_string (pf | out, "*)")
+          val () = fprint1_string (pf | out, ", ")
+          val () = emit_valprim (pf | out, vp_root)
+          val () = fprint1_string (pf | out, ", ")
+          val () = emit_labelext (pf | out, isext, lab)
+          val () = fprint1_string (pf | out, ")")
+        in
+          // nothing
+        end // end of [_ when ...]
+      | _ when hityp_t_is_tyrecsin (hit_rec) => let
+          val () = if knd > 0 then
+            fprint1_string (pf | out, "ats_ptrget_mac(")
+          else
+            fprint1_string (pf | out, "ats_varget_mac(")
+          // end of [if]
+          val () = emit_hityp (pf | out, hit_rec)
+          val () = fprint1_string (pf | out, ", ")
           val () = emit_valprim (pf | out, vp_root)
           val () = fprint1_string (pf | out, ")")
-          val isext = false
         in
-          emit_select_lab_ptr (pf | out, false, lab)
+          // nothing
         end // end of [_ when ...]
-      | _ when hityp_t_is_tyrecsin hit_rec => let
+      | _ => let // HX: [hit_rec] is flat!
+          val isext = hityp_t_is_tyrecext hit_rec
+          val () = if knd > 0 then
+            fprint1_string (pf | out, "ats_selptr_mac(")
+          else
+            fprint1_string (pf | out, "ats_select_mac(")
+          // end of [if]
           val () = if knd > 0 then let
-            val () = fprint1_string (pf | out, "*(")
+            val () = fprint1_string (pf | out, "ats_castptr_mac(")
             val () = emit_hityp (pf | out, hit_rec)
-            val () = fprint1_string (pf | out, "*)")
+            val () = fprint1_string (pf | out, ", ")
+            val () = emit_valprim (pf | out, vp_root)
+            val () = fprint1_string (pf | out, ")")
           in
             // nothing
-          end // end of [val]
-        in
-          emit_valprim (pf | out, vp_root)
-        end // end of [_ when ...]
-      | _ => let // [hit_rec] is flat!
-          val () = fprint1_string (pf | out, "(")
-          val () = (case+ 0 of
-            | _ when knd > 0 => let
-                val () = fprint1_string (pf | out, "(")
-                val () = emit_hityp (pf | out, hit_rec)
-                val () = fprint1_string (pf | out, "*)")
-              in
-                // empty
-              end // end of [_ when ...]
-            | _ => ()
-          ) // end of [val]
-          val () = emit_valprim (pf | out, vp_root)
+          end else let
+            val () = emit_valprim (pf | out, vp_root)
+          in
+            // nothing
+          end // end of [if]
+          val () = fprint1_string (pf | out, ", ")
+          val () = emit_labelext (pf | out, isext, lab)
           val () = fprint1_string (pf | out, ")")
-          val isext = hityp_t_is_tyrecext hit_rec
         in
-          case+ 0 of
-          | _ when knd > 0 =>
-              emit_select_lab_ptr (pf | out, isext, lab)
-            // end of [ptr]
-          | _ => emit_select_lab (pf | out, isext, lab) // var
+          // nothing
         end // end of [_]
     end // end [OFFSETlab]
   end // end of [aux_fst]
 in
   case+ offs of
   | list_cons (off_fst, offs_rst) => let
-      val () = emit_valprim_select_bef (pf | out, offs_rst)
-      val () = aux_fst (out, knd, vp_root, off_fst)
-      val () = emit_valprim_select_aft (pf | out, offs_rst)
+      val () = emit_select_clo {m}
+        (pf | out, offs_rst, lam (out) => aux_fst (out, knd, vp_root, off_fst))
+      // end of [val]
     in
       // empty
     end // end of [list_cons]
   | list_nil () => let
       val () = prerr_interror ()
-      val () = (prerr ": emit_valprim_select_varptr: vp_root = "; prerr vp_root; prerr_newline ())
-      val () = $Err.abort {void} ()
+      val () = (
+        prerr ": emit_valprim_select_varptr: vp_root = "; prerr vp_root; prerr_newline ()
+      ) // end of [val]
     in
-      // empty
+      $Err.abort {void} ()
     end // end of [list_nil]
 end // end of [emit_valprim_select_varptr]
 
+(* ****** ****** *)
+
 fn emit_valprim_select_var {m:file_mode} (
-    pf: file_mode_lte (m, w)
-  | out: &FILE m, vp_root: valprim, offs: offsetlst
-  ) : void = begin
+  pf: fmlte (m, w)
+| out: &FILE m, vp_root: valprim, offs: offsetlst
+) : void = begin
   emit_valprim_select_varptr (pf | out, 0(*var*), vp_root, offs)
 end // end of [emit_valprim_select_var]
 
 fn emit_valprim_select_ptr {m:file_mode} (
-    pf: file_mode_lte (m, w)
-  | out: &FILE m, vp_root: valprim, offs: offsetlst
-  ) : void = begin
+  pf: fmlte (m, w) | out: &FILE m, vp_root: valprim, offs: offsetlst
+) : void = begin
   emit_valprim_select_varptr (pf | out, 1(*ptr*), vp_root, offs)
 end // end of [emit_valprim_select_ptr]
 
@@ -906,7 +910,7 @@ atsccomp_emit_valprim_string (
 
 extern
 fun emit_valprim_string {m:file_mode}
-  (pf: file_mode_lte (m, w) | out: &FILE m, str: string, len: size_t): void
+  (pf: fmlte (m, w) | out: &FILE m, str: string, len: size_t): void
   = "atsccomp_emit_valprim_string"
 // end of [emit_valprim_string]
 
@@ -924,12 +928,13 @@ emit_valprim_tmpvar
 (* ****** ****** *)
 
 implement
-emit_valprim (pf | out, vp0) = begin
+emit_valprim
+  {m} (pf | out, vp0) = begin
   case+ vp0.valprim_node of
   | VParg ind => emit_valprim_arg (pf | out, ind)
-  | VParg_ref ind => begin
-      emit_valprim_arg_ref (pf | out, ind, vp0.valprim_typ)
-    end // end of [VParg_ref]
+  | VPargref ind => begin
+      emit_valprim_argref (pf | out, ind, vp0.valprim_typ)
+    end // end of [VPargref]
   | VPbool b => emit_valprim_bool (pf | out, b)
   | VPcastfn (_d2c, vp_arg) => let
       val () = fprint1_string
@@ -972,14 +977,17 @@ emit_valprim (pf | out, vp0) = begin
       val ind = varindmap_find_some (d2v)
     in
       case+ 0 of
-      | _ when d2var_is_mutable d2v => begin
-          fprint1_string (pf | out, "*(");
-          emit_hityp (pf | out, vartyp_typ_get vtp);
-          fprintf1_exn (pf | out, "*)env%i", @(ind))
+      | _ when d2var_is_mutable d2v => let
+          val () = fprint1_string
+            (pf | out, "ats_ptrget_mac(")
+          val () = emit_hityp (pf | out, vartyp_typ_get vtp)
+          val () = fprint1_string (pf | out, ", ")
+          val () = fprintf1_exn (pf | out, "env%i", @(ind))
+          val () = fprint1_string (pf | out, ")")
+        in
+          // nothing
         end // end of [_ when ...]
-      | _ => begin
-          fprintf1_exn (pf | out, "env%i", @(ind))
-        end // end of [_]
+      | _ => fprintf1_exn (pf | out, "env%i", @(ind))
     end // end of [VPenv]
   | VPext code => fprint1_string (pf | out, code)
   | VPfix (vpr) => emit_valprim (pf | out, !vpr)
@@ -1075,7 +1083,7 @@ emit_kont
 (* ****** ****** *)
 
 extern fun emit_patck {m:file_mode} (
-  pf: file_mode_lte (m, w) | out: &FILE m, vp: valprim, patck: patck, fail: kont
+  pf: fmlte (m, w) | out: &FILE m, vp: valprim, patck: patck, fail: kont
 ) : void
 
 implement
@@ -1192,7 +1200,7 @@ end (* end of [emit_patck] *)
 (* ****** ****** *)
 
 extern fun emit_branch {m:file_mode}
-  (pf: file_mode_lte (m, w) | out: &FILE m, br: branch): void
+  (pf: fmlte (m, w) | out: &FILE m, br: branch): void
 
 implement
 emit_branch
@@ -1209,7 +1217,7 @@ in
 end // end of [emit_branch]
 
 extern fun emit_branchlst {m:file_mode}
-  (pf: file_mode_lte (m, w) | out: &FILE m, brs: branchlst): void
+  (pf: fmlte (m, w) | out: &FILE m, brs: branchlst): void
 
 implement
 emit_branchlst {m} (pf | out, brs) = let
@@ -1279,7 +1287,7 @@ end // end of [emit_cloenv]
 (* ****** ****** *)
 
 fn emit_move_con {m:file_mode} (
-    pf: file_mode_lte (m, w)
+    pf: fmlte (m, w)
   | out: &FILE m
   , tmp: tmpvar_t
   , hit_sum: hityp_t
@@ -1324,24 +1332,29 @@ fn emit_move_con {m:file_mode} (
       ) : void // end of [val]
       val () = aux_arg (out, 0, vps) where {
         fun aux_arg (
-            out: &FILE m
-          , i: int
-          , vps: valprimlst
-          ) :<cloptr1> void = begin case+ vps of
+          out: &FILE m
+        , i: int, vps: valprimlst
+        ) :<cloptr1> void = begin case+ vps of
           | list_cons (vp, vps) => let
-              val () = begin case+ vp.valprim_node of
+              val () = (
+                case+ vp.valprim_node of
                 | VPtop () => ()
-                | _ => begin
-                    fprint1_char (pf | out, '\n');
-                    fprint1_string (pf | out, "((");
-                    emit_hityp_ptr (pf | out, hit_sum);
-                    fprint1_string (pf | out, "*)");
-                    emit_valprim_tmpvar (pf | out, tmp);
-                    fprintf1_exn (pf | out, ")->atslab_%i = ", @(i));
-                    emit_valprim (pf | out, vp);
-                    fprint1_string (pf | out, " ;")
-                  end
-              end // end of [val]
+                | _ => () where {
+//
+                    val () = fprint1_char (pf | out, '\n')
+//
+                    val () = fprint1_string
+                      (pf | out, "ats_selptrset_mac(")
+                    val () = emit_hityp_ptr (pf | out, hit_sum)
+                    val () = fprint1_string (pf | out, ", ")
+                    val () = emit_valprim_tmpvar (pf | out, tmp)
+                    val () = fprint1_string (pf | out, ", ")
+                    val () = fprintf1_exn (pf | out, "atslab_%i", @(i))
+                    val () = fprint1_string (pf | out, ", ")
+                    val () = emit_valprim (pf | out, vp)
+                    val () = fprint1_string (pf | out, ") ;")
+                  } // end of [_]
+              ) : void // end of [val]
             in
               aux_arg (out, i+1, vps)
             end // end of [list_cons]
@@ -1371,7 +1384,7 @@ end // end of [emit_move_con]
 (* ****** ****** *)
 
 fn emit_instr_assgn_arr {m:file_mode} (
-    pf: file_mode_lte (m, w)
+    pf: fmlte (m, w)
   | out: &FILE m
   , vp_arr: valprim, vp_asz: valprim
   , tmp_elt: tmpvar_t, vp_tsz: valprim
@@ -1405,7 +1418,7 @@ arraysize_viewt0ype_int_viewt0ype (a: viewt@ype, n:int) =
 *)
 
 fn emit_instr_arr_heap {m:file_mode} (
-    pf: file_mode_lte (m, w)
+    pf: fmlte (m, w)
   | out: &FILE m, tmp: tmpvar_t, asz: int, hit_elt: hityp_t
   ) : void = let
   val () = fprint1_string
@@ -1428,7 +1441,7 @@ end // end of [emit_instr_arr_heap]
 (* ****** ****** *)
 
 fn emit_instr_arr_stack {m:file_mode} (
-    pf: file_mode_lte (m, w)
+    pf: fmlte (m, w)
   | out: &FILE m
   , tmp: tmpvar_t, level: int, vp_asz: valprim, hit_elt: hityp_t
   ) : void = let
@@ -1461,7 +1474,7 @@ end // end of [funlab_fun_is_void]
 
 fun emit_instr_call
   {m:file_mode} (
-    pf: file_mode_lte (m, w)
+    pf: fmlte (m, w)
   | out: &FILE m
   , tmp: tmpvar_t
   , hit_fun: hityp_t
@@ -1707,11 +1720,12 @@ in
     end // end of [INSTRdynload_file]
   | INSTRload_ptr (tmp, vp_ptr) => let
       val () = emit_valprim_tmpvar (pf | out, tmp)
-      val () = fprint1_string (pf | out, " = *(")
+      val () = fprint1_string (pf | out, " = ")
+      val () = fprint1_string (pf | out, "ats_ptrget_mac(")
       val () = emit_hityp (pf | out, tmpvar_typ_get tmp)
-      val () = fprint1_string (pf | out, "*)")
+      val () = fprint1_string (pf | out, ", ")
       val () = emit_valprim (pf | out, vp_ptr)
-      val () = fprint1_string (pf | out, " ;")
+      val () = fprint1_string (pf | out, ") ;")
     in
       // empty
     end // end of [INSTRload_ptr]
@@ -1780,6 +1794,7 @@ in
   | INSTRmove_con (tmp, hit_sum, d2c, vps) => begin
       emit_move_con (pf | out, tmp, hit_sum, d2c, vps)
     end // end of [INSTRmove_con]
+//
   | INSTRmove_lazy_delay (tmp, lin, hit_body, vp_clo) => let
       val () = if lin = 0 then begin
         fprint1_string (pf | out, "ats_instr_move_lazy_delay_mac (")
@@ -1810,38 +1825,42 @@ in
     in
       // empty
     end // end of [INSTRmove_lazy_delay]
-  | INSTRmove_rec_box (tmp, hit_rec, lvps) => let
-      val isext = hityp_t_is_tyrecext hit_rec
+//
+  | INSTRmove_rec_box
+      (tmp, hit_rec, lvps) => let
+      val isext =
+        hityp_t_is_tyrecext hit_rec
+      // end of [val]
       fun aux (
-          out: &FILE m, tmp: tmpvar_t, lvps: labvalprimlst
-        ) :<cloptr1> void = begin case+ lvps of
-        | LABVALPRIMLSTcons (l, vp, lvps) => let
-            val () = fprint1_string (pf | out, "((")
+        out: &FILE m
+      , tmp: tmpvar_t, lvps: labvalprimlst
+      ) :<cloptr1> void = (case+ lvps of
+        | LABVALPRIMLSTcons
+            (l, vp, lvps) => let
+            val () = fprint1_string
+              (pf | out, "ats_selptrset_mac(")
             val () = emit_hityp_ptr (pf | out, hit_rec)
-            val () = fprint1_string (pf | out, "*)")
+            val () = fprint1_string (pf | out, ", ")
             val () = emit_valprim_tmpvar (pf | out, tmp)
-            val () = if isext then
-              fprint1_string (pf | out, ")->")
-            else
-              fprint1_string (pf | out, ")->atslab_")
-            // end of [if]
-            val () = emit_label (pf | out, l)
-            val () = fprint1_string (pf | out, " = ")
+            val () = fprint1_string (pf | out, ", ")
+            val () = emit_labelext (pf | out, isext, l)
+            val () = fprint1_string (pf | out, ", ")
             val () = emit_valprim (pf | out, vp)
-            val () = fprint1_string (pf | out, " ;\n")
+            val () = fprint1_string (pf | out, ") ;\n")
           in
             aux (out, tmp, lvps)
           end
         | LABVALPRIMLSTnil () => ()
-      end // end of [aux]
+      ) // end of [aux]
+      val () = emit_valprim_tmpvar (pf | out, tmp)
+      val () = fprint1_string (pf | out, " = ATS_MALLOC(sizeof(")
+      val () = emit_hityp_ptr (pf | out, hit_rec)
+      val () = fprint1_string (pf | out, ")) ;\n")
     in
-      emit_valprim_tmpvar (pf | out, tmp);
-      fprint1_string (pf | out, " = ATS_MALLOC(sizeof(");
-      emit_hityp_ptr (pf | out, hit_rec);
-      fprint1_string (pf | out, ")) ;\n");
       aux (out, tmp, lvps)
     end // end of [INSTRmove_rec_box]
-  | INSTRmove_rec_flt (tmp, hit_rec, lvps) => let
+  | INSTRmove_rec_flt
+      (tmp, hit_rec, lvps) => let
       val isext = hityp_t_is_tyrecext hit_rec
       fun aux (
           out: &FILE m, tmp: tmpvar_t, lvps: labvalprimlst
@@ -1865,30 +1884,33 @@ in
     in
       aux (out, tmp, lvps)
     end // end of [INSTRmove_rec_flt]
-  | INSTRmove_ref (tmp, vp) => begin
-      fprint1_string (pf | out, "ats_instr_move_ref_mac (");
-      emit_valprim_tmpvar (pf | out, tmp);
-      fprint1_string (pf | out, ", ");
-      emit_hityp (pf | out, vp.valprim_typ);
-      fprint1_string (pf | out, ", ");
-      emit_valprim (pf | out, vp);
-      fprint1_string (pf | out, ") ;")
+//
+  | INSTRmove_ref (tmp, vp) => let
+      val () = fprint1_string
+        (pf | out, "ats_instr_move_ref_mac (")
+      val () = emit_valprim_tmpvar (pf | out, tmp)
+      val () = fprint1_string (pf | out, ", ")
+      val () = emit_hityp (pf | out, vp.valprim_typ)
+      val () = fprint1_string (pf | out, ", ")
+      val () = emit_valprim (pf | out, vp)
+      val () = fprint1_string (pf | out, ") ;")
+    in
+      // nothing
     end // end of [INSTRmove_ref]
-  | INSTRmove_val (tmp, vp) => begin case+ 0 of
-    | _ when valprim_is_void vp => begin
-        fprint1_string (pf | out, "/* ");
-        emit_valprim_tmpvar (pf | out, tmp);
-        fprint1_string (pf | out, " = ");
-        emit_valprim (pf | out, vp);
-        fprint1_string (pf | out, " */ ;")
-      end // end of [_ when ...]
-    | _ => begin
-        emit_valprim_tmpvar (pf | out, tmp);
-        fprint1_string (pf | out, " = ");
-        emit_valprim (pf | out, vp);
-        fprint1_string (pf | out, " ;")
-      end // end of [_]
+  | INSTRmove_val (tmp, vp) => let
+      val isvoid = valprim_is_void vp
+      val () = if isvoid then
+        fprint1_string (pf | out, "/* ")
+      val () = emit_valprim_tmpvar (pf | out, tmp)
+      val () = fprint1_string (pf | out, " = ")
+      val () = emit_valprim (pf | out, vp)
+      val () = if isvoid then
+        fprint1_string (pf | out, " */")
+      val () = fprint1_string (pf | out, " ;")
+    in
+      // nothing
     end // end of [INSTRmove_val]
+//
   | INSTRpatck (vp, patck, fail) => let
       val fail1 = case+ fail of
         | KONTmatpnt mpt => matpnt_kont_get mpt | _ => fail
@@ -1899,6 +1921,7 @@ in
     in
       emit_patck (pf | out, vp, patck, fail)
     end // end of [INSTRpatck]
+//
   | INSTRraise (tmp, vp_exn) => () where {
       val () = fprint1_string (pf | out, "/* ")
       val () = emit_tmpvar (pf | out, tmp)
@@ -1906,6 +1929,7 @@ in
       val () = emit_valprim (pf | out, vp_exn)
       val () = fprint1_string (pf | out, ") ;")
     } // end of [INSTRraise]
+//
   | INSTRselect (tmp, vp_root, offs) => let
       val is_void = tmpvar_is_void tmp
       val () = if is_void then fprint1_string (pf | out, "/* ")
@@ -1917,56 +1941,86 @@ in
     in
       // empty
     end // end of [INSTRselect]
-  | INSTRselcon (tmp, vp_sum, hit_sum, ind) => begin
-      emit_tmpvar (pf | out, tmp);
-      fprint1_string (pf | out, " = ((");
-      emit_hityp_ptr (pf | out, hit_sum);
-      fprint1_string (pf | out, "*)");
-      emit_valprim (pf | out, vp_sum);
-      fprintf1_exn (pf | out, ")->atslab_%i", @(ind));
-      fprint1_string (pf | out, " ;")
+//
+  | INSTRselcon (
+      tmp, vp_sum, hit_sum, ind
+    ) => let
+      val () = emit_tmpvar (pf | out, tmp)
+      val () = fprint1_string (pf | out, " = ")
+      val () = fprint1_string (pf | out, "ats_caselptr_mac(")
+      val () = emit_hityp_ptr (pf | out, hit_sum)
+      val () = fprint1_string (pf | out, ", ")
+      val () = emit_valprim (pf | out, vp_sum)
+      val () = fprint1_string (pf | out, ", ")
+      val () = fprintf1_exn (pf | out, "atslab_%i", @(ind))
+      val () = fprint1_string (pf | out, ") ;")
+    in
+      // nothing
     end // end of [INSTRselcon]
-  | INSTRselcon_ptr (tmp, vp_sum, hit_sum, ind) => begin
-      emit_tmpvar (pf | out, tmp);
-      fprint1_string (pf | out, " = &(((");
-      emit_hityp_ptr (pf | out, hit_sum);
-      fprint1_string (pf | out, "*)");
-      emit_valprim (pf | out, vp_sum);
-      fprintf1_exn (pf | out, ")->atslab_%i)", @(ind));
-      fprint1_string (pf | out, " ;")
+  | INSTRselcon_ptr (
+      tmp, vp_sum, hit_sum, ind
+    ) => let
+      val () = emit_tmpvar (pf | out, tmp)
+      val () = fprint1_string (pf | out, " = ")
+      val () = fprint1_string (pf | out, "&ats_caselptr_mac(")
+      val () = emit_hityp_ptr (pf | out, hit_sum)
+      val () = fprint1_string (pf | out, ", ")
+      val () = emit_valprim (pf | out, vp_sum)
+      val () = fprint1_string (pf | out, ", ")
+      val () = fprintf1_exn (pf | out, "atslab_%i", @(ind))
+      val () = fprint1_string (pf | out, ") ;")
+    in
+      // nothing
     end // end of [INSTRselcon_ptr]
-  | INSTRstore_ptr (vp_ptr, vp_val) => begin
-      fprint1_string (pf | out, "*((");
-      emit_hityp (pf | out, vp_val.valprim_typ);
-      fprint1_string (pf | out, "*)");
-      emit_valprim (pf | out, vp_ptr);
-      fprint1_string (pf | out, ") = ");
-      emit_valprim (pf | out, vp_val);
-      fprint1_string (pf | out, " ;");
+//
+  | INSTRstore_ptr (vp_ptr, vp_val) => let
+      val () = fprint1_string
+        (pf | out, "ats_ptrget_mac(")
+      val () = emit_hityp (pf | out, vp_val.valprim_typ)
+      val () = fprint1_string (pf | out, ", ")
+      val () = emit_valprim (pf | out, vp_ptr)
+      val () = fprint1_string (pf | out, ")")
+      val () = fprint1_string (pf | out, " = ")
+      val () = emit_valprim (pf | out, vp_val)
+      val () = fprint1_string (pf | out, " ;")
+    in
+      // nothing
     end // end of [INSTRstore_ptr]
-  | INSTRstore_ptr_offs (vp_ptr, offs, vp_val) => begin
-      emit_valprim_select_ptr (pf | out, vp_ptr, offs);
-      fprint1_string (pf | out, " = ");
-      emit_valprim (pf | out, vp_val);
-      fprint1_string (pf | out, " ;")
+  | INSTRstore_ptr_offs
+      (vp_ptr, offs, vp_val) => let
+      val () = emit_valprim_select_ptr (pf | out, vp_ptr, offs)
+      val () = fprint1_string (pf | out, " = ")
+      val () = emit_valprim (pf | out, vp_val)
+      val () = fprint1_string (pf | out, " ;")
+    in
+      // nothing
     end // end of [INSTRstore_ptr_offs]
-  | INSTRstore_var (vp_mut, vp_val) => begin
-      emit_valprim (pf | out, vp_mut);
-      fprint1_string (pf | out, " = ");
-      emit_valprim (pf | out, vp_val);
-      fprint1_string (pf | out, " ;");
+//
+  | INSTRstore_var
+      (vp_mut, vp_val) => let
+      val () = emit_valprim (pf | out, vp_mut)
+      val () = fprint1_string (pf | out, " = ")
+      val () = emit_valprim (pf | out, vp_val)
+      val () = fprint1_string (pf | out, " ;")
+    in
+      // nothing
     end // end of [INSTRstore_var]
-  | INSTRstore_var_offs (vp_var, offs, vp_val) => begin
-      emit_valprim_select_var (pf | out, vp_var, offs);
-      fprint1_string (pf | out, " = ");
-      emit_valprim (pf | out, vp_val);
-      fprint1_string (pf | out, " ;")
+  | INSTRstore_var_offs
+      (vp_var, offs, vp_val) => let
+      val () = emit_valprim_select_var (pf | out, vp_var, offs)
+      val () = fprint1_string (pf | out, " = ")
+      val () = emit_valprim (pf | out, vp_val)
+      val () = fprint1_string (pf | out, " ;")
+    in
+      // nothing
     end // end of [INSTRstore_ptr]
+//
   | INSTRswitch branchlst => begin
       fprint1_string (pf | out, "do {\n");
       emit_branchlst (pf | out, branchlst);
       fprint1_string (pf | out, "} while (0) ;")
     end // end of [INSTRswitch]
+//
   | INSTRtmplabint (tl, i) => begin
       emit_tmplabint (pf | out, tl, i); fprint1_char (pf | out, ':')
     end // end of [INSTRtmplabint]
@@ -2038,7 +2092,8 @@ end // end of [emit_instrlst]
 (* ****** ****** *)
 
 extern fun emit_funarg {m:file_mode}
-  (pf: file_mode_lte (m, w) | out: &FILE m, hits: hityplst_t): void
+  (pf: fmlte (m, w) | out: &FILE m, hits: hityplst_t): void
+// end of [emit_funarg]
 
 implement
 emit_funarg {m} (pf | out, hits) = let
@@ -2063,15 +2118,15 @@ end // end of [emit_funarg]
 (* ****** ****** *)
 
 extern fun emit_funenvarg {m:file_mode}
-  (pf: file_mode_lte (m, w) | out: &FILE m, vtps: vartypset): int
-// end of ...
+  (pf: fmlte (m, w) | out: &FILE m, vtps: vartypset): int
+// end of [emit_funenvarg]
 
 local
 
 dataviewtype ENV (l:addr, i:addr) = ENVcon (l, i) of (ptr l, ptr i)
 
 fn _emit_funenvarg {m:file_mode} {l:addr} (
-    pf_mod: file_mode_lte (m, w)
+    pf_mod: fmlte (m, w)
   , pf_fil: !FILE m @ l
   | p_l: ptr l, vtps: vartypset
   ) : int = let
@@ -2151,27 +2206,29 @@ end // end of [funentry_env_err]
 (* ****** ****** *)
 
 extern fun emit_closure_type {m:file_mode} (
-  pf_mod: file_mode_lte (m, w) | out: &FILE m, fl: funlab_t, vtps: vartypset
+  pf_mod: fmlte (m, w) | out: &FILE m, fl: funlab_t, vtps: vartypset
 ) : void
 
 extern fun emit_closure_init {m:file_mode} (
-  pf_mod: file_mode_lte (m, w) | out: &FILE m, fl: funlab_t, vtps: vartypset
+  pf_mod: fmlte (m, w) | out: &FILE m, fl: funlab_t, vtps: vartypset
 ) : void
 
 extern fun emit_closure_make {m:file_mode} (
-  pf_mod: file_mode_lte (m, w) | out: &FILE m, fl: funlab_t, vtps: vartypset
+  pf_mod: fmlte (m, w) | out: &FILE m, fl: funlab_t, vtps: vartypset
 ) : void
 
 extern fun emit_closure_clofun {m:file_mode} (
-  pf_mod: file_mode_lte (m, w) | out: &FILE m, fl: funlab_t, vtps: vartypset
+  pf_mod: fmlte (m, w) | out: &FILE m, fl: funlab_t, vtps: vartypset
 ) : void
 
 (* ****** ****** *)
 
 local
 
-fn _emit_closure_type {m:file_mode} {l:addr} (
-    pf_mod: file_mode_lte (m, w), pf_fil: !FILE m @ l
+fn _emit_closure_type
+  {m:file_mode} {l:addr} (
+    pf_mod: fmlte (m, w)
+  , pf_fil: !FILE m @ l
   | p_l: ptr l, fl: funlab_t, vtps: vartypset
   ) : void = let
   dataviewtype ENV (l:addr, i:addr) = ENVcon2 (l, i) of (ptr l, ptr i)
@@ -2213,7 +2270,7 @@ end // end of [_emit_closure_type]
 
 fn _emit_closure_init
   {m:file_mode} {l:addr} (
-    pf_mod: file_mode_lte (m, w), pf_fil: !FILE m @ l
+    pf_mod: fmlte (m, w), pf_fil: !FILE m @ l
   | p_l: ptr l, fl: funlab_t, vtps: vartypset
   ) : void = let
 //
@@ -2283,14 +2340,17 @@ end // end of [_emit_closure_init]
 
 (* ****** ****** *)
 
-fn _emit_closure_make {m:file_mode} {l:addr} (
-    pf_mod: file_mode_lte (m, w), pf_fil: !FILE m @ l
+fn _emit_closure_make
+  {m:file_mode} {l:addr} (
+    pf_mod: fmlte (m, w), pf_fil: !FILE m @ l
   | p_l: ptr l, fl: funlab_t, vtps: vartypset
   ) : void = let
+//
   dataviewtype ENV (l:addr, i:addr) = ENVcon2 (l, i) of (ptr l, ptr i)
   var i: int // uninitialized
   viewdef V = (FILE m @ l, int @ i)
   viewtypedef VT = ENV (l, i)
+//
   fn f_arg (pf: !V | vtp: vartyp_t, env: !VT): void = let
     prval @(pf_fil, pf_int) = pf
     val+ ENVcon2 (p_l, p_i) = env
@@ -2307,19 +2367,19 @@ fn _emit_closure_make {m:file_mode} {l:addr} (
   in
     pf := @(pf_fil, pf_int); fold@ env
   end // end of [f_arg]
-
+//
   val () = fprint1_string (pf_mod | !p_l, "ats_clo_ptr_type\n")
   val () = emit_funlab (pf_mod | !p_l, fl)
   val () = fprint1_string (pf_mod | !p_l, "_closure_make (")
-
+//
   val env = ENVcon2 (p_l, &i)
-
+//
   val () = i := 0
   prval pf = @(pf_fil, view@ i)
   val () = vartypset_foreach_main {V} {VT} (pf | vtps, f_arg, env)
   prval () = (pf_fil := pf.0; view@ i := pf.1)
   val narg = i
-
+//
   val () = fprint1_string (pf_mod | !p_l, ") {\n")
   val () = emit_funlab (pf_mod | !p_l, fl)
   val () = begin
@@ -2327,7 +2387,7 @@ fn _emit_closure_make {m:file_mode} {l:addr} (
   end // end of [val]
   val () = emit_funlab (pf_mod | !p_l, fl)
   val () = fprint1_string (pf_mod | !p_l, "_closure_type)) ;\n")
-
+//
   val () = emit_funlab (pf_mod | !p_l, fl)
   val () = fprint1_string (pf_mod | !p_l, "_closure_init (p_clo")
   val () = loop (!p_l, narg, 0) where {
@@ -2338,9 +2398,9 @@ fn _emit_closure_make {m:file_mode} {l:addr} (
     // end of [loop]
   } // end of [val]
   val () = fprint1_string (pf_mod | !p_l, ") ;\n")
-
+//
   val+ ~ENVcon2 (_, _) = env
-
+//
   val () = fprint1_string (pf_mod | !p_l, "return (ats_clo_ptr_type)p_clo ;\n")
   val () = fprint1_string (pf_mod | !p_l, "} /* end of function */")
 in
@@ -2349,8 +2409,9 @@ end // end of [_emit_closure_make]
 
 (* ****** ****** *)
 
-fn _emit_closure_clofun {m:file_mode} {l:addr} (
-    pf_mod: file_mode_lte (m, w), pf_fil: !FILE m @ l
+fn _emit_closure_clofun
+  {m:file_mode} {l:addr} (
+    pf_mod: fmlte (m, w), pf_fil: !FILE m @ l
   | p_l: ptr l, fl: funlab_t, vtps: vartypset
   ) : void = let
   dataviewtype ENV (l:addr, i:addr) = ENVcon3 (l, i) of (funlab_t, ptr l, ptr i)

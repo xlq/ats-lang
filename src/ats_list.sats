@@ -93,7 +93,10 @@ fun list_map_cloptr
 fun list_revapp {a:type} {i,j:nat}
   (xs: list (a, i), ys: list (a, j)):<> list (a, i+j)
 
-fun list_reverse {a:type} {n:nat} (xs: list (a, n)):<> list (a, n)
+fun list_reverse
+  {a:type} {n:nat} (xs: list (a, n)):<> list (a, n)
+fun list_reverse_list_vt
+  {a:type} {n:nat} (xs: list (a, n)):<> list_vt (a, n)
 
 (* ****** ****** *)
 

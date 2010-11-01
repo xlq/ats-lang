@@ -111,9 +111,9 @@ in
   | VParg i => begin
       prstr "VParg("; fprint1_int (pf | out, i); prstr ")"
     end // end of [VParg]
-  | VParg_ref i => begin
-      prstr "VParg_ref("; fprint1_int (pf | out, i); prstr ")"
-    end // end of [VParg_ref]
+  | VPargref i => begin
+      prstr "VPargref("; fprint1_int (pf | out, i); prstr ")"
+    end // end of [VPargref]
   | VPbool b => begin
       prstr "VPbool("; fprint1_bool (pf | out, b); prstr ")"
     end // end of [VPbool]

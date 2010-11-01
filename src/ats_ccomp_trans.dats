@@ -1015,8 +1015,7 @@ fn funarg_valprim_make
   | HITrefarg (refval, hit) => let
       val hit = hityp_normalize (hit)
     in
-      if refval > 0 then valprim_arg_ref (n, hit)
-      else valprim_arg (n, hit)
+      if refval > 0 then valprim_argref (n, hit) else valprim_arg (n, hit)
     end // end of [HITrefarg]
   | _ => valprim_arg (n, hityp_normalize hit0)
 end // end of [funarg_valprim_make]
@@ -1643,7 +1642,7 @@ fn tailcall_arg_move (
         val vp = (case+ vp.valprim_node of
           | VParg i_arg when i_arg < i => valprim_mov (res, loc0, vp)
           | VPptrof vp1 => begin case+ vp1.valprim_node of
-              | VParg_ref i_arg when i_arg < i => valprim_mov (res, loc0, vp) | _ => vp
+              | VPargref i_arg when i_arg < i => valprim_mov (res, loc0, vp) | _ => vp
             end // end of [VPptrof]
           | VPclo _ => valprim_mov (res, loc0, vp)
           | _ => vp

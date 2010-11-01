@@ -45,7 +45,7 @@
 typedef struct {
   unsigned char *buf_ptr ;
   int buf_size ;
-  ats_infile_t infile ;
+  atslex_infile_t infile ;
   int fstpos ;
   int fstpos_line ; // line number
   int fstpos_loff ; // line offset
@@ -96,7 +96,7 @@ implement prerr_position (pos) = prerr_mac (fprint_position, pos)
 (* ****** ****** *)
 
 typedef infile (v:view) =
-  $extype_struct "ats_infile_t" of {
+$extype_struct "atslex_infile_t" of {
   free= (v | (*none*)) -<cloref1> void
 , getc= (!v | (*none*)) -<cloref1> int
 } // end of [infile]
@@ -617,7 +617,7 @@ lexing_curpos_prerr () {
 
 ats_ptr_type
 lexbuf_make_infile (
-  ats_infile_t infile
+  atslex_infile_t infile
 ) {
   lexbuf *lxbf ;
   unsigned char *buf_ptr ;

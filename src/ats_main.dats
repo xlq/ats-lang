@@ -678,16 +678,25 @@ fun process_DATS_def
   (def: string): void = let
   val def = string1_of_string (def)
   #define EQ '='
+//
+// HX: this is ATS/Geizella
+//
+extern
+fun string_index_of_char_from_left
+  {n:nat} (str: string n, c: char):<> ssizeBtw (~1, n)
+  = "atspre_string_index_of_char_from_left"
+// end of [string_index_of_char_from_left]
+//
   val i = string_index_of_char_from_left (def, EQ)
 in
   if i >= 0 then let
     val i = size1_of_ssize1 (i)
     val part1 = string_make_substring (def, 0, i)
-    val part1 = string_of_strbuf (part1)
+    val part1 = string1_of_strbuf (part1)
     val n = string1_length (def)
     val ni = n - (i + 1)
     val part2 = string_make_substring (def, i+1, ni)
-    val part2 = string_of_strbuf (part2)
+    val part2 = string1_of_strbuf (part2)
     val sym = $Sym.symbol_make_string (part1)
     val e1xp = $SEXP1.e1xp_string
       ($Loc.location_none, part2, (int_of_size)ni)
