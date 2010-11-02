@@ -9,7 +9,7 @@
 (*
 ** ATS - Unleashing the Potential of Types!
 **
-** Copyright (C) 2002-2009 Hongwei Xi, Boston University
+** Copyright (C) 2002-2010 Hongwei Xi, Boston University
 **
 ** All rights reserved
 **
@@ -119,8 +119,9 @@ fmatrix_ptr_initialize_elt (base, m, n, x) = () where {
 } // end of [fmatrix_ptr_initialize]
 
 (* ****** ****** *)
-
-// initialization is done column by colmun
+//
+// HX: initialization is done column by colmun
+//
 implement{a} // worth it???
 fmatrix_ptr_initialize_clo
   {v} {m,n} (pf | base, m, n, f) = () where {
@@ -166,7 +167,9 @@ fmatrix_ptr_initialize_clo
       array_ptr_split_tsz {a?} (pf_arr | p, m, sizeof<a>)
     val () = loop_one (pf1_arr, pf | p, f, m, n-nj)
     val () = loop_all (pf1_mul, pf2_arr, pf | p1, f, nj-1)
-    prval () = pf_arr := array_v_unsplit {a} (pfmul, pf1_arr, pf2_arr)
+    prval () = pf_arr :=
+      array_v_unsplit {a} (pfmul, pf1_arr, pf2_arr)
+    // end of [prval]
   in
     // nothing
   end else let
@@ -186,7 +189,6 @@ fmatrix_ptr_initialize_clo
 (* ****** ****** *)
 
 local
-
 //
 // HX: implemented in [libats/CATS/fmatrix.cats]
 //
@@ -202,14 +204,16 @@ fun fmatrix_ptr_takeout_tsz {a:viewt@ype}
   ) = "atslib_fmatrix_ptr_takeout_tsz"
 // end of [fmatrix_ptr_takeout_tsz]
 
-in
+in // in of [local]
 
-implement{a} fmatrix_ptr_takeout
+implement{a}
+fmatrix_ptr_takeout
   (pf_mat | base, m, i, j) = begin
   fmatrix_ptr_takeout_tsz {a} (pf_mat | base, m, i, j, sizeof<a>)
 end // end of [fmatrix_ptr_takeout]
 
-implement{a} fmatrix_ptr_get_elt_at
+implement{a}
+fmatrix_ptr_get_elt_at
   (base, m, i, j) = x where {
   prval pf_mat = view@ base
   val (pf_elt, fpf_mat | p_elt) =
@@ -219,7 +223,8 @@ implement{a} fmatrix_ptr_get_elt_at
   prval () = view@ base := fpf_mat (pf_elt)
 } // end of [fmatrix_ptr_get_elt_at]
 
-implement{a} fmatrix_ptr_set_elt_at
+implement{a}
+fmatrix_ptr_set_elt_at
   (base, m, i, j, x) = () where {
   prval pf_mat = view@ base
   val (pf_elt, fpf_mat | p_elt) =
@@ -234,7 +239,8 @@ end // end of [local]
 (* ****** ****** *)
 
 implement{a}
-fmatrix_ptr_copy {m,n} (A, B, m, n) = let
+fmatrix_ptr_copy
+  {m,n} (A, B, m, n) = let
   val [mn:int] (pf_mn | mn) = mul2_size1_size1 (m, n)
   prval () = mul_nat_nat_nat (pf_mn)
   prval (pf2_mn, pfA_arr) = array_v_of_fmatrix_v {a} {m,n} (view@ A)
@@ -252,8 +258,9 @@ in
 end // end of [fmatrix_ptr_copy]
 
 (* ****** ****** *)
-
-// loop proceeds column by column
+//
+// HX: loop proceeds column by column
+//
 implement
 fmatrix_ptr_foreach_fun_tsz__main
   {a} {v} {vt} {ord} {m,n}
@@ -269,18 +276,21 @@ end (* end of [fmatrix_ptr_foreach_fun_tsz__main] *)
 (* ****** ****** *)
 
 implement{a}
-fmatrix_ptr_foreach_fun {v} (pf | M, f, ord, m, n) = let
+fmatrix_ptr_foreach_fun
+  {v} (pf | M, f, ord, m, n) = let
   val f = coerce (f) where { extern castfn
     coerce (f: (!v | &a) -<> void) :<> (!v | &a, !ptr) -<> void
   } // end of [where]
 in
-  fmatrix_ptr_foreach_fun_tsz__main {a} {v} {ptr} (pf | M, f, ord, m, n, sizeof<a>, null)
+  fmatrix_ptr_foreach_fun_tsz__main
+    {a} {v} {ptr} (pf | M, f, ord, m, n, sizeof<a>, null)
 end // end of [fmatrix_ptr_foreach_fun]
 
 (* ****** ****** *)
 
 implement{a}
-fmatrix_ptr_foreach_clo {v} (pf_v | M, f, ord, m, n) = let
+fmatrix_ptr_foreach_clo
+  {v} (pf_v | M, f, ord, m, n) = let
   stavar l_f: addr
   val p_f: ptr l_f = &f
   typedef clo_t = (!v | &a) -<clo> void
@@ -298,8 +308,9 @@ in
 end // end of [fmatrix_ptr_foreach_clo_tsz]
 
 (* ****** ****** *)
-
-// loop proceeds column by column
+//
+// HX: loop proceeds column by column
+//
 implement
 fmatrix_ptr_iforeach_fun_tsz__main
   {a} {v} {vt} {ord} {m,n}
