@@ -203,6 +203,15 @@ fprint_line_pragma
     val () = fprint1_string (pf | out, "\"\n")
   in
     // nothing
+  end else let
+(*
+//
+// HX-2010-11-02: this is another possibility:
+//
+    val () = fprint1_string (pf | out, "#line 1 \"<built-in>\"\n")
+*)
+  in
+    // nothing
   end // end of [if]
 //
 in
