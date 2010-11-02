@@ -162,16 +162,11 @@ fmatrix_ptr_initialize_clo
     prval () = mul_nat_nat_nat (pf_mul)
     prval pf1_mul = mul_add_const {~1} (pf_mul)
     prval () = mul_nat_nat_nat (pf1_mul)
-    val [l1:addr] (pf1_arr, pf2_arr, fpf_arr | p1) =
+    val (pfmul, pf1_arr, pf2_arr | p1) =
       array_ptr_split_tsz {a?} (pf_arr | p, m, sizeof<a>)
     val () = loop_one (pf1_arr, pf | p, f, m, n-nj)
     val () = loop_all (pf1_mul, pf2_arr, pf | p1, f, nj-1)
-    propdef fpf_p (a:viewt@ype) =
-      (array_v (a, m, l), array_v (a, p-m, l1)) -<prf> array_v (a, p, l)
-    prval fpf_arr = __cast fpf_arr where {
-      extern prfun __cast (fpf: fpf_p (a?)):<prf> fpf_p (a)
-    } // end of [prval]
-    prval () = pf_arr := fpf_arr (pf1_arr, pf2_arr)
+    prval () = pf_arr := array_v_unsplit {a} (pfmul, pf1_arr, pf2_arr)
   in
     // nothing
   end else let
