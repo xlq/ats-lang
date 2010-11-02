@@ -58,7 +58,6 @@ val symbol_COLONEQ : symbol_t
 val symbol_DIV : symbol_t
 val symbol_EQ : symbol_t
 val symbol_EQEQ : symbol_t
-val symbol_FALSE : symbol_t
 val symbol_FUN: symbol_t
 val symbol_GT : symbol_t
 val symbol_GTEQ : symbol_t
@@ -76,15 +75,21 @@ val symbol_NEQEQ : symbol_t
 val symbol_OR : symbol_t
 val symbol_QMARK : symbol_t
 val symbol_QMARKBANG : symbol_t
+val symbol_SUB : symbol_t
+val symbol_TILDA : symbol_t
+//
+val symbol_FALSE : symbol_t
+val symbol_TRUE : symbol_t
+//
+val symbol_FOR : symbol_t
+val symbol_IN : symbol_t
 val symbol_R0EAD : symbol_t // r@ead: read-only annotation
 val symbol_SIZEOF : symbol_t
 val symbol_STDIN : symbol_t
-val symbol_SUB : symbol_t
-val symbol_TILDA : symbol_t
-val symbol_TRUE : symbol_t
 val symbol_UNDERSCORE : symbol_t
 val symbol_UNION : symbol_t
 val symbol_VBOX : symbol_t
+val symbol_WHILE : symbol_t
 
 (* macro expansion *)
 

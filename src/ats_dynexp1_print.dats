@@ -382,6 +382,9 @@ in
       fprint_d1exp (pf | out, d1e);
       prstr ")"
     end // end of [D1Efreeat]
+  | D1Eidext (id) => (
+      prstr "`"; $Sym.fprint_symbol (pf | out, id); prstr "`"
+    ) // end of [D1Eidext]
   | D1Eif (_(*inv*), d1e_cond, d1e_then, od1e_else) => begin
       prstr "D1Eif(";
       fprint1_string (pf | out, "...");

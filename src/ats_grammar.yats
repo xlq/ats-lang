@@ -141,6 +141,7 @@ extern srpifkindtok_t srpifkindtok_ifndef (t0kn_t) ;
 typedef ats_ptr_type i0de_t ;
 typedef ats_ptr_type i0delst_t ;
 typedef ats_ptr_type i0delstlst_t ;
+typedef ats_ptr_type i0dext_t ;
 
 extern i0de_t i0de_make_ampersand (t0kn_t) ;
 extern i0de_t i0de_make_backslash (t0kn_t) ;
@@ -156,8 +157,11 @@ extern i0de_t i0de_make_module (t0kn_t) ;
 extern i0de_t i0de_make_r0ead (t0kn_t) ;
 extern i0de_t i0de_make_tilda (t0kn_t) ;
 extern i0de_t i0de_make_t0ype (t0kn_t) ;
-extern i0de_t i0de_make_union (t0kn_t) ;
 extern i0de_t i0de_make_viewt0ype (t0kn_t) ;
+
+extern i0de_t i0de_make_for (t0kn_t) ;
+extern i0de_t i0de_make_in (t0kn_t) ;
+extern i0de_t i0de_make_while (t0kn_t) ;
 
 extern i0delst_t i0delst_nil (void) ;
 extern i0delst_t i0delst_sing (i0de_t) ;
@@ -726,6 +730,8 @@ extern d0exp_t d0exp_for_itp (loophead_t, initestpost_t, d0exp_t) ;
 extern d0exp_t d0exp_freeat (t0kn_t, d0explst_t) ;
 
 extern d0exp_t d0exp_ide (i0de_t) ;
+extern d0exp_t d0exp_idext (i0de_t) ;
+
 extern d0exp_t d0exp_if_none (ifhead_t, d0exp_t, d0exp_t) ;
 extern d0exp_t d0exp_if_some (ifhead_t, d0exp_t, d0exp_t, d0exp_t) ;
 
@@ -1017,6 +1023,10 @@ srpifkindtok_t srpifkindtok ;
 i0de_t i0de ;
 i0delst_t i0delst ;
 i0delstlst_t i0delstlst ;
+
+//
+
+i0dext_t i0dext ;
 
 //
 
@@ -1517,6 +1527,8 @@ guad0ec_t guad0ec ;
 %type <i0de> i0de_srp
 %type <i0delst> i0deseq
 
+%type <i0dext> i0dext
+
 %type <l0ab> l0ab
 
 %type <i0de> stai0de
@@ -1884,6 +1896,7 @@ srpthenopt
 i0de /* identifier */
   : IDENTIFIER_alp                      { $$ = $1 ; }
   | IDENTIFIER_sym                      { $$ = $1 ; }
+/* keysymb */
   | AMPERSAND                           { $$ = i0de_make_ampersand($1) ; }
   | BACKSLASH                           { $$ = i0de_make_backslash($1) ; }
   | BANG                                { $$ = i0de_make_bang($1) ; }
@@ -1893,6 +1906,10 @@ i0de /* identifier */
   | MINUSGT                             { $$ = i0de_make_minusgt($1) ; }
   | MINUSLTGT                           { $$ = i0de_make_minusltgt($1) ; }
   | TILDA                               { $$ = i0de_make_tilda($1) ; }
+/* keyword */
+  | FOR                                 { $$ = i0de_make_for($1) ; }
+  | IN                                  { $$ = i0de_make_in($1) ; }
+  | WHILE                               { $$ = i0de_make_while($1) ; }
 ;
 
 i0de_dlr /* identifier beginning with $ */
@@ -1907,6 +1924,12 @@ i0deseq /* identifier sequence */
   : /* empty */                         { $$ = i0delst_nil() ; }
   | i0de i0deseq                        { $$ = i0delst_cons($1, $2) ; }
 ;
+
+/* ****** ****** */
+
+i0dext : BACKQUOTE i0de BACKQUOTE       { $$ = i0dext_make($1, $2, $3) ; }
+
+/* ****** ****** */
 
 l0ab /* label */
   : i0de                                { $$ = l0ab_ide($1) ; }
@@ -2770,11 +2793,16 @@ atmd0exp
   | LITERAL_int                         { $$ = d0exp_int($1) ; }
   | LITERAL_intsp                       { $$ = d0exp_intsp($1) ; }
   | LITERAL_string                      { $$ = d0exp_string($1) ; }
+
   | SRPFILENAME                         { $$ = d0exp_FILENAME($1) ; }
   | SRPLOCATION                         { $$ = d0exp_LOCATION($1) ; }
+
   | di0de                               { $$ = d0exp_ide($1) ; }
   | OP di0de                            { $$ = d0exp_opide($1, $2) ; }
   | d0ynq i0de                          { $$ = d0exp_qid($1, $2) ; }
+
+  | i0dext                              { $$ = d0exp_idext($1) ; }
+
   | AMPERSAND                           { $$ = d0exp_ptrof($1) ; }
   | BREAK                               { $$ = d0exp_loopexn(0, $1) ; }
   | CONTINUE                            { $$ = d0exp_loopexn(1, $1) ; }
@@ -2817,7 +2845,7 @@ atmd0exp
   | BEGIN d0expsemiseq0 END             { $$ = d0exp_seq ($1, $2, $3) ; }
   | LPAREN d0expsemiseq1 RPAREN         { $$ = d0exp_seq ($1, $2, $3) ; }
 
-    /* dynamic tuples */
+/* dynamic tuples */
   | ATLPAREN d0expcommaseq RPAREN       { $$ = d0exp_tup (0, $1, $2, $3) ; }
   | QUOTELPAREN d0expcommaseq RPAREN    { $$ = d0exp_tup (1, $1, $2, $3) ; }
   | DLRTUP_T LPAREN d0expcommaseq RPAREN
@@ -2825,12 +2853,13 @@ atmd0exp
   | DLRTUP_VT LPAREN d0expcommaseq RPAREN
                                         { $$ = d0exp_tup (3, $1, $3, $4) ; }
 
+/* dynamic tuple pairs */
   | ATLPAREN d0expcommaseq BAR d0expcommaseq RPAREN
                                         { $$ = d0exp_tup2 (0, $1, $2, $4, $5) ; }
   | QUOTELPAREN d0expcommaseq BAR d0expcommaseq RPAREN
                                         { $$ = d0exp_tup2 (1, $1, $2, $4, $5) ; }
 
-    /* dynamic records */
+/* dynamic records */
   | ATLBRACE labd0expseq RBRACE         { $$ = d0exp_rec (0, $1, $2, $3) ; }
   | QUOTELBRACE labd0expseq RBRACE      { $$ = d0exp_rec (1, $1, $2, $3) ; }
   | DLRREC_T LBRACE labd0expseq RBRACE  { $$ = d0exp_rec (2, $1, $3, $4) ; }

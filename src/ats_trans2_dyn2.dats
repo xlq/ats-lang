@@ -166,7 +166,8 @@ fn c1lassdec_tr
 
 (* ****** ****** *)
 
-implement overload_def_tr (id, def) = let
+implement
+overload_def_tr (id, def) = let
   val ans = ans where {
     val id_sym = id.i0de_sym
     val ans = the_d2expenv_current_find id_sym
@@ -1092,7 +1093,8 @@ end // end of [s1taload_tr]
 
 (* ****** ****** *)
 
-implement overload_d2eclst_tr (d2cs) =
+implement
+overload_d2eclst_tr (d2cs) =
   case+ d2cs of
   | list_cons (d2c, d2cs) => let
       val () = (case+ d2c.d2ec_node of
@@ -1285,9 +1287,11 @@ d1ec_tr (d1c0) = begin
 end // end of [d1ec_tr]
 
 (* ****** ****** *)
-
-// [list_map_fun] is tail-recursive!
-implement d1eclst_tr (d1cs) = $Lst.list_map_fun (d1cs, d1ec_tr)
+//
+// HX: [list_map_fun] is tail-recursive!
+//
+implement
+d1eclst_tr (d1cs) = $Lst.list_map_fun (d1cs, d1ec_tr)
 
 (* ****** ****** *)
 

@@ -79,7 +79,9 @@ implement p1at_anys (loc) = '{
   p1at_loc= loc, p1at_node= P1Tanys ()
 }
 
-implement p1at_app_dyn (loc, p1t, loc_arg, npf, p1ts) = '{
+implement
+p1at_app_dyn
+  (loc, p1t, loc_arg, npf, p1ts) = '{
   p1at_loc= loc, p1at_node= P1Tapp_dyn (p1t, loc_arg, npf, p1ts)
 }
 
@@ -183,6 +185,7 @@ fn prerr_loc_error1 (loc: loc_t): void =
 
 implement
 p1at_make_e1xp (loc, e0) = let
+//
   fun aux (e0: e1xp):<cloptr1> p1at = case+ e0.e1xp_node of
     | E1XPapp (e1, loc_arg, es2) => begin
         p1at_app_dyn (loc, aux e1, loc_arg, 0(*npf*), auxlst es2)
@@ -195,12 +198,14 @@ p1at_make_e1xp (loc, e0) = let
     | E1XPnone () => p1at_empty (loc)
     | E1XPstring (str, _(*len*)) => p1at_string (loc, str)
     | E1XPundef () => begin
-        prerr_loc_error1 (loc); prerr ": incorrect use of undefined value."; prerr_newline ();
+        prerr_loc_error1 (loc);
+        prerr ": incorrect use of undefined value."; prerr_newline ();
         $Err.abort ()
       end // end of [E1XPundef]
   // end of [aux]
-
-  and auxlst (es0: e1xplst):<cloptr1> p1atlst = case+ es0 of
+//
+  and auxlst
+    (es0: e1xplst):<cloptr1> p1atlst = case+ es0 of
     | cons (e, es) => cons (aux e, auxlst es) | nil () => nil ()
   // end of [auxlst]
 in
@@ -209,42 +214,54 @@ end // end of [p1at_make_e1xp]
 
 (* ****** ****** *)
 
-implement d1exp_ann_effc (loc, d1e, efc) = '{
+implement
+d1exp_ann_effc (loc, d1e, efc) = '{
   d1exp_loc= loc, d1exp_node= D1Eann_effc (d1e, efc)
 }
 
-implement d1exp_ann_funclo (loc, d1e, fc) = '{
+implement
+d1exp_ann_funclo (loc, d1e, fc) = '{
   d1exp_loc= loc, d1exp_node= D1Eann_funclo (d1e, fc)
 }
 
-implement d1exp_ann_funclo_opt (loc, d1e, fc) = begin
+implement
+d1exp_ann_funclo_opt (loc, d1e, fc) = begin
   case+ d1e.d1exp_node of
   | D1Eann_funclo _ => d1e | _ => d1exp_ann_funclo (loc, d1e, fc)
 end // end of [d1exp_ann_funclo_opt]
 
-implement d1exp_ann_type (loc, d1e, s1e) = '{
+implement
+d1exp_ann_type (loc, d1e, s1e) = '{
   d1exp_loc= loc, d1exp_node= D1Eann_type (d1e, s1e)
-}
-
-implement d1exp_app_dyn (loc, d1e, loc_arg, npf, d1es) = '{
-  d1exp_loc= loc, d1exp_node= D1Eapp_dyn (d1e, loc_arg, npf, d1es)
-}
-
-implement d1exp_app_sta (loc, d1e, s1as) = '{
-  d1exp_loc= loc, d1exp_node= D1Eapp_sta (d1e, s1as)
 }
 
 (* ****** ****** *)
 
-implement d1exp_arrinit (loc, s1e, od1e_asz, d1es_elt) = '{
+implement
+d1exp_app_dyn
+  (loc, d1e, loc_arg, npf, d1es) = '{
+  d1exp_loc= loc, d1exp_node= D1Eapp_dyn (d1e, loc_arg, npf, d1es)
+} // end of [d1exp_app_dyn]
+
+implement
+d1exp_app_sta (loc, d1e, s1as) = '{
+  d1exp_loc= loc, d1exp_node= D1Eapp_sta (d1e, s1as)
+} // end of [d1exp_app_sta]
+
+(* ****** ****** *)
+
+implement
+d1exp_arrinit (loc, s1e, od1e_asz, d1es_elt) = '{
   d1exp_loc= loc, d1exp_node= D1Earrinit (s1e, od1e_asz, d1es_elt)
 }
 
-implement d1exp_arrsize (loc, os1e_elt, d1es_elt) = '{
+implement
+d1exp_arrsize (loc, os1e_elt, d1es_elt) = '{
   d1exp_loc= loc, d1exp_node= D1Earrsize (os1e_elt, d1es_elt)
 }
 
-implement d1exp_arrsub (loc, d1e_arr, loc_ind, d1ess_ind) = '{
+implement
+d1exp_arrsub (loc, d1e_arr, loc_ind, d1ess_ind) = '{
   d1exp_loc= loc, d1exp_node= D1Earrsub (d1e_arr, loc_ind, d1ess_ind)
 }
 
@@ -311,9 +328,10 @@ implement d1exp_foldat (loc, s1as, d1e) = '{
   d1exp_loc= loc, d1exp_node= D1Efoldat (s1as, d1e)
 }
 
-implement d1exp_for (loc, inv, ini, test, post, body) = '{
+implement d1exp_for
+  (loc, inv, ini, test, post, body) = '{
   d1exp_loc= loc, d1exp_node= D1Efor (inv, ini, test, post, body)
-}
+} // end of [d1exp_for]
 
 implement d1exp_freeat (loc, s1as, d1e) = '{
   d1exp_loc= loc, d1exp_node= D1Efreeat (s1as, d1e)
@@ -321,6 +339,10 @@ implement d1exp_freeat (loc, s1as, d1e) = '{
 
 implement d1exp_ide (loc, id) = '{
   d1exp_loc= loc, d1exp_node= D1Eqid (d0ynq_none, id)
+}
+
+implement d1exp_idext (loc, id) = '{
+  d1exp_loc= loc, d1exp_node= D1Eidext (id) // for syndef
 }
 
 implement d1exp_if

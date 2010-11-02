@@ -308,6 +308,8 @@ and d1exp_node =
     ) // end of [D1Efor]
   | D1Efreeat of (* free at a given address *)
       (s1exparglst, d1exp)
+  | D1Eidext of (* external identifier for syndef *)
+      sym_t
   | D1Eif of (* conditional dynamic expression *)
       (i1nvresstate, d1exp, d1exp, d1expopt)
   | D1Eint of (* dynamic integer constant *)
@@ -752,6 +754,7 @@ fun d1exp_for (
 fun d1exp_freeat (_: loc_t, _: s1exparglst, _: d1exp): d1exp
 
 fun d1exp_ide (_: loc_t, _: sym_t): d1exp
+fun d1exp_idext (_: loc_t, _: sym_t): d1exp
 
 fun d1exp_if (
   loc: loc_t

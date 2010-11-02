@@ -30,10 +30,10 @@
 *)
 
 (* ****** ****** *)
-
+//
 // Author: Hongwei Xi (hwxi AT cs DOT bu DOT edu)
 // Time: November 2007
-
+//
 (* ****** ****** *)
 
 staload Arr = "ats_array.sats"
@@ -110,7 +110,8 @@ overload prerr with $Loc.prerr_location
 
 (* ****** ****** *)
 
-fn prerr_loc_error2 (loc: loc_t): void =
+fn prerr_loc_error2
+  (loc: loc_t): void =
   ($Loc.prerr_location loc; prerr ": error(2)")
 // end of [prerr_loc_error2]
 
@@ -166,7 +167,8 @@ in
   the_d2expenv_add_dcst d2c; d2c
 end // end of [d1cstdec_tr]
 
-implement d1cstdeclst_tr (dck, s2vpslst, d1cs) = begin
+implement
+d1cstdeclst_tr (dck, s2vpslst, d1cs) = begin
   case+ d1cs of
   | cons (d1c, d1cs) => let
       val d2c = d1cstdec_tr (dck, s2vpslst, d1c)
@@ -523,7 +525,8 @@ end // end of [p2at_vbox_tr]
 
 (* ****** ****** *)
 
-implement p1at_tr (p1t0) = let
+implement
+p1at_tr (p1t0) = let
 //
 val loc0 = p1t0.p1at_loc
 var linearity_check: int = 0
@@ -1381,7 +1384,8 @@ end // end of [d1exp_arg_body_tr]
 
 (* ****** ****** *)
 
-implement d1exp_tr (d1e0): d2exp = let
+implement
+d1exp_tr (d1e0) = let
   val loc0 = d1e0.d1exp_loc
 (*
   val () = begin
@@ -1391,7 +1395,8 @@ implement d1exp_tr (d1e0): d2exp = let
 in
   case+ d1e0.d1exp_node of
   | D1Eann_type (d1e, s1e) => let
-      val d2e = d1exp_tr d1e; val s2e = s1exp_tr_dn_impredicative s1e
+      val d2e = d1exp_tr d1e
+      val s2e = s1exp_tr_dn_impredicative (s1e)
     in
       d2exp_ann_type (loc0, d2e, s2e)
     end // end of [D1Eann_type]
@@ -1400,10 +1405,12 @@ in
     in
       d2exp_ann_seff (loc0, d2e, s2fe)
     end // end of [D1Eann_effc]
-  | D1Eann_funclo (d1e, fc) => begin
-      let val d2e = d1exp_tr d1e in d2exp_ann_funclo (loc0, d2e, fc) end
+  | D1Eann_funclo (d1e, fc) => let
+      val d2e = d1exp_tr d1e in d2exp_ann_funclo (loc0, d2e, fc)
     end // end of [D1Efunclo]
-  | D1Eapp_dyn (d1e_fun, loc_arg, npf, darg) => let
+  | D1Eapp_dyn (
+      d1e_fun, loc_arg, npf, darg
+    ) => let
       val loc1 = d1e_fun.d1exp_loc
       val d1e_fun = d1exp_make_d1exp d1e_fun
     in
@@ -1548,6 +1555,14 @@ in
   | D1Efreeat (s1as, d1e) => begin
       d2exp_freeat (loc0, s1exparglst_tr s1as, d1exp_tr d1e)
     end // end of [D1Efreeat]
+  | D1Eidext id => let
+      val () = prerr_loc_error2 (loc0)
+      val () = prerr ": the external identifier `"
+      val () = prerr id
+      val () = prerr "` should have previously been resolved.\n"
+    in
+      $Err.abort {d2exp} ()
+    end // end of [D1Eidext]
   | D1Eif (r1es, d1e_cond, d1e_then, od1e_else) => let
       val r2es = i1nvresstate_tr r1es
       val d2e_cond = d1exp_tr d1e_cond
@@ -1764,20 +1779,25 @@ in
     end // end of [_]
 end // end of [d1exp_tr]
 
-implement d1explst_tr (d1es) = $Lst.list_map_fun (d1es, d1exp_tr)
-implement d1explstlst_tr (d1ess) = $Lst.list_map_fun (d1ess, d1explst_tr)
+implement
+d1explst_tr (d1es) = $Lst.list_map_fun (d1es, d1exp_tr)
+implement
+d1explstlst_tr (d1ess) = $Lst.list_map_fun (d1ess, d1explst_tr)
 
-implement d1expopt_tr (od1e) = case+ od1e of
+implement
+d1expopt_tr (od1e) = case+ od1e of
   | Some d1e => Some (d1exp_tr d1e) | None () => None ()
 // end of [d1expopt_tr]
 
-implement labd1explst_tr (ld1es) = case+ ld1es of
+implement
+labd1explst_tr (ld1es) = case+ ld1es of
   | LABD1EXPLSTcons (l0, d1e, ld1es) =>
       LABD2EXPLSTcons (l0.l0ab_lab, d1exp_tr d1e, labd1explst_tr ld1es)
   | LABD1EXPLSTnil () => LABD2EXPLSTnil ()
 // end of [labd1explst_tr]
 
-implement d1lab_tr (d1l) = case+ d1l.d1lab_node of
+implement
+d1lab_tr (d1l) = case+ d1l.d1lab_node of
   | D1LABlab lab => d2lab_lab (d1l.d1lab_loc, lab)
   | D1LABind ind => d2lab_ind (d1l.d1lab_loc, d1explstlst_tr ind)
 // end of [d1lab_tr]

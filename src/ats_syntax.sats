@@ -311,22 +311,35 @@ fun i0de_make_gt (t: t0kn): i0de = "i0de_make_gt"
 fun i0de_make_lt (t: t0kn): i0de = "i0de_make_lt"
 fun i0de_make_minusgt (t: t0kn): i0de = "i0de_make_minusgt"
 fun i0de_make_minusltgt (t: t0kn): i0de = "i0de_make_minusltgt"
-fun i0de_make_r0ead (t: t0kn): i0de = "i0de_make_r0ead"
 fun i0de_make_tilda (t: t0kn): i0de = "i0de_make_tilda"
 fun i0de_make_t0ype (t: t0kn): i0de = "i0de_make_t0ype"
-fun i0de_make_union (t: t0kn): i0de = "i0de_make_union"
 fun i0de_make_viewt0ype (t: t0kn): i0de = "i0de_make_viewt0ype"
+
+fun i0de_make_for (t: t0kn): i0de = "i0de_make_for"
+fun i0de_make_in (t: t0kn): i0de = "i0de_make_in"
+fun i0de_make_r0ead (t: t0kn): i0de = "i0de_make_r0ead"
+fun i0de_make_while (t: t0kn): i0de = "i0de_make_while"
 
 fun i0de_make_lrbrackets
   (t_l: t0kn, t_r: t0kn): i0de = "i0de_make_lrbrackets"
+// end of [i0de_make_lrbrackets]
 
 fun i0delst_nil (): i0delst = "i0delst_nil"
 fun i0delst_sing (x: i0de): i0delst = "i0delst_sing"
 fun i0delst_cons (x: i0de, xs: i0delst): i0delst = "i0delst_cons"
 
 fun i0delstlst_nil (): i0delstlst = "i0delstlst_nil"
-fun i0delstlst_cons (x: i0delst, xs: i0delstlst): i0delstlst
-  = "i0delstlst_cons"
+fun i0delstlst_cons
+  (x: i0delst, xs: i0delstlst): i0delstlst = "i0delstlst_cons"
+// end of [i0delstlst_cons]
+
+(* ****** ****** *)
+
+typedef i0dext = i0de
+
+fun i0dext_make
+  (t_beg: t0kn, ide: i0de, t_end: t0kn): i0dext = "i0dext_make"
+// end of [i0dext_make]
 
 (* ****** ****** *)
 
@@ -1631,6 +1644,8 @@ datatype d0exp_node =
       d0explst(* static arguments *)
   | D0Eide of (* identifier *)
       sym_t
+  | D0Eidext of (* external identifier for syndef *)
+      sym_t
   | D0Eif of (* dynamic conditionals *)
       (ifhead, d0exp, d0exp, d0expopt)
   | D0Eint of (* dynamic integers *)
@@ -2009,8 +2024,12 @@ fun d0exp_fix (
 , body: d0exp
 ): d0exp = "d0exp_fix"
 
+(* ****** ****** *)
+
 fun d0exp_float (_: f0loat): d0exp = "d0exp_float"
 fun d0exp_floatsp (_: f0loatsp): d0exp = "d0exp_floatsp"
+
+(* ****** ****** *)
 
 fun d0exp_foldat
   (t_foldat: t0kn, _: d0explst): d0exp = "d0exp_foldat"
@@ -2026,7 +2045,10 @@ fun d0exp_freeat
 
 (* ****** ****** *)
 
-fun d0exp_ide (id: i0de): d0exp = "d0exp_ide"
+fun d0exp_ide (ide: i0de): d0exp = "d0exp_ide"
+fun d0exp_idext (idext: i0dext): d0exp = "d0exp_idext"
+
+(* ****** ****** *)
 
 fun d0exp_if_none
   (hd: ifhead, d0e_cond: d0exp, d0e_then: d0exp): d0exp
