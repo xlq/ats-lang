@@ -177,13 +177,13 @@ bootstrapping:: ; $(MAKE) -C src -f ./Makefile_srcbootstrap all
 ###### w/o GC ######
 
 atsopt1::
-	$(MAKE) -C bootstrap1 -f ../Makefile_bootstrap BOOTSTRAP1=1 atsopt
+	$(MAKE) -C bootstrap1 -f ../Makefile_bootstrap atsopt
 	cp bootstrap1/atsopt $(ATSHOMEBIN)/atsopt
 
 ###### with GC ######
 
 atsopt1_gc::
-	$(MAKE) -C bootstrap1 -f ../Makefile_bootstrap BOOTSTRAP1=1 atsopt_gc
+	$(MAKE) -C bootstrap1 -f ../Makefile_bootstrap atsopt_gc
 	cp bootstrap1/atsopt_gc $(ATSHOMEBIN)/atsopt
 
 ###### contrib libraries ######

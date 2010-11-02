@@ -76,10 +76,7 @@ include ../config.mk
 #ATSHOMEQ = "$(ATSHOME)"
 ATSRUNTIME := $(ATSHOMEQ)/ccomp/runtime
 
-ifdef BOOTSTRAP0
-CCFLAG=-I$(ATSHOMEQ) -I$(ATSRUNTIME) -g -O2
-endif
-
+BOOTSTRAP1=1
 ifdef BOOTSTRAP1
 CCFLAG=-I$(ATSHOMEQ) -I$(ATSRUNTIME) -g -O2
 endif
