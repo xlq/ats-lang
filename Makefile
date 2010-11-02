@@ -165,7 +165,7 @@ all1:: \
 atsopt0:: atsopt0-anairiats
 
 atsopt0-anairiats::
-	$(MAKE) -C bootstrap0 -f ../Makefile_bootstrap BOOTSTRAP0=1 atsopt
+	$(MAKE) -C bootstrap0 -f ./Makefile atsopt
 
 atsopt0-geizella::
 	$(MAKE) -C bootstrap0 -f ./Makefile atsopt
