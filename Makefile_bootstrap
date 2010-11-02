@@ -165,6 +165,7 @@ SOURCES := \
   ats_trans3_assgn.dats \
   ats_trans3_deref.dats \
   ats_trans3_view.dats \
+  ats_trans3_util.dats \
   ats_trans3_exp_up.dats \
   ats_trans3_exp_dn.dats \
   ats_trans3_loop.dats ats_trans3_dec.dats \

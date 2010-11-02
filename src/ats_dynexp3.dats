@@ -986,44 +986,21 @@ ats_dynexp3_d3exp_typ_set (
 
 (* ****** ****** *)
 
-implement d3explst_typ_get (d3es) = begin case+ d3es of
+implement
+d3explst_typ_get
+  (d3es) = begin case+ d3es of
   | cons (d3e, d3es) => cons (d3e.d3exp_typ, d3explst_typ_get d3es)
   | nil () => nil ()
 end // end of [d3explst_typ_get]
 
-implement labd3explst_typ_get (ld3es) = begin case+ ld3es of
+implement
+labd3explst_typ_get
+  (ld3es) = begin case+ ld3es of
   | LABD3EXPLSTcons (l, d3e, ld3es) => begin
       LABS2EXPLSTcons (l, d3e.d3exp_typ, labd3explst_typ_get ld3es)
     end // end of [LABD3EXPLSTcons]
   | LABD3EXPLSTnil () => LABS2EXPLSTnil ()
 end // end of [labd3explst_typ_get]
-
-fn d3exp_ind_get (d3e: d3exp): s2exp = let
-  val s2e = s2exp_whnf (d3e.d3exp_typ)
-  val os2i = un_s2exp_int_int_t0ype (s2e)
-  val os2i = (case+ os2i of
-    | Some_vt _ => (fold@ os2i; os2i)
-    | ~None_vt () => un_s2exp_size_int_t0ype (s2e)
-  ) : s2expopt_vt // end of [val]
-in
-  case+ os2i of
-  | ~Some_vt s2i => s2i
-  | ~None_vt () => begin
-      prerr d3e.d3exp_loc;
-      prerr ": error(3)";
-      prerr ": the array index is assigned the type [";
-      prerr_s2exp s2e;
-      prerr "], which is not an indexed integer type.";
-      prerr_newline ();
-      $Err.abort {s2exp} ()
-    end // end of [None_vt]
-end // end of [d3exp_ind_get]
-
-fn d3explst_ind_get (d3es: d3explst): s2explst =
-  $Lst.list_map_fun (d3es, d3exp_ind_get)
-
-implement d3explstlst_ind_get (d3ess: d3explstlst): s2explstlst =
-  $Lst.list_map_fun (d3ess, d3explst_ind_get)
 
 (* ****** ****** *)
 

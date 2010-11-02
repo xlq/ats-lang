@@ -820,9 +820,11 @@ end // end of [s2exp_addr_normalize]
 
 (* ****** ****** *)
 
-fun s2exp_prenexing
-  (isexi: bool, s2e0: s2exp,
-   s2vs_r: &s2varlst, s2ps_r: &s2explst, flag: &int): s2exp = let
+fun s2exp_prenexing (
+  isexi: bool, s2e0: s2exp
+, s2vs_r: &s2varlst, s2ps_r: &s2explst
+, flag: &int
+) : s2exp = let
   val s2e0 = s2exp_whnf s2e0 in case+ s2e0.s2exp_node of
     | S2Eapp (s2e_fun, s2es_arg) => begin
         if s2cstref_exp_equ (At_viewt0ype_addr_view, s2e_fun) then

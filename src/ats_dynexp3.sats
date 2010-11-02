@@ -425,8 +425,6 @@ fun d3exp_typ_set (d3e: d3exp, s2e: s2exp): void
 fun d3explst_typ_get {n:nat} (d3es: d3explst n): s2explst n
 fun labd3explst_typ_get (ld3es: labd3explst): labs2explst
 
-fun d3explstlst_ind_get (d3ess: d3explstlst): s2explstlst
-
 (* ****** ****** *)
 
 fun fprint_d3exp {m:file_mode}

@@ -77,69 +77,6 @@ staload "ats_trans3.sats"
 
 (* ****** ****** *)
 
-extern val "FLOATKINDfloat" = $Syn.FLOATKINDfloat ()
-extern val "FLOATKINDdouble" = $Syn.FLOATKINDdouble ()
-extern val "FLOATKINDdouble_long" = $Syn.FLOATKINDdouble_long ()
-extern val "FLOATKINDnone" = $Syn.FLOATKINDnone ()
-
-extern val "INTKINDint" = $Syn.INTKINDint ()
-extern val "INTKINDuint" = $Syn.INTKINDuint ()
-extern val "INTKINDlint" = $Syn.INTKINDlint ()
-extern val "INTKINDulint" = $Syn.INTKINDulint ()
-extern val "INTKINDllint" = $Syn.INTKINDllint ()
-extern val "INTKINDullint" = $Syn.INTKINDullint ()
-extern val "INTKINDnone" = $Syn.INTKINDnone ()
-
-%{$
-
-ats_ptr_type
-ats_trans3_floatkind_eval (ats_ptr_type s0) {
-  char *s ;
-
-  s = s0 ; while (*s) { ++s ; } ; --s ;
-  switch (*s) {
-    case 'f': case 'F': return FLOATKINDfloat ;
-    case 'd': case 'D': return FLOATKINDdouble ;
-    case 'l': case 'L': return FLOATKINDdouble_long ;
-    default : ;
-  }
-  return FLOATKINDnone ;
-} // end of [ats_trans3_floatkind_eval]
-
-ats_ptr_type
-ats_trans3_intkind_eval (ats_ptr_type s0) {
-  char c, *s ; int nL, nU ;
-  s = s0 ; nL = 0 ; nU = 0 ;
-  while (c = *s) {
-    s += 1 ; switch (c) {
-      case 'l': case 'L': ++nL ; break ;
-      case 'u': case 'U': ++nU ; break ;
-      default : break ;
-    } // end of [switch]
-  } /* end of [while] */
-//
-  if (nL == 0) {
-    if (nU == 0) return INTKINDint ; /* deadcode */
-    if (nU == 1) return INTKINDuint ; /* unsigned */
-  } // end of [if]
-//
-  if (nL == 1) {
-    if (nU == 0) return INTKINDlint ; /* long */
-    if (nU == 1) return INTKINDulint ; /* unsigned long */
-  } // end of [if]
-//
-  if (nL == 2) {
-    if (nU == 0) return INTKINDllint ; /* long long */
-    if (nU == 1) return INTKINDullint ; /* unsigned long long */
-  } // end of [if]
-//
-  return INTKINDnone ;
-} // end of [ats_trans3_intkind_eval]
-
-%} // end of [%{$]
-
-(* ****** ****** *)
-
 overload prerr with $Loc.prerr_location
 
 (* ****** ****** *)
@@ -156,156 +93,7 @@ end // end of [prerr_loc_interror]
 
 (* ****** ****** *)
 
-typedef funclo =  $Syn.funclo
-
-fn d2exp_funclo_of_d2exp
-  (d2e0: d2exp, fc0: &funclo): d2exp = begin
-  case+ :(fc0: funclo) => d2e0.d2exp_node of
-  | D2Eann_funclo (d2e, fc) => (fc0 := fc; d2e) | _ => d2e0
-end // end of [d2exp_funclo_of_d2exp]
-
-//
-
-fn s2eff_of_d2exp (d2e0: d2exp): s2eff =
-  case+ d2e0.d2exp_node of
-  | D2Eann_seff (_, s2fe) => s2fe
-  | D2Elam_dyn _ => S2EFFnil ()
-  | D2Elaminit_dyn _ => S2EFFnil ()
-  | D2Elam_sta _ => S2EFFnil ()
-  | _ => S2EFFall ()
-// end of [s2eff_of_d2exp]
-
-//
-
-fn d2exp_s2eff_of_d2exp
-  (d2e0: d2exp, s2fe0: &(s2eff?) >> s2eff): d2exp =
-  case+ :(s2fe0: s2eff) => d2e0.d2exp_node of
-  | D2Eann_seff (d2e, s2fe) => (s2fe0 := s2fe; d2e)
-  | D2Elam_dyn _ => (s2fe0 := S2EFFnil (); d2e0)
-  | D2Elaminit_dyn _ => (s2fe0 := S2EFFnil (); d2e0)
-  | D2Elam_sta _ => (s2fe0 := S2EFFnil (); d2e0)
-  | _ => (s2fe0 := S2EFFall (); d2e0)
-// end of [d2exp_s2eff_of_d2exp]
-
-(* ****** ****** *)
-
-fn d2exp_arg_body_typ_syn (
-    d2e0: d2exp
-  , fc0: $Syn.funclo
-  , lin: int, npf: int
-  , p2ts_arg: p2atlst, d2e_body: d2exp
-  ) : s2exp = let
-(*
-  val () = begin
-    print "d2exp_arg_body_typ_syn: d2e_body = "; print d2e_body;
-    print_newline ()
-  end // end of [val]
-*)
-  val loc0 = d2e0.d2exp_loc
-  var fc: $Syn.funclo = fc0
-  val s2es_arg = p2atlst_typ_syn p2ts_arg
-  val s2e_res = d2exp_typ_syn (d2e_body)
-  val d2e_body = d2exp_funclo_of_d2exp (d2e_body, fc)
-  val s2fe = s2eff_of_d2exp d2e_body
-  val isprf = s2exp_is_proof s2e_res
-  val islin = (if lin > 0 then true else false): bool
-  val s2t_fun: s2rt = s2rt_prf_lin_fc (loc0, isprf, islin, fc)
-  val s2e_fun = s2exp_fun_srt
-    (s2t_fun, fc, lin, s2fe, npf, s2es_arg, s2e_res)
-  // end of [val]
-(*
-  val () = begin
-    print "d2exp_arg_body_typ_syn: s2e_fun = "; print s2e_fun;
-    print_newline ()
-  end // end of [val]
-*)
-in
-  s2e_fun
-end // end of [d2exp_arg_body_typ_syn]
-
-fn d2exp_cstsp_typ_syn
-  (cst: $Syn.cstsp): s2exp = case+ cst of
-  | $Syn.CSTSPfilename () => s2exp_string_type ()
-  | $Syn.CSTSPlocation () => s2exp_string_type ()
-// end of [d2exp_cstsp_typ_syn]
-
-fn d2exp_seq_typ_syn
-  (d2es: d2explst): s2exp = let
-  fun aux (d2e: d2exp, d2es: d2explst): s2exp = case+ d2es of
-    | cons (d2e, d2es) => aux (d2e, d2es) | nil () => d2exp_typ_syn d2e
-  // end of [aux]
-in
-  case+ d2es of
-  | cons (d2e, d2es) => aux (d2e, d2es) | nil () => s2exp_void_t0ype ()
-end // end of [d2exp_seq_typ_syn]
-
-implement
-d2exp_typ_syn (d2e0) = begin
-  case+ d2e0.d2exp_node of
-  | D2Eann_type (_, s2e) => s2e
-  | D2Eann_seff (d2e, _) => d2exp_typ_syn (d2e)
-  | D2Eann_funclo (d2e, _) => d2exp_typ_syn (d2e)
-  | D2Eassgn _ => s2exp_void_t0ype ()
-  | D2Echar _ => s2exp_char_t0ype ()
-  | D2Ecst d2c => d2cst_typ_get d2c
-  | D2Ecstsp cst => d2exp_cstsp_typ_syn (cst)
-  | D2Eeffmask (_, d2e) => d2exp_typ_syn (d2e)
-  | D2Eempty () => s2exp_void_t0ype ()
-  | D2Efix (_, _, d2e) => d2exp_typ_syn (d2e)
-  | D2Efloat _ => s2exp_double_t0ype ()
-  | D2Efor _ => s2exp_void_t0ype ()
-  | D2Eint _ => s2exp_int_t0ype ()
-  | D2Elam_dyn (lin, npf, p2ts_arg, d2e_body) => let
-      val fc0: funclo = $Syn.FUNCLOfun () // default
-    in
-      d2exp_arg_body_typ_syn (d2e0, fc0, lin, npf, p2ts_arg, d2e_body)
-    end // end of [D2Elam_dyn]
-  | D2Elaminit_dyn (lin, npf, p2ts_arg, d2e_body) => let
-      val fc: funclo = $Syn.FUNCLOclo 0(*unboxed*) // default
-    in
-      d2exp_arg_body_typ_syn (d2e0, fc, lin, npf, p2ts_arg, d2e_body)
-    end // end of [D2Elaminit_dyn]
-  | D2Elam_met (r_d2vs, s2es_met, d2e) => begin
-    case+ !r_d2vs of
-    | list_cons _ => begin
-        s2exp_metfn (None (), s2es_met, d2exp_typ_syn d2e)
-      end // end of [list_cons]
-    | list_nil () => begin
-        prerr_loc_error3 d2e0.d2exp_loc;
-        prerr ": illegal use of termination metric.";
-        prerr_newline ();
-        $Err.abort {s2exp} ()
-      end (* end of [list_nil] *)
-    end // end of [D2Elam_met]
-  | D2Elam_sta (s2vs, s2ps, d2e) => begin
-      s2exp_uni (s2vs, s2ps, d2exp_typ_syn d2e)
-    end // end of [D2Elam_sta]
-  | D2Elet (_, d2e) => d2exp_typ_syn (d2e)
-  | D2Estring (_(*str*), _(*len*)) => s2exp_string_type ()
-  | D2Ewhere (d2e, _) => d2exp_typ_syn (d2e)
-  | D2Ewhile _ => s2exp_void_t0ype ()
-  | _ => s2e where {
-      val s2e = s2exp_Var_make_srt (d2e0.d2exp_loc, s2rt_t0ype)
-      val () = d2exp_typ_set (d2e0, Some s2e)
-    } // end of [_]
-end // end of [d2exp_typ_syn]
-
-(* ****** ****** *)
-
-implement
-d3exp_open_and_add (d3e) = let
-  val s2e = s2exp_opnexi_and_add (d3e.d3exp_loc, d3e.d3exp_typ)
-in
-  d3exp_typ_set (d3e, s2e)
-end // end of [d3exp_open_and_add]
-
-implement
-d3explst_open_and_add (d3es) = case+ d3es of
-  | list_cons (d3e, d3es) => begin
-      d3exp_open_and_add d3e; d3explst_open_and_add d3es 
-    end // end of [list_cons]
-  | list_nil () => ()
-// end of [d3explst_open_and_add]
+// typedef funclo =  $Syn.funclo // declared in [ats_trans3.sats]
 
 (* ****** ****** *)
 
@@ -352,7 +140,9 @@ fun s2lab0lst_of_d3lab0lst {n:nat} .<n>.
 end // end of [s2lab0lst_of_d3lab0lst]
 
 (*
-
+//
+// HX-2010-11-01: why is this commented out?
+//
 fun s2lab1lst_of_d3lab1lst {n:nat} .<n>.
   (d3ls: list (d3lab1, n)): list (s2lab, n) = begin
   case+ d3ls of
