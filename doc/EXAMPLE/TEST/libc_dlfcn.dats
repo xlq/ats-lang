@@ -22,13 +22,13 @@ fun ftrig_get {l:addr} .<>. (
   ) : ftrig_t = let
   val (fpf_msg | msg) = dlerror () // clearing any existing error
   prval () = fpf_msg (msg)
-  val _ftrig = dlsym (pf_lib | p_lib, name)
+  val ftrig = dlsym (pf_lib | p_lib, name)
   val (fpf_msg | msg) = dlerror () // see if there is any error
   val p_msg = ptr_of_strptr (msg)
   prval () = fpf_msg (msg)
   val () = assert_errmsg (p_msg = null, #LOCATION)
 in
-  __cast (_ftrig) where { extern castfn __cast (x: ptr):<> ftrig_t }
+  __cast (ftrig) where { extern castfn __cast (x: ptr):<> ftrig_t }
 end // end of [ftrig_get]
 
 (* ****** ****** *)
