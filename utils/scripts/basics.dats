@@ -138,6 +138,8 @@ end // end of [ATSHOME_get]
 
 end // end of [local]
 
+(* ****** ****** *)
+
 implement ATSHOME_dir = let
   val ATSHOME = ATSHOME_get ()
   val n = string_length ATSHOME
