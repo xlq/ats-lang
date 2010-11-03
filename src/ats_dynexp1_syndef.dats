@@ -82,7 +82,9 @@ fun atsyndef_search_all_default
 
 (* ****** ****** *)
 
-#define _SYNDEFATS
+(*
+// HX: compile with the -DATS_SYNDEFATS flag
+*)
 #if defined(_SYNDEFATS) #then
 //
 local
