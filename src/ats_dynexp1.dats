@@ -267,6 +267,13 @@ d1exp_arrsub (loc, d1e_arr, loc_ind, d1ess_ind) = '{
 
 (* ****** ****** *)
 
+implement
+d1exp_bool (loc, tf) = '{
+  d1exp_loc= loc, d1exp_node= D1Ebool (tf)
+} // end of [d1exp_bool]
+
+(* ****** ****** *)
+
 implement d1exp_caseof
   (loc, casknd, inv, d1es, c1ls) = let
   // empty
@@ -292,19 +299,23 @@ d1exp_decseq (loc, d1cs) = '{
   d1exp_loc= loc, d1exp_node= D1Edecseq (d1cs)
 } // end of [d1exp_decseq]
 
-implement d1exp_dynload (loc, fil) = '{
+implement
+d1exp_dynload (loc, fil) = '{
   d1exp_loc= loc, d1exp_node= D1Edynload (fil)
 }
 
-implement d1exp_effmask (loc, effs, d1e) = '{
+implement
+d1exp_effmask (loc, effs, d1e) = '{
  d1exp_loc= loc, d1exp_node= D1Eeffmask (effs, d1e)
 }
 
-implement d1exp_empty (loc) = '{
+implement
+d1exp_empty (loc) = '{
   d1exp_loc= loc, d1exp_node= D1Eempty ()
 }
 
-implement d1exp_exist (loc, s1a, d1e) = '{
+implement
+d1exp_exist (loc, s1a, d1e) = '{
   d1exp_loc= loc, d1exp_node= D1Eexist (s1a, d1e)
 }
 
@@ -337,63 +348,82 @@ implement d1exp_freeat (loc, s1as, d1e) = '{
   d1exp_loc= loc, d1exp_node= D1Efreeat (s1as, d1e)
 }
 
-implement d1exp_ide (loc, id) = '{
+(* ****** ****** *)
+
+implement
+d1exp_ide (loc, id) = '{
   d1exp_loc= loc, d1exp_node= D1Eqid (d0ynq_none, id)
-}
+} // end of [d1exp_ide]
 
-implement d1exp_idext (loc, id) = '{
-  d1exp_loc= loc, d1exp_node= D1Eidext (id) // for syndef
-}
+implement
+d1exp_idextapp
+  (loc, id, ns, d1es) = '{ // for syndef
+  d1exp_loc= loc, d1exp_node= D1Eidextapp (id, ns, d1es)
+} // end of [d1exp_idextapp]
 
-implement d1exp_if
-  (loc, inv, d1e_cond, d1e_then, od1e_else) = let
-  // empty
+(* ****** ****** *)
+
+implement d1exp_if (
+  loc, inv, d1e_cond, d1e_then, od1e_else
+) = let
 in '{
   d1exp_loc= loc,
   d1exp_node = D1Eif (inv, d1e_cond, d1e_then, od1e_else)
 } end // end of [d1exp_if]
 
-implement d1exp_int (loc, str) = '{
+(* ****** ****** *)
+
+implement
+d1exp_int (loc, str) = '{
   d1exp_loc= loc, d1exp_node= D1Eint (str)
 }
 
-implement d1exp_intsp (loc, str) = '{
+implement
+d1exp_intsp (loc, str) = '{
   d1exp_loc= loc, d1exp_node= D1Eintsp (str)
 }
 
 (* ****** ****** *)
 
-implement d1exp_lam_dyn (loc, lin, p1t, d1e) = '{
+implement
+d1exp_lam_dyn (loc, lin, p1t, d1e) = '{
   d1exp_loc= loc, d1exp_node= D1Elam_dyn (lin, p1t, d1e)
 } // end of [d1exp_lam_dyn]
 
-implement d1exp_laminit_dyn (loc, lin, p1t, d1e) = '{
+implement
+d1exp_laminit_dyn (loc, lin, p1t, d1e) = '{
   d1exp_loc= loc, d1exp_node= D1Elaminit_dyn (lin, p1t, d1e)
 } // end of [d1exp_laminit_dyn]
 
 (* ****** ****** *)
 
-implement d1exp_lam_met (loc, loc_arg, s1es, d1e) = '{
+implement
+d1exp_lam_met (loc, loc_arg, s1es, d1e) = '{
   d1exp_loc= loc, d1exp_node= D1Elam_met (loc_arg, s1es, d1e)
 }
 
-implement d1exp_lam_sta_ana (loc, loc_arg, s1as, d1e) = '{
+implement
+d1exp_lam_sta_ana (loc, loc_arg, s1as, d1e) = '{
   d1exp_loc= loc, d1exp_node= D1Elam_sta_ana (loc_arg, s1as, d1e)
 }
 
-implement d1exp_lam_sta_syn (loc, loc_arg, s1qs, d1e) = '{
+implement
+d1exp_lam_sta_syn (loc, loc_arg, s1qs, d1e) = '{
   d1exp_loc= loc, d1exp_node= D1Elam_sta_syn (loc_arg, s1qs, d1e)
 }
 
 (* ****** ****** *)
 
-implement d1exp_lazy_delay (loc, lin, d1e) = '{
+implement
+d1exp_lazy_delay (loc, lin, d1e) = '{
   d1exp_loc= loc, d1exp_node= D1Elazy_delay (lin, d1e)
 }
 
 implement d1exp_let (loc, d1cs, d1e) = '{
   d1exp_loc= loc, d1exp_node= D1Elet (d1cs, d1e)
 }
+
+(* ****** ****** *)
 
 implement d1exp_list
   (loc, d1es) = case+ d1es of
@@ -416,6 +446,8 @@ implement d1exp_list2
 in '{
   d1exp_loc= loc, d1exp_node= D1Elist (npf, d1es)
 } end // end of [d1exp_list2]
+
+(* ****** ****** *)
 
 implement d1exp_loopexn (loc, i) = '{
   d1exp_loc= loc, d1exp_node= D1Eloopexn (i)
@@ -489,11 +521,13 @@ implement d1exp_trywith (loc, res, d1e, c1ls) = '{
   d1exp_loc= loc, d1exp_node= D1Etrywith (res, d1e, c1ls)
 }
 
-implement d1exp_tup (loc, tupknd, d1es) = '{
+implement
+d1exp_tup (loc, tupknd, d1es) = '{
   d1exp_loc= loc, d1exp_node= D1Etup (tupknd, 0, d1es)
 }
 
-implement d1exp_tup2
+implement
+d1exp_tup2
   (loc, tupknd, d1es1, d1es2) = let
   val npf = $Lst.list_length d1es1
   val d1es = $Lst.list_append (d1es1, d1es2)
@@ -501,22 +535,26 @@ in '{
   d1exp_loc= loc, d1exp_node= D1Etup (tupknd, npf, d1es)
 } end // end of [d1exp_tup2]
 
-implement d1exp_viewat (loc, d1e) = '{
+implement
+d1exp_viewat (loc, d1e) = '{
   d1exp_loc= loc, d1exp_node= D1Eviewat (d1e)
-}
+} // end of [d1exp_viewat]
 
-implement d1exp_where (loc, d1e, d1cs) = '{
+implement
+d1exp_where (loc, d1e, d1cs) = '{
   d1exp_loc= loc, d1exp_node= D1Ewhere (d1e, d1cs)
-}
+} // end of [d1exp_where]
 
-implement d1exp_while (loc, inv, test, body) = '{
+implement
+d1exp_while (loc, inv, test, body) = '{
   d1exp_loc= loc, d1exp_node= D1Ewhile (inv, test, body)
-}
+} // end of [d1exp_while]
 
 (* ****** ****** *)
 
 implement
 d1exp_make_e1xp (loc, e0) = let
+//
   fun aux (e0: e1xp):<cloptr1> d1exp = case+ e0.e1xp_node of
     | E1XPapp (e1, loc_arg, es2) => begin
         d1exp_app_dyn (loc, aux e1, loc_arg, 0(*npf*), auxlst es2)
@@ -533,13 +571,16 @@ d1exp_make_e1xp (loc, e0) = let
         $Err.abort ()
       end // end of [E1XPundef]
   // end of [aux]
-
+//
   and auxlst (es0: e1xplst)
     :<cloptr1> d1explst = case+ es0 of
     | cons (e, es) => cons (aux e, auxlst es) | nil () => nil ()
   // end of [auxlst]
+//
 in
+//
   aux (e0)
+//
 end // end of [d1exp_make_e1xp]
 
 (* ****** ****** *)
@@ -584,23 +625,39 @@ implement sc1lau_make (loc, sp1t, body) = '{
 
 (* ****** ****** *)
 
-implement i1nvarg_make (loc, id, os1e) = '{
+implement
+i1nvarg_make (
+  loc, id, os1e
+) = '{
   i1nvarg_loc= loc
 , i1nvarg_sym= id
 , i1nvarg_typ= os1e
 } // end of [i1nvarg_make]
 
-implement i1nvresstate_make (s1qs, arg) = '{
+implement
+i1nvresstate_make (s1qs, arg) = '{
   i1nvresstate_qua= s1qs, i1nvresstate_arg= arg
 }
 
-implement loopi1nv_make (loc, qua, met, arg, res) = '{
+implement i1nvresstate_nil =
+  i1nvresstate_make (list_nil (), list_nil ())
+// end of [i1nvresstate_nil]
+
+implement
+loopi1nv_make (
+  loc, qua, met, arg, res
+) = '{
   loopi1nv_loc= loc
 , loopi1nv_qua= qua
 , loopi1nv_met= met
 , loopi1nv_arg= arg
 , loopi1nv_res= res
 } // end of [loopi1nv_make]
+
+implement
+loopi1nv_nil (loc0) = begin
+  loopi1nv_make (loc0, nil (), None (), nil (), i1nvresstate_nil)
+end // end of [loopi1nv_nil]
 
 (* ****** ****** *)
 

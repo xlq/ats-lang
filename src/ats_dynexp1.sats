@@ -53,6 +53,8 @@ staload "ats_staexp1.sats"
 
 (* ****** ****** *)
 
+typedef intlst = List (int)
+
 typedef fil_t = $Fil.filename_t
 typedef lab_t = $Lab.label_t
 typedef loc_t = $Loc.location_t
@@ -274,6 +276,7 @@ and d1exp_node =
       (s1expopt (*element type*), d1explst (*elements*))
   | D1Earrsub of (* array subscription *)
       (d1exp, loc_t(*ind*), d1explstlst)
+  | D1Ebool of bool // boolean constant
   | D1Ecaseof of (* dynamic caseof-expression *)
       (int(*kind*), i1nvresstate, d1explst, c1laulst)
   | D1Echar of char // dynamic character
@@ -308,8 +311,8 @@ and d1exp_node =
     ) // end of [D1Efor]
   | D1Efreeat of (* free at a given address *)
       (s1exparglst, d1exp)
-  | D1Eidext of (* external identifier for syndef *)
-      sym_t
+  | D1Eidextapp of (* idext application for syndef *)
+      (sym_t, intlst(*ns*), d1explst) // ns: arity list
   | D1Eif of (* conditional dynamic expression *)
       (i1nvresstate, d1exp, d1exp, d1expopt)
   | D1Eint of (* dynamic integer constant *)
@@ -709,6 +712,10 @@ fun d1exp_arrsub
 
 (* ****** ****** *)
 
+fun d1exp_bool (loc: loc_t, tf: bool): d1exp
+
+(* ****** ****** *)
+
 fun d1exp_caseof (
   _: loc_t, k: int, res: i1nvresstate, d1es: d1explst, c1ls: c1laulst
 ) : d1exp // end of [d1exp_caseof]
@@ -753,8 +760,14 @@ fun d1exp_for (
 
 fun d1exp_freeat (_: loc_t, _: s1exparglst, _: d1exp): d1exp
 
+(* ****** ****** *)
+
 fun d1exp_ide (_: loc_t, _: sym_t): d1exp
-fun d1exp_idext (_: loc_t, _: sym_t): d1exp
+fun d1exp_idextapp (
+  _: loc_t, _: sym_t, ns: intlst, d1es: d1explst
+) : d1exp // end of [d1exp_idextapp]
+
+(* ****** ****** *)
 
 fun d1exp_if (
   loc: loc_t
@@ -871,10 +884,13 @@ fun i1nvarg_make
   (_: loc_t, id: sym_t, os1e: s1expopt): i1nvarg
 
 fun i1nvresstate_make (s1qs: s1qualst, arg: i1nvarglst): i1nvresstate
+val i1nvresstate_nil: i1nvresstate
 
-fun loopi1nv_make
-  (_: loc_t, _: s1qualst, met: s1explstopt, _: i1nvarglst, _: i1nvresstate)
-  : loopi1nv
+fun loopi1nv_make (
+  _: loc_t, _: s1qualst, met: s1explstopt, _: i1nvarglst, _: i1nvresstate
+) : loopi1nv // end of [loopi1nv_make]
+
+fun loopi1nv_nil (loc0: loc_t): loopi1nv
 
 (* ****** ****** *)
 

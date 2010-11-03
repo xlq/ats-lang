@@ -47,6 +47,7 @@ staload Glo = "ats_global.sats"
 staload Lab = "ats_label.sats"
 staload Lex = "ats_lexer.sats"
 staload Loc = "ats_location.sats"
+typedef loc_t = $Loc.location_t
 staload Sym = "ats_symbol.sats"
 
 (* ****** ****** *)
@@ -68,7 +69,6 @@ staload "ats_syntax.sats"
 
 (* ****** ****** *)
 
-typedef loc_t = $Loc.location_t
 val combine = $Loc.location_combine
 
 (* ****** ****** *)
@@ -77,7 +77,8 @@ overload = with $Sym.eq_symbol_symbol
 
 (* ****** ****** *)
 
-fn prerr_loc_error0 (loc: loc_t): void =
+fn prerr_loc_error0
+  (loc: loc_t): void =
   ($Loc.prerr_location loc; prerr ": error(0)")
 // end of [prerr_loc_error0]
 
@@ -293,31 +294,24 @@ in '{
 
 implement i0de_make_ampersand (tok) =
   '{ i0de_loc= tok.t0kn_loc, i0de_sym= $Sym.symbol_AMPERSAND }
-// end of [i0de_make_ampersand]
 implement i0de_make_backslash (tok) =
   '{ i0de_loc= tok.t0kn_loc, i0de_sym= $Sym.symbol_BACKSLASH }
-// end of [i0de_make_backslash]
 implement i0de_make_bang (tok) =
   '{ i0de_loc= tok.t0kn_loc, i0de_sym= $Sym.symbol_BANG }
-// end of [i0de_make_bang]
 implement i0de_make_eq (tok) =
   '{ i0de_loc= tok.t0kn_loc, i0de_sym= $Sym.symbol_EQ }
-// end of [i0de_make_eq]
 implement i0de_make_gt (tok) =
   '{ i0de_loc= tok.t0kn_loc, i0de_sym= $Sym.symbol_GT }
-// end of [i0de_make_gt]
 implement i0de_make_lt (tok) =
   '{ i0de_loc= tok.t0kn_loc, i0de_sym= $Sym.symbol_LT }
-// end of [i0de_make_lt]
 implement i0de_make_minusgt (tok) =
   '{ i0de_loc= tok.t0kn_loc, i0de_sym= $Sym.symbol_MINUSGT }
-// end of [i0de_make_minusgt]
 implement i0de_make_minusltgt (tok) =
   '{ i0de_loc= tok.t0kn_loc, i0de_sym= $Sym.symbol_MINUSLTGT }
-// end of [i0de_make_minusltgt]
+implement i0de_make_r0ead (tok) =
+  '{ i0de_loc= tok.t0kn_loc, i0de_sym= $Sym.symbol_R0EAD }
 implement i0de_make_tilda (tok) =
   '{ i0de_loc= tok.t0kn_loc, i0de_sym= $Sym.symbol_TILDA }
-// end of [i0de_make_tilda]
 
 implement i0de_make_t0ype (tok) =
   '{ i0de_loc= tok.t0kn_loc, i0de_sym= $Sym.symbol_T0YPE }
@@ -325,15 +319,6 @@ implement i0de_make_t0ype (tok) =
 implement i0de_make_viewt0ype (tok) =
   '{ i0de_loc= tok.t0kn_loc, i0de_sym= $Sym.symbol_VIEWT0YPE }
 // end of [i0de_make_viewt0ype]
-
-implement i0de_make_for (tok) =
-  '{ i0de_loc= tok.t0kn_loc, i0de_sym= $Sym.symbol_FOR }
-implement i0de_make_in (tok) =
-  '{ i0de_loc= tok.t0kn_loc, i0de_sym= $Sym.symbol_IN }
-implement i0de_make_r0ead (tok) =
-  '{ i0de_loc= tok.t0kn_loc, i0de_sym= $Sym.symbol_R0EAD }
-implement i0de_make_while (tok) =
-  '{ i0de_loc= tok.t0kn_loc, i0de_sym= $Sym.symbol_WHILE }
 
 implement
 i0de_make_lrbrackets (t_l, t_r) = let
@@ -351,12 +336,12 @@ implement i0delstlst_cons (x, xs) = cons (x, xs)
 
 (* ****** ****** *)
 
-implement i0dext_make
-  (t_beg, ide, t_end) = let
-  val loc = combine (t_beg.t0kn_loc, t_end.t0kn_loc)
-in '{
-  i0de_loc= loc, i0de_sym= ide.i0de_sym
-} end // end of [i0dext_make]
+implement i0dext_make_for (tok) =
+  '{ i0de_loc= tok.t0kn_loc, i0de_sym= $Sym.symbol_FOR }
+implement i0dext_make_in (tok) =
+  '{ i0de_loc= tok.t0kn_loc, i0de_sym= $Sym.symbol_IN }
+implement i0dext_make_while (tok) =
+  '{ i0de_loc= tok.t0kn_loc, i0de_sym= $Sym.symbol_WHILE }
 
 (* ****** ****** *)
 
@@ -1984,16 +1969,19 @@ in
 end (* end of [d0exp_ide] *)
 
 implement
-d0exp_idext (id) = let
-  val sym_id = id.i0de_sym
+d0exp_idext
+  (t_beg, ide, t_end) = let
+  val loc = combine
+    (t_beg.t0kn_loc, t_end.t0kn_loc)
 in '{
-  d0exp_loc= id.i0de_loc, d0exp_node= D0Eidext sym_id
-} end (* end of [d0exp_ide] *)
+  d0exp_loc= loc, d0exp_node= D0Eidext (ide.i0de_sym)
+} end // end of [d0exp_i0dext]
 
 (* ****** ****** *)
 
 implement
-d0exp_if_none (hd, d0e_cond, d0e_then) = let
+d0exp_if_none
+  (hd, d0e_cond, d0e_then) = let
   val t_if = hd.ifhead_tok
   val loc = combine (t_if.t0kn_loc, d0e_then.d0exp_loc)
 in '{
@@ -2001,7 +1989,9 @@ in '{
 } end // end of [d0exp_if_none]
 
 implement
-d0exp_if_some (hd, d0e_cond, d0e_then, d0e_else) = let
+d0exp_if_some (
+  hd, d0e_cond, d0e_then, d0e_else
+) = let
   val t_if = hd.ifhead_tok
   val loc = combine (t_if.t0kn_loc, d0e_else.d0exp_loc)
 in '{

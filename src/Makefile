@@ -119,6 +119,7 @@ SOURCES := \
   ats_dynexp1.sats ats_dynexp1.dats ats_dynexp1_print.dats \
   ats_trans1_env.sats ats_trans1_env.dats \
   ats_e1xp_eval.sats ats_e1xp_eval.dats \
+  ats_syndef.sats ats_syndef.dats \
   ats_trans1.sats ats_trans1_sta.dats ats_trans1_dyn.dats \
   ats_staexp2.sats ats_staexp2.dats \
   ats_staexp2_print.dats \
@@ -187,6 +188,8 @@ OBJECTS := $(patsubst %.sats, %_sats.o, $(OBJECTS))
 OBJECTS := $(patsubst %.lats, %_lats_dats.o, $(OBJECTS))
 OBJECTS := $(patsubst %.dats, %_dats.o, $(OBJECTS))
 
+ATSYNDEF :=  $(ATSHOME)/utils/syndef/atsyndef.o
+
 ######
 
 LIBOBJS := -lgmp
@@ -198,7 +201,8 @@ atsopt: \
   ats_lexer_lats_dats.o ats_lexer_sats.o \
   ats_grammar_yats.o \
   libc_sats.o libats_lex.o \
-  $(OBJECTS)
+  $(OBJECTS) \
+  $(ATSYNDEF)
 	$(ATSCC) $(GCFLAGS) $(ATSCCFLAGS) \
   -o atsopt \
   ats_main_dats.o \
@@ -206,6 +210,7 @@ atsopt: \
   ats_grammar_yats.o \
   libc_sats.o libats_lex.o \
   $(OBJECTS) \
+  $(ATSYNDEF) \
   $(LIBOBJS)
 
 ######

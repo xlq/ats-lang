@@ -30,10 +30,10 @@
 */
 
 /* ****** ****** */
-
+//
 // Author: Hongwei Xi (hwxi AT cs DOT bu DOT edu)
 // July 2007
-
+//
 /* ****** ****** */
 
 /*
@@ -159,16 +159,18 @@ extern i0de_t i0de_make_tilda (t0kn_t) ;
 extern i0de_t i0de_make_t0ype (t0kn_t) ;
 extern i0de_t i0de_make_viewt0ype (t0kn_t) ;
 
-extern i0de_t i0de_make_for (t0kn_t) ;
-extern i0de_t i0de_make_in (t0kn_t) ;
-extern i0de_t i0de_make_while (t0kn_t) ;
-
 extern i0delst_t i0delst_nil (void) ;
 extern i0delst_t i0delst_sing (i0de_t) ;
 extern i0delst_t i0delst_cons (i0de_t, i0delst_t) ;
 
 extern i0delstlst_t i0delstlst_nil (void) ;
 extern i0delstlst_t i0delstlst_cons (i0delst_t, i0delstlst_t) ;
+
+//
+
+extern i0de_t i0dext_make_for (t0kn_t) ;
+extern i0de_t i0dext_make_in (t0kn_t) ;
+extern i0de_t i0dext_make_while (t0kn_t) ;
 
 //
 
@@ -730,7 +732,7 @@ extern d0exp_t d0exp_for_itp (loophead_t, initestpost_t, d0exp_t) ;
 extern d0exp_t d0exp_freeat (t0kn_t, d0explst_t) ;
 
 extern d0exp_t d0exp_ide (i0de_t) ;
-extern d0exp_t d0exp_idext (i0de_t) ;
+extern d0exp_t d0exp_idext (t0kn_t, i0de_t, t0kn_t) ;
 
 extern d0exp_t d0exp_if_none (ifhead_t, d0exp_t, d0exp_t) ;
 extern d0exp_t d0exp_if_some (ifhead_t, d0exp_t, d0exp_t, d0exp_t) ;
@@ -1906,10 +1908,6 @@ i0de /* identifier */
   | MINUSGT                             { $$ = i0de_make_minusgt($1) ; }
   | MINUSLTGT                           { $$ = i0de_make_minusltgt($1) ; }
   | TILDA                               { $$ = i0de_make_tilda($1) ; }
-/* keyword */
-  | FOR                                 { $$ = i0de_make_for($1) ; }
-  | IN                                  { $$ = i0de_make_in($1) ; }
-  | WHILE                               { $$ = i0de_make_while($1) ; }
 ;
 
 i0de_dlr /* identifier beginning with $ */
@@ -1927,7 +1925,12 @@ i0deseq /* identifier sequence */
 
 /* ****** ****** */
 
-i0dext : BACKQUOTE i0de BACKQUOTE       { $$ = i0dext_make($1, $2, $3) ; }
+i0dext
+  : i0de                                { $$ = $1 ; }
+/* keyword */
+  | FOR                                 { $$ = i0dext_make_for($1) ; }
+  | IN                                  { $$ = i0dext_make_in($1) ; }
+  | WHILE                               { $$ = i0dext_make_while($1) ; }
 
 /* ****** ****** */
 
@@ -2801,7 +2804,7 @@ atmd0exp
   | OP di0de                            { $$ = d0exp_opide($1, $2) ; }
   | d0ynq i0de                          { $$ = d0exp_qid($1, $2) ; }
 
-  | i0dext                              { $$ = d0exp_idext($1) ; }
+  | BACKQUOTE i0dext BACKQUOTE          { $$ = d0exp_idext($1, $2, $3) ; }
 
   | AMPERSAND                           { $$ = d0exp_ptrof($1) ; }
   | BREAK                               { $$ = d0exp_loopexn(0, $1) ; }

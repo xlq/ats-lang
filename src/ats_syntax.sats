@@ -311,14 +311,10 @@ fun i0de_make_gt (t: t0kn): i0de = "i0de_make_gt"
 fun i0de_make_lt (t: t0kn): i0de = "i0de_make_lt"
 fun i0de_make_minusgt (t: t0kn): i0de = "i0de_make_minusgt"
 fun i0de_make_minusltgt (t: t0kn): i0de = "i0de_make_minusltgt"
+fun i0de_make_r0ead (t: t0kn): i0de = "i0de_make_r0ead"
 fun i0de_make_tilda (t: t0kn): i0de = "i0de_make_tilda"
 fun i0de_make_t0ype (t: t0kn): i0de = "i0de_make_t0ype"
 fun i0de_make_viewt0ype (t: t0kn): i0de = "i0de_make_viewt0ype"
-
-fun i0de_make_for (t: t0kn): i0de = "i0de_make_for"
-fun i0de_make_in (t: t0kn): i0de = "i0de_make_in"
-fun i0de_make_r0ead (t: t0kn): i0de = "i0de_make_r0ead"
-fun i0de_make_while (t: t0kn): i0de = "i0de_make_while"
 
 fun i0de_make_lrbrackets
   (t_l: t0kn, t_r: t0kn): i0de = "i0de_make_lrbrackets"
@@ -337,9 +333,9 @@ fun i0delstlst_cons
 
 typedef i0dext = i0de
 
-fun i0dext_make
-  (t_beg: t0kn, ide: i0de, t_end: t0kn): i0dext = "i0dext_make"
-// end of [i0dext_make]
+fun i0dext_make_for (t: t0kn): i0dext = "i0dext_make_for"
+fun i0dext_make_in (t: t0kn): i0dext = "i0dext_make_in"
+fun i0dext_make_while (t: t0kn): i0dext = "i0dext_make_while"
 
 (* ****** ****** *)
 
@@ -2046,7 +2042,9 @@ fun d0exp_freeat
 (* ****** ****** *)
 
 fun d0exp_ide (ide: i0de): d0exp = "d0exp_ide"
-fun d0exp_idext (idext: i0dext): d0exp = "d0exp_idext"
+fun d0exp_idext
+  (t_beg: t0kn, idext: i0dext, t_end: t0kn): d0exp = "d0exp_idext"
+// end of [d0exp_idext]
 
 (* ****** ****** *)
 

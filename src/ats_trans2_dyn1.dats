@@ -1492,6 +1492,7 @@ in
   | D1Earrsub (d1e_arr, loc_ind, d1ess_ind) => begin
       d1exp_arrsub_tr (loc0, d1e_arr, loc_ind, d1ess_ind)
     end // end of [D1Earrsub]
+  | D1Ebool tf => d2exp_bool (loc0, tf)
   | D1Echar chr => d2exp_char (loc0, chr)
   | D1Ecstsp cst => d2exp_cstsp (loc0, cst)
   | D1Ecaseof (knd, r1es, d1es, c1ls) => let
@@ -1539,7 +1540,9 @@ in
   | D1Efoldat (s1as, d1e) => begin
       d2exp_foldat (loc0, s1exparglst_tr s1as, d1exp_tr d1e)
     end // end of [D1Efoldat]
-  | D1Efor (inv, ini, test, post, body) => let
+  | D1Efor (
+      inv, ini, test, post, body
+    ) => let
       val ini = d1exp_tr ini
       val (pf_s2expenv | ()) = the_s2expenv_push ()
       val inv = loopi1nv_tr inv
@@ -1555,11 +1558,14 @@ in
   | D1Efreeat (s1as, d1e) => begin
       d2exp_freeat (loc0, s1exparglst_tr s1as, d1exp_tr d1e)
     end // end of [D1Efreeat]
-  | D1Eidext id => let
+  | D1Eidextapp (
+      id, _(*ns*), _(*d1es*)
+    ) => let
       val () = prerr_loc_error2 (loc0)
-      val () = prerr ": the external identifier `"
-      val () = prerr id
-      val () = prerr "` should have previously been resolved.\n"
+      val () = (
+        prerr ": the external id `"; prerr id; prerr "` cannot be handled."
+      ) // end of [val]
+      val () = prerr_newline ()
     in
       $Err.abort {d2exp} ()
     end // end of [D1Eidext]

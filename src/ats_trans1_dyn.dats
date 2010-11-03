@@ -30,12 +30,10 @@
 *)
 
 (* ****** ****** *)
-
 //
 // Author: Hongwei Xi (hwxi AT cs DOT bu DOT edu)
 // Time: August 2007
 //
-
 (* ****** ****** *)
 
 (* The first translation mainly resolves the issue of operator fixity *)
@@ -46,9 +44,11 @@ staload Deb = "ats_debug.sats"
 staload Eff = "ats_effect.sats"
 staload Err = "ats_error.sats"
 staload Fil = "ats_filename.sats"
+typedef fil_t = $Fil.filename_t
 staload Fix = "ats_fixity.sats"
 staload Glo = "ats_global.sats"
 staload Loc = "ats_location.sats"
+typedef loc_t = $Loc.location_t
 staload Lst = "ats_list.sats"
 staload Par = "ats_parser.sats"
 staload PM = "ats_posmark.sats"
@@ -62,6 +62,7 @@ staload "ats_staexp1.sats"
 staload "ats_dynexp1.sats"
 staload "ats_trans1_env.sats"
 staload "ats_e1xp_eval.sats"
+staload "ats_syndef.sats"
 
 (* ****** ****** *)
 
@@ -76,11 +77,6 @@ staload "ats_trans1.sats"
 #define nil list_nil
 #define cons list_cons
 #define :: list_cons
-
-(* ****** ****** *)
-
-typedef loc_t = $Loc.location_t
-typedef fil_t = $Fil.filename_t
 
 (* ****** ****** *)
 
@@ -511,19 +507,21 @@ fn f (
     (d1e1.d1exp_loc, d1e2.d1exp_loc)
   val d1e_app = begin case+ d1e2.d1exp_node of
     | D1Elist (npf, d1es) => begin
-        d1exp_app_dyn (loc, d1e1, d1e2.d1exp_loc, npf, d1es)
+        d1exp_app_dyn_syndef (loc, d1e1, d1e2.d1exp_loc, npf, d1es)
       end // end of [D1Elist]
     | D1Esexparg s1a => begin case+ d1e1.d1exp_node of
       | D1Eapp_sta (d1e1, s1as) => begin
           d1exp_app_sta (loc, d1e1, $Lst.list_extend (s1as, s1a))
         end // end of [D1Eapp_sta]
-      | _ => begin
-          d1exp_app_sta (loc, d1e1, cons (s1a, nil ()))
+      | _ => let
+          val s1as =  cons (s1a, nil ()) in d1exp_app_sta (loc, d1e1, s1as)
         end // end of [_]
       end // end of [D1Esexparg]
-    | _ => d1exp_app_dyn
-        (loc, d1e1, d1e2.d1exp_loc, 0, cons (d1e2, nil ()))
-      // end of [_]
+    | _ => let
+        val npf = 0 and d1es = cons (d1e2, nil ())
+      in
+        d1exp_app_dyn_syndef (loc, d1e1, d1e2.d1exp_loc, npf, d1es)
+      end // end of [_]
   end // end of [val]
 (*
   val () = begin
@@ -803,10 +801,6 @@ in
   i1nvresstate_make (s1qs, arg)
 end // end of [i0nvresstate_tr]
 
-val i1nvresstate_nil =
-  i1nvresstate_make (nil (), nil ())
-// end of [i1nvresstate_nil]
-
 fn loopi0nv_tr
   (loc0: loc_t, inv: loopi0nv): loopi1nv = let
   val qua = (
@@ -823,10 +817,6 @@ fn loopi0nv_tr
 in
   loopi1nv_make (loc0, qua, met, arg, res)
 end // end of [loopi0nv_tr]
-
-fun loopi1nv_nil (loc0: loc_t): loopi1nv = begin
-  loopi1nv_make (loc0, nil (), None (), nil (), i1nvresstate_nil)
-end // end of [loopi1nv_nil]
 
 (* ****** ****** *)
 
@@ -874,16 +864,17 @@ fn sc0laulst_tr (sc0ls: sc0laulst): sc1laulst =
 
 (* ****** ****** *)
 
-fn d0exp_tr_errmsg_opr
-  (loc: loc_t): d1exp = begin
-  prerr_loc_error1 loc;
-  prerr ": the operator needs to be applied";
-  prerr_newline ();
-  $Err.abort {d1exp} ()
-end // end of [d0exp_tr_errmsg_opr]
-
 implement
 d0exp_tr d0e0 = let
+//
+fn opr_errmsg
+  (d0e: d0exp): d1exp = let
+  val () = prerr_loc_error1 (d0e.d0exp_loc)
+  val () = prerr ": the operator needs to be applied"
+  val () = prerr_newline ()
+in
+  $Err.abort {d1exp} ()
+end // end of [opr_errmsg]
 //
 fun aux_item (
   d0e0: d0exp
@@ -900,6 +891,12 @@ in
   | D0Eapp _ => let 
       val d1e =
         $Fix.fixity_resolve (loc0, d1expitm_app, aux_itemlst d0e0)
+      // end of [val]
+(*
+      val () = (
+        print "d0exp_tr: aux_item: d1e = "; print_d1exp d1e; print_newline ()
+      ) // end of [val]
+*)
     in
       $Fix.ITEMatm d1e
     end // end of [D0Eapp]
@@ -1075,9 +1072,11 @@ in
   | D0Efreeat (d0es) => let
       val s1as = s0expdarglst_tr d0es
       fn f (d1e: d1exp):<cloref1> d1expitm =
-        let val loc0 = $Loc.location_combine (loc0, d1e.d1exp_loc) in
+        let val loc0 =
+          $Loc.location_combine (loc0, d1e.d1exp_loc) in
           $Fix.ITEMatm (d1exp_freeat (loc0, s1as, d1e))
-        end
+        end // end of [let]
+      // end of [f]
     in
       $Fix.ITEMopr ($Fix.OPERpre ($Fix.freeat_prec_dyn, f))
     end // end of [D0Efreeat]
@@ -1090,8 +1089,10 @@ in
       | ~Some_vt f => d1exp_make_opr (d1e, f)
       | ~None_vt () => $Fix.ITEMatm d1e
     end // end of [D0Eide]
+//
   | D0Eidext id => let
-      val d1e = d1exp_idext (loc0, id)
+      val ns = nil () and arglst = nil ()
+      val d1e = d1exp_idextapp (loc0, id, ns, arglst)
     in
       case+ the_fxtyenv_find id of
       | ~Some_vt f => d1exp_make_opr (d1e, f)
@@ -1281,9 +1282,10 @@ in
   | D0Ewhile (oinv, loc_inv, d0e_test, d0e_body) => let
       val inv = (
         case+ oinv of
-        | Some inv => loopi0nv_tr (loc_inv, inv)
+        | Some inv =>
+            loopi0nv_tr (loc_inv, inv)
         | None () => loopi1nv_nil (loc_inv)
-      ) : loopi1nv
+      ) : loopi1nv // end of [val]
       val d1e_test = d0exp_tr d0e_test
       val d1e_body = d0exp_tr d0e_body
     in
@@ -1312,9 +1314,7 @@ end // end of [aux_itemlst]
 in
   case+ aux_item d0e0 of
   | $Fix.ITEMatm d1e => d1e
-  | $Fix.ITEMopr _ => begin
-      d0exp_tr_errmsg_opr d0e0.d0exp_loc
-    end // end of [ITEMopr]
+  | $Fix.ITEMopr _ => opr_errmsg (d0e0)
 end // end of [d0exp_tr]
 
 implement

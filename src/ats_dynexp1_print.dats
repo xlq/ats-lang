@@ -287,6 +287,9 @@ in
       fprint_d1explstlst (pf | out, d1ess_ind);
       prstr ")"
     end // end of [D1Earrsub]
+  | D1Ebool (tf) => begin
+      prstr "D1Ebool("; fprint1_bool (pf | out, tf); prstr ")"
+    end // end of [D1Ebool]
   | D1Ecaseof _ => begin
       prstr "D1Ecaseof("; fprint1_string (pf | out, "..."); prstr ")"
     end // end of [D1Ecaseof]
@@ -382,24 +385,33 @@ in
       fprint_d1exp (pf | out, d1e);
       prstr ")"
     end // end of [D1Efreeat]
-  | D1Eidext (id) => (
-      prstr "`"; $Sym.fprint_symbol (pf | out, id); prstr "`"
-    ) // end of [D1Eidext]
-  | D1Eif (_(*inv*), d1e_cond, d1e_then, od1e_else) => begin
-      prstr "D1Eif(";
-      fprint1_string (pf | out, "...");
-      prstr "; ";
-      fprint_d1exp (pf | out, d1e_cond);
-      prstr "; ";
-      fprint_d1exp (pf | out, d1e_then);
-      begin case+ od1e_else of
+  | D1Eidextapp
+      (id, ns, d1es_arg) => () where {
+      val () = prstr "D1Eidextall(";
+      val () = $Sym.fprint_symbol (pf | out, id)
+      val () = prstr "; "
+      val () = fprint1_string (pf | out, "...")
+      val () = prstr "; "
+      val () = fprint_d1explst (pf | out, d1es_arg)
+      val () = prstr ")"
+    } // end of [D1Eidext]
+  | D1Eif (
+      _(*inv*), d1e_cond, d1e_then, od1e_else
+    ) => () where {
+      val () = prstr "D1Eif("
+      val () = fprint1_string (pf | out, "...")
+      val () = prstr "; "
+      val () = fprint_d1exp (pf | out, d1e_cond)
+      val () = prstr "; "
+      val () = fprint_d1exp (pf | out, d1e_then)
+      val () = case+ od1e_else of
         | Some d1e_else => begin
             prstr "; "; fprint_d1exp (pf | out, d1e_else)
-          end
+          end // end of [Some]
         | None () => ()
-      end;
-      prstr ")"
-    end // end of [D1Eif]
+      // end of [val]
+      val () = prstr ")"
+    } // end of [D1Eif]
   | D1Eint i(*string*) => begin
       prstr "D1Eint("; fprint1_string (pf | out, i); prstr ")"
     end // end of [D1Eint]
