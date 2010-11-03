@@ -58,8 +58,12 @@ ATSLIB=$(ATSHOMEQ)/ccomp/lib
 
 ######
 
+all:: libatsyndef cleanall
+
+######
+
 libatsyndef: $(OBJECTS)
-	gcc -shared -o $(ATSLIB)/libatsyndef.so -Wl,-soname,libatsyndef.so `ar t ${ATSHOME}/ccomp/lib/libatsyndef.a`
+	gcc -shared -o $(ATSLIB)/libatsyndef.so -Wl,-soname,libatsyndef.so `ar t libatsyndef.a`
 
 ######
 
@@ -70,20 +74,26 @@ ATSLIB=$(ATSHOMEQ)/ccomp/lib
 
 atsyndef_util_sats.o: atsyndef_util.sats
 	$(ATSCC) $(IATS) $(CCFLAGS) -c atsyndef_util.sats
-	$(AR) -r $(ATSLIB)/libatsyndef.a $@
+	$(AR) -r libatsyndef.a $@
 atsyndef_util_dats.o: atsyndef_util.dats
 	$(ATSCC) $(IATS) $(CCFLAGS) -c atsyndef_util.dats
-	$(AR) -r $(ATSLIB)/libatsyndef.a $@
+	$(AR) -r libatsyndef.a $@
 
 atsyndef_main_dats.o: atsyndef_main.dats
 	$(ATSCC) $(IATS) $(CCFLAGS) -c atsyndef_main.dats
-	$(AR) -r $(ATSLIB)/libatsyndef.a $@
+	$(AR) -r libatsyndef.a $@
+
+######
+
+RMF = rm -f
 
 ######
 
 clean::
-	rm -f *_sats.c *_dats.c *.o *~
+	$(RMF) *~
+	$(RMF) *_?ats.c *_?ats.o
 
-cleanall: clean
+cleanall:: clean
+	$(RMF) libatsyndef.a
 
 ###### end of [Makefile] ######
