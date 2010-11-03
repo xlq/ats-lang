@@ -115,11 +115,13 @@ SOURCES := \
   ats_parser.sats ats_parser.dats \
   ats_syntax.sats ats_syntax.dats \
   ats_syntax_depgen.dats ats_syntax_posmark.dats \
-  ats_staexp1.sats ats_staexp1.dats ats_staexp1_print.dats \
-  ats_dynexp1.sats ats_dynexp1.dats ats_dynexp1_print.dats \
+  ats_staexp1.sats ats_staexp1.dats \
+  ats_staexp1_print.dats \
+  ats_dynexp1.sats ats_dynexp1.dats \
+  ats_dynexp1_syndef.dats \
+  ats_dynexp1_print.dats \
   ats_trans1_env.sats ats_trans1_env.dats \
   ats_e1xp_eval.sats ats_e1xp_eval.dats \
-  ats_syndef.sats ats_syndef.dats \
   ats_trans1.sats ats_trans1_sta.dats ats_trans1_dyn.dats \
   ats_staexp2.sats ats_staexp2.dats \
   ats_staexp2_print.dats \
@@ -128,8 +130,7 @@ SOURCES := \
   ats_staexp2_dcon.dats \
   ats_staexp2_util1.dats ats_staexp2_util2.dats \
   ats_staexp2_pprint.sats ats_staexp2_pprint.dats \
-  ats_dynexp2.sats \
-  ats_dynexp2.dats \
+  ats_dynexp2.sats ats_dynexp2.dats \
   ats_dynexp2_dcst.dats \
   ats_dynexp2_dmac.dats \
   ats_dynexp2_dvar.dats \

@@ -62,7 +62,6 @@ staload "ats_staexp1.sats"
 staload "ats_dynexp1.sats"
 staload "ats_trans1_env.sats"
 staload "ats_e1xp_eval.sats"
-staload "ats_syndef.sats"
 
 (* ****** ****** *)
 

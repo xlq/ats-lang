@@ -47,7 +47,7 @@ staload "ats_dynexp1.sats"
 
 (* ****** ****** *)
 
-staload "ats_syndef.sats"
+dynload "utils/syndef/atsyndef_main.dats"
 
 (* ****** ****** *)
 
@@ -69,8 +69,10 @@ extern fun atsyndef_search_all
   (id: sym_t, ns: intlst): Option_vt (fsyndef_t) = "atsyndef_search_all"
 // end of [atsyndef_search_all]
 
+(*
 implement
 atsyndef_search_all (id, ns) = None_vt ()
+*)
 
 (* ****** ****** *)
 
