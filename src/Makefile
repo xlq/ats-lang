@@ -62,6 +62,7 @@ ATSCCFLAGS=-g
 #ATSCCFLAGS=-O2
 #ATSCCFLAGS=-D_ATS_MULTITHREAD -O2 -g
 #ATSCCFLAGS=-O2 -g
+ATSCCFLAGS=-O2 -g -DATS_SYNDEFATS -rdynamic
 
 #GCFLAGS=-D_ATS_gc
 #GCFLAGS=-D_ATS_gcats
@@ -189,11 +190,10 @@ OBJECTS := $(patsubst %.sats, %_sats.o, $(OBJECTS))
 OBJECTS := $(patsubst %.lats, %_lats_dats.o, $(OBJECTS))
 OBJECTS := $(patsubst %.dats, %_dats.o, $(OBJECTS))
 
-ATSYNDEF :=  $(ATSHOME)/utils/syndef/atsyndef.o
-
 ######
 
 LIBOBJS := -lgmp
+LIBATSYNDEF := -ldl -latsyndef
 
 ######
 
@@ -202,16 +202,15 @@ atsopt: \
   ats_lexer_lats_dats.o ats_lexer_sats.o \
   ats_grammar_yats.o \
   libc_sats.o libats_lex.o \
-  $(OBJECTS) \
-  $(ATSYNDEF)
-	$(ATSCC) $(GCFLAGS) $(ATSCCFLAGS) \
-  -o atsopt \
+  $(OBJECTS)
+	$(ATSCC) \
+  $(GCFLAGS) $(ATSCCFLAGS) -o atsopt \
   ats_main_dats.o \
   ats_lexer_lats_dats.o ats_lexer_sats.o \
   ats_grammar_yats.o \
   libc_sats.o libats_lex.o \
   $(OBJECTS) \
-  $(ATSYNDEF) \
+  $(LIBATSYNDEF) \
   $(LIBOBJS)
 
 ######

@@ -20,13 +20,16 @@ typedef ftrig_t = (double) -> double
 fun ftrig_get {l:addr} .<>. (
     pf_lib: !dlopen_v l | p_lib: ptr l, name: string
   ) : ftrig_t = let
-  val _msg = dlerror () // clearing any existing error
-  val _fcos = dlsym (pf_lib | p_lib, name)
-  val _msg = dlerror () // see if there is any error
-  val () = assert_errmsg (stropt_is_none _msg, #LOCATION)
+  val (fpf_msg | msg) = dlerror () // clearing any existing error
+  prval () = fpf_msg (msg)
+  val _ftrig = dlsym (pf_lib | p_lib, name)
+  val (fpf_msg | msg) = dlerror () // see if there is any error
+  val p_msg = ptr_of_strptr (msg)
+  prval () = fpf_msg (msg)
+  val () = assert_errmsg (p_msg = null, #LOCATION)
 in
-  __cast (_fcos) where { extern castfn __cast (x: ptr):<> ftrig_t }
-end // end of [fcos]
+  __cast (_ftrig) where { extern castfn __cast (x: ptr):<> ftrig_t }
+end // end of [ftrig_get]
 
 (* ****** ****** *)
 

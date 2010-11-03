@@ -9,6 +9,11 @@
 
 (* ****** ****** *)
 
+#define ATS_DYNLOADFLAG 0 // there is no need for dynloading at run-time
+#define ATS_DYNLOADFUN_NAME "atsyndef_initialize"
+
+(* ****** ****** *)
+
 staload Err = "ats_error.sats"
 staload Loc = "ats_location.sats"
 typedef loc_t = $Loc.location_t

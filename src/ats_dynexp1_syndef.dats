@@ -48,7 +48,7 @@ staload "ats_dynexp1.sats"
 (* ****** ****** *)
 
 (*
-dynload "utils/syndef/atsyndef_main.dats"
+dynload "libatsyndef/atsyndef_main.dats"
 *)
 
 (* ****** ****** *)
@@ -67,14 +67,112 @@ typedef fsyndef_t = (loc_t, d1explst) -<fun1> d1exp
 // this function is implemented in
 // $ATSHOME/utils/syndef/atsyndef_main.dats
 //
-extern fun atsyndef_search_all
-  (id: sym_t, ns: intlst): Option_vt (fsyndef_t) = "atsyndef_search_all"
+typedef
+atsyndef_search_all_type =
+  (sym_t, intlst) -<fun1> Option_vt (fsyndef_t)
+extern
+fun atsyndef_search_all: atsyndef_search_all_type
+// end of [extern]
+
+(* ****** ****** *)
+
+fun atsyndef_search_all_default
+  (id: sym_t, ns: intlst) = None_vt ()
+// end of [atsyndef_search_all_default]
+
+(* ****** ****** *)
+
+#define _SYNDEFATS
+#if defined(_SYNDEFATS) #then
+//
+local
+//
+staload "libc/SATS/dlfcn.sats"
+//
+val finit_name = "atsyndef_initialize"
+var finit_ptr: ptr = null
+//
+val fsrch_name = "atsyndef_search_all"
+var fsrch_ptr: ptr = null
+//
+val (pfopt_lib | p_lib) =
+  dlopen ("libatsyndef.so", RTLD_LAZY)
+// end of [val]
+val () = if
+p_lib > null then let
+  val () = (prerr "\
+ATS/Anairiats: [libatsyndef.so] is available to support syndef-loaded external ids.\n\
+"
+  ) // end of [val]
+  prval Some_v (pf_lib) = pfopt_lib
+  val () = dlerror_clr ()
+  val () = finit_ptr := dlsym (pf_lib | p_lib, finit_name)
+(*
+  val (fpf_msg | msg) = dlerror () // clearing any existing error
+  val () = (
+    print "atsyndef_search_all: finit: "; print msg; print_newline ()
+  ) // end of [val]
+  prval () = fpf_msg (msg)
+*)
+  val () = dlerror_clr ()
+  val () = fsrch_ptr := dlsym (pf_lib | p_lib, fsrch_name)
+(*
+  val (fpf_msg | msg) = dlerror () // see if there is any error
+  val () = (
+    print "atsyndef_search_all: fsrch = "; print msg; print_newline ()
+  ) // end of [val]
+  prval () = fpf_msg (msg)
+*)
+  val () = dlclose_exn (pf_lib | p_lib)
+in
+  // nothing
+end else let
+  val () = (prerr "\
+ATS/Anairiats: [libatsyndef.so] is not available to support syndef-loaded external ids.\n\
+"
+  ) // end of [val]
+  prval None_v () = pfopt_lib
+in
+  // nothing
+end // end of [if]
+//
+val finit_ptr = finit_ptr
+val fsrch_ptr = fsrch_ptr
+//
+val () = if
+  finit_ptr > null then let
+  val finit = __cast (finit_ptr) where {
+    extern castfn __cast (x: ptr):<> ((*none*)) -<fun1> void
+  } // end of [val]
+in
+  finit ()
+end // end of [val]
+
+in // in of [local]
+
+implement
+atsyndef_search_all
+  (id, ns) = case+ 0 of
+  | _ when fsrch_ptr > null => let
+      val fsrch = __cast (fsrch_ptr) where {
+        extern castfn __cast (x: ptr):<> atsyndef_search_all_type
+      } // end of [_ when ...]
+    in
+      fsrch (id, ns)
+    end // end of [_ when ...]
+  | _ => atsyndef_search_all_default (id, ns)
 // end of [atsyndef_search_all]
 
-// (*
+end  // end of [local]
+
+#else
+
 implement
-atsyndef_search_all (id, ns) = None_vt ()
-// *)
+atsyndef_search_all
+  (id, ns) = atsyndef_search_all_default (id, ns)
+// end of [atsyndef_search_all]
+
+#endif // end of [_SYNDEFATS]
 
 (* ****** ****** *)
 
@@ -102,4 +200,4 @@ d1exp_app_dyn_syndef (
 
 (* ****** ****** *)
 
-(* end of [ats_syndef.dats] *)
+(* end of [ats_dynexp1_syndef.dats] *)

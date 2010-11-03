@@ -114,6 +114,7 @@ libc/SATS/dirent.sats
 libc/DATS/dirent.dats
 
 libc/SATS/dlfcn.sats
+libc/DATS/dlfcn.dats
 
 libc/SATS/errno.sats
 

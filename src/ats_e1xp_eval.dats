@@ -312,8 +312,9 @@ and e1xp_eval_undefined
     end // end of [_]
 end // end of [e1xp_eval_undefined]
   
-and e1xp_eval_add
-  (loc: loc_t, e1: e1xp, e2: e1xp): v1al = let
+and e1xp_eval_add (
+  loc: loc_t, e1: e1xp, e2: e1xp
+) : v1al = let
   val v1 = e1xp_eval e1; val v2 = e1xp_eval e2
 in
   case+ (v1, v2) of
@@ -325,8 +326,9 @@ in
     end // end of [(_, _)]
 end // end of [e1xp_eval_add]
 
-and e1xp_eval_sub
-  (loc: loc_t, e1: e1xp, e2: e1xp): v1al = let
+and e1xp_eval_sub (
+  loc: loc_t, e1: e1xp, e2: e1xp
+) : v1al = let
   val v1 = e1xp_eval e1; val v2 = e1xp_eval e2
 in
   case+ (v1, v2) of
@@ -337,8 +339,9 @@ in
     end // end of [(_, _)]
 end // end of [e1xp_eval_sub]
 
-and e1xp_eval_mul
-  (loc: loc_t, e1: e1xp, e2: e1xp): v1al = let
+and e1xp_eval_mul (
+  loc: loc_t, e1: e1xp, e2: e1xp
+) : v1al = let
   val v1 = e1xp_eval e1; val v2 = e1xp_eval e2
 in
   case+ (v1, v2) of
@@ -349,8 +352,9 @@ in
     end // end of [(_, _)]
 end // end of [e1xp_eval_mul]
 
-and e1xp_eval_div
-  (loc: loc_t, e1: e1xp, e2: e1xp): v1al = let
+and e1xp_eval_div (
+  loc: loc_t, e1: e1xp, e2: e1xp
+) : v1al = let
   val v1 = e1xp_eval e1; val v2 = e1xp_eval e2
 in
   case+ (v1, v2) of
@@ -361,8 +365,9 @@ in
     end // end of [(_, _)]
 end // end of [e1xp_eval_div]
 
-and e1xp_eval_lt
-  (loc: loc_t, e1: e1xp, e2: e1xp): v1al = let
+and e1xp_eval_lt (
+  loc: loc_t, e1: e1xp, e2: e1xp
+) : v1al = let
   val v1 = e1xp_eval e1; val v2 = e1xp_eval e2
 in
   case+ (v1, v2) of
@@ -377,8 +382,9 @@ in
     end // end of [(_, _)]
 end // end of [e1xp_eval_lt]
 
-and e1xp_eval_lte
-  (loc: loc_t, e1: e1xp, e2: e1xp): v1al = let
+and e1xp_eval_lte (
+  loc: loc_t, e1: e1xp, e2: e1xp
+) : v1al = let
   val v1 = e1xp_eval e1; val v2 = e1xp_eval e2
 in
   case+ (v1, v2) of
@@ -393,8 +399,9 @@ in
     end // end of [(_, _)]
 end // end of [e1xp_eval_lte]
 
-and e1xp_eval_gt
-  (loc: loc_t, e1: e1xp, e2: e1xp): v1al = let
+and e1xp_eval_gt (
+  loc: loc_t, e1: e1xp, e2: e1xp
+) : v1al = let
   val v1 = e1xp_eval e1; val v2 = e1xp_eval e2
 in
   case+ (v1, v2) of
@@ -409,8 +416,9 @@ in
     end // end of [(_, _)]
 end // end of [e1xp_eval_get]
 
-and e1xp_eval_gte
-  (loc: loc_t, e1: e1xp, e2: e1xp): v1al = let
+and e1xp_eval_gte (
+  loc: loc_t, e1: e1xp, e2: e1xp
+) : v1al = let
   val v1 = e1xp_eval e1; val v2 = e1xp_eval e2
 in
   case+ (v1, v2) of
@@ -425,8 +433,9 @@ in
     end // end of [(_, _)]
 end // end of [e1xp_eval_gte]
 
-and e1xp_eval_eq
-  (loc: loc_t, e1: e1xp, e2: e1xp): v1al = let
+and e1xp_eval_eq (
+  loc: loc_t, e1: e1xp, e2: e1xp
+) : v1al = let
   val v1 = e1xp_eval e1; val v2 = e1xp_eval e2
 in
   case+ (v1, v2) of
@@ -439,8 +448,9 @@ in
     end // end of [(_, _)]
 end // end of [e1xp_eval_eq]
 
-and e1xp_eval_neq
-  (loc: loc_t, e1: e1xp, e2: e1xp): v1al = let
+and e1xp_eval_neq (
+  loc: loc_t, e1: e1xp, e2: e1xp
+) : v1al = let
   val v1 = e1xp_eval e1; val v2 = e1xp_eval e2
 in
   case+ (v1, v2) of
@@ -453,8 +463,9 @@ in
     end // end of [(_, _)]
 end // end of [e1xp_eval_neq]
 
-and e1xp_eval_and
-  (loc: loc_t, e1: e1xp, e2: e1xp): v1al = let
+and e1xp_eval_and (
+  loc: loc_t, e1: e1xp, e2: e1xp
+) : v1al = let
   val v1 = e1xp_eval e1; val v2 = e1xp_eval e2
 in
   case+ (v1, v2) of
@@ -475,8 +486,9 @@ in
     end // end of [(_, _)]
 end // end of [e1xp_eval_and]
 
-and e1xp_eval_or
-  (loc: loc_t, e1: e1xp, e2: e1xp): v1al = let
+and e1xp_eval_or (
+  loc: loc_t, e1: e1xp, e2: e1xp
+) : v1al = let
   val v1 = e1xp_eval e1; val v2 = e1xp_eval e2
 in
   case+ (v1, v2) of
@@ -498,8 +510,9 @@ in
 end // end of [e1xp_eval_or]
 
 (* arithmetic shift to the left *)
-and e1xp_eval_asl
-  (loc: loc_t, e1: e1xp, e2: e1xp): v1al = let
+and e1xp_eval_asl (
+  loc: loc_t, e1: e1xp, e2: e1xp
+) : v1al = let
   val v1 = e1xp_eval e1; val v2 = e1xp_eval e2
 in
   case+ (v1, v2) of
@@ -524,8 +537,9 @@ in
 end // end of [e1xp_eval_asl]
 
 (* arithmetic shift to the right *)
-and e1xp_eval_asr
-  (loc: loc_t, e1: e1xp, e2: e1xp): v1al = let
+and e1xp_eval_asr (
+  loc: loc_t, e1: e1xp, e2: e1xp
+) : v1al = let
   val v1 = e1xp_eval e1; val v2 = e1xp_eval e2
 in
   case+ (v1, v2) of
@@ -551,7 +565,8 @@ end // end of [e1xp_eval_asr]
 
 (* ****** ****** *)
 
-implement e1xp_eval (e0) = let
+implement
+e1xp_eval (e0) = let
 (*
   val () = begin
     print "e1xp_eval: e0 = "; print e0; print_newline ()
@@ -583,7 +598,8 @@ end // end of [e1xp_eval]
 
 (* ****** ****** *)
 
-implement e1xp_eval_if (knd, e) = begin
+implement
+e1xp_eval_if (knd, e) = begin
   case+ knd of $Syn.SRPIFKINDif _ => e1xp_eval (e)
   | $Syn.SRPIFKINDifdef _ => e1xp_eval_defined (e.e1xp_loc, e)
   | $Syn.SRPIFKINDifndef _ => e1xp_eval_undefined (e.e1xp_loc, e)
@@ -591,7 +607,8 @@ end // end of [e1xp_eval_if]
 
 (* ****** ****** *)
 
-implement e1xp_make_v1al (loc, v) = // turning a value into an expr
+implement
+e1xp_make_v1al (loc, v) = // turning a value into an expr
   case+ v of
   | V1ALchar c => e1xp_char (loc, c)
   | V1ALfloat f =>
