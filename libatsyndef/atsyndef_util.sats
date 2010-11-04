@@ -49,6 +49,7 @@ fun un_d1exp_ann_type (d1e: d1exp): (d1exp, s1exp)
 (* ****** ****** *)
 
 fun un_d1exp_qid (d1e: d1exp): (d0ynq, sym_t)
+fun un_d1exp_qid_sym (d1e: d1exp, id: sym_t): void
 
 (* ****** ****** *)
 

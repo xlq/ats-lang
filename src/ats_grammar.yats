@@ -159,18 +159,18 @@ extern i0de_t i0de_make_tilda (t0kn_t) ;
 extern i0de_t i0de_make_t0ype (t0kn_t) ;
 extern i0de_t i0de_make_viewt0ype (t0kn_t) ;
 
+//
+
+extern i0de_t i0de_make_in (t0kn_t) ;
+
+//
+
 extern i0delst_t i0delst_nil (void) ;
 extern i0delst_t i0delst_sing (i0de_t) ;
 extern i0delst_t i0delst_cons (i0de_t, i0delst_t) ;
 
 extern i0delstlst_t i0delstlst_nil (void) ;
 extern i0delstlst_t i0delstlst_cons (i0delst_t, i0delstlst_t) ;
-
-//
-
-extern i0de_t i0dext_make_for (t0kn_t) ;
-extern i0de_t i0dext_make_in (t0kn_t) ;
-extern i0de_t i0dext_make_while (t0kn_t) ;
 
 //
 
@@ -732,7 +732,7 @@ extern d0exp_t d0exp_for_itp (loophead_t, initestpost_t, d0exp_t) ;
 extern d0exp_t d0exp_freeat (t0kn_t, d0explst_t) ;
 
 extern d0exp_t d0exp_ide (i0de_t) ;
-extern d0exp_t d0exp_idext (t0kn_t, i0de_t, t0kn_t) ;
+extern d0exp_t d0exp_idext (i0de_t) ;
 
 extern d0exp_t d0exp_if_none (ifhead_t, d0exp_t, d0exp_t) ;
 extern d0exp_t d0exp_if_some (ifhead_t, d0exp_t, d0exp_t, d0exp_t) ;
@@ -1260,9 +1260,15 @@ guad0ec_t guad0ec ;
 %token <i0ntsp> LITERAL_intsp
 %token <s0tring> LITERAL_string
 
-%token <i0de> IDENTIFIER_alp IDENTIFIER_sym
-%token <i0de> IDENTIFIER_arr IDENTIFIER_tmp
-%token <i0de> IDENTIFIER_dlr IDENTIFIER_srp
+%token <i0de> IDENTIFIER_alp
+%token <i0de> IDENTIFIER_sym
+
+%token <i0de> IDENTIFIER_arr
+%token <i0de> IDENTIFIER_tmp
+%token <i0de> IDENTIFIER_ext
+
+%token <i0de> IDENTIFIER_dlr
+%token <i0de> IDENTIFIER_srp
 
 /* ****** ****** */
 
@@ -1925,12 +1931,8 @@ i0deseq /* identifier sequence */
 
 /* ****** ****** */
 
-i0dext
-  : i0de                                { $$ = $1 ; }
-/* keyword */
-  | FOR                                 { $$ = i0dext_make_for($1) ; }
-  | IN                                  { $$ = i0dext_make_in($1) ; }
-  | WHILE                               { $$ = i0dext_make_while($1) ; }
+i0dext /* extern identifier for loading syndef */
+  : IDENTIFIER_ext                      { $$ = $1 ; }
 
 /* ****** ****** */
 
@@ -2154,12 +2156,15 @@ commasi0deseq /* additional static identifier sequence */
 di0de /* dynamic identifier */
   : IDENTIFIER_alp                      { $$ = $1 ; }
   | IDENTIFIER_sym                      { $$ = $1 ; }
+/* keysymb identifier */
   | BANG                                { $$ = i0de_make_bang($1) ; }
   | BACKSLASH                           { $$ = i0de_make_backslash($1) ; }
   | EQ                                  { $$ = i0de_make_eq($1) ; }
   | GT                                  { $$ = i0de_make_gt($1) ; }
   | LT                                  { $$ = i0de_make_lt($1) ; }
   | TILDA                               { $$ = i0de_make_tilda($1) ; }
+/* keyword identifier */
+  | BACKQUOTE IN BACKQUOTE              { $$ = i0de_make_in($2) ; }
 ;
 
 dqi0de /* qualified dynamic identifier */
@@ -2804,7 +2809,7 @@ atmd0exp
   | OP di0de                            { $$ = d0exp_opide($1, $2) ; }
   | d0ynq i0de                          { $$ = d0exp_qid($1, $2) ; }
 
-  | BACKQUOTE i0dext BACKQUOTE          { $$ = d0exp_idext($1, $2, $3) ; }
+  | i0dext                              { $$ = d0exp_idext($1) ; }
 
   | AMPERSAND                           { $$ = d0exp_ptrof($1) ; }
   | BREAK                               { $$ = d0exp_loopexn(0, $1) ; }

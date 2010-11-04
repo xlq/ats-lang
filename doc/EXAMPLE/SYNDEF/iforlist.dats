@@ -9,7 +9,8 @@
 //
 (* ****** ****** *)
 
-staload "prelude/DATS/list.dats"
+staload "prelude/SATS/syndef.sats"
+staload _(*anon*) = "prelude/DATS/syndef.dats"
 
 (* ****** ****** *)
 
@@ -28,8 +29,8 @@ val xs = (
   0 :: 1 :: 2 :: 3 :: 4 :: 5 :: 6 :: 7 :: 8 :: 9 :: list_nil
 ) : intlst // end of [val]
 
-val () = `ifor_list`
-  (i) (x:int) `in` xs `do` (if i > 0 then print ","; print x)
+val () = ifor_list!
+  (i) (x:int) `in` xs do (if i > 0 then print ","; print x)
 val () = print_newline ()
 
 implement main () = ()

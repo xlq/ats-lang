@@ -9,6 +9,7 @@
 
 (* ****** ****** *)
 
+staload _(*anon*) = "prelude/DATS/list.dats"
 staload _(*anon*) = "prelude/DATS/list_vt.dats"
 
 (* ****** ****** *)
@@ -58,15 +59,17 @@ val _neg1 = (~1 :: nil ()): intlst
 
 (* ****** ****** *)
 
-(*
-`for_list` ($x:$T) `in` $xs `do` $exp =>
-  list_foreach_cloptr__viewless<$T> ($xs, lam ($x) => $exp)
-*)
-
 extern
 fun print_neg1
   (loc: loc_t, d1es: d1explst): d1exp
 // end of [print_neg1]
+
+extern
+fun println_neg1
+  (loc: loc_t, d1es: d1explst): d1exp
+// end of [print_neg1]
+
+(* ****** ****** *)
 
 implement
 print_search (ns) = let
@@ -81,25 +84,23 @@ in
   | _ => None_vt ()
 end // end of [print_search]
 
+implement
+println_search (ns) = let
+(*
+  val () = print "println_search: ns = "
+  val () = fprint_intlst (stdout_ref, ns)
+  val () = print_newline ()
+*)
+in
+  case+ 0 of
+  | _ when ns \matii _neg1 => Some_vt (println_neg1)
+  | _ => None_vt ()
+end // end of [println_search]
+
 (* ****** ****** *)
 
 implement
-print_neg1
-  (loc0, d1es) = let
-  viewtypedef res_vt = List_vt (d1exp)
-  fun loop (
-    _fun: d1exp, d1es: d1explst, res: res_vt
-  ) : res_vt =
-    case+ d1es of
-    | list_cons (d1e, d1es) => let
-        val loc = d1e.d1exp_loc
-        val d1e = d1exp_app_dyn
-          (loc, _fun, loc, 0(*npf*), list_sing (d1e))
-      in
-        loop (_fun, d1es, list_vt_cons (d1e, res))
-      end // end of [list_cons]
-    | list_nil () => res
-  // end of [loop]
+print_neg1 (loc0, d1es) = let
 //
   val q = $Syn.d0ynq_none ()
   val id = $Sym.symbol_make_string ("print")
@@ -110,18 +111,39 @@ print_neg1
 in
   case+ d1e.d1exp_node of
   | D1Elist (_(*npf*), d1es) => let
-      val d1es = loop (_print, d1es, list_vt_nil)
-      val d1es = list_vt_reverse (d1es)
+      fun f (
+        pf: !unit_v | d1e: d1exp
+      ) :<cloptr1> d1exp = let
+        val loc = d1e.d1exp_loc in
+        d1exp_app_dyn (loc, _print, loc, 0(*npf*), list_sing (d1e))
+      end // end of [f]
+      prval pfu = unit_v ()
+      val d1es = list_map_cloptr {unit_v} (pfu | d1es, f)
+      prval unit_v () = pfu
       val d1es = list_of_list_vt (d1es)
     in
       d1exp_seq (loc0, d1es)
     end // end of [D1Elist]
   | _ => let
-      val loc = d1e.d1exp_loc
-    in
+      val loc = d1e.d1exp_loc in
       d1exp_app_dyn (loc, _print, loc, 0(*npf*), list_sing (d1e))
     end // end of [_]
 end // end of [print_neg1]
+
+(* ****** ****** *)
+
+implement
+println_neg1 (loc0, d1es) = let
+  val d1e1 = print_neg1 (loc0, d1es)
+//
+  val q = $Syn.d0ynq_none ()
+  val id = $Sym.symbol_make_string ("println")
+  val _println = d1exp_qid (loc0, q, id)
+//
+  val d1e2 = d1exp_app_dyn (loc0, _println, loc0, 0(*npf*), list_nil)
+in
+  d1exp_seq (loc0, d1e1 :: d1e2 :: list_nil)
+end // end of [println_neg1]
 
 (* ****** ****** *)
 

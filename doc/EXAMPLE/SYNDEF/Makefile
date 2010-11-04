@@ -37,6 +37,9 @@ forlist: forlist.dats
 iforlist: iforlist.dats
 	$(ATSCC) -o iforlist iforlist.dats -lats && ./iforlist
 
+print: print.dats
+	$(ATSCC) -o print print.dats -lats && ./print
+
 ######
 
 html::

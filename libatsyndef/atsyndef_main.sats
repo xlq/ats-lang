@@ -38,6 +38,7 @@ fun iforlist_search (ns: intlst): Option_vt (fsyndef_t)
 (* ****** ****** *)
 
 fun print_search (ns: intlst): Option_vt (fsyndef_t)
+fun println_search (ns: intlst): Option_vt (fsyndef_t)
 
 (* ****** ****** *)
 

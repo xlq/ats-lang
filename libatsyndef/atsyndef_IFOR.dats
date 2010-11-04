@@ -53,8 +53,8 @@ val _1_1_1_1_1_1 =
 (* ****** ****** *)
 
 (*
-`ifor_list` i ($x:$T) `in` $xs `do` $exp =>
-  list_iforeach_cloptr__viewless<$T> ($xs, lam ($x) => $exp)
+`ifor_list` $i ($x:$T) `in` $xs `do` $exp =>
+  iforlist_in_do<$T> ($xs, lam ($i, $x) => $exp)
 *)
 
 extern
@@ -70,13 +70,13 @@ ifor_name_1_1_1_1_1_1
   val _exp = d1e6
 //
   val- cons (d1e5, d1es) = d1es
-  val () = un_d1exp_idext_sym (d1e5, symbol_DO)
+  val () = un_d1exp_qid_sym (d1e5, symbol_DO)
 //
   val- cons (d1e4, d1es) = d1es
   val _xs = d1e4
 //
   val- cons (d1e3, d1es) = d1es
-  val () = un_d1exp_idext_sym (d1e3, symbol_IN)
+  val () = un_d1exp_qid_sym (d1e3, symbol_IN)
 //
   val- cons (d1e2, d1es) = d1es
   val (_qid, _typ) = un_d1exp_ann_type (d1e2)
@@ -131,7 +131,7 @@ implement
 iforlist_1_1_1_1_1_1
   (loc, d1es) = let
   val name =
-    $Sym.symbol_make_string ("list_iforeach_cloptr__viewless")
+    $Sym.symbol_make_string ("iforlist_in_do")
 in
   ifor_name_1_1_1_1_1_1 (name, loc, d1es)
 end // end of [iforlist_1_1_1_1_1_1]

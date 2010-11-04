@@ -56,7 +56,7 @@ atsyndef_search_all
   | _ when id = symbol_DO => do_search (ns)
   | _ when id = symbol_FORLIST => forlist_search (ns)
   | _ when id = symbol_IFORLIST => iforlist_search (ns)
-  | _ when id = symbol_PRINT => print_search (ns)
+//  | _ when id = symbol_PRINT => print_search (ns)
   | _ => None_vt ()
 // end of [search_all]
 
@@ -65,7 +65,7 @@ atsyndef_search_all
 dynload "atsyndef_DO.dats"
 dynload "atsyndef_FOR.dats"
 dynload "atsyndef_IFOR.dats"
-dynload "atsyndef_PRINT.dats"
+// dynload "atsyndef_PRINT.dats"
 
 (* ****** ****** *)
 

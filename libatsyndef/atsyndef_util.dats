@@ -111,6 +111,24 @@ un_d1exp_qid (d1e) =
     end // end of [_]
 // end of [un_d1exp_qid]
 
+implement
+un_d1exp_qid_sym
+  (d1e, sym0) = let
+  val (q, sym) = un_d1exp_qid (d1e)
+in
+  if $Sym.eq_symbol_symbol
+    (sym0, sym) then () else let
+    val () = prerr_loc_syndef (d1e.d1exp_loc)
+    val () = (
+      prerr ": the symbol ["; $Sym.prerr_symbol (sym0); prerr "] is expected."
+    ) // end of [val]
+    val () = prerr_newline ()
+  in
+    $Err.abort {void} ()
+  end (* end of [if] *)
+end // end of [un_d1exp_idext_sym]
+
+
 (* ****** ****** *)
 
 implement
@@ -134,9 +152,9 @@ in
   if $Sym.eq_symbol_symbol
     (sym0, sym) then () else let
     val () = prerr_loc_syndef (d1e.d1exp_loc)
-    val () = prerr ": the dynexp is expected to be the idext `"
-    val () = $Sym.prerr_symbol (sym0)
-    val () = prerr "`"
+    val () = (
+      prerr ": the external id ["; $Sym.prerr_symbol (sym0); prerr "!]"
+    ) // end of [val]
     val () = prerr_newline ()
   in
     $Err.abort {void} ()

@@ -205,6 +205,8 @@ macdef IDENTIFIER_tmp = $extval (token_t, "IDENTIFIER_tmp")
 macdef IDENTIFIER_dlr = $extval (token_t, "IDENTIFIER_dlr")
 macdef IDENTIFIER_srp = $extval (token_t, "IDENTIFIER_srp")
 
+macdef IDENTIFIER_ext = $extval (token_t, "IDENTIFIER_ext")
+
 //
 
 macdef ABSPROP = $extval (token_t, "ABSPROP")
@@ -568,35 +570,43 @@ in
   end // end of [if]
 end // end of [tokenize_identifier_sym]
 
-fn prefix_identifier_arr (s0: string): string = let
+(* ****** ****** *)
+
+fn prefix_identifier1 (s0: string): string = let
   val s0 = string1_of_string s0; val n0 = string_length s0
 in
   if n0 > 0 then let
     val sbp = string_make_substring (s0, 0, n0-1) in string1_of_strbuf sbp
   end else s0
-end // end of [prefix_identifier_arr]
+end // end of [prefix_identifier1]
+
+(* ****** ****** *)
    
-fn tokenize_identifier_arr (): token_t = let // array identifier
-  val str = prefix_identifier_arr (lexeme_string ())
+fn tokenize_identifier_arr
+  (): token_t = let // array identifier
+  val str = prefix_identifier1 (lexeme_string ())
   val loc = location_get ()
 in
   yylval_ide_set ($Syn.i0de_make (loc, str)); IDENTIFIER_arr
 end // end of [tokenize_identifier_arr]
 
-fn prefix_identifier_tmp (s0: string): string = let
-  val s0 = string1_of_string s0; val n0 = string_length s0
-in
-  if n0 > 0 then let
-    val sbp = string_make_substring (s0, 0, n0-1) in string1_of_strbuf sbp
-  end else s0
-end // end of [prefix_identifier_tmp]
-
-fn tokenize_identifier_tmp (): token_t = let // template identifier
-  val str = prefix_identifier_tmp (lexeme_string ())
+fn tokenize_identifier_tmp
+  (): token_t = let // template identifier
+  val str = prefix_identifier1 (lexeme_string ())
   val loc = location_get ()
 in
   yylval_ide_set ($Syn.i0de_make (loc, str)); IDENTIFIER_tmp
 end // end of [tokenize_identifier_tmp]
+
+fn tokenize_identifier_ext
+  (): token_t = let // template identifier
+  val str = prefix_identifier1 (lexeme_string ())
+  val loc = location_get ()
+in
+  yylval_ide_set ($Syn.i0de_make (loc, str)); IDENTIFIER_ext
+end // end of [tokenize_identifier_ext]
+
+(* ****** ****** *)
 
 fn tokenize_identifier_dlr (): token_t = let // $-identifier
   val str = lexeme_string ()
@@ -1058,6 +1068,7 @@ MAIN () =
   | $identifier_alp { tokenize_identifier_alp () }
   | $identifier_alp '\[' { tokenize_identifier_arr () }
   | $identifier_alp '\<' { tokenize_identifier_tmp () }
+  | $identifier_alp '!' { tokenize_identifier_ext () }
   | '$' $identifier_alp { tokenize_identifier_dlr () }
   | '#' $identifier_alp { tokenize_identifier_srp () }
   | $identifier_sym { tokenize_identifier_sym () }

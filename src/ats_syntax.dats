@@ -320,6 +320,13 @@ implement i0de_make_viewt0ype (tok) =
   '{ i0de_loc= tok.t0kn_loc, i0de_sym= $Sym.symbol_VIEWT0YPE }
 // end of [i0de_make_viewt0ype]
 
+//
+
+implement i0de_make_in (tok) =
+  '{ i0de_loc= tok.t0kn_loc, i0de_sym= $Sym.symbol_IN }
+
+//
+
 implement
 i0de_make_lrbrackets (t_l, t_r) = let
   val loc = combine (t_l.t0kn_loc, t_r.t0kn_loc)
@@ -327,21 +334,14 @@ in '{
   i0de_loc= loc, i0de_sym= $Sym.symbol_LRBRACKETS
 } end // end of [i0de_make_lrbrackets]
 
+//
+
 implement i0delst_nil () = nil ()
 implement i0delst_sing (x) = cons (x, nil ())
 implement i0delst_cons (x, xs) = cons (x, xs)
 
 implement i0delstlst_nil () = nil ()
 implement i0delstlst_cons (x, xs) = cons (x, xs)
-
-(* ****** ****** *)
-
-implement i0dext_make_for (tok) =
-  '{ i0de_loc= tok.t0kn_loc, i0de_sym= $Sym.symbol_FOR }
-implement i0dext_make_in (tok) =
-  '{ i0de_loc= tok.t0kn_loc, i0de_sym= $Sym.symbol_IN }
-implement i0dext_make_while (tok) =
-  '{ i0de_loc= tok.t0kn_loc, i0de_sym= $Sym.symbol_WHILE }
 
 (* ****** ****** *)
 
@@ -1974,13 +1974,9 @@ in
 end (* end of [d0exp_ide] *)
 
 implement
-d0exp_idext
-  (t_beg, ide, t_end) = let
-  val loc = combine
-    (t_beg.t0kn_loc, t_end.t0kn_loc)
-in '{
-  d0exp_loc= loc, d0exp_node= D0Eidext (ide.i0de_sym)
-} end // end of [d0exp_i0dext]
+d0exp_idext (id) = '{
+  d0exp_loc= id.i0de_loc, d0exp_node= D0Eidext (id.i0de_sym)
+} // end of [d0exp_i0dext]
 
 (* ****** ****** *)
 

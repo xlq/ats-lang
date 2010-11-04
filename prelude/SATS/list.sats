@@ -472,19 +472,10 @@ list_foreach_clo {v:view} {f:eff}
   (pf: !v | xs: List a, f: &(!v | a) -<clo,f> void):<f> void
 // end of [list_foreach_clo]
 
-//
-
 fun{a:t@ype}
 list_foreach_cloptr {v:view} {f:eff}
   (pf: !v | xs: List a, f: !(!v | a) -<cloptr,f> void):<f> void
 // end of [list_foreach_cloptr]
-
-fun{a:t@ype}
-list_foreach_cloptr__viewless
-  (xs: List a, f: !(a) -<cloptr1> void): void
-// end of [list_foreach_cloptr__viewless]
-
-//
 
 fun{a:t@ype} list_foreach_cloref
   {f:eff} (xs: List a, f: (a) -<cloref,f> void):<f> void
@@ -547,19 +538,10 @@ list_iforeach_clo {v:view} {n:nat} {f:eff}
   (pf: !v | xs: list (a, n), f: &(!v | natLt n, a) -<clo,f> void):<f> void
 // end of [list_iforeach_clo]
 
-//
-
 fun{a:t@ype}
 list_iforeach_cloptr {v:view} {n:nat} {f:eff}
   (pf: !v | xs: list (a, n), f: !(!v | natLt n, a) -<cloptr,f> void):<f> void
 // end of [list_iforeach_cloptr]
-
-fun{a:t@ype}
-list_iforeach_cloptr__viewless {n:nat}
-  (xs: list (a, n), f: !(natLt n, a) -<cloptr1> void): void
-// end of [list_iforeach_cloptr__viewless]
-
-//
 
 fun{a:t@ype}
 list_iforeach_cloref {n:nat} {f:eff}

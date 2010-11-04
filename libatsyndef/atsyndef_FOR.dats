@@ -52,7 +52,7 @@ val _1_1_1_1_1 = (1 :: 1 :: 1 :: 1 :: 1 :: nil ()): intlst
 
 (*
 `for_list` ($x:$T) `in` $xs `do` $exp =>
-  list_foreach_cloptr__viewless<$T> ($xs, lam ($x) => $exp)
+  forlist_in_do<$T> ($xs, lam ($x) => $exp)
 *)
 
 extern
@@ -68,13 +68,13 @@ for_name_1_1_1_1_1
   val _exp = d1e5
 //
   val- cons (d1e4, d1es) = d1es
-  val () = un_d1exp_idext_sym (d1e4, symbol_DO)
+  val () = un_d1exp_qid_sym (d1e4, symbol_DO)
 //
   val- cons (d1e3, d1es) = d1es
   val _xs = d1e3
 //
   val- cons (d1e2, d1es) = d1es
-  val () = un_d1exp_idext_sym (d1e2, symbol_IN)
+  val () = un_d1exp_qid_sym (d1e2, symbol_IN)
 //
   val- cons (d1e1, d1es) = d1es
   val (_qid, _typ) = un_d1exp_ann_type (d1e1)
@@ -120,7 +120,7 @@ implement
 forlist_1_1_1_1_1
   (loc, d1es) = let
   val name =
-    $Sym.symbol_make_string ("list_foreach_cloptr__viewless")
+    $Sym.symbol_make_string ("forlist_in_do")
 in
   for_name_1_1_1_1_1 (name, loc, d1es)
 end // end of [forlist_1_1_1_1_1]

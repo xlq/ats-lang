@@ -283,6 +283,7 @@ fun t0kn_make (_: loc_t): t0kn = "t0kn_make"
 typedef i0de = '{
   i0de_loc= loc_t, i0de_sym= sym_t
 } // end of [i0de]
+typedef i0dext = i0de
 
 typedef i0delst = List i0de
 typedef i0delstlst = List i0delst
@@ -316,9 +317,17 @@ fun i0de_make_tilda (t: t0kn): i0de = "i0de_make_tilda"
 fun i0de_make_t0ype (t: t0kn): i0de = "i0de_make_t0ype"
 fun i0de_make_viewt0ype (t: t0kn): i0de = "i0de_make_viewt0ype"
 
+//
+
 fun i0de_make_lrbrackets
   (t_l: t0kn, t_r: t0kn): i0de = "i0de_make_lrbrackets"
 // end of [i0de_make_lrbrackets]
+
+//
+
+fun i0de_make_in (t: t0kn): i0de = "i0de_make_in"
+
+//
 
 fun i0delst_nil (): i0delst = "i0delst_nil"
 fun i0delst_sing (x: i0de): i0delst = "i0delst_sing"
@@ -328,14 +337,6 @@ fun i0delstlst_nil (): i0delstlst = "i0delstlst_nil"
 fun i0delstlst_cons
   (x: i0delst, xs: i0delstlst): i0delstlst = "i0delstlst_cons"
 // end of [i0delstlst_cons]
-
-(* ****** ****** *)
-
-typedef i0dext = i0de
-
-fun i0dext_make_for (t: t0kn): i0dext = "i0dext_make_for"
-fun i0dext_make_in (t: t0kn): i0dext = "i0dext_make_in"
-fun i0dext_make_while (t: t0kn): i0dext = "i0dext_make_while"
 
 (* ****** ****** *)
 
@@ -2042,9 +2043,7 @@ fun d0exp_freeat
 (* ****** ****** *)
 
 fun d0exp_ide (ide: i0de): d0exp = "d0exp_ide"
-fun d0exp_idext
-  (t_beg: t0kn, idext: i0dext, t_end: t0kn): d0exp = "d0exp_idext"
-// end of [d0exp_idext]
+fun d0exp_idext (idext: i0dext): d0exp = "d0exp_idext"
 
 (* ****** ****** *)
 
