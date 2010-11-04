@@ -326,6 +326,7 @@ fun i0de_make_lrbrackets
 //
 
 fun i0de_make_in (t: t0kn): i0de = "i0de_make_in"
+fun i0de_make_while (t: t0kn): i0de = "i0de_make_while"
 
 //
 

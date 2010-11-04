@@ -16,7 +16,7 @@ fun fact
   var res: int = 1
   val () = do! {
     val () = res := n * res; val () = n := n-1
-  } while! (n >= 1)
+  } `while` (n >= 1)
 in
   res
 end // end of [fact]

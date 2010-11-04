@@ -50,12 +50,11 @@ val _1_1_1 = (1 :: 1 :: 1 :: nil ()): intlst
 (* ****** ****** *)
 
 (*
-`do` ($exp1) `while` ($exp2) =>
+do! ($exp1) `while` ($exp2) =>
   while (true)
     let #declst($exp1) in if ($exp2) then continue else break end
   // end of [while]
 *)
-
 
 extern
 fun do_1_1_1 (loc: loc_t, d1es: d1explst): d1exp
@@ -81,7 +80,7 @@ do_1_1_1 (loc0, d1es) = let
   val- cons (d1e3, d1es) = d1es
 //
   val- cons (d1e2, d1es) = d1es
-  val () = un_d1exp_idext_sym (d1e2, symbol_WHILE)
+  val () = un_d1exp_qid_sym (d1e2, symbol_WHILE)
 //
   val- cons (d1e1, d1es) = d1es
   val d1cs1 = un_d1exp_decseq (d1e1)

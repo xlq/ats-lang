@@ -25,6 +25,7 @@ compall:: \
   fact \
   forlist \
   iforlist \
+  println \
 
 ######
 
@@ -37,8 +38,8 @@ forlist: forlist.dats
 iforlist: iforlist.dats
 	$(ATSCC) -o iforlist iforlist.dats -lats && ./iforlist
 
-print: print.dats
-	$(ATSCC) -o print print.dats -lats && ./print
+println: println.dats
+	$(ATSCC) -o println println.dats -lats && ./println
 
 ######
 
@@ -55,6 +56,7 @@ xref::
 	$(ATSOPT) --posmark_xref=XREF -d fact.dats > fact_dats.html
 	$(ATSOPT) --posmark_xref=XREF -d forlist.dats > forlist_dats.html
 	$(ATSOPT) --posmark_xref=XREF -d iforlist.dats > iforlist_dats.html
+	$(ATSOPT) --posmark_xref=XREF -d println.dats > println_dats.html
 
 ######
 
@@ -72,6 +74,6 @@ cleanall:: clean
 	$(RMF) *_?ats.html
 	$(RMF) fact
 	$(RMF) forlist
-	$(RMF) iforlist
+	$(RMF) println
 
 ###### end of [Makefile] ######

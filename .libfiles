@@ -90,8 +90,13 @@ prelude/DATS/option0.dats
 prelude/SATS/ptrarr.sats
 prelude/DATS/ptrarr.dats
 
+//
+prelude/SATS/syndef.sats
+prelude/DATS/syndef.dats
+//
 prelude/SATS/unsafe.sats
 prelude/DATS/unsafe.dats
+//
 
 /* ****** ****** */
 

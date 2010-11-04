@@ -51,7 +51,7 @@ SOURCES = \
   atsyndef_DO.dats \
   atsyndef_FOR.dats \
   atsyndef_IFOR.dats \
-#  atsyndef_PRINT.dats \
+  atsyndef_PRINT.dats \
 
 OBJECTS := $(patsubst %.sats, %_sats.o, $(SOURCES))
 OBJECTS := $(patsubst %.dats, %_dats.o, $(OBJECTS))
@@ -67,7 +67,7 @@ all:: libatsyndef cleanall
 ######
 
 libatsyndef: $(OBJECTS)
-	gcc -shared -o $(ATSLIB)/libatsyndef.so -Wl,-soname,libatsyndef.so `ar t libatsyndef.a`
+	$(ATSCC) -shared -o $(ATSLIB)/libatsyndef.so -Wl,-soname,libatsyndef.so `ar t libatsyndef.a`
 
 ######
 

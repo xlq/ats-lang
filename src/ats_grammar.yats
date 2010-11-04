@@ -162,6 +162,7 @@ extern i0de_t i0de_make_viewt0ype (t0kn_t) ;
 //
 
 extern i0de_t i0de_make_in (t0kn_t) ;
+extern i0de_t i0de_make_while (t0kn_t) ;
 
 //
 
@@ -2165,6 +2166,7 @@ di0de /* dynamic identifier */
   | TILDA                               { $$ = i0de_make_tilda($1) ; }
 /* keyword identifier */
   | BACKQUOTE IN BACKQUOTE              { $$ = i0de_make_in($2) ; }
+  | BACKQUOTE WHILE BACKQUOTE           { $$ = i0de_make_while($2) ; }
 ;
 
 dqi0de /* qualified dynamic identifier */

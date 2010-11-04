@@ -137,10 +137,10 @@ println_neg1 (loc0, d1es) = let
   val d1e1 = print_neg1 (loc0, d1es)
 //
   val q = $Syn.d0ynq_none ()
-  val id = $Sym.symbol_make_string ("println")
-  val _println = d1exp_qid (loc0, q, id)
+  val id = $Sym.symbol_make_string ("print_newline")
+  val _print_newline = d1exp_qid (loc0, q, id)
 //
-  val d1e2 = d1exp_app_dyn (loc0, _println, loc0, 0(*npf*), list_nil)
+  val d1e2 = d1exp_app_dyn (loc0, _print_newline, loc0, 0(*npf*), list_nil)
 in
   d1exp_seq (loc0, d1e1 :: d1e2 :: list_nil)
 end // end of [println_neg1]
