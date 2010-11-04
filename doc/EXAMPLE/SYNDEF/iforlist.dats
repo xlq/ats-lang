@@ -14,8 +14,8 @@ staload "prelude/DATS/list.dats"
 (* ****** ****** *)
 
 (*
-for_list (x:T) `in` xs `do` $exp =>
-  list_foreach_cloptr__viewless<T> (xs, lam (x) => $exp)
+ifor_list (i) (x:T) `in` xs `do` $exp =>
+  list_iforeach_cloptr__viewless<T> (xs, lam (x) => $exp)
 *)
 
 (* ****** ****** *)

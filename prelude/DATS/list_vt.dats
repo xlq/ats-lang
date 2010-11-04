@@ -39,6 +39,7 @@
 
 (* ****** ****** *)
 
+#define ATS_STALOADFLAG 0 // ...
 #define ATS_DYNLOADFLAG 0 // loaded by [ats_main_prelude]
 
 (* ****** ****** *)

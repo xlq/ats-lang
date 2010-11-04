@@ -334,7 +334,7 @@ and d1exp_node =
   | D1Elet of (* dynamic let-expression *)
       (d1eclst, d1exp)
   | D1Elist of (* dynamic expression list: temporary *)
-      (int (*pfarity*), d1explst)
+      (int(*pfarity*), d1explst)
   | D1Eloopexn of (* break: 0 and continue: 1 *)
       int
   | D1Elst of (* dynamic list expression *)

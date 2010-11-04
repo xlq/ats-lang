@@ -37,16 +37,19 @@ fn prerr_loc_syndef
 (* ****** ****** *)
 
 implement
-eq_intlst_intlst (ns1, ns2) =
+match_intlst_intlst (ns1, ns2) =
   case+ ns1 of
   | list_cons (n1, ns1) => (case+ ns2 of
-    | list_cons (n2, ns2) => (n1 = n2) andalso (ns1 = ns2)
+    | list_cons (n2, ns2) =>
+        if n2 >= 0 then
+          (if (n1 = n2) then match_intlst_intlst (ns1, ns2) else false)
+        else match_intlst_intlst (ns1, ns2)
     | list_nil () => false
     ) // end of [cons]
   | list_nil () => (
     case+ ns2 of list_cons _ => false | list_nil () => true
     ) // en dof [list_nil]
-// end of [eq_list_list]
+// end of [match_intlst_intlst]
 
 (* ****** ****** *)
 

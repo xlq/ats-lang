@@ -28,8 +28,7 @@ staload "ats_dynexp1.sats"
 (* ****** ****** *)
 
 typedef intlst = List (int)
-fun eq_intlst_intlst (ns1: intlst, ns2: intlst): bool
-overload = with eq_intlst_intlst
+fun match_intlst_intlst (ns1: intlst, ns2: intlst): bool
 
 (* ****** ****** *)
 
