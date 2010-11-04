@@ -16,7 +16,7 @@ staload _(*anon*) = "prelude/DATS/syndef.dats"
 
 (*
 for_list (x:T) `in` xs `do` $exp =>
-  list_foreach_cloptr__viewless<T> (xs, lam (x) => $exp)
+  forlist_in_do<T> (xs, lam (x) => $exp)
 *)
 
 (* ****** ****** *)
@@ -39,3 +39,16 @@ implement main () = ()
 (* ****** ****** *)
 
 (* end of [forlist.dats] *)
+
+////
+
+for_list (x:int) `in` $exp do (sum := sum + x) =>
+
+ let
+    var x: int
+    var xs: list(int) = exp
+ in
+   while (list_isnot_null (xs)) {
+     val () = list_uncons (xs, x); val () = $exp
+   } // end of [while]
+ end // end of [let]

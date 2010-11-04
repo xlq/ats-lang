@@ -24,7 +24,6 @@ checkall: compall cleanall
 compall:: \
   fact \
   forlist \
-  iforlist \
   println \
 
 ######
@@ -35,9 +34,6 @@ fact: fact.dats
 forlist: forlist.dats
 	$(ATSCC) -o forlist forlist.dats -lats && ./forlist
 
-iforlist: iforlist.dats
-	$(ATSCC) -o iforlist iforlist.dats -lats && ./iforlist
-
 println: println.dats
 	$(ATSCC) -o println println.dats -lats && ./println
 
@@ -46,7 +42,6 @@ println: println.dats
 html::
 	$(ATSOPT) --posmark_html -d fact.dats > fact_dats.html
 	$(ATSOPT) --posmark_html -d forlist.dats > forlist_dats.html
-	$(ATSOPT) --posmark_html -d iforlist.dats > iforlist_dats.html
 
 ######
 
@@ -55,7 +50,6 @@ xref::
           $(ATSHOME)/utils/xref/ats_prelude_xref.dats > /dev/null
 	$(ATSOPT) --posmark_xref=XREF -d fact.dats > fact_dats.html
 	$(ATSOPT) --posmark_xref=XREF -d forlist.dats > forlist_dats.html
-	$(ATSOPT) --posmark_xref=XREF -d iforlist.dats > iforlist_dats.html
 	$(ATSOPT) --posmark_xref=XREF -d println.dats > println_dats.html
 
 ######

@@ -4,7 +4,8 @@
 
 ######
 
-fact: do-while syntax
+fact: do! { ... } `while` (...)
+println: print! (...) and println! (...)
 
 ###### end of [README] ######
 
