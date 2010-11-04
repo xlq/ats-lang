@@ -48,6 +48,9 @@ SOURCES = \
   atsyndef_util.sats \
   atsyndef_util.dats \
   atsyndef_main.dats \
+  atsyndef_DO.dats \
+  atsyndef_FOR.dats \
+  atsyndef_IFOR.dats \
 
 OBJECTS := $(patsubst %.sats, %_sats.o, $(SOURCES))
 OBJECTS := $(patsubst %.dats, %_dats.o, $(OBJECTS))
@@ -79,8 +82,25 @@ atsyndef_util_dats.o: atsyndef_util.dats
 	$(ATSCC) $(IATS) $(CCFLAGS) -c atsyndef_util.dats
 	$(AR) -r libatsyndef.a $@
 
+atsyndef_main_sats.o: atsyndef_main.sats
+	$(ATSCC) $(IATS) $(CCFLAGS) -c atsyndef_main.sats
+	$(AR) -r libatsyndef.a $@
 atsyndef_main_dats.o: atsyndef_main.dats
 	$(ATSCC) $(IATS) $(CCFLAGS) -c atsyndef_main.dats
+	$(AR) -r libatsyndef.a $@
+
+######
+
+atsyndef_DO_dats.o: atsyndef_DO.dats
+	$(ATSCC) $(IATS) $(CCFLAGS) -c atsyndef_DO.dats
+	$(AR) -r libatsyndef.a $@
+
+atsyndef_FOR_dats.o: atsyndef_FOR.dats
+	$(ATSCC) $(IATS) $(CCFLAGS) -c atsyndef_FOR.dats
+	$(AR) -r libatsyndef.a $@
+
+atsyndef_IFOR_dats.o: atsyndef_IFOR.dats
+	$(ATSCC) $(IATS) $(CCFLAGS) -c atsyndef_IFOR.dats
 	$(AR) -r libatsyndef.a $@
 
 ######

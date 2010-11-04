@@ -1,0 +1,10 @@
+#
+# Some examples in ATS involving syndef-loaded identifiers
+#
+
+######
+
+fact: do-while syntax
+
+###### end of [README] ######
+

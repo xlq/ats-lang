@@ -1145,6 +1145,31 @@ end // end of [list_foreach_cloref]
 
 (* ****** ****** *)
 
+implement{a}
+list_foreach_cloptr__viewless
+  (xs, f) = let
+//
+  viewtypedef cloptr0_t = a -<cloptr1> void
+  viewtypedef cloptr1_t = (!unit_v | a) -<cloptr1> void
+//
+  val _ptr = __cast (f) where {
+    extern castfn __cast (f: !cloptr0_t >> cloptr1_t):<> ptr
+  } // end of [val]
+//
+  prval pf = unit_v ()
+  val () = list_foreach_cloptr<a> {unit_v} (pf | xs, f)
+  prval unit_v () = pf
+//
+  val _ptr = __cast (f) where {
+    extern castfn __cast (f: !cloptr1_t >> cloptr0_t):<> ptr
+  } // end of [val]
+//
+in
+  // empty
+end // end of [list_foreach_cloptr__viewless]
+
+(* ****** ****** *)
+
 implement{a1,a2}
 list_foreach2__main
   {v} {vt} {n} {f:eff} (pf | xs1, xs2, f, env) = let
@@ -1274,6 +1299,8 @@ in
   // empty
 end // end of [list_iforeach_clo]
 
+(* ****** ****** *)
+
 implement{a}
 list_iforeach_cloptr
   {v} {n} {f:eff} (pf | xs, f) = let
@@ -1283,6 +1310,31 @@ list_iforeach_cloptr
 in
   // empty
 end // end of [list_iforeach_cloptr]
+
+implement{a}
+list_iforeach_cloptr__viewless
+  {n} (xs, f) = let
+//
+  viewtypedef cloptr0_t = (natLt n, a) -<cloptr1> void
+  viewtypedef cloptr1_t = (!unit_v | natLt n, a) -<cloptr1> void
+//
+  val _ptr = __cast (f) where {
+    extern castfn __cast (f: !cloptr0_t >> cloptr1_t):<> ptr
+  } // end of [val]
+//
+  prval pf = unit_v ()
+  val () = list_iforeach_cloptr<a> {unit_v} (pf | xs, f)
+  prval unit_v () = pf
+//
+  val _ptr = __cast (f) where {
+    extern castfn __cast (f: !cloptr1_t >> cloptr0_t):<> ptr
+  } // end of [val]
+//
+in
+  // empty
+end // end of [list_iforeach_cloptr__viewless]
+
+(* ****** ****** *)
 
 implement{a}
 list_iforeach_cloref {n} {f:eff} (xs, f) = let

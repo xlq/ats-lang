@@ -73,13 +73,50 @@ end // end of [fprint_intlst]
 (* ****** ****** *)
 
 implement
-un_d1exp_idext
-  (loc, d1e) =
-   case+ d1e.d1exp_node of
+tmpqi0de_make_qid
+  (loc, q, id) = '{
+  tmpqi0de_loc= loc, tmpqi0de_qua= q, tmpqi0de_sym= id
+} // end of [tmpqi0de_make_qid]
+
+(* ****** ****** *)
+
+implement
+un_d1exp_ann_type
+  (d1e) = case+ d1e.d1exp_node of
+  | D1Eann_type (d1e, s1e) => (d1e, s1e)
+  | _ => let
+      val () = prerr_loc_syndef (d1e.d1exp_loc)
+      val () = prerr ": the dynexp is expected be some annotated expression."
+      val () = prerr_newline ()
+    in
+      $Err.abort ()
+    end // end of [_]
+// end of [un_d1exp_ann_type]
+
+(* ****** ****** *)
+
+implement
+un_d1exp_qid (d1e) =
+  case+ d1e.d1exp_node of
+  | D1Eqid (q, id) =>  (q, id)
+  | _ => let
+      val () = prerr_loc_syndef (d1e.d1exp_loc)
+      val () = prerr ": the dynexp is expected be some (qualified) identifier."
+      val () = prerr_newline ()
+    in
+      $Err.abort ()
+    end // end of [_]
+// end of [un_d1exp_qid]
+
+(* ****** ****** *)
+
+implement
+un_d1exp_idext (d1e) =
+  case+ d1e.d1exp_node of
   | D1Eidextapp (id, _, _) => id
   | _ => let
-      val () = prerr_loc_syndef (loc)
-      val () = prerr ": the dynexp is expected to refer to some external identifer."
+      val () = prerr_loc_syndef (d1e.d1exp_loc)
+      val () = prerr ": the dynexp is expected to be some external identifer."
       val () = prerr_newline ()
     in
       $Err.abort {sym_t} ()
@@ -88,13 +125,13 @@ un_d1exp_idext
 
 implement
 un_d1exp_idext_sym
-  (loc, d1e, sym0) = let
-  val sym = un_d1exp_idext (loc, d1e)
+  (d1e, sym0) = let
+  val sym = un_d1exp_idext (d1e)
 in
   if $Sym.eq_symbol_symbol
     (sym0, sym) then () else let
-    val () = prerr_loc_syndef (loc)
-    val () = prerr ": the dynexp is expected to refer to the idext `"
+    val () = prerr_loc_syndef (d1e.d1exp_loc)
+    val () = prerr ": the dynexp is expected to be the idext `"
     val () = $Sym.prerr_symbol (sym0)
     val () = prerr "`"
     val () = prerr_newline ()
@@ -107,12 +144,12 @@ end // end of [un_d1exp_idext_sym]
 
 implement
 un_d1exp_decseq
-  (loc, d1e) =
+  (d1e) =
   case+ d1e.d1exp_node of
   | D1Edecseq (d1cs) => d1cs
   | _ => let
-      val () = prerr_loc_syndef (loc)
-      val () = prerr ": the dynexp is expected to refer to a list of declarations."
+      val () = prerr_loc_syndef (d1e.d1exp_loc)
+      val () = prerr ": the dynexp is expected to be a list of declarations."
       val () = prerr_newline ()
     in
       $Err.abort {d1eclst} ()

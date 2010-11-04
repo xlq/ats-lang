@@ -876,16 +876,21 @@ implement dqi0de_make_none (id) = begin
   let val q = d0ynq_none () in dqi0de_make_some (q, id) end
 end // end of [dqi0de_make_none]
 
-//
+(* ****** ****** *)
 
-implement arrqi0de_make_some (q, id) = '{
-  arrqi0de_loc= id.i0de_loc, arrqi0de_qua= q, arrqi0de_sym= id.i0de_sym
-}
+implement
+arrqi0de_make_some
+  (q, id) = '{
+  arrqi0de_loc= id.i0de_loc
+, arrqi0de_qua= q, arrqi0de_sym= id.i0de_sym
+} // end of [arrqi0de_make_some]
 
-implement arrqi0de_make_none (id) =
+implement
+arrqi0de_make_none (id) =
   let val q = d0ynq_none () in arrqi0de_make_some (q, id) end
+// end of [arrqi0de_make_none]
 
-//
+(* ****** ****** *)
 
 implement tmpqi0de_make_some (q, id) = let
   val loc = combine (q.d0ynq_loc, id.i0de_loc) in '{

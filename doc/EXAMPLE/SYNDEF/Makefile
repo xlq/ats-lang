@@ -21,18 +21,28 @@ checkall: compall cleanall
 
 ######
 
-compall:: fact
+compall:: \
+  fact \
+  forlist \
+  iforlist \
 
 ######
 
 fact: fact.dats
-	$(ATSCC) -D_ATS_PROOFCHECK -o fact fact.dats -lats && ./fact
+	$(ATSCC) -o fact fact.dats -lats && ./fact
+
+forlist: forlist.dats
+	$(ATSCC) -o forlist forlist.dats -lats && ./forlist
+
+iforlist: iforlist.dats
+	$(ATSCC) -o iforlist iforlist.dats -lats && ./iforlist
 
 ######
 
 html::
-	$(ATSOPT) --posmark_html -d HelloWorld.dats > HelloWorld_dats.html
 	$(ATSOPT) --posmark_html -d fact.dats > fact_dats.html
+	$(ATSOPT) --posmark_html -d forlist.dats > forlist_dats.html
+	$(ATSOPT) --posmark_html -d iforlist.dats > iforlist_dats.html
 
 ######
 
@@ -40,6 +50,8 @@ xref::
 	$(ATSOPT) --posmark_xref=XREF -d \
           $(ATSHOME)/utils/xref/ats_prelude_xref.dats > /dev/null
 	$(ATSOPT) --posmark_xref=XREF -d fact.dats > fact_dats.html
+	$(ATSOPT) --posmark_xref=XREF -d forlist.dats > forlist_dats.html
+	$(ATSOPT) --posmark_xref=XREF -d iforlist.dats > iforlist_dats.html
 
 ######
 
@@ -56,5 +68,7 @@ cleanall:: clean
 	$(RMF) ./XREF/*
 	$(RMF) *_?ats.html
 	$(RMF) fact
+	$(RMF) forlist
+	$(RMF) iforlist
 
 ###### end of [Makefile] ######

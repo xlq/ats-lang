@@ -1,5 +1,5 @@
 (*
-** some code for testing syndef
+** some code for testing the do-while syntax
 *)
 
 (* ****** ****** *)
@@ -19,7 +19,7 @@ fun fact
   } `while` (n >= 1)
 in
   res
-end // end of [f]
+end // end of [fact]
 
 implement main () = let
   val ans = fact (10) in print "10! = "; print ans; print_newline ()

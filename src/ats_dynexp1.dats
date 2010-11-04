@@ -179,7 +179,8 @@ in '{
 
 (* ****** ****** *)
 
-fn prerr_loc_error1 (loc: loc_t): void =
+fn prerr_loc_error1
+  (loc: loc_t): void =
   ($Loc.prerr_location loc; prerr ": error(1)")
 // end of [prerr_loc_error1]
 

@@ -695,12 +695,12 @@ typedef tmpqi0de = '{
   tmpqi0de_loc= loc_t, tmpqi0de_qua= d0ynq, tmpqi0de_sym= sym_t
 } // end of [tmpqi0de]
 
-fun tmpqi0de_make_none (id: i0de): tmpqi0de =
-  "tmpqi0de_make_none"
+fun tmpqi0de_make_none
+  (id: i0de): tmpqi0de = "tmpqi0de_make_none"
 // end of [tmpqi0de_make_none]
 
-fun tmpqi0de_make_some (q: d0ynq, id: i0de): tmpqi0de =
-  "tmpqi0de_make_some"
+fun tmpqi0de_make_some
+  (q: d0ynq, id: i0de): tmpqi0de = "tmpqi0de_make_some"
 // end of [tmpqi0de_make_some]
 
 (* ****** ****** *)
