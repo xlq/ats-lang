@@ -135,7 +135,8 @@ end // end of [who2wc]
 
 (* ****** ****** *)
 
-implement main () = () where {
+implement
+main () = () where {
   val () = who2wc ()
   val () = printf ("who2wc is finished.\n", @())
 } // end of [main]

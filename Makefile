@@ -35,7 +35,10 @@
 ## Author: Yuri D'Elia (wavexx AT thregr DOT org)
 ##
 
+# Disable parallelism and implicit rules
+MAKEFLAGS += -j1
 .SUFFIXES:
+
 all:: Makefile
 
 ######
