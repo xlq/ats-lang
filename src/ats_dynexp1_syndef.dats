@@ -95,16 +95,120 @@ implement
 match_intlst_intlst (ns1, ns2) =
   case+ ns1 of
   | list_cons (n1, ns1) => (case+ ns2 of
-    | list_cons (n2, ns2) =>
+    | list_cons (n2, ns2) => (
         if n2 >= 0 then
           (if (n1 = n2) then match_intlst_intlst (ns1, ns2) else false)
         else match_intlst_intlst (ns1, ns2)
+      ) // end of [list_cons]
     | list_nil () => false
     ) // end of [cons]
   | list_nil () => (
     case+ ns2 of list_cons _ => false | list_nil () => true
-    ) // en dof [list_nil]
+    ) // end of [list_nil]
 // end of [match_intlst_intlst]
+
+(* ****** ****** *)
+
+implement
+tmpqi0de_make_qid
+  (loc, q, id) = '{
+  tmpqi0de_loc= loc, tmpqi0de_qua= q, tmpqi0de_sym= id
+} // end of [tmpqi0de_make_qid]
+
+(* ****** ****** *)
+
+implement
+un_d1exp_ann_type
+  (d1e) = case+ d1e.d1exp_node of
+  | D1Eann_type (d1e, s1e) => (d1e, s1e)
+  | _ => let
+      val () = prerr_loc_error1 (d1e.d1exp_loc)
+      val () = prerr ": the dynexp is expected be some annotated expression."
+      val () = prerr_newline ()
+    in
+      $Err.abort ()
+    end // end of [_]
+// end of [un_d1exp_ann_type]
+
+(* ****** ****** *)
+
+implement
+un_d1exp_idext (d1e) =
+  case+ d1e.d1exp_node of
+  | D1Eidextapp (id, _, _) => id
+  | _ => let
+      val () = prerr_loc_error1 (d1e.d1exp_loc)
+      val () = prerr ": the dynexp is expected to be some external identifer."
+      val () = prerr_newline ()
+    in
+      $Err.abort {sym_t} ()
+    end // end of [_]
+// end of [un_d1exp_idext]
+
+implement
+un_d1exp_idext_sym
+  (d1e, sym0) = let
+  val sym = un_d1exp_idext (d1e)
+in
+  if $Sym.eq_symbol_symbol
+    (sym0, sym) then () else let
+    val () = prerr_loc_error1 (d1e.d1exp_loc)
+    val () = (
+      prerr ": the external id ["; $Sym.prerr_symbol (sym0); prerr "] is expected."
+    ) // end of [val]
+    val () = prerr_newline ()
+  in
+    $Err.abort {void} ()
+  end (* end of [if] *)
+end // end of [un_d1exp_idext_sym]
+
+(* ****** ****** *)
+
+implement
+un_d1exp_qid (d1e) =
+  case+ d1e.d1exp_node of
+  | D1Eqid (q, id) =>  (q, id)
+  | _ => let
+      val () = prerr_loc_error1 (d1e.d1exp_loc)
+      val () = prerr ": the dynexp is expected be some (qualified) identifier."
+      val () = prerr_newline ()
+    in
+      $Err.abort ()
+    end // end of [_]
+// end of [un_d1exp_qid]
+
+implement
+un_d1exp_qid_sym
+  (d1e, sym0) = let
+  val (q, sym) = un_d1exp_qid (d1e)
+in
+  if $Sym.eq_symbol_symbol
+    (sym0, sym) then () else let
+    val () = prerr_loc_error1 (d1e.d1exp_loc)
+    val () = (
+      prerr ": the symbol ["; $Sym.prerr_symbol (sym0); prerr "] is expected."
+    ) // end of [val]
+    val () = prerr_newline ()
+  in
+    $Err.abort {void} ()
+  end (* end of [if] *)
+end // end of [un_d1exp_qid_sym]
+
+(* ****** ****** *)
+
+implement
+un_d1exp_decseq
+  (d1e) =
+  case+ d1e.d1exp_node of
+  | D1Edecseq (d1cs) => d1cs
+  | _ => let
+      val () = prerr_loc_error1 (d1e.d1exp_loc)
+      val () = prerr ": the dynexp is expected to be a list of declarations."
+      val () = prerr_newline ()
+    in
+      $Err.abort {d1eclst} ()
+    end // end of [_]
+// end of [un_d1exp_decseq]
 
 (* ****** ****** *)
 //
@@ -121,7 +225,10 @@ fun atsyndef_search_all: atsyndef_search_all_type
 
 (* ****** ****** *)
 
-val _neg1_1 = (~1 :: 1 :: nil): intlst
+val _n1_p1 = (~1 :: 1 :: nil): intlst // while ($test) 
+val _n1_p1_n1 =
+  (~1 :: 1 :: ~1 :: nil): intlst // do ($body) while ($test)
+// end of [val]
 
 (* ****** ****** *)
 
@@ -130,12 +237,35 @@ macdef matii = match_intlst_intlst
 (* ****** ****** *)
 
 extern
+fun search_DO
+  (ns: intlst): fsyndefopt
+extern
+fun d1exp_do_n1_p1_n1
+  (loc: loc_t, d1es: d1explst): d1exp
+// end of [d1exp_do_n1_p1_n1]
+
+implement
+search_DO (ns) = let
+// (*
+  val () = print "search_DO: ns = "
+  val () = fprint_intlst (stdout_ref, ns)
+  val () = print_newline ()
+// *)
+in
+  case+ 0 of
+  | _ when ns \matii _n1_p1_n1 => Some_vt (d1exp_do_n1_p1_n1)
+  | _ => None_vt ()
+end // end of [search_DO]
+
+(* ****** ****** *)
+
+extern
 fun search_WHILE
   (ns: intlst): fsyndefopt
 extern
-fun d1exp_while_neg1_1
+fun d1exp_while_n1_p1
   (loc: loc_t, d1es: d1explst): d1exp
-// end of [d1exp_while_neg1_1]
+// end of [d1exp_while_n1_p1]
 
 implement
 search_WHILE (ns) = let
@@ -146,9 +276,9 @@ search_WHILE (ns) = let
 // *)
 in
   case+ 0 of
-  | _ when ns \matii _neg1_1 => Some_vt (d1exp_while_neg1_1)
+  | _ when ns \matii _n1_p1 => Some_vt (d1exp_while_n1_p1)
   | _ => None_vt ()
-end // end of [do_search]
+end // end of [search_WHILE]
 
 implement
 atsyndef_search_all_default
@@ -163,6 +293,7 @@ atsyndef_search_all_default
 *)
 in
   case+ 0 of
+  | _ when id = $Sym.symbol_DO => search_DO (ns)
   | _ when id = $Sym.symbol_WHILE => search_WHILE (ns)
   | _ => None_vt ()
 end // end of [atsyndef_search_all_default]
@@ -297,7 +428,35 @@ d1exp_app_dyn_syndef (
 (* ****** ****** *)
 
 implement
-d1exp_while_neg1_1
+d1exp_do_n1_p1_n1
+  (loc0, d1es) = let
+//
+  val- cons (d1e3, d1es) = d1es
+//
+  val- cons (d1e2, d1es) = d1es
+  val () = un_d1exp_idext_sym (d1e2, $Sym.symbol_WHILE)
+//
+  val- cons (d1e1, d1es) = d1es
+//
+  val _then = d1exp_loopexn (loc0, 1) // continue
+  val _else = Some (d1exp_loopexn (loc0, 0)) // break
+//
+  val loc3 = d1e3.d1exp_loc
+  val _ifexp = d1exp_if (loc3, i1nvresstate_nil, d1e3, _then, _else)
+//
+  val _inv = loopi1nv_nil (loc0)
+  val _true = d1exp_bool (loc0, true)
+//
+  val _body = d1exp_seq (loc0, d1e1 :: _ifexp :: nil)
+//
+in
+  d1exp_while (loc0, _inv, _true, _body)
+end // end of [do_n1_p1_n1]
+
+(* ****** ****** *)
+
+implement
+d1exp_while_n1_p1
   (loc0, d1es) = let
 //
   val- cons (d1e2, d1es) = d1es
@@ -310,7 +469,7 @@ d1exp_while_neg1_1
 //
 in
   d1exp_while (loc0, _inv, _test, _body)
-end // end of [d1exp_while_1_1]
+end // end of [d1exp_while_n1_p1]
 
 (* ****** ****** *)
 

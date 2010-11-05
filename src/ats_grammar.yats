@@ -1935,7 +1935,11 @@ i0deseq /* identifier sequence */
 i0dext /* extern identifier for loading syndef */
   : IDENTIFIER_ext                      { $$ = $1 ; }
 /* keyword */
+/*
+  | DO                                  { $$ = i0de_make_DO($1) ; }
+*/
   | WHILE                               { $$ = i0de_make_WHILE($1) ; }
+;
 
 /* ****** ****** */
 

@@ -22,6 +22,7 @@ overload = with $Sym.eq_symbol_symbol
 
 staload "ats_staexp1.sats"
 staload "ats_dynexp1.sats"
+staload "ats_dynexp1_syndef.sats"
 
 (* ****** ****** *)
 
@@ -55,7 +56,6 @@ fun atsyndef_search_all
 implement
 atsyndef_search_all
   (id, ns) = case+ 0 of
-  | _ when id = symbol_DO => do_search (ns)
   | _ when id = symbol_FORLIST => forlist_search (ns)
   | _ when id = symbol_PRINT => print_search (ns)
   | _ when id = symbol_PRINTLN => println_search (ns)
@@ -64,7 +64,6 @@ atsyndef_search_all
 
 (* ****** ****** *)
 
-dynload "atsyndef_DO.dats"
 dynload "atsyndef_FOR.dats"
 dynload "atsyndef_PRINT.dats"
 

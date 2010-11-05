@@ -27,33 +27,4 @@ staload "ats_dynexp1.sats"
 
 (* ****** ****** *)
 
-typedef intlst = List (int)
-fun match_intlst_intlst (ns1: intlst, ns2: intlst): bool
-
-(* ****** ****** *)
-
-fun tmpqi0de_make_qid
-  (loc: loc_t, q: d0ynq, id: sym_t): tmpqi0de
-// end of [tmpqi0de_make_qid]
-
-(* ****** ****** *)
-
-fun un_d1exp_ann_type (d1e: d1exp): (d1exp, s1exp)
-
-(* ****** ****** *)
-
-fun un_d1exp_qid (d1e: d1exp): (d0ynq, sym_t)
-fun un_d1exp_qid_sym (d1e: d1exp, id: sym_t): void
-
-(* ****** ****** *)
-
-fun un_d1exp_idext (d1e: d1exp): sym_t
-fun un_d1exp_idext_sym (d1e: d1exp, id: sym_t): void
-
-(* ****** ****** *)
-
-fun un_d1exp_decseq (d1e: d1exp): d1eclst
-
-(* ****** ****** *)
-
 (* end of [atsyndef_util.sats] *)

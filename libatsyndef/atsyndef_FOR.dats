@@ -20,14 +20,12 @@ overload = with $Sym.eq_symbol_symbol
 
 staload "ats_staexp1.sats"
 staload "ats_dynexp1.sats"
-
-(* ****** ****** *)
-
-staload "atsyndef_util.sats"
+staload "ats_dynexp1_syndef.sats"
 macdef matii = match_intlst_intlst
 
 (* ****** ****** *)
 
+staload "atsyndef_util.sats"
 staload "atsyndef_main.sats"
 
 (* ****** ****** *)

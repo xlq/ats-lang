@@ -15,7 +15,7 @@ staload _(*anon*) = "prelude/DATS/syndef.dats"
 (* ****** ****** *)
 
 (*
-for_list (x:T) `in` xs `do` $exp =>
+for_list! (x:T) `in` xs do $exp =>
   forlist_in_do<T> (xs, lam (x) => $exp)
 *)
 

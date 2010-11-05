@@ -137,6 +137,7 @@ implement symbol_TILDA = symbol_make_string "~"
 implement symbol_FALSE = symbol_make_string "false"
 implement symbol_TRUE = symbol_make_string "true"
 
+implement symbol_DO = symbol_make_string "do"
 implement symbol_FOR = symbol_make_string "for"
 implement symbol_IN = symbol_make_string "in"
 implement symbol_R0EAD = symbol_make_string "r@ead"

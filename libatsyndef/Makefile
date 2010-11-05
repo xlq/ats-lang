@@ -48,7 +48,6 @@ SOURCES = \
   atsyndef_util.sats \
   atsyndef_util.dats \
   atsyndef_main.dats \
-  atsyndef_DO.dats \
   atsyndef_FOR.dats \
   atsyndef_PRINT.dats \
 
@@ -90,10 +89,6 @@ atsyndef_main_dats.o: atsyndef_main.dats
 	$(AR) -r libatsyndef.a $@
 
 ######
-
-atsyndef_DO_dats.o: atsyndef_DO.dats
-	$(ATSCC) $(IATS) $(CCFLAGS) -c atsyndef_DO.dats
-	$(AR) -r libatsyndef.a $@
 
 atsyndef_FOR_dats.o: atsyndef_FOR.dats
 	$(ATSCC) $(IATS) $(CCFLAGS) -c atsyndef_FOR.dats
