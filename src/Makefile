@@ -61,8 +61,8 @@ ATSCCFLAGS=-g
 #ATSCCFLAGS=-O1
 #ATSCCFLAGS=-O2
 #ATSCCFLAGS=-D_ATS_MULTITHREAD -O2 -g
-#ATSCCFLAGS=-O2 -g
-ATSCCFLAGS=-O2 -g -DATS_SYNDEFATS
+ATSCCFLAGS=-O2 -g
+#ATSCCFLAGS=-O2 -g -DATS_SYNDEFATS
 
 #GCFLAGS=-D_ATS_gc
 #GCFLAGS=-D_ATS_gcats
@@ -119,8 +119,9 @@ SOURCES := \
   ats_staexp1.sats ats_staexp1.dats \
   ats_staexp1_print.dats \
   ats_dynexp1.sats ats_dynexp1.dats \
-  ats_dynexp1_syndef.dats \
   ats_dynexp1_print.dats \
+  ats_dynexp1_syndef.sats \
+  ats_dynexp1_syndef.dats \
   ats_trans1_env.sats ats_trans1_env.dats \
   ats_e1xp_eval.sats ats_e1xp_eval.dats \
   ats_trans1.sats ats_trans1_sta.dats ats_trans1_dyn.dats \
@@ -193,7 +194,8 @@ OBJECTS := $(patsubst %.dats, %_dats.o, $(OBJECTS))
 ######
 
 LIBOBJS := -lgmp
-LIBATSYNDEF := -ldl -latsyndef
+#LIBATSYNDEF := -ldl -latsyndef
+LIBATSYNDEF :=
 
 ######
 

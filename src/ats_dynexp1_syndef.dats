@@ -36,14 +36,17 @@
 //
 (* ****** ****** *)
 
-staload
-Loc = "ats_location.sats"
+staload Err = "ats_error.sats"
+staload Loc = "ats_location.sats"
 typedef loc_t = $Loc.location_t
 staload Lst = "ats_list.sats"
+staload Sym = "ats_symbol.sats"
+overload = with $Sym.eq_symbol_symbol
 
 (* ****** ****** *)
 
 staload "ats_dynexp1.sats"
+staload "ats_dynexp1_syndef.sats"
 
 (* ****** ****** *)
 
@@ -59,9 +62,51 @@ dynload "libatsyndef/atsyndef_main.dats"
 
 (* ****** ****** *)
 
-typedef intlst = List (int)
-typedef fsyndef_t = (loc_t, d1explst) -<fun1> d1exp
+fn prerr_loc_error1
+  (loc: loc_t): void =
+  ($Loc.prerr_location loc; prerr ": error(1)")
+// end of [prerr_loc_error1]
 
+(* ****** ****** *)
+
+implement
+fprint_intlst
+  (out, ns) = let
+  fun loop (
+    out: FILEref, ns: intlst, i: int
+  ) : void =
+    case+ ns of
+    | list_cons (n, ns) => let
+        val () = if i > 0 then
+          fprint_string (out, ", ")
+        val () = fprint_int (out, n)
+      in
+        loop (out, ns, i+1)
+      end // end of [cons]
+    | list_nil () => ()
+  // end of [loop]
+in
+  loop (out, ns, 0)
+end // end of [fprint_intlst]
+
+(* ****** ****** *)
+
+implement
+match_intlst_intlst (ns1, ns2) =
+  case+ ns1 of
+  | list_cons (n1, ns1) => (case+ ns2 of
+    | list_cons (n2, ns2) =>
+        if n2 >= 0 then
+          (if (n1 = n2) then match_intlst_intlst (ns1, ns2) else false)
+        else match_intlst_intlst (ns1, ns2)
+    | list_nil () => false
+    ) // end of [cons]
+  | list_nil () => (
+    case+ ns2 of list_cons _ => false | list_nil () => true
+    ) // en dof [list_nil]
+// end of [match_intlst_intlst]
+
+(* ****** ****** *)
 //
 // HX-2010-11-02:
 // this function is implemented in
@@ -69,21 +114,64 @@ typedef fsyndef_t = (loc_t, d1explst) -<fun1> d1exp
 //
 typedef
 atsyndef_search_all_type =
-  (sym_t, intlst) -<fun1> Option_vt (fsyndef_t)
+  (sym_t, intlst) -<fun1> Option_vt (fsyndef)
 extern
 fun atsyndef_search_all: atsyndef_search_all_type
 // end of [extern]
 
 (* ****** ****** *)
 
-fun atsyndef_search_all_default
-  (id: sym_t, ns: intlst) = None_vt ()
-// end of [atsyndef_search_all_default]
+val _neg1_1 = (~1 :: 1 :: nil): intlst
+
+(* ****** ****** *)
+
+macdef matii = match_intlst_intlst
+
+(* ****** ****** *)
+
+extern
+fun search_WHILE
+  (ns: intlst): fsyndefopt
+extern
+fun d1exp_while_neg1_1
+  (loc: loc_t, d1es: d1explst): d1exp
+// end of [d1exp_while_neg1_1]
+
+implement
+search_WHILE (ns) = let
+// (*
+  val () = print "search_WHILE: ns = "
+  val () = fprint_intlst (stdout_ref, ns)
+  val () = print_newline ()
+// *)
+in
+  case+ 0 of
+  | _ when ns \matii _neg1_1 => Some_vt (d1exp_while_neg1_1)
+  | _ => None_vt ()
+end // end of [do_search]
+
+implement
+atsyndef_search_all_default
+  (id, ns) = let
+(*
+  val () = print "atsyndef_search_all_default: id = "
+  val () = $Sym.print_symbol (id)
+  val () = print_newline ()
+  val () = print "atsyndef_search_all_default: ns = "
+  val () = fprint_intlst (stdout_ref, ns)
+  val () = print_newline ()
+*)
+in
+  case+ 0 of
+  | _ when id = $Sym.symbol_WHILE => search_WHILE (ns)
+  | _ => None_vt ()
+end // end of [atsyndef_search_all_default]
 
 (* ****** ****** *)
 
 (*
 // HX: compile with the -DATS_SYNDEFATS flag
+#define _SYNDEFATS 1
 *)
 #if defined(_SYNDEFATS) #then
 //
@@ -154,20 +242,26 @@ in // in of [local]
 
 implement
 atsyndef_search_all
-  (id, ns) = case+ 0 of
-  | _ when fsrch_ptr > null => let
-      val fsrch = __cast (fsrch_ptr) where {
-        extern castfn __cast (x: ptr):<> atsyndef_search_all_type
-      } // end of [_ when ...]
-    in
-      fsrch (id, ns)
-    end // end of [_ when ...]
-  | _ => atsyndef_search_all_default (id, ns)
-// end of [atsyndef_search_all]
+  (id, ns) = let
+  val ans = atsyndef_search_all_default (id, ns)
+in
+  case+ ans of
+  | ~None_vt _ => (case+ 0 of
+    | _ when fsrch_ptr > null => let
+        val fsrch = __cast (fsrch_ptr) where {
+          extern castfn __cast (x: ptr):<> atsyndef_search_all_type
+        } // end of [_ when ...]
+      in
+        fsrch (id, ns)
+      end // end of [_ when ...]
+    | _ => None_vt ()
+    ) // end of [None_vt]
+  | Some_vt _ => (fold@ ans; ans)
+end // end of [atsyndef_search_all]
 
 end  // end of [local]
 
-#else
+#else // else of [_SYNDEFATS]
 
 implement
 atsyndef_search_all
@@ -199,6 +293,24 @@ d1exp_app_dyn_syndef (
       (loc0, d1e_fun, loc_arg, npf, d1es_arg)
     // end of [_]
 // end of [d1exp_app_dyn_syndef]
+
+(* ****** ****** *)
+
+implement
+d1exp_while_neg1_1
+  (loc0, d1es) = let
+//
+  val- cons (d1e2, d1es) = d1es
+  val _body = d1e2
+//
+  val- cons (d1e1, d1es) = d1es
+  val _test = d1e1
+//
+  val _inv = loopi1nv_nil (loc0)
+//
+in
+  d1exp_while (loc0, _inv, _test, _body)
+end // end of [d1exp_while_1_1]
 
 (* ****** ****** *)
 

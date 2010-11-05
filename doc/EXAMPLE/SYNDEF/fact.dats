@@ -14,9 +14,9 @@ fun fact
   (n: int n): int = let
   var n: int = n
   var res: int = 1
-  val () = do! {
+  val () = while (n >= 1) {
     val () = res := n * res; val () = n := n-1
-  } `while` (n >= 1)
+  } // end of [val]
 in
   res
 end // end of [fact]

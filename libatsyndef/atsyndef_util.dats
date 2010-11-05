@@ -54,28 +54,6 @@ match_intlst_intlst (ns1, ns2) =
 (* ****** ****** *)
 
 implement
-fprint_intlst
-  (out, ns) = let
-  fun loop (
-    out: FILEref, ns: intlst, i: int
-  ) : void =
-    case+ ns of
-    | list_cons (n, ns) => let
-        val () = if i > 0 then
-          fprint_string (out, ", ")
-        val () = fprint_int (out, n)
-      in
-        loop (out, ns, i+1)
-      end // end of [cons]
-    | list_nil () => ()
-  // end of [loop]
-in
-  loop (out, ns, 0)
-end // end of [fprint_intlst]
-
-(* ****** ****** *)
-
-implement
 tmpqi0de_make_qid
   (loc, q, id) = '{
   tmpqi0de_loc= loc, tmpqi0de_qua= q, tmpqi0de_sym= id

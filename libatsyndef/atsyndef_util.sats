@@ -32,12 +32,6 @@ fun match_intlst_intlst (ns1: intlst, ns2: intlst): bool
 
 (* ****** ****** *)
 
-fun fprint_intlst
-  (out: FILEref, ns: intlst): void
-// end of [fprint_intlst]
-
-(* ****** ****** *)
-
 fun tmpqi0de_make_qid
   (loc: loc_t, q: d0ynq, id: sym_t): tmpqi0de
 // end of [tmpqi0de_make_qid]

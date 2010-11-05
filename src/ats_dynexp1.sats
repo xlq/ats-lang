@@ -695,12 +695,6 @@ fun d1exp_ann_type (_: loc_t, d1e: d1exp, s1e: s1exp): d1exp
 fun d1exp_app_dyn (
   loc: loc_t, d1e: d1exp, loc_arg: loc_t, npf: int, d1es: d1explst
 ) : d1exp // end of [d1exp_app_dyn]
-//
-// HX: for resolving external ids loaded with syndef
-//
-fun d1exp_app_dyn_syndef (
-  loc: loc_t, d1e: d1exp, loc_arg: loc_t, npf: int, d1es: d1explst
-) : d1exp // end of [d1exp_app_dyn_syndef]
 
 (* ****** ****** *)
 

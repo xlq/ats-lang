@@ -123,8 +123,9 @@ SOURCES := \
   ats_staexp1.sats ats_staexp1.dats \
   ats_staexp1_print.dats \
   ats_dynexp1.sats ats_dynexp1.dats \
-  ats_dynexp1_syndef.dats \
   ats_dynexp1_print.dats \
+  ats_dynexp1_syndef.dats \
+  ats_dynexp1_syndef.sats \
   ats_trans1_env.sats ats_trans1_env.dats \
   ats_e1xp_eval.sats ats_e1xp_eval.dats \
   ats_trans1.sats ats_trans1_sta.dats ats_trans1_dyn.dats \
