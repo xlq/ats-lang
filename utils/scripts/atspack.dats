@@ -342,9 +342,9 @@ in
     val d = n1 - n2
     var i: natLte n2 = 0
     var res: bool = true
-    val () = while (i < n2)
+    val () = while (i < n2) (
       if name[d+i] = sfx[i] then i := i+1 else (res := false; break)
-    // end of [val]
+    ) // end of [val]
   in
     res
   end else
