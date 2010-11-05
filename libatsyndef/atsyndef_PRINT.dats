@@ -53,19 +53,19 @@ val symbol_FORLIST = $Sym.symbol_make_string "for_list"
 
 (* ****** ****** *)
 
-val _neg1 = (~1 :: nil ()): intlst
+val _n1 = (~1 :: nil ()): intlst
 
 (* ****** ****** *)
 
 extern
-fun print_neg1
+fun print_n1
   (loc: loc_t, d1es: d1explst): d1exp
-// end of [print_neg1]
+// end of [print_n1]
 
 extern
-fun println_neg1
+fun println_n1
   (loc: loc_t, d1es: d1explst): d1exp
-// end of [print_neg1]
+// end of [println_n1]
 
 (* ****** ****** *)
 
@@ -78,7 +78,7 @@ print_search (ns) = let
 *)
 in
   case+ 0 of
-  | _ when ns \matii _neg1 => Some_vt (print_neg1)
+  | _ when ns \matii _n1 => Some_vt (print_n1)
   | _ => None_vt ()
 end // end of [print_search]
 
@@ -91,14 +91,15 @@ println_search (ns) = let
 *)
 in
   case+ 0 of
-  | _ when ns \matii _neg1 => Some_vt (println_neg1)
+  | _ when ns \matii _n1 => Some_vt (println_n1)
   | _ => None_vt ()
 end // end of [println_search]
 
 (* ****** ****** *)
 
 implement
-print_neg1 (loc0, d1es) = let
+print_n1
+  (loc0, d1es) = let
 //
   val q = $Syn.d0ynq_none ()
   val id = $Sym.symbol_make_string ("print")
@@ -126,13 +127,14 @@ in
       val loc = d1e.d1exp_loc in
       d1exp_app_dyn (loc, _print, loc, 0(*npf*), list_sing (d1e))
     end // end of [_]
-end // end of [print_neg1]
+end // end of [print_n1]
 
 (* ****** ****** *)
 
 implement
-println_neg1 (loc0, d1es) = let
-  val d1e1 = print_neg1 (loc0, d1es)
+println_n1
+  (loc0, d1es) = let
+  val d1e1 = print_n1 (loc0, d1es)
 //
   val q = $Syn.d0ynq_none ()
   val id = $Sym.symbol_make_string ("print_newline")
@@ -141,7 +143,7 @@ println_neg1 (loc0, d1es) = let
   val d1e2 = d1exp_app_dyn (loc0, _print_newline, loc0, 0(*npf*), list_nil)
 in
   d1exp_seq (loc0, d1e1 :: d1e2 :: list_nil)
-end // end of [println_neg1]
+end // end of [println_n1]
 
 (* ****** ****** *)
 
