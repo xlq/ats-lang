@@ -836,7 +836,7 @@ s2exp_tyleq_solve_err (loc0, s2e10, s2e20, err) = let
     case+ s2en20 of
     | S2Evararg s2e2 => s2exp_tyleq_solve_err (loc0, s2e1, s2e2, err)
     | _ => (err := err + 1)
-    end // en dof [S2Evararg, _]
+    end // end of [S2Evararg, _]
   | (S2Ewth (s2e1, wths2es1), s2en20) => begin
     case+ s2en20 of
     | S2Ewth (s2e2, wths2es2) => () where {

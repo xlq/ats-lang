@@ -755,7 +755,7 @@ and loopi2nv = '{
 
 and m2atch = '{
   m2atch_loc= loc_t, m2atch_exp= d2exp, m2atch_pat= p2atopt
-} // en dof [m2atch]
+} // end of [m2atch]
 
 and m2atchlst = List m2atch
 

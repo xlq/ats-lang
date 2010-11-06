@@ -616,7 +616,7 @@ end // end of [s2exp_string_int_type]
 
 implement s2exp_void_t0ype () =
   s2exp_cst (s2cstref_cst_get (Void_t0ype))
-// en dof [s2exp_void_t0ype]
+// end of [s2exp_void_t0ype]
 
 (* ****** ****** *)
 
@@ -650,7 +650,7 @@ fn un_s2exp_s2cstref_1
             end // end of [_]
         ) else (
           None_vt ()
-        ) // en dof [if]
+        ) // end of [if]
       end // end of [S2Ecst]
     | _ => None_vt ()
     end // end of [S2Eapp]

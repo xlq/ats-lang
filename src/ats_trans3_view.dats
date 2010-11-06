@@ -118,10 +118,10 @@ in
       val () = d2var_typ_reset_at (d2v_view, s2e_vt, s2e_addr)
       val s2ls0_bk = begin
         s2lablst_trim_s2lablst_s2lablst (s2ls0_ft, s2ls_ft, s2ls_bk)
-      end
+      end // end of [val]
       val s2e_at = begin
         s2exp_at_viewt0ype_addr_view (s2e_out, s2exp_projlst (s2r0, s2ls0_bk))
-      end
+      end // end of [val]
     in
       @(s2e_at, s2ls0_bk, d2v_view, s2ls_bk_nt)
     end // end of [Some_vt]
@@ -129,6 +129,7 @@ in
       fun aux (s2ls: s2lablst): void = case+ s2ls of
         | list_cons (s2l, s2ls) => (prerr "."; prerr_s2lab s2l; aux s2ls)
         | list_nil () => ()
+      // end of [aux]
     in
       prerr_loc_error3 loc0;
       prerr ": there is no view at ["; prerr s2r0; aux s2ls0; prerr "]";
@@ -221,28 +222,37 @@ fn d2var_view_viewat_slablst_set_main
    s2e_new_at: s2exp)
   : @(s2exp(*old*), s2lablst) = let
   val s2e_new_at = s2exp_whnf s2e_new_at
-  val @(s2e_new, s2e_new_addr): @(s2exp, s2exp) =
-    case+ un_s2exp_at_viewt0ype_addr_view s2e_new_at of
+  typedef s2exp2 = @(s2exp, s2exp)
+  val @(s2e_new, s2e_new_addr) = (case+
+    un_s2exp_at_viewt0ype_addr_view s2e_new_at of
     | ~Some_vt s2ts2a => s2ts2a
-    | ~None_vt () => begin
-        prerr_loc_error3 loc0;
-        prerr ": the view ["; prerr s2e_new_at;
-        prerr "] is expected to be an @-view"; prerr_newline ();
-        $Err.abort {@(s2exp, s2exp)} ()
-      end
+    | ~None_vt () => let
+        val () = prerr_loc_error3 loc0
+        val () = prerr ": the view ["
+        val () = prerr s2e_new_at
+        val () = prerr "] is expected to be an @-view"
+        val () = prerr_newline ()
+      in
+        $Err.abort {s2exp2} ()
+      end // end of [None_vt]
+  ) : s2exp2 // end of [val]
   var cstr: s2explst = list_nil ()
   val @(s2e_old, s2e0, s2ls) =
     s2exp_slablst_linset_cstr (loc0, s2e0, s2ls_view, s2e_new, cstr)
-  val s2e_addr = s2exp_projlst (s2e0_addr, s2ls)
+  val s2e_old_addr = s2exp_projlst (s2e0_addr, s2ls)
   val () = trans3_env_add_proplst (loc0, cstr)
-  val () = 
-    if s2exp_syneq (s2e_addr, s2e_new_addr) then () else begin
-      prerr_loc_error3 loc0;
-      prerr ": address mismatch for @-view restoration: [";
-      prerr s2e_addr; prerr "] <> [";
-      prerr_s2exp s2e_new_addr; prerr "]."; prerr_newline ();
-      $Err.abort {void} ()
-    end
+  val () =  if s2exp_syneq
+    (s2e_old_addr, s2e_new_addr) then () else let
+    val () = prerr_loc_error3 loc0
+    val () = prerr ": address mismatch for @-view restoration: ["
+    val () = prerr_s2exp s2e_old_addr
+    val () = prerr "] <> ["
+    val () = prerr_s2exp s2e_new_addr
+    val () = prerr "]."
+    val () = prerr_newline ()
+  in
+    $Err.abort {void} ()
+  end // end of [if]
   val () = d2var_typ_reset_at (d2v_view, s2e0, s2e0_addr)
 in
   (s2e_old, s2ls)
@@ -252,27 +262,31 @@ fn d2var_view_viewat_slablst_set
   (loc0: loc_t, d2v_view: d2var_t, s2ls: s2lablst, s2e_new_at: s2exp)
   : (s2exp (*old*), s2lablst) = begin
   case+ d2var_typ_get d2v_view of
-  | Some s2e_at => begin
-    case+ un_s2exp_at_viewt0ype_addr_view s2e_at of
+  | Some s2e_at => (case+
+    un_s2exp_at_viewt0ype_addr_view s2e_at of
     | ~Some_vt s2ts2a => begin
         d2var_view_viewat_slablst_set_main
           (loc0, d2v_view, s2ts2a.0, s2ts2a.1, s2ls, s2e_new_at)
       end // end of [Some_vt]
-    | ~None_vt () => begin
-        prerr_loc_error3 loc0;
-        prerr ": the view of ["; prerr d2v_view;
-        prerr "] is expected to be an @-view but it is [";
-        prerr s2e_at; prerr "] instead."; prerr_newline ();
+    | ~None_vt () => let
+        val () = prerr_loc_error3 loc0
+        val () = prerr ": the view of ["
+        val () = prerr_d2var d2v_view
+        val () = prerr "] is expected to be an @-view but it is ["
+        val () = prerr_s2exp s2e_at
+        val () = prerr "] instead."
+        val () = prerr_newline ()
+      in
         $Err.abort ()
       end // end of [None_vt]
-    end // end [Some]
+    ) // end [Some]
   | None () => let
       val s2e0 = s2exp_void_t0ype ()
       val s2e0_addr = d2var_addr_get_some (loc0, d2v_view)
     in
       d2var_view_viewat_slablst_set_main
         (loc0, d2v_view, s2e0, s2e0_addr, s2ls, s2e_new_at)
-    end
+    end // end of [None]
 end // end of [d2var_view_viewat_slablst_set]
 
 (* ****** ****** *)

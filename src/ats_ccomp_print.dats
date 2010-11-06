@@ -729,20 +729,22 @@ end // end of [fprint_instrlst]
 
 (* ****** ****** *)
 
-implement fprint_branch {m} (pf | out, br) = begin
+implement
+fprint_branch {m} (pf | out, br) = begin
   fprint_tmplab (pf | out, br.branch_lab);
   fprint1_string (pf | out, ": "); fprint_newline (pf | out);
   fprint_instrlst (pf | out, br.branch_inss);
 end // end of [fprint_branch]
 
-implement fprint_branchlst {m} (pf | out, brs) = let
-  fun aux (out: &FILE m, brs: branchlst): void = begin
+implement
+fprint_branchlst {m} (pf | out, brs) = let
+  fun aux (out: &FILE m, brs: branchlst): void =
     case+ brs of
     | list_cons (br, brs) => begin
         fprint_branch (pf | out, br); aux (out, brs)
-      end // en dof [list_cons]
+      end // end of [list_cons]
     | list_nil () => ()
-  end // end of [aux]
+  // end of [aux]
 in
   aux (out, brs)
 end // end of [fprint_branchlst]

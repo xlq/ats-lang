@@ -1078,7 +1078,7 @@ in
       end // end of [val]
     in
       None_vt ()
-    end // en dof [_]
+    end // end of [_]
 *)
 end // end of [s3iexp_make_s2cst_s2explst]
 
