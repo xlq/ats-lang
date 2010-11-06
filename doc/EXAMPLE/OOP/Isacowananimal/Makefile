@@ -15,7 +15,8 @@ ATSCC=$(ATSHOME)/bin/atscc
 
 isacowananimal: \
   isacowananimal.sats isacowananimal.dats
-	$(ATSCC) -o $@ $^
+	$(ATSCC) -o $@ \
+  isacowananimal.sats isacowananimal.dats
 
 ######
 
