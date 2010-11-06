@@ -13,7 +13,7 @@ staload "isacowananimal.sats"
 
 (* ****** ****** *)
 
-macdef eat = eat_animal_food
+macdef eat = eat_animal_food // HX: create a shorthand
 
 (* ****** ****** *)
 
@@ -51,7 +51,7 @@ main () = () where {
   val a_rabbit1 = thing_ref (a_rabbit)
   val things = list_vt_cons (a_rabbit1, things)
 //
-// things = a_rabbit :: a_cow :: a_human
+// things = [a_rabbit, a_cow, a_human]
 //
   val () = loop (things) where {
     fun loop (Xs: List_vt(THING)): void =

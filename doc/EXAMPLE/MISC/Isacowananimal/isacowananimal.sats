@@ -7,16 +7,12 @@
 **
 *)
 
-//
-// HX: note that this is just a specification
-//
-
 (* ****** ****** *)
 %{#
 #include "isacowananimal.cats"
 %}
 (* ****** ****** *)
-//
+
 datasort thing =
 | grass
 | carrot
@@ -28,7 +24,8 @@ datasort thing =
 | dead_rabbit
 | beef
 | dead_human
-//
+// end of [thing]
+
 (* ****** ****** *)
 
 dataprop VEGE (thing) =
