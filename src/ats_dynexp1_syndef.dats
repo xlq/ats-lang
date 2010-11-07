@@ -41,6 +41,7 @@ staload Loc = "ats_location.sats"
 typedef loc_t = $Loc.location_t
 staload Lst = "ats_list.sats"
 staload Sym = "ats_symbol.sats"
+typedef sym_t = $Sym.symbol_t
 overload = with $Sym.eq_symbol_symbol
 
 (* ****** ****** *)
@@ -59,6 +60,8 @@ dynload "libatsyndef/atsyndef_main.dats"
 #define nil list_nil
 #define cons list_cons
 #define :: list_cons
+
+macdef list_sing (x) = list_cons (,(x), list_nil)
 
 (* ****** ****** *)
 
@@ -225,6 +228,7 @@ fun atsyndef_search_all: atsyndef_search_all_type
 
 (* ****** ****** *)
 
+val _n1 = (~1 :: nil): intlst
 val _n1_p1 = (~1 :: 1 :: nil): intlst // while ($test) 
 val _n1_p1_n1 =
   (~1 :: 1 :: ~1 :: nil): intlst // do ($body) while ($test)
@@ -280,6 +284,49 @@ in
   | _ => None_vt ()
 end // end of [search_WHILE]
 
+(* ****** ****** *)
+
+extern
+fun search_PRINT (ns: intlst): fsyndefopt
+extern
+fun d1exp_print_n1 (loc: loc_t, d1es: d1explst): d1exp
+implement
+search_PRINT (ns) = let
+(*
+  val () = print "print_search: ns = "
+  val () = fprint_intlst (stdout_ref, ns)
+  val () = print_newline ()
+*)
+in
+  case+ 0 of
+  | _ when ns \matii _n1 => Some_vt (d1exp_print_n1)
+  | _ => None_vt ()
+end // end of [search_PRINT]
+
+extern
+fun search_PRINTLN  (ns: intlst): fsyndefopt
+extern
+fun d1exp_println_n1 (loc: loc_t, d1es: d1explst): d1exp
+implement
+search_PRINTLN (ns) = let
+(*
+  val () = print "search_PRINTLN: ns = "
+  val () = fprint_intlst (stdout_ref, ns)
+  val () = print_newline ()
+*)
+in
+  case+ 0 of
+  | _ when ns \matii _n1 => Some_vt (d1exp_println_n1)
+  | _ => None_vt ()
+end // end of [search_PRINTLN]
+
+(* ****** ****** *)
+
+val symbol_DO = $Sym.symbol_DO
+val symbol_WHILE = $Sym.symbol_WHILE
+val symbol_PRINT = $Sym.symbol_make_string ("print")
+val symbol_PRINTLN = $Sym.symbol_make_string ("println")
+
 implement
 atsyndef_search_all_default
   (id, ns) = let
@@ -293,8 +340,10 @@ atsyndef_search_all_default
 *)
 in
   case+ 0 of
-  | _ when id = $Sym.symbol_DO => search_DO (ns)
-  | _ when id = $Sym.symbol_WHILE => search_WHILE (ns)
+  | _ when id = symbol_DO => search_DO (ns)
+  | _ when id = symbol_WHILE => search_WHILE (ns)
+  | _ when id = symbol_PRINT => search_PRINT (ns)
+  | _ when id = symbol_PRINTLN => search_PRINTLN (ns)
   | _ => None_vt ()
 end // end of [atsyndef_search_all_default]
 
@@ -427,6 +476,33 @@ d1exp_app_dyn_syndef (
 
 (* ****** ****** *)
 
+fun d1exp_applst (
+  loc0: loc_t
+, fid: sym_t, d1e: d1exp
+) : d1exp = let
+  val q = $Syn.d0ynq_none ()
+  val fqid = d1exp_qid (loc0, q, fid)
+in
+  case+ d1e.d1exp_node of
+  | D1Elist (_(*npf*), d1es) => let
+//
+      fn f (d1e: d1exp):<cloptr1> d1exp = let
+        val loc = d1e.d1exp_loc in
+        d1exp_app_dyn (loc, fqid, loc, 0(*npf*), list_sing (d1e))
+      end // end of [f]
+//
+      val d1es = $Lst.list_map_cloptr (d1es, f)
+    in
+      d1exp_seq (loc0, d1es)
+    end // end of [D1Elist]
+  | _ => let
+      val loc = d1e.d1exp_loc in
+      d1exp_app_dyn (loc, fqid, loc, 0(*npf*), list_sing (d1e))
+    end // end of [_]
+end // end of [d1exp_applst]
+
+(* ****** ****** *)
+
 implement
 d1exp_do_n1_p1_n1
   (loc0, d1es) = let
@@ -470,6 +546,31 @@ d1exp_while_n1_p1
 in
   d1exp_while (loc0, _inv, _test, _body)
 end // end of [d1exp_while_n1_p1]
+
+(* ****** ****** *)
+
+implement
+d1exp_print_n1
+  (loc0, d1es) = let
+  val- cons (d1e1, _) = d1es in
+  d1exp_applst (loc0, symbol_PRINT, d1e1)
+end // end of [print_n1]
+
+implement
+d1exp_println_n1
+  (loc0, d1es) = let
+//
+  val q = $Syn.d0ynq_none ()
+  val println_id = $Sym.symbol_make_string ("print_newline")
+  val println_qid = d1exp_qid (loc0, q, println_id)
+//
+  val d1e1 = d1exp_print_n1 (loc0, d1es)
+//
+  val d1e2 = d1exp_app_dyn (loc0, println_qid, loc0, 0(*npf*), list_nil)
+//
+in
+  d1exp_seq (loc0, d1e1 :: d1e2 :: list_nil)
+end // end of [println_n1]
 
 (* ****** ****** *)
 

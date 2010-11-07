@@ -49,7 +49,6 @@ SOURCES = \
   atsyndef_util.dats \
   atsyndef_main.dats \
   atsyndef_FOR.dats \
-  atsyndef_PRINT.dats \
 
 OBJECTS := $(patsubst %.sats, %_sats.o, $(SOURCES))
 OBJECTS := $(patsubst %.dats, %_dats.o, $(OBJECTS))
@@ -92,10 +91,6 @@ atsyndef_main_dats.o: atsyndef_main.dats
 
 atsyndef_FOR_dats.o: atsyndef_FOR.dats
 	$(ATSCC) $(IATS) $(CCFLAGS) -c atsyndef_FOR.dats
-	$(AR) -r libatsyndef.a $@
-
-atsyndef_PRINT_dats.o: atsyndef_PRINT.dats
-	$(ATSCC) $(IATS) $(CCFLAGS) -c atsyndef_PRINT.dats
 	$(AR) -r libatsyndef.a $@
 
 ######

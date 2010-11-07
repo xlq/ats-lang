@@ -43,6 +43,12 @@
 
 /* ****** ****** */
 
+#ifndef memset
+extern void *memset (void *p, int c, size_t n) ;
+#endif // end of [#ifndef]
+
+/* ****** ****** */
+
 ATSinline()
 ats_void_type
 atslib_sockaddr_in_init (
@@ -52,7 +58,7 @@ atslib_sockaddr_in_init (
 , in_port_t port
 ) {
   struct sockaddr_in *sa = sa0 ;
-  memset(sa, 0, sizeof (struct sockaddr_in)) ;
+  (void)memset(sa, 0, sizeof (struct sockaddr_in)) ;
   sa->sin_family = af ;
   sa->sin_addr.s_addr = inp ;
   sa->sin_port = port ;

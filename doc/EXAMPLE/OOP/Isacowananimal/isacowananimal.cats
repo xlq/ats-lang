@@ -1,6 +1,8 @@
 /*
 **
-** An interesting example found at http://merd.sourceforge.net
+** An interesting example found at:
+**
+** http://rigaux.org/language-study/various/is-a-cow-an-animal/
 **
 ** Author: Hongwei Xi (hwxi AT cs DOT bu DOT edu)
 ** Time: November, 2010

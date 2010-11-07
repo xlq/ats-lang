@@ -1,6 +1,8 @@
 (*
 **
-** An interesting example found at http://merd.sourceforge.net
+** An interesting example found at:
+**
+** http://rigaux.org/language-study/various/is-a-cow-an-animal/
 **
 ** Author: Hongwei Xi (hwxi AT cs DOT bu DOT edu)
 ** Time: November, 2010
@@ -51,7 +53,7 @@ main () = () where {
   val a_rabbit1 = thing_ref (a_rabbit)
   val things = list_vt_cons (a_rabbit1, things)
 //
-// things = [a_rabbit, a_cow, a_human]
+// things = [a_rabbit1, a_cow1, a_human1]
 //
   val () = loop (things) where {
     fun loop (Xs: List_vt(THING)): void =
@@ -87,16 +89,18 @@ main () = () where {
   val () = eat (AFhuman2 (MEATdead_rabbit) | a_human, a_dead_rabbit)
   val () = eaten_over (a_dead_rabbit)
 //
-  val (AMhuman () | another_dead_human) = slaughter (ANIMhuman | another_human)
+  val (am | another_dead_human) = slaughter (ANIMhuman | another_human)
+  prval AMhuman () = am
   val () = eat (AFhuman2 (MEATdead_human) | a_human, another_dead_human)
   val () = eaten_over (another_dead_human)
 //
   val theEnergy = thing_get_energy(a_human)
-  val () = thing_unref (a_human)
+//
+  val () = thing_unref (a_human) // this is the only THING left at this point!
 //
   val () = (print "theEnergy = "; print theEnergy; print_newline ())
 //
-  val () = assert (theEnergy = 1785)
+  val () = assertloc (theEnergy = 1785)
 //
 } // end of [main]
 

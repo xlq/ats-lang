@@ -355,13 +355,13 @@ implement FRAME_rows_remove_if () = let
   end // end of [test]
   var j: Nat = 0
 in
-  while (j < FRAME_Y)
+  while (j < FRAME_Y) (
     if test (j) then let
       val () = theTotalScore_incby (POINTS_FOR_FILLED_ROW)
     in
       FRAME_row_flash (j); FRAME_row_remove (j)
     end else (j := j+1)
-  // end of [while]
+  ) // end of [while]
 end // end of [FRAME_rows_remove]
 
 (* ****** ****** *)

@@ -1,6 +1,8 @@
 (*
 **
-** An interesting example found at http://merd.sourceforge.net
+** An interesting example found at:
+**
+** http://rigaux.org/language-study/various/is-a-cow-an-animal/
 **
 ** Author: Hongwei Xi (hwxi AT cs DOT bu DOT edu)
 ** Time: October, 2010
@@ -73,25 +75,28 @@ dataprop AM ( // Animal/Meat relation
 
 absviewtype THING (thing)
 viewtypedef THING = [x:thing] THING (x)
-//
-// HX: everything has some energy
-//
+
+fun thing_ref {x:thing}
+  (X: !THING (x)): THING (x) = "thing_ref"
+fun thing_unref
+  {x:thing} (X: THING (x)): void = "thing_unref"
+
+(* ****** ****** *)
+
 fun thing_get_name {x:thing}
   (X: !THING (x)): [l:agz] (strptr(l) -<lin,prf> void | strptr(l))
   = "thing_get_name"
 // end of [thing_get_name]
 
+//
+// HX: everything has some energy
+//
 fun thing_get_energy {x:thing}
   (X: !THING (x)): int = "thing_get_energy"
 // end of [thing_get_energy]
 
 fun fprint_thing {x:thing}
   (out: FILEref, X: !THING (x)): void = "fprint_thing"
-
-fun thing_ref {x:thing}
-  (X: !THING (x)): THING (x) = "thing_ref"
-fun thing_unref
-  {x:thing} (X: THING (x)): void = "thing_unref"
 
 (* ****** ****** *)
 //

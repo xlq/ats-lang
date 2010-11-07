@@ -455,7 +455,7 @@ end // end of [display_shape_at]
 
 //
 
-viewtypedef shapeObj (m:int, n:int) = struct {
+viewtypedef shapeObj (m:int, n:int) = @{
   rot= rotate_t
 , xlen= int m
 , ylen= int n

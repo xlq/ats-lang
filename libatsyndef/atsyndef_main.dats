@@ -31,11 +31,7 @@ staload "atsyndef_main.sats"
 (* ****** ****** *)
 
 val symbol_DO = $Sym.symbol_make_string "do"
-
 val symbol_FORLIST = $Sym.symbol_make_string "for_list"
-
-val symbol_PRINT = $Sym.symbol_make_string "print"
-val symbol_PRINTLN = $Sym.symbol_make_string "println"
 
 (* ****** ****** *)
 (*
@@ -57,15 +53,12 @@ implement
 atsyndef_search_all
   (id, ns) = case+ 0 of
   | _ when id = symbol_FORLIST => forlist_search (ns)
-  | _ when id = symbol_PRINT => print_search (ns)
-  | _ when id = symbol_PRINTLN => println_search (ns)
   | _ => None_vt ()
 // end of [search_all]
 
 (* ****** ****** *)
 
 dynload "atsyndef_FOR.dats"
-dynload "atsyndef_PRINT.dats"
 
 (* ****** ****** *)
 
