@@ -100,7 +100,7 @@ main () = () where {
 //
   val () = (print "theEnergy = "; print theEnergy; print_newline ())
 //
-  val () = assertloc (theEnergy = 1785)
+  val () = assert_errmsg (theEnergy = 1785, #LOCATION)
 //
 } // end of [main]
 

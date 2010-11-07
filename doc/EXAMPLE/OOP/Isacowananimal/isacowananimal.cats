@@ -55,7 +55,7 @@ ats_ptr_type
 thing_ref (
   ats_ptr_type X
 ) {
-  thing_get_refcnt_mac(X) += 1 ;
+  thing_get_refcnt_mac(X) += 1 ; return X ;
 } // end of [thing_ref]
 
 ATSinline()
