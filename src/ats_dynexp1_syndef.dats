@@ -246,11 +246,11 @@ fun d1exp_do_n1_p1_n1
 
 implement
 search_DO (ns) = let
-// (*
+(*
   val () = print "search_DO: ns = "
   val () = fprint_intlst (stdout_ref, ns)
   val () = print_newline ()
-// *)
+*)
 in
   case+ 0 of
   | _ when ns \matii _n1_p1_n1 => Some_vt (d1exp_do_n1_p1_n1)
@@ -269,11 +269,11 @@ fun d1exp_while_n1_p1
 
 implement
 search_WHILE (ns) = let
-// (*
+(*
   val () = print "search_WHILE: ns = "
   val () = fprint_intlst (stdout_ref, ns)
   val () = print_newline ()
-// *)
+*)
 in
   case+ 0 of
   | _ when ns \matii _n1_p1 => Some_vt (d1exp_while_n1_p1)

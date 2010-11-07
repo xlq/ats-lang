@@ -47,6 +47,19 @@ staload _(*anon*) = "prelude/DATS/list.dats"
 
 (* ****** ****** *)
 
+implement{}
+list_is_cons (xs) =
+  case+ xs of list_cons _ => true | list_nil () => false
+// end of [list_is_cons]
+
+implement{a}
+list_uncons_ref (rxs, rx) = let
+  val+ list_cons (x, xs) = rxs in rx := x; rxs := xs
+end // end of [list_uncons_ref]
+
+(* ****** ****** *)
+
+(*
 implement{a}
 forlist_in_do
   (xs, f) = let
@@ -69,9 +82,11 @@ forlist_in_do
 in
   // empty
 end // end of [forlist_in_do]
+*)
 
 (* ****** ****** *)
 
+(*
 implement{a}
 iforlist_in_do
   {n} (xs, f) = let
@@ -94,6 +109,7 @@ iforlist_in_do
 in
   // empty
 end // end of [iforlist_in_do]
+*)
 
 (* ****** ****** *)
 

@@ -159,6 +159,7 @@ keyval_insert("dataprop", DATAPROP) ;
 keyval_insert("datatype", DATATYPE) ;
 keyval_insert("dataview", DATAVIEW) ;
 keyval_insert("dataviewtype", DATAVIEWTYPE) ;
+keyval_insert("do", DO) ;
 keyval_insert("dyn", DYN) ;
 keyval_insert("dynload", DYNLOAD) ;
 keyval_insert("else", ELSE) ;

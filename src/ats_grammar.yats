@@ -161,6 +161,7 @@ extern i0de_t i0de_make_viewt0ype (t0kn_t) ;
 
 //
 
+extern i0de_t i0de_make_DO (t0kn_t) ;
 extern i0de_t i0de_make_IN (t0kn_t) ;
 extern i0de_t i0de_make_WHILE (t0kn_t) ;
 
@@ -1295,6 +1296,7 @@ guad0ec_t guad0ec ;
 %token <t0kn> DATATYPE
 %token <t0kn> DATAVIEW
 %token <t0kn> DATAVIEWTYPE
+%token <t0kn> DO
 %token <t0kn> DYN
 %token <t0kn> DYNLOAD
 %token <t0kn> ELSE
@@ -1935,9 +1937,7 @@ i0deseq /* identifier sequence */
 i0dext /* extern identifier for loading syndef */
   : IDENTIFIER_ext                      { $$ = $1 ; }
 /* keyword */
-/*
   | DO                                  { $$ = i0de_make_DO($1) ; }
-*/
   | WHILE                               { $$ = i0de_make_WHILE($1) ; }
 ;
 

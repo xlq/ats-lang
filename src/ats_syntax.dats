@@ -321,6 +321,8 @@ implement i0de_make_viewt0ype (tok) =
 // end of [i0de_make_viewt0ype]
 
 //
+implement i0de_make_DO (tok) =
+  '{ i0de_loc= tok.t0kn_loc, i0de_sym= $Sym.symbol_DO }
 implement i0de_make_IN (tok) =
   '{ i0de_loc= tok.t0kn_loc, i0de_sym= $Sym.symbol_IN }
 implement i0de_make_WHILE (tok) =

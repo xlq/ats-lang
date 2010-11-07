@@ -41,7 +41,7 @@ val symbol_WHILE = $Sym.symbol_WHILE
 //
 val symbol_DO = $Sym.symbol_make_string "do"
 val symbol_FORLIST = $Sym.symbol_make_string "for_list"
-
+//
 (* ****** ****** *)
 
 val _1_1_1_1_1 = (1 :: 1 :: 1 :: 1 :: 1 :: nil ()): intlst
@@ -49,49 +49,79 @@ val _1_1_1_1_1 = (1 :: 1 :: 1 :: 1 :: 1 :: nil ()): intlst
 (* ****** ****** *)
 
 (*
-`for_list` ($x:$T) `in` $xs `do` $exp =>
-  forlist_in_do<$T> ($xs, lam ($x) => $exp)
+for_list! ($x:$T) `in` $exp1 do $exp2 =>
+   let
+     var xs: List(T) = $exp1
+   in
+     while (list_is_cons (xs)) (xs := list_uncons<T> (xs, x); $exp2)
+   end
 *)
 
+(* ****** ****** *)
+
 extern
-fun for_name_1_1_1_1_1
-  (name: sym_t, loc: loc_t, d1es: d1explst): d1exp
-// end of [for_name_1_1_1_1_1]
+fun for_name_1_1_1_1_1 (
+  iscons_id: sym_t, uncons_id: sym_t, loc: loc_t, d1es: d1explst
+) : d1exp // end of [for_name_1_1_1_1_1]
 
 implement
-for_name_1_1_1_1_1
-  (fid, loc0, d1es) = let
+for_name_1_1_1_1_1 (
+  iscons_id, uncons_id, loc0, d1es
+) = let
 //
   val- cons (d1e5, d1es) = d1es
-  val _exp = d1e5
+  val exp2 = d1e5
 //
   val- cons (d1e4, d1es) = d1es
-  val () = un_d1exp_qid_sym (d1e4, symbol_DO)
+  val () = un_d1exp_idext_sym (d1e4, symbol_DO)
 //
   val- cons (d1e3, d1es) = d1es
-  val _xs = d1e3
+  val exp1 = d1e3
 //
   val- cons (d1e2, d1es) = d1es
   val () = un_d1exp_qid_sym (d1e2, symbol_IN)
 //
   val- cons (d1e1, d1es) = d1es
-  val (_qid, _typ) = un_d1exp_ann_type (d1e1)
-  val (_q, _id) = un_d1exp_qid (_qid)
+  val (x_qid, T) = un_d1exp_ann_type (d1e1)
+  val (x_q, x_id) = un_d1exp_qid (x_qid)
 //
-  val loc1 = d1e1.d1exp_loc
-  val _x = p1at_qid (loc1, _q, _id)
-  val _lam = d1exp_lam_dyn (_exp.d1exp_loc, 0(*lin*), _x, _exp)
+  val s0taq0 = $Syn.s0taq_none ()
+  val d0ynq0 = $Syn.d0ynq_none ()
 //
-  val q = $Syn.d0ynq_none ()
-  val _t0id = tmpqi0de_make_qid (loc0, q, fid)
+  val x_typ = s1exp_top (T.s1exp_loc, 0(*knd*), T)
+  val x_vardec = v1ardec_make 
+    (loc0, 0(*non*), x_id, loc0, Some(x_typ), None(*wth*), None(*def*))
+  // end of [x_v1ardec]
 //
-  val _decarg = TMPS1EXPLSTLSTcons
-    (_typ.s1exp_loc, _typ :: nil, TMPS1EXPLSTLSTnil)
-  val _t1id = d1exp_tmpid (loc0, _t0id, _decarg)
-  val _arglst = _xs :: _lam :: list_nil ()
-  val loc_arg = $Loc.location_combine (_xs.d1exp_loc, _lam.d1exp_loc)
+  val xs_id = $Sym.symbol_make_string ("#xs")
+  val xs_qid = d1exp_qid (loc0, d0ynq0, xs_id)
+//
+  val List_id = $Sym.symbol_make_string ("List_forlist")
+  val List_qid = s1exp_qid (loc0, s0taq0, List_id)
+  val xs_typ = s1exp_app (loc0, List_qid, loc0, T :: nil)
+  val xs_vardec = v1ardec_make
+    (loc0, 0(*non*), xs_id, loc0, Some(xs_typ), None(*wth*), Some(exp1)(*def*))
+  // end of [xs_v1ardec]
+  val _let_dec = d1ec_vardecs (loc0, x_vardec :: xs_vardec :: nil)
+//
+  val _while_inv = loopi1nv_nil (loc0)
+//
+  val iscons_qid = d1exp_qid (loc0, d0ynq0, iscons_id)
+  val _arglst = xs_qid :: nil
+  val _while_test = d1exp_app_dyn (loc0, iscons_qid, loc0, 0(*npf*), _arglst)
+//
+  val _t0id = tmpqi0de_make_qid (loc0, d0ynq0, uncons_id)
+  val _decarg = TMPS1EXPLSTLSTcons (T.s1exp_loc, T :: nil, TMPS1EXPLSTLSTnil)
+  val uncons_tid = d1exp_tmpid (loc0, _t0id, _decarg)
+  val _arglst = xs_qid :: x_qid :: nil
+  val uncons_exp = d1exp_app_dyn (loc0, uncons_tid, loc0, 0(*npf*), _arglst)
+//
+  val _while_body = d1exp_seq (loc0, uncons_exp :: exp2 :: list_nil ())
+//
+  val _while_loop = d1exp_while (loc0, _while_inv, _while_test, _while_body)
+//
 in
-  d1exp_app_dyn (loc0, _t1id, loc_arg, 0(*npf*), _arglst)
+  d1exp_let (loc0, _let_dec :: nil, _while_loop)
 end // end of [for_name_1_1_1_1_1]
 
 (* ****** ****** *)
@@ -117,10 +147,10 @@ end // end of [forlist_search]
 implement
 forlist_1_1_1_1_1
   (loc, d1es) = let
-  val name =
-    $Sym.symbol_make_string ("forlist_in_do")
+  val iscons_id = $Sym.symbol_make_string ("list_is_cons")
+  val uncons_id = $Sym.symbol_make_string ("list_uncons_ref")
 in
-  for_name_1_1_1_1_1 (name, loc, d1es)
+  for_name_1_1_1_1_1 (iscons_id, uncons_id, loc, d1es)
 end // end of [forlist_1_1_1_1_1]
 
 (* ****** ****** *)

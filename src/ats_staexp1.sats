@@ -229,14 +229,15 @@ where sp1at = '{
 (* ****** ****** *)
 
 datatype s1exp_node =
-  | S1Eann of (* ascribed static expression *)
+  | S1Eann of // sort-ascribed expression
       (s1exp, s1rt)
-  | S1Eany (* omitted static expression *)
+  | S1Eany of (* omitted static expression *)
+      ()
   | S1Eapp of (* static application *)
       (s1exp, loc_t(*arg*), s1explst)
   | S1Echar of (* static character *)
       char
-  | S1Eexi of (* existential quantifed expression *)
+  | S1Eexi of (* existentially quantifed expression *)
       (int(*funres*), s1qualst, s1exp)
   | S1Eextype of (* external type *)
       string
@@ -245,12 +246,12 @@ datatype s1exp_node =
   | S1Eint of (* static integer *)
       string
   | S1Einvar of (* invariant view or viewtype *)
-      (int(*1:ref/0:val*), s1exp) (* &/i: call-by-ref/val *)
+      (int(*1:ref/0:val*), s1exp) (* &/!: call-by-ref/val *)
   | S1Elam of (* static abstraction *)
       (s1arglst, s1rtopt, s1exp)
   | S1Emod of (* module type *)
       (s0taq, sym_t, labs1explst)
-  | S1Enamed of (* named type *)
+  | S1Enamed of (* named type (for template instantiation) *)
       (sym_t, s1exp)
   | S1Elist of (* static expression list: temoprary *)
       (int (*pfarity*), s1explst)

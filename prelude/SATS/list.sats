@@ -86,24 +86,27 @@ prfun list_length_is_nonnegative
 exception ListSubscriptException of ()
 
 (* ****** ****** *)
-
-// a casting function implemented in [prelude/DATS/list.dats]
-castfn list_of_list_vt {a:t@ype}
-  {n:nat} (xs: list_vt (a, n)):<> list (a, n)
+//
+// HX: a casting function
+// implemented in [prelude/DATS/list.dats]
+//
+castfn list_of_list_vt
+  {a:t@ype} {n:nat} (xs: list_vt (a, n)):<> list (a, n)
+// end of [list_of_list_vt]
 
 (* ****** ****** *)
-
-// implemented on top of [list_vt_of_arraysize]
+//
+// HX: implemented on top of [list_vt_of_arraysize]
+//
 fun{a:t@ype} list_of_arraysize
   {n:nat} (arrsz: arraysize (a, n)):<> list (a, n)
 
 (* ****** ****** *)
 
 fun{a:t@ype} list_app__main
-  {v:view} {vt:viewtype} {f:eff}
-  (pf: !v | xs: List a, f: (!v | a, !vt) -<fun,f> void, env: !vt)
-  :<f> void
-// end of [list_app__main]
+  {v:view} {vt:viewtype} {f:eff} (
+  pf: !v | xs: List a, f: (!v | a, !vt) -<fun,f> void, env: !vt
+) :<f> void // end of [list_app__main]
 
 fun{a:t@ype} list_app_fun {f:eff}
   (xs: List a, f: a -<fun,f> void):<f> void

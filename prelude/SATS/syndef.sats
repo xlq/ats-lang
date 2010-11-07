@@ -39,17 +39,34 @@
 
 (* ****** ****** *)
 
+typedef List_forlist (a:t@ype) = [n:nat] list_t0ype_int_type (a, n)
+
+(* ****** ****** *)
+
+fun{} list_is_nil {a:t@ype}
+  {n:nat} (xs: list (a, n)):<> bool (n == 0)
+fun{} list_is_cons {a:t@ype}
+  {n:nat} (xs: list (a, n)):<> bool ( n > 0 )
+
+(* ****** ****** *)
+
+fun{a:t@ype} list_uncons_ref
+  {n:pos} (xs: &list (a, n) >> list (a, n-1), x: &a? >> a): void
+// end of [list_uncons_ref]
+
+(* ****** ****** *)
+
+(*
 fun{a:t@ype}
 forlist_in_do
   (xs: List a, f: !(a) -<cloptr1> void): void
 // end of [forlist_in_do]
 
-(* ****** ****** *)
-
 fun{a:t@ype}
 iforlist_in_do {n:nat}
   (xs: list (a, n), f: !(natLt n, a) -<cloptr1> void): void
 // end of [iforlist_in_do]
+*)
 
 (* ****** ****** *)
 

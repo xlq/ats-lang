@@ -15,8 +15,12 @@ staload _(*anon*) = "prelude/DATS/syndef.dats"
 (* ****** ****** *)
 
 (*
-for_list! (x:T) `in` xs do $exp =>
-  forlist_in_do<T> (xs, lam (x) => $exp)
+for_list! ($x:$T) `in` $exp1 do $exp2 =>
+   let
+     var xs: List(T) = $exp1
+   in
+     while (list_is_cons (xs)) (xs := list_uncons<T> (xs, x); $exp2)
+   end
 *)
 
 (* ****** ****** *)
@@ -26,29 +30,22 @@ for_list! (x:T) `in` xs do $exp =>
 typedef intlst = List (int)
 
 val xs = (
-  0 :: 1 :: 2 :: 3 :: 4 :: 5 :: 6 :: 7 :: 8 :: 9 :: list_nil
+  1 :: 2 :: 3 :: 4 :: 5 :: 6 :: 7 :: 8 :: 9 :: 10 :: list_nil
 ) : intlst // end of [val]
-
+var i: int = 0
+var prod: int = 1
 val () = for_list!
-  (x:int) `in` xs do (
-  print "x = "; print x; print_newline ()
-) // end of [val]
+  (x:int) `in` xs do {
+  val () = i := i + 1
+  val () = if i >= 2 then print "," else ()
+  val () = print x
+  val () = prod := prod * x
+} // end of [val]
+val () = print_newline ()
+val () = printf ("The product of the list = %i\n", @(prod))
 
 implement main () = ()
 
 (* ****** ****** *)
 
 (* end of [forlist.dats] *)
-
-////
-
-for_list (x:int) `in` $exp do (sum := sum + x) =>
-
- let
-    var x: int
-    var xs: list(int) = exp
- in
-   while (list_isnot_null (xs)) {
-     val () = list_uncons (xs, x); val () = $exp
-   } // end of [while]
- end // end of [let]

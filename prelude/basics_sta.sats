@@ -783,9 +783,9 @@ abstype FILEref_type
 stadef FILEref = FILEref_type
 
 (* ****** ****** *)
-
-// some common datatypes
-
+//
+// HX: some common datatypes
+//
 datatype
 box_t0ype_type (a:t@ype+) = box (a) of a
 stadef box = box_t0ype_type
@@ -795,8 +795,8 @@ box_viewt0ype_viewtype (a:viewt@ype+) = box_vt (a) of a
 stadef box_vt = box_viewt0ype_viewtype
 
 //
-
-// [list0_t0ype_type] is co-variant
+// HX: [list0_t0ype_type] is co-variant
+//
 datatype list0_t0ype_type (a: t@ype+) =
   | list0_cons (a) of (a, list0_t0ype_type a) | list0_nil (a) of ()
 // end of [list0_t0ype_type]
@@ -812,7 +812,8 @@ stadef list = list_t0ype_int_type
 typedef List (a:t@ype) = [n:int | n >= 0] list (a, n)
 
 //
-
+// HX: [option0_t0ype_type] is co-variant
+//
 datatype option0_t0ype_type (a: t@ype) =
   | option0_some (a) of (a) | option0_none (a) of ()
 // end of [datatype]
