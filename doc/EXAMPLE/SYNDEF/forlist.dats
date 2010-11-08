@@ -15,7 +15,7 @@ staload _(*anon*) = "prelude/DATS/syndef.dats"
 (* ****** ****** *)
 
 (*
-for_list! ($x:$T) `in` $exp1 do $exp2 =>
+for! ($x:$T) in_list $exp1 do $exp2 =>
   let
     var x: T?
     var xs: List(T) = $exp1
