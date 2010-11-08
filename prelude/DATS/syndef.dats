@@ -48,13 +48,13 @@ staload _(*anon*) = "prelude/DATS/list.dats"
 (* ****** ****** *)
 
 implement{}
-list_is_cons (xs) =
-  case+ xs of list_cons _ => true | list_nil () => false
+list_is_cons (xs) = case+ xs of
+  | list_cons _ => true | list_nil () => false
 // end of [list_is_cons]
 
 implement{a}
-list_uncons_ref (rxs, rx) = let
-  val+ list_cons (x, xs) = rxs in rx := x; rxs := xs
+list_uncons (rxs, rx) = let
+  val+ list_cons (x, xs) = rxs in rx := x; xs
 end // end of [list_uncons_ref]
 
 (* ****** ****** *)

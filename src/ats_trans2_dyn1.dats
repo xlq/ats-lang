@@ -1563,7 +1563,7 @@ in
     ) => let
       val () = prerr_loc_error2 (loc0)
       val () = (
-        prerr ": the external id `"; prerr id; prerr "` cannot be handled."
+        prerr ": the external id: ["; prerr id; prerr "] cannot be handled."
       ) // end of [val]
       val () = prerr_newline ()
     in

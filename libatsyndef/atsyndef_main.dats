@@ -30,8 +30,8 @@ staload "atsyndef_main.sats"
 
 (* ****** ****** *)
 
-val symbol_DO = $Sym.symbol_make_string "do"
-val symbol_FORLIST = $Sym.symbol_make_string "for_list"
+val symbol_DO = $Sym.symbol_DO
+val symbol_FOR = $Sym.symbol_FOR
 
 (* ****** ****** *)
 (*
@@ -52,7 +52,7 @@ fun atsyndef_search_all
 implement
 atsyndef_search_all
   (id, ns) = case+ 0 of
-  | _ when id = symbol_FORLIST => forlist_search (ns)
+  | _ when id = symbol_FOR => search_FOR (ns)
   | _ => None_vt ()
 // end of [search_all]
 

@@ -1,5 +1,5 @@
 (*
-** some code for testing the forlist syntax
+** some code for testing the "for ... in_list ... do ..." syntax
 *)
 
 (* ****** ****** *)
@@ -16,26 +16,28 @@ staload _(*anon*) = "prelude/DATS/syndef.dats"
 
 (*
 for_list! ($x:$T) `in` $exp1 do $exp2 =>
-   let
-     var xs: List(T) = $exp1
-   in
-     while (list_is_cons (xs)) (xs := list_uncons<T> (xs, x); $exp2)
-   end
+  let
+    var x: T?
+    var xs: List(T) = $exp1
+  in
+    while (list_is_cons (xs)) (xs := list_uncons<T> (xs, x); $exp2)
+  end
 *)
 
 (* ****** ****** *)
 
 #define :: list_cons
-
 typedef intlst = List (int)
+
+(* ****** ****** *)
 
 val xs = (
   1 :: 2 :: 3 :: 4 :: 5 :: 6 :: 7 :: 8 :: 9 :: 10 :: list_nil
 ) : intlst // end of [val]
 var i: int = 0
 var prod: int = 1
-val () = for_list!
-  (x:int) `in` xs do {
+val () = for!
+  (x:int) in_list xs do {
   val () = i := i + 1
   val () = if i >= 2 then print "," else ()
   val () = print x

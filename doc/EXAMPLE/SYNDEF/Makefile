@@ -24,7 +24,7 @@ checkall: compall cleanall
 compall:: \
   fact \
   forlist \
-  println \
+  forrange \
 
 ######
 
@@ -34,8 +34,8 @@ fact: fact.dats
 forlist: forlist.dats
 	$(ATSCC) -o forlist forlist.dats -lats && ./forlist
 
-println: println.dats
-	$(ATSCC) -o println println.dats -lats && ./println
+forrange: forrange.dats
+	$(ATSCC) -o forrange forrange.dats -lats && ./forrange
 
 ######
 
@@ -50,7 +50,7 @@ xref::
           $(ATSHOME)/utils/xref/ats_prelude_xref.dats > /dev/null
 	$(ATSOPT) --posmark_xref=XREF -d fact.dats > fact_dats.html
 	$(ATSOPT) --posmark_xref=XREF -d forlist.dats > forlist_dats.html
-	$(ATSOPT) --posmark_xref=XREF -d println.dats > println_dats.html
+	$(ATSOPT) --posmark_xref=XREF -d forrange.dats > forrange_dats.html
 
 ######
 
@@ -68,6 +68,6 @@ cleanall:: clean
 	$(RMF) *_?ats.html
 	$(RMF) fact
 	$(RMF) forlist
-	$(RMF) println
+	$(RMF) forrange
 
 ###### end of [Makefile] ######

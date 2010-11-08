@@ -25,16 +25,7 @@ typedef fsyndef_t =
 
 (* ****** ****** *)
 
-fun do_search (ns: intlst): Option_vt (fsyndef_t)
-
-(* ****** ****** *)
-
-fun forlist_search (ns: intlst): Option_vt (fsyndef_t)
-
-(* ****** ****** *)
-
-fun print_search (ns: intlst): Option_vt (fsyndef_t)
-fun println_search (ns: intlst): Option_vt (fsyndef_t)
+fun search_FOR (ns: intlst): Option_vt (fsyndef_t)
 
 (* ****** ****** *)
 

@@ -47,6 +47,7 @@ INCLUDES=-I$(ATSHOMEQ)
 SOURCES = \
   atsyndef_util.sats \
   atsyndef_util.dats \
+  atsyndef_main.sats \
   atsyndef_main.dats \
   atsyndef_FOR.dats \
 

@@ -27,6 +27,17 @@ staload "ats_dynexp1.sats"
 
 (* ****** ****** *)
 
+fun prerr_loc_syndef (loc: loc_t): void
+
+(* ****** ****** *)
+
+fun d1exp_binop
+  (loc: loc_t, fid: sym_t, d1e1: d1exp, d1e2: d1exp): d1exp
+
+(* ****** ****** *)
+
+fun d1ec_sym_exp (loc: loc_t, x_id: sym_t, d1e: d1exp): d1ec
+
 (* ****** ****** *)
 
 (* end of [atsyndef_util.sats] *)

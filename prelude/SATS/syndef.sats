@@ -39,7 +39,13 @@
 
 (* ****** ****** *)
 
-typedef List_forlist (a:t@ype) = [n:nat] list_t0ype_int_type (a, n)
+typedef atsyndef__List (a:t@ype) = [n:nat] list_t0ype_int_type (a, n)
+
+(* ****** ****** *)
+
+(*
+fun{a:t@ype} atsyndef__of_int (i: int): a
+*)
 
 (* ****** ****** *)
 
@@ -50,9 +56,9 @@ fun{} list_is_cons {a:t@ype}
 
 (* ****** ****** *)
 
-fun{a:t@ype} list_uncons_ref
-  {n:pos} (xs: &list (a, n) >> list (a, n-1), x: &a? >> a): void
-// end of [list_uncons_ref]
+fun{a:t@ype} list_uncons
+  {n:pos} (xs: list (a, n), x: &a? >> a):<> list (a, n-1)
+// end of [list_uncons]
 
 (* ****** ****** *)
 
