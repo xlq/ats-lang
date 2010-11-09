@@ -697,7 +697,7 @@ extern d0exp_t d0exp_arrinit_none
   (t0kn_t, s0exp_t, d0explst_t /*elt*/, t0kn_t) ;
 extern d0exp_t d0exp_arrinit_some
   (t0kn_t, s0exp_t, d0exp_t /*asz*/, d0explst_t /*elt*/, t0kn_t) ;
-extern d0exp_t d0exp_arrsize (t0kn_t, s0exp_t, d0explst_t, t0kn_t) ;
+extern d0exp_t d0exp_arrsize (t0kn_t, s0exp_t, d0exp_t) ;
 extern d0exp_t d0exp_arrsub (arrqi0de_t, d0arrind_t) ;
 extern d0exp_t d0exp_char (t0kn_t) ;
 extern d0exp_t d0exp_caseof (casehead_t, d0exp_t, t0kn_t, c0laulst_t) ;
@@ -751,7 +751,7 @@ extern d0exp_t d0exp_let_seq
 extern d0exp_t d0exp_list (t0kn_t, d0explst_t, t0kn_t) ;
 extern d0exp_t d0exp_list2 (t0kn_t, d0explst_t, d0explst_t, t0kn_t) ;
 
-extern d0exp_t d0exp_lst (int, t0kn_t, s0expopt_t, d0explst_t, t0kn_t) ;
+extern d0exp_t d0exp_lst (int, t0kn_t, s0expopt_t, d0exp_t) ;
 extern d0exp_t d0exp_lst_quote (t0kn_t, d0explst_t, t0kn_t) ;
 
 extern d0exp_t d0exp_loopexn (int, t0kn_t) ;
@@ -2837,8 +2837,7 @@ atmd0exp
                                         { $$ = d0exp_arrinit_none ($1, $2, $5, $6) ; }
   | ATLBRACKET s0exp RBRACKET LBRACKET d0exp RBRACKET LPAREN d0expcommaseq RPAREN
                                         { $$ = d0exp_arrinit_some ($1, $2, $5, $8, $9) ; }
-  | DLRARRSZ s0expelt LPAREN d0expcommaseq RPAREN
-                                        { $$ = d0exp_arrsize ($1, $2, $4, $5) ; }
+  | DLRARRSZ s0expelt atmd0exp          { $$ = d0exp_arrsize ($1, $2, $3) ; }
   | arrqi0de d0arrind                   { $$ = d0exp_arrsub ($1, $2) ; }
   | s0elop l0ab                         { $$ = d0exp_sel_lab ($1, $2) ; }
   | s0elop LBRACKET d0arrind            { $$ = d0exp_sel_ind ($1, $3) ; }
@@ -2850,10 +2849,8 @@ atmd0exp
   | LPAREN d0expcommaseq BAR d0expcommaseq RPAREN
                                         { $$ = d0exp_list2 ($1, $2, $4, $5) ; }
 
-  | DLRLST_T s0expelt LPAREN d0expcommaseq RPAREN
-                                        { $$ = d0exp_lst (0, $1, $2, $4, $5) ; }
-  | DLRLST_VT s0expelt LPAREN d0expcommaseq RPAREN
-                                        { $$ = d0exp_lst (1, $1, $2, $4, $5) ; }
+  | DLRLST_T s0expelt atmd0exp          { $$ = d0exp_lst (0, $1, $2, $3) ; }
+  | DLRLST_VT s0expelt atmd0exp         { $$ = d0exp_lst (1, $1, $2, $3) ; }
   | QUOTELBRACKET d0expcommaseq RBRACKET
                                         { $$ = d0exp_lst_quote ($1, $2, $3) ; }
 
@@ -3368,59 +3365,63 @@ d0ecseq_dyn
 
 %%
 
-int yylex_tok0 = -1 ;
+int
+yylex_tok0 = -1 ;
 
-int yylex () {
+int
+yylex() {
+//
   int tok ;
-
+//
   if (yylex_tok0 >= 0) {
     tok = yylex_tok0 ; yylex_tok0 = -1 ;
   } else {
     tok = atsopt_lexer_token_get () ;
   } // end of [if]
 /*
-  fprintf (stdout, "tok = %i\n", tok) ;
+** fprintf (stdout, "tok = %i\n", tok) ;
 */
   return tok ;
+//
 } /* end of [yylex_tok0] */
 
 //
 // HX: needed in [ats_lexer.lats]
 //
 ats_void_type
-yylval_char_set (c0har_t val)
+yylval_char_set(c0har_t val)
   { yylval.c0har = val ; return ; }
 
 ats_void_type
-yylval_extcode_set (e0xtcode_t val)
+yylval_extcode_set(e0xtcode_t val)
   { yylval.e0xtcode = val ; return ; }
 
 ats_void_type
-yylval_float_set (f0loat_t val)
+yylval_float_set(f0loat_t val)
   { yylval.f0loat = val ; return ; }
 
 ats_void_type
-yylval_floatsp_set (f0loatsp_t val)
+yylval_floatsp_set(f0loatsp_t val)
   { yylval.f0loatsp = val ; return ; }
 
 ats_void_type
-yylval_ide_set (i0de_t val)
+yylval_ide_set(i0de_t val)
   { yylval.i0de = val ; return ; }
 
 ats_void_type
-yylval_int_set (i0nt_t val)
+yylval_int_set(i0nt_t val)
   { yylval.i0nt = val ; return ; }
 
 ats_void_type
-yylval_intsp_set (i0ntsp_t val)
+yylval_intsp_set(i0ntsp_t val)
   { yylval.i0ntsp = val ; return ; }
 
 ats_void_type
-yylval_string_set (s0tring_t val)
+yylval_string_set(s0tring_t val)
   { yylval.s0tring = val ; return ; }
 
 ats_void_type
-yylval_token_set (t0kn_t val)
+yylval_token_set(t0kn_t val)
   { yylval.t0kn = val ; return ; }
 
 // HX: implemented in [ats_filename.dats]
@@ -3429,7 +3430,8 @@ extern ats_void_type atsopt_filename_prerr () ;
 extern ats_ptr_type lexing_fstpos_get () ;
 extern ats_void_type lexing_prerr_position (ats_ptr_type) ;
 //
-void yyerror (char *s) {
+void
+yyerror(char *s) {
   fprintf (stderr, "%s: ", s) ;
   atsopt_filename_prerr () ;
   fprintf (stderr, ": [") ;

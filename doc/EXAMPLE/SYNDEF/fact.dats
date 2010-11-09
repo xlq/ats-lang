@@ -22,7 +22,7 @@ in
 end // end of [fact]
 
 implement main () = let
-  val ans = fact (10) in print "10! = "; print ans; print_newline ()
+  val ans = fact (10) in println! ("10! = ", ans)
 end // end of [main]
 
 (* ****** ****** *)

@@ -211,8 +211,8 @@ depgen_d0exp (d0e0) =
     )
   | D0Earrinit (_, od0e, d0es) => (
       depgen_d0expopt (od0e); depgen_d0explst (d0es)
-    )
-  | D0Earrsize (_, d0es) => depgen_d0explst (d0es)
+    ) // end of [D0Earrinit]
+  | D0Earrsize (_, d0e_elts) => depgen_d0exp (d0e_elts)
   | D0Earrsub (_, _, d0ess) => depgen_d0explstlst (d0ess)
   | D0Ecaseof (_, d0e, c0ls) => (
       depgen_d0exp (d0e); depgen_c0laulst (c0ls)
@@ -270,7 +270,7 @@ depgen_d0exp (d0e0) =
 (*
   | D0Eloopexn _ => ()
 *)
-  | D0Elst (_, _, d0es) => depgen_d0explst (d0es)
+  | D0Elst (_, _, d0e) => depgen_d0exp (d0e)
   | D0Emacsyn (_, d0e) => depgen_d0exp (d0e)
 (*
   | D0Eopide _ => ()

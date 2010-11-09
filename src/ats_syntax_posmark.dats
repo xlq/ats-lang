@@ -382,9 +382,11 @@ implement d0exp_posmark (d0e0) = case+ d0e0.d0exp_node of
   | D0Elist2 (d0es1, d0es2) => begin
       d0explst_prf_posmark d0es1; d0explst_posmark d0es2;
     end
-  | D0Elst (_(*lstknd*), os0e, d0es) => begin
-      s0expopt_posmark os0e; d0explst_posmark d0es;
-    end
+  | D0Elst (
+      _(*lstknd*), os0e, d0e_elts
+    ) => begin
+      s0expopt_posmark os0e; d0exp_posmark d0e_elts;
+    end // end of [D0Elst]
   | D0Emacsyn (_(*knd*), d0e) => d0exp_posmark d0e
   | D0Eraise (d0e) => d0exp_posmark d0e
   | D0Erec (_(*recknd*), ld0es) => begin

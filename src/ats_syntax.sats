@@ -1601,7 +1601,7 @@ datatype d0exp_node =
   | D0Earrinit of (* array initilization *)
       (s0exp (*elt*), d0expopt (*asz*), d0explst (*elt*))
   | D0Earrsize of (* arraysize expression *)
-      (s0expopt (*elt*), d0explst (*elt*))
+      (s0expopt (*elt*), d0exp (*elts*))
   | D0Earrsub of (* array subscription *)
       (arrqi0de, loc_t(*ind*), d0explstlst)
   | D0Ecaseof of (* case expression *)
@@ -1662,7 +1662,7 @@ datatype d0exp_node =
   | D0Eloopexn of (* break: 0 and continue: 1 *)
       int
   | D0Elst of (* for d0exp lists *)
-      (int (*lin*), s0expopt, d0explst)
+      (int (*lin*), s0expopt, d0exp(*elts*))
   | D0Emacsyn of (* macro syntax *)
       (macsynkind, d0exp)
 (*
@@ -1964,7 +1964,7 @@ fun d0exp_arrinit_some (
 (* ****** ****** *)
 
 fun d0exp_arrsize
-  (t_beg: t0kn, elt: s0expopt, elts: d0explst, t_end: t0kn): d0exp
+  (t_beg: t0kn, elt: s0expopt, elts: d0exp): d0exp
   = "d0exp_arrsize"
 
 fun d0exp_arrsub (qid: arrqi0de, ind: d0arrind): d0exp
@@ -2089,7 +2089,7 @@ fun d0exp_list2 (
 fun d0exp_loopexn (i: int, t: t0kn): d0exp = "d0exp_loopexn"
 
 fun d0exp_lst (
-  lin: int, t_beg: t0kn, os0e: s0expopt, elts: d0explst, t_end: t0kn
+  lin: int, t_beg: t0kn, os0e: s0expopt, xs: d0exp
 ) : d0exp = "d0exp_lst"
 
 fun d0exp_lst_quote

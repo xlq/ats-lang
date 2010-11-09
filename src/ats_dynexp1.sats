@@ -267,7 +267,7 @@ and d1exp_node =
   | D1Eann_type of (* ascribed dynamic expressions *)
       (d1exp, s1exp)
   | D1Eapp_dyn of (* dynamic application *)
-      (d1exp, loc_t(*arg*), int (* pfarity *), d1explst)
+      (d1exp, loc_t(*arg*), int (*pfarity*), d1explst)
   | D1Eapp_sta of (* static application *)
       (d1exp, s1exparglst)
   | D1Earrinit of (* array initialization *)

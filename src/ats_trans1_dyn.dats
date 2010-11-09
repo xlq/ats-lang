@@ -864,6 +864,22 @@ fn sc0laulst_tr (sc0ls: sc0laulst): sc1laulst =
 
 (* ****** ****** *)
 
+fun d1exp_idextapp_resolve
+  (loc0: loc_t, d1e: d1exp): d1exp =
+  case+ d1e.d1exp_node of
+  | D1Eidextapp (
+      id, _(*ns*), d1es_arg
+    ) => begin case+ 0 of
+    | _ when id = $Sym.symbol_TUPIZE =>
+        d1exp_list (loc0, $Lst.list_reverse (d1es_arg))
+      // end of [_ when ...]
+    | _ => d1e
+    end // end of [D1Eidextapp]
+  | _ => d1e // end of [_]
+// end of [d1exp_idextapp_resolve]
+
+(* ****** ****** *)
+
 implement
 d0exp_tr d0e0 = let
 //
@@ -897,6 +913,7 @@ in
         print "d0exp_tr: aux_item: d1e = "; print_d1exp d1e; print_newline ()
       ) // end of [val]
 *)
+      val d1e = d1exp_idextapp_resolve (loc0, d1e)
     in
       $Fix.ITEMatm d1e
     end // end of [D0Eapp]
@@ -907,9 +924,12 @@ in
     in
       $Fix.ITEMatm (d1exp_arrinit (loc0, s1e_elt, od1e_asz, d1es_elt))
     end // end of [D0Earrinit]
-  | D0Earrsize (os0e_elt, d0es_elt) => let
+  | D0Earrsize (os0e_elt, d0e_elts) => let
       val os1e_elt = s0expopt_tr os0e_elt
-      val d1es_elt = d0explst_tr d0es_elt
+      val d1e_elts = d0exp_tr (d0e_elts)
+      val d1es_elt = (case+ d1e_elts.d1exp_node of
+        | D1Elist (_(*npf*), d1es) => d1es | _ => cons (d1e_elts, nil ())
+      ) : d1explst // end of [val]
       val d1e_arrsize = d1exp_arrsize (loc0, os1e_elt, d1es_elt)
     in
       $Fix.ITEMatm (d1e_arrsize)
@@ -926,7 +946,7 @@ in
       val inv = i0nvresstate_tr (hd.casehead_inv)
       val d1e = d0exp_tr d0e
       val d1es = (case+ d1e.d1exp_node of
-        | D1Elist (_npf, d1es) => d1es | _ => cons (d1e, nil ())
+        | D1Elist (_(*npf*), d1es) => d1es | _ => cons (d1e, nil ())
       ) : d1explst
       val c1ls = c0laulst_tr c0ls
     in
@@ -1054,7 +1074,8 @@ in
       fn f (d1e: d1exp):<cloref1> d1expitm =
         let val loc0 = $Loc.location_combine (loc0, d1e.d1exp_loc) in
           $Fix.ITEMatm (d1exp_foldat (loc0, s1as, d1e))
-        end
+        end // end of [let]
+      // end of [f]
     in
       $Fix.ITEMopr ($Fix.OPERpre ($Fix.foldat_prec_dyn, f))
     end // end of [D0Efoldat]
@@ -1110,7 +1131,7 @@ in
     end // end of [D0Eif]
   | D0Eint (str (*int*)) => begin
       $Fix.ITEMatm (d1exp_int (loc0, str))
-    end
+    end // end of [D0Eint]
   | D0Eintsp (str (*int*)) => begin
       $Fix.ITEMatm (d1exp_intsp (loc0, str))
     end // end of [D0Eintsp]
@@ -1154,9 +1175,12 @@ in
       $Fix.ITEMatm (d1exp_list2 (loc0, d1es1, d1es2))
     end // end of [D0Elist2]
   | D0Eloopexn (i(*brk/cont*)) => $Fix.ITEMatm (d1exp_loopexn (loc0, i))
-  | D0Elst (lin, os0e_elt, d0es_elt) => let
+  | D0Elst (lin, os0e_elt, d0e_elts) => let
       val os1e_elt = s0expopt_tr os0e_elt
-      val d1es_elt = d0explst_tr d0es_elt
+      val d1e_elts = d0exp_tr (d0e_elts)
+      val d1es_elt = (case+ d1e_elts.d1exp_node of
+        | D1Elist (_(*npf*), d1es) => d1es | _ => cons (d1e_elts, nil ())
+      ) : d1explst // end of [val]
       val d1e_lst = d1exp_lst (loc0, lin, os1e_elt, d1es_elt)
     in
       $Fix.ITEMatm (d1e_lst)
@@ -1177,12 +1201,12 @@ in
   | D0Eqid (q, id) => $Fix.ITEMatm (d1exp_qid (loc0, q, id))
   | D0Eraise (d0e) => begin
       $Fix.ITEMatm (d1exp_raise (loc0, d0exp_tr d0e))
-    end
+    end // end of [D0Eraise]
   | D0Erec (recknd, ld0es) => let
       val ld1es = labd0explst_tr ld0es
     in
       $Fix.ITEMatm (d1exp_rec (loc0, recknd, ld1es))
-    end
+    end // end of [D0Erec]
   | D0Escaseof (hd, s0e, sc0ls) => let
       // hd.casehead_knd is always 0
       val inv = i0nvresstate_tr (hd.casehead_inv)
@@ -1196,7 +1220,8 @@ in
       fn f (d1e: d1exp):<cloref1> d1expitm =
         let val loc0 = $Loc.location_combine (d1e.d1exp_loc, loc0) in
           $Fix.ITEMatm (d1exp_sel (loc0, knd, d1e, d1l))
-        end
+        end // end of [let]
+      // end of [f]
     in
       $Fix.ITEMopr ($Fix.OPERpos ($Fix.select_prec, f))
     end // end of [D0Esel_lab]
@@ -1206,18 +1231,19 @@ in
       fn f (d1e: d1exp):<cloref1> d1expitm =
         let val loc0 = $Loc.location_combine (d1e.d1exp_loc, loc0) in
           $Fix.ITEMatm (d1exp_sel (loc0, knd, d1e, d1l))
-        end
+        end // end of [let]
+      // end of [f]
     in
       $Fix.ITEMopr ($Fix.OPERpos ($Fix.select_prec, f))
     end // end of [D0Esel_ind]
   | D0Eseq d0es => begin
       $Fix.ITEMatm (d1exp_seq (loc0, d0explst_tr d0es))
-    end
+    end // end of [D0Eseq]
   | D0Esexparg (s0a) => let
       val s1a = s0exparg_tr (loc0, s0a)
     in
       $Fix.ITEMatm (d1exp_sexparg (loc0, s1a))
-    end
+    end // end of [D0Esexparg]
   | D0Esif (hd, s0e_cond, d0e_then, d0e_else) => let
       val inv = i0nvresstate_tr hd.ifhead_inv
       val s1e_cond = s0exp_tr s0e_cond
@@ -1307,6 +1333,7 @@ and aux_itemlst (d0e0: d0exp): d1expitmlst = let
         val res = aux_item d0e2 :: res in aux (res, d0e1)
       end // end of [D0Eapp]
     | _ => aux_item d0e0 :: res
+  // end of [aux]
 in
   aux (nil (), d0e0)
 end // end of [aux_itemlst]

@@ -168,7 +168,8 @@ in
 end // end of [d1cstdec_tr]
 
 implement
-d1cstdeclst_tr (dck, s2vpslst, d1cs) = begin
+d1cstdeclst_tr
+  (dck, s2vpslst, d1cs) = begin
   case+ d1cs of
   | cons (d1c, d1cs) => let
       val d2c = d1cstdec_tr (dck, s2vpslst, d1c)
@@ -815,7 +816,9 @@ end // end of [macro_var_check]
 
 (* ****** ****** *)
 
-dataviewtype specdynid = SPDIDassgn | SPDIDderef | SPDIDnone
+dataviewtype
+specdynid = SPDIDassgn | SPDIDderef | SPDIDnone
+// end of [specdynid]
 
 fn specdynid_of_qid
   (q: d0ynq, id: sym_t): specdynid = begin
@@ -1035,6 +1038,25 @@ in
     end // end of [None_vt]
 end (* end of [d1exp_qid_app_dyn_tr] *)
 
+(* ****** ****** *)
+
+fun d1exp_idextapp_tr (
+  loc0: loc_t, id: sym_t, d1es: d1explst
+) : d2exp = begin
+//
+case+ 0 of
+| _ => let
+    val () = prerr_loc_error2 (loc0)
+    val () = (
+      prerr ": the external id ["; prerr id; prerr "] cannot be handled."
+    ) // end of [val]
+    val () = prerr_newline ()
+  in
+    $Err.abort {d2exp} ()
+  end // end of [_]
+//
+end // end of [d1exp_idextapp_tr]
+  
 (* ****** ****** *)
 
 // [wths1es] is assumed to be not empty
@@ -1558,18 +1580,10 @@ in
   | D1Efreeat (s1as, d1e) => begin
       d2exp_freeat (loc0, s1exparglst_tr s1as, d1exp_tr d1e)
     end // end of [D1Efreeat]
-  | D1Eidextapp (
-      id, _(*ns*), _(*d1es*)
+  | D1Eidextapp (id, _(*ns*), d1es) => d1exp_idextapp_tr (loc0, id, d1es)
+  | D1Eif (
+      r1es, d1e_cond, d1e_then, od1e_else
     ) => let
-      val () = prerr_loc_error2 (loc0)
-      val () = (
-        prerr ": the external id ["; prerr id; prerr "] cannot be handled."
-      ) // end of [val]
-      val () = prerr_newline ()
-    in
-      $Err.abort {d2exp} ()
-    end // end of [D1Eidext]
-  | D1Eif (r1es, d1e_cond, d1e_then, od1e_else) => let
       val r2es = i1nvresstate_tr r1es
       val d2e_cond = d1exp_tr d1e_cond
       val d2e_then = d1exp_tr d1e_then
