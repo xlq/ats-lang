@@ -1,0 +1,200 @@
+(*
+**
+** For documenting the grammar of ATS/Anairiats
+**
+** Contributed by Hongwei Xi (hwxi AT cs DOT bu DOT edu)
+** Contributed by Sylvain Nahas (sylvain.nahas AT googlemail DOT com)
+**
+** Time: November, 2010
+**
+*)
+
+(* ****** ****** *)
+
+staload "atsgrammar_symbol.sats"
+staload "atsgrammar_grmrule.sats"
+
+(* ****** ****** *)
+
+staload "atsgrammar_main.sats"
+
+(* ****** ****** *)
+//
+val LITERAL_char = symbol_make "LITERAL_char"
+val LITERAL_extcode = symbol_make "LITERAL_extcode"
+val LITERAL_float = symbol_make "LITERAL_float"
+val LITERAL_floatsp = symbol_make "LITERAL_floatsp"
+val LITERAL_int = symbol_make "LITERAL_int"
+val LITERAL_intsp = symbol_make "LITERAL_intsp"
+val LITERAL_string = symbol_make "LITERAL_string"
+//
+val IDENTIFIER_alp = symbol_make "IDENTIFIER_alp"
+val () = symbol_set_printname
+  (IDENTIFIER_alp, "ALPHANUMERIC_IDENTIFIER")
+//
+val IDENTIFIER_sym = symbol_make "IDENTIFIER_sym"
+val () = symbol_set_printname (IDENTIFIER_sym, "SYMBOLIC_IDENTIFIER")
+//
+val IDENTIFIER_arr = symbol_make "IDENTIFIER_arr"
+val () = symbol_set_printname (IDENTIFIER_arr, "ARRAY_IDENTIFIER")
+val IDENTIFIER_tmp = symbol_make "IDENTIFIER_tmp"
+val () = symbol_set_printname (IDENTIFIER_tmp, "TEMPLATE_IDENTIFIER")
+val IDENTIFIER_ext = symbol_make "IDENTIFIER_ext"
+val () = symbol_set_printname (IDENTIFIER_ext, "EXTERNAL_IDENTIFIER")
+//
+val IDENTIFIER_dlr = symbol_make "IDENTIFIER_dlr"
+val IDENTIFIER_srp = symbol_make "IDENTIFIER_srp"
+//
+(* ****** ****** *)
+//
+val EQ = symbol_make ("EQ")
+val () = symbol_set_printname (EQ, "\"=\"")
+//
+val GT = symbol_make ("GT")
+val () = symbol_set_printname (GT, "\">\"")
+//
+val LT = symbol_make ("LT")
+val () = symbol_set_printname (LT, "\"<\"")
+//
+(* ****** ****** *)
+//
+val ABSPROP = symbol_make "ABSPROP"
+val () = symbol_set_printname (ABSPROP, "\"absprop\"")
+//
+val ABSTYPE = symbol_make "ABSTYPE"
+val () = symbol_set_printname (ABSTYPE, "\"abstype\"")
+//
+val ABST0YPE = symbol_make "ABST@YPE"
+val () = symbol_set_printname (ABST0YPE, "\"abst@ype\"")
+//
+val ABSVIEW = symbol_make "ABSVIEW"
+val () = symbol_set_printname (ABSVIEW, "\"absview\"")
+//
+val ABSVIEWTYPE = symbol_make "ABSVIEWTYPE"
+val () = symbol_set_printname (ABSVIEWTYPE, "\"absviewtype\"")
+//
+val ABSVIEWT0YPE = symbol_make "ABSVIEWT@YPE"
+val () = symbol_set_printname (ABSVIEWT0YPE, "\"absviewt@ype\"")
+//
+val AND = symbol_make "AND"
+val () = symbol_set_printname (AND, "\"and\"")
+//
+val AS = symbol_make "AS"
+val () = symbol_set_printname (AS, "\"as\"")
+//
+val ASSUME = symbol_make "ASSUME"
+val () = symbol_set_printname (ASSUME, "\"assume\"")
+//
+val CASTFN = symbol_make "CASTFN"
+val () = symbol_set_printname (CASTFN, "\"castfn\"")
+//
+val FUN = symbol_make "FUN"
+val () = symbol_set_printname (FUN, "\"fun\"")
+//
+val PRAXI = symbol_make "PRAXI"
+val () = symbol_set_printname (PRAXI, "\"praxi\"")
+//
+val PRFUN = symbol_make "PRFUN"
+val () = symbol_set_printname (PRFUN, "\"prfun\"")
+//
+val PRVAL = symbol_make "PRVAL"
+val () = symbol_set_printname (PRVAL, "\"prval\"")
+//
+val VAL = symbol_make "VAL"
+val () = symbol_set_printname (VAL, "\"val\"")
+//
+(* ****** ****** *)
+
+val abskind = symbol_make "abskind"
+val dcstkind = symbol_make "dcstkind"
+
+(* ****** ****** *)
+
+val i0de = symbol_make "i0de"
+val i0deseq = symbol_make "i0deseq"
+
+(* ****** ****** *)
+
+(*
+abskind =
+    "absprop"
+  | "abstype"
+  | "abst@ype"
+  | "absview"
+  | "absviewtype"
+  | "absviewt@ype"
+  ;
+*)
+fun abskind_proc
+  (): void = () where {
+//
+val (pf | ()) = symbol_open (abskind)
+//
+val () = grmrule_append (ABSPROP)
+val () = grmrule_append (ABSTYPE)
+val () = grmrule_append (ABST0YPE)
+val () = grmrule_append (ABSVIEW)
+val () = grmrule_append (ABSVIEWTYPE)
+val () = grmrule_append (ABSVIEWT0YPE)
+//
+val () = symbol_close (pf | abskind)
+} // end of [abskind_proc]
+
+(* ****** ****** *)
+
+(*
+dcstkind =
+    "fun"
+  | "val"
+  | "praxi"
+  | "prfun"
+  | "prval"
+  | "castfn"
+  ;
+*)
+fun dcstkind_proc
+  (): void = () where {
+//
+val (pf | ()) = symbol_open (dcstkind)
+//
+val () = grmrule_append (FUN)
+val () = grmrule_append (VAL)
+val () = grmrule_append (PRAXI)
+val () = grmrule_append (PRFUN)
+val () = grmrule_append (PRVAL)
+val () = grmrule_append (CASTFN)
+//
+val () = symbol_close (pf | dcstkind)
+} // end of [dcstkind_proc]
+
+(* ****** ****** *)
+
+fun i0deseq_proc
+  (): void = () where {
+//
+val (pf | ()) = symbol_open (i0deseq)
+//
+val () = grmrule_append ()
+val () = grmrule_append ($lst_t {symbol} (tupz! i0de i0deseq))
+//
+val () = symbol_close (pf | i0deseq)
+//
+} // end of [i0deseq_proc]
+
+(* ****** ****** *)
+
+extern fun atsgrammar_main (): void
+
+(* ****** ****** *)
+
+implement
+atsgrammar_main
+  () = () where {
+  val () = abskind_proc ()
+  val () = dcstkind_proc ()
+  val () = i0deseq_proc ()
+} // end of [atsgrammar_main]
+
+(* ****** ****** *)
+
+(* end of [atsgrammar_main.dats] *)
