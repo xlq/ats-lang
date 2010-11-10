@@ -14,6 +14,37 @@
 staload "atsgrammar.sats"
 
 (* ****** ****** *)
+
+local
+//
+assume symbol_open_v (s:int) = unit_v
+//
+in
+//
+implement
+symbol_open (sym) = (unit_v () | ())
+//
+implement
+symbol_close
+  (pf | sym) = let
+  prval unit_v () = pf
+  val grs1 = theGrmrulelst_get ()
+  val grs2 = symbol_get_grmrulelst (sym)
+  val grs = revapp (grs1, grs2) where {
+    fun revapp (
+      grs1: grmrulelst_vt, grs2: grmrulelst
+    ) : grmrulelst = case+ grs1 of
+      | ~list_vt_cons (gr, grs1) => revapp (grs1, list_cons (gr, grs2))
+      | ~list_vt_nil () => grs2
+    // end of [revapp]
+  } // end of [val]
+in
+  symbol_set_grmrulelst (sym, grs)
+end // end of [symbol_close]
+//
+end // end of [local]
+
+(* ****** ****** *)
 //
 val LITERAL_char = symbol_make "LITERAL_char"
 val LITERAL_extcode = symbol_make "LITERAL_extcode"
