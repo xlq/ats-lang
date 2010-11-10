@@ -11,12 +11,7 @@
 
 (* ****** ****** *)
 
-staload "atsgrammar_symbol.sats"
-staload "atsgrammar_grmrule.sats"
-
-(* ****** ****** *)
-
-staload "atsgrammar_main.sats"
+staload "atsgrammar.sats"
 
 (* ****** ****** *)
 //
@@ -115,6 +110,14 @@ val i0deseq = symbol_make "i0deseq"
 
 (* ****** ****** *)
 
+val d0ec_sta = symbol_make "d0ec_sta"
+val d0ecseq_sta = symbol_make "d0ecseq_sta"
+val d0ec_dyn = symbol_make "d0ec_dyn"
+val d0ecseq_dyn = symbol_make "d0ecseq_dyn"
+val d0ecseq_dyn_rev = symbol_make "d0ecseq_dyn_rev"
+
+(* ****** ****** *)
+
 (*
 abskind =
     "absprop"
@@ -183,6 +186,43 @@ val () = symbol_close (pf | i0deseq)
 
 (* ****** ****** *)
 
+(*
+d0ecseq_dyn_rev /* tail-recursive */
+  : /* empty */                         { $$ = d0ecllst_nil() ; }
+  | d0ecseq_dyn_rev d0ec_dyn semicolonseq
+                                        { $$ = d0ecllst_cons($1, $2) ; }
+;
+*)
+fun d0ecseq_dyn_rev_proc
+  (): void = () where {
+//
+val (pf | ()) = symbol_open (d0ecseq_dyn_rev)
+//
+val () = grmrule_append ()
+val () = grmrule_append ($lst_t {symbol} (tupz! d0ecseq_dyn_rev d0ec_dyn))
+//
+val () = symbol_close (pf | d0ecseq_dyn_rev)
+//
+} // end of [d0ecseq_dyn_proc]
+
+(*
+d0ecseq_dyn
+  : d0ecseq_dyn_rev                     { $$ = d0ecllst_reverse($1) ; }
+;
+*)
+fun d0ecseq_dyn_proc
+  (): void = () where {
+//
+val (pf | ()) = symbol_open (d0ecseq_dyn)
+//
+val () = grmrule_append (d0ecseq_dyn_rev)
+//
+val () = symbol_close (pf | d0ecseq_dyn)
+//
+} // end of [d0ecseq_dyn_proc]
+
+(* ****** ****** *)
+
 extern fun atsgrammar_main (): void
 
 (* ****** ****** *)
@@ -193,6 +233,8 @@ atsgrammar_main
   val () = abskind_proc ()
   val () = dcstkind_proc ()
   val () = i0deseq_proc ()
+  val () = d0ecseq_dyn_rev_proc () // reversed dynamic declaration sequence
+  val () = d0ecseq_dyn_proc ()
 } // end of [atsgrammar_main]
 
 (* ****** ****** *)

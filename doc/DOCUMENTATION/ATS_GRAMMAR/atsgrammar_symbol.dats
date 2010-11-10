@@ -11,7 +11,7 @@
 
 (* ****** ****** *)
 
-staload "atsgrammar_symbol.sats"
+staload "atsgrammar.sats"
 
 (* ****** ****** *)
 
