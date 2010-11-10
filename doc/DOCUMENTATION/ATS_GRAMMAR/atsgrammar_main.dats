@@ -150,13 +150,13 @@ val d0ecseq_dyn_rev = symbol_make "d0ecseq_dyn_rev"
 (* ****** ****** *)
 
 (*
-abskind =
-    "absprop"
-  | "abstype"
-  | "abst@ype"
-  | "absview"
-  | "absviewtype"
-  | "absviewt@ype"
+abskind
+  : ABSPROP                             { $$ = abskind_prop () ; }
+  | ABSTYPE                             { $$ = abskind_type () ; }
+  | ABST0YPE                            { $$ = abskind_t0ype () ; }
+  | ABSVIEW                             { $$ = abskind_view () ; }
+  | ABSVIEWTYPE                         { $$ = abskind_viewtype () ; }
+  | ABSVIEWT0YPE                        { $$ = abskind_viewt0ype () ; }
   ;
 *)
 fun abskind_proc
@@ -177,14 +177,14 @@ val () = symbol_close (pf | abskind)
 (* ****** ****** *)
 
 (*
-dcstkind =
-    "fun"
-  | "val"
-  | "praxi"
-  | "prfun"
-  | "prval"
-  | "castfn"
-  ;
+dcstkind
+  : FUN                                 { $$ = dcstkind_fun () ; }
+  | VAL                                 { $$ = dcstkind_val () ; }
+  | PRAXI                               { $$ = dcstkind_praxi () ; }
+  | PRFUN                               { $$ = dcstkind_prfun () ; }
+  | PRVAL                               { $$ = dcstkind_prval () ; }
+  | CASTFN                              { $$ = dcstkind_castfn () ; }
+;
 *)
 fun dcstkind_proc
   (): void = () where {
