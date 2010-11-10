@@ -144,7 +144,6 @@ keyval_insert("absview", ABSVIEW) ;
 keyval_insert("absviewtype", ABSVIEWTYPE) ;
 keyval_insert("absviewt@ype", ABSVIEWT0YPE) ;
 keyval_insert("and", AND) ;
-keyval_insert("arrvar", ARRVAR) ;
 keyval_insert("as", AS) ;
 keyval_insert("assume", ASSUME) ;
 keyval_insert("begin", BEGIN) ;
