@@ -270,4 +270,13 @@ atsgrammar_main
 
 (* ****** ****** *)
 
+dynload "atsgrammar_symbol.dats"
+dynload "atsgrammar_grmrule.dats"
+
+(* ****** ****** *)
+
+implement main () = ()
+
+(* ****** ****** *)
+
 (* end of [atsgrammar_main.dats] *)

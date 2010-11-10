@@ -19,6 +19,7 @@ assume
 symbol (s:int) = '{
   symbol_name= string
 , symbol_printname= Stropt
+, symbol_grmrulelst= grmrulelst
 , symbol_stamp= int
 } // end of [symbol]
 
@@ -29,8 +30,17 @@ symbol_make
   (name) = #[0 | '{
   symbol_name= name
 , symbol_printname= stropt_none
+, symbol_grmrulelst= list_nil ()
 , symbol_stamp= 0
 } ] // end of [symbol_make]
+
+(* ****** ****** *)
+
+implement
+symbol_get_printname (x) = x.symbol_printname
+
+implement
+symbol_get_grmrulelst (x) = x.symbol_grmrulelst
 
 (* ****** ****** *)
 
