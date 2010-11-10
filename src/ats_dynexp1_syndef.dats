@@ -453,6 +453,23 @@ atsyndef_search_all
 (* ****** ****** *)
 
 implement
+d1exp_idextapp_resolve
+  (loc0, d1e) = begin
+  case+ d1e.d1exp_node of
+  | D1Eidextapp (
+      id, _(*ns*), d1es_arg
+    ) => begin case+ 0 of
+    | _ when id = $Sym.symbol_TUPZ =>
+        d1exp_list (loc0, $Lst.list_reverse (d1es_arg))
+      // end of [_ when ...]
+    | _ => d1e
+    end // end of [D1Eidextapp]
+  | _ => d1e // end of [_]
+end // end of [d1exp_idextapp_resolve]
+
+(* ****** ****** *)
+
+implement
 d1exp_app_dyn_syndef (
   loc0, d1e_fun, loc_arg, npf, d1es_arg
 ) =

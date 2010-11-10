@@ -88,6 +88,10 @@ fun fprint_intlst (out: FILEref, ns: intlst): void
 fun match_intlst_intlst (ns1: intlst, ns2: intlst): bool
 
 (* ****** ****** *)
+
+fun d1exp_idextapp_resolve (loc0: loc_t, d1e: d1exp): d1exp
+
+(* ****** ****** *)
 //
 // HX: for resolving external ids loaded with syndef
 //

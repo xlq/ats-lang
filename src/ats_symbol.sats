@@ -89,7 +89,7 @@ val symbol_IN : symbol_t
 val symbol_R0EAD : symbol_t // r@ead: read-only annotation
 val symbol_SIZEOF : symbol_t
 val symbol_STDIN : symbol_t
-val symbol_TUPIZE : symbol_t
+val symbol_TUPZ : symbol_t // TUPSIZE
 val symbol_UNION : symbol_t
 val symbol_VBOX : symbol_t
 val symbol_WHILE : symbol_t

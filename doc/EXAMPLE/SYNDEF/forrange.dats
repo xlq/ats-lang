@@ -52,7 +52,7 @@ val () = for!
   val () = prod := prod * x
 } // end of [val]
 val () = print_newline ()
-val () = printf ("The product of the array = %i\n", @(prod))
+val () = println! ("The product of the array = ", prod)
 
 implement main () = ()
 

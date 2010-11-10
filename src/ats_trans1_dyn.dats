@@ -864,22 +864,6 @@ fn sc0laulst_tr (sc0ls: sc0laulst): sc1laulst =
 
 (* ****** ****** *)
 
-fun d1exp_idextapp_resolve
-  (loc0: loc_t, d1e: d1exp): d1exp =
-  case+ d1e.d1exp_node of
-  | D1Eidextapp (
-      id, _(*ns*), d1es_arg
-    ) => begin case+ 0 of
-    | _ when id = $Sym.symbol_TUPIZE =>
-        d1exp_list (loc0, $Lst.list_reverse (d1es_arg))
-      // end of [_ when ...]
-    | _ => d1e
-    end // end of [D1Eidextapp]
-  | _ => d1e // end of [_]
-// end of [d1exp_idextapp_resolve]
-
-(* ****** ****** *)
-
 implement
 d0exp_tr d0e0 = let
 //

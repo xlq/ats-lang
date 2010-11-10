@@ -36,7 +36,7 @@ val xs = (
   1 :: 2 :: 3 :: 4 :: 5 :: 6 :: 7 :: 8 :: 9 :: 10 :: list_nil
 ) : intlst // end of [val]
 *)
-val xs = $lst_t {int} (tupize! 1 2 3 4 5 6 7 8 9 10)
+val xs = $lst_t {int} (tupz! 1 2 3 4 5 6 7 8 9 10)
 var i: int = 0
 var prod: int = 1
 val () = for!
