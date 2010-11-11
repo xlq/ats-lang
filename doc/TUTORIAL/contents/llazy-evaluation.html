@@ -71,19 +71,19 @@ of this function is given as follows:
   <FONT COLOR="#000000">if</FONT> c &gt;= 0 <FONT COLOR="#000000">then</FONT> <FONT COLOR="#000000">let</FONT> <FONT COLOR="#787878">// c &lt;&gt; EOF
 </FONT>    <FONT COLOR="#000000">val</FONT> c <FONT COLOR="#000000">=</FONT> char_of_int <FONT COLOR="#000000">(</FONT>c<FONT COLOR="#000000">)</FONT>
   <FONT COLOR="#000000">in</FONT>
-    <FONT COLOR="#000000">$delay_vt</FONT> <FONT COLOR="#000000">(</FONT>
+    <FONT COLOR="#000000">$ldelay</FONT> <FONT COLOR="#000000">(</FONT>
       stream_vt_cons <FONT COLOR="#000000">(</FONT>c<FONT COLOR="#000000">,</FONT> char_stream_vt_make_file <FONT COLOR="#000000">(</FONT><FONT COLOR="#009000">pf_mod</FONT><FONT COLOR="#000000">,</FONT> <FONT COLOR="#009000">pf_fil</FONT> <FONT COLOR="#000000">|</FONT> p_fil<FONT COLOR="#000000">)</FONT><FONT COLOR="#000000">)</FONT>
     <FONT COLOR="#000000">,</FONT> fclose1_exn <FONT COLOR="#000000">(</FONT><FONT COLOR="#009000">pf_fil</FONT> <FONT COLOR="#000000">|</FONT> p_fil<FONT COLOR="#000000">)</FONT>
-    <FONT COLOR="#000000">)</FONT> <FONT COLOR="#787878">// end of [$delay_vt]
+    <FONT COLOR="#000000">)</FONT> <FONT COLOR="#787878">// end of [$ldelay]
 </FONT>  <FONT COLOR="#000000">end</FONT> <FONT COLOR="#000000">else</FONT> <FONT COLOR="#000000">let</FONT>
-    <FONT COLOR="#000000">val</FONT> <FONT COLOR="#000000">(</FONT><FONT COLOR="#000000">)</FONT> <FONT COLOR="#000000">=</FONT> fclose1_exn <FONT COLOR="#000000">(</FONT><FONT COLOR="#009000">pf_fil</FONT> <FONT COLOR="#000000">|</FONT> p_fil<FONT COLOR="#000000">)</FONT> <FONT COLOR="#000000">in</FONT> <FONT COLOR="#000000">$delay_vt</FONT> <FONT COLOR="#000000">(</FONT>stream_vt_nil <FONT COLOR="#000000">(</FONT><FONT COLOR="#000000">)</FONT><FONT COLOR="#000000">)</FONT>
+    <FONT COLOR="#000000">val</FONT> <FONT COLOR="#000000">(</FONT><FONT COLOR="#000000">)</FONT> <FONT COLOR="#000000">=</FONT> fclose1_exn <FONT COLOR="#000000">(</FONT><FONT COLOR="#009000">pf_fil</FONT> <FONT COLOR="#000000">|</FONT> p_fil<FONT COLOR="#000000">)</FONT> <FONT COLOR="#000000">in</FONT> <FONT COLOR="#000000">$ldelay</FONT> <FONT COLOR="#000000">(</FONT>stream_vt_nil <FONT COLOR="#000000">(</FONT><FONT COLOR="#000000">)</FONT><FONT COLOR="#000000">)</FONT>
   <FONT COLOR="#000000">end</FONT> <FONT COLOR="#787878">// end of [if]
 </FONT><FONT COLOR="#000000">end</FONT> <FONT COLOR="#787878">// end of [char_stream_vt_make_file]
 </FONT></FONT></PRE>
 
-The keyword <i>$delay_vt</i> is used to form a linear lazy value.  Given
+The keyword <i>$ldelay</i> is used to form a linear lazy value.  Given
 two dynamic expressions <i>exp1</i> and <i>exp2</i>, the linear lazy value
-<i>$delay_vt (exp1, exp2)</i> essentially contains two thunks whose bodies
+<i>$ldelay (exp1, exp2)</i> essentially contains two thunks whose bodies
 are <i>exp1</i> and <i>exp2</i>, repectively.  The first thunk represents a
 suspended computation while the second thunk represents a finalizer that
 can be called to free up the resources held in the first thunk. In the case

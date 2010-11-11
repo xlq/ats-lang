@@ -38,12 +38,12 @@ in
   if c >= 0 then let // c <> EOF
     val c = char_of_int (c)
   in
-    $delay_vt (
+    $ldelay (
       stream_vt_cons (c, char_stream_vt_make_file (pf_mod, pf_fil | p_fil))
     , fclose1_exn (pf_fil | p_fil)
     ) // end of [$delay_vt]
   end else let
-    val () = fclose1_exn (pf_fil | p_fil) in $delay_vt (stream_vt_nil ())
+    val () = fclose1_exn (pf_fil | p_fil) in $ldelay (stream_vt_nil ())
   end // end of [if]
 end // end of [char_stream_vt_make_file]
 
