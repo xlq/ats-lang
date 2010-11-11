@@ -15,11 +15,16 @@ staload "atsgrammar.sats"
 
 (* ****** ****** *)
 
+dynload "atsgrammar_symbol.dats"
+dynload "atsgrammar_grmrule.dats"
+
+(* ****** ****** *)
+
 local
 //
 assume symbol_open_v (s:int) = unit_v
 //
-in
+in // in of [local]
 //
 implement
 symbol_open (sym) = (unit_v () | ())
@@ -45,6 +50,24 @@ end // end of [symbol_close]
 end // end of [local]
 
 (* ****** ****** *)
+
+fn symbol_make
+  (name: string) = x where {
+  val x = symbol_make (name)
+  val () = (
+    print ("symbol_make: x = "); print x; print_newline ()
+  ) // end of [val]
+} // end of [symbol_make]
+
+fn symbol_make_nt
+  (name: string) = x where {
+  val x = symbol_make_nt (name)
+  val () = (
+    print ("symbol_make_nt: x = "); print x; print_newline ()
+  ) // end of [val]
+} // end of [symbol_make_nt]
+
+(* ****** ****** *)
 //
 val LITERAL_char = symbol_make "LITERAL_char"
 val LITERAL_extcode = symbol_make "LITERAL_extcode"
@@ -55,18 +78,18 @@ val LITERAL_intsp = symbol_make "LITERAL_intsp"
 val LITERAL_string = symbol_make "LITERAL_string"
 //
 val IDENTIFIER_alp = symbol_make "IDENTIFIER_alp"
-val () = symbol_set_printname
+val () = symbol_set_fullname
   (IDENTIFIER_alp, "ALPHANUMERIC_IDENTIFIER")
 //
 val IDENTIFIER_sym = symbol_make "IDENTIFIER_sym"
-val () = symbol_set_printname (IDENTIFIER_sym, "SYMBOLIC_IDENTIFIER")
+val () = symbol_set_fullname (IDENTIFIER_sym, "SYMBOLIC_IDENTIFIER")
 //
 val IDENTIFIER_arr = symbol_make "IDENTIFIER_arr"
-val () = symbol_set_printname (IDENTIFIER_arr, "ARRAY_IDENTIFIER")
+val () = symbol_set_fullname (IDENTIFIER_arr, "ARRAY_IDENTIFIER")
 val IDENTIFIER_tmp = symbol_make "IDENTIFIER_tmp"
-val () = symbol_set_printname (IDENTIFIER_tmp, "TEMPLATE_IDENTIFIER")
+val () = symbol_set_fullname (IDENTIFIER_tmp, "TEMPLATE_IDENTIFIER")
 val IDENTIFIER_ext = symbol_make "IDENTIFIER_ext"
-val () = symbol_set_printname (IDENTIFIER_ext, "EXTERNAL_IDENTIFIER")
+val () = symbol_set_fullname (IDENTIFIER_ext, "EXTERNAL_IDENTIFIER")
 //
 val IDENTIFIER_dlr = symbol_make "IDENTIFIER_dlr"
 val IDENTIFIER_srp = symbol_make "IDENTIFIER_srp"
@@ -74,78 +97,78 @@ val IDENTIFIER_srp = symbol_make "IDENTIFIER_srp"
 (* ****** ****** *)
 //
 val EQ = symbol_make ("EQ")
-val () = symbol_set_printname (EQ, "\"=\"")
+val () = symbol_set_fullname (EQ, "\"=\"")
 //
 val GT = symbol_make ("GT")
-val () = symbol_set_printname (GT, "\">\"")
+val () = symbol_set_fullname (GT, "\">\"")
 //
 val LT = symbol_make ("LT")
-val () = symbol_set_printname (LT, "\"<\"")
+val () = symbol_set_fullname (LT, "\"<\"")
 //
 (* ****** ****** *)
 //
 val ABSPROP = symbol_make "ABSPROP"
-val () = symbol_set_printname (ABSPROP, "\"absprop\"")
+val () = symbol_set_fullname (ABSPROP, "\"absprop\"")
 //
 val ABSTYPE = symbol_make "ABSTYPE"
-val () = symbol_set_printname (ABSTYPE, "\"abstype\"")
+val () = symbol_set_fullname (ABSTYPE, "\"abstype\"")
 //
 val ABST0YPE = symbol_make "ABST@YPE"
-val () = symbol_set_printname (ABST0YPE, "\"abst@ype\"")
+val () = symbol_set_fullname (ABST0YPE, "\"abst@ype\"")
 //
 val ABSVIEW = symbol_make "ABSVIEW"
-val () = symbol_set_printname (ABSVIEW, "\"absview\"")
+val () = symbol_set_fullname (ABSVIEW, "\"absview\"")
 //
 val ABSVIEWTYPE = symbol_make "ABSVIEWTYPE"
-val () = symbol_set_printname (ABSVIEWTYPE, "\"absviewtype\"")
+val () = symbol_set_fullname (ABSVIEWTYPE, "\"absviewtype\"")
 //
 val ABSVIEWT0YPE = symbol_make "ABSVIEWT@YPE"
-val () = symbol_set_printname (ABSVIEWT0YPE, "\"absviewt@ype\"")
+val () = symbol_set_fullname (ABSVIEWT0YPE, "\"absviewt@ype\"")
 //
 val AND = symbol_make "AND"
-val () = symbol_set_printname (AND, "\"and\"")
+val () = symbol_set_fullname (AND, "\"and\"")
 //
 val AS = symbol_make "AS"
-val () = symbol_set_printname (AS, "\"as\"")
+val () = symbol_set_fullname (AS, "\"as\"")
 //
 val ASSUME = symbol_make "ASSUME"
-val () = symbol_set_printname (ASSUME, "\"assume\"")
+val () = symbol_set_fullname (ASSUME, "\"assume\"")
 //
 val CASTFN = symbol_make "CASTFN"
-val () = symbol_set_printname (CASTFN, "\"castfn\"")
+val () = symbol_set_fullname (CASTFN, "\"castfn\"")
 //
 val FUN = symbol_make "FUN"
-val () = symbol_set_printname (FUN, "\"fun\"")
+val () = symbol_set_fullname (FUN, "\"fun\"")
 //
 val PRAXI = symbol_make "PRAXI"
-val () = symbol_set_printname (PRAXI, "\"praxi\"")
+val () = symbol_set_fullname (PRAXI, "\"praxi\"")
 //
 val PRFUN = symbol_make "PRFUN"
-val () = symbol_set_printname (PRFUN, "\"prfun\"")
+val () = symbol_set_fullname (PRFUN, "\"prfun\"")
 //
 val PRVAL = symbol_make "PRVAL"
-val () = symbol_set_printname (PRVAL, "\"prval\"")
+val () = symbol_set_fullname (PRVAL, "\"prval\"")
 //
 val VAL = symbol_make "VAL"
-val () = symbol_set_printname (VAL, "\"val\"")
+val () = symbol_set_fullname (VAL, "\"val\"")
 //
 (* ****** ****** *)
 
-val abskind = symbol_make "abskind"
-val dcstkind = symbol_make "dcstkind"
+val abskind = symbol_make_nt "abskind"
+val dcstkind = symbol_make_nt "dcstkind"
 
 (* ****** ****** *)
 
-val i0de = symbol_make "i0de"
-val i0deseq = symbol_make "i0deseq"
+val i0de = symbol_make_nt "i0de"
+val i0deseq = symbol_make_nt "i0deseq"
 
 (* ****** ****** *)
 
-val d0ec_sta = symbol_make "d0ec_sta"
-val d0ecseq_sta = symbol_make "d0ecseq_sta"
-val d0ec_dyn = symbol_make "d0ec_dyn"
-val d0ecseq_dyn = symbol_make "d0ecseq_dyn"
-val d0ecseq_dyn_rev = symbol_make "d0ecseq_dyn_rev"
+val d0ec_sta = symbol_make_nt "d0ec_sta"
+val d0ecseq_sta = symbol_make_nt "d0ecseq_sta"
+val d0ec_dyn = symbol_make_nt "d0ec_dyn"
+val d0ecseq_dyn = symbol_make_nt "d0ecseq_dyn"
+val d0ecseq_dyn_rev = symbol_make_nt "d0ecseq_dyn_rev"
 
 (* ****** ****** *)
 
@@ -267,11 +290,6 @@ atsgrammar_main
   val () = d0ecseq_dyn_rev_proc () // reversed dynamic declaration sequence
   val () = d0ecseq_dyn_proc ()
 } // end of [atsgrammar_main]
-
-(* ****** ****** *)
-
-dynload "atsgrammar_symbol.dats"
-dynload "atsgrammar_grmrule.dats"
 
 (* ****** ****** *)
 

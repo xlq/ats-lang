@@ -24,12 +24,31 @@ viewtypedef grmrulelst_vt = List_vt (grmrule)
 (* ****** ****** *)
 
 fun symbol_make (name: string): [s:int] symbol(s)
-//
-fun symbol_get_printname (x: symbol): Stropt
-fun symbol_set_printname (x: symbol, pname: string): void
-//
+fun symbol_make_nt (name: string): [s:int] symbol(s)
+
+(* ****** ****** *)
+
+fun eq_symbol_symbol
+  (x1: symbol, x2: symbol): bool
+overload = with eq_symbol_symbol
+
+fun symbol_get_nonterm (x: symbol): bool
+fun symbol_set_nonterm (
+  x: symbol, nt: bool
+) :<!ref> void = "atsgrammar_symbol_set_nonterm"
+// end of [symbol_set_nonterm]
+
+fun symbol_get_fullname (x: symbol): Stropt
+fun symbol_set_fullname (
+  x: symbol, fname: string
+) :<!ref> void = "atsgrammar_symbol_set_fullname"
+// end of [symbol_set_fullname]
+
 fun symbol_get_grmrulelst (x: symbol): grmrulelst
-fun symbol_set_grmrulelst (x: symbol, grs: grmrulelst): void
+fun symbol_set_grmrulelst (
+  x: symbol, grs: grmrulelst
+) :<!ref> void = "atsgrammar_symbol_set_grmrulelst"
+// end of [symbol_set_grmrulelst]
 
 (* ****** ****** *)
 
@@ -39,6 +58,11 @@ fun print_symbol (sym: symbol): void
 overload print with print_symbol
 fun prerr_symbol (sym: symbol): void
 overload prerr with prerr_symbol
+
+(* ****** ****** *)
+
+fun theSymlst_get (): symlst
+fun theSymlst_add (x: symbol): void
 
 (* ****** ****** *)
 

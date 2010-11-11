@@ -37,6 +37,19 @@ atsgrammar_main_dats.o: atsgrammar_main.dats
 
 ######
 
+#
+# HX: '-o .depend' means appending instead of overwriting
+#
+depend::
+	rm -f .depend
+	$(ATSOPT) -o .depend -dep1 -s atsgrammar.sats
+	$(ATSOPT) -o .depend -dep1 -d atsgrammar_symbol.dats
+	$(ATSOPT) -o .depend -dep1 -d atsgrammar_grmrule.dats
+	$(ATSOPT) -o .depend -dep1 -d atsgrammar_main.dats
+include .depend
+
+######
+
 RMF = rm -f
 
 ######
