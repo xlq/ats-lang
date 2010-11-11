@@ -217,11 +217,11 @@ macdef LLAM = $extval (token_t, "LLAM")
 macdef LOCAL = $extval (token_t, "LOCAL")
 macdef MACDEF = $extval (token_t, "MACDEF")
 macdef MACRODEF = $extval (token_t, "MACRODEF")
-/*
+(*
 macdef METHOD = $extval (token_t, "METHOD")
 macdef METHODSTAR = $extval (token_t, "METHODSTAR")
 macdef MODCLS = $extval (token_t, "MODCLS")
-*/
+*)
 macdef MODPROP = $extval (token_t, "MODPROP")
 macdef MODTYPE = $extval (token_t, "MODTYPE")
 macdef MODULE = $extval (token_t, "MODULE")
@@ -235,10 +235,10 @@ macdef PRFUN = $extval (token_t, "PRFUN")
 macdef PROPMINUS = $extval (token_t, "PROPMINUS")
 macdef PROPPLUS = $extval (token_t, "PROPPLUS")
 macdef PRVAL = $extval (token_t, "PRVAL")
-/*
+(*
 macdef OBJECT = $extval (token_t, "OBJECT")
 macdef OBJCLS = $extval (token_t, "OBJCLS")
-*/
+*)
 macdef OF = $extval (token_t, "OF")
 macdef OP = $extval (token_t, "OP")
 macdef PROPDEF = $extval (token_t, "PROPDEF")
@@ -250,9 +250,9 @@ macdef STA = $extval (token_t, "STA")
 macdef STADEF = $extval (token_t, "STADEF")
 macdef STALOAD = $extval (token_t, "STALOAD")
 macdef STAVAR = $extval (token_t, "STAVAR")
-/*
+(*
 macdef STRUCT = $extval (token_t, "STRUCT")
-*/
+*)
 macdef SYMELIM = $extval (token_t, "SYMELIM")
 macdef SYMINTR = $extval (token_t, "SYMINTR")
 macdef THEN = $extval (token_t, "THEN")
@@ -263,9 +263,9 @@ macdef TYPEPLUS = $extval (token_t, "TYPEPLUS")
 macdef T0YPE = $extval (token_t, "T0YPE")
 macdef T0YPEMINUS = $extval (token_t, "T0YPEMINUS")
 macdef T0YPEPLUS = $extval (token_t, "T0YPEPLUS")
-/*
+(*
 macdef UNION = $extval (token_t, "UNION")
-*/
+*)
 macdef VAL = $extval (token_t, "VAL")
 macdef VALMINUS = $extval (token_t, "VALMINUS")
 macdef VALPLUS = $extval (token_t, "VALPLUS")
@@ -746,7 +746,7 @@ ats_lexer_literal_int_check // HX: checking octal numbers
       return ats_true_bool ;
     } // end of [if]
     ++s ; c = *s ;
-  }
+  } // end of [while]
 //
   return ats_true_bool ;
 } /* end of [ats_lexer_literal_int_check] */

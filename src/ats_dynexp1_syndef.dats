@@ -222,6 +222,14 @@ un_d1exp_decseq
 typedef
 atsyndef_search_all_type =
   (sym_t, intlst) -<fun1> Option_vt (fsyndef)
+(*
+//
+// HX: this style is not supported in ATS/Geizella
+//
+extern
+fun atsyndef_search_all : atsyndef_search_all_type
+// end of [extern]
+*)
 extern
 fun atsyndef_search_all
   (_: sym_t, _: intlst):<fun1> Option_vt (fsyndef)
