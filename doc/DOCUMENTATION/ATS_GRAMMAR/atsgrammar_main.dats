@@ -640,9 +640,14 @@ val i0deseq = symbol_make_nt "i0deseq"
 
 (* ****** ****** *)
 
+val e0xp = symbol_make_nt "e0xp"
+
+(* ****** ****** *)
+
 val d0ec_sta = symbol_make_nt "d0ec_sta"
 val d0ecseq_sta = symbol_make_nt "d0ecseq_sta"
 val d0ec_dyn = symbol_make_nt "d0ec_dyn"
+val guad0ec_dyn = symbol_make_nt "guad0ec_dyn"
 val d0ecseq_dyn = symbol_make_nt "d0ecseq_dyn"
 val d0ecseq_dyn_rev = symbol_make_nt "d0ecseq_dyn_rev"
 
@@ -962,6 +967,27 @@ val () = symbol_close (pf | i0deseq)
 
 (* ****** ****** *)
 
+fun guad0ec_dyn_proc
+  (): void = () where {
+//
+val (pf | ()) = symbol_open (guad0ec_dyn)
+//
+val () = grmrule_append (
+  $lst_t {symbol} (tupz! e0xp srpthenopt d0ecseq_dyn SRPENDIF)
+) // end of [val]
+val () = grmrule_append ($lst_t {symbol}
+  (tupz! e0xp srpthenopt d0ecseq_dyn SRPELSE d0ecseq_dyn SRPENDIF)
+) // end of [val]
+val () = grmrule_append ($lst_t {symbol}
+  (tupz! e0xp srpthenopt d0ecseq_dyn srpelifkind guad0ec_dyn)
+) // end of [val]
+//
+val () = symbol_close (pf | guad0ec_dyn)
+//
+} // end of [guad0ec_dyn_proc]
+
+(* ****** ****** *)
+
 (*
 d0ecseq_dyn_rev /* tail-recursive */
   : /* empty */                         { $$ = d0ecllst_nil() ; }
@@ -1023,6 +1049,8 @@ atsgrammar_main
 //
   val () = i0de_proc ()
   val () = i0deseq_proc ()
+//
+  val () = guad0ec_dyn_proc ()
 //
   val () = d0ecseq_dyn_rev_proc () // reversed dynamic declaration sequence
   val () = d0ecseq_dyn_proc ()

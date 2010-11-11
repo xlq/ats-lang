@@ -1289,47 +1289,6 @@ guad0ec_t guad0ec ;
 
 /* ****** ****** */
 
-%token <t0kn> AMPERSAND
-%token <t0kn> BACKQUOTE
-%token <t0kn> BACKSLASH
-%token <t0kn> BANG
-%token <t0kn> BAR
-%token <t0kn> COMMA
-%token <t0kn> COLON
-%token <t0kn> SEMICOLON
-%token <t0kn> DOT
-%token <t0kn> EQ
-%token <t0kn> LT GT
-%token <t0kn> DOLLAR
-%token <t0kn> HASH
-%token <t0kn> TILDA
-%token <t0kn> DOTDOT DOTDOTDOT
-%token <t0kn> EQLT EQGT
-%token <t0kn> EQLTGT
-%token <t0kn> EQGTGT
-%token <t0kn> EQSLASHEQGT
-%token <t0kn> EQSLASHEQGTGT
-%token <t0kn> GTLT
-%token <t0kn> DOTLT
-%token <t0kn> GTDOT
-%token <t0kn> DOTLTGTDOT
-%token <t0kn> MINUSLT MINUSGT MINUSLTGT
-%token <t0kn> COLONLT
-%token <t0kn> COLONLTGT
-%token <t0kn> BACKQUOTELPAREN
-%token <t0kn> COMMALPAREN
-%token <t0kn> PERCENTLPAREN
-/*
-%token <t0kn> BACKQUOTELBRACKET
-%token <t0kn> COMMALBRACKET
-%token <t0kn> PERCENTLBRACKET
-%token <t0kn> BACKQUOTELBRACE
-%token <t0kn> COMMALBRACE
-%token <t0kn> PERCENTLBRACE
-*/
-
-/* ****** ****** */
-
 %token <t0kn> ABSPROP
 %token <t0kn> ABSTYPE ABST0YPE
 %token <t0kn> ABSVIEW
@@ -1430,6 +1389,50 @@ guad0ec_t guad0ec ;
 %token <t0kn> WHILE WHILESTAR
 %token <t0kn> WITH
 %token <t0kn> WITHPROP WITHTYPE WITHVIEW WITHVIEWTYPE
+
+/* ****** ****** */
+
+%token <t0kn> AMPERSAND
+%token <t0kn> BACKQUOTE
+%token <t0kn> BACKSLASH
+%token <t0kn> BANG
+%token <t0kn> BAR
+%token <t0kn> COMMA
+%token <t0kn> COLON
+%token <t0kn> SEMICOLON
+%token <t0kn> DOT
+%token <t0kn> EQ
+%token <t0kn> LT GT
+%token <t0kn> DOLLAR
+%token <t0kn> HASH
+%token <t0kn> TILDA
+%token <t0kn> DOTDOT DOTDOTDOT
+%token <t0kn> EQLT EQGT
+%token <t0kn> EQLTGT
+%token <t0kn> EQGTGT
+%token <t0kn> EQSLASHEQGT
+%token <t0kn> EQSLASHEQGTGT
+%token <t0kn> GTLT
+%token <t0kn> DOTLT
+%token <t0kn> GTDOT
+%token <t0kn> DOTLTGTDOT
+%token <t0kn> MINUSLT MINUSGT MINUSLTGT
+%token <t0kn> COLONLT
+%token <t0kn> COLONLTGT
+%token <t0kn> BACKQUOTELPAREN
+%token <t0kn> COMMALPAREN
+%token <t0kn> PERCENTLPAREN
+/*
+//
+// HX: these symbols are reserved for supporting MP
+//
+%token <t0kn> BACKQUOTELBRACKET
+%token <t0kn> COMMALBRACKET
+%token <t0kn> PERCENTLBRACKET
+%token <t0kn> BACKQUOTELBRACE
+%token <t0kn> COMMALBRACE
+%token <t0kn> PERCENTLBRACE
+*/
 
 /* ****** ****** */
 
@@ -1809,7 +1812,7 @@ guad0ec_t guad0ec ;
 
 %type <d0ec> d0ec_sta
 %type <d0eclst> d0ecseq_sta
-%type <d0ecllst> d0ecseq_r_sta
+%type <d0ecllst> d0ecseq_sta_rev
 
 %type <d0ec> d0ec_dyn
 %type <d0eclst> d0ecseq_dyn
@@ -3238,7 +3241,7 @@ andv0ardecseq
 i0mpdec
   : impqi0de f0arg2seq colons0expopt EQ d0exp
                                         { $$ = i0mpdec_make($1, $2, $3, $5) ; }
-;
+; /* end of [i0mpdec] */
 
 /* ****** ****** */
 
@@ -3248,12 +3251,12 @@ i0mpdec
 
 d0ecarg
   : LBRACE s0quaseq RBRACE              { $$ = $2 ; }
-;
+; /* end of [d0ecarg] */
 
 d0ecargseq
   : /* empty */                         { $$ = s0qualstlst_nil() ;}
   | d0ecarg d0ecargseq                  { $$ = s0qualstlst_cons($1, $2) ; }
-;
+; /* end of [d0ecargseq] */
 
 d0ec
   : INFIX p0rec i0deseq                 { $$ = d0ec_infix($1, $2,  0, $3) ; }
@@ -3299,7 +3302,7 @@ d0ec
   | DYNLOAD LITERAL_string              { $$ = d0ec_dynload($2) ; }
   | STALOAD LITERAL_string              { $$ = d0ec_staload_none($2) ; }
   | STALOAD stai0de EQ LITERAL_string   { $$ = d0ec_staload_some($2, $4) ; }
-;
+; /* end of [d0ec] */
 
 d0ec_sta
   : d0ec                                { $$ = $1 ; }
@@ -3310,8 +3313,7 @@ d0ec_sta
   | SRPINCLUDE LITERAL_string           { $$ = d0ec_include(0/*sta*/, $2) ; }
   | LOCAL d0ecseq_sta IN d0ecseq_sta END
                                         { $$ = d0ec_local($1, $2, $4, $5) ; }
-;
-
+; /* end of [d0ec_sta] */
 
 guad0ec_sta
   : e0xp srpthenopt d0ecseq_sta SRPENDIF
@@ -3320,21 +3322,22 @@ guad0ec_sta
                                         { $$ = guad0ec_two($1, $3, $5, $6) ; }
   | e0xp srpthenopt d0ecseq_sta srpelifkind guad0ec_sta
                                         { $$ = guad0ec_cons($1, $3, $4, $5) ; }
-;
+; /* end of [guad0ec_sta] */
 
 semicolonseq
   : /* empty */                         { ; }
   | semicolonseq SEMICOLON              { ; }
-;
+; /* end of [semicolonseq] */
 
-d0ecseq_r_sta /* tail-recursive */
+d0ecseq_sta_rev /* tail-recursive */
   : /* empty */                         { $$ = d0ecllst_nil() ; }
-  | d0ecseq_r_sta d0ec_sta semicolonseq { $$ = d0ecllst_cons($1, $2) ; }
-;
+  | d0ecseq_sta_rev d0ec_sta semicolonseq
+                                        { $$ = d0ecllst_cons($1, $2) ; }
+; /* end of [d0ecseq_sta_rev] */
 
 d0ecseq_sta
-  : d0ecseq_r_sta                       { $$ = d0ecllst_reverse($1) ; }
-;
+  : d0ecseq_sta_rev                     { $$ = d0ecllst_reverse($1) ; }
+; /* end of [d0ecseq_sta] */
 
 d0ec_dyn
   : d0ec                                { $$ = $1 ; }
@@ -3355,7 +3358,7 @@ d0ec_dyn
   | LITERAL_extcode                     { $$ = d0ec_extcode_dyn($1) ; }
   | srpifkind guad0ec_dyn               { $$ = d0ec_guadec($1, $2) ; }
   | SRPINCLUDE LITERAL_string           { $$ = d0ec_include(1/*dyn*/, $2) ; }
-;
+; /* end of [d0ec_dyn] */
 
 guad0ec_dyn
   : e0xp srpthenopt d0ecseq_dyn SRPENDIF
@@ -3364,17 +3367,17 @@ guad0ec_dyn
                                         { $$ = guad0ec_two($1, $3, $5, $6) ; }
   | e0xp srpthenopt d0ecseq_dyn srpelifkind guad0ec_dyn
                                         { $$ = guad0ec_cons($1, $3, $4, $5) ; }
-;
+; /* end of [guad0ec_dyn] */
 
 d0ecseq_dyn_rev /* tail-recursive */
   : /* empty */                         { $$ = d0ecllst_nil() ; }
   | d0ecseq_dyn_rev d0ec_dyn semicolonseq
                                         { $$ = d0ecllst_cons($1, $2) ; }
-;
+; /* end of [d0ecseq_dyn_rev] */
 
 d0ecseq_dyn
   : d0ecseq_dyn_rev                     { $$ = d0ecllst_reverse($1) ; }
-;
+; /* end of [d0ecseq_dyn] */
 
 /* ****** ****** */
 
