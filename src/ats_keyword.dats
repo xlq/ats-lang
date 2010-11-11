@@ -181,8 +181,10 @@ keyval_insert("llam", LLAM) ;
 keyval_insert("local", LOCAL) ;
 keyval_insert("macdef", MACDEF) ;
 keyval_insert("macrodef", MACRODEF) ;
+/*
 keyval_insert("method", METHOD) ;
 keyval_insert("modcls", MODCLS) ;
+*/
 keyval_insert("nonfix", NONFIX) ;
 keyval_insert("overload", OVERLOAD) ;
 keyval_insert("par", PAR) ;
@@ -206,8 +208,6 @@ keyval_insert("staload", STALOAD) ;
 keyval_insert("stavar", STAVAR) ;
 /*
 keyval_insert("struct", STRUCT) ;
-*/
-/*
 keyval_insert("super", SUPER) ;
 */
 keyval_insert("symelim", SYMELIM) ;
@@ -232,21 +232,25 @@ keyval_insert("withview", WITHVIEW) ;
 keyval_insert("withviewtype", WITHVIEWTYPE) ;
 //
 keyval_insert("$arrsz", DLRARRSZ) ;
+keyval_insert("$decrypt", DLRDECRYPT) ;
+keyval_insert("$delay", DLRDELAY) ; // $delay
+keyval_insert("$dynload", DLRDYNLOAD) ;
+/*
+keyval_insert("$exec", DLREXEC) ;
+*/
 keyval_insert("$effmask_all", DLREFFMASK_ALL) ;
 keyval_insert("$effmask_exn", DLREFFMASK_EXN) ;
 keyval_insert("$effmask_ntm", DLREFFMASK_NTM) ;
 keyval_insert("$effmask_ref", DLREFFMASK_REF) ;
-keyval_insert("$exec", DLREXEC) ;
 keyval_insert("$extern", DLREXTERN) ;
 keyval_insert("$extval", DLREXTVAL) ;
 keyval_insert("$extype", DLREXTYPE) ;
 keyval_insert("$extype_struct", DLREXTYPE_STRUCT) ;
-keyval_insert("$decrypt", DLRDECRYPT) ;
-keyval_insert("$delay", DLRDELAY) ;
-keyval_insert("$delay_vt", DLRDELAY_VT) ;
-keyval_insert("$dynload", DLRDYNLOAD) ;
 keyval_insert("$encrypt", DLRENCRYPT) ;
+/*
 keyval_insert("$fold", DLRFOLD) ;
+*/
+keyval_insert("$ldelay", DLRLDELAY) ; // linear $delay
 keyval_insert("$lst", DLRLST_T) ;
 keyval_insert("$lst_t", DLRLST_T) ;
 keyval_insert("$lst_vt", DLRLST_VT) ;

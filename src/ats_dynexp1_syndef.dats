@@ -223,7 +223,8 @@ typedef
 atsyndef_search_all_type =
   (sym_t, intlst) -<fun1> Option_vt (fsyndef)
 extern
-fun atsyndef_search_all: atsyndef_search_all_type
+fun atsyndef_search_all
+  (_: sym_t, _: intlst):<fun1> Option_vt (fsyndef)
 // end of [extern]
 
 (* ****** ****** *)

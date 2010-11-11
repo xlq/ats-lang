@@ -1314,8 +1314,11 @@ guad0ec_t guad0ec ;
 %token <t0kn> LLAM
 %token <t0kn> LOCAL
 %token <t0kn> MACDEF MACRODEF
-%token <t0kn> METHOD METHODSTAR
+/*
+%token <t0kn> METHOD
+%token <t0kn> METHODSTAR
 %token <t0kn> MODCLS
+*/
 %token <t0kn> NONFIX
 /*
 %token <t0kn> OBJECT
@@ -1345,8 +1348,8 @@ guad0ec_t guad0ec ;
 %token <t0kn> STAVAR
 /*
 %token <t0kn> STRUCT
-*/
 %token <tokn> SUPER
+*/
 %token <t0kn> SYMELIM SYMINTR
 %token <t0kn> THEN
 %token <t0kn> TRY
@@ -1381,7 +1384,7 @@ guad0ec_t guad0ec ;
 
 %token <t0kn> DLRDECRYPT
 %token <t0kn> DLRDELAY
-%token <t0kn> DLRDELAY_VT
+%token <t0kn> DLRLDELAY
 %token <t0kn> DLRDYNLOAD
 %token <t0kn> DLREFFMASK_ALL
 %token <t0kn> DLREFFMASK_EXN
@@ -1393,7 +1396,9 @@ guad0ec_t guad0ec ;
 %token <t0kn> DLREXTVAL
 %token <t0kn> DLREXTYPE
 %token <t0kn> DLREXTYPE_STRUCT /* external struct */
+/*
 %token <t0kn> DLRFOLD
+*/
 /*
 %token <t0kn> DLROBJ_T
 %token <t0kn> DLROBJ_VT
@@ -1402,6 +1407,8 @@ guad0ec_t guad0ec ;
 %token <t0kn> DLRRAISE
 %token <t0kn> DLRUNFOLD
 %token <t0kn> DLRTYPEOF
+
+/* ****** ****** */
 
 %token <t0kn> SRPFILENAME
 %token <t0kn> SRPLOCATION
@@ -1533,7 +1540,6 @@ guad0ec_t guad0ec ;
 
 %type <i0de> i0de
 %type <i0de> i0de_dlr
-%type <i0de> i0de_srp
 %type <i0delst> i0deseq
 
 %type <i0dext> i0dext
@@ -1546,7 +1552,6 @@ guad0ec_t guad0ec ;
 
 %type <e0xp> e0xp
 %type <e0xp> atme0xp
-%type <e0xp> atme0xpseq
 %type <e0xplst> e0xpseq
 %type <e0xplst> commae0xpseq
 %type <e0xpopt> e0xpopt
@@ -1561,7 +1566,6 @@ guad0ec_t guad0ec ;
 %type <i0de> s0rtid
 %type <s0rt> s0rt
 %type <s0rt> atms0rt
-%type <s0rtlst> atms0rtseq
 %type <s0rtlst> s0rtseq
 %type <s0rtlst> commas0rtseq
 %type <s0rtpol> s0rtpol
@@ -1915,20 +1919,16 @@ i0de /* identifier */
   | MINUSGT                             { $$ = i0de_make_minusgt($1) ; }
   | MINUSLTGT                           { $$ = i0de_make_minusltgt($1) ; }
   | TILDA                               { $$ = i0de_make_tilda($1) ; }
-;
+; /* end of [i0de] */
 
 i0de_dlr /* identifier beginning with $ */
   : IDENTIFIER_dlr                      { $$ = $1 ; }
-;
-
-i0de_srp /* identifier beginning with # */
-  : IDENTIFIER_srp                      { $$ = $1 ; }
-;
+; /* end of [i0de_dlr] */
 
 i0deseq /* identifier sequence */
   : /* empty */                         { $$ = i0delst_nil() ; }
   | i0de i0deseq                        { $$ = i0delst_cons($1, $2) ; }
-;
+; /* end of [i0deseq] */
 
 /* ****** ****** */
 
@@ -1937,7 +1937,7 @@ i0dext /* extern identifier for loading syndef */
 /* keyword */
   | DO                                  { $$ = i0de_make_DO($1) ; }
   | WHILE                               { $$ = i0de_make_WHILE($1) ; }
-;
+; /* end of [i0dext] */
 
 /* ****** ****** */
 
@@ -1945,11 +1945,11 @@ l0ab /* label */
   : i0de                                { $$ = l0ab_ide($1) ; }
   | LITERAL_int                         { $$ = l0ab_int($1) ; }
   | LPAREN l0ab RPAREN                  { $$ = $2 ; }
-;
+; /* end of [l0ab] */
 
 stai0de /* idenitifer for packages */
   : IDENTIFIER_alp                      { $$ = stai0de_make($1) ; }
-;
+; /* end of [stai0de] */
 
 /* ****** ****** */
 
@@ -1959,7 +1959,7 @@ p0rec /* precedence */
   | LPAREN i0de RPAREN                  { $$ = p0rec_ide($2) ; }
   | LPAREN i0de IDENTIFIER_sym LITERAL_int RPAREN
                                         { $$ = p0rec_opr($2, $3, $4) ; }
-;
+; /* end of [p0rec] */
 
 /* ****** ****** */
 
@@ -1971,32 +1971,27 @@ atme0xp /* atomic generic expression */
   | i0de                                { $$ = e0xp_ide($1) ; }
   | LPAREN e0xpseq RPAREN               { $$ = e0xp_list($1, $2, $3) ; }
   | PERCENTLPAREN e0xp RPAREN           { $$ = e0xp_eval($1, $2, $3) ; }
-;
-
-atme0xpseq /* atomic generic expression sequence */
-  : /* empty */                         { $$ = e0xplst_nil() ; }
-  | atme0xp atme0xpseq                  { $$ = e0xplst_cons($1, $2) ; }
-;
+; /* end of [atme0xp] */
 
 e0xp /* generic expression */
   : e0xp atme0xp                        { $$ = e0xp_app($1, $2) ; }
   | atme0xp                             { $$ = $1 ; }
-;
+; /* end of [e0xp] */
 
 e0xpseq /* generic expression sequence */
   : /* empty */                         { $$ = e0xplst_nil() ; }
   | e0xp commae0xpseq                   { $$ = e0xplst_cons($1, $2) ; }
-;
+; /* end of [e0xpseq] */
 
 commae0xpseq
   : /* empty */                         { $$ = e0xplst_nil() ; }
   | COMMA e0xp commae0xpseq             { $$ = e0xplst_cons($2, $3) ; }
-;
+; /* end of [commae0xpseq] */
   
 e0xpopt
   : /* empty */                         { $$ = e0xpopt_none() ; }
   | e0xp                                { $$ = e0xpopt_some($1) ; }
-;
+; /* end of [e0xpopt] */
 
 /* ****** ****** */
 
@@ -2050,11 +2045,6 @@ atms0rt /* atomic sort */
   | s0rtq s0rtid                        { $$ = s0rt_qid($1, $2) ; }
   | LPAREN s0rtseq RPAREN               { $$ = s0rt_list($1, $2, $3) ; }
   | ATLPAREN s0rtseq RPAREN             { $$ = s0rt_tup($1, $2, $3) ; }
-;
-
-atms0rtseq /* atomic sort sequence */
-  : /* empty */                         { $$ = s0rtlst_nil() ; }
-  | atms0rt atms0rtseq                  { $$ = s0rtlst_cons($1, $2) ; }
 ;
 
 s0rt /* sort */
@@ -2825,7 +2815,7 @@ atmd0exp
   | DLRDECRYPT                          { $$ = d0exp_crypt (-1, $1) ; }
   | DLRENCRYPT                          { $$ = d0exp_crypt ( 1, $1) ; }
   | DLRDELAY                            { $$ = d0exp_delay(0, $1) ; }
-  | DLRDELAY_VT                         { $$ = d0exp_delay(1, $1) ; }
+  | DLRLDELAY                           { $$ = d0exp_delay(1, $1) ; }
   | DLRDYNLOAD                          { $$ = d0exp_dynload($1) ; }
   | DLREFFMASK_ALL                      { $$ = d0exp_effmask_all($1) ; }
   | DLREFFMASK_EXN                      { $$ = d0exp_effmask_exn($1) ; }
