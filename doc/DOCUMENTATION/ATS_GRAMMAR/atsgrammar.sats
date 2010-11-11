@@ -36,8 +36,8 @@ viewtypedef grmrulelst_vt = List_vt (grmrule)
 
 (* ****** ****** *)
 
-fun symbol_make (name: string): [s:int] symbol(s)
-fun symbol_make_nt (name: string): [s:int] symbol(s)
+fun symbol_make (name: string): symbol
+fun symbol_make_nt (name: string): symbol
 
 (* ****** ****** *)
 

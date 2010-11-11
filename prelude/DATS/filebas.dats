@@ -70,7 +70,8 @@ typedef struct {
 } *charlst ; // end of [typedef]
 
 ATSinline()
-ats_ptr_type string_make_charlst_rev
+ats_ptr_type
+string_make_charlst_rev
   (ats_int_type sz, ats_ptr_type cs) {
   char *s0, *s ; charlst cs_next ;
   s0 = (char*)ATS_MALLOC (sz + 1) ; s = s0 + sz ;
@@ -79,7 +80,7 @@ ats_ptr_type string_make_charlst_rev
     *s-- = ((charlst)cs)->atslab_0 ;
     cs_next = ((charlst)cs)->atslab_1 ;
     ATS_FREE (cs) ; cs = cs_next ;
-  }  
+  } // end of [while]
   return s0 ;
 } /* string_make_charlst_rev */
 
@@ -88,8 +89,9 @@ ats_ptr_type string_make_charlst_rev
 (* ****** ****** *)
 
 #define i2c char_of_int
-
 macdef EOF = $extval (int, "EOF")
+
+(* ****** ****** *)
 
 extern fun feof0 (f: FILEref):<> int = "atslib_feof"
 
@@ -115,15 +117,17 @@ fun fclose1_exn {m:file_mode} {l:addr}
 (* ****** ****** *)
 
 extern
-fun string_make_charlst_rev {n:nat}
-  (sz: int n, cs: list_vt (char, n)):<> String
+fun string_make_charlst_rev
+  {n:nat} (sz: int n, cs: list_vt (char, n)):<> String
   = "string_make_charlst_rev"
 // end of [string_make_charlst_rev]
 
 (* ****** ****** *)
-
-// if the last character is '\n', it is dropped
-implement input_line (fil) = let
+//
+// HX: if the last character is '\n', it is dropped
+//
+implement
+input_line (fil) = let
   fun loop {n:nat} (
       fil: FILEref, n: int n, cs: list_vt (char, n)
     ) : Stropt = let
@@ -169,9 +173,10 @@ fun fflush0_exn (fil: FILEref):<!exn> void = "atslib_fflush_exn"
 //
 // HX: the character '\n' is added at the end
 //
-implement output_line (fil, line) = begin
+implement
+output_line (fil, line) = (
   fputs0_exn (line, fil); fputc0_exn ('\n', fil); fflush0_exn (fil)
-end // end of [output_line]
+) // end of [output_line]
 
 (* ****** ****** *)
 
@@ -271,7 +276,7 @@ $ldelay (
 loop (
   pf_fil | p_fil, 0, list_vt_nil ()
 ) // end of [loop]
-,
+, // HX: separator
 fclose1_exn (pf_fil | p_fil) // HX: for cleanup
 ) // end of [$ldelay]
 //

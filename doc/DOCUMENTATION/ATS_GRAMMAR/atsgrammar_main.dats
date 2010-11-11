@@ -56,7 +56,7 @@ end // end of [local]
 (* ****** ****** *)
 
 fn symbol_make
-  (name: string) = x where {
+  (name: string): symbol = x where {
   val x = symbol_make (name)
   val () = theSymlst_add (x)
 (*
@@ -67,7 +67,7 @@ fn symbol_make
 } // end of [symbol_make]
 
 fn symbol_make_nt
-  (name: string) = x where {
+  (name: string): symbol = x where {
   val x = symbol_make_nt (name)
   val () = theSymlst_add (x)
 (*
@@ -103,17 +103,6 @@ val () = symbol_set_fullname (IDENTIFIER_ext, "EXTERNAL_IDENTIFIER")
 //
 val IDENTIFIER_dlr = symbol_make "IDENTIFIER_dlr"
 val IDENTIFIER_srp = symbol_make "IDENTIFIER_srp"
-//
-(* ****** ****** *)
-//
-val EQ = symbol_make ("EQ")
-val () = symbol_set_fullname (EQ, "\"=\"")
-//
-val GT = symbol_make ("GT")
-val () = symbol_set_fullname (GT, "\">\"")
-//
-val LT = symbol_make ("LT")
-val () = symbol_set_fullname (LT, "\"<\"")
 //
 (* ****** ****** *)
 //
@@ -423,50 +412,228 @@ val () = symbol_set_fullname (DLRTUP_T, "\"$tup_t\"")
 val DLRTUP_VT = symbol_make "DLRTUP_VT"
 val () = symbol_set_fullname (DLRTUP_VT, "\"$tup_vt\"")
 //
-val DLRDECRYPT = symbol_make "DLRDECRYPT"
-val () = symbol_set_fullname (DLRDECRYPT, "\"$decrypt\"")
-//
 val DLRDELAY = symbol_make "DLRDELAY"
 val () = symbol_set_fullname (DLRDELAY, "\"$delay\"")
-val DLRDELAY_VT = symbol_make "DLRDELAY_VT"
-val () = symbol_set_fullname (DLRDELAY_VT, "\"$delay_vt\"")
+val DLRLDELAY = symbol_make "DLRLDELAY"
+val () = symbol_set_fullname (DLRLDELAY, "\"$ldelay\"")
 //
 val DLRDYNLOAD = symbol_make "DLRDYNLOAD"
-val () = symbol_set_fullname (DLRDYNLOAD, "\"???\"")
-val DLREFFMASK_ALL = symbol_make "DLREFFMASK_ALL"
-val () = symbol_set_fullname (DLREFFMASK_ALL, "\"???\"")
-val DLREFFMASK_EXN = symbol_make "DLREFFMASK_EXN"
-val () = symbol_set_fullname (DLREFFMASK_EXN, "\"???\"")
-val DLREFFMASK_NTM = symbol_make "DLREFFMASK_NTM"
-val () = symbol_set_fullname (DLREFFMASK_NTM, "\"???\"")
-val DLREFFMASK_REF = symbol_make "DLREFFMASK_REF"
-val () = symbol_set_fullname (DLREFFMASK_REF, "\"???\"")
-val DLRENCRYPT = symbol_make "DLRENCRYPT"
-val () = symbol_set_fullname (DLRENCRYPT, "\"???\"")
-val DLREXEC = symbol_make "DLREXEC"
-val () = symbol_set_fullname (DLREXEC, "\"???\"")
-val DLREXTERN = symbol_make "DLREXTERN"
-val () = symbol_set_fullname (DLREXTERN, "\"???\"")
-val DLREXTVAL = symbol_make "DLREXTVAL"
-val () = symbol_set_fullname (DLREXTVAL, "\"???\"")
-val DLREXTYPE = symbol_make "DLREXTYPE"
-val () = symbol_set_fullname (DLREXTYPE, "\"???\"")
-val DLREXTYPE_STRUCT = symbol_make "DLREXTYPE_STRUCT"
-val () = symbol_set_fullname (DLREXTYPE_STRUCT, "\"???\"")
-val DLRFOLD = symbol_make "DLRFOLD"
-val () = symbol_set_fullname (DLRFOLD, "\"???\"")
-val DLRRAISE = symbol_make "DLRRAISE"
-val () = symbol_set_fullname (DLRRAISE, "\"???\"")
-val DLRUNFOLD = symbol_make "DLRUNFOLD"
-val () = symbol_set_fullname (DLRUNFOLD, "\"???\"")
-val DLRTYPEOF = symbol_make "DLRTYPEOF"
-val () = symbol_set_fullname (DLRTYPEOF, "\"???\"")
+val () = symbol_set_fullname (DLRDYNLOAD, "\"$dynload\"")
 //
+val DLREFFMASK_ALL = symbol_make "DLREFFMASK_ALL"
+val () = symbol_set_fullname (DLREFFMASK_ALL, "\"$effmask_all\"")
+val DLREFFMASK_EXN = symbol_make "DLREFFMASK_EXN"
+val () = symbol_set_fullname (DLREFFMASK_EXN, "\"$effmask_exn\"")
+val DLREFFMASK_NTM = symbol_make "DLREFFMASK_NTM"
+val () = symbol_set_fullname (DLREFFMASK_NTM, "\"$effmask_ntm\"")
+val DLREFFMASK_REF = symbol_make "DLREFFMASK_REF"
+val () = symbol_set_fullname (DLREFFMASK_REF, "\"$effmask_ref\"")
+//
+val DLRDECRYPT = symbol_make "DLRDECRYPT"
+val () = symbol_set_fullname (DLRDECRYPT, "\"$decrypt\"")
+val DLRENCRYPT = symbol_make "DLRENCRYPT"
+val () = symbol_set_fullname (DLRENCRYPT, "\"$encrypt\"")
+//
+val DLREXTERN = symbol_make "DLREXTERN"
+val () = symbol_set_fullname (DLREXTERN, "\"$extern\"")
+val DLREXTVAL = symbol_make "DLREXTVAL"
+val () = symbol_set_fullname (DLREXTVAL, "\"$extval\"")
+//
+val DLREXTYPE = symbol_make "DLREXTYPE"
+val () = symbol_set_fullname (DLREXTYPE, "\"$extype\"")
+val DLREXTYPE_STRUCT = symbol_make "DLREXTYPE_STRUCT"
+val () = symbol_set_fullname (DLREXTYPE_STRUCT, "\"$extype_struct\"")
+//
+val DLRFOLD = symbol_make "DLRFOLD"
+val () = symbol_set_fullname (DLRFOLD, "\"$fold\"")
+val DLRUNFOLD = symbol_make "DLRUNFOLD"
+val () = symbol_set_fullname (DLRUNFOLD, "\"$unfold\"")
+//
+val DLRRAISE = symbol_make "DLRRAISE"
+val () = symbol_set_fullname (DLRRAISE, "\"$raise\"")
+//
+val DLRTYPEOF = symbol_make "DLRTYPEOF"
+val () = symbol_set_fullname (DLRTYPEOF, "\"$typeof\"")
+//
+(* ****** ****** *)
+//
+val SRPFILENAME = symbol_make "SRPFILENAME"
+val () = symbol_set_fullname (SRPFILENAME, "\"#FILENAME\"")
+val SRPLOCATION = symbol_make "SRPLOCATION"
+val () = symbol_set_fullname (SRPLOCATION, "\"#LOCATION\"")
+val SRPCHARCOUNT = symbol_make "SRPCHARCOUNT"
+val () = symbol_set_fullname (SRPCHARCOUNT, "\"#CHARCOUNT\"")
+val SRPLINECOUNT = symbol_make "SRPLINECOUNT"
+val () = symbol_set_fullname (SRPLINECOUNT, "\"#LINECOUNT\"")
+//
+val SRPASSERT = symbol_make "SRPASSERT"
+val () = symbol_set_fullname (SRPASSERT, "\"#assert\"")
+val SRPDEFINE = symbol_make "SRPDEFINE"
+val () = symbol_set_fullname (SRPDEFINE, "\"#define\"")
+val SRPELSE = symbol_make "SRPELSE"
+val () = symbol_set_fullname (SRPELSE, "\"#else\"")
+val SRPELIF = symbol_make "SRPELIF"
+val () = symbol_set_fullname (SRPELIF, "\"#elif\"")
+val SRPELIFDEF = symbol_make "SRPELIFDEF"
+val () = symbol_set_fullname (SRPELIFDEF, "\"#elifdef\"")
+val SRPELIFNDEF = symbol_make "SRPELIFNDEF"
+val () = symbol_set_fullname (SRPELIFNDEF, "\"#elifndef\"")
+val SRPENDIF = symbol_make "SRPENDIF"
+val () = symbol_set_fullname (SRPENDIF, "\"#endif\"")
+val SRPERROR = symbol_make "SRPERROR"
+val () = symbol_set_fullname (SRPERROR, "\"#error\"")
+val SRPIF = symbol_make "SRPIF"
+val () = symbol_set_fullname (SRPIF, "\"#if\"")
+val SRPIFDEF = symbol_make "SRPIFDEF"
+val () = symbol_set_fullname (SRPIFDEF, "\"#ifdef\"")
+val SRPIFNDEF = symbol_make "SRPIFNDEF"
+val () = symbol_set_fullname (SRPIFNDEF, "\"#ifndef\"")
+val SRPINCLUDE = symbol_make "SRPINCLUDE"
+val () = symbol_set_fullname (SRPINCLUDE, "\"#include\"")
+val SRPPRINT = symbol_make "SRPPRINT"
+val () = symbol_set_fullname (SRPPRINT, "\"#print\"")
+val SRPTHEN = symbol_make "SRPTHEN"
+val () = symbol_set_fullname (SRPTHEN, "\"#then\"")
+val SRPUNDEF = symbol_make "SRPUNDEF"
+val () = symbol_set_fullname (SRPUNDEF, "\"#undef\"")
+//
+(* ****** ****** *)
+//
+val FOLDAT = symbol_make "FOLDAT"
+val () = symbol_set_fullname (FOLDAT, "\"fold@\"")
+val FREEAT = symbol_make "FREEAT"
+val () = symbol_set_fullname (FREEAT, "\"free@\"")
+val VIEWAT = symbol_make "VIEWAT"
+val () = symbol_set_fullname (VIEWAT, "\"view@\"")
+//
+(* ****** ****** *)
+//
+val AMPERSAND = symbol_make ("AMPERSAND")
+val () = symbol_set_fullname (AMPERSAND, "\"&\"")
+//
+val BACKQUOTE = symbol_make ("BACKQUOTE")
+val () = symbol_set_fullname (BACKQUOTE, "\"`\"")
+//
+val BACKSLASH = symbol_make ("BACKSLASH")
+val () = symbol_set_fullname (BACKSLASH, "\"\\\"")
+//
+val BANG = symbol_make ("BANG")
+val () = symbol_set_fullname (BANG, "\"!\"")
+//
+val BAR = symbol_make ("BAR")
+val () = symbol_set_fullname (BAR, "\"|\"")
+//
+val COMMA = symbol_make ("COMMA")
+val () = symbol_set_fullname (COMMA, "\",\"")
+//
+val COLON = symbol_make ("COLON")
+val () = symbol_set_fullname (COLON, "\":\"")
+//
+val SEMICOLON = symbol_make ("SEMICOLON")
+val () = symbol_set_fullname (SEMICOLON, "\";\"")
+//
+val DOT = symbol_make ("DOT")
+val () = symbol_set_fullname (DOT, "\".\"")
+//
+val EQ = symbol_make ("EQ")
+val () = symbol_set_fullname (EQ, "\"=\"")
+//
+val LT = symbol_make ("LT")
+val () = symbol_set_fullname (LT, "\"<\"")
+val GT = symbol_make ("GT")
+val () = symbol_set_fullname (GT, "\">\"")
+//
+val DOLLAR = symbol_make ("DOLLAR")
+val () = symbol_set_fullname (DOLLAR, "\"$\"")
+//
+val HASH = symbol_make ("HASH")
+val () = symbol_set_fullname (HASH, "\"#\"")
+//
+val TILDA = symbol_make ("TILDA")
+val () = symbol_set_fullname (TILDA, "\"~\"")
+//
+val DOTDOT = symbol_make ("DOTDOT")
+val () = symbol_set_fullname (DOTDOT, "\"..\"")
+val DOTDOTDOT = symbol_make ("DOTDOTDOT")
+val () = symbol_set_fullname (DOTDOTDOT, "\"...\"")
+//
+val EQLT = symbol_make ("EQLT")
+val () = symbol_set_fullname (EQLT, "\"=<\"")
+val EQGT = symbol_make ("EQGT")
+val () = symbol_set_fullname (EQGT, "\"=>\"")
+val EQLTGT = symbol_make ("EQLTGT")
+val () = symbol_set_fullname (EQLTGT, "\"=<>\"")
+val EQGTGT = symbol_make ("EQGTGT")
+val () = symbol_set_fullname (EQGTGT, "\"=>>\"")
+//
+val EQSLASHEQGT = symbol_make ("EQSLASHEQGT")
+val () = symbol_set_fullname (EQSLASHEQGT, "\"=/=>\"")
+val EQSLASHEQGTGT = symbol_make ("EQSLASHEQGTGT")
+val () = symbol_set_fullname (EQSLASHEQGTGT, "\"=/=>>\"")
+//
+val GTLT = symbol_make ("GTLT")
+val () = symbol_set_fullname (GTLT, "\"<>\"")
+//
+val DOTLT = symbol_make ("DOTLT")
+val () = symbol_set_fullname (DOTLT, "\".<\"")
+val GTDOT = symbol_make ("GTDOT")
+val () = symbol_set_fullname (GTDOT, "\">.\"")
+val DOTLTGTDOT = symbol_make ("DOTLTGTDOT")
+val () = symbol_set_fullname (DOTLTGTDOT, "\".<>.\"")
+//
+val MINUSLT = symbol_make ("MINUSLT")
+val () = symbol_set_fullname (MINUSLT, "\"-<\"")
+val MINUSGT = symbol_make ("MINUSGT")
+val () = symbol_set_fullname (MINUSGT, "\"->\"")
+val MINUSLTGT = symbol_make ("MINUSLTGT")
+val () = symbol_set_fullname (MINUSLTGT, "\"-<>\"")
+//
+val COLONLT = symbol_make ("COLONLT")
+val () = symbol_set_fullname (COLONLT, "\":<\"")
+val COLONLTGT = symbol_make ("COLONLTGT")
+val () = symbol_set_fullname (COLONLTGT, "\":<>\"")
+//
+val BACKQUOTELPAREN = symbol_make ("BACKQUOTELPAREN")
+val () = symbol_set_fullname (BACKQUOTELPAREN, "\"`(\"")
+val COMMALPAREN = symbol_make ("COMMALPAREN")
+val () = symbol_set_fullname (COMMALPAREN, "\",(\"")
+val PERCENTLPAREN = symbol_make ("PERCENTLPAREN")
+val () = symbol_set_fullname (PERCENTLPAREN, "\"%(\"")
+(*
+//
+// HX: these symbols were reserved for supporting MP
+//
+val BACKQUOTELBRACKET = symbol_make ("BACKQUOTELBRACKET")
+val () = symbol_set_fullname (BACKQUOTELBRACKET, "\"`[\"")
+val PERCENTLBRACKET = symbol_make ("PERCENTLBRACKET")
+val () = symbol_set_fullname (COMMALBRACE, "\"%[\"")
+val COMMALBRACKET = symbol_make ("COMMALBRACKET")
+val () = symbol_set_fullname (COMMALBRACKET, "\",[\"")
+//
+val BACKQUOTELBRACE = symbol_make ("BACKQUOTELBRACE")
+val () = symbol_set_fullname (BACKQUOTELBRACE, "\"`{\"")
+val PERCENTLBRACE = symbol_make ("PERCENTLBRACE")
+val () = symbol_set_fullname (COMMALBRACE, "\"%{\"")
+val COMMALBRACE = symbol_make ("COMMALBRACE")
+val () = symbol_set_fullname (COMMALBRACE, "\",{\"")
+*)
 (* ****** ****** *)
 
 val abskind = symbol_make_nt "abskind"
 val dcstkind = symbol_make_nt "dcstkind"
-
+val datakind = symbol_make_nt "datakind"
+val stadefkind = symbol_make_nt "stadefkind"
+//
+val valkind = symbol_make_nt "valkind"
+val funkind = symbol_make_nt "funkind"
+//
+val lamkind = symbol_make_nt "lamkind"
+val fixkind = symbol_make_nt "fixkind"
+//
+val srpifkind = symbol_make_nt "srpifkind"
+val srpelifkind = symbol_make_nt "srpelifkind"
+val srpthenopt = symbol_make_nt "srpthenopt"
+//
 (* ****** ****** *)
 
 val i0de = symbol_make_nt "i0de"
@@ -513,10 +680,10 @@ val () = symbol_close (pf | abskind)
 dcstkind
   : FUN                                 { $$ = dcstkind_fun () ; }
   | VAL                                 { $$ = dcstkind_val () ; }
+  | CASTFN                              { $$ = dcstkind_castfn () ; }
   | PRAXI                               { $$ = dcstkind_praxi () ; }
   | PRFUN                               { $$ = dcstkind_prfun () ; }
   | PRVAL                               { $$ = dcstkind_prval () ; }
-  | CASTFN                              { $$ = dcstkind_castfn () ; }
 ;
 *)
 fun dcstkind_proc
@@ -526,13 +693,216 @@ val (pf | ()) = symbol_open (dcstkind)
 //
 val () = grmrule_append (FUN)
 val () = grmrule_append (VAL)
+val () = grmrule_append (CASTFN)
 val () = grmrule_append (PRAXI)
 val () = grmrule_append (PRFUN)
 val () = grmrule_append (PRVAL)
-val () = grmrule_append (CASTFN)
 //
 val () = symbol_close (pf | dcstkind)
 } // end of [dcstkind_proc]
+
+(* ****** ****** *)
+
+(*
+datakind
+  : DATAPROP                            { $$ = datakind_prop () ; }
+  | DATATYPE                            { $$ = datakind_type () ; }
+  | DATAVIEW                            { $$ = datakind_view () ; }
+  | DATAVIEWTYPE                        { $$ = datakind_viewtype () ; }
+;
+*)
+fun datakind_proc
+  (): void = () where {
+//
+val (pf | ()) = symbol_open (datakind)
+//
+val () = grmrule_append (DATAPROP)
+val () = grmrule_append (DATATYPE)
+val () = grmrule_append (DATAVIEW)
+val () = grmrule_append (DATAVIEWTYPE)
+//
+val () = symbol_close (pf | datakind)
+} // end of [datakind_proc]
+
+(* ****** ****** *)
+
+(*
+stadefkind
+  : STADEF                              { $$ = stadefkind_generic () ; }
+  | PROPDEF                             { $$ = stadefkind_prop ($1) ; }
+  | TYPEDEF                             { $$ = stadefkind_type ($1) ; }
+  | VIEWDEF                             { $$ = stadefkind_view ($1) ; }
+  | VIEWTYPEDEF                         { $$ = stadefkind_viewtype ($1) ; }
+;
+*)
+fun stadefkind_proc
+  (): void = () where {
+//
+val (pf | ()) = symbol_open (stadefkind)
+//
+val () = grmrule_append (STADEF)
+val () = grmrule_append (PROPDEF)
+val () = grmrule_append (TYPEDEF)
+val () = grmrule_append (VIEWDEF)
+val () = grmrule_append (VIEWTYPEDEF)
+//
+val () = symbol_close (pf | stadefkind)
+} // end of [stadefkind_proc]
+
+(* ****** ****** *)
+
+(*
+valkind
+  : VAL                                 { $$ = valkind_val () ; }
+  | VALMINUS                            { $$ = valkind_valminus () ; }
+  | VALPLUS                             { $$ = valkind_valplus () ; }
+  | PRVAL                               { $$ = valkind_prval () ; }
+;
+*)
+fun valkind_proc
+  (): void = () where {
+//
+val (pf | ()) = symbol_open (valkind)
+//
+val () = grmrule_append (VAL)
+val () = grmrule_append (VALMINUS)
+val () = grmrule_append (VALPLUS)
+val () = grmrule_append (PRVAL)
+//
+val () = symbol_close (pf | valkind)
+} // end of [valkind_proc]
+
+(* ****** ****** *)
+
+(*
+funkind
+  : FN                                  { $$ = funkind_fn () ; }
+  | FNSTAR                              { $$ = funkind_fnstar () ; }
+  | FUN                                 { $$ = funkind_fun () ; }
+  | CASTFN                              { $$ = funkind_castfn () ; }
+  | PRFN                                { $$ = funkind_prfn () ; }
+  | PRFUN                               { $$ = funkind_prfun () ; }
+;
+*)
+fun funkind_proc
+  (): void = () where {
+//
+val (pf | ()) = symbol_open (funkind)
+//
+val () = grmrule_append (FN)
+val () = grmrule_append (FNSTAR)
+val () = grmrule_append (FUN)
+val () = grmrule_append (CASTFN)
+val () = grmrule_append (PRFN)
+val () = grmrule_append (PRFUN)
+//
+val () = symbol_close (pf | funkind)
+//
+} // end of [funkind_proc]
+
+(* ****** ****** *)
+
+(*
+lamkind
+  : LAM                                 { $$ = lamkind_lam ($1) ; }
+  | ATLAM                               { $$ = lamkind_atlam ($1) ; }
+  | LLAM                                { $$ = lamkind_llam ($1) ; }
+  | ATLLAM                              { $$ = lamkind_atllam ($1) ; }
+;
+*)
+fun lamkind_proc
+  (): void = () where {
+//
+val (pf | ()) = symbol_open (lamkind)
+//
+val () = grmrule_append (LAM)
+val () = grmrule_append (ATLAM)
+val () = grmrule_append (LLAM)
+val () = grmrule_append (ATLLAM)
+//
+val () = symbol_close (pf | lamkind)
+//
+} // end of [lamkind_proc]
+
+(* ****** ****** *)
+
+(*
+fixkind
+  : FIX                                 { $$ = fixkind_fix ($1) ; }
+  | ATFIX                               { $$ = fixkind_atfix ($1) ; }
+;
+*)
+fun fixkind_proc
+  (): void = () where {
+//
+val (pf | ()) = symbol_open (fixkind)
+//
+val () = grmrule_append (FIX)
+val () = grmrule_append (ATFIX)
+//
+val () = symbol_close (pf | fixkind)
+//
+} // end of [fixkind_proc]
+
+(* ****** ****** *)
+
+(*
+srpifkind
+  : SRPIF                               { $$ = srpifkindtok_if ($1) ; }
+  | SRPIFDEF                            { $$ = srpifkindtok_ifdef ($1) ; }
+  | SRPIFNDEF                           { $$ = srpifkindtok_ifndef ($1) ; }
+;
+*)
+fun srpifkind_proc
+  (): void = () where {
+//
+val (pf | ()) = symbol_open (srpifkind)
+//
+val () = grmrule_append (SRPIF)
+val () = grmrule_append (SRPIFDEF)
+val () = grmrule_append (SRPIFNDEF)
+//
+val () = symbol_close (pf | srpifkind)
+//
+} // end of [srpifkind]
+
+(*
+srpelifkind
+  : SRPELIF                             { $$ = srpifkindtok_if ($1) ; }
+  | SRPELIFDEF                          { $$ = srpifkindtok_ifdef ($1) ; }
+  | SRPELIFNDEF                         { $$ = srpifkindtok_ifndef ($1) ; }
+;
+*)
+fun srpelifkind_proc
+  (): void = () where {
+//
+val (pf | ()) = symbol_open (srpelifkind)
+//
+val () = grmrule_append (SRPELIF)
+val () = grmrule_append (SRPELIFDEF)
+val () = grmrule_append (SRPELIFNDEF)
+//
+val () = symbol_close (pf | srpelifkind)
+//
+} // end of [srpelifkind]
+
+(*
+srpthenopt
+  : /* empty */                         { }
+  | SRPTHEN                             { }
+;
+*)
+fun srpthenopt_proc
+  (): void = () where {
+//
+val (pf | ()) = symbol_open (srpthenopt)
+//
+val () = grmrule_append ()
+val () = grmrule_append (SRPTHEN)
+//
+val () = symbol_close (pf | srpthenopt)
+//
+} // end of [srpthenopt]
 
 (* ****** ****** *)
 
@@ -596,6 +966,19 @@ atsgrammar_main
   () = () where {
   val () = abskind_proc ()
   val () = dcstkind_proc ()
+  val () = datakind_proc ()
+  val () = stadefkind_proc ()
+//
+  val () = valkind_proc ()
+  val () = funkind_proc ()
+//
+  val () = lamkind_proc ()
+  val () = fixkind_proc ()
+//
+  val () = srpifkind_proc ()
+  val () = srpelifkind_proc ()
+  val () = srpthenopt_proc ()
+//
   val () = i0deseq_proc ()
   val () = d0ecseq_dyn_rev_proc () // reversed dynamic declaration sequence
   val () = d0ecseq_dyn_proc ()

@@ -1289,6 +1289,47 @@ guad0ec_t guad0ec ;
 
 /* ****** ****** */
 
+%token <t0kn> AMPERSAND
+%token <t0kn> BACKQUOTE
+%token <t0kn> BACKSLASH
+%token <t0kn> BANG
+%token <t0kn> BAR
+%token <t0kn> COMMA
+%token <t0kn> COLON
+%token <t0kn> SEMICOLON
+%token <t0kn> DOT
+%token <t0kn> EQ
+%token <t0kn> LT GT
+%token <t0kn> DOLLAR
+%token <t0kn> HASH
+%token <t0kn> TILDA
+%token <t0kn> DOTDOT DOTDOTDOT
+%token <t0kn> EQLT EQGT
+%token <t0kn> EQLTGT
+%token <t0kn> EQGTGT
+%token <t0kn> EQSLASHEQGT
+%token <t0kn> EQSLASHEQGTGT
+%token <t0kn> GTLT
+%token <t0kn> DOTLT
+%token <t0kn> GTDOT
+%token <t0kn> DOTLTGTDOT
+%token <t0kn> MINUSLT MINUSGT MINUSLTGT
+%token <t0kn> COLONLT
+%token <t0kn> COLONLTGT
+%token <t0kn> BACKQUOTELPAREN
+%token <t0kn> COMMALPAREN
+%token <t0kn> PERCENTLPAREN
+/*
+%token <t0kn> BACKQUOTELBRACKET
+%token <t0kn> COMMALBRACKET
+%token <t0kn> PERCENTLBRACKET
+%token <t0kn> BACKQUOTELBRACE
+%token <t0kn> COMMALBRACE
+%token <t0kn> PERCENTLBRACE
+*/
+
+/* ****** ****** */
+
 %token <t0kn> ABSPROP
 %token <t0kn> ABSTYPE ABST0YPE
 %token <t0kn> ABSVIEW
@@ -1446,6 +1487,8 @@ guad0ec_t guad0ec ;
 %token <t0kn> SRPTHEN
 %token <t0kn> SRPUNDEF
 
+/* ****** ****** */
+
 %token <t0kn> FOLDAT
 %token <t0kn> FREEAT
 %token <t0kn> VIEWAT
@@ -1464,42 +1507,6 @@ guad0ec_t guad0ec ;
 %token <t0kn> HASHLPAREN
 %token <t0kn> HASHLBRACKET
 %token <t0kn> HASHLBRACE
-
-/* ****** ****** */
-
-%token <t0kn> AMPERSAND
-%token <t0kn> BACKQUOTE
-%token <t0kn> BACKSLASH
-%token <t0kn> BANG
-%token <t0kn> BAR
-%token <t0kn> COMMA
-%token <t0kn> COLON
-%token <t0kn> SEMICOLON
-%token <t0kn> DOT
-%token <t0kn> DOLLAR
-%token <t0kn> EQ
-%token <t0kn> LT GT
-%token <t0kn> HASH
-%token <t0kn> TILDA
-%token <t0kn> DOTDOT DOTDOTDOT
-%token <t0kn> EQLT EQGT EQLTGT
-%token <t0kn> EQSLASHEQGT
-%token <t0kn> EQGTGT
-%token <t0kn> EQSLASHEQGTGT
-%token <t0kn> GTLT
-%token <t0kn> DOTLT
-%token <t0kn> GTDOT
-%token <t0kn> DOTLTGTDOT
-%token <t0kn> MINUSLT MINUSGT MINUSLTGT
-%token <t0kn> COLONLT
-%token <t0kn> COLONLTGT
-%token <t0kn> BACKQUOTELPAREN
-%token <t0kn> COMMALPAREN
-%token <t0kn> PERCENTLPAREN
-%token <t0kn> BACKQUOTELBRACKET
-%token <t0kn> COMMALBRACKET
-%token <t0kn> BACKQUOTELBRACE
-%token <t0kn> COMMALBRACE
 
 /* ****** ****** */
 
@@ -1836,10 +1843,10 @@ abskind
 dcstkind
   : FUN                                 { $$ = dcstkind_fun () ; }
   | VAL                                 { $$ = dcstkind_val () ; }
+  | CASTFN                              { $$ = dcstkind_castfn () ; }
   | PRAXI                               { $$ = dcstkind_praxi () ; }
   | PRFUN                               { $$ = dcstkind_prfun () ; }
   | PRVAL                               { $$ = dcstkind_prval () ; }
-  | CASTFN                              { $$ = dcstkind_castfn () ; }
 ;
 
 datakind
@@ -1899,6 +1906,7 @@ lamkind
 fixkind
   : FIX                                 { $$ = fixkind_fix ($1) ; }
   | ATFIX                               { $$ = fixkind_atfix ($1) ; }
+;
 
 /* ****** ****** */
 

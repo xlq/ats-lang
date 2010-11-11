@@ -8,6 +8,9 @@
 
 ATSCC=$(ATSHOME)/bin/atscc
 ATSOPT=$(ATSHOME)/bin/atsopt
+######
+
+ATSGCFLAG=-D_ATS_GCATS
 
 ######
 
@@ -19,7 +22,7 @@ OBJECT := \
 
 ######
 
-atsgrammar: $(OBJECT); $(ATSCC) -o $@ $(OBJECT)
+atsgrammar: $(OBJECT); $(ATSCC) $(ATSGCFLAG) -o $@ $(OBJECT)
 
 ######
 

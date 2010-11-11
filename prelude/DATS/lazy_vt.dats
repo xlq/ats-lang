@@ -47,7 +47,9 @@ assume lazy_viewt0ype_viewtype (a:viewt@ype) = thunkvalue_vt a
 
 in
 
-implement{a} lazy_vt_force_crypt (v_lazy) = begin
+implement{a}
+lazy_vt_force_crypt
+  (v_lazy) = begin
   case+ $decrypt (v_lazy) of
   | ~thunkvalue_vt_thunk (xf) => let
       stavar T: t@ype
@@ -70,10 +72,11 @@ extern castfn
     (x: stream_vt_cons_unfold (l1, l2)):<> list_vt_cons_unfold (l1, l2)
 // casting one data constructor to another
 
-implement{a} list_vt_of_stream_vt (xs) = let
-  fun loop {n0:nat}
-    (xs: stream_vt a, n: &int n0 >> int (n + n0))
-    :<1,~ref> #[n:nat] list_vt (a, n) = let
+implement{a}
+list_vt_of_stream_vt (xs) = let
+  fun loop {n0:nat} (
+    xs: stream_vt a, n: &int n0 >> int (n + n0)
+  ) :<!laz> #[n:nat] list_vt (a, n) = let
     val xs_con = !xs
   in
     case+ xs_con of
@@ -100,16 +103,20 @@ end // end of [list_vt_of_stream_vt]
 
 (* ****** ****** *)
 
-implement{a} stream_vt_free (xs) = case+ !xs of
+implement{a}
+stream_vt_free (xs) = case+ !xs of
   | ~stream_vt_cons (_, xs) => stream_vt_free xs
   | ~stream_vt_nil () => ()
 // end of [stream_vt_free]
 
 (* ****** ****** *)
 
-fun{a:t@ype} stream_vt_filter_cloptr_con
-  (xs: stream_vt a, pred: (&a) -<cloptr1,~ref> bool)
-  :<1,~ref> stream_vt_con a = let
+local
+
+fun{a:t@ype}
+stream_vt_filter_cloptr_con
+  (xs: stream_vt a, pred: (&a) -<cloptr,!laz> bool)
+  :<!laz> stream_vt_con a = let
   val xs_con = !xs
 in
   case+ xs_con of
@@ -131,6 +138,8 @@ in
     end // end of [stream_vt_nil]
 end // end of [stream_vt_filter_con]
 
+in // in of [local]
+
 implement{a}
 stream_vt_filter_fun (xs, pred) =
   $ldelay (stream_vt_filter_cloptr_con<a> (xs, lam x => pred x), ~xs)
@@ -141,19 +150,22 @@ stream_vt_filter_cloptr (xs, pred) = $ldelay (
   stream_vt_filter_cloptr_con<a> (xs, pred), (cloptr_free pred; ~xs)
 ) // end of [stream_vt_filter_cloptr]
 
+end // end of [local]
+
 (* ****** ****** *)
 
 local
 
-#define nil stream_vt_nil; #define :: stream_vt_cons
+#define nil stream_vt_nil
+#define :: stream_vt_cons
 
-in
-
-fun{a1,a2,b:t@ype} stream_vt_map2_cloptr_con (
-    xs1: stream_vt a1
-  , xs2: stream_vt a2
-  , f: (a1, a2) -<cloptr1,~ref> b
-  ) :<1,~ref> stream_vt_con b = begin case+ !xs1 of
+fun{a1,a2,b:t@ype}
+stream_vt_map2_cloptr_con (
+  xs1: stream_vt a1
+, xs2: stream_vt a2
+, f: (a1, a2) -<cloptr,!laz> b
+) :<!laz> stream_vt_con b = begin
+  case+ !xs1 of
   | ~(x1 :: xs1) => begin case+ !xs2 of
     | ~(x2 :: xs2) => y :: ys where {
         val y = f (x1, x2)
@@ -166,6 +178,8 @@ fun{a1,a2,b:t@ype} stream_vt_map2_cloptr_con (
     end // end of [::]
   | ~nil () => (~xs2; cloptr_free f; nil ())
 end // end of [stream_map2_con]
+
+in // in of [local]
 
 implement{a1,a2,b}
 stream_vt_map2_fun (xs1, xs2, f) = $ldelay (
