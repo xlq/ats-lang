@@ -1794,6 +1794,8 @@ in '{
   d0exp_loc= loc, d0exp_node= D0Earrinit (s0e_elt, od0e_asz, d0es_elt)
 } end // end of [d0exp_arrinit]
 
+(* ****** ****** *)
+
 implement
 d0exp_arrinit_none
   (t_beg, s0e_elt, d0es_elt, t_end) =
@@ -1809,12 +1811,19 @@ d0exp_arrinit_some
 (* ****** ****** *)
 
 implement
-d0exp_arrsize
-  (t_beg, os0e, d0e_elts) = let
-  val loc = combine (t_beg.t0kn_loc, d0e_elts.d0exp_loc)
+d0exp_arrsize (
+  t_beg, os0e, t_lp, d0es, t_rp
+) = let
+  val loc = combine (t_beg.t0kn_loc, t_rp.t0kn_loc)
+  val d0e_elts = (case+ d0es of
+    | cons (d0e, nil ()) => d0e
+    | _ => d0exp_list (t_lp, d0es, t_rp)
+  ) : d0exp // end of [val]
 in '{
   d0exp_loc= loc, d0exp_node= D0Earrsize (os0e, d0e_elts)
 } end // end of [d0exp_arrsize]
+
+(* ****** ****** *)
 
 implement
 d0exp_arrsub (qid, ind) = let
@@ -2023,7 +2032,8 @@ in '{
 
 (* ****** ****** *)
 
-implement d0exp_let_seq
+implement
+d0exp_let_seq
   (t_beg, d0cs, t_in, d0es, t_end) = let
   val loc = combine (t_beg.t0kn_loc, t_end.t0kn_loc)
   val d0e = d0exp_seq (t_in, d0es, t_end)
@@ -2031,18 +2041,25 @@ in '{
   d0exp_loc= loc, d0exp_node= D0Elet (d0cs, d0e)
 } end // end of [d0exp_let_seq]
 
-implement d0exp_list (t_beg, d0es, t_end) = let
+(* ****** ****** *)
+
+implement
+d0exp_list
+  (t_beg, d0es, t_end) = let
   val loc = combine (t_beg.t0kn_loc, t_end.t0kn_loc)
 in '{
   d0exp_loc= loc, d0exp_node= D0Elist d0es
 } end // end of [d0exp_list]
 
-implement d0exp_list2
+implement
+d0exp_list2
   (t_beg, d0es1, d0es2, t_end) = let
   val loc = combine (t_beg.t0kn_loc, t_end.t0kn_loc)
 in '{
   d0exp_loc= loc, d0exp_node= D0Elist2 (d0es1, d0es2)
 } end // end of [d0exp_list2]
+
+(* ****** ****** *)
 
 implement d0exp_loopexn (i, t) = 
   '{ d0exp_loc= t.t0kn_loc, d0exp_node= D0Eloopexn i }
@@ -2051,17 +2068,23 @@ implement d0exp_loopexn (i, t) =
 (* ****** ****** *)
 
 implement
-d0exp_lst
-  (lin, t_beg, os0e, d0e_elts) = let
-  val loc = combine (t_beg.t0kn_loc, d0e_elts.d0exp_loc)
+d0exp_lst (
+  lin, t_beg, os0e, t_lp, d0es, t_rp
+) = let
+  val loc = combine (t_beg.t0kn_loc, t_rp.t0kn_loc)
+  val d0e_elts = (case+ d0es of
+    | cons (d0e, nil ()) => d0e
+    | _ => d0exp_list (t_lp, d0es, t_rp)
+  ) : d0exp // end of [val]
 in '{
   d0exp_loc= loc, d0exp_node= D0Elst (lin, os0e, d0e_elts)
 } end // end of [d0exp_lst]
 
 implement
-d0exp_lst_quote
-  (t_beg, d0es, t_end) = let
-  val d0e_elts = d0exp_list (t_beg, d0es, t_end)
+d0exp_lst_quote (
+  t_beg, d0es_elt, t_end
+) = let
+  val d0e_elts = d0exp_list (t_beg, d0es_elt, t_end)
   val loc = d0e_elts.d0exp_loc
 in '{
   d0exp_loc= loc, d0exp_node= D0Elst (0, s0expopt_none (), d0e_elts)

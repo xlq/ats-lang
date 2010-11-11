@@ -1963,12 +1963,16 @@ fun d0exp_arrinit_some (
 
 (* ****** ****** *)
 
-fun d0exp_arrsize
-  (t_beg: t0kn, elt: s0expopt, elts: d0exp): d0exp
-  = "d0exp_arrsize"
+fun d0exp_arrsize (
+  t_beg: t0kn, elt: s0expopt
+, t_lp: t0kn, elts: d0explst, t_rp: t0kn
+) : d0exp = "d0exp_arrsize"
 
-fun d0exp_arrsub (qid: arrqi0de, ind: d0arrind): d0exp
-  = "d0exp_arrsub"
+(* ****** ****** *)
+
+fun d0exp_arrsub
+  (qid: arrqi0de, ind: d0arrind): d0exp = "d0exp_arrsub"
+// end of [d0exp_arrsub]
 
 (* ****** ****** *)
 
@@ -2088,13 +2092,17 @@ fun d0exp_list2 (
 
 fun d0exp_loopexn (i: int, t: t0kn): d0exp = "d0exp_loopexn"
 
+(* ****** ****** *)
+
 fun d0exp_lst (
-  lin: int, t_beg: t0kn, os0e: s0expopt, xs: d0exp
+  lin: int
+, t_beg: t0kn, os0e: s0expopt
+, t_lp: t0kn, elts: d0explst, t_rp: t0kn
 ) : d0exp = "d0exp_lst"
 
-fun d0exp_lst_quote
-  (t_beg: t0kn, elts: d0explst, t_end: t0kn): d0exp = "d0exp_lst_quote"
-// end of [d0exp_lst_quote]
+fun d0exp_lst_quote (
+  t_beg: t0kn, elts: d0explst, t_end: t0kn
+) : d0exp = "d0exp_lst_quote"
 
 (* ****** ****** *)
 

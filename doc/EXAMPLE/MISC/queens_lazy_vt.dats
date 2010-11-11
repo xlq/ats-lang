@@ -62,7 +62,7 @@ and board_extend_aux {n,k:nat | k < n} {i:nat | i <= n}
   :<!laz> stream_vt_con (board (n, k+1)) =
   if x < n then begin
     if test_one {n,k} (x, 1, xs) then let
-      val xss = $delay_vt (board_extend_aux (n, xs, xss, x+1), ~xss)
+      val xss = $ldelay (board_extend_aux (n, xs, xss, x+1), ~xss)
     in
       stream_vt_cons (list_cons (x, xs), xss)
     end else begin
@@ -76,10 +76,10 @@ and board_extend_aux {n,k:nat | k < n} {i:nat | i <= n}
 
 fun queens {n,k:nat | k <= n}
   (n: int n, k: int k):<!laz> stream_vt (board (n, k)) =
-  if k = 0 then begin
-    $delay_vt (stream_vt_cons (list_nil (), $delay_vt (stream_vt_nil ())))
-  end else begin
-    $delay_vt (board_extend {n,k-1} (n, queens (n, k-1)))
+  if k = 0 then begin $ldelay (
+    stream_vt_cons (list_nil (), $ldelay (stream_vt_nil ()))
+  ) end else begin
+    $ldelay (board_extend {n,k-1} (n, queens (n, k-1)))
   end // end of [if]
 (* end of [queens] *)
 
