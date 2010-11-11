@@ -152,22 +152,23 @@ end // end of [input_line]
 (* ****** ****** *)
 
 extern
-fun fputc0_exn (c: char, fil: FILEref):<!exn> void
-  = "atslib_fputc_exn"
+fun fputc0_exn
+  (c: char, fil: FILEref):<!exn> void = "atslib_fputc_exn"
 // end of [fputc0_exn]
 
 extern
 fun fputs0_exn
-  (str: string, fil: FILEref):<!exn> void
-  = "atslib_fputs_exn"
+  (str: string, fil: FILEref):<!exn> void = "atslib_fputs_exn"
 // end of [fputs0_exn]
 
 extern
-fun fflush0_exn (fil: FILEref):<!exn> void
-  = "atslib_fflush_exn"
+fun fflush0_exn (fil: FILEref):<!exn> void = "atslib_fflush_exn"
 // end of [fflush0_exn]
 
-// the character '\n' is added at the end
+(* ****** ****** *)
+//
+// HX: the character '\n' is added at the end
+//
 implement output_line (fil, line) = begin
   fputs0_exn (line, fil); fputc0_exn ('\n', fil); fflush0_exn (fil)
 end // end of [output_line]
@@ -177,15 +178,15 @@ end // end of [output_line]
 implement
 char_stream_make_file
   (fil) = $delay (let
-    val c = fgetc0_err (fil)
-  in
-    if c <> EOF then let
-      val c = i2c c in
-      stream_cons (c, char_stream_make_file fil)
-    end else begin
-      let val () = fclose0_exn (fil) in stream_nil () end
-    end // end of [if]
-  end : stream_con char
+  val c = fgetc0_err (fil)
+in
+  if c <> EOF then let
+    val c = i2c c in
+    stream_cons (c, char_stream_make_file fil)
+  end else begin
+    let val () = fclose0_exn (fil) in stream_nil () end
+  end // end of [if]
+end : stream_con char
 ) (* end of [char_stream_make_file] *)
 
 (* ****** ****** *)
@@ -193,34 +194,39 @@ char_stream_make_file
 implement
 line_stream_make_file
   (fil) = $delay (let
-    val line = $effmask_ref (input_line fil) in
-    if stropt_is_some line then let
-      val line = stropt_unsome line in
-      stream_cons (line, line_stream_make_file fil)
-    end else let
-      val () = fclose0_exn fil in stream_nil ()
-    end // end of [if]
-  end : stream_con string // end of [let]
+  val line = $effmask_ref (input_line fil)
+in
+  if stropt_is_some line then let
+    val line = stropt_unsome line in
+    stream_cons (line, line_stream_make_file fil)
+  end else let
+    val () = fclose0_exn fil in stream_nil ()
+  end // end of [if]
+end : stream_con string // end of [let]
 ) (* end of [line_stream_make_file] *)
 
 (* ****** ****** *)
 
 implement
 char_stream_vt_make_file
-  {m} {l} (pf_mod, pf_fil | p_fil) = $delay_vt (let
-    val c = fgetc1_err (pf_mod | !p_fil)
+  {m} {l} (
+  pf_mod, pf_fil | p_fil
+) = $ldelay (
+let
+  val c = fgetc1_err (pf_mod | !p_fil)
+in
+  if c >= 0 then let // c <> EOF
+    val c = char_of_int (c)
   in
-    if c >= 0 then let // c <> EOF
-      val c = char_of_int (c)
-    in
-      stream_vt_cons (
-        c, char_stream_vt_make_file (pf_mod, pf_fil | p_fil)
-      ) // end of [stream_vt_cons]
-    end else let
-      val () = fclose1_exn (pf_fil | p_fil) in stream_vt_nil ()
-    end (* end of [if] *)
-  end : stream_vt_con char
-, fclose1_exn (pf_fil | p_fil)
+    stream_vt_cons (
+      c, char_stream_vt_make_file (pf_mod, pf_fil | p_fil)
+    ) // end of [stream_vt_cons]
+  end else let
+    val () = fclose1_exn (pf_fil | p_fil) in stream_vt_nil ()
+  end (* end of [if] *)
+end : stream_vt_con char
+,
+fclose1_exn (pf_fil | p_fil) // HX: for cleanup
 ) // end of [char_stream_vt_make_file]
 
 (* ****** ****** *)
@@ -228,39 +234,47 @@ char_stream_vt_make_file
 implement
 line_stream_vt_make_file
   {m} {l} (pf_mod, pf_fil | p_fil) = let
-  fun loop {n:nat} (
-      pf_fil: FILE m @ l
-    | p_fil: ptr l, n: int n, cs: list_vt (char, n)
-    ) :<1,~ref> stream_vt_con (string) = let
-    val c = fgetc1_err (pf_mod | !p_fil)
-  in
-    if c >= 0 then let
-      val c = char_of_int (c) // c <> EOF
-    in
-      if c <> '\n' then
-        loop (pf_fil | p_fil, n+1, list_vt_cons (c, cs))
-      else let
-        val line = string_make_charlst_rev (n, cs) in
-        stream_vt_cons (
-          line, line_stream_vt_make_file (pf_mod, pf_fil | p_fil)
-        ) // end of [stream_vt_cons]
-      end // end of [if]
-    end else let
-      val () = fclose1_exn (pf_fil | p_fil)
-    in
-      if n > 0 then let
-        val line = string_make_charlst_rev (n, cs) in
-        stream_vt_cons (line, $delay_vt stream_vt_nil)
-      end else let
-        val+ ~list_vt_nil () = cs in stream_vt_nil ()
-      end // end of [if]
-    end (* end of [if] *)
-  end (* end of [loop] *)
+//
+fun loop {n:nat} (
+    pf_fil: FILE m @ l
+  | p_fil: ptr l, n: int n, cs: list_vt (char, n)
+  ) :<!laz> stream_vt_con (string) = let
+  val c = fgetc1_err (pf_mod | !p_fil)
 in
-  $delay_vt (
-    loop (pf_fil
-  | p_fil, 0, list_vt_nil ()), fclose1_exn (pf_fil | p_fil)
-  ) // end of [$delay_vt]
+  if c >= 0 then let
+    val c = char_of_int (c) // c <> EOF
+  in
+    if c <> '\n' then
+      loop (pf_fil | p_fil, n+1, list_vt_cons (c, cs))
+    else let
+      val line = string_make_charlst_rev (n, cs) in
+      stream_vt_cons (
+        line, line_stream_vt_make_file (pf_mod, pf_fil | p_fil)
+      ) // end of [stream_vt_cons]
+    end // end of [if]
+  end else let
+    val () = fclose1_exn (pf_fil | p_fil)
+  in
+    if n > 0 then let
+      val line = string_make_charlst_rev (n, cs)
+    in
+      stream_vt_cons (line, $ldelay stream_vt_nil)
+    end else let
+      val+ ~list_vt_nil () = cs in stream_vt_nil ()
+    end // end of [if]
+  end (* end of [if] *)
+end (* end of [loop] *)
+//
+in
+//
+$ldelay (
+loop (
+  pf_fil | p_fil, 0, list_vt_nil ()
+) // end of [loop]
+,
+fclose1_exn (pf_fil | p_fil) // HX: for cleanup
+) // end of [$ldelay]
+//
 end // end of [char_stream_vt_make_file]
 
 (* ****** ****** *)

@@ -59,5 +59,6 @@ clean::
 	$(RMF) *_?ats.c *_?ats.o
 
 cleanall:: clean
+	$(RMF) atsgrammar
 
 ###### end of [Makefile] ######

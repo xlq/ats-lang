@@ -14,6 +14,7 @@
 abstype symbol (s:int)
 typedef symbol = [s:int] symbol (s)
 typedef symlst = List (symbol)
+viewtypedef symlst_vt = List_vt (symbol)
 
 (* ****** ****** *)
 
@@ -110,7 +111,11 @@ overload grmrule_append with grmrule_append_symlst
 //
 (* ****** ****** *)
 
-fun emit_symdef_yats (out: FILEref, x: symbol): void
+fun emit_symdef_yats
+  (out: FILEref, x: symbol) : void
+// end of [emit_symdef_yats]
+
+fun emit_symdefall_yats (out: FILEref): void
 
 (* ****** ****** *)
 

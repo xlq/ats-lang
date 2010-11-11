@@ -131,11 +131,13 @@ in
     end // end of [stream_vt_nil]
 end // end of [stream_vt_filter_con]
 
-implement{a} stream_vt_filter_fun (xs, pred) =
-  $delay_vt (stream_vt_filter_cloptr_con<a> (xs, lam x => pred x), ~xs)
+implement{a}
+stream_vt_filter_fun (xs, pred) =
+  $ldelay (stream_vt_filter_cloptr_con<a> (xs, lam x => pred x), ~xs)
 // end of [stream_vt_filter_fun]
 
-implement{a} stream_vt_filter_cloptr (xs, pred) = $delay_vt (
+implement{a}
+stream_vt_filter_cloptr (xs, pred) = $ldelay (
   stream_vt_filter_cloptr_con<a> (xs, pred), (cloptr_free pred; ~xs)
 ) // end of [stream_vt_filter_cloptr]
 
@@ -155,7 +157,7 @@ fun{a1,a2,b:t@ype} stream_vt_map2_cloptr_con (
   | ~(x1 :: xs1) => begin case+ !xs2 of
     | ~(x2 :: xs2) => y :: ys where {
         val y = f (x1, x2)
-        val ys = $delay_vt (
+        val ys = $ldelay (
           stream_vt_map2_cloptr_con<a1,a2,b> (xs1, xs2, f)
         , (~xs1; ~xs2; cloptr_free f)
         ) // end of [val ys]
@@ -165,15 +167,16 @@ fun{a1,a2,b:t@ype} stream_vt_map2_cloptr_con (
   | ~nil () => (~xs2; cloptr_free f; nil ())
 end // end of [stream_map2_con]
 
-implement{a1,a2,b} stream_vt_map2_fun (xs1, xs2, f) = $delay_vt (
+implement{a1,a2,b}
+stream_vt_map2_fun (xs1, xs2, f) = $ldelay (
   stream_vt_map2_cloptr_con<a1,a2,b> (xs1, xs2, lam (x1, x2) => f (x1, x2))
 , (~xs1; ~xs2)
 ) // end of [stream_map2_fun]
 
-implement{a1,a2,b} stream_vt_map2_cloptr (xs1, xs2, f) = $delay_vt (
-  stream_vt_map2_cloptr_con<a1,a2,b> (xs1, xs2, f)
-, (~xs1; ~xs2; cloptr_free f)
-)
+implement{a1,a2,b}
+stream_vt_map2_cloptr (xs1, xs2, f) = $ldelay (
+  stream_vt_map2_cloptr_con<a1,a2,b> (xs1, xs2, f), (~xs1; ~xs2; cloptr_free f)
+) // end of [stream_vt_map2_cloptr]
 
 end // end of [local]
 

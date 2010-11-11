@@ -93,14 +93,14 @@ fun telldir (dir: &DIR): off_t = "#atslib_telldir"
 
 // [dirent_stream_vt_make_DIR] is reentrant
 fun dirent_stream_vt_make_DIR {l_dir:addr}
-  (pf: DIR @ l_dir | p: ptr l_dir):<1,~ref> stream_vt (dirent)
+  (pf: DIR @ l_dir | p: ptr l_dir):<!laz> stream_vt (dirent)
 
 viewtypedef direntptr_gc =
   [l:addr] (free_gc_v (dirent, l), dirent @ l | ptr l)
 
 // [direntptr_stream_vt_make_DIR] is reentrant
 fun direntptr_stream_vt_make_DIR {l_dir:addr}
-  (pf: DIR @ l_dir | p: ptr l_dir):<1,~ref> stream_vt (direntptr_gc)
+  (pf: DIR @ l_dir | p: ptr l_dir):<!laz> stream_vt (direntptr_gc)
 
 (* ****** ****** *)
 
