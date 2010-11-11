@@ -1787,7 +1787,7 @@ guad0ec_t guad0ec ;
 
 %type <d0ec> d0ec_dyn
 %type <d0eclst> d0ecseq_dyn
-%type <d0ecllst> d0ecseq_r_dyn
+%type <d0ecllst> d0ecseq_dyn_rev
 
 %type <guad0ec> guad0ec_sta
 %type <guad0ec> guad0ec_dyn
@@ -3353,13 +3353,14 @@ guad0ec_dyn
                                         { $$ = guad0ec_cons($1, $3, $4, $5) ; }
 ;
 
-d0ecseq_r_dyn /* tail-recursive */
+d0ecseq_dyn_rev /* tail-recursive */
   : /* empty */                         { $$ = d0ecllst_nil() ; }
-  | d0ecseq_r_dyn d0ec_dyn semicolonseq { $$ = d0ecllst_cons($1, $2) ; }
+  | d0ecseq_dyn_rev d0ec_dyn semicolonseq
+                                        { $$ = d0ecllst_cons($1, $2) ; }
 ;
 
 d0ecseq_dyn
-  : d0ecseq_r_dyn                       { $$ = d0ecllst_reverse($1) ; }
+  : d0ecseq_dyn_rev                     { $$ = d0ecllst_reverse($1) ; }
 ;
 
 /* ****** ****** */

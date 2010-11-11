@@ -113,7 +113,7 @@ val () = symbol_set_fullname (ABSPROP, "\"absprop\"")
 val ABSTYPE = symbol_make "ABSTYPE"
 val () = symbol_set_fullname (ABSTYPE, "\"abstype\"")
 //
-val ABST0YPE = symbol_make "ABST@YPE"
+val ABST0YPE = symbol_make "ABST0YPE"
 val () = symbol_set_fullname (ABST0YPE, "\"abst@ype\"")
 //
 val ABSVIEW = symbol_make "ABSVIEW"
@@ -122,7 +122,7 @@ val () = symbol_set_fullname (ABSVIEW, "\"absview\"")
 val ABSVIEWTYPE = symbol_make "ABSVIEWTYPE"
 val () = symbol_set_fullname (ABSVIEWTYPE, "\"absviewtype\"")
 //
-val ABSVIEWT0YPE = symbol_make "ABSVIEWT@YPE"
+val ABSVIEWT0YPE = symbol_make "ABSVIEWT0YPE"
 val () = symbol_set_fullname (ABSVIEWT0YPE, "\"absviewt@ype\"")
 //
 val AND = symbol_make "AND"
@@ -293,7 +293,15 @@ atsgrammar_main
 
 (* ****** ****** *)
 
-implement main () = ()
+implement
+main () = () where {
+  val () = atsgrammar_main ()
+  val () = emit_symdef_yats (stdout_ref, abskind)
+  val () = emit_symdef_yats (stdout_ref, dcstkind)
+  val () = emit_symdef_yats (stdout_ref, i0deseq)
+  val () = emit_symdef_yats (stdout_ref, d0ecseq_dyn_rev)
+  val () = emit_symdef_yats (stdout_ref, d0ecseq_dyn)
+} // end of [main]
 
 (* ****** ****** *)
 

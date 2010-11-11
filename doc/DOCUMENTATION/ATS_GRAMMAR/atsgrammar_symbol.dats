@@ -73,6 +73,9 @@ eq_symbol_symbol
 (* ****** ****** *)
 
 implement
+symbol_get_name (x) = x.symbol_name
+
+implement
 symbol_get_nonterm (x) = x.symbol_nonterm
 
 implement

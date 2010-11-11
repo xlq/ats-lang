@@ -17,6 +17,18 @@ typedef symlst = List (symbol)
 
 (* ****** ****** *)
 
+datatype symreg =
+  | SYMREGlit of symbol // symbol
+  | SYMREGseq of (symbol, symbol) // (symbol , symbol)
+  | SYMREGalt of (symbol, symbol) // (symbol | symbol)
+  | SYMREGstar of (symbol) // {symbol}
+  | SYMREGplus of (symbol) // {symbol}+
+// end of [symreg]
+
+typedef symreglst = List (symreg)
+
+(* ****** ****** *)
+
 abstype grmrule
 typedef grmrulelst = List (grmrule)
 viewtypedef grmrulelst_vt = List_vt (grmrule)
@@ -31,6 +43,8 @@ fun symbol_make_nt (name: string): [s:int] symbol(s)
 fun eq_symbol_symbol
   (x1: symbol, x2: symbol): bool
 overload = with eq_symbol_symbol
+
+fun symbol_get_name (x: symbol): string
 
 fun symbol_get_nonterm (x: symbol): bool
 fun symbol_set_nonterm (
@@ -94,6 +108,10 @@ overload grmrule_append with grmrule_append_symbol
 fun grmrule_append_symlst (xs: symlst): void
 overload grmrule_append with grmrule_append_symlst
 //
+(* ****** ****** *)
+
+fun emit_symdef_yats (out: FILEref, x: symbol): void
+
 (* ****** ****** *)
 
 (* end of [atsgrammar.sats] *)
