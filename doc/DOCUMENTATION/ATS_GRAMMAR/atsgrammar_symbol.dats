@@ -44,6 +44,9 @@ symbol (s:int) = '{
 , symbol_stamp= int
 } // end of [symbol]
 
+extern
+typedef "atsgrammar_symbol_t" = symbol
+
 (* ****** ****** *)
 
 implement
@@ -119,9 +122,6 @@ theSymlst_add (x) = (
 end // end of [local]
 
 (* ****** ****** *)
-
-extern
-typedef "atsgrammar_symbol_t" = symbol
 
 %{$
 //

@@ -11,6 +11,10 @@
 
 (* ****** ****** *)
 
+macdef list_sing (x) = list_cons (,(x), list_nil)
+
+(* ****** ****** *)
+
 abstype symbol (s:int)
 typedef symbol = [s:int] symbol (s)
 typedef symlst = List (symbol)
@@ -22,6 +26,7 @@ datatype symreg =
   | SYMREGlit of symbol // symbol
   | SYMREGseq of (symbol, symbol) // (symbol , symbol)
   | SYMREGalt of (symbol, symbol) // (symbol | symbol)
+  | SYMREGopt of (symbol) // [symbol]
   | SYMREGstar of (symbol) // {symbol}
   | SYMREGplus of (symbol) // {symbol}+
 // end of [symreg]
@@ -81,8 +86,31 @@ fun theSymlst_add (x: symbol): void
 
 (* ****** ****** *)
 
+fun grmrule_make_symlst (xs: symlst): grmrule
+fun grmrule_make_symreglst (knd: int, xs: symreglst): grmrule
+
+(* ****** ****** *)
+
+fun grmrule_get_kind (gr: grmrule): int
+(*
+fun grmrule_set_kind
+  (gr: grmrule, knd: int): void = "atsgrammar_grmrule_set_kind"
+// end of [grmrule_set_kind]
+*)
+
+fun grmrule_get_merged (gr: grmrule): int
+fun grmrule_set_merged
+  (gr: grmrule, merged: int): void = "atsgrammar_grmrule_set_merged"
+// end of [grmrule_set_merged]
+
+fun grmrule_get_symreglst (gr: grmrule): symreglst
+
+(* ****** ****** *)
+
 fun theGrmrulelst_get (): grmrulelst_vt
 fun theGrmrulelst_add (x: grmrule): void
+
+fun theGrmrulelst_merge_all (x: symbol, r: symreg): void
 
 (* ****** ****** *)
 
@@ -109,6 +137,9 @@ overload grmrule_append with grmrule_append_symbol
 fun grmrule_append_symlst (xs: symlst): void
 overload grmrule_append with grmrule_append_symlst
 //
+fun grmrule_append_grmrule (gr: grmrule): void
+overload grmrule_append with grmrule_append_grmrule
+//
 (* ****** ****** *)
 
 fun emit_symdef_yats
@@ -116,6 +147,14 @@ fun emit_symdef_yats
 // end of [emit_symdef_yats]
 
 fun emit_symdefall_yats (out: FILEref): void
+
+(* ****** ****** *)
+
+fun emit_symdef_desc
+  (out: FILEref, x: symbol) : void
+// end of [emit_symdef_desc]
+
+fun emit_symdefall_desc (out: FILEref): void
 
 (* ****** ****** *)
 

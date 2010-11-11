@@ -24,17 +24,15 @@ macdef list_sing (x) = list_cons (,(x), list_nil)
 
 (* ****** ****** *)
 
-extern
-fun grmrule_make_symlst (xs: symlst): grmrule
-
-extern
-fun grmrule_get_symreglst (gr: grmrule): symreglst
-
-(* ****** ****** *)
+typedef _grmrule = '{
+  grmrule_kind= int // 0/1 : original/derived
+, grmrule_merged= int // 0/1 : available/superceded
+, grmrule_symreglst= List (symreg)
+} // end of [grmrule]
 
 local
 
-assume grmrule = List (symreg)
+assume grmrule = _grmrule
 
 in // in of [local]
 
@@ -43,11 +41,23 @@ grmrule_make_symlst (xs) = let
   val xs =
     list_map_fun<symbol,symreg> (xs, lam x =<1> SYMREGlit (x))
   // end of [val]
+  val xs = list_of_list_vt (xs)
 in
-  list_of_list_vt (xs)
+  grmrule_make_symreglst (0(*original*), xs)
 end // end of [grmrule_make_symlst]
 
-implement grmrule_get_symreglst (gr) = gr
+implement
+grmrule_make_symreglst (knd, xs) = '{
+  grmrule_kind= knd
+, grmrule_merged= 0
+, grmrule_symreglst= xs
+} // end of [grmrule_make_symreglst]
+
+(* ****** ****** *)
+
+implement grmrule_get_kind (gr) = gr.grmrule_kind
+implement grmrule_get_merged (gr) = gr.grmrule_merged
+implement grmrule_get_symreglst (gr) = gr.grmrule_symreglst
 
 end // end of [local]
 
@@ -60,20 +70,50 @@ val theGrmrulelst = ref<grmrulelst_vt> (list_vt_nil)
 implement
 theGrmrulelst_get () = let
   val (vbox pf | p) = ref_get_view_ptr (theGrmrulelst)
-  val xs = !p
+  val grs = !p
   val () = !p := list_vt_nil ()
 in
-  xs
+  grs
 end // end of [theGrmrulelst_get]
 
 (* ****** ****** *)
 
 implement
-theGrmrulelst_add (x) = let
+theGrmrulelst_add (gr) = let
   val (vbox pf | p) = ref_get_view_ptr (theGrmrulelst)
 in
-  !p := list_vt_cons (x, !p)
+  !p := list_vt_cons (gr, !p)
 end // end of [theGrmrulelst_add]
+
+(* ****** ****** *)
+
+implement
+theGrmrulelst_merge_all
+  (x, r) = let
+//
+  fun loop {n:nat} .<n>.
+    (grs: !list_vt (grmrule, n)): void =
+    case+ grs of
+    | list_vt_cons (gr, !p_grs) => let
+        val () = grmrule_set_merged (gr, 1)
+        val () = loop (!p_grs)
+        val () = fold@ (grs)
+      in
+        // nothing
+      end // end of [val]
+    | list_vt_nil () => fold@ (grs)
+  // end of [loop]
+  val () = let
+    val (vbox pf | p) = ref_get_view_ptr (theGrmrulelst)
+  in
+    $effmask_ref (loop (!p))
+  end // end of [val]
+//
+  val gr = grmrule_make_symreglst (1, list_sing (r))
+  val () = theGrmrulelst_add (gr)
+in
+  // nothing
+end // end of [theGrmrulelst_merge]
 
 (* ****** ****** *)
 
@@ -100,64 +140,31 @@ end // end of [grmrule_append_symbol]
 
 (* ****** ****** *)
 
-fun emit_symreg_yats
-  (out: FILEref, r: symreg): void = case+ r of
-  | SYMREGlit (x) => fprint_string (out, symbol_get_name (x))
-  | _ => fprint_string (out, "(ERROR)")
-// end of [emit_symreg_yats]
-
-fun emit_grmrule_yats (
-  out: FILEref, gr: grmrule
-) : void = let
-  fun loop (
-    out: FILEref, xs: symreglst, i: int
-  ) : void =
-    case+ xs of
-    | list_cons (x, xs) => let
-        val () = if (i > 0) then fprint_string (out, " ")
-        val () = emit_symreg_yats (out, x)
-      in
-        loop (out, xs, i+1)
-      end // end of [list_cons]
-    | list_nil () => ()
-  // end of [loop]
-  val xs = grmrule_get_symreglst (gr)
-in
-  case+ xs of
-  | list_cons _ => loop (out, xs, 0)
-  | list_nil () => fprint_string (out, "/*(empty)*/")
-end // end of [emit_grmrule_yats]
+implement
+grmrule_append_grmrule (gr) = theGrmrulelst_add (gr)
 
 (* ****** ****** *)
 
-implement
-emit_symdef_yats (out, x) = let
+extern
+typedef "atsgrammar_grmrule_t" = _grmrule
+
+%{$
 //
-  fun loop (
-    out: FILEref, grs: grmrulelst, i: int
-  ) : void =
-    case+ grs of
-    | list_cons (gr, grs) => let
-        val c = (
-          if i = 0 then ':' else '|'
-        ) : char // end of [val]
-        val () = fprintf (out, "  %c ", @(c))
-        val () = emit_grmrule_yats (out, gr)
-        val () = fprint_newline (out)
-      in
-        loop (out, grs, i+1)
-      end // end of [list_cons]
-    | list_nil () => ()
-  // end of [loop]
+ats_void_type
+atsgrammar_grmrule_set_kind
+  (ats_ptr_type sym, ats_int_type knd) {
+  ((atsgrammar_grmrule_t)sym)->atslab_grmrule_kind = knd ;
+  return ;
+} /* end of [atsgrammar_grmrule_set_kind] */
 //
-  val name = symbol_get_name (x)
-  val () = fprintf (out, "%s\n", @(name))
-  val () = loop (out, symbol_get_grmrulelst (x), 0)
-  val () = fprintf (out, "; /* %s */\n\n", @(name))
+ats_void_type
+atsgrammar_grmrule_set_merged
+  (ats_ptr_type sym, ats_int_type merged) {
+  ((atsgrammar_grmrule_t)sym)->atslab_grmrule_merged = merged ;
+  return ;
+} /* end of [atsgrammar_grmrule_set_merged] */
 //
-in
-  // nothing  
-end // end of [emit_symdef_yats]
+%} // end of [%{$]
 
 (* ****** ****** *)
 

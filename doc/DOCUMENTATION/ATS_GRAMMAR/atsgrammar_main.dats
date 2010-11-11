@@ -11,17 +11,16 @@
 
 (* ****** ****** *)
 
-staload _(*anon*) = "prelude/DATS/list.dats"
-
-(* ****** ****** *)
-
 staload "atsgrammar.sats"
 
 (* ****** ****** *)
-
+//
 dynload "atsgrammar_symbol.dats"
 dynload "atsgrammar_grmrule.dats"
-
+//
+dynload "atsgrammar_emit_yats.dats"
+dynload "atsgrammar_emit_desc.dats"
+//
 (* ****** ****** *)
 
 local
@@ -394,6 +393,117 @@ val () = symbol_set_fullname (WITHVIEWTYPE, "\"withviewtype\"")
 //
 (* ****** ****** *)
 //
+val AMPERSAND = symbol_make ("AMPERSAND")
+val () = symbol_set_fullname (AMPERSAND, "\"&\"")
+//
+val BACKQUOTE = symbol_make ("BACKQUOTE")
+val () = symbol_set_fullname (BACKQUOTE, "\"`\"")
+//
+val BACKSLASH = symbol_make ("BACKSLASH")
+val () = symbol_set_fullname (BACKSLASH, "\"\\\"")
+//
+val BANG = symbol_make ("BANG")
+val () = symbol_set_fullname (BANG, "\"!\"")
+//
+val BAR = symbol_make ("BAR")
+val () = symbol_set_fullname (BAR, "\"|\"")
+//
+val COMMA = symbol_make ("COMMA")
+val () = symbol_set_fullname (COMMA, "\",\"")
+//
+val COLON = symbol_make ("COLON")
+val () = symbol_set_fullname (COLON, "\":\"")
+//
+val SEMICOLON = symbol_make ("SEMICOLON")
+val () = symbol_set_fullname (SEMICOLON, "\";\"")
+//
+val DOT = symbol_make ("DOT")
+val () = symbol_set_fullname (DOT, "\".\"")
+//
+val EQ = symbol_make ("EQ")
+val () = symbol_set_fullname (EQ, "\"=\"")
+//
+val LT = symbol_make ("LT")
+val () = symbol_set_fullname (LT, "\"<\"")
+val GT = symbol_make ("GT")
+val () = symbol_set_fullname (GT, "\">\"")
+//
+val DOLLAR = symbol_make ("DOLLAR")
+val () = symbol_set_fullname (DOLLAR, "\"$\"")
+//
+val HASH = symbol_make ("HASH")
+val () = symbol_set_fullname (HASH, "\"#\"")
+//
+val TILDA = symbol_make ("TILDA")
+val () = symbol_set_fullname (TILDA, "\"~\"")
+//
+val DOTDOT = symbol_make ("DOTDOT")
+val () = symbol_set_fullname (DOTDOT, "\"..\"")
+val DOTDOTDOT = symbol_make ("DOTDOTDOT")
+val () = symbol_set_fullname (DOTDOTDOT, "\"...\"")
+//
+val EQLT = symbol_make ("EQLT")
+val () = symbol_set_fullname (EQLT, "\"=<\"")
+val EQGT = symbol_make ("EQGT")
+val () = symbol_set_fullname (EQGT, "\"=>\"")
+val EQLTGT = symbol_make ("EQLTGT")
+val () = symbol_set_fullname (EQLTGT, "\"=<>\"")
+val EQGTGT = symbol_make ("EQGTGT")
+val () = symbol_set_fullname (EQGTGT, "\"=>>\"")
+//
+val EQSLASHEQGT = symbol_make ("EQSLASHEQGT")
+val () = symbol_set_fullname (EQSLASHEQGT, "\"=/=>\"")
+val EQSLASHEQGTGT = symbol_make ("EQSLASHEQGTGT")
+val () = symbol_set_fullname (EQSLASHEQGTGT, "\"=/=>>\"")
+//
+val GTLT = symbol_make ("GTLT")
+val () = symbol_set_fullname (GTLT, "\"<>\"")
+//
+val DOTLT = symbol_make ("DOTLT")
+val () = symbol_set_fullname (DOTLT, "\".<\"")
+val GTDOT = symbol_make ("GTDOT")
+val () = symbol_set_fullname (GTDOT, "\">.\"")
+val DOTLTGTDOT = symbol_make ("DOTLTGTDOT")
+val () = symbol_set_fullname (DOTLTGTDOT, "\".<>.\"")
+//
+val MINUSLT = symbol_make ("MINUSLT")
+val () = symbol_set_fullname (MINUSLT, "\"-<\"")
+val MINUSGT = symbol_make ("MINUSGT")
+val () = symbol_set_fullname (MINUSGT, "\"->\"")
+val MINUSLTGT = symbol_make ("MINUSLTGT")
+val () = symbol_set_fullname (MINUSLTGT, "\"-<>\"")
+//
+val COLONLT = symbol_make ("COLONLT")
+val () = symbol_set_fullname (COLONLT, "\":<\"")
+val COLONLTGT = symbol_make ("COLONLTGT")
+val () = symbol_set_fullname (COLONLTGT, "\":<>\"")
+//
+val BACKQUOTELPAREN = symbol_make ("BACKQUOTELPAREN")
+val () = symbol_set_fullname (BACKQUOTELPAREN, "\"`(\"")
+val COMMALPAREN = symbol_make ("COMMALPAREN")
+val () = symbol_set_fullname (COMMALPAREN, "\",(\"")
+val PERCENTLPAREN = symbol_make ("PERCENTLPAREN")
+val () = symbol_set_fullname (PERCENTLPAREN, "\"%(\"")
+(*
+//
+// HX: these symbols were reserved for supporting MP
+//
+val BACKQUOTELBRACKET = symbol_make ("BACKQUOTELBRACKET")
+val () = symbol_set_fullname (BACKQUOTELBRACKET, "\"`[\"")
+val PERCENTLBRACKET = symbol_make ("PERCENTLBRACKET")
+val () = symbol_set_fullname (COMMALBRACE, "\"%[\"")
+val COMMALBRACKET = symbol_make ("COMMALBRACKET")
+val () = symbol_set_fullname (COMMALBRACKET, "\",[\"")
+//
+val BACKQUOTELBRACE = symbol_make ("BACKQUOTELBRACE")
+val () = symbol_set_fullname (BACKQUOTELBRACE, "\"`{\"")
+val PERCENTLBRACE = symbol_make ("PERCENTLBRACE")
+val () = symbol_set_fullname (COMMALBRACE, "\"%{\"")
+val COMMALBRACE = symbol_make ("COMMALBRACE")
+val () = symbol_set_fullname (COMMALBRACE, "\",{\"")
+*)
+(* ****** ****** *)
+//
 val DLRARRSZ = symbol_make "DLRARRSZ"
 val () = symbol_set_fullname (DLRARRSZ, "\"$arrsz\"")
 //
@@ -506,117 +616,6 @@ val () = symbol_set_fullname (FREEAT, "\"free@\"")
 val VIEWAT = symbol_make "VIEWAT"
 val () = symbol_set_fullname (VIEWAT, "\"view@\"")
 //
-(* ****** ****** *)
-//
-val AMPERSAND = symbol_make ("AMPERSAND")
-val () = symbol_set_fullname (AMPERSAND, "\"&\"")
-//
-val BACKQUOTE = symbol_make ("BACKQUOTE")
-val () = symbol_set_fullname (BACKQUOTE, "\"`\"")
-//
-val BACKSLASH = symbol_make ("BACKSLASH")
-val () = symbol_set_fullname (BACKSLASH, "\"\\\"")
-//
-val BANG = symbol_make ("BANG")
-val () = symbol_set_fullname (BANG, "\"!\"")
-//
-val BAR = symbol_make ("BAR")
-val () = symbol_set_fullname (BAR, "\"|\"")
-//
-val COMMA = symbol_make ("COMMA")
-val () = symbol_set_fullname (COMMA, "\",\"")
-//
-val COLON = symbol_make ("COLON")
-val () = symbol_set_fullname (COLON, "\":\"")
-//
-val SEMICOLON = symbol_make ("SEMICOLON")
-val () = symbol_set_fullname (SEMICOLON, "\";\"")
-//
-val DOT = symbol_make ("DOT")
-val () = symbol_set_fullname (DOT, "\".\"")
-//
-val EQ = symbol_make ("EQ")
-val () = symbol_set_fullname (EQ, "\"=\"")
-//
-val LT = symbol_make ("LT")
-val () = symbol_set_fullname (LT, "\"<\"")
-val GT = symbol_make ("GT")
-val () = symbol_set_fullname (GT, "\">\"")
-//
-val DOLLAR = symbol_make ("DOLLAR")
-val () = symbol_set_fullname (DOLLAR, "\"$\"")
-//
-val HASH = symbol_make ("HASH")
-val () = symbol_set_fullname (HASH, "\"#\"")
-//
-val TILDA = symbol_make ("TILDA")
-val () = symbol_set_fullname (TILDA, "\"~\"")
-//
-val DOTDOT = symbol_make ("DOTDOT")
-val () = symbol_set_fullname (DOTDOT, "\"..\"")
-val DOTDOTDOT = symbol_make ("DOTDOTDOT")
-val () = symbol_set_fullname (DOTDOTDOT, "\"...\"")
-//
-val EQLT = symbol_make ("EQLT")
-val () = symbol_set_fullname (EQLT, "\"=<\"")
-val EQGT = symbol_make ("EQGT")
-val () = symbol_set_fullname (EQGT, "\"=>\"")
-val EQLTGT = symbol_make ("EQLTGT")
-val () = symbol_set_fullname (EQLTGT, "\"=<>\"")
-val EQGTGT = symbol_make ("EQGTGT")
-val () = symbol_set_fullname (EQGTGT, "\"=>>\"")
-//
-val EQSLASHEQGT = symbol_make ("EQSLASHEQGT")
-val () = symbol_set_fullname (EQSLASHEQGT, "\"=/=>\"")
-val EQSLASHEQGTGT = symbol_make ("EQSLASHEQGTGT")
-val () = symbol_set_fullname (EQSLASHEQGTGT, "\"=/=>>\"")
-//
-val GTLT = symbol_make ("GTLT")
-val () = symbol_set_fullname (GTLT, "\"<>\"")
-//
-val DOTLT = symbol_make ("DOTLT")
-val () = symbol_set_fullname (DOTLT, "\".<\"")
-val GTDOT = symbol_make ("GTDOT")
-val () = symbol_set_fullname (GTDOT, "\">.\"")
-val DOTLTGTDOT = symbol_make ("DOTLTGTDOT")
-val () = symbol_set_fullname (DOTLTGTDOT, "\".<>.\"")
-//
-val MINUSLT = symbol_make ("MINUSLT")
-val () = symbol_set_fullname (MINUSLT, "\"-<\"")
-val MINUSGT = symbol_make ("MINUSGT")
-val () = symbol_set_fullname (MINUSGT, "\"->\"")
-val MINUSLTGT = symbol_make ("MINUSLTGT")
-val () = symbol_set_fullname (MINUSLTGT, "\"-<>\"")
-//
-val COLONLT = symbol_make ("COLONLT")
-val () = symbol_set_fullname (COLONLT, "\":<\"")
-val COLONLTGT = symbol_make ("COLONLTGT")
-val () = symbol_set_fullname (COLONLTGT, "\":<>\"")
-//
-val BACKQUOTELPAREN = symbol_make ("BACKQUOTELPAREN")
-val () = symbol_set_fullname (BACKQUOTELPAREN, "\"`(\"")
-val COMMALPAREN = symbol_make ("COMMALPAREN")
-val () = symbol_set_fullname (COMMALPAREN, "\",(\"")
-val PERCENTLPAREN = symbol_make ("PERCENTLPAREN")
-val () = symbol_set_fullname (PERCENTLPAREN, "\"%(\"")
-(*
-//
-// HX: these symbols were reserved for supporting MP
-//
-val BACKQUOTELBRACKET = symbol_make ("BACKQUOTELBRACKET")
-val () = symbol_set_fullname (BACKQUOTELBRACKET, "\"`[\"")
-val PERCENTLBRACKET = symbol_make ("PERCENTLBRACKET")
-val () = symbol_set_fullname (COMMALBRACE, "\"%[\"")
-val COMMALBRACKET = symbol_make ("COMMALBRACKET")
-val () = symbol_set_fullname (COMMALBRACKET, "\",[\"")
-//
-val BACKQUOTELBRACE = symbol_make ("BACKQUOTELBRACE")
-val () = symbol_set_fullname (BACKQUOTELBRACE, "\"`{\"")
-val PERCENTLBRACE = symbol_make ("PERCENTLBRACE")
-val () = symbol_set_fullname (COMMALBRACE, "\"%{\"")
-val COMMALBRACE = symbol_make ("COMMALBRACE")
-val () = symbol_set_fullname (COMMALBRACE, "\",{\"")
-*)
 (* ****** ****** *)
 
 val abskind = symbol_make_nt "abskind"
@@ -900,9 +899,50 @@ val (pf | ()) = symbol_open (srpthenopt)
 val () = grmrule_append ()
 val () = grmrule_append (SRPTHEN)
 //
+val () = theGrmrulelst_merge_all (i0deseq, SYMREGopt(SRPTHEN))
+//
 val () = symbol_close (pf | srpthenopt)
 //
 } // end of [srpthenopt]
+
+(* ****** ****** *)
+
+(*
+i0de /* identifier */
+  : IDENTIFIER_alp                      { $$ = $1 ; }
+  | IDENTIFIER_sym                      { $$ = $1 ; }
+/* keysymb */
+  | AMPERSAND                           { $$ = i0de_make_ampersand($1) ; }
+  | BACKSLASH                           { $$ = i0de_make_backslash($1) ; }
+  | BANG                                { $$ = i0de_make_bang($1) ; }
+  | EQ                                  { $$ = i0de_make_eq($1) ; }
+  | GT                                  { $$ = i0de_make_gt($1) ; }
+  | LT                                  { $$ = i0de_make_lt($1) ; }
+  | MINUSGT                             { $$ = i0de_make_minusgt($1) ; }
+  | MINUSLTGT                           { $$ = i0de_make_minusltgt($1) ; }
+  | TILDA                               { $$ = i0de_make_tilda($1) ; }
+; /* end of [i0de] */
+*)
+fun i0de_proc
+  (): void = () where {
+//
+  val (pf | ()) = symbol_open (i0de)
+//
+  val () = grmrule_append (IDENTIFIER_alp)
+  val () = grmrule_append (IDENTIFIER_sym)  
+  val () = grmrule_append (AMPERSAND)
+  val () = grmrule_append (BACKSLASH)
+  val () = grmrule_append (BANG)
+  val () = grmrule_append (EQ)
+  val () = grmrule_append (GT)
+  val () = grmrule_append (LT)
+  val () = grmrule_append (MINUSGT)
+  val () = grmrule_append (MINUSLTGT)
+  val () = grmrule_append (TILDA)  
+//
+  val () = symbol_close (pf | i0de)
+//
+} // end of [i0de_proc]
 
 (* ****** ****** *)
 
@@ -913,6 +953,8 @@ val (pf | ()) = symbol_open (i0deseq)
 //
 val () = grmrule_append ()
 val () = grmrule_append ($lst_t {symbol} (tupz! i0de i0deseq))
+//
+val () = theGrmrulelst_merge_all (i0deseq, SYMREGstar(i0de))
 //
 val () = symbol_close (pf | i0deseq)
 //
@@ -979,28 +1021,13 @@ atsgrammar_main
   val () = srpelifkind_proc ()
   val () = srpthenopt_proc ()
 //
+  val () = i0de_proc ()
   val () = i0deseq_proc ()
+//
   val () = d0ecseq_dyn_rev_proc () // reversed dynamic declaration sequence
   val () = d0ecseq_dyn_proc ()
+//
 } // end of [atsgrammar_main]
-
-(* ****** ****** *)
-
-implement
-emit_symdefall_yats (out) = let
-  fun loop (out: FILEref, xs: symlst_vt): void =
-    case+ xs of
-    | ~list_vt_cons (x, xs) => let
-        val isnt = symbol_get_nonterm (x)
-        val () = if isnt then emit_symdef_yats (stdout_ref, x)
-      in
-        loop (out, xs)
-      end // end of [list_vt_cons]
-    | ~list_vt_nil () => () // end of [list_vt_nil]
-  // end of [loop]
-in
-  loop (out, list_reverse (theSymlst_get ()))
-end // end of [emit_symdefall_yats]
 
 (* ****** ****** *)
 
@@ -1010,6 +1037,8 @@ main () = () where {
   val () = atsgrammar_main ()
 //
   val () = emit_symdefall_yats (stdout_ref)
+//
+  val () = emit_symdefall_desc (stdout_ref)
 //
 } // end of [main]
 
