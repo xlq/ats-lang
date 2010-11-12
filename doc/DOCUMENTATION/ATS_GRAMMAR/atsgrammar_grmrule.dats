@@ -27,6 +27,7 @@ macdef list_sing (x) = list_cons (,(x), list_nil)
 typedef _grmrule = '{
   grmrule_kind= int // 0/1 : original/derived
 , grmrule_merged= int // 0/1 : available/superceded
+, grmrule_action= Stropt
 , grmrule_symreglst= List (symreg)
 } // end of [grmrule]
 
@@ -50,6 +51,7 @@ implement
 grmrule_make_symreglst (knd, xs) = '{
   grmrule_kind= knd
 , grmrule_merged= 0
+, grmrule_action= stropt_none
 , grmrule_symreglst= xs
 } // end of [grmrule_make_symreglst]
 
@@ -57,6 +59,7 @@ grmrule_make_symreglst (knd, xs) = '{
 
 implement grmrule_get_kind (gr) = gr.grmrule_kind
 implement grmrule_get_merged (gr) = gr.grmrule_merged
+implement grmrule_get_action (gr) = gr.grmrule_action
 implement grmrule_get_symreglst (gr) = gr.grmrule_symreglst
 
 end // end of [local]
@@ -134,14 +137,17 @@ grmrule_append_symbol (x) =
 implement
 grmrule_append_symlst (xs) = let
   val gr = grmrule_make_symlst (xs)
+  val () = theGrmrulelst_add (gr)
 in
-  theGrmrulelst_add (gr)
+  gr
 end // end of [grmrule_append_symbol]
 
 (* ****** ****** *)
 
 implement
-grmrule_append_grmrule (gr) = theGrmrulelst_add (gr)
+grmrule_append_grmrule (gr) = let
+  val () = theGrmrulelst_add (gr) in gr
+end // end of [grmrule_append_grmrule]
 
 (* ****** ****** *)
 
@@ -163,6 +169,13 @@ atsgrammar_grmrule_set_merged
   ((atsgrammar_grmrule_t)sym)->atslab_grmrule_merged = merged ;
   return ;
 } /* end of [atsgrammar_grmrule_set_merged] */
+//
+ats_void_type
+atsgrammar_grmrule_set_action
+  (ats_ptr_type sym, ats_ptr_type action) {
+  ((atsgrammar_grmrule_t)sym)->atslab_grmrule_action = action ;
+  return ;
+} /* end of [atsgrammar_grmrule_set_action] */
 //
 %} // end of [%{$]
 

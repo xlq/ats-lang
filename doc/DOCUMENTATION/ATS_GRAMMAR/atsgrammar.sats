@@ -103,6 +103,11 @@ fun grmrule_set_merged
   (gr: grmrule, merged: int): void = "atsgrammar_grmrule_set_merged"
 // end of [grmrule_set_merged]
 
+fun grmrule_get_action (gr: grmrule): Stropt
+fun grmrule_set_action
+  (gr: grmrule, action: string): void = "atsgrammar_grmrule_set_action"
+// end of [grmrule_set_action]
+
 fun grmrule_get_symreglst (gr: grmrule): symreglst
 
 (* ****** ****** *)
@@ -128,16 +133,16 @@ fun symbol_close {s:int}
 
 symintr grmrule_append
 //
-fun grmrule_append_empty (): void
+fun grmrule_append_empty (): grmrule
 overload grmrule_append with grmrule_append_empty
 //
-fun grmrule_append_symbol (x: symbol): void
+fun grmrule_append_symbol (x: symbol): grmrule
 overload grmrule_append with grmrule_append_symbol
 //
-fun grmrule_append_symlst (xs: symlst): void
+fun grmrule_append_symlst (xs: symlst): grmrule
 overload grmrule_append with grmrule_append_symlst
 //
-fun grmrule_append_grmrule (gr: grmrule): void
+fun grmrule_append_grmrule (gr: grmrule): grmrule
 overload grmrule_append with grmrule_append_grmrule
 //
 (* ****** ****** *)

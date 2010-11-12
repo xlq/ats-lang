@@ -41,10 +41,19 @@ fun emit_grmrule_yats (
     | list_nil () => ()
   // end of [loop]
   val xs = grmrule_get_symreglst (gr)
+  val () = (case+ xs of
+    | list_cons _ => loop (out, xs, 0)
+    | list_nil () => fprint_string (out, "/*(empty)*/")
+  ) : void // end of [val]
+  val action = grmrule_get_action (gr)
+  val () = if
+    stropt_is_some (action) then let
+    val action = stropt_unsome (action)
+  in
+    fprintf (out, "  %s", @(action))
+  end // end of [val]
 in
-  case+ xs of
-  | list_cons _ => loop (out, xs, 0)
-  | list_nil () => fprint_string (out, "/*(empty)*/")
+  // nothing
 end // end of [emit_grmrule_yats]
 
 (* ****** ****** *)

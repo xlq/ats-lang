@@ -668,12 +668,18 @@ fun abskind_proc
 //
 val (pf | ()) = symbol_open (abskind)
 //
-val () = grmrule_append (ABSPROP)
-val () = grmrule_append (ABSTYPE)
-val () = grmrule_append (ABST0YPE)
-val () = grmrule_append (ABSVIEW)
-val () = grmrule_append (ABSVIEWTYPE)
-val () = grmrule_append (ABSVIEWT0YPE)
+val gr = grmrule_append (ABSPROP)
+val () = grmrule_set_action (gr, "{ $$ = abskind_prop () ; }")
+val gr = grmrule_append (ABSTYPE)
+val () = grmrule_set_action (gr, "{ $$ = abskind_type () ; }")
+val gr = grmrule_append (ABST0YPE)
+val () = grmrule_set_action (gr, "{ $$ = abskind_t0ype () ; }")
+val gr = grmrule_append (ABSVIEW)
+val () = grmrule_set_action (gr, "{ $$ = abskind_view () ; }")
+val gr = grmrule_append (ABSVIEWTYPE)
+val () = grmrule_set_action (gr, "{ $$ = abskind_viewtype () ; }")
+val gr = grmrule_append (ABSVIEWT0YPE)
+val () = grmrule_set_action (gr, "{ $$ = abskind_viewt0ype () ; }")
 //
 val () = symbol_close (pf | abskind)
 } // end of [abskind_proc]
@@ -695,12 +701,18 @@ fun dcstkind_proc
 //
 val (pf | ()) = symbol_open (dcstkind)
 //
-val () = grmrule_append (FUN)
-val () = grmrule_append (VAL)
-val () = grmrule_append (CASTFN)
-val () = grmrule_append (PRAXI)
-val () = grmrule_append (PRFUN)
-val () = grmrule_append (PRVAL)
+val gr = grmrule_append (FUN)
+val () = grmrule_set_action (gr, "{ $$ = dcstkind_fun () ; }")
+val gr = grmrule_append (VAL)
+val () = grmrule_set_action (gr, "{ $$ = dcstkind_val () ; }")
+val gr = grmrule_append (CASTFN)
+val () = grmrule_set_action (gr, "{ $$ = dcstkind_castfn () ; }")
+val gr = grmrule_append (PRAXI)
+val () = grmrule_set_action (gr, "{ $$ = dcstkind_praxi () ; }")
+val gr = grmrule_append (PRFUN)
+val () = grmrule_set_action (gr, "{ $$ = dcstkind_prfun () ; }")
+val gr = grmrule_append (PRVAL)
+val () = grmrule_set_action (gr, "{ $$ = dcstkind_prval () ; }")
 //
 val () = symbol_close (pf | dcstkind)
 } // end of [dcstkind_proc]
@@ -720,10 +732,14 @@ fun datakind_proc
 //
 val (pf | ()) = symbol_open (datakind)
 //
-val () = grmrule_append (DATAPROP)
-val () = grmrule_append (DATATYPE)
-val () = grmrule_append (DATAVIEW)
-val () = grmrule_append (DATAVIEWTYPE)
+val gr = grmrule_append (DATAPROP)
+val () = grmrule_set_action (gr, "{ $$ = datakind_prop () ; }")
+val gr = grmrule_append (DATATYPE)
+val () = grmrule_set_action (gr, "{ $$ = datakind_type () ; }")
+val gr = grmrule_append (DATAVIEW)
+val () = grmrule_set_action (gr, "{ $$ = datakind_view () ; }")
+val gr = grmrule_append (DATAVIEWTYPE)
+val () = grmrule_set_action (gr, "{ $$ = datakind_viewtype () ; }")
 //
 val () = symbol_close (pf | datakind)
 } // end of [datakind_proc]
@@ -744,11 +760,16 @@ fun stadefkind_proc
 //
 val (pf | ()) = symbol_open (stadefkind)
 //
-val () = grmrule_append (STADEF)
-val () = grmrule_append (PROPDEF)
-val () = grmrule_append (TYPEDEF)
-val () = grmrule_append (VIEWDEF)
-val () = grmrule_append (VIEWTYPEDEF)
+val gr = grmrule_append (STADEF)
+val () = grmrule_set_action (gr, "{ $$ = stadefkind_generic () ; }")
+val gr = grmrule_append (PROPDEF)
+val () = grmrule_set_action (gr, "{ $$ = stadefkind_prop () ; }")
+val gr = grmrule_append (TYPEDEF)
+val () = grmrule_set_action (gr, "{ $$ = stadefkind_type () ; }")
+val gr = grmrule_append (VIEWDEF)
+val () = grmrule_set_action (gr, "{ $$ = stadefkind_view () ; }")
+val gr = grmrule_append (VIEWTYPEDEF)
+val () = grmrule_set_action (gr, "{ $$ = stadefkind_viewtype () ; }")
 //
 val () = symbol_close (pf | stadefkind)
 } // end of [stadefkind_proc]
@@ -768,10 +789,14 @@ fun valkind_proc
 //
 val (pf | ()) = symbol_open (valkind)
 //
-val () = grmrule_append (VAL)
-val () = grmrule_append (VALMINUS)
-val () = grmrule_append (VALPLUS)
-val () = grmrule_append (PRVAL)
+val gr = grmrule_append (VAL)
+val () = grmrule_set_action (gr, "{ $$ = valkind_val () ; }")
+val gr = grmrule_append (VALMINUS)
+val () = grmrule_set_action (gr, "{ $$ = valkind_valminus () ; }")
+val gr = grmrule_append (VALPLUS)
+val () = grmrule_set_action (gr, "{ $$ = valkind_valplus () ; }")
+val gr = grmrule_append (PRVAL)
+val () = grmrule_set_action (gr, "{ $$ = valkind_prval () ; }")
 //
 val () = symbol_close (pf | valkind)
 } // end of [valkind_proc]
@@ -793,12 +818,18 @@ fun funkind_proc
 //
 val (pf | ()) = symbol_open (funkind)
 //
-val () = grmrule_append (FN)
-val () = grmrule_append (FNSTAR)
-val () = grmrule_append (FUN)
-val () = grmrule_append (CASTFN)
-val () = grmrule_append (PRFN)
-val () = grmrule_append (PRFUN)
+val gr = grmrule_append (FN)
+val () = grmrule_set_action (gr, "{ $$ = funkind_fn () ; }")
+val gr = grmrule_append (FNSTAR)
+val () = grmrule_set_action (gr, "{ $$ = funkind_fnstar () ; }")
+val gr = grmrule_append (FUN)
+val () = grmrule_set_action (gr, "{ $$ = funkind_fun () ; }")
+val gr = grmrule_append (CASTFN)
+val () = grmrule_set_action (gr, "{ $$ = funkind_castfn () ; }")
+val gr = grmrule_append (PRFN)
+val () = grmrule_set_action (gr, "{ $$ = funkind_prfn () ; }")
+val gr = grmrule_append (PRFUN)
+val () = grmrule_set_action (gr, "{ $$ = funkind_prfun () ; }")
 //
 val () = symbol_close (pf | funkind)
 //
@@ -819,10 +850,14 @@ fun lamkind_proc
 //
 val (pf | ()) = symbol_open (lamkind)
 //
-val () = grmrule_append (LAM)
-val () = grmrule_append (ATLAM)
-val () = grmrule_append (LLAM)
-val () = grmrule_append (ATLLAM)
+val gr = grmrule_append (LAM)
+val () = grmrule_set_action (gr, "{ $$ = lamkind_lam ($1) ; }")
+val gr = grmrule_append (ATLAM)
+val () = grmrule_set_action (gr, "{ $$ = lamkind_atlam ($1) ; }")
+val gr = grmrule_append (LLAM)
+val () = grmrule_set_action (gr, "{ $$ = lamkind_llam ($1) ; }")
+val gr = grmrule_append (ATLLAM)
+val () = grmrule_set_action (gr, "{ $$ = lamkind_atllam ($1) ; }")
 //
 val () = symbol_close (pf | lamkind)
 //
@@ -841,8 +876,10 @@ fun fixkind_proc
 //
 val (pf | ()) = symbol_open (fixkind)
 //
-val () = grmrule_append (FIX)
-val () = grmrule_append (ATFIX)
+val gr = grmrule_append (FIX)
+val () = grmrule_set_action (gr, "{ $$ = fixkind_fix ($1) ; }")
+val gr = grmrule_append (ATFIX)
+val () = grmrule_set_action (gr, "{ $$ = fixkind_atfix ($1) ; }")
 //
 val () = symbol_close (pf | fixkind)
 //
@@ -862,9 +899,12 @@ fun srpifkind_proc
 //
 val (pf | ()) = symbol_open (srpifkind)
 //
-val () = grmrule_append (SRPIF)
-val () = grmrule_append (SRPIFDEF)
-val () = grmrule_append (SRPIFNDEF)
+val gr = grmrule_append (SRPIF)
+val () = grmrule_set_action (gr, "{ $$ = srpifkindtok_if ($1) ; }")
+val gr = grmrule_append (SRPIFDEF)
+val () = grmrule_set_action (gr, "{ $$ = srpifkindtok_ifdef ($1) ; }")
+val gr = grmrule_append (SRPIFNDEF)
+val () = grmrule_set_action (gr, "{ $$ = srpifkindtok_ifndef ($1) ; }")
 //
 val () = symbol_close (pf | srpifkind)
 //
@@ -882,9 +922,12 @@ fun srpelifkind_proc
 //
 val (pf | ()) = symbol_open (srpelifkind)
 //
-val () = grmrule_append (SRPELIF)
-val () = grmrule_append (SRPELIFDEF)
-val () = grmrule_append (SRPELIFNDEF)
+val gr = grmrule_append (SRPELIF)
+val () = grmrule_set_action (gr, "{ $$ = srpifkindtok_if ($1) ; }")
+val gr = grmrule_append (SRPELIFDEF)
+val () = grmrule_set_action (gr, "{ $$ = srpifkindtok_ifdef ($1) ; }")
+val gr = grmrule_append (SRPELIFNDEF)
+val () = grmrule_set_action (gr, "{ $$ = srpifkindtok_ifndef ($1) ; }")
 //
 val () = symbol_close (pf | srpelifkind)
 //
@@ -892,8 +935,8 @@ val () = symbol_close (pf | srpelifkind)
 
 (*
 srpthenopt
-  : /* empty */                         { }
-  | SRPTHEN                             { }
+  : /* empty */                         { ; }
+  | SRPTHEN                             { ; }
 ;
 *)
 fun srpthenopt_proc
@@ -901,8 +944,10 @@ fun srpthenopt_proc
 //
 val (pf | ()) = symbol_open (srpthenopt)
 //
-val () = grmrule_append ()
-val () = grmrule_append (SRPTHEN)
+val gr = grmrule_append ()
+val () = grmrule_set_action (gr, "{ ; }")
+val gr = grmrule_append (SRPTHEN)
+val () = grmrule_set_action (gr, "{ ; }")
 //
 val () = theGrmrulelst_merge_all (i0deseq, SYMREGopt(SRPTHEN))
 //
@@ -931,21 +976,32 @@ i0de /* identifier */
 fun i0de_proc
   (): void = () where {
 //
-  val (pf | ()) = symbol_open (i0de)
+val (pf | ()) = symbol_open (i0de)
 //
-  val () = grmrule_append (IDENTIFIER_alp)
-  val () = grmrule_append (IDENTIFIER_sym)  
-  val () = grmrule_append (AMPERSAND)
-  val () = grmrule_append (BACKSLASH)
-  val () = grmrule_append (BANG)
-  val () = grmrule_append (EQ)
-  val () = grmrule_append (GT)
-  val () = grmrule_append (LT)
-  val () = grmrule_append (MINUSGT)
-  val () = grmrule_append (MINUSLTGT)
-  val () = grmrule_append (TILDA)  
+val gr = grmrule_append (IDENTIFIER_alp)
+val () = grmrule_set_action (gr, "{ $$ = $1 ; }")
+val gr = grmrule_append (IDENTIFIER_sym)
+val () = grmrule_set_action (gr, "{ $$ = $1 ; }")
+val gr = grmrule_append (AMPERSAND)
+val () = grmrule_set_action (gr, "{ $$ = i0de_make_ampersand($1) ; }")
+val gr = grmrule_append (BACKSLASH)
+val () = grmrule_set_action (gr, "{ $$ = i0de_make_backslash($1) ; }")
+val gr = grmrule_append (BANG)
+val () = grmrule_set_action (gr, "{ $$ = i0de_make_bang($1) ; }")
+val gr = grmrule_append (EQ)
+val () = grmrule_set_action (gr, "{ $$ = i0de_make_eq($1) ; }")
+val gr = grmrule_append (GT)
+val () = grmrule_set_action (gr, "{ $$ = i0de_make_gt($1) ; }")
+val gr = grmrule_append (LT)
+val () = grmrule_set_action (gr, "{ $$ = i0de_make_lt($1) ; }")
+val gr = grmrule_append (MINUSGT)
+val () = grmrule_set_action (gr, "{ $$ = i0de_make_minusgt($1) ; }")
+val gr = grmrule_append (MINUSLTGT)
+val () = grmrule_set_action (gr, "{ $$ = i0de_make_minusltgt($1) ; }")
+val gr = grmrule_append (TILDA)
+val () = grmrule_set_action (gr, "{ $$ = i0de_make_tilda($1) ; }")
 //
-  val () = symbol_close (pf | i0de)
+val () = symbol_close (pf | i0de)
 //
 } // end of [i0de_proc]
 
@@ -956,8 +1012,8 @@ fun i0deseq_proc
 //
 val (pf | ()) = symbol_open (i0deseq)
 //
-val () = grmrule_append ()
-val () = grmrule_append ($lst_t {symbol} (tupz! i0de i0deseq))
+val gr = grmrule_append ()
+val gr = grmrule_append ($lst_t {symbol} (tupz! i0de i0deseq))
 //
 val () = theGrmrulelst_merge_all (i0deseq, SYMREGstar(i0de))
 //
@@ -967,20 +1023,36 @@ val () = symbol_close (pf | i0deseq)
 
 (* ****** ****** *)
 
+(*
+guad0ec_dyn
+  : e0xp srpthenopt d0ecseq_dyn SRPENDIF
+                                        { $$ = guad0ec_one($1, $3, $4) ; }
+  | e0xp srpthenopt d0ecseq_dyn SRPELSE d0ecseq_dyn SRPENDIF
+                                        { $$ = guad0ec_two($1, $3, $5, $6) ; }
+  | e0xp srpthenopt d0ecseq_dyn srpelifkind guad0ec_dyn
+                                        { $$ = guad0ec_cons($1, $3, $4, $5) ; }
+; /* end of [guad0ec_dyn] */
+*)
+
 fun guad0ec_dyn_proc
   (): void = () where {
 //
 val (pf | ()) = symbol_open (guad0ec_dyn)
 //
-val () = grmrule_append (
+val gr = grmrule_append (
   $lst_t {symbol} (tupz! e0xp srpthenopt d0ecseq_dyn SRPENDIF)
 ) // end of [val]
-val () = grmrule_append ($lst_t {symbol}
+val () = grmrule_set_action (gr, "{ $$ = guad0ec_one($1, $3, $4) ; }")
+//
+val gr = grmrule_append ($lst_t {symbol}
   (tupz! e0xp srpthenopt d0ecseq_dyn SRPELSE d0ecseq_dyn SRPENDIF)
 ) // end of [val]
-val () = grmrule_append ($lst_t {symbol}
+val () = grmrule_set_action (gr, "{ $$ = guad0ec_two($1, $3, $5, $6) ; }")
+//
+val gr = grmrule_append ($lst_t {symbol}
   (tupz! e0xp srpthenopt d0ecseq_dyn srpelifkind guad0ec_dyn)
 ) // end of [val]
+val () = grmrule_set_action (gr, "{ $$ = guad0ec_cons($1, $3, $4, $5) ; }")
 //
 val () = symbol_close (pf | guad0ec_dyn)
 //
@@ -1000,8 +1072,10 @@ fun d0ecseq_dyn_rev_proc
 //
 val (pf | ()) = symbol_open (d0ecseq_dyn_rev)
 //
-val () = grmrule_append ()
-val () = grmrule_append ($lst_t {symbol} (tupz! d0ecseq_dyn_rev d0ec_dyn))
+val gr = grmrule_append ()
+val () = grmrule_set_action (gr, "{ $$ = d0ecllst_nil() ; }")
+val gr = grmrule_append ($lst_t {symbol} (tupz! d0ecseq_dyn_rev d0ec_dyn))
+val () = grmrule_set_action (gr, "{ $$ = d0ecllst_cons($1, $2) ; }")
 //
 val () = symbol_close (pf | d0ecseq_dyn_rev)
 //
@@ -1017,7 +1091,8 @@ fun d0ecseq_dyn_proc
 //
 val (pf | ()) = symbol_open (d0ecseq_dyn)
 //
-val () = grmrule_append (d0ecseq_dyn_rev)
+val gr = grmrule_append (d0ecseq_dyn_rev)
+val () = grmrule_set_action (gr, "{ $$ = d0ecllst_reverse($1) ; }")
 //
 val () = symbol_close (pf | d0ecseq_dyn)
 //
