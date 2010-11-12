@@ -35,16 +35,14 @@
 // Time: October 2008
 
 (* ****** ****** *)
-
-// A linear map implementation based on randomized binary search trees
-
+//
+// HX: A linear map implementation based on randomized binary search trees
+//
 (* ****** ****** *)
 
 %{^
-
 #include <stdlib.h>
-
-%}
+%} // end of [%{^]
 
 (* ****** ****** *)
 
@@ -74,18 +72,20 @@ fn{key,itm:t@ype}
 // end of [bst_size]
 
 fn{key,itm:t@ype}
-  bst_is_empty {n:nat}(t: !bst (key, itm, n)):<> bool (n == 0) =
+bst_is_empty {n:nat}
+  (t: !bst (key, itm, n)):<> bool (n == 0) =
   case+ t of BSTcons _ => (fold@ t; false) | BSTnil _ => (fold@ t; true)
 // end of [bst_is_empty]
 
 (* ****** ****** *)
 
-fun{key,itm:t@ype} bst_insert_atroot {n:nat} .<n>. (
-    t: bst (key, itm, n)
-  , k0: key
-  , i0: itm
-  , cmp: (key, key) -<fun> Sgn
-  ) :<> bst (key, itm, n+1) = begin case+ t of
+fun{key,itm:t@ype}
+bst_insert_atroot {n:nat} .<n>. (
+  t: bst (key, itm, n)
+, k0: key
+, i0: itm
+, cmp: (key, key) -<fun> Sgn
+) :<> bst (key, itm, n+1) = begin case+ t of
   | BSTcons (!p_n, k, _(*i*), !p_tl, !p_tr) => begin
       if cmp (k0, k) <= 0 then let
         val tl_new = bst_insert_atroot (!p_tl, k0, i0, cmp)
@@ -110,9 +110,10 @@ end (* end of [bst_insert_atroot] *)
 
 (* ****** ****** *)
 
-fun{key,itm:t@ype} bst_search {n:nat} .<n>.
-  ( t: !bst (key, itm, n), k0: key, cmp: (key, key) -<fun> Sgn)
-  :<> Option_vt itm = begin case+ t of
+fun{key,itm:t@ype}
+bst_search {n:nat} .<n>. (
+  t: !bst (key, itm, n), k0: key, cmp: (key, key) -<fun> Sgn
+) :<> Option_vt itm = begin case+ t of
   | BSTcons (_, k, i, !p_tl, !p_tr) => begin case+ cmp (k0, k) of
     | ~1 => let val ans = bst_search (!p_tl, k0, cmp) in fold@ t; ans end
     |  1 => let val ans = bst_search (!p_tr, k0, cmp) in fold@ t; ans end
@@ -123,29 +124,31 @@ end (* end of [bst_search] *)
 
 (* ****** ****** *)
 
-extern fun dice {m,n:int | m > 0; n > 0} (m: int m, n: int n):<> bool
-  = "ats_map_lin_dice"
-
 %{^
 
 ats_bool_type
-ats_map_lin_dice (
+atsopt_map_lin_dice (
   ats_int_type m, ats_int_type n
 ) {
   double r = drand48 ();
-  return ((m + n) * r < m) ? ats_true_bool : ats_false_bool ;
+  return ((m+n)*r < m) ? ats_true_bool : ats_false_bool ;
 } // end of [ats_map_lin_dice]
 
 %} // end of [%{^]
+extern
+fun dice {m,n:int | m > 0; n > 0}
+  (m: int m, n: int n):<> bool = "atsopt_map_lin_dice"
+// end of [dice]
 
 (* ****** ****** *)
 
-fun{key,itm:t@ype} bst_insert_random {n:nat} .<n>. (
-    t: bst (key, itm, n)
-  , k0: key
-  , i0: itm
-  , cmp: (key, key) -<fun> Sgn
-  ) :<> bst (key, itm, n+1) = begin case+ t of
+fun{key,itm:t@ype}
+bst_insert_random {n:nat} .<n>. (
+  t: bst (key, itm, n)
+, k0: key
+, i0: itm
+, cmp: (key, key) -<fun> Sgn
+) :<> bst (key, itm, n+1) = begin case+ t of
   | BSTcons (!p_n, k, _(*i*), !p_tl, !p_tr) =>
     if dice (1, !p_n) then
       (fold@ t; bst_insert_atroot (t, k0, i0, cmp))
@@ -166,9 +169,11 @@ end (* end of [bst_insert_random] *)
 (* ****** ****** *)
 
 fun{key,itm:t@ype}
-  bst_join_random {nl,nr:nat} .<nl+nr>.
-  (tl: bst (key, itm, nl), tr: bst (key, itm, nr))
-  :<> bst (key, itm, nl+nr) = begin case+ tl of
+bst_join_random
+  {nl,nr:nat} .<nl+nr>. (
+  tl: bst (key, itm, nl)
+, tr: bst (key, itm, nr)
+) :<> bst (key, itm, nl+nr) = begin case+ tl of
   | BSTcons (!p_nl, kl, il, !p_tll, !p_tlr) => begin case+ tr of
     | BSTcons (!p_nr, kr, ir, !p_trl, !p_trr) => let
         val n = !p_nl + !p_nr
@@ -187,7 +192,7 @@ fun{key,itm:t@ype}
 end // end of [bst_join_random]
 
 (* ****** ****** *)
-
+//
 // the function [bst_remove_random] can be implemented more elegantly by
 // exploiting the existential quantifier #[...] as follows:
 // {n:nat} (
@@ -196,16 +201,19 @@ end // end of [bst_join_random]
 // , r1: &Int? >> int i
 // , r2: &Option_vt itm? >> option_vt (itm, i > 0)
 // ) : #[i:two | i <= n] bst (key, itm, n-i)
-
-fun{key,itm:t@ype} bst_remove_random {n:nat} {l1,l2:addr} .<n>. (
-    pf1: Int? @ l1
-  , pf2: Option_vt (itm)? @ l2
-  | t: bst (key, itm, n)
-  , k0: key, p1: ptr l1
-  , p2: ptr l2
-  , cmp: (key, key) -<fun> Sgn
-  ) :<> [i:two | i <= n]
-    (int i @ l1, option_vt (itm, i > 0) @ l2 | bst (key, itm, n-i)) = begin
+//
+fun{key,itm:t@ype}
+bst_remove_random
+  {n:nat} {l1,l2:addr} .<n>. (
+  pf1: Int? @ l1
+, pf2: Option_vt (itm)? @ l2
+| t: bst (key, itm, n)
+, k0: key, p1: ptr l1
+, p2: ptr l2
+, cmp: (key, key) -<fun> Sgn
+) :<> [i:two | i <= n] (
+  int i @ l1, option_vt (itm, i > 0) @ l2 | bst (key, itm, n-i)
+) = begin
   case+ t of
   | BSTcons {..} {nl,nr}
       (!p_n, k, i, !p_tl, !p_tr) => begin case+ cmp (k0, k) of
@@ -236,8 +244,10 @@ end // end of [bst_remove_random]
 (* ****** ****** *)
 
 fun{key,itm:t@ype}
-  bst_select {n,s:nat | s < n} .<n>.
-    (t: !bst (key, itm, n), s: int s):<> itm = let 
+bst_select
+  {n,s:nat | s < n} .<n>. (
+  t: !bst (key, itm, n), s: int s
+) :<> itm = let 
   val BSTcons (_, k, i, !p_tl, !p_tr) = t
   val nl = bst_size !p_tl
 in
@@ -258,8 +268,10 @@ end // end of [bst_select]
 (* ****** ****** *)
 
 // infix order listing
-fn{key,itm:t@ype} bst_list_inf {n:nat}
-  (t: !bst (key, itm, n)):<> list_vt (@(key, itm), n) = let
+fn{key,itm:t@ype}
+bst_list_inf {n:nat} (
+  t: !bst (key, itm, n)
+) :<> list_vt (@(key, itm), n) = let
   typedef ki = @(key, itm)
   fun aux {i,j:nat} .<i>. (
       t: !bst (key, itm, i), res: list_vt (ki, j)
@@ -279,13 +291,15 @@ end // end of [bst_list_inf]
 (* ****** ****** *)
 
 // infix order foreach
-fun{key,itm:t@ype} bst_foreach_inf
-  {v:view} {vt:viewtype} {n:nat} {f:eff} .<n>. (
-    pf: !v
-  | t: !bst (key, itm, n)
-  , f: (!v | key, itm, !vt) -<f> void
-  , env: !vt
-  ) :<f> void = begin case+ t of
+fun{key,itm:t@ype}
+bst_foreach_inf
+  {v:view} {vt:viewtype}
+  {n:nat} {f:eff} .<n>. (
+  pf: !v
+| t: !bst (key, itm, n)
+, f: (!v | key, itm, !vt) -<f> void
+, env: !vt
+) :<f> void = begin case+ t of
   | BSTcons (_, k, i, !p_tl, !p_tr) => let
       val () = bst_foreach_inf (pf | !p_tl, f, env)
       val () = f (pf | k, i, env)
@@ -298,27 +312,31 @@ end // end of [bst_foreach_inf]
 
 (* ****** ****** *)
 
-dataviewtype map (key:t@ype, itm:t@ype+) =
+dataviewtype
+map (key:t@ype, itm:t@ype+) =
   {n:nat} MAP (key, itm) of ((key, key) -<fun> Sgn, bst (key, itm, n))
-
 assume map_vt = map
 
 (* ****** ****** *)
 
-implement map_make (cmp) = MAP (cmp, BSTnil ())
+implement
+map_make (cmp) = MAP (cmp, BSTnil ())
 
-implement{key,item} map_free (m) =
+implement{key,item}
+map_free (m) =
   let val+ ~MAP (cmp, bst) = m in bst_free bst end
 // end of [map_free]
 
-implement{key,item} map_clean (m) = let
+implement{key,item}
+map_clear (m) = let
   val+ MAP (cmp, !p_bst) = m in
   bst_free !p_bst; !p_bst := BSTnil (); fold@ m
-end // end of [map_clean]
+end // end of [map_clear]
   
 (* ****** ****** *)
 
-implement{key,itm} map_search (m, k) = let
+implement{key,itm}
+map_search (m, k) = let
   val+ MAP (cmp, !p_bst) = m
   val ans = bst_search<key,itm> (!p_bst, k, cmp)
 in
@@ -326,12 +344,13 @@ in
 end // end of [map_search]
 
 implement{key,itm}
-  map_insert (m, k, i) = let
+map_insert (m, k, i) = let
   val+ MAP (cmp, !p_bst) = m in
   !p_bst := bst_insert_random<key,itm> (!p_bst, k, i, cmp); fold@ m
 end // end of [map_insert]
 
-implement{key,itm} map_remove (m, k) = let
+implement{key,itm}
+map_remove (m, k) = let
   val+ MAP (cmp, !p_bst) = m
   var status: int and itmopt: Option_vt itm
   val (pf1, pf2 | bst_new) = bst_remove_random<key,itm>
@@ -344,7 +363,8 @@ end // end of [map_remove]
 
 (* ****** ****** *)
 
-implement{key,itm} map_join (m1, m2) = let
+implement{key,itm}
+map_join (m1, m2) = let
   typedef cmp_t = (key, key) -<fun> Sgn
   fun aux {m:nat} {n:nat} .<n>.
     (t0: bst (key, itm, m), t: bst (key, itm, n), cmp: cmp_t)
@@ -369,7 +389,8 @@ end // end of [map_join]
 
 (* ****** ****** *)
 
-implement{key,itm} map_list_inf (m) = let
+implement{key,itm}
+map_list_inf (m) = let
   val+ MAP (_(*cmp*), !p_bst) = m; val ans = bst_list_inf<key,itm> !p_bst
 in
   fold@ (m); ans
@@ -377,7 +398,8 @@ end // end of [map_list_inf]
 
 (* ****** ****** *)
 
-implement{key,itm} map_foreach_inf (pf | m, f, env) = let
+implement{key,itm}
+map_foreach_inf (pf | m, f, env) = let
   val+ MAP (_(*cmp*), !p_bst) = m
   val ans = bst_foreach_inf<key,itm> (pf | !p_bst, f, env)
 in

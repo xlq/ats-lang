@@ -175,15 +175,15 @@ implement
 the_s2varbindmap_initialize () = let
   val (vbox pf | p) = ref_get_view_ptr (the_s2varbindmap)
 in
-  $Map.map_clean<stamp_t, s2exp> (!p)
+  $Map.map_clear<stamp_t, s2exp> (!p)
 end // end of [the_s2varbindmap_initialize]
 
 implement
-fprint_the_s2varbindmap {m} (pfout | out) = let
-  val kis = $Map.map_list_inf (!p) where {
-    val (vbox pf | p) = ref_get_view_ptr (the_s2varbindmap)
-  }
-  fun loop (out: &FILE m, kis: List_vt @(stamp_t, s2exp)): void =
+fprint_the_s2varbindmap
+  {m} (pfout | out) = let
+  fun loop (
+    out: &FILE m, kis: List_vt @(stamp_t, s2exp)
+  ) : void =
     case+ kis of
     | ~list_vt_cons (ki, kis) => begin
          $Stamp.fprint_stamp (pfout | out, ki.0);
@@ -193,6 +193,10 @@ fprint_the_s2varbindmap {m} (pfout | out) = let
          loop (out, kis)
        end // end of [list_vt_cons]
     | ~list_vt_nil () => ()
+  // end of [loop]
+  val kis = $Map.map_list_inf (!p) where {
+    val (vbox pf | p) = ref_get_view_ptr (the_s2varbindmap)
+  } // end of [val]
 in
   loop (out, kis)
 end // end of [fprint_the_s2varbindmap]
