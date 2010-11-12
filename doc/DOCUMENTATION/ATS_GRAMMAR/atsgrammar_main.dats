@@ -88,7 +88,7 @@ val LITERAL_string = symbol_make "LITERAL_string"
 //
 val IDENTIFIER_alp = symbol_make "IDENTIFIER_alp"
 val () = symbol_set_fullname
-  (IDENTIFIER_alp, "ALPHANUMERIC_IDENTIFIER")
+  (IDENTIFIER_alp, "ALNUMRIC_IDENTIFIER")
 //
 val IDENTIFIER_sym = symbol_make "IDENTIFIER_sym"
 val () = symbol_set_fullname (IDENTIFIER_sym, "SYMBOLIC_IDENTIFIER")
@@ -644,8 +644,28 @@ val e0xp = symbol_make_nt "e0xp"
 
 (* ****** ****** *)
 
+val s0rt = symbol_make_nt "s0rt"
+val s0rtq = symbol_make_nt "s0rtq"
+val s0rtid = symbol_make_nt "s0rtid"
+val atms0rt = symbol_make_nt "atms0rt"
+val s0rtseq = symbol_make_nt "s0rtseq"
+val commas0rtseq = symbol_make_nt "commas0rtseq"
+val s0rtpol = symbol_make_nt "s0rtpol"
+
+(* ****** ****** *)
+//
+val d0ec = symbol_make_nt "d0ec"
+//
+val d0ecarg = symbol_make_nt "d0ecarg"
+val d0ecargseq = symbol_make_nt "d0ecargseq"
+//
+val semicolonseq = symbol_make_nt "semicolonseq"
+//
 val d0ec_sta = symbol_make_nt "d0ec_sta"
+val guad0ec_sta = symbol_make_nt "guad0ec_sta"
 val d0ecseq_sta = symbol_make_nt "d0ecseq_sta"
+val d0ecseq_sta_rev = symbol_make_nt "d0ec_staseq_rev"
+//
 val d0ec_dyn = symbol_make_nt "d0ec_dyn"
 val guad0ec_dyn = symbol_make_nt "guad0ec_dyn"
 val d0ecseq_dyn = symbol_make_nt "d0ecseq_dyn"
@@ -1024,6 +1044,242 @@ val () = symbol_close (pf | i0deseq)
 (* ****** ****** *)
 
 (*
+s0rtid /* sort identifier */
+  : IDENTIFIER_alp                      { $$ = $1 ; }
+  | IDENTIFIER_sym                      { $$ = $1 ; }
+  | T0YPE                               { $$ = i0de_make_t0ype($1) ; }
+  | VIEWT0YPE                           { $$ = i0de_make_viewt0ype($1) ; }
+  | BACKSLASH                           { $$ = i0de_make_backslash($1) ; }
+  | MINUSGT                             { $$ = i0de_make_minusgt($1) ; }
+  | MINUSLTGT                           { $$ = i0de_make_minusltgt($1) ; }
+; /* end of [s0rtid] */
+*)
+fun s0rtid_proc
+  (): void = () where {
+//
+val (pf | ()) = symbol_open (s0rtid)
+//
+val gr = grmrule_append (IDENTIFIER_alp)
+val () = grmrule_set_action (gr, "{ $$ = $1 ; }")
+//
+val gr = grmrule_append (IDENTIFIER_sym)
+val () = grmrule_set_action (gr, "{ $$ = $1 ; }")
+//
+val gr = grmrule_append (T0YPE)
+val () = grmrule_set_action (gr, "{ $$ = i0de_make_t0ype($1) ; }")
+//
+val gr = grmrule_append (VIEWT0YPE)
+val () = grmrule_set_action (gr, "{ $$ = i0de_make_viewt0ype($1) ; }")
+//
+val gr = grmrule_append (BACKSLASH)
+val () = grmrule_set_action (gr, "{ $$ = i0de_make_backslash($1) ; }")
+//
+val gr = grmrule_append (MINUSGT)
+val () = grmrule_set_action (gr, "{ $$ = i0de_make_minusgt($1) ; }")
+//
+val gr = grmrule_append (MINUSLTGT)
+val () = grmrule_set_action (gr, "{ $$ = i0de_make_minusltgt($1) ; }")
+//
+val () = symbol_close (pf | s0rtid)
+//
+} // end of [s0rtid_proc]
+
+
+(*
+s0rtpol /* sort with polarity */
+  : s0rt                                { $$ = s0rtpol_make($1, 0) ; }
+  | PROPMINUS                           { $$ = s0rtpol_make(s0rt_prop($1), -1) ; }
+  | PROPPLUS                            { $$ = s0rtpol_make(s0rt_prop($1),  1) ; }
+  | TYPEMINUS                           { $$ = s0rtpol_make(s0rt_type($1), -1) ; }
+  | TYPEPLUS                            { $$ = s0rtpol_make(s0rt_type($1),  1) ; }
+  | T0YPEMINUS                          { $$ = s0rtpol_make(s0rt_t0ype($1), -1) ; }
+  | T0YPEPLUS                           { $$ = s0rtpol_make(s0rt_t0ype($1),  1) ; }
+  | VIEWMINUS                           { $$ = s0rtpol_make(s0rt_view($1), -1) ; }
+  | VIEWPLUS                            { $$ = s0rtpol_make(s0rt_view($1),  1) ; }
+  | VIEWTYPEMINUS                       { $$ = s0rtpol_make(s0rt_viewtype($1), -1) ; }
+  | VIEWTYPEPLUS                        { $$ = s0rtpol_make(s0rt_viewtype($1),  1) ; }
+  | VIEWT0YPEMINUS                      { $$ = s0rtpol_make(s0rt_viewt0ype($1), -1) ; }
+  | VIEWT0YPEPLUS                       { $$ = s0rtpol_make(s0rt_viewt0ype($1),  1) ; }
+; /* end of [s0rtpol] */
+*)
+fun s0rtpol_proc
+  (): void = () where {
+//
+val (pf | ()) = symbol_open (s0rtpol)
+//
+val gr = grmrule_append (s0rt)
+val () = grmrule_set_action (gr, "{ $$ = s0rtpol_make($1, 0) ; }")
+//
+val gr = grmrule_append (PROPMINUS)
+val () = grmrule_set_action (gr, "{ $$ = s0rtpol_make(s0rt_prop($1), -1) ; }")
+val gr = grmrule_append (PROPPLUS)
+val () = grmrule_set_action (gr, "{ $$ = s0rtpol_make(s0rt_prop($1),  1) ; }")
+//
+val gr = grmrule_append (TYPEMINUS)
+val () = grmrule_set_action (gr, "{ $$ = s0rtpol_make(s0rt_type($1), -1) ; }")
+val gr = grmrule_append (TYPEPLUS)
+val () = grmrule_set_action (gr, "{ $$ = s0rtpol_make(s0rt_type($1),  1) ; }")
+//
+val gr = grmrule_append (T0YPEMINUS)
+val () = grmrule_set_action (gr, "{ $$ = s0rtpol_make(s0rt_t0ype($1), -1) ; }")
+val gr = grmrule_append (T0YPEPLUS)
+val () = grmrule_set_action (gr, "{ $$ = s0rtpol_make(s0rt_t0ype($1),  1) ; }")
+//
+val gr = grmrule_append (VIEWMINUS)
+val () = grmrule_set_action (gr, "{ $$ = s0rtpol_make(s0rt_view($1), -1) ; }")
+val gr = grmrule_append (VIEWPLUS)
+val () = grmrule_set_action (gr, "{ $$ = s0rtpol_make(s0rt_view($1),  1) ; }")
+//
+val gr = grmrule_append (VIEWTYPEMINUS)
+val () = grmrule_set_action (gr, "{ $$ = s0rtpol_make(s0rt_viewtype($1), -1) ; }")
+val gr = grmrule_append (VIEWTYPEPLUS)
+val () = grmrule_set_action (gr, "{ $$ = s0rtpol_make(s0rt_viewtype($1),  1) ; }")
+//
+val gr = grmrule_append (VIEWT0YPEMINUS)
+val () = grmrule_set_action (gr, "{ $$ = s0rtpol_make(s0rt_viewt0ype($1), -1) ; }")
+val gr = grmrule_append (VIEWT0YPEPLUS)
+val () = grmrule_set_action (gr, "{ $$ = s0rtpol_make(s0rt_viewt0ype($1),  1) ; }")
+//
+val () = symbol_close (pf | s0rtpol)
+//
+} // end of [s0rtpol_proc]
+
+(* ****** ****** *)
+
+(*
+d0ecarg
+  : LBRACE s0quaseq RBRACE              { $$ = $2 ; }
+; /* end of [d0ecarg] */
+*)
+
+(*
+d0ecargseq
+  : /* empty */                         { $$ = s0qualstlst_nil() ; }
+  | d0ecarg d0ecargseq                  { $$ = s0qualstlst_cons($1, $2) ; }
+; /* end of [d0ecargseq] */
+*)
+
+fun d0ecargseq_proc
+  (): void = () where {
+//
+val (pf | ()) = symbol_open (d0ecargseq)
+//
+val gr = grmrule_append ()
+val () = grmrule_set_action (gr, "{ $$ = s0qualstlst_nil() ; }")
+val gr = grmrule_append ($lst_t {symbol} (tupz! d0ecarg d0ecargseq))
+val () = grmrule_set_action (gr, "{ $$ = s0qualstlst_cons($1, $2) ; }")
+//
+val () = theGrmrulelst_merge_all (d0ecargseq, SYMREGstar(d0ecarg))
+//
+val () = symbol_close (pf | d0ecargseq)
+//
+} // end of [d0ecargseq]
+
+(* ****** ****** *)
+
+(*
+semicolonseq
+  : /* empty */                         { ; }
+  | semicolonseq SEMICOLON              { ; }
+; /* end of [semicolonseq] */
+*)
+fun semicolonseq_proc
+  (): void = () where {
+//
+val (pf | ()) = symbol_open (semicolonseq)
+//
+val gr = grmrule_append ()
+val () = grmrule_set_action (gr, "{ ; }")
+val gr = grmrule_append ($lst_t {symbol} (tupz! semicolonseq SEMICOLON))
+val () = grmrule_set_action (gr, "{ ; }")
+//
+val () = theGrmrulelst_merge_all (semicolonseq, SYMREGstar(SEMICOLON))
+//
+val () = symbol_close (pf | semicolonseq)
+//
+} // end of [semicolonseq_proc]
+
+(* ****** ****** *)
+
+(*
+guad0ec_sta
+  : e0xp srpthenopt d0ecseq_sta SRPENDIF
+                                        { $$ = guad0ec_one($1, $3, $4) ; }
+  | e0xp srpthenopt d0ecseq_sta SRPELSE d0ecseq_sta SRPENDIF
+                                        { $$ = guad0ec_two($1, $3, $5, $6) ; }
+  | e0xp srpthenopt d0ecseq_sta srpelifkind guad0ec_sta
+                                        { $$ = guad0ec_cons($1, $3, $4, $5) ; }
+; /* end of [guad0ec_sta] */
+*)
+fun guad0ec_sta_proc
+  (): void = () where {
+//
+val (pf | ()) = symbol_open (guad0ec_sta)
+//
+val gr = grmrule_append (
+  $lst_t {symbol} (tupz! e0xp srpthenopt d0ecseq_sta SRPENDIF)
+) // end of [val]
+val () = grmrule_set_action (gr, "{ $$ = guad0ec_one($1, $3, $4) ; }")
+//
+val gr = grmrule_append ($lst_t {symbol}
+  (tupz! e0xp srpthenopt d0ecseq_sta SRPELSE d0ecseq_sta SRPENDIF)
+) // end of [val]
+val () = grmrule_set_action (gr, "{ $$ = guad0ec_two($1, $3, $5, $6) ; }")
+//
+val gr = grmrule_append ($lst_t {symbol}
+  (tupz! e0xp srpthenopt d0ecseq_sta srpelifkind guad0ec_sta)
+) // end of [val]
+val () = grmrule_set_action (gr, "{ $$ = guad0ec_cons($1, $3, $4, $5) ; }")
+//
+val () = symbol_close (pf | guad0ec_sta)
+//
+} // end of [guad0ec_sta_proc]
+
+(* ****** ****** *)
+
+(*
+d0ecseq_sta_rev /* tail-recursive */
+  : /* empty */                         { $$ = d0ecllst_nil() ; }
+  | d0ecseq_sta_rev d0ec_sta semicolonseq
+                                        { $$ = d0ecllst_cons($1, $2) ; }
+; /* end of [d0ecseq_sta_rev] */
+*)
+fun d0ecseq_sta_rev_proc
+  (): void = () where {
+//
+val (pf | ()) = symbol_open (d0ecseq_sta_rev)
+//
+val gr = grmrule_append ()
+val () = grmrule_set_action (gr, "{ $$ = d0ecllst_nil() ; }")
+val gr = grmrule_append ($lst_t {symbol} (tupz! d0ecseq_sta_rev d0ec_sta semicolonseq))
+val () = grmrule_set_action (gr, "{ $$ = d0ecllst_cons($1, $2) ; }")
+//
+val () = symbol_close (pf | d0ecseq_sta_rev)
+//
+} // end of [d0ecseq_sta_proc]
+
+(* ****** ****** *)
+
+(*
+d0ecseq_sta
+  : d0ecseq_sta_rev                     { $$ = d0ecllst_reverse($1) ; }
+;
+*)
+fun d0ecseq_sta_proc
+  (): void = () where {
+//
+val (pf | ()) = symbol_open (d0ecseq_sta)
+//
+val gr = grmrule_append (d0ecseq_sta_rev)
+val () = grmrule_set_action (gr, "{ $$ = d0ecllst_reverse($1) ; }")
+//
+val () = symbol_close (pf | d0ecseq_sta)
+//
+} // end of [d0ecseq_sta_proc]
+
+(* ****** ****** *)
+
+(*
 guad0ec_dyn
   : e0xp srpthenopt d0ecseq_dyn SRPENDIF
                                         { $$ = guad0ec_one($1, $3, $4) ; }
@@ -1065,7 +1321,7 @@ d0ecseq_dyn_rev /* tail-recursive */
   : /* empty */                         { $$ = d0ecllst_nil() ; }
   | d0ecseq_dyn_rev d0ec_dyn semicolonseq
                                         { $$ = d0ecllst_cons($1, $2) ; }
-;
+; /* end of [d0ecseq_dyn_rev] */
 *)
 fun d0ecseq_dyn_rev_proc
   (): void = () where {
@@ -1074,7 +1330,7 @@ val (pf | ()) = symbol_open (d0ecseq_dyn_rev)
 //
 val gr = grmrule_append ()
 val () = grmrule_set_action (gr, "{ $$ = d0ecllst_nil() ; }")
-val gr = grmrule_append ($lst_t {symbol} (tupz! d0ecseq_dyn_rev d0ec_dyn))
+val gr = grmrule_append ($lst_t {symbol} (tupz! d0ecseq_dyn_rev d0ec_dyn semicolonseq))
 val () = grmrule_set_action (gr, "{ $$ = d0ecllst_cons($1, $2) ; }")
 //
 val () = symbol_close (pf | d0ecseq_dyn_rev)
@@ -1125,8 +1381,18 @@ atsgrammar_main
   val () = i0de_proc ()
   val () = i0deseq_proc ()
 //
-  val () = guad0ec_dyn_proc ()
+  val () = s0rtid_proc ()
+  val () = s0rtpol_proc ()
 //
+  val () = d0ecargseq_proc ()
+//
+  val () = semicolonseq_proc ()
+//
+  val () = guad0ec_sta_proc ()
+  val () = d0ecseq_sta_rev_proc ()
+  val () = d0ecseq_sta_proc ()
+//
+  val () = guad0ec_dyn_proc ()
   val () = d0ecseq_dyn_rev_proc () // reversed dynamic declaration sequence
   val () = d0ecseq_dyn_proc ()
 //
