@@ -46,7 +46,7 @@ end // end of [stream_vt_nth]
 fun from_con {n:int} (n: int n)
   :<!laz> stream_vt_con (intGte n) = n :: from (n+1)
 and from {n:int} (n: int n)
-  :<!laz> stream_vt (intGte n) = $delay_vt (from_con n)
+  :<!laz> stream_vt (intGte n) = $ldelay (from_con n)
 
 //
 
@@ -75,7 +75,7 @@ fun sieve_con
 // end of [sieve_con]
 
 and sieve (ns: stream_vt Nat2)
-  :<!laz> stream_vt (Nat2) = $delay_vt (sieve_con ns, ~ns)
+  :<!laz> stream_vt (Nat2) = $ldelay (sieve_con ns, ~ns)
 // end of [sieve]
 
 //
