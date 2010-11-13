@@ -48,6 +48,14 @@ atsgrammar_main_dats.o: atsgrammar_main.dats
 
 ######
 
+atsgrammar.yats: atsgrammar
+	./atsgrammar --format=yats > $@
+
+atsgrammar.desc: atsgrammar
+	./atsgrammar --format=desc > $@
+
+######
+
 #
 # HX: '-o .depend' means appending instead of overwriting
 #
@@ -73,5 +81,7 @@ clean::
 
 cleanall:: clean
 	$(RMF) atsgrammar
+	$(RMF) atsgrammar.yats
+	$(RMF) atsgrammar.desc
 
 ###### end of [Makefile] ######

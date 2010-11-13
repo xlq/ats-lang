@@ -51,13 +51,13 @@ fun map_make {key,itm:t@ype}
 
 (* ****** ****** *)
 //
-// HX: free up the map
+// HX: free the map
 //
 fun{key,itm:t@ype} map_free (m: map_vt (key, itm)):<> void
 //
-// HX: clear up the map: free up the binary tree
+// HX: clean up the map: free the binary tree
 //
-fun{key,itm:t@ype} map_clear (m: !map_vt (key, itm)):<> void
+fun{key,itm:t@ype} map_cleanup (m: !map_vt (key, itm)):<> void
 
 (* ****** ****** *)
 

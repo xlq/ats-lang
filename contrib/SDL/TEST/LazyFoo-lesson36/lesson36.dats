@@ -11,11 +11,9 @@
 //
 
 (* ****** ****** *)
-
 //
-// How to compiler: see ../Makefile
+// How to compile: see ../Makefile
 //
-
 (* ****** ****** *)
 
 staload "contrib/GL/SATS/gl.sats"

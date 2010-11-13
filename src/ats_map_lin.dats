@@ -328,10 +328,10 @@ map_free (m) =
 // end of [map_free]
 
 implement{key,item}
-map_clear (m) = let
+map_cleanup (m) = let
   val+ MAP (cmp, !p_bst) = m in
   bst_free !p_bst; !p_bst := BSTnil (); fold@ m
-end // end of [map_clear]
+end // end of [map_cleanup]
   
 (* ****** ****** *)
 

@@ -1164,23 +1164,20 @@ fun cairo_text_path {l1,l2:agz}
 // end of [cairo_text_path]
 
 fun cairo_glyph_path
-  {l:agz} {n:nat} {la:agz}
-  (cr: !cairo_ref l, glyphs: !cairo_glyph_arrptr (n, la), n: int n)
-  : void = "#atsctrb_cairo_glyph_path"
-// end of [cairo_glyph_path]
+  {l:agz} {n:nat} {la:agz} (
+  cr: !cairo_ref l, glyphs: !cairo_glyph_arrptr (n, la), n: int n
+) : void = "#atsctrb_cairo_glyph_path" // end of [cairo_glyph_path]
 
 (* ****** ****** *)
 
-fun cairo_show_text
-  {l1,l2:agz} (cr: !cairo_ref l1, utf8: !strptr l2): void
-  = "#atsctrb_cairo_show_text"
+fun cairo_show_text {l1,l2:agz}
+  (cr: !cairo_ref l1, utf8: !strptr l2): void = "#atsctrb_cairo_show_text"
 // end of [cairo_show_text]
 
 fun cairo_show_glyphs
   {l:agz} {n:nat} {la:agz} (
-    cr: !cairo_ref l, glyphs: !cairo_glyph_arrptr (n, la), n: int n
-  ) : void = "#atsctrb_cairo_show_glyphs"
-// end of [cairo_show_glyphs]
+  cr: !cairo_ref l, glyphs: !cairo_glyph_arrptr (n, la), n: int n
+) : void = "#atsctrb_cairo_show_glyphs" // end of [cairo_show_glyphs]
 
 (* ****** ****** *)
 

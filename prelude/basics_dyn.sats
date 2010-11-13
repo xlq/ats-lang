@@ -177,7 +177,7 @@ fun exit_prerrf {a:viewt@ype} {ts:types}
 // the function should be used in a position
 // where it is deadcode!
 //
-fun assertfalse ():<> [false] void = "atspre_assertfalse"
+fun assertfalse ():<!exn> [false] void = "atspre_assertfalse"
 
 (* ****** ****** *)
 

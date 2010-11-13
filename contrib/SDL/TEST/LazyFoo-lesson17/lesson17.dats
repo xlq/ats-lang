@@ -11,6 +11,10 @@
 //
 
 (* ****** ****** *)
+//
+// How to compile: see ../Makefile
+//
+(* ****** ****** *)
 
 staload "contrib/SDL/SATS/SDL.sats"
 staload "contrib/SDL/SATS/SDL_image.sats"

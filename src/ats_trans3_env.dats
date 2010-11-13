@@ -175,7 +175,7 @@ implement
 the_s2varbindmap_initialize () = let
   val (vbox pf | p) = ref_get_view_ptr (the_s2varbindmap)
 in
-  $Map.map_clear<stamp_t, s2exp> (!p)
+  $Map.map_cleanup<stamp_t, s2exp> (!p)
 end // end of [the_s2varbindmap_initialize]
 
 implement

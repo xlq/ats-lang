@@ -38,7 +38,8 @@ assume grmrule = _grmrule
 in // in of [local]
 
 implement
-grmrule_make_symlst (xs) = let
+grmrule_make_symlst
+  (xs) = let
   val xs =
     list_map_fun<symbol,symreg> (xs, lam x =<1> SYMREGlit (x))
   // end of [val]
@@ -92,7 +93,7 @@ end // end of [theGrmrulelst_add]
 
 implement
 theGrmrulelst_merge_all
-  (x, r) = let
+  (sym, xs) = let
 //
   fun loop {n:nat} .<n>.
     (grs: !list_vt (grmrule, n)): void =
@@ -112,7 +113,7 @@ theGrmrulelst_merge_all
     $effmask_ref (loop (!p))
   end // end of [val]
 //
-  val gr = grmrule_make_symreglst (1, list_sing (r))
+  val gr = grmrule_make_symreglst (1, list_sing (xs))
   val () = theGrmrulelst_add (gr)
 in
   // nothing
@@ -135,19 +136,19 @@ grmrule_append_symbol (x) =
 (* ****** ****** *)
 
 implement
-grmrule_append_symlst (xs) = let
+grmrule_append_symlst
+  (xs) = gr where {
   val gr = grmrule_make_symlst (xs)
   val () = theGrmrulelst_add (gr)
-in
-  gr
-end // end of [grmrule_append_symbol]
+} // end of [grmrule_append_symbol]
 
 (* ****** ****** *)
 
 implement
-grmrule_append_grmrule (gr) = let
-  val () = theGrmrulelst_add (gr) in gr
-end // end of [grmrule_append_grmrule]
+grmrule_append_grmrule
+  (gr) = gr where {
+  val () = theGrmrulelst_add (gr)
+} // end of [grmrule_append_grmrule]
 
 (* ****** ****** *)
 

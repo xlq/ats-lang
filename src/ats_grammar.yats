@@ -1821,16 +1821,18 @@ guad0ec_t guad0ec ;
 %type <guad0ec> guad0ec_sta
 %type <guad0ec> guad0ec_dyn
 
-%type <d0eclst> main
+%type <d0eclst> theStartEntry
 
-%start main
+%start theStartEntry
 
 %%
 
-main
+/* ****** ****** */
+
+theStartEntry
   : ISSTATIC d0ecseq_sta TOKEN_eof      { $$ = $2 ; return 0 ; }
   | ISDYNAMIC d0ecseq_dyn TOKEN_eof     { $$ = $2 ; return 0 ; }
-;
+; /* end of [theStartEntry] */
 
 /* ****** ****** */
 
@@ -1989,6 +1991,11 @@ p0rec /* precedence */
 
 /* ****** ****** */
 
+e0xp /* generic expression */
+  : e0xp atme0xp                        { $$ = e0xp_app($1, $2) ; }
+  | atme0xp                             { $$ = $1 ; }
+; /* end of [e0xp] */
+
 atme0xp /* atomic generic expression */
   : LITERAL_char                        { $$ = e0xp_char($1) ; }
   | LITERAL_float                       { $$ = e0xp_float($1) ; }
@@ -1998,11 +2005,6 @@ atme0xp /* atomic generic expression */
   | LPAREN e0xpseq RPAREN               { $$ = e0xp_list($1, $2, $3) ; }
   | PERCENTLPAREN e0xp RPAREN           { $$ = e0xp_eval($1, $2, $3) ; }
 ; /* end of [atme0xp] */
-
-e0xp /* generic expression */
-  : e0xp atme0xp                        { $$ = e0xp_app($1, $2) ; }
-  | atme0xp                             { $$ = $1 ; }
-; /* end of [e0xp] */
 
 e0xpseq /* generic expression sequence */
   : /* empty */                         { $$ = e0xplst_nil() ; }
@@ -2190,62 +2192,62 @@ di0de /* dynamic identifier */
   | TILDA                               { $$ = i0de_make_tilda($1) ; }
 /* keyword identifier */
   | BACKQUOTE IN BACKQUOTE              { $$ = i0de_make_IN($2) ; }
-;
+; /* end of [di0de] */
 
 dqi0de /* qualified dynamic identifier */
   : di0de                               { $$ = dqi0de_make_none($1) ; }
   | d0ynq di0de                         { $$ = dqi0de_make_some($1, $2) ; }
-;
+; /* end of [dqi0de] */
 
 pi0de /* dynamic pattern identifier */
   : IDENTIFIER_alp                      { $$ = $1 ; }
   | IDENTIFIER_sym                      { $$ = $1 ; }
-;
+; /* end of [pi0de] */
 
 fi0de /* dynamic function identifier */
   : di0de                               { $$ = $1 ; }
   | OP di0de                            { $$ = $2 ; }
-;
+; /* end of [fi0de] */
   
 arri0de /* array identifier */
   : IDENTIFIER_arr                      { $$ = $1 ; }
-;
+; /* end of [arri0de] */
 
 arrqi0de /* qualified array identifier */
   : arri0de                             { $$ = arrqi0de_make_none($1) ; }
   | d0ynq arri0de                       { $$ = arrqi0de_make_some($1, $2) ; }
-;
+; /* end of [arrqi0de] */
 
 tmpi0de /* template identifier */
   : IDENTIFIER_tmp                      { $$ = $1 ; }
-;
+; /* end of [tmpi0de] */
 
 tmpqi0de /* qualified template identifier */
   : tmpi0de                             { $$ = tmpqi0de_make_none($1) ; }
   | d0ynq tmpi0de                       { $$ = tmpqi0de_make_some($1, $2) ; }
-;
+; /* end of [tmpqi0de] */
 
 /* ****** ****** */
 
 s0arg /* static argument */
   : si0de colons0rtopt                  { $$ = s0arg_make($1, $2) ; }
-;
+; /* end of [s0arg] */
 
 s0argseq /* static argument sequence */
   : /* empty */                         { $$ = s0arglst_nil() ; }
   | s0arg commas0argseq                 { $$ = s0arglst_cons ($1, $2) ; }
-;
+; /* end of [s0argseq] */
 
 commas0argseq
   : /* empty */                         { $$ = s0arglst_nil() ; }
   | COMMA s0arg commas0argseq           { $$ = s0arglst_cons ($2, $3) ; }
-;
+; /* end of [commas0argseq] */
 
 s0argseqseq /* static argument sequence sequence */
   : /* empty */                         { $$ = s0arglstlst_nil() ; }
   | si0de s0argseqseq                   { $$ = s0arglstlst_cons_ide($1, $2) ; }
   | LPAREN s0argseq RPAREN s0argseqseq  { $$ = s0arglstlst_cons($2, $4); }
-;
+; /* end of [s0argseqseq] */
 
 /*
 ** template argument variables
@@ -2254,26 +2256,37 @@ s0argseqseq /* static argument sequence sequence */
 commadecs0argseq
   : /* empty */ %prec TMPSARG           { $$ = s0arglst_nil() ; }
   | COMMA s0arg commadecs0argseq        { $$ = s0arglst_cons($2, $3) ; }
-;
+; /* end of [commadecs0argseq] */
 
 decs0argseq
   : /* empty */ %prec TMPSARG           { $$ = s0arglst_nil() ; }
   | s0arg commadecs0argseq              { $$ = s0arglst_cons($1, $2) ; }
-;
+; /* end of [decs0argseq] */
 
 decs0argseqseq
   : /* empty */                         { $$ = s0arglstlst_nil() ; }
   | LBRACE decs0argseq RBRACE decs0argseqseq
                                         { $$ = s0arglstlst_cons($2, $4) ; }
-;
+; /* end of [decs0argseqseq] */
 
 /* ****** ****** */
 
 sp0at /* static pattern */
   : sqi0de LPAREN s0argseq RPAREN       { $$ = sp0at_con($1, $3, $4) ; }
-;
+; /* end of [sp0at] */
 
 /* ****** ****** */
+
+/* static expressions */
+
+/* ****** ****** */
+
+s0exp /* static expression */
+  : apps0exp                            { $$ = $1 ; }
+  | s0exp COLON s0rt                    { $$ = s0exp_ann($1, $3) ; }
+  | LAM s0argseqseq colons0rtopt EQGT s0exp %prec SEXPLAM
+                                        { $$ = s0exp_lams($1, $2, $3, $5) ; }
+; /* end of [s0exp] */
 
 atms0exp /* atomic static expression */
   : LITERAL_char                        { $$ = s0exp_char($1) ; }
@@ -2327,82 +2340,77 @@ atms0exp /* atomic static expression */
   | LBRACE s0quaseq RBRACE              { $$ = s0exp_uni($1, $2, $3) ; }
   | LBRACKET s0quaseq RBRACKET          { $$ = s0exp_exi($1, 0/*funres*/, $2, $3) ; }
   | HASHLBRACKET s0quaseq RBRACKET      { $$ = s0exp_exi($1, 1/*funres*/, $2, $3) ; }
-;
+; /* end of [atms0exp] */
 
 apps0exp /* static application */
   : apps0exp atms0exp                   { $$ = s0exp_app($1, $2) ; }
   | atms0exp                            { $$ = $1 ; }
-;
+; /* end of [apps0exp] */
 
 s0expelt /* type for array or list elements */
   : /* empty */                         { $$ = s0expopt_none () ; }
   | LBRACE s0exp RBRACE                 { $$ = s0expopt_some ($2) ; }
-;
+; /* end of [s0expelt] */
 
 s0arrind /* static array indexes */
   : s0expseq RBRACKET %prec SARRIND     { $$ = s0arrind_make_sing($1, $2) ; }
   | s0expseq RBRACKET LBRACKET s0arrind { $$ = s0arrind_make_cons($1, $4) ; }
-;
+; /* end of [s0arrind] */
 
 s0qua /* static quantification */
   : apps0exp                            { $$ = s0qua_prop($1) ; }
   | si0de commasi0deseq COLON s0rtext   { $$ = s0qua_vars($1, $2, $4) ; }
-;
+; /* end of [s0qua] */
 
 bars0quaseq /* semicolon may substitute for bar */
   : /* empty */                         { $$ = s0qualst_nil() ; }
   | BAR s0qua bars0quaseq               { $$ = s0qualst_cons($2, $3) ; }
   | SEMICOLON s0qua bars0quaseq         { $$ = s0qualst_cons($2, $3) ; }
-;
+; /* end of [bars0quaseq] */
 
 s0quaseq /* static quantification sequence */
   : /* empty */                         { $$ = s0qualst_nil() ; }
   | s0qua bars0quaseq                   { $$ = s0qualst_cons($1, $2) ; }
-;
+; /* end of [s0quaseq] */
 
 s0rtext /* extended sort (sort and subset sort) */
   : s0rt                                { $$ = s0rtext_srt($1) ; }
   | LBRACE si0de COLON s0rtext BAR s0exp bars0expseq RBRACE
                                         { $$ = s0rtext_sub($1, $2, $4, $6, $7, $8) ; }
-;
-
-s0exp /* static expression */
-  : apps0exp                            { $$ = $1 ; }
-  | s0exp COLON s0rt                    { $$ = s0exp_ann($1, $3) ; }
-  | LAM s0argseqseq colons0rtopt EQGT s0exp %prec SEXPLAM
-                                        { $$ = s0exp_lams($1, $2, $3, $5) ; }
-;
+; /* end of [s0rtext] */
 
 bars0expseq /* semicolon may substitute for bar */
   : /* empty */                         { $$ = s0explst_nil() ; }
   | BAR s0exp bars0expseq               { $$ = s0explst_cons($2, $3) ; }
   | SEMICOLON s0exp bars0expseq         { $$ = s0explst_cons($2, $3) ; }
-;
+; /* end of [bars0expseq] */
 
 s0expseq /* static expression sequence */
   : /* empty */                         { $$ = s0explst_nil() ; }
   | s0expseq1                           { $$ = $1 ; }
-;
+; /* end of [s0expseq] */
 
 commas0expseq
   : /* empty */                         { $$ = s0explst_nil() ; }
   | COMMA s0exp commas0expseq           { $$ = s0explst_cons($2, $3) ; }
-;
+; /* end of [commas0expseq] */
 
 s0expseq1
   : s0exp commas0expseq                 { $$ = s0explst_cons($1, $2) ; }
-;
+; /* end of [s0expseq1] */
 
 labs0expseq /* labeled static expression sequence */
   : /* empty */                         { $$ = labs0explst_nil() ; }
   | l0ab EQ s0exp commalabs0expseq      { $$ = labs0explst_cons($1, $3, $4) ; }
-;
+; /* end of [labs0expseq] */
 
 commalabs0expseq
   : /* empty */                         { $$ = labs0explst_nil() ; }
   | COMMA l0ab EQ s0exp commalabs0expseq
                                         { $$ = labs0explst_cons($2, $4, $5) ; }
-;
+; /* end of [commalabs0expseq] */
+
+/* ****** ****** */
 
 /*
 ** template argument expressions
@@ -2411,34 +2419,34 @@ commalabs0expseq
 t0mps0exp
   : atms0exp                            { $$ = $1 ; }
   | t0mps0exp atms0exp                  { $$ = s0exp_app($1, $2) ; }
-;
+; /* end of [t0mps0exp] */
 
 t1mps0exp
   : t0mps0exp %prec TMPSEXP             { $$ = $1 ; }
   | si0de EQ t0mps0exp %prec TMPSEXP    { $$ = s0exp_named ($1, $3) ; }
-;
+; /* end of [t1mps0exp] */
 
 commat1mps0expseq
   : /* empty */ %prec TMPSEXP           { $$ = s0explst_nil() ; }
   | COMMA t1mps0exp commat1mps0expseq   { $$ = s0explst_cons($2, $3) ; }
-;
+; /* end of [commat1mps0expseq] */
 
 t1mps0expseq
   : /* empty */ %prec TMPSEXP           { $$ = s0explst_nil() ; }
   | t1mps0exp commat1mps0expseq         { $$ = s0explst_cons($1, $2) ; }
-;
+; /* end of [t1mps0expseq] */
 
 gtlt_t1mps0expseqseq
   : /* empty */                         { $$ = gtlt_t1mps0expseqseq_nil() ; }
   | GTLT t1mps0expseq gtlt_t1mps0expseqseq
                                         { $$ = gtlt_t1mps0expseqseq_cons_tok($1, $2, $3) ; }
-;
+; /* end of [gtlt_t1mps0expseqseq] */
 
 impqi0de
   : dqi0de                              { $$ = impqi0de_make_none($1) ; }
   | tmpqi0de t1mps0expseq gtlt_t1mps0expseqseq GT
                                         { $$ = impqi0de_make_some($1, $2, $3, $4) ; }
-;
+; /* end of [impqi0de] */
 
 /* ****** ****** */
 
@@ -2450,29 +2458,29 @@ impqi0de
 
 s0rtdef /* sort definition */
   : s0rtid EQ s0rtext                   { $$ = s0rtdef_make($1, $3) ; }
-;
+; /* end of [s0rtdef] */
 
 ands0rtdefseq /* additional sort definition sequence */
   : /* empty */                         { $$ = s0rtdeflst_nil() ; }
   | AND s0rtdef ands0rtdefseq           { $$ = s0rtdeflst_cons($2, $3) ; }
-;
+; /* end of [ands0rtdefseq] */
 
 /* ****** ****** */
 
 d0atarg /* datatype argument */
   : s0rtpol                             { $$ = d0atarg_srt($1) ; }
   | i0de COLON s0rtpol                  { $$ = d0atarg_id_srt($1, $3) ; }
-;
+; /* end of [d0atarg] */
 
 d0atargseq /* datatype argument sequence */
   : /* empty */                         { $$ = d0atarglst_nil() ; }
   | d0atarg commad0atargseq             { $$ = d0atarglst_cons($1, $2) ; }
-;
+; /* end of [d0atargseq] */
 
 commad0atargseq
   : /* empty */                         { $$ = d0atarglst_nil() ; }
   | COMMA d0atarg commad0atargseq       { $$ = d0atarglst_cons($2, $3) ; }
-;
+; /* end of [commad0atargseq] */
 
 /* ****** ****** */
 
@@ -2482,12 +2490,12 @@ s0tacon /* abstract static constructor */
   | si0de EQ s0exp                      { $$ = s0tacon_make_none_some($1, $3) ; }
   | si0de LPAREN d0atargseq RPAREN EQ s0exp
                                         { $$ = s0tacon_make_some_some($1, $3, $6) ; }
-;
+; /* end of [s0tacon] */
 
 ands0taconseq /* additional abstract static constructor sequence */
   : /* empty */                         { $$ = s0taconlst_nil() ; }
   | AND s0tacon ands0taconseq           { $$ = s0taconlst_cons($2, $3) ; }
-;
+; /* end of [ands0taconseq] */
 
 /* ****** ****** */
 
@@ -2495,49 +2503,49 @@ s0tacst /* static constant */
   : si0de COLON s0rt                    { $$ = s0tacst_make_none($1, $3) ; }
   | si0de LPAREN d0atargseq RPAREN COLON s0rt
                                         { $$ = s0tacst_make_some($1, $3, $6) ; }
-;
+; /* end of [s0tacst] */
 
 ands0tacstseq /* additional static constant sequence */
   : /* empty */                         { $$ = s0tacstlst_nil() ; }
   | AND s0tacst ands0tacstseq           { $$ = s0tacstlst_cons($2, $3) ; }
-;
+; /* end of [ands0tacstseq] */
 
 /* ****** ****** */
 
 s0tavar /* static variable */
   : si0de COLON s0rt                    { $$ = s0tavar_make($1, $3) ; }
-;
+; /* end of [s0tavar] */
 
 ands0tavarseq /* additional static constant sequence */
   : /* empty */                         { $$ = s0tavarlst_nil() ; }
   | AND s0tavar ands0tavarseq           { $$ = s0tavarlst_cons($2, $3) ; }
-;
+; /* end of [ands0tavarseq] */
 
 /* ****** ****** */
 
 colons0rtopt /* optional sort annotation */
   : /* empty */                         { $$ = s0rtopt_none() ; }
   | COLON s0rt                          { $$ = s0rtopt_some($2) ; }
-;
+; /* end of [colons0rtopt] */
 
 /* ****** ****** */
 
 s0expdef /* static definition */
   : si0de s0argseqseq colons0rtopt EQ s0exp
                                         { $$ = s0expdef_make ($1, $2, $3, $5) ; }
-;
+; /* end of [s0expdef] */
 
 ands0expdefseq /* additional static definition sequence */
   : /* empty */                         { $$ = s0expdeflst_nil() ; }
   | AND s0expdef ands0expdefseq         { $$ = s0expdeflst_cons($2, $3) ; }
-;
+; /* end of [ands0expdefseq] */
 
 /* ****** ****** */
 
 s0aspdec /* static assumption (for a static abstract constructor) */
   : sqi0de s0argseqseq colons0rtopt EQ s0exp
                                         { $$ = s0aspdec_make($1, $2, $3, $5) ; }
-;
+; /* end of [s0aspdec] */
 
 /* ****** ****** */
 

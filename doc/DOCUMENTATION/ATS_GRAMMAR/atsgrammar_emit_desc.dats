@@ -113,11 +113,11 @@ emit_symdef_desc (out, x) = let
     | list_nil () => ()
   // end of [loop]
 //
-  val name = symbol_get_name (x)
-  val () = fprintf (out, "%s\n", @(name))
+  val fname = symbol_get_descname (x)
+  val () = fprintf (out, "%s\n", @(fname))
   var i: int = 0
   val () = loop (out, symbol_get_grmrulelst (x), i)
-  val () = fprintf (out, "; /* %s */\n\n", @(name))
+  val () = fprintf (out, "; /* %s */\n\n", @(fname))
 //
 in
   // nothing  

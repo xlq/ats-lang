@@ -78,6 +78,13 @@ fn symbol_make_nt
 
 (* ****** ****** *)
 //
+val TOKEN_eof = symbol_make "TOKEN_eof"
+//
+val ISSTATIC = symbol_make "ISSTATIC"
+val ISDYNAMIC = symbol_make "ISDYNAMIC"
+//
+(* ****** ****** *)
+//
 val LITERAL_char = symbol_make "LITERAL_char"
 val LITERAL_extcode = symbol_make "LITERAL_extcode"
 val LITERAL_float = symbol_make "LITERAL_float"
@@ -618,6 +625,11 @@ val () = symbol_set_fullname (VIEWAT, "\"view@\"")
 //
 (* ****** ****** *)
 
+val theStartEntry = symbol_make_nt "theStartEntry"
+val () = symbol_set_fullname (theStartEntry, "program")
+
+(* ****** ****** *)
+//
 val abskind = symbol_make_nt "abskind"
 val dcstkind = symbol_make_nt "dcstkind"
 val datakind = symbol_make_nt "datakind"
@@ -636,7 +648,9 @@ val srpthenopt = symbol_make_nt "srpthenopt"
 (* ****** ****** *)
 
 val i0de = symbol_make_nt "i0de"
+val i0de_dlr = symbol_make_nt "i0de_dlr"
 val i0deseq = symbol_make_nt "i0deseq"
+val i0dext = symbol_make_nt "i0dext"
 
 (* ****** ****** *)
 
@@ -670,6 +684,30 @@ val d0ec_dyn = symbol_make_nt "d0ec_dyn"
 val guad0ec_dyn = symbol_make_nt "guad0ec_dyn"
 val d0ecseq_dyn = symbol_make_nt "d0ecseq_dyn"
 val d0ecseq_dyn_rev = symbol_make_nt "d0ecseq_dyn_rev"
+
+(* ****** ****** *)
+
+(*
+theStartEntry
+  : ISSTATIC d0ecseq_sta TOKEN_eof      { $$ = $2 ; return 0 ; }
+  | ISDYNAMIC d0ecseq_dyn TOKEN_eof     { $$ = $2 ; return 0 ; }
+; /* end of [theStartEntry] */
+*)
+fun theStartEntry_proc
+  (): void = () where {
+//
+val (pf | ()) = symbol_open (theStartEntry)
+//
+val gr = grmrule_append
+  ($lst_t {symbol} (tupz! ISSTATIC d0ecseq_sta TOKEN_eof))
+val () = grmrule_set_action (gr, "{ $$ = $2 ; return 0 ; }")
+//
+val gr = grmrule_append
+  ($lst_t {symbol} (tupz! ISDYNAMIC d0ecseq_dyn TOKEN_eof))
+val () = grmrule_set_action (gr, "{ $$ = $2 ; return 0 ; }")
+//
+val () = symbol_close (pf | theStartEntry)
+} // end of [theStartEntry_proc]
 
 (* ****** ****** *)
 
@@ -969,7 +1007,7 @@ val () = grmrule_set_action (gr, "{ ; }")
 val gr = grmrule_append (SRPTHEN)
 val () = grmrule_set_action (gr, "{ ; }")
 //
-val () = theGrmrulelst_merge_all (i0deseq, SYMREGopt(SRPTHEN))
+val () = theGrmrulelst_merge_all (srpthenopt, SYMREGopt(SRPTHEN))
 //
 val () = symbol_close (pf | srpthenopt)
 //
@@ -1027,19 +1065,72 @@ val () = symbol_close (pf | i0de)
 
 (* ****** ****** *)
 
+(*
+/* identifier beginning with $ */
+  : IDENTIFIER_dlr                      { $$ = $1 ; }
+; /* end of [i0de_dlr] */
+*)
+fun i0de_dlr_proc
+  (): void = () where {
+//
+val (pf | ()) = symbol_open (i0de_dlr)
+//
+val gr = grmrule_append (IDENTIFIER_dlr)
+val () = grmrule_set_action (gr, "{ $$ = $1 ; }")
+//
+val () = symbol_close (pf | i0de_dlr)
+//
+} // end of [i0de_dlr_proc]
+
+(* ****** ****** *)
+
+(*
+i0deseq /* identifier sequence */
+  : /* empty */                         { $$ = i0delst_nil() ; }
+  | i0de i0deseq                        { $$ = i0delst_cons($1, $2) ; }
+; /* end of [i0deseq] */
+*)
 fun i0deseq_proc
   (): void = () where {
 //
 val (pf | ()) = symbol_open (i0deseq)
 //
 val gr = grmrule_append ()
+val () = grmrule_set_action (gr, "{ $$ = i0delst_nil() ; }")
 val gr = grmrule_append ($lst_t {symbol} (tupz! i0de i0deseq))
+val () = grmrule_set_action (gr, "{ $$ = i0delst_cons($1, $2) ; }")
 //
 val () = theGrmrulelst_merge_all (i0deseq, SYMREGstar(i0de))
 //
 val () = symbol_close (pf | i0deseq)
 //
 } // end of [i0deseq_proc]
+
+(* ****** ****** *)
+
+(*
+i0dext /* extern identifier for loading syndef */
+  : IDENTIFIER_ext                      { $$ = $1 ; }
+/* keyword */
+  | DO                                  { $$ = i0de_make_DO($1) ; }
+  | WHILE                               { $$ = i0de_make_WHILE($1) ; }
+; /* end of [i0dext] */
+*)
+fun i0dext_proc
+  (): void = () where {
+//
+val (pf | ()) = symbol_open (i0dext)
+//
+val gr = grmrule_append (IDENTIFIER_ext)
+val () = grmrule_set_action (gr, "{ $$ = $1 ; }")
+val gr = grmrule_append (DO)
+val () = grmrule_set_action (gr, "{ $$ = i0de_make_DO($1) ; }")
+val gr = grmrule_append (WHILE)
+val () = grmrule_set_action (gr, "{ $$ = i0de_make_WHILE($1) ; }")
+//
+val () = symbol_close (pf | i0dext)
+//
+} // end of [i0dext_proc]
 
 (* ****** ****** *)
 
@@ -1363,6 +1454,9 @@ extern fun atsgrammar_main (): void
 implement
 atsgrammar_main
   () = () where {
+//
+  val () = theStartEntry_proc ()
+//
   val () = abskind_proc ()
   val () = dcstkind_proc ()
   val () = datakind_proc ()
@@ -1379,7 +1473,9 @@ atsgrammar_main
   val () = srpthenopt_proc ()
 //
   val () = i0de_proc ()
+  val () = i0de_dlr_proc ()
   val () = i0deseq_proc ()
+  val () = i0dext_proc ()
 //
   val () = s0rtid_proc ()
   val () = s0rtpol_proc ()
@@ -1400,14 +1496,69 @@ atsgrammar_main
 
 (* ****** ****** *)
 
+datatype outfmt =
+  | OUTFMTyats of ()
+  | OUTFMTdesc of ()
+  | OUTFMTnone of ()
+// end of [outfmt]
+
+fun fprint_usage
+  (out: FILEref, cmd: string): void = let
+  val () = fprintf (out, "The command [%s] accepts the following flags:\n", @(cmd))
+  val () = fprintf (out, "  --help\n", @())
+  val () = fprintf (out, "  --format=yats\n", @())
+  val () = fprintf (out, "  --format=desc\n", @())
+in
+  // nothing
+end // end of [fprint_usage]
+
+(* ****** ****** *)
+
 implement
-main () = () where {
+main (
+  argc, argv
+) = () where {
+//
+  val cmd = "atsgrammar"
+//
+  var fmt: outfmt = OUTFMTyats()
+  val () = loop (argc, argv, 1, fmt) where {
+    fun loop {n,i:nat | i <= n} .<n-i>. (
+      argc: int n, argv: &(@[string][n]), i: int i, fmt: &outfmt
+    ) :<cloref1> void =
+    if argc > i then let
+      var arg = argv.[i]
+    in
+      case+ arg of
+      | "--help" => let
+          val () = fprint_usage (stderr_ref, cmd)
+        in
+          fmt := OUTFMTnone // loop exits
+        end // end of [...]
+      | "--format=yats" => (fmt := OUTFMTyats) // loop exits
+      | "--format=desc" => (fmt := OUTFMTdesc) // loop exits
+      | _ => let
+          val () = prerrf ("Warning(atsgrammar): unrecognized flag: %s\n", @(arg))
+        in
+          loop (argc, argv, i+1, fmt)
+        end // end of [_]
+    end // end of [if]
+  } // end of [val]
 //
   val () = atsgrammar_main ()
 //
-  val () = emit_symdefall_yats (stdout_ref)
-//
-  val () = emit_symdefall_desc (stdout_ref)
+  val () = (case+ fmt of
+    | OUTFMTnone () => ()
+    | OUTFMTyats () => emit_symdefall_yats (stdout_ref)
+    | OUTFMTdesc () => emit_symdefall_desc (stdout_ref)
+(*
+    | _ => let
+        val () = prerrf ("Warning(atsgrammar): unrecognized format.\n", @())
+      in
+        // nothing
+      end // end of [_]
+*)
+  ) : void // end of [val]
 //
 } // end of [main]
 
