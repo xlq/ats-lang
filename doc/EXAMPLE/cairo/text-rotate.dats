@@ -46,9 +46,7 @@ fun draw {l:agz} (
   val () = cairo_set_source_rgb (cr, 0., 0., 0.)
   val () = cairo_translate (cr, WIDTH/2.0, HEIGHT/2.0)
   var extents: cairo_text_extents_t
-  val (fpf_x | x) = string_takeout_ptr (text)
-  val () = cairo_text_extents (cr, x, extents)
-  prval () = fpf_x (x)
+  val () = cairo_text_extents (cr, text, extents)
   var x_off: double and y_off: double
   val () = if (NUM_TEXT = 1) then let
     val () = x_off := 0.0 and () = y_off := 0.0
@@ -70,9 +68,7 @@ fun draw {l:agz} (
     val () = cairo_stroke (cr)
     val () = cairo_move_to (cr, x_off - extents.x_bearing, y_off - extents.y_bearing)
     val () = cairo_set_source_rgb (cr, 0., 0., 0.)
-    val (fpf_x | x) = string_takeout_ptr (text)
-    val () = cairo_text_path (cr, x)
-    prval () = fpf_x (x)
+    val () = cairo_text_path (cr, text)
     val () = cairo_fill (cr)
     val () = cairo_restore (pf_save | cr)
   in

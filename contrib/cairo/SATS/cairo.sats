@@ -1034,18 +1034,17 @@ castfn int_of_cairo_font_weight (x: cairo_font_weight_t):<> int
 
 (* ****** ****** *)
 
-fun cairo_select_font_face
-  {l:agz} (
-    cr: !cairo_ref l
-  , name: string (* family *)
-  , slnt: cairo_font_slant_t
-  , wght: cairo_font_weight_t
-  ) : void = "#atsctrb_cairo_select_font_face"
+fun cairo_select_font_face {l:agz} (
+  cr: !cairo_ref l
+, name: !READ(string) (*family*)
+, slnt: cairo_font_slant_t
+, wght: cairo_font_weight_t
+) : void = "#atsctrb_cairo_select_font_face"
 // end of [cairo_select_font_face]
 
-fun cairo_set_font_size
-  {l:agz} (cr: !cairo_ref l, size: double): void
-  = "#atsctrb_cairo_set_font_size"
+fun cairo_set_font_size {l:agz} (
+  cr: !cairo_ref l, size: double
+) : void = "#atsctrb_cairo_set_font_size"
 // end of [cairo_set_font_size]
 
 (* ****** ****** *)
@@ -1143,8 +1142,8 @@ fun cairo_font_extents {l:agz} (
   ) : void = "#atsctrb_cairo_font_extents"
 // end of [cairo_font_extents]
 
-fun cairo_text_extents {l1,l2:agz} (
-    cr: !cairo_ref l1, utf8: !strptr l2
+fun cairo_text_extents {l:agz} (
+    cr: !cairo_ref l, utf8: !READ(string)
   , extents: &cairo_text_extents_t? >> cairo_text_extents_t
   ) : void = "#atsctrb_cairo_text_extents"
 // end of [cairo_text_extents]
@@ -1159,9 +1158,9 @@ fun cairo_glyph_extents
 
 (* ****** ****** *)
 
-fun cairo_text_path {l1,l2:agz}
-  (cr: !cairo_ref l1, text: !strptr l2): void = "#atsctrb_cairo_text_path"
-// end of [cairo_text_path]
+fun cairo_text_path {l:agz} (
+  cr: !cairo_ref l, text: !READ(string)
+) : void = "#atsctrb_cairo_text_path" // end of [cairo_text_path]
 
 fun cairo_glyph_path
   {l:agz} {n:nat} {la:agz} (
@@ -1170,9 +1169,9 @@ fun cairo_glyph_path
 
 (* ****** ****** *)
 
-fun cairo_show_text {l1,l2:agz}
-  (cr: !cairo_ref l1, utf8: !strptr l2): void = "#atsctrb_cairo_show_text"
-// end of [cairo_show_text]
+fun cairo_show_text {l:agz} (
+  cr: !cairo_ref l, utf8: !READ(string)
+) : void = "#atsctrb_cairo_show_text" // end of [cairo_show_text]
 
 fun cairo_show_glyphs
   {l:agz} {n:nat} {la:agz} (
@@ -1182,13 +1181,14 @@ fun cairo_show_glyphs
 (* ****** ****** *)
 
 fun cairo_toy_font_face_create (
-    family: string, s: cairo_font_slant_t, w: cairo_font_weight_t
-  ) : cairo_font_face_ref1
-  = "#atsctrb_cairo_toy_font_face_create"
+  family: !READ(string)
+, s: cairo_font_slant_t, w: cairo_font_weight_t
+) : cairo_font_face_ref1 = "#atsctrb_cairo_toy_font_face_create"
 // end of [cairo_toy_font_face_create]
 
 fun cairo_toy_font_face_get_family
-  {l:agz} (font_face: !cairo_font_face_ref l): string
+  {l:agz} (font_face: !cairo_font_face_ref l)
+  : [l:agz] (strptr(l) -<lin,prf> void | strptr(l))
   = "#atsctrb_cairo_toy_font_face_get_family"
 // end of [cairo_toy_font_face_get_family]
 
@@ -1221,80 +1221,71 @@ fun cairo_cluster_free {n:nat} {l:agz} // [l] can be null
 // end of [cairo_cluster_free]
 
 (* ****** ****** *)
-
 //
-// transformations for drawing
+// HX: transformations for drawing
 //
-
 (* ****** ****** *)
 
-fun cairo_translate {l:agz}
-  (cr: !cairo_ref l, x: double, y: double): void
-  = "#atsctrb_cairo_translate"
-// end of [cairo_translate]
+fun cairo_translate {l:agz} (
+  cr: !cairo_ref l, x: double, y: double
+) : void = "#atsctrb_cairo_translate" // end of [cairo_translate]
 
-fun cairo_scale {l:agz}
-  (cr: !cairo_ref l, sx: double, sy: double): void
-  = "#atsctrb_cairo_scale"
-// end of [cairo_scale]
+fun cairo_scale {l:agz} (
+  cr: !cairo_ref l, sx: double, sy: double
+) : void = "#atsctrb_cairo_scale" // end of [cairo_scale]
 
 //
 // HX: radiants are used for angles
 //
-fun cairo_rotate {l:agz}
-  (cr: !cairo_ref l, angle: double): void = "#atsctrb_cairo_rotate"
-// end of [cairo_rotate]
+fun cairo_rotate {l:agz} (
+  cr: !cairo_ref l, angle: double
+) : void = "#atsctrb_cairo_rotate" // end of [cairo_rotate]
 
-fun cairo_transform {l:agz}
-  (cr: !cairo_ref l, mat: &cairo_matrix_t): void
-  = "#atsctrb_cairo_transform"
-// end of [cairo_transform]
+fun cairo_transform {l:agz} (
+  cr: !cairo_ref l, mat: &cairo_matrix_t
+) : void = "#atsctrb_cairo_transform" // end of [cairo_transform]
   
 (* ****** ****** *)
 
-fun cairo_get_matrix
-  {l:agz} (
-    cr: !cairo_ref l
-  , mat: &cairo_matrix_t? >> cairo_matrix_t
-  ) : void = "#atsctrb_cairo_get_matrix"
-// end of [cairo_get_matrix]  
+fun cairo_get_matrix {l:agz} (
+  cr: !cairo_ref l, mat: &cairo_matrix_t? >> cairo_matrix_t
+) : void = "#atsctrb_cairo_get_matrix" // end of [cairo_get_matrix]  
   
-fun cairo_set_matrix
-  {l:agz} (cr: !cairo_ref l, mat: &cairo_matrix_t): void
-  = "#atsctrb_cairo_set_matrix"
-// end of [cairo_set_matrix]
+fun cairo_set_matrix {l:agz} (
+  cr: !cairo_ref l, mat: &cairo_matrix_t
+) : void = "#atsctrb_cairo_set_matrix" // end of [cairo_set_matrix]
 
-fun cairo_identity_matrix {l:agz} (cr: !cairo_ref l): void
-  = "#atsctrb_cairo_identity_matrix"
+fun cairo_identity_matrix {l:agz}
+  (cr: !cairo_ref l): void = "#atsctrb_cairo_identity_matrix"
 // end of [cairo_identity_matrix]
 
 (* ****** ****** *)
 
-fun cairo_user_to_device
-  {l:agz} (cr: !cairo_ref l, x: &double, y: &double) : void
-  = "#atsctrb_cairo_user_to_device"
+fun cairo_user_to_device {l:agz} (
+  cr: !cairo_ref l, x: &double, y: &double
+) : void = "#atsctrb_cairo_user_to_device"
 // end of [cairo_user_to_device]
 
-fun cairo_user_to_device_distance
-  {l:agz} (cr: !cairo_ref l, dx: &double, dy: &double) : void
-  = "#atsctrb_cairo_user_to_device_distance"
+fun cairo_user_to_device_distance {l:agz} (
+  cr: !cairo_ref l, dx: &double, dy: &double
+) : void = "#atsctrb_cairo_user_to_device_distance"
 // end of [cairo_user_to_device_distance]
 
-fun cairo_device_to_user
-  {l:agz} (cr: !cairo_ref l, x: &double, y: &double) : void
-  = "#atsctrb_cairo_device_to_user"
+fun cairo_device_to_user {l:agz} (
+  cr: !cairo_ref l, x: &double, y: &double
+) : void = "#atsctrb_cairo_device_to_user"
 // end of [cairo_device_to_user]
 
-fun cairo_device_to_user_distance
-  {l:agz} (cr: !cairo_ref l, dx: &double, dy: &double) : void
-  = "#atsctrb_cairo_device_to_user_distance"
+fun cairo_device_to_user_distance {l:agz} (
+  cr: !cairo_ref l, dx: &double, dy: &double
+) : void = "#atsctrb_cairo_device_to_user_distance"
 // end of [cairo_device_to_user_distance]
 
 (* ****** ****** *)
-
 //
-// fonts for drawing
+// HX: fonts for drawing
 //
+(* ****** ****** *)
 
 fun cairo_font_face_status
   {l:agz} (font_face: !cairo_font_face_ref l): cairo_status_t
@@ -1333,10 +1324,10 @@ fun cairo_font_face_get_type
 // end of [cairo_font_face_get_type]
 
 (* ****** ****** *)
-
 //
-// scaled fonts
+// HX: scaled fonts
 //
+(* ****** ****** *)
 
 absviewtype cairo_scaled_font_ref (l:addr) // cairo_scaled_font_t*
 viewtypedef cairo_scaled_font_ref1 = [l:addr | l > null] cairo_scaled_font_ref l
@@ -1368,10 +1359,10 @@ fun cairo_scaled_font_extents {l:agz} (
   ) : void = "#atsctrb_cairo_scaled_font_extents"
 // end of [cairo_scaled_font_extents]
 
-fun cairo_scaled_font_text_extents {l1,l2:agz} (
-    font: !cairo_scaled_font_ref l1
-  , utf8: !strptr l2, extents: &cairo_text_extents_t? >> cairo_text_extents_t
-  ) : void = "#atsctrb_cairo_scaled_font_text_extents"
+fun cairo_scaled_font_text_extents {l:agz} (
+  font: !cairo_scaled_font_ref l
+, utf8: !READ(string), extents: &cairo_text_extents_t? >> cairo_text_extents_t
+) : void = "#atsctrb_cairo_scaled_font_text_extents"
 // end of [cairo_scaled_font_text_extents]
 
 fun cairo_scaled_font_get_font_face
@@ -1408,10 +1399,10 @@ fun cairo_scaled_font_get_type
 // end of [cairo_scaled_font_get_type]
 
 (* ****** ****** *)
-
 //
-// font options
+// HX: font options
 //
+(* ****** ****** *)
 
 fun cairo_font_options_create
   (): cairo_font_options_ptr1 = "#atsctrb_cairo_font_options_create"
@@ -1536,11 +1527,9 @@ fun cairo_font_options_set_hint_metrics {l:agz} (
 // end of [cairo_font_options_set_hint_metrics]
 
 (* ****** ****** *)
-
 //
-// Support for FreeType Font 
+// HX: Support for FreeType Font 
 //
-
 (* ****** ****** *)
 
 (*
@@ -1578,11 +1567,9 @@ fun cairo_ft_scaled_font_unlock_face {l:agz}
 // end of [cairo_ft_scaled_font_unlock_face]
 
 (* ****** ****** *)
-
 //
-// surfaces for drawing
+// HX: surfaces for drawing
 //
-
 (* ****** ****** *)
 
 fun cairo_surface_create_similar {l:agz} (
@@ -1699,10 +1686,10 @@ fun cairo_surface_show_page
 // end of [cairo_surface_show_page]
 
 (* ****** ****** *)
-
 //
-// image surface
+// HX: image surface
 //
+(* ****** ****** *)
 
 (*
 // how to handle this:
@@ -1761,27 +1748,27 @@ fun cairo_image_surface_get_data
 // end of [cairo_image_surface_get_data]
 
 (* ****** ****** *)
-
 //
-// PNG support
+// HX: PNG support
 //
+(* ****** ****** *)
 
 fun cairo_image_surface_create_from_png
-  (filename: string): cairo_surface_ref1
+  (filename: !READ(string)): cairo_surface_ref1
   = "#atsctrb_cairo_image_surface_create_from_png"
 // end of [cairo_image_surface_create_from_png]
 
 fun cairo_image_surface_create_from_png_stream
   {v:view} {vt:viewtype} (
     pf: !v
-  | read_func: (!v | !vt, string, uint) -<fun1> cairo_status_t
+  | read_func: {n:nat} (!v | !vt, &(@[byte][n]), int n) -<fun1> cairo_status_t
   , env: !vt
   ) : cairo_surface_ref1
   = "#atsctrb_cairo_image_surface_create_from_png"
 // end of [cairo_image_surface_create_from_png_stream]
 
-fun cairo_surface_write_to_png
-  {l:agz} (sf: !cairo_surface_ref l, filename: string): cairo_status_t
+fun cairo_surface_write_to_png {l:agz}
+  (sf: !cairo_surface_ref l, filename: !READ(string)): cairo_status_t
   = "#atsctrb_cairo_surface_write_to_png"
 // end of [cairo_surface_write_to_png]
 
@@ -1789,26 +1776,26 @@ fun cairo_surface_write_to_png_stream
   {v:view} {vt:viewtype} {l:agz} (
     pf: !v
   | sf: !cairo_surface_ref l
-  , write_func: (!v | !vt, string, uint) -<fun1> cairo_status_t
+  , write_func: {n:nat} (!v | !vt, &(@[byte][n]), int n) -<fun1> cairo_status_t
   , env: !vt
   ) : cairo_status_t
   = "#atsctrb_cairo_surface_write_to_png_stream"
 // end of [cairo_surface_write_to_png_stream]
 
 (* ****** ****** *)
-
 //
-// PDF surface
+// HX: PDF surface
 //
+(* ****** ****** *)
 
 (*
 #define CAIRO_HAS_PDF_SURFACE
 *)
 
 fun cairo_pdf_surface_create (
-    filename: string, width_in_points: double, height_in_points: double
-  ) : cairo_surface_ref1
-  = "#atsctrb_cairo_pdf_surface_create"
+  filename: !READ(string)
+, width_in_points: double, height_in_points: double
+) : cairo_surface_ref1 = "#atsctrb_cairo_pdf_surface_create"
 // end of [cairo_pdf_surface_create]
 
 fun cairo_pdf_surface_create_null (
@@ -1824,7 +1811,7 @@ fun cairo_pdf_surface_create_null (
 fun cairo_pdf_surface_create_for_stream
   {v:view} {vt:viewtype} (
     pf: !v
-  | write_func: (!v | !vt, string, uint) -<fun1> cairo_status_t
+  | write_func: {n:nat} (!v | !vt, &(@[byte][n]), int n) -<fun1> cairo_status_t
   , env: !vt
   , width_in_points: double
   , height_in_points: double
@@ -1838,25 +1825,24 @@ fun cairo_pdf_surface_set_size {l:agz} (
 // end of [cairo_pdf_surface_set_size]
 
 (* ****** ****** *)
-
 //
-// PS surface
+// HX: PS surface
 //
+(* ****** ****** *)
 
 (*
 #define CAIRO_HAS_PS_SURFACE
 *)
 
 fun cairo_ps_surface_create (
-    filename: string, width_in_points: double, height_in_points: double
-  ) : cairo_surface_ref1
-  = "#atsctrb_cairo_ps_surface_create"
+  filename: !READ(string)
+, width_in_points: double, height_in_points: double
+) : cairo_surface_ref1 = "#atsctrb_cairo_ps_surface_create"
 // end of [cairo_ps_surface_create]
 
 fun cairo_ps_surface_create_null (
-    width_in_points: double, height_in_points: double
-  ) : cairo_surface_ref1
-  = "atsctrb_cairo_ps_surface_create_null" // function
+  width_in_points: double, height_in_points: double
+) : cairo_surface_ref1 = "atsctrb_cairo_ps_surface_create_null" // fun!
 // end of [cairo_ps_surface_create_null]
 
 (*
@@ -1866,7 +1852,7 @@ fun cairo_ps_surface_create_null (
 fun cairo_ps_surface_create_for_stream
   {v:view} {vt:viewtype} (
     pf: !v
-  | write_func: (!v | !vt, string, uint) -<fun1> cairo_status_t
+  | write_func: {n:nat} (!v | !vt, &(@[byte][n]), int n) -<fun1> cairo_status_t
   , env: !vt
   , width_in_points: double
   , height_in_points: double
@@ -1893,16 +1879,19 @@ fun cairo_ps_get_levels
 // end of [cairo_ps_get_levels]
 
 //
-// HX: a null string is returned if [level] is invalid
+// HX: a NULL ptr is returned if [level] is invalid
 //
-fun cairo_ps_level_to_string (level: cairo_ps_level_t): Stropt
+fun cairo_ps_level_to_string
+  (level: cairo_ps_level_t): [l:addr] (strptr(l) -<lin,prf> void | strptr(l))
+  = "#atsctrb_cairo_ps_level_to_string"
+// end of [cairo_ps_level_to_string]
 *)
 
 fun cairo_ps_surface_set_size
   {l:agz} (
-    sf: !cairo_surface_ref l
-  , width_in_points: double, height_in_points: double
-  ) : void = "#atsctrb_cairo_ps_surface_set_size"
+  sf: !cairo_surface_ref l
+, width_in_points: double, height_in_points: double
+) : void = "#atsctrb_cairo_ps_surface_set_size"
 // end of [cairo_ps_surface_set_size]
 
 fun cairo_ps_surface_dsc_begin_setup
@@ -1916,7 +1905,7 @@ fun cairo_ps_surface_dsc_begin_page_setup
 // end of [cairo_ps_surface_dsc_begin_page_setup]
 
 fun cairo_ps_surface_dsc_comment
-  {l:agz} (sf: !cairo_surface_ref l, comment: string): void
+  {l:agz} (sf: !cairo_surface_ref l, comment: !READ(string)): void
   = "#atsctrb_cairo_ps_surface_dsc_comment"
 // end of [cairo_ps_surface_dsc_comment]
 
@@ -1926,10 +1915,9 @@ fun cairo_ps_surface_dsc_comment
 #define CAIRO_HAS_SVG_SURFACE
 *)
 fun cairo_svg_surface_create (
-    filename: string
-  , width_in_points: double, height_in_points: double
-  ) : cairo_surface_ref1
-  = "#atsctrb_cairo_svg_surface_create"
+  filename: !READ(string)
+, width_in_points: double, height_in_points: double
+) : cairo_surface_ref1 = "#atsctrb_cairo_svg_surface_create"
 // end of [cairo_svg_surface_create]
 
 (*
@@ -1939,7 +1927,7 @@ fun cairo_svg_surface_create (
 fun cairo_svg_surface_create_for_stream
   {v:view} {vt:viewtype} (
     pf: !v
-  | write_func: (!v | !vt, string, uint) -<fun1> cairo_status_t
+  | write_func: {n:nat} (!v | !vt, &(@[byte][n]), int n) -<fun1> cairo_status_t
   , env: !vt
   , width_in_points: double
   , height_in_points: double
@@ -1958,15 +1946,18 @@ fun cairo_svg_get_versions
   (n: &int? >> int n): #[n:nat] array (cairo_svg_version_t, n)
   = "atsctrb_cairo_svg_get_versions" // this is a function!
 
+//
+// HX: the return string is statically allocated
+//
 fun cairo_svg_version_to_string
   (version: cairo_svg_version_t): string = "#atsctrb_cairo_svg_version_to_string"
 // end of [cairo_svg_version_to_string]
 
 (* ****** ****** *)
-
 //
-// Quartz surface
+// HX: Quartz surface
 //
+(* ****** ****** *)
 
 (*
 #define CAIRO_HAS_QUARTZ_SURFACE
@@ -2074,11 +2065,9 @@ fun cairo_xlib_surface_get_depth {l:agz}
 // end of [cairo_xlib_surface_get_depth]
 
 (* ****** ****** *)
-
 //
-// utilities for drawing
+// HX: utilities for drawing
 //
-
 (* ****** ****** *)
 
 //
@@ -2156,16 +2145,16 @@ fun cairo_matrix_transform_point (
 // end of [cairo_matrix_transform_point]
 
 (* ****** ****** *)
-
 //
-// error handling
+// HX: error handling
 //
+(* ****** ****** *)
 
 //
 // HX: all error strings are statically allocated
 //
 fun cairo_status_to_string
-  (status: cairo_status_t):<> string = "#atsctrb_cairo_status_to_string"
+  (status: cairo_status_t): string = "#atsctrb_cairo_status_to_string"
 // end of [cairo_status_to_string]
 
 fun cairo_debug_reset_static_data
@@ -2173,11 +2162,9 @@ fun cairo_debug_reset_static_data
 // end of [cairo_debug_reset_static_data]
 
 (* ****** ****** *)
-
 //
-// cairo version macros and functions
+// HX: cairo version macros and functions
 //
-
 macdef CAIRO_VERSION = $extval (int, "CAIRO_VERSION")
 macdef CAIRO_VERSION_MAJOR = $extval (int, "CAIRO_VERSION_MAJOR")
 macdef CAIRO_VERSION_MINOR = $extval (int, "CAIRO_VERSION_MINOR")

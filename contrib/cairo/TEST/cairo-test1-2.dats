@@ -21,6 +21,10 @@
 
 (* ****** ****** *)
 
+staload UN = "prelude/SATS/unsafe.sats"
+
+(* ****** ****** *)
+
 staload "libc/SATS/time.sats"
 staload "contrib/cairo/SATS/cairo.sats"
 
@@ -49,7 +53,7 @@ fun draw_time {l:agz} (
     val (fpf_utf8 | utf8) = strbuf_takeout_ptr (pf_buf | p_buf)
 //
     var extents: cairo_text_extents_t
-    val () = cairo_text_extents (cr, utf8, extents)
+    val () = cairo_text_extents (cr, $UN.castvwtp1{string} (utf8), extents)
     val xc = (wd - extents.width) / 2
 (*
     val () = (print "wd = "; print wd; print_newline ())
@@ -64,7 +68,7 @@ fun draw_time {l:agz} (
 *)
     val () = cairo_move_to (cr, xc - extents.x_bearing, yc - extents.y_bearing)
     val () = cairo_set_source_rgb (cr, 0.0, 0.0, 1.0)
-    val () = cairo_show_text (cr, utf8)
+    val () = cairo_show_text (cr, $UN.castvwtp1{string} (utf8))
 //
     prval () = fpf_utf8 (utf8)
     prval () = pf_buf := bytes_v_of_strbuf_v (pf_buf)

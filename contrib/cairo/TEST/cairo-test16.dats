@@ -42,13 +42,11 @@ implement main () = () where {
   val () = cairo_set_font_size (cr, 52.0)
   var extents: cairo_text_extents_t
 //
-  val pfx = string_takeout_ptr (utf8)
-  val () = cairo_text_extents (cr, pfx.1, extents)
+  val () = cairo_text_extents (cr, utf8, extents)
   val x = 128.0 - (extents.width / 2 + extents.x_bearing)
   val y = 128.0 - (extents.height / 2 + extents.y_bearing)
   val () = cairo_move_to (cr, x, y)
-  val () = cairo_show_text (cr, pfx.1)
-  prval () = pfx.0 (pfx.1)
+  val () = cairo_show_text (cr, utf8)
 //
   val () = cairo_set_source_rgba (cr, 1.0, 0.2, 0.2, 0.6)
   val () = cairo_set_line_width (cr, 6.0)

@@ -9,6 +9,10 @@
 
 (* ****** ****** *)
 
+staload UN = "prelude/SATS/unsafe.sats"
+
+(* ****** ****** *)
+
 staload "contrib/cairo/SATS/cairo.sats"
 staload "contrib/cairo/SATS/cairo_extra.sats"
 
@@ -35,7 +39,7 @@ fun draw_intarray
       val () = cairo_set_source_rgb (cr, 0.25, 0.25, 0.25)
 //
       val txt = sprintf ("%2.2i", @(A[i]))
-      val () = cairo_show_text_inbox (cr, w, H, txt)
+      val () = cairo_show_text_inbox (cr, w, H, $UN.castvwtp1{string} (txt))
       val () = strptr_free (txt)
 //
       val () = cairo_restore (pf | cr)
@@ -188,7 +192,7 @@ draw_trace
     val () = cairo_translate (cr, x + nw/2, 0.0)
     val () = cairo_set_source_rgb (cr, 0.25, 0.25, 0.25)
     val txt = sprintf ("%2.2i", @(A0[m]))
-    val () = cairo_show_text_inbox (cr, nw, nh, txt)
+    val () = cairo_show_text_inbox (cr, nw, nh, $UN.castvwtp1{string} (txt))
     val () = strptr_free (txt)
     val () = cairo_restore (pf | cr)
   in
@@ -211,7 +215,7 @@ implement draw_main
   val () = cairo_translate (cr, w0/2, h/3)
 //
   val txt = sprintf ("searching for key = %i", @(key0))
-  val () = cairo_show_text_inbox (cr, w0/2, 2*h/3, txt)
+  val () = cairo_show_text_inbox (cr, w0/2, 2*h/3, $UN.castvwtp1{string} (txt))
   val () = strptr_free (txt)
 //
   val () = cairo_restore (pf | cr)

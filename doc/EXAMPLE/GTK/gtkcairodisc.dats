@@ -57,9 +57,7 @@ fn draw_disc {l:agz}
   val txt = d.txt
   val () = if txt <> "" then let
     val () = cairo_set_source_rgb (cr, 0.0, 0.5, 0.5) // dark gray
-    val (fpf_p | p) = string_takeout_ptr (txt)
-    val () = cairo_show_text_inbox (cr, w, h, p)
-    prval () = fpf_p (p)
+    val () = cairo_show_text_inbox (cr, w, h, txt)
   in
     // nothing
   end // end of [val]

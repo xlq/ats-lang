@@ -58,9 +58,7 @@ fun draw {l:agz} (
   ) // end of [val]
 //
   val () = cairo_move_to (cr, 0.0, SIZE)
-  val (fpf_x | x) = string_takeout_ptr ("cairo")
-  val () = cairo_show_text (cr, x)
-  prval () = fpf_x (x)
+  val () = cairo_show_text (cr, "cairo")
 //
 } // end of [draw]
 

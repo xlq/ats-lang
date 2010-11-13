@@ -21,6 +21,10 @@
 
 (* ****** ****** *)
 
+staload UN = "prelude/SATS/unsafe.sats"
+
+(* ****** ****** *)
+
 staload "libc/SATS/math.sats"
 staload "contrib/cairo/SATS/cairo.sats"
 
@@ -144,7 +148,7 @@ fn draw_table {l:agz}
     (i := 1; i < 10; i := i+1) let
     val () = cairo_move_to (cr, x, y)
     val txt = tostrptr (i)
-    val () = cairo_show_text (cr, txt)
+    val () = cairo_show_text (cr, $UN.castvwtp1{string} (txt))
     val () = strptr_free (txt)
     val () = x := x + xdelta
   in
@@ -157,7 +161,7 @@ fn draw_table {l:agz}
     (i := 1; i < 10; i := i+1) let
     val () = cairo_move_to (cr, x, y)
     val txt = tostrptr (i)
-    val () = cairo_show_text (cr, txt)
+    val () = cairo_show_text (cr, $UN.castvwtp1{string} (txt))
     val () = strptr_free (txt)
     val () = y := y + ydelta
   in
@@ -176,12 +180,12 @@ fn draw_table {l:agz}
       val d2 = ij mod 10
       val () = cairo_move_to (cr, x, y)
       val txt = tostrptr (d2)
-      val () = cairo_show_text (cr, txt)
+      val () = cairo_show_text (cr, $UN.castvwtp1{string} (txt))
       val () = strptr_free (txt)
       val () = if d1 > 0 then let
         val () = cairo_move_to (cr, x - 0.60 * fntsz, y)
         val txt = tostrptr (d1)
-        val () = cairo_show_text (cr, txt)
+        val () = cairo_show_text (cr, $UN.castvwtp1{string} (txt))
         val () = strptr_free (txt)
       in
         // nothing
@@ -260,15 +264,13 @@ implement main () = () where {
   // end of [val]
   val () = cairo_set_font_size (cr, 24.0)
   val () = cairo_set_source_rgb (cr, 0.0, 0.0, 1.0)
+//
   val title = "Zoe's Multiplication Table"
   var txtexts : cairo_text_extents_t
-//
-  val pfx = string_takeout_ptr (title)
-  val () = cairo_text_extents (cr, pfx.1, txtexts)
+  val () = cairo_text_extents (cr, title, txtexts)
   val x_title = (wsf-txtexts.width)/2
   val () = cairo_move_to (cr, x_title, 272.0/768*hsf)
-  val () = cairo_show_text (cr, pfx.1)
-  prval () = pfx.0 (pfx.1)
+  val () = cairo_show_text (cr, title)
 //
   val m_table = 72.0 // margin
   val x_table = m_table
