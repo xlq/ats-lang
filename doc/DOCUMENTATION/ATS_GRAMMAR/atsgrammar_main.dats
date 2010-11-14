@@ -24,6 +24,12 @@ dynload "atsgrammar_emit_desc.dats"
 //
 (* ****** ****** *)
 
+macdef SYMREGoptlit (x) = SYMREGopt(SYMREGlit ,(x))
+macdef SYMREGstarlit (x) = SYMREGstar(SYMREGlit ,(x))
+macdef SYMREGpluslit (x) = SYMREGplus(SYMREGlit ,(x))
+
+(* ****** ****** *)
+
 val t0kn_tyname = tyname_make_string "t0kn"
 val c0har_tyname = tyname_make_string "c0har"
 val e0xtcode_tyname = tyname_make_string "e0xtcode"
@@ -33,6 +39,38 @@ val i0nt_tyname = tyname_make_string "i0nt"
 val i0ntsp_tyname = tyname_make_string "i0ntsp"
 val s0tring_tyname = tyname_make_string "s0tring"
 val i0de_tyname = tyname_make_string "i0de"
+
+(* ****** ****** *)
+
+val abskind_tyname = tyname_make_string "abskind"
+val dcstkind_tyname = tyname_make_string "dcstkind"
+val datakind_tyname = tyname_make_string "datakind"
+val stadefkind_tyname = tyname_make_string "stadefkind"
+
+val valkind_tyname = tyname_make_string "valkind"
+val funkind_tyname = tyname_make_string "funkind"
+val lamkind_tyname = tyname_make_string "lamkind"
+val fixkind_tyname = tyname_make_string "fixkind"
+
+val srpifkindtok_tyname = tyname_make_string "srpifkindtok"
+
+val i0de_tyname = tyname_make_string "i0de"
+val i0delst_tyname = tyname_make_string "i0delst"
+
+val e0xp_tyname = tyname_make_string "e0xp"
+val e0xplst_tyname = tyname_make_string "e0xplst"
+val e0xpopt_tyname = tyname_make_string "e0xpopt"
+
+val s0rt_tyname = tyname_make_string "s0rt"
+val s0rtq_tyname = tyname_make_string "s0rtq"
+val s0rtlst_tyname = tyname_make_string "s0rtlst"
+val s0rtpol_tyname = tyname_make_string "s0rtpol"
+
+val s0qualst_tyname = tyname_make_string "s0qualst"
+val s0qualstlst_tyname = tyname_make_string "s0qualstlst"
+
+val d0ec_tyname = tyname_make_string "d0ec"
+val d0eclst_tyname = tyname_make_string "d0eclst"
 
 (* ****** ****** *)
 
@@ -856,65 +894,159 @@ val () = symbol_set_tyname (VIEWAT, t0kn_tyname)
 //
 (* ****** ****** *)
 
+val LPAREN = symbol_make "LPAREN"
+val () = symbol_set_fullname (LPAREN, "\"(\"")
+val () = symbol_set_tyname (LPAREN, t0kn_tyname)
+val RPAREN = symbol_make "RPAREN"
+val () = symbol_set_fullname (RPAREN, "\")\"")
+val () = symbol_set_tyname (RPAREN, t0kn_tyname)
+//
+val LBRACKET = symbol_make "LBRACKET"
+val () = symbol_set_fullname (LBRACKET, "\"[\"")
+val () = symbol_set_tyname (LBRACKET, t0kn_tyname)
+val RBRACKET = symbol_make "RBRACKET"
+val () = symbol_set_fullname (RBRACKET, "\"]\"")
+val () = symbol_set_tyname (RBRACKET, t0kn_tyname)
+//
+val LBRACE = symbol_make "LBRACE"
+val () = symbol_set_fullname (LBRACE, "\"{\"")
+val () = symbol_set_tyname (LBRACE, t0kn_tyname)
+val RBRACE = symbol_make "RBRACE"
+val () = symbol_set_fullname (RBRACE, "\"}\"")
+val () = symbol_set_tyname (RBRACE, t0kn_tyname)
+//
+val ATLPAREN = symbol_make "ATLPAREN"
+val () = symbol_set_fullname (ATLPAREN, "\"@(\"")
+val () = symbol_set_tyname (ATLPAREN, t0kn_tyname)
+val ATLBRACKET = symbol_make "ATLBRACKET"
+val () = symbol_set_fullname (ATLBRACKET, "\"@[\"")
+val () = symbol_set_tyname (ATLBRACKET, t0kn_tyname)
+val ATLBRACE = symbol_make "ATLBRACE"
+val () = symbol_set_fullname (ATLBRACE, "\"@{\"")
+val () = symbol_set_tyname (ATLBRACE, t0kn_tyname)
+//
+val QUOTELPAREN = symbol_make "QUOTELPAREN"
+val () = symbol_set_fullname (QUOTELPAREN, "\"'(\"")
+val () = symbol_set_tyname (QUOTELPAREN, t0kn_tyname)
+val QUOTELBRACKET = symbol_make "QUOTELBRACKET"
+val () = symbol_set_fullname (QUOTELBRACKET, "\"'[\"")
+val () = symbol_set_tyname (QUOTELBRACKET, t0kn_tyname)
+val QUOTELBRACE = symbol_make "QUOTELBRACE"
+val () = symbol_set_fullname (QUOTELBRACE, "\"'{\"")
+val () = symbol_set_tyname (QUOTELBRACE, t0kn_tyname)
+//
+val HASHLPAREN = symbol_make "HASHLPAREN"
+val () = symbol_set_fullname (HASHLPAREN, "\"#(\"")
+val () = symbol_set_tyname (HASHLPAREN, t0kn_tyname)
+val HASHLBRACKET = symbol_make "HASHLBRACKET"
+val () = symbol_set_fullname (HASHLBRACKET, "\"#[\"")
+val () = symbol_set_tyname (HASHLBRACKET, t0kn_tyname)
+val HASHLBRACE = symbol_make "HASHLBRACE"
+val () = symbol_set_fullname (HASHLBRACE, "\"#{\"")
+val () = symbol_set_tyname (HASHLBRACE, t0kn_tyname)
+//
+(* ****** ****** *)
+
 val theStartEntry = symbol_make_nt "theStartEntry"
 val () = symbol_set_fullname (theStartEntry, "program")
 
 (* ****** ****** *)
 //
 val abskind = symbol_make_nt "abskind"
+val () = symbol_set_tyname (abskind, abskind_tyname)
 val dcstkind = symbol_make_nt "dcstkind"
+val () = symbol_set_tyname (dcstkind, dcstkind_tyname)
 val datakind = symbol_make_nt "datakind"
+val () = symbol_set_tyname (datakind, datakind_tyname)
 val stadefkind = symbol_make_nt "stadefkind"
+val () = symbol_set_tyname (stadefkind, stadefkind_tyname)
 //
 val valkind = symbol_make_nt "valkind"
+val () = symbol_set_tyname (valkind, valkind_tyname)
 val funkind = symbol_make_nt "funkind"
+val () = symbol_set_tyname (funkind, funkind_tyname)
 //
 val lamkind = symbol_make_nt "lamkind"
+val () = symbol_set_tyname (lamkind, lamkind_tyname)
 val fixkind = symbol_make_nt "fixkind"
+val () = symbol_set_tyname (fixkind, fixkind_tyname)
 //
 val srpifkind = symbol_make_nt "srpifkind"
+val () = symbol_set_tyname (srpifkind, srpifkindtok_tyname)
 val srpelifkind = symbol_make_nt "srpelifkind"
+val () = symbol_set_tyname (srpelifkind, srpifkindtok_tyname)
 val srpthenopt = symbol_make_nt "srpthenopt"
 //
 (* ****** ****** *)
 
 val i0de = symbol_make_nt "i0de"
+val () = symbol_set_tyname (i0de, i0de_tyname)
 val i0de_dlr = symbol_make_nt "i0de_dlr"
+val () = symbol_set_tyname (i0de_dlr, i0de_tyname)
 val i0deseq = symbol_make_nt "i0deseq"
+val () = symbol_set_tyname (i0deseq, i0delst_tyname)
 val i0dext = symbol_make_nt "i0dext"
+val () = symbol_set_tyname (i0dext, i0de_tyname)
 
 (* ****** ****** *)
 
 val e0xp = symbol_make_nt "e0xp"
+val () = symbol_set_tyname (e0xp, e0xp_tyname)
+val atme0xp = symbol_make_nt "atme0xp"
+val () = symbol_set_tyname (atme0xp, e0xp_tyname)
+val e0xpseq = symbol_make_nt "e0xpseq"
+val () = symbol_set_tyname (e0xpseq, e0xplst_tyname)
+val commae0xpseq = symbol_make_nt "commae0xpseq"
+val () = symbol_set_tyname (commae0xpseq, e0xplst_tyname)
+val e0xpopt = symbol_make_nt "e0xpopt"
+val () = symbol_set_tyname (e0xpopt, e0xpopt_tyname)
 
 (* ****** ****** *)
 
 val s0rt = symbol_make_nt "s0rt"
+val () = symbol_set_tyname (s0rt, s0rt_tyname)
 val s0rtq = symbol_make_nt "s0rtq"
+val () = symbol_set_tyname (s0rtq, s0rtq_tyname)
 val s0rtid = symbol_make_nt "s0rtid"
+val () = symbol_set_tyname (s0rtid, i0de_tyname)
 val atms0rt = symbol_make_nt "atms0rt"
+val () = symbol_set_tyname (atms0rt, s0rt_tyname)
 val s0rtseq = symbol_make_nt "s0rtseq"
+val () = symbol_set_tyname (s0rtseq, s0rtlst_tyname)
 val commas0rtseq = symbol_make_nt "commas0rtseq"
+val () = symbol_set_tyname (commas0rtseq, s0rtlst_tyname)
 val s0rtpol = symbol_make_nt "s0rtpol"
+val () = symbol_set_tyname (s0rtpol, s0rtpol_tyname)
 
 (* ****** ****** *)
 //
 val d0ec = symbol_make_nt "d0ec"
+val () = symbol_set_tyname (d0ec, d0ec_tyname)
 //
 val d0ecarg = symbol_make_nt "d0ecarg"
+val () = symbol_set_tyname (d0ecarg, s0qualst_tyname)
 val d0ecargseq = symbol_make_nt "d0ecargseq"
+val () = symbol_set_tyname (d0ecargseq, s0qualstlst_tyname)
 //
 val semicolonseq = symbol_make_nt "semicolonseq"
 //
 val d0ec_sta = symbol_make_nt "d0ec_sta"
+val () = symbol_set_tyname (d0ec_sta, d0ec_tyname)
 val guad0ec_sta = symbol_make_nt "guad0ec_sta"
+val () = symbol_set_tyname (guad0ec_sta, d0eclst_tyname)
 val d0ecseq_sta = symbol_make_nt "d0ecseq_sta"
+val () = symbol_set_tyname (d0ecseq_sta, d0eclst_tyname)
 val d0ecseq_sta_rev = symbol_make_nt "d0ec_staseq_rev"
+val () = symbol_set_tyname (d0ecseq_sta_rev, d0eclst_tyname)
 //
 val d0ec_dyn = symbol_make_nt "d0ec_dyn"
+val () = symbol_set_tyname (d0ec_dyn, d0ec_tyname)
 val guad0ec_dyn = symbol_make_nt "guad0ec_dyn"
+val () = symbol_set_tyname (guad0ec_dyn, d0eclst_tyname)
 val d0ecseq_dyn = symbol_make_nt "d0ecseq_dyn"
+val () = symbol_set_tyname (d0ecseq_dyn, d0eclst_tyname)
 val d0ecseq_dyn_rev = symbol_make_nt "d0ecseq_dyn_rev"
+val () = symbol_set_tyname (d0ecseq_dyn_rev, d0eclst_tyname)
 
 (* ****** ****** *)
 
@@ -1238,7 +1370,7 @@ val () = grmrule_set_action (gr, "{ ; }")
 val gr = grmrule_append (SRPTHEN)
 val () = grmrule_set_action (gr, "{ ; }")
 //
-val () = theGrmrulelst_merge_all (srpthenopt, SYMREGopt(SRPTHEN))
+val () = theGrmrulelst_merge_all (srpthenopt, SYMREGoptlit(SRPTHEN))
 //
 val () = symbol_close (pf | srpthenopt)
 //
@@ -1331,7 +1463,7 @@ val () = grmrule_set_action (gr, "{ $$ = i0delst_nil() ; }")
 val gr = grmrule_append ($lst_t {symbol} (tupz! i0de i0deseq))
 val () = grmrule_set_action (gr, "{ $$ = i0delst_cons($1, $2) ; }")
 //
-val () = theGrmrulelst_merge_all (i0deseq, SYMREGstar(i0de))
+val () = theGrmrulelst_merge_all (i0deseq, SYMREGstarlit(i0de))
 //
 val () = symbol_close (pf | i0deseq)
 //
@@ -1362,6 +1494,132 @@ val () = grmrule_set_action (gr, "{ $$ = i0de_make_WHILE($1) ; }")
 val () = symbol_close (pf | i0dext)
 //
 } // end of [i0dext_proc]
+
+(* ****** ****** *)
+
+(*
+e0xp /* generic expression */
+  : e0xp atme0xp                        { $$ = e0xp_app($1, $2) ; }
+  | atme0xp                             { $$ = $1 ; }
+; /* end of [e0xp] */
+*)
+fun e0xp_proc
+  (): void = () where {
+//
+val (pf | ()) = symbol_open (e0xp)
+//
+val gr = grmrule_append ($lst_t {symbol} (tupz! e0xp atme0xp))
+val () = grmrule_set_action (gr, "{ $$ = e0xp_app($1, $2) ; }")
+val gr = grmrule_append (atme0xp)
+val () = grmrule_set_action (gr, "{ $$ = $1 ; }")
+//
+val () = theGrmrulelst_merge_all (e0xp, SYMREGpluslit(atme0xp))
+//
+val () = symbol_close (pf | e0xp)
+//
+} // end of [e0xp_proc]
+
+(* ****** ****** *)
+
+(*
+atme0xp /* atomic generic expression */
+  : LITERAL_char                        { $$ = e0xp_char($1) ; }
+  | LITERAL_float                       { $$ = e0xp_float($1) ; }
+  | LITERAL_int                         { $$ = e0xp_int($1) ; }
+  | LITERAL_string                      { $$ = e0xp_string($1) ; }
+  | i0de                                { $$ = e0xp_ide($1) ; }
+  | LPAREN e0xpseq RPAREN               { $$ = e0xp_list($1, $2, $3) ; }
+  | PERCENTLPAREN e0xp RPAREN           { $$ = e0xp_eval($1, $2, $3) ; }
+; /* end of [atme0xp] */
+*)
+fun atme0xp_proc
+  (): void = () where {
+//
+val (pf | ()) = symbol_open (atme0xp)
+//
+val gr = grmrule_append (LITERAL_char)
+val () = grmrule_set_action (gr, "{ $$ = e0xp_char($1) ; }")
+val gr = grmrule_append (LITERAL_float)
+val () = grmrule_set_action (gr, "{ $$ = e0xp_f0loat($1) ; }")
+val gr = grmrule_append (LITERAL_int)
+val () = grmrule_set_action (gr, "{ $$ = e0xp_int($1) ; }")
+val gr = grmrule_append (LITERAL_string)
+val () = grmrule_set_action (gr, "{ $$ = e0xp_string($1) ; }")
+val gr = grmrule_append (i0de)
+val () = grmrule_set_action (gr, "{ $$ = e0xp_ide($1) ; }")
+val gr = grmrule_append ($lst_t {symbol} (tupz! LPAREN e0xpseq RPAREN))
+val () = grmrule_set_action (gr, "{ $$ = e0xp_list($1, $2, $3) ; }")
+val gr = grmrule_append ($lst_t {symbol} (tupz! PERCENTLPAREN e0xp RPAREN))
+val () = grmrule_set_action (gr, "{ $$ = e0xp_eval($1, $2, $3) ; }")
+//
+val () = symbol_close (pf | atme0xp)
+//
+} // end of [atme0xp]
+
+(* ****** ****** *)
+
+(*
+e0xpseq /* generic expression sequence */
+  : /* empty */                         { $$ = e0xplst_nil() ; }
+  | e0xp commae0xpseq                   { $$ = e0xplst_cons($1, $2) ; }
+; /* end of [e0xpseq] */
+*)
+fun e0xpseq_proc
+  (): void = () where {
+//
+val (pf | ()) = symbol_open (e0xpseq)
+//
+val gr = grmrule_append ()
+val () = grmrule_set_action (gr, "{ $$ = e0xplst_nil() ; }")
+val gr = grmrule_append ($lst_t {symbol} (tupz! e0xp commae0xpseq))
+val () = grmrule_set_action (gr, "{ $$ = e0xplst_cons($1, $2) ; }")
+//
+val () = symbol_close (pf | e0xpseq)
+//
+} // end of [e0xpseq_proc]
+
+(* ****** ****** *)
+
+(*
+commae0xpseq
+  : /* empty */                         { $$ = e0xplst_nil() ; }
+  | COMMA e0xp commae0xpseq             { $$ = e0xplst_cons($2, $3) ; }
+; /* end of [commae0xpseq] */
+*)
+fun commae0xpseq_proc
+  (): void = () where {
+//
+val (pf | ()) = symbol_open (commae0xpseq)
+//
+val gr = grmrule_append ()
+val () = grmrule_set_action (gr, "{ $$ = e0xplst_nil() ; }")
+val gr = grmrule_append ($lst_t {symbol} (tupz! COMMA e0xp commae0xpseq))
+val () = grmrule_set_action (gr, "{ $$ = e0xplst_cons($2, $3) ; }")
+//
+val commae0xp = SYMREGseq (SYMREGlit(COMMA), SYMREGlit(e0xp))
+val () = theGrmrulelst_merge_all (commae0xpseq, SYMREGstar(commae0xp))
+//
+val () = symbol_close (pf | commae0xpseq)
+//
+} // end of [comme0xpseq_proc]
+
+(* ****** ****** *)
+  
+fun e0xpopt_proc
+  (): void = () where {
+//
+val (pf | ()) = symbol_open (e0xpopt)
+//
+val gr = grmrule_append ()
+val () = grmrule_set_action (gr, "{ $$ = e0xpopt_none() ; }")
+val gr = grmrule_append (e0xp)
+val () = grmrule_set_action (gr, "{ $$ = e0xpopt_some($1) ; }")
+//
+val () = theGrmrulelst_merge_all (e0xpopt, SYMREGoptlit(e0xp))
+//
+val () = symbol_close (pf | e0xpopt)
+//
+} // end of [e0xpopt_proc]
 
 (* ****** ****** *)
 
@@ -1491,7 +1749,7 @@ val () = grmrule_set_action (gr, "{ $$ = s0qualstlst_nil() ; }")
 val gr = grmrule_append ($lst_t {symbol} (tupz! d0ecarg d0ecargseq))
 val () = grmrule_set_action (gr, "{ $$ = s0qualstlst_cons($1, $2) ; }")
 //
-val () = theGrmrulelst_merge_all (d0ecargseq, SYMREGstar(d0ecarg))
+val () = theGrmrulelst_merge_all (d0ecargseq, SYMREGstarlit(d0ecarg))
 //
 val () = symbol_close (pf | d0ecargseq)
 //
@@ -1515,7 +1773,7 @@ val () = grmrule_set_action (gr, "{ ; }")
 val gr = grmrule_append ($lst_t {symbol} (tupz! semicolonseq SEMICOLON))
 val () = grmrule_set_action (gr, "{ ; }")
 //
-val () = theGrmrulelst_merge_all (semicolonseq, SYMREGstar(SEMICOLON))
+val () = theGrmrulelst_merge_all (semicolonseq, SYMREGstarlit(SEMICOLON))
 //
 val () = symbol_close (pf | semicolonseq)
 //
@@ -1707,6 +1965,12 @@ atsgrammar_main
   val () = i0de_dlr_proc ()
   val () = i0deseq_proc ()
   val () = i0dext_proc ()
+//
+  val () = e0xp_proc ()
+  val () = atme0xp_proc ()  
+  val () = e0xpseq_proc ()
+  val () = commae0xpseq_proc ()
+  val () = e0xpopt_proc ()
 //
   val () = s0rtid_proc ()
   val () = s0rtpol_proc ()

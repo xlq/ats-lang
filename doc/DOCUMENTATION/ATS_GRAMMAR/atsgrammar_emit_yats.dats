@@ -59,6 +59,45 @@ end // end of [emit_symall_term]
 
 (* ****** ****** *)
 
+fun emit_sym_nonterm
+  (out: FILEref, x: symbol): void = let
+  val name = symbol_get_name (x)
+  val tname = symbol_get_tyname (x)
+  val () = fprint_string (out, "%type ")
+  val () = if
+    tyname_is_some (tname) then let
+    val () = fprint_string (out, "<")
+    val () = fprint_tyname (out, tname)
+    val () = fprint_string (out, "> ")
+  in
+    // nothing
+  end // end of [val]
+  val () = fprint_string (out, name)
+  val () = fprint_newline (out)
+in
+  // nothing
+end // end of [emit_sym_nonterm]
+
+fun emit_symall_nonterm (
+  out: FILEref, xs: !symlst_vt
+) : void = let
+  fun loop (out: FILEref, xs: !symlst_vt): void =
+    case+ xs of
+    | list_vt_cons (x, !p_xs1) => let
+        val isnt = symbol_get_nonterm (x)
+        val () = if isnt then emit_sym_nonterm (out, x) else ()
+        val () = loop (out, !p_xs1)
+      in
+        fold@ (xs)
+      end // end of [list_vt_cons]
+    | list_vt_nil () => (fold@ xs) // end of [list_vt_nil]
+  // end of [loop]
+in
+  loop (out, xs)
+end // end of [emit_symall_nonterm]
+
+(* ****** ****** *)
+
 fun emit_symreg
   (out: FILEref, r: symreg): void = case+ r of
   | SYMREGlit (x) => fprint_string (out, symbol_get_name (x))
@@ -161,6 +200,8 @@ emit_yats (out) = let
   val xs = theSymlst_get ()
   val xs = list_reverse (xs)
   val () = emit_symall_term (out, xs)
+  val () = fprint_string (out, "\n/* ****** ****** */\n\n")
+  val () = emit_symall_nonterm (out, xs)
   val () = fprint_string (out, "\n/* ****** ****** */\n\n")
   val () = emit_symall_defn (out, xs)
 in

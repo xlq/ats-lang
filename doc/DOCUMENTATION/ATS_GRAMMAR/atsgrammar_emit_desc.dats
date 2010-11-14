@@ -39,31 +39,43 @@ fun emit_symreg_desc (
       fprintf (out, "%s", @(fname))
     end // end of [SYMREGlit]
   | SYMREGseq (x1, x2) => let
-      val fname1 = symbol_get_descname (x1)
-      and fname2 = symbol_get_descname (x2)
+      val () = fprint (out, "(")
+      val () = emit_symreg_desc (out, x1)
+      val () = fprint (out, " , ")
+      val () = emit_symreg_desc (out, x2)
+      val () = fprint (out, ")")
     in
-      fprintf (out, "(%s , %s)", @(fname1, fname2))
+      // nothing
     end // end of [SYMREGseq]
   | SYMREGalt (x1, x2) => let
-      val fname1 = symbol_get_descname (x1)
-      and fname2 = symbol_get_descname (x2)
+      val () = fprint (out, "(")
+      val () = emit_symreg_desc (out, x1)
+      val () = fprint (out, " | ")
+      val () = emit_symreg_desc (out, x2)
+      val () = fprint (out, ")")
     in
-      fprintf (out, "(%s | %s)", @(fname1, fname2))
+      // nothing
     end // end of [SYMREGalt]
   | SYMREGopt (x) => let
-      val fname = symbol_get_descname (x)
+      val () = fprint (out, "[")
+      val () = emit_symreg_desc (out, x)
+      val () = fprint (out, "]")
     in
-      fprintf (out, "[%s]", @(fname))
+      // nothing
     end // end of [SYMREGopt]
   | SYMREGstar (x) => let
-      val fname = symbol_get_descname (x)
+      val () = fprint (out, "{")
+      val () = emit_symreg_desc (out, x)
+      val () = fprint (out, "}")
     in
-      fprintf (out, "{%s}", @(fname))
+      // nothing
     end // end of [SYMREGstar]
   | SYMREGplus (x) => let
-      val fname = symbol_get_descname (x)
+      val () = fprint (out, "{")
+      val () = emit_symreg_desc (out, x)
+      val () = fprint (out, "}+")
     in
-      fprintf (out, "{%s}+", @(fname))
+      // nothing
     end // end of [SYMREGplus]
 end // end of [emit_symreg_desc]
 
@@ -91,8 +103,9 @@ end // end of [emit_grmrule_desc]
 
 (* ****** ****** *)
 
-fun emit_sym_defn
-  (out: FILEref, x: symbol) : void = let
+fun emit_sym_defn (
+  out: FILEref, x: symbol
+) : void = let
   fun loop (
     out: FILEref, grs: grmrulelst, i: &int
   ) : void =

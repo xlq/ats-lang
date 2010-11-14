@@ -40,11 +40,11 @@ viewtypedef symlst_vt = List_vt (symbol)
 
 datatype symreg =
   | SYMREGlit of symbol // symbol
-  | SYMREGseq of (symbol, symbol) // (symbol , symbol)
-  | SYMREGalt of (symbol, symbol) // (symbol | symbol)
-  | SYMREGopt of (symbol) // [symbol]
-  | SYMREGstar of (symbol) // {symbol}
-  | SYMREGplus of (symbol) // {symbol}+
+  | SYMREGseq of (symreg, symreg) // (symreg , symreg)
+  | SYMREGalt of (symreg, symreg) // (symreg | symreg)
+  | SYMREGopt of (symreg) // [symreg]
+  | SYMREGstar of (symreg) // {symreg}
+  | SYMREGplus of (symreg) // {symreg}+
 // end of [symreg]
 
 typedef symreglst = List (symreg)
