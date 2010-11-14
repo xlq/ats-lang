@@ -16,6 +16,7 @@ ATSGCFLAG=-D_ATS_GCATS
 
 OBJECT := \
   atsgrammar_sats.o \
+  atsgrammar_tyname_dats.o \
   atsgrammar_symbol_dats.o \
   atsgrammar_grmrule_dats.o \
   atsgrammar_emit_yats_dats.o \
@@ -29,6 +30,9 @@ atsgrammar: $(OBJECT); $(ATSCC) $(ATSGCFLAG) -o $@ $(OBJECT)
 ######
 
 atsgrammar_sats.o: atsgrammar.sats
+	$(ATSCC) -c -o $@ $<
+
+atsgrammar_tyname_dats.o: atsgrammar_tyname.dats
 	$(ATSCC) -c -o $@ $<
 
 atsgrammar_symbol_dats.o: atsgrammar_symbol.dats
@@ -62,6 +66,7 @@ atsgrammar.desc: atsgrammar
 depend::
 	rm -f .depend
 	$(ATSOPT) -o .depend -dep1 -s atsgrammar.sats
+	$(ATSOPT) -o .depend -dep1 -d atsgrammar_tyname.dats
 	$(ATSOPT) -o .depend -dep1 -d atsgrammar_symbol.dats
 	$(ATSOPT) -o .depend -dep1 -d atsgrammar_grmrule.dats
 	$(ATSOPT) -o .depend -dep1 -d atsgrammar_emit_yats.dats

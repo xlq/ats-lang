@@ -12,6 +12,7 @@
 (* ****** ****** *)
 
 staload _(*anon*) = "prelude/DATS/list.dats"
+staload _(*anon*) = "prelude/DATS/list_vt.dats"
 
 (* ****** ****** *)
 
@@ -90,9 +91,8 @@ end // end of [emit_grmrule_desc]
 
 (* ****** ****** *)
 
-implement
-emit_symdef_desc (out, x) = let
-//
+fun emit_sym_defn
+  (out: FILEref, x: symbol) : void = let
   fun loop (
     out: FILEref, grs: grmrulelst, i: &int
   ) : void =
@@ -121,25 +121,38 @@ emit_symdef_desc (out, x) = let
 //
 in
   // nothing  
-end // end of [emit_symdef_desc]
+end // end of [emit_sym_defn]
+
+(* ****** ****** *)
+
+fun emit_symall_defn (
+  out: FILEref, xs: !symlst_vt
+) : void = let
+  fun loop (out: FILEref, xs: !symlst_vt): void =
+    case+ xs of
+    | list_vt_cons (x, !p_xs1) => let
+        val isnt = symbol_get_nonterm (x)
+        val () = if isnt then emit_sym_defn (out, x)
+        val () = loop (out, !p_xs1)
+      in
+        fold@ (xs)
+      end // end of [list_vt_cons]
+    | list_vt_nil () => (fold@ xs) // end of [list_vt_nil]
+  // end of [loop]
+in
+  loop (out, xs)
+end // end of [emit_symall_defn]
 
 (* ****** ****** *)
 
 implement
-emit_symdefall_desc (out) = let
-  fun loop (out: FILEref, xs: symlst_vt): void =
-    case+ xs of
-    | ~list_vt_cons (x, xs) => let
-        val isnt = symbol_get_nonterm (x)
-        val () = if isnt then emit_symdef_desc (out, x)
-      in
-        loop (out, xs)
-      end // end of [list_vt_cons]
-    | ~list_vt_nil () => () // end of [list_vt_nil]
-  // end of [loop]
+emit_desc (out) = let
+  val xs = theSymlst_get ()
+  val xs = list_reverse (xs)
+  val () = emit_symall_defn (out, xs)
 in
-  loop (out, list_reverse (theSymlst_get ()))
-end // end of [emit_symdefall_desc]
+  list_vt_free (xs)
+end // end of [emit_desc]
 
 (* ****** ****** *)
 

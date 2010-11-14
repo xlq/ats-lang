@@ -40,6 +40,7 @@ symbol (s:int) = '{
   symbol_name= string
 , symbol_nonterm= bool
 , symbol_fullname= Stropt
+, symbol_tyname= tyname
 , symbol_grmrulelst= grmrulelst
 , symbol_stamp= int
 } // end of [symbol]
@@ -55,6 +56,7 @@ symbol_make
   symbol_name= name
 , symbol_nonterm= false
 , symbol_fullname= stropt_none
+, symbol_tyname= theTynameNone
 , symbol_grmrulelst= list_nil ()
 , symbol_stamp= theSymbolStampCount_getinc ()
 } ] // end of [symbol_make]
@@ -83,6 +85,9 @@ symbol_get_nonterm (x) = x.symbol_nonterm
 
 implement
 symbol_get_fullname (x) = x.symbol_fullname
+
+implement
+symbol_get_tyname (x) = x.symbol_tyname
 
 implement
 symbol_get_grmrulelst (x) = x.symbol_grmrulelst
@@ -138,6 +143,13 @@ atsgrammar_symbol_set_fullname
   ((atsgrammar_symbol_t)sym)->atslab_symbol_fullname = fname ;
   return ;
 } /* end of [atsgrammar_symbol_set_fullname] */
+//
+ats_void_type
+atsgrammar_symbol_set_tyname
+  (ats_ptr_type sym, ats_ptr_type tname) {
+  ((atsgrammar_symbol_t)sym)->atslab_symbol_tyname = tname ;
+  return ;
+} /* end of [atsgrammar_symbol_set_tyname] */
 //
 ats_void_type
 atsgrammar_symbol_set_grmrulelst

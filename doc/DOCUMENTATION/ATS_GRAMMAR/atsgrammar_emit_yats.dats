@@ -12,6 +12,7 @@
 (* ****** ****** *)
 
 staload _(*anon*) = "prelude/DATS/list.dats"
+staload _(*anon*) = "prelude/DATS/list_vt.dats"
 
 (* ****** ****** *)
 
@@ -19,13 +20,52 @@ staload "atsgrammar.sats"
 
 (* ****** ****** *)
 
-fun emit_symreg_yats
+fun emit_sym_term
+  (out: FILEref, x: symbol): void = let
+  val name = symbol_get_name (x)
+  val tname = symbol_get_tyname (x)
+  val () = fprint_string (out, "%token ")
+  val () = if
+    tyname_is_some (tname) then let
+    val () = fprint_string (out, "<")
+    val () = fprint_tyname (out, tname)
+    val () = fprint_string (out, "> ")
+  in
+    // nothing
+  end // end of [val]
+  val () = fprint_string (out, name)
+  val () = fprint_newline (out)
+in
+  // nothing
+end // end of [emit_sym_term]
+
+fun emit_symall_term (
+  out: FILEref, xs: !symlst_vt
+) : void = let
+  fun loop (out: FILEref, xs: !symlst_vt): void =
+    case+ xs of
+    | list_vt_cons (x, !p_xs1) => let
+        val isnt = symbol_get_nonterm (x)
+        val () = if isnt then () else emit_sym_term (out, x)
+        val () = loop (out, !p_xs1)
+      in
+        fold@ (xs)
+      end // end of [list_vt_cons]
+    | list_vt_nil () => (fold@ xs) // end of [list_vt_nil]
+  // end of [loop]
+in
+  loop (out, xs)
+end // end of [emit_symall_term]
+
+(* ****** ****** *)
+
+fun emit_symreg
   (out: FILEref, r: symreg): void = case+ r of
   | SYMREGlit (x) => fprint_string (out, symbol_get_name (x))
   | _ => fprint_string (out, "(ERROR)")
-// end of [emit_symreg_yats]
+// end of [emit_symreg]
 
-fun emit_grmrule_yats (
+fun emit_grmrule (
   out: FILEref, gr: grmrule
 ) : void = let
   fun loop (
@@ -34,7 +74,7 @@ fun emit_grmrule_yats (
     case+ xs of
     | list_cons (x, xs) => let
         val () = if (i > 0) then fprint_string (out, " ")
-        val () = emit_symreg_yats (out, x)
+        val () = emit_symreg (out, x)
       in
         loop (out, xs, i+1)
       end // end of [list_cons]
@@ -54,13 +94,13 @@ fun emit_grmrule_yats (
   end // end of [val]
 in
   // nothing
-end // end of [emit_grmrule_yats]
+end // end of [emit_grmrule]
 
 (* ****** ****** *)
 
-implement
-emit_symdef_yats (out, x) = let
-//
+fun emit_sym_defn (
+  out: FILEref, x: symbol
+) : void = let
   fun loop (
     out: FILEref, grs: grmrulelst, i: &int
   ) : void =
@@ -73,7 +113,7 @@ emit_symdef_yats (out, x) = let
           ) : char // end of [val]
           val () = i := i+1
           val () = fprintf (out, "  %c ", @(c))
-          val () = emit_grmrule_yats (out, gr)
+          val () = emit_grmrule (out, gr)
           val () = fprint_newline (out)
         in
           // nothing
@@ -92,25 +132,40 @@ emit_symdef_yats (out, x) = let
 //
 in
   // nothing  
-end // end of [emit_symdef_yats]
+end // end of [emit_sym_defn]
+
+(* ****** ****** *)
+
+fun emit_symall_defn (
+  out: FILEref, xs: !symlst_vt
+) : void = let
+  fun loop (out: FILEref, xs: !symlst_vt): void =
+    case+ xs of
+    | list_vt_cons (x, !p_xs1) => let
+        val isnt = symbol_get_nonterm (x)
+        val () = if isnt then emit_sym_defn (out, x)
+        val () = loop (out, !p_xs1)
+      in
+        fold@ (xs)
+      end // end of [list_vt_cons]
+    | list_vt_nil () => fold@ (xs) // end of [list_vt_nil]
+  // end of [loop]
+in
+  loop (out, xs)
+end // end of [emit_symall_defn]
 
 (* ****** ****** *)
 
 implement
-emit_symdefall_yats (out) = let
-  fun loop (out: FILEref, xs: symlst_vt): void =
-    case+ xs of
-    | ~list_vt_cons (x, xs) => let
-        val isnt = symbol_get_nonterm (x)
-        val () = if isnt then emit_symdef_yats (out, x)
-      in
-        loop (out, xs)
-      end // end of [list_vt_cons]
-    | ~list_vt_nil () => () // end of [list_vt_nil]
-  // end of [loop]
+emit_yats (out) = let
+  val xs = theSymlst_get ()
+  val xs = list_reverse (xs)
+  val () = emit_symall_term (out, xs)
+  val () = fprint_string (out, "\n/* ****** ****** */\n\n")
+  val () = emit_symall_defn (out, xs)
 in
-  loop (out, list_reverse (theSymlst_get ()))
-end // end of [emit_symdefall_yats]
+  list_vt_free (xs)
+end // end of [emit_yats]
 
 (* ****** ****** *)
 

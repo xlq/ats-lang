@@ -1261,11 +1261,12 @@ guad0ec_t guad0ec ;
 
 /* ****** ****** */
 
-%token TOKEN_eof
+%token <t0kn> TOKEN_eof
 
 /* ****** ****** */
 
-%token ISSTATIC ISDYNAMIC
+%token <t0kn> ISSTATIC
+%token <t0kn> ISDYNAMIC
 
 /* ****** ****** */
 

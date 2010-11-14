@@ -15,7 +15,23 @@ macdef list_sing (x) = list_cons (,(x), list_nil)
 
 (* ****** ****** *)
 
+abstype tyname
 abstype symbol (s:int)
+abstype grmrule
+
+(* ****** ****** *)
+
+val theTynameNone : tyname
+fun tyname_make_string (name: string): tyname
+
+fun fprint_tyname (out: FILEref, x: tyname): void
+fun print_tyname (x: tyname): void
+fun prerr_tyname (x: tyname): void
+
+fun tyname_is_some (x: tyname): bool
+
+(* ****** ****** *)
+
 typedef symbol = [s:int] symbol (s)
 typedef symlst = List (symbol)
 viewtypedef symlst_vt = List_vt (symbol)
@@ -35,7 +51,6 @@ typedef symreglst = List (symreg)
 
 (* ****** ****** *)
 
-abstype grmrule
 typedef grmrulelst = List (grmrule)
 viewtypedef grmrulelst_vt = List_vt (grmrule)
 
@@ -63,6 +78,11 @@ fun symbol_set_fullname (
   x: symbol, fname: string
 ) :<!ref> void = "atsgrammar_symbol_set_fullname"
 // end of [symbol_set_fullname]
+
+fun symbol_get_tyname (x: symbol): tyname
+fun symbol_set_tyname
+  (x: symbol, t: tyname): void = "atsgrammar_symbol_set_tyname"
+// end of [symbol_set_tyname]
 
 fun symbol_get_grmrulelst (x: symbol): grmrulelst
 fun symbol_set_grmrulelst (
@@ -118,17 +138,17 @@ fun theGrmrulelst_add (x: grmrule): void
 fun theGrmrulelst_merge_all (x: symbol, r: symreg): void
 
 (* ****** ****** *)
-
+//
 absview symbol_open_v (s:int)
-
+//
 fun symbol_open {s:int}
   (sym: symbol (s)): (symbol_open_v (s) | void)
 // end of [symbol_open]
-
+//
 fun symbol_close {s:int}
   (pf: symbol_open_v (s) | sym: symbol (s)): void
 // end of [symbol_clsoe]
-
+//
 (* ****** ****** *)
 
 symintr grmrule_append
@@ -147,19 +167,11 @@ overload grmrule_append with grmrule_append_grmrule
 //
 (* ****** ****** *)
 
-fun emit_symdef_yats
-  (out: FILEref, x: symbol) : void
-// end of [emit_symdef_yats]
-
-fun emit_symdefall_yats (out: FILEref): void
+fun emit_yats (out: FILEref): void
 
 (* ****** ****** *)
 
-fun emit_symdef_desc
-  (out: FILEref, x: symbol) : void
-// end of [emit_symdef_desc]
-
-fun emit_symdefall_desc (out: FILEref): void
+fun emit_desc (out: FILEref): void
 
 (* ****** ****** *)
 
