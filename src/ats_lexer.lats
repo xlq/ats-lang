@@ -30,10 +30,10 @@
 *)
 
 (* ****** ****** *)
-
+//
 // Author: Hongwei Xi (hwxi AT cs DOT bu DOT edu)
 // July 2007
-
+//
 (* ****** ****** *)
 
 (* The lexical analyzer for ATS/Anairiats *)
@@ -68,17 +68,19 @@ staload "ats_lexer.sats"
 overload prerr with $Loc.prerr_location
 
 (* ****** ****** *)
-
-extern
-fun ats_lexer_lats_initialize (): void = "ats_lexer_lats_initialize"
-
-val () = ats_lexer_lats_initialize () // called when [ats_lexer_lats.dats]
-// is located dynamically
+//
+// HX: it is called when [ats_lexer_lats.dats] is loaded dynamically
+//
+val () = ats_lexer_lats_initialize () where {
+  extern fun ats_lexer_lats_initialize (): void = "ats_lexer_lats_initialize"
+} // end of [val]
 
 (* ****** ****** *)
 
-dataviewtype poslst = (* list of positions *)
+dataviewtype
+poslst = (* list of positions *)
   | POSLSTnil | POSLSTcons of (position_t, poslst)
+// end of [poslst]
 
 fun poslst_free (ps: poslst): void = case+ ps of
   | ~POSLSTcons (p, ps) => poslst_free ps | ~POSLSTnil () => ()
@@ -104,8 +106,9 @@ fn CHAR0 (): token_t = CHAR (lexing_fstpos_get ())
 
 extern fun COMMENT (p: position_t, ps: poslst): void
 
-fn COMMENT_lexing_error (p: position_t, ps: poslst): void =
-  (poslst_free ps; lexing_error ())
+fn COMMENT_lexing_error
+  (p: position_t, ps: poslst): void =
+  let val () = poslst_free (ps) in lexing_error () end
 // end of [COMMENT_lexing_error]
 
 fn COMMENT0 (): void = let
@@ -467,11 +470,14 @@ end // end of [process_keyword]
 
 (* ****** ****** *)
 
-fn process_comment_open (p: position_t, ps: poslst): void =
-  let val fstpos = lexing_fstpos_get () in
-    COMMENT (fstpos, POSLSTcons (p, ps))
-  end
-
+fn process_comment_open (
+  p: position_t, ps: poslst
+) : void =
+//
+let val fstpos = lexing_fstpos_get () in
+  COMMENT (fstpos, POSLSTcons (p, ps))
+end
+//
 fn process_comment_close
   (p0: position_t, ps: poslst): void = begin
   case+ ps of
@@ -482,11 +488,14 @@ fn process_comment_close
     in
       $POSMARK.posmark_insert_comment_end lstoff
     end // end of [POSLSTnil]
+// end of [process_comment_close]
+//
 end // end of [process_comment_close]
 
 (* ****** ****** *)
 
-fn process_comment_clike_open (p1: position_t): void = let
+fn process_comment_clike_open
+  (p1: position_t): void = let
   val p2 = lexing_fstpos_get ()
 in
   prerr_string "The comment starting at [";
@@ -499,29 +508,29 @@ in
   $raise LexingErrorException
 end // end of [process_comment_clike_open]
 
-fn process_comment_clike_close (fstpos: position_t): void = let
-  val lstpos = lexing_lstpos_get ();val lstoff = position_toff lstpos
+fn process_comment_clike_close
+  (fstpos: position_t): void = let
+  val lstpos = lexing_lstpos_get ()
+  val lstoff = position_toff lstpos
 in
   $POSMARK.posmark_insert_comment_end lstoff
 end // end of [process_comment_clike_close]
 
 (* ****** ****** *)
 
-fn process_comment_line_open (): void =
-  let
-    val fstpos = lexing_fstpos_get ()
-    val fstoff = position_toff fstpos
-  in
-    $POSMARK.posmark_insert_comment_beg fstoff
-  end
+fn process_comment_line_open (): void = let
+  val fstpos = lexing_fstpos_get ()
+  val fstoff = position_toff fstpos
+in
+  $POSMARK.posmark_insert_comment_beg fstoff
+end // end of [process_comment_line_open]
 
-fn process_comment_line_close (): void =
-  let
-    val lstpos = lexing_lstpos_get ()
-    val lstoff = position_toff lstpos
-  in
-    $POSMARK.posmark_insert_comment_end lstoff
-  end
+fn process_comment_line_close (): void = let
+  val lstpos = lexing_lstpos_get ()
+  val lstoff = position_toff lstpos
+in
+  $POSMARK.posmark_insert_comment_end lstoff
+end // end of [process_comment_line_close]
 
 (* ****** ****** *)
 
@@ -551,12 +560,12 @@ fn location_get_pos (fstpos: position_t): $Loc.location_t =
 
 fn tokenize_identifier_alp (): token_t = let
   val str = lexeme_string ()
-  val tok = keyword_search str
 (*
   val () = begin
     print "tokenize_identifier_alp: str = "; print str; print_newline ()
   end // end of [val]
 *)
+  val tok = keyword_search str
 in
   if token_is_valid tok then let
     val () = process_keyword () in tok
@@ -569,6 +578,11 @@ end // end of [tokenize_identifier_alp]
 
 fn tokenize_identifier_sym (): token_t = let
   val str = lexeme_string ()
+(*
+  val () = begin
+    print "tokenize_identifier_sym: str = "; print str; print_newline ()
+  end // end of [val]
+*)
   val tok = keyword_search str
 in
   if token_is_valid tok then let

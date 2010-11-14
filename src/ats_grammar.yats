@@ -406,7 +406,8 @@ extern s0arrind_t s0arrind_make_cons (s0explst_t, s0arrind_t) ;
 
 extern t1mps0explstlst_t gtlt_t1mps0expseqseq_nil (void) ;
 extern t1mps0explstlst_t
-  gtlt_t1mps0expseqseq_cons_tok (t0kn_t, s0explst_t, t1mps0explstlst_t) ;
+gtlt_t1mps0expseqseq_cons_tok (t0kn_t, s0explst_t, t1mps0explstlst_t) ;
+// end of [extern]
 
 /* ****** ****** */
 
@@ -1261,12 +1262,9 @@ guad0ec_t guad0ec ;
 
 /* ****** ****** */
 
-%token <t0kn> TOKEN_eof
-
-/* ****** ****** */
-
-%token <t0kn> ISSTATIC
-%token <t0kn> ISDYNAMIC
+%token ISSTATIC
+%token ISDYNAMIC
+%token TOKEN_eof
 
 /* ****** ****** */
 

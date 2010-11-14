@@ -102,6 +102,12 @@ ats_void_type
 atsopt_keyval_table_initialize (
   // no argument for this function
 ) {
+
+/*
+// HX: [theKeywordTable] is already initialized:
+memset (&theKeywordTable[0], 0, sizeof(theKeywordTable)) ;
+*/
+
 //
 // HX: symbolic keywords
 //
@@ -282,6 +288,17 @@ keyval_insert("#FILENAME", SRPFILENAME) ;
 keyval_insert("#LOCATION", SRPLOCATION) ;
 keyval_insert("#CHARCOUNT", SRPCHARCOUNT) ;
 keyval_insert("#LINECOUNT", SRPLINECOUNT) ;
+/*
+//
+// HX: these keywords are hard-wired into [ats_lexer.lats]:
+//
+keyval_insert("fn*", FNSTAR)
+keyval_insert("for*", FORSTAR)
+keyval_insert("while*", WHILESTAR)
+//
+keyval_insert("@lam", ATLAM) ;
+keyval_insert("@llam", ATLLAM) ;
+keyval_insert("@fix", ATFIX) ;
 //
 keyval_insert("fold@", FOLDAT) ;
 keyval_insert("free@", FREEAT) ;
@@ -289,15 +306,30 @@ keyval_insert("view@", VIEWAT) ;
 //
 keyval_insert("r@ead", R0EAD) ;
 //
+keyval_insert("val+", VALPLUS) ;
+keyval_insert("val-", VALMINUS) ;
+keyval_insert("case+", CASEPLUS) ;
+keyval_insert("case-", CASEMINUS) ;
+//
+keyval_insert("prop+", PROPPLUS) ;
+keyval_insert("prop-", PROPMINUS) ;
+keyval_insert("type+", TYPEPLUS) ;
+keyval_insert("type-", TYPEMINUS) ;
+keyval_insert("view+", VIEWPLUS) ;
+keyval_insert("view-", VIEWMINUS) ;
+keyval_insert("viewtype+", VIEWTYPEPLUS) ;
+keyval_insert("viewt@ype-", VIEWTYPEMINUS) ;
+//
+keyval_insert("abst@ype", ABST0YPE) ;
+keyval_insert("absviewt@ype", ABSVIEWT0YPE) ;
+//
 keyval_insert("t@ype", T0YPE) ;
 keyval_insert("t@ype+", T0YPEPLUS) ;
 keyval_insert("t@ype-", T0YPEMINUS) ;
 keyval_insert("viewt@ype", VIEWT0YPE) ;
 keyval_insert("viewt@ype+", VIEWT0YPEPLUS) ;
 keyval_insert("viewt@ype-", VIEWT0YPEMINUS) ;
-keyval_insert("abst@ype", ABST0YPE) ;
-keyval_insert("absviewt@ype", ABSVIEWT0YPE) ;
-//
+*/
 return ;
 } // end of [atsopt_keyval_table_initialize]
 

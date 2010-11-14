@@ -91,13 +91,9 @@ fn symbol_make_nt
 
 (* ****** ****** *)
 //
-val TOKEN_eof = symbol_make "TOKEN_eof"
-val () = symbol_set_tyname (TOKEN_eof, t0kn_tyname)
-//
 val ISSTATIC = symbol_make "ISSTATIC"
-val () = symbol_set_tyname (ISSTATIC, t0kn_tyname)
 val ISDYNAMIC = symbol_make "ISDYNAMIC"
-val () = symbol_set_tyname (ISDYNAMIC, t0kn_tyname)
+val TOKEN_eof = symbol_make "TOKEN_eof"
 //
 (* ****** ****** *)
 //
