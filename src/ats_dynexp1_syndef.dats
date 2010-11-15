@@ -101,7 +101,11 @@ match_intlst_intlst (ns1, ns2) =
     | list_cons (n2, ns2) => (
         if n2 >= 0 then
           (if (n1 = n2) then match_intlst_intlst (ns1, ns2) else false)
-        else match_intlst_intlst (ns1, ns2)
+        else if n2 <= ~2 then
+          (if (n1 + 1 >= ~n2) then match_intlst_intlst (ns1, ns2) else false)
+        else (
+          match_intlst_intlst (ns1, ns2)
+        ) // end of [if]
       ) // end of [list_cons]
     | list_nil () => false
     ) // end of [cons]
@@ -241,7 +245,7 @@ val _n1 = (~1 :: nil): intlst
 val _n1_p1 = (~1 :: 1 :: nil): intlst // while ($test) 
 val _n1_p1_n1 =
   (~1 :: 1 :: ~1 :: nil): intlst // do ($body) while ($test)
-// end of [val]
+val _n2 = (~2 :: nil): intlst
 
 (* ****** ****** *)
 
@@ -329,12 +333,30 @@ in
   | _ => None_vt ()
 end // end of [search_PRINTLN]
 
+extern
+fun search_FPRINT (ns: intlst): fsyndefopt
+extern
+fun d1exp_fprint_n2 (loc: loc_t, d1es: d1explst): d1exp
+implement
+search_FPRINT (ns) = let
+(*
+  val () = print "fprint_search: ns = "
+  val () = fprint_intlst (stdout_ref, ns)
+  val () = print_newline ()
+*)
+in
+  case+ 0 of
+  | _ when ns \matii _n2 => Some_vt (d1exp_fprint_n2)
+  | _ => None_vt ()
+end // end of [search_FPRINT]
+
 (* ****** ****** *)
 
 val symbol_DO = $Sym.symbol_DO
 val symbol_WHILE = $Sym.symbol_WHILE
 val symbol_PRINT = $Sym.symbol_make_string ("print")
 val symbol_PRINTLN = $Sym.symbol_make_string ("println")
+val symbol_FPRINT = $Sym.symbol_make_string ("fprint")
 
 implement
 atsyndef_search_all_default
@@ -353,6 +375,11 @@ in
   | _ when id = symbol_WHILE => search_WHILE (ns)
   | _ when id = symbol_PRINT => search_PRINT (ns)
   | _ when id = symbol_PRINTLN => search_PRINTLN (ns)
+  | _ when id = symbol_FPRINT => search_FPRINT (ns)
+(*
+// HX-2010-11-15:
+// how should I judge whether a new external symbol should be supported?
+*)
   | _ => None_vt ()
 end // end of [atsyndef_search_all_default]
 
@@ -502,30 +529,31 @@ d1exp_app_dyn_syndef (
 
 (* ****** ****** *)
 
-fun d1exp_applst (
+fun d1exp_applstseq (
   loc0: loc_t
-, fid: sym_t, d1e: d1exp
+, d1es: d1explst
+, f: !(d1exp) -<cloptr1> d1exp
 ) : d1exp = let
-  val q = $Syn.d0ynq_none ()
-  val fqid = d1exp_qid (loc0, q, fid)
+  fun mapf (
+    d1es: d1explst, f: !(d1exp) -<cloptr1> d1exp
+  ) : d1explst =
+    case+ d1es of
+    | list_cons (d1e, d1es) => list_cons (f (d1e), mapf (d1es, f))
+    | list_nil () => list_nil ()
+  // end of [mapf]
 in
+  d1exp_seq (loc0, mapf (d1es, f))
+end // end of [d1exp_applstseq]
+
+fun d1exp_appseq (
+  loc0: loc_t
+, d1e: d1exp
+, f: !(d1exp) -<cloptr1> d1exp
+) : d1exp = begin
   case+ d1e.d1exp_node of
-  | D1Elist (_(*npf*), d1es) => let
-//
-      fn f (d1e: d1exp):<cloptr1> d1exp = let
-        val loc = d1e.d1exp_loc in
-        d1exp_app_dyn (loc, fqid, loc, 0(*npf*), list_sing (d1e))
-      end // end of [f]
-//
-      val d1es = $Lst.list_map_cloptr (d1es, f)
-    in
-      d1exp_seq (loc0, d1es)
-    end // end of [D1Elist]
-  | _ => let
-      val loc = d1e.d1exp_loc in
-      d1exp_app_dyn (loc, fqid, loc, 0(*npf*), list_sing (d1e))
-    end // end of [_]
-end // end of [d1exp_applst]
+  | D1Elist (_(*npf*), d1es) => d1exp_applstseq (loc0, d1es, f)
+  | _ => f (d1e)
+end // end of [d1exp_appseq]
 
 (* ****** ****** *)
 
@@ -578,8 +606,20 @@ end // end of [d1exp_while_n1_p1]
 implement
 d1exp_print_n1
   (loc0, d1es) = let
-  val- cons (d1e1, _) = d1es in
-  d1exp_applst (loc0, symbol_PRINT, d1e1)
+  val- cons (d1e1, _) = d1es
+  val q = $Syn.d0ynq_none ()
+  val fqid = d1exp_qid (loc0, q, symbol_PRINT)
+  val f = lam
+    (d1e: d1exp)
+    : d1exp =<cloptr1> let
+    val loc = d1e.d1exp_loc
+  in
+    d1exp_app_dyn (loc, fqid, loc, 0(*npf*), list_sing (d1e))
+  end // end of [_]
+  val d1eseq = d1exp_appseq (loc0, d1e1, f)
+  val () = cloptr_free (f)
+in
+  d1eseq
 end // end of [print_n1]
 
 implement
@@ -591,12 +631,35 @@ d1exp_println_n1
   val println_qid = d1exp_qid (loc0, q, println_id)
 //
   val d1e1 = d1exp_print_n1 (loc0, d1es)
-//
   val d1e2 = d1exp_app_dyn (loc0, println_qid, loc0, 0(*npf*), list_nil)
 //
 in
   d1exp_seq (loc0, d1e1 :: d1e2 :: list_nil)
 end // end of [println_n1]
+
+(* ****** ****** *)
+
+implement
+d1exp_fprint_n2
+  (loc0, d1es) = let
+  val- cons (d1e1, _) = d1es
+  val q = $Syn.d0ynq_none ()
+  val fqid = d1exp_qid (loc0, q, symbol_FPRINT)
+  val (d1e_out, d1es_arg) = (case+ d1e1.d1exp_node of
+    | D1Elist (_(*npf*), d1e :: d1es) => (d1e, d1es) | _ => (d1e1, list_nil)
+  ) : (d1exp, d1explst)
+  val f = lam
+    (d1e_arg: d1exp)
+    : d1exp =<cloptr1> let
+    val loc = d1e_arg.d1exp_loc
+  in
+    d1exp_app_dyn (loc, fqid, loc, 0(*npf*), d1e_out :: d1e_arg :: list_nil)
+  end // end of [_]
+  val d1eseq = d1exp_applstseq (loc0, d1es_arg, f)
+  val () = cloptr_free (f)
+in
+  d1eseq
+end // end of [print_n1]
 
 (* ****** ****** *)
 

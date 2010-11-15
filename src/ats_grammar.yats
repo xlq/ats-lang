@@ -1586,9 +1586,9 @@ guad0ec_t guad0ec ;
 %type <e0fftaglst> commae0fftagseq
 %type <e0fftaglstopt> colonwith
 
+%type <s0rt> s0rt
 %type <s0rtq> s0rtq
 %type <i0de> s0rtid
-%type <s0rt> s0rt
 %type <s0rt> atms0rt
 %type <s0rtlst> s0rtseq
 %type <s0rtlst> commas0rtseq
