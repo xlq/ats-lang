@@ -43,20 +43,19 @@ typedef atsyndef__List (a:t@ype) = [n:nat] list_t0ype_int_type (a, n)
 
 (* ****** ****** *)
 
-(*
 fun{a:t@ype} atsyndef__of_int (i: int): a
-*)
 
 (* ****** ****** *)
 
-fun{} list_is_nil {a:t@ype}
+fun{} atsyndef__list_is_nil {a:t@ype}
   {n:nat} (xs: list (a, n)):<> bool (n == 0)
-fun{} list_is_cons {a:t@ype}
+fun{} atsyndef__list_is_cons {a:t@ype}
   {n:nat} (xs: list (a, n)):<> bool ( n > 0 )
 
 (* ****** ****** *)
 
-fun{a:t@ype} list_uncons
+fun{a:t@ype}
+atsyndef__list_uncons
   {n:pos} (xs: list (a, n), x: &a? >> a):<> list (a, n-1)
 // end of [list_uncons]
 
@@ -64,12 +63,12 @@ fun{a:t@ype} list_uncons
 
 (*
 fun{a:t@ype}
-forlist_in_do
+atsyndef__forlist_in_do
   (xs: List a, f: !(a) -<cloptr1> void): void
 // end of [forlist_in_do]
 
 fun{a:t@ype}
-iforlist_in_do {n:nat}
+atsyndef__iforlist_in_do {n:nat}
   (xs: list (a, n), f: !(natLt n, a) -<cloptr1> void): void
 // end of [iforlist_in_do]
 *)

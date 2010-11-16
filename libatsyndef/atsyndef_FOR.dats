@@ -54,7 +54,7 @@ for! ($x:$T) in_list $exp1 do $exp2 =>
   let
     var xs: List(T) = $exp1
   in
-    while (list_is_cons (xs)) (xs := list_uncons<T> (xs, x); $exp2)
+    while (list_is_cons (xs)) (xs := atsyndef__list_uncons<T> (xs, x); $exp2)
   end
 *)
 
@@ -145,8 +145,9 @@ implement
 for_list
   (loc0, x_qid, T, exp1, exp2) = let
 //
-  val iscons_id = $Sym.symbol_make_string ("list_is_cons")
-  val uncons_id = $Sym.symbol_make_string ("list_uncons")
+  val is_cons_id =
+    $Sym.symbol_make_string ("atsyndef__list_is_cons")
+  val uncons_id = $Sym.symbol_make_string ("atsyndef__list_uncons")
 //
   val (x_q, x_id) = un_d1exp_qid (x_qid)
 //
@@ -171,9 +172,9 @@ for_list
 //
   val _while_inv = loopi1nv_nil (loc0)
 //
-  val iscons_qid = d1exp_qid (loc0, d0ynq0, iscons_id)
+  val is_cons_qid = d1exp_qid (loc0, d0ynq0, is_cons_id)
   val _arglst = xs_qid :: nil
-  val _while_test = d1exp_app_dyn (loc0, iscons_qid, loc0, 0(*npf*), _arglst)
+  val _while_test = d1exp_app_dyn (loc0, is_cons_qid, loc0, 0(*npf*), _arglst)
 //
   val _t0id = tmpqi0de_make_qid (loc0, d0ynq0, uncons_id)
   val _decarg = TMPS1EXPLSTLSTcons (T.s1exp_loc, T :: nil, TMPS1EXPLSTLSTnil)
@@ -189,6 +190,22 @@ for_list
 in
   d1exp_let (loc0, _let_dec :: nil, _while_loop)
 end // end of [for_list]
+
+(* ****** ****** *)
+
+fun d1exp_of_int (
+  T: s1exp, int: d1exp
+) : d1exp = let
+  val loc0 = int.d1exp_loc
+  val d0ynq0 = $Syn.d0ynq_none ()
+  val of_int_id = $Sym.symbol_make_string ("atsyndef__of_int")
+  val _t0id = tmpqi0de_make_qid (loc0, d0ynq0, of_int_id)
+  val _decarg = TMPS1EXPLSTLSTcons (T.s1exp_loc, T :: nil, TMPS1EXPLSTLSTnil)
+  val of_int_tid = d1exp_tmpid (loc0, _t0id, _decarg)
+  val _arglst = int :: nil
+in
+  d1exp_app_dyn (loc0, of_int_tid, loc0, 0(*npf*), _arglst)
+end // end of [d1exp_of_int]
 
 (* ****** ****** *)
 
@@ -229,6 +246,7 @@ for_range
       ) // end of [D1Elist]
     | _ => let
         val d1e11 = d1exp_int (loc0, "0")
+        val d1e11 = d1exp_of_int (T, d1e11)
         val d1e12 = exp1
         val d1e13 = d1exp_int (loc0, "1")
       in

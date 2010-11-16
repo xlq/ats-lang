@@ -61,10 +61,24 @@ val e0xp_tyname = tyname_make_string "e0xp"
 val e0xplst_tyname = tyname_make_string "e0xplst"
 val e0xpopt_tyname = tyname_make_string "e0xpopt"
 
+val e0fftag_tyname = tyname_make_string "e0fftag"
+val e0fftaglst_tyname = tyname_make_string "e0fftaglst"
+val e0fftaglstopt_tyname = tyname_make_string "e0fftaglstopt"
+
 val s0rt_tyname = tyname_make_string "s0rt"
 val s0rtq_tyname = tyname_make_string "s0rtq"
 val s0rtlst_tyname = tyname_make_string "s0rtlst"
 val s0rtpol_tyname = tyname_make_string "s0rtpol"
+
+val d0atsrtcon_tyname = tyname_make_string "d0atsrtcon"
+val d0atsrtconlst_tyname = tyname_make_string "d0atsrtconlst"
+val d0atsrtdec_tyname = tyname_make_string "d0atsrtdec"
+val d0atsrtdeclst_tyname = tyname_make_string "d0atsrtdeclst"
+
+val s0taq_tyname = tyname_make_string "s0taq_tyname"
+val d0ynq_tyname = tyname_make_string "d0ynq_tyname"
+
+val sqi0de_tyname = tyname_make_string "sqi0de"
 
 val s0qualst_tyname = tyname_make_string "s0qualst"
 val s0qualstlst_tyname = tyname_make_string "s0qualstlst"
@@ -1003,6 +1017,19 @@ val () = symbol_set_tyname (e0xpopt, e0xpopt_tyname)
 
 (* ****** ****** *)
 
+val e0ffid = symbol_make_nt "e0ffid"
+val () = symbol_set_tyname (e0ffid, i0de_tyname)
+val e0fftag = symbol_make_nt "e0fftag"
+val () = symbol_set_tyname (e0fftag, e0fftag_tyname)
+val e0fftagseq = symbol_make_nt "e0fftagseq"
+val () = symbol_set_tyname (e0fftagseq, e0fftaglst_tyname)
+val commae0fftagseq = symbol_make_nt "commae0fftagseq"
+val () = symbol_set_tyname (commae0fftagseq, e0fftaglst_tyname)
+val colonwith = symbol_make_nt "colonwith"
+val () = symbol_set_tyname (colonwith, e0fftaglstopt_tyname)
+
+(* ****** ****** *)
+
 val s0rt = symbol_make_nt "s0rt"
 val () = symbol_set_tyname (s0rt, s0rt_tyname)
 val s0rtq = symbol_make_nt "s0rtq"
@@ -1017,6 +1044,35 @@ val commas0rtseq = symbol_make_nt "commas0rtseq"
 val () = symbol_set_tyname (commas0rtseq, s0rtlst_tyname)
 val s0rtpol = symbol_make_nt "s0rtpol"
 val () = symbol_set_tyname (s0rtpol, s0rtpol_tyname)
+
+(* ****** ****** *)
+
+val d0atsrtcon = symbol_make_nt "d0atsrtcon"
+val () = symbol_set_tyname (d0atsrtcon, d0atsrtcon_tyname)
+val d0atsrtconseq = symbol_make_nt "d0atsrtconseq"
+val () = symbol_set_tyname (d0atsrtconseq, d0atsrtconlst_tyname)
+val bard0atsrtconseq = symbol_make_nt "bard0atsrtconseq"
+val () = symbol_set_tyname (bard0atsrtconseq, d0atsrtconlst_tyname)
+val d0atsrtdec = symbol_make_nt "d0atsrtdec"
+val () = symbol_set_tyname (d0atsrtdec, d0atsrtdec_tyname)
+val andd0atsrtdecseq = symbol_make_nt "andd0atsrtdecseq"
+val () = symbol_set_tyname (andd0atsrtdecseq, d0atsrtdeclst_tyname)
+
+(* ****** ****** *)
+
+val s0taq = symbol_make_nt "s0taq"
+val () = symbol_set_tyname (s0taq, s0taq_tyname)
+val d0ynq = symbol_make_nt "d0ynq"
+val () = symbol_set_tyname (d0ynq, d0ynq_tyname)
+
+(* ****** ****** *)
+
+val si0de = symbol_make_nt "si0de"
+val () = symbol_set_tyname (si0de, i0de_tyname)
+val sqi0de = symbol_make_nt "sqi0de"
+val () = symbol_set_tyname (sqi0de, sqi0de_tyname)
+val commasi0deseq = symbol_make_nt "commasi0deseq"
+val () = symbol_set_tyname (commasi0deseq, i0delst_tyname)
 
 (* ****** ****** *)
 //
@@ -1624,6 +1680,173 @@ val () = symbol_close (pf | e0xpopt)
 (* ****** ****** *)
 
 (*
+e0ffid /* alphanum identifier for effects */
+  : IDENTIFIER_alp                      { $$ = $1 ; }
+; /* end of [e0ffid] */
+*)
+fun e0ffid_proc
+  (): void = () where {
+//
+val (pf | ()) = symbol_open (e0ffid)
+//
+val gr = grmrule_append (IDENTIFIER_alp)
+val () = grmrule_set_action (gr, "{ $$ = $1 ; }")
+//
+val () = symbol_close (pf | e0ffid)
+//
+} // end of [e0ffid_proc]
+
+(* ****** ****** *)
+
+(*
+e0fftag /* effect tag */
+  : BANG e0ffid                         { $$ = e0fftag_cst (0, $2) ; }
+  | TILDA e0ffid                        { $$ = e0fftag_cst (1, $2) ; }
+  | e0ffid                              { $$ = e0fftag_var($1) ; }
+  | FUN                                 { $$ = e0fftag_var_fun($1) ; }
+  | LITERAL_int                         { $$ = e0fftag_int($1) ; }
+; /* end of [e0fftag] */
+*)
+fun e0fftag_proc
+  (): void = () where {
+//
+val (pf | ()) = symbol_open (e0fftag)
+//
+val gr = grmrule_append ($lst_t {symbol} (tupz! BANG e0ffid))
+val () = grmrule_set_action (gr, "{ $$ = e0fftag_cst (0, $2) ; }")
+val gr = grmrule_append ($lst_t {symbol} (tupz! TILDA e0ffid))
+val () = grmrule_set_action (gr, "{ $$ = e0fftag_cst (1, $2) ; }")
+val gr = grmrule_append (e0ffid)
+val () = grmrule_set_action (gr, "{ $$ = e0fftag_var($1) ; }")
+val gr = grmrule_append (FUN)
+val () = grmrule_set_action (gr, "{ $$ = e0fftag_var_fun($1) ; }")
+val gr = grmrule_append (LITERAL_int)
+val () = grmrule_set_action (gr, "{ $$ = e0fftag_int($1) ; }")
+//
+val () = symbol_close (pf | e0fftag)
+//
+} // end of [e0fftag_proc]
+
+(* ****** ****** *)
+
+(*
+e0fftagseq /* effect tag sequence */
+  : /* empty */                         { $$ = e0fftaglst_nil() ; }
+  | e0fftag commae0fftagseq             { $$ = e0fftaglst_cons($1, $2) ; }
+; /* end of [e0fftagseq] */
+*)
+fun e0fftagseq_proc
+  (): void = () where {
+//
+val (pf | ()) = symbol_open (e0fftagseq)
+//
+val gr = grmrule_append ()
+val () = grmrule_set_action (gr, "{ $$ = e0fftaglst_nil() ; }")
+val gr = grmrule_append ($lst_t {symbol} (tupz! e0fftag commae0fftagseq))
+val () = grmrule_set_action (gr, "{ $$ = e0fftaglst_cons($1, $2) ; }")
+//
+val () = symbol_close (pf | e0fftagseq)
+//
+} // end of [e0fftagseq_proc]
+
+(* ****** ****** *)
+
+(*
+commae0fftagseq
+  : /* empty */                         { $$ = e0fftaglst_nil() ; }
+  | COMMA e0fftag commae0fftagseq       { $$ = e0fftaglst_cons($2, $3) ; }
+; /* end of [commae0fftagseq] */
+*)
+fun commae0fftagseq_proc
+  (): void = () where {
+//
+val (pf | ()) = symbol_open (commae0fftagseq)
+//
+val gr = grmrule_append ()
+val () = grmrule_set_action (gr, "{ $$ = e0fftaglst_nil() ; }")
+val gr = grmrule_append ($lst_t {symbol} (tupz! COMMA e0fftag commae0fftagseq))
+val () = grmrule_set_action (gr, "{ $$ = e0fftaglst_cons($2, $3) ; }")
+//
+val commae0fftag = SYMREGseq (SYMREGlit(COMMA), SYMREGlit(e0fftag))
+val () = theGrmrulelst_merge_all (commae0fftagseq, SYMREGstar(commae0fftag))
+//
+val () = symbol_close (pf | commae0fftagseq)
+//
+} // end of [commae0fftagseq_proc]
+
+(* ****** ****** *)
+
+(*
+colonwith /* effection annotation */
+  : COLON                               { $$ = e0fftaglstopt_none() ; }
+  | COLONLTGT                           { $$ = e0fftaglstopt_some(e0fftaglst_nil()) ; }
+  | COLONLT e0fftagseq GT               { $$ = e0fftaglstopt_some($2) ; }
+; /* end of [colonwith] */
+*)
+fun colonwith_proc
+  (): void = () where {
+//
+val (pf | ()) = symbol_open (colonwith)
+//
+val gr = grmrule_append (COLON)
+val () = grmrule_set_action (gr, "{ $$ = e0fftaglstopt_none() ; }")
+val gr = grmrule_append (COLONLTGT)
+val () = grmrule_set_action (gr, "{ $$ = e0fftaglstopt_some(e0fftaglst_nil()) ; }")
+val gr = grmrule_append ($lst_t {symbol} (tupz! COLONLT e0fftagseq GT))
+//
+val () = symbol_close (pf | colonwith)
+//
+} // end of [colonwith_proc]
+
+(* ****** ****** *)
+
+(*
+s0rt /* sort */
+  : s0rt atms0rt                        { $$ = s0rt_app($1, $2) ; }
+  | atms0rt                             { $$ = $1 ; }
+; /* end of [s0rt] */
+*)
+fun s0rt_proc
+  (): void = () where {
+//
+val (pf | ()) = symbol_open (s0rt)
+//
+val gr = grmrule_append ($lst_t {symbol} (tupz! s0rt atms0rt))
+val () = grmrule_set_action (gr, "{ $$ = s0rt_app($1, $2) ; }")
+val gr = grmrule_append (atms0rt)
+val () = grmrule_set_action (gr, "{ $$ = $1 ; }")
+//
+val () = theGrmrulelst_merge_all (s0rt, SYMREGpluslit(atms0rt))
+//
+val () = symbol_close (pf | s0rt)
+//
+} // end of [s0rt_proc]
+
+(* ****** ****** *)
+
+(*
+s0rtq /* sort qualifier */
+  : i0de_dlr DOT                        { $$ = s0rtq_sym($1) ; }
+  | DOLLAR LITERAL_string DOT           { $$ = s0rtq_str($2) ; }
+; /* end of [s0rtq] */
+*)
+fun s0rtq_proc
+  (): void = () where {
+//
+val (pf | ()) = symbol_open (s0rtq)
+//
+val gr = grmrule_append ($lst_t {symbol} (tupz! i0de_dlr DOT))
+val () = grmrule_set_action (gr, "{ $$ = s0rtq_sym($1) ; }")
+val gr = grmrule_append ($lst_t {symbol} (tupz! DOLLAR LITERAL_string DOT))
+val () = grmrule_set_action (gr, "{ $$ = s0rtq_str($2) ; }")
+//
+val () = symbol_close (pf | s0rtq)
+//
+} // end of [s0rtq_proc]
+
+(* ****** ****** *)
+
+(*
 s0rtid /* sort identifier */
   : IDENTIFIER_alp                      { $$ = $1 ; }
   | IDENTIFIER_sym                      { $$ = $1 ; }
@@ -1664,6 +1887,82 @@ val () = symbol_close (pf | s0rtid)
 //
 } // end of [s0rtid_proc]
 
+(* ****** ****** *)
+
+(*
+atms0rt /* atomic sort */
+  : s0rtid                              { $$ = s0rt_ide($1) ; }
+  | s0rtq s0rtid                        { $$ = s0rt_qid($1, $2) ; }
+  | LPAREN s0rtseq RPAREN               { $$ = s0rt_list($1, $2, $3) ; }
+  | ATLPAREN s0rtseq RPAREN             { $$ = s0rt_tup($1, $2, $3) ; }
+; /* end of [atms0rt] */
+*)
+fun atms0rt_proc
+  (): void = () where {
+//
+val (pf | ()) = symbol_open (atms0rt)
+//
+val gr = grmrule_append (s0rtid)
+val () = grmrule_set_action (gr, "{ $$ = s0rt_ide($1) ; }")
+val gr = grmrule_append ($lst_t {symbol} (tupz! s0rtq s0rtid))
+val () = grmrule_set_action (gr, "{ $$ = s0rt_qid($1, $2) ; }")
+val gr = grmrule_append ($lst_t {symbol} (tupz! LPAREN s0rtseq RPAREN))
+val () = grmrule_set_action (gr, "{ $$ = s0rt_list($1, $2, $3) ; }")
+val gr = grmrule_append ($lst_t {symbol} (tupz! ATLPAREN s0rtseq RPAREN))
+val () = grmrule_set_action (gr, "{ $$ = s0rt_tup($1, $2, $3) ; }")
+//
+val () = symbol_close (pf | atms0rt)
+//
+} // end of [atms0rt_proc]
+
+(* ****** ****** *)
+
+(*
+s0rtseq /* sort sequence */
+  : /* empty */                         { $$ = s0rtlst_nil() ; }
+  | s0rt commas0rtseq                   { $$ = s0rtlst_cons($1, $2) ; }
+; /* end of [s0rtseq] */
+*)
+fun s0rtseq_proc
+  (): void = () where {
+//
+val (pf | ()) = symbol_open (s0rtseq)
+//
+val gr = grmrule_append ()
+val () = grmrule_set_action (gr, "{ $$ = s0rtlst_nil() ; }")
+val gr = grmrule_append ($lst_t {symbol} (tupz! s0rt commas0rtseq))
+val () = grmrule_set_action (gr, "{ $$ = s0rtlst_cons($1, $2) ; }")
+//
+val () = symbol_close (pf | s0rtseq)
+//
+} // end of [s0rtseq_proc]
+
+(* ****** ****** *)
+
+(*
+commas0rtseq
+  : /* empty */                         { $$ = s0rtlst_nil() ; }
+  | COMMA s0rt commas0rtseq             { $$ = s0rtlst_cons($2, $3) ; }
+; /* end of [commas0rtseq] */
+*)
+fun commas0rtseq_proc
+  (): void = () where {
+//
+val (pf | ()) = symbol_open (commas0rtseq)
+//
+val gr = grmrule_append ()
+val () = grmrule_set_action (gr, "{ $$ = s0rtlst_nil() ; }")
+val gr = grmrule_append ($lst_t {symbol} (tupz! COMMA s0rt commas0rtseq))
+val () = grmrule_set_action (gr, "{ $$ = s0rtlst_cons($2, $3) ; }")
+//
+val commas0rt = SYMREGseq (SYMREGlit(COMMA), SYMREGlit(s0rt))
+val () = theGrmrulelst_merge_all (commas0rtseq, SYMREGstar(commas0rt))
+//
+val () = symbol_close (pf | commas0rtseq)
+//
+} // end of [commas0rtseq_proc]
+
+(* ****** ****** *)
 
 (*
 s0rtpol /* sort with polarity */
@@ -1723,6 +2022,267 @@ val () = grmrule_set_action (gr, "{ $$ = s0rtpol_make(s0rt_viewt0ype($1),  1) ; 
 val () = symbol_close (pf | s0rtpol)
 //
 } // end of [s0rtpol_proc]
+
+(* ****** ****** *)
+
+(*
+d0atsrtcon /* datasort constructor */
+  : i0de                                { $$ = d0atsrtcon_make_none($1) ; }
+  | i0de OF s0rt                        { $$ = d0atsrtcon_make_some($1, $3) ; }
+; /* end of [d0atsrtcon] */
+*)
+fun d0atsrtcon_proc
+  (): void = () where {
+//
+val (pf | ()) = symbol_open (d0atsrtcon)
+//
+val gr = grmrule_append (i0de)
+val () = grmrule_set_action (gr, "{ $$ = d0atsrtcon_make_none($1) ; }")
+val gr = grmrule_append ($lst_t {symbol} (tupz! i0de OF s0rt))
+val () = grmrule_set_action (gr, "{ $$ = d0atsrtcon_make_some($1, $3) ; }")
+//
+val () = symbol_close (pf | d0atsrtcon)
+//
+} // end of [d0atsrtcon_proc]
+
+(* ****** ****** *)
+
+(*
+d0atsrtconseq /* datasort constructor sequence */
+  : bard0atsrtconseq                    { $$ = $1 ; }
+  | d0atsrtcon bard0atsrtconseq         { $$ = d0atsrtconlst_cons($1, $2) ; }
+; /* end of [d0atsrtconseq] */
+*)
+fun d0atsrtconseq_proc
+  (): void = () where {
+//
+val (pf | ()) = symbol_open (d0atsrtconseq)
+//
+val gr = grmrule_append (bard0atsrtconseq)
+val () = grmrule_set_action (gr, "{ $$ = $1 ; }")
+val gr = grmrule_append ($lst_t {symbol} (tupz! d0atsrtcon bard0atsrtconseq))
+val () = grmrule_set_action (gr, "{ $$ = d0atsrtconlst_cons($1, $2) ; }")
+//
+val () = symbol_close (pf | d0atsrtconseq)
+//
+} // end of [d0atsrtconseq_proc]
+
+(*
+bard0atsrtconseq
+  : /* empty */                         { $$ = d0atsrtconlst_nil() ; }
+  | BAR d0atsrtcon bard0atsrtconseq     { $$ = d0atsrtconlst_cons($2, $3) ; }
+; /* end of [bard0atsrtconseq] */
+*)
+fun bard0atsrtconseq_proc
+  (): void = () where {
+//
+val (pf | ()) = symbol_open (bard0atsrtconseq)
+//
+val gr = grmrule_append ()
+val () = grmrule_set_action (gr, "{ $$ = d0atsrtconlst_nil() ; }")
+val gr = grmrule_append ($lst_t {symbol} (tupz! BAR d0atsrtcon bard0atsrtconseq))
+val () = grmrule_set_action (gr, "{ $$ = d0atsrtconlst_cons($2, $3) ; }")
+//
+val bard0atsrtcon = SYMREGseq (SYMREGlit(BAR), SYMREGlit(d0atsrtcon))
+val () = theGrmrulelst_merge_all (bard0atsrtconseq, SYMREGstar(bard0atsrtcon))
+//
+val () = symbol_close (pf | bard0atsrtconseq)
+//
+} // end of [bard0atsrtconseq_proc]
+
+(*
+d0atsrtdec /* datasort declaration */
+  : i0de EQ d0atsrtconseq               { $$ = d0atsrtdec_make($1, $3) ; }
+; /* end of [d0atsrtdec] */
+*)
+fun d0atsrtdec_proc
+  (): void = () where {
+//
+val (pf | ()) = symbol_open (d0atsrtdec)
+//
+val gr = grmrule_append ($lst_t {symbol} (tupz! i0de EQ d0atsrtconseq))
+val () = grmrule_set_action (gr, "{ $$ = d0atsrtdec_make($1, $3) ; }")
+//
+val () = symbol_close (pf | d0atsrtdec)
+//
+} // end of [d0atsrtdec_proc]
+
+(*
+andd0atsrtdecseq /* additional datasort declaration sequence */
+  : /* empty */                         { $$ = d0atsrtdeclst_nil() ; }
+  | AND d0atsrtdec andd0atsrtdecseq     { $$ = d0atsrtdeclst_cons($2, $3) ; }
+; /* end of [andd0atsrtdecseq] */
+*)
+fun andd0atsrtdecseq_proc
+  (): void = () where {
+//
+val (pf | ()) = symbol_open (andd0atsrtdecseq)
+//
+val gr = grmrule_append ()
+val () = grmrule_set_action (gr, "{ $$ = d0atsrtdeclst_nil() ; }")
+val gr = grmrule_append ($lst_t {symbol} (tupz! AND d0atsrtdec andd0atsrtdecseq))
+val () = grmrule_set_action (gr, "{ $$ = d0atsrtdeclst_cons($2, $3) ; }")
+//
+val andd0atsrtdec = SYMREGseq (SYMREGlit(AND), SYMREGlit(d0atsrtdec))
+val () = theGrmrulelst_merge_all (andd0atsrtdecseq, SYMREGstar(andd0atsrtdec))
+//
+val () = symbol_close (pf | andd0atsrtdecseq)
+//
+} // end of [d0atsrtdec_proc]
+
+(* ****** ****** *)
+
+(*
+s0taq /* static qualifier */
+  : i0de_dlr DOT                        { $$ = s0taq_symdot($1) ; }
+  | i0de_dlr COLON                      { $$ = s0taq_symcolon($1) ; }
+  | DOLLAR LITERAL_string DOT           { $$ = s0taq_fildot($2) ; }
+; /* end of [s0taq] */
+*)
+fun s0taq_proc
+  (): void = () where {
+//
+val (pf | ()) = symbol_open (s0taq)
+//
+val gr = grmrule_append ($lst_t {symbol} (tupz! i0de_dlr DOT))
+val () = grmrule_set_action (gr, "{ $$ = s0taq_symdot($1) ; }")
+val gr = grmrule_append ($lst_t {symbol} (tupz! i0de_dlr COLON))
+val () = grmrule_set_action (gr, "{ $$ = s0taq_symcolon($1) ; }")
+val gr = grmrule_append ($lst_t {symbol} (tupz! DOLLAR LITERAL_string DOT))
+val () = grmrule_set_action (gr, "{ $$ = s0taq_fildot($2) ; }")
+//
+val () = symbol_close (pf | s0taq)
+//
+} // end of [s0taq_proc]
+
+(* ****** ****** *)
+
+(*
+d0ynq /* dynamic qualifier */
+  : i0de_dlr DOT                        { $$ = d0ynq_symdot($1) ; }
+  | i0de_dlr COLON                      { $$ = d0ynq_symcolon($1) ; }
+  | i0de_dlr i0de_dlr COLON             { $$ = d0ynq_symdot_symcolon ($1, $2) ; }
+  | DOLLAR LITERAL_string DOT           { $$ = d0ynq_fildot($2) ; }
+  | DOLLAR LITERAL_string i0de_dlr COLON
+                                        { $$ = d0ynq_fildot_symcolon($2, $3) ; }
+;  /* end of [d0ynq] */
+*)
+fun d0ynq_proc
+  (): void = () where {
+//
+val (pf | ()) = symbol_open (d0ynq)
+//
+val gr = grmrule_append ($lst_t {symbol} (tupz! i0de_dlr DOT))
+val () = grmrule_set_action (gr, "{ $$ = d0ynq_symdot($1) ; }")
+val gr = grmrule_append ($lst_t {symbol} (tupz! i0de_dlr COLON))
+val () = grmrule_set_action (gr, "{ $$ = d0ynq_symcolon($1) ; }")
+val gr = grmrule_append ($lst_t {symbol} (tupz! i0de_dlr i0de_dlr COLON))
+val () = grmrule_set_action (gr, "{ $$ = d0ynq_symdot_symcolon ($1, $2) ; }")
+val gr = grmrule_append ($lst_t {symbol} (tupz! DOLLAR LITERAL_string DOT))
+val () = grmrule_set_action (gr, "{ $$ = d0ynq_fildot($2) ; }")
+val gr = grmrule_append ($lst_t {symbol} (tupz! DOLLAR LITERAL_string i0de_dlr COLON))
+val () = grmrule_set_action (gr, "{ $$ = d0ynq_fildot_symcolon($2, $3) ; }")
+//
+val () = symbol_close (pf | d0ynq)
+//
+} // end of [d0ynq_proc]
+
+(* ****** ****** *)
+
+(*
+si0de /* static identifiers */
+  : IDENTIFIER_alp                      { $$ = $1 ; }
+  | IDENTIFIER_sym                      { $$ = $1 ; }
+/* keyword */
+  | R0EAD                               { $$ = i0de_make_r0ead($1) ; }
+/* keysymb */
+  | AMPERSAND                           { $$ = i0de_make_ampersand($1) ; }
+  | BACKSLASH                           { $$ = i0de_make_backslash($1) ; }
+  | BANG                                { $$ = i0de_make_bang($1) ; }
+  | GT                                  { $$ = i0de_make_gt($1) ; }
+  | LT                                  { $$ = i0de_make_lt($1) ; }
+  | MINUSGT                             { $$ = i0de_make_minusgt($1) ; }
+  | TILDA                               { $$ = i0de_make_tilda($1) ; }
+; /* end of [si0de] */
+*)
+fun si0de_proc
+  (): void = () where {
+//
+val (pf | ()) = symbol_open (si0de)
+//
+val gr = grmrule_append (IDENTIFIER_alp)
+val () = grmrule_set_action (gr, "{ $$ = $1 ; }")
+val gr = grmrule_append (IDENTIFIER_sym)
+val () = grmrule_set_action (gr, "{ $$ = $1 ; }")
+//
+val gr = grmrule_append (R0EAD)
+val () = grmrule_set_action (gr, "{ $$ = i0de_make_r0ead($1) ; }")
+//
+val gr = grmrule_append (AMPERSAND)
+val () = grmrule_set_action (gr, "{ $$ = i0de_make_ampersand($1) ; }")
+val gr = grmrule_append (BACKSLASH)
+val () = grmrule_set_action (gr, "{ $$ = i0de_make_backslash($1) ; }")
+val gr = grmrule_append (BANG)
+val () = grmrule_set_action (gr, "{ $$ = i0de_make_bang($1) ; }")
+val gr = grmrule_append (GT)
+val () = grmrule_set_action (gr, "{ $$ = i0de_make_gt($1) ; }")
+val gr = grmrule_append (LT)
+val () = grmrule_set_action (gr, "{ $$ = i0de_make_lt($1) ; }")
+val gr = grmrule_append (MINUSGT)
+val () = grmrule_set_action (gr, "{ $$ = i0de_make_minusgt($1) ; }")
+val gr = grmrule_append (TILDA)
+val () = grmrule_set_action (gr, "{ $$ = i0de_make_tilda($1) ; }")
+//
+val () = symbol_close (pf | si0de)
+//
+} // end of [si0de_proc]
+
+(* ****** ****** *)
+
+(*
+sqi0de /* qualified static identifier */
+  : si0de                               
+  | s0taq si0de                         { $$ = sqi0de_make_some($1, $2) ; }
+; /* end of [sqi0de] */
+*)
+fun sqi0de_proc
+  (): void = () where {
+//
+val (pf | ()) = symbol_open (sqi0de)
+//
+val gr = grmrule_append (si0de)
+val () = grmrule_set_action (gr, "{ $$ = sqi0de_make_none($1) ; }")
+val gr = grmrule_append ($lst_t {symbol} (tupz! s0taq si0de))
+val () = grmrule_set_action (gr, "{ $$ = sqi0de_make_some($1, $2) ; }")
+//
+val () = symbol_close (pf | sqi0de)
+//
+} // end of [sqi0de_proc]
+
+(* ****** ****** *)
+
+(*
+commasi0deseq /* additional static identifier sequence */
+  : /* empty */                         { $$ = i0delst_nil() ; }
+  | COMMA si0de commasi0deseq           { $$ = i0delst_cons($2, $3) ; }
+; /* end of [commasi0deseq] */
+*)
+fun commasi0deseq_proc
+  (): void = () where {
+//
+val (pf | ()) = symbol_open (commasi0deseq)
+//
+val gr = grmrule_append ()
+val () = grmrule_set_action (gr, "{ $$ = si0delst_nil() ; }")
+val gr = grmrule_append ($lst_t {symbol} (tupz! COMMA si0de commasi0deseq))
+val () = grmrule_set_action (gr, "{ $$ = si0delst_cons($2, $3) ; }")
+//
+val commasi0de = SYMREGseq (SYMREGlit(COMMA), SYMREGlit(si0de))
+val () = theGrmrulelst_merge_all (commasi0deseq, SYMREGstar(commasi0de))
+//
+val () = symbol_close (pf | commasi0deseq)
+//
+} // end of [commasi0deseq_proc]
 
 (* ****** ****** *)
 
@@ -1972,8 +2532,32 @@ atsgrammar_main
   val () = commae0xpseq_proc ()
   val () = e0xpopt_proc ()
 //
+  val () = e0ffid_proc ()
+  val () = e0fftag_proc ()
+  val () = e0fftagseq_proc ()
+  val () = commae0fftagseq_proc ()
+  val () = colonwith_proc ()
+//
+  val () = d0atsrtcon_proc ()
+  val () = d0atsrtconseq_proc ()
+  val () = bard0atsrtconseq_proc ()
+  val () = d0atsrtdec_proc ()
+  val () = andd0atsrtdecseq_proc ()
+//
+  val () = s0rt_proc ()
+  val () = s0rtq_proc ()
   val () = s0rtid_proc ()
+  val () = atms0rt_proc ()
+  val () = s0rtseq_proc ()
+  val () = commas0rtseq_proc ()
   val () = s0rtpol_proc ()
+//
+  val () = s0taq_proc ()
+  val () = d0ynq_proc ()
+//
+  val () = si0de_proc ()
+  val () = sqi0de_proc ()
+  val () = commasi0deseq_proc ()
 //
   val () = d0ecargseq_proc ()
 //
@@ -2043,9 +2627,9 @@ main (
   val () = atsgrammar_main ()
 //
   val () = (case+ fmt of
-    | OUTFMTnone () => ()
     | OUTFMTyats () => emit_yats (stdout_ref)
     | OUTFMTdesc () => emit_desc (stdout_ref)
+    | OUTFMTnone () => ()
 (*
     | _ => let
         val () = prerrf ("Warning(atsgrammar): unrecognized format.\n", @())

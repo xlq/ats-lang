@@ -1842,7 +1842,7 @@ abskind
   | ABSVIEW                             { $$ = abskind_view () ; }
   | ABSVIEWTYPE                         { $$ = abskind_viewtype () ; }
   | ABSVIEWT0YPE                        { $$ = abskind_viewt0ype () ; }
-;
+; /* end of [abskind] */
 
 dcstkind
   : FUN                                 { $$ = dcstkind_fun () ; }
@@ -1851,14 +1851,14 @@ dcstkind
   | PRAXI                               { $$ = dcstkind_praxi () ; }
   | PRFUN                               { $$ = dcstkind_prfun () ; }
   | PRVAL                               { $$ = dcstkind_prval () ; }
-;
+; /* end of [dcstkind] */
 
 datakind
   : DATAPROP                            { $$ = datakind_prop () ; }
   | DATATYPE                            { $$ = datakind_type () ; }
   | DATAVIEW                            { $$ = datakind_view () ; }
   | DATAVIEWTYPE                        { $$ = datakind_viewtype () ; }
-;
+; /* end of [datakind] */
 
 stadefkind
   : STADEF                              { $$ = stadefkind_generic () ; }
@@ -1866,7 +1866,7 @@ stadefkind
   | TYPEDEF                             { $$ = stadefkind_type ($1) ; }
   | VIEWDEF                             { $$ = stadefkind_view ($1) ; }
   | VIEWTYPEDEF                         { $$ = stadefkind_viewtype ($1) ; }
-;
+; /* end of [stadefkind] */
 
 /*
 // HX-2010-05-12: the OOP plan is permanently abandoned
@@ -1887,7 +1887,7 @@ valkind
   | VALMINUS                            { $$ = valkind_valminus () ; }
   | VALPLUS                             { $$ = valkind_valplus () ; }
   | PRVAL                               { $$ = valkind_prval () ; }
-;
+; /* end of [valkind] */
 
 funkind
   : FN                                  { $$ = funkind_fn () ; }
@@ -1896,7 +1896,7 @@ funkind
   | CASTFN                              { $$ = funkind_castfn () ; }
   | PRFN                                { $$ = funkind_prfn () ; }
   | PRFUN                               { $$ = funkind_prfun () ; }
-;
+; /* end of [funkind] */
 
 /* ****** ****** */
 
@@ -1905,12 +1905,12 @@ lamkind
   | ATLAM                               { $$ = lamkind_atlam ($1) ; }
   | LLAM                                { $$ = lamkind_llam ($1) ; }
   | ATLLAM                              { $$ = lamkind_atllam ($1) ; }
-;
+; /* end of [lamkind] */
 
 fixkind
   : FIX                                 { $$ = fixkind_fix ($1) ; }
   | ATFIX                               { $$ = fixkind_atfix ($1) ; }
-;
+; /* end of [fixkind] */
 
 /* ****** ****** */
 
@@ -2024,7 +2024,7 @@ e0xpopt
 
 e0ffid /* alphanum identifier for effects */
   : IDENTIFIER_alp                      { $$ = $1 ; }
-;
+; /* end of [e0ffid] */
 
 e0fftag /* effect tag */
   : BANG e0ffid                         { $$ = e0fftag_cst (0, $2) ; }
@@ -2032,23 +2032,23 @@ e0fftag /* effect tag */
   | e0ffid                              { $$ = e0fftag_var($1) ; }
   | FUN                                 { $$ = e0fftag_var_fun($1) ; }
   | LITERAL_int                         { $$ = e0fftag_int($1) ; }
-;
+; /* end of [e0fftag] */
 
 e0fftagseq /* effect tag sequence */
   : /* empty */                         { $$ = e0fftaglst_nil() ; }
   | e0fftag commae0fftagseq             { $$ = e0fftaglst_cons($1, $2) ; }
-;
+; /* end of [e0fftagseq] */
 
 commae0fftagseq
   : /* empty */                         { $$ = e0fftaglst_nil() ; }
   | COMMA e0fftag commae0fftagseq       { $$ = e0fftaglst_cons($2, $3) ; }
-;
+; /* end of [commae0fftagseq] */
 
 colonwith /* effection annotation */
   : COLON                               { $$ = e0fftaglstopt_none() ; }
   | COLONLTGT                           { $$ = e0fftaglstopt_some(e0fftaglst_nil()) ; }
   | COLONLT e0fftagseq GT               { $$ = e0fftaglstopt_some($2) ; }
-;
+; /* end of [colonwith] */
 
 /* ****** ****** */
 
@@ -2114,26 +2114,26 @@ s0rtpol /* sort with polarity */
 d0atsrtcon /* datasort constructor */
   : i0de                                { $$ = d0atsrtcon_make_none($1) ; }
   | i0de OF s0rt                        { $$ = d0atsrtcon_make_some($1, $3) ; }
-;
-
-bard0atsrtconseq
-  : /* empty */                         { $$ = d0atsrtconlst_nil() ; }
-  | BAR d0atsrtcon bard0atsrtconseq     { $$ = d0atsrtconlst_cons($2, $3) ; }
-;
+; /* end of [d0atsrtcon] */
 
 d0atsrtconseq /* datasort constructor sequence */
   : bard0atsrtconseq                    { $$ = $1 ; }
   | d0atsrtcon bard0atsrtconseq         { $$ = d0atsrtconlst_cons($1, $2) ; }
-;
+; /* end of [d0atsrtconseq] */
+
+bard0atsrtconseq
+  : /* empty */                         { $$ = d0atsrtconlst_nil() ; }
+  | BAR d0atsrtcon bard0atsrtconseq     { $$ = d0atsrtconlst_cons($2, $3) ; }
+; /* end of [bard0atsrtconseq] */
 
 d0atsrtdec /* datasort declaration */
   : i0de EQ d0atsrtconseq               { $$ = d0atsrtdec_make($1, $3) ; }
-;
+; /* end of [d0atsrtdec] */
 
 andd0atsrtdecseq /* additional datasort declaration sequence */
   : /* empty */                         { $$ = d0atsrtdeclst_nil() ; }
   | AND d0atsrtdec andd0atsrtdecseq     { $$ = d0atsrtdeclst_cons($2, $3) ; }
-;
+; /* end of [andd0atsrtdecseq] */
 
 /* ****** ****** */
 
@@ -2141,41 +2141,43 @@ s0taq /* static qualifier */
   : i0de_dlr DOT                        { $$ = s0taq_symdot($1) ; }
   | i0de_dlr COLON                      { $$ = s0taq_symcolon($1) ; }
   | DOLLAR LITERAL_string DOT           { $$ = s0taq_fildot($2) ; }
-;
+; /* end of [s0taq] */
 
 d0ynq /* dynamic qualifier */
-  : i0de_dlr COLON                      { $$ = d0ynq_symcolon($1) ; }
-  | i0de_dlr DOT                        { $$ = d0ynq_symdot($1) ; }
+  : i0de_dlr DOT                        { $$ = d0ynq_symdot($1) ; }
+  | i0de_dlr COLON                      { $$ = d0ynq_symcolon($1) ; }
   | i0de_dlr i0de_dlr COLON             { $$ = d0ynq_symdot_symcolon ($1, $2) ; }
   | DOLLAR LITERAL_string DOT           { $$ = d0ynq_fildot($2) ; }
   | DOLLAR LITERAL_string i0de_dlr COLON
                                         { $$ = d0ynq_fildot_symcolon($2, $3) ; }
-; 
+;  /* end of [d0ynq] */
 
 /* ****** ****** */
 
 si0de /* static identifiers */
   : IDENTIFIER_alp                      { $$ = $1 ; }
   | IDENTIFIER_sym                      { $$ = $1 ; }
+/* keyword */
+  | R0EAD                               { $$ = i0de_make_r0ead($1) ; }
+/* keysymb */
   | AMPERSAND                           { $$ = i0de_make_ampersand($1) ; }
   | BACKSLASH                           { $$ = i0de_make_backslash($1) ; }
   | BANG                                { $$ = i0de_make_bang($1) ; }
   | GT                                  { $$ = i0de_make_gt($1) ; }
   | LT                                  { $$ = i0de_make_lt($1) ; }
   | MINUSGT                             { $$ = i0de_make_minusgt($1) ; }
-  | R0EAD                               { $$ = i0de_make_r0ead($1) ; }
   | TILDA                               { $$ = i0de_make_tilda($1) ; }
-;
+; /* end of [si0de] */
 
 sqi0de /* qualified static identifier */
   : si0de                               { $$ = sqi0de_make_none($1) ; }
   | s0taq si0de                         { $$ = sqi0de_make_some($1, $2) ; }
-;
+; /* end of [sqi0de] */
 
 commasi0deseq /* additional static identifier sequence */
   : /* empty */                         { $$ = i0delst_nil() ; }
   | COMMA si0de commasi0deseq           { $$ = i0delst_cons($2, $3) ; }
-;
+; /* end of [commasi0deseq] */
 
 /* ****** ****** */
 
@@ -2189,8 +2191,6 @@ di0de /* dynamic identifier */
   | GT                                  { $$ = i0de_make_gt($1) ; }
   | LT                                  { $$ = i0de_make_lt($1) ; }
   | TILDA                               { $$ = i0de_make_tilda($1) ; }
-/* keyword identifier */
-  | BACKQUOTE IN BACKQUOTE              { $$ = i0de_make_IN($2) ; }
 ; /* end of [di0de] */
 
 dqi0de /* qualified dynamic identifier */

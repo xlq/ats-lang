@@ -48,12 +48,12 @@ staload _(*anon*) = "prelude/DATS/list.dats"
 (* ****** ****** *)
 
 implement{}
-list_is_cons (xs) = case+ xs of
+atsyndef__list_is_cons (xs) = case+ xs of
   | list_cons _ => true | list_nil () => false
 // end of [list_is_cons]
 
 implement{a}
-list_uncons (rxs, rx) = let
+atsyndef__list_uncons (rxs, rx) = let
   val+ list_cons (x, xs) = rxs in rx := x; xs
 end // end of [list_uncons_ref]
 
@@ -61,7 +61,7 @@ end // end of [list_uncons_ref]
 
 (*
 implement{a}
-forlist_in_do
+atsyndef__forlist_in_do
   (xs, f) = let
 //
   viewtypedef cloptr0_t = a -<cloptr1> void
@@ -88,7 +88,7 @@ end // end of [forlist_in_do]
 
 (*
 implement{a}
-iforlist_in_do
+atsyndef__iforlist_in_do
   {n} (xs, f) = let
 //
   viewtypedef cloptr0_t = (natLt n, a) -<cloptr1> void

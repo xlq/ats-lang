@@ -15,6 +15,7 @@ staload _(*anon*) = "prelude/DATS/array0.dats"
 
 staload "prelude/SATS/syndef.sats"
 staload _(*anon*) = "prelude/DATS/syndef.dats"
+local #include "prelude/HATS/syndef.hats" in (*empty*) end
 
 (* ****** ****** *)
 
@@ -36,16 +37,12 @@ typedef intlst = List (int)
 (* ****** ****** *)
 
 val xs = array0_make_arrsz
-  {int} ($arrsz (1, 2, 3, 4, 5, 6, 7, 8, 9, 10))
-(*
-val xs = array0! {int} (1, 2, 3, 4, 5, 6, 7, 8, 9, 10)
-*)
+  {int} ($arrsz (tupz! 1 2 3 4 5 6 7 8 9 10))
 val _0 = size1_of_int1 (0)
 var prod: int = 1
 val nxs = array0_size (xs)
-val nxs = int_of_size (nxs)
 val () = for!
-  (i:int) in_range (nxs) do {
+  (i:size_t) in_range (nxs) do {
   val x = xs[i]
   val () = if i >= 1 then print "," else ()
   val () = print x
