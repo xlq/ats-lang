@@ -1072,19 +1072,19 @@ int dgesv_ (
 *)
 
 implement gesv<float>
-  (n, nrhs, a, lda, ipiv, b, ldb) = sgesv (n, nrhs, a, lda, ipiv, b, ldb)
+  (pf | n, nrhs, a, lda, ipiv, b, ldb) = sgesv (pf | n, nrhs, a, lda, ipiv, b, ldb)
 // end of [gesv<float>]
 
 implement gesv<double>
-  (n, nrhs, a, lda, ipiv, b, ldb) = dgesv (n, nrhs, a, lda, ipiv, b, ldb)
+  (pf | n, nrhs, a, lda, ipiv, b, ldb) = dgesv (pf | n, nrhs, a, lda, ipiv, b, ldb)
 // end of [gesv<double>]
 
 implement gesv<ccmplx>
-  (n, nrhs, a, lda, ipiv, b, ldb) = cgesv (n, nrhs, a, lda, ipiv, b, ldb)
+  (pf | n, nrhs, a, lda, ipiv, b, ldb) = cgesv (pf | n, nrhs, a, lda, ipiv, b, ldb)
 // end of [gesv<ccmplx>]
 
 implement gesv<zcmplx>
-  (n, nrhs, a, lda, ipiv, b, ldb) = zgesv (n, nrhs, a, lda, ipiv, b, ldb)
+  (pf | n, nrhs, a, lda, ipiv, b, ldb) = zgesv (pf | n, nrhs, a, lda, ipiv, b, ldb)
 // end of [gesv<zcmplx>]
 
 (* ****** ****** *)

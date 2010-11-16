@@ -630,9 +630,10 @@ gesv_test () = () where {
 // Solve for X (inside B after gesv)
   val M_ = integer_of_int1 (M)
   val NRHS_ = integer_of_int1 NRHS
-  val info = gesv<t> (M_, NRHS_, !p_A, M_, !p_ipiv, !p_B, M_)
+  val (pferr | info) = gesv<t> (pf_gmat_A  | M_, NRHS_, p_A, M_, !p_ipiv, !p_B, M_)
   val () = assert_prerrf_bool
     (info = 0, "%s: gesv failed: info = %i", @(#LOCATION, info))
+  val () = pf_gmat_A := LUMAT_err_v_elim (pferr)
 // Free ipiv
   val () = array_ptr_free (pf_gc_ipiv, pf_arr_ipiv | p_ipiv)
 // X <- X - B

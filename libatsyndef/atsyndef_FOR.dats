@@ -38,7 +38,6 @@ staload "atsyndef_main.sats"
 //
 val symbol_DO = $Sym.symbol_DO
 val symbol_FOR = $Sym.symbol_FOR
-val symbol_WHILE = $Sym.symbol_WHILE
 //
 val symbol_IN_LIST = $Sym.symbol_make_string "in_list"
 val symbol_IN_RANGE = $Sym.symbol_make_string "in_range"

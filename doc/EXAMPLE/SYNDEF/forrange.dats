@@ -36,6 +36,9 @@ typedef intlst = List (int)
 
 (* ****** ****** *)
 
+(*
+val xs = array0! {int} (tupz! 1 2 3 4 5 6 7 8 9 10)
+*)
 val xs = array0_make_arrsz
   {int} ($arrsz (tupz! 1 2 3 4 5 6 7 8 9 10))
 val _0 = size1_of_int1 (0)

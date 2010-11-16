@@ -1114,28 +1114,26 @@ prfun TRMAT_LU_v_of_LUMAT_v
 prfun TRMAT_UN_v_of_LUMAT_v
   {a:t@ype} {m,n:nat | m >= n}
   {lda:inc} {la:addr} {err:nat} (
-    pf_lumat: LUMAT_err_v (a, m, n, lda, la, err)
-  ) :<prf> (
-    TRMAT (a, n, upper, nonunit, lda) @ la
-  , TRMAT (a, n, upper, nonunit, lda) @ la -<lin,prf> LUMAT_err_v (a, m, n, lda, la, err)
-  )
-// end of [TRMAT_UN_v_of_LUMAT_v]
+  pf_lumat: LUMAT_err_v (a, m, n, lda, la, err)
+) :<prf> (
+  TRMAT (a, n, upper, nonunit, lda) @ la
+, TRMAT (a, n, upper, nonunit, lda) @ la -<lin,prf> LUMAT_err_v (a, m, n, lda, la, err)
+) // end of [TRMAT_UN_v_of_LUMAT_v]
 
 fun{a:t@ype} LUMAT_ptr_split_skinny
   {m,n:nat | m >= n} {lda:inc} {la:addr} {err:nat} (
-    pf_lumat: LUMAT_err_v (a, m, n, lda, la, err)
-  | la: ptr la, m: size_t m, n: size_t n, lda: size_t lda
-  ) :<> [la_ofs:addr] (
-    TRMAT (a, n, lower, unit, lda) @ la
+  pf_lumat: LUMAT_err_v (a, m, n, lda, la, err)
+| la: ptr la, m: size_t m, n: size_t n, lda: size_t lda
+) :<> [la_ofs:addr] (
+  TRMAT (a, n, lower, unit, lda) @ la
+, TRMAT (a, n, upper, nonunit, lda) @ la
+, GEMAT (a, m-n, n, lda) @ la_ofs
+, ( TRMAT (a, n, lower, unit, lda) @ la
   , TRMAT (a, n, upper, nonunit, lda) @ la
   , GEMAT (a, m-n, n, lda) @ la_ofs
-  , ( TRMAT (a, n, lower, unit, lda) @ la
-    , TRMAT (a, n, upper, nonunit, lda) @ la
-    , GEMAT (a, m-n, n, lda) @ la_ofs
-    ) -<prf> LUMAT_err_v (a, m, n, lda, la, err)
-  | ptr la_ofs
-  )
-// end of [LUMAT_ptr_split_skinny]
+  ) -<prf> LUMAT_err_v (a, m, n, lda, la, err)
+| ptr la_ofs
+) // end of [LUMAT_ptr_split_skinny]
 
 (* ****** ****** *)
 
@@ -1156,14 +1154,13 @@ int dgetrf_(
 typedef
 getrf_type (t:t@ype) =
   {m,n:nat} {mn:int | mn==min(m,n)} {lda:inc} {la:addr} (
-    (*a*) GEMAT (t, m, n, lda) @ la
-  | (*m:*) integer m, (*n:*) integer n
-  , (*a:*) ptr la, (*lda:*) integer lda
-  , (*ipiv:*) &(@[integer?][mn]) >> @[integer][mn]
-  ) -<fun> [err:int] (
-    LUMAT_err_v (t, m, n, lda, la, err) | int err
-  )
-// end of [getrf_type]
+  (*a*) GEMAT (t, m, n, lda) @ la
+| (*m:*) integer m, (*n:*) integer n
+, (*a:*) ptr la, (*lda:*) integer lda
+, (*ipiv:*) &(@[integer?][mn]) >> @[integer][mn]
+) -<fun> [err:int] (
+  LUMAT_err_v (t, m, n, lda, la, err) | int err
+) // end of [getrf_type]
 
 //
 
@@ -1175,14 +1172,13 @@ fun zgetrf: getrf_type (doublecomplex) = "atsctrb_clapack_zgetrf"
 
 fun{t:t@ype} getrf_exn
   {m,n:nat} {mn:int | mn==min(m,n)} {lda:inc} {la:addr} (
-    pf: GEMAT (t, m, n, lda) @ la
-  | m: integer m, n: integer n
-  , a: ptr la, lda: integer lda
-  , ipiv: &(@[integer?][mn]) >> @[integer][mn]
-  ) :<!exn> [info:int | info >= 0] (
-    LUMAT_err_v (t, m, n, lda, la, info) | int info
-  )
-// end of [getrf_exn]
+  pf: GEMAT (t, m, n, lda) @ la
+| m: integer m, n: integer n
+, a: ptr la, lda: integer lda
+, ipiv: &(@[integer?][mn]) >> @[integer][mn]
+) :<!exn> [info:int | info >= 0] (
+  LUMAT_err_v (t, m, n, lda, la, info) | int info
+) // end of [getrf_exn]
 
 (* ****** ****** *)
 
@@ -1241,12 +1237,15 @@ int dgesv_ (
 
 typedef
 gesv_type (t:t@ype) =
-  {n,nrhs:nat} {lda,ldb:inc} (
-    (*n:*) integer n, (*nrhs:*) integer nrhs
-  , (*a:*) &GEMAT (t, n, n, lda), (*lda:*) integer lda
+  {n,nrhs:nat} {lda,ldb:inc} {la:addr} (
+    (*a*) GEMAT (t, n, n, lda) @ la
+  | (*n:*) integer n, (*nrhs:*) integer nrhs
+  , (*a:*) ptr la, (*lda:*) integer lda
   , (*ipiv:*) &(@[integer?][n]) >> @[integer][n]
   , (*b:*) &GEMAT (t, n, nrhs, ldb), (*ldb:*) integer ldb
-  ) -<fun> int
+  ) -<fun> [err:int] (
+    LUMAT_err_v (t, n, n, lda, la, err) | int err
+  )
 // end of [gesv_type]
 
 fun{t:t@ype} gesv: gesv_type (t)
