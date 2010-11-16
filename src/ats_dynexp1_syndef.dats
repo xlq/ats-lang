@@ -46,6 +46,7 @@ overload = with $Sym.eq_symbol_symbol
 
 (* ****** ****** *)
 
+staload "ats_staexp1.sats"
 staload "ats_dynexp1.sats"
 staload "ats_dynexp1_syndef.sats"
 
@@ -93,6 +94,13 @@ in
 end // end of [fprint_intlst]
 
 (* ****** ****** *)
+
+(*
+//
+// n >= 0 means exact n
+// n <  0 means at least (~n-1)
+//
+*)
 
 implement
 match_intlst_intlst (ns1, ns2) =
@@ -204,8 +212,22 @@ end // end of [un_d1exp_qid_sym]
 (* ****** ****** *)
 
 implement
-un_d1exp_decseq
-  (d1e) =
+un_d1exp_sexparg (d1e) =
+  case+ d1e.d1exp_node of
+  | D1Esexparg s1a => s1a
+  | _ => let
+      val () = prerr_loc_error1 (d1e.d1exp_loc)
+      val () = prerr ": the dynexp is expected to be a static argument."
+      val () = prerr_newline ()
+    in
+      $Err.abort {s1exparg} ()
+    end // end of [_]
+// end of [un_d1exp_sexparg]
+
+(* ****** ****** *)
+
+implement
+un_d1exp_decseq (d1e) =
   case+ d1e.d1exp_node of
   | D1Edecseq (d1cs) => d1cs
   | _ => let
@@ -506,26 +528,42 @@ end // end of [d1exp_idextapp_resolve]
 (* ****** ****** *)
 
 implement
-d1exp_app_dyn_syndef (
-  loc0, d1e_fun, loc_arg, npf, d1es_arg
+d1exp_app_syndef (
+  loc0, d1e_fun, d1e_arg
 ) =
   case+ d1e_fun.d1exp_node of
   | D1Eidextapp
       (id, ns, arglst) => let
-      val n = $Lst.list_length (d1es_arg)
+      val n = (
+        case+ d1e_arg.d1exp_node of
+        | D1Elist (_(*npf*), d1es) => $Lst.list_length (d1es) | _ => 1
+      ) : int // end of [val]
       val ns = cons (n, ns)
-      val arg = d1exp_list (loc_arg, d1es_arg)
-      val arglst = cons (arg, arglst)
+      val arglst = cons (d1e_arg, arglst)
       val opt = atsyndef_search_all (id, ns)
     in
       case+ opt of
       | ~Some_vt (fsyndef) => fsyndef (loc0, arglst)
       | ~None_vt () => d1exp_idextapp (loc0, id, ns, arglst)
     end // end of [D1Eidexpapp]
-  | _ => d1exp_app_dyn
-      (loc0, d1e_fun, loc_arg, npf, d1es_arg)
-    // end of [_]
-// end of [d1exp_app_dyn_syndef]
+  | _ => (case+ d1e_arg.d1exp_node of
+    | D1Elist (npf, d1es) => begin
+        d1exp_app_dyn (loc0, d1e_fun, d1e_arg.d1exp_loc, npf, d1es)
+      end // end of [D1Elist]
+    | D1Esexparg s1a => (case+ d1e_fun.d1exp_node of
+      | D1Eapp_sta (d1e_fun, s1as) => begin
+          d1exp_app_sta (loc0, d1e_fun, $Lst.list_extend (s1as, s1a))
+        end // end of [D1Eapp_sta]
+      | _ => let
+          val s1as =  cons (s1a, nil ()) in d1exp_app_sta (loc0, d1e_fun, s1as)
+        end // end of [_]
+      ) // end of [D1Esexparg]
+    | _ => let
+        val npf = 0 and d1es = cons (d1e_arg, nil ()) in
+        d1exp_app_dyn (loc0, d1e_fun, d1e_arg.d1exp_loc, npf, d1es)
+      end // end of [_]    
+    ) // end of [_]
+// end of [d1exp_app_syndef]
 
 (* ****** ****** *)
 

@@ -34,6 +34,11 @@ val symbol_DO = $Sym.symbol_DO
 val symbol_FOR = $Sym.symbol_FOR
 
 (* ****** ****** *)
+
+implement symbol_ARRAY = $Sym.symbol_make_string "array"
+implement symbol_ARRAY0 = $Sym.symbol_make_string "array0"
+
+(* ****** ****** *)
 (*
 //
 // HX-2010-11-02:
@@ -53,12 +58,14 @@ implement
 atsyndef_search_all
   (id, ns) = case+ 0 of
   | _ when id = symbol_FOR => search_FOR (ns)
+  | _ when id = symbol_ARRAY0 => search_ARRAY0 (ns)
   | _ => None_vt ()
 // end of [search_all]
 
 (* ****** ****** *)
 
 dynload "atsyndef_FOR.dats"
+dynload "atsyndef_ARRAY.dats"
 
 (* ****** ****** *)
 

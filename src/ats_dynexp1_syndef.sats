@@ -71,6 +71,10 @@ fun un_d1exp_idext_sym (d1e: d1exp, id: sym_t): void
 
 (* ****** ****** *)
 
+fun un_d1exp_sexparg (d1e: d1exp): s1exparg
+
+(* ****** ****** *)
+
 fun un_d1exp_decseq (d1e: d1exp): d1eclst
 
 (* ****** ****** *)
@@ -95,9 +99,9 @@ fun d1exp_idextapp_resolve (loc0: loc_t, d1e: d1exp): d1exp
 //
 // HX: for resolving external ids loaded with syndef
 //
-fun d1exp_app_dyn_syndef (
-  loc: loc_t, d1e: d1exp, loc_arg: loc_t, npf: int, d1es: d1explst
-) : d1exp // end of [d1exp_app_dyn_syndef]
+fun d1exp_app_syndef (
+  loc: loc_t, d1e_fun: d1exp, d1e_arg: d1exp
+) : d1exp // end of [d1exp_app_syndef]
 
 (* ****** ****** *)
 

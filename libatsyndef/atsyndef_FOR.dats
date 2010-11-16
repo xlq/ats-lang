@@ -84,14 +84,9 @@ fun for_range (
 (* ****** ****** *)
 
 extern
-fun for_p1_p1_n1_p1_p1 (
-  loc: loc_t, d1es: d1explst
-) : d1exp // end of [for_p1_p1_n1_p1_p1]
-
-extern
 fun d1exp_for_p1_p1_n1_p1_p1
   (loc: loc_t, d1es: d1explst): d1exp
-// end of [d1exp_do_n1_p1_n1]
+// end of [d1exp_for_p1_p1_n1_p1_p1]
 
 implement
 search_FOR (ns) = let
@@ -136,7 +131,7 @@ in
     in
       $Err.abort ()
     end // end of [_]
-end // end of [for_p1_p1_n1_p1_p1]
+end // end of [d1exp_for_p1_p1_n1_p1_p1]
 
 (* ****** ****** *)
 

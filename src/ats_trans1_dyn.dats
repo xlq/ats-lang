@@ -505,24 +505,7 @@ fn f (
 ) :<cloref1> d1expitm = let
   val loc = $Loc.location_combine
     (d1e1.d1exp_loc, d1e2.d1exp_loc)
-  val d1e_app = begin case+ d1e2.d1exp_node of
-    | D1Elist (npf, d1es) => begin
-        d1exp_app_dyn_syndef (loc, d1e1, d1e2.d1exp_loc, npf, d1es)
-      end // end of [D1Elist]
-    | D1Esexparg s1a => begin case+ d1e1.d1exp_node of
-      | D1Eapp_sta (d1e1, s1as) => begin
-          d1exp_app_sta (loc, d1e1, $Lst.list_extend (s1as, s1a))
-        end // end of [D1Eapp_sta]
-      | _ => let
-          val s1as =  cons (s1a, nil ()) in d1exp_app_sta (loc, d1e1, s1as)
-        end // end of [_]
-      end // end of [D1Esexparg]
-    | _ => let
-        val npf = 0 and d1es = cons (d1e2, nil ())
-      in
-        d1exp_app_dyn_syndef (loc, d1e1, d1e2.d1exp_loc, npf, d1es)
-      end // end of [_]
-  end // end of [val]
+  val d1e_app = d1exp_app_syndef (loc, d1e1, d1e2)
 (*
   val () = begin
     print "d1expitm_app: f: d1e_app = "; print d1e_app; print_newline ()
