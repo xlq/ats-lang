@@ -1015,7 +1015,7 @@ implement getrf<zcmplx>
 // end of [getrf<zcmplx>]
 
 implement{t}
-  getrf_exn (pfa | m, n, a, lda, ipiv) = let
+getrf_exn (pfa | m, n, a, lda, ipiv) = let
   val [info:int] (pflu | info) = getrf<t> (pfa | m, n, a, lda, ipiv)
   val () = $effmask_all (if (info < 0) then begin
     prerr "exit(ATS/CLAPACK): [getrf] failed."; prerr_newline (); exit (1)

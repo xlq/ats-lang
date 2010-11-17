@@ -1193,7 +1193,7 @@ fun{t:t@ype} getrf_exn
   pf: GEMAT (t, m, n, lda) @ la
 | m: integer m, n: integer n
 , a: ptr la, lda: integer lda
-, ipiv: &(@[integer?][mn]) >> @[integerBtwe(1,mn)][mn]
+, ipiv: &(@[integer?][mn]) >> @[integerBtwe(1,m)][mn]
 ) :<!exn> [info:int | info >= 0] (
   LUMAT_err_v (t, m, n, lda, la, info) | int info
 ) // end of [getrf_exn]
