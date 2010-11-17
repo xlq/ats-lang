@@ -1615,6 +1615,8 @@ guad0ec_t guad0ec ;
 %type <i0de> tmpi0de
 %type <tmpqi0de> tmpqi0de
 
+%type <s0rtopt> colons0rtopt
+
 %type <s0arg> s0arg
 %type <s0arglst> s0argseq
 %type <s0arglst> commas0argseq
@@ -1666,8 +1668,6 @@ guad0ec_t guad0ec ;
 %type <s0tacstlst> ands0tacstseq
 %type <s0tavar> s0tavar
 %type <s0tavarlst> ands0tavarseq
-
-%type <s0rtopt> colons0rtopt
 
 %type <s0expdef> s0expdef
 %type <s0expdeflst> ands0expdefseq
@@ -2228,6 +2228,13 @@ tmpqi0de /* qualified template identifier */
 
 /* ****** ****** */
 
+colons0rtopt /* optional sort annotation */
+  : /* empty */                         { $$ = s0rtopt_none() ; }
+  | COLON s0rt                          { $$ = s0rtopt_some($2) ; }
+; /* end of [colons0rtopt] */
+
+/* ****** ****** */
+
 s0arg /* static argument */
   : si0de colons0rtopt                  { $$ = s0arg_make($1, $2) ; }
 ; /* end of [s0arg] */
@@ -2248,19 +2255,21 @@ s0argseqseq /* static argument sequence sequence */
   | LPAREN s0argseq RPAREN s0argseqseq  { $$ = s0arglstlst_cons($2, $4); }
 ; /* end of [s0argseqseq] */
 
+/* ****** ****** */
+
 /*
 ** template argument variables
 */
-
-commadecs0argseq
-  : /* empty */ %prec TMPSARG           { $$ = s0arglst_nil() ; }
-  | COMMA s0arg commadecs0argseq        { $$ = s0arglst_cons($2, $3) ; }
-; /* end of [commadecs0argseq] */
 
 decs0argseq
   : /* empty */ %prec TMPSARG           { $$ = s0arglst_nil() ; }
   | s0arg commadecs0argseq              { $$ = s0arglst_cons($1, $2) ; }
 ; /* end of [decs0argseq] */
+
+commadecs0argseq
+  : /* empty */ %prec TMPSARG           { $$ = s0arglst_nil() ; }
+  | COMMA s0arg commadecs0argseq        { $$ = s0arglst_cons($2, $3) ; }
+; /* end of [commadecs0argseq] */
 
 decs0argseqseq
   : /* empty */                         { $$ = s0arglstlst_nil() ; }
@@ -2519,13 +2528,6 @@ ands0tavarseq /* additional static constant sequence */
   : /* empty */                         { $$ = s0tavarlst_nil() ; }
   | AND s0tavar ands0tavarseq           { $$ = s0tavarlst_cons($2, $3) ; }
 ; /* end of [ands0tavarseq] */
-
-/* ****** ****** */
-
-colons0rtopt /* optional sort annotation */
-  : /* empty */                         { $$ = s0rtopt_none() ; }
-  | COLON s0rt                          { $$ = s0rtopt_some($2) ; }
-; /* end of [colons0rtopt] */
 
 /* ****** ****** */
 
