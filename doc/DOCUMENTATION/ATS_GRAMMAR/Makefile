@@ -20,6 +20,7 @@ OBJECT := \
   atsgrammar_symbol_dats.o \
   atsgrammar_grmrule_dats.o \
   atsgrammar_emit_yats_dats.o \
+  atsgrammar_emit_yats_html_dats.o \
   atsgrammar_emit_desc_dats.o \
   atsgrammar_main_dats.o \
 
@@ -43,8 +44,12 @@ atsgrammar_grmrule_dats.o: atsgrammar_grmrule.dats
 
 atsgrammar_emit_yats_dats.o: atsgrammar_emit_yats.dats
 	$(ATSCC) -c -o $@ $<
+atsgrammar_emit_yats_html_dats.o: atsgrammar_emit_yats_html.dats
+	$(ATSCC) -c -o $@ $<
 
 atsgrammar_emit_desc_dats.o: atsgrammar_emit_desc.dats
+	$(ATSCC) -c -o $@ $<
+atsgrammar_emit_desc_html_dats.o: atsgrammar_emit_desc_html.dats
 	$(ATSCC) -c -o $@ $<
 
 atsgrammar_main_dats.o: atsgrammar_main.dats
@@ -54,9 +59,12 @@ atsgrammar_main_dats.o: atsgrammar_main.dats
 
 atsgrammar.yats: atsgrammar
 	./atsgrammar --format=yats > $@
-
 atsgrammar.desc: atsgrammar
 	./atsgrammar --format=desc > $@
+atsgrammar_yats.html: atsgrammar
+	./atsgrammar --format=yats_html > $@
+atsgrammar_desc.html: atsgrammar
+	./atsgrammar --format=desc_html > $@
 
 ######
 
@@ -70,7 +78,9 @@ depend::
 	$(ATSOPT) -o .depend -dep1 -d atsgrammar_symbol.dats
 	$(ATSOPT) -o .depend -dep1 -d atsgrammar_grmrule.dats
 	$(ATSOPT) -o .depend -dep1 -d atsgrammar_emit_yats.dats
+	$(ATSOPT) -o .depend -dep1 -d atsgrammar_emit_yats_html.dats
 	$(ATSOPT) -o .depend -dep1 -d atsgrammar_emit_desc.dats
+	$(ATSOPT) -o .depend -dep1 -d atsgrammar_emit_desc_html.dats
 	$(ATSOPT) -o .depend -dep1 -d atsgrammar_main.dats
 include .depend
 

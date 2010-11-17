@@ -168,10 +168,10 @@ overload grmrule_append with grmrule_append_grmrule
 (* ****** ****** *)
 
 fun emit_yats (out: FILEref): void
-
-(* ****** ****** *)
+fun emit_yats_html (out: FILEref): void
 
 fun emit_desc (out: FILEref): void
+fun emit_desc_html (out: FILEref): void
 
 (* ****** ****** *)
 

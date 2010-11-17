@@ -20,6 +20,7 @@ dynload "atsgrammar_symbol.dats"
 dynload "atsgrammar_grmrule.dats"
 //
 dynload "atsgrammar_emit_yats.dats"
+dynload "atsgrammar_emit_yats_html.dats"
 dynload "atsgrammar_emit_desc.dats"
 //
 (* ****** ****** *)
@@ -3381,7 +3382,9 @@ atsgrammar_main
 
 datatype outfmt =
   | OUTFMTyats of ()
+  | OUTFMTyats_html of ()
   | OUTFMTdesc of ()
+  | OUTFMTdesc_html of ()
   | OUTFMTnone of ()
 // end of [outfmt]
 
@@ -3390,7 +3393,9 @@ fun fprint_usage
   val () = fprintf (out, "The command [%s] accepts the following flags:\n", @(cmd))
   val () = fprintf (out, "  --help\n", @())
   val () = fprintf (out, "  --format=yats\n", @())
+  val () = fprintf (out, "  --format=yats_html\n", @())
   val () = fprintf (out, "  --format=desc\n", @())
+  val () = fprintf (out, "  --format=desc_html\n", @())
 in
   // nothing
 end // end of [fprint_usage]
@@ -3419,7 +3424,9 @@ main (
           fmt := OUTFMTnone // loop exits
         end // end of [...]
       | "--format=yats" => (fmt := OUTFMTyats) // loop exits
+      | "--format=yats_html" => (fmt := OUTFMTyats_html) // loop exits
       | "--format=desc" => (fmt := OUTFMTdesc) // loop exits
+      | "--format=desc_html" => (fmt := OUTFMTdesc_html) // loop exits
       | _ => let
           val () = prerrf ("Warning(atsgrammar): unrecognized flag: %s\n", @(arg))
         in
@@ -3432,15 +3439,16 @@ main (
 //
   val () = (case+ fmt of
     | OUTFMTyats () => emit_yats (stdout_ref)
+    | OUTFMTyats_html () => emit_yats_html (stdout_ref)
     | OUTFMTdesc () => emit_desc (stdout_ref)
     | OUTFMTnone () => ()
-(*
+// (*
     | _ => let
         val () = prerrf ("Warning(atsgrammar): unrecognized format.\n", @())
       in
         // nothing
       end // end of [_]
-*)
+// *)
   ) : void // end of [val]
 //
 } // end of [main]
