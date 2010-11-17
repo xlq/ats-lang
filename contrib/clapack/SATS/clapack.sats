@@ -1158,7 +1158,7 @@ int dgetrf_(
 // The view at A is changed to LUMAT_err_v to reflect this.
 // The original view at A can be recovered using LUMAT_err_v_elim.
 // The permutation is stored in ipiv. Note that this uses Fortran indices,
-// so 1 <= IPIV(i) <= mn.
+// so 1 <= IPIV(i) <= m.
 // If the returned error code is < 0, then IPIV is still uninitialized and
 // so has no meaning. If the error code > 0, then the LU factorization did
 // finish, but the U has a zero diagonal in position indicated by the error
@@ -1170,7 +1170,7 @@ getrf_type (t:t@ype) =
   (*a*) GEMAT (t, m, n, lda) @ la
 | (*m:*) integer m, (*n:*) integer n
 , (*a:*) ptr la, (*lda:*) integer lda
-, (*ipiv:*) &(@[integer?][mn]) >> @[integerBtwe(1,mn)][mn]
+, (*ipiv:*) &(@[integer?][mn]) >> @[integerBtwe(1,m)][mn]
 ) -<fun> [err:int] (
   LUMAT_err_v (t, m, n, lda, la, err) | int err
 ) // end of [getrf_type]
