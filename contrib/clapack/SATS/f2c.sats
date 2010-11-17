@@ -258,6 +258,10 @@ overload <> with neq_doublecomplex_doublecomplex
 abst@ype integer (i: int) =
   $extype "F2Cinteger" // defined to be long int
 typedef integer = [i:int] integer (i)
+typedef integerGt (n) = [i:int | i > n] integer (i)
+typedef integerGte (n) = [i:int | i >= n] integer (i)
+typedef integerBtw (l, u) = [i:int | l <= i; i < u] integer (i)
+typedef integerBtwe (l, u) = [i:int | l <= i; i <= u] integer (i)
 
 castfn integer_of_lint (x: lint):<> integer
 castfn lint_of_integer (x: integer):<> lint

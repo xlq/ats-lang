@@ -1151,13 +1151,26 @@ int dgetrf_(
 
 *)
 
+//
+// SC-2010-11-16:
+// getrf computes LU factorization with row pivoting: A = P*L*U
+// The LU factors are overwritten on the input matrix A.
+// The view at A is changed to LUMAT_err_v to reflect this.
+// The original view at A can be recovered using LUMAT_err_v_elim.
+// The permutation is stored in ipiv. Note that this uses Fortran indices,
+// so 1 <= IPIV(i) <= mn.
+// If the returned error code is < 0, then IPIV is still uninitialized and
+// so has no meaning. If the error code > 0, then the LU factorization did
+// finish, but the U has a zero diagonal in position indicated by the error
+// code (in Fortran index notation).
+//
 typedef
 getrf_type (t:t@ype) =
   {m,n:nat} {mn:int | mn==min(m,n)} {lda:inc} {la:addr} (
   (*a*) GEMAT (t, m, n, lda) @ la
 | (*m:*) integer m, (*n:*) integer n
 , (*a:*) ptr la, (*lda:*) integer lda
-, (*ipiv:*) &(@[integer?][mn]) >> @[integer][mn]
+, (*ipiv:*) &(@[integer?][mn]) >> @[integerBtwe(1,mn)][mn]
 ) -<fun> [err:int] (
   LUMAT_err_v (t, m, n, lda, la, err) | int err
 ) // end of [getrf_type]
@@ -1170,12 +1183,17 @@ fun dgetrf: getrf_type (doublereal) = "atsctrb_clapack_dgetrf"
 fun cgetrf: getrf_type (complex) = "atsctrb_clapack_cgetrf"
 fun zgetrf: getrf_type (doublecomplex) = "atsctrb_clapack_zgetrf"
 
+//
+// SC-2010-11-16:
+// getrf_exn is the same as getrf, except that it raises an exception
+// of error < 0.
+//
 fun{t:t@ype} getrf_exn
   {m,n:nat} {mn:int | mn==min(m,n)} {lda:inc} {la:addr} (
   pf: GEMAT (t, m, n, lda) @ la
 | m: integer m, n: integer n
 , a: ptr la, lda: integer lda
-, ipiv: &(@[integer?][mn]) >> @[integer][mn]
+, ipiv: &(@[integer?][mn]) >> @[integerBtwe(1,mn)][mn]
 ) :<!exn> [info:int | info >= 0] (
   LUMAT_err_v (t, m, n, lda, la, info) | int info
 ) // end of [getrf_exn]
@@ -1235,13 +1253,21 @@ int dgesv_ (
 
 *)
 
+//
+// SC-2010-11-15:
+// A := P*L*U; So the view at A is changed to LUMAT_err_v. To get back the
+// original view (with uninitialized A) use LUMAT_err_v_elim. ipiv is
+// assigned P. The solution to A * x = b, is returned in b. A must be a
+// square matrix.
+//
+
 typedef
 gesv_type (t:t@ype) =
   {n,nrhs:nat} {lda,ldb:inc} {la:addr} (
     (*a*) GEMAT (t, n, n, lda) @ la
   | (*n:*) integer n, (*nrhs:*) integer nrhs
   , (*a:*) ptr la, (*lda:*) integer lda
-  , (*ipiv:*) &(@[integer?][n]) >> @[integer][n]
+  , (*ipiv:*) &(@[integer?][n]) >> @[integerBtwe(1,n)][n]
   , (*b:*) &GEMAT (t, n, nrhs, ldb), (*ldb:*) integer ldb
   ) -<fun> [err:int] (
     LUMAT_err_v (t, n, n, lda, la, err) | int err
