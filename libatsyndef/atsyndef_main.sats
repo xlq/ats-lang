@@ -28,18 +28,18 @@ typedef fsyndef_t =
 // end of [typedef]
 
 (* ****** ****** *)
-
+//
 val symbol_ARRAY : $Sym.symbol_t
 val symbol_ARRAY0 : $Sym.symbol_t
 //
 (* ****** ****** *)
 
-fun search_ARRAY (ns: intlst): Option_vt (fsyndef_t)
-fun search_ARRAY0 (ns: intlst): Option_vt (fsyndef_t)
+fun search_FOR (ns: intlst): Option_vt (fsyndef_t)
 
 (* ****** ****** *)
 
-fun search_FOR (ns: intlst): Option_vt (fsyndef_t)
+fun search_ARRAY (ns: intlst): Option_vt (fsyndef_t)
+fun search_ARRAY0 (ns: intlst): Option_vt (fsyndef_t)
 
 (* ****** ****** *)
 

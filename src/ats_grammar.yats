@@ -2370,16 +2370,16 @@ s0qua /* static quantification */
   | si0de commasi0deseq COLON s0rtext   { $$ = s0qua_vars($1, $2, $4) ; }
 ; /* end of [s0qua] */
 
+s0quaseq /* static quantification sequence */
+  : /* empty */                         { $$ = s0qualst_nil() ; }
+  | s0qua bars0quaseq                   { $$ = s0qualst_cons($1, $2) ; }
+; /* end of [s0quaseq] */
+
 bars0quaseq /* semicolon may substitute for bar */
   : /* empty */                         { $$ = s0qualst_nil() ; }
   | BAR s0qua bars0quaseq               { $$ = s0qualst_cons($2, $3) ; }
   | SEMICOLON s0qua bars0quaseq         { $$ = s0qualst_cons($2, $3) ; }
 ; /* end of [bars0quaseq] */
-
-s0quaseq /* static quantification sequence */
-  : /* empty */                         { $$ = s0qualst_nil() ; }
-  | s0qua bars0quaseq                   { $$ = s0qualst_cons($1, $2) ; }
-; /* end of [s0quaseq] */
 
 s0rtext /* extended sort (sort and subset sort) */
   : s0rt                                { $$ = s0rtext_srt($1) ; }

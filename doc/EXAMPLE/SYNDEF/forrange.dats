@@ -37,12 +37,12 @@ typedef intlst = List (int)
 (* ****** ****** *)
 
 (*
+// HX: this is the verbose way!
 val xs = array0_make_arrsz
   {int} ($arrsz (tupz! 1 2 3 4 5 6 7 8 9 10))
 // end of [val]
 *)
 val xs = array0! {int} (tupz! 1 2 3 4 5 6 7 8 9 10)
-val _0 = size1_of_int1 (0)
 var prod: int = 1
 val nxs = array0_size (xs)
 val () = for!
