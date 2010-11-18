@@ -32,7 +32,7 @@
 /* ****** ****** */
 //
 // Author: Hongwei Xi (hwxi AT cs DOT bu DOT edu)
-// July 2007
+// Start time: July 2007
 //
 /* ****** ****** */
 
@@ -2387,16 +2387,16 @@ s0rtext /* extended sort (sort and subset sort) */
                                         { $$ = s0rtext_sub($1, $2, $4, $6, $7, $8) ; }
 ; /* end of [s0rtext] */
 
+s0expseq /* static expression sequence */
+  : /* empty */                         { $$ = s0explst_nil() ; }
+  | s0expseq1                           { $$ = $1 ; }
+; /* end of [s0expseq] */
+
 bars0expseq /* semicolon may substitute for bar */
   : /* empty */                         { $$ = s0explst_nil() ; }
   | BAR s0exp bars0expseq               { $$ = s0explst_cons($2, $3) ; }
   | SEMICOLON s0exp bars0expseq         { $$ = s0explst_cons($2, $3) ; }
 ; /* end of [bars0expseq] */
-
-s0expseq /* static expression sequence */
-  : /* empty */                         { $$ = s0explst_nil() ; }
-  | s0expseq1                           { $$ = $1 ; }
-; /* end of [s0expseq] */
 
 commas0expseq
   : /* empty */                         { $$ = s0explst_nil() ; }

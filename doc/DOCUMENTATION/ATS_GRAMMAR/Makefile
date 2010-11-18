@@ -22,6 +22,7 @@ OBJECT := \
   atsgrammar_emit_yats_dats.o \
   atsgrammar_emit_yats_html_dats.o \
   atsgrammar_emit_desc_dats.o \
+  atsgrammar_emit_desc_html_dats.o \
   atsgrammar_main_dats.o \
 
 ######
@@ -59,10 +60,11 @@ atsgrammar_main_dats.o: atsgrammar_main.dats
 
 atsgrammar.yats: atsgrammar
 	./atsgrammar --format=yats > $@
-atsgrammar.desc: atsgrammar
-	./atsgrammar --format=desc > $@
 atsgrammar_yats.html: atsgrammar
 	./atsgrammar --format=yats_html > $@
+
+atsgrammar.desc: atsgrammar
+	./atsgrammar --format=desc > $@
 atsgrammar_desc.html: atsgrammar
 	./atsgrammar --format=desc_html > $@
 
@@ -97,6 +99,8 @@ clean::
 cleanall:: clean
 	$(RMF) atsgrammar
 	$(RMF) atsgrammar.yats
+	$(RMF) atsgrammar_yats.html
 	$(RMF) atsgrammar.desc
+	$(RMF) atsgrammar_desc.html
 
 ###### end of [Makefile] ######
