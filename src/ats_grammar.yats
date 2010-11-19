@@ -282,14 +282,18 @@ extern d0atsrtdeclst_t d0atsrtdeclst_cons (d0atsrtdec_t, d0atsrtdeclst_t) ;
 
 /* ****** ****** */
 
-/* static qualifiers */
+/*
+** static qualifiers
+*/
 
 typedef ats_ptr_type s0taq_t ;
 extern s0taq_t s0taq_symdot (i0de_t) ;
 extern s0taq_t s0taq_symcolon (i0de_t) ;
 extern s0taq_t s0taq_fildot (s0tring_t) ;
 
-/* dynamic qualifiers */
+/*
+** dynamic qualifiers
+*/
 
 typedef ats_ptr_type d0ynq_t ;
 extern d0ynq_t d0ynq_symcolon(i0de_t) ;
@@ -300,22 +304,30 @@ extern d0ynq_t d0ynq_fildot_symcolon(s0tring_t, i0de_t) ;
 
 /* ****** ****** */
 
-/* static qualified identifiers */
-
+/*
+** (qualified) static identifiers
+*/
 typedef ats_ptr_type sqi0de_t ;
 extern sqi0de_t sqi0de_make_none (i0de_t) ;
 extern sqi0de_t sqi0de_make_some (s0taq_t, i0de_t) ;
 
-/* dynamic qualified identifiers */
-
+/*
+** (qualified) dynamic identifiers
+*/
 typedef ats_ptr_type dqi0de_t ;
 extern dqi0de_t dqi0de_make_none (i0de_t) ;
 extern dqi0de_t dqi0de_make_some (d0ynq_t, i0de_t) ;
 
+/*
+** (qualified) array identifiers
+*/
 typedef ats_ptr_type arrqi0de_t ;
 extern arrqi0de_t arrqi0de_make_none (i0de_t) ;
 extern arrqi0de_t arrqi0de_make_some (d0ynq_t, i0de_t) ;
 
+/*
+** (qualified) template identifiers
+*/
 typedef ats_ptr_type tmpqi0de_t ;
 extern tmpqi0de_t tmpqi0de_make_none (i0de_t) ;
 extern tmpqi0de_t tmpqi0de_make_some (d0ynq_t, i0de_t) ;
@@ -2561,61 +2573,63 @@ s0aspdec /* static assumption (for a static abstract constructor) */
 conq0uaseq /* quantifiers */
   : /* empty */                         { $$ = s0qualstlst_nil() ; }
   | LBRACE s0quaseq RBRACE conq0uaseq   { $$ = s0qualstlst_cons($2, $4) ; }
-;
+; /* end of [conq0uaseq] */
 
 coni0ndopt /* type indexes are optional */
   : /* empty */                         { $$ = s0expopt_none() ; }
   | LPAREN s0expseq RPAREN              { $$ = s0expopt_some(s0exp_list($1, $2, $3)) ; }
-;
+; /* end of [coni0ndopt] */
 
 cona0rgopt /* arguments are optional */
   : /* empty */                         { $$ = s0expopt_none() ; }
   | OF s0exp                            { $$ = s0expopt_some($2) ; }
-;
+; /* end of [cona0rgopt] */
 
 d0atcon /* data constructor */
   : conq0uaseq di0de coni0ndopt cona0rgopt
                                         { $$ = d0atcon_make($1, $2, $3, $4) ; }
-;
-
-bard0atconseq
-  : /* empty */                         { $$ = d0atconlst_nil() ; }
-  | BAR d0atcon bard0atconseq           { $$ = d0atconlst_cons($2, $3) ; }
-;
+; /* end of [d0atcon] */
 
 d0atconseq /* data constructor sequence: the first bar is optional */
   : bard0atconseq                       { $$ = $1 ; }
   | d0atcon bard0atconseq               { $$ = d0atconlst_cons($1, $2) ; }
-;
+; /* end of [d0atconseq] */
+
+bard0atconseq
+  : /* empty */                         { $$ = d0atconlst_nil() ; }
+  | BAR d0atcon bard0atconseq           { $$ = d0atconlst_cons($2, $3) ; }
+; /* end of [bard0atconseq] */
 
 d0atdec /* datatype declaration */
   : si0de EQ d0atconseq                 { $$ = d0atdec_make_none($1, $3) ; }
   | si0de LPAREN d0atargseq RPAREN EQ d0atconseq
                                         { $$ = d0atdec_make_some($1, $3, $4, $6) ; }
-;
+; /* end of [d0atdec] */
 
 andd0atdecseq /* additional datatype declaration sequence */
   : /* empty */                         { $$ = d0atdeclst_nil() ; }
   | AND d0atdec andd0atdecseq           { $$ = d0atdeclst_cons($2, $3) ; }
-;
+; /* end of [andd0atdecseq] */
 
 s0expdefseqopt /* optional static definition sequence */
   : /* empty */                         { $$ = s0expdeflst_nil() ; }
   | WHERE s0expdef ands0expdefseq       { $$ = s0expdeflst_cons($2, $3) ; }
-;
+; /* end of [s0expdefseqopt] */
 
 /* ****** ****** */
 
-/* exception constructor declaration */
+/*
+** exception constructor declaration
+*/
 
 e0xndec
   : conq0uaseq di0de cona0rgopt         { $$ = e0xndec_make($1, $2, $3) ; }
-;
+; /* end of [e0xndec] */
 
 ande0xndecseq
   : /* empty */                         { $$ = e0xndeclst_nil() ; }
   | AND e0xndec ande0xndecseq           { $$ = e0xndeclst_cons($2, $3) ; }
-;
+; /* end of [ande0xndecseq] */
 
 /* ****** ****** */
 
@@ -2660,47 +2674,46 @@ c0lassdec
 p0arg
   : pi0de                               { $$ = p0arg_make_none($1) ; }
   | pi0de COLON s0exp                   { $$ = p0arg_make_some($1, $3) ; }
-;
-
-commap0argseq
-  : /* empty */                         { $$ = p0arglst_nil() ; }
-  | COMMA p0arg commap0argseq           { $$ = p0arglst_cons($2, $3) ; }
-;
+; /* end of [p0arg] */
 
 p0argseq
   : /* empty */                         { $$ = p0arglst_nil() ; }
   | p0arg commap0argseq                 { $$ = p0arglst_cons($1, $2) ; }
-;
+; /* end of [p0argseq] */
+
+commap0argseq
+  : /* empty */                         { $$ = p0arglst_nil() ; }
+  | COMMA p0arg commap0argseq           { $$ = p0arglst_cons($2, $3) ; }
+; /* end of [commap0argseq] */
 
 d0arg
   : pi0de                               { $$ = d0arg_var($1) ; }
   | LPAREN p0argseq RPAREN              { $$ = d0arg_dyn($1, $2, $3) ; }
-  | LPAREN p0argseq BAR p0argseq RPAREN
-                                        { $$ = d0arg_dyn2($1, $2, $4, $5) ; }
+  | LPAREN p0argseq BAR p0argseq RPAREN { $$ = d0arg_dyn2($1, $2, $4, $5) ; }
   | LBRACE s0quaseq RBRACE              { $$ = d0arg_sta($1, $2, $3) ; }
-;
+; /* end of [d0arg] */
 
 d0argseq
   : /* empty */                         { $$ = d0arglst_nil() ; }
   | d0arg d0argseq                      { $$ = d0arglst_cons($1, $2) ; }
-;
+; /* end of [d0argseq] */
 
 /* ****** ****** */
 
 extnamopt
   : /* empty */                         { $$ = extnamopt_none() ; }
   | EQ LITERAL_string                   { $$ = extnamopt_some($2) ; }
-;
+; /* end of [extnamope] */
 
 d0cstdec
   : di0de d0argseq colonwith s0exp extnamopt
                                         { $$ = d0cstdec_make($1, $2, $3, $4, $5) ; }
-;
+; /* end of [d0cstdec] */
 
 andd0cstdecseq
   : /* empty */                         { $$ = d0cstdeclst_nil() ; }
   | AND d0cstdec andd0cstdecseq         { $$ = d0cstdeclst_cons($2, $3) ; }
-;
+; /* end of [andd0cstdecseq] */
 
 /* ****** ****** */
 
@@ -2708,18 +2721,18 @@ s0vararg
   : DOTDOT                              { $$ = s0vararg_one() ; }
   | DOTDOTDOT                           { $$ = s0vararg_all() ; }
   | s0argseq                            { $$ = s0vararg_seq($1) ; }
-;
+; /* end of [s0vararg] */
 
 s0exparg
   : DOTDOT                              { $$ = s0exparg_one() ; }
   | DOTDOTDOT                           { $$ = s0exparg_all() ; }
   | s0expseq1                           { $$ = s0exparg_seq($1) ; }
-;
+; /* end of [s0exparg] */
 
 s0elop
   : DOT                                 { $$ = s0elop_make (0, $1) ; }
   | MINUSGT                             { $$ = s0elop_make (1, $1) ; }
-;
+; /* end of [s0elop] */
 
 witht0ype
   : /* empty */                         { $$ = witht0ype_none() ; }
@@ -2727,13 +2740,21 @@ witht0ype
   | WITHTYPE s0exp                      { $$ = witht0ype_type($2) ; }
   | WITHVIEW s0exp                      { $$ = witht0ype_view($2) ; }
   | WITHVIEWTYPE s0exp                  { $$ = witht0ype_viewtype($2) ; }
-;
+; /* end of [withtype] */
 
 /* ****** ****** */
 
 /*
 ** dynamic patterns
 */
+
+p0at
+  : atmp0at argp0atseq                  { $$ = p0at_apps($1, $2) ; }
+  | p0at COLON s0exp                    { $$ = p0at_ann($1, $3) ; }
+  | pi0de AS p0at %prec PATAS           { $$ = p0at_as($1, $3) ; }
+  | BANG pi0de AS p0at %prec PATAS      { $$ = p0at_refas($1, $2, $4) ; }
+  | TILDA p0at %prec PATFREE            { $$ = p0at_free($1, $2) ; }
+; /* end of [p0at] */
 
 atmp0at
   : LITERAL_char                        { $$ = p0at_char($1) ; }
@@ -2755,61 +2776,57 @@ atmp0at
   | ATLBRACE labp0atseq RBRACE          { $$ = p0at_rec(0, $1, $2, $3) ; }
   | QUOTELBRACE labp0atseq RBRACE       { $$ = p0at_rec(1, $1, $2, $3) ; }
   | LBRACKET s0argseq RBRACKET          { $$ = p0at_exist($1, $2, $3) ; }
-;
+; /* end of [atmp0at] */
 
 argp0at
   : atmp0at                             { $$ = $1 ; }
   | LBRACE s0vararg RBRACE              { $$ = p0at_svararg($1, $2, $3) ; }
-;
+; /* end of [argp0at] */
 
 argp0atseq
   : /* empty */                         { $$ = p0atlst_nil() ; }
   | argp0at argp0atseq                  { $$ = p0atlst_cons($1, $2) ; }
-;
-
-p0at
-  : atmp0at argp0atseq                  { $$ = p0at_apps($1, $2) ; }
-  | p0at COLON s0exp                    { $$ = p0at_ann($1, $3) ; }
-  | pi0de AS p0at %prec PATAS           { $$ = p0at_as($1, $3) ; }
-  | BANG pi0de AS p0at %prec PATAS      { $$ = p0at_refas($1, $2, $4) ; }
-  | TILDA p0at %prec PATFREE            { $$ = p0at_free($1, $2) ; }
-;
+; /* end of [argp0atseq] */
 
 p0atseq
   : /* empty */                         { $$ = p0atlst_nil() ; }
   | p0at commap0atseq                   { $$ = p0atlst_cons($1, $2) ; }
-;
+; /* end of [p0atseq] */
 
 commap0atseq
   : /* empty */                         { $$ = p0atlst_nil() ; }
   | COMMA p0at commap0atseq             { $$ = p0atlst_cons($2, $3) ; }
-;
+; /* end of [commap0atseq] */
 
 labp0atseq
   : /* empty */                         { $$ = labp0atlst_nil() ; }
   | DOTDOTDOT                           { $$ = labp0atlst_dot() ; }
   | l0ab EQ p0at commalabp0atseq        { $$ = labp0atlst_cons($1, $3, $4) ; } 
-;
+; /* end of [labp0atseq] */
 
 commalabp0atseq
   : /* empty */                         { $$ = labp0atlst_nil() ; }
   | COMMA DOTDOTDOT                     { $$ = labp0atlst_dot() ; }
   | COMMA l0ab EQ p0at commalabp0atseq  { $$ = labp0atlst_cons($2, $4, $5) ; }
-;
+; /* end of [commalabp0atseq] */
 
-/* function arguments */
+/* ****** ****** */
+
+/*
+** dynamic function arguments
+*/
 
 f0arg1
   : LBRACE s0quaseq RBRACE              { $$ = f0arg_sta1($1, $2, $3) ; }
   | atmp0at                             { $$ = f0arg_dyn($1) ; }
   | DOTLT s0expseq GTDOT                { $$ = f0arg_met_some($1, $2, $3) ; }
   | DOTLTGTDOT                          { $$ = f0arg_met_none($1) ; }
-;
+; /* end of [f0arg1] */
 
 f0arg1seq
   : /* empty */                         { $$ = f0arglst_nil() ; }
   | f0arg1 f0arg1seq                    { $$ = f0arglst_cons($1, $2) ; }
-;
+; /* end of [f0arg1seq] */
 
 f0arg2
   : LBRACE s0argseq RBRACE              { $$ = f0arg_sta2($1, $2, $3) ; }
@@ -2818,21 +2835,53 @@ f0arg2
   | DOTLT s0expseq GTDOT                { $$ = f0arg_met_some($1, $2, $3) ; }
   | DOTLTGTDOT                          { $$ = f0arg_met_none($1) ; }
 */
-;
+; /* end of [f0arg2] */
 
 f0arg2seq
   : /* empty */                         { $$ = f0arglst_nil() ; }
   | f0arg2 f0arg2seq                    { $$ = f0arglst_cons($1, $2) ; }
-;
+; /* end of [f0arg2seq] */
 
 /*
 // HX-2010-05-12: the OOP plan is permanently abandoned
 objc0ls
   : LPAREN s0exp RPAREN                 { $$ = $2 ; }
-;
+; // end of [objc0ls]
 */
 
-/* dynamic expressions */
+/* ****** ****** */
+
+/*
+** dynamic expressions
+*/
+
+d0exp
+  : atmd0exp argd0expseq                { $$ = d0exp_apps($1, $2) ; }
+  | d0exp COLON s0exp                   { $$ = d0exp_ann($1, $3) ; }
+  | ifhead d0exp THEN d0exp %prec DEXPIF
+                                        { $$ = d0exp_if_none($1, $2, $4) ; }
+  | ifhead d0exp THEN d0exp ELSE d0exp %prec DEXPIF
+                                        { $$ = d0exp_if_some($1, $2, $4, $6) ; }
+  | sifhead s0exp THEN d0exp ELSE d0exp %prec DEXPIF
+                                        { $$ = d0exp_sif($1, $2, $4, $6) ; }
+  | casehead d0exp OF c0lauseq %prec DEXPCASE
+                                        { $$ = d0exp_caseof($1, $2, $3, $4) ; }
+  | scasehead s0exp OF sc0lauseq %prec DEXPCASE
+                                        { $$ = d0exp_scaseof($1, $2, $3, $4) ; }
+  | lamkind f0arg1seq colons0expopt funarrow d0exp %prec DEXPLAM
+                                        { $$ = d0exp_lam($1, $2, $3, $4, $5 ) ; }
+  | fixkind di0de f0arg1seq colons0expopt funarrow d0exp %prec DEXPLAM
+                                        { $$ = d0exp_fix($1, $2, $3, $4, $5, $6) ; }
+  | forhead initestpost d0exp %prec DEXPFOR
+                                        { $$ = d0exp_for_itp ($1, $2, $3) ; }
+  | whilehead atmd0exp d0exp %prec DEXPWHILE
+                                        { $$ = d0exp_while ($1, $2, $3) ; }
+  | DLRRAISE d0exp %prec DEXPRAISE      { $$ = d0exp_raise($1, $2) ; }
+  | tryhead d0expsemiseq0 WITH c0lauseq %prec DEXPTRY
+                                        { $$ = d0exp_trywith_seq($1, $2, $3, $4) ; }
+  | d0exp WHERE LBRACE d0ecseq_dyn RBRACE
+                                        { $$ = d0exp_where ($1, $4, $5) ; }
+;
 
 atmd0exp
   : LITERAL_char                        { $$ = d0exp_char($1) ; }
@@ -3011,34 +3060,6 @@ tryhead
   : TRY /* no invariant */              { $$ = tryhead_make($1) ; }
 ;
 
-d0exp
-  : atmd0exp argd0expseq                { $$ = d0exp_apps($1, $2) ; }
-  | d0exp COLON s0exp                   { $$ = d0exp_ann($1, $3) ; }
-  | ifhead d0exp THEN d0exp %prec DEXPIF
-                                        { $$ = d0exp_if_none($1, $2, $4) ; }
-  | ifhead d0exp THEN d0exp ELSE d0exp %prec DEXPIF
-                                        { $$ = d0exp_if_some($1, $2, $4, $6) ; }
-  | sifhead s0exp THEN d0exp ELSE d0exp %prec DEXPIF
-                                        { $$ = d0exp_sif($1, $2, $4, $6) ; }
-  | casehead d0exp OF c0lauseq %prec DEXPCASE
-                                        { $$ = d0exp_caseof($1, $2, $3, $4) ; }
-  | scasehead s0exp OF sc0lauseq %prec DEXPCASE
-                                        { $$ = d0exp_scaseof($1, $2, $3, $4) ; }
-  | lamkind f0arg1seq colons0expopt funarrow d0exp %prec DEXPLAM
-                                        { $$ = d0exp_lam($1, $2, $3, $4, $5 ) ; }
-  | fixkind di0de f0arg1seq colons0expopt funarrow d0exp %prec DEXPLAM
-                                        { $$ = d0exp_fix($1, $2, $3, $4, $5, $6) ; }
-  | forhead initestpost d0exp %prec DEXPFOR
-                                        { $$ = d0exp_for_itp ($1, $2, $3) ; }
-  | whilehead atmd0exp d0exp %prec DEXPWHILE
-                                        { $$ = d0exp_while ($1, $2, $3) ; }
-  | DLRRAISE d0exp %prec DEXPRAISE      { $$ = d0exp_raise($1, $2) ; }
-  | tryhead d0expsemiseq0 WITH c0lauseq %prec DEXPTRY
-                                        { $$ = d0exp_trywith_seq($1, $2, $3, $4) ; }
-  | d0exp WHERE LBRACE d0ecseq_dyn RBRACE
-                                        { $$ = d0exp_where ($1, $4, $5) ; }
-;
-
 commad0expseq
   : /* empty */                         { $$ = d0explst_nil() ; }
   | COMMA d0exp commad0expseq           { $$ = d0explst_cons($2, $3) ; }
@@ -3177,7 +3198,9 @@ initestpost
 
 /* ****** ****** */
 
-/* macro declarations */
+/*
+** macro declarations
+*/
 
 m0arg : pi0de                           { $$ = $1 ; }
 ;
