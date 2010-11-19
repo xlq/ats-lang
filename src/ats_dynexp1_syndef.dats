@@ -362,7 +362,7 @@ fun d1exp_fprint_n2 (loc: loc_t, d1es: d1explst): d1exp
 implement
 search_FPRINT (ns) = let
 (*
-  val () = print "fprint_search: ns = "
+  val () = print "search_FPRINT: ns = "
   val () = fprint_intlst (stdout_ref, ns)
   val () = print_newline ()
 *)
@@ -372,6 +372,23 @@ in
   | _ => None_vt ()
 end // end of [search_FPRINT]
 
+extern
+fun search_FPRINTLN (ns: intlst): fsyndefopt
+extern
+fun d1exp_fprintln_n2 (loc: loc_t, d1es: d1explst): d1exp
+implement
+search_FPRINTLN (ns) = let
+(*
+  val () = print "search_FPRINTLN: ns = "
+  val () = fprint_intlst (stdout_ref, ns)
+  val () = print_newline ()
+*)
+in
+  case+ 0 of
+  | _ when ns \matii _n2 => Some_vt (d1exp_fprintln_n2)
+  | _ => None_vt ()
+end // end of [search_FPRINTLN]
+
 (* ****** ****** *)
 
 val symbol_DO = $Sym.symbol_DO
@@ -379,6 +396,7 @@ val symbol_WHILE = $Sym.symbol_WHILE
 val symbol_PRINT = $Sym.symbol_make_string ("print")
 val symbol_PRINTLN = $Sym.symbol_make_string ("println")
 val symbol_FPRINT = $Sym.symbol_make_string ("fprint")
+val symbol_FPRINTLN = $Sym.symbol_make_string ("fprintln")
 
 implement
 atsyndef_search_all_default
@@ -398,6 +416,7 @@ in
   | _ when id = symbol_PRINT => search_PRINT (ns)
   | _ when id = symbol_PRINTLN => search_PRINTLN (ns)
   | _ when id = symbol_FPRINT => search_FPRINT (ns)
+  | _ when id = symbol_FPRINTLN => search_FPRINTLN (ns)
 (*
 // HX-2010-11-15:
 // how should I judge whether a new external symbol should be supported?
@@ -668,11 +687,11 @@ d1exp_println_n1
   val println_id = $Sym.symbol_make_string ("print_newline")
   val println_qid = d1exp_qid (loc0, q, println_id)
 //
-  val d1e1 = d1exp_print_n1 (loc0, d1es)
-  val d1e2 = d1exp_app_dyn (loc0, println_qid, loc0, 0(*npf*), list_nil)
+  val d1eseq = d1exp_print_n1 (loc0, d1es)
+  val d1eln = d1exp_app_dyn (loc0, println_qid, loc0, 0(*npf*), list_nil)
 //
 in
-  d1exp_seq (loc0, d1e1 :: d1e2 :: list_nil)
+  d1exp_seq (loc0, d1eseq :: d1eln :: list_nil)
 end // end of [println_n1]
 
 (* ****** ****** *)
@@ -689,15 +708,42 @@ d1exp_fprint_n2
   val f = lam
     (d1e_arg: d1exp)
     : d1exp =<cloptr1> let
-    val loc = d1e_arg.d1exp_loc
-  in
+    val loc = d1e_arg.d1exp_loc in
     d1exp_app_dyn (loc, fqid, loc, 0(*npf*), d1e_out :: d1e_arg :: list_nil)
   end // end of [_]
   val d1eseq = d1exp_applstseq (loc0, d1es_arg, f)
   val () = cloptr_free (f)
 in
   d1eseq
-end // end of [print_n1]
+end // end of [fprint_n2]
+
+(* ****** ****** *)
+
+implement
+d1exp_fprintln_n2
+  (loc0, d1es) = let
+  val- cons (d1e1, _) = d1es
+  val q = $Syn.d0ynq_none ()
+  val fqid = d1exp_qid (loc0, q, symbol_FPRINT)
+  val (d1e_out, d1es_arg) = (case+ d1e1.d1exp_node of
+    | D1Elist (_(*npf*), d1e :: d1es) => (d1e, d1es) | _ => (d1e1, list_nil)
+  ) : (d1exp, d1explst)
+  val f = lam
+    (d1e_arg: d1exp)
+    : d1exp =<cloptr1> let
+    val loc = d1e_arg.d1exp_loc in
+    d1exp_app_dyn (loc, fqid, loc, 0(*npf*), d1e_out :: d1e_arg :: list_nil)
+  end // end of [_]
+  val d1eseq = d1exp_applstseq (loc0, d1es_arg, f)
+  val () = cloptr_free (f)
+//
+  val fprintln_id = $Sym.symbol_make_string ("fprint_newline")
+  val fprintln_qid = d1exp_qid (loc0, q, fprintln_id)
+  val d1eln = d1exp_app_dyn (loc0, fprintln_qid, loc0, 0(*npf*), list_sing (d1e_out))
+//
+in
+  d1exp_seq (loc0, d1eseq :: d1eln :: list_nil)
+end // end of [fprintln_n2]
 
 (* ****** ****** *)
 

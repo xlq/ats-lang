@@ -21,6 +21,7 @@ overload = with $Sym.eq_symbol_symbol
 staload "ats_staexp1.sats"
 staload "ats_dynexp1.sats"
 staload "ats_dynexp1_syndef.sats"
+overload fprint with fprint_intlst
 macdef matii = match_intlst_intlst
 
 (* ****** ****** *)
@@ -91,9 +92,7 @@ fun d1exp_for_p1_p1_n1_p1_p1
 implement
 search_FOR (ns) = let
 (*
-  val () = print "search_FOR: ns = "
-  val () = fprint_intlst (stdout_ref, ns)
-  val () = print_newline ()
+  val () = fprintln! (stdout_ref, "search_FOR: ns = ", ns)
 *)
 in
   case+ 0 of

@@ -1117,10 +1117,6 @@ s0explstopt_t s0explstopt ;
 labs0explst_t labs0explst ;
 s0expopt_t s0expelt ;
 s0arrind_t s0arrind ;
-t1mps0explstlst_t t1mps0explstlst ;
-impqi0de_t impqi0de ;
-
-/* ****** ****** */
 
 s0qua_t s0qua ;
 s0qualst_t s0qualst ;
@@ -1128,15 +1124,21 @@ s0qualstlst_t s0qualstlst ;
 s0qualstopt_t s0qualstopt ;
 s0rtext_t s0rtext ;
 
+t1mps0explstlst_t t1mps0explstlst ;
+
 /* ****** ****** */
 
-d0atarg_t d0atarg ;
-d0atarglst_t d0atarglst ;
+impqi0de_t impqi0de ;
 
 /* ****** ****** */
 
 s0rtdef_t s0rtdef ;
 s0rtdeflst_t s0rtdeflst ;
+
+/* ****** ****** */
+
+d0atarg_t d0atarg ;
+d0atarglst_t d0atarglst ;
 
 /* ****** ****** */
 
@@ -1645,8 +1647,6 @@ guad0ec_t guad0ec ;
 %type <s0explst> commat1mps0expseq
 %type <t1mps0explstlst> gtlt_t1mps0expseqseq
 
-%type <impqi0de> impqi0de
-
 %type <s0expopt> s0expelt
 %type <s0arrind> s0arrind
 
@@ -1654,6 +1654,8 @@ guad0ec_t guad0ec ;
 %type <s0qualst> s0quaseq
 %type <s0qualst> bars0quaseq
 %type <s0rtext> s0rtext
+
+%type <impqi0de> impqi0de
 
 %type <s0rtdef> s0rtdef
 %type <s0rtdeflst> ands0rtdefseq
@@ -2285,9 +2287,9 @@ sp0at /* static pattern */
 
 /* ****** ****** */
 
-/* static expressions */
-
-/* ****** ****** */
+/*
+** static expressions
+*/
 
 s0exp /* static expression */
   : apps0exp                            { $$ = $1 ; }
@@ -2434,21 +2436,23 @@ t1mps0exp
   | si0de EQ t0mps0exp %prec TMPSEXP    { $$ = s0exp_named ($1, $3) ; }
 ; /* end of [t1mps0exp] */
 
-commat1mps0expseq
-  : /* empty */ %prec TMPSEXP           { $$ = s0explst_nil() ; }
-  | COMMA t1mps0exp commat1mps0expseq   { $$ = s0explst_cons($2, $3) ; }
-; /* end of [commat1mps0expseq] */
-
 t1mps0expseq
   : /* empty */ %prec TMPSEXP           { $$ = s0explst_nil() ; }
   | t1mps0exp commat1mps0expseq         { $$ = s0explst_cons($1, $2) ; }
 ; /* end of [t1mps0expseq] */
+
+commat1mps0expseq
+  : /* empty */ %prec TMPSEXP           { $$ = s0explst_nil() ; }
+  | COMMA t1mps0exp commat1mps0expseq   { $$ = s0explst_cons($2, $3) ; }
+; /* end of [commat1mps0expseq] */
 
 gtlt_t1mps0expseqseq
   : /* empty */                         { $$ = gtlt_t1mps0expseqseq_nil() ; }
   | GTLT t1mps0expseq gtlt_t1mps0expseqseq
                                         { $$ = gtlt_t1mps0expseqseq_cons_tok($1, $2, $3) ; }
 ; /* end of [gtlt_t1mps0expseqseq] */
+
+/* ****** ****** */
 
 impqi0de
   : dqi0de                              { $$ = impqi0de_make_none($1) ; }
@@ -2550,7 +2554,9 @@ s0aspdec /* static assumption (for a static abstract constructor) */
 
 /* ****** ****** */
 
-/* dataprop/type/view/viewtype declarations */
+/*
+** dataprop/type/view/viewtype declarations
+*/
 
 conq0uaseq /* quantifiers */
   : /* empty */                         { $$ = s0qualstlst_nil() ; }
@@ -2726,7 +2732,7 @@ witht0ype
 /* ****** ****** */
 
 /*
-** patterns
+** dynamic patterns
 */
 
 atmp0at
@@ -3258,7 +3264,9 @@ i0mpdec
 
 /* ****** ****** */
 
-/* declarations */
+/*
+** generic declarations
+*/
 
 /* ****** ****** */
 
