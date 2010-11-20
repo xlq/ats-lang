@@ -35,6 +35,14 @@
 // Start time: July 2007
 //
 /* ****** ****** */
+//
+// HX-2010-11-20:
+// This file is retired as of today. To generate [ats_grammar.yats], please
+// use the following command:
+//
+// $ATSHOME/utils/atsgrammar --formats=yats
+//
+/* ****** ****** */
 
 /*
 ** Grammar for ATS/Anairiats
