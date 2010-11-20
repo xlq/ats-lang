@@ -21,14 +21,26 @@ abstype grmrule
 
 (* ****** ****** *)
 
+typedef tynamelst = List (tyname)
+viewtypedef tynamelst_vt = List_vt (tyname)
+
+fun theTynamelst_get (): tynamelst
+fun theTynamelst_add (x: tyname): void
+
+(* ****** ****** *)
+
 val theTynameNone : tyname
-fun tyname_make_string (name: string): tyname
+fun tyname_make_namdef
+  (nam: string, def: string): tyname
+// end of [tyname_make_namdef]
+
+fun tyname_is_some (x: tyname): bool
+fun tyname_get_nam (x: tyname): Stropt
+fun tyname_get_def (x: tyname): Stropt
 
 fun fprint_tyname (out: FILEref, x: tyname): void
 fun print_tyname (x: tyname): void
 fun prerr_tyname (x: tyname): void
-
-fun tyname_is_some (x: tyname): bool
 
 (* ****** ****** *)
 

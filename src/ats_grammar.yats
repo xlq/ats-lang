@@ -118,8 +118,6 @@ extern funkind_t funkind_castfn (void) ;
 extern funkind_t funkind_prfn (void) ;
 extern funkind_t funkind_prfun (void) ;
 
-/* ****** ****** */
-
 typedef ats_ptr_type lamkind_t ;
 extern lamkind_t lamkind_lam (t0kn_t) ;
 extern lamkind_t lamkind_atlam (t0kn_t) ;
@@ -128,8 +126,6 @@ extern lamkind_t lamkind_atllam (t0kn_t) ;
 typedef lamkind_t fixkind_t ;
 extern fixkind_t fixkind_fix (t0kn_t) ;
 extern fixkind_t fixkind_atfix (t0kn_t) ;
-
-/* ****** ****** */
 
 typedef ats_ptr_type srpifkindtok_t ;
 extern srpifkindtok_t srpifkindtok_if (t0kn_t) ;
@@ -159,13 +155,9 @@ extern i0de_t i0de_make_tilda (t0kn_t) ;
 extern i0de_t i0de_make_t0ype (t0kn_t) ;
 extern i0de_t i0de_make_viewt0ype (t0kn_t) ;
 
-//
-
 extern i0de_t i0de_make_DO (t0kn_t) ;
 extern i0de_t i0de_make_IN (t0kn_t) ;
 extern i0de_t i0de_make_WHILE (t0kn_t) ;
-
-//
 
 extern i0delst_t i0delst_nil (void) ;
 extern i0delst_t i0delst_sing (i0de_t) ;
@@ -174,19 +166,14 @@ extern i0delst_t i0delst_cons (i0de_t, i0delst_t) ;
 extern i0delstlst_t i0delstlst_nil (void) ;
 extern i0delstlst_t i0delstlst_cons (i0delst_t, i0delstlst_t) ;
 
-//
-
 typedef ats_ptr_type l0ab_t ;
 extern l0ab_t l0ab_ide (i0de_t) ;
 extern l0ab_t l0ab_int (i0nt_t) ;
-
-//
 
 extern i0de_t stai0de_make (i0de_t) ;
 
 /* ****** ****** */
 
-typedef ats_ptr_type assoc_t ;
 typedef ats_ptr_type p0rec_t ;
 extern p0rec_t p0rec_emp (void) ;
 extern p0rec_t p0rec_ide (i0de_t) ;
@@ -265,7 +252,9 @@ extern s0rtpol_t s0rtpol_make (s0rt_t, int) ;
 
 /* ****** ****** */
 
-/* datasort declaration */
+/*
+** datasort declaration
+*/
 
 typedef ats_ptr_type d0atsrtcon_t ;
 typedef ats_ptr_type d0atsrtconlst_t ;
@@ -285,7 +274,6 @@ extern d0atsrtdeclst_t d0atsrtdeclst_cons (d0atsrtdec_t, d0atsrtdeclst_t) ;
 /*
 ** static qualifiers
 */
-
 typedef ats_ptr_type s0taq_t ;
 extern s0taq_t s0taq_symdot (i0de_t) ;
 extern s0taq_t s0taq_symcolon (i0de_t) ;
@@ -294,7 +282,6 @@ extern s0taq_t s0taq_fildot (s0tring_t) ;
 /*
 ** dynamic qualifiers
 */
-
 typedef ats_ptr_type d0ynq_t ;
 extern d0ynq_t d0ynq_symcolon(i0de_t) ;
 extern d0ynq_t d0ynq_symdot(i0de_t) ;
@@ -334,6 +321,9 @@ extern tmpqi0de_t tmpqi0de_make_some (d0ynq_t, i0de_t) ;
 
 /* ****** ****** */
 
+/*
+** static arguments
+*/
 typedef ats_ptr_type s0arg_t ;
 typedef ats_ptr_type s0arglst_t ;
 typedef ats_ptr_type s0arglstlst_t ;
@@ -370,8 +360,12 @@ extern impqi0de_t impqi0de_make_none (dqi0de_t) ;
 extern impqi0de_t impqi0de_make_some
   (tmpqi0de_t, s0explst_t, t1mps0explstlst_t, t0kn_t) ;
   
+/* ****** ****** */
+
 typedef ats_ptr_type sp0at_t ;
 extern sp0at_t sp0at_con (sqi0de_t, s0arglst_t, t0kn_t) ;
+
+/* ****** ****** */
 
 extern s0exp_t s0exp_ann (s0exp_t, s0rt_t) ;
 extern s0exp_t s0exp_app (s0exp_t, s0exp_t) ;
@@ -441,6 +435,9 @@ extern s0qualstopt_t s0qualstopt_some (s0qualst_t) ;
 
 /* ****** ****** */
 
+/*
+** data-kind arguments
+*/
 typedef ats_ptr_type d0atarg_t ;
 extern d0atarg_t d0atarg_srt (s0rtpol_t) ;
 extern d0atarg_t d0atarg_id_srt (i0de_t, s0rtpol_t) ;
@@ -453,7 +450,6 @@ extern d0atarglst_t d0atarglst_cons (d0atarg_t, d0atarglst_t) ;
 
 typedef ats_ptr_type s0rtdef_t ;
 typedef ats_ptr_type s0rtdeflst_t ;
-
 extern s0rtdef_t s0rtdef_make (i0de_t, s0rtext_t) ;
 extern s0rtdeflst_t s0rtdeflst_nil (void) ;
 extern s0rtdeflst_t s0rtdeflst_cons (s0rtdef_t, s0rtdeflst_t) ;
@@ -461,31 +457,28 @@ extern s0rtdeflst_t s0rtdeflst_cons (s0rtdef_t, s0rtdeflst_t) ;
 /* ****** ****** */
 
 typedef ats_ptr_type s0tacon_t ;
+typedef ats_ptr_type s0taconlst_t ;
 extern s0tacon_t s0tacon_make_none_none (i0de_t) ;
 extern s0tacon_t s0tacon_make_some_none (i0de_t, d0atarglst_t, t0kn_t) ;
 extern s0tacon_t s0tacon_make_none_some (i0de_t, s0exp_t) ;
 extern s0tacon_t s0tacon_make_some_some (i0de_t, d0atarglst_t, s0exp_t) ;
-
-typedef ats_ptr_type s0taconlst_t ;
 extern s0taconlst_t s0taconlst_nil (void) ;
 extern s0taconlst_t s0taconlst_cons (s0tacon_t, s0taconlst_t) ;
 
 /* ****** ****** */
 
 typedef ats_ptr_type s0tacst_t ;
+typedef ats_ptr_type s0tacstlst_t ;
 extern s0tacst_t s0tacst_make_none (i0de_t, s0rt_t) ;
 extern s0tacst_t s0tacst_make_some (i0de_t, d0atarglst_t, s0rt_t) ;
-
-typedef ats_ptr_type s0tacstlst_t ;
 extern s0tacstlst_t s0tacstlst_nil (void) ;
 extern s0tacstlst_t s0tacstlst_cons (s0tacst_t, s0tacstlst_t) ;
 
 /* ****** ****** */
 
 typedef ats_ptr_type s0tavar_t ;
-extern s0tavar_t s0tavar_make (i0de_t, s0rt_t) ;
-
 typedef ats_ptr_type s0tavarlst_t ;
+extern s0tavar_t s0tavar_make (i0de_t, s0rt_t) ;
 extern s0tavarlst_t s0tavarlst_nil (void) ;
 extern s0tavarlst_t s0tavarlst_cons (s0tavar_t, s0tavarlst_t) ;
 
@@ -493,7 +486,6 @@ extern s0tavarlst_t s0tavarlst_cons (s0tavar_t, s0tavarlst_t) ;
 
 typedef ats_ptr_type s0expdef_t ;
 typedef ats_ptr_type s0expdeflst_t ;
-
 extern s0expdef_t s0expdef_make (i0de_t, s0arglstlst_t, s0rtopt_t, s0exp_t) ;
 extern s0expdeflst_t s0expdeflst_nil (void) ;
 extern s0expdeflst_t s0expdeflst_cons (s0expdef_t, s0expdeflst_t) ;
@@ -502,26 +494,21 @@ typedef ats_ptr_type s0aspdec_t ;
 extern s0aspdec_t s0aspdec_make (i0de_t, s0arglstlst_t, s0rtopt_t, s0exp_t) ;
 
 typedef ats_ptr_type d0atcon_t ;
-extern d0atcon_t
-d0atcon_make (s0qualstlst_t, i0de_t, s0explstopt_t, s0expopt_t) ;
-
 typedef ats_ptr_type d0atconlst_t ;
+extern d0atcon_t d0atcon_make (s0qualstlst_t, i0de_t, s0explstopt_t, s0expopt_t) ;
 extern d0atconlst_t d0atconlst_nil (void) ;
 extern d0atconlst_t d0atconlst_cons (d0atcon_t, d0atconlst_t) ;
 
 typedef ats_ptr_type d0atdec_t ;
-extern d0atdec_t d0atdec_make_none (i0de_t, d0atconlst_t) ;
-extern d0atdec_t
-d0atdec_make_some (i0de_t, d0atarglst_t, t0kn_t, d0atconlst_t) ;
-
 typedef ats_ptr_type d0atdeclst_t ;
+extern d0atdec_t d0atdec_make_none (i0de_t, d0atconlst_t) ;
+extern d0atdec_t d0atdec_make_some (i0de_t, d0atarglst_t, t0kn_t, d0atconlst_t) ;
 extern d0atdeclst_t d0atdeclst_nil (void) ;
 extern d0atdeclst_t d0atdeclst_cons (d0atdec_t, d0atdeclst_t) ;
 
 typedef ats_ptr_type e0xndec_t ;
-extern e0xndec_t e0xndec_make (s0qualstlst_t, i0de_t, s0expopt_t) ;
-
 typedef ats_ptr_type e0xndeclst_t ;
+extern e0xndec_t e0xndec_make (s0qualstlst_t, i0de_t, s0expopt_t) ;
 extern e0xndeclst_t e0xndeclst_nil (void) ;
 extern e0xndeclst_t e0xndeclst_cons (e0xndec_t, e0xndeclst_t) ;
 
@@ -551,20 +538,18 @@ extern e0xndeclst_t e0xndeclst_cons (e0xndec_t, e0xndeclst_t) ;
 /* ****** ****** */
 
 typedef ats_ptr_type p0arg_t ;
+typedef ats_ptr_type p0arglst_t ;
 extern p0arg_t p0arg_make_none (i0de_t) ;
 extern p0arg_t p0arg_make_some (i0de_t, s0exp_t) ;
-
-typedef ats_ptr_type p0arglst_t ;
 extern p0arglst_t p0arglst_nil (void) ;
 extern p0arglst_t p0arglst_cons (p0arg_t, p0arglst_t) ;
 
 typedef ats_ptr_type d0arg_t ;
+typedef ats_ptr_type d0arglst_t ;
 extern d0arg_t d0arg_var (i0de_t) ;
 extern d0arg_t d0arg_dyn (t0kn_t, p0arglst_t, t0kn_t) ;
 extern d0arg_t d0arg_dyn2 (t0kn_t, p0arglst_t, p0arglst_t, t0kn_t) ;
 extern d0arg_t d0arg_sta (t0kn_t, s0qualst_t, t0kn_t) ;
-
-typedef ats_ptr_type d0arglst_t ;
 extern d0arglst_t d0arglst_nil (void) ;
 extern d0arglst_t d0arglst_cons (d0arg_t, d0arglst_t) ;
 
@@ -582,10 +567,10 @@ extern extnamopt_t extnamopt_none (void) ;
 extern extnamopt_t extnamopt_some (s0tring_t) ;
 
 typedef ats_ptr_type d0cstdec_t ;
+typedef ats_ptr_type d0cstdeclst_t ;
 extern d0cstdec_t
 d0cstdec_make (i0de_t, d0arglst_t, e0fftaglstopt_t, s0exp_t, extnamopt_t) ;
-
-typedef ats_ptr_type d0cstdeclst_t ;
+// end of [extern]
 extern d0cstdeclst_t d0cstdeclst_nil (void) ;
 extern d0cstdeclst_t d0cstdeclst_cons (d0cstdec_t, d0cstdeclst_t) ;
 
@@ -629,31 +614,24 @@ extern s0vararg_t s0vararg_one (void) ;
 extern s0vararg_t s0vararg_all (void) ;
 extern s0vararg_t s0vararg_seq (s0arglst_t) ;
 
-//
-
 typedef ats_ptr_type s0exparg_t ;
 extern s0exparg_t s0exparg_one (void) ;
 extern s0exparg_t s0exparg_all (void) ;
 extern s0exparg_t s0exparg_seq (s0explst_t) ;
 
-//
-
 typedef ats_ptr_type f0arg_t ;
 typedef ats_ptr_type f0arglst_t ;
-
 extern f0arg_t f0arg_sta1 (t0kn_t, s0qualst_t, t0kn_t) ;
 extern f0arg_t f0arg_sta2 (t0kn_t, s0arglst_t, t0kn_t) ;
 extern f0arg_t f0arg_dyn (p0at_t) ;
 extern f0arg_t f0arg_met_none (t0kn_t) ;
 extern f0arg_t f0arg_met_some (t0kn_t, s0explst_t, t0kn_t) ;
-
 extern f0arglst_t f0arglst_nil (void) ;
 extern f0arglst_t f0arglst_cons (f0arg_t, f0arglst_t) ;
 
-//
-
 typedef ats_ptr_type s0elop_t ;
 extern s0elop_t s0elop_make (int, t0kn_t) ;
+
 typedef ats_ptr_type witht0ype_t ;
 extern witht0ype_t witht0ype_none (void) ;
 extern witht0ype_t witht0ype_prop (s0exp_t) ;
@@ -661,7 +639,9 @@ extern witht0ype_t witht0ype_type (s0exp_t) ;
 extern witht0ype_t witht0ype_view (s0exp_t) ;
 extern witht0ype_t witht0ype_viewtype (s0exp_t) ;
 
-//
+/*
+** dynamic expressions and declarations
+*/
 
 typedef ats_ptr_type d0exp_t ;
 typedef ats_ptr_type d0explst_t ;
@@ -705,6 +685,9 @@ typedef ats_ptr_type guad0ec_t ;
 
 /* ****** ****** */
 
+/*
+** dynamic expressions
+*/
 extern d0exp_t d0exp_ann (d0exp_t, s0exp_t) ;
 //
 extern d0exp_t d0exp_apps (d0exp_t, d0explst_t) ;
@@ -788,12 +771,10 @@ extern d0exp_t d0exp_loopexn (int, t0kn_t) ;
 extern d0exp_t d0exp_macsyn_cross (t0kn_t, d0explst_t, t0kn_t) ;
 extern d0exp_t d0exp_macsyn_decode (t0kn_t, d0explst_t, t0kn_t) ;
 extern d0exp_t d0exp_macsyn_encode_seq (t0kn_t, d0explst_t, t0kn_t) ;
-
 //
 // HX-2010-05-12:
 // extern d0exp_t d0exp_obj (objkind_t, s0exp_t, m0thdeclst_t, t0kn_t) ;
 //
-
 extern d0exp_t d0exp_opide (t0kn_t, i0de_t) ;
 extern d0exp_t d0exp_ptrof (t0kn_t) ;
 extern d0exp_t d0exp_qid (d0ynq_t, i0de_t) ;
@@ -836,6 +817,9 @@ extern loophead_t loophead_make_none (t0kn_t) ;
 extern loophead_t loophead_make_some (t0kn_t, loopi0nv_t, t0kn_t) ;
 extern tryhead_t tryhead_make (t0kn_t) ;
 
+/*
+** pattern matching
+*/
 extern m0atch_t m0atch_make_none (d0exp_t) ;
 extern m0atch_t m0atch_make_some (d0exp_t, p0at_t) ;
 extern m0atchlst_t m0atchlst_nil (void) ;
@@ -868,9 +852,13 @@ extern loopi0nv_t loopi0nv_make
 
 extern initestpost_t initestpost_make
   (t0kn_t, d0explst_t, t0kn_t, d0explst_t, t0kn_t, d0explst_t, t0kn_t) ;
+// end of [extern]
 
 /* ****** ****** */
 
+/*
+** individual declarations
+*/
 extern v0aldec_t v0aldec_make (p0at_t, d0exp_t, witht0ype_t) ;
 extern v0aldeclst_t v0aldeclst_nil (void) ;
 extern v0aldeclst_t v0aldeclst_cons (v0aldec_t, v0aldeclst_t) ;
@@ -882,8 +870,6 @@ extern f0undec_t f0undec_make_some
 extern f0undeclst_t f0undeclst_nil (void) ;
 extern f0undeclst_t f0undeclst_cons (f0undec_t, f0undeclst_t) ;
 
-/* ****** ****** */
-
 extern v0arwth_t v0arwth_none () ;
 extern v0arwth_t v0arwth_some (i0de_t) ;
 
@@ -893,7 +879,6 @@ extern v0ardec_t v0ardec_make_none_some
   (int /*stadyn*/, i0de_t, v0arwth_t, d0exp_t) ;
 extern v0ardec_t v0ardec_make_some_some
   (int /*stadyn*/, i0de_t, s0exp_t, v0arwth_t, d0exp_t) ;
-
 extern v0ardeclst_t v0ardeclst_nil (void) ;
 extern v0ardeclst_t v0ardeclst_cons (v0ardec_t, v0ardeclst_t) ;
 
@@ -908,9 +893,8 @@ extern m0acdeflst_t m0acdeflst_cons (m0acdef_t, m0acdeflst_t) ;
 /* ****** ****** */
 
 extern
-i0mpdec_t i0mpdec_make (
-  impqi0de_t, f0arglst_t, s0expopt_t, d0exp_t
-) ; // end of [i0mpdec_make]
+i0mpdec_t i0mpdec_make (impqi0de_t, f0arglst_t, s0expopt_t, d0exp_t) ;
+// end of [i0mpdec_make]
 
 /* ****** ****** */
 //
@@ -933,7 +917,6 @@ i0mpdec_t i0mpdec_make (
 //  (t0kn_t, i0de_t, f0arglst_t, s0expopt_t, d0exp_t) ;
 // end of [m0thdec_make_imp]
 //
-
 /* ****** ****** */
 
 extern d0ec_t d0ec_infix (t0kn_t, p0rec_t, int, i0delst_t) ;
@@ -979,8 +962,9 @@ extern d0ec_t d0ec_dynload (s0tring_t) ;
 extern d0ec_t d0ec_staload_none (s0tring_t) ;
 extern d0ec_t d0ec_staload_some (i0de_t, s0tring_t) ;
 
-//
-
+/*
+** dynamic declarations
+*/
 extern d0ec_t d0ec_extype (s0tring_t, s0exp_t) ;
 extern d0ec_t d0ec_extval (s0tring_t, d0exp_t) ;
 extern d0ec_t d0ec_extcode_dyn (e0xtcode_t) ;
@@ -995,13 +979,9 @@ extern d0ec_t d0ec_impdec (t0kn_t, s0arglstlst_t, i0mpdec_t) ;
 extern d0ec_t d0ec_local (t0kn_t, d0eclst_t, d0eclst_t, t0kn_t) ;
 extern d0ec_t d0ec_guadec (srpifkindtok_t, guad0ec_t) ;
 
-//
-
 extern guad0ec_t guad0ec_one (e0xp_t, d0eclst_t, t0kn_t) ;
 extern guad0ec_t guad0ec_two (e0xp_t, d0eclst_t, d0eclst_t, t0kn_t) ;
 extern guad0ec_t guad0ec_cons (e0xp_t, d0eclst_t, srpifkindtok_t, guad0ec_t) ;
-
-//
 
 extern d0eclst_t d0eclst_nil (void) ;
 extern d0eclst_t d0eclst_cons (d0ec_t, d0eclst_t) ;
@@ -1837,7 +1817,11 @@ guad0ec_t guad0ec ;
 
 %type <d0eclst> theStartEntry
 
+/* ****** ****** */
+
 %start theStartEntry
+
+/* ****** ****** */
 
 %%
 
@@ -3433,6 +3417,8 @@ d0ecseq_dyn
 /* ****** ****** */
 
 %%
+
+/* ****** ****** */
 
 int
 yylex_tok0 = -1 ;

@@ -30,9 +30,18 @@
 *)
 
 (* ****** ****** *)
-
+//
 // Author: Hongwei Xi (hwxi AT cs DOT bu DOT edu)
-// Time: April 2010
+// Time: May, 2010
+//
+(* ****** ****** *)
+
+staload "libc/SATS/stdio.sats"
+
+(* ****** ****** *)
+
+staload "contrib/glib/SATS/glib.sats"
+staload "contrib/glib/SATS/glib-object.sats"
 
 (* ****** ****** *)
 
@@ -40,72 +49,62 @@ staload "contrib/GTK/SATS/gtk.sats"
 
 (* ****** ****** *)
 
+staload UT = "atsui_util.sats"
+staload SWL = "atsui_srcwinlst.sats"
+
+(* ****** ****** *)
+
 staload "atsui_topenv.sats"
+macdef gs = gstring_of_string
 
 (* ****** ****** *)
 
 %{^
-extern
+
+/* ****** ****** */
+
+ats_ptr_type
+atsui_topenv_get_textview_output () {
+  return theATSUItopenv.textview_output ;
+} // end of [atsui_topenv_get_textview_output]
+
 ats_void_type
-mainats (ats_int_type argc, ats_ptr_type argv) ;
+atsui_topenv_initset_textview_output
+  (ats_ptr_type x) {
+  if (theATSUItopenv.textview_output != (GtkTextView*)0) {
+    fprintf (stderr, "exit(ATS): [atsui_topenv_initset_textview_output] failed\n"); exit(1);
+  } // end of [if]
+  theATSUItopenv.textview_output = (GtkTextView*)x ;
+} // end of [atsui_topenv_initset_textview_output]
+
+/* ****** ****** */
+
 %} // end of [%{^]
 
 (* ****** ****** *)
 
-dynload "atsui_util.dats"
-dynload "atsui_srcwinlst.dats"
+macdef TEXTVIEW_OUTPUT_LEFT_MARGIN = 6
 
-dynload "atsui_compile.dats"
-//
-dynload "atsui_menu_file.dats"
-dynload "atsui_menuitem_file_openfile.dats"
-dynload "atsui_menuitem_file_save.dats"
-dynload "atsui_menuitem_file_saveas.dats"
-dynload "atsui_menuitem_file_quit.dats"
-//
-dynload "atsui_menu_edit.dats"
-dynload "atsui_menuitem_edit_undoredo.dats"
-//
-dynload "atsui_menu_view.dats"
-dynload "atsui_menuitem_view_fontsel.dats"
-//
-dynload "atsui_menu_winlst.dats"
-//
-dynload "atsui_textview_source.dats"
-dynload "atsui_textview_source_linenumber.dats"
-dynload "atsui_textview_output.dats"
-//
-dynload "atsui_topenv.dats"
-
-(* ****** ****** *)
-
-implement main_dummy () = ()
-
-(* ****** ****** *)
-
-extern fun main1 (): void = "main1"
+extern
+fun topenv_make_textview_output (): GtkTextView_ref1
+  = "atsui_topenv_make_textview_output"
 implement
-main1 () = () where {
-   val () = topenv_init ()
-   val (fpf_topwin | topwin) = topenv_get_topwin ()
-   val () = gtk_widget_show (topwin)
-   prval () = fpf_topwin (topwin)
-   val () = gtk_main () // looping until [gtk_main_quit] is called
-} // end of [main1]
+topenv_make_textview_output () = let
+  val tb = gtk_text_buffer_new_null ()
+  val [l_tv:addr] tv = gtk_text_view_new_with_buffer (tb)
+  val () = gtk_text_view_set_editable (tv, GFALSE)
+  val () = gtk_text_view_set_cursor_visible (tv, GFALSE)
+  val () = gtk_text_view_set_left_margin (tv, (gint)TEXTVIEW_OUTPUT_LEFT_MARGIN)
+//
+  val (fpf_x | x) = (gs)"(No compilation output yet)"  
+  val () = gtk_text_buffer_setall_text (tb, x)
+  prval () = fpf_x (x)
+//
+  val () = g_object_unref (tb)
+in
+  tv (* return *)
+end // end of [topenv_make_textview_output]
 
 (* ****** ****** *)
 
-%{$
-ats_void_type
-mainats (
-  ats_int_type argc, ats_ptr_type argv
-) {
-  gtk_init ((int*)&argc, (char***)&argv) ;
-  main1 () ;
-  return ;
-} // end of [mainats]
-%} // end of [%{$]
-
-(* ****** ****** *)
-
-(* end of [atsui_main.dats] *)
+(* end of [atsui_textview_output.dats] *)

@@ -32,199 +32,213 @@ macdef SYMREGpluslit (x) = SYMREGplus(SYMREGlit ,(x))
 
 (* ****** ****** *)
 
-val t0kn_tyname = tyname_make_string "t0kn"
-val c0har_tyname = tyname_make_string "c0har"
-val e0xtcode_tyname = tyname_make_string "e0xtcode"
-val f0loat_tyname = tyname_make_string "f0loat"
-val f0loatsp_tyname = tyname_make_string "f0loatsp"
-val i0nt_tyname = tyname_make_string "i0nt"
-val i0ntsp_tyname = tyname_make_string "i0ntsp"
-val s0tring_tyname = tyname_make_string "s0tring"
-val i0de_tyname = tyname_make_string "i0de"
-val l0ab_tyname = tyname_make_string "l0ab"
-val p0rec_tyname = tyname_make_string "p0rec"
+fn tyname_make_namdef (
+  nam: string, def: string
+) : tyname = x where {
+  val x = tyname_make_namdef (nam, def)
+  val () = theTynamelst_add (x)
+(*
+  val () = (
+    print ("tyname_make_namdef: x = "); print x; print_newline ()
+  ) // end of [val]
+*)
+} // end of [tyname_make_namdef]
 
 (* ****** ****** *)
 
-val abskind_tyname = tyname_make_string "abskind"
-val dcstkind_tyname = tyname_make_string "dcstkind"
-val datakind_tyname = tyname_make_string "datakind"
-val stadefkind_tyname = tyname_make_string "stadefkind"
+val t0kn_tyname = tyname_make_namdef ("t0kn", "t0kn_t")
+val c0har_tyname = tyname_make_namdef ("c0har", "c0har_t")
+val e0xtcode_tyname = tyname_make_namdef ("e0xtcode", "e0xtcode_t")
+val f0loat_tyname = tyname_make_namdef ("f0loat", "f0loat_t")
+val f0loatsp_tyname = tyname_make_namdef ("f0loatsp", "f0loatsp_t")
+val i0nt_tyname = tyname_make_namdef ("i0nt", "i0nt_t")
+val i0ntsp_tyname = tyname_make_namdef ("i0ntsp", "i0ntsp_t")
+val s0tring_tyname = tyname_make_namdef ("s0tring", "s0tring_t")
+val i0de_tyname = tyname_make_namdef ("i0de", "i0de_t")
+val l0ab_tyname = tyname_make_namdef ("l0ab", "l0ab_t")
+val p0rec_tyname = tyname_make_namdef ("p0rec", "p0rec_t")
 
-val valkind_tyname = tyname_make_string "valkind"
-val funkind_tyname = tyname_make_string "funkind"
-val lamkind_tyname = tyname_make_string "lamkind"
-val fixkind_tyname = tyname_make_string "fixkind"
+(* ****** ****** *)
 
-val srpifkindtok_tyname = tyname_make_string "srpifkindtok"
+val abskind_tyname = tyname_make_namdef ("abskind", "abskind_t")
+val dcstkind_tyname = tyname_make_namdef ("dcstkind", "dcstkind_t")
+val datakind_tyname = tyname_make_namdef ("datakind", "datakind_t")
+val stadefkind_tyname = tyname_make_namdef ("stadefkind", "stadefkind_t")
 
-val i0de_tyname = tyname_make_string "i0de"
-val i0delst_tyname = tyname_make_string "i0delst"
+val valkind_tyname = tyname_make_namdef ("valkind", "valkind_t")
+val funkind_tyname = tyname_make_namdef ("funkind", "funkind_t")
+val lamkind_tyname = tyname_make_namdef ("lamkind", "lamkind_t")
+val fixkind_tyname = tyname_make_namdef ("fixkind", "fixkind_t")
 
-val e0xp_tyname = tyname_make_string "e0xp"
-val e0xplst_tyname = tyname_make_string "e0xplst"
-val e0xpopt_tyname = tyname_make_string "e0xpopt"
+val srpifkindtok_tyname = tyname_make_namdef ("srpifkindtok", "srpifkindtok_t")
 
-val e0fftag_tyname = tyname_make_string "e0fftag"
-val e0fftaglst_tyname = tyname_make_string "e0fftaglst"
-val e0fftaglstopt_tyname = tyname_make_string "e0fftaglstopt"
+val i0de_tyname = tyname_make_namdef ("i0de", "i0de_t")
+val i0delst_tyname = tyname_make_namdef ("i0delst", "i0delst_t")
 
-val s0rt_tyname = tyname_make_string "s0rt"
-val s0rtq_tyname = tyname_make_string "s0rtq"
-val s0rtlst_tyname = tyname_make_string "s0rtlst"
-val s0rtopt_tyname = tyname_make_string "s0rtopt"
-val s0rtpol_tyname = tyname_make_string "s0rtpol"
+val e0xp_tyname = tyname_make_namdef ("e0xp", "e0xp_t")
+val e0xplst_tyname = tyname_make_namdef ("e0xplst", "e0xplst_t")
+val e0xpopt_tyname = tyname_make_namdef ("e0xpopt", "e0xpopt_t")
 
-val d0atsrtcon_tyname = tyname_make_string "d0atsrtcon"
-val d0atsrtconlst_tyname = tyname_make_string "d0atsrtconlst"
-val d0atsrtdec_tyname = tyname_make_string "d0atsrtdec"
-val d0atsrtdeclst_tyname = tyname_make_string "d0atsrtdeclst"
+val e0fftag_tyname = tyname_make_namdef ("e0fftag", "e0fftag_t")
+val e0fftaglst_tyname = tyname_make_namdef ("e0fftaglst", "e0fftaglst_t")
+val e0fftaglstopt_tyname = tyname_make_namdef ("e0fftaglstopt", "e0fftaglstopt_t")
 
-val s0taq_tyname = tyname_make_string "s0taq_tyname"
-val d0ynq_tyname = tyname_make_string "d0ynq_tyname"
+val s0rt_tyname = tyname_make_namdef ("s0rt", "s0rt_t")
+val s0rtq_tyname = tyname_make_namdef ("s0rtq", "s0rtq_t")
+val s0rtlst_tyname = tyname_make_namdef ("s0rtlst", "s0rtlst_t")
+val s0rtopt_tyname = tyname_make_namdef ("s0rtopt", "s0rtopt_t")
+val s0rtpol_tyname = tyname_make_namdef ("s0rtpol", "s0rtpol_t")
 
-val sqi0de_tyname = tyname_make_string "sqi0de"
-val dqi0de_tyname = tyname_make_string "dqi0de"
-val arrqi0de_tyname = tyname_make_string "arrqi0de"
-val tmpqi0de_tyname = tyname_make_string "tmpqi0de"
+val d0atsrtcon_tyname = tyname_make_namdef ("d0atsrtcon", "d0atsrtcon_t")
+val d0atsrtconlst_tyname = tyname_make_namdef ("d0atsrtconlst", "d0atsrtconlst_t")
+val d0atsrtdec_tyname = tyname_make_namdef ("d0atsrtdec", "d0atsrtdec_t")
+val d0atsrtdeclst_tyname = tyname_make_namdef ("d0atsrtdeclst", "d0atsrtdeclst_t")
 
-val s0arg_tyname = tyname_make_string "s0arg"
-val s0arglst_tyname = tyname_make_string "s0arglst"
-val s0arglstlst_tyname = tyname_make_string "s0arglstlst"
+val s0taq_tyname = tyname_make_namdef ("s0taq_tyname", "s0taq_tyname_t")
+val d0ynq_tyname = tyname_make_namdef ("d0ynq_tyname", "d0ynq_tyname_t")
 
-val sp0at_tyname = tyname_make_string "sp0at"
+val sqi0de_tyname = tyname_make_namdef ("sqi0de", "sqi0de_t")
+val dqi0de_tyname = tyname_make_namdef ("dqi0de", "dqi0de_t")
+val arrqi0de_tyname = tyname_make_namdef ("arrqi0de", "arrqi0de_t")
+val tmpqi0de_tyname = tyname_make_namdef ("tmpqi0de", "tmpqi0de_t")
 
-val s0exp_tyname = tyname_make_string "s0exp"
-val s0explst_tyname = tyname_make_string "s0explst"
-val s0expopt_tyname = tyname_make_string "s0expopt"
-val s0explstlst_tyname = tyname_make_string "s0explstlst"
-val s0explstopt_tyname = tyname_make_string "s0explstopt"
-val labs0explst_tyname = tyname_make_string "labs0explst"
-val s0arrind_tyname = tyname_make_string "s0arrind_tyname"
-val t1mps0explstlst = tyname_make_string "t1mps0explstlst"
+val s0arg_tyname = tyname_make_namdef ("s0arg", "s0arg_t")
+val s0arglst_tyname = tyname_make_namdef ("s0arglst", "s0arglst_t")
+val s0arglstlst_tyname = tyname_make_namdef ("s0arglstlst", "s0arglstlst_t")
 
-val s0qua_tyname = tyname_make_string "s0qua"
-val s0qualst_tyname = tyname_make_string "s0qualst"
-val s0qualstlst_tyname = tyname_make_string "s0qualstlst"
-val s0qualstopt_tyname = tyname_make_string "s0qualstopt"
-val s0rtext_tyname = tyname_make_string "s0rtext"
+val sp0at_tyname = tyname_make_namdef ("sp0at", "sp0at_t")
 
-val impqi0de_tyname = tyname_make_string "impqi0de"
+val s0exp_tyname = tyname_make_namdef ("s0exp", "s0exp_t")
+val s0explst_tyname = tyname_make_namdef ("s0explst", "s0explst_t")
+val s0expopt_tyname = tyname_make_namdef ("s0expopt", "s0expopt_t")
+val s0explstlst_tyname = tyname_make_namdef ("s0explstlst", "s0explstlst_t")
+val s0explstopt_tyname = tyname_make_namdef ("s0explstopt", "s0explstopt_t")
+val labs0explst_tyname = tyname_make_namdef ("labs0explst", "labs0explst_t")
+val s0arrind_tyname = tyname_make_namdef ("s0arrind_tyname", "s0arrind_tyname_t")
+val t1mps0explstlst = tyname_make_namdef ("t1mps0explstlst", "t1mps0explstlst_t")
+
+val s0qua_tyname = tyname_make_namdef ("s0qua", "s0qua_t")
+val s0qualst_tyname = tyname_make_namdef ("s0qualst", "s0qualst_t")
+val s0qualstlst_tyname = tyname_make_namdef ("s0qualstlst", "s0qualstlst_t")
+val s0qualstopt_tyname = tyname_make_namdef ("s0qualstopt", "s0qualstopt_t")
+val s0rtext_tyname = tyname_make_namdef ("s0rtext", "s0rtext_t")
+
+val impqi0de_tyname = tyname_make_namdef ("impqi0de", "impqi0de_t")
 
 (*
 ** static declarations
 *)
-val s0rtdef_tyname = tyname_make_string "s0rtdef"
-val s0rtdeflst_tyname = tyname_make_string "s0rtdeflst"
-val d0atarg_tyname = tyname_make_string "d0atarg"
-val d0atarglst_tyname = tyname_make_string "d0atarglst"
-val s0tacon_tyname = tyname_make_string "s0tacon"
-val s0taconlst_tyname = tyname_make_string "s0taconlst"
-val s0tacst_tyname = tyname_make_string "s0tacst"
-val s0tacstlst_tyname = tyname_make_string "s0tacstlst"
-val s0tavar_tyname = tyname_make_string "s0tavar"
-val s0tavarlst_tyname = tyname_make_string "s0tavarlst"
+val s0rtdef_tyname = tyname_make_namdef ("s0rtdef", "s0rtdef_t")
+val s0rtdeflst_tyname = tyname_make_namdef ("s0rtdeflst", "s0rtdeflst_t")
+val d0atarg_tyname = tyname_make_namdef ("d0atarg", "d0atarg_t")
+val d0atarglst_tyname = tyname_make_namdef ("d0atarglst", "d0atarglst_t")
+val s0tacon_tyname = tyname_make_namdef ("s0tacon", "s0tacon_t")
+val s0taconlst_tyname = tyname_make_namdef ("s0taconlst", "s0taconlst_t")
+val s0tacst_tyname = tyname_make_namdef ("s0tacst", "s0tacst_t")
+val s0tacstlst_tyname = tyname_make_namdef ("s0tacstlst", "s0tacstlst_t")
+val s0tavar_tyname = tyname_make_namdef ("s0tavar", "s0tavar_t")
+val s0tavarlst_tyname = tyname_make_namdef ("s0tavarlst", "s0tavarlst_t")
 
-val s0expdef_tyname = tyname_make_string "s0expdef"
-val s0expdeflst_tyname = tyname_make_string "s0expdeflst"
-val s0expdefopt_tyname = tyname_make_string "s0expdefopt"
-val s0aspdec_tyname = tyname_make_string "s0aspdec"
+val s0expdef_tyname = tyname_make_namdef ("s0expdef", "s0expdef_t")
+val s0expdeflst_tyname = tyname_make_namdef ("s0expdeflst", "s0expdeflst_t")
+val s0expdefopt_tyname = tyname_make_namdef ("s0expdefopt", "s0expdefopt_t")
+val s0aspdec_tyname = tyname_make_namdef ("s0aspdec", "s0aspdec_t")
 
 (*
 ** dataprop/type/view/viewtype declarations
 *)
-val d0atcon_tyname = tyname_make_string "d0atcon"
-val d0atconlst_tyname = tyname_make_string "d0atconlst"
-val d0atdec_tyname = tyname_make_string "d0atdec"
-val d0atdeclst_tyname = tyname_make_string "d0atdeclst"
-val e0xndec_tyname = tyname_make_string "e0xndec"
-val e0xndeclst_tyname = tyname_make_string "e0xndeclst"
+val d0atcon_tyname = tyname_make_namdef ("d0atcon", "d0atcon_t")
+val d0atconlst_tyname = tyname_make_namdef ("d0atconlst", "d0atconlst_t")
+val d0atdec_tyname = tyname_make_namdef ("d0atdec", "d0atdec_t")
+val d0atdeclst_tyname = tyname_make_namdef ("d0atdeclst", "d0atdeclst_t")
+val e0xndec_tyname = tyname_make_namdef ("e0xndec", "e0xndec_t")
+val e0xndeclst_tyname = tyname_make_namdef ("e0xndeclst", "e0xndeclst_t")
 
-val p0arg_tyname = tyname_make_string "p0arg"
-val p0arglst_tyname = tyname_make_string "p0arglst"
-val d0arg_tyname = tyname_make_string "d0arg"
-val d0arglst_tyname = tyname_make_string "d0arglst"
+val p0arg_tyname = tyname_make_namdef ("p0arg", "p0arg_t")
+val p0arglst_tyname = tyname_make_namdef ("p0arglst", "p0arglst_t")
+val d0arg_tyname = tyname_make_namdef ("d0arg", "d0arg_t")
+val d0arglst_tyname = tyname_make_namdef ("d0arglst", "d0arglst_t")
 
-val extnamopt_tyname = tyname_make_string "extnamopt"
-val d0cstdec_tyname = tyname_make_string "d0cstdec"
-val d0cstdeclst_tyname = tyname_make_string "d0cstdeclst"
+val extnamopt_tyname = tyname_make_namdef ("extnamopt", "extnamopt_t")
+val d0cstdec_tyname = tyname_make_namdef ("d0cstdec", "d0cstdec_t")
+val d0cstdeclst_tyname = tyname_make_namdef ("d0cstdeclst", "d0cstdeclst_t")
 
-val s0vararg_tyname = tyname_make_string "s0vararg"
-val s0exparg_tyname = tyname_make_string "s0exparg"
-val s0elop_tyname = tyname_make_string "s0elop"
-val witht0ype_tyname = tyname_make_string "witht0ype"
+val s0vararg_tyname = tyname_make_namdef ("s0vararg", "s0vararg_t")
+val s0exparg_tyname = tyname_make_namdef ("s0exparg", "s0exparg_t")
+val s0elop_tyname = tyname_make_namdef ("s0elop", "s0elop_t")
+val witht0ype_tyname = tyname_make_namdef ("witht0ype", "witht0ype_t")
 
 (*
 ** dynamic patterns
 *)
-val p0at_tyname = tyname_make_string "p0at"
-val p0atlst_tyname = tyname_make_string "p0atlst"
-val labp0atlst_tyname = tyname_make_string "labp0atlst"
+val p0at_tyname = tyname_make_namdef ("p0at", "p0at_t")
+val p0atlst_tyname = tyname_make_namdef ("p0atlst", "p0atlst_t")
+val labp0atlst_tyname = tyname_make_namdef ("labp0atlst", "labp0atlst_t")
 
-val f0arg_tyname = tyname_make_string "f0arg"
-val f0arglst_tyname = tyname_make_string "f0arglst"
+val f0arg_tyname = tyname_make_namdef ("f0arg", "f0arg_t")
+val f0arglst_tyname = tyname_make_namdef ("f0arglst", "f0arglst_t")
 
 (*
 ** dynamic expressions
 *)
-val d0exp_tyname = tyname_make_string "d0exp"
-val d0explst_tyname = tyname_make_string "d0explst"
-val d0expopt_tyname = tyname_make_string "d0expopt"
-val labd0explst_tyname = tyname_make_string "labd0explst"
-val d0arrind_tyname = tyname_make_string "d0arrind"
+val d0exp_tyname = tyname_make_namdef ("d0exp", "d0exp_t")
+val d0explst_tyname = tyname_make_namdef ("d0explst", "d0explst_t")
+val d0expopt_tyname = tyname_make_namdef ("d0expopt", "d0expopt_t")
+val labd0explst_tyname = tyname_make_namdef ("labd0explst", "labd0explst_t")
+val d0arrind_tyname = tyname_make_namdef ("d0arrind", "d0arrind_t")
 
-val ifhead_tyname = tyname_make_string "ifhead"
-val casehead_tyname = tyname_make_string "casehead"
-val loophead_tyname = tyname_make_string "loophead"
-val tryhead_tyname = tyname_make_string "tryhead"
+val ifhead_tyname = tyname_make_namdef ("ifhead", "ifhead_t")
+val casehead_tyname = tyname_make_namdef ("casehead", "casehead_t")
+val loophead_tyname = tyname_make_namdef ("loophead", "loophead_t")
+val tryhead_tyname = tyname_make_namdef ("tryhead", "tryhead_t")
 
 (*
 ** pattern matching
 *)
-val m0atch_tyname = tyname_make_string "m0atch"
-val m0atchlst_tyname = tyname_make_string "m0atchlst"
-val guap0at_tyname = tyname_make_string "guap0at"
-val c0lau_tyname = tyname_make_string "c0lau"
-val c0laulst_tyname = tyname_make_string "c0laulst"
-val sc0lau_tyname = tyname_make_string "sc0lau"
-val sc0laulst_tyname = tyname_make_string "sc0laulst"
+val m0atch_tyname = tyname_make_namdef ("m0atch", "m0atch_t")
+val m0atchlst_tyname = tyname_make_namdef ("m0atchlst", "m0atchlst_t")
+val guap0at_tyname = tyname_make_namdef ("guap0at", "guap0at_t")
+val c0lau_tyname = tyname_make_namdef ("c0lau", "c0lau_t")
+val c0laulst_tyname = tyname_make_namdef ("c0laulst", "c0laulst_t")
+val sc0lau_tyname = tyname_make_namdef ("sc0lau", "sc0lau_t")
+val sc0laulst_tyname = tyname_make_namdef ("sc0laulst", "sc0laulst_t")
 
 (*
 ** invariants
 *)
-val i0nvarg_tyname = tyname_make_string "i0nvarg"
-val i0nvarglst_tyname = tyname_make_string "i0nvarglst"
-val i0nvresstate_tyname = tyname_make_string "i0nvresstate"
-val loopi0nv_tyname = tyname_make_string "loopi0nv"
-val initestpost_tyname = tyname_make_string "initestpost"
+val i0nvarg_tyname = tyname_make_namdef ("i0nvarg", "i0nvarg_t")
+val i0nvarglst_tyname = tyname_make_namdef ("i0nvarglst", "i0nvarglst_t")
+val i0nvresstate_tyname = tyname_make_namdef ("i0nvresstate", "i0nvresstate_t")
+val loopi0nv_tyname = tyname_make_namdef ("loopi0nv", "loopi0nv_t")
+val initestpost_tyname = tyname_make_namdef ("initestpost", "initestpost_t")
 
 (*
 ** macro definitions
 *)
-val m0arg_tyname = tyname_make_string "m0arg"
-val m0arglst_tyname = tyname_make_string "m0arglst"
-val m0acarg_tyname = tyname_make_string "m0acarg"
-val m0acarglst_tyname = tyname_make_string "m0acarglst"
-val m0acdef_tyname = tyname_make_string "m0acdef"
-val m0acdeflst_tyname = tyname_make_string "m0acdeflst"
+val m0arg_tyname = tyname_make_namdef ("m0arg", "m0arg_t")
+val m0arglst_tyname = tyname_make_namdef ("m0arglst", "m0arglst_t")
+val m0acarg_tyname = tyname_make_namdef ("m0acarg", "m0acarg_t")
+val m0acarglst_tyname = tyname_make_namdef ("m0acarglst", "m0acarglst_t")
+val m0acdef_tyname = tyname_make_namdef ("m0acdef", "m0acdef_t")
+val m0acdeflst_tyname = tyname_make_namdef ("m0acdeflst", "m0acdeflst_t")
 
 (*
 **
 *)
-val v0aldec_tyname = tyname_make_string "v0aldec"
-val v0aldeclst_tyname = tyname_make_string "v0aldeclst"
-val f0undec_tyname = tyname_make_string "f0undec"
-val f0undeclst_tyname = tyname_make_string "f0undeclst"
-val v0arwth_tyname = tyname_make_string "v0arwth"
-val v0ardec_tyname = tyname_make_string "v0ardec"
-val v0ardeclst_tyname = tyname_make_string "v0ardeclst"
-val i0mpdec_tyname = tyname_make_string "i0mpdec"
+val v0aldec_tyname = tyname_make_namdef ("v0aldec", "v0aldec_t")
+val v0aldeclst_tyname = tyname_make_namdef ("v0aldeclst", "v0aldeclst_t")
+val f0undec_tyname = tyname_make_namdef ("f0undec", "f0undec_t")
+val f0undeclst_tyname = tyname_make_namdef ("f0undeclst", "f0undeclst_t")
+val v0arwth_tyname = tyname_make_namdef ("v0arwth", "v0arwth_t")
+val v0ardec_tyname = tyname_make_namdef ("v0ardec", "v0ardec_t")
+val v0ardeclst_tyname = tyname_make_namdef ("v0ardeclst", "v0ardeclst_t")
+val i0mpdec_tyname = tyname_make_namdef ("i0mpdec", "i0mpdec_t")
 
 (*
 ** generic declarations
 *)
-val d0ec_tyname = tyname_make_string "d0ec"
-val d0eclst_tyname = tyname_make_string "d0eclst"
+val d0ec_tyname = tyname_make_namdef ("d0ec", "d0ec_t")
+val d0eclst_tyname = tyname_make_namdef ("d0eclst", "d0eclst_t")
 
 (* ****** ****** *)
 
