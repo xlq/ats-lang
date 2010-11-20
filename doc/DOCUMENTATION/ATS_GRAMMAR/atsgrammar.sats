@@ -140,6 +140,11 @@ fun grmrule_set_action
   (gr: grmrule, action: string): void = "atsgrammar_grmrule_set_action"
 // end of [grmrule_set_action]
 
+fun grmrule_get_precval (gr: grmrule): Stropt
+fun grmrule_set_precval
+  (gr: grmrule, precval: string): void = "atsgrammar_grmrule_set_precval"
+// end of [grmrule_set_precval]
+
 fun grmrule_get_symreglst (gr: grmrule): symreglst
 
 (* ****** ****** *)

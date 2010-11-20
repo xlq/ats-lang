@@ -188,7 +188,7 @@ fn e0xp_tr_errmsg_opr (loc: loc_t): e1xp = begin
   $Err.abort {e1xp} ()
 end // end of [e0xp_tr_errmsg_opr]
   
-implement e0xp_tr e0 = let
+implement e0xp_tr (e0) = let
 //
   fun aux_item (e0: e0xp): e1xpitm = let
     val loc = e0.e0xp_loc in case+ e0.e0xp_node of
@@ -238,7 +238,7 @@ in
   // end of [case]
 end // end of [e0xp_tr]
 
-implement e0xplst_tr es = $Lst.list_map_fun (es, e0xp_tr)
+implement e0xplst_tr (es) = $Lst.list_map_fun (es, e0xp_tr)
 
 (* ****** ****** *)
 
@@ -286,35 +286,36 @@ fn s0rt_tr_errmsg_opr
   $Err.abort {s1rt} ()
 end // end of [s0rt_tr_errmsg_opr]
   
-implement s0rt_tr s0t0 = let
+implement s0rt_tr (s0t0) = let
 //
 fun aux_item (s0t0: s0rt): s1rtitm = let
   val loc0 = s0t0.s0rt_loc in case+ s0t0.s0rt_node of
     | S0RTapp _ => let 
         val s1t0 =
           $Fix.fixity_resolve (loc0, s1rtitm_app, aux_itemlst s0t0)
+        // end of [val]
       in
         $Fix.ITEMatm s1t0
-      end
+      end // end of [S0RTapp]
     | S0RTide id when id = $Sym.symbol_BACKSLASH => s1rtitm_backslash
     | S0RTide id => begin case+ the_fxtyenv_find id of
       | ~Some_vt f => s1rt_make_opr (s1rt_ide (loc0, id), f)
       | ~None_vt () => $Fix.ITEMatm (s1rt_ide (loc0, id))
-      end
+      end // end of [S0RTide]
     | S0RTlist (s0ts) => $Fix.ITEMatm (s1rt_list (loc0, s0rtlst_tr s0ts))
     | S0RTqid (q, id) => $Fix.ITEMatm (s1rt_qid (loc0, q, id))
     | S0RTtup (s0ts) => $Fix.ITEMatm (s1rt_tup (loc0, s0rtlst_tr s0ts))
 end // end of [aux_item]
 //
-and aux_itemlst (s0t0: s0rt): s1rtitmlst = let
+and aux_itemlst
+  (s0t0: s0rt): s1rtitmlst = let
   fun aux (res: s1rtitmlst, s0t0: s0rt): s1rtitmlst =
     case+ s0t0.s0rt_node of
     | S0RTapp (s0t1, s0t2) => let
-        val res = aux_item s0t2 :: res
-      in
-        aux (res, s0t1)
-      end
-    | _ => aux_item s0t0 :: res
+        val res = aux_item s0t2 :: res in aux (res, s0t1)
+      end // end of [S0RTapp]
+    | _ => aux_item s0t0 :: res // end of [_]
+  // end of [aux]
 in
   aux (nil (), s0t0)
 end // end of [aux_itemlst]
@@ -326,9 +327,10 @@ in
   // end of [case]
 end // end of [s0rt_tr]
 
-implement s0rtlst_tr (s0ts: s0rtlst) = $Lst.list_map_fun (s0ts, s0rt_tr)
+implement
+s0rtlst_tr (s0ts) = $Lst.list_map_fun (s0ts, s0rt_tr)
 
-implement s0rtopt_tr (os0t: s0rtopt) =
+implement s0rtopt_tr (os0t) =
   case+ os0t of Some s0t => Some (s0rt_tr s0t) | None () => None ()
 // end of [s0rtopt_tr]
 
@@ -380,7 +382,8 @@ end // end of [d0atarglst_srtlst_tr]
 
 (* ****** ****** *)
 
-implement d0ec_fixity_tr (f0xty, ids) = let
+implement
+d0ec_fixity_tr (f0xty, ids) = let
   fun loop (fxty: $Fix.fxty_t, ids: i0delst): void =
     case+ ids of
     | cons (id, ids) => let
@@ -407,12 +410,13 @@ in
   loop (f0xty_tr f0xty, ids)
 end // end of [d0ec_fixity_tr]
 
-implement d0ec_nonfix_tr (ids) = let
+implement
+d0ec_nonfix_tr (ids) = let
   fun loop (ids: i0delst): void = case+ ids of
     | cons (id, ids) => begin
         the_fxtyenv_add (id.i0de_sym, $Fix.fxty_non); loop ids
       end // end of [cons]
-    | nil () => ()
+    | nil () => () // end of [nil]
   // end of [loop]
 in
   loop ids
@@ -420,7 +424,8 @@ end // end of [d0ec_nonfix_tr]
 
 (* ****** ****** *)
 
-implement do_e0xpact_assert (loc, v) = let
+implement
+do_e0xpact_assert (loc, v) = let
   val is_false = (case+ v of
     | V1ALchar c => c = '\0'
     | V1ALfloat f => f = 0.0 | V1ALint i => i = 0
@@ -436,7 +441,8 @@ in
   end // end of [if]
 end // end of [do_e0xpact_assert]
 
-implement do_e0xpact_error (loc, v) = let
+implement
+do_e0xpact_error (loc, v) = let
   val () = begin
     prerr_loc_error1 loc;
     prerr ": [#error] directive encountered: "
@@ -451,7 +457,8 @@ in
   exit {void} (1)
 end // end of [do_e0xpact_error]
 
-implement do_e0xpact_prerr (v) = case+ v of
+implement
+do_e0xpact_prerr (v) = case+ v of
   | V1ALchar c => prerr c
   | V1ALfloat f => prerr f
   | V1ALint i => prerr i
@@ -460,7 +467,8 @@ implement do_e0xpact_prerr (v) = case+ v of
 
 (* ****** ****** *)
 
-implement s0tacon_tr (d) = let
+implement
+s0tacon_tr (d) = let
   val arg = (case+ d.s0tacon_arg of
     | Some d0as => Some (d0atarglst_tr d0as) | None () => None ()
   ) : Option d1atarglst 
@@ -469,11 +477,13 @@ in
   s1tacon_make (d.s0tacon_loc, d.s0tacon_sym, arg, def)
 end // end of [s0tacon_tr]
 
-implement s0taconlst_tr (ds) = $Lst.list_map_fun (ds, s0tacon_tr)
+implement
+s0taconlst_tr (ds) = $Lst.list_map_fun (ds, s0tacon_tr)
 
 (* ****** ****** *)
 
-implement s0tacst_tr (d) = let
+implement
+s0tacst_tr (d) = let
   val os1ts_arg = (
     case+ d.s0tacst_arg of
     | Some arg => Some (d0atarglst_srtlst_tr arg) | None () => None ()
@@ -483,21 +493,25 @@ in
   s1tacst_make (d.s0tacst_loc, d.s0tacst_sym, os1ts_arg, s1t_res)
 end // end of [s0tacst_tr]
 
-implement s0tacstlst_tr (ds) = $Lst.list_map_fun (ds, s0tacst_tr)
+implement
+s0tacstlst_tr (ds) = $Lst.list_map_fun (ds, s0tacst_tr)
 
 (* ****** ****** *)
 
-implement s0tavar_tr (d) = let
+implement
+s0tavar_tr (d) = let
   val s1t: s1rt = s0rt_tr d.s0tavar_srt
 in
   s1tavar_make (d.s0tavar_loc, d.s0tavar_sym, s1t)
 end // end of [s0tavar_tr]
 
-implement s0tavarlst_tr (ds) = $Lst.list_map_fun (ds, s0tavar_tr)
+implement
+s0tavarlst_tr (ds) = $Lst.list_map_fun (ds, s0tavar_tr)
 
 (* ****** ****** *)
 
-fun d0atsrtcon_tr (x: d0atsrtcon): d1atsrtcon = let
+fun d0atsrtcon_tr
+  (x: d0atsrtcon): d1atsrtcon = let
   val loc = x.d0atsrtcon_loc and nam = x.d0atsrtcon_sym
   val s1ts = (
     case+ x.d0atsrtcon_arg of
@@ -516,13 +530,15 @@ end // end of [d0atsrtcon_tr]
 fun d0atsrtconlst_tr (xs: d0atsrtconlst): d1atsrtconlst =
   $Lst.list_map_fun (xs, d0atsrtcon_tr)
 
-implement d0atsrtdec_tr (d) = let
+implement
+d0atsrtdec_tr (d) = let
   val loc = d.d0atsrtdec_loc and nam = d.d0atsrtdec_sym
 in
   d1atsrtdec_make (loc, nam, d0atsrtconlst_tr d.d0atsrtdec_con)
 end // end of [d0atsrtdec_tr]
 
-implement d0atsrtdeclst_tr (ds) = $Lst.list_map_fun (ds, d0atsrtdec_tr)
+implement
+d0atsrtdeclst_tr (ds) = $Lst.list_map_fun (ds, d0atsrtdec_tr)
 
 (* ****** ****** *)
 
@@ -532,10 +548,13 @@ in
   s1arg_make (s0a.s0arg_loc, s0a.s0arg_sym, res)
 end // end of [s0arg_tr]
 
-implement s0arglst_tr (s0as) = $Lst.list_map_fun (s0as, s0arg_tr)
-implement s0arglstlst_tr (s0ass) = $Lst.list_map_fun (s0ass, s0arglst_tr)
+implement
+s0arglst_tr (s0as) = $Lst.list_map_fun (s0as, s0arg_tr)
+implement
+s0arglstlst_tr (s0ass) = $Lst.list_map_fun (s0ass, s0arglst_tr)
 
-implement sp0at_tr (sp0t) = begin case+ sp0t.sp0at_node of
+implement
+sp0at_tr (sp0t) = begin case+ sp0t.sp0at_node of
   | SP0Tcon (qid, s0as) => let
       val s1as = s0arglst_tr s0as
     in
@@ -597,8 +616,10 @@ fn s0qua_tr (s0q: s0qua): s1qua = begin
     end
 end // end of [s0qua_tr]
 
-implement s0qualst_tr (s0qs) = $Lst.list_map_fun (s0qs, s0qua_tr)
-implement s0qualstlst_tr (s0qss) = $Lst.list_map_fun (s0qss, s0qualst_tr)
+implement
+s0qualst_tr (s0qs) = $Lst.list_map_fun (s0qs, s0qua_tr)
+implement
+s0qualstlst_tr (s0qss) = $Lst.list_map_fun (s0qss, s0qualst_tr)
 
 (* ****** ****** *)
 
@@ -609,7 +630,8 @@ fn s0exp_tr_errmsg_opr
   $Err.abort {s1exp} ()
 end // end of [s0exp_tr_errmsg_opr]
 
-implement s0exp_tr s0e0 = let
+implement
+s0exp_tr s0e0 = let
   fun aux_item (s0e0: s0exp): s1expitm = let
     val loc0 = s0e0.s0exp_loc in case+ s0e0.s0exp_node of
     | S0Eann (s0e, s0t) => let
@@ -820,25 +842,28 @@ in
   | $Fix.ITEMopr _ => s0exp_tr_errmsg_opr s0e0.s0exp_loc
 end // end of [s0exp_tr]
 
-implement s0explst_tr s0es =
-  $Lst.list_map_fun (s0es, s0exp_tr)
+implement
+s0explst_tr (s0es) = $Lst.list_map_fun (s0es, s0exp_tr)
 // end of [s0explst_tr]
 
-implement s0expopt_tr (os0e) = case+ os0e of
+implement
+s0expopt_tr (os0e) = case+ os0e of
   | Some s0e => Some (s0exp_tr s0e) | None () => None ()
 // end of [s0expopt_tr]
 
-implement s0explstlst_tr s0ess =
-  $Lst.list_map_fun (s0ess, s0explst_tr)
+implement
+s0explstlst_tr s0ess = $Lst.list_map_fun (s0ess, s0explst_tr)
 // end of [s0explstlst_tr]
 
-implement labs0explst_tr ls0es = case+ ls0es of
+implement
+labs0explst_tr ls0es = case+ ls0es of
   | LABS0EXPLSTcons (l, s0e, ls0es) =>
     LABS1EXPLSTcons (l.l0ab_lab, s0exp_tr s0e, labs0explst_tr ls0es)
   | LABS0EXPLSTnil () => LABS1EXPLSTnil ()
 // end of [labs0explst_tr]
 
-implement s0rtext_tr s0te = let
+implement
+s0rtext_tr s0te = let
   val loc = s0te.s0rtext_loc
 in
   case+ s0te.s0rtext_node of
@@ -853,7 +878,8 @@ end // end of [s0rtext_tr]
 
 (* ****** ****** *)
 
-implement t1mps0explstlst_tr (ts0ess) = begin
+implement
+t1mps0explstlst_tr (ts0ess) = begin
   case+ ts0ess of
   | T1MPS0EXPLSTLSTnil () => TMPS1EXPLSTLSTnil ()
   | T1MPS0EXPLSTLSTcons (loc, s0es, ts0ess) => let
@@ -866,7 +892,8 @@ end // end of [t1mps0explstlst_tr]
 
 (* ****** ****** *)
 
-implement witht0ype_tr (w0t) = begin case+ w0t of
+implement
+witht0ype_tr (w0t) = begin case+ w0t of
   | WITHT0YPEnone () => WITHT1YPEnone ()
   | WITHT0YPEprop s0e => WITHT1YPEprop (s0exp_tr s0e)
   | WITHT0YPEtype s0e => WITHT1YPEtype (s0exp_tr s0e)
@@ -876,7 +903,8 @@ end // end of [witht0ype_tr]
 
 (* ****** ****** *)
 
-implement s0rtdef_tr (d) = let
+implement
+s0rtdef_tr (d) = let
   val s1te = s0rtext_tr d.s0rtdef_def
 (*
   val () = print "s0rtdef_tr: s1te = "
@@ -889,11 +917,13 @@ in
   s1rtdef_make (d.s0rtdef_loc, d.s0rtdef_sym, s1te)
 end // end of [s0rtdef_tr]
 
-implement s0rtdeflst_tr (ds) = $Lst.list_map_fun (ds, s0rtdef_tr)
+implement
+s0rtdeflst_tr (ds) = $Lst.list_map_fun (ds, s0rtdef_tr)
 
 (* ****** ****** *)
 
-implement s0expdef_tr (d) = let
+implement
+s0expdef_tr (d) = let
   val loc = d.s0expdef_loc
   val arg = s0arglstlst_tr d.s0expdef_arg
   val id = d.s0expdef_sym
@@ -908,11 +938,13 @@ in
   s1expdef_make (loc, id, arg, res, def)
 end // end of [s0expdef_tr]
 
-implement s0expdeflst_tr (ds) = $Lst.list_map_fun (ds, s0expdef_tr)
+implement
+s0expdeflst_tr (ds) = $Lst.list_map_fun (ds, s0expdef_tr)
 
 (* ****** ****** *)
 
-implement s0aspdec_tr (d) = let
+implement
+s0aspdec_tr (d) = let
   val arg = s0arglstlst_tr d.s0aspdec_arg
   val res = s0rtopt_tr d.s0aspdec_res
   val def = s0exp_tr d.s0aspdec_def
@@ -961,7 +993,8 @@ fun d0atconlst_tr (ds: d0atconlst): d1atconlst = begin
   | nil () => nil ()
 end // end of [d0atconlst_tr]
 
-implement d0atdec_tr (d0c) = let
+implement
+d0atdec_tr (d0c) = let
   val arg = (
     case+ d0c.d0atdec_arg of
     | Some d0as => Some (d0atarglst_tr d0as) | None () => None ()
@@ -974,7 +1007,8 @@ in
   ) // end of [d1atdec_make]
 end // end of [d0atdec_tr]
 
-implement d0atdeclst_tr (ds) = begin
+implement
+d0atdeclst_tr (ds) = begin
   case+ ds of
   | cons (d, ds) => cons (d0atdec_tr d, d0atdeclst_tr ds)
   | nil () => nil ()
@@ -982,7 +1016,8 @@ end // end of [d0atdeclst_tr]
 
 (* ****** ****** *)
 
-implement e0xndec_tr (d) = let
+implement
+e0xndec_tr (d) = let
   val qua = s0qualstlst_tr (d.e0xndec_qua)
   var npf_r: int = 0
   val arg = (case+ d.e0xndec_arg of
@@ -1000,7 +1035,8 @@ in
   ) // end of [e1xndec_make]
 end // end of [e0xndec_tr]
 
-implement e0xndeclst_tr (ds) = $Lst.list_map_fun (ds, e0xndec_tr)
+implement
+e0xndeclst_tr (ds) = $Lst.list_map_fun (ds, e0xndec_tr)
 
 (* ****** ****** *)
 

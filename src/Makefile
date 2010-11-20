@@ -231,7 +231,7 @@ ats_grammar_yats.h: ats_grammar_yats.c
 ats_grammar_yats.c: ats_grammar.yats
 	$(YACC) -v -d -o ats_grammar_yats.c ats_grammar.yats
 ats_grammar_yats.o: ats_grammar_yats.c
-	$(ATSCC) $(ATSCCFLAGS) -DYYDEBUG -c ats_grammar_yats.c 
+	$(ATSCC) $(ATSCCFLAGS) -DYYDEBUG=1 -c ats_grammar_yats.c 
 
 ######
 
