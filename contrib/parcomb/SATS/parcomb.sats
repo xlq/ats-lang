@@ -346,7 +346,7 @@ repeat1_sep_parser
 fun{a:t@ype}{t:t@ype}
 apply_parser (
     p: parser_t (a, t), tks: &stream t, ncur: &int, nmax: &int
-  ) :<1,~ref> Option_vt a
+  ) :<!laz> Option_vt a
 // end of [apply_parser]
 
 (* ****** ****** *)

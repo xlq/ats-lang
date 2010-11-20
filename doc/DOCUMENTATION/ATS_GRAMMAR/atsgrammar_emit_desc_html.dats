@@ -135,7 +135,7 @@ fun emit_sym_defn (
   val name = symbol_get_name (x)
   val fname = symbol_get_descname (x)
   val () = fprintf (
-    out, "<a name=\"%s\"><span class=nonterm>%s</span></a>\n", @(name, fname)
+    out, "<a name=\"%s\"><span class=nonterm>%s</span></a> ::= \n", @(name, fname)
   ) // end of [val]
   var i: int = 0
   val () = loop (out, symbol_get_grmrulelst (x), i)

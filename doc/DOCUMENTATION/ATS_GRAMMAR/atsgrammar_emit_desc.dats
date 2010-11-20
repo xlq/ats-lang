@@ -127,7 +127,7 @@ fun emit_sym_defn (
   // end of [loop]
 //
   val fname = symbol_get_descname (x)
-  val () = fprintf (out, "%s\n", @(fname))
+  val () = fprintf (out, "%s ::= \n", @(fname))
   var i: int = 0
   val () = loop (out, symbol_get_grmrulelst (x), i)
   val () = fprintf (out, "; /* %s */\n\n", @(fname))

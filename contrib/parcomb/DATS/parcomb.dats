@@ -54,7 +54,7 @@ stream_get_item (tks) = case+ !tks of
 
 assume parser_t = // no [ref] effect!
   lam (a:t@ype, t:t@ype) =>
-    (&stream t, &int, &int) -<cloref1,~ref> Option_vt a
+    (&stream t, &int, &int) -<cloref,!laz> Option_vt a
 // end of [parser_t]
 
 (* ****** ****** *)
@@ -515,7 +515,7 @@ repeat0_parser
   typedef T = List a
   fun loop (
     tks: &stream t, ncur: &int, nmax: &int, p: parser_t (a, t), res: &T? >> T
-  ) :<1,~ref> void = let
+  ) :<!laz> void = let
     val tks0 = tks and ncur0 = ncur; val r = p (tks, ncur, nmax)
   in
     case+ r of
@@ -573,7 +573,7 @@ repeat1_sep_parser
         fun loop (
             tks: &stream t, ncur: &int, nmax: &int
           , res: &(List a?) >> List a
-          ) :<cloref1,~ref> void = let
+          ) :<cloref,!laz> void = let
           val tks0 = tks and ncur0 = ncur in
           case+ sep (tks, ncur, nmax) of
           | ~Okay v_sep => let
@@ -614,7 +614,7 @@ discard_many_parser
   (p) = lam (tks, ncur, nmax) => let
   fun loop (
     tks: &stream t, ncur: &int, nmax: &int, p: parser_t (a, t)
-  ) :<1,~ref> void = let
+  ) :<!laz> void = let
     val tks0 = tks and ncur0 = ncur val r = p (tks, ncur, nmax) in
     case+ r of
     | ~Okay v => loop (tks, ncur, nmax, p)

@@ -106,6 +106,7 @@ val t1mps0explstlst = tyname_make_string "t1mps0explstlst"
 val s0qua_tyname = tyname_make_string "s0qua"
 val s0qualst_tyname = tyname_make_string "s0qualst"
 val s0qualstlst_tyname = tyname_make_string "s0qualstlst"
+val s0qualstopt_tyname = tyname_make_string "s0qualstopt"
 val s0rtext_tyname = tyname_make_string "s0rtext"
 
 val impqi0de_tyname = tyname_make_string "impqi0de"
@@ -162,6 +163,62 @@ val labp0atlst_tyname = tyname_make_string "labp0atlst"
 
 val f0arg_tyname = tyname_make_string "f0arg"
 val f0arglst_tyname = tyname_make_string "f0arglst"
+
+(*
+** dynamic expressions
+*)
+val d0exp_tyname = tyname_make_string "d0exp"
+val d0explst_tyname = tyname_make_string "d0explst"
+val d0expopt_tyname = tyname_make_string "d0expopt"
+val labd0explst_tyname = tyname_make_string "labd0explst"
+val d0arrind_tyname = tyname_make_string "d0arrind"
+
+val ifhead_tyname = tyname_make_string "ifhead"
+val casehead_tyname = tyname_make_string "casehead"
+val loophead_tyname = tyname_make_string "loophead"
+val tryhead_tyname = tyname_make_string "tryhead"
+
+(*
+** pattern matching
+*)
+val m0atch_tyname = tyname_make_string "m0atch"
+val m0atchlst_tyname = tyname_make_string "m0atchlst"
+val guap0at_tyname = tyname_make_string "guap0at"
+val c0lau_tyname = tyname_make_string "c0lau"
+val c0laulst_tyname = tyname_make_string "c0laulst"
+val sc0lau_tyname = tyname_make_string "sc0lau"
+val sc0laulst_tyname = tyname_make_string "sc0laulst"
+
+(*
+** invariants
+*)
+val i0nvarg_tyname = tyname_make_string "i0nvarg"
+val i0nvarglst_tyname = tyname_make_string "i0nvarglst"
+val i0nvresstate_tyname = tyname_make_string "i0nvresstate"
+val loopi0nv_tyname = tyname_make_string "loopi0nv"
+val initestpost_tyname = tyname_make_string "initestpost"
+
+(*
+** macro definitions
+*)
+val m0arg_tyname = tyname_make_string "m0arg"
+val m0arglst_tyname = tyname_make_string "m0arglst"
+val m0acarg_tyname = tyname_make_string "m0acarg"
+val m0acarglst_tyname = tyname_make_string "m0acarglst"
+val m0acdef_tyname = tyname_make_string "m0acdef"
+val m0acdeflst_tyname = tyname_make_string "m0acdeflst"
+
+(*
+**
+*)
+val v0aldec_tyname = tyname_make_string "v0aldec"
+val v0aldeclst_tyname = tyname_make_string "v0aldeclst"
+val f0undec_tyname = tyname_make_string "f0undec"
+val f0undeclst_tyname = tyname_make_string "f0undeclst"
+val v0arwth_tyname = tyname_make_string "v0arwth"
+val v0ardec_tyname = tyname_make_string "v0ardec"
+val v0ardeclst_tyname = tyname_make_string "v0ardeclst"
+val i0mpdec_tyname = tyname_make_string "i0mpdec"
 
 (*
 ** generic declarations
@@ -498,6 +555,10 @@ val () = symbol_set_tyname (POSTFIX, t0kn_tyname)
 val PRAXI = symbol_make "PRAXI"
 val () = symbol_set_fullname (PRAXI, "\"praxi\"")
 val () = symbol_set_tyname (PRAXI, t0kn_tyname)
+//
+val PREFIX = symbol_make "PREFIX"
+val () = symbol_set_fullname (PREFIX, "\"prefix\"")
+val () = symbol_set_tyname (PREFIX, t0kn_tyname)
 //
 val PRFN = symbol_make "PRFN"
 val () = symbol_set_fullname (PRFN, "\"prfn\"")
@@ -1397,7 +1458,157 @@ val () = symbol_set_tyname (f0arg2seq, f0arglst_tyname)
 
 (* ****** ****** *)
 
-//
+(*
+** dynamic expressions
+*)
+
+val d0exp = symbol_make_nt "d0exp"
+val () = symbol_set_tyname (d0exp, d0exp_tyname)
+val atmd0exp = symbol_make_nt "atmd0exp"
+val () = symbol_set_tyname (atmd0exp, d0exp_tyname)
+val s0expdarg = symbol_make_nt "s0expdarg"
+val s0expdargseq = symbol_make_nt "s0expdargseq"
+val argd0exp = symbol_make_nt "argd0exp"
+val () = symbol_set_tyname (argd0exp, d0exp_tyname)
+val argd0expseq = symbol_make_nt "argd0expseq"
+val () = symbol_set_tyname (argd0expseq, d0explst_tyname)
+val d0arrind = symbol_make_nt "d0arrind"
+val () = symbol_set_tyname (d0arrind, d0arrind_tyname)
+val colons0expopt = symbol_make_nt "colons0expopt"
+val () = symbol_set_tyname (colons0expopt, s0expopt_tyname)
+val funarrow = symbol_make_nt "funarrow"
+val () = symbol_set_tyname (funarrow, e0fftaglstopt_tyname)
+
+val caseinv = symbol_make_nt "caseinv"
+val () = symbol_set_tyname (caseinv, i0nvresstate_tyname)
+val ifhead = symbol_make_nt "ifhead"
+val () = symbol_set_tyname (ifhead, ifhead_tyname)
+val sifhead = symbol_make_nt "sifhead"
+val () = symbol_set_tyname (sifhead, ifhead_tyname)
+val casehead = symbol_make_nt "casehead"
+val () = symbol_set_tyname (casehead, casehead_tyname)
+val scasehead = symbol_make_nt "scasehead"
+val () = symbol_set_tyname (scasehead, casehead_tyname)
+
+val forhead = symbol_make_nt "forhead"
+val () = symbol_set_tyname (forhead, loophead_tyname)
+val whilehead = symbol_make_nt "whilehead"
+val () = symbol_set_tyname (whilehead, loophead_tyname)
+val tryhead = symbol_make_nt "tryhead"
+val () = symbol_set_tyname (tryhead, tryhead_tyname)
+
+val d0expcommaseq = symbol_make_nt "d0expcommaseq"
+val () = symbol_set_tyname (d0expcommaseq, d0explst_tyname)
+val commad0expseq = symbol_make_nt "commad0expseq"
+val () = symbol_set_tyname (commad0expseq, d0explst_tyname)
+val d0expsemiseq0 = symbol_make_nt "d0expsemiseq0"
+val () = symbol_set_tyname (d0expsemiseq0, d0explst_tyname)
+val d0expsemiseq1 = symbol_make_nt "d0expsemiseq1"
+val () = symbol_set_tyname (d0expsemiseq1, d0explst_tyname)
+val labd0expseq = symbol_make_nt "labd0expseq"
+val () = symbol_set_tyname (labd0expseq, d0explst_tyname)
+val commalabd0expseq = symbol_make_nt "commalabd0expseq"
+val () = symbol_set_tyname (commalabd0expseq, d0explst_tyname)
+
+(* ****** ****** *)
+
+(*
+** pattern matching
+*)
+val m0atch = symbol_make_nt "m0atch"
+val () = symbol_set_tyname (m0atch, m0atch_tyname)
+val m0atchseq = symbol_make_nt "m0atchseq"
+val () = symbol_set_tyname (m0atchseq, m0atchlst_tyname)
+val andm0atchseq = symbol_make_nt "andm0atchseq"
+val () = symbol_set_tyname (andm0atchseq, m0atchlst_tyname)
+val guap0at = symbol_make_nt "guap0at"
+val () = symbol_set_tyname (guap0at, guap0at_tyname)
+val c0lau = symbol_make_nt "c0lau"
+val () = symbol_set_tyname (c0lau, c0lau_tyname)
+val c0lauseq = symbol_make_nt "c0lauseq"
+val () = symbol_set_tyname (c0lauseq, c0laulst_tyname)
+val barc0lauseq = symbol_make_nt "barc0lauseq"
+val () = symbol_set_tyname (barc0lauseq, c0laulst_tyname)
+val sc0lau = symbol_make_nt "sc0lau"
+val () = symbol_set_tyname (sc0lau, sc0lau_tyname)
+val sc0lauseq = symbol_make_nt "sc0lauseq"
+val () = symbol_set_tyname (sc0lau, sc0laulst_tyname)
+val barsc0lauseq = symbol_make_nt "barsc0lauseq"
+val () = symbol_set_tyname (barsc0lauseq, sc0laulst_tyname)
+
+(* ****** ****** *)
+
+(*
+** invariants
+*)
+val i0nvqua = symbol_make_nt "i0nvqua"
+val () = symbol_set_tyname (i0nvqua, s0qualstopt_tyname)
+val i0nvmet = symbol_make_nt "i0nvmet"
+val () = symbol_set_tyname (i0nvmet, s0qualstopt_tyname)
+val i0nvarg = symbol_make_nt "i0nvarg"
+val () = symbol_set_tyname (i0nvarg, i0nvarg_tyname)
+val i0nvargseq = symbol_make_nt "i0nvargseq"
+val () = symbol_set_tyname (i0nvargseq, i0nvarglst_tyname)
+val commai0nvargseq = symbol_make_nt "commai0nvargseq"
+val () = symbol_set_tyname (commai0nvargseq, i0nvarglst_tyname)
+val i0nvargstate = symbol_make_nt "i0nvargstate"
+val () = symbol_set_tyname (i0nvargstate, i0nvarglst_tyname)
+val i0nvresqua = symbol_make_nt "i0nvresqua"
+val () = symbol_set_tyname (i0nvresqua, s0qualstopt_tyname)
+val i0nvresstate = symbol_make_nt "i0nvresstate"
+val () = symbol_set_tyname (i0nvresstate, i0nvresstate_tyname)
+val loopi0nv = symbol_make_nt "loopi0nv"
+val () = symbol_set_tyname (loopi0nv, loopi0nv_tyname)
+val initestpost = symbol_make_nt "initestpost"
+val () = symbol_set_tyname (initestpost, initestpost_tyname)
+
+(* ****** ****** *)
+
+(*
+** macro definitions
+*)
+val m0arg = symbol_make_nt "m0arg"
+val () = symbol_set_tyname (m0arg, m0arg_tyname)
+val m0argseq = symbol_make_nt "m0argseq"
+val () = symbol_set_tyname (m0argseq, m0arglst_tyname)
+val commam0argseq = symbol_make_nt "commam0argseq"
+val () = symbol_set_tyname (commam0argseq, m0arglst_tyname)
+val m0acarg = symbol_make_nt "m0acarg"
+val () = symbol_set_tyname (m0acarg, m0acarg_tyname)
+val m0acargseq = symbol_make_nt "m0acargseq"
+val () = symbol_set_tyname (m0acargseq, m0acarglst_tyname)
+val m0acdef = symbol_make_nt "m0acdef"
+val () = symbol_set_tyname (m0acdef, m0acdef_tyname)
+val andm0acdefseq = symbol_make_nt "andm0acdefseq"
+val () = symbol_set_tyname (andm0acdefseq, m0acdeflst_tyname)
+
+(* ****** ****** *)
+
+(*
+** individual declarations
+*)
+val v0aldec = symbol_make_nt "v0aldec"
+val () = symbol_set_tyname (v0aldec, v0aldec_tyname)
+val andv0aldecseq = symbol_make_nt "andv0aldecseq"
+val () = symbol_set_tyname (andv0aldecseq, v0aldeclst_tyname)
+val f0undec = symbol_make_nt "f0undec"
+val () = symbol_set_tyname (f0undec, f0undec_tyname)
+val andf0undecseq = symbol_make_nt "andf0undecseq"
+val () = symbol_set_tyname (andf0undecseq, f0undeclst_tyname)
+val v0arwth = symbol_make_nt "v0arwth"
+val () = symbol_set_tyname (v0arwth, v0arwth_tyname)
+val v0ardec = symbol_make_nt "v0ardec"
+val () = symbol_set_tyname (v0ardec, v0ardec_tyname)
+val andv0ardecseq = symbol_make_nt "andv0ardecseq"
+val () = symbol_set_tyname (andv0ardecseq, v0ardeclst_tyname)
+val i0mpdec = symbol_make_nt "i0mpdec"
+val () = symbol_set_tyname (i0mpdec, i0mpdec_tyname)
+
+(* ****** ****** *)
+
+(*
+** generic declarations
+*)
 val d0ec = symbol_make_nt "d0ec"
 val () = symbol_set_tyname (d0ec, d0ec_tyname)
 //
@@ -1408,7 +1619,7 @@ val () = symbol_set_tyname (d0ecargseq, s0qualstlst_tyname)
 //
 val semicolonseq = symbol_make_nt "semicolonseq"
 //
-val d0ec_sta = symbol_make_nt "d0ec_sta"
+val d0ec_sta = symbol_make_nt "d0ec_sta" // static declaration
 val () = symbol_set_tyname (d0ec_sta, d0ec_tyname)
 val guad0ec_sta = symbol_make_nt "guad0ec_sta"
 val () = symbol_set_tyname (guad0ec_sta, d0eclst_tyname)
@@ -1417,7 +1628,7 @@ val () = symbol_set_tyname (d0ecseq_sta, d0eclst_tyname)
 val d0ecseq_sta_rev = symbol_make_nt "d0ec_staseq_rev"
 val () = symbol_set_tyname (d0ecseq_sta_rev, d0eclst_tyname)
 //
-val d0ec_dyn = symbol_make_nt "d0ec_dyn"
+val d0ec_dyn = symbol_make_nt "d0ec_dyn" // dynamic declaration
 val () = symbol_set_tyname (d0ec_dyn, d0ec_tyname)
 val guad0ec_dyn = symbol_make_nt "guad0ec_dyn"
 val () = symbol_set_tyname (guad0ec_dyn, d0eclst_tyname)
@@ -4267,98 +4478,6 @@ val () = symbol_close (pf | d0argseq)
 (* ****** ****** *)
 
 (*
-** dynamic function arguments
-*)
-
-(*
-f0arg1
-  : LBRACE s0quaseq RBRACE              { $$ = f0arg_sta1($1, $2, $3) ; }
-  | atmp0at                             { $$ = f0arg_dyn($1) ; }
-  | DOTLT s0expseq GTDOT                { $$ = f0arg_met_some($1, $2, $3) ; }
-  | DOTLTGTDOT                          { $$ = f0arg_met_none($1) ; }
-; /* end of [f0arg1] */
-*)
-fun f0arg1_proc (): void = () where {
-//
-val (pf | ()) = symbol_open (f0arg1)
-//
-val gr = grmrule_append ($lst_t {symbol} (tupz! LBRACE s0quaseq RBRACE))
-val gr = grmrule_set_action (gr, "{ $$ = f0arg_sta1($1, $2, $3) ; }")
-val gr = grmrule_append ($lst_t {symbol} (tupz! atmp0at))
-val gr = grmrule_set_action (gr, "{ $$ = f0arg_dyn($1) ; }")
-val gr = grmrule_append ($lst_t {symbol} (tupz! DOTLT s0expseq GTDOT))
-val gr = grmrule_set_action (gr, "{ $$ = f0arg_met_some($1, $2, $3) ; }")
-val gr = grmrule_append ($lst_t {symbol} (tupz! DOTLTGTDOT))
-val gr = grmrule_set_action (gr, "{ $$ = f0arg_met_none($1) ; }")
-//
-val () = symbol_close (pf | f0arg1)
-//
-} // end of [f0arg1_proc]
-
-(*
-f0arg1seq
-  : /* empty */                         { $$ = f0arglst_nil() ; }
-  | f0arg1 f0arg1seq                    { $$ = f0arglst_cons($1, $2) ; }
-; /* end of [f0arg1seq] */
-*)
-fun f0arg1seq_proc (): void = () where {
-//
-val (pf | ()) = symbol_open (f0arg1seq)
-//
-val gr = grmrule_append ()
-val gr = grmrule_set_action (gr, "{ $$ = f0arglst_nil() ; }")
-val gr = grmrule_append ($lst_t {symbol} (tupz! f0arg1 f0arg1seq))
-val gr = grmrule_set_action (gr, "{ $$ = f0arglst_cons($1, $2) ; }")
-//
-val () = symbol_close (pf | f0arg1seq)
-//
-} // end of [f0arg1seq_proc]
-
-(*
-f0arg2
-  : LBRACE s0argseq RBRACE              { $$ = f0arg_sta2($1, $2, $3) ; }
-  | atmp0at                             { $$ = f0arg_dyn($1) ; }
-/*
-  | DOTLT s0expseq GTDOT                { $$ = f0arg_met_some($1, $2, $3) ; }
-  | DOTLTGTDOT                          { $$ = f0arg_met_none($1) ; }
-*/
-; /* end of [f0arg2] */
-*)
-fun f0arg2_proc (): void = () where {
-//
-val (pf | ()) = symbol_open (f0arg2)
-//
-val gr = grmrule_append ($lst_t {symbol} (tupz! LBRACE s0argseq RBRACE))
-val gr = grmrule_set_action (gr, "{ $$ = f0arg_sta2($1, $2, $3) ; }")
-val gr = grmrule_append ($lst_t {symbol} (tupz! atmp0at))
-val gr = grmrule_set_action (gr, "{ $$ = f0arg_dyn($1) ; }")
-//
-val () = symbol_close (pf | f0arg2)
-//
-} // end of [f0arg2_proc]
-
-(*
-f0arg2seq
-  : /* empty */                         { $$ = f0arglst_nil() ; }
-  | f0arg2 f0arg2seq                    { $$ = f0arglst_cons($1, $2) ; }
-; /* end of [f0arg2seq] */
-*)
-fun f0arg2seq_proc (): void = () where {
-//
-val (pf | ()) = symbol_open (f0arg2seq)
-//
-val gr = grmrule_append ()
-val gr = grmrule_set_action (gr, "{ $$ = f0arglst_nil() ; }")
-val gr = grmrule_append ($lst_t {symbol} (tupz! f0arg2 f0arg2seq))
-val gr = grmrule_set_action (gr, "{ $$ = f0arglst_cons($1, $2) ; }")
-//
-val () = symbol_close (pf | f0arg2seq)
-//
-} // end of [f0arg2seq_proc]
-
-(* ****** ****** *)
-
-(*
 extnamopt
   : /* empty */                         { $$ = extnamopt_none() ; }
   | EQ LITERAL_string                   { $$ = extnamopt_some($2) ; }
@@ -4735,6 +4854,1624 @@ val () = symbol_close (pf | commalabp0atseq)
 (* ****** ****** *)
 
 (*
+** dynamic function arguments
+*)
+
+(*
+f0arg1
+  : LBRACE s0quaseq RBRACE              { $$ = f0arg_sta1($1, $2, $3) ; }
+  | atmp0at                             { $$ = f0arg_dyn($1) ; }
+  | DOTLT s0expseq GTDOT                { $$ = f0arg_met_some($1, $2, $3) ; }
+  | DOTLTGTDOT                          { $$ = f0arg_met_none($1) ; }
+; /* end of [f0arg1] */
+*)
+fun f0arg1_proc (): void = () where {
+//
+val (pf | ()) = symbol_open (f0arg1)
+//
+val gr = grmrule_append ($lst_t {symbol} (tupz! LBRACE s0quaseq RBRACE))
+val gr = grmrule_set_action (gr, "{ $$ = f0arg_sta1($1, $2, $3) ; }")
+val gr = grmrule_append ($lst_t {symbol} (tupz! atmp0at))
+val gr = grmrule_set_action (gr, "{ $$ = f0arg_dyn($1) ; }")
+val gr = grmrule_append ($lst_t {symbol} (tupz! DOTLT s0expseq GTDOT))
+val gr = grmrule_set_action (gr, "{ $$ = f0arg_met_some($1, $2, $3) ; }")
+val gr = grmrule_append ($lst_t {symbol} (tupz! DOTLTGTDOT))
+val gr = grmrule_set_action (gr, "{ $$ = f0arg_met_none($1) ; }")
+//
+val () = symbol_close (pf | f0arg1)
+//
+} // end of [f0arg1_proc]
+
+(*
+f0arg1seq
+  : /* empty */                         { $$ = f0arglst_nil() ; }
+  | f0arg1 f0arg1seq                    { $$ = f0arglst_cons($1, $2) ; }
+; /* end of [f0arg1seq] */
+*)
+fun f0arg1seq_proc (): void = () where {
+//
+val (pf | ()) = symbol_open (f0arg1seq)
+//
+val gr = grmrule_append ()
+val gr = grmrule_set_action (gr, "{ $$ = f0arglst_nil() ; }")
+val gr = grmrule_append ($lst_t {symbol} (tupz! f0arg1 f0arg1seq))
+val gr = grmrule_set_action (gr, "{ $$ = f0arglst_cons($1, $2) ; }")
+//
+val () = symbol_close (pf | f0arg1seq)
+//
+} // end of [f0arg1seq_proc]
+
+(*
+f0arg2
+  : LBRACE s0argseq RBRACE              { $$ = f0arg_sta2($1, $2, $3) ; }
+  | atmp0at                             { $$ = f0arg_dyn($1) ; }
+/*
+  | DOTLT s0expseq GTDOT                { $$ = f0arg_met_some($1, $2, $3) ; }
+  | DOTLTGTDOT                          { $$ = f0arg_met_none($1) ; }
+*/
+; /* end of [f0arg2] */
+*)
+fun f0arg2_proc (): void = () where {
+//
+val (pf | ()) = symbol_open (f0arg2)
+//
+val gr = grmrule_append ($lst_t {symbol} (tupz! LBRACE s0argseq RBRACE))
+val gr = grmrule_set_action (gr, "{ $$ = f0arg_sta2($1, $2, $3) ; }")
+val gr = grmrule_append ($lst_t {symbol} (tupz! atmp0at))
+val gr = grmrule_set_action (gr, "{ $$ = f0arg_dyn($1) ; }")
+//
+val () = symbol_close (pf | f0arg2)
+//
+} // end of [f0arg2_proc]
+
+(*
+f0arg2seq
+  : /* empty */                         { $$ = f0arglst_nil() ; }
+  | f0arg2 f0arg2seq                    { $$ = f0arglst_cons($1, $2) ; }
+; /* end of [f0arg2seq] */
+*)
+fun f0arg2seq_proc (): void = () where {
+//
+val (pf | ()) = symbol_open (f0arg2seq)
+//
+val gr = grmrule_append ()
+val gr = grmrule_set_action (gr, "{ $$ = f0arglst_nil() ; }")
+val gr = grmrule_append ($lst_t {symbol} (tupz! f0arg2 f0arg2seq))
+val gr = grmrule_set_action (gr, "{ $$ = f0arglst_cons($1, $2) ; }")
+//
+val () = symbol_close (pf | f0arg2seq)
+//
+} // end of [f0arg2seq_proc]
+
+(* ****** ****** *)
+
+(*
+** dynamic expressions
+*)
+(*
+d0exp
+  : atmd0exp argd0expseq                { $$ = d0exp_apps($1, $2) ; }
+  | d0exp COLON s0exp                   { $$ = d0exp_ann($1, $3) ; }
+  | ifhead d0exp THEN d0exp %prec DEXPIF
+                                        { $$ = d0exp_if_none($1, $2, $4) ; }
+  | ifhead d0exp THEN d0exp ELSE d0exp %prec DEXPIF
+                                        { $$ = d0exp_if_some($1, $2, $4, $6) ; }
+  | sifhead s0exp THEN d0exp ELSE d0exp %prec DEXPIF
+                                        { $$ = d0exp_sif($1, $2, $4, $6) ; }
+  | casehead d0exp OF c0lauseq %prec DEXPCASE
+                                        { $$ = d0exp_caseof($1, $2, $3, $4) ; }
+  | scasehead s0exp OF sc0lauseq %prec DEXPCASE
+                                        { $$ = d0exp_scaseof($1, $2, $3, $4) ; }
+  | lamkind f0arg1seq colons0expopt funarrow d0exp %prec DEXPLAM
+                                        { $$ = d0exp_lam($1, $2, $3, $4, $5 ) ; }
+  | fixkind di0de f0arg1seq colons0expopt funarrow d0exp %prec DEXPLAM
+                                        { $$ = d0exp_fix($1, $2, $3, $4, $5, $6) ; }
+  | forhead initestpost d0exp %prec DEXPFOR
+                                        { $$ = d0exp_for_itp ($1, $2, $3) ; }
+  | whilehead atmd0exp d0exp %prec DEXPWHILE
+                                        { $$ = d0exp_while ($1, $2, $3) ; }
+  | DLRRAISE d0exp %prec DEXPRAISE      { $$ = d0exp_raise($1, $2) ; }
+  | tryhead d0expsemiseq0 WITH c0lauseq %prec DEXPTRY
+                                        { $$ = d0exp_trywith_seq($1, $2, $3, $4) ; }
+  | d0exp WHERE LBRACE d0ecseq_dyn RBRACE
+                                        { $$ = d0exp_where ($1, $4, $5) ; }
+; /* end of [d0exp] */
+*)
+fun d0exp_proc (): void = () where {
+//
+val (pf | ()) = symbol_open (d0exp)
+//
+val gr = grmrule_append ($lst_t {symbol} (tupz! atmd0exp argd0expseq))
+val () = grmrule_set_action (gr, "{ $$ = d0exp_apps($1, $2) ; }")
+val gr = grmrule_append ($lst_t {symbol} (tupz! d0exp COLON s0exp))
+val () = grmrule_set_action (gr, "{ $$ = d0exp_ann($1, $3) ; }")
+val gr = grmrule_append ($lst_t {symbol} (tupz! ifhead d0exp THEN d0exp))
+val () = grmrule_set_action (gr, "{ $$ = d0exp_if_none($1, $2, $4) ; }")
+val gr = grmrule_append ($lst_t {symbol} (tupz! ifhead d0exp THEN d0exp ELSE d0exp))
+val () = grmrule_set_action (gr, "{ $$ = d0exp_if_some($1, $2, $4, $6) ; }")
+val gr = grmrule_append ($lst_t {symbol} (tupz! sifhead s0exp THEN d0exp ELSE d0exp))
+val () = grmrule_set_action (gr, "{ $$ = d0exp_sif($1, $2, $4, $6) ; }")
+val gr = grmrule_append ($lst_t {symbol} (tupz! casehead d0exp OF c0lauseq))
+val () = grmrule_set_action (gr, "{ $$ = d0exp_caseof($1, $2, $3, $4) ; }")
+val gr = grmrule_append ($lst_t {symbol} (tupz! scasehead s0exp OF sc0lauseq))
+val () = grmrule_set_action (gr, "{ $$ = d0exp_scaseof($1, $2, $3, $4) ; }")
+val gr = grmrule_append ($lst_t {symbol} (tupz! lamkind f0arg1seq colons0expopt funarrow d0exp))
+val () = grmrule_set_action (gr, "{ $$ = d0exp_lam($1, $2, $3, $4, $5 ) ; }")
+val gr = grmrule_append ($lst_t {symbol} (tupz! fixkind di0de f0arg1seq colons0expopt funarrow d0exp))
+val () = grmrule_set_action (gr, "{ $$ = d0exp_fix($1, $2, $3, $4, $5, $6) ; }")
+val gr = grmrule_append ($lst_t {symbol} (tupz! forhead initestpost d0exp))
+val () = grmrule_set_action (gr, "{ $$ = d0exp_for_itp ($1, $2, $3) ; }")
+val gr = grmrule_append ($lst_t {symbol} (tupz! whilehead atmd0exp d0exp))
+val () = grmrule_set_action (gr, "{ $$ = d0exp_while ($1, $2, $3) ; }")
+val gr = grmrule_append ($lst_t {symbol} (tupz! DLRRAISE d0exp))
+val () = grmrule_set_action (gr, "{ $$ = d0exp_raise($1, $2) ; }")
+val gr = grmrule_append ($lst_t {symbol} (tupz! tryhead d0expsemiseq0 WITH c0lauseq))
+val () = grmrule_set_action (gr, "{ $$ = d0exp_trywith_seq($1, $2, $3, $4) ; }")
+val gr = grmrule_append ($lst_t {symbol} (tupz! d0exp WHERE LBRACE d0ecseq_dyn RBRACE))
+val () = grmrule_set_action (gr, "{ $$ = d0exp_where ($1, $4, $5) ; }")
+//
+val () = symbol_close (pf | d0exp)
+//
+} // end of [d0exp_proc]
+
+(* ****** ****** *)
+
+(*
+atmd0exp /* atomic dynamic expressions */
+  : LITERAL_char                        { $$ = d0exp_char($1) ; }
+  | LITERAL_float                       { $$ = d0exp_float($1) ; }
+  | LITERAL_floatsp                     { $$ = d0exp_floatsp($1) ; }
+  | LITERAL_int                         { $$ = d0exp_int($1) ; }
+  | LITERAL_intsp                       { $$ = d0exp_intsp($1) ; }
+  | LITERAL_string                      { $$ = d0exp_string($1) ; }
+
+  | SRPFILENAME                         { $$ = d0exp_FILENAME($1) ; }
+  | SRPLOCATION                         { $$ = d0exp_LOCATION($1) ; }
+
+  | di0de                               { $$ = d0exp_ide($1) ; }
+  | OP di0de                            { $$ = d0exp_opide($1, $2) ; }
+  | d0ynq i0de                          { $$ = d0exp_qid($1, $2) ; }
+
+  | i0dext                              { $$ = d0exp_idext($1) ; }
+
+  | AMPERSAND                           { $$ = d0exp_ptrof($1) ; }
+  | BREAK                               { $$ = d0exp_loopexn(0, $1) ; }
+  | CONTINUE                            { $$ = d0exp_loopexn(1, $1) ; }
+  | FOLDAT s0expdargseq                 { $$ = d0exp_foldat($1, $2) ; }
+  | FREEAT s0expdargseq                 { $$ = d0exp_freeat($1, $2) ; }
+  | VIEWAT                              { $$ = d0exp_viewat($1) ; }
+  | DLRDECRYPT                          { $$ = d0exp_crypt (-1, $1) ; }
+  | DLRENCRYPT                          { $$ = d0exp_crypt ( 1, $1) ; }
+  | DLRDELAY                            { $$ = d0exp_delay(0, $1) ; }
+  | DLRLDELAY                           { $$ = d0exp_delay(1, $1) ; }
+  | DLRDYNLOAD                          { $$ = d0exp_dynload($1) ; }
+  | DLREFFMASK_ALL                      { $$ = d0exp_effmask_all($1) ; }
+  | DLREFFMASK_EXN                      { $$ = d0exp_effmask_exn($1) ; }
+  | DLREFFMASK_NTM                      { $$ = d0exp_effmask_ntm($1) ; }
+  | DLREFFMASK_REF                      { $$ = d0exp_effmask_ref($1) ; }
+  | ATLBRACKET s0exp RBRACKET LPAREN d0expcommaseq RPAREN
+                                        { $$ = d0exp_arrinit_none ($1, $2, $5, $6) ; }
+  | ATLBRACKET s0exp RBRACKET LBRACKET d0exp RBRACKET LPAREN d0expcommaseq RPAREN
+                                        { $$ = d0exp_arrinit_some ($1, $2, $5, $8, $9) ; }
+  | DLRARRSZ s0expelt LPAREN d0expcommaseq RPAREN
+                                        { $$ = d0exp_arrsize ($1, $2, $3, $4, $5) ; }
+  | arrqi0de d0arrind                   { $$ = d0exp_arrsub ($1, $2) ; }
+  | s0elop l0ab                         { $$ = d0exp_sel_lab ($1, $2) ; }
+  | s0elop LBRACKET d0arrind            { $$ = d0exp_sel_ind ($1, $3) ; }
+  | tmpqi0de t1mps0expseq gtlt_t1mps0expseqseq GT
+                                        { $$ = d0exp_tmpid ($1, $2, $3, $4) ; }
+  | HASHLBRACKET s0exparg BAR d0exp RBRACKET
+                                        { $$ = d0exp_exist ($1, $2, $3, $4, $5) ; }
+  | LPAREN d0expcommaseq RPAREN         { $$ = d0exp_list ($1, $2, $3) ; }
+  | LPAREN d0expcommaseq BAR d0expcommaseq RPAREN
+                                        { $$ = d0exp_list2 ($1, $2, $4, $5) ; }
+
+  | DLRLST_T s0expelt LPAREN d0expcommaseq RPAREN
+                                        { $$ = d0exp_lst (0, $1, $2, $3, $4, $5) ; }
+  | DLRLST_VT s0expelt LPAREN d0expcommaseq RPAREN
+                                        { $$ = d0exp_lst (1, $1, $2, $3, $4, $5) ; }
+  | QUOTELBRACKET d0expcommaseq RBRACKET
+                                        { $$ = d0exp_lst_quote ($1, $2, $3) ; }
+
+  | BEGIN d0expsemiseq0 END             { $$ = d0exp_seq ($1, $2, $3) ; }
+  | LPAREN d0expsemiseq1 RPAREN         { $$ = d0exp_seq ($1, $2, $3) ; }
+
+/* dynamic tuples */
+  | ATLPAREN d0expcommaseq RPAREN       { $$ = d0exp_tup (0, $1, $2, $3) ; }
+  | QUOTELPAREN d0expcommaseq RPAREN    { $$ = d0exp_tup (1, $1, $2, $3) ; }
+  | DLRTUP_T LPAREN d0expcommaseq RPAREN
+                                        { $$ = d0exp_tup (2, $1, $3, $4) ; }
+  | DLRTUP_VT LPAREN d0expcommaseq RPAREN
+                                        { $$ = d0exp_tup (3, $1, $3, $4) ; }
+
+/* dynamic tuple pairs */
+  | ATLPAREN d0expcommaseq BAR d0expcommaseq RPAREN
+                                        { $$ = d0exp_tup2 (0, $1, $2, $4, $5) ; }
+  | QUOTELPAREN d0expcommaseq BAR d0expcommaseq RPAREN
+                                        { $$ = d0exp_tup2 (1, $1, $2, $4, $5) ; }
+
+/* dynamic records */
+  | ATLBRACE labd0expseq RBRACE         { $$ = d0exp_rec (0, $1, $2, $3) ; }
+  | QUOTELBRACE labd0expseq RBRACE      { $$ = d0exp_rec (1, $1, $2, $3) ; }
+  | DLRREC_T LBRACE labd0expseq RBRACE  { $$ = d0exp_rec (2, $1, $3, $4) ; }
+  | DLRREC_VT LBRACE labd0expseq RBRACE { $$ = d0exp_rec (3, $1, $3, $4) ; }
+
+/*
+//
+// HX-2010-05-12: the OOP plan is permanently abandoned
+//
+    // dynamic objects
+  | objkind objc0ls LBRACE m0thdecseq RBRACE
+                                        { $$ = d0exp_obj($1, $2, $4, $5) ; }
+*/
+    /* external dynamic value */
+  | DLREXTVAL LPAREN s0exp COMMA LITERAL_string RPAREN
+                                        { $$ = d0exp_extval($1, $3, $5, $6) ; }
+/* macsyn */
+  | PERCENTLPAREN d0exp RPAREN          { $$ = d0exp_macsyn_cross($1, $2, $3) ; }
+  | COMMALPAREN d0exp RPAREN            { $$ = d0exp_macsyn_decode($1, $2, $3) ; }
+  | BACKQUOTELPAREN d0expsemiseq0 RPAREN
+                                        { $$ = d0exp_macsyn_encode_seq($1, $2, $3) ; }
+/* letexp */
+  | LET d0ecseq_dyn IN d0expsemiseq0 END
+                                        { $$ = d0exp_let_seq($1, $2, $3, $4, $5) ; }
+/* decseq as exp */
+  | LBRACE d0ecseq_dyn RBRACE           { $$ = d0exp_decseq($1, $2, $3) ; }
+; /* end of [atmd0exp] */
+*)
+fun atmd0exp_proc (): void = () where {
+//
+val (pf | ()) = symbol_open (atmd0exp)
+//
+val gr = grmrule_append ($lst_t {symbol} (tupz! LITERAL_char))
+val () = grmrule_set_action (gr, "{ $$ = d0exp_char($1) ; }")
+val gr = grmrule_append ($lst_t {symbol} (tupz! LITERAL_float))
+val () = grmrule_set_action (gr, "{ $$ = d0exp_float($1) ; }")
+val gr = grmrule_append ($lst_t {symbol} (tupz! LITERAL_floatsp))
+val () = grmrule_set_action (gr, "{ $$ = d0exp_floatsp($1) ; }")
+val gr = grmrule_append ($lst_t {symbol} (tupz! LITERAL_int))
+val () = grmrule_set_action (gr, "{ $$ = d0exp_int($1) ; }")
+val gr = grmrule_append ($lst_t {symbol} (tupz! LITERAL_intsp))
+val () = grmrule_set_action (gr, "{ $$ = d0exp_intsp($1) ; }")
+val gr = grmrule_append ($lst_t {symbol} (tupz! LITERAL_string))
+val () = grmrule_set_action (gr, "{ $$ = d0exp_string($1) ; }")
+val gr = grmrule_append ($lst_t {symbol} (tupz! SRPFILENAME))
+val () = grmrule_set_action (gr, "{ $$ = d0exp_FILENAME($1) ; }")
+val gr = grmrule_append ($lst_t {symbol} (tupz! SRPLOCATION))
+val () = grmrule_set_action (gr, "{ $$ = d0exp_LOCATION($1) ; }")
+val gr = grmrule_append ($lst_t {symbol} (tupz! di0de))
+val () = grmrule_set_action (gr, "{ $$ = d0exp_ide($1) ; }")
+val gr = grmrule_append ($lst_t {symbol} (tupz! OP di0de))
+val () = grmrule_set_action (gr, "{ $$ = d0exp_opide($1, $2) ; }")
+val gr = grmrule_append ($lst_t {symbol} (tupz! d0ynq i0de))
+val () = grmrule_set_action (gr, "{ $$ = d0exp_qid($1, $2) ; }")
+val gr = grmrule_append ($lst_t {symbol} (tupz! i0dext))
+val () = grmrule_set_action (gr, "{ $$ = d0exp_idext($1) ; }")
+val gr = grmrule_append ($lst_t {symbol} (tupz! AMPERSAND))
+val () = grmrule_set_action (gr, "{ $$ = d0exp_ptrof($1) ; }")
+val gr = grmrule_append ($lst_t {symbol} (tupz! BREAK))
+val () = grmrule_set_action (gr, "{ $$ = d0exp_loopexn(0, $1) ; }")
+val gr = grmrule_append ($lst_t {symbol} (tupz! CONTINUE))
+val () = grmrule_set_action (gr, "{ $$ = d0exp_loopexn(1, $1) ; }")
+val gr = grmrule_append ($lst_t {symbol} (tupz! FOLDAT s0expdargseq))
+val () = grmrule_set_action (gr, "{ $$ = d0exp_foldat($1, $2) ; }")
+val gr = grmrule_append ($lst_t {symbol} (tupz! FREEAT s0expdargseq))
+val () = grmrule_set_action (gr, "{ $$ = d0exp_freeat($1, $2) ; }")
+val gr = grmrule_append ($lst_t {symbol} (tupz! VIEWAT))
+val () = grmrule_set_action (gr, "{ $$ = d0exp_viewat($1) ; }")
+val gr = grmrule_append ($lst_t {symbol} (tupz! DLRDECRYPT))
+val () = grmrule_set_action (gr, "{ $$ = d0exp_crypt (-1, $1) ; }")
+val gr = grmrule_append ($lst_t {symbol} (tupz! DLRENCRYPT))
+val () = grmrule_set_action (gr, "{ $$ = d0exp_crypt ( 1, $1) ; }")
+val gr = grmrule_append ($lst_t {symbol} (tupz! DLRDELAY))
+val () = grmrule_set_action (gr, "{ $$ = d0exp_delay(0, $1) ; }")
+val gr = grmrule_append ($lst_t {symbol} (tupz! DLRLDELAY))
+val () = grmrule_set_action (gr, "{ $$ = d0exp_delay(1, $1) ; }")
+val gr = grmrule_append ($lst_t {symbol} (tupz! DLRDYNLOAD))
+val () = grmrule_set_action (gr, "{ $$ = d0exp_dynload($1) ; }")
+val gr = grmrule_append ($lst_t {symbol} (tupz! DLREFFMASK_ALL))
+val () = grmrule_set_action (gr, "{ $$ = d0exp_effmask_all($1) ; }")
+val gr = grmrule_append ($lst_t {symbol} (tupz! DLREFFMASK_EXN))
+val () = grmrule_set_action (gr, "{ $$ = d0exp_effmask_exn($1) ; }")
+val gr = grmrule_append ($lst_t {symbol} (tupz! DLREFFMASK_NTM))
+val () = grmrule_set_action (gr, "{ $$ = d0exp_effmask_ntm($1) ; }")
+val gr = grmrule_append ($lst_t {symbol} (tupz! DLREFFMASK_REF))
+val () = grmrule_set_action (gr, "{ $$ = d0exp_effmask_ref($1) ; }")
+val gr = grmrule_append ($lst_t {symbol} (tupz! ATLBRACKET s0exp RBRACKET LPAREN d0expcommaseq RPAREN))
+val () = grmrule_set_action (gr, "{ $$ = d0exp_arrinit_none ($1, $2, $5, $6) ; }")
+val gr = grmrule_append ($lst_t {symbol} (tupz! ATLBRACKET s0exp RBRACKET LBRACKET d0exp RBRACKET LPAREN d0expcommaseq RPAREN))
+val () = grmrule_set_action (gr, "{ $$ = d0exp_arrinit_some ($1, $2, $5, $8, $9) ; }")
+val gr = grmrule_append ($lst_t {symbol} (tupz! DLRARRSZ s0expelt LPAREN d0expcommaseq RPAREN))
+val () = grmrule_set_action (gr, "{ $$ = d0exp_arrsize ($1, $2, $3, $4, $5) ; }")
+val gr = grmrule_append ($lst_t {symbol} (tupz! arrqi0de d0arrind))
+val () = grmrule_set_action (gr, "{ $$ = d0exp_arrsub ($1, $2) ; }")
+val gr = grmrule_append ($lst_t {symbol} (tupz! s0elop l0ab))
+val () = grmrule_set_action (gr, "{ $$ = d0exp_sel_lab ($1, $2) ; }")
+val gr = grmrule_append ($lst_t {symbol} (tupz! s0elop LBRACKET d0arrind))
+val () = grmrule_set_action (gr, "{ $$ = d0exp_sel_ind ($1, $3) ; }")
+val gr = grmrule_append ($lst_t {symbol} (tupz! tmpqi0de t1mps0expseq gtlt_t1mps0expseqseq GT))
+val () = grmrule_set_action (gr, "{ $$ = d0exp_tmpid ($1, $2, $3, $4) ; }")
+val gr = grmrule_append ($lst_t {symbol} (tupz! HASHLBRACKET s0exparg BAR d0exp RBRACKET))
+val () = grmrule_set_action (gr, "{ $$ = d0exp_exist ($1, $2, $3, $4, $5) ; }")
+val gr = grmrule_append ($lst_t {symbol} (tupz! LPAREN d0expcommaseq RPAREN))
+val () = grmrule_set_action (gr, "{ $$ = d0exp_list ($1, $2, $3) ; }")
+val gr = grmrule_append ($lst_t {symbol} (tupz! LPAREN d0expcommaseq BAR d0expcommaseq RPAREN))
+val () = grmrule_set_action (gr, "{ $$ = d0exp_list2 ($1, $2, $4, $5) ; }")
+val gr = grmrule_append ($lst_t {symbol} (tupz! DLRLST_T s0expelt LPAREN d0expcommaseq RPAREN))
+val () = grmrule_set_action (gr, "{ $$ = d0exp_lst (0, $1, $2, $3, $4, $5) ; }")
+val gr = grmrule_append ($lst_t {symbol} (tupz! DLRLST_VT s0expelt LPAREN d0expcommaseq RPAREN))
+val () = grmrule_set_action (gr, "{ $$ = d0exp_lst (1, $1, $2, $3, $4, $5) ; }")
+val gr = grmrule_append ($lst_t {symbol} (tupz! QUOTELBRACKET d0expcommaseq RBRACKET))
+val () = grmrule_set_action (gr, "{ $$ = d0exp_lst_quote ($1, $2, $3) ; }")
+val gr = grmrule_append ($lst_t {symbol} (tupz! BEGIN d0expsemiseq0 END))
+val () = grmrule_set_action (gr, "{ $$ = d0exp_seq ($1, $2, $3) ; }")
+val gr = grmrule_append ($lst_t {symbol} (tupz! LPAREN d0expsemiseq1 RPAREN))
+val () = grmrule_set_action (gr, "{ $$ = d0exp_seq ($1, $2, $3) ; }")
+val gr = grmrule_append ($lst_t {symbol} (tupz! ATLPAREN d0expcommaseq RPAREN))
+val () = grmrule_set_action (gr, "{ $$ = d0exp_tup (0, $1, $2, $3) ; }")
+val gr = grmrule_append ($lst_t {symbol} (tupz! QUOTELPAREN d0expcommaseq RPAREN))
+val () = grmrule_set_action (gr, "{ $$ = d0exp_tup (1, $1, $2, $3) ; }")
+val gr = grmrule_append ($lst_t {symbol} (tupz! DLRTUP_T LPAREN d0expcommaseq RPAREN))
+val () = grmrule_set_action (gr, "{ $$ = d0exp_tup (2, $1, $3, $4) ; }")
+val gr = grmrule_append ($lst_t {symbol} (tupz! DLRTUP_VT LPAREN d0expcommaseq RPAREN))
+val () = grmrule_set_action (gr, "{ $$ = d0exp_tup (3, $1, $3, $4) ; }")
+val gr = grmrule_append ($lst_t {symbol} (tupz! ATLPAREN d0expcommaseq BAR d0expcommaseq RPAREN))
+val () = grmrule_set_action (gr, "{ $$ = d0exp_tup2 (0, $1, $2, $4, $5) ; }")
+val gr = grmrule_append ($lst_t {symbol} (tupz! QUOTELPAREN d0expcommaseq BAR d0expcommaseq RPAREN))
+val () = grmrule_set_action (gr, "{ $$ = d0exp_tup2 (1, $1, $2, $4, $5) ; }")
+val gr = grmrule_append ($lst_t {symbol} (tupz! ATLBRACE labd0expseq RBRACE))
+val () = grmrule_set_action (gr, "{ $$ = d0exp_rec (0, $1, $2, $3) ; }")
+val gr = grmrule_append ($lst_t {symbol} (tupz! QUOTELBRACE labd0expseq RBRACE))
+val () = grmrule_set_action (gr, "{ $$ = d0exp_rec (1, $1, $2, $3) ; }")
+val gr = grmrule_append ($lst_t {symbol} (tupz! DLRREC_T LBRACE labd0expseq RBRACE))
+val () = grmrule_set_action (gr, "{ $$ = d0exp_rec (2, $1, $3, $4) ; }")
+val gr = grmrule_append ($lst_t {symbol} (tupz! DLRREC_VT LBRACE labd0expseq RBRACE))
+val () = grmrule_set_action (gr, "{ $$ = d0exp_rec (3, $1, $3, $4) ; }")
+val gr = grmrule_append ($lst_t {symbol} (tupz! DLREXTVAL LPAREN s0exp COMMA LITERAL_string RPAREN))
+val () = grmrule_set_action (gr, "{ $$ = d0exp_extval($1, $3, $5, $6) ; }")
+val gr = grmrule_append ($lst_t {symbol} (tupz! PERCENTLPAREN d0exp RPAREN))
+val () = grmrule_set_action (gr, "{ $$ = d0exp_macsyn_cross($1, $2, $3) ; }")
+val gr = grmrule_append ($lst_t {symbol} (tupz! COMMALPAREN d0exp RPAREN))
+val () = grmrule_set_action (gr, "{ $$ = d0exp_macsyn_decode($1, $2, $3) ; }")
+val gr = grmrule_append ($lst_t {symbol} (tupz! BACKQUOTELPAREN d0expsemiseq0 RPAREN))
+val () = grmrule_set_action (gr, "{ $$ = d0exp_macsyn_encode_seq($1, $2, $3) ; }")
+val gr = grmrule_append ($lst_t {symbol} (tupz! LET d0ecseq_dyn IN d0expsemiseq0 END))
+val () = grmrule_set_action (gr, "{ $$ = d0exp_let_seq($1, $2, $3, $4, $5) ; }")
+val gr = grmrule_append ($lst_t {symbol} (tupz! LBRACE d0ecseq_dyn RBRACE))
+val () = grmrule_set_action (gr, "{ $$ = d0exp_decseq($1, $2, $3) ; }")
+//
+val () = symbol_close (pf | atmd0exp)
+//
+} // end of [atmd0exp_proc]
+
+(* ****** ****** *)
+
+(*
+s0expdarg
+  : LBRACE s0exparg RBRACE              { $$ = d0exp_sexparg($1, $2, $3) ; }
+; /* end of [s0expdarg] */
+*)
+fun s0expdarg_proc
+  (): void = () where {
+//
+val (pf | ()) = symbol_open (s0expdarg)
+//
+val gr = grmrule_append ($lst_t {symbol} (tupz! LBRACE s0exparg RBRACE))
+val () = grmrule_set_action (gr, "{ $$ = d0exp_sexparg($1, $2, $3) ; }")
+//
+val () = symbol_close (pf | s0expdarg)
+//
+} // end of [s0expdarg_proc]
+
+(*
+s0expdargseq
+  : s0expdarg s0expdargseq              { $$ = d0explst_cons($1, $2) ;  }
+  | /* empty */ %prec SEXPDARGSEQEMPTY  { $$ = d0explst_nil() ; }
+; /* end of [s0expdargseq] */
+*)
+fun s0expdargseq_proc
+  (): void = () where {
+//
+val (pf | ()) = symbol_open (s0expdargseq)
+//
+val gr = grmrule_append ($lst_t {symbol} (tupz! s0expdarg s0expdargseq))
+val () = grmrule_set_action (gr, "{ $$ = d0explst_cons($1, $2) ;  }")
+val gr = grmrule_append ()
+val () = grmrule_set_action (gr, "{ $$ = d0explst_nil() ; }")
+//
+val () = symbol_close (pf | s0expdargseq)
+//
+} // end of [s0expdargseq_proc]
+
+(*
+argd0exp
+  : atmd0exp                            { $$ = $1 ; }
+  | s0expdarg                           { $$ = $1 ; }
+; /* end of [argd0exp] */
+*)
+fun argd0exp_proc (): void = () where {
+//
+val (pf | ()) = symbol_open (argd0exp)
+//
+val gr = grmrule_append ($lst_t {symbol} (tupz! atmd0exp))
+val () = grmrule_set_action (gr, "{ $$ = $1 ; }")
+val gr = grmrule_append ($lst_t {symbol} (tupz! s0expdarg))
+val () = grmrule_set_action (gr, "{ $$ = $1 ; }")
+//
+val () = symbol_close (pf | argd0exp)
+//
+} // end of [argd0exp_proc]
+
+(*
+argd0expseq
+  : /* empty */                         { $$ = d0explst_nil() ; }
+  | argd0exp argd0expseq                { $$ = d0explst_cons($1, $2) ; }
+; /* end of [argd0expseq] */
+*)
+fun argd0expseq_proc (): void = () where {
+//
+val (pf | ()) = symbol_open (argd0expseq)
+//
+val gr = grmrule_append ()
+val () = grmrule_set_action (gr, "{ $$ = d0explst_nil() ; }")
+val gr = grmrule_append ($lst_t {symbol} (tupz! argd0exp argd0expseq))
+val () = grmrule_set_action (gr, "{ $$ = d0explst_cons($1, $2) ; }")
+//
+val () = symbol_close (pf | argd0expseq)
+//
+} // end of [argd0expseq_proc]
+
+(*
+d0arrind
+  : d0expcommaseq RBRACKET              { $$ = d0arrind_make_sing($1, $2) ; }
+  | d0expcommaseq RBRACKET LBRACKET d0arrind
+                                        { $$ = d0arrind_make_cons($1, $4) ; }
+; /* end of [d0arrind] */
+*)
+fun d0arrind_proc (): void = () where {
+//
+val (pf | ()) = symbol_open (d0arrind)
+//
+val gr = grmrule_append ($lst_t {symbol} (tupz! d0expcommaseq RBRACKET))
+val () = grmrule_set_action (gr, "{ $$ = d0arrind_make_sing($1, $2) ; }")
+val gr = grmrule_append ($lst_t {symbol} (tupz! d0expcommaseq RBRACKET LBRACKET d0arrind))
+val () = grmrule_set_action (gr, "{ $$ = d0arrind_make_cons($1, $4) ; }")
+//
+val () = symbol_close (pf | d0arrind)
+//
+} // end of [d0arrind_proc]
+
+(*
+colons0expopt
+  : /* empty */                         { $$ = s0expopt_none() ; }
+  | COLON s0exp                         { $$ = s0expopt_some($2) ; }
+; /* end of [colons0expopt] */
+*)
+fun colons0expopt_proc
+  (): void = () where {
+//
+val (pf | ()) = symbol_open (colons0expopt)
+//
+val gr = grmrule_append ()
+val () = grmrule_set_action (gr, "{ $$ = s0expopt_none() ; }")
+val gr = grmrule_append ($lst_t {symbol} (tupz! COLON s0exp))
+val () = grmrule_set_action (gr, "{ $$ = s0expopt_some($2) ; }")
+//
+val () = symbol_close (pf | colons0expopt)
+//
+} // end of [colons0expopt_proc]
+
+(* ****** ****** *)
+
+(*
+funarrow
+  : EQGT                                { $$ = e0fftaglstopt_none() ; }
+  | EQLTGT                              { $$ = e0fftaglstopt_some(e0fftaglst_nil()) ; }
+  | EQLT e0fftagseq GT                  { $$ = e0fftaglstopt_some($2) ; }
+; /* end of [funarrow] */
+*)
+fun funarrow_proc
+  (): void = () where {
+//
+val (pf | ()) = symbol_open (funarrow)
+//
+val gr = grmrule_append ($lst_t {symbol} (tupz! EQGT))
+val () = grmrule_set_action (gr, "{ $$ = e0fftaglstopt_none() ; }")
+val gr = grmrule_append ($lst_t {symbol} (tupz! EQLTGT))
+val () = grmrule_set_action (gr, "{ $$ = e0fftaglstopt_some(e0fftaglst_nil()) ; }")
+val gr = grmrule_append ($lst_t {symbol} (tupz! EQLT e0fftagseq GT))
+val () = grmrule_set_action (gr, "{ $$ = e0fftaglstopt_some($2) ; }")
+//
+val () = symbol_close (pf | funarrow)
+//
+} /* end of [funarrow_proc] */
+
+(*
+caseinv
+  : /* empty */                         { $$ = i0nvresstate_none() ; }
+  | i0nvresstate EQGT                   { $$ = $1 ; }
+; /* end of [caseinv] */
+*)
+fun caseinv_proc
+  (): void = () where {
+//
+val (pf | ()) = symbol_open (caseinv)
+//
+val gr = grmrule_append ()
+val () = grmrule_set_action (gr, "{ $$ = i0nvresstate_none() ; }")
+val gr = grmrule_append ($lst_t {symbol} (tupz! i0nvresstate EQGT))
+val () = grmrule_set_action (gr, "{ $$ = $1 ; }")
+//
+val () = symbol_close (pf | caseinv)
+//
+} // end of [caseinv_proc]
+
+(*
+ifhead
+  : IF caseinv                          { $$ = ifhead_make($1, $2) ; }
+; /* end of [ifhead] */
+*)
+fun ifhead_proc 
+  (): void = () where {
+//
+val (pf | ()) = symbol_open (ifhead)
+//
+val gr = grmrule_append ($lst_t {symbol} (tupz! IF caseinv))
+val () = grmrule_set_action (gr, "{ $$ = ifhead_make($1, $2) ; }")
+//
+val () = symbol_close (pf | ifhead)
+//
+} // end of [ifhead_proc]
+
+(*
+sifhead
+  : SIF caseinv                         { $$ = ifhead_make($1, $2) ; }
+; /* end of [sifhead] */
+*)
+fun sifhead_proc 
+  (): void = () where {
+//
+val (pf | ()) = symbol_open (sifhead)
+//
+val gr = grmrule_append ($lst_t {symbol} (tupz! SIF caseinv))
+val () = grmrule_set_action (gr, "{ $$ = ifhead_make($1, $2) ; }")
+//
+val () = symbol_close (pf | sifhead)
+//
+} // end of [sifhead_proc]
+
+(*
+casehead
+  : CASE caseinv                        { $$ = casehead_make(0, $1, $2) ; }
+  | CASEMINUS caseinv                   { $$ = casehead_make(-1, $1, $2) ; }
+  | CASEPLUS caseinv                    { $$ = casehead_make(1, $1, $2) ; }
+; /* end of [casehead] */
+*)
+fun casehead_proc
+  (): void = () where {
+//
+val (pf | ()) = symbol_open (casehead)
+//
+val gr = grmrule_append ($lst_t {symbol} (tupz! CASE caseinv))
+val () = grmrule_set_action (gr, "{ $$ = casehead_make(0, $1, $2) ; }")
+val gr = grmrule_append ($lst_t {symbol} (tupz! CASEMINUS caseinv))
+val () = grmrule_set_action (gr, "{ $$ = casehead_make(-1, $1, $2) ; }")
+val gr = grmrule_append ($lst_t {symbol} (tupz! CASEPLUS caseinv))
+val () = grmrule_set_action (gr, "{ $$ = casehead_make(1, $1, $2) ; }")
+//
+val () = symbol_close (pf | casehead)
+//
+} // end of [casehead_proc]
+
+(*
+scasehead
+  : SCASE caseinv                       { $$ = casehead_make(0, $1, $2) ; }
+; /* end of [scasehead] */
+*)
+fun scasehead_proc
+  (): void = () where {
+//
+val (pf | ()) = symbol_open (scasehead)
+//
+val gr = grmrule_append ($lst_t {symbol} (tupz! SCASE caseinv))
+val () = grmrule_set_action (gr, "{ $$ = casehead_make(0, $1, $2) ; }")
+//
+val () = symbol_close (pf | scasehead)
+//
+} // end of [scasehead_proc]
+
+(*
+forhead
+  : FOR                                 { $$ = loophead_make_none($1) ; }
+  | FORSTAR loopi0nv EQGT               { $$ = loophead_make_some($1, $2, $3) ; }
+; /* end of [forhead] */
+*)
+fun forhead_proc (): void = () where {
+//
+val (pf | ()) = symbol_open (forhead)
+//
+val gr = grmrule_append ($lst_t {symbol} (tupz! FOR))
+val () = grmrule_set_action (gr, "{ $$ = loophead_make_none($1) ; }")
+val gr = grmrule_append ($lst_t {symbol} (tupz! FORSTAR loopi0nv EQGT))
+val () = grmrule_set_action (gr, "{ $$ = loophead_make_some($1, $2, $3) ; }")
+//
+val () = symbol_close (pf | forhead)
+//
+} // end of [forhead_proc]
+
+(*
+whilehead
+/*
+  : WHILE                               { $$ = loophead_make_none($1) ; }
+*/
+  : WHILESTAR loopi0nv EQGT             { $$ = loophead_make_some($1, $2, $3) ; }
+; /* end of [whilehead] */
+*)
+fun whilehead_proc
+  (): void = () where {
+//
+val (pf | ()) = symbol_open (whilehead)
+//
+val gr = grmrule_append ($lst_t {symbol} (tupz! WHILESTAR loopi0nv EQGT))
+val () = grmrule_set_action (gr, "{ $$ = loophead_make_some($1, $2, $3) ; }")
+//
+val () = symbol_close (pf | whilehead)
+//
+} // end of [whilehead]
+
+(*
+tryhead
+  : TRY /* no invariant */              { $$ = tryhead_make($1) ; }
+; /* end of [tryhead] */
+*)
+fun tryhead_proc
+  (): void = () where {
+//
+val (pf | ()) = symbol_open (tryhead)
+//
+val gr = grmrule_append ($lst_t {symbol} (tupz! TRY))
+val () = grmrule_set_action (gr, "{ $$ = tryhead_make($1) ; }")
+//
+val () = symbol_close (pf | tryhead)
+//
+} // end of [tryhead_proc]
+
+(* ****** ****** *)
+
+(*
+** dynamic expression sequences
+*)
+
+(*
+d0expcommaseq
+  : /* empty */                         { $$ = d0explst_nil() ; }
+  | d0exp commad0expseq                 { $$ = d0explst_cons($1, $2) ; }
+; /* end of [d0expcommaseq] */
+*)
+fun d0expcommaseq_proc
+  (): void = () where {
+//
+val (pf | ()) = symbol_open (d0expcommaseq)
+//
+val gr = grmrule_append ()
+val () = grmrule_set_action (gr, "{ $$ = d0explst_nil() ; }")
+val gr = grmrule_append ($lst_t {symbol} (tupz! d0exp commad0expseq))
+val () = grmrule_set_action (gr, "{ $$ = d0explst_cons($1, $2) ; }")
+//
+val () = symbol_close (pf | d0expcommaseq)
+//
+} // end of [d0expcommaseq_proc]
+
+(*
+commad0expseq
+  : /* empty */                         { $$ = d0explst_nil() ; }
+  | COMMA d0exp commad0expseq           { $$ = d0explst_cons($2, $3) ; }
+; /* end of [commad0expseq] */
+*)
+fun commad0expseq_proc
+  (): void = () where {
+//
+val (pf | ()) = symbol_open (commad0expseq)
+//
+val gr = grmrule_append ()
+val () = grmrule_set_action (gr, "{ $$ = d0explst_nil() ; }")
+val gr = grmrule_append ($lst_t {symbol} (tupz! COMMA d0exp commad0expseq))
+val () = grmrule_set_action (gr, "{ $$ = d0explst_cons($2, $3) ; }")
+//
+val () = symbol_close (pf | commad0expseq)
+//
+} // end of [commad0expseq_proc]
+
+(*
+d0expsemiseq0
+  : d0exp                               { $$ = d0explst_sing($1) ; }
+  | d0exp SEMICOLON d0expsemiseq0       { $$ = d0explst_cons($1, $3) ; }
+  | /* empty */                         { $$ = d0explst_nil() ; }
+; /* end of [d0expsemiseq0] */
+*)
+fun d0expsemiseq0_proc
+  (): void = () where {
+//
+val (pf | ()) = symbol_open (d0expsemiseq0)
+//
+val gr = grmrule_append ($lst_t {symbol} (tupz! d0exp))
+val () = grmrule_set_action (gr, "{ $$ = d0explst_sing($1) ; }")
+val gr = grmrule_append ($lst_t {symbol} (tupz! d0exp SEMICOLON d0expsemiseq0))
+val () = grmrule_set_action (gr, "{ $$ = d0explst_cons($1, $3) ; }")
+val gr = grmrule_append ()
+val () = grmrule_set_action (gr, "{ $$ = d0explst_nil() ; }")
+//
+val () = symbol_close (pf | d0expsemiseq0)
+//
+} // end of [d0expsemiseq0_proc]
+
+(*
+d0expsemiseq1 // containing at least on semicolon
+  : d0exp SEMICOLON d0expsemiseq0       { $$ = d0explst_cons($1, $3) ; }
+; /* end of [d0expsemiseq1] */
+*)
+fun d0expsemiseq1_proc
+  (): void = () where {
+//
+val (pf | ()) = symbol_open (d0expsemiseq1)
+//
+val gr = grmrule_append ($lst_t {symbol} (tupz! d0exp SEMICOLON d0expsemiseq0))
+val () = grmrule_set_action (gr, "{ $$ = d0explst_cons($1, $3) ; }")
+//
+val () = symbol_close (pf | d0expsemiseq1)
+//
+} // end of [d0expsemiseq1_proc]
+
+(*
+labd0expseq
+  : /* empty */                         { $$ = labd0explst_nil() ; }
+  | l0ab EQ d0exp commalabd0expseq      { $$ = labd0explst_cons($1, $3, $4) ; }
+; /* end of [labd0expseq] */
+*)
+fun labd0expseq_proc
+  (): void = () where {
+//
+val (pf | ()) = symbol_open (labd0expseq)
+//
+val gr = grmrule_append ()
+val () = grmrule_set_action (gr, "{ $$ = labd0explst_nil() ; }")
+val gr = grmrule_append ($lst_t {symbol} (tupz! l0ab EQ d0exp commalabd0expseq))
+val () = grmrule_set_action (gr, "{ $$ = labd0explst_cons($1, $3, $4) ; }")
+//
+val () = symbol_close (pf | labd0expseq)
+//
+} // end of [labd0expseq_proc]
+
+(*
+commalabd0expseq
+  : /* empty */                         { $$ = labd0explst_nil() ; }
+  | COMMA l0ab EQ d0exp commalabd0expseq
+                                        { $$ = labd0explst_cons($2, $4, $5) ; }
+; /* end of [commalabd0expseq] */
+*)
+fun commalabd0expseq_proc
+  (): void = () where {
+//
+val (pf | ()) = symbol_open (commalabd0expseq)
+//
+val gr = grmrule_append ()
+val () = grmrule_set_action (gr, "{ $$ = labd0explst_nil() ; }")
+val gr = grmrule_append ($lst_t {symbol} (tupz! COMMA l0ab EQ d0exp commalabd0expseq))
+val () = grmrule_set_action (gr, "{ $$ = labd0explst_cons($2, $4, $5) ; }")
+//
+val () = symbol_close (pf | commalabd0expseq)
+//
+} // end of [commalabd0expseq_proc]
+
+(* ****** ****** *)
+
+(*
+m0atch
+  : d0exp                               { $$ = m0atch_make_none ($1) ; }
+  | d0exp AS p0at                       { $$ = m0atch_make_some ($1, $3) ; }
+; /* end of [m0atch] */
+*)
+fun m0atch_proc (): void = () where {
+//
+val (pf | ()) = symbol_open (m0atch)
+//
+val gr = grmrule_append ($lst_t {symbol} (tupz! d0exp))
+val () = grmrule_set_action (gr, "{ $$ = m0atch_make_none ($1) ; }")
+val gr = grmrule_append ($lst_t {symbol} (tupz! d0exp AS p0at))
+val () = grmrule_set_action (gr, "{ $$ = m0atch_make_some ($1, $3) ; }")
+//
+val () = symbol_close (pf | m0atch)
+//
+} // end of [m0atch_proc]
+
+(*
+m0atchseq
+  : m0atch andm0atchseq                 { $$ = m0atchlst_cons ($1, $2 ) ; }
+; /* end of [m0atchseq] */
+*)
+fun m0atchseq_proc (): void = () where {
+//
+val (pf | ()) = symbol_open (m0atchseq)
+//
+val gr = grmrule_append ($lst_t {symbol} (tupz! m0atch andm0atchseq))
+val () = grmrule_set_action (gr, "{ $$ = m0atchlst_cons ($1, $2 ) ; }")
+//
+val () = symbol_close (pf | m0atchseq)
+//
+} // end of [m0atchseq_proc]
+
+(*
+andm0atchseq
+  : /* empty */                         { $$ = m0atchlst_nil () ; }
+  | AND m0atch andm0atchseq             { $$ = m0atchlst_cons ($2, $3 ) ; }
+; /* end of [andm0atchseq] */
+*)
+fun andm0atchseq_proc (): void = () where {
+//
+val (pf | ()) = symbol_open (andm0atchseq)
+//
+val gr = grmrule_append ()
+val () = grmrule_set_action (gr, "{ $$ = m0atchlst_nil () ; }")
+val gr = grmrule_append ($lst_t {symbol} (tupz! AND m0atch andm0atchseq))
+val () = grmrule_set_action (gr, "{ $$ = m0atchlst_cons ($2, $3 ) ; }")
+//
+val () = symbol_close (pf | andm0atchseq)
+//
+} // end of [andm0atchseq_proc]
+
+(*
+guap0at
+  : p0at                                { $$ = guap0at_make_none($1) ; }
+  | p0at WHEN m0atchseq                 { $$ = guap0at_make_some($1, $3) ; }
+; /* end of [guap0at] */
+*)
+fun guap0at_proc (): void = () where {
+//
+val (pf | ()) = symbol_open (guap0at)
+//
+val gr = grmrule_append ($lst_t {symbol} (tupz! p0at))
+val () = grmrule_set_action (gr, "{ $$ = guap0at_make_none($1) ; }")
+val gr = grmrule_append ($lst_t {symbol} (tupz! p0at WHEN m0atchseq))
+val () = grmrule_set_action (gr, "{ $$ = guap0at_make_some($1, $3) ; }")
+//
+val () = symbol_close (pf | guap0at)
+//
+} // end of [guap0at_proc]
+
+(*
+c0lau
+  : guap0at EQGT d0exp %prec CLAUS      { $$ = c0lau_make ($1, 0, 0, $3) ; }
+  | guap0at EQGTGT d0exp %prec CLAUS    { $$ = c0lau_make ($1, 1, 0, $3) ; }
+  | guap0at EQSLASHEQGT d0exp %prec CLAUS
+                                        { $$ = c0lau_make ($1, 0, 1, $3) ; }
+  | guap0at EQSLASHEQGTGT d0exp %prec CLAUS
+                                        { $$ = c0lau_make ($1, 1, 1, $3) ; }
+; /* end of [c0lau] */
+*)
+fun c0lau_proc (): void = () where {
+//
+val (pf | ()) = symbol_open (c0lau)
+//
+val gr = grmrule_append ($lst_t {symbol} (tupz! guap0at EQGT d0exp))
+val () = grmrule_set_action (gr, "{ $$ = c0lau_make ($1, 0, 0, $3) ; }")
+val gr = grmrule_append ($lst_t {symbol} (tupz! guap0at EQGTGT d0exp))
+val () = grmrule_set_action (gr, "{ $$ = c0lau_make ($1, 1, 0, $3) ; }")
+val gr = grmrule_append ($lst_t {symbol} (tupz! guap0at EQSLASHEQGT d0exp))
+val () = grmrule_set_action (gr, "{ $$ = c0lau_make ($1, 0, 1, $3) ; }")
+val gr = grmrule_append ($lst_t {symbol} (tupz! guap0at EQSLASHEQGTGT d0exp))
+val () = grmrule_set_action (gr, "{ $$ = c0lau_make ($1, 1, 1, $3) ; }")
+//
+val () = symbol_close (pf | c0lau)
+//
+} // end of [c0lau_proc]
+
+(*
+c0lauseq
+  : barc0lauseq                         { $$ = $1 ; }
+  | c0lau barc0lauseq                   { $$ = c0laulst_cons($1, $2) ; }
+; /* end of [c0lauseq] */
+*)
+fun c0lauseq_proc (): void = () where {
+//
+val (pf | ()) = symbol_open (c0lauseq)
+//
+val gr = grmrule_append ($lst_t {symbol} (tupz! barc0lauseq))
+val () = grmrule_set_action (gr, "{ $$ = $1 ; }")
+val gr = grmrule_append ($lst_t {symbol} (tupz! c0lau barc0lauseq))
+val () = grmrule_set_action (gr, "{ $$ = c0laulst_cons($1, $2) ; }")
+//
+val () = symbol_close (pf | c0lauseq)
+//
+} // end of [c0lauseq_proc]
+
+(*
+barc0lauseq
+  : /* empty */ %prec BARCLAUSSEQNONE   { $$ = c0laulst_nil() ; } 
+  | BAR c0lau barc0lauseq               { $$ = c0laulst_cons($2, $3) ; }
+; /* end of [barc0lauseq] */
+*)
+fun barc0lauseq_proc (): void = () where {
+//
+val (pf | ()) = symbol_open (barc0lauseq)
+//
+val gr = grmrule_append ()
+val () = grmrule_set_action (gr, "{ $$ = c0laulst_nil() ; } ")
+val gr = grmrule_append ($lst_t {symbol} (tupz! BAR c0lau barc0lauseq))
+val () = grmrule_set_action (gr, "{ $$ = c0laulst_cons($2, $3) ; }")
+//
+val () = symbol_close (pf | barc0lauseq)
+//
+} // end of [barc0lauseq_proc]
+
+(*
+sc0lau
+  : sp0at EQGT d0exp %prec CLAUS        { $$ = sc0lau_make($1, $3) ; }
+; /* end of [sc0lau] */
+*)
+fun sc0lau_proc (): void = () where {
+//
+val (pf | ()) = symbol_open (sc0lau)
+//
+val gr = grmrule_append ($lst_t {symbol} (tupz! sp0at EQGT d0exp))
+val () = grmrule_set_action (gr, "{ $$ = sc0lau_make($1, $3) ; }")
+//
+val () = symbol_close (pf | sc0lau)
+//
+} // end of [sc0lau_proc]
+
+(*
+sc0lauseq
+  : barsc0lauseq                        { $$ = $1 ; }
+  | sc0lau barsc0lauseq                 { $$ = sc0laulst_cons($1, $2) ; }
+; /* end of [sc0lauseq] */
+*)
+fun sc0lauseq_proc (): void = () where {
+//
+val (pf | ()) = symbol_open (sc0lauseq)
+//
+val gr = grmrule_append ($lst_t {symbol} (tupz! barsc0lauseq))
+val () = grmrule_set_action (gr, "{ $$ = $1 ; }")
+val gr = grmrule_append ($lst_t {symbol} (tupz! sc0lau barsc0lauseq))
+val () = grmrule_set_action (gr, "{ $$ = sc0laulst_cons($1, $2) ; }")
+//
+val () = symbol_close (pf | sc0lauseq)
+//
+} // end of [sc0lauseq_proc]
+
+(*
+barsc0lauseq
+  : /* empty */ %prec BARCLAUSSEQNONE   { $$ = sc0laulst_nil() ; } 
+  | BAR sc0lau barsc0lauseq             { $$ = sc0laulst_cons($2, $3) ; }
+; /* end of [barsc0lauseq] */
+*)
+fun barsc0lauseq_proc (): void = () where {
+//
+val (pf | ()) = symbol_open (barsc0lauseq)
+//
+val gr = grmrule_append ()
+val () = grmrule_set_action (gr, "{ $$ = sc0laulst_nil() ; } ")
+val gr = grmrule_append ($lst_t {symbol} (tupz! BAR sc0lau barsc0lauseq))
+val () = grmrule_set_action (gr, "{ $$ = sc0laulst_cons($2, $3) ; }")
+//
+val () = symbol_close (pf | barsc0lauseq)
+//
+} // end of [barsc0lauseq_proc]
+
+(* ****** ****** *)
+
+(*
+** invariants
+*)
+
+(*
+i0nvqua
+  : /* empty */                         { $$ = s0qualstopt_none() ; }
+  | LBRACE s0quaseq RBRACE              { $$ = s0qualstopt_some($2) ; }
+; /* end of [i0nvqua] */
+*)
+fun i0nvqua_proc (): void = () where {
+//
+val (pf | ()) = symbol_open (i0nvqua)
+//
+val gr = grmrule_append ()
+val () = grmrule_set_action (gr, "{ $$ = s0qualstopt_none() ; }")
+val gr = grmrule_append ($lst_t {symbol} (tupz! LBRACE s0quaseq RBRACE))
+val () = grmrule_set_action (gr, "{ $$ = s0qualstopt_some($2) ; }")
+//
+val () = symbol_close (pf | i0nvqua)
+//
+} // end of [i0nvqua_proc]
+
+(*
+i0nvmet
+  : /* empty */                         { $$ = s0explstopt_none() ; }
+  | DOTLT s0expseq GTDOT                { $$ = s0explstopt_some($2) ; }
+  | DOTLTGTDOT                          { $$ = s0explstopt_some(s0explstopt_none()) ; }
+; /* end of [i0nvmet] */ /* end of [i0nvmet] */
+*)
+fun i0nvmet_proc (): void = () where {
+//
+val (pf | ()) = symbol_open (i0nvmet)
+//
+val gr = grmrule_append ()
+val () = grmrule_set_action (gr, "{ $$ = s0explstopt_none() ; }")
+val gr = grmrule_append ($lst_t {symbol} (tupz! DOTLT s0expseq GTDOT))
+val () = grmrule_set_action (gr, "{ $$ = s0explstopt_some($2) ; }")
+val gr = grmrule_append ($lst_t {symbol} (tupz! DOTLTGTDOT))
+val () = grmrule_set_action (gr, "{ $$ = s0explstopt_some(s0explstopt_none()) ; }")
+//
+val () = symbol_close (pf | i0nvmet)
+//
+} // end of [i0nvmet_proc]
+
+(*
+i0nvarg
+  : di0de COLON                         { $$ = i0nvarg_make_none($1) ; }
+  | di0de COLON s0exp                   { $$ = i0nvarg_make_some($1, $3) ; }
+; /* end of [i0nvarg] */ /* end of [i0nvarg] */
+*)
+fun i0nvarg_proc (): void = () where {
+//
+val (pf | ()) = symbol_open (i0nvarg)
+//
+val gr = grmrule_append ($lst_t {symbol} (tupz! di0de COLON))
+val () = grmrule_set_action (gr, "{ $$ = i0nvarg_make_none($1) ; }")
+val gr = grmrule_append ($lst_t {symbol} (tupz! di0de COLON s0exp))
+val () = grmrule_set_action (gr, "{ $$ = i0nvarg_make_some($1, $3) ; }")
+//
+val () = symbol_close (pf | i0nvarg)
+//
+} // end of [i0nvarg_proc]
+
+(*
+i0nvargseq
+  : /* empty */                         { $$ = i0nvarglst_nil() ; }
+  | i0nvarg commai0nvargseq             { $$ = i0nvarglst_cons($1, $2) ; }
+; /* end of [i0nvargseq] */ /* end of [i0nvargseq] */
+*)
+fun i0nvargseq_proc (): void = () where {
+//
+val (pf | ()) = symbol_open (i0nvargseq)
+//
+val gr = grmrule_append ()
+val () = grmrule_set_action (gr, "{ $$ = i0nvarglst_nil() ; }")
+val gr = grmrule_append ($lst_t {symbol} (tupz! i0nvarg commai0nvargseq))
+val () = grmrule_set_action (gr, "{ $$ = i0nvarglst_cons($1, $2) ; }")
+//
+val () = symbol_close (pf | i0nvargseq)
+//
+} // end of [i0nvargseq_proc]
+
+(*
+commai0nvargseq
+  : /* empty */                         { $$ = i0nvarglst_nil() ; }
+  | COMMA i0nvarg commai0nvargseq       { $$ = i0nvarglst_cons($2, $3) ; }
+; /* end of [commai0nvargseq] */ /* end of [commai0nvargseq] */
+*)
+fun commai0nvargseq_proc (): void = () where {
+//
+val (pf | ()) = symbol_open (commai0nvargseq)
+//
+val gr = grmrule_append ()
+val () = grmrule_set_action (gr, "{ $$ = i0nvarglst_nil() ; }")
+val gr = grmrule_append ($lst_t {symbol} (tupz! COMMA i0nvarg commai0nvargseq))
+val () = grmrule_set_action (gr, "{ $$ = i0nvarglst_cons($2, $3) ; }")
+//
+val () = symbol_close (pf | commai0nvargseq)
+//
+} // end of [commai0nvargseq_proc]
+
+(*
+i0nvargstate
+  : LPAREN i0nvargseq RPAREN            { $$ = $2 ; }
+; /* end of [i0nvargstate] */ /* end of [i0nvargstate] */
+*)
+fun i0nvargstate_proc (): void = () where {
+//
+val (pf | ()) = symbol_open (i0nvargstate)
+//
+val gr = grmrule_append ($lst_t {symbol} (tupz! LPAREN i0nvargseq RPAREN))
+val () = grmrule_set_action (gr, "{ $$ = $2 ; }")
+//
+val () = symbol_close (pf | i0nvargstate)
+//
+} // end of [i0nvargstate_proc]
+
+(*
+i0nvresqua
+  : /* empty */                         { $$ = s0qualstopt_none() ; }
+  | LBRACKET s0quaseq RBRACKET          { $$ = s0qualstopt_some($2) ; }
+; /* end of [i0nvresqua] */ /* end of [i0nvresqua] */
+*)
+fun i0nvresqua_proc (): void = () where {
+//
+val (pf | ()) = symbol_open (i0nvresqua)
+//
+val gr = grmrule_append ()
+val () = grmrule_set_action (gr, "{ $$ = s0qualstopt_none() ; }")
+val gr = grmrule_append ($lst_t {symbol} (tupz! LBRACKET s0quaseq RBRACKET))
+val () = grmrule_set_action (gr, "{ $$ = s0qualstopt_some($2) ; }")
+//
+val () = symbol_close (pf | i0nvresqua)
+//
+} // end of [i0nvresqua_proc]
+
+(*
+i0nvresstate
+  : /* empty */                         { $$ = i0nvresstate_none() ; }
+  | COLON i0nvresqua LPAREN i0nvargseq RPAREN
+                                        { $$ = i0nvresstate_some($2, $4) ; }
+; /* end of [i0nvresstate] */ /* end of [i0nvresstate] */
+*)
+fun i0nvresstate_proc (): void = () where {
+//
+val (pf | ()) = symbol_open (i0nvresstate)
+//
+val gr = grmrule_append ()
+val () = grmrule_set_action (gr, "{ $$ = i0nvresstate_none() ; }")
+val gr = grmrule_append ($lst_t {symbol} (tupz! COLON i0nvresqua LPAREN i0nvargseq RPAREN))
+val () = grmrule_set_action (gr, "{ $$ = i0nvresstate_some($2, $4) ; }")
+//
+val () = symbol_close (pf | i0nvresstate)
+//
+} // end of [i0nvresstate_proc]
+
+(*
+loopi0nv
+  : i0nvqua i0nvmet i0nvargstate i0nvresstate
+                                        { $$ = loopi0nv_make($1, $2, $3, $4) ; }
+; /* end of [loopi0nv] */ /* end of [loopi0nv] */
+*)
+fun loopi0nv_proc (): void = () where {
+//
+val (pf | ()) = symbol_open (loopi0nv)
+//
+val gr = grmrule_append ($lst_t {symbol} (tupz! i0nvqua i0nvmet i0nvargstate i0nvresstate))
+val () = grmrule_set_action (gr, "{ $$ = loopi0nv_make($1, $2, $3, $4) ; }")
+//
+val () = symbol_close (pf | loopi0nv)
+//
+} // end of [loopi0nv_proc]
+
+(*
+initestpost
+  : LPAREN d0expcommaseq SEMICOLON d0expcommaseq SEMICOLON d0expcommaseq RPAREN
+                                        { $$ = initestpost_make ($1,$2,$3,$4,$5,$6,$7) ; }
+; /* end of [initestpost] */ /* end of [initestpost] */
+*)
+fun initestpost_proc (): void = () where {
+//
+val (pf | ()) = symbol_open (initestpost)
+//
+val gr = grmrule_append ($lst_t {symbol}
+  (tupz! LPAREN d0expcommaseq SEMICOLON d0expcommaseq SEMICOLON d0expcommaseq RPAREN)
+) // end of [val]
+val () = grmrule_set_action (gr, "{ $$ = initestpost_make ($1,$2,$3,$4,$5,$6,$7) ; }")
+//
+val () = symbol_close (pf | initestpost)
+//
+} // end of [initestpost_proc]
+
+(* ****** ****** *)
+
+(*
+** macro declarations
+*)
+
+(*
+m0arg : pi0de                           { $$ = $1 ; }
+; /* end of [m0arg] */
+*)
+fun m0arg_proc (): void = () where {
+//
+val (pf | ()) = symbol_open (m0arg)
+//
+val gr = grmrule_append ($lst_t {symbol} (tupz! pi0de))
+val () = grmrule_set_action (gr, "{ $$ = $1 ; }")
+//
+val () = symbol_close (pf | m0arg)
+//
+} // end of [m0arg_proc]
+
+(*
+m0argseq
+  : /* empty */                         { $$ = i0delst_nil() ; }
+  | m0arg commam0argseq                 { $$ = i0delst_cons($1, $2) ; }
+; /* end of [m0argseq] */
+*)
+fun m0argseq_proc (): void = () where {
+//
+val (pf | ()) = symbol_open (m0argseq)
+//
+val gr = grmrule_append ()
+val () = grmrule_set_action (gr, "{ $$ = i0delst_nil() ; }")
+val gr = grmrule_append ($lst_t {symbol} (tupz! m0arg commam0argseq))
+val () = grmrule_set_action (gr, "{ $$ = i0delst_cons($1, $2) ; }")
+//
+val () = symbol_close (pf | m0argseq)
+//
+} // end of [m0argseq_proc]
+
+(*
+commam0argseq
+  : /* empty */                         { $$ = i0delst_nil() ; }
+  | COMMA m0arg commam0argseq           { $$ = i0delst_cons($2, $3) ; }
+; /* end of [commam0argseq] */
+*)
+fun commam0argseq_proc (): void = () where {
+//
+val (pf | ()) = symbol_open (commam0argseq)
+//
+val gr = grmrule_append ()
+val () = grmrule_set_action (gr, "{ $$ = i0delst_nil() ; }")
+val gr = grmrule_append ($lst_t {symbol} (tupz! COMMA m0arg commam0argseq))
+val () = grmrule_set_action (gr, "{ $$ = i0delst_cons($2, $3) ; }")
+//
+val () = symbol_close (pf | commam0argseq)
+//
+} // end of [commam0argseq_proc]
+
+(*
+m0acarg
+  : m0arg                               { $$ = m0acarg_one ($1) ; }
+  | LPAREN m0argseq RPAREN              { $$ = m0acarg_lst ($1, $2, $3) ; }
+; /* end of [m0acarg] */
+*)
+fun m0acarg_proc (): void = () where {
+//
+val (pf | ()) = symbol_open (m0acarg)
+//
+val gr = grmrule_append ($lst_t {symbol} (tupz! m0arg))
+val () = grmrule_set_action (gr, "{ $$ = m0acarg_one ($1) ; }")
+val gr = grmrule_append ($lst_t {symbol} (tupz! LPAREN m0argseq RPAREN))
+val () = grmrule_set_action (gr, "{ $$ = m0acarg_lst ($1, $2, $3) ; }")
+//
+val () = symbol_close (pf | m0acarg)
+//
+} // end of [m0acarg_proc]
+
+(*
+m0acargseq
+  : /* empty */                         { $$ = m0acarglst_nil () ; }
+  | m0acarg m0acargseq                  { $$ = m0acarglst_cons ($1, $2) ; }
+; /* end of [m0acargseq] */
+*)
+fun m0acargseq_proc (): void = () where {
+//
+val (pf | ()) = symbol_open (m0acargseq)
+//
+val gr = grmrule_append ()
+val () = grmrule_set_action (gr, "{ $$ = m0acarglst_nil () ; }")
+val gr = grmrule_append ($lst_t {symbol} (tupz! m0acarg m0acargseq))
+val () = grmrule_set_action (gr, "{ $$ = m0acarglst_cons ($1, $2) ; }")
+//
+val () = symbol_close (pf | m0acargseq)
+//
+} // end of [m0acargseq_proc]
+
+(*
+m0acdef
+  : di0de m0acargseq EQ d0exp           { $$ = m0acdef_make($1, $2, $4) ; }
+; /* end of [m0acdef] */
+*)
+fun m0acdef_proc (): void = () where {
+//
+val (pf | ()) = symbol_open (m0acdef)
+//
+val gr = grmrule_append ($lst_t {symbol} (tupz! di0de m0acargseq EQ d0exp))
+val () = grmrule_set_action (gr, "{ $$ = m0acdef_make($1, $2, $4) ; }")
+//
+val () = symbol_close (pf | m0acdef)
+//
+} // end of [m0acdef_proc]
+
+(*
+andm0acdefseq
+  : /* empty */                         { $$ = m0acdeflst_nil() ; }
+  | AND m0acdef andm0acdefseq           { $$ = m0acdeflst_cons($2, $3) ; }
+; /* end of [andm0acdefseq] */
+*)
+fun andm0acdefseq_proc (): void = () where {
+//
+val (pf | ()) = symbol_open (andm0acdefseq)
+//
+val gr = grmrule_append ()
+val () = grmrule_set_action (gr, "{ $$ = m0acdeflst_nil() ; }")
+val gr = grmrule_append ($lst_t {symbol} (tupz! AND m0acdef andm0acdefseq))
+val () = grmrule_set_action (gr, "{ $$ = m0acdeflst_cons($2, $3) ; }")
+//
+val () = symbol_close (pf | andm0acdefseq)
+//
+} // end of [andm0acdefseq_proc]
+
+(* ****** ****** *)
+
+(*
+v0aldec
+  : p0at EQ d0exp witht0ype             { $$ = v0aldec_make ($1, $3, $4) ; }
+; /* end of [v0aldec] */
+*)
+fun v0aldec_proc (): void = () where {
+//
+val (pf | ()) = symbol_open (v0aldec)
+//
+val gr = grmrule_append ($lst_t {symbol} (tupz! p0at EQ d0exp witht0ype))
+val () = grmrule_set_action (gr, "{ $$ = v0aldec_make ($1, $3, $4) ; }")
+//
+val () = symbol_close (pf | v0aldec)
+//
+} // end of [v0aldec_proc]
+
+(*
+andv0aldecseq
+  : /* empty */                         { $$ = v0aldeclst_nil() ; }
+  | AND v0aldec andv0aldecseq           { $$ = v0aldeclst_cons($2, $3) ; }
+; /* end of [andv0aldecseq] */
+*)
+fun andv0aldecseq_proc (): void = () where {
+//
+val (pf | ()) = symbol_open (andv0aldecseq)
+//
+val gr = grmrule_append ()
+val () = grmrule_set_action (gr, "{ $$ = v0aldeclst_nil() ; }")
+val gr = grmrule_append($lst_t {symbol} (tupz! AND v0aldec andv0aldecseq))
+val () = grmrule_set_action (gr, "{ $$ = v0aldeclst_cons($2, $3) ; }")
+//
+val () = symbol_close (pf | andv0aldecseq)
+//
+} // end of [andv0aldecseq_proc]
+
+(*
+f0undec
+  : fi0de f0arg1seq EQ d0exp witht0ype
+                                        { $$ = f0undec_make_none($1, $2, $4, $5) ; }
+  | fi0de f0arg1seq colonwith s0exp EQ d0exp witht0ype
+                                        { $$ = f0undec_make_some($1, $2, $3, $4, $6, $7) ; }
+; /* end of [f0undec] */
+*)
+fun f0undec_proc (): void = () where {
+//
+val (pf | ()) = symbol_open (f0undec)
+//
+val gr = grmrule_append ($lst_t {symbol} (tupz! fi0de f0arg1seq EQ d0exp witht0ype))
+val () = grmrule_set_action (gr, "{ $$ = f0undec_make_none($1, $2, $4, $5) ; }")
+val gr = grmrule_append ($lst_t {symbol} (tupz! fi0de f0arg1seq colonwith s0exp EQ d0exp witht0ype))
+val () = grmrule_set_action (gr, "{ $$ = f0undec_make_some($1, $2, $3, $4, $6, $7) ; }")
+//
+val () = symbol_close (pf | f0undec)
+//
+} // end of [f0undec_proc]
+
+(*
+andf0undecseq
+  : /* empty */                         { $$ = f0undeclst_nil() ; }
+  | AND f0undec andf0undecseq           { $$ = f0undeclst_cons($2, $3) ; }
+; /* end of [andf0undecseq] */
+*)
+fun andf0undecseq_proc (): void = () where {
+//
+val (pf | ()) = symbol_open (andf0undecseq)
+//
+val gr = grmrule_append ()
+val () = grmrule_set_action (gr, "{ $$ = f0undeclst_nil() ; }")
+val gr = grmrule_append ($lst_t {symbol} (tupz! AND f0undec andf0undecseq))
+val () = grmrule_set_action (gr, "{ $$ = f0undeclst_cons($2, $3) ; }")
+//
+val () = symbol_close (pf | andf0undecseq)
+//
+} // end of [andf0undecseq_proc]
+
+(*
+v0arwth
+  : /* empty */                         { $$ = v0arwth_none () ; }
+  | WITH pi0de                          { $$ = v0arwth_some ($2) ; }
+; /* end of [v0arwth] */
+*)
+fun v0arwth_proc (): void = () where {
+//
+val (pf | ()) = symbol_open (v0arwth)
+//
+val gr = grmrule_append ()
+val () = grmrule_set_action (gr, "{ $$ = v0arwth_none () ; }")
+val gr = grmrule_append ($lst_t {symbol} (tupz! WITH pi0de))
+val () = grmrule_set_action (gr, "{ $$ = v0arwth_some ($2) ; }")
+//
+val () = symbol_close (pf | v0arwth)
+//
+} // end of [v0arwth_proc]
+
+(*
+v0ardec /* stack-allocated variable */
+  : pi0de v0arwth EQ d0exp              { $$ = v0ardec_make_none_some(0, $1, $2, $4) ; }
+  | BANG pi0de v0arwth EQ d0exp         { $$ = v0ardec_make_none_some(1, $2, $3, $5) ; }
+  | pi0de COLON s0exp v0arwth           { $$ = v0ardec_make_some_none(0, $1, $3, $4) ; }
+  | pi0de COLON s0exp v0arwth EQ d0exp  { $$ = v0ardec_make_some_some(0, $1, $3, $4, $6) ; }
+; /* end of [v0ardec] */
+*)
+fun v0ardec_proc (): void = () where {
+//
+val (pf | ()) = symbol_open (v0arwth)
+//
+val gr = grmrule_append ($lst_t {symbol} (tupz! pi0de v0arwth EQ d0exp))
+val () = grmrule_set_action (gr, "{ $$ = v0ardec_make_none_some(0, $1, $2, $4) ; }")
+val gr = grmrule_append ($lst_t {symbol} (tupz! BANG pi0de v0arwth EQ d0exp))
+val () = grmrule_set_action (gr, "{ $$ = v0ardec_make_none_some(1, $2, $3, $5) ; }")
+val gr = grmrule_append ($lst_t {symbol} (tupz! pi0de COLON s0exp v0arwth))
+val () = grmrule_set_action (gr, "{ $$ = v0ardec_make_some_none(0, $1, $3, $4) ; }")
+val gr = grmrule_append ($lst_t {symbol} (tupz! pi0de COLON s0exp v0arwth EQ d0exp))
+val () = grmrule_set_action (gr, "{ $$ = v0ardec_make_some_some(0, $1, $3, $4, $6) ; }")
+//
+val () = symbol_close (pf | v0arwth)
+//
+} // end of [v0arwth_proc]
+
+(*
+andv0ardecseq
+  : /* empty */                         { $$ = v0ardeclst_nil() ; }
+  | AND v0ardec andv0ardecseq           { $$ = v0ardeclst_cons($2, $3) ; }
+; /* end of [andv0ardecseq] */
+*)
+fun andv0ardecseq_proc (): void = () where {
+//
+val (pf | ()) = symbol_open (andv0ardecseq)
+//
+val gr = grmrule_append ()
+val () = grmrule_set_action (gr, "{ $$ = v0ardeclst_nil() ; }")
+val gr = grmrule_append ($lst_t {symbol} (tupz! AND v0ardec andv0ardecseq))
+val () = grmrule_set_action (gr, "{ $$ = v0ardeclst_cons($2, $3) ; }")
+//
+val () = symbol_close (pf | andv0ardecseq)
+//
+} // end of [andv0ardecseq_proc]
+
+(*
+i0mpdec
+  : impqi0de f0arg2seq colons0expopt EQ d0exp
+                                        { $$ = i0mpdec_make($1, $2, $3, $5) ; }
+; /* end of [i0mpdec] */ /* end of [i0mpdec] */
+*)
+fun i0mpdec_proc (): void = () where {
+//
+val (pf | ()) = symbol_open (i0mpdec)
+//
+val gr = grmrule_append ($lst_t {symbol} (tupz! impqi0de f0arg2seq colons0expopt EQ d0exp))
+val () = grmrule_set_action (gr, "{ $$ = i0mpdec_make($1, $2, $3, $5) ; }")
+//
+val () = symbol_close (pf | i0mpdec)
+//
+} // end of [i0mpdec_proc]
+
+(* ****** ****** *)
+
+(*
+** generic dynamic declarations
+*)
+
+(*
+d0ec
+  : INFIX p0rec i0deseq                 { $$ = d0ec_infix($1, $2,  0, $3) ; }
+  | INFIXL p0rec i0deseq                { $$ = d0ec_infix($1, $2, -1, $3) ; }
+  | INFIXR p0rec i0deseq                { $$ = d0ec_infix($1, $2,  1, $3) ; }
+  | PREFIX p0rec i0deseq                { $$ = d0ec_prefix($1, $2, $3) ; }
+  | POSTFIX p0rec i0deseq               { $$ = d0ec_postfix($1, $2, $3) ; }
+  | NONFIX i0deseq                      { $$ = d0ec_nonfix($1, $2) ; }
+  | SYMINTR i0deseq                     { $$ = d0ec_symintr($1, $2) ; }
+  | SRPUNDEF i0de                       { $$ = d0ec_e0xpundef($2) ; }
+  | SRPDEFINE i0de e0xpopt              { $$ = d0ec_e0xpdef($2, $3) ; }
+  | SRPASSERT e0xp                      { $$ = d0ec_e0xpact_assert($2) ; }
+  | SRPERROR e0xp                       { $$ = d0ec_e0xpact_error($2) ; }
+  | SRPPRINT e0xp                       { $$ = d0ec_e0xpact_print($2) ; }
+  | SORTDEF s0rtdef ands0rtdefseq       { $$ = d0ec_srtdefs($2, $3) ; }
+  | DATASORT d0atsrtdec andd0atsrtdecseq
+                                        { $$ = d0ec_datsrts(0, $2, $3) ; }
+  | DATAPARASORT d0atsrtdec andd0atsrtdecseq
+                                        { $$ = d0ec_datsrts(1, $2, $3) ; }
+  | abskind s0tacon ands0taconseq       { $$ = d0ec_stacons($1, $2, $3) ; }
+  | STA s0tacst ands0tacstseq           { $$ = d0ec_stacsts($2, $3) ; }
+  | STAVAR s0tavar ands0tavarseq        { $$ = d0ec_stavars($2, $3) ; }
+  | stadefkind s0expdef ands0expdefseq  { $$ = d0ec_sexpdefs($1, $2, $3) ; }
+  | ASSUME s0aspdec                     { $$ = d0ec_saspdec($2) ; }
+  | datakind d0atdec andd0atdecseq s0expdefseqopt
+                                        { $$ = d0ec_datdecs($1, $2, $3, $4) ; }
+  | EXCEPTION e0xndec ande0xndecseq     { $$ = d0ec_exndecs($1, $2, $3) ; } 
+/*
+// HX-2010-05-12: the OOP plan is permanently abandoned
+  | clskind d0ecargseq c0lassdec s0expdefseqopt
+                                        { $$ = d0ec_classdec($1, $2, $3, $4) ; }
+*/
+  | CLASSDEC si0de                      { $$ = d0ec_classdec_none ($1, $2) ; }
+  | CLASSDEC si0de COLON s0exp          { $$ = d0ec_classdec_some ($1, $2, $4) ; }
+
+  | OVERLOAD di0de WITH dqi0de          { $$ = d0ec_overload($1, $2, $4) ; }
+  | OVERLOAD LBRACKET RBRACKET WITH dqi0de
+                                        { $$ = d0ec_overload_lrbrackets($1, $2, $3, $5) ; }
+  | MACDEF m0acdef andm0acdefseq        { $$ = d0ec_macdefs(0, $2, $3) ; }
+  | MACDEF REC m0acdef andm0acdefseq    { $$ = d0ec_macdefs(-1/*error*/, $3, $4) ; }
+  | MACRODEF m0acdef andm0acdefseq      { $$ = d0ec_macdefs(1, $2, $3) ; }
+  | MACRODEF REC m0acdef andm0acdefseq  { $$ = d0ec_macdefs(2, $3, $4) ; }
+  | DYNLOAD LITERAL_string              { $$ = d0ec_dynload($2) ; }
+  | STALOAD LITERAL_string              { $$ = d0ec_staload_none($2) ; }
+  | STALOAD stai0de EQ LITERAL_string   { $$ = d0ec_staload_some($2, $4) ; }
+; /* end of [d0ec] */
+*)
+fun d0ec_proc (): void = () where {
+//
+val (pf | ()) = symbol_open (d0ec)
+//
+val gr = grmrule_append ($lst_t {symbol} (tupz! INFIX p0rec i0deseq))
+val () = grmrule_set_action (gr, "{ $$ = d0ec_infix($1, $2,  0, $3) ; }")
+val gr = grmrule_append ($lst_t {symbol} (tupz! INFIXL p0rec i0deseq))
+val () = grmrule_set_action (gr, "{ $$ = d0ec_infix($1, $2, -1, $3) ; }")
+val gr = grmrule_append ($lst_t {symbol} (tupz! INFIXR p0rec i0deseq))
+val () = grmrule_set_action (gr, "{ $$ = d0ec_infix($1, $2,  1, $3) ; }")
+val gr = grmrule_append ($lst_t {symbol} (tupz! PREFIX p0rec i0deseq))
+val () = grmrule_set_action (gr, "{ $$ = d0ec_prefix($1, $2, $3) ; }")
+val gr = grmrule_append ($lst_t {symbol} (tupz! POSTFIX p0rec i0deseq))
+val () = grmrule_set_action (gr, "{ $$ = d0ec_postfix($1, $2, $3) ; }")
+val gr = grmrule_append ($lst_t {symbol} (tupz! NONFIX i0deseq))
+val () = grmrule_set_action (gr, "{ $$ = d0ec_nonfix($1, $2) ; }")
+val gr = grmrule_append ($lst_t {symbol} (tupz! SYMINTR i0deseq))
+val () = grmrule_set_action (gr, "{ $$ = d0ec_symintr($1, $2) ; }")
+val gr = grmrule_append ($lst_t {symbol} (tupz! SRPUNDEF i0de))
+val () = grmrule_set_action (gr, "{ $$ = d0ec_e0xpundef($2) ; }")
+val gr = grmrule_append ($lst_t {symbol} (tupz! SRPDEFINE i0de e0xpopt))
+val () = grmrule_set_action (gr, "{ $$ = d0ec_e0xpdef($2, $3) ; }")
+val gr = grmrule_append ($lst_t {symbol} (tupz! SRPASSERT e0xp))
+val () = grmrule_set_action (gr, "{ $$ = d0ec_e0xpact_assert($2) ; }")
+val gr = grmrule_append ($lst_t {symbol} (tupz! SRPERROR e0xp))
+val () = grmrule_set_action (gr, "{ $$ = d0ec_e0xpact_error($2) ; }")
+val gr = grmrule_append ($lst_t {symbol} (tupz! SRPPRINT e0xp))
+val () = grmrule_set_action (gr, "{ $$ = d0ec_e0xpact_print($2) ; }")
+val gr = grmrule_append ($lst_t {symbol} (tupz! SORTDEF s0rtdef ands0rtdefseq))
+val () = grmrule_set_action (gr, "{ $$ = d0ec_srtdefs($2, $3) ; }")
+val gr = grmrule_append ($lst_t {symbol} (tupz! DATASORT d0atsrtdec andd0atsrtdecseq))
+val () = grmrule_set_action (gr, "{ $$ = d0ec_datsrts(0, $2, $3) ; }")
+val gr = grmrule_append ($lst_t {symbol} (tupz! DATAPARASORT d0atsrtdec andd0atsrtdecseq))
+val () = grmrule_set_action (gr, "{ $$ = d0ec_datsrts(1, $2, $3) ; }")
+val gr = grmrule_append ($lst_t {symbol} (tupz! abskind s0tacon ands0taconseq))
+val () = grmrule_set_action (gr, "{ $$ = d0ec_stacons($1, $2, $3) ; }")
+val gr = grmrule_append ($lst_t {symbol} (tupz! STA s0tacst ands0tacstseq))
+val () = grmrule_set_action (gr, "{ $$ = d0ec_stacsts($2, $3) ; }")
+val gr = grmrule_append ($lst_t {symbol} (tupz! STAVAR s0tavar ands0tavarseq))
+val () = grmrule_set_action (gr, "{ $$ = d0ec_stavars($2, $3) ; }")
+val gr = grmrule_append ($lst_t {symbol} (tupz! stadefkind s0expdef ands0expdefseq))
+val () = grmrule_set_action (gr, "{ $$ = d0ec_sexpdefs($1, $2, $3) ; }")
+val gr = grmrule_append ($lst_t {symbol} (tupz! ASSUME s0aspdec))
+val () = grmrule_set_action (gr, "{ $$ = d0ec_saspdec($2) ; }")
+val gr = grmrule_append ($lst_t {symbol} (tupz! datakind d0atdec andd0atdecseq s0expdefseqopt))
+val () = grmrule_set_action (gr, "{ $$ = d0ec_datdecs($1, $2, $3, $4) ; }")
+val gr = grmrule_append ($lst_t {symbol} (tupz! EXCEPTION e0xndec ande0xndecseq))
+val () = grmrule_set_action (gr, "{ $$ = d0ec_exndecs($1, $2, $3) ; } ")
+val gr = grmrule_append ($lst_t {symbol} (tupz! CLASSDEC si0de))
+val () = grmrule_set_action (gr, "{ $$ = d0ec_classdec_none ($1, $2) ; }")
+val gr = grmrule_append ($lst_t {symbol} (tupz! CLASSDEC si0de COLON s0exp))
+val () = grmrule_set_action (gr, "{ $$ = d0ec_classdec_some ($1, $2, $4) ; }")
+val gr = grmrule_append ($lst_t {symbol} (tupz! OVERLOAD di0de WITH dqi0de))
+val () = grmrule_set_action (gr, "{ $$ = d0ec_overload($1, $2, $4) ; }")
+val gr = grmrule_append ($lst_t {symbol} (tupz! OVERLOAD LBRACKET RBRACKET WITH dqi0de))
+val () = grmrule_set_action (gr, "{ $$ = d0ec_overload_lrbrackets($1, $2, $3, $5) ; }")
+val gr = grmrule_append ($lst_t {symbol} (tupz! MACDEF m0acdef andm0acdefseq))
+val () = grmrule_set_action (gr, "{ $$ = d0ec_macdefs(0, $2, $3) ; }")
+val gr = grmrule_append ($lst_t {symbol} (tupz! MACDEF REC m0acdef andm0acdefseq))
+val () = grmrule_set_action (gr, "{ $$ = d0ec_macdefs(-1/*error*/, $3, $4) ; }")
+val gr = grmrule_append ($lst_t {symbol} (tupz! MACRODEF m0acdef andm0acdefseq))
+val () = grmrule_set_action (gr, "{ $$ = d0ec_macdefs(1, $2, $3) ; }")
+val gr = grmrule_append ($lst_t {symbol} (tupz! MACRODEF REC m0acdef andm0acdefseq))
+val () = grmrule_set_action (gr, "{ $$ = d0ec_macdefs(2, $3, $4) ; }")
+val gr = grmrule_append ($lst_t {symbol} (tupz! DYNLOAD LITERAL_string))
+val () = grmrule_set_action (gr, "{ $$ = d0ec_dynload($2) ; }")
+val gr = grmrule_append ($lst_t {symbol} (tupz! STALOAD LITERAL_string))
+val () = grmrule_set_action (gr, "{ $$ = d0ec_staload_none($2) ; }")
+val gr = grmrule_append ($lst_t {symbol} (tupz! STALOAD stai0de EQ LITERAL_string))
+val () = grmrule_set_action (gr, "{ $$ = d0ec_staload_some($2, $4) ; }")
+//
+val () = symbol_close (pf | d0ec)
+//
+} // end of [d0ec_proc]
+
+(* ****** ****** *)
+
+(*
 d0ecarg
   : LBRACE s0quaseq RBRACE              { $$ = $2 ; }
 ; /* end of [d0ecarg] */
@@ -4773,7 +6510,7 @@ val () = theGrmrulelst_merge_all (d0ecargseq, SYMREGstarlit(d0ecarg))
 //
 val () = symbol_close (pf | d0ecargseq)
 //
-} // end of [d0ecargseq]
+} // end of [d0ecargseq_proc]
 
 (* ****** ****** *)
 
@@ -4820,8 +6557,8 @@ val (pf | ()) = symbol_open (d0ec_sta)
 //
 val gr = grmrule_append ($lst_t {symbol} (tupz! d0ec))
 val () = grmrule_set_action (gr, "{ $$ = $1 ; }")
-// val gr = grmrule_append ($lst_t {symbol} (tupz! dcstkind d0ecargseq d0cstdec andd0cstdecseq))
-// val () = grmrule_set_action (gr, "{ $$ = d0ec_dcstdecs($1, $2, $3, $4) ; }")
+val gr = grmrule_append ($lst_t {symbol} (tupz! dcstkind d0ecargseq d0cstdec andd0cstdecseq))
+val () = grmrule_set_action (gr, "{ $$ = d0ec_dcstdecs($1, $2, $3, $4) ; }")
 val gr = grmrule_append ($lst_t {symbol} (tupz! LITERAL_extcode))
 val () = grmrule_set_action (gr, "{ $$ = d0ec_extcode_sta($1) ; }")
 val gr = grmrule_append ($lst_t {symbol} (tupz! srpifkind guad0ec_sta))
@@ -4912,6 +6649,67 @@ val () = grmrule_set_action (gr, "{ $$ = d0ecllst_reverse($1) ; }")
 val () = symbol_close (pf | d0ecseq_sta)
 //
 } // end of [d0ecseq_sta_proc]
+
+(* ****** ****** *)
+
+(*
+d0ec_dyn
+  : d0ec                                { $$ = $1 ; }
+  | EXTERN dcstkind d0ecargseq d0cstdec andd0cstdecseq
+                                        { $$ = d0ec_dcstdecs($2, $3, $4, $5) ; }
+  | EXTERN TYPEDEF LITERAL_string EQ s0exp
+                                        { $$ = d0ec_extype($3, $5) ; }  
+  | EXTERN VAL LITERAL_string EQ d0exp  { $$ = d0ec_extval($3, $5) ; }
+  | valkind v0aldec andv0aldecseq       { $$ = d0ec_valdecs($1, $2, $3) ; }
+  | VAL PAR v0aldec andv0aldecseq       { $$ = d0ec_valdecs_par($3, $4) ; }
+  | VAL REC v0aldec andv0aldecseq       { $$ = d0ec_valdecs_rec($3, $4) ; }
+  | funkind d0ecargseq f0undec andf0undecseq       
+                                        { $$ = d0ec_fundecs($1, $2, $3, $4) ; }
+  | VAR v0ardec andv0ardecseq           { $$ = d0ec_vardecs($2, $3) ; }
+  | IMPLEMENT decs0argseqseq i0mpdec    { $$ = d0ec_impdec($1, $2, $3) ; }
+  | LOCAL d0ecseq_dyn IN d0ecseq_dyn END
+                                        { $$ = d0ec_local($1, $2, $4, $5) ; }
+  | LITERAL_extcode                     { $$ = d0ec_extcode_dyn($1) ; }
+  | srpifkind guad0ec_dyn               { $$ = d0ec_guadec($1, $2) ; }
+  | SRPINCLUDE LITERAL_string           { $$ = d0ec_include(1/*dyn*/, $2) ; }
+; /* end of [d0ec_dyn] */
+*)
+fun d0ec_dyn_proc (): void = () where {
+//
+val (pf | ()) = symbol_open (d0ec_dyn)
+//
+val gr = grmrule_append ($lst_t {symbol} (tupz! d0ec))
+val () = grmrule_set_action (gr, "{ $$ = $1 ; }")
+val gr = grmrule_append ($lst_t {symbol} (tupz! EXTERN dcstkind d0ecargseq d0cstdec andd0cstdecseq))
+val () = grmrule_set_action (gr, "{ $$ = d0ec_dcstdecs($2, $3, $4, $5) ; }")
+val gr = grmrule_append ($lst_t {symbol} (tupz! EXTERN TYPEDEF LITERAL_string EQ s0exp))
+val () = grmrule_set_action (gr, "{ $$ = d0ec_extype($3, $5) ; }  ")
+val gr = grmrule_append ($lst_t {symbol} (tupz! EXTERN VAL LITERAL_string EQ d0exp))
+val () = grmrule_set_action (gr, "{ $$ = d0ec_extval($3, $5) ; }")
+val gr = grmrule_append ($lst_t {symbol} (tupz! valkind v0aldec andv0aldecseq))
+val () = grmrule_set_action (gr, "{ $$ = d0ec_valdecs($1, $2, $3) ; }")
+val gr = grmrule_append ($lst_t {symbol} (tupz! VAL PAR v0aldec andv0aldecseq))
+val () = grmrule_set_action (gr, "{ $$ = d0ec_valdecs_par($3, $4) ; }")
+val gr = grmrule_append ($lst_t {symbol} (tupz! VAL REC v0aldec andv0aldecseq))
+val () = grmrule_set_action (gr, "{ $$ = d0ec_valdecs_rec($3, $4) ; }")
+val gr = grmrule_append ($lst_t {symbol} (tupz! funkind d0ecargseq f0undec andf0undecseq))
+val () = grmrule_set_action (gr, "{ $$ = d0ec_fundecs($1, $2, $3, $4) ; }")
+val gr = grmrule_append ($lst_t {symbol} (tupz! VAR v0ardec andv0ardecseq))
+val () = grmrule_set_action (gr, "{ $$ = d0ec_vardecs($2, $3) ; }")
+val gr = grmrule_append ($lst_t {symbol} (tupz! IMPLEMENT decs0argseqseq i0mpdec))
+val () = grmrule_set_action (gr, "{ $$ = d0ec_impdec($1, $2, $3) ; }")
+val gr = grmrule_append ($lst_t {symbol} (tupz! LOCAL d0ecseq_dyn IN d0ecseq_dyn END))
+val () = grmrule_set_action (gr, "{ $$ = d0ec_local($1, $2, $4, $5) ; }")
+val gr = grmrule_append ($lst_t {symbol} (tupz! LITERAL_extcode))
+val () = grmrule_set_action (gr, "{ $$ = d0ec_extcode_dyn($1) ; }")
+val gr = grmrule_append ($lst_t {symbol} (tupz! srpifkind guad0ec_dyn))
+val () = grmrule_set_action (gr, "{ $$ = d0ec_guadec($1, $2) ; }")
+val gr = grmrule_append ($lst_t {symbol} (tupz! SRPINCLUDE LITERAL_string))
+val () = grmrule_set_action (gr, "{ $$ = d0ec_include(1/*dyn*/, $2) ; }")
+//
+val () = symbol_close (pf | d0ec_dyn)
+//
+} // end of [d0ec_dyn_proc]
 
 (* ****** ****** *)
 
@@ -5165,6 +6963,71 @@ atsgrammar_main
   val () = f0arg2_proc ()
   val () = f0arg2seq_proc ()
 //
+  val () = d0exp_proc ()
+  val () = atmd0exp_proc ()
+  val () = s0expdarg_proc ()
+  val () = s0expdargseq_proc ()
+  val () = argd0exp_proc ()
+  val () = argd0expseq_proc ()
+  val () = d0arrind_proc ()
+  val () = colons0expopt_proc ()
+  val () = funarrow_proc ()
+  val () = caseinv_proc ()
+  val () = ifhead_proc ()
+  val () = sifhead_proc ()
+  val () = casehead_proc ()
+  val () = scasehead_proc ()
+  val () = forhead_proc ()
+  val () = whilehead_proc ()
+  val () = tryhead_proc ()
+//
+  val () = d0expcommaseq_proc ()
+  val () = commad0expseq_proc ()
+  val () = d0expsemiseq0_proc ()
+  val () = d0expsemiseq1_proc ()
+  val () = labd0expseq_proc ()
+  val () = commalabd0expseq_proc ()
+//
+  val () = m0atch_proc ()
+  val () = m0atchseq_proc ()
+  val () = andm0atchseq_proc ()
+  val () = guap0at_proc ()
+  val () = c0lau_proc ()
+  val () = c0lauseq_proc ()
+  val () = barc0lauseq_proc ()
+  val () = sc0lau_proc ()
+  val () = sc0lauseq_proc ()
+  val () = barsc0lauseq_proc ()
+//
+  val () = i0nvqua_proc ()
+  val () = i0nvmet_proc ()
+  val () = i0nvarg_proc ()
+  val () = i0nvargseq_proc ()
+  val () = commai0nvargseq_proc ()
+  val () = i0nvargstate_proc ()
+  val () = i0nvresqua_proc ()
+  val () = i0nvresstate_proc ()
+  val () = loopi0nv_proc ()
+  val () = initestpost_proc ()
+//
+  val () = m0arg_proc ()
+  val () = m0argseq_proc ()
+  val () = commam0argseq_proc ()
+  val () = m0acarg_proc ()
+  val () = m0acargseq_proc ()
+  val () = m0acdef_proc ()
+  val () = andm0acdefseq_proc ()
+//
+  val () = v0aldec_proc ()
+  val () = andv0aldecseq_proc ()
+  val () = f0undec_proc ()
+  val () = andf0undecseq_proc ()
+  val () = v0arwth_proc ()
+  val () = v0ardec_proc ()
+  val () = andv0ardecseq_proc ()
+  val () = i0mpdec_proc ()
+//
+  val () = d0ec_proc ()
   val () = d0ecarg_proc ()
   val () = d0ecargseq_proc ()
 //
@@ -5172,9 +7035,10 @@ atsgrammar_main
 //
   val () = d0ec_sta_proc ()
   val () = guad0ec_sta_proc ()
-  val () = d0ecseq_sta_rev_proc ()
+  val () = d0ecseq_sta_rev_proc () // reversed static declaration sequence
   val () = d0ecseq_sta_proc ()
 //
+  val () = d0ec_dyn_proc ()
   val () = guad0ec_dyn_proc ()
   val () = d0ecseq_dyn_rev_proc () // reversed dynamic declaration sequence
   val () = d0ecseq_dyn_proc ()

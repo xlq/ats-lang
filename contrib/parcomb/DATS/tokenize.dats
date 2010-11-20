@@ -106,12 +106,12 @@ typedef pos_t = position_t
 typedef charpos = @(char, pos_t)
 
 extern fun charposstream_make_charstream
-  (cs: stream char, pos: pos_t):<1,~ref> stream charpos
+  (cs: stream char, pos: pos_t):<!laz> stream charpos
 
 implement
 charposstream_make_charstream (cs, pos) = let
   fun charposstream_make_charstream_con
-    (cs: stream char, pos: pos_t):<1,~ref> stream_con charpos =
+    (cs: stream char, pos: pos_t):<!laz> stream_con charpos =
     case+ !cs of
     | stream_cons (c, cs1) => let
         val pos1 = position_next (pos, c) in
@@ -143,13 +143,15 @@ fn token_str_make (loc: loc_t, str: string):<> token =
 
 extern fun token_singleton_make (loc: loc_t, c: char):<> token
 
-implement token_singleton_make (loc, c) =
+implement
+token_singleton_make (loc, c) =
   '{ token_loc= loc, token_node= TOKsingleton c }
 // end of [token_singleton_make]
 
 (* ****** ****** *)
 
-implement fprint_token (out, tok) = begin
+implement
+fprint_token (out, tok) = begin
   case+ tok.token_node of
   | TOKchr c => begin
       fprint (out, "TOKchr("); fprint (out, c); fprint (out, ")")
@@ -168,8 +170,10 @@ implement fprint_token (out, tok) = begin
     end // end of [TOKsingleton]
 end // end of [fprint_token]
 
-implement print_token (tok) = fprint_token (stdout_ref, tok)
-implement prerr_token (tok) = fprint_token (stderr_ref, tok)
+implement
+print_token (tok) = fprint_token (stdout_ref, tok)
+implement
+prerr_token (tok) = fprint_token (stderr_ref, tok)
 
 (* ****** ****** *)
 
@@ -572,11 +576,12 @@ val p_token = p_ignores >> (
 //
 // declared in [parcomb.sats]
 //
-implement tokenstream_make_charstream (cs) = let
+implement
+tokenstream_make_charstream (cs) = let
   fun make (cps: stream charpos)
-    :<1,~ref> stream token = $delay (make_con cps)
+    :<!laz> stream token = $delay (make_con cps)
   and make_con (cps: stream charpos)
-    :<1,~ref> stream_con token = let
+    :<!laz> stream_con token = let
     var cps = cps
     var ncur: int = 0 and nmax: int = 0
     val r = apply_parser (p_token, cps, ncur, nmax)
@@ -603,7 +608,8 @@ dynload "posloc.dats" ;
 
 (* ****** ****** *)
 
-implement main () = let
+implement
+main () = let
   val cs = char_stream_make_file stdin_ref
   var tks = tokenstream_make_charstream (cs)
   val () = loop (tks) where {

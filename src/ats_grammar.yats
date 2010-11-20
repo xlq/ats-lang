@@ -673,6 +673,7 @@ typedef ats_ptr_type ifhead_t ;
 typedef ats_ptr_type casehead_t ;
 typedef ats_ptr_type loophead_t ;
 typedef ats_ptr_type tryhead_t ;
+
 typedef ats_ptr_type m0atch_t ;
 typedef ats_ptr_type m0atchlst_t ;
 typedef ats_ptr_type guap0at_t ;
@@ -2881,9 +2882,9 @@ d0exp
                                         { $$ = d0exp_trywith_seq($1, $2, $3, $4) ; }
   | d0exp WHERE LBRACE d0ecseq_dyn RBRACE
                                         { $$ = d0exp_where ($1, $4, $5) ; }
-;
+; /* end of [d0exp] */
 
-atmd0exp
+atmd0exp /* atomic dynamic expressions */
   : LITERAL_char                        { $$ = d0exp_char($1) ; }
   | LITERAL_float                       { $$ = d0exp_float($1) ; }
   | LITERAL_floatsp                     { $$ = d0exp_floatsp($1) ; }
@@ -2983,132 +2984,140 @@ atmd0exp
                                         { $$ = d0exp_let_seq($1, $2, $3, $4, $5) ; }
 /* decseq as exp */
   | LBRACE d0ecseq_dyn RBRACE           { $$ = d0exp_decseq($1, $2, $3) ; }
-;
+; /* end of [atmd0exp] */
 
 s0expdarg
   : LBRACE s0exparg RBRACE              { $$ = d0exp_sexparg($1, $2, $3) ; }
-;
+; /* end of [s0expdarg] */
 
 s0expdargseq
   : s0expdarg s0expdargseq              { $$ = d0explst_cons($1, $2) ;  }
   | /* empty */ %prec SEXPDARGSEQEMPTY  { $$ = d0explst_nil() ; }
-;
+; /* end of [s0expdargseq] */
 
 argd0exp
   : atmd0exp                            { $$ = $1 ; }
   | s0expdarg                           { $$ = $1 ; }
-;
+; /* end of [argd0exp] */
 
 argd0expseq
   : /* empty */                         { $$ = d0explst_nil() ; }
   | argd0exp argd0expseq                { $$ = d0explst_cons($1, $2) ; }
-;
+; /* end of [argd0expseq] */
 
 d0arrind
   : d0expcommaseq RBRACKET              { $$ = d0arrind_make_sing($1, $2) ; }
   | d0expcommaseq RBRACKET LBRACKET d0arrind
                                         { $$ = d0arrind_make_cons($1, $4) ; }
-;
+; /* end of [d0arrind] */
 
 colons0expopt
   : /* empty */                         { $$ = s0expopt_none() ; }
   | COLON s0exp                         { $$ = s0expopt_some($2) ; }
-;
+; /* end of [colons0expopt] */
 
 funarrow
   : EQGT                                { $$ = e0fftaglstopt_none() ; }
   | EQLTGT                              { $$ = e0fftaglstopt_some(e0fftaglst_nil()) ; }
   | EQLT e0fftagseq GT                  { $$ = e0fftaglstopt_some($2) ; }
-;
+; /* end of [funarrow] */
 
 caseinv
   : /* empty */                         { $$ = i0nvresstate_none() ; }
   | i0nvresstate EQGT                   { $$ = $1 ; }
-;
+; /* end of [caseinv] */
 
 ifhead
   : IF caseinv                          { $$ = ifhead_make($1, $2) ; }
-;
+; /* end of [ifhead] */
 
 sifhead
   : SIF caseinv                         { $$ = ifhead_make($1, $2) ; }
-;
+; /* end of [sifhead] */
 
 casehead
   : CASE caseinv                        { $$ = casehead_make(0, $1, $2) ; }
   | CASEMINUS caseinv                   { $$ = casehead_make(-1, $1, $2) ; }
   | CASEPLUS caseinv                    { $$ = casehead_make(1, $1, $2) ; }
-;
+; /* end of [casehead] */
 
 scasehead
   : SCASE caseinv                       { $$ = casehead_make(0, $1, $2) ; }
-;
+; /* end of [scasehead] */
 
 forhead
   : FOR                                 { $$ = loophead_make_none($1) ; }
   | FORSTAR loopi0nv EQGT               { $$ = loophead_make_some($1, $2, $3) ; }
-;
+; /* end of [forhead] */
 
 whilehead
 /*
   : WHILE                               { $$ = loophead_make_none($1) ; }
 */
   : WHILESTAR loopi0nv EQGT             { $$ = loophead_make_some($1, $2, $3) ; }
-;
+; /* end of [whilehead] */
 
 tryhead
   : TRY /* no invariant */              { $$ = tryhead_make($1) ; }
-;
+; /* end of [tryhead] */
 
-commad0expseq
-  : /* empty */                         { $$ = d0explst_nil() ; }
-  | COMMA d0exp commad0expseq           { $$ = d0explst_cons($2, $3) ; }
-;
+/*
+** dynamic expression sequences
+*/
 
 d0expcommaseq
   : /* empty */                         { $$ = d0explst_nil() ; }
   | d0exp commad0expseq                 { $$ = d0explst_cons($1, $2) ; }
-;
+; /* end of [d0expcommaseq] */
+
+commad0expseq
+  : /* empty */                         { $$ = d0explst_nil() ; }
+  | COMMA d0exp commad0expseq           { $$ = d0explst_cons($2, $3) ; }
+; /* end of [commad0expseq] */
 
 d0expsemiseq0
   : d0exp                               { $$ = d0explst_sing($1) ; }
   | d0exp SEMICOLON d0expsemiseq0       { $$ = d0explst_cons($1, $3) ; }
   | /* empty */                         { $$ = d0explst_nil() ; }
-;
+; /* end of [d0expsemiseq0] */
 
 d0expsemiseq1 // containing at least on semicolon
   : d0exp SEMICOLON d0expsemiseq0       { $$ = d0explst_cons($1, $3) ; }
-;
+; /* end of [d0expsemiseq1] */
+
+labd0expseq
+  : /* empty */                         { $$ = labd0explst_nil() ; }
+  | l0ab EQ d0exp commalabd0expseq      { $$ = labd0explst_cons($1, $3, $4) ; }
+; /* end of [labd0expseq] */
 
 commalabd0expseq
   : /* empty */                         { $$ = labd0explst_nil() ; }
   | COMMA l0ab EQ d0exp commalabd0expseq
                                         { $$ = labd0explst_cons($2, $4, $5) ; }
-;
+; /* end of [commalabd0expseq] */
 
-labd0expseq
-  : /* empty */                         { $$ = labd0explst_nil() ; }
-  | l0ab EQ d0exp commalabd0expseq      { $$ = labd0explst_cons($1, $3, $4) ; }
-;
+/*
+** pattern matching
+*/
 
 m0atch
   : d0exp                               { $$ = m0atch_make_none ($1) ; }
   | d0exp AS p0at                       { $$ = m0atch_make_some ($1, $3) ; }
-;
+; /* end of [m0atch] */
+
+m0atchseq
+  : m0atch andm0atchseq                 { $$ = m0atchlst_cons ($1, $2 ) ; }
+; /* end of [m0atchseq] */
 
 andm0atchseq
   : /* empty */                         { $$ = m0atchlst_nil () ; }
   | AND m0atch andm0atchseq             { $$ = m0atchlst_cons ($2, $3 ) ; }
-;
-
-m0atchseq
-  : m0atch andm0atchseq                 { $$ = m0atchlst_cons ($1, $2 ) ; }
-;
+; /* end of [andm0atchseq] */
 
 guap0at
   : p0at                                { $$ = guap0at_make_none($1) ; }
   | p0at WHEN m0atchseq                 { $$ = guap0at_make_some($1, $3) ; }
-;
+; /* end of [guap0at] */
 
 c0lau
   : guap0at EQGT d0exp %prec CLAUS      { $$ = c0lau_make ($1, 0, 0, $3) ; }
@@ -3117,181 +3126,179 @@ c0lau
                                         { $$ = c0lau_make ($1, 0, 1, $3) ; }
   | guap0at EQSLASHEQGTGT d0exp %prec CLAUS
                                         { $$ = c0lau_make ($1, 1, 1, $3) ; }
-;
-
-barc0lauseq
-  : /* empty */ %prec BARCLAUSSEQNONE   { $$ = c0laulst_nil() ; } 
-  | BAR c0lau barc0lauseq               { $$ = c0laulst_cons($2, $3) ; }
-;
+; /* end of [c0lau] */
 
 c0lauseq
   : barc0lauseq                         { $$ = $1 ; }
   | c0lau barc0lauseq                   { $$ = c0laulst_cons($1, $2) ; }
-;
+; /* end of [c0lauseq] */
+
+barc0lauseq
+  : /* empty */ %prec BARCLAUSSEQNONE   { $$ = c0laulst_nil() ; } 
+  | BAR c0lau barc0lauseq               { $$ = c0laulst_cons($2, $3) ; }
+; /* end of [barc0lauseq] */
 
 sc0lau
   : sp0at EQGT d0exp %prec CLAUS        { $$ = sc0lau_make($1, $3) ; }
-;
-
-barsc0lauseq
-  : /* empty */ %prec BARCLAUSSEQNONE   { $$ = sc0laulst_nil() ; } 
-  | BAR sc0lau barsc0lauseq             { $$ = sc0laulst_cons($2, $3) ; }
-;
+; /* end of [sc0lau] */
 
 sc0lauseq
   : barsc0lauseq                        { $$ = $1 ; }
   | sc0lau barsc0lauseq                 { $$ = sc0laulst_cons($1, $2) ; }
-;
+; /* end of [sc0lauseq] */
 
-/* invariants */
+barsc0lauseq
+  : /* empty */ %prec BARCLAUSSEQNONE   { $$ = sc0laulst_nil() ; } 
+  | BAR sc0lau barsc0lauseq             { $$ = sc0laulst_cons($2, $3) ; }
+; /* end of [barsc0lauseq] */
+
+/*
+** invariants
+*/
 
 i0nvqua
   : /* empty */                         { $$ = s0qualstopt_none() ; }
   | LBRACE s0quaseq RBRACE              { $$ = s0qualstopt_some($2) ; }
-;
+; /* end of [i0nvqua] */
 
 i0nvmet
   : /* empty */                         { $$ = s0explstopt_none() ; }
   | DOTLT s0expseq GTDOT                { $$ = s0explstopt_some($2) ; }
   | DOTLTGTDOT                          { $$ = s0explstopt_some(s0explstopt_none()) ; }
-;
+; /* end of [i0nvmet] */ /* end of [i0nvmet] */
 
 i0nvarg
   : di0de COLON                         { $$ = i0nvarg_make_none($1) ; }
   | di0de COLON s0exp                   { $$ = i0nvarg_make_some($1, $3) ; }
-;
-
-commai0nvargseq
-  : /* empty */                         { $$ = i0nvarglst_nil() ; }
-  | COMMA i0nvarg commai0nvargseq       { $$ = i0nvarglst_cons($2, $3) ; }
-;
+; /* end of [i0nvarg] */ /* end of [i0nvarg] */
 
 i0nvargseq
   : /* empty */                         { $$ = i0nvarglst_nil() ; }
   | i0nvarg commai0nvargseq             { $$ = i0nvarglst_cons($1, $2) ; }
-;
+; /* end of [i0nvargseq] */ /* end of [i0nvargseq] */
+
+commai0nvargseq
+  : /* empty */                         { $$ = i0nvarglst_nil() ; }
+  | COMMA i0nvarg commai0nvargseq       { $$ = i0nvarglst_cons($2, $3) ; }
+; /* end of [commai0nvargseq] */ /* end of [commai0nvargseq] */
 
 i0nvargstate
   : LPAREN i0nvargseq RPAREN            { $$ = $2 ; }
-;
+; /* end of [i0nvargstate] */ /* end of [i0nvargstate] */
 
 i0nvresqua
   : /* empty */                         { $$ = s0qualstopt_none() ; }
   | LBRACKET s0quaseq RBRACKET          { $$ = s0qualstopt_some($2) ; }
-;
+; /* end of [i0nvresqua] */ /* end of [i0nvresqua] */
 
 i0nvresstate
   : /* empty */                         { $$ = i0nvresstate_none() ; }
   | COLON i0nvresqua LPAREN i0nvargseq RPAREN
                                         { $$ = i0nvresstate_some($2, $4) ; }
-;
+; /* end of [i0nvresstate] */ /* end of [i0nvresstate] */
 
 loopi0nv
   : i0nvqua i0nvmet i0nvargstate i0nvresstate
                                         { $$ = loopi0nv_make($1, $2, $3, $4) ; }
-;
+; /* end of [loopi0nv] */ /* end of [loopi0nv] */
 
 initestpost
   : LPAREN d0expcommaseq SEMICOLON d0expcommaseq SEMICOLON d0expcommaseq RPAREN
                                         { $$ = initestpost_make ($1,$2,$3,$4,$5,$6,$7) ; }
-;
+; /* end of [initestpost] */ /* end of [initestpost] */
 
 /* ****** ****** */
 
 /*
-** macro declarations
+** macro definitions
 */
 
 m0arg : pi0de                           { $$ = $1 ; }
-;
-
-commam0argseq
-  : /* empty */                         { $$ = i0delst_nil() ; }
-  | COMMA m0arg commam0argseq           { $$ = i0delst_cons($2, $3) ; }
-;
+; /* end of [m0arg] */
 
 m0argseq
   : /* empty */                         { $$ = i0delst_nil() ; }
   | m0arg commam0argseq                 { $$ = i0delst_cons($1, $2) ; }
-;
+; /* end of [m0argseq] */
+
+commam0argseq
+  : /* empty */                         { $$ = i0delst_nil() ; }
+  | COMMA m0arg commam0argseq           { $$ = i0delst_cons($2, $3) ; }
+; /* end of [commam0argseq] */
 
 m0acarg
   : m0arg                               { $$ = m0acarg_one ($1) ; }
   | LPAREN m0argseq RPAREN              { $$ = m0acarg_lst ($1, $2, $3) ; }
-;
+; /* end of [m0acarg] */
 
 m0acargseq
   : /* empty */                         { $$ = m0acarglst_nil () ; }
   | m0acarg m0acargseq                  { $$ = m0acarglst_cons ($1, $2) ; }
-;
+; /* end of [m0acargseq] */
 
 m0acdef
   : di0de m0acargseq EQ d0exp           { $$ = m0acdef_make($1, $2, $4) ; }
-;
+; /* end of [m0acdef] */
 
 andm0acdefseq
   : /* empty */                         { $$ = m0acdeflst_nil() ; }
   | AND m0acdef andm0acdefseq           { $$ = m0acdeflst_cons($2, $3) ; }
-;
+; /* end of [andm0acdefseq] */
 
 /* ****** ****** */
 
+/*
+** individual declarations
+*/
+
 v0aldec
   : p0at EQ d0exp witht0ype             { $$ = v0aldec_make ($1, $3, $4) ; }
-;
+; /* end of [v0aldec] */
 
 andv0aldecseq
   : /* empty */                         { $$ = v0aldeclst_nil() ; }
   | AND v0aldec andv0aldecseq           { $$ = v0aldeclst_cons($2, $3) ; }
-;
-
-/* ****** ****** */
+; /* end of [andv0aldecseq] */
 
 f0undec
   : fi0de f0arg1seq EQ d0exp witht0ype
                                         { $$ = f0undec_make_none($1, $2, $4, $5) ; }
   | fi0de f0arg1seq colonwith s0exp EQ d0exp witht0ype
                                         { $$ = f0undec_make_some($1, $2, $3, $4, $6, $7) ; }
-;
+; /* end of [f0undec] */
 
 andf0undecseq
   : /* empty */                         { $$ = f0undeclst_nil() ; }
   | AND f0undec andf0undecseq           { $$ = f0undeclst_cons($2, $3) ; }
-;
-
-/* ****** ****** */
+; /* end of [andf0undecseq] */
 
 v0arwth
   : /* empty */                         { $$ = v0arwth_none () ; }
   | WITH pi0de                          { $$ = v0arwth_some ($2) ; }
-;
+; /* end of [v0arwth] */
 
 v0ardec /* stack-allocated variable */
   : pi0de v0arwth EQ d0exp              { $$ = v0ardec_make_none_some(0, $1, $2, $4) ; }
   | BANG pi0de v0arwth EQ d0exp         { $$ = v0ardec_make_none_some(1, $2, $3, $5) ; }
   | pi0de COLON s0exp v0arwth           { $$ = v0ardec_make_some_none(0, $1, $3, $4) ; }
   | pi0de COLON s0exp v0arwth EQ d0exp  { $$ = v0ardec_make_some_some(0, $1, $3, $4, $6) ; }
-;
+; /* end of [v0ardec] */
 
 andv0ardecseq
   : /* empty */                         { $$ = v0ardeclst_nil() ; }
   | AND v0ardec andv0ardecseq           { $$ = v0ardeclst_cons($2, $3) ; }
-;
-
-/* ****** ****** */
+; /* end of [andv0ardecseq] */
 
 i0mpdec
   : impqi0de f0arg2seq colons0expopt EQ d0exp
                                         { $$ = i0mpdec_make($1, $2, $3, $5) ; }
-; /* end of [i0mpdec] */
+; /* end of [i0mpdec] */ /* end of [i0mpdec] */
 
 /* ****** ****** */
 
 /*
 ** generic declarations
 */
-
-/* ****** ****** */
 
 d0ec
   : INFIX p0rec i0deseq                 { $$ = d0ec_infix($1, $2,  0, $3) ; }

@@ -75,7 +75,7 @@ overload prerr with prerr_token
 (* ****** ****** *)
 
 fun tokenstream_make_charstream
-  (cps: stream char):<1,~ref> stream token
+  (cps: stream char):<!laz> stream token
 // end of [tokenstream_make_charstream]
 
 (* ****** ****** *)
