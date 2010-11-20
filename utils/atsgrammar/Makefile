@@ -58,15 +58,7 @@ atsgrammar_main_dats.o: atsgrammar_main.dats
 
 ######
 
-atsgrammar.yats: atsgrammar
-	./atsgrammar --format=yats > $@
-atsgrammar_yats.html: atsgrammar
-	./atsgrammar --format=yats_html > $@
-
-atsgrammar.desc: atsgrammar
-	./atsgrammar --format=desc > $@
-atsgrammar_desc.html: atsgrammar
-	./atsgrammar --format=desc_html > $@
+atsgrammar.yats: atsgrammar; ./atsgrammar --format=yats > $@
 
 ######
 
