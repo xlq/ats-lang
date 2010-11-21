@@ -50,6 +50,7 @@
 
 /* ****** ****** */
 
+#define _POSIX_X_SOURCE 1 // for [sigsetjmp] in gcc-4.5
 #include <alloca.h>
 #include <setjmp.h>
 

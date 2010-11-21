@@ -1651,11 +1651,11 @@ guad0ec_t guad0ec ;
 
 %type <s0qua> s0qua
 %type <s0qualst> s0quaseq
-%type <s0qualst> bars0quaseq
+%type <s0qualst> barsemis0quaseq
 %type <s0rtext> s0rtext
 
 %type <s0explst> s0expseq
-%type <s0explst> bars0expseq
+%type <s0explst> barsemis0expseq
 %type <s0explst> commas0expseq
 %type <s0explst> s0expseq1
 
@@ -2392,18 +2392,18 @@ s0qua /* static quantification */
 
 s0quaseq /* static quantification sequence */
   : /* empty */                         { $$ = s0qualst_nil() ; }
-  | s0qua bars0quaseq                   { $$ = s0qualst_cons($1, $2) ; }
+  | s0qua barsemis0quaseq               { $$ = s0qualst_cons($1, $2) ; }
 ; /* end of [s0quaseq] */
 
-bars0quaseq /* semicolon may substitute for bar */
+barsemis0quaseq /* semicolon may substitute for bar */
   : /* empty */                         { $$ = s0qualst_nil() ; }
-  | BAR s0qua bars0quaseq               { $$ = s0qualst_cons($2, $3) ; }
-  | SEMICOLON s0qua bars0quaseq         { $$ = s0qualst_cons($2, $3) ; }
-; /* end of [bars0quaseq] */
+  | BAR s0qua barsemis0quaseq           { $$ = s0qualst_cons($2, $3) ; }
+  | SEMICOLON s0qua barsemis0quaseq     { $$ = s0qualst_cons($2, $3) ; }
+; /* end of [barsemis0quaseq] */
 
 s0rtext /* extended sort (sort and subset sort) */
   : s0rt                                { $$ = s0rtext_srt($1) ; }
-  | LBRACE si0de COLON s0rtext BAR s0exp bars0expseq RBRACE
+  | LBRACE si0de COLON s0rtext BAR s0exp barsemis0expseq RBRACE
                                         { $$ = s0rtext_sub($1, $2, $4, $6, $7, $8) ; }
 ; /* end of [s0rtext] */
 
@@ -2412,11 +2412,11 @@ s0expseq /* static expression sequence */
   | s0expseq1                           { $$ = $1 ; }
 ; /* end of [s0expseq] */
 
-bars0expseq /* semicolon may substitute for bar */
+barsemis0expseq /* semicolon may substitute for bar */
   : /* empty */                         { $$ = s0explst_nil() ; }
-  | BAR s0exp bars0expseq               { $$ = s0explst_cons($2, $3) ; }
-  | SEMICOLON s0exp bars0expseq         { $$ = s0explst_cons($2, $3) ; }
-; /* end of [bars0expseq] */
+  | BAR s0exp barsemis0expseq           { $$ = s0explst_cons($2, $3) ; }
+  | SEMICOLON s0exp barsemis0expseq     { $$ = s0explst_cons($2, $3) ; }
+; /* end of [barsemis0expseq] */
 
 commas0expseq
   : /* empty */                         { $$ = s0explst_nil() ; }

@@ -31,9 +31,20 @@ end // end of [symbol_get_descname]
 
 fun emit_symreg_desc (
   out: FILEref, r: symreg
-) : void = begin
+) : void = let
+//
+#define PRECalt 10
+#define PRECseq 20
+(*
+#define PRECopt 1000000 // infinity
+#define PRECstar 1000000 // infinity
+#define PRECplus 1000000 // infinity
+*)
+#define PRECini 1000000 // infinity
+//
+fun emit (p: int, r: symreg):<cloref1> void =
   case+ r of
-  | SYMREGlit (x) => let
+  | SYMREGlit (x) => {
       val isnt = symbol_get_nonterm (x)
       val clsname = (if isnt then "nonterm" else "term"): string
       val name = symbol_get_name (x)
@@ -41,49 +52,52 @@ fun emit_symreg_desc (
       val fname = symbol_get_descname (x)
       val () = fprintf (out, "<span class=%s>%s</span>", @(clsname, fname))
       val () = if isnt then fprintf (out, "</a>", @())
-    in
-      // nothing
-    end // end of [SYMREGlit]
+    } // end of [SYMREGlit]
   | SYMREGseq (x1, x2) => let
-      val () = fprint (out, "(")
-      val () = emit_symreg_desc (out, x1)
+      val () = if p > PRECseq then fprint (out, "(")
+      val () = emit (PRECseq, x1)
       val () = fprint (out, " , ")
-      val () = emit_symreg_desc (out, x2)
-      val () = fprint (out, ")")
+      val () = emit (PRECseq, x2)
+      val () = if p > PRECseq then fprint (out, ")")
     in
       // nothing
     end // end of [SYMREGseq]
   | SYMREGalt (x1, x2) => let
-      val () = fprint (out, "(")
-      val () = emit_symreg_desc (out, x1)
+      val () = if p > PRECalt then fprint (out, "(")
+      val () = emit (PRECalt, x1)
       val () = fprint (out, " | ")
-      val () = emit_symreg_desc (out, x2)
-      val () = fprint (out, ")")
+      val () = emit (PRECalt, x2)
+      val () = if p > PRECalt then fprint (out, ")")
     in
       // nothing
     end // end of [SYMREGalt]
   | SYMREGopt (x) => let
       val () = fprint (out, "[")
-      val () = emit_symreg_desc (out, x)
+      val () = emit (0, x)
       val () = fprint (out, "]")
     in
       // nothing
     end // end of [SYMREGopt]
   | SYMREGstar (x) => let
       val () = fprint (out, "{")
-      val () = emit_symreg_desc (out, x)
+      val () = emit (0, x)
       val () = fprint (out, "}")
     in
       // nothing
     end // end of [SYMREGstar]
   | SYMREGplus (x) => let
       val () = fprint (out, "{")
-      val () = emit_symreg_desc (out, x)
+      val () = emit (0, x)
       val () = fprint (out, "}+")
     in
       // nothing
     end // end of [SYMREGplus]
+// end of [emit]
+in
+  emit (PRECini, r)
 end // end of [emit_symreg_desc]
+
+(* ****** ****** *)
 
 fun emit_grmrule_desc (
   out: FILEref, gr: grmrule
