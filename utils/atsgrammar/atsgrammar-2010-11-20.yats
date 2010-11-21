@@ -2996,8 +2996,8 @@ s0expdarg
 ; /* end of [s0expdarg] */
 
 s0expdargseq
-  : s0expdarg s0expdargseq              { $$ = d0explst_cons($1, $2) ;  }
-  | /* empty */ %prec SEXPDARGSEQEMPTY  { $$ = d0explst_nil() ; }
+  : /* empty */ %prec SEXPDARGSEQEMPTY  { $$ = d0explst_nil() ; }
+  | s0expdarg s0expdargseq              { $$ = d0explst_cons($1, $2) ;  }
 ; /* end of [s0expdargseq] */
 
 argd0exp
@@ -3081,9 +3081,9 @@ commad0expseq
 ; /* end of [commad0expseq] */
 
 d0expsemiseq0
-  : d0exp                               { $$ = d0explst_sing($1) ; }
+  : /* empty */                         { $$ = d0explst_nil() ; }
+  | d0exp                               { $$ = d0explst_sing($1) ; }
   | d0exp SEMICOLON d0expsemiseq0       { $$ = d0explst_cons($1, $3) ; }
-  | /* empty */                         { $$ = d0explst_nil() ; }
 ; /* end of [d0expsemiseq0] */
 
 d0expsemiseq1 // containing at least on semicolon

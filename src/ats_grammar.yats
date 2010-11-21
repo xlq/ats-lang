@@ -2373,8 +2373,8 @@ s0expdarg
 ; /* s0expdarg */
 
 s0expdargseq
-  : s0expdarg s0expdargseq  { $$ = d0explst_cons($1, $2) ;  }
-  | /*(empty)*/  %prec SEXPDARGSEQEMPTY
+  : /*(empty)*/  { $$ = d0explst_nil() ; }  %prec SEXPDARGSEQEMPTY
+  | s0expdarg s0expdargseq  { $$ = d0explst_cons($1, $2) ;  }
 ; /* s0expdargseq */
 
 argd0exp
@@ -2450,9 +2450,9 @@ commad0expseq
 ; /* commad0expseq */
 
 d0expsemiseq0
-  : d0exp  { $$ = d0explst_sing($1) ; }
+  : /*(empty)*/  { $$ = d0explst_nil() ; }
+  | d0exp  { $$ = d0explst_sing($1) ; }
   | d0exp SEMICOLON d0expsemiseq0  { $$ = d0explst_cons($1, $3) ; }
-  | /*(empty)*/  { $$ = d0explst_nil() ; }
 ; /* d0expsemiseq0 */
 
 d0expsemiseq1
@@ -2501,7 +2501,7 @@ c0lauseq
 ; /* c0lauseq */
 
 barc0lauseq
-  : /*(empty)*/  %prec BARCLAUSSEQNONE
+  : /*(empty)*/  { $$ = c0laulst_nil() ; }   %prec BARCLAUSSEQNONE
   | BAR c0lau barc0lauseq  { $$ = c0laulst_cons($2, $3) ; }
 ; /* barc0lauseq */
 
