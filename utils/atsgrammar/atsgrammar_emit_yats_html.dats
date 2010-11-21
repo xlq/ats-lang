@@ -16,6 +16,11 @@ staload _(*anon*) = "prelude/DATS/list_vt.dats"
 
 (* ****** ****** *)
 
+staload "libc/SATS/time.sats"
+staload UN = "prelude/SATS/unsafe.sats"
+
+(* ****** ****** *)
+
 staload "atsgrammar.sats"
 
 (* ****** ****** *)
@@ -279,9 +284,7 @@ val theATSGrammarHeader = "\
 \n\
 /*\n\
 ** Grammar for ATS/Anairiats\n\
-*/\n\
-\n\
-/* ****** ****** */\n\
+*/\
 " // end of [theATSGrammarHeader]
 
 (* ****** ****** *)
@@ -294,17 +297,46 @@ emit_yats_html (out) = let
     out, "<span class=comment>%s</span>\n", @(theATSGrammarHeader)
   ) // end of [val]
 //
-  val xs = theSymlst_get ()
-  val xs = list_reverse (xs)
-  val () = emit_symall_term (out, xs)
-  val () = fprint_string (out, "\n<span class=comment>/* ****** ****** */</span>\n\n")
-  val () = emit_symall_nonterm (out, xs)
-  val () = fprint_string (out, "\n<span class=comment>/* ****** ****** */</span>\n\n")
-  val () = emit_symall_defn (out, xs)
+  var time: time_t // uninitialized
+  val () = assertloc (time_get_and_set (time))
+  prval () = opt_unsome (time)
+//
+  val () = fprint_string (out, "\n<span class=comment>/* ****** ****** */\n\n")
+  val () = fprint_string (out, "/*\n")
+  val (fpf_str | p_str) = ctime (time)
+  val () = fprintf (out, "** Time of Generation: %s", @($UN.castvwtp1 {string} (p_str)))
+  prval () = fpf_str (p_str)
+  val () = fprint_string (out, "*/</span>\n")
+//
+  val () = () where {
+    val xs = theSymlst_get ()
+    val xs = list_reverse (xs)
+//
+    val () = fprint_string (out, "\n<span class=comment>/* ****** ****** */\n\n")
+    val () = fprint_string (out, "/*\n")
+    val () = fprint_string (out, "** terminals\n")
+    val () = fprint_string (out, "*/</span>\n\n")
+    val () = emit_symall_term (out, xs)
+//
+    val () = fprint_string (out, "\n<span class=comment>/* ****** ****** */\n\n")
+    val () = fprint_string (out, "/*\n")
+    val () = fprint_string (out, "** nonterminals\n")
+    val () = fprint_string (out, "*/</span>\n\n")
+    val () = emit_symall_nonterm (out, xs)
+//
+    val () = fprint_string (out, "\n<span class=comment>/* ****** ****** */\n\n")
+    val () = fprint_string (out, "/*\n")
+    val () = fprint_string (out, "** production rules\n")
+    val () = fprint_string (out, "*/</span>\n\n")
+    val () = emit_symall_defn (out, xs)
+//
+    val () = list_vt_free (xs)
+  } // end of [val]
 //
   val () = fprint_string (out, thePostamble)
+//
 in
-  list_vt_free (xs)
+  // nothing
 end // end of [emit_yats_html]
 
 (* ****** ****** *)

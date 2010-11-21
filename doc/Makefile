@@ -66,12 +66,10 @@ sysprog::
 	scp BOOK/sysprog.html \
           ats-hwxi@web.sourceforge.net:/home/groups/a/at/ats-lang/htdocs/DOCUMENTATION/sysprog.html
 
-atsgrammar_desc::
-	scp DOCUMENTATION/ATS_GRAMMAR/atsgrammar_desc.html \
-          ats-hwxi@web.sourceforge.net:/home/groups/a/at/ats-lang/htdocs/DOCUMENTATION/atsgrammar_desc.html
-
-atsgrammar_yats::
-	scp DOCUMENTATION/ATS_GRAMMAR/atsgrammar_yats.html \
-          ats-hwxi@web.sourceforge.net:/home/groups/a/at/ats-lang/htdocs/DOCUMENTATION/atsgrammar_yats.html
+atsgrammar::
+	scp \
+          DOCUMENTATION/ATS_GRAMMAR/ats_grammar_desc.html \
+          DOCUMENTATION/ATS_GRAMMAR/ats_grammar_yats.html \
+          ats-hwxi@web.sourceforge.net:/home/groups/a/at/ats-lang/htdocs/DOCUMENTATION/
 
 ###### end of [Makefile] ######

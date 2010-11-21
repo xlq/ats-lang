@@ -11,13 +11,13 @@ ATSGRAMMAR=$(ATSHOME)/utils/atsgrammar/atsgrammar
 ######
 
 all:: \
-  atsgrammar_desc.html \
-  atsgrammar_yats.html \
+  ats_grammar_desc.html \
+  ats_grammar_yats.html \
 
 ######
 
-atsgrammar_desc.html: ; $(ATSGRAMMAR) --format=desc_html > $@
-atsgrammar_yats.html: ; $(ATSGRAMMAR) --format=yats_html > $@
+ats_grammar_desc.html: ; $(ATSGRAMMAR) --format=desc_html > $@
+ats_grammar_yats.html: ; $(ATSGRAMMAR) --format=yats_html > $@
 
 ######
 
@@ -29,7 +29,7 @@ clean::
 	$(RMF) *~
 
 cleanall:: clean
-	$(RMF) atsgrammar_desc.html
-	$(RMF) atsgrammar_yats.html
+	$(RMF) ats_grammar_desc.html
+	$(RMF) ats_grammar_yats.html
 
 ###### end of [Makefile] ######
