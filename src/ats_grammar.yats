@@ -597,7 +597,6 @@ extern witht0ype_t witht0ype_viewtype (s0exp_t) ;
 /*
 ** dynamic expressions
 */
-
 extern d0exp_t d0exp_ann (d0exp_t, s0exp_t) ;
 //
 extern d0exp_t d0exp_apps (d0exp_t, d0explst_t) ;
@@ -804,6 +803,9 @@ i0mpdec_t i0mpdec_make (impqi0de_t, f0arglst_t, s0expopt_t, d0exp_t) ;
  
 /* ****** ****** */
 
+/*
+** static and dynamic declarations
+*/
 extern d0ec_t d0ec_infix (t0kn_t, p0rec_t, int, i0delst_t) ;
 extern d0ec_t d0ec_prefix (t0kn_t, p0rec_t, i0delst_t) ;
 extern d0ec_t d0ec_postfix (t0kn_t, p0rec_t, i0delst_t) ;
@@ -1006,6 +1008,10 @@ d0eclst_t d0eclst ;
 %}
 
 /* ****** ****** */
+
+/*
+** terminals
+*/
 
 %token ISSTATIC
 %token ISDYNAMIC
@@ -1271,6 +1277,10 @@ d0eclst_t d0eclst ;
 
 /* ****** ****** */
 
+/*
+** nonterminals
+*/
+
 %type <d0eclst> theStartEntry
 %type <abskind> abskind
 %type <dcstkind> dcstkind
@@ -1484,6 +1494,10 @@ d0eclst_t d0eclst ;
 %%
 
 /* ****** ****** */
+
+/*
+** production rules
+*/
 
 theStartEntry
   : ISSTATIC d0ecseq_sta TOKEN_eof  { $$ = $2 ; return 0 ; }

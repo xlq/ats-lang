@@ -622,7 +622,6 @@ extern witht0ype_t witht0ype_viewtype (s0exp_t) ;\n\
 /*\n\
 ** dynamic expressions\n\
 */\n\
-\n\
 extern d0exp_t d0exp_ann (d0exp_t, s0exp_t) ;\n\
 //\n\
 extern d0exp_t d0exp_apps (d0exp_t, d0explst_t) ;\n\
@@ -829,6 +828,9 @@ i0mpdec_t i0mpdec_make (impqi0de_t, f0arglst_t, s0expopt_t, d0exp_t) ;\n\
  \n\
 /* ****** ****** */\n\
 \n\
+/*\n\
+** static and dynamic declarations\n\
+*/\n\
 extern d0ec_t d0ec_infix (t0kn_t, p0rec_t, int, i0delst_t) ;\n\
 extern d0ec_t d0ec_prefix (t0kn_t, p0rec_t, i0delst_t) ;\n\
 extern d0ec_t d0ec_postfix (t0kn_t, p0rec_t, i0delst_t) ;\n\
@@ -1305,26 +1307,37 @@ emit_yats (out) = let
   } // end of [val]
 //
   val () = fprint_string (out, "\n%}\n")
-  val () = fprint_string (out, "\n/* ****** ****** */\n\n")
 //
   val () = () where {
     val xs = theSymlst_get ()
     val xs = list_reverse (xs)
 //
+    val () = fprint_string (out, "\n/* ****** ****** */\n\n")
+    val () = fprint_string (out, "/*\n")
+    val () = fprint_string (out, "** terminals\n")
+    val () = fprint_string (out, "*/\n\n")
     val () = emit_symall_term (out, xs)
 //
     val () = fprint_string (out, "\n/* ****** ****** */\n\n")
     val () = fprint_string (out, thePrecedenceHeader)
-    val () = fprint_string (out, "\n/* ****** ****** */\n\n")
 //
+    val () = fprint_string (out, "\n/* ****** ****** */\n\n")
+    val () = fprint_string (out, "/*\n")
+    val () = fprint_string (out, "** nonterminals\n")
+    val () = fprint_string (out, "*/\n\n")
     val () = emit_symall_nonterm (out, xs)
 //
     val () = fprint_string (out, "\n/* ****** ****** */\n\n")
     val () = fprint_string (out, "%start theStartEntry\n")
     val () = fprint_string (out, "\n/* ****** ****** */\n\n")
     val () = fprint_string (out, "%%\n")
+//
     val () = fprint_string (out, "\n/* ****** ****** */\n\n")
+    val () = fprint_string (out, "/*\n")
+    val () = fprint_string (out, "** production rules\n")
+    val () = fprint_string (out, "*/\n\n")
     val () = emit_symall_defn (out, xs)
+//
     val () = fprint_string (out, "\n/* ****** ****** */\n\n")
     val () = fprint_string (out, "%%\n")
     val () = fprint_string (out, "\n/* ****** ****** */\n\n")
