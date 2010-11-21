@@ -234,7 +234,7 @@ val thePreamble = "\
 val thePostamble = "\
 <span class=comment>\
 /* ****** ****** */\n\n\
-/* end of [atsgrammar.yats] */\n\
+/* end of [ats_grammar.yats] */\n\
 </span>\n\
 </pre>\n\
 </body>\n\

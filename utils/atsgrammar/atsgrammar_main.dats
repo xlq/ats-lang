@@ -3770,6 +3770,11 @@ val () = grmrule_set_action (gr, "{ $$ = labs0explst_nil() ; }")
 val gr = grmrule_append ($lst_t {symbol} (tupz! COMMA l0ab EQ s0exp commalabs0expseq))
 val () = grmrule_set_action (gr, "{ $$ = labs0explst_cons($2, $4, $5) ; }")
 //
+val commal0ab = SYMREGseqlit (COMMA, l0ab)
+val commal0abeq = SYMREGseq (commal0ab, SYMREGlit EQ)
+val commal0abeqs0exp = SYMREGseq (commal0abeq, SYMREGlit s0exp)
+val () = theGrmrulelst_merge_all (commalabs0expseq, SYMREGstar (commal0abeqs0exp))
+//
 val () = symbol_close (pf | commalabs0expseq)
 //
 } // end of [commalabs0expseq_proc]
@@ -4932,6 +4937,11 @@ val () = grmrule_set_action (gr, "{ $$ = labp0atlst_dot() ; }")
 val gr = grmrule_append ($lst_t {symbol} (tupz! COMMA l0ab EQ p0at commalabp0atseq))
 val () = grmrule_set_action (gr, "{ $$ = labp0atlst_cons($2, $4, $5) ; }")
 //
+val commal0ab = SYMREGseqlit (COMMA, l0ab)
+val commal0abeq = SYMREGseq (commal0ab, SYMREGlit EQ)
+val commal0abeqp0at = SYMREGseq (commal0abeq, SYMREGlit p0at)
+val () = theGrmrulelst_merge_all (commalabp0atseq, SYMREGstar (commal0abeqp0at))
+//
 val () = symbol_close (pf | commalabp0atseq)
 //
 } // end of [commalabp0atseq_proc]
@@ -5771,6 +5781,11 @@ val () = grmrule_set_action (gr, "{ $$ = labd0explst_nil() ; }")
 val gr = grmrule_append ($lst_t {symbol} (tupz! COMMA l0ab EQ d0exp commalabd0expseq))
 val () = grmrule_set_action (gr, "{ $$ = labd0explst_cons($2, $4, $5) ; }")
 //
+val commal0ab = SYMREGseqlit (COMMA, l0ab)
+val commal0abeq = SYMREGseq (commal0ab, SYMREGlit EQ)
+val commal0abeqd0exp = SYMREGseq (commal0abeq, SYMREGlit d0exp)
+val () = theGrmrulelst_merge_all (commalabd0expseq, SYMREGstar (commal0abeqd0exp))
+//
 val () = symbol_close (pf | commalabd0expseq)
 //
 } // end of [commalabd0expseq_proc]
@@ -5826,6 +5841,9 @@ val gr = grmrule_append ()
 val () = grmrule_set_action (gr, "{ $$ = m0atchlst_nil () ; }")
 val gr = grmrule_append ($lst_t {symbol} (tupz! AND m0atch andm0atchseq))
 val () = grmrule_set_action (gr, "{ $$ = m0atchlst_cons ($2, $3 ) ; }")
+//
+val andm0atch = SYMREGseqlit (AND, m0atch)
+val () = theGrmrulelst_merge_all (andm0atchseq, SYMREGstar (andm0atch))
 //
 val () = symbol_close (pf | andm0atchseq)
 //
@@ -5916,6 +5934,9 @@ val () = grmrule_set_precval (gr, "%prec BARCLAUSSEQNONE")
 val gr = grmrule_append ($lst_t {symbol} (tupz! BAR c0lau barc0lauseq))
 val () = grmrule_set_action (gr, "{ $$ = c0laulst_cons($2, $3) ; }")
 //
+val barc0lau = SYMREGseqlit (BAR, c0lau)
+val () = theGrmrulelst_merge_all (barc0lauseq, SYMREGstar (barc0lau))
+//
 val () = symbol_close (pf | barc0lauseq)
 //
 } // end of [barc0lauseq_proc]
@@ -5971,6 +5992,9 @@ val () = grmrule_set_action (gr, "{ $$ = sc0laulst_nil() ; } ")
 val () = grmrule_set_precval (gr, "%prec BARCLAUSSEQNONE")
 val gr = grmrule_append ($lst_t {symbol} (tupz! BAR sc0lau barsc0lauseq))
 val () = grmrule_set_action (gr, "{ $$ = sc0laulst_cons($2, $3) ; }")
+//
+val barsc0lau = SYMREGseqlit (BAR, sc0lau)
+val () = theGrmrulelst_merge_all (barsc0lauseq, SYMREGstar (barsc0lau))
 //
 val () = symbol_close (pf | barsc0lauseq)
 //
@@ -6307,6 +6331,9 @@ val () = grmrule_set_action (gr, "{ $$ = m0acdeflst_nil() ; }")
 val gr = grmrule_append ($lst_t {symbol} (tupz! AND m0acdef andm0acdefseq))
 val () = grmrule_set_action (gr, "{ $$ = m0acdeflst_cons($2, $3) ; }")
 //
+val andm0acdef = SYMREGseqlit (AND, m0acdef)
+val () = theGrmrulelst_merge_all (andm0acdefseq, SYMREGstar (andm0acdef))
+//
 val () = symbol_close (pf | andm0acdefseq)
 //
 } // end of [andm0acdefseq_proc]
@@ -6343,6 +6370,9 @@ val gr = grmrule_append ()
 val () = grmrule_set_action (gr, "{ $$ = v0aldeclst_nil() ; }")
 val gr = grmrule_append($lst_t {symbol} (tupz! AND v0aldec andv0aldecseq))
 val () = grmrule_set_action (gr, "{ $$ = v0aldeclst_cons($2, $3) ; }")
+//
+val andv0aldec = SYMREGseqlit (AND, v0aldec)
+val () = theGrmrulelst_merge_all (andv0aldecseq, SYMREGstar (andv0aldec))
 //
 val () = symbol_close (pf | andv0aldecseq)
 //
@@ -6383,6 +6413,9 @@ val gr = grmrule_append ()
 val () = grmrule_set_action (gr, "{ $$ = f0undeclst_nil() ; }")
 val gr = grmrule_append ($lst_t {symbol} (tupz! AND f0undec andf0undecseq))
 val () = grmrule_set_action (gr, "{ $$ = f0undeclst_cons($2, $3) ; }")
+//
+val andf0undec = SYMREGseqlit (AND, f0undec)
+val () = theGrmrulelst_merge_all (andf0undecseq, SYMREGstar (andf0undec))
 //
 val () = symbol_close (pf | andf0undecseq)
 //
@@ -6446,6 +6479,9 @@ val gr = grmrule_append ()
 val () = grmrule_set_action (gr, "{ $$ = v0ardeclst_nil() ; }")
 val gr = grmrule_append ($lst_t {symbol} (tupz! AND v0ardec andv0ardecseq))
 val () = grmrule_set_action (gr, "{ $$ = v0ardeclst_cons($2, $3) ; }")
+//
+val andv0ardec = SYMREGseqlit (AND, v0ardec)
+val () = theGrmrulelst_merge_all (andv0ardecseq, SYMREGstar (andv0ardec))
 //
 val () = symbol_close (pf | andv0ardecseq)
 //
