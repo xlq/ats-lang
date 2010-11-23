@@ -16,6 +16,9 @@ ats-lang-anairiats-0.2.3:
 9. DO and WHILE are external ids: both while-loop and do-while-loop are
    supported.
 10. print! and println! are now supported.
+11. fprint! and fprintln! are now supported.
+12. tupz! is now supported.
+13. $ATSHOME/utils/atsgrammar is added for documenting the grammar of ATS.
 
 ########################################################################
 

@@ -196,22 +196,22 @@ fingertree_cons{a}
 //
 fun cons {d:nat}
   {n1,n2:int | n2 >= 0} .<n2>. (
-  xn0: ftnode (a, d, n1), xt: fingertree (a, d, n2)
+  xn: ftnode (a, d, n1), xt: fingertree (a, d, n2)
 ) :<> fingertree (a, d, n1+n2) = let
-  prval () = ftnode_prop_szpos (xn0) in
+  prval () = ftnode_prop_szpos (xn) in
   case+ xt of
-  | FTempty () => FTsingle (xn0)
+  | FTempty () => FTsingle (xn)
   | FTsingle (xn1) => let
       prval () = ftnode_prop_szpos (xn1)
     in
-      FTdeep (FTD1(xn0), FTempty(), FTD1(xn1))
+      FTdeep (FTD1(xn), FTempty(), FTD1(xn1))
     end // end [FTsingle]
   | FTdeep (pr, m, sf) => (case+ pr of
-    | FTD1 (xn1) => FTdeep (FTD2 (xn0, xn1), m, sf) 
-    | FTD2 (xn1, xn2) => FTdeep (FTD3 (xn0, xn1, xn2), m, sf)
-    | FTD3 (xn1, xn2, xn3) => FTdeep (FTD4 (xn0, xn1, xn2, xn3), m, sf)
+    | FTD1 (xn1) => FTdeep (FTD2 (xn, xn1), m, sf) 
+    | FTD2 (xn1, xn2) => FTdeep (FTD3 (xn, xn1, xn2), m, sf)
+    | FTD3 (xn1, xn2, xn3) => FTdeep (FTD4 (xn, xn1, xn2, xn3), m, sf)
     | FTD4 (xn1, xn2, xn3, xn4) => let
-        val pr = FTD2 (xn0, xn1)
+        val pr = FTD2 (xn, xn1)
 //
         prval () = ftdigit_prop_szpos (sf)
         prval () = fingertree_prop1_sznat (m)
@@ -248,8 +248,8 @@ fun uncons {d:nat} {n:pos} .<n>. (
       val () = r := xn in FTempty ()
     end // end of [Single]
   | FTdeep (pr, m, sf) => (case+ pr of
-    | FTD1 (xn0) => let
-        val () = r := xn0
+    | FTD1 (xn) => let
+        val () = r := xn
         prval () = ftdigit_prop_szpos (pr)
         prval () = ftdigit_prop_szpos (sf)
       in
@@ -266,18 +266,63 @@ fun uncons {d:nat} {n:pos} .<n>. (
             FTdeep (ftnode2ftdigit (r1), m, sf)
           end // end of [_]
       end // end of [FTD1]
-    | FTD2 (xn0, xn1) => let
-        val () = r := xn0 in FTdeep (FTD1 (xn1), m, sf)
+    | FTD2 (xn, xn1) => let
+        val () = r := xn in FTdeep (FTD1 (xn1), m, sf)
       end // end of [FTD2]
-    | FTD3 (xn0, xn1, xn2) => let
-        val () = r := xn0 in FTdeep (FTD2 (xn1, xn2), m, sf)
+    | FTD3 (xn, xn1, xn2) => let
+        val () = r := xn in FTdeep (FTD2 (xn1, xn2), m, sf)
       end // end of [FTD3]
-    | FTD4 (xn0, xn1, xn2, xn3) => let
-        val () = r := xn0 in FTdeep (FTD3 (xn1, xn2, xn3), m, sf)
+    | FTD4 (xn, xn1, xn2, xn3) => let
+        val () = r := xn in FTdeep (FTD3 (xn1, xn2, xn3), m, sf)
       end // end of [FTD4]
     ) // end of [FTdeep]
 // end of [uncons]
 } // end of [fingertree_uncons]
+
+(* ****** ****** *)
+
+extern
+fun fingertree_snoc
+  {a:t@ype} {d:nat} {n1,n2:int} (
+  xn: ftnode (a, d, n1), xt: fingertree (a, d, n2)
+) :<> fingertree (a, d, n1+n2) // end of [fingertree_snoc]
+
+implement
+fingertree_snoc{a}
+  (xn, xt) = snoc (xn, xt) where {
+//
+fun snoc {d:nat}
+  {n1,n2:int | n2 >= 0} .<n2>. (
+  xn: ftnode (a, d, n1), xt: fingertree (a, d, n2)
+) :<> fingertree (a, d, n1+n2) = let
+  prval () = ftnode_prop_szpos (xn) in
+  case+ xt of
+  | FTempty () => FTsingle (xn)
+  | FTsingle (xn1) => let
+      prval () = ftnode_prop_szpos (xn1)
+    in
+      FTdeep (FTD1(xn1), FTempty(), FTD1(xn))
+    end // end [FTsingle]
+  | FTdeep (pr, m, sf) => (case+ sf of
+    | FTD1 (xn1) => FTdeep (pr, m, FTD2 (xn1, xn))
+    | FTD2 (xn1, xn2) => FTdeep (pr, m, FTD3 (xn1, xn2, xn))
+    | FTD3 (xn1, xn2, xn3) => FTdeep (pr, m, FTD4 (xn1, xn2, xn3, xn))
+    | FTD4 (xn1, xn2, xn3, xn4) => let
+        val sf = FTD2 (xn4, xn)
+//
+        prval () = ftdigit_prop_szpos (pr)
+        prval () = fingertree_prop1_sznat (m)
+//
+        val m = snoc (FTN3 (xn1, xn2, xn3), m)
+      in
+        FTdeep (pr, m, sf)
+      end // end of [FTD4]
+    ) // end of [FTdeep]
+end // end of [snoc]
+//
+prval () = fingertree_prop1_sznat (xt)
+//
+} // end of [fingertree_snoc]
 
 (* ****** ****** *)
 
@@ -289,6 +334,72 @@ assume tree_t0ype_int
 
 implement{}
 tree_nil () = FTempty ()
+
+implement{}
+tree_is_nil (xt) =
+  case+ xt of
+  | FTempty () => true
+  | FTsingle (xn) => let
+      prval () = ftnode_prop_szpos (xn) in false
+    end // end of [FTsingle]
+  | FTdeep (pr, _, _) => let
+      prval () = ftdigit_prop_szpos (pr) in false
+    end // end of [FTdeep]
+// end of [tree_is_nil]
+
+(* ****** ****** *)
+
+extern
+fun fingertree_unsnoc
+  {a:t@ype} {d:nat} {n:pos} (
+  xt: fingertree (a, d, n), r: &ftnode? >> ftnode (a, d, n1)
+) :<> #[n1:nat] fingertree (a, d, n-n1)
+// end of [fingertree_unsnoc]
+
+implement
+fingertree_unsnoc{a}
+  (xt, r) = unsnoc (xt, r) where {
+//
+fun unsnoc {d:nat} {n:pos} .<n>. (
+  xt: fingertree (a, d, n), r: &ft0node? >> ftnode (a, d, n1)
+) :<> #[n1:nat | n1 <= n] fingertree (a, d, n-n1) =
+  case+ xt of
+  | FTsingle (xn) => let
+      val () = r := xn in FTempty ()
+    end // end of [Single]
+  | FTdeep (pr, m, sf) => (case+ sf of
+    | FTD1 (xn) => let
+        val () = r := xn
+        prval () = ftdigit_prop_szpos (pr)
+        prval () = ftdigit_prop_szpos (sf)
+      in
+        case+ m of
+        | FTempty () => ftdigit2fingertree (pr)
+        | FTsingle (xn1) => FTdeep (pr, FTempty (), ftnode2ftdigit (xn1))
+        | FTdeep (pr1, m1, sf1) => let
+            var r1: ft0node?
+            prval () = ftdigit_prop_szpos (pr1)
+            prval () = fingertree_prop1_sznat (m1)
+            prval () = ftdigit_prop_szpos (sf1)
+            val m = unsnoc (m, r1)
+          in
+            FTdeep (pr, m, ftnode2ftdigit (r1))
+          end // end of [_]
+      end // end of [FTD1]
+    | FTD2 (xn1, xn) => let
+        val () = r := xn in FTdeep (pr, m, FTD1 (xn1))
+      end // end of [FTD2]
+    | FTD3 (xn1, xn2, xn) => let
+        val () = r := xn in FTdeep (pr, m, FTD2 (xn1, xn2))
+      end // end of [FTD3]
+    | FTD4 (xn1, xn2, xn3, xn) => let
+        val () = r := xn in FTdeep (pr, m, FTD3 (xn1, xn2, xn3))
+      end // end of [FTD4]
+    ) // end of [FTdeep]
+// end of [unsnoc]
+} // end of [fingertree_unsnoc]
+
+(* ****** ****** *)
 
 implement{a}
 tree_cons (xn, xt) =
@@ -306,17 +417,19 @@ tree_uncons
 
 (* ****** ****** *)
 
-implement{}
-tree_is_nil (xt) =
-  case+ xt of
-  | FTempty () => true
-  | FTsingle (xn) => let
-      prval () = ftnode_prop_szpos (xn) in false
-    end // end of [FTsingle]
-  | FTdeep (pr, _, _) => let
-      prval () = ftdigit_prop_szpos (pr) in false
-    end // end of [FTdeep]
-// end of [tree_is_nil]
+implement{a}
+tree_snoc (xn, xt) =
+  fingertree_snoc (FTN1 (xn), xt)
+// end of [tree_snoc]
+
+implement{a}
+tree_unsnoc
+  (xt, r) = xt where {
+  var xn: ft0node?
+  val xt = fingertree_unsnoc (xt, xn)
+  val+ FTN1 (x) = xn
+  val () = (r := x)
+} // end of [fingertree0_unsnoc]
 
 (* ****** ****** *)
 

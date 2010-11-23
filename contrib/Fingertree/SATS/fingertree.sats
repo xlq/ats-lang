@@ -24,8 +24,13 @@ typedef tree
 
 (* ****** ****** *)
 
-fun{}
-tree_nil {a:t@ype} ():<> tree (a, 0)
+fun{} tree_nil {a:t@ype} ():<> tree (a, 0)
+
+fun{} tree_is_nil
+  {a:t@ype} {n:nat} (xt: tree (a, n)): bool (n==0)
+// end of [tree_is_nil]
+
+(* ****** ****** *)
 
 fun{a:t@ype}
 tree_cons {n:nat}
@@ -39,9 +44,15 @@ tree_uncons {n:pos}
 
 (* ****** ****** *)
 
-fun{} tree_is_nil
-  {a:t@ype} {n:nat} (xt: tree (a, n)): bool (n==0)
-// end of [tree_is_nil]
+fun{a:t@ype}
+tree_snoc {n:nat}
+  (x: a, xt: tree (a, n)):<> tree (a, n+1)
+// end of [fingertree0_snoc]
+
+fun{a:t@ype}
+tree_unsnoc {n:pos}
+  (xt: tree (a, n), r: &a? >> a):<> tree (a, n-1)
+// end of [tree_unsnoc]
 
 (* ****** ****** *)
 
