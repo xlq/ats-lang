@@ -664,7 +664,9 @@ atslib_hashtbl_ptr_make__linprb
 //
 // declared in [string.h]
 //
+#ifndef memset
 extern void *memset (void *buf, int chr, size_t n) ;
+#endif
 //
 ats_void_type
 atslib_hashtbl_ptr_clear__linprb (

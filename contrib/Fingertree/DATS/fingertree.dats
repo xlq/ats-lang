@@ -326,7 +326,7 @@ prval () = fingertree_prop1_sznat (xt)
 
 (* ****** ****** *)
 
-assume tree_t0ype_int
+assume tree_t0ype_int_type
   (a:t@ype, n:int) = fingertree (a, 0, n)
 // end of [tree_t0ype_int]
 
@@ -413,7 +413,7 @@ tree_uncons
   val xt = fingertree_uncons (xt, xn)
   val+ FTN1 (x) = xn
   val () = (r := x)
-} // end of [fingertree0_uncons]
+} // end of [tree_uncons]
 
 (* ****** ****** *)
 
@@ -429,7 +429,7 @@ tree_unsnoc
   val xt = fingertree_unsnoc (xt, xn)
   val+ FTN1 (x) = xn
   val () = (r := x)
-} // end of [fingertree0_unsnoc]
+} // end of [tree_unsnoc]
 
 (* ****** ****** *)
 

@@ -17,9 +17,9 @@
 (* ****** ****** *)
 
 abstype
-tree_t0ype_int (a:t@ype+, n:int)
+tree_t0ype_int_type (a:t@ype+, n:int)
 typedef tree
-  (a:t@ype, n:int) = tree_t0ype_int (a, n)
+  (a:t@ype, n:int) = tree_t0ype_int_type (a, n)
 // end of [tree]
 
 (* ****** ****** *)
