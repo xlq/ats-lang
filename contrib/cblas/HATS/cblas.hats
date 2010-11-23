@@ -9,10 +9,10 @@
 **
 *)
 
+(* ****** ****** *)
 //
 // License: LGPL 3.0 (available at http://www.gnu.org/licenses/lgpl.txt)
 //
-
 (* ****** ****** *)
 
 #define ATS_CBLAS_DEBUG 1 // for controlling some debugging code

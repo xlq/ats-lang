@@ -127,9 +127,11 @@ typedef weight = Nat
 typedef refdep = ref depth
 
 (* ****** ****** *)
-
+//
+// HX:
 // The function attaches a ref cell to each element in the input list
 // It also computes the length of the input list
+//
 fun{a:t@ype} trans0 {n:nat}
   (xws: list (@(a, weight), n), len: &int? >> int n)
   : list_vt (@(a, weight, refdep), n) = begin case+ xws of
@@ -146,16 +148,16 @@ end // end of [trans0]
 
 dataviewtype tree1 (a:t@ype) =
   | Node1 (a) of (tree1 a, tree1 a) | Leaf1 (a) of (a, refdep)
+// end of [tree1]
 
 extern fun tree1_free {a:t@ype} (t: tree1 a): void = "tree1_free"
 
 implement tree1_free (t) = begin case+ t of
   | ~Node1 (t1, t2) => (tree1_free t1; tree1_free t2) | ~Leaf1 _ => ()
-end
+end // end of [tree1_free]
 
 extern fun Node1_make {a:t@ype}
   (t1: tree1 a, t2: tree1 a): tree1 a = "Node1_make"
-
 implement Node1_make (t1, t2) = Node1 (t1, t2)
 
 (* ****** ****** *)
@@ -185,7 +187,8 @@ extern fun trans2_all {a:t@ype} {n:int | n >= 1}
 
 (* ****** ****** *)
 
-fun{a:t@ype} mark_depth_and_free (t: tree1 a): void = let
+fun{a:t@ype}
+mark_depth_and_free (t: tree1 a): void = let
   fun aux (t: tree1 a, d: depth): void = begin case+ t of
     | ~Node1 (t1, t2) => begin
         let val d1 = d+1 in aux (t1, d1); aux (t2, d1) end

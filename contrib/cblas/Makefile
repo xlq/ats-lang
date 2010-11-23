@@ -10,6 +10,8 @@
 
 ATSHOMEQ="$(ATSHOME)"
 ATSCC=$(ATSHOMEQ)/bin/atscc -Wall
+
+LD=ld
 LIBFLAGS=-L/usr/lib/atlas
 
 ######
@@ -20,7 +22,7 @@ all: atsctrb_cblas.o clean
 
 atsctrb_cblas.o: \
   cblas_dats.o cblas_extra_dats.o
-	ld -r -o $@ cblas_dats.o cblas_extra_dats.o
+	$(LD) -r -o $@ $^
 
 ######
 
