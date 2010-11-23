@@ -49,7 +49,13 @@ implement bitvec_notequal (vec1, vec2, n) = ~bitvec_equal (vec1, vec2, n)
 (* ****** ****** *)
 
 %{^
-
+//
+// declared in [string.h]
+//
+#ifndef memset
+extern void *memset (void *buf, int chr, size_t n) ;
+#endif
+//
 ats_ptr_type
 atslib_linbitvec_bitvec_make
   (ats_size_type nbit) {
@@ -58,7 +64,7 @@ atslib_linbitvec_bitvec_make
   p_vec = ATS_CALLOC (nwrd, NBYTE_PER_WORD) ; // initialized to zero
   return p_vec ;
 } // end of [atslib_linbitvec_bitvec_make]
-
+//
 ats_ptr_type // HX: same as [atslib_linbitvec_bitvec_make] for now
 atslib_linbitvec_bitvec_make_nil
   (ats_size_type nbit) {
@@ -67,7 +73,7 @@ atslib_linbitvec_bitvec_make_nil
   p_vec = ATS_CALLOC (nwrd, NBYTE_PER_WORD) ; // initialized to zero
   return p_vec ;
 } // end of [atslib_linbitvec_bitvec_make_nil]
-
+//
 ats_ptr_type
 atslib_linbitvec_bitvec_make_all
   (ats_size_type nbit) {
@@ -82,18 +88,18 @@ atslib_linbitvec_bitvec_make_all
   if (nwrd > 0) { zc = ~0; p_vec[nwrd-1] &= (zc >> next) ; }
   return p_vec ;
 } // end of [atslib_linbitvec_bitvec_make_all]
-
+//
 ats_void_type
 atslib_linbitvec_bitvec_free
   (ats_ptr_type p_vec) { ATS_FREE (p_vec) ; return ; }
 // end of [atslib_linbitvec_bitvec_free]
-
-%}
+//
+%} // end of [%{^]
 
 (* ****** ****** *)
 
 %{^
-
+//
 ats_bool_type
 atslib_linbitvec_bitvec_is_nil (
   ats_ptr_type p0, ats_size_type nbit
@@ -105,7 +111,7 @@ atslib_linbitvec_bitvec_is_nil (
   while (--nwrd > 0) { if (*++p != 0) return ats_false_bool ; }
   return ats_true_bool ;
 } // end of [atslib_linbitvec_bitvec_is_nil]
-
+//
 ats_bool_type
 atslib_linbitvec_bitvec_is_all (
   ats_ptr_type p0, ats_size_type nbit
@@ -122,13 +128,13 @@ atslib_linbitvec_bitvec_is_all (
   if (nwrd) { if (*p != (zc >> next)) return ats_false_bool ; } ;
   return ats_true_bool ;  
 } // end of [atslib_linbitvec_bitvec_is_all]
-
+//
 %} // end of [%{^]
 
 (* ****** ****** *)
 
 %{^
-
+//
 ats_bool_type
 atslib_linbitvec_bitvec_equal (
   ats_ptr_type p10, ats_ptr_type p20, ats_size_type nbit
@@ -140,13 +146,13 @@ atslib_linbitvec_bitvec_equal (
   while (--nwrd > 0) { if (*++p1 != *++p2) return ats_false_bool ; } ;
   return ats_true_bool ;  
 } // end of [atslib_linbitvec_bitvec_copy]
-
+//
 %} // end of [%{^]
 
 (* ****** ****** *)
 
 %{^
-
+//
 ats_void_type
 atslib_linbitvec_bitvec_copy (
   ats_ptr_type p10, ats_ptr_type p20, ats_size_type nbit
@@ -157,13 +163,13 @@ atslib_linbitvec_bitvec_copy (
   *p1 = *p2 ; while (--nwrd > 0) { *(++p1) = *(++p2) ; }
   return ;  
 } // end of [atslib_linbitvec_bitvec_copy]
-
+//
 %} // end of [%{^]
 
 (* ****** ****** *)
 
 %{^
-
+//
 ats_void_type
 atslib_linbitvec_bitvec_neg (
   ats_ptr_type p0, ats_size_type nbit
@@ -180,7 +186,7 @@ atslib_linbitvec_bitvec_neg (
   if (nwrd > 0) { *p = ~(*p) ; *p &= (zc >> next) ; }
   return ;  
 } // end of [atslib_linbitvec_bitvec_neg]
-
+//
 ats_void_type
 atslib_linbitvec_bitvec_or (
   ats_ptr_type p10, ats_ptr_type p20, ats_size_type nbit
@@ -191,7 +197,7 @@ atslib_linbitvec_bitvec_or (
   *p1 |= *p2 ; while (--nwrd > 0) { *(++p1) |= *(++p2) ; }
   return ;  
 } // end of [atslib_linbitvec_bitvec_or]
-
+//
 ats_void_type
 atslib_linbitvec_bitvec_and (
   ats_ptr_type p10, ats_ptr_type p20, ats_size_type nbit
@@ -202,7 +208,7 @@ atslib_linbitvec_bitvec_and (
   *p1 &= *p2 ; while (--nwrd > 0) { *(++p1) &= *(++p2) ; }
   return ;  
 } // end of [atslib_linbitvec_bitvec_and]
-
+//
 ats_void_type
 atslib_linbitvec_bitvec_xor ( // symmetric difference
   ats_ptr_type p10, ats_ptr_type p20, ats_size_type nbit
@@ -213,7 +219,7 @@ atslib_linbitvec_bitvec_xor ( // symmetric difference
   *p1 ^= *p2 ; while (--nwrd > 0) { *(++p1) ^= *(++p2) ; }
   return ;  
 } // end of [atslib_linbitvec_bitvec_xor]
-
+//
 ats_void_type
 atslib_linbitvec_bitvec_diff ( // difference
   ats_ptr_type p10, ats_ptr_type p20, ats_size_type nbit
@@ -224,7 +230,7 @@ atslib_linbitvec_bitvec_diff ( // difference
   *p1 &= ~(*p2) ; while (--nwrd > 0) { *(++p1) &= ~(*(++p2)) ; }
   return ;  
 } // end of [atslib_linbitvec_bitvec_diff]
-
+//
 %} // end of [%{^]
 
 (* ****** ****** *)
