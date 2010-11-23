@@ -162,7 +162,6 @@ n-body_smp: n-body_smp.dats
 
 n-body2: n-body2.dats
 	$(ATSCC) -fomit-frame-pointer -msse2 -mfpmath=sse -O3 n-body2.dats -o n-body2 -lm
-
 n-body2_c: n-body2.c
 	$(ATSCC) -fomit-frame-pointer -msse2 -mfpmath=sse -O3 n-body2.c -o n-body2_c -lm
 
@@ -170,10 +169,8 @@ n-body2_c: n-body2.c
 
 pidigits: pidigits.dats
 	$(ATSCC) -O3 -fomit-frame-pointer pidigits.dats -o pidigits -lgmp
-
 pidigits2: pidigits2.dats
 	$(ATSCC) -O3 -fomit-frame-pointer pidigits2.dats -o pidigits2 -lgmp
-
 pidigits3: pidigits3.dats
 	$(ATSCC) -O3 -fomit-frame-pointer pidigits3.dats -o pidigits3 -lgmp
 

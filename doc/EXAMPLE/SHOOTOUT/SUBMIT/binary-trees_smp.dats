@@ -5,7 +5,7 @@
 ** contributed by Hongwei Xi (hwxi AT cs DOT bu DOT edu)
 **
 ** compilation command:
-**   atscc -D_ATS_MULTITHREAD -O3 binary-trees_smp.dats -o binary-trees_smp -lpthread -D_ATS_GCATS
+**   atscc -D_ATS_GCATS -D_ATS_MULTITHREAD -O3 binary-trees_smp.dats -o binary-trees_smp -lpthread
 *)
 
 (* ****** ****** *)

@@ -3,7 +3,7 @@
 # Some programs involving the CAIRO drawing package
 #
 # Author: Hongwei Xi (hwxi AT cs DOT bu DOT edu)
-# Time: December, 2010
+# Time: December, 2009
 #
 #
 
@@ -141,28 +141,33 @@ test16: cairo-test16.dats
 
 ######
 
+RMF = rm -f
+
+######
+
 clean::
-	rm -f *~ *_?ats.c *_?ats.o
+	$(RMF) *~
+	$(RMF) *_?ats.c *_?ats.o
 
 cleanall: clean
-	rm -f test1-1 cairo-test1-1.png
-	rm -f test1-2
-	rm -f test2 cairo-test2.png
-	rm -f test3 cairo-test3.png
-	rm -f test4 cairo-test4.png
-	rm -f test5 cairo-test5.png
-	rm -f test6 cairo-test6.png
-	rm -f test7-1 cairo-test7-1.png
-	rm -f test7-2
-	rm -f test8-1 cairo-test8-1.png
-	rm -f test8-2 test8-3
-	rm -f test9
-	rm -f test10 cairo-test10.ps
-	rm -f test11 cairo-test11.png
-	rm -f test12
-	rm -f test13 cairo-test13.png
-	rm -f test14 cairo-test14.png
-	rm -f test15 cairo-test15.png
-	rm -f test16 cairo-test16.png
+	$(RMF) test1-1 cairo-test1-1.png
+	$(RMF) test1-2
+	$(RMF) test2 cairo-test2.png
+	$(RMF) test3 cairo-test3.png
+	$(RMF) test4 cairo-test4.png
+	$(RMF) test5 cairo-test5.png
+	$(RMF) test6 cairo-test6.png
+	$(RMF) test7-1 cairo-test7-1.png
+	$(RMF) test7-2
+	$(RMF) test8-1 cairo-test8-1.png
+	$(RMF) test8-2 test8-3
+	$(RMF) test9
+	$(RMF) test10 cairo-test10.ps
+	$(RMF) test11 cairo-test11.png
+	$(RMF) test12
+	$(RMF) test13 cairo-test13.png
+	$(RMF) test14 cairo-test14.png
+	$(RMF) test15 cairo-test15.png
+	$(RMF) test16 cairo-test16.png
 
 ###### end of [Makefile] ######

@@ -18,15 +18,26 @@ GCC=gcc
 checkall:: compall cleanall
 
 compall:: \
-  binary-trees binary-trees-ref \
-  fannkuch fannkuch_smp \
-  fasta k-nucleotide \
+  binary-trees \
+  binary-trees-ref \
+  fannkuch \
+  fannkuch_smp \
+  fasta \
+  fasta2 \
+  fasta4 \
+  k-nucleotide \
   mandelbrot \
+  mandelbrot_simd \
+  mandelbrot_simd_smp \
   n-body \
-  nsieve nsieve-bits \
+  n-body2 \
+  nsieve \
+  nsieve-bits \
   partial-sums \
   pidigits \
+  pidigits2 \
   recursive \
+  regex-dna \
   reverse-complement \
   spectral-norm \
   sum-file \
@@ -71,14 +82,11 @@ mandelbrot_simd: mandelbrot_simd.dats
 	$(ATSCC) -O3 -fomit-frame-pointer -D_ISOC9X_SOURCE -mfpmath=sse -msse2 -o mandelbrot_simd mandelbrot_simd.dats
 mandelbrot_simd_smp: mandelbrot_simd_smp.dats
 	$(ATSCC) -D_ATS_MULTITHREAD -O3 -fomit-frame-pointer -D_ISOC9X_SOURCE -mfpmath=sse -msse2 -o mandelbrot_simd_smp mandelbrot_simd_smp.dats -lpthread
-mandelbrot_simd_smp1: mandelbrot_simd_smp1.dats
-	$(ATSCC) -D_ATS_MULTITHREAD -O3 -fomit-frame-pointer -D_ISOC9X_SOURCE -mfpmath=sse -msse2 -o mandelbrot_simd_smp1 mandelbrot_simd_smp1.dats -lpthread
-mandelbrot_c: mandelbrot.c
-	$(GCC) -Wall -O3 -fomit-frame-pointer -D_ISOC9X_SOURCE -mfpmath=sse -msse2 -lm mandelbrot.c -o mandelbrot_c
-
 
 n-body: n-body.dats
 	$(ATSCC) -O3 n-body.dats -o n-body -lm
+n-body2: n-body2.dats
+	$(ATSCC) -fomit-frame-pointer -msse2 -mfpmath=sse -O3 n-body2.dats -o n-body2 -lm
 
 nsieve: nsieve.dats
 	$(ATSCC) -O3 nsieve.dats -o nsieve
@@ -94,6 +102,8 @@ partial-sums: partial-sums.dats
 
 pidigits: pidigits.dats
 	$(ATSCC) -O3 pidigits.dats -o pidigits -lgmp
+pidigits2: pidigits2.dats
+	$(ATSCC) -O3 -fomit-frame-pointer pidigits2.dats -o pidigits2 -lgmp
 
 recursive: recursive.dats
 	$(ATSCC) -O3 -fomit-frame-pointer recursive.dats -o recursive
@@ -163,11 +173,11 @@ cleanall: clean
 	rm -f mandelbrot_simd
 	rm -f mandelbrot_simd_smp
 	rm -f mandelbrot_simd_smp1
-	rm -f n-body
+	rm -f n-body n-body2
 	rm -f nsieve
 	rm -f nsieve-bits
 	rm -f partial-sums
-	rm -f pidigits
+	rm -f pidigits pidigits2
 	rm -f recursive
 	rm -f regex-dna
 	rm -f reverse-complement
