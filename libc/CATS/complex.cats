@@ -55,6 +55,11 @@ typedef long double complex ats_lcomplex_type ;
 
 /* ****** ****** */
 
+extern float sinf (float) ; // should be in [math.h]
+extern float cosf (float) ; // should be in [math.h]
+
+/* ****** ****** */
+
 /*
 ** complex numbers of single precision
 */

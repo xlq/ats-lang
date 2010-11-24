@@ -43,6 +43,12 @@
 
 /* ****** ****** */
 
+#ifndef strcpy
+extern char *strcpy (char *dst, const char *src) ; // in [string.h]
+#endif // end of [strcpy]
+
+/* ****** ****** */
+
 ATSinline()
 ats_void_type
 atslib_sockaddr_un_init (

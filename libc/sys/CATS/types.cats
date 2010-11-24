@@ -188,8 +188,10 @@ ats_double_type atslib_double_of_time (time_t t) { return t ; }
 // HX: where is [timer_t] declared?
 // typedef timer_t ats_timer_type ; // for timers returned by timer_create ()
 //
+#ifdef _XOPEN_SOURCE // for POSIX and XPG things
 typedef useconds_t ats_useconds_type ; // for time in microseconds
 typedef suseconds_t ats_suseconds_type ; // for signed time in microseconds
+#endif // end of [_XOPEN_SOURCE]
 
 /* ****** ****** */
 
