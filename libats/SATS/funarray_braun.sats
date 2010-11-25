@@ -48,8 +48,9 @@
 
 (* ****** ****** *)
 
-abstype array_t0ype_type (a:t@ype+ (*element*),  n:int (*size*))
-stadef array = array_t0ype_type
+abstype array_t0ype_int_type
+  (a:t@ype+ (*element*),  n:int (*size*))
+stadef array = array_t0ype_int_type
 
 (* ****** ****** *)
 
@@ -149,13 +150,15 @@ funarray_hirem_get (* O(log(n)) *)
 
 fun{a:t@ype} funarray_foreach_clo {v:view} {n:nat}
   (pf: !v | A: array (a, n), n: int n, f: &(!v | a) -<clo> void):<> void
-
+fun{a:t@ype} funarray_foreach_cloptr {v:view} {n:nat}
+  (pf: !v | A: array (a, n), n: int n, f: !(!v | a) -<cloptr> void):<> void
 fun{a:t@ype} funarray_foreach_cloref {n:nat}
   (A: array (a, n), n: int n, f: a -<cloref> void):<!ref> void
 
 fun{a:t@ype} funarray_iforeach_clo {v:view} {n:nat}
   (pf: !v | A: array (a, n), n: int n, f: &(!v | natLt n, a) -<clo> void):<> void
-
+fun{a:t@ype} funarray_iforeach_cloptr {v:view} {n:nat}
+  (pf: !v | A: array (a, n), n: int n, f: !(!v | natLt n, a) -<cloptr> void):<> void
 fun{a:t@ype} funarray_iforeach_cloref {n:nat}
   (A: array (a, n), n: int n, f:  (natLt n, a) -<cloref> void):<!ref> void
 

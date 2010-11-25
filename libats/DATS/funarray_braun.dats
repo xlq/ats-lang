@@ -66,7 +66,7 @@ stadef bt = brauntree // an abbreviation
 
 (* ****** ****** *)
 
-assume array_t0ype_type (a:t@ype, n:int) = brauntree (a, n)
+assume array_t0ype_int_type (a:t@ype, n:int) = brauntree (a, n)
 
 (* ****** ****** *)
 
@@ -327,6 +327,14 @@ in
 end // end of [funarray_foreach_clo]
 
 implement{a}
+funarray_foreach_cloptr {v} {n} (pf | A, n, f) = let
+  var i: natLte n
+in
+  for* {i:nat | i <= n} .<n-i>. // term metric
+    (i: int i) => (i := 0; i < n; i := i+1) f (pf | A[i])
+end // end of [funarray_foreach_cloptr]
+
+implement{a}
 funarray_foreach_cloref {n} (A, n, f) = let
   var i: natLte n
 in
@@ -343,6 +351,14 @@ in
   for* {i:nat | i <= n} .<n-i>. // term metric
     (i: int i) => (i := 0; i < n; i := i+1) f (pf | i, A[i])
 end // end of [funarray_iforeach_clo]
+
+implement{a}
+funarray_iforeach_cloptr {v} {n} (pf | A, n, f) = let
+  var i: natLte n
+in
+  for* {i:nat | i <= n} .<n-i>. // term metric
+    (i: int i) => (i := 0; i < n; i := i+1) f (pf | i, A[i])
+end // end of [funarray_iforeach_cloptr]
 
 implement{a}
 funarray_iforeach_cloref {n} (A, n, f) = let

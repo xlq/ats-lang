@@ -462,7 +462,7 @@ and ftadd0
 , pr2: ftdigit (a, d, npr2)
 , m2: fingertree (a, d+1, nm2)
 ) : fingertree (a, d+1, nm1+nsf1+npr2+nm2) =
-  case sf1 of
+  case+ sf1 of
   | FTD1 (xn1) => (case+ pr2 of
     | FTD1 (xn_1) => ftapp1 (m1, FTN2 (xn1, xn_1), m2)
     | FTD2 (xn_1, xn_2) => ftapp1 (m1, FTN3 (xn1, xn_1, xn_2), m2)
@@ -521,7 +521,7 @@ and ftadd1
 , pr2: ftdigit (a, d, npr2)
 , m2: fingertree (a, d+1, nm2)
 ) : fingertree (a, d+1, nm1+nsf1+na+npr2+nm2) =
-  case sf1 of
+  case+ sf1 of
   | FTD1 (xn1) => (case+ pr2 of
     | FTD1 (xn_1) => ftapp1 (m1, FTN3 (xn1, xna, xn_1), m2)
     | FTD2 (xn_1, xn_2) => ftapp2 (m1, FTN2 (xn1, xna), FTN2 (xn_1, xn_2), m2)
@@ -584,7 +584,7 @@ and ftadd2
 , pr2: ftdigit (a, d, npr2)
 , m2: fingertree (a, d+1, nm2)
 ) : fingertree (a, d+1, nm1+nsf1+na+nb+npr2+nm2) =
-  case sf1 of
+  case+ sf1 of
   | FTD1 (xn1) => (case+ pr2 of
     | FTD1 (xn_1) => ftapp2 (m1, FTN2 (xn1, xna), FTN2 (xnb, xn_1), m2)
     | FTD2 (xn_1, xn_2) => ftapp2 (m1, FTN3 (xn1, xna, xnb), FTN2 (xn_1, xn_2), m2)
@@ -650,7 +650,7 @@ and ftadd3
 , pr2: ftdigit (a, d, npr2)
 , m2: fingertree (a, d+1, nm2)
 ) : fingertree (a, d+1, nm1+nsf1+na+nb+nc+npr2+nm2) =
-  case sf1 of
+  case+ sf1 of
   | FTD1 (xn1) => (case+ pr2 of
     | FTD1 (xn_1) => ftapp2 (m1, FTN3 (xn1, xna, xnb), FTN2 (xnc, xn_1), m2)
     | FTD2 (xn_1, xn_2) => ftapp2 (m1, FTN3 (xn1, xna, xnb), FTN3 (xnc, xn_1, xn_2), m2)
@@ -719,7 +719,7 @@ and ftadd4
 , pr2: ftdigit (a, d, npr2)
 , m2: fingertree (a, d+1, nm2)
 ) : fingertree (a, d+1, nm1+nsf1+na+nb+nc+nd+npr2+nm2) =
-  case sf1 of
+  case+ sf1 of
   | FTD1 (xn1) => (case+ pr2 of
     | FTD1 (xn_1) => ftapp2 (m1, FTN3 (xn1, xna, xnb), FTN3 (xnc, xnd, xn_1), m2)
     | FTD2 (xn_1, xn_2) =>
@@ -766,6 +766,210 @@ in // in of [local]
 implement tree_append (xt1, xt2) = $effmask_all (ftapp0 (xt1, xt2))
 
 end // end of [local]
+
+(* ****** ****** *)
+
+typedef ftnode
+  (a:t@ype, d:int) = [n:int] ftnode (a, d, n)
+// end of [ftnode]
+
+(* ****** ****** *)
+
+local
+
+extern
+fun foreach
+  {a:t@ype} {v:view} {d:nat} {n:nat} (
+  pf: !v
+| xt: fingertree (a, d, n)
+, f: (!v | ftnode (a, d)) -<cloref> void
+) : void
+
+implement foreach
+  {a} {v} {d} (pf | xt, f) =
+  case xt of
+  | FTempty () => ()
+  | FTsingle (xn) => f (pf | xn)
+  | FTdeep (pr, m, sf) => let
+      val () = (case+ pr of
+        | FTD1 (xn1) => f (pf | xn1)
+        | FTD2 (xn1, xn2) => (f (pf | xn1); f (pf | xn2))
+        | FTD3 (xn1, xn2, xn3) => (f (pf | xn1); f (pf | xn2); f (pf | xn3))
+        | FTD4 (xn1, xn2, xn3, xn4) =>
+            (f (pf | xn1); f (pf | xn2); f (pf | xn3); f (pf | xn4))
+      ) : void // end of [val]
+      val () = (case+ m of
+        | FTempty () => ()
+        | _ => let
+            var !p_clo = @lam (
+              pf: !v | xn_1: ftnode (a, d+1)
+            ) : void =<clo> let
+            in
+              case+ xn_1 of
+              | FTN2 (xn1, xn2) => (f (pf | xn1); f (pf | xn2))
+              | FTN3 (xn1, xn2, xn3) => (f (pf | xn1); f (pf | xn2); f (pf | xn3))
+            end // end of [val]
+            val f_1 = __cast (!p_clo) where {
+              extern castfn __cast
+                (f_1: &(!v | ftnode (a, d+1)) -<clo> void): (!v | ftnode (a, d+1)) -<cloref> void
+            } // end of [val]
+          in
+            foreach (pf | m, f_1)
+          end // end of [_]
+      ) : void // end of [val]
+      val () = (case+ sf of
+        | FTD1 (xn1) => f (pf | xn1)
+        | FTD2 (xn1, xn2) => (f (pf | xn1); f (pf | xn2))
+        | FTD3 (xn1, xn2, xn3) => (f (pf | xn1); f (pf | xn2); f (pf | xn3))
+        | FTD4 (xn1, xn2, xn3, xn4) =>
+            (f (pf | xn1); f (pf | xn2); f (pf | xn3); f (pf | xn4))
+      ) : void // end of [val]
+    in
+      // nothing
+    end // end of [FTdeep]
+// end of [foreach]
+
+in // in of [local]
+
+implement{a}
+tree_foreach_cloptr
+  {v} {n} (pf0 | xs, f) = let
+  val f = __cast (f) where {
+    extern castfn __cast
+      (f: !(!v | a) -<cloptr> void):<> (!v | a) -<cloref> void
+  } // end of [val]
+  var !p_clo = @lam (
+    pf: !v | xn: ftnode (a, 0)
+  ) : void =<clo> let
+    val FTN1 (x) = xn in f (pf | x)
+  end // end of [val]
+  val f0 = __cast (!p_clo) where {
+    extern castfn __cast
+      (f0: &(!v | ftnode (a, 0)) -<clo> void):<> (!v | ftnode (a, 0)) -<cloref> void
+  } // end of [val]
+in
+  $effmask_all (foreach (pf0 | xs, f0))
+end // end of [tree_foreach_cloptr]
+
+end // end of [local]
+
+(* ****** ****** *)
+
+implement{a}
+tree_foreach_cloref
+  {n} (xs, f) = let
+  viewtypedef cloptr_type = (!unit_v | a) -<cloptr> void  
+  val f = __encode (f) where {
+    extern castfn __encode (f: (a) -<cloref> void):<> cloptr_type
+  } // end of [val]
+  prval pfu = unit_v ()
+  val () = tree_foreach_cloptr<a> (pfu | xs, f)
+  prval unit_v () = pfu
+  val _ptr = __decode (f) where {
+    extern castfn __decode (f: cloptr_type):<> ptr
+  } // end of [val]
+in
+  // nothing
+end // end of [tree_foreach_cloref]
+
+(* ****** ****** *)
+
+local
+
+extern
+fun foreach_rev
+  {a:t@ype} {v:view} {d:nat} {n:nat} (
+  pf: !v
+| xt: fingertree (a, d, n)
+, f: (!v | ftnode (a, d)) -<cloref> void
+) : void
+
+implement foreach_rev
+  {a} {v} {d} (pf | xt, f) =
+  case xt of
+  | FTempty () => ()
+  | FTsingle (xn) => f (pf | xn)
+  | FTdeep (pr, m, sf) => let
+      val () = (case+ sf of
+        | FTD1 (xn1) => f (pf | xn1)
+        | FTD2 (xn1, xn2) => (f (pf | xn2); f (pf | xn1))
+        | FTD3 (xn1, xn2, xn3) => (f (pf | xn3); f (pf | xn2); f (pf | xn1))
+        | FTD4 (xn1, xn2, xn3, xn4) =>
+            (f (pf | xn4); f (pf | xn3); f (pf | xn2); f (pf | xn1))
+      ) : void // end of [val]
+      val () = (case+ m of
+        | FTempty () => ()
+        | _ => let
+            var !p_clo = @lam (
+              pf: !v | xn_1: ftnode (a, d+1)
+            ) : void =<clo> let
+            in
+              case+ xn_1 of
+              | FTN2 (xn1, xn2) => (f (pf | xn2); f (pf | xn1))
+              | FTN3 (xn1, xn2, xn3) => (f (pf | xn3); f (pf | xn2); f (pf | xn1))
+            end // end of [val]
+            val f_1 = __cast (!p_clo) where {
+              extern castfn __cast
+                (f_1: &(!v | ftnode (a, d+1)) -<clo> void): (!v | ftnode (a, d+1)) -<cloref> void
+            } // end of [val]
+          in
+            foreach_rev (pf | m, f_1)
+          end // end of [_]
+      ) : void // end of [val]
+      val () = (case+ pr of
+        | FTD1 (xn1) => f (pf | xn1)
+        | FTD2 (xn1, xn2) => (f (pf | xn2); f (pf | xn1))
+        | FTD3 (xn1, xn2, xn3) => (f (pf | xn3); f (pf | xn2); f (pf | xn1))
+        | FTD4 (xn1, xn2, xn3, xn4) =>
+            (f (pf | xn4); f (pf | xn3); f (pf | xn2); f (pf | xn1))
+      ) : void // end of [val]
+    in
+      // nothing
+    end // end of [FTdeep]
+// end of [foreach_rev]
+
+in // in of [local]
+
+implement{a}
+tree_foreach_rev_cloptr
+  {v} {n} (pf0 | xs, f) = let
+  val f = __cast (f) where {
+    extern castfn __cast
+      (f: !(!v | a) -<cloptr> void):<> (!v | a) -<cloref> void
+  } // end of [val]
+  var !p_clo = @lam (
+    pf: !v | xn: ftnode (a, 0)
+  ) : void =<clo> let
+    val FTN1 (x) = xn in f (pf | x)
+  end // end of [val]
+  val f0 = __cast (!p_clo) where {
+    extern castfn __cast
+      (f0: &(!v | ftnode (a, 0)) -<clo> void):<> (!v | ftnode (a, 0)) -<cloref> void
+  } // end of [val]
+in
+  $effmask_all (foreach_rev (pf0 | xs, f0))
+end // end of [tree_foreach_rev_cloptr]
+
+end // end of [local]
+
+(* ****** ****** *)
+
+implement{a}
+tree_foreach_rev_cloref
+  {n} (xs, f) = let
+  viewtypedef cloptr_type = (!unit_v | a) -<cloptr> void  
+  val f = __encode (f) where {
+    extern castfn __encode (f: (a) -<cloref> void):<> cloptr_type
+  } // end of [val]
+  prval pfu = unit_v ()
+  val () = tree_foreach_rev_cloptr<a> (pfu | xs, f)
+  prval unit_v () = pfu
+  val _ptr = __decode (f) where {
+    extern castfn __decode (f: cloptr_type):<> ptr
+  } // end of [val]
+in
+  // nothing
+end // end of [tree_foreach_rev_cloref]
 
 (* ****** ****** *)
 

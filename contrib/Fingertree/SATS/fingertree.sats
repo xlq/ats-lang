@@ -62,4 +62,30 @@ fun tree_append {a:t@ype} {n1,n2:nat}
 
 (* ****** ****** *)
 
+fun{a:t@ype}
+tree_foreach_cloptr
+  {v:view} {n:nat}
+  (pf: !v | xs: tree (a, n), f: !(!v | a) -<cloptr> void):<> void
+// end of [tree_foreach_cloptr]
+
+fun{a:t@ype}
+tree_foreach_cloref {n:nat}
+  (xs: tree (a, n), f: (a) -<cloref> void):<> void
+// end of [tree_foreach_cloref]
+
+(* ****** ****** *)
+
+fun{a:t@ype}
+tree_foreach_rev_cloptr
+  {v:view} {n:nat}
+  (pf: !v | xs: tree (a, n), f: !(!v | a) -<cloptr> void):<> void
+// end of [tree_foreach_rev_cloptr]
+
+fun{a:t@ype}
+tree_foreach_rev_cloref {n:nat}
+  (xs: tree (a, n), f: (a) -<cloref> void):<> void
+// end of [tree_foreach_rev_cloref]
+
+(* ****** ****** *)
+
 (* end of [fingertree.sats] *)
