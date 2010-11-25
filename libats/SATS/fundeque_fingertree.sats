@@ -33,10 +33,15 @@
 
 (*
 **
-** A functional random-access list implementation based on nested datatypes
+** A functional concatenable deque implementation based on fingertrees
+** Please see the JFP paper by Hinze and Paterson on fingertrees for more
+** details on this interesting data structure
 **
+** Contributed by
+**   Robbie Harwood (rharwood AT cs DOT bu DOT edu)
 ** Contributed by Hongwei Xi (hwxi AT cs DOT bu DOT edu)
-** Time: April, 2010 // based on a version done in November, 2008
+**
+** Time: November, 2010
 **
 *)
 
@@ -52,61 +57,75 @@
 
 (* ****** ****** *)
 //
-// HX: indexed by list length
+// HX: indexed by deque size
 //
-abstype list_t0ype_int_type (elt:t@ype+, n:int)
-stadef list = list_t0ype_int_type
+abstype deque_t0ype_int_type (elt:t@ype+, n:int)
+stadef deque = deque_t0ype_int_type
 
 (* ****** ****** *)
 
-fun{} funralist_make_nil {elt:t@ype} ():<> list (elt, 0)
+fun{} fundeque_nil {a:t@ype} ():<> deque (a, 0)
 
-(* ****** ****** *)
-
-fun{elt:t@ype} funralist_length {n:nat} (xs: list (elt, n)): int n
-
-(* ****** ****** *)
-
-fun{a:t@ype}
-funralist_cons {n:nat} (x: a, xs: list (a, n)):<> list (a, n+1)
-// end of [funralist_cons]
-
-fun{a:t@ype}
-funralist_uncons {n:pos} (xs: list (a, n), x: &a? >> a):<> list (a, n-1)
-// end of [funralist_uncons]
-
-(* ****** ****** *)
-
-fun{a:t@ype} funralist_head {n:pos} (xs: list (a, n)):<> a
-fun{a:t@ype} funralist_tail {n:pos} (xs: list (a, n)):<> list (a, n-1)
+fun{} fundeque_is_nil
+  {a:t@ype} {n:nat} (xt: deque (a, n)): bool (n==0)
+// end of [fundeque_is_nil]
 
 (* ****** ****** *)
 
 fun{a:t@ype}
-funralist_lookup {n:nat} (xs: list (a, n), i: natLt n):<> a
-// end of [funralist_lookup]
+fundeque_cons {n:nat}
+  (x: a, xt: deque (a, n)):<> deque (a, n+1)
+// end of [fingertree0_cons]
 
 fun{a:t@ype}
-funralist_update {n:nat} (xs: list (a, n), i: natLt n, x: a):<> list (a, n)
-// end of [funralist_update]
+fundeque_uncons {n:pos}
+  (xt: deque (a, n), r: &a? >> a):<> deque (a, n-1)
+// end of [fundeque_uncons]
 
 (* ****** ****** *)
 
-fun{elt:t@ype}
-funralist_foreach_clo {v:view} {n:nat} {f:eff}
-  (pf: !v | xs: list (elt, n), f: &(!v | elt) -<clo,f> void):<f> void
-// end of [funralist_foreach_clo]
+fun{a:t@ype}
+fundeque_snoc {n:nat}
+  (xt: deque (a, n), x: a):<> deque (a, n+1)
+// end of [fingertree0_snoc]
 
-fun{elt:t@ype}
-funralist_foreach_cloptr {v:view} {n:nat} {f:eff}
-  (pf: !v | xs: list (elt, n), f: !(!v | elt) -<cloptr,f> void):<f> void
-// end of [funralist_foreach_cloptr]
-
-fun{elt:t@ype}
-funralist_foreach_cloref {n:nat} {f:eff}
-  (xs: list (elt, n), f: (elt) -<cloref,f> void):<f> void
-// end of [funralist_foreach_cloref]
+fun{a:t@ype}
+fundeque_unsnoc {n:pos}
+  (xt: deque (a, n), r: &a? >> a):<> deque (a, n-1)
+// end of [fundeque_unsnoc]
 
 (* ****** ****** *)
 
-(* end of [funralist_nested.sats] *)
+fun fundeque_append {a:t@ype} {n1,n2:nat}
+  (xt1: deque (a, n1), xt2: deque (a, n2)):<> deque (a, n1+n2)
+// end of [fundeque_append]
+
+(* ****** ****** *)
+
+fun{a:t@ype}
+fundeque_foreach_cloptr
+  {v:view} {n:nat}
+  (pf: !v | xs: deque (a, n), f: !(!v | a) -<cloptr> void):<> void
+// end of [fundeque_foreach_cloptr]
+
+fun{a:t@ype}
+fundeque_foreach_cloref {n:nat}
+  (xs: deque (a, n), f: (a) -<cloref> void):<> void
+// end of [fundeque_foreach_cloref]
+
+(* ****** ****** *)
+
+fun{a:t@ype}
+fundeque_foreach_rev_cloptr
+  {v:view} {n:nat}
+  (pf: !v | xs: deque (a, n), f: !(!v | a) -<cloptr> void):<> void
+// end of [fundeque_foreach_rev_cloptr]
+
+fun{a:t@ype}
+fundeque_foreach_rev_cloref {n:nat}
+  (xs: deque (a, n), f: (a) -<cloref> void):<> void
+// end of [fundeque_foreach_rev_cloref]
+
+(* ****** ****** *)
+
+(* end of [fundeque_fingertree.sats] *)

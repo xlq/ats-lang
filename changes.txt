@@ -19,6 +19,7 @@ ats-lang-anairiats-0.2.3:
 11. fprint! and fprintln! are now supported.
 12. tupz! is now supported.
 13. $ATSHOME/utils/atsgrammar is added for documenting the grammar of ATS.
+14. Implementing the $ATSHOME/libats/fundeque_fingertree package
 
 ########################################################################
 

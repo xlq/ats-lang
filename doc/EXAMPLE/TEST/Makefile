@@ -169,6 +169,12 @@ libats_funarray_braun: libats_funarray_braun.dats
 
 ######
 
+libats_fundeque_fingertree: libats_fundeque_fingertree.dats
+	$(ATSCC) -D_ATS_GCATS -O2 -o libats_fundeque_fingertree libats_fundeque_fingertree.dats \
+	&& ./libats_fundeque_fingertree 10
+
+######
+
 libats_funheap_braun: libats_funheap_braun.dats
 	$(ATSCC) -D_ATS_GCATS -O2 -o libats_funheap_braun libats_funheap_braun.dats \
 	&& ./libats_funheap_braun 100000
@@ -315,6 +321,7 @@ cleanall: clean
 	rm -f libc_unistd
 	rm -f libc_sys_utsname
 	rm -f libats_funarray_braun
+	rm -f libats_fundeque_fingertree
 	rm -f libats_funheap_braun
 	rm -f libats_funmap_avltree
 	rm -f libats_funralist_nested

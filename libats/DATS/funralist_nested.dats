@@ -70,7 +70,7 @@ macdef P x0 x1 = '( ,(x0), ,(x1) )
 
 (* ****** ****** *)
 
-assume list_t0ype_type (a:t@ype, n:int) = ralist (a, n)
+assume list_t0ype_int_type (a:t@ype, n:int) = ralist (a, n)
 
 (* ****** ****** *)
 

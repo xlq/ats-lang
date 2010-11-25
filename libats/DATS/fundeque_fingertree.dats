@@ -1,12 +1,47 @@
+(***********************************************************************)
+(*                                                                     *)
+(*                         Applied Type System                         *)
+(*                                                                     *)
+(*                              Hongwei Xi                             *)
+(*                                                                     *)
+(***********************************************************************)
+
+(*
+** ATS - Unleashing the Potential of Types!
+**
+** Copyright (C) 2002-2010 Hongwei Xi, Boston University
+**
+** All rights reserved
+**
+** ATS is free software;  you can  redistribute it and/or modify it under
+** the  terms of the  GNU General Public License as published by the Free
+** Software Foundation; either version 2.1, or (at your option) any later
+** version.
+** 
+** ATS is distributed in the hope that it will be useful, but WITHOUT ANY
+** WARRANTY; without  even  the  implied  warranty  of MERCHANTABILITY or
+** FITNESS FOR A PARTICULAR PURPOSE.  See the  GNU General Public License
+** for more details.
+** 
+** You  should  have  received  a  copy of the GNU General Public License
+** along  with  ATS;  see the  file COPYING.  If not, please write to the
+** Free Software Foundation,  51 Franklin Street, Fifth Floor, Boston, MA
+** 02110-1301, USA.
+*)
+
+(* ****** ****** *)
+
 (*
 **
-** A finger tree implementation in ATS 
+** A functional concatenable deque implementation based on fingertrees
+** Please see the JFP paper by Hinze and Paterson on fingertrees for more
+** details on this interesting data structure
 **
 ** Contributed by
 **   Robbie Harwood (rharwood AT cs DOT bu DOT edu)
 ** Contributed by Hongwei Xi (hwxi AT cs DOT bu DOT edu)
 **
-** Time: Fall, 2010
+** Time: November, 2010
 **
 *)
 
@@ -16,11 +51,11 @@
 //
 (* ****** ****** *)
 
-#define ATS_DYNLOADFLAG 0 // no dynamic loading at run-time
+#define ATS_DYNLOADFLAG 0 // no static loading at run-time
 
 (* ****** ****** *)
 
-staload "contrib/Fingertree/SATS/fingertree.sats"
+staload "libats/SATS/fundeque_fingertree.sats"
 
 (* ****** ****** *)
 
@@ -326,17 +361,17 @@ prval () = fingertree_prop1_sznat (xt)
 
 (* ****** ****** *)
 
-assume tree_t0ype_int_type
+assume deque_t0ype_int_type
   (a:t@ype, n:int) = fingertree (a, 0, n)
-// end of [tree_t0ype_int_type]
+// end of [deque_t0ype_int_type]
 
 (* ****** ****** *)
 
 implement{}
-tree_nil () = FTempty ()
+fundeque_nil () = FTempty ()
 
 implement{}
-tree_is_nil (xt) =
+fundeque_is_nil (xt) =
   case+ xt of
   | FTempty () => true
   | FTsingle (xn) => let
@@ -345,7 +380,7 @@ tree_is_nil (xt) =
   | FTdeep (pr, _, _) => let
       prval () = ftdigit_prop_szpos (pr) in false
     end // end of [FTdeep]
-// end of [tree_is_nil]
+// end of [fundeque_is_nil]
 
 (* ****** ****** *)
 
@@ -402,34 +437,34 @@ fun unsnoc {d:nat} {n:pos} .<n>. (
 (* ****** ****** *)
 
 implement{a}
-tree_cons (xn, xt) =
+fundeque_cons (xn, xt) =
   fingertree_cons (FTN1 (xn), xt)
-// end of [tree_cons]
+// end of [fundeque_cons]
 
 implement{a}
-tree_uncons
+fundeque_uncons
   (xt, r) = xt where {
   var xn: ft0node?
   val xt = fingertree_uncons (xt, xn)
   val+ FTN1 (x) = xn
   val () = (r := x)
-} // end of [tree_uncons]
+} // end of [fundeque_uncons]
 
 (* ****** ****** *)
 
 implement{a}
-tree_snoc (xt, xn) =
+fundeque_snoc (xt, xn) =
   fingertree_snoc (xt, FTN1 (xn))
-// end of [tree_snoc]
+// end of [fundeque_snoc]
 
 implement{a}
-tree_unsnoc
+fundeque_unsnoc
   (xt, r) = xt where {
   var xn: ft0node?
   val xt = fingertree_unsnoc (xt, xn)
   val+ FTN1 (x) = xn
   val () = (r := x)
-} // end of [tree_unsnoc]
+} // end of [fundeque_unsnoc]
 
 (* ****** ****** *)
 
@@ -763,7 +798,7 @@ and ftadd4
 
 in // in of [local]
 
-implement tree_append (xt1, xt2) = $effmask_all (ftapp0 (xt1, xt2))
+implement fundeque_append (xt1, xt2) = $effmask_all (ftapp0 (xt1, xt2))
 
 end // end of [local]
 
@@ -832,7 +867,7 @@ implement foreach
 in // in of [local]
 
 implement{a}
-tree_foreach_cloptr
+fundeque_foreach_cloptr
   {v} {n} (pf0 | xs, f) = let
   val f = __cast (f) where {
     extern castfn __cast
@@ -849,28 +884,28 @@ tree_foreach_cloptr
   } // end of [val]
 in
   $effmask_all (foreach (pf0 | xs, f0))
-end // end of [tree_foreach_cloptr]
+end // end of [fundeque_foreach_cloptr]
 
 end // end of [local]
 
 (* ****** ****** *)
 
 implement{a}
-tree_foreach_cloref
+fundeque_foreach_cloref
   {n} (xs, f) = let
   viewtypedef cloptr_type = (!unit_v | a) -<cloptr> void  
   val f = __encode (f) where {
     extern castfn __encode (f: (a) -<cloref> void):<> cloptr_type
   } // end of [val]
   prval pfu = unit_v ()
-  val () = tree_foreach_cloptr<a> (pfu | xs, f)
+  val () = fundeque_foreach_cloptr<a> (pfu | xs, f)
   prval unit_v () = pfu
   val _ptr = __decode (f) where {
     extern castfn __decode (f: cloptr_type):<> ptr
   } // end of [val]
 in
   // nothing
-end // end of [tree_foreach_cloref]
+end // end of [fundeque_foreach_cloref]
 
 (* ****** ****** *)
 
@@ -931,7 +966,7 @@ implement foreach_rev
 in // in of [local]
 
 implement{a}
-tree_foreach_rev_cloptr
+fundeque_foreach_rev_cloptr
   {v} {n} (pf0 | xs, f) = let
   val f = __cast (f) where {
     extern castfn __cast
@@ -948,29 +983,29 @@ tree_foreach_rev_cloptr
   } // end of [val]
 in
   $effmask_all (foreach_rev (pf0 | xs, f0))
-end // end of [tree_foreach_rev_cloptr]
+end // end of [fundeque_foreach_rev_cloptr]
 
 end // end of [local]
 
 (* ****** ****** *)
 
 implement{a}
-tree_foreach_rev_cloref
+fundeque_foreach_rev_cloref
   {n} (xs, f) = let
   viewtypedef cloptr_type = (!unit_v | a) -<cloptr> void  
   val f = __encode (f) where {
     extern castfn __encode (f: (a) -<cloref> void):<> cloptr_type
   } // end of [val]
   prval pfu = unit_v ()
-  val () = tree_foreach_rev_cloptr<a> (pfu | xs, f)
+  val () = fundeque_foreach_rev_cloptr<a> (pfu | xs, f)
   prval unit_v () = pfu
   val _ptr = __decode (f) where {
     extern castfn __decode (f: cloptr_type):<> ptr
   } // end of [val]
 in
   // nothing
-end // end of [tree_foreach_rev_cloref]
+end // end of [fundeque_foreach_rev_cloref]
 
 (* ****** ****** *)
 
-(* end of [fingertree.dats] *)
+(* end of [fundeque_fingertree.dats] *)

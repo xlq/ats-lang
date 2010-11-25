@@ -237,6 +237,10 @@ libats/DATS/freelst.dats
 libats/SATS/funarray_braun.sats
 libats/DATS/funarray_braun.dats
 
+/* functional deque implementation based on finger trees */
+libats/SATS/fundeque_fingertree.sats
+libats/DATS/fundeque_fingertree.dats
+
 /* functional heap implementation based on Braun trees */
 libats/SATS/funheap_braun.sats
 libats/DATS/funheap_braun.dats

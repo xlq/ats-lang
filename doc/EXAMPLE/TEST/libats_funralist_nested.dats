@@ -40,7 +40,7 @@ main (argc, argv) = () where {
   val () = assert_errmsg (n > 0, #LOCATION)
   val xs = genlist (n)
 //
-  val () = assert_errmsg (n = $RA.funralist_length xs, #LOCATION)
+  val () = assertloc (n = $RA.funralist_length xs)
 //
   var i: int = 0
   val () = $RA.funralist_foreach_clo<int> {int@i} (view@ i | xs, !p_f) where {
@@ -113,4 +113,4 @@ end // end [main]
 
 (* ****** ****** *)
 
-(* end [test_ralist.dats] *)
+(* end [libats_funralist_nested.dats] *)
