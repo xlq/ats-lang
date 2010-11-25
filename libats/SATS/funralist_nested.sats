@@ -96,8 +96,13 @@ funralist_foreach_clo {v:view} {n:nat} {f:eff}
 // end of [funralist_foreach_clo]
 
 fun{elt:t@ype}
-funralist_foreach_cloref {v:view} {n:nat} {f:eff}
-  (pf: !v | xs: list (elt, n), f: !(!v | elt) -<cloref,f> void):<f> void
+funralist_foreach_cloptr {v:view} {n:nat} {f:eff}
+  (pf: !v | xs: list (elt, n), f: !(!v | elt) -<cloptr,f> void):<f> void
+// end of [funralist_foreach_cloptr]
+
+fun{elt:t@ype}
+funralist_foreach_cloref {n:nat} {f:eff}
+  (xs: list (elt, n), f: (elt) -<cloref,f> void):<f> void
 // end of [funralist_foreach_cloref]
 
 (* ****** ****** *)

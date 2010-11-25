@@ -79,7 +79,8 @@ implement{} funralist_make_nil {elt} () = RAnil ()
 (* ****** ****** *)
 
 implement{elt}
-funralist_length (xs) = length<elt> (xs) where {
+funralist_length
+  (xs) = length<elt> (xs) where {
   fun{elt:t@ype}
   length {n:nat} .<n>.
     (xs: ralist (elt, n)):<> int n = let
@@ -95,7 +96,8 @@ funralist_length (xs) = length<elt> (xs) where {
 (* ****** ****** *)
 
 implement{elt}
-funralist_cons (x0, xs) = cons<elt> (x0, xs) where {
+funralist_cons
+  (x0, xs) = cons<elt> (x0, xs) where {
   fun{elt:t@ype} cons {n:nat} .<n>.
     (x0: elt, xs: ralist (elt, n)):<> ralist (elt, n+1) = let
     typedef elt2 = P elt elt
@@ -249,21 +251,28 @@ end // end of [funralist_update]
 (* ****** ****** *)
 
 implement{elt}
-funralist_foreach_clo {v} {n} {f} (pf0 | xs, f) = let
+funralist_foreach_clo
+  {v} {n} {f} (pf0 | xs, f) = let
   typedef clo_type = (!v | elt) -<clo,f> void
-  typedef cloref_type = (!v | elt) -<cloref,f> void
-  val f = cloref_make_cloptr (view@ f | &f) where {
-    extern castfn cloref_make_cloptr {l:addr}
-      (pf: !clo_type @ l | p: ptr l):<> cloref_type
+  viewtypedef cloptr_type = (!v | elt) -<cloptr,f> void
+  val f = __encode (view@ f | &f) where {
+    extern castfn __encode {l:addr} (pf: !clo_type @ l | p: ptr l):<> cloptr_type
   } // end of [where]
-  val () = funralist_foreach_cloref<elt> {v} (pf0 | xs, f)
+  val () = funralist_foreach_cloptr<elt> {v} (pf0 | xs, f)
+  val _ptr = __decode (f) where {
+    extern castfn __decode (f: cloptr_type):<> ptr
+  } // end of [val]
 in
   // empty
 end // end of [funralist_foreach_clo]
 
+(* ****** ****** *)
+
+local
+
 fun{a:t@ype}
 foreach {v:view} {n:pos} {f:eff} .<n>. (
-  pf0: !v | xs: ralist (a, n), f: !(!v | a) -<cloref,f> void
+  pf0: !v | xs: ralist (a, n), f: (!v | a) -<cloref,f> void
 ) :<f> void = case+ xs of
   | RAodd (x, xxs) => let
       val () = f (pf0 | x) in case+ xxs of
@@ -272,8 +281,8 @@ foreach {v:view} {n:pos} {f:eff} .<n>. (
             @lam (pf0: !v | xx: P a a): void =<clo,f> (f (pf0 | xx.0); f (pf0 | xx.1))
           typedef clo_type = (!v | P a a) -<clo,f> void
           typedef cloref_type = (!v | P a a) -<cloref,f> void
-          val f2 = cloref_make_clo (pf_f2 | p_f2) where { // cutting a corner here!
-            extern castfn cloref_make_clo (pf: !clo_type @ p_f2 | p: ptr p_f2):<> cloref_type
+          val f2 = __encode (pf_f2 | p_f2) where { // cutting a corner here!
+            extern castfn __encode (pf: !clo_type @ p_f2 | p: ptr p_f2):<> cloref_type
           } // end of [val]
         in
           foreach<P a a> (pf0 | xxs, f2)
@@ -284,18 +293,43 @@ foreach {v:view} {n:pos} {f:eff} .<n>. (
         @lam (pf0: !v | xx: P a a): void =<clo,f> (f (pf0 | xx.0); f (pf0 | xx.1))
       typedef clo_type = (!v | P a a) -<clo,f> void
       typedef cloref_type = (!v | P a a) -<cloref,f> void
-      val f2 = cloref_make_clo (pf_f2 | p_f2) where { // cutting a corner here!
-        extern castfn cloref_make_clo (pf: !clo_type @ p_f2 | p: ptr p_f2):<> cloref_type
+      val f2 = __encode (pf_f2 | p_f2) where { // cutting a corner here!
+        extern castfn __encode (pf: !clo_type @ p_f2 | p: ptr p_f2):<> cloref_type
       } // end of [val]
     in
       foreach<P a a> (pf0 | xxs, f2)
     end // end of [RAevn]
 // end of [foreach]
 
+in // in of [local]
+
 implement{elt}
-funralist_foreach_cloref (pf0 | xs, f) = begin
+funralist_foreach_cloptr
+  {v} {n} {f} (pf0 | xs, f) = let
+  typedef cloref_type = (!v | elt) -<cloref,f> void
+  viewtypedef cloptr_type = (!v | elt) -<cloptr,f> void
+  val f = __cast (f) where {
+    extern castfn __cast (f: !cloptr_type):<> cloref_type
+  } // end of [val]
+in
   case+ xs of RAnil () => () | _ =>> foreach<elt> (pf0 | xs, f)
+end // end of [funralist_foreach_cloptr]
+
+implement{elt}
+funralist_foreach_cloref
+  {n} {f} (xs, f) = let
+  typedef cloref_type = (!unit_v | elt) -<cloref,f> void  
+  val f = __cast (f) where {
+    extern castfn __cast (f: (elt) -<cloref,f> void):<> cloref_type
+  } // end of [val]
+  prval pfu = unit_v ()
+  val () = case+ xs of RAnil () => () | _ =>> foreach<elt> (pfu | xs, f)
+  prval unit_v () = pfu
+in
+  // nothing
 end // end of [funralist_foreach_cloref]
+
+end // end of [local]
 
 (* ****** ****** *)
 

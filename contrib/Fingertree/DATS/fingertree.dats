@@ -440,68 +440,6 @@ infix (+) ++
 overload ++ with fingertree_cons
 overload ++ with fingertree_snoc
 
-(*
-extern
-fun ftadd0
-  {a:t@ype} {d:int}
-  {nm1,nm2:nat} {nsf1,npr2:nat} (
-  m1: fingertree (a, d+1, nm1)
-, sf1: ftdigit (a, d, nsf1)
-, pr2: ftdigit (a, d, npr2)
-, m2: fingertree (a, d+1, nm2)
-) : fingertree (a, d+1, nm1+nsf1+npr2+nm2)
-
-extern
-fun ftadd1
-  {a:t@ype} {d:int}
-  {nm1,nm2:nat} {nsf1,npr2:nat} {na:nat} (
-  m1: fingertree (a, d+1, nm1)
-, sf1: ftdigit (a, d, nsf1)
-, xna: ftnode (a, d, na)
-, pr2: ftdigit (a, d, npr2)
-, m2: fingertree (a, d+1, nm2)
-) : fingertree (a, d+1, nm1+nsf1+na+npr2+nm2)
-
-extern
-fun ftadd2
-  {a:t@ype} {d:int}
-  {nm1,nm2:nat} {nsf1,npr2:nat} {na,nb:nat} (
-  m1: fingertree (a, d+1, nm1)
-, sf1: ftdigit (a, d, nsf1)
-, xna: ftnode (a, d, na)
-, xnb: ftnode (a, d, nb)
-, pr2: ftdigit (a, d, npr2)
-, m2: fingertree (a, d+1, nm2)
-) : fingertree (a, d+1, nm1+nsf1+na+nb+npr2+nm2)
-
-extern
-fun ftadd3
-  {a:t@ype} {d:int}
-  {nm1,nm2:nat} {nsf1,npr2:nat} {na,nb,nc:nat} (
-  m1: fingertree (a, d+1, nm1)
-, sf1: ftdigit (a, d, nsf1)
-, xna: ftnode (a, d, na)
-, xnb: ftnode (a, d, nb)
-, xnc: ftnode (a, d, nc)
-, pr2: ftdigit (a, d, npr2)
-, m2: fingertree (a, d+1, nm2)
-) : fingertree (a, d+1, nm1+nsf1+na+nb+nc+npr2+nm2)
-
-extern
-fun ftadd4
-  {a:t@ype} {d:int}
-  {nm1,nm2:nat} {nsf1,npr2:nat} {na,nb,nc,nd:nat} (
-  m1: fingertree (a, d+1, nm1)
-, sf1: ftdigit (a, d, nsf1)
-, xna: ftnode (a, d, na)
-, xnb: ftnode (a, d, nb)
-, xnc: ftnode (a, d, nc)
-, xnd: ftnode (a, d, nd)
-, pr2: ftdigit (a, d, npr2)
-, m2: fingertree (a, d+1, nm2)
-) : fingertree (a, d+1, nm1+nsf1+na+nb+nc+nd+npr2+nm2)
-*)
-
 fun ftapp0
   {a:t@ype} {d:int} {n1,n2:nat} (
   xt1: fingertree (a, d, n1)
@@ -825,7 +763,7 @@ and ftadd4
 
 in // in of [local]
 
-implement tree_append (xt1, xt2) = ftapp0 (xt1, xt2)
+implement tree_append (xt1, xt2) = $effmask_all (ftapp0 (xt1, xt2))
 
 end // end of [local]
 

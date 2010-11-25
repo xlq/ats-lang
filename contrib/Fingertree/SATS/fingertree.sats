@@ -57,7 +57,7 @@ tree_unsnoc {n:pos}
 (* ****** ****** *)
 
 fun tree_append {a:t@ype} {n1,n2:nat}
-  (xt1: tree (a, n1), xt2: tree (a, n2)): tree (a, n1+n2)
+  (xt1: tree (a, n1), xt2: tree (a, n2)):<> tree (a, n1+n2)
 // end of [tree_append]
 
 (* ****** ****** *)
