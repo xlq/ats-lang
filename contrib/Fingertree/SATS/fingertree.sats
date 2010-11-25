@@ -46,13 +46,19 @@ tree_uncons {n:pos}
 
 fun{a:t@ype}
 tree_snoc {n:nat}
-  (x: a, xt: tree (a, n)):<> tree (a, n+1)
+  (xt: tree (a, n), x: a):<> tree (a, n+1)
 // end of [fingertree0_snoc]
 
 fun{a:t@ype}
 tree_unsnoc {n:pos}
   (xt: tree (a, n), r: &a? >> a):<> tree (a, n-1)
 // end of [tree_unsnoc]
+
+(* ****** ****** *)
+
+fun tree_append {a:t@ype} {n1,n2:nat}
+  (xt1: tree (a, n1), xt2: tree (a, n2)): tree (a, n1+n2)
+// end of [tree_append]
 
 (* ****** ****** *)
 
