@@ -152,7 +152,7 @@ extern i0de_t i0de_make_backslash (t0kn_t) ;
 extern i0de_t i0de_make_bang (t0kn_t) ;
 extern i0de_t i0de_make_eq (t0kn_t) ;
 extern i0de_t i0de_make_gt (t0kn_t) ;
-extern i0de_t i0de_make_lrbrackets (t0kn_t, t0kn_t) ;
+extern i0de_t i0de_make_gtlt (t0kn_t) ;
 extern i0de_t i0de_make_lt (t0kn_t) ;
 extern i0de_t i0de_make_minusgt (t0kn_t) ;
 extern i0de_t i0de_make_minuslt (t0kn_t) ;
@@ -2209,6 +2209,7 @@ di0de /* dynamic identifier */
   | BACKSLASH                           { $$ = i0de_make_backslash($1) ; }
   | EQ                                  { $$ = i0de_make_eq($1) ; }
   | GT                                  { $$ = i0de_make_gt($1) ; }
+  | GTLT                                { $$ = i0de_make_gtlt($1) ; }  
   | LT                                  { $$ = i0de_make_lt($1) ; }
   | TILDA                               { $$ = i0de_make_tilda($1) ; }
 ; /* end of [di0de] */

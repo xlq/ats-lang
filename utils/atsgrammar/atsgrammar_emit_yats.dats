@@ -248,7 +248,7 @@ extern i0de_t i0de_make_backslash (t0kn_t) ;\n\
 extern i0de_t i0de_make_bang (t0kn_t) ;\n\
 extern i0de_t i0de_make_eq (t0kn_t) ;\n\
 extern i0de_t i0de_make_gt (t0kn_t) ;\n\
-extern i0de_t i0de_make_lrbrackets (t0kn_t, t0kn_t) ;\n\
+extern i0de_t i0de_make_gtlt (t0kn_t) ;\n\
 extern i0de_t i0de_make_lt (t0kn_t) ;\n\
 extern i0de_t i0de_make_minusgt (t0kn_t) ;\n\
 extern i0de_t i0de_make_minuslt (t0kn_t) ;\n\

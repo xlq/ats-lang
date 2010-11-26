@@ -302,6 +302,8 @@ implement i0de_make_eq (tok) =
   '{ i0de_loc= tok.t0kn_loc, i0de_sym= $Sym.symbol_EQ }
 implement i0de_make_gt (tok) =
   '{ i0de_loc= tok.t0kn_loc, i0de_sym= $Sym.symbol_GT }
+implement i0de_make_gtlt (tok) =
+  '{ i0de_loc= tok.t0kn_loc, i0de_sym= $Sym.symbol_GTLT }
 implement i0de_make_lt (tok) =
   '{ i0de_loc= tok.t0kn_loc, i0de_sym= $Sym.symbol_LT }
 implement i0de_make_minusgt (tok) =

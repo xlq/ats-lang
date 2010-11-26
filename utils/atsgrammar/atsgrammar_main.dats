@@ -2917,6 +2917,7 @@ di0de /* dynamic identifier */
   | BACKSLASH                           { $$ = i0de_make_backslash($1) ; }
   | EQ                                  { $$ = i0de_make_eq($1) ; }
   | GT                                  { $$ = i0de_make_gt($1) ; }
+  | GTLT                                { $$ = i0de_make_gtlt($1) ; }
   | LT                                  { $$ = i0de_make_lt($1) ; }
   | TILDA                               { $$ = i0de_make_tilda($1) ; }
 ; /* end of [di0de] */
@@ -2939,6 +2940,8 @@ val gr = grmrule_append (EQ)
 val () = grmrule_set_action (gr, "{ $$ = i0de_make_eq($1) ; }")
 val gr = grmrule_append (GT)
 val () = grmrule_set_action (gr, "{ $$ = i0de_make_gt($1) ; }")
+val gr = grmrule_append (GTLT)
+val () = grmrule_set_action (gr, "{ $$ = i0de_make_gtlt($1) ; }")
 val gr = grmrule_append (LT)
 val () = grmrule_set_action (gr, "{ $$ = i0de_make_lt($1) ; }")
 val gr = grmrule_append (TILDA)
@@ -3800,6 +3803,8 @@ val gr = grmrule_append ($lst_t {symbol} (tupz! atms0exp))
 val () = grmrule_set_action (gr, "{ $$ = $1 ; }")
 val gr = grmrule_append ($lst_t {symbol} (tupz! t0mps0exp atms0exp))
 val () = grmrule_set_action (gr, "{ $$ = s0exp_app($1, $2) ; }")
+//
+val () = theGrmrulelst_merge_all (t0mps0exp, SYMREGpluslit(atms0exp))
 //
 val () = symbol_close (pf | t0mps0exp)
 //

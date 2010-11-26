@@ -9,7 +9,7 @@
 /* ****** ****** */
 
 /*
-** Time of Generation: Sun Nov 21 10:57:52 2010
+** Time of Generation: Thu Nov 25 21:41:53 2010
 */
 
 /* ****** ****** */
@@ -226,7 +226,7 @@ extern i0de_t i0de_make_backslash (t0kn_t) ;
 extern i0de_t i0de_make_bang (t0kn_t) ;
 extern i0de_t i0de_make_eq (t0kn_t) ;
 extern i0de_t i0de_make_gt (t0kn_t) ;
-extern i0de_t i0de_make_lrbrackets (t0kn_t, t0kn_t) ;
+extern i0de_t i0de_make_gtlt (t0kn_t) ;
 extern i0de_t i0de_make_lt (t0kn_t) ;
 extern i0de_t i0de_make_minusgt (t0kn_t) ;
 extern i0de_t i0de_make_minuslt (t0kn_t) ;
@@ -1359,10 +1359,10 @@ d0eclst_t d0eclst ;
 %type <s0arrind> s0arrind
 %type <s0qua> s0qua
 %type <s0qualst> s0quaseq
-%type <s0qualst> bars0quaseq
+%type <s0qualst> barsemis0quaseq
 %type <s0rtext> s0rtext
 %type <s0explst> s0expseq
-%type <s0explst> bars0expseq
+%type <s0explst> barsemis0expseq
 %type <s0explst> commas0expseq
 %type <s0explst> s0expseq1
 %type <labs0explst> labs0expseq
@@ -1815,6 +1815,7 @@ di0de
   | BACKSLASH  { $$ = i0de_make_backslash($1) ; }
   | EQ  { $$ = i0de_make_eq($1) ; }
   | GT  { $$ = i0de_make_gt($1) ; }
+  | GTLT  { $$ = i0de_make_gtlt($1) ; }
   | LT  { $$ = i0de_make_lt($1) ; }
   | TILDA  { $$ = i0de_make_tilda($1) ; }
 ; /* di0de */
@@ -1955,18 +1956,18 @@ s0qua
 
 s0quaseq
   : /*(empty)*/  { $$ = s0qualst_nil() ; }
-  | s0qua bars0quaseq  { $$ = s0qualst_cons($1, $2) ; }
+  | s0qua barsemis0quaseq  { $$ = s0qualst_cons($1, $2) ; }
 ; /* s0quaseq */
 
-bars0quaseq
+barsemis0quaseq
   : /*(empty)*/  { $$ = s0qualst_nil() ; }
-  | BAR s0qua bars0quaseq  { $$ = s0qualst_cons($2, $3) ; }
-  | SEMICOLON s0qua bars0quaseq  { $$ = s0qualst_cons($2, $3) ; }
-; /* bars0quaseq */
+  | BAR s0qua barsemis0quaseq  { $$ = s0qualst_cons($2, $3) ; }
+  | SEMICOLON s0qua barsemis0quaseq  { $$ = s0qualst_cons($2, $3) ; }
+; /* barsemis0quaseq */
 
 s0rtext
   : s0rt  { $$ = s0rtext_srt($1) ; }
-  | LBRACE si0de COLON s0rtext BAR s0exp bars0expseq RBRACE  { $$ = s0rtext_sub($1, $2, $4, $6, $7, $8) ; }
+  | LBRACE si0de COLON s0rtext BAR s0exp barsemis0expseq RBRACE  { $$ = s0rtext_sub($1, $2, $4, $6, $7, $8) ; }
 ; /* s0rtext */
 
 s0expseq
@@ -1974,11 +1975,11 @@ s0expseq
   | s0expseq1  { $$ = $1 ; }
 ; /* s0expseq */
 
-bars0expseq
+barsemis0expseq
   : /*(empty)*/  { $$ = s0explst_nil() ; }
-  | BAR s0exp bars0expseq  { $$ = s0explst_cons($2, $3) ; }
-  | SEMICOLON s0exp bars0expseq  { $$ = s0explst_cons($2, $3) ; }
-; /* bars0expseq */
+  | BAR s0exp barsemis0expseq  { $$ = s0explst_cons($2, $3) ; }
+  | SEMICOLON s0exp barsemis0expseq  { $$ = s0explst_cons($2, $3) ; }
+; /* barsemis0expseq */
 
 commas0expseq
   : /*(empty)*/  { $$ = s0explst_nil() ; }
