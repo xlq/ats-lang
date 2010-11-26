@@ -641,7 +641,7 @@ in
     val loc = location_get ()
   in
     yylval_ide_set ($Syn.i0de_make (loc, str)); IDENTIFIER_dlr
-  end
+  end (* end of [if] *)
 end // end of [tokenize_identifier_dlr]
 
 fn tokenize_identifier_srp (): token_t = let // #-identifier
@@ -653,7 +653,7 @@ in
     val loc = location_get ()
   in
     yylval_ide_set ($Syn.i0de_make (loc, str)); IDENTIFIER_srp
-  end
+  end (* end of [if] *)
 end // end of [tokenize_identifier_srp]
 
 (* ****** ****** *)

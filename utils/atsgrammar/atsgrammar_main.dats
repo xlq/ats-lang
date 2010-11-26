@@ -2021,6 +2021,8 @@ val gr = grmrule_append (EQ)
 val () = grmrule_set_action (gr, "{ $$ = i0de_make_eq($1) ; }")
 val gr = grmrule_append (GT)
 val () = grmrule_set_action (gr, "{ $$ = i0de_make_gt($1) ; }")
+val gr = grmrule_append (GTLT)
+val () = grmrule_set_action (gr, "{ $$ = i0de_make_gtlt($1) ; }")
 val gr = grmrule_append (LT)
 val () = grmrule_set_action (gr, "{ $$ = i0de_make_lt($1) ; }")
 val gr = grmrule_append (MINUSGT)
@@ -2913,8 +2915,8 @@ di0de /* dynamic identifier */
   : IDENTIFIER_alp                      { $$ = $1 ; }
   | IDENTIFIER_sym                      { $$ = $1 ; }
 /* keysymb identifier */
-  | BANG                                { $$ = i0de_make_bang($1) ; }
   | BACKSLASH                           { $$ = i0de_make_backslash($1) ; }
+  | BANG                                { $$ = i0de_make_bang($1) ; }
   | EQ                                  { $$ = i0de_make_eq($1) ; }
   | GT                                  { $$ = i0de_make_gt($1) ; }
   | GTLT                                { $$ = i0de_make_gtlt($1) ; }
@@ -2932,10 +2934,10 @@ val () = grmrule_set_action (gr, "{ $$ = $1 ; }")
 val gr = grmrule_append (IDENTIFIER_sym)
 val () = grmrule_set_action (gr, "{ $$ = $1 ; }")
 //
-val gr = grmrule_append (BANG)
-val () = grmrule_set_action (gr, "{ $$ = i0de_make_bang($1) ; }")
 val gr = grmrule_append (BACKSLASH)
 val () = grmrule_set_action (gr, "{ $$ = i0de_make_backslash($1) ; }")
+val gr = grmrule_append (BANG)
+val () = grmrule_set_action (gr, "{ $$ = i0de_make_bang($1) ; }")
 val gr = grmrule_append (EQ)
 val () = grmrule_set_action (gr, "{ $$ = i0de_make_eq($1) ; }")
 val gr = grmrule_append (GT)

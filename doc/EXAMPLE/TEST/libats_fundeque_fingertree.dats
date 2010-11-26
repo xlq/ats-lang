@@ -16,32 +16,50 @@ stadef deque = $DQ.deque
 
 (* ****** ****** *)
 
+symintr <|
+infixr (+) <|
+overload <| with $DQ.fundeque_cons
+
+symintr |>
+infixr (+) |>
+overload |> with $DQ.fundeque_snoc
+
+symintr ><
+infix (+) ><
+overload >< with $DQ.fundeque_append
+
+(* ****** ****** *)
+
 implement
 main (argc, argv) = {
 //
   macdef N = 10
   val N = (if argc >= 2 then int_of (argv.[1]) else N): int
 //
-  typedef ideque = [n:nat] $DQ.deque (int, n)
+  typedef ideq = [n:nat] $DQ.deque (int, n)
 //
   val t = $DQ.fundeque_nil ()
   val t1 = loop (0, t) where {
-    fun loop (n: int, res: ideque):<cloref1> ideque =
-      if n < N then loop (n+1, $DQ.fundeque_cons (n, res)) else res
+    fun loop (
+      n: int, res: ideq
+    ) :<cloref1> ideq =
+      if n < N then loop (n+1, n <| res) else res
     // end of [loop]
   } // end of [val]
   val t = $DQ.fundeque_nil ()
   val t2 = loop (0, t) where {
-    fun loop (n: int, res: ideque):<cloref1> ideque =
-      if n < N then loop (n+1, $DQ.fundeque_snoc (res, n)) else res
+    fun loop (
+      n: int, res: ideq
+    ) :<cloref1> ideq =
+      if n < N then loop (n+1, res |> n) else res
     // end of [loop]
   } // end of [val]
-  val t12 = $DQ.fundeque_append (t1, t2)
+  val t12 = t1 >< t2
 //
   val () = assertloc ($DQ.fundeque_size (t12) = N+N)
 //
   val () = loop (t12) where {
-    fun loop (t: ideque): void =
+    fun loop (t: ideq): void =
       if $DQ.fundeque_is_nil (t) then ()
       else let
         var x: int
@@ -54,7 +72,7 @@ main (argc, argv) = {
   val () = print_newline ()
 //
   val () = loop (t12) where {
-    fun loop (t: ideque): void =
+    fun loop (t: ideq): void =
       if $DQ.fundeque_is_nil (t) then ()
       else let
         var x: int
