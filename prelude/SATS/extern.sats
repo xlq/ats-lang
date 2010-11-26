@@ -39,13 +39,11 @@
 #include "prelude/params.hats"
 
 (* ****** ****** *)
-
 //
 // HX: this file is mostly used for building API's for external packages.
 // The "tricks" presented here should be used sparringly in cases that do
 // require special attention.
 //
-
 (* ****** ****** *)
 
 viewdef ptrout
@@ -72,8 +70,8 @@ prfun minus_addback // [minus] is defined in basics_sta.sats
 
 //
 // HX-2010-04-18:
-// the types [stamp] and [stamped] should only be used in a situation where
-// the value takeout out cannot be uniquely identified by its type
+// the types [stamp] and [stamped] should only be used in a situation
+// where the value taken out cannot be uniquely identified by its type
 //
 absviewtype
 stamped (a:viewtype, l:addr) = a
@@ -95,6 +93,17 @@ castfn stamp_get1
   : (minus (stamped (a, l), stamp (a, l)) | stamp (a, l))
 // end of [stamp_get1]
 
+(* ****** ****** *)
+//
+// HX-2010-11-26: mrsw: multiple-read-single-write
+//
+absviewt@ype
+mrsw_viewt0ype_int_viewt0ype (a:viewt@ype+, n:int) = a
+stadef mrsw_vt = mrsw_viewt0ype_int_viewt0ype
+//
+praxi mrsw_encode {a:viewt@ype} (x: !a >> mrsw_vt (a, 0)):<prf> void
+praxi mrsw_decode {a:viewt@ype} (x: !mrsw_vt (a, 0) >> a):<prf> void
+//
 (* ****** ****** *)
 
 (* end of [extern.sats] *)

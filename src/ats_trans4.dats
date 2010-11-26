@@ -147,7 +147,8 @@ end // end of [s2Var_tr]
 
 (* ****** ****** *)
 
-implement s2exp_tr (loc0, deep, s2e0) = let
+implement
+s2exp_tr (loc0, deep, s2e0) = let
   val s2e0 = s2exp_whnf s2e0; val s2t0 = s2e0.s2exp_srt
 (*
   val () = begin
@@ -478,7 +479,8 @@ in
     end // end of [_]
 end // end of [p3at_tr]
 
-implement p3atlst_tr (p3ts) = $Lst.list_map_fun (p3ts, p3at_tr)
+implement
+p3atlst_tr (p3ts) = $Lst.list_map_fun (p3ts, p3at_tr)
 
 (* ****** ****** *)
 
@@ -765,14 +767,24 @@ end // end of [c3laulst_tr]
 (* ****** ****** *)
 
 absview dyncstsetlst_push_token
-extern fun the_dyncstset_get (): dyncstset_t
-  = "ats_ccomp_env_the_dyncstset_get"
-extern fun the_dyncstsetlst_push (): (dyncstsetlst_push_token | void)
+
+extern
+fun the_dyncstset_get (): dyncstset_t = "ats_ccomp_env_the_dyncstset_get"
+// end of [extern]
+
+extern
+fun the_dyncstsetlst_push (): (dyncstsetlst_push_token | void)
   = "ats_ccomp_env_the_dyncstsetlst_push"
-extern fun the_dyncstsetlst_pop (pf: dyncstsetlst_push_token | (*none*)): dyncstset_t
+// end of [extern]
+
+extern
+fun the_dyncstsetlst_pop (pf: dyncstsetlst_push_token | (*none*)): dyncstset_t
   = "ats_ccomp_env_the_dyncstsetlst_pop"
+// end of [extern]
+
 extern fun // this function is implemented in [ats_ccomp_env.dats]
-  the_dyncstset_add_if (d2c: d2cst_t): void = "ats_ccomp_env_the_dyncstset_add_if"
+the_dyncstset_add_if (d2c: d2cst_t): void = "ats_ccomp_env_the_dyncstset_add_if"
+// end of [extern]
 
 (* ****** ****** *)
 
@@ -880,7 +892,7 @@ in
         print "d3exp_tr: d2c = "; print d2c; print_newline ();
         print "d3exp_tr: npf = "; print npf; print_newline ();
         print "d3exp_tr: d3es_arg = "; print d3es_arg; print_newline ()
-      end
+      end // end of [val]
 *)
       val hit0 = s2exp_tr (loc0, 0(*deep*), s2e0)
       val hies_arg = d3explst_arg_tr (npf, d3es_arg)
@@ -922,7 +934,9 @@ in
     in
       hiexp_extval (loc0, hit0, code)
     end // end of [D3Eextval]
-  | D3Efix (knd, d2v_fun, d3e_def) => let
+  | D3Efix (
+      knd, d2v_fun, d3e_def
+    ) => let
       val hit0 = s2exp_tr (loc0, 0(*deep*), s2e0)
       val hie_def = d3exp_tr d3e_def
       val isval = hiexp_is_value (hie_def)
@@ -957,7 +971,9 @@ in
     in
       hiexp_freeat (loc0, hit0, d3exp_tr d3e)
     end // end of [D3Efreeat]
-  | D3Eif (d3e_cond, d3e_then, d3e_else) => let
+  | D3Eif (
+      d3e_cond, d3e_then, d3e_else
+    ) => let
       val hit0 = s2exp_tr (loc0, 0(*deep*), s2e0)
       val hie_cond = d3exp_tr d3e_cond
       val hie_then = d3exp_tr d3e_then
@@ -975,21 +991,27 @@ in
     in
       hiexp_intsp (loc0, hit0, str, int)
     end // end of [D3Eintsp]
-  | D3Elam_dyn (lin, npf, p3ts_arg, d3e_body) => let
+  | D3Elam_dyn (
+      lin, npf, p3ts_arg, d3e_body
+    ) => let
       val hit_fun = s2exp_tr (loc0, 1(*deep*), s2e0)
       val hips_arg = p3atlst_arg_tr (npf, p3ts_arg)
       val hie_body = d3exp_tr d3e_body
     in
       hiexp_lam (loc0, hit_fun, hips_arg, hie_body)
     end // end of [D3Elam_dyn]
-  | D3Elaminit_dyn (lin, npf, p3ts_arg, d3e_body) => let
+  | D3Elaminit_dyn (
+      lin, npf, p3ts_arg, d3e_body
+    ) => let
       val hit_fun = s2exp_tr (loc0, 1(*deep*), s2e0)
       val hips_arg = p3atlst_arg_tr (npf, p3ts_arg)
       val hie_body = d3exp_tr d3e_body
     in
       hiexp_laminit (loc0, hit_fun, hips_arg, hie_body)
     end // end of [D3Elaminit_dyn]
-  | D3Elam_sta (_(*s2vs*), _(*s2ps*), d3e_body) => let
+  | D3Elam_sta (
+      _(*s2vs*), _(*s2ps*), d3e_body
+    ) => let
       val hie_body = d3exp_tr d3e_body
       val isval = hiexp_is_value (hie_body)
       val () = // check for valueness
@@ -999,6 +1021,7 @@ in
           prerr_newline ();
           $Err.abort {void} ()
         end (* end of [if] *)
+      // end of [val]
     in
       hie_body
     end // end of [D3Elam_sta]
@@ -1385,23 +1408,36 @@ fun f3undeclst_prf_tr
   | list_cons (fundec, fundecs) => begin
       d3exp_prf_tr (fundec.f3undec_def); f3undeclst_prf_tr fundecs
     end // end of [list_cons]
-  | list_nil () => ()
+  | list_nil () => () // end of [list_nil]
 // end of [f3undeclst_prf_tr]
 
 (* ****** ****** *)
 
-fn v3aldec_tr (d3c: v3aldec): hivaldec = let
+fn v3aldec_tr (
+  d3c: v3aldec
+) : hivaldec = let
   val loc = d3c.v3aldec_loc
   val hip = p3at_tr d3c.v3aldec_pat
-  val hie = d3exp_tr d3c.v3aldec_def
+  val d3e_def = d3c.v3aldec_def
+  val isprf = d3exp_is_proof (d3e_def)
+  val () = if isprf then let
+    val () = prerr_loc_error4 (loc)
+    val () = prerr ": [val] should be replaced with [prval] as this is a proof binding."
+    val () = prerr_newline ()
+  in
+    $Err.abort {void} ()
+  end // end of [val]
+  val hie = d3exp_tr d3e_def
 in
   hivaldec_make (loc, hip, hie)
 end // end of [v3aldec_tr]
 
-fn v3aldeclst_tr (d3cs: v3aldeclst): hivaldeclst =
-  $Lst.list_map_fun (d3cs, v3aldec_tr)
+fn v3aldeclst_tr
+  (d3cs: v3aldeclst): hivaldeclst = $Lst.list_map_fun (d3cs, v3aldec_tr)
+// end of [v3aldeclst_tr]
 
-fn v3ardec_tr (d3c: v3ardec): hivardec = let
+fn v3ardec_tr
+  (d3c: v3ardec): hivardec = let
   val loc = d3c.v3ardec_loc
   val knd = d3c.v3ardec_knd
   val d2v_ptr = d3c.v3ardec_dvar_ptr
@@ -1412,8 +1448,8 @@ in
   hivardec_make (loc, knd, d2v_ptr, ini)
 end // end of [v3ardec_tr]
 
-fn v3ardeclst_tr (d3cs: v3ardeclst): hivardeclst =
-  $Lst.list_map_fun (d3cs, v3ardec_tr)
+fn v3ardeclst_tr
+  (d3cs: v3ardeclst): hivardeclst = $Lst.list_map_fun (d3cs, v3ardec_tr)
 // end of [v3ardeclst_tr]
 
 fun v3aldeclst_prf_tr

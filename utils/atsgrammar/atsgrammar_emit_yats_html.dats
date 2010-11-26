@@ -122,6 +122,7 @@ fun emit_symreg (
 fun emit_grmrule (
   out: FILEref, gr: grmrule
 ) : void = let
+//
   fun loop (
     out: FILEref, xs: symreglst, i: int
   ) : void =
@@ -134,18 +135,30 @@ fun emit_grmrule (
       end // end of [list_cons]
     | list_nil () => ()
   // end of [loop]
+//
   val xs = grmrule_get_symreglst (gr)
+//
   val () = (case+ xs of
     | list_cons _ => loop (out, xs, 0)
     | list_nil () => fprint_string (out, "<span class=comment>/*(empty)*/</span>")
   ) : void // end of [val]
   val action = grmrule_get_action (gr)
+//
   val () = if
     stropt_is_some (action) then let
     val action = stropt_unsome (action)
   in
-    fprintf (out, "  <span class=action>%s</span>", @(action))
+    fprintf (out, " <span class=action>%s</span>", @(action))
   end // end of [val]
+//
+  val precval = grmrule_get_precval (gr)
+  val () = if
+    stropt_is_some (precval) then let
+    val precval = stropt_unsome (precval)
+  in
+    fprintf (out, " <span class=precval>%s</span>", @(precval))
+  end // end of [val]
+//
 in
   // nothing
 end // end of [emit_grmrule]
@@ -223,6 +236,7 @@ val thePreamble = "\
     span.term {color:#000000}\n\
     span.nonterm {color:#0000FF}\n\
     span.action {color:#E80000}\n\
+    span.precval {color:#009000}\n\
     span.comment {color:#787878;font-style:italic}
     body {color:#000000;background-color:#E0E0E0}\n\
   </style>\n\
@@ -289,6 +303,45 @@ val theATSGrammarHeader = "\
 
 (* ****** ****** *)
 
+val thePrecedenceHeader = "\
+%nonassoc PATAS\n\
+%nonassoc PATFREE\n\
+\n\
+%nonassoc SEXPLAM\n\
+%nonassoc DEXPLAM\n\
+%nonassoc DEXPFIX\n\
+\n\
+%nonassoc CLAUS\n\
+%nonassoc DEXPCASE\n\
+%nonassoc DEXPIF\n\
+\n\
+%nonassoc DEXPRAISE\n\
+%nonassoc DEXPTRY\n\
+\n\
+%nonassoc DEXPFOR\n\
+%nonassoc DEXPWHILE\n\
+\n\
+%nonassoc ELSE\n\
+%nonassoc WHERE\n\
+\n\
+%right COLON /* <d0exp> : <s0exp> : <s0rt> */\n\
+\n\
+%nonassoc BARCLAUSSEQNONE\n\
+%nonassoc BAR\n\
+\n\
+%nonassoc GT\n\
+%nonassoc TMPSEXP\n\
+%nonassoc TMPSARG\n\
+\n\
+%nonassoc SARRIND\n\
+%nonassoc LBRACKET\n\
+\n\
+%nonassoc SEXPDARGSEQEMPTY\n\
+%nonassoc LBRACE\n\
+" // end of [thePrecedenceHeader]
+
+(* ****** ****** *)
+
 implement
 emit_yats_html (out) = let
   val () = fprint_string (out, thePreamble)
@@ -317,6 +370,12 @@ emit_yats_html (out) = let
     val () = fprint_string (out, "** terminals\n")
     val () = fprint_string (out, "*/</span>\n\n")
     val () = emit_symall_term (out, xs)
+//
+    val () = fprint_string (out, "\n<span class=comment>/* ****** ****** */\n\n")
+    val () = fprint_string (out, "/*\n")
+    val () = fprint_string (out, "** precedence\n")
+    val () = fprint_string (out, "*/</span>\n\n")
+    val () = fprint_string (out, thePrecedenceHeader)
 //
     val () = fprint_string (out, "\n<span class=comment>/* ****** ****** */\n\n")
     val () = fprint_string (out, "/*\n")

@@ -159,7 +159,7 @@ slseg_foreach_clo
   in
     // nothing
   end // end of [app]
-  val pf1 = (pf, view@ f)
+  prval pf1 = (pf, view@ f)
   val () = slseg_foreach_main<a> {v1} {vt} (pf1, pf_sl | p, n, app, p_f)
   prval () = pf := pf1.0
   prval () = view@ f := pf1.1

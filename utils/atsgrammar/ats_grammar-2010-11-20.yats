@@ -1962,6 +1962,7 @@ i0de /* identifier */
   | BANG                                { $$ = i0de_make_bang($1) ; }
   | EQ                                  { $$ = i0de_make_eq($1) ; }
   | GT                                  { $$ = i0de_make_gt($1) ; }
+  | GTLT                                { $$ = i0de_make_gtlt($1) ; }
   | LT                                  { $$ = i0de_make_lt($1) ; }
   | MINUSGT                             { $$ = i0de_make_minusgt($1) ; }
   | MINUSLTGT                           { $$ = i0de_make_minusltgt($1) ; }
