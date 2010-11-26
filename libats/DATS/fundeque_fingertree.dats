@@ -93,7 +93,9 @@ datatype ftdigit
 (* ****** ****** *)
 
 datatype
-fingertree (a:t@ype, int(*d*), int(*n*)) =
+fingertree (
+  a:t@ype, int(*d*), int(*n*)
+) =
   | {d:nat}
     FTempty (a, d, 0) of () // FTempty: () -> fingertree (a)
   | {d:nat} {n:int}
@@ -364,6 +366,25 @@ prval () = fingertree_prop1_sznat (xt)
 assume deque_t0ype_int_type
   (a:t@ype, n:int) = fingertree (a, 0, n)
 // end of [deque_t0ype_int_type]
+
+(* ****** ****** *)
+
+implement
+fundeque_size {a} (xt) = let
+  fun size {d:int} {n:nat} .<n>.
+    (xt: fingertree (a, d, n)):<> int (n) =
+    case+ xt of
+    | FTempty () => 0
+    | FTsingle (xn) => ftnode_size (xn)
+    | FTdeep (pr, m, sf) => let
+        prval () = ftdigit_prop_szpos (pr)
+      in
+        ftdigit_size (pr) + size (m) + ftdigit_size (sf)
+      end // end of [FTdeep]
+  // end of [size]
+in
+  size (xt)
+end // end of [fundeque_size]
 
 (* ****** ****** *)
 
@@ -822,7 +843,7 @@ fun foreach
 
 implement foreach
   {a} {v} {d} (pf | xt, f) =
-  case xt of
+  case+ xt of
   | FTempty () => ()
   | FTsingle (xn) => f (pf | xn)
   | FTdeep (pr, m, sf) => let
@@ -921,7 +942,7 @@ fun foreach_rev
 
 implement foreach_rev
   {a} {v} {d} (pf | xt, f) =
-  case xt of
+  case+ xt of
   | FTempty () => ()
   | FTsingle (xn) => f (pf | xn)
   | FTdeep (pr, m, sf) => let

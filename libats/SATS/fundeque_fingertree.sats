@@ -64,6 +64,12 @@ stadef deque = deque_t0ype_int_type
 
 (* ****** ****** *)
 
+fun fundeque_size
+  {a:t@ype} {n:nat} (xt: deque (a, n)):<> int (n)
+// end of [fundeque_size]
+
+(* ****** ****** *)
+
 fun{} fundeque_nil {a:t@ype} ():<> deque (a, 0)
 
 fun{} fundeque_is_nil

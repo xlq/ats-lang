@@ -45,6 +45,7 @@ compall:: \
   libc_unistd \
   libc_sys_utsname \
   libats_funarray_braun \
+  libats_fundeque_fingertree \
   libats_funheap_braun \
   libats_funmap_avltree \
   libats_genarrays \

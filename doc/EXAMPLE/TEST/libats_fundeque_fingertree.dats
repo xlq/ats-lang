@@ -1,13 +1,13 @@
 (*
 ** some testing code for functions declared in
-** libats/SATS/funralist_nested.sats
+** libats/SATS/fundeque_fingertree.sats
 *)
 
+(* ****** ****** *)
 //
 // Author: Hongwei Xi (hwxi AT cs DOT bu DOT edu)
-// Time: March, 2010
+// Time: November, 2010
 //
-
 (* ****** ****** *)
 
 staload DQ = "libats/SATS/fundeque_fingertree.sats"
@@ -37,6 +37,8 @@ main (argc, argv) = {
     // end of [loop]
   } // end of [val]
   val t12 = $DQ.fundeque_append (t1, t2)
+//
+  val () = assertloc ($DQ.fundeque_size (t12) = N+N)
 //
   val () = loop (t12) where {
     fun loop (t: ideque): void =

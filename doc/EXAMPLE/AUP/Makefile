@@ -184,7 +184,7 @@ test823: AUP_8_2_3.dats; $(ATSCC) -I utils -Wall -o $@ $< && ./test823
 
 test826: AUP_8_2_6.dats; $(ATSCC) -I utils -Wall -o $@ $< && ./test826
 
-test83: AUP_8_3.dats; $(ATSCC) -Wall -o $@ $< && ./test83
+test83: AUP_8_3.dats; $(ATSCC) -D_XOPEN_SOURCE -Wall -o $@ $< && ./test83
 
 test8811: AUP_8_8_1_1.dats; $(ATSCC) -Wall -o $@ $< && ./test8811
 test8812: AUP_8_8_1_2.dats; $(ATSCC) -Wall -o $@ $< && ./test8812
