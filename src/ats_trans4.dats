@@ -1295,7 +1295,9 @@ in
 (*
   | D3Efreeat _ => ()
 *)
-  | D3Eif (d3e_cond, d3e_then, d3e_else) => let
+  | D3Eif (
+      d3e_cond, d3e_then, d3e_else
+    ) => let
       val () = d3exp_prf_tr d3e_cond
       val () = d3exp_prf_tr d3e_then
       val () = d3exp_prf_tr d3e_else
@@ -1311,7 +1313,9 @@ in
     in
       // empty
     end // end of [D3Elet]
-  | D3Elst (_(*lin*), _(*s2e*), d3es_elt) => let
+  | D3Elst (
+      _(*lin*), _(*s2e*), d3es_elt
+    ) => let
       val () = d3explst_prf_tr d3es_elt
     in
       // empty
@@ -1320,14 +1324,17 @@ in
   | D3Eptrof_var _ => ()
   | D3Erec (_(*knd*), _(*npf*), ld3es) => labd3explst_prf_tr ld3es
   | D3Erefarg _ => ()
-  | D3Escaseof (_(*s2e*), sc3ls) => $Lst.list_foreach_fun (sc3ls, f) where {
+  | D3Escaseof (_(*s2e*), sc3ls) =>
+      $Lst.list_foreach_fun (sc3ls, f) where {
       fn f (sc3l: sc3lau): void = d3exp_prf_tr (sc3l.sc3lau_exp)
     } // end of [D3Escaseof]
   | D3Esel (d3e, d3ls) => d3exp_prf_tr d3e
   | D3Esel_ptr (d3e_ptr, d3ls) => d3exp_prf_tr d3e_ptr
   | D3Esel_var (d2v_ptr, d3ls) => ()
   | D3Eseq d3es => d3explst_prf_tr d3es
-  | D3Esif (_(*cond*), d3e_then, d3e_else) => let
+  | D3Esif (
+      _(*cond*), d3e_then, d3e_else
+    ) => let
       val () = d3exp_prf_tr d3e_then
       and () = d3exp_prf_tr d3e_else
     in
@@ -1372,7 +1379,9 @@ in
     end // end of [_]
 end (* end of [d3exp_prf_tr] *)
 
-implement d3explst_prf_tr (d3es) = $Lst.list_foreach_fun (d3es, d3exp_prf_tr)
+implement
+d3explst_prf_tr (d3es) = $Lst.list_foreach_fun (d3es, d3exp_prf_tr)
+// end of [d3explst_prf_tr]
 
 (* ****** ****** *)
 
@@ -1386,7 +1395,7 @@ fn f3undec_tr (
     | list_cons _ => begin
         tmpvarmap_add (d2v_fun, decarg, hie_def) // template function
       end // end of [list_cons]
-    | list_nil () => ()
+    | list_nil () => () // end of [list_nil]
   ) : void // end of [val]
 (*
   val () = begin
@@ -1443,7 +1452,7 @@ fn v3ardec_tr
   val d2v_ptr = d3c.v3ardec_dvar_ptr
   val ini = (case+ d3c.v3ardec_ini of
     | Some d3e => Some (d3exp_tr d3e) | None () => None ()
-  ) : hiexpopt
+  ) : hiexpopt // end of [val]
 in
   hivardec_make (loc, knd, d2v_ptr, ini)
 end // end of [v3ardec_tr]
@@ -1462,7 +1471,9 @@ fun v3aldeclst_prf_tr
 
 (* ****** ****** *)
 
-fn i3mpdec_tr (d3c: i3mpdec): hiimpdec = let
+fn i3mpdec_tr (
+  d3c: i3mpdec
+) : hiimpdec = let
   val loc = d3c.i3mpdec_loc
   val d2c = d3c.i3mpdec_cst
   val decarg = d3c.i3mpdec_decarg
@@ -1493,7 +1504,9 @@ end // end of [i3mpdec_tr]
 
 implement
 d3eclst_tr (d3cs0) = res where {
+//
 // [aux0] and [aux1] are mutually tail-recursive
+//
   fn* aux0 (
       d3cs: d3eclst
     , res: &hideclst? >> hideclst
@@ -1673,7 +1686,9 @@ d3eclst_prf_tr
       | D3Cvaldecs_rec valdecs => let
           val () = v3aldeclst_prf_tr valdecs in aux (d3cs)
         end // end of [D3Cvaldecs_rec]
-      | D3Clocal (d3cs_head, d3cs_body) => let
+      | D3Clocal (
+          d3cs_head, d3cs_body
+        ) => let
           val () = d3eclst_prf_tr d3cs_head
           val () = d3eclst_prf_tr d3cs_body
         in
@@ -1681,9 +1696,11 @@ d3eclst_prf_tr
         end // end of [D3Clocal]
       | D3Cstaload _ => aux d3cs
       | D3Cdynload _ => aux d3cs
-      | _ => begin
-          prerr_loc_interror d3c.d3ec_loc;
-          prerr ": d3explst_prf_tr: illegal proof declaration"; prerr_newline ();
+      | _ => let
+          val () = prerr_loc_interror (d3c.d3ec_loc)
+          val () = prerr ": d3eclst_prf_tr: illegal proof declaration."
+          val () = prerr_newline ()
+        in
           $Err.abort {void} ()
         end // end of [_]
       end // end of [list_cons]
