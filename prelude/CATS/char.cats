@@ -214,6 +214,12 @@ ATSinline()
 ats_bool_type
 atspre_char_isalpha (ats_char_type c) { return isalpha((int)c) ; }
 
+/* ****** ****** */
+
+#ifndef isascii
+extern int isascii(int c) ; // declared in ctype.h
+#endif
+
 ATSinline()
 ats_bool_type
 atspre_char_isascii (ats_char_type c) { return isascii((int)c) ; }

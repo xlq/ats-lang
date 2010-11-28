@@ -50,7 +50,9 @@
 
 /* ****** ****** */
 
-#define _POSIX_X_SOURCE 1 // for [sigsetjmp] in gcc-4.5
+#ifndef _XOPEN_SOURCE
+#define _XOPEN_SOURCE // for [sigsetjmp] in gcc-4.5
+#endif // end of [_XOPEN_SOURCE]
 #include <alloca.h>
 #include <setjmp.h>
 
