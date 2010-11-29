@@ -91,9 +91,7 @@ clean::
 
 cleanall:: clean
 	$(RMF) atsgrammar
-	$(RMF) atsgrammar.yats
-	$(RMF) atsgrammar_yats.html
-	$(RMF) atsgrammar.desc
-	$(RMF) atsgrammar_desc.html
+	$(RMF) ats_grammar.yats
+	$(RMF) ats_grammar.desc
 
 ###### end of [Makefile] ######

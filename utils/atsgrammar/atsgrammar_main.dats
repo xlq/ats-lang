@@ -599,7 +599,7 @@ val () = symbol_set_fullname (REC, "\"rec\"")
 val () = symbol_set_tyname (REC, t0kn_tyname)
 //
 val R0EAD = symbol_make "R0EAD"
-val () = symbol_set_fullname (R0EAD, "\"r0ead\"")
+val () = symbol_set_fullname (R0EAD, "\"r@ead\"")
 val () = symbol_set_tyname (R0EAD, t0kn_tyname)
 //
 val SCASE = symbol_make "SCASE"
@@ -2283,7 +2283,13 @@ val () = symbol_close (pf | commae0xpseq)
 } // end of [comme0xpseq_proc]
 
 (* ****** ****** *)
-  
+
+(*
+e0xpopt
+  : /* empty */                         { $$ = e0xpopt_none() ; }
+  | e0xp                                { $$ = e0xpopt_some($1) ; }
+; /* end of [e0xpopt] */
+*)  
 fun e0xpopt_proc
   (): void = () where {
 //
@@ -3741,7 +3747,6 @@ labs0expseq /* labeled static expression sequence */
   | l0ab EQ s0exp commalabs0expseq      { $$ = labs0explst_cons($1, $3, $4) ; }
 ; /* end of [labs0expseq] */
 *)
-
 fun labs0expseq_proc
   (): void = () where {
 //
@@ -3975,7 +3980,6 @@ d0atarg /* datatype argument */
   | i0de COLON s0rtpol                  { $$ = d0atarg_id_srt($1, $3) ; }
 ; /* end of [d0atarg] */
 *)
-
 fun d0atarg_proc (): void = () where {
 //
 val (pf | ()) = symbol_open (d0atarg)
@@ -6665,7 +6669,6 @@ d0ecargseq
   | d0ecarg d0ecargseq                  { $$ = s0qualstlst_cons($1, $2) ; }
 ; /* end of [d0ecargseq] */
 *)
-
 fun d0ecargseq_proc
   (): void = () where {
 //
@@ -6894,7 +6897,6 @@ guad0ec_dyn
                                         { $$ = guad0ec_cons($1, $3, $4, $5) ; }
 ; /* end of [guad0ec_dyn] */
 *)
-
 fun guad0ec_dyn_proc
   (): void = () where {
 //
