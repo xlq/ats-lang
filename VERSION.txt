@@ -159,13 +159,9 @@ Please see $ATSHOME/doc/EXAMPLE/MULTICORE for some examples.
 *)
 
 3. The semantics for symbol overloading is greatly simplified.
-
 4. Adding libc/sched based on /usr/include/sched.x
-
 5. Adding libats/parworkshop to support multicore programming.
-
 6. The examples in doc/EXAMPLE/MULTICORE are modified to run again.
-
 7. Adding support for lliunt and ullint.
 
 ......
@@ -221,11 +217,8 @@ As usual, this release contains a large number of bug fixes. Some of the
 significant changes are listed as follows:
 
 1. Support for OOP is under development. So far, typechecking is done.
-
 2. Type error message reporting is made more informative. This is ongoing.
-
 3. Adding $ATSHOME/ccomp/lib64 for storing libfiles for 64-bit machines.
-
 4. The Makefile in $ATSHOME is re-designed by Likai Liu. It now allows
    ATS to be installed in a selected directory. Just issue the following
    command before calling 'make':

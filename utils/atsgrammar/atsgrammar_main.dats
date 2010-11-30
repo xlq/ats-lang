@@ -7201,9 +7201,9 @@ atsgrammar_main
   val () = i0mpdec_proc ()
 //
   val () = d0ec_proc ()
+//
   val () = d0ecarg_proc ()
   val () = d0ecargseq_proc ()
-//
   val () = semicolonseq_proc ()
 //
   val () = d0ec_sta_proc ()

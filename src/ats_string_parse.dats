@@ -30,20 +30,23 @@
 *)
 
 (* ****** ****** *)
-
-// March 2008
+//
 // Author: Hongwei Xi (hwxi AT cs DOT bu DOT edu)
-
+// March 2008
+//
 (* ****** ****** *)
 
 staload "ats_staexp2.sats"
 staload "ats_stadyncst2.sats"
 
+(* ****** ****** *)
+
 staload "ats_string_parse.sats"
 
 (* ****** ****** *)
 
-implement s2exp_make_printf_c_argtype (fat) = begin
+implement
+s2exp_make_printf_c_argtype (fat) = begin
   case+ fat of
   | FAT_c_char () => s2exp_char_t0ype ()
   | FAT_c_double () => s2exp_double_t0ype ()
@@ -62,7 +65,8 @@ implement s2exp_make_printf_c_argtype (fat) = begin
   | FAT_c_uint_short_short () => s2exp_ussint_t0ype ()
 end // end of [s2exp_make_printf_c_argtype]
 
-implement s2exp_make_printf_c_argtypes (fats) = let
+implement
+s2exp_make_printf_c_argtypes (fats) = let
   fun aux (fats: printf_c_argtypes): s2explst = begin
     case+ fats of
     | ~list_vt_cons (fat, fats) => begin

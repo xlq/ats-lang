@@ -30,17 +30,15 @@
 *)
 
 (* ****** ****** *)
-
+//
 // Author: Hongwei Xi (hwxi AT cs DOT bu DOT edu)
 // Time: November 2007
-
+//
 (* ****** ****** *)
 
 %{^
-
 #include "ats_counter.cats" /* only needed for [ATS/Geizella] */
-
-%}
+%} // end of [%{^]
 
 (* ****** ****** *)
 
