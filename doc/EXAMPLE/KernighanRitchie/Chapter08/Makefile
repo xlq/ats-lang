@@ -6,7 +6,13 @@
 
 ######
 
-ATSHOMEQ=$(or "$(ATSHOME)", "/usr")
+ATSHOMEQ="$(ATSHOME)"
+ifeq ($(ATSHOMEQ),"")
+ATSHOMEQ="/usr" # default value if [ATSHOME] is undefined
+endif
+
+######
+
 ATSCC=$(ATSHOMEQ)/bin/atscc
 ATSOPT=$(ATSHOMEQ)/bin/atsopt
 
@@ -16,26 +22,25 @@ checkall: compall cleanall
 
 ######
 
-compall: \
-  fsize \
+compall:: fsize
+fsize: fsize.dats ; $(ATSCC) -o fsize fsize.dats
 
 ######
 
-html::
-	$(ATSOPT) --posmark_html -d fsize.dats > fsize_dats.html
+html:: ; $(ATSOPT) --posmark_html -d fsize.dats > fsize_dats.html
 
 ######
 
-fsize: fsize.dats
-	$(ATSCC) -o fsize fsize.dats
+RMF=rm -f
 
 ######
 
-clean::
-	rm -f a.out *_dats.c *.o *~
+clean:
+	$(RMF) *~
+	$(RMF) *_?ats.c *_?ats.o
 
-cleanall: clean
-	rm -f *_dats.html 
-	rm -f fsize
+cleanall:: clean
+	$(RMF) *_?ats.html 
+	$(RMF) fsize
 
 ###### end of [Makefile] ######

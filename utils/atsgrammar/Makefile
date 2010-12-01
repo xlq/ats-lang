@@ -6,8 +6,16 @@
 
 ######
 
-ATSCC=$(ATSHOME)/bin/atscc
-ATSOPT=$(ATSHOME)/bin/atsopt
+ATSHOMEQ="$(ATSHOME)"
+ifeq ($(ATSHOMEQ),"")
+ATSHOMEQ="/usr" # default value if [ATSHOME] is undefined
+endif
+
+######
+
+ATSCC=$(ATSHOMEQ)/bin/atscc
+ATSOPT=$(ATSHOMEQ)/bin/atsopt
+
 ######
 
 ATSGCFLAG=-D_ATS_GCATS

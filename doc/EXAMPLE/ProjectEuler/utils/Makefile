@@ -1,7 +1,7 @@
-######
 #
 # A simple Makefile
 #
+
 ######
 
 ATSHOMEQ="$(ATSHOME)"
@@ -15,21 +15,20 @@ ATSCC=$(ATSHOMEQ)/bin/atscc
 
 ######
 
-checkall: compall cleanall
-compall:: \
-  problem3-hwxi \
+makefilegen: makefilegen.sats makefilegen.dats
+	$(ATSCC) -o $@ -O2 makefilegen.sats makefilegen.dats
 
 ######
 
-problem3-hwxi: problem3-hwxi.dats
-	$(ATSCC) -o $@ problem3-hwxi.dats -lats -lgmp && ./problem3-hwxi
+RMF=rm -f
 
 ######
 
-clean::
-	rm -f *~ *_?ats.c *_?ats.o
+clean:
+	$(RMF) *~
+	$(RMF) *_?ats.c *_?ats.o
 
 cleanall: clean
-	rm -f problem3-hwxi
+	$(RMF) makefilegen
 
 ###### end of [Makefile] ######

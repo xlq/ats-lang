@@ -9,7 +9,13 @@
 
 ######
 
-ATSHOMEQ=$(or "$(ATSHOME)", "/usr")
+ATSHOMEQ="$(ATSHOME)"
+ifeq ($(ATSHOMEQ),"")
+ATSHOMEQ="/usr" # default value if [ATSHOME] is undefined
+endif
+
+######
+
 ATSCC=$(ATSHOMEQ)/bin/atscc
 ATSOPT=$(ATSHOMEQ)/bin/atsopt
 

@@ -13,7 +13,13 @@ all: checkall
 
 ######
 
-ATSHOMEQ=$(or "$(ATSHOME)", "/usr")
+ATSHOMEQ="$(ATSHOME)"
+ifeq ($(ATSHOMEQ),"")
+ATSHOMEQ="/usr" # default value if [ATSHOME] is undefined
+endif
+
+######
+
 ATSCC=$(ATSHOMEQ)/bin/atscc
 ATSCTRB=$(ATSHOMEQ)/contrib/GL/atsctrb_GL.o
 
@@ -23,59 +29,55 @@ checkall: compall cleanall
 
 ######
 
-compall: \
-  glHello \
-  glDoubleBuffer \
-  glIcosahedron \
-  glClipping \
-  glCubeView \
-  glPlanet \
-  glColoredTriangle \
-  glLitSphere \
-  glLightMove1 \
-  glLightMove2 \
-  glDisplayList1 \
-  glBlending1 \
-  glBlending2 \
-  glFaces \
-  glTetrix \
-
+compall:: glHello
 glHello: glHello.dats
 	$(ATSCC) -o glHello glHello.dats $(ATSCTRB) -lGL -lglut
 
+compall:: glDoubleBuffer
 glDoubleBuffer: glDoubleBuffer.dats
 	$(ATSCC) -o glDoubleBuffer glDoubleBuffer.dats $(ATSCTRB) -lGL -lglut
 
+compall:: glIcosahedron
 glIcosahedron: glIcosahedron.dats
 	$(ATSCC) -D_ATS_GCATS -o glIcosahedron glIcosahedron.dats $(ATSCTRB) -lGL -lGLU -lglut -lm
 
+compall:: glClipping
 glClipping: glClipping.dats
 	$(ATSCC) -o glClipping glClipping.dats $(ATSCTRB) -lGL -lGLU -lglut
 
+compall:: glCubeView
 glCubeView: glCubeView.dats
 	$(ATSCC) -o glCubeView glCubeView.dats $(ATSCTRB) -lGL -lGLU -lglut
 
+compall:: glPlanet
 glPlanet: glPlanet.dats
 	$(ATSCC) -o glPlanet glPlanet.dats $(ATSCTRB) -lGL -lGLU -lglut
 
+compall:: glColoredTriangle
 glColoredTriangle: glColoredTriangle.dats
 	$(ATSCC) -o glColoredTriangle glColoredTriangle.dats $(ATSCTRB) -lGL -lGLU -lglut -lm
 
+compall:: glLitSphere
 glLitSphere: glLitSphere.dats
 	$(ATSCC) -o glLitSphere glLitSphere.dats $(ATSCTRB) -lGL -lglut
 
+compall:: glLightMove1
 glLightMove1: glLightMove1.dats
 	$(ATSCC) -o glLightMove1 glLightMove1.dats $(ATSCTRB) -lGL -lGLU -lglut
 
+compall:: glLightMove2
 glLightMove2: glLightMove2.dats
 	$(ATSCC) -o glLightMove2 glLightMove2.dats $(ATSCTRB) -lGL -lGLU -lglut
 
+compall:: glBlending1
 glBlending1: glBlending1.dats
 	$(ATSCC) -o glBlending1 glBlending1.dats $(ATSCTRB) -lGL -lGLU -lglut
 
+compall:: glBlending2
 glBlending2: glBlending2.dats
 	$(ATSCC) -o glBlending2 glBlending2.dats $(ATSCTRB) -lGL -lglut
 
+compall:: glDisplayList1
 glDisplayList1: glDisplayList1.dats
 	$(ATSCC) -o glDisplayList1 glDisplayList1.dats $(ATSCTRB) -lGL -lGLU -lglut -lm
 
@@ -84,6 +86,7 @@ glDisplayList1: glDisplayList1.dats
 #
 # A little bit animation for fun
 #
+compall:: glFaces
 glFaces: glFaces.dats
 	$(ATSCC) -o glFaces glFaces.dats $(ATSCTRB) -lGL -lglut -lm
 
@@ -92,12 +95,13 @@ glFaces: glFaces.dats
 #
 # A simple game of Tetris implemented in ATS
 #
+compall:: glTetrix
 glTetrix: glTetrix.dats
 	$(ATSCC) -O2 -o glTetrix glTetrix.dats $(ATSCTRB) -lGL -lglut -lm
 
 ######
 
-RMF = rm -f
+RMF=rm -f
 
 ######
 

@@ -1,38 +1,38 @@
-######
 #
-# A simple Makefile
+# Time of Generation: Wed Dec  1 16:24:56 2010
 #
+
 ######
 
 ATSHOMEQ="$(ATSHOME)"
-ATSCC=$(or $(ATSHOMEQ), "/usr")/bin/atscc
+ifeq ($(ATSHOMEQ),"")
+ATSHOMEQ="/usr" # default value if [ATSHOME] is undefined
+endif
+ATSCC=$(ATSHOMEQ)/bin/atscc
+ATSOPT=$(ATSHOMEQ)/bin/atsopt
 
 ######
 
 checkall: compall cleanall
-compall:: \
-  problem20-hwxi \
-  problem20-hwxi2 \
-
-######
-
-ATS_PROOFCHECK=-D_ATS_PROOFCHECK
-ATS_PROOFCHECK=
+compall:: problem20-hwxi
+compall:: problem20-hwxi2
 
 ######
 
 problem20-hwxi: problem20-hwxi.dats
-	$(ATSCC) -o $@ problem20-hwxi.dats -lats -lgmp && ./problem20-hwxi
+	$(ATSCC) -O2 -o $@ $< -lats -lgmp && ./problem20-hwxi
 problem20-hwxi2: problem20-hwxi2.dats
-	$(ATSCC) $(ATS_PROOFCHECK) -o $@ problem20-hwxi2.dats -lats -lgmp && ./problem20-hwxi2
+	$(ATSCC) -O2 -o $@ $< && ./problem20-hwxi2
+
+######
+
+RMF=rm -f
 
 ######
 
 clean::
-	rm -f *~ *_?ats.c *_?ats.o
-
-cleanall: clean
-	rm -f problem20-hwxi
-	rm -f problem20-hwxi2
-
-###### end of [Makefile] ######
+	$(RMF) *~
+	$(RMF) *_?ats.c *_?ats.o
+cleanall:: clean
+cleanall:: ; $(RMF) problem20-hwxi
+cleanall:: ; $(RMF) problem20-hwxi2

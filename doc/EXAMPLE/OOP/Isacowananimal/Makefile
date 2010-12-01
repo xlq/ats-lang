@@ -9,7 +9,15 @@
 
 ######
 
-ATSCC=$(ATSHOME)/bin/atscc
+ATSHOMEQ="$(ATSHOME)"
+ifeq ($(ATSHOMEQ),"")
+ATSHOMEQ="/usr" # default value if [ATSHOME] is undefined
+endif
+
+######
+
+ATSCC=$(ATSHOMEQ)/bin/atscc
+ATSOPT=$(ATSHOMEQ)/bin/atsopt
 
 ######
 
@@ -31,4 +39,5 @@ clean::
 cleanall:: clean
 	$(RMF) isacowananimal
 
-######
+###### end of [Makefile] ######
+

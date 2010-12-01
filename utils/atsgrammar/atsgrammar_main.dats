@@ -76,6 +76,8 @@ val fixkind_tyname = tyname_make_namdef ("fixkind", "fixkind_t")
 
 val srpifkindtok_tyname = tyname_make_namdef ("srpifkindtok", "srpifkindtok_t")
 
+(* ****** ****** *)
+
 val e0xp_tyname = tyname_make_namdef ("e0xp", "e0xp_t")
 val e0xplst_tyname = tyname_make_namdef ("e0xplst", "e0xplst_t")
 val e0xpopt_tyname = tyname_make_namdef ("e0xpopt", "e0xpopt_t")

@@ -1,33 +1,38 @@
-######
 #
-# A simple Makefile
+# Time of Generation: Wed Dec  1 16:24:56 2010
 #
+
 ######
 
 ATSHOMEQ="$(ATSHOME)"
-ATSCC=$(or $(ATSHOMEQ), "/usr")/bin/atscc
+ifeq ($(ATSHOMEQ),"")
+ATSHOMEQ="/usr" # default value if [ATSHOME] is undefined
+endif
+ATSCC=$(ATSHOMEQ)/bin/atscc
+ATSOPT=$(ATSHOMEQ)/bin/atsopt
 
 ######
 
 checkall: compall cleanall
-compall:: \
-  problem25-hwxi \
-  problem25-hwxi2 \
+compall:: problem25-hwxi
+compall:: problem25-hwxi2
 
 ######
 
 problem25-hwxi: problem25-hwxi.dats
-	$(ATSCC) -o $@ problem25-hwxi.dats -lats -lgmp && ./problem25-hwxi
+	$(ATSCC) -O2 -o $@ $< -lats -lgmp && ./problem25-hwxi
 problem25-hwxi2: problem25-hwxi2.dats
-	$(ATSCC) -D_ATS_GCATS -o $@ problem25-hwxi2.dats && ./problem25-hwxi2
+	$(ATSCC) -O2 -o $@ $< && ./problem25-hwxi2
+
+######
+
+RMF=rm -f
 
 ######
 
 clean::
-	rm -f *~ *_?ats.c *_?ats.o
-
-cleanall: clean
-	rm -f problem25-hwxi
-	rm -f problem25-hwxi2
-
-###### end of [Makefile] ######
+	$(RMF) *~
+	$(RMF) *_?ats.c *_?ats.o
+cleanall:: clean
+cleanall:: ; $(RMF) problem25-hwxi
+cleanall:: ; $(RMF) problem25-hwxi2

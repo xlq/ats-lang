@@ -6,20 +6,30 @@
 
 ######
 
-ATSHOMEQ=$(or "$(ATSHOME)", "/usr")
+ATSHOMEQ="$(ATSHOME)"
+ifeq ($(ATSHOMEQ),"")
+ATSHOMEQ="/usr" # default value if [ATSHOME] is undefined
+endif
+
+######
+
 ATSCC=$(ATSHOMEQ)/bin/atscc
 ATSOPT=$(ATSHOMEQ)/bin/atsopt
 
 ######
 
-checkall: compall cleanall
+checkall:: compall cleanall
 
 ######
 
-compall: \
-  atoi \
-  reverse \
-  itoa \
+compall:: atoi
+atoi: atoi.dats ; $(ATSCC) -o atoi atoi.dats
+
+compall:: reverse
+reverse: reverse.dats ; $(ATSCC) -o reverse reverse.dats
+
+compall:: itoa
+itoa: itoa.dats ; $(ATSCC) -o itoa itoa.dats
 
 ######
 
@@ -30,24 +40,18 @@ html::
 
 ######
 
-atoi: atoi.dats
-	$(ATSCC) -o atoi atoi.dats
-
-reverse: reverse.dats
-	$(ATSCC) -o reverse reverse.dats
-
-itoa: itoa.dats
-	$(ATSCC) -o itoa itoa.dats
+RMF=rm -f
 
 ######
 
-clean::
-	rm -f a.out *_dats.c *.o *~
+clean:
+	$(RMF) *~
+	$(RMF) *_?ats.c *_?ats.o
 
-cleanall: clean
-	rm -f *_dats.html 
-	rm -f atoi
-	rm -f reverse
-	rm -f itoa
+cleanall:: clean
+	$(RMF) *_?ats.html 
+	$(RMF) atoi
+	$(RMF) reverse
+	$(RMF) itoa
 
 ###### end of [Makefile] ######

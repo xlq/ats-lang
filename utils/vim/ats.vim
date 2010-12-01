@@ -82,3 +82,5 @@ syn keyword Keyword typedef viewtypedef true false val var
 syn keyword Operator _
 
 let b:current_syntax = "ats"
+
+" end of [ats.vim]

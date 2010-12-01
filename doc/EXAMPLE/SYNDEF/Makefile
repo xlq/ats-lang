@@ -6,7 +6,13 @@
 
 ######
 
-ATSHOMEQ=$(or "$(ATSHOME)", "/usr")
+ATSHOMEQ="$(ATSHOME)"
+ifeq ($(ATSHOMEQ),"")
+ATSHOMEQ="/usr" # default value if [ATSHOME] is undefined
+endif
+
+######
+
 ATSCC=$(ATSHOMEQ)/bin/atscc
 ATSOPT=$(ATSHOMEQ)/bin/atsopt
 
@@ -21,46 +27,35 @@ checkall: compall cleanall
 
 ######
 
-compall:: \
-  fact \
-  forlist \
-  forrange \
-
-######
-
+compall:: fact
 fact: fact.dats
 	$(ATSCC) -o fact fact.dats -lats && ./fact
 
-print: print.dats
-	$(ATSCC) -o print print.dats -lats && ./print
-
+compall:: forlist
 forlist: forlist.dats
 	$(ATSCC) -o forlist forlist.dats -lats && ./forlist
 
+compall:: forrange
 forrange: forrange.dats
 	$(ATSCC) -o forrange forrange.dats -lats && ./forrange
 
 ######
 
-html::
-	$(ATSOPT) --posmark_html -d fact.dats > fact_dats.html
-	$(ATSOPT) --posmark_html -d print.dats > print_dats.html
-	$(ATSOPT) --posmark_html -d forlist.dats > forlist_dats.html
-	$(ATSOPT) --posmark_html -d forrange.dats > forrange_dats.html
+html:: ; $(ATSOPT) --posmark_html -d fact.dats > fact_dats.html
+html:: ; $(ATSOPT) --posmark_html -d forlist.dats > forlist_dats.html
+html:: ; $(ATSOPT) --posmark_html -d forrange.dats > forrange_dats.html
 
 ######
 
-xref::
-	$(ATSOPT) --posmark_xref=XREF -d \
-          $(ATSHOME)/utils/xref/ats_prelude_xref.dats > /dev/null
-	$(ATSOPT) --posmark_xref=XREF -d fact.dats > fact_dats.html
-	$(ATSOPT) --posmark_xref=XREF -d print.dats > print_dats.html
-	$(ATSOPT) --posmark_xref=XREF -d forlist.dats > forlist_dats.html
-	$(ATSOPT) --posmark_xref=XREF -d forrange.dats > forrange_dats.html
+xref:: ; $(ATSOPT) --posmark_xref=XREF -d \
+  $(ATSHOME)/utils/xref/ats_prelude_xref.dats > /dev/null
+xref:: ; $(ATSOPT) --posmark_xref=XREF -d fact.dats > fact_dats.html
+xref:: ; $(ATSOPT) --posmark_xref=XREF -d forlist.dats > forlist_dats.html
+xref:: ; $(ATSOPT) --posmark_xref=XREF -d forrange.dats > forrange_dats.html
 
 ######
 
-RMF = rm -f
+RMF=rm -f
 
 ######
 
@@ -73,7 +68,6 @@ cleanall:: clean
 	$(RMF) ./XREF/*
 	$(RMF) *_?ats.html
 	$(RMF) fact
-	$(RMF) print
 	$(RMF) forlist
 	$(RMF) forrange
 
