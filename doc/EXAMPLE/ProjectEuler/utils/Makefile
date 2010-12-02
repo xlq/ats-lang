@@ -15,6 +15,11 @@ ATSCC=$(ATSHOMEQ)/bin/atscc
 
 ######
 
+#
+# HX-2010-12-01:
+# this command is used to generate Makefiles
+# for individual PE problems
+#
 makefilegen: makefilegen.sats makefilegen.dats
 	$(ATSCC) -o $@ -O2 makefilegen.sats makefilegen.dats
 
@@ -28,7 +33,7 @@ clean:
 	$(RMF) *~
 	$(RMF) *_?ats.c *_?ats.o
 
-cleanall: clean
+cleanall:: clean
 	$(RMF) makefilegen
 
 ###### end of [Makefile] ######

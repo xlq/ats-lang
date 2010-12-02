@@ -207,7 +207,7 @@ fun emit03_Makefile (
   val () = emit_checkall (out)
   val () = emit_compall_itemname (out, itemname)
   val () = emit_sep (out)
-  val () = emit03_item_comp_and_exec (out, itemname)
+  val () = emit03_item_comp_and_exec (out, itemname) // -lgmp
   val () = emit_sep (out)
   val () = emit_RMF (out)
   val () = emit_sep (out)
@@ -230,7 +230,7 @@ fun emit04_Makefile (
   val () = emit_checkall (out)
   val () = emit_compall_itemname (out, itemname)
   val () = emit_sep (out)
-  val () = emit04_item_comp_and_exec (out, itemname)
+  val () = emit04_item_comp_and_exec (out, itemname) // -lgmp -lm
   val () = emit_sep (out)
   val () = emit_RMF (out)
   val () = emit_sep (out)
@@ -278,7 +278,7 @@ fun emit_Makefile_problem2
   val () = emit_compall_itemname (out, itemname)
   val () = emit_compall_itemname (out, itemname2)
   val () = emit_sep (out)
-  val () = emit03_item_comp_and_exec (out, itemname)
+  val () = emit03_item_comp_and_exec (out, itemname) // -lgmp
   val () = emit01pfck_item_comp_and_exec (out, itemname2)
   val () = emit_sep (out)
   val () = emit_RMF (out)
@@ -333,7 +333,7 @@ fun emit_Makefile_problem7
   val () = emit_compall_itemname (out, itemname2)
   val () = emit_sep (out)
   val () = emit01_item_comp_and_exec (out, itemname)
-  val () = emit02_item_comp_and_exec (out, itemname2)
+  val () = emit02_item_comp_and_exec (out, itemname2) // -lm
   val () = emit_sep (out)
   val () = emit_RMF (out)
   val () = emit_sep (out)
@@ -393,7 +393,7 @@ fun emit_Makefile_problem15
   val () = emit_compall_itemname (out, itemname2)
   val () = emit_compall_itemname (out, itemname3)
   val () = emit_sep (out)
-  val () = emit03_item_comp_and_exec (out, itemname) // -lats -lgmp
+  val () = emit03_item_comp_and_exec (out, itemname) // -lgmp
   val () = emit01_item_comp_and_exec (out, itemname2)
   val () = emit01_item_comp_and_exec (out, itemname3)
   val () = emit_sep (out)
@@ -422,7 +422,7 @@ fun emit_Makefile_problem16
   val () = emit_compall_itemname (out, itemname)
   val () = emit_compall_itemname (out, itemname2)
   val () = emit_sep (out)
-  val () = emit03_item_comp_and_exec (out, itemname) // -lats -lgmp
+  val () = emit03_item_comp_and_exec (out, itemname) // -lgmp
   val () = emit01_item_comp_and_exec (out, itemname2)
   val () = emit_sep (out)
   val () = emit_RMF (out)
@@ -463,7 +463,7 @@ fun emit_Makefile_problem20
   val () = emit_compall_itemname (out, itemname)
   val () = emit_compall_itemname (out, itemname2)
   val () = emit_sep (out)
-  val () = emit03_item_comp_and_exec (out, itemname) // -lats -lgmp
+  val () = emit03_item_comp_and_exec (out, itemname) // -lgmp
   val () = emit01_item_comp_and_exec (out, itemname2)
   val () = emit_sep (out)
   val () = emit_RMF (out)
@@ -508,7 +508,7 @@ fun emit_Makefile_problem25
   val () = emit_compall_itemname (out, itemname)
   val () = emit_compall_itemname (out, itemname2)
   val () = emit_sep (out)
-  val () = emit03_item_comp_and_exec (out, itemname) // -lats -lgmp
+  val () = emit03_item_comp_and_exec (out, itemname) // -lgmp
   val () = emit01_item_comp_and_exec (out, itemname2)
   val () = emit_sep (out)
   val () = emit_RMF (out)
@@ -534,7 +534,7 @@ fun emit_Makefile_problem28
 // end of [emit_Makefile_problem28]
 
 fun emit_Makefile_problem29
-  (out: FILEref): void = emit03_Makefile (out, "problem29-hwxi")
+  (out: FILEref): void = emit03_Makefile (out, "problem29-hwxi") // -lgmp
 // end of [emit_Makefile_problem29]
 
 (* ****** ****** *)
@@ -614,7 +614,7 @@ fun emit_Makefile_problem47
 // end of [emit_Makefile_problem47]
 
 fun emit_Makefile_problem48
-  (out: FILEref): void = emit03_Makefile (out, "problem48-hwxi")
+  (out: FILEref): void = emit03_Makefile (out, "problem48-hwxi") // -lgmp
 // end of [emit_Makefile_problem48]
 
 fun emit_Makefile_problem49
@@ -628,11 +628,11 @@ fun emit_Makefile_problem50
 (* ****** ****** *)
 
 fun emit_Makefile_problem51
-  (out: FILEref): void = emit02_Makefile (out, "problem51-hwxi")
+  (out: FILEref): void = emit02_Makefile (out, "problem51-hwxi") // -lm
 // end of [emit_Makefile_problem51]
 
 fun emit_Makefile_problem52
-  (out: FILEref): void = emit01_Makefile (out, "problem52-hwxi") // -lm
+  (out: FILEref): void = emit01_Makefile (out, "problem52-hwxi")
 // end of [emit_Makefile_problem52]
 
 fun emit_Makefile_problem53
@@ -640,19 +640,19 @@ fun emit_Makefile_problem53
 // end of [emit_Makefile_problem53]
 
 fun emit_Makefile_problem55
-  (out: FILEref): void = emit03_Makefile (out, "problem55-hwxi") // -lm
+  (out: FILEref): void = emit03_Makefile (out, "problem55-hwxi") // -lgmp
 // end of [emit_Makefile_problem55]
 
 fun emit_Makefile_problem56
-  (out: FILEref): void = emit03_Makefile (out, "problem56-hwxi")
+  (out: FILEref): void = emit03_Makefile (out, "problem56-hwxi") // -lgmp
 // end of [emit_Makefile_problem56]
 
 fun emit_Makefile_problem57
-  (out: FILEref): void = emit03_Makefile (out, "problem57-hwxi")
+  (out: FILEref): void = emit03_Makefile (out, "problem57-hwxi") // -lgmp
 // end of [emit_Makefile_problem57]
 
 fun emit_Makefile_problem58
-  (out: FILEref): void = emit02_Makefile (out, "problem58-hwxi")
+  (out: FILEref): void = emit02_Makefile (out, "problem58-hwxi") // -lm
 // end of [emit_Makefile_problem58]
 
 fun emit_Makefile_problem60
@@ -667,7 +667,7 @@ fun emit_Makefile_problem60
   val () = emit_checkall (out)
   val () = emit_compall_itemname (out, itemname)
   val () = emit_sep (out)
-  val () = emit02gc_item_comp_and_exec (out, itemname)
+  val () = emit02gc_item_comp_and_exec (out, itemname) // -lm
   val () = emit_sep (out)
   val () = emit_RMF (out)
   val () = emit_sep (out)
@@ -679,15 +679,15 @@ fun emit_Makefile_problem60
 (* ****** ****** *)
 
 fun emit_Makefile_problem63
-  (out: FILEref): void = emit02_Makefile (out, "problem63-hwxi")
+  (out: FILEref): void = emit02_Makefile (out, "problem63-hwxi") // -lm
 // end of [emit_Makefile_problem63]
 
 fun emit_Makefile_problem65
-  (out: FILEref): void = emit03_Makefile (out, "problem65-hwxi")
+  (out: FILEref): void = emit03_Makefile (out, "problem65-hwxi") // -lgmp
 // end of [emit_Makefile_problem65]
 
 fun emit_Makefile_problem66
-  (out: FILEref): void = emit04_Makefile (out, "problem66-hwxi")
+  (out: FILEref): void = emit04_Makefile (out, "problem66-hwxi") // -lgmp -lm
 // end of [emit_Makefile_problem66]
 
 fun emit_Makefile_problem69
@@ -705,7 +705,7 @@ fun emit_Makefile_problem73
 // end of [emit_Makefile_problem73]
 
 fun emit_Makefile_problem75
-  (out: FILEref): void = emit02_Makefile (out, "problem75-hwxi")
+  (out: FILEref): void = emit02_Makefile (out, "problem75-hwxi") // -lm
 // end of [emit_Makefile_problem75]
 
 fun emit_Makefile_problem76
@@ -713,7 +713,7 @@ fun emit_Makefile_problem76
 // end of [emit_Makefile_problem76]
 
 fun emit_Makefile_problem77
-  (out: FILEref): void = emit02_Makefile (out, "problem77-hwxi")
+  (out: FILEref): void = emit02_Makefile (out, "problem77-hwxi") // -lm
 // end of [emit_Makefile_problem77]
 
 fun emit_Makefile_problem78
@@ -721,7 +721,7 @@ fun emit_Makefile_problem78
 // end of [emit_Makefile_problem78]
 
 fun emit_Makefile_problem80
-  (out: FILEref): void = emit04_Makefile (out, "problem80-hwxi")
+  (out: FILEref): void = emit04_Makefile (out, "problem80-hwxi") // -lgmp -lm
 // end of [emit_Makefile_problem80]
 
 (* ****** ****** *)
@@ -731,21 +731,21 @@ fun emit_Makefile_problem92
 // end of [emit_Makefile_problem92]
 
 fun emit_Makefile_problem94
-  (out: FILEref): void = emit02_Makefile (out, "problem94-hwxi")
+  (out: FILEref): void = emit02_Makefile (out, "problem94-hwxi") // -lm
 // end of [emit_Makefile_problem94]
 
 fun emit_Makefile_problem97
-  (out: FILEref): void = emit03_Makefile (out, "problem97-hwxi")
+  (out: FILEref): void = emit03_Makefile (out, "problem97-hwxi") // -lgmp
 // end of [emit_Makefile_problem97]
 
 (* ****** ****** *)
 
 fun emit_Makefile_problem100
-  (out: FILEref): void = emit02_Makefile (out, "problem100-hwxi")
+  (out: FILEref): void = emit02_Makefile (out, "problem100-hwxi") // -lm
 // end of [emit_Makefile_problem100]
 
 fun emit_Makefile_problem104
-  (out: FILEref): void = emit03_Makefile (out, "problem104-hwxi")
+  (out: FILEref): void = emit03_Makefile (out, "problem104-hwxi") // -lgmp
 // end of [emit_Makefile_problem104]
 
 fun emit_Makefile_problem108
@@ -753,7 +753,7 @@ fun emit_Makefile_problem108
 // end of [emit_Makefile_problem108]
 
 fun emit_Makefile_problem110
-  (out: FILEref): void = emit02_Makefile (out, "problem110-hwxi")
+  (out: FILEref): void = emit02_Makefile (out, "problem110-hwxi") // -lm
 // end of [emit_Makefile_problem110]
 
 fun emit_Makefile_problem120
@@ -761,15 +761,15 @@ fun emit_Makefile_problem120
 // end of [emit_Makefile_problem120]
 
 fun emit_Makefile_problem122
-  (out: FILEref): void = emit02_Makefile (out, "problem122-hwxi")
+  (out: FILEref): void = emit02_Makefile (out, "problem122-hwxi") // -lm
 // end of [emit_Makefile_problem122]
 
 fun emit_Makefile_problem123
-  (out: FILEref): void = emit02_Makefile (out, "problem123-hwxi")
+  (out: FILEref): void = emit02_Makefile (out, "problem123-hwxi") // -lm
 // end of [emit_Makefile_problem123]
 
 fun emit_Makefile_problem125
-  (out: FILEref): void = emit02_Makefile (out, "problem125-hwxi")
+  (out: FILEref): void = emit02_Makefile (out, "problem125-hwxi") // -lm
 // end of [emit_Makefile_problem125]
 
 fun emit_Makefile_problem145
@@ -781,7 +781,7 @@ fun emit_Makefile_problem157
 // end of [emit_Makefile_problem157]
 
 fun emit_Makefile_problem162
-  (out: FILEref): void = emit03_Makefile (out, "problem162-hwxi")
+  (out: FILEref): void = emit03_Makefile (out, "problem162-hwxi") // -lgmp
 // end of [emit_Makefile_problem162]
 
 fun emit_Makefile_problem164
