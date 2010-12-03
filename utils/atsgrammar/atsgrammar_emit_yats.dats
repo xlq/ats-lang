@@ -11,7 +11,6 @@
 
 (* ****** ****** *)
 
-staload _(*anon*) = "prelude/DATS/list.dats"
 staload _(*anon*) = "prelude/DATS/list_vt.dats"
 
 (* ****** ****** *)
@@ -1317,7 +1316,7 @@ emit_yats (out) = let
 //
   val () = () where {
     val xs = theTynamelst_get ()
-    val xs = list_reverse (xs)
+    val xs = list_vt_reverse (xs)
     val () = emit_YYSTYPE_union (out, xs)
     val () = list_vt_free (xs)
   } // end of [val]
@@ -1326,7 +1325,7 @@ emit_yats (out) = let
 //
   val () = () where {
     val xs = theSymlst_get ()
-    val xs = list_reverse (xs)
+    val xs = list_vt_reverse (xs)
 //
     val () = fprint_string (out, "\n/* ****** ****** */\n\n")
     val () = fprint_string (out, "/*\n")

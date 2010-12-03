@@ -78,7 +78,8 @@ html:: ; $(ATSOPT) --posmark_html -d f91.dats > f91_dats.html
 html:: ; $(ATSOPT) --posmark_html -d fact1.dats > fact1_dats.html
 html:: ; $(ATSOPT) --posmark_html -d fact2.dats > fact2_dats.html
 html:: ; $(ATSOPT) --posmark_html -d fact3.dats > fact3_dats.html
-html:: ; $(ATSOPT) --posmark_html -d fact4.dats > fact4_dats.html
+html:: html_fact4
+html_fact4: ; $(ATSOPT) --posmark_html -d fact4.dats > fact4_dats.html
 html:: ; $(ATSOPT) --posmark_html -d fact_in_c.dats > fact_in_c_dats.html
 html:: ; $(ATSOPT) --posmark_html -d fibs.dats > fibs_dats.html
 html:: ; $(ATSOPT) --posmark_html -d revarr.dats > revarr_dats.html
@@ -94,7 +95,8 @@ xref:: ; $(ATSOPT) --posmark_xref=XREF -d f91.dats > f91_dats.html
 xref:: ; $(ATSOPT) --posmark_xref=XREF -d fact1.dats > fact1_dats.html
 xref:: ; $(ATSOPT) --posmark_xref=XREF -d fact2.dats > fact2_dats.html
 xref:: ; $(ATSOPT) --posmark_xref=XREF -d fact3.dats > fact3_dats.html
-xref:: ; $(ATSOPT) --posmark_xref=XREF -d fact4.dats > fact4_dats.html
+xref:: xref_fact4
+xref_fact4: ; $(ATSOPT) --posmark_xref=XREF -d fact4.dats > fact4_dats.html
 xref:: ; $(ATSOPT) --posmark_xref=XREF -d fact_in_c.dats > fact_in_c_dats.html
 xref:: ; $(ATSOPT) --posmark_xref=XREF -d fibs.dats > fibs_dats.html
 xref:: ; $(ATSOPT) --posmark_xref=XREF -d revarr.dats > revarr_dats.html

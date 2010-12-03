@@ -32,7 +32,7 @@ checkall: compall cleanall
 
 ######
 
-compall::  blurring
+compall:: blurring
 blurring: blurring.dats blur_image_surface.o
 	$(ATSCC) -o $@ blurring.dats blur_image_surface.o $(GTKCLFLAGS) -lm
 blur_image_surface.o: blur_image_surface.dats
@@ -40,35 +40,35 @@ blur_image_surface.o: blur_image_surface.dats
 
 ######
 
-compall::  clip-all
+compall:: clip-all
 clip-all: clip-all.dats
 	$(ATSCC) -o $@ clip-all.dats $(GTKCLFLAGS)
 
 ######
 
-compall::  push-group
+compall:: push-group
 push-group: push-group.dats
 	$(ATSCC) -g -o $@ push-group.dats $(GTKCLFLAGS)
 
 ######
 
-compall::  stroke-image
+compall:: stroke-image
 stroke-image: stroke-image.dats
 	$(ATSCC) -o $@ stroke-image.dats $(GTKCLFLAGS)
 
 ######
 
-compall::  testcairo
+compall:: testcairo
 testcairo: testcairo.dats
 	$(ATSCC) -o $@ testcairo.dats $(GTKCLFLAGS) -lm
 
 ######
 
-compall::  text-rotate
+compall:: text-rotate
 text-rotate: text-rotate.dats
 	$(ATSCC) -o $@ text-rotate.dats $(GTKCLFLAGS) -lm
 
-compall::  text-transform
+compall:: text-transform
 text-transform: text-transform.dats
 	$(ATSCC) -o $@ text-transform.dats $(GTKCLFLAGS) -lm
 

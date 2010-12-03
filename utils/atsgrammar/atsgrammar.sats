@@ -24,7 +24,7 @@ abstype grmrule
 typedef tynamelst = List (tyname)
 viewtypedef tynamelst_vt = List_vt (tyname)
 
-fun theTynamelst_get (): tynamelst
+fun theTynamelst_get (): tynamelst_vt
 fun theTynamelst_add (x: tyname): void
 
 (* ****** ****** *)
@@ -113,11 +113,6 @@ overload prerr with prerr_symbol
 
 (* ****** ****** *)
 
-fun theSymlst_get (): symlst
-fun theSymlst_add (x: symbol): void
-
-(* ****** ****** *)
-
 fun grmrule_make_symlst (xs: symlst): grmrule
 fun grmrule_make_symreglst (knd: int, xs: symreglst): grmrule
 
@@ -146,6 +141,12 @@ fun grmrule_set_precval
 // end of [grmrule_set_precval]
 
 fun grmrule_get_symreglst (gr: grmrule): symreglst
+
+(* ****** ****** *)
+
+fun theSymbolStampCount_getinc (): int
+fun theSymlst_get (): symlst_vt
+fun theSymlst_add (x: symbol): void
 
 (* ****** ****** *)
 

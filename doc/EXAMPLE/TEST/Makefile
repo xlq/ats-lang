@@ -1,6 +1,6 @@
 #
 #
-# unit testing (kind of) for ATS library code
+# (kind of) unit testing for ATS library code
 #
 #
 
@@ -19,9 +19,11 @@ ATSOPT=$(ATSHOMEQ)/bin/atsopt
 ######
 
 .PHONY: all
-all:: checkall
+all: checkall
 
-checkall:: compall cleanall
+######
+
+checkall: compall cleanall
 	echo "[checkall] is finished successfully!"
 
 ######

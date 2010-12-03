@@ -209,7 +209,7 @@ emit_desc (out) = let
   val () = fprint_string (out, "\n/* ****** ****** */\n\n")
   val () = () where {
     val xs = theSymlst_get ()
-    val xs = list_reverse (xs)
+    val xs = list_vt_reverse (xs)
     val () = emit_symall_defn (out, xs)
     val () = list_vt_free (xs)
   } // end of [val]

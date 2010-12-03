@@ -66,22 +66,4 @@ implement prerr_tyname (x) = fprint_tyname (stderr_ref, x)
 
 (* ****** ****** *)
 
-local
-
-val theTynamelst = ref<tynamelst> (list_nil)
-
-in // in of [local]
-
-implement
-theTynamelst_get () = !theTynamelst
-
-implement
-theTynamelst_add (x) = (
-  !theTynamelst := list_cons (x, !theTynamelst)
-) // end of [theTynamelst_add]
-
-end // end of [local]
-
-(* ****** ****** *)
-
 (* end of [atsgrammar_tyname.dats] *)

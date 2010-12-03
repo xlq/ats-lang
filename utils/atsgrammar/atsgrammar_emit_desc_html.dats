@@ -11,7 +11,6 @@
 
 (* ****** ****** *)
 
-staload _(*anon*) = "prelude/DATS/list.dats"
 staload _(*anon*) = "prelude/DATS/list_vt.dats"
 
 (* ****** ****** *)
@@ -253,13 +252,28 @@ val theATSGrammarHeader = "\
 // Sylvain Nahas (sylvain.nahas AT googlemail DOT com)\n\
 //\n\
 /* ****** ****** */\n\
-\n\
-/*\n\
-** Grammar for ATS/Anairiats\n\
-*/\n\
-\n\
-/* ****** ****** */\n\
 " // end of [theATSGrammarHeader]
+
+(* ****** ****** *)
+
+val theTitle = "\
+<H2>Grammar for ATS/Anairiats</H2>\n\
+" // end of [theTitle]
+
+(* ****** ****** *)
+
+val theEBNFnotation = "\
+<H3>Some Explanation on the EBNF Notation</H3>\n\
+\"...\"   : terminal string<BR>\n\
+::=     : nonterminal definition<BR>\n\
+a , b   : concatenation<BR>\n\
+(...)   : grouping<BR>\n\
+{a}     : 0 or more a (Kleene's star closure)<BR>\n\
+{a}+    : 1 or more a (this is an extension to the standard EBNF)<BR>\n\
+[a]     : 0 or 1 a (option)<BR>\n\
+a | b   : a or b (alternation)<BR>\n\
+/*...*/ : comment<BR>\n\
+" // end of [theEBNFnotation]
 
 (* ****** ****** *)
 
@@ -271,8 +285,15 @@ emit_desc_html (out) = let
     out, "<span class=comment>%s</span>\n", @(theATSGrammarHeader)
   ) // end of [val]
 //
+  val () = fprintf (out, "<HR>\n", @())
+  val () = fprint_string (out, theTitle)
+  val () = fprintf (out, "<HR>\n", @())
+//
+  val () = fprint_string (out, theEBNFnotation)
+  val () = fprintf (out, "<HR>\n", @())
+//
   val xs = theSymlst_get ()
-  val xs = list_reverse (xs)
+  val xs = list_vt_reverse (xs)
   val () = emit_symall_defn (out, xs)
 //
   val () = fprint_string (out, thePostamble)

@@ -18,6 +18,7 @@ staload "atsgrammar.sats"
 dynload "atsgrammar_tyname.dats"
 dynload "atsgrammar_symbol.dats"
 dynload "atsgrammar_grmrule.dats"
+dynload "atsgrammar_global.dats"
 //
 dynload "atsgrammar_emit_yats.dats"
 dynload "atsgrammar_emit_yats_html.dats"

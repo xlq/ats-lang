@@ -363,7 +363,7 @@ emit_yats_html (out) = let
 //
   val () = () where {
     val xs = theSymlst_get ()
-    val xs = list_reverse (xs)
+    val xs = list_vt_reverse (xs)
 //
     val () = fprint_string (out, "\n<span class=comment>/* ****** ****** */\n\n")
     val () = fprint_string (out, "/*\n")

@@ -70,60 +70,6 @@ end // end of [local]
 
 (* ****** ****** *)
 
-val theGrmrulelst = ref<grmrulelst_vt> (list_vt_nil)
-
-(* ****** ****** *)
-
-implement
-theGrmrulelst_get () = let
-  val (vbox pf | p) = ref_get_view_ptr (theGrmrulelst)
-  val grs = !p
-  val () = !p := list_vt_nil ()
-in
-  grs
-end // end of [theGrmrulelst_get]
-
-(* ****** ****** *)
-
-implement
-theGrmrulelst_add (gr) = let
-  val (vbox pf | p) = ref_get_view_ptr (theGrmrulelst)
-in
-  !p := list_vt_cons (gr, !p)
-end // end of [theGrmrulelst_add]
-
-(* ****** ****** *)
-
-implement
-theGrmrulelst_merge_all
-  (sym, xs) = let
-//
-  fun loop {n:nat} .<n>.
-    (grs: !list_vt (grmrule, n)): void =
-    case+ grs of
-    | list_vt_cons (gr, !p_grs) => let
-        val () = grmrule_set_merged (gr, 1)
-        val () = loop (!p_grs)
-        val () = fold@ (grs)
-      in
-        // nothing
-      end // end of [val]
-    | list_vt_nil () => fold@ (grs)
-  // end of [loop]
-  val () = let
-    val (vbox pf | p) = ref_get_view_ptr (theGrmrulelst)
-  in
-    $effmask_ref (loop (!p))
-  end // end of [val]
-//
-  val gr = grmrule_make_symreglst (1, list_sing (xs))
-  val () = theGrmrulelst_add (gr)
-in
-  // nothing
-end // end of [theGrmrulelst_merge]
-
-(* ****** ****** *)
-
 implement
 grmrule_append_empty () =
   grmrule_append_symlst (list_nil ())
