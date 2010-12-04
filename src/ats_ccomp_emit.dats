@@ -247,7 +247,7 @@ end // end of [emit_funlab_prefix]
 
 implement
 emit_funlab (pf | out, fl) = let
-  val () = case+ funlab_qua_get fl of
+  val () = (case+ funlab_qua_get fl of
     | D2CSTOPTsome d2c => let // global function
         val () = emit_d2cst (pf | out, d2c)
         val () = (case+ d2cst_kind_get d2c of
@@ -263,7 +263,7 @@ emit_funlab (pf | out, fl) = let
       in
         // empty
       end // end of [D2CSTOPTnone]
-  // end of [val]
+  ) : void // end of [val]
 in
   if funlab_prfck_get fl > 0 then fprint1_string (pf | out, "_prfck")
 end // end of [emit_funlab]
@@ -314,9 +314,11 @@ end // end of [emit_tmpvar]
 
 #define PTR_TYPE_NAME "ats_ptr_type"
 
-fn _emit_hityp {m:file_mode}
-  (pf: fmlte (m, w) | out: &FILE m, hit: hityp)
-  : void = let
+(* ****** ****** *)
+
+fn _emit_hityp {m:file_mode} (
+  pf: fmlte (m, w) | out: &FILE m, hit: hityp
+) : void = let
   val HITNAM (knd, name) = hit.hityp_name
 (*
   val () = (
@@ -329,38 +331,11 @@ fn _emit_hityp {m:file_mode}
 in
   case+ 0 of
   | _ when knd <= 0 => (* flt_ext: ~1; flt: 0 *)
-      fprint_string (pf | out, name)
+      fprint1_string (pf | out, name)
   | _ => (* boxed: knd > 0 *)
       fprint1_string (pf | out, PTR_TYPE_NAME)
   // end of [case]
 end // end of [_emit_hityp]
-
-implement
-emit_hityp (pf | out, hit) =
-  _emit_hityp (pf | out, hityp_decode hit)
-// end of [emit_hityp]
-
-fn _emit_hityplst {m:file_mode}
-  (pf: fmlte (m, w) | out: &FILE m, hits: hityplst)
-  : void = let
-  fun aux (out: &FILE m, i: int, hits: hityplst)
-    : void = begin case+ hits of
-    | list_cons (hit, hits) => begin
-        if i > 0 then fprint1_string (pf | out, ", ");
-        _emit_hityp (pf | out, hit); aux (out, i+1, hits)
-      end (* end of [list_cons] *)
-    | list_nil () => ()
-  end // end of [aux]
-in
-  aux (out, 0, hits)
-end // end of [emit_hityplst]
-
-implement
-emit_hityplst {m} (pf | out, hits) =
-  _emit_hityplst (pf | out, hityplst_decode hits)
-// end of [emit_hityplst]
-
-(* ****** ****** *)
 
 fn _emit_hityp_ptr {m:file_mode}
   (pf: fmlte (m, w) | out: &FILE m, hit: hityp)
@@ -372,40 +347,74 @@ in
   // empty
 end // end of [emit_hityp_ptr]
 
+fn _emit_hityplst_sep {m:file_mode} (
+  pf: fmlte (m, w) | out: &FILE m, hits: hityplst, sep: string
+) : void = let
+  fun aux (
+    out: &FILE m, i: int, hits: hityplst, sep: string
+  ) : void = begin case+ hits of
+    | list_cons (hit, hits) => let
+        val () = if i > 0 then fprint1_string (pf | out, sep)
+        val () = _emit_hityp (pf | out, hit)
+      in
+        aux (out, i+1, hits, sep)
+      end (* end of [list_cons] *)
+    | list_nil () => () // end of [list_nil]
+  end // end of [aux]
+in
+  aux (out, 0, hits, sep)
+end // end of [_emit_hityplst_sep]
+
+(* ****** ****** *)
+
+implement
+emit_hityp (pf | out, hit) =
+  _emit_hityp (pf | out, hityp_decode hit)
+// end of [emit_hityp]
+
 implement emit_hityp_ptr (pf | out, hit) =
   _emit_hityp_ptr (pf | out, hityp_decode hit)
 // end of [emit_hityp_ptr]
 
+implement
+emit_hityplst_sep (
+  pf | out, _arg, sep
+) = _emit_hityplst_sep (pf | out, hityplst_decode (_arg), sep)
+// end of [emit_hityplst_sep]
+
 (* ****** ****** *)
 
-extern fun emit_hityp_fun {m:file_mode} (
-  pf: fmlte (m, w) | out: &FILE m, hits_arg: hityplst_t, hit_res: hityp_t
-) : void
-
-extern fun emit_hityp_clofun {m:file_mode} (
-  pf: fmlte (m, w) | out: &FILE m, hits_arg: hityplst_t, hit_res: hityp_t
-) : void
-
+extern
+fun emit_hityp_fun {m:file_mode} (
+  pf: fmlte (m, w) | out: &FILE m, _arg: hityplst_t, _res: hityp_t
+) : void // end of [emit_hityp_fun]
 implement
-emit_hityp_fun
-  (pf | out, hits_arg, hit_res) = begin
-  emit_hityp (pf | out, hit_res);
-  fprint1_string (pf | out, "(*)(");
-  emit_hityplst (pf | out, hits_arg);
-  fprint1_string (pf | out, ")")
-end // end of [emit_hityp_fun]
+emit_hityp_fun (
+  pf | out, _arg, _res
+) = () where {
+  val () = emit_hityp (pf | out, _res)
+  val () = fprint1_string (pf | out, "(*)(")
+  val () = emit_hityplst_sep (pf | out, _arg, ", ")
+  val () = fprint1_string (pf | out, ")")
+} // end of [emit_hityp_fun]
 
+extern
+fun emit_hityp_clofun {m:file_mode} (
+  pf: fmlte (m, w) | out: &FILE m, _arg: hityplst_t, _res: hityp_t
+) : void // end of [emit_hityp_clofun]
 implement
-emit_hityp_clofun
-  (pf | out, hits_arg, hit_res) = let
-  val () = emit_hityp (pf | out, hit_res)
+emit_hityp_clofun (
+  pf | out, _arg, _res
+) = let
+  val () = emit_hityp (pf | out, _res)
   val () = fprint1_string (pf | out, "(*)(ats_clo_ptr_type")
   val () = case+ 0 of
-    | _ when hityplst_is_cons hits_arg => begin
-        fprint1_string (pf | out, ", ");
-        emit_hityplst (pf | out, hits_arg)
+    | _ when hityplst_is_cons _arg => let
+        val () = fprint1_string (pf | out, ", ") in
+        emit_hityplst_sep (pf | out, _arg, ", ")
       end // end of [_ when ...]
-    | _ => ()
+    | _ => () // end of [_]
+  // end of [_]
   val () = fprint1_string (pf | out, ")")
 in
   // empty

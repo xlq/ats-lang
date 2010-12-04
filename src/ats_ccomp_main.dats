@@ -455,15 +455,23 @@ fn emit_dynconset {m:file_mode}
 
 (* ****** ****** *)
 
-fn emit_d2cst_dec {m:file_mode} // for a non-proof constant
+#define HITARGSEP ", "
+
+(* ****** ****** *)
+
+fn emit_d2cst_dec
+  {m:file_mode} // for a non-proof constant
   (pf: fmlte (m, w)| out: &FILE m, d2c: d2cst_t): void = let
   val hit0 = d2cst_hityp_get_some (d2c); val hit1 = hityp_decode (hit0)
+//
   macdef f_isprf_mac () = begin
     fprint1_string (pf | out, "ATSextern_prf(");
     emit_d2cst (pf | out, d2c);
     fprint1_string (pf | out, ") ;\n")
   end // end of [macdef]  
-  macdef f_isfun_FUNCLOclo_mac (hits_arg, hit_res) = let
+//
+  macdef f_isfun_FUNCLOclo_mac
+     (hits_arg, hit_res) = let
      val hits_arg = hityplst_encode ,(hits_arg)
      val hit_res = hityp_encode ,(hit_res)
    in
@@ -476,10 +484,12 @@ fn emit_d2cst_dec {m:file_mode} // for a non-proof constant
      fprint1_char (pf | out, ' ');
      emit_d2cst (pf | out, d2c);
      fprint1_string (pf | out, "$fun (");
-     emit_hityplst (pf | out, hits_arg);
+     emit_hityplst_sep (pf | out, hits_arg, HITARGSEP);
      fprint1_string (pf | out, ") ;\n");
    end // end of [macdef]
-  macdef f_isfun_FUNCLOfun_mac (hits_arg, hit_res) = let
+//
+  macdef f_isfun_FUNCLOfun_mac
+    (hits_arg, hit_res) = let
     val hits_arg = hityplst_encode ,(hits_arg)
     val hit_res = hityp_encode ,(hit_res)
   in
@@ -490,7 +500,7 @@ fn emit_d2cst_dec {m:file_mode} // for a non-proof constant
         fprint1_char (pf | out, ' ');
         emit_d2cst (pf | out, d2c);
         fprint1_string (pf | out, " (");
-        emit_hityplst (pf | out, hits_arg);
+        emit_hityplst_sep (pf | out, hits_arg, HITARGSEP);
         fprint1_string (pf | out, ") ;\n")
        end // end of [_ when ...]
      | _ when d2cst_is_castfn d2c => () // casting function
@@ -504,11 +514,12 @@ fn emit_d2cst_dec {m:file_mode} // for a non-proof constant
          fprint1_char (pf | out, ' ');
          emit_d2cst (pf | out, d2c);
          fprint1_string (pf | out, "$fun (");
-         emit_hityplst (pf | out, hits_arg);
+         emit_hityplst_sep (pf | out, hits_arg, HITARGSEP);
          fprint1_string (pf | out, ") ;\n")
        end // end of [_]
     // end of [case]
   end // end of [macdef]
+//
   macdef f_isnotfun_mac () = () where {
     val () = fprint1_string (pf | out, "ATSextern_val(")
     val () = emit_hityp (pf | out, hit0)
@@ -516,7 +527,9 @@ fn emit_d2cst_dec {m:file_mode} // for a non-proof constant
     val () = emit_d2cst (pf | out, d2c)
     val () = fprint1_string (pf | out, ") ;\n")
   } // end of [_]
-in
+//
+in // in of [let]
+//
   case+ 0 of
   | _ when d2cst_is_proof d2c => ()
   | _ when d2cst_is_extmac d2c => ()
@@ -527,11 +540,14 @@ in
       end // end of [HITfun]
     | _ => f_isnotfun_mac ()
     end // end of [_]
+//
 end // end of [emit_d2cst_dec]
 
 fn emit_d2cst_dec_prfck {m:file_mode} // for terminating constants
   (pf: fmlte (m, w)| out: &FILE m, d2c: d2cst_t): void = let
+//
   val hit0 = d2cst_hityp_get_some (d2c); val hit1 = hityp_decode (hit0)
+//
   macdef f_isprf_mac () = begin
     fprint1_string (pf | out, "extern\n");
     emit_hityp (pf | out, hityp_t_void);
@@ -540,12 +556,15 @@ fn emit_d2cst_dec_prfck {m:file_mode} // for terminating constants
     fprint1_string (pf | out, "_prfck (");
     fprint1_string (pf | out, ") ;\n")
   end // end of [macdef]
+//
 in
+//
   case+ 0 of
   | _ when d2cst_is_praxi d2c => ()
   | _ when d2cst_is_prfun d2c => f_isprf_mac ()
   | _ when d2cst_is_prval d2c => f_isprf_mac ()
   | _ => () // needs some fixing later
+//
 end // end of [emit_d2cst_dec]
 
 (* ****** ****** *)

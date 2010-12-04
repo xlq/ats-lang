@@ -850,11 +850,12 @@ fun emit_tmpvar {m:file_mode}
 fun emit_hityp {m:file_mode}
   (pf: file_mode_lte (m, w) | out: &FILE m, hit: hityp_t): void
 
-fun emit_hityplst {m:file_mode}
-  (pf: file_mode_lte (m, w) | out: &FILE m, hits: hityplst_t): void
-
 fun emit_hityp_ptr {m:file_mode}
   (pf: file_mode_lte (m, w) | out: &FILE m, hit: hityp_t): void
+
+fun emit_hityplst_sep {m:file_mode} (
+  pf: file_mode_lte (m, w) | out: &FILE m, _arg: hityplst_t, sep: string
+) : void // end of [emit_hityplst_sep]
 
 (* ****** ****** *)
 

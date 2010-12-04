@@ -85,6 +85,10 @@ end // end of [prerr_loc_interror]
 
 (* ****** ****** *)
 
+fn hityp_ptr_abs (s2t: s2rt): hityp =
+  if s2rt_is_boxed (s2t) then hityp_ptr else hityp_abs
+// end of [hityp_ptr_abs]
+
 fn s2exp_app_tr (
     loc0: loc_t
   , deep: int
@@ -102,11 +106,14 @@ fn s2exp_app_tr (
 in
   case+ s2e_fun.s2exp_node of
   | S2Ecst s2c => begin case+ s2t_app of
+(*
     | _ when s2rt_is_boxed s2t_app => hityp_ptr
+*)
     | _ => begin case+ s2cst_isabs_get s2c of
       | Some (os2e) => begin case+ os2e of
         | Some s2e => begin case+ s2e.s2exp_node of
           | S2Elam (s2vs_arg, s2e_body) => let
+//
               fun aux (
                   s2vs: s2varlst, s2es: s2explst
                 ) : stasub_t =
@@ -123,21 +130,21 @@ in
                     $Err.abort {stasub_t} ()
                   end // end [_,_]
               // end of [aux]
+//
               val sub = aux (s2vs_arg, s2es_arg)
               val s2e_app = s2exp_subst (sub, s2e_body)
+//
             in
               s2exp_tr (loc0, deep, s2e_app)
             end // end of [S2Elam]
-          | _ => hityp_abs
+          | _ => hityp_ptr_abs (s2t_app)
           end // end of [Some]
-        | None () => hityp_abs
+        | None () => hityp_ptr_abs (s2t_app)
         end // end of [case]
-      | None () => hityp_abs
+      | None () => hityp_ptr_abs (s2t_app)
       end // end of [case]
     end (* end of [S2Ecst] *)
-  | _ => begin
-      if s2rt_is_boxed s2t_app then hityp_ptr else hityp_abs
-    end (* end of [_] *)
+  | _ => hityp_ptr_abs (s2t_app) // end of [_]
 end // end of [s2exp_app_tr]
 
 fn s2Var_tr
@@ -191,7 +198,7 @@ s2exp_tr (loc0, deep, s2e0) = let
     ) : hityp = begin
     prerr_loc_error4 (loc0);
     $Deb.debug_prerrf (": [%s]: s2exp_tr", @(THISFILENAME));
-    prerr ": s2t0 = "; prerr s2t0; prerr "; s2e0 = "; prerr s2e0;
+    prerr ": s2t0 = "; prerr s2t0; prerr "; s2e0 = "; prerr_s2exp (s2e0);
     prerr_newline ();
     $Err.abort {hityp} ()
   end // end of [err]
@@ -202,13 +209,12 @@ in
     end // end of [S2Eapp]
   | S2Ecrypt s2e => s2exp_tr (loc0, deep, s2e)
   | S2Ecst s2c => begin case+ s2t0 of
-    | _ when s2rt_is_boxed (s2t0) => hityp_ptr
     | _ => begin
       case+ s2cst_isabs_get s2c of
       | Some os2e => begin case+ os2e of
-        | Some s2e => s2exp_tr (loc0, deep, s2e) | None () => hityp_abs
+        | Some s2e => s2exp_tr (loc0, deep, s2e) | None () => hityp_ptr_abs (s2t0)
         end // end of [Some]
-      | None () => hityp_abs // HX: this is not appropriate: err (loc0, s2t0, s2e0)
+      | None () => hityp_ptr_abs (s2t0)
       end (* end of [_] *)
     end // end of [S2Ecst]
   | S2Eclo (knd, s2exp) => begin

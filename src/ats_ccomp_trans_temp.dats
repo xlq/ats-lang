@@ -193,8 +193,9 @@ end // end of [the_stactx_pop]
 end // end of [local]
 
 (* ****** ****** *)
-
-// declared in [ats_hiexp.sats]
+//
+// HX: declared in [ats_hiexp.sats]
+//
 implement hityp_s2var_normalize (s2v) = let
 (*
   val () = print "hityp_s2var_normalize: the_stactx =\n"
@@ -208,27 +209,38 @@ end // end of [hityp_s2var_normalize]
 
 #define PTR_TYPE_NAME "ats_ptr_type"
 
-implement template_name_make (basename, hitss) = let
+implement
+template_name_make
+  (basename, hitss) = let
   viewtypedef T = $CS.Charlst_vt
+//
   fun aux_char (cs: &T, c: char): void = (cs := $CS.CHARLSTcons (c, cs))
-
+//
   fun aux_string {n,i:nat | i <= n}
      (cs: &T, i: size_t i, s: string n): void =
     if string_is_at_end (s, i) then () else begin
       cs := $CS.CHARLSTcons (s[i], cs); aux_string (cs, i+1, s)
     end // end of [if]
-  // end of [aux_string]
-
+  (* end of [aux_string] *)
+//
   fun aux_hityp
-    (cs: &T, hit: hityp): void = let
-    val HITNAM (knd, name) = hit.hityp_name
-    val name = (if knd > 0 then PTR_TYPE_NAME else name): string
-    val name = string1_of_string name
-  in
-    aux_string (cs, 0, name)
-  end // end of [aux_hityp]
-
-  fun aux_hityplst
+    (cs: &T, hit: hityp): void =
+    case+ hit.hityp_node of
+    | HITextype (name, _arg) => let
+        val name = string1_of_string name
+      in
+        aux_string (cs, 0, name); aux_hityplstlst (cs, _arg)
+      end // end of [HITextype]
+    | _ => let    
+        val HITNAM (knd, name) = hit.hityp_name
+        val name = (if knd > 0 then PTR_TYPE_NAME else name): string
+        val name = string1_of_string name
+      in
+        aux_string (cs, 0, name)
+      end // end of [_]
+  (* end of [aux_hityp] *)
+//
+  and aux_hityplst
     (cs: &T, hits: hityplst): void = case+ hits of
     | list_cons (hit, hits) => let
         val () = (aux_char (cs, '_'); aux_hityp (cs, hit))
@@ -236,9 +248,9 @@ implement template_name_make (basename, hitss) = let
         aux_hityplst (cs, hits)
       end // end of [list_cons]
     | list_nil () => ()
-  // end of [aux_hityplst]
-
-  fun aux_hityplstlst
+  (* end of [aux_hityplst] *)
+//
+  and aux_hityplstlst
     (cs: &T, hitss: hityplstlst): void = case+ hitss of
     | list_cons (hits, hitss) => let
         val () = (aux_char (cs, '_'); aux_hityplst (cs, hits))
@@ -246,12 +258,13 @@ implement template_name_make (basename, hitss) = let
         aux_hityplstlst (cs, hitss)
       end // end of [list_cons]
     | list_nil () => ()
-  // end of [aux_hityplstlst]
-
+  (* end of [aux_hityplstlst] *)
+//
   var cs: T = $CS.CHARLSTnil ()
   val basename = string1_of_string (basename)
   val () = aux_string (cs, 0, basename)
   val () = aux_hityplstlst (cs, hityplstlst_decode hitss)
+//
 in
   $CS.string_make_charlst_rev (cs)
 end // end of [template_name_make]
