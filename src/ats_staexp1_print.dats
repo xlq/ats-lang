@@ -278,9 +278,11 @@ in
       fprint_s1exp (pf | out, s1e);
       prstr ")"
     end // end of [S1Eexi]
-  | S1Eextype name => begin
+  | S1Eextype (name, arg) => begin
       prstr "S1Eextype(";
       fprint1_string (pf | out, name);
+      prstr "; ";
+      fprint_s1explstlst (pf | out, arg);
       prstr ")"
     end // end of [S1Eextype]
   | S1Eimp (fc, lin, prf, oefc) => begin

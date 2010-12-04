@@ -303,8 +303,12 @@ in
       fprint_s2exp (pf | out, s2e);
       prstr ")"
     end // end of [S2Eexi]
-  | S2Eextype name => begin
-      prstr "S2Eextype("; fprint1_string (pf | out, name); prstr ")"
+  | S2Eextype (name, arglst) => begin
+      prstr "S2Eextype(";
+      fprint1_string (pf | out, name);
+      prstr "; ";
+      fprint_s2explstlst (pf | out, arglst);
+      prstr ")"
     end // end of [S2Eextype]
   | S2Efun (fc, lin, s2fe, npf, s2es, s2e) => begin
       prstr "S2Efun(";

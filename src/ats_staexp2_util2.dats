@@ -254,7 +254,7 @@ in
                 prerr_interror ();
                 prerr ": s2exp_whnf_flag: S2Eapp: arity error"; prerr_newline ();
                 $Err.abort {stasub_t} ()
-              end // end of [_, _]
+              end // end of [_,_]
           // end of [aux]
           val sub = aux (s2vs_arg, s2es_arg)
           val () = flag := flag + 1
@@ -592,12 +592,17 @@ in
   | S2Eeqeq (s2e11, s2e12) => begin case+ s2e20.s2exp_node of
     | S2Eeqeq (s2e21, s2e22) => begin
         s2exp_syneq (s2e11, s2e21) andalso s2exp_syneq (s2e12, s2e22)
-      end
+      end // end of [S2Eeqeq]
     | _ => false
     end // end of [S2Eeqeq]
-  | S2Eextype name1 => begin case+ s2e20.s2exp_node of
-    | S2Eextype name2 => eq_string_string (name1, name2) | _ => false
+(*
+  | S2Eextype (name1, s2ess1) => begin case+ s2e20.s2exp_node of
+    | S2Eextype (name2, s2ess2) => (
+        eq_string_string (name1, name2) andalso s2explstlst_syneq (s2ess1, s2ess2)
+      ) // end of [S2Eextyp]
+    | _ => false
     end // end of [S2Eextype]
+*)
   | S2Efun (fc1, lin1, s2fe1, npf1, s2es1_arg, s2e1_res) => begin
       case+ s2e20.s2exp_node of
       | S2Efun (fc2, lin2, s2fe2, npf2, s2es2_arg, s2e2_res) => begin
@@ -626,21 +631,21 @@ in
   | S2Eproj (s2e1(*root*), s2l1) => begin case+ s2e20.s2exp_node of
     | S2Eproj (s2e2(*root*), s2l2) => begin
         s2exp_syneq (s2e1, s2e2) andalso s2lab_syneq (s2l1, s2l2)
-      end
+      end // end of [S2Eproj]
     | _ => false
     end // end of [S2Eproj]
   | S2Eread (_v1, s2e1) => begin
     case+ s2e20.s2exp_node of
     | S2Eread (_v2, s2e2) => begin
         s2exp_syneq (_v1, _v2) andalso s2exp_syneq (s2e1, s2e2)
-      end
+      end // end of [S2Eread]
     | _ => false
     end // end of [S2Eread]
   | S2Erefarg (refval1, s2e1) => begin
     case+ s2e20.s2exp_node of
     | S2Erefarg (refval2, s2e2) => begin
         refval1 = refval2 andalso s2exp_syneq (s2e1, s2e2)
-      end
+      end // end of [S2Erefarg]
     | _ => false
     end // end of [S2Erefarg]
   | S2Esel (s2e1, i1) => begin case+ s2e20.s2exp_node of
@@ -667,29 +672,30 @@ in
     | S2Etyarr (s2e2_elt, s2ess2_ind) => begin
         s2exp_syneq (s2e1_elt, s2e2_elt) andalso
         s2explstlst_syneq (s2ess1_ind, s2ess2_ind)
-      end
+      end // end of [S2Etyarr]
     | _ => false
     end // end of [S2Etyarr]
   | S2Etyleq (_(*knd*), s2e11, s2e12) => begin
     case+ s2e20.s2exp_node of
     | S2Etyleq (_(*knd*), s2e21, s2e22) => begin
         s2exp_syneq (s2e11, s2e21) andalso s2exp_syneq (s2e12, s2e22)
-      end
+      end // end of [S2Etyleq]
     | _ => false
     end // end of [S2Etyleq]
   | S2Etyrec (knd1, npf1, ls2es1) => begin case+ s2e20.s2exp_node of
     | S2Etyrec (knd2, npf2, ls2es2) => begin
         knd1 = knd2 andalso npf1 = npf2 andalso
         labs2explst_syneq (ls2es1, ls2es2)
-      end
+      end // end of [S2Etyrec]
     | _ => false
     end // end of [S2Etyrec]
-  | S2Eunion (s1, s2e1_ind, ls2es1_body) => begin case+ s2e20.s2exp_node of
+  | S2Eunion (s1, s2e1_ind, ls2es1_body) => begin
+    case+ s2e20.s2exp_node of
     | S2Eunion (s2, s2e2_ind, ls2es2_body) => begin
         $Stamp.eq_stamp_stamp (s1, s2) andalso
         s2exp_syneq (s2e1_ind, s2e2_ind) andalso
         labs2explst_syneq (ls2es1_body, ls2es2_body)
-      end
+      end // end of [S2Eunion]
     | _ => false
     end // end of [S2Eunion]
   | S2Evar s2v1 => begin case+ s2e20.s2exp_node of
@@ -708,7 +714,7 @@ s2explst_syneq (s2es10, s2es20) = begin
       s2exp_syneq (s2e1, s2e2) andalso s2explst_syneq (s2es1, s2es2)
     end // end of [::, ::]
   | (nil (), nil ()) => true
-  | (_, _) => false
+  | (_, _) => false // end of [_,_]
 end // end of [s2explst_syneq]
 
 implement
@@ -718,7 +724,7 @@ s2explstlst_syneq (s2ess10, s2ess20) = begin
       s2explst_syneq (s2es1, s2es2) andalso s2explstlst_syneq (s2ess1, s2ess2)
     end // end of [::, ::]
   | (nil (), nil ()) => true
-  | (_, _) => false
+  | (_, _) => false // end of [_,_]
 end // end of [s2explstlst_syneq]
 
 (* ****** ****** *)
@@ -732,9 +738,9 @@ fun labs2zexplst_syneq (
       l1 = l2 andalso
       s2zexp_syneq (s2ze1, s2ze2) andalso
       labs2zexplst_syneq (ls2zes1, ls2zes2)
-    end
+    end // end of [_cons, _cons]
   | (LABS2ZEXPLSTnil (), LABS2ZEXPLSTnil ()) => true
-  | (_, _) => false
+  | (_, _) => false // end of [_,_]
 end // end of [labs2zexplst_syneq]
 
 fun s2zexplst_syneq
@@ -745,7 +751,7 @@ fun s2zexplst_syneq
       else false
     end // end of [cons, cons]
   | (nil (), nil ()) => true
-  | (_, _) => false
+  | (_, _) => false // end of [_,_]
 // end of [s2zexplst_syneq]
 
 implement
@@ -772,12 +778,14 @@ in
   | S2ZEextype name1 => begin case+ s2ze20 of
     | S2ZEextype name2 => (name1 = name2) | _ => false
     end // end of [S2ZEextype]
-  | S2ZEptr () => (case+ s2ze20 of S2ZEptr () => true | _ => false)
+  | S2ZEptr () => (
+      case+ s2ze20 of S2ZEptr () => true | _ => false
+    ) // end of [S2ZEptr]
   | S2ZEtyarr (s2ze1_elt, s2ess1_dim) => begin case+ s2ze20 of
     | S2ZEtyarr (s2ze2_elt, s2ess2_dim) => begin
         s2zexp_syneq (s2ze1_elt, s2ze2_elt) andalso
         s2explstlst_syneq (s2ess1_dim, s2ess2_dim)
-      end
+      end // end of [S2ZEtyarr]
     | _ => false
     end // end of [S2ZEtyarr]
   | S2ZEtyrec (knd1, ls2zes1) => begin case+ s2ze20 of
@@ -790,7 +798,7 @@ in
     | S2ZEunion (s2, ls2zes2) => begin
         $Stamp.eq_stamp_stamp (s1, s2) andalso
         labs2zexplst_syneq (ls2zes1, ls2zes2)
-      end
+      end // end of [S2ZEunion]
     | _ => false
     end // end of [S2ZEunion]
   | S2ZEvar s2v1 => begin case+ s2ze20 of
@@ -808,11 +816,12 @@ end // end of [s2exp_projlst]
 
 implement
 s2exp_addr_normalize (s2e0) = let
-  fun aux
-    (s2e0: s2exp, s2ls: s2lablst): @(s2exp, s2lablst) =
+  fun aux (
+    s2e0: s2exp, s2ls: s2lablst
+  ) : @(s2exp, s2lablst) =
     case+ s2e0.s2exp_node of
     | S2Eproj (s2e0, s2l) => aux (s2e0, cons (s2l, s2ls))
-    | _ => (s2e0, s2ls)
+    | _ => (s2e0, s2ls) // end of [_]
   // end of [aux]
 in
   aux (s2e0, nil ())
@@ -836,7 +845,7 @@ fun s2exp_prenexing (
               if flag > flag0 then s2exp_app_srt
                 (s2rt_view, s2e_fun, cons (s2e_at, cons(s2l, nil ())))
               else s2e0
-            end
+            end // end of [cons]
           | _ => begin
               prerr_interror ();
               prerr ": s2exp_prenexing: At_viewt0ype_addr_view"; prerr_newline ();

@@ -472,8 +472,9 @@ implement s1explst_tr_dn_cls (s1es) =
 implement
 s1exp_tr_dn_int (s1e) = s1exp_tr_dn (s1e, s2rt_int)
 
-implement s1explst_tr_dn_int (s1es) =
-  $Lst.list_map_fun (s1es, s1exp_tr_dn_int)
+implement
+s1explst_tr_dn_int (s1es) = $Lst.list_map_fun (s1es, s1exp_tr_dn_int)
+// end of [s1explst_tr_dn_int]
 
 (* ****** ****** *)
 
@@ -481,15 +482,20 @@ implement s1exp_tr_dn_prop (s1e) = s1exp_tr_dn (s1e, s2rt_prop)
 implement s1exp_tr_dn_type (s1e) = s1exp_tr_dn (s1e, s2rt_type)
 implement s1exp_tr_dn_t0ype (s1e) = s1exp_tr_dn (s1e, s2rt_t0ype)
 
-fun s1explst_tr_dn_t0ype (s1es: s1explst): s2explst =
-  $Lst.list_map_fun (s1es, s1exp_tr_dn_t0ype)
+fun s1explst_tr_dn_t0ype
+  (s1es: s1explst): s2explst = $Lst.list_map_fun (s1es, s1exp_tr_dn_t0ype)
+// end of [s1explst_tr_dn_t0ype]
+fun s1explstlst_tr_dn_t0ype
+  (s1ess: s1explstlst): s2explstlst = $Lst.list_map_fun (s1ess, s1explst_tr_dn_t0ype)
+// end of [s1explstlst_tr_dn_t0ype]
 
 implement s1exp_tr_dn_view (s1e) = s1exp_tr_dn (s1e, s2rt_view)
 implement s1exp_tr_dn_viewtype (s1e) = s1exp_tr_dn (s1e, s2rt_viewtype)
 implement s1exp_tr_dn_viewt0ype (s1e) = s1exp_tr_dn (s1e, s2rt_viewt0ype)
 
-fun s1explst_tr_dn_viewt0ype (s1es: s1explst): s2explst =
-  $Lst.list_map_fun (s1es, s1exp_tr_dn_viewt0ype)
+fun s1explst_tr_dn_viewt0ype
+  (s1es: s1explst): s2explst = $Lst.list_map_fun (s1es, s1exp_tr_dn_viewt0ype)
+// end of [s1explst_tr_dn_viewt0ype]
 
 implement
 s1exp_tr_dn_impredicative (s1e) = let
@@ -1502,7 +1508,9 @@ in
     in
       s2exp_exi (s2vs, s2ps, s2e_scope)
     end // end of [S1Eexi]
-  | S1Eextype name => s2exp_extype_srt (s2rt_viewt0ype, name)
+  | S1Eextype (name, _arg) => begin
+      s2exp_extype_srt (s2rt_viewt0ype, name, s1explstlst_tr_dn_t0ype (_arg))
+    end // end of [S1Eextype]
   | S1Eimp _ => begin
       prerr_loc_interror s1e0.s1exp_loc;
       prerr ": s1exp_tr_up: S1Eimp"; prerr_newline ();
@@ -1623,9 +1631,11 @@ end // end of [tmps1explstlst_tr]
 implement
 s1exp_tr_dn (s1e0, s2t0) = begin
   case+ s1e0.s1exp_node of
-  | S1Eextype name => begin
+  | S1Eextype (name, _arg) => let
+      val _arg = s1explstlst_tr_dn_t0ype (_arg)
+    in
       if s2rt_is_impredicative s2t0 then
-        s2exp_extype_srt (s2t0, name) // [s2t0] can even be a view!
+        s2exp_extype_srt (s2t0, name, _arg) // [s2t0] can even be a view!
       else let
         val () = prerr_loc_error2 s1e0.s1exp_loc
         val () = $Deb.debug_prerrf (": %s: s1exp_tr_dn", @(THISFILENAME))

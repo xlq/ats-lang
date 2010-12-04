@@ -350,8 +350,8 @@ s2exp_exi
 end // end of [s2exp_exi]
 
 implement
-s2exp_extype_srt (s2t, name) = '{
-  s2exp_srt= s2t, s2exp_node= S2Eextype name
+s2exp_extype_srt (s2t, name, arglst) = '{
+  s2exp_srt= s2t, s2exp_node= S2Eextype (name, arglst)
 } // end of [s2exp_extype_srt]
 
 implement s2exp_fun_srt

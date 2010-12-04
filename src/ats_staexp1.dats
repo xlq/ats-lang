@@ -200,9 +200,10 @@ implement s1exp_exi (loc, knd(*funres*), s1qs, s1e) = '{
   s1exp_loc= loc, s1exp_node= S1Eexi (knd, s1qs, s1e)
 }
 
-implement s1exp_extype (loc, name) = '{
-  s1exp_loc= loc, s1exp_node= S1Eextype name
-}
+implement
+s1exp_extype (loc, name, arglst) = '{
+  s1exp_loc= loc, s1exp_node= S1Eextype (name, arglst)
+} // end of [s1exp_extype]
 
 implement s1exp_ide (loc, id: sym_t) = '{
   s1exp_loc= loc, s1exp_node= S1Eqid (s0taq_none, id)

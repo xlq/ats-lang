@@ -240,7 +240,7 @@ datatype s1exp_node =
   | S1Eexi of (* existentially quantifed expression *)
       (int(*funres*), s1qualst, s1exp)
   | S1Eextype of (* external type *)
-      string
+      (string(*extname*), s1explstlst(*arglst*))
   | S1Eimp of (* annotated implication *)
       (funclo, int (*lin*), int (*prf*), efcopt)
   | S1Eint of (* static integer *)
@@ -411,11 +411,16 @@ fun sp1at_con (_: loc_t, q: s0taq, id: sym_t, args: s1arglst): sp1at
 
 fun s1exp_ann (_: loc_t, _: s1exp, _: s1rt): s1exp
 fun s1exp_any (_: loc_t): s1exp
+
 fun s1exp_app
   (loc: loc_t, _fun: s1exp, loc_arg: loc_t, _arg: s1explst): s1exp
+// end of [s1exp_app]
+
 fun s1exp_char (_: loc_t, _: char): s1exp
 fun s1exp_exi (_: loc_t, knd: int, qua: s1qualst, body: s1exp): s1exp
-fun s1exp_extype (_: loc_t, name: string): s1exp
+
+fun s1exp_extype (_: loc_t, name: string, arg: s1explstlst): s1exp
+
 fun s1exp_ide (_: loc_t, _: sym_t): s1exp
 fun s1exp_imp
   (_: loc_t, fc: funclo, lin: int, prf: int, _: efcopt): s1exp

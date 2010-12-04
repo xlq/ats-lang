@@ -202,7 +202,7 @@ in
       end (* end of [if] *)
     end // end of [S2Edatcontyp]
   | S2Eexi (_(*s2vs*), _(*s2ps*), s2e) => s2exp_tr (loc0, deep, s2e)
-  | S2Eextype name => hityp_extype name
+  | S2Eextype (name, _arg) => hityp_extype (name)
   | S2Efun (fc, _(*lin*), _(*s2fe*), npf, s2es_arg, s2e_res) => begin
       if deep > 0 then let
         val hits_arg = s2explst_arg_tr (loc0, npf, s2es_arg)

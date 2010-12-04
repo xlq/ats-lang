@@ -221,7 +221,7 @@ and s2exp_node =
   | S2Eexi of (* existential quantifed expression *)
       (s2varlst, s2explst, s2exp)
   | S2Eextype of (* external name *)
-      string
+      (string, s2explstlst)
   | S2Efun of (* function type *) (
       $Syn.funclo
     , int(*lin*)
@@ -1078,7 +1078,10 @@ fun s2exp_datcontyp (d2c: d2con_t, s2es: s2explst): s2exp
 fun s2exp_eff (s2fe: s2eff): s2exp
 fun s2exp_eqeq (s2e1: s2exp, s2e2: s2exp): s2exp
 fun s2exp_exi (s2vs: s2varlst, s2ps: s2explst, s2e: s2exp): s2exp
-fun s2exp_extype_srt (s2t: s2rt, name: string): s2exp
+
+fun s2exp_extype_srt
+  (s2t: s2rt, name: string, arglst: s2explstlst): s2exp
+// end of [s2exp_extype_srt]
 
 fun s2exp_fun_srt (
     s2t: s2rt
