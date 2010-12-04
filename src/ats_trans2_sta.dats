@@ -485,9 +485,6 @@ implement s1exp_tr_dn_t0ype (s1e) = s1exp_tr_dn (s1e, s2rt_t0ype)
 fun s1explst_tr_dn_t0ype
   (s1es: s1explst): s2explst = $Lst.list_map_fun (s1es, s1exp_tr_dn_t0ype)
 // end of [s1explst_tr_dn_t0ype]
-fun s1explstlst_tr_dn_t0ype
-  (s1ess: s1explstlst): s2explstlst = $Lst.list_map_fun (s1ess, s1explst_tr_dn_t0ype)
-// end of [s1explstlst_tr_dn_t0ype]
 
 implement s1exp_tr_dn_view (s1e) = s1exp_tr_dn (s1e, s2rt_view)
 implement s1exp_tr_dn_viewtype (s1e) = s1exp_tr_dn (s1e, s2rt_viewtype)
@@ -496,6 +493,9 @@ implement s1exp_tr_dn_viewt0ype (s1e) = s1exp_tr_dn (s1e, s2rt_viewt0ype)
 fun s1explst_tr_dn_viewt0ype
   (s1es: s1explst): s2explst = $Lst.list_map_fun (s1es, s1exp_tr_dn_viewt0ype)
 // end of [s1explst_tr_dn_viewt0ype]
+fun s1explstlst_tr_dn_viewt0ype
+  (s1ess: s1explstlst): s2explstlst = $Lst.list_map_fun (s1ess, s1explst_tr_dn_viewt0ype)
+// end of [s1explstlst_tr_dn_viewt0ype]
 
 implement
 s1exp_tr_dn_impredicative (s1e) = let
@@ -1495,12 +1495,17 @@ in
         print "s1exp_tr_up: S1Eexi: s1e0 = "; print s1e0; print_newline ()
       end // end of [val]
 *)
-      val () = if knd = 0 then () else begin
-        prerr_loc_error2 s1e0.s1exp_loc;
-        prerr ": The kind of existential quantifier #[...] is used incorrectly.";
-        prerr_newline ();
+//
+      val () = if knd > 0 then let
+        val () = prerr_loc_error2 (s1e0.s1exp_loc)
+        val () = prerr (
+          ": The existential quantifier #[...] is used incorrectly."
+        ) // end of [val]
+        val () = prerr_newline ()
+      in
         $Err.abort {void} ()
       end // end of [val]
+//
       val (pf_s2expenv | ()) = the_s2expenv_push ()
       val @(s2vs, s2ps) = s1qualst_tr (s1qs)
       val s2e_scope = s1exp_tr_dn_impredicative s1e_scope
@@ -1508,19 +1513,26 @@ in
     in
       s2exp_exi (s2vs, s2ps, s2e_scope)
     end // end of [S1Eexi]
-  | S1Eextype (name, _arg) => begin
-      s2exp_extype_srt (s2rt_viewt0ype, name, s1explstlst_tr_dn_t0ype (_arg))
+  | S1Eextype (name, s1ess_arg) => let
+      val s2ess_arg =
+        s1explstlst_tr_dn_viewt0ype (s1ess_arg)
+      // end of [val]
+    in
+      s2exp_extype_srt (s2rt_viewt0ype, name, s2ess_arg)
     end // end of [S1Eextype]
   | S1Eimp _ => begin
       prerr_loc_interror s1e0.s1exp_loc;
       prerr ": s1exp_tr_up: S1Eimp"; prerr_newline ();
       $Err.abort {s2exp} ()
     end // end of [S1Eimp]
-  | S1Eint i(*string*) => s2exp_intinf ($IntInf.intinf_make_string i)
-  | S1Einvar (refval, s1e) => begin
-      prerr_loc_error2 s1e0.s1exp_loc;
-      prerr ": an invariant type can only be assigned to the argument of a function.";
-      prerr_newline ();
+  | S1Eint int(*string*) => s2exp_intinf ($IntInf.intinf_make_string(int))
+  | S1Einvar (refval, s1e) => let
+      val () = prerr_loc_error2 (s1e0.s1exp_loc)
+      val () = prerr (
+        ": an invariant type can only be assigned to the argument of a function."
+      ) // end of [val]
+      val () = prerr_newline ()
+    in
       $Err.abort {s2exp} ()
     end // end of [S1Einvar]
   | S1Elam (s1as, os1t, s1e_body) => let
@@ -1529,7 +1541,7 @@ in
         case+ os1t of
         | Some s1t => s1exp_tr_dn (s1e_body, s1rt_tr s1t)
         | None () => s1exp_tr_up s1e_body
-      ) : s2exp
+      ) : s2exp // end of [val]
       val () = the_s2expenv_pop (pf_s2expenv | (*none*))
       val s2ts_arg = s2rtlst_of_s2varlst (s2vs)
       val s2t_res = s2e_body.s2exp_srt
@@ -1539,12 +1551,16 @@ in
   | S1Elist (npf, s1es) => begin
       s1exp_list_tr_up (s1e0.s1exp_loc, npf, s1es)
     end // end of [S1Elist]
-  | S1Emod _ => begin
-      prerr_loc_interror s1e0.s1exp_loc;
-      prerr ": s1exp_tr_up: S1Emod: not implemented yet.";
-      prerr_newline ();
+(*
+// HX-2010-12-04: simplification
+  | S1Emod _ => let
+      val () = prerr_loc_interror s1e0.s1exp_loc
+      val () = prerr ": s1exp_tr_up: S1Emod: not implemented yet."
+      val () = prerr_newline ()
+    in
       $Err.abort {s2exp} ()
     end // end of [S1Emod]
+*)
 (*
 // HX-2010-12-04: removal
   | S1Enamed (name, s1e) => let
@@ -1632,7 +1648,7 @@ implement
 s1exp_tr_dn (s1e0, s2t0) = begin
   case+ s1e0.s1exp_node of
   | S1Eextype (name, _arg) => let
-      val _arg = s1explstlst_tr_dn_t0ype (_arg)
+      val _arg = s1explstlst_tr_dn_viewt0ype (_arg)
     in
       if s2rt_is_impredicative s2t0 then
         s2exp_extype_srt (s2t0, name, _arg) // [s2t0] can even be a view!

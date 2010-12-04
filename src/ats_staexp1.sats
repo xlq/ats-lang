@@ -249,8 +249,11 @@ datatype s1exp_node =
       (int(*1:ref/0:val*), s1exp) (* &/!: call-by-ref/val *)
   | S1Elam of (* static abstraction *)
       (s1arglst, s1rtopt, s1exp)
+(*
+// HX-2010-12-04: simplification
   | S1Emod of (* module type *)
       (s0taq, sym_t, labs1explst)
+*)
 (*
 // HX-2010-12-04: removal
   | S1Enamed of (* named type (for template instantiation) *)
@@ -433,7 +436,11 @@ fun s1exp_lam
 
 fun s1exp_list (_: loc_t, _: s1explst): s1exp
 fun s1exp_list2 (_: loc_t, _1: s1explst, _2: s1explst): s1exp
+
+(*
+// HX-2010-12-04: simplification
 fun s1exp_mod (_: loc_t, q: s0taq, id: sym_t, _: labs1explst): s1exp
+*)
 
 (*
 // HX-2010-12-04: removal

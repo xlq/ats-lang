@@ -245,9 +245,12 @@ in '{
   s1exp_loc= loc, s1exp_node= S1Elist (npf, s1es)
 } end // end of [s1exp_list2]
 
+(*
+// HX-2010-12-04: simplification
 implement s1exp_mod (loc, q, id, ls1es) = '{
   s1exp_loc= loc, s1exp_node= S1Emod (q, id, ls1es)
 }
+*)
 
 (*
 // HX-2010-12-04: removal

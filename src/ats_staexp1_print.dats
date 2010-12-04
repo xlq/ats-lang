@@ -314,11 +314,14 @@ in
       fprint_s1explst (pf | out, s1es);
       prstr ")"
     end // end of [S1Elist]
+(*
+// HX-2010-12-04: simplification
   | S1Emod _ => begin
       prstr "S1Emod(";
       fprint1_string (pf | out, "...");
       prstr ")"
     end // end of [S1Emod]
+*)
 (*
 // HX-2010-12-04: removal
   | S1Enamed (name, s1e) => begin
