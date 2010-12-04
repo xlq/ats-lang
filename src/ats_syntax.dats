@@ -1070,11 +1070,16 @@ end // end of [s0exp_list2]
 
 (* ****** ****** *)
 
+(*
+// HX-2010-12-04: removal
 implement s0exp_named (ide, s0e) = let
   val loc = combine (ide.i0de_loc, s0e.s0exp_loc)
 in '{
   s0exp_loc= loc, s0exp_node= S0Enamed (ide.i0de_sym, s0e)
 } end // end of [s0exp_named]
+*)
+
+(* ****** ****** *)
 
 implement s0exp_opide (t_op, id) = let
   val loc = combine (t_op.t0kn_loc, id.i0de_loc)

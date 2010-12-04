@@ -39,7 +39,7 @@
 (* ****** ****** *)
 
 abst@ype
-GtkDialogFlags = $extype "GtkDialogFlags"
+GtkDialogFlags = $extype"GtkDialogFlags"
 
 macdef GTK_DIALOG_MODAL =
   $extval (GtkDialogFlags, "GTK_DIALOG_MODAL")
@@ -56,7 +56,7 @@ overload lor with lor_GtkDialogFlags_GtkDialogFlags
 (* ****** ****** *)
 
 abst@ype
-GtkResponseType = $extype "GtkResponseType"
+GtkResponseType = $extype"GtkResponseType"
 
 symintr GtkResponseType
 castfn GtkResponseType_of_int (x: int):<>GtkResponseType

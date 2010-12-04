@@ -190,7 +190,7 @@ macdef SDL_PREALLOC = $extval (Uint32, "SDL_PREALLOC")
 
 (* ****** ****** *)
 
-abst@ype SDL_GLattr = $extype "SDL_GLattr"
+abst@ype SDL_GLattr = $extype"SDL_GLattr"
 macdef SDL_GL_RED_SIZE = $extval (SDL_GLattr, "SDL_GL_RED_SIZE")
 macdef SDL_GL_GREEN_SIZE = $extval (SDL_GLattr, "SDL_GL_GREEN_SIZE")
 macdef SDL_GL_BLUE_SIZE = $extval (SDL_GLattr, "SDL_GL_BLUE_SIZE")

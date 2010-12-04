@@ -431,7 +431,10 @@ extern s0exp_t s0exp_intsp_err (i0nt_t) ; /* error handling */\n\
 extern s0exp_t s0exp_lams (t0kn_t, s0arglstlst_t, s0rtopt_t, s0exp_t) ;\n\
 extern s0exp_t s0exp_list (t0kn_t, s0explst_t, t0kn_t) ;\n\
 extern s0exp_t s0exp_list2 (t0kn_t, s0explst_t, s0explst_t, t0kn_t) ;\n\
+/*\n\
+// HX-2010-12-04: removal\n\
 extern s0exp_t s0exp_named (i0de_t, s0exp_t) ;\n\
+*/\n\
 extern s0exp_t s0exp_opide (t0kn_t, i0de_t) ;\n\
 extern s0exp_t s0exp_qid (s0taq_t, i0de_t) ;\n\
 extern s0exp_t s0exp_struct (t0kn_t, labs0explst_t, t0kn_t) ;\n\

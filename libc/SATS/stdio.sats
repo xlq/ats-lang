@@ -261,7 +261,7 @@ non-zero value upon failure.
 *)
 
 abst@ype
-fpos_t = $extype "ats_fpos_type"
+fpos_t = $extype"ats_fpos_type"
 
 dataview fgetpos_v (addr, int) =
   | {l:addr} fgetpos_v_succ (l, 0) of fpos_t @ l

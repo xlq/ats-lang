@@ -38,7 +38,7 @@
 
 (* ****** ****** *)
 
-abst@ype GtkFileChooserAction = $extype "GtkFileChooserAction"
+abst@ype GtkFileChooserAction = $extype"GtkFileChooserAction"
 macdef GTK_FILE_CHOOSER_ACTION_OPEN =
   $extval (GtkFileChooserAction, "GTK_FILE_CHOOSER_ACTION_OPEN")
 macdef GTK_FILE_CHOOSER_ACTION_SAVE =
@@ -50,7 +50,7 @@ macdef GTK_FILE_CHOOSER_ACTION_CREATE_FOLDER =
 
 (* ****** ****** *)
 
-abst@ype GtkFileChooserConfirmation = $extype "GtkFileChooserConfirmation"
+abst@ype GtkFileChooserConfirmation = $extype"GtkFileChooserConfirmation"
 macdef GTK_FILE_CHOOSER_CONFIRMATION_CONFIRM =
   $extval (GtkFileChooserConfirmation, "GTK_FILE_CHOOSER_CONFIRMATION_CONFIRM")
 macdef GTK_FILE_CHOOSER_CONFIRMATION_ACCEPT_FILENAME =

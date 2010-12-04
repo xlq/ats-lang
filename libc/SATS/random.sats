@@ -65,7 +65,7 @@ fun mrand48 ():<!ref> lint = "atslib_mrand48" // signed [-2^31, 2^31)
 
 (* ****** ****** *)
 
-abst@ype drand48_data = $extype "ats_drand48_data_type"
+abst@ype drand48_data = $extype"ats_drand48_data_type"
 
 fun srand48_r // the return is always 0
   (seed: lint, buf: &drand48_data? >> drand48_data):<> int = "atslib_srand48_r"

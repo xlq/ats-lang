@@ -65,7 +65,7 @@ typedef sched_param = sched_param_struct
 //
 
 abst@ype
-cpu_set0_t = $extype "cpu_set_t"
+cpu_set0_t = $extype"cpu_set_t"
 abst@ype cpu_set_t (n:int) = cpu_set0_t
 
 (* ****** ****** *)

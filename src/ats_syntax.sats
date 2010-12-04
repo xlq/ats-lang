@@ -796,8 +796,11 @@ datatype s0exp_node =
       (s0explst (*prop/view*), s0explst (*type/viewtype*))
   | S0Emod of (* module type *)
       (s0taq, sym_t, labs0explst)
+(*
+// HX-2010-12-04: removal
   | S0Enamed of (* named types *)
       (sym_t, s0exp)
+*)
   | S0Eopide of (* noninfix static identifier *)
       sym_t
   | S0Eqid of (* qualified static identifier *)
@@ -907,8 +910,13 @@ fun s0exp_list2
 
 (* ****** ****** *)
 
+(*
+// HX-2010-12-04: removal
 fun s0exp_named (ide: i0de, s0e: s0exp): s0exp
   = "s0exp_named"
+*)
+
+(* ****** ****** *)
 
 fun s0exp_opide (t_op: t0kn, id: i0de): s0exp = "s0exp_opide"
 

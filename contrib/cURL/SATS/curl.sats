@@ -76,7 +76,7 @@ macdef CURL_READFUNC_PAUSE = $extval (int, "CURL_READFUNC_PAUSE")
 
 (* ****** ****** *)
 
-abst@ype curlsocktype = $extype "curlsocktype" // enum type
+abst@ype curlsocktype = $extype"curlsocktype" // enum type
 macdef CURLSOCKTYPE_IPCXN =
   $extval (curlsocktype, "CURLSOCKTYPE_IPCXN") // for a specific IP connection
 macdef CURLSOCKTYPE_LAST =
@@ -84,13 +84,13 @@ macdef CURLSOCKTYPE_LAST =
 
 (* ****** ****** *)
 
-abst@ype curlioerr = $extype "curlioerr" // enum type
+abst@ype curlioerr = $extype"curlioerr" // enum type
 macdef CURLIOE_OK = $extval (curlioerr, "CURLIOE_OK")
 macdef CURLIOE_UNKNOWNCMD = $extval (curlioerr, "CURLIOE_UNKNOWNCMD")
 macdef CURLIOE_FAILRESTART = $extval (curlioerr, "CURLIOE_FAILRESTART")
 macdef CURLIOE_LAST = $extval (curlioerr, "CURLIOE_LAST")
 
-abst@ype curliocmd = $extype "curliocmd" // enum type
+abst@ype curliocmd = $extype"curliocmd" // enum type
 macdef CURLIOCMD_NOP = $extval (curliocmd, "CURLIOCMD_NOP")
 macdef CURLIOCMD_RESTARTREAD = $extval (curliocmd, "CURLIOCMD_RESTARTREAD")
 macdef CURLIOCMD_LAST = $extval (curliocmd, "CURLIOCMD_LAST")
@@ -101,7 +101,7 @@ absview CURLerr_v (i:int)
 prfun curlerr_elim_null (pf: CURLerr_v 0):<> void
 
 abst@ype CURLcode
-  (i:int) = $extype "CURLcode" // enum type
+  (i:int) = $extype"CURLcode" // enum type
 typedef CURLcode = [i:int] CURLcode (i)
 macdef CURLE_OK = $extval (CURLcode 0, "CURLE_OK")
 macdef CURLE_UNSUPPORTED_PROTOCOL = $extval (CURLcode, "CURLE_UNSUPPORTED_PROTOCOL")
@@ -199,7 +199,7 @@ overload <> with neq_CURLcode_CURLcode
 
 (* ****** ****** *)
 
-abst@ype CURLoption = $extype "CURLoption"
+abst@ype CURLoption = $extype"CURLoption"
 macdef CURLOPT_FILE = $extval (CURLoption, "CURLOPT_FILE")
 macdef CURLOPT_URL = $extval (CURLoption, "CURLOPT_URL")
 macdef CURLOPT_PORT = $extval (CURLoption, "CURLOPT_PORT")

@@ -54,14 +54,14 @@
 
 (* ****** ****** *)
 
-abst@ype pthread_t = $extype "pthread_t"
+abst@ype pthread_t = $extype"pthread_t"
 castfn int_of_pthread (x: pthread_t):<> int
 castfn lint_of_pthread (x: pthread_t):<> lint
 fun pthread_self (): pthread_t = "#atslib_pthread_self"
 
 (* ****** ****** *)
 
-absviewt@ype pthread_attr_t = $extype "pthread_attr_t"
+absviewt@ype pthread_attr_t = $extype"pthread_attr_t"
 
 fun pthread_attr_init
   (attr: &pthread_attr_t? >> opt (pthread_attr_t, i == 0)): #[i:nat] int i
@@ -158,7 +158,7 @@ fun pthread_cleanup_pop
 
 absviewt@ype
 pthread_mutex_view_viewt0ype
-  (v:view) = $extype "pthread_mutex_t"
+  (v:view) = $extype"pthread_mutex_t"
 // end of [absviewt@ype]
 stadef mutex_vt = pthread_mutex_view_viewt0ype
 
@@ -216,7 +216,7 @@ fun pthread_mutex_unlock {v:view}
 (* ****** ****** *)
 
 absviewt@ype
-pthread_cond_viewt0ype = $extype "pthread_cond_t"
+pthread_cond_viewt0ype = $extype"pthread_cond_t"
 stadef cond_vt = pthread_cond_viewt0ype
 
 (* ****** ****** *)

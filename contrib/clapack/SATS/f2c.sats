@@ -61,7 +61,7 @@ fun{t:t@ype} neq (x1: t, x2: t):<> bool
 //
 // F2Creal = float // f2c.cats
 //
-abst@ype real = $extype "ats_float_type"
+abst@ype real = $extype"ats_float_type"
 
 castfn real_of_float (x: float):<> real
 castfn float_of_real (x: real):<> float
@@ -114,7 +114,7 @@ overload <> with neq_real_real
 (* ****** ****** *)
 
 // F2Cdoublereal = double // f2c.cats
-abst@ype doublereal = $extype "ats_double_type"
+abst@ype doublereal = $extype"ats_double_type"
 castfn doublereal_of_double (x: double):<> doublereal
 castfn double_of_doublereal (x: doublereal):<> double
 
@@ -167,7 +167,7 @@ overload <> with neq_doublereal_doublereal
 //
 // F2Ccomplex = ccmplx // f2c.cats
 //
-abst@ype complex = $extype "ats_fcomplex_type"
+abst@ype complex = $extype"ats_fcomplex_type"
 
 castfn complex_of_ccmplx (x: ccmplx):<> complex
   = "atsctrb_f2c_complex_of_ccmplx"
@@ -211,7 +211,7 @@ overload <> with neq_complex_complex
 //
 // F2Cdoublecomplex = zcmplx // f2c.cats
 //
-abst@ype doublecomplex = $extype "ats_dcomplex_type"
+abst@ype doublecomplex = $extype"ats_dcomplex_type"
 
 castfn doublecomplex_of_zcmplx (x: zcmplx):<> doublecomplex
   = "atsctrb_f2c_doublecomplex_of_zcmplx"
@@ -256,7 +256,7 @@ overload <> with neq_doublecomplex_doublecomplex
 (* ****** ****** *)
 
 abst@ype integer (i: int) =
-  $extype "F2Cinteger" // defined to be long int
+  $extype"F2Cinteger" // defined to be long int
 typedef integer = [i:int] integer (i)
 typedef integerGt (n:int) = [i:int | i > n] integer (i)
 typedef integerGte (n:int) = [i:int | i >= n] integer (i)
@@ -362,7 +362,7 @@ fun{t:t@ype} to_integer (x: t):<> integer
 (* ****** ****** *)
 
 abst@ype uinteger (i:int) =
-  $extype "F2Cuinteger" // defined to be unsigned long int
+  $extype"F2Cuinteger" // defined to be unsigned long int
 typedef uinteger = [i:nat] uinteger (i)
 
 castfn uinteger_of_ulint (x: ulint):<> uinteger

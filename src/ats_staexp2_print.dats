@@ -348,6 +348,8 @@ in
       fprint_s2explst (pf | out, s2es2);
       prstr ")"
     end // end of [S2Emetlt]
+(*
+// HX-2010-12-04: removal
   | S2Enamed (name, s2e) => begin
       prstr "S2Enamed(";
       $Sym.fprint_symbol (pf | out, name);
@@ -355,6 +357,7 @@ in
       fprint_s2exp (pf | out, s2e);
       prstr ")"
     end // end of [S2Enamed]
+*)
   | S2Eout s2e => begin
       prstr "S2Eout("; fprint_s2exp (pf | out, s2e); prstr ")"
     end // end of [S2Eout]

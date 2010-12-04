@@ -42,15 +42,15 @@
 // HX-2010-02-27:
 // these are declared in glibconfig.h
 //
-abst@ype gint8 = $extype "gint8"
-abst@ype gint16 = $extype "gint16"
-abst@ype gint32 = $extype "gint32"
-abst@ype gint64 = $extype "gint64"
+abst@ype gint8 = $extype"gint8"
+abst@ype gint16 = $extype"gint16"
+abst@ype gint32 = $extype"gint32"
+abst@ype gint64 = $extype"gint64"
 
-abst@ype guint8 = $extype "guint8"
-abst@ype guint16 = $extype "guint16"
-abst@ype guint32 = $extype "guint32"
-abst@ype guint64 = $extype "guint64"
+abst@ype guint8 = $extype"guint8"
+abst@ype guint16 = $extype"guint16"
+abst@ype guint32 = $extype"guint32"
+abst@ype guint64 = $extype"guint64"
 
 (* ****** ****** *)
 
@@ -73,54 +73,54 @@ macdef G_MAXUINT64 = $extval (guint64, "G_MAXUINT64")
 (* ****** ****** *)
 
 abst@ype
-gboolean (bool) = $extype "gboolean"
+gboolean (bool) = $extype"gboolean"
 typedef gboolean = [b:bool] gboolean (b)
 
 abst@ype
-gchar (c:char) = $extype "gchar"
+gchar (c:char) = $extype"gchar"
 typedef gchar = [c:char] gchar (c)
 
 abst@ype
-guchar (c:char) = $extype "guchar"
+guchar (c:char) = $extype"guchar"
 typedef guchar = [c:char] guchar (c)
 
 (* ****** ****** *)
 
-abst@ype gint (i:int) = $extype "gint"
+abst@ype gint (i:int) = $extype"gint"
 typedef gint = [i:int] gint i
 
-abst@ype guint (i:int) = $extype "guint"
+abst@ype guint (i:int) = $extype"guint"
 typedef guint = [i:nat] guint i
 
 (* ****** ****** *)
 
-abst@ype gshort = $extype "gshort"
-abst@ype gushort = $extype "gushort"
+abst@ype gshort = $extype"gshort"
+abst@ype gushort = $extype"gushort"
 
 (* ****** ****** *)
 
-abst@ype glong (i: int) = $extype "glong"
+abst@ype glong (i: int) = $extype"glong"
 typedef glong = [i:nat] glong (i)
 
-abst@ype gulong (i:int) = $extype "gulong"
+abst@ype gulong (i:int) = $extype"gulong"
 typedef gulong = [i:nat] gulong (i)
 
 (* ****** ****** *)
 
-abst@ype gsize (i:int) = $extype "gsize"
+abst@ype gsize (i:int) = $extype"gsize"
 typedef gsize = [i:nat] gsize i
 
-abst@ype gssize (i:int) = $extype "gssize"
+abst@ype gssize (i:int) = $extype"gssize"
 typedef gssize = [i:int] gssize i
 
 (* ****** ****** *)
 
-abst@ype gfloat = $extype "gfloat"
-abst@ype gdouble = $extype "gdouble"
+abst@ype gfloat = $extype"gfloat"
+abst@ype gdouble = $extype"gdouble"
 
 (* ****** ****** *)
 
-abstype gpointer = $extype "gpointer"
+abstype gpointer = $extype"gpointer"
 
 (* ****** ****** *)
 

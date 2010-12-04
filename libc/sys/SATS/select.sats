@@ -41,7 +41,7 @@
 
 (* ****** ****** *)
 
-abst@ype fd_set_t0ype = $extype "ats_fd_set_type"
+abst@ype fd_set_t0ype = $extype"ats_fd_set_type"
 typedef fd_set = fd_set_t0ype
 
 (* ****** ****** *)

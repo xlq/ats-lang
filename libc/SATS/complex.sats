@@ -49,7 +49,7 @@
 ** complex numbers of single precision
 *)
 
-abst@ype ccmplx_t0ype = $extype "ats_fcomplex_type"
+abst@ype ccmplx_t0ype = $extype"ats_fcomplex_type"
 typedef ccmplx = ccmplx_t0ype
 symintr ccmplx_of
 
@@ -218,7 +218,7 @@ fun cprojf (c: ccmplx):<> float = "atslib_cprojf"
 
 (* ****** ****** *)
 
-abst@ype zcmplx_t0ype = $extype "ats_dcomplex_type"
+abst@ype zcmplx_t0ype = $extype"ats_dcomplex_type"
 typedef zcmplx = zcmplx_t0ype
 symintr zcmplx_of
 

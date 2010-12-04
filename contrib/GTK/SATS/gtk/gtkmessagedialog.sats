@@ -38,7 +38,7 @@
 
 (* ****** ****** *)
 
-abst@ype GtkMessageType = $extype "GtkMessageType"
+abst@ype GtkMessageType = $extype"GtkMessageType"
 macdef GTK_MESSAGE_INFO = $extval (GtkMessageType, "GTK_MESSAGE_INFO")
 macdef GTK_MESSAGE_WARNING = $extval (GtkMessageType, "GTK_MESSAGE_WARNING")
 macdef GTK_MESSAGE_QUESTION = $extval (GtkMessageType, "GTK_MESSAGE_QUESTION")
@@ -47,7 +47,7 @@ macdef GTK_MESSAGE_OTHER = $extval (GtkMessageType, "GTK_MESSAGE_OTHER")
 
 (* ****** ****** *)
 
-abst@ype GtkButtonsType = $extype "GtkButtonsType"
+abst@ype GtkButtonsType = $extype"GtkButtonsType"
 macdef GTK_BUTTONS_NONE = $extval (GtkButtonsType, "GTK_BUTTONS_NONE")
 macdef GTK_BUTTONS_OK = $extval (GtkButtonsType, "GTK_BUTTONS_OK")
 macdef GTK_BUTTONS_CLOSE = $extval (GtkButtonsType, "GTK_BUTTONS_CLOSE")

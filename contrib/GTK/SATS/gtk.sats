@@ -346,7 +346,7 @@ viewtypedef GtkTextTagTable_ref (l:addr) = gobjref (GtkTextTagTable, l)
 viewtypedef GtkTextTagTable_ref0 = [l:agez] GtkTextTagTable_ref l
 viewtypedef GtkTextTagTable_ref1 = [l:addr | l > null] GtkTextTagTable_ref l
 
-abst@ype GtkTextIter = $extype "GtkTextIter" // opaque
+abst@ype GtkTextIter = $extype"GtkTextIter" // opaque
 
 viewtypedef GtkTextMark_ref (l:addr) = gobjref (GtkTextMark, l)
 viewtypedef GtkTextMark_ref0 = [l:agez] GtkTextMark_ref l

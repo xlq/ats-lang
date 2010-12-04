@@ -38,7 +38,7 @@
 
 (* ****** ****** *)
 
-abst@ype GtkTextWindowType = $extype "GtkTextWindowType"
+abst@ype GtkTextWindowType = $extype"GtkTextWindowType"
 macdef GTK_TEXT_WINDOW_PRIVATE = $extval (GtkTextWindowType, "GTK_TEXT_WINDOW_PRIVATE")
 macdef GTK_TEXT_WINDOW_WIDGET = $extval (GtkTextWindowType, "GTK_TEXT_WINDOW_WIDGET")
 macdef GTK_TEXT_WINDOW_TEXT = $extval (GtkTextWindowType, "GTK_TEXT_WINDOW_TEXT")

@@ -82,7 +82,7 @@ macdef IPPROTO_MAX = $extval (ipproto_t, "IPPROTO_MAX")
 
 (* ****** ****** *)
 
-abst@ype in_port_t = $extype "in_port_t"
+abst@ype in_port_t = $extype"in_port_t"
 macdef IPPORT_ECHO = $extval (in_port_t, "IPPORT_ECHO")
 macdef IPPORT_DISCARD = $extval (in_port_t, "IPPORT_DISCARD")
 macdef IPPORT_SYSTAT = $extval (in_port_t, "IPPORT_SYSTAT")
@@ -120,7 +120,7 @@ macdef INET6_ADDRSTRLEN = 46 // for IPv6 hex string
 (* ****** ****** *)
 
 symintr in_port_nbo_of
-abst@ype in_port_nbo_t = $extype "in_port_t"
+abst@ype in_port_nbo_t = $extype"in_port_t"
 castfn in_port_nbo_of_in_port (n: in_port_t): in_port_nbo_t
 overload in_port_nbo_of with in_port_nbo_of_in_port
 fun in_port_nbo_of_int
@@ -130,7 +130,7 @@ overload in_port_nbo_of with in_port_nbo_of_int
 (* ****** ****** *)
 
 (*
-abst@ype in_addr_t = $extype "in_addr_t"
+abst@ype in_addr_t = $extype"in_addr_t"
 *)
 abst@ype in_addr_hbo_t = $extype "in_addr_t"
 abst@ype in_addr_nbo_t = $extype "in_addr_t"

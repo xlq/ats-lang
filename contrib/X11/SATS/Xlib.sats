@@ -84,7 +84,8 @@ castfn ptr_of_XString {l:addr} (x: !XString (l)): ptr l
 overload ptr_of with ptr_of_XString
 
 //
-// for a array of linear strings:
+// HX: for a array of linear strings:
+//
 absviewtype XStrarr (n:int, l:addr) // array + strings are allocated by XAlloc
 viewtypedef XStrarr1 (n:int) = [l:addr | l > null] XStrarr (n, l)
 
@@ -103,44 +104,46 @@ fun XStringFree {a:viewt@ype} {l:addr} (x: XString l): void
 // end of [XStringFree]
 
 (* ****** ****** *)
-
+//
 // HX-2010-01-22:
 // it is just a pointer; it is not reference counted
+//
 absviewtype Display_ptr (l:addr) // Display*
 viewtypedef Display_ptr0 = [l:agez] Display_ptr l
 viewtypedef Display_ptr1 = [l:addr | l > null] Display_ptr l
-
+//
 // HX-2010-01-22:
 // it is just a pointer; it is not reference counted
+//
 absviewtype Screen_ptr (l:addr) // Screen*
 viewtypedef Screen_ptr0 = [l:agez] Screen_ptr l
 viewtypedef Screen_ptr1 = [l:addr | l > null] Screen_ptr l
-
-// it is just a pointer; it is not reference counted
+//
+// HX: it is just a pointer; it is not reference counted
+//
 absviewtype Visual_ptr (l:addr) // Visual*
 viewtypedef Visual_ptr0 = [l:agez] Visual_ptr l
 viewtypedef Visual_ptr1 = [l:addr | l > null] Visual_ptr l
 
 (* ****** ****** *)
-
-// it is just a pointer; it is not reference counted
-absviewtype GCptr (l:addr) = ptr // $extype "GC" // *GC = _XGC
+//
+// HX: it is just a pointer; it is not reference counted
+//
+absviewtype GCptr (l:addr) = ptr // $extype"GC" // *GC = _XGC
 viewtypedef GCptr0 = [l:agez] GCptr l
 viewtypedef GCptr1 = [l:addr | l > null] GCptr l
-abstype GCref = $extype "GC" // this one should never be freed!
+abstype GCref = $extype"GC" // this one should never be freed!
 
 (* ****** ****** *)
-
+//
 //
 // Chapter 2: Display Functions
 //
-
+//
 (* ****** ****** *)
-
 //
 // 2.1: opening the display
 //
-
 (* ****** ****** *)
 
 fun XOpenDisplay (name: Stropt): Display_ptr0 = "#atsctrb_XOpenDisplay"
@@ -151,15 +154,13 @@ fun Display_ptr_isnot_null {l:addr} (p_dpy: !Display_ptr l): bool (l > null)
   = "atspre_ptr_isnot_null" // defined in $ATSHOME/prelude/CATS/pointer.cats
 
 (* ****** ****** *)
-
 //
 // 2.2: obtaining information about display, image formats or screens
 //
-
 (* ****** ****** *)
-
+//
 // 2.2.1: display macros
-
+//
 (* ****** ****** *)
 
 fun XAllPlanes (): ulint = "#atsctrb_XAllPlanes"
@@ -283,9 +284,9 @@ fun XVendorRelease {l:agz} (dpy: !Display_ptr l): int
   = "#atsctrb_XVendorRelease"
 
 (* ****** ****** *)
-
+//
 // 2.2.2: image format functions and macros
-
+//
 (* ****** ****** *)
 
 typedef XPixmapFormatValues =
@@ -326,9 +327,9 @@ fun XDisplayWidthMM {l:agz} (dpy: !Display_ptr l, nscr: int): int
   = "#atsctrb_XDisplayWidthMM"
 
 (* ****** ****** *)
-
+//
 // 2.2.3: screen information macros
-
+//
 (* ****** ****** *)
 
 fun XBlackPixelOfScreen {l:agz} (scr: !Screen_ptr l): ulint
@@ -350,7 +351,7 @@ fun XDefaultGCOfScreen {l:agz} (scr: !Screen_ptr l): GCref
   = "#atsctrb_XDefaultGCOfScreen"
 
 //
-// the function returns WhenMapped, NotUseful or Always
+// HX: the function returns WhenMapped, NotUseful or Always
 //
 fun XDoesBackingStore {l:agz} (scr: !Screen_ptr l): int
   = "#atsctrb_XDoesBackingStore"
@@ -389,22 +390,18 @@ fun XRootWindowOfScreen {l:agz} (scr: !Screen_ptr l): Window
   = "#atsctrb_XRootWindowOfScreen"
 
 (* ****** ****** *)
-
 //
 // 2.3: generating a NoOperation protocol request
 //
-
 (* ****** ****** *)
 
 fun XNoOp {l:agz} (dpy: !Display_ptr l): void
   = "#atsctrb_XNoOp"
 
 (* ****** ****** *)
-
 //
 // 2.4: freeing client-created data
 //
-
 (* ****** ****** *)
 
 absview XFree_v (l:addr)
@@ -420,10 +417,10 @@ overload XFree with XArrayFree
 overload XFree with XStringFree
 
 (* ****** ****** *)
-
 //
 // 2.5: closing the display
 //
+(* ****** ****** *)
 
 fun XCloseDisplay (dpy: Display_ptr1): void = "#atsctrb_XCloseDisplay"
 
@@ -436,25 +433,25 @@ macdef RetainTemporary = $extval (close_mode_t, "RetainTemporary")
 fun XSetCloseDownMode {l:agz} (dpy: Display_ptr l, mode: close_mode_t): void
 
 (* ****** ****** *)
-
+//
 //
 // Chapter 3: Window Functions
 //
-
+//
 (* ****** ****** *)
-
 //
 // 3.1: visual types
 //
+(* ****** ****** *)
 
 fun XVisualIDFromVisual {l:agz} (visual: !Visual_ptr l): VisualID
   = "#atsctrb_XVisualIDFromVisual"
   
 (* ****** ****** *)
-
 //
 // 3.2: window attributes
 //
+(* ****** ****** *)
 
 typedef XSetWindowAttributes =
   $extype_struct "XSetWindowAttributes" of {
@@ -476,10 +473,10 @@ typedef XSetWindowAttributes =
 } // end of [XSetWindowAttributes]
 
 (* ****** ****** *)
-
 //
 // 3.3: creating windows
 //
+(* ****** ****** *)
 
 fun XCreateWindow {ld,lv:agz} (
     dpy: !Display_ptr ld
@@ -509,10 +506,10 @@ fun XCreateSimpleWindow {ld:agz} (
 // end of [XCreateSimpleWindow]
 
 (* ****** ****** *)
-
 //
 // 3.4: destroying windows
 //
+(* ****** ****** *)
 
 fun XDestroyWindow {l:agz}
   (dpy: !Display_ptr l, win: Window): void
@@ -523,10 +520,10 @@ fun XDestroySubwindows {l:agz}
   = "#atsctrb_XDestroyWindow"
 
 (* ****** ****** *)
-
 //
 // 3.5: mapping windows
 //
+(* ****** ****** *)
 
 fun XMapWindow {l:agz}
   (dpy: !Display_ptr l, win: Window): void
@@ -541,10 +538,10 @@ fun XMapSubwindows {l:agz}
   = "#atsctrb_XMapSubwindows"
 
 (* ****** ****** *)
-
 //
 // 3.6: unmapping windows
 //
+(* ****** ****** *)
 
 fun XUnmapWindow {l:agz}
   (dpy: !Display_ptr l, win: Window): void
@@ -555,10 +552,10 @@ fun XUnmapSubwindows {l:agz}
   = "#atsctrb_XUnmapSubwindows"
 
 (* ****** ****** *)
-
 //
 // 3.7: configuring windows
 //
+(* ****** ****** *)
 
 typedef XWindowChanges =
   $extype_struct "XWindowChanges" of {
@@ -592,10 +589,10 @@ fun XSetWindowBorderWidth {l:agz}
   = "#atsctrb_XSetWindowBorderWidth"
 
 (* ****** ****** *)
-
 //
 // 3.8: changing windows stacking order
 //
+(* ****** ****** *)
 
 fun XRaiseWindow {l:agz}
   (dpy: !Display_ptr l, win: Window): void
@@ -622,10 +619,10 @@ fun XRestackWindows {l:agz} {n:nat}
   = "#atsctrb_XRestackWindows"
 
 (* ****** ****** *)
-
 //
 // 3.9: changing windows attributes
 //
+(* ****** ****** *)
 
 fun XChangeWindowAttributes {l:agz} (
     dpy: !Display_ptr l, win: Window, valmask: ulint, attr: &XSetWindowAttributes
@@ -660,14 +657,14 @@ fun XUndefineCursor {l:agz} (dpy: !Display_ptr l, win: Window): void
   = "#atsctrb_XUndefineCursor"
 
 (* ****** ****** *)
-
+//
 //
 // Chapter 4: Window Information Functions
 //
-
+//
 (* ****** ****** *)
 
-abst@ype Status (i:int) = $extype "Status" // = int
+abst@ype Status (i:int) = $extype"Status" // = int
 typedef Status = [i:int] Status i
 castfn int_of_Status {i:int} (x: Status i):<> int i
 overload int_of with int_of_Status
@@ -724,10 +721,10 @@ fun XGetGeometry {l:agz} (
   = "#atsctrb_XGetWindowAttributes"
 
 (* ****** ****** *)
-
 //
 // 4.2: translating screen coordinates
 //
+(* ****** ****** *)
 
 fun XTranslateCoordinates {l:agz} (
     dpy: !Display_ptr l
@@ -749,10 +746,10 @@ fun XQueryPointer {l:agz} (
   = "#atsctrb_XQueryPointer"
 
 (* ****** ****** *)
-
 //
 // 4.3: properties and atoms
 //
+(* ****** ****** *)
 
 fun XInternAtom {l:agz} (
     dpy: !Display_ptr l, atom_name: string, only_if_exists: bool
@@ -765,22 +762,20 @@ fun XGetAtomName {l:agz}
 // end of [XGetAtomName]
 
 (* ****** ****** *)
-
 //
 // 4.4: obtaining and changing window properties
 //
-
 (* ****** ****** *)
-
+//
 //
 // Chapter 5: Pixmap and Cursor Functions
 //
-
+//
 (* ****** ****** *)
-
 //
 // 5.1: creating and freeing pixmaps
 //
+(* ****** ****** *)
 
 fun XCreatePixmap {l:agz} (
     dpy: !Display_ptr l
@@ -794,10 +789,12 @@ fun XFreePixmap
 // end of [XFreePixmap]
 
 (* ****** ****** *)
-
+//
 //
 // 5.2: creating, recoloring and freeing cursors
 //
+//
+(* ****** ****** *)
 
 fun XCreateFontCursor
   {l:agz} (dpy: !Display_ptr l, shape: uint) : Cursor
@@ -808,14 +805,16 @@ fun XFreeCursor
   = "#atsctrb_XFreeCursor"
 
 (* ****** ****** *)
-
+//
 //
 // Chapter 6: Color Management Functions
 //
-
+//
 (* ****** ****** *)
-
+//
 // 6.1: color structures
+//
+(* ****** ****** *)
 
 typedef XColor =
   $extype_struct "XColor" of {
@@ -825,8 +824,10 @@ typedef XColor =
 } // end of [XColor]
 
 (* ****** ****** *)
-
+//
 // 6.4: creating, copying and destroying
+//
+(* ****** ****** *)
 
 fun XCreateColormap {l1,l2:agz} (
     dsp: !Display_ptr l1
@@ -843,8 +844,10 @@ fun XFreeColormap {l:agz}
   = "#atsctrb_XFreeColormap"
 
 (* ****** ****** *)
-
+//
 // 6.5: Mapping Color Names to Values
+//
+(* ****** ****** *)
 
 fun XLookupColor {l:agz} (
     dpy: !Display_ptr l
@@ -869,8 +872,10 @@ fun XcmsLookupColor (...)
 *)
 
 (* ****** ****** *)
-
+//
 // 6.6: Allocating and Freeing Color Cells
+//
+(* ****** ****** *)
 
 fun XAllocColor {l:agz} (
     dpy: !Display_ptr l
@@ -907,8 +912,10 @@ fun XFreeColors (...)
 *)
 
 (* ****** ****** *)
-
+//
 // 6.7: Modifying and Querying Colormap Cells
+//
+(* ****** ****** *)
 
 fun XStoreColor {l:agz} (
     dpy: !Display_ptr l, colormap: Colormap, color: &XColor
@@ -950,34 +957,36 @@ fun XcmsQueryColors (...)
 *)
 
 (* ****** ****** *)
-
+//
 // 6.8: Color Conversion Context Functions
-
+//
 (* ****** ****** *)
-
+//
 // 6.9: Converting Between Color Spaces
-
+//
 (* ****** ****** *)
-
+//
 // 6.10: Callback functions
-
+//
 (* ****** ****** *)
-
+//
 // 6.11: Gamut querying functions
-
+//
 (* ****** ****** *)
-
+//
 // 6.12: Color management extensions
-
+//
 (* ****** ****** *)
-
+//
 //
 // Chapter 7: Graphics Context Functions
 //
-
+//
 (* ****** ****** *)
-
+//
 // 7.1: Manipulating Graphics Context/State
+//
+(* ****** ****** *)
 
 macdef GCFunction = $extval (lint, "GCFunction")
 macdef GCPlaneMask = $extval (lint, "GCPlaneMask")
@@ -1064,8 +1073,10 @@ fun XFlushGC {l1,l2:agz}
 // end of [XFlushGC]
 
 (* ****** ****** *)
-
+//
 // 7.2: Using GC convenience routines
+//
+(* ****** ****** *)
 
 fun XSetForeground {l1,l2:agz}
   (dpy: !Display_ptr l1, gc: !GCptr l2, foreground: ulint): void
@@ -1106,14 +1117,16 @@ fun XSetDashes {l1,l2:agz} {n:nat} (
 // end of [XSetDashes]
 
 (* ****** ****** *)
-
+//
 //
 // Chapter 8: Graphics Functions
 //
-
+//
 (* ****** ****** *)
-
+//
 // 8.1: Clearing Areas
+//
+(* ****** ****** *)
 
 fun XClearArea {l:agz} (
     dsp: !Display_ptr l
@@ -1129,8 +1142,10 @@ fun XClearWindow {l:agz} (dsp: !Display_ptr l, win: Window) : void
 // end of [XClearWindow]
 
 (* ****** ****** *)
-
+//
 // 8.2: Copying Areas
+//
+(* ****** ****** *)
 
 fun XCopyArea
   {l1,l2:agz} (
@@ -1156,8 +1171,10 @@ fun XCopyPlane
   = "#atsctrb_XCopyPlane"
 
 (* ****** ****** *)
-
+//
 // 8.3: Drawing Points, Lines, Rectangles and Arcs
+//
+(* ****** ****** *)
 
 typedef XSegment =
   $extype_struct "XSegment" of {
@@ -1181,8 +1198,10 @@ typedef XArc =
 } // end of [XArc]
 
 (* ****** ****** *)
-
+//
 // 8.3.1: Drawing Single and Multiple Points
+//
+(* ****** ****** *)
 
 fun XDrawPoint {l1,l2:agz} (
     dpy: !Display_ptr l1, drw: Drawable, gc: !GCptr l2, x: int, y: int
@@ -1196,8 +1215,10 @@ fun XDrawPoints {l1,l2:agz} {n:nat} (
 // end of [XDrawPoints]
 
 (* ****** ****** *)
-
+//
 // 8.3.2: Drawing Single and Multiple Lines
+//
+(* ****** ****** *)
 
 fun XDrawLine {l1,l2:agz} (
     dpy: !Display_ptr l1
@@ -1218,8 +1239,10 @@ fun XDrawSegments {l1,l2:agz} {n:nat} (
 // end of [XDrawSegments]
 
 (* ****** ****** *)
-
+//
 // 8.3.3: Drawing Single and Multiple Rectangles
+//
+(* ****** ****** *)
 
 fun XDrawRectangle {l1,l2:agz} (
     dpy: !Display_ptr l1
@@ -1234,8 +1257,10 @@ fun XDrawRectangles {l1,l2:agz} {n:nat} (
 // end of [XDrawRectangles]
 
 (* ****** ****** *)
-
+//
 // 8.3.4: Drawing Single and Multiple Arcs
+//
+(* ****** ****** *)
 
 fun XDrawArc {l1,l2:agz} (
     dpy: !Display_ptr l1
@@ -1251,12 +1276,14 @@ fun XDrawArcs {l1,l2:agz} {n:nat} (
 // end of [XDrawArcs]
 
 (* ****** ****** *)
-
+//
 // 8.4: Filling Areas
-
+//
 (* ****** ****** *)
-
+//
 // 8.4.1: Filling Single and Multiple Rectangles
+//
+(* ****** ****** *)
 
 fun XFillRectangle {l1,l2:agz} (
     dpy: !Display_ptr l1
@@ -1271,8 +1298,10 @@ fun XFillRectangles {l1,l2:agz} {n:nat} (
 // end of [XFillRectangles]
 
 (* ****** ****** *)
-
+//
 // 8.4.2: Filling a Single Polygon
+//
+(* ****** ****** *)
 
 fun XFillPolygon {l1,l2:agz} {n:nat} (
     dpy: !Display_ptr l1
@@ -1282,8 +1311,10 @@ fun XFillPolygon {l1,l2:agz} {n:nat} (
 // end of [XFillPolygon]
 
 (* ****** ****** *)
-
+//
 // 8.4.3: Filling Single and Multiple Arcs
+//
+(* ****** ****** *)
 
 fun XFillArc {l1,l2:agz} (
     dpy: !Display_ptr l1
@@ -1299,8 +1330,10 @@ fun XFillArcs {l1,l2:agz} {n:nat} (
 // end of [XFillArcs]
 
 (* ****** ****** *)
-
+//
 // 8.5: Font Metrics
+//
+(* ****** ****** *)
 
 typedef XCharStruct =
   $extype_struct "XCharStruct" of {
@@ -1337,8 +1370,10 @@ typedef XFontStruct = $extype_struct "XFontStruct" of {
 } // end of [XFontStruct]
 
 (* ****** ****** *)
-
+//
 // 8.5.1: Loading and Freeing Fonts
+//
+(* ****** ****** *)
 
 absview XFreeFont_v (l:addr)
 prfun XFreeFont_v_unnull (pf: XFreeFont_v null): void
@@ -1365,8 +1400,10 @@ fun XFreeFont {l1,l2:addr} (
 // end of [XFreeFont]
             
 (* ****** ****** *)
-
+//
 // 8.5.3: Computing Character String Sizes
+//
+(* ****** ****** *)
 
 fun XTextWidth {n:nat}
   (ftinfo: &XFontStruct, str: string n, nstr: int n): int
@@ -1379,12 +1416,14 @@ fun XTextWidth16 {n:nat}
 // end of [XTextWidth]
 
 (* ****** ****** *)
-
+//
 // 8.6: Drawing Text
-
+//
 (* ****** ****** *)
-
+//
 // 8.6.2: Drawing Text Characters
+//
+(* ****** ****** *)
 
 fun XDrawString
   {l1,l2:agz} {n:nat} (
@@ -1409,8 +1448,10 @@ fun XDrawString16
 // end of [XDrawString16]
 
 (* ****** ****** *)
-
+//
 // 8.6.3: Drawing Image Characters
+//
+(* ****** ****** *)
 
 fun XDrawImageString
   {l1,l2:agz} {n:nat} (
@@ -1435,14 +1476,16 @@ fun XDrawImageString16
 // end of [XDrawImageString16]
 
 (* ****** ****** *)
-
+//
 //
 // Chapter 9: Window and Session Manager Functions
 //
-
+//
 (* ****** ****** *)
-
+//
 // 9.1: Changing the parent of a window
+//
+(* ****** ****** *)
 
 fun XReparentWindow {l:agz}
   (dpy: !Display_ptr l, win: Window, parent: Window, x: int, y: int): void
@@ -1450,8 +1493,10 @@ fun XReparentWindow {l:agz}
 // end of [XReparentWindow]
 
 (* ****** ****** *)
-
+//
 // 9.2: Controlling the Lifetime of a Window
+//
+(* ****** ****** *)
 
 fun XChangeSaveSet {l:agz}
   (dpy: !Display_ptr l, win: Window, mode: int): void
@@ -1467,8 +1512,10 @@ fun XRemoveFromSaveSet {l:agz}
 // end of [XRemoveFromSaveSet]
 
 (* ****** ****** *)
-
+//
 // 9.3: Managing installed colormaps
+//
+(* ****** ****** *)
 
 fun XInstallColormap {l:agz}
   (dpy: !Display_ptr l, colormap: Colormap): void = "#atsctrb_XInstallColormap"
@@ -1485,12 +1532,14 @@ fun XListInstalledColormaps {l:agz} (
 // end of [XListInstalledColormaps]
 
 (* ****** ****** *)
-
+//
 // 9.4: Setting and Retrieving the Fond Search Path
-
+//
 (* ****** ****** *)
-
+//
 // 9.5: Server Grabbing
+//
+(* ****** ****** *)
 
 fun XGrabServer {l:agz}
   (dpy: !Display_ptr l): void = "#atsctrb_XGrabServer"
@@ -1501,16 +1550,20 @@ fun XUngrabServer {l:agz}
 // end of [XUngrabServer]
 
 (* ****** ****** *)
-
+//
 // 9.6: Killing Clients
+//
+(* ****** ****** *)
 
 fun XKillClient {l:agz}
   (dpy: !Display_ptr l, resource: XID): void = "#atsctrb_XKillClient"
 // end of [XKillClient]
 
 (* ****** ****** *)
-
+//
 // 9.7: Screen Saver Control
+//
+(* ****** ****** *)
 
 fun XSetScreenSaver {l:agz} (
     dpy: !Display_ptr l
@@ -1540,12 +1593,14 @@ fun XGetScreenSaver {l:agz} (
 // end of [XGetScreenSaver]
 
 (* ****** ****** *)
-
+//
 // 9.8: Controlling Host Access
-
+//
 (* ****** ****** *)
-
+//
 // 9.8.1: Adding, Getting or Removing Hosts
+//
+(* ****** ****** *)
 
 typedef XHostAddress = $extype_struct "XHostAddress" of {
   family= int
@@ -1581,8 +1636,10 @@ fun XRemoveHosts {l:agz} {n:nat}
 // end of [XRemoveHosts]
 
 (* ****** ****** *)
-
+//
 // 9.8.2: Changing, Enabling or Disabling Access Control
+//
+(* ****** ****** *)
 
 fun XSetAccessControl {l:agz}
   (dpy: !Display_ptr l, mode: int): void = "#atsctrb_XSetAccessControl"
@@ -1597,11 +1654,11 @@ fun XDisableAccessControl {l:agz}
 // end of [XDisableAccessControl]
 
 (* ****** ****** *)
-
+//
 //
 // Chapter 10: Events
 //
-
+//
 (* ****** ****** *)
 
 abst@ype XEvent_rest // unknown quantity
@@ -1617,8 +1674,10 @@ propdef XEvent_castdn_t (a:t@ype) = {l:addr}
 // end of [XEvent_castdn_t]
 
 (* ****** ****** *)
-
+//
 // 10.2: Event Structures
+//
+(* ****** ****** *)
 
 typedef XAnyEvent = $extype_struct "XAnyEvent" of {
   type= EventType_t
@@ -1633,9 +1692,9 @@ typedef XAnyEvent = $extype_struct "XAnyEvent" of {
 praxi XEvent_xany_castdn : XEvent_castdn_t (XAnyEvent)
 
 (* ****** ****** *)
-
+//
 // 10.5: Keyboard and Pointer Events
-
+//
 (* ****** ****** *)
 
 typedef XKeyEvent = $extype_struct "XKeyEvent" of {
@@ -1717,20 +1776,22 @@ typedef XMotionEvent = $extype_struct "XMotionEvent" of {
 praxi XEvent_xmotion_castdn : XEvent_castdn_t (XMotionEvent)
 
 (* ****** ****** *)
-
+//
 // 10.6: Window Entry/Exit Events
-
+//
 (* ****** ****** *)
-
+//
 // 10.7: Input Focus Events
-
+//
 (* ****** ****** *)
-
+//
 // 10.8: Key Map State Notification Events
-
+//
 (* ****** ****** *)
-
+//
 // 10.9: Exposure Events
+//
+(* ****** ****** *)
 
 typedef XExposeEvent = $extype_struct "XExposeEvent" of {
   type= EventType_t
@@ -1749,12 +1810,14 @@ typedef XExposeEvent = $extype_struct "XExposeEvent" of {
 praxi XEvent_xexpose_castdn : XEvent_castdn_t (XExposeEvent)
 
 (* ****** ****** *)
-
+//
 // 10.10: Window State Change Events
-
+//
 (* ****** ****** *)
-
+//
 // 10.10.1: CirculateNotify Events
+//
+(* ****** ****** *)
 
 typedef XCirculateEvent =
   $extype_struct "XCirculateEvent" of {
@@ -1773,8 +1836,10 @@ typedef XCirculateEvent =
 praxi XEvent_xcirculate_castdn : XEvent_castdn_t (XCirculateEvent)
 
 (* ****** ****** *)
-
+//
 // 10.10.2: ConfigureNotify Events
+//
+(* ****** ****** *)
 
 typedef XConfigureEvent =
   $extype_struct "XConfigureEvent" of {
@@ -1797,8 +1862,10 @@ typedef XConfigureEvent =
 praxi XEvent_xconfigure_castdn : XEvent_castdn_t (XConfigureEvent)
 
 (* ****** ****** *)
-
+//
 // 10.10.2: CreateNotify Events
+//
+(* ****** ****** *)
 
 typedef XCreateWindowEvent =
   $extype_struct "XCreateWindowEvent" of {
@@ -1820,8 +1887,10 @@ typedef XCreateWindowEvent =
 praxi XEvent_xcreatewindow_castdn : XEvent_castdn_t (XCreateWindowEvent)
 
 (* ****** ****** *)
-
+//
 // 10.10.2: DestroyNotify Events
+//
+(* ****** ****** *)
 
 typedef XDestroyWindowEvent =
   $extype_struct "XDestroyWindowEvent" of {
@@ -1840,14 +1909,16 @@ typedef XDestroyWindowEvent =
 praxi XEvent_xdestroywindow_castdn : XEvent_castdn_t (XDestroyWindowEvent)
 
 (* ****** ****** *)
-
+//
 //
 // Chapter 11: Event Handling Functions
 //
-
+//
 (* ****** ****** *)
-
+//
 // 11.1: selecting events
+//
+(* ****** ****** *)
 
 fun XSelectInput {l:agz}
   (dpy: !Display_ptr l, win: Window, eventmask: InputEventMask_t): void
@@ -1855,8 +1926,10 @@ fun XSelectInput {l:agz}
 // end of [XSelectInput]
 
 (* ****** ****** *)
-
+//
 // 11.2: handling the output buffer
+//
+(* ****** ****** *)
 
 fun XFlush {l:agz} (dpy: !Display_ptr l): void
   = "#atsctrb_XFlush"
@@ -1867,9 +1940,9 @@ fun XSync {l:agz} (dpy: !Display_ptr l, discard: bool): void
 // end of [XSync]
 
 (* ****** ****** *)
-
+//
 // 11.3: Event Queue Management
-
+//
 macdef QueuedAlready = $extval (int, "QueuedAlready")
 macdef QueuedAfterReading = $extval (int, "QueuedAfterReading")
 macdef QueuedAfterFlush = $extval (int, "QueuedAfterFlush")
@@ -1882,12 +1955,14 @@ fun XEventsQueued {l:agz} (dpy: Display_ptr l, mode: int): int
 fun XPending {l:agz} (dpy: Display_ptr l): int = "#atsctrb_XPending"
 
 (* ****** ****** *)
-
+//
 // 11.4: manipulating the event queue
-
+//
 (* ****** ****** *)
-
+//
 // 11.4.1: returning the next event
+//
+(* ****** ****** *)
 
 fun XNextEvent {l:agz}
   (dpy: !Display_ptr l, event: &XEvent? >> XEvent): void = "#atsctrb_XNextEvent"
@@ -1898,16 +1973,17 @@ fun XPeekEvent {l:agz}
 // end of [XPeekEvent]
 
 (* ****** ****** *)
-
+//
 //
 // Chapter 14: Inter-client communication functions
 //
-
 // source: "X11/Xutil.h"
-
+//
 (* ****** ****** *)
-
+//
 // 14.1: Client to Window Manage Communication
+//
+(* ****** ****** *)
 
 typedef XTextProperty (l:addr) =
   $extype_struct "XTextProperty" of {
@@ -1920,18 +1996,20 @@ typedef XTextProperty (l:addr) =
 typedef XTextProperty = [l:addr] XTextProperty l
 
 (* ****** ****** *)
-
-// this is an enum type
-abst@ype XICCEncodingStyle = $extype "XICCEncodingStyle"
-
+//
+// HX: this is an enum type
+//
+abst@ype XICCEncodingStyle = $extype"XICCEncodingStyle"
 macdef XStringStyle = $extval (XICCEncodingStyle, "XStringStyle")
 macdef XCompoundTextStyle = $extval (XICCEncodingStyle, "XCompoundTextStyle")
 macdef XTextStyle = $extval (XICCEncodingStyle, "XTextStyle")
 macdef XStdICCTextStyle = $extval (XICCEncodingStyle, "XStdICCTextStyle")
 
 (* ****** ****** *)
-
+//
 // 14.1.1: Manipulating Top-Level Windows
+//
+(* ****** ****** *)
 
 fun XIconifyWindow {l:agz}
   (dpy: !Display_ptr l, win: Window, nscr: int): Status
@@ -1950,8 +2028,10 @@ fun XReconfigureWMWindow {l:agz} (
 // end of [XReconfigureWMWindow]
 
 (* ****** ****** *)
-
+//
 // 14.1.2: Converting String Lists
+//
+(* ****** ****** *)
 
 fun XDefaultString (): string = "#atsctrb_XDefaultString"
 
@@ -1985,8 +2065,10 @@ fun XFreeStringList
 // end of [XFreeStringList]
 
 (* ****** ****** *)
-
+//
 // 14.1.3: Setting and Reading Text Properties
+//
+(* ****** ****** *)
 
 fun XSetTextProperty {l:agz} (
     dpy: !Display_ptr l
@@ -2005,8 +2087,10 @@ fun XGetTextProperty {l:agz} (
 // end of [XGetTextProperty]
 
 (* ****** ****** *)
-
+//
 // 14.1.4: Setting and Reading the WM_NAME Property
+//
+(* ****** ****** *)
 
 fun XSetWMName {l:agz} (
     dpy: !Display_ptr l
@@ -2039,8 +2123,10 @@ fun XFetchName {l:agz} (
 // end of [XFetchName]
 
 (* ****** ****** *)
-
+//
 // 14.1.5: Setting and Reading the WM_ICON_NAME Property
+//
+(* ****** ****** *)
 
 fun XSetWMIconName {l:agz} (
     dpy: !Display_ptr l
@@ -2071,9 +2157,9 @@ fun XGetIconName {l:agz} (
 // end of [XGetIconName]
 
 (* ****** ****** *)
-
+//
 // 14.1.6: Setting and Reading the WM_HINTS Property
-
+//
 macdef InputHint = $extval (lint, "InputHint")
 macdef StateHint = $extval (lint, "StateHint")
 macdef IconPixmapHint = $extval (lint, "IconPixmapHint")
@@ -2119,8 +2205,10 @@ fun XGetWNHints {l:agz}
 // end of [XGetWNHints]
 
 (* ****** ****** *)
-
+//
 // 14.1.7: Setting and Reading the WM_NORMAL Property
+//
+(* ****** ****** *)
 
 typedef XSizeHints_aspect =
   $extype_struct "XSizeHints_aspect" of { x= int, y= int }
@@ -2184,8 +2272,10 @@ fun XGetWMSizeHints {l:agz} (
 // end of [XGetWMSizeHints]
 
 (* ****** ****** *)
-
+//
 // 14.1.8: Setting and Reading the WM_CLASS Property
+//
+(* ****** ****** *)
 
 typedef XClassHint = $extype_struct "XClassHint" of {
   res_name= string
@@ -2208,8 +2298,10 @@ fun XGetClassHint {l:agz} (
   = "#atsctrb_XGetClassHint"
 
 (* ****** ****** *)
-
+//
 // 14.1.9: Setting and Reading the WM_TRANSIENT_FOR Property
+//
+(* ****** ****** *)
 
 fun XSetTransientForHint {l:agz} (
     dpy: !Display_ptr l, win: Window, prop_window: Window
@@ -2223,8 +2315,10 @@ fun XGetTransientForHint {l:agz} (
 // end of [XGetTransientForHint]
 
 (* ****** ****** *)
-
+//
 // 14.1.13: Using Window Manager Convenience Functions
+//
+(* ****** ****** *)
 
 fun XSetWMProperties
   {l:agz} {l1,l2:addr} {n:nat} (
@@ -2240,14 +2334,16 @@ fun XSetWMProperties
 // end of [XSetWMProperties]
 
 (* ****** ****** *)
-
+//
 //
 // Chapter 16: Application Unitility Functions
 //
-
+//
 (* ****** ****** *)
-
+//
 // 16.9: Manipulating Bitmaps
+//
+(* ****** ****** *)
 
 fun XCreatePixmapFromBitmapData {l:agz} (
     dpy: !Display_ptr l
@@ -2265,9 +2361,9 @@ fun XCreateBitmapFromData {l:agz} (
 // end of [XCreateBitmapFromData]
 
 (* ****** ****** *)
-
+//
 // 16.10: Using the Context Manager
-
+//
 (* ****** ****** *)
 
 (* end of [Xlib.sats] *)

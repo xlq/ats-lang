@@ -38,12 +38,12 @@
 
 (* ****** ****** *)
 
-abst@ype GtkProgressBarStyle = $extype "GtkProgressBarStyle"
+abst@ype GtkProgressBarStyle = $extype"GtkProgressBarStyle"
 macdef GTK_PROGRESS_CONTINUOUS =
   $extval (GtkProgressBarStyle, "GTK_PROGRESS_CONTINUOUS")
 macdef GTK_PROGRESS_DISCRETE = $extval (GtkProgressBarStyle, "GTK_PROGRESS_DISCRETE")
 
-abst@ype GtkProgressBarOrientation = $extype "GtkProgressBarOrientation"
+abst@ype GtkProgressBarOrientation = $extype"GtkProgressBarOrientation"
 macdef GTK_PROGRESS_LEFT_TO_RIGHT =
   $extval (GtkProgressBarOrientation, "GTK_PROGRESS_LEFT_TO_RIGHT")
 macdef GTK_PROGRESS_RIGHT_TO_LEFT =

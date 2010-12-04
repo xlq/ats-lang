@@ -37,7 +37,7 @@
 (* ****** ****** *)
 
 abst@ype
-ClutterInitError = $extype "ClutterInitError"
+ClutterInitError = $extype"ClutterInitError"
 macdef CLUTTER_INIT_SUCCESS = $extval (ClutterInitError, "CLUTTER_INIT_SUCCESS")
 macdef CLUTTER_INIT_UNKNOWN = $extval (ClutterInitError, "CLUTTER_INIT_UNKNOWN")
 macdef CLUTTER_INIT_THREADS = $extval (ClutterInitError, "CLUTTER_INIT_THREADS")

@@ -62,7 +62,7 @@ fun pango_color_parse {l:agz} (
 
 (* ****** ****** *)
 
-abst@ype PangoAttrType = $extype "PangoAttrType"
+abst@ype PangoAttrType = $extype"PangoAttrType"
 macdef PANGO_ATTR_INVALID = $extval (PangoAttrType, "PANGO_ATTR_INVALID")
 macdef PANGO_ATTR_LANGUAGE = $extval (PangoAttrType, "PANGO_ATTR_LANGUAGE")
 macdef PANGO_ATTR_FAMILY = $extval (PangoAttrType, "PANGO_ATTR_FAMILY")
@@ -87,7 +87,7 @@ macdef PANGO_ATTR_ABSOLUTE_SIZE = $extval (PangoAttrType, "PANGO_ATTR_ABSOLUTE_S
 
 (* ****** ****** *)
 
-abst@ype PangoUnderline = $extype "PangoUnderline"
+abst@ype PangoUnderline = $extype"PangoUnderline"
 macdef PANGO_UNDERLINE_NONE = $extval (PangoUnderline, "PANGO_UNDERLINE_NONE")
 macdef PANGO_UNDERLINE_SINGLE = $extval (PangoUnderline, "PANGO_UNDERLINE_SINGLE")
 macdef PANGO_UNDERLINE_DOUBLE = $extval (PangoUnderline, "PANGO_UNDERLINE_DOUBLE")

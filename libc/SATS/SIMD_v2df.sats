@@ -51,7 +51,7 @@
 
 (* ****** ****** *)
 
-abst@ype v2df = $extype "ats_v2df_type"
+abst@ype v2df = $extype"ats_v2df_type"
 
 (* ****** ****** *)
 

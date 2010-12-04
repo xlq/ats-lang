@@ -91,7 +91,7 @@ typedef GdkSpan =
 
 (* ****** ****** *)
 
-abst@ype GdkWChar = $extype "GdKWChar"
+abst@ype GdkWChar = $extype"GdKWChar"
 
 (* ****** ****** *)
 
@@ -104,12 +104,12 @@ macdef GDK_NONE = $extval (GdkAtom, "GDK_NONE")
 
 (* ****** ****** *)
 
-abst@ype GdkEventType = $extype "GdkEventType"
-abst@ype GdkEventMask = $extype "GdkEventMask"
+abst@ype GdkEventType = $extype"GdkEventType"
+abst@ype GdkEventMask = $extype"GdkEventMask"
 
 (* ****** ****** *)
 
-abst@ype GdkModifierType = $extype "GdkModifierType"
+abst@ype GdkModifierType = $extype"GdkModifierType"
 
 macdef GDK_SHIFT_MASK = $extval (GdkModifierType, "GDK_SHIFT_MASK")
 macdef GDK_LOCK_MASK = $extval (GdkModifierType, "GDK_LOCK_MASK")
@@ -132,8 +132,8 @@ macdef GDK_MODIFIER_MASK = $extval (GdkModifierType, "GDK_MODIFIER_MASK")
 
 (* ****** ****** *)
 
-abst@ype GdkVisibilityState = $extype "GdkVisibilityState"
-abst@ype GdkWindowState = $extype "GdkWindowState"
+abst@ype GdkVisibilityState = $extype"GdkVisibilityState"
+abst@ype GdkWindowState = $extype"GdkWindowState"
 
 (* ****** ****** *)
 

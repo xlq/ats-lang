@@ -9,7 +9,7 @@
 (*
 ** ATS - Unleashing the Potential of Types!
 **
-** Copyright (C) 2002-2008 Hongwei Xi, Boston University
+** Copyright (C) 2002-2010 Hongwei Xi, Boston University
 **
 ** All rights reserved
 **
@@ -69,14 +69,14 @@
 
 (* ****** ****** *)
 
-abst@ype bool_t0ype = $extype "ats_bool_type"
-abst@ype byte_t0ype = $extype "ats_byte_type" // sizeof (byte) = 1
+abst@ype bool_t0ype = $extype"ats_bool_type"
+abst@ype byte_t0ype = $extype"ats_byte_type" // sizeof (byte) = 1
 
 (* ****** ****** *)
 
-abst@ype char_t0ype = $extype "ats_char_type"
-abst@ype schar_t0ype = $extype "ats_schar_type"
-abst@ype uchar_t0ype = $extype "ats_uchar_type"
+abst@ype char_t0ype = $extype"ats_char_type"
+abst@ype schar_t0ype = $extype"ats_schar_type"
+abst@ype uchar_t0ype = $extype"ats_uchar_type"
 
 (* ****** ****** *)
 
@@ -84,54 +84,57 @@ abstype clo_t0ype // ats_clo_type
 
 (* ****** ****** *)
 
-abst@ype double_t0ype = $extype "ats_double_type"
+abst@ype double_t0ype = $extype"ats_double_type"
 
 (* ****** ****** *)
 
 absviewtype exception_viewtype // boxed type
 
 (* ****** ****** *)
-
-abst@ype int_t0ype = $extype "ats_int_type"
-abst@ype uint_t0ype = $extype "ats_uint_type"
-
-abst@ype int_short_t0ype = $extype "ats_sint_type"
-abst@ype uint_short_t0ype = $extype "ats_usint_type"
-
-abst@ype int_short_short_t0ype = $extype "ats_sint_type"
-abst@ype uint_short_short_t0ype = $extype "ats_ussint_type"
-
-abst@ype int_long_t0ype = $extype "ats_lint_type"
-abst@ype uint_long_t0ype = $extype "ats_ulint_type"
-
-abst@ype int_long_long_t0ype = $extype "ats_llint_type"
-abst@ype uint_long_long_t0ype = $extype "ats_ullint_type"
-
-abst@ype intmax_t0ype = $extype "ats_intmax_type"
-abst@ype uintmax_t0ype = $extype "ats_uintmax_type"
-
-// integer types guaranteed to be of one word size
+//
+abst@ype int_t0ype = $extype"ats_int_type"
+abst@ype uint_t0ype = $extype"ats_uint_type"
+//
+abst@ype int_short_t0ype = $extype"ats_sint_type"
+abst@ype uint_short_t0ype = $extype"ats_usint_type"
+//
+abst@ype int_short_short_t0ype = $extype"ats_sint_type"
+abst@ype uint_short_short_t0ype = $extype"ats_ussint_type"
+//
+abst@ype int_long_t0ype = $extype"ats_lint_type"
+abst@ype uint_long_t0ype = $extype"ats_ulint_type"
+//
+abst@ype int_long_long_t0ype = $extype"ats_llint_type"
+abst@ype uint_long_long_t0ype = $extype"ats_ullint_type"
+//
+abst@ype intmax_t0ype = $extype"ats_intmax_type"
+abst@ype uintmax_t0ype = $extype"ats_uintmax_type"
+//
+// HX: integer types guaranteed to be of one word size
+//
 abstype intptr_type // ats_intptr_type
 abstype uintptr_type // ats_uintptr_type
-
-// integer types with fixed size
-abst@ype int8_t0ype = $extype "ats_int8_type"
-abst@ype uint8_t0ype = $extype "ats_uint8_type"
-
-abst@ype int16_t0ype = $extype "ats_int16_type"
-abst@ype uint16_t0ype = $extype "ats_uint16_type"
-
-abst@ype int32_t0ype = $extype "ats_int32_type"
-abst@ype uint32_t0ype = $extype "ats_uint32_type"
-
-abst@ype int64_t0ype = $extype "ats_int64_type"
-abst@ype uint64_t0ype = $extype "ats_uint64_type"
-
-// integer types for sizes
-abst@ype size_t0ype = $extype "ats_size_type"
-abst@ype ssize_t0ype = $extype "ats_ssize_type"
-abst@ype ptrdiff_t0ype = $extype "ats_ptrdiff_type"
-
+//
+// HX: integer types with fixed size
+//
+abst@ype int8_t0ype = $extype"ats_int8_type"
+abst@ype uint8_t0ype = $extype"ats_uint8_type"
+//
+abst@ype int16_t0ype = $extype"ats_int16_type"
+abst@ype uint16_t0ype = $extype"ats_uint16_type"
+//
+abst@ype int32_t0ype = $extype"ats_int32_type"
+abst@ype uint32_t0ype = $extype"ats_uint32_type"
+//
+abst@ype int64_t0ype = $extype"ats_int64_type"
+abst@ype uint64_t0ype = $extype"ats_uint64_type"
+//
+// HX: integer types for sizes
+//
+abst@ype size_t0ype = $extype"ats_size_type"
+abst@ype ssize_t0ype = $extype"ats_ssize_type"
+abst@ype ptrdiff_t0ype = $extype"ats_ptrdiff_type"
+//
 (* ****** ****** *)
 
 abstype ptr_type // unindexed type for pointers
@@ -147,168 +150,168 @@ abst@ype strbuf_t0ype // a type of variable size
 // sizeof (void) is undefined in the standard but GCC sets it to 1
 // For instance, try to compile with the flags: '-ansi' and '-pedantic'
 //
-abst@ype void_t0ype = $extype "ats_void_type"
+abst@ype void_t0ype = $extype"ats_void_type"
 //
 // HX-2010-10-23: [ats_empty_type] is a struct of no fields
 //
-abst@ype empty_t0ype = $extype "ats_empty_type" // sizeof(empty) = 0
+abst@ype empty_t0ype = $extype"ats_empty_type" // sizeof(empty) = 0
 
 (* ****** ****** *)
 //
-// some built-in static constants for integer operations
+// HX: some built-in static constants for integer operations
 //
 sta neg_int_int : int -> int (* integer negation *)
 stadef ~ = neg_int_int
-
+//
 sta add_int_int_int : (int, int) -> int (* addition *)
 stadef + = add_int_int_int
-
+//
 sta sub_int_int_int: (int, int) -> int (* subtraction *)
 stadef - = sub_int_int_int
-
+//
 sta nsub_int_int_int: (int, int) -> int (* subtraction on nats *)
 stadef nsub = nsub_int_int_int
-
+//
 sta mul_int_int_int : (int, int) -> int (* multiplication *)
 stadef * = mul_int_int_int
-
+//
 sta div_int_int_int : (int, int) -> int (* division *)
 stadef / = div_int_int_int
-
+//
 (*
 sta mod_int_int_int : (int, int) -> int (* modulo operation *)
 stadef mod = mod_int_int_int
 *)
 // [y] is required to be a constant
 stadef mod (x:int, y:int) = x - y * (x / y)
-
+//
 sta abs_int_int : int -> int
 stadef abs = abs_int_int
-
+//
 sta max_int_int_int : (int, int) -> int
 stadef max = max_int_int_int
-
+//
 sta min_int_int_int : (int, int) -> int
 stadef min = min_int_int_int
-
+//
 sta int_of_bool : bool -> int and bool_of_int : int -> bool
 sta int_of_char : char -> int and char_of_int : int -> char
-
+//
 (* ****** ****** *)
-
-// The built-in boolean constants
-
+//
+// HX: some built-in boolean constants
+//
 sta true_bool : bool and false_bool : bool
 stadef true = true_bool and false = false_bool
-
-// some built-in static constants for boolean operations
-
+//
+// HX: some built-in static constants for boolean operations
+//
 sta neg_bool_bool : bool -> bool (* boolean negation *)
 stadef ~ = neg_bool_bool
-
+//
 sta mul_bool_bool_bool : (bool, bool) -> bool (* conjunction *)
 stadef && = mul_bool_bool_bool
-
+//
 sta add_bool_bool_bool : (bool, bool) -> bool (* disjunction *)
 stadef || = add_bool_bool_bool
-
+//
 sta gt_bool_bool_bool : (bool, bool) -> bool
 stadef > = gt_bool_bool_bool
-
+//
 sta gte_bool_bool_bool : (bool, bool) -> bool
 stadef >= = gte_bool_bool_bool
-
+//
 sta lt_bool_bool_bool : (bool, bool) -> bool
 stadef < = lt_bool_bool_bool
-
+//
 sta lte_bool_bool_bool : (bool, bool) -> bool
 stadef <= = lte_bool_bool_bool
-
+//
 sta eq_bool_bool_bool : (bool, bool) -> bool
 stadef == = eq_bool_bool_bool
-
+//
 sta neq_bool_bool_bool : (bool, bool) -> bool
 stadef <> = neq_bool_bool_bool
-
+//
 (* ****** ****** *)
-
-// some built-in static constants for char comparisons
-
+//
+// HX: some built-in static constants for char comparisons
+//
 sta sub_char_char_int : (char, char) -> int
 stadef - = sub_char_char_int
-
+//
 sta gt_char_char_bool : (char, char) -> bool
 stadef > = gt_char_char_bool
-
+//
 sta gte_char_char_bool : (char, char) -> bool
 stadef >= = gte_char_char_bool
-
+//
 sta lt_char_char_bool : (char, char) -> bool
 stadef < = lt_char_char_bool
-
+//
 sta lte_char_char_bool : (char, char) -> bool
 stadef <= = lte_char_char_bool
-
+//
 sta eq_char_char_bool : (char, char) -> bool
 stadef == = eq_char_char_bool
-
+//
 sta neq_char_char_bool : (char, char) -> bool
 stadef <> = neq_char_char_bool
-
+//
 (* ****** ****** *)
-
-// some built-in static constants for integer comparisons
-
+//
+// HX: some built-in static constants for integer comparisons
+//
 sta gt_int_int_bool : (int, int) -> bool
 stadef > = gt_int_int_bool
-
+//
 sta gte_int_int_bool : (int, int) -> bool
 stadef >= = gte_int_int_bool
-
+//
 sta lt_int_int_bool : (int, int) -> bool
 stadef < = lt_int_int_bool
-
+//
 sta lte_int_int_bool : (int, int) -> bool
 stadef <= = lte_int_int_bool
-
+//
 sta eq_int_int_bool : (int, int) -> bool
 stadef == = eq_int_int_bool
-
+//
 sta neq_int_int_bool : (int, int) -> bool
 stadef <> = neq_int_int_bool
-
-// some built-in static constants for pointer arithmetic
-
+//
+// HX: some built-in static constants for pointer arithmetic
+//
 sta null_addr : addr
 stadef null = null_addr
-
+//
 sta add_addr_int_addr : (addr, int) -> addr
 stadef + = add_addr_int_addr
-
+//
 sta sub_addr_int_addr : (addr, int) -> addr
 stadef - = sub_addr_int_addr
-
+//
 sta sub_addr_addr_int : (addr, addr) -> int
 stadef - = sub_addr_addr_int
-
+//
 sta gt_addr_addr_bool : (addr, addr) -> bool
 stadef > = gt_addr_addr_bool
-
+//
 sta gte_addr_addr_bool : (addr, addr) -> bool
 stadef >= = gte_addr_addr_bool
-
+//
 sta lt_addr_addr_bool : (addr, addr) -> bool
 stadef < = lt_addr_addr_bool
-
+//
 sta lte_addr_addr_bool : (addr, addr) -> bool
 stadef <= = lte_addr_addr_bool
-
+//
 sta eq_addr_addr_bool : (addr, addr) -> bool
 stadef == = eq_addr_addr_bool
-
+//
 sta neq_addr_addr_bool : (addr, addr) -> bool
 stadef <> = neq_addr_addr_bool
-
+//
 (* ****** ****** *)
 
 (*
@@ -320,17 +323,18 @@ stadef <= = lte_cls_cls_bool
 (* ****** ****** *)
 
 (*
-
+//
+// HX:
 // some built-in static constants for rationals
 // not yet supported and may never be supported
-
+//
 sta ~ : rat -> rat (* rational negation *)
 sta + : (rat, rat) -> rat (* addition *)
 and - : (rat, rat) -> rat (* subtraction *)
 and * : (rat, rat) -> rat (* multiplication *)
 and / : (rat, int) -> rat (* division *)
 and / : (rat, rat) -> rat (* division *)
-
+//
 sta > : (rat, rat) -> bool
 sta > : (rat, int) -> bool
 and >= : (rat, rat) -> bool
@@ -338,21 +342,21 @@ and < : (rat, rat) -> bool
 and <= : (rat, rat) -> bool
 and <> : (rat, rat) -> bool
 and == : (rat, rat) -> bool
-
+//
 *)
 
 (* ****** ****** *)
-
+//
 viewtypedef bottom_t0ype_uni = {a:t@ype} a
 viewtypedef bottom_t0ype_exi = [a:t@ype | false] a
-
+//
 viewtypedef bottom_viewt0ype_uni = {a:viewt@ype} a
 viewtypedef bottom_viewt0ype_exi = [a:viewt@ype | false] a
-
+//
 (* ****** ****** *)
-
-// some built-in type/viewtype/prop/view constructors
-
+//
+// HX: some built-in type/viewtype/prop/view constructors
+//
 absview at_viewt0ype_addr_view (viewt@ype+, addr)
 stadef @ = at_viewt0ype_addr_view
 
@@ -365,29 +369,34 @@ abstype refconst_t0ype_type (t@ype) // boxed type
 stadef refconst = refconst_t0ype_type
 
 (*
-
+//
 // HX-2009: should this be added?
+//
 abstype refopt_viewt0ype_bool_type (viewt@ype, bool)
 stadef refopt = refopt_viewt0ype_bool_type
-
+//
 typedef Refopt (a: viewt@ype) = [b:bool] refopt (a, b)
-
+//
 *)
 
 (* ****** ****** *)
-
-// for taking out a component in a record
+//
+// HX: for taking out a component in a record
 abst@ype
 without_viewt0ype_t0ype (viewt@ype)
 stadef without = without_viewt0ype_t0ype
-
-// sta vbox_view_prop : view -> prop
+//
+// HX: sta vbox_view_prop : view -> prop
+//
 absprop vbox_view_prop (view)
 stadef vbox = vbox_view_prop
-
+//
 (* ****** ****** *)
 
 (*
+//
+// HX: support for union type may be removed
+//
 absviewt@ype opt_viewt0ype_int_viewt0ype
   (a:viewt@ype+, i:int) = union (i) { value= a }
 stadef opt = value_viewt0ype_int_viewt0ype
@@ -396,16 +405,16 @@ stadef opt = value_viewt0ype_int_viewt0ype
 absviewt@ype
 opt_viewt0ype_bool_viewt0ype (a:viewt@ype+, opt:bool) = a
 stadef opt = opt_viewt0ype_bool_viewt0ype
+
 //
 // HX-2010-03-23: resulting in incorrect erasure
 // stadef Opt (a:viewt@ype) = [b:bool] opt (a, b)
 //
-
 (* ****** ****** *)
 
 (*
 // HX-2008:
-// this not yet supported and it may never
+// this is not yet supported and may never be
 datasort stamp = (* abstract *) // be supported
 // sta vfrac : (stamp, view, rat) -> view
 absview vfrac (stamp, view, rat)
@@ -421,12 +430,12 @@ abstype
 array0_viewt0ype_type (elt:viewt@ype)
 abstype
 array_viewt0ype_int_type (elt:viewt@ype, sz:int)
-
+//
 abstype
 matrix0_viewt0ype_type (elt:viewt@ype)
 abstype
 matrix_viewt0ype_int_int_type (elt:viewt@ype, nrow:int, ncol:int)
-
+//
 (* ****** ****** *)
 
 abst@ype bool_bool_t0ype (bool) = bool_t0ype
@@ -462,71 +471,66 @@ strptr_addr_int_viewtype (addr, int) // for linear strings
 absviewtype strptr_addr_viewtype (addr) // for linear strings
 
 (* ****** ****** *)
-
-// The following definitions are needed in the ATS constraint solver
-
+//
+// HX: The following definitions are needed in the ATS constraint solver
+//
 // absolute value function relation
-
+//
 stadef abs_int_int_bool (x: int, v: int): bool =
   (x >= 0 && x == v) || (x <= 0 && ~x == v)
-
 stadef abs_r = abs_int_int_bool
-
-// in-between relation
-
+//
+// HX: in-between relation
+//
 stadef btw_int_int_int_bool (x: int, y: int, z:int): bool =
   (x <= y && y < z)
-
-// int_of_bool conversion
-
+//
+// HX: int_of_bool conversion
+//
 stadef int_of_bool_bool (b: bool, v: int): bool =
   (b && v == 1) || (~b && v == 0)
-
-// subtraction relation on natural numbers
-
+//
+// HX: subtraction relation on natural numbers
+//
 stadef nsub_int_int_int_bool (x: int, y: int, v: int): bool =
   (x >= y && v == x - y) || (x <= y && v == 0)
-
 stadef nsub_r = nsub_int_int_int_bool
-
-// maximum function relation
-
+//
+// HX: maximum function relation
+//
 stadef max_int_int_int_bool (x: int, y: int, v: int): bool =
   (x >= y && x == v) || (x <= y && y == v)
-
 stadef max_r = max_int_int_int_bool
-
-// minimum function relation
-
+//
+// HX: minimum function relation
+//
 stadef min_int_int_int_bool (x: int, y: int, v: int): bool =
   (x >= y && y == v) || (x <= y && x == v)
-
 stadef min_r = min_int_int_int_bool
-
-// sign function relation
-
+//
+// HX: sign function relation
+//
 stadef sgn_int_int_bool (x: int, v: int): bool =
   (x > 0 && v == 1) || (x == 0 && v == 0) || (x < 0 && v == ~1)
-
 stadef sgn_r = sgn_int_int_bool
-
-// division relation
-
+//
+// HX: division relation (nat)
+//
 stadef ndiv_int_int_int_bool (x: int, y: int, q: int): bool =
   (q * y <= x && x < q * y + y)
-
 stadef ndiv_r = ndiv_int_int_int_bool
-
+//
+// HX: division relation (int)
+//
 stadef div_int_int_int_bool (x: int, y: int, q: int) =
   (x >= 0 && y > 0 && ndiv_int_int_int_bool (x, y, q)) ||
   (x >= 0 && y < 0 && ndiv_int_int_int_bool (x, ~y, ~q)) ||
   (x <= 0 && y > 0 && ndiv_int_int_int_bool (~x, y, ~q)) ||
   (x <= 0 && y < 0 && ndiv_int_int_int_bool (~x, ~y, q))
-
 stadef div_r = div_int_int_int_bool
-
-// modulo relation // not handled yet
-
+//
+// HX: modulo relation // not handled yet
+//
 (* ****** ****** *)
 
 stadef size_int_int_bool (sz: int, n:int) = n >= 0
@@ -535,15 +539,17 @@ sta sizeof_viewt0ype_int : viewt@ype -> int
 stadef sizeof = sizeof_viewt0ype_int
 
 (* ****** ****** *)
-
-// introduce some short names
-
+//
+// HX: introduce some short names
+//
 stadef array0 = array0_viewt0ype_type // with dynamic size
 stadef array = array_viewt0ype_int_type // without dynamic size
 stadef matrix0 = matrix0_viewt0ype_type // with dynamic size
 stadef matrix = matrix_viewt0ype_int_int_type // without dynamic size
 
-(* this order is significant! *)
+(*
+** HX: this order is significant!
+*)
 stadef bool = bool_bool_t0ype
 stadef bool = bool_t0ype
 
@@ -551,7 +557,9 @@ stadef byte = byte_t0ype
 
 (* ****** ****** *)
 
-(* this order is significant! *)
+(*
+** HX: this order is significant!
+*)
 stadef char = char_char_t0ype
 stadef char = char_t0ype
 
@@ -562,19 +570,27 @@ stadef uchar = uchar_t0ype
 
 stadef double = double_t0ype
 
-stadef exn = exception_viewtype
+(* ****** ****** *)
+
+stadef exn = exception_viewtype // a boxed type
 
 (* ****** ****** *)
 
-(* this order is significant! *)
+(*
+** HX: this order is significant!
+*)
 stadef int = int_int_t0ype
 stadef int = int_t0ype
 
-(* this order is significant! *)
+(*
+** HX: this order is significant!
+*)
 stadef uint = uint_int_t0ype
 stadef uint = uint_t0ype
 
-(* this order is significant! *)
+(*
+** HX: this order is significant!
+*)
 stadef size_t = size_int_t0ype
 stadef size_t = size_t0ype
 
@@ -750,12 +766,13 @@ stadef printf_c = printf_c_types_type
 // HX: for handling variadic functions
 //
 absviewt@ype
-va_list_viewt0ype = $extype "ats_va_list_viewtype"
-
+va_list_viewt0ype = $extype"ats_va_list_viewtype"
 absviewt@ype
 va_list_types_viewt0ype (types) = va_list_viewt0ype
 
-(* this order is significant! *)
+(*
+** HX: this order is significant!
+*)
 stadef va_list = va_list_types_viewt0ype
 stadef va_list = va_list_viewt0ype
 
@@ -766,23 +783,21 @@ datasort file_mode =
   | file_mode_w (* write *)
   | file_mode_rw (* read and write *)
 // end of [file_mode]
-
-stadef r = file_mode_r ()
-stadef w = file_mode_w ()
+//
+stadef r = file_mode_r () and w = file_mode_w ()
 stadef rw = file_mode_rw ()
-
 //
 // [ats_FILE_viewtype] is defined in [libc/CATS/stdio.cats]
 //
 absviewt@ype
-FILE_viewt0ype (file_mode) = $extype "ats_FILE_viewtype"
+FILE_viewt0ype (file_mode) = $extype"ats_FILE_viewtype"
 stadef FILE = FILE_viewt0ype
-
 //
 // HX-2010-05-02:
 // this is easy to use but unsafe and should probably be DEPRECATED?
 //
 // [FILEref_type] is [ref (FILE m)] for some [m]
+//
 abstype FILEref_type
 stadef FILEref = FILEref_type
 
@@ -793,11 +808,10 @@ stadef FILEref = FILEref_type
 datatype
 box_t0ype_type (a:t@ype+) = box (a) of a
 stadef box = box_t0ype_type
-
+//
 dataviewtype
 box_viewt0ype_viewtype (a:viewt@ype+) = box_vt (a) of a
 stadef box_vt = box_viewt0ype_viewtype
-
 //
 // HX: [list0_t0ype_type] is co-variant
 //
@@ -805,7 +819,7 @@ datatype list0_t0ype_type (a: t@ype+) =
   | list0_cons (a) of (a, list0_t0ype_type a) | list0_nil (a) of ()
 // end of [list0_t0ype_type]
 stadef list0 = list0_t0ype_type
-
+//
 datatype // t@ype+: covariant
 list_t0ype_int_type (a:t@ype+, int) =
   | {n:int | n >= 0}
@@ -814,7 +828,6 @@ list_t0ype_int_type (a:t@ype+, int) =
 // end of [datatype]
 stadef list = list_t0ype_int_type
 typedef List (a:t@ype) = [n:int | n >= 0] list (a, n)
-
 //
 // HX: [option0_t0ype_type] is co-variant
 //
@@ -822,79 +835,70 @@ datatype option0_t0ype_type (a: t@ype) =
   | option0_some (a) of (a) | option0_none (a) of ()
 // end of [datatype]
 stadef option0 = option0_t0ype_type
-
+//
 datatype // t@ype+: covariant
 option_t0ype_bool_type (a:t@ype+, bool) =
   | None (a, false) | Some (a, true) of a
 // end of [datatype]
 stadef option = option_t0ype_bool_type
 typedef Option (a:t@ype) = [b:bool] option (a, b)
-
+//
 (* ****** ****** *)
-
-// some common dataviewtypes
-
+//
+// HX: some common dataviewtypes
+//
 dataviewtype // viewt@ype+: covariant
 list_viewt0ype_int_viewtype (a:viewt@ype+, int) =
   | {n:int | n >= 0}
     list_vt_cons (a, n+1) of (a, list_viewt0ype_int_viewtype (a, n))
   | list_vt_nil (a, 0)
 // end of [list_viewt0ype_int_viewtype]
-
 stadef list_vt = list_viewt0ype_int_viewtype
 viewtypedef List_vt (a:viewt@ype) = [n:int | n >=0] list_vt (a, n)
-
+//
 dataviewtype // viewt@ype+: covariant
 option_viewt0ype_bool_viewtype (a:viewt@ype+, bool) =
   | None_vt (a, false) | Some_vt (a, true) of a
 // end of [option_viewt0ype_bool_viewtype]
-
 stadef option_vt = option_viewt0ype_bool_viewtype
 viewtypedef Option_vt (a:viewt@ype) = [b:bool] option_vt (a, b)
-
+//
 (* ****** ****** *)
 //
 // HX: some useful props and views
 //
 dataprop unit_p = unit_p of ()
 dataview unit_v = unit_v of ()
-
 //
-
 dataview
 option_view_bool_view
   (a:view+, bool) = Some_v (a, true) of a | None_v (a, false)
 // end of [option_view_bool_view]
 stadef option_v = option_view_bool_view
 viewdef ptropt_v (a:viewt@ype, l:addr) = option_v (a @ l, l > null)
-
 //
-
 dataview
 disj_view_view_int_view
   (v0: view, v1: view, int) =
   | InsLeft_v (v0, v1, 0) of v0 | InsRight_v (v0, v1, 1) of v1
 // end of [dataview or_view_view_int_view]
 stadef disj_v = disj_view_view_int_view
-
-//
-
 //
 // HX: subview relation that only allows *reading*
 //
 absprop vsubr_p (v1:view+, v2: view-) // v2 -<prf> [v:iew] @(v1, v)
 stadef <= (v1:view, v2:view) = vsubr_p (v1, v2)
-
 //
 // HX: subview relation that allows *reading* and *writing*
 //
 absprop vsubw_p (v1:view, v2: view) // v2 -<prf> @(v1, v1 -<lin,prf> v2)
-
+//
 (* ****** ****** *)
-
-absviewt@ype crypt_viewt0ype_viewt0ype (a:viewt@ype) = a
+//
+absviewt@ype
+crypt_viewt0ype_viewt0ype (a:viewt@ype) = a
 stadef crypt = crypt_viewt0ype_viewt0ype
-
+//
 (* ****** ****** *)
 //
 // HX:
@@ -902,14 +906,13 @@ stadef crypt = crypt_viewt0ype_viewt0ype
 //
 abstype lazy_t0ype_type (t@ype+) // boxed type
 stadef lazy = lazy_t0ype_type
-
 //
 // HX: [lazy_vt(VT)] :
 // suspended computation with a linear value of viewtype VT
 //
 absviewtype lazy_viewt0ype_viewtype (viewt@ype+) // boxed linear type
 stadef lazy_vt = lazy_viewt0ype_viewtype
-
+//
 (* ****** ****** *)
 //
 // HX: lazy streams
@@ -923,7 +926,7 @@ where stream (a:t@ype) = lazy (stream_con a)
 dataviewtype stream_vt_con (a:viewt@ype+) =
   | stream_vt_nil (a) | stream_vt_cons (a) of (a, stream_vt a)
 where stream_vt (a:viewt@ype) = lazy_vt (stream_vt_con a)
-
+//
 (* ****** ****** *)
 
 #if VERBOSE_PRELUDE #then

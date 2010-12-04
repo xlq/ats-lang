@@ -60,27 +60,27 @@ overload lor with lor_lint_lint
 // Bool is already used in ATS
 typedef XBool = bool // unindexed
 //
-abst@ype Atom = $extype "Atom" // unsigned long int
-abst@ype Mask = $extype "Mask" // unsigned long int
-abst@ype VisualID = $extype "VisualID" // unsigned long int
-abst@ype Time = $extype "Time" // unsigned long int
+abst@ype Atom = $extype"Atom" // unsigned long int
+abst@ype Mask = $extype"Mask" // unsigned long int
+abst@ype VisualID = $extype"VisualID" // unsigned long int
+abst@ype Time = $extype"Time" // unsigned long int
 
 (* ****** ****** *)
 
 // [XID] is unsigned long int  
 
-abst@ype XID = $extype "XID"
-abst@ype Window = $extype "Window" // = XID
-abst@ype Font = $extype "Font" // = XID
-abst@ype Pixmap = $extype "Pixmap" // = XID
-abst@ype Cursor = $extype "Cursor" // = XID
-abst@ype Colormap = $extype "Colormap" // = XID
-abst@ype GContext = $extype "GContext" // = XID
-abst@ype KeySym = $extype "KeySym" // = XID
+abst@ype XID = $extype"XID"
+abst@ype Window = $extype"Window" // = XID
+abst@ype Font = $extype"Font" // = XID
+abst@ype Pixmap = $extype"Pixmap" // = XID
+abst@ype Cursor = $extype"Cursor" // = XID
+abst@ype Colormap = $extype"Colormap" // = XID
+abst@ype GContext = $extype"GContext" // = XID
+abst@ype KeySym = $extype"KeySym" // = XID
 
 //
 
-abst@ype Drawable = $extype "Drawable" // = XID
+abst@ype Drawable = $extype"Drawable" // = XID
 
 symintr Drawable
 

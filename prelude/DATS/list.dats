@@ -1949,7 +1949,9 @@ local
 //
   typedef lte (a:t@ype, env: viewtype, f:eff) = (a, a, !env) -<fun,f> bool
 
-  fun{a:t@ype} qs {env:viewtype} {n:nat} {f:eff} .<n,0>.
+  fun{a:t@ype}
+  qsrt {env:viewtype}
+    {n:nat} {f:eff} .<n,0>.
     (lte: lte (a, env, f), xs: list (a, n), env: !env)
     :<f> list (a, n) = begin
     case+ xs of // [case+]: exhaustive pattern matching
@@ -1957,9 +1959,10 @@ local
         part {env} {n-1,0,0} (lte, x', xs', nil, nil, env)
       end // end of [::]
     | nil () => nil ()
-  end // end of [qs]
+  end // end of [qsrt]
 
-  and part {env:viewtype} {p,l,r:nat} {f:eff} .<p+l+r,p+1>. (
+  and part {env:viewtype}
+    {p,l,r:nat} {f:eff} .<p+l+r,p+1>. (
       lte: lte (a, env, f)
     , x: a, xs: list (a, p)
     , l: list (a, l), r: list (a, r)
@@ -1974,14 +1977,14 @@ local
         end // end of [if]
       end (* end of [::] *)
     | nil () => begin
-        list_append (qs (lte, l, env), x :: qs (lte, r, env))
+        list_append (qsrt (lte, l, env), x :: qsrt (lte, r, env))
       end // end of [nil]
   end // end of [part]
 
 in // end of [local]
 
 implement{a}
-list_quicksort (xs, lte, env) = qs (lte, xs, env)
+list_quicksort (xs, lte, env) = qsrt (lte, xs, env)
 
 end // end of [local]
 

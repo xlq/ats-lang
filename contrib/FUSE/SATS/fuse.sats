@@ -39,8 +39,8 @@ typedef off_t = $TYPES.off_t
 (* ****** ****** *)
 
 absviewt@ype
-fuse_struct = $extype "ats_fuse_type"
-viewtypedef fuse = fuse_struct
+fuse_struct = $extype"ats_fuse_type"
+viewtypedef fuse = fuse_struct // HX: creating a shorthand
 
 (* ****** ****** *)
 

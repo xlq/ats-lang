@@ -36,17 +36,17 @@
 
 (* ****** ****** *)
 
-abst@ype PangoAlignment = $extype "PangoAlignment"
+abst@ype PangoAlignment = $extype"PangoAlignment"
 macdef PANGO_ALIGN_LEFT = $extval (PangoAlignment, "PANGO_ALIGN_LEFT")
 macdef PANGO_ALIGN_CENTER = $extval (PangoAlignment, "PANGO_ALIGN_CENTER")
 macdef PANGO_ALIGN_RIGHT = $extval (PangoAlignment, "PANGO_ALIGN_RIGHT")
 
-abst@ype PangoWrapMode = $extype "PangoWrapMode"
+abst@ype PangoWrapMode = $extype"PangoWrapMode"
 macdef PANGO_WRAP_WORD = $extval (PangoWrapMode, "PANGO_WRAP_WORD")
 macdef PANGO_WRAP_CHAR = $extval (PangoWrapMode, "PANGO_WRAP_CHAR")
 macdef PANGO_WRAP_WORD_CHAR = $extval (PangoWrapMode, "PANGO_WRAP_WORD_CHAR")
 
-abst@ype PangoEllipsizeMode = $extype "PangoEllipsizeMode"
+abst@ype PangoEllipsizeMode = $extype"PangoEllipsizeMode"
 macdef PANGO_ELLIPSIZE_NONE = $extval (PangoEllipsizeMode, "PANGO_ELLIPSIZE_NONE")
 macdef PANGO_ELLIPSIZE_START = $extval (PangoEllipsizeMode, "PANGO_ELLIPSIZE_START")
 macdef PANGO_ELLIPSIZE_MIDDLE = $extval (PangoEllipsizeMode, "PANGO_ELLIPSIZE_MIDDLE")

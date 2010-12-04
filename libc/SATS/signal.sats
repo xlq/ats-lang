@@ -53,7 +53,7 @@ typedef pthread_t = $PTHREAD.pthread_t
 //
 // HX: defined in [libc/CATS/signal.cats]
 //
-abst@ype signum_t = $extype "signum_t"
+abst@ype signum_t = $extype"signum_t"
 //
 macdef SIGHUP =  $extval (signum_t, "SIGHUP") // 1
 macdef SIGINT =  $extval (signum_t, "SIGINT") // 2
@@ -95,7 +95,7 @@ overload sighandler with sighandler_of_fun
 
 (* ****** ****** *)
 
-abst@ype sigset_t = $extype "sigset_t"
+abst@ype sigset_t = $extype"sigset_t"
 fun sigemptyset // 0/-1 : fail/succ // errno set: EINVAL
   (set: &sigset_t? >> opt (sigset_t, i==0))
   : #[i:int | i <= 0] int (i) = "#atslib_sigemptyset"
@@ -143,7 +143,7 @@ fun sigprocmask_null
 
 (* ****** ****** *)
 
-abst@ype sigval_t = $extype "sigval_t"
+abst@ype sigval_t = $extype"sigval_t"
 abst@ype saflag_t = uint
 macdef SA_NOCLDSTOP = $extval (saflag_t, "SA_NOCLDSTOP")
 macdef SA_NOCLDWAIT = $extval (saflag_t, "SA_NOCLDWAIT")

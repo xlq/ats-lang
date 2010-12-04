@@ -41,7 +41,7 @@
 
 (* ****** ****** *)
 
-abst@ype SDL_EventType = $extype "SDL_EventType"
+abst@ype SDL_EventType = $extype"SDL_EventType"
 abst@ype SDL_Event_rest // this abstype is never defined
 
 typedef SDL_Event =

@@ -66,7 +66,7 @@
 
 // HX-2010-02-24: [GHashTable_ref] is refcounted
 absviewtype GHashTable_ref
-  (key:type, itm: type, l:addr) = $extype "GHashTable_ref"
+  (key:type, itm: type, l:addr) = $extype"GHashTable_ref"
 viewtypedef GHashTable_ref
   (key:type, itm: type) = [l:addr] GHashTable_ref (key, itm, l)
 // end of [GHashTable_ref]

@@ -40,7 +40,7 @@ staload "contrib/Xlib/SATS/Xlib.sats"
 
 (* ****** ****** *)
 
-abst@ype GLXFBConfig = $extype "GLXFBConfig"
+abst@ype GLXFBConfig = $extype"GLXFBConfig"
 
 fun glXGetFBConfigs {l:anz} (
     dpy: !Display_ptr l, screen: int, nelements: &int 0 >> int n

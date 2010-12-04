@@ -251,8 +251,11 @@ datatype s1exp_node =
       (s1arglst, s1rtopt, s1exp)
   | S1Emod of (* module type *)
       (s0taq, sym_t, labs1explst)
+(*
+// HX-2010-12-04: removal
   | S1Enamed of (* named type (for template instantiation) *)
       (sym_t, s1exp)
+*)
   | S1Elist of (* static expression list: temoprary *)
       (int (*pfarity*), s1explst)
   | S1Eqid of (* (qualified) static identifier *)
@@ -426,7 +429,12 @@ fun s1exp_lam
 fun s1exp_list (_: loc_t, _: s1explst): s1exp
 fun s1exp_list2 (_: loc_t, _1: s1explst, _2: s1explst): s1exp
 fun s1exp_mod (_: loc_t, q: s0taq, id: sym_t, _: labs1explst): s1exp
+
+(*
+// HX-2010-12-04: removal
 fun s1exp_named (_: loc_t, name: sym_t, s1e: s1exp): s1exp
+*)
+
 fun s1exp_qid (_: loc_t, q: s0taq, id: sym_t): s1exp
 fun s1exp_read (_: loc_t, s1e: s1exp(*list*)): s1exp
 

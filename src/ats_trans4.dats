@@ -107,17 +107,22 @@ in
       | Some (os2e) => begin case+ os2e of
         | Some s2e => begin case+ s2e.s2exp_node of
           | S2Elam (s2vs_arg, s2e_body) => let
-              fun aux
-                (s2vs: s2varlst, s2es: s2explst): stasub_t =
+              fun aux (
+                  s2vs: s2varlst, s2es: s2explst
+                ) : stasub_t =
                 case+ (s2vs, s2es) of
-                | (cons (s2v, s2vs), cons (s2e, s2es)) =>
-                    stasub_add (aux (s2vs, s2es), s2v, s2e)
+                | (cons (s2v, s2vs), cons (s2e, s2es)) => let
+                    val sub = aux (s2vs, s2es) in stasub_add (sub, s2v, s2e)
+                  end // end of [cons, cons]
                 | (nil _, nil _) => stasub_nil
-                | (_, _) => begin
-                    prerr_interror ();
-                    prerr ": s2exp_app_tr: S2Eapp: arity error"; prerr_newline ();
+                | (_, _) => let
+                    val () = prerr_interror ()
+                    val () = prerr ": s2exp_app_tr: S2Eapp: arity error"
+                    val () = prerr_newline ()
+                  in
                     $Err.abort {stasub_t} ()
                   end // end [_,_]
+              // end of [aux]
               val sub = aux (s2vs_arg, s2es_arg)
               val s2e_app = s2exp_subst (sub, s2e_body)
             in
@@ -202,8 +207,8 @@ in
       if deep > 0 then let
         val hits_arg = s2explst_arg_tr (loc0, npf, s2es_arg)
         val hit_res = s2exp_tr (loc0, 0, s2e_res)
-        // [hityp_varetisze] turns ats_var_type 
-        val hit_res = hityp_varetize (hit_res) // into ats_varet_type if needed
+        // HX: [hityp_varetisze] turns [ats_var_type]
+        val hit_res = hityp_varetize (hit_res) // into [ats_varet_type] if needed
 (*
         val HITNAM (_, name) = hit_res.hityp_name
         val () = (print "s2exp_tr: S2Efun: hit_res = "; print name; print_newline ())
@@ -221,9 +226,12 @@ in
     end // end of [S2Efun]
   | S2Elam (_(*s2vs*), s2e_body) => s2exp_tr (loc0, deep, s2e_body)
   | S2Emetfn (_(*stamp*), _(*met*), s2e) => s2exp_tr (loc0, deep, s2e)
+(*
+// HX-2010-12-04: removal
   | S2Enamed (name, _) => let
       val name = $Sym.symbol_name name in hityp_extype name
     end // end of [S2Enamed]
+*)
   | S2Erefarg (refval, s2e_arg) => begin
       hityp_refarg (refval, s2exp_tr (loc0, 0, s2e_arg))
     end // end of [S2Erefarg]

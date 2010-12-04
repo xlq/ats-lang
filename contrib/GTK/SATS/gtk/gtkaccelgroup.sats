@@ -38,7 +38,7 @@
 
 (* ****** ****** *)
 
-abst@ype GtkAccelFlags = $extype "GtkAccelFlags"
+abst@ype GtkAccelFlags = $extype"GtkAccelFlags"
 macdef GTK_ACCEL_VISIBLE = $extval (GtkAccelFlags, "GTK_ACCEL_VISIBLE")
 macdef GTK_ACCEL_LOCKED = $extval (GtkAccelFlags, "GTK_ACCEL_LOCKED")
 macdef GTK_ACCEL_MASK = $extval (GtkAccelFlags, "GTK_ACCEL_MASK")

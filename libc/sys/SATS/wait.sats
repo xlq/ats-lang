@@ -107,7 +107,7 @@ fun wait (status: &int? >> int): pid_t = "#atslib_wait" // !macro
 
 (* ****** ****** *)
 
-abst@ype waitopt_t = $extype "ats_int_type"
+abst@ype waitopt_t = $extype"ats_int_type"
 macdef WNOHANG = $extval (waitopt_t, "WNOHANG")
 macdef WUNTRACED = $extval (waitopt_t, "WUNTRACED")
 macdef WCONTINUED = $extval (waitopt_t, "WCONTINUED")

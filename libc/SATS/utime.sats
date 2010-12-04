@@ -49,7 +49,7 @@ typedef time_t = $TYPES.time_t
 typedef
 utimbuf_struct =
 $extype_struct
-"ats_utimbuf_type "of {
+"ats_utimbuf_type" of {
   actime= time_t // access time
 , modtime= time_t // modification time
 } // end of [utimbuf_struct]

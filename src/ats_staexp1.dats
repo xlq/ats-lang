@@ -248,9 +248,12 @@ implement s1exp_mod (loc, q, id, ls1es) = '{
   s1exp_loc= loc, s1exp_node= S1Emod (q, id, ls1es)
 }
 
+(*
+// HX-2010-12-04: removal
 implement s1exp_named (loc, name, s1e) = '{
   s1exp_loc= loc, s1exp_node= S1Enamed (name, s1e)
 }
+*)
 
 implement s1exp_qid (loc, q, id): s1exp =
   '{ s1exp_loc= loc, s1exp_node= S1Eqid (q, id) } 

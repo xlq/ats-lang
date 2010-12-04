@@ -35,7 +35,7 @@
 
 (* ****** ****** *)
 
-abst@ype sa_family_t = $extype "sa_family_t"
+abst@ype sa_family_t = $extype"sa_family_t"
 //
 // HX: these are the primary ones:
 //
@@ -86,7 +86,7 @@ sta socklen_max: int // length of [sockaddr_storage]
 
 (* ****** ****** *)
 
-abst@ype socklen_t(n:int) = $extype "socklen_t"
+abst@ype socklen_t(n:int) = $extype"socklen_t"
 castfn socklen_of_int1 {n:nat} (n: int n): socklen_t n
 castfn socklen_of_size1 {n:nat} (n: size_t n): socklen_t n
 
@@ -97,7 +97,7 @@ abst@ype sockaddr_struct(n:int) // a generic type
 (* ****** ****** *)
 
 abst@ype sockaddr_storage_struct
-  = $extype "ats_sockaddr_storage_type"
+  = $extype"ats_sockaddr_storage_type"
 typedef sockaddr_max_struct = sockaddr_storage_struct
 
 (* ****** ****** *)

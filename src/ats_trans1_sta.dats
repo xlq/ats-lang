@@ -761,10 +761,13 @@ s0exp_tr s0e0 = let
       in
         $Fix.ITEMatm (s1exp_list2 (loc0, s1es1, s1es2))
       end // end of [S0Elist2]
+(*
+// HX-2010-12-04: removal
     | S0Enamed (name, s0e) => let
         val s1e = s0exp_tr s0e in
         $Fix.ITEMatm (s1exp_named (loc0, name, s1e))
       end // end of [S0Enamed]
+*)
     | S0Eopide id => $Fix.ITEMatm (s1exp_ide (loc0, id))
     | S0Eqid (q, id) => $Fix.ITEMatm (s1exp_qid (loc0, q, id))
 (*

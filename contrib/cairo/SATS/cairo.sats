@@ -78,12 +78,12 @@ viewtypedef cairo_font_options_ptr1 = [l:addr | l > null] cairo_font_options_ptr
 
 (* ****** ****** *)
 
-abst@ype cairo_matrix_t = $extype "cairo_matrix_t"
+abst@ype cairo_matrix_t = $extype"cairo_matrix_t"
 
 (* ****** ****** *)
 
 // enum type
-abst@ype cairo_status_t = $extype "cairo_status_t"
+abst@ype cairo_status_t = $extype"cairo_status_t"
 macdef CAIRO_STATUS_SUCCESS =
   $extval (cairo_status_t, "CAIRO_STATUS_SUCCESS")
 macdef CAIRO_STATUS_NO_MEMORY =
@@ -144,7 +144,7 @@ overload <> with neq_cairo_status_cairo_status
 
 // enum type
 abst@ype
-cairo_format_t = $extype "cairo_format_t"
+cairo_format_t = $extype"cairo_format_t"
 macdef CAIRO_FORMAT_ARGB32 =
   $extval (cairo_format_t, "CAIRO_FORMAT_ARGB32")
 macdef CAIRO_FORMAT_RGB24 =
@@ -169,7 +169,7 @@ overload = with eq_cairo_format_cairo_format
 (* ****** ****** *)
 
 // enum type
-abst@ype cairo_content_t = $extype "cairo_content_t"
+abst@ype cairo_content_t = $extype"cairo_content_t"
 macdef CAIRO_CONTENT_COLOR =
   $extval (cairo_content_t, "CAIRO_CONTENT_COLOR")
 macdef CAIRO_CONTENT_ALPHA =
@@ -315,7 +315,7 @@ fun cairo_set_source_surface {l1,l2:agz} (
 
 (* ****** ****** *)
 
-abst@ype cairo_antialias_t = $extype "cairo_antialias_t"
+abst@ype cairo_antialias_t = $extype"cairo_antialias_t"
 macdef CAIRO_ANTIALIAS_DEFAULT =
   $extval (cairo_antialias_t, "CAIRO_ANTIALIAS_DEFAULT")
 macdef CAIRO_ANTIALIAS_NONE =
@@ -359,7 +359,7 @@ fun cairo_set_dash {l:agz} {n:nat} (
 (* ****** ****** *)
 
 // enum type
-abst@ype cairo_fill_rule_t = $extype "cairo_fill_rule_t"
+abst@ype cairo_fill_rule_t = $extype"cairo_fill_rule_t"
 
 macdef CAIRO_FILL_RULE_WINDING =
   $extval (cairo_fill_rule_t, "CAIRO_FILL_RULE_WINDING")
@@ -378,7 +378,7 @@ fun cairo_set_fill_rule
 (* ****** ****** *)
 
 // enum type
-abst@ype cairo_line_cap_t = $extype "cairo_line_cap_t"
+abst@ype cairo_line_cap_t = $extype"cairo_line_cap_t"
 macdef CAIRO_LINE_CAP_BUTT =
   $extval (cairo_line_cap_t, "CAIRO_LINE_CAP_BUTT")
 macdef CAIRO_LINE_CAP_ROUND =
@@ -399,7 +399,7 @@ fun cairo_set_line_cap
 (* ****** ****** *)
 
 // enum type
-abst@ype cairo_line_join_t = $extype "cairo_line_join_t"
+abst@ype cairo_line_join_t = $extype"cairo_line_join_t"
 
 macdef CAIRO_LINE_JOIN_MITER =
   $extval (cairo_line_join_t, "CAIRO_LINE_JOIN_MITER")
@@ -441,7 +441,7 @@ fun cairo_set_miter_limit
 (* ****** ****** *)
 
 // enum type
-abst@ype cairo_operator_t = $extype "cairo_operator_t"
+abst@ype cairo_operator_t = $extype"cairo_operator_t"
 castfn int_of_cairo_operator (x: cairo_operator_t):<> int
 macdef CAIRO_OPERATOR_CLEAR =
   $extval (cairo_operator_t, "CAIRO_OPERATOR_CLEAR")
@@ -497,7 +497,7 @@ fun cairo_set_tolerance
 
 (*
 // this would be of great inconvenience!
-abst@ype cairo_rectangle_t = $extype "cairo_rectangle_t"
+abst@ype cairo_rectangle_t = $extype"cairo_rectangle_t"
 *)
 typedef cairo_rectangle_t =
   $extype_struct "cairo_rectangle_t" of {
@@ -629,7 +629,7 @@ fun cairo_show_page
 
 (* ****** ****** *)
 
-abst@ype cairo_user_data_key_t = $extype "cairo_user_data_key_t"
+abst@ype cairo_user_data_key_t = $extype"cairo_user_data_key_t"
 
 //
 // note: this interface is unsafe!!!
@@ -799,7 +799,7 @@ fun cairo_path_extents
 (* ****** ****** *)
 
 // enum type
-abst@ype cairo_pattern_type_t = $extype "cairo_pattern_type_t"
+abst@ype cairo_pattern_type_t = $extype"cairo_pattern_type_t"
 macdef CAIRO_PATTERN_TYPE_SOLID =
   $extval (cairo_pattern_type_t, "CAIRO_PATTERN_TYPE_SOLID")
 macdef CAIRO_PATTERN_TYPE_SURFACE =
@@ -812,7 +812,7 @@ macdef CAIRO_PATTERN_TYPE_RADIAL =
 (* ****** ****** *)
 
 // HX: this is an enum type
-abst@ype cairo_extend_t = $extype "cairo_extend_t"
+abst@ype cairo_extend_t = $extype"cairo_extend_t"
 macdef CAIRO_EXTEND_NONE = $extval (cairo_extend_t, "CAIRO_EXTEND_NONE")
 macdef CAIRO_EXTEND_REPEAT = $extval (cairo_extend_t, "CAIRO_EXTEND_REPEAT")
 macdef CAIRO_EXTEND_REFLECT = $extval (cairo_extend_t, "CAIRO_EXTEND_REFLECT")
@@ -821,7 +821,7 @@ macdef CAIRO_EXTEND_PAD = $extval (cairo_extend_t, "CAIRO_EXTEND_PAD")
 (* ****** ****** *)
 
 // HX: this is an enum type
-abst@ype cairo_filter_t = $extype "cairo_filter_t"
+abst@ype cairo_filter_t = $extype"cairo_filter_t"
 macdef CAIRO_FILTER_FAST = $extval (cairo_filter_t, "CAIRO_FILTER_FAST")
 macdef CAIRO_FILTER_GOOD = $extval (cairo_filter_t, "CAIRO_FILTER_GOOD")
 macdef CAIRO_FILTER_BEST = $extval (cairo_filter_t, "CAIRO_FILTER_BEST")
@@ -1015,7 +1015,7 @@ fun cairo_pattern_set_user_data
 (* ****** ****** *)
 
 // enum type
-abst@ype cairo_font_slant_t = $extype "cairo_font_slant_t"
+abst@ype cairo_font_slant_t = $extype"cairo_font_slant_t"
 macdef CAIRO_FONT_SLANT_NORMAL =
   $extval (cairo_font_slant_t, "CAIRO_FONT_SLANT_NORMAL")
 macdef CAIRO_FONT_SLANT_ITALIC =
@@ -1025,7 +1025,7 @@ macdef CAIRO_FONT_SLANT_OBLIQUE =
 castfn int_of_cairo_font_slant (x: cairo_font_slant_t):<> int
 
 // enum type
-abst@ype cairo_font_weight_t = $extype "cairo_font_weight_t"
+abst@ype cairo_font_weight_t = $extype"cairo_font_weight_t"
 macdef CAIRO_FONT_WEIGHT_NORMAL =
   $extval (cairo_font_weight_t, "CAIRO_FONT_WEIGHT_NORMAL")
 macdef CAIRO_FONT_WEIGHT_BOLD =
@@ -1090,8 +1090,8 @@ fun cairo_set_font_face {l1,l2:agz}
 
 (*
 // this would be of great inconvenience
-abst@ype cairo_glyph_t = $extype "cairo_glyph_t"
-abst@ype cairo_cluster_t = $extype "cairo_cluster_t"
+abst@ype cairo_glyph_t = $extype"cairo_glyph_t"
+abst@ype cairo_cluster_t = $extype"cairo_cluster_t"
 *)
 
 typedef cairo_glyph_t =
@@ -1110,7 +1110,7 @@ absviewtype cairo_cluster_arrptr (n:int,l:addr) // = cairo_cluster_t*
 
 (*
 // this would be of great inconvenience
-abst@ype cairo_font_extents_t = $extype "cairo_font_extents_t"
+abst@ype cairo_font_extents_t = $extype"cairo_font_extents_t"
 *)
 typedef cairo_font_extents_t =
   $extype_struct "cairo_font_extents_t" of {
@@ -1125,7 +1125,7 @@ typedef cairo_font_extents_t =
 
 (*
 // HX: this would have been of great inconvenience:
-abst@ype cairo_text_extents_t = $extype "cairo_text_extents_t"
+abst@ype cairo_text_extents_t = $extype"cairo_text_extents_t"
 *)
 typedef cairo_text_extents_t =
   $extype_struct "cairo_text_extents_t" of {
@@ -1305,7 +1305,7 @@ fun cairo_font_face_get_reference_count
   = "#atsctrb_cairo_font_face_get_reference_count"
 // end of [cairo_font_face_get_reference_count]
 
-abst@ype cairo_font_type_t = $extype "cairo_font_type_t"
+abst@ype cairo_font_type_t = $extype"cairo_font_type_t"
 
 macdef CAIRO_FONT_TYPE_TOY =
   $extval (cairo_font_type_t, "CAIRO_FONT_TYPE_TOY")
@@ -1457,7 +1457,7 @@ fun cairo_font_options_set_antialias
 ** enum
 *)
 abst@ype
-cairo_subpixel_order_t = $extype "cairo_subpixel_order_t"
+cairo_subpixel_order_t = $extype"cairo_subpixel_order_t"
 macdef CAIRO_SUBPIXEL_ORDER_DEFAULT =
   $extval (cairo_subpixel_order_t, "CAIRO_SUBPIXEL_ORDER_DEFAULT")
 macdef CAIRO_SUBPIXEL_ORDER_RGB =
@@ -1482,7 +1482,7 @@ fun cairo_font_options_set_subpixel_order {l:agz} (
 (*
 ** enum
 *)
-abst@ype cairo_hint_style_t = $extype "cairo_hint_style_t"
+abst@ype cairo_hint_style_t = $extype"cairo_hint_style_t"
 macdef CAIRO_HINT_STYLE_DEFAULT =
   $extval (cairo_hint_style_t, "CAIRO_HINT_STYLE_DEFAULT")
 macdef CAIRO_HINT_STYLE_NONE =
@@ -1508,7 +1508,7 @@ fun cairo_font_options_set_hint_style {l:agz} (
 ** enum
 *)
 abst@ype
-cairo_hint_metrics_t = $extype "cairo_hint_metrics_t"
+cairo_hint_metrics_t = $extype"cairo_hint_metrics_t"
 macdef CAIRO_HINT_METRICS_DEFAULT =
   $extval (cairo_hint_metrics_t, "CAIRO_HINT_METRICS_DEFAULT")
 macdef CAIRO_HINT_METRICS_OFF =
@@ -1627,7 +1627,7 @@ fun cairo_set_device_offset {l:agz}
 // end of [cairo_set_device_offset]
 
 // enum type
-abstype cairo_surface_type_t = $extype "cairo_surface_type_t"
+abstype cairo_surface_type_t = $extype"cairo_surface_type_t"
 
 macdef CAIRO_SURFACE_TYPE_IMAGE =
   $extval (cairo_surface_type_t, "CAIRO_SURFACE_TYPE_IMAGE")
@@ -1862,7 +1862,7 @@ fun cairo_ps_surface_create_for_stream
 
 (*
 // enum
-abst@ype cairo_ps_level_t = $extype "cairo_ps_level_t"
+abst@ype cairo_ps_level_t = $extype"cairo_ps_level_t"
 
 macdef CAIRO_PS_LEVEL_2 =
   $extval (cairo_ps_level_t, "CAIRO_PS_LEVEL_2")
@@ -1936,7 +1936,7 @@ fun cairo_svg_surface_create_for_stream
 // end of [cairo_svg_surface_create_for_stream]
 
 // enum type
-abst@ype cairo_svg_version_t = $extype "cairo_svg_version_t"
+abst@ype cairo_svg_version_t = $extype"cairo_svg_version_t"
 
 fun cairo_svg_surface_restrict_to_version
   {l:agz} (cr: !cairo_ref l, version: cairo_svg_version_t): void
@@ -1972,7 +1972,7 @@ fun cairo_quartz_surface_create
 ** this type should probably be linear; however I do not really know
 ** how it can be properly handled as I have never used it.
 *)
-abstype CGContextRef = $extype "CGContextRef"
+abstype CGContextRef = $extype"CGContextRef"
 
 fun cairo_quartz_surface_create_for_cg_context
   (cgContext: CGContextRef, width: uint, height: uint): cairo_surface_ref1

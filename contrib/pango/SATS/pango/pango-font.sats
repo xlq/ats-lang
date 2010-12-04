@@ -42,7 +42,7 @@
 
 (* ****** ****** *)
 
-abst@ype PangoStyle = $extype "PangoStyle"
+abst@ype PangoStyle = $extype"PangoStyle"
 macdef PANGO_STYLE_NORMAL =
   $extval (PangoStyle, "PANGO_STYLE_NORMAL")
 macdef PANGO_STYLE_OBLIQUE =
@@ -52,7 +52,7 @@ macdef PANGO_STYLE_ITALIC =
 
 (* ****** ****** *)
 
-abst@ype PangoVariant = $extype "PangoVariant"
+abst@ype PangoVariant = $extype"PangoVariant"
 macdef PANGO_VARIANT_NORMAL =
   $extval (PangoVariant, "PANGO_VARIANT_NORMAL")
 macdef PANGO_VARIANT_SMALL_CAPS =
@@ -60,7 +60,7 @@ macdef PANGO_VARIANT_SMALL_CAPS =
 
 (* ****** ****** *)
 
-abst@ype PangoWeight = $extype "PangoWeight"
+abst@ype PangoWeight = $extype"PangoWeight"
 macdef PANGO_WEIGHT_ULTRALIGHT =
   $extval (PangoWeight, "PANGO_WEIGHT_ULTRALIGHT")
 macdef PANGO_WEIGHT_LIGHT =
@@ -78,7 +78,7 @@ macdef PANGO_WEIGHT_HEAVY =
 
 (* ****** ****** *)
 
-abst@ype PangoStretch = $extype "PangoStretch"
+abst@ype PangoStretch = $extype"PangoStretch"
 macdef PANGO_STRETCH_ULTRA_CONDENSED =
   $extval (PangoStretch, "PANGO_STRETCH_ULTRA_CONDENSED")
 macdef PANGO_STRETCH_EXTRA_CONDENSED =
@@ -100,7 +100,7 @@ macdef PANGO_STRETCH_ULTRA_EXPANDED =
 
 (* ****** ****** *)
 
-abst@ype PangoFontMask = $extype "PangoFontMask"
+abst@ype PangoFontMask = $extype"PangoFontMask"
 macdef PANGO_FONT_MASK_FAMILY =
   $extval (PangoFontMask, "PANGO_FONT_MASK_FAMILY")
 macdef PANGO_FONT_MASK_STYLE =

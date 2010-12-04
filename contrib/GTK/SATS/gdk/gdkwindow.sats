@@ -38,7 +38,7 @@
 
 (* ****** ****** *)
 
-abst@ype GdkWindowType = $extype "GdkWindowType"
+abst@ype GdkWindowType = $extype"GdkWindowType"
 macdef GDK_WINDOW_ROOT = $extval (GdkWindowType, "GDK_WINDOW_ROOT")
 macdef GDK_WINDOW_TOPLEVEL = $extval (GdkWindowType, "GDK_WINDOW_TOPLEVEL")
 macdef GDK_WINDOW_CHILD = $extval (GdkWindowType, "GDK_WINDOW_CHILD")
@@ -49,7 +49,7 @@ macdef GDK_WINDOW_FOREIGN = $extval (GdkWindowType, "GDK_WINDOW_FOREIGN")
 (* ****** ****** *)
 
 abst@ype
-GdkWindowAttributesType = $extype "GdkWindowAttributesType"
+GdkWindowAttributesType = $extype"GdkWindowAttributesType"
 macdef GDK_WA_TITLE =
   $extval (GdkWindowAttributesType, "GDK_WA_TITLE")
 macdef GDK_WA_X =
@@ -71,7 +71,7 @@ macdef GDK_WA_TYPE_HINT =
 
 (* ****** ****** *)
 
-abst@ype GdkWindowHints = $extype "GdkWindowHints"
+abst@ype GdkWindowHints = $extype"GdkWindowHints"
 macdef GDK_HINT_POS = $extval (GdkWindowHints, "GDK_HINT_POS")
 macdef GDK_HINT_MIN_SIZE = $extval (GdkWindowHints, "GDK_HINT_MIN_SIZE")
 macdef GDK_HINT_MAX_SIZE = $extval (GdkWindowHints, "GDK_HINT_MAX_SIZE")
@@ -85,7 +85,7 @@ macdef GDK_HINT_USER_SIZE = $extval (GdkWindowHints, "GDK_HINT_USER_SIZE")
 (* ****** ****** *)
 
 abst@ype
-GdkWindowTypeHint = $extype "GdkWindowTypeHint"
+GdkWindowTypeHint = $extype"GdkWindowTypeHint"
 macdef GDK_WINDOW_TYPE_HINT_NORMAL =
   $extval (GdkWindowTypeHint, "GDK_WINDOW_TYPE_HINT_NORMAL")
 macdef GDK_WINDOW_TYPE_HINT_DIALOG =
@@ -124,7 +124,7 @@ macdef GDK_WINDOW_TYPE_HINT_DND =
 ** will need to change as well.
 *)
 abst@ype
-GdkWMDecoration = $extype "GdkWMDecoration"
+GdkWMDecoration = $extype"GdkWMDecoration"
 macdef GDK_DECOR_ALL = $extval (GdkWMDecoration, "GDK_DECOR_ALL")
 macdef GDK_DECOR_BORDER = $extval (GdkWMDecoration, "GDK_DECOR_BORDER")
 macdef GDK_DECOR_RESIZEH = $extval (GdkWMDecoration, "GDK_DECOR_RESIZEH")
@@ -134,7 +134,7 @@ macdef GDK_DECOR_MINIMIZE = $extval (GdkWMDecoration, "GDK_DECOR_MINIMIZE")
 macdef GDK_DECOR_MAXIMIZE = $extval (GdkWMDecoration, "GDK_DECOR_MAXIMIZE")
 
 abst@ype
-GdkWMFunction = $extype "GdkWMFunction"
+GdkWMFunction = $extype"GdkWMFunction"
 macdef GDK_FUNC_ALL = $extval (GdkWMFunction, "GDK_FUNC_ALL")
 macdef GDK_FUNC_RESIZE = $extval (GdkWMFunction, "GDK_FUNC_RESIZE")
 macdef GDK_FUNC_MOVE = $extval (GdkWMFunction, "GDK_FUNC_MOVE")
@@ -145,7 +145,7 @@ macdef GDK_FUNC_CLOSE = $extval (GdkWMFunction, "GDK_FUNC_CLOSE")
 (* ****** ****** *)
 
 abst@ype
-GdkGravity = $extype "GdkGravity"
+GdkGravity = $extype"GdkGravity"
 macdef GDK_GRAVITY_NORTH_WEST =
   $extval (GdkGravity, "GDK_GRAVITY_NORTH_WEST")
 macdef GDK_GRAVITY_NORTH =
@@ -168,7 +168,7 @@ macdef GDK_GRAVITY_STATIC =
   $extval (GdkGravity, "GDK_GRAVITY_STATIC")
 
 abst@ype
-GdkWindowEdge = $extype "GdkWindowEdge"
+GdkWindowEdge = $extype"GdkWindowEdge"
 macdef GDK_WINDOW_EDGE_NORTH_WEST =
   $extval (GdkWindowEdge, "GDK_WINDOW_EDGE_NORTH_WEST")
 macdef GDK_WINDOW_EDGE_NORTH =

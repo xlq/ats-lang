@@ -317,6 +317,8 @@ in
       fprint1_string (pf | out, "...");
       prstr ")"
     end // end of [S1Emod]
+(*
+// HX-2010-12-04: removal
   | S1Enamed (name, s1e) => begin
       prstr "S1Enamed(";
       $Sym.fprint_symbol (pf | out, name);
@@ -324,6 +326,7 @@ in
       fprint_s1exp (pf | out, s1e);
       prstr ")"
     end // end of [S1Enamed]
+*)
   | S1Eqid (q, id: sym_t) => begin
       $Syn.fprint_s0taq (pf | out, q);
       $Sym.fprint_symbol (pf | out, id)

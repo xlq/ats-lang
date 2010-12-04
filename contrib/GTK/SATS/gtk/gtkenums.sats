@@ -38,7 +38,7 @@
 
 (* ****** ****** *)
 
-abst@ype GtkAnchorType = $extype "GtkAnchorType"
+abst@ype GtkAnchorType = $extype"GtkAnchorType"
 macdef GTK_ANCHOR_CENTER = $extval (GtkAnchorType, "GTK_ANCHOR_CENTER")
 macdef GTK_ANCHOR_NORTH = $extval (GtkAnchorType, "GTK_ANCHOR_NORTH")
 macdef GTK_ANCHOR_NORTH_WEST = $extval (GtkAnchorType, "GTK_ANCHOR_NORTH_WEST")
@@ -59,7 +59,7 @@ macdef GTK_ANCHOR_E = $extval (GtkAnchorType, "GTK_ANCHOR_E")
 
 (* ****** ****** *)
 
-abst@ype GtkArrowPlacement = $extype "GtkArrowPlacement"
+abst@ype GtkArrowPlacement = $extype"GtkArrowPlacement"
 macdef GTK_ARROWS_BOTH = $extval (GtkArrowPlacement, "GTK_ARROWS_BOTH")
 macdef GTK_ARROWS_START = $extval (GtkArrowPlacement, "GTK_ARROWS_START")
 macdef GTK_ARROWS_END = $extval (GtkArrowPlacement, "GTK_ARROWS_END")
@@ -67,7 +67,7 @@ macdef GTK_ARROWS_END = $extval (GtkArrowPlacement, "GTK_ARROWS_END")
 (* ****** ****** *)
 
 abst@ype
-GtkArrowType = $extype "GtkArrowType"
+GtkArrowType = $extype"GtkArrowType"
 macdef GTK_ARROW_UP = $extval (GtkArrowType, "GTK_ARROW_UP")
 macdef GTK_ARROW_DOWN = $extval (GtkArrowType, "GTK_ARROW_DOWN")
 macdef GTK_ARROW_LEFT = $extval (GtkArrowType, "GTK_ARROW_LEFT")
@@ -76,7 +76,7 @@ macdef GTK_ARROW_NONE = $extval (GtkArrowType, "GTK_ARROW_NONE")
 
 (* ****** ****** *)
 
-abst@ype GtkAttachOptions = $extype "GtkAttachOptions"
+abst@ype GtkAttachOptions = $extype"GtkAttachOptions"
 macdef GTK_EXPAND = $extval (GtkAttachOptions, "GTK_EXPAND")
 macdef GTK_SHRINK = $extval (GtkAttachOptions, "GTK_SHRINK")
 macdef GTK_FILL = $extval (GtkAttachOptions, "GTK_FILL")
@@ -84,7 +84,7 @@ macdef GTK_FILL = $extval (GtkAttachOptions, "GTK_FILL")
 (* ****** ****** *)
 
 abst@ype
-GtkButtonBoxStyle = $extype "GtkButtonBoxStyle"
+GtkButtonBoxStyle = $extype"GtkButtonBoxStyle"
 macdef GTK_BUTTONBOX_DEFAULT_STYLE =
   $extval (GtkButtonBoxStyle, "GTK_BUTTONBOX_DEFAULT_STYLE")
 macdef GTK_BUTTONBOX_SPREAD = $extval (GtkButtonBoxStyle, "GTK_BUTTONBOX_SPREAD")
@@ -96,7 +96,7 @@ macdef GTK_BUTTONBOX_CENTER = $extval (GtkButtonBoxStyle, "GTK_BUTTONBOX_CENTER"
 (* ****** ****** *)
 
 abst@ype
-GtkJustification = $extype "GtkJustification"
+GtkJustification = $extype"GtkJustification"
 macdef GTK_JUSTIFY_LEFT = $extval (GtkJustification, "GTK_JUSTIFY_LEFT")
 macdef GTK_JUSTIFY_RIGHT = $extval (GtkJustification, "GTK_JUSTIFY_RIGHT")
 macdef GTK_JUSTIFY_CENTER = $extval (GtkJustification, "GTK_JUSTIFY_CENTER")
@@ -107,7 +107,7 @@ macdef GTK_JUSTIFY_FILL = $extval (GtkJustification, "GTK_JUSTIFY_FILL")
 (*
 ** Placement type for scrolled window
 *)
-abst@ype GtkCornerType = $extype "GtkCornerType"
+abst@ype GtkCornerType = $extype"GtkCornerType"
 macdef GTK_CORNER_TOP_LEFT = $extval (GtkCornerType, "GTK_CORNER_TOP_LEFT")
 macdef GTK_CORNER_BOTTOM_LEFT = $extval (GtkCornerType, "GTK_CORNER_BOTTOM_LEFT")
 macdef GTK_CORNER_TOP_RIGHT = $extval (GtkCornerType, "GTK_CORNER_TOP_RIGHT")
@@ -115,7 +115,7 @@ macdef GTK_CORNER_BOTTOM_RIGHT = $extval (GtkCornerType, "GTK_CORNER_BOTTOM_RIGH
 
 (* ****** ****** *)
 
-abst@ype GtkPathType = $extype "GtkPathType"
+abst@ype GtkPathType = $extype"GtkPathType"
 macdef GTK_PATH_WIDGET = $extval (GtkPathType, "GTK_PATH_WIDGET")
 macdef GTK_PATH_WIDGET_CLASS = $extval (GtkPathType, "GTK_PATH_WIDGET_CLASS")
 macdef GTK_PATH_CLASS = $extval (GtkPathType, "GTK_PATH_CLASS")
@@ -125,7 +125,7 @@ macdef GTK_PATH_CLASS = $extval (GtkPathType, "GTK_PATH_CLASS")
 (*
 ** Policy type for scrolled window
 *)
-abst@ype GtkPolicyType = $extype "GtkPolicyType"
+abst@ype GtkPolicyType = $extype"GtkPolicyType"
 macdef GTK_POLICY_ALWAYS = $extval (GtkPolicyType, "GTK_POLICY_ALWAYS")
 macdef GTK_POLICY_AUTOMATIC = $extval (GtkPolicyType, "GTK_POLICY_AUTOMATIC")
 macdef GTK_POLICY_NEVER = $extval (GtkPolicyType, "GTK_POLICY_NEVER")
@@ -133,7 +133,7 @@ macdef GTK_POLICY_NEVER = $extval (GtkPolicyType, "GTK_POLICY_NEVER")
 (* ****** ****** *)
 
 abst@ype
-GtkPositionType = $extype "GtkPositionType"
+GtkPositionType = $extype"GtkPositionType"
 macdef GTK_POS_LEFT = $extval (GtkPositionType, "GTK_POS_LEFT")
 macdef GTK_POS_RIGHT = $extval (GtkPositionType, "GTK_POS_RIGHT")
 macdef GTK_POS_TOP = $extval (GtkPositionType, "GTK_POS_TOP")
@@ -141,7 +141,7 @@ macdef GTK_POS_BOTTOM = $extval (GtkPositionType, "GTK_POS_BOTTOM")
 
 (* ****** ****** *)
 
-abst@ype GtkShadowType = $extype "GtkShadowType"
+abst@ype GtkShadowType = $extype"GtkShadowType"
 macdef GTK_SHADOW_IN = $extval (GtkShadowType, "GTK_SHADOW_IN")
 macdef GTK_SHADOW_OUT = $extval (GtkShadowType, "GTK_SHADOW_OUT") // default
 macdef GTK_SHADOW_ETCHED_IN = $extval (GtkShadowType, "GTK_SHADOW_ETCHED_IN")
@@ -150,7 +150,7 @@ macdef GTK_SHADOW_NONE = $extval (GtkShadowType, "GTK_SHADOW_NONE")
 
 (* ****** ****** *)
 
-abst@ype GtkStateType = $extype "GtkStateType"
+abst@ype GtkStateType = $extype"GtkStateType"
 macdef GTK_STATE_NORMAL = $extval (GtkStateType, "GTK_STATE_NORMAL")
 macdef GTK_STATE_ACTIVE = $extval (GtkStateType, "GTK_STATE_ACTIVE")
 macdef GTK_STATE_PRELIGHT = $extval (GtkStateType, "GTK_STATE_PRELIGHT")
@@ -159,14 +159,14 @@ macdef GTK_STATE_INSENSITIVE = $extval (GtkStateType, "GTK_STATE_INSENSITIVE")
 
 (* ****** ****** *)
 
-abst@ype GtkMetricType = $extype "GtkMetricType"
+abst@ype GtkMetricType = $extype"GtkMetricType"
 macdef GTK_PIXELS = $extval (GtkMetricType, "GTK_PIXELS")
 macdef GTK_INCHES = $extval (GtkMetricType, "GTK_INCHES")
 macdef GTK_CENTIMETERS = $extval (GtkMetricType, "GTK_CENTIMETERS")
 
 (* ****** ****** *)
 
-abst@ype GtkToolbarStyle = $extype "GtkToolbarStyle"
+abst@ype GtkToolbarStyle = $extype"GtkToolbarStyle"
 macdef GTK_TOOLBAR_ICONS = $extval (GtkToolbarStyle, "GTK_TOOLBAR_ICONS")
 macdef GTK_TOOLBAR_TEXT = $extval (GtkToolbarStyle, "GTK_TOOLBAR_TEXT")
 macdef GTK_TOOLBAR_BOTH = $extval (GtkToolbarStyle, "GTK_TOOLBAR_BOTH")
@@ -175,7 +175,7 @@ macdef GTK_TOOLBAR_BOTH_HORIZ = $extval (GtkToolbarStyle, "GTK_TOOLBAR_BOTH_HORI
 (* ****** ****** *)
 
 abst@ype
-GtkUpdateType = $extype "GtkUpdateType"
+GtkUpdateType = $extype"GtkUpdateType"
 macdef GTK_UPDATE_CONTINUOUS =
   $extval (GtkUpdateType, "GTK_UPDATE_CONTINUOUS")
 macdef GTK_UPDATE_DISCONTINUOUS =
@@ -185,7 +185,7 @@ macdef GTK_UPDATE_DELAYED = $extval (GtkUpdateType, "GTK_UPDATE_DELAYED")
 (* ****** ****** *)
 
 abst@ype
-GtkWindowPosition = $extype "GtkWindowPosition"
+GtkWindowPosition = $extype"GtkWindowPosition"
 macdef GTK_WIN_POS_NONE =
   $extval (GtkWindowPosition, "GTK_WIN_POS_NONE")
 macdef GTK_WIN_POS_CENTER =
@@ -200,7 +200,7 @@ macdef GTK_WIN_POS_CENTER_ON_PARENT =
 (* ****** ****** *)
 
 abst@ype
-GtkWindowType = $extype "GtkWindowType"
+GtkWindowType = $extype"GtkWindowType"
 macdef GTK_WINDOW_TOPLEVEL =
   $extval (GtkWindowType, "GTK_WINDOW_TOPLEVEL")
 macdef GTK_WINDOW_POPUP =
@@ -209,7 +209,7 @@ macdef GTK_WINDOW_POPUP =
 (* ****** ****** *)
 
 abst@ype
-GtkWrapMode = $extype "GtkWrapMode"
+GtkWrapMode = $extype"GtkWrapMode"
 macdef GTK_WRAP_NONE = $extval (GtkWrapMode, "GTK_WRAP_NONE")
 macdef GTK_WRAP_CHAR = $extval (GtkWrapMode, "GTK_WRAP_CHAR")
 macdef GTK_WRAP_WORD = $extval (GtkWrapMode, "GTK_WRAP_WORD")

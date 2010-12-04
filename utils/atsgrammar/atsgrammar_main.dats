@@ -3823,7 +3823,10 @@ val () = symbol_close (pf | t0mps0exp)
 (*
 t1mps0exp
   : t0mps0exp %prec TMPSEXP             { $$ = $1 ; }
+/*
+// HX-2010-12-04: removal
   | si0de EQ t0mps0exp %prec TMPSEXP    { $$ = s0exp_named ($1, $3) ; }
+*/
 ; /* end of [t1mps0exp] */
 *)
 fun t1mps0exp_proc
@@ -3833,9 +3836,6 @@ val (pf | ()) = symbol_open (t1mps0exp)
 //
 val gr = grmrule_append ($lst_t {symbol} (tupz! t0mps0exp))
 val () = grmrule_set_action (gr, "{ $$ = $1 ; }")
-val () = grmrule_set_precval (gr, "%prec TMPSEXP")
-val gr = grmrule_append ($lst_t {symbol} (tupz! si0de EQ t0mps0exp))
-val () = grmrule_set_action (gr, "{ $$ = s0exp_named ($1, $3) ; }")
 val () = grmrule_set_precval (gr, "%prec TMPSEXP")
 //
 val () = symbol_close (pf | t1mps0exp)

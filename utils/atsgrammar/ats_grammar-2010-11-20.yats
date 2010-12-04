@@ -388,7 +388,10 @@ extern s0exp_t s0exp_intsp_err (i0nt_t) ; /* error handling */
 extern s0exp_t s0exp_lams (t0kn_t, s0arglstlst_t, s0rtopt_t, s0exp_t) ;
 extern s0exp_t s0exp_list (t0kn_t, s0explst_t, t0kn_t) ;
 extern s0exp_t s0exp_list2 (t0kn_t, s0explst_t, s0explst_t, t0kn_t) ;
+/*
+// HX-2010-12-04: removal
 extern s0exp_t s0exp_named (i0de_t, s0exp_t) ;
+*/
 extern s0exp_t s0exp_opide (t0kn_t, i0de_t) ;
 extern s0exp_t s0exp_qid (s0taq_t, i0de_t) ;
 extern s0exp_t s0exp_struct (t0kn_t, labs0explst_t, t0kn_t) ;
@@ -2453,7 +2456,10 @@ t0mps0exp
 
 t1mps0exp
   : t0mps0exp %prec TMPSEXP             { $$ = $1 ; }
+/*
+// HX-2010-12-04: removal
   | si0de EQ t0mps0exp %prec TMPSEXP    { $$ = s0exp_named ($1, $3) ; }
+*/
 ; /* end of [t1mps0exp] */
 
 t1mps0expseq

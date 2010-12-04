@@ -36,7 +36,7 @@
 
 (* ****** ****** *)
 
-abst@ype SDLKey = $extype "SDLKey"
+abst@ype SDLKey = $extype"SDLKey"
 //
 castfn int_of_SDLKey (x: SDLKey):<> int
 fun eq_SDLKey_SDLKey (x1: SDLKey, x2: SDLKey):<> bool
@@ -287,7 +287,7 @@ macdef SDLK_LAST = $extval (SDLKey, "SDLK_LAST")
 
 (* ****** ****** *)
 
-abst@ype SDLMod = $extype "SDLMod"
+abst@ype SDLMod = $extype"SDLMod"
 //
 macdef KMOD_NONE = $extval (SDLMod, "KMOD_NONE")
 macdef KMOD_LSHIFT = $extval (SDLMod, "KMOD_LSHIFT")

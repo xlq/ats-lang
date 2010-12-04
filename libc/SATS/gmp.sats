@@ -43,25 +43,25 @@
 (* ****** ****** *)
 
 // integral numbers
-absviewt@ype mpz_viewt0ype = $extype "ats_mpz_viewt0ype"
+absviewt@ype mpz_viewt0ype = $extype"ats_mpz_viewt0ype"
 stadef mpz_vt = mpz_viewt0ype
 
 // rational numbers
-absviewt@ype mpq_viewt0ype = $extype "ats_mpq_viewt0ype"
+absviewt@ype mpq_viewt0ype = $extype"ats_mpq_viewt0ype"
 stadef mpq_vt = mpq_viewt0ype
 
 // floating point numbers
-absviewt@ype mpf_viewt0ype = $extype "ats_mpf_viewt0ype"
+absviewt@ype mpf_viewt0ype = $extype"ats_mpf_viewt0ype"
 stadef mpf_vt = mpf_viewt0ype
 
 (* ****** ****** *)
 
-abst@ype mp_limb_t = $extype "mp_limb_t"
-abst@ype mp_limb_signed_t = $extype "mp_limb_signed_t"
+abst@ype mp_limb_t = $extype"mp_limb_t"
+abst@ype mp_limb_signed_t = $extype"mp_limb_signed_t"
 
 (* ****** ****** *)
 
-abst@ype mp_exp_t = $extype "mp_exp_t" // int or lint
+abst@ype mp_exp_t = $extype"mp_exp_t" // int or lint
 
 symintr mp_exp_t
 castfn mp_exp_t_of_int (x: int):<> mp_exp_t
@@ -69,7 +69,7 @@ overload mp_exp_t with mp_exp_t_of_int
 castfn mp_exp_t_of_lint (x: lint):<> mp_exp_t
 overload mp_exp_t with mp_exp_t_of_lint
 
-abst@ype mp_size_t = $extype "mp_size_t" // int or lint
+abst@ype mp_size_t = $extype"mp_size_t" // int or lint
 
 symintr mp_size_t
 castfn mp_size_t_of_int (x: int):<> mp_size_t
@@ -1323,7 +1323,7 @@ fun prerr_mpf (x: &mpf_vt, ndigit: size_t) : void = "atslib_prerr_mpf"
 //
 (* ****** ****** *)
 
-absviewt@ype gmp_randstate_vt = $extype "ats_gmp_randstate_viewt0ype"
+absviewt@ype gmp_randstate_vt = $extype"ats_gmp_randstate_viewt0ype"
 
 fun gmp_randclear
   (state: &gmp_randstate_vt >> gmp_randstate_vt?): void = "#atslib_gmp_randclear"

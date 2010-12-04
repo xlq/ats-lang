@@ -50,7 +50,7 @@ staload "contrib/GL/SATS/gl.sats"
 
 (* ****** ****** *)
 
-abst@ype GLUquadricObj = $extype "ats_GLUquadricObj_type"
+abst@ype GLUquadricObj = $extype"ats_GLUquadricObj_type"
 
 (* ****** ****** *)
 

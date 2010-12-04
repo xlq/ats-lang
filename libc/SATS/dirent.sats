@@ -47,9 +47,9 @@ typedef off_t = $TYPES.off_t
 (* ****** ****** *)
 
 // defined in dirent.cats
-abst@ype DIR_t0ype = $extype "ats_DIR_type" // = DIR
+abst@ype DIR_t0ype = $extype"ats_DIR_type" // = DIR
 typedef DIR = DIR_t0ype
-abst@ype dirent_t0ype = $extype "ats_dirent_type" // = struct dirent
+abst@ype dirent_t0ype = $extype"ats_dirent_type" // = struct dirent
 typedef dirent = dirent_t0ype
 
 (* ****** ****** *)

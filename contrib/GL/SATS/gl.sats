@@ -50,7 +50,7 @@
 typedef GLvoid = void
 
 // typedef GLenum = uint
-abst@ype GLenum = $extype "ats_GLenum_type"
+abst@ype GLenum = $extype"ats_GLenum_type"
 fun int_of_GLenum (x: GLenum): int = "atsctrb_int_of_GLenum"
 overload int_of with int_of_GLenum
 
@@ -68,34 +68,34 @@ abst@ype GLenum_format (n:int) = GLenum
 (* ****** ****** *)
 
 // typedef GLbitfield = int
-abst@ype GLbitfield = $extype "ats_GLbitfield_type"
+abst@ype GLbitfield = $extype"ats_GLbitfield_type"
 
 (* ****** ****** *)
 
 // typedef GLboolean = uchar
-abst@ype GLboolean = $extype "ats_GLboolean_type"
+abst@ype GLboolean = $extype"ats_GLboolean_type"
 
 (* ****** ****** *)
 
 // typedef GLbyte = char // 1-byte signed
-abst@ype GLbyte = $extype "ats_GLbyte_type"
+abst@ype GLbyte = $extype"ats_GLbyte_type"
 castfn GLbyte_of_byte (x: byte):<> GLbyte
 
 // typedef GLubyte = uchar // 1-byte unsigned
-abst@ype GLubyte = $extype "ats_GLubyte_type"
+abst@ype GLubyte = $extype"ats_GLubyte_type"
 castfn GLubyte_of_byte (x: byte):<> GLubyte
 
 (* ****** ****** *)
 
 // typedef GLshort = short // 2-byte signed
-abst@ype GLshort = $extype "ats_GLshort_type"
+abst@ype GLshort = $extype"ats_GLshort_type"
 
 // typedef GLushort = usint // 2-byte unsigned
-abst@ype GLushort = $extype "ats_GLushort_type"
+abst@ype GLushort = $extype"ats_GLushort_type"
 
 (* ****** ****** *)
 
-abst@ype GLint (n:int) = $extype "ats_GLint_type" // 4-byte signed
+abst@ype GLint (n:int) = $extype"ats_GLint_type" // 4-byte signed
 typedef GLint = [n:int] GLint (n)
 castfn GLint_of_int (x: int):<> GLint
 castfn int_of_GLint (x: GLint):<> int
@@ -103,7 +103,7 @@ castfn GLint_of_int1 {n:int} (x: int n):<> GLint n
 castfn int1_of_GLint {n:int} (x: GLint n):<> int n
 castfn GLint_of_GLenum (x: GLenum):<> GLint
 
-abst@ype GLuint (n:int) = $extype "ats_GLuint_type" // 4-byte unsigned
+abst@ype GLuint (n:int) = $extype"ats_GLuint_type" // 4-byte unsigned
 typedef GLuint = [n:nat] GLuint (n)
 castfn GLuint_of_uint (x: uint):<> GLuint
 castfn uint_of_GLuint (x: GLuint):<> uint
@@ -113,29 +113,29 @@ castfn uint1_of_GLuint {n:int} (x: GLuint n):<> uint n
 (* ****** ****** *)
 
 // typedef GLsizei = int // 4-byte signed
-abst@ype GLsizei (i: int) = $extype "ats_GLsizei_type"
+abst@ype GLsizei (i: int) = $extype"ats_GLsizei_type"
 typedef GLsizei = [i:int] GLsizei (i)
 
 (* ****** ****** *)
 
-abst@ype GLdouble = $extype "ats_GLdouble_type" // double precision
+abst@ype GLdouble = $extype"ats_GLdouble_type" // double precision
 castfn GLdouble_of_double (x: double):<> GLdouble
 castfn double_of_GLdouble (x: GLdouble):<> double
 overload double_of with double_of_GLdouble
 
 // typedef GLclampd = double // double precision float in [0,1]
-abst@ype GLclampd = $extype "ats_GLclampd_type"
+abst@ype GLclampd = $extype"ats_GLclampd_type"
 castfn GLclampd_of_double (x: double):<> GLclampd
 
 (* ****** ****** *)
 
-abst@ype GLfloat = $extype "ats_GLfloat_type" // single precision
+abst@ype GLfloat = $extype"ats_GLfloat_type" // single precision
 castfn GLfloat_of_float (x: float):<> GLfloat
 castfn float_of_GLfloat (x: GLfloat):<> float
 overload float_of with float_of_GLfloat
 
 // typedef GLclampf = float // single precision float in [0,1]
-abst@ype GLclampf = $extype "ats_GLclampf_type"
+abst@ype GLclampf = $extype"ats_GLclampf_type"
 castfn GLclampf_of_float (x: float):<> GLclampf
 
 (* ****** ****** *)

@@ -38,7 +38,7 @@
 
 (* ****** ****** *)
 
-abst@ype GtkToolbarSpaceStyle = $extype "GtkToolbarSpaceStyle"
+abst@ype GtkToolbarSpaceStyle = $extype"GtkToolbarSpaceStyle"
 macdef GTK_TOOLBAR_SPACE_EMPTY =
   $extval (GtkToolbarSpaceStyle, "GTK_TOOLBAR_SPACE_EMPTY")
 macdef GTK_TOOLBAR_SPACE_LINE =

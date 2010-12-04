@@ -43,7 +43,7 @@
 
 (*
 // this is declared in $ATSHOME/prelude/basics_sta.sats
-absviewt@ype va_list (ts: types) = $extype "ats_va_list_viewtype"
+absviewt@ype va_list (ts: types) = $extype"ats_va_list_viewtype"
 *)
 
 absviewt@ype va_list1 (t: t@ype, ts: types) = va_list (ts)

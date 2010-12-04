@@ -39,7 +39,7 @@
 (* ****** ****** *)
 
 abst@ype
-GtkSpinButtonUpdatePolicy = $extype "GtkSpinButtonUpdatePolicy"
+GtkSpinButtonUpdatePolicy = $extype"GtkSpinButtonUpdatePolicy"
 macdef GTK_UPDATE_ALWAYS =
   $extval (GtkSpinButtonUpdatePolicy, "GTK_UPDATE_ALWAYS")
 macdef GTK_UPDATE_IF_VALID =
@@ -47,7 +47,7 @@ macdef GTK_UPDATE_IF_VALID =
 
 (* ****** ****** *)
 
-abst@ype GtkSpinType = $extype "GtkSpinType"
+abst@ype GtkSpinType = $extype"GtkSpinType"
 macdef GTK_SPIN_STEP_FORWARD = $extval (GtkSpinType, "GTK_SPIN_STEP_FORWARD")
 macdef GTK_SPIN_STEP_BACKWARD = $extval (GtkSpinType, "GTK_SPIN_STEP_BACKWARD")
 macdef GTK_SPIN_PAGE_FORWARD = $extval (GtkSpinType, "GTK_SPIN_PAGE_FORWARD")
