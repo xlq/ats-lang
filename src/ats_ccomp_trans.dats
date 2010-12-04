@@ -2007,8 +2007,8 @@ in
         val hit_cons = hityp_decode hit_cons
         val HITNAM (_(*knd=1*), name) = hit_cons.hityp_name
       in
-        hityp_encode (hityp_extype name)
-      end
+        hityp_encode (hityp_extype_nil name)
+      end // end of [val]
       val off = OFFSETlab ($Lab.label_make_int 1(*tail*), hit_cons_flt)
       val offs = '[off]
       val tmp_fst = tmpvar_make hityp_t_ptr; val vp_fst = valprim_tmp tmp_fst

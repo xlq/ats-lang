@@ -50,8 +50,8 @@ staload "ats_dynexp2.sats"
 (* ****** ****** *)
 
 datatype hityp_node =
-  | HITextype of (* external named type *)
-      string
+  | HITextype of (* externally named type *)
+      (string(*extname*), hityplstlst(*arglst*))
   | HITfun of (* function type *)
       ($Syn.funclo, hityplst, hityp)
   | HITrefarg of (* reference argument *)
@@ -128,7 +128,10 @@ val hityp_void : hityp
 
 (* ****** ****** *)
 
-fun hityp_extype (name: string): hityp
+fun hityp_extype
+  (name: string, _arg: hityplstlst): hityp
+fun hityp_extype_nil (name: string): hityp
+
 fun hityp_fun (fc: $Syn.funclo, _arg: hityplst, _res: hityp): hityp
 fun hityp_refarg (refvar: int, _arg: hityp): hityp
 fun hityp_s2var (s2v: s2var_t): hityp

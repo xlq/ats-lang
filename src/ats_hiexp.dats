@@ -77,24 +77,24 @@ staload "ats_hiexp.sats"
 
 (* ****** ****** *)
 
-implement hityp_abs = hityp_extype ABS_TYPE_NAME
-implement hityp_bool = hityp_extype BOOL_TYPE_NAME
-implement hityp_char = hityp_extype CHAR_TYPE_NAME
-implement hityp_clo = hityp_extype CLO_TYPE_NAME
-implement hityp_clo_ptr = hityp_extype CLO_PTR_TYPE_NAME
-implement hityp_clo_ref = hityp_extype CLO_REF_TYPE_NAME
-implement hityp_double = hityp_extype DOUBLE_TYPE_NAME
-implement hityp_float = hityp_extype FLOAT_TYPE_NAME
-implement hityp_int = hityp_extype INT_TYPE_NAME
-implement hityp_proof = hityp_extype PROOF_TYPE_NAME
-implement hityp_ptr = hityp_extype PTR_TYPE_NAME
-implement hityp_string = hityp_extype STRING_TYPE_NAME
-implement hityp_tysum_ptr = hityp_extype SUM_PTR_TYPE_NAME
+implement hityp_abs = hityp_extype_nil ABS_TYPE_NAME
+implement hityp_bool = hityp_extype_nil BOOL_TYPE_NAME
+implement hityp_char = hityp_extype_nil CHAR_TYPE_NAME
+implement hityp_clo = hityp_extype_nil CLO_TYPE_NAME
+implement hityp_clo_ptr = hityp_extype_nil CLO_PTR_TYPE_NAME
+implement hityp_clo_ref = hityp_extype_nil CLO_REF_TYPE_NAME
+implement hityp_double = hityp_extype_nil DOUBLE_TYPE_NAME
+implement hityp_float = hityp_extype_nil FLOAT_TYPE_NAME
+implement hityp_int = hityp_extype_nil INT_TYPE_NAME
+implement hityp_proof = hityp_extype_nil PROOF_TYPE_NAME
+implement hityp_ptr = hityp_extype_nil PTR_TYPE_NAME
+implement hityp_string = hityp_extype_nil STRING_TYPE_NAME
+implement hityp_tysum_ptr = hityp_extype_nil SUM_PTR_TYPE_NAME
 (*
-implement hityp_var = hityp_extype VAR_TYPE_NAME
-implement hityp_varet = hityp_extype VARET_TYPE_NAME
+implement hityp_var = hityp_extype_nil VAR_TYPE_NAME
+implement hityp_varet = hityp_extype_nil VARET_TYPE_NAME
 *)
-implement hityp_void = hityp_extype VOID_TYPE_NAME
+implement hityp_void = hityp_extype_nil VOID_TYPE_NAME
 
 (* ****** ****** *)
 
@@ -117,9 +117,16 @@ val hityp_name_vararg = HITNAM (0(*non*), "...")
 (* ****** ****** *)
 
 implement
-hityp_extype (name: string): hityp = '{
-  hityp_name= HITNAM (0(*non*), name), hityp_node= HITextype name
+hityp_extype
+  (name, arglst): hityp = '{
+  hityp_name= HITNAM (0(*non*), name)
+, hityp_node= HITextype (name, arglst)
 } // end of [hityp_extype]
+
+implement
+hityp_extype_nil (name) = hityp_extype (name, list_nil)
+
+(* ****** ****** *)
 
 implement
 hityp_fun (fc, hits_arg, hit_res) = '{

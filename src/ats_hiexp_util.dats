@@ -86,7 +86,8 @@ fn prerr_interror () = prerr "INTERNAL ERROR (ats_ccomp_env)"
 implement
 hityp_is_void (hit0) = begin
   case+ hit0.hityp_node of
-  | HITextype name => begin case+ 0 of
+  | HITextype (name, _(*arglst*)) => begin
+    case+ 0 of
     | _ when name = ABS_TYPE_NAME => true
     | _ when name = VAR_TYPE_NAME => true
     | _ when name = VOID_TYPE_NAME => true

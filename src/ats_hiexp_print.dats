@@ -63,9 +63,11 @@ implement fprint_hityp (pf | out, hit) = let
   macdef prstr (s) = fprint1_string (pf | out, ,(s))
 in
   case+ hit.hityp_node of
-  | HITextype name => begin
+  | HITextype (name, _arg) => begin
       prstr "HITextype(";
       fprint_string (pf | out, name);
+      prstr "; ";
+      fprint_hityplstlst (pf | out, _arg);
       prstr ")"
     end // end of [HITextype]
   | HITfun (fc, hits_arg, hit_res) => begin

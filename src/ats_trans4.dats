@@ -152,6 +152,30 @@ end // end of [s2Var_tr]
 
 (* ****** ****** *)
 
+fun s2explst_tr
+  (loc0: loc_t, s2es: s2explst): hityplst =
+  case+ s2es of
+  | list_cons (s2e, s2es) => let
+      val hit = s2exp_tr (loc0, 0(*deep*), s2e)
+    in
+      list_cons (hit, s2explst_tr (loc0, s2es))
+    end // end of [list_cons]
+  | list_nil () => list_nil ()
+// end of [s2explst_tr]
+
+fun s2explstlst_tr
+  (loc0: loc_t, s2ess: s2explstlst): hityplstlst =
+  case+ s2ess of
+  | list_cons (s2es, s2ess) => let
+      val hits = s2explst_tr (loc0, s2es)
+    in
+      list_cons (hits, s2explstlst_tr (loc0, s2ess))
+    end // end of [list_cons]
+  | list_nil () => list_nil ()
+// end of [s2explstlst_tr]
+
+(* ****** ****** *)
+
 implement
 s2exp_tr (loc0, deep, s2e0) = let
   val s2e0 = s2exp_whnf s2e0; val s2t0 = s2e0.s2exp_srt
@@ -202,7 +226,9 @@ in
       end (* end of [if] *)
     end // end of [S2Edatcontyp]
   | S2Eexi (_(*s2vs*), _(*s2ps*), s2e) => s2exp_tr (loc0, deep, s2e)
-  | S2Eextype (name, _arg) => hityp_extype (name)
+  | S2Eextype (name, _arg) => let
+      val _arg = s2explstlst_tr (loc0, _arg) in hityp_extype (name, _arg)
+    end // end of [S2Eextype]
   | S2Efun (fc, _(*lin*), _(*s2fe*), npf, s2es_arg, s2e_res) => begin
       if deep > 0 then let
         val hits_arg = s2explst_arg_tr (loc0, npf, s2es_arg)
@@ -283,30 +309,6 @@ in
   | S2Ewth (s2e, _(*wths2es*)) => s2exp_tr (loc0, deep, s2e)
   | _ => err (loc0, s2t0, s2e0)
 end // end of [s2exp_tr]
-
-(* ****** ****** *)
-
-fun s2explst_tr
-  (loc0: loc_t, s2es: s2explst): hityplst =
-  case+ s2es of
-  | list_cons (s2e, s2es) => let
-      val hit = s2exp_tr (loc0, 0(*deep*), s2e)
-    in
-      list_cons (hit, s2explst_tr (loc0, s2es))
-    end // end of [list_cons]
-  | list_nil () => list_nil ()
-// end of [s2explst_tr]
-
-fun s2explstlst_tr
-  (loc0: loc_t, s2ess: s2explstlst): hityplstlst =
-  case+ s2ess of
-  | list_cons (s2es, s2ess) => let
-      val hits = s2explst_tr (loc0, s2es)
-    in
-      list_cons (hits, s2explstlst_tr (loc0, s2ess))
-    end // end of [list_cons]
-  | list_nil () => list_nil ()
-// end of [s2explstlst_tr]
 
 (* ****** ****** *)
 
