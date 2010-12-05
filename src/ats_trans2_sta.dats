@@ -1562,7 +1562,7 @@ in
     end // end of [S1Emod]
 *)
 (*
-// HX-2010-12-04: removal
+// HX-2010-12-04: inadequate design
   | S1Enamed (name, s1e) => let
       val s2e = s1exp_tr_up (s1e) in
       s2exp_named (s2e.s2exp_srt, name, s2e)

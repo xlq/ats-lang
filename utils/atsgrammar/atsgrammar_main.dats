@@ -3824,7 +3824,7 @@ val () = symbol_close (pf | t0mps0exp)
 t1mps0exp
   : t0mps0exp %prec TMPSEXP             { $$ = $1 ; }
 /*
-// HX-2010-12-04: removal
+// HX-2010-12-04: inadequate design
   | si0de EQ t0mps0exp %prec TMPSEXP    { $$ = s0exp_named ($1, $3) ; }
 */
 ; /* end of [t1mps0exp] */

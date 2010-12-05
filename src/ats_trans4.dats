@@ -259,7 +259,7 @@ in
   | S2Elam (_(*s2vs*), s2e_body) => s2exp_tr (loc0, deep, s2e_body)
   | S2Emetfn (_(*stamp*), _(*met*), s2e) => s2exp_tr (loc0, deep, s2e)
 (*
-// HX-2010-12-04: removal
+// HX-2010-12-04: inadequate design
   | S2Enamed (name, _) => let
       val name = $Sym.symbol_name name in hityp_extype name
     end // end of [S2Enamed]

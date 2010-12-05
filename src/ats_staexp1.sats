@@ -251,11 +251,10 @@ datatype s1exp_node =
       (s1arglst, s1rtopt, s1exp)
 (*
 // HX-2010-12-04: simplification
-  | S1Emod of (* module type *)
-      (s0taq, sym_t, labs1explst)
+  | S1Emod of (s0taq, sym_t, labs1explst) // module types
 *)
 (*
-// HX-2010-12-04: removal
+// HX-2010-12-04: inadequate design
   | S1Enamed of (* named type (for template instantiation) *)
       (sym_t, s1exp)
 *)
@@ -443,7 +442,7 @@ fun s1exp_mod (_: loc_t, q: s0taq, id: sym_t, _: labs1explst): s1exp
 *)
 
 (*
-// HX-2010-12-04: removal
+// HX-2010-12-04: inadequate design
 fun s1exp_named (_: loc_t, name: sym_t, s1e: s1exp): s1exp
 *)
 

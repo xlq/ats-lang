@@ -386,7 +386,8 @@ implement s2exp_metlt (s2es1, s2es2) = '{
 } // end of [s2exp_metlt]
 
 (*
-// HX-2010-12-04: removalimplement s2exp_named (s2t, name, s2e) = '{
+// HX-2010-12-04: inadequate design
+implement s2exp_named (s2t, name, s2e) = '{
   s2exp_srt= s2t, s2exp_node= S2Enamed (name, s2e)
 } // end of [s2exp_named]
 *)

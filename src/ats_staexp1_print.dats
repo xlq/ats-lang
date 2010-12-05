@@ -323,7 +323,7 @@ in
     end // end of [S1Emod]
 *)
 (*
-// HX-2010-12-04: removal
+// HX-2010-12-04: inadequate design
   | S1Enamed (name, s1e) => begin
       prstr "S1Enamed(";
       $Sym.fprint_symbol (pf | out, name);

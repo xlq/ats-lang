@@ -389,7 +389,7 @@ s2exp_equal_solve_err (loc0, s2e10, s2e20, err) = let
       s2exp_equal_solve_Var_err (loc0, s2V2, s2e20, s2e10, err)
     end // end of [_, S2EVar]
 (*
-// HX-2010-12-04: removal
+// HX-2010-12-04: inadequate design
   | (S2Enamed (_(*name*), s2e1), _) =>
       s2exp_equal_solve_err (loc0, s2e1, s2e20, err)
     // end of [S2Enamed, _]  
@@ -599,7 +599,7 @@ s2exp_tyleq_solve_err (loc0, s2e10, s2e20, err) = let
       s2exp_tyleq_solve_Var_r_err (loc0, s2e10, s2V2, s2e20, err)
     end // end of [_, S2EVar]
 (*
-// HX-2010-12-04: removal
+// HX-2010-12-04: inadequate design
   | (S2Enamed (_(*name*), s2e1), _) =>
       s2exp_tyleq_solve_err (loc0, s2e1, s2e20, err)
   | (_, S2Enamed (_(*name*), s2e2)) =>
@@ -1264,7 +1264,7 @@ in
       s2exp_hypo_equal_solve_con (loc0, s2e1, s2e2)
   | (S2Ecst s2c1, S2Ecst s2c2) when s2c1 = s2c2 => ()
 (*
-// HX-2010-12-04: removal
+// HX-2010-12-04: inadequate design
   | (S2Enamed (_(*name*), s2e1), _) =>
       s2exp_hypo_equal_solve (loc0, s2e1, s2e2)
     // end of [S2Enamed, _]  

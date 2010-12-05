@@ -884,7 +884,7 @@ s2kexp_make_s2exp (s2e0) = let
           S2KEfun (fc, s2kes_arg, s2ke_res)
         end // end of [S2Efun]
 (*
-// HX-2010-12-04: removal
+// HX-2010-12-04: inadequate design
       | S2Enamed (_(*name*), s2e) => aux_s2exp (pol, s2vss, s2e)
 *)
       | S2Eread (_(*view*), s2e_vt) => aux_s2exp (pol, s2vss, s2e_vt)
@@ -1475,7 +1475,7 @@ fun s2exp_subst_flag
       if flag > flag0 then s2exp_metlt (s2es1, s2es2) else s2e0
     end // end of [S2Emetlt]
 (*
-// HX-2010-12-04: removal
+// HX-2010-12-04: inadequate design
   | S2Enamed _ => s2e0 // a named type must be closed!
 *)
   | S2Eout s2e => let
@@ -1866,7 +1866,7 @@ fun aux_s2exp (
       aux_s2explst (s2es1, fvs); aux_s2explst (s2es2, fvs)
     end // end of [metlt]
 (*
-// HX-2010-12-04: removal
+// HX-2010-12-04: inadequate design
   | S2Enamed _ => () // a named type must be closed
 *)
   | S2Eout s2e => aux_s2exp (s2e, fvs)
@@ -2083,7 +2083,7 @@ fun aux_s2exp
       aux_s2explst (s2V0, s2es2, ans, s2cs, s2vs)
     end // end of [S2Emetlt]
 (*
-// HX-2010-12-04: removal
+// HX-2010-12-04: inadequate design
   | S2Enamed _ => () // a named type should be closed
 *)
   | S2Eout s2e => aux_s2exp (s2V0, s2e, ans, s2cs, s2vs)

@@ -797,9 +797,8 @@ datatype s0exp_node =
   | S0Emod of (* module type *)
       (s0taq, sym_t, labs0explst)
 (*
-// HX-2010-12-04: removal
-  | S0Enamed of (* named types *)
-      (sym_t, s0exp)
+// HX-2010-12-04: inadequate design
+  | S0Enamed of (sym_t, s0exp) // named types
 *)
   | S0Eopide of (* noninfix static identifier *)
       sym_t
@@ -911,9 +910,9 @@ fun s0exp_list2
 (* ****** ****** *)
 
 (*
-// HX-2010-12-04: removal
-fun s0exp_named (ide: i0de, s0e: s0exp): s0exp
-  = "s0exp_named"
+// HX-2010-12-04: inadequate design
+fun s0exp_named
+  (ide: i0de, s0e: s0exp): s0exp = "s0exp_named"
 *)
 
 (* ****** ****** *)

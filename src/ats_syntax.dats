@@ -1071,7 +1071,7 @@ end // end of [s0exp_list2]
 (* ****** ****** *)
 
 (*
-// HX-2010-12-04: removal
+// HX-2010-12-04: inadequate design
 implement s0exp_named (ide, s0e) = let
   val loc = combine (ide.i0de_loc, s0e.s0exp_loc)
 in '{

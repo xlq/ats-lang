@@ -253,7 +253,7 @@ implement s1exp_mod (loc, q, id, ls1es) = '{
 *)
 
 (*
-// HX-2010-12-04: removal
+// HX-2010-12-04: inadequate design
 implement s1exp_named (loc, name, s1e) = '{
   s1exp_loc= loc, s1exp_node= S1Enamed (name, s1e)
 }

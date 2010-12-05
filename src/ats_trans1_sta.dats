@@ -786,7 +786,7 @@ s0exp_tr s0e0 = let
         $Fix.ITEMatm (s1exp_list2 (loc0, s1es1, s1es2))
       end // end of [S0Elist2]
 (*
-// HX-2010-12-04: removal
+// HX-2010-12-04: inadequate design
     | S0Enamed (name, s0e) => let
         val s1e = s0exp_tr s0e in
         $Fix.ITEMatm (s1exp_named (loc0, name, s1e))

@@ -241,9 +241,8 @@ and s2exp_node =
   | {n:nat} S2Emetlt of (* strict metric ordering *)
       (s2explst n, s2explst n)
 (*
-// HX-2010-12-04: removal
-  | S2Enamed of (* name type *)
-      (sym_t, s2exp)
+// HX-2010-12-04: inadequate design
+  | S2Enamed of (sym_t, s2exp) // named types
 *)
   | S2Eout of (* taken out *)
       s2exp
@@ -1100,7 +1099,7 @@ fun s2exp_metfn
 fun s2exp_metlt {n:nat} (met1: s2explst n, met2: s2explst n): s2exp
 
 (*
-// HX-2010-12-04: removal
+// HX-2010-12-04: inadequate design
 fun s2exp_named (s2t: s2rt, name: sym_t, s2e: s2exp): s2exp
 *)
 
