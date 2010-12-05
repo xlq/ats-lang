@@ -1327,7 +1327,6 @@ fun s2exp_slablst_lindel_cstr {n:nat}
 // end of ...
 
 (* ****** ****** *)
-
 //
 // HX-2010-04-07:
 // this functions yields a definite answer

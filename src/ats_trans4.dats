@@ -89,12 +89,27 @@ fn hityp_ptr_abs (s2t: s2rt): hityp =
   if s2rt_is_boxed (s2t) then hityp_ptr else hityp_abs
 // end of [hityp_ptr_abs]
 
-fn s2exp_app_tr (
+(* ****** ****** *)
+//
+// HX-2010-12-05:
+// for testing if a type is named: a named type is one that
+// can be recovered from its name. For instance, bool, char,
+// float, double and int are all named types, but string is
+// not named as its (erasure) name is simply "ats_ptr_type".
+//
+extern fun s2exp_tr_named (
+  loc0: loc_t, deep: int, s2e0: s2exp, named: &bool
+) : hityp // end of [s2exp_tr_named]
+
+(* ****** ****** *)
+
+fun s2exp_app_tr_named .<>. (
     loc0: loc_t
   , deep: int
   , s2t_app: s2rt
   , s2e_fun: s2exp
   , s2es_arg: s2explst
+  , named: &bool
   ) : hityp = let
 (*
   val () = begin
@@ -135,7 +150,7 @@ in
               val s2e_app = s2exp_subst (sub, s2e_body)
 //
             in
-              s2exp_tr (loc0, deep, s2e_app)
+              s2exp_tr_named (loc0, deep, s2e_app, named)
             end // end of [S2Elam]
           | _ => hityp_ptr_abs (s2t_app)
           end // end of [Some]
@@ -147,50 +162,80 @@ in
   | _ => hityp_ptr_abs (s2t_app) // end of [_]
 end // end of [s2exp_app_tr]
 
-fn s2Var_tr
-  (loc0: loc_t, deep: int, s2V: s2Var_t): hityp = begin
+fun s2Var_tr_named .<>. (
+  loc0: loc_t, deep: int, s2V: s2Var_t, named: &bool
+) : hityp = begin
   case+ s2Var_lbs_get s2V of
-  | list_cons (s2Vb, _) => s2exp_tr (loc0, deep, s2Varbound_val_get s2Vb)
+  | list_cons (s2Vb, _) => let
+      val s2elb = s2Varbound_val_get (s2Vb)
+    in
+      s2exp_tr_named (loc0, deep, s2elb, named)
+    end // end of [list_cons]
   | list_nil () => begin case+ s2Var_ubs_get s2V of
-    | list_cons (s2Vb, _) => s2exp_tr (loc0, deep, s2Varbound_val_get s2Vb)
-    | list_nil () => hityp_abs
+    | list_cons (s2Vb, _) => let
+        val s2eub = s2Varbound_val_get (s2Vb)
+      in
+        s2exp_tr_named (loc0, deep, s2eub, named)
+      end // end of [list_cons]
+    | list_nil () => hityp_abs // end of [list_nil]
     end // end of [list_nil]
-end // end of [s2Var_tr]
+end // end of [s2Var_tr_named]
 
 (* ****** ****** *)
 
-fun s2explst_tr
-  (loc0: loc_t, s2es: s2explst): hityplst =
+fun s2explst_tr_named (
+  loc0: loc_t, s2es: s2explst, res: &s2expopt
+) : hityplst =
   case+ s2es of
   | list_cons (s2e, s2es) => let
-      val hit = s2exp_tr (loc0, 0(*deep*), s2e)
+      var named: bool = false
+      val hit = s2exp_tr_named (loc0, 0(*deep*), s2e, named)
+      val () = (case+ res of
+        | Some _ => () | None () => if not(named) then res := Some (s2e)
+      ) // end of [val]
     in
-      list_cons (hit, s2explst_tr (loc0, s2es))
+      list_cons (hit, s2explst_tr_named (loc0, s2es, res))
     end // end of [list_cons]
   | list_nil () => list_nil ()
-// end of [s2explst_tr]
+// end of [s2explst_tr_named]
 
-fun s2explstlst_tr
-  (loc0: loc_t, s2ess: s2explstlst): hityplstlst =
+fun s2explst_tr (
+  loc0: loc_t, s2es: s2explst
+) : hityplst = let
+  var res: s2expopt = None () in s2explst_tr_named (loc0, s2es, res)
+end // end of [s2explst_tr]
+
+(* ****** ****** *)
+
+fun s2explstlst_tr_named (
+  loc0: loc_t, s2ess: s2explstlst, res: &s2expopt
+) : hityplstlst =
   case+ s2ess of
   | list_cons (s2es, s2ess) => let
-      val hits = s2explst_tr (loc0, s2es)
-    in
-      list_cons (hits, s2explstlst_tr (loc0, s2ess))
+      val hits = s2explst_tr_named (loc0, s2es, res) in
+      list_cons (hits, s2explstlst_tr_named (loc0, s2ess, res))
     end // end of [list_cons]
   | list_nil () => list_nil ()
-// end of [s2explstlst_tr]
+// end of [s2explstlst_tr_named]
+
+fun s2explstlst_tr (
+  loc0: loc_t, s2ess: s2explstlst
+) : hityplstlst = let
+  var res: s2expopt = None () in s2explstlst_tr_named (loc0, s2ess, res)
+end // end of [s2explst_tr]
 
 (* ****** ****** *)
 
 implement
-s2exp_tr (loc0, deep, s2e0) = let
+s2exp_tr_named (
+  loc0, deep, s2e0, named
+) = let
   val s2e0 = s2exp_whnf s2e0; val s2t0 = s2e0.s2exp_srt
 (*
   val () = begin
-    print "s2exp_tr: loc0 = "; $Loc.print_location loc0; print_newline ();
-    print "s2exp_tr: deep = "; print deep; print_newline ();
-    print "s2exp_tr: s2e0 = "; print s2e0; print_newline ();
+    print "s2exp_tr_named: loc0 = "; $Loc.print_location loc0; print_newline ();
+    print "s2exp_tr_named: deep = "; print deep; print_newline ();
+    print "s2exp_tr_named: s2e0 = "; print s2e0; print_newline ();
   end // end of [val]
 *)
   fn err (
@@ -204,21 +249,25 @@ s2exp_tr (loc0, deep, s2e0) = let
   end // end of [err]
 in
   case+ s2e0.s2exp_node of
-  | S2Eapp (s2e_fun, s2es_arg) => begin
-      s2exp_app_tr (loc0, deep, s2e0.s2exp_srt, s2e_fun, s2es_arg)
+  | S2Eapp (
+      s2e_fun, s2es_arg
+    ) => let
+      val s2t0 = s2e0.s2exp_srt in
+      s2exp_app_tr_named (loc0, deep, s2t0, s2e_fun, s2es_arg, named)
     end // end of [S2Eapp]
-  | S2Ecrypt s2e => s2exp_tr (loc0, deep, s2e)
+  | S2Ecrypt s2e => s2exp_tr_named (loc0, deep, s2e, named)
   | S2Ecst s2c => begin case+ s2t0 of
     | _ => begin
       case+ s2cst_isabs_get s2c of
       | Some os2e => begin case+ os2e of
-        | Some s2e => s2exp_tr (loc0, deep, s2e) | None () => hityp_ptr_abs (s2t0)
+        | Some s2e => s2exp_tr_named (loc0, deep, s2e, named)
+        | None () => hityp_ptr_abs (s2t0)
         end // end of [Some]
       | None () => hityp_ptr_abs (s2t0)
       end (* end of [_] *)
     end // end of [S2Ecst]
   | S2Eclo (knd, s2exp) => begin
-      if knd <> 0 then hityp_ptr (*cloptr/cloref*) else hityp_abs (*clo*)
+      if knd <> 0 then hityp_ptr (*1/-1:cloptr/cloref*) else hityp_abs (*0:clo*)
     end // end of [S2Eclo]
   | S2Edatconptr _ => hityp_ptr
   | S2Edatcontyp (d2c, s2es) => begin
@@ -231,9 +280,15 @@ in
         hityp_ptr // deep = 0
       end (* end of [if] *)
     end // end of [S2Edatcontyp]
-  | S2Eexi (_(*s2vs*), _(*s2ps*), s2e) => s2exp_tr (loc0, deep, s2e)
+  | S2Eexi (_(*s2vs*), _(*s2ps*), s2e) => s2exp_tr_named (loc0, deep, s2e, named)
   | S2Eextype (name, _arg) => let
-      val _arg = s2explstlst_tr (loc0, _arg) in hityp_extype (name, _arg)
+      var res: s2expopt = None ()
+      val _arg = s2explstlst_tr_named (loc0, _arg, res)
+      val () = (
+        case+ res of | None () => named := true | Some _ => ()
+      ) // end of [val]
+    in
+      hityp_extype (name, _arg)
     end // end of [S2Eextype]
   | S2Efun (fc, _(*lin*), _(*s2fe*), npf, s2es_arg, s2e_res) => begin
       if deep > 0 then let
@@ -243,7 +298,7 @@ in
         val hit_res = hityp_varetize (hit_res) // into [ats_varet_type] if needed
 (*
         val HITNAM (_, name) = hit_res.hityp_name
-        val () = (print "s2exp_tr: S2Efun: hit_res = "; print name; print_newline ())
+        val () = (print "s2exp_tr_named: S2Efun: hit_res = "; print name; print_newline ())
 *)
       in
         hityp_fun (fc, hits_arg, hit_res)
@@ -256,7 +311,8 @@ in
           end // end of [FUNCLOclo]
       end (* end of [if] *)
     end // end of [S2Efun]
-  | S2Elam (_(*s2vs*), s2e_body) => s2exp_tr (loc0, deep, s2e_body)
+  | S2Elam (_(*s2vs*), s2e_body) =>
+      s2exp_tr_named (loc0, deep, s2e_body, named)
   | S2Emetfn (_(*stamp*), _(*met*), s2e) => s2exp_tr (loc0, deep, s2e)
 (*
 // HX-2010-12-04: inadequate design
@@ -267,16 +323,14 @@ in
   | S2Erefarg (refval, s2e_arg) => begin
       hityp_refarg (refval, s2exp_tr (loc0, 0, s2e_arg))
     end // end of [S2Erefarg]
-  | S2Etop (_(*knd*), s2e) => s2exp_tr (loc0, 0, s2e)
+  | S2Etop (_(*knd*), s2e) => s2exp_tr_named (loc0, 0, s2e, named)
   | S2Etyarr (s2e_elt, s2ess_dim) => let
-      val hit_elt = s2exp_tr (loc0, 0, s2e_elt)
-    in
-      hityp_tyarr (hit_elt, s2ess_dim)
+      val hit_elt = s2exp_tr (loc0, 0, s2e_elt) in hityp_tyarr (hit_elt, s2ess_dim)
     end // end of [S2Etyarr]
-  | S2Etyrec (knd, npf, ls2es) => let
+  | S2Etyrec (knd, npf, ls2es) => hit0 where {
 (*
       val () = begin
-        print "s2exp_tr: S2Etyrec: s2e0 = "; print s2e0; print_newline ()
+        print "s2exp_tr_named: S2Etyrec: s2e0 = "; print s2e0; print_newline ()
       end // end of [val]
 *)
       val lhits = labs2explst_arg_tr (loc0, npf, ls2es)
@@ -289,16 +343,14 @@ in
           | LABHITYPLSTcons (_(*lab*), hit, LABHITYPLSTnil ()) => hityp_tyrecsin hit
           | _ => hityp_tyrectemp (0(*flt*), lhits)
           end // end of [_]
-      ) : hityp
+      ) : hityp // end of [val]
 (*
       val () = begin
-        print "s2exp_tr: S2Etyrec: hit0 = "; print_hityp hit0; print_newline ()
+        print "s2exp_tr_named: S2Etyrec: hit0 = "; print_hityp hit0; print_newline ()
       end // end of [val]
 *)
-    in
-      hit0 
-    end // end of [S2Etyrec]
-  | S2Euni (_(*s2vs*), _(*s2ps*), s2e) => s2exp_tr (loc0, deep, s2e)
+    } // end of [S2Etyrec]
+  | S2Euni (_(*s2vs*), _(*s2ps*), s2e) => s2exp_tr_named (loc0, deep, s2e, named)
 (*
   | S2Eunion (stamp, s2i, ls2es) => let
       val lhits = labs2explst_arg_tr (0, ls2es)
@@ -309,14 +361,19 @@ in
       hityp_union (name, lhits)
     end // end of [S2Eunion]
 *)
-  | S2EVar s2V => s2Var_tr (loc0, deep, s2V)
+  | S2EVar s2V => s2Var_tr_named (loc0, deep, s2V, named)
   | S2Evar s2v => hityp_s2var s2v
   | S2Evararg _ => hityp_vararg
   | S2Ewth (s2e, _(*wths2es*)) => s2exp_tr (loc0, deep, s2e)
   | _ => err (loc0, s2t0, s2e0)
-end // end of [s2exp_tr]
+end // end of [s2exp_tr_named]
 
 (* ****** ****** *)
+
+implement
+s2exp_tr (loc0, deep, s2e0) = let
+  var named: bool = false in s2exp_tr_named (loc0, deep, s2e0, named)
+end // end of [s2exp_tr]
 
 implement
 s2explst_arg_tr
@@ -1482,7 +1539,7 @@ fun v3aldeclst_prf_tr
   | list_cons (valdec, valdecs) => begin
       d3exp_prf_tr (valdec.v3aldec_def); v3aldeclst_prf_tr valdecs
     end // end of [list_cons]
-  | list_nil () => ()
+  | list_nil () => () // end of [list_nil]
 // end of [v3aldeclst_prf_tr]
 
 (* ****** ****** *)
@@ -1490,30 +1547,51 @@ fun v3aldeclst_prf_tr
 fn i3mpdec_tr (
   d3c: i3mpdec
 ) : hiimpdec = let
-  val loc = d3c.i3mpdec_loc
+  val loc0 = d3c.i3mpdec_loc
   val d2c = d3c.i3mpdec_cst
   val decarg = d3c.i3mpdec_decarg
   val tmp = (case+ decarg of cons _ => 1 | nil _ => 0): int
-  val tmparg = s2explstlst_tr (loc, d3c.i3mpdec_tmparg)
+//
+  var named: s2expopt = None ()
+  val tmparg = d3c.i3mpdec_tmparg
+  val tmparg = s2explstlst_tr_named (loc0, tmparg, named)
+  val () = (case+ named of
+    | Some (s2e) => let
+        val () = prerr_loc_error4 (loc0)
+        val () = prerr ": the template parameter ["
+        val () = prerr_s2exp (s2e)
+        val () = prerr "] is required to be named but it is not."
+        val () = prerr_newline ()
+      in
+        $Err.abort {void} ()
+      end // end of [Some_vt]
+    | None () => () // end of [None_vt]
+  ) // end of [val]
+//
   val def = d3exp_tr d3c.i3mpdec_def
   val () = begin case+ 0 of
     | _ when d2cst_is_fun d2c => begin
       case+ def.hiexp_node of
-      | HIElam _ => () | _ => begin
-          prerr_loc_error4 loc;
-          prerr ": the dynamic constant ["; prerr d2c;
-          prerr "] is required to be implemented as a function";
-          prerr ", but it is not.";
-          prerr_newline ();
+      | HIElam _ => () | _ => let
+          val () = prerr_loc_error4 (loc0)
+          val () = prerr ": the dynamic constant ["
+          val () = prerr (d2c)
+          val () = prerr "] is required to be implemented as a function but it is not."
+          val () = prerr_newline ()
+        in
           $Err.abort {void} ()
         end // end of [_]
       end // end of [_ when ...]
     | _ => ()
   end : void // end of [val]
+//
   val () = if tmp > 0 then tmpcstmap_add (d2c, decarg, def)
   val d2cs = the_dyncstset_get ()
+//
 in
-  hiimpdec_make (loc, d2c, tmp, decarg, tmparg, def, d2cs)
+//
+  hiimpdec_make (loc0, d2c, tmp, decarg, tmparg, def, d2cs)
+//
 end // end of [i3mpdec_tr]
 
 (* ****** ****** *)

@@ -115,7 +115,8 @@ val the_stactxlst = ref_make_elt<stactxlst> (list_vt_nil ())
 
 in // in of [local]
 
-implement print_the_stactx () = let
+implement
+print_the_stactx () = let
   val kis = $Map.map_list_inf (!p) where {
     val (vbox pf | p) = ref_get_view_ptr (the_stactx)
   } // end of [val]
@@ -134,19 +135,22 @@ in
   loop (kis)
 end // end of [print_the_stactx]
 
-implement the_stactx_add (s2v, hit) = let
+implement
+the_stactx_add (s2v, hit) = let
   val (vbox pf | p) = ref_get_view_ptr (the_stactx)
 in
   $Map.map_insert<s2var_t,hityp_t> (!p, s2v, hit)
 end // end of [the_stactx_add]
 
-implement the_stactx_find (s2v) = let
+implement
+the_stactx_find (s2v) = let
   val (vbox pf | p) = ref_get_view_ptr (the_stactx)
 in
   $Map.map_search<s2var_t,hityp_t> (!p, s2v)
 end // end of [the_stactx_find]
 
-implement the_stactx_push () = let
+implement
+the_stactx_push () = let
   val stactx = let
     val (vbox pf | p) = ref_get_view_ptr (the_stactx)
     val stactx = !p
@@ -162,7 +166,8 @@ in
   (unit_v () | ())
 end // end of [the_stactx_push]
 
-implement the_stactx_pop (pf | (*none*)) = let
+implement
+the_stactx_pop (pf | (*none*)) = let
   prval unit_v () = pf
   var err: int = 0; val stactx = let
     val (vbox pf | p) = ref_get_view_ptr (the_stactxlst)
@@ -196,7 +201,8 @@ end // end of [local]
 //
 // HX: declared in [ats_hiexp.sats]
 //
-implement hityp_s2var_normalize (s2v) = let
+implement
+hityp_s2var_normalize (s2v) = let
 (*
   val () = print "hityp_s2var_normalize: the_stactx =\n"
   val () = print_the_stactx ()
@@ -379,7 +385,8 @@ end : tmpnamtbl // end of [the_tmpnamtbl]
 
 in // in of [local]
 
-implement tmpnamtbl_add (fullname, vp_funclo) = let
+implement
+tmpnamtbl_add (fullname, vp_funclo) = let
   val ans = $HT.hashtbl_insert (the_tmpnamtbl, fullname, vp_funclo)
 in
   case+ ans of
@@ -390,7 +397,8 @@ in
     end // end of [Some_vt]
 end // end of [tmpnamtbl_add]
 
-implement tmpnamtbl_find (fullname) =
+implement
+tmpnamtbl_find (fullname) =
   $HT.hashtbl_search (the_tmpnamtbl, fullname)
 // end of [tmpnamtbl_find]
 
@@ -398,7 +406,8 @@ end // end of [local]
 
 (* ****** ****** *)
 
-implement ccomp_tmpdef
+implement
+ccomp_tmpdef
   (loc0, res, hit0, tcv, hitss, fullname, tmpdef) = let
   val fl = funlab_make_nam_typ (fullname, hit0)
   val vp_funclo = valprim_funclo_make (fl)
@@ -434,7 +443,8 @@ end // end of [ccomp_tmpdef]
 
 (* ****** ****** *)
 
-implement template_cst_name_make (d2c, hitss) = let
+implement
+template_cst_name_make (d2c, hitss) = let
   val extdef = d2cst_extdef_get d2c; val base = (case+ extdef of
     | $Syn.DCSTEXTDEFnone () => let
         val sym = d2cst_sym_get d2c; val stamp = d2cst_stamp_get d2c
@@ -468,7 +478,8 @@ end // end of [template_var_name_make]
 
 (* ****** ****** *)
 
-implement ccomp_exp_template_cst
+implement
+ccomp_exp_template_cst
   (res, loc0, hit0, d2c, hitss) = let
   val hitss = hityplstlst_normalize (hitss)
   val fullname = template_cst_name_make (d2c, hitss)
@@ -507,7 +518,8 @@ end // end of [ccomp_exp_template_cst]
 
 (* ****** ****** *)
 
-implement ccomp_exp_template_var
+implement
+ccomp_exp_template_var
   (res, loc0, hit0, d2v, hitss) = let
   val hitss = hityplstlst_normalize (hitss)
   val fullname = template_var_name_make (d2v, hitss)
