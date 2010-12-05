@@ -162,8 +162,11 @@ in
   | _ => hityp_ptr_abs (s2t_app) // end of [_]
 end // end of [s2exp_app_tr]
 
+(* ****** ****** *)
+
 fun s2Var_tr_named .<>. (
-  loc0: loc_t, deep: int, s2V: s2Var_t, named: &bool
+  loc0: loc_t
+, deep: int, s2V: s2Var_t, named: &bool
 ) : hityp = begin
   case+ s2Var_lbs_get s2V of
   | list_cons (s2Vb, _) => let
@@ -226,6 +229,94 @@ end // end of [s2explst_tr]
 
 (* ****** ****** *)
 
+fun s2explst_npf_tr_named (
+  loc0: loc_t
+, npf: int, s2es: s2explst, res: &s2expopt
+) : hityplst = let
+  fun aux1 (
+    loc0: loc_t, s2es: s2explst, res: &s2expopt
+  ) : hityplst =
+    case+ s2es of
+    | list_cons (s2e, s2es) => begin
+        if s2exp_is_proof s2e then aux1 (loc0, s2es, res)
+        else let
+          var named: bool = false
+          val hit = s2exp_tr_named (loc0, 0, s2e, named)
+          val () = case+ res of
+            | Some _ => () | None () => if not(named) then res := Some (s2e)
+          // end of [val]
+        in
+          list_cons (hit, aux1 (loc0, s2es, res))
+        end // end of [if]
+      end (* end of [cons] *)
+    | list_nil () => list_nil () // end of [list_nil]
+  // end of [aux1]
+  fun aux2 (
+    loc0: loc_t
+  , i: int, s2es: s2explst, res: &s2expopt
+  ) : hityplst =
+    if i > 0 then begin case+ s2es of
+      | list_cons (_, s2es) => aux2 (loc0, i-1, s2es, res)
+      | list_nil () => list_nil () // deadcode
+    end else begin
+      aux1 (loc0, s2es, res) // proof arguments have been dropped
+    end // end of [if]
+  // end of [aux2]
+in
+  aux2 (loc0, npf, s2es, res)
+end // end of [s2explst_npf_tr_named]
+
+fun s2explst_npf_tr (
+  loc0: loc_t, npf: int, s2es: s2explst
+) : hityplst = let
+  var res: s2expopt = None () in s2explst_npf_tr_named (loc0, npf, s2es, res)
+end // end of [s2explst_npf_tr]
+
+(* ****** ****** *)
+
+fun labs2explst_npf_tr_named (
+  loc0: loc_t
+, npf: int, ls2es: labs2explst, res: &s2expopt
+) : labhityplst = let
+  fun aux1 (
+    loc0: loc_t
+  , ls2es: labs2explst, res: &s2expopt
+  ) : labhityplst =
+    case+ ls2es of
+    | LABS2EXPLSTcons
+        (l, s2e, ls2es) => let
+        val isprf = s2exp_is_proof s2e in
+        if isprf then begin
+          aux1 (loc0, ls2es, res) // HX: skipping the proof argument
+        end else let
+          var named: bool = false
+          val hit = s2exp_tr_named (loc0, 0, s2e, named)
+          val () = (case+ res of
+            | Some _ => () | None () => if not(named) then res := Some (s2e)
+          ) : void // end of [val]
+        in
+          LABHITYPLSTcons (l, hit, aux1 (loc0, ls2es, res))
+        end (* end of [if] *)
+      end // end of [LABS2EXPLSTcons]
+    | LABS2EXPLSTnil () => LABHITYPLSTnil ()
+  // end of [aux1]
+  fun aux2 (
+      loc0: loc_t
+    , i: int, ls2es: labs2explst, res: &s2expopt
+    ) : labhityplst =
+    if i > 0 then begin case+ ls2es of
+      | LABS2EXPLSTcons (_, _, ls2es) => aux2 (loc0, i-1, ls2es, res)
+      | LABS2EXPLSTnil () => LABHITYPLSTnil () // deadcode
+    end else begin
+      aux1 (loc0, ls2es, res) // proof arguments have been dropped
+    end // end of [if]
+  // end of [aux2]
+in
+  aux2 (loc0, npf, ls2es, res)
+end // end of [labs2explst_npf_tr_named]
+
+(* ****** ****** *)
+
 implement
 s2exp_tr_named (
   loc0, deep, s2e0, named
@@ -273,7 +364,7 @@ in
   | S2Edatcontyp (d2c, s2es) => begin
       if deep > 0 then let
         val npf = d2con_npf_get d2c
-        val hits_arg = s2explst_arg_tr (loc0, npf, s2es)
+        val hits_arg = s2explst_npf_tr (loc0, npf, s2es)
       in
         hityp_tysumtemp (d2c, hits_arg)
       end else begin
@@ -290,9 +381,11 @@ in
     in
       hityp_extype (name, _arg)
     end // end of [S2Eextype]
-  | S2Efun (fc, _(*lin*), _(*s2fe*), npf, s2es_arg, s2e_res) => begin
+  | S2Efun (
+      fc, _(*lin*), _(*s2fe*), npf, s2es_arg, s2e_res
+    ) => begin
       if deep > 0 then let
-        val hits_arg = s2explst_arg_tr (loc0, npf, s2es_arg)
+        val hits_arg = s2explst_npf_tr (loc0, npf, s2es_arg)
         val hit_res = s2exp_tr (loc0, 0, s2e_res)
         // HX: [hityp_varetisze] turns [ats_var_type]
         val hit_res = hityp_varetize (hit_res) // into [ats_varet_type] if needed
@@ -333,16 +426,27 @@ in
         print "s2exp_tr_named: S2Etyrec: s2e0 = "; print s2e0; print_newline ()
       end // end of [val]
 *)
-      val lhits = labs2explst_arg_tr (loc0, npf, ls2es)
+//
+      var res: s2expopt = None ()
+      val lhits = labs2explst_npf_tr_named (loc0, npf, ls2es, res)
+//
       val hit0 = (case+ knd of
         | TYRECKINDbox () => begin
-            if deep > 0 then hityp_tyrectemp (1(*box*), lhits) else hityp_ptr
+            if deep > 0 then hityp_tyrectemp (1(*box*), lhits)
+            else hityp_ptr
           end // end of [TYRECKINDbox]
-        | TYRECKINDflt_ext name => hityp_tyrec (~1(*ext*), name, lhits)
-        | _ (*TYRECKINDflt0 or TYRECKINDflt1*) => begin case+ lhits of
-          | LABHITYPLSTcons (_(*lab*), hit, LABHITYPLSTnil ()) => hityp_tyrecsin hit
-          | _ => hityp_tyrectemp (0(*flt*), lhits)
-          end // end of [_]
+        | TYRECKINDflt_ext name => let
+            val () = named := true in hityp_tyrec (~1(*ext*), name, lhits)
+          end // end of [TYRECKINDflt_ext]
+        | _ (*TYRECKINDflt0/1*) => let
+            val () = case+ res of None () => named := true | Some _ => ()
+          in
+            case+ lhits of
+            | LABHITYPLSTcons (
+                _(*lab*), hit, LABHITYPLSTnil ()
+              ) => hityp_tyrecsin hit // end of [LABHITYPLSTcons]
+            | _ => hityp_tyrectemp (0(*flt*), lhits)
+          end // end of [TYRECKINDflt0/1]
       ) : hityp // end of [val]
 (*
       val () = begin
@@ -353,7 +457,7 @@ in
   | S2Euni (_(*s2vs*), _(*s2ps*), s2e) => s2exp_tr_named (loc0, deep, s2e, named)
 (*
   | S2Eunion (stamp, s2i, ls2es) => let
-      val lhits = labs2explst_arg_tr (0, ls2es)
+      val lhits = labs2explst_npf_tr (0, ls2es)
       val lnames = List.map labhityp_labname_get lhits
       val tk_uni = TYKEYuni lnames
       val name = typedef_map_find tk
@@ -372,62 +476,11 @@ end // end of [s2exp_tr_named]
 
 implement
 s2exp_tr (loc0, deep, s2e0) = let
+(*
+** HX-2010-12-05: [s2e0] is assumed to be unnamed by default
+*)
   var named: bool = false in s2exp_tr_named (loc0, deep, s2e0, named)
 end // end of [s2exp_tr]
-
-implement
-s2explst_arg_tr
-  (loc0, npf, s2es) = let
-  fun aux1 (loc0: loc_t, s2es: s2explst): hityplst =
-    case+ s2es of
-    | list_cons (s2e, s2es) => begin
-        if s2exp_is_proof s2e then aux1 (loc0, s2es)
-        else begin
-          list_cons (s2exp_tr (loc0, 0, s2e), aux1 (loc0, s2es))
-        end // end of [if]
-      end (* end of [cons] *)
-    | list_nil () => list_nil ()
-  // end of [aux1]
-  fun aux2
-    (loc0: loc_t, i: int, s2es: s2explst): hityplst =
-    if i > 0 then begin case+ s2es of
-      | list_cons (_, s2es) => aux2 (loc0, i-1, s2es)
-      | list_nil () => list_nil () // deadcode
-    end else begin
-      aux1 (loc0, s2es) // proof arguments have been dropped
-    end // end of [if]
-  // end of [aux2]
-in
-  aux2 (loc0, npf, s2es)
-end // end of [s2explst_arg_tr]
-
-implement
-labs2explst_arg_tr
-  (loc0, npf, ls2es) = let
-  fun aux1
-    (loc0: loc_t, ls2es: labs2explst): labhityplst =
-    case+ ls2es of
-    | LABS2EXPLSTcons (l, s2e, ls2es) =>
-        if s2exp_is_proof s2e then begin
-          aux1 (loc0, ls2es)
-        end else begin LABHITYPLSTcons
-          (l, s2exp_tr (loc0, 0, s2e), aux1 (loc0, ls2es))
-        end // end of [if]
-      (* end of [LABS2EXPLSTcons] *)
-    | LABS2EXPLSTnil () => LABHITYPLSTnil ()
-  // end of [aux1]
-  fun aux2
-    (loc0: loc_t, i: int, ls2es: labs2explst): labhityplst =
-    if i > 0 then begin case+ ls2es of
-      | LABS2EXPLSTcons (_, _, ls2es) => aux2 (loc0, i-1, ls2es)
-      | LABS2EXPLSTnil () => LABHITYPLSTnil () // deadcode
-    end else begin
-      aux1 (loc0, ls2es) // proof arguments have been dropped
-    end // end of [if]
-  // end of [aux2]
-in
-  aux2 (loc0, npf, ls2es)
-end // end of [labs2explst_tr]
 
 (* ****** ****** *)
 
@@ -563,11 +616,15 @@ fn hiexplst_typ_get (hies: hiexplst): hityplst =
 
 fn d3exp_is_proof (d3e: d3exp): bool = s2exp_is_proof (d3e.d3exp_typ)
 
+(* ****** ****** *)
+
 viewtypedef hiexplst_vt = List_vt hiexp
 
 extern fun d3explst_funarg_tr
   (isvararg: bool, npf: int, arg: d3explst): hiexplst
 // end of [d3explst_funarg_tr]
+
+(* ****** ****** *)
 
 implement
 d3explst_funarg_tr
@@ -604,6 +661,7 @@ d3explst_funarg_tr
           // end of [loop]  
         } // end of [val]
       in  
+//
         if isvararg then (
           case+ d3e.d3exp_node of
           | D3Erec (_, _, ld3es) => aux0 (hies, ld3es)
@@ -621,6 +679,7 @@ d3explst_funarg_tr
         in
           $Lst.list_vt_reverse_list (hies)
         end // end of [if]
+//
       end (* end of [list_nil] *)
   // end of [aux1]
 //
@@ -642,9 +701,11 @@ in
   aux2 (npf, d3es)
 end // end of [d3explst_funarg_tr]
 
+(* ****** ****** *)
+
 fn d3explst_arg_tr (
-    npf: int, d3es: d3explst
-  ) : hiexplst = let
+  npf: int, d3es: d3explst
+) : hiexplst = let
   fun aux (
       i: int, d3es: d3explst
     ) : hiexplst = begin
@@ -695,8 +756,8 @@ end // end of [labd3explst_arg_tr]
 (* ****** ****** *)
 
 fn d3exp_cst_tr (
-    loc0: loc_t, hit0: hityp, d2c: d2cst_t
-  ) : hiexp = let
+  loc0: loc_t, hit0: hityp, d2c: d2cst_t
+) : hiexp = let
   val sym = d2cst_sym_get d2c in
   case+ sym of
   | _ when sym = $Sym.symbol_TRUE => hiexp_bool (loc0, hit0, true)
@@ -707,12 +768,12 @@ end // end of [d3exp_cst_tr]
 (* ****** ****** *)
 
 fn d3exp_seq_tr (
-    loc0: loc_t, hit0: hityp, d3es: d3explst
-  ) : hiexp = let
+  loc0: loc_t, hit0: hityp, d3es: d3explst
+) : hiexp = let
   val hies = d3explst_tr d3es in hiexp_seq_simplify (loc0, hit0, hies)
 end // end of [d3exp_seq_tr]
 
-//
+(* ****** ****** *)
 
 fn d3exp_tmpcst_tr (
     loc0: loc_t
@@ -789,7 +850,8 @@ in
   himat_make (m3at.m3atch_loc, hie, ohip)
 end // end of [m3atch_tr]
 
-fn m3atchlst_tr (m3ats: m3atchlst): himatlst =
+fn m3atchlst_tr
+  (m3ats: m3atchlst): himatlst =
   $Lst.list_map_fun (m3ats, m3atch_tr)
 // end of [m3atchlst_tr]
 

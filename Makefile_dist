@@ -246,6 +246,6 @@ cleanall:: clean
 
 ######
 #
-# end of [Makefile]
+# end of [Makefile_dist]
 #
 ######

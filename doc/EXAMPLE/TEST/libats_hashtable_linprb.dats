@@ -21,12 +21,21 @@ stadef HASHTBLptr = $H.HASHTBLptr
 
 (* ****** ****** *)
 
-typedef keyitm = @(int,string)
+%{^
+typedef ats_ptr_type absptr ;
+%} // end of [%{^]
+abstype absptr = $extype "absptr"
+extern castfn enstr (x: string):<> absptr
+extern castfn destr (x: absptr):<> string
+
+(* ****** ****** *)
+
+typedef keyitm = @(int,absptr)
 
 implement
 $H.keyitem_nullify<keyitm> (ki) = let
   val () = ki.1 := __cast (null) where {
-    extern castfn __cast (x: ptr null):<> string
+    extern castfn __cast (x: ptr null):<> absptr
   } // end of [val]
   prval () = $H.Opt_none {keyitm} (ki)
 in
@@ -39,7 +48,7 @@ $H.keyitem_isnot_null<keyitm> (ki) = let
     extern prfun __assert (x: !($H.Opt keyitm) >> keyitm):<> void
   } // end of [prval]
   val i = ki.1
-  extern castfn __cast (x: string):<> ptr
+  extern castfn __cast (x: absptr):<> ptr
   val i = __cast (i)
   val res = (i <> null)
   val [b:bool] res = bool1_of_bool (res)
@@ -92,25 +101,26 @@ implement main (argc, argv) = let
   var n: int = 0
   val () = begin
     if argc >= 2 then n := int_of_string (argv.[1])
-  end
+  end // end of [val]
   val [n:int] n = int1_of n
   val () = assert_errmsg (n > 0, #LOCATION)
 (*
   val () = $RAND.srand48_with_time ()
 *)
 //
-  typedef key = int and itm = string
+  typedef key = int and itm = absptr
+//
   fn hash (x: key):<cloref> ulint = ulint_of_int (x)
   fn eq (x1: key, x2: key):<cloref> bool = (x1 = x2)
 //
-  val [l:addr] ptbl = $H.hashtbl_make<int,string> (hash, eq)
+  val [l:addr] ptbl = $H.hashtbl_make<key,itm> (hash, eq)
   var i: int; val () = for (i := 0; i < n; i := i+1) let
 (*
     val () = if (i mod 10000 = 0) then (print "i = "; print i; print_newline ())
 *)
     val key = i
     // val key = $RAND.randint n
-    var itm0 : itm = tostring key // = sprintf ("%i", @(key))
+    var itm0 : itm = enstr (tostring key) // = sprintf ("%i", @(key))
     // val () = printf ("key = %i and itm = %s\n", @(key, itm))
     val ans = $H.hashtbl_insert<key,itm> (ptbl, key, itm0)
     prval () = opt_clear (itm0)
@@ -132,10 +142,12 @@ implement main (argc, argv) = let
     val () = printf ("%i\t->\t", @(k0))
     val ans = $H.hashtbl_search (ptbl, k0, res)
     val () = if ans then let
-      prval () = opt_unsome {itm} (res) in
-      print "Some("; print res; print ")"
+      prval () = opt_unsome {itm} (res)
+    in
+      print! ("Some(", destr res, ")")
     end else let
-      prval () = opt_unnone {itm} (res) in
+      prval () = opt_unnone {itm} (res)
+    in
       print "None()"
     end // end of [if]
     val () = print_newline ()
@@ -155,8 +167,10 @@ implement main (argc, argv) = let
   val () = find (ptbl, k10000, res)
 //
   #define p2s string_of_strptr
-  var !p_f = @lam
-    (pf: !unit_v | k: key, i: &itm): void =<clo> i := p2s (sprintf ("%i", @(k+k+1)))
+  var !p_f = @lam (
+    pf: !unit_v | k: key, i: &itm
+  ) : void =<clo>
+    i := enstr (p2s (sprintf ("%i", @(k+k+1))))
   // end of [var]
   prval pf = unit_v ()
   val () = $H.hashtbl_foreach_clo<key,itm> {unit_v} (pf | ptbl, !p_f)
