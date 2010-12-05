@@ -3526,8 +3526,6 @@ val () = grmrule_set_action (gr, "{ $$ = s0expext_nam($1, $2) ; }")
 val gr = grmrule_append ($lst_t {symbol} (tupz! exts0exp atms0exp))
 val () = grmrule_set_action (gr, "{ $$ = s0expext_app($1, $2) ; }")
 //
-val () = theGrmrulelst_merge_all (exts0exp, SYMREGpluslit(atms0exp))
-//
 val () = symbol_close (pf | exts0exp)
 //
 } // end of [exts0exp_proc]

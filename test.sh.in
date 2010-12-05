@@ -1,10 +1,12 @@
 #!/bin/sh
 
 #
-# Author: Matthew Danish
+# For running some tests with the newly built compiler
+# Author: Matthew Danish (md AT cs DOT bu DOT edu)
+# Time: 2010
 #
-# Run some basic tests with the newly built compiler
-#
+
+######
 
 PACKAGE_TARNAME=@PACKAGE_TARNAME@
 PACKAGE_VERSION=@PACKAGE_VERSION@
@@ -12,14 +14,13 @@ PACKAGE_VERSION=@PACKAGE_VERSION@
 ######
 
 CURDIR="`pwd`"
+ATSHOME="$CURDIR"
+ATSHOMERELOC="ATS-$PACKAGE_VERSION"
 
-cd doc/EXAMPLE/TEST
-make cleanall
-ATSHOMERELOC="ATS-$PACKAGE_VERSION" ATSHOME="$CURDIR" make
-CODE=$?
-make cleanall
-
-cd "$CURDIR"
-exit $CODE
+TESTDIR=doc/EXAMPLE/TEST
+make -C ${TESTDIR} cleanall
+make -C ${TESTDIR} checkall
+EXITCODE=$?
+exit $EXITCODE
 
 ###### end of [test.sh.in] ######
