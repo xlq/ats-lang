@@ -30,10 +30,10 @@
 *)
 
 (* ****** ****** *)
-
+//
 // Author: Hongwei Xi (hwxi AT cs DOT bu DOT edu)
-// Time: March 2008
-
+// Start Time: March 2008
+//
 (* ****** ****** *)
 
 staload Loc = "ats_location.sats"
@@ -853,7 +853,7 @@ fun emit_hityp {m:file_mode}
 fun emit_hityp_ptr {m:file_mode}
   (pf: file_mode_lte (m, w) | out: &FILE m, hit: hityp_t): void
 
-fun emit_hityplst_sep {m:file_mode} (
+fun emit_hityplst_sep {m:file_mode} ( // sep: separator
   pf: file_mode_lte (m, w) | out: &FILE m, _arg: hityplst_t, sep: string
 ) : void // end of [emit_hityplst_sep]
 
@@ -883,7 +883,7 @@ fun emit_instrlst {m:file_mode}
 
 absviewtype tmpvarmap_vt
 
-fun tmpvarmap_nil(): tmpvarmap_vt
+fun tmpvarmap_nil (): tmpvarmap_vt
 fun tmpvarmap_free (tmps: tmpvarmap_vt): void
 
 fun instr_tmpvarmap_add (tmps: &tmpvarmap_vt, ins: instr): void
