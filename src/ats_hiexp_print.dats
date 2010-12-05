@@ -30,10 +30,10 @@
 *)
 
 (* ****** ****** *)
-
-// Time: March 2008
+//
 // Author: Hongwei Xi (hwxi AT cs DOT bu DOT edu)
-
+// Start Time: March 2008
+//
 (* ****** ****** *)
 
 (* high-level intermediate representation *)
@@ -59,15 +59,16 @@ macdef fprint_label = $Lab.fprint_label
 
 (* ****** ****** *)
 
-implement fprint_hityp (pf | out, hit) = let
+implement
+fprint_hityp (pf | out, hit) = let
   macdef prstr (s) = fprint1_string (pf | out, ,(s))
 in
   case+ hit.hityp_node of
-  | HITextype (name, _arg) => begin
+  | HITextype (name, hitss_arg) => begin
       prstr "HITextype(";
       fprint_string (pf | out, name);
       prstr "; ";
-      fprint_hityplstlst (pf | out, _arg);
+      fprint_hityplstlst (pf | out, hitss_arg);
       prstr ")"
     end // end of [HITextype]
   | HITfun (fc, hits_arg, hit_res) => begin
@@ -103,7 +104,7 @@ in
     end // end of [HITtysumtemp]
   | HITs2var s2v => begin
       prstr "HITs2var("; fprint_s2var (pf | out, s2v); prstr ")"
-    end
+    end // end of [HITs2var]
   | _ => let
       val HITNAM (knd, name) = hit.hityp_name
     in
@@ -112,8 +113,12 @@ in
     end // end of [_]
 end // end of [fprint_hityp]
 
-implement fprint_hityplst {m} (pf | out, hits0) = let
-  fun aux (out: &FILE m, i: int, hits: hityplst): void =
+implement
+fprint_hityplst {m}
+  (pf | out, hits0) = let
+  fun aux (
+    out: &FILE m, i: int, hits: hityplst
+  ) : void =
     case+ hits of
     | list_cons (hit, hits) => begin
         if i > 0 then fprint1_string (pf | out, ", ");
@@ -125,8 +130,12 @@ in
   aux (out, 0, hits0)
 end // end of [fprint_hityplst]
 
-implement fprint_hityplstlst {m} (pf | out, hitss0) = let
-  fun aux (out: &FILE m, i: int, hitss: hityplstlst): void =
+implement
+fprint_hityplstlst {m}
+  (pf | out, hitss0) = let
+  fun aux (
+    out: &FILE m, i: int, hitss: hityplstlst
+  ) : void =
     case+ hitss of
     | list_cons (hits, hitss) => begin
         if i > 0 then fprint1_string (pf | out, ", ");
@@ -140,15 +149,20 @@ end // end of [fprint_hityplstlst]
 
 (* ****** ****** *)
 
-implement print_hityp (hit) = print_mac (fprint_hityp, hit)
-implement prerr_hityp (hit) = prerr_mac (fprint_hityp, hit)
+implement
+print_hityp (hit) = print_mac (fprint_hityp, hit)
+implement
+prerr_hityp (hit) = prerr_mac (fprint_hityp, hit)
 
-implement print_hityplst (hits) = print_mac (fprint_hityplst, hits)
-implement prerr_hityplst (hits) = prerr_mac (fprint_hityplst, hits)
+implement
+print_hityplst (hits) = print_mac (fprint_hityplst, hits)
+implement
+prerr_hityplst (hits) = prerr_mac (fprint_hityplst, hits)
 
 (* ****** ****** *)
 
-implement fprint_hipat (pf | out, hip0) = let
+implement
+fprint_hipat (pf | out, hip0) = let
   macdef prstr (s) = fprint1_string (pf | out, ,(s))
 in
   case+ hip0.hipat_node of
@@ -230,8 +244,12 @@ in
     end // end of [HIPvar]
 end // end of [fprint_hipat]
 
-implement fprint_hipatlst {m} (pf | out, hips0) = let
-  fun aux (out: &FILE m, i: int, hips: hipatlst): void =
+implement
+fprint_hipatlst {m}
+  (pf | out, hips0) = let
+  fun aux (
+    out: &FILE m, i: int, hips: hipatlst
+  ) : void =
     case+ hips of
     | list_cons (hip, hips) => begin
         if i > 0 then fprint1_string (pf | out, ", ");
@@ -243,8 +261,9 @@ in
   aux (out, 0, hips0)
 end // end of [fprint_hipatlst]
 
-implement fprint_labhipatlst
-  {m} (pf | out, lhips0) = let
+implement
+fprint_labhipatlst {m}
+  (pf | out, lhips0) = let
   fun aux
     (out: &FILE m, i: int, lhips: labhipatlst): void =
     case+ lhips of
@@ -267,15 +286,20 @@ end // end of [fprint_labhipatlst]
 
 (* ****** ****** *)
 
-implement print_hipat (hip) = print_mac (fprint_hipat, hip)
-implement prerr_hipat (hip) = prerr_mac (fprint_hipat, hip)
+implement
+print_hipat (hip) = print_mac (fprint_hipat, hip)
+implement
+prerr_hipat (hip) = prerr_mac (fprint_hipat, hip)
 
-implement print_hipatlst (hips) = print_mac (fprint_hipatlst, hips)
-implement prerr_hipatlst (hips) = prerr_mac (fprint_hipatlst, hips)
+implement
+print_hipatlst (hips) = print_mac (fprint_hipatlst, hips)
+implement
+prerr_hipatlst (hips) = prerr_mac (fprint_hipatlst, hips)
 
 (* ****** ****** *)
 
-implement fprint_hiexp (pf | out, hie0) = let
+implement
+fprint_hiexp (pf | out, hie0) = let
   macdef prstr (s) = fprint1_string (pf | out, ,(s))
 in
   case+ hie0.hiexp_node of
@@ -563,8 +587,12 @@ in
     end // end of [HIEvar]
 end // end of [fprint_hiexp]
 
-implement fprint_hiexplst {m} (pf | out, hies0) = let
-  fun aux (out: &FILE m, i: int, hies: hiexplst): void =
+implement
+fprint_hiexplst {m}
+  (pf | out, hies0) = let
+  fun aux (
+    out: &FILE m, i: int, hies: hiexplst
+  ) : void =
     case+ hies of
     | list_cons (hie, hies) => begin
         if i > 0 then fprint1_string (pf | out, ", ");
@@ -576,8 +604,12 @@ in
   aux (out, 0, hies0)
 end // end of [fprint_hiexplst]
 
-implement fprint_hiexplstlst {m} (pf | out, hiess0) = let
-  fun aux (out: &FILE m, i: int, hiess: hiexplstlst): void =
+implement
+fprint_hiexplstlst {m}
+  (pf | out, hiess0) = let
+  fun aux (
+    out: &FILE m, i: int, hiess: hiexplstlst
+  ) : void =
     case+ hiess of
     | list_cons (hies, hiess) => begin
         if i > 0 then fprint1_string (pf | out, "; ");
@@ -589,8 +621,12 @@ in
   aux (out, 0, hiess0)
 end // end of [fprint_hiexplstlst]
 
-implement fprint_labhiexplst {m} (pf | out, lhies0) = let
-  fun aux (out: &FILE m, i: int, lhies: labhiexplst): void =
+implement
+fprint_labhiexplst {m}
+  (pf | out, lhies0) = let
+  fun aux (
+    out: &FILE m, i: int, lhies: labhiexplst
+  ) : void =
     case+ lhies of
     | LABHIEXPLSTcons (l, hie, lhies) => begin
         if i > 0 then fprint1_string (pf | out, ", ");
@@ -605,7 +641,8 @@ in
   aux (out, 0, lhies0)
 end // end of [fprint_labhiexplst]
 
-implement fprint_hilab (pf | out, hil) = let
+implement
+fprint_hilab (pf | out, hil) = let
   macdef prstr (s) = fprint1_string (pf | out, ,(s))
 in
   case+ hil.hilab_node of
@@ -617,8 +654,12 @@ in
     end // end of [HILind]
 end // end of [fprint_hilab]
 
-implement fprint_hilablst {m} (pf | out, hils0) = let
-  fun aux (out: &FILE m, i: int, hils: hilablst): void =
+implement
+fprint_hilablst {m}
+  (pf | out, hils0) = let
+  fun aux (
+    out: &FILE m, i: int, hils: hilablst
+  ) : void =
     case+ hils of
     | list_cons (hil, hils) => begin
         if i > 0 then fprint1_string (pf | out, ", ");
@@ -632,23 +673,30 @@ end // end of [fprint_hilablst]
 
 (* ****** ****** *)
 
-implement print_hiexp (hie) = print_mac (fprint_hiexp, hie)
-implement prerr_hiexp (hie) = prerr_mac (fprint_hiexp, hie)
+implement
+print_hiexp (hie) = print_mac (fprint_hiexp, hie)
+implement
+prerr_hiexp (hie) = prerr_mac (fprint_hiexp, hie)
 
-implement print_hiexplst (hies) = print_mac (fprint_hiexplst, hies)
-implement prerr_hiexplst (hies) = prerr_mac (fprint_hiexplst, hies)
+implement
+print_hiexplst (hies) = print_mac (fprint_hiexplst, hies)
+implement
+prerr_hiexplst (hies) = prerr_mac (fprint_hiexplst, hies)
 
 (* ****** ****** *)
 
-implement fprint_vartyp (pf | out, vtp) = begin
+implement
+fprint_vartyp (pf | out, vtp) = begin
   fprint_d2var (pf | out, vartyp_var_get vtp);
   fprint1_string (pf | out, "(");
   fprint_hityp (pf | out, hityp_decode (vartyp_typ_get vtp));
   fprint1_string (pf | out, ")")
 end // end of [fprint_vartyp]
 
-implement print_vartyp (vtp) = print_mac (fprint_vartyp, vtp)
-implement prerr_vartyp (vtp) = prerr_mac (fprint_vartyp, vtp)
+implement
+print_vartyp (vtp) = print_mac (fprint_vartyp, vtp)
+implement
+prerr_vartyp (vtp) = prerr_mac (fprint_vartyp, vtp)
 
 (* ****** ****** *)
 

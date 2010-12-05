@@ -30,10 +30,10 @@
 *)
 
 (* ****** ****** *)
-
+//
 // Author: Hongwei Xi (hwxi AT cs DOT bu DOT edu)
-// Time: March 2008
-
+// Start Time: March 2008
+//
 (* ****** ****** *)
 
 (* high-level intermediate representation *)
