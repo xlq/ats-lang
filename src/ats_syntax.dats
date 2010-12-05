@@ -30,10 +30,10 @@
 *)
 
 (* ****** ****** *)
-
+//
 // Author: Hongwei Xi (hwxi AT cs DOT bu DOT edu)
 // Time: July 2007
-
+//
 (* ****** ****** *)
 
 (* ats_syntax: AST for source programs in ATS/Anairiats *)
@@ -998,34 +998,61 @@ in '{
 
 implement s0exp_char (c) = '{
   s0exp_loc= c.c0har_loc, s0exp_node= S0Echar (c.c0har_val)
-}
+} // end of [s0exp_char]
 
-implement s0exp_exi (t_beg, knd, s0quas, t_end) = 
-  let val loc = combine (t_beg.t0kn_loc, t_end.t0kn_loc) in
-    '{ s0exp_loc= loc, s0exp_node= S0Eexi (knd(*funres*), s0quas) }
-  end
+implement
+s0exp_exi (t_beg, knd, s0quas, t_end) = let
+  val loc = combine (t_beg.t0kn_loc, t_end.t0kn_loc)
+in '{
+  s0exp_loc= loc, s0exp_node= S0Eexi (knd(*funres*), s0quas)
+} end // end of [s0exp_exi]
 
-implement s0exp_extern (t_extype, name) =
-  let val loc = combine (t_extype.t0kn_loc, name.s0tring_loc) in
-    '{ s0exp_loc= loc, s0exp_node= S0Eextype name.s0tring_val }
-  end
+(*
+** HX-2010-12-05: for handling $extype with arguments
+*)
+implement
+s0expext_nam (t, name) = S0EXT (t, name, nil)
+implement
+s0expext_app (s0ext, s0e) = let
+  val+ S0EXT (t, name, s0es) = s0ext in S0EXT (t, name, cons (s0e, s0es))
+end // end of [s0expext_app]
+implement
+s0exp_extern (s0ext) = let
+  val+ S0EXT (t, name, s0es) = s0ext
+  val loc = name.s0tring_loc
+  val loc = loop (loc, s0es) where {
+    fun loop (loc: loc_t, s0es: s0explst): loc_t =
+      case+ s0es of
+      | cons (s0e, s0es) => loop (s0e.s0exp_loc, s0es)
+      | nil () => loc
+    // end of [loop]
+  } // end of [val]
+  val loc = combine (t.t0kn_loc, loc)
+in '{
+  s0exp_loc= loc, s0exp_node= S0Eextype (name.s0tring_val, s0es)
+} end // end of [s0exp_extern]
 
-implement s0exp_ide (id) = 
-  '{ s0exp_loc= id.i0de_loc, s0exp_node= S0Eide id.i0de_sym }
+implement s0exp_ide (id) =  '{
+  s0exp_loc= id.i0de_loc, s0exp_node= S0Eide id.i0de_sym
+} // end of [s0exp_ide]
 
-implement s0exp_int (i) =
-  '{ s0exp_loc= i.i0nt_loc, s0exp_node= S0Eint i.i0nt_val }
+implement s0exp_int (i) = '{
+  s0exp_loc= i.i0nt_loc, s0exp_node= S0Eint i.i0nt_val
+} // end of [s0exp_int]
 
-implement s0exp_intsp_err (i) = begin
-  prerr_loc_error0 (i.i0nt_loc);
-  prerr ": the specified integer [";
-  prerr i.i0nt_val;
-  prerr "] is not allowed in statics.";
-  prerr_newline ();
+implement
+s0exp_intsp_err (i) = let
+  val () = prerr_loc_error0 (i.i0nt_loc)
+  val () = prerr ": the specified integer ["
+  val () = prerr (i.i0nt_val)
+  val () = prerr "] is not allowed in statics."
+  val () = prerr_newline ()
+in
   $Err.abort {s0exp} ()
 end // end of [s0exp_intsp_err]
 
-implement s0exp_imp (t_beg, efs, t_end) = let
+implement
+s0exp_imp (t_beg, efs, t_end) = let
   val loc = combine (t_beg.t0kn_loc, t_end.t0kn_loc)
 in '{
   s0exp_loc= loc, s0exp_node= S0Eimp efs

@@ -781,7 +781,7 @@ datatype s0exp_node =
   | S0Eexi of (* existentially quantified type *)
       (int(*funres*), s0qualst)
   | S0Eextype of (* external type *)
-      string
+      (string(*name*), s0explst(*arglst*))
   | S0Eide of (* static identifier *)
       sym_t
   | S0Eimp of (* decorated implication *)
@@ -824,6 +824,8 @@ datatype s0exp_node =
   | S0Eunion of (* union type *)
       (s0exp (*index*), labs0explst (*body*))
 // end of [s0exp_node]
+
+and s0expext = S0EXT of (t0kn, s0tring(*name*), s0explst)
 
 and s0rtext_node =
   | S0TEsrt of s0rt | S0TEsub of (i0de, s0rtext, s0exp, s0explst)
@@ -872,27 +874,33 @@ typedef s0qualstopt = Option s0qualst
 
 fun s0exp_ann (_: s0exp, _: s0rt): s0exp = "s0exp_ann"
 
-fun s0exp_app (_fun: s0exp, _arg: s0exp): s0exp
-  = "s0exp_app"
+fun s0exp_app (_fun: s0exp, _arg: s0exp): s0exp = "s0exp_app"
 
 fun s0exp_char (_: c0har): s0exp = "s0exp_char"
 
 fun s0exp_exi
   (t_beg: t0kn, knd: int, qua: s0qualst, t_end: t0kn): s0exp
   = "s0exp_exi"
+// end of [s0exp_exi]
 
-fun s0exp_extern (t_extype: t0kn, name: s0tring): s0exp
-  = "s0exp_extern"
+fun s0expext_nam
+  (t: t0kn, name: s0tring): s0expext = "s0expext_nam"
+fun s0expext_app
+  (s0ext: s0expext, arg: s0exp): s0expext = "s0expext_app" 
+fun s0exp_extern (s0ext: s0expext): s0exp = "s0exp_extern"
 
-fun s0exp_imp (t_beg: t0kn, _: e0fftaglst, t_end: t0kn): s0exp
-  = "s0exp_imp"
+fun s0exp_imp
+  (t_beg: t0kn, _: e0fftaglst, t_end: t0kn): s0exp = "s0exp_imp"
+// end of [s0exp_imp]
 fun s0exp_imp_emp (t: t0kn): s0exp = "s0exp_imp_emp"
 
 fun s0exp_ide (_: i0de): s0exp = "s0exp_ide"
 
 fun s0exp_int (_: i0nt): s0exp = "s0exp_int"
 
-// to report misuse of specified integers in statics
+//
+// HX: for reporting misuse of specified integers in statics
+//
 fun s0exp_intsp_err (_: i0nt): s0exp = "s0exp_intsp_err"
 
 fun s0exp_lams (t: t0kn, arg: s0arglstlst, res: s0rtopt, body: s0exp): s0exp

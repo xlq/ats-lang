@@ -113,6 +113,7 @@ val s0arglstlst_tyname = tyname_make_namdef ("s0arglstlst", "s0arglstlst_t")
 val sp0at_tyname = tyname_make_namdef ("sp0at", "sp0at_t")
 
 val s0exp_tyname = tyname_make_namdef ("s0exp", "s0exp_t")
+val s0expext_tyname = tyname_make_namdef ("s0expext", "s0expext_t")
 val s0explst_tyname = tyname_make_namdef ("s0explst", "s0explst_t")
 val s0expopt_tyname = tyname_make_namdef ("s0expopt", "s0expopt_t")
 val s0explstlst_tyname = tyname_make_namdef ("s0explstlst", "s0explstlst_t")
@@ -1294,6 +1295,8 @@ val atms0exp = symbol_make_nt "atms0exp"
 val () = symbol_set_tyname (atms0exp, s0exp_tyname)
 val apps0exp = symbol_make_nt "apps0exp"
 val () = symbol_set_tyname (apps0exp, s0exp_tyname)
+val exts0exp = symbol_make_nt "exts0exp"
+val () = symbol_set_tyname (exts0exp, s0expext_tyname)
 
 val s0expelt = symbol_make_nt "s0expelt"
 val () = symbol_set_tyname (s0expelt, s0expopt_tyname)
@@ -3328,6 +3331,7 @@ val () = symbol_close (pf | sp0at)
 (*
 s0exp /* static expression */
   : apps0exp                            { $$ = $1 ; }
+  | exts0exp                            { $$ = s0exp_extern($1) ; }
   | s0exp COLON s0rt                    { $$ = s0exp_ann($1, $3) ; }
   | LAM s0argseqseq colons0rtopt EQGT s0exp %prec SEXPLAM
                                         { $$ = s0exp_lams($1, $2, $3, $5) ; }
@@ -3340,6 +3344,8 @@ val (pf | ()) = symbol_open (s0exp)
 //
 val gr = grmrule_append (apps0exp)
 val () = grmrule_set_action (gr, "{ $$ = $1 ; }")
+val gr = grmrule_append (exts0exp)
+val () = grmrule_set_action (gr, "{ $$ = s0exp_extern($1) ; }")
 val gr = grmrule_append ($lst_t {symbol} (tupz! s0exp COLON s0rt))
 val () = grmrule_set_action (gr, "{ $$ = s0exp_ann($1, $3) ; }")
 val gr = grmrule_append ($lst_t {symbol} (tupz! LAM s0argseqseq colons0rtopt EQGT s0exp))
@@ -3364,7 +3370,6 @@ atms0exp /* atomic static expression */
   | sqi0de HASHLBRACE labs0expseq RBRACE
                                         { $$ = s0exp_mod($1, $3, $4) ; }
 */
-  | DLREXTYPE LITERAL_string            { $$ = s0exp_extern($1, $2) ; }
   | LPAREN s0expseq RPAREN              { $$ = s0exp_list($1, $2, $3) ; }
   | LPAREN s0expseq BAR s0expseq RPAREN { $$ = s0exp_list2($1, $2, $4, $5) ; }
 
@@ -3418,19 +3423,15 @@ val gr = grmrule_append ($lst_t {symbol} (tupz! LITERAL_int))
 val () = grmrule_set_action (gr, "{ $$ = s0exp_int($1) ; }")
 val gr = grmrule_append ($lst_t {symbol} (tupz! LITERAL_intsp))
 val () = grmrule_set_action (gr, "{ $$ = s0exp_intsp_err($1) ; }")
-val gr = grmrule_append ($lst_t {symbol} (tupz! si0de))
 //
+val gr = grmrule_append ($lst_t {symbol} (tupz! si0de))
 val () = grmrule_set_action (gr, "{ $$ = s0exp_ide($1) ; }")
 val gr = grmrule_append ($lst_t {symbol} (tupz! OP si0de))
 val () = grmrule_set_action (gr, "{ $$ = s0exp_opide($1, $2) ; }")
 val gr = grmrule_append ($lst_t {symbol} (tupz! s0taq si0de))
-//
 val () = grmrule_set_action (gr, "{ $$ = s0exp_qid($1, $2) ; }")
-val gr = grmrule_append ($lst_t {symbol} (tupz! DLREXTYPE LITERAL_string))
 //
-val () = grmrule_set_action (gr, "{ $$ = s0exp_extern($1, $2) ; }")
 val gr = grmrule_append ($lst_t {symbol} (tupz! LPAREN s0expseq RPAREN))
-//
 val () = grmrule_set_action (gr, "{ $$ = s0exp_list($1, $2, $3) ; }")
 val gr = grmrule_append ($lst_t {symbol} (tupz! LPAREN s0expseq BAR s0expseq RPAREN))
 val () = grmrule_set_action (gr, "{ $$ = s0exp_list2($1, $2, $4, $5) ; }")
@@ -3438,7 +3439,6 @@ val () = grmrule_set_action (gr, "{ $$ = s0exp_list2($1, $2, $4, $5) ; }")
 val gr = grmrule_append ($lst_t {symbol} (tupz! ATLPAREN s0expseq RPAREN))
 val () = grmrule_set_action (gr, "{ $$ = s0exp_tytup(0, $1, $2, $3) ; }")
 val gr = grmrule_append ($lst_t {symbol} (tupz! QUOTELPAREN s0expseq RPAREN))
-//
 val () = grmrule_set_action (gr, "{ $$ = s0exp_tytup(1, $1, $2, $3) ; }")
 val gr = grmrule_append ($lst_t {symbol} (tupz! DLRTUP_T LPAREN s0expseq RPAREN))
 val () = grmrule_set_action (gr, "{ $$ = s0exp_tytup(2, $1, $3, $4) ; }")
@@ -3448,7 +3448,6 @@ val () = grmrule_set_action (gr, "{ $$ = s0exp_tytup(3, $1, $3, $4) ; }")
 val gr = grmrule_append ($lst_t {symbol} (tupz! ATLPAREN s0expseq BAR s0expseq RPAREN))
 val () = grmrule_set_action (gr, "{ $$ = s0exp_tytup2(0, $1, $2, $4, $5) ; }")
 val gr = grmrule_append ($lst_t {symbol} (tupz! QUOTELPAREN s0expseq BAR s0expseq RPAREN))
-//
 val () = grmrule_set_action (gr, "{ $$ = s0exp_tytup2(1, $1, $2, $4, $5) ; }")
 val gr = grmrule_append ($lst_t {symbol} (tupz! DLRTUP_T LPAREN s0expseq BAR s0expseq RPAREN))
 val () = grmrule_set_action (gr, "{ $$ = s0exp_tytup2(2, $1, $3, $5, $6) ; }")
@@ -3508,6 +3507,30 @@ val () = theGrmrulelst_merge_all (apps0exp, SYMREGpluslit(atms0exp))
 val () = symbol_close (pf | apps0exp)
 //
 } // end of [apps0exp_proc]
+
+(* ****** ****** *)
+
+(*
+exts0exp
+  : DLREXTYPE LITERAL_string            { $$ = s0expext_nam($1, $2) ; }
+  | exts0exp atms0exp                   { $$ = s0expext_app($1, $2) ; }
+; /* exts0exp */
+*)
+fun exts0exp_proc
+  (): void = () where {
+//
+val (pf | ()) = symbol_open (exts0exp)
+//
+val gr = grmrule_append ($lst_t {symbol} (tupz! DLREXTYPE LITERAL_string))
+val () = grmrule_set_action (gr, "{ $$ = s0expext_nam($1, $2) ; }")
+val gr = grmrule_append ($lst_t {symbol} (tupz! exts0exp atms0exp))
+val () = grmrule_set_action (gr, "{ $$ = s0expext_app($1, $2) ; }")
+//
+val () = theGrmrulelst_merge_all (exts0exp, SYMREGpluslit(atms0exp))
+//
+val () = symbol_close (pf | exts0exp)
+//
+} // end of [exts0exp_proc]
 
 (* ****** ****** *)
 
@@ -7058,6 +7081,7 @@ atsgrammar_main
   val () = s0exp_proc ()
   val () = atms0exp_proc ()
   val () = apps0exp_proc ()
+  val () = exts0exp_proc ()
   val () = s0expelt_proc ()
   val () = s0arrind_proc ()
 //

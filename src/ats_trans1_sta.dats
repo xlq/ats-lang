@@ -571,17 +571,6 @@ typedef s1expitmlst = List s1expitm
 
 val s1expitm_app : s1expitm = let
 //
-// HX-2010-12-04: $extype"foo" (...) ... (...)
-//
-fn s1exp_appext (
-  loc: loc_t, _fun: s1exp, locarg: loc_t, _arg: s1explst
-) : s1exp = case+ _fun.s1exp_node of
-  | S1Eextype (name, args) => (
-      s1exp_extype (loc, name, $Lst.list_extend (args, _arg))
-    ) // end of [S1Eextype]
-  | _ => s1exp_app (loc, _fun, locarg, _arg)
-// end of [s1exp_appext]
-//
 fn f (s1e1: s1exp, s1e2: s1exp):<cloref1> s1expitm = let
   val loc = $Loc.location_combine (s1e1.s1exp_loc, s1e2.s1exp_loc)
   val s1es2 = (
@@ -589,7 +578,7 @@ fn f (s1e1: s1exp, s1e2: s1exp):<cloref1> s1expitm = let
     | S1Elist (npf, s1es) => s1es // should [npf = 0] be enforced?
     | _ => cons (s1e2, nil ())
   ) : s1explst
-  val s1e_app = s1exp_appext (loc, s1e1, s1e2.s1exp_loc, s1es2)
+  val s1e_app = s1exp_app (loc, s1e1, s1e2.s1exp_loc, s1es2)
 (*
   val () = begin
     print "s1expitm_app: f: s1e_app = "; print s1e_app; print_newline ()
@@ -670,9 +659,26 @@ s0exp_tr s0e0 = let
       in
         $Fix.ITEMopr ($Fix.OPERpre ($Fix.exi_prec_sta, f))
       end // end of [S0Eexi]
-    | S0Eextype name =>
-        $Fix.ITEMatm (s1exp_extype (loc0, name, nil))
-      // end of [S0Eextype]
+//
+    | S0Eextype (name, s0es) => let
+        val s1ess = loop (s0es, nil) where {
+          fun loop (s0es: s0explst, res: s1explstlst): s1explstlst =
+            case+ s0es of 
+            | cons (s0e, s0es) => let
+                val s1e = s0exp_tr (s0e)
+                val s1es = (case+ s1e.s1exp_node of
+                  | S1Elist (_(*npf*), s1es) => s1es | _ => cons (s1e, nil)
+                ) : s1explst
+              in
+                loop (s0es, cons (s1es, res))
+              end // end of [cons]
+            | nil () => res
+          // end of [loop]
+        } // end of [val]
+      in
+        $Fix.ITEMatm (s1exp_extype (loc0, name, s1ess))
+      end // end of [S0Eextype]
+//
     | S0Eint int (*string*) => $Fix.ITEMatm (s1exp_int (loc0, int))
     | S0Eide id when id = $Sym.symbol_AMPERSAND => let
         fn f (s1e: s1exp):<cloref1> s1expitm =
@@ -775,9 +781,7 @@ s0exp_tr s0e0 = let
         $Fix.ITEMatm (s1e_lam)
       end // end of [S0Elam]
     | S0Elist (s0es) => let
-        val s1es = s0explst_tr s0es
-      in
-        $Fix.ITEMatm (s1exp_list (loc0, s1es))
+        val s1es = s0explst_tr s0es in $Fix.ITEMatm (s1exp_list (loc0, s1es))
       end // end of [S0Elist]
     | S0Elist2 (s0es1, s0es2) => let
         val s1es1 = s0explst_tr s0es1

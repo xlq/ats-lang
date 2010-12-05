@@ -100,6 +100,7 @@ typedef ats_ptr_type s0arg_t ;\n\
 typedef ats_ptr_type s0arglst_t ;\n\
 typedef ats_ptr_type s0arglstlst_t ;\n\
 typedef ats_ptr_type s0exp_t ;\n\
+typedef ats_ptr_type s0expext_t ; // for external types\n\
 typedef ats_ptr_type s0explst_t ;\n\
 typedef ats_ptr_type s0expopt_t ;\n\
 typedef ats_ptr_type s0explstlst_t ;\n\
@@ -422,7 +423,9 @@ extern s0exp_t s0exp_ann (s0exp_t, s0rt_t) ;\n\
 extern s0exp_t s0exp_app (s0exp_t, s0exp_t) ;\n\
 extern s0exp_t s0exp_char (c0har_t) ;\n\
 extern s0exp_t s0exp_exi (t0kn_t, int/*funres*/, s0qualst_t, t0kn_t) ;\n\
-extern s0exp_t s0exp_extern (t0kn_t, s0tring_t) ;\n\
+extern s0expext_t s0expext_nam (t0kn_t, s0tring_t/*name*/) ;\n\
+extern s0expext_t s0expext_app (s0expext_t/*fun*/, s0exp_t/*arg*/) ;\n\
+extern s0exp_t s0exp_extern (s0expext_t) ;\n\
 extern s0exp_t s0exp_ide (i0de_t) ;\n\
 extern s0exp_t s0exp_imp (t0kn_t, e0fftaglst_t, t0kn_t) ;\n\
 extern s0exp_t s0exp_imp_emp (t0kn_t) ;\n\
