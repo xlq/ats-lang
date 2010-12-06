@@ -1614,10 +1614,10 @@ fn i3mpdec_tr (
   val decarg = d3c.i3mpdec_decarg
   val tmp = (case+ decarg of cons _ => 1 | nil _ => 0): int
 //
-  var named: s2expopt = None ()
+  var res: s2expopt = None ()
   val tmparg = d3c.i3mpdec_tmparg
-  val tmparg = s2explstlst_tr_named (loc0, tmparg, named)
-  val () = (case+ named of
+  val tmparg = s2explstlst_tr_named (loc0, tmparg, res)
+  val () = (case+ res of
     | Some (s2e) => let
         val () = prerr_loc_error4 (loc0)
         val () = prerr ": the template parameter ["
