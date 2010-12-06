@@ -415,6 +415,7 @@ stadef opt = opt_viewt0ype_bool_viewt0ype
 // HX-2010-03-23: resulting in incorrect erasure
 // stadef Opt (a:viewt@ype) = [b:bool] opt (a, b)
 //
+
 (* ****** ****** *)
 
 (*

@@ -307,13 +307,17 @@ fun vbox_make_view_ptr
 // end of [vbox_make_view_ptr]
 
 (* ****** ****** *)
-
+//
+// HX: optional initialization
+//
 praxi opt_some {a:viewt@ype} (x: !(a) >> opt (a, true)):<prf> void
 praxi opt_unsome {a:viewt@ype} (x: !opt (a, true) >> a):<prf> void
+//
 praxi opt_none {a:viewt@ype} (x: !(a?) >> opt (a, false)):<prf> void
 praxi opt_unnone {a:viewt@ype} (x: !opt (a, false) >> a?):<prf> void
+//
 praxi opt_clear {a:t@ype} {b:bool} (x: !opt (a, b) >> a?):<prf> void
-
+//
 (* ****** ****** *)
 
 (*

@@ -206,7 +206,7 @@ fun sethostent {b:bool}
 
 fun gethostent
   (pf: !sethostent_v | (*none*))
-  :<!ref> [l:addr] (ptroutopt (hostent, l) | ptr l)
+  :<!ref> [l:addr] (vptroutopt (hostent, l) | ptr l)
   = "#atslib_gethostent"
 // end of [gethostent]
 
@@ -220,7 +220,7 @@ fun endhostent
 // HX: [gethostbyname] does not handle [IPv6] addresses
 //
 fun gethostbyname (name: string)
-  :<!ref> [l:addr] (ptroutopt (hostent, l) | ptr l) = "#atslib_gethostbyname"
+  :<!ref> [l:addr] (vptroutopt (hostent, l) | ptr l) = "#atslib_gethostbyname"
 // end of [gethostbyname]
 
 //
@@ -228,7 +228,7 @@ fun gethostbyname (name: string)
 //
 fun gethostbyaddr {a:t@ype}
   (addr: &a, n: sizeof_t(a), af: sa_family_t)
-  :<!ref> [l:addr] (ptroutopt (hostent, l) | ptr l) = "#atslib_gethostbyaddr"
+  :<!ref> [l:addr] (vptroutopt (hostent, l) | ptr l) = "#atslib_gethostbyaddr"
 // end of [gethostbyaddr]
 
 (* ****** ****** *)

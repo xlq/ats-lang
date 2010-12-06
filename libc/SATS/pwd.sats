@@ -101,7 +101,7 @@ fun passwd_get_pw_shell
 
 // HX: non-reentrant
 fun getpwnam (nam: !READ(string)):<!ref>
-  [l:addr] (ptroutopt (passwd, l) | ptr l) = "#atslib_getpwnam"
+  [l:addr] (vptroutopt (passwd, l) | ptr l) = "#atslib_getpwnam"
 // end of [getpwnam]
 
 // HX: reentrant
@@ -118,7 +118,7 @@ fun getpwnam_r {n:nat} (
 
 // HX: non-reentrant
 fun getpwuid (uid: uid_t):<!ref>
-  [l:addr] (ptroutopt (passwd, l) | ptr l) = "#atslib_getpwuid"
+  [l:addr] (vptroutopt (passwd, l) | ptr l) = "#atslib_getpwuid"
 // end of [getpwuid]
 
 // HX: reentrant

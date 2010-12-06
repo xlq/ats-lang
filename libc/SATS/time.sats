@@ -136,7 +136,7 @@ fun ctime_r // reentrant
 
 // [localtime] is non-reentrant
 fun localtime (time: &READ(time_t)):<!ref>
-  [l:addr] (ptroutopt (tm_struct, l) | ptr l) = "#atslib_localtime"
+  [l:addr] (vptroutopt (tm_struct, l) | ptr l) = "#atslib_localtime"
 // end of [localtime]
 
 // [localtime_r] is reentrant
@@ -149,7 +149,7 @@ fun localtime_r (
 
 // [gmtime] is non-reentrant
 fun gmtime (time: &READ(time_t)):<!ref>
-  [l:addr] (ptroutopt (tm_struct, l) | ptr l) = "#atslib_gmtime"
+  [l:addr] (vptroutopt (tm_struct, l) | ptr l) = "#atslib_gmtime"
 // end of [gmtime]
 
 // [gmtime_r] is reentrant

@@ -80,7 +80,7 @@ fun closedir_exn {l_dir:addr} (pf: DIR @ l_dir | p: ptr l_dir):<!exn> void
 (* ****** ****** *)
 
 fun readdir (dir: &DIR) :<>
-  [l_ent:addr] (ptroutopt (dirent, l_ent) | ptr l_ent) = "#atslib_readdir"
+  [l_ent:addr] (vptroutopt (dirent, l_ent) | ptr l_ent) = "#atslib_readdir"
 // end of [readdir]
 
 (* ****** ****** *)

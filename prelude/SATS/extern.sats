@@ -30,10 +30,10 @@
 *)
 
 (* ****** ****** *)
-
+//
 // Author: Hongwei Xi (hwxi AT cs DOT bu DOT edu)
-// Starting time: January 29, 2010
-
+// Start Time: January 29, 2010
+//
 (* ****** ****** *)
 
 #include "prelude/params.hats"
@@ -46,12 +46,12 @@
 //
 (* ****** ****** *)
 
-viewdef ptrout
+viewdef vptrout // virtual ownership
   (a:viewt@ype, l:addr) = (a @ l, a @ l -<lin,prf> void)
-// end of [ptrout]
-viewdef ptroutopt
-  (a:viewt@ype, l:addr) = option_v (ptrout (a, l), l > null)
-// end of [ptroutopt]
+// end of [vptrout]
+viewdef vptroutopt // optional virtual ownership
+  (a:viewt@ype, l:addr) = option_v (vptrout (a, l), l > null)
+// end of [vptroutopt]
 
 (* ****** ****** *)
 

@@ -88,12 +88,12 @@ fun group_get_gr_mem
 
 // HX: non-reentrant
 fun getgrnam (nam: !READ(string)):<!ref>
-  [l:addr] (ptroutopt (group, l) | ptr l) = "#atslib_getgrnam"
+  [l:addr] (vptroutopt (group, l) | ptr l) = "#atslib_getgrnam"
 // end of [getgrnam]
 
 // HX: non-reentrant
 fun getgrgid (gid: gid_t):<!ref>
-  [l:addr] (ptroutopt (group, l) | ptr l) = "#atslib_getgrgid"
+  [l:addr] (vptroutopt (group, l) | ptr l) = "#atslib_getgrgid"
 // end of [getgrgid]
 
 (* ****** ****** *)
