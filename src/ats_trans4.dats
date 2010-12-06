@@ -186,6 +186,14 @@ end // end of [s2Var_tr_named]
 
 (* ****** ****** *)
 
+fn update_ifnot_named (
+  res: &s2expopt, s2e: s2exp, named: bool
+) :<> void = case+ res of
+  | Some _ => () | None () => if not(named) then res := Some (s2e)
+// end of [update_ifnot_named]
+
+(* ****** ****** *)
+
 fun s2explst_tr_named (
   loc0: loc_t, s2es: s2explst, res: &s2expopt
 ) : hityplst =
@@ -193,9 +201,7 @@ fun s2explst_tr_named (
   | list_cons (s2e, s2es) => let
       var named: bool = false
       val hit = s2exp_tr_named (loc0, 0(*deep*), s2e, named)
-      val () = (case+ res of
-        | Some _ => () | None () => if not(named) then res := Some (s2e)
-      ) // end of [val]
+      val () = update_ifnot_named (res, s2e, named)
     in
       list_cons (hit, s2explst_tr_named (loc0, s2es, res))
     end // end of [list_cons]
@@ -242,9 +248,7 @@ fun s2explst_npf_tr_named (
         else let
           var named: bool = false
           val hit = s2exp_tr_named (loc0, 0, s2e, named)
-          val () = case+ res of
-            | Some _ => () | None () => if not(named) then res := Some (s2e)
-          // end of [val]
+          val () = update_ifnot_named (res, s2e, named)
         in
           list_cons (hit, aux1 (loc0, s2es, res))
         end // end of [if]
@@ -291,9 +295,7 @@ fun labs2explst_npf_tr_named (
         end else let
           var named: bool = false
           val hit = s2exp_tr_named (loc0, 0, s2e, named)
-          val () = (case+ res of
-            | Some _ => () | None () => if not(named) then res := Some (s2e)
-          ) : void // end of [val]
+          val () = update_ifnot_named (res, s2e, named)
         in
           LABHITYPLSTcons (l, hit, aux1 (loc0, ls2es, res))
         end (* end of [if] *)
@@ -825,7 +827,9 @@ in
       hilab_lab (loc0, l, hit_rec)
     end // end of [D3LAB1lab]
   | D3LAB1ind (d3ess, s2e_elt) => let
-      val hiess: hiexplstlst = $Lst.list_map_fun (d3ess, d3explst_tr)
+      val hiess = (
+        $Lst.list_map_fun (d3ess, d3explst_tr)
+      ) : hiexplstlst // end of [val]
       val hit_elt = s2exp_tr (loc0, 0(*deep*), s2e_elt)
     in
       hilab_ind (loc0, hiess, hit_elt)
@@ -833,8 +837,7 @@ in
 end // end of [d3lab1_tr]
 
 fn d3lab1lst_tr
-  (d3ls: d3lab1lst): hilablst =
-  $Lst.list_map_fun (d3ls, d3lab1_tr)
+  (d3ls: d3lab1lst): hilablst = $Lst.list_map_fun (d3ls, d3lab1_tr)
 // end of [d3lab1lst_tr]
 
 (* ****** ****** *)
@@ -842,8 +845,7 @@ fn d3lab1lst_tr
 fn m3atch_tr
   (m3at: m3atch): himat = let
   val hie = d3exp_tr m3at.m3atch_exp
-  val ohip = (
-    case+ m3at.m3atch_pat of
+  val ohip = (case+ m3at.m3atch_pat of
     | Some p3t => Some (p3at_tr p3t) | None () => None ()
   ) : hipatopt // end of [val]
 in
@@ -857,13 +859,14 @@ fn m3atchlst_tr
 
 (* ****** ****** *)
 
-fn c3lau_tr (c3l: c3lau): hiclau = let
-  val loc0 = c3l.c3lau_loc
+fn c3lau_tr
+  (c3l: c3lau): hiclau = let
 (*
   val () = begin
     print "cla3_tr: c3l = "; print c3l; print_newline ()
   end // end of [val]
 *)
+  val loc0 = c3l.c3lau_loc
   val hips = p3atlst_tr c3l.c3lau_pat
 (*
   val () = begin
@@ -878,23 +881,29 @@ end // end of [c3lau_tr]
 
 fn c3laulst_tr
   (c3ls: c3laulst): hiclaulst = let
-  fun aux // tail-recursive function
-    (c3ls: c3laulst, res: &hiclaulst? >> hiclaulst)
-    : void = begin case+ c3ls of
-    | cons (c3l, c3ls) => begin case+ 0 of
+//
+  fun aux ( // tail-recursive function
+      c3ls: c3laulst, res: &hiclaulst? >> hiclaulst
+    ) : void =
+    case+ c3ls of
+    | list_cons
+      (c3l, c3ls) => (case+ 0 of
       | _ when c3l.c3lau_neg > 0 => aux (c3ls, res)
       | _ => let
           val hicl = c3lau_tr c3l
           val () = (res := cons {hiclau} {0} (hicl, ?))
           val+ cons (_, !res_nxt) = res
+          val () = aux (c3ls, !res_nxt)
         in
-          aux (c3ls, !res_nxt); fold@ (res)
-        end
-      end
-    | nil () => (res := nil ())
-  end // end of [aux]
+          fold@ (res)
+        end (* end of [_] *)
+      ) // end of [list_cons]
+    | list_nil () => (res := list_nil)
+  (* end of [aux] *)
+//
   var res: c3laulst // uninitialized
   val () = aux (c3ls, res)
+//
 in
   res
 end // end of [c3laulst_tr]
@@ -904,21 +913,25 @@ end // end of [c3laulst_tr]
 absview dyncstsetlst_push_token
 
 extern
-fun the_dyncstset_get (): dyncstset_t = "ats_ccomp_env_the_dyncstset_get"
+fun the_dyncstset_get
+  (): dyncstset_t = "ats_ccomp_env_the_dyncstset_get"
 // end of [extern]
 
 extern
-fun the_dyncstsetlst_push (): (dyncstsetlst_push_token | void)
+fun the_dyncstsetlst_push
+  (): (dyncstsetlst_push_token | void)
   = "ats_ccomp_env_the_dyncstsetlst_push"
 // end of [extern]
 
 extern
-fun the_dyncstsetlst_pop (pf: dyncstsetlst_push_token | (*none*)): dyncstset_t
-  = "ats_ccomp_env_the_dyncstsetlst_pop"
+fun the_dyncstsetlst_pop (
+  pf: dyncstsetlst_push_token | (*none*)
+) : dyncstset_t = "ats_ccomp_env_the_dyncstsetlst_pop"
 // end of [extern]
 
-extern fun // this function is implemented in [ats_ccomp_env.dats]
-the_dyncstset_add_if (d2c: d2cst_t): void = "ats_ccomp_env_the_dyncstset_add_if"
+extern // HX: implemented in [ats_ccomp_env.dats]
+fun the_dyncstset_add_if
+  (d2c: d2cst_t): void = "ats_ccomp_env_the_dyncstset_add_if"
 // end of [extern]
 
 (* ****** ****** *)

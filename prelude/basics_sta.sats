@@ -30,11 +30,10 @@
 *)
 
 (* ****** ****** *)
-
 //
-// author of the file: Hongwei Xi (hwxi AT cs DOT bu DOT edu)
+// Author of the file: Hongwei Xi (hwxi AT cs DOT bu DOT edu)
+// Start Time: 2007
 //
-
 (* ****** ****** *)
 
 #include "prelude/params.hats"
@@ -80,7 +79,7 @@ abst@ype uchar_t0ype = $extype"ats_uchar_type"
 
 (* ****** ****** *)
 
-abstype clo_t0ype // ats_clo_type
+abstype clo_t0ype // ats_clo_type // unnamed
 
 (* ****** ****** *)
 
@@ -88,7 +87,7 @@ abst@ype double_t0ype = $extype"ats_double_type"
 
 (* ****** ****** *)
 
-absviewtype exception_viewtype // boxed type
+absviewtype exception_viewtype // boxed type // unamed
 
 (* ****** ****** *)
 //
@@ -112,8 +111,8 @@ abst@ype uintmax_t0ype = $extype"ats_uintmax_type"
 //
 // HX: integer types guaranteed to be of one word size
 //
-abstype intptr_type // ats_intptr_type
-abstype uintptr_type // ats_uintptr_type
+abstype intptr_type = $extype"ats_intptr_type" // named
+abstype uintptr_type = $extype"ats_uintptr_type" // named
 //
 // HX: integer types with fixed size
 //
@@ -136,12 +135,14 @@ abst@ype ssize_t0ype = $extype"ats_ssize_type"
 abst@ype ptrdiff_t0ype = $extype"ats_ptrdiff_type"
 //
 (* ****** ****** *)
-
-abstype ptr_type // unindexed type for pointers
-
+//
+// HX: unindexed type for pointers
+//
+abstype ptr_type = $extype"ats_ptr_type" // named
+//
 (* ****** ****** *)
 
-abstype string_type // boxed type
+abstype string_type // boxed type // unnamed
 abst@ype strbuf_t0ype // a type of variable size
 
 (* ****** ****** *)
@@ -362,17 +363,21 @@ stadef @ = at_viewt0ype_addr_view
 
 (* ****** ****** *)
 
-abstype ref_viewt0ype_type (viewt@ype) // boxed type
+abstype
+ref_viewt0ype_type
+  (viewt@ype) // boxed type // unnamed
 stadef ref = ref_viewt0ype_type
 
-abstype refconst_t0ype_type (t@ype) // boxed type
+abstype
+refconst_t0ype_type (t@ype) // boxed type // unnamed
 stadef refconst = refconst_t0ype_type
 
 (*
 //
 // HX-2009: should this be added?
 //
-abstype refopt_viewt0ype_bool_type (viewt@ype, bool)
+abstype
+refopt_viewt0ype_bool_type (viewt@ype, bool) // unnamed
 stadef refopt = refopt_viewt0ype_bool_type
 //
 typedef Refopt (a: viewt@ype) = [b:bool] refopt (a, b)
@@ -427,12 +432,12 @@ absviewtype vtfrac (stamp, viewtype, rat)
 // HX: build-in dependent type constructors
 //
 abstype
-array0_viewt0ype_type (elt:viewt@ype)
+array0_viewt0ype_type (elt:viewt@ype) // unnamed
 abstype
-array_viewt0ype_int_type (elt:viewt@ype, sz:int)
+array_viewt0ype_int_type (elt:viewt@ype, sz:int) // unnamed
 //
 abstype
-matrix0_viewt0ype_type (elt:viewt@ype)
+matrix0_viewt0ype_type (elt:viewt@ype) // unnamed
 abstype
 matrix_viewt0ype_int_int_type (elt:viewt@ype, nrow:int, ncol:int)
 //
@@ -458,12 +463,12 @@ abst@ype ptrdiff_int_t0ype (i:int) = ptrdiff_t0ype
 
 (* ****** ****** *)
 
-abstype ptr_addr_type (addr)
+abstype ptr_addr_type (addr) = ptr_type // named
 
 (* ****** ****** *)
 
-abstype string_int_type (int)
-abstype stropt_int_type (int)
+abstype string_int_type (int) // unnamed
+abstype stropt_int_type (int) // unnamed
 abst@ype
 strbuf_int_int_t0ype (bsz: int, len: int) // of variable size
 absviewtype
@@ -709,8 +714,8 @@ viewdef free_ngc_v (n:int, l:addr) = free_ngc_v (byte, n, l)
 // note that the viewtype [junkptr] may be just defined as follows:
 // [a:viewt@ype; l:addr] (free_gc_v (a, 1, l), a? @ l | ptr l)
 //
-absviewtype junkptr_viewtype
-stadef junkptr = junkptr_viewtype
+absviewtype junkptr_viewtype // unnamed
+stadef junkptr = junkptr_viewtype // shorthand
 
 (* ****** ****** *)
 //
@@ -732,14 +737,15 @@ viewtypedef Arraysize
 // HX: closure, closure pointer and closure reference
 //
 absviewt@ype
-clo_viewt0ype_viewt0ype (_fun: viewt@ype+)
+clo_viewt0ype_viewt0ype (_fun: viewt@ype+) // unnamed
 stadef clo = clo_viewt0ype_viewt0ype
 
 absviewtype
-cloptr_viewt0ype_viewtype (_fun: viewt@ype+)
+cloptr_viewt0ype_viewtype (_fun: viewt@ype+) // unnamed
 stadef cloptr = cloptr_viewt0ype_viewtype
 
-abstype cloref_t0ype_type (t@ype)
+abstype
+cloref_t0ype_type (_fun: t@ype) // unnamed
 stadef cloref = cloref_t0ype_type
 
 (* ****** ****** *)
@@ -758,7 +764,8 @@ stadef READ = READ_viewt0ype_viewt0ype
 //
 // HX: for print-format strings
 //
-abstype printf_c_types_type (types) // boxed type: string
+abstype
+printf_c_types_type (types) // boxed type: string
 stadef printf_c = printf_c_types_type
 
 (* ****** ****** *)
@@ -798,9 +805,9 @@ stadef FILE = FILE_viewt0ype
 //
 // [FILEref_type] is [ref (FILE m)] for some [m]
 //
-abstype FILEref_type
-stadef FILEref = FILEref_type
-
+abstype FILEref_type // unnamed
+stadef FILEref = FILEref_type // shorthand
+//
 (* ****** ****** *)
 //
 // HX: some common datatypes
@@ -904,13 +911,16 @@ stadef crypt = crypt_viewt0ype_viewt0ype
 // HX:
 // [lazy(T)] : suspended computation with a value of type T
 //
-abstype lazy_t0ype_type (t@ype+) // boxed type
+abstype
+lazy_t0ype_type (t@ype+) // boxed type // unnamed
 stadef lazy = lazy_t0ype_type
 //
 // HX: [lazy_vt(VT)] :
 // suspended computation with a linear value of viewtype VT
 //
-absviewtype lazy_viewt0ype_viewtype (viewt@ype+) // boxed linear type
+absviewtype
+lazy_viewt0ype_viewtype
+  (viewt@ype+) // boxed linear type // unnamed
 stadef lazy_vt = lazy_viewt0ype_viewtype
 //
 (* ****** ****** *)

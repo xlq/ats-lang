@@ -30,9 +30,10 @@
 *)
 
 (* ****** ****** *)
-
-// author of the file: Hongwei Xi (hwxi AT cs DOT bu DOT edu)
-
+//
+// Author of the file: Hongwei Xi (hwxi AT cs DOT bu DOT edu)
+// Start Time: 2007
+//
 (* ****** ****** *)
 
 #include "prelude/params.hats"
