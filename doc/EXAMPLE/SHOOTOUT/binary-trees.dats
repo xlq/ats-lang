@@ -1,10 +1,10 @@
 //
-// binary-tree-lin.dats
+// binary-tree.dats
 //
 // An example involving linear datatype (dataviewtype)
 // This example should be compared with binary-tree.dats
 //
-// Hongwei Xi (hwxi AT cs DOT bu DOT edu)
+// Author: Hongwei Xi (hwxi AT cs DOT bu DOT edu)
 //
 
 (*
@@ -14,7 +14,7 @@ This implementation handily beats a corresponding one in C
 deallocation)
 
 machine: dml.bu.edu
-command: binary-tree-lin 16
+command: binary-tree 16
 
 ATS:	2.879u 0.017s 0:03.03 95.0%	0+0k 0+0io 0pf+0w
 C:	4.453u 0.013s 0:04.62 96.5%	0+0k 0+0io 0pf+0w

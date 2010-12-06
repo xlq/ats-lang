@@ -1384,13 +1384,13 @@ fun XLoadFont {l:agz}
 
 fun XQueryFont {l:agz}
   (dpy: !Display_ptr l, font_id: XID)
-  : [l:agez] (XFreeFont_v l, ptropt_v (XFontStruct, l) | ptr l)
+  : [l:agez] (XFreeFont_v l, optvar_v (XFontStruct, l) | ptr l)
   = "#atsctrb_XQueryFont"
 // end of [XQueryFont]
 
 fun XLoadQueryFont {l:agz}
   (dpy: !Display_ptr l, name: string)
-  : [l:agez] (XFreeFont_v l, ptropt_v (XFontStruct, l) | ptr l)
+  : [l:agez] (XFreeFont_v l, optvar_v (XFontStruct, l) | ptr l)
   = "#atsctrb_XLoadQueryFont"
 // end of [XLoadQueryFont]
 
