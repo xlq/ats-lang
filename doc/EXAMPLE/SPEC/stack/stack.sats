@@ -11,11 +11,10 @@
 (* ****** ****** *)
 
 staload "libats/SATS/ilistp.sats"
-
-(* ****** ****** *)
-
 stadef nil = ilist_nil // creating a shorthand
 stadef cons = ilist_cons // creating a shorthand
+
+(* ****** ****** *)
 
 // this specifies what EMPTY does
 dataprop EMPTY (ilist) = EMPTY (nil)
