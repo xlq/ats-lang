@@ -18,33 +18,10 @@ staload "libats/SATS/ilistp.sats"
 
 (* ****** ****** *)
 
-staload "stack.sats"
+staload "stack_alg.sats"
+staload "stack_list.sats"
 
 (* ****** ****** *)
-
-// this is a property that can be proven
-prfun lemma1 {xs:ilist} .<>.
-  (pf: EMPTY (xs)): IS_EMPTY (xs, true) =
-  let prval EMPTY () = pf in IS_EMPTY_nil () end
-// end of [lemma1]
-
-// this is a property that can be proven
-prfun lemma2
-  {x:int} {xs1,xs2:ilist} .<>.
-  (pf: PUSH (x, xs1, xs2)): TOP (xs2, x) =
-  let prval PUSH () = pf in TOP () end
-// end of [lemma2]
-
-// this is a property that can be proven
-prfun lemma3
-  {x:int} {xs1,xs2:ilist} .<>.
-  (pf: PUSH (x, xs1, xs2)): POP (xs2, xs1) =
-  let prval PUSH () = pf in POP () end
-// end of [lemma3]
-
-(* ****** ****** *)
-
-local
 
 datatype
 stlst (a:t@ype, ilist) =
@@ -53,10 +30,10 @@ stlst (a:t@ype, ilist) =
     stlst_cons (a, cons (x, xs)) of (E (a, x), stlst (a, xs))
 assume Stack (a:t@ype, xs:ilist) = stlst (a, xs)
 
-in // in of [local]
+(* ****** ****** *)
 
 implement{a}
-empty () = (EMPTY () | stlst_nil)
+make_nil () = (EMPTY () | stlst_nil)
 
 implement{a}
 is_empty (es) = case+ es of
@@ -79,8 +56,6 @@ pop (pf | es) = (POP () | es) where {
 implement{a}
 push (e, es) = (PUSH () | stlst_cons (e, es))
 
-end // end of [local]
-
 (* ****** ****** *)
 
-(* end of [stack.dats] *)
+(* end of [stack_imp_list.dats] *)
