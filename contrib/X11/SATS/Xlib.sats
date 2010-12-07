@@ -30,10 +30,10 @@
 *)
 
 (* ****** ****** *)
-
+//
 // Author of the file: Hongwei Xi (hwxi AT cs DOT bu DOT edu)
-// Starting time: January, 2010
-
+// Start Time: January, 2010
+//
 (* ****** ****** *)
 
 %{#

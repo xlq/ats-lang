@@ -30,14 +30,14 @@
 *)
 
 (* ****** ****** *)
-
+//
 // Author: Hongwei Xi (hwxi AT cs DOT bu DOT edu)
-// Time: September 2009
-
+// Start Time: September 2009
+//
 (* ****** ****** *)
-
-// pretty printing for static expressions
-
+//
+// HX: pretty printing for static expressions
+//
 (* ****** ****** *)
 
 staload "ats_staexp2.sats"

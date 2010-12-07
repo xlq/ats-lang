@@ -62,7 +62,7 @@ typedef struct ats_struct_type *ats_ref_type ;
 typedef void ats_var_type ; // for ATS/Geizella
 #else
 typedef struct ats_struct_type ats_var_type ;
-#endif
+#endif // end of [_ATS_GEIZELLA]
 typedef void ats_varet_type ;
 
 typedef void ats_void_type ;
@@ -115,6 +115,14 @@ typedef uint64_t ats_uint64_type ;
 
 /* ****** ****** */
 
+//
+// HX-2010-12-06:
+// the erasure name of [ptr] is [ats_ptrself_type]
+//
+typedef void *ats_ptrself_type ;
+
+/* ****** ****** */
+
 /*
 typedef ats_ptr_type ats_string_type ;
 */
@@ -122,27 +130,29 @@ typedef ats_ptr_type ats_string_type ;
 /* ****** ****** */
 
 /*
-
-// there is no definition for [ats_atarray_type].
-
+//
+// HX: this is intended: no definition for [ats_atarray_type].
+//
 */
 
 typedef struct {
   ats_ptr_type data ;
   ats_int_type size ;
-} ats_array1_type ;
+} ats_a1rray_type ;
 
-typedef ats_array1_type *ats_array1_ptr_type ;
-typedef ats_array1_ptr_type ats_array_type ;
+typedef
+ats_a1rray_type *ats_a1rray_ptr_type ;
+typedef ats_a1rray_ptr_type ats_array_type ;
 
 typedef struct {
   ats_ptr_type data ;
   ats_int_type size_row ;
   ats_int_type size_col ;
-} ats_array2_type ;
+} ats_a2rray_type ;
 
-typedef ats_array2_type *ats_array2_ptr_type ;
-typedef ats_array2_ptr_type ats_matrix_type ;
+typedef
+ats_a2rray_type *ats_a2rray_ptr_type ;
+typedef ats_a2rray_ptr_type ats_matrix_type ;
 
 /* ****** ****** */
 

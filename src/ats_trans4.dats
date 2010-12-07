@@ -567,15 +567,19 @@ in
       | _ => let
           val hits_arg = hipatlst_typ_get (hips_arg)
 (*
-          val () = begin
-            print "p3at_tr: P3Tcon: hits_arg = "; print hits_arg; print_newline ()
-          end // end of [val]
+          val () = () where {
+            val () = print "p3at_tr: P3Tcon: hits_arg = "
+            val () = print_hityplst (hits_arg)
+            val () = print_newline ()
+          } // end of [val]
 *)
           val hit_sum = hityp_tysumtemp (d2c, hits_arg)
 (*
-          val () = begin
-            print "p3at_tr: P3Tcon: hit_sum = "; print hit_sum; print_newline ()
-          end // end of [val]
+          val () = () where {
+            val () = print "p3at_tr: P3Tcon: hit_sum = "
+            val () = print_hityp (hit_sum)
+            val () = print_newline ()
+          } // end of [val]
 *)
         in
           hipat_con (loc0, hit0, freeknd, d2c, hips_arg, hit_sum)
