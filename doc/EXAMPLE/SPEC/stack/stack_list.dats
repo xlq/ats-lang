@@ -58,4 +58,4 @@ push (e, es) = (PUSH () | stlst_cons (e, es))
 
 (* ****** ****** *)
 
-(* end of [stack_imp_list.dats] *)
+(* end of [stack_list.dats] *)

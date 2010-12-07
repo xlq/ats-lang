@@ -19,6 +19,13 @@ stadef nil = ilist_nil // creating a shorthand
 stadef cons = ilist_cons // creating a shorthand
 
 (* ****** ****** *)
+//
+// HX: none of the following dataprops are really needed;
+// they are kept so that a direct correspondence to the
+// original formulation in Bjorner's book can be readily
+// noticed.
+//
+(* ****** ****** *)
 
 // this specifies what EMPTY does
 dataprop EMPTY (ilist) = EMPTY (nil)
@@ -47,4 +54,4 @@ dataprop PUSH (int, ilist, ilist) =
 
 (* ****** ****** *)
 
-(* end of [stack_alg.dats] *)
+(* end of [stack_alg.sats] *)

@@ -21,6 +21,13 @@ staload "libats/SATS/ilistp.sats"
 staload "stack_alg.sats"
 
 (* ****** ****** *)
+//
+// HX: none of the following lemmas are needed;
+// they are kept so that a direct correspondence to the
+// original formulation in Bjorner's book can be readily
+// noticed.
+//
+(* ****** ****** *)
 
 // this is a property that can be proven
 prfun lemma1 {xs:ilist} .<>.
@@ -44,4 +51,4 @@ prfun lemma3
 
 (* ****** ****** *)
 
-(* end of [stack.dats] *)
+(* end of [stack_alg.dats] *)

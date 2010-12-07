@@ -60,4 +60,4 @@ push {x:int} {xs1:ilist}
 
 (* ****** ****** *)
 
-(* end of [stack_imp_list.sats] *)
+(* end of [stack_list.sats] *)
