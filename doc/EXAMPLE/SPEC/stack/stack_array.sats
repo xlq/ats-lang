@@ -52,9 +52,16 @@ is_empty {xs:ilist} {n:nat}
 // end of [is_empty]
 
 fun{a:t@ype}
-length {xs:ilist} {n:nat}
+size {xs:ilist} {n:nat}
   (s: !Stack (a, xs, n)): [m:nat] (LENGTH (xs, m) | int m)
-// end of [length]
+// end of [size]
+
+fun{a:t@ype}
+capacity {xs:ilist} {n:nat}
+  (s: !Stack (a, xs, n)): [m:nat] (LENGTH (xs, m) | int (m+n))
+// end of [capacity]
+
+(* ****** ****** *)
 
 fun{a:t@ype}
 top {xs:ilist} {n:nat} (
