@@ -98,11 +98,14 @@ implement prerr_fxty (fxty) = prerr_mac (fprint_fxty, fxty)
 implement precedence_inc (p, i) = p + i
 implement precedence_dec (p, i) = p - i
 
-implement precedence_of_fixity (fxty) = case+ fxty of
-  | FXTYnon () => None ()
-  | FXTYinf (p, _) => Some p
-  | FXTYpre p => Some p
-  | FXTYpos p => Some p
+implement
+fixity_get_prec
+  (fxty) = case+ fxty of
+  | FXTYnon () => None_vt ()
+  | FXTYinf (p, _) => Some_vt (p)
+  | FXTYpre p => Some_vt (p)
+  | FXTYpos p => Some_vt (p)
+// end of [fixity_get_prec]
 
 implement fxty_non = FXTYnon ()
 implement fxty_inf (p: prec_t, a: assoc) = FXTYinf (p, a)

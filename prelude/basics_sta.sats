@@ -138,7 +138,8 @@ abst@ype ptrdiff_t0ype = $extype"ats_ptrdiff_type"
 //
 // HX: unindexed type for pointers
 //
-abstype ptr_type = $extype"ats_ptrself_type" // named
+abstype ptr_type = $extype"ats_ptr_type" // unnamed
+abstype ptrself_type = $extype"ats_ptrself_type" // named
 //
 (* ****** ****** *)
 

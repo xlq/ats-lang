@@ -79,7 +79,7 @@ staload _(*anonymous*) = "ats_map_lin.dats"
 
 (* ****** ****** *)
 
-fn prerr_interror () = prerr "INTERNAL ERROR (ats_ccomp_env)"
+fn prerr_interror () = prerr "INTERNAL ERROR (ats_hiexp_util)"
 
 (* ****** ****** *)
 
@@ -124,16 +124,21 @@ implement
 hityp_fun_is_vararg (hit_fun) = let
   fun aux (hit: hityp, hits: hityplst): bool = case+ hits of
     | cons (hit, hits) => aux (hit, hits) | nil () => hityp_is_vararg hit
+  // end of [aux]
 in
   case+ hit_fun.hityp_node of
   | HITfun (_(*fc*), arg, _(*res*)) => begin
       case+ arg of cons (hit, hits) => aux (hit, hits) | nil () => false
     end // end of [HITfun]
-  | _ => begin
-      prerr_interror ();
-      prerr ": hityp_fun_is_vararg: hit_fun = "; prerr_hityp hit_fun; print_newline ();
+  | _ => let
+      val () = prerr_interror ()
+      val () = prerr ": hityp_fun_is_vararg: hit_fun = "
+      val () = prerr_hityp (hit_fun)
+      val () = print_newline ()
+    in
       $Err.abort {bool} ()
     end // end of [_]
+  // end of [case]
 end // end of [hityp_fun_is_vararg]
 
 implement
@@ -159,7 +164,8 @@ end // end of [hityp_is_tyrecsim]
 (* ****** ****** *)
 
 implement
-hipatlst_is_unused (hips) = begin case+ hips of
+hipatlst_is_unused
+  (hips) = begin case+ hips of
   | list_cons (hip, hips) => begin
     case+ hip.hipat_node of
     | HIPany () => hipatlst_is_unused hips | _ => false
@@ -172,7 +178,7 @@ end // end of [hipatlst_is_unused]
 viewtypedef hiexplst_vt = List_vt hiexp
 
 implement
-hiexp_is_empty (hie0) = begin
+hiexp_is_empty (hie0) =
   case+ hie0.hiexp_node of
   | HIEempty () => true
   | HIErec (
@@ -183,12 +189,15 @@ hiexp_is_empty (hie0) = begin
     | _ => false
     end
   | _ => false
-end // end of [hiexp_is_empty]
+// end of [hiexp_is_empty]
 
 implement
-hiexp_seq_simplify
-  (loc0: loc_t, hit0: hityp, hies: hiexplst): hiexp = let
-  fun aux (res: &hiexplst_vt, hies: hiexplst): void = begin
+hiexp_seq_simplify (
+  loc0: loc_t, hit0: hityp, hies: hiexplst
+) : hiexp = let
+  fun aux (
+    res: &hiexplst_vt, hies: hiexplst
+  ) : void = begin
     case+ hies of
     | cons (hie, hies) => let
         val () = begin
@@ -214,7 +223,8 @@ end // end of [hiexp_seq_simplify]
 
 (* ****** ****** *)
 
-fun hiexplst_is_value (hies: hiexplst): bool = begin
+fun hiexplst_is_value
+  (hies: hiexplst): bool = begin
   case+ hies of
   | cons (hie, hies) => begin
       if hiexp_is_value hie then hiexplst_is_value hies else false
@@ -222,7 +232,8 @@ fun hiexplst_is_value (hies: hiexplst): bool = begin
   | nil () => true
 end // end of [hiexplst_is_value]
 
-fun labhiexplst_is_value (lhies: labhiexplst): bool = begin
+fun labhiexplst_is_value
+  (lhies: labhiexplst): bool = begin
   case+ lhies of
   | LABHIEXPLSTcons (_, hie, lhies) => begin
       if hiexp_is_value hie then labhiexplst_is_value lhies else false
@@ -257,18 +268,20 @@ hiexp_is_value
 
 (* ****** ****** *)
 
-fn hiclau_is_bool_fst (hicl: hiclau)
-  : Option_vt @(bool, hiexp) = begin case+ hicl.hiclau_pat of
+fn hiclau_is_bool_fst
+  (hicl: hiclau): Option_vt @(bool, hiexp) = begin
+  case+ hicl.hiclau_pat of
   | cons (hip, nil ()) => begin case+ hip.hipat_node of
     | HIPbool b => begin case+ hicl.hiclau_gua of
       | cons _ => None_vt () | nil _ => Some_vt @(b, hicl.hiclau_exp)
       end (* end of [HIPbool] *)
     | _ => None_vt ()
     end (* end of [cons (_, nil)] *)
-  | _ => None_vt ()
+  | _ => None_vt () // end of [_]
 end // end of [hiclau_is_bool_fst]
 
-fn hiclau_is_bool_snd (hicl: hiclau): Option_vt hiexp = begin
+fn hiclau_is_bool_snd
+  (hicl: hiclau): Option_vt hiexp = begin
   case+ hicl.hiclau_pat of
   | cons (hip, nil ()) => begin case+ hicl.hiclau_gua of
     | cons _ => None_vt () | nil _ => Some_vt (hicl.hiclau_exp)
@@ -281,6 +294,7 @@ hiexp_caseof_if
   (loc0, hit0, knd, hies, hicls) = let
   macdef hiexp_caseof_mac () =
     hiexp_caseof (loc0, hit0, knd, hies, hicls)
+  // end of [macdef]
 in
   case+ hies of
   | cons (hie, nil ()) => begin case+ hicls of
@@ -345,12 +359,14 @@ in
   | _ => HIBINDnone ()
 end // end of [hidec_valdecs_is_singular]
 
-//
+(* ****** ****** *)
 
 datatype hiempvar =
   | HIEMPVARnone | HIEMPVARsome_emp | HIEMPVARsome_var of d2var_t
+// end of [hiempvar]
 
-fun hiexp_is_empvar (hie: hiexp): hiempvar = begin
+fun hiexp_is_empvar
+  (hie: hiexp): hiempvar =
   case+ hie.hiexp_node of
   | HIEempty () => HIEMPVARsome_emp
   | HIEvar d2v => HIEMPVARsome_var d2v
@@ -360,7 +376,7 @@ fun hiexp_is_empvar (hie: hiexp): hiempvar = begin
     | _ => HIEMPVARnone ()
     end // end of [HIErec]
   | _ => HIEMPVARnone ()
-end // end of [hiexp_is_empvar]
+// end of [hiexp_is_empvar]
 
 implement
 hiexp_let_simplify
@@ -369,6 +385,7 @@ hiexp_let_simplify
   fun aux_simplify
     (hid0: hidec, hids: hideclst, hie0: hiexp)
     :<cloptr1> hiexp = let
+//
     fun aux_init_main
       (hid0: hidec, hids: hideclst, res: &hideclst? >> hideclst)
       : void = begin case+ hids of
@@ -380,19 +397,19 @@ hiexp_let_simplify
         end
       | nil () => (res := nil ())
     end // end of [aux_init_main]
-
-    fun aux_init
-      (hid0: hidec, hids: hideclst): hideclst = let
+//
+    fun aux_init (
+      hid0: hidec, hids: hideclst
+    ) : hideclst = res where {
       var res: hideclst // uninitialized
       val () = aux_init_main (hid0, hids, res)
-    in
-      res
-    end // end of [aux_init]
-
+    } // end of [aux_init]
+//
     fun aux_last (hid0: hidec, hids: hideclst): hidec = begin
       case+ hids of
       | cons (hid, hids) => aux_last (hid, hids) | nil () => hid0
     end // end of [aux_last]
+//
   in
     case+ hiexp_is_empvar hie0 of
     | HIEMPVARsome_emp () => let
@@ -517,6 +534,7 @@ in
   | _ => name where {
       val HITNAM (_, name) = hityp_ptr.hityp_name
     } // end of [where]
+  // end of [case]
 end // end of [hityp_name_get]
 
 implement
@@ -612,7 +630,7 @@ fun hityp_normalize_flag
         | ~Some_vt hit => (flag := flag + 1; hit) | ~None_vt () => hit0
       ) : hityp
     } // end of [HITs2var]
-  | _ => hit0
+  | _ => hit0 // end of [_]
 (*
   val () = begin
     print "hityp_normalize: hit0_new = "; print_hityp hit0_new; print_newline ()
@@ -622,8 +640,9 @@ in
   hit0_new
 end // end of [hityp_normalize_flag]
 
-and hityplst_normalize_flag (hits0: hityplst, flag: &int)
-  : hityplst = begin case+ hits0 of
+and hityplst_normalize_flag (
+  hits0: hityplst, flag: &int
+) : hityplst = begin case+ hits0 of
   | list_cons (hit, hits) => let
       val flag0 = flag
       val hit = hityp_normalize_flag (hit, flag)
@@ -634,25 +653,24 @@ and hityplst_normalize_flag (hits0: hityplst, flag: &int)
   | list_nil () => list_nil ()
 end // end of [hityplst_normalize_flag]
   
-and labhityplst_normalize_flag (lhits0: labhityplst, flag: &int)
-  : labhityplst = begin case+ lhits0 of
+and labhityplst_normalize_flag (
+  lhits0: labhityplst, flag: &int
+) : labhityplst = begin case+ lhits0 of
   | LABHITYPLSTcons (l, hit, lhits) => let
       val flag0 = flag
       val hit = hityp_normalize_flag (hit, flag)
       val lhits = labhityplst_normalize_flag (lhits, flag)
     in
       if flag > flag0 then LABHITYPLSTcons (l, hit, lhits) else lhits0
-    end
+    end // end of [LABHITYPLSTcons]
   | LABHITYPLSTnil () => LABHITYPLSTnil ()
 end // end of [labhityplst_normalize_flag]
 
-//
+(* ****** ****** *)
 
 implement
 hityp_normalize (hit) = let
-  var flag: int = 0
-in
-  hityp_normalize_flag (hit, flag)
+  var flag: int = 0 in hityp_normalize_flag (hit, flag)
 end // end of [hityp_normalize]
 
 implement
@@ -670,11 +688,18 @@ end // end of [local]
 (* ****** ****** *)
 
 implement
-d2cst_hityp_get_some (d2c) = begin
-  case+ d2cst_hityp_get d2c of
-  | Some hit => hit | None () => begin
-      prerr_interror ();
-      prerr ": d2cst_hityp_get_some: d2c = "; prerr d2c; prerr_newline ();
+d2cst_hityp_get_some
+  (d2c) = let
+  val hitopt = d2cst_hityp_get (d2c)
+in
+  case+ hitopt of
+  | Some hit => hit
+  | None () => let
+      val () = prerr_interror ()
+      val () = prerr ": d2cst_hityp_get_some: d2c = "
+      val () = prerr_d2cst (d2c)
+      val () = prerr_newline ()
+    in
       $Err.abort {hityp_t} ()
     end // end of [None]
 end // end of [d2cst_hityp_get_some]
@@ -683,11 +708,11 @@ end // end of [d2cst_hityp_get_some]
 
 local
 
-typedef tmpdef = '{ tmpdef_arg= s2qualst, tmpdef_exp= hiexp }
+typedef tmpdef = '{
+  tmpdef_arg= s2qualst, tmpdef_exp= hiexp
+} // end of [tmpdef]
 
 assume tmpdef_t = tmpdef
-
-in // in of [local]
 
 fn _tmpdef_make
   (arg: s2qualst, hie: hiexp)
@@ -695,7 +720,11 @@ fn _tmpdef_make
   tmpdef_arg= arg, tmpdef_exp= hie
 } // end of [tmpdef_make]
 
-implement tmpdef_make (arg, hie) = _tmpdef_make (arg, hie)
+in // in of [local]
+
+implement tmpdef_make
+  (arg, hie) = _tmpdef_make (arg, hie)
+// end of [tmpdef_make]
 
 implement tmpdef_arg_get (def) = def.tmpdef_arg
 implement tmpdef_exp_get (def) = def.tmpdef_exp
@@ -706,14 +735,18 @@ end // end of [local]
 
 local
 
-viewtypedef tmpcstmap = $Map.map_vt (d2cst_t, tmpdef_t)
+viewtypedef
+tmpcstmap = $Map.map_vt (d2cst_t, tmpdef_t)
 
 fn tmpcstmap_nil ()
   : tmpcstmap = $Map.map_make (compare_d2cst_d2cst)
+// end of [tmpcstmap_nil]
 
-val the_tmpcstmap = ref_make_elt<tmpcstmap> (tmpcstmap_nil ())
+val the_tmpcstmap =
+  ref_make_elt<tmpcstmap> (tmpcstmap_nil ())
+// end of [val]
 
-in
+in // in of [local]
 
 implement
 tmpcstmap_add
@@ -737,18 +770,23 @@ end // end of [local]
 
 local
 
-viewtypedef tmpvarmap = $Map.map_vt (d2var_t, tmpdef_t)
+viewtypedef
+tmpvarmap = $Map.map_vt (d2var_t, tmpdef_t)
 
 fn tmpvarmap_nil ()
   : tmpvarmap = $Map.map_make (compare_d2var_d2var)
+// end of [tmpvarmap_nil]
 
-val the_tmpvarmap = ref_make_elt<tmpvarmap> (tmpvarmap_nil ())
+val the_tmpvarmap =
+  ref_make_elt<tmpvarmap> (tmpvarmap_nil ())
+// end of [val]
 
-in
+in // in of [local]
 
 implement
-tmpvarmap_add
-  (d2v, decarg, hie_def) = let
+tmpvarmap_add (
+  d2v, decarg, hie_def
+) = let
   val tmpdef = tmpdef_make (decarg, hie_def)
   val (vbox pf | p) = ref_get_view_ptr (the_tmpvarmap)
 in

@@ -115,10 +115,10 @@ fn p0rec_tr (p0: p0rec): $Fix.prec_t = let
           $Sym.print_symbol_code id.i0de_sym; print_newline ()
         end // end of [val]
 *)
-        val precopt = $Fix.precedence_of_fixity fxty
+        val precopt = $Fix.fixity_get_prec (fxty)
       in
         case+ precopt of
-        | Some prec => prec | None () => prec_tr_errmsg id
+        | ~Some_vt prec => prec | ~None_vt () => prec_tr_errmsg id
       end // end of [Some_vt]
     | ~None_vt () => prec_tr_errmsg id
   end // end of [precfnd]

@@ -26,6 +26,9 @@ ats-lang-anairiats-0.2.3:
 17. Removing named types (S2Enamed), which is inadequate for its purpose
 18. S2Eextype can now carry arguments
 19. overhauling partial template implementation
+20. ptrout -> vptrout and ptroutopt -> vptroutopt
+21. ptropt_v -> optvar_v
+22. [ptrself] is introduced as a named type of the name "ats_ptrself_type"
 
 ########################################################################
 

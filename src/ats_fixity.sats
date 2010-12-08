@@ -45,7 +45,6 @@ staload "ats_symbol.sats"
 
 (* ****** ****** *)
 
-abst@ype prec_t = $extype "ats_int_type" (* precedence type *)
 abstype fxty_t // boxed type (* fixity type *)
 
 fun fprint_fxty {m:file_mode}
@@ -56,10 +55,14 @@ fun print_fxty (fxty: fxty_t): void
 
 (* ****** ****** *)
 
+abst@ype prec_t = int (* precedence type *)
+
+(* ****** ****** *)
+
 fun precedence_inc (p: prec_t, i: int): prec_t
 fun precedence_dec (p: prec_t, i: int): prec_t
 
-fun precedence_of_fixity (fxty: fxty_t): Option prec_t
+fun fixity_get_prec (fxty: fxty_t): Option_vt (prec_t)
 
 (* ****** ****** *)
 
@@ -74,8 +77,11 @@ fun fxty_pos (p: prec_t): fxty_t
 
 (* ****** ****** *)
 
-val select_prec : prec_t
 fun prec_make_int (i: int): prec_t
+
+(* ****** ****** *)
+
+val select_prec : prec_t
 
 val exi_prec_sta : prec_t
 and uni_prec_sta : prec_t

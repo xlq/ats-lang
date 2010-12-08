@@ -81,7 +81,11 @@ end // end of [tmpvarmap_addlst]
 
 local
 
+(* ****** ****** *)
+
 assume tmpvarmap_vt = tmpvarmap
+
+(* ****** ****** *)
 
 dataviewtype ENV
   (l:addr, i:addr) = ENVcon (l, i) of (ptr l, ptr i, int)
@@ -139,9 +143,11 @@ in
   i // the number of tmpvars
 end // end of [_emit_tmpvarmap_dec]
 
-//
+(* ****** ****** *)
 
-dataviewtype ENV (l:addr, i:addr) = ENVcon (l, i) of (ptr l, ptr i)
+dataviewtype ENV
+  (l:addr, i:addr) = ENVcon (l, i) of (ptr l, ptr i)
+// end of [ENV]
 
 fn _emit_tmpvarmap_markroot {m:file_mode} {l:addr} (
     pf_mod: file_mode_lte (m, w), pf_fil: !FILE m @ l
@@ -177,7 +183,11 @@ in
   i // the number of tmpvars
 end // end of [_emit_tmpvarmap_markroot]
 
+(* ****** ****** *)
+
 in (* in of [local] *)
+
+(* ****** ****** *)
 
 implement tmpvarmap_nil () =
   $Map.map_make {tmpvar_t,int} (compare_tmpvar_tmpvar)
@@ -273,14 +283,14 @@ emit_tmpvarmap_dec_static (pf | out, tmps) =
   _emit_tmpvarmap_dec (pf, view@ out | &out, 1(*static*), tmps)
 // end of [emit_tmpvarmap_dec_static]
 
-//
+(* ****** ****** *)
 
 implement
 emit_tmpvarmap_markroot (pf | out, tmps) =
   _emit_tmpvarmap_markroot (pf, view@ out | &out, tmps)
 // end of [emit_tmpvarmap_markroot]
 
-//
+(* ****** ****** *)
 
 implement funentry_tmpvarmap_add (tmps, entry) = () where {
   val () = instrlst_tmpvarmap_add (tmps, funentry_body_get entry)
@@ -300,7 +310,9 @@ implement tailjoinlst_tmpvarmap_add
   // end of [loop]
 } // end of [tailjoinlst_tmpvarmap_add]
 
-end // end of [local]
+(* ****** ****** *)
+
+end (* end of [local] *)
 
 (* ****** ****** *)
 
