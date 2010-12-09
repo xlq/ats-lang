@@ -16,7 +16,7 @@
 typedef struct {
   ats_ptr_type atslab_ptr0 ;
   ats_ptr_type atslab_ptr1 ;
-  ats_int_type atslab_cap ;
+  ats_size_type atslab_cap ;
 } stack_struct ; // end of [stack_struct]
 #endif // end of [STACK_ARRAY_SATS]
 %} // end of [%{#]
@@ -53,7 +53,7 @@ absviewt@ype Stack (a:t@ype, xs:ilist, n:int) = Stack0
 
 fun{a:t@ype}
 initialize {n:nat}
-  (S: &Stack0? >> Stack (a, nil, n), n: int n): void
+  (S: &Stack0? >> Stack (a, nil, n), n: size_t n): void
 // end of [make_nil]
 
 fun un_initialize_nil
@@ -68,11 +68,11 @@ fun is_empty {a:t@ype} {xs:ilist} {n:nat}
 
 fun{a:t@ype}
 size {xs:ilist} {n:nat}
-  (S: &Stack (a, xs, n)): [m:nat] (LENGTH (xs, m) | int m)
+  (S: &Stack (a, xs, n)): [m:nat] (LENGTH (xs, m) | size_t m)
 // end of [size]
 
 fun capacity {a:t@ype} {xs:ilist} {n:nat}
-  (S: &Stack (a, xs, n)): [m:int] (LENGTH (xs, m) | int (m+n))
+  (S: &Stack (a, xs, n)): [m:nat] (LENGTH (xs, m) | size_t (m+n))
 // end of [capacity]
 
 (* ****** ****** *)

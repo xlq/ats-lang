@@ -62,7 +62,8 @@ prfun stack_v_lemma1 {a:t@ype}
 //
 viewtypedef
 stack_struct (
-  a:t@ype, xs:ilist, m: int, n:int, l0:addr, l1:addr
+  a:t@ype
+, xs:ilist, m: int, n:int, l0:addr, l1:addr
 ) = @{
   pfgc=free_gc_v (a, m+n, l0)
 , ptr0= ptr (l0)
@@ -70,7 +71,7 @@ stack_struct (
 , pfarr= array_v (a?, n, l1)
 , ptr1= ptr (l1)
 , pflen= LENGTH (xs, m)
-, cap= int (m+n)
+, cap= size_t (m+n)
 } // end of [stack_struct]
 
 (* ****** ****** *)
@@ -83,8 +84,7 @@ assume Stack0 = stack_struct (void, nil, 0, 0, null, null)
 
 implement{a}
 initialize {n} (S, n) = let
-  val asz = size1_of_int1 (n)
-  val [l:addr] (pfgc, pfarr | arrp) = array_ptr_alloc<a> (asz)
+  val [l:addr] (pfgc, pfarr | arrp) = array_ptr_alloc<a> (n)
   prval () = S.pfgc := pfgc
   prval () = S.pfstk := stack_v_nil ()
   prval () = S.pfarr := pfarr
@@ -140,14 +140,14 @@ size (S) = let
   } // end of [prval]
 //
   prval pfmul = stack_v_lemma1 (S.pfstk, S.pflen)
-  extern fun evendiv
-    {p: int} {q:pos} {r:int} (pf: MUL (p, q, r) | r: int (r), q: size_t q):<> int p
-  // end of [evendiv]
-  val d = int1 (S.ptr1 - S.ptr0) where {
-    extern castfn {x:int} int1 (x: ptrdiff_t (x)): int (x)
-  }
+  extern fun divexact
+    {p: int} {q:pos} {r:int}
+    (pf: MUL (p, q, r) | r: ptrdiff_t (r), q: size_t q):<> size_t p
+    = "div_size_size"
+  // end of [divexact]
+  val d = S.ptr1 - S.ptr0
   stavar m: int
-  val m = evendiv {m} (pfmul | d, sizeof<a>)
+  val m = divexact {m} (pfmul | d, sizeof<a>)
   prval () = length_isnat (S.pflen)
 in
   (S.pflen | m)
@@ -155,7 +155,10 @@ end // end of [size]
 
 (* ****** ****** *)
 
-implement capacity {a} (S) = (S.pflen | S.cap)
+implement
+capacity {a} (S) = let
+  prval () = length_isnat (S.pflen) in (S.pflen | S.cap)
+end // end of [capacipty]
 
 (* ****** ****** *)
 
