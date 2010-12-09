@@ -10,6 +10,19 @@
 
 (* ****** ****** *)
 
+%{#
+#ifndef STACK_ARRAY_SATS
+#define STACK_ARRAY_SATS
+typedef struct {
+  ats_ptr_type atslab_ptr0 ;
+  ats_ptr_type atslab_ptr1 ;
+  ats_int_type atslab_cap ;
+} stack_struct ; // end of [stack_struct]
+#endif // end of [STACK_ARRAY_SATS]
+%} // end of [%{#]
+
+(* ****** ****** *)
+
 #define ATS_STALOADFLAG 0 // no staloading at run-time
 
 (* ****** ****** *)
@@ -33,50 +46,51 @@ castfn decelt {a:t@ype} {i:int} (x: E (a, i)):<> a
 // HX-2010-12-07:
 // [n] is the number of available slots
 //
-absviewtype Stack (a:t@ype, xs:ilist, n:int)
+absviewt@ype Stack0 = $extype"stack_struct"
+absviewt@ype Stack (a:t@ype, xs:ilist, n:int) = Stack0
 
 (* ****** ****** *)
 
 fun{a:t@ype}
-make_nil {n:nat}
-  (n: int n): [xs:ilist] (EMPTY (xs) | Stack (a, xs, n))
+initialize {n:nat}
+  (S: &Stack0? >> Stack (a, nil, n), n: int n): void
 // end of [make_nil]
 
-fun{a:t@ype} free_nil {n:nat} (s: Stack (a, nil, n)): void
+fun un_initialize_nil
+  {a:t@ype} {n:nat} (S: &Stack (a, nil, n) >> Stack0?): void
+// end of [un_initialize_nil]
 
 (* ****** ****** *)
 
-fun{a:t@ype}
-is_empty {xs:ilist} {n:nat}
-  (s: Stack (a, xs, n)): [b:bool] (IS_EMPTY (xs, b) | bool (b))
+fun is_empty {a:t@ype} {xs:ilist} {n:nat}
+  (S: &Stack (a, xs, n)): [b:bool] (IS_EMPTY (xs, b) | bool (b))
 // end of [is_empty]
 
 fun{a:t@ype}
 size {xs:ilist} {n:nat}
-  (s: !Stack (a, xs, n)): [m:nat] (LENGTH (xs, m) | int m)
+  (S: &Stack (a, xs, n)): [m:nat] (LENGTH (xs, m) | int m)
 // end of [size]
 
-fun{a:t@ype}
-capacity {xs:ilist} {n:nat}
-  (s: !Stack (a, xs, n)): [m:nat] (LENGTH (xs, m) | int (m+n))
+fun capacity {a:t@ype} {xs:ilist} {n:nat}
+  (S: &Stack (a, xs, n)): [m:int] (LENGTH (xs, m) | int (m+n))
 // end of [capacity]
 
 (* ****** ****** *)
 
 fun{a:t@ype}
 top {xs:ilist} {n:nat} (
-  pf: IS_EMPTY (xs, false) | s: !Stack (a, xs, n)
+  pf: IS_EMPTY (xs, false) | S: &Stack (a, xs, n)
 ) : [x:int] (TOP (xs, x) | E (a, x)) // end of [top]
 
 fun{a:t@ype}
 pop {xs1:ilist} {n:nat} (
   pf: IS_EMPTY (xs1, false)
-| s: !Stack (a, xs1, n) >> Stack (a, xs2, n+1)
+| S: &Stack (a, xs1, n) >> Stack (a, xs2, n+1)
 ) : #[xs2:ilist] (POP (xs1, xs2) | void) // end of [pop]
 
 fun{a:t@ype}
 push {x:int} {xs1:ilist} {n:pos} (
-  e: E (a, x), s: !Stack (a, xs1, n) >> Stack (a, xs2, n-1)
+  S: &Stack (a, xs1, n) >> Stack (a, xs2, n-1), e: E (a, x)
 ): #[xs2:ilist] (PUSH (x, xs1, xs2) | void) // end of [push]
 
 (* ****** ****** *)

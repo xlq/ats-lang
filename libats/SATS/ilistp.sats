@@ -82,6 +82,10 @@ prfun length_isfun {xs:ilist} {n1,n2:int}
   (pf1: LENGTH (xs, n1), pf2: LENGTH (xs, n2)): [n1==n2] void
 // end of [length_isfun]
 
+prfun length_isnat
+  {xs:ilist} {n:int} (pf: LENGTH (xs, n)): [n>=0] void
+// end of [length_isnat]
+
 (* ****** ****** *)
 
 dataprop

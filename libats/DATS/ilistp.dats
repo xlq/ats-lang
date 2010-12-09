@@ -81,6 +81,12 @@ end // end of [length_isfun]
 
 (* ****** ****** *)
 
+implement length_isnat
+  {xs} (pf) = length_isfun (pf, length_istot {xs} ())
+// end of [length_isnat]
+
+(* ****** ****** *)
+
 implement
 msetcnt_istot
   {x0} {xs} () = let
@@ -124,7 +130,7 @@ end // end of [msetcnt_first]
 
 implement
 nth_msetcnt_lemma {x} (pf) = let
-  prfun lemma {xs:ilist} {i:nat} .<xs>.
+  prfun lemma {xs:ilist} {i:int} .<xs>.
     (pf: NTH (x, xs, i)): [n:pos] MSETCNT (x, xs, n) =
     case+ pf of
     | NTHind (pf) => MSETCNTcons (lemma (pf))
@@ -166,7 +172,7 @@ end // end of [insert_length_lemma]
 
 implement
 nth_insert_lemma {x} (pf) = let
-  prfun lemma {xs:ilist} {n:nat} .<xs>.
+  prfun lemma {xs:ilist} {n:int} .<xs>.
     (pf: NTH (x, xs, n)): [ys:ilist] INSERT (x, ys, n, xs) =
     case+ pf of
     | NTHind (pf) => INSERTind (lemma (pf))

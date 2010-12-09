@@ -1,6 +1,6 @@
 (*
 **
-** An Example of Stack Algebra
+** An Example of Queue Algebra
 ** See Section 8.5.3 in Dines Bjorner's SE book
 **
 ** Author: Hongwei Xi (hwxi AT cs DOT bu DOT edu)
