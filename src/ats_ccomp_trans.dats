@@ -30,12 +30,10 @@
 *)
 
 (* ****** ****** *)
-
 //
 // Author: Hongwei Xi (hwxi AT cs DOT bu DOT edu)
 // Time: April 2008
 //
-
 (* ****** ****** *)
 
 staload Err = "ats_error.sats"
@@ -325,9 +323,12 @@ end // end of [local]
 
 local
 
-val the_glocstlst = ref_make_elt<glocstlst> (GLOCSTLSTnil ())
+val the_glocstlst =
+  ref_make_elt<glocstlst> (GLOCSTLSTnil ())
+// end of [val]
 
-fn glocstlst_reverse (xs: glocstlst): glocstlst = let
+fn glocstlst_reverse
+  (xs: glocstlst): glocstlst = let
   fun aux (xs: glocstlst, ys: glocstlst)
     : glocstlst = begin case+ xs of
     | GLOCSTLSTcons_clo (_(*d2c*), !xs1) => let
@@ -354,6 +355,20 @@ end (* end of [glocstlst_reverse] *)
 in // in of [local]
 
 implement
+the_glocstlst_get () = let
+  val xs = let
+    val (vbox pf | p) = ref_get_view_ptr (the_glocstlst)
+    val xs = !p
+  in
+    !p := GLOCSTLSTnil (); xs
+  end // end of [val]
+in
+  glocstlst_reverse (xs)
+end // end of [the_glocstlst_get]
+
+(* ****** ****** *)
+
+implement
 the_glocstlst_add_clo (d2c) = let
   val (vbox pf | p) = ref_get_view_ptr (the_glocstlst)
 in
@@ -373,18 +388,6 @@ the_glocstlst_add_val (d2c, vp) = let
 in
   !p := GLOCSTLSTcons_val (d2c, vp, !p)
 end // end of [the_glocstlst_add_val]
-
-implement
-the_glocstlst_get () = let
-  val xs = let
-    val (vbox pf | p) = ref_get_view_ptr (the_glocstlst)
-    val xs = !p
-  in
-    !p := GLOCSTLSTnil (); xs
-  end // end of [val]
-in
-  glocstlst_reverse (xs)
-end // end of [the_glocstlst_get]
 
 end // end of [local]
 
@@ -2743,18 +2746,18 @@ fn ccomp_impdec
     , hie: hiexp
     ) : void = begin
     case+ hie.hiexp_node of
-    | HIElam (hips_arg, hie_body) => let
+    | HIElam (
+        hips_arg, hie_body
+      ) when d2cst_is_fun (d2c) => let
 //
         val hit = hityp_normalize (hie.hiexp_typ)
         val fl = funlab_make_cst_typ (d2c, tmparg, hit)
         val fc = funlab_funclo_get (fl)
-//
 (*
         val () = begin
           print "ccomp_impdec: aux: fl = "; print fl; print_newline ()
         end // end of [val]
 *)
-//
         val vp_lam = valprim_funclo_make (fl)
         val () = the_topcstctx_add (d2c, vp_lam)
 //
@@ -2770,21 +2773,26 @@ fn ccomp_impdec
         // end of [val]
         val () = the_tailcallst_unmark (pf_tailcallst_mark | (*none*))
 //
-        val () = case+ 0 of
+        val () = (case+ 0 of
           | _ when $Lst.list_is_cons tmparg => let
               val name = funlab_name_get fl in tmpnamtbl_add (name, vp_lam)
             end // end of [_ when ...]
           | _ => begin case+ d2cst_kind_get d2c of
             | $Syn.DCSTKINDval () => begin case+ fc of
-              | $Syn.FUNCLOfun () => begin
-                  the_glocstlst_add_fun d2c; instr_add_define_fun (res, loc0, d2c, fl)
+              | $Syn.FUNCLOfun () => let
+                  val () = the_glocstlst_add_fun (d2c)
+                in
+                  instr_add_define_fun (res, loc0, d2c, fl)
                 end // end of [FUNCLOfun]
-              | $Syn.FUNCLOclo _(*knd*) => begin // knd <> 0
-                  the_glocstlst_add_clo d2c; instr_add_define_clo (res, loc0, d2c, fl)
+              | $Syn.FUNCLOclo _(*knd*) => let // knd <> 0 as 0 is for clo
+                  val () = the_glocstlst_add_clo (d2c)
+                in
+                  instr_add_define_clo (res, loc0, d2c, fl)
                 end // end of [FUNCLOclo]
-              end // end of [FUNCLOfun]
+              end // end of [DCSTKINDval]
             | _ => () // end of [_]
-          end // end of [_]
+            end // end of [_]
+         ) : void // end of [val]
 //
       in
         // empty

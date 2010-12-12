@@ -30,10 +30,10 @@
 *)
 
 (* ****** ****** *)
-
-// Time: March 2008
+//
 // Author: Hongwei Xi (hwxi AT cs DOT bu DOT edu)
-
+// Start Time: March 2008
+//
 (* ****** ****** *)
 
 %{^
@@ -73,23 +73,28 @@ fn prerr_interror () = prerr "INTERNAL ERROR (ats_ccomp)"
 
 local
 
-typedef tmplab = '{ tmplab_stamp = stamp_t }
-assume tmplab_t = tmplab
+typedef tmplab = '{
+  tmplab_stamp = stamp_t
+} // end of [tmplab]
 
-in // in of [local]
+assume tmplab_t = tmplab
 
 fn _tmplab_make (): tmplab = '{
   tmplab_stamp= $Stamp.tmplab_stamp_make ()
 } // end of [tmplab]
 
+in // in of [local]
+
 implement tmplab_make () = _tmplab_make ()
 
 implement tmplab_stamp_get (tl) = tl.tmplab_stamp
 
-implement fprint_tmplab (pf | out, tl) = begin
-  fprint1_string (pf | out, "__ats_lab_");
-  $Stamp.fprint_stamp (pf | out, tl.tmplab_stamp)
-end // end of [fprint_tmplab]
+implement
+fprint_tmplab
+  (pf | out, tl) = () where {
+  val () = fprint1_string (pf | out, "__ats_lab_")
+  val () = $Stamp.fprint_stamp (pf | out, tl.tmplab_stamp)
+} // end of [fprint_tmplab]
 
 end // end of [local]
 
@@ -111,25 +116,30 @@ in // in of [local]
 
 extern typedef "tmpvar_t" = tmpvar
 
-implement fprint_tmpvar (pf | out, tmp) = begin
-  fprint1_string (pf | out, "tmp(");
-  $Stamp.fprint_stamp (pf | out, tmp.tmpvar_stamp);
-  fprint1_string (pf | out, ")")
-end // end of [fprint_tmpvar]
+implement
+fprint_tmpvar
+  (pf | out, tmp) = () where {
+  val () = fprint1_string (pf | out, "tmp(")
+  val () = $Stamp.fprint_stamp (pf | out, tmp.tmpvar_stamp)
+  val () = fprint1_string (pf | out, ")")
+} // end of [fprint_tmpvar]
 
-//
+(* ****** ****** *)
 
-implement eq_tmpvar_tmpvar (tmp1, tmp2) =
+implement
+eq_tmpvar_tmpvar (tmp1, tmp2) =
   $Stamp.eq_stamp_stamp (tmp1.tmpvar_stamp, tmp2.tmpvar_stamp)
 // end of [val]
 
-implement compare_tmpvar_tmpvar (tmp1, tmp2) =
+implement
+compare_tmpvar_tmpvar (tmp1, tmp2) =
   $Stamp.compare_stamp_stamp (tmp1.tmpvar_stamp, tmp2.tmpvar_stamp)
 // end of [val]
 
-//
+(* ****** ****** *)
 
-implement tmpvar_make (hit) = let
+implement
+tmpvar_make (hit) = let
   val stamp = $Stamp.tmpvar_stamp_make () in '{
   tmpvar_typ= hit
 , tmpvar_ret= 0
@@ -138,20 +148,22 @@ implement tmpvar_make (hit) = let
 , tmpvar_stamp= stamp
 } end // end of [tmpvar_make]
 
-extern fun tmpvar_ret_set (tmp: tmpvar, ret: int): void
-  = "atsccomp_tmpvar_ret_set"
+extern fun tmpvar_ret_set
+  (tmp: tmpvar, ret: int): void = "atsccomp_tmpvar_ret_set"
+// end of [tmpvar_ret_set]
 
-implement tmpvar_make_ret (hit) = let
+implement
+tmpvar_make_ret (hit) = let
   val tmp = tmpvar_make (hit)
-  val () = tmpvar_ret_set (tmp, 1)
-in
-  tmp
+  val () = tmpvar_ret_set (tmp, 1) in tmp
 end // end of [tmpvar_make_ret]
 
-extern fun tmpvar_root_set (tmp: tmpvar, otmp: tmpvaropt): void
-  = "atsccomp_tmpvar_root_set"
+extern fun tmpvar_root_set
+  (tmp: tmpvar, otmp: tmpvaropt): void = "atsccomp_tmpvar_root_set"
+// end of [tmpvar_root_set]
 
-implement tmpvar_make_root (tmp) = let
+implement
+tmpvar_make_root (tmp) = let
   val otmp = (case+ tmp.tmpvar_root of
     | TMPVAROPTnone () => TMPVAROPTsome tmp | otmp => otmp
   ) : tmpvaropt
@@ -160,16 +172,17 @@ in
   tmp
 end // end of [tmpvar_make_root]
 
-//
+(* ****** ****** *)
 
-implement tmpvarlst_make (hits) = let
+implement
+tmpvarlst_make (hits) = let
   val hits = hityplst_decode (hits)
   fn aux (hit: hityp): tmpvar_t = tmpvar_make (hityp_encode hit)
 in
   $Lst.list_map_fun (hits, aux) 
 end // end of [tmpvarlst_make]
 
-//
+(* ****** ****** *)
 
 implement tmpvar_ret_get (tmp) = tmp.tmpvar_ret
 implement tmpvar_top_get (tmp) = tmp.tmpvar_top
@@ -206,15 +219,18 @@ in // in of [local]
 
 extern typedef "funlab_t" = funlab
 
-implement fprint_funlab (pf | out, fl) = begin
+implement
+fprint_funlab (pf | out, fl) = begin
   fprint1_string (pf | out, fl.funlab_name)
 end // end of [fprint_funlab]
 
-implement eq_funlab_funlab (fl1, fl2) = begin
+implement
+eq_funlab_funlab (fl1, fl2) = begin
   $Stamp.eq_stamp_stamp (fl1.funlab_stamp, fl2.funlab_stamp)
 end // end of [eq_funlab_funlab]
 
-implement compare_funlab_funlab (fl1, fl2) = begin
+implement
+compare_funlab_funlab (fl1, fl2) = begin
   $Stamp.compare_stamp_stamp (fl1.funlab_stamp, fl2.funlab_stamp)
 end // end of [compare_funlab_funlab]
 
@@ -233,7 +249,8 @@ fn _funlab_make (
 , funlab_prfck= prfck
 } // end of [funlab_make]
 
-implement funlab_make_typ (hit) = let
+implement
+funlab_make_typ (hit) = let
   val level = d2var_current_level_get ()
   val stamp = $Stamp.funlab_stamp_make ()
   val name = "__ats_fun_" + $Stamp.tostring_stamp stamp
@@ -241,7 +258,9 @@ in
   _funlab_make (name, level, hit, stamp, 0(*prfck*))
 end // end of [funlab_make_typ]
 
-implement funlab_make_nam_typ (name, hit) = let
+implement
+funlab_make_nam_typ
+  (name, hit) = let
   val level = d2var_current_level_get ()
   val stamp = $Stamp.funlab_stamp_make ()
 in
@@ -255,12 +274,7 @@ fn global_cst_name_make
   val extdef = d2cst_extdef_get d2c
 in
   case+ extdef of
-  | $Syn.DCSTEXTDEFnone () => let
-      val d2c_name = $Sym.symbol_name (d2cst_sym_get d2c)
-    in
-      case+ d2cst_kind_get d2c of
-      | $Syn.DCSTKINDval () => d2c_name + "$fun" | _ => d2c_name
-    end // end of [DSTEXTDEFnone]
+  | $Syn.DCSTEXTDEFnone () => $Sym.symbol_name (d2cst_sym_get d2c)
   | $Syn.DCSTEXTDEFsome_fun name => name
   | $Syn.DCSTEXTDEFsome_mac _name => begin
       prerr_interror ();
@@ -270,7 +284,9 @@ in
     end // end of [DSTEXTDEFsome_mac]
 end // end of [global_cst_name_make]
 
-implement funlab_make_cst_typ (d2c, tmparg, hit) = let
+implement
+funlab_make_cst_typ
+  (d2c, tmparg, hit) = let
   val is_global =
     (case+ tmparg of list_cons _ => false | _ => true): bool
   val name: string = (
@@ -296,7 +312,8 @@ in
   fl
 end // end of [funlab_make_cst_typ]
 
-implement funlab_make_var_typ (d2v, hit) = let
+implement
+funlab_make_var_typ (d2v, hit) = let
   val d2v_name = $Sym.symbol_name (d2var_sym_get d2v)
   val level = d2var_current_level_get ()
   val stamp = $Stamp.funlab_stamp_make ()
@@ -309,7 +326,8 @@ end // end of [funlab_make_var_typ]
 
 (* ****** ****** *)
 
-implement funlab_make_cst_prfck (d2c) = let
+implement
+funlab_make_cst_prfck (d2c) = let
   val name = global_cst_name_make (d2c)
   val hit = hityp_encode (
     hityp_fun ($Syn.FUNCLOfun (), list_nil (), hityp_void)
@@ -329,7 +347,8 @@ implement funlab_lev_get (fl) = fl.funlab_lev
 
 implement funlab_typ_get (fl) = fl.funlab_typ
 
-implement funlab_typ_arg_get (fl) = let
+implement
+funlab_typ_arg_get (fl) = let
   val hit_fun = hityp_decode (fl.funlab_typ) in
   case+ hit_fun.hityp_node of
   | HITfun (_(*fc*), hits_arg, _(*hit_res*)) =>
@@ -342,7 +361,8 @@ implement funlab_typ_arg_get (fl) = let
     end (* end of [_] *)
 end // end of [funlab_typ_arg_get]
 
-implement funlab_typ_res_get (fl) = let
+implement
+funlab_typ_res_get (fl) = let
   val hit_fun = hityp_decode (fl.funlab_typ) in
   case+ hit_fun.hityp_node of
   | HITfun (_(*fc*), _(*hits_arg*), hit_res) =>
@@ -355,7 +375,8 @@ implement funlab_typ_res_get (fl) = let
     end (* end of [_] *)
 end // end of [funlab_typ_res_get]
 
-implement funlab_funclo_get (fl) = let
+implement
+funlab_funclo_get (fl) = let
   val hit_fun = hityp_decode (fl.funlab_typ) in
   case+ hit_fun.hityp_node of
   | HITfun (funclo, _(*hits_arg*), _(*hit_res*)) => funclo

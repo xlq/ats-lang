@@ -29,15 +29,15 @@ checkall: compall cleanall
 
 compall:: fact
 fact: fact.dats
-	$(ATSCC) -o fact fact.dats -lats && ./fact
+	$(ATSCC) -o fact fact.dats -ldl -lats && ./fact
 
 compall:: forlist
 forlist: forlist.dats
-	$(ATSCC) -o forlist forlist.dats -lats && ./forlist
+	$(ATSCC) -o forlist forlist.dats -ldl -lats && ./forlist
 
 compall:: forrange
 forrange: forrange.dats
-	$(ATSCC) -o forrange forrange.dats -lats && ./forrange
+	$(ATSCC) -o forrange forrange.dats -ldl -lats && ./forrange
 
 ######
 

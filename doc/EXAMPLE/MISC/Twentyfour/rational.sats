@@ -1,18 +1,27 @@
 (*
-
+//
 // interface for some operations on rational numbers
-
+//
 // author: Hongwei Xi (hwxi AT cs DOT bu DOT edu)
-
+//
 *)
 
+(* ****** ****** *)
+//
 // assume int_t: t@ype
 // assume rat_t: t@ype
-
 // the header file for rational
+//
+(* ****** ****** *)
 
 abst@ype int_t = int
 abst@ype rat_t = @{ numer= int_t, denom= int_t }
+
+(* ****** ****** *)
+//
+// HX: for testing, please do not change 'val' to 'fun'
+//
+(* ****** ****** *)
 
 val int_make_int0 : int -<> int_t
 

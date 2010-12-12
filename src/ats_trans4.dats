@@ -1163,20 +1163,17 @@ in
     end // end of [D3Elaminit_dyn]
   | D3Elam_sta (
       _(*s2vs*), _(*s2ps*), d3e_body
-    ) => let
+    ) => hie_body where {
       val hie_body = d3exp_tr d3e_body
       val isval = hiexp_is_value (hie_body)
-      val () = // check for valueness
-        if isval then () else begin
-          prerr_loc_error4 (loc0);
-          prerr ": a non-value body for static lambda-abstraction is not supported.";
-          prerr_newline ();
-          $Err.abort {void} ()
-        end (* end of [if] *)
-      // end of [val]
-    in
-      hie_body
-    end // end of [D3Elam_sta]
+      val () = if isval then () else let // check for valueness
+        val () = prerr_loc_error4 (loc0)
+        val () = prerr ": a non-value body for static lambda-abstraction is not supported."
+        val () = prerr_newline ()
+      in
+        $Err.abort {void} ()
+      end (* end of [if] *)
+    } // end of [D3Elam_sta]
   | D3Elam_met (_(*s2es_met*), d3e) => d3exp_tr d3e
   | D3Elazy_delay (d3e_eval) => let
       val hit0 = s2exp_tr (loc0, 0(*deep*), s2e0)

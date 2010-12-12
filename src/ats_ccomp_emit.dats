@@ -9,7 +9,7 @@
 (*
 ** ATS/Anairiats - Unleashing the Potential of Types!
 **
-** Copyright (C) 2002-2008 Hongwei Xi, Boston University
+** Copyright (C) 2002-2010 Hongwei Xi, Boston University
 **
 ** All rights reserved
 **
@@ -150,14 +150,12 @@ end // end of [emit_atslabel]
 (* ****** ****** *)
 
 (*
-
 //
-// not working properly on special chars
+// HX: not working properly on special chars
 //
 implement emit_filename (pf | out, fil) =
   emit_identifier (pf | out, $Fil.filename_full fil)
 // end of [emit_filename]
-
 *)
 
 %{$
@@ -249,13 +247,7 @@ implement
 emit_funlab (pf | out, fl) = let
   val () = (case+ funlab_qua_get fl of
     | D2CSTOPTsome d2c => let // global function
-        val () = emit_d2cst (pf | out, d2c)
-        val () = (case+ d2cst_kind_get d2c of
-          | $Syn.DCSTKINDval () => fprint1_string (pf | out, "$fun")
-          | _ => ()
-        ) : void // end of [val]
-      in
-        // empty
+        val () = emit_d2cst (pf | out, d2c) in (*empty*)
       end // end of [D2CSTOPTsome]
     | D2CSTOPTnone () => let // local function
         val () = emit_funlab_prefix (pf | out)
@@ -1546,10 +1538,9 @@ in
 //
 case+ vp_fun.valprim_node of
 //
-| VPcst d2c => let
+| VPcst (d2c)
+    when d2cst_is_fun (d2c) => let
     val () = emit_d2cst (pf | out, d2c)
-    val isfun = $Syn.dcstkind_is_fun (d2cst_kind_get d2c)
-    val () = if isfun then () else fprint1_string (pf | out, "$fun")
     val () = fprint1_string (pf | out, " (")
     val () = emit_valprimlst (pf | out, vps_arg)
     val () = fprint1_string (pf | out, ") ;")
@@ -1581,9 +1572,9 @@ case+ vp_fun.valprim_node of
     // empty
   end // end of [VPfun]
 //
-  | VPfix (vpr) => emit_instr_call (
-      pf | out, tmp, hit_fun, !vpr, vps_arg
-    ) // end of [VPfix]
+| VPfix (vpr) => emit_instr_call (
+    pf | out, tmp, hit_fun, !vpr, vps_arg
+  ) // end of [VPfix]
 //
 | _ (*variadic function*) => let
     val hit_fun = hityp_decode (hit_fun)

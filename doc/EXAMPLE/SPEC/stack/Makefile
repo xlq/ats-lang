@@ -10,8 +10,14 @@ ATSOPT=$(ATSHOME)/bin/atsopt
 ######
 
 .PHONY: all
-all:: test_list
-all:: test_array
+
+all: checkall cleanall
+
+######
+
+checkall::
+checkall:: test_list
+checkall:: test_array
 
 ######
 

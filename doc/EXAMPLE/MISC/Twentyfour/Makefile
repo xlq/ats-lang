@@ -24,20 +24,24 @@ GCFLAG=-D_ATS_GCATS
 ######
 
 .PHONY: all
-all: checkall
+all: checkall cleanall
 
 ######
 
-checkall:: twentyfour cleanall
+checkall::
+cleanall:: clean
 
 ######
 
+checkall:: twentyfour
 twentyfour: twentyfour.dats rational.dats rational.sats
 	$(ATSCC) -O2 $(GCFLAG) -o twentyfour twentyfour.dats rational.dats rational.sats -lm \
      && ./twentyfour
 ######
 
-clean:: ; rm -f *_dats.c *_sats.c *~
-cleanall: clean; rm -f twentyfour
+clean:
+	rm -f  *~
+	rm -f *_dats.c *_sats.c
+cleanall:: ; rm -f twentyfour
 
 ###### end of [Makefile] ######

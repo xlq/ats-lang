@@ -19,10 +19,10 @@ ATSOPT=$(ATSHOMEQ)/bin/atsopt
 ######
 
 .PHONY: all
-all:: checkall
+all:: checkall cleanall
 
-checkall: compall cleanall
-compall:: server server2
+checkall::
+cleanall:: clean
 
 ######
 
@@ -30,11 +30,15 @@ compall:: server server2
 # If on SunOS, please add [-lsocket]
 #
 
+checkall:: server
 server: server.dats
 	$(ATSCC) -D_ATS_GCATS -o server -O2 server.dats
+cleanall:: ; rm -f server
 
+checkall:: server2
 server2: server2.dats
 	$(ATSCC) -D_ATS_GCATS -o server2 -O2 server2.dats
+cleanall:: ; rm -f server2
 
 ######
 
@@ -47,9 +51,7 @@ update::
 ######
 
 clean::
-	rm -f *_dats.c *_sats.c *~
-
-cleanall:: clean
-	rm -f server server2
+	rm -f *~
+	rm -f *_dats.c *_sats.c
 
 ###### end of [Makefile] ######

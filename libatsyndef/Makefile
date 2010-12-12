@@ -58,20 +58,21 @@ OBJECTS := $(patsubst %.dats, %_dats.o, $(OBJECTS))
 ######
 
 ATSLIB=$(ATSHOMEQ)/ccomp/lib
+ATSLIB=$(ATSHOMEQ)/ccomp/lib64
 
 ######
 
-all:: libatsyndef cleanall
+all:: libatsyndef
+all:: cleanall
 
 ######
 
 libatsyndef: $(OBJECTS)
-	$(ATSCC) -shared -o $(ATSLIB)/libatsyndef.so -Wl,-soname,libatsyndef.so `ar t libatsyndef.a`
+	$(ATSCC) -fPIC -shared -o $(ATSLIB)/libatsyndef.so -Wl,-soname,libatsyndef.so `ar t libatsyndef.a`
 
 ######
 
 AR = ar
-ATSLIB=$(ATSHOMEQ)/ccomp/lib
 
 ######
 

@@ -62,7 +62,7 @@ ATSCCFLAGS=-g
 #ATSCCFLAGS=-O2
 #ATSCCFLAGS=-D_ATS_MULTITHREAD -O2 -g
 ATSCCFLAGS=-O2 -g
-ATSCCFLAGS=-O2 -g -DATS_SYNDEFATS
+#ATSCCFLAGS=-O2 -g -DATS_SYNDEFATS
 
 #GCFLAGS=-D_ATS_gc
 #GCFLAGS=-D_ATS_gcats
@@ -195,8 +195,8 @@ OBJECTS := $(patsubst %.dats, %_dats.o, $(OBJECTS))
 
 #LIBOBJS :=
 LIBOBJS := -lgmp
-#LIBATSYNDEF :=
-LIBATSYNDEF := -ldl -latsyndef
+LIBATSYNDEF :=
+#LIBATSYNDEF := -ldl -latsyndef
 
 ######
 

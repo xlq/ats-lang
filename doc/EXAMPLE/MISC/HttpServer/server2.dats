@@ -568,7 +568,7 @@ in
     end : Sgn (* end of [val] *)
     val () = case+ 0 of
       | _ when ft >= 0 => let
-          var! p_msg with pf_msg = @[byte][MSGSZ](); stadef l_msg = p_msg
+          var !p_msg with pf_msg = @[byte][MSGSZ](); stadef l_msg = p_msg
           val _(*n*) : int = let
             typedef mystrbuf = [n:nat | n < MSGSZ] strbuf (MSGSZ, n)
             extern castfn __cast (ent: !Strlin): string; val str = __cast ent
@@ -640,7 +640,7 @@ in
     val _ = socket_write_substring (pf_conn | fd, dir_msg32_str, 0, dir_msg32_len)
 //
     #define MSGSZ 64
-    var! p_msg with pf_msg = @[byte][MSGSZ]()
+    var !p_msg with pf_msg = @[byte][MSGSZ]()
     val _(*int*) = snprintf (
       pf_msg | p_msg, MSGSZ, "The number of requests handled: %i\n", @(n)
     ) where {
@@ -739,7 +739,7 @@ in
 *)
         val () = socket_close_exn (pf_list | sfd)
         val n = socket_read_exn (pf_conn | cfd, !p_buf, BUFSZ)
-        var! p_msg with pf_msg = @[byte][n+1]()
+        var !p_msg with pf_msg = @[byte][n+1]()
         prval () = pf_msg := bytes_v_of_b0ytes_v pf_msg
         val _(*p_msg*) = memcpy (pf_msg | p_msg, !p_buf, n)
         val () = bytes_strbuf_trans (pf_msg | p_msg, n)
@@ -793,7 +793,7 @@ implement main (argc, argv) = let
   val () = sockaddr_in_init (servaddr, AF_INET, in4add_any, servport)
   val () = bind_in_exn (pf_sock | fd, servaddr)
   val () = listen_exn (pf_sock | fd, BACKLOG)
-  var! p_buf with pf_buf = @[byte][BUFSZ]()
+  var !p_buf with pf_buf = @[byte][BUFSZ]()
   prval () = pf_buf := bytes_v_of_b0ytes_v (pf_buf)
   val () = sigpipe_ignore () // prevent server crash due to broken pipe
 in

@@ -329,11 +329,12 @@ dataviewtype glocstlst =
   | GLOCSTLSTnil of ()
 // end of [glocstlst]
 
+fun the_glocstlst_get (): glocstlst
+
 fun the_glocstlst_add_clo (d2c: d2cst_t): void
 fun the_glocstlst_add_fun (d2c: d2cst_t): void
-fun the_glocstlst_add_val (d2c: d2cst_t, vp: valprim): void
 
-fun the_glocstlst_get (): glocstlst
+fun the_glocstlst_add_val (d2c: d2cst_t, vp: valprim): void
 
 (* ****** ****** *)
 
