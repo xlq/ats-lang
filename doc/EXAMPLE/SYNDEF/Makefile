@@ -15,29 +15,39 @@ endif
 
 ATSCC=$(ATSHOMEQ)/bin/atscc
 ATSOPT=$(ATSHOMEQ)/bin/atsopt
+ATSOPT=$(ATSHOMEQ)/src/atsopt
 
 ######
 
 .PHONY: all
-all: checkall
+all:: checkall
+all:: cleanall
 
 ######
 
-checkall: compall cleanall
+checkall::
+html::
+xref::
 
 ######
 
-compall:: fact
-fact: fact.dats
-	$(ATSCC) -o fact fact.dats -ldl -lats && ./fact
+checkall:: fact
+fact: fact_dats.c
+	$(ATSCC) -o fact fact_dats.c -lats && ./fact
+fact_dats.c: fact.dats
+	$(ATSOPT) -o $@ -d $<
 
-compall:: forlist
-forlist: forlist.dats
-	$(ATSCC) -o forlist forlist.dats -ldl -lats && ./forlist
+checkall:: forlist
+forlist: forlist_dats.c
+	$(ATSCC) -o forlist forlist_dats.c -lats && ./forlist
+forlist_dats.c: forlist.dats
+	$(ATSOPT) -o $@ -d $<
 
-compall:: forrange
-forrange: forrange.dats
-	$(ATSCC) -o forrange forrange.dats -ldl -lats && ./forrange
+checkall:: forrange
+forrange: forrange_dats.c
+	$(ATSCC) -o forrange forrange_dats.c -lats && ./forrange
+forrange_dats.c: forrange.dats
+	$(ATSOPT) -o $@ -d $<
 
 ######
 

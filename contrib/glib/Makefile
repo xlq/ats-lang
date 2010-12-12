@@ -10,13 +10,15 @@
 ATSHOMEQ="$(ATSHOME)"
 ATSCC=$(ATSHOMEQ)/bin/atscc -Wall
 
-GCC=gcc
-GLIBINC=/usr/lib/glib-2.0/include
-#GLIBINC=/usr/lib64/glib-2.0/include
+######
 
-INCLUDES= \
-  -I $(GLIBINC) \
-  -I /usr/include/glib-2.0 \
+GCC=gcc
+
+######
+
+GLIBINC := -I"/usr/lib/glib-2.0/include"
+GLIBINC += -I"/usr/lib64/glib-2.0/include"
+INCLUDES= $(GLIBINC) -I"/usr/include/glib-2.0"
 
 ######
 

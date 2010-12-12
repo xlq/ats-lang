@@ -29,8 +29,7 @@ atsctrb_parcomb.o: $(OBJECTS); ld -r -o $@ $(OBJECTS)
 
 ######
 
-dynloadall_dats.o: dynloadall.dats
-	$(ATSCC) -O2 -c -o $@ $<
+dynloadall_dats.o: dynloadall.dats; $(ATSCC) -O2 -c -o $@ $<
 
 ######
 

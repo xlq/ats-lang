@@ -13,7 +13,7 @@ ATSCTRB=$(ATSHOMEQ)/contrib/glib/atsctrb_glib.o
 ######
 
 GLIBINC=/usr/lib/glib-2.0/include
-#GLIBINC=/usr/lib64/glib-2.0/include
+GLIBINC=/usr/lib64/glib-2.0/include
 
 INCLUDES= \
   -I $(GLIBINC) \
@@ -25,59 +25,70 @@ INCLUDES_ATS= \
 
 ######
 
-all: \
-  garray-test \
-  glist-test \
-  gqsort-test \
-  gstring-test \
-  cleanall \
+.PHONY: all
 
 ######
 
+all:: checkall
+all:: cleanall
+
+######
+
+checkall::
+cleanall:: clean
+
+######
+
+checkall:: garray-test
 garray-test: garray-test.dats
 	$(ATSCC) -O3 \
   $(INCLUDES) $(INCLUDES_ATS) \
   -o garray-test garray-test.dats \
   $(ATSCTRB) -lglib-2.0 \
   && ./garray-test
+cleanall:: ; $(RMF) garray-test
 
 ######
 
+checkall:: glist-test
 glist-test: glist-test.dats
 	$(ATSCC) -O3 \
   $(INCLUDES) $(INCLUDES_ATS) \
   -o glist-test glist-test.dats \
   $(ATSCTRB) -lglib-2.0 \
   && ./glist-test
+cleanall:: ; $(RMF) glist-test
 
 ######
 
+checkall:: gqsort-test
 gqsort-test: gqsort-test.dats
 	$(ATSCC) -O3 \
   $(INCLUDES) $(INCLUDES_ATS) \
   -o gqsort-test gqsort-test.dats \
   $(ATSCTRB) -lglib-2.0 \
   && ./gqsort-test
+cleanall:: ; $(RMF) gqsort-test
 
 ######
 
+checkall:: gstring-test
 gstring-test: gstring-test.dats
 	$(ATSCC) -O3 \
   $(INCLUDES) $(INCLUDES_ATS) \
   -o gstring-test gstring-test.dats \
   $(ATSCTRB) -lglib-2.0 \
   && ./gstring-test
+cleanall:: ; $(RMF) gstring-test
+
+######
+
+RMF = rm -f
 
 ######
 
 clean::
-	rm -f *~
-	rm -f *_?ats.c *_?ats.o
-
-cleanall: clean
-	rm -f garray-test
-	rm -f glist-test
-	rm -f gqsort-test
-	rm -f gstring-test
+	$(RMF) *~
+	$(RMF) *_?ats.c *_?ats.o
 
 ###### end of [Makefile] ######
