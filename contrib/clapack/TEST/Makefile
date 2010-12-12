@@ -16,27 +16,39 @@ ATSCTRB=\
 
 ######
 
-checkall: test cleanall
+.PHONY: all
+
+# ######
+
+all:: checkall
+all:: cleanall
 
 ######
 
-test: clapack_test.dats
-	$(ATSCC) $(LIBFLAGS) -O3 -o test clapack_test.dats $(ATSCTRB) -llapack -lcblas \
-      && ./test
+checkall::
+cleanall:: clean
 
 ######
 
-html::
-	$(ATSOPT) --posmark_html -d clapack_test.dats > clapack_test_dats.html
+checkall:: clapack_test
+clapack_test: clapack_test.dats
+	$(ATSCC) $(LIBFLAGS) -O3 -o $@ $< $(ATSCTRB) -llapack -lcblas \
+      && ./clapack_test
+cleanall:: ; $(RMF) clapack_test
 
 ######
 
-clean::
-	rm -f *~ *_?ats.c *_?ats.o
+html:: ; $(ATSOPT) --posmark_html -d clapack_test.dats > clapack_test_dats.html
+cleanall:: ; $(RMF) clapack_test_dats.html
 
-cleanall: clean
-	rm -f test
-	rm -f *_?ats.html
+######
 
+RMF = rm -f
+
+######
+
+clean:
+	$(RMF) *~
+	$(RMF) *_?ats.c *_?ats.o
 
 ###### end of [Makefile] ######

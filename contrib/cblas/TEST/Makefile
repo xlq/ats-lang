@@ -14,58 +14,67 @@ ATSCTRB=$(ATSHOMEQ)/contrib/cblas/atsctrb_cblas.o
 
 ######
 
-checkall: \
-  test \
-  gemm_test1 gemm_test2 \
-  symm_test \
-  lu_test \
-  cleanall
+.PHONY: all
+
+all:: checkall
+all:: cleanall
 
 ######
 
-test: cblas_test.dats
+checkall::
+cleanall:: clean
+
+######
+
+checkall:: cblas_test
+cblas_test: cblas_test.dats
 	$(ATSCC) $(LIBFLAGS) -O2 -o $@ cblas_test.dats $(ATSCTRB) -lcblas -lm \
-     && ./test
+     && ./cblas_test
+cleanall:: ; $(RMF) cblas_test
 
 ######
 
+checkall:: gemm_test1
 gemm_test1: gemm_test1.dats
 	$(ATSCC) $(LIBFLAGS) -O2 -o $@ gemm_test1.dats $(ATSCTRB) -lcblas -lm \
      && ./gemm_test1
+cleanall:: ; $(RMF) gemm_test1
 
+checkall:: gemm_test2
 gemm_test2: gemm_test2.dats
 	$(ATSCC) $(LIBFLAGS) -O2 -o $@ gemm_test2.dats $(ATSCTRB) -lcblas -lm \
      && ./gemm_test2
+cleanall:: ; $(RMF) gemm_test2
 
 ######
 
+checkall:: symm_test
 symm_test: symm_test.dats
 	$(ATSCC) $(LIBFLAGS) -O2 -o $@ symm_test.dats $(ATSCTRB) -lcblas -lm \
      && ./symm_test
+cleanall:: ; $(RMF) symm_test
 
 ######
 
+checkall:: lu_test
 lu_test: lu_test.dats
 	$(ATSCC) $(LIBFLAGS) -O2 -o $@ lu_test.dats $(ATSCTRB) -lcblas -lm \
      && ./lu_test
+cleanall:: ; $(RMF) lu_test
 
 ######
 
-html::
-	$(ATSOPT) --posmark_html -d cblas_test.dats > cblas_test_dats.html
+html:: ; $(ATSOPT) --posmark_html -d cblas_test.dats > cblas_test_dats.html
+cleanall:: ; $(RMF) *_?ats.html
+
+######
+
+RMF = rm -f
 
 ######
 
 clean::
-	rm -f *~ *_?ats.c *_?ats.o
-
-cleanall: clean
-	rm -f test
-	rm -f gemm_test1
-	rm -f gemm_test2
-	rm -f symm_test
-	rm -f lu_test
-	rm -f *_?ats.html
-
+	$(RMF) *~
+	$(RMF) *_?ats.c *_?ats.o
 
 ###### end of [Makefile] ######
