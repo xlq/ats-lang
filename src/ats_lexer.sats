@@ -53,7 +53,7 @@ overload = with eq_token_token
 fun MAIN (): token_t = "atsopt_lexer_token_get"
 
 // implemented in [ats_lexer.lats]
-fun token_is_valid (t: token_t): bool = "token_is_valid"
+fun token_is_valid (t: token_t): bool = "atsopt_token_is_valid"
 
 (* ****** ****** *)
 

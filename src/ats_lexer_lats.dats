@@ -32,6 +32,7 @@ overload prerr with $Loc.prerr_location
 // HX: it is called when [ats_lexer_lats.dats] is loaded dynamically
 //
 val () = ats_lexer_lats_initialize () where {
+  // HX: this function is implemented externally
   extern fun ats_lexer_lats_initialize (): void = "ats_lexer_lats_initialize"
 } // end of [val]
 
@@ -601,7 +602,7 @@ in
     val loc = location_get ()
   in
     yylval_ide_set ($Syn.i0de_make (loc, str)); IDENTIFIER_dlr
-  end
+  end (* end of [if] *)
 end // end of [tokenize_identifier_dlr]
 
 fn tokenize_identifier_srp (): token_t = let // #-identifier
@@ -613,7 +614,7 @@ in
     val loc = location_get ()
   in
     yylval_ide_set ($Syn.i0de_make (loc, str)); IDENTIFIER_srp
-  end
+  end (* end of [if] *)
 end // end of [tokenize_identifier_srp]
 
 (* ****** ****** *)
@@ -1556,16 +1557,18 @@ case+ lexing_engine (__EXTCODE_transition_table, __EXTCODE_accept_table) of
 
 %{
 
-ats_void_type ats_lexer_lats_initialize () {
-  // currently empty
-  return ;
-}
+ats_void_type
+ats_lexer_lats_initialize () {
+  return ;  // HX: the function body is yet empty
+} // end of [ats_lexer_lats_initialize]
 
-//
-
-ats_bool_type token_is_valid (ats_int_type tok) {
+/*
+** HX: it declared in ats_lexer.sats
+*/
+ats_bool_type
+atsopt_token_is_valid (ats_int_type tok) {
   return (tok >= 0 ? ats_true_bool : ats_false_bool) ;
-}
+} // end of [token_is_valid]
 
 %} // end of [%{]
 

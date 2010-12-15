@@ -30,10 +30,10 @@
 *)
 
 (* ****** ****** *)
-
+//
 // Author: Hongwei Xi (hwxi AT cs DOT bu DOT edu)
 // Time: April 2008
-
+//
 (* ****** ****** *)
 
 staload Fil = "ats_filename.sats"
@@ -86,8 +86,9 @@ fun the_exnconlst_adds (d2cs: d2conlst): void
 fun the_exnconlst_get (): exnconlst
 
 (* ****** ****** *)
-
-// implemented in [ats_ccomp_trans.dats]
+//
+// HX: implemented in [ats_ccomp_trans.dats]
+//
 absviewtype dynctx_vt
 
 fun the_dynctx_add (d2v: d2var_t, vp: valprim): void
@@ -348,9 +349,9 @@ fun the_valprimlst_free_add (vp: valprim): void
 fun the_valprimlst_free_get (): valprimlst_vt
 
 (* ****** ****** *)
-
-// for tailcall optimization
-
+//
+// HX: for tailcall optimization
+//
 dataviewtype tailcallst =
   | TAILCALLSTcons of (funlab_t, tmpvarlst, tailcallst)
   | TAILCALLSTmark of tailcallst
