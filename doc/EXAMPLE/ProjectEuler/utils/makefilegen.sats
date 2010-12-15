@@ -10,7 +10,7 @@
 
 (* ****** ****** *)
 
-fun emit_ATSHOMEQ (out: FILEref): void
+fun emit_ATSUSRQ (out: FILEref): void
 fun emit_ATSCC (out: FILEref): void
 fun emit_ATSOPT (out: FILEref): void
 

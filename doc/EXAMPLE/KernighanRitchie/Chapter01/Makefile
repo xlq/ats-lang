@@ -6,54 +6,72 @@
 
 ######
 
-ATSHOMEQ="$(ATSHOME)"
-ifeq ($(ATSHOMEQ),"")
-ATSHOMEQ="/usr" # default value if [ATSHOME] is undefined
+ATSUSRQ="$(ATSHOME)"
+ifeq ($(ATSUSRQ),"")
+ATSUSRQ="/usr"
 endif
 
 ######
 
-ATSCC=$(ATSHOMEQ)/bin/atscc
-ATSOPT=$(ATSHOMEQ)/bin/atsopt
+ATSCC=$(ATSUSRQ)/bin/atscc
+ATSOPT=$(ATSUSRQ)/bin/atsopt
 
 ######
 
-checkall: compall cleanall
+.PHONY: all
+all:: checkall
+all:: cleanall
 
 ######
 
-compall:: hello
+checkall::
+cleanall:: clean
+cleanall:: ; $(RMF) *_?ats.html 
+
+######
+
+checkall:: hello
+cleanall:: ; $(RMF) hello
 hello: hello.dats
 	$(ATSCC) -o hello hello.dats
 
-compall:: fahrenheit_celsius
+checkall:: fahrenheit_celsius
+cleanall:: ; $(RMF) fahrenheit_celsius
 fahrenheit_celsius: fahrenheit_celsius.dats
 	$(ATSCC) -o fahrenheit_celsius fahrenheit_celsius.dats
 
-compall:: echo
+checkall:: echo
+cleanall:: ; $(RMF) echo
 echo: echo.dats ; $(ATSCC) -o echo echo.dats
 
-compall:: charcnt
+checkall:: charcnt
+cleanall:: ; $(RMF) charcnt
 charcnt: charcnt.dats ; $(ATSCC) -o charcnt charcnt.dats
 
-compall:: linecnt
+checkall:: linecnt
+cleanall:: ; $(RMF) linecnt
 linecnt: linecnt.dats ; $(ATSCC) -o linecnt linecnt.dats
 
-compall:: wc
+checkall:: wc
+cleanall:: ; $(RMF) wc
 wc: wc.dats ; $(ATSCC) -o wc wc.dats
 
-compall:: dsocnt
+checkall:: dsocnt
+cleanall:: ; $(RMF) dsocnt
 dsocnt: digit_space_other_cnt.dats
 	$(ATSCC) -o dsocnt digit_space_other_cnt.dats
 
-compall:: power
+checkall:: power
+cleanall:: ; $(RMF) power
 power: power.dats ; $(ATSCC) -o power power.dats
 
-compall:: longest_line
+checkall:: longest_line
+cleanall:: ; $(RMF) longest_line
 longest_line: longest_line.dats
 	$(ATSCC) -o longest_line longest_line.dats
 
-compall:: longest_line_alt
+checkall:: longest_line_alt
+cleanall:: ; $(RMF) longest_line_alt
 longest_line_alt: longest_line_alt.dats
 	$(ATSCC) -o longest_line_alt longest_line_alt.dats
 
@@ -79,18 +97,5 @@ RMF = rm -f
 clean:
 	$(RMF) *~
 	$(RMF) *_?ats.c *_?ats.o
-
-cleanall: clean
-	$(RMF) *_?ats.html 
-	$(RMF) hello
-	$(RMF) fahrenheit_celsius
-	$(RMF) echo
-	$(RMF) charcnt
-	$(RMF) linecnt
-	$(RMF) wc
-	$(RMF) dsocnt
-	$(RMF) power
-	$(RMF) longest_line
-	$(RMF) longest_line_alt
 
 ###### end of [Makefile] ######

@@ -179,21 +179,21 @@ end // end of [write_count]
 
 (* ****** ****** *)
 
-extern fun getline (): string = "getline"
-extern fun getrest (sz: &size_t? >> size_t n): #[n:nat] string n = "getrest"
+extern fun getline (): string = "__getline"
+extern fun getrest (sz: &size_t? >> size_t n): #[n:nat] string n = "__getrest"
 
 %{$
 
 #define LINEBUFSZ 1024
 char theLineBuffer[LINEBUFSZ] ;
-ats_ptr_type getline () {
+ats_ptr_type __getline () {
   fgets (theLineBuffer, LINEBUFSZ, stdin) ; return theLineBuffer ;
-} /* end of [getline] */
+} /* end of [__getline] */
 
 #define RESTBUFSZ (128 * 1024 * 1024)
 char theRestBuffer[RESTBUFSZ] ;
 
-ats_ptr_type getrest (ats_ref_type p_n) {
+ats_ptr_type __getrest (ats_ref_type p_n) {
   int c ; size_t i ; char *s ;
   s = theRestBuffer ; i = 0 ;
   while ((c = fgetc(stdin)) != EOF) {
@@ -204,7 +204,7 @@ ats_ptr_type getrest (ats_ref_type p_n) {
     fprintf (stderr, "exit(ATS): too much data for processing\n") ; exit(1) ;
   }
   return theRestBuffer ;
-} /* end of [getrest] */
+} /* end of [__getrest] */
 
 %}
 

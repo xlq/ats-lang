@@ -6,15 +6,17 @@
 
 ######
 
-ATSHOMEQ="$(ATSHOME)"
-ifeq ($(ATSHOMEQ),"")
-ATSHOMEQ="/usr" # default value if [ATSHOME] is undefined
+ATSUSRQ="$(ATSHOME)"
+ATSLIBQ="$(ATSHOME)"
+ifeq ("$(ATSHOME)","")
+ATSUSRQ="/usr"
+ATSLIBQ="/usr/lib/ats-anairiats-0.2.3"
 endif
 
 ######
 
-ATSCC=$(ATSHOMEQ)/bin/atscc
-ATSOPT=$(ATSHOMEQ)/bin/atsopt
+ATSCC=$(ATSUSRQ)/bin/atscc
+ATSOPT=$(ATSUSRQ)/bin/atsopt
 
 ######
 
@@ -36,7 +38,7 @@ checkall: compall cleanall
 #   cd $ATSHOME/contrib/GTK; make atsctrb_GTK.o
 # if "atsctrb_GTK.o" is not available
 #
-LIBATSGTK=$(ATSHOMEQ)/contrib/GTK/atsctrb_GTK.o
+LIBATSGTK=$(ATSLIBQ)/contrib/GTK/atsctrb_GTK.o
 compall:: GameOf24
 GameOf24: GameOf24.dats
 	$(ATSCC) -D_ATS_GCATS -o $@ GameOf24.dats $(LIBATSGTK) $(GTKFLAGS) -lm
@@ -45,7 +47,7 @@ GameOf24: GameOf24.dats
 
 compall:: gtkcairoclock
 gtkcairoclock: gtkcairoclock.dats
-	$(ATSCC) -Wl,-rpath,$(ATSHOMEQ)/ccomp/lib -o $@ gtkcairoclock.dats $(GTKFLAGS) -lm
+	$(ATSCC) -Wl,-rpath,$(ATSLIBQ)/ccomp/lib -o $@ gtkcairoclock.dats $(GTKFLAGS) -lm
 
 ######
 
@@ -55,14 +57,14 @@ gtkcairopascal: gtkcairopascal.dats
 
 ######
 
-ATSCTRB=$(ATSHOMEQ)/contrib/cairo/atsctrb_cairo.o
+ATSCTRB=$(ATSLIBQ)/contrib/cairo/atsctrb_cairo.o
 compall:: gtkcairodisc
 gtkcairodisc: gtkcairodisc.dats
 	$(ATSCC) -D_ATS_GCATS $(ATSCTRB) -o $@ gtkcairodisc.dats $(GTKFLAGS) -lm
 
 ######
 
-ATSCTRB=$(ATSHOMEQ)/contrib/cairo/atsctrb_cairo.o
+ATSCTRB=$(ATSLIBQ)/contrib/cairo/atsctrb_cairo.o
 compall:: bsearch_demo
 bsearch_demo: bsearch_demo.dats
 	$(ATSCC) -D_ATS_GCATS $(ATSCTRB) -o $@ bsearch_demo.dats $(GTKFLAGS) -lm

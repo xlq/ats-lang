@@ -6,15 +6,15 @@
 
 ######
 
-ATSHOMEQ="$(ATSHOME)"
-ifeq ($(ATSHOMEQ),"")
-ATSHOMEQ="/usr" # default value if [ATSHOME] is undefined
+ATSUSRQ="$(ATSHOME)"
+ifeq ($(ATSUSRQ),"")
+ATSUSRQ="/usr"
 endif
 
 ######
 
-ATSCC=$(ATSHOMEQ)/bin/atscc
-ATSOPT=$(ATSHOMEQ)/bin/atsopt
+ATSCC=$(ATSUSRQ)/bin/atscc
+ATSOPT=$(ATSUSRQ)/bin/atsopt
 
 ######
 
@@ -33,12 +33,12 @@ cleanall:: clean
 checkall:: server
 server: server.dats
 	$(ATSCC) -D_ATS_GCATS -o server -O2 server.dats
-cleanall:: ; rm -f server
+cleanall:: ; $(RMF) server
 
 checkall:: server2
 server2: server2.dats
 	$(ATSCC) -D_ATS_GCATS -o server2 -O2 server2.dats
-cleanall:: ; rm -f server2
+cleanall:: ; $(RMF) server2
 
 ######
 
@@ -50,8 +50,12 @@ update::
 
 ######
 
-clean::
-	rm -f *~
-	rm -f *_dats.c *_sats.c
+RMF = rm -f
+
+######
+
+clean:
+	$(RMF) *~
+	$(RMF) *_dats.c *_sats.c
 
 ###### end of [Makefile] ######

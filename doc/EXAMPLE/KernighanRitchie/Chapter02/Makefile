@@ -6,26 +6,36 @@
 
 ######
 
-ATSHOMEQ="$(ATSHOME)"
-ifeq ($(ATSHOMEQ),"")
-ATSHOMEQ="/usr" # default value if [ATSHOME] is undefined
+ATSUSRQ="$(ATSHOME)"
+ifeq ($(ATSUSRQ),"")
+ATSUSRQ="/usr"
 endif
 
 ######
 
-ATSCC=$(ATSHOMEQ)/bin/atscc
-ATSOPT=$(ATSHOMEQ)/bin/atsopt
+ATSCC=$(ATSUSRQ)/bin/atscc
+ATSOPT=$(ATSUSRQ)/bin/atsopt
 
 ######
 
-checkall:: compall cleanall
+.PHONY: all
+all:: checkall
+all:: cleanall
 
 ######
 
-compall:: strlen
+checkall::
+cleanall:: clean
+cleanall:: ; $(RMF) *_?ats.html 
+
+######
+
+checkall:: strlen
+cleanall:: ; $(RMF) strlen
 strlen: strlen.dats ; $(ATSCC) -o strlen strlen.dats
 
-compall:: rand
+checkall:: rand
+cleanall:: ; $(RMF) rand
 rand: rand.dats ; $(ATSCC) -o rand rand.dats
 
 ######
@@ -35,17 +45,12 @@ html:: ; $(ATSOPT) --posmark_html -d rand.dats > rand_dats.html
 
 ######
 
-RMF=rm -f
+RMF = rm -f
 
 ######
 
 clean:
 	$(RMF) *~
 	$(RMF) *_?ats.c *_?ats.o
-
-cleanall:: clean
-	$(RMF) *_?ats.html 
-	$(RMF) strlen
-	$(RMF) rand
 
 ###### end of [Makefile] ######

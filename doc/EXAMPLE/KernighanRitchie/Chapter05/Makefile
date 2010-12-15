@@ -6,41 +6,56 @@
 
 ######
 
-ATSHOMEQ="$(ATSHOME)"
-ifeq ($(ATSHOMEQ),"")
-ATSHOMEQ="/usr" # default value if [ATSHOME] is undefined
+ATSUSRQ="$(ATSHOME)"
+ifeq ($(ATSUSRQ),"")
+ATSUSRQ="/usr"
 endif
 
 ######
 
-ATSCC=$(ATSHOMEQ)/bin/atscc
-ATSOPT=$(ATSHOMEQ)/bin/atsopt
+ATSCC=$(ATSUSRQ)/bin/atscc
+ATSOPT=$(ATSUSRQ)/bin/atsopt
 
 ######
 
-checkall: compall cleanall
+.PHONY: all
+all:: checkall
+all:: cleanall
 
 ######
 
-compall:: getint
+checkall::
+cleanall:: clean
+cleanall:: ; $(RMF) *_?ats.html 
+
+######
+
+checkall:: getint
+cleanall:: ; $(RMF) getint
 getint: getint.dats ; $(ATSCC) -o getint getint.dats
 
-compall:: strlen
+checkall:: strlen
+cleanall:: ; $(RMF) strlen
 strlen: strlen.dats ; $(ATSCC) -o strlen strlen.dats
 
-compall:: strcpy
+checkall:: strcpy
+cleanall:: ; $(RMF) strcpy
 strcpy: strcpy.dats ; $(ATSCC) -o strcpy strcpy.dats
 
-compall:: strcmp
+checkall:: strcmp
+cleanall:: ; $(RMF) strcmp
 strcmp: strcmp.dats ; $(ATSCC) -o strcmp strcmp.dats
 
-compall:: strcmp_alt
+checkall:: strcmp_alt
+cleanall:: ; $(RMF) strcmp_alt
 strcmp_alt: strcmp_alt.dats; $(ATSCC) -o strcmp_alt strcmp_alt.dats
 
-compall:: month_name
+checkall:: month_name
+cleanall:: ; $(RMF) month_name
 month_name: month_name.dats ; $(ATSCC) -o month_name month_name.dats
 
-compall:: month_day
+checkall:: month_day
+cleanall:: ; $(RMF) month_day
 month_day: month_day.dats ; $(ATSCC) -o month_day month_day.dats
 
 ######
@@ -62,15 +77,5 @@ RMF=rm -f
 clean:
 	$(RMF) *~
 	$(RMF) *_?ats.c *_?ats.o
-
-cleanall: clean
-	$(RMF) *_?ats.html 
-	$(RMF) getint
-	$(RMF) strlen
-	$(RMF) strcpy
-	$(RMF) strcmp
-	$(RMF) strcmp_alt
-	$(RMF) month_name
-	$(RMF) month_day
 
 ###### end of [Makefile] ######

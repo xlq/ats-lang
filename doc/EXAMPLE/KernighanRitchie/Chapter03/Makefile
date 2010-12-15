@@ -6,52 +6,56 @@
 
 ######
 
-ATSHOMEQ="$(ATSHOME)"
-ifeq ($(ATSHOMEQ),"")
-ATSHOMEQ="/usr" # default value if [ATSHOME] is undefined
+ATSUSRQ="$(ATSHOME)"
+ifeq ($(ATSUSRQ),"")
+ATSUSRQ="/usr"
 endif
 
 ######
 
-ATSCC=$(ATSHOMEQ)/bin/atscc
-ATSOPT=$(ATSHOMEQ)/bin/atsopt
+ATSCC=$(ATSUSRQ)/bin/atscc
+ATSOPT=$(ATSUSRQ)/bin/atsopt
 
 ######
 
-checkall:: compall cleanall
+.PHONY: all
+all:: checkall
+all:: cleanall
 
 ######
 
-compall:: atoi
+checkall::
+cleanall:: clean
+cleanall:: ; $(RMF) *_?ats.html 
+
+######
+
+checkall:: atoi
+cleanall:: ; $(RMF) atoi
 atoi: atoi.dats ; $(ATSCC) -o atoi atoi.dats
 
-compall:: reverse
+checkall:: reverse
+cleanall:: ; $(RMF) reverse
 reverse: reverse.dats ; $(ATSCC) -o reverse reverse.dats
 
-compall:: itoa
+checkall:: itoa
+cleanall:: ; $(RMF) itoa
 itoa: itoa.dats ; $(ATSCC) -o itoa itoa.dats
 
 ######
 
-html::
-	$(ATSOPT) --posmark_html -d atoi.dats > atoi_dats.html
-	$(ATSOPT) --posmark_html -d reverse.dats > reverse_dats.html
-	$(ATSOPT) --posmark_html -d itoa.dats > itoa_dats.html
+html:: ; $(ATSOPT) --posmark_html -d atoi.dats > atoi_dats.html
+html:: ; $(ATSOPT) --posmark_html -d reverse.dats > reverse_dats.html
+html:: ; $(ATSOPT) --posmark_html -d itoa.dats > itoa_dats.html
 
 ######
 
-RMF=rm -f
+RMF = rm -f
 
 ######
 
 clean:
 	$(RMF) *~
 	$(RMF) *_?ats.c *_?ats.o
-
-cleanall:: clean
-	$(RMF) *_?ats.html 
-	$(RMF) atoi
-	$(RMF) reverse
-	$(RMF) itoa
 
 ###### end of [Makefile] ######

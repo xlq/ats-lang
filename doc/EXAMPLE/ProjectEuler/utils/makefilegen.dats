@@ -18,37 +18,37 @@ staload "makefilegen.sats"
 
 (* ****** ****** *)
 
-#define ATSHOMEDEFAULT "/usr"
+#define ATSUSRDEFAULT "/usr"
 
 (* ****** ****** *)
 
 implement
-emit_ATSHOMEQ (out) = let
+emit_ATSUSRQ (out) = let
   val () = fprintf (out, "\
-ATSHOMEQ=\"$(ATSHOME)\"\n\
-ifeq ($(ATSHOMEQ),\"\")\n\
-ATSHOMEQ=\"%s\" # default value if [ATSHOME] is undefined\n\
+ATSUSRQ=\"$(ATSHOME)\"\n\
+ifeq ($(ATSUSRQ),\"\")\n\
+ATSUSRQ=\"%s\"
 endif\n\
 "
 ,
-@(ATSHOMEDEFAULT)
+@(ATSUSRDEFAULT)
 ) // end of [val]
 in
   // nothing
-end // end of [emit_ATSHOMEQ]
+end // end of [emit_ATSUSRQ]
 
 (* ****** ****** *)
 
 implement
 emit_ATSCC (out) = {
-  val () = fprint (out, "ATSCC=$(ATSHOMEQ)/bin/atscc\n")
+  val () = fprint (out, "ATSCC=$(ATSUSRQ)/bin/atscc\n")
 } // end of [emit_ATSCC]
 
 (* ****** ****** *)
 
 implement
 emit_ATSOPT (out) = {
-  val () = fprint (out, "ATSOPT=$(ATSHOMEQ)/bin/atsopt\n")
+  val () = fprint (out, "ATSOPT=$(ATSUSRQ)/bin/atsopt\n")
 } // end of [emit_ATSOPT]
 
 (* ****** ****** *)
@@ -154,7 +154,7 @@ fun emit01_Makefile (
 ) : void = {
   val () = emit_header (out)
   val () = emit_sep (out)
-  val () = emit_ATSHOMEQ (out)
+  val () = emit_ATSUSRQ (out)
   val () = emit_ATSCC (out)
   val () = emit_ATSOPT (out)
   val () = emit_sep (out)
@@ -177,7 +177,7 @@ fun emit02_Makefile (
 ) : void = {
   val () = emit_header (out)
   val () = emit_sep (out)
-  val () = emit_ATSHOMEQ (out)
+  val () = emit_ATSUSRQ (out)
   val () = emit_ATSCC (out)
   val () = emit_ATSOPT (out)
   val () = emit_sep (out)
@@ -200,7 +200,7 @@ fun emit03_Makefile (
 ) : void = {
   val () = emit_header (out)
   val () = emit_sep (out)
-  val () = emit_ATSHOMEQ (out)
+  val () = emit_ATSUSRQ (out)
   val () = emit_ATSCC (out)
   val () = emit_ATSOPT (out)
   val () = emit_sep (out)
@@ -223,7 +223,7 @@ fun emit04_Makefile (
 ) : void = {
   val () = emit_header (out)
   val () = emit_sep (out)
-  val () = emit_ATSHOMEQ (out)
+  val () = emit_ATSUSRQ (out)
   val () = emit_ATSCC (out)
   val () = emit_ATSOPT (out)
   val () = emit_sep (out)
@@ -246,7 +246,7 @@ fun emit_Makefile_problem1
   val itemname = "problem1-hwxi"
   val () = emit_header (out)
   val () = emit_sep (out)
-  val () = emit_ATSHOMEQ (out)
+  val () = emit_ATSUSRQ (out)
   val () = emit_ATSCC (out)
   val () = emit_ATSOPT (out)
   val () = emit_sep (out)
@@ -270,7 +270,7 @@ fun emit_Makefile_problem2
   val itemname2 = "problem2-hwxi2"
   val () = emit_header (out)
   val () = emit_sep (out)
-  val () = emit_ATSHOMEQ (out)
+  val () = emit_ATSUSRQ (out)
   val () = emit_ATSCC (out)
   val () = emit_ATSOPT (out)
   val () = emit_sep (out)
@@ -297,7 +297,7 @@ fun emit_Makefile_problem6
   val itemname2 = "problem6-hwxi2"
   val () = emit_header (out)
   val () = emit_sep (out)
-  val () = emit_ATSHOMEQ (out)
+  val () = emit_ATSUSRQ (out)
   val () = emit_ATSCC (out)
   val () = emit_ATSOPT (out)
   val () = emit_sep (out)
@@ -324,7 +324,7 @@ fun emit_Makefile_problem7
   val itemname2 = "problem7-hwxi2"
   val () = emit_header (out)
   val () = emit_sep (out)
-  val () = emit_ATSHOMEQ (out)
+  val () = emit_ATSUSRQ (out)
   val () = emit_ATSCC (out)
   val () = emit_ATSOPT (out)
   val () = emit_sep (out)
@@ -384,7 +384,7 @@ fun emit_Makefile_problem15
   val itemname3 = "problem15-mberndt"
   val () = emit_header (out)
   val () = emit_sep (out)
-  val () = emit_ATSHOMEQ (out)
+  val () = emit_ATSUSRQ (out)
   val () = emit_ATSCC (out)
   val () = emit_ATSOPT (out)
   val () = emit_sep (out)
@@ -414,7 +414,7 @@ fun emit_Makefile_problem16
   val itemname2 = "problem16-hwxi2"
   val () = emit_header (out)
   val () = emit_sep (out)
-  val () = emit_ATSHOMEQ (out)
+  val () = emit_ATSUSRQ (out)
   val () = emit_ATSCC (out)
   val () = emit_ATSOPT (out)
   val () = emit_sep (out)
@@ -455,7 +455,7 @@ fun emit_Makefile_problem20
   val itemname2 = "problem20-hwxi2"
   val () = emit_header (out)
   val () = emit_sep (out)
-  val () = emit_ATSHOMEQ (out)
+  val () = emit_ATSUSRQ (out)
   val () = emit_ATSCC (out)
   val () = emit_ATSOPT (out)
   val () = emit_sep (out)
@@ -500,7 +500,7 @@ fun emit_Makefile_problem25
   val itemname2 = "problem25-hwxi2"
   val () = emit_header (out)
   val () = emit_sep (out)
-  val () = emit_ATSHOMEQ (out)
+  val () = emit_ATSUSRQ (out)
   val () = emit_ATSCC (out)
   val () = emit_ATSOPT (out)
   val () = emit_sep (out)
@@ -660,7 +660,7 @@ fun emit_Makefile_problem60
   val itemname = "problem60-hwxi"
   val () = emit_header (out)
   val () = emit_sep (out)
-  val () = emit_ATSHOMEQ (out)
+  val () = emit_ATSUSRQ (out)
   val () = emit_ATSCC (out)
   val () = emit_ATSOPT (out)
   val () = emit_sep (out)

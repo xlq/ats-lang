@@ -13,71 +13,91 @@ all: checkall
 
 ######
 
-ATSHOMEQ="$(ATSHOME)"
-ifeq ($(ATSHOMEQ),"")
-ATSHOMEQ="/usr" # default value if [ATSHOME] is undefined
+ATSUSRQ="$(ATSHOME)"
+ifeq ($(ATSUSRQ),"")
+ATSUSRQ="/usr"
 endif
 
 ######
 
-ATSCC=$(ATSHOMEQ)/bin/atscc
-ATSCTRB=$(ATSHOMEQ)/contrib/GL/atsctrb_GL.o
+ATSCC=$(ATSUSRQ)/bin/atscc
+ATSCTRB=$(ATSUSRQ)/contrib/GL/atsctrb_GL.o
 
 ######
 
-checkall: compall cleanall
+.PHONY: all
+all:: checkall
+all:: cleanall
 
 ######
 
-compall:: glHello
+checkall::
+cleanall:: clean
+
+######
+
+checkall:: glHello
+cleanall:: ; $(RMF) glHello
 glHello: glHello.dats
 	$(ATSCC) -o glHello glHello.dats $(ATSCTRB) -lGL -lglut
 
-compall:: glDoubleBuffer
+checkall:: glDoubleBuffer
+cleanall:: ; $(RMF) glDoubleBuffer
 glDoubleBuffer: glDoubleBuffer.dats
 	$(ATSCC) -o glDoubleBuffer glDoubleBuffer.dats $(ATSCTRB) -lGL -lglut
 
-compall:: glIcosahedron
+checkall:: glIcosahedron
+cleanall:: ; $(RMF) glIcosahedron
 glIcosahedron: glIcosahedron.dats
 	$(ATSCC) -D_ATS_GCATS -o glIcosahedron glIcosahedron.dats $(ATSCTRB) -lGL -lGLU -lglut -lm
 
-compall:: glClipping
+checkall:: glClipping
+cleanall:: ; $(RMF) glClipping
 glClipping: glClipping.dats
 	$(ATSCC) -o glClipping glClipping.dats $(ATSCTRB) -lGL -lGLU -lglut
 
-compall:: glCubeView
+checkall:: glCubeView
+cleanall:: ; $(RMF) glCubeView
 glCubeView: glCubeView.dats
 	$(ATSCC) -o glCubeView glCubeView.dats $(ATSCTRB) -lGL -lGLU -lglut
 
-compall:: glPlanet
+checkall:: glPlanet
+cleanall:: ; $(RMF) glPlanet
 glPlanet: glPlanet.dats
 	$(ATSCC) -o glPlanet glPlanet.dats $(ATSCTRB) -lGL -lGLU -lglut
 
-compall:: glColoredTriangle
+checkall:: glColoredTriangle
+cleanall:: ; $(RMF) glColoredTriangle
 glColoredTriangle: glColoredTriangle.dats
 	$(ATSCC) -o glColoredTriangle glColoredTriangle.dats $(ATSCTRB) -lGL -lGLU -lglut -lm
 
-compall:: glLitSphere
+checkall:: glLitSphere
+cleanall:: ; $(RMF) glLitSphere
 glLitSphere: glLitSphere.dats
 	$(ATSCC) -o glLitSphere glLitSphere.dats $(ATSCTRB) -lGL -lglut
 
-compall:: glLightMove1
+checkall:: glLightMove1
+cleanall:: ; $(RMF) glLightMove1
 glLightMove1: glLightMove1.dats
 	$(ATSCC) -o glLightMove1 glLightMove1.dats $(ATSCTRB) -lGL -lGLU -lglut
 
-compall:: glLightMove2
+checkall:: glLightMove2
+cleanall:: ; $(RMF) glLightMove2
 glLightMove2: glLightMove2.dats
 	$(ATSCC) -o glLightMove2 glLightMove2.dats $(ATSCTRB) -lGL -lGLU -lglut
 
-compall:: glBlending1
+checkall:: glBlending1
+cleanall:: ; $(RMF) glBlending1
 glBlending1: glBlending1.dats
 	$(ATSCC) -o glBlending1 glBlending1.dats $(ATSCTRB) -lGL -lGLU -lglut
 
-compall:: glBlending2
+checkall:: glBlending2
+cleanall:: ; $(RMF) glBlending2
 glBlending2: glBlending2.dats
 	$(ATSCC) -o glBlending2 glBlending2.dats $(ATSCTRB) -lGL -lglut
 
-compall:: glDisplayList1
+checkall:: glDisplayList1
+cleanall:: ; $(RMF) glDisplayList1
 glDisplayList1: glDisplayList1.dats
 	$(ATSCC) -o glDisplayList1 glDisplayList1.dats $(ATSCTRB) -lGL -lGLU -lglut -lm
 
@@ -86,7 +106,8 @@ glDisplayList1: glDisplayList1.dats
 #
 # A little bit animation for fun
 #
-compall:: glFaces
+checkall:: glFaces
+cleanall:: ; $(RMF) glFaces
 glFaces: glFaces.dats
 	$(ATSCC) -o glFaces glFaces.dats $(ATSCTRB) -lGL -lglut -lm
 
@@ -95,7 +116,8 @@ glFaces: glFaces.dats
 #
 # A simple game of Tetris implemented in ATS
 #
-compall:: glTetrix
+checkall:: glTetrix
+cleanall:: ; $(RMF) glTetrix
 glTetrix: glTetrix.dats
 	$(ATSCC) -O2 -o glTetrix glTetrix.dats $(ATSCTRB) -lGL -lglut -lm
 
@@ -107,24 +129,7 @@ RMF=rm -f
 
 clean:
 	$(RMF) *~
-	$(RMF) *.o
 	$(RMF) *_?ats.c
-
-cleanall: clean
-	$(RMF) glHello
-	$(RMF) glDoubleBuffer
-	$(RMF) glIcosahedron
-	$(RMF) glClipping
-	$(RMF) glCubeView
-	$(RMF) glPlanet
-	$(RMF) glColoredTriangle
-	$(RMF) glLitSphere
-	$(RMF) glLightMove1
-	$(RMF) glLightMove2
-	$(RMF) glBlending1
-	$(RMF) glBlending2
-	$(RMF) glDisplayList1
-	$(RMF) glFaces
-	$(RMF) glTetrix
+	$(RMF) *_?ats.o
 
 ###### end of [Makefile] ######

@@ -6,29 +6,40 @@
 
 ######
 
-ATSHOMEQ="$(ATSHOME)"
-ifeq ($(ATSHOMEQ),"")
-ATSHOMEQ="/usr" # default value if [ATSHOME] is undefined
+ATSUSRQ="$(ATSHOME)"
+ifeq ($(ATSUSRQ),"")
+ATSUSRQ="/usr"
 endif
 
 ######
 
-ATSCC=$(ATSHOMEQ)/bin/atscc
-ATSOPT=$(ATSHOMEQ)/bin/atsopt
+ATSCC=$(ATSUSRQ)/bin/atscc
+ATSOPT=$(ATSUSRQ)/bin/atsopt
 
 ######
 
-checkall:: compall cleanall
+.PHONY: all
+all:: checkall
+all:: cleanall
 
 ######
 
-compall:: atof
+checkall::
+cleanall:: clean
+cleanall:: ; $(RMF) *_?ats.html 
+
+######
+
+checkall:: atof
+cleanall:: ; $(RMF) atof
 atof: atof.dats ; $(ATSCC) -o atof atof.dats
 
-compall:: printd
+checkall:: printd
+cleanall:: ; $(RMF) printd
 printd: printd.dats ; $(ATSCC) -o printd printd.dats
 
-compall:: qsort
+checkall:: qsort
+cleanall:: ; $(RMF) qsort
 qsort: qsort.dats ; $(ATSCC) -o qsort qsort.dats
 
 ######
@@ -39,18 +50,12 @@ html:: ; $(ATSOPT) --posmark_html -d qsort.dats > qsort_dats.html
 
 ######
 
-RMF=rm -f
+RMF = rm -f
 
 ######
 
 clean:
 	$(RMF) *~
 	$(RMF) *_?ats.c *_?ats.o
-
-cleanall:: clean
-	$(RMF) *_?ats.html 
-	$(RMF) atof
-	$(RMF) printd
-	$(RMF) qsort
 
 ###### end of [Makefile] ######

@@ -6,23 +6,32 @@
 
 ######
 
-ATSHOMEQ="$(ATSHOME)"
-ifeq ($(ATSHOMEQ),"")
-ATSHOMEQ="/usr" # default value if [ATSHOME] is undefined
+ATSUSRQ="$(ATSHOME)"
+ifeq ($(ATSUSRQ),"")
+ATSUSRQ="/usr"
 endif
 
 ######
 
-ATSCC=$(ATSHOMEQ)/bin/atscc
-ATSOPT=$(ATSHOMEQ)/bin/atsopt
+ATSCC=$(ATSUSRQ)/bin/atscc
+ATSOPT=$(ATSUSRQ)/bin/atsopt
 
 ######
 
-checkall: compall cleanall
+.PHONY: all
+all:: checkall
+all:: cleanall
 
 ######
 
-compall:: getword
+checkall::
+cleanall:: clean
+cleanall:: ; $(RMF) *_?ats.html 
+
+######
+
+checkall:: getword
+cleanall:: ; $(RMF) getword
 getword: getword.dats ; $(ATSCC) -o getword getword.dats
 
 ######
@@ -31,16 +40,12 @@ html:: ; $(ATSOPT) --posmark_html -d getword.dats > getword_dats.html
 
 ######
 
-RMF=rm -f
+RMF = rm -f
 
 ######
 
 clean:
 	$(RMF) *~
 	$(RMF) *_?ats.c *_?ats.o
-
-cleanall:: clean
-	$(RMF) *_?ats.html 
-	$(RMF) getword
 
 ###### end of [Makefile] ######

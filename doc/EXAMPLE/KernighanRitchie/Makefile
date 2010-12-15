@@ -7,7 +7,8 @@
 ######
 
 .PHONY: all
-all: checkall
+all:: checkall
+all:: cleanall
 
 ######
 
@@ -22,14 +23,14 @@ checkall:: ; make -C Chapter08 checkall
 
 ######
 
-compall:: ; make -C Chapter01 compall
-compall:: ; make -C Chapter02 compall
-compall:: ; make -C Chapter03 compall
-compall:: ; make -C Chapter04 compall
-compall:: ; make -C Chapter05 compall
-compall:: ; make -C Chapter06 compall
-compall:: ; make -C Chapter07 compall
-compall:: ; make -C Chapter08 compall
+cleanall:: ; make -C  Chapter01 cleanall
+cleanall:: ; make -C  Chapter02 cleanall
+cleanall:: ; make -C  Chapter03 cleanall
+cleanall:: ; make -C  Chapter04 cleanall
+cleanall:: ; make -C  Chapter05 cleanall
+cleanall:: ; make -C  Chapter06 cleanall
+cleanall:: ; make -C  Chapter07 cleanall
+cleanall:: ; make -C  Chapter08 cleanall
 
 ######
 
@@ -75,16 +76,5 @@ update07:: ; scp Chapter07/*.dats Chapter07/*_dats.html \
 update:: update08
 update08:: ; scp Chapter08/*.dats Chapter08/*_dats.html \
   ats-hwxi,ats-lang@web.sourceforge.net:htdocs/EXAMPLE/KernighanRitchie/Chapter08
-
-######
-
-cleanall:: ; make -C  Chapter01 cleanall
-cleanall:: ; make -C  Chapter02 cleanall
-cleanall:: ; make -C  Chapter03 cleanall
-cleanall:: ; make -C  Chapter04 cleanall
-cleanall:: ; make -C  Chapter05 cleanall
-cleanall:: ; make -C  Chapter06 cleanall
-cleanall:: ; make -C  Chapter07 cleanall
-cleanall:: ; make -C  Chapter08 cleanall
 
 ###### end of [Makefile] ######

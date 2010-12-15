@@ -4,15 +4,15 @@
 #
 ######
 
-ATSHOMEQ="$(ATSHOME)"
-ifeq ($(ATSHOMEQ),"")
-ATSHOMEQ="/usr" # default value if [ATSHOME] is undefined
+ATSUSRQ="$(ATSHOME)"
+ifeq ($(ATSUSRQ),"")
+ATSUSRQ="/usr"
 endif
 
 ######
 
-ATSCC=$(ATSHOMEQ)/bin/atscc
-ATSOPT=$(ATSHOMEQ)/bin/atsopt
+ATSCC=$(ATSUSRQ)/bin/atscc
+ATSOPT=$(ATSUSRQ)/bin/atsopt
 
 ######
 
@@ -23,6 +23,12 @@ all:: cleanall
 ######
 
 checkall::
+cleanall:: clean
+cleanall:: ; $(RMF) ./XREF/*
+cleanall:: ; $(RMF) *_?ats.html
+
+######
+
 html::
 
 ######
@@ -35,12 +41,14 @@ AutoDiff: AutoDiff.dats
 #	$(ATSCC) -o AutoDiff -D_ATS_gc -O3 AutoDiff.dats -lm
 #	$(ATSCC) -o AutoDiff -D_ATS_gcats -O3 AutoDiff.dats -lm
 	$(ATSCC) -o AutoDiff -D_ATS_GCATS -O3 AutoDiff.dats -lm
+cleanall:: ; $(RMF) AutoDiff
 
 #
 # BlackScholes formula
 #
 checkall:: BlackScholes
 BlackScholes: BlackScholes.dats; $(ATSCC) -tc BlackScholes.dats
+cleanall:: ; $(RMF) BlackScholes
 
 #
 # random number generation
@@ -48,18 +56,21 @@ BlackScholes: BlackScholes.dats; $(ATSCC) -tc BlackScholes.dats
 checkall:: coin_flip
 coin_flip: coin_flip.dats
 	$(ATSCC) -O3 -o coin_flip coin_flip.dats && ./coin_flip
+cleanall:: ; $(RMF) coin_flip
 
 #
 # an interesting curve
 #
 checkall:: curve
 curve: curve.dats; $(ATSCC) -o curve curve.dats -lm # && ./curve
+cleanall:: ; $(RMF) curve
 
 #
 # test for Mersenne primes
 #
 checkall:: fft
 fft: fft.dats; $(ATSCC) -O3 -o fft fft.dats -lm
+cleanall:: ; $(RMF) fft
 
 #
 # Garsia-Wachs
@@ -68,6 +79,7 @@ checkall:: GarsiaWachs
 GarsiaWachs: GarsiaWachs.dats
 	$(ATSCC) -D_ATS_GCATS -O3 -o GarsiaWachs GarsiaWachs.dats \
      && ./GarsiaWachs
+cleanall:: ; $(RMF) GarsiaWachs
 
 #
 # gaussian elimination
@@ -75,6 +87,7 @@ GarsiaWachs: GarsiaWachs.dats
 checkall:: GaussElim
 GaussElim: GaussElim.dats
 	$(ATSCC) -o GaussElim GaussElim.dats && ./GaussElim
+cleanall:: ; $(RMF) GaussElim
 
 #
 # a multithreaded implementation of GCD
@@ -83,6 +96,7 @@ checkall:: gcd_mt
 gcd_mt: gcd_mt.dats
 	$(ATSCC) -o gcd_mt -O3 -D_ATS_MULTITHREAD gcd_mt.dats -lpthread -lats_mt \
      && ./gcd_mt 12345 67890
+cleanall:: ; $(RMF) gcd_mt
 
 #
 # hamming in lazy style
@@ -90,24 +104,28 @@ gcd_mt: gcd_mt.dats
 checkall:: hamming_lazy
 hamming_lazy: hamming_lazy.dats
 	$(ATSCC) -o hamming_lazy hamming_lazy.dats && ./hamming_lazy
+cleanall:: ; $(RMF) hamming_lazy
 
 #
 # hanoi tower
 #
 checkall:: hanoi
 hanoi: hanoi.dats; $(ATSCC) -o hanoi hanoi.dats && ./hanoi
+cleanall:: ; $(RMF) hanoi
 
 #
 # integer square root
 #
 checkall:: isqrt
 isqrt: isqrt.dats; $(ATSCC) -o isqrt isqrt.dats && ./isqrt
+cleanall:: ; $(RMF) isqrt
 
 #
 # Knuth-Morris-Pratt string search
 #
 checkall:: kmp
 kmp: kmp.dats; $(ATSCC) -o kmp kmp.dats && ./kmp
+cleanall:: ; $(RMF) kmp
 
 #
 # Monte Carlo method
@@ -116,6 +134,7 @@ checkall:: montecarlo
 montecarlo: montecarlo.dats
 	$(ATSCC) -O2 -o montecarlo montecarlo.dats -lm -lats_smlbas \
      && ./montecarlo
+cleanall:: ; $(RMF) montecarlo
 
 #
 # An example of linear lazy evaluation
@@ -124,6 +143,7 @@ checkall:: longestline
 longestline: longestline.dats
 	$(ATSCC) -o longestline longestline.dats \
      && ./longestline < ./longestline.dats
+cleanall:: ; $(RMF) longestline
 
 #
 # generating a password randomly
@@ -131,18 +151,21 @@ longestline: longestline.dats
 checkall:: passwdgen
 passwdgen: passwdgen.dats
 	$(ATSCC) -O3 -o passwdgen passwdgen.dats && ./passwdgen
+cleanall:: ; $(RMF) passwdgen
 
 #
 # implementing natural numbers in ATS
 #
 checkall:: Peano
 Peano: Peano.dats; $(ATSCC) -o Peano Peano.dats && ./Peano
+cleanall:: ; $(RMF) Peano
 
 #
 # Euler's transform in lazy style
 #
 checkall:: pi_lazy
 pi_lazy: pi_lazy.dats; $(ATSCC) -o pi_lazy pi_lazy.dats && ./pi_lazy
+cleanall:: ; $(RMF) pi_lazy
 
 #
 # Verified quicksort implementations
@@ -150,9 +173,12 @@ pi_lazy: pi_lazy.dats; $(ATSCC) -o pi_lazy pi_lazy.dats && ./pi_lazy
 checkall:: quicksort_list
 quicksort_list: quicksort_list.dats
 	$(ATSCC) -D_ATS_PROOFCHECK -o quicksort_list quicksort_list.dats
+cleanall:: ; $(RMF) quicksort_list
+
 checkall:: quicksort2_list
 quicksort2_list: quicksort2_list.dats
 	$(ATSCC) -o quicksort2_list quicksort2_list.dats
+cleanall:: ; $(RMF) quicksort2_list
 
 #
 # the n-queen problem
@@ -160,32 +186,43 @@ quicksort2_list: quicksort2_list.dats
 checkall:: queens
 queens: queens.dats
 	$(ATSCC) -o queens queens.dats && ./queens 4 > /dev/null
+cleanall:: ; $(RMF) queens
+
 checkall:: queens_appel
 queens_appel: queens_appel.dats
 	$(ATSCC) -o queens_appel queens_appel.dats && ./queens_appel
+cleanall:: ; $(RMF) queens_appel
+
 checkall:: queens_lazy_vt
 queens_lazy_vt: queens_lazy_vt.dats
 	$(ATSCC) -D_ATS_GCATS -O3 -o queens_lazy_vt queens_lazy_vt.dats && ./queens_lazy_vt
+cleanall:: ; $(RMF) queens_lazy_vt
 
 #
 # Erathosthene's sieve
 #
 checkall:: sieve
 sieve: sieve.dats; $(ATSCC) -o sieve sieve.dats # && ./sieve
+cleanall:: ; $(RMF) sieve
+
 checkall:: sieve_lazy
 sieve_lazy: sieve_lazy.dats
 	$(ATSCC) -D_ATS_GCATS -O3 -o sieve_lazy sieve_lazy.dats # && ./sieve_lazy
+cleanall:: ; $(RMF) sieve_lazy
+
 checkall:: sieve_lazy_vt
 sieve_lazy_vt: sieve_lazy_vt.dats
 #	$(ATSCC) -O3 -o sieve_lazy_vt sieve_lazy_vt.dats
 #	$(ATSCC) -D_ATS_gcats -O3 -o sieve_lazy_vt sieve_lazy_vt.dats
 	$(ATSCC) -D_ATS_GCATS -O3 -o sieve_lazy_vt sieve_lazy_vt.dats # && ./sieve_lazy_vt
+cleanall:: ; $(RMF) sieve_lazy_vt
 
 #
 # a simple implementation of string match in CPS-style
 #
 checkall:: strmat
 strmat: strmat.dats; $(ATSCC) -o strmat strmat.dats
+cleanall:: ; $(RMF) strmat
 
 #
 # programming in System F
@@ -193,6 +230,7 @@ strmat: strmat.dats; $(ATSCC) -o strmat strmat.dats
 checkall:: systemf_programming_examples
 systemf_programming_examples: systemf_programming_examples.dats
 	$(ATSCC) -O3 -o $@ $< && ./systemf_programming_examples
+cleanall:: ; $(RMF) systemf_programming_examples
 
 #
 # a simple example of programming with theorem-proving
@@ -200,18 +238,21 @@ systemf_programming_examples: systemf_programming_examples.dats
 checkall:: sumup
 sumup: sumup.dats
 	$(ATSCC) -D_ATS_PROOFCHECK -O3 -o sumup sumup.dats && ./sumup
+cleanall:: ; $(RMF) sumup
 
 #
 # a poor man's game of tetrix
 #
 checkall:: tetrix
 tetrix: tetrix.dats; $(ATSCC) -O3 -o tetrix tetrix.dats
+cleanall:: ; $(RMF) tetrix
 
 #
 # a simple implementation of world count
 #
 checkall:: wc
 wc: wc.dats; $(ATSCC) -O3 -o wc wc.dats && ./wc *.dats
+cleanall:: ; $(RMF) wc
 
 ######
 
@@ -308,42 +349,9 @@ RMF = rm -f
 
 ######
 
-clean::
+clean:
 	$(RMF) *~
 	$(RMF) ./MISC/*
 	$(RMF) *_dats.c *_sats.c
-
-cleanall:: clean
-	$(RMF) ./XREF/*
-	$(RMF) *_?ats.html
-	$(RMF) AutoDiff
-	$(RMF) coin_flip
-	$(RMF) curve
-	$(RMF) fft
-	$(RMF) GaussElim
-	$(RMF) GarsiaWachs
-	$(RMF) gcd_mt
-	$(RMF) hamming_lazy
-	$(RMF) hanoi
-	$(RMF) isqrt
-	$(RMF) kmp
-	$(RMF) longestline
-	$(RMF) montecarlo
-	$(RMF) passwdgen
-	$(RMF) Peano
-	$(RMF) pi_lazy
-	$(RMF) quicksort_list
-	$(RMF) quicksort2_list
-	$(RMF) queens
-	$(RMF) queens_appel
-	$(RMF) queens_lazy_vt
-	$(RMF) sieve
-	$(RMF) strmat
-	$(RMF) sieve_lazy
-	$(RMF) sieve_lazy_vt
-	$(RMF) sumup
-	$(RMF) systemf_programming_examples
-	$(RMF) tetrix
-	$(RMF) wc
 
 ###### end of [Makefile] ######
