@@ -7,196 +7,193 @@
 ######
 
 .PHONY: all
-all: checkall
+all:: checkall
+all:: cleanall
 
 ######
 
-checkall: compall cleanall
+checkall:: problem1
+problem1: ; make -C PE-problem1 checkall
+checkall:: problem2
+problem2: ; make -C PE-problem2 checkall
+checkall:: problem3
+problem3: ; make -C PE-problem3 checkall
+checkall:: problem4
+problem4: ; make -C PE-problem4 checkall
+checkall:: problem5
+problem5: ; make -C PE-problem5 checkall
+checkall:: problem6
+problem6: ; make -C PE-problem6 checkall
+checkall:: problem7
+problem7: ; make -C PE-problem7 checkall
+checkall:: problem8
+problem8: ; make -C PE-problem8 checkall
+checkall:: problem9
+problem9: ; make -C PE-problem9 checkall
 
-######
+checkall:: problem10
+problem10: ; make -C PE-problem10 checkall
+checkall:: problem11
+problem11: ; make -C PE-problem11 checkall
+checkall:: problem12
+problem12: ; make -C PE-problem12 checkall
+checkall:: problem13
+problem13: ; make -C PE-problem13 checkall
+checkall:: problem14
+problem14: ; make -C PE-problem14 checkall
+checkall:: problem15
+problem15: ; make -C PE-problem15 checkall
+checkall:: problem16
+problem16: ; make -C PE-problem16 checkall
+checkall:: problem17
+problem17: ; make -C PE-problem17 checkall
+checkall:: problem18
+problem18: ; make -C PE-problem18 checkall
+checkall:: problem19
+problem19: ; make -C PE-problem19 checkall
 
-compall:: problem1
-problem1: ; make -C PE-problem1 compall
-compall:: problem2
-problem2: ; make -C PE-problem2 compall
-compall:: problem3
-problem3: ; make -C PE-problem3 compall
-compall:: problem4
-problem4: ; make -C PE-problem4 compall
-compall:: problem5
-problem5: ; make -C PE-problem5 compall
-compall:: problem6
-problem6: ; make -C PE-problem6 compall
-compall:: problem7
-problem7: ; make -C PE-problem7 compall
-compall:: problem8
-problem8: ; make -C PE-problem8 compall
-compall:: problem9
-problem9: ; make -C PE-problem9 compall
+checkall:: problem20
+problem20: ; make -C PE-problem20 checkall
+checkall:: problem21
+problem21: ; make -C PE-problem21 checkall
+checkall:: problem22
+problem22: ; make -C PE-problem22 checkall
+checkall:: problem23
+problem23: ; make -C PE-problem23 checkall
+checkall:: problem24
+problem24: ; make -C PE-problem24 checkall
+checkall:: problem25
+problem25: ; make -C PE-problem25 checkall
+checkall:: problem26
+problem26: ; make -C PE-problem26 checkall
+checkall:: problem27
+problem27: ; make -C PE-problem27 checkall
+checkall:: problem28
+problem28: ; make -C PE-problem28 checkall
+checkall:: problem29
+problem29: ; make -C PE-problem29 checkall
 
-compall:: problem10
-problem10: ; make -C PE-problem10 compall
-compall:: problem11
-problem11: ; make -C PE-problem11 compall
-compall:: problem12
-problem12: ; make -C PE-problem12 compall
-compall:: problem13
-problem13: ; make -C PE-problem13 compall
-compall:: problem14
-problem14: ; make -C PE-problem14 compall
-compall:: problem15
-problem15: ; make -C PE-problem15 compall
-compall:: problem16
-problem16: ; make -C PE-problem16 compall
-compall:: problem17
-problem17: ; make -C PE-problem17 compall
-compall:: problem18
-problem18: ; make -C PE-problem18 compall
-compall:: problem19
-problem19: ; make -C PE-problem19 compall
+checkall:: problem30
+problem30: ; make -C PE-problem30 checkall
+checkall:: problem31
+problem31: ; make -C PE-problem31 checkall
+checkall:: problem32
+problem32: ; make -C PE-problem32 checkall
+checkall:: problem33
+problem33: ; make -C PE-problem33 checkall
+checkall:: problem34
+problem34: ; make -C PE-problem34 checkall
+checkall:: problem35
+problem35: ; make -C PE-problem35 checkall
+checkall:: problem36
+problem36: ; make -C PE-problem36 checkall
+checkall:: problem37
+problem37: ; make -C PE-problem37 checkall
+checkall:: problem38
+problem38: ; make -C PE-problem38 checkall
+checkall:: problem39
+problem39: ; make -C PE-problem39 checkall
 
-compall:: problem20
-problem20: ; make -C PE-problem20 compall
-compall:: problem21
-problem21: ; make -C PE-problem21 compall
-compall:: problem22
-problem22: ; make -C PE-problem22 compall
-compall:: problem23
-problem23: ; make -C PE-problem23 compall
-compall:: problem24
-problem24: ; make -C PE-problem24 compall
-compall:: problem25
-problem25: ; make -C PE-problem25 compall
-compall:: problem26
-problem26: ; make -C PE-problem26 compall
-compall:: problem27
-problem27: ; make -C PE-problem27 compall
-compall:: problem28
-problem28: ; make -C PE-problem28 compall
-compall:: problem29
-problem29: ; make -C PE-problem29 compall
+checkall:: problem40
+problem40: ; make -C PE-problem40 checkall
+checkall:: problem41
+problem41: ; make -C PE-problem41 checkall
+checkall:: problem42
+problem42: ; make -C PE-problem42 checkall
+checkall:: problem43
+problem43: ; make -C PE-problem43 checkall
+checkall:: problem44
+problem44: ; make -C PE-problem44 checkall
+checkall:: problem45
+problem45: ; make -C PE-problem45 checkall
+checkall:: problem46
+problem46: ; make -C PE-problem46 checkall
+checkall:: problem47
+problem47: ; make -C PE-problem47 checkall
+checkall:: problem48
+problem48: ; make -C PE-problem48 checkall
+checkall:: problem49
+problem49: ; make -C PE-problem49 checkall
 
-compall:: problem30
-problem30: ; make -C PE-problem30 compall
-compall:: problem31
-problem31: ; make -C PE-problem31 compall
-compall:: problem32
-problem32: ; make -C PE-problem32 compall
-compall:: problem33
-problem33: ; make -C PE-problem33 compall
-compall:: problem34
-problem34: ; make -C PE-problem34 compall
-compall:: problem35
-problem35: ; make -C PE-problem35 compall
-compall:: problem36
-problem36: ; make -C PE-problem36 compall
-compall:: problem37
-problem37: ; make -C PE-problem37 compall
-compall:: problem38
-problem38: ; make -C PE-problem38 compall
-compall:: problem39
-problem39: ; make -C PE-problem39 compall
+checkall:: problem50
+problem50: ; make -C PE-problem50 checkall
+checkall:: problem51
+problem51: ; make -C PE-problem51 checkall
+checkall:: problem52
+problem52: ; make -C PE-problem52 checkall
+checkall:: problem53
+problem53: ; make -C PE-problem53 checkall
+checkall:: problem55
+problem55: ; make -C PE-problem55 checkall
+checkall:: problem56
+problem56: ; make -C PE-problem56 checkall
+checkall:: problem57
+problem57: ; make -C PE-problem57 checkall
+checkall:: problem58
+problem58: ; make -C PE-problem58 checkall
 
-compall:: problem40
-problem40: ; make -C PE-problem40 compall
-compall:: problem41
-problem41: ; make -C PE-problem41 compall
-compall:: problem42
-problem42: ; make -C PE-problem42 compall
-compall:: problem43
-problem43: ; make -C PE-problem43 compall
-compall:: problem44
-problem44: ; make -C PE-problem44 compall
-compall:: problem45
-problem45: ; make -C PE-problem45 compall
-compall:: problem46
-problem46: ; make -C PE-problem46 compall
-compall:: problem47
-problem47: ; make -C PE-problem47 compall
-compall:: problem48
-problem48: ; make -C PE-problem48 compall
-compall:: problem49
-problem49: ; make -C PE-problem49 compall
+checkall:: problem60
+problem60: ; make -C PE-problem60 checkall
+checkall:: problem63
+problem63: ; make -C PE-problem63 checkall
+checkall:: problem65
+problem65: ; make -C PE-problem65 checkall
+checkall:: problem66
+problem66: ; make -C PE-problem66 checkall
+checkall:: problem69
+problem69: ; make -C PE-problem69 checkall
 
-compall:: problem50
-problem50: ; make -C PE-problem50 compall
-compall:: problem51
-problem51: ; make -C PE-problem51 compall
-compall:: problem52
-problem52: ; make -C PE-problem52 compall
-compall:: problem53
-problem53: ; make -C PE-problem53 compall
-compall:: problem55
-problem55: ; make -C PE-problem55 compall
-compall:: problem56
-problem56: ; make -C PE-problem56 compall
-compall:: problem57
-problem57: ; make -C PE-problem57 compall
-compall:: problem58
-problem58: ; make -C PE-problem58 compall
+checkall:: problem71
+problem71: ; make -C PE-problem71 checkall
+checkall:: problem73
+problem73: ; make -C PE-problem73 checkall
+checkall:: problem75
+problem75: ; make -C PE-problem75 checkall
+checkall:: problem76
+problem76: ; make -C PE-problem76 checkall
+checkall:: problem77
+problem77: ; make -C PE-problem77 checkall
+checkall:: problem78
+problem78: ; make -C PE-problem78 checkall
 
-compall:: problem60
-problem60: ; make -C PE-problem60 compall
-compall:: problem63
-problem63: ; make -C PE-problem63 compall
-compall:: problem65
-problem65: ; make -C PE-problem65 compall
-compall:: problem66
-problem66: ; make -C PE-problem66 compall
-compall:: problem69
-problem69: ; make -C PE-problem69 compall
+checkall:: problem80
+problem80: ; make -C PE-problem80 checkall
 
-compall:: problem71
-problem71: ; make -C PE-problem71 compall
-compall:: problem73
-problem73: ; make -C PE-problem73 compall
-compall:: problem75
-problem75: ; make -C PE-problem75 compall
-compall:: problem76
-problem76: ; make -C PE-problem76 compall
-compall:: problem77
-problem77: ; make -C PE-problem77 compall
-compall:: problem78
-problem78: ; make -C PE-problem78 compall
+checkall:: problem92
+problem92: ; make -C PE-problem92 checkall
+checkall:: problem94
+problem94: ; make -C PE-problem94 checkall
+checkall:: problem97
+problem97: ; make -C PE-problem97 checkall
 
-compall:: problem80
-problem80: ; make -C PE-problem80 compall
-
-compall:: problem92
-problem92: ; make -C PE-problem92 compall
-compall:: problem94
-problem94: ; make -C PE-problem94 compall
-compall:: problem97
-problem97: ; make -C PE-problem97 compall
-
-compall:: problem100
-problem100: ; make -C PE-problem100 compall
-compall:: problem104
-problem104: ; make -C PE-problem104 compall
-compall:: problem108
-problem108: ; make -C PE-problem108 compall
-compall:: problem110
-problem110: ; make -C PE-problem110 compall
-compall:: problem120
-problem120: ; make -C PE-problem120 compall
-compall:: problem122
-problem122: ; make -C PE-problem122 compall
-compall:: problem123
-problem123: ; make -C PE-problem123 compall
-compall:: problem125
-problem125: ; make -C PE-problem125 compall
-compall:: problem145
-problem145: ; make -C PE-problem145 compall
-compall:: problem157
-problem157: ; make -C PE-problem157 compall
-compall:: problem162
-problem162: ; make -C PE-problem162 compall
-compall:: problem164
-problem164: ; make -C PE-problem164 compall
-compall:: problem169
-problem169: ; make -C PE-problem169 compall
-compall:: problem301
-problem301: ; make -C PE-problem301 compall
+checkall:: problem100
+problem100: ; make -C PE-problem100 checkall
+checkall:: problem104
+problem104: ; make -C PE-problem104 checkall
+checkall:: problem108
+problem108: ; make -C PE-problem108 checkall
+checkall:: problem110
+problem110: ; make -C PE-problem110 checkall
+checkall:: problem120
+problem120: ; make -C PE-problem120 checkall
+checkall:: problem122
+problem122: ; make -C PE-problem122 checkall
+checkall:: problem123
+problem123: ; make -C PE-problem123 checkall
+checkall:: problem125
+problem125: ; make -C PE-problem125 checkall
+checkall:: problem145
+problem145: ; make -C PE-problem145 checkall
+checkall:: problem157
+problem157: ; make -C PE-problem157 checkall
+checkall:: problem162
+problem162: ; make -C PE-problem162 checkall
+checkall:: problem164
+problem164: ; make -C PE-problem164 checkall
+checkall:: problem169
+problem169: ; make -C PE-problem169 checkall
+checkall:: problem301
+problem301: ; make -C PE-problem301 checkall
 
 ######
 
@@ -204,6 +201,12 @@ Makefiles:: Makefile_problem1
 Makefile_problem1: ; ./utils/makefilegen problem1 > PE-problem1/Makefile
 Makefiles:: Makefile_problem2
 Makefile_problem2: ; ./utils/makefilegen problem2 > PE-problem2/Makefile
+Makefiles:: Makefile_problem3
+Makefile_problem3: ; ./utils/makefilegen problem3 > PE-problem3/Makefile
+Makefiles:: Makefile_problem4
+Makefile_problem4: ; ./utils/makefilegen problem4 > PE-problem4/Makefile
+Makefiles:: Makefile_problem5
+Makefile_problem5: ; ./utils/makefilegen problem5 > PE-problem5/Makefile
 Makefiles:: Makefile_problem6
 Makefile_problem6: ; ./utils/makefilegen problem6 > PE-problem6/Makefile
 Makefiles:: Makefile_problem7

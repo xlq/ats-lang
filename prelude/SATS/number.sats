@@ -105,6 +105,11 @@ fun{a:t@ype} div (x1: a, x2: a):<> a
 (* ****** ****** *)
 
 // S, D, C, Z
+fun{a:t@ype} pow (base: a, exp: a):<> a
+
+(* ****** ****** *)
+
+// S, D, C, Z
 fun{a:t@ype} sqrt (x: a):<> a
 
 (* ****** ****** *)

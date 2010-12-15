@@ -6,9 +6,17 @@
 
 ######
 
-ATSHOMEQ="$(ATSHOME)"
-ATSCC=$(ATSHOMEQ)/bin/atscc
-ATSCTRB=$(ATSHOMEQ)/contrib/glib/atsctrb_glib.o
+ATSUSRQ="$(ATSHOME)"
+ATSLIBQ="$(ATSHOME)"
+ifeq ("$(ATSHOME)","")
+ATSUSRQ="/usr"
+ATSLIBQ="/usr/lib/ats-anairiats-0.2.3"
+endif
+
+######
+
+ATSCC=$(ATSUSRQ)/bin/atscc
+ATSCTRB=$(ATSLIBQ)/contrib/glib/atsctrb_glib.o
 
 ######
 

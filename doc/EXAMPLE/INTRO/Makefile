@@ -19,55 +19,69 @@ ATSOPT=$(ATSUSRQ)/bin/atsopt
 ######
 
 .PHONY: all
-all: checkall
+all:: checkall
+all:: cleanall
 
 ######
 
-checkall: compall cleanall
+checkall::
+cleanall:: clean
+cleanall:: ; $(RMF) ./XREF/*
+cleanall:: ; $(RMF) *_?ats.html
 
 ######
 
-compall:: HelloWorld
+checkall:: HelloWorld
 HelloWorld: HelloWorld.dats
 	$(ATSCC) -o HelloWorld HelloWorld.dats && ./HelloWorld
 
-compall:: f91
+checkall:: f91
+cleanall:: ; $(RMF) f91
 f91: f91.dats
 	$(ATSCC) -o f91 f91.dats && ./f91 0
 
-compall:: fact1
+checkall:: fact1
+cleanall:: ; $(RMF) fact1
 fact1: fact1.dats
 	$(ATSCC) -o fact1 fact1.dats && ./fact1 10
 
-compall:: fact2
+checkall:: fact2
+cleanall:: ; $(RMF) fact2
 fact2: fact2.dats
 	$(ATSCC) -o fact2 fact2.dats && ./fact2 10
 
-compall:: fact3
+checkall:: fact3
+cleanall:: ; $(RMF) fact3
 fact3: fact3.dats
 	$(ATSCC) -D_ATS_PROOFCHECK -o fact3 fact3.dats -lats -lgmp && ./fact3 100
 
-compall:: fact4
+checkall:: fact4
+cleanall:: ; $(RMF) fact4
 fact4: fact4.dats
 	$(ATSCC) -D_ATS_PROOFCHECK -o fact4 fact4.dats -lats -lgmp && ./fact4 10
 
-compall:: fact_in_c
+checkall:: fact_in_c
+cleanall:: ; $(RMF) fact_in_c
 fact_in_c: fact_in_c.dats
 	$(ATSCC) -o fact_in_c fact_in_c.dats && ./fact_in_c 10
 
-compall:: fibs
+checkall:: fibs
+cleanall:: ; $(RMF) fibs
 fibs: fibs.dats
 	$(ATSCC) -o fibs fibs.dats -lats -lgmp && ./fibs 20
 
-compall:: revarr
+checkall:: revarr
+cleanall:: ; $(RMF) revarr
 revarr: revarr.dats
 	$(ATSCC) -o revarr revarr.dats && ./revarr
 
-compall:: revstr
+checkall:: revstr
+cleanall:: ; $(RMF) revstr
 revstr: revstr.dats
 	$(ATSCC) -o revstr revstr.dats && ./revstr "abcdefghijklmnopqrstuvwxyz"
 
-compall:: tally
+checkall:: tally
+cleanall:: ; $(RMF) tally
 tally: tally.dats
 	$(ATSCC) -o tally tally.dats -lats && ./tally
 
@@ -109,24 +123,9 @@ RMF = rm -f
 
 ######
 
-clean::
+clean:
 	$(RMF) *~
 	$(RMF) ./INTRO/*
 	$(RMF) *_dats.c *_sats.c
-
-cleanall:: clean
-	$(RMF) ./XREF/*
-	$(RMF) *_?ats.html
-	if [ -f HelloWorld ] ; then rm HelloWorld ; fi
-	if [ -f f91 ] ; then rm f91 ; fi
-	if [ -f fact1 ] ; then rm fact1 ; fi
-	if [ -f fact2 ] ; then rm fact2 ; fi
-	if [ -f fact3 ] ; then rm fact3 ; fi
-	if [ -f fact4 ] ; then rm fact4 ; fi
-	if [ -f fact_in_c ] ; then rm fact_in_c ; fi
-	if [ -f fibs ] ; then rm fibs ; fi
-	if [ -f revarr ] ; then rm revarr ; fi
-	if [ -f revstr ] ; then rm revstr ; fi
-	if [ -f tally ] ; then rm tally ; fi
 
 ###### end of [Makefile] ######

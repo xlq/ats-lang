@@ -4,14 +4,14 @@
 
 ######
 
-ATSHOMEQ="$(ATSHOME)"
-ifeq ($(ATSHOMEQ),"")
-ATSHOMEQ="/usr" # default value if [ATSHOME] is undefined
+ATSUSRQ="$(ATSHOME)"
+ifeq ($(ATSUSRQ),"")
+ATSUSRQ="/usr"
 endif
 
 ######
 
-ATSCC=$(ATSHOMEQ)/bin/atscc
+ATSCC=$(ATSUSRQ)/bin/atscc
 
 ######
 
@@ -25,7 +25,7 @@ makefilegen: makefilegen.sats makefilegen.dats
 
 ######
 
-RMF=rm -f
+RMF = rm -f
 
 ######
 

@@ -73,16 +73,18 @@ fun emit_sep (out: FILEref): void = {
 
 (* ****** ****** *)
 
-fun emit_checkall (out: FILEref): void = {
-  val () = fprint_string (out, "checkall: compall cleanall\n")
-} // end of [emit_checkall]
+fun emit_all (out: FILEref): void = {
+  val () = fprint_string (out, ".PHONY: all\n")
+  val () = fprint_string (out, "all:: checkall\n")
+  val () = fprint_string (out, "all:: cleanall\n")
+} // end of [emit_all]
 
 (* ****** ****** *)
 
-fun emit_compall_itemname
+fun emit_checkall_itemname
   (out: FILEref, itemname: string): void = {
-  val () = fprintf (out, "compall:: %s\n", @(itemname))
-} // end of [emit_compall_itemname]
+  val () = fprintf (out, "checkall:: %s\n", @(itemname))
+} // end of [emit_checkall_itemname]
 
 (* ****** ****** *)
 
@@ -125,13 +127,13 @@ fun emit04_item_comp_and_exec
 (* ****** ****** *)
 
 fun emit_RMF (out: FILEref): void = {
-  val () = fprint_string (out, "RMF=rm -f\n")
+  val () = fprint_string (out, "RMF = rm -f\n")
 } // end of [emit_RMF]
 
 (* ****** ****** *)
 
 fun emit_clean (out: FILEref): void = {
-  val () = fprint_string (out, "clean::\n")
+  val () = fprint_string (out, "clean:\n")
   val () = fprint_string (out, "\t$(RMF) *~\n")
   val () = fprint_string (out, "\t$(RMF) *_?ats.c *_?ats.o\n")
 } // end of [emit_clean]
@@ -158,8 +160,8 @@ fun emit01_Makefile (
   val () = emit_ATSCC (out)
   val () = emit_ATSOPT (out)
   val () = emit_sep (out)
-  val () = emit_checkall (out)
-  val () = emit_compall_itemname (out, itemname)
+  val () = emit_all (out)
+  val () = emit_checkall_itemname (out, itemname)
   val () = emit_sep (out)
   val () = emit01_item_comp_and_exec (out, itemname)
   val () = emit_sep (out)
@@ -181,8 +183,8 @@ fun emit02_Makefile (
   val () = emit_ATSCC (out)
   val () = emit_ATSOPT (out)
   val () = emit_sep (out)
-  val () = emit_checkall (out)
-  val () = emit_compall_itemname (out, itemname)
+  val () = emit_all (out)
+  val () = emit_checkall_itemname (out, itemname)
   val () = emit_sep (out)
   val () = emit02_item_comp_and_exec (out, itemname)
   val () = emit_sep (out)
@@ -204,8 +206,8 @@ fun emit03_Makefile (
   val () = emit_ATSCC (out)
   val () = emit_ATSOPT (out)
   val () = emit_sep (out)
-  val () = emit_checkall (out)
-  val () = emit_compall_itemname (out, itemname)
+  val () = emit_all (out)
+  val () = emit_checkall_itemname (out, itemname)
   val () = emit_sep (out)
   val () = emit03_item_comp_and_exec (out, itemname) // -lgmp
   val () = emit_sep (out)
@@ -227,8 +229,8 @@ fun emit04_Makefile (
   val () = emit_ATSCC (out)
   val () = emit_ATSOPT (out)
   val () = emit_sep (out)
-  val () = emit_checkall (out)
-  val () = emit_compall_itemname (out, itemname)
+  val () = emit_all (out)
+  val () = emit_checkall_itemname (out, itemname)
   val () = emit_sep (out)
   val () = emit04_item_comp_and_exec (out, itemname) // -lgmp -lm
   val () = emit_sep (out)
@@ -250,8 +252,8 @@ fun emit_Makefile_problem1
   val () = emit_ATSCC (out)
   val () = emit_ATSOPT (out)
   val () = emit_sep (out)
-  val () = emit_checkall (out)
-  val () = emit_compall_itemname (out, itemname)
+  val () = emit_all (out)
+  val () = emit_checkall_itemname (out, itemname)
   val () = emit_sep (out)
   val () = emit01pfck_item_comp_and_exec (out, itemname)
   val () = emit_sep (out)
@@ -274,9 +276,9 @@ fun emit_Makefile_problem2
   val () = emit_ATSCC (out)
   val () = emit_ATSOPT (out)
   val () = emit_sep (out)
-  val () = emit_checkall (out)
-  val () = emit_compall_itemname (out, itemname)
-  val () = emit_compall_itemname (out, itemname2)
+  val () = emit_all (out)
+  val () = emit_checkall_itemname (out, itemname)
+  val () = emit_checkall_itemname (out, itemname2)
   val () = emit_sep (out)
   val () = emit03_item_comp_and_exec (out, itemname) // -lgmp
   val () = emit01pfck_item_comp_and_exec (out, itemname2)
@@ -291,6 +293,20 @@ fun emit_Makefile_problem2
 
 (* ****** ****** *)
 
+fun emit_Makefile_problem3
+  (out: FILEref): void = emit03_Makefile (out, "problem3-hwxi")
+// end of [emit_Makefile_problem3]
+
+fun emit_Makefile_problem4
+  (out: FILEref): void = emit01_Makefile (out, "problem4-hwxi")
+// end of [emit_Makefile_problem4]
+
+fun emit_Makefile_problem5
+  (out: FILEref): void = emit03_Makefile (out, "problem5-hwxi")
+// end of [emit_Makefile_problem5]
+
+(* ****** ****** *)
+
 fun emit_Makefile_problem6
   (out: FILEref): void = {
   val itemname = "problem6-hwxi"
@@ -301,9 +317,9 @@ fun emit_Makefile_problem6
   val () = emit_ATSCC (out)
   val () = emit_ATSOPT (out)
   val () = emit_sep (out)
-  val () = emit_checkall (out)
-  val () = emit_compall_itemname (out, itemname)
-  val () = emit_compall_itemname (out, itemname2)
+  val () = emit_all (out)
+  val () = emit_checkall_itemname (out, itemname)
+  val () = emit_checkall_itemname (out, itemname2)
   val () = emit_sep (out)
   val () = emit01_item_comp_and_exec (out, itemname)
   val () = emit01_item_comp_and_exec (out, itemname2)
@@ -328,9 +344,9 @@ fun emit_Makefile_problem7
   val () = emit_ATSCC (out)
   val () = emit_ATSOPT (out)
   val () = emit_sep (out)
-  val () = emit_checkall (out)
-  val () = emit_compall_itemname (out, itemname)
-  val () = emit_compall_itemname (out, itemname2)
+  val () = emit_all (out)
+  val () = emit_checkall_itemname (out, itemname)
+  val () = emit_checkall_itemname (out, itemname2)
   val () = emit_sep (out)
   val () = emit01_item_comp_and_exec (out, itemname)
   val () = emit02_item_comp_and_exec (out, itemname2) // -lm
@@ -388,10 +404,10 @@ fun emit_Makefile_problem15
   val () = emit_ATSCC (out)
   val () = emit_ATSOPT (out)
   val () = emit_sep (out)
-  val () = emit_checkall (out)
-  val () = emit_compall_itemname (out, itemname)
-  val () = emit_compall_itemname (out, itemname2)
-  val () = emit_compall_itemname (out, itemname3)
+  val () = emit_all (out)
+  val () = emit_checkall_itemname (out, itemname)
+  val () = emit_checkall_itemname (out, itemname2)
+  val () = emit_checkall_itemname (out, itemname3)
   val () = emit_sep (out)
   val () = emit03_item_comp_and_exec (out, itemname) // -lgmp
   val () = emit01_item_comp_and_exec (out, itemname2)
@@ -418,9 +434,9 @@ fun emit_Makefile_problem16
   val () = emit_ATSCC (out)
   val () = emit_ATSOPT (out)
   val () = emit_sep (out)
-  val () = emit_checkall (out)
-  val () = emit_compall_itemname (out, itemname)
-  val () = emit_compall_itemname (out, itemname2)
+  val () = emit_all (out)
+  val () = emit_checkall_itemname (out, itemname)
+  val () = emit_checkall_itemname (out, itemname2)
   val () = emit_sep (out)
   val () = emit03_item_comp_and_exec (out, itemname) // -lgmp
   val () = emit01_item_comp_and_exec (out, itemname2)
@@ -459,9 +475,9 @@ fun emit_Makefile_problem20
   val () = emit_ATSCC (out)
   val () = emit_ATSOPT (out)
   val () = emit_sep (out)
-  val () = emit_checkall (out)
-  val () = emit_compall_itemname (out, itemname)
-  val () = emit_compall_itemname (out, itemname2)
+  val () = emit_all (out)
+  val () = emit_checkall_itemname (out, itemname)
+  val () = emit_checkall_itemname (out, itemname2)
   val () = emit_sep (out)
   val () = emit03_item_comp_and_exec (out, itemname) // -lgmp
   val () = emit01_item_comp_and_exec (out, itemname2)
@@ -504,9 +520,9 @@ fun emit_Makefile_problem25
   val () = emit_ATSCC (out)
   val () = emit_ATSOPT (out)
   val () = emit_sep (out)
-  val () = emit_checkall (out)
-  val () = emit_compall_itemname (out, itemname)
-  val () = emit_compall_itemname (out, itemname2)
+  val () = emit_all (out)
+  val () = emit_checkall_itemname (out, itemname)
+  val () = emit_checkall_itemname (out, itemname2)
   val () = emit_sep (out)
   val () = emit03_item_comp_and_exec (out, itemname) // -lgmp
   val () = emit01_item_comp_and_exec (out, itemname2)
@@ -664,8 +680,8 @@ fun emit_Makefile_problem60
   val () = emit_ATSCC (out)
   val () = emit_ATSOPT (out)
   val () = emit_sep (out)
-  val () = emit_checkall (out)
-  val () = emit_compall_itemname (out, itemname)
+  val () = emit_all (out)
+  val () = emit_checkall_itemname (out, itemname)
   val () = emit_sep (out)
   val () = emit02gc_item_comp_and_exec (out, itemname) // -lm
   val () = emit_sep (out)
@@ -806,6 +822,9 @@ main (argc, argv) = () where {
 //
     | "problem1" => emit_Makefile_problem1 (stdout_ref)
     | "problem2" => emit_Makefile_problem2 (stdout_ref)
+    | "problem3" => emit_Makefile_problem3 (stdout_ref)
+    | "problem4" => emit_Makefile_problem4 (stdout_ref)
+    | "problem5" => emit_Makefile_problem5 (stdout_ref)
     | "problem6" => emit_Makefile_problem6 (stdout_ref)
     | "problem7" => emit_Makefile_problem7 (stdout_ref)
     | "problem8" => emit_Makefile_problem8 (stdout_ref)

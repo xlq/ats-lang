@@ -23,64 +23,64 @@ all:: cleanall
 ######
 
 checkall::
-cleanall:: cleanl
+cleanall:: clean
 cleanall:: ; $(RMF) ./*_?ats.html
 cleanall:: ; $(RMF) ./XREF/*.html
 
 ######
 
-compall:: fib_mt
-cleanall: f; $(RMF) ib_mt
+checkall:: fib_mt
 fib_mt: fib_mt.dats
 	$(ATSCC) -o fib_mt -O3 -D_ATS_MULTITHREAD fib_mt.dats -lpthread
+cleanall:: ; $(RMF) fib_mt
 
 ######
 
-compall:: nsieve_mt
-cleanall: n; $(RMF) sieve_mt
+checkall:: nsieve_mt
 nsieve_mt: nsieve_mt.dats
 	$(ATSCC) -o nsieve_mt -O3 -D_ATS_MULTITHREAD nsieve_mt.dats -lm -lpthread
+cleanall:: ; $(RMF) nsieve_mt
 
-compall:: nsieve2_mt
-cleanall: n; $(RMF) sieve2_mt
+checkall:: nsieve2_mt
 nsieve2_mt: nsieve2_mt.dats
 	$(ATSCC) -o nsieve2_mt -O3 -D_ATS_MULTITHREAD nsieve2_mt.dats -lm -lpthread
+cleanall:: ; $(RMF) nsieve2_mt
 
 ######
 
-compall:: partial-sums_mt
-cleanall: p; $(RMF) artial-sums_mt
+checkall:: partial-sums_mt
 partial-sums_mt: partial-sums_mt.dats
 	$(ATSCC) -o partial-sums_mt -O3 -D_ATS_MULTITHREAD partial-sums_mt.dats -lm -lpthread
+cleanall:: ; $(RMF) partial-sums_mt
 
 ######
 
-compall:: qsort_mt_flt
-cleanall: q; $(RMF) sort_mt_flt
+checkall:: qsort_mt_flt
 qsort_mt_flt: qsort_mt_flt.dats
 	$(ATSCC) -o qsort_mt_flt -O3 -D_ATS_MULTITHREAD qsort_mt_flt.dats -lm -lpthread
+cleanall:: ; $(RMF) qsort_mt_flt
 
-compall:: qsort_mt_int
-cleanall: q; $(RMF) sort_mt_int
+checkall:: qsort_mt_int
 qsort_mt_int: qsort_mt_int.dats
 	$(ATSCC) -o qsort_mt_int -O3 -D_ATS_MULTITHREAD qsort_mt_int.dats -lm -lpthread
+cleanall:: ; $(RMF) qsort_mt_int
 
 ######
 
-compall:: randcompec_mt
-cleanall: r; $(RMF) andcompec_mt
+checkall:: randcompec_mt
 randcompec_mt: randcompec_mt.dats
 	$(ATSCC) -o randcompec_mt -O3 -D_ATS_MULTITHREAD randcompec_mt.dats -lpthread
+cleanall:: ; $(RMF) randcompec_mt
 
-compall:: randcompec2_mt
-cleanall: r; $(RMF) andcompec2_mt
+checkall:: randcompec2_mt
 randcompec2_mt: randcompec2_mt.dats
 	$(ATSCC) -o randcompec2_mt -O3 -D_ATS_MULTITHREAD randcompec2_mt.dats -lpthread
+cleanall:: ; $(RMF) randcompec2_mt
 
-compall:: randcompec3_mt
-cleanall: r; $(RMF) andcompec3_mt
+checkall:: randcompec3_mt
 randcompec3_mt: randcompec3_mt.dats
 	$(ATSCC) -o randcompec3_mt -O3 -D_ATS_MULTITHREAD randcompec3_mt.dats -lpthread
+cleanall:: ; $(RMF) randcompec3_mt
 
 ######
 
@@ -99,7 +99,7 @@ xref:: ; $(ATSOPT) --posmark_xref=XREF -d randcompec3_mt.dats > randcompec3_mt_d
 
 ######
 
-RMF=rm -f
+RMF = rm -f
 
 ######
 

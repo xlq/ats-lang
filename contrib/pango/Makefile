@@ -7,8 +7,14 @@
 
 ######
 
-ATSHOMEQ="$(ATSHOME)"
-ATSCC=$(ATSHOMEQ)/bin/atscc
+ATSUSRQ="$(ATSHOME)"
+ifeq ($(ATSUSRQ),"")
+ATSUSRQ="/usr"
+endif
+
+######
+
+ATSCC=$(ATSUSRQ)/bin/atscc
 PANGOCFLAGS=`pkg-config pango --cflags`
 
 ######

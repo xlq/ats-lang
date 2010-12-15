@@ -8,8 +8,14 @@
 
 ######
 
-ATSHOMEQ="$(ATSHOME)"
-ATSCC=$(ATSHOMEQ)/bin/atscc -Wall
+ATSUSRQ="$(ATSHOME)"
+ifeq ($(ATSUSRQ),"")
+ATSUSRQ="/usr"
+endif
+
+######
+
+ATSCC=$(ATSUSRQ)/bin/atscc -Wall
 
 LD=ld
 LIBFLAGS=-L/usr/lib/atlas

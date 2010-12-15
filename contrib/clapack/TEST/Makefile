@@ -6,13 +6,22 @@
 
 ######
 
-ATSHOMEQ="$(ATSHOME)"
-ATSCC=$(ATSHOMEQ)/bin/atscc
-ATSOPT=$(ATSHOMEQ)/bin/atsopt
+ATSUSRQ="$(ATSHOME)"
+ATSLIBQ="$(ATSHOME)"
+ifeq ("$(ATSHOME)","")
+ATSUSRQ="/usr"
+ATSLIBQ="/usr/lib/ats-anairiats-0.2.3"
+endif
+
+######
+
+ATSCC=$(ATSUSRQ)/bin/atscc
+ATSOPT=$(ATSUSRQ)/bin/atsopt
+
 LIBFLAGS=-L/usr/lib/atlas -L/usr/lib64/atlas
 ATSCTRB=\
-  $(ATSHOMEQ)/contrib/cblas/atsctrb_cblas.o \
-  $(ATSHOMEQ)/contrib/clapack/atsctrb_clapack.o \
+  $(ATSLIBQ)/contrib/cblas/atsctrb_cblas.o \
+  $(ATSLIBQ)/contrib/clapack/atsctrb_clapack.o \
 
 ######
 

@@ -4,16 +4,21 @@
 #
 ######
 
-ATSHOMEQ="$(ATSHOME)"
-ATSCC=$(ATSHOMEQ)/bin/atscc
-ATSCTRB=$(ATSHOMEQ)/contrib/parcomb/atsctrb_parcomb.o
+ATSUSRQ="$(ATSHOME)"
+ATSLIBQ="$(ATSHOME)"
+ifeq ("$(ATSHOME)","")
+ATSUSRQ="/usr"
+ATSLIBQ="/usr/lib/ats-anairiats-0.2.3"
+endif
+
+######
+
+ATSCC=$(ATSUSRQ)/bin/atscc
+ATSCTRB=$(ATSLIBQ)/contrib/parcomb/atsctrb_parcomb.o
 
 ######
 
 .PHONY: all
-
-######
-
 all:: checkall
 all:: cleanall
 

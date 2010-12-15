@@ -144,6 +144,13 @@ implement div<zcmplx> (x1, x2) = $CMPLX.div_zcmplx_zcmplx (x1, x2)
 
 (* ****** ****** *)
 
+implement pow<float> (x, y) = $MATH.powf (x, y)
+implement pow<double> (x, y) = $MATH.pow (x, y)
+implement pow<ccmplx> (x, y) = $CMPLX.cpowf (x, y)
+implement pow<zcmplx> (x, y) = $CMPLX.cpow (x, y)
+
+(* ****** ****** *)
+
 implement ceil<float> (x) = $MATH.ceilf (x)
 implement ceil<double> (x) = $MATH.ceil (x)
 

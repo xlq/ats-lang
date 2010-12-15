@@ -6,15 +6,24 @@
 
 ######
 
-ATSHOMEQ="$(ATSHOME)"
-ATSCC=$(ATSHOMEQ)/bin/atscc
+ATSUSRQ="$(ATSHOME)"
+ATSLIBQ="$(ATSHOME)"
+ifeq ("$(ATSHOME)","")
+ATSUSRQ="/usr"
+ATSLIBQ="/usr/lib/ats-anairiats-0.2.3"
+endif
+
+######
+
+ATSUSRQ="$(ATSHOME)"
+ATSCC=$(ATSUSRQ)/bin/atscc
 ATSCTRB=\
-  $(ATSHOMEQ)/contrib/SDL/atsctrb_SDL.o
+  $(ATSLIBQ)/contrib/SDL/atsctrb_SDL.o
 ATSCTRB_GL=\
-  $(ATSHOMEQ)/contrib/GL/atsctrb_GL.o
+  $(ATSLIBQ)/contrib/GL/atsctrb_GL.o
 ATSCTRB_xr=\
-  $(ATSHOMEQ)/contrib/X11/atsctrb_X11.o \
-  $(ATSHOMEQ)/contrib/cairo/atsctrb_cairo.o
+  $(ATSLIBQ)/contrib/X11/atsctrb_X11.o \
+  $(ATSLIBQ)/contrib/cairo/atsctrb_cairo.o
 SDLCFLAGS=`sdl-config --cflags`
 CAIROCFLAGS=`pkg-config cairo --cflags`
 

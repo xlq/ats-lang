@@ -7,8 +7,14 @@
 
 ######
 
-ATSHOMEQ="$(ATSHOME)"
-ATSCC=$(ATSHOMEQ)/bin/atscc -Wall
+ATSUSRQ="$(ATSHOME)"
+ifeq ($(ATSHOME),"")
+ATSUSRQ="/usr"
+endif
+
+######
+
+ATSCC=$(ATSUSRQ)/bin/atscc -Wall
 
 ######
 

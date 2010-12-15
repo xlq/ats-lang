@@ -1,5 +1,5 @@
 #
-# Time of Generation: Tue Dec 14 22:22:26 2010
+# Time of Generation: Wed Dec 15 14:30:49 2010
 #
 
 ######
@@ -13,9 +13,11 @@ ATSOPT=$(ATSUSRQ)/bin/atsopt
 
 ######
 
-checkall: compall cleanall
-compall:: problem25-hwxi
-compall:: problem25-hwxi2
+.PHONY: all
+all:: checkall
+all:: cleanall
+checkall:: problem25-hwxi
+checkall:: problem25-hwxi2
 
 ######
 
@@ -26,7 +28,7 @@ problem25-hwxi2: problem25-hwxi2.dats
 
 ######
 
-RMF=rm -f
+RMF = rm -f
 
 ######
 

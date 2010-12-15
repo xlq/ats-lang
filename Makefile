@@ -287,9 +287,6 @@ liblines::
 clean::
 	rm -f bootstrap0/*.o
 	rm -f bootstrap1/*.c bootstrap1/*.o
-	$(MAKE) -C utils/atslex -f ./Makefile clean
-	$(MAKE) -C utils/scripts -f ./Makefile clean
-	cd ccomp/runtime/GCATS; $(MAKE) clean
 
 cleanall:: clean
 	rm -f $(BUILT_CONFIG_FILES)
@@ -308,7 +305,6 @@ cleanall:: clean
 	rm -f ccomp/lib64/libats_lex.a
 	rm -f ccomp/lib64/libats_smlbas.a
 	rm -f ccomp/lib64/output/*
-	$(MAKE) -C ccomp/runtime/GCATS -f ./Makefile cleanall
 	rm -f contrib/glib/atsctrb_glib.o
 	rm -f contrib/cairo/atsctrb_cairo.o
 	rm -f contrib/pango/atsctrb_pango.o
@@ -316,6 +312,15 @@ cleanall:: clean
 	rm -f contrib/GTK/atsctrb_GTK.o
 	rm -f contrib/GL/atsctrb_GL.o
 	rm -f contrib/SDL/atsctrb_SDL.o
+
+cleanall::
+	$(MAKE) -C utils/atslex -f ./Makefile cleanall
+cleanall::
+	$(MAKE) -C utils/scripts -f ./Makefile cleanall
+cleanall::
+	$(MAKE) -C ccomp/runtime/GCATS -f ./Makefile cleanall
+
+cleanall::
 	find . -name .svn -prune -o -name \*~ -exec rm \{} \;
 
 ######
