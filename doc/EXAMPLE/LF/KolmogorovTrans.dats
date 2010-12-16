@@ -3,13 +3,12 @@
 // Implementing Kolmogorov's translation on propositional logic
 //
 //
-
 // February 2005: It is completed by Sa Cui and Hongwei Xi
 // January 2007: It is ported to ATS/Geizella by Hongwei Xi
-
+//
 // March 5th, 2008:
 // It is verified by ATS/Anairiats (without any changes being made).
-
+//
 (* ****** ****** *)
 
 // Infix operators

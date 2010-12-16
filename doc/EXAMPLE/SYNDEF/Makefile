@@ -7,15 +7,17 @@
 ######
 
 ATSUSRQ="$(ATSHOME)"
-ifeq ($(ATSUSRQ),"")
+ATSLIBQ="$(ATSHOME)"
+ifeq ($"(ATSHOME)","")
 ATSUSRQ="/usr"
+ATSLIBQ="/usr/lib/ats-anairiats-0.2.3"
 endif
 
 ######
 
 ATSCC=$(ATSUSRQ)/bin/atscc
 ATSOPT=$(ATSUSRQ)/bin/atsopt
-ATSOPT=$(ATSUSRQ)/src/atsopt
+ATSOPT=$(ATSLIBQ)/src/atsopt
 
 ######
 

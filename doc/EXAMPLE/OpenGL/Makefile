@@ -8,11 +8,6 @@
 
 ######
 
-.PHONY: all
-all: checkall
-
-######
-
 ATSUSRQ="$(ATSHOME)"
 ifeq ($(ATSUSRQ),"")
 ATSUSRQ="/usr"
@@ -123,7 +118,7 @@ glTetrix: glTetrix.dats
 
 ######
 
-RMF=rm -f
+RMF = rm -f
 
 ######
 
