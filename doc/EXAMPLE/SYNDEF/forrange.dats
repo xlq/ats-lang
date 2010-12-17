@@ -45,8 +45,12 @@ val xs = array0_make_arrsz
 val xs = array0! {int} (tupz! 1 2 3 4 5 6 7 8 9 10)
 var prod: int = 1
 val nxs = array0_size (xs)
+//
+val _0 = atsyndef__of_int<size_t> (0)
+and _2 = atsyndef__of_int<size_t> (2)
+//
 val () = for!
-  (i:size_t) in_range (nxs) do {
+  (i:size_t) in_range (_0,nxs,_2) do {
   val x = xs[i]
   val () = if i >= 1 then print "," else ()
   val () = print x

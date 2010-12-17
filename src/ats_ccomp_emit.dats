@@ -1119,13 +1119,15 @@ emit_kont
 
 (* ****** ****** *)
 
-extern fun emit_patck {m:file_mode} (
+extern
+fun emit_patck {m:file_mode} (
   pf: fmlte (m, w) | out: &FILE m, vp: valprim, patck: patck, fail: kont
-) : void
+) : void // end of [emit_patch]
 
 implement
-emit_patck
-  (pf | out, vp, patck, fail) = begin
+emit_patck (
+  pf | out, vp, patck, fail
+) = begin
   case+ patck of
   | PATCKbool b => begin
       fprint1_string (pf | out, "if (");
@@ -1236,8 +1238,10 @@ end (* end of [emit_patck] *)
 
 (* ****** ****** *)
 
-extern fun emit_branch {m:file_mode}
+extern
+fun emit_branch {m:file_mode}
   (pf: fmlte (m, w) | out: &FILE m, br: branch): void
+// end of [emit_branch]
 
 implement
 emit_branch
@@ -1258,7 +1262,9 @@ extern fun emit_branchlst {m:file_mode}
 
 implement
 emit_branchlst {m} (pf | out, brs) = let
-  fun aux (out: &FILE m, i: int, brs: branchlst): void =
+  fun aux (
+    out: &FILE m, i: int, brs: branchlst
+  ) : void =
     case+ brs of
     | list_cons (br, brs) => let
         val () = if i > 0 then fprint1_char (pf | out, '\n')
@@ -1266,6 +1272,7 @@ emit_branchlst {m} (pf | out, brs) = let
         emit_branch (pf | out, br); aux (out, i+1, brs)
       end // end of [list_cons]
     | list_nil () => ()
+  // end of [aux]
 in
   aux (out, 0, brs)
 end // end of [emit_branchlst]
@@ -1273,8 +1280,10 @@ end // end of [emit_branchlst]
 (* ****** ****** *)
 
 implement
-emit_cloenv {m}
-  (pf | out, map, vtps, i0): int = let
+emit_cloenv {m} (
+  pf | out, map, vtps, i0
+) : int = let
+//
   fn aux_envmap (
       out: &FILE m
     , map: envmap_t, d2v: d2var_t
@@ -1292,7 +1301,7 @@ emit_cloenv {m}
         $Err.abort {void} ()
       end // end of [None_vt]
   end // end of [envmap]
-
+//
   fun aux_main (
       out: &FILE m
     , map: envmap_t
@@ -1312,11 +1321,12 @@ emit_cloenv {m}
       end // end of [list_vt_cons]
     | ~list_vt_nil () => i
   end // end of [aux_main]
-
+//
   val d2vs = vartypset_d2varlst_make (vtps)
   var err: int = 0
   val n = aux_main (out, map, i0, d2vs, err)
   val () = if err > 0 then $Err.abort {void} ()
+//
 in
   n - i0 // the number of variables in the closure environment
 end // end of [emit_cloenv]
@@ -1446,12 +1456,13 @@ end // end of [emit_instr_assgn_arr]
 (* ****** ****** *)
 
 (*
-
-// This definition should not be changed!!!
+//
+// HX: This definition should not be changed!!!
+//
 viewtypedef
 arraysize_viewt0ype_int_viewt0ype (a: viewt@ype, n:int) =
   [l:addr | l <> null] (free_gc_v (a, n, l), @[a][n] @ l | ptr l, int n)
-
+// end of [arraysize_viewt0ype_int_viewt0ype]
 *)
 
 fn emit_instr_arr_heap {m:file_mode} (
@@ -2132,8 +2143,11 @@ extern fun emit_funarg {m:file_mode}
 // end of [emit_funarg]
 
 implement
-emit_funarg {m} (pf | out, hits) = let
-  fun loop (out: &FILE m, i: int, hits: hityplst): void =
+emit_funarg {m}
+  (pf | out, hits) = let
+  fun loop (
+    out: &FILE m, i: int, hits: hityplst
+  ) : void =
     case+ hits of
     | list_cons (hit, hits) => let
         val () = if i > 0 then fprint1_string (pf | out, ", ")
@@ -2159,7 +2173,9 @@ extern fun emit_funenvarg {m:file_mode}
 
 local
 
-dataviewtype ENV (l:addr, i:addr) = ENVcon (l, i) of (ptr l, ptr i)
+dataviewtype ENV
+  (l:addr, i:addr) = ENVcon (l, i) of (ptr l, ptr i)
+// end of [ENV]
 
 fn _emit_funenvarg {m:file_mode} {l:addr} (
     pf_mod: fmlte (m, w)
@@ -2243,19 +2259,19 @@ end // end of [funentry_env_err]
 
 extern fun emit_closure_type {m:file_mode} (
   pf_mod: fmlte (m, w) | out: &FILE m, fl: funlab_t, vtps: vartypset
-) : void
+) : void // end of [emit_closure_type]
 
 extern fun emit_closure_init {m:file_mode} (
   pf_mod: fmlte (m, w) | out: &FILE m, fl: funlab_t, vtps: vartypset
-) : void
+) : void // end of [emit_closure_init]
 
 extern fun emit_closure_make {m:file_mode} (
   pf_mod: fmlte (m, w) | out: &FILE m, fl: funlab_t, vtps: vartypset
-) : void
+) : void // end of [emit_closure_make]
 
 extern fun emit_closure_clofun {m:file_mode} (
   pf_mod: fmlte (m, w) | out: &FILE m, fl: funlab_t, vtps: vartypset
-) : void
+) : void // end of [emit_closure_clofun]
 
 (* ****** ****** *)
 

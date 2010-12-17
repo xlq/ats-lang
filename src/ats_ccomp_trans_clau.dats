@@ -9,7 +9,7 @@
 (*
 ** ATS/Anairiats - Unleashing the Potential of Types!
 **
-** Copyright (C) 2002-2008 Hongwei Xi, Boston University
+** Copyright (C) 2002-2010 Hongwei Xi, Boston University
 **
 ** All rights reserved
 **
@@ -30,21 +30,20 @@
 *)
 
 (* ****** ****** *)
-
+//
 // Author: Hongwei Xi (hwxi AT cs DOT bu DOT edu)
 // Time: May 2008
-
+//
 (* ****** ****** *)
 
 %{^
-
 #include "ats_intinf.cats"
-
-%}
+%} // end of [%{^]
 
 (* ****** ****** *)
 
-staload IntInf = "ats_intinf.sats"
+staload
+IntInf = "ats_intinf.sats"
 staload Lab = "ats_label.sats"
 staload Lst = "ats_list.sats"
 
@@ -63,19 +62,22 @@ staload "ats_ccomp_env.sats"
 
 viewtypedef branchlst_vt = List_vt branch
 
-fn branch_make (tl: tmplab_t, inss: instrlst): branch = '{
+fn branch_make (
+  tl: tmplab_t, inss: instrlst
+) : branch = '{
   branch_lab= tl, branch_inss= inss
-}
+} // end of [branch_make]
 
 (* ****** ****** *)
 
 datatype tmpmovlst =
   | TMPMOVLSTcons of (tmpvar_t, tmpvar_t, tmpmovlst)
   | TMPMOVLSTnil
+// end of [tmpmovlst]
 
 typedef matpnt = '{
   matpnt_kont= kont, matpnt_tmpmovlst= tmpmovlst
-}
+} // end of [matpnt]
 
 (* ****** ****** *)
 
@@ -86,9 +88,13 @@ extern fun matpnt_tmpmovlst_get (mpt: matpnt_t): tmpmovlst
 extern fun matpnt_tmpmovlst_set (mpt: matpnt_t, _: tmpmovlst): void
   = "atsccomp_matpnt_tmpmovlst_set"
 
+(* ****** ****** *)
+
 local
 
-fn _matpnt_make (k: kont, xs: tmpmovlst): matpnt = '{
+fn _matpnt_make (
+  k: kont, xs: tmpmovlst
+) : matpnt = '{
   matpnt_kont= k, matpnt_tmpmovlst= xs
 } // end of [matpnt_make]
 
@@ -104,18 +110,25 @@ implement matpnt_make (k, xs) = _matpnt_make (k, xs)
 implement matpnt_kont_get (mpt) = mpt.matpnt_kont
 implement matpnt_tmpmovlst_get (mpt) = mpt.matpnt_tmpmovlst
 
-implement emit_matpnt {m} (pf | out, mpt) = let
-  val tmpmovlst = matpnt_tmpmovlst_get (mpt)
+implement
+emit_matpnt {m}
+  (pf | out, mpt) = let
+  val tmpmovlst =
+    matpnt_tmpmovlst_get (mpt)
+  // end of [val]
   val () = aux (out, tmpmovlst) where {
-    fun aux
-      (out: &FILE m, xs: tmpmovlst): void = begin case+ xs of
-      | TMPMOVLSTcons (tmp1, tmp2, xs) => aux (out, xs)  where {
+    fun aux (
+      out: &FILE m, xs: tmpmovlst
+    ) : void = begin case+ xs of
+      | TMPMOVLSTcons (
+          tmp1, tmp2, xs
+        ) => aux (out, xs)  where {
           val () = emit_tmpvar (pf | out, tmp2)
           val () = fprint1_string (pf | out, " = ")
           val () = emit_tmpvar (pf | out, tmp1)
           val () = fprint1_string (pf | out, " ; ")
         } // end of [where]
-      | TMPMOVLSTnil () => ()
+      | TMPMOVLSTnil () => () // end of [TMPMOVLSTnil]
     end // end of [aux]
   } // end of [where]
   val () = emit_kont (pf | out, matpnt_kont_get mpt)
@@ -138,8 +151,10 @@ fun ccomp_hiclau (
 , tmp_res: tmpvar_t
 ) : @(matpntlst, matpntopt)
 
-implement ccomp_hiclau
-  (loc0, level, branchlst, tl, vps, hicl, tmp_res) = let
+implement
+ccomp_hiclau (
+  loc0, level, branchlst, tl, vps, hicl, tmp_res
+) = let
 //
   fun aux_pat (
       res: &instrlst_vt
@@ -236,8 +251,12 @@ extern fun hipatlst_test_int (hips1: hipatlst, hips2: hipatlst): bool
 
 extern fun labhipatlst_test_int
   (lhips1: labhipatlst, lhips2: labhipatlst): bool
+// end of [labhipatlst_test_int]
 
-implement hipat_test_int (hip1, hip2) = let
+(* ****** ****** *)
+
+implement
+hipat_test_int (hip1, hip2) = let
 (*
   val () = begin
     print "hipat_test_int: hip1 = "; print hip1; print_newline ();
@@ -274,8 +293,9 @@ in
 end // end of [hipat_test_int]
 
 (* [hips1] and [hips2] are of the same length *)
-implement hipatlst_test_int
-  (hips1, hips2) = begin case+ hips1 of
+implement
+hipatlst_test_int (hips1, hips2) = begin
+  case+ hips1 of
   | list_cons (hip1, hips1) => begin case+ hips2 of
     | list_cons (hip2, hips2) => begin
         if hipat_test_int (hip1, hip2) then hipatlst_test_int (hips1, hips2)
@@ -288,8 +308,10 @@ implement hipatlst_test_int
     end // end of [list_nil]
 end (* end of [hipatlst_test_int] *)
 
-implement labhipatlst_test_int
-  (lhips1, lhips2) = begin case+ lhips1 of
+implement
+labhipatlst_test_int
+  (lhips1, lhips2) = begin
+  case+ lhips1 of
   | LABHIPATLSTcons (l1, hip1, hips1) => begin
     case+ lhips2 of
     | LABHIPATLSTcons (l2, hip2, hips2) => begin
@@ -311,28 +333,33 @@ end // end of [labhipatlst_test_int]
 
 extern fun hipat_test_sub (hip1: hipat, hip2: hipat): bool
 extern fun hipatlst_test_sub (hips1: hipatlst, hips2: hipatlst): bool
-
 extern fun labhipatlst_test_sub
   (lhips1: labhipatlst, lhips2: labhipatlst): bool
+// end of [labhipatlst_test_sub]
 
-fun hipat_is_any (hip0: hipat): bool = begin
+(* ****** ****** *)
+
+fun hipat_is_any
+  (hip0: hipat): bool =
   case+ hip0.hipat_node of
   | HIPann (hip, _) => hipat_is_any hip
   | HIPany _ => true
   | HIPas (_, _, hip) => hipat_is_any hip
   | HIPvar _ => true
   | _ => false
-end // end of [hipat_is_any]
+// end of [hipat_is_any]
 
-fun hipatlst_is_any (hips: hipatlst): bool = begin
+fun hipatlst_is_any
+  (hips: hipatlst): bool =
   case+ hips of
   | list_cons (hip, hips) => begin
       if hipat_is_any hip then hipatlst_is_any hips else false
     end
   | list_nil () => false
-end // end of [hipatlst_is_any]
+// end of [hipatlst_is_any]
 
-implement hipat_test_sub (hip1, hip2) = let
+implement
+hipat_test_sub (hip1, hip2) = let
 (*
   val () = begin
     print "hipat_test_sub: hip1 = "; print hip1; print_newline ();
@@ -367,9 +394,12 @@ in
   | (_, _) => false
 end // end of [hipat_test_sub]
 
-(* [hips1] and [hips2] are of the same length *)
-implement hipatlst_test_sub
-  (hips1, hips2) = begin case+ hips1 of
+(*
+** HX: [hips1] and [hips2] are of the same length
+*)
+implement
+hipatlst_test_sub
+  (hips1, hips2) = case+ hips1 of
   | list_cons (hip1, hips1) => begin case+ hips2 of
     | list_cons (hip2, hips2) => begin
         if hipat_test_sub (hip1, hip2) then hipatlst_test_sub (hips1, hips2)
@@ -380,10 +410,11 @@ implement hipatlst_test_sub
   | list_nil () => begin case+ hips2 of
     | list_cons _ => false | list_nil _ => true
     end // end of [list_nil]
-end (* end of [hipatlst_test_sub] *)
+(* end of [hipatlst_test_sub] *)
 
-implement labhipatlst_test_sub
-  (lhips1, lhips2) = begin case+ lhips1 of
+implement
+labhipatlst_test_sub
+  (lhips1, lhips2) = case+ lhips1 of
   | LABHIPATLSTcons (l1, hip1, hips1) => begin
     case+ lhips2 of
     | LABHIPATLSTcons (l2, hip2, hips2) => begin
@@ -399,7 +430,7 @@ implement labhipatlst_test_sub
   | _ => begin case+ lhips2 of
     | LABHIPATLSTcons _ => false | _ => true
     end // end of [_]
-end (* end of [labhipatlst_test_sub] *)
+(* end of [labhipatlst_test_sub] *)
 
 (* ****** ****** *)
 
@@ -408,9 +439,11 @@ local
 datatype l0st =
   | L0STcons of (tmplab_t, hiclau, matpntlst, matpntopt, l0st)
   | L0STnil
+// end of [l0st]
 
-fun hipatlst_prefix_test_int
-  (i: int, hips1: hipatlst, hips2: hipatlst): bool = begin
+fun hipatlst_prefix_test_int (
+  i: int, hips1: hipatlst, hips2: hipatlst
+) : bool = begin
   if i > 0 then begin case+ hips1 of
    | list_cons (hip1, hips1) => begin case+ hips2 of
       | list_cons (hip2, hips2) => begin
@@ -429,8 +462,10 @@ fun hipatlst_prefix_test_int
   end // end of [if]
 end (* end of [hipatlst_test_int] *)
 
-fun aux_major (i: int, hips0: hipatlst, xs: l0st)
-  : Option_vt @(tmplab_t, hiclau) = begin case+ xs of
+fun aux_major (
+  i: int, hips0: hipatlst, xs: l0st
+) : Option_vt @(tmplab_t, hiclau) = begin
+  case+ xs of
   | L0STcons (tl, hicl, _, _, xs) => let
       val isint = hipatlst_prefix_test_int (i, hips0, hicl.hiclau_pat)
     in
@@ -439,9 +474,9 @@ fun aux_major (i: int, hips0: hipatlst, xs: l0st)
   | L0STnil () => None_vt ()
 end (* end [aux_major] *)
 
-fun aux_minor
-  (i0: int, hips0: hipatlst, hicl: hiclau)
-  : int = let
+fun aux_minor (
+  i0: int, hips0: hipatlst, hicl: hiclau
+) : int = let
   fun f (i: int, hips1: hipatlst, hips2: hipatlst)
     :<cloptr1> int = begin case+ i of
     | _ when i < i0 => begin case+ (hips1, hips2) of
@@ -455,8 +490,10 @@ in
   f (0, hips0, hicl.hiclau_pat)
 end // end of [aux_minor]
 
-fun aux_tmpmov
-  (i: int, hips0: hipatlst, hicl: hiclau): tmpmovlst = let
+fun aux_tmpmov (
+  i: int, hips0: hipatlst, hicl: hiclau
+) : tmpmovlst = let
+//
   fun auxpat (
       hip1: hipat
     , hip2: hipat
@@ -488,7 +525,7 @@ fun aux_tmpmov
         auxlabpatlst (lhips1, lhips2, res)
     | (_, _) => ()
   end // end of [auxpat]
-
+//
   and auxpatlst (
       hips1: hipatlst
     , hips2: hipatlst
@@ -498,7 +535,7 @@ fun aux_tmpmov
         (auxpat (hip1, hip2, res); auxpatlst (hips1, hips2, res))
     | (_, _) => ()
   end // end of [auxpatlst]
-
+//
   and auxlabpatlst (
       lhips1: labhipatlst
     , lhips2: labhipatlst
@@ -510,7 +547,7 @@ fun aux_tmpmov
       end // end of [LABHIPATLSTcons, LABHIPATLSTcons]
     | (_, _) => ()       
   end // end of [auxlabpatlst]
-
+//
   fun auxpatlst_prefix (
       i: int
     , hips1: hipatlst
@@ -528,17 +565,20 @@ fun aux_tmpmov
       end // end of [_ when i > 0]
     | _ => ()
   end (* end of [auxpatlst_prefix] *)
-
+//
   var res: tmpmovlst = TMPMOVLSTnil ()
   val () = auxpatlst_prefix (i, hips0, hicl.hiclau_pat, res)
   val res = auxrev (res, TMPMOVLSTnil ()) where {
-    fun auxrev (xs: tmpmovlst, ys: tmpmovlst): tmpmovlst =
-      case+ xs of
+    fun auxrev (
+      xs: tmpmovlst, ys: tmpmovlst
+    ) : tmpmovlst = case+ xs of
       | TMPMOVLSTcons (tmp1, tmp2, xs) => begin
           auxrev (xs, TMPMOVLSTcons (tmp1, tmp2, ys))
         end // end of [TMPMOVLSTcons]
-      | TMPMOVLSTnil () => ys
+      | TMPMOVLSTnil () => ys // end of [TMPMOVLSTnil]
+    // end of [auxrev]
   } // end [where]
+//
 in
   res
 end // end of [aux_tmpmov]
@@ -546,6 +586,7 @@ end // end of [aux_tmpmov]
 fun matpnt_kont_set_all
   (xs: l0st, fail_default: kont): void = begin case+ xs of
   | L0STcons (tl, hicl, mpts, ompt, xs) => let
+//
       fn aux (
           i: int
         , hips0: hipatlst
@@ -566,7 +607,7 @@ fun matpnt_kont_set_all
           end // end of [Some_vt]
         | ~None_vt () => matpnt_kont_set (mpt, fail_default)
       end // end of [aux]
-
+//
       fun auxlst (
           i: int
         , hips0: hipatlst
@@ -577,7 +618,7 @@ fun matpnt_kont_set_all
           end // end of [list_cons]
         | list_nil () => i
       end // end of [auxlst]
-
+//
       fn auxopt (
           i: int
         , hips0: hipatlst
@@ -585,20 +626,24 @@ fun matpnt_kont_set_all
         ) :<cloptr1> void = begin case+ ompt of
         | Some mpt => aux (i, hips0, mpt) | None () => ()
       end // end of [auxopt]
-
+//
       val () = auxopt (i, hips0, ompt) where {
         val hips0 = hicl.hiclau_pat; val i = auxlst (0, hips0, mpts)
       } // end of [where]
+//
     in
       matpnt_kont_set_all (xs, fail_default)
     end // end ofl[L0STcons]
-  | L0STnil () => ()
+  | L0STnil () => () // end of [L0STnil]
 end // end of [matpnt_kont_set_all]
 
 in // in of [local]
 
-implement ccomp_hiclaulst
-  (level, vps, hicls, tmp_res, fail_default) = let
+implement
+ccomp_hiclaulst (
+  level, vps, hicls, tmp_res, fail_default
+) = let
+//
   fun auxlst (
       branchlst: &branchlst_vt
     , hicls: hiclaulst
@@ -613,10 +658,11 @@ implement ccomp_hiclaulst
       end // end of [list_cons]
     | list_nil () => L0STnil ()
   end // end of [auxlst]
-
+//
   var branchlst: branchlst_vt = list_vt_nil ()
   val xs(*l0st*) = auxlst (branchlst, hicls)
   val () = matpnt_kont_set_all (xs, fail_default)
+//
 in
   $Lst.list_vt_reverse_list (branchlst)
 end // end of [ccomp_hiclaulst]

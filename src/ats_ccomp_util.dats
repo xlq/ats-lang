@@ -9,7 +9,7 @@
 (*
 ** ATS/Anairiats - Unleashing the Potential of Types!
 **
-** Copyright (C) 2002-2008 Hongwei Xi, Boston University
+** Copyright (C) 2002-2010 Hongwei Xi, Boston University
 **
 ** All rights reserved
 **
@@ -30,10 +30,10 @@
 *)
 
 (* ****** ****** *)
-
+//
 // Author: Hongwei Xi (hwxi AT cs DOT bu DOT edu)
 // Time: April 2008
-
+//
 (* ****** ****** *)
 
 staload Map = "ats_map_lin.sats"
@@ -189,7 +189,8 @@ in (* in of [local] *)
 
 (* ****** ****** *)
 
-implement tmpvarmap_nil () =
+implement
+tmpvarmap_nil () =
   $Map.map_make {tmpvar_t,int} (compare_tmpvar_tmpvar)
 // end of [tmpvarmap_nil]
 
@@ -292,14 +293,16 @@ emit_tmpvarmap_markroot (pf | out, tmps) =
 
 (* ****** ****** *)
 
-implement funentry_tmpvarmap_add (tmps, entry) = () where {
+implement
+funentry_tmpvarmap_add (tmps, entry) = () where {
   val () = instrlst_tmpvarmap_add (tmps, funentry_body_get entry)
   val () = tmpvarmap_add_root (tmps, funentry_ret_get entry)
 } // end of [funentry_tmpvarmap_add]
 
 (* ****** ****** *)
 
-implement tailjoinlst_tmpvarmap_add
+implement
+tailjoinlst_tmpvarmap_add
   (tmps, tjs) = loop (tmps, tjs) where {
   fun loop (tmps: &tmpvarmap_vt, tjs: tailjoinlst): void =
     case+ tjs of

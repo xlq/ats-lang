@@ -30,10 +30,10 @@
 *)
 
 (* ****** ****** *)
-
+//
 // Author: Hongwei Xi (hwxi AT cs DOT bu DOT edu)
 // Time: July 2007
-
+//
 (* ****** ****** *)
 
 (* ats_error: some common error reporting functions *)
@@ -54,10 +54,10 @@ fun error_location {a:viewt@ype} (loc: location_t, msg: string): a
 (* ****** ****** *)
 
 exception FatalErrorException
-fun abort {a:viewt@ype} (): a
+fun abort {a:viewt@ype} ():<!exn> a // raising FatalErrorException
 
 exception DeadCodeException
-// if this function is called at run-time, something is wrong.
+// if this function is ever called at run-time, something is wrong!
 fun deadcode {a:viewt@ype} (msg: string): a
 
 (* ****** ****** *)

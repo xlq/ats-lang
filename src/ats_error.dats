@@ -30,17 +30,19 @@
 *)
 
 (* ****** ****** *)
-
+//
 // Author: Hongwei Xi (hwxi AT cs DOT bu DOT edu)
 // Time: July 2007
-
+//
 (* ****** ****** *)
 
 (* ats_error: some common error reporting functions *)
 
 (* ****** ****** *)
 
-staload "ats_location.sats"
+(*
+staload Loc = "ats_location.sats"
+*)
 
 (* ****** ****** *)
 
@@ -48,7 +50,8 @@ staload "ats_error.sats"
 
 (* ****** ****** *)
 
-implement abort () = let
+implement
+abort () = let
 (*
   val _ = segfault () where {
     extern fun segfault (): int = "ats_error_segfault"
@@ -56,29 +59,40 @@ implement abort () = let
 *)
 in
   $raise FatalErrorException ()
-end
+end // end of [abort]
+
+(* ****** ****** *)
 
 (*
-implement error msg = begin
+implement
+error (msg) = begin
   prerr (msg) ; prerr_newline () ; $raise FatalErrorException ()
-end
+end // end of [error]
 
-implement error_location (loc, msg) = begin
-  prerr_location loc ; prerr ": " ; prerr msg ; prerr_newline () ;
+implement
+error_location (loc, msg) = begin
+  $Loc.prerr_location loc ; prerr ": " ; prerr msg ; prerr_newline () ;
   $raise FatalErrorException ()
-end
+end // end of [error_location]
 *)
 
-implement deadcode msg = begin
-  prerr "error(deadcode)";
-  prerr (msg); prerr_newline (); $raise DeadCodeException ()
+(* ****** ****** *)
+
+implement
+deadcode (msg) = let
+  val () = begin
+    prerr "error(deadcode)"; prerr (msg); prerr_newline ()
+  end // end of [val]
+in
+  $raise DeadCodeException ()
 end // end of [deadcode]
 
 (* ****** ****** *)
 
 %{$
 
-ats_int_type ats_error_segfault () {
+ats_int_type
+ats_error_segfault () {
   fprintf (stderr, "ats_error_segfault: this is for debugging.\n") ;
   return *(ats_int_type*)0 ;
 } /* end of [ats_error_segfault] */

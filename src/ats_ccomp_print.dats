@@ -9,7 +9,7 @@
 (*
 ** ATS/Anairiats - Unleashing the Potential of Types!
 **
-** Copyright (C) 2002-2008 Hongwei Xi, Boston University
+** Copyright (C) 2002-2010 Hongwei Xi, Boston University
 **
 ** All rights reserved
 **
@@ -54,15 +54,20 @@ macdef fprint_label = $Lab.fprint_label
 
 (* ****** ****** *)
 
-implement print_tmplab (tl) = print_mac (fprint_tmplab, tl)
-implement prerr_tmplab (tl) = prerr_mac (fprint_tmplab, tl)
+implement
+print_tmplab (tl) = print_mac (fprint_tmplab, tl)
+implement
+prerr_tmplab (tl) = prerr_mac (fprint_tmplab, tl)
 
 (* ****** ****** *)
 
-implement print_tmpvar (tmp) = print_mac (fprint_tmpvar, tmp)
-implement prerr_tmpvar (tmp) = prerr_mac (fprint_tmpvar, tmp)
+implement
+print_tmpvar (tmp) = print_mac (fprint_tmpvar, tmp)
+implement
+prerr_tmpvar (tmp) = prerr_mac (fprint_tmpvar, tmp)
 
-implement fprint_tmpvarlst {m} (pf | out, tmps) = let
+implement
+fprint_tmpvarlst {m} (pf | out, tmps) = let
   fun aux (out: &FILE m, i: int, tmps: tmpvarlst): void =
     case+ tmps of
     | list_cons (tmp, tmps) => begin
@@ -75,17 +80,22 @@ in
   aux (out, 0, tmps)
 end // end of [fprint_tmpvarlst]
 
-implement print_tmpvarlst (tmps) = print_mac (fprint_tmpvarlst, tmps)
-implement prerr_tmpvarlst (tmps) = prerr_mac (fprint_tmpvarlst, tmps)
+implement
+print_tmpvarlst (tmps) = print_mac (fprint_tmpvarlst, tmps)
+implement
+prerr_tmpvarlst (tmps) = prerr_mac (fprint_tmpvarlst, tmps)
 
 (* ****** ****** *)
 
-implement print_funlab (fl) = print_mac (fprint_funlab, fl)
-implement prerr_funlab (fl) = prerr_mac (fprint_funlab, fl)
+implement
+print_funlab (fl) = print_mac (fprint_funlab, fl)
+implement
+prerr_funlab (fl) = prerr_mac (fprint_funlab, fl)
 
 (* ****** ****** *)
 
-implement fprint_funlablst {m} (pf | out, fls) = let
+implement
+fprint_funlablst {m} (pf | out, fls) = let
   fun aux (out: &FILE m, i: int, fls: funlablst): void =
     case+ fls of
     | list_cons (fl, fls) => begin
@@ -98,8 +108,10 @@ in
   aux (out, 0, fls)
 end // end of [fprint_funlablst]
 
-implement print_funlablst (fls) = print_mac (fprint_funlablst, fls)
-implement prerr_funlablst (fls) = prerr_mac (fprint_funlablst, fls)
+implement
+print_funlablst (fls) = print_mac (fprint_funlablst, fls)
+implement
+prerr_funlablst (fls) = prerr_mac (fprint_funlablst, fls)
 
 (* ****** ****** *)
 
@@ -226,7 +238,8 @@ in
   aux (out, 0, vps)
 end // end of [fprint_valprimlst]
 
-implement fprint_labvalprimlst {m} (pf | out, lvps) = let
+implement
+fprint_labvalprimlst {m} (pf | out, lvps) = let
   fun aux (out: &FILE m, i: int, lvps: labvalprimlst): void =
     case+ lvps of
     | LABVALPRIMLSTcons (l, vp, lvps) => begin
@@ -242,7 +255,8 @@ end // end of [fprint_labvalprimlst]
 
 (* ****** ****** *)
 
-implement fprint_offset {m} (pf | out, off) = begin
+implement
+fprint_offset {m} (pf | out, off) = begin
   case+ off of
   | OFFSETlab (l, _(*hit_rec*)) => begin
       fprint1_string (pf | out, "."); fprint_label (pf | out, l)
@@ -261,7 +275,8 @@ implement fprint_offset {m} (pf | out, off) = begin
     } // end of [OFFSETind]
 end // end of [fprint_offset]
 
-implement fprint_offsetlst {m} (pf | out, offs) = let
+implement
+fprint_offsetlst {m} (pf | out, offs) = let
   fun aux (out: &FILE m, i: int, offs: offsetlst): void =
     case+ offs of
     | list_cons (off, offs) => begin
@@ -276,7 +291,8 @@ end // end of [fprint_offsetlst]
 
 (* ****** ****** *)
 
-implement fprint_patck (pf | out, patck) = let
+implement
+fprint_patck (pf | out, patck) = let
   macdef prstr (s) = fprint1_string (pf | out, ,(s))
 in
   case+ patck of
@@ -305,7 +321,8 @@ in
     end
 end // end of [fprint_patck]
 
-implement fprint_patcklst {m} (pf | out, patcks) = let
+implement
+fprint_patcklst {m} (pf | out, patcks) = let
   fun aux (out: &FILE m, i: int, patcks: patcklst): void =
     case+ patcks of
     | list_cons (patck, patcks) => begin
@@ -320,7 +337,8 @@ end // end of [fprint_patcklst]
 
 (* ****** ****** *)
 
-implement fprint_kont {m} (pf | out, k) = let
+implement
+fprint_kont {m} (pf | out, k) = let
   macdef prstr (s) = fprint1_string (pf | out, ,(s))
 in
   case+ k of
@@ -353,7 +371,8 @@ in
     end // end of [KONTnone]
 end (* end of [fprint_kont] *)
 
-implement fprint_kontlst {m} (pf | out, ks) = let
+implement
+fprint_kontlst {m} (pf | out, ks) = let
   fun aux (out: &FILE m, i: int, ks: kontlst): void =
     case+ ks of
     | list_cons (k, ks) => begin
@@ -368,7 +387,8 @@ end // end of [fprint_kontlst]
 
 (* ****** ****** *)
 
-implement fprint_instr (pf | out, ins) = let
+implement
+fprint_instr (pf | out, ins) = let
   macdef prstr (s) = fprint1_string (pf | out, ,(s))
 in
   case+ ins.instr_node of
@@ -714,7 +734,8 @@ in
 *)
 end // end of [fprint_instr]
 
-implement fprint_instrlst {m} (pf | out, inss) = let
+implement
+fprint_instrlst {m} (pf | out, inss) = let
   fun aux (out: &FILE m, inss: instrlst): void = begin
     case+ inss of
     | list_cons (ins, inss) => begin
@@ -751,21 +772,29 @@ end // end of [fprint_branchlst]
 
 (* ****** ****** *)
 
-implement print_valprim (vp) = print_mac (fprint_valprim, vp)
-implement prerr_valprim (vp) = prerr_mac (fprint_valprim, vp)
+implement
+print_valprim (vp) = print_mac (fprint_valprim, vp)
+implement
+prerr_valprim (vp) = prerr_mac (fprint_valprim, vp)
 
-implement print_valprimlst (vps) = print_mac (fprint_valprimlst, vps)
-implement prerr_valprimlst (vps) = prerr_mac (fprint_valprimlst, vps)
+implement
+print_valprimlst (vps) = print_mac (fprint_valprimlst, vps)
+implement
+prerr_valprimlst (vps) = prerr_mac (fprint_valprimlst, vps)
         
 (* ****** ****** *)
 
-implement print_instr (ins) = print_mac (fprint_instr, ins)
-implement prerr_instr (ins) = prerr_mac (fprint_instr, ins)
+implement
+print_instr (ins) = print_mac (fprint_instr, ins)
+implement
+prerr_instr (ins) = prerr_mac (fprint_instr, ins)
 
 (* ****** ****** *)
 
-implement print_instrlst (inss) = print_mac (fprint_instrlst, inss)
-implement prerr_instrlst (inss) = prerr_mac (fprint_instrlst, inss)
+implement
+print_instrlst (inss) = print_mac (fprint_instrlst, inss)
+implement
+prerr_instrlst (inss) = prerr_mac (fprint_instrlst, inss)
 
 (* ****** ****** *)
 
