@@ -246,6 +246,7 @@ fun emit04_Makefile (
 fun emit_Makefile_problem1
   (out: FILEref): void = {
   val itemname = "problem1-hwxi"
+  val itemname2 = "problem1-hwxi2"
   val () = emit_header (out)
   val () = emit_sep (out)
   val () = emit_ATSUSRQ (out)
@@ -254,14 +255,17 @@ fun emit_Makefile_problem1
   val () = emit_sep (out)
   val () = emit_all (out)
   val () = emit_checkall_itemname (out, itemname)
+  val () = emit_checkall_itemname (out, itemname2)
   val () = emit_sep (out)
-  val () = emit01pfck_item_comp_and_exec (out, itemname)
+  val () = emit01_item_comp_and_exec (out, itemname)
+  val () = emit01pfck_item_comp_and_exec (out, itemname2)
   val () = emit_sep (out)
   val () = emit_RMF (out)
   val () = emit_sep (out)
   val () = emit_clean (out)
   val () = emit_cleanall_clean (out)
   val () = emit_cleanall_rmf_namepat (out, itemname)
+  val () = emit_cleanall_rmf_namepat (out, itemname2)
 } // end of [emit_Makefile_problem1]
 
 (* ****** ****** *)
