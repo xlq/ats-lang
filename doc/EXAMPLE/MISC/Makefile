@@ -172,12 +172,16 @@ cleanall:: ; $(RMF) pi_lazy
 #
 checkall:: quicksort_list
 quicksort_list: quicksort_list.dats
-	$(ATSCC) -D_ATS_PROOFCHECK -o quicksort_list quicksort_list.dats
+	$(ATSCC) -o $@ $< && ./quicksort_list
 cleanall:: ; $(RMF) quicksort_list
 
+checkall:: quicksort1_list
+quicksort1_list: quicksort1_list.dats
+	$(ATSCC) -D_ATS_PROOFCHECK -o $@ $< && ./quicksort1_list
+cleanall:: ; $(RMF) quicksort1_list
+
 checkall:: quicksort2_list
-quicksort2_list: quicksort2_list.dats
-	$(ATSCC) -o quicksort2_list quicksort2_list.dats
+quicksort2_list: quicksort2_list.dats; $(ATSCC) -o $@ $< && ./quicksort2_list
 cleanall:: ; $(RMF) quicksort2_list
 
 #

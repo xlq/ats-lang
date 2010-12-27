@@ -88,6 +88,37 @@ implement length_isnat
 (* ****** ****** *)
 
 implement
+append_length_lemma (pf, pf1len, pf2len) = let
+//
+prfun lemma
+  {xs1,xs2:ilist} {xs:ilist} {n1,n2:int} .<xs1>. (
+  pf: APPEND (xs1, xs2, xs), pf1len: LENGTH (xs1, n1), pf2len: LENGTH (xs2, n2)
+) : LENGTH (xs, n1+n2) = let
+  prval () = length_isnat (pf2len)
+in
+  scase xs1 of
+  | ilist_cons (x1, xs1) => let
+      prval APPENDcons (pf) = pf
+      prval LENGTHcons (pf1len) = pf1len
+      prval pflen = lemma (pf, pf1len, pf2len)
+    in
+      LENGTHcons (pflen)
+    end // end of [ilist_cons]
+  | ilist_nil () => let
+      prval APPENDnil () = pf
+      prval LENGTHnil () = pf1len
+    in
+      pf2len
+    end // end of [ilist_nil]
+end // end of [append_length_lemma]
+//
+in
+  lemma (pf, pf1len, pf2len)
+end // end of [append_length_lemma]
+
+(* ****** ****** *)
+
+implement
 msetcnt_istot
   {x0} {xs} () = let
   prfun istot {xs:ilist} .<xs>.
@@ -204,6 +235,7 @@ permute_trans (fpf1, fpf2) = lam pf => fpf2 (fpf1 (pf))
 
 (* ****** ****** *)
 
+(*
 implement
 append_munion_lemma
   (pf) = lemma (pf) where {
@@ -223,6 +255,7 @@ append_munion_lemma
       (* end of [APPENDnil] *)
   // end of [lemma]
 } // end of [append_munion_lemma]
+*)
 
 (* ****** ****** *)
 

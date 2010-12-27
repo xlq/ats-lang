@@ -16,22 +16,33 @@
 
 (* ****** ****** *)
 
+staload "libc/SATS/random.sats"
 staload "libats/SATS/ilistp.sats"
 
 (* ****** ****** *)
 
-abst@ype T (x:int) = double
+stadef nil = ilist_nil
+stadef cons = ilist_cons
+
+(* ****** ****** *)
+
+abst@ype E (a: t@ype, x:int) = a
+extern castfn encode {a:t@ype} (x: a):<> [x:pos] E (a, x)
+extern castfn decode {a:t@ype} {x:int} (x: E (a, x)):<> a
+
+(* ****** ****** *)
 
 extern
-fun lte_elt_elt {x,y:nat} (x: T x, y: T y):<> bool (x <= y)
+fun{a:t@ype}
+lte_elt_elt {x,y:nat} (x: E(a, x), y: E (a, y)):<> bool (x <= y)
 overload <= with lte_elt_elt
 
-datatype list (ilist) =
-  | nil (ilist_nil)
-  | {x:pos} {xs: ilist} cons (ilist_cons (x, xs)) of (T (x), list (xs))
+datatype list (a:t@ype, ilist) =
+  | nil (a, nil) of ()
+  | {x:pos} {xs: ilist} cons (a, cons (x, xs)) of (E (a, x), list (a, xs))
 // end of [list]
 
-typedef list = [xs:ilist] list (xs)
+typedef list (a:t@ype) = [xs:ilist] list (a, xs)
 
 (* ****** ****** *)
 
@@ -57,19 +68,21 @@ dataprop ISORD (ilist) =
 (* ****** ****** *)
 
 extern
-fun quicksort {xs:ilist}
-  (xs: list (xs)): [ys:ilist] (PERMUTE (xs, ys) | list (ys))
+fun{a:t@ype}
+quicksort {xs:ilist}
+  (xs: list (a, xs)): [ys:ilist] (PERMUTE (xs, ys) | list (a, ys))
 // end of [quicksort]
 
 (* ****** ****** *)
 
 extern
-fun append {xs1,xs2:ilist}
-  (xs1: list xs1, xs2: list xs2)
-  : [xs3: ilist] (APPEND (xs1, xs2, xs3) | list xs3)
+fun{a:t@ype}
+append {xs1,xs2:ilist}
+  (xs1: list (a, xs1), xs2: list (a, xs2))
+  : [xs3: ilist] (APPEND (xs1, xs2, xs3) | list (a, xs3))
 // end of [append]
 
-implement
+implement{a}
 append {xs1,xs2}
   (xs1, xs2) = case+ xs1 of
   | cons {x1} (x1, xs11) => let
@@ -89,8 +102,10 @@ propdef PART (
 ) -<prf> MSETCNT (x0, xs, n0+n1+n2+b2i(x0==x))
 // end of [PART]
 
-fun qsrt {xs:ilist}
-  (xs: list xs): [ys:ilist] (PERMUTE (xs, ys) | list (ys)) =
+fun{a:t@ype}
+qsrt {xs:ilist} (
+  xs: list (a, xs)
+) : [ys:ilist] (PERMUTE (xs, ys) | list (a, ys)) =
   case+ xs of
   | cons {x} {xs1} (x, xs1) => let
       val [ys:ilist] (fpf | ys) = part (x, xs1, nil (), nil ())
@@ -106,9 +121,14 @@ fun qsrt {xs:ilist}
   | nil () => (permute_refl {ilist_nil} () | nil ())
 // end of [qsrt]
 
-and part {x:pos} {xs,xs1,xs2:ilist} (
-    x: T x, xs: list xs, xs1: list xs1, xs2: list xs2
-  ) : [ys:ilist] (PART (x, xs, xs1, xs2, ys) | list ys) =
+and
+part {x:pos}
+  {xs,xs1,xs2:ilist} (
+  x: E (a, x)
+, xs: list (a, xs)
+, xs1: list (a, xs1)
+, xs2: list (a, xs2)
+) : [ys:ilist] (PART (x, xs, xs1, xs2, ys) | list (a, ys)) =
   case xs of
   | cons (x_, xs_) => (
       if (x_ <= x) then let
@@ -158,26 +178,30 @@ and part {x:pos} {xs,xs1,xs2:ilist} (
 
 (* ****** ****** *)
 
-implement quicksort (xs) = qsrt (xs)
+implement{a} quicksort (xs) = qsrt<a> (xs)
 
 (* ****** ****** *)
 
-local
-
-assume T (n:int) = double
-
-in
-
-implement lte_elt_elt {x,y} (x, y) = let
+implement
+lte_elt_elt<double>
+  {x,y} (x, y) = let
+  val x = decode (x) and y = decode(y)
   extern castfn __cast (_: bool):<> bool (x <= y)
 in
   __cast (lte_double_double (x, y))
 end // end of [lte_elt_elt]
 
-fn print_list (xs: list): void = let
-  fun aux (xs: list, i: int): void = begin case+ xs of
-    | cons (x, xs) => begin
-        if i > 0 then print ", "; printf ("%.1f", @(x)); aux (xs, i+1)
+fn print_list (
+  xs: list (double)
+) : void = let
+  fun aux (
+    xs: list (double), i: int
+  ) : void = begin
+    case+ xs of
+    | cons (x, xs) => let
+        val x = decode (x)
+      in
+        if i > 0 then print ", "; printf ("%.2f", @(x)); aux (xs, i+1)
       end // end of [cons]
     | nil () => ()
   end // end of [aux]
@@ -185,25 +209,29 @@ in
   aux (xs, 0)
 end // end of [print_list]
 
-castfn T .<>. (f: double):<> [x:pos] T (x) = #[1 | f]
-
-end // end of [local]
+fun randgen_list
+  {n:nat} .<n>.
+  (n: int n): list (double) =
+  if n > 0 then let
+    val x = drand48 ()
+    val x = encode (x)
+  in
+    cons {double} (x, randgen_list (n-1))
+  end else nil ()
+// end of [randgen_list]
 
 (* ****** ****** *)
 
-#define :: cons
-
 implement main () = let
-  val xs: list =
-     T 2.0 :: T 1.0 :: T 4.0 :: T 3.0 :: T 6.0 :: T 5.0
-  :: T 2.0 :: T 1.0 :: T 4.0 :: T 3.0 :: T 6.0 :: T 5.0
-  :: T 2.0 :: T 1.0 :: T 4.0 :: T 3.0 :: T 6.0 :: T 5.0
-  :: T 2.0 :: T 1.0 :: T 4.0 :: T 3.0 :: T 6.0 :: T 5.0
-  :: nil ()
+//
+  val () = srand48_with_time ()
+//
+  val xs = randgen_list (20)
+  val () = (print "xs = "; print_list xs; print_newline ())
   val (_fpf | ys) = quicksort (xs)
+  val () = (print "ys = "; print_list ys; print_newline ())
 in
-  print "xs = "; print_list xs; print_newline ();
-  print "ys = "; print_list ys; print_newline ();
+  // nothing
 end // end of [main]
 
 (* ****** ****** *)

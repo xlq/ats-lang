@@ -98,6 +98,7 @@ atslib_test_regexp_match_str_len_ofs (
   ats_ptr_type re, ats_ptr_type str, ats_int_type len, ats_int_type ofs
 ) {
   int result ;
+//
   result = pcre_exec (
     (pcre*)re
   , (pcre_extra*)0 /* [re] is not studied */
@@ -106,16 +107,17 @@ atslib_test_regexp_match_str_len_ofs (
   , (int*)0 /* ovector */
   , 0 /* ovecsize */
   ) ; // end of [pcre_exec]
-
+//
   if (result >= 0) return ats_true_bool ;
-
+//
   switch (result) {
   case PCRE_ERROR_NOMATCH: return ats_false_bool ;
   default: fprintf
     (stderr, "exit(ATS): [test_regexp_match_str_len_ofs] failed\n"); exit (1);
   } /* end of [switch] */
-
+//
   return ats_false_bool ; /* deadcode */
+//
 } /* end of [atslib_test_regexp_match_str_len_ofs] */
 
 %} // end of [%{$]
@@ -124,7 +126,7 @@ atslib_test_regexp_match_str_len_ofs (
 
 %{^
 
-static inline
+ATSinline()
 ats_int_type
 atslib_string_split_regexp_search (
   ats_ptr_type re
@@ -208,9 +210,11 @@ val () = initialize () where {
 (* ****** ****** *)
 
 %{$
-
+//
 // HX-2010-02-20: is this really necessary?
-ats_void_type atslib_libats_regexp_initialize () {
+//
+ats_void_type
+atslib_libats_regexp_initialize () {
   pcre_malloc = (void *(*)(size_t))ats_malloc_gc ;
   pcre_free = (void (*)(void*))ats_free_gc ;
   pcre_stack_malloc = (void *(*)(size_t))ats_malloc_gc ;

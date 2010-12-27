@@ -68,8 +68,11 @@ fun test_regexp_match_str
   {l:agz} (re: !REGEXPptr l, str: string): bool
 // end of [test_regexp_match_str]
 
+//
+// HX: starting from a given offset
+//
 fun test_regexp_match_str_len_ofs
-  {l:agz} {n,i:int | 0 <= i; i <= n }
+  {l:agz} {n,i:int | 0 <= i; i <= n}
   (re: !REGEXPptr l, str: string n, len: int n, ofs: int i): bool
   = "atslib_test_regexp_match_str_len_ofs"
 // end of [test_regexp_match_str_len_ofs]
@@ -84,8 +87,8 @@ abstype REGEXPref // = ref (REGEXP)
 
 castfn regexp_ref_make_ptr {l:agz} (p: REGEXPptr l):<> REGEXPref
 
-fun string_split_regexp (str: string, re: REGEXPref): stream string
-  = "atslib_string_split_regexp"
+fun string_split_regexp
+  (str: string, re: REGEXPref): stream string = "atslib_string_split_regexp"
 // end of [string_split_regexp]
 
 (* ****** ****** *)

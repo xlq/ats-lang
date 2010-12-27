@@ -4,6 +4,20 @@
 <META name="description" content="Home Page for ATS">
 <META name="keywords" content="">
 <LINK REL="stylesheet" HREF="ATS.css" TYPE="text/css">
+  <style type="text/css">
+    span.comment {color:#787878;font-style:italic}
+    span.extern  {color:#A52A2A}
+    span.keyword {color:#000000;font-weight:bold}
+    span.neuexp  {color:#800080}
+    span.staexp  {color:#0000FF}
+    span.dynexp  {color:#E80000}
+    span.prfexp  {color:#009000}
+    span.stacstdec  {text-decoration:none}
+    span.stacstuse  {color:#0000CF;text-decoration:underline}
+    span.dyncstdec  {text-decoration:none}
+    span.dyncstimp  {color:#B80000;text-decoration:underline}
+    span.dyncstuse  {color:#B80000;text-decoration:underline}
+  </style>
 </HEAD>
 <BODY BGCOLOR="#E7CF9E" TEXT="#000000" LEFTMARGIN="0" TOPMARGIN="0" MARGINWIDTH="0" MARGINHEIGHT="0">
 <TABLE WIDTH="100%" BORDER=0 CELLSPACING=0 CELLPADDING=10>
@@ -352,133 +366,107 @@ which is then compiled by gcc to produce "HelloWorld".  By running
 
 <PRE>Hello, world!</PRE> 
 
-<H4>Factorial (version 1)</H4> A simple recursive function <i>fact1</i>
-is defined as follows to compute factorials.
+<H4>Computing Fibonacci Numbers</H4>
 
-<PRE><FONT COLOR="#E800000"><FONT COLOR="#787878">// [fun] declares a recursive function
-</FONT><FONT COLOR="#000000">fun</FONT> fact1 <FONT COLOR="#000000">(</FONT>x<FONT COLOR="#000000">:</FONT> <FONT COLOR="#0000FF">int</FONT><FONT COLOR="#000000">)</FONT><FONT COLOR="#000000">:</FONT> <FONT COLOR="#0000FF">int</FONT> <FONT COLOR="#000000">=</FONT> <FONT COLOR="#000000">if</FONT> x <FONT COLOR="#000000">&gt;</FONT> 0 <FONT COLOR="#000000">then</FONT> x * fact1 <FONT COLOR="#000000">(</FONT>x-1<FONT COLOR="#000000">)</FONT> <FONT COLOR="#000000">else</FONT> 1
-</FONT></PRE>
-
-The following code passes an integer read from the standard input to the
-function <i>fact1</i> and then prints the result returned from
-<i>fact1</i> onto the standard output.
-
-<PRE><FONT COLOR="#E80000"><FONT COLOR="#787878">// [fn] declares a non-recursive function; it is fine to replace [fn] with [fun]
-</FONT><FONT COLOR="#787878">// [@(...)] is used in ATS to group arguments for functions of variable arguments
-</FONT><FONT COLOR="#000000">fn</FONT> fact1_usage <FONT COLOR="#000000">(</FONT>cmd<FONT COLOR="#000000">:</FONT> <FONT COLOR="#0000FF">string</FONT><FONT COLOR="#000000">)</FONT><FONT COLOR="#000000">:</FONT> <FONT COLOR="#0000FF">void</FONT> <FONT COLOR="#000000">=</FONT>
-  prerrf <FONT COLOR="#000000">(</FONT>"Usage: %s [integer]\n"<FONT COLOR="#000000">,</FONT> <FONT COLOR="#000000">@(</FONT>cmd<FONT COLOR="#000000">)</FONT><FONT COLOR="#000000">)</FONT> <FONT COLOR="#787878">// print an error message</FONT>
-
-<FONT COLOR="#000000">implement</FONT> main <FONT COLOR="#000000">(</FONT>argc<FONT COLOR="#000000">,</FONT> argv<FONT COLOR="#000000">)</FONT> <FONT COLOR="#000000">=</FONT>
-  <FONT COLOR="#000000">if</FONT> argc &gt;= 2 <FONT COLOR="#000000">then</FONT> <FONT COLOR="#000000">let</FONT>
-    <FONT COLOR="#000000">val</FONT> n <FONT COLOR="#000000">=</FONT> int1_of argv<FONT COLOR="#000000">.</FONT><FONT COLOR="#000000">[</FONT>1<FONT COLOR="#000000">]</FONT> <FONT COLOR="#787878">// turning a string into an integer
-</FONT>    <FONT COLOR="#000000">val</FONT> res <FONT COLOR="#000000">=</FONT> fact1 n
-  <FONT COLOR="#000000">in</FONT>
-    printf <FONT COLOR="#000000">(</FONT>"factorial of %i = %i\n"<FONT COLOR="#000000">,</FONT> <FONT COLOR="#000000">@(</FONT>n<FONT COLOR="#000000">,</FONT> res<FONT COLOR="#000000">)</FONT><FONT COLOR="#000000">)</FONT>
-  <FONT COLOR="#000000">end</FONT> <FONT COLOR="#000000">else</FONT> <FONT COLOR="#000000">begin</FONT>
-    fact1_usage <FONT COLOR="#000000">(</FONT>argv<FONT COLOR="#000000">.</FONT><FONT COLOR="#000000">[</FONT>0<FONT COLOR="#000000">]</FONT><FONT COLOR="#000000">)</FONT><FONT COLOR="#000000">;</FONT> exit <FONT COLOR="#000000">(</FONT>1<FONT COLOR="#000000">)</FONT>
-  <FONT COLOR="#000000">end</FONT>
-</FONT></PRE>
-
-Note that the function <i>exit</i> is given the following type:
-
-<PRE><FONT COLOR="#E80000"><FONT COLOR="#787878">// [a:viewt@ype] means that [a] can be a linear type of any size
-</FONT><FONT COLOR="#000000">fun</FONT> exit <FONT COLOR="#000000">:</FONT> <FONT COLOR="#0000FF"><FONT COLOR="#000000">{</FONT>a<FONT COLOR="#000000">:</FONT>viewt@ype<FONT COLOR="#000000">}</FONT> int <FONT COLOR="#000000">-&gt;</FONT> a</FONT>
-</FONT></PRE>
-
-Also note that the type <i>void</i> should not be confused with the type
-<i>unit</i> in languages like SML and OCaml; the former is of size 0 while
-the latter is of size 1 (word).
+We now present a simple example to illustrate the idea of programming with
+theorem-proving.
 <P>
 
-The entire code for this example is available <a href="EXAMPLE/INTRO/fact1.dats">here</a>.
+We can specify a function fib as follows for computing Fibonacci numbers:
+<PRE>
+fib(0)   = 0
+fib(1)   = 1
+fib(n+2) = fib(n) + fib(n+1) for n >= 0
+</PRE>
 
-<H4>Factorial (version 2)</H4>
+A direct implementation of this specification in ATS can be done as
+follows:
+<PRE><FONT COLOR="#E80000"><span class="keyword">fun</span> fib <span class="keyword">(</span>n<span class="keyword">:</span> <span class="staexp">int</span><span class="keyword">)</span><span class="keyword">:</span> <span class="staexp">int</span> <span class="keyword">=</span>
+  <span class="keyword">if</span> n <span class="keyword">=</span> 0 <span class="keyword">then</span> 0 <span class="keyword">else</span> <span class="keyword">if</span> n <span class="keyword">=</span> 1 <span class="keyword">then</span> 1 <span class="keyword">else</span> fib <span class="keyword">(</span>n-2<span class="keyword">)</span> + fib<span class="keyword">(</span>n-1<span class="keyword">)</span>
+<span class="comment">// end of [fib]
+</span></FONT></PRE>
+Clearly, this is a terribly inefficient implementation of exponential
+time-complexity. An implementation of fib in C is given as follows
+that is of linear time-complexity:
 
-Let us now see an example involving dependent types.  In ATS, <i>int</i> is
-a static constant of the following sort:
+<PRE>
+int fibc (int n) {
+  int tmp, f0 = 0, f1 = 1 ;
+  while (n-- > 0) { tmp = f1 ; f1 = f0 + f1 ; f0 = tmp ; } ; return f0 ;
+} // end of [fibc]
+</PRE>
 
-<PRE>int -&gt; type</PRE>
+There is obviously a logic gap between the defintion of fib and its
+implementation fibc in C. In ATS, we can give an implementation of fib that
+completely bridges this gap. First, we need a way to encode the definition
+of fib into ATS, which is fulfilled by the declaration of the following
+dataprop:
 
-Note that the symbol <i>int</i> is overloaded: it is both a static constant
-and a sort. Given an integer
-<i>i</i> (of sort <i>int</i>), <i>int(i)</i> is a singleton type
-containing only the integer <i>i</i>. So <i>int</i> is often called a
-type constructor. We now define a
-type constant <i>Int</i> as follows:
+<PRE><FONT COLOR="#E80000"><span class="keyword">dataprop</span> <span class="prfexp"><span class="staexp"><a name="115"><span class="stacstdec">FIB <span class="keyword">(</span>int<span class="keyword">,</span>int<span class="keyword">)</span></span></a></span> <span class="keyword">=</span>
+  <span class="keyword">|</span> FIB0 <span class="staexp"><span class="keyword">(</span>0<span class="keyword">,</span>0<span class="keyword">)</span></span> <span class="keyword">|</span> FIB1 <span class="staexp"><span class="keyword">(</span>1<span class="keyword">,</span>1<span class="keyword">)</span></span>
+  <span class="keyword">|</span> <span class="keyword">{</span><span class="staexp">n<span class="keyword">:</span>nat</span><span class="keyword">}</span> <span class="keyword">{</span><span class="staexp">r0<span class="keyword">,</span>r1<span class="keyword">:</span>int</span><span class="keyword">}</span> FIB2 <span class="staexp"><span class="keyword">(</span>n+2<span class="keyword">,</span>r0+r1<span class="keyword">)</span></span> <span class="keyword">of</span> <span class="staexp"><span class="keyword">(</span>FIB <span class="keyword">(</span>n<span class="keyword">,</span>r0<span class="keyword">)</span><span class="keyword">,</span> FIB <span class="keyword">(</span>n+1<span class="keyword">,</span>r1<span class="keyword">)</span><span class="keyword">)</span></span></span>
+<span class="comment">// end of [FIB]
+</span></FONT></PRE>
 
-<PRE><FONT COLOR="#E80000"><FONT COLOR="#000000">typedef</FONT> <FONT COLOR="#0000FF">Int <FONT COLOR="#000000">=</FONT> <FONT COLOR="#000000">[</FONT>n<FONT COLOR="#000000">:</FONT>int<FONT COLOR="#000000">]</FONT> int n</FONT> <FONT COLOR="#787878">// type for integers
-</FONT></FONT></PRE>
-
-We use the syntax <i>[n:int]</i> to existentially quantify over
-some variable <i>n</i> of sort <i>int</i>, that is, <i>n</i>
-ranging over integers.
-
-We define the type for natural number as follows:
-
-<PRE><FONT COLOR="#E80000"><FONT COLOR="#000000">typedef</FONT> <FONT COLOR="#0000FF">Nat <FONT COLOR="#000000">=</FONT> <FONT COLOR="#000000">[</FONT>n<FONT COLOR="#000000">:</FONT>int <FONT COLOR="#000000">|</FONT> n &gt;= 0<FONT COLOR="#000000">]</FONT> int n</FONT> <FONT COLOR="#787878">// type for natural numbers</FONT>
-</FONT></PRE>
-
-where the syntax <i>[n:int | n &gt;= 0]</i> represents existential
-quantification over some variable <i>n</i> of sort <i>int</i> that
-satisfies <i>n &gt;= 0</i>.
+This declaration introduces a type FIB for proofs. Such a type is
+referred to as a prop in ATS. Intuitively, if a proof can be assgined the
+type FIB(n,r) for some integers n and r, then fib(n) equals r.
+In other words, FIB(n,r) encodes the relation fib(n)=r. There are
+three constructors FIB0, FIB1 and FIB2 associated with
+FIB, which are given the following types corresponding to the three
+equations in the definition of fib:
+<PRE>
+FIB0 : () -> FIB (0, 0)
+FIB1 : () -> FIB (1, 1)
+FIB2 : {n:nat} {r0,r1:int} (FIB (n, r0), FIB (n, r1) -> FIB (n+2, r0+r1)
+</PRE>
+Note that {...} is the concrete syntax in ATS for universal quantification.
+For instance, FIB2(FIB0(), FIB1()) is a term of the type FIB(2,1), attesting
+to fib(2)=1.
 <P>
-The factorial function can be implemented as follows:
 
-<PRE><FONT COLOR="#E80000"><FONT COLOR="#000000">fun</FONT> fact2 <FONT COLOR="#0000FF"><FONT COLOR="#000000">{</FONT>n<FONT COLOR="#000000">:</FONT>nat<FONT COLOR="#000000">}</FONT></FONT> <FONT COLOR="#000000">(</FONT>x<FONT COLOR="#000000">:</FONT> <FONT COLOR="#0000FF">int n</FONT><FONT COLOR="#000000">)</FONT><FONT COLOR="#000000">:</FONT> <FONT COLOR="#0000FF">Nat</FONT> <FONT COLOR="#000000">=</FONT> <FONT COLOR="#000000">if</FONT> x <FONT COLOR="#000000">&gt;</FONT> 0 <FONT COLOR="#000000">then</FONT> x nmul fact2 <FONT COLOR="#000000">(</FONT>x-1<FONT COLOR="#000000">)</FONT> <FONT COLOR="#000000">else</FONT> 1
-</FONT></PRE>
+We now implement a function in ATS as follows for computing Fibonacci
+numbers:
 
-The type assigned to <i>fact2</i> indicates that the function returns a
-natural number when applied to a natural number. It causes a type error
-if <i>fact2</i> is applied to a negative integer. The function
-<i>nmul</i> (infix) is assumed to be of the following type:
+<PRE><FONT COLOR="#E80000"><span class="keyword">fun</span> fibats <span class="staexp"><span class="keyword">{</span>n<span class="keyword">:</span>nat<span class="keyword">}</span></span> <span class="keyword">(</span>n<span class="keyword">:</span> <span class="staexp">int n</span><span class="keyword">)</span>
+  <span class="keyword">:</span> <span class="staexp"><span class="keyword">[</span>r<span class="keyword">:</span>int<span class="keyword">]</span> <span class="keyword">(</span>FIB <span class="keyword">(</span>n<span class="keyword">,</span> r<span class="keyword">)</span> <span class="keyword">|</span> int r<span class="keyword">)</span></span> <span class="keyword">=</span> <span class="keyword">let</span>
+  <span class="keyword">fun</span> loop <span class="staexp"><span class="keyword">{</span>n<span class="keyword">,</span>i<span class="keyword">:</span>nat <span class="keyword">|</span> i &lt;= n<span class="keyword">}</span></span> <span class="staexp"><span class="keyword">{</span>r0<span class="keyword">,</span>r1<span class="keyword">:</span>int<span class="keyword">}</span></span> <span class="staexp"><span class="keyword">.&lt;</span>n-i<span class="keyword">&gt;.</span></span> <span class="keyword">(</span>
+    <span class="prfexp">pf0<span class="keyword">:</span> <span class="staexp">FIB <span class="keyword">(</span>i<span class="keyword">,</span> r0<span class="keyword">)</span></span></span><span class="keyword">,</span> <span class="prfexp">pf1<span class="keyword">:</span> <span class="staexp">FIB <span class="keyword">(</span>i+1<span class="keyword">,</span> r1<span class="keyword">)</span></span></span> <span class="keyword">|</span> r0<span class="keyword">:</span> <span class="staexp">int <span class="keyword">(</span>r0<span class="keyword">)</span></span><span class="keyword">,</span> r1<span class="keyword">:</span> <span class="staexp">int <span class="keyword">(</span>r1<span class="keyword">)</span></span><span class="keyword">,</span> ni<span class="keyword">:</span> <span class="staexp">int<span class="keyword">(</span>n-i<span class="keyword">)</span></span>
+  <span class="keyword">)</span> <span class="keyword">:</span> <span class="staexp"><span class="keyword">[</span>r<span class="keyword">:</span>int<span class="keyword">]</span> <span class="keyword">(</span>FIB <span class="keyword">(</span>n<span class="keyword">,</span> r<span class="keyword">)</span> <span class="keyword">|</span> int <span class="keyword">(</span>r<span class="keyword">)</span><span class="keyword">)</span></span> <span class="keyword">=</span>
+  <span class="keyword">if</span> ni <span class="keyword">&gt;</span> 0 <span class="keyword">then</span>
+    loop <span class="staexp"><span class="keyword">{</span>n<span class="keyword">,</span>i+1<span class="keyword">}</span></span> <span class="keyword">(</span><span class="prfexp">pf1</span><span class="keyword">,</span> <span class="prfexp">FIB2 <span class="keyword">(</span>pf0<span class="keyword">,</span> pf1<span class="keyword">)</span></span> <span class="keyword">|</span> r1<span class="keyword">,</span> r0+r1<span class="keyword">,</span> ni-1<span class="keyword">)</span>
+  <span class="keyword">else</span> <span class="keyword">(</span><span class="prfexp">pf0</span> <span class="keyword">|</span> r0<span class="keyword">)</span>
+<span class="keyword">in</span>
+  loop <span class="keyword">(</span><span class="prfexp">FIB0<span class="keyword">(</span><span class="keyword">)</span></span><span class="keyword">,</span> <span class="prfexp">FIB1<span class="keyword">(</span><span class="keyword">)</span></span> <span class="keyword">|</span> 0<span class="keyword">,</span> 1<span class="keyword">,</span> n<span class="keyword">)</span>
+<span class="keyword">end</span> <span class="comment">// end of [fibats]
+</span></FONT></PRE>
 
-<PRE>(Nat, Nat) -&gt; Nat</PRE>
+Note that fibats is assigned the following type:
 
-That is, <i>nmul</i> returns a natural number when applied to
-two natural numbers.
+<PRE>
+fibats : {n:nat} int(n) -> [r:int] (FIB(n,r) | int(r))
+</PRE>
 
-The following code indicates the necessity to check that an integer read
-from the standard input is nonngative when <i>fact2</i> is called on it.
-In particuar, eliminating such a check results in a type error when the
-code is typechecked.
+where [...] is the concrete syntax in ATS for existential quantification
+and the bar symbol (|) is just a separator (like a comma) for separating
+proofs from values. For each integer I, int(I) is a singleton type for the
+only integer whose value is I. When fibats is applied to an integer of
+value n, it returns a pair consisting of a proof and an integer value r
+such that the proof, which is of the type FIB(n,r), asserts fib(n)=r.
+Therefore, fibats is a verified implementation of fib. Note that the loop
+function directly corresponds to the while-loop in the body of fibc.
+<P>
 
-<PRE><FONT COLOR="#E80000"><FONT COLOR="#787878">// [fn] declares a non-recursive function
-</FONT><FONT COLOR="#787878">// [@(...)] is used in ATS to group arguments for functions of variable arguments
-</FONT><FONT COLOR="#000000">fn</FONT> fact2_usage <FONT COLOR="#000000">(</FONT>cmd<FONT COLOR="#000000">:</FONT> <FONT COLOR="#0000FF">string</FONT><FONT COLOR="#000000">)</FONT><FONT COLOR="#000000">:</FONT> <FONT COLOR="#0000FF">void</FONT> <FONT COLOR="#000000">=</FONT>
-  prerrf <FONT COLOR="#000000">(</FONT>"Usage: %s [integer]\n"<FONT COLOR="#000000">,</FONT> <FONT COLOR="#000000">@(</FONT>cmd<FONT COLOR="#000000">)</FONT><FONT COLOR="#000000">)</FONT> <FONT COLOR="#787878">// print an error message</FONT>
-
-<FONT COLOR="#000000">implement</FONT> main <FONT COLOR="#000000">(</FONT>argc<FONT COLOR="#000000">,</FONT> argv<FONT COLOR="#000000">)</FONT> <FONT COLOR="#000000">=</FONT>
-  <FONT COLOR="#000000">if</FONT> argc &gt;= 2 <FONT COLOR="#000000">then</FONT> <FONT COLOR="#000000">let</FONT>
-    <FONT COLOR="#000000">val</FONT> n <FONT COLOR="#000000">=</FONT> int1_of argv<FONT COLOR="#000000">.</FONT><FONT COLOR="#000000">[</FONT>1<FONT COLOR="#000000">]</FONT> <FONT COLOR="#787878">// turning a string into an integer
-</FONT>    <FONT COLOR="#000000">val</FONT> <FONT COLOR="#000000">(</FONT><FONT COLOR="#000000">)</FONT> <FONT COLOR="#000000">=</FONT> assert_errmsg
-      <FONT COLOR="#000000">(</FONT>n &gt;= 0<FONT COLOR="#000000">,</FONT> "The integer argument needs to be nonnegative.\n"<FONT COLOR="#000000">)</FONT>
-    <FONT COLOR="#000000">val</FONT> res <FONT COLOR="#000000">=</FONT> fact2 n
-  <FONT COLOR="#000000">in</FONT>
-    printf <FONT COLOR="#000000">(</FONT>"factorial of %i = %i\n"<FONT COLOR="#000000">,</FONT> <FONT COLOR="#000000">@(</FONT>n<FONT COLOR="#000000">,</FONT> res<FONT COLOR="#000000">)</FONT><FONT COLOR="#000000">)</FONT>
-  <FONT COLOR="#000000">end</FONT> <FONT COLOR="#000000">else</FONT> <FONT COLOR="#000000">begin</FONT>
-    fact2_usage <FONT COLOR="#000000">(</FONT>argv<FONT COLOR="#000000">.</FONT><FONT COLOR="#000000">[</FONT>0<FONT COLOR="#000000">]</FONT><FONT COLOR="#000000">)</FONT><FONT COLOR="#000000">;</FONT> exit <FONT COLOR="#000000">(</FONT>1<FONT COLOR="#000000">)</FONT>
-  <FONT COLOR="#000000">end</FONT>
-</FONT></PRE>
-
-The entire code for this example is available <a
-href="EXAMPLE/INTRO/fact2.dats">here</a>. One may want to see what happens
-to typechecking if the call to <i>assert_errmsg</i> in the code is deleted.
-
-<H4>Factorial (version 3)</H4>
-
-If you are not afraid of being overwhelmed at this moment, please find an
-implementation of the factorial function <a
-href="EXAMPLE/INTRO/fact3.dats">here</a> that bears the signature of ATS:
-<EM>programming with theorem proving</EM>.  This is an implementation of
-the factorial function whose correctness is formally verified in the type
-system of ATS.
+Lastly, we emphasize that proofs are completely erased after
+typechecking. In particular, there is no proof construction at run-time.
 
 <H4>List Quicksort</H4> This one is for program verification enthusiasts:
-An implementation of list quicksort is given <a
-href="EXAMPLE/MISC/listquicksort_dats.html">here</a> that guarantees solely
-based on its type that the implmentation is terminating and the output list
-it returns is always a <EM>sorted permutation</EM> of its input list.  This
-is considered a milestone example in the development of ATS.
+An implementation of list quicksort is
+given <a href="EXAMPLE/MISC/quicksort_list_dats.html">here</a> that
+guarantees solely based on its type that the implmentation is terminating
+and the output list it returns is always a <EM>sorted permutation</EM> of
+its input list.  This is considered a milestone example in the development
+of ATS.
 
 <H4>A GTK/cairo Clock</H4> A clock implementation based on <a
 href="http://www.gtk.org">GTK+</a> and <a

@@ -36,7 +36,7 @@
 //
 (* ****** ****** *)
 //
-// HX: reasoning about integer sequences and multisets
+// HX: reasoning about integer sequences
 //
 (* ****** ****** *)
 
@@ -44,9 +44,19 @@
 
 (* ****** ****** *)
 
+staload "libats/SATS/imsetp.sats" // for handling integer multiset
+
+(* ****** ****** *)
+
 datasort ilist =
   | ilist_nil of () | ilist_cons of (int, ilist)
 // end of [ilist]
+
+(* ****** ****** *)
+
+absprop SETIZE (ilist, imset)
+
+(* ****** ****** *)
 
 dataprop
 ilisteq (ilist, ilist) =
@@ -58,6 +68,16 @@ ilisteq (ilist, ilist) =
       ilisteq (xs1, xs2)
     // end of [ilisteq_cons]
 // end of [ilisteq]
+
+(* ****** ****** *)
+
+dataprop LSTEQ
+  (ilist, ilist) = {xs:ilist} LSTEQ (xs, xs) of ()
+// end of [LSTEQ]
+
+prfun ilisteq_elim
+  {xs1,xs2:ilist} (pf: ilisteq (xs1, xs2)): LSTEQ (xs1, xs2)
+// end of [ilisteq_elim]
 
 (* ****** ****** *)
 
@@ -86,6 +106,10 @@ prfun length_isnat
   {xs:ilist} {n:int} (pf: LENGTH (xs, n)): [n>=0] void
 // end of [length_isnat]
 
+prfun length_msize {xs:ilist;mxs:imset} {n:int}
+  (pf1: SETIZE (xs, mxs), pf2: LENGTH (xs, n)): MSIZE (mxs, n)
+// end of [length_msize]
+
 (* ****** ****** *)
 
 dataprop
@@ -99,6 +123,14 @@ prfun append_istot {xs,ys:ilist} (): [zs:ilist] APPEND (xs, ys, zs)
 prfun append_isfun {xs,ys:ilist} {zs1,zs2:ilist}
   (pf1: APPEND (xs, ys, zs1), pf2: APPEND (xs, ys, zs2)): ilisteq (zs1, zs2)
 // end of [append_isfun]
+
+prfun append_unit1 {xs:ilist} (): APPEND (ilist_nil, xs, xs)
+prfun append_unit2 {xs:ilist} (): APPEND (xs, ilist_nil, xs)
+
+prfun append_length_lemma
+  {xs1,xs2:ilist} {xs:ilist} {n1,n2:int} (
+  pf: APPEND (xs1, xs2, xs), pf1len: LENGTH (xs1, n1), pf2len: LENGTH (xs2, n2)
+) : LENGTH (xs, n1+n2) // end of [append_length_lemma]
 
 (* ****** ****** *)
 
@@ -174,7 +206,7 @@ prfun permute_trans {xs1,xs2,xs3:ilist}
 
 prfun permute_insert_lemma
   {x:int} {xs:ilist} {ys:ilist}
-  (pf: PERMUTE (ilist_cons (x, xs), ys)): [ys1:ilist] [i:nat] INSERT (x, ys1, i, ys)
+  (pf: PERMUTE (ilist_cons (x, xs), ys)): [ys1:ilist;i:nat] INSERT (x, ys1, i, ys)
 // end of [permute_insert_lemma]
 
 prfun permute_length_lemma
@@ -182,27 +214,46 @@ prfun permute_length_lemma
   (pf1: PERMUTE (xs1, xs2), pf2: LENGTH (xs1, n)): LENGTH (xs2, n)
 // end of [permute_length_lemma]
 
+prfun permute_seteq_intr
+  {xs1,xs2:ilist} {mxs:imset}
+  (pf1: SETIZE (xs1, mxs), pf2: SETIZE (xs2, mxs)): PERMUTE (xs1, xs2)
+// end of [permute_seteq]
+
+prfun permute_seteq_elim
+  {xs1:ilist;mxs1:imset}
+  {xs2:ilist;mxs2:imset} (
+  pf: PERMUTE (xs1, xs2), pf1: SETIZE (xs1, mxs1), pf2: SETIZE (xs2, mxs2)
+) : SETEQ (mxs1, mxs2) // end of [permute_mseteq]
+
 (* ****** ****** *)
 
+(*
+//
+// HX-2010-12-27: see [imsetp.dats]
+//
 propdef
 MUNION (xs1:ilist, xs2:ilist, xs3:ilist) =
   {x0:int} {n1,n2:nat}
   (MSETCNT (x0, xs1, n1), MSETCNT (x0, xs2, n2)) -<prf> MSETCNT (x0, xs3, n1+n2)
 // end of [MUNION]
 
-(* ****** ****** *)
-
 prfun append_munion_lemma
   {xs,ys,zs:ilist} (pf: APPEND (xs,ys,zs)): MUNION (xs, ys, zs)
 // end of [append_munion_lemma]
+*)
 
 (* ****** ****** *)
 
+(*
+//
+// HX-2010-12-27: see [imsetp.dats]
+//
 propdef
 MSUBSET (xs1:ilist, xs2:ilist) =
   {x0:int} {n1,n2:nat}
   (MSETCNT (x0, xs1, n1), MSETCNT (x0, xs1, n2)) -<prf> [n1 <= n2] void
 // end of [MSUBSET]
+*)
 
 (* ****** ****** *)
 
