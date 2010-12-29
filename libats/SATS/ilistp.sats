@@ -52,6 +52,8 @@ datasort ilist =
   | ilist_nil of () | ilist_cons of (int, ilist)
 // end of [ilist]
 
+stadef ilist_sing (x:int): ilist = ilist_cons (x, ilist_nil)
+
 (* ****** ****** *)
 
 absprop SETIZE (ilist, imset)
@@ -112,8 +114,20 @@ prfun length_msize {xs:ilist;mxs:imset} {n:int}
 
 (* ****** ****** *)
 
-dataprop
-APPEND (ilist, ilist, ilist) =
+dataprop SNOC (ilist, int, ilist) =
+  | {x:int} SNOCnil (ilist_nil, x, ilist_sing (x)) of ()
+  | {x0:int} {xs1:ilist} {x:int} {xs2:ilist}
+    SNOCcons (ilist_cons (x0, xs1), x, ilist_cons (x0, xs2)) of SNOC (xs1, x, xs2)
+// end of [SNOC]
+
+prfun snoc_length_lemma
+  {xs1:ilist} {x:int} {xs2:ilist} {n:nat}
+  (pf1: SNOC (xs1, x, xs2), pf2: LENGTH (xs1, n)): LENGTH (xs2, n+1)
+// end of [snoc_length_lemma]
+
+(* ****** ****** *)
+
+dataprop APPEND (ilist, ilist, ilist) =
   | {ys:ilist} APPENDnil (ilist_nil, ys, ys) of ()
   | {x:int} {xs:ilist} {ys:ilist} {zs:ilist}
     APPENDcons (ilist_cons (x, xs), ys, ilist_cons (x, zs)) of APPEND (xs, ys, zs)
@@ -131,6 +145,14 @@ prfun append_length_lemma
   {xs1,xs2:ilist} {xs:ilist} {n1,n2:int} (
   pf: APPEND (xs1, xs2, xs), pf1len: LENGTH (xs1, n1), pf2len: LENGTH (xs2, n2)
 ) : LENGTH (xs, n1+n2) // end of [append_length_lemma]
+
+(* ****** ****** *)
+
+dataprop REVAPP (ilist, ilist, ilist) =
+  | {ys:ilist} REVAPPnil (ilist_nil, ys, ys) of ()
+  | {x:int} {xs:ilist} {ys:ilist} {zs:ilist}
+    REVAPPcons (ilist_cons (x, xs), ys, zs) of REVAPP (xs, ilist_cons (x, ys), zs)
+// end of [REVAPP]
 
 (* ****** ****** *)
 
@@ -273,24 +295,36 @@ prfun msetall_trans
 
 (* ****** ****** *)
 
-(*
-propdef LT (x0:int) (x:int) = [x0 < x] void
-propdef LTB (x0:int, xs:ilist) = MSETALL (LT x0, xs)
-propdef LTE (x0:int) (x:int) = [x0 <= x] void
-propdef LTEB (x0:int, xs:ilist) = MSETALL (LTE x0, xs)
+absprop LTEB
+  (x:int, xs: ilist) // [x] is a lower bound for [xs]
+// end of [LTEB]
 
-propdef GT (x0:int) (x:int) = [x0 > x] void
-propdef GTB (x0:int, xs:ilist) = MSETALL (GT x0, xs)
-propdef GTE (x0:int) (x:int) = [x0 >= x] void
-propdef GTEB (x0:int, xs:ilist) = MSETALL (GTE x0, xs)
+prfun lteb_istot {xs:ilist} (): [x:int] LTEB (x, xs)
 
-dataprop
-ISORD (ilist) =
+prfun lteb_nil {x:int} (): LTEB (x, ilist_nil)
+
+prfun lteb_cons {x0:int}
+  {x:int | x0 <= x} {xs:ilist} (pf: LTEB (x0, xs)): LTEB (x0, ilist_cons (x, xs))
+// end of [lteb_cons]
+prfun lteb_cons_elim {x0:int}
+  {x:int} {xs:ilist} (pf: LTEB (x0, ilist_cons (x, xs))): [x0 <= x] LTEB (x0, xs)
+// end of [lteb_cons_elim]
+
+prfun lteb_dec {x1:int}
+  {x2:int | x2 <= x1} {xs:ilist} (pf: LTEB (x1, xs)): LTEB (x2, xs)
+// end of [lteb_dec]
+
+prfun lteb_permute_lemma {x:int}
+  {xs1,xs2:ilist} (pf1: LTEB (x, xs1), pf2: PERMUTE (xs1, xs2)): LTEB (x, xs2)
+// end of [lteb_permute_lemma]
+
+(* ****** ****** *)
+
+dataprop ISORD (ilist) =
   | ISORDnil (ilist_nil) of ()
   | {x:int} {xs:ilist}
     ISORDcons (ilist_cons (x, xs)) of (ISORD xs, LTEB (x, xs))
 // end of [ISORD]
-*)
 
 (* ****** ****** *)
 

@@ -253,6 +253,13 @@ libats/DATS/funmap_avltree.dats
 libats/SATS/funralist_nested.sats
 libats/DATS/funralist_nested.dats
 
+/*
+libats/SATS/gfarray.sats
+libats/DATS/gfarray.dats
+libats/SATS/gflist.sats
+libats/DATS/gflist.dats
+*/
+
 /* generic arrays of various dimensions */
 libats/SATS/genarrays.sats
 libats/DATS/genarrays.dats
