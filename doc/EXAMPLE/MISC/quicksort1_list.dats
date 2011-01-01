@@ -99,10 +99,10 @@ end // end of [UB_lemma_monotone]
 
 (* ****** ****** *)
 
-dataprop ISORD (ilist) =
-  | ISORDnil (nil)
-  | {x:nat} {xs:ilist} ISORDcons (cons (x, xs)) of (LB (x, xs), ISORD xs)
-// end of [ISORD]
+dataprop ISORD1 (ilist) =
+  | ISORD1nil (nil)
+  | {x:nat} {xs:ilist} ISORD1cons (cons (x, xs)) of (LB (x, xs), ISORD1 xs)
+// end of [ISORD1]
 
 (* ****** ****** *)
 
@@ -125,46 +125,46 @@ end // end of [APPEND_MSET_lemma]
 
 (* ****** ****** *)
 
-extern prfun APPEND_ISORD_lemma {xs1,xs2,xs:ilist} {x:nat} (
-    pf1: ISORD xs1
-  , pf2: ISORD xs2
+extern prfun APPEND_ISORD1_lemma {xs1,xs2,xs:ilist} {x:nat} (
+    pf1: ISORD1 xs1
+  , pf2: ISORD1 xs2
   , pf3: UB (xs1, x)
   , pf4: LB (x, xs2)
   , pf5: APPEND (xs1, xs2, xs)
-) :<prf> ISORD (xs)
+) :<prf> ISORD1 (xs)
 
-implement APPEND_ISORD_lemma (pf1, pf2, pf3, pf4, pf5) = let
+implement APPEND_ISORD1_lemma (pf1, pf2, pf3, pf4, pf5) = let
   prfun aux {x0:nat} {xs1,xs2,xs:ilist} {x:nat | x0 <= x} .<xs1>. (
-      pf1: ISORD xs1
-    , pf2: ISORD xs2
+      pf1: ISORD1 xs1
+    , pf2: ISORD1 xs2
     , pf3: UB (xs1, x)
     , pf4: LB (x, xs2)
     , pf5: APPEND (xs1, xs2, xs)
     , pf6: LB (x0, xs1)
-  ) : @(ISORD xs, LB (x0, xs)) =
+  ) : @(ISORD1 xs, LB (x0, xs)) =
   case+ pf5 of
   | APPENDcons {x1} (pf5) => let
-      val ISORDcons (pf1_lb1, pf1) = pf1
+      val ISORD1cons (pf1_lb1, pf1) = pf1
       val UBcons pf3 = pf3
       val (pf_ord, pf_lb1) = aux {x1} (pf1, pf2, pf3, pf4, pf5, pf1_lb1)
       val LBcons pf6 = pf6
       val pf_lb0 = LB_lemma_monotone {x0,x1} (pf_lb1)
     in
-      (ISORDcons (pf_lb1, pf_ord), LBcons pf_lb0)
+      (ISORD1cons (pf_lb1, pf_ord), LBcons pf_lb0)
     end
   | APPENDnil () => (pf2, LB_lemma_monotone {x0, x} pf4)
 in
   case+ pf5 of
   | APPENDcons {x1} _ => let
       val UBcons _ = pf3
-      val ISORDcons (pf_lb, _) = pf1
+      val ISORD1cons (pf_lb, _) = pf1
       val pf_lb = LBcons {x1} {x1} (pf_lb)
       val (pf_ord, pf_lb) = aux {x1} (pf1, pf2, pf3, pf4, pf5, pf_lb)
     in
       pf_ord
     end
   | APPENDnil () => pf2
-end // end of [APPEND_ISORD_lemma]
+end // end of [APPEND_ISORD1_lemma]
 
 (* ****** ****** *)
 
@@ -202,14 +202,14 @@ end // end of [append]
 
 fun qsrt {xs:ilist} {n:nats} .<n,0>.
   (pf: MSET (xs, n) | xs: list xs)
-  :<> [xs: ilist] (MSET (xs, n), ISORD (xs) | list xs) = begin
+  :<> [xs: ilist] (MSET (xs, n), ISORD1 (xs) | list xs) = begin
   case+ xs of
   | cons (x, xs) => let
       prval MSETcons pf = pf in part (
       pf, MSETnil (), MSETnil (), UBnil (), LBnil () | x, xs, nil (), nil ()
     ) end
   | nil () => let
-      prval MSETnil () = pf in (MSETnil (), ISORDnil () | nil ())
+      prval MSETnil () = pf in (MSETnil (), ISORD1nil () | nil ())
     end
 end // end of [qsrt]
 
@@ -220,7 +220,7 @@ and part {x:pos} {xs0,xs1,xs2:ilist} {n0,n1,n2:nats} .<n0+n1+n2,n0+1>. (
   , pf_ub: UB (xs1, x)
   , pf_lb: LB (x, xs2)
   | x: T x, xs0: list xs0, xs1: list xs1, xs2: list xs2
-  ) :<> [xs: ilist] (MSET (xs, x+n0+n1+n2), ISORD (xs) | list xs) = begin
+  ) :<> [xs: ilist] (MSET (xs, x+n0+n1+n2), ISORD1 (xs) | list xs) = begin
   case+ xs0 of
   | cons (x0, xs0) => let
       prval MSETcons (pf0) = pf0
@@ -239,10 +239,10 @@ and part {x:pos} {xs0,xs1,xs2:ilist} {n0,n1,n2:nats} .<n0+n1+n2,n0+1>. (
       val (pf2_set, pf2_ord | xs2) = qsrt (pf2 | xs2)
       prval pf_ub = UB_MSET_lemma (pf1, pf1_set, pf_ub)
       prval pf_lb = LB_MSET_lemma (pf2, pf2_set, pf_lb)
-      prval pf2_ord1 = ISORDcons (pf_lb, pf2_ord)
+      prval pf2_ord1 = ISORD1cons (pf_lb, pf2_ord)
       val (pf_app | xs) = append (xs1, cons (x, xs2))
       prval pf_set = APPEND_MSET_lemma (pf1_set, MSETcons pf2_set, pf_app)
-      prval pf_ord = APPEND_ISORD_lemma (
+      prval pf_ord = APPEND_ISORD1_lemma (
         pf1_ord, pf2_ord1, pf_ub, LBcons {x} (pf_lb), pf_app
       )
     in
@@ -254,7 +254,7 @@ end // end of [part]
 
 extern fun quicksort
   {xs:ilist} {n:nats} (pf: MSET (xs, n) | xs: list xs)
-  :<> [xs: ilist] (MSET (xs, n), ISORD (xs) | list xs)
+  :<> [xs: ilist] (MSET (xs, n), ISORD1 (xs) | list xs)
 implement quicksort (pf | xs) = qsrt (pf | xs)
 
 (* ****** ****** *)

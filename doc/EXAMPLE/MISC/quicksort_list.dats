@@ -77,10 +77,11 @@ extern prfun UB_lemma_monotone
 
 (* ****** ****** *)
 
-dataprop ISORD (ilist) =
-  | ISORDnil (nil)
-  | {x:nat} {xs:ilist} ISORDcons (cons (x, xs)) of (LB (x, xs), ISORD xs)
-// end of [ISORD]
+absprop ISORD (ilist)
+extern prfun isord_nil (): ISORD (nil)
+extern prfun isord_cons {x:int} {xs:ilist}
+  (pf1: LB (x, xs), pf2: ISORD (xs)): ISORD (cons (x, xs))
+// end of [isord_cons]
 
 (* ****** ****** *)
 
@@ -151,7 +152,7 @@ qsrt {xs:ilist} {n:nats} .<n,0>.
       pf, MSETnil (), MSETnil (), UBnil (), LBnil () | x, xs, nil (), nil ()
     ) end
   | nil () => let
-      prval MSETnil () = pf in (MSETnil (), ISORDnil () | nil ())
+      prval MSETnil () = pf in (MSETnil (), isord_nil () | nil ())
     end
 end // end of [qsrt]
 
@@ -181,7 +182,7 @@ and part {x:pos} {xs0,xs1,xs2:ilist} {n0,n1,n2:nats} .<n0+n1+n2,n0+1>. (
       val (pf2_set, pf2_ord | xs2) = qsrt (pf2 | xs2)
       prval pf_ub = UB_MSET_lemma (pf1, pf1_set, pf_ub)
       prval pf_lb = LB_MSET_lemma (pf2, pf2_set, pf_lb)
-      prval pf2_ord1 = ISORDcons (pf_lb, pf2_ord)
+      prval pf2_ord1 = isord_cons (pf_lb, pf2_ord)
       val (pf_app | xs) = append (xs1, cons (x, xs2))
       prval pf_set = APPEND_MSET_lemma (pf1_set, MSETcons pf2_set, pf_app)
       prval pf_ord = APPEND_ISORD_lemma (

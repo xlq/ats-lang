@@ -88,7 +88,7 @@ prfun gfarray_v_unsplit {a:viewt@ype}
   pflen: LENGTH (xs1, n1)
 , pfmul: MUL (n1, sizeof a, ofs)
 , pfarr1: gfarray_v (a, xs1, l)
-, gpfarr2: gfarray_v (a, xs2, l+ofs)
+, pfarr2: gfarray_v (a, xs2, l+ofs)
 ) :<prf> [xs:ilist] (APPEND (xs1, xs2, xs), gfarray_v (a, xs, l))
 // end of [gfarray_v_unsplit]
 

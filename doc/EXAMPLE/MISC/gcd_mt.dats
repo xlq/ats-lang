@@ -94,11 +94,10 @@ atslib_pthread_mutexref_unlock
 
 (* ****** ****** *)
 
-absprop GCD (int, int, int)
-extern prval gcd_lemma0 {x,y:int} ():<prf> [z:nat] GCD (x, y, z)
-extern prval gcd_lemma1 {x,y,z:int} (pf: GCD (x, y, z)):<prf> GCD (x - y, y, z)
-extern prval gcd_lemma2 {x,y,z:int} (pf: GCD (x, y, z)):<prf> GCD (x, y - x, z)
-extern prval gcd_lemma3 {x:nat;z:int} (pf: GCD (x, x, z)):<prf> [x == z] void
+extern prfun gcd_lemma0 {x,y:int} ():<prf> [z:nat] GCD (x, y, z)
+extern prfun gcd_lemma1 {x,y,z:int} (pf: GCD (x, y, z)):<prf> GCD (x - y, y, z)
+extern prfun gcd_lemma2 {x,y,z:int} (pf: GCD (x, y, z)):<prf> GCD (x, y - x, z)
+extern prfun gcd_lemma3 {x:nat;z:int} (pf: GCD (x, x, z)):<prf> [x == z] void
 
 //
 

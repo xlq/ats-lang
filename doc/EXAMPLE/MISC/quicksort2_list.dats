@@ -82,6 +82,8 @@ append {xs1,xs2:ilist}
   : [xs3: ilist] (APPEND (xs1, xs2, xs3) | list (a, xs3))
 // end of [append]
 
+(* ****** ****** *)
+
 implement{a}
 append {xs1,xs2}
   (xs1, xs2) = case+ xs1 of
@@ -92,6 +94,39 @@ append {xs1,xs2}
     end // end of [cons]
   | nil () => (APPENDnil () | xs2)
 // end of [append]  
+
+(* ****** ****** *)
+
+propdef
+MUNION (xs1:ilist, xs2:ilist, xs3:ilist) =
+  {x0:int} {n1,n2:nat}
+  (MSETCNT (x0, xs1, n1), MSETCNT (x0, xs2, n2)) -<prf> MSETCNT (x0, xs3, n1+n2)
+// end of [MUNION]
+
+extern
+prfun append_munion_lemma
+  {xs,ys,zs:ilist} (pf: APPEND (xs,ys,zs)): MUNION (xs, ys, zs)
+// end of [append_munion_lemma]
+
+implement
+append_munion_lemma
+  (pf) = lemma (pf) where {
+  prfun lemma {xs,ys,zs:ilist} .<xs>.
+    (pf: APPEND (xs,ys,zs)): MUNION (xs, ys, zs) =
+    case+ pf of
+    | APPENDcons (pf) => let
+        prval fpf = lemma (pf) in
+        lam (pf1, pf2) => let
+          prval MSETCNTcons pf1 = pf1 in MSETCNTcons (fpf (pf1, pf2))
+        end // end of [lam]
+      end (* end of [APPENDcons] *)
+    | APPENDnil () =>
+        lam (pf1, pf2) => let
+          prval MSETCNTnil () = pf1 in pf2
+        end // end of [lam]
+      (* end of [APPENDnil] *)
+  // end of [lemma]
+} // end of [append_munion_lemma]
 
 (* ****** ****** *)
 

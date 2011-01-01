@@ -86,29 +86,25 @@ and pred_int (i: int):<> int = "atspre_pred_int"
 overload succ with succ_int
 overload pred with pred_int
 
-fun add_int_int (i1: int, i2: int):<> int
-  = "atspre_add_int_int"
-
-and sub_int_int (i1: int, i2: int):<> int
-  = "atspre_sub_int_int"
-
-and mul_int_int (i1: int, i2: int):<> int
-  = "atspre_mul_int_int"
-
-and div_int_int (i1: int, i2: int):<> int
-  = "atspre_div_int_int"
-
-and mod_int_int (i1: int, i2: int):<> int
-  = "atspre_mod_int_int"
-
-and gcd_int_int (i1: int, i2: int):<> int
-  = "atspre_gcd_int_int"
-
+fun add_int_int
+  (i1: int, i2: int):<> int = "atspre_add_int_int"
+and sub_int_int
+  (i1: int, i2: int):<> int = "atspre_sub_int_int"
 overload + with add_int_int
 overload - with sub_int_int
+
+fun mul_int_int
+  (i1: int, i2: int):<> int = "atspre_mul_int_int"
+and div_int_int
+  (i1: int, i2: int):<> int = "atspre_div_int_int"
+and mod_int_int
+  (i1: int, i2: int):<> int = "atspre_mod_int_int"
 overload * with mul_int_int
 overload / with div_int_int
 overload mod with mod_int_int
+
+fun gcd_int_int
+ (i1: int, i2: int):<> int = "atspre_gcd_int_int"
 overload gcd with gcd_int_int
 
 fun lt_int_int (i1: int, i2: int):<> bool
@@ -248,27 +244,23 @@ overload pred with pred_uint
 
 fun add_uint_uint (u1: uint, u2: uint):<> uint
   = "atspre_add_uint_uint"
-
 and sub_uint_uint (u1: uint, u2: uint):<> uint
   = "atspre_sub_uint_uint"
-
-and mul_uint_uint (u1: uint, u2: uint):<> uint
-  = "atspre_mul_uint_uint"
-
-and div_uint_uint (u1: uint, u2: uint):<> uint
-  = "atspre_div_uint_uint"
-
-and mod_uint_uint (u1: uint, u2: uint):<> uint
-  = "atspre_mod_uint_uint"
-
-and gcd_uint_uint (u1: uint, u2: uint):<> uint
-  = "atspre_gcd_uint_uint"
-
 overload + with add_uint_uint
 overload - with sub_uint_uint
+
+fun mul_uint_uint (u1: uint, u2: uint):<> uint
+  = "atspre_mul_uint_uint"
+and div_uint_uint (u1: uint, u2: uint):<> uint
+  = "atspre_div_uint_uint"
+and mod_uint_uint (u1: uint, u2: uint):<> uint
+  = "atspre_mod_uint_uint"
 overload * with mul_uint_uint
 overload / with div_uint_uint
 overload mod with mod_uint_uint
+
+fun gcd_uint_uint (u1: uint, u2: uint):<> uint
+  = "atspre_gcd_uint_uint"
 overload gcd with gcd_uint_uint
 
 (* ****** ****** *)
@@ -460,10 +452,12 @@ fun igcd2 {i,j:int}
 
 fun nmul (i: Nat, j: Nat):<> Nat = "atspre_nmul"
 fun ndiv (i: Nat, j: Pos):<> Nat = "atspre_ndiv"
+//
 // HX: there is no [ndiv1]
-fun ndiv2 {i:nat;j:pos}
-  (i: int i, j: int j)
-  :<> [q,r:nat | r < j] (MUL (q, j, i-r) | int q) = "atspre_ndiv2"
+//
+fun ndiv2 {i,j:int | i >= 0; j > 0}
+  (i: int i, j: int j):<> [q:int] (DIV (i, j, q) | int q)
+  = "atspre_ndiv2"
 // end of [ndiv2]
 
 //
@@ -474,7 +468,7 @@ fun nmod {i,j:int | i >= 0; j > 0} // [j] must be a constant!
 fun nmod1 {i,j:int | i >= 0; j > 0} (i: int i, j: int j):<> natLt j
   = "atspre_nmod1"
 fun nmod2 {i,j:int | i >= 0; j > 0}
-  (i: int i, j: int j):<> [q,r:nat | r < j] (MUL (q, j, i-r) | int r)
+  (i: int i, j: int j):<> [r:int] (MOD (i, j, r) | int r)
   = "atspre_nmod1"
 
 (* ****** ****** *)
@@ -553,22 +547,18 @@ overload pred with upred
 
 fun uadd {i,j:nat} (i: uint i, j: uint j):<> uint (i+j)
   = "atspre_uadd"
-
 and usub {i,j:nat | i >= j} (i: uint i, j: uint j):<> uint (i-j)
   = "atspre_usub"
-
-and umul {i,j:nat} (i: uint i, j: uint j):<> uint (i*j)
-  = "atspre_umul"
-
-and udiv {i,j:nat | j > 0} (i: uint i, j: uint j):<> uint (i/j)
-  = "atspre_udiv"
-
-and umod {i,j:nat | j > 0} (i: uint i, j: uint j)
-  :<> [q,r:int | 0 <= r; r < j; i == q*j + r] uint r
-  = "atspre_umod"
-
 overload + with uadd
 overload - with usub
+
+fun umul {i,j:nat} (i: uint i, j: uint j):<> uint (i*j)
+  = "atspre_umul"
+and udiv {i,j:nat | j > 0} (i: uint i, j: uint j):<> uint (i/j)
+  = "atspre_udiv"
+and umod {i,j:nat | j > 0}
+  (i: uint i, j: uint j):<> [r:int] (MOD (i, j, r) | uint r)
+  = "atspre_umod"
 overload * with umul
 overload / with udiv
 overload mod with umod
@@ -650,22 +640,22 @@ and pred_lint (li: lint):<> lint = "atspre_pred_lint"
 overload succ with succ_lint
 overload pred with pred_lint
 
-fun add_lint_lint (i: lint, j: lint):<> lint
-  = "atspre_add_lint_lint"
-and sub_lint_lint (i: lint, j: lint):<> lint
-  = "atspre_sub_lint_lint"
+fun add_lint_lint
+  (i: lint, j: lint):<> lint = "atspre_add_lint_lint"
+and sub_lint_lint
+  (i: lint, j: lint):<> lint = "atspre_sub_lint_lint"
 overload + with add_lint_lint
 overload - with sub_lint_lint
 
-fun mul_lint_lint (i: lint, j: lint):<> lint
-  = "atspre_mul_lint_lint"
-and div_lint_lint (i: lint, j: lint):<> lint
-  = "atspre_div_lint_lint"
+fun mul_lint_lint
+  (i: lint, j: lint):<> lint = "atspre_mul_lint_lint"
+and div_lint_lint
+  (i: lint, j: lint):<> lint = "atspre_div_lint_lint"
 overload * with mul_lint_lint
 overload / with div_lint_lint
 
-fun mod_lint_lint (i: lint, j: lint):<> lint
-  = "atspre_mod_lint_lint"
+fun mod_lint_lint
+  (i: lint, j: lint):<> lint = "atspre_mod_lint_lint"
 overload mod with mod_lint_lint
 
 fun lt_lint_lint (i: lint, j: lint):<> bool
@@ -804,49 +794,41 @@ and pred_ulint (lu: ulint):<> ulint
 overload succ with succ_ulint
 overload pred with pred_ulint
 
-fun add_ulint_ulint (i: ulint, j: ulint):<> ulint
-  = "atspre_add_ulint_ulint"
-
-and sub_ulint_ulint (i: ulint, j: ulint):<> ulint
-  = "atspre_sub_ulint_ulint"
-
-and mul_ulint_ulint (i: ulint, j: ulint):<> ulint
-  = "atspre_mul_ulint_ulint"
-
-and div_ulint_ulint (i: ulint, j: ulint):<> ulint
-  = "atspre_div_ulint_ulint"
-
-and mod_ulint_ulint (i: ulint, j: ulint):<> ulint
-  = "atspre_mod_ulint_ulint"
-
+fun add_ulint_ulint
+  (i: ulint, j: ulint):<> ulint = "atspre_add_ulint_ulint"
+and sub_ulint_ulint
+  (i: ulint, j: ulint):<> ulint = "atspre_sub_ulint_ulint"
 overload + with add_ulint_ulint
 overload - with sub_ulint_ulint
+
+fun mul_ulint_ulint
+  (i: ulint, j: ulint):<> ulint = "atspre_mul_ulint_ulint"
+and div_ulint_ulint
+  (i: ulint, j: ulint):<> ulint = "atspre_div_ulint_ulint"
+and mod_ulint_ulint
+  (i: ulint, j: ulint):<> ulint = "atspre_mod_ulint_ulint"
 overload * with mul_ulint_ulint
 overload / with div_ulint_ulint
 overload mod with mod_ulint_ulint
 
 fun lt_ulint_ulint (i: ulint, j: ulint):<> bool
   = "atspre_lt_ulint_ulint"
-
 and lte_ulint_ulint (i: ulint, j: ulint):<> bool
   = "atspre_lte_ulint_ulint"
+overload < with lt_ulint_ulint
+overload <= with lte_ulint_ulint
 
 fun gt_ulint_ulint (i: ulint, j: ulint):<> bool
   = "atspre_gt_ulint_ulint"
-
 and gte_ulint_ulint (i: ulint, j: ulint):<> bool
   = "atspre_gte_ulint_ulint"
+overload > with gt_ulint_ulint
+overload >= with gte_ulint_ulint
 
 fun eq_ulint_ulint (i: ulint, j: ulint):<> bool
   = "atspre_eq_ulint_ulint"
-
 and neq_ulint_ulint (i: ulint, j: ulint):<> bool
   = "atspre_neq_ulint_ulint"
-
-overload < with lt_ulint_ulint
-overload <= with lte_ulint_ulint
-overload > with gt_ulint_ulint
-overload >= with gte_ulint_ulint
 overload = with eq_ulint_ulint
 overload <> with neq_ulint_ulint
 
@@ -974,47 +956,39 @@ overload pred with pred_llint
 
 fun add_llint_llint (i: llint, j: llint):<> llint
   = "atspre_add_llint_llint"
-
 and sub_llint_llint (i: llint, j: llint):<> llint
   = "atspre_sub_llint_llint"
-
-and mul_llint_llint (i: llint, j: llint):<> llint
-  = "atspre_mul_llint_llint"
-
-and div_llint_llint (i: llint, j: llint):<> llint
-  = "atspre_div_llint_llint"
-
-and mod_llint_llint (i: llint, j: llint):<> llint
-  = "atspre_mod_llint_llint"
-
 overload + with add_llint_llint
 overload - with sub_llint_llint
+
+fun mul_llint_llint (i: llint, j: llint):<> llint
+  = "atspre_mul_llint_llint"
+and div_llint_llint (i: llint, j: llint):<> llint
+  = "atspre_div_llint_llint"
+and mod_llint_llint (i: llint, j: llint):<> llint
+  = "atspre_mod_llint_llint"
 overload * with mul_llint_llint
 overload / with div_llint_llint
 overload mod with mod_llint_llint
 
 fun lt_llint_llint (i: llint, j: llint):<> bool
   = "atspre_lt_llint_llint"
-
 and lte_llint_llint (i: llint, j: llint):<> bool
   = "atspre_lte_llint_llint"
+overload < with lt_llint_llint
+overload <= with lte_llint_llint
 
 fun gt_llint_llint (i: llint, j: llint):<> bool
   = "atspre_gt_llint_llint"
-
 and gte_llint_llint (i: llint, j: llint):<> bool
   = "atspre_gte_llint_llint"
+overload > with gt_llint_llint
+overload >= with gte_llint_llint
 
 fun eq_llint_llint (i: llint, j: llint):<> bool
   = "atspre_eq_llint_llint"
-
 and neq_llint_llint (i: llint, j: llint):<> bool
   = "atspre_neq_llint_llint"
-
-overload < with lt_llint_llint
-overload <= with lte_llint_llint
-overload > with gt_llint_llint
-overload >= with gte_llint_llint
 overload = with eq_llint_llint
 overload <> with neq_llint_llint
 
@@ -1109,47 +1083,39 @@ overload pred with pred_ullint
 
 fun add_ullint_ullint (i: ullint, j: ullint):<> ullint
   = "atspre_add_ullint_ullint"
-
 and sub_ullint_ullint (i: ullint, j: ullint):<> ullint
   = "atspre_sub_ullint_ullint"
-
-and mul_ullint_ullint (i: ullint, j: ullint):<> ullint
-  = "atspre_mul_ullint_ullint"
-
-and div_ullint_ullint (i: ullint, j: ullint):<> ullint
-  = "atspre_div_ullint_ullint"
-
-and mod_ullint_ullint (i: ullint, j: ullint):<> ullint
-  = "atspre_mod_ullint_ullint"
-
 overload + with add_ullint_ullint
 overload - with sub_ullint_ullint
+
+fun mul_ullint_ullint (i: ullint, j: ullint):<> ullint
+  = "atspre_mul_ullint_ullint"
+and div_ullint_ullint (i: ullint, j: ullint):<> ullint
+  = "atspre_div_ullint_ullint"
+and mod_ullint_ullint (i: ullint, j: ullint):<> ullint
+  = "atspre_mod_ullint_ullint"
 overload * with mul_ullint_ullint
 overload / with div_ullint_ullint
 overload mod with mod_ullint_ullint
 
 fun lt_ullint_ullint (i: ullint, j: ullint):<> bool
   = "atspre_lt_ullint_ullint"
-
 and lte_ullint_ullint (i: ullint, j: ullint):<> bool
   = "atspre_lte_ullint_ullint"
+overload < with lt_ullint_ullint
+overload <= with lte_ullint_ullint
 
 fun gt_ullint_ullint (i: ullint, j: ullint):<> bool
   = "atspre_gt_ullint_ullint"
-
 and gte_ullint_ullint (i: ullint, j: ullint):<> bool
   = "atspre_gte_ullint_ullint"
+overload > with gt_ullint_ullint
+overload >= with gte_ullint_ullint
 
 fun eq_ullint_ullint (i: ullint, j: ullint):<> bool
   = "atspre_eq_ullint_ullint"
-
 and neq_ullint_ullint (i: ullint, j: ullint):<> bool
   = "atspre_neq_ullint_ullint"
-
-overload < with lt_ullint_ullint
-overload <= with lte_ullint_ullint
-overload > with gt_ullint_ullint
-overload >= with gte_ullint_ullint
 overload = with eq_ullint_ullint
 overload <> with neq_ullint_ullint
 

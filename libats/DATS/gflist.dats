@@ -9,7 +9,7 @@
 (*
 ** ATS - Unleashing the Potential of Types!
 **
-** Copyright (C) 2002-2008 Hongwei Xi, Boston University
+** Copyright (C) 2002-2010 Hongwei Xi, Boston University
 **
 ** All rights reserved
 **
@@ -30,31 +30,58 @@
 *)
 
 (* ****** ****** *)
+//
+// Author: Hongwei Xi (hwxi AT cs DOT bu DOT edu)
+// Time: December, 2010
+//
+(* ****** ****** *)
+//
+// HX: generic fully indexed lists 
+//
+(* ****** ****** *)
 
-(*
-** Author: Hongwei Xi (hwxi AT cs DOT bu DOT edu)
-** Time: 2008
-*)
+#define ATS_STALOADFLAG 0 // there is no need for staloading at run-time
 
 (* ****** ****** *)
 
-#include "prelude/params.hats"
+staload "libats/SATS/ilistp.sats"
 
 (* ****** ****** *)
 
-#if VERBOSE_PRELUDE #then
-#print "Loading [option.sats] starts!\n"
-#endif // end of [VERBOSE_PRELUDE]
+staload "libats/SATS/gflist.sats"
 
 (* ****** ****** *)
 
-castfn option0_of_option1 {a:t@ype} (xs: Option a):<> option0 a
-castfn option1_of_option0 {a:t@ype} (xs: option0 a):<> Option a
+implement{a}
+gflist_append
+  {xs,ys} (xs, ys) = let
+  val (_pf | xs) = list_of_gflist {a} (xs)
+  val (_pf | ys) = list_of_gflist {a} (ys)
+  val res = list_append (xs, ys)
+  val [res:ilist] (_pf | res) = gflist_of_list (res)
+  prval pfres = __assert () where {
+    extern prfun __assert (): APPEND (xs, ys, res)
+  } // end of [prval]
+in
+  (pfres | res)
+end // end of [gflist_append]
 
 (* ****** ****** *)
 
-#if VERBOSE_PRELUDE #then
-#print "Loading [option0.sats] finishes!\n"
-#endif // end of [VERBOSE_PRELUDE]
+implement{a}
+gflist_revapp
+  {xs,ys} (xs, ys) = let
+  val (_pf | xs) = list_of_gflist {a} (xs)
+  val (_pf | ys) = list_of_gflist {a} (ys)
+  val res = list_reverse_append (xs, ys)
+  val [res:ilist] (_pf | res) = gflist_of_list (res)
+  prval pfres = __assert () where {
+    extern prfun __assert (): REVAPP (xs, ys, res)
+  } // end of [prval]
+in
+  (pfres | res)
+end // end of [gflist_append]
 
-(* end of [option0.sats] *)
+(* ****** ****** *)
+
+(* end of [gflist.dats] *)

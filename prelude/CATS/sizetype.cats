@@ -258,6 +258,7 @@ atspre_mod_size1_int1
 } // end of [atspre_mod_size1_int1]
 
 #define atspre_mod1_size1_int1 atspre_mod_size1_int1
+#define atspre_mod2_size1_int1 atspre_mod_size1_int1
 
 ATSinline()
 ats_size_type
@@ -267,6 +268,7 @@ atspre_mod_size1_size1
 } // end of [atspre_mod_size1_size1]
 
 #define atspre_mod1_size1_size1 atspre_mod_size1_size1
+#define atspre_mod2_size1_size1 atspre_mod_size1_size1
 
 /* ****** ****** */
 

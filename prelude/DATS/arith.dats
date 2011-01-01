@@ -195,63 +195,6 @@ end // end of [mul_associate]
 (* ****** ****** *)
 
 (*
-** the greatest-common-divisor function
-*)
-
-local
-
-prfun aux1 {m,n:pos} {r:int} .<m+n>.
-  (pf: GCD (m, n, r)):<> GCD (n, m, r) =
-  sif m <= n then
-    let prval GCDind1 pf1 = pf in
-       sif m < n then GCDind2 (aux1 pf1) else pf
-    end
-  else let
-    prval GCDind2 pf1 = pf
-  in
-    GCDind1 (aux1 pf1)
-  end // end of [sif]
-
-prfn aux2 {m:nat;n:int} {r:int} 
-  (pf: GCD (m, n, r)):<> GCD (n, m, r) =
-  sif n > 0 then
-    sif m > 0 then aux1 pf
-    else let
-      prval GCDbas2 () = pf
-    in
-      GCDbas1 ()
-    end
-  else sif n < 0 then let
-    prval GCDneg1 pf1 = pf
-  in
-    sif m > 0 then GCDneg2 (aux1 pf1)
-    else let
-      prval GCDbas2 () = pf1
-    in
-      GCDneg2 (GCDbas1 ())
-    end
-  end else let
-    prval GCDbas1 () = pf
-  in
-    sif m > 0 then GCDbas2 () else pf
-  end // end of [sif]
-
-in // in of [local]
-
-// gcd_commute: GCD (m, n, r) -> GCD (n, m, r)
-implement gcd_commute {m,n} (pf) =
-  sif m >= 0 then aux2 pf else let
-    prval GCDneg2 pf1 = pf
-  in
-    sif n >= 0 then GCDneg1 (aux2 pf1) else let
-      prval GCDneg2 pf2 = aux2 pf1 in GCDneg2 (GCDneg1 pf2)
-    end // end of [sif]
-  end // end of [sif]
-end // end of local
-
-(* ****** ****** *)
-
-(*
 ** the power-of-2 function
 *)
 

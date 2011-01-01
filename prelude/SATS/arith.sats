@@ -134,7 +134,36 @@ prfun mul_associate {x,y,z:int} {xy,yz,xy_z,x_yz:int} (
   ) :<prf> [xy_z==x_yz] void
 
 (* ****** ****** *)
+//
+// HX-2010-12-30: 
+//
+absprop DIVMOD (
+  x:int, y: int, q: int, r: int // x = q * y + r
+) // end of [DIVMOD]
 
+propdef DIV (x:int, y:int, q:int) = [r:int] DIVMOD (x, y, q, r)
+propdef MOD (x:int, y:int, r:int) = [q:int] DIVMOD (x, y, q, r)
+
+praxi div_istot {x,y:int | x >= 0; y > 0} (): DIV (x, y, x/y)
+
+praxi divmod_istot
+  {x,y:int | x >= 0; y > 0} (): [q,r:nat | r < y] DIVMOD (x, y, q, r)
+
+praxi divmod_isfun
+  {x,y:int | x >= 0; y > 0}
+  {q1,q2:int} {r1,r2:int} (
+  pf1: DIVMOD (x, y, q1, r1)
+, pf2: DIVMOD (x, y, q2, r2)
+) : [q1==q2;r1==r2] void // end of [divmod_isfun]
+  
+praxi divmod_elim
+  {x,y:int | x >= 0; y > 0} {q,r:int}
+  (pf: DIVMOD (x, y, q, r)): [qy:int | 0 <= r; r < y; x==qy+r] MUL (q, y, qy)
+// end of [divmod_elim]
+
+(* ****** ****** *)
+
+(*
 dataprop GCD (int, int, int) =
   | {m:nat} GCDbas1 (m, 0, m)
   | {n:pos} GCDbas2 (0, n, n)
@@ -143,12 +172,16 @@ dataprop GCD (int, int, int) =
   | {m:nat;n:int | n < 0} {r:int} GCDneg1 (m, n, r) of GCD (m, ~n, r)
   | {m:int;n:int | m < 0} {r:int} GCDneg2 (m, n, r) of GCD (~m, n, r)
 // end of [GCD]
+*)
 
-prfun gcd_is_fun {m,n:int} {r1,r2:int}
+//
+// HX-2010-12-31: GCD (0, 0, 0): gcd (0, 0) = 0
+//
+absprop GCD (int, int, int)
+
+prfun gcd_istot {m,n:int} (): [r:nat] GCD (m,n,r)
+prfun gcd_isfun {m,n:int} {r1,r2:int}
   (pf1: GCD (m, n, r1), pf2: GCD (m, n, r2)):<prf> [r1==r2] void
-
-prfun gcd_modulo {m,n:int} {r:int}
-  (pf: GCD (m, n, r)):<prf> [s1,s2:int] (MUL (s1, r, m), MUL (s2, r, n))
 
 prfun gcd_commute {m,n:int} {r:int} (pf: GCD (m, n, r)):<prf> GCD (n, m, r)
 

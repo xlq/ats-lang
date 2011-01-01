@@ -120,9 +120,14 @@ dataprop SNOC (ilist, int, ilist) =
     SNOCcons (ilist_cons (x0, xs1), x, ilist_cons (x0, xs2)) of SNOC (xs1, x, xs2)
 // end of [SNOC]
 
+prfun snoc_istot {xs:ilist} {x:int} (): [xsx:ilist] SNOC (xs, x, xsx)
+prfun snoc_isfun {xs:ilist} {x:int}
+  {xsx1,xsx2:ilist} (pf1: SNOC (xs, x, xsx1), pf2: SNOC (xs, x, xsx2)): LSTEQ (xsx1, xsx2)
+// end of [snoc_isfun]
+
 prfun snoc_length_lemma
-  {xs1:ilist} {x:int} {xs2:ilist} {n:nat}
-  (pf1: SNOC (xs1, x, xs2), pf2: LENGTH (xs1, n)): LENGTH (xs2, n+1)
+  {xs:ilist} {x:int} {xsx:ilist} {n:nat}
+  (pf1: SNOC (xs, x, xsx), pf2: LENGTH (xs, n)): LENGTH (xsx, n+1)
 // end of [snoc_length_lemma]
 
 (* ****** ****** *)
@@ -135,7 +140,7 @@ dataprop APPEND (ilist, ilist, ilist) =
 
 prfun append_istot {xs,ys:ilist} (): [zs:ilist] APPEND (xs, ys, zs)
 prfun append_isfun {xs,ys:ilist} {zs1,zs2:ilist}
-  (pf1: APPEND (xs, ys, zs1), pf2: APPEND (xs, ys, zs2)): ilisteq (zs1, zs2)
+  (pf1: APPEND (xs, ys, zs1), pf2: APPEND (xs, ys, zs2)): LSTEQ (zs1, zs2)
 // end of [append_isfun]
 
 prfun append_unit1 {xs:ilist} (): APPEND (ilist_nil, xs, xs)
@@ -145,6 +150,16 @@ prfun append_length_lemma
   {xs1,xs2:ilist} {xs:ilist} {n1,n2:int} (
   pf: APPEND (xs1, xs2, xs), pf1len: LENGTH (xs1, n1), pf2len: LENGTH (xs2, n2)
 ) : LENGTH (xs, n1+n2) // end of [append_length_lemma]
+
+prfun append_snoc_lemma
+  {xs1:ilist}
+  {x:int}
+  {xs2:ilist}
+  {xs1x:ilist}
+  {xs:ilist} (
+  pf1: APPEND (xs1, ilist_cons (x, xs2), xs)
+, pf2: SNOC (xs1, x, xs1x)
+) : APPEND (xs1x, xs2, xs) // end of [append_snoc_lemma]
 
 (* ****** ****** *)
 
@@ -295,8 +310,33 @@ prfun msetall_trans
 
 (* ****** ****** *)
 
+absprop LTB
+  (x: int, xs: ilist) // [x] is a strict lower bound for [xs]
+// end of [LTB]
+
+prfun ltb_istot {xs:ilist} (): [x:int] LTB (x, xs)
+
+prfun ltb_nil {x:int} (): LTB (x, ilist_nil)
+
+prfun ltb_cons {x0:int}
+  {x:int | x0 < x} {xs:ilist} (pf: LTB (x0, xs)): LTB (x0, ilist_cons (x, xs))
+// end of [ltb_cons]
+prfun ltb_cons_elim {x0:int}
+  {x:int} {xs:ilist} (pf: LTB (x0, ilist_cons (x, xs))): [x0 < x] LTB (x0, xs)
+// end of [ltb_cons_elim]
+
+prfun ltb_dec {x1:int}
+  {x2:int | x2 <= x1} {xs:ilist} (pf: LTB (x1, xs)): LTB (x2, xs)
+// end of [ltb_dec]
+
+prfun ltb_permute_lemma {x:int}
+  {xs1,xs2:ilist} (pf1: LTB (x, xs1), pf2: PERMUTE (xs1, xs2)): LTB (x, xs2)
+// end of [ltb_permute_lemma]
+
+(* ****** ****** *)
+
 absprop LTEB
-  (x:int, xs: ilist) // [x] is a lower bound for [xs]
+  (x: int, xs: ilist) // [x] is a lower bound for [xs]
 // end of [LTEB]
 
 prfun lteb_istot {xs:ilist} (): [x:int] LTEB (x, xs)
@@ -325,6 +365,18 @@ dataprop ISORD (ilist) =
   | {x:int} {xs:ilist}
     ISORDcons (ilist_cons (x, xs)) of (ISORD xs, LTEB (x, xs))
 // end of [ISORD]
+
+(* ****** ****** *)
+//
+// SORT (xs, ys):
+// [ys] is a sorted version of [xs]
+//
+absprop SORT (xs: ilist, ys: ilist)
+
+prfun sort_elim {xs,ys:ilist}
+  (pf: SORT (xs, ys)): @(PERMUTE (xs, ys), ISORD ys)
+prfun sort_make {xs,ys:ilist}
+  (pf1: PERMUTE (xs, ys), pf2: ISORD ys): SORT (xs, ys)
 
 (* ****** ****** *)
 
