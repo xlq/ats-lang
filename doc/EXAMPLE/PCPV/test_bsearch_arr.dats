@@ -92,7 +92,7 @@ main () = () where {
   val (pfmul, pfsrch | p_srch) = bsearch (pford, pflen, pf_arr | p_arr, x0, N, cmp)
   prval () = decode (x0)
 //
-  prval () = length_isnat (pfsrch.0)
+  prval () = bsearch_ind_isnat (pfsrch)
   prval () = mul_nat_nat_nat (pfmul)
   val pdiff = size1_of_ptrdiff1 (p_srch - p_arr)
   val ind = div_size_size (pdiff, sizeof<T>)
