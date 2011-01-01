@@ -304,19 +304,34 @@ fun mul2_size1_size1
   = "atspre_mul2_size1_size1"
 overload szmul2 with mul2_size1_size1
 
-// ------ ------
+(* ****** ****** *)
+
+symintr szdiv2
+infixl ( / ) szdiv2
 
 fun div_size1_int1
   {i:nat;j:int | j > 0} (i: size_t i, j: int j):<> size_t (i/j)
   = "atspre_div_size1_int1"
 overload / with div_size1_int1
 
+fun div2_size1_int1
+  {i:nat;j:int | j > 0}
+  (i: size_t i, j: int j):<> [q:nat] (DIV (i, j, q) | size_t q)
+  = "atspre_div2_size1_int1"
+overload szdiv2 with div2_size1_int1
+
 fun div_size1_size1
   {i:nat;j:int | j > 0} (i: size_t i, j: size_t j):<> size_t (i/j)
   = "atspre_div_size1_size1"
 overload / with div_size1_size1
 
-// ------ ------
+fun div2_size1_size1
+  {i:nat;j:int | j > 0}
+  (i: size_t i, j: size_t j):<> [q:nat] (DIV (i, j, q) | size_t q)
+  = "atspre_div2_size1_size1"
+overload szdiv2 with div2_size1_size1
+
+(* ****** ****** *)
 
 symintr szmod1 szmod2
 infixl (mod) szmod1 szmod2
@@ -341,7 +356,15 @@ fun mod2_size1_size1 {i:nat;j:int | j > 0}
   = "atspre_mod2_size1_size1"
 overload szmod2 with mod2_size1_size1
 
-// ------ ------
+(* ****** ****** *)
+
+fun divmod_size1_size1
+  {m:nat; n:int | n > 0} (
+  m: size_t m, n: size_t n
+, r: &size_t? >> size_t r
+) :<> #[q,r:nat | r < n] (DIVMOD (m, n, q, r) | size_t q)
+
+(* ****** ****** *)
 
 fun lt_int1_size1 {i,j:nat}
   (i: int i, j: size_t j):<> bool (i < j) = "atspre_lt_int1_size1"

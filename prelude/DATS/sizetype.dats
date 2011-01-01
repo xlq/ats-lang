@@ -35,16 +35,12 @@
 
 (* ****** ****** *)
 
-#define ATS_DYNLOADFLAG 0 // no initialization is needed
-
-(* ****** ****** *)
-
 implement
-divmod_int1_int1
+divmod_size1_size1
   {m,n} (m, n, r) = let
 //
-  val (pfdiv_mn | q) = ndiv2 (m, n)
-  val (pfmul_qn | qn) = op imul2 (q, n)
+  val (pfdiv_mn | q) = div2_size1_size1 (m, n)
+  val (pfmul_qn | qn) = mul2_size1_size1 (q, n)
 //
   prval pfdivmod_mn = divmod_istot {m,n} ()
   prval () = divmod_isfun (pfdiv_mn, pfdivmod_mn)
@@ -55,51 +51,8 @@ divmod_int1_int1
   val () = r := m - qn
 in
   (pfdivmod_mn | q)
-end // end of [quotrem_int1_int1]
+end // end of [quotrem_size1_size1]
 
 (* ****** ****** *)
 
-%{$
-
-// stringization
-
-ats_ptr_type
-atspre_tostrptr_llint
-  (ats_llint_type i0) {
-  ats_llint_type i, i1 ; int n ; char *res ;
-//
-  i1 = (i0 >= 0 ? i0 : -i0) ;
-  for (i = i1, n = 0; i > 0; i = i / 10) n += 1 ;
-  if (i0 < 0) n += 1 ; if (i0 == 0) n = 1;
-  res = ATS_MALLOC(n+1) ; res = res + n ; *res = '\000' ;
-  for (i = i1, n = 0; i > 0; i = i / 10) {
-    *--res = ('0' + i % 10) ;
-  } // end of [for]
-  if (i0 < 0) *--res = '-' ; if (i0 == 0) *--res = '0' ;
-//
-  return res ;
-} // end of [atspre_tostrptr_llint]
-
-/* ****** ****** */
-
-ats_ptr_type
-atspre_tostrptr_ullint
-  (ats_ullint_type i0) {
-  ats_ullint_type i; int n ; char *res ;
-//
-  for (i = i0, n = 0; i > 0; i = i / 10) n += 1 ;
-  if (i0 == 0) n = 1 ;
-  res = ATS_MALLOC(n+1) ; res = res + n; *res = '\000' ;
-  for (i = i0, n = 0; i > 0; i = i / 10) {
-    *--res = ('0' + i % 10) ;
-  } // end of [for]
-  if (i0 == 0) *--res = '0' ;
-//
-  return res ;
-} // end of [atspre_tostrptr_ullint]
-
-%} // end of [%{$]
-
-(* ****** ****** *)
-
-(* end of [integer.dats] *)
+(* end of [sizetype.dats] *)

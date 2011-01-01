@@ -187,29 +187,33 @@ atspre_pred_size1 (ats_size_type sz) { return (sz - 1) ; }
 
 ATSinline()
 ats_size_type
-atspre_add_size1_size1 (ats_size_type sz1, ats_size_type sz2) {
-  return (sz1 + sz2) ;
-}
-
-ATSinline()
-ats_size_type
 atspre_add_size1_int1 (ats_size_type sz1, ats_int_type i2) {
   return (sz1 + i2) ;
 }
 
-// ------ ------
-
 ATSinline()
 ats_size_type
-atspre_sub_size1_size1 (ats_size_type sz1, ats_size_type sz2) {
-  return (sz1 - sz2) ;
-}
+atspre_add_size1_size1 (
+  ats_size_type sz1, ats_size_type sz2
+) {
+  return (sz1 + sz2) ;
+} // end of [atspre_add_size1_size1]
+
+/* ****** ****** */
 
 ATSinline()
 ats_size_type
 atspre_sub_size1_int1 (ats_size_type sz1, ats_int_type i2) {
   return (sz1 - i2) ;
 }
+
+ATSinline()
+ats_size_type
+atspre_sub_size1_size1 (
+  ats_size_type sz1, ats_size_type sz2
+) {
+  return (sz1 - sz2) ;
+} // end of [atspre_sub_size1_size1]
 
 /* ****** ****** */
 
@@ -221,34 +225,46 @@ atspre_mul_int1_size1 (ats_int_type i1, ats_size_type sz2) {
 
 ATSinline()
 ats_size_type
-atspre_mul_size1_int1 (ats_size_type sz1, ats_int_type i2) {
+atspre_mul_size1_int1 (
+  ats_size_type sz1, ats_int_type i2
+) {
   return (sz1 * i2) ;
-}
+} // end of [atspre_mul_size1_int1]
 
 ATSinline()
 ats_size_type
-atspre_mul_size1_size1 (ats_size_type sz1, ats_size_type sz2) {
+atspre_mul_size1_size1 (
+  ats_size_type sz1, ats_size_type sz2
+) {
   return (sz1 * sz2) ;
-}
+} // end of [atspre_mul_size1_size1]
 
 #define atspre_mul1_size1_size1 atspre_mul_size1_size1
 #define atspre_mul2_size1_size1 atspre_mul_size1_size1
 
-// ------ ------
+/* ****** ****** */
 
 ATSinline()
 ats_size_type
-atspre_div_size1_int1 (ats_size_type sz1, ats_int_type i2) {
+atspre_div_size1_int1 (
+  ats_size_type sz1, ats_int_type i2
+) {
   return (sz1 / i2) ;
 } // end of [atspre_div_size1_int1]
 
+#define atspre_div2_size1_int1 atspre_div_size1_int1
+
 ATSinline()
 ats_size_type
-atspre_div_size1_size1 (ats_size_type sz1, ats_size_type sz2) {
+atspre_div_size1_size1 (
+  ats_size_type sz1, ats_size_type sz2
+) {
   return (sz1 / sz2) ;
 } // end of [atspre_div_size1_size1]
 
-// ------ ------
+#define atspre_div2_size1_size1 atspre_div_size1_size1
+
+/* ****** ****** */
 
 ATSinline()
 ats_int_type
