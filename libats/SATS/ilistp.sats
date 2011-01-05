@@ -62,23 +62,25 @@ absprop SETIZE (ilist, imset)
 
 dataprop
 ilisteq (ilist, ilist) =
-  | ilisteq_nil (ilist_nil, ilist_nil) of ()
+  | ilisteq_nil (
+      ilist_nil, ilist_nil
+    ) of ()
   | {x:int} {xs1,xs2:ilist}
     ilisteq_cons (
       ilist_cons (x, xs1), ilist_cons (x, xs2)
-    ) of
+    ) of (
       ilisteq (xs1, xs2)
-    // end of [ilisteq_cons]
+    ) // end of [ilisteq_cons]
 // end of [ilisteq]
 
 (* ****** ****** *)
 
-dataprop LSTEQ
-  (ilist, ilist) = {xs:ilist} LSTEQ (xs, xs) of ()
-// end of [LSTEQ]
+dataprop ILISTEQ
+  (ilist, ilist) = {xs:ilist} ILISTEQ (xs, xs) of ()
+// end of [ILISTEQ]
 
 prfun ilisteq_elim
-  {xs1,xs2:ilist} (pf: ilisteq (xs1, xs2)): LSTEQ (xs1, xs2)
+  {xs1,xs2:ilist} (pf: ilisteq (xs1, xs2)): ILISTEQ (xs1, xs2)
 // end of [ilisteq_elim]
 
 (* ****** ****** *)
@@ -122,7 +124,7 @@ dataprop SNOC (ilist, int, ilist) =
 
 prfun snoc_istot {xs:ilist} {x:int} (): [xsx:ilist] SNOC (xs, x, xsx)
 prfun snoc_isfun {xs:ilist} {x:int}
-  {xsx1,xsx2:ilist} (pf1: SNOC (xs, x, xsx1), pf2: SNOC (xs, x, xsx2)): LSTEQ (xsx1, xsx2)
+  {xsx1,xsx2:ilist} (pf1: SNOC (xs, x, xsx1), pf2: SNOC (xs, x, xsx2)): ILISTEQ (xsx1, xsx2)
 // end of [snoc_isfun]
 
 prfun snoc_length_lemma
@@ -140,7 +142,7 @@ dataprop APPEND (ilist, ilist, ilist) =
 
 prfun append_istot {xs,ys:ilist} (): [zs:ilist] APPEND (xs, ys, zs)
 prfun append_isfun {xs,ys:ilist} {zs1,zs2:ilist}
-  (pf1: APPEND (xs, ys, zs1), pf2: APPEND (xs, ys, zs2)): LSTEQ (zs1, zs2)
+  (pf1: APPEND (xs, ys, zs1), pf2: APPEND (xs, ys, zs2)): ILISTEQ (zs1, zs2)
 // end of [append_isfun]
 
 prfun append_unit1 {xs:ilist} (): APPEND (ilist_nil, xs, xs)

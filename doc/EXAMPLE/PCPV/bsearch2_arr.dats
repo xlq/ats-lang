@@ -135,7 +135,7 @@ prfun ltb_append_lemma1
 //
       prval pfarr_xs2 = gfarray_v_cons {a} (pfat_x, pfarr_xs21)
       prval (pfapp_alt, pfarr_alt) = gfarray_v_unsplit {a} (pflen_xs1, pfmul_nsz2, pfarr_xs1, pfarr_xs2)
-      prval LSTEQ () = append_isfun (pfapp_xs1_xs2, pfapp_alt)
+      prval ILISTEQ () = append_isfun (pfapp_xs1_xs2, pfapp_alt)
       prval () = pfarr := pfarr_alt
     in
       (pfmul_xs1f, pfsrch_xs | p_res)
@@ -178,7 +178,7 @@ prfun gteb_append_lemma1
 //
       prval pfarr_xs2 = gfarray_v_cons {a} (pfat_x, pfarr_xs21)
       prval (pfapp_alt, pfarr_alt) = gfarray_v_unsplit {a} (pflen_xs1, pfmul_nsz2, pfarr_xs1, pfarr_xs2)
-      prval LSTEQ () = append_isfun (pfapp_xs1_xs2, pfapp_alt)
+      prval ILISTEQ () = append_isfun (pfapp_xs1_xs2, pfapp_alt)
       prval () = pfarr := pfarr_alt
     in
       (pfmul_xs1x2f, pfsrch_xs | p21_res)

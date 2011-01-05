@@ -83,7 +83,9 @@ implement{} funheap_make_nil () = E ()
 
 implement{elt}
 funheap_size (hp) = size (hp) where {
-// this algorithm is taken from a paper by Okasaki
+//
+// this algorithm is taken from a paper by Chris Okasaki
+//
   fun diff {nl,nr:nat | nr <= nl && nl <= nr+1} .<nr>. 
     (nr: size_t nr, t: bt (elt, nl)):<> int (nl-nr) = begin case+ t of
     | B (_, tl, tr) => begin

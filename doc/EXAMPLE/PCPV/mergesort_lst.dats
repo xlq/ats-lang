@@ -71,7 +71,6 @@ extern
 prfun union_commute {ys1,ys2:ilist} {ys:ilist}
   (pf: UNION (ys1, ys2, ys)): UNION (ys2, ys1, ys)
 
-
 extern
 prfun union_nil1 {ys:ilist} (): UNION (nil, ys, ys)
 extern
@@ -91,6 +90,8 @@ prfun isord_union_cons
   pf1: ORD (cons (y1, ys1)), pf2: ORD (cons (y2, ys2))
 , pf3: UNION (ys1, cons (y2, ys2), ys), pf4: ORD (ys)
 ) : ORD (cons (y1, ys))
+
+(* ****** ****** *)
 
 fun{a:viewt@ype}
 merge {ys1,ys2:ilist} (
@@ -151,6 +152,8 @@ extern
 prfun ORDPERM2SORT
   {xs,ys:ilist} (pf1: ORD (ys), pf2: PERM (xs, ys)): SORT (xs, ys)
 // end of [ORDPERM2SORT]
+
+(* ****** ****** *)
 
 fun{a:viewt@ype}
 msort {xs:ilist} {n:nat} .<n>. (
