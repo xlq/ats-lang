@@ -1857,8 +1857,9 @@ end // end of [list_unzip]
 
 (* ****** ****** *)
 
-
-// implementing merge sort
+//
+// HX: implementing merge sort
+//
 
 (*
 **
@@ -1870,7 +1871,7 @@ end // end of [list_unzip]
 
 local
 //
-// this is not an efficient implementation but it is guaranteed to be O(n*log(n))
+// HX: this is not an efficient implementation but it is guaranteed to be O(n*log(n))
 //
   datatype llist (a:t@ype+, int, int) =
     | {i,j,n:nat} lcons (a, i+j, n+1) of (list (a, i), llist (a, j, n))
@@ -1941,7 +1942,9 @@ end // end of [local]
 
 (* ****** ****** *)
 
-// implementing quick sort
+//
+// HX: implementing quick sort
+//
 
 local
 //

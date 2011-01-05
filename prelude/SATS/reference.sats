@@ -48,14 +48,19 @@
 #endif // end of [VERBOSE_PRELUDE]
 
 (* ****** ****** *)
-
-// implemented in [prelude/CATS/reference.cats]
+//
+// HX: implemented in [prelude/CATS/reference.cats]
+//
 fun ref_make_elt_tsz
   {a:viewt@ype} (x: &a >> a?, tsz: sizeof_t a):<> ref a
   = "atspre_ref_make_elt_tsz"
+// end of [ref_make_elt_tsz]
 
+//
+// HX:
 // [ref] and [ref_make_elt] are the same
 // implemented in [prelude/DATS/reference.dats]
+//
 fun{a:viewt@ype} ref (x: a):<> ref a
 fun{a:viewt@ype} ref_make_elt (x: a):<> ref a
 
@@ -66,43 +71,56 @@ fun ref_make_view_ptr
   = "atspre_ref_make_view_ptr"
 // end of [ref_make_view_ptr]
 
-// implemented in [prelude/CATS/reference.cats]
+//
+// HX: implemented in [prelude/CATS/reference.cats]
+//
 fun ref_void_make ():<> ref void = "atspre_ref_void_make"
 
 (* ****** ****** *)
-
-// Operationally, it is the same as [ref_make_view_ptr]
+//
+// HX: Operationally, it is the same as [ref_make_view_ptr]
+//
 fun refconst_make_view_ptr
   {a:t@ype} {l:addr} (pf: a @ l | p: ptr l):<> refconst a
   = "atspre_ref_make_view_ptr"
+// end of [refconst_make_view_ptr]
 
 (* ****** ****** *)
+//
+// HX: implemented in [prelude/DATS/reference.dats]
+//
+fun{a:t@ype}
+ref_get_elt (r: ref a):<!ref> a = "atspre_ref_get_elt"
 
-// implemented in [prelude/DATS/reference.dats]
-fun{a:t@ype} ref_get_elt (r: ref a):<!ref> a
-  = "atspre_ref_get_elt"
-
-// implemented in [prelude/DATS/reference.dats]
+//
+// HX: implemented in [prelude/DATS/reference.dats]
+//
 fun{a:t@ype} ref_set_elt (r: ref a, x: a):<!ref> void
 
 (* ****** ****** *)
-
+//
 // Operationally, it is the same as [ref_get_elt]
+//
 fun{a:t@ype} refconst_get_elt (r: refconst a):<> a
 
 (* ****** ****** *)
-
-// implemented in [prelude/CATS/reference.cats]
+//
+// HX: implemented in [prelude/CATS/reference.cats]
+//
 fun ref_get_view_ptr
   {a:viewt@ype} (r: ref a):<> [l:addr] (vbox (a @ l) | ptr l)
   = "atspre_ref_get_view_ptr"
+// end of [ref_get_view_ptr]
 
-// implemented in [prelude/DATS/reference.dats]
+//
+// HX: implemented in [prelude/DATS/reference.dats]
+//
 fun{a:viewt@ype} ref_swap (r: ref a, x: &a):<!ref> void
 
-// implemented in [prelude/DATS/reference.dats]
-fun ref_map {a:viewt@ype} {f:eff}
-  (r: ref a, f: (&a) -<0> void):<!ref> void
+//
+// HX: implemented in [prelude/DATS/reference.dats]
+//
+fun ref_map {a:viewt@ype} (r: ref a, f: (&a) -<0> void):<!ref> void
 
 (*
 

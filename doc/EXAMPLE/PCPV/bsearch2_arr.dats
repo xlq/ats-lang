@@ -23,7 +23,7 @@ staload "libats/SATS/gfarray.sats"
 (* ****** ****** *)
 
 typedef cmp (a:viewt@ype) =
-  {x1,x2:int} (&E (a, x1), &E (a, x2)) -> int (x1-x2)
+  {x1,x2:int} (&elt (a, x1), &elt (a, x2)) -> int (x1-x2)
 // end of [lte]
 
 (* ****** ****** *)
@@ -84,7 +84,7 @@ bsearch {xs:ilist} {x0:int} {n:nat} {l:addr} .<n>. (
   pford: ISORD (xs)
 , pflen: LENGTH (xs, n)
 , pfarr: !gfarray_v (a, xs, l)
-| p: ptr l, x0: &E (a, x0), n: int n, cmp: cmp(a)
+| p: ptr l, x0: &elt (a, x0), n: int n, cmp: cmp(a)
 ) : [i,ofs:int] (MUL (i, sizeof(a), ofs), BSEARCH (xs, x0, i) | ptr (l+ofs)) =
   if n > 0 then let
     val n2 = n/2

@@ -173,6 +173,7 @@ list_vt_mergesort {v:view} {n:nat}
 *)
 
 //
+// HX:
 // note that [libc/CATS/stdlib.cats] is needed
 // this one essentially copies a given list into an array;
 // then it sorts the array and copies it back into the list;

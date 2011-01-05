@@ -70,7 +70,7 @@ main () = () where {
     (x1: &T, x2: &T): bool = "test_lte"
   implement lte (x1, x2) = x1 <= x2
   extern fun lte {x1,x2:int}
-    (x1: &E (T, x1), x2: &E (T, x2)): bool (x1 <= x2) = "test_lte"
+    (x1: &elt (T, x1), x2: &elt (T, x2)): bool (x1 <= x2) = "test_lte"
 //
   val (pfsrt | ys) = insort<T> (pflen, pf_arr | p_arr, N, lte)
   prval pfperm = SORT2PERM (pfsrt)
@@ -80,17 +80,13 @@ main () = () where {
     (x1: &T, x2: &T): int = "test_cmp"
   implement cmp (x1, x2) = compare (x1, x2)
   extern fun cmp {x1,x2:int}
-    (x1: &E (T, x1), x2: &E (T, x2)): int (x1-x2) = "test_cmp"
-//
-  extern prfun encode
-    (x: &T >> E (T, x)): #[x:int] void
-  extern prfun decode {x:int} (x: &E (T, x) >> T): void
+    (x1: &elt (T, x1), x2: &elt (T, x2)): int (x1-x2) = "test_cmp"
 //
   var x0: T = drand48 ()
-  prval () = encode (x0)
+  prval () = eltencode (x0)
   prval pford = SORT2ORD (pfsrt)
   val (pfmul, pfsrch | p_srch) = bsearch (pford, pflen, pf_arr | p_arr, x0, N, cmp)
-  prval () = decode (x0)
+  prval () = eltdecode (x0)
 //
   prval () = bsearch_ind_isnat (pfsrch)
   prval () = mul_nat_nat_nat (pfmul)

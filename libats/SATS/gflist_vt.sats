@@ -48,46 +48,33 @@ staload "libats/SATS/ilistp.sats" // for handling integer sequences
 
 (* ****** ****** *)
 
-abst@ype elt (a:t@ype, x:int) = a
+absviewt@ype
+elt (a:viewt@ype, x:int) = a
 
-datatype
-gflist (a:t@ype, ilist) =
+dataviewtype
+gflist_vt (a:viewt@ype, ilist) =
   | {x:int} {xs:ilist}
-    gflist_cons (a, ilist_cons (x, xs)) of (elt (a, x), gflist (a, xs))
-  | gflist_nil (a, ilist_nil) of ()
-// end of [gflist]
+    gflist_vt_cons (a, ilist_cons (x, xs)) of (elt (a, x), gflist_vt (a, xs))
+  | gflist_vt_nil (a, ilist_nil) of ()
+// end of [gflist_vt]
 
 (* ****** ****** *)
 
-castfn list_of_gflist {a:t@ype} {xs:ilist}
-  (xs: gflist (a, xs)):<> [n:nat] (LENGTH (xs, n) | list (a, n))
-// end of [list_of_gflist]
+prfun list_vt_of_gflist_vt {a:viewt@ype} {xs:ilist}
+  (xs: !gflist_vt (a, xs) >> list_vt (a, n)): #[n:nat] LENGTH (xs, n)
+// end of [list_of_gflist_vt]
 
-castfn gflist_of_list {a:t@ype} {n:int}
-  (xs: list (a, n)):<> [xs:ilist] (LENGTH (xs, n) | gflist (a, xs))
-// end of [gflist_of_list]
-
-(* ****** ****** *)
-
-fun{a:t@ype}
-gflist_length {xs:ilist}
-  (xs: gflist (a, xs)):<> [n:nat] (LENGTH (xs, n) | int n)
-// end of [gflist_length]
+prfun gflist_vt_of_list_vt {a:viewt@ype} {n:int}
+  (xs: !list_vt (a, n) >> gflist_vt (a, xs)): #[xs:ilist] LENGTH (xs, n)
+// end of [gflist_vt_of_list]
 
 (* ****** ****** *)
 
-fun{a:t@ype}
-gflist_append {xs1,xs2:ilist}
-  (xs1: gflist (a, xs1), xs2: gflist (a, xs2))
-  : [res:ilist] (APPEND (xs1, xs2, res) | gflist (a, res))
-// end of [gflist_append]
-
-fun{a:t@ype}
-gflist_revapp {xs1,xs2:ilist}
-  (xs1: gflist (a, xs1), xs2: gflist (a, xs2))
-  : [res:ilist] (REVAPP (xs1, xs2, res) | gflist (a, res))
-// end of [gflist_revapp]
+fun{a:viewt@ype}
+gflist_vt_length {xs:ilist}
+  (xs: !gflist_vt (a, xs)):<> [n:nat] (LENGTH (xs, n) | int n)
+// end of [gflist_vt_length]
 
 (* ****** ****** *)
 
-(* end of [gflist.sats] *)
+(* end of [gflist_vt.sats] *)

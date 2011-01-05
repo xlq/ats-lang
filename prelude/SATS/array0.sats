@@ -80,7 +80,9 @@ array0_make_elt (asz: size_t, x: a):<> array0 a
 fun{a:t@ype} array0_make_lst (xs: list0 a):<> array0 a
 
 (* ****** ****** *)
-
+//
+// HX: this is a polymorphic function
+//
 fun array0_size {a:t@ype} (A: array0 a):<!ref> size_t
 
 (* ****** ****** *)

@@ -53,6 +53,18 @@ staload "libats/SATS/gflist.sats"
 (* ****** ****** *)
 
 implement{a}
+gflist_length (xs) = let
+  val (pf | xs) =
+    list_of_gflist {a} (xs) // no-op casting
+  // end of [val]
+  val n = list_length<a> (xs)
+in
+  (pf | n)
+end // end of [gflist_length]
+
+(* ****** ****** *)
+
+implement{a}
 gflist_append
   {xs,ys} (xs, ys) = let
   val (_pf | xs) = list_of_gflist {a} (xs)

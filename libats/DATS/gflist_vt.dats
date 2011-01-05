@@ -44,50 +44,28 @@
 
 (* ****** ****** *)
 
-staload "libats/SATS/ilistp.sats" // for handling integer sequences
+staload "libats/SATS/ilistp.sats"
 
 (* ****** ****** *)
 
-abst@ype elt (a:t@ype, x:int) = a
-
-datatype
-gflist (a:t@ype, ilist) =
-  | {x:int} {xs:ilist}
-    gflist_cons (a, ilist_cons (x, xs)) of (elt (a, x), gflist (a, xs))
-  | gflist_nil (a, ilist_nil) of ()
-// end of [gflist]
+staload "libats/SATS/gflist_vt.sats"
 
 (* ****** ****** *)
 
-castfn list_of_gflist {a:t@ype} {xs:ilist}
-  (xs: gflist (a, xs)):<> [n:nat] (LENGTH (xs, n) | list (a, n))
-// end of [list_of_gflist]
-
-castfn gflist_of_list {a:t@ype} {n:int}
-  (xs: list (a, n)):<> [xs:ilist] (LENGTH (xs, n) | gflist (a, xs))
-// end of [gflist_of_list]
-
-(* ****** ****** *)
-
-fun{a:t@ype}
-gflist_length {xs:ilist}
-  (xs: gflist (a, xs)):<> [n:nat] (LENGTH (xs, n) | int n)
-// end of [gflist_length]
-
-(* ****** ****** *)
-
-fun{a:t@ype}
-gflist_append {xs1,xs2:ilist}
-  (xs1: gflist (a, xs1), xs2: gflist (a, xs2))
-  : [res:ilist] (APPEND (xs1, xs2, res) | gflist (a, res))
-// end of [gflist_append]
-
-fun{a:t@ype}
-gflist_revapp {xs1,xs2:ilist}
-  (xs1: gflist (a, xs1), xs2: gflist (a, xs2))
-  : [res:ilist] (REVAPP (xs1, xs2, res) | gflist (a, res))
-// end of [gflist_revapp]
+implement{a}
+gflist_vt_length {xs} (xs) = let
+  prval pf =
+    list_vt_of_gflist_vt {a} (xs) // no-op casting
+  // end of [val]
+  val n = list_vt_length<a> (xs)
+  prval () = __assert (xs) where {
+    extern prfun __assert
+      {n:nat} (xs: !list_vt (a, n) >> gflist_vt (a, xs)): void
+  } // end of [prval]
+in
+  (pf | n)
+end // end of [gflist_vt_length]
 
 (* ****** ****** *)
 
-(* end of [gflist.sats] *)
+(* end of [gflist_vt.dats] *)

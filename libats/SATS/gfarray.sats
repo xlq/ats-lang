@@ -48,7 +48,13 @@ staload "libats/SATS/ilistp.sats" // for handling integer sequences
 
 (* ****** ****** *)
 
-absviewt@ype E (a:viewt@ype, x:int) = a
+absviewt@ype
+elt (a:viewt@ype, x:int) = a
+
+prfun eltencode {a:viewt@ype}
+  (x: &a >> elt (a, x)): #[x:int] void
+prfun eltdecode
+  {a:viewt@ype} {x:int} (x: &elt (a, x) >> a): void
 
 (* ****** ****** *)
 
@@ -56,7 +62,7 @@ dataview gfarray_v
   (a:viewt@ype, ilist, addr) =
   | {x:int} {xs:ilist} {l:addr}
     gfarray_v_cons (a, ilist_cons (x, xs), l) of
-      (E (a, x) @ l, gfarray_v (a, xs, l+sizeof(a)))
+      (elt (a, x) @ l, gfarray_v (a, xs, l+sizeof(a)))
   | {l:addr} gfarray_v_nil (a, ilist_nil, l) of ()
 // end of [gfarray_v]
 
@@ -110,7 +116,7 @@ prfun gfarray_v_unextend {a:viewt@ype}
 , pfmul: MUL (n, sizeof a, ofs)
 , pfarr: gfarray_v (a, xs, l)
 ) :<prf> [xsf:ilist;x:int] ( // xsf: the front
-  SNOC (xsf, x, xs), gfarray_v (a, xsf, l), E (a, x) @ l+ofs-sizeof a
+  SNOC (xsf, x, xs), gfarray_v (a, xsf, l), elt (a, x) @ l+ofs-sizeof a
 ) // end of [gfarray_v_unextend]
 
 (* ****** ****** *)

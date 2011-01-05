@@ -55,6 +55,12 @@
 //
 (* ****** ****** *)
 
+fun size_of_int
+  (i: int):<> size_t = "atspre_size_of_int"
+// end of [size_of_int]
+
+(* ****** ****** *)
+
 castfn size_of_lint (i: lint):<> size_t
 castfn lint_of_size (sz: size_t):<> lint
 castfn size_of_ulint (u: ulint):<> size_t

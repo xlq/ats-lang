@@ -86,6 +86,19 @@
 
 /* ****** ****** */
 
+ATSinline()
+ats_size_type
+atspre_size_of_int
+  (ats_int_type i) {
+  if (i < 0) {
+    fprintf (stderr, "[atspre_size_of_int(%i)] failed\n", i) ;
+    exit (1) ;
+  } /* end of [if] */
+  return ((ats_size_type)i) ;
+} // end of [atspre_size_of_int]
+
+/* ****** ****** */
+
 //
 // unsigned size type
 //
@@ -97,7 +110,7 @@ ats_int_type
 atspre_int1_of_size1
   (ats_size_type sz) {
   if (INT_MAX < sz) {
-    fprintf (stderr, "[ats_int_of_size(%lu)] failed\n", (ats_ulint_type)sz) ;
+    fprintf (stderr, "[atspre_int_of_size(%lu)] failed\n", (ats_ulint_type)sz) ;
     exit (1) ;
   } /* end of [if] */
   return ((ats_int_type)sz) ;
@@ -108,7 +121,7 @@ ats_uint_type
 atspre_uint1_of_size1
   (ats_size_type sz) {
   if (UINT_MAX < sz) {
-    fprintf (stderr, "[ats_uint_of_size(%lu)] failed\n", (ats_ulint_type)sz) ;
+    fprintf (stderr, "[atspre_uint_of_size(%lu)] failed\n", (ats_ulint_type)sz) ;
     exit (1) ;
   } /* end of [if] */
   return ((ats_uint_type)sz) ;
@@ -151,8 +164,7 @@ ats_void_type
 atspre_fprint_size (
   ats_ptr_type out, ats_size_type sz
 ) {
-  fprintf ((FILE*)out, "%lu", (ats_ulint_type)sz) ;
-  return ;
+  fprintf ((FILE*)out, "%lu", (ats_ulint_type)sz) ; return ;
 } // end of [atspre_fprint_size]
 
 ATSinline()
@@ -427,10 +439,11 @@ atspre_min_size1_size1
 
 ATSinline()
 ats_int_type
-atspre_int1_of_ssize1 (ats_ssize_type ssz) {
+atspre_int1_of_ssize1
+  (ats_ssize_type ssz) {
   if (INT_MAX < ssz || ssz < INT_MIN) {
     fprintf (stderr,
-      "exit(ATS): [ats_int1_of_ssize1(%li)] failed\n", (ats_lint_type)ssz
+      "exit(ATS): [atspre_int1_of_ssize1(%li)] failed\n", (ats_lint_type)ssz
     ) ; exit (1) ;
   } /* end of [if] */
   return (ats_int_type)ssz ;
@@ -537,8 +550,7 @@ ats_void_type
 atspre_fprint_ssize (
   ats_ptr_type out, ats_ssize_type ssz
 ) {
-  fprintf ((FILE*)out, "%li", (ats_lint_type)ssz) ;
-  return ;
+  fprintf ((FILE*)out, "%li", (ats_lint_type)ssz) ; return ;
 } // end of [atspre_fprint_ssize]
 
 ATSinline()

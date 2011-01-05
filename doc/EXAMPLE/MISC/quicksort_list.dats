@@ -104,8 +104,8 @@ prfun APPEND_ISORD_lemma
 (* ****** ****** *)
 
 abst@ype E (a: t@ype, x:int) = a
-extern castfn encode {a:t@ype} (x: a):<> [x:pos] E (a, x)
-extern castfn decode {a:t@ype} {x:int} (x: E (a, x)):<> a
+extern castfn eltencode {a:t@ype} (x: a):<> [x:pos] E (a, x)
+extern castfn eltdecode {a:t@ype} {x:int} (x: E (a, x)):<> a
 
 (* ****** ****** *)
 
@@ -210,7 +210,7 @@ staload "libc/SATS/random.sats"
 implement
 lte_elt_elt<double>
   {x,y} (x, y) = let
-  val x = decode (x) and y = decode(y)
+  val x = eltdecode (x) and y = eltdecode(y)
   extern castfn __cast (_: bool):<> bool (x <= y)
 in
   __cast (lte_double_double (x, y))
@@ -224,7 +224,7 @@ fn print_list (
   ) : void = begin
     case+ xs of
     | cons (x, xs) => let
-        val x = decode (x)
+        val x = eltdecode (x)
       in
         if i > 0 then print ", "; printf ("%.2f", @(x)); aux (xs, i+1)
       end // end of [cons]
@@ -239,7 +239,7 @@ fun randgen_list
   (n: int n): list (double) =
   if n > 0 then let
     val x = drand48 ()
-    val x = encode (x)
+    val x = eltencode (x)
   in
     cons {double} (x, randgen_list (n-1))
   end else nil ()

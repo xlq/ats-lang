@@ -804,11 +804,21 @@ list_unzip {n:nat}
 
 (* ****** ****** *)
 
+(*
+** HX:
+** if the list to be sorted is long (say, containing 10K+ elements),
+** please try to use [list_vt_mergesort] instead
+*)
 fun{a:t@ype}
 list_mergesort {env:viewtype} {n:nat}
   (xs: list (a, n), lte: (a, a, !env) -<fun> bool, env: !env):<> list (a, n)
 // end of [list_mergesort]
 
+(*
+** HX:
+** this is not a realistic implementation. please try to use
+** [list_vt_quicksort] instead
+*)
 fun{a:t@ype}
 list_quicksort {env:viewtype} {n:nat}
   (xs: list (a, n), lte: (a, a, !env) -<fun> bool, env: !env):<> list (a, n)
