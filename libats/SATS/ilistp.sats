@@ -56,7 +56,7 @@ stadef ilist_sing (x:int): ilist = ilist_cons (x, ilist_nil)
 
 (* ****** ****** *)
 
-absprop SETIZE (ilist, imset)
+absprop MSETIZE (ilist, imset)
 
 (* ****** ****** *)
 
@@ -111,7 +111,7 @@ prfun length_isnat
 // end of [length_isnat]
 
 prfun length_msize {xs:ilist;mxs:imset} {n:int}
-  (pf1: SETIZE (xs, mxs), pf2: LENGTH (xs, n)): MSIZE (mxs, n)
+  (pf1: MSETIZE (xs, mxs), pf2: LENGTH (xs, n)): MSIZE (mxs, n)
 // end of [length_msize]
 
 (* ****** ****** *)

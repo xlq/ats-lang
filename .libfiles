@@ -269,6 +269,8 @@ libats/SATS/gfarray.sats
 libats/DATS/gfarray.dats
 libats/SATS/gflist.sats
 libats/DATS/gflist.dats
+libats/SATS/gftree.sats
+libats/DATS/gftree.dats
 */
 
 /* generic arrays of various dimensions */
