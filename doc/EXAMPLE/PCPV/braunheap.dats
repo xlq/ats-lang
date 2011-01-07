@@ -12,6 +12,10 @@ stadef cons = itree_cons
 
 (* ****** ****** *)
 
+staload "libats/SATS/gftree.sats"
+
+(* ****** ****** *)
+
 macdef nil = gftree_nil
 macdef cons (x, tl, tr) = gftree_cons (,(x), ,(tl), ,(tr))
 

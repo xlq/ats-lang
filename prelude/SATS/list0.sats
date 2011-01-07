@@ -152,6 +152,9 @@ fun{a:t@ype} list0_nth_opt (xs: list0 a, i: int): Option a
 
 fun{a:t@ype} list0_reverse (xs: list0 a): list0 a
 fun{a:t@ype} list0_reverse_append (xs: list0 a, ys: list0 a): list0 a
+(*
+fun{a:t@ype} list0_revapp (xs: list0 a, ys: list0 a): list0 a
+*)
 
 (* ****** ****** *)
 

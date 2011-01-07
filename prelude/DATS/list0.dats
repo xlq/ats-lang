@@ -250,6 +250,7 @@ end // end of [try]
 implement{a}
 list0_reverse (xs) =
   list0_reverse_append (xs, list0_nil ())
+// end of [list0_reverse]
 
 implement{a}
 list0_reverse_append (xs, ys) = let
