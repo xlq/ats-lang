@@ -149,6 +149,20 @@ end // end of [list0_foreach_cloref]
 (* ****** ****** *)
 
 implement{a}
+list0_iforeach_fun (xs, f) =
+  list_iforeach_fun<a> (list1_of_list0 xs, f)
+// end of [list0_iforeach_fun]
+  
+implement{a}
+list0_iforeach_cloref (xs, f) = let
+  val () = list_iforeach_cloref<a> (list1_of_list0 xs, f)
+in
+  // empty
+end // end of [list0_iforeach_cloref]
+
+(* ****** ****** *)
+
+implement{a}
 list0_head_exn (xs) = begin case+ xs of
   | list0_cons (x, xs) => x | list0_nil () => $raise ListSubscriptException
 end // end of [list0_head_exn]

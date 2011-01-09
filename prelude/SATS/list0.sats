@@ -53,10 +53,8 @@
 (* ****** ****** *)
 
 #if VERBOSE_PRELUDE #then
-
 #print "Loading [list0.sats] starts!\n"
-
-#endif
+#endif // end of [VERBOSE_PRELUDE]
 
 (* ****** ****** *)
 
@@ -125,6 +123,14 @@ fun{a:t@ype} list0_foreach_cloref (xs: list0 a, f: a -<cloref1> void): void
 
 (* ****** ****** *)
 
+fun{a:t@ype}
+list0_iforeach_fun (xs: list0 a, f: (int, a) -<fun1> void): void
+
+fun{a:t@ype}
+list0_iforeach_cloref (xs: list0 a, f: (int, a) -<cloref1> void): void
+
+(* ****** ****** *)
+
 fun{a:t@ype} list0_head_exn (xs: list0 a): a
 
 (* ****** ****** *)
@@ -168,9 +174,7 @@ fun{a:t@ype} list0_drop_exn (xs: list0 a, n: int): list0 a
 (* ****** ****** *)
 
 #if VERBOSE_PRELUDE #then
-
 #print "Loading [list0.sats] finishes!\n"
-
-#endif
+#endif // end of [VERBOSE_PRELUDE]
 
 (* end of [list0.sats] *)

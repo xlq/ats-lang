@@ -40,10 +40,8 @@
 (* ****** ****** *)
 
 #if VERBOSE_PRELUDE #then
-
 #print "Loading [integer.sats] starts!\n"
-
-#endif
+#endif // end of [VERBOSE_PRELUDE]
 
 (* ****** ****** *)
 
@@ -265,10 +263,13 @@ overload gcd with gcd_uint_uint
 
 (* ****** ****** *)
 
-fun square_uint (u: uint):<> uint
-  = "atspre_square_uint"
-
+fun square_uint
+  (u: uint):<> uint = "atspre_square_uint"
 overload square with square_uint
+
+fun cube_uint
+  (u: uint):<> uint = "atspre_cube_uint"
+overload cube with cube_uint
 
 (* ****** ****** *)
 
@@ -316,27 +317,35 @@ fun lnot_uint (u: uint):<> uint
   = "atspre_lnot_uint" (* bitwise *)
 overload ~ with lnot_uint
 
-fun land_uint_uint (u1: uint, u2: uint):<> uint
-  = "atspre_land_uint_uint"
-
-fun lor_uint_uint (u1: uint, u2: uint):<> uint
-  = "atspre_lor_uint_uint"
-
-fun lxor_uint_uint (u1: uint, u2: uint):<> uint
-  = "atspre_lxor_uint_uint"
-
+fun land_uint_uint
+  (u1: uint, u2: uint):<> uint = "atspre_land_uint_uint"
 overload land with land_uint_uint
+
+fun lor_uint_uint
+  (u1: uint, u2: uint):<> uint = "atspre_lor_uint_uint"
 overload lor with lor_uint_uint
+
+fun lxor_uint_uint
+  (u1: uint, u2: uint):<> uint = "atspre_lxor_uint_uint"
 overload lxor with lxor_uint_uint
 
-fun lsl_uint_int1 (u: uint, n: Nat):<> uint
-  = "atspre_lsl_uint_int1"
+(* ****** ****** *)
 
-and lsr_uint_int1 (u: uint, n: Nat):<> uint
-  = "atspre_lsr_uint_int1"
-
+fun lsl_uint_int1
+  (u: uint, n: Nat):<> uint = "atspre_lsl_uint_int1"
 overload << with lsl_uint_int1
+
+fun lsl_uint_uint
+  (u: uint, n: uint):<> uint = "#atspre_lsl_uint_uint"
+overload << with lsl_uint_uint
+
+fun lsr_uint_int1
+  (u: uint, n: Nat):<> uint = "atspre_lsr_uint_int1"
 overload >> with lsr_uint_int1
+
+fun lsr_uint_uint
+  (u: uint, n: uint):<> uint = "#atspre_lsr_uint_uint"
+overload >> with lsr_uint_uint
 
 (* ****** ****** *)
 
@@ -1188,9 +1197,7 @@ typedef usint = uint_short_t0ype
 (* ****** ****** *)
 
 #if VERBOSE_PRELUDE #then
-
 #print "Loading [integer.sats] finishes!\n"
-
-#endif
+#endif // end of [VERBOSE_PRELUDE]
 
 (* end of [integer.sats] *)

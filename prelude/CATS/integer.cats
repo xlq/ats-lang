@@ -185,7 +185,9 @@ atspre_min_int_int (ats_int_type i1, ats_int_type i2) {
   return (i1 <= i2) ? i1 : i2 ;
 }
 
+//
 // square, cube and pow functions
+//
 
 ATSinline()
 ats_int_type
@@ -415,9 +417,17 @@ atspre_min_uint_uint (ats_uint_type i1, ats_uint_type i2) {
   return (i1 <= i2 ? i1 : i2) ;
 }
 
-//
-// bitwise operations
-//
+ATSinline()
+ats_uint_type
+atspre_square_uint (ats_uint_type u) { return (u * u) ; }
+
+ATSinline()
+ats_uint_type
+atspre_cube_uint (ats_uint_type u) { return (u * u * u) ; }
+
+/*
+** bitwise operations
+*/
 
 ATSinline()
 ats_uint_type
@@ -441,19 +451,34 @@ atspre_lxor_uint_uint (ats_uint_type x, ats_uint_type y) {
   return (x ^ y) ;
 }
 
+/*
+** logical shifting operations
+*/
+
 ATSinline()
 ats_uint_type
-atspre_lsl_uint_int1 (ats_uint_type u, ats_int_type n) {
+atspre_lsl_uint_int1 (
+  ats_uint_type u, ats_int_type n
+) {
   return (u << n) ;
-}
+} // end of [atspre_lsl_uint_int1]
 
 ATSinline()
 ats_uint_type
-atspre_lsr_uint_int1 (ats_uint_type u, ats_int_type n) {
+atspre_lsr_uint_int1 (
+  ats_uint_type u, ats_int_type n
+) {
   return (u >> n) ;
-}
+} // end of [atspre_lsr_uint_int1]
 
-// print functions
+#define atspre_lsl_uint_uint atspre_lsl_uint_int1
+#define atspre_lsr_uint_uint atspre_lsr_uint_int1
+
+/* ****** ****** */
+
+/*
+** print functions
+*/
 
 ATSinline()
 ats_void_type
@@ -487,7 +512,9 @@ atspre_prerr_uint (
   return ;
 } /* end of [atspre_prerr_uint] */
 
-//
+/*
+** stringization
+*/
 
 ATSinline()
 ats_ptr_type

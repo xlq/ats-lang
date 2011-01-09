@@ -52,7 +52,7 @@ sta mnil : imset // for the empty multiset
 
 (* ****** ****** *)
 
-dataprop SETEQ (imset, imset) = {xs:imset} SETEQ (xs, xs) of ()
+dataprop MSETEQ (imset, imset) = {xs:imset} MSETEQ (xs, xs) of ()
 
 (* ****** ****** *)
 
@@ -76,7 +76,7 @@ absprop MCONS (x: int, xs: imset, res: imset)
 prfun mcons_istot
   {x:int} {xs:imset} (): [res:imset] MCONS (x, xs, res)
 prfun mcons_isfun {x:int} {xs:imset} {res1,res2:imset}
-  (pf1: MCONS (x, xs, res1), pf2: MCONS (x, xs, res2)): SETEQ (res1, res2)
+  (pf1: MCONS (x, xs, res1), pf2: MCONS (x, xs, res2)): MSETEQ (res1, res2)
 // end of [mcons_isfun]
 
 prfun mcons_msize
@@ -99,7 +99,7 @@ prfun munion_istot
 // end of [munion_istot]
 
 prfun munion_isfun {xs,ys:imset} {zs1,zs2:imset}
-  (pf1: MUNION (xs, ys, zs1), pf2: MUNION (xs, ys, zs2)): SETEQ (zs1, zs2)
+  (pf1: MUNION (xs, ys, zs1), pf2: MUNION (xs, ys, zs2)): MSETEQ (zs1, zs2)
 // end of [munion_isfun]
 
 prfun munion_unit {xs:imset} (): MUNION (mnil, xs, xs)
@@ -114,7 +114,7 @@ prfun munion_associcate
 , pf2: MUNION (m2, m3, m23)
 , pf3: MUNION (m12, m3, m12_3)
 , pf4: MUNION (m1, m23, m1_23)
-) : SETEQ (m12_3, m1_23) // end of [munion_associcate]
+) : MSETEQ (m12_3, m1_23) // end of [munion_associcate]
 
 (* ****** ****** *)
 

@@ -255,14 +255,14 @@ prfun permute_length_lemma
 
 prfun permute_seteq_intr
   {xs1,xs2:ilist} {mxs:imset}
-  (pf1: SETIZE (xs1, mxs), pf2: SETIZE (xs2, mxs)): PERMUTE (xs1, xs2)
+  (pf1: MSETIZE (xs1, mxs), pf2: MSETIZE (xs2, mxs)): PERMUTE (xs1, xs2)
 // end of [permute_seteq]
 
 prfun permute_seteq_elim
   {xs1:ilist;mxs1:imset}
   {xs2:ilist;mxs2:imset} (
-  pf: PERMUTE (xs1, xs2), pf1: SETIZE (xs1, mxs1), pf2: SETIZE (xs2, mxs2)
-) : SETEQ (mxs1, mxs2) // end of [permute_mseteq]
+  pf: PERMUTE (xs1, xs2), pf1: MSETIZE (xs1, mxs1), pf2: MSETIZE (xs2, mxs2)
+) : MSETEQ (mxs1, mxs2) // end of [permute_mseteq]
 
 (* ****** ****** *)
 
