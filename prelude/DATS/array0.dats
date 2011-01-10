@@ -57,8 +57,8 @@ assume array0_viewt0ype_type
 
 (* ****** ****** *)
 
+implement array0_get_arrszref (A) = A
 implement array0_make_arrsz (arrsz) = ref_make_elt (arrsz)
-implement array0_get_arraysize_ref (A) = A
 
 (* ****** ****** *)
 

@@ -1089,6 +1089,18 @@ fn Anairiats_contrib_dir_copy
     val () = libdir_copy (SRCROOTcontrib_SDL, DSTROOTcontrib_SDL)
   } // end of [where]
 //
+  val () = () where { // [contrib/testing]
+    val SRCROOTcontrib_testing = SRCROOTcontrib ++ "testing/"
+    val DSTROOTcontrib_testing = DSTROOTcontrib ++ "testing/"
+    val () = mkdir_exn (DSTROOTcontrib_testing, DIRmode)
+(*
+    val () = fcopy_exn (
+      SRCROOTcontrib_testing++"Makefile", DSTROOTcontrib_testing++"Makefile"
+    ) // end of [val]
+*)
+    val () = libdir_copy (SRCROOTcontrib_testing, DSTROOTcontrib_testing)
+  } // end of [where]
+//
 in
   prerr "The [contrib] directory is successfully copied.";
   prerr_newline ()

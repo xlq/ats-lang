@@ -57,14 +57,18 @@
 #endif // end of [VERBOSE_PRELUDE]
 
 (* ****** ****** *)
-
 //
-// matrix0 (a) = ref (... | ptr, row, col)
+// HX: matrix0 (a) = ref (... | ptr, row, col)
 //
-
 (* ****** ****** *)
 
 fun matrix0_make_arrsz
+  {a:viewt@ype} {m,n:nat} (
+  m: size_t m, n: size_t n, arrsz: arraysize (a, m*n)
+  ) :<> matrix0 (a)
+// end of [matrix0_make_arrsz]
+
+fun matrix0_make_arrsz__main
   {a:viewt@ype} {m,n:nat} {mn:int} (
     pf_mul: MUL (m, n, mn)
   | m: size_t m, n: size_t n, arrsz: arraysize (a, mn)

@@ -53,14 +53,49 @@ fun{a:t@ype} randgen (): a
 (* ****** ****** *)
 
 fun{a:t@ype}
-array_randinit {n:nat} {l:addr} (
-  pf: !array_v (a?, n, l) >> array_v (a, n, l) | p: ptr l, n: int n
-) : void // end of [array_randinit]
+array0_randgen {n:nat} (n: size_t n): array0 (a)
+
+fun{a:t@ype}
+array_randgen {n:nat} (n: size_t n): array (a, n)
 
 (* ****** ****** *)
 
+fun{a:t@ype}
+array_ptr_randgen {n:nat} (n: size_t n)
+  : [l:agz] (free_gc_v (a, n, l), array_v (a, n, l) | ptr l)
+// end of [array_ptr_randgen]
+
+fun{a:t@ype}
+array_ptr_randinit {n:nat} {l:addr} (
+  pf: !array_v (a?, n, l) >> array_v (a, n, l) | p: ptr l, n: size_t n
+) : void // end of [array_ptr_randinit]
+
+(* ****** ****** *)
+
+fun{a:t@ype} list0_randgen {n:nat} (n: int n): list0 (a)
+
 fun{a:t@ype} list_randgen {n:nat} (n: int n): list (a, n)
 fun{a:t@ype} list_vt_randgen {n:nat} (n: int n): list_vt (a, n)
+
+(* ****** ****** *)
+
+fun{a:t@ype}
+matrix0_randgen
+  {m,n:nat} (m: size_t m, n: size_t n): matrix0 (a)
+// end of [matrix0_randgen]
+
+fun{a:t@ype}
+matrix_randgen
+  {m,n:nat} (m: size_t m, n: size_t n): matrix (a, m, n)
+// end of [matrix_randgen]
+
+(* ****** ****** *)
+
+fun{a:t@ype}
+matrix_ptr_randinit {m,n:nat} {l:addr} (
+  pf: !matrix_v (a?, m, n, l) >> matrix_v (a, m, n, l)
+| p: ptr l, m: size_t m, n: size_t n
+) : void // end of [matrix_ptr_randinit]
 
 (* ****** ****** *)
 

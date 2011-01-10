@@ -33,6 +33,7 @@ implement main () = let
     end // end of [val]
     val () = print_newline ()
   } // end of [val]
+//
   val () = () where {
     #define asz 10
     val A = array0_make_elt<int> (asz, 0)

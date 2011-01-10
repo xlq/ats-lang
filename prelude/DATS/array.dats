@@ -114,8 +114,8 @@ implement
 array_ptr_allocfree_tsz {a} (asz, tsz) = let
   val [l:addr] (pf_gc, pf_arr | p_arr) = array_ptr_alloc_tsz {a} (asz, tsz)
 in #[l | (
-  pf_arr | p_arr
-         , lam (pf_arr | p_arr) =<lin> array_ptr_free {a} (pf_gc, pf_arr | p_arr)
+  pf_arr
+| p_arr, lam (pf_arr | p_arr) =<lin> array_ptr_free {a} (pf_gc, pf_arr | p_arr)
 ) ] end // end of [array_ptr_allocfree_tsz]
 
 (* ****** ****** *)

@@ -52,9 +52,38 @@ staload "contrib/testing/SATS/randgen.sats"
 (* ****** ****** *)
 
 implement{a}
-array_randinit (pf | p, n) = let
+array0_randgen (n) = let
+  val (pfgc, pfarr | p) = array_ptr_randgen<a> (n)
+in
+  array0_make_arrsz @(pfgc, pfarr | p, n) // HX: a unary fun
+end // end of [array0_randgen]
+
+(* ****** ****** *)
+
+implement{a}
+array_randgen (n) = let
+  val (pfgc, pfarr | p) = array_ptr_randgen<a> (n)
+  prval () = free_gc_elim {a} (pfgc) // HX: return the certificate
+in
+  array_make_view_ptr (pfarr | p)
+end // end of [array_randgen]
+
+(* ****** ****** *)
+
+implement{a}
+array_ptr_randgen (n) =
+  (pfgc, pfarr | p) where {
+  val (pfgc, pfarr | p) = array_ptr_alloc_tsz {a} (n, sizeof<a>)
+  val () = array_ptr_randinit<a> (pfarr | p, n)
+} // end of [array_ptr_randgen]
+
+(* ****** ****** *)
+
+implement{a}
+array_ptr_randinit
+  (pf | p, n) = let
   fun loop {n:nat} {l:addr} .<n>. (
-    pf: !array_v (a?, n, l) >> array_v (a, n, l) | p: ptr l, n: int n
+    pf: !array_v (a?, n, l) >> array_v (a, n, l) | p: ptr l, n: size_t n
   ) : void =
   if n > 0 then let
     prval (pf1, pf2) =
@@ -71,7 +100,14 @@ array_randinit (pf | p, n) = let
   end // end of [if]
 in
   loop (pf | p, n)
-end // end of [array_randinit]
+end // end of [array_ptr_randinit]
+
+(* ****** ****** *)
+
+implement{a}
+list0_randgen (n) = let
+  val xs = list_randgen (n) in list0_of_list1 (xs)
+end // end of [list0_randgen]
 
 (* ****** ****** *)
 
@@ -94,6 +130,43 @@ list_vt_randgen (n) = let
 in
   loop (n, list_vt_nil ())
 end // end of [list_vt_randgen]
+
+(* ****** ****** *)
+
+implement{a}
+matrix0_randgen (m, n) = let
+  val (pfmul | mn) = mul2_size1_size1 (m, n)
+  val (pfgc, pfarr | p) = array_ptr_randgen<a> (mn)
+in
+  matrix0_make_arrsz__main (pfmul | m, n, (pfgc, pfarr | p, mn))
+end // end of [matrix0_randgen]
+
+(* ****** ****** *)
+
+implement{a}
+matrix_randgen (m, n) = let
+  val (pfmul | mn) = mul2_size1_size1 (m, n)
+  val (pfgc, pfarr | p) = array_ptr_randgen<a> (mn)
+in
+  matrix_make_arrsz__main (pfmul | m, n, (pfgc, pfarr | p, mn))
+end // end of [matrix_randgen]
+
+(* ****** ****** *)
+
+(*
+prfun array_v_of_matrix_v {a:viewt@ype} {m,n:int} {l:addr}
+  (pf_mat: matrix_v (a, m, n, l)):<> [mn:nat] (MUL (m, n, mn), array_v (a, mn, l))
+*)
+implement{a}
+matrix_ptr_randinit (pfmat | p, m, n) = let
+  prval (pfmul, pfarr) = array_v_of_matrix_v {a?} (pfmat)
+  val (pfmul_alt | mn) = mul2_size1_size1 (m, n)
+  prval () = mul_isfun (pfmul, pfmul_alt) // HX: there is only one [mn]
+  val () = array_ptr_randinit<a> (pfarr | p, mn)
+  prval () = pfmat := matrix_v_of_array_v {a} (pfmul, pfarr)
+in
+  // nothing
+end // end of [matrix_ptr_randinit]
 
 (* ****** ****** *)
 

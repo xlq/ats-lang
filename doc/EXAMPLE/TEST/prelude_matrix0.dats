@@ -3,11 +3,11 @@
 ** prelude/SATS/matrix0.sats
 *)
 
+(* ****** ****** *)
 //
 // Author: Hongwei Xi (hwxi AT cs DOT bu DOT edu)
 // Time: Summer, 2009
 //
-
 (* ****** ****** *)
 
 // staload "prelude/SATS/matrix0.sats"
@@ -19,9 +19,13 @@ staload _(*anonymous*) = "prelude/DATS/matrix0.dats"
 (* ****** ****** *)
 
 implement main () = let
-  #define row 5; #define col 2; #define asz 10
+//
+  #define row 5;
+  #define col 2;
+  #define asz 10;
+//
   val () = () where {
-    val (pf_mul | _(*asz*)) = op imul2 (row, col)
+    prval pf_mul = mul_istot {row,col} ()
     prval () = mul_elim (pf_mul)
 //
     val M = matrix0_make_arrsz {int} {row,col} {asz}
@@ -63,12 +67,14 @@ implement main () = let
 //
   val () = () where {
     #define row1 2; #define col1 5
-    val (pf_mul | _(*asz*)) = op imul2 (row1, col1)
+    prval pf_mul = mul_istot {row1,col1} ()
     prval () = mul_elim (pf_mul)
+//
     val M = matrix0_make_arrsz {int} {row1,col1} {asz}
       (pf_mul | row1, col1, $arrsz (0, 1, 2, 3, 4, 5, 6, 7, 8, 9))
-    val f = lam (i: size_t, j: size_t, x: &int)
-      : void =<cloref> let
+    val f = lam (
+      i: size_t, j: size_t, x: &int
+    ) : void =<cloref> let
       val i = int_of_size i and j = int_of_size j
     in
       $effmask_all (printf ("M[%i,%i] = %i\n", @(i, j, x)))

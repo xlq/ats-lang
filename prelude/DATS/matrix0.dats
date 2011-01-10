@@ -60,9 +60,18 @@ assume matrix0_viewt0ype_type
 
 implement
 matrix0_make_arrsz
-  {a} {m,n} {mn} (pf_mul | m, n, arrsz) = let
+  {a} {m,n} (m, n, arrsz) = let
+  prval pfmul = mul_istot {m,n} ()
+  prval () = mul_elim (pfmul)
 in
-  ref @(pf_mul, arrsz.0, arrsz.1 | arrsz.2, m, n)
+  ref @(pfmul, arrsz.0, arrsz.1 | arrsz.2, m, n)
+end // end of [matrix0_make_arrsz]
+
+implement
+matrix0_make_arrsz__main
+  {a} {m,n} {mn} (pfmul | m, n, arrsz) = let
+in
+  ref @(pfmul, arrsz.0, arrsz.1 | arrsz.2, m, n)
 end (* end of [matrix0_make_arrsz] *)
 
 (* ****** ****** *)
@@ -70,14 +79,14 @@ end (* end of [matrix0_make_arrsz] *)
 implement{a} matrix0_make_elt (row, col, x0) = let
   val [m:int] row = size1_of_size (row)
   val [n:int] col = size1_of_size (col)
-  val [mn:int] (pf_mul | asz) = mul2_size1_size1 (row, col)
-  prval () = mul_nat_nat_nat (pf_mul)
+  val [mn:int] (pfmul | asz) = mul2_size1_size1 (row, col)
+  prval () = mul_nat_nat_nat (pfmul)
   val tsz = sizeof<a>
   val (pf_gc, pf_arr | p_arr) = array_ptr_alloc_tsz {a} (asz, tsz)
   var ini: a = x0
   val () = array_ptr_initialize_elt_tsz {a} (!p_arr, asz, ini, tsz)
 in
-  matrix0_make_arrsz {a} {m,n} {mn} (pf_mul | row, col, @(pf_gc, pf_arr | p_arr, asz))
+  matrix0_make_arrsz__main {a} (pfmul | row, col, @(pf_gc, pf_arr | p_arr, asz))
 end // end of [matrix0_make_elt]
 
 (* ****** ****** *)
@@ -107,9 +116,9 @@ in
   if i < row then (
     if j < col then let
       prval pf_data = p->2
-      val (pf_mul | icol) = mul2_size1_size1 (i, col)
-      prval () = lemma_for_matrix_subscripting (p->0, pf_mul)
-      prval () = mul_nat_nat_nat (pf_mul) 
+      val (pfmul | icol) = mul2_size1_size1 (i, col)
+      prval () = lemma_for_matrix_subscripting (p->0, pfmul)
+      prval () = mul_nat_nat_nat (pfmul) 
       val x = p_data->[icol + j]
       prval () = p->2 := pf_data
     in
@@ -131,9 +140,9 @@ in
   if i < row then (
     if j < col then let
       prval pf_data = p->2
-      val (pf_mul | icol) = mul2_size1_size1 (i, col)
-      prval () = lemma_for_matrix_subscripting (p->0, pf_mul)
-      prval () = mul_nat_nat_nat (pf_mul) 
+      val (pfmul | icol) = mul2_size1_size1 (i, col)
+      prval () = lemma_for_matrix_subscripting (p->0, pfmul)
+      prval () = mul_nat_nat_nat (pfmul) 
       val () = p_data->[icol + j] := x
       prval () = p->2 := pf_data
     in
@@ -265,7 +274,7 @@ implement{a} matrix0_tabulate (row, col, f) = let
   // end of [loop]
   val () = loop (pf_arr | p_arr, mn, 0, n, 0, f)
 in
-  matrix0_make_arrsz {a} {m,n} {mn} (pf_mn | m, n, @(pf_gc, pf_arr | p_arr, mn))
+  matrix0_make_arrsz__main {a} (pf_mn | m, n, @(pf_gc, pf_arr | p_arr, mn))
 end // end of [array0_tabulate]
 
 (* ****** ****** *)

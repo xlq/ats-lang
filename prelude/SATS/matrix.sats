@@ -48,9 +48,9 @@
 absview matrix_v (a:viewt@ype, m:int, n:int, l:addr)
 
 prfun array_v_of_matrix_v {a:viewt@ype} {m,n:int} {l:addr}
-  (pf_mat: matrix_v (a, m, n, l)):<> [mn:int] (MUL (m, n, mn), array_v (a, mn, l))
+  (pf_mat: matrix_v (a, m, n, l)):<> [mn:nat] (MUL (m, n, mn), array_v (a, mn, l))
 
-prfun matrix_v_of_array_v {a:viewt@ype} {m,n:int} {mn:int} {l:addr}
+prfun matrix_v_of_array_v {a:viewt@ype} {m,n:nat} {mn:int} {l:addr}
   (pf_mul: MUL (m, n, mn), pf_arr: array_v (a, mn, l)):<> matrix_v (a, m, n, l)
 
 (* ****** ****** *)

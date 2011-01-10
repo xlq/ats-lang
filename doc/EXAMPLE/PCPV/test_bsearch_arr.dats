@@ -6,6 +6,8 @@
 
 staload "contrib/testing/SATS/randgen.sats"
 staload _(*anon*) = "contrib/testing/DATS/randgen.dats"
+staload "contrib/testing/SATS/print.sats"
+staload _(*anon*) = "contrib/testing/DATS/print.dats"
 
 (* ****** ****** *)
 
@@ -26,19 +28,7 @@ typedef T = double
 (* ****** ****** *)
 
 implement randgen<T> () = drand48 ()
-
-(* ****** ****** *)
-
-fun print_array {n:nat}
-  {i:nat | i <= n} {l:addr} (
-    A: &(@[T][n]), n: int n, i: int i
-  ) : void = let
-  var i: natLte (n)
-in
-  for (i := 0; i < n; i := i+1) (
-    if i > 0 then print ", "; print (A.[i])
-  ) // end of [for]
-end // end of [print_array]
+implement fprint_elt<T> (out, x) = fprint (out, x)
 
 (* ****** ****** *)
 
@@ -50,9 +40,9 @@ main () = () where {
   #define N 10
 //
   var !p_arr with pf_arr = @[T][N]()
-  val () = array_randinit<T> (pf_arr | p_arr, N)
+  val () = array_ptr_randinit<T> (pf_arr | p_arr, N)
 //
-  val () = print_array (!p_arr, N, 0)
+  val () = array_fprint_elt (stdout_ref, !p_arr, N, ", ")
   val () = print_newline ()
 //
   prval pflen = gfarray_of_array {T} (pf_arr)
@@ -86,7 +76,7 @@ main () = () where {
 //
   prval pflen_alt = array_of_gfarray {T} (pf_arr)
   prval () = length_isfun (pflen, pflen_alt)
-  val () = print_array (!p_arr, N, 0)
+  val () = array_fprint_elt (stdout_ref, !p_arr, N, ", ")
   val () = print_newline ()
 //
   val () = (print "bsearch: x0 = "; print x0; print_newline ())

@@ -54,10 +54,14 @@
 #endif // end of [VERBOSE_PRELUDE]
 
 (* ****** ****** *)
+//
+// HX: array0 (a) = ref (Arraysize a)
+//
+(* ****** ****** *)
 
-//
-// array0 (a) = ref (Arraysize a)
-//
+fun array0_get_arrszref
+  {a:viewt@ype} (A: array0 a):<> ref (Arraysize a)
+// end of [array0_get_arrszref]
 
 (* ****** ****** *)
 
@@ -66,10 +70,6 @@ fun array0_make_arrsz {a:viewt@ype}
 // end of [array0_make_arrsz]
 
 macdef array0 (x) = array0_make_arrsz ,(x)
-
-fun array0_get_arraysize_ref
-  {a:viewt@ype} (A: array0 a):<> ref (Arraysize a)
-// end of [array0_get_arraysize_ref]
 
 (* ****** ****** *)
 

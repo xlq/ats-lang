@@ -11,6 +11,8 @@ staload _(*anon*) = "libats/DATS/gflist_vt.dats"
 
 staload "contrib/testing/SATS/randgen.sats"
 staload _(*anon*) = "contrib/testing/DATS/randgen.dats"
+staload "contrib/testing/SATS/print.sats"
+staload _(*anon*) = "contrib/testing/DATS/print.dats"
 
 (* ****** ****** *)
 
@@ -27,28 +29,13 @@ typedef T = double
 (* ****** ****** *)
 
 implement randgen<T> () = drand48 ()
+implement fprint_elt<T> (out, x) = fprint (out, x)
 
 (* ****** ****** *)
 
 fun listgen {n:nat}
   (n: int n): list_vt (T, n) = list_vt_randgen<T> (n)
 // end of [listgen]
-
-extern
-fun print_list
-  (xs: List (T), i: int): void = "print_list"
-implement print_list (xs, i) =
-  case+ xs of
-  | list_cons (x, xs) => (
-      if i > 0 then print ", "; print x; print_list (xs, i+1)
-    ) // end of [list_cons]
-  | list_nil () => ()
-// end of [print_list]
-
-extern
-fun print_list_vt {n:nat}
-  (xs: !list_vt (T, n), i: int): void = "print_list"
-// end of [print_list_vt]
 
 (* ****** ****** *)
 
@@ -65,7 +52,7 @@ main () = () where {
   val xs = listgen (N)
 //
   val () = println! ("The input list has been generated")
-  val () = (print_list_vt (xs, 0); print_newline ())
+  val () = (list_vt_fprint_elt (stdout_ref, xs, ", "); print_newline ())
   prval _pflen = gflist_vt_of_list_vt {T} (xs)
 //
   extern fun lte
@@ -77,7 +64,7 @@ main () = () where {
   val (_pfsrt | ys) = mergesort<T> (xs, lte)
 //
   prval _pflen = list_vt_of_gflist_vt {T} (ys)
-  val () = (print_list_vt (ys, 0); print_newline ())
+  val () = (list_vt_fprint_elt (stdout_ref, ys, ", "); print_newline ())
 //
   val () = list_vt_free (ys)
 //
