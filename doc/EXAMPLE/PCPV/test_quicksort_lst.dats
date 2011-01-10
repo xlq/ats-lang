@@ -9,6 +9,11 @@ staload _(*anon*) = "libats/DATS/gflist.dats"
 
 (* ****** ****** *)
 
+staload "contrib/testing/SATS/randgen.sats"
+staload _(*anon*) = "contrib/testing/DATS/randgen.dats"
+
+(* ****** ****** *)
+
 #include "quicksort_lst.dats"
 
 (* ****** ****** *)
@@ -21,29 +26,15 @@ typedef T = double
 
 (* ****** ****** *)
 
-fun listgen {n:nat} .<n>.
-  (n: int n): list_vt (T, n) = let
-  fun loop {n:nat}
-    (n: int n, res: &List_vt(T)? >> list_vt (T, n)): void =
-  if n > 0 then let
-    val x = drand48 ()
-    val () = res := list_vt_cons {T} {0} (x, ?)
-    val+ list_vt_cons (_, !p_res) = res
-    val () = loop (n-1, !p_res)
-    prval () = fold@ (res)
-  in
-    // nothing
-  end else (res := list_vt_nil)
-  var res: List_vt(T)?
-  val () = loop (n, res)
-in
-  res
-end // end of [listgen]
+implement randgen<T> () = drand48 ()
 
-fn listgen {n:nat}
-  (n: int n): list (T, n) = let
-  val xs = listgen (n) in list_of_list_vt (xs)
-end // end of [listgen]
+(* ****** ****** *)
+
+fun listgen {n:nat}
+  (n: int n): list (T, n) = list_randgen<T> (n)
+// end of [listgen]
+
+(* ****** ****** *)
 
 fun print_list (xs: List (T), i: int): void =
   case+ xs of

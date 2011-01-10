@@ -65,17 +65,21 @@ end // end of [new_tbloptref_some]
 
 (* ****** ****** *)
 
-extern fun table_ptr_free {a:viewt@ype}
-  {n:nat} {l:addr} (pf: array_v (a, n, l) | p: ptr l):<> void
-  = "table_ptr_free"
+extern
+fun table_ptr_free
+  {a:viewt@ype} {n:nat} {l:addr}
+  (pf: array_v (a, n, l) | p: ptr l):<> void = "table_ptr_free"
+// end of [table_ptr_free]
+
+(* ****** ****** *)
 
 %{^
-
-static inline
+//
+ATSinline()
 ats_void_type
 table_ptr_free (ats_ptr_type p) { free (p) ; return ; }
-
-%}
+//
+%} // end of [%{^]
 
 fn tbloptref_free
   (r_tblopt: ref tblopt): void = let
@@ -93,7 +97,7 @@ end // end of [tbloptref_free]
 assume accept_table_t = ref (tblopt)
 assume transition_table_t = ref (tblopt)
 
-//
+(* ****** ****** *)
 
 extern fun __accept_table_make_fun
   (ntot: int, nfin: int, s: string): accept_table_t
@@ -108,26 +112,31 @@ implement
 __accept_table_free (r_tblopt): void = tbloptref_free r_tblopt
 // end of [__accept_table_free]
 
-//
+(* ****** ****** *)
 
 extern fun int_of_int16 (x: int16):<> int = "ats_int_of_int16"
 
 %{^
-
-static inline
+//
+ATSinline()
 ats_int_type
 ats_int_of_int16 (ats_int16_type i) { return i ; }
-
+//
 %} // end of [%{^]
 
 (* ****** ****** *)
 
 implement
-accept_table_get (r_tblopt, nstate) = let
+accept_table_get
+  (r_tblopt, nstate) = let
+//
   var ans: int = (0: int)
   var err: int = (0: int)
+//
   val () = let
-    val (vbox pf_tblopt | p_tblopt) = ref_get_view_ptr r_tblopt
+    val (vbox pf | p_tblopt) =
+      ref_get_view_ptr (r_tblopt)
+    // end of [val]
   in
     case+ !p_tblopt of
     | tblopt_none () => let
@@ -141,12 +150,12 @@ accept_table_get (r_tblopt, nstate) = let
         end else if nstate >= n then begin
           err := (3: int); fold@ (!p_tblopt)
         end else let
-          prval pf_v = !pf
-        in
+          prval pf_v = !pf in
           ans := int_of_int16 (!p.[nstate]); !pf := pf_v; fold@ (!p_tblopt)
         end (* end of [if] *)
       end // end of [tblopt_some]
   end // end of [val]
+//
 in
   case+ err of
   | 1 => exit_errmsg (1, "lexing: accept_table_get: table is not available\n")
@@ -165,24 +174,32 @@ macdef CHAR_MAX_PLUS1 = 1 << 7 // 128
 macdef NUMBER_OF_CHARS = CHAR_MAX_PLUS1 + 1 // 129
 
 extern fun
-__transition_table_make_fun (n: int, s: string): transition_table_t =
-  "__transition_table_make_fun"
+__transition_table_make_fun
+  (n: int, s: string): transition_table_t = "__transition_table_make_fun"
+// end of [__transition_table_make_fun]
 
-implement __transition_table_make n = lam s =>
-  __transition_table_make_fun (n, s)
+implement
+__transition_table_make (n) =
+  lam s => __transition_table_make_fun (n, s)
 
-implement __transition_table_free (r_tblopt): void =
-  tbloptref_free r_tblopt
+implement
+__transition_table_free (r_tblopt) = tbloptref_free (r_tblopt)
 
-implement transition_table_get (r_tblopt, nstate, c) = let
+implement
+transition_table_get (r_tblopt, nstate, c) = let
 (*
   val () = printf (
     "transition_table_get: nstate = %i and c = %i\n", @(nstate, int_of_char c)
   ) // end of [val]
 *)
-  var ans: int = (0: int) and err: int = (0: int)
+//
+  var ans: int = (0: int)
+  var err: int = (0: int)
+//
   val () = let
-    val (vbox pf_tblopt | p_tblopt) = ref_get_view_ptr r_tblopt
+    val (vbox pf | p_tblopt) =
+      ref_get_view_ptr (r_tblopt)
+    // end of [val]
   in
     case+ !p_tblopt of
     | tblopt_none () => begin
@@ -213,16 +230,16 @@ implement transition_table_get (r_tblopt, nstate, c) = let
           prval pf_v = !pf
         in
           ans := int_of_int16 (!p.[i]); !pf := pf_v; fold@ (!p_tblopt)
-        end // end of [if]
+        end (* end of [if] *)
       end // end of [tblopt_some]
   end // end of [val]
-
+//
 (*
   val () = begin
     prerr "transition_table_get: ans = "; prerr ans; prerr_newline ()
   end // end of [val]
 *)
-
+//
 in
   case+ err of
   | 1 => exit_errmsg (1, "lexing: transition_table_get: table is not available\n")
@@ -239,18 +256,20 @@ end // end of [transition_table_get]
 #define NUMBER_OF_CHARS ((1 << NBITS_PER_BYTE - 1) + 1)
 
 ats_ptr_type
-__accept_table_make_fun
-  (ats_int_type ntot, ats_int_type nfin, ats_ptr_type s0) {
+__accept_table_make_fun (
+  ats_int_type ntot, ats_int_type nfin, ats_ptr_type s0
+) {
   int i, nstate, irule, sz ;
   ats_int16_type *p0 ; ats_uchar_type *s ; ats_ptr_type res ;
-
+//
   s = (ats_uchar_type*)s0;
-
-  // [calloc] is used as only integers are to be stored; thus,
-  // there is no need to scan the allocated memory during GC;
-  // the allocated memory is freed by a call to [free]
-  sz = ntot + 1 ; p0 = calloc (sz, sizeof(ats_int16_type)) ;  
-
+/*
+// [calloc] is used as only integers are to be stored; thus,
+// there is no need to scan the allocated memory during GC;
+// the allocated memory is freed by a call to [free]
+*/
+  sz = ntot + 1 ; p0 = calloc(sz, sizeof(ats_int16_type)) ;  
+//
   for (i = 0 ; i < nfin ; ++i) {
     nstate = (s[0] << NBITS_PER_BYTE) + s[1] ;
     s += 2 ;
@@ -260,8 +279,9 @@ __accept_table_make_fun
     fprintf (stdout, "%i -> %i\n", nstate, p0[nstate]) ;
 */
   } /* end of [for] */
-
+//
   res = new_tbloptref_some (p0, sz) ;
+//
 /*
   fprintf (stdout, "__accept_table_make_fun: sz = %i\n", sz);
   fprintf (stdout, "__accept_table_make_fun: ptr = %p\n", p0);
@@ -275,14 +295,17 @@ __transition_table_make_fun (ats_int_type n, ats_ptr_type s0) {
   int i, j, c, sz;
   ats_int16_type *p0, *p ; ats_uchar_type *s ;
   ats_ptr_type res ;
-
+//
   sz = n * NUMBER_OF_CHARS ;
-
-  // [malloc] is used as only integers are to be stored; thus,
-  // there is no need to scan the allocated memory during GC;
-  // the allocated memory is freed by a call to [free]
+/*
+// [malloc] is used to allocate memory for storing integers;
+// thus, there is no need to scan the allocated memory during GC;
+// the allocated memory is freed by a call to [free]
+*/
   p0 = malloc (sz*sizeof(ats_int16_type)) ; p = p0 ;
+//
   s = (ats_uchar_type*)s0;
+//
   for (i = 0 ; i < n ; ++i) {
     for (j = 0 ; j < NUMBER_OF_CHARS ; ++j) {
       *p = (s[0] << NBITS_PER_BYTE) + s[1] ;
@@ -302,7 +325,7 @@ __transition_table_make_fun (ats_int_type n, ats_ptr_type s0) {
   return res ;
 } /* end of [__transition_table_make_fun] */
 
-%}
+%} // end of [%{]
 
 (* ****** ****** *)
 

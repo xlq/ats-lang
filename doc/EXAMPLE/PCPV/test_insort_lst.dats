@@ -4,6 +4,11 @@
 
 (* ****** ****** *)
 
+staload "contrib/testing/SATS/randgen.sats"
+staload _(*anon*) = "contrib/testing/DATS/randgen.dats"
+
+(* ****** ****** *)
+
 #include "insort_lst.dats"
 
 (* ****** ****** *)
@@ -16,12 +21,15 @@ typedef T = double
 
 (* ****** ****** *)
 
-fun listgen {n:nat} .<n>.
-  (n: int n): list (T, n) =
-  if n > 0 then let
-    val x = drand48 () in list_cons (x, listgen (n-1))
-  end else list_nil
+implement randgen<T> () = drand48 ()
+
+(* ****** ****** *)
+
+fun listgen {n:nat}
+  (n: int n): list (T, n) = list_randgen<T> (n)
 // end of [listgen]
+
+(* ****** ****** *)
 
 fun print_list (xs: List (T), i: int): void =
   case+ xs of

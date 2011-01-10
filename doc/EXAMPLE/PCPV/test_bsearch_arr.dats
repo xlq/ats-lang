@@ -4,6 +4,11 @@
 
 (* ****** ****** *)
 
+staload "contrib/testing/SATS/randgen.sats"
+staload _(*anon*) = "contrib/testing/DATS/randgen.dats"
+
+(* ****** ****** *)
+
 #include "insort_arr.dats"
 
 (* ****** ****** *)
@@ -20,21 +25,7 @@ typedef T = double
 
 (* ****** ****** *)
 
-fun arrinit {n:nat} {l:addr} .<n>. (
-  pf: !array_v (T?, n, l) >> array_v (T, n, l) | p: ptr l, n: int n
-) : void =
-  if n > 0 then let
-    prval (pf1, pf2) = array_v_uncons {T?} (pf)
-    val () = !p := drand48 ()
-    val () = arrinit (pf2 | p+sizeof<T>, n-1)
-  in
-    pf := array_v_cons {T} (pf1, pf2)
-  end else let
-    prval () = array_v_unnil (pf)
-    prval () = pf := array_v_nil ()
-  in
-    // nothing
-  end // end of [if]
+implement randgen<T> () = drand48 ()
 
 (* ****** ****** *)
 
@@ -59,7 +50,7 @@ main () = () where {
   #define N 10
 //
   var !p_arr with pf_arr = @[T][N]()
-  val () = arrinit (pf_arr | p_arr, N)
+  val () = array_randinit<T> (pf_arr | p_arr, N)
 //
   val () = print_array (!p_arr, N, 0)
   val () = print_newline ()
