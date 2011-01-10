@@ -80,16 +80,20 @@ fun matrix_ptr_takeout_tsz {a:viewt@ype}
 
 (* ****** ****** *)
 
-fun matrix_make_arrsz {a:viewt@ype} {m,n:int}
-  (m: size_t m, n: size_t n, arrsz: arraysize (a, m * n))
+fun matrix_make_arrsz
+  {a:viewt@ype} {m,n:nat}
+  (m: size_t m, n: size_t n, arrsz: arraysize (a, m*n))
   :<> matrix (a, m, n)
   = "atspre_matrix_make_arrsz__main"
+// end of [matrix_make_arrsz]
 
 // implemented in [prelude/DATS/matrix.das]
-fun matrix_make_arrsz__main {a:viewt@ype} {m,n,mn:int}
+fun matrix_make_arrsz__main
+  {a:viewt@ype} {m,n:nat} {mn:int}
   (pf: MUL (m, n, mn) | m: size_t m, n: size_t n, arrsz: arraysize (a, mn))
   :<> matrix (a, m, n)
   = "atspre_matrix_make_arrsz__main"
+// end of [matrix_make_arrsz__main]
 
 macdef matrix (m, n) asz = matrix_make_arrsz (,(m), ,(n), ,(asz))
 

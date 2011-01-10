@@ -57,12 +57,16 @@ local
 
 assume matrix_v
   (a:viewt@ype, m:int, n:int, l:addr) =
-  [mn:int] (MUL (m, n, mn), array_v (a, mn, l))
+  [mn:int | m >= 0; n >= 0] (MUL (m, n, mn), array_v (a, mn, l))
 // end of [assume]
 
 in // in of [local]
 
-implement array_v_of_matrix_v (pf_mat) = pf_mat
+implement
+array_v_of_matrix_v (pf_mat) = let
+  prval () = mul_nat_nat_nat (pf_mat.0) in pf_mat
+end // end of [array_v_of_matrix_v]
+
 implement matrix_v_of_array_v (pf_mul, pf_arr) = @(pf_mul, pf_arr)
 
 end // end of [local]
