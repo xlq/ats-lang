@@ -33,7 +33,8 @@
 
 (*
 **
-** A functional random-access list implementation based on nested datatypes
+** A functional array implementation based on Braun trees
+** An functional array as such can also be used as a deque
 **
 ** Contributed by Hongwei Xi (hwxi AT cs DOT bu DOT edu)
 ** Time: April, 2010 // based on a version done in October, 2008
@@ -41,14 +42,15 @@
 *)
 
 (* ****** ****** *)
-
 //
 // License: LGPL 3.0 (available at http://www.gnu.org/licenses/lgpl.txt)
 //
-
 (* ****** ****** *)
-
-#define ATS_DYNLOADFLAG 0 // no static loading at run-time
+//
+// HX: staloading can actually be skipped as the
+// following declared datatype [brauntree] is list-like!
+//
+#define ATS_DYNLOADFLAG 0 // no dynloading at run-time
 
 (* ****** ****** *)
 
@@ -247,9 +249,11 @@ funarray_lorem_get {n} (A) = let
     | B (xl, _, _) => B (xl, tr, lorem tl) | E () => E ()
   end // end of [lorem]
   val+ B (x0, tl, tr) = A
-  val () = case+ :(A: array (a, n-1)) => tl of
+  val () = case+
+    :(A: array (a, n-1)) => tl of
     | B (xl, _, _) => (A := B (xl, tr, lorem tl))
     | E () => (A := E ())
+  // end of [val]
 in
   x0 (* return value *)
 end // end of [funarray_lorem_get]

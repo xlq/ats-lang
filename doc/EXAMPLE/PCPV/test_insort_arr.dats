@@ -6,8 +6,8 @@
 
 staload "contrib/testing/SATS/randgen.sats"
 staload _(*anon*) = "contrib/testing/DATS/randgen.dats"
-staload "contrib/testing/SATS/print.sats"
-staload _(*anon*) = "contrib/testing/DATS/print.dats"
+staload "contrib/testing/SATS/fprint.sats"
+staload _(*anon*) = "contrib/testing/DATS/fprint.dats"
 
 (* ****** ****** *)
 
