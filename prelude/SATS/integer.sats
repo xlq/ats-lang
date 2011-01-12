@@ -95,10 +95,11 @@ fun mul_int_int
   (i1: int, i2: int):<> int = "atspre_mul_int_int"
 and div_int_int
   (i1: int, i2: int):<> int = "atspre_div_int_int"
-and mod_int_int
-  (i1: int, i2: int):<> int = "atspre_mod_int_int"
 overload * with mul_int_int
 overload / with div_int_int
+
+fun mod_int_int
+  (i1: int, i2: int):<> int = "atspre_mod_int_int"
 overload mod with mod_int_int
 
 fun gcd_int_int
@@ -178,11 +179,8 @@ overload fprint_int with fprint1_int
 
 overload fprint with fprint_int
 
-//
-
 fun print_int (i: int):<!ref> void = "atspre_print_int"
 overload print with print_int
-
 fun prerr_int (i: int):<!ref> void = "atspre_prerr_int"
 overload prerr with prerr_int
 

@@ -78,8 +78,9 @@ fun matrix0_make_arrsz__main
 (* ****** ****** *)
 
 fun{a:t@ype}
-matrix0_make_elt (row: size_t, col: size_t, x: a):<> matrix0 a
-// end of [matrix0_make_elt]
+matrix0_make_elt (
+  row: size_t, col: size_t, x: a
+) :<> matrix0 (a) // end of [matrix0_make_elt]
 
 (* ****** ****** *)
 

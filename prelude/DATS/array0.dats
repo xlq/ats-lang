@@ -57,12 +57,19 @@ assume array0_viewt0ype_type
 
 (* ****** ****** *)
 
+(*
+//
+// HX-2011-01-12:
+// it is a casting function now!
+//
 implement array0_get_arrszref (A) = A
+*)
 implement array0_make_arrsz (arrsz) = ref_make_elt (arrsz)
 
 (* ****** ****** *)
 
-implement{a} array0_make_elt (asz, x0) = let
+implement{a}
+array0_make_elt (asz, x0) = let
   val [n:int] asz = size1_of_size asz
   val tsz = sizeof<a>
   val (pf_gc, pf_arr | p_arr) = array_ptr_alloc_tsz {a} (asz, tsz)
@@ -74,7 +81,8 @@ end // end of [array0_make_elt]
 
 (* ****** ****** *)
 
-implement{a} array0_make_lst (xs) = let
+implement{a}
+array0_make_lst (xs) = let
   val [n:int] xs = list1_of_list0 (xs)
   val n = list_length (xs)
   val asz = size1_of_int1 (n)
@@ -86,7 +94,8 @@ end // end of [array_make_lst]
 
 (* ****** ****** *)
 
-implement array0_size (A) = let
+implement
+array0_size (A) = let
   val (vbox pf_arrsz | p_arrsz) = ref_get_view_ptr (A)
 in
   p_arrsz->3
@@ -94,7 +103,8 @@ end // end of [array0_size]
 
 (* ****** ****** *)
 
-implement{a} array0_get_elt_at (A, i) = let
+implement{a}
+array0_get_elt_at (A, i) = let
   val (vbox pf_arrsz | p_arrsz) = ref_get_view_ptr (A)
   val i = size1_of_size i
   val p_data = p_arrsz->2; val asz = p_arrsz->3
@@ -128,7 +138,8 @@ end (* end of [array0_set_elt_at] *)
 
 (* ****** ****** *)
 
-implement{a} array0_get_elt_at__intsz (A, i) = let
+implement{a}
+array0_get_elt_at__intsz (A, i) = let
   val i = int1_of_int i
 in
   if i >= 0 then begin
@@ -138,7 +149,8 @@ in
   end // end of [if]
 end (* end of [array0_get_elt_at__intsz] *)
   
-implement{a} array0_set_elt_at__intsz (A, i, x) = let
+implement{a}
+array0_set_elt_at__intsz (A, i, x) = let
   val i = int1_of_int i
 in
   if i >= 0 then begin
@@ -150,7 +162,8 @@ end (* end of [array0_set_elt_at__intsz] *)
   
 (* ****** ****** *)
 
-implement{a} array0_foreach (A, f) = let
+implement{a}
+array0_foreach (A, f) = let
   fun loop {n:nat} {l:addr} .<n>. (
       pf: !array_v (a, n, l)
     | p: ptr l, n: size_t n, f: (&a) -<cloref> void
@@ -168,7 +181,8 @@ in
   loop (p_arrsz->1 | p_arrsz->2, p_arrsz->3, f)
 end // end of [array0_foreach]
 
-implement{a} array0_iforeach (A, f) = let
+implement{a}
+array0_iforeach (A, f) = let
   val (vbox pf_arrsz | p_arrsz) = ref_get_view_ptr (A)
   stavar n0: int
   val n0: size_t n0 = p_arrsz->3
@@ -190,7 +204,8 @@ end // end of [array0_iforeach]
 
 (* ****** ****** *)
 
-implement{a} array0_tabulate (asz, f) = let
+implement{a}
+array0_tabulate (asz, f) = let
   val [n0:int] asz = size1_of_size asz
   val (pf_gc, pf_arr | p_arr) = array_ptr_alloc_tsz {a} (asz, sizeof<a>)
   fun loop {n,i:nat | n0 == n+i} {l:addr} .<n>. (

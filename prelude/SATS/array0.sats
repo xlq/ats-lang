@@ -59,7 +59,11 @@
 //
 (* ****** ****** *)
 
-fun array0_get_arrszref
+(*
+** HX-2011-01-12:
+** it is changed from a fun to a castfn
+*)
+castfn array0_get_arrszref
   {a:viewt@ype} (A: array0 a):<> ref (Arraysize a)
 // end of [array0_get_arrszref]
 

@@ -95,7 +95,8 @@ ref_get_elt (r: ref a):<!ref> a = "atspre_ref_get_elt"
 //
 // HX: implemented in [prelude/DATS/reference.dats]
 //
-fun{a:t@ype} ref_set_elt (r: ref a, x: a):<!ref> void
+fun{a:t@ype}
+ref_set_elt (r: ref a, x: a):<!ref> void = "atspre_ref_set_elt"
 
 (* ****** ****** *)
 //
@@ -107,7 +108,7 @@ fun{a:t@ype} refconst_get_elt (r: refconst a):<> a
 //
 // HX: implemented in [prelude/CATS/reference.cats]
 //
-fun ref_get_view_ptr
+castfn ref_get_view_ptr
   {a:viewt@ype} (r: ref a):<> [l:addr] (vbox (a @ l) | ptr l)
   = "atspre_ref_get_view_ptr"
 // end of [ref_get_view_ptr]

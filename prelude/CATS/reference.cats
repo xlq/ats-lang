@@ -48,26 +48,33 @@
 
 /* ****** ****** */
 
-static inline
+ATSinline()
 ats_ptr_type
-atspre_ref_make_elt_tsz (ats_ptr_type p0, ats_size_type sz) {
+atspre_ref_make_elt_tsz (
+  ats_ptr_type p0, ats_size_type sz
+) {
   ats_ptr_type p ;
   p = ATS_MALLOC(sz) ;
   memcpy (p, p0, sz) ;
   return p ;
-}
+} // end of [atspre_ref_make_elt_tsz]
 
-static inline
+ATSinline()
 ats_ptr_type
 atspre_ref_void_make () { return (ats_ptr_type)0 ; }
 
-static inline
+ATSinline()
 ats_ptr_type
 atspre_ref_make_view_ptr (ats_ptr_type p) { return p ; }
 
-static inline
+/*
+//
+// HX-2011-01-12: it is now a casting function
+//
+ATSinline()
 ats_ptr_type
 atspre_ref_get_view_ptr (ats_ptr_type r) { return r ; }
+*/
 
 /* ****** ****** */
 

@@ -54,12 +54,28 @@ fprint_elt (out: FILEref, x: a): void
 (* ****** ****** *)
 
 fun{a:t@ype}
+array0_fprint_elt (
+  out: FILEref, A: array0 a, sep: string
+) : void // end of [array_fprint_elt]
+
+fun{a:t@ype}
 array_fprint_elt {n:nat} (
-  out: FILEref
-, A: &(@[a][n]), n: size_t n, sep: string
+  out: FILEref, A: array (a, n), n:  size_t n, sep: string
 ) : void // end of [array_fprint_elt]
 
 (* ****** ****** *)
+
+fun{a:t@ype}
+array_ptr_fprint_elt {n:nat} (
+  out: FILEref, A: &(@[a][n]), n: size_t n, sep: string
+) : void // end of [array_ptr_fprint_elt]
+
+(* ****** ****** *)
+
+fun{a:t@ype}
+list0_fprint_elt (
+  out: FILEref, xs: list0 (a), sep: string
+) : void // end of [list0_fprint_elt]
 
 fun{a:t@ype}
 list_fprint_elt (
