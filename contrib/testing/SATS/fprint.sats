@@ -89,4 +89,29 @@ list_vt_fprint_elt {n:nat} (
 
 (* ****** ****** *)
 
+fun{a:t@ype}
+matrix0_fprint_elt (
+  out: FILEref, M: matrix0 a, sep1: string, sep2: string
+) : void // end of [matrix0_fprint_elt]
+
+fun{a:t@ype}
+matrix_fprint_elt
+  {m,n:nat} {l:addr} (
+  out: FILEref, M: matrix (a, m, n), m: size_t m, n: size_t n
+, sep1: string, sep2: string
+) : void // end of [matrix_fprint_elt]
+
+(* ****** ****** *)
+
+fun{a:t@ype}
+matrix_ptr_fprint_elt
+  {m,n:nat} {l:addr} (
+  pf: !matrix_v (a, m, n, l) 
+| out: FILEref
+, p: ptr l, m: size_t m, n: size_t n
+, sep1: string, sep2: string
+) : void // end of [matrix_ptr_fprint_elt]
+
+(* ****** ****** *)
+
 (* end of [fprint.sats] *)

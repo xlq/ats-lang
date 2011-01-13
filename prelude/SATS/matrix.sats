@@ -158,7 +158,7 @@ overload [] with matrix_set_elt_at__intsz
 // implemented in ATS (prelude/DATS/matrix.dats)
 *)
 fun{a:viewt@ype}
-  matrix_foreach_fun__main
+matrix_foreach_fun__main
   {v:view} {vt:viewtype} {m,n:nat} (
     pf: !v
   | M: matrix (a, m, n)
@@ -168,21 +168,21 @@ fun{a:viewt@ype}
 // end of [matrix_foreach_fun__main]
 
 fun{a:viewt@ype}
-  matrix_foreach_fun {v:view} {m,n:nat} (
+matrix_foreach_fun {v:view} {m,n:nat} (
     pf: !v
   | M: matrix (a, m, n)
   , f: (!v | &a) -<fun> void, m: size_t m, n: size_t n
   ) :<!ref> void
 
 fun{a:viewt@ype}
-  matrix_foreach_clo {v:view} {m,n:nat} (
+matrix_foreach_clo {v:view} {m,n:nat} (
     pf: !v
   | M: matrix (a, m, n)
   , f: &(!v | &a) -<clo> void, m: size_t m, n: size_t n
   ) :<!ref> void
 
 fun{a:viewt@ype}
-  matrix_foreach_cloref {m,n:nat} (
+matrix_foreach_cloref {m,n:nat} (
     M: matrix (a, m, n), f: (&a) -<cloref> void, m: size_t m, n: size_t n
   ) :<!ref> void
 
@@ -196,7 +196,7 @@ fun{a:viewt@ype}
 // implemented in ATS (prelude/DATS/matrix.dats)
 *)
 fun{a:viewt@ype}
-  matrix_iforeach_fun__main
+matrix_iforeach_fun__main
   {v:view} {vt:viewtype} {m,n:nat} (
     pf: !v
   | M: matrix (a, m, n)
@@ -205,21 +205,21 @@ fun{a:viewt@ype}
   ) :<!ref> void
 
 fun{a:viewt@ype}
-  matrix_iforeach_fun {v:view} {m,n:nat} (
+matrix_iforeach_fun {v:view} {m,n:nat} (
     pf: !v
   | M: matrix (a, m, n)
   , f: (!v | sizeLt m, sizeLt n, &a) -<fun> void, m: size_t m, n: size_t n
   ) :<!ref> void
 
 fun{a:viewt@ype}
-  matrix_iforeach_clo {v:view} {m,n:nat} (
+matrix_iforeach_clo {v:view} {m,n:nat} (
     pf: !v
   | M: matrix (a, m, n)
   , f: &(!v | sizeLt m, sizeLt n, &a) -<clo> void, m: size_t m, n: size_t n
   ) :<!ref> void
 
 fun{a:viewt@ype}
-  matrix_iforeach_cloref {m,n:nat} (
+matrix_iforeach_cloref {m,n:nat} (
     M: matrix (a, m, n)
   , f: (sizeLt m, sizeLt n, &a) -<cloref1> void, m: size_t m, n: size_t n
   ) :<fun1> void

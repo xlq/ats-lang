@@ -76,7 +76,8 @@ end (* end of [matrix0_make_arrsz] *)
 
 (* ****** ****** *)
 
-implement{a} matrix0_make_elt (row, col, x0) = let
+implement{a}
+matrix0_make_elt (row, col, x0) = let
   val [m:int] row = size1_of_size (row)
   val [n:int] col = size1_of_size (col)
   val [mn:int] (pfmul | asz) = mul2_size1_size1 (row, col)
@@ -107,7 +108,8 @@ extern prfun lemma_for_matrix_subscripting
   (pf1: MUL (m, n, mn), pf2: MUL (i, n, p)): [p+n <= mn] void
 // end of [lemma_for_matrix_subscripting]  
 
-implement{a} matrix0_get_elt_at (M, i, j) = let
+implement{a}
+matrix0_get_elt_at (M, i, j) = let
   val (vbox pf | p) = ref_get_view_ptr (M)
   val i = size1_of_size i
   val j = size1_of_size j
@@ -131,7 +133,8 @@ in
   ) // end of [if]
 end (* end of [matrix0_get_elt_at] *)
 
-implement{a} matrix0_set_elt_at (M, i, j, x) = let
+implement{a}
+matrix0_set_elt_at (M, i, j, x) = let
   val (vbox pf | p) = ref_get_view_ptr (M)
   val i = size1_of_size i
   val j = size1_of_size j
@@ -158,7 +161,7 @@ end (* end of [matrix0_set_elt_at] *)
 (* ****** ****** *)
 
 implement{a}
-  matrix0_get_elt_at__intsz (A, i, j) = let
+matrix0_get_elt_at__intsz (A, i, j) = let
   val i = int1_of_int i and j = int1_of_int j in
   if i >= 0 then (
     if j >= 0 then (
@@ -172,7 +175,7 @@ implement{a}
 end (* end of [matrix0_get_elt_at__intsz] *)
 
 implement{a}
-  matrix0_set_elt_at__intsz (A, i, j, x) = let
+matrix0_set_elt_at__intsz (A, i, j, x) = let
   val i = int1_of_int i and j = int1_of_int j in
   if i >= 0 then (
     if j >= 0 then (
@@ -187,7 +190,8 @@ end (* end of [matrix0_set_elt_at__intsz] *)
 
 (* ****** ****** *)
 
-implement{a} matrix0_foreach (M, f) = let
+implement{a}
+matrix0_foreach (M, f) = let
   fun loop {k:nat} {l:addr} .<k>. (
       pf: !array_v (a, k, l)
     | p: ptr l, k: size_t k, f: (&a) -<cloref> void
@@ -211,7 +215,8 @@ end // end of [matrix0_foreach]
 
 (* ****** ****** *)
 
-implement{a} matrix0_iforeach (M, f) = let
+implement{a}
+matrix0_iforeach (M, f) = let
   fun loop {k:nat} {l:addr} .<k>. (
       pf: !array_v (a, k, l)
     | p: ptr l, k: size_t k
@@ -241,7 +246,8 @@ end // end of [matrix0_iforeach]
 
 (* ****** ****** *)
 
-implement{a} matrix0_tabulate (row, col, f) = let
+implement{a}
+matrix0_tabulate (row, col, f) = let
   val [m:int] m = size1_of_size row
   val [n:int] n = size1_of_size col
   val [mn:int] (pf_mn | mn) = mul2_size1_size1 (m, n)

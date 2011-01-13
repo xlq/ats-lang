@@ -135,4 +135,49 @@ list_vt_fprint_elt
 
 (* ****** ****** *)
 
+implement{a}
+matrix0_fprint_elt
+  (out, M, sep1, sep2) = let
+  val m = matrix0_row (M) and n = matrix0_col (M)
+  var !p_clo = @lam (
+    i: size_t, j: size_t, x: &a
+  ) : void =<clo> $effmask_all {
+    val () = if j > 0 then fprint_string (out, sep1)
+    val () = fprint_elt<a> (out, x)
+    val () = if j = n-1 then fprint_string (out, sep2)
+  } // end of [var]
+  val () = matrix0_iforeach (M, $UN.cast (p_clo))
+in
+  // nothing
+end // end of [matrix0_fprint_elt]
+
+(* ****** ****** *)
+
+implement{a}
+matrix_fprint_elt {m,n}
+  (out, M, m, n, sep1, sep2) = let
+  var !p_clo = @lam (
+    pf: !unit_v | i: sizeLt m, j: sizeLt n, x: &a
+  ) : void =<clo> $effmask_all {
+    val () = if j > 0 then fprint_string (out, sep1)
+    val () = fprint_elt<a> (out, x)
+    val () = if j = n-1 then fprint_string (out, sep2)
+  } // end of [var]
+  prval pfu = unit_v ()
+  val () = matrix_iforeach_clo (pfu | M, !p_clo, m, n)
+  prval unit_v () = pfu
+in
+  // nothing
+end // end of [matrix_ptr_fprint_elt]
+
+(* ****** ****** *)
+
+implement{a}
+matrix_ptr_fprint_elt {m,n}
+  (pf | out, p, m, n, sep1, sep2) =
+  matrix_fprint_elt (out, $UN.cast (p), m, n, sep1, sep2)
+// end of [matrix_ptr_fprint_elt]
+
+(* ****** ****** *)
+
 (* end of [fprint.dats] *)
