@@ -1694,6 +1694,7 @@ in
       emit_instrlst (pf | out, inss_else);
       fprint1_string (pf | out, "\n} /* end of [if] */")
     end // end of [INSTRcond]
+//
   | INSTRdefine_clo (d2c, fl) => begin
       fprint1_string (pf | out, "ATS_GC_MARKROOT(&");
       emit_d2cst (pf | out, d2c);
@@ -1720,6 +1721,20 @@ in
       emit_valprim (pf | out, vp);
       fprint1_string (pf | out, " ;")
     end // end of [INSTRdefine_val]
+(*
+// HX-2011-01-15: this may not be needed
+  | INSTRdefine_nameval (name, vp) => begin
+      fprint1_string (pf | out, "ATS_GC_MARKROOT(&");
+      fprint1_string (pf | out, name);
+      fprint1_string (pf | out, ", sizeof(");
+      emit_hityp (pf | out, vp.valprim_typ);
+      fprint1_string (pf | out, ")) ;\n");
+      fprint1_string (pf | out, name);
+      fprint1_string (pf | out, " = ");
+      emit_valprim (pf | out, vp);
+      fprint1_string (pf | out, " ;")
+    end // end of [INSTRdefine_val]
+*)
   | INSTRextval (name, vp) => begin
       fprint1_string (pf | out, "ATS_GC_MARKROOT(&");
       fprint1_string (pf | out, name);

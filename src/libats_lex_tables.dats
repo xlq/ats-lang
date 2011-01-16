@@ -30,10 +30,10 @@
 *)
 
 (* ****** ****** *)
-
+//
 // Author: Hongwei Xi (* hwxi AT cs DOT bu DOT edu *)
 // July, 2007
-
+//
 (* ****** ****** *)
 
 staload "libats_lex_lexing.sats"
@@ -67,17 +67,21 @@ end // end of [new_tbloptref_some]
 
 (* ****** ****** *)
 
-extern fun table_ptr_free {a:viewt@ype}
-  {n:nat} {l:addr} (pf: array_v (a, n, l) | p: ptr l):<> void
-  = "table_ptr_free"
+extern
+fun table_ptr_free {a:viewt@ype} {n:nat} {l:addr}
+  (pf: array_v (a, n, l) | p: ptr l):<> void = "table_ptr_free"
+// end of [table_ptr_free]
+
+(* ****** ****** *)
 
 %{^
-static inline
+ATSinline()
 ats_void_type
 table_ptr_free (ats_ptr_type p) { free (p) ; return ; }
 %}
 
-fn tbloptref_free (r_tblopt: ref tblopt): void = let
+fn tbloptref_free
+  (r_tblopt: ref tblopt): void = let
   val (vbox pf_tblopt | p_tblopt) = ref_get_view_ptr r_tblopt
 in
   case+ !p_tblopt of
@@ -109,7 +113,7 @@ implement __accept_table_free (r_tblopt): void =
 extern fun int_of_int16 (x: int16):<> int = "ats_int_of_int16"
 
 %{^
-static inline
+ATSinline()
 ats_int_type
 ats_int_of_int16 (ats_int16_type i) { return i ; }
 %}

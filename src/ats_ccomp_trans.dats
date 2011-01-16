@@ -2780,6 +2780,10 @@ fn ccomp_impdec
 //
         val () = (case+ 0 of
           | _ when $Lst.list_is_cons tmparg => let
+(*
+              // HX-2011-01-15:
+              // [d2c] is a partial function template instance
+*)
               val name = funlab_name_get fl in tmpnamtbl_add (name, vp_lam)
             end // end of [_ when ...]
           | _ => begin case+ d2cst_kind_get d2c of
@@ -2806,7 +2810,8 @@ fn ccomp_impdec
         knd, d2v_fix, hie_def
       ) when hiexp_is_lam (hie_def) => let
 (*
-// HX: should we enforce [tmparg] being empty? this is currently ignored
+       // HX: should we enforce [tmparg] being empty?
+       // this is currently ignored!
 *)
         val hit = hityp_normalize (hie.hiexp_typ)
         val vp_cst = valprim_cst (d2c, hit)
@@ -2816,12 +2821,34 @@ fn ccomp_impdec
       end // end of [HIEfix]
     | _ => let
         val vp = ccomp_exp (res, hie)
-        val () = the_topcstctx_add (d2c, vp)
-        val () = the_glocstlst_add_val (d2c, vp)
       in
-        instr_add_define_val (res, loc0, d2c, vp)
+        case+ 0 of
+        | _ when $Lst.list_is_cons tmparg => let
+(*
+            // HX-2011-01-15:
+            // [d2c] is a partial value template instance
+*)
+            val tmparg = hityplstlst_normalize (tmparg)
+            val name = template_cst_name_make (d2c, tmparg)
+            val () = tmpnamtbl_add (name, vp)
+          in
+(*
+            instr_add_define_nameval (res, loc0, name, vp)
+*)
+          end // end of [_ when ...]
+        | _ => let
+(*
+            // HX: [d2c] is a global constant
+*)
+            val () = the_topcstctx_add (d2c, vp)
+            val () = the_glocstlst_add_val (d2c, vp)
+          in
+            instr_add_define_val (res, loc0, d2c, vp)
+          end // end of [_]
+        // end of [case]
       end // end of [_]
   end // end of [aux]
+//
   val d2c = impdec.hiimpdec_cst // [d2c] must not be a proof constant!
 (*
   val () = begin
@@ -2846,8 +2873,9 @@ in
 end // end of [ccomp_impdec]
 
 (* ****** ****** *)
-
-// [d2c] is a terminating constant
+//
+// HX: [d2c] is a terminating constant
+//
 fn ccomp_impdec_prfck
   (loc: loc_t, d2c: d2cst_t, d2cs: dyncstset_t): void = let
 (*

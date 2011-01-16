@@ -774,6 +774,24 @@ instr_add_define_val (res, loc, d2c, vp) =
 
 (* ****** ****** *)
 
+(*
+//
+// HX-2011-01-15: this may not be needed:
+//
+fun instr_define_nameval (
+  loc: loc_t, name: string, vp: valprim
+) : instr = '{
+  instr_loc= loc, instr_node= INSTRdefine_nameval (name, vp)
+} // end of [instr_define_nameval]
+
+implement
+instr_add_define_nameval (res, loc, name, vp) =
+  res := list_vt_cons (instr_define_nameval (loc, name, vp), res)
+// end of [instr_add_define_nameval]
+*)
+
+(* ****** ****** *)
+
 fun instr_extval (
   loc: loc_t, name: string, vp: valprim
 ) : instr = '{

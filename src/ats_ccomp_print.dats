@@ -481,6 +481,16 @@ in
       fprint_valprim (pf | out, vp);
       prstr ")"
     end // end of [INSTRdefine_val]
+(*
+// HX-2011-01-15: this may not be needed:
+  | INSTRdefine_nameval (name, vp) => begin
+      prstr "INSTRdefine_nameval(";
+      fprint_string (pf | out, name);
+      prstr ", ";
+      fprint_valprim (pf | out, vp);
+      prstr ")"
+    end // end of [INSTRdefine_val]
+*)
   | INSTRextern cmd => begin
       fprintf1_exn (pf | out, "INSTRextern(\"%s\")", @(cmd))
     end // end of [INSTRextern]

@@ -1625,6 +1625,7 @@ fn i3mpdec_tr (
 ) : hiimpdec = let
   val loc0 = d3c.i3mpdec_loc
   val d2c = d3c.i3mpdec_cst
+//
   val decarg = d3c.i3mpdec_decarg
   val tmp = (case+ decarg of cons _ => 1 | nil _ => 0): int
 //
@@ -1645,6 +1646,7 @@ fn i3mpdec_tr (
   ) // end of [val]
 //
   val def = d3exp_tr d3c.i3mpdec_def
+//
   val () = begin case+ 0 of
     | _ when d2cst_is_fun d2c => begin
       case+ def.hiexp_node of
@@ -1661,7 +1663,13 @@ fn i3mpdec_tr (
     | _ => ()
   end : void // end of [val]
 //
-  val () = if tmp > 0 then tmpcstmap_add (d2c, decarg, def)
+  val () = if tmp > 0 then let
+(*
+    val () = (print "i3mpdec_tr: d2c = "; print d2c; print_newline ())
+*)
+  in
+    tmpcstmap_add (d2c, decarg, def)
+  end // end of [val]
   val d2cs = the_dyncstset_get ()
 //
 in
@@ -1728,6 +1736,9 @@ d3eclst_tr (d3cs0) = res where {
         end // end of [D3Cextcode]
       | D3Cimpdec impdec => let
           val d2c = impdec.i3mpdec_cst
+(*
+          val () = (print "i3mpdec_tr: d2c = "; print d2c; print_newline ())
+*)
           val hid = (case+ 0 of
             | _ when d2cst_is_proof d2c => let
                 val (pf_token | ()) = the_dyncstsetlst_push ()

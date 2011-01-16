@@ -493,16 +493,21 @@ ccomp_exp_template_cst
 in
   case+ ovp of
   | ~None_vt () => let
-      val tmpdef = (case+ tmpcstmap_find d2c of
-      | ~Some_vt tmpdef => tmpdef | ~None_vt () => begin
-          $Loc.prerr_location loc0; prerr ": error(ccomp)";
-          $Deb.debug_prerrf (": %s: ccomp_exp_template_cst", @(THISFILENAME));
-          prerr ": the template definition for [";
-          prerr d2c;
-          prerr "] is unavailable at [";
-          prerr fullname;
-          prerr "].";
-          prerr_newline ();
+      val tmpdef = (
+      case+ tmpcstmap_find d2c of
+      | ~Some_vt tmpdef => tmpdef
+      | ~None_vt () => let
+          val () = $Loc.prerr_location loc0
+          val () = prerr ": error(ccomp)"
+          val () = $Deb.debug_prerrf
+            (": %s: ccomp_exp_template_cst", @(THISFILENAME))
+          val () = prerr ": the template definition for ["
+          val () = prerr d2c
+          val () = prerr "] is unavailable at ["
+          val () = prerr fullname
+          val () = prerr "]."
+          val () = prerr_newline ()
+        in
           $Err.abort {tmpdef_t} ()
         end // end of [None_vt]
       ) : tmpdef_t
@@ -533,16 +538,21 @@ ccomp_exp_template_var
 in
   case+ ovp of
   | ~None_vt () => let
-      val tmpdef = (case+ tmpvarmap_find d2v of
-      | ~Some_vt tmpdef => tmpdef | ~None_vt () => begin
-          $Loc.prerr_location loc0; prerr ": error(ccomp)";
-          $Deb.debug_prerrf (": %s: ccomp_exp_template_var", @(THISFILENAME));
-          prerr ": the template definition for [";
-          prerr d2v;
-          prerr "] is unavailable at [";
-          prerr fullname;
-          prerr "].";
-          prerr_newline ();
+      val tmpdef = (
+      case+ tmpvarmap_find d2v of
+      | ~Some_vt tmpdef => tmpdef
+      | ~None_vt () => let
+          val () = $Loc.prerr_location loc0
+          val () = prerr ": error(ccomp)"
+          val () = $Deb.debug_prerrf
+            (": %s: ccomp_exp_template_var", @(THISFILENAME))
+          val () = prerr ": the template definition for ["
+          val () = prerr d2v
+          val () = prerr "] is unavailable at ["
+          val () = prerr fullname
+          val () = prerr "]."
+          val () = prerr_newline ()
+        in
           $Err.abort {tmpdef_t} ()
         end // end of [None_vt]
       ) : tmpdef_t

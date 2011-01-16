@@ -425,7 +425,9 @@ fn _emit_dynconset
     (l:addr, i:addr) = ENV2con (l, i) of (ptr l, ptr i)
   // end of [ENV2]
   viewtypedef VT = ENV2 (l, i)
-  fn f_con (pf: !V | d2c: d2con_t, env: !VT): void = let
+  fn f_con (
+    pf: !V | d2c: d2con_t, env: !VT
+  ) : void = let
     prval @(pf_fil, pf_int) = pf
     val+ ENV2con (p_l, p_i)= env
     val i = !p_i; val () = (!p_i := i + 1)
@@ -442,7 +444,7 @@ fn _emit_dynconset
     val () = fprint1_string (pf_mod | !p_l, ") ;\n")
   in
     pf := @(pf_fil, pf_int); fold@ env
-  end
+  end // end of [f_con]
   val env = ENV2con (p_l, &i)
   prval pf = @(pf_fil, view@ i)
   val () = dynconset_foreach_main {V} {VT} (pf | d2cs, f_con, env)
@@ -578,7 +580,9 @@ fn _emit_dyncstset_proc
   dataviewtype ENV3 (m: file_mode, l:addr, i:addr) =
     ENV3con (m, l, i) of (ptr l, ptr i, fun_type m)
   viewtypedef VT = ENV3 (m, l, i)
-  fn f_cst (pf: !V | d2c: d2cst_t, env: !VT): void = let
+  fn f_cst (
+    pf: !V | d2c: d2cst_t, env: !VT
+  ) : void = let
     prval @(pf_fil, pf_int) = pf
     val+ ENV3con (p_l, p_i, proc)= env
     val i = !p_i; val () = (!p_i := i + 1)
@@ -586,7 +590,9 @@ fn _emit_dyncstset_proc
   in
     pf := @(pf_fil, pf_int); fold@ env
   end // end of [f_cst]
-  fn f_cst_if (pf: !V | d2c: d2cst_t, env: !VT): void = begin
+  fn f_cst_if (
+    pf: !V | d2c: d2cst_t, env: !VT
+  ) : void = begin
     case+ d2cst_decarg_get (d2c) of
     | list_cons _ => () | list_nil _ => f_cst (pf | d2c, env)
   end // end of [f_cst_if]
