@@ -1526,16 +1526,21 @@ in
       valprim_top (hit0)
     end // end of [HIEtop]
   | HIEvar d2v => begin case+ 0 of
-    | _ when d2var_isprf_get d2v => begin
-        prerr_loc_ccomp (loc0);
-        prerr ": ["; prerr d2v; prerr "] is a proof variable";
-        prerr ", which must not occur at run-time.";
-        prerr_newline ();
+    | _ when d2var_isprf_get d2v => let
+        val () = prerr_loc_ccomp (loc0)
+        val () = prerr ": ["
+        val () = prerr d2v
+        val () = prerr "] is a proof variable"
+        val () = prerr ", which must not occur at run-time."
+        val () = prerr_newline ()
+      in
         $Err.abort {valprim} ()
       end // end of [_ when ...]
     | _ => ccomp_exp_var (d2v)
     end // end of [HIEvar]
-  | HIEloop (ohie_init, hie_test, ohie_post, hie_body) => let
+  | HIEloop (
+      ohie_init, hie_test, ohie_post, hie_body
+    ) => let
       val () = ccomp_exp_loop
         (res, loc0, ohie_init, hie_test, ohie_post, hie_body)
     in
@@ -2801,7 +2806,7 @@ fn ccomp_impdec
         knd, d2v_fix, hie_def
       ) when hiexp_is_lam (hie_def) => let
 (*
-// HX: should we enforce [tmparg] being empty? this is ignore currently
+// HX: should we enforce [tmparg] being empty? this is currently ignored
 *)
         val hit = hityp_normalize (hie.hiexp_typ)
         val vp_cst = valprim_cst (d2c, hit)
@@ -2817,7 +2822,7 @@ fn ccomp_impdec
         instr_add_define_val (res, loc0, d2c, vp)
       end // end of [_]
   end // end of [aux]
-  val d2c = impdec.hiimpdec_cst // [d2c] must not be a proof cst!
+  val d2c = impdec.hiimpdec_cst // [d2c] must not be a proof constant!
 (*
   val () = begin
     print "ccomp_impdec: d2c = "; print d2c; print_newline ()
@@ -2825,7 +2830,11 @@ fn ccomp_impdec
 *)
 in
   case+ 0 of
-  | _ when d2cst_is_castfn d2c => () // checking is needed!!!
+(*
+// HX: there is currently no checking on the validity of
+// a castfn implementation!
+*)
+  | _ when d2cst_is_castfn d2c => ()
   | _ => begin case+ impdec.hiimpdec_decarg of
     | list_cons _ => () // template is not compiled
     | list_nil () => let

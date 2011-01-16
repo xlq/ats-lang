@@ -273,6 +273,9 @@ in
   list0_of_list1 (list_reverse_append (xs, ys))
 end // end of [list0_reverse_append]
 
+implement{a}
+list0_revapp (xs, ys) = list0_reverse_append<a> (xs, ys)
+
 (* ****** ****** *)
 
 implement{a}

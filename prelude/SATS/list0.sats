@@ -9,7 +9,7 @@
 (*
 ** ATS - Unleashing the Potential of Types!
 **
-** Copyright (C) 2002-2008 Hongwei Xi, Boston University
+** Copyright (C) 2002-2010 Hongwei Xi, Boston University
 **
 ** All rights reserved
 **
@@ -38,8 +38,8 @@
 (* 
 ** HX:
 ** Note that the functions declared in this file are for supporting list
-** processing in ML-like manner. Many more functions are available in the
-** following file:
+** processing in an ML-like manner. Many more functions are available in
+** the following file:
 **
 ** $ATSHOME/libats/smlbas/SATS/list.sats
 **
@@ -62,18 +62,26 @@
 // macdef list0_sing (x) = list0_cons (,(x), list0_nil ())
 
 (* ****** ****** *)
+//
+// HX: a casting function implemented in [prelude/CATS/list.cats]
+//
+castfn list0_of_list1
+  {a:t@ype} (xs: List a):<> list0 a = "atspre_list0_of_list1"
+// end of [castfn list0_of_list1]
 
-// a casting function implemented in [prelude/CATS/list.cats]
-castfn list0_of_list1 {a:t@ype} (xs: List a):<> list0 a
-  = "atspre_list0_of_list1"
+//
+// HX: a casting function implemented in [prelude/CATS/list.cats]
+//
+castfn list0_of_list_vt
+  {a:t@ype} (xs: List_vt a):<> list0 a = "atspre_list0_of_list_vt"
+// end of [castfn list0_of_list_vt]
 
-// a casting function implemented in [prelude/CATS/list.cats]
-castfn list0_of_list_vt {a:t@ype} (xs: List_vt a):<> list0 a
-  = "atspre_list0_of_list_vt"
-
-// a casting function implemented in [prelude/DATS/list.cats]
-castfn list1_of_list0 {a:t@ype} (xs: list0 a):<> List a
-  = "atspre_list1_of_list0"
+//
+// HX: a casting function implemented in [prelude/DATS/list.cats]
+//
+castfn list1_of_list0
+  {a:t@ype} (xs: list0 a):<> List a = "atspre_list1_of_list0"
+// end of [list1_of_list0]
 
 (* ****** ****** *)
 
@@ -84,42 +92,58 @@ list0_make_arrsz
 
 (* ****** ****** *)
 
-fun{a:t@ype} list0_append (xs: list0 a, ys: list0 a):<> list0 a
+fun{a:t@ype}
+list0_append (xs: list0 a, ys: list0 a):<> list0 a
 overload + with list0_append
 
 (* ****** ****** *)
 
-fun{a:t@ype} list0_concat (xs: list0 (list0 a)):<> list0 a
+fun{a:t@ype}
+list0_concat (xs: list0 (list0 a)):<> list0 a
 
 (* ****** ****** *)
 
-fun{a:t@ype} list0_exists_fun (xs: list0 a, f: a -<fun1> bool): bool
-fun{a:t@ype} list0_exists_cloref (xs: list0 a, f: a -<cloref1> bool): bool
+fun{a:t@ype}
+list0_exists_fun (xs: list0 a, f: a -<fun1> bool): bool
+
+fun{a:t@ype}
+list0_exists_cloref (xs: list0 a, f: a -<cloref1> bool): bool
 
 (* ****** ****** *)
 
-fun{a:t@ype} list0_filter_fun (xs: list0 a, pred: a -<fun1> bool): list0 a
-fun{a:t@ype} list0_filter_cloref (xs: list0 a, pred: a -<cloref1> bool): list0 a
+fun{a:t@ype}
+list0_filter_fun (xs: list0 a, pred: a -<fun1> bool): list0 a
+
+fun{a:t@ype}
+list0_filter_cloref (xs: list0 a, pred: a -<cloref1> bool): list0 a
 
 (* ****** ****** *)
 
 fun{init,a:t@ype}
-list0_fold_left {f:eff}
-  (f: (init, a) -<cloref,f> init, ini: init, xs: list0 a):<f> init
+list0_fold_left
+  (f: (init, a) -<cloref1> init, ini: init, xs: list0 a): init
+// end of [list0_fold_left]
 
 fun{a,sink:t@ype}
-list0_fold_right {f:eff}
-  (f: (a, sink) -<cloref,f> sink, xs: list0 a, snk: sink):<f> sink
+list0_fold_right
+  (f: (a, sink) -<cloref1> sink, xs: list0 a, snk: sink): sink
+// end of [list0_fold_right]
 
 (* ****** ****** *)
 
-fun{a:t@ype} list0_forall_fun (xs: list0 a, f: a -<fun1> bool): bool
-fun{a:t@ype} list0_forall_cloref (xs: list0 a, f: a -<cloref1> bool): bool
+fun{a:t@ype}
+list0_forall_fun (xs: list0 a, f: a -<fun1> bool): bool
+
+fun{a:t@ype}
+list0_forall_cloref (xs: list0 a, f: a -<cloref1> bool): bool
 
 (* ****** ****** *)
 
-fun{a:t@ype} list0_foreach_fun (xs: list0 a, f: a -<fun1> void): void
-fun{a:t@ype} list0_foreach_cloref (xs: list0 a, f: a -<cloref1> void): void
+fun{a:t@ype}
+list0_foreach_fun (xs: list0 a, f: a -<fun1> void): void
+
+fun{a:t@ype}
+list0_foreach_cloref (xs: list0 a, f: a -<cloref1> void): void
 
 (* ****** ****** *)
 
@@ -139,8 +163,11 @@ fun{a:t@ype} list0_length (xs: list0 a):<> int
 
 (* ****** ****** *)
 
-fun{a,b:t@ype} list0_map_fun (xs: list0 a, f: a -<fun1> b): list0 b
-fun{a,b:t@ype} list0_map_cloref (xs: list0 a, f: a -<cloref1> b): list0 b
+fun{a,b:t@ype}
+list0_map_fun (xs: list0 a, f: a -<fun1> b): list0 b
+
+fun{a,b:t@ype}
+list0_map_cloref (xs: list0 a, f: a -<cloref1> b): list0 b
 
 (* ****** ****** *)
 
@@ -156,11 +183,17 @@ fun{a:t@ype} list0_nth_opt (xs: list0 a, i: int): Option a
 
 (* ****** ****** *)
 
-fun{a:t@ype} list0_reverse (xs: list0 a): list0 a
-fun{a:t@ype} list0_reverse_append (xs: list0 a, ys: list0 a): list0 a
-(*
-fun{a:t@ype} list0_revapp (xs: list0 a, ys: list0 a): list0 a
-*)
+fun{a:t@ype}
+list0_reverse (xs: list0 a): list0 a
+
+fun{a:t@ype}
+list0_reverse_append (xs: list0 a, ys: list0 a): list0 a
+//
+// HX: this one is the same as [list0_reverse_append]
+//
+fun{a:t@ype}
+list0_revapp (xs: list0 a, ys: list0 a): list0 a
+
 
 (* ****** ****** *)
 
@@ -168,8 +201,11 @@ fun{a:t@ype} list0_tail_exn (xs: list0 a): list0 a
 
 (* ****** ****** *)
 
-fun{a:t@ype} list0_take_exn (xs: list0 a, n: int): list0 a
-fun{a:t@ype} list0_drop_exn (xs: list0 a, n: int): list0 a
+fun{a:t@ype}
+list0_take_exn (xs: list0 a, n: int): list0 a
+
+fun{a:t@ype}
+list0_drop_exn (xs: list0 a, n: int): list0 a
 
 (* ****** ****** *)
 
