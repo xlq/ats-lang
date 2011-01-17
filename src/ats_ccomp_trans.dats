@@ -2831,10 +2831,11 @@ fn ccomp_impdec
             val tmparg = hityplstlst_normalize (tmparg)
             val name = template_cst_name_make (d2c, tmparg)
             val () = tmpnamtbl_add (name, vp)
-          in
 (*
-            instr_add_define_nameval (res, loc0, name, vp)
+            val () = the_partvalst_add (name, vp) // HX: not implemented
 *)
+          in
+            instr_add_define_partval (res, loc0, name, vp)
           end // end of [_ when ...]
         | _ => let
 (*

@@ -433,10 +433,9 @@ instr_node =
   | INSTRdefine_clo of (d2cst_t, funlab_t)
   | INSTRdefine_fun of (d2cst_t, funlab_t)
   | INSTRdefine_val of (d2cst_t, valprim)
-(*
-// HX-2011-01-15: this may not be needed
-  | INSTRdefine_nameval of (string, valprim)
-*)
+//
+  | INSTRdefine_partval of (string(*name*), valprim) // partial value template
+//
   | INSTRextern of string // external instruction
   | INSTRextval of (string(*name*), valprim)
 //
@@ -646,11 +645,8 @@ fun instr_add_define_fun
 fun instr_add_define_val
   (res: &instrlst_vt, loc: loc_t, d2c: d2cst_t, vp: valprim): void
 
-(*
-// HX-2011-01-12: this may not be needed:
-fun instr_add_define_nameval
+fun instr_add_define_partval
   (res: &instrlst_vt, loc: loc_t, name: string, vp: valprim): void
-*)
 
 (* ****** ****** *)
 

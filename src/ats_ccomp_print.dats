@@ -481,16 +481,17 @@ in
       fprint_valprim (pf | out, vp);
       prstr ")"
     end // end of [INSTRdefine_val]
-(*
-// HX-2011-01-15: this may not be needed:
-  | INSTRdefine_nameval (name, vp) => begin
-      prstr "INSTRdefine_nameval(";
+//
+// HX-2011-01-15: partial value template
+//
+  | INSTRdefine_partval (name, vp) => begin
+      prstr "INSTRdefine_partval(";
       fprint_string (pf | out, name);
       prstr ", ";
       fprint_valprim (pf | out, vp);
       prstr ")"
-    end // end of [INSTRdefine_val]
-*)
+    end // end of [INSTRdefine_partval]
+//
   | INSTRextern cmd => begin
       fprintf1_exn (pf | out, "INSTRextern(\"%s\")", @(cmd))
     end // end of [INSTRextern]

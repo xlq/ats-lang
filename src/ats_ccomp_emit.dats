@@ -1721,20 +1721,30 @@ in
       emit_valprim (pf | out, vp);
       fprint1_string (pf | out, " ;")
     end // end of [INSTRdefine_val]
+//
+// HX-2011-01-15: partial value template
+//
+  | INSTRdefine_partval (name, vp) => begin
 (*
-// HX-2011-01-15: this may not be needed
-  | INSTRdefine_nameval (name, vp) => begin
+//
+// HX-2011-01-15: is this really needed?
+//  
       fprint1_string (pf | out, "ATS_GC_MARKROOT(&");
       fprint1_string (pf | out, name);
       fprint1_string (pf | out, ", sizeof(");
       emit_hityp (pf | out, vp.valprim_typ);
       fprint1_string (pf | out, ")) ;\n");
+*)
+      fprint1_string (pf | out, "/*\n");
+//
       fprint1_string (pf | out, name);
       fprint1_string (pf | out, " = ");
       emit_valprim (pf | out, vp);
-      fprint1_string (pf | out, " ;")
-    end // end of [INSTRdefine_val]
-*)
+      fprint1_string (pf | out, " ;");
+//
+      fprint1_string (pf | out, "\n*/")
+    end // end of [INSTRdefine_partval]
+//
   | INSTRextval (name, vp) => begin
       fprint1_string (pf | out, "ATS_GC_MARKROOT(&");
       fprint1_string (pf | out, name);
