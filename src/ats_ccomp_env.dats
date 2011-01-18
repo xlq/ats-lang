@@ -30,10 +30,10 @@
 *)
 
 (* ****** ****** *)
-
+//
 // Author: Hongwei Xi (hwxi AT cs DOT bu DOT edu)
 // Time: April 2008
-
+//
 (* ****** ****** *)
 
 staload Deb = "ats_debug.sats"
@@ -76,7 +76,8 @@ fun compare_strlst_strlst
   (ss1: strlst, ss2: strlst):<> Sgn
 overload compare with compare_strlst_strlst
 
-implement compare_strlst_strlst (ss1, ss2) = begin
+implement
+compare_strlst_strlst (ss1, ss2) = begin
   case+ (ss1, ss2) of
   | (list_cons (s1, ss1), list_cons (s2, ss2)) => let
       val sgn = compare (s1, s2)
@@ -93,7 +94,8 @@ fun compare_labstrlst_labstrlst
   (lss1: labstrlst, lss2: labstrlst):<> Sgn
 overload compare with compare_labstrlst_labstrlst
 
-implement compare_labstrlst_labstrlst
+implement
+compare_labstrlst_labstrlst
   (lss1, lss2) = begin case+ (lss1, lss2) of
   | (LABSTRLSTcons (l1, s1, lss1),
      LABSTRLSTcons (l2, s2, lss2)) => let
@@ -115,7 +117,8 @@ fun compare_typkey_typkey
   (tk1: typkey, tk2: typkey):<> Sgn
 overload compare with compare_typkey_typkey
 
-implement compare_typkey_typkey (tk1, tk2) = begin
+implement
+compare_typkey_typkey (tk1, tk2) = begin
   case+ (tk1, tk2) of
   | (TYPKEYrec lss1, TYPKEYrec lss2) => compare (lss1, lss2)
   | (TYPKEYrec _, _) => ~1
@@ -146,7 +149,8 @@ implement typdef_base_set (base) = !the_typdef_base := base
 
 extern fun typdef_count_get_and_inc (): int
 
-implement typdef_count_get_and_inc () = begin
+implement
+typdef_count_get_and_inc () = begin
   (!the_typdef_count := n+1; n) where { val n = !the_typdef_count }
 end // end of [typdef_count_get]
 
@@ -162,10 +166,10 @@ fn typdeflst_reverse
   (xs: typdeflst): typdeflst = let
   fun aux (xs: typdeflst, ys: typdeflst)
     : typdeflst = begin case+ xs of
-    | TYPDEFLSTcons (_(*tk*), _(*name*), !xs1) => let
-        val xs1_v = !xs1; val () = (!xs1 := ys; fold@ (xs))
+    | TYPDEFLSTcons (_(*tk*), _(*name*), !p_xs1) => let
+        val xs1 = !p_xs1; val () = (!p_xs1 := ys; fold@ (xs))
       in
-        aux (xs1_v, xs)
+        aux (xs1, xs)
       end // end of [TYPDEFLSTcons]
     | ~TYPDEFLSTnil () => ys
   end // end of [aux]
@@ -178,7 +182,8 @@ in
 extern
 fun typdeflst_add (tk: typkey, name: string): void
 
-implement typdeflst_add (tk, name) = let
+implement
+typdeflst_add (tk, name) = let
   val (pfbox | p) = ref_get_view_ptr (the_typdeflst)
   prval vbox pf = pfbox
 in
@@ -203,12 +208,18 @@ end // end of [local]
 
 local
 
-viewtypedef typdefmap = $Map.map_vt (typkey, string)
+viewtypedef
+typdefmap = $Map.map_vt (typkey, string)
 
-fn typdefmap_nil () = $Map.map_make (compare_typkey_typkey)
-val the_typdefmap = ref_make_elt<typdefmap> (typdefmap_nil ())
+fn typdefmap_nil () =
+  $Map.map_make (compare_typkey_typkey)
+// end of [typdefmap_nil]
 
-in
+val the_typdefmap =
+  ref_make_elt<typdefmap> (typdefmap_nil ())
+// end of [the_typdefmap]
+
+in // in of [local]
 
 (* ****** ****** *)
 
@@ -218,7 +229,8 @@ extern fun typdefmap_add_uni (tk: typkey): string
 
 (* ****** ****** *)
 
-implement typdefmap_add_rec (tk) = let
+implement
+typdefmap_add_rec (tk) = let
   val base = typdef_base_get ()
   val n = typdef_count_get_and_inc ()
   val name_rec = let
@@ -243,7 +255,8 @@ in
   name_rec
 end // end of [typdefmap_add_rec]
 
-implement typdefmap_add_sum (tk) = let
+implement
+typdefmap_add_sum (tk) = let
   val base = typdef_base_get ()
   val n = typdef_count_get_and_inc ()
   val name_sum = let
@@ -268,7 +281,8 @@ in
   name_sum
 end // end of [typdefmap_add_sum]
 
-implement typdefmap_add_uni (tk) = let
+implement
+typdefmap_add_uni (tk) = let
   val base = typdef_base_get ()
   val n = typdef_count_get_and_inc ()
   val name_uni = let // union
@@ -293,7 +307,8 @@ in
   name_uni
 end // end of [typdefmap_add_uni]
 
-implement typdefmap_find (tk) = let
+implement
+typdefmap_find (tk) = let
   val oname = let
     val (pfbox | p) = ref_get_view_ptr (the_typdefmap)
     prval vbox pf = pfbox
@@ -327,10 +342,10 @@ fn datcstlst_reverse
   (xs: datcstlst): datcstlst = let
   fun aux (xs: datcstlst, ys: datcstlst)
     : datcstlst = begin case+ xs of
-    | DATCSTLSTcons (_, !xs1) => let
-        val xs1_v = !xs1; val () = (!xs1 := ys; fold@ (xs))
+    | DATCSTLSTcons (_, !p_xs1) => let
+        val xs1 = !p_xs1; val () = (!p_xs1 := ys; fold@ (xs))
       in
-        aux (xs1_v, xs)
+        aux (xs1, xs)
       end
     | ~DATCSTLSTnil () => ys
   end // end of [aux]
@@ -340,20 +355,23 @@ end // end of [datcstlst_reverse]
 
 in
 
-implement datcstlst_free (s2cs) = begin
+implement
+datcstlst_free (s2cs) = begin
   case+ s2cs of
   | ~DATCSTLSTcons (_, s2cs) => datcstlst_free s2cs
   | ~DATCSTLSTnil () => ()
 end // end of [datcstlst_free]
 
-implement the_datcstlst_add (s2c) = let
+implement
+the_datcstlst_add (s2c) = let
   val (pfbox | p) = ref_get_view_ptr (the_datcstlst)
   prval vbox pf = pfbox
 in
  !p := DATCSTLSTcons (s2c, !p)
 end // end of [the_datcstlst_add]
 
-implement the_datcstlst_adds (s2cs) = begin
+implement
+the_datcstlst_adds (s2cs) = begin
   case+ s2cs of
   | S2CSTLSTcons (s2c, s2cs) => begin
       the_datcstlst_add s2c; the_datcstlst_adds s2cs
@@ -361,7 +379,8 @@ implement the_datcstlst_adds (s2cs) = begin
   | S2CSTLSTnil () => ()
 end // end of [the_datcstlst_adds]
 
-implement the_datcstlst_get () = let
+implement
+the_datcstlst_get () = let
   val s2cs = let
     val (pfbox | p) = ref_get_view_ptr (the_datcstlst)
     prval vbox pf = pfbox
@@ -387,10 +406,10 @@ fn exnconlst_reverse
   (xs: exnconlst): exnconlst = let
   fun aux (xs: exnconlst, ys: exnconlst)
     : exnconlst = begin case+ xs of
-    | EXNCONLSTcons (_, !xs1) => let
-        val xs1_v = !xs1; val () = (!xs1 := ys; fold@ (xs))
+    | EXNCONLSTcons (_, !p_xs1) => let
+        val xs1 = !p_xs1; val () = (!p_xs1 := ys; fold@ (xs))
       in
-        aux (xs1_v, xs)
+        aux (xs1, xs)
       end
     | ~EXNCONLSTnil () => ys
   end // end of [aux]
@@ -398,22 +417,25 @@ in
   aux (xs, EXNCONLSTnil ())
 end // end of [exnconlst_reverse]
 
-in
+in // in of [local]
 
-implement exnconlst_free (d2cs) = begin
+implement
+exnconlst_free (d2cs) = begin
   case+ d2cs of
   | ~EXNCONLSTcons (_, d2cs) => exnconlst_free d2cs
   | ~EXNCONLSTnil () => ()
 end // end of [exnconlst_free]
 
-implement the_exnconlst_add (d2c) = let
+implement
+the_exnconlst_add (d2c) = let
   val (pfbox | p) = ref_get_view_ptr (the_exnconlst)
   prval vbox pf = pfbox
 in
  !p := EXNCONLSTcons (d2c, !p)
 end // end of [the_exnconlst_add]
 
-implement the_exnconlst_adds (d2cs) = begin
+implement
+the_exnconlst_adds (d2cs) = begin
   case+ d2cs of
   | D2CONLSTcons (d2c, d2cs) => begin
       the_exnconlst_add d2c; the_exnconlst_adds d2cs
@@ -421,7 +443,8 @@ implement the_exnconlst_adds (d2cs) = begin
   | D2CONLSTnil () => ()
 end // end of [the_exnconlst_adds]
 
-implement the_exnconlst_get () = let
+implement
+the_exnconlst_get () = let
   val d2cs = let
     val (pfbox | p) = ref_get_view_ptr (the_exnconlst)
     prval vbox pf = pfbox
@@ -451,7 +474,8 @@ val the_vartypsetlst =
 
 in // in of [local]
 
-implement the_vartypset_pop () = let
+implement
+the_vartypset_pop () = let
   var err: int = 0
   val x0 = !the_vartypset
   val () = let
@@ -472,7 +496,8 @@ in
   x0
 end // end of [the_vartypset_pop]
 
-implement the_vartypset_push () = let
+implement
+the_vartypset_push () = let
   val vts = !the_vartypset
   val () = let
     val (pfbox | p) = ref_get_view_ptr (the_vartypsetlst)
@@ -484,7 +509,8 @@ in
   !the_vartypset := $Set.set_nil
 end // end of [the_vartypset_push]
 
-implement the_vartypset_add (vtp) = let
+implement
+the_vartypset_add (vtp) = let
   val _new = $Set.set_insert<vartyp_t>
     (!the_vartypset, vtp, compare_vartyp_vartyp)
 in
@@ -493,7 +519,8 @@ end // end of [the_vartypset_add]
 
 end // end of [local]
 
-implement vartypset_d2varlst_make (vtps) = let
+implement
+vartypset_d2varlst_make (vtps) = let
   viewtypedef d2varlst_vt = List_vt d2var_t
   var d2vs: d2varlst_vt = list_vt_nil ()
   viewdef V = d2varlst_vt @ d2vs; viewtypedef VT = ptr d2vs
@@ -508,22 +535,25 @@ end // end of [vartypset_d2varlst_make]
 
 //
 
-implement vartypset_union (vtps1, vtps2) =
+implement
+vartypset_union (vtps1, vtps2) =
   $Set.set_union (vtps1, vtps2, compare_vartyp_vartyp)
+// end of [vartypset_union]
 
-//
-
-implement vartypset_foreach_main
+implement
+vartypset_foreach_main
   (pf | vtps, f, env) = $Set.set_foreach_main (pf | vtps, f, env)
 // end of [vartypset_foreach_main]
 
-implement vartypset_foreach_cloptr
+implement
+vartypset_foreach_cloptr
   (vtps, f) = $Set.set_foreach_cloptr (vtps, f)
 // end of [vartypset_foreach_cloptr]
 
 //
 
-implement print_vartypset (vtps) = let
+implement
+print_vartypset (vtps) = let
   var i: int = 0
   fn f (
       pf: !int @ i
@@ -541,8 +571,11 @@ in
 end // end of [print_vartypset]
 
 (*
-// not used
-implement prerr_vartypset (vtps) = let
+//
+// HX: this one is not used
+//
+implement
+prerr_vartypset (vtps) = let
   var i: int = 0
   fn f (pf: !int @ i | vtp: vartyp_t, p: !ptr i): void =
     let val i = !p; val () = !p := i + 1 in
@@ -567,7 +600,8 @@ val the_funlabsetlst = ref_make_elt<funlabsetlst> (list_vt_nil ())
 
 in // in of [local]
 
-implement the_funlabset_pop () = let
+implement
+the_funlabset_pop () = let
   var err: int = 0
   val x0 = !the_funlabset
   val () = let
@@ -588,7 +622,8 @@ in
   x0
 end // end of [the_funlabset_pop]
 
-implement the_funlabset_push () = let
+implement
+the_funlabset_push () = let
   val fls = !the_funlabset
   val () = let
     val (pfbox | p) = ref_get_view_ptr (the_funlabsetlst)
@@ -600,7 +635,8 @@ in
   !the_funlabset := $Set.set_nil
 end // end of [the_funlabset_push]
 
-implement the_funlabset_add (fl) = let
+implement
+the_funlabset_add (fl) = let
   val _new = begin
     $Set.set_insert<funlab_t> (!the_funlabset, fl, compare_funlab_funlab)
   end // end of [val]
@@ -608,19 +644,23 @@ in
   !the_funlabset := _new
 end // end of [the_funlabset_add]
 
-implement the_funlabset_mem (fl) = begin
+implement
+the_funlabset_mem (fl) = begin
   $Set.set_member<funlab_t> (!the_funlabset, fl, compare_funlab_funlab)
 end // end of [the_funlabset_mem]
 
-implement funlabset_foreach_main
+implement
+funlabset_foreach_main
   (pf | fls, f, env) = $Set.set_foreach_main (pf | fls, f, env)
 // end of [funlabset_foreach_main]
 
-implement funlabset_foreach_cloptr (fls, f) = $Set.set_foreach_cloptr (fls, f)
+implement
+funlabset_foreach_cloptr (fls, f) = $Set.set_foreach_cloptr (fls, f)
 
 end // end of [local]
 
-implement print_funlabset (fls) = let
+implement
+print_funlabset (fls) = let
   var i: int = 0
   fn f (pf: !int @ i | fl: funlab_t, p: !ptr i): void =
     let val i = !p; val () = !p := i + 1 in
@@ -634,8 +674,11 @@ in
 end // end of [print_funlabset]
 
 (*
-// not used
-implement prerr_funlabset (fls) = let
+//
+// HX: this one is not used
+//
+implement
+prerr_funlabset (fls) = let
   var i: int = 0
   fn f (pf: !int @ i | fl: funlab_t, p: !ptr i): void =
     let val i = !p; val () = !p := i + 1 in
@@ -661,11 +704,13 @@ val the_dynconset = ref_make_elt<dynconset> ($Set.set_nil)
 
 in // in of [local]
 
-implement dynconset_foreach_main
+implement
+dynconset_foreach_main
   (pf | d2cs, f, env) = $Set.set_foreach_main (pf | d2cs, f, env)
 // end of [dynconset_foreach_main]
 
-implement the_dynconset_add (d2c) = let
+implement
+the_dynconset_add (d2c) = let
   val _new = $Set.set_insert<d2con_t> (!the_dynconset, d2c, compare_d2con_d2con)
 in
   !the_dynconset := _new
@@ -715,13 +760,15 @@ fn dyncstset_add_if
 
 in // in of [local]
 
-implement dyncstset_foreach_main
+implement
+dyncstset_foreach_main
   (pf | d2cs, f, env) = $Set.set_foreach_main (pf | d2cs, f, env)
 // end of [dyncstset_foreach_main]
 
 implement the_dyncstset_get () = !the_dyncstset
 
-implement the_dyncstset_add_if (d2c) =
+implement
+the_dyncstset_add_if (d2c) =
   // a template constant should not be added!
   if d2cst_is_temp d2c then () else let
     val ismem = begin
@@ -732,7 +779,8 @@ implement the_dyncstset_add_if (d2c) =
   end // end of [if]
 // end of [the_dyncstset_add_if]
 
-implement the_dyncstsetlst_push () = let
+implement
+the_dyncstsetlst_push () = let
   val d2cs = !the_dyncstset
   val () = let
     val (pfbox | p) = ref_get_view_ptr (the_dyncstsetlst)
@@ -745,7 +793,8 @@ in
   // empty
 end // end of [the_dyncstsetlst_push]
 
-implement the_dyncstsetlst_pop () = let
+implement
+the_dyncstsetlst_pop () = let
   var err: int = 0
   val d2cs = !the_dyncstset
   val () = let
@@ -777,14 +826,16 @@ val the_extypelst = ref_make_elt<extypelst> (EXTYPELSTnil ())
 
 in // in of [local]
 
-implement the_extypelst_add (name, hit) = let
+implement
+the_extypelst_add (name, hit) = let
   val (pfbox | p) = ref_get_view_ptr (the_extypelst)
   prval vbox pf = pfbox
 in
   !p := EXTYPELSTcons (name, hit, !p)
 end // end of [the_extypelst_add]
 
-implement the_extypelst_get () = let
+implement
+the_extypelst_get () = let
   val (pfbox | p) = ref_get_view_ptr (the_extypelst)
   prval vbox pf = pfbox
   val res = !p; val () = !p := EXTYPELSTnil ()
@@ -804,10 +855,10 @@ fn extvallst_reverse
   (xs: extvallst): extvallst = let
   fun aux (xs: extvallst, ys: extvallst)
     : extvallst = begin case+ xs of
-    | EXTVALLSTcons (_(*name*), _(*vp*), !xs1) => let
-        val xs1_v = !xs1; val () = (!xs1 := ys; fold@ (xs))
+    | EXTVALLSTcons (_(*name*), _(*vp*), !p_xs1) => let
+        val xs1 = !p_xs1; val () = (!p_xs1 := ys; fold@ (xs))
       in
-        aux (xs1_v, xs)
+        aux (xs1, xs)
       end
     | ~EXTVALLSTnil () => ys
   end // end of [aux]
@@ -817,14 +868,16 @@ end // end of [extvallst_reverse]
 
 in // in of [local]
 
-implement the_extvallst_add (name, hit) = let
+implement
+the_extvallst_add (name, hit) = let
   val (pfbox | p) = ref_get_view_ptr (the_extvallst)
   prval vbox pf = pfbox
 in
   !p := EXTVALLSTcons (name, hit, !p)
 end // end of [the_extvallst_add]
 
-implement the_extvallst_get () = let
+implement
+the_extvallst_get () = let
   val res = let
     val (pfbox | p) = ref_get_view_ptr (the_extvallst)
     prval vbox pf = pfbox
@@ -836,7 +889,8 @@ in
   extvallst_reverse (res)
 end // end of [the_extvallst_get]
 
-implement extvallst_free (exts) = begin case+ exts of
+implement
+extvallst_free (exts) = begin case+ exts of
   | ~EXTVALLSTcons (_(*name*), _(*vp*), exts) => extvallst_free exts
   | ~EXTVALLSTnil () => ()
 end // end of [extvallst_free]
@@ -909,10 +963,10 @@ fn stafilelst_reverse
   (xs: stafilelst): stafilelst = let
   fun aux (xs: stafilelst, ys: stafilelst)
     : stafilelst = begin case+ xs of
-    | STAFILELSTcons (_fil, _loadflag, !xs1) => let
-        val xs1_v = !xs1; val () = (!xs1 := ys; fold@ (xs))
+    | STAFILELSTcons (_fil, _loadflag, !p_xs1) => let
+        val xs1 = !p_xs1; val () = (!p_xs1 := ys; fold@ (xs))
       in
-        aux (xs1_v, xs)
+        aux (xs1, xs)
       end // end of [STAFILELSTcons]
     | ~STAFILELSTnil () => ys
   end // end of [aux]
@@ -922,14 +976,16 @@ end // end of [stafilelst_reverse]
 
 in // in of [local]
 
-implement the_stafilelst_add (fil, loadflag) = let
+implement
+the_stafilelst_add (fil, loadflag) = let
   val (pfbox | p) = ref_get_view_ptr (the_stafilelst)
   prval vbox pf = pfbox
 in
   !p := STAFILELSTcons (fil, loadflag, !p)
 end // end of [the_stafilelst_add]
 
-implement the_stafilelst_get () = let
+implement
+the_stafilelst_get () = let
   val res = res where {
     val (vbox pf | p) = ref_get_view_ptr (the_stafilelst)
     val res = !p; val () = !p := STAFILELSTnil ()
@@ -938,7 +994,8 @@ in
   stafilelst_reverse (res)
 end // end of [the_stafilelst_get]
 
-implement stafilelst_free (fils) = begin
+implement
+stafilelst_free (fils) = begin
   case+ fils of
   | ~STAFILELSTcons (_fil, _loadflag, fils) => stafilelst_free fils
   | ~STAFILELSTnil () => ()
@@ -955,14 +1012,16 @@ val the_dynfilelst =
 
 in // in of [local]
 
-implement the_dynfilelst_add (fil) = let
+implement
+the_dynfilelst_add (fil) = let
   val (pfbox | p) = ref_get_view_ptr (the_dynfilelst)
   prval vbox pf = pfbox
 in
   !p := DYNFILELSTcons (fil, !p)
 end // end of [the_dynfilelst_add]
 
-implement the_dynfilelst_get () = let
+implement
+the_dynfilelst_get () = let
   val (pfbox | p) = ref_get_view_ptr (the_dynfilelst)
   prval vbox pf = pfbox
   val res = !p; val () = !p := DYNFILELSTnil ()
@@ -970,7 +1029,8 @@ in
   res
 end // end of [the_dynfilelst_get]
 
-implement dynfilelst_free (fils) = begin
+implement
+dynfilelst_free (fils) = begin
   case+ fils of
   | ~DYNFILELSTcons (fil, fils) => dynfilelst_free fils
   | ~DYNFILELSTnil () => ()
@@ -987,7 +1047,8 @@ val the_funlablst = ref_make_elt<funlablst_vt> (list_vt_nil ())
 
 in // in of [local]
 
-implement funlab_pop (pf | (*none*)) = let
+implement
+funlab_pop (pf | (*none*)) = let
   prval unit_v () = pf
   var err: int = 0; val () = let
     val (vbox pf | p) = ref_get_view_ptr (the_funlablst)
@@ -1003,14 +1064,16 @@ in
   end // end of [if]
 end // end of [funlab_pop]
 
-implement funlab_push (fl) = let
+implement
+funlab_push (fl) = let
   val (vbox pf | p) = ref_get_view_ptr (the_funlablst)
   val () = !p := list_vt_cons (fl, !p)
 in
   (unit_v () | ())
 end // end of [funlab_push]
 
-implement funlab_top () = let
+implement
+funlab_top () = let
   fn err (): funlab_t = begin
     prerr_interror (); prerr ": funlab_top"; prerr_newline ();
     $Err.abort {funlab_t} ()
@@ -1134,7 +1197,8 @@ dataviewtype ENV (l:addr) = ENVcon (l) of (ptr l, int)
 
 in
 
-implement funentry_vtps_get_all (entry0) = let
+implement
+funentry_vtps_get_all (entry0) = let
 (*
   val fl0 = funentry_lab_get entry0
   val () = begin
@@ -1205,20 +1269,22 @@ dataviewtype ENV (l:addr, i:addr) = ENVcon (l, i) of (ptr l, ptr i)
 
 fn varindmap_nil ():<> varindmap = begin
   $Map.map_make {d2var_t, int} (compare_d2var_d2var)
-end
+end // end of [varindmap]
 
 val the_varindmap = ref_make_elt<varindmap> (varindmap_nil ())
 
 in
 
-implement varindmap_find (d2v) = let
+implement
+varindmap_find (d2v) = let
   val (pfbox | p) = ref_get_view_ptr (the_varindmap)
   prval vbox pf = pfbox
 in
   $Map.map_search (!p, d2v)
 end // end of [varindmap_find]
 
-implement varindmap_find_some (d2v) = begin
+implement
+varindmap_find_some (d2v) = begin
   case+ varindmap_find d2v of
   | ~Some_vt ind => ind | ~None_vt () => begin
       prerr_interror ();
@@ -1227,7 +1293,8 @@ implement varindmap_find_some (d2v) = begin
     end // end of [None_vt]
 end // end of [varindmap_find_some]
 
-implement funentry_varindmap_reset () = let
+implement
+funentry_varindmap_reset () = let
   val (pfbox | p) = ref_get_view_ptr (the_varindmap)
   prval vbox pf = pfbox
   val () = $Map.map_free<d2var_t,int> (!p)
@@ -1235,7 +1302,8 @@ in
   !p := varindmap_nil ()
 end // end of [funentry_varindmap_reset]
 
-implement funentry_varindmap_set (vtps) = let
+implement
+funentry_varindmap_set (vtps) = let
   var i: int = 0
   val [l:addr] (pfbox | r) = ref_get_view_ptr (the_varindmap)
   viewdef V = (varindmap @ l, int @ i)
@@ -1269,7 +1337,8 @@ end
 
 in // in of [local]
 
-implement funentry_lablst_add (fl) = let
+implement
+funentry_lablst_add (fl) = let
 (*
   val () = begin
     print "funentry_lablst_add: fl = "; print fl; print_newline ()
@@ -1281,7 +1350,8 @@ in
   !p := list_vt_cons (fl, !p)
 end // end of [funentry_lablst_add]
 
-implement funentry_lablst_get () = let
+implement
+funentry_lablst_get () = let
   val res = let
     val (pfbox | p) = ref_get_view_ptr (the_funlablst)
     prval vbox pf = pfbox
@@ -1312,14 +1382,17 @@ val the_loopexnlablst =
 
 in
 
-implement loopexnlablst_push (tl_init, tl_fini, tl_cont) = let
+implement
+loopexnlablst_push
+  (tl_init, tl_fini, tl_cont) = let
   val (pfbox | p) = ref_get_view_ptr (the_loopexnlablst)
   prval vbox pf = pfbox
 in
   !p := LOOPEXNLABLSTcons (tl_init, tl_fini, tl_cont, !p)
 end // end of [loopexnlablst_push]
 
-implement loopexnlablst_pop () = let
+implement
+loopexnlablst_pop () = let
   var err: int = 0
   val () = let
     val (pfbox | p) = ref_get_view_ptr (the_loopexnlablst)
@@ -1336,7 +1409,8 @@ in
   end // end of [if]
 end // end of [loopexnlablst_pop]
 
-implement loopexnlablst_get (i) = let
+implement
+loopexnlablst_get (i) = let
   fn tmplab_gen (): tmplab_t = begin
     prerr_interror (); prerr ": loopexnlablst_get"; prerr_newline ();
     $Err.abort {tmplab_t} ()
@@ -1357,24 +1431,203 @@ end // end of [local]
 
 (* ****** ****** *)
 
+local
+
+val the_glocstlst =
+  ref_make_elt<glocstlst> (GLOCSTLSTnil ())
+// end of [val]
+
+fn glocstlst_reverse
+  (xs: glocstlst): glocstlst = let
+  fun aux (xs: glocstlst, ys: glocstlst)
+    : glocstlst = begin case+ xs of
+    | GLOCSTLSTcons_clo (_(*d2c*), !p_xs1) => let
+        val xs1 = !p_xs1; val () = (!p_xs1 := ys; fold@ (xs))
+      in
+        aux (xs1, xs)
+      end // end of [GLOCSTLSTcons_clo]
+    | GLOCSTLSTcons_fun (_(*d2c*), !p_xs1) => let
+        val xs1 = !p_xs1; val () = (!p_xs1 := ys; fold@ (xs))
+      in
+        aux (xs1, xs)
+      end // end of [GLOCSTLSTcons_fun]
+    | GLOCSTLSTcons_val (_(*d2c*), _(*vp*), !p_xs1) => let
+        val xs1 = !p_xs1; val () = (!p_xs1 := ys; fold@ (xs))
+      in
+        aux (xs1, xs)
+      end // end of [GLOCSTLSTcons_val]
+    | ~GLOCSTLSTnil () => ys
+  end // end of [aux]
+in
+  aux (xs, GLOCSTLSTnil ())
+end (* end of [glocstlst_reverse] *)
+
+in // in of [local]
+
+implement
+the_glocstlst_get () = let
+  val xs = let
+    val (vbox pf | p) = ref_get_view_ptr (the_glocstlst)
+    val xs = !p
+  in
+    !p := GLOCSTLSTnil (); xs
+  end // end of [val]
+in
+  glocstlst_reverse (xs)
+end // end of [the_glocstlst_get]
+
+(* ****** ****** *)
+
+implement
+the_glocstlst_add_clo (d2c) = let
+  val (vbox pf | p) = ref_get_view_ptr (the_glocstlst)
+in
+  !p := GLOCSTLSTcons_clo (d2c, !p)
+end // end of [the_glocstlst_add_clo]
+
+implement
+the_glocstlst_add_fun (d2c) = let
+  val (vbox pf | p) = ref_get_view_ptr (the_glocstlst)
+in
+  !p := GLOCSTLSTcons_fun (d2c, !p)
+end // end of [the_glocstlst_add_fun]
+
+implement
+the_glocstlst_add_val (d2c, vp) = let
+  val (vbox pf | p) = ref_get_view_ptr (the_glocstlst)
+in
+  !p := GLOCSTLSTcons_val (d2c, vp, !p)
+end // end of [the_glocstlst_add_val]
+
+end // end of [local]
+
+(* ****** ****** *)
+
+local
+
+val the_partvalst =
+  ref_make_elt<partvalst> (PARTVALSTnil ())
+// end of [val]
+
+fn partvalst_reverse
+  (xs: partvalst): partvalst = let
+  fun aux (xs: partvalst, ys: partvalst)
+    : partvalst = begin case+ xs of
+    | PARTVALSTcons (_(*name*), _(*vp*), !p_xs1) => let
+        val xs1 = !p_xs1; val () = (!p_xs1 := ys; fold@ (xs))
+      in
+        aux (xs1, xs)
+      end // end of [PARTVALSTcons]
+    | ~PARTVALSTnil () => ys
+  end // end of [aux]
+in
+  aux (xs, PARTVALSTnil ())
+end (* end of [partvalst_reverse] *)
+
+in // in of [local]
+
+implement
+the_partvalst_get () = let
+  val xs = let
+    val (vbox pf | p) = ref_get_view_ptr (the_partvalst)
+    val xs = !p
+  in
+    !p := PARTVALSTnil (); xs
+  end // end of [val]
+in
+  partvalst_reverse (xs)
+end // end of [the_partvalst_get]
+
+implement
+the_partvalst_add (name, vp) = let
+  val (vbox pf | p) = ref_get_view_ptr (the_partvalst)
+in
+  !p := PARTVALSTcons (name, vp, !p)
+end // end of [the_partvalst_add]
+
+end // end of [local]
+
+(* ****** ****** *)
+
+local
+
+viewtypedef
+cstctx = $Map.map_vt (d2cst_t, valprim)
+
+fn cstctx_nil ()
+  : cstctx = $Map.map_make (compare_d2cst_d2cst)
+// end of [cstctx]
+
+val the_topcstctx = ref_make_elt<cstctx> (cstctx_nil ())
+
+in // in of [local]
+
+implement
+the_topcstctx_add (d2c, vp) = let
+  val (pfbox | p) = ref_get_view_ptr (the_topcstctx)
+  prval vbox pf = pfbox
+in
+  $Map.map_insert (!p, d2c, vp)
+end // end of [the_topcstctx_add]
+
+implement
+the_topcstctx_find (d2c) = let
+  val (pfbox | p) = ref_get_view_ptr (the_topcstctx)
+  prval vbox pf = pfbox
+in
+  $Map.map_search (!p, d2c)
+end // end of [the_topcstctx_find]
+
+end // end of [local]
+
+(* ****** ****** *)
+
+local
+
+val the_valprimlst_free =
+  ref_make_elt<valprimlst_vt> (list_vt_nil ())
+// end of [the_valprimlst_free]
+
+in // in of [local]
+
+implement
+the_valprimlst_free_get () = let
+  val (vbox pf | p) = ref_get_view_ptr (the_valprimlst_free)
+  val vps = !p; val () = !p := list_vt_nil ()
+in
+  $Lst.list_vt_reverse (vps)
+end // end of [the_valprimlst_free_get]
+
+implement
+the_valprimlst_free_add (vp) = let
+  val (vbox pf | p) = ref_get_view_ptr (the_valprimlst_free)
+in
+  !p := list_vt_cons (vp, !p)
+end // end of [the_valprimlst_free_add]
+
+end // end of [local]
+
+(* ****** ****** *)
+
 %{$
 
 ats_void_type
 ats_ccomp_env_funentry_vtps_set
   (ats_ptr_type entry, ats_ptr_type vtps) {
   ((funentry_t)entry)->atslab_funentry_vtps = vtps ; return ;
-}
+} // end of [ats_ccomp_env_funentry_vtps_set]
 
 ats_void_type
-ats_ccomp_env_funentry_vtps_flag_set (ats_ptr_type entry) {
+ats_ccomp_env_funentry_vtps_flag_set
+  (ats_ptr_type entry) {
   ((funentry_t)entry)->atslab_funentry_vtps_flag = 1 ; return ;
-}
+} // end of [ats_ccomp_env_funentry_vtps_flag_set]
 
 ats_void_type
 ats_ccomp_env_funentry_tailjoin_set
   (ats_ptr_type entry, ats_ptr_type tjs) {
   ((funentry_t)entry)->atslab_funentry_tailjoin = tjs ; return ;
-}
+} // end of [ats_ccomp_env_funentry_tailjoin_set]
 
 %} // end of [%{$]
 

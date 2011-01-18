@@ -321,132 +321,6 @@ end // end of [local]
 
 (* ****** ****** *)
 
-local
-
-val the_glocstlst =
-  ref_make_elt<glocstlst> (GLOCSTLSTnil ())
-// end of [val]
-
-fn glocstlst_reverse
-  (xs: glocstlst): glocstlst = let
-  fun aux (xs: glocstlst, ys: glocstlst)
-    : glocstlst = begin case+ xs of
-    | GLOCSTLSTcons_clo (_(*d2c*), !xs1) => let
-        val xs1_v = !xs1; val () = (!xs1 := ys; fold@ (xs))
-      in
-        aux (xs1_v, xs)
-      end // end of [GLOCSTLSTcons_clo]
-    | GLOCSTLSTcons_fun (_(*d2c*), !xs1) => let
-        val xs1_v = !xs1; val () = (!xs1 := ys; fold@ (xs))
-      in
-        aux (xs1_v, xs)
-      end // end of [GLOCSTLSTcons_fun]
-    | GLOCSTLSTcons_val (_(*d2c*), _(*vp*), !xs1) => let
-        val xs1_v = !xs1; val () = (!xs1 := ys; fold@ (xs))
-      in
-        aux (xs1_v, xs)
-      end // end of [GLOCSTLSTcons_val]
-    | ~GLOCSTLSTnil () => ys
-  end // end of [aux]
-in
-  aux (xs, GLOCSTLSTnil ())
-end (* end of [glocstlst_reverse] *)
-
-in // in of [local]
-
-implement
-the_glocstlst_get () = let
-  val xs = let
-    val (vbox pf | p) = ref_get_view_ptr (the_glocstlst)
-    val xs = !p
-  in
-    !p := GLOCSTLSTnil (); xs
-  end // end of [val]
-in
-  glocstlst_reverse (xs)
-end // end of [the_glocstlst_get]
-
-(* ****** ****** *)
-
-implement
-the_glocstlst_add_clo (d2c) = let
-  val (vbox pf | p) = ref_get_view_ptr (the_glocstlst)
-in
-  !p := GLOCSTLSTcons_clo (d2c, !p)
-end // end of [the_glocstlst_add_clo]
-
-implement
-the_glocstlst_add_fun (d2c) = let
-  val (vbox pf | p) = ref_get_view_ptr (the_glocstlst)
-in
-  !p := GLOCSTLSTcons_fun (d2c, !p)
-end // end of [the_glocstlst_add_fun]
-
-implement
-the_glocstlst_add_val (d2c, vp) = let
-  val (vbox pf | p) = ref_get_view_ptr (the_glocstlst)
-in
-  !p := GLOCSTLSTcons_val (d2c, vp, !p)
-end // end of [the_glocstlst_add_val]
-
-end // end of [local]
-
-(* ****** ****** *)
-
-local
-
-viewtypedef cstctx = $Map.map_vt (d2cst_t, valprim)
-
-fn cstctx_nil ()
-  : cstctx = $Map.map_make (compare_d2cst_d2cst)
-// end of [cstctx]
-
-val the_topcstctx = ref_make_elt<cstctx> (cstctx_nil ())
-
-in // in of [local]
-
-implement
-the_topcstctx_add (d2c, vp) = let
-  val (pfbox | p) = ref_get_view_ptr (the_topcstctx)
-  prval vbox pf = pfbox
-in
-  $Map.map_insert (!p, d2c, vp)
-end // end of [the_topcstctx_add]
-
-implement
-the_topcstctx_find (d2c) = let
-  val (pfbox | p) = ref_get_view_ptr (the_topcstctx)
-  prval vbox pf = pfbox
-in
-  $Map.map_search (!p, d2c)
-end // end of [the_topcstctx_find]
-
-end // end of [local]
-
-(* ****** ****** *)
-
-local
-
-val the_valprimlst_free =
-  ref_make_elt<valprimlst_vt> (list_vt_nil ())
-
-in // in of [local]
-
-implement
-the_valprimlst_free_add (vp) = let
-  val (vbox pf | p) = ref_get_view_ptr (the_valprimlst_free)
-in
-  !p := list_vt_cons (vp, !p)
-end // end of [the_valprimlst_free_add]
-
-implement
-the_valprimlst_free_get () = let
-  val (vbox pf | p) = ref_get_view_ptr (the_valprimlst_free)
-  val vps = !p; val () = !p := list_vt_nil ()
-in
-  $Lst.list_vt_reverse (vps)
-end // end of [the_valprimlst_free_get]
-
 implement
 instr_add_valprimlst_free (res, loc) = let
   fun aux_free (
@@ -460,8 +334,6 @@ instr_add_valprimlst_free (res, loc) = let
 in
   aux_free (res, loc, the_valprimlst_free_get ())
 end // end of [instr_add_valprimlst_free]
-
-end // end of [local]
 
 (* ****** ****** *)
 
@@ -2831,9 +2703,7 @@ fn ccomp_impdec
             val tmparg = hityplstlst_normalize (tmparg)
             val name = template_cst_name_make (d2c, tmparg)
             val () = tmpnamtbl_add (name, vp)
-(*
-            val () = the_partvalst_add (name, vp) // HX: not implemented
-*)
+            val () = the_partvalst_add (name, vp)
           in
             instr_add_define_partval (res, loc0, name, vp)
           end // end of [_ when ...]

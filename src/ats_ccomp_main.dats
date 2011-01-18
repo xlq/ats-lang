@@ -412,6 +412,38 @@ end // end of [emit_free_glocstlst]
 
 (* ****** ****** *)
 
+fn emit_free_partvalst
+  {m:file_mode} (
+    pf: fmlte (m, w)
+  | out: &FILE m
+  , xs: partvalst
+  ) : int = let
+  fun aux (
+    out: &FILE m, i: int, xs: partvalst
+  ) : int = begin case+ xs of
+    | ~PARTVALSTcons (name, vp, xs) => let
+//
+        val () = fprint1_string (pf | out, "/*\n")
+//
+        val () = fprint1_string (pf | out, "ATSstatic(")
+        val () = emit_hityp (pf | out, vp.valprim_typ)
+        val () = fprint1_string (pf | out, ", ")
+        val () = fprint1_string (pf | out, name)
+        val () = fprint1_string (pf | out, ") ;\n")
+//
+        val () = fprint1_string (pf | out, "*/\n")
+//
+      in
+        aux (out, i+1, xs)
+      end // end of [PARTVALSTcons]
+    | ~PARTVALSTnil () => i // end of [PARTVALSTnil]
+  end // end of [aux]
+in
+  aux (out, 0, xs)
+end // end of [emit_free_partvalst]
+
+(* ****** ****** *)
+
 fn _emit_dynconset
   {m:file_mode} {l:addr} (
     pf_mod: fmlte (m, w)
@@ -1306,9 +1338,6 @@ implement ccomp_main {m}
   in
     // empty
   end // end of [val]
-(*
-//
-// HX: this is not implemented for now
 //
 // HX: declaring implemented partial value templates
 //
@@ -1323,7 +1352,6 @@ implement ccomp_main {m}
   in
     // nothing
   end // end of [val]
-*)
 //
 // HX: declaring static temporary variables
 //

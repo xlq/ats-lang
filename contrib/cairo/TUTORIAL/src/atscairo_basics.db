@@ -313,13 +313,13 @@ The simple idea behind <emphasis>cairo_save_v</emphasis> is this: Given a
 reference of the type <emphasis>cairo_ref(L)</emphasis> for some address
 <emphasis>L</emphasis>, a call to <emphasis>cairo_save</emphasis> on the
 reference returns a linear proof of the view
-<emphasis>cairo_save_v(L)</emphasis>, and this proof must be consume at
+<emphasis>cairo_save_v(L)</emphasis>, and this proof must be consumed at
 some point by a call to <emphasis>cairo_restore</emphasis> on a reference
 of the type <emphasis>cairo_ref(L)</emphasis>. In other words, calls to
 <emphasis>cairo_save</emphasis> and <emphasis>cairo_restore</emphasis> are
 guaranteed to be properly balanced in a well-typed ATS program.  This is
 evidently a desirable feature given that balancing such calls can often be
-a burden for the programmer using languages like C.
+a onerous burden for the programmer programming in languages like C.
 
 </para>
 
@@ -370,15 +370,15 @@ following type:
 <informalexample><programlisting>
 fun cairo_rel_line_to {l:agz} (cr: !cairo_ref l, x: double, y: double): void
 </programlisting></informalexample>
-This function is similar to <emphasis>cairo_line_to</emphasis> except that
-(x, y) is relative to the current point on the current (sub)path.
+This function is similar to <emphasis>cairo_line_to</emphasis> except for
+(x, y) being relative to the current point on the current (sub)path.
 </para>
 
-<para>
-Once a path is constructed, <emphasis>cairo_stroke</emphasis> can be called
-to draw line segments along the path.  There are a few line attributes that
-can be set in cairo. For instance, the styles of line cap and line join as
-well as the width of line can be set by the following functions:
+<para> Once a path is constructed, <emphasis>cairo_stroke</emphasis> can be
+called to draw line segments along the path.  There are a few line
+attributes that can be set in cairo. For instance, the styles of line cap
+and line join as well as the width of line can be set by the following
+functions:
 
 <informalexample><programlisting>
 fun cairo_set_line_cap {l:agz} (cr: !cairo_ref l, line_cap: cairo_line_cap_t): void

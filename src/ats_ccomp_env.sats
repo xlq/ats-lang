@@ -339,14 +339,23 @@ fun the_glocstlst_add_val (d2c: d2cst_t, vp: valprim): void
 
 (* ****** ****** *)
 
-// implemented in [ats_ccomp_trans.dats]
+dataviewtype partvalst =
+  | PARTVALSTcons of (string(*name*), valprim, partvalst)
+  | PARTVALSTnil of ()
+// end of [partvalst]
+
+fun the_partvalst_get (): partvalst
+fun the_partvalst_add (name: string, vp: valprim): void
+
+(* ****** ****** *)
+
 fun the_topcstctx_add (d2c: d2cst_t, vp: valprim): void
 fun the_topcstctx_find (d2c: d2cst_t): Option_vt (valprim)
 
 (* ****** ****** *)
 
-fun the_valprimlst_free_add (vp: valprim): void
 fun the_valprimlst_free_get (): valprimlst_vt
+fun the_valprimlst_free_add (vp: valprim): void
 
 (* ****** ****** *)
 //

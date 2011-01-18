@@ -39,16 +39,16 @@ cleanall:: clean
 
 ######
 
-checkall:: clapack_test
-clapack_test: clapack_test.dats
+checkall:: test_clapack
+test_clapack: test_clapack.dats
 	$(ATSCC) $(LIBFLAGS) -O3 -o $@ $< $(ATSCTRB) -llapack -lcblas \
-      && ./clapack_test
-cleanall:: ; $(RMF) clapack_test
+      && ./test_clapack
+cleanall:: ; $(RMF) test_clapack
 
 ######
 
-html:: ; $(ATSOPT) --posmark_html -d clapack_test.dats > clapack_test_dats.html
-cleanall:: ; $(RMF) clapack_test_dats.html
+html:: ; $(ATSOPT) --posmark_html -d test_clapack.dats > test_clapack_dats.html
+cleanall:: ; $(RMF) test_clapack_dats.html
 
 ######
 
