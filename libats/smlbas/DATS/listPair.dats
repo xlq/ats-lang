@@ -52,7 +52,8 @@ staload "libats/smlbas/SATS/listPair.sats"
 
 (* ****** ****** *)
 
-implement{a,b} zip (xs, ys) = res where {
+implement{a,b}
+zip (xs, ys) = res where {
   viewtypedef res_t = List_vt @(a, b)
   fun loop {m,n:nat} .<m>. (
       xs: list (a, m), ys: list (b, n), res: &res_t? >> res_t
@@ -70,7 +71,8 @@ implement{a,b} zip (xs, ys) = res where {
   val res = list0_of_list_vt (res)
 } // end of [zip]
 
-implement{a,b} zipEq (xs, ys) = let
+implement{a,b}
+zipEq (xs, ys) = let
   viewtypedef res_t = List_vt @(a, b)
   fun loop {m,n:nat} .<m>. (
       xs: list (a, m), ys: list (b, n), res: &res_t? >> res_t, err: &int
@@ -97,7 +99,8 @@ end (* end of [zipEq] *)
 
 (* ****** ****** *)
 
-implement{a,b} unzip (xys) = (xs, ys) where {
+implement{a,b}
+unzip (xys) = (xs, ys) where {
   val xys = list1_of_list0 (xys)
   val (xs, ys) = list_unzip<a,b> (xys)
   val xs = list0_of_list_vt xs and ys = list0_of_list_vt ys
@@ -107,9 +110,10 @@ implement{a,b} unzip (xys) = (xs, ys) where {
 
 local
 
-fun{a,b:t@ype} loop (
-    f: (a, b) -<cloref1> void, xs: list0 a, ys: list0 b
-  ) : int(*err*) =
+fun{a,b:t@ype}
+loop (
+  f: (a, b) -<cloref1> void, xs: list0 a, ys: list0 b
+) : int(*err*) =
   case+ (xs, ys) of
   | (list0_cons (x, xs), list0_cons (y, ys)) => (f (x, y); loop (f, xs, ys))
   | (list0_nil (), list0_nil ()) => 0
@@ -118,11 +122,13 @@ fun{a,b:t@ype} loop (
 
 in // in of [local]
 
-implement{a,b} app (f, xs, ys) =
+implement{a,b}
+app (f, xs, ys) =
   let val _(*int*) = loop<a,b> (f, xs, ys) in () end
 // end of [app]
 
-implement{a,b} appEq (f, xs, ys) = let
+implement{a,b}
+appEq (f, xs, ys) = let
   val err = loop<a,b> (f, xs, ys) in
   if err > 0 then $raise UnequalLengths () else ()
 end // end of [zipEq]
@@ -133,11 +139,12 @@ end // end of [local]
 
 local
 
-fun{a,b,c:t@ype} loop (
-    f: (a, b) -<cloref1> c
-  , xs: list0 a, ys: list0 b, res: &List_vt c? >> List_vt c
-  , err: &int
-  ) : void =
+fun{a,b:t@ype}{c:t@ype}
+loop (
+  f: (a, b) -<cloref1> c
+, xs: list0 a, ys: list0 b, res: &List_vt c? >> List_vt c
+, err: &int
+) : void =
   case+ (xs, ys) of
   | (list0_cons (x, xs), list0_cons (y, ys)) => let
       val () = res := list_vt_cons {..} {0} (f (x, y), ?); val+ list_vt_cons (_, !p_res1) = res
@@ -150,16 +157,18 @@ fun{a,b,c:t@ype} loop (
 
 in // in of [local]
 
-implement{a,b,c} map (f, xs, ys) = let
+implement{a,b}{c}
+map (f, xs, ys) = let
   var res: List_vt c?; var err: int = 0
-  val () = loop<a,b,c> (f, xs, ys, res, err)
+  val () = loop<a,b><c> (f, xs, ys, res, err)
 in
   list0_of_list_vt (res)
 end (* end of [mapEq] *)
 
-implement{a,b,c} mapEq (f, xs, ys) = let
+implement{a,b}{c}
+mapEq (f, xs, ys) = let
   var res: List_vt c?; var err: int = 0
-  val () = loop<a,b,c> (f, xs, ys, res, err)
+  val () = loop<a,b><c> (f, xs, ys, res, err)
 in
   if err = 0 then 
     list0_of_list_vt (res)
@@ -172,14 +181,16 @@ end // end of [local]
 
 (* ****** ****** *)
 
-implement{a,b,c} foldl (f, ini, xs, ys) = loop (ini, xs, ys) where {
+implement{a,b}{c}
+foldl (f, ini, xs, ys) = loop (ini, xs, ys) where {
   fun loop (ini: c, xs: list0 a, ys: list0 b): c = case+ (xs, ys) of
     | (list0_cons (x, xs), list0_cons (y, ys)) => loop (f (x, y, ini), xs, ys)
     | (_, _) => ini
   // end of [loop]
 } // end of [foldl]
 
-implement{a,b,c} foldlEq (f, ini, xs, ys) = loop (ini, xs, ys) where {
+implement{a,b}{c}
+foldlEq (f, ini, xs, ys) = loop (ini, xs, ys) where {
   fun loop (ini: c, xs: list0 a, ys: list0 b): c = case+ (xs, ys) of
     | (list0_cons (x, xs), list0_cons (y, ys)) => loop (f (x, y, ini), xs, ys)
     | (list0_nil (), list0_nil ()) => ini 
@@ -189,14 +200,16 @@ implement{a,b,c} foldlEq (f, ini, xs, ys) = loop (ini, xs, ys) where {
 
 (* ****** ****** *)
 
-implement{a,b,c} foldr (f, snk, xs, ys) = aux (snk, xs, ys) where {
+implement{a,b}{c}
+foldr (f, snk, xs, ys) = aux (snk, xs, ys) where {
   fun aux (snk: c, xs: list0 a, ys: list0 b): c = case+ (xs, ys) of
     | (list0_cons (x, xs), list0_cons (y, ys)) => f (x, y, aux(snk, xs, ys))
     | (_, _) => snk
   // end of [aux]
 } // end of [foldr]
 
-implement{a,b,c} foldrEq (f, snk, xs, ys) = aux (snk, xs, ys) where {
+implement{a,b}{c}
+foldrEq (f, snk, xs, ys) = aux (snk, xs, ys) where {
   fun aux (snk: c, xs: list0 a, ys: list0 b): c = case+ (xs, ys) of
     | (list0_cons (x, xs), list0_cons (y, ys)) => f (x, y, aux (snk, xs, ys))
     | (list0_nil (), list0_nil ()) => snk
@@ -206,7 +219,8 @@ implement{a,b,c} foldrEq (f, snk, xs, ys) = aux (snk, xs, ys) where {
 
 (* ****** ****** *)
 
-implement{a,b} all (f, xs, ys) = loop (f, xs, ys) where {
+implement{a,b}
+all (f, xs, ys) = loop (f, xs, ys) where {
   fun loop (f: (a, b) -<cloref1> bool, xs: list0 a, ys: list0 b): bool =
     case+ (xs, ys) of
     | (list0_cons (x, xs), list0_cons (y, ys)) => f (x, y) andalso loop (f, xs, ys)
@@ -214,7 +228,8 @@ implement{a,b} all (f, xs, ys) = loop (f, xs, ys) where {
   // end of [loop]
 } // end of [all]
 
-implement{a,b} allEq (f, xs, ys) = loop (f, xs, ys) where {
+implement{a,b}
+allEq (f, xs, ys) = loop (f, xs, ys) where {
   fun loop (f: (a, b) -<cloref1> bool, xs: list0 a, ys: list0 b): bool =
     case+ (xs, ys) of
     | (list0_cons (x, xs), list0_cons (y, ys)) => f (x, y) andalso loop (f, xs, ys)
@@ -225,7 +240,8 @@ implement{a,b} allEq (f, xs, ys) = loop (f, xs, ys) where {
 
 (* ****** ****** *)
 
-implement{a,b} exits (f, xs, ys) = loop (f, xs, ys) where {
+implement{a,b}
+exists (f, xs, ys) = loop (f, xs, ys) where {
   fun loop (f: (a, b) -<cloref1> bool, xs: list0 a, ys: list0 b): bool =
     case+ (xs, ys) of
     | (list0_cons (x, xs), list0_cons (y, ys)) => f (x, y) orelse loop (f, xs, ys)

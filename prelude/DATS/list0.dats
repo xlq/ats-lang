@@ -186,7 +186,7 @@ list0_map_cloref (xs, f) =
 
 (* ****** ****** *)
 
-implement{a1,a2,b}
+implement{a1,a2}{b}
 list0_map2_fun (xs1, xs2, f) = let
   fun loop {n1,n2:nat} .<n1>.
     (xs1: list (a1, n1), xs2: list (a2, n2), res: &list0 b? >> list0 b)
@@ -212,7 +212,7 @@ in
   res
 end // end of [list0_map2_fun]
 
-implement{a1,a2,b}
+implement{a1,a2}{b}
 list0_map2_cloref (xs1, xs2, f) = let
   fun loop {n1,n2:nat} .<n1>.
     (xs1: list (a1, n1), xs2: list (a2, n2), res: &list0 b? >> list0 b)

@@ -171,9 +171,9 @@ list0_map_cloref (xs: list0 a, f: a -<cloref1> b): list0 b
 
 (* ****** ****** *)
 
-fun{a1,a2,b:t@ype} list0_map2_fun
+fun{a1,a2:t@ype}{b:t@ype} list0_map2_fun
   (xs1: list0 a1, xs2: list0 a2, f: (a1, a2) -<fun1> b): list0 b
-fun{a1,a2,b:t@ype} list0_map2_cloref
+fun{a1,a2:t@ype}{b:t@ype} list0_map2_cloref
   (xs1: list0 a1, xs2: list0 a2, f: (a1, a2) -<cloref1> b): list0 b
 
 (* ****** ****** *)

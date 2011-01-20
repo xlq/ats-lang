@@ -82,7 +82,8 @@ fun{a:t@ype} filter (f: a -<cloref1> bool, xs: list0 a): list0 a
 
 (* ****** ****** *)
 
-fun{a:t@ype} partition (f: a -<cloref1> bool, xs: list0 a): @(list0 a, list0 a)
+fun{a:t@ype}
+partition (f: a -<cloref1> bool, xs: list0 a): @(list0 a, list0 a)
 
 (* ****** ****** *)
 

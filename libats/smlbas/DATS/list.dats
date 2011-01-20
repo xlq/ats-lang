@@ -58,7 +58,8 @@ implement null (xs) =
 
 implement{a} length (xs) = list0_length<a> (xs)
 
-implement{a} append (xs, ys) = list0_append<a> (xs, ys)
+implement{a}
+append (xs, ys) = list0_append<a> (xs, ys) // tail-recursive
 
 implement{a} hd (xs) = case+ xs of
   | list0_cons (x, _) => x | list0_nil () => $raise Empty ()
@@ -112,7 +113,8 @@ implement{a} concat (xss) = list0_concat<a> (xss)
 
 (* ****** ****** *)
 
-implement{a} app (f, xs) = loop (f, xs) where {
+implement{a}
+app (f, xs) = loop (f, xs) where {
   fun loop (f: a -<cloref1> void, xs: list0 a): void = case+ xs of
     | list0_cons (x, xs) => (f x; loop (f, xs)) | list0_nil () => ()
   // end of [loop] 
@@ -122,7 +124,8 @@ implement{a} app (f, xs) = loop (f, xs) where {
 
 implement{a,b} map (f, xs) = list0_map_cloref<a,b> (xs, f) 
 
-implement{a,b} mapPartial (f, xs) = res where {
+implement{a,b}
+mapPartial (f, xs) = res where {
   typedef res_t = list0 b
   fun loop (
       f: a -<cloref1> option0 b, xs: list0 a, res: &res_t? >> res_t
@@ -143,7 +146,8 @@ implement{a,b} mapPartial (f, xs) = res where {
 
 (* ****** ****** *)
 
-implement{a} find (f, xs) = loop (f, xs) where {
+implement{a}
+find (f, xs) = loop (f, xs) where {
   fun loop (f: a -<cloref1> bool, xs: list0 a): option0 a =
     case+ xs of
     | list0_cons (x, xs) =>
@@ -156,7 +160,8 @@ implement{a} filter (f, xs) = list0_filter_cloref<a> (xs, f)
 
 (* ****** ****** *)
 
-implement{a} partition (f, xs) = (res_p, res_n) where {
+implement{a}
+partition (f, xs) = (res_p, res_n) where {
   typedef res_t = list0 a
   fun loop (
       f: a -<cloref1> bool
@@ -187,7 +192,8 @@ implement{a} partition (f, xs) = (res_p, res_n) where {
 
 (* ****** ****** *)
 
-implement{a,b} foldl (f, ini, xs) = loop (f, ini, xs) where {
+implement{a,b}
+foldl (f, ini, xs) = loop (f, ini, xs) where {
   fun loop
     (f: (a, b) -<cloref1> b, ini: b, xs: list0 a): b =
     case+ xs of
@@ -199,7 +205,8 @@ implement{a,b} foldr (f, snk, xs) = list0_fold_right<a,b> (f, xs, snk)
 
 (* ****** ****** *)
 
-implement{a} all (f, xs) = loop (f, xs) where {
+implement{a}
+all (f, xs) = loop (f, xs) where {
   fun loop (f: a -<cloref1> bool, xs: list0 a): bool =
     case+ xs of
     | list0_cons (x, xs) => f x andalso loop (f, xs)
@@ -207,7 +214,8 @@ implement{a} all (f, xs) = loop (f, xs) where {
   // end of [loop]  
 } // end of [all]
 
-implement{a} exists (f, xs) = loop (f, xs) where {
+implement{a}
+exists (f, xs) = loop (f, xs) where {
   fun loop (f: a -<cloref1> bool, xs: list0 a): bool =
     case+ xs of
     | list0_cons (x, xs) => f x orelse loop (f, xs)
@@ -217,7 +225,8 @@ implement{a} exists (f, xs) = loop (f, xs) where {
 
 (* ****** ****** *)
 
-implement{a} tabulate (lsz, f) = let
+implement{a}
+tabulate (lsz, f) = let
   typedef res_t = list0 a
   fun loop {n,i:nat | i <= n} .<n-i>. (
       n: int n, i: int i, f: int -<cloref1> a, res: &res_t? >> res_t
@@ -242,7 +251,8 @@ end // end of [tabulate]
 
 (* ****** ****** *)
 
-implement{a} collate (cmp, xs, ys) = loop (cmp, xs, ys) where {
+implement{a}
+collate (cmp, xs, ys) = loop (cmp, xs, ys) where {
   fun loop (cmp: (a, a) -<cloref1> int, xs: list0 a, ys: list0 a): int =
     case+ (xs, ys) of
     | (list0_cons (x, xs), list0_cons (y, ys)) => let
