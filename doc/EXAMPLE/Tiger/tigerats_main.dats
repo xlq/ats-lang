@@ -215,12 +215,12 @@ fn emit_char (c: char): void =
   | _ => let
       val _0 = int_of_char '0'
       val d = uint1_of_char c
-      val d2 = int_of (d umod 8U)
+      val d2 = int_of (d \mod_uint_uint 8U)
       val c2 = char_of_int (_0 + d2)
-      val d = d udiv 8U
-      val d1 = int_of (d umod 8U)
+      val d = d / 8U
+      val d1 = int_of (d \mod_uint_uint 8U)
       val c1 = char_of_int (_0 + d1)
-      val d = d udiv 8U
+      val d = d / 8U
       val d0 = int_of (d)
       val c0 = char_of_int (_0 + d0)
     in

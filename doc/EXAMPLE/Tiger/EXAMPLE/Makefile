@@ -16,14 +16,26 @@ TIGCOMP=$(TIGDIR)/tigcomp
 
 ######
 
-all:: \
-  ack ack2 evenodd \
-  f91 fact1 fact2 \
-  fib1 fib2 fib3 fib4 \
-  intpair hanoi listops \
-  merge prettyprint \
-  queens0 queens1 queens2 \
-  sum tak \
+all:: ack
+all:: ack2
+all:: evenodd
+all:: f91
+all:: fact1
+all:: fact2
+all:: fib1
+all:: fib2
+all:: fib3
+all:: fib4
+all:: intpair
+all:: hanoi
+all:: listops
+all:: merge
+all:: prettyprint
+all:: queens0
+all:: queens1
+all:: queens2
+all:: sum
+all:: tak
 
 ######
 

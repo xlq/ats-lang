@@ -38,7 +38,7 @@ main () = () where {
   var !p_arr with pf_arr = @[T][N]()
   val () = array_ptr_randinit<T> (pf_arr | p_arr, N)
 //
-  val () = array_fprint_elt<T> (stdout_ref, !p_arr, N, ", ")
+  val () = array_ptr_fprint_elt<T> (stdout_ref, !p_arr, N, ", ")
   val () = print_newline ()
 //
   prval pflen = gfarray_of_array {T} (pf_arr)
@@ -55,7 +55,7 @@ main () = () where {
   prval pflen_alt = array_of_gfarray {T} (pf_arr)
   prval () = length_isfun (pflen, pflen_alt)
 //
-  val () = array_fprint_elt<T> (stdout_ref, !p_arr, N, ", ")
+  val () = array_ptr_fprint_elt<T> (stdout_ref, !p_arr, N, ", ")
   val () = print_newline ()
 //
 } // end of [main]

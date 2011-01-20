@@ -407,7 +407,7 @@ implement{key,itm}
   funmap_make_stream_key (t) = _make1 (t) where {
   fun _make1 {h:nat}
     (t: avltree (key, itm, h))
-    :<1,~ref> stream_vt key = $delay_vt (begin case+ t of
+    :<1,~ref> stream_vt key = $ldelay (begin case+ t of
     | B (_(*h*), k, _(*xs*), tl, tr) => let
         val ks1 = _make1 (tl)
         val ks1_con = !ks1 in case+ ks1_con of
@@ -424,7 +424,7 @@ implement{key,itm}
       ks1: stream_vt key
     , k: key
     , tr: avltree (key, itm, h)
-    ) :<1,~ref> stream_vt key = $delay_vt (
+    ) :<1,~ref> stream_vt key = $ldelay (
     let val ks1_con = !ks1 in case+ ks1_con of
       | stream_vt_cons (k1, !p_ks1) => let
           val () = !p_ks1 := _make2 (!p_ks1, k, tr) in
@@ -443,7 +443,7 @@ implement{key,itm}
   typedef keyitm = @(key, itm)
   fun _make1 {h:nat}
     (t: avltree (key, itm, h))
-    :<1,~ref> stream_vt keyitm = $delay_vt (begin case+ t of
+    :<1,~ref> stream_vt keyitm = $ldelay (begin case+ t of
     | B (_(*h*), k, xs, tl, tr) => let
         val kis1 = _make1 (tl)
         val+ list_cons (x, _) = xs
@@ -461,7 +461,7 @@ implement{key,itm}
       kis1: stream_vt keyitm
     , k: key, x: itm
     , tr: avltree (key, itm, h)
-    ) :<1,~ref> stream_vt keyitm = $delay_vt (
+    ) :<1,~ref> stream_vt keyitm = $ldelay (
     let val kis1_con = !kis1 in case+ kis1_con of
       | stream_vt_cons (k1, !p_kis1) => let
           val () = !p_kis1 := _make2 (!p_kis1, k, x, tr) in

@@ -121,7 +121,7 @@ implement fprint_fgraph (out, fg) = let
       loop (pf_A | out, p_A, n, i+1)
     end // end of [if]
   // end of [loop
-  val r_arrsz = array0_get_arraysize_ref (fg)
+  val r_arrsz = array0_get_arrszref (fg)
   val (vbox pf_arrsz | p_arrsz) = ref_get_view_ptr (r_arrsz)
 in
   $effmask_ref (
