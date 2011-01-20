@@ -30,9 +30,9 @@
 *)
 
 (* ****** ****** *)
-
-// author of the file: Hongwei Xi (hwxi AT cs DOT bu DOT edu)
-
+//
+// Author of the file: Hongwei Xi (hwxi AT cs DOT bu DOT edu)
+//
 (* ****** ****** *)
 
 #include "prelude/params.hats"
@@ -88,4 +88,4 @@ sortdef agz = {a:addr | a > null}
 
 (* ****** ****** *)
 
-(* end of [sortdef.ats] *)
+(* end of [sortdef.sats] *)
