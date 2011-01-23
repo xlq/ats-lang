@@ -48,19 +48,19 @@
 typedef b0ytes (n:int) = @[byte?][n]
 
 // two axioms
-praxi ptr_to_b0ytes_v : {a:viewt@ype} {l:addr} a? @ l -<prf> b0ytes (sizeof a) @ l
-praxi ptr_of_b0ytes_v : {a:viewt@ype} {l:addr} b0ytes (sizeof a) @ l -<prf> a? @ l
+praxi ptr_to_b0ytes_v
+  : {a:viewt@ype} {l:addr} a? @ l -<prf> b0ytes (sizeof a) @ l
+praxi ptr_of_b0ytes_v
+  : {a:viewt@ype} {l:addr} b0ytes (sizeof a) @ l -<prf> a? @ l
 
 prfun array_v_of_byte_v
   {a:viewt@ype} {n:nat} {l:addr} {nsz:int}
   (pf_mul: MUL (n, sizeof a, nsz), pf_arr: b0ytes (nsz) @ l):<prf> @[a?][n] @ l
 
 (* ****** ****** *)
-
 //
 // the following declared functions are implemented in [ats_prelude_gcats.c]
 //
-
 (* ****** ****** *)
 
 fun gc_init (): void = "ats_gc_init"

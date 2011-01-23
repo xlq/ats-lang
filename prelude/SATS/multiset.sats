@@ -40,9 +40,7 @@
 (* ****** ****** *)
 
 #if VERBOSE_PRELUDE #then
-
 #print "Loading [multiset.sats] starts!\n"
-
 #endif // end of [VERBOSE_PRELUDE]
 
 (* ****** ****** *)
@@ -120,9 +118,7 @@ prfun ELTMSETUB_monotone
 (* ****** ****** *)
 
 #if VERBOSE_PRELUDE #then
-
 #print "Loading [multiset.sats] finishes!\n"
-
 #endif // end of [VERBOSE_PRELUDE]
 
 (* end of [multiset.sats] *)

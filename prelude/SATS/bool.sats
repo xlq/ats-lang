@@ -63,47 +63,51 @@ fun int1_of_bool1 {b:bool} (b: bool b):<> int (int_of_bool b)
 //
 // HX: the following two function are identical
 //
-fun neg_bool (b: bool):<> bool = "atspre_neg_bool"
+fun neg_bool
+  (b: bool):<> bool = "atspre_neg_bool"
 overload ~ with neg_bool
 overload not with neg_bool
 
-fun add_bool_bool (b1: bool, b2: bool):<> bool
-  = "atspre_add_bool_bool"
+fun add_bool_bool
+  (b1: bool, b2: bool):<> bool = "atspre_add_bool_bool"
 overload || with add_bool_bool
 
-fun mul_bool_bool (b1: bool, b2: bool):<> bool
-  = "atspre_mul_bool_bool"
+fun mul_bool_bool
+  (b1: bool, b2: bool):<> bool = "atspre_mul_bool_bool"
 overload && with mul_bool_bool
 
-fun lt_bool_bool (b1: bool, b2: bool):<> bool
-  = "atspre_lt_bool_bool"
-and lte_bool_bool (b1: bool, b2: bool):<> bool
-  = "atspre_lte_bool_bool"
+(* ****** ****** *)
+
+fun lt_bool_bool
+  (b1: bool, b2: bool):<> bool = "atspre_lt_bool_bool"
+and lte_bool_bool
+  (b1: bool, b2: bool):<> bool = "atspre_lte_bool_bool"
 overload < with lt_bool_bool
 overload <= with lte_bool_bool
 
-fun gt_bool_bool (b1: bool, b2: bool):<> bool
-  = "atspre_gt_bool_bool"
-and gte_bool_bool (b1: bool, b2: bool):<> bool
-  = "atspre_gte_bool_bool"
+fun gt_bool_bool
+  (b1: bool, b2: bool):<> bool = "atspre_gt_bool_bool"
+and gte_bool_bool
+  (b1: bool, b2: bool):<> bool = "atspre_gte_bool_bool"
 overload > with gt_bool_bool
 overload >= with gte_bool_bool
 
-fun eq_bool_bool (b1: bool, b2: bool):<> bool
-  = "atspre_eq_bool_bool"
-and neq_bool_bool (b1: bool, b2: bool):<> bool
-  = "atspre_neq_bool_bool"
+fun eq_bool_bool
+  (b1: bool, b2: bool):<> bool = "atspre_eq_bool_bool"
+and neq_bool_bool
+  (b1: bool, b2: bool):<> bool = "atspre_neq_bool_bool"
 overload = with eq_bool_bool
 overload <> with neq_bool_bool
 
-fun compare_bool_bool (b1: bool, b2: bool):<> Sgn
-  = "atspre_compare_bool_bool"
+fun compare_bool_bool
+  (b1: bool, b2: bool):<> Sgn = "atspre_compare_bool_bool"
 overload compare with compare_bool_bool
 
 (* ****** ****** *)
 //
 // print functions for booleans
 //
+(* ****** ****** *)
 
 symintr fprint_bool
 
@@ -127,14 +131,14 @@ overload prerr with prerr_bool
 //
 // HX: stringization
 //
-fun tostring_bool (b: bool):<> string
-  = "atspre_tostring_bool"
+fun tostring_bool
+  (b: bool):<> string = "atspre_tostring_bool"
 overload tostring with tostring_bool
 
 (* ****** ****** *)
 
-fun neg_bool1 {b:bool} (b: bool b):<> bool (~b)
-  = "atspre_neg_bool1"
+fun neg_bool1 {b:bool}
+  (b: bool b):<> bool (~b) = "atspre_neg_bool1"
 overload ~ with neg_bool1
 overload not with neg_bool1
 
