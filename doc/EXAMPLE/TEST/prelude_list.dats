@@ -41,9 +41,12 @@ fun random_list_gen {n:nat}
 
 #define l2l list_of_list_vt 
 
-implement main (argc, argv) = let
+implement
+main (argc, argv) = let
+//
 // for printing out an integer list
 // also for testing [list_iforeach]
+//
   fn lstpr (xs: List int): void = () where {
     val () = list_iforeach_fun (xs, f) where {
       fn f (i: int, x: int)

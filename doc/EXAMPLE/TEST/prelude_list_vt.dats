@@ -20,8 +20,8 @@ staload _(*anonymous*) = "prelude/DATS/list_vt.dats"
 (* ****** ****** *)
 
 #define MAXELT 100
-(*
 
+(*
 fun random_list_gen {n: nat}
   (n: int n): list_vt (natLt MAXELT, n) = loop (n, list_vt_nil) where {
   typedef T = natLt MAXELT
@@ -30,7 +30,6 @@ fun random_list_gen {n: nat}
     if i = 0 then xs else loop (i-1, list_vt_cons ($RAND.randint MAXELT, xs))
   // end of [loop]
 } // end of [random]
-
 *)
 
 fun random_list_gen {n:nat}
@@ -43,7 +42,8 @@ fun random_list_gen {n:nat}
 (* ****** ****** *)
 
 implement main (argc, argv) = let
-  fn lstpr {n:nat} (xs: !list_vt (int, n)): void = () where {
+  fn lstpr {n:nat}
+    (xs: !list_vt (int, n)): void = () where {
     val xs = __cast (xs) where {
       extern castfn __cast (xs: !list_vt (int, n)): list (int, n)
     } // end of [val]
@@ -53,6 +53,10 @@ implement main (argc, argv) = let
       // end of [f]
     } // end of [val]
   } // end of [lstpr]
+//
+  val xs = list_vt_of_arraysize
+    ($arrsz {int} (1, 2, 3, 4, 5, 6, 7, 8, 9))
+  val () = list_vt_free (xs)
 //
   val () = $RAND.srand48_with_time () // a new seed is generated
   val xs = random_list_gen (10)
