@@ -10,6 +10,10 @@
 
 (* ****** ****** *)
 
+staload "prelude/DATS/list_vt.dats"
+
+(* ****** ****** *)
+
 staload "libats/SATS/regexp.sats"
 
 (* ****** ****** *)
@@ -24,20 +28,42 @@ dynload "libats/DATS/regexp.dats"
 
 (* ****** ****** *)
 
-implement main (argc, argv) = let
-  val () = if (argc <> 2) then prerr_usage (argv.[0])
-  val intpat = "^[1-9][0-9]*$"
-  val () = assert (argc = 2)
-  val intstr = argv.[1]
+fun print_strposlst
+  {n:nat} (xs: !strposlst n): void =
+  case+ xs of
+  | list_vt_cons (pp, !p_xs) => {
+      val () = printf ("%i-%i\n", @(pp.0, pp.1))
+      val () = print_strposlst {n} (!p_xs)
+      prval () = fold@ (xs)
+    } // end of [list_vt_cons]
+  | _ => ()
+// end of [print_strposlst]
+
+(* ****** ****** *)
+
+implement
+main (argc, argv) = let
+  stavar n: int
+  val intstr = "12345789": string (n)
+  val intpat = "^([1-9])([0-9]*)$"
   val re = regexp_compile_exn intpat
+//
   val ans = test_regexp_match_str (re, intstr)
-  val () = regexp_free (re)
-in
-  if ans then begin
-    printf ("the input [%s] represents a valid integer.\n", @(intstr))
+  val () = if ans then begin
+    printf ("The string [%s] represents a valid integer.\n", @(intstr))
   end else begin
-    printf ("the input [%s] does not represent a valid integer.\n", @(intstr))  
+    printf ("The string [%s] does not represent a valid integer.\n", @(intstr))  
   end // end of [if]
+//
+  val ans = strposlst_regexp_match_str (re, intstr)
+  val () = print_strposlst {n} (ans)
+//
+  val () = list_vt_free (ans)
+//
+  val () = regexp_free (re)
+//
+in
+  // nothing
 end (* end of [main] *)
 
 (* ****** ****** *)

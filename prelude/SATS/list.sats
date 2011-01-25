@@ -98,8 +98,10 @@ castfn list_of_list_vt
 //
 // HX: implemented on top of [list_vt_of_arraysize]
 //
-fun{a:t@ype} list_of_arraysize
+fun{a:t@ype}
+list_of_arraysize
   {n:nat} (arrsz: arraysize (a, n)):<> list (a, n)
+// end of [list_of_arraysize]
 
 (* ****** ****** *)
 

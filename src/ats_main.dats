@@ -254,7 +254,7 @@ end // end of [atsopt_usage]
 
 fn atsopt_version (): void = begin
   printf (
-    "ATS/Anairiats version %i.%i.%i with Copyright (c) 2002-2010 Hongwei Xi\n"
+    "ATS/Anairiats version %i.%i.%i with Copyright (c) 2002-2011 Hongwei Xi\n"
   , @(ATS_MAJOR_VERSION, ATS_MINOR_VERSION, ATS_MICRO_VERSION)
   ) // end of [printf]
 end // end of [atsopt_version]

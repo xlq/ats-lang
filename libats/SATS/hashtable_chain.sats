@@ -151,7 +151,7 @@ hashtbl_insert {l:agz}
 fun{key:t@ype;itm:viewt@ype}
 hashtbl_remove {l:agz} (
   ptbl: !HASHTBLptr (key, itm, l), k0: key, res: &itm? >> opt (itm, b)
-) : #[b:bool] bool b
+) :<> #[b:bool] bool b
 // end of [hashtbl_remove]
 
 (* ****** ****** *)

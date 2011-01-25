@@ -483,7 +483,7 @@ end // end of [hashtbl_resize_double]
 
 fn{key:t0p;itm:vt0p}
 hashtbl_resize_half
-  {l:agz} (ptbl: !HASHTBLptr (key, itm, l)): void = let
+  {l:agz} (ptbl: !HASHTBLptr (key, itm, l)):<> void = let
   val sz = hashtbl_size (ptbl)
   val sz = size1_of_size (sz) // casting: no op
   val sz2 = sz / 2

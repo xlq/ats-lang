@@ -179,41 +179,41 @@ ats_void_type gc_man_free (ats_ptr_type ptr) {
 ats_ptr_type gc_man_realloc_bsz
   (ats_ptr_type ptr, ats_int_type bsz) {
   manmemlst mms, mms_prev, mms_next ;
-
+//
   mms = (manmemlst)((byte*)ptr - offsetof(manmem, data)) ;
   mms_prev = mms->prev ; mms_next = mms->next ;
   mms = (manmemlst)realloc(mms, sizeof(manmem) + bsz) ;
-
+//
   if (!mms) {
     fprintf (stderr, "[gc_man_realloc_bsz]: [realloc] failed.\n") ;
     exit (1) ;
   } // end of [if]
-
+//
   mms->itemwsz = bsz >> NBYTE_PER_WORD_LOG ;
-
+//
 #ifdef _ATS_MULTITHREAD
   pthread_mutex_lock (&the_manmemlst_lock) ;
 #endif
-
+//
   if (mms_next) {
     mms_next->prev = mms ;
   } /* end of [if] */
-
+//
   if (mms_prev) {
     mms_prev->next = mms ;
   } else {
     the_manmemlst = mms ;
   } /* end of [if] */
-
+//
 #ifdef _ATS_MULTITHREAD
   pthread_mutex_unlock (&the_manmemlst_lock) ;
 #endif
-
+//
   return (mms->data) ;
-
+//
 } /* end of [gc_man_realloc_bsz] */
 
-%}
+%} // end of [%{$]
 
 (* ****** ****** *)
 

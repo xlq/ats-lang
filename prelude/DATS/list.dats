@@ -72,7 +72,8 @@ list_of_list_vt {a} (xs) = aux (xs) where {
 
 (* ****** ****** *)
 
-implement{a} list_of_arraysize (arrsz) =
+implement{a}
+list_of_arraysize (arrsz) =
   list_of_list_vt (list_vt_of_arraysize<a> arrsz)
 // end of [list_of_arraysize]
 

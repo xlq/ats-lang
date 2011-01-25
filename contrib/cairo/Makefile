@@ -25,7 +25,7 @@ all: atsctrb_cairo.o clean
 
 atsctrb_cairo.o: \
   cairo_dats.o cairo_extra_dats.o
-	ld -r -o $@ $?
+	ld -r -o $@ $^
 
 ######
 

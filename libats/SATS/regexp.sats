@@ -68,18 +68,37 @@ fun test_regexp_match_str
   {l:agz} (re: !REGEXPptr l, str: string): bool
 // end of [test_regexp_match_str]
 
+(* ****** ****** *)
 //
 // HX: starting from a given offset
 //
-fun test_regexp_match_str_len_ofs
+fun test_regexp_match_strlenofs
   {l:agz} {n,i:int | 0 <= i; i <= n}
   (re: !REGEXPptr l, str: string n, len: int n, ofs: int i): bool
-  = "atslib_test_regexp_match_str_len_ofs"
-// end of [test_regexp_match_str_len_ofs]
+  = "atslib_test_regexp_match_strlenofs"
+// end of [test_regexp_match_strlenofs]
 
-symintr test_regexp_match
-overload test_regexp_match with test_regexp_match_str
-overload test_regexp_match with test_regexp_match_str_len_ofs
+(* ****** ****** *)
+
+typedef strpos (n:int) =
+  [i,j:int | i <= j; j <= n] (int i, int j)
+viewtypedef strposlst (n:int) = List_vt (strpos n)
+
+fun strposlst_regexp_match_str
+  {l:agz} {n:nat} (re: !REGEXPptr l, str: string n): strposlst (n)
+// end of [test_regexp_match_str]
+
+fun strposlst_regexp_match_strlenofs
+  {l:agz} {n,i:int | 0 <= i; i <= n}
+  (re: !REGEXPptr l, str: string n, len: int n, ofs: int i): strposlst (n)
+  = "atslib_strposlst_regexp_match_strlenofs"
+// end of [strposlst_regexp_match_strlenofs]
+
+(* ****** ****** *)
+
+fun string_split_regexp_list {l:agz}
+  (str: !READ(string), re: !REGEXPptr l): List_vt (strptr1)
+// end of [string_split_regexp_list]
 
 (* ****** ****** *)
 
@@ -87,9 +106,9 @@ abstype REGEXPref // = ref (REGEXP)
 
 castfn regexp_ref_make_ptr {l:agz} (p: REGEXPptr l):<> REGEXPref
 
-fun string_split_regexp
-  (str: string, re: REGEXPref): stream string = "atslib_string_split_regexp"
-// end of [string_split_regexp]
+fun string_split_regexp_stream
+  (str: string, re: REGEXPref): stream string
+// end of [string_split_regexp_stream]
 
 (* ****** ****** *)
 

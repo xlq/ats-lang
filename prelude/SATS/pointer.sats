@@ -271,7 +271,7 @@ fun ptr_move_t_tsz {a:t@ype} {l1,l2:addr} (
 
 // implemented in [prelude/DATS/pointer.dats]
 fun{a:viewt@ype} ptr_get_vt {l:addr}
-  (pf: !a @ l >> (a?) @ l | p: ptr l):<> a
+  (pf: !a @ l >> (a?!) @ l | p: ptr l):<> a
 
 // implemented in [prelude/DATS/pointer.dats]
 fun{a:viewt@ype} ptr_set_vt {l:addr}

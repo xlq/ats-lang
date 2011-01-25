@@ -31,106 +31,106 @@ cleanall:: clean
 
 checkall:: prelude_array
 prelude_array: prelude_array.dats
-	$(ATSCC) -O2 -o prelude_array prelude_array.dats && ./prelude_array
+	$(ATSCC) -O2 -o $@ $< && ./prelude_array
 cleanall:: ; $(RMF) prelude_array
 
 checkall:: prelude_array0
 prelude_array0: prelude_array0.dats
-	$(ATSCC) -O2 -o prelude_array0 prelude_array0.dats && ./prelude_array0
+	$(ATSCC) -O2 -o $@ $< && ./prelude_array0
 cleanall:: ; $(RMF) prelude_array0
 
 checkall:: prelude_bool
 prelude_bool: prelude_bool.dats
-	$(ATSCC) -O2 -o prelude_bool prelude_bool.dats && ./prelude_bool
+	$(ATSCC) -O2 -o $@ $< && ./prelude_bool
 cleanall:: ; $(RMF) prelude_bool
 
 checkall:: prelude_char
 prelude_char: prelude_char.dats
-	$(ATSCC) -O2 -o prelude_char prelude_char.dats && ./prelude_char
+	$(ATSCC) -O2 -o $@ $< && ./prelude_char
 cleanall:: ; $(RMF) prelude_char
 
 checkall:: prelude_float
 prelude_float: prelude_float.dats
-	$(ATSCC) -O2 -o prelude_float prelude_float.dats && ./prelude_float
+	$(ATSCC) -O2 -o $@ $< && ./prelude_float
 cleanall:: ; $(RMF) prelude_float
 
 checkall:: prelude_list
 prelude_list: prelude_list.dats
-	$(ATSCC) -O2 -o prelude_list prelude_list.dats && ./prelude_list
+	$(ATSCC) -O2 -o $@ $< && ./prelude_list
 cleanall:: ; $(RMF) prelude_list
 
 checkall:: prelude_list_vt
 prelude_list_vt: prelude_list_vt.dats
-	$(ATSCC) -O2 -o prelude_list_vt prelude_list_vt.dats && ./prelude_list_vt
+	$(ATSCC) -O2 -o $@ $< && ./prelude_list_vt
 cleanall:: ; $(RMF) prelude_list_vt
 
 checkall:: prelude_matrix
 prelude_matrix: prelude_matrix.dats
-	$(ATSCC) -O2 -o prelude_matrix prelude_matrix.dats && ./prelude_matrix
+	$(ATSCC) -O2 -o $@ $< && ./prelude_matrix
 cleanall:: ; $(RMF) prelude_matrix
 
 checkall:: prelude_matrix0
 prelude_matrix0: prelude_matrix0.dats
-	$(ATSCC) -O2 -o prelude_matrix0 prelude_matrix0.dats && ./prelude_matrix0
+	$(ATSCC) -O2 -o $@ $< && ./prelude_matrix0
 cleanall:: ; $(RMF) prelude_matrix0
 
 checkall:: prelude_string
 prelude_string: prelude_string.dats
-	$(ATSCC) -O2 -o prelude_string prelude_string.dats && ./prelude_string
+	$(ATSCC) -O2 -o $@ $< && ./prelude_string
 cleanall:: ; $(RMF) prelude_string
 
 ######
 
 checkall:: libc_complex
 libc_complex: libc_complex.dats
-	$(ATSCC) -O2 -o libc_complex libc_complex.dats -lm && ./libc_complex
+	$(ATSCC) -O2 -o $@ $< -lm && ./libc_complex
 cleanall:: ; $(RMF) libc_complex
 
 ######
 
 checkall:: libc_dirent
 libc_dirent: libc_dirent.dats
-	$(ATSCC) -O2 -o libc_dirent libc_dirent.dats && ./libc_dirent "."
+	$(ATSCC) -O2 -o $@ $< && ./libc_dirent "."
 cleanall:: ; $(RMF) libc_dirent
 
 checkall:: libc_dlfcn
 libc_dlfcn: libc_dlfcn.dats
-	$(ATSCC) -rdynamic -O2 -o libc_dlfcn libc_dlfcn.dats -ldl && ./libc_dlfcn "."
+	$(ATSCC) -rdynamic -O2 -o $@ $< -ldl && ./libc_dlfcn "."
 cleanall:: ; $(RMF) libc_dlfcn
 
 ######
 
 checkall:: libc_gmp
 libc_gmp: libc_gmp.dats
-	$(ATSCC) -D_GNU_SOURCE -O2 -o libc_gmp libc_gmp.dats -lats -lgmp && ./libc_gmp
+	$(ATSCC) -D_GNU_SOURCE -O2 -o $@ $< -lats -lgmp && ./libc_gmp
 cleanall:: ; $(RMF) libc_gmp
 
 ######
 
 checkall:: libc_printf
 libc_printf: libc_printf.dats
-	$(ATSCC) -o libc_printf libc_printf.dats && ./libc_printf
+	$(ATSCC) -o $@ $< && ./libc_printf
 cleanall:: ; $(RMF) libc_printf
 
 ######
 
 checkall:: libc_pwd
 libc_pwd: libc_pwd.dats
-	$(ATSCC) -O2 -o libc_pwd libc_pwd.dats && ./libc_pwd
+	$(ATSCC) -O2 -o $@ $< && ./libc_pwd
 cleanall:: ; $(RMF) libc_pwd
 
 ######
 
 checkall:: libc_random
 libc_random: libc_random.dats
-	$(ATSCC) -O2 -o libc_random libc_random.dats && ./libc_random
+	$(ATSCC) -O2 -o $@ $< && ./libc_random
 cleanall:: ; $(RMF) libc_random
 
 ######
 
 checkall:: libc_sched
 libc_sched: libc_sched.dats
-	$(ATSCC) -D_GNU_SOURCE -O2 -o libc_sched libc_sched.dats && ./libc_sched
+	$(ATSCC) -D_GNU_SOURCE -O2 -o $@ $< && ./libc_sched
 cleanall:: ; $(RMF) libc_sched
 
 ######
@@ -168,7 +168,7 @@ cleanall:: ; $(RMF) libc_sys_utsname
 
 checkall:: libats_funarray_braun
 libats_funarray_braun: libats_funarray_braun.dats
-	$(ATSCC) -D_ATS_GCATS -O2 -o libats_funarray_braun libats_funarray_braun.dats \
+	$(ATSCC) -D_ATS_GCATS -O2 -o $@ $< \
      && ./libats_funarray_braun 0 1 2 3 4 5 6 7 8 9
 cleanall:: ; $(RMF) libats_funarray_braun
 
@@ -176,24 +176,21 @@ cleanall:: ; $(RMF) libats_funarray_braun
 
 checkall:: libats_fundeque_fingertree
 libats_fundeque_fingertree: libats_fundeque_fingertree.dats
-	$(ATSCC) -D_ATS_GCATS -O2 -o libats_fundeque_fingertree libats_fundeque_fingertree.dats \
-     && ./libats_fundeque_fingertree 10
+	$(ATSCC) -D_ATS_GCATS -O2 -o $@ $< && ./libats_fundeque_fingertree 10
 cleanall:: ; $(RMF) libats_fundeque_fingertree
 
 ######
 
 checkall:: libats_funheap_braun
 libats_funheap_braun: libats_funheap_braun.dats
-	$(ATSCC) -D_ATS_GCATS -O2 -o libats_funheap_braun libats_funheap_braun.dats \
-    && ./libats_funheap_braun 100000
+	$(ATSCC) -D_ATS_GCATS -O2 -o $@ $< && ./libats_funheap_braun 100000
 cleanall:: ; $(RMF) libats_funheap_braun
 
 ######
 
 checkall:: libats_funmap_avltree
 libats_funmap_avltree: libats_funmap_avltree.dats
-	$(ATSCC) -D_ATS_GCATS -O2 -o libats_funmap_avltree libats_funmap_avltree.dats \
-     && ./libats_funmap_avltree 100000
+	$(ATSCC) -D_ATS_GCATS -O2 -o $@ $< && ./libats_funmap_avltree 100000
 cleanall:: ; $(RMF) libats_funmap_avltree
 
 
@@ -201,102 +198,94 @@ cleanall:: ; $(RMF) libats_funmap_avltree
 
 checkall:: libats_funralist_nested
 libats_funralist_nested: libats_funralist_nested.dats
-	$(ATSCC) -D_ATS_GCATS -O2 -o libats_funralist_nested libats_funralist_nested.dats \
-     && ./libats_funralist_nested 100000
+	$(ATSCC) -D_ATS_GCATS -O2 -o $@ $< && ./libats_funralist_nested 100000
 cleanall:: ; $(RMF) libats_funralist_nested
 
 ######
 
 checkall:: libats_genarrays
 libats_genarrays: libats_genarrays.dats
-	$(ATSCC) -O2 -o libats_genarrays libats_genarrays.dats && ./libats_genarrays
+	$(ATSCC) -O2 -o $@ $< && ./libats_genarrays
 cleanall:: ; $(RMF) libats_genarrays
 
 ######
 
 checkall:: libats_hashtable_chain
 libats_hashtable_chain: libats_hashtable_chain.dats
-	$(ATSCC) -D_ATS_GCATS -O2 -o libats_hashtable_chain libats_hashtable_chain.dats \
-     && ./libats_hashtable_chain 100000
+	$(ATSCC) -D_ATS_GCATS -O2 -o $@ $< && ./libats_hashtable_chain 100000
 cleanall:: ; $(RMF) libats_hashtable_chain
 
 checkall:: libats_hashtable_linprb
 libats_hashtable_linprb: libats_hashtable_linprb.dats
-	$(ATSCC) -D_ATS_GCATS -O2 -o libats_hashtable_linprb libats_hashtable_linprb.dats \
-     && ./libats_hashtable_linprb 100000
+	$(ATSCC) -D_ATS_GCATS -O2 -o $@ $< && ./libats_hashtable_linprb 100000
 cleanall:: ; $(RMF) libats_hashtable_linprb
 
 ######
 
 checkall:: libats_intinf
 libats_intinf: libats_intinf.dats
-	$(ATSCC) -O2 -o libats_intinf libats_intinf.dats -lats -lgmp && ./libats_intinf 10
+	$(ATSCC) -O2 -o $@ $< -lats -lgmp && ./libats_intinf 10
 cleanall:: ; $(RMF) libats_intinf
 
 checkall:: libats_iterint
 libats_iterint: libats_iterint.dats
-	$(ATSCC) -O2 -o libats_iterint libats_iterint.dats && ./libats_iterint
+	$(ATSCC) -O2 -o $@ $< && ./libats_iterint
 cleanall:: ; $(RMF) libats_iterint
 
 ######
 
 checkall:: libats_linbitvec
 libats_linbitvec: libats_linbitvec.dats
-	$(ATSCC) -O2 -o libats_linbitvec libats_linbitvec.dats && ./libats_linbitvec
+	$(ATSCC) -O2 -o $@ $< && ./libats_linbitvec
 cleanall:: ; $(RMF) libats_linbitvec
 
 ######
 
 checkall:: libats_linmap_avltree
 libats_linmap_avltree: libats_linmap_avltree.dats
-	$(ATSCC) -D_ATS_GCATS -O2 -o libats_linmap_avltree libats_linmap_avltree.dats \
-     && ./libats_linmap_avltree 100000
+	$(ATSCC) -D_ATS_GCATS -O2 -o $@ $< && ./libats_linmap_avltree 100000
 cleanall:: ; $(RMF) libats_linmap_avltree
 
 ######
 
 checkall:: libats_linqueue_arr
 libats_linqueue_arr: libats_linqueue_arr.dats
-	$(ATSCC) -D_ATS_GCATS -O2 -o libats_linqueue_arr libats_linqueue_arr.dats \
-     && ./libats_linqueue_arr 1000000
+	$(ATSCC) -D_ATS_GCATS -O2 -o $@ $< && ./libats_linqueue_arr 1000000
 cleanall:: ; $(RMF) libats_linqueue_arr
 
 ######
 
 checkall:: libats_linqueue_lst
 libats_linqueue_lst: libats_linqueue_lst.dats
-	$(ATSCC) -D_ATS_GCATS -O2 -o libats_linqueue_lst libats_linqueue_lst.dats \
-     && ./libats_linqueue_lst 1000000
+	$(ATSCC) -D_ATS_GCATS -O2 -o $@ $< && ./libats_linqueue_lst 1000000
 cleanall:: ; $(RMF) libats_linqueue_lst
 
 ######
 
 checkall:: libats_linstack_arr
 libats_linstack_arr: libats_linstack_arr.dats
-	$(ATSCC) -D_ATS_GCATS -O2 -o libats_linstack_arr libats_linstack_arr.dats \
-     && ./libats_linstack_arr 1000000
+	$(ATSCC) -D_ATS_GCATS -O2 -o $@ $< && ./libats_linstack_arr 1000000
 cleanall:: ; $(RMF) libats_linstack_arr
 
 ######
 
 checkall:: libats_parworkshop
 libats_parworkshop: libats_parworkshop.dats
-	$(ATSCC) -D_ATS_MULTITHREAD -O2 -o libats_parworkshop libats_parworkshop.dats -lpthread -lats_mt \
-     && ./libats_parworkshop
+	$(ATSCC) -D_ATS_MULTITHREAD -O2 -o $@ $< -lpthread -lats_mt && ./libats_parworkshop
 cleanall:: ; $(RMF) libats_parworkshop
 
 ######
 
 checkall:: libats_rarray
 libats_rarray: libats_rarray.dats
-	$(ATSCC) -O2 -o libats_rarray libats_rarray.dats && ./libats_rarray
+	$(ATSCC) -O2 -o $@ $< && ./libats_rarray
 cleanall:: ; $(RMF) libats_rarray
 
 ######
 
 checkall:: libats_regexp
 libats_regexp: libats_regexp.dats
-	$(ATSCC) -O2 -o libats_regexp libats_regexp.dats -lats -lpcre && ./libats_regexp "12345789"
+	$(ATSCC) -O2 -o $@ $< -lats -lpcre && ./libats_regexp
 cleanall:: ; $(RMF) libats_regexp
 
 ######

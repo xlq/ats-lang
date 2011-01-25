@@ -72,6 +72,13 @@ prfun list_vt_length_is_nonnegative
 (* ****** ****** *)
 
 fun{a:viewt@ype}
+list_vt_make_array {n:nat}
+  (A: &(@[a][n]) >> @[a?!][n], n: size_t n):<> list_vt (a, n)
+// end of [list_vt_make_array]
+
+(* ****** ****** *)
+
+fun{a:viewt@ype}
 list_vt_of_arraysize
   {n:nat} (arrsz: arraysize (a, n)):<> list_vt (a, n)
 // end of [list_vt_of_arraysize]

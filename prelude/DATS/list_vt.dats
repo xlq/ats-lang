@@ -58,14 +58,14 @@ fn list_vt_is_cons {a:viewt@ype} {n:nat} (xs: !list_vt (a, n)): bool (n>0) =
 
 (* ****** ****** *)
 
-viewtypedef
-List_vt = [a:viewt@ype] List_vt a
-
 implement{a}
-list_vt_of_arraysize (arrsz) = let
+list_vt_make_array (A, n) = let
+//
+  viewtypedef list_vt = [a:viewt@ype;n:nat] list_vt (a, n)
+//
   fun loop {n:nat} {l1,l2:addr} .<n>. (
-      pf1: !array_v (a, n, l1) >> array_v (a?, n, l1)
-    , pf2: !List_vt? @ l2 >> list_vt (a, n) @ l2
+      pf1: !array_v (a, n, l1) >> array_v (a?!, n, l1)
+    , pf2: !list_vt? @ l2 >> list_vt (a, n) @ l2
     | p_arr: ptr l1, res: ptr l2, n: size_t n
     ) :<> void =
     if n > 0 then let
@@ -75,55 +75,70 @@ list_vt_of_arraysize (arrsz) = let
       val () = loop 
         (pf12, view@ (!res_next) | p_arr+sizeof<a>, res_next, n-1)
       // end of [val]
-      prval () = pf1 := array_v_cons {a?} (pf11, pf12)
+      prval () = pf1 := array_v_cons {a?!} (pf11, pf12)
     in
       fold@ (!res)
     end else let
       prval () = array_v_unnil {a} (pf1)
-      prval () = pf1 := array_v_nil {a?} ()        
+      prval () = pf1 := array_v_nil {a?!} ()
     in
       !res := list_vt_nil {a} ()
     end // end of [if]
   // end of [loop]
-  var res: List_vt?
-  val (pf_gc, pf_arr | p_arr, sz) = arrsz
-  val () = loop (pf_arr, view@ res | p_arr, &res, sz)
-  val () = array_ptr_free {a} (pf_gc, pf_arr | p_arr)
+  var res: list_vt?
+  val () = loop (view@ A, view@ res | &A, &res, n)
 in
   res
-end // end of [list_vt_of_arraysize]
+end // end of [list_vt_make_arrsz]
+
+(* ****** ****** *)
 
 (*
+//
+// HX: this is a different style: looping backward
+//
 implement{a}
-list_vt_of_arraysize (arrsz) = let
+list_vt_make_array (A, n) = let
 // the loop goes from the end of an array to its beginning
 fun loop {i,j:nat} {l:addr} {ofs:int} .<i>.
   (pf_mul: MUL (i, sizeof a, ofs), pf_arr: array_v (a, i, l) |
-   i: int i, p: ptr (l+ofs), res: list_vt (a, j))
-  :<> (array_v (a?, i, l) | list_vt (a, i+j)) =
+   i: size_t i, p: ptr (l+ofs), res: list_vt (a, j))
+  :<> (array_v (a?!, i, l) | list_vt (a, i+j)) =
   if i > 0 then let
     prval pf1_mul = mul_add_const {~1} (pf_mul)
     prval (pf1_arr, pf_lst) = array_v_unextend {a} (pf_mul, pf_arr)
     val p1 = p - sizeof<a>
-    val x = ptr_get_vt (pf_lst | p1)
-    val (pf1_arr | res) = loop (pf1_mul, pf1_arr | i-1, p1, cons (x, res))
-    prval pf_arr = array_v_extend (pf1_mul, pf1_arr, pf_lst)
+    val x = ptr_get_vt<a> (pf_lst | p1)
+    val (pf1_arr | res) = loop (pf1_mul, pf1_arr | i-1, p1, list_vt_cons (x, res))
+    prval pf_arr = array_v_extend {a?!} (pf1_mul, pf1_arr, pf_lst)
   in
     (pf_arr | res)    
   end else let
-    prval () = array_v_unnone {a} (pf_arr)
+    prval () = array_v_unnil {a} (pf_arr)
   in
-    (array_v_none {a?} () | res)
+    (array_v_nil {a?!} () | res)
   end // end of [if]
 // end of [loop]
-val (pf_arr | p_arr, sz) = arrsz
-val (pf_mul | ofs) = sz imul2 sizeof<a>
-val (pf_arr | res) = loop (pf_mul, pf_arr | sz, p_arr+ofs, nil ())
+val (pf_mul | ofs) = mul2_size1_size1 (n, sizeof<a>)
+val (pf_arr | res) = loop (pf_mul, view@ A | n, &A+ofs, list_vt_nil ())
+//
+prval () = view@ A := pf_arr
 //
 in
-  array_ptr_free {a} (pf_arr | p_arr); res
+  res
 end // end of [list_vt_of_arraysize]
 *)
+
+(* ****** ****** *)
+
+implement{a}
+list_vt_of_arraysize (arrsz) = let
+  val (pf_gc, pf_arr | p_arr, asz) = arrsz
+  val res = list_vt_make_array (!p_arr, asz)
+  val () = array_ptr_free {a} (pf_gc, pf_arr | p_arr)
+in
+  res
+end // end of [list_vt_of_arraysize]
 
 (* ****** ****** *)
 
