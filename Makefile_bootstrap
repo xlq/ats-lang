@@ -78,7 +78,7 @@ ATSRUNTIME := $(ATSHOMEQ)/ccomp/runtime
 
 BOOTSTRAP1=1
 ifdef BOOTSTRAP1
-CCFLAG=-I$(ATSHOMEQ) -I$(ATSRUNTIME) -g -O2
+ATSCCFLAGS=-I$(ATSHOMEQ) -I$(ATSRUNTIME) -O2 -g
 endif
 
 LIBGMP=
@@ -228,10 +228,30 @@ OBJECTS += \
 
 ######
 
-COMPILE = $(CC) $(CCFLAG) -o $@
-#COMPILE = $(CC) $(CPPFLAGS) $(CFLAGS) $(CCFLAG) -o $@
-CLINK = $(CC) $(CCFLAG) $(LDFLAGS) -o $@
-#CLINK = $(CC) $(CPPFLAGS) $(CFLAGS) $(CCFLAG) $(LDFLAGS) -o $@
+COMPILE = $(CC) $(ATSCCFLAGS) -o $@
+#COMPILE = $(CC) $(CPPFLAGS) $(CFLAGS) $(ATSCCFLAGS) -o $@
+CLINK = $(CC) $(ATSCCFLAGS) $(LDFLAGS) -o $@
+#CLINK = $(CC) $(CPPFLAGS) $(CFLAGS) $(ATSCCFLAGS) $(LDFLAGS) -o $@
+
+######
+
+#
+#if [yacc] is used to generate [ats_grammar_yats.c]
+#
+#ATSYACCFLAGS=$(ATSCCFLAGS)
+
+#
+#if [byacc] is used to generate [ats_grammar_yats.c]
+#
+#ATSYACCFLAGS=$(ATSCCFLAGS)
+
+#
+#if [bison] is used to generate [ats_grammar_yats.c]
+#
+ATSYACCFLAGS=-D_ATS_YYVALISLOCAL $(ATSCCFLAGS)
+
+ats_grammar_yats.o: ats_grammar_yats.c
+	$(CC) $(ATSYACCFLAGS) -o $@ -c $<
 
 ######
 

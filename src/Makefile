@@ -66,7 +66,7 @@ ATSYACCFLAGS=-O2
 
 #YACC=bison # HX: this is the default one
 #YACCFLAGS=-d -v
-#ATSYACCFLAGS=-D_ATS_YYVAL_IS_LOCAL -O2
+#ATSYACCFLAGS=-D_ATS_YYVALISLOCAL -O2
 
 ######
 
@@ -326,18 +326,24 @@ lines:
 
 ######
 
+RMF=rm -f
+
+######
+
 clean::
-	rm -f $(DIR)/*_?ats.o
-	rm -f $(DIR)/*_sats.c
-	rm -f $(DIR)/*_dats.c
-	rm -f $(DIR)/*_?ats.html
-	rm -f $(DIR)/*_lats.dats
-	rm -f $(DIR)/libats_lex.o
-	rm -f $(DIR)/ats_grammar_yats.output
-	rm -f $(DIR)/*~
+	$(RMF) $(DIR)/*_?ats.o
+	$(RMF) $(DIR)/*_sats.c
+	$(RMF) $(DIR)/*_dats.c
+	$(RMF) $(DIR)/*_?ats.html
+	$(RMF) $(DIR)/*_lats.dats
+	$(RMF) $(DIR)/libats_lex.o
+	$(RMF) $(DIR)/ats_grammar_yats.output
+	$(RMF) $(DIR)/*~
 
 cleanall: clean
-	rm -f atsopt
+	$(RMF) ats_grammar_yats.c
+	$(RMF) ats_grammar_yats.h
+	$(RMF) atsopt
 
 ######
 
@@ -345,7 +351,7 @@ cleanall: clean
 # HX: '-o .depend' means appending instead of overwriting
 #
 depend::
-	rm -f .depend
+	$(RMF) .depend
 	$(ATSOPT) -o .depend -dep1 -s $(SOURCESsta) -d $(SOURCESdyn)
 	$(ATSOPT) -o .depend -dep1 -d ats_main.dats
 include .depend
