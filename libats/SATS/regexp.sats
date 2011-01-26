@@ -64,19 +64,19 @@ fun regexp_free
 
 (* ****** ****** *)
 
-fun test_regexp_match_str
+fun regexp_match_string
   {l:agz} (re: !REGEXPptr l, str: string): bool
-// end of [test_regexp_match_str]
+// end of [regexp_match_string]
 
 (* ****** ****** *)
 //
 // HX: starting from a given offset
 //
-fun test_regexp_match_strlenofs
-  {l:agz} {n,i:int | 0 <= i; i <= n}
-  (re: !REGEXPptr l, str: string n, len: int n, ofs: int i): bool
-  = "atslib_test_regexp_match_strlenofs"
-// end of [test_regexp_match_strlenofs]
+fun regexp_match_substring
+  {l:agz} {n:int} {i,ln:nat | i + ln <= n}
+  (re: !REGEXPptr l, str: string n, ofs: int i, len: int ln): bool
+  = "atslib_regexp_match_substring"
+// end of [regexp_match_substring]
 
 (* ****** ****** *)
 
@@ -84,31 +84,31 @@ typedef strpos (n:int) =
   [i,j:int | i <= j; j <= n] (int i, int j)
 viewtypedef strposlst (n:int) = List_vt (strpos n)
 
-fun strposlst_regexp_match_str
+fun regexp_match_string_strposlst
   {l:agz} {n:nat} (re: !REGEXPptr l, str: string n): strposlst (n)
-// end of [test_regexp_match_str]
+// end of [regexp_match_string_strposlst]
 
-fun strposlst_regexp_match_strlenofs
-  {l:agz} {n,i:int | 0 <= i; i <= n}
-  (re: !REGEXPptr l, str: string n, len: int n, ofs: int i): strposlst (n)
-  = "atslib_strposlst_regexp_match_strlenofs"
-// end of [strposlst_regexp_match_strlenofs]
+fun regexp_match_substring_strposlst
+  {l:agz} {n:int} {i,ln:nat | i + ln <= n}
+  (re: !REGEXPptr l, str: string n, ofs: int i, len: int ln): strposlst (n)
+  = "atslib_regexp_match_substring_strposlst"
+// end of [regexp_match_substring_strposlst]
 
 (* ****** ****** *)
 
-fun string_split_regexp_list {l:agz}
-  (str: !READ(string), re: !REGEXPptr l): List_vt (strptr1)
-// end of [string_split_regexp_list]
+fun regexp_split_string_list {l:agz}
+  (re: !REGEXPptr l, str: !READ(string)): List_vt (strptr1)
+// end of [regexp_string_split_list]
+
+fun regexp_split_substring_list
+  {l:agz} {n:int} {i,ln:nat | i+ln <= n}
+  (re: !REGEXPptr l, str: string n, ofs: int i, len: int ln): List_vt (strptr1)
+// end of [regexp_string_split_list]
 
 (* ****** ****** *)
 
 abstype REGEXPref // = ref (REGEXP)
-
 castfn regexp_ref_make_ptr {l:agz} (p: REGEXPptr l):<> REGEXPref
-
-fun string_split_regexp_stream
-  (str: string, re: REGEXPref): stream string
-// end of [string_split_regexp_stream]
 
 (* ****** ****** *)
 

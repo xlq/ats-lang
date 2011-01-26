@@ -49,9 +49,26 @@ MAKE=make
 #MAKE=gmake
 
 CC=gcc
+
+######
+
+YACC=
+YACCFLAGS=
+ATSYACCFLAGS=
+
 #YACC=yacc # HX: this one should work
-#YACC=bison # HX: this one does not work
-YACC=byacc # HX: this is the default one
+#YACCFLAGS=-d -v
+#ATSYACCFLAGS=-O2
+
+#YACC=byacc # HX: this is the original one
+#YACCFLAGS=-d -v
+#ATSYACCFLAGS=-O2
+
+YACC=bison # HX: this is the default one
+YACCFLAGS=-d -v
+ATSYACCFLAGS=-D_ATS_YYVAL_IS_LOCAL -O2
+
+######
 
 ATSCC=$(ATSHOME)/bin/atscc
 ATSOPT=$(ATSHOME)/bin/atsopt
@@ -60,7 +77,7 @@ ATSCCFLAGS=-g
 #ATSCCFLAGS=-O0
 #ATSCCFLAGS=-O1
 #ATSCCFLAGS=-O2
-#ATSCCFLAGS=-D_ATS_MULTITHREAD -O2 -g
+ATSCCFLAGS=-D_ATS_MULTITHREAD -O2 -g
 ATSCCFLAGS=-O2 -g
 #ATSCCFLAGS=-O2 -g -DATS_SYNDEFATS
 
@@ -229,9 +246,9 @@ ats_lexer_lats_dats.o: ats_grammar_yats.h ats_lexer_lats.dats
 
 ats_grammar_yats.h: ats_grammar_yats.c
 ats_grammar_yats.c: ats_grammar.yats
-	$(YACC) -v -d -o ats_grammar_yats.c ats_grammar.yats
+	$(YACC) $(YACCFLAGS) -o ats_grammar_yats.c ats_grammar.yats
 ats_grammar_yats.o: ats_grammar_yats.c
-	$(ATSCC) $(ATSCCFLAGS) -DYYDEBUG=1 -c ats_grammar_yats.c 
+	$(ATSCC) $(ATSYACCFLAGS) -DYYDEBUG=1 -c ats_grammar_yats.c 
 
 ######
 

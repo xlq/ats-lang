@@ -12,6 +12,48 @@ all::
 
 ######
 
+all:: all_AUP
+all_AUP: ; make -C AUP all
+
+all:: all_INTRO
+all_INTRO: ; make -C INTRO all
+
+all:: all_MISC
+all_MISC: ; make -C MISC all
+all:: all_MISC_Twentyfour
+all_MISC_Twentyfour: ; make -C MISC/Twentyfour all
+all:: all_MISC_HttpServer
+all_MISC_HttpServer: ; make -C MISC/HttpServer all
+
+all:: all_MULTICORE
+all_MULTICORE: ; make -C MULTICORE all
+
+all:: all_PCPV
+all_PCPV: ; make -C PCPV all
+
+all:: all_SOCKET
+all_SOCKET: ; make -C SOCKET all
+
+all:: all_TEST
+all_TEST: ; make -C TEST all
+
+all:: all_cairo
+all_cairo: ; make -C cairo all
+
+all:: all_GTK
+all_GTK: ; make -C GTK all
+
+all:: all_ProjectEuler
+all_ProjectEuler: ; make -C ProjectEuler all
+
+all:: all_SHOOTOUT
+all_SHOOTOUT: ; make -C SHOOTOUT all
+
+all:: all_SHOOTOUT_SUBMIT
+all_SHOOTOUT_SUBMIT: ; make -C SHOOTOUT/SUBMIT all
+
+######
+
 INTRO::
 	make -C INTRO xref
 	cp INTRO/INTRO.html INTRO/INTRO
@@ -198,47 +240,5 @@ LF::
 
 LF_html::
 	scp -r LF/LF.html ats-hwxi,ats-lang@web.sourceforge.net:htdocs/EXAMPLE/LF
-
-######
-
-all:: all_AUP
-all_AUP: ; make -C AUP all
-
-all:: all_INTRO
-all_INTRO: ; make -C INTRO all
-
-all:: all_MISC
-all_MISC: ; make -C MISC all
-all:: all_MISC_Twentyfour
-all_MISC_Twentyfour: ; make -C MISC/Twentyfour all
-all:: all_MISC_HttpServer
-all_MISC_HttpServer: ; make -C MISC/HttpServer all
-
-all:: all_MULTICORE
-all_MULTICORE: ; make -C MULTICORE all
-
-all:: all_PCPV
-all_PCPV: ; make -C PCPV all
-
-all:: all_SOCKET
-all_SOCKET: ; make -C SOCKET all
-
-all:: all_TEST
-all_TEST: ; make -C TEST all
-
-all:: all_cairo
-all_cairo: ; make -C cairo all
-
-all:: all_GTK
-all_GTK: ; make -C GTK all
-
-all:: all_ProjectEuler
-all_ProjectEuler: ; make -C ProjectEuler all
-
-all:: all_SHOOTOUT
-all_SHOOTOUT: ; make -C SHOOTOUT all
-
-all:: all_SHOOTOUT_SUBMIT
-all_SHOOTOUT_SUBMIT: ; make -C SHOOTOUT/SUBMIT all
 
 ###### end of [Makefile] ######

@@ -48,7 +48,7 @@
 
 (* ****** ****** *)
 
-fun{a:t@ype} randgen (): a
+fun{a:t@ype} randgen (): a // HX: cannot implemented generically
 
 (* ****** ****** *)
 

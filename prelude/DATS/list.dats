@@ -73,13 +73,6 @@ list_of_list_vt {a} (xs) = aux (xs) where {
 (* ****** ****** *)
 
 implement{a}
-list_of_arraysize (arrsz) =
-  list_of_list_vt (list_vt_of_arraysize<a> arrsz)
-// end of [list_of_arraysize]
-
-(* ****** ****** *)
-
-implement{a}
 list_app__main
   {v} {vt} {f:eff} (pf | xs, f, env) = let
   typedef fun_t = (!v | a, !vt) -<fun,f> void

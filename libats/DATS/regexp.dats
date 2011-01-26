@@ -93,27 +93,27 @@ end // end of [regexp_compile_exn]
 (* ****** ****** *)
 
 implement
-test_regexp_match_str (re, str) = let
+regexp_match_string (re, str) = let
   val str = string1_of_string (str)
   val len = string_length (str); val len = sz2i (len)
 in
-  test_regexp_match_strlenofs (re, str, len, 0(*ofs*))
-end // end of [test_regexp_match_str]
+  regexp_match_substring (re, str, 0(*ofs*), len)
+end // end of [regexp_match_string]
 
 (* ****** ****** *)
 
 %{$
 
 ats_bool_type
-atslib_test_regexp_match_strlenofs (
-  ats_ptr_type re, ats_ptr_type str, ats_int_type len, ats_int_type ofs
+atslib_regexp_match_substring (
+  ats_ptr_type re, ats_ptr_type str, ats_int_type ofs, ats_int_type len
 ) {
   int rc ;
 //
   rc = pcre_exec (
     (pcre*)re
   , (pcre_extra*)0 /* [re] is not studied */
-  , (char*)str, len, ofs
+  , ((char*)str)+ofs, len, 0 // strlenofs
   , 0 /* option bits */
   , (int*)0 /* ovector */
   , 0 /* ovecsize */
@@ -124,23 +124,23 @@ atslib_test_regexp_match_strlenofs (
   switch (rc) {
   case PCRE_ERROR_NOMATCH: return ats_false_bool ;
   default: fprintf
-    (stderr, "exit(ATS): [test_regexp_match_strlenofs] failed\n"); exit (1);
+    (stderr, "exit(ATS): [regexp_match_substring] failed\n"); exit (1);
   } /* end of [switch] */
 //
   return ats_false_bool ; /* deadcode */
 //
-} /* end of [atslib_test_regexp_match_strlenofs] */
+} /* end of [atslib_regexp_match_substring] */
 
 %} // end of [%{$]
 
 (* ****** ****** *)
 
 implement
-strposlst_regexp_match_str (re, str) = let
+regexp_match_string_strposlst (re, str) = let
   val len = string_length (str); val len = sz2i (len)
 in
-  strposlst_regexp_match_strlenofs (re, str, len, 0(*ofs*))
-end // end of [strpostlst_regexp_match_str]
+  regexp_match_substring_strposlst (re, str, 0(*ofs*), len)
+end // end of [regexp_match_string_strpostlst]
 
 (* ****** ****** *)
 
@@ -175,8 +175,8 @@ end // end of [local]
 
 %{$
 ats_ptr_type
-atslib_strposlst_regexp_match_strlenofs (
-  ats_ptr_type re, ats_ptr_type str, ats_int_type len, ats_int_type ofs
+atslib_regexp_match_substring_strposlst (
+  ats_ptr_type re, ats_ptr_type str, ats_int_type ofs, ats_int_type len
 ) {
   int rc ;
   int ncapture ;
@@ -195,7 +195,7 @@ atslib_strposlst_regexp_match_strlenofs (
   rc = pcre_exec (
     (pcre*)re
   , (pcre_extra*)0 /* [re] is not studied */
-  , (char*)str, len, ofs
+  , ((char*)str)+ofs, len, 0 // strlenofs
   , 0 /* option bits */
   , ovector
   , ovecsize
@@ -214,13 +214,13 @@ atslib_strposlst_regexp_match_strlenofs (
   switch (rc) { // [rc] is negative
     case PCRE_ERROR_NOMATCH: return res ;
     default: fprintf (
-      stderr, "exit(ATS): [strposlst_regexp_match_strlenofs] failed\n"
+      stderr, "exit(ATS): [regexp_match_substring_strposlst] failed\n"
     ) ; exit (1) ;
   } // end of [switch]
 //
   return res ; /* deadcode */
 //
-} /* end of [atslib_strposlst_regexp_match_strlenofs] */
+} /* end of [atslib_regexp_match_substring_strposlst] */
 
 %} // end of [%{$]
 
@@ -230,70 +230,91 @@ atslib_strposlst_regexp_match_strlenofs (
 
 ATSinline()
 ats_int_type
-atslib_string_split_regexp_search (
+atslib_regexp_split_substring_search (
   ats_ptr_type re
 , ats_ptr_type str
-, ats_int_type len
 , ats_int_type ofs
+, ats_int_type len
 , ats_ptr_type ofsvec
 ) {
   int rc ;
   rc = pcre_exec (
     (pcre*)re
   , (pcre_extra*)0 /* [re] is not study */
-  , (char*)str, len, ofs
+  , ((char*)str)+ofs, len, 0 // strlenofs
   , 0 /* option bits */
   , (int*)ofsvec /* ovector */
   , 3 /* ovecsize */
   ) ; // end of [pcre_exec]
   return rc ;
-} /* end of [atslib_string_split_regexp_search] */
+} /* end of [atslib_regexp_split_substring_search] */
 
 %} // end of [%{^]
 
 (* ****** ****** *)
 
 implement
-string_split_regexp_list {l0} (str, re) = let
+regexp_split_string_list
+  (re, str) = let
+  val str = string1_of_string (str)
+  val len = string1_length (str)
+  val len = int1_of_size1 (len)
+in
+  regexp_split_substring_list (re, str, 0, len)
+end // end of [regexp_split_string_list]
+
+implement
+regexp_split_substring_list
+  {l0} {n} (re, str, ofs, len) = let
 //
   extern fun search
-    {n,i:nat | i < n} {l:addr} (
+    {i,ln:nat | i + ln <= n} {l:addr} (
       pf_arr: ! @[int?][3] @ l >> @[int][3] @ l
-    | re: !REGEXPptr l0, s0: string n, n: int n, i: int i, p: ptr l
-    ) : int = "atslib_string_split_regexp_search"
+    | re: !REGEXPptr l0, str: string n, ofs: int i, len: int ln, l: ptr l
+    ) : int = "atslib_regexp_split_substring_search"
 //
   viewtypedef res = List_vt (strptr1)
 //
-  fun loop {n,i:nat | i <= n} {l:addr} (
+  fun loop {i,ln:nat | i+ln <= n} {l:addr} (
       pf_arr: !(@[int?][3] @ l)
-    | re: !REGEXPptr l0, s0: string n, n: int n, i: int i, p: ptr l, res: &res? >> res
+    | re: !REGEXPptr l0
+    , str: string n, ofs: int i, len: int ln, p: ptr l, res: &res? >> res
     ) : void = case+ 0 of
-    | _ when (i < n) => let
-        val rc = search (pf_arr | re, s0, n, i, p)
+    | _ when (len > 0) => let
+        val rc = search (pf_arr | re, str, ofs, len, p)
       in
         case+ rc of
         | _ when rc >= 0 => let
-            val i1 = int1_of p->[0] and i2 = int1_of p->[1]
-            val () = assert (i <= i1)
-            val () = assert (i1 <= i2)
-            val () = assert (i2 <= n)
-            val st = i2sz i and ln = i2sz (i1 - i)
-            val sbp = string_make_substring (s0, st, ln)
+            val [i1:int] i1 = int1_of p->[0]
+            and [i2:int] i2 = int1_of p->[1]
+            prval () = __assert () where {
+              extern prfun __assert (): [0 <= i1; i1 <= i2; i2 <= ln] void
+            } // end of [prval]
+(*
+            val () = if (i1 = i2) then let
+              val () = prerr (
+                "exit(ATS): [regexp_split_substring_list]: nullable separator"
+              ) // end of [val]
+              val () = prerr_newline ()
+            in
+              exit (1)
+            end // end of [val]
+*)
+            val sbp = string_make_substring (str, (i2sz)ofs, (i2sz)i1)
             val s = strptr_of_strbuf (sbp) // no-op cast
             val () = res := list_vt_cons {strptr1} {0} (s, ?)
             val+ list_vt_cons (_, !p_res) = res
-            val () = loop (pf_arr | re, s0, n, i2, p, !p_res)
+            val () = loop (pf_arr | re, str, ofs+i2, len-i2, p, !p_res)
             prval () = fold@ (res)
           in
             // nothing
           end // end of [_ when rc >= 0]
         | _ => let
-            val st = i2sz i and ln = i2sz (n - i)
-            val sbp = string_make_substring (s0, st, ln)
+            val sbp = string_make_substring (str, (i2sz)ofs, (i2sz)len)
             val s = strptr_of_strbuf (sbp) // no-op cast
             val () = res := list_vt_cons {strptr1} {0} (s, ?)
             val+ list_vt_cons (_, !p_res) = res
-            val () = loop (pf_arr | re, s0, n, n, p, !p_res)
+            val () = loop (pf_arr | re, str, ofs+len, 0, p, !p_res)
             prval () = fold@ (res)
           in
             // nothing
@@ -301,67 +322,12 @@ string_split_regexp_list {l0} (str, re) = let
       end // end of [_ when (i < n)]
     | _ (* i = n *) => (res := list_vt_nil)
 //
-  val s0 = string1_of_string str
-  val n = string_length s0; val n = sz2i (n)
   var !p_arr with pf_arr = @[int][3]()
   var res: res? // uninitialized
-  val () = loop (pf_arr | re, s0, n, 0, p_arr, res)
+  val () = loop (pf_arr | re, str, ofs, len, p_arr, res)
 in
   res
-end // end of [string_split_regexp_list]
-
-(* ****** ****** *)
-
-implement
-string_split_regexp_stream (str, re) = let
-//
-  extern fun search
-    {n,i:nat | i < n} {l:addr} (
-      pf_arr: ! @[int?][3] @ l >> @[int][3] @ l
-    | re: REGEXPref, s0: string n, n: int n, i: int i, p: ptr l
-    ) :<!laz> int
-    = "atslib_string_split_regexp_search"
-  // end of [extern]
-//
-  fun loop {n,i:nat | i <= n} {l:addr} (
-      pf_gc: free_gc_v (int, 3, l), pf_arr: @[int?][3] @ l
-    | re: REGEXPref, s0: string n, n: int n, i: int i, p: ptr l
-    ) :<!laz> stream_con string = case+ 0 of
-    | _ when (i < n) => let
-        val rc = search (pf_arr | re, s0, n, i, p)
-      in
-        case+ rc of
-        | _ when rc >= 0 => let
-            val i1 = int1_of p->[0] and i2 = int1_of p->[1]
-            val () = assert (i <= i1)
-            val () = assert (i1 <= i2)
-            val () = assert (i2 <= n)
-            val st = i2sz i and ln = i2sz (i1 - i)
-            val sbp = string_make_substring (s0, st, ln)
-            val s = string1_of_strbuf (sbp) // no-op cast
-          in
-            stream_cons (s, $delay loop (pf_gc, pf_arr | re, s0, n, i2, p))
-          end // end of [_ when rc >= 0]
-        | _ => let
-            val st = i2sz i and ln = i2sz (n - i)
-            val sbp = string_make_substring (s0, st, ln)
-            val s = string1_of_strbuf (sbp) // no-op cast
-          in
-            stream_cons (s, $delay loop (pf_gc, pf_arr | re, s0, n, n, p))
-          end // end of [_]
-      end // end of [_ when (i < n)]
-    | _ (* i = n *) => let
-        val () = array_ptr_free {int} (pf_gc, pf_arr | p)
-      in
-        stream_nil ()
-      end // end of [_]
-//
-  val s0 = string1_of_string str
-  val n = string_length s0; val n = sz2i (n)
-  val (pf_gc, pf_arr | p) = array_ptr_alloc_tsz {int} (3, sizeof<int>)
-in
-  $delay loop (pf_gc, pf_arr | re, s0, n, 0, p)
-end // end of [string_split_regexp_stream]
+end // end of [regexp_split_substring_list]
 
 (* ****** ****** *)
 

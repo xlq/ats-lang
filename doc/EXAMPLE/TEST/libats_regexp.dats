@@ -44,18 +44,18 @@ fun print_strposlst
 implement
 main (argc, argv) = let
   stavar n: int
-  val intstr = "12345789": string (n)
+  val intstr = "0123456789": string (n)
   val intpat = "^([1-9])([0-9]*)$"
   val re = regexp_compile_exn intpat
 //
-  val ans = test_regexp_match_str (re, intstr)
+  val ans = regexp_match_string (re, intstr)
   val () = if ans then begin
     printf ("The string [%s] represents a valid integer.\n", @(intstr))
   end else begin
     printf ("The string [%s] does not represent a valid integer.\n", @(intstr))  
   end // end of [if]
 //
-  val ans = strposlst_regexp_match_str (re, intstr)
+  val ans = regexp_match_substring_strposlst (re, intstr, 1, 9)
   val () = print_strposlst {n} (ans)
 //
   val () = list_vt_free (ans)

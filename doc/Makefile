@@ -4,15 +4,15 @@
 #
 ######
 
-all:: \
-  ATS \
-  TUTORIAL \
-  EXAMPLE EXAMPLES_new \
-  IMPLEMENTATION \
-  RESOURCE \
-  LIBRARY \
-  PAPER \
-  CHANGELOG
+all:: ATS
+all:: TUTORIAL
+all:: EXAMPLE
+all:: EXAMPLES_new
+all:: IMPLEMENTATION
+all:: RESOURCE
+all:: LIBRARY
+all:: PAPER
+all:: CHANGELOG
 
 ######
 

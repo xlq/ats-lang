@@ -42,6 +42,8 @@ val theExternHeader = "\
 #define malloc ats_malloc_ngc\n\
 #define realloc ats_realloc_ngc\n\
 \n\
+extern void yyerror (char *s) ;\n\
+\n\
 /* ****** ****** */\n\
 \n\
 typedef ats_ptr_type c0har_t ;\n\
@@ -190,6 +192,10 @@ typedef ats_ptr_type d0ec_t ;\n\
 typedef ats_ptr_type d0eclst_t ;\n\
 typedef ats_ptr_type d0ecllst_t ;\n\
 typedef ats_ptr_type guad0ec_t ;\n\
+\n\
+/* ****** ****** */\n\
+\n\
+d0eclst_t theYYVALd0eclst ; /* the result of parsing */\n\
 \n\
 /* ****** ****** */\n\
 \n\
@@ -1046,6 +1052,7 @@ yyparse_main (\n\
 ** if BISON is used then [yyval] is a stack variable and\n\
 ** thus there is no need to treat it as a GC root explicitly\n\
 */\n\
+#ifndef _ATS_YYVAL_IS_LOCAL\n\
   extern YYSTYPE yyval;\n\
   // fprintf (stderr, \"yyparse_main: &yyval = %p\\n\", &yyval) ;\n\
   ATS_GC_MARKROOT (&yyval, sizeof(YYSTYPE)) ;\n\
@@ -1053,12 +1060,13 @@ yyparse_main (\n\
   extern YYSTYPE yylval;\n\
   // fprintf (stderr, \"yyparse_main: &yylval = %p\\n\", &yylval) ;\n\
   ATS_GC_MARKROOT (&yylval, sizeof(YYSTYPE)) ;\n\
+#endif // end of [_ATS_YYVAL_IS_LOCAL]\n\
 //\n\
   yylex_tok0 = tok0 ;\n\
 //\n\
   yyparse () ;\n\
 //\n\
-  return yyval.d0eclst ;\n\
+  return theYYVALd0eclst ;\n\
 } /* end of [yyparse_main] */
 
 /* ****** ****** */

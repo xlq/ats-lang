@@ -48,9 +48,11 @@
 (* ****** ****** *)
 
 implement{a}
-list0_make_arrsz (arrsz) =
-  list0_of_list1 (list_of_arraysize<a> arrsz)
-// end of [list0_make_arraysize]
+list0_of_arraysize (arrsz) = let
+  val xs = list_vt_of_arraysize<a> (arrsz)
+in
+  list0_of_list_vt (xs)
+end // end of [list0_make_arraysize]
 
 (* ****** ****** *)
 

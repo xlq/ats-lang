@@ -9,7 +9,7 @@
 /* ****** ****** */
 
 /*
-** Time of Generation: Sat Dec  4 09:49:31 2010
+** Time of Generation: Wed Jan 26 14:10:17 2011
 */
 
 /* ****** ****** */
@@ -20,6 +20,8 @@
 #include "ats_memory.h" // HX: loading [ats_types.h] as well
 #define malloc ats_malloc_ngc
 #define realloc ats_realloc_ngc
+
+extern void yyerror (char *s) ;
 
 /* ****** ****** */
 
@@ -169,6 +171,10 @@ typedef ats_ptr_type d0ec_t ;
 typedef ats_ptr_type d0eclst_t ;
 typedef ats_ptr_type d0ecllst_t ;
 typedef ats_ptr_type guad0ec_t ;
+
+/* ****** ****** */
+
+d0eclst_t theYYVALd0eclst ; /* the result of parsing */
 
 /* ****** ****** */
 
@@ -1516,8 +1522,8 @@ d0eclst_t d0eclst ;
 */
 
 theStartEntry
-  : ISSTATIC d0ecseq_sta TOKEN_eof  { $$ = $2 ; return 0 ; }
-  | ISDYNAMIC d0ecseq_dyn TOKEN_eof  { $$ = $2 ; return 0 ; }
+  : ISSTATIC d0ecseq_sta TOKEN_eof  { $$ = theYYVALd0eclst ; return 0 ; }
+  | ISDYNAMIC d0ecseq_dyn TOKEN_eof  { $$ = theYYVALd0eclst ; return 0 ; }
 ; /* theStartEntry */
 
 abskind
@@ -2867,6 +2873,7 @@ yyparse_main (
 ** if BISON is used then [yyval] is a stack variable and
 ** thus there is no need to treat it as a GC root explicitly
 */
+#ifndef _ATS_YYVAL_IS_LOCAL
   extern YYSTYPE yyval;
   // fprintf (stderr, "yyparse_main: &yyval = %p\n", &yyval) ;
   ATS_GC_MARKROOT (&yyval, sizeof(YYSTYPE)) ;
@@ -2874,12 +2881,13 @@ yyparse_main (
   extern YYSTYPE yylval;
   // fprintf (stderr, "yyparse_main: &yylval = %p\n", &yylval) ;
   ATS_GC_MARKROOT (&yylval, sizeof(YYSTYPE)) ;
+#endif // end of [_ATS_YYVAL_IS_LOCAL]
 //
   yylex_tok0 = tok0 ;
 //
   yyparse () ;
 //
-  return yyval.d0eclst ;
+  return theYYVALd0eclst ;
 } /* end of [yyparse_main] */
 
 /* ****** ****** */

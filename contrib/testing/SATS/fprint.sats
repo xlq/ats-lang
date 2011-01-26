@@ -49,7 +49,7 @@
 (* ****** ****** *)
 
 fun{a:t@ype}
-fprint_elt (out: FILEref, x: a): void
+fprint_elt (out: FILEref, x: a): void // HX: cannot implemented generically
 
 (* ****** ****** *)
 

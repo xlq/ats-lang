@@ -109,9 +109,8 @@ fun strcpy
 (* ****** ****** *)
 
 fun strcat
-  {m,n1,n2:nat | n1 + n2 < m} {l:addr} {ofs:int} (
-  pf_mul: MUL (n1, sizeof char, ofs)
-, pf_buf: !strbuf (m, n1) @ l >> strbuf (m, n1+n2) @ l
+  {m,n1,n2:nat | n1 + n2 < m} {l:addr} (
+  pf_buf: !strbuf (m, n1) @ l >> strbuf (m, n1+n2) @ l
 | sbf: ptr l, str: !READ(string n2)
 ) :<> ptr l = "#atslib_strcat" // macro!
 // end of [strcat]
