@@ -286,7 +286,10 @@ liblines::
 
 clean::
 	rm -f bootstrap0/*.o
-	rm -f bootstrap1/*.c bootstrap1/*.o
+	rm -f bootstrap1/*.c
+	rm -f bootstrap1/*.h
+	rm -f bootstrap1/*.cats
+	rm -f bootstrap1/*.o
 
 cleanall:: clean
 	rm -f $(BUILT_CONFIG_FILES)

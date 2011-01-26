@@ -60,13 +60,13 @@ ATSYACCFLAGS=
 #YACCFLAGS=-d -v
 #ATSYACCFLAGS=-O2
 
-#YACC=byacc # HX: this is the original one
-#YACCFLAGS=-d -v
-#ATSYACCFLAGS=-O2
-
-YACC=bison # HX: this is the default one
+YACC=byacc # HX: this is the original one
 YACCFLAGS=-d -v
-ATSYACCFLAGS=-D_ATS_YYVAL_IS_LOCAL -O2
+ATSYACCFLAGS=-O2
+
+#YACC=bison # HX: this is the default one
+#YACCFLAGS=-d -v
+#ATSYACCFLAGS=-D_ATS_YYVAL_IS_LOCAL -O2
 
 ######
 

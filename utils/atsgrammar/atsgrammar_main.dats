@@ -1666,8 +1666,8 @@ val () = symbol_set_tyname (d0ecseq_dyn_rev, d0eclst_tyname)
 
 (*
 theStartEntry
-  : ISSTATIC d0ecseq_sta TOKEN_eof      { $$ = theYYVALd0eclst ; return 0 ; }
-  | ISDYNAMIC d0ecseq_dyn TOKEN_eof     { $$ = theYYVALd0eclst ; return 0 ; }
+  : ISSTATIC d0ecseq_sta TOKEN_eof      { theYYVALd0eclst = $2 ; return 0 ; }
+  | ISDYNAMIC d0ecseq_dyn TOKEN_eof     { theYYVALd0eclst = $2 ; return 0 ; }
 ; /* end of [theStartEntry] */
 *)
 fun theStartEntry_proc
@@ -1677,11 +1677,11 @@ val (pf | ()) = symbol_open (theStartEntry)
 //
 val gr = grmrule_append
   ($lst_t {symbol} (tupz! ISSTATIC d0ecseq_sta TOKEN_eof))
-val () = grmrule_set_action (gr, "{ $$ = theYYVALd0eclst ; return 0 ; }")
+val () = grmrule_set_action (gr, "{ theYYVALd0eclst = $2 ; return 0 ; }")
 //
 val gr = grmrule_append
   ($lst_t {symbol} (tupz! ISDYNAMIC d0ecseq_dyn TOKEN_eof))
-val () = grmrule_set_action (gr, "{ $$ = theYYVALd0eclst ; return 0 ; }")
+val () = grmrule_set_action (gr, "{ theYYVALd0eclst = $2 ; return 0 ; }")
 //
 val () = symbol_close (pf | theStartEntry)
 } // end of [theStartEntry_proc]
