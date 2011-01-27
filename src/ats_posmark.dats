@@ -113,19 +113,26 @@ datatype posmark = // 0/1 : begin/end
 (* ****** ****** *)
 
 #define NPOSMARK1 100
-// please make sure that the values assigned to closing tags
-// (i=1) are less than the values assigned to opening tags (i=0)
+// please make sure that the values assigned to closing tags (i=1)
+// are strictly less than the values assigned to opening tags (i=0)
 fn int_of_posmark (pm: posmark): int =
   case+ pm of
   | PMnone () => 0
+//
   | PMcomment i => if i > 0 then 1 else NPOSMARK1-1
+//
   | PMextern  i => if i > 0 then 2 else NPOSMARK1-2
+//
   | PMkeyword i => if i > 0 then 3 else NPOSMARK1-3
+//
   | PMneuexp  i => if i > 0 then 4 else NPOSMARK1-4
+//
   | PMstacstdec (i, _) => if i > 0 then 5 else NPOSMARK1-5
   | PMstacstuse (i, _) => if i > 0 then 6 else NPOSMARK1-6
+//
   | PMstaexp  i => if i > 0 then 7 else NPOSMARK1-7
   | PMprfexp  i => if i > 0 then 8 else NPOSMARK1-8
+//
   | PMdyncstdec (i, _) => if i > 0 then 20 else NPOSMARK1-20
   | PMdyncstimp (i, _) => if i > 0 then 21 else NPOSMARK1-21
   | PMdyncstuse (i, _) => if i > 0 then 22 else NPOSMARK1-22
@@ -407,27 +414,28 @@ local
   <title></title>\n\
   <meta http-equiv=\"Content-Type\" content=\"text/html;charset=utf-8\"/>\n\
   <style type=\"text/css\">\n\
-    span.comment {color:#787878;font-style:italic}\n\
-    span.extern  {color:#A52A2A}\n\
-    span.keyword {color:#000000;font-weight:bold}\n\
-    span.neuexp  {color:#800080}\n\
-    span.staexp  {color:#0000FF}\n\
-    span.dynexp  {color:#E80000}\n\
-    span.prfexp  {color:#009000}\n\
-    span.stacstdec  {text-decoration:none}\n\
-    span.stacstuse  {color:#0000CF;text-decoration:underline}\n\
-    span.dyncstdec  {text-decoration:none}\n\
-    span.dyncstimp  {color:#B80000;text-decoration:underline}\n\
-    span.dyncstuse  {color:#B80000;text-decoration:underline}\n\
-    body          {color:#E80000;background-color:#E0E0E0}\n\
+    .atsyntax {color:#E80000;background-color:#E0E0E0}\n\
+    .atsyntax span.comment {color:#787878;font-style:italic}\n\
+    .atsyntax span.extern  {color:#A52A2A}\n\
+    .atsyntax span.keyword {color:#000000;font-weight:bold}\n\
+    .atsyntax span.neuexp  {color:#800080}\n\
+    .atsyntax span.staexp  {color:#0000FF}\n\
+    .atsyntax span.dynexp  {color:#E80000}\n\
+    .atsyntax span.prfexp  {color:#009000}\n\
+    .atsyntax span.stacstdec  {text-decoration:none}\n\
+    .atsyntax span.stacstuse  {color:#0000CF;text-decoration:underline}\n\
+    .atsyntax span.dyncstdec  {text-decoration:none}\n\
+    .atsyntax span.dyncstimp  {color:#B80000;text-decoration:underline}\n\
+    .atsyntax span.dyncstuse  {color:#B80000;text-decoration:underline}\n\
+    body {color:#E80000;background-color:#E0E0E0}\n\
   </style>\n\
 </head>\n\
 <body>\n\
-<pre>\n\
 "
+#define HTM_POSMARK_PRE_BEG "<pre class=\"atsyntax\">\n"
+#define HTM_POSMARK_PRE_END "</pre>\n"
 
 #define HTM_POSMARK_FILE_END "\
-</pre>\n\
 </body>\n\
 </html>\n\
 "
@@ -470,7 +478,8 @@ end // end of [posmarklst_sort]
 (* ****** ****** *)
 
 fn posmark_file_file (
-    proc: (&FILE w, lint, posmark) -<fun1> void
+    isall: bool // header+body or body only
+  , proc: (&FILE w, lint, posmark) -<fun1> void
   , fputchr: (char, &FILE w) -<fun1> void
   , fil_s: &FILE r, fil_d: &FILE w
   ) : void = let
@@ -537,9 +546,15 @@ fn posmark_file_file (
   val ppms = posmarklst_sort (the_posmarklst_get ())
 //
   prval pf_mod = file_mode_lte_w_w
-  val () = fprint1_string (pf_mod | fil_d, HTM_POSMARK_FILE_BEG);
+  val () = if isall then
+    fprint1_string (pf_mod | fil_d, HTM_POSMARK_FILE_BEG)
+//
+  val () = fprint1_string (pf_mod | fil_d, HTM_POSMARK_PRE_BEG)
   val () = loop1 (fil_s, fil_d, lint0, lint0, PMnone (), ppms)
-  val () = fprint1_string (pf_mod | fil_d, HTM_POSMARK_FILE_END);
+  val () = fprint1_string (pf_mod | fil_d, HTM_POSMARK_PRE_END)
+//
+  val () = if isall then
+    fprint1_string (pf_mod | fil_d, HTM_POSMARK_FILE_END)
 //
 in
   // empty
@@ -704,25 +719,32 @@ end // end of [fputchr_htm]
 
 in // in of [local]
 
-extern fun posmark_htmlfilename_make (basename: string): string
-  = "posmark_htmlfilename_make"
+extern fun posmark_htmlfilename_make
+  (basename: string): string = "posmark_htmlfilename_make"
+// end of [posmark_htmlfilename_make]
 
-implement posmark_file_make_htm (in_name, out_name) = let
+implement
+posmark_file_make_htm
+  (isall, in_name, out_name) = let
   val file_mode_r = $extval (file_mode r, "\"r\"")
   val (pf_in | p_in) = fopen_exn (in_name, file_mode_r)
   val file_mode_w = $extval (file_mode w, "\"w\"")
   val () = if stropt_is_some out_name then let
     val out_name = stropt_unsome (out_name)
     val (pf_out | p_out) = fopen_exn (out_name, file_mode_w)
-    val () = posmark_file_file (posmark_process_htm, fputchr_htm, !p_in, !p_out)
+    val () = posmark_file_file
+      (isall, posmark_process_htm, fputchr_htm, !p_in, !p_out)
+    // end of [val]
   in
     fclose_exn (pf_out | p_out)
   end else let
     val (pf_out | p_out) = stdout_get ()
-    val () = posmark_file_file (posmark_process_htm, fputchr_htm, !p_in, !p_out)
+    val () = posmark_file_file
+      (isall, posmark_process_htm, fputchr_htm, !p_in, !p_out)
+    // end of [val]
   in
     stdout_view_set (pf_out | (*none*))
-  end
+  end // end of [val]
   val () = fclose_exn (pf_in | p_in)
 in
   // empty

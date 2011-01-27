@@ -367,8 +367,8 @@ fun string_test_char_at {n:nat}
 
 
 //
-// these functions are present mostly for convenience as a programmer
-// ofter uses values of the type int as array indices:
+// HX: these functions are present mostly for convenience
+// values of the type [int] are often used as array indices:
 //
 
 fun strbuf_test_char_at__intsz {m,n:nat}

@@ -9,7 +9,7 @@
 /* ****** ****** */
 
 /*
-** Time of Generation: Wed Jan 26 14:10:17 2011
+** Time of Generation: Thu Jan 27 10:55:07 2011
 */
 
 /* ****** ****** */
@@ -2873,15 +2873,16 @@ yyparse_main (
 ** if BISON is used then [yyval] is a stack variable and
 ** thus there is no need to treat it as a GC root explicitly
 */
+//
 #ifndef _ATS_YYVALISLOCAL
   extern YYSTYPE yyval;
   // fprintf (stderr, "yyparse_main: &yyval = %p\n", &yyval) ;
   ATS_GC_MARKROOT (&yyval, sizeof(YYSTYPE)) ;
+#endif // end of [_ATS_YYVALISLOCAL]
 //
   extern YYSTYPE yylval;
   // fprintf (stderr, "yyparse_main: &yylval = %p\n", &yylval) ;
   ATS_GC_MARKROOT (&yylval, sizeof(YYSTYPE)) ;
-#endif // end of [_ATS_YYVALISLOCAL]
 //
   yylex_tok0 = tok0 ;
 //

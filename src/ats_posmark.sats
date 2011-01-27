@@ -91,7 +91,14 @@ fun posmark_insert_dyncstuse_end (li: lint, loc: loc_t): void
 (* ****** ****** *)
 
 fun posmark_file_make_tex (basename: string): void
-fun posmark_file_make_htm (in_name: string, out_name: Stropt): void
+
+(* ****** ****** *)
+//
+// isall=true/false: header+body / body only
+//
+fun posmark_file_make_htm
+  (isall: bool, in_name: string, out_name: Stropt): void
+// end of [posmark_file_make_htm]
 
 (* ****** ****** *)
 

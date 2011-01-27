@@ -626,15 +626,17 @@ fun fwrite // [sz]: the size of each item
   | buf: &bytes (bsz), sz: size_t sz, n: size_t n, fil: &FILE m
   ) :<> natLte n
   = "atslib_fwrite"
-
-// [fwrite_byte] is a special case of [fwrite]
+//
+// HX: [fwrite_byte] is a special case of [fwrite]
+//
 fun fwrite_byte // [fwrite_byte] only writes once
   {bsz:int} {n:nat | n <= bsz} {m:fm} (
     pf_mod: file_mode_lte (m, w) | buf: &bytes (bsz), n: size_t n, fil: &FILE m
   ) :<> sizeLte n
   = "atslib_fwrite_byte"
-
-// an uncatchable exception is thrown if not all bytes are written
+//
+// HX: an uncatchable exception is thrown if not all bytes are written
+//
 fun fwrite_byte_exn
   {bsz:int} {n:nat | n <= bsz} {m:fm} (
     pf_mod: file_mode_lte (m, w) | buf: &bytes (bsz), n: size_t n, fil: &FILE m

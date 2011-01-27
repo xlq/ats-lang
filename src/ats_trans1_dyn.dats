@@ -1528,11 +1528,12 @@ fn i0nclude_tr (
 //
   val d0cs = $Par.parse_from_filename (stadyn, filename)
 //
-// HX-2010-04-27: perform for posmarking if needed
+// HX-2010-04-27: perform posmarking if needed
 //
   val () = if isposmark then let
+    val isall = true // header+body
     val () = $Syn.d0eclst_posmark d0cs
-    val () = $PM. posmark_file_make_htm (fullname, pmstropt) in
+    val () = $PM. posmark_file_make_htm (isall, fullname, pmstropt) in
     $PM.posmark_disable (); $PM.posmark_pop ()
   end // end of [val]
 //
@@ -1607,8 +1608,9 @@ fn s0taload_tr (
 // HX-2010-04-27: perform for posmarking if needed
 //
         val () = if isposmark then let
+          val isall = true // header+body
           val () = $Syn.d0eclst_posmark d0cs
-          val () = $PM. posmark_file_make_htm (fullname, pmstropt) in
+          val () = $PM. posmark_file_make_htm (isall, fullname, pmstropt) in
           $PM.posmark_disable (); $PM.posmark_pop ()
         end // end of [val]
 //

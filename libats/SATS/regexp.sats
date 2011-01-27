@@ -90,7 +90,7 @@ fun regexp_match_string_strposlst
 
 fun regexp_match_substring_strposlst
   {l:agz} {n:int} {i,ln:nat | i + ln <= n}
-  (re: !REGEXPptr l, str: string n, ofs: int i, len: int ln): strposlst (n)
+  (re: !REGEXPptr l, str: string n, ofs: int i, len: int ln): strposlst (ln)
   = "atslib_regexp_match_substring_strposlst"
 // end of [regexp_match_substring_strposlst]
 

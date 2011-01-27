@@ -233,8 +233,9 @@ fn atsopt_usage (cmd: string): void = begin
   print "  --depgen=2 (for generating dependencies and then compiling)\n";
   print "  -tc (for typechecking only)\n";
   print "  --typecheck (for typechecking only)\n";
-  print "  --posmark_html (for generating a html file depicting colored concrete syntax)\n";
-  print "  --posmark_xref (for generating a html file depicting some syntactic cross references)\n";
+  print "  --posmark_html (for generating html file depicting colored concrete syntax)\n";
+  print "  --posmark_xref (for generating html file depicting some syntactic cross references)\n";
+  print "  --posmark_html_code (for generating html code depicting colored concrete syntax)\n";
   print "  --gline (for generating line pragma information on source code)\n";
   print "  --debug=0 (for disabling the generation of debugging information)\n";
   print "  --debug=1 (for enabling the generation of debugging information)\n";
@@ -416,15 +417,46 @@ fn comkind_is_output (knd: comkind): bool =
 viewtypedef arglst (n:int) = list_vt (comarg, n)
 
 (* ****** ****** *)
+//
+#define POSMARK_NONE 0
+#define POSMARK_SOME 1
+//
+#define POSMARKND_NONE 0
+//
+#define POSMARKND_HTML_CODE 01
+#define POSMARKND_HTML_FILE 02
+#define POSMARKND_HTML_XREF 03
+//
+(* ****** ****** *)
+
+fn is_htmlcodefile (x: int): bool =
+  (x = POSMARKND_HTML_CODE orelse x = POSMARKND_HTML_FILE)
+// end of [is_htmlcodefile]
+
+fn is_htmlxref (x: int): bool = (x = POSMARKND_HTML_XREF)
+
+(* ****** ****** *)
+
+fn posmarknd_isall
+  (x: int): bool = case+ x of
+  | POSMARKND_HTML_FILE => true // header + body
+  | POSMARKND_HTML_XREF => true // header + body
+  | _ => false  // body only
+// end of [val]
+
+(* ****** ****** *)
 
 typedef param_t = @{
   comkind= comkind
 , wait= int
 , prelude= int
+//
 , depgen= int
 , depgenout= Stropt
+//
 , posmark= int
-, posmark_html= int
+, posmarknd= int
+//
 , typecheck_only= int
 } // end of [param_t]
 
@@ -490,7 +522,7 @@ fn do_parse_filename (
   ) : $Fil.filename_t
   val () = input_filename_set (filename)
 //
-  val () = if param.posmark > 0 then $PM.posmark_enable ()
+  val () = if param.posmark > POSMARK_NONE then $PM.posmark_enable ()
 //
   var d0cs: $Syn.d0eclst = list_nil ()
   val () = $Fil.the_filenamelst_push filename
@@ -501,7 +533,7 @@ fn do_parse_filename (
     printf ("The file [%s] is successfully parsed!\n", @(basename))
   end // end of [if]
 //
-  val () = if param.posmark > 0 then let
+  val () = if param.posmark > POSMARK_NONE then let
     val () = $Syn.d0eclst_posmark d0cs in $PM.posmark_disable ()
   end // end of [val]
 //
@@ -509,8 +541,9 @@ fn do_parse_filename (
   val pmstropt = $PM.posmark_xref_testnot_if (fullname)
   val isposmark = stropt_is_some pmstropt
   val () = if isposmark then let
+    val isall = true // header + body
     val () = $PM.posmark_push_dup ()
-    val () = $PM. posmark_file_make_htm (fullname, pmstropt)
+    val () = $PM.posmark_file_make_htm (isall, fullname, pmstropt)
     val () = $PM.posmark_pop ()
   in
     // empty
@@ -551,9 +584,10 @@ fn do_trans12 (
     print_newline ()
   end // end of [if]
 //
-  val () = if param.posmark_html = 2 then $PM.posmark_enable ()
+  val () = if param.posmarknd = POSMARKND_HTML_XREF then $PM.posmark_enable ()
   val d2cs = $Trans2.d1eclst_tr d1cs
-  val () = if param.posmark_html = 2 then $PM.posmark_disable ()
+  val () = if param.posmarknd = POSMARKND_HTML_XREF then $PM.posmark_disable ()
+//
   val () = if debug_flag > 0 then begin
     print "The 2nd translation (binding) of [";
     print basename;
@@ -654,9 +688,21 @@ end // end of [do_trans1234]
 
 (* ****** ****** *)
 
+extern fun is_posmark_html (str: string): bool
+
+implement
+is_posmark_html
+  (str) = case+ str of
+  | "--posmark_html" => true
+(*
+  | "--posmark_html_file" => true
+*)
+  | _ => false
+// end of [is_posmark_html]
+
 extern fun is_posmark_xref_prefix
-  (s: string): bool = "atsopt_is_posmark_xref_prefix"
-// end of ...
+  (str: string): bool = "atsopt_is_posmark_xref_prefix"
+// end of [is_posmark_xref_prefix]
 
 (* ****** ****** *)
 //
@@ -838,13 +884,27 @@ fun loop {i:nat | i <= n} .<i>. (
               param.depgen := 2; param.depgenout := output_filename_get ()
             ) // end of ["--depgen=2"]
           | "--typecheck" => (param.typecheck_only := 1)
-          | "--posmark_html" => begin
-              param.posmark := 1; param.posmark_html := 1
+//
+          | "--posmark_html_code" => let
+              val () = param.posmark := POSMARK_SOME
+              val () = param.posmarknd := POSMARKND_HTML_CODE
+            in
+             // nothing
+            end // end of ["--posmark_html_code"]
+//
+          | _ when is_posmark_html (str) => let
+              val () = param.posmark := POSMARK_SOME
+              val () = param.posmarknd := POSMARKND_HTML_FILE
+            in
+             // nothing
             end // end of ["--posmark_html"]
           | _ when is_posmark_xref_prefix (str) => let
+              val () = param.posmark := POSMARK_SOME
+              val () = param.posmarknd := POSMARKND_HTML_XREF
             in
-              param.posmark := 1; param.posmark_html := 2
+              // nothing
             end // end of ["--posmark_xref"]
+//
           | "--gline" => $Deb.gline_flag_set (1)
           | "--debug=0" => $Deb.debug_flag_set (0)
           | "--debug=1" => $Deb.debug_flag_set (1)
@@ -892,9 +952,11 @@ fun loop {i:nat | i <= n} .<i>. (
             in
               if (param.depgen >= 2) then do_trans1234 (param, flag, basename, d0cs)
             end // end of [val]
-          | _ when param.posmark_html = 1 => let
+//
+          | _ when is_htmlcodefile (param.posmarknd) => let
+              val isall = posmarknd_isall (param.posmarknd)
               val outname = output_filename_get ()
-              val () = $PM.posmark_file_make_htm (basename, outname)
+              val () = $PM.posmark_file_make_htm (isall, basename, outname)
               val () = $PM.posmark_disable ()
             in
 (*
@@ -903,10 +965,12 @@ fun loop {i:nat | i <= n} .<i>. (
               print_newline ()
 *)
             end // end of [_ when ...]
-          | _ when param.posmark_html = 2 => let
+//
+          | _ when is_htmlxref (param.posmarknd) => let
+              val isall = true // header + body
               val _(*d2cs*) = do_trans12 (param, basename, d0cs)
               val outname = output_filename_get ()
-              val () = $PM.posmark_file_make_htm (basename, outname)
+              val () = $PM.posmark_file_make_htm (isall, basename, outname)
               val () = $PM.posmark_disable ()
             in
 (*
@@ -915,6 +979,7 @@ fun loop {i:nat | i <= n} .<i>. (
               print_newline ()              
 *)
             end // end of [_ when ...]
+//
           | _ when param.typecheck_only > 0 => let
               val _(*d3cs*) = do_trans123 (param, basename, d0cs)
             in
@@ -961,7 +1026,7 @@ fun loop {i:nat | i <= n} .<i>. (
         val d0cs = do_parse_stdin (flag)
         val () = begin case+ 0 of
           | _ when param.depgen > 0 => ()
-          | _ when param.posmark = 1 => ()
+          | _ when param.posmark > POSMARK_NONE => ()
           | _ when param.typecheck_only > 0 => let
               val _(*d3cs*) = do_trans123 (param, "stdin", d0cs)
             in
@@ -983,8 +1048,8 @@ var param: param_t = @{
 , prelude= 0
 , depgen= 0
 , depgenout= stropt_none // output filename for depgen
-, posmark= 0
-, posmark_html= 0
+, posmark= POSMARK_NONE
+, posmarknd= POSMARKND_NONE
 , typecheck_only= 0
 } // end of [var]
 
