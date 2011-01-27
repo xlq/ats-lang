@@ -236,22 +236,16 @@ CLINK = $(CC) $(ATSCCFLAGS) $(LDFLAGS) -o $@
 ######
 
 #
-#if [yacc] is used to generate [ats_grammar_yats.c]
+# HX-2011-01-26: please select the proper one
 #
-#ATSYACCFLAGS=$(ATSCCFLAGS)
-
+# if [yacc] or [byacc] is used to generate [ats_grammar_yats.c]
+# ATSYACCFLAGS=$(ATSCCFLAGS)
 #
-#if [byacc] is used to generate [ats_grammar_yats.c]
-#
-#ATSYACCFLAGS=$(ATSCCFLAGS)
-
-#
-#if [bison] is used to generate [ats_grammar_yats.c]
-#
+# select it if [bison] is used to generate [ats_grammar_yats.c]
 ATSYACCFLAGS=-D_ATS_YYVALISLOCAL $(ATSCCFLAGS)
+#
 
-ats_grammar_yats.o: ats_grammar_yats.c
-	$(CC) $(ATSYACCFLAGS) -o $@ -c $<
+ats_grammar_yats.o: ats_grammar_yats.c; $(CC) $(ATSYACCFLAGS) -o $@ -c $<
 
 ######
 
@@ -266,8 +260,7 @@ atsopt: $(OBJECTS)
 	$(CLINK) $(OBJECTS) $(LIBOBJS)
 
 atsopt_gc: $(OBJECTS) $(ATSOPT_GC_OBJECTS)
-	$(CLINK) -D_ATS_GCATS \
-	  $(OBJECTS) $(ATSOPT_GC_OBJECTS) $(LIBOBJS)
+	$(CLINK) -D_ATS_GCATS $(OBJECTS) $(ATSOPT_GC_OBJECTS) $(LIBOBJS)
 
 ######
 

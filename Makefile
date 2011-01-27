@@ -297,6 +297,7 @@ cleanall:: clean
 	rm -f .libfiles_mt_local
 	rm -f bootstrap0/atsopt
 	rm -f bootstrap1/atsopt
+	rm -f src/ats_grammar_yats.c src/ats_grammar_yats.h
 	rm -f bin/atsopt bin/atscc bin/atslib bin/atslex bin/atspack
 	rm -f ccomp/lib/libats.a
 	rm -f ccomp/lib/libats_mt.a

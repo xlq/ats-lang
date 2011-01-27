@@ -2,11 +2,13 @@
 
 ats-lang-anairiats-0.2.4:
 
-1. Adding the package contrib/testing to facilitate testing code
-   construction
-2. Adding support for value templates
+1. Adding the package contrib/testing to facilitate construction of
+   testing code.
+2. Adding support for value templates.
 3. Adding various examples in doc/EXAMPLE/PCPV to demonstate a style of
    program verification that is described as being programmer-centric.
+4. Adding the package contrib/scripting to support scripting in ATS.
+5. Bison is now the default too for generate [ats_grammar_yats.c].
 
 ########################################################################
 
