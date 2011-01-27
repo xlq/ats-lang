@@ -235,7 +235,7 @@ fn atsopt_usage (cmd: string): void = begin
   print "  --typecheck (for typechecking only)\n";
   print "  --posmark_html (for generating html file depicting colored concrete syntax)\n";
   print "  --posmark_xref (for generating html file depicting some syntactic cross references)\n";
-  print "  --posmark_html_code (for generating html code depicting colored concrete syntax)\n";
+  print "  --posmark_html_body (for generating html body depicting colored concrete syntax)\n";
   print "  --gline (for generating line pragma information on source code)\n";
   print "  --debug=0 (for disabling the generation of debugging information)\n";
   print "  --debug=1 (for enabling the generation of debugging information)\n";
@@ -423,15 +423,15 @@ viewtypedef arglst (n:int) = list_vt (comarg, n)
 //
 #define POSMARKND_NONE 0
 //
-#define POSMARKND_HTML_CODE 01
+#define POSMARKND_HTML_BODY 01
 #define POSMARKND_HTML_FILE 02
 #define POSMARKND_HTML_XREF 03
 //
 (* ****** ****** *)
 
-fn is_htmlcodefile (x: int): bool =
-  (x = POSMARKND_HTML_CODE orelse x = POSMARKND_HTML_FILE)
-// end of [is_htmlcodefile]
+fn is_htmlbodyfile (x: int): bool =
+  (x = POSMARKND_HTML_BODY orelse x = POSMARKND_HTML_FILE)
+// end of [is_htmlbodyfile]
 
 fn is_htmlxref (x: int): bool = (x = POSMARKND_HTML_XREF)
 
@@ -885,12 +885,12 @@ fun loop {i:nat | i <= n} .<i>. (
             ) // end of ["--depgen=2"]
           | "--typecheck" => (param.typecheck_only := 1)
 //
-          | "--posmark_html_code" => let
+          | "--posmark_html_body" => let
               val () = param.posmark := POSMARK_SOME
-              val () = param.posmarknd := POSMARKND_HTML_CODE
+              val () = param.posmarknd := POSMARKND_HTML_BODY
             in
              // nothing
-            end // end of ["--posmark_html_code"]
+            end // end of ["--posmark_html_body"]
 //
           | _ when is_posmark_html (str) => let
               val () = param.posmark := POSMARK_SOME
@@ -953,7 +953,7 @@ fun loop {i:nat | i <= n} .<i>. (
               if (param.depgen >= 2) then do_trans1234 (param, flag, basename, d0cs)
             end // end of [val]
 //
-          | _ when is_htmlcodefile (param.posmarknd) => let
+          | _ when is_htmlbodyfile (param.posmarknd) => let
               val isall = posmarknd_isall (param.posmarknd)
               val outname = output_filename_get ()
               val () = $PM.posmark_file_make_htm (isall, basename, outname)
