@@ -35,6 +35,10 @@
 
 (* ****** ****** *)
 
+#define ATS_DYNLOADFLAG 0 // no initialization is needed
+
+(* ****** ****** *)
+
 implement
 divmod_size1_size1
   {m,n} (m, n, r) = let
