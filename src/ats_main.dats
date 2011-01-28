@@ -234,8 +234,8 @@ fn atsopt_usage (cmd: string): void = begin
   print "  -tc (for typechecking only)\n";
   print "  --typecheck (for typechecking only)\n";
   print "  --posmark_html (for generating html file depicting colored concrete syntax)\n";
-  print "  --posmark_xref (for generating html file depicting some syntactic cross references)\n";
   print "  --posmark_html_body (for generating html body depicting colored concrete syntax)\n";
+  print "  --posmark_xref (for generating html file depicting some syntactic cross references)\n";
   print "  --gline (for generating line pragma information on source code)\n";
   print "  --debug=0 (for disabling the generation of debugging information)\n";
   print "  --debug=1 (for enabling the generation of debugging information)\n";
@@ -885,6 +885,13 @@ fun loop {i:nat | i <= n} .<i>. (
             ) // end of ["--depgen=2"]
           | "--typecheck" => (param.typecheck_only := 1)
 //
+          | _ when is_posmark_html (str) => let
+              val () = param.posmark := POSMARK_SOME
+              val () = param.posmarknd := POSMARKND_HTML_FILE
+            in
+             // nothing
+            end // end of ["--posmark_html"]
+//
           | "--posmark_html_body" => let
               val () = param.posmark := POSMARK_SOME
               val () = param.posmarknd := POSMARKND_HTML_BODY
@@ -892,12 +899,6 @@ fun loop {i:nat | i <= n} .<i>. (
              // nothing
             end // end of ["--posmark_html_body"]
 //
-          | _ when is_posmark_html (str) => let
-              val () = param.posmark := POSMARK_SOME
-              val () = param.posmarknd := POSMARKND_HTML_FILE
-            in
-             // nothing
-            end // end of ["--posmark_html"]
           | _ when is_posmark_xref_prefix (str) => let
               val () = param.posmark := POSMARK_SOME
               val () = param.posmarknd := POSMARKND_HTML_XREF
