@@ -258,7 +258,7 @@ vector_insert_at
   val [ofs:int] (pfmul | ofs) = mul2_size1_size1 (n, sizeof<a>)
 //
   prval (pf1, pf2) = vector_v_decode {a} (pfmul, pf)
-  prval (pf11, pf12) = array_v_split {a} {n,i} (pfmul1, pf1)
+  prval (pf11, pf12) = array_v_split {a} {n} {i} (pfmul1, pf1)
   prval (pf21, pf22) = array_v_uncons {a?} (pf2)  
   prval pf3 = array_v_nil {a} {l0+ofs+sizeof a} ()
 //
@@ -317,7 +317,7 @@ vector_remove_at {m,n} {i} (V, i, x) = let
   prval pfmul2 = mul_add_const {~1} (pfmul2)
 //
   prval (pf1, pf2) = vector_v_decode {a} (pfmul, pf)
-  prval (pf11, pf12) = array_v_split {a} {n,i} (pfmul1, pf1)
+  prval (pf11, pf12) = array_v_split {a} {n} {i} (pfmul1, pf1)
   prval (pf121, pf122) = array_v_uncons {a} (pf12)
   val p = p0 + ofs1; val () = x := !p
 //

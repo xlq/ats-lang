@@ -333,7 +333,7 @@ array_ptr_takeout2 (pf | A, i1, i2) =
 
 implement
 array_ptr_takeout2_tsz
-  {a} {n, i1, i2} {l0} (pf | A, i1, i2, tsz) = let
+  {a} {n} {i1,i2} {l0} (pf | A, i1, i2, tsz) = let
   val [off1:int] (pf1_mul | off1) = i1 szmul2 tsz
   val [off2:int] (pf2_mul | off2) = i2 szmul2 tsz
   prval (pf1, pf2, fpf) = array_v_takeout2 {a} (pf1_mul, pf2_mul, pf)

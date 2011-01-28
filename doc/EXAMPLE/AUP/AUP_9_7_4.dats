@@ -40,7 +40,7 @@ fun fprint_bytes_size
   prval () = eqsize_byte_one () // sizeof byte == 1
   prval pfmul = mul_make {n2,sizeof(byte)} ()
   prval () = mul_elim {n2,1} (pfmul)
-  prval (pf1, pf2) = array_v_split {byte} {n1,n2} (pfmul, view@ (buf))
+  prval (pf1, pf2) = array_v_split {byte} {n1} {n2} (pfmul, view@ (buf))
   prval pfu = unit_v ()
   typedef env = FILEref
   val () = array_ptr_foreach_fun_tsz__main {byte} {unit_v} {env}

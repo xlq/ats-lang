@@ -105,7 +105,7 @@ implement{a} array_ptr_initialize_lstlst
     | list_cons (xs, xss) => let
         prval pf1_mul = mul_add_const {~1} {n,m} (pf_mul)
         prval () = mul_nat_nat_nat (pf1_mul)
-        prval (pf1_arr, pf2_arr) = array_v_split {a?} {mn,m} (pf_ofs, pf_arr)
+        prval (pf1_arr, pf2_arr) = array_v_split {a?} {mn} {m} (pf_ofs, pf_arr)
         val () = array_ptr_initialize_lst<a> (!p_arr, xs)
         val () = loop (pf1_mul, pf2_arr | p_arr + ofs, xss)
         prval () = pf_arr := array_v_unsplit {a} (pf_ofs, pf1_arr, pf2_arr)

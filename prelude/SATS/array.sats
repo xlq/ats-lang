@@ -49,17 +49,20 @@ exception ArraySubscriptException of ()
 
 (* ****** ****** *)
 
-fun{a:t@ype} array_ptr_get_elt_at
-  {n:nat} {i:nat | i < n} (A: &(@[a][n]), i: size_t i):<> a
-
-fun{a:t@ype} array_ptr_set_elt_at
-  {n:nat} {i:nat | i < n} (A: &(@[a][n]), i: size_t i, x: a):<> void
-
+fun{a:t@ype}
+array_ptr_get_elt_at {n:int}
+  {i:nat | i < n} (A: &(@[a][n]), i: size_t i):<> a
 overload [] with array_ptr_get_elt_at
+
+fun{a:t@ype}
+array_ptr_set_elt_at {n:int}
+  {i:nat | i < n} (A: &(@[a][n]), i: size_t i, x: a):<> void
 overload [] with array_ptr_set_elt_at
 
-fun{a:viewt@ype} array_ptr_xch_elt_at
-  {n,i:nat | i < n} {l:addr} (A: &(@[a][n]), i: size_t i, x: &a):<> void
+fun{a:viewt@ype}
+array_ptr_xch_elt_at {n:int}
+  {i:nat | i < n} {l:addr} (A: &(@[a][n]), i: size_t i, x: &a):<> void
+// end of [array_ptr_xch_elt_at]
 
 (* ****** ****** *)
 
@@ -68,23 +71,29 @@ fun{a:viewt@ype} array_ptr_xch_elt_at
 // ofter uses values of the type int as array indices:
 //
 
-fun{a:t@ype} array_ptr_get_elt_at__intsz
-  {n:nat} {i:nat | i < n} (A: &(@[a][n]), i: int i):<> a
-
-fun{a:t@ype} array_ptr_set_elt_at__intsz
-  {n:nat} {i:nat | i < n} (A: &(@[a][n]), i: int i, x:a):<> void
-
+fun{a:t@ype}
+array_ptr_get_elt_at__intsz
+  {n:int} {i:nat | i < n} (A: &(@[a][n]), i: int i):<> a
 overload [] with array_ptr_get_elt_at__intsz
+
+fun{a:t@ype}
+array_ptr_set_elt_at__intsz
+  {n:int} {i:nat | i < n} (A: &(@[a][n]), i: int i, x:a):<> void
 overload [] with array_ptr_set_elt_at__intsz
 
-fun{a:viewt@ype} array_ptr_xch_elt_at__intsz
-  {n,i:nat | i < n} {l:addr} (A: &(@[a][n]), i: int i, x: &a):<> void
+fun{a:viewt@ype}
+array_ptr_xch_elt_at__intsz {n:int}
+  {i:nat | i < n} {l:addr} (A: &(@[a][n]), i: int i, x: &a):<> void
+// end of [array_ptr_xch_elt_at__intsz]
 
 (* ****** ****** *)
 
 (*
 
-dataview array_v (a:viewt@ype+, int, addr) =
+dataview
+array_v (
+  a:viewt@ype+, int, addr
+) =
   | {n:int | n >= 0} {l:addr}
       array_v_cons (a, n+1, l) of (a @ l, array_v (a, n, l+sizeof a))
   | {l:addr} array_v_nil (a, 0, l)
@@ -146,10 +155,10 @@ fun array_ptr_alloc_tsz
 (*
 // implemented in C
 *)
-fun array_ptr_free {a:viewt@ype} {n:int} {l:addr}
-  (pf_gc: free_gc_v (a, n, l), pf_arr: array_v (a?, n, l) | p_arr: ptr l):<> void
-  = "atspre_array_ptr_free"
-// end of [array_ptr_free]
+fun array_ptr_free
+  {a:viewt@ype} {n:int} {l:addr} (
+  pf_gc: free_gc_v (a, n, l), pf_arr: array_v (a?, n, l) | p_arr: ptr l
+) :<> void = "atspre_array_ptr_free"
 
 (* ****** ****** *)
 
@@ -260,7 +269,7 @@ fun array_ptr_clear_clo_tsz
 (* ****** ****** *)
 
 prfun array_v_split {a:viewt@ype}
-  {n,i:nat | i <= n} {l:addr} {ofs:int} (
+  {n:int} {i:nat | i <= n} {l:addr} {ofs:int} (
   pf_mul: MUL (i, sizeof a, ofs), pf_arr: array_v (a, n, l)
 ) :<prf> @(
   array_v (a, i, l), array_v (a, n-i, l+ofs)
@@ -288,12 +297,12 @@ prfun array_v_unextend : {a:viewt@ype}
 // end of [array_v_unextend]
 
 prfun array_v_takeout : {a:viewt@ype}
-  {n,i:nat | i < n} {l:addr} {ofs:int}
+  {n:int} {i:nat | i < n} {l:addr} {ofs:int}
   (MUL (i, sizeof a, ofs), array_v (a, n, l)) -<prf> (a @ l+ofs, a @ l+ofs -<lin> array_v (a, n, l))
 // end of [array_v_takeout]
 
 prfun array_v_takeout2 : {a:viewt@ype}
-  {n,i1,i2:nat | i1 < n; i2 < n; i1 <> i2} {l:addr} {ofs1,ofs2:int}
+  {n:int} {i1,i2:nat | i1 < n; i2 < n; i1 <> i2} {l:addr} {ofs1,ofs2:int}
     (MUL (i1, sizeof a, ofs1), MUL (i2, sizeof a, ofs2), array_v (a, n, l)) -<prf>
     (a @ l+ofs1, a @ l+ofs2, (a @ l+ofs1, a @ l+ofs2) -<lin> array_v (a, n, l))
 // end of [array_v_takeou2]
@@ -317,7 +326,8 @@ prfun array_v_ungroup : {a:viewt@ype} {m,n:nat} {l:addr} {mn:int}
 (* ****** ****** *)
 
 fun{a:viewt@ype}
-array_ptr_split {n,i:nat | i <= n} {l0:addr} (
+array_ptr_split
+  {n:int} {i:nat | i <= n} {l0:addr} (
   pf: array_v (a, n, l0) | base: ptr l0, offset: size_t i
 ) :<> [ofs:nat] (
   MUL (i, sizeof(a), ofs)
@@ -329,7 +339,8 @@ array_ptr_split {n,i:nat | i <= n} {l0:addr} (
 // implemented in C (prelude/CATS/array.cats)
 *)
 fun array_ptr_split_tsz
-  {a:viewt@ype} {n,i:nat | i <= n} {l0:addr} (
+  {a:viewt@ype}
+  {n:int} {i:nat | i <= n} {l0:addr} (
   pf: array_v (a, n, l0) | base: ptr l0, offset: size_t i, tsz: sizeof_t a
 ) :<> [ofs:nat] (
   MUL (i, sizeof(a), ofs)
@@ -341,7 +352,8 @@ fun array_ptr_split_tsz
 (* ****** ****** *)
 
 fun{a:viewt@ype}
-array_ptr_takeout {n,i:nat | i < n} {l0:addr} (
+array_ptr_takeout
+  {n:int} {i:nat | i < n} {l0:addr} (
   pf: array_v (a, n, l0) | base: ptr l0, offset: size_t i
 ) :<> [l:addr] (
   a @ l
@@ -353,7 +365,8 @@ array_ptr_takeout {n,i:nat | i < n} {l0:addr} (
 // implemented in C (prelude/CATS/array.cats)
 *)
 fun array_ptr_takeout_tsz
-  {a:viewt@ype} {n,i:nat | i < n} {l0:addr} (
+  {a:viewt@ype}
+  {n:int} {i:nat | i < n} {l0:addr} (
   pf: array_v (a, n, l0)
 | base: ptr l0, offset: size_t i, tsz: sizeof_t a
 ) :<> [l:addr] (
@@ -366,24 +379,23 @@ fun array_ptr_takeout_tsz
 (* ****** ****** *)
 
 fun{a:viewt@ype}
-array_ptr_takeout2
-  {n,i1,i2:nat | i1 < n; i2 < n; i1 <> i2} {l0:addr} (
-    pf: array_v (a, n, l0)
-  | base: ptr l0
-  , off1: size_t i1, off2: size_t i2
-  ) :<> [l1,l2:addr] (
-      a @ l1
-    , a @ l2, (a @ l1, a @ l2) -<lin,prf> array_v (a, n, l0)
-    | ptr l1
-    , ptr l2
-    )
-// end of [array_ptr_takeout2]
+array_ptr_takeout2 {n:int}
+  {i1,i2:nat | i1 < n; i2 < n; i1 <> i2} {l0:addr} (
+  pf: array_v (a, n, l0)
+| base: ptr l0
+, off1: size_t i1, off2: size_t i2
+) :<> [l1,l2:addr] (
+  a @ l1
+, a @ l2, (a @ l1, a @ l2) -<lin,prf> array_v (a, n, l0)
+| ptr l1
+, ptr l2
+) // end of [array_ptr_takeout2]
 
 (*
 // implemented in ATS (prelude/DATS/array.dats)
 *)
 fun array_ptr_takeout2_tsz {a:viewt@ype}
-  {n,i1,i2:nat | i1 < n; i2 < n; i1 <> i2} {l0:addr} (
+  {n:int} {i1,i2:nat | i1 < n; i2 < n; i1 <> i2} {l0:addr} (
   pf: array_v (a, n, l0)
 | base: ptr l0
 , off1: size_t i1, off2: size_t i2
@@ -401,9 +413,9 @@ fun array_ptr_takeout2_tsz {a:viewt@ype}
 // implemented in C (prelude/CATS/array.cats)
 *)
 fun array_ptr_copy_tsz {a:t@ype} {n:nat} (
-    A: &(@[a][n]), B: &(@[a?][n]) >> @[a][n], n: size_t n
-  , tsz: sizeof_t a
-  ) :<> void = "atspre_array_ptr_copy_tsz"
+  A: &(@[a][n]), B: &(@[a?][n]) >> @[a][n], n: size_t n
+, tsz: sizeof_t a
+) :<> void = "atspre_array_ptr_copy_tsz"
 // end of [array_ptr_copy_tsz]
 
 (*
@@ -420,7 +432,7 @@ fun array_ptr_move_tsz {a:viewt@ype} {n:nat} (
 *)
 fun{a:viewt@ype}
 array_ptr_exch
-  {n,i1,i2:nat | i1 < n; i2 < n; i1 <> i2}
+  {n:int} {i1,i2:nat | i1 < n; i2 < n; i1 <> i2}
   (A: &(@[a][n]), i1: size_t i1, i2: size_t i2):<> void
 // end of [array_ptr_exch]
 
@@ -581,11 +593,11 @@ fun{a:viewt@ype}
 *)
 fun array_make_clo_tsz
   {a:viewt@ype} {v:view} {n:nat} (
-    pf: !v
-  | asz: size_t n
-  , f: &(!v | sizeLt n, &(a?) >> a) -<clo> void
-  , tsz: sizeof_t a
-  ) :<> array (a, n)
+  pf: !v
+| asz: size_t n
+, f: &(!v | sizeLt n, &(a?) >> a) -<clo> void
+, tsz: sizeof_t a
+) :<> array (a, n)
 // end of [array_make_clo_tsz]
 
 (* ****** ****** *)
@@ -595,9 +607,9 @@ fun array_make_clo_tsz
 *)
 fun{a:viewt@ype}
 array_make_cloref {n:nat} (
-    asz: size_t n
-  , f: (sizeLt n, &(a?) >> a) -<cloref> void
-  ) :<fun> array (a, n)
+  asz: size_t n
+, f: (sizeLt n, &(a?) >> a) -<cloref> void
+) :<fun> array (a, n)
 // end of [array_make_cloref_tsz]
 
 (*
@@ -605,29 +617,29 @@ array_make_cloref {n:nat} (
 *)
 fun array_make_cloref_tsz
   {a:viewt@ype} {n:nat} (
-    asz: size_t n
-  , f: (sizeLt n, &(a?) >> a) -<cloref> void
-  , tsz: sizeof_t a
-  ) :<fun> array (a, n)
+  asz: size_t n
+, f: (sizeLt n, &(a?) >> a) -<cloref> void
+, tsz: sizeof_t a
+) :<fun> array (a, n)
 // end of [array_make_cloref_tsz]
 
 (* ****** ****** *)
 
-fun{a:t@ype} array_get_elt_at {n:nat}
+fun{a:t@ype} array_get_elt_at {n:int}
   {i:nat | i < n} (A: array (a, n), i: size_t i):<!ref> a
 overload [] with array_get_elt_at
 
-fun{a:t@ype} array_set_elt_at {n:nat}
+fun{a:t@ype} array_set_elt_at {n:int}
   {i:nat | i < n} (A: array (a, n), i: size_t i, x: a):<!ref> void
 overload [] with array_set_elt_at
 
-fun{a:viewt@ype} array_xch_elt_at {n:nat}
+fun{a:viewt@ype} array_xch_elt_at {n:int}
   {i:nat | i < n} (A: array (a, n), i: size_t i, x: &a):<!ref> void
 // end of [array_xch_elt_at]
 
 (* ****** ****** *)
 
-fun{a:t@ype} array_get_elt_at__intsz {n:nat}
+fun{a:t@ype} array_get_elt_at__intsz {n:int}
   {i:nat | i < n} (A: array (a, n), i: int i):<!ref> a
 overload [] with array_get_elt_at__intsz
 
