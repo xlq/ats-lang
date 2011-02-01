@@ -101,13 +101,13 @@ praxi bytes_v_of_strbuf_v {bsz:int}
 (* ****** ****** *)
 
 praxi strbuf_v_null
-  {n:nat} {l:addr}
+  {n:int} {l:addr} // [n] must be a nat
   (pf1: char NUL @ l, pf2: b0ytes (n) @ l + sizeof(char))
   : strbuf_v (n+1, 0, l)
 // end of [strbuf_v]
 
 praxi strbuf_v_cons
-  {m,n:nat} {l:addr}
+  {m,n:int} {l:addr} // [m] and [n] must be nats
   (pf1: c1har @ l, pf2: strbuf_v (m, n, l + sizeof(char)))
   :<prf> strbuf_v (m+1, n+1, l)
 // end of [strbuf_v_cons]
@@ -120,16 +120,15 @@ dataview strbufopt_v (int, int, addr, char) =
 // end of [strbufopt_v]
 
 praxi strbuf_v_uncons
-  {m,n:nat} {l:addr} (pf: strbuf_v (m, n, l))
+  {m,n:int} {l:addr} (pf: strbuf_v (m, n, l))
   :<prf> [c:char] @(
-     char c @ l, strbufopt_v (m-1, n-1, l + sizeof(char), c)
-   )
-// end of [strbuf_v_uncons]
+   char c @ l, strbufopt_v (m-1, n-1, l + sizeof(char), c)
+) // end of [strbuf_v_uncons]
 
 (* ****** ****** *)
 
 prfun strbuf_v_split
-  {m,n:nat} {i:nat | i <= n} {l:addr} {ofs:int} (
+  {m,n:int} {i:nat | i <= n} {l:addr} {ofs:int} (
     pf_mul: MUL (i, sizeof char, ofs), pf_str: strbuf_v (m, n, l)
   ) : (c1hars i @ l, strbuf_v (m-i, n-i, l+ofs))
 // end of [strbuf_v_split]
@@ -143,10 +142,12 @@ prfun strbuf_v_unsplit
 
 (* ****** ****** *)
 
-fun bytes_strbuf_trans {m,n:nat | n < m} {l:addr}
+fun bytes_strbuf_trans
+  {m,n:nat | n < m} {l:addr}
   (pf: !b0ytes m @ l >> strbuf (m, n1) @ l | p: ptr l, n: size_t n)
   :<> #[n1: nat | n1 <= n] void
   = "atspre_bytes_strbuf_trans"
+// end of [bytes_strbuf_trans]
 
 (* ****** ****** *)
 
@@ -165,11 +166,9 @@ fun prerr_strbuf {m,n:int} (buf: &strbuf (m, n)): void
 // val string_empty : string 0 // this not really necessary
 //
 (* ****** ****** *)
-
 //
-// casting functions
+// HX: casting functions
 //
-
 castfn string1_of_string
   (str: string):<> [n:nat] string n
 
@@ -293,13 +292,14 @@ overload prerr with prerr_string
 
 (* ****** ****** *)
 
-fun strbuf_get_char_at {m,n:nat} {i:nat | i < n}
-  (sbf: &strbuf (m, n), i: size_t i):<> [c:char | c <> NUL] char c
+fun strbuf_get_char_at
+  {m,n:int} {i:nat | i < n}
+  (sbf: &strbuf (m, n), i: size_t i):<> c1har
   = "atspre_string_get_char_at"
 overload [] with strbuf_get_char_at
 
-fun string_get_char_at {n:nat} {i:nat | i < n}
-  (str: string n, i: size_t i):<> [c:char | c <> NUL] char c // no effect
+fun string_get_char_at {n:int} {i:nat | i < n}
+  (str: string n, i: size_t i):<> c1har // no effect
   = "atspre_string_get_char_at"
 overload [] with string_get_char_at
 
@@ -310,73 +310,77 @@ overload [] with string_get_char_at
 //
 
 fun strbuf_get_char_at__intsz
-  {m,n:nat} {i:nat | i < n}
-  (sbf: &strbuf (m, n), i: int i):<> [c:char | c <> NUL] char c
+  {m,n:int} {i:nat | i < n}
+  (sbf: &strbuf (m, n), i: int i):<> c1har
   = "atspre_string_get_char_at__intsz"
 overload [] with strbuf_get_char_at__intsz
 
-fun string_get_char_at__intsz {n:nat} {i:nat | i < n}
-  (str: string n, i: int i):<> [c:char | c <> NUL] char c // no effect
+fun string_get_char_at__intsz
+  {n:int} {i:nat | i < n}
+  (str: string n, i: int i):<> c1har // without effect
   = "atspre_string_get_char_at__intsz"
 overload [] with string_get_char_at__intsz
 
 (* ****** ****** *)
 
-fun strbuf_set_char_at {m,n:nat}
-  {i:nat | i < n} {c: char | c <> NUL}
-  (sbf: &strbuf (m, n), i: size_t i, c: char c):<> void
+fun strbuf_set_char_at
+  {m,n:int} {i:nat | i < n}
+  (sbf: &strbuf (m, n), i: size_t i, c: c1har):<> void
   = "atspre_strbuf_set_char_at"
 overload [] with strbuf_set_char_at
 
-fun string_set_char_at {n:nat}
-  {i:nat | i < n} {c: char | c <> NUL}
-  (str: string n, i: size_t i, c: char c):<!ref> void
+fun string_set_char_at
+  {n:int} {i:nat | i < n}
+  (str: string n, i: size_t i, c: c1har):<!ref> void // with effect!
   = "atspre_strbuf_set_char_at"
 overload [] with string_set_char_at
 
+(* ****** ****** *)
+
 //
-// these functions are present mostly for convenience as a programmer
-// ofter uses values of the type int as array indices:
+// HX: these functions are present mostly for convenience as a
+// programmer ofter uses values of the type int as array indices:
 //
 
-fun strbuf_set_char_at__intsz {m,n:nat}
-  {i:nat | i < n} {c: char | c <> NUL}
-  (sbf: &strbuf (m, n), i: int i, c: char c):<> void
+fun strbuf_set_char_at__intsz
+  {m,n:int} {i:nat | i < n}
+  (sbf: &strbuf (m, n), i: int i, c: c1har):<> void
   = "atspre_strbuf_set_char_at__intsz"
 overload [] with strbuf_set_char_at__intsz
 
-fun string_set_char_at__intsz {n:nat}
-  {i:nat | i < n} {c: char | c <> NUL}
-  (str: string n, i: int i, c: char c):<!ref> void
+fun string_set_char_at__intsz
+  {n:int} {i:nat | i < n}
+  (str: string n, i: int i, c: c1har):<!ref> void // with effect!
   = "atspre_strbuf_set_char_at__intsz"
 overload [] with string_set_char_at__intsz
 
 (* ****** ****** *)
 
-fun strbuf_test_char_at {m,n:nat}
+fun strbuf_test_char_at {m,n:int}
   {i:nat | i <= n} (sbf: &strbuf (m, n), i: size_t i)
   :<> [c:char | (c <> NUL && i < n) || (c == NUL && i >= n)] char c
   = "atspre_string_test_char_at"
 // end of [strbuf_test_char_at]
 
-fun string_test_char_at {n:nat}
+fun string_test_char_at {n:int}
   {i:nat | i <= n} (str: string n, i: size_t i)
   :<> [c:char | (c <> NUL && i < n) || (c == NUL && i >= n)] char c
   = "atspre_string_test_char_at"
 // end of [string_test_char_at]
 
+(* ****** ****** *)
 
 //
 // HX: these functions are present mostly for convenience
 // values of the type [int] are often used as array indices:
 //
 
-fun strbuf_test_char_at__intsz {m,n:nat}
+fun strbuf_test_char_at__intsz {m,n:int}
   {i:nat | i <= n} (sbf: &strbuf (m, n), i: size_t i)
   :<> [c:char | (c <> NUL && i < n) || (c == NUL && i >= n)] char c
   = "atspre_string_test_char_at__intsz"
 
-fun string_test_char_at__intsz {n:nat}
+fun string_test_char_at__intsz {n:int}
   {i:nat | i <= n} (str: string n, i: size_t i)
   :<> [c:char | (c <> NUL && i < n) || (c == NUL && i >= n)] char c
   = "atspre_string_test_char_at__intsz"
@@ -526,10 +530,12 @@ overload string_isnot_empty with string1_isnot_empty
 
 (* ****** ****** *)
 
-fun strbuf_is_at_end {m,n,i:nat | i <= n}
+fun strbuf_is_at_end
+  {m,n:int} {i:nat | i <= n}
   (sbf: &strbuf (m, n), i: size_t i):<> bool (i == n)
   = "atspre_string_is_at_end"
-fun string_is_at_end {n,i:nat | i <= n}
+
+fun string_is_at_end {n:int} {i:nat | i <= n}
   (str: string n, i: size_t i):<> bool (i == n) = "atspre_string_is_at_end"
 // end of [string_is_at_end]
 
@@ -537,12 +543,11 @@ fun string_is_at_end {n,i:nat | i <= n}
 
 fun strbuf_isnot_at_end
   {m,n:int} {i:nat | i <= n}
-  (sbf: &strbuf (m, n), i: size_t i):<> bool (i <> n)
+  (sbf: &strbuf (m, n), i: size_t i):<> bool (i < n)
   = "atspre_string_isnot_at_end"
-// end of [strbuf_isnot_at_end]
 
-fun string_isnot_at_end {n,i:nat | i <= n}
-  (str: string n, i: size_t i):<> bool (i <> n) = "atspre_string_isnot_at_end"
+fun string_isnot_at_end {n:int} {i:nat | i <= n}
+  (str: string n, i: size_t i):<> bool (i < n) = "atspre_string_isnot_at_end"
 // end of [string_isnot_at_end]
 
 (* ****** ****** *)
@@ -569,6 +574,7 @@ fun string_implode {n:nat}
 fun string_index_of_char_from_left
   {n:nat} (str: string n, c: c1har):<> ssizeBtw (~1, n)
   = "atspre_string_index_of_char_from_left"
+// end of [string_index_of_char_from_left]
 
 //
 // This function is based on [strrchr] in [string.h]
@@ -579,6 +585,7 @@ fun string_index_of_char_from_left
 fun string_index_of_char_from_right
   {n:nat} (str: string n, c: c1har):<> ssizeBtw (~1, n)
   = "atspre_string_index_of_char_from_right"
+// end of [string_index_of_char_from_right]
 
 (* ****** ****** *)
 //
@@ -750,7 +757,7 @@ overload strptr_of with strptr_of_strptrlen
 
 fun strptr_dup {l:agz} (x: !strptr l): strptr1
 fun string_tail
-  {n,i:nat | i <= n} (
+  {n:int} {i:nat | i <= n} (
   x: string n, i: size_t i
 ) :<> [l:addr] (strptr l -<lin,prf> void | strptrlen (l, n-i))
   = "atspre_padd_size"
