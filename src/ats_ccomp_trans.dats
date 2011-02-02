@@ -1982,9 +1982,11 @@ in
         if knd > 0 then KONTnone () else KONTcaseof_fail (loc0)
       ) : kont
       val (pf_mark | ()) = the_dynctx_mark ()
+//
       val branchlst = begin
         ccomp_hiclaulst (level, vps, hicls, tmp_res, fail)
       end // end of [val]
+//
       val () = the_dynctx_unmark (pf_mark | (*none*))
     in
       instr_add_switch (res, loc0, branchlst)

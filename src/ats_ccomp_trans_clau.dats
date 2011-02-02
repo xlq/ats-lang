@@ -649,10 +649,13 @@ ccomp_hiclaulst (
     , hicls: hiclaulst
     ) :<cloptr1> l0st = begin case+ hicls of
     | list_cons (hicl, hicls) => let
+//
         val tl = tmplab_make ()
         val xy = ccomp_hiclau
           (hicl.hiclau_loc, level, branchlst, tl, vps, hicl, tmp_res)
+//
         val xys = auxlst (branchlst, hicls)
+//
       in
         L0STcons (tl, hicl, xy.0, xy.1, xys)
       end // end of [list_cons]

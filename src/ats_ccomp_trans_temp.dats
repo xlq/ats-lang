@@ -120,7 +120,9 @@ print_the_stactx () = let
   val kis = $Map.map_list_inf (!p) where {
     val (vbox pf | p) = ref_get_view_ptr (the_stactx)
   } // end of [val]
-  fun loop (kis: List_vt @(s2var_t, hityp_t)): void = case+ kis of
+  fun loop (
+    kis: List_vt @(s2var_t, hityp_t)
+  ) : void = case+ kis of
     | ~list_vt_cons (ki, kis) => let
         val () = print_s2var (ki.0)
         val () = print_string " -> "
@@ -129,7 +131,7 @@ print_the_stactx () = let
       in
         loop (kis)
       end // end of [list_vt_cons]
-    | ~list_vt_nil () => ()
+    | ~list_vt_nil () => () // end of [list_vt_nil]
   // end of [loop]
 in
   loop (kis)
@@ -151,17 +153,20 @@ end // end of [the_stactx_find]
 
 implement
 the_stactx_push () = let
+//
   val stactx = let
     val (vbox pf | p) = ref_get_view_ptr (the_stactx)
     val stactx = !p
   in
     !p := stactx_nil (); stactx
   end // end of [val]
+//
   val () = let
     val (vbox pf | p) = ref_get_view_ptr (the_stactxlst)
   in
     !p := list_vt_cons (stactx, !p)
   end // end of [val]
+//
 in
   (unit_v () | ())
 end // end of [the_stactx_push]
@@ -169,6 +174,7 @@ end // end of [the_stactx_push]
 implement
 the_stactx_pop (pf | (*none*)) = let
   prval unit_v () = pf
+//
   var err: int = 0; val stactx = let
     val (vbox pf | p) = ref_get_view_ptr (the_stactxlst)
     val stactx = (
@@ -181,16 +187,19 @@ the_stactx_pop (pf | (*none*)) = let
   in
     stactx
   end // end of [val]
+//
   val () = if err > 0 then begin // error checking
     prerr_interror (); prerr ": the_stactx_pop"; prerr_newline ();
     $Err.abort {void} ()
   end // end of [val]
+//
   val stactx = let
     val (vbox pf | p) = ref_get_view_ptr (the_stactx)
     val () = $Map.map_free (!p)
   in
     !p := stactx
   end // end of [val]
+//
 in
   // empty
 end // end of [the_stactx_pop]
@@ -317,7 +326,8 @@ fn prerr_tmpcstvar (tcv: tmpcstvar): void = prerr_mac (fprint_tmpcstvar, tcv)
 
 (* ****** ****** *)
 
-extern fun ccomp_tmpdef (
+extern
+fun ccomp_tmpdef (
   loc0: loc_t
 , res: &instrlst_vt
 , hit0: hityp_t
@@ -325,7 +335,7 @@ extern fun ccomp_tmpdef (
 , hitss: hityplstlst_t
 , fullname: string
 , tmpdef: tmpdef_t
-) : valprim
+) : valprim // end of [ccomp_tmpdef]
 
 (* ****** ****** *)
 
@@ -342,26 +352,36 @@ fn template_arg_match (
     val hit = hityp_encode hit in the_stactx_add (s2v, hit)
   end // end of [aux]
 //
-  fun auxlst (s2vs: s2varlst, hits: hityplst)
-    :<cloptr1> void = begin case+ (s2vs, hits) of
-    | (list_cons (s2v, s2vs), list_cons (hit, hits)) => begin
-        let val () = aux (s2v, hit) in auxlst (s2vs, hits) end
-      end
+  fun auxlst (
+    s2vs: s2varlst
+  , hits: hityplst
+  ) :<cloptr1> void = begin
+    case+ (s2vs, hits) of
+    | (list_cons (s2v, s2vs),
+       list_cons (hit, hits)) => let
+       val () = aux (s2v, hit) in auxlst (s2vs, hits)
+      end // end of [list_cons _, list_cons _]
     | (list_nil (), list_nil ()) => ()
-    | (_, _) => begin
-        $Loc.prerr_location loc0; prerr ": error(ccomp)";
-        prerr ": template argument mismatch for ["; prerr_tmpcstvar tcv; prerr "].";
-        prerr_newline ();
+    | (_, _) => let
+        val () = $Loc.prerr_location (loc0)
+        val () = prerr ": error(ccomp)"; val () = (
+          prerr ": template argument mismatch for ["; prerr_tmpcstvar tcv; prerr "]."
+        ) // end of [val]
+        val () = prerr_newline ()
+      in
         $Err.abort {void} ()
-      end
+      end // end of [_, _]
   end // end of [auxlst]
 //
-  fun auxlstlst
-    (s2qs: s2qualst, hitss: hityplstlst)
-    :<cloptr1> void = begin case+ (s2qs, hitss) of
-    | (list_cons (s2q, s2qs), list_cons (hits, hitss)) => begin
-        let val () = auxlst (s2q.0, hits) in auxlstlst (s2qs, hitss) end
-      end
+  fun auxlstlst (
+    s2qs: s2qualst
+  , hitss: hityplstlst
+  ) :<cloptr1> void = begin
+    case+ (s2qs, hitss) of
+    | (list_cons (s2q, s2qs),
+       list_cons (hits, hitss)) => let
+        val () = auxlst (s2q.0, hits) in auxlstlst (s2qs, hitss)
+      end // end of [list_cons _, list_cons _]
     | (list_nil (), list_nil ()) => ()
     | (_, _) => let
         val () = $Loc.prerr_location (loc0)
@@ -414,12 +434,16 @@ end // end of [local]
 (* ****** ****** *)
 
 implement
-ccomp_tmpdef
-  (loc0, res, hit0, tcv, hitss, fullname, tmpdef) = let
+ccomp_tmpdef (
+  loc0, res, hit0, tcv, hitss, fullname, tmpdef
+) = let
+//
   val fl = funlab_make_nam_typ (fullname, hit0)
   val vp_funclo = valprim_funclo_make (fl)
+//
   val (pf_stactx_token | ()) = the_stactx_push ()
   val (pf_dynctx_token | ()) = the_dynctx_push ()
+//
   val tmparg = tmpdef_arg_get tmpdef
   val () = template_arg_match (loc0, tcv, tmparg, hitss)
   val () = tmpnamtbl_add (fullname, vp_funclo)
@@ -446,6 +470,7 @@ ccomp_tmpdef
 //
   val () = the_stactx_pop (pf_stactx_token | (*none*))
   val () = the_dynctx_pop (pf_dynctx_token | (*none*))
+//
 in
   vp_funclo
 end // end of [ccomp_tmpdef]

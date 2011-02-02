@@ -71,7 +71,7 @@ datatype hityp_node =
       (d2con_t, hityplst)
   | HITunion of (* union type *)
       labhityplst
-  | HITvararg (* variable argument *)
+  | HITvararg (* variadic function argument *)
 // end of [hityp_node]
 
 and labhityplst =
