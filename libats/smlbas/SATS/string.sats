@@ -30,12 +30,10 @@
 *)
 
 (* ****** ****** *)
-
 //
 // Author: Hongwei Xi (hwxi AT cs DOT bu DOT edu)
 // Time: Summer, 2009
 //
-
 (* ****** ****** *)
 
 //
@@ -43,8 +41,9 @@
 //
 
 (* ****** ****** *)
-
-// this one is undefined!
+//
+// HX: this one is undefined!
+//
 fun maxSize (): size_t // maximal string size allowed
 
 (* ****** ****** *)
@@ -57,7 +56,10 @@ fun extract {n,i:nat} {b:bool;j:nat | i+j <= n}
   (s: string n, i: size_t i, j: option (size_t j, b))
   : [k:nat | (b && k == j) || (~b && k == n-i)] string (k)
 
-fun substring {n,i,j:nat | i+j <= n} (s: string n, i: size_t i, j: size_t j): string j
+fun substring
+  {n:int} {i,ln:nat | i+ln <= n}
+  (s: string n, ofs: size_t i, len: size_t ln): string (ln)
+// end of [substring]
 
 fun ^ {i,j:nat} (s1: string i, s2: string j): string (i+j)
 

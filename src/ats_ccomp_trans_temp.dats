@@ -335,10 +335,13 @@ fn template_arg_match (
   , tmparg: s2qualst
   , hitss: hityplstlst_t
   ) : void = let
-  fn aux (s2v: s2var_t, hit: hityp) :<cloptr1> void = begin
-    let val hit = hityp_encode hit in the_stactx_add (s2v, hit) end
+//
+  fun aux (
+    s2v: s2var_t, hit: hityp
+  ) :<cloptr1> void = let
+    val hit = hityp_encode hit in the_stactx_add (s2v, hit)
   end // end of [aux]
-
+//
   fun auxlst (s2vs: s2varlst, hits: hityplst)
     :<cloptr1> void = begin case+ (s2vs, hits) of
     | (list_cons (s2v, s2vs), list_cons (hit, hits)) => begin
@@ -352,7 +355,7 @@ fn template_arg_match (
         $Err.abort {void} ()
       end
   end // end of [auxlst]
-
+//
   fun auxlstlst
     (s2qs: s2qualst, hitss: hityplstlst)
     :<cloptr1> void = begin case+ (s2qs, hitss) of
@@ -360,13 +363,17 @@ fn template_arg_match (
         let val () = auxlst (s2q.0, hits) in auxlstlst (s2qs, hitss) end
       end
     | (list_nil (), list_nil ()) => ()
-    | (_, _) => begin
-        $Loc.prerr_location loc0; prerr ": error(ccomp)";
-        prerr ": template argument mismatch for ["; prerr_tmpcstvar tcv; prerr "].";
-        prerr_newline ();
+    | (_, _) => let
+        val () = $Loc.prerr_location (loc0)
+        val () = prerr ": error(ccomp)"; val () = (
+          prerr ": template argument mismatch for ["; prerr_tmpcstvar tcv; prerr "]."
+        ) // end of [val]
+        val () = prerr_newline ()
+      in
         $Err.abort {void} ()
       end // end of [_, _]
   end // end of [auxlstlst]
+//
 in
   auxlstlst (tmparg, hityplstlst_decode hitss)
 end // end of [template_arg_match]
@@ -416,6 +423,7 @@ ccomp_tmpdef
   val tmparg = tmpdef_arg_get tmpdef
   val () = template_arg_match (loc0, tcv, tmparg, hitss)
   val () = tmpnamtbl_add (fullname, vp_funclo)
+//
   (* ****** vvvvvv vvvvvv ****** *)
   val (pf_tailcallst_mark | ()) = the_tailcallst_mark ()
   val () = the_tailcallst_add (fl, list_nil ())
@@ -435,6 +443,7 @@ ccomp_tmpdef
    end (* end of [val] *)
   val () = the_tailcallst_unmark (pf_tailcallst_mark | (*none*))
   (* ****** ^^^^^^ ^^^^^^ ****** *)
+//
   val () = the_stactx_pop (pf_stactx_token | (*none*))
   val () = the_dynctx_pop (pf_dynctx_token | (*none*))
 in
@@ -444,8 +453,10 @@ end // end of [ccomp_tmpdef]
 (* ****** ****** *)
 
 implement
-template_cst_name_make (d2c, hitss) = let
-  val extdef = d2cst_extdef_get d2c; val base = (case+ extdef of
+template_cst_name_make
+  (d2c, hitss) = let
+  val extdef = d2cst_extdef_get d2c
+  val base = (case+ extdef of
     | $Syn.DCSTEXTDEFnone () => let
         val sym = d2cst_sym_get d2c; val stamp = d2cst_stamp_get d2c
         val name = tostringf (
@@ -455,9 +466,13 @@ template_cst_name_make (d2c, hitss) = let
         string_of_strptr (name)
       end // end of [if]
     | $Syn.DCSTEXTDEFsome_fun name => name
-    | $Syn.DCSTEXTDEFsome_mac _name => begin
-        prerr_interror ();
-        prerr ": tmpnamtbl_cst_name_make: d2c = "; prerr d2c; prerr_newline ();
+    | $Syn.DCSTEXTDEFsome_mac _name => let
+        val () = prerr_interror ()
+        val () =  (
+          prerr ": tmpnamtbl_cst_name_make: d2c = "; prerr d2c
+        ) // end of [val]
+        val () = prerr_newline ()
+      in
         $Err.abort {string} ()
       end // end of [DCSTEXTDEFsome_mac]
   ) : string

@@ -30,12 +30,10 @@
 *)
 
 (* ****** ****** *)
-
 //
 // Author: Hongwei Xi (hwxi AT cs DOT bu DOT edu)
 // Time: Summer, 2009
 //
-
 (* ****** ****** *)
 
 //
