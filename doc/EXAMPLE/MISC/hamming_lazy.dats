@@ -27,7 +27,7 @@ fn scale
 // end of [scale]
 *)
 macdef scale (S, n) =
-  stream_map_fun<Nat,Nat> (,(S), lam x => ,(n) nmul x)
+  stream_map_fun<Nat><Nat> (,(S), lam x => ,(n) nmul x)
 // end of [scale]
 
 val rec S: stream Nat = $delay (

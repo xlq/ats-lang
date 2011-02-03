@@ -475,23 +475,27 @@ prfun unit_v_elim (pf: unit_v): void
 //
 
 // nonlinear version
-dataviewtype thunkvalue (a:t@ype+) =
-  | thunkvalue_thunk (a) of (() -<cloref1,~ref> a)
+dataviewtype
+thunkvalue (a:t@ype+) =
+  | thunkvalue_thunk (a) of (() -<cloref,!laz> a)
   | thunkvalue_value (a) of a
 // end of [thunkvalue]
 
+// implemented in [prelude/DATS/lazy.dats]
+fun{a:t@ype}
+lazy_force_crypt (x: crypt (lazy a)):<!laz> a
+macdef lazy_force (x) = lazy_force_crypt ($encrypt ,(x))
+
 // linear version
-dataviewtype thunkvalue_vt (a:viewt@ype+) =
-  | thunkvalue_vt_thunk (a) of (() -<lin,cloptr1,~ref> a)
+dataviewtype
+thunkvalue_vt (a:viewt@ype+) =
+  | thunkvalue_vt_thunk (a) of (() -<lin,cloptr,!laz> a)
   | thunkvalue_vt_value (a) of a
 // end of [thunkvalue_vt]
 
 // implemented in [prelude/DATS/lazy.dats]
-fun{a:t@ype} lazy_force_crypt (x: crypt (lazy a)):<1,~ref> a
-macdef lazy_force (x) = lazy_force_crypt ($encrypt ,(x))
-
-// implemented in [prelude/DATS/lazy.dats]
-fun{a:viewt@ype} lazy_vt_force_crypt (x: crypt (lazy_vt a)):<1,~ref> a
+fun{a:viewt@ype}
+lazy_vt_force_crypt (x: crypt (lazy_vt a)):<!laz> a
 macdef lazy_vt_force (x) = lazy_vt_force_crypt ($encrypt ,(x))
 
 *)
@@ -499,7 +503,7 @@ macdef lazy_vt_force (x) = lazy_vt_force_crypt ($encrypt ,(x))
 (* ****** ****** *)
 
 fun lazy_vt_free
-  {a:viewt@ype} (x: lazy_vt a):<1,~ref> void = "ats_lazy_vt_free"
+  {a:viewt@ype} (x: lazy_vt a):<!laz> void = "ats_lazy_vt_free"
 overload ~ with lazy_vt_free
 
 (* ****** ****** *)

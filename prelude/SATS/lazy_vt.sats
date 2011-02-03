@@ -46,38 +46,45 @@
 (* ****** ****** *)
 
 fun{a:viewt@ype} list_vt_of_stream_vt
-  (xs: stream_vt a):<1,~ref> [n:nat] (int n, list_vt (a, n))
+  (xs: stream_vt a):<!laz> [n:nat] (int n, list_vt (a, n))
 // end of [list_vt_of_stream_vt]
 
 (* ****** ****** *)
 
-fun{a:t@ype} stream_vt_free (xs: stream_vt a):<1,~ref> void
+fun{a:t@ype} stream_vt_free (xs: stream_vt a):<!laz> void
 
 (* ****** ****** *)
 
 fun{a:t@ype}
 stream_vt_filter_fun
-  (xs: stream_vt a, pred: (&a) -<1,~ref> bool):<1,~ref> stream_vt a
+  (xs: stream_vt a, pred: (&a) -<!laz> bool):<!laz> stream_vt a
 // end of [stream_vt_filter_fun]
 
 fun{a:t@ype}
 stream_vt_filter_cloptr
-  (xs: stream_vt a, pred: (&a) -<cloptr1,~ref> bool):<1,~ref> stream_vt a
+  (xs: stream_vt a, pred: (&a) -<cloptr,!laz> bool):<!laz> stream_vt a
 // end of [stream_vt_filter_cloptr]
 
 (* ****** ****** *)
 
 fun{a1,a2:t@ype}{b:t@ype}
 stream_vt_map2_fun
-  (xs1: stream_vt a1, xs2: stream_vt a2, f: (a1, a2) -<1,~ref> b)
-  :<1,~ref> stream_vt b
+  (xs1: stream_vt a1, xs2: stream_vt a2, f: (a1, a2) -<!laz> b)
+  :<!laz> stream_vt b
 // end of [stream_vt_map2_fun]
 
 fun{a1,a2:t@ype}{b:t@ype}
 stream_vt_map2_cloptr
-  (xs1: stream_vt a1, xs2: stream_vt a2, f: (a1, a2) -<cloptr1,~ref> b)
-  :<1,~ref> stream_vt b
+  (xs1: stream_vt a1, xs2: stream_vt a2, f: (a1, a2) -<cloptr,!laz> b)
+  :<!laz> stream_vt b
 // end of [stream_vt_map2_cloptr]
+
+(* ****** ****** *)
+
+fun{a1,a2:t@ype}
+stream_vt_of_listprod {n1,n2:nat}
+  (xs1: list_vt (a1, n1), xs2: list_vt (a2, n2)): stream_vt @(a1, a2)
+// end of [stream_vt_of_listprod]
 
 (* ****** ****** *)
 
