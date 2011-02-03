@@ -202,7 +202,7 @@ local
 staload UN = "prelude/SATS/unsafe.sats"
 
 fun{a1,a2:t@ype}
-stream_vt_of_listprod_con {n1,n2:nat} (
+stream_vt_of_lstlstprod_con {n1,n2:nat} (
   xs1: list_vt (a1, n1), xs2: list_vt (a2, n2)
 ) :<!laz> stream_vt_con @(a1, a2) = let
   typedef lst2_t = list (a2, n2)
@@ -217,8 +217,9 @@ stream_vt_of_listprod_con {n1,n2:nat} (
     | ~list_vt_nil () => (free (xs2); stream_vt_nil)
   // end of [aux1]
 //
-  and aux2 {n1:nat} {k:nat} (
-    y1: a1, ys2: list (a2, k), xs1: list_vt (a1, n1), xs2: list_vt (a2, n2)
+  and aux2 {n1:nat} {k:nat | k <= n2} (
+    y1: a1, ys2: list (a2, k)
+  , xs1: list_vt (a1, n1), xs2: list_vt (a2, n2)
   ) :<!laz> res_vt =
     case+ ys2 of
     | list_cons (y2, ys2) => let
@@ -233,14 +234,65 @@ stream_vt_of_listprod_con {n1,n2:nat} (
 //
 in
   aux1 (xs1, xs2)
-end // end of [stream_vt_of_listprod_con]
+end // end of [stream_vt_of_lstlstprod_con]
 
 in // in of [local]
 
 implement{a1,a2}
-stream_vt_of_listprod (xs1, xs2) = $ldelay (
-  stream_vt_of_listprod_con<a1,a2> (xs1, xs2), (free (xs1); free (xs2))
-) // end of [stream_vt_of_listprod]
+stream_vt_of_lstlstprod (xs1, xs2) = $ldelay (
+  stream_vt_of_lstlstprod_con<a1,a2> (xs1, xs2), (free (xs1); free (xs2))
+) // end of [stream_vt_of_lstlstprod]
+
+end // end of [local]
+
+(* ****** ****** *)
+
+local
+
+#define free list_vt_free
+staload UN = "prelude/SATS/unsafe.sats"
+
+fun{a1,a2:t@ype}
+stream_vt_of_strmlstprod_con {n:nat} (
+  xs1: stream_vt (a1), xs2: list_vt (a2, n)
+) :<!laz> stream_vt_con @(a1, a2) = let
+  typedef lst2_t = list (a2, n)
+  viewtypedef res_vt = stream_vt_con @(a1, a2)
+//
+  fun aux1 (
+    xs1: stream_vt (a1), xs2: list_vt (a2, n)
+  ) :<!laz> res_vt =
+    case+ !xs1 of
+    | ~stream_vt_cons (x1, xs1) =>
+        aux2 (x1, $UN.castvwtp1 {lst2_t} (xs2), xs1, xs2)
+    | ~stream_vt_nil () => (free (xs2); stream_vt_nil)
+  // end of [aux1]
+//
+  and aux2 {k:nat | k <= n} (
+    y1: a1, ys2: list (a2, k)
+  , xs1: stream_vt (a1), xs2: list_vt (a2, n)
+  ) :<!laz> res_vt =
+    case+ ys2 of
+    | list_cons (y2, ys2) => let
+        val res = $ldelay (
+          aux2 (y1, ys2, xs1, xs2), (~xs1; free (xs2))
+        ) // end of [val]
+      in
+        stream_vt_cons ((y1, y2), res)
+      end // end of [list_cons]
+    | list_nil () => aux1 (xs1, xs2)
+  // end of [aux2]
+//
+in
+  aux1 (xs1, xs2)
+end // end of [stream_vt_of_strmlstprod_con]
+
+in // in of [local]
+
+implement{a1,a2}
+stream_vt_of_strmlstprod (xs1, xs2) = $ldelay (
+  stream_vt_of_strmlstprod_con<a1,a2> (xs1, xs2), (~xs1; free (xs2))
+) // end of [stream_vt_of_strmlstprod]
 
 end // end of [local]
 

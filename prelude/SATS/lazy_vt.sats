@@ -82,9 +82,16 @@ stream_vt_map2_cloptr
 (* ****** ****** *)
 
 fun{a1,a2:t@ype}
-stream_vt_of_listprod {n1,n2:nat}
+stream_vt_of_lstlstprod {n1,n2:nat}
   (xs1: list_vt (a1, n1), xs2: list_vt (a2, n2)): stream_vt @(a1, a2)
-// end of [stream_vt_of_listprod]
+// end of [stream_vt_of_lstlstprod]
+
+(* ****** ****** *)
+
+fun{a1,a2:t@ype}
+stream_vt_of_strmlstprod {n:nat}
+  (xs1: stream_vt (a1), xs2: list_vt (a2, n)): stream_vt @(a1, a2)
+// end of [stream_vt_of_strmlstprod]
 
 (* ****** ****** *)
 
