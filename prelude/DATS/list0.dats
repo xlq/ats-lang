@@ -114,14 +114,14 @@ end // end of [list0_filter]
 
 (* ****** ****** *)
 
-implement{init,a}
+implement{init}{a}
 list0_fold_left (f, init, xs) =
-  list_fold_left_cloref<init,a> (f, init, list1_of_list0 xs)
+  list_fold_left_cloref<init><a> (f, init, list1_of_list0 xs)
 // end of [list0_fold_left]
 
-implement{a,sink}
+implement{a}{sink}
 list0_fold_right (f, xs, sink) =
-  list_fold_right_cloref<a,sink> (f, list1_of_list0 xs, sink)
+  list_fold_right_cloref<a><sink> (f, list1_of_list0 xs, sink)
 // end of [list0_fold_right]
 
 (* ****** ****** *)
@@ -176,12 +176,12 @@ list0_length (xs) = list_length (list1_of_list0 xs)
 
 (* ****** ****** *)
 
-implement{a,b}
+implement{a}{b}
 list0_map_fun (xs, f) =
   list0_of_list_vt (list_map_fun (list1_of_list0 xs, f))
 // end of [list0_map_fun]
 
-implement{a,b}
+implement{a}{b}
 list0_map_cloref (xs, f) =
   list0_of_list_vt (list_map_cloref (list1_of_list0 xs, f))
 // end of [list0_map_cloref]

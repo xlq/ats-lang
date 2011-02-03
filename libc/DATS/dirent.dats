@@ -57,7 +57,7 @@ dirent_stream_vt_make_DIR
   fn f (
       pf_dir: DIR @ l_dir
     | p_dir: ptr l_dir, res: &stream_vt_con dirent? >> stream_vt_con dirent
-    ) :<1,~ref> void = let
+    ) :<!laz> void = let
     var ret: ptr // uninitialized
     val () = (res := stream_vt_cons {dirent} (?, ?))
     val+ stream_vt_cons (!p_x, !p_xs) = res
@@ -93,7 +93,7 @@ direntptr_stream_vt_make_DIR
       pf_dir: DIR @ l_dir
     | p_dir: ptr l_dir
     , res: &stream_vt_con direntptr_gc? >> stream_vt_con direntptr_gc
-    ) :<1,~ref> void = let
+    ) :<!laz> void = let
     var ret: ptr // uninitialized
     val (pf_ent_gc, pf_ent | p_ent) = ptr_alloc_tsz {dirent} (sizeof<dirent>)
     val err = readdir_r (!p_dir, !p_ent, ret)

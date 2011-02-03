@@ -41,15 +41,20 @@
 
 /* ****** ****** */
 
-#define ats_instr_move_lazy_vt_delay_mac(tmp, hit, vp_clo) \
+#define ats_instr_move_lazy_ldelay_mac(tmp, hit, vp_clo) \
   do { tmp = (vp_clo) ; } while (0) /* end of [do ... while ...] */
 
-#define ats_instr_move_lazy_vt_force_mac(tmp, hit, vp_lazy) do { \
+#define ats_instr_move_lazy_lforce_mac(tmp, hit, vp_lazy) do { \
   tmp = \
     ((hit (*)(ats_ptr_type, ats_bool_type))ats_closure_fun(vp_lazy))(vp_lazy, ats_true_bool) ; \
   ATS_FREE (vp_lazy) ; \
 } while (0) /* end of [do ... while ...] */
 
+/* ****** ****** */
+
+/*
+** HX: [lazy_vt_free] is declared in $ATSHOME/prelude/basics_dyn.sats
+*/
 ATSinline()
 ats_void_type
 ats_lazy_vt_free (ats_ptr_type vp_lazy) {

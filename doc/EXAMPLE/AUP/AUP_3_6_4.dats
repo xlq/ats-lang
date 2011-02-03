@@ -61,8 +61,8 @@ fun SAME_INODE .<>.
 macdef errno_is_ENOENT () = (errno_get () = ENOENT)
 
 fun loop_dir (
-    ents: stream_vt dirent, stat: &stat, lstrs: &pathlist, nent: int
-  ) : int = case+ !ents of
+  ents: stream_vt dirent, stat: &stat, lstrs: &pathlist, nent: int
+) : int = case+ !ents of
   | ~stream_vt_cons (ent, ents) => let
       var ent = ent
       val [l:addr] (fpf_d_name | d_name) = dirent_get_d_name (ent)

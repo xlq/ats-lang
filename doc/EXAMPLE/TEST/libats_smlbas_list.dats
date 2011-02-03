@@ -45,7 +45,7 @@ implement main () = () where {
     (lam (c, i) => (if i > 0 then print ", "; print c; i + 1), 0, abs) 
   val () = print_newline ()
 //
-  val ABs = map<char,char> (lam x => toUpper x, abs)
+  val ABs = map<char><char> (lam x => toUpper x, abs)
   val () = app<char> (lam (c) => print c, ABs)
   val () = print_newline ()
 //
@@ -72,7 +72,7 @@ implement main () = () where {
   val () = assert (~exists<char> (lam (x) => x \gt 'z', abs))
 //
   macdef list0_sing (x) = list0_cons (,(x), list0_nil ())
-  val abss = map<char,list0 char> (lam x => list0_sing x, abs) 
+  val abss = map<char><list0 char> (lam x => list0_sing x, abs) 
   val () = assert
     (collate<char> (lam (x, y) => compare (x, y), abs, abs1) = 0)
   // end of [val]

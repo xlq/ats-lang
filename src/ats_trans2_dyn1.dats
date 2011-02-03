@@ -1636,7 +1636,7 @@ in
         | cons (d1e1, cons (d1e2, nil ())) => let
             val d2e1 = d1exp_tr d1e1 and d2e2 = d1exp_tr d1e2
           in
-            d2exp_lazy_vt_delay (loc0, d2e1, d2e2)
+            d2exp_lazy_ldelay (loc0, d2e1, d2e2)
           end // end of [cons (_, cons (_, nil))]
         | _ => $Err.abort {d2exp} () where {
             val n = $Lst.list_length d1es
@@ -1649,7 +1649,7 @@ in
       | _ => let
           val d2e1 = d1exp_tr d1e and d2e2 = d2exp_empty (d1e.d1exp_loc)
         in
-          d2exp_lazy_vt_delay (loc0, d2e1, d2e2)
+          d2exp_lazy_ldelay (loc0, d2e1, d2e2)
         end // end of [_]
       end // end of [_ when lin = 1]
     end (* end of [D1Elazy_delay] *)

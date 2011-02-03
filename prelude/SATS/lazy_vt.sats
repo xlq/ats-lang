@@ -40,15 +40,14 @@
 (* ****** ****** *)
 
 #if VERBOSE_PRELUDE #then
-
 #print "Loading [lazy_vt.sats] starts!\n"
-
-#endif
+#endif // end of [VERBOSE_PRELUDE]
 
 (* ****** ****** *)
 
 fun{a:viewt@ype} list_vt_of_stream_vt
   (xs: stream_vt a):<1,~ref> [n:nat] (int n, list_vt (a, n))
+// end of [list_vt_of_stream_vt]
 
 (* ****** ****** *)
 
@@ -56,28 +55,34 @@ fun{a:t@ype} stream_vt_free (xs: stream_vt a):<1,~ref> void
 
 (* ****** ****** *)
 
-fun{a:t@ype} stream_vt_filter_fun
+fun{a:t@ype}
+stream_vt_filter_fun
   (xs: stream_vt a, pred: (&a) -<1,~ref> bool):<1,~ref> stream_vt a
+// end of [stream_vt_filter_fun]
 
-fun{a:t@ype} stream_vt_filter_cloptr
+fun{a:t@ype}
+stream_vt_filter_cloptr
   (xs: stream_vt a, pred: (&a) -<cloptr1,~ref> bool):<1,~ref> stream_vt a
+// end of [stream_vt_filter_cloptr]
 
 (* ****** ****** *)
 
-fun{a1,a2,b:t@ype} stream_vt_map2_fun
+fun{a1,a2:t@ype}{b:t@ype}
+stream_vt_map2_fun
   (xs1: stream_vt a1, xs2: stream_vt a2, f: (a1, a2) -<1,~ref> b)
   :<1,~ref> stream_vt b
+// end of [stream_vt_map2_fun]
 
-fun{a1,a2,b:t@ype} stream_vt_map2_cloptr
+fun{a1,a2:t@ype}{b:t@ype}
+stream_vt_map2_cloptr
   (xs1: stream_vt a1, xs2: stream_vt a2, f: (a1, a2) -<cloptr1,~ref> b)
   :<1,~ref> stream_vt b
+// end of [stream_vt_map2_cloptr]
 
 (* ****** ****** *)
 
 #if VERBOSE_PRELUDE #then
-
 #print "Loading [lazy_vt.sats] finishes!\n"
-
-#endif
+#endif // end of [VERBOSE_PRELUDE]
 
 (* end of [lazy_vt.sats] *)

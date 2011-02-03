@@ -578,23 +578,29 @@ implement d3exp_lam_sta
 
 (* ****** ****** *)
 
-implement d3exp_lazy_delay (loc, s2e, d3e) =  '{
+implement
+d3exp_lazy_delay
+  (loc, s2e, d3e) =  '{
   d3exp_loc= loc
 , d3exp_eff= S2EFFnil (), d3exp_typ= s2e
 , d3exp_node= D3Elazy_delay (d3e)
-}
+} // end of [d3exp_lazy_delay]
 
-implement d3exp_lazy_vt_delay (loc, s2e, d3e1, d3e2) =  '{
+implement
+d3exp_lazy_ldelay
+  (loc, s2e, d3e1, d3e2) =  '{
   d3exp_loc= loc
 , d3exp_eff= S2EFFnil (), d3exp_typ= s2e
-, d3exp_node= D3Elazy_vt_delay (d3e1, d3e2)
-}
+, d3exp_node= D3Elazy_ldelay (d3e1, d3e2)
+} // end of [d3exp_lazy_ldelay]
 
-implement d3exp_lazy_force (loc, s2e, lin, d3e) =  '{
+implement
+d3exp_lazy_force
+  (loc, s2e, lin, d3e) =  '{
   d3exp_loc= loc
 , d3exp_eff= S2EFFnil (), d3exp_typ= s2e
 , d3exp_node= D3Elazy_force (lin, d3e)
-}
+} // end of [d3exp_lazy_force]
 
 (* ****** ****** *)
 

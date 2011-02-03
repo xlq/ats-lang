@@ -358,7 +358,7 @@ and hiexp_node =
       (hipatlst, hiexp)
   | HIElazy_delay of (* delayed computation *)
       hiexp (*eval*)
-  | HIElazy_vt_delay of (* delayed linear computation *)
+  | HIElazy_ldelay of (* delayed linear computation *)
       (hiexp (*eval*), hiexp (*free*))
   | HIElazy_force of (* lazy value evaluation *)
       (int(*linearity*), hiexp)
@@ -626,7 +626,7 @@ fun hiexp_laminit
 fun hiexp_lazy_delay
   (_: loc_t, _body: hityp, _eval: hiexp): hiexp
 
-fun hiexp_lazy_vt_delay
+fun hiexp_lazy_ldelay
   (_: loc_t, _body: hityp, _eval: hiexp, _free: hiexp): hiexp
 
 fun hiexp_lazy_force

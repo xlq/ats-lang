@@ -106,35 +106,35 @@ stream_filter_cloref (xs, p) =
 
 (* ****** ****** *)
 
-implement{a,b}
+implement{a}{b}
 stream_map_fun (xs, f) = $delay (begin
   case+ !xs of
-  | x :: xs => cons (f x, stream_map_fun<a,b> (xs, f)) | nil () => nil ()
+  | x :: xs => cons (f x, stream_map_fun<a><b> (xs, f)) | nil () => nil ()
 end : stream_con b) // end of [stream_map_fun]
 
-implement{a,b}
+implement{a}{b}
 stream_map_cloref (xs, f) = $delay (begin
   case+ !xs of
-  | x :: xs => cons (f x, stream_map_cloref<a,b> (xs, f)) | nil () => nil ()
+  | x :: xs => cons (f x, stream_map_cloref<a><b> (xs, f)) | nil () => nil ()
 end : stream_con b) // end of [stream_map_cloref]
 
 (* ****** ****** *)
 
-implement{a1,a2,b}
+implement{a1,a2}{b}
 stream_map2_fun (xs1, xs2, f) = $delay (begin
   case+ !xs1 of
   | x1 :: xs1 => begin case+ !xs2 of
-    | x2 :: xs2 => f (x1, x2) :: stream_map2_fun<a1,a2,b> (xs1, xs2, f)
+    | x2 :: xs2 => f (x1, x2) :: stream_map2_fun<a1,a2><b> (xs1, xs2, f)
     | nil () => nil ()
     end // end of [::]
   | nil () => nil ()
 end : stream_con b) // end of [stream_map2_fun]
 
-implement{a1,a2,b}
+implement{a1,a2}{b}
 stream_map2_cloref (xs1, xs2, f) = $delay (begin
   case+ !xs1 of
   | x1 :: xs1 => begin case+ !xs2 of
-    | x2 :: xs2 => f (x1, x2) :: stream_map2_cloref<a1,a2,b> (xs1, xs2, f)
+    | x2 :: xs2 => f (x1, x2) :: stream_map2_cloref<a1,a2><b> (xs1, xs2, f)
     | nil () => nil ()
     end // end of [::]
   | nil () => nil ()

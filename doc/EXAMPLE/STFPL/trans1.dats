@@ -349,7 +349,7 @@ trans1_exp (e) =
         var G = G
         val xs = ctx_extend_arglst (G, args)
         val ts_arg =
-          list_map_fun<v1ar,t1yp> (xs, lam x =<fun> x.v1ar_typ)
+          list_map_fun<v1ar><t1yp> (xs, lam x =<fun> x.v1ar_typ)
         // end of [val]
         val ts_arg = l2l (ts_arg)
         val t_arg = (case+ ts_arg of
@@ -432,7 +432,7 @@ trans1_exp (e) =
         var G = G
         val xs = ctx_extend_arglst (G, args)
         val ts_arg =
-          list_map_fun<v1ar,t1yp> (xs, lam x =<fun> x.v1ar_typ)
+          list_map_fun<v1ar><t1yp> (xs, lam x =<fun> x.v1ar_typ)
         // end of [val]
         val ts_arg = l2l (ts_arg)
         val t_arg = (case+ ts_arg of
@@ -501,7 +501,7 @@ trans1_exp (e) =
         } // end of [val]
         prval unit_v () = pf
         val es = l2l (es)
-        val ts = list_map_fun<e1xp,t1yp> (es, lam e =<fun> e.e1xp_typ)
+        val ts = list_map_fun<e1xp><t1yp> (es, lam e =<fun> e.e1xp_typ)
         val ts = l2l (ts)
       in
         e1xp_make_tup (loc0, es, T1YPtup ts)

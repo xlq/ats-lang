@@ -352,13 +352,14 @@ in
   | D3Elazy_delay (d3e) => begin
       prstr "D3Elazy_delay("; fprint_d3exp (pf | out, d3e); prstr ")"
     end // end of [D3Elazy_delay]
-  | D3Elazy_vt_delay (d3e_eval, d3e_free) => begin
+  | D3Elazy_ldelay
+      (d3e_eval, d3e_free) => begin
       prstr "D3Elazy_delay(";
       fprint_d3exp (pf | out, d3e_eval);
       prstr "; ";
       fprint_d3exp (pf | out, d3e_free);
       prstr ")"
-    end // end of [D3Elazy_vt_delay]
+    end // end of [D3Elazy_ldelay]
   | D3Elazy_force (lin, d3e) => begin
       prstr "D3Elazy_force(";
       fprint_int (pf | out, lin);

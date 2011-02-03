@@ -119,12 +119,12 @@ list0_filter_cloref (xs: list0 a, pred: a -<cloref1> bool): list0 a
 
 (* ****** ****** *)
 
-fun{init,a:t@ype}
+fun{init:t@ype}{a:t@ype}
 list0_fold_left
   (f: (init, a) -<cloref1> init, ini: init, xs: list0 a): init
 // end of [list0_fold_left]
 
-fun{a,sink:t@ype}
+fun{a:t@ype}{sink:t@ype}
 list0_fold_right
   (f: (a, sink) -<cloref1> sink, xs: list0 a, snk: sink): sink
 // end of [list0_fold_right]
@@ -163,10 +163,10 @@ fun{a:t@ype} list0_length (xs: list0 a):<> int
 
 (* ****** ****** *)
 
-fun{a,b:t@ype}
+fun{a:t@ype}{b:t@ype}
 list0_map_fun (xs: list0 a, f: a -<fun1> b): list0 b
 
-fun{a,b:t@ype}
+fun{a:t@ype}{b:t@ype}
 list0_map_cloref (xs: list0 a, f: a -<cloref1> b): list0 b
 
 (* ****** ****** *)

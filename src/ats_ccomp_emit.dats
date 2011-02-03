@@ -1867,11 +1867,12 @@ in
       emit_move_con (pf | out, tmp, hit_sum, d2c, vps)
     end // end of [INSTRmove_con]
 //
-  | INSTRmove_lazy_delay (tmp, lin, hit_body, vp_clo) => let
+  | INSTRmove_lazy_delay
+      (tmp, lin, hit_body, vp_clo) => let
       val () = if lin = 0 then begin
         fprint1_string (pf | out, "ats_instr_move_lazy_delay_mac (")
       end else begin
-        fprint1_string (pf | out, "ats_instr_move_lazy_vt_delay_mac (")
+        fprint1_string (pf | out, "ats_instr_move_lazy_ldelay_mac (")
       end // end of [val]
       val () = emit_valprim_tmpvar (pf | out, tmp)
       val () = fprint1_string (pf | out, ", ")
@@ -1882,11 +1883,12 @@ in
     in
       // empty
     end // end of [INSTRmove_lazy_delay]
-  | INSTRmove_lazy_force (tmp, lin, hit_val, vp_lazy) => let
+  | INSTRmove_lazy_force
+      (tmp, lin, hit_val, vp_lazy) => let
       val () = if lin = 0 then begin
         fprint1_string (pf | out, "ats_instr_move_lazy_force_mac (")
       end else begin
-        fprint1_string (pf | out, "ats_instr_move_lazy_vt_force_mac (")        
+        fprint1_string (pf | out, "ats_instr_move_lazy_lforce_mac (")        
       end // end of [val]
       val () = emit_valprim_tmpvar (pf | out, tmp)
       val () = fprint1_string (pf | out, ", ")

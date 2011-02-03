@@ -442,13 +442,13 @@ in
       fprint_hiexp (pf | out, hie_eval);
       prstr ")"
     end // end of [HIElazy_delay]
-  | HIElazy_vt_delay (hie_eval, hie_free) => begin
+  | HIElazy_ldelay (hie_eval, hie_free) => begin
       prstr "HIElazy_delay(";
       fprint_hiexp (pf | out, hie_eval);
       prstr "; ";
       fprint_hiexp (pf | out, hie_free);
       prstr ")"
-    end // end of [HIElazy_vt_delay]
+    end // end of [HIElazy_ldelay]
   | HIElazy_force (lin, hie_lazy) => begin
       prstr "HIElazy_force(";
       fprint_int (pf | out, lin);

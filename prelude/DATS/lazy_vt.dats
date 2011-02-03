@@ -159,7 +159,7 @@ local
 #define nil stream_vt_nil
 #define :: stream_vt_cons
 
-fun{a1,a2,b:t@ype}
+fun{a1,a2:t@ype}{b:t@ype}
 stream_vt_map2_cloptr_con (
   xs1: stream_vt a1
 , xs2: stream_vt a2
@@ -170,7 +170,7 @@ stream_vt_map2_cloptr_con (
     | ~(x2 :: xs2) => y :: ys where {
         val y = f (x1, x2)
         val ys = $ldelay (
-          stream_vt_map2_cloptr_con<a1,a2,b> (xs1, xs2, f)
+          stream_vt_map2_cloptr_con<a1,a2><b> (xs1, xs2, f)
         , (~xs1; ~xs2; cloptr_free f)
         ) // end of [val ys]
       } (* end of [::] *)
@@ -181,15 +181,15 @@ end // end of [stream_map2_con]
 
 in // in of [local]
 
-implement{a1,a2,b}
+implement{a1,a2}{b}
 stream_vt_map2_fun (xs1, xs2, f) = $ldelay (
-  stream_vt_map2_cloptr_con<a1,a2,b> (xs1, xs2, lam (x1, x2) => f (x1, x2))
+  stream_vt_map2_cloptr_con<a1,a2><b> (xs1, xs2, lam (x1, x2) => f (x1, x2))
 , (~xs1; ~xs2)
 ) // end of [stream_map2_fun]
 
-implement{a1,a2,b}
+implement{a1,a2}{b}
 stream_vt_map2_cloptr (xs1, xs2, f) = $ldelay (
-  stream_vt_map2_cloptr_con<a1,a2,b> (xs1, xs2, f), (~xs1; ~xs2; cloptr_free f)
+  stream_vt_map2_cloptr_con<a1,a2><b> (xs1, xs2, f), (~xs1; ~xs2; cloptr_free f)
 ) // end of [stream_vt_map2_cloptr]
 
 end // end of [local]

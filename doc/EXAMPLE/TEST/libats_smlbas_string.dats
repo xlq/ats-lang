@@ -68,7 +68,7 @@ implement main () = () where {
   val () = $List.app<string> (lam s => (print "field="; print s; print_newline ()), words)
 //
   val abs = explode abs
-  val abss = $List.map<char,string> (lam c => str c, abs) 
+  val abss = $List.map<char><string> (lam c => str c, abs) 
   val abs_sep = concatWith (sep, abss) where { val sep = ", " }
   val () = print (abs_sep)
   val () = print_newline ()

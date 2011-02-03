@@ -1180,11 +1180,11 @@ in
     in
       hiexp_lazy_delay (loc0, hit0, d3exp_tr d3e_eval)
     end // end of [D3Elazy_delay]
-  | D3Elazy_vt_delay (d3e_eval, d3e_free) => let
+  | D3Elazy_ldelay (d3e_eval, d3e_free) => let
       val hit0 = s2exp_tr (loc0, 0(*deep*), s2e0)
       val hie_eval = d3exp_tr d3e_eval and hie_free = d3exp_tr d3e_free
     in
-      hiexp_lazy_vt_delay (loc0, hit0, hie_eval, hie_free)
+      hiexp_lazy_ldelay (loc0, hit0, hie_eval, hie_free)
     end // end of [D3Elazy_delay]
   | D3Elazy_force (lin, d3e_lazy) => let
       val hit0 = s2exp_tr (loc0, 0(*deep*), s2e0)

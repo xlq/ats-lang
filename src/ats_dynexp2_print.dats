@@ -424,13 +424,13 @@ in
   | D2Elazy_delay (d2e) => begin
       prstr "D2Elazy_delay("; fprint_d2exp (pf | out, d2e); prstr ")"
     end // end of [D2Elazy_delay]
-  | D2Elazy_vt_delay (d2e_eval, d2e_free) => begin
-      prstr "D2Elazy_vt_delay(";
+  | D2Elazy_ldelay (d2e_eval, d2e_free) => begin
+      prstr "D2Elazy_ldelay(";
       fprint_d2exp (pf | out, d2e_eval);
       prstr "; ";
       fprint_d2exp (pf | out, d2e_free);
       prstr ")"
-    end // end of [D2Elazy_vt_delay]
+    end // end of [D2Elazy_ldelay]
   | D2Ederef d2e => begin
       prstr "D2Ederef("; fprint_d2exp (pf | out, d2e); prstr ")"
     end // end of [D2Ederef]

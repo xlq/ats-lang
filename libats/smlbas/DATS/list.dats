@@ -122,9 +122,10 @@ app (f, xs) = loop (f, xs) where {
 
 (* ****** ****** *)
 
-implement{a,b} map (f, xs) = list0_map_cloref<a,b> (xs, f) 
+implement{a}{b}
+map (f, xs) = list0_map_cloref<a><b> (xs, f) 
 
-implement{a,b}
+implement{a}{b}
 mapPartial (f, xs) = res where {
   typedef res_t = list0 b
   fun loop (
@@ -201,7 +202,8 @@ foldl (f, ini, xs) = loop (f, ini, xs) where {
   // end of [loop]  
 } // end of [foldl]
 
-implement{a,b} foldr (f, snk, xs) = list0_fold_right<a,b> (f, xs, snk)
+implement{a,b}
+foldr (f, snk, xs) = list0_fold_right<a><b> (f, xs, snk)
 
 (* ****** ****** *)
 

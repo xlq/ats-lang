@@ -1354,12 +1354,12 @@ in
     in
       d2exp_lazy_delay (loc0, d2e)
     end // end of [D2Elazy_delay]
-  | D2Elazy_vt_delay (d2e1, d2e2) => let
+  | D2Elazy_ldelay (d2e1, d2e2) => let
       val d2e1 = eval1_d2exp (loc0, ctx, env, d2e1)
       val d2e2 = eval1_d2exp (loc0, ctx, env, d2e2)
     in
-      d2exp_lazy_vt_delay (loc0, d2e1, d2e2)
-    end // end of [D2Elazy_vt_delay]
+      d2exp_lazy_ldelay (loc0, d2e1, d2e2)
+    end // end of [D2Elazy_ldelay]
   | D2Elet (d2cs, d2e) => let
       val () = alphaenv_push (env)
       val d2cs = eval1_d2eclst (loc0, ctx, env, d2cs)

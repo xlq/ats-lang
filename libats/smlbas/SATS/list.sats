@@ -69,9 +69,11 @@ fun{a:t@ype} concat (xs: list0 (list0 a)): list0 a
 
 fun{a:t@ype} app (f: a -<cloref1> void, xs: list0 a): void
 
-fun{a,b:t@ype} map (f: a -<cloref1> b, xs: list0 a) : list0 b
+fun{a:t@ype}{b:t@ype}
+map (f: a -<cloref1> b, xs: list0 a) : list0 b
 
-fun{a,b:t@ype} mapPartial (f: a -<cloref1> option0 b, xs: list0 a) : list0 b
+fun{a:t@ype}{b:t@ype}
+mapPartial (f: a -<cloref1> option0 b, xs: list0 a) : list0 b
 
 (* ****** ****** *)
 

@@ -71,16 +71,18 @@ fun opendir_exn (s: string)
 
 (* ****** ****** *)
 
-fun closedir_err {l_dir:addr} (pf: DIR @ l_dir | p: ptr l_dir):<> int
-  = "#atslib_closedir_err" // macro!
+fun closedir_err {l_dir:addr} (
+  pf: DIR @ l_dir | p: ptr l_dir
+) :<> int = "#atslib_closedir_err" // macro!
 
-fun closedir_exn {l_dir:addr} (pf: DIR @ l_dir | p: ptr l_dir):<!exn> void
-  = "atslib_closedir_exn" // function!
+fun closedir_exn {l_dir:addr} (
+  pf: DIR @ l_dir | p: ptr l_dir
+) :<!exn> void = "atslib_closedir_exn" // function!
 
 (* ****** ****** *)
 
-fun readdir (dir: &DIR) :<>
-  [l_ent:addr] (vptroutopt (dirent, l_ent) | ptr l_ent) = "#atslib_readdir"
+fun readdir (dir: &DIR):<> [l_ent:addr]
+  (vptroutopt (dirent, l_ent) | ptr l_ent) = "#atslib_readdir"
 // end of [readdir]
 
 (* ****** ****** *)
@@ -91,16 +93,23 @@ fun telldir (dir: &DIR): off_t = "#atslib_telldir"
 
 (* ****** ****** *)
 
-// [dirent_stream_vt_make_DIR] is reentrant
-fun dirent_stream_vt_make_DIR {l_dir:addr}
-  (pf: DIR @ l_dir | p: ptr l_dir):<!laz> stream_vt (dirent)
-
 viewtypedef direntptr_gc =
   [l:addr] (free_gc_v (dirent, l), dirent @ l | ptr l)
+// end of [direntptr_gc]
 
-// [direntptr_stream_vt_make_DIR] is reentrant
+//
+// HX: [dirent_stream_vt_make_DIR] is reentrant
+//
+fun dirent_stream_vt_make_DIR {l_dir:addr}
+  (pf: DIR @ l_dir | p: ptr l_dir):<!laz> stream_vt (dirent)
+// end of [dirent_strean_vt_make_DIR]
+
+//
+// HX: [direntptr_stream_vt_make_DIR] is reentrant
+//
 fun direntptr_stream_vt_make_DIR {l_dir:addr}
   (pf: DIR @ l_dir | p: ptr l_dir):<!laz> stream_vt (direntptr_gc)
+// end of [direntptr_stream_vt_make_DIR]
 
 (* ****** ****** *)
 

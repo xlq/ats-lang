@@ -1352,7 +1352,7 @@ fn d2exp_lazy_delay_tr_up
   val s2e_eval = d3e_eval.d3exp_typ
   val () = if s2exp_is_linear s2e_eval then begin // linearity checking
     prerr_loc_error3 loc0;
-    prerr ": the keyword [$delay_vt] is needed to form a linear lazy value.";
+    prerr ": the keyword [$ldelay] is needed to form a linear lazy value.";
     prerr_newline ();
     $Err.abort {void} ()
   end // end of [val]
@@ -1363,7 +1363,7 @@ end // end of [d2exp_lazy_delay_tr_up]
 
 (* ****** ****** *)
 
-fn d2exp_lazy_delay_vt_tr_up
+fn d2exp_lazy_ldelay_tr_up
   (loc0: loc_t, d2e_eval: d2exp, d2e_free: d2exp): d3exp = let
   val sbis = the_d2varset_env_stbefitemlst_save ()
   val sac = staftscstr_initialize (i2nvresstate_nil, sbis)
@@ -1393,8 +1393,8 @@ fn d2exp_lazy_delay_vt_tr_up
 //
   val s2e_lazy_vt = s2exp_lazy_viewt0ype_viewtype (d3e_eval.d3exp_typ)
 in
-  d3exp_lazy_vt_delay (loc0, s2e_lazy_vt, d3e_eval, d3e_free)
-end // end of [d2exp_lazy_delay_vt_tr_up]
+  d3exp_lazy_ldelay (loc0, s2e_lazy_vt, d3e_eval, d3e_free)
+end // end of [d2exp_lazy_ldelay_tr_up]
 
 (* ****** ****** *)
 
@@ -2108,14 +2108,14 @@ val d3e0 = (case+ d2e0.d2exp_node of
     in
       d3e_lazy
     end // end of [D2Elazy_delay]
-  | D2Elazy_vt_delay (d2e_eval, d2e_free) => let
+  | D2Elazy_ldelay (d2e_eval, d2e_free) => let
       // as if checking [llam (b) =<~ref> if b then d2e_eval else d2e_free]
       val () = trans3_env_push_sta ()
       val (pf_effect1 | ()) = the_effect_env_push_effmask ($Eff.effectlst_all)
       val (pf_effect2 | ()) = the_effect_env_push_delay ()
       val (pf_d2varset | ()) = the_d2varset_env_push_lam (1(*linear*))
       val (pf_lamloop | ()) = the_lamloop_env_push_lam (nil ())
-      val d3e_lazy_vt = d2exp_lazy_delay_vt_tr_up (loc0, d2e_eval, d2e_free)
+      val d3e_lazy_vt = d2exp_lazy_ldelay_tr_up (loc0, d2e_eval, d2e_free)
       val () = the_d2varset_env_check loc0
       val () = the_d2varset_env_check_llam loc0
       val () = the_lamloop_env_pop (pf_lamloop | (*none*))
@@ -2125,7 +2125,7 @@ val d3e0 = (case+ d2e0.d2exp_node of
       val () = trans3_env_pop_sta_and_add_none (loc0)
     in
       d3e_lazy_vt
-    end // end of [D2Elazy_vt_delay]
+    end // end of [D2Elazy_ldelay]
   | D2Elet (d2cs, d2e) => let
       val (pf_effect | ()) = the_effect_env_push ()
       val (pf_s2cstlst | ()) = the_s2cstlst_env_push ()

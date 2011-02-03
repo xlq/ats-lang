@@ -496,6 +496,8 @@ macdef lazy_vt_force (x) = lazy_vt_force_crypt ($encrypt ,(x))
 
 *)
 
+(* ****** ****** *)
+
 fun lazy_vt_free
   {a:viewt@ype} (x: lazy_vt a):<1,~ref> void = "ats_lazy_vt_free"
 overload ~ with lazy_vt_free

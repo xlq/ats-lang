@@ -1054,7 +1054,7 @@ in
   ccomp_exp_lam (loc0, hit_fun, '[], hie_eval)
 end // end of [ccomp_exp_lazy_delay]
 
-fn ccomp_exp_lazy_vt_delay
+fn ccomp_exp_lazy_ldelay
   (loc0: loc_t, hie_eval: hiexp, hie_free: hiexp): valprim = let
   val funclo = $Syn.FUNCLOclo ( 1) // cloptr
   val hit_eval = hie_eval.hiexp_typ
@@ -1066,7 +1066,7 @@ fn ccomp_exp_lazy_vt_delay
   val hit_fun = hityp_fun (funclo, '[hityp_bool], hit_eval)
 in
   ccomp_exp_lam (loc0, hit_fun, '[hip_arg], hie_if)
-end // end of [ccomp_exp_lazy_vt_delay]
+end // end of [ccomp_exp_lazy_ldelay]
 
 (* ****** ****** *)
 
@@ -2067,14 +2067,14 @@ in
         res, loc0, tmp_res, 0(*lin*), hit_eval, vp_clo
       ) // end of [instr_add_move_lazy_delay]
     end // end of [HIElazy_delay]
-  | HIElazy_vt_delay (hie_eval, hie_free) => let
+  | HIElazy_ldelay (hie_eval, hie_free) => let
       val hit_eval = hityp_normalize (hie_eval.hiexp_typ)
-      val vp_clo = ccomp_exp_lazy_vt_delay (loc0, hie_eval, hie_free)
+      val vp_clo = ccomp_exp_lazy_ldelay (loc0, hie_eval, hie_free)
     in
       instr_add_move_lazy_delay (
         res, loc0, tmp_res, 1(*lin*), hit_eval, vp_clo
       ) // end of [instr_add_move_lazy_delay]
-    end // end of [HIElazy_vt_delay]
+    end // end of [HIElazy_ldelay]
   | HIElazy_force (lin, hie) => let
       val vp_lazy = ccomp_exp (res, hie)
       val hit_val = hityp_normalize (hie0.hiexp_typ)

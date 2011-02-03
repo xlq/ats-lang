@@ -65,25 +65,25 @@ stream_filter_cloref
 
 (* ****** ****** *)
 
-fun{a,b:t@ype}
+fun{a:t@ype}{b:t@ype}
 stream_map_fun
   (xs: stream a, f: a -<!laz> b):<!laz> stream b
 // end of [stream_map_fun]
 
-fun{a,b:t@ype}
+fun{a:t@ype}{b:t@ype}
 stream_map_cloref
   (xs: stream a, f: a -<cloref,!laz> b):<!laz> stream b
 // end of [stream_map_cloref]
 
 (* ****** ****** *)
 
-fun{a1,a2,b:t@ype}
+fun{a1,a2:t@ype}{b:t@ype}
 stream_map2_fun
   (xs1: stream a1, xs2: stream a2, f: (a1, a2) -<!laz> b)
   :<!laz> stream b
 // end of [stream_map2_fun]
 
-fun{a1,a2,b:t@ype}
+fun{a1,a2:t@ype}{b:t@ype}
 stream_map2_cloref
   (xs1: stream a1, xs2: stream a2, f: (a1, a2) -<cloref,!laz> b)
   :<!laz> stream b

@@ -849,12 +849,12 @@ d2exp_lazy_delay
 } // end of [d2exp_lazy_delay]
 
 implement
-d2exp_lazy_vt_delay
+d2exp_lazy_ldelay
   (loc, d2e1, d2e2) = '{
   d2exp_loc= loc
-, d2exp_node= D2Elazy_vt_delay (d2e1, d2e2)
+, d2exp_node= D2Elazy_ldelay (d2e1, d2e2)
 , d2exp_typ= None ()
-} // end of [d2exp_lazy_vt_delay]
+} // end of [d2exp_lazy_ldelay]
 
 (* ****** ****** *)
 

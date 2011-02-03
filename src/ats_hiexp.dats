@@ -492,12 +492,12 @@ hiexp_lazy_delay
 } // end of [hiexp_lazy_delay]
 
 implement
-hiexp_lazy_vt_delay
+hiexp_lazy_ldelay
   (loc, hit, hie1, hie2) = '{
   hiexp_loc= loc
-, hiexp_node= HIElazy_vt_delay (hie1(*eval*), hie2(*free*))
+, hiexp_node= HIElazy_ldelay (hie1(*eval*), hie2(*free*))
 , hiexp_typ= hit (* type of eval *)
-} // end of [hiexp_lazy_vt_delay]
+} // end of [hiexp_lazy_ldelay]
 
 implement
 hiexp_lazy_force
