@@ -28,7 +28,9 @@ INCLUDES= $(GLIBINC) -I"/usr/include/glib-2.0"
 
 ######
 
-all:: glibconfig atsctrb_glib.o clean
+all:: glibconfig
+all:: atsctrb_glib.o
+all:: clean
 
 ######
 

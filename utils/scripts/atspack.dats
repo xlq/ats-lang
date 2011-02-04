@@ -940,7 +940,7 @@ fn Anairiats_libats_dir_copy () = let
   val () = mkdir_exn (DSTROOTlibats_smlbas, DIRmode)
   val () = libdir_copy (SRCROOTlibats_smlbas, DSTROOTlibats_smlbas)
   val () = fcopy_exn (
-    SRCROOTlibats_smlbas ++ ".libfiles", DSTROOTlibats_smlbas ++ ".libfiles"
+    SRCROOTlibats_smlbas++".libfiles", DSTROOTlibats_smlbas++".libfiles"
   ) (* end of [val] *)
   // the code for ATS lexer is in [libats/lex]
   val SRCROOTlibatslex = SRCROOTlibats ++ "lex/"
@@ -957,6 +957,27 @@ fn Anairiats_contrib_dir_copy
   val SRCROOTcontrib = SRCROOT ++ "contrib/"
   val DSTROOTcontrib = DSTROOT ++ "contrib/"
   val () = mkdir_exn (DSTROOTcontrib, DIRmode)
+//
+  val () = () where { // API for parcomb: [contrib/parcomb]
+    val SRCROOTcontrib_parcomb = SRCROOTcontrib ++ "parcomb/"
+    val DSTROOTcontrib_parcomb = DSTROOTcontrib ++ "parcomb/"
+    val () = mkdir_exn (DSTROOTcontrib_parcomb, DIRmode)
+//
+    val filename = "Makefile"
+    val () = fcopy_exn (
+      SRCROOTcontrib_parcomb++filename, DSTROOTcontrib_parcomb++filename
+    ) // end of [val]
+    val filename = "dynloadall.dats"
+    val () = fcopy_exn (
+      SRCROOTcontrib_parcomb++filename, DSTROOTcontrib_parcomb++filename
+    ) // end of [val]
+//
+    val () = libdir_copy (SRCROOTcontrib_parcomb, DSTROOTcontrib_parcomb)
+    val SRCROOTcontrib_parcomb_TEST = SRCROOTcontrib_parcomb ++ "TEST/"
+    val DSTROOTcontrib_parcomb_TEST = DSTROOTcontrib_parcomb ++ "TEST/"
+    val () = mkdir_exn (DSTROOTcontrib_parcomb_TEST, DIRmode)
+    val () = dir_copy_all (SRCROOTcontrib_parcomb_TEST, DSTROOTcontrib_parcomb_TEST)
+  } // end of [where]
 //
   val () = () where { // API for cblas: [contrib/cblas]
     val SRCROOTcontrib_cblas = SRCROOTcontrib ++ "cblas/"

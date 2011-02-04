@@ -94,7 +94,7 @@ list0_exists_cloref (xs, f) =
 
 // this implementation
 implement{a} // of [list0_filter] is tail-recursive
-  list0_filter_fun (xs, pred) = let
+list0_filter_fun (xs, pred) = let
   val xs = list1_of_list0 (xs)
   val xs = list_filter_fun (xs, pred)
   val xs = list_of_list_vt (xs)
@@ -104,13 +104,29 @@ end // end of [list0_filter]
 
 // this implementation
 implement{a} // of [list0_filter] is tail-recursive
-  list0_filter_cloref (xs, pred) = let
+list0_filter_cloref (xs, pred) = let
   val xs = list1_of_list0 (xs)
   val xs = list_filter_cloref (xs, pred)
   val xs = list_of_list_vt (xs)
 in
   list0_of_list1 (xs)
 end // end of [list0_filter]
+
+(* ****** ****** *)
+
+implement{a}
+list0_find_fun (xs, pred) = let
+  val ans = list_find_fun (list1_of_list0 (xs), pred)
+in
+  option0_of_option_vt (ans)
+end // end of [list0_find_fun]
+
+implement{a}
+list0_find_cloref (xs, pred) = let
+  val ans = list_find_cloref (list1_of_list0 (xs), pred)
+in
+  option0_of_option_vt (ans)
+end // end of [list0_find_cloref]
 
 (* ****** ****** *)
 

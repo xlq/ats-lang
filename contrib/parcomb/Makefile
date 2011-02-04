@@ -7,7 +7,7 @@
 ATSUSRQ="$(ATSHOME)"
 ifeq ($(ATSUSRQ),"")
 ATSUSRQ="/usr"
-endif
+endif # end of [ifeq]
 
 ######
 
@@ -27,7 +27,8 @@ OBJECTS := $(patsubst %.sats, %_sats.o, $(OBJECTS))
 
 ######
 
-all:: atsctrb_parcomb.o clean
+all:: atsctrb_parcomb.o
+all:: clean
 
 ######
 

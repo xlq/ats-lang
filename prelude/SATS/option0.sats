@@ -33,7 +33,7 @@
 
 (*
 ** Author: Hongwei Xi (hwxi AT cs DOT bu DOT edu)
-** Time: 2008
+** Time: 2010
 *)
 
 (* ****** ****** *)
@@ -50,6 +50,10 @@
 
 castfn option0_of_option1 {a:t@ype} (xs: Option a):<> option0 a
 castfn option1_of_option0 {a:t@ype} (xs: option0 a):<> Option a
+
+(* ****** ****** *)
+
+castfn option0_of_option_vt {a:t@ype} (xs: Option_vt a):<> option0 a
 
 (* ****** ****** *)
 

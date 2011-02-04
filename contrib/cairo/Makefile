@@ -19,7 +19,8 @@ XRCFLAGS=`pkg-config cairo --cflags`
 
 ######
 
-all: atsctrb_cairo.o clean
+all:: atsctrb_cairo.o
+all:: clean
 
 ######
 

@@ -86,10 +86,12 @@ fun{a1,a2:t@ype} option_map {b:bool} {f:eff}
   (opt: option (a1, b), f: a1 -<f> a2):<f> option (a2, b)
 
 (* ****** ****** *)
-
-// a casting function implemented in [prelude/DATS/option.dats]
+//
+// HX: a casting function implemented in [prelude/DATS/option.dats]
+//
 castfn option_of_option_vt
   {a:t@ype} {b:bool} (x: option_vt (a, b)):<> option (a, b)
+// end of [option_of_option_vt]
 
 (* ****** ****** *)
 

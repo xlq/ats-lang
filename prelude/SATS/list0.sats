@@ -119,6 +119,14 @@ list0_filter_cloref (xs: list0 a, pred: a -<cloref1> bool): list0 a
 
 (* ****** ****** *)
 
+fun{a:t@ype}
+list0_find_fun (xs: list0 a, pred: a -<fun1> bool): option0 a
+
+fun{a:t@ype}
+list0_find_cloref (xs: list0 a, pred: a -<cloref1> bool): option0 a
+
+(* ****** ****** *)
+
 fun{init:t@ype}{a:t@ype}
 list0_fold_left
   (f: (init, a) -<cloref1> init, ini: init, xs: list0 a): init

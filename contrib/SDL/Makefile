@@ -11,7 +11,8 @@ SDLCFLAGS=`sdl-config --cflags`
 
 ######
 
-all: atsctrb_SDL.o clean
+all:: atsctrb_SDL.o
+all:: clean
 
 ######
 

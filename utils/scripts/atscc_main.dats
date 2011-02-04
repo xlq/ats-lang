@@ -54,7 +54,7 @@
 
 typedef ats_ptr_type ats_intref_type ;
 
-%}
+%} // end of [%{^]
 
 (* ****** ****** *)
 
@@ -62,10 +62,12 @@ staload "top.sats"
 
 (* ****** ****** *)
 
-fn do_usage (cmd: string): void = begin
-  printf ("The usage of %s is:\n", @(cmd));
-  printf ("  %s [flag-or-file]*\n", @(cmd));
-end // end of [do_usage]
+fn do_usage (
+  cmd: string
+) : void = () where {
+  val () = printf ("The usage of %s is:\n", @(cmd))
+  val () = printf ("  %s [flag-or-file]*\n", @(cmd))
+} // end of [do_usage]
 
 (* ****** ****** *)
 
@@ -195,9 +197,15 @@ fn* aux {i:nat | i <= n} ( // .<n-i,0>.
   ) :<cloptr1> Strlst(*param_c*) =
   if i < n then let
     val s = p[i] in case+ 0 of
+//
+    | _ when DATS_wait_is_set () => begin
+        DATS_wait_clear (); aux (pf | s :: param_ats, param_c, i+1)
+      end // end of [_ when ...]
+//
     | _ when IATS_wait_is_set () => begin
         IATS_wait_clear (); aux (pf | s :: param_ats, param_c, i+1)
       end // end of [_ when ...]
+//
     | _ when string_is_flag s => begin
         aux_flag (pf | param_ats, param_c, i, s)
       end // end of [_ when ...]
@@ -344,8 +352,8 @@ and aux_flag {i:nat | i < n} // .<n-i-1,1>.
 //
   | _ when flag_is_DATSdef flag => let
       val param_ats = flag :: param_ats
-      val dir = DATS_extract flag; val () = begin
-        if stropt_is_some dir then () else DATS_wait_set ()
+      val flgval = DATS_extract flag; val () = begin
+        if stropt_is_some flgval then () else DATS_wait_set ()
       end // end of [if]
     in
       aux (pf | param_ats, param_c, i+1)

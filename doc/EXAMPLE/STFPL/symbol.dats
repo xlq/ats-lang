@@ -86,7 +86,7 @@ in
   end // end of [None_vt]
 end // end of [symbol_make]
 
-implement symbol_name_get (x) = x.symbol_name
+implement symbol_get_name (x) = x.symbol_name
 
 //
 
@@ -154,7 +154,7 @@ in // in of [local]
 
 implement{itm}
 symenv_make () = let
-  val hash = lam (x: sym) =<cloref> string_hash_33 (symbol_name_get x)
+  val hash = lam (x: sym) =<cloref> string_hash_33 (symbol_get_name x)
   val eq = lam (x1: sym, x2: sym) =<cloref> x1 = x2
   val x = $H.hashtbl_make {sym,itm} (hash, eq)
 in

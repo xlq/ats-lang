@@ -19,7 +19,8 @@ PANGOCFLAGS=`pkg-config pango --cflags`
 
 ######
 
-all: atsctrb_pango.o clean
+all:: atsctrb_pango.o
+all:: clean
 
 ######
 

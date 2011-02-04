@@ -19,7 +19,8 @@ GTKCFLAGS = `pkg-config gtk+-2.0 --cflags`
 
 ######
 
-all: atsctrb_GTK.o clean
+all:: atsctrb_GTK.o
+all:: clean
 
 ######
 
