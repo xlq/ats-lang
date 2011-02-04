@@ -44,6 +44,10 @@
 
 (* ****** ****** *)
 
+#define ATS_DYNLOADFLAG 0 // there is no need for dynamic loading
+
+(* ****** ****** *)
+
 staload "libats/smlbas/SATS/general.sats"
 
 (* ****** ****** *)

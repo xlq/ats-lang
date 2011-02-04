@@ -32,6 +32,7 @@
 (* ****** ****** *)
 
 (* Author: Hongwei Xi (hwxi AT cs DOT bu DOT edu) *)
+(* Time: 2008 *)
 
 (* ****** ****** *)
 //
@@ -147,6 +148,8 @@ fun char_stream_vt_make_file {m:file_mode} {l:addr}
   :<!laz> stream_vt (char)
 // end of [char_stream_vt_make_file]
 
+(* ****** ****** *)
+//
 // making a _linear_ lazy line stream out of a file handle
 // note that the newline character at the end of each line is dropped
 fun line_stream_vt_make_file {m:file_mode} {l:addr}

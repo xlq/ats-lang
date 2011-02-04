@@ -47,7 +47,7 @@
 
 %{#
 #include "prelude/CATS/list.cats"
-%}
+%} // end of [%{#]
 
 (* ****** ****** *)
 

@@ -53,7 +53,8 @@ fun{a:t@ype} tl (xs: list0 a): list0 a
 
 fun{a:t@ype} last (xs: list0 a): a 
 
-fun{a:t@ype} getItem (xs: list0 a): option0 @(a, list0 a)
+fun{a:t@ype}
+getItem (xs: list0 a): option0 @(a, list0 a)
 
 fun{a:t@ype} nth (xs: list0 a, n: int): a
 
@@ -77,8 +78,10 @@ mapPartial (f: a -<cloref1> option0 b, xs: list0 a) : list0 b
 
 (* ****** ****** *)
 
-fun{a:t@ype} find (f: a -<cloref1> bool, xs: list0 a): option0 a
-fun{a:t@ype} filter (f: a -<cloref1> bool, xs: list0 a): list0 a
+fun{a:t@ype}
+find (f: a -<cloref1> bool, xs: list0 a): option0 a
+fun{a:t@ype}
+filter (f: a -<cloref1> bool, xs: list0 a): list0 a
 
 (* ****** ****** *)
 
@@ -87,8 +90,11 @@ partition (f: a -<cloref1> bool, xs: list0 a): @(list0 a, list0 a)
 
 (* ****** ****** *)
 
-fun{a,b:t@ype} foldl (f: (a, b) -<cloref1> b, ini: b, xs: list0 a): b
-fun{a,b:t@ype} foldr (f: (a, b) -<cloref1> b, snk: b, xs: list0 a): b
+fun{a,b:t@ype}
+foldl (f: (a, b) -<cloref1> b, ini: b, xs: list0 a): b
+
+fun{a,b:t@ype}
+foldr (f: (a, b) -<cloref1> b, snk: b, xs: list0 a): b
 
 (* ****** ****** *)
 
@@ -97,8 +103,12 @@ fun{a:t@ype} exists (f: a -<cloref1> bool, xs: list0 a): bool
 
 (* ****** ****** *)
 
-fun{a:t@ype} tabulate (lsz: int, f: int -<cloref1> a): list0 a
-fun{a:t@ype} collate (cmp: (a, a) -<cloref1> int, xs: list0 a, ys: list0 a): int 
+fun{a:t@ype}
+tabulate (lsz: int, f: int -<cloref1> a): list0 a
+
+fun{a:t@ype} collate
+  (cmp: (a, a) -<cloref1> int, xs: list0 a, ys: list0 a): int 
+// end of [collate]
 
 (* ****** ****** *)
 
