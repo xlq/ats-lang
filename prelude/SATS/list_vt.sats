@@ -103,13 +103,26 @@ list_vt_make_elt {n:nat} (x: a, n: int n):<> list_vt (a, n)
 
 (* ****** ****** *)
 
-fun{a:viewt@ype} list_vt_append
-  {m,n:nat} (xs: list_vt (a, m), ys: list_vt (a, n)):<> list_vt (a, m+n)
+fun{a:viewt@ype}
+list_vt_append {m,n:nat}
+  (xs: list_vt (a, m), ys: list_vt (a, n)):<> list_vt (a, m+n)
 // end of [list_vt_append]
 
-fun{a:viewt@ype} list_vt_reverse
-  {n:nat} (xs: list_vt (a, n)):<> list_vt (a, n)
+(* ****** ****** *)
+
+fun{a:viewt@ype}
+list_vt_reverse {n:nat} (xs: list_vt (a, n)):<> list_vt (a, n)
 // end of [list_vt_reverse]
+
+fun{a:viewt@ype}
+list_vt_reverse_append {m,n:nat}
+  (xs: list_vt (a, m), ys: list_vt (a, n)):<> list_vt (a, m+n)
+// end of [list_vt_reverse_append]
+
+(* ****** ****** *)
+
+fun{a:viewt@ype}
+list_vt_concat (xss: List_vt (List_vt (a))):<> List_vt (a)
 
 (* ****** ****** *)
 
@@ -149,18 +162,21 @@ fun{a:viewt@ype} list_vt_foreach_clo {v:view} {n:nat} {f:eff}
 
 (* ****** ****** *)
 
-fun{a:viewt@ype} list_vt_iforeach__main
+fun{a:viewt@ype}
+list_vt_iforeach__main
   {v:view} {vt:viewtype} {n:nat} {f:eff} (
     pf: !v
   | xs: !list_vt (a, n), f: (!v | natLt n, &a, !vt) -<fun,f> void, env: !vt
   ) :<f> void
 // end of [list_vt_iforeach__main]
 
-fun{a:viewt@ype} list_vt_iforeach_fun {n:nat} {f:eff}
+fun{a:viewt@ype}
+list_vt_iforeach_fun {n:nat} {f:eff}
   (xs: !list_vt (a, n), f: (natLt n, &a) -<fun,f> void):<f> void
 // end of [list_vt_iforeach_fun]
 
-fun{a:viewt@ype} list_vt_iforeach_clo {v:view} {n:nat} {f:eff}
+fun{a:viewt@ype}
+list_vt_iforeach_clo {v:view} {n:nat} {f:eff}
   (pf: !v | xs: !list_vt (a, n), f: &(!v | natLt n, &a) -<clo,f> void):<f> void
 // end of [list_vt_iforeach_clo]
 

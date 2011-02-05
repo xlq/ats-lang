@@ -9,7 +9,7 @@
 (*
 ** ATS - Unleashing the Potential of Types!
 **
-** Copyright (C) 2002-2009 Hongwei Xi, Boston University
+** Copyright (C) 2002-2011 Hongwei Xi, Boston University
 **
 ** All rights reserved
 **
@@ -30,9 +30,9 @@
 *)
 
 (* ****** ****** *)
-
-// author of the file: Hongwei Xi (hwxi AT cs DOT bu DOT edu)
-
+//
+// Author of the file: Hongwei Xi (hwxi AT cs DOT bu DOT edu)
+//
 (* ****** ****** *)
 
 #define ATS_DYNLOADFLAG 0 // loaded by [ats_main_prelude]
@@ -156,23 +156,65 @@ end // end of [local]
 
 local
 
+fun
+{a:viewt@ype}
+{b:viewt@ype}
+stream_vt_map_cloptr_con (
+  xs: stream_vt a, f: (&a >> a?) -<cloptr,!laz> b
+) :<!laz> stream_vt_con (b) = let
+  val xs_con = !xs
+in
+  case+ xs_con of
+  | stream_vt_cons (!p_x, xs1) => let
+      val y = f (!p_x)
+      val () = free@ {a} (xs_con)
+      val ys = $ldelay (
+        stream_vt_map_cloptr_con<a><b> (xs1, f)
+      , (~xs1; cloptr_free (f))
+      ) // end of [$ldelay
+    in
+      stream_vt_cons (y, ys)
+    end // end of [stream_vt_cons]
+  | ~stream_vt_nil () => (cloptr_free (f); stream_vt_nil)
+end // end of [stream_vt_map_cloptr_con]
+
+in // in of [local]
+
+implement{a}{b}
+stream_vt_map_fun (xs, f) = $ldelay (
+  stream_vt_map_cloptr_con<a><b> (xs, lam (x) => f (x)), ~xs
+) // end of [stream_vt_map_fun]
+
+implement{a}{b}
+stream_vt_map_cloptr (xs, f) = $ldelay (
+  stream_vt_map_cloptr_con<a><b> (xs, f), (~xs; cloptr_free (f))
+) // end of [stream_vt_map_cloptr]
+
+end // end of [local]
+
+(* ****** ****** *)
+
+local
+
 #define nil stream_vt_nil
 #define :: stream_vt_cons
 
-fun{a1,a2:t@ype}{b:t@ype}
+fun
+{a1,a2:t@ype}
+{b:viewt@ype}
 stream_vt_map2_cloptr_con (
   xs1: stream_vt a1
 , xs2: stream_vt a2
 , f: (a1, a2) -<cloptr,!laz> b
 ) :<!laz> stream_vt_con b = begin
-  case+ !xs1 of
+  case !xs1 of
   | ~(x1 :: xs1) => begin case+ !xs2 of
     | ~(x2 :: xs2) => y :: ys where {
         val y = f (x1, x2)
         val ys = $ldelay (
           stream_vt_map2_cloptr_con<a1,a2><b> (xs1, xs2, f)
         , (~xs1; ~xs2; cloptr_free f)
-        ) // end of [val ys]
+        ) // end of [$ldelay]
       } (* end of [::] *)
     | ~nil () => (~xs1; cloptr_free f; nil ())
     end // end of [::]

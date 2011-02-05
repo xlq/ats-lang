@@ -49,6 +49,12 @@
 
 /* ****** ****** */
 
+/*
+typedef ino_t ats_ino_type ; // defined in sys/CATS/types.cats
+*/
+
+/* ****** ****** */
+
 typedef DIR ats_DIR_type ;
 typedef struct dirent ats_dirent_type ;
 
@@ -71,6 +77,12 @@ atspre_exit_prerrf
 // end of [atspre_exit_prerrf]
 
 /* ****** ****** */
+
+ATSinline()
+ats_ino_type
+atslib_dirent_get_d_ino
+  (ats_ptr_type dir) { return ((ats_dirent_type*)dir)->d_ino ; }
+// end of [atslib_dirent_get_d_ino]
 
 ATSinline()
 ats_ptr_type

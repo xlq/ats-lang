@@ -35,13 +35,14 @@
 
 (* ****** ****** *)
 
-staload TYPES = "libc/sys/SATS/types.sats" // for [off_t]
+staload TYPES = "libc/sys/SATS/types.sats"
+typedef ino_t = $TYPES.ino_t
 typedef off_t = $TYPES.off_t
 
 (* ****** ****** *)
 
 %{#
-#include "libc/CATS/dirent.cats"
+#include "libc/CATS/dirent.cats" // included after types.cats
 %} // end of [%{#]
 
 (* ****** ****** *)
@@ -54,8 +55,12 @@ typedef dirent = dirent_t0ype
 
 (* ****** ****** *)
 
+fun dirent_get_d_ino
+  (ent: &dirent):<> ino_t = "atslib_direct_get_d_ino"
+// end of [dirent_get_d_ino]
+
 fun dirent_get_d_name
-  (ent: &dirent): [l:agz] (strptr l -<lin,prf> void | strptr l)
+  (ent: &dirent):<> [l:agz] (strptr l -<lin,prf> void | strptr l)
   = "atslib_dirent_get_d_name"
 // end of [dirent_get_d_name]
 

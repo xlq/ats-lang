@@ -9,7 +9,7 @@
 (*
 ** ATS - Unleashing the Potential of Types!
 **
-** Copyright (C) 2002-2009 Hongwei Xi, Boston University
+** Copyright (C) 2002-2011 Hongwei Xi, Boston University
 **
 ** All rights reserved
 **
@@ -31,7 +31,7 @@
 
 (* ****** ****** *)
 
-(* author: Hongwei Xi (hwxi AT cs DOT bu DOT edu) *)
+(* Author: Hongwei Xi (hwxi AT cs DOT bu DOT edu) *)
 
 (* ****** ****** *)
 
@@ -67,14 +67,25 @@ stream_vt_filter_cloptr
 
 (* ****** ****** *)
 
-fun{a1,a2:t@ype}{b:t@ype}
-stream_vt_map2_fun
+fun{a:viewt@ype}{b:viewt@ype} stream_vt_map_fun
+  (xs: stream_vt a, f: (&a >> a?) -<!laz> b):<!laz> stream_vt b
+// end of [stream_vt_map_fun]
+
+fun{a:viewt@ype}{b:viewt@ype} stream_vt_map_cloptr
+  (xs: stream_vt a, f: (&a >> a?) -<cloptr,!laz> b):<!laz> stream_vt b
+// end of [stream_vt_map_cloptr]
+
+(* ****** ****** *)
+//
+// HX: it is intended that no call-by-reference for [f]
+//
+
+fun{a1,a2:t@ype}{b:viewt@ype} stream_vt_map2_fun
   (xs1: stream_vt a1, xs2: stream_vt a2, f: (a1, a2) -<!laz> b)
   :<!laz> stream_vt b
 // end of [stream_vt_map2_fun]
 
-fun{a1,a2:t@ype}{b:t@ype}
-stream_vt_map2_cloptr
+fun{a1,a2:t@ype}{b:viewt@ype} stream_vt_map2_cloptr
   (xs1: stream_vt a1, xs2: stream_vt a2, f: (a1, a2) -<cloptr,!laz> b)
   :<!laz> stream_vt b
 // end of [stream_vt_map2_cloptr]

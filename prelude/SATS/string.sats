@@ -755,7 +755,7 @@ overload strptr_of with strptr_of_strptrlen
 //
 (* ****** ****** *)
 
-fun strptr_dup {l:agz} (x: !strptr l): strptr1
+fun strptr_dup {l:agz} (x: !strptr l):<> strptr1
 fun string_tail
   {n:int} {i:nat | i <= n} (
   x: string n, i: size_t i

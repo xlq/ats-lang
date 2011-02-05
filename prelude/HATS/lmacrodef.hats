@@ -30,9 +30,9 @@
 *)
 
 (* ****** ****** *)
-
-// author of the file: Hongwei Xi (hwxi AT cs DOT bu DOT edu)
-
+//
+// Author of the file: Hongwei Xi (hwxi AT cs DOT bu DOT edu)
+//
 (* ****** ****** *)
 
 (* some commonly used _local_ macro definitions *)
@@ -78,9 +78,8 @@ prerrstar_rec args =
 in // in of [local]
 
 //
-// for instance, we can write something like:
-//
-// printstarln @("x+y = ", x+y, "and x*y = ", x*y)
+// HX: for instance, we can write something like:
+// printstarln @("x+y = ", x+y, " and x*y = ", x*y)
 //
 macdef printstar args = ,(printstar_rec args)
 macdef printstarln args = begin ,(printstar_rec args); print_newline () end

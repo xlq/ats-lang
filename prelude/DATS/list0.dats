@@ -77,7 +77,7 @@ list0_concat (xss) = let
   // end of [castfn]
   val xss = list1_of_list0 {list0 a} (xss)
 in
-  list0_of_list1 (list_concat (__cast xss)) 
+  list0_of_list_vt (list_concat (__cast xss)) 
 end // end of [list0_concat]
 
 (* ****** ****** *)
@@ -85,14 +85,16 @@ end // end of [list0_concat]
 implement{a}
 list0_exists_fun (xs, f) =
   list_exists_fun (list1_of_list0 xs, f)
+// end of [list0_exists_fun]
 
 implement{a}
 list0_exists_cloref (xs, f) =
   list_exists_cloref (list1_of_list0 xs, f)
+// end of [list0_exists_cloref]
 
 (* ****** ****** *)
-
-// this implementation
+//
+// HX: this implementation
 implement{a} // of [list0_filter] is tail-recursive
 list0_filter_fun (xs, pred) = let
   val xs = list1_of_list0 (xs)
@@ -102,7 +104,7 @@ in
   list0_of_list1 (xs)
 end // end of [list0_filter]
 
-// this implementation
+// HX: this implementation
 implement{a} // of [list0_filter] is tail-recursive
 list0_filter_cloref (xs, pred) = let
   val xs = list1_of_list0 (xs)

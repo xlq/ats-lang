@@ -142,7 +142,8 @@ end // end of [list_vt_of_arraysize]
 
 (* ****** ****** *)
 
-implement{a} list_vt_copy (xs0) = let
+implement{a}
+list_vt_copy (xs0) = let
   fun loop {n:nat} .<n>.
     (xs: !list_vt (a, n), res: &List_vt a? >> list_vt (a, n))
     :<> void = case+ xs of
@@ -160,7 +161,8 @@ end // end of [list_vt_copy]
 
 (* ****** ****** *)
 
-implement{a} list_vt_free (xs0) = let
+implement{a}
+list_vt_free (xs0) = let
   fun loop {n:nat} .<n>. (xs: list_vt (a, n)):<> void =
     case+ xs of ~list_vt_cons (_, xs) => loop xs | ~list_vt_nil () => ()
   // end of [list_vt_free]
@@ -170,7 +172,8 @@ end // end of [list_vt_free]
 
 (* ****** ****** *)
 
-implement{a} list_vt_length (xs0) = loop (xs0, 0) where {
+implement{a}
+list_vt_length (xs0) = loop (xs0, 0) where {
   fun loop {i,j:nat} .<i>.
     (xs: !list_vt (a, i), j: int j):<> int (i+j) = begin
     case+ xs of
@@ -182,7 +185,8 @@ implement{a} list_vt_length (xs0) = loop (xs0, 0) where {
 
 (* ****** ****** *)
 
-implement{a} list_vt_make_elt (x0, n) = let
+implement{a}
+list_vt_make_elt (x0, n) = let
   fun loop {i,j:nat} .<i>.
     (x0: a, i: int i, res: list_vt (a, j)):<> list_vt (a, i+j) =
     if i > 0 then loop (x0, i-1, list_vt_cons (x0, res)) else res
@@ -192,7 +196,8 @@ end // end of [list_make_elt]
 
 (* ****** ****** *)
 
-implement{a} list_vt_append (xs0, ys0) = let
+implement{a}
+list_vt_append (xs0, ys0) = let
   var xs0 = xs0
   fun{a:viewt@ype} loop {m,n:nat} .<m>.
     (xs0: &list_vt (a, m) >> list_vt (a, m+n), ys0: list_vt (a, n))
@@ -206,9 +211,16 @@ end // end of [list_vt_append]
 
 (* ****** ****** *)
 
-implement{a} list_vt_reverse (xs0) = let
-  fun revapp {m,n:nat} .<m>.
-    (xs: list_vt (a, m), ys: list_vt (a, n)):<> list_vt (a, m+n) =
+implement{a}
+list_vt_reverse (xs) =
+  list_vt_reverse_append<a> (xs, list_vt_nil)
+// end of [list_vt_reverse]
+
+implement{a}
+list_vt_reverse_append (xs, ys) = let
+  fun revapp {m,n:nat} .<m>. (
+    xs: list_vt (a, m), ys: list_vt (a, n)
+  ) :<> list_vt (a, m+n) =
     case+ xs of
     | list_vt_cons (_, !p_xs1) => let
         val xs1 = !p_xs1
@@ -218,12 +230,30 @@ implement{a} list_vt_reverse (xs0) = let
     | ~list_vt_nil () => ys
   // end of [revapp]
 in
-  revapp (xs0, list_vt_nil ())
-end // end of [list_vt_reverse]
+  revapp (xs, ys)
+end // end of [list_vt_reverse_append]
 
 (* ****** ****** *)
 
-implement{a} list_vt_tabulate__main
+implement{a}
+list_vt_concat (xss) = let
+  fun aux {n:nat} .<n>. (
+    xs0: List_vt a, xss: list_vt (List_vt a, n)
+  ) :<> List_vt a =
+    case+ xss of
+    | ~list_vt_cons (xs, xss) => list_vt_append (xs0, aux (xs, xss))
+    | ~list_vt_nil () => xs0
+  // end of [aux]
+in
+  case+ xss of
+  | ~list_vt_cons (xs0, xss) => aux (xs0, xss)
+  | ~list_vt_nil () => list_vt_nil ()
+end // end of [list_vt_concat]
+
+(* ****** ****** *)
+
+implement{a}
+list_vt_tabulate__main
   {v} {vt} {n} {f} (pf | f, n, env) = let
   var res: List_vt a // uninitialized
   fun loop {i:nat | i <= n} .<n-i>. (
@@ -256,7 +286,8 @@ in
   ans
 end // end of [list_vt_tabulate_fun]
 
-implement{a} list_vt_tabulate_clo
+implement{a}
+list_vt_tabulate_clo
   {v} {n} {f:eff} (pf1 | f, n) = let
   typedef clo_t = (!v | natLt n) -<clo,f> a
   stavar l_f: addr; val p_f: ptr l_f = &f
@@ -278,7 +309,8 @@ end // end of [list_vt_tabulate_clo]
 
 (* ****** ****** *)
 
-implement{a} list_vt_foreach__main
+implement{a}
+list_vt_foreach__main
   {v} {vt} {n} {f} (pf | xs0, f, env) = let
   viewtypedef fun_t = (!v | &a, !vt) -<f> void
   fun loop {i:nat} .<i>.

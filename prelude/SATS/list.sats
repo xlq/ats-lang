@@ -166,9 +166,13 @@ fun{a:t@ype} list_append {i,j:nat}
   (xs: list (a, i), ys: list (a, j)):<> list (a, i+j)
 overload + with list_append
 
-fun{a:t@ype} list_append_vt {i,j:nat}
+fun{a:t@ype} list_append1_vt {i,j:nat}
+  (xs: list_vt (a, i), ys: list (a, j)):<> list (a, i+j)
+// end of [list_append1_vt]
+
+fun{a:t@ype} list_append2_vt {i,j:nat}
   (xs: list (a, i), ys: list_vt (a, j)):<> list_vt (a, i+j)
-// end of [list_append_vt]
+// end of [list_append2_vt]
 
 (* ****** ****** *)
 
@@ -196,11 +200,12 @@ fun{a1,a2:t@ype} list_assoc_cloref {eq:eff}
 
 (* ****** ****** *)
 
-fun{a:t@ype} list_concat (xs: List (List a)):<> List a
+fun{a:t@ype} list_concat (xs: List (List a)):<> List_vt a
 
 (* ****** ****** *)
 
-fun{a:t@ype} list_drop {n,i:nat | i <= n}
+fun{a:t@ype} list_drop
+  {n:int} {i:nat | i <= n}
   (xs: list (a, n), i: int i):<> list (a, n-i)
 
 fun{a:t@ype} list_drop_exn {n,i:nat}
@@ -762,16 +767,21 @@ list_set_elt_at_opt {n:nat}
 (* ****** ****** *)
 
 fun{a:t@ype}
-list_split_at {n,i:nat | i <= n}
+list_split_at {n:int} {i:nat | i <= n}
   (xs: list (a, n), i: int i):<> (list_vt (a, i), list (a, n-i))
+// end of [list_split_at]
+
+(* ****** ****** *)
 
 fun{a:t@ype}
-list_take {n,i:nat | i <= n}
+list_take {n:int} {i:nat | i <= n}
   (xs: list (a, n), i: int i):<> list_vt (a, i)
+// end of [list_take]
 
 fun{a:t@ype}
 list_take_exn {n,i:nat}
   (xs: list (a, n), i: int i):<!exn> [i <= n] list_vt (a, i)
+// end of [list_take_exn]
 
 (* ****** ****** *)
 

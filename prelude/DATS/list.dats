@@ -224,15 +224,18 @@ in
 end  // end of [list_app2_cloref]
 
 (* ****** ****** *)
-
-// a tail-recursive implementation of list-append
-
+//
+// HX: a tail-recursive implementation of list-append
+//
 implement{a}
-list_append {i,j} (xs, ys) = let
+list_append (xs, ys) = let
   var res: List a // uninitialized
-  fun loop {n1,n2:nat} .<n1>.
-    (xs: list (a, n1), ys: list (a, n2), res: &(List a)? >> list (a, n1+n2))
-    :<> void = begin case+ xs of
+  fun loop
+    {n1,n2:nat} .<n1>. (
+    xs: list (a, n1)
+  , ys: list (a, n2)
+  , res: &(List a)? >> list (a, n1+n2)
+  ) :<> void = begin case+ xs of
     | x :: xs => let
         val () = (res := cons {a} {0} (x, ?)); val+ cons (_, !p) = res
       in
@@ -246,7 +249,8 @@ end // end of [list_append]
 
 (*
 //
-// standard non-tail-recursive implementation of list-append
+// HX: this is a standard non-tail-recursive implementation
+// of list_append:
 //
 implement{a}
 list_append {i,j} (xs, ys) = let
@@ -258,12 +262,23 @@ in
 end // end of [list_append]
 *)
 
+(* ****** ****** *)
+
 implement{a}
-list_append_vt {i,j} (xs, ys) = let
+list_append1_vt (xs, ys) = let
+  extern castfn __cast {j:nat} (ys: list (a, j)):<> list_vt (a, j)
+in
+  list_of_list_vt (list_vt_append (xs, __cast (ys)))
+end // end of [list_append1_vt]
+
+implement{a}
+list_append2_vt (xs, ys) = let
   var res: List_vt a // uninitialized
-  fun loop {n1,n2:nat} .<n1>.
-    (xs: list (a, n1), ys: list_vt (a, n2), res: &(List_vt a)? >> list_vt (a, n1+n2))
-    :<> void = begin case+ xs of
+  fun loop {n1,n2:nat} .<n1>. (
+    xs: list (a, n1)
+  , ys: list_vt (a, n2)
+  , res: &(List_vt a)? >> list_vt (a, n1+n2)
+  ) :<> void = begin case+ xs of
     | x :: xs => let
         val () = (res := list_vt_cons {a} {0} (x, ?)); val+ list_vt_cons (_, !p) = res
       in
@@ -344,7 +359,9 @@ implement{a1,a2}
 list_assoc_cloref
   {eq:eff} (xys, eq, x0) = let
   typedef cloref_t = (a1, a1) -<cloref,eq> bool
-  fn app (pf: !unit_v | x: a1, y: a1, eq: !cloref_t):<eq> bool = eq (x, y)
+  fn app (
+    pf: !unit_v | x: a1, y: a1, eq: !cloref_t
+  ) :<eq> bool = eq (x, y)
   prval pf = unit_v ()
   val ans = list_assoc__main<a1,a2> {unit_v} {cloref_t} (pf | xys, app, x0, eq)
   prval unit_v () = pf
@@ -356,13 +373,15 @@ end // end of [list_assoc_cloref]
 
 implement{a}
 list_concat (xss) = let
-  fun aux {n:nat} .<n>.
-    (xs0: List a, xss: list (List a, n)):<> List a =
+  fun aux {n:nat} .<n>. (
+    xs0: List a, xss: list (List a, n)
+  ) :<> List_vt a =
     case+ xss of
-    | xs :: xss => list_append (xs0, aux (xs, xss))
-    | nil () => xs0
+    | xs :: xss => list_append2_vt (xs0, aux (xs, xss))
+    | nil () => list_append2_vt (xs0, list_vt_nil)
+  // end of [aux]
 in
-  case+ xss of xs :: xss => aux (xs, xss) | nil () => nil ()
+  case+ xss of xs :: xss => aux (xs, xss) | nil () => list_vt_nil ()
 end // end of [list_concat]
 
 (* ****** ****** *)
@@ -1717,7 +1736,7 @@ end // end of [local]
 (* ****** ****** *)
 
 implement{a}
-list_split_at {n,i} (xs, i) = let
+list_split_at {n} {i} (xs, i) = let
   var fsts: List_vt a? // uninitialized
   fun loop {j:nat | j <= i} .<i-j>.
     (xs: list (a, n-j), ij: int (i-j), fsts: &(List_vt a)? >> list_vt (a, i-j))
