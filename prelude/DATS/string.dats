@@ -305,7 +305,7 @@ implement prerr_strptr (p) = fprint_strptr (stderr_ref, p)
 implement
 strptr_dup (p) = let
   val str = __cast (p) where {
-    extern castfn __cast {l:agz} (p: !strptr l): String
+    extern castfn __cast {l:agz} (p: !strptr l):<> String
   } // end of [val]
   val n = string1_length (str)
   val str2 = string_make_substring (str, 0, n)
