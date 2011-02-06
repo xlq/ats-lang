@@ -1675,18 +1675,27 @@ end // end of [list_reverse_append]
 (* ****** ****** *)
 
 implement{a}
-list_reverse (xs) =
-  list_reverse_append_vt<a> (xs, list_vt_nil ())
-// end of [list_reverse]
+list_reverse_append1_vt (xs, ys) = let
+  extern castfn __cast {j:nat} (ys: list (a, j)):<> list_vt (a, j)
+in
+  list_of_list_vt (list_vt_reverse_append (xs, __cast (ys)))
+end // end of [list_reverse_append1_vt]
 
 implement{a}
-list_reverse_append_vt (xs, ys) = let
+list_reverse_append2_vt (xs, ys) = let
   fun loop {n1,n2:nat} .<n1>.
     (xs: list (a, n1), ys: list_vt (a, n2)):<> list_vt (a, n1+n2) =
     case+ xs of x :: xs => loop (xs, list_vt_cons (x, ys)) | nil () => ys
 in
   loop (xs, ys)
-end (* end of [list_reverse] *)
+end // end of [list_reverse_append2_vt]
+
+(* ****** ****** *)
+
+implement{a}
+list_reverse (xs) =
+  list_reverse_append2_vt<a> (xs, list_vt_nil ())
+// end of [list_reverse]
 
 (* ****** ****** *)
 

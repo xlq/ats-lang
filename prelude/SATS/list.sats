@@ -744,8 +744,14 @@ list_reverse_append {i,j:nat}
 (* ****** ****** *)
 
 fun{a:t@ype}
-list_reverse_append_vt {i,j:nat}
+list_reverse_append1_vt {i,j:nat}
+  (xs: list_vt (a, i), ys: list (a, j)):<> list (a, i+j)
+
+fun{a:t@ype}
+list_reverse_append2_vt {i,j:nat}
   (xs: list (a, i), ys: list_vt (a, j)):<> list_vt (a, i+j)
+
+(* ****** ****** *)
 
 fun{a:t@ype}
 list_reverse {n:nat} (xs: list (a, n)):<> list_vt (a, n)
