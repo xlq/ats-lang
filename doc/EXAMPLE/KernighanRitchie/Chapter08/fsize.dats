@@ -23,6 +23,8 @@ staload "libc/sys/SATS/types.sats"
 extern fun fsize (name: string): void
 extern fun dirwalk (dir: string, f: (string) -> void): void
 
+(* ****** ****** *)
+
 implement main (argc, argv) = let
   fun loop {n,i:nat | i <= n}
     (A: &(@[string][n]), n: int n, i: int i): void =
@@ -82,11 +84,12 @@ atslib_dirent_is_parent (ats_ref_type dp) {
   return ats_false_bool ;
 } /* end of [atslib_dirent_is_self] */
 
-%}
+%} // end of [%{^]
 
 (* ****** ****** *)
 
-implement dirwalk (dirname, f) = let
+implement
+dirwalk (dirname, f) = let
 (*
   val () = begin
     prerr "dirwalk: dirname = "; prerr dirname; prerr_newline ()
@@ -100,7 +103,9 @@ implement dirwalk (dirname, f) = let
 in
   if (p_dir > null) then let
     prval Some_v pf_dir = pfopt_dir
-    fun loop (buf: &buf_t, dir: &DIR):<cloref1> void = let
+    fun loop (
+      buf: &buf_t, dir: &DIR
+    ) :<cloref1> void = let
       val (pfopt | p_ent) = readdir (dir)
     in
       if (p_ent > null) then let
@@ -112,11 +117,13 @@ in
             $effmask_ref (loop (buf, dir))
         | _ => let
             val direntnameopt =
-              direntnameopt_make (buf, dirname, !p_ent) where {
+              direntnameopt_make (
+                buf, dirname, !p_ent
+              ) where {
               extern fun direntnameopt_make (
                 buf: &buf_t, dir: string, ent: &dirent
               ) :<> Stropt = "direntnameopt_make" 
-            }
+            } // end of [val]
             val () = begin
               if stropt_is_some (direntnameopt) then begin
                 $effmask_ref (f (stropt_unsome direntnameopt))
@@ -129,9 +136,7 @@ in
       in
         // nothing
       end else let
-        prval None_v () = pfopt
-      in
-        // loop exists
+        prval None_v () = pfopt in (* loop exists *)
       end // end of [if]
     end // end of [loop]
     val () = loop (!p_name, !p_dir)
@@ -140,7 +145,7 @@ in
   end else let
     prval None_v () = pfopt_dir
   in
-    prerrf ("dirwalk: can't open [%s]\n", @(dirname))
+    prerrf ("*** ERROR ***: dirwalk: can't open [%s]\n", @(dirname))
   end // end of [if]
 end // end of [dirwalk]
 
@@ -148,7 +153,8 @@ end // end of [dirwalk]
 
 %{^
 
-ats_ptr_type direntnameopt_make (
+ats_ptr_type
+direntnameopt_make (
   ats_ref_type buf, ats_ptr_type dir, ats_ref_type ent
 ) {
   int cnt ;
@@ -156,10 +162,9 @@ ats_ptr_type direntnameopt_make (
     ((char*)buf, MAXPATHLEN, "%s/%s", dir, ((ats_dirent_type*)ent)->d_name) ;
   if (cnt < MAXPATHLEN) return buf ;
   return (ats_ptr_type)0 ;
-}
+} // end of [direntnameopt_make]
 
-%}
-
+%} // end of [%{^]
 
 (* ****** ****** *)
 

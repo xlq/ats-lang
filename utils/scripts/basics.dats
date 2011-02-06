@@ -48,11 +48,13 @@ staload "top.sats"
 
 exception Fatal of string
 
+(* ****** ****** *)
+
 local
 
 #include "prelude/params_system.hats"
 
-in
+in // in of [local]
 
 #if OPERATING_SYSTEM_IS_UNIX_LIKE #then
 
@@ -61,24 +63,31 @@ val dirsep_str: string = "/"
 
 #endif
 
-end
+end // end of [local]
 
 (* ****** ****** *)
 
+local
+
 val the_wordsize: size_t = sizeof<ptr>
 
-var the_wordsize_target : size_t = the_wordsize
+var the_wordsize_target: size_t = the_wordsize
 val (pfbox_the_wordsize_target | ()) = begin
   vbox_make_view_ptr {size_t} (view@ the_wordsize_target | &the_wordsize_target)
 end // end of [val]
+
+in // in of [local]
 
 implement wordsize_target_get () = let
   prval vbox pf = pfbox_the_wordsize_target in the_wordsize_target
 end // end of [wordsize_target_get]
 
-implement wordsize_target_set (sz) = let
+implement
+wordsize_target_set (sz) = let
   prval vbox pf = pfbox_the_wordsize_target in the_wordsize_target := sz
 end // end of [wordsize_target_get]
+
+end // end of [local]
 
 (* ****** ****** *)
 
@@ -98,15 +107,21 @@ in
   | _ => "ccomp/lib/"
 end // end of [atslib_local]
 
-implement atslib_output_local () =
+implement
+atslib_output_local () =
   sbp2str (atslib_local () + "output/")
+// end of [atslib_output_local]
 
 implement libats_local () =
   sbp2str (atslib_local () + "libats.a")
+// end of [libats_local]
 
-// multithreaded
+//
+// HX: multithreaded
+//
 implement libats_mt_local () =
   sbp2str (atslib_local () + "libats_mt.a")
+// end of [libats_mt_local]
 
 (* ****** ****** *)
 
@@ -140,7 +155,8 @@ end // end of [local]
 
 (* ****** ****** *)
 
-implement ATSHOME_dir = let
+implement
+ATSHOME_dir = let
   val ATSHOME = ATSHOME_get ()
   val n = string_length ATSHOME
 in
@@ -152,7 +168,8 @@ in
   end (* end of [if] *)
 end // end of [ATSHOME]
 
-implement ATSHOME_dir_append basename =
+implement
+ATSHOME_dir_append basename =
   sbp2str (ATSHOME_dir + (string1_of_string basename))
 // end of [ATSHOME_dir_append]
 

@@ -9,7 +9,7 @@
 ATSUSRQ="$(ATSHOME)"
 ifeq ($(ATSUSRQ),"")
 ATSUSRQ="/usr"
-endif
+endif # end of [ifeq]
 
 ######
 
