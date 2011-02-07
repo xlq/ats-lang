@@ -294,6 +294,11 @@ fun nice
 
 (* ****** ****** *)
 
+// HX: succ/fail: 0/-1
+fun rmdir (path: !READ(string)): int = "#atslib_rmdir" // macro!
+
+(* ****** ****** *)
+
 fun link (src: !READ(string), dst: !READ(string)): int = "#atslib_link"
 fun unlink (path: !READ(string)): int = "#atslib_unlink" // macro!
 

@@ -10,7 +10,16 @@
 
 (* ****** ****** *)
 
+staload UN = "prelude/SATS/unsafe.sats"
+
+(* ****** ****** *)
+
 staload "libc/SATS/random.sats"
+staload STR = "libc/SATS/string.sats"
+staload UNI = "libc/SATS/unistd.sats"
+
+(* ****** ****** *)
+
 staload "libc/SATS/stdlib.sats"
 
 (* ****** ****** *)
@@ -59,10 +68,17 @@ main (argc, argv) = let
 //
   val () = print_array<double> (!p_arr, ASZ, lam x => printf ("%.2f", @(x)))
   val () = print_newline ()
-//
   val () = qsort {double} (!p_arr, ASZ, sizeof<double>, lam (x1, x2) => compare (x1, x2))
   val () = print_array<double> (!p_arr, ASZ, lam x => printf ("%.2f", @(x)))
   val () = print_newline ()
+//
+  val tmp = $STR.strdup_gc ("foo-XXXXXX")
+  prval pfstr = tmp.1
+  val p = mkdtemp !(tmp.2) // create it!
+  val () = assertloc (p > null)
+  prval () = tmp.1 := pfstr
+  val () = assertloc ($UNI.rmdir ($UN.castvwtp (tmp.2)) = 0) // remove it!
+  val () = strbufptr_free (tmp)
 //
   val _err = atexit (lam () => printf ("Bye, bye!\n", @()))
   val () = assert_errmsg (_err = 0, #LOCATION)

@@ -148,6 +148,10 @@ atslib_usleep (ats_int_type n) { usleep (n) ; return ; }
 
 /* ****** ****** */
 
+#define atslib_rmdir rmdir
+
+/* ****** ****** */
+
 #define atslib_link link
 #define atslib_unlink unlink
 

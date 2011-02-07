@@ -78,7 +78,9 @@ implement{} funarray_make_nil {a} () = E ()
 
 implement{a}
 funarray_size (A) = size (A) where {
-// this algorithm is taken from a paper by Chris Okasaki
+//
+// HX: this algorithm is taken from a paper by Chris Okasaki
+//
   fun diff {nl,nr:nat | nr <= nl && nl <= nr+1} .<nr>. 
     (nr: size_t nr, t: bt (a, nl)):<> int (nl-nr) = case+ t of
     | B (_, tl, tr) => begin

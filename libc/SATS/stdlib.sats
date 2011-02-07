@@ -89,14 +89,22 @@ fun system (cmd: !READ(string)): int = "#atslib_system" // !macro
 
 fun abort (): void = "#atslib_abort"
 
+(* ****** ****** *)
+
 fun _Exit (status: int): void = "#atslib__Exit" // !macro
 fun atexit (f: () -> void): int = "#atslib_atexit" // !macro
 
 (* ****** ****** *)
-
-fun mkstemp {m,n:nat}
-  (path: !READ(string)): [i: int] (open_v (i) | int i) = "#atslib_mkstemp"
+//
+// HX: the last six characters of path much be XXXXXX
+//
+fun mkstemp {m,n:int | n >= 6}
+  (path: &strbuf (m, n)): [i:int] (open_v (i) | int i) = "#atslib_mkstemp"
 // end of [mkstemp]
+
+fun mkdtemp {m,n:int | n >= 6}
+  (path: &strbuf (m, n)): ptr = "#atslib_mkdtemp" // null/nonnull: fail/succ
+// end of [mkdtemp]
 
 (* ****** ****** *)
 //

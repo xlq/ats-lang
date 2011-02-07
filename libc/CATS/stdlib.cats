@@ -78,6 +78,7 @@ atspre_exit_prerrf(ats_int_type code, ats_ptr_type fmt, ...) ;
 /* ****** ****** */
 
 #define atslib_mkstemp mkstemp
+#define atslib_mkdtemp mkdtemp
 
 /* ****** ****** */
 //
