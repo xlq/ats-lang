@@ -92,14 +92,12 @@ funmap_search (
 // if [k0] occurs in [m], [x0] replaces the original value associated with [k0]
 //
 fun{key,itm:t@ype} funmap_insert (
-    m: &map (key, itm), k0: key, x0: itm, cmp: cmp key
-  ) :<> bool(*[k0] alreay exists in [m]*)
-// end of [funmap_insert]
+  m: &map (key, itm), k0: key, x0: itm, cmp: cmp key
+) :<> bool(*[k0] alreay exists in [m]*) // end of [funmap_insert]
 
 fun{key,itm:t@ype} funmap_insert_clo (
-    m: &map (key, itm), k0: key, x0: itm, f: &(itm(*new*), itm) -<clo> itm, cmp: cmp key
-  ) :<> void
-// end of [funmap_insert_clo]
+  m: &map (key, itm), k0: key, x0: itm, f: &(itm(*new*), itm) -<clo> itm, cmp: cmp key
+) :<> void // end of [funmap_insert_clo]
 
 (* ****** ****** *)
 

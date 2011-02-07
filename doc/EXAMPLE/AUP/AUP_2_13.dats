@@ -97,7 +97,7 @@ end // end of [backward]
 
 implement main
   (argc, argv) = () where {
-  val () = assert_errmsg (argc >= 2, #LOCATION)
+  val () = assertloc (argc >= 2)
   val () = backward (argv.[1])
 } // end of [val]
 

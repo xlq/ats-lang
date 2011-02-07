@@ -64,6 +64,8 @@ fun ref_make_elt_tsz
 fun{a:viewt@ype} ref (x: a):<> ref a
 fun{a:viewt@ype} ref_make_elt (x: a):<> ref a
 
+//
+// HX:
 // this is really an identity function; it is
 // implemented in [prelude/CATS/reference.cats]
 fun ref_make_view_ptr

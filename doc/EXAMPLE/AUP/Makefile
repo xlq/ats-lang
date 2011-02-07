@@ -35,71 +35,54 @@ checkall: compall cleanall
 ######
 
 compall:: testlock
-testlock: AUP_2_4_3.dats
-	$(ATSCC) -o $@ AUP_2_4_3.dats
+testlock: AUP_2_4_3.dats; $(ATSCC) -o $@ $^
 
 compall:: backward
 backward: AUP_2_13.dats
-	$(ATSCC) -o $@ AUP_2_13.dats \
-     && ./backward "AUP_2_13.dats"
+	$(ATSCC) -o $@ $^ && ./$@ "AUP_2_13.dats"
 
 compall:: backward2
 backward2: AUP_2_14.dats
-	$(ATSCC) -o $@ AUP_2_14.dats \
-     && ./backward2 "AUP_2_14.dats"
+	$(ATSCC) -o $@ $^ && ./$@ "AUP_2_14.dats"
+
+#######
 
 compall:: pathnames
-pathnames: AUP_3_4.dats
-	$(ATSCC) -o $@ AUP_3_4.dats \
-     && ./pathnames
+pathnames: AUP_3_4.dats; $(ATSCC) -o $@ $^ && ./$@
 
 compall:: longls
-longls: AUP_3_5.dats
-	$(ATSCC) -o $@ AUP_3_5.dats \
-     && ./longls
+longls: AUP_3_5.dats; $(ATSCC) -o $@ $^ && ./$@
 
 compall:: getcwdx
-getcwdx: AUP_3_6_4.dats
-	$(ATSCC) -o $@ AUP_3_6_4.dats \
-     && ./getcwdx
+getcwdx: AUP_3_6_4.dats; $(ATSCC) -o $@ $^ && ./getcwdx
 
 #######
 
 compall:: test421
-test421: AUP_4_2_1.dats
-	$(ATSCC) -o $@ AUP_4_2_1.dats
+test421: AUP_4_2_1.dats; $(ATSCC) -o $@ $^
 
 compall:: test4221
-test4221: AUP_4_2_2_1.dats
-	$(ATSCC) -o $@ AUP_4_2_2_1.dats
+test4221: AUP_4_2_2_1.dats; $(ATSCC) -o $@ $^
 
 compall:: test4222
-test4222: AUP_4_2_2_2.dats
-	$(ATSCC) -o $@ AUP_4_2_2_2.dats
+test4222: AUP_4_2_2_2.dats; $(ATSCC) -o $@ $^
 
 compall:: test423
-test423: AUP_4_2_3.dats
-	$(ATSCC) -o $@ AUP_4_2_3.dats
+test423: AUP_4_2_3.dats; $(ATSCC) -o $@ $^
 
 compall:: test435
-test435: AUP_4_3_5.dats
-	$(ATSCC) -o $@ AUP_4_3_5.dats
+test435: AUP_4_3_5.dats; $(ATSCC) -o $@ $^
 
 compall:: test47
-test47: AUP_4_7.dats
-	$(ATSCC) -o $@ AUP_4_7.dats \
-     && ./test47
+test47: AUP_4_7.dats; $(ATSCC) -o $@ $^ && ./test47
 
 compall:: test48
-test48: AUP_4_8.dats
-	$(ATSCC) -o $@ AUP_4_8.dats -lcurses
+test48: AUP_4_8.dats; $(ATSCC) -o $@ $^ -lcurses
 
 #######
 
 compall:: test52
-test52: AUP_5_2.dats
-	$(ATSCC) -o $@ AUP_5_2.dats \
-     && ./test52
+test52: AUP_5_2.dats; $(ATSCC) -o $@ $^ && ./test52
 
 #######
 

@@ -9,7 +9,7 @@
 ATSUSRQ="$(ATSHOME)"
 ifeq ($(ATSUSRQ),"")
 ATSUSRQ="/usr"
-endif
+endif # end of [ifeq]
 
 ######
 
@@ -32,11 +32,12 @@ cleanall:: ; $(RMF) *_?ats.html
 
 checkall:: strlen
 cleanall:: ; $(RMF) strlen
-strlen: strlen.dats ; $(ATSCC) -o strlen strlen.dats
+strlen: strlen.dats
+	$(ATSCC) -o $@ $^ && ./$@ "abcdefghijklmnopqrstuvwxyz"
 
 checkall:: rand
 cleanall:: ; $(RMF) rand
-rand: rand.dats ; $(ATSCC) -o rand rand.dats
+rand: rand.dats ; $(ATSCC) -o $@ $^ && ./$@
 
 ######
 

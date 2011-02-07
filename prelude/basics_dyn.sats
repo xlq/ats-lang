@@ -45,9 +45,9 @@
 #endif // end of [VERBOSE_PRELUDE]
 
 (* ****** ****** *)
-
-// some overloaded symbols
-
+//
+// HX: some overloaded symbols
+//
 symintr ~ not
 symintr && || << >> land lor lxor
 symintr + - * / mod gcd

@@ -24,8 +24,6 @@ int srand (unsigned int seed) { next = seed ; return ; }
 
 staload TIME = "libc/SATS/time.sats"
 
-staload _(*anonymous*) = "prelude/DATS/reference.dats"
-
 (* ****** ****** *)
 
 extern fun rand (): int
@@ -33,7 +31,12 @@ extern fun srand (seed: ulint): void
 
 (* ****** ****** *)
 
-val next = ref_make_elt<ulint> (1UL)
+local
+
+var next: ulint = 1UL // HX: avoid heap-allocation
+val next = ref_make_view_ptr {ulint} (view@ (next) | &next)
+
+in
 
 implement rand () = let
   val n = !next * 1103515245UL + 12345UL
@@ -43,6 +46,8 @@ in
 end // end of [rand]
 
 implement srand (seed) = !next := seed
+
+end // end of [local]
 
 (* ****** ****** *)
 

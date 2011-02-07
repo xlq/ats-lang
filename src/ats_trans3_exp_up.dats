@@ -564,6 +564,12 @@ in
   | D3Evar d2v => begin
       fprint_d2var (pf | out, d2v)
     end // end of [D3Evar]
+  | D3Etmpcst (d2c, _) => begin
+      fprint_d2cst (pf | out, d2c)
+    end // end of [D3Etmpcst]
+  | D3Etmpvar (d2v, _) => begin
+      fprint_d2var (pf | out, d2v)
+    end // end of [D3Etmpcst]
   | _ => let
       val () = fprint1_string (
         pf | out, "INTERNAL ERROR (ats_trans3_exp_up): fprint_xyz_root: d3e = "

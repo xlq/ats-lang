@@ -26,8 +26,9 @@ implement strlen {m,n} (buf) = loop (buf, 0) where {
 
 (* ****** ****** *)
 
-implement main (argc, argv) = let
-  val () = assert (argc >= 2)
+implement
+main (argc, argv) = let
+  val () = assertloc (argc >= 2)
   val str = string1_of_string (argv.[1])
   val len = strlen (!p_buf) where {
     val (vbox pf_buf | p_buf) = strbuf_of_string1 str

@@ -45,36 +45,36 @@ html:: ; make -C Chapter08 html
 
 ######
 
-update:: update01
-update01:: ; scp Chapter01/*.dats Chapter01/*_dats.html \
+upload:: upload01
+upload01:: ; scp Chapter01/*.dats Chapter01/*_dats.html \
   ats-hwxi,ats-lang@web.sourceforge.net:htdocs/EXAMPLE/KernighanRitchie/Chapter01
 
-update:: update02
-update02:: ; scp Chapter02/*.dats Chapter02/*_dats.html \
+upload:: upload02
+upload02:: ; scp Chapter02/*.dats Chapter02/*_dats.html \
   ats-hwxi,ats-lang@web.sourceforge.net:htdocs/EXAMPLE/KernighanRitchie/Chapter02
 
-update:: update03
-update03:: ; scp Chapter03/*.dats Chapter03/*_dats.html \
+upload:: upload03
+upload03:: ; scp Chapter03/*.dats Chapter03/*_dats.html \
   ats-hwxi,ats-lang@web.sourceforge.net:htdocs/EXAMPLE/KernighanRitchie/Chapter03
 
-update:: update04
-update04:: ; scp Chapter04/*.dats Chapter04/*_dats.html \
+upload:: upload04
+upload04:: ; scp Chapter04/*.dats Chapter04/*_dats.html \
   ats-hwxi,ats-lang@web.sourceforge.net:htdocs/EXAMPLE/KernighanRitchie/Chapter04
 
-update:: update05
-update05:: ; scp Chapter05/*.dats Chapter05/*_dats.html \
+upload:: upload05
+upload05:: ; scp Chapter05/*.dats Chapter05/*_dats.html \
   ats-hwxi,ats-lang@web.sourceforge.net:htdocs/EXAMPLE/KernighanRitchie/Chapter05
 
-update:: update06
-update06:: ; scp Chapter06/*.dats Chapter06/*_dats.html \
+upload:: upload06
+upload06:: ; scp Chapter06/*.dats Chapter06/*_dats.html \
   ats-hwxi,ats-lang@web.sourceforge.net:htdocs/EXAMPLE/KernighanRitchie/Chapter06
 
-update:: update07
-update07:: ; scp Chapter07/*.dats Chapter07/*_dats.html \
+upload:: upload07
+upload07:: ; scp Chapter07/*.dats Chapter07/*_dats.html \
   ats-hwxi,ats-lang@web.sourceforge.net:htdocs/EXAMPLE/KernighanRitchie/Chapter07
 
-update:: update08
-update08:: ; scp Chapter08/*.dats Chapter08/*_dats.html \
+upload:: upload08
+upload08:: ; scp Chapter08/*.dats Chapter08/*_dats.html \
   ats-hwxi,ats-lang@web.sourceforge.net:htdocs/EXAMPLE/KernighanRitchie/Chapter08
 
 ###### end of [Makefile] ######

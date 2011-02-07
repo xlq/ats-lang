@@ -79,7 +79,8 @@ end // end of [loop_main]
 
 (* ****** ****** *)
 
-implement backward2 (path) = let
+implement
+backward2 (path) = let
   val (pf_fd | fd) = open_flag_exn (path, O_RDONLY)
   var !p_buf with pf_buf = @[byte][BUFSZ]()
   prval () = pf_buf := bytes_v_of_b0ytes_v (pf_buf)
@@ -103,8 +104,9 @@ end // end of [backward2]
 
 (* ****** ****** *)
 
-implement main (argc, argv) = let
-  val () = assert (argc >= 2)
+implement
+main (argc, argv) = let
+  val () = assertloc (argc >= 2)
   val () = backward2 (argv.[1])
 in
   // nothing

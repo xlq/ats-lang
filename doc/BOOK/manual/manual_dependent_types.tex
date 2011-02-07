@@ -360,7 +360,7 @@ empty.
 
 \subsection{Sequentiality}
 In ATS, pattern matching is performed sequentially at run-time. In other
-words, a clause is selected only if the given value matches the pattern
+words, a clause is selected only if a given value matches the pattern
 associated with this clause but the value does not match the patterns
 associated with the clauses ahead of it. Naturally, one might expect that
 the following implementation of ${\it list\_zip\_with}$ also typechecks:
@@ -382,7 +382,7 @@ of the following:
 $$\begin{array}{lll}
 (list\_cons(\_,\_), list\_nil ())~~~& 
 (list\_nil (), list\_cons(\_,\_))~~~&
-(list\_cons(\_, \_), list\_cons(\_,\_)) \\
+(list\_nil (), list\_nil()) \\
 \end{array}$$
 This assumption allows typechecking to succeed.
 

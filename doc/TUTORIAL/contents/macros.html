@@ -34,7 +34,7 @@ Then <i>N1 * N2</i> first expands into <i>1024 * (N1 + N1)</i>, which
 further expands into <i>1024 * (1024 + 1024)</i>. Note that if this example
 is done in C, then <i>N1 * N2</i> expands into <i>1024 * 1024 + 1024</i>,
 which is different from what we have here.  Also note that it makes no
-diffierence if we reverse the order of the previous macro definitions:
+difference if we reverse the order of the previous macro definitions:
 
 <pre>
 #define N2 N1 + N1
@@ -108,7 +108,7 @@ instance, the following syntax introduces a macro function
 <i>square_mac</i>:
 
 <pre>
-macrodef square_mac (x) = `(,(x) * ,(x)) // [x] should refers to some code
+macrodef square_mac (x) = `(,(x) * ,(x)) // [x] should refer to some code
 </pre>
 
 Here are some examples that make use of <i>square_mac</i>:
@@ -122,7 +122,7 @@ fun area_of_circle_fun (r: double): doubld = 3.1416 * ,(square_mac `(r))
 The previous macro function <i>square_mac</i> can also be defined as follows:
 
 <pre>
-macdef square_mac (x) = ,(x) * ,(x) // [x] should refers to some code
+macdef square_mac (x) = ,(x) * ,(x) // [x] should refer to some code
 </pre>
 
 The keyword <i>macdef</i> introduces a macro definition in short form.
