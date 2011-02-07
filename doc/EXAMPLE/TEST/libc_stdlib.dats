@@ -14,7 +14,8 @@ staload UN = "prelude/SATS/unsafe.sats"
 
 (* ****** ****** *)
 
-staload "libc/SATS/random.sats"
+staload F = "libc/SATS/fcntl.sats"
+staload R = "libc/SATS/random.sats"
 staload STR = "libc/SATS/string.sats"
 staload UNI = "libc/SATS/unistd.sats"
 
@@ -52,7 +53,26 @@ main (argc, argv) = let
   val () = (print "${ATSHOME0} = "; print _x; print_newline ())
   prval () = fpf_x (_x)
 //
-  val () = srand48_with_time ()
+  val tmp = $STR.strdup_gc ("foo-XXXXXX")
+  prval pfstr = tmp.1
+  val (pfopt | i) = mkstemp !(tmp.2) // create it!
+  val () = assertloc (i > 0)
+  val () = printf ("mkstemp: %s\n", @($UN.cast (tmp.2)))
+  prval () = tmp.1 := pfstr
+  prval $F.open_v_succ (pffil) = pfopt
+  val () = $F.close_exn (pffil | i)
+  val () = strbufptr_free (tmp)
+//
+  val tmp = $STR.strdup_gc ("bar-XXXXXX")
+  prval pfstr = tmp.1
+  val p = mkdtemp !(tmp.2) // create it!
+  val () = assertloc (p > null)
+  val () = printf ("mkdtemp: %s\n", @($UN.cast (tmp.2)))
+  prval () = tmp.1 := pfstr
+  val () = assertloc ($UNI.rmdir ($UN.cast (tmp.2)) = 0) // remove it!
+  val () = strbufptr_free (tmp)
+//
+  val () = $R.srand48_with_time ()
 //
   #define ASZ 10
   var !p_arr = @[double][ASZ](0.0)
@@ -61,7 +81,7 @@ main (argc, argv) = let
 //
   val () = for
     (i := 0; i < ASZ; i := i+1) let
-    val () = p_arr->[i] := drand48 ()
+    val () = p_arr->[i] := $R.drand48 ()
   in
     // nothing
   end // end of [val]
@@ -72,16 +92,9 @@ main (argc, argv) = let
   val () = print_array<double> (!p_arr, ASZ, lam x => printf ("%.2f", @(x)))
   val () = print_newline ()
 //
-  val tmp = $STR.strdup_gc ("foo-XXXXXX")
-  prval pfstr = tmp.1
-  val p = mkdtemp !(tmp.2) // create it!
-  val () = assertloc (p > null)
-  prval () = tmp.1 := pfstr
-  val () = assertloc ($UNI.rmdir ($UN.castvwtp (tmp.2)) = 0) // remove it!
-  val () = strbufptr_free (tmp)
-//
   val _err = atexit (lam () => printf ("Bye, bye!\n", @()))
   val () = assert_errmsg (_err = 0, #LOCATION)
+//
 in
   // empty
 end // end of [main]
