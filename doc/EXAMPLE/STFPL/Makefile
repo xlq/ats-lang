@@ -11,6 +11,10 @@
 
 ######
 
+ATSCC=$(ATSHOME)/bin/atscc
+
+######
+
 CCFLAGS=-O2 -g
 #CCFLAGS=
 GCFLAG=-D_ATS_GCATS
@@ -38,8 +42,8 @@ OBJECTS := $(patsubst %.sats, %_sats.o, $(OBJECTS))
 
 ######
 
-stfpl: $(OBJECTS) $(LIBPARCOMB)
-	atscc $(GCFLAG) -o stfpl $(OBJECTS) $(LIBPARCOMB)
+stfpl: $(OBJECTS)
+	$(ATSCC) $(GCFLAG) -o stfpl $(OBJECTS) $(LIBPARCOMB)
 
 ######
 
@@ -54,45 +58,45 @@ test:: stfpl
 ######
 
 stfpl_main_dats.o: stfpl_main.dats
-	atscc $(CCFLAGS) -c -o stfpl_main_dats.o stfpl_main.dats
+	$(ATSCC) $(CCFLAGS) -c -o stfpl_main_dats.o stfpl_main.dats
 
 ######
 
 error_sats.o: error.sats
-	atscc $(CCFLAGS) -o error_sats.o -c error.sats
+	$(ATSCC) $(CCFLAGS) -o error_sats.o -c error.sats
 
 error_dats.o: error.dats
-	atscc $(CCFLAGS) -o error_dats.o -c error.dats
+	$(ATSCC) $(CCFLAGS) -o error_dats.o -c error.dats
 
 ######
 
-symbol_sats.o: symbol.sats; atscc $(CCFLAGS) -c -o $@ symbol.sats
-symbol_dats.o: symbol.dats; atscc $(CCFLAGS) -c -o $@ symbol.dats
+symbol_sats.o: symbol.sats; $(ATSCC) $(CCFLAGS) -c -o $@ symbol.sats
+symbol_dats.o: symbol.dats; $(ATSCC) $(CCFLAGS) -c -o $@ symbol.dats
 
 ######
 
-absyn_sats.o: absyn.sats; atscc $(CCFLAGS) -c -o $@ absyn.sats
-absyn_dats.o: absyn.dats; atscc $(CCFLAGS) -c -o $@ absyn.dats
+absyn_sats.o: absyn.sats; $(ATSCC) $(CCFLAGS) -c -o $@ absyn.sats
+absyn_dats.o: absyn.dats; $(ATSCC) $(CCFLAGS) -c -o $@ absyn.dats
 
 ######
 
-fixity_sats.o: fixity.sats; atscc $(CCFLAGS) -c -o $@ fixity.sats
-fixity_dats.o: fixity.dats; atscc $(CCFLAGS) -c -o $@ fixity.dats
+fixity_sats.o: fixity.sats; $(ATSCC) $(CCFLAGS) -c -o $@ fixity.sats
+fixity_dats.o: fixity.dats; $(ATSCC) $(CCFLAGS) -c -o $@ fixity.dats
 
 ######
 
-parser_sats.o: parser.sats; atscc $(CCFLAGS) -o $@ -c parser.sats
-parser_dats.o: parser.dats; atscc $(CCFLAGS) -o $@ -c parser.dats
+parser_sats.o: parser.sats; $(ATSCC) $(CCFLAGS) -o $@ -c parser.sats
+parser_dats.o: parser.dats; $(ATSCC) $(CCFLAGS) -o $@ -c parser.dats
 
 ######
 
-trans1_sats.o: trans1.sats; atscc $(CCFLAGS) -o $@ -c trans1.sats
-trans1_dats.o: trans1.dats; atscc $(CCFLAGS) -o $@ -c trans1.dats
+trans1_sats.o: trans1.sats; $(ATSCC) $(CCFLAGS) -o $@ -c trans1.sats
+trans1_dats.o: trans1.dats; $(ATSCC) $(CCFLAGS) -o $@ -c trans1.dats
 
 ######
 
-interp_sats.o: interp.sats; atscc $(CCFLAGS) -o $@ -c interp.sats
-interp_dats.o: interp.dats; atscc $(CCFLAGS) -o $@ -c interp.dats
+interp_sats.o: interp.sats; $(ATSCC) $(CCFLAGS) -o $@ -c interp.sats
+interp_dats.o: interp.dats; $(ATSCC) $(CCFLAGS) -o $@ -c interp.dats
 
 ######
 

@@ -83,6 +83,7 @@ overload intptr_of with intptr_of_lint
 (* ****** ****** *)
 
 castfn ptr_of_intptr (i: intptr):<> ptr // "atspre_ptr_of_intptr"(removed)
+overload ptr_of with ptr_of_intptr
 castfn intptr_of_ptr (p: ptr):<> intptr // = "atspre_intptr_of_ptr"(removed)
 overload intptr_of with intptr_of_ptr
 
@@ -296,6 +297,7 @@ overload uintptr_of with uintptr_of_ulint
 (* ****** ****** *)
 
 castfn ptr_of_uintptr (u: uintptr):<> ptr // = "atspre_ptr_of_uintptr"(removed)
+overload ptr_of with ptr_of_uintptr
 castfn uintptr_of_ptr (p: ptr):<> uintptr // = "atspre_uintptr_of_ptr"(removed)
 overload uintptr_of with uintptr_of_ptr
 

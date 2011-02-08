@@ -64,11 +64,9 @@ main (argc, argv) = let
   val () = strbufptr_free (tmp)
 //
   val tmp = $STR.strdup_gc ("bar-XXXXXX")
-  prval pfstr = tmp.1
-  val p = mkdtemp !(tmp.2) // create it!
+  val p = mkdtemp (tmp.1 | tmp.2) // create it!
   val () = assertloc (p > null)
   val () = printf ("mkdtemp: %s\n", @($UN.cast (tmp.2)))
-  prval () = tmp.1 := pfstr
   val () = assertloc ($UNI.rmdir ($UN.cast (tmp.2)) = 0) // remove it!
   val () = strbufptr_free (tmp)
 //

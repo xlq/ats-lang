@@ -98,12 +98,17 @@ fun atexit (f: () -> void): int = "#atslib_atexit" // !macro
 //
 // HX: the last six characters of path much be XXXXXX
 //
-fun mkstemp {m,n:int | n >= 6}
-  (path: &strbuf (m, n)): [i:int] (open_v (i) | int i) = "#atslib_mkstemp"
+fun mkstemp
+  {m,n:int | n >= 6}
+  (path: &strbuf (m, n)): [i:int] (open_v (i) | int i)
+  = "#atslib_mkstemp"
 // end of [mkstemp]
 
-fun mkdtemp {m,n:int | n >= 6}
-  (path: &strbuf (m, n)): ptr = "#atslib_mkdtemp" // null/nonnull: fail/succ
+fun mkdtemp
+  {m,n:int | n >= 6} {l:addr} (
+  pf: !strbuf (m, n) @ l | p: ptr l
+) : [l1:addr | l1==l || l1==null] ptr (l1)
+  = "#atslib_mkdtemp" // null/nonnull: fail/succ
 // end of [mkdtemp]
 
 (* ****** ****** *)

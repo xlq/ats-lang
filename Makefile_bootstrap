@@ -198,6 +198,7 @@ ATSOPT_GC_OBJECTS := \
 PRELUDE_DATS_OBJECTS := \
   prelude_dats_array_dats.o \
   prelude_dats_basics_dats.o \
+  prelude_dats_bool_dats.o \
   prelude_dats_file_dats.o \
   prelude_dats_integer_dats.o \
   prelude_dats_printf_dats.o \

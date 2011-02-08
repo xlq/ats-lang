@@ -571,7 +571,7 @@ atscc_main (
 
   extern ats_ptr_type ATSCCOMP_gcc ;
 
-  char *gcc = (char*) ATSCCOMP_gcc ;
+  char *gcc = (char*)ATSCCOMP_gcc ;
 
   ss = ((ats_sum_ptr_type (*)(ats_int_type, ats_ptr_type))atscc_argv_process)(argc, argv) ;
 

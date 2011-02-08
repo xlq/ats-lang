@@ -34,6 +34,8 @@ prelude/ats_main_prelude.dats
 */
 prelude/DATS/basics.dats
 //
+prelude/DATS/bool.dats
+//
 prelude/SATS/extern.sats /* for building external API's */
 //
 prelude/SATS/filebas.sats

@@ -97,6 +97,7 @@ ATSLEX=$(ATSHOME)/bin/atslex
 #
 # prelude_dats_array.dats
 # prelude_dats_basics.dats
+# prelude_dats_bool.dats
 # prelude_dats_file.dats
 # prelude_dats_integer.dats
 # prelude_dats_printf.dats

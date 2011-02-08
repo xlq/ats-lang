@@ -21,7 +21,11 @@ fn not1 {b:bool}
 
 implement
 main () = let
+//
   val b1 = true and b2 = false
+//
+  val () = println! ("b1(true) = ", b1)
+  val () = println! ("b2(false) = ", b2)
 //
   val () = assert (not1 b1 = ~b1)
   val () = assert (not1 b2 = ~b2)

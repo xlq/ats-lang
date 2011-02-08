@@ -225,7 +225,7 @@ atscc_version_exec () {
   exit(EXIT_FAILURE) ;
 } // end of [atscc_version]
 
-%}
+%} // end of [%{^]
 
 (* ****** ****** *)
 

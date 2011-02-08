@@ -480,17 +480,6 @@ fun nmod2 {i,j:int | i >= 0; j > 0}
 
 (* ****** ****** *)
 
-//
-// HX: not supported by ATS/Geizella
-//
-fun divmod_int1_int1
-  {m:nat; n:int | n > 0} (
-  m: int m, n: int n
-, r: &int? >> int r
-) :<> #[q,r:nat | r < n] (DIVMOD (m, n, q, r) | int q)
-
-(* ****** ****** *)
-
 fun ilt {i,j:int} (i: int i, j: int j):<> bool (i < j)
   = "atspre_ilt"
 and ilte {i,j:int} (i: int i, j: int j):<> bool (i <= j)

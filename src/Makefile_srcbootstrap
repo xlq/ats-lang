@@ -168,6 +168,7 @@ TARGETS := \
   $(BOOTDIR)/ats_grammar_yats.c $(BOOTDIR)/ats_grammar_yats.h \
   $(BOOTDIR)/prelude_dats_array_dats.c \
   $(BOOTDIR)/prelude_dats_basics_dats.c \
+  $(BOOTDIR)/prelude_dats_bool_dats.c \
   $(BOOTDIR)/prelude_dats_file_dats.c \
   $(BOOTDIR)/prelude_dats_integer_dats.c \
   $(BOOTDIR)/prelude_dats_printf_dats.c \
