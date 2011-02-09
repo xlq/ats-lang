@@ -155,11 +155,15 @@ Peano: Peano.dats; $(ATSCC) -o $@ $< && ./$@
 cleanall:: ; $(RMF) Peano
 
 #
-# generating a password randomly
+# generate lexicographically ordered permutations
 #
 checkall:: permute
 permute: permute.dats; $(ATSCC) -D_ATS_GCATS -O2 -o $@ $< && ./$@
 cleanall:: ; $(RMF) permute
+
+checkall:: permute_vt
+permute_vt: permute_vt.dats; $(ATSCC) -D_ATS_GCATS -O2 -o $@ $< && ./$@
+cleanall:: ; $(RMF) permute_vt
 
 #
 # Euler's transform in lazy style

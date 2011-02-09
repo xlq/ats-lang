@@ -4,15 +4,14 @@
 *)
 
 (* ****** ****** *)
-//
-// Given a natural number n, permute(n) lists all the permutations
-// of (1, 2, ..., n) in the lexicographic order.
-//
-(* ****** ****** *)
 
 staload "prelude/DATS/list.dats"
 staload "prelude/DATS/list_vt.dats"
 staload "prelude/DATS/list0.dats"
+
+(* ****** ****** *)
+
+staload UN = "prelude/SATS/unsafe.sats"
 
 (* ****** ****** *)
 
@@ -22,7 +21,8 @@ fun range {m,n:nat}
 // end of [range]
 
 fun permute {n:nat}
-  (n: int n): List (list (int, n)) = let
+  (n: int n): List_vt (list (int, n)) = let
+//
   fun{a:t@ype}
   rotout {n:int} {i:nat | i < n}
     (xs: list (a, n), i: int i): (a, list (a, n-1)) = let
@@ -32,43 +32,49 @@ fun permute {n:nat}
   in
     (x, xs)
   end // end of [rotout]
-  fun{a:t@ype} perm {n:nat}
-    (xs: list (a, n), n: int n): List (list (a, n)) = let
-    typedef res_t = List (list (a, n))
+//
+  fun{a:t@ype} perm {n:nat} (
+    xs: list (a, n), n: int n
+  ) : List_vt (list (a, n)) = let
+    viewtypedef res_vt = List_vt (list (a, n))
   in
     case+ xs of
     | list_cons (x, xs1) => let
         fun loop {i:nat | i < n} (
-          xs1: list (a, n-1), i: int i, res: res_t
-        ) :<cloref1> res_t =
+          xs1: list (a, n-1), i: int i, res: res_vt
+        ) :<cloref1> res_vt =
         if i > 0 then let
           val (x1, xs2) = rotout (xs1, i-1)
           val xs = list_cons (x1, list_cons (x, xs2))
         in
-          loop (xs1, i-1, list_cons (xs, res))
+          loop (xs1, i-1, list_vt_cons (xs, res))
         end else
-          list_cons (xs, res)
+          list_vt_cons (xs, res)
         // end of [if]
-        val xss = loop (xs1, n-1, list_nil)
+//
+        val xss = loop (xs1, n-1, list_vt_nil)
+//
         val f = lam (
           xs: list (a, n)
-        ) : res_t =<cloref1> let
+        ) : res_vt =<cloref1> let
           val+ list_cons (x, xs1) = xs
           val xss1 = perm (xs1, n-1)
           val xss =
             list_map_cloref<list(a,n-1)><list(a,n)>
-            (xss1, lam (xs1) =<cloref1> list_cons (x, xs1))
+            ($UN.castvwtp1 {List(list(a,n-1))} (xss1), lam (xs1) =<cloref1> list_cons (x, xs1))
           // end of [val]
+          val () = list_vt_free (xss1)
         in
-          list_of_list_vt (xss)
+          xss
         end // end of [f]
-        val xsss = list_map_cloref (xss, f)
-        val xsss = list_of_list_vt (xsss)
+        val xsss = list_map_cloref ($UN.castvwtp1 {List(list(a,n))} xss, f)
+        val () = list_vt_free (xss)
       in
-        list_of_list_vt (list_concat (xsss))
+        list_vt_concat (xsss)
       end // end of [list_cons]
-    | list_nil () => list_cons (list_nil, list_nil)
+    | list_nil () => list_vt_cons (list_nil, list_vt_nil)
   end // end of [perm]
+//
 in
   perm (range (1, n), n)
 end // end of [permute]
@@ -85,6 +91,7 @@ implement fprint_elt<int> (out, x) = fprint (out, x)
 implement
 main () = () where {
   val xss = permute (5)
+  val xss = list_of_list_vt (xss)
   fun f (xs: List (int)): void = let
     val () = list_fprint_elt (stdout_ref, xs, " >> ")
   in

@@ -11,6 +11,7 @@ ats-lang-anairiats-0.2.4:
 5. Bison is now the default tool for generate [ats_grammar_yats.c].
 6. Adding some functions in prelude/list.
 7. Adding some functions in prelude/lazy_vt.
+8. ATS/Anairiats is kept up-to-date for bootstrapping.
 
 ########################################################################
 
