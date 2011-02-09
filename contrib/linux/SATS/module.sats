@@ -36,65 +36,20 @@
 (* ****** ****** *)
 
 %{#
-#include "libc/CATS/grp.cats"
+#include "linux/module.cats"
 %} // end of [%{#]
 
 (* ****** ****** *)
 
-staload T = "libc/sys/SATS/types.sats"
-typedef gid_t = $T.gid_t
-
-(* ****** ****** *)
-
-(*
-struct group {
-  char *gr_name;		/* Group name.	*/
-  char *gr_passwd;		/* Password.	*/
-  __gid_t gr_gid;		/* Group ID.	*/
-  char **gr_mem;		/* Member list.	*/ // null-terminated
-} ;
-*)
 abst@ype
-group_rest // unknown quantity
-typedef group_struct =
-$extype_struct "ats_group_type" of {
-  gr_gid= gid_t
-, _rest= group_rest
-} // end of [group]
-typedef group = group_struct
+module_state = $extype "module_state"
+macdef MODULE_STATE_LIVE =
+  $extval (module_state, "MODULE_STATE_LIVE")
+macdef MODULE_STATE_COMING =
+  $extval (module_state, "MODULE_STATE_COMING")
+macdef MODULE_STATE_GOING =
+  $extval (module_state, "MODULE_STATE_GOING")
 
 (* ****** ****** *)
 
-fun group_get_gr_name
-  (grp: &READ(group)): [l:addr] (strptr l -<lin,prf> void | strptr l)
-  = "atslib_group_get_gr_name" // fun!
-// end of [group_get_gr_name]
-
-fun group_get_gr_passwd
-  (grp: &READ(group)): [l:addr] (strptr l -<lin,prf> void | strptr l)
-  = "atslib_group_get_gr_passwd" // fun!
-// end of [group_get_gr_passwd]
-
-(* ****** ****** *)
-//
-// HX: please use with caution!
-//
-fun group_get_gr_mem
-  (grp: &READ(group)): ptr = "atslib_group_get_gr_mem" // fun!
-// end of [group_get_gr_mem]
-
-(* ****** ****** *)
-
-// HX: non-reentrant
-fun getgrnam (nam: !READ(string)):<!ref>
-  [l:addr] (vptroutopt (group, l) | ptr l) = "#atslib_getgrnam"
-// end of [getgrnam]
-
-// HX: non-reentrant
-fun getgrgid (gid: gid_t):<!ref>
-  [l:addr] (vptroutopt (group, l) | ptr l) = "#atslib_getgrgid"
-// end of [getgrgid]
-
-(* ****** ****** *)
-
-(* end of [grp.sats] *)
+(* end of [module.sats] *)
