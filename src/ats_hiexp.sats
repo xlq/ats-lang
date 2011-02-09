@@ -165,6 +165,10 @@ fun hityp_is_tyrecsin (hit: hityp): bool // singular (flat) record
 
 (* ****** ****** *)
 
+fun label_is_tyarr (hit_rec: hityp, lab: lab_t): bool
+
+(* ****** ****** *)
+
 abstype tmpvar_t // implemented in [ats_ccomp.dats]
 typedef tmpvarlst = List (tmpvar_t)
 datatype tmpvaropt = TMPVAROPTsome of tmpvar_t | TMPVAROPTnone

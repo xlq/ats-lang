@@ -670,23 +670,15 @@ end // end of [emit_array_index]
 
 (* ****** ****** *)
 
-fun label_is_tyarr (
+fn label_is_tyarr (
   hit_rec: hityp_t, lab: lab_t
 ) : bool = let
   val hit_rec = hityp_decode (hit_rec)
-  fun istyarr
-    (lhits: labhityplst, lab: lab_t): bool =
-    case+ lhits of
-    | LABHITYPLSTcons (l, hit, lhits) =>
-        if $Lab.eq_label_label (lab, l)
-          then hityp_is_tyarr(hit) else istyarr (lhits, lab)
-      // end of [if]
-    | LABHITYPLSTnil () => false
 in
-  case+ hit_rec.hityp_node of
-  | HITtyrec (_(*knd*), lhits) => istyarr (lhits, lab)
-  | _ => false
+  label_is_tyarr (hit_rec, lab)
 end // end of [label_is_tyarr]
+
+(* ****** ****** *)
 
 fn emit_select_clo
   {m:file_mode} (
