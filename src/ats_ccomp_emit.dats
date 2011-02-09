@@ -669,13 +669,13 @@ in
 end // end of [emit_array_index]
 
 (* ****** ****** *)
-
-fn label_is_tyarr (
-  hit_rec: hityp_t, lab: lab_t
-) : bool = let
-  val hit_rec = hityp_decode (hit_rec)
-in
-  label_is_tyarr (hit_rec, lab)
+//
+// HX: this function calls another one of
+// the same name defined in [ats_hiexp_util.dats]
+//
+fn label_is_tyarr
+  (hit_rec: hityp_t, lab: lab_t) : bool = let
+  val hit_rec = hityp_decode (hit_rec) in label_is_tyarr (hit_rec, lab)
 end // end of [label_is_tyarr]
 
 (* ****** ****** *)

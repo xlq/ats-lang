@@ -141,6 +141,8 @@ in
   // end of [case]
 end // end of [hityp_fun_is_vararg]
 
+(* ****** ****** *)
+
 implement
 hityp_is_tyarr (hit_rec) = begin
   case+ hit_rec.hityp_node of HITtyarr _ => true | _ => false
@@ -166,14 +168,16 @@ end // end of [hityp_is_tyrecsim]
 implement
 label_is_tyarr
   (hit_rec, lab) = let
-  fun istyarr
-    (lhits: labhityplst, lab: lab_t): bool =
+  fun istyarr (
+    lhits: labhityplst, lab: lab_t
+  ) : bool =
     case+ lhits of
     | LABHITYPLSTcons (l, hit, lhits) =>
         if $Lab.eq_label_label (lab, l)
           then hityp_is_tyarr(hit) else istyarr (lhits, lab)
       // end of [if]
     | LABHITYPLSTnil () => false
+  // end of [istyarr]
 in
   case+ hit_rec.hityp_node of
   | HITtyrec (_(*knd*), lhits) => istyarr (lhits, lab)
