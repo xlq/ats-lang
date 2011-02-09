@@ -35,7 +35,7 @@
 
 (* ****** ****** *)
 
-staload _(*anonymous*) = "prelude/DATS/reference.dats"
+staload _(*anon*) = "prelude/DATS/reference.dats"
 
 (* ****** ****** *)
 
