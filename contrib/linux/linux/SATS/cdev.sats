@@ -41,6 +41,104 @@
 
 (* ****** ****** *)
 
+staload
+FS = "linux/SATS/fs.sats"
+viewtypedef inode = $FS.inode
+
+staload
+TYPES = "linux/SATS/types.sats"
+typedef dev_t = $TYPES.dev_t
+
+(* ****** ****** *)
+
+viewtypedef
+cdev_struct =
+  $extype_struct "cdev_struct" of {
+  dev= dev_t
+, count= uint
+} // end of [cdev_struct]
+viewtypedef cdev = cdev_struct
+
+absviewtype cdev_ref (l:addr, sd: int)
+
+(* ****** ****** *)
+
+fun cdev_alloc // HX: dynamically allocated cdev
+  () : [l:agez] cdev_ref (l, 1) = "#atsctrb_linux_cdev_alloc"
+// end of [cdev_alloc]
+
+(* ****** ****** *)
+
+fun cdev_init {l:agz}
+  (pf: cdev? @ l | p: ptr l, fops: ptr): cdev_ref (l, 0)
+  = "atsctrb_linux_cdev_init" // end of [cdev_init]
+
+(* ****** ****** *)
+
+fun cdev_put {l:agz} {sd:int}
+  (dev: cdev_ref (l, sd)): void = "atsctrb_linux_cdev_put"
+// end of [cdev_put]
+
+(* ****** ****** *)
+
+fun cdev_add {l:agz} {sd:int} (
+  dev: !cdev_ref (l, sd), num: dev_t, count: uint
+) : #[i:int | i <= 0] int (i) = "atsctrb_linux_cdev_add"
+
+fun cdev_del {l:addr} {sd:int}
+  (dev: !cdev_ref (l, sd) >> ptr l): (option_v (cdev? @ l, sd==0) | void)
+  = "#atsctrb_linux_cdev_del" // end of [cdev_del]
+
+(* ****** ****** *)
+
+fun cdev_index
+  (inode: &inode): int = "atsctrb_linux_cdev_index"
+// end of [cdev_index]
+
+fun cd_forget (inode: &inode): int = "atsctrb_linux_cd_forget"
+
 (* ****** ****** *)
 
 (* end of [cdev.sats] *)
+
+
+////
+
+
+#ifndef _LINUX_CDEV_H
+#define _LINUX_CDEV_H
+
+#include <linux/kobject.h>
+#include <linux/kdev_t.h>
+#include <linux/list.h>
+
+struct file_operations;
+struct inode;
+struct module;
+
+struct cdev {
+	struct kobject kobj;
+	struct module *owner;
+	const struct file_operations *ops;
+	struct list_head list;
+	dev_t dev;
+	unsigned int count;
+};
+
+void cdev_init(struct cdev *, const struct file_operations *);
+
+struct cdev *cdev_alloc(void);
+
+void cdev_put(struct cdev *p);
+
+int cdev_add(struct cdev *, dev_t, unsigned);
+
+void cdev_del(struct cdev *);
+
+int cdev_index(struct inode *inode);
+
+void cd_forget(struct inode *);
+
+extern struct backing_dev_info directly_mappable_cdev_bdi;
+
+#endif

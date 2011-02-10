@@ -9,7 +9,7 @@
 ##
 ## ATS/Anairiats - Unleashing the Potential of Types!
 ##
-## Copyright (C) 2002-2008 Hongwei Xi.
+## Copyright (C) 2002-2010 Hongwei Xi.
 ##
 ## ATS is  free software;  you can redistribute it and/or modify it under
 ## the  terms of the  GNU General Public License as published by the Free
@@ -284,38 +284,42 @@ liblines::
 
 ######
 
+RMF=rm -f
+
+######
+
 clean::
-	rm -f bootstrap0/*.o
-	rm -f bootstrap1/*.c
-	rm -f bootstrap1/*.h
-	rm -f bootstrap1/*.cats
-	rm -f bootstrap1/*.o
+	$(RMF) bootstrap0/*.o
+	$(RMF) bootstrap1/*.c
+	$(RMF) bootstrap1/*.h
+	$(RMF) bootstrap1/*.cats
+	$(RMF) bootstrap1/*.o
 
 cleanall:: clean
-	rm -f $(BUILT_CONFIG_FILES)
-	rm -f .libfiles_local
-	rm -f .libfiles_mt_local
-	rm -f bootstrap0/atsopt
-	rm -f bootstrap1/atsopt
-	rm -f src/ats_grammar_yats.c src/ats_grammar_yats.h
-	rm -f bin/atsopt bin/atscc bin/atslib bin/atslex bin/atspack
-	rm -f ccomp/lib/libats.a
-	rm -f ccomp/lib/libats_mt.a
-	rm -f ccomp/lib/libats_lex.a
-	rm -f ccomp/lib/libats_smlbas.a
-	rm -f ccomp/lib/output/*
-	rm -f ccomp/lib64/libats.a
-	rm -f ccomp/lib64/libats_mt.a
-	rm -f ccomp/lib64/libats_lex.a
-	rm -f ccomp/lib64/libats_smlbas.a
-	rm -f ccomp/lib64/output/*
-	rm -f contrib/glib/atsctrb_glib.o
-	rm -f contrib/cairo/atsctrb_cairo.o
-	rm -f contrib/pango/atsctrb_pango.o
-	rm -f contrib/X11/atsctrb_X11.o
-	rm -f contrib/GTK/atsctrb_GTK.o
-	rm -f contrib/GL/atsctrb_GL.o
-	rm -f contrib/SDL/atsctrb_SDL.o
+	$(RMF) $(BUILT_CONFIG_FILES)
+	$(RMF) .libfiles_local
+	$(RMF) .libfiles_mt_local
+	$(RMF) bootstrap0/atsopt
+	$(RMF) bootstrap1/atsopt
+	$(RMF) src/ats_grammar_yats.c src/ats_grammar_yats.h
+	$(RMF) bin/atsopt bin/atscc bin/atslib bin/atslex bin/atspack
+	$(RMF) ccomp/lib/libats.a
+	$(RMF) ccomp/lib/libats_mt.a
+	$(RMF) ccomp/lib/libats_lex.a
+	$(RMF) ccomp/lib/libats_smlbas.a
+	$(RMF) ccomp/lib/output/*
+	$(RMF) ccomp/lib64/libats.a
+	$(RMF) ccomp/lib64/libats_mt.a
+	$(RMF) ccomp/lib64/libats_lex.a
+	$(RMF) ccomp/lib64/libats_smlbas.a
+	$(RMF) ccomp/lib64/output/*
+	$(RMF) contrib/glib/atsctrb_glib.o
+	$(RMF) contrib/cairo/atsctrb_cairo.o
+	$(RMF) contrib/pango/atsctrb_pango.o
+	$(RMF) contrib/X11/atsctrb_X11.o
+	$(RMF) contrib/GTK/atsctrb_GTK.o
+	$(RMF) contrib/GL/atsctrb_GL.o
+	$(RMF) contrib/SDL/atsctrb_SDL.o
 
 cleanall::
 	$(MAKE) -C utils/atslex -f ./Makefile cleanall
@@ -327,8 +331,4 @@ cleanall::
 cleanall::
 	find . -name .svn -prune -o -name \*~ -exec rm \{} \;
 
-######
-#
-# end of [Makefile]
-#
-######
+###### end of [Makefile] ######

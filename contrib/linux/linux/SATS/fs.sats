@@ -41,6 +41,14 @@
 
 (* ****** ****** *)
 
+viewtypedef
+inode = $extype_struct "inode" of {
+  empty= empty
+, i_state= ulint
+, dirtied_when= ulint (* jiffies or first dirtying *)
+, i_flags= uint
+} // end of [inode]
+
 (* ****** ****** *)
 
 (* end of [fs.sats] *)

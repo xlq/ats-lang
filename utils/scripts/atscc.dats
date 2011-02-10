@@ -146,7 +146,7 @@ extern ats_ptr_type atsopt_global ;
 extern ats_bool_type strlst_is_nil (ats_ptr_type) ;
 extern ats_ptr_type strlst_head_get (ats_ptr_type) ;
 extern ats_ptr_type strlst_tail_get (ats_ptr_type) ;
-
+//
 ats_void_type
 ccomp_file_to_file_exec (
   ats_int_type flag_stadyn

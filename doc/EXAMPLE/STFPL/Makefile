@@ -12,6 +12,7 @@
 ######
 
 ATSCC=$(ATSHOME)/bin/atscc
+ATSOPT=$(ATSHOME)/bin/atsopt
 
 ######
 
@@ -52,55 +53,19 @@ test:: stfpl
 	./stfpl < TEST/fact.stfpl
 	./stfpl < TEST/fact_fix.stfpl
 	./stfpl < TEST/fib.stfpl
+	./stfpl < TEST/evenodd.stfpl
 	./stfpl < TEST/twice.stfpl
 	./stfpl < TEST/queens.stfpl
 
 ######
 
-stfpl_main_dats.o: stfpl_main.dats
-	$(ATSCC) $(CCFLAGS) -c -o stfpl_main_dats.o stfpl_main.dats
+%_sats.o: %.sats
+	$(ATSCC) $(ATSCCFLAGS) -o $@ -c $< || touch $@
+
+%_dats.o: %.dats
+	$(ATSCC) $(ATSCCFLAGS) -o $@ -c $< || touch $@
 
 ######
-
-error_sats.o: error.sats
-	$(ATSCC) $(CCFLAGS) -o error_sats.o -c error.sats
-
-error_dats.o: error.dats
-	$(ATSCC) $(CCFLAGS) -o error_dats.o -c error.dats
-
-######
-
-symbol_sats.o: symbol.sats; $(ATSCC) $(CCFLAGS) -c -o $@ symbol.sats
-symbol_dats.o: symbol.dats; $(ATSCC) $(CCFLAGS) -c -o $@ symbol.dats
-
-######
-
-absyn_sats.o: absyn.sats; $(ATSCC) $(CCFLAGS) -c -o $@ absyn.sats
-absyn_dats.o: absyn.dats; $(ATSCC) $(CCFLAGS) -c -o $@ absyn.dats
-
-######
-
-fixity_sats.o: fixity.sats; $(ATSCC) $(CCFLAGS) -c -o $@ fixity.sats
-fixity_dats.o: fixity.dats; $(ATSCC) $(CCFLAGS) -c -o $@ fixity.dats
-
-######
-
-parser_sats.o: parser.sats; $(ATSCC) $(CCFLAGS) -o $@ -c parser.sats
-parser_dats.o: parser.dats; $(ATSCC) $(CCFLAGS) -o $@ -c parser.dats
-
-######
-
-trans1_sats.o: trans1.sats; $(ATSCC) $(CCFLAGS) -o $@ -c trans1.sats
-trans1_dats.o: trans1.dats; $(ATSCC) $(CCFLAGS) -o $@ -c trans1.dats
-
-######
-
-interp_sats.o: interp.sats; $(ATSCC) $(CCFLAGS) -o $@ -c interp.sats
-interp_dats.o: interp.dats; $(ATSCC) $(CCFLAGS) -o $@ -c interp.dats
-
-######
-
-ATSOPT=$(ATSHOME)/bin/atsopt
 
 xref::
 	$(ATSOPT) --posmark_xref=XREF \
@@ -133,6 +98,16 @@ chmod::
 ######
 
 RMF = rm -f
+
+######
+
+SOURCESsta := $(filter %.sats, $(SOURCES))
+SOURCESdyn := $(filter %.dats, $(SOURCES))
+
+depend::
+	$(RMF) .depend
+	$(ATSOPT) -o .depend -dep1 -s $(SOURCESsta) -d $(SOURCESdyn)
+include .depend
 
 ######
 
