@@ -1,0 +1,30 @@
+make -f#
+#
+# HX-2010-08-29: this is for generating shared libats file (liats.so)
+#
+#
+
+OUTPUT=$(ATSHOME)/ccomp/lib/output
+OUTPUT=$(ATSHOME)/ccomp/lib64/output
+
+all: step1 step2
+
+step1:: ; atslib -fPIC --libats
+step1:: ; atslib -fPIC -D_ATS_MULTITHREAD --libats_mt
+step1:: ; atslib -fPIC ${ATSHOME}/libc/dynloadall.dats ${ATSHOME}/libats/dynloadall.dats
+#
+# step1:: ; atslib -fPIC --libats_smlbas
+#
+
+step2:: ; cd $(OUTPUT); \
+  gcc -shared -o ../libats.so -Wl,-soname,libats.so `ar t ../libats.a` -ldl -lgmp -lpcre
+
+step2:: ; cd $(OUTPUT); \
+  gcc -shared -o ../libats_mt.so -Wl,-soname,libats_mt.so `ar t ../libats_mt.a` -lpthread
+
+#
+#step2:: ; cd $(OUTPUT); \
+#  gcc -shared -o ../libats_smlbas.so -Wl,-soname,libats_smlbas.so `ar t ../libats_smlbas.a`
+#
+
+###### end of [Makefile_libats_shared.txt] ######
