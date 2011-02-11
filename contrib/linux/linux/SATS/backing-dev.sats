@@ -9,7 +9,7 @@
 (*
 ** ATS - Unleashing the Potential of Types!
 **
-** Copyright (C) 2002-2010 Hongwei Xi, Boston University
+** Copyright (C) 2002-2011 Hongwei Xi, Boston University
 **
 ** All rights reserved
 **
@@ -30,39 +30,24 @@
 *)
 
 (* ****** ****** *)
-//
-// Author: Hongwei Xi (hwxi AT cs DOT bu DOT edu)
-// Time: April, 2010
-//
-(* ****** ****** *)
 
-fun gtk_range_set_update_policy
-  {c:cls | c <= GtkRange} {l:agz}
-  (range: !gobjref (c, l), policy: GtkUpdateType): void
-  = "#atsctrb_gtk_range_set_update_policy"
-// end of [gtk_range_set_update_policy]
-
-(* ****** ****** *)
-//
-// HX-2010-04: this one is 'get0' in ATS:
-//
-fun gtk_range_get_adjustment
-  {c:cls | c <= GtkRange} {l:agz}
-  (range: !gobjref (c, l)): [l1:addr] (
-    minus (gobjref (c, l), gobjref (GtkAdjustment, l1)) | gobjref (GtkAdjustment, l1)
-  ) = "#atsctrb_gtk_range_get_adjustment"
-// end of [gtk_range_get_adjustment]
-
-//
-// HX-2010-04-13:
-// this one is 'set1': [g_object_ref] is called on [adj] if it is added!
-//
-fun gtk_range_set_adjustment
-  {c:cls | c <= GtkRange} {l1,l2:agz}
-  (range: !gobjref (c, l1), adj: !gobjref (GtkAdjustment, l2)): void
-  = "#atsctrb_gtk_range_set_adjustment"
-// end of [gtk_range_set_adjustment]
+(* author: Hongwei Xi (hwxi AT cs DOT bu DOT edu) *)
 
 (* ****** ****** *)
 
-(* end of [gtkrange.sats] *)
+%{#
+#include "linux/backing-dev.cats"
+%} // end of [%{#]
+
+(* ****** ****** *)
+
+viewtypedef
+backing_dev_info =
+  $extype_struct "backing_dev_info_struct" of {
+  empty= empty
+, _rest = undefined
+} // end of [viewtypedef]
+
+(* ****** ****** *)
+
+(* end of [backing-dev.sats] *)

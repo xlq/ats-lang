@@ -187,7 +187,7 @@ fun{a1,a2:t@ype}{b:t@ype} list0_map2_cloref
 (* ****** ****** *)
 
 fun{a:t@ype} list0_nth_exn (xs: list0 a, i: int): a
-fun{a:t@ype} list0_nth_opt (xs: list0 a, i: int): Option a
+fun{a:t@ype} list0_nth_opt (xs: list0 a, i: int): option0 a
 
 (* ****** ****** *)
 

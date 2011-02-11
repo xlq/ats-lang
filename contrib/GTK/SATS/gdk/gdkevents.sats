@@ -163,12 +163,11 @@ macdef GDK_WINDOW_STATE_BELOW =
 
 (* ****** ****** *)
 
-abst@ype GdkEvent_rest // completely opaque
 typedef GdkEvent = $extype_struct "GdkEvent" of {
   type= GdkEventType
 , window= Ptr // GdkWindow *window;
 , send_event= gint8
-, _rest= GdkEvent_rest // this field cannot be accessed
+, _rest= undefined // this field cannot be accessed
 } // end of [GdkEvent]
 
 propdef GdkEvent_castdn_t (a:t@ype) = {l:addr}
@@ -199,7 +198,7 @@ typedef GdkEventButton =
 , button= guint
 , device= Ptr // GdkDevice *device;
 , x_root= gdouble, y_root= gdouble
-, _res= GdkEvent_rest // this field cannot be accessed
+, _res= undefined // this field cannot be accessed
 } // end of [GdkEventButton]
 praxi GdkEventButton_castdn : GdkEvent_castdn_t (GdkEventButton)
 

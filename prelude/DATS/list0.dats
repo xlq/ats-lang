@@ -261,23 +261,32 @@ end // end of [list0_map2_cloref]
 (* ****** ****** *)
 
 implement{a}
-list0_nth_exn (xs, i) = let
+list0_nth_exn
+  (xs, i) = let
   fun loop {i:nat} .<i>.
-    (xs: list0 a, i: int i): a = begin case+ xs of
+    (xs: list0 a, i: int i): a = case+ xs of
     | cons (x, xs) => if i > 0 then loop (xs, i-1) else x
     | nil () => $raise ListSubscriptException
-  end // end of [loop]
+  // end of [loop]
   val i = int1_of_int i
 in
   if i >= 0 then loop (xs, i) else $raise ListSubscriptException
 end // end of [list0_nth_exn]
 
 implement{a}
-list0_nth_opt (xs, i) = begin try
-  let val x = list0_nth_exn<a> (xs, i) in Some x end
-with
-  | ~ListSubscriptException () => None ()
-end // end of [try]
+list0_nth_opt
+  (xs, i) = let
+  fun loop {i:nat} .<i>. (
+    xs: list0 a, i: int i
+  ) :<> option0 (a) = case+ xs of
+    | cons (x, xs) =>
+        if i > 0 then loop (xs, i-1) else option0_some (x)
+    | nil () => option0_none ()
+  // end of [loop]
+  val i = int1_of_int i
+in
+  if i >= 0 then loop (xs, i) else option0_none ()
+end // end of [list0_nth_opt]
 
 (* ****** ****** *)
 

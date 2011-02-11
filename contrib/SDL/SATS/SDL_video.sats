@@ -66,8 +66,6 @@ fun SDL_Color_init (
 
 (* ****** ****** *)
 
-absviewt@ype SDL_PixelFormat_rest // ...
-
 viewtypedef SDL_PixelFormat =
   $extype_struct "SDL_PixelFormat" of {
   BitsPerPixel= Uint8
@@ -77,7 +75,7 @@ viewtypedef SDL_PixelFormat =
 , Rmask= Uint32, Gmask= Uint32, Bmask= Uint32, Amask= Uint32
 , colorkey= Uint32
 , alpha= Uint8
-, rest=SDL_PixelFormat_rest // fields that are not exported
+, rest= undefined // fields that are not exported
 } // end of [SDL_PixelFormat]
 
 (* ****** ****** *)

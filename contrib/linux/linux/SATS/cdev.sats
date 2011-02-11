@@ -43,79 +43,24 @@
 
 staload
 FS = "linux/SATS/fs.sats"
-viewtypedef inode = $FS.inode
+stadef inode = $FS.inode
+
+staload
+MOD = "linux/SATS/module.sats"
+stadef module_ref = $MOD.module_ref
+stadef module_ref1 = $MOD.module_ref1
 
 staload
 TYPES = "linux/SATS/types.sats"
-typedef dev_t = $TYPES.dev_t
+stadef dev_t = $TYPES.dev_t
 
 (* ****** ****** *)
 
-viewtypedef
-cdev_struct =
-  $extype_struct "cdev_struct" of {
-  dev= dev_t
-, count= uint
-} // end of [cdev_struct]
-viewtypedef cdev = cdev_struct
-
-absviewtype cdev_ref (l:addr, sd: int)
+abstype file_operations_ptr = ptr
 
 (* ****** ****** *)
 
-fun cdev_alloc // HX: dynamically allocated cdev
-  () : [l:agez] cdev_ref (l, 1) = "#atsctrb_linux_cdev_alloc"
-// end of [cdev_alloc]
-
-(* ****** ****** *)
-
-fun cdev_init {l:agz}
-  (pf: cdev? @ l | p: ptr l, fops: ptr): cdev_ref (l, 0)
-  = "atsctrb_linux_cdev_init" // end of [cdev_init]
-
-(* ****** ****** *)
-
-fun cdev_put {l:agz} {sd:int}
-  (dev: cdev_ref (l, sd)): void = "atsctrb_linux_cdev_put"
-// end of [cdev_put]
-
-(* ****** ****** *)
-
-fun cdev_add {l:agz} {sd:int} (
-  dev: !cdev_ref (l, sd), num: dev_t, count: uint
-) : #[i:int | i <= 0] int (i) = "atsctrb_linux_cdev_add"
-
-fun cdev_del {l:addr} {sd:int}
-  (dev: !cdev_ref (l, sd) >> ptr l): (option_v (cdev? @ l, sd==0) | void)
-  = "#atsctrb_linux_cdev_del" // end of [cdev_del]
-
-(* ****** ****** *)
-
-fun cdev_index
-  (inode: &inode): int = "atsctrb_linux_cdev_index"
-// end of [cdev_index]
-
-fun cd_forget (inode: &inode): int = "atsctrb_linux_cd_forget"
-
-(* ****** ****** *)
-
-(* end of [cdev.sats] *)
-
-
-////
-
-
-#ifndef _LINUX_CDEV_H
-#define _LINUX_CDEV_H
-
-#include <linux/kobject.h>
-#include <linux/kdev_t.h>
-#include <linux/list.h>
-
-struct file_operations;
-struct inode;
-struct module;
-
+(*
 struct cdev {
 	struct kobject kobj;
 	struct module *owner;
@@ -123,22 +68,112 @@ struct cdev {
 	struct list_head list;
 	dev_t dev;
 	unsigned int count;
-};
+} ; // end of [struct cdev]
+*)
 
-void cdev_init(struct cdev *, const struct file_operations *);
+viewtypedef
+cdev_struct =
+  $extype_struct "cdev_struct" of {
+  empty= empty
+, module= module_ref1
+, ops= file_operations_ptr
+, dev= dev_t
+, count= uint
+, _rest= undefined
+} // end of [cdev_struct]
+viewtypedef cdev = cdev_struct
 
+(* ****** ****** *)
+//
+// HX-2011-02-10:
+// this type is ref-counted
+//
+absviewtype cdev_ref (l:addr, sd: int) // sd: static(0)/dynamic(1)
+//
+(* ****** ****** *)
+
+fun cdev_get_owner
+  {l:agz} {sd:int} (dev: cdev_ref (l, sd)): [l1: agz] (
+  minus (cdev_ref (l, sd), module_ref (l1)) | module_ref (l1)
+) // end of [cdev_get_owner]
+
+(* ****** ****** *)
+/*
 struct cdev *cdev_alloc(void);
+*/
+fun cdev_alloc // HX: dynamically allocated cdev
+  () : [l:agez] cdev_ref (l, 1) = "#atsctrb_linux_cdev_alloc"
+// end of [cdev_alloc]
 
+(* ****** ****** *)
+/*
+void cdev_init(struct cdev *, const struct file_operations *);
+*/
+fun cdev_init {l:agz} (
+  pf: cdev? @ l | p: ptr l, fops: file_operations_ptr
+) : cdev_ref (l, 0) = "atsctrb_linux_cdev_init"
+
+(* ****** ****** *)
+//
+// HX-2011-02-10: ref-count decrement
+//
+/*
 void cdev_put(struct cdev *p);
+*/
+fun cdev_put {l:agz} {sd:int}
+  (dev: cdev_ref (l, sd)): void = "#atsctrb_linux_cdev_put"
+// end of [cdev_put]
 
+(* ****** ****** *)
+/*
 int cdev_add(struct cdev *, dev_t, unsigned);
+*/
+fun cdev_add {l:agz} {sd:int} (
+  dev: !cdev_ref (l, sd), num: dev_t, count: uint
+) : #[i:int | i <= 0] int (i) = "atsctrb_linux_cdev_add"
 
+(* ****** ****** *)
+/*
 void cdev_del(struct cdev *);
+*/
+fun cdev_del {l:addr} {sd:int} (
+  dev: !cdev_ref (l, sd) >> ptr l
+) : (option_v (cdev? @ l, sd==0) | void) = "#atsctrb_linux_cdev_del"
+// end of [cdev_del]
 
+(* ****** ****** *)
+/*
 int cdev_index(struct inode *inode);
+*/
+fun cdev_index
+  (inode: &inode): int = "atsctrb_linux_cdev_index"
+// end of [cdev_index]
 
+(* ****** ****** *)
+/*
 void cd_forget(struct inode *);
+*/
+fun cd_forget (inode: &inode): int = "#atsctrb_linux_cd_forget"
 
+(* ****** ****** *)
+/*
 extern struct backing_dev_info directly_mappable_cdev_bdi;
+*/
 
-#endif
+local
+
+staload
+BDI = "linux/SATS/backing-dev.sats"
+stadef backing_dev_info = $BDI.backing_dev_info
+
+in
+
+fun directly_mappable_cdev_bdi_get (): [l:addr]
+  (backing_dev_info @ l, backing_dev_info @ l -<lin,prf> void | ptr l)
+// end of [directly_mappable_cdev_bdi_get]
+
+end // end of [local]
+
+(* ****** ****** *)
+
+(* end of [cdev.sats] *)

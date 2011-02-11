@@ -40,6 +40,7 @@
 
 //
 // HX:
+//
 // Some naming conventions used in this API for GTK
 //
 // get0 : get out a value that must be returned

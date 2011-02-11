@@ -1661,12 +1661,10 @@ fun XDisableAccessControl {l:agz}
 //
 (* ****** ****** *)
 
-abst@ype XEvent_rest // unknown quantity
-
 typedef XEvent =
   $extype_struct "XEvent" of {
   type= EventType_t // the type of the event
-, _rest= XEvent_rest // this abstract field cannot be accessed
+, _rest= undefined // this abstract field cannot be accessed
 } // end of [XEvent]
 
 propdef XEvent_castdn_t (a:t@ype) = {l:addr}
@@ -1687,6 +1685,7 @@ typedef XAnyEvent = $extype_struct "XAnyEvent" of {
 , display= Display_ptr0 // Display the event was read freom
 */
 , window= Window
+, _rest= undefined
 } // end of [XAnyEvent]
 
 praxi XEvent_xany_castdn : XEvent_castdn_t (XAnyEvent)
@@ -1716,6 +1715,7 @@ typedef XKeyEvent = $extype_struct "XKeyEvent" of {
 , state= uint
 , keycode= uint
 , same_screen= XBool  
+, _rest= undefined
 } // end of [XKeyEvent]
 
 praxi XEvent_xkey_castdn : XEvent_castdn_t (XKeyEvent)
@@ -1746,6 +1746,7 @@ typedef XButtonEvent = $extype_struct "XButtonEvent" of {
 , state= uint
 , button= uint
 , same_screen= XBool
+, _rest= undefined
 } // end of [XButtonEvent]
 
 praxi XEvent_xbutton_castdn : XEvent_castdn_t (XButtonEvent)
@@ -1771,6 +1772,7 @@ typedef XMotionEvent = $extype_struct "XMotionEvent" of {
 , state= uint
 , in_hint= char
 , same_screen= XBool  
+, _rest= undefined
 } // end of [XMotionEvent]
 
 praxi XEvent_xmotion_castdn : XEvent_castdn_t (XMotionEvent)
@@ -1831,6 +1833,7 @@ typedef XCirculateEvent =
 , event= Window
 , window= Window
 , place= int  
+, _rest= undefined
 } // end of [XCirculateEvent]
 
 praxi XEvent_xcirculate_castdn : XEvent_castdn_t (XCirculateEvent)
@@ -1857,6 +1860,7 @@ typedef XConfigureEvent =
 , border_width= int
 , above= Window
 , override_redirect= XBool
+, _rest= undefined
 } // end of [XConfigureEvent]
 
 praxi XEvent_xconfigure_castdn : XEvent_castdn_t (XConfigureEvent)
@@ -1882,6 +1886,7 @@ typedef XCreateWindowEvent =
 , width= int, height= int
 , border_width= int
 , override_redirect= XBool
+, _rest= undefined
 } // end of [XCreateWindowEvent]
 
 praxi XEvent_xcreatewindow_castdn : XEvent_castdn_t (XCreateWindowEvent)
@@ -1904,6 +1909,7 @@ typedef XDestroyWindowEvent =
 , event= Window
 , window= Window
 , x= int, y= int
+, _rest= undefined
 } // end of [XDestroyWindowEvent]
 
 praxi XEvent_xdestroywindow_castdn : XEvent_castdn_t (XDestroyWindowEvent)

@@ -30,15 +30,23 @@
 *)
 
 (* ****** ****** *)
-
-(* author: Hongwei Xi (hwxi AT cs DOT bu DOT edu) *)
-
+//
+// Author: Hongwei Xi (hwxi AT cs DOT bu DOT edu)
+// Start Time: February, 2011
+//
 (* ****** ****** *)
 
 %{#
 #include "linux/module.cats"
 %} // end of [%{#]
 
+(* ****** ****** *)
+//
+// HX: this is ref-counted
+//
+absviewtype module_ref (l:addr)
+viewtypedef module_ref1 = [l:agz] module_ref (l)
+//
 (* ****** ****** *)
 
 abst@ype

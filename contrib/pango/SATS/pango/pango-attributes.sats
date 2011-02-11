@@ -96,12 +96,10 @@ macdef PANGO_UNDERLINE_ERROR = $extval (PangoUnderline, "PANGO_UNDERLINE_ERROR")
 
 (* ****** ****** *)
 
-abst@ype
-PangoAttribute_rest // totally opaque
 typedef PangoAttribute =
   $extype_struct "PangoAttribute" of {
   start_index= guint, end_index= guint
-, _rest = PangoAttribute_rest // inaccessible
+, _rest = undefined // this field cannot be accessed
 } // end of [PangoAttribute]
 
 absviewtype PangoAttribute_ptr (l:addr) // HX: _not_ refcounted

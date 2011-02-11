@@ -157,7 +157,11 @@ abst@ype void_t0ype = $extype"ats_void_type"
 // HX-2010-10-23: [ats_empty_type] is a struct of no fields
 //
 abst@ype empty_t0ype = $extype"ats_empty_type" // sizeof(empty) = 0
-
+//
+// HX-2011-02-11: [ats_undefined_type] is undefined
+//
+abst@ype undefined_t0ype = $extype"ats_undefined_type"
+//
 (* ****** ****** *)
 //
 // HX: some built-in static constants for integer operations
@@ -629,6 +633,7 @@ stadef strptrlen = strptr_addr_int_viewtype // for linear strings with length
 
 stadef void = void_t0ype // sizeof(void) = 1
 stadef empty = empty_t0ype // sizeof(empty) = 0
+stadef undefined= undefined_t0ype // sizeof(undefined) = ?
 
 (* ****** ****** *)
 
