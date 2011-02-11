@@ -9,7 +9,7 @@
 (*
 ** ATS - Unleashing the Potential of Types!
 **
-** Copyright (C) 2002-2008 Hongwei Xi, Boston University
+** Copyright (C) 2002-2011 Hongwei Xi, Boston University
 **
 ** All rights reserved
 **
@@ -270,7 +270,7 @@ list0_nth_exn
   // end of [loop]
   val i = int1_of_int i
 in
-  if i >= 0 then loop (xs, i) else $raise ListSubscriptException
+  if i >= 0 then loop (xs, i) else $raise ListSubscriptException ()
 end // end of [list0_nth_exn]
 
 implement{a}

@@ -321,14 +321,11 @@ cleanall:: clean
 	$(RMF) contrib/GL/atsctrb_GL.o
 	$(RMF) contrib/SDL/atsctrb_SDL.o
 
-cleanall::
-	$(MAKE) -C utils/atslex -f ./Makefile cleanall
-cleanall::
-	$(MAKE) -C utils/scripts -f ./Makefile cleanall
-cleanall::
-	$(MAKE) -C ccomp/runtime/GCATS -f ./Makefile cleanall
+cleanall:: ; $(MAKE) -C utils/atslex -f ./Makefile cleanall
+cleanall:: ; $(MAKE) -C utils/scripts -f ./Makefile cleanall
+cleanall:: ; $(MAKE) -C ccomp/runtime/GCATS -f ./Makefile cleanall
 
-cleanall::
-	find . -name .svn -prune -o -name \*~ -exec rm \{} \;
+distclean:: cleanall
+distclean:: ; find . -name .svn -prune -o -name \*~ -exec rm \{} \;
 
 ###### end of [Makefile] ######
