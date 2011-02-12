@@ -112,7 +112,8 @@ praxi strbuf_v_cons
   :<prf> strbuf_v (m+1, n+1, l)
 // end of [strbuf_v_cons]
 
-dataview strbufopt_v (int, int, addr, char) =
+dataview
+strbufopt_v (int, int, addr, char) =
   | {m:nat} {l:addr}
     strbufopt_v_none (m, ~1, l, NUL) of b0ytes m @ l
   | {m,n:nat} {l:addr} {c:char | c <> NUL}
@@ -181,75 +182,83 @@ castfn strbuf_of_string1 {n:nat} (str: string n)
 
 (* ****** ****** *)
 
-fun strbufptr_free (p_buf: Strbufptr_gc):<> void = "atspre_strbufptr_free"
+fun strbufptr_free
+  (p_buf: Strbufptr_gc):<> void = "atspre_strbufptr_free"
+// end of [strbufptr_free]
 
 (* ****** ****** *)
 
-fun lt_string_string (s1: string, s2: string):<> bool
-  = "atspre_lt_string_string"
+fun lt_string_string
+  (s1: string, s2: string):<> bool = "atspre_lt_string_string"
 overload < with lt_string_string
 
-fun lt_string_string__main {v:view} {l1,l2:addr} (
+fun lt_string_string__main
+  {v:view} {l1,l2:addr} (
     pf: !v, pf1: vsubr_p (strbuf_v l1, v), pf2: vsubr_p (strbuf_v l2, v)
   | p1: ptr l1, p2: ptr l2
-  ) :<> bool
-  = "atspre_lt_string_string"
+  ) :<> bool = "atspre_lt_string_string"
+// end of [lt_string_string__main]
 
-//
+(* ****** ****** *)
 
-fun lte_string_string (s1: string, s2: string):<> bool
-  = "atspre_lte_string_string"
+fun lte_string_string
+  (s1: string, s2: string):<> bool = "atspre_lte_string_string"
 overload <= with lte_string_string
 
-fun lte_string_string__main {v:view} {l1,l2:addr} (
+fun lte_string_string__main
+  {v:view} {l1,l2:addr} (
     pf: !v, pf1: vsubr_p (strbuf_v l1, v), pf2: vsubr_p (strbuf_v l2, v)
   | p1: ptr l1, p2: ptr l2
   ) :<> bool = "atspre_lte_string_string"
 // end of [lte_string_string__main]
 
-//
+(* ****** ****** *)
 
-fun gt_string_string (s1: string, s2: string):<> bool
-  = "atspre_gt_string_string"
+fun gt_string_string
+  (s1: string, s2: string):<> bool = "atspre_gt_string_string"
 overload > with gt_string_string
 
-fun gt_string_string__main {v:view} {l1,l2:addr} (
+fun gt_string_string__main
+  {v:view} {l1,l2:addr} (
     pf: !v, pf1: vsubr_p (strbuf_v l1, v), pf2: vsubr_p (strbuf_v l2, v)
   | p1: ptr l1, p2: ptr l2
   ) :<> bool = "atspre_gt_string_string"
 // end of [gt_string_string__main]
 
-//
+(* ****** ****** *)
 
-fun gte_string_string (s1: string, s2: string):<> bool
-  = "atspre_gte_string_string"
+fun gte_string_string
+  (s1: string, s2: string):<> bool = "atspre_gte_string_string"
 overload >= with gte_string_string
 
-fun gte_string_string__main {v:view} {l1,l2:addr} (
+fun gte_string_string__main
+  {v:view} {l1,l2:addr} (
     pf: !v, pf1: vsubr_p (strbuf_v l1, v), pf2: vsubr_p (strbuf_v l2, v)
   | p1: ptr l1, p2: ptr l2
   ) :<> bool = "atspre_gte_string_string"
 // end of [gte_string_string__main]
 
-//
+(* ****** ****** *)
 
 fun eq_string_string
   (s1: string, s2: string):<> bool = "atspre_eq_string_string"
 overload = with eq_string_string
 
-fun eq_string_string__main {v:view} {l1,l2:addr} (
+fun eq_string_string__main
+  {v:view} {l1,l2:addr} (
     pf: !v, pf1: vsubr_p (strbuf_v l1, v), pf2: vsubr_p (strbuf_v l2, v)
   | p1: ptr l1, p2: ptr l2
   ) :<> bool = "atspre_eq_string_string"
 // end of [eq_string_string__main]
 
-//
+(* ****** ****** *)
 
-fun neq_string_string (s1: string, s2: string):<> bool
-  = "atspre_neq_string_string"
+fun neq_string_string
+  (s1: string, s2: string):<> bool = "atspre_neq_string_string"
 overload <> with neq_string_string
 
-fun neq_string_string__main {v:view} {l1,l2:addr} (
+fun neq_string_string__main
+  {v:view} {l1,l2:addr} (
     pf: !v, pf1: vsubr_p (strbuf_v l1, v), pf2: vsubr_p (strbuf_v l2, v)
   | p1: ptr l1, p2: ptr l2
   ) :<> bool = "atspre_neq_string_string"
@@ -257,11 +266,12 @@ fun neq_string_string__main {v:view} {l1,l2:addr} (
 
 (* ****** ****** *)
 
-fun compare_string_string (s1: string, s2: string):<> Sgn
-  = "atspre_compare_string_string"
+fun compare_string_string
+  (s1: string, s2: string):<> Sgn = "atspre_compare_string_string"
 overload compare with compare_string_string
 
-fun compare_string_string__main {v:view} {l1,l2:addr} (
+fun compare_string_string__main
+  {v:view} {l1,l2:addr} (
     pf: !v, pf1: vsubr_p (strbuf_v l1, v), pf2: vsubr_p (strbuf_v l2, v)
   | p1: ptr l1, p2: ptr l2
   ) :<> Sgn = "atspre_compare_string_string"

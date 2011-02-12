@@ -293,8 +293,9 @@ fun nice
 // end of [nice]
 
 (* ****** ****** *)
-
+//
 // HX: succ/fail: 0/-1
+//
 fun rmdir (path: !READ(string)): int = "#atslib_rmdir" // macro!
 
 (* ****** ****** *)
@@ -411,8 +412,11 @@ gethostname_v (m:int, l:addr, int) =
   | gethostname_v_fail (m, l, ~1) of (b0ytes m @ l)
   | {n:nat | n < m}
     gethostname_v_succ (m, l,  0) of strbuf_v (m, n, l)
-fun gethostname {m:pos} {l:addr}
-  (pf: b0ytes(m) @ l | p: ptr l, m: size_t m): [i:nat] (gethostname_v (m, l, i) | int i)
+// end of [gethostname_v]
+
+fun gethostname {m:pos} {l:addr} (
+  pf: b0ytes(m) @ l | p: ptr l, m: size_t m
+) : [i:nat] (gethostname_v (m, l, i) | int i)
   = "atslib_gethostname" // function!
 // end of [gethostname]
 //
@@ -429,6 +433,8 @@ getdomainname_v (m:int, l:addr, int) =
   | getdomainname_v_fail (m, l, ~1) of (b0ytes m @ l)
   | {n:nat | n < m}
     getdomainname_v_succ (m, l,  0) of strbuf_v (m, n, l)
+// end of [getdomainname_vt]
+
 fun getdomainname {m:pos} {l:addr}
   (pf: b0ytes(m) @ l | p: ptr l, m: size_t m): [i:nat] (getdomainname_v (m, l, i) | int i)
   = "atslib_getdomainname" // function!
