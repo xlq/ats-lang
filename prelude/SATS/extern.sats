@@ -86,11 +86,11 @@ prfun stamped_decode
 // HX-2010-11-26: mrsw: multiple-read-single-write
 //
 absviewt@ype
-mrsw_viewt0ype_int_viewt0ype (a:viewt@ype+, n:int) = a
-stadef mrsw_vt = mrsw_viewt0ype_int_viewt0ype
+mrsw_viewt0ype_int_viewt0ype (a:viewt@ype, n:int) = a
+stadef mrsw = mrsw_viewt0ype_int_viewt0ype
 //
-praxi mrsw_encode {a:viewt@ype} (x: !a >> mrsw_vt (a, 0)):<prf> void
-praxi mrsw_decode {a:viewt@ype} (x: !mrsw_vt (a, 0) >> a):<prf> void
+praxi mrsw_encode {a:viewt@ype} (x: !a >> mrsw (a, 0)):<prf> void
+praxi mrsw_decode {a:viewt@ype} (x: !mrsw (a, 0) >> a):<prf> void
 //
 (* ****** ****** *)
 

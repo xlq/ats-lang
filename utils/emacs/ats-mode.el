@@ -1,10 +1,10 @@
 ;;; ats-mode.el --- Major mode to edit ATS source code
 
 ;; Copyright (C) 2007  Stefan Monnier
-;; updated and modified by Matthew Danish <mrd@debian.org> 2008
-
 ;; Author: Stefan Monnier <monnier@iro.umontreal.ca>
-;; Keywords:
+;; Keywords: ATS
+
+;; updated and modified by Matthew Danish <mrd@debian.org> 2008
 
 ;; This file is free software; you can redistribute it and/or modify
 ;; it under the terms of the GNU General Public License as published by
@@ -451,7 +451,7 @@
 
 (defvar ats-default-mode (list "ATS" 'ats-mode))
 (defvar ats-second-modes (list
-			   (list "C/ATS" "%{[$#^]?" "%}" 'c/ats-mode)))
+			   (list "C/ATS" "^%{[#^$]?" "%}" 'c/ats-mode)))
 
 ;; ----------------
 
