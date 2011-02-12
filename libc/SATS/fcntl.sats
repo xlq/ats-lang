@@ -222,14 +222,14 @@ fun write_all_exn
 // HX: implemented in [libc/CATS/fcntl.cats]
 //
 fun write_substring_err
-  {fd:int} {sz,i,n:nat | i+n <= sz} (
+  {fd:int} {sz:int} {i,n:nat | i+n <= sz} (
     pf: !fildes_v (fd)
   | fd: int fd, str: !READ(string sz), start: size_t i, n: size_t n
   ) : ssizeBtw(~1, n+1) = "atslib_fildes_write_substring_err"
 // end of [write_substring_err]
 
 fun write_substring_exn
-  {fd:int} {sz,i,n:nat | i+n <= sz} (
+  {fd:int} {sz:int} {i,n:nat | i+n <= sz} (
     pf: !fildes_v (fd)
   | fd: int fd, str: !READ(string sz), start: size_t i, n: size_t n
   ) : sizeLte n = "atslib_fildes_write_substring_exn"

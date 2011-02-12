@@ -761,8 +761,18 @@ stadef cloref = cloref_t0ype_type
 //
 (*
 absviewt@ype
-READ_viewt0ype_viewt0ype (a: viewt@ype+) = a
+READ_viewt0ype_viewt0ype
+  (a: viewt@ype+, int) = a
+// end of [READ_viewt0ype_viewt0ype]
 *)
+
+(*
+viewtypedef
+READ_viewt0ype_int_viewt0ype
+  (a: viewt@ype, stamp: int) = a
+stadef READ = READ_viewt0ype_int_viewt0ype
+*)
+
 viewtypedef
 READ_viewt0ype_viewt0ype (a: viewt@ype) = a
 stadef READ = READ_viewt0ype_viewt0ype

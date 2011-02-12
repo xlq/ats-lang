@@ -51,10 +51,10 @@ macdef EXIT_FAILURE = $extval (int, "EXIT_FAILURE")
 
 (* ****** ****** *)
 
-fun atoi (s: !READ(string)):<> int = "#atslib_atoi"
-fun atof (s: !READ(string)):<> double = "#atslib_atof"
-fun atol (s: !READ(string)):<> lint = "#atslib_atol"
-fun atoll (s: !READ(string)):<> llint = "#atslib_atoll"
+fun atoi (inp: !READ(string)):<> int = "#atslib_atoi"
+fun atof (inp: !READ(string)):<> double = "#atslib_atof"
+fun atol (inp: !READ(string)):<> lint = "#atslib_atol"
+fun atoll (inp: !READ(string)):<> llint = "#atslib_atoll"
 
 (* ****** ****** *)
 
@@ -76,10 +76,11 @@ fun putenv {l:agz} (nameval: !strptr l): int // 0/nz : succ/fail
 //
 fun setenv ( // 0/-1 : succ/fail
   name: !READ(string), value: !READ(string), overwrite: int
-  ) : int = "#atslib_setenv"
-// end of [atslib_setenv]
+) : int = "#atslib_setenv" // end of [atslib_setenv]
 
-fun unsetenv (name: !READ(string)): int = "#atslib_unsetenv" // 0/-1: succ/fail
+fun unsetenv
+  (name: !READ(string)): int = "#atslib_unsetenv" // 0/-1: succ/fail
+// end of [unsetenv]
 
 (* ****** ****** *)
 

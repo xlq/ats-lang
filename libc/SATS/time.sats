@@ -114,8 +114,9 @@ fun time_get_and_set // HX: error must be checked!
 overload time with time_get_and_set
 
 (* ****** ****** *)
-
-// non-reentrant
+//
+// HX: [ctime] is non-reentrant
+//
 fun ctime (t: &READ(time_t)):<!ref>
   [l:addr] (strptr l -<lin,prf> void | strptr l) = "#atslib_ctime"
 // end of [ctime]
@@ -125,34 +126,37 @@ dataview ctime_v (m:int, addr, addr) =
   | {l:addr | l > null}
     ctime_v_succ (m, l, l) of strbuf (m, CTIME_BUFLEN - 1) @ l
   | {l:addr} ctime_v_fail (m, l, null) of b0ytes (m) @ l
-fun ctime_r // reentrant
+fun ctime_r // reentrant version of [ctime]
   {m:int | m >= CTIME_BUFLEN} {l:addr} (
-    pf: ! b0ytes (m) @ l >> ctime_v (m, l, l1)
-  | t: &READ(time_t), p_buf: ptr l
+    pf: ! b0ytes (m) @ l >> ctime_v (m, l, l1) | t: &READ(time_t), p_buf: ptr l
   ) :<> #[l1:addr] ptr l1 = "#atslib_ctime_r"
 // end of [ctime_r]
 
 (* ****** ****** *)
-
-// [localtime] is non-reentrant
+//
+// HX: [localtime] is non-reentrant
+//
 fun localtime (time: &READ(time_t)):<!ref>
   [l:addr] (vptroutopt (tm_struct, l) | ptr l) = "#atslib_localtime"
 // end of [localtime]
-
-// [localtime_r] is reentrant
+//
+// HX: [localtime_r] is reentrant
+//
 fun localtime_r (
     time: &READ(time_t), tm: &tm_struct? >> opt (tm_struct, l > null)
   ) :<> #[l:addr] ptr l = "#atslib_localtime_r"
 // end of [localtime_r]
 
 (* ****** ****** *)
-
-// [gmtime] is non-reentrant
+//
+// HX: [gmtime] is non-reentrant
+//
 fun gmtime (time: &READ(time_t)):<!ref>
   [l:addr] (vptroutopt (tm_struct, l) | ptr l) = "#atslib_gmtime"
 // end of [gmtime]
-
-// [gmtime_r] is reentrant
+//
+// HX: [gmtime_r] is reentrant
+//
 fun gmtime_r (
     time: &READ(time_t), tm: &tm_struct? >> opt (tm_struct, l > null)
   ) :<> #[l:addr] ptr l = "#atslib_gmtime_r"
@@ -198,8 +202,7 @@ fun getdate (str: !READ(string)):<!ref>
 // -D_XOPEN_SOURCE
 //
 fun strptime (
-    str: !READ(string)
-  , fmt: !READ(string)
+    str: !READ(string), fmt: !READ(string)
   , tm: &tm_struct? >> opt (tm_struct, l > null)
   ) : #[l:addr] ptr l = "#atslib_strptime" // HX: it returns NULL on error
 // end of [strptime]
@@ -247,7 +250,9 @@ fun nanosleep (
 ) : #[i:int | i <= 0] int(i) = "#atslib_nanosleep"
 // end of [nanosleep]
 
-fun nanosleep_null (nsec: &READ(timespec)): int = "#atslib_nanosleep_null"
+fun nanosleep_null
+  (nsec: &READ(timespec)): int = "#atslib_nanosleep_null"
+// end of [nanosleep]
 
 (* ****** ****** *)
 

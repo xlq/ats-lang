@@ -503,34 +503,39 @@ file associated with a standard text stream (stderr, stdin, or stdout).
 *)
 
 symintr freopen_err
-fun freopen0_err {m_new:fm}
-  (path: !READ(string), m_new: file_mode m_new, f: FILEref):<!ref> void
-  = "atslib_freopen_err"
+
+fun freopen0_err {m_new:fm} (
+  path: !READ(string), m_new: file_mode m_new, f: FILEref
+) :<!ref> void = "atslib_freopen_err"
 overload freopen_err with freopen0_err
-fun freopen1_err {m_old,m_new:fm} {l_file:addr}
-  (pf: FILE m_old @ l_file | s: !READ(string), m: file_mode m_new, p: ptr l_file)
-  :<!ref> [l:addr | l == null || l == l_file] (FILEopt_v (m_new, l) | ptr l)
+
+fun freopen1_err
+  {m_old,m_new:fm} {l0:addr} (
+  pf: FILE m_old @ l0
+| path: !READ(string), m: file_mode m_new, p: ptr l0
+) :<!ref> [l:addr | l==null || l == l0] (FILEopt_v (m_new, l) | ptr l)
   = "atslib_freopen_err"
 overload freopen_err with freopen1_err
 
 symintr freopen_exn
-fun freopen0_exn {m_new:fm}
-  (path: !READ(string), m_new: file_mode m_new, f: FILEref):<!exnref> void
-  = "atslib_freopen_exn"
+fun freopen0_exn {m_new:fm} (
+  path: !READ(string), m_new: file_mode m_new, f: FILEref
+) :<!exnref> void = "atslib_freopen_exn"
+
 overload freopen_exn with freopen0_exn
-fun freopen1_exn {m_old,m_new:fm} {l_file:addr}
-  (pf: FILE m_old @ l_file | path: !READ(string), m: file_mode m_new, p: ptr l_file)
-  :<!exnref> (FILE m_new @ l_file | void)
-  = "atslib_freopen_exn"
+fun freopen1_exn {m_old,m_new:fm} {l0:addr} (
+  pf: FILE m_old @ l0
+| path: !READ(string), m: file_mode m_new, p: ptr l0
+) :<!exnref> (FILE m_new @ l0 | void) = "atslib_freopen_exn"
 overload freopen_exn with freopen1_exn
 
-fun freopen_stdin {m:fm}
+fun freopen_stdin
   (s: !READ(string)):<!exnref> void = "atslib_freopen_stdin"
 // end of [freopen_stdin]
-fun freopen_stdout {m:fm}
+fun freopen_stdout
   (s: !READ(string)):<!exnref> void = "atslib_freopen_stdout"
 // end of [freopen_stdout]
-fun freopen_stderr {m:fm}
+fun freopen_stderr
   (s: !READ(string)):<!exnref> void = "atslib_freopen_stderr"
 // end of [freopen_stderr]
 
@@ -655,7 +660,9 @@ newline.
 
 *)
 
-fun perror (msg: !READ(string)):<> void = "atslib_perror"
+fun perror
+  (msg: !READ(string)):<> void = "atslib_perror"
+// end of [perror]
 
 // ------------------------------------------------
 
@@ -665,23 +672,29 @@ macdef putc = fputc_err
 // ------------------------------------------------
 
 fun getchar ():<> int = "atslib_getchar"
-fun getchar1 ():<> [i:int | i <= UCHAR_MAX] int i
-  = "atslib_getchar"
+fun getchar1
+  () :<> [i:int | i <= UCHAR_MAX] int i = "atslib_getchar"
+// end of [getchar1]
 
 fun putchar (c: char):<> int = "atslib_putchar"
-fun putchar1 (c: char):<> [i:int | i <= UCHAR_MAX] int i
-  = "atslib_putchar"
+fun putchar1
+  (c: char):<> [i:int | i <= UCHAR_MAX] int i = "atslib_putchar"
+// end of [putchar1]
 
 // ------------------------------------------------
 
 // [puts] puts a newline at the end
-fun puts_err (s: !READ(string)):<> int = "atslib_puts_err"
-fun puts_exn (s: !READ(string)):<!exn> void = "atslib_puts_exn"
+fun puts_err
+  (inp: !READ(string)):<> int = "atslib_puts_err"
+fun puts_exn
+  (inp: !READ(string)):<!exn> void = "atslib_puts_exn"
 
 // ------------------------------------------------
 
-fun remove_err (s: !READ(string)):<!ref> int = "atslib_remove_err"
-fun remove_exn (s: !READ(string)):<!exnref> void = "atslib_remove_exn"
+fun remove_err
+  (inp: !READ(string)):<!ref> int = "atslib_remove_err"
+fun remove_exn
+  (inp: !READ(string)):<!exnref> void = "atslib_remove_exn"
 
 // ------------------------------------------------
 

@@ -46,12 +46,15 @@ typedef errno_t = $ERRNO.errno_t
 
 (* ****** ****** *)
 
-fun strcmp (str1: !READ(string), str2: !READ(string)): int = "atslib_strcmp"
+fun strcmp
+  (str1: !READ(string), str2: !READ(string)): int = "atslib_strcmp"
+// end of [strcmp]
 
 fun substrcmp
-  {n1,i1:nat | i1 <= n1} {n2,i2:nat | i2 <= n2}
-  (str1: !READ(string n1), i: size_t i1, str2: !READ(string n2), i2: size_t i2): int
-  = "atslib_substrcmp"
+  {n1:int} {i1:nat | i1 <= n1}
+  {n2:int} {i2:nat | i2 <= n2} (
+  str1: !READ(string n1), i1: size_t i1, str2: !READ(string n2), i2: size_t i2
+) : int = "atslib_substrcmp"
 // end of [substrcmp]
 
 (* ****** ****** *)
@@ -62,8 +65,12 @@ fun strncmp {n:nat}
 // end of [strncmp]
 
 fun substrncmp
-  {n1,i1:nat | i1 <= n1} {n2,i2:nat | i2 <= n2} {n: nat} (
-  str1: !READ(string n1), i1: size_t i1, str2: !READ(string n2), i2: size_t i2, n: size_t n
+  {n1:int} {i1:nat | i1 <= n1}
+  {n2:int} {i2:nat | i2 <= n2}
+  {n:nat} (
+  str1: !READ(string n1), i1: size_t i1
+, str2: !READ(string n2), i2: size_t i2
+, n: size_t n
 ) :<> int = "atslib_substrncmp"
 // end of [substrncmp]
 

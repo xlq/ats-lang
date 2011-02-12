@@ -271,8 +271,10 @@ macdef W_OK = $extval (uint, "W_OK") // test for write permission
 macdef X_OK = $extval (uint, "X_OK") // test for execute permission
 macdef F_OK = $extval (uint, "F_OK") // test for existence
 //
-fun access (path: !READ(string), mode: uint): int = "#atslib_access"
-//
+fun access
+  (path: !READ(string), mode: uint): int = "#atslib_access"
+// end of [access]
+
 (* ****** ****** *)
 
 fun chroot
@@ -281,7 +283,8 @@ fun chroot
 
 (* ****** ****** *)
 
-fun chdir (path: !READ(string)): int(*err*) = "#atslib_chdir"
+fun chdir
+  (path: !READ(string)): int(*err*) = "#atslib_chdir"
 fun fchdir {fd:int}
   (pf: !fildes_v (fd) | fd: int): int(*err*) = "#atslib_fchdir"
 // end of [fchdir]
@@ -300,7 +303,8 @@ fun rmdir (path: !READ(string)): int = "#atslib_rmdir" // macro!
 
 (* ****** ****** *)
 
-fun link (src: !READ(string), dst: !READ(string)): int = "#atslib_link"
+fun link
+  (src: !READ(string), dst: !READ(string)): int = "#atslib_link"
 fun unlink (path: !READ(string)): int = "#atslib_unlink" // macro!
 
 (* ****** ****** *)
@@ -348,8 +352,10 @@ fun fdatasync {fd:int} // (sets errno)
 
 (* ****** ****** *)
 
-fun readlink {n:nat} {l:addr} (
-  pf: !b0ytes(n) @ l >> bytes(n) @ l | path: !READ(string), p: ptr l, n: size_t n
+fun readlink
+  {n:nat} {l:addr} (
+  pf: !b0ytes(n) @ l >> bytes(n) @ l
+| path: !READ(string), p: ptr l, n: size_t n
 ) : [n1:int | n1 <= n] ssize_t (n1) = "#atslib_readlink"
 // end of [readlink]
 
@@ -416,14 +422,13 @@ gethostname_v (m:int, l:addr, int) =
 
 fun gethostname {m:pos} {l:addr} (
   pf: b0ytes(m) @ l | p: ptr l, m: size_t m
-) : [i:nat] (gethostname_v (m, l, i) | int i)
-  = "atslib_gethostname" // function!
+) : [i:nat] (gethostname_v (m, l, i) | int i) = "atslib_gethostname" // fun!
 // end of [gethostname]
 //
 // HX: [m] should most likely be [n+1].
 //
 fun sethostname {m,n:nat | n < m}
-  (name: !READ(string(n)), m: size_t m): int = "#atslib_sethostname"
+  (name: !READ(string n), m: size_t m): int = "#atslib_sethostname"
 // end of [sethostname]
 
 (* ****** ****** *)
@@ -435,15 +440,16 @@ getdomainname_v (m:int, l:addr, int) =
     getdomainname_v_succ (m, l,  0) of strbuf_v (m, n, l)
 // end of [getdomainname_vt]
 
-fun getdomainname {m:pos} {l:addr}
-  (pf: b0ytes(m) @ l | p: ptr l, m: size_t m): [i:nat] (getdomainname_v (m, l, i) | int i)
-  = "atslib_getdomainname" // function!
+fun getdomainname
+  {m:pos} {l:addr} (
+  pf: b0ytes(m) @ l | p: ptr l, m: size_t m
+) : [i:nat] (getdomainname_v (m, l, i) | int i) = "atslib_getdomainname" // fun!
 // end of [getdomainname]
 //
 // HX: [m] should most likely be [n+1].
 //
 fun setdomainname {m,n:nat | n < m}
-  (name: !READ(string(n)), m: size_t m): int = "#atslib_setdomainname"
+  (name: !READ(string n), m: size_t m): int = "#atslib_setdomainname"
 // end of [setdomainname]
 
 (* ****** ****** *)
