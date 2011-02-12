@@ -113,4 +113,6 @@ clean::
 cleanall:: clean
 	$(RMF) libatsyndef.a
 
+distclean:: cleanall
+
 ###### end of [Makefile] ######

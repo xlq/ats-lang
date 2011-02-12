@@ -35,95 +35,91 @@
 // Time: July 2007
 //
 (* ****** ****** *)
+
+staload "ats_precedence.sats"
+
+(* ****** ****** *)
+
+assume prec_t: t@ype = int
+
+(* ****** ****** *)
+
+implement app_prec = 70
+
+(* ****** ****** *)
+
+implement backslash_prec = app_prec + 1
+implement infixtemp_prec = 0 (* for temporary infix status *)
+
+(* ****** ****** *)
+
+implement select_prec = 80 (* .label is a postfix operator *)
+
+(* ****** ****** *)
+
+implement exi_prec_sta = 0
+implement uni_prec_sta = 0
+
+(* ****** ****** *)
+
+implement delay_prec_dyn = 0
+
+(* ****** ****** *)
+
+implement exist_prec_dyn = 0 (* for dynamic patterns *)
+
+(* ****** ****** *)
+
+implement dynload_prec_dyn = app_prec + 1
+
+(* ****** ****** *)
 //
-// ats_fixity: for handing prefix, infix and postfix operators
+// HX: supporting [&p->lab] = &(p->lab)
 //
-(* ****** ****** *)
-
-staload Loc = "ats_location.sats"
-typedef loc_t = $Loc.location_t
-staload Prec = "ats_precedence.sats"
-typedef prec_t = $Prec.prec_t
+implement ptrof_prec_dyn = select_prec - 1
 
 (* ****** ****** *)
-
-datatype assoc = ASSOCnon | ASSOClft | ASSOCrgt
-
-(* ****** ****** *)
-
-datatype fxty =
-  | FXTYnon
-  | FXTYinf of (prec_t, assoc)
-  | FXTYpre of prec_t
-  | FXTYpos of prec_t
-// end of [fxty]
+//
+// HX: supporting [fold@ !p], [free@ !p] and [view@ !p]
+//
+implement foldat_prec_dyn = app_prec - 1
+implement freeat_prec_dyn = app_prec - 1
+implement viewat_prec_dyn = app_prec - 1
 
 (* ****** ****** *)
 
-val fxty_non : fxty
-fun fxty_inf (p: prec_t, a: assoc): fxty
-fun fxty_pre (p: prec_t): fxty
-fun fxty_pos (p: prec_t): fxty
+(*
+** HX: [invar_prec_sta] must be greater than [trans_prec_sta]
+*)
+implement invar_prec_sta = 1
 
 (* ****** ****** *)
 
-val deref_fixity_dyn : fxty
-val selptr_fixity_dyn : fxty
+implement qmark_prec_sta = app_prec - 1
+
+implement qmarkbang_prec_sta = app_prec - 1
+
+implement r0ead_prec_sta = 100 (* highest *)
+
+implement trans_prec_sta = 0
+
+implement crypt_prec_dyn = 0
+
+implement deref_prec_dyn = 100
 
 (* ****** ****** *)
 
-fun fprint_fxty {m:file_mode}
-  (pf: file_mode_lte (m, w) | out: &FILE m, fxty: fxty): void
-// end of [fprint_fxty]
+implement int_of_prec (p) = p
+implement prec_make_int (i) = i
 
-fun prerr_fxty (fxty: fxty): void
-fun print_fxty (fxty: fxty): void
-
-(* ****** ****** *)
-
-fun fixity_get_prec (fxty: fxty): Option_vt (prec_t)
+implement precedence_inc (p, i) = p + i
+implement precedence_dec (p, i) = p - i
 
 (* ****** ****** *)
 
-datatype oper (a:type) = 
-  | OPERinf (a) of (prec_t, assoc, (a, a) -<cloref1> item a)
-  | OPERpre (a) of (prec_t, a -<cloref1> item a)
-  | OPERpos (a) of (prec_t, a -<cloref1> item a)
-// end of [oper]
-        
-and item (a: type) = ITEMatm (a) of a | ITEMopr (a) of oper a
-
-fun oper_precedence {a:type} (opr: oper a): prec_t
-fun oper_associativity {a:type} (opr: oper a): assoc
+implement
+compare_prec_prec (p1, p2) = compare_int_int (p1, p2)
 
 (* ****** ****** *)
 
-fun item_app {a:type}
-  (app: (a, a) -<cloref1> item a): item a
-// end of [item_app]
-
-(* ****** ****** *)
-
-fun oper_make_backslash {a:type} (
-    locf: a -<cloref1> loc_t
-  , appf: (loc_t, a, loc_t, List a) -<cloref1> a
-  ) : item a 
-// end of [oper_make_backslash]
-
-fun oper_make {a:type} (
-    locf: a -<cloref1> loc_t
-  , appf: (loc_t, a, loc_t, List a) -<cloref1> a
-  , opr: a
-  , fxty: fxty
-  ) : item a 
-// end of [oper_make]
-
-(* ****** ****** *)
-
-fun fixity_resolve {a:type}
-  (loc: loc_t, app: item a, xs: List (item a)): a
-// end of [fixity_resolve]
-
-(* ****** ****** *)
-
-(* end of [ats_fixity.sats] *)
+(* end of [ats_precedence.dats] *)

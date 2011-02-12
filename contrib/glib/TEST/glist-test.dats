@@ -35,7 +35,20 @@ extern fun ptr_read (p: ptr):<> int = "#ptr_read"
 extern fun test_ptr {i:nat} (i: int i): ptr = "#test_ptr"
 extern fun more_ptr {i:nat} (i: int i): ptr = "#more_ptr"
 
-implement main () = () where {
+fun my_g_list_free
+  {a:vwtp} {r:nat}
+  (xs: GList_ptr (a?, 0, r)): void =
+  if g_list_isnot_nil (xs) then let
+    var node: ptr
+    val xs = g_list_remove_current {a?} (xs, node)
+    val () = g_list_free1 {a} (node)
+  in
+    my_g_list_free {a} (xs)
+  end else g_list_free_nil {a?} (xs)
+// end of [my_g_list_free]
+
+implement
+main () = () where {
   val () = begin
     print ("glist-test: starts"); print_newline ()
   end // end of [va]
@@ -45,48 +58,65 @@ implement main () = () where {
   val glist = loop (glist, 0) where {
     val glist = g_list_new_nil ()
     fun loop {i:nat | i <= N} .<N-i>.
-      (xs: GList_ptr (ptr, i), i: int i): GList_ptr (ptr, N) =
+      (xs: GList_ptr (ptr, 0, i), i: int i): GList_ptr (ptr, 0, N) =
       if i < N then let
         val x = test_ptr i
         val xs = g_list_append {ptr} (xs, x) in loop (xs, i+1)
       end else xs
     // end of [loop]
   } // end of [val]
-  val () = assert_errmsg ((gint)N = g_list_length (glist), #LOCATION)
+//
+  val glist = g_list_next (glist)
+  val () = assertloc (gint(N-1) = g_list_length (glist))
+  val glist = g_list_last (glist)
+  val () = assertloc (gint(1) = g_list_length (glist))
+  val glist = g_list_first (glist)
+  val () = assertloc ((gint)N = g_list_length (glist))
+//
   val () = loop (glist, 0) where {
-    fun loop {i:nat | i <= N}
-      (xs: !GList_ptr (ptr, N), i: int i): void =
+    fun loop {i:nat | i <= N} (
+      xs: !GList_ptr (ptr, 0, N), i: int i
+    ) : void =
       if i < N then let
-        val x = g_list_nth_data {ptr} (xs, i)
-        val () = assert_errmsg (ptr_read(x) = i, #LOCATION)
+        val x =
+          g_list_nth_data {ptr} (xs, i)
+        // end of [val]
+        val () = assertloc (ptr_read(x) = i)
       in
         loop (xs, i+1)
       end // end of [if]
   } // end of [val]
+//
   val () = g_list_free {ptr} (glist)
 //
   val glist = loop (glist, 0) where {
     val glist = g_list_new_nil ()
-    fun loop {i:nat | i <= N} .<N-i>.
-      (xs: GList_ptr (ptr, i), i: int i): GList_ptr (ptr, N) =
+    fun loop {i:nat | i <= N} .<N-i>. (
+      xs: GList_ptr (ptr, 0, i), i: int i
+    ) : GList_ptr (ptr, 0, N) =
       if i < N then let
         val x = test_ptr i
         val xs = g_list_prepend {ptr} (xs, x) in loop (xs, i+1)
       end else xs
     // end of [loop]
   } // end of [val]
-  val () = assert_errmsg ((gint)N = g_list_length (glist), #LOCATION)
+//
+  val () = assertloc ((gint)N = g_list_length (glist))
+//
   val () = loop (glist, 0) where {
-    fun loop {i:nat | i <= N}
-      (xs: !GList_ptr (ptr, N), i: int i): void =
+    fun loop {i:nat | i <= N} (
+      xs: !GList_ptr (ptr, 0, N), i: int i
+    ) : void =
       if i < N then let
-        val x = g_list_nth_data {ptr} (xs, i)
-        val () = assert_errmsg (ptr_read(x) = N-1-i, #LOCATION)
+        val x =
+          g_list_nth_data {ptr} (xs, i)
+        // end of [val]
+        val () = assertloc (ptr_read(x) = N-1-i)
       in
         loop (xs, i+1)
       end // end of [if]
   } // end of [val]
-  val () = g_list_free {ptr} (glist)
+  val () = my_g_list_free {ptr} (glist)
 //
   val glist = loop (glist, 0) where {
     val glist = g_list_new_nil ()
@@ -94,27 +124,28 @@ implement main () = () where {
       : gint =<fun> (gint)(ptr_read x1 - ptr_read x2)
     // end of [val]
     fun loop {i:nat | i <= N} .<N-i>.
-      (xs: GList_ptr (ptr, i), i: int i):<cloref1> GList_ptr (ptr, N) =
+      (xs: GList_ptr (ptr, 0, i), i: int i):<cloref1> GList_ptr (ptr, 0, N) =
       if i < N then let
         val x = test_ptr i
         val xs = g_list_insert_sorted {ptr} (xs, x, cmp) in loop (xs, i+1)
       end else xs
     // end of [loop]
   } // end of [val]
-  val () = assert_errmsg ((gint)N = g_list_length (glist), #LOCATION)
+  val () = assertloc ((gint)N = g_list_length (glist))
   val glist = g_list_reverse (glist)
-  val () = assert_errmsg ((gint)N = g_list_length (glist), #LOCATION)
+  val () = assertloc ((gint)N = g_list_length (glist))
   val () = loop (glist, 0) where {
-    fun loop {i:nat | i <= N}
-      (xs: !GList_ptr (ptr, N), i: int i): void =
+    fun loop {i:nat | i <= N} (
+      xs: !GList_ptr (ptr, 0, N), i: int i
+    ) : void =
       if i < N then let
         val x = g_list_nth_data {ptr} (xs, i)
-        val () = assert_errmsg (ptr_read(x) = N-1-i, #LOCATION)
+        val () = assertloc (ptr_read(x) = N-1-i)
       in
         loop (xs, i+1)
       end // end of [if]
   } // end of [val]
-  val () = g_list_free {ptr} (glist)
+  val () = my_g_list_free {ptr} (glist)
 //
   val () = begin
     print ("glist-test: finishes"); print_newline ()

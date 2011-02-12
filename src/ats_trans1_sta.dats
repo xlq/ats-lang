@@ -48,8 +48,11 @@ staload Eff = "ats_effect.sats"
 staload Err = "ats_error.sats"
 staload Fil = "ats_filename.sats"
 staload Fix = "ats_fixity.sats"
+typedef fxty = $Fix.fxty
 staload Loc = "ats_location.sats"
 staload Lst = "ats_list.sats"
+staload Prec = "ats_precedence.sats"
+typedef prec_t = $Prec.prec_t
 staload Sym = "ats_symbol.sats"
 
 (* ****** ****** *)
@@ -94,7 +97,8 @@ fn prerr_interror () = prerr "INTERNAL ERROR (ats_trans1_sta)"
 
 (* ****** ****** *)
 
-fn prec_tr_errmsg (opr: i0de): $Fix.prec_t = begin
+fn prec_tr_errmsg
+  (opr: i0de): prec_t = begin
   prerr_loc_error1 opr.i0de_loc;
   prerr ": the operator [";
   prerr opr.i0de_sym;
@@ -103,8 +107,8 @@ fn prec_tr_errmsg (opr: i0de): $Fix.prec_t = begin
   $Err.abort ()
 end // end of [prec_tr_errmsg]
 
-fn p0rec_tr (p0: p0rec): $Fix.prec_t = let
-  fun precfnd (id: i0de): $Fix.prec_t = let
+fn p0rec_tr (p0: p0rec): prec_t = let
+  fun precfnd (id: i0de): prec_t = let
     val fxtyopt = the_fxtyenv_find id.i0de_sym
   in
     case+ fxtyopt of
@@ -125,12 +129,12 @@ fn p0rec_tr (p0: p0rec): $Fix.prec_t = let
 in
   case+ p0 of
   | P0RECide id => precfnd id
-  | P0RECint int => $Fix.prec_make_int int
-  | P0RECinc (id, int) => $Fix.precedence_inc (precfnd id, int)
-  | P0RECdec (id, int) => $Fix.precedence_dec (precfnd id, int)
+  | P0RECint int => $Prec.prec_make_int int
+  | P0RECinc (id, int) => $Prec.precedence_inc (precfnd id, int)
+  | P0RECdec (id, int) => $Prec.precedence_dec (precfnd id, int)
 end // end of [p0rec_tr]
 
-fn f0xty_tr (f0xty: f0xty): $Fix.fxty_t = begin
+fn f0xty_tr (f0xty: f0xty): fxty = begin
  case+ f0xty of
   | F0XTYinf (p0, a) =>
       let val p = p0rec_tr p0 in $Fix.fxty_inf (p, a) end
@@ -166,7 +170,7 @@ in // in of [let]
   $Fix.item_app f
 end // end of [e1xpitm_app]
 
-fun e1xp_make_opr (e: e1xp, f: $Fix.fxty_t): e1xpitm = begin
+fun e1xp_make_opr (e: e1xp, f: fxty): e1xpitm = begin
   $Fix.oper_make {e1xp} (
     lam x => x.e1xp_loc,
     lam (loc, x, loc_arg, xs) => e1xp_app (loc, x, loc_arg, xs), e, f
@@ -263,7 +267,7 @@ in
 end // end of [app_s1rt_item]
 
 fun s1rt_make_opr
-  (s1t: s1rt, f: $Fix.fxty_t): s1rtitm = begin
+  (s1t: s1rt, f: fxty): s1rtitm = begin
   $Fix.oper_make {s1rt} (
     lam x => x.s1rt_loc,
     lam (loc, x, _(*loc_arg*), xs) => s1rt_app (loc, x, xs), s1t, f
@@ -384,7 +388,7 @@ end // end of [d0atarglst_srtlst_tr]
 
 implement
 d0ec_fixity_tr (f0xty, ids) = let
-  fun loop (fxty: $Fix.fxty_t, ids: i0delst): void =
+  fun loop (fxty: fxty, ids: i0delst): void =
     case+ ids of
     | cons (id, ids) => let
 (*
@@ -593,7 +597,7 @@ in
 end // end of [app_s1exp_item]
 
 fun s1exp_make_opr 
-  (s1e: s1exp, f: $Fix.fxty_t): s1expitm = begin
+  (s1e: s1exp, f: fxty): s1expitm = begin
   $Fix.oper_make {s1exp} (
     lam x => x.s1exp_loc,
     lam (loc, x, loc_arg, xs) => s1exp_app (loc, x, loc_arg, xs), s1e, f
@@ -657,7 +661,7 @@ s0exp_tr s0e0 = let
           end // end of [let]
         // end of [f]
       in
-        $Fix.ITEMopr ($Fix.OPERpre ($Fix.exi_prec_sta, f))
+        $Fix.ITEMopr ($Fix.OPERpre ($Prec.exi_prec_sta, f))
       end // end of [S0Eexi]
 //
     | S0Eextype (name, s0es) => let
@@ -687,7 +691,7 @@ s0exp_tr s0e0 = let
           end // end of [let]
         // end of [f]
       in
-        $Fix.ITEMopr ($Fix.OPERpre ($Fix.invar_prec_sta, f))
+        $Fix.ITEMopr ($Fix.OPERpre ($Prec.invar_prec_sta, f))
       end // end of [S0Eide when ...]
     | S0Eide id when id = $Sym.symbol_BACKSLASH => s1expitm_backslash
     | S0Eide id when id = $Sym.symbol_BANG => let
@@ -696,7 +700,7 @@ s0exp_tr s0e0 = let
             $Fix.ITEMatm (s1exp_invar (loc0, 0(*val*), s1e))
           end
       in
-        $Fix.ITEMopr ($Fix.OPERpre ($Fix.invar_prec_sta, f))
+        $Fix.ITEMopr ($Fix.OPERpre ($Prec.invar_prec_sta, f))
       end // end of [S0Eide when ...]
     | S0Eide id when id = $Sym.symbol_QMARK => let
         fn f (s1e: s1exp):<cloref1> s1expitm =
@@ -705,7 +709,7 @@ s0exp_tr s0e0 = let
           end // end of [let]
         // end of [f]
       in
-        $Fix.ITEMopr ($Fix.OPERpos ($Fix.qmark_prec_sta, f))
+        $Fix.ITEMopr ($Fix.OPERpos ($Prec.qmark_prec_sta, f))
       end // end of [S0Eide when ...]
     | S0Eide id when id = $Sym.symbol_QMARKBANG => let
         fn f (s1e: s1exp):<cloref1> s1expitm =
@@ -714,7 +718,7 @@ s0exp_tr s0e0 = let
           end // end of [let]
         // end of [f]
       in
-        $Fix.ITEMopr ($Fix.OPERpos ($Fix.qmarkbang_prec_sta, f))
+        $Fix.ITEMopr ($Fix.OPERpos ($Prec.qmarkbang_prec_sta, f))
       end // end of [S0Eide when ...]
     | S0Eide id when id = $Sym.symbol_GTGT => let
         fn f (s1e1: s1exp, s1e2: s1exp):<cloref1> s1expitm =
@@ -723,7 +727,7 @@ s0exp_tr s0e0 = let
           end // end of [let]
         // end of [f]
       in
-        $Fix.ITEMopr ($Fix.OPERinf ($Fix.trans_prec_sta, $Fix.ASSOCnon, f))
+        $Fix.ITEMopr ($Fix.OPERinf ($Prec.trans_prec_sta, $Fix.ASSOCnon, f))
       end // end of [S0Eide when ...]
     | S0Eide id when id = $Sym.symbol_R0EAD => let
         fn f (s1e: s1exp):<cloref1> s1expitm =
@@ -732,7 +736,7 @@ s0exp_tr s0e0 = let
           end // end of [let
         // end of [f]
       in
-        $Fix.ITEMopr ($Fix.OPERpre ($Fix.r0ead_prec_sta, f))
+        $Fix.ITEMopr ($Fix.OPERpre ($Prec.r0ead_prec_sta, f))
       end // end of [S0Eide when ...]
     | S0Eide id => let
         // [e1xpdef] expansion is to be done in [ats_trans2.dats]
@@ -841,7 +845,7 @@ s0exp_tr s0e0 = let
           end // end of [f]
         // end of [f]
       in
-        $Fix.ITEMopr ($Fix.OPERpre ($Fix.uni_prec_sta, f))
+        $Fix.ITEMopr ($Fix.OPERpre ($Prec.uni_prec_sta, f))
       end // end of [S0Euni]
     | S0Eunion (s0e, ls0es) => let
         val s1e = s0exp_tr s0e

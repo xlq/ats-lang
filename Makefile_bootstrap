@@ -108,6 +108,7 @@ SOURCES := \
   ats_location.sats ats_location.dats \
   ats_namespace.sats ats_namespace.dats \
   ats_posmark.sats ats_posmark.dats \
+  ats_precedence.sats ats_precedence.dats \
   ats_stamp.sats ats_stamp.dats \
   ats_symbol.sats ats_symbol.dats \
   ats_symenv.sats ats_symenv.dats \

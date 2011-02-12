@@ -111,9 +111,9 @@ end // end of [e1xpenv_pervasive_add_topenv]
 
 (* ****** ****** *)
 
-typedef fxtyenv = symenv_t (fxty_t)
+typedef fxtyenv = symenv_t (fxty)
 
-val the_fxtyenv = $SymEnv.symenv_make {fxty_t} ()
+val the_fxtyenv = $SymEnv.symenv_make {fxty} ()
 
 implement
 the_fxtyenv_add (opr, fxty) = let
@@ -149,7 +149,7 @@ implement
 atsopt_fxtyenv_print () = let
   val r_m = $SymEnv.symenv_reftop_get the_fxtyenv
   val kis = $SymEnv.symmap_reflist_get (r_m)
-  typedef ki = @(sym_t, fxty_t)
+  typedef ki = @(sym_t, fxty)
   fun loop {n:nat} .<n>.
     (kis: list_vt (ki, n)): void = begin case+ kis of
     | ~list_vt_cons (ki, kis) => let

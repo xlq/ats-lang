@@ -69,6 +69,7 @@ dynload "libats_lex_lexing.dats"
 dynload "ats_array.dats"
 dynload "ats_charlst.dats"
 dynload "ats_counter.dats"
+dynload "ats_precedence.dats"
 dynload "ats_hashtbl.dats"
 dynload "ats_intinf.dats"
 dynload "ats_list.dats"
@@ -78,25 +79,26 @@ dynload "ats_symbol.dats"
 
 // ------ ------ //
 
-// dynload "ats_array.dats"
-// dynload "ats_charlst.dats"
+// dynload "ats_array.dats" // loaded earlier
+// dynload "ats_charlst.dats" // loaded earlier
 // dynload "ats_counter.dats" // loaded earlier
 dynload "ats_comarg.dats"
 dynload "ats_debug.dats"
 dynload "ats_effect.dats"
 dynload "ats_error.dats"
-dynload "ats_filename.dats" // needs ats_symbol.dats
-dynload "ats_fixity.dats"
+dynload "ats_filename.dats" // needs [ats_symbol.dats]
+dynload "ats_fixity.dats" // needs [ats_precedence.dats]
 dynload "ats_global.dats"
-// dynload "ats_hashtbl.dats"
-// dynload "ats_intinf.dats"
+// dynload "ats_hashtbl.dats" // loaded earlier
+// dynload "ats_intinf.dats" // loaded earlier
 dynload "ats_keyword.dats"
 dynload "ats_label.dats"
 dynload "ats_lexer_lats.dats"
-// dynload "ats_list.dats"
+// dynload "ats_list.dats" // loaded earlier
 dynload "ats_location.dats"
-// dynload "ats_map_lin.dats"
+// dynload "ats_map_lin.dats" // loaded earlier
 dynload "ats_namespace.dats"
+// dynload "ats_precedence.dats" // loaded earlier
 dynload "ats_posmark.dats"
 dynload "ats_stamp.dats"
 // dynload "ats_set_fun.dats" // loaded earlier

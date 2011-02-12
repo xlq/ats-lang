@@ -30,66 +30,75 @@
 *)
 
 (* ****** ****** *)
-
+//
 // Author: Hongwei Xi (hwxi AT cs DOT bu DOT edu)
-// Time: October 2007
+// Time: July 2007
+//
+(* ****** ****** *)
 
-(* ****** ******* *)
+abst@ype prec_t = int (* precedence type *)
 
-staload Fix = "ats_fixity.sats"
-staload Sym = "ats_symbol.sats"
+(* ****** ****** *)
 
-(* ****** ******* *)
+val app_prec : prec_t
 
-staload "ats_staexp1.sats"
-staload "ats_dynexp1.sats"
+(* ****** ****** *)
 
-(* ****** ******* *)
+val select_prec : prec_t
 
-typedef fxty = $Fix.fxty
-typedef sym_t = $Sym.symbol_t
+(* ****** ****** *)
 
-(* ****** ******* *)
+val backslash_prec : prec_t
+val infixtemp_prec : prec_t // = 0
 
-fun the_e1xpenv_add (id: sym_t, _: e1xp): void
-fun the_e1xpenv_find (id: sym_t): Option_vt e1xp
-fun the_e1xpenv_pervasive_add_topenv (): void
+(* ****** ****** *)
 
-(* ****** ******* *)
+val exi_prec_sta : prec_t
+and uni_prec_sta : prec_t
 
-fun the_fxtyenv_add (id: sym_t, _: fxty): void
-fun the_fxtyenv_find (id: sym_t): Option_vt (fxty)
-fun the_fxtyenv_pervasive_add_topenv (): void
+val delay_prec_dyn : prec_t
 
-(* ****** ******* *)
+val dynload_prec_dyn : prec_t
 
-fun atsopt_fxtyenv_print (): void // mostly for debugging
+val exist_prec_dyn : prec_t
 
-(* ****** ******* *)
+val ptrof_prec_dyn : prec_t
 
-absview trans1_level_token // to avoid entering negative level
-fun trans1_level_get (): int
-fun trans1_level_dec (pf: trans1_level_token | (*none*)): void
-fun trans1_level_inc (): (trans1_level_token | void)
+(* ****** ****** *)
 
-(* ****** ******* *)
+val foldat_prec_dyn : prec_t
+val freeat_prec_dyn : prec_t
+val viewat_prec_dyn : prec_t
 
-fun trans1_env_pop (): void
-fun trans1_env_push (): void
+(* ****** ****** *)
 
-(* <env_localjoin> is for handling <local ... in ... end> *)
-fun trans1_env_localjoin (): void
+val invar_prec_sta : prec_t
 
-fun trans1_env_save (): void
-fun trans1_env_restore (): void
+val qmark_prec_sta : prec_t
 
-(* ****** ******* *)
+val qmarkbang_prec_sta : prec_t
 
-fun staload_file_insert
-  (fullname: string, flag: int, d1cs: d1eclst): void
-fun staload_file_search
-  (fullname: string): Option_vt @(int(*flag*), d1eclst)
+val r0ead_prec_sta : prec_t
 
-(* ****** ******* *)
+val trans_prec_sta : prec_t
 
-(* end of [ats_trans1_env.sats] *)
+val crypt_prec_dyn : prec_t
+
+val deref_prec_dyn : prec_t
+
+(* ****** ****** *)
+
+fun int_of_prec (p: prec_t): int
+fun prec_make_int (i: int): prec_t
+
+fun precedence_inc (p: prec_t, i: int): prec_t
+fun precedence_dec (p: prec_t, i: int): prec_t
+
+(* ****** ****** *)
+
+fun compare_prec_prec (p1: prec_t, p2: prec_t): Sgn
+overload compare with compare_prec_prec
+
+(* ****** ****** *)
+
+(* end of [ats_precedence.sats] *)

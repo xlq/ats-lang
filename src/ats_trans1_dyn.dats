@@ -46,11 +46,13 @@ staload Err = "ats_error.sats"
 staload Fil = "ats_filename.sats"
 typedef fil_t = $Fil.filename_t
 staload Fix = "ats_fixity.sats"
+typedef fxty = $Fix.fxty
 staload Glo = "ats_global.sats"
 staload Loc = "ats_location.sats"
 typedef loc_t = $Loc.location_t
 staload Lst = "ats_list.sats"
 staload Par = "ats_parser.sats"
+staload Prec = "ats_precedence.sats"
 staload PM = "ats_posmark.sats"
 staload Sym = "ats_symbol.sats"
 staload Syn = "ats_syntax.sats"
@@ -319,7 +321,7 @@ in
   $Fix.item_app f
 end // end of [app_p1at_item]
 
-fun p1at_make_opr (p1t: p1at, f: $Fix.fxty_t): p1atitm = begin
+fun p1at_make_opr (p1t: p1at, f: fxty): p1atitm = begin
   $Fix.oper_make {p1at} (
     lam x => x.p1at_loc
   , lam (loc, x, loc_arg, xs) => p1at_app_dyn (loc, x, loc_arg, 0, xs)
@@ -383,7 +385,7 @@ fun aux_item (p0t0: p0at): p1atitm = let
           $Fix.ITEMatm (p1at_exist (loc, s1as, body))
         end // end of [f]
       in
-        $Fix.ITEMopr ($Fix.OPERpre ($Fix.exist_prec_dyn, f))
+        $Fix.ITEMopr ($Fix.OPERpre ($Prec.exist_prec_dyn, f))
       end // end of [P0Texist]
     | P0Tfloat f(*string*) => $Fix.ITEMatm (p1at_float (loc, f))
     | P0Tfree (p0t) => begin
@@ -520,7 +522,7 @@ in
 end // end of [app_d1exp_item]
 
 fun d1exp_make_opr (
-  d1e: d1exp, f: $Fix.fxty_t
+  d1e: d1exp, f: fxty
 ) : d1expitm = begin
   $Fix.oper_make {d1exp} (
     lam x => x.d1exp_loc
@@ -932,7 +934,7 @@ in
         end // end of [let]
       // end of [f]
     in
-      $Fix.ITEMopr ($Fix.OPERpre ($Fix.crypt_prec_dyn, f))
+      $Fix.ITEMopr ($Fix.OPERpre ($Prec.crypt_prec_dyn, f))
     end // end of [D0Ecrypt]
 //
   | D0Edecseq (d0cs) => let
@@ -952,7 +954,7 @@ in
         $Fix.ITEMatm (d1exp_lazy_delay (loc0, lin, d1e))
       end // end of [f]
     in
-      $Fix.ITEMopr ($Fix.OPERpre ($Fix.delay_prec_dyn, f))
+      $Fix.ITEMopr ($Fix.OPERpre ($Prec.delay_prec_dyn, f))
     end // end of [D0Edelay]
   | D0Edynload () => let
       fn f (d1e: d1exp)
@@ -982,7 +984,7 @@ in
           end // end of [_]
         // end of [case]
     in
-      $Fix.ITEMopr ($Fix.OPERpre ($Fix.dynload_prec_dyn, f))
+      $Fix.ITEMopr ($Fix.OPERpre ($Prec.dynload_prec_dyn, f))
     end // end of [D0Edynlaod]
   | D0Eeffmask (effs) => let
       fn f (d1e: d1exp):<cloref1> d1expitm =
@@ -991,7 +993,7 @@ in
         end // end of [let]
       // end of [f]
     in
-      $Fix.ITEMopr ($Fix.OPERpre ($Fix.delay_prec_dyn, f))
+      $Fix.ITEMopr ($Fix.OPERpre ($Prec.delay_prec_dyn, f))
     end // end of [D0Eeffmask]
   | D0Eempty () => $Fix.ITEMatm (d1exp_empty loc0)
   | D0Eexist (qualoc, s0a, d0e) => let
@@ -1044,7 +1046,7 @@ in
         end // end of [let]
       // end of [f]
     in
-      $Fix.ITEMopr ($Fix.OPERpre ($Fix.foldat_prec_dyn, f))
+      $Fix.ITEMopr ($Fix.OPERpre ($Prec.foldat_prec_dyn, f))
     end // end of [D0Efoldat]
   | D0Efor (inv, loc_inv, ini, test, post, body) => let
       val inv: loopi1nv = case+ inv of
@@ -1066,7 +1068,7 @@ in
         end // end of [let]
       // end of [f]
     in
-      $Fix.ITEMopr ($Fix.OPERpre ($Fix.freeat_prec_dyn, f))
+      $Fix.ITEMopr ($Fix.OPERpre ($Prec.freeat_prec_dyn, f))
     end // end of [D0Efreeat]
 //
   | D0Eide id when id = $Sym.symbol_BACKSLASH => d1expitm_backslash
@@ -1163,7 +1165,7 @@ in
         $Fix.ITEMatm (d1exp_ptrof (loc0, d1e))
       end (* end of [f] *)
     in
-      $Fix.ITEMopr ($Fix.OPERpre ($Fix.ptrof_prec_dyn, f))
+      $Fix.ITEMopr ($Fix.OPERpre ($Prec.ptrof_prec_dyn, f))
     end // end of [D0Eptrof]
   | D0Eqid (q, id) => $Fix.ITEMatm (d1exp_qid (loc0, q, id))
   | D0Eraise (d0e) => begin
@@ -1190,7 +1192,7 @@ in
         end // end of [let]
       // end of [f]
     in
-      $Fix.ITEMopr ($Fix.OPERpos ($Fix.select_prec, f))
+      $Fix.ITEMopr ($Fix.OPERpos ($Prec.select_prec, f))
     end // end of [D0Esel_lab]
   | D0Esel_ind (knd, ind) => let
       val ind = d0explstlst_tr ind
@@ -1201,7 +1203,7 @@ in
         end // end of [let]
       // end of [f]
     in
-      $Fix.ITEMopr ($Fix.OPERpos ($Fix.select_prec, f))
+      $Fix.ITEMopr ($Fix.OPERpos ($Prec.select_prec, f))
     end // end of [D0Esel_ind]
   | D0Eseq d0es => begin
       $Fix.ITEMatm (d1exp_seq (loc0, d0explst_tr d0es))
@@ -1259,7 +1261,7 @@ in
         end
       // end of [f]
     in
-      $Fix.ITEMopr ($Fix.OPERpre ($Fix.viewat_prec_dyn, f))
+      $Fix.ITEMopr ($Fix.OPERpre ($Prec.viewat_prec_dyn, f))
     end // end of [D0Eviewat]
   | D0Ewhere (d0e, d0cs) => let
       val () = trans1_env_push ()
