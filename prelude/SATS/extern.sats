@@ -67,11 +67,10 @@ prfun minus_addback // [minus] is defined in basics_sta.sats
 // end of [minus_addback]
 
 (* ****** ****** *)
-
 //
 // HX-2010-04-18:
-// the types [stamp] and [stamped] should only be used in a situation
-// where the value taken out cannot be uniquely identified by its type
+// the type [stamped] should only be used in a situation
+// where the value cannot be uniquely identified by its type
 //
 absviewtype
 stamped (a:viewtype, l:addr) = a
@@ -81,17 +80,6 @@ prfun stamped_encode
 prfun stamped_decode
   {a:viewtype} {l:addr} (x: !stamped (a, l) >> a):<> void
 // end of [stamped_decode]
-
-absviewtype
-stamp (a:viewtype, l:addr) = a
-castfn stamp_get
-  {a:viewtype} {l:addr} (x: !a >> stamped (a, l))
-  : (minus (stamped (a, l), stamp (a, l)) | stamp (a, l))
-// end of [stamp_get]
-castfn stamp_get1
-  {a:viewtype} {l:addr} (x: !stamped (a, l))
-  : (minus (stamped (a, l), stamp (a, l)) | stamp (a, l))
-// end of [stamp_get1]
 
 (* ****** ****** *)
 //
