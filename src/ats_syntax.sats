@@ -331,7 +331,7 @@ fun i0de_make_DO (t: t0kn): i0de = "i0de_make_DO"
 fun i0de_make_IN (t: t0kn): i0de = "i0de_make_IN"
 fun i0de_make_WHILE (t: t0kn): i0de = "i0de_make_WHILE"
 
-//
+(* ****** ****** *)
 
 fun i0delst_nil (): i0delst = "i0delst_nil"
 fun i0delst_sing (x: i0de): i0delst = "i0delst_sing"
@@ -371,11 +371,12 @@ fun p0rec_opr (ide: i0de, opr: i0de, int: i0nt): p0rec = "p0rec_opr"
 
 (* ****** ****** *)
 //
-// assumed in [ats_effect.dats]
+// HX: assumed in [ats_effect.dats]
 //
-abst@ype effect_t = $extype "ats_int_type" 
-typedef effectlst = List effect_t
-
+abst@ype effect_t = int
+//
+typedef effectlst = List (effect_t)
+//
 (* ****** ****** *)
 
 datatype e0xp_node =
@@ -409,22 +410,23 @@ fun e0xpopt_some (x: e0xp): e0xpopt = "e0xpopt_some"
 fun e0xp_app (_fun: e0xp, _arg: e0xp): e0xp = "e0xp_app"
 fun e0xp_char (_: c0har): e0xp = "e0xp_char"
 
-fun e0xp_eval (t_beg: t0kn, e: e0xp, t_end: t0kn): e0xp
-  = "e0xp_eval"
+fun e0xp_eval
+  (t_beg: t0kn, e: e0xp, t_end: t0kn): e0xp = "e0xp_eval"
+// end of [e0xp_eval]
 
 fun e0xp_float (_: f0loat): e0xp = "e0xp_float"
 fun e0xp_ide (_: i0de): e0xp = "e0xp_ide"
 fun e0xp_int (_: i0nt): e0xp = "e0xp_int"
 
-fun e0xp_list (t_beg: t0kn, es: e0xplst, t_end: t0kn): e0xp
-  = "e0xp_list"
+fun e0xp_list
+  (t_beg: t0kn, es: e0xplst, t_end: t0kn): e0xp = "e0xp_list"
+// end of [e0xp_list]
 
 fun e0xp_string (s: s0tring): e0xp = "e0xp_string"
 
 (* ****** ****** *)
-
 //
-// sort qualifier
+// HX: sort qualifier
 //
 datatype s0rtq_node =
   | S0RTQnone
@@ -434,7 +436,7 @@ datatype s0rtq_node =
 
 typedef s0rtq = '{
   s0rtq_loc= loc_t, s0rtq_node= s0rtq_node
-}
+} // end of [s0rtq]
 
 fun fprint_s0rtq {m:file_mode}
   (pf: file_mode_lte (m, w) | out: &FILE m, _: s0rtq): void
@@ -459,7 +461,7 @@ datatype s0rt_node =
 
 where s0rt: type = '{ 
   s0rt_loc= loc_t, s0rt_node= s0rt_node
-}
+} // end of [s0rt]
 
 and s0rtlst: type = List s0rt
 and s0rtopt: type = Option s0rt
@@ -467,13 +469,13 @@ and s0rtopt: type = Option s0rt
 (* sorts with polarity *)
 typedef s0rtpol = '{
   s0rtpol_loc= loc_t, s0rtpol_srt= s0rt, s0rtpol_pol= int
-}
+} // end of [s0rtpol]
 
 (* ****** ****** *)
 
-fun fprint_s0rt {m:file_mode}
-  (pf: file_mode_lte (m, w) | out: &FILE m, s0t: s0rt): void
-  = "fprint_s0rt"
+fun fprint_s0rt {m:file_mode} (
+  pf: file_mode_lte (m, w) | out: &FILE m, s0t: s0rt
+) : void = "fprint_s0rt" // end of [fprint_s0rt]
 
 (* ****** ****** *)
 
@@ -494,13 +496,20 @@ fun s0rt_viewt0ype (t: t0kn): s0rt = "s0rt_viewt0ype"
 
 //
 
-fun s0rt_app (_fun: s0rt, _arg: s0rt): s0rt = "s0rt_app"
+fun s0rt_app
+  (_fun: s0rt, _arg: s0rt): s0rt = "s0rt_app"
+
 fun s0rt_ide (_: i0de): s0rt = "s0rt_ide"
+
 fun s0rt_qid (q: s0rtq, id: i0de): s0rt = "s0rt_qid"
-fun s0rt_list (t_beg: t0kn, _: s0rtlst, t_end: t0kn): s0rt
-  = "s0rt_list"
-fun s0rt_tup (t_beg: t0kn, _: s0rtlst, t_end: t0kn): s0rt
-  = "s0rt_tup"
+
+fun s0rt_list
+  (t_beg: t0kn, _: s0rtlst, t_end: t0kn): s0rt = "s0rt_list"
+// end of [s0rt_list]
+
+fun s0rt_tup (
+  t_beg: t0kn, _: s0rtlst, t_end: t0kn
+) : s0rt = "s0rt_tup" // end of [s0rt_tup]
 
 fun s0rtpol_make (s0t: s0rt, pol: int): s0rtpol = "s0rtpol_make"
 
@@ -510,18 +519,19 @@ typedef d0atsrtcon = '{
   d0atsrtcon_loc= loc_t
 , d0atsrtcon_sym= sym_t
 , d0atsrtcon_arg= s0rtopt
-}
+} // end of [d0atsrtcon]
 
-fun d0atsrtcon_make_none (id: i0de): d0atsrtcon
-  = "d0atsrtcon_make_none"
-fun d0atsrtcon_make_some (id: i0de, s0t: s0rt): d0atsrtcon
-  = "d0atsrtcon_make_some"
+fun d0atsrtcon_make_none
+  (id: i0de): d0atsrtcon = "d0atsrtcon_make_none"
+fun d0atsrtcon_make_some
+  (id: i0de, s0t: s0rt): d0atsrtcon = "d0atsrtcon_make_some"
 
 typedef d0atsrtconlst = List d0atsrtcon
 
 fun d0atsrtconlst_nil (): d0atsrtconlst = "d0atsrtconlst_nil"
-fun d0atsrtconlst_cons (x: d0atsrtcon, xs: d0atsrtconlst): d0atsrtconlst
-  = "d0atsrtconlst_cons"
+fun d0atsrtconlst_cons
+  (x: d0atsrtcon, xs: d0atsrtconlst): d0atsrtconlst = "d0atsrtconlst_cons"
+// end of [d0atsrtconlst_cons]
 
 (* ****** ****** *)
 
@@ -529,16 +539,18 @@ typedef d0atsrtdec = '{
   d0atsrtdec_loc= loc_t
 , d0atsrtdec_sym= sym_t
 , d0atsrtdec_con= d0atsrtconlst
-}
+} // end of [d0atsrtdec]
 
 typedef d0atsrtdeclst = List d0atsrtdec
 
-fun d0atsrtdec_make (id: i0de, xs: d0atsrtconlst): d0atsrtdec
-  = "d0atsrtdec_make"
+fun d0atsrtdec_make
+  (id: i0de, xs: d0atsrtconlst): d0atsrtdec = "d0atsrtdec_make"
+// end of [d0atsrtdec_make]
 
 fun d0atsrtdeclst_nil (): d0atsrtdeclst = "d0atsrtdeclst_nil"
-fun d0atsrtdeclst_cons (x: d0atsrtdec, xs: d0atsrtdeclst): d0atsrtdeclst
-  = "d0atsrtdeclst_cons"
+fun d0atsrtdeclst_cons
+  (x: d0atsrtdec, xs: d0atsrtdeclst): d0atsrtdeclst = "d0atsrtdeclst_cons"
+// end of [d0atsrtdeclst_cons]
 
 (* ****** ****** *)
 
@@ -574,7 +586,7 @@ datatype e0fftag_node =
 
 typedef e0fftag = '{
   e0fftag_loc= loc_t, e0fftag_node= e0fftag_node
-}
+} // end of [e0fftag]
 
 fun e0fftag_cst (i: int, _: i0de): e0fftag = "e0fftag_cst"
 fun e0fftag_var (_: i0de): e0fftag = "e0fftag_var"

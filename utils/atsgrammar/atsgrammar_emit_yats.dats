@@ -919,6 +919,7 @@ extern d0eclst_t d0ecllst_reverse (d0ecllst_t) ;\n\
 /*\n\
 ** HX: implemented in [ats_parser.dats]\n\
 */\n\
+extern yyres_t atsopt_yyres_i0de (i0de_t) ;\n\
 extern yyres_t atsopt_yyres_s0exp (s0exp_t) ;\n\
 extern yyres_t atsopt_yyres_d0exp (d0exp_t) ;\n\
 extern yyres_t atsopt_yyres_d0eclst (d0eclst_t) ;\n\

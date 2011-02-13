@@ -9,7 +9,7 @@
 /* ****** ****** */
 
 /*
-** Time of Generation: Sun Feb 13 12:21:35 2011
+** Time of Generation: Sun Feb 13 14:50:56 2011
 */
 
 /* ****** ****** */
@@ -1542,10 +1542,10 @@ d0eclst_t d0eclst ;
 */
 
 theStartEntry
-  : YYBEG_i0de i0de TOKEN_eof { theYYVALyyres = atsopt_yyres_i0de($2) ; return 0 ; }
-  | YYBEG_s0rtid s0rtid TOKEN_eof { theYYVALyyres = atsopt_yyres_i0de($2) ; return 0 ; }
-  | YYBEG_si0de si0de TOKEN_eof { theYYVALyyres = atsopt_yyres_i0de($2) ; return 0 ; }
-  | YYBEG_di0de di0de TOKEN_eof { theYYVALyyres = atsopt_yyres_i0de($2) ; return 0 ; }
+  : YYBEG_i0de i0de TOKEN_eof  { theYYVALyyres = atsopt_yyres_i0de($2) ; return 0 ; }
+  | YYBEG_s0rtid s0rtid TOKEN_eof  { theYYVALyyres = atsopt_yyres_i0de($2) ; return 0 ; }
+  | YYBEG_si0de si0de TOKEN_eof  { theYYVALyyres = atsopt_yyres_i0de($2) ; return 0 ; }
+  | YYBEG_di0de di0de TOKEN_eof  { theYYVALyyres = atsopt_yyres_i0de($2) ; return 0 ; }
   | YYBEG_s0exp s0exp TOKEN_eof  { theYYVALyyres = atsopt_yyres_s0exp($2) ; return 0 ; }
   | YYBEG_d0exp d0exp TOKEN_eof  { theYYVALyyres = atsopt_yyres_d0exp($2) ; return 0 ; }
   | YYBEG_d0ecseq_sta d0ecseq_sta TOKEN_eof  { theYYVALyyres = atsopt_yyres_d0eclst($2) ; return 0 ; }

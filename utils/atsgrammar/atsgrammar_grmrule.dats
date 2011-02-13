@@ -42,7 +42,7 @@ implement
 grmrule_make_symlst
   (xs) = let
   val xs =
-    list_map_fun<symbol,symreg> (xs, lam x =<1> SYMREGlit (x))
+    list_map_fun<symbol><symreg> (xs, lam x =<1> SYMREGlit (x))
   // end of [val]
   val xs = list_of_list_vt (xs)
 in
