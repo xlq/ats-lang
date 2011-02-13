@@ -40,6 +40,11 @@ abst@ype prec_t = int (* precedence type *)
 
 (* ****** ****** *)
 
+val neginf_prec : prec_t // lowest legal precedence value
+val posinf_prec : prec_t // highest legal precedence value
+
+(* ****** ****** *)
+
 val app_prec : prec_t
 
 (* ****** ****** *)
@@ -49,7 +54,7 @@ val select_prec : prec_t
 (* ****** ****** *)
 
 val backslash_prec : prec_t
-val infixtemp_prec : prec_t // = 0
+val infixtemp_prec : prec_t // for temp infix status
 
 (* ****** ****** *)
 
@@ -81,6 +86,8 @@ val qmarkbang_prec_sta : prec_t
 val r0ead_prec_sta : prec_t
 
 val trans_prec_sta : prec_t
+
+(* ****** ****** *)
 
 val crypt_prec_dyn : prec_t
 

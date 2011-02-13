@@ -97,6 +97,8 @@ fn prerr_interror () = prerr "INTERNAL ERROR (ats_trans1_sta)"
 
 (* ****** ****** *)
 
+local
+
 fn prec_tr_errmsg
   (opr: i0de): prec_t = begin
   prerr_loc_error1 opr.i0de_loc;
@@ -106,6 +108,8 @@ fn prec_tr_errmsg
   prerr_newline ();
   $Err.abort ()
 end // end of [prec_tr_errmsg]
+
+in // in of [local]
 
 fn p0rec_tr (p0: p0rec): prec_t = let
   fun precfnd (id: i0de): prec_t = let
@@ -134,15 +138,17 @@ in
   | P0RECdec (id, int) => $FP.precedence_dec (precfnd id, int)
 end // end of [p0rec_tr]
 
-fn f0xty_tr (f0xty: f0xty): fxty = begin
- case+ f0xty of
+end // end of [local]
+
+(* ****** ****** *)
+
+fn f0xty_tr
+  (f0xty: f0xty): fxty = case+ f0xty of
   | F0XTYinf (p0, a) =>
       let val p = p0rec_tr p0 in $FX.fxty_inf (p, a) end
-  | F0XTYpre p0 =>
-      let val p = p0rec_tr p0 in $FX.fxty_pre p end
-  | F0XTYpos p0 =>
-      let val p = p0rec_tr p0 in $FX.fxty_pos p end
-end // end of [f0xty_tr]
+  | F0XTYpre p0 => let val p = p0rec_tr p0 in $FX.fxty_pre p end
+  | F0XTYpos p0 => let val p = p0rec_tr p0 in $FX.fxty_pos p end
+// end of [f0xty_tr]
 
 (* ****** ****** *)
 
@@ -150,7 +156,7 @@ typedef e1xpitm = $FX.item (e1xp)
 typedef e1xpitmlst = List e1xpitm
 
 val e1xpitm_app : e1xpitm = let
-
+//
 fn f (e1: e1xp, e2: e1xp):<cloref1> e1xpitm = let
   val loc = $Loc.location_combine (e1.e1xp_loc, e2.e1xp_loc)
   val es2 = (
@@ -165,12 +171,13 @@ fn f (e1: e1xp, e2: e1xp):<cloref1> e1xpitm = let
 in
   $FX.ITEMatm (e_app)
 end // end of [f]
-    
+//
 in // in of [let]
   $FX.item_app (f)
 end // end of [e1xpitm_app]
 
-fun e1xp_make_opr (e: e1xp, f: fxty): e1xpitm = begin
+fn e1xp_make_opr
+  (e: e1xp, f: fxty): e1xpitm = begin
   $FX.oper_make {e1xp} (
     lam x => x.e1xp_loc,
     lam (loc, x, loc_arg, xs) => e1xp_app (loc, x, loc_arg, xs), e, f
@@ -186,11 +193,16 @@ end // end of [e1xpitm_backslash]
 
 (* ****** ****** *)
 
-fn e0xp_tr_errmsg_opr (loc: loc_t): e1xp = begin
+local
+
+fn e0xp_tr_errmsg_opr
+  (loc: loc_t): e1xp = begin
   prerr_loc_error1 loc;
   prerr ": the operator needs to be applied.\n";
   $Err.abort {e1xp} ()
 end // end of [e0xp_tr_errmsg_opr]
+
+in // in of [local]
   
 implement e0xp_tr (e0) = let
 //
@@ -242,12 +254,14 @@ in
   // end of [case]
 end // end of [e0xp_tr]
 
+end // end of [local]
+
 implement e0xplst_tr (es) = $Lst.list_map_fun (es, e0xp_tr)
 
 (* ****** ****** *)
-
-// translation of sorts
-
+//
+// HX: translation of sorts
+//
 typedef s1rtitm = $FX.item s1rt
 typedef s1rtitmlst = List s1rtitm
 
@@ -283,12 +297,16 @@ end // end of [s1rtitm_backslash]
 
 (* ****** ****** *)
 
+local
+
 fn s0rt_tr_errmsg_opr
   (loc: loc_t): s1rt = begin
   prerr_loc_error1 loc;
   prerr ": the operator needs to be applied";
   $Err.abort {s1rt} ()
 end // end of [s0rt_tr_errmsg_opr]
+
+in // in of [local]
   
 implement s0rt_tr (s0t0) = let
 //
@@ -330,6 +348,8 @@ in
     | $FX.ITEMopr _ => s0rt_tr_errmsg_opr s0t0.s0rt_loc
   // end of [case]
 end // end of [s0rt_tr]
+
+end // end of [local]
 
 implement
 s0rtlst_tr (s0ts) = $Lst.list_map_fun (s0ts, s0rt_tr)
@@ -514,25 +534,30 @@ s0tavarlst_tr (ds) = $Lst.list_map_fun (ds, s0tavar_tr)
 
 (* ****** ****** *)
 
-fun d0atsrtcon_tr
+local
+
+fn d0atsrtcon_tr
   (x: d0atsrtcon): d1atsrtcon = let
   val loc = x.d0atsrtcon_loc and nam = x.d0atsrtcon_sym
   val s1ts = (
     case+ x.d0atsrtcon_arg of
     | Some s0t => let
-        val s1t = s0rt_tr s0t
-      in
+        val s1t = s0rt_tr s0t in
         case+ s1t.s1rt_node of
           | S1RTlist s1ts => s1ts | _ => cons (s1t, nil ())
-      end
+        // end of [case]
+      end // end of [Some]
     | None () => nil ()
-  ) : s1rtlst
+  ) : s1rtlst // end of [val]
 in
   d1atsrtcon_make (loc, nam, s1ts)
 end // end of [d0atsrtcon_tr]
 
-fun d0atsrtconlst_tr (xs: d0atsrtconlst): d1atsrtconlst =
+fn d0atsrtconlst_tr
+  (xs: d0atsrtconlst): d1atsrtconlst =
   $Lst.list_map_fun (xs, d0atsrtcon_tr)
+
+in // in of [local]
 
 implement
 d0atsrtdec_tr (d) = let
@@ -544,24 +569,36 @@ end // end of [d0atsrtdec_tr]
 implement
 d0atsrtdeclst_tr (ds) = $Lst.list_map_fun (ds, d0atsrtdec_tr)
 
+end // end of [local]
+
 (* ****** ****** *)
 
-fn s0arg_tr (s0a: s0arg): s1arg = let
+local
+
+fn s0arg_tr
+  (s0a: s0arg): s1arg = let
   val res = s0rtopt_tr s0a.s0arg_srt
 in
   s1arg_make (s0a.s0arg_loc, s0a.s0arg_sym, res)
 end // end of [s0arg_tr]
 
+in // in of [local]
+
 implement
 s0arglst_tr (s0as) = $Lst.list_map_fun (s0as, s0arg_tr)
+
+end // end of [local]
+
 implement
 s0arglstlst_tr (s0ass) = $Lst.list_map_fun (s0ass, s0arglst_tr)
 
+(* ****** ****** *)
+
 implement
-sp0at_tr (sp0t) = begin case+ sp0t.sp0at_node of
+sp0at_tr (sp0t) = begin
+  case+ sp0t.sp0at_node of
   | SP0Tcon (qid, s0as) => let
-      val s1as = s0arglst_tr s0as
-    in
+      val s1as = s0arglst_tr s0as in
       sp1at_con (sp0t.sp0at_loc, qid.sqi0de_qua, qid.sqi0de_sym, s1as)
     end // end of [SP0Tcon]
 end // end of [sp0at_tr]
@@ -596,7 +633,7 @@ in
   $FX.item_app (f)
 end // end of [app_s1exp_item]
 
-fun s1exp_make_opr 
+fn s1exp_make_opr 
   (s1e: s1exp, f: fxty): s1expitm = begin
   $FX.oper_make {s1exp} (
     lam x => x.s1exp_loc,
@@ -628,12 +665,16 @@ s0qualstlst_tr (s0qss) = $Lst.list_map_fun (s0qss, s0qualst_tr)
 
 (* ****** ****** *)
 
+local
+
 fn s0exp_tr_errmsg_opr
   (loc: loc_t): s1exp = begin
   prerr_loc_error1 loc;
   prerr ": the operator needs to be applied";
   $Err.abort {s1exp} ()
 end // end of [s0exp_tr_errmsg_opr]
+
+in // in of [local]
 
 implement
 s0exp_tr s0e0 = let
@@ -878,6 +919,8 @@ in
   | $FX.ITEMopr _ => s0exp_tr_errmsg_opr s0e0.s0exp_loc
 end // end of [s0exp_tr]
 
+end // end of [local]
+
 implement
 s0explst_tr (s0es) = $Lst.list_map_fun (s0es, s0exp_tr)
 // end of [s0explst_tr]
@@ -1064,7 +1107,7 @@ e0xndec_tr (d) = let
         | _ => cons (s1e, nil ())
       end // end of [Some]
     | None () => nil ()
-  ) : s1explst
+  ) : s1explst // end of [val]
 in
   e1xndec_make (
     d.e0xndec_loc, d.e0xndec_fil, d.e0xndec_sym, qua, npf_r, arg

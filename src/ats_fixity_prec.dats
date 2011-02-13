@@ -9,7 +9,7 @@
 (*
 ** ATS/Anairiats - Unleashing the Potential of Types!
 **
-** Copyright (C) 2002-2008 Hongwei Xi, Boston University
+** Copyright (C) 2002-2011 Hongwei Xi, Boston University
 **
 ** All rights reserved
 **
@@ -32,7 +32,7 @@
 (* ****** ****** *)
 //
 // Author: Hongwei Xi (hwxi AT cs DOT bu DOT edu)
-// Time: July 2007
+// Start Time: July 2007
 //
 (* ****** ****** *)
 
@@ -44,16 +44,24 @@ assume prec_t: t@ype = int
 
 (* ****** ****** *)
 
+#define PRECMIN ~1000000
+#define PRECMAX  1000000
+
+implement neginf_prec = PRECMIN
+implement posinf_prec = PRECMAX
+
+(* ****** ****** *)
+
 implement app_prec = 70
+
+(* ****** ****** *)
+
+implement select_prec = 80 (* .label is a postfix operator *)
 
 (* ****** ****** *)
 
 implement backslash_prec = app_prec + 1
 implement infixtemp_prec = 0 (* for temporary infix status *)
-
-(* ****** ****** *)
-
-implement select_prec = 80 (* .label is a postfix operator *)
 
 (* ****** ****** *)
 
@@ -101,26 +109,28 @@ implement qmarkbang_prec_sta = app_prec - 1
 
 implement r0ead_prec_sta = 100 (* highest *)
 
-implement trans_prec_sta = 0
+implement trans_prec_sta = 0 (* lowest *)
 
-implement crypt_prec_dyn = 0
+implement crypt_prec_dyn = 0 (* lowest *)
 
-implement deref_prec_dyn = 100
+implement deref_prec_dyn = 100 (* highest *)
 
 (* ****** ****** *)
 
 implement int_of_prec (p) = p
-implement prec_make_int (i) = i
+
+implement prec_make_int (i) = case+ 0 of
+  | _ when i <= PRECMIN => PRECMIN | _ when i >= PRECMAX => PRECMAX | _ => i
+// end of [prec_make_int]
 
 (* ****** ****** *)
 
-implement precedence_inc (p, i) = p + i
-implement precedence_dec (p, i) = p - i
+implement precedence_inc (p, i) = prec_make_int (p + i)
+implement precedence_dec (p, i) = prec_make_int (p - i)
 
 (* ****** ****** *)
 
-implement
-compare_prec_prec (p1, p2) = compare_int_int (p1, p2)
+implement compare_prec_prec (p1, p2) = compare_int_int (p1, p2)
 
 (* ****** ****** *)
 

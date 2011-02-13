@@ -17,8 +17,6 @@
 
 staload Lab = "ats_label.sats"
 
-(* ****** ****** *)
-
 fun tostring_label (x: $Lab.label_t): string
 overload tostring with tostring_label
 
