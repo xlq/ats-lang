@@ -98,6 +98,18 @@ overload + with list0_append
 
 (* ****** ****** *)
 
+fun{a,b:t@ype}
+list0_assoc_fun
+  (xs: list0 @(a, b), eq: (a, a) -<fun1> bool, x: a): option0 (b)
+// end of [list0_assoc_fun]
+
+fun{a,b:t@ype}
+list0_assoc_cloref
+  (xs: list0 @(a, b), eq: (a, a) -<cloref1> bool, x: a): option0 (b)
+// end of [list0_assoc_cloref]
+
+(* ****** ****** *)
+
 fun{a:t@ype}
 list0_concat (xs: list0 (list0 a)):<> list0 a
 
@@ -179,10 +191,15 @@ list0_map_cloref (xs: list0 a, f: a -<cloref1> b): list0 b
 
 (* ****** ****** *)
 
-fun{a1,a2:t@ype}{b:t@ype} list0_map2_fun
+fun{a1,a2:t@ype}{b:t@ype}
+list0_map2_fun
   (xs1: list0 a1, xs2: list0 a2, f: (a1, a2) -<fun1> b): list0 b
-fun{a1,a2:t@ype}{b:t@ype} list0_map2_cloref
+// end of [list0_map2_fun]
+
+fun{a1,a2:t@ype}{b:t@ype}
+list0_map2_cloref
   (xs1: list0 a1, xs2: list0 a2, f: (a1, a2) -<cloref1> b): list0 b
+// end of [list0_map2_cloref]
 
 (* ****** ****** *)
 

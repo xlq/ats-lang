@@ -65,6 +65,26 @@ end // end of [list0_append]
 
 (* ****** ****** *)
 
+implement{a,b}
+list0_assoc_fun
+  (xs, f, x) = let
+  val xs = list1_of_list0 (xs)
+  val ans = list_assoc_fun<a,b> (xs, f, x)
+in
+  option0_of_option_vt (ans)
+end // end of [list0_assoc_fun]
+
+implement{a,b}
+list0_assoc_cloref
+  (xs, f, x) = let
+  val xs = list1_of_list0 (xs)
+  val ans = list_assoc_cloref<a,b> (xs, f, x)
+in
+  option0_of_option_vt (ans)
+end // end of [list0_assoc_cloref]
+
+(* ****** ****** *)
+
 implement{a}
 list0_concat (xss) = let
   castfn __cast {n:nat} .<n>. 
