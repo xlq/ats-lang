@@ -40,19 +40,31 @@ abst@ype token_t = $extype "ats_int_type"
 
 (* ****** ****** *)
 
-val ISNONE : token_t
-val ISSTATIC : token_t and ISDYNAMIC : token_t
+val YYBEG_none : token_t
 
-// implemented in [ats_lexer.lats]
+val YYBEG_s0exp : token_t
+val YYBEG_d0exp : token_t
+
+val YYBEG_d0ecseq_sta : token_t
+val YYBEG_d0ecseq_dyn : token_t
+
+(* ****** ****** *)
+//
+// HX: implemented in [ats_lexer.lats]
+//
 fun eq_token_token (t1: token_t, t2: token_t): bool= "eq_token_token"
 overload = with eq_token_token
 
 (* ****** ****** *)
-
-// implemented in [ats_lexer.lats]
+//
+// HX: implemented in [ats_lexer.lats]
+//
 fun MAIN (): token_t = "atsopt_lexer_token_get"
 
-// implemented in [ats_lexer.lats]
+(* ****** ****** *)
+//
+// HX: implemented in [ats_lexer.lats]
+//
 fun token_is_valid (t: token_t): bool = "atsopt_token_is_valid"
 
 (* ****** ****** *)

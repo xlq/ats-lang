@@ -195,7 +195,11 @@ typedef ats_ptr_type guad0ec_t ;\n\
 \n\
 /* ****** ****** */\n\
 \n\
-d0eclst_t theYYVALd0eclst ; /* the result of parsing */\n\
+typedef ats_ptr_type yyres_t ;\n\
+\n\
+/* ****** ****** */\n\
+\n\
+yyres_t theYYVALyyres ; /* the result of parsing */\n\
 \n\
 /* ****** ****** */\n\
 \n\
@@ -912,6 +916,15 @@ extern d0eclst_t d0ecllst_reverse (d0ecllst_t) ;\n\
 \n\
 /* ****** ****** */\n\
 \n\
+/*\n\
+** HX: implemented in [ats_parser.dats]\n\
+*/\n\
+extern yyres_t atsopt_yyres_s0exp (s0exp_t) ;\n\
+extern yyres_t atsopt_yyres_d0exp (d0exp_t) ;\n\
+extern yyres_t atsopt_yyres_d0eclst (d0eclst_t) ;\n\
+\n\
+/* ****** ****** */\n\
+\n\
 " // end of [theExternHeader]
 
 (* ****** ****** *)
@@ -1036,7 +1049,7 @@ yyerror(char *s) {\n\
   return ;\n\
 } /* end of [yyerror] */\n\
 \n\
-ats_ptr_type\n\
+yyres_t\n\
 yyparse_main (\n\
   ats_int_type tok0\n\
 ) {\n\
@@ -1067,7 +1080,7 @@ yyparse_main (\n\
 //\n\
   yyparse () ;\n\
 //\n\
-  return theYYVALd0eclst ;\n\
+  return theYYVALyyres ;\n\
 } /* end of [yyparse_main] */
 
 /* ****** ****** */

@@ -9,7 +9,7 @@
 /* ****** ****** */
 
 /*
-** Time of Generation: Thu Jan 27 10:55:07 2011
+** Time of Generation: Sun Feb 13 12:21:35 2011
 */
 
 /* ****** ****** */
@@ -174,7 +174,11 @@ typedef ats_ptr_type guad0ec_t ;
 
 /* ****** ****** */
 
-d0eclst_t theYYVALd0eclst ; /* the result of parsing */
+typedef ats_ptr_type yyres_t ;
+
+/* ****** ****** */
+
+yyres_t theYYVALyyres ; /* the result of parsing */
 
 /* ****** ****** */
 
@@ -891,6 +895,15 @@ extern d0eclst_t d0ecllst_reverse (d0ecllst_t) ;
 
 /* ****** ****** */
 
+/*
+** HX: implemented in [ats_parser.dats]
+*/
+extern yyres_t atsopt_yyres_s0exp (s0exp_t) ;
+extern yyres_t atsopt_yyres_d0exp (d0exp_t) ;
+extern yyres_t atsopt_yyres_d0eclst (d0eclst_t) ;
+
+/* ****** ****** */
+
 typedef union {
 t0kn_t t0kn ;
 c0har_t c0har ;
@@ -1034,8 +1047,10 @@ d0eclst_t d0eclst ;
 ** terminals
 */
 
-%token ISSTATIC
-%token ISDYNAMIC
+%token YYBEG_s0exp
+%token YYBEG_d0exp
+%token YYBEG_d0ecseq_sta
+%token YYBEG_d0ecseq_dyn
 %token TOKEN_eof
 %token <c0har> LITERAL_char
 %token <e0xtcode> LITERAL_extcode
@@ -1522,8 +1537,10 @@ d0eclst_t d0eclst ;
 */
 
 theStartEntry
-  : ISSTATIC d0ecseq_sta TOKEN_eof  { theYYVALd0eclst = $2 ; return 0 ; }
-  | ISDYNAMIC d0ecseq_dyn TOKEN_eof  { theYYVALd0eclst = $2 ; return 0 ; }
+  : YYBEG_s0exp s0exp TOKEN_eof  { theYYVALyyres = atsopt_yyres_s0exp($2) ; return 0 ; }
+  | YYBEG_d0exp d0exp TOKEN_eof  { theYYVALyyres = atsopt_yyres_d0exp($2) ; return 0 ; }
+  | YYBEG_d0ecseq_sta d0ecseq_sta TOKEN_eof  { theYYVALyyres = atsopt_yyres_d0eclst($2) ; return 0 ; }
+  | YYBEG_d0ecseq_dyn d0ecseq_dyn TOKEN_eof  { theYYVALyyres = atsopt_yyres_d0eclst($2) ; return 0 ; }
 ; /* theStartEntry */
 
 abskind
@@ -2857,7 +2874,7 @@ yyerror(char *s) {
   return ;
 } /* end of [yyerror] */
 
-ats_ptr_type
+yyres_t
 yyparse_main (
   ats_int_type tok0
 ) {
@@ -2888,7 +2905,7 @@ yyparse_main (
 //
   yyparse () ;
 //
-  return theYYVALd0eclst ;
+  return theYYVALyyres ;
 } /* end of [yyparse_main] */
 
 /* ****** ****** */

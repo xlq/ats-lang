@@ -9,7 +9,7 @@
 (*
 ** ATS/Anairiats - Unleashing the Potential of Types!
 **
-** Copyright (C) 2002-2008 Hongwei Xi, Boston University
+** Copyright (C) 2002-2011 Hongwei Xi, Boston University
 **
 ** All rights reserved
 **
@@ -37,11 +37,10 @@
 (* ****** ****** *)
 
 %{^
-#include "libc/CATS/stdio.cats"
+#include "libc/CATS/stdio.cats" // for [atslib_fopen_exn]
 %} // end of [%{^]
 
 (* ****** ****** *)
-
 //
 // staload "libc/SATS/stdio.sats"
 //
@@ -52,13 +51,13 @@ extern fun fopen_exn {m:file_mode}
 
 (* ****** ****** *)
 
-staload Fil =
-  "ats_filename.sats"
+staload Fil = "ats_filename.sats"
+staload Lex = "ats_lexer.sats"
+typedef token_t = $Lex.token_t
 staload Syn = "ats_syntax.sats"
 
 (* ****** ****** *)
 
-staload "ats_lexer.sats"
 staload "ats_parser.sats"
 
 (* ****** ****** *)
@@ -68,7 +67,7 @@ staload LEXING = "libats_lex_lexing.sats"
 (* ****** ****** *)
 
 extern // implemented in [ats_grammar.yats]
-fun yyparse_main (tok0: token_t): $Syn.d0eclst = "yyparse_main"
+fun yyparse_main (tok0: token_t): yyres = "yyparse_main"
 // end of [yyparse_main]
 
 (* ****** ****** *)
@@ -78,28 +77,63 @@ fn flag_is_dyn (flag: int): bool = (flag > 0)
 
 (* ****** ****** *)
 
-implement
-parse_from_stdin (flag) = ans where {
-  val (pf_infil | p_infil) = $LEXING.infile_make_stdin ()
-  val (pf_lexbuf | lexbuf) =
-    $LEXING.lexbuf_make_infile (pf_infil | p_infil)
-  val () = $LEXING.lexing_lexbuf_set (pf_lexbuf | lexbuf)
-  var tok0: token_t = ISNONE
-  val () = if flag_is_sta flag then tok0 := ISSTATIC
-  val () = if flag_is_dyn flag then tok0 := ISDYNAMIC
-  val ans = yyparse_main (tok0)
-  val () = $LEXING.lexing_lexbuf_free ()
-} // end of [parse_from_stdin]
+implement yyres_s0exp (s0e) = YYRESs0exp (s0e)
+implement yyres_d0exp (d0e) = YYRESd0exp (d0e)
+
+implement yyres_d0eclst (d0cs) = YYRESd0eclst (d0cs)
+
+(* ****** ****** *)
+
+fn token_of_yybeg
+  (tok: yybeg): token_t = case+ tok of
+  | YYBEGnone () => $Lex.YYBEG_none
+  | YYBEGs0exp () => $Lex.YYBEG_s0exp
+  | YYBEGd0exp () => $Lex.YYBEG_d0exp
+  | YYBEGd0ecseq_sta () => $Lex.YYBEG_d0ecseq_sta
+  | YYBEGd0ecseq_dyn () => $Lex.YYBEG_d0ecseq_dyn
+// end of [token_of_yybeg]
 
 (* ****** ****** *)
 
 implement
-parse_from_filename (flag, filename) = ans where {
+parse_from_stdin_yyres
+  (tok0) = yyres where {
+//
+  val tok0: token_t = token_of_yybeg (tok0)
+//
+  val (pf_infil | p_infil) = $LEXING.infile_make_stdin ()
+  val (pf_lexbuf | lexbuf) =
+    $LEXING.lexbuf_make_infile (pf_infil | p_infil)
+  val () = $LEXING.lexing_lexbuf_set (pf_lexbuf | lexbuf)
+//
+  val yyres = yyparse_main (tok0)
+//
+  val () = $LEXING.lexing_lexbuf_free ()
+} // end of [parse_from_stdin_yyres]
+
+implement
+parse_from_stdin_d0eclst
+  (flag) = d0cs where {
+  var tok0: yybeg = YYBEGnone ()
+  val () = if flag_is_sta flag then tok0 := YYBEGd0ecseq_sta ()
+  val () = if flag_is_dyn flag then tok0 := YYBEGd0ecseq_dyn ()
+  val yyres = parse_from_stdin_yyres (tok0)
+  val- YYRESd0eclst (d0cs) = yyres
+} // end of [parse_from_stdin_d0eclst]
+
+(* ****** ****** *)
+
+implement
+parse_from_filename_yyres
+  (tok0, filename) = yyres where {
 (*
   val () = begin
     print "parse_from_filename: "; $Fil.print_filename filename; print_newline ()
   end // end of [val]
 *)
+//
+  val tok0: token_t = token_of_yybeg (tok0)
+//
   val fullname = $Fil.filename_full filename
   val file_mode_r = $extval (file_mode r, "\"r\"")
   val (pf_fil | p_fil) = fopen_exn (fullname, file_mode_r)
@@ -108,12 +142,33 @@ parse_from_filename (flag, filename) = ans where {
   val (pf_lexbuf | lexbuf) =
     $LEXING.lexbuf_make_infile (pf_infil | p_infil)
   val () = $LEXING.lexing_lexbuf_set (pf_lexbuf | lexbuf)
-  var tok0: token_t = ISNONE
-  val () = if flag_is_sta flag then tok0 := ISSTATIC
-  val () = if flag_is_dyn flag then tok0 := ISDYNAMIC
-  val ans = yyparse_main (tok0)
+//
+  val yyres = yyparse_main (tok0)
   val () = $LEXING.lexing_lexbuf_free ()
-} // end of [parse_from_filename]
+} // end of [parse_from_filename_yyres]
+
+implement
+parse_from_filename_d0eclst
+  (flag, filename) = d0cs where {
+  var tok0: yybeg = YYBEGnone ()
+  val () = if flag_is_sta flag then tok0 := YYBEGd0ecseq_sta ()
+  val () = if flag_is_dyn flag then tok0 := YYBEGd0ecseq_dyn ()
+  val yyres = parse_from_filename_yyres (tok0, filename)
+  val- YYRESd0eclst (d0cs) = yyres
+} // end of [parse_from_filename_d0eclst]
+
+(* ****** ****** *)
+
+implement
+parse_from_string_yyres
+  (tok0, inp) = yyres where {
+  val tok0 = token_of_yybeg (tok0)
+  val (pf_infil | p_infil) = $LEXING.infile_make_string (inp)
+  val (pf_lexbuf | lexbuf) = $LEXING.lexbuf_make_infile (pf_infil | p_infil)
+  val () = $LEXING.lexing_lexbuf_set (pf_lexbuf | lexbuf)
+  val yyres = yyparse_main (tok0)
+  val () = $LEXING.lexing_lexbuf_free ()
+} // end of [parse_from_string_yyres]
 
 (* ****** ****** *)
 

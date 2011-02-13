@@ -180,9 +180,15 @@ fn EXTCODE0 (i: int): token_t =
 
 (* ****** ****** *)
 
-implement ISNONE = $extval (token_t, "-1")
-implement ISSTATIC = $extval (token_t, "ISSTATIC")
-implement ISDYNAMIC = $extval (token_t, "ISDYNAMIC")
+implement YYBEG_none = $extval (token_t, "-1")
+
+implement YYBEG_s0exp = $extval (token_t, "YYBEG_s0exp")
+implement YYBEG_d0exp = $extval (token_t, "YYBEG_d0exp")
+
+implement YYBEG_d0ecseq_sta = $extval (token_t, "YYBEG_d0ecseq_sta")
+implement YYBEG_d0ecseq_dyn = $extval (token_t, "YYBEG_d0ecseq_dyn")
+
+(* ****** ****** *)
 
 %{$
 ats_bool_type
@@ -192,7 +198,7 @@ eq_token_token
 } // end of [ats_bool_type eq_token_token]
 %} // end of ...
 
-//
+(* ****** ****** *)
 
 macdef TOKEN_eof = $extval (token_t, "TOKEN_eof")
 
@@ -206,6 +212,8 @@ macdef LITERAL_intsp = $extval (token_t, "LITERAL_intsp")
 macdef LITERAL_string = $extval (token_t, "LITERAL_string")
 
 macdef LITERAL_extcode = $extval (token_t, "LITERAL_extcode")
+
+//
 
 macdef IDENTIFIER_alp = $extval (token_t, "IDENTIFIER_alp")
 macdef IDENTIFIER_sym = $extval (token_t, "IDENTIFIER_sym")

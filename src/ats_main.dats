@@ -275,21 +275,29 @@ end // end of [atsopt_version]
 
 (* ****** ****** *)
 
+fn parse_from_filename_d0eclst_sta
+  (fil: $Fil.filename_t): $Syn.d0eclst =
+  $Par.parse_from_filename_d0eclst (0(*static*), fil)
+// end of [parse_from_filename_d0eclst_sta]
+
+(* ****** ****** *)
+
 fn e1xpenv_load () = () where {
   val () = $TransEnv1.the_e1xpenv_pervasive_add_topenv ()
 } // end of [e1xpenv_load]
 
 (* ****** ****** *)
-
-// load in built-in fixity declarations
+//
+// HX: load in built-in fixity declarations
+//
 fn fixity_load (ATSHOME: string): void = let
   val basename = "prelude/fixity.ats"
   val fullname = $Fil.filename_append (ATSHOME, basename)
   val filename = $Fil.filename_make_absolute fullname
   val () = $Fil.the_filenamelst_push filename
-  val d0cs = $Par.parse_from_filename (0 (*static*), filename)
+  val d0cs = parse_from_filename_d0eclst_sta (filename)
   val () = $Fil.the_filenamelst_pop ()
-  val d1cs = $Trans1.d0eclst_tr d0cs
+  val d1cs = $Trans1.d0eclst_tr (d0cs)
   val () = $TransEnv1.the_fxtyenv_pervasive_add_topenv ()
 (*
   val () = begin
@@ -310,14 +318,14 @@ fn pervasive_load
     print "pervasive_load: parse: fullname = "; print fullname; print_newline ()
   end // end of [val]
 *)
-  val d0cs = $Par.parse_from_filename (0(*static*), filename)
+  val d0cs = parse_from_filename_d0eclst_sta (filename)
 (*
   val () = begin
     print "pervasive_load: parse: after: fullname = "; print fullname; print_newline ()
   end // end of [val]
 *)
   val () = $Fil.the_filenamelst_pop ()
-  val d1cs = $Trans1.d0eclst_tr d0cs
+  val d1cs = $Trans1.d0eclst_tr (d0cs)
   val _(*d2cs*) = $Trans2.d1eclst_tr d1cs
 in
   // empty
@@ -539,7 +547,7 @@ fn do_parse_filename (
 //
   var d0cs: $Syn.d0eclst = list_nil ()
   val () = $Fil.the_filenamelst_push filename
-  val () = d0cs := $Par.parse_from_filename (flag, filename)
+  val () = d0cs := $Par.parse_from_filename_d0eclst (flag, filename)
   val () = $Fil.the_filenamelst_pop ()
 //
   val () = if debug_flag > 0 then begin
@@ -572,7 +580,7 @@ fn do_parse_stdin
   (flag: int): $Syn.d0eclst = let
   (* no support for position marking *)
   val () = $Fil.the_filenamelst_push $Fil.filename_stdin
-  val d0cs = $Par.parse_from_stdin (flag)
+  val d0cs = $Par.parse_from_stdin_d0eclst (flag)
   val () = $Fil.the_filenamelst_pop ()
 in
   d0cs

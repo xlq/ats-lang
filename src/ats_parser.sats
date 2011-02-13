@@ -9,7 +9,7 @@
 (*
 ** ATS/Anairiats - Unleashing the Potential of Types!
 **
-** Copyright (C) 2002-2008 Hongwei Xi, Boston University
+** Copyright (C) 2002-2011 Hongwei Xi, Boston University
 **
 ** All rights reserved
 **
@@ -30,21 +30,59 @@
 *)
 
 (* ****** ****** *)
-
 //
 // Author: Hongwei Xi (hwxi AT cs DOT bu DOT edu)
-// Time: August 2007
+// Start Time: August 2007
 //
-
 (* ****** ****** *)
 
 staload Fil = "ats_filename.sats"
-staload Syn = "ats_syntax.sats"
 
 (* ****** ****** *)
 
-fun parse_from_stdin (flag: int): $Syn.d0eclst
-fun parse_from_filename (flag: int, f: $Fil.filename_t): $Syn.d0eclst
+local
+
+staload "ats_syntax.sats"
+
+in // in of [local]
+
+datatype yyres =
+  | YYRESs0exp of s0exp
+  | YYRESd0exp of d0exp
+  | YYRESd0eclst of d0eclst
+// end of [yyres]
+
+typedef d0eclst = d0eclst
+
+fun yyres_s0exp (s0e: s0exp): yyres = "atsopt_yyres_s0exp"
+fun yyres_d0exp (d0e: d0exp): yyres = "atsopt_yyres_d0exp"
+fun yyres_d0eclst (d0cs: d0eclst): yyres = "atsopt_yyres_d0eclst"
+
+end // end of [local]
+
+(* ****** ****** *)
+
+datatype yybeg =
+  | YYBEGnone of ()
+  | YYBEGs0exp of ()
+  | YYBEGd0exp of ()
+  | YYBEGd0ecseq_sta of ()
+  | YYBEGd0ecseq_dyn of ()
+// end of [yybeg]
+
+(* ****** ****** *)
+
+fun parse_from_stdin_yyres (tok: yybeg): yyres
+fun parse_from_stdin_d0eclst (flag: int): d0eclst
+
+(* ****** ****** *)
+
+fun parse_from_filename_yyres (tok: yybeg, fil: $Fil.filename_t): yyres
+fun parse_from_filename_d0eclst (flag: int, fil: $Fil.filename_t): d0eclst
+
+(* ****** ****** *)
+
+fun parse_from_string_yyres (tok: yybeg, str: string): yyres
 
 (* ****** ****** *)
 

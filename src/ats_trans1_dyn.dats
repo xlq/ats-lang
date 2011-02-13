@@ -1528,7 +1528,7 @@ fn i0nclude_tr (
     $PM.posmark_push (); $PM.posmark_enable ()
   end // end of [val]
 //
-  val d0cs = $Par.parse_from_filename (stadyn, filename)
+  val d0cs = $Par.parse_from_filename_d0eclst (stadyn, filename)
 //
 // HX-2010-04-27: perform posmarking if needed
 //
@@ -1605,7 +1605,7 @@ fn s0taload_tr (
           $PM.posmark_push (); $PM.posmark_enable ()
         end // end of [val]
 //
-        val d0cs = $Par.parse_from_filename (flag, fil)
+        val d0cs = $Par.parse_from_filename_d0eclst (flag, fil)
 //
 // HX-2010-04-27: perform for posmarking if needed
 //
