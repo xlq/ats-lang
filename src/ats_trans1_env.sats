@@ -30,24 +30,25 @@
 *)
 
 (* ****** ****** *)
-
+//
 // Author: Hongwei Xi (hwxi AT cs DOT bu DOT edu)
 // Time: October 2007
+//
+(* ****** ******* *)
+
+staload FX =
+  "ats_fixity_fxty.sats"
+typedef fxty = $FX.fxty
 
 (* ****** ******* *)
 
-staload Fix = "ats_fixity.sats"
 staload Sym = "ats_symbol.sats"
+typedef sym_t = $Sym.symbol_t
 
 (* ****** ******* *)
 
 staload "ats_staexp1.sats"
 staload "ats_dynexp1.sats"
-
-(* ****** ******* *)
-
-typedef fxty = $Fix.fxty
-typedef sym_t = $Sym.symbol_t
 
 (* ****** ******* *)
 

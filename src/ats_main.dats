@@ -69,7 +69,6 @@ dynload "libats_lex_lexing.dats"
 dynload "ats_array.dats"
 dynload "ats_charlst.dats"
 dynload "ats_counter.dats"
-dynload "ats_precedence.dats"
 dynload "ats_hashtbl.dats"
 dynload "ats_intinf.dats"
 dynload "ats_list.dats"
@@ -87,7 +86,8 @@ dynload "ats_debug.dats"
 dynload "ats_effect.dats"
 dynload "ats_error.dats"
 dynload "ats_filename.dats" // needs [ats_symbol.dats]
-dynload "ats_fixity.dats" // needs [ats_precedence.dats]
+dynload "ats_fixity_prec.dats"
+dynload "ats_fixity_fxty.dats"
 dynload "ats_global.dats"
 // dynload "ats_hashtbl.dats" // loaded earlier
 // dynload "ats_intinf.dats" // loaded earlier

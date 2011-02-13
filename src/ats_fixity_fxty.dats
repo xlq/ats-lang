@@ -46,11 +46,8 @@ staload Sym = "ats_symbol.sats"
 
 (* ****** ****** *)
 
-staload "ats_precedence.sats"
-
-(* ****** ****** *)
-
-staload "ats_fixity.sats"
+staload "ats_fixity_prec.sats"
+staload "ats_fixity_fxty.sats"
 
 (* ****** ****** *)
 
@@ -305,4 +302,4 @@ end // end of [fixity_resolve]
 
 (* ****** ****** *)
 
-(* end of [ats_fixity.dats] *)
+(* end of [ats_fixity_fxty.dats] *)

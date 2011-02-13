@@ -42,7 +42,10 @@
 
 staload Loc = "ats_location.sats"
 typedef loc_t = $Loc.location_t
-staload Prec = "ats_precedence.sats"
+
+(* ****** ****** *)
+
+staload Prec = "ats_fixity_prec.sats"
 typedef prec_t = $Prec.prec_t
 
 (* ****** ****** *)
@@ -126,4 +129,4 @@ fun fixity_resolve {a:type}
 
 (* ****** ****** *)
 
-(* end of [ats_fixity.sats] *)
+(* end of [ats_fixity_fxty.sats] *)

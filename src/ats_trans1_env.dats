@@ -36,7 +36,12 @@
 //
 (* ****** ******* *)
 
-staload Fix = "ats_fixity.sats"
+staload FX =
+  "ats_fixity_fxty.sats"
+// end of [FX]
+
+(* ****** ******* *)
+
 staload Sym = "ats_symbol.sats"
 staload SymEnv = "ats_symenv.sats"
 
@@ -154,7 +159,7 @@ atsopt_fxtyenv_print () = let
     (kis: list_vt (ki, n)): void = begin case+ kis of
     | ~list_vt_cons (ki, kis) => let
         val (k, i) = ki; val () = begin
-          $Sym.print_symbol_code k; print " = "; $Fix.print_fxty i;
+          $Sym.print_symbol_code k; print " = "; $FX.print_fxty i;
           print_newline ()
         end // end of [val]
       in

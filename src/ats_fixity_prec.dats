@@ -36,7 +36,7 @@
 //
 (* ****** ****** *)
 
-staload "ats_precedence.sats"
+staload "ats_fixity_prec.sats"
 
 (* ****** ****** *)
 
@@ -62,7 +62,7 @@ implement uni_prec_sta = 0
 
 (* ****** ****** *)
 
-implement delay_prec_dyn = 0
+implement delay_prec_dyn = 0 (* for $delay and $ldelay *)
 
 (* ****** ****** *)
 
@@ -112,6 +112,8 @@ implement deref_prec_dyn = 100
 implement int_of_prec (p) = p
 implement prec_make_int (i) = i
 
+(* ****** ****** *)
+
 implement precedence_inc (p, i) = p + i
 implement precedence_dec (p, i) = p - i
 
@@ -122,4 +124,4 @@ compare_prec_prec (p1, p2) = compare_int_int (p1, p2)
 
 (* ****** ****** *)
 
-(* end of [ats_precedence.dats] *)
+(* end of [ats_fixity_prec.dats] *)

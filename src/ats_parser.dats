@@ -30,12 +30,10 @@
 *)
 
 (* ****** ****** *)
-
 //
 // Author: Hongwei Xi (hwxi AT cs DOT bu DOT edu)
 // Time: August 2007
 //
-
 (* ****** ****** *)
 
 %{^
@@ -54,7 +52,8 @@ extern fun fopen_exn {m:file_mode}
 
 (* ****** ****** *)
 
-staload Fil = "ats_filename.sats"
+staload Fil =
+  "ats_filename.sats"
 staload Syn = "ats_syntax.sats"
 
 (* ****** ****** *)

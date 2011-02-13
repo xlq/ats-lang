@@ -40,23 +40,24 @@
 
 (* ****** ****** *)
 
-staload "ats_error.sats"
-staload "ats_filename.sats"
-staload "ats_fixity.sats"
-staload "ats_label.sats"
-staload "ats_location.sats"
-staload "ats_symbol.sats"
+staload Fil = "ats_filename.sats"
+typedef fil_t = $Fil.filename_t
+staload FX = "ats_fixity_fxty.sats"
+typedef assoc = $FX.assoc
+staload Lab = "ats_label.sats"
+typedef lab_t = $Lab.label_t
+staload Loc = "ats_location.sats"
+typedef loc_t = $Loc.location_t
+staload Sym = "ats_symbol.sats"
+typedef sym_t = $Sym.symbol_t
 
 (* ****** ****** *)
-
-typedef loc_t = location_t
-typedef sym_t = symbol_t
-
-(* ****** ****** *)
-
+//
+// HX:
 // Note that [t0kn] is still boxed!
+//
 typedef t0kn = @{ t0kn_loc= loc_t }
-
+//
 (* ****** ****** *)
 
 datatype abskind = 
@@ -344,7 +345,7 @@ fun i0delstlst_cons
 (* ****** ****** *)
 
 typedef l0ab = '{
-  l0ab_loc= loc_t, l0ab_lab= label_t
+  l0ab_loc= loc_t, l0ab_lab= lab_t
 } // end of [l0ab]
 
 fun l0ab_ide (ide: i0de): l0ab = "l0ab_ide"
@@ -1177,10 +1178,11 @@ fun d0atconlst_nil (): d0atconlst = "d0atconlst_nil"
 fun d0atconlst_cons (x: d0atcon, xs: d0atconlst): d0atconlst
   = "d0atconlst_cons"
 
-typedef d0atdec = '{
+typedef
+d0atdec = '{
   d0atdec_loc= loc_t
 , d0atdec_headloc= loc_t
-, d0atdec_fil= filename_t
+, d0atdec_fil= fil_t
 , d0atdec_sym= sym_t
 , d0atdec_arg= d0atarglstopt
 , d0atdec_con= d0atconlst
@@ -1199,9 +1201,10 @@ fun d0atdeclst_cons (x: d0atdec, xs: d0atdeclst): d0atdeclst
 
 (* ****** ****** *)
 
-typedef e0xndec = '{
+typedef
+e0xndec = '{
   e0xndec_loc= loc_t
-, e0xndec_fil= filename_t
+, e0xndec_fil= fil_t
 , e0xndec_sym= sym_t
 , e0xndec_qua= s0qualstlst
 , e0xndec_arg= s0expopt
@@ -1363,9 +1366,10 @@ fun extnamopt_some (ext: s0tring): Stropt = "extnamopt_some"
 
 (* ****** ****** *)
 
-typedef d0cstdec = '{
+typedef
+d0cstdec = '{
   d0cstdec_loc= loc_t
-, d0cstdec_fil= filename_t
+, d0cstdec_fil= fil_t
 , d0cstdec_sym= sym_t
 , d0cstdec_arg= d0arglst
 , d0cstdec_eff= e0fftaglstopt
@@ -1706,7 +1710,7 @@ datatype d0exp_node =
   | D0Escaseof of (* static caseof *)
       (casehead, s0exp, sc0laulst)
   | D0Esel_lab of (* dot label selection *)
-      (int (*ptr*), label_t)
+      (int (*ptr*), lab_t)
   | D0Esel_ind of (* dot index selection *)
       (int (*ptr*), d0explstlst)
   | D0Eseq of (* sequencing *)

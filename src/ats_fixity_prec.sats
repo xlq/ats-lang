@@ -101,4 +101,4 @@ overload compare with compare_prec_prec
 
 (* ****** ****** *)
 
-(* end of [ats_precedence.sats] *)
+(* end of [ats_fixity_prec.sats] *)

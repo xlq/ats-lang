@@ -114,7 +114,8 @@ SOURCES := \
   ats_effect.sats ats_effect.dats \
   ats_error.sats ats_error.dats \
   ats_filename.sats ats_filename.dats \
-  ats_fixity.sats ats_fixity.dats \
+  ats_fixity_prec.sats ats_fixity_prec.dats \
+  ats_fixity_fxty.sats ats_fixity_fxty.dats \
   ats_global.sats ats_global.dats \
   ats_hashtbl.sats ats_hashtbl.dats \
   ats_intinf.sats ats_intinf.dats \
@@ -123,7 +124,6 @@ SOURCES := \
   ats_location.sats ats_location.dats \
   ats_namespace.sats ats_namespace.dats \
   ats_posmark.sats ats_posmark.dats \
-  ats_precedence.sats ats_precedence.dats \
   ats_stamp.sats ats_stamp.dats \
   ats_symbol.sats ats_symbol.dats \
   ats_symenv.sats ats_symenv.dats \

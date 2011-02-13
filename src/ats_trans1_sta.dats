@@ -47,12 +47,12 @@ staload Deb = "ats_debug.sats"
 staload Eff = "ats_effect.sats"
 staload Err = "ats_error.sats"
 staload Fil = "ats_filename.sats"
-staload Fix = "ats_fixity.sats"
-typedef fxty = $Fix.fxty
+staload FP = "ats_fixity_prec.sats"
+typedef prec_t = $FP.prec_t
+staload FX = "ats_fixity_fxty.sats"
+typedef fxty = $FX.fxty
 staload Loc = "ats_location.sats"
 staload Lst = "ats_list.sats"
-staload Prec = "ats_precedence.sats"
-typedef prec_t = $Prec.prec_t
 staload Sym = "ats_symbol.sats"
 
 (* ****** ****** *)
@@ -119,7 +119,7 @@ fn p0rec_tr (p0: p0rec): prec_t = let
           $Sym.print_symbol_code id.i0de_sym; print_newline ()
         end // end of [val]
 *)
-        val precopt = $Fix.fixity_get_prec (fxty)
+        val precopt = $FX.fixity_get_prec (fxty)
       in
         case+ precopt of
         | ~Some_vt prec => prec | ~None_vt () => prec_tr_errmsg id
@@ -129,24 +129,24 @@ fn p0rec_tr (p0: p0rec): prec_t = let
 in
   case+ p0 of
   | P0RECide id => precfnd id
-  | P0RECint int => $Prec.prec_make_int int
-  | P0RECinc (id, int) => $Prec.precedence_inc (precfnd id, int)
-  | P0RECdec (id, int) => $Prec.precedence_dec (precfnd id, int)
+  | P0RECint int => $FP.prec_make_int int
+  | P0RECinc (id, int) => $FP.precedence_inc (precfnd id, int)
+  | P0RECdec (id, int) => $FP.precedence_dec (precfnd id, int)
 end // end of [p0rec_tr]
 
 fn f0xty_tr (f0xty: f0xty): fxty = begin
  case+ f0xty of
   | F0XTYinf (p0, a) =>
-      let val p = p0rec_tr p0 in $Fix.fxty_inf (p, a) end
+      let val p = p0rec_tr p0 in $FX.fxty_inf (p, a) end
   | F0XTYpre p0 =>
-      let val p = p0rec_tr p0 in $Fix.fxty_pre p end
+      let val p = p0rec_tr p0 in $FX.fxty_pre p end
   | F0XTYpos p0 =>
-      let val p = p0rec_tr p0 in $Fix.fxty_pos p end
+      let val p = p0rec_tr p0 in $FX.fxty_pos p end
 end // end of [f0xty_tr]
 
 (* ****** ****** *)
 
-typedef e1xpitm = $Fix.item (e1xp)
+typedef e1xpitm = $FX.item (e1xp)
 typedef e1xpitmlst = List e1xpitm
 
 val e1xpitm_app : e1xpitm = let
@@ -163,25 +163,25 @@ fn f (e1: e1xp, e2: e1xp):<cloref1> e1xpitm = let
   end // end of [val]
 *)
 in
-  $Fix.ITEMatm (e_app)
+  $FX.ITEMatm (e_app)
 end // end of [f]
     
 in // in of [let]
-  $Fix.item_app f
+  $FX.item_app (f)
 end // end of [e1xpitm_app]
 
 fun e1xp_make_opr (e: e1xp, f: fxty): e1xpitm = begin
-  $Fix.oper_make {e1xp} (
+  $FX.oper_make {e1xp} (
     lam x => x.e1xp_loc,
     lam (loc, x, loc_arg, xs) => e1xp_app (loc, x, loc_arg, xs), e, f
-  )
+  ) // end of [oper_make]
 end // end of [e1xpitm_opr]
 
 val e1xpitm_backslash : e1xpitm = begin
-  $Fix.oper_make_backslash {e1xp} (
+  $FX.oper_make_backslash {e1xp} (
     lam x => x.e1xp_loc,
     lam (loc, x, loc_arg, xs) => e1xp_app (loc, x, loc_arg, xs)
-  )
+  ) // end of [oper_make_backslash]
 end // end of [e1xpitm_backslash]
 
 (* ****** ****** *)
@@ -198,29 +198,29 @@ implement e0xp_tr (e0) = let
     val loc = e0.e0xp_loc in case+ e0.e0xp_node of
     | E0XPapp _ => let
         val es_new = aux_itemlst e0
-        val e0_new = $Fix.fixity_resolve (loc, e1xpitm_app, es_new)
+        val e0_new = $FX.fixity_resolve (loc, e1xpitm_app, es_new)
       in
-        $Fix.ITEMatm (e0_new)
+        $FX.ITEMatm (e0_new)
       end
-    | E0XPchar (c: char) => $Fix.ITEMatm (e1xp_char (loc, c))
+    | E0XPchar (c: char) => $FX.ITEMatm (e1xp_char (loc, c))
     | E0XPeval (e: e0xp) => let
         val e = e0xp_tr (e)
         val v = e1xp_eval (e)
         val e = e1xp_make_v1al (loc, v)
       in
-        $Fix.ITEMatm (e)
+        $FX.ITEMatm (e)
       end // end of [E0XPeval]
-    | E0XPfloat (f: string) => $Fix.ITEMatm (e1xp_float (loc, f))
+    | E0XPfloat (f: string) => $FX.ITEMatm (e1xp_float (loc, f))
     | E0XPide id when id = $Sym.symbol_BACKSLASH => e1xpitm_backslash
     | E0XPide id => begin case+ the_fxtyenv_find id of
       | ~Some_vt f => begin
           let val e = e1xp_ide (loc, id) in e1xp_make_opr (e, f) end
         end
-      | ~None_vt () => $Fix.ITEMatm (e1xp_ide (loc, id))
+      | ~None_vt () => $FX.ITEMatm (e1xp_ide (loc, id))
       end (* end of [E0XPide] *)
-    | E0XPint (int: string) => $Fix.ITEMatm (e1xp_int (loc, int))
-    | E0XPlist (es) => $Fix.ITEMatm (e1xp_list (loc, e0xplst_tr es))
-    | E0XPstring (str, len) => $Fix.ITEMatm (e1xp_string (loc, str, len))
+    | E0XPint (int: string) => $FX.ITEMatm (e1xp_int (loc, int))
+    | E0XPlist (es) => $FX.ITEMatm (e1xp_list (loc, e0xplst_tr es))
+    | E0XPstring (str, len) => $FX.ITEMatm (e1xp_string (loc, str, len))
   end // end of [aux_item]
 //
   and aux_itemlst (e0: e0xp): e1xpitmlst = let
@@ -237,8 +237,8 @@ implement e0xp_tr (e0) = let
 //
 in
   case+ aux_item e0 of
-    | $Fix.ITEMatm e => e
-    | $Fix.ITEMopr _ => e0xp_tr_errmsg_opr e0.e0xp_loc
+  | $FX.ITEMatm (e) => e
+  | $FX.ITEMopr _ => e0xp_tr_errmsg_opr e0.e0xp_loc
   // end of [case]
 end // end of [e0xp_tr]
 
@@ -248,7 +248,7 @@ implement e0xplst_tr (es) = $Lst.list_map_fun (es, e0xp_tr)
 
 // translation of sorts
 
-typedef s1rtitm = $Fix.item s1rt
+typedef s1rtitm = $FX.item s1rt
 typedef s1rtitmlst = List s1rtitm
 
 val s1rtitm_app : s1rtitm = let
@@ -260,25 +260,25 @@ val s1rtitm_app : s1rtitm = let
     ) : s1rtlst
     val s1t_app = s1rt_app (loc, s1t1, s1ts2)
   in
-    $Fix.ITEMatm s1t_app
+    $FX.ITEMatm (s1t_app)
   end // end of [f]
 in
-  $Fix.item_app f
+  $FX.item_app (f)
 end // end of [app_s1rt_item]
 
 fun s1rt_make_opr
   (s1t: s1rt, f: fxty): s1rtitm = begin
-  $Fix.oper_make {s1rt} (
+  $FX.oper_make {s1rt} (
     lam x => x.s1rt_loc,
     lam (loc, x, _(*loc_arg*), xs) => s1rt_app (loc, x, xs), s1t, f
-  )
+  ) // end of [oper_make]
 end // end of [s1rt_make_opr]
 
 val s1rtitm_backslash : s1rtitm = begin
-  $Fix.oper_make_backslash {s1rt} (
+  $FX.oper_make_backslash {s1rt} (
     lam x => x.s1rt_loc,
     lam (loc, x, _(*loc_arg*), xs) => s1rt_app (loc, x, xs)
-  )
+  ) // end of [oper_make_backslash]
 end // end of [s1rtitm_backslash]
 
 (* ****** ****** *)
@@ -296,19 +296,19 @@ fun aux_item (s0t0: s0rt): s1rtitm = let
   val loc0 = s0t0.s0rt_loc in case+ s0t0.s0rt_node of
     | S0RTapp _ => let 
         val s1t0 =
-          $Fix.fixity_resolve (loc0, s1rtitm_app, aux_itemlst s0t0)
+          $FX.fixity_resolve (loc0, s1rtitm_app, aux_itemlst s0t0)
         // end of [val]
       in
-        $Fix.ITEMatm s1t0
+        $FX.ITEMatm (s1t0)
       end // end of [S0RTapp]
     | S0RTide id when id = $Sym.symbol_BACKSLASH => s1rtitm_backslash
     | S0RTide id => begin case+ the_fxtyenv_find id of
       | ~Some_vt f => s1rt_make_opr (s1rt_ide (loc0, id), f)
-      | ~None_vt () => $Fix.ITEMatm (s1rt_ide (loc0, id))
+      | ~None_vt () => $FX.ITEMatm (s1rt_ide (loc0, id))
       end // end of [S0RTide]
-    | S0RTlist (s0ts) => $Fix.ITEMatm (s1rt_list (loc0, s0rtlst_tr s0ts))
-    | S0RTqid (q, id) => $Fix.ITEMatm (s1rt_qid (loc0, q, id))
-    | S0RTtup (s0ts) => $Fix.ITEMatm (s1rt_tup (loc0, s0rtlst_tr s0ts))
+    | S0RTlist (s0ts) => $FX.ITEMatm (s1rt_list (loc0, s0rtlst_tr s0ts))
+    | S0RTqid (q, id) => $FX.ITEMatm (s1rt_qid (loc0, q, id))
+    | S0RTtup (s0ts) => $FX.ITEMatm (s1rt_tup (loc0, s0rtlst_tr s0ts))
 end // end of [aux_item]
 //
 and aux_itemlst
@@ -326,8 +326,8 @@ end // end of [aux_itemlst]
 //
 in
   case+ aux_item s0t0 of
-    | $Fix.ITEMatm s1t => s1t
-    | $Fix.ITEMopr _ => s0rt_tr_errmsg_opr s0t0.s0rt_loc
+    | $FX.ITEMatm (s1t) => s1t
+    | $FX.ITEMopr _ => s0rt_tr_errmsg_opr s0t0.s0rt_loc
   // end of [case]
 end // end of [s0rt_tr]
 
@@ -418,7 +418,7 @@ implement
 d0ec_nonfix_tr (ids) = let
   fun loop (ids: i0delst): void = case+ ids of
     | cons (id, ids) => begin
-        the_fxtyenv_add (id.i0de_sym, $Fix.fxty_non); loop ids
+        the_fxtyenv_add (id.i0de_sym, $FX.fxty_non); loop ids
       end // end of [cons]
     | nil () => () // end of [nil]
   // end of [loop]
@@ -570,7 +570,7 @@ end // end of [sp0at_tr]
 //
 // HX: translation of static expressions
 //
-typedef s1expitm = $Fix.item s1exp
+typedef s1expitm = $FX.item s1exp
 typedef s1expitmlst = List s1expitm
 
 val s1expitm_app : s1expitm = let
@@ -589,23 +589,23 @@ fn f (s1e1: s1exp, s1e2: s1exp):<cloref1> s1expitm = let
   end // end of [val]
 *)
 in
-  $Fix.ITEMatm s1e_app
+  $FX.ITEMatm (s1e_app)
 end // end of [f]
 //
 in
-  $Fix.item_app f
+  $FX.item_app (f)
 end // end of [app_s1exp_item]
 
 fun s1exp_make_opr 
   (s1e: s1exp, f: fxty): s1expitm = begin
-  $Fix.oper_make {s1exp} (
+  $FX.oper_make {s1exp} (
     lam x => x.s1exp_loc,
     lam (loc, x, loc_arg, xs) => s1exp_app (loc, x, loc_arg, xs), s1e, f
   ) // end of[ oper_make]
 end // end of [s1exp_make_opr]
 
 val s1expitm_backslash : s1expitm = begin
-  $Fix.oper_make_backslash {s1exp} (
+  $FX.oper_make_backslash {s1exp} (
     lam x => x.s1exp_loc,
     lam (loc, x1, loc_arg, x2) => s1exp_app (loc, x1, loc_arg, x2)
   ) // end of [oper_make_backslash]
@@ -643,25 +643,25 @@ s0exp_tr s0e0 = let
         val s1e = s0exp_tr s0e and s1t = s0rt_tr s0t
         val s1e_ann = s1exp_ann (loc0, s1e, s1t)
       in
-        $Fix.ITEMatm (s1e_ann)
+        $FX.ITEMatm (s1e_ann)
       end // end of [S0Eann]
     | S0Eapp _ => let 
         val s1e_app =
-          $Fix.fixity_resolve (loc0, s1expitm_app, aux_itemlst s0e0)
+          $FX.fixity_resolve (loc0, s1expitm_app, aux_itemlst s0e0)
         // end of [val]
       in
-        $Fix.ITEMatm (s1e_app)
+        $FX.ITEMatm (s1e_app)
       end // end of [S0Eapp]
-    | S0Echar c => $Fix.ITEMatm (s1exp_char (loc0, c))
+    | S0Echar c => $FX.ITEMatm (s1exp_char (loc0, c))
     | S0Eexi (knd(*funres*), s0qs) => let
         val s1qs = s0qualst_tr s0qs
         fn f (body: s1exp):<cloref1> s1expitm =
           let val loc0 = $Loc.location_combine (loc0, body.s1exp_loc) in
-            $Fix.ITEMatm (s1exp_exi (loc0, knd, s1qs, body))
+            $FX.ITEMatm (s1exp_exi (loc0, knd, s1qs, body))
           end // end of [let]
         // end of [f]
       in
-        $Fix.ITEMopr ($Fix.OPERpre ($Prec.exi_prec_sta, f))
+        $FX.ITEMopr ($FX.OPERpre ($FP.exi_prec_sta, f))
       end // end of [S0Eexi]
 //
     | S0Eextype (name, s0es) => let
@@ -680,63 +680,63 @@ s0exp_tr s0e0 = let
           // end of [loop]
         } // end of [val]
       in
-        $Fix.ITEMatm (s1exp_extype (loc0, name, s1ess))
+        $FX.ITEMatm (s1exp_extype (loc0, name, s1ess))
       end // end of [S0Eextype]
 //
-    | S0Eint int (*string*) => $Fix.ITEMatm (s1exp_int (loc0, int))
+    | S0Eint int (*string*) => $FX.ITEMatm (s1exp_int (loc0, int))
     | S0Eide id when id = $Sym.symbol_AMPERSAND => let
         fn f (s1e: s1exp):<cloref1> s1expitm =
           let val loc0 = $Loc.location_combine (loc0, s1e.s1exp_loc) in
-            $Fix.ITEMatm (s1exp_invar (loc0, 1(*ref*), s1e))
+            $FX.ITEMatm (s1exp_invar (loc0, 1(*ref*), s1e))
           end // end of [let]
         // end of [f]
       in
-        $Fix.ITEMopr ($Fix.OPERpre ($Prec.invar_prec_sta, f))
+        $FX.ITEMopr ($FX.OPERpre ($FP.invar_prec_sta, f))
       end // end of [S0Eide when ...]
     | S0Eide id when id = $Sym.symbol_BACKSLASH => s1expitm_backslash
     | S0Eide id when id = $Sym.symbol_BANG => let
         fn f (s1e: s1exp):<cloref1> s1expitm =
           let val loc0 = $Loc.location_combine (loc0, s1e.s1exp_loc) in
-            $Fix.ITEMatm (s1exp_invar (loc0, 0(*val*), s1e))
+            $FX.ITEMatm (s1exp_invar (loc0, 0(*val*), s1e))
           end
       in
-        $Fix.ITEMopr ($Fix.OPERpre ($Prec.invar_prec_sta, f))
+        $FX.ITEMopr ($FX.OPERpre ($FP.invar_prec_sta, f))
       end // end of [S0Eide when ...]
     | S0Eide id when id = $Sym.symbol_QMARK => let
         fn f (s1e: s1exp):<cloref1> s1expitm =
           let val loc0 = $Loc.location_combine (s1e.s1exp_loc, loc0) in
-            $Fix.ITEMatm (s1exp_top (loc0, 0(*knd*), s1e))
+            $FX.ITEMatm (s1exp_top (loc0, 0(*knd*), s1e))
           end // end of [let]
         // end of [f]
       in
-        $Fix.ITEMopr ($Fix.OPERpos ($Prec.qmark_prec_sta, f))
+        $FX.ITEMopr ($FX.OPERpos ($FP.qmark_prec_sta, f))
       end // end of [S0Eide when ...]
     | S0Eide id when id = $Sym.symbol_QMARKBANG => let
         fn f (s1e: s1exp):<cloref1> s1expitm =
           let val loc0 = $Loc.location_combine (s1e.s1exp_loc, loc0) in
-            $Fix.ITEMatm (s1exp_top (loc0, 1(*knd*), s1e))
+            $FX.ITEMatm (s1exp_top (loc0, 1(*knd*), s1e))
           end // end of [let]
         // end of [f]
       in
-        $Fix.ITEMopr ($Fix.OPERpos ($Prec.qmarkbang_prec_sta, f))
+        $FX.ITEMopr ($FX.OPERpos ($FP.qmarkbang_prec_sta, f))
       end // end of [S0Eide when ...]
     | S0Eide id when id = $Sym.symbol_GTGT => let
         fn f (s1e1: s1exp, s1e2: s1exp):<cloref1> s1expitm =
           let val loc0 = $Loc.location_combine (s1e1.s1exp_loc, s1e2.s1exp_loc) in
-            $Fix.ITEMatm (s1exp_trans (loc0, s1e1, s1e2))
+            $FX.ITEMatm (s1exp_trans (loc0, s1e1, s1e2))
           end // end of [let]
         // end of [f]
       in
-        $Fix.ITEMopr ($Fix.OPERinf ($Prec.trans_prec_sta, $Fix.ASSOCnon, f))
+        $FX.ITEMopr ($FX.OPERinf ($FP.trans_prec_sta, $FX.ASSOCnon, f))
       end // end of [S0Eide when ...]
     | S0Eide id when id = $Sym.symbol_R0EAD => let
         fn f (s1e: s1exp):<cloref1> s1expitm =
           let val loc0 = $Loc.location_combine (loc0, s1e.s1exp_loc) in
-            $Fix.ITEMatm (s1exp_read (loc0, s1e))
+            $FX.ITEMatm (s1exp_read (loc0, s1e))
           end // end of [let
         // end of [f]
       in
-        $Fix.ITEMopr ($Fix.OPERpre ($Prec.r0ead_prec_sta, f))
+        $FX.ITEMopr ($FX.OPERpre ($FP.r0ead_prec_sta, f))
       end // end of [S0Eide when ...]
     | S0Eide id => let
         // [e1xpdef] expansion is to be done in [ats_trans2.dats]
@@ -744,7 +744,7 @@ s0exp_tr s0e0 = let
         val s1e = s1exp_ide (loc0, id)
       in
         case+ the_fxtyenv_find id of
-          | ~Some_vt f => s1exp_make_opr (s1e, f) | ~None_vt () => $Fix.ITEMatm s1e
+          | ~Some_vt f => s1exp_make_opr (s1e, f) | ~None_vt () => $FX.ITEMatm (s1e)
         // end of [case]
       end // end of [S0Eide]
     | S0Eimp tags => let
@@ -782,76 +782,76 @@ s0exp_tr s0e0 = let
         end // end of [val]
 *)
       in
-        $Fix.ITEMatm (s1e_lam)
+        $FX.ITEMatm (s1e_lam)
       end // end of [S0Elam]
     | S0Elist (s0es) => let
-        val s1es = s0explst_tr s0es in $Fix.ITEMatm (s1exp_list (loc0, s1es))
+        val s1es = s0explst_tr s0es in $FX.ITEMatm (s1exp_list (loc0, s1es))
       end // end of [S0Elist]
     | S0Elist2 (s0es1, s0es2) => let
         val s1es1 = s0explst_tr s0es1
         val s1es2 = s0explst_tr s0es2
       in
-        $Fix.ITEMatm (s1exp_list2 (loc0, s1es1, s1es2))
+        $FX.ITEMatm (s1exp_list2 (loc0, s1es1, s1es2))
       end // end of [S0Elist2]
 (*
 // HX-2010-12-04: inadequate design
     | S0Enamed (name, s0e) => let
         val s1e = s0exp_tr s0e in
-        $Fix.ITEMatm (s1exp_named (loc0, name, s1e))
+        $FX.ITEMatm (s1exp_named (loc0, name, s1e))
       end // end of [S0Enamed]
 *)
-    | S0Eopide id => $Fix.ITEMatm (s1exp_ide (loc0, id))
-    | S0Eqid (q, id) => $Fix.ITEMatm (s1exp_qid (loc0, q, id))
+    | S0Eopide id => $FX.ITEMatm (s1exp_ide (loc0, id))
+    | S0Eqid (q, id) => $FX.ITEMatm (s1exp_qid (loc0, q, id))
 (*
 // HX-2010-11-01: simplification
     | S0Estruct (ls0es) => let
         val ls1es = labs0explst_tr ls0es
       in
-        $Fix.ITEMatm (s1exp_struct (loc0, ls1es))
+        $FX.ITEMatm (s1exp_struct (loc0, ls1es))
       end // end of [S0Estruct]
 *)
     | S0Etyarr (s0e_elt, s0ess_dim) => let
         val s1e_elt = s0exp_tr s0e_elt
         val s1ess_dim = s0explstlst_tr s0ess_dim
       in
-        $Fix.ITEMatm (s1exp_tyarr (loc0, s1e_elt, s1ess_dim))
+        $FX.ITEMatm (s1exp_tyarr (loc0, s1e_elt, s1ess_dim))
       end // end of [S0Etyarr]
     | S0Etyrec (flat, ls0es) => let
         val ls1es = labs0explst_tr ls0es
       in
-        $Fix.ITEMatm (s1exp_tyrec (loc0, flat, ls1es))
+        $FX.ITEMatm (s1exp_tyrec (loc0, flat, ls1es))
       end // end of [S0Etyrec]
     | S0Etyrec_ext (name, ls0es) => let
         val ls1es = labs0explst_tr ls0es
       in
-        $Fix.ITEMatm (s1exp_tyrec_ext (loc0, name, ls1es))
+        $FX.ITEMatm (s1exp_tyrec_ext (loc0, name, ls1es))
       end // end of [S0Etyrec_ext]
     | S0Etytup (flat, s0es) => let
         val s1es = s0explst_tr s0es
       in
-        $Fix.ITEMatm (s1exp_tytup (loc0, flat, s1es))
+        $FX.ITEMatm (s1exp_tytup (loc0, flat, s1es))
       end // end of [S0Etytup]
     | S0Etytup2 (flat, s0es1, s0es2) => let
         val s1es1 = s0explst_tr s0es1
         val s1es2 = s0explst_tr s0es2
       in
-        $Fix.ITEMatm (s1exp_tytup2 (loc0, flat, s1es1, s1es2))
+        $FX.ITEMatm (s1exp_tytup2 (loc0, flat, s1es1, s1es2))
       end // end of [S0Etytup2]
     | S0Euni (s0qs) => let
         val s1qs = s0qualst_tr s0qs
         fn f (body: s1exp):<cloref1> s1expitm =
           let val loc0 = $Loc.location_combine (loc0, body.s1exp_loc) in
-            $Fix.ITEMatm (s1exp_uni (loc0, s1qs, body))
+            $FX.ITEMatm (s1exp_uni (loc0, s1qs, body))
           end // end of [f]
         // end of [f]
       in
-        $Fix.ITEMopr ($Fix.OPERpre ($Prec.uni_prec_sta, f))
+        $FX.ITEMopr ($FX.OPERpre ($FP.uni_prec_sta, f))
       end // end of [S0Euni]
     | S0Eunion (s0e, ls0es) => let
         val s1e = s0exp_tr s0e
         val ls1es = labs0explst_tr ls0es
       in
-        $Fix.ITEMatm (s1exp_union (loc0, s1e, ls1es))
+        $FX.ITEMatm (s1exp_union (loc0, s1e, ls1es))
       end // end of [S0Eunion]
     | _ => begin
         prerr_loc_error1 loc0;
@@ -874,8 +874,8 @@ s0exp_tr s0e0 = let
   end // end of [aux_itemlist]
 in
   case+ aux_item s0e0 of
-  | $Fix.ITEMatm s1e => s1e
-  | $Fix.ITEMopr _ => s0exp_tr_errmsg_opr s0e0.s0exp_loc
+  | $FX.ITEMatm (s1e) => s1e
+  | $FX.ITEMopr _ => s0exp_tr_errmsg_opr s0e0.s0exp_loc
 end // end of [s0exp_tr]
 
 implement
