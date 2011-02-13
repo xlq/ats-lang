@@ -16,14 +16,16 @@
 
 (* ****** ****** *)
 
-staload Lab = "ats_label.sats"
-staload Sym = "ats_symbol.sats"
-
-(* ****** ****** *)
-
 staload "atsyntax_util.sats"
 
 (* ****** ****** *)
+
+local
+
+staload "ats_label.sats"
+staload "ats_symbol.sats"
+
+in // in of [local]
 
 implement
 tostring_label (l) = let
@@ -32,11 +34,52 @@ in
   case+ ans of
   | ~Some_vt (i) => tostring_int (i)
   | ~None_vt () => let
-      val ans = $Lab.label_sym_get (l) in
-      case+ ans of
-      | ~Some_vt s => $Sym.symbol_name (s) | ~None_vt () => "" (*deadcode*)
+      val ans = label_sym_get (l) in case+ ans of
+      | ~Some_vt s => symbol_name (s) | ~None_vt () => "" (*deadcode*)
     end // end of [None_vt]
 end // end of [tostring_label]
+
+end // end of [local]
+
+(* ****** ****** *)
+
+local
+
+staload "ats_parser.sats"
+
+in // in of [local]
+
+implement
+parse_from_string_i0de (inp) = id where {
+  val- YYRESi0de (id) = parse_from_string_yyres (YYBEGi0de, inp)
+} // end of [parse_from_string_i0de]
+
+implement
+parse_from_string_si0de (inp) = id where {
+  val- YYRESi0de (id) = parse_from_string_yyres (YYBEGsi0de, inp)
+} // end of [parse_from_string_si0de]
+
+implement
+parse_from_string_di0de (inp) = id where {
+  val- YYRESi0de (id) = parse_from_string_yyres (YYBEGdi0de, inp)
+} // end of [parse_from_string_di0de]
+
+implement
+parse_from_string_s0exp (inp) = d0e where {
+  val- YYRESi0de (d0e) = parse_from_string_yyres (YYBEGs0exp, inp)
+} // end of [parse_from_string_s0exp]
+
+implement
+parse_from_string_d0exp (inp) = d0e where {
+  val- YYRESi0de (d0e) = parse_from_string_yyres (YYBEGd0exp, inp)
+} // end of [parse_from_string_d0exp]
+
+implement
+parse_from_string_d0ecseq_dyn (inp) = d0cs where {
+  val- YYRESi0de (d0cs) = parse_from_string_yyres (YYBEGd0ecseq_dyn, inp)
+} // end of [parse_from_string_d0eclst]
+
+end // end of [local]
 
 (* ****** ****** *)
 
