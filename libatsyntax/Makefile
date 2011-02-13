@@ -45,12 +45,8 @@ INCLUDES=-I$(ATSHOMEQ)
 ######
 
 SOURCES = \
-  atsyndef_util.sats \
-  atsyndef_util.dats \
-  atsyndef_main.sats \
-  atsyndef_main.dats \
-  atsyndef_FOR.dats \
-  atsyndef_ARRAY.dats \
+  atsyntax_util.sats \
+  atsyntax_util.dats \
 
 OBJECTS := $(patsubst %.sats, %_sats.o, $(SOURCES))
 OBJECTS := $(patsubst %.dats, %_dats.o, $(OBJECTS))
@@ -62,13 +58,13 @@ ATSLIB=$(ATSHOMEQ)/ccomp/lib64
 
 ######
 
-all:: libatsyndef
+all:: libatsyntax
 all:: cleanall
 
 ######
 
-libatsyndef: $(OBJECTS)
-	$(ATSCC) -fPIC -shared -o $(ATSLIB)/libatsyndef.so -Wl,-soname,libatsyndef.so `ar t libatsyndef.a`
+libatsyntax: $(OBJECTS)
+	$(ATSCC) -fPIC -shared -o $(ATSLIB)/libatsyntax.so -Wl,-soname,libatsyntax.so `ar t libatsyntax.a`
 
 ######
 
@@ -76,29 +72,12 @@ AR=ar
 
 ######
 
-atsyndef_util_sats.o: atsyndef_util.sats
-	$(ATSCC) $(IATS) $(CCFLAGS) -c atsyndef_util.sats
-	$(AR) -r libatsyndef.a $@
-atsyndef_util_dats.o: atsyndef_util.dats
-	$(ATSCC) $(IATS) $(CCFLAGS) -c atsyndef_util.dats
-	$(AR) -r libatsyndef.a $@
-
-atsyndef_main_sats.o: atsyndef_main.sats
-	$(ATSCC) $(IATS) $(CCFLAGS) -c atsyndef_main.sats
-	$(AR) -r libatsyndef.a $@
-atsyndef_main_dats.o: atsyndef_main.dats
-	$(ATSCC) $(IATS) $(CCFLAGS) -c atsyndef_main.dats
-	$(AR) -r libatsyndef.a $@
-
-######
-
-atsyndef_FOR_dats.o: atsyndef_FOR.dats
-	$(ATSCC) $(IATS) $(CCFLAGS) -c atsyndef_FOR.dats
-	$(AR) -r libatsyndef.a $@
-
-atsyndef_ARRAY_dats.o: atsyndef_ARRAY.dats
-	$(ATSCC) $(IATS) $(CCFLAGS) -c atsyndef_ARRAY.dats
-	$(AR) -r libatsyndef.a $@
+atsyntax_util_sats.o: atsyntax_util.sats
+	$(ATSCC) $(IATS) $(CCFLAGS) -c atsyntax_util.sats
+	$(AR) -r libatsyntax.a $@
+atsyntax_util_dats.o: atsyntax_util.dats
+	$(ATSCC) $(IATS) $(CCFLAGS) -c atsyntax_util.dats
+	$(AR) -r libatsyntax.a $@
 
 ######
 
@@ -111,7 +90,7 @@ clean::
 	$(RMF) *_?ats.c *_?ats.o
 
 cleanall:: clean
-	$(RMF) libatsyndef.a
+	$(RMF) libatsyntax.a
 
 distclean:: cleanall
 

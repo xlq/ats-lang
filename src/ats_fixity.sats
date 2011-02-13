@@ -67,8 +67,8 @@ fun fxty_pos (p: prec_t): fxty
 
 (* ****** ****** *)
 
-val deref_fixity_dyn : fxty
 val selptr_fixity_dyn : fxty
+val deref_fixity_dyn : fxty // for dereference
 
 (* ****** ****** *)
 

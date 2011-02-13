@@ -30,10 +30,10 @@
 *)
 
 (* ****** ****** *)
-
+//
 // Author: Hongwei Xi (hwxi AT cs DOT bu DOT edu)
 // Time: July 2007
-
+//
 (* ****** ****** *)
 
 (* ats_fixity: for handing prefix, infix and postfix operators *)
@@ -98,8 +98,10 @@ implement fxty_pos (p) = FXTYpos p
 
 (* ****** ****** *)
 
+implement
+selptr_fixity_dyn = FXTYinf (select_prec, ASSOClft)
+
 implement deref_fixity_dyn = FXTYpre (deref_prec_dyn)
-implement selptr_fixity_dyn = FXTYinf (select_prec, ASSOClft)
 
 (* ****** ****** *)
 
@@ -107,7 +109,7 @@ local
 
 val app_assoc = ASSOClft (* left association *)
 
-in
+in // in of [local]
 
 implement item_app f = ITEMopr (OPERinf (app_prec, app_assoc, f))
 
@@ -134,8 +136,8 @@ end // end of [oper_make_backslahsh]
 (* ****** ****** *)
 
 implement
-oper_make
-  {a} (locf, appf, opr, fx) = let
+oper_make {a}
+  (locf, appf, opr, fx) = let
 //
   val loc_opr = locf opr
 //
@@ -184,11 +186,13 @@ end // end of [oper_make]
 
 (* ****** ****** *)
 
-implement oper_associativity opr = begin
+implement
+oper_associativity opr = begin
   case+ opr of OPERinf (_, a, _) => a | _ => ASSOCnon ()
 end // end of [oper_associativity]
         
-implement oper_precedence opr = begin case+ opr of
+implement
+oper_precedence opr = begin case+ opr of
   | OPERinf (p, _, _) => p | OPERpre (p, _) => p | OPERpos (p, _) => p
 end // end of [oper_precedence]
 
@@ -199,8 +203,8 @@ end // end of [oper_precedence]
 *)
 
 implement
-fixity_resolve {a}
-  (loc0, app, xs) = let
+fixity_resolve
+  {a} (loc0, app, xs) = let
 //
 #define nil list_nil
 #define cons list_cons
