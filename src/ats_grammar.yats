@@ -898,6 +898,7 @@ extern d0eclst_t d0ecllst_reverse (d0ecllst_t) ;
 /*
 ** HX: implemented in [ats_parser.dats]
 */
+extern yyres_t atsopt_yyres_i0de (i0de_t) ;
 extern yyres_t atsopt_yyres_s0exp (s0exp_t) ;
 extern yyres_t atsopt_yyres_d0exp (d0exp_t) ;
 extern yyres_t atsopt_yyres_d0eclst (d0eclst_t) ;
@@ -1047,6 +1048,10 @@ d0eclst_t d0eclst ;
 ** terminals
 */
 
+%token YYBEG_i0de
+%token YYBEG_s0rtid
+%token YYBEG_si0de
+%token YYBEG_di0de
 %token YYBEG_s0exp
 %token YYBEG_d0exp
 %token YYBEG_d0ecseq_sta
@@ -1537,7 +1542,11 @@ d0eclst_t d0eclst ;
 */
 
 theStartEntry
-  : YYBEG_s0exp s0exp TOKEN_eof  { theYYVALyyres = atsopt_yyres_s0exp($2) ; return 0 ; }
+  : YYBEG_i0de i0de TOKEN_eof { theYYVALyyres = atsopt_yyres_i0de($2) ; return 0 ; }
+  | YYBEG_s0rtid s0rtid TOKEN_eof { theYYVALyyres = atsopt_yyres_i0de($2) ; return 0 ; }
+  | YYBEG_si0de si0de TOKEN_eof { theYYVALyyres = atsopt_yyres_i0de($2) ; return 0 ; }
+  | YYBEG_di0de di0de TOKEN_eof { theYYVALyyres = atsopt_yyres_i0de($2) ; return 0 ; }
+  | YYBEG_s0exp s0exp TOKEN_eof  { theYYVALyyres = atsopt_yyres_s0exp($2) ; return 0 ; }
   | YYBEG_d0exp d0exp TOKEN_eof  { theYYVALyyres = atsopt_yyres_d0exp($2) ; return 0 ; }
   | YYBEG_d0ecseq_sta d0ecseq_sta TOKEN_eof  { theYYVALyyres = atsopt_yyres_d0eclst($2) ; return 0 ; }
   | YYBEG_d0ecseq_dyn d0ecseq_dyn TOKEN_eof  { theYYVALyyres = atsopt_yyres_d0eclst($2) ; return 0 ; }

@@ -179,15 +179,20 @@ fn EXTCODE0 (i: int): token_t =
 // end of [EXTCODE0]
 
 (* ****** ****** *)
-
+//
 implement YYBEG_none = $extval (token_t, "-1")
-
+//
+implement YYBEG_i0de = $extval (token_t, "YYBEG_i0de")
+implement YYBEG_s0rtid = $extval (token_t, "YYBEG_s0rtid")
+implement YYBEG_si0de = $extval (token_t, "YYBEG_si0de")
+implement YYBEG_di0de = $extval (token_t, "YYBEG_di0de")
+//
 implement YYBEG_s0exp = $extval (token_t, "YYBEG_s0exp")
 implement YYBEG_d0exp = $extval (token_t, "YYBEG_d0exp")
-
+//
 implement YYBEG_d0ecseq_sta = $extval (token_t, "YYBEG_d0ecseq_sta")
 implement YYBEG_d0ecseq_dyn = $extval (token_t, "YYBEG_d0ecseq_dyn")
-
+//
 (* ****** ****** *)
 
 %{$

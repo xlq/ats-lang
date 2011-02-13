@@ -55,6 +55,9 @@ staload Fil = "ats_filename.sats"
 staload Lex = "ats_lexer.sats"
 typedef token_t = $Lex.token_t
 staload Syn = "ats_syntax.sats"
+typedef i0de = $Syn.i0de
+typedef s0exp = $Syn.s0exp
+typedef d0exp = $Syn.d0exp
 
 (* ****** ****** *)
 
@@ -77,16 +80,42 @@ fn flag_is_dyn (flag: int): bool = (flag > 0)
 
 (* ****** ****** *)
 
+local
+
+extern
+fun yyres_i0de (id: i0de): yyres = "atsopt_yyres_i0de"
+implement yyres_i0de (id) = YYRESi0de (id)
+
+extern
+fun yyres_s0exp (s0e: s0exp): yyres = "atsopt_yyres_s0exp"
 implement yyres_s0exp (s0e) = YYRESs0exp (s0e)
+
+extern
+fun yyres_d0exp (d0e: d0exp): yyres = "atsopt_yyres_d0exp"
 implement yyres_d0exp (d0e) = YYRESd0exp (d0e)
 
+extern
+fun yyres_d0eclst (d0cs: d0eclst): yyres = "atsopt_yyres_d0eclst"
 implement yyres_d0eclst (d0cs) = YYRESd0eclst (d0cs)
+
+in // in of [local]
+//
+// HX: nothing
+//
+end // end of [local]
 
 (* ****** ****** *)
 
 fn token_of_yybeg
-  (tok: yybeg): token_t = case+ tok of
+  (tok: yybeg): token_t =
+  case+ tok of
   | YYBEGnone () => $Lex.YYBEG_none
+//
+  | YYBEGi0de () => $Lex.YYBEG_i0de
+  | YYBEGs0rtid () => $Lex.YYBEG_s0rtid
+  | YYBEGsi0de () => $Lex.YYBEG_si0de
+  | YYBEGdi0de () => $Lex.YYBEG_di0de
+//
   | YYBEGs0exp () => $Lex.YYBEG_s0exp
   | YYBEGd0exp () => $Lex.YYBEG_d0exp
   | YYBEGd0ecseq_sta () => $Lex.YYBEG_d0ecseq_sta

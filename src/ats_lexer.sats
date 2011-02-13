@@ -42,6 +42,11 @@ abst@ype token_t = $extype "ats_int_type"
 
 val YYBEG_none : token_t
 
+val YYBEG_i0de : token_t
+val YYBEG_s0rtid : token_t
+val YYBEG_si0de : token_t
+val YYBEG_di0de : token_t
+
 val YYBEG_s0exp : token_t
 val YYBEG_d0exp : token_t
 

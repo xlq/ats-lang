@@ -299,6 +299,11 @@ fn symbol_make_nt
 
 (* ****** ****** *)
 //
+val YYBEG_i0de = symbol_make "YYBEG_i0de"
+val YYBEG_s0rtid = symbol_make "YYBEG_s0rtid"
+val YYBEG_si0de = symbol_make "YYBEG_si0de"
+val YYBEG_di0de = symbol_make "YYBEG_di0de"
+//
 val YYBEG_s0exp = symbol_make "YYBEG_s0exp"
 val YYBEG_d0exp = symbol_make "YYBEG_d0exp"
 val YYBEG_d0ecseq_sta = symbol_make "YYBEG_d0ecseq_sta"

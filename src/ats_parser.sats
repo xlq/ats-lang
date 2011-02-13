@@ -40,6 +40,23 @@ staload Fil = "ats_filename.sats"
 
 (* ****** ****** *)
 
+datatype yybeg =
+  | YYBEGnone of ()
+//
+  | YYBEGi0de of ()
+  | YYBEGs0rtid of ()
+  | YYBEGsi0de of ()
+  | YYBEGdi0de of ()
+//
+  | YYBEGs0exp of ()
+  | YYBEGd0exp of ()
+//
+  | YYBEGd0ecseq_sta of ()
+  | YYBEGd0ecseq_dyn of ()
+// end of [yybeg]
+
+(* ****** ****** *)
+
 local
 
 staload "ats_syntax.sats"
@@ -47,28 +64,17 @@ staload "ats_syntax.sats"
 in // in of [local]
 
 datatype yyres =
+  | YYRESi0de of i0de
+//
   | YYRESs0exp of s0exp
   | YYRESd0exp of d0exp
+//
   | YYRESd0eclst of d0eclst
 // end of [yyres]
 
 typedef d0eclst = d0eclst
 
-fun yyres_s0exp (s0e: s0exp): yyres = "atsopt_yyres_s0exp"
-fun yyres_d0exp (d0e: d0exp): yyres = "atsopt_yyres_d0exp"
-fun yyres_d0eclst (d0cs: d0eclst): yyres = "atsopt_yyres_d0eclst"
-
 end // end of [local]
-
-(* ****** ****** *)
-
-datatype yybeg =
-  | YYBEGnone of ()
-  | YYBEGs0exp of ()
-  | YYBEGd0exp of ()
-  | YYBEGd0ecseq_sta of ()
-  | YYBEGd0ecseq_dyn of ()
-// end of [yybeg]
 
 (* ****** ****** *)
 
