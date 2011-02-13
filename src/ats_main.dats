@@ -76,41 +76,52 @@ dynload "ats_map_lin.dats"
 dynload "ats_set_fun.dats"
 dynload "ats_symbol.dats"
 
-// ------ ------ //
-
+(* ****** ****** *)
+//
 // dynload "ats_array.dats" // loaded earlier
 // dynload "ats_charlst.dats" // loaded earlier
 // dynload "ats_counter.dats" // loaded earlier
+//
 dynload "ats_comarg.dats"
 dynload "ats_debug.dats"
 dynload "ats_effect.dats"
 dynload "ats_error.dats"
 dynload "ats_filename.dats" // needs [ats_symbol.dats]
+//
 dynload "ats_fixity_prec.dats"
-dynload "ats_fixity_fxty.dats"
+dynload "ats_fixity_fxty.dats" // needs the previous one
+//
 dynload "ats_global.dats"
+//
 // dynload "ats_hashtbl.dats" // loaded earlier
 // dynload "ats_intinf.dats" // loaded earlier
+//
 dynload "ats_keyword.dats"
 dynload "ats_label.dats"
 dynload "ats_lexer_lats.dats"
+//
 // dynload "ats_list.dats" // loaded earlier
+//
 dynload "ats_location.dats"
+//
 // dynload "ats_map_lin.dats" // loaded earlier
+//
 dynload "ats_namespace.dats"
-// dynload "ats_precedence.dats" // loaded earlier
 dynload "ats_posmark.dats"
 dynload "ats_stamp.dats"
+//
 // dynload "ats_set_fun.dats" // loaded earlier
 // dynload "ats_symbol.dats"  // loaded earlier
+//
 dynload "ats_symenv.dats"
 dynload "ats_symtbl.dats"
+//
 dynload "ats_syntax.dats"
 dynload "ats_syntax_depgen.dats"
 dynload "ats_syntax_posmark.dats"
-
+//
 dynload "ats_parser.dats"
-
+//
 dynload "ats_staexp1.dats"
 dynload "ats_staexp1_print.dats"
 dynload "ats_dynexp1.dats"
@@ -120,7 +131,7 @@ dynload "ats_trans1_env.dats"
 dynload "ats_e1xp_eval.dats"
 dynload "ats_trans1_sta.dats"
 dynload "ats_trans1_dyn.dats"
-
+//
 dynload "ats_staexp2.dats"
 dynload "ats_staexp2_print.dats"
 dynload "ats_staexp2_scst.dats"
@@ -129,7 +140,7 @@ dynload "ats_staexp2_dcon.dats"
 dynload "ats_staexp2_util1.dats"
 dynload "ats_staexp2_util2.dats"
 dynload "ats_staexp2_pprint.dats"
-
+//
 dynload "ats_dynexp2.dats"
 dynload "ats_dynexp2_print.dats"
 dynload "ats_dynexp2_dcst.dats"
@@ -164,17 +175,17 @@ dynload "ats_trans3_exp_up.dats"
 dynload "ats_trans3_exp_dn.dats"
 dynload "ats_trans3_loop.dats"
 dynload "ats_trans3_dec.dats"
-
+//
 dynload "ats_solver_fm.dats"
 dynload "ats_constraint.dats"
 dynload "ats_constraint_print.dats"
-
+//
 dynload "ats_hiexp.dats"
 dynload "ats_hiexp_print.dats"
 dynload "ats_hiexp_util.dats"
-
+//
 dynload "ats_trans4.dats"
-
+//
 dynload "ats_ccomp.dats"
 dynload "ats_ccomp_env.dats"
 dynload "ats_ccomp_print.dats"
@@ -185,7 +196,7 @@ dynload "ats_ccomp_trans_tailcal.dats"
 dynload "ats_ccomp_trans_temp.dats"
 dynload "ats_ccomp_emit.dats"
 dynload "ats_ccomp_main.dats"
-
+//
 (* ****** ****** *)
 
 staload Deb = "ats_debug.sats"

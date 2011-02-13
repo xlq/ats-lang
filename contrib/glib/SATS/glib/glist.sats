@@ -220,7 +220,7 @@ fun g_list_nth_prev
   {a:vwtp} {f,r:nat} {i:nat | i <= f}
   (list: GList_ptr (a, f, r), i: int i): GList_ptr (a, f-i, r+i)
   = "#atsctrb_g_list_nth"
-// end of [g_list_nth]
+// end of [g_list_nth_prev]
 
 (* ****** ****** *)
 

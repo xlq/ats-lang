@@ -36,8 +36,8 @@
 //
 (* ****** ******* *)
 
-staload FX =
-  "ats_fixity_fxty.sats"
+staload
+FX = "ats_fixity_fxty.sats"
 typedef fxty = $FX.fxty
 
 (* ****** ******* *)
