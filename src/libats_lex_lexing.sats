@@ -44,7 +44,7 @@ fun __accept_table_free (acctbl: accept_table_t): void
 fun accept_table_get
   (acctbl: accept_table_t, nstate: int): int (* irule *)
 
-//
+(* ****** ****** *)
 
 abstype transition_table_t // boxed type
 

@@ -30,9 +30,15 @@
 *)
 
 (* ****** ****** *)
-
+//
 // Author: Hongwei Xi (hwxi AT cs DOT bu DOT edu)
 // July 2007
+//
+(* ****** ****** *)
+
+%{^
+#include "libc/CATS/stdio.cats" // for some IO functions
+%} // end of [%{^]
 
 (* ****** ****** *)
 
@@ -100,25 +106,23 @@ in
   #[ V | (@(pf_gc, pf_at) | '{ free= _free, getc= _getc }) ]
 end // end of [infile_make_string]
 
-//
+(* ****** ****** *)
 
 local
 
-// staload "libc/SATS/stdio.sats"
-
 extern fun fclose_exn {m:file_mode} {l:addr}
-  (pf: FILE m @ l | p: ptr l):<!exnref> void
-  = "atslib_fclose_exn"
+  (pf: FILE m @ l | p: ptr l):<!exnref> void = "atslib_fclose_exn"
 
 extern fun fgetc_err {m:file_mode}
-  (pf: file_mode_lte (m, r) | f: &FILE m): int
-  = "atslib_fgetc_err"
+  (pf: file_mode_lte (m, r) | f: &FILE m): int = "atslib_fgetc_err"
 
 extern fun getchar (): int = "atslib_getchar"
 
-in
+in // in of [local]
 
-implement infile_make_file {m} {l} (pf_fil, pf_mod | fil) = let
+implement
+infile_make_file
+  {m} {l} (pf_fil, pf_mod | fil) = let
   viewdef V = FILE m @ l
   fn _free (pf_fil: V | (*none*)):<cloref1> void = fclose_exn (pf_fil | fil)
   fn _getc (pf_fil: !V | (*none*)):<cloref1> int = fgetc_err (pf_mod | !fil)
@@ -126,7 +130,8 @@ in
   #[ V | (pf_fil | '{ free= _free, getc= _getc }) ]
 end // end of [infile_make_file]
 
-implement infile_make_stdin () = let
+implement
+infile_make_stdin () = let
   viewdef V = unit_v
   fn _free (pf: V | (*none*)):<cloref1> void = begin
      let prval unit_v () = pf in end
@@ -251,10 +256,6 @@ in
 end // end of [val]
 
 (* ****** ****** *)
-
-%{^
-#include "libc/CATS/stdio.cats"
-%}
 
 %{$
 
