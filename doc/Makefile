@@ -70,6 +70,6 @@ atsgrammar::
 	scp \
           DOCUMENTATION/ATS_GRAMMAR/ats_grammar_desc.html \
           DOCUMENTATION/ATS_GRAMMAR/ats_grammar_yats.html \
-          ats-hwxi@web.sourceforge.net:/home/groups/a/at/ats-lang/htdocs/DOCUMENTATION/
+          ats-hwxi@web.sourceforge.net:/home/groups/a/at/ats-lang/htdocs/DOCUMENTATION/GRAMMAR/
 
 ###### end of [Makefile] ######

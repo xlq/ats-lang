@@ -56,8 +56,7 @@ staload Lex = "ats_lexer.sats"
 typedef token_t = $Lex.token_t
 staload Syn = "ats_syntax.sats"
 typedef i0de = $Syn.i0de
-typedef s0exp = $Syn.s0exp
-typedef d0exp = $Syn.d0exp
+typedef s0exp = $Syn.s0exp and d0exp = $Syn.d0exp
 
 (* ****** ****** *)
 

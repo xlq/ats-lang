@@ -39,25 +39,26 @@
 abst@ype token_t = $extype "ats_int_type"
 
 (* ****** ****** *)
-
+//
 val YYBEG_none : token_t
-
+//
 val YYBEG_i0de : token_t
 val YYBEG_s0rtid : token_t
 val YYBEG_si0de : token_t
 val YYBEG_di0de : token_t
-
+//
 val YYBEG_s0exp : token_t
 val YYBEG_d0exp : token_t
-
+//
 val YYBEG_d0ecseq_sta : token_t
 val YYBEG_d0ecseq_dyn : token_t
-
+//
 (* ****** ****** *)
 //
 // HX: implemented in [ats_lexer.lats]
 //
-fun eq_token_token (t1: token_t, t2: token_t): bool= "eq_token_token"
+fun eq_token_token
+  (t1: token_t, t2: token_t): bool= "eq_token_token"
 overload = with eq_token_token
 
 (* ****** ****** *)

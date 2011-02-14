@@ -195,9 +195,9 @@ partition (f, xs) = (res_p, res_n) where {
 
 implement{a,b}
 foldl (f, ini, xs) = loop (f, ini, xs) where {
-  fun loop
-    (f: (a, b) -<cloref1> b, ini: b, xs: list0 a): b =
-    case+ xs of
+  fun loop (
+    f: (a, b) -<cloref1> b, ini: b, xs: list0 a
+  ) : b = case+ xs of
     | list0_cons (x, xs) => loop (f, f (x, ini), xs) | list0_nil () => ini
   // end of [loop]  
 } // end of [foldl]
@@ -211,7 +211,7 @@ implement{a}
 all (f, xs) = loop (f, xs) where {
   fun loop (f: a -<cloref1> bool, xs: list0 a): bool =
     case+ xs of
-    | list0_cons (x, xs) => f x andalso loop (f, xs)
+    | list0_cons (x, xs) => if f (x) then loop (f, xs) else false
     | list0_nil () => true
   // end of [loop]  
 } // end of [all]
@@ -220,7 +220,7 @@ implement{a}
 exists (f, xs) = loop (f, xs) where {
   fun loop (f: a -<cloref1> bool, xs: list0 a): bool =
     case+ xs of
-    | list0_cons (x, xs) => f x orelse loop (f, xs)
+    | list0_cons (x, xs) => if f (x) then true else loop (f, xs)
     | list0_nil () => false
   // end of [loop]  
 } // end of [exists]

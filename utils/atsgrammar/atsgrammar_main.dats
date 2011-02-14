@@ -1674,22 +1674,30 @@ val () = symbol_set_tyname (d0ecseq_dyn_rev, d0eclst_tyname)
 
 (*
 theStartEntry
-  : YYBEG_i0de i0de TOKEN_eof           { theYYVALyyres = atsopt_yyres_i0de($2) ; return 0 ; }
+  : YYBEG_d0ecseq_sta d0ecseq_sta TOKEN_eof
+                                        { theYYVALyyres = atsopt_yyres_d0eclst($2) ; return 0 ; }
+  | YYBEG_d0ecseq_dyn d0ecseq_dyn TOKEN_eof
+                                        { theYYVALyyres = atsopt_yyres_d0eclst($2) ; return 0 ; }
+  | YYBEG_i0de i0de TOKEN_eof           { theYYVALyyres = atsopt_yyres_i0de($2) ; return 0 ; }
   | YYBEG_s0rtid s0rtid TOKEN_eof       { theYYVALyyres = atsopt_yyres_i0de($2) ; return 0 ; }
   | YYBEG_si0de si0de TOKEN_eof         { theYYVALyyres = atsopt_yyres_i0de($2) ; return 0 ; }
   | YYBEG_di0de di0de TOKEN_eof         { theYYVALyyres = atsopt_yyres_i0de($2) ; return 0 ; }
   | YYBEG_s0exp s0exp TOKEN_eof         { theYYVALyyres = atsopt_yyres_s0exp($2) ; return 0 ; }
   | YYBEG_d0exp d0exp TOKEN_eof         { theYYVALyyres = atsopt_yyres_d0exp($2) ; return 0 ; }
-  | YYBEG_d0ecseq_sta d0ecseq_sta TOKEN_eof
-                                        { theYYVALyyres = atsopt_yyres_d0eclst($2) ; return 0 ; }
-  | YYBEG_d0ecseq_dyn d0ecseq_dyn TOKEN_eof
-                                        { theYYVALyyres = atsopt_yyres_d0eclst($2) ; return 0 ; }
 ; /* end of [theStartEntry] */
 *)
 fun theStartEntry_proc
   (): void = () where {
 //
 val (pf | ()) = symbol_open (theStartEntry)
+//
+val gr = grmrule_append
+  ($lst_t {symbol} (tupz! YYBEG_d0ecseq_sta d0ecseq_sta TOKEN_eof))
+val () = grmrule_set_action (gr, "{ theYYVALyyres = atsopt_yyres_d0eclst($2) ; return 0 ; }")
+//
+val gr = grmrule_append
+  ($lst_t {symbol} (tupz! YYBEG_d0ecseq_dyn d0ecseq_dyn TOKEN_eof))
+val () = grmrule_set_action (gr, "{ theYYVALyyres = atsopt_yyres_d0eclst($2) ; return 0 ; }")
 //
 val gr = grmrule_append
   ($lst_t {symbol} (tupz! YYBEG_i0de i0de TOKEN_eof))
@@ -1714,14 +1722,6 @@ val () = grmrule_set_action (gr, "{ theYYVALyyres = atsopt_yyres_s0exp($2) ; ret
 val gr = grmrule_append
   ($lst_t {symbol} (tupz! YYBEG_d0exp d0exp TOKEN_eof))
 val () = grmrule_set_action (gr, "{ theYYVALyyres = atsopt_yyres_d0exp($2) ; return 0 ; }")
-//
-val gr = grmrule_append
-  ($lst_t {symbol} (tupz! YYBEG_d0ecseq_sta d0ecseq_sta TOKEN_eof))
-val () = grmrule_set_action (gr, "{ theYYVALyyres = atsopt_yyres_d0eclst($2) ; return 0 ; }")
-//
-val gr = grmrule_append
-  ($lst_t {symbol} (tupz! YYBEG_d0ecseq_dyn d0ecseq_dyn TOKEN_eof))
-val () = grmrule_set_action (gr, "{ theYYVALyyres = atsopt_yyres_d0eclst($2) ; return 0 ; }")
 //
 val () = symbol_close (pf | theStartEntry)
 } // end of [theStartEntry_proc]

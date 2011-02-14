@@ -962,7 +962,7 @@ list_forall__main {v} {vt} {p:eff} (pf | xs, p, env) = let
     | x :: xs => begin
         if p (pf | x, env) then loop (pf | xs, p, env) else false
       end // end of [::]
-    | nil () => false
+    | nil () => true
   // end of [loop]
 in
   loop (pf | xs, p, env)
@@ -1038,8 +1038,8 @@ list_forall2__main
         val+ x2 :: xs2 = xs2
       in
         if p (pf | x1, x2, env) then loop (pf | xs1, xs2, p, env) else false
-      end
-    | nil () => false
+      end // end of [::]
+    | nil () => true
   end // end of [loop]
 in
   loop (pf | xs1, xs2, p, env)

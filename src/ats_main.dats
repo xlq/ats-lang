@@ -37,12 +37,12 @@
 (* ****** ****** *)
 
 %{^
-
+//
 #include "libc/CATS/stdio.cats"
 #include "libc/CATS/stdlib.cats"
-
+//
 #include "ats_main.cats"
-
+//
 %} // end of [%{^]
 
 (* ****** ****** *)
@@ -52,8 +52,9 @@ extern fun fopen_exn {m:file_mode}
   = "atslib_fopen_exn"
 //
 extern fun fclose_exn
-  {m:file_mode} {l:addr} (pf: FILE m @ l | p: ptr l):<!exnref> void
-  = "atslib_fclose_exn"
+  {m:file_mode} {l:addr}
+  (pf: FILE m @ l | p: ptr l):<!exnref> void = "atslib_fclose_exn"
+// end of [fclose_exn]
 //
 (* ****** ****** *)
 
