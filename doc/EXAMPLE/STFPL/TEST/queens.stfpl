@@ -16,12 +16,12 @@ let
   // end of [abs]
 
   val dots_pr = fix f (n:int): unit =>
-    if n > 0 then let val _ = print (".") in f (n-1) end
+    if n > 0 then let val _ = print (". ") in f (n-1) end
   // end of [dots_pr]
 
   val row_pr = lam (n:int): unit => let
     val _ = dots_pr (n-1)
-    val _ = print ("Q")
+    val _ = print ("Q ")
     val _ = dots_pr (8-n)
   in  
     print ("\n")

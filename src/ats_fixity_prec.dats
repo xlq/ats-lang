@@ -44,8 +44,8 @@ assume prec_t: t@ype = int
 
 (* ****** ****** *)
 
-#define PRECMIN ~1000000
-#define PRECMAX  1000000
+#define PRECMIN ~1000000 // this is low enough
+#define PRECMAX  1000000 // this is high enough
 
 implement neginf_prec = PRECMIN
 implement posinf_prec = PRECMAX

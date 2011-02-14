@@ -46,8 +46,23 @@ end // end of [local]
 local
 
 staload "ats_parser.sats"
+staload LEXING = "libats_lex_lexing.sats"
+
+extern // implemented in [ats_grammar.yats]
+fun yyparse_main (tok0: token_t): yyres = "yyparse_main"
 
 in // in of [local]
+
+implement
+parse_from_string_yyres
+  (tok0, inp) = yyres where {
+  val tok0 = token_of_yybeg (tok0)
+  val (pf_infil | p_infil) = $LEXING.infile_make_string (inp)
+  val (pf_lexbuf | lexbuf) = $LEXING.lexbuf_make_infile (pf_infil | p_infil)
+  val () = $LEXING.lexing_lexbuf_set (pf_lexbuf | lexbuf)
+  val yyres = yyparse_main (tok0)
+  val () = $LEXING.lexing_lexbuf_free ()
+} // end of [parse_from_string_yyres]
 
 implement
 parse_from_string_i0de (inp) = id where {

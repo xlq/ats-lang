@@ -16,14 +16,24 @@
 (* ****** ****** *)
 
 staload Lab = "ats_label.sats"
+staload Syn = "ats_syntax.sats"
+
+(* ****** ****** *)
 
 fun tostring_label (x: $Lab.label_t): string
 overload tostring with tostring_label
 
 (* ****** ****** *)
 
-staload Par = "ats_parser.sats"
-staload Syn = "ats_syntax.sats"
+local
+
+staload "ats_parser.sats"
+
+in // in of [local]
+
+fun parse_from_string_yyres
+  (tok: yybeg, str: string): yyres
+// end of [parse_from_string_yyres]
 
 fun parse_from_string_i0de (inp: string): $Syn.i0de
 fun parse_from_string_s0rtid (inp: string): $Syn.i0de
@@ -32,6 +42,8 @@ fun parse_from_string_di0de (inp: string): $Syn.i0de
 fun parse_from_string_s0exp (inp: string): $Syn.i0de
 fun parse_from_string_d0exp (inp: string): $Syn.i0de
 fun parse_from_string_d0ecseq_dyn (inp: string): $Syn.i0de
+
+end // end of [local]
 
 (* ****** ****** *)
 

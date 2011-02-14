@@ -36,7 +36,10 @@
 //
 (* ****** ****** *)
 
+staload Lex = "ats_lexer.sats"
+typedef token_t = $Lex.token_t
 staload Fil = "ats_filename.sats"
+typedef fil_t = $Fil.filename_t
 
 (* ****** ****** *)
 
@@ -54,6 +57,10 @@ datatype yybeg =
   | YYBEGd0ecseq_sta of ()
   | YYBEGd0ecseq_dyn of ()
 // end of [yybeg]
+
+(* ****** ****** *)
+
+fun token_of_yybeg (tok: yybeg): token_t
 
 (* ****** ****** *)
 
@@ -83,12 +90,8 @@ fun parse_from_stdin_d0eclst (flag: int): d0eclst
 
 (* ****** ****** *)
 
-fun parse_from_filename_yyres (tok: yybeg, fil: $Fil.filename_t): yyres
-fun parse_from_filename_d0eclst (flag: int, fil: $Fil.filename_t): d0eclst
-
-(* ****** ****** *)
-
-fun parse_from_string_yyres (tok: yybeg, str: string): yyres
+fun parse_from_filename_yyres (tok: yybeg, fil: fil_t): yyres
+fun parse_from_filename_d0eclst (flag: int, fil: fil_t): d0eclst
 
 (* ****** ****** *)
 

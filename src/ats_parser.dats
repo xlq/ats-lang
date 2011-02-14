@@ -51,9 +51,6 @@ extern fun fopen_exn {m:file_mode}
 
 (* ****** ****** *)
 
-staload Fil = "ats_filename.sats"
-staload Lex = "ats_lexer.sats"
-typedef token_t = $Lex.token_t
 staload Syn = "ats_syntax.sats"
 typedef i0de = $Syn.i0de
 typedef s0exp = $Syn.s0exp and d0exp = $Syn.d0exp
@@ -105,8 +102,8 @@ end // end of [local]
 
 (* ****** ****** *)
 
-fn token_of_yybeg
-  (tok: yybeg): token_t =
+implement
+token_of_yybeg (tok) =
   case+ tok of
   | YYBEGnone () => $Lex.YYBEG_none
 //
@@ -184,19 +181,6 @@ parse_from_filename_d0eclst
   val yyres = parse_from_filename_yyres (tok0, filename)
   val- YYRESd0eclst (d0cs) = yyres
 } // end of [parse_from_filename_d0eclst]
-
-(* ****** ****** *)
-
-implement
-parse_from_string_yyres
-  (tok0, inp) = yyres where {
-  val tok0 = token_of_yybeg (tok0)
-  val (pf_infil | p_infil) = $LEXING.infile_make_string (inp)
-  val (pf_lexbuf | lexbuf) = $LEXING.lexbuf_make_infile (pf_infil | p_infil)
-  val () = $LEXING.lexing_lexbuf_set (pf_lexbuf | lexbuf)
-  val yyres = yyparse_main (tok0)
-  val () = $LEXING.lexing_lexbuf_free ()
-} // end of [parse_from_string_yyres]
 
 (* ****** ****** *)
 
