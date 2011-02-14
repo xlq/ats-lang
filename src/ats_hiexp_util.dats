@@ -284,7 +284,7 @@ hiexp_is_value
   | HIEtmpcst _ => true
   | HIEtmpvar _ => true
   | HIEvar d2v => begin
-      if d2var_isfix_get d2v then false else true
+      if d2var_get_isfix d2v then false else true
     end // end of [HIEvar]
   | _ => false
 // end of [hiexp_is_value]
@@ -539,7 +539,7 @@ implement hityp_t_ptr = hityp_ptr
 implement hityp_t_void = hityp_void // so this file must be loaded
 //
 implement hityp_t_s2var (s2v) = hityp_s2var (s2v)
-implement hityp_t_name_get (hit) = hit.hityp_name
+implement hityp_t_get_name (hit) = hit.hityp_name
 //
 implement hityp_t_is_void (hit) = hityp_is_void (hit)
 implement hityp_t_fun_is_void (hit_fun) = hityp_fun_is_void (hit_fun) 
@@ -589,13 +589,13 @@ hityp_tysum_make
       end // end of [val]
 *)
       val names_arg = $Lst.list_map_fun (hits_arg, hityp_name_get)
-      val s2c = d2con_scst_get (d2c)
+      val s2c = d2con_get_scst (d2c)
       val tag = (case+ d2c of
         | _ when s2cst_is_singular s2c => 0
         | _ when s2cst_is_listlike s2c => 0
         | _ when d2con_is_exn d2c => ~1
         | _ => 1
-      ) : int
+      ) : int // end of [val]
       val name_sum = typdefmap_find (TYPKEYsum (tag, names_arg))
       val hit_sum = hityp_tysum (name_sum, d2c, hits_arg)
     in
@@ -711,9 +711,9 @@ end // end of [local]
 (* ****** ****** *)
 
 implement
-d2cst_hityp_get_some
+d2cst_get_hityp_some
   (d2c) = let
-  val hitopt = d2cst_hityp_get (d2c)
+  val hitopt = d2cst_get_hityp (d2c)
 in
   case+ hitopt of
   | Some hit => hit
@@ -749,8 +749,8 @@ implement tmpdef_make
   (arg, hie) = _tmpdef_make (arg, hie)
 // end of [tmpdef_make]
 
-implement tmpdef_arg_get (def) = def.tmpdef_arg
-implement tmpdef_exp_get (def) = def.tmpdef_exp
+implement tmpdef_get_arg (def) = def.tmpdef_arg
+implement tmpdef_get_exp (def) = def.tmpdef_exp
 
 end // end of [local]
 

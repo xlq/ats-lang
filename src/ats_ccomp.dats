@@ -87,7 +87,7 @@ in // in of [local]
 
 implement tmplab_make () = _tmplab_make ()
 
-implement tmplab_stamp_get (tl) = tl.tmplab_stamp
+implement tmplab_get_stamp (tl) = tl.tmplab_stamp
 
 implement
 fprint_tmplab
@@ -148,29 +148,45 @@ tmpvar_make (hit) = let
 , tmpvar_stamp= stamp
 } end // end of [tmpvar_make]
 
-extern fun tmpvar_ret_set
-  (tmp: tmpvar, ret: int): void = "atsccomp_tmpvar_ret_set"
-// end of [tmpvar_ret_set]
+(* ****** ****** *)
+
+local
+
+extern fun tmpvar_set_ret
+  (tmp: tmpvar, ret: int): void = "atsopt_tmpvar_set_ret"
+// end of [tmpvar_set_ret]
+
+in
 
 implement
 tmpvar_make_ret (hit) = let
   val tmp = tmpvar_make (hit)
-  val () = tmpvar_ret_set (tmp, 1) in tmp
+  val () = tmpvar_set_ret (tmp, 1) in tmp
 end // end of [tmpvar_make_ret]
 
-extern fun tmpvar_root_set
-  (tmp: tmpvar, otmp: tmpvaropt): void = "atsccomp_tmpvar_root_set"
-// end of [tmpvar_root_set]
+end // end of [local]
+
+(* ****** ****** *)
+
+local
+
+extern fun tmpvar_set_root
+  (tmp: tmpvar, otmp: tmpvaropt): void = "atsopt_tmpvar_set_root"
+// end of [tmpvar_set_root]
+
+in
 
 implement
 tmpvar_make_root (tmp) = let
   val otmp = (case+ tmp.tmpvar_root of
     | TMPVAROPTnone () => TMPVAROPTsome tmp | otmp => otmp
   ) : tmpvaropt
-  val () = tmpvar_root_set (tmp, otmp)
+  val () = tmpvar_set_root (tmp, otmp)
 in
   tmp
 end // end of [tmpvar_make_root]
+
+end // end of [local]
 
 (* ****** ****** *)
 
@@ -184,11 +200,11 @@ end // end of [tmpvarlst_make]
 
 (* ****** ****** *)
 
-implement tmpvar_ret_get (tmp) = tmp.tmpvar_ret
-implement tmpvar_top_get (tmp) = tmp.tmpvar_top
-implement tmpvar_root_get (tmp) = tmp.tmpvar_root
-implement tmpvar_stamp_get (tmp) = tmp.tmpvar_stamp
-implement tmpvar_typ_get (tmp) = tmp.tmpvar_typ
+implement tmpvar_get_ret (tmp) = tmp.tmpvar_ret
+implement tmpvar_get_top (tmp) = tmp.tmpvar_top
+implement tmpvar_get_root (tmp) = tmp.tmpvar_root
+implement tmpvar_get_stamp (tmp) = tmp.tmpvar_stamp
+implement tmpvar_get_typ (tmp) = tmp.tmpvar_typ
 
 implement tmpvar_is_void (tmp) = hityp_t_is_void (tmp.tmpvar_typ)
 
@@ -271,10 +287,9 @@ end // end of [funlab_make_nam_typ]
 
 fn global_cst_name_make
   (d2c: d2cst_t): string = let
-  val extdef = d2cst_extdef_get d2c
-in
+  val extdef = d2cst_get_extdef (d2c) in
   case+ extdef of
-  | $Syn.DCSTEXTDEFnone () => $Sym.symbol_name (d2cst_sym_get d2c)
+  | $Syn.DCSTEXTDEFnone () => $Sym.symbol_name (d2cst_get_sym d2c)
   | $Syn.DCSTEXTDEFsome_fun name => name
   | $Syn.DCSTEXTDEFsome_mac _name => begin
       prerr_interror ();
@@ -283,6 +298,8 @@ in
       $Err.abort {string} ()
     end // end of [DSTEXTDEFsome_mac]
 end // end of [global_cst_name_make]
+
+(* ****** ****** *)
 
 implement
 funlab_make_cst_typ
@@ -307,14 +324,14 @@ funlab_make_cst_typ
   val stamp = $Stamp.funlab_stamp_make ()
   val fl = _funlab_make (name, level, hit, stamp, 0(*prfck*))
   // note that template instantiation is always *local* !!!
-  val () = if is_global then funlab_qua_set (fl, D2CSTOPTsome d2c)
+  val () = if is_global then funlab_set_qua (fl, D2CSTOPTsome d2c)
 in
   fl
 end // end of [funlab_make_cst_typ]
 
 implement
 funlab_make_var_typ (d2v, hit) = let
-  val d2v_name = $Sym.symbol_name (d2var_sym_get d2v)
+  val d2v_name = $Sym.symbol_name (d2var_get_sym d2v)
   val level = d2var_current_level_get ()
   val stamp = $Stamp.funlab_stamp_make ()
   val stamp_name = $Stamp.tostring_stamp stamp
@@ -334,76 +351,77 @@ funlab_make_cst_prfck (d2c) = let
   ) // end of [val]
   val stamp = $Stamp.funlab_stamp_make ()
   val fl = _funlab_make (name, 0(*level*), hit, stamp, 1(*prfck*))
-  val () = funlab_qua_set (fl, D2CSTOPTsome d2c)
+  val () = funlab_set_qua (fl, D2CSTOPTsome d2c)
 in
   fl
 end // end of [funlab_make_cst_prfck] 
 
 (* ****** ****** *)
 
-implement funlab_name_get (fl) = fl.funlab_name
+implement funlab_get_lev (fl) = fl.funlab_lev
 
-implement funlab_lev_get (fl) = fl.funlab_lev
+implement funlab_get_name (fl) = fl.funlab_name
 
-implement funlab_typ_get (fl) = fl.funlab_typ
+implement funlab_get_typ (fl) = fl.funlab_typ
 
 implement
-funlab_typ_arg_get (fl) = let
+funlab_get_typ_arg (fl) = let
   val hit_fun = hityp_decode (fl.funlab_typ) in
   case+ hit_fun.hityp_node of
   | HITfun (_(*fc*), hits_arg, _(*hit_res*)) =>
       hityplst_encode (hits_arg)
   | _ => begin
       prerr_interror ();
-      prerr ": funlab_typ_arg_get: hit_fun = "; prerr_hityp hit_fun;
+      prerr ": funlab_get_typ_arg: hit_fun = "; prerr_hityp hit_fun;
       prerr_newline ();
       $Err.abort {hityplst_t} ()
     end (* end of [_] *)
-end // end of [funlab_typ_arg_get]
+end // end of [funlab_get_typ_arg]
 
 implement
-funlab_typ_res_get (fl) = let
+funlab_get_typ_res (fl) = let
   val hit_fun = hityp_decode (fl.funlab_typ) in
   case+ hit_fun.hityp_node of
   | HITfun (_(*fc*), _(*hits_arg*), hit_res) =>
       hityp_encode (hit_res)
   | _ => begin
       prerr_interror ();
-      prerr ": funlab_typ_res_get: hit_fun = "; prerr_hityp hit_fun;
+      prerr ": funlab_get_typ_res: hit_fun = "; prerr_hityp hit_fun;
       prerr_newline ();
       $Err.abort {hityp_t} ()
     end (* end of [_] *)
-end // end of [funlab_typ_res_get]
+end // end of [funlab_get_typ_res]
 
 implement
-funlab_funclo_get (fl) = let
+funlab_get_funclo (fl) = let
   val hit_fun = hityp_decode (fl.funlab_typ) in
   case+ hit_fun.hityp_node of
   | HITfun (funclo, _(*hits_arg*), _(*hit_res*)) => funclo
   | _ => begin
       prerr_interror ();
-      prerr ": funlab_funclo_get: hit_fun = "; prerr_hityp hit_fun;
+      prerr ": funlab_get_funclo: hit_fun = "; prerr_hityp hit_fun;
       prerr_newline ();
       $Err.abort {$Syn.funclo} ()
     end // end of [_]
-end // end of [funlab_funclo_get]
+end // end of [funlab_get_funclo]
 
-implement funlab_qua_get (fl) = fl.funlab_qua
+implement funlab_get_qua (fl) = fl.funlab_qua
 
-implement funlab_tailjoined_get (fl) = fl.funlab_tailjoined
+implement funlab_get_tailjoined (fl) = fl.funlab_tailjoined
 
-implement funlab_entry_get (fl) = fl.funlab_entry
+implement funlab_get_entry (fl) = fl.funlab_entry
 
-implement funlab_entry_get_some (fl) = begin
+implement
+funlab_get_entry_some (fl) = begin
   case+ fl.funlab_entry of
   | Some entry => entry | None () => begin
       prerr_interror ();
-      prerr ": funlab_entry_get_some: fl = "; prerr_funlab fl; prerr_newline ();
+      prerr ": funlab_get_entry_some: fl = "; prerr_funlab fl; prerr_newline ();
       $Err.abort {funentry_t} ()
     end // end of [None]
-end (* end of [funlab_entry_get_some] *)
+end (* end of [funlab_get_entry_some] *)
 
-implement funlab_prfck_get (fl) = fl.funlab_prfck
+implement funlab_get_prfck (fl) = fl.funlab_prfck
 
 end // end of [local]
 
@@ -511,7 +529,7 @@ in '{
 
 implement
 valprim_fun (funlab) = '{
-  valprim_node= VPfun funlab, valprim_typ= funlab_typ_get funlab
+  valprim_node= VPfun funlab, valprim_typ= funlab_get_typ funlab
 } // end of [valprim_fun]
 
 (* ****** ****** *)
@@ -570,12 +588,12 @@ valprim_string (str, len) = '{
 
 implement
 valprim_tmp (tmp) = '{
-  valprim_node= VPtmp tmp, valprim_typ= tmpvar_typ_get tmp
+  valprim_node= VPtmp tmp, valprim_typ= tmpvar_get_typ tmp
 } // end of [valprim_tmp]
 
 implement
 valprim_tmpref (tmp) = '{
-  valprim_node= VPtmpref tmp, valprim_typ= tmpvar_typ_get tmp
+  valprim_node= VPtmpref tmp, valprim_typ= tmpvar_get_typ tmp
 } // end of [valprim_tmpref]
 
 implement
@@ -1251,40 +1269,40 @@ instr_add_vardec (res, loc, tmp) =
 %{$
 
 ats_void_type
-atsccomp_funlab_qua_set
+atsopt_funlab_set_qua
   (ats_ptr_type fl, ats_ptr_type od2c) {
   ((funlab_t)fl)->atslab_funlab_qua = od2c ; return ;
-} // end of [atsccomp_funlab_qua_set]
+} // end of [atsopt_funlab_set_qua]
 
 ats_void_type
-atsccomp_funlab_entry_set
+atsopt_funlab_set_entry
   (ats_ptr_type fl, ats_ptr_type entry) {
   ((funlab_t)fl)->atslab_funlab_entry = entry ; return ;
-} // end of [atsccomp_funlab_entry_set]
+} // end of [atsopt_funlab_set_entry]
 
 ats_void_type
-atsccomp_funlab_tailjoined_set
+atsopt_funlab_set_tailjoined
   (ats_ptr_type fl, ats_ptr_type tmps) {
   ((funlab_t)fl)->atslab_funlab_tailjoined = tmps ; return ;
-} // end of [atsccomp_funlab_tailjoined_set]
+} // end of [atsopt_funlab_set_tailjoined]
 
 ats_void_type
-atsccomp_tmpvar_ret_set
+atsopt_tmpvar_set_ret
   (ats_ptr_type tmp, ats_int_type ret) {
   ((tmpvar_t)tmp)->atslab_tmpvar_ret = ret ; return ;
-} // end of [atsccomp_tmpvar_ret_set]
+} // end of [atsopt_tmpvar_set_ret]
 
 ats_void_type
-atsccomp_tmpvar_top_set
+atsopt_tmpvar_set_top
   (ats_ptr_type tmp, ats_int_type top) {
   ((tmpvar_t)tmp)->atslab_tmpvar_top = top ; return ;
-} // end of [atsccomp_tmpvar_top_set]
+} // end of [atsopt_tmpvar_set_top]
 
 ats_void_type
-atsccomp_tmpvar_root_set
+atsopt_tmpvar_set_root
   (ats_ptr_type tmp, ats_ptr_type root) {
   ((tmpvar_t)tmp)->atslab_tmpvar_root = root ; return ;
-} // end of [atsccomp_tmpvar_root_set]
+} // end of [atsopt_tmpvar_set_root]
 
 %} // end of [%{$]
 

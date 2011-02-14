@@ -30,10 +30,10 @@
 *)
 
 (* ****** ****** *)
-
+//
 // Author: Hongwei Xi (hwxi AT cs DOT bu DOT edu)
 // Time: October 2007
-
+//
 (* ****** ****** *)
 
 %{^
@@ -411,7 +411,7 @@ in
   case+ s2e0.s2exp_node of
   | S2Eeff s2fe => s2eff_contain_eff (s2fe, eff)
   | S2EVar s2V => begin
-      prerr (s2Var_loc_get s2V);
+      prerr (s2Var_get_loc s2V);
       prerr ": INTERNAL WARNING (ats_staexp2_util1)";
       prerr ": s2exp_contain_eff: s2e0 = "; prerr s2e0; prerr_newline ();
       false
@@ -471,7 +471,7 @@ in
   | S2Eeff s2fe => s2eff_contain_effvar (s2fe, s2v0)
   | S2Evar s2v => eq_s2var_s2var (s2v0, s2v)
   | S2EVar s2V => begin
-      prerr (s2Var_loc_get s2V);
+      prerr (s2Var_get_loc s2V);
       prerr ": INTERNAL WARNING (ats_staexp2_util1)";
       prerr ": s2exp_contain_effvar: s2e = "; prerr s2e; prerr_newline ();
       false
@@ -504,7 +504,7 @@ in
   | S2Eeff s2fe2 => s2eff_contain_s2eff (s2fe1, s2fe2)
   | S2Evar s2v2 => s2eff_contain_effvar (s2fe1, s2v2)
   | S2EVar s2V2 => begin
-      prerr (s2Var_loc_get s2V2);
+      prerr (s2Var_get_loc s2V2);
       prerr ": INTERNAL WARNING";
       prerr ": s2eff_contain_s2exp: s2e2 = "; prerr s2e2; prerr_newline ();
       false
@@ -606,7 +606,7 @@ implement
 s2exp_is_abscon (s2e) = begin
   case+ s2e.s2exp_node of
   | S2Ecst s2c => begin
-      if s2cst_is_abstract s2c then true else s2cst_iscon_get s2c
+      if s2cst_is_abstract s2c then true else s2cst_get_iscon s2c
     end // end of [S2Ecst]
   | S2Eapp (s2e, _) => s2exp_is_abscon s2e
   | _ => false
@@ -689,7 +689,7 @@ s2cst_select_s2explstlst (s2cs, s2ess) = let
         print (s2cst_srt_get s2c);
         print_newline ();
 *)
-        if test (s2cst_srt_get s2c, s2ess) then begin
+        if test (s2cst_get_srt s2c, s2ess) then begin
           S2CSTLSTcons (s2c, filter (s2cs, s2ess))
         end else begin
           filter (s2cs, s2ess)
@@ -940,7 +940,7 @@ s2kexp_make_s2exp (s2e0) = let
   and aux_s2Var
     (pol: int, s2vss: s2varlstlst, s2V: s2Var_t): s2kexp = begin
     if pol > 0 then
-      S2KEunion (aux_s2Varboundlst (pol, s2vss, s2Var_lbs_get s2V))
+      S2KEunion (aux_s2Varboundlst (pol, s2vss, s2Var_get_lbs s2V))
     else S2KEany ()
   end // end of [aux_s2Var]
 in
@@ -1068,7 +1068,7 @@ end // end of [s2kexp_match_fun_arg]
 (* ****** ****** *)
 
 fun s2cst_root_get
-  (s2c: s2cst_t): s2cst_t = case+ s2cst_sup_get s2c of
+  (s2c: s2cst_t): s2cst_t = case+ s2cst_get_sup s2c of
   | S2CSTLSTcons (s2c, _) => s2cst_root_get s2c | S2CSTLSTnil () => s2c
 // end of [s2cst_root_get]
 
@@ -1091,14 +1091,14 @@ s2zexp_make_s2exp (s2e0) = let
         // end of [S2Eapp]
 //
       | S2Ecst s2c => let
-          val isabs = s2cst_isabs_get (s2c) in
+          val isabs = s2cst_get_isabs (s2c) in
           case+ isabs of
           | Some (Some s2e) => aux_s2exp (s2vss, s2e) | _ => s2zexp_make_s2cst (s2c)
         end // end of [S2Ecst]
 //
       | S2Eclo (knd, _) => if knd <> 0 then S2ZEptr () else S2ZEbot ()
-      | S2Edatconptr (d2c, _) => s2zexp_make_s2cst (d2con_scst_get d2c)
-      | S2Edatcontyp (d2c, _) => s2zexp_make_s2cst (d2con_scst_get d2c)
+      | S2Edatconptr (d2c, _) => s2zexp_make_s2cst (d2con_get_scst d2c)
+      | S2Edatcontyp (d2c, _) => s2zexp_make_s2cst (d2con_get_scst d2c)
       | S2Eexi (s2vs, _(*s2ps*), s2e) => aux_s2exp (s2vs :: s2vss, s2e)
       | S2Eextype (name, _(*arglst*)) => S2ZEextype (name)
       | S2Efun _ => S2ZEptr ()
@@ -1130,7 +1130,7 @@ s2zexp_make_s2exp (s2e0) = let
     ) : s2zexp =
     case+ s2e_fun.s2exp_node of
     | S2Ecst s2c => let
-        val isabs = s2cst_isabs_get (s2c) in
+        val isabs = s2cst_get_isabs (s2c) in
         case+ isabs of
         | Some (Some s2e_fun) => let
             val s2e = s2exp_app_srt (s2t, s2e_fun, s2es_arg) in aux_s2exp (s2vss, s2e)
@@ -1173,14 +1173,14 @@ s2zexp_make_s2exp (s2e0) = let
 //
   and aux_s2Var
     (s2vss: s2varlstlst, s2V0: s2Var_t): s2zexp = let
-    val lbs = s2Var_lbs_get s2V0
+    val lbs = s2Var_get_lbs s2V0
   in
     case+ lbs of
     | list_cons (lb, _) => let
         val s2e = s2Varbound_val_get lb in aux_s2exp (s2vss, s2e)
       end // end of [list_cons]
     | list_nil () => let
-        val ubs = s2Var_ubs_get s2V0 in
+        val ubs = s2Var_get_ubs s2V0 in
         case+ ubs of
         | list_cons (ub, _) => let
             val s2e = s2Varbound_val_get ub in aux_s2exp (s2vss, s2e)
@@ -1314,7 +1314,7 @@ stasub_extend_sarglst_svarlst
     : @(stasub, s2varlst) = case+ (s2as, s2vs) of
     | (nil (), nil ()) => (sub, $Lst.list_reverse s2vs1)
     | (s2a :: s2as, s2v :: s2vs) => let
-        val s2t_s2v = s2var_srt_get s2v
+        val s2t_s2v = s2var_get_srt s2v
         val s2t = (case+ s2a.s2arg_srt of
           | Some s2t => begin
               if s2t_s2v <= s2t then s2t else err1 (loc0, s2t_s2v, s2a)
@@ -1344,15 +1344,18 @@ fun s2var_subst
   | nil () => None_vt ()
 end (* end of [s2var_subst] *)
 
-fun s2Var_subst .<>.
-  (sub: stasub, s2V0: s2Var_t): Option_vt s2exp = begin
-  case+ s2Var_link_get s2V0 of
+fun s2Var_subst .<>. (
+  sub: stasub, s2V0: s2Var_t
+) : Option_vt (s2exp) = begin
+  case+ s2Var_get_link s2V0 of
   | Some s2e => Some_vt (s2exp_subst (sub, s2e))
   | None () => None_vt () where {
-      fun aux (s2V0: s2Var_t, sub: stasub): void = case+ sub of
+      fun aux (
+        s2V0: s2Var_t, sub: stasub
+      ) : void = case+ sub of
         | s2vs2e :: sub => let
-            val s2v = s2vs2e.0; val sVs = s2var_sVarset_get s2v
-            val () = s2var_sVarset_set (s2v, s2Varset_add (sVs, s2V0))
+            val s2v = s2vs2e.0; val sVs = s2var_get_sVarset s2v
+            val () = s2var_set_sVarset (s2v, s2Varset_add (sVs, s2V0))
           in
             aux (s2V0, sub)
           end // end of [::]
@@ -1969,9 +1972,9 @@ and aux_s2lab (
 
 and aux_s2Var
   (s2V: s2Var_t, fvs: &s2varset_t): void =
-  case+ s2Var_link_get s2V of
+  case+ s2Var_get_link s2V of
   | Some s2e => aux_s2exp (s2e, fvs) | None () => begin
-      prerr_loc_interror (s2Var_loc_get s2V);
+      prerr_loc_interror (s2Var_get_loc s2V);
       prerr ": s2exp_freevars: s2V = "; prerr s2V; prerr_newline ();
       $Err.abort {void} ()
     end // end of [None]
@@ -2039,7 +2042,7 @@ fun aux_s2exp
       aux_s2exp (s2V0, s2e_fun, ans, s2cs, s2vs)
   | S2Ecrypt s2e => aux_s2exp (s2V0, s2e, ans, s2cs, s2vs)
   | S2Ecst s2c => let
-      val sVs = s2cst_sVarset_get s2c in
+      val sVs = s2cst_get_sVarset s2c in
       if s2Varset_ismem (sVs, s2V0) then (s2cs := S2CSTLSTcons (s2c, s2cs))
     end // end of [S2Ecst]
   | S2Edatconptr (d2c, s2es_arg) => begin
@@ -2214,7 +2217,7 @@ and aux_s2var (
   , s2v: s2var_t
   , ans: &int, s2cs: &s2cstlst, s2vs: &s2varlst
   ) : void = let
-  val sVs = s2var_sVarset_get s2v in
+  val sVs = s2var_get_sVarset s2v in
   if s2Varset_ismem (sVs, s2V0)
     then (s2vs := list_cons (s2v, s2vs))
   // end of [if]
@@ -2226,14 +2229,14 @@ and aux_s2Var (
   , ans: &int
   , s2cs: &s2cstlst
   , s2vs: &s2varlst
-  ) : void = begin case+ s2Var_link_get s2V of
+  ) : void = begin case+ s2Var_get_link s2V of
   | Some s2e => aux_s2exp (s2V0, s2e, ans, s2cs, s2vs)
   | None () => let
       val tst = eq_s2Var_s2Var (s2V0, s2V) in
       if tst then
         (ans := ans + 1)
       else let
-        val sVs = s2Var_sVarset_get s2V in
+        val sVs = s2Var_get_sVarset s2V in
         if s2Varset_ismem (sVs, s2V0) then (ans := ans + 1)
       end // end of [if]
     end (* end of [None] *)

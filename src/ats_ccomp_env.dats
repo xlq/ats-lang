@@ -234,7 +234,7 @@ typdefmap_add_rec (tk) = let
   val base = typdef_base_get ()
   val n = typdef_count_get_and_inc ()
   val name_rec = let
-    val prfx = $Glo.atsccomp_namespace_get ()
+    val prfx = $Glo.atsopt_namespace_get ()
   in
     if stropt_is_some prfx then let
       val prfx = stropt_unsome prfx
@@ -260,7 +260,7 @@ typdefmap_add_sum (tk) = let
   val base = typdef_base_get ()
   val n = typdef_count_get_and_inc ()
   val name_sum = let
-    val prfx = $Glo.atsccomp_namespace_get ()
+    val prfx = $Glo.atsopt_namespace_get ()
   in
     if stropt_is_some prfx then let
       val prfx = stropt_unsome prfx
@@ -286,7 +286,7 @@ typdefmap_add_uni (tk) = let
   val base = typdef_base_get ()
   val n = typdef_count_get_and_inc ()
   val name_uni = let // union
-    val prfx = $Glo.atsccomp_namespace_get ()
+    val prfx = $Glo.atsopt_namespace_get ()
   in
     if stropt_is_some prfx then let
       val prfx = stropt_unsome prfx
@@ -526,7 +526,7 @@ vartypset_d2varlst_make (vtps) = let
   viewdef V = d2varlst_vt @ d2vs; viewtypedef VT = ptr d2vs
   fn f (pf: !V | vtp: vartyp_t, env: !VT)
     :<> void = begin
-    !env := list_vt_cons (vartyp_var_get vtp, !env)
+    !env := list_vt_cons (vartyp_get_var vtp, !env)
   end // end of [fn]
   val () = vartypset_foreach_main {V} {VT} (view@ d2vs | vtps, f, &d2vs)
 in
@@ -732,14 +732,15 @@ viewtypedef dyncstsetlst = List_vt (dyncstset)
 val the_dyncstset = ref_make_elt<dyncstset> ($Set.set_nil) 
 val the_dyncstsetlst = ref_make_elt<dyncstsetlst> (list_vt_nil ())
 
-fn dyncstset_add
-  (d2cset_ref: ref dyncstset, d2c: d2cst_t): void = let
-  val loc0 = d2cst_loc_get d2c
+fn dyncstset_add (
+  d2cset_ref: ref dyncstset, d2c: d2cst_t
+) : void = let
+  val loc0 = d2cst_get_loc d2c
   val hit0 = (if d2cst_is_proof (d2c)
-    then hityp_proof else s2exp_tr (loc0, 1(*deep*), d2cst_typ_get d2c)
+    then hityp_proof else s2exp_tr (loc0, 1(*deep*), d2cst_get_typ d2c)
   ) : hityp
   val hit0 = hityp_normalize hit0
-  val () = d2cst_hityp_set (d2c, Some hit0)
+  val () = d2cst_set_hityp (d2c, Some hit0)
   val d2cset = !d2cset_ref
 in
   !d2cset_ref := $Set.set_insert<d2cst_t> (d2cset, d2c, compare_d2cst_d2cst)
@@ -1138,32 +1139,35 @@ implement funentry_make
   _funentry_make (loc, fl, level, fls, vtps, tmp_ret, inss)
 end // end of [funentry_make]
 
-implement funentry_loc_get (entry) = entry.funentry_loc
-implement funentry_lab_get (entry) = entry.funentry_lab
-implement funentry_lev_get (entry) = entry.funentry_lev
-implement funentry_vtps_get (entry) = entry.funentry_vtps
-implement funentry_vtps_flag_get (entry) = entry.funentry_vtps_flag
-implement funentry_labset_get (entry) = entry.funentry_labset
-implement funentry_ret_get (entry) = entry.funentry_ret
-implement funentry_body_get (entry) = entry.funentry_body
-implement funentry_tailjoin_get (entry) = entry.funentry_tailjoin
+implement funentry_get_loc (entry) = entry.funentry_loc
+implement funentry_get_lab (entry) = entry.funentry_lab
+implement funentry_get_lev (entry) = entry.funentry_lev
+implement funentry_get_vtps (entry) = entry.funentry_vtps
+implement funentry_get_vtps_flag (entry) = entry.funentry_vtps_flag
+implement funentry_get_labset (entry) = entry.funentry_labset
+implement funentry_get_ret (entry) = entry.funentry_ret
+implement funentry_get_body (entry) = entry.funentry_body
+implement funentry_get_tailjoin (entry) = entry.funentry_tailjoin
 
 end // end of [local]
 
-implement funentry_associate (entry) =
-  let val fl = funentry_lab_get (entry) in
-    funlab_entry_set (fl, Some entry)
-  end // end of [funentry_associate]
+implement
+funentry_associate (entry) = let
+  val fl = funentry_get_lab (entry)
+in
+  funlab_set_entry (fl, Some entry)
+end // end of [funentry_associate]
 
 local
-
-// transitive closure
-fn funentry_labset_get_all
+//
+// HX: transitive closure
+//
+fn funentry_get_labset_all
   (entry0: funentry_t): funlabset = let
-  val level0 = funentry_lev_get (entry0)
+  val level0 = funentry_get_lev (entry0)
   fun aux (fl: funlab_t):<cloptr1> void = let
-    val entry = funlab_entry_get_some fl
-    val level = funentry_lev_get (entry)
+    val entry = funlab_get_entry_some fl
+    val level = funentry_get_lev (entry)
 (*
     val () = begin
       print "funentry_labset_get_all: aux: fl = "; print fl; print_newline ();
@@ -1175,14 +1179,14 @@ fn funentry_labset_get_all
     | _ when level >= level0 => begin
         if the_funlabset_mem fl then () else begin
           let val () = the_funlabset_add (fl) in
-            funlabset_foreach_cloptr (funentry_labset_get entry, aux)
+            funlabset_foreach_cloptr (funentry_get_labset entry, aux)
           end // end of [let]
         end // end of [if]
       end // end of [_ when ...]
     | _ => the_funlabset_add (fl)
   end // end of [aux]
   val () = the_funlabset_push ()
-  val fls0 = funentry_labset_get entry0
+  val fls0 = funentry_get_labset (entry0)
 (*
   val () = begin
     print "funentry_labset_get_all: fls0 = "; print_funlabset fls0; print_newline ()
@@ -1198,29 +1202,29 @@ dataviewtype ENV (l:addr) = ENVcon (l) of (ptr l, int)
 in
 
 implement
-funentry_vtps_get_all (entry0) = let
+funentry_get_vtps_all (entry0) = let
 (*
   val fl0 = funentry_lab_get entry0
   val () = begin
     print "funentry_vtps_get_all: entry0 = "; print fl0; print_newline ()
   end // end of [val]
 *)
-  val vtps_flag = funentry_vtps_flag_get (entry0)
-  var vtps_all: vartypset = funentry_vtps_get (entry0)
+  val vtps_flag = funentry_get_vtps_flag (entry0)
+  var vtps_all: vartypset = funentry_get_vtps (entry0)
   viewdef V = vartypset @ vtps_all
   viewtypedef VT = ENV (vtps_all)
   fun aux
     (pf: !V | fl: funlab_t, env: !VT)
     : void = let
     val+ ENVcon (p, level0) = env
-    val entry = funlab_entry_get_some (fl)
-    val level = funentry_lev_get (entry)
+    val entry = funlab_get_entry_some (fl)
+    val level = funentry_get_lev (entry)
     val vtps = (
       if level < level0 then begin
         // higher-level should be handled earlier
-        funentry_vtps_get_all (entry)
+        funentry_get_vtps_all (entry)
       end else begin // [level = level0]
-        funentry_vtps_get (entry)
+        funentry_get_vtps (entry)
       end // end of [if]
     ) : vartypset
     val () = begin
@@ -1231,8 +1235,8 @@ funentry_vtps_get_all (entry0) = let
   end // end of [aux]
   val () =
     if vtps_flag = 0 then let
-      val level0 = funentry_lev_get (entry0)
-      val fls = funentry_labset_get_all (entry0)
+      val level0 = funentry_get_lev (entry0)
+      val fls = funentry_get_labset_all (entry0)
 (*
       val () = begin
         print "funentry_vtps_get_all: fls = "; print_funlabset fls; print_newline ()        
@@ -1243,8 +1247,8 @@ funentry_vtps_get_all (entry0) = let
         funlabset_foreach_main {V} {VT} (view@ vtps_all | fls, aux, env)
       end
       val+ ~ENVcon (_, _) = env
-      val () = funentry_vtps_set (entry0, vtps_all)
-      val () = funentry_vtps_flag_set (entry0)
+      val () = funentry_set_vtps (entry0, vtps_all)
+      val () = funentry_set_vtps_flag (entry0)
     in
       // empty
     end
@@ -1312,7 +1316,7 @@ funentry_varindmap_set (vtps) = let
     prval @(pf_map, pf_int) = pf
     val+ ENVcon (p_l, p_i) = env
     val i = !p_i; val () = (!p_i := i + 1)
-    val () = $Map.map_insert (!p_l, vartyp_var_get vtp, i)
+    val () = $Map.map_insert (!p_l, vartyp_get_var vtp, i)
   in
     pf := (pf_map, pf_int); fold@ env
   end
@@ -1333,12 +1337,12 @@ local
 
 val the_funlablst = begin
   ref_make_elt<funlablst_vt> (list_vt_nil ())
-end
+end // end of [the_funlablst]
 
 in // in of [local]
 
 implement
-funentry_lablst_add (fl) = let
+funentry_add_lablst (fl) = let
 (*
   val () = begin
     print "funentry_lablst_add: fl = "; print fl; print_newline ()
@@ -1351,7 +1355,7 @@ in
 end // end of [funentry_lablst_add]
 
 implement
-funentry_lablst_get () = let
+funentry_get_lablst () = let
   val res = let
     val (pfbox | p) = ref_get_view_ptr (the_funlablst)
     prval vbox pf = pfbox
@@ -1591,7 +1595,7 @@ val the_valprimlst_free =
 in // in of [local]
 
 implement
-the_valprimlst_free_get () = let
+the_valprimlst_get_free () = let
   val (vbox pf | p) = ref_get_view_ptr (the_valprimlst_free)
   val vps = !p; val () = !p := list_vt_nil ()
 in
@@ -1599,7 +1603,7 @@ in
 end // end of [the_valprimlst_free_get]
 
 implement
-the_valprimlst_free_add (vp) = let
+the_valprimlst_add_free (vp) = let
   val (vbox pf | p) = ref_get_view_ptr (the_valprimlst_free)
 in
   !p := list_vt_cons (vp, !p)
@@ -1612,22 +1616,22 @@ end // end of [local]
 %{$
 
 ats_void_type
-ats_ccomp_env_funentry_vtps_set
+atsopt_funentry_set_vtps
   (ats_ptr_type entry, ats_ptr_type vtps) {
   ((funentry_t)entry)->atslab_funentry_vtps = vtps ; return ;
-} // end of [ats_ccomp_env_funentry_vtps_set]
+} // end of [atsopt_funentry_set_vtps]
 
 ats_void_type
-ats_ccomp_env_funentry_vtps_flag_set
+atsopt_funentry_set_vtps_flag
   (ats_ptr_type entry) {
   ((funentry_t)entry)->atslab_funentry_vtps_flag = 1 ; return ;
-} // end of [ats_ccomp_env_funentry_vtps_flag_set]
+} // end of [atsopt_funentry_set_vtps_flag]
 
 ats_void_type
-ats_ccomp_env_funentry_tailjoin_set
+atsopt_funentry_set_tailjoin
   (ats_ptr_type entry, ats_ptr_type tjs) {
   ((funentry_t)entry)->atslab_funentry_tailjoin = tjs ; return ;
-} // end of [ats_ccomp_env_funentry_tailjoin_set]
+} // end of [atsopt_funentry_set_tailjoin]
 
 %} // end of [%{$]
 

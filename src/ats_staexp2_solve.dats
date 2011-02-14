@@ -676,7 +676,7 @@ s2exp_tyleq_solve_err (loc0, s2e10, s2e20, err) = let
       ) of
       | (S2Ecst s2c1_fun, S2Ecst s2c2_fun) => begin
           if s2cst_is_eqsup (s2c1_fun, s2c2_fun) then begin
-            case+ s2cst_argvar_get s2c1_fun of
+            case+ s2cst_get_argvar s2c1_fun of
             | Some argvarlst => begin
                 s2explst_tyleq_solve_argvarlst_err
                   (loc0, s2es1_arg, s2es2_arg, argvarlst, err)
@@ -1048,7 +1048,7 @@ s2exp_equal_solve_Var_err (loc0, s2V1, s2e1, s2e2, err) = let
 in
   case+ (ans, s2cs, s2vs) of
   | (0, S2CSTLSTnil (), list_nil ()) => let
-      val s2t1 = s2Var_srt_get s2V1 and s2t2 = s2e2.s2exp_srt
+      val s2t1 = s2Var_get_srt s2V1 and s2t2 = s2e2.s2exp_srt
 (*
       val () = begin
         print "s2exp_equal_solve_Var_err: s2t1 = "; print s2t1; print_newline ();
@@ -1057,18 +1057,18 @@ in
 *)
     in
       if (s2t2 <= s2t1) then let
-        val () = s2Var_srt_set (s2V1, s2t2)
-        val () = s2exp_srt_set (s2e1, s2t2)
+        val () = s2Var_set_srt (s2V1, s2t2)
+        val () = s2exp_set_srt (s2e1, s2t2)
 (*
         val () = begin
           print "s2exp_equal_solve_Var_err: "; print s2V1; print " <- "; print s2e2;
           print_newline ()
         end // end of [val]
 *)
-        val () = s2Var_link_set (s2V1, Some s2e2)
+        val () = s2Var_set_link (s2V1, Some s2e2)
       in
-        s2exp_tyleq_solve_lbs_err (loc0, s2Var_lbs_get s2V1, s2e2, err);
-        s2exp_tyleq_solve_ubs_err (loc0, s2e2, s2Var_ubs_get s2V1, err);
+        s2exp_tyleq_solve_lbs_err (loc0, s2Var_get_lbs s2V1, s2e2, err);
+        s2exp_tyleq_solve_ubs_err (loc0, s2e2, s2Var_get_ubs s2V1, err);
       end else begin
         prerr_loc_error3 (loc0);
         $Deb.debug_prerrf (": %s: s2exp_equal_solve_Var_err", @(THISFILENAME));
@@ -1095,9 +1095,10 @@ in
     end // end of (_, _, _)
 end // end of [s2exp_equal_solve_Var_err]
 
-implement s2exp_tyleq_solve_Var_l_err
+implement
+s2exp_tyleq_solve_Var_l_err
   (loc0, s2V1, s2e1, s2e2, err) = let
-  val lbs = s2Var_lbs_get s2V1 and ubs = s2Var_ubs_get s2V1
+  val lbs = s2Var_get_lbs s2V1 and ubs = s2Var_get_ubs s2V1
   var s2cs: s2cstlst = S2CSTLSTnil () and s2vs: s2varlst = list_nil ()
   val ans = s2Var_s2exp_occurs (s2V1, s2e2, s2cs, s2vs)
 in
@@ -1105,7 +1106,7 @@ in
   | (0, S2CSTLSTnil (), list_nil ()) => let
       val () = s2exp_tyleq_solve_lbs_err (loc0, lbs, s2e2, err)
 (*
-      val s2t1 = s2Var_srt_get (s2V1)
+      val s2t1 = s2Var_get_srt (s2V1)
       val s2t2 = s2e2.s2exp_srt
       val () = if s2t2 <= s2t1 then () else begin
         prerr_loc_error3 (loc0);
@@ -1123,7 +1124,7 @@ in
 *)
       val ub = s2Varbound_make (loc0, s2e2)
     in
-      s2Var_ubs_set (s2V1, list_cons (ub, ubs))
+      s2Var_set_ubs (s2V1, list_cons (ub, ubs))
     end // end of [0, S2CSTLSTnil, list_nil]
   | (_, _, _) => let
 (*
@@ -1137,9 +1138,10 @@ in
     end // end of [_, _, _]
 end // end of [s2exp_tyleq_solve_Var_l_err]
 
-implement s2exp_tyleq_solve_Var_r_err
+implement
+s2exp_tyleq_solve_Var_r_err
   (loc0, s2e1, s2V2, s2e2, err) = let
-  val lbs = s2Var_lbs_get s2V2 and ubs = s2Var_ubs_get s2V2
+  val lbs = s2Var_get_lbs s2V2 and ubs = s2Var_get_ubs s2V2
   var s2cs: s2cstlst = S2CSTLSTnil () and s2vs: s2varlst = list_nil ()
   val ans = s2Var_s2exp_occurs (s2V2, s2e1, s2cs, s2vs)
 in
@@ -1147,7 +1149,7 @@ in
   | (0, S2CSTLSTnil (), list_nil ()) => let
       val () = s2exp_tyleq_solve_ubs_err (loc0, s2e1, ubs, err)
       val s2t1 = s2e1.s2exp_srt
-      val s2t2 = s2Var_srt_get (s2V2)
+      val s2t2 = s2Var_get_srt (s2V2)
       val () = if s2t1 <= s2t2 then () else begin
         prerr_loc_error3 (loc0);
         $Deb.debug_prerrf (": %s: s2exp_equal_solve_Var_err", @(THISFILENAME));
@@ -1163,8 +1165,8 @@ in
       end // end of [val]
     val lb = s2Varbound_make (loc0, s2e1)
     in
-      s2Var_lbs_set (s2V2, list_cons (lb, lbs))
-    end
+      s2Var_set_lbs (s2V2, list_cons (lb, lbs))
+    end // end of [...]
   | (_, _, _) => let
 (*
       val () = begin
@@ -1174,7 +1176,7 @@ in
 *)
     in
       trans3_env_add_tyleq (loc0, s2e1, s2e2)
-    end
+    end // end of [_,_,_]
 end // end of [s2exp_tyleq_solve_Var_r_err]
 
 (* ****** ****** *)
@@ -1289,10 +1291,10 @@ in
     end // end of [S2Evar _, S2Evar _]
   | (S2Evar s2v1, _) => let
 (*
-      val s2t_var = s2var_srt_get s2v1
+      val s2t_var = s2var_get_srt s2v1
       val s2t_exp = s2e2.s2exp_srt
       val () = begin
-        if not (s2t_var <= s2t_exp) then s2var_srt_set (s2v1, s2t_exp)
+        if not (s2t_var <= s2t_exp) then s2var_set_srt (s2v1, s2t_exp)
       end // end of [val]
 *)
     in
@@ -1300,10 +1302,10 @@ in
     end // end of [S2Evar _, _]
   | (_, S2Evar s2v2) => let
 (*
-      val s2t_var = s2var_srt_get s2v2
+      val s2t_var = s2var_get_srt s2v2
       val s2t_exp = s2e1.s2exp_srt
       val () = begin
-        if not (s2t_var <= s2t_exp) then s2var_srt_set (s2v2, s2t_exp)
+        if not (s2t_var <= s2t_exp) then s2var_set_srt (s2v2, s2t_exp)
       end // end of [val]
 *)
     in

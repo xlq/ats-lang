@@ -115,7 +115,7 @@ in
         s2exp_slablst_lindel_cstr (loc0, s2e_vt, s2ls_bk_nt, cstr)
       end
       val () = trans3_env_add_proplst (loc0, cstr)
-      val () = d2var_typ_reset_at (d2v_view, s2e_vt, s2e_addr)
+      val () = d2var_reset_typ_at (d2v_view, s2e_vt, s2e_addr)
       val s2ls0_bk = begin
         s2lablst_trim_s2lablst_s2lablst (s2ls0_ft, s2ls_ft, s2ls_bk)
       end // end of [val]
@@ -195,7 +195,7 @@ in
       val s2ls0_bk = begin
         s2lablst_trim_s2lablst_s2lablst (s2ls0_ft, s2ls_ft, s2ls_bk)
       end // end of [val]
-      val () = d2var_typ_reset_at (d2v_view, s2e, s2e_addr)
+      val () = d2var_reset_typ_at (d2v_view, s2e, s2e_addr)
       val () = $SOL.s2exp_out_void_solve (loc0, s2e_old)
     in
       s2ls0_bk
@@ -253,7 +253,7 @@ fn d2var_view_viewat_slablst_set_main
   in
     $Err.abort {void} ()
   end // end of [if]
-  val () = d2var_typ_reset_at (d2v_view, s2e0, s2e0_addr)
+  val () = d2var_reset_typ_at (d2v_view, s2e0, s2e0_addr)
 in
   (s2e_old, s2ls)
 end // end [d2var_view_viewat_slablst_set_main]
@@ -261,7 +261,7 @@ end // end [d2var_view_viewat_slablst_set_main]
 fn d2var_view_viewat_slablst_set
   (loc0: loc_t, d2v_view: d2var_t, s2ls: s2lablst, s2e_new_at: s2exp)
   : (s2exp (*old*), s2lablst) = begin
-  case+ d2var_typ_get d2v_view of
+  case+ d2var_get_typ d2v_view of
   | Some s2e_at => (case+
     un_s2exp_at_viewt0ype_addr_view s2e_at of
     | ~Some_vt s2ts2a => begin
@@ -282,7 +282,7 @@ fn d2var_view_viewat_slablst_set
     ) // end [Some]
   | None () => let
       val s2e0 = s2exp_void_t0ype ()
-      val s2e0_addr = d2var_addr_get_some (loc0, d2v_view)
+      val s2e0_addr = d2var_get_addr_some (loc0, d2v_view)
     in
       d2var_view_viewat_slablst_set_main
         (loc0, d2v_view, s2e0, s2e0_addr, s2ls, s2e_new_at)
@@ -361,7 +361,7 @@ in
       (* empty *)
     end // end of [D3Esel_var when d2var_is_mutable]
 //
-  | D3Evar d2v when d2var_isfix_get (d2v) => (err := err + 1) 
+  | D3Evar d2v when d2var_get_isfix (d2v) => (err := err + 1) 
   | D3Evar d2v when d2var_is_mutable d2v => let
       val _ (* nil *) = begin
         d2var_mut_slablst_assgn (loc0, d2v, list_nil (), s2e_new)

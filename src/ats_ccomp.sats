@@ -55,7 +55,7 @@ staload "ats_hiexp.sats"
 abstype tmplab_t // boxed type
 
 fun tmplab_make (): tmplab_t
-fun tmplab_stamp_get (tl: tmplab_t): stamp_t
+fun tmplab_get_stamp (tl: tmplab_t): stamp_t
 
 fun fprint_tmplab {m:file_mode}
   (pf: file_mode_lte (m, w) | out: &FILE m, tl: tmplab_t): void
@@ -124,30 +124,34 @@ fun funlab_make_cst_prfck (d2c: d2cst_t): funlab_t
 
 //
 
-fun funlab_name_get (fl: funlab_t): string
+fun funlab_get_lev (fl: funlab_t): int
 
-fun funlab_lev_get (fl: funlab_t): int
+fun funlab_get_name (fl: funlab_t): string
 
-fun funlab_typ_get (fl: funlab_t): hityp_t
-fun funlab_typ_arg_get (fl: funlab_t): hityplst_t
-fun funlab_typ_res_get (fl: funlab_t): hityp_t
-fun funlab_funclo_get (fl: funlab_t): $Syn.funclo
+fun funlab_get_typ (fl: funlab_t): hityp_t
+fun funlab_get_typ_arg (fl: funlab_t): hityplst_t
+fun funlab_get_typ_res (fl: funlab_t): hityp_t
 
-fun funlab_qua_get (fl: funlab_t): d2cstopt
-fun funlab_qua_set (fl: funlab_t, _: d2cstopt): void
-  = "atsccomp_funlab_qua_set"
+fun funlab_get_funclo (fl: funlab_t): $Syn.funclo
 
-fun funlab_tailjoined_get (fl: funlab_t): tmpvarlst
-fun funlab_tailjoined_set (fl: funlab_t, tmps: tmpvarlst): void
-  = "atsccomp_funlab_tailjoined_set"
+fun funlab_get_qua (fl: funlab_t): d2cstopt
+fun funlab_set_qua
+  (fl: funlab_t, _: d2cstopt): void = "atsopt_funlab_set_qua"
+// end of [funlab_qua_set]
 
-fun funlab_entry_get (fl: funlab_t): funentryopt
-fun funlab_entry_set (fl: funlab_t, _: funentryopt): void
-  = "atsccomp_funlab_entry_set"
+fun funlab_get_tailjoined (fl: funlab_t): tmpvarlst
+fun funlab_set_tailjoined
+  (fl: funlab_t, tmps: tmpvarlst): void = "atsopt_funlab_set_tailjoined"
+// end of [funlab_set_tailjoined]
 
-fun funlab_entry_get_some (fl: funlab_t): funentry_t
+fun funlab_get_entry (fl: funlab_t): funentryopt
+fun funlab_set_entry
+  (fl: funlab_t, _: funentryopt): void = "atsopt_funlab_set_entry"
+// end of [funlab_set_entry]
 
-fun funlab_prfck_get (fl: funlab_t): int
+fun funlab_get_entry_some (fl: funlab_t): funentry_t
+
+fun funlab_get_prfck (fl: funlab_t): int
 
 (* ****** ****** *)
 
@@ -175,7 +179,7 @@ overload = with eq_tmpvar_tmpvar
 fun compare_tmpvar_tmpvar (tmp1: tmpvar_t, tmp2: tmpvar_t):<> Sgn
 overload compare with compare_tmpvar_tmpvar
 
-//
+(* ****** ****** *)
 
 fun tmpvar_make (hit: hityp_t): tmpvar_t
 fun tmpvar_make_ret (hit: hityp_t): tmpvar_t
@@ -183,13 +187,15 @@ fun tmpvar_make_root (tmp: tmpvar_t): tmpvar_t
 
 fun tmpvarlst_make (hit: hityplst_t): tmpvarlst
 
-//
+(* ****** ****** *)
 
-fun tmpvar_ret_get (tmp: tmpvar_t): int
-fun tmpvar_top_get (tmp: tmpvar_t): int // 0/1: local/top(static)
-fun tmpvar_root_get (tmp: tmpvar_t): tmpvaropt
-fun tmpvar_stamp_get (tmp: tmpvar_t): stamp_t
-fun tmpvar_typ_get (tmp: tmpvar_t): hityp_t
+fun tmpvar_get_ret (tmp: tmpvar_t): int
+fun tmpvar_get_top (tmp: tmpvar_t): int // 0/1: local/top(static)
+fun tmpvar_get_root (tmp: tmpvar_t): tmpvaropt
+fun tmpvar_get_stamp (tmp: tmpvar_t): stamp_t
+fun tmpvar_get_typ (tmp: tmpvar_t): hityp_t
+
+(* ****** ****** *)
 
 fun tmpvar_is_mutable (tmp: tmpvar_t): bool
 fun tmpvar_is_void (tmp: tmpvar_t): bool
@@ -395,10 +401,10 @@ fun fprint_kontlst {m:file_mode}
   (pf: file_mode_lte (m, w) | out: &FILE m, _: kontlst): void
 overload fprint with fprint_kontlst
 
-fun matpnt_kont_get (mpt: matpnt_t): kont
-fun matpnt_kont_set
-  (mpt: matpnt_t, _: kont): void = "atsccomp_matpnt_kont_set"
-// end of [matpnt_kont_set]
+fun matpnt_get_kont (mpt: matpnt_t): kont
+fun matpnt_set_kont
+  (mpt: matpnt_t, _: kont): void = "atsopt_matpnt_set_kont"
+// end of [matpnt_set_kont]
 
 (* ****** ****** *)
 
@@ -828,9 +834,9 @@ fun emit_label {m:file_mode}
 fun emit_labelext {m:file_mode}
   (pf: file_mode_lte (m, w) | out: &FILE m, isext: bool, l: $Lab.label_t): void
 
-fun emit_filename {m:file_mode}
-  (pf: file_mode_lte (m, w) | out: &FILE m, fil: $Fil.filename_t): void
-  = "atsccomp_emit_filename"
+fun emit_filename {m:file_mode} (
+  pf: file_mode_lte (m, w) | out: &FILE m, fil: $Fil.filename_t
+) : void = "atsopt_emit_filename" // end of [emit_filename]
 
 fun emit_d2con {m:file_mode}
   (pf: file_mode_lte (m, w) | out: &FILE m, d2c: d2con_t): void

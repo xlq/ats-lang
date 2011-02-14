@@ -64,7 +64,8 @@ val the_s2cstlstlst: ref (s2cstlstlst_vt) = ref_make_elt (list_vt_nil ())
 
 in
 
-implement the_s2cstlst_env_add (s2c) = let
+implement
+the_s2cstlst_env_add (s2c) = let
 (*
   val () = begin
     print "the_s2cstlst_env_add: s2c = "; print s2c; print_newline ()
@@ -74,7 +75,8 @@ in
   !the_s2cstlst := S2CSTLSTcons (s2c, !the_s2cstlst)
 end // end of [the_s2cstlst_env_add]
 
-implement the_s2cstlst_env_adds (s2cs) = let
+implement
+the_s2cstlst_env_adds (s2cs) = let
 (*
   val () = begin
     print "the_s2cstlst_env_adds: s2cs = "; print s2cs; print_newline ()
@@ -86,31 +88,37 @@ end // end of [the_s2cstlst_env_adds]
 
 (* ****** ****** *)
 
-implement the_s2cstlst_env_bind_and_add (loc0, s2c, s2e) = begin
-  if not (s2cst_isasp_get s2c) then let
+implement
+the_s2cstlst_env_bind_and_add
+  (loc0, s2c, s2e) = begin
+  if not (s2cst_get_isasp s2c) then let
 (*
     val () = begin
       print "the_s2cstlst_env_bind_and_add: s2c = "; print s2c; print_newline ();
       print "the_s2cstlst_env_bind_and_add: s2e = "; print s2e; print_newline ();
     end // end of [val]
 *)
+    val () = s2cst_set_def (s2c, Some s2e)
+    val () = s2cst_set_isasp (s2c, false)
   in
-    s2cst_def_set (s2c, Some s2e);
-    s2cst_isasp_set (s2c, false);
-    the_s2cstlst_env_add s2c;
-  end else begin
-    $Loc.prerr_location loc0;
-    prerr ": error(3)";
-    prerr ": the static constant ["; prerr s2c;
-    prerr "] has already been assumed elsewhere.";
-    prerr_newline ();
+    the_s2cstlst_env_add s2c
+  end else let
+    val () = $Loc.prerr_location loc0
+    val () = prerr ": error(3)"
+    val () = prerr ": the static constant ["
+    val () = prerr s2c
+    val () = prerr "] has already been assumed elsewhere."
+    val () = prerr_newline ()
+  in
     $Err.abort {void} ()
-  end
+  end (* end of [if] *)
 end // end of [the_s2cstlst_env_bind_ad_add]
 
 (* ****** ****** *)
 
-implement the_s2cstlst_env_pop (pf | (*none*)) = let
+implement
+the_s2cstlst_env_pop
+  (pf | (*none*)) = let
   prval unit_v () = pf; var err: int = 0
   val s2cs0 = !the_s2cstlst
   val () = let
@@ -124,18 +132,18 @@ implement the_s2cstlst_env_pop (pf | (*none*)) = let
       end // end of [list_vt_cons]
     | ~list_vt_nil () => (err := 1; !p := list_vt_nil ())
   end // end of [val]
-  val () = // for reporting an error
-    if err > 0 then begin
-      prerr "INTERNAL ERROR (ats_trans3_env_scst)";
-      prerr ": the_s2cstlst_env_pop: [the_s2cstlstlst] is empty."; prerr_newline ();
-      $Err.abort {void} ()
-    end // end of [if]
-  // end of [val]
+  val () = if err > 0 then begin // for reporting an error
+    prerr "INTERNAL ERROR (ats_trans3_env_scst)";
+    prerr ": the_s2cstlst_env_pop: [the_s2cstlstlst] is empty."; prerr_newline ();
+    $Err.abort {void} ()
+  end // end of [if] // end of [val]
 in
   s2cs0
 end // end of [the_s2cstlst_env_pop]
 
-implement the_s2cstlst_env_pop_and_unbind (pf | (*none*)) = let
+implement
+the_s2cstlst_env_pop_and_unbind
+  (pf | (*none*)) = let
   fun aux (s2cs: s2cstlst): void = begin
     case+ s2cs of
     | S2CSTLSTcons (s2c, s2cs) => let
@@ -145,7 +153,7 @@ implement the_s2cstlst_env_pop_and_unbind (pf | (*none*)) = let
           print s2c; print_newline ()
         end // end of [val]
 *)
-        val () = s2cst_def_set (s2c, None ())
+        val () = s2cst_set_def (s2c, None ())
       in
         aux s2cs
       end // end of [S2CSTLSTcons]
@@ -157,7 +165,8 @@ end // end of [the_s2cstlst_env_pop_and_unbind]
 
 (* ****** ****** *)
 
-implement the_s2cstlst_env_push () = let
+implement
+the_s2cstlst_env_push () = let
   val (vbox pf | p) = ref_get_view_ptr (the_s2cstlstlst)
   val s2cs = $effmask_ref (!the_s2cstlst)
   val () = $effmask_ref (!the_s2cstlst := S2CSTLSTnil ())

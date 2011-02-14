@@ -112,44 +112,44 @@ in
 
 end // end of [d2cst_make]
 
-implement d2cst_loc_get (d2c) =
+implement d2cst_get_loc (d2c) =
   let val (vbox pf | p) = d2c in p->d2cst_loc end
 
-implement d2cst_fil_get (d2c) =
+implement d2cst_get_fil (d2c) =
   let val (vbox pf | p) = d2c in p->d2cst_fil end
 
-implement d2cst_sym_get (d2c) =
+implement d2cst_get_sym (d2c) =
   let val (vbox pf | p) = d2c in p->d2cst_sym end
 
-implement d2cst_kind_get (d2c) =
+implement d2cst_get_kind (d2c) =
   let val (vbox pf | p) = d2c in p->d2cst_kind end
 
-implement d2cst_arilst_get (d2c) =
+implement d2cst_get_arilst (d2c) =
   let val (vbox pf | p) = d2c in p->d2cst_arilst end
 
-implement d2cst_decarg_get (d2c) =
+implement d2cst_get_decarg (d2c) =
   let val (vbox pf | p) = d2c in p->d2cst_decarg end
 
-implement d2cst_decarg_set (d2c, decarg) =
+implement d2cst_set_decarg (d2c, decarg) =
   let val (vbox pf | p) = d2c in p->d2cst_decarg := decarg end
 
-implement d2cst_typ_get (d2c) =
+implement d2cst_get_typ (d2c) =
   let val (vbox pf | p) = d2c in p->d2cst_typ end
 
-implement d2cst_extdef_get (d2c) =
+implement d2cst_get_extdef (d2c) =
   let val (vbox pf | p) = d2c in p->d2cst_extdef end
 
-implement d2cst_def_get (d2c) =
+implement d2cst_get_def (d2c) =
   let val (vbox pf | p) = d2c in p->d2cst_def end
 
-implement d2cst_def_set (d2c, def) =
+implement d2cst_set_def (d2c, def) =
   let val (vbox pf | p) = d2c in p->d2cst_def := def end
 
-implement d2cst_stamp_get (d2c) =
+implement d2cst_get_stamp (d2c) =
   let val (vbox pf | p) = d2c in p->d2cst_stamp end
 
-// [d2cst_hityp_get] is declared in [ats_hiexp.sats]
-implement d2cst_hityp_get (d2c) =
+// [d2cst_get_hityp] is declared in [ats_hiexp.sats]
+implement d2cst_get_hityp (d2c) =
   let val (vbox pf | p) = d2c in p->d2cst_hityp end
 
 (* ****** ****** *)
@@ -311,18 +311,26 @@ end // end of [local] (for assuming d2cst_t)
 
 (* ****** ****** *)
 
-implement fprint_d2cst (pf_out | out, d2c) = begin
-  $Sym.fprint_symbol (pf_out | out, d2cst_sym_get d2c)
+implement
+fprint_d2cst (pf_out | out, d2c) = begin
+  $Sym.fprint_symbol (pf_out | out, d2cst_get_sym d2c)
 end // end of [fprint_d2cst]
 
-implement fprint_d2cstlst {m} (pf | out, d2cs) = let
-  fun aux (out: &FILE m, i: int, d2cs: d2cstlst): void =
+implement
+fprint_d2cstlst
+  {m} (pf | out, d2cs) = let
+  fun aux (
+    out: &FILE m, i: int, d2cs: d2cstlst
+  ) : void =
     case+ d2cs of
-    | cons (d2c, d2cs) => begin
-        if i > 0 then fprint1_string (pf | out, ", ");
-        fprint_d2cst (pf | out, d2c); aux (out, i+1, d2cs)
-    end
-  | nil () => ()
+    | cons (d2c, d2cs) => let
+        val () = if i > 0 then fprint1_string (pf | out, ", ")
+        val () = fprint_d2cst (pf | out, d2c)
+      in
+        aux (out, i+1, d2cs)
+      end // end of [cons]
+    | nil () => ()
+  // end of [aux]
 in
   aux (out, 0, d2cs)
 end // end of [fprint_d2cstlst]
@@ -346,11 +354,11 @@ extern typedef "d2cst_struct" = d2cst_struct
 %{$
 
 ats_void_type
-ats_dynexp2_d2cst_hityp_set (
+ats_dynexp2_d2cst_set_hityp (
   ats_ptr_type d2c, ats_ptr_type ohit
 ) {
   ((d2cst_struct*)d2c)->atslab_d2cst_hityp = ohit ; return ;
-} /* end of [ats_dynexp2_d2cst_hityp_set] */
+} /* end of [ats_dynexp2_d2cst_set_hityp] */
 
 %} // end of [%{$]
 

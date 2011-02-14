@@ -30,12 +30,10 @@
 *)
 
 (* ****** ****** *)
-
 //
 // Author: Hongwei Xi (hwxi AT cs DOT bu DOT edu)
 // Time: February 2008
 //
-
 (* ****** ****** *)
 
 (* Mainly for handling macro expansion during type-checking *)
@@ -185,9 +183,10 @@ fun alphaenv_free (env: alphaenv): void = begin
   | ~ALPHAENVnil () => ()
 end // end of [alphaenv_free]
 
-fn alphaenv_add
-  (env: alphaenv, d2v: d2var_t, d2v_new: d2var_t): alphaenv =
-  ALPHAENVcons (d2var_stamp_get d2v, d2v_new, env)
+fn alphaenv_add (
+  env: alphaenv, d2v: d2var_t, d2v_new: d2var_t
+) : alphaenv =
+  ALPHAENVcons (d2var_get_stamp d2v, d2v_new, env)
 // end of [alphaenv_add]
 
 fn alphaenv_find
@@ -209,12 +208,14 @@ fn alphaenv_find
     end
   | ALPHAENVnil () => (fold@ env; None_vt ())
 in
-  aux (env, d2var_stamp_get d2v0)
+  aux (env, d2var_get_stamp d2v0)
 end // end of [alphaenv_find]
 
-fn alphaenv_insert
-  (env: &alphaenv, d2v: d2var_t, d2v_new: d2var_t): void =
-  (env := ALPHAENVcons (d2var_stamp_get d2v, d2v_new, env))
+fn alphaenv_insert (
+  env: &alphaenv, d2v: d2var_t, d2v_new: d2var_t
+) : void = (
+  env := ALPHAENVcons (d2var_get_stamp d2v, d2v_new, env)
+) // end of [alphaenv_insert]
 
 fun alphaenv_pop (env: &alphaenv): void = let
   fun aux (env: alphaenv): alphaenv =
@@ -388,9 +389,10 @@ fun eval0ctx_free (ctx: eval0ctx): void = begin
   | ~EVAL0CTXnil () => ()
 end // end of [eval0ctx_free]
 
-fn eval0ctx_add
-  (ctx: eval0ctx, d2v: d2var_t, v2al: v2alue): eval0ctx =
-  EVAL0CTXcons (d2var_stamp_get d2v, v2al, ctx)
+fn eval0ctx_add (
+  ctx: eval0ctx, d2v: d2var_t, v2al: v2alue
+) : eval0ctx =
+  EVAL0CTXcons (d2var_get_stamp d2v, v2al, ctx)
 // end of [eval0ctx_add]
 
 (* ****** ****** *)
@@ -736,13 +738,13 @@ extern fun eval1_d2explst {n:nat}
   (loc0: loc_t, ctx: !eval0ctx, env: &alphaenv, d2es: d2explst n): d2explst n
 // end of [eval1_d2explst]
 
-extern fun eval1_d2explstlst
-  (loc0: loc_t, ctx: !eval0ctx, env: &alphaenv, d2ess: d2explstlst): d2explstlst
-// end of [eval1_d2explstlst]
+extern fun eval1_d2explstlst (
+  loc0: loc_t, ctx: !eval0ctx, env: &alphaenv, d2ess: d2explstlst
+) : d2explstlst // end of [eval1_d2explstlst]
 
-extern fun eval1_labd2explst
-  (loc0: loc_t, ctx: !eval0ctx, env: &alphaenv, ld2es: labd2explst): labd2explst
-// end of [eval1_labd2explst]
+extern fun eval1_labd2explst (
+  loc0: loc_t, ctx: !eval0ctx, env: &alphaenv, ld2es: labd2explst
+) : labd2explst // end of [eval1_labd2explst]
 
 extern fun eval1_d2ec
   (loc0: loc_t, ctx: !eval0ctx, env: &alphaenv, d2c0: d2ec): d2ec
@@ -757,12 +759,14 @@ extern fun eval1_d2eclst
 fun eval0_var (
     loc0: loc_t, ctx: !eval0ctx, d2v: d2var_t
   ) : v2alue = let
+//
   fn err (loc0: loc_t, d2v: d2var_t): v2alue = begin
     prerr_loc_errmac loc0;
     prerr ": the variable ["; prerr d2v; prerr "] is unbound.";
     prerr_newline ();
     $Err.abort {v2alue} ()
   end (* end of [err] *)
+//
   fun auxfind
     (ctx: !eval0ctx, stamp0: stamp_t):<cloptr1> v2alue =
     case+ ctx of
@@ -775,9 +779,10 @@ fun eval0_var (
         fold@ ctx; ans
       end
     | EVAL0CTXnil () => (fold@ ctx; err (loc0, d2v))
-  // end of [auxfind]
+  (* end of [auxfind] *)
+//
 in
-  auxfind (ctx, d2var_stamp_get d2v)
+  auxfind (ctx, d2var_get_stamp d2v)
 end (* end of [eval0_var] *)
 
 (* ****** ****** *)
@@ -1229,7 +1234,7 @@ in
     in
       case+ d2e.d2exp_node of
       | D2Emac d2m => begin
-          if d2mac_kind_get d2m = 0 then begin // [d2m] is short
+          if d2mac_get_kind d2m = 0 then begin // [d2m] is short
             // expanding a macro in short form
             eval0_exp_app_mac_short (loc0, d2m, ctx, env, d2as)
           end else begin
@@ -1753,13 +1758,15 @@ fun eval0ctx_extend_arglst {narg:nat} (
 end // end of [eval0ctx_extend_arglst]
 
 implement // expanding macros in long form
-eval0_exp_app_mac_long {narg} (loc0, d2m, ctx, env, d2as) = let
+eval0_exp_app_mac_long
+  {narg} (loc0, d2m, ctx, env, d2as) = let
 (*
   val () = begin
     print "eval0_exp_app_mac_long: d2m = "; print d2m; print_newline ()
-  end
+  end // end of [val]
 *)
-  val narg = d2mac_narg_get (d2m); val args = d2mac_arglst_get (d2m)
+  val narg = d2mac_get_narg (d2m)
+  val args = d2mac_get_arglst (d2m)
   stavar nd2as: int; val nd2as: int nd2as = $Lst.list_length d2as
 (*
   val () = begin
@@ -1788,7 +1795,7 @@ eval0_exp_app_mac_long {narg} (loc0, d2m, ctx, env, d2as) = let
     print "eval0_exp_app_mac_long: ctx_new = "; print_newline (); print ctx_new
   end // end of [val]
 *)
-  val v2al = eval0_exp (loc0, ctx_new, env, d2mac_def_get d2m)
+  val v2al = eval0_exp (loc0, ctx_new, env, d2mac_get_def d2m)
   val () = eval0ctx_free ctx_new
 in
   v2al
@@ -1803,8 +1810,8 @@ eval0_exp_app_mac_short {narg} (loc0, d2m, ctx, env, d2as) = let
     print "eval0_exp_app_mac_short: d2m = "; print d2m; print_newline ()
   end // end of [val]
 *)
-  val narg = d2mac_narg_get (d2m)
-  val args = d2mac_arglst_get (d2m)
+  val narg = d2mac_get_narg (d2m)
+  val args = d2mac_get_arglst (d2m)
   stavar nd2as: int; val nd2as: int (nd2as) = $Lst.list_length d2as
 (*
   val () = begin
@@ -1844,11 +1851,12 @@ eval0_exp_app_mac_short {narg} (loc0, d2m, ctx, env, d2as) = let
     print "eval0_exp_app_mac_short: ctx_new =\n"; print ctx_new
   end // end of [val]
 *)
-  val d2e = eval1_d2exp (loc0, ctx_new, env, d2mac_def_get d2m)
+  val d2e = eval1_d2exp (loc0, ctx_new, env, d2mac_get_def d2m)
   val () = eval0ctx_free ctx_new
 in
   case+ d2as2 of
-  | list_cons _ => begin case+ d2e.d2exp_node of
+  | list_cons _ => begin
+    case+ d2e.d2exp_node of
     | D2Eapps (d2e_fun, d2as1) => let
         val d2as_arg = $Lst.list_append (d2as1, d2as2)
       in

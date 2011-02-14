@@ -444,7 +444,7 @@ ccomp_tmpdef (
   val (pf_stactx_token | ()) = the_stactx_push ()
   val (pf_dynctx_token | ()) = the_dynctx_push ()
 //
-  val tmparg = tmpdef_arg_get tmpdef
+  val tmparg = tmpdef_get_arg tmpdef
   val () = template_arg_match (loc0, tcv, tmparg, hitss)
   val () = tmpnamtbl_add (fullname, vp_funclo)
 //
@@ -453,7 +453,7 @@ ccomp_tmpdef (
   val () = the_tailcallst_add (fl, list_nil ())
   val _(*funentry_t*) = let
     val ins = instr_funlab (fl); val prolog = '[ins]
-    val hie = tmpdef_exp_get (tmpdef); val loc_fun = hie.hiexp_loc
+    val hie = tmpdef_get_exp (tmpdef); val loc_fun = hie.hiexp_loc
   in
     case+ hie.hiexp_node of
     | HIElam (hips_arg, hie_body) => begin
@@ -480,10 +480,11 @@ end // end of [ccomp_tmpdef]
 implement
 template_cst_name_make
   (d2c, hitss) = let
-  val extdef = d2cst_extdef_get d2c
+  val extdef = d2cst_get_extdef (d2c)
   val base = (case+ extdef of
     | $Syn.DCSTEXTDEFnone () => let
-        val sym = d2cst_sym_get d2c; val stamp = d2cst_stamp_get d2c
+        val sym = d2cst_get_sym (d2c)
+        and stamp = d2cst_get_stamp (d2c)
         val name = tostringf (
           "%s$%s", @($Sym.symbol_name sym, $Stamp.tostring_stamp stamp)
         ) // end of [tostringf]
@@ -492,8 +493,7 @@ template_cst_name_make
       end // end of [if]
     | $Syn.DCSTEXTDEFsome_fun name => name
     | $Syn.DCSTEXTDEFsome_mac _name => let
-        val () = prerr_interror ()
-        val () =  (
+        val () = prerr_interror (); val () =  (
           prerr ": tmpnamtbl_cst_name_make: d2c = "; prerr d2c
         ) // end of [val]
         val () = prerr_newline ()
@@ -507,7 +507,7 @@ end // end of [template_cst_name_make]
 
 implement
 template_var_name_make (d2v, hitss) = let
-  val sym = d2var_sym_get d2v and stamp = d2var_stamp_get d2v
+  val sym = d2var_get_sym d2v and stamp = d2var_get_stamp d2v
   val basename = tostringf (
     "%s$%s", @($Sym.symbol_name sym, $Stamp.tostring_stamp stamp)
   ) // end of [tostringf]
@@ -596,7 +596,7 @@ in
           $Err.abort {tmpdef_t} ()
         end // end of [None_vt]
       ) : tmpdef_t
-      val d2v_lev = d2var_lev_get (d2v)
+      val d2v_lev = d2var_get_lev (d2v)
       val level0 = d2var_current_level_get ()
 (*
       val () = begin

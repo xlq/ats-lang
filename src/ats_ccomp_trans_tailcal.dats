@@ -30,10 +30,10 @@
 *)
 
 (* ****** ****** *)
-
+//
 // Author: Hongwei Xi (hwxi AT cs DOT bu DOT edu)
 // Time: June 2008
-
+//
 (* ****** ****** *)
 
 staload CS = "ats_charlst.sats"
@@ -72,8 +72,10 @@ fn tailjoin_name_make
     end // end of [if]
   end // end of [aux_string]
 
-  fun aux_entry (cs: &T, f: funentry_t): void = let
-    val name = funlab_name_get (funentry_lab_get (f))
+  fun aux_entry (
+    cs: &T, f: funentry_t
+  ) : void = let
+    val name = funlab_get_name (funentry_get_lab (f))
   in
     aux_string (cs, 0, string1_of_string name)
   end // end of [aux_entry]
@@ -99,13 +101,13 @@ fn tailjoin_retyp_check // retyp: return type
     , fs: funentrylst
     ) : void = begin case+ fs of
     | list_cons (f, fs) => let
-        val hit = tmpvar_typ_get (funentry_ret_get f)
-        val HITNAM (knd, name) = hityp_t_name_get (hit)
+        val hit = tmpvar_get_typ (funentry_get_ret f)
+        val HITNAM (knd, name) = hityp_t_get_name (hit)
       in
         case+ 0 of
         | _ when name0 = name => aux (name0, fs)
         | _ => begin
-            $Loc.prerr_location (funentry_loc_get f);
+            $Loc.prerr_location (funentry_get_loc f);
             prerr ": error(ccomp)";
             prerr ": the return type of this function is inconsistent.";
             prerr_newline ();
@@ -114,7 +116,7 @@ fn tailjoin_retyp_check // retyp: return type
       end // end of [list_cons]
     | list_nil () => ()
   end // end of [aux]
-  val HITNAM (knd0, name0) = hityp_t_name_get (hit0)
+  val HITNAM (knd0, name0) = hityp_t_get_name (hit0)
 in
   aux (name0, fs)
 end // end of [tailjoin_retyp_check]
@@ -130,13 +132,13 @@ fn tailjoin_funentry_update (
   , tag: int
   ) : @(int, funlab_t, tmpvarlst, instr) = let
 //
-  val fl = funentry_lab_get (f)
-  val hits_arg = funlab_typ_arg_get (fl)
-  val tmps_arg = funlab_tailjoined_get (fl)
-  val tmp_ret = funentry_ret_get (f)
+  val fl = funentry_get_lab (f)
+  val hits_arg = funlab_get_typ_arg (fl)
+  val tmps_arg = funlab_get_tailjoined (fl)
+  val tmp_ret = funentry_get_ret (f)
   val ins_fun = let
     val vps = $Lst.list_map_fun (tmps_arg, valprim_tmp)
-    val body = funentry_body_get (f)
+    val body = funentry_get_body (f)
   in
     instr_function (loc_all, tmp_ret_all, vps, body, tmp_ret)
   end // end of [val]
@@ -158,14 +160,14 @@ fn tailjoin_funentry_update (
       | list_nil () => list_nil ()
   } // end of [where]
 //
-  val loc_f = funentry_loc_get (f)
+  val loc_f = funentry_get_loc (f)
   val vp_fun = valprim_funclo_make (fl_all)
-  val tmp_ret_new = tmpvar_make_ret (tmpvar_typ_get tmp_ret)
+  val tmp_ret_new = tmpvar_make_ret (tmpvar_get_typ tmp_ret)
   val ins_call = instr_call
     (loc_f, tmp_ret_new, hit_fun_all, vp_fun, list_cons (vp_tag, vps_arg))
 //
   val f_new = let
-    val level = funentry_lev_get (f)
+    val level = funentry_get_lev (f)
     val vtps = begin // empty
       let val () = the_vartypset_push () in the_vartypset_pop () end
     end // end of [val]
@@ -222,42 +224,43 @@ ccomp_tailjoin_funentrylst (loc_all, fs0) = let
 //
   val name_all = tailjoin_name_make (f0, fs)
 //
-  val hit0_ret = tmpvar_typ_get (funentry_ret_get (f0))
+  val hit0_ret = tmpvar_get_typ (funentry_get_ret (f0))
   val () = tailjoin_retyp_check (hit0_ret, fs)
 //
   val tmp_ret_all = tmpvar_make_ret (hit0_ret)
 //
   val fl_all = let
-    val fc0 = funlab_funclo_get (funentry_lab_get f0)
+    val fc0 = funlab_get_funclo (funentry_get_lab f0)
     val hits_arg = '[hityp_int, hityp_vararg]
     val hit_fun = hityp_fun (fc0, hits_arg, hityp_decode hit0_ret)
   in
     funlab_make_nam_typ (name_all, hityp_encode hit_fun)
   end : funlab_t // end of [val]
 //
-  val vtps_all = aux_vtps (vtps0, fs) where {
-    val vtps0 = funentry_vtps_get_all f0
+  val vtps_all =
+    aux_vtps (vtps0, fs) where {
+    val vtps0 = funentry_get_vtps_all (f0)
     fun aux_vtps
       (vtps0: vartypset, fs: funentrylst): vartypset = begin
       case+ fs of
       | list_cons (f, fs) => let
-          val vtps0 = vartypset_union (vtps0, funentry_vtps_get_all f)
+          val vtps0 = vartypset_union (vtps0, funentry_get_vtps_all f)
         in
           aux_vtps (vtps0, fs)
         end // end of [list_cons]
       | list_nil () => vtps0
     end // end of [aux_vtps]
   } // end of [where]
-  val () = funentry_vtps_set (f0, vtps_all)
-  val () = funentry_vtps_flag_set (f0)
+  val () = funentry_set_vtps (f0, vtps_all)
+  val () = funentry_set_vtps_flag (f0)
 //
-  val hit_fun_all = funlab_typ_get (fl_all)
+  val hit_fun_all = funlab_get_typ (fl_all)
   var inss_fun: instrlst_vt = list_vt_nil ()
   val tjs = tailjoin_funentrylst_update
     (loc_all, fl_all, hit_fun_all, tmp_ret_all, inss_fun, fs0, 0)
   val inss_fun = $Lst.list_vt_reverse_list inss_fun
   val f_all = let
-    val level = funentry_lev_get (f0)
+    val level = funentry_get_lev (f0)
     // [fls] is set aribitrarily as [vtps_all] is already final
     val () = the_funlabset_push (); val fls(*empty*) = the_funlabset_pop ()
   in
@@ -265,9 +268,9 @@ ccomp_tailjoin_funentrylst (loc_all, fs0) = let
       loc_all, fl_all, level, fls, vtps_all, tmp_ret_all, inss_fun
     ) // end of [funentry_make]
   end // end of [val]
-  val () = funentry_vtps_flag_set (f_all)
-  val () = funentry_tailjoin_set (f_all, tjs)
-  val () = funentry_lablst_add (fl_all)
+  val () = funentry_set_vtps_flag (f_all)
+  val () = funentry_set_tailjoin (f_all, tjs)
+  val () = funentry_add_lablst (fl_all)
   val () = funentry_associate (f_all) // [fl_all] -> [f_all]
 in
   // empty
@@ -357,7 +360,7 @@ fn emit_tailjoin_case {m:file_mode} (
       | list_cons (tmp, tmps) => let
           val () = emit_valprim_tmpvar (pf | out, tmp)
           val () = fprint1_string (pf | out, " = va_arg(funarg, ")
-          val () = emit_hityp (pf | out, tmpvar_typ_get tmp)
+          val () = emit_hityp (pf | out, tmpvar_get_typ tmp)
           val () = fprint1_string (pf | out, ") ;\n")
         in
           aux (out, tmps)

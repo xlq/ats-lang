@@ -30,15 +30,15 @@
 *)
 
 (* ****** ****** *)
-
+//
 // Author: Hongwei Xi (hwxi AT cs DOT bu DOT edu)
 // Time: November 2007
-
+//
 (* ****** ****** *)
 
 %{^
 #include "ats_counter.cats" /* only needed for [ATS/Geizella] */
-%}
+%} // end of [%{^]
 
 (* ****** ****** *)
 
@@ -122,141 +122,107 @@ end // end of [d2var_make_any]
 
 (* ****** ****** *)
 
-implement d2var_loc_get (d2v) =
+implement d2var_get_loc (d2v) =
   let val (vbox pf | p) = d2v in p->d2var_loc end
 
-implement d2var_sym_get (d2v) =
+implement d2var_get_sym (d2v) =
   let val (vbox pf | p) = d2v in p->d2var_sym end
 
-implement d2var_isfix_get (d2v) =
+implement d2var_get_isfix (d2v) =
   let val (vbox pf | p) = d2v in p->d2var_isfix end
 
-implement d2var_isfix_set (d2v, isfix) =
+implement d2var_set_isfix (d2v, isfix) =
   let val (vbox pf | p) = d2v in p->d2var_isfix := isfix end
 
-implement d2var_isprf_get (d2v) =
+implement d2var_get_isprf (d2v) =
   let val (vbox pf | p) = d2v in p->d2var_isprf end
 
-implement d2var_isprf_set (d2v, isprf) =
+implement d2var_set_isprf (d2v, isprf) =
   let val (vbox pf | p) = d2v in p->d2var_isprf := isprf end
 
-implement d2var_lev_get (d2v) =
+implement d2var_get_lev (d2v) =
   let val (vbox pf | p) = d2v in p->d2var_lev end
 
-implement d2var_lev_set (d2v, lev) =
+implement d2var_set_lev (d2v, lev) =
   let val (vbox pf | p) = d2v in p->d2var_lev := lev end
 
-implement d2var_lin_get (d2v) =
+implement d2var_get_lin (d2v) =
   let val (vbox pf | p) = d2v in p->d2var_lin end
 
-implement d2var_lin_set (d2v, lin) =
-  let val (vbox pf | p) = d2v in p->d2var_lin := lin end
-
-implement d2var_lin_inc (d2v) =
+implement d2var_inc_lin (d2v) =
   let val (vbox pf | p) = d2v in p->d2var_lin := 1 + p->d2var_lin end
 
-implement d2var_decarg_get (d2v) =
+implement d2var_set_lin (d2v, lin) =
+  let val (vbox pf | p) = d2v in p->d2var_lin := lin end
+
+implement d2var_get_decarg (d2v) =
   let val (vbox pf | p) = d2v in p->d2var_decarg end
 
-implement d2var_decarg_set (d2v, decarg) =
+implement d2var_set_decarg (d2v, decarg) =
   let val (vbox pf | p) = d2v in p->d2var_decarg := decarg end
 
-implement d2var_addr_get (d2v) =
+implement d2var_get_addr (d2v) =
   let val (vbox pf | p) = d2v in p->d2var_addr end
 
-implement d2var_addr_set (d2v, os2e_addr) =
+implement d2var_set_addr (d2v, os2e_addr) =
   let val (vbox pf | p) = d2v in p->d2var_addr := os2e_addr end
 
-implement d2var_view_get (d2v) =
+implement d2var_get_view (d2v) =
   let val (vbox pf | p) = d2v in p->d2var_view end
 
-implement d2var_view_set (d2v, od2v_view) =
+implement d2var_set_view (d2v, od2v_view) =
   let val (vbox pf | p) = d2v in p->d2var_view := od2v_view end
 
-implement d2var_fin_get (d2v) =
+implement d2var_get_fin (d2v) =
   let val (vbox pf | p) = d2v in p->d2var_fin end
 
-implement d2var_fin_set (d2v, fin) =
+implement d2var_set_fin (d2v, fin) =
   let val (vbox pf | p) = d2v in p->d2var_fin := fin end
 
-implement d2var_typ_get (d2v) =
+implement d2var_get_typ (d2v) =
   let val (vbox pf | p) = d2v in p->d2var_typ end
 
-implement d2var_typ_set (d2v, os2e) =
+implement d2var_set_typ (d2v, os2e) =
   let val (vbox pf | p) = d2v in p->d2var_typ := os2e end
 
-implement d2var_mastyp_get (d2v) =
+implement d2var_get_mastyp (d2v) =
   let val (vbox pf | p) = d2v in p->d2var_mastyp end
 
-implement d2var_mastyp_set (d2v, os2e) =
+implement d2var_set_mastyp (d2v, os2e) =
   let val (vbox pf | p) = d2v in p->d2var_mastyp := os2e end
 
-implement d2var_count_get (d2v) =
+implement d2var_get_count (d2v) =
   let val (vbox pf | p) = d2v in p->d2var_count end
-// end of [d2var_count_get]
+// end of [d2var_get_count]
 
-implement d2var_count_inc (d2v) = let
+implement d2var_inc_count (d2v) = let
   val (vbox pf | p) = d2v; val n = p->d2var_count in
   p->d2var_count := n + 1
-end (* end of [d2var_count_inc] *)
+end (* end of [d2var_inc_count] *)
 
-implement d2var_stamp_get (d2v) =
+implement d2var_get_stamp (d2v) =
   let val (vbox pf | p) = d2v in p->d2var_stamp end
-// end of [d2var_stamp_get]
+// end of [d2var_get_stamp]
 
 (* ****** ****** *)
 
-fn _lt_d2var_d2var
-  (d2v1: d2var_t, d2v2: d2var_t): bool = let
-  val stamp1 =
-    let val (vbox pf1 | p1) = d2v1 in p1->d2var_stamp end
-  val stamp2 =
-    let val (vbox pf2 | p2) = d2v2 in p2->d2var_stamp end
-in
-  $Stamp.lt_stamp_stamp (stamp1, stamp2)
-end
+implement lt_d2var_d2var
+  (d2v1, d2v2) = compare_d2var_d2var (d2v1, d2v2) < 0
+// end of [lte_d2var_d2var]
 
-implement lt_d2var_d2var (d2v1, d2v2) =
-  $effmask_all ( _lt_d2var_d2var (d2v1, d2v2) )
+implement lte_d2var_d2var
+  (d2v1, d2v2) = compare_d2var_d2var (d2v1, d2v2) <= 0
+// end of [lte_d2var_d2var]
 
-fn _lte_d2var_d2var
-  (d2v1: d2var_t, d2v2: d2var_t): bool = let
-  val stamp1 =
-    let val (vbox pf1 | p1) = d2v1 in p1->d2var_stamp end
-  val stamp2 =
-    let val (vbox pf2 | p2) = d2v2 in p2->d2var_stamp end
-in
-  $Stamp.lte_stamp_stamp (stamp1, stamp2)
-end
+implement eq_d2var_d2var
+  (d2v1, d2v2) = compare_d2var_d2var (d2v1, d2v2) = 0
+// end of [eq_d2var_d2var]
 
-implement lte_d2var_d2var (d2v1, d2v2) =
-  $effmask_all ( _lte_d2var_d2var (d2v1, d2v2) )
+implement neq_d2var_d2var
+  (d2v1, d2v2) = compare_d2var_d2var (d2v1, d2v2) <> 0
+// end of [neq_d2var_d2var]
 
-fn _eq_d2var_d2var
-  (d2v1: d2var_t, d2v2: d2var_t): bool = let
-  val stamp1 =
-    let val (vbox pf1 | p1) = d2v1 in p1->d2var_stamp end
-  val stamp2 =
-    let val (vbox pf2 | p2) = d2v2 in p2->d2var_stamp end
-in
-  $Stamp.eq_stamp_stamp (stamp1, stamp2)
-end
-
-implement eq_d2var_d2var (d2v1, d2v2) =
-  $effmask_all ( _eq_d2var_d2var (d2v1, d2v2) )
-
-fn _neq_d2var_d2var
-  (d2v1: d2var_t, d2v2: d2var_t): bool = let
-  val stamp1 =
-    let val (vbox pf1 | p1) = d2v1 in p1->d2var_stamp end
-  val stamp2 =
-    let val (vbox pf2 | p2) = d2v2 in p2->d2var_stamp end
-in
-  $Stamp.neq_stamp_stamp (stamp1, stamp2)
-end
-
-implement neq_d2var_d2var (d2v1, d2v2) =
-  $effmask_all ( _neq_d2var_d2var (d2v1, d2v2) )
+(* ****** ****** *)
 
 fn _compare_d2var_d2var
   (d2v1: d2var_t, d2v2: d2var_t): Sgn = let
@@ -266,7 +232,7 @@ fn _compare_d2var_d2var
     let val (vbox pf2 | p2) = d2v2 in p2->d2var_stamp end
 in
   $Stamp.compare_stamp_stamp (stamp1, stamp2)
-end
+end // end of [_compare_d2var_d2var]
 
 implement compare_d2var_d2var (d2v1, d2v2) =
   $effmask_all ( _compare_d2var_d2var (d2v1, d2v2) )
@@ -277,8 +243,10 @@ end // end of [local] (for assuming d2var_t)
 
 (* ****** ****** *)
 
-implement d2var_typ_get_some (loc0, d2v) = begin
-  case+ d2var_typ_get d2v of
+implement
+d2var_get_typ_some
+  (loc0, d2v) = begin
+  case+ d2var_get_typ d2v of
   | Some s2e => s2e | None () => begin
       $Loc.prerr_location loc0;
       prerr ": error(3)";
@@ -288,10 +256,12 @@ implement d2var_typ_get_some (loc0, d2v) = begin
       prerr_newline ();
       $Err.abort {s2exp} ()
     end // end of [None]
-end // end of [d2var_typ_get_some]
+end // end of [d2var_get_typ_some]
 
-implement d2var_mastyp_get_some (loc0, d2v) = begin
-  case+ d2var_mastyp_get d2v of
+implement
+d2var_get_mastyp_some
+  (loc0, d2v) = begin
+  case+ d2var_get_mastyp d2v of
   | Some s2e => s2e | None () => begin
       $Loc.prerr_location loc0;
       prerr ": error(3)";
@@ -301,23 +271,27 @@ implement d2var_mastyp_get_some (loc0, d2v) = begin
       prerr_newline ();
       $Err.abort {s2exp} ()
     end // end of [None]
-end // end of [d2var_mastyp_get_some]
+end // end of [d2var_get_mastyp_some]
 
-implement d2var_addr_get_some (loc0, d2v) = begin
-  case+ d2var_addr_get d2v of
+implement
+d2var_get_addr_some
+  (loc0, d2v) = begin
+  case+ d2var_get_addr d2v of
   | Some s2e => s2e | None () => begin
       $Loc.prerr_location loc0;
-      prerr ": Internal Error: d2var_addr_get_some: ";
+      prerr ": Internal Error: d2var_get_addr_some: ";
       prerr ": there is no address for the dynamic variable [";
       prerr d2v;
       prerr "].";
       prerr_newline ();
       $Err.abort {s2exp} ()
     end // end of [None]
-end // end of [d2var_addr_get_some]
+end // end of [d2var_get_addr_some]
 
-implement d2var_view_get_some (loc0, d2v) = begin
-  case+ d2var_view_get d2v of
+implement
+d2var_get_view_some
+  (loc0, d2v) = begin
+  case+ d2var_get_view d2v of
   | D2VAROPTsome d2v_view => d2v_view
   | D2VAROPTnone () => begin
       $Loc.prerr_location loc0;
@@ -328,12 +302,13 @@ implement d2var_view_get_some (loc0, d2v) = begin
       prerr_newline ();
       $Err.abort {d2var_t} ()
     end // end of [D2VAROPTnone]
-end // end of [d2var_addr_get_some]
+end // end of [d2var_get_view_some]
 
 (* ****** ****** *)
 
-implement fprint_d2var (pf_out | out, d2v) = let
-  val () = $Sym.fprint_symbol (pf_out | out, d2var_sym_get d2v)
+implement
+fprint_d2var (pf_out | out, d2v) = let
+  val () = $Sym.fprint_symbol (pf_out | out, d2var_get_sym d2v)
 (*
   val () = fprint_string (pf_out | out, "(")
   val () = $Stamp.fprint_stamp (pf_out | out, d2var_stamp_get d2v)
@@ -343,7 +318,8 @@ in
   // nothing
 end // end of [fprint_d2var]
 
-implement fprint_d2varlst {m} (pf | out, d2vs) = let
+implement
+fprint_d2varlst {m} (pf | out, d2vs) = let
   fun aux (out: &FILE m, i: int, d2vs: d2varlst): void =
     case+ d2vs of
     | cons (d2v, d2vs) => begin
@@ -366,30 +342,36 @@ implement prerr_d2varlst (d2vs) = prerr_mac (fprint_d2varlst, d2vs)
 
 (* ****** ****** *)
 
-implement d2var_is_linear (d2v) = (d2var_lin_get d2v >= 0)
+implement d2var_is_linear (d2v) = (d2var_get_lin d2v >= 0)
 implement d2var_is_mutable (d2v) =
-  case+ d2var_view_get d2v of D2VAROPTsome _ => true | D2VAROPTnone () => false
+  case+ d2var_get_view d2v of D2VAROPTsome _ => true | D2VAROPTnone () => false
+// end of [d2var_is_mutable]
 
 (* ****** ****** *)
 
-implement d2var_typ_reset (d2v, s2e) = begin
-  d2var_lin_inc (d2v); d2var_typ_set (d2v, Some s2e)
-end
+implement
+d2var_reset_typ (d2v, s2e) = let
+  val () = d2var_inc_lin (d2v) in d2var_set_typ (d2v, Some s2e)
+end // end of [d2var_reset_typ]
 
-implement d2var_typ_reset_at (d2v, s2e, s2l) = let
+implement
+d2var_reset_typ_at (d2v, s2e, s2l) = let
   val s2e = s2exp_whnf s2e
   val os2e_at = (
     case+ s2e.s2exp_node of
     | S2Eout _ => None ()
     | _ when s2cstref_exp_equ (Void_t0ype, s2e) => None ()
     | _ => Some (s2exp_at_viewt0ype_addr_view (s2e, s2l))
-  ) : s2expopt
+  ) : s2expopt // end of [val]
+  val () = d2var_inc_lin (d2v)
 in
-  d2var_lin_inc (d2v); d2var_typ_set (d2v, os2e_at)
-end
+  d2var_set_typ (d2v, os2e_at)
+end // end of [d2var_reset_typ]
 
-implement d2var_ptr_viewat_make (d2v_ptr, od2v_view) = let
-  val loc = d2var_loc_get d2v_ptr and sym = d2var_sym_get d2v_ptr
+implement
+d2var_ptr_viewat_make
+  (d2v_ptr, od2v_view) = let
+  val loc = d2var_get_loc d2v_ptr and sym = d2var_get_sym d2v_ptr
   val d2v_view = (case+ od2v_view of
     | D2VAROPTsome d2v_view => d2v_view | D2VAROPTnone () => let
        val sym_view = $Sym.symbol_make_string ($Sym.symbol_name sym + ".view")
@@ -397,19 +379,21 @@ implement d2var_ptr_viewat_make (d2v_ptr, od2v_view) = let
        d2var_make (loc, sym_view)
      end // end of [D2VAROPTnone]
   ) : d2var_t
-  val () = d2var_lin_set (d2v_view, 0)
-  val () = d2var_addr_set (d2v_view, d2var_addr_get d2v_ptr)
+  val () = d2var_set_lin (d2v_view, 0)
+  val () = d2var_set_addr (d2v_view, d2var_get_addr d2v_ptr)
 in
   d2v_view
 end // end of [d2var_ptr_viewat_make]
 
-implement d2var_ptr_viewat_make_none (d2v_ptr) =
+implement
+d2var_ptr_viewat_make_none (d2v_ptr) =
   d2var_ptr_viewat_make (d2v_ptr, D2VAROPTnone ())
 // end of [d2var_ptr_viewat_make_none]
 
 (* ****** ****** *)
-
-// implementing [d2varset_t]
+//
+// HX: implementing [d2varset_t]
+//
 
 local
 

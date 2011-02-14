@@ -106,9 +106,9 @@ fn d2exp_loopinv_tr
       | Some s2e => let
           val s2e = s2exp_opnexi_and_add (loc0, s2e)
         in
-          d2var_typ_set (d2v, Some s2e)
+          d2var_set_typ (d2v, Some s2e)
         end // end of [Some]
-      | None () => d2var_typ_set (d2v, None ())
+      | None () => d2var_set_typ (d2v, None ())
      end // end of [aux]
   in
     $Lst.list_foreach_cloptr (i2nv_arg, aux)

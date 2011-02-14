@@ -86,7 +86,7 @@ fun fprint_tyreckind {m:file_mode}
 
 fn fprint_s2rtdat {m:file_mode}
   (pf: file_mode_lte (m, w) | out: &FILE m, s2td: s2rtdat_t): void =
-  fprint_symbol (pf | out, s2rtdat_sym_get s2td)
+  fprint_symbol (pf | out, s2rtdat_get_sym s2td)
 // end of [fprint_s2rtdat]
 
 fn fprint_s2rtbas {m:file_mode}

@@ -105,7 +105,7 @@ cloenv_make_dynctx (ctx) = let
   var res: map_vt = $Map.map_make {d2var_t, valprim} (compare_d2var_d2var)
   typedef ptrres = ptr (res)
   fn f (pf: !map_vt @ res | d2v: d2var_t, vp: valprim, p_res: !ptrres): void =
-    if d2var_lev_get (d2v) > 0 then begin
+    if d2var_get_lev (d2v) > 0 then begin
       // [d2v] is recorded only if it is not at the top level
       $Map.map_insert (!p_res, d2v, vp)
     end // end of [if]
@@ -252,7 +252,7 @@ the_dynctx_find (d2v) = let
 in
   case+ ans of
   | ~Some_vt vp => vp | ~None_vt () => begin
-      prerr_loc_interror (d2var_loc_get d2v);
+      prerr_loc_interror (d2var_get_loc d2v);
       prerr ": the_dynctx_find: d2v = "; prerr d2v; prerr_newline ();
       $Err.abort {valprim} ()
     end // end of [None_vt]
@@ -332,7 +332,7 @@ instr_add_valprimlst_free (res, loc) = let
     | ~list_vt_nil () => ()
   end // end of [aux_free]
 in
-  aux_free (res, loc, the_valprimlst_free_get ())
+  aux_free (res, loc, the_valprimlst_get_free ())
 end // end of [instr_add_valprimlst_free]
 
 (* ****** ****** *)
@@ -373,7 +373,7 @@ ccomp_patck_rec
           case+ hip.hipat_asvar of
           | D2VAROPTnone () => let
               val d2v = d2var_make_any (loc)
-              val () = hipat_asvar_set (hip, D2VAROPTsome d2v)
+              val () = hipat_set_asvar (hip, D2VAROPTsome d2v)
             in
               d2v
             end // end of [D2VAROPTnone]
@@ -420,7 +420,7 @@ ccomp_patck_sum (
           case+ hip.hipat_asvar of
           | D2VAROPTnone () => d2v where {
               val d2v = d2var_make_any (loc)
-              val () = hipat_asvar_set (hip, D2VAROPTsome d2v)
+              val () = hipat_set_asvar (hip, D2VAROPTsome d2v)
             } // end of [D2VAROPTnone]
           | D2VAROPTsome d2v => d2v // may happen in template compilation
         ) : d2var_t
@@ -585,10 +585,10 @@ fn ccomp_match_sum (
     end // end of [val]
 *)
     val loc0 = hip0.hipat_loc
-    val () = d2var_lev_set (d2v, level)
+    val () = d2var_set_lev (d2v, level)
   in
     case+ 0 of
-    | _ when d2var_count_get d2v = 0 => () // [d2v] is unused
+    | _ when d2var_get_count d2v = 0 => () // [d2v] is unused
     | _ when refknd > 0 => let
         val hit = hityp_encode (hityp_ptr)
         val tmp_ptr = tmpvar_make (hit)
@@ -694,10 +694,10 @@ ccomp_match (res, level, vp0, hip0) = let
       print "ccomp_match: aux_var: d2v = "; print d2v; print_newline ();
     end // end of [val]
 *)
-    val () = d2var_lev_set (d2v, level)
+    val () = d2var_set_lev (d2v, level)
   in
     case+ d2v of
-    | _ when d2var_count_get d2v > 0 => let
+    | _ when d2var_get_count d2v > 0 => let
         val ismove = (
           case+ vp0.valprim_node of
           | VPclo _ => true
@@ -716,7 +716,7 @@ ccomp_match (res, level, vp0, hip0) = let
         in
           // empty
         end // end of [ismove]
-      end // end of [d2var_count_get (d2v) > 0]
+      end // end of [d2var_get_count (d2v) > 0]
     | _ => () // the variable [d2v] is unused
   end // end of [aux_var]
 in
@@ -738,10 +738,10 @@ in
         (res, level, vp0, freeknd, d2c, hips_arg, hit_sum)
       // end of [val]
     in
-      if freeknd < 0 then the_valprimlst_free_add vp0
+      if freeknd < 0 then the_valprimlst_add_free (vp0)
     end // end of [HIPcon]
   | HIPcon_any (freeknd, d2c) => begin
-      if freeknd < 0 then the_valprimlst_free_add vp0
+      if freeknd < 0 then the_valprimlst_add_free (vp0)
     end // end of [HIPcon_any]
   | HIPempty _ => ()
   | HIPint _ => ()
@@ -794,9 +794,9 @@ fn hiexp_refarg_tr (
       val d2v_any = d2v_any where {
         val d2v_any = d2var_make_any (loc)
         val d2v_any_view = d2var_make_any (loc)
-        val () = d2var_lev_set (d2v_any, level)
+        val () = d2var_set_lev (d2v_any, level)
         val () = begin
-          d2var_view_set (d2v_any, D2VAROPTsome d2v_any_view)
+          d2var_set_view (d2v_any, D2VAROPTsome d2v_any_view)
         end (* end of [val] *)
       } // end of [val]
       val hit = hie.hiexp_typ
@@ -838,7 +838,7 @@ end (* end of [hiexplst_refarg_tr] *)
 
 implement
 valprim_funclo_make (fl) = let
-  val fc = funlab_funclo_get (fl) in case+ fc of
+  val fc = funlab_get_funclo (fl) in case+ fc of
   | $Syn.FUNCLOclo knd => valprim_clo (knd, fl, cloenv_make ())
   | $Syn.FUNCLOfun () => valprim_fun (fl)
 end // end of [valprim_funclo_make]
@@ -963,8 +963,9 @@ ccomp_exp_arg_body_funlab
     end // end of [aux]
   } // end of [where]
 //
-  val (pf_level | level) = d2var_current_level_inc_and_get ()
-  val () = the_funlabset_push () and () = the_vartypset_push ()
+  val (pf_level | level) = d2var_current_level_incget ()
+  val () = the_funlabset_push ()
+  and () = the_vartypset_push ()
 //
   val (pf_dynctx_mark | ()) = the_dynctx_mark ()
 //
@@ -978,21 +979,24 @@ ccomp_exp_arg_body_funlab
 //
   val () = the_dynctx_unmark (pf_dynctx_mark | (*none*))
 //
-  val fls = the_funlabset_pop () and vtps = the_vartypset_pop ()
-  val level = d2var_current_level_dec_and_get (pf_level | (*none*))
+  val fls = the_funlabset_pop ()
+  and vtps = the_vartypset_pop ()
+  val level = d2var_current_level_decget (pf_level | (*none*))
   // function label propogation
   val () = funlabset_foreach_cloptr (fls, aux) where {
     fun aux (fl: funlab_t):<cloptr1> void = begin
-      if funlab_lev_get fl < level then the_funlabset_add fl
+      if funlab_get_lev (fl) < level then the_funlabset_add fl
     end
   } // end of [where]
   // environment variable propogation
   val () = vartypset_foreach_cloptr (vtps, aux) where {
-    fun aux (vtp: vartyp_t):<cloptr1> void = let
-      val d2v = vartyp_var_get (vtp)
+    fun aux (
+      vtp: vartyp_t
+    ) :<cloptr1> void = let
+      val d2v = vartyp_get_var (vtp)
     in
-      if d2var_lev_get d2v < level then the_vartypset_add vtp
-    end
+      if d2var_get_lev d2v < level then the_vartypset_add vtp
+    end // end of [aux]
   } // end of [where]
   val res = $Lst.list_vt_reverse_list (res)
 (*
@@ -1005,7 +1009,7 @@ ccomp_exp_arg_body_funlab
     funentry_make (loc_fun, fl, level, fls, vtps, tmp_ret, res)
   end // end of [val]
 in
-  funentry_lablst_add (fl); funentry_associate (entry); entry
+  funentry_add_lablst (fl); funentry_associate (entry); entry
 end // end of [ccomp_exp_arg_body_funlab]
 
 (* ****** ****** *)
@@ -1059,7 +1063,7 @@ fn ccomp_exp_lazy_ldelay
   val funclo = $Syn.FUNCLOclo ( 1) // cloptr
   val hit_eval = hie_eval.hiexp_typ
   val d2v_arg = d2var_make_any (loc0)
-  val () = d2var_count_inc (d2v_arg)
+  val () = d2var_inc_count (d2v_arg)
   val hie_cond = hiexp_var (loc0, hityp_bool, d2v_arg)
   val hie_if = hiexp_if (loc0, hit_eval, hie_cond, hie_eval, hie_free)
   val hip_arg = hipat_var (loc0, hityp_bool, 0(*refknd*), d2v_arg)
@@ -1099,7 +1103,7 @@ vp_mut.valprim_node of
 //
 | _ => let  
   val () = let
-    val lev_d2v = d2var_lev_get (d2v_mut)
+    val lev_d2v = d2var_get_lev (d2v_mut)
     val level = d2var_current_level_get ()
 (*
     val () = begin
@@ -1176,7 +1180,7 @@ end // end of [ccomp_exp_seq]
 implement
 ccomp_exp_var (d2v) = vp where {
   var vp: valprim = the_dynctx_find (d2v)
-  val d2v_lev = d2var_lev_get (d2v)
+  val d2v_lev = d2var_get_lev (d2v)
   val level = d2var_current_level_get ()
 (*
   val () = begin
@@ -1398,7 +1402,7 @@ in
       valprim_top (hit0)
     end // end of [HIEtop]
   | HIEvar d2v => begin case+ 0 of
-    | _ when d2var_isprf_get d2v => let
+    | _ when d2var_get_isprf d2v => let
         val () = prerr_loc_ccomp (loc0)
         val () = prerr ": ["
         val () = prerr d2v
@@ -1660,7 +1664,7 @@ fn ccomp_exp_app_tmpvar (
 *)
         val () = case+ vps_free of
           | list_vt_nil _ => let
-              val () = if tmpvar_ret_get tmp_res > 0 then istail := 1
+              val () = if tmpvar_get_ret (tmp_res) > 0 then istail := 1
               val () = fold@ vps_free
             in
               // nothing
@@ -1790,7 +1794,7 @@ fn ccomp_exp_arrsize_tmpvar (
   val vp_arr = valprim_tmp (tmp_arr)
   val () = let
     val vp_res = valprim_tmp (tmp_res)
-    val hit_arrsz = tmpvar_typ_get tmp_res
+    val hit_arrsz = tmpvar_get_typ (tmp_res)
 (*
 //
 viewtypedef
@@ -2221,7 +2225,7 @@ end // end of [ccomp_hilablst]
 fn d2var_typ_ptr_get
   (d2v: d2var_t): s2exp = s2e_elt where {
   val d2v_view = (
-    case+ d2var_view_get d2v of
+    case+ d2var_get_view d2v of
     | D2VAROPTsome d2v_view => d2v_view
     | D2VAROPTnone () => begin
         prerr_interror ();
@@ -2230,7 +2234,7 @@ fn d2var_typ_ptr_get
       end // end of [D2VAROPTnone]
   ) : d2var_t // end of [val d2v_view]
   val s2e_view = (
-    case+ d2var_mastyp_get (d2v_view) of
+    case+ d2var_get_mastyp (d2v_view) of
     | Some s2e_view => s2e_view | None () => begin
         prerr_interror ();
         prerr ": d2var_typ_ptr_get: d2v_view = "; prerr d2v_view; prerr_newline ();
@@ -2256,8 +2260,8 @@ fun ccomp_fundeclst_init {n:nat}
   | list_cons (fundec, fundecs) => let
       val loc = fundec.hifundec_loc
       val d2v = fundec.hifundec_var
-      val () = d2var_lev_set (d2v, level)
-      val s2e = d2var_mastyp_get_some (fundec.hifundec_loc, d2v)
+      val () = d2var_set_lev (d2v, level)
+      val s2e = d2var_get_mastyp_some (fundec.hifundec_loc, d2v)
       val hit = hityp_normalize (s2exp_tr (loc, 1(*deep*), s2e))
       val fl = funlab_make_var_typ (d2v, hit)
       val vp = valprim_funclo_make (fl)
@@ -2284,14 +2288,14 @@ fn ccomp_fntdeclst_main {n:nat} (
         print_newline ()
       end // end of [val]
 *)
-      val tmps = tmpvarlst_make (funlab_typ_arg_get fl)
+      val tmps = tmpvarlst_make (funlab_get_typ_arg fl)
 (*
       val () = begin
         print "ccomp_fntdeclst_main: aux_push: tmps = "; print_tmpvarlst tmps;
         print_newline ()
       end // end of [val]
 *)
-      val () = funlab_tailjoined_set (fl, tmps)
+      val () = funlab_set_tailjoined (fl, tmps)
     in
       the_tailcallst_add (fl, tmps)
     end (* end of [aux_push] *)
@@ -2446,7 +2450,7 @@ fn ccomp_vardec_sta
   : void = let
   val loc = vardec.hivardec_loc
   val d2v = vardec.hivardec_ptr
-  val () = d2var_lev_set (d2v, level)
+  val () = d2var_set_lev (d2v, level)
   val s2e = d2var_typ_ptr_get d2v
   val hit = s2exp_tr (loc, 0(*deep*), s2e)
   val tmp = tmpvar_make (hityp_normalize hit)
@@ -2472,11 +2476,11 @@ fn ccomp_vardec_dyn (
 ) : void = let
   val loc_var = vardec.hivardec_loc
   val d2v = vardec.hivardec_ptr
-  val () = d2var_lev_set (d2v, level)
+  val () = d2var_set_lev (d2v, level)
   val hit_ptr =
     s2exp_tr (loc_var, 0(*deep*), s2e) where {
     // [s2e] must a pointer type
-    val s2e = d2var_typ_get_some (d2var_loc_get d2v, d2v)
+    val s2e = d2var_get_typ_some (d2var_get_loc d2v, d2v)
   } // end of [val]
   val tmp_ptr =
     tmpvar_make (hityp_normalize hit_ptr)
@@ -2631,7 +2635,7 @@ fn ccomp_impdec
 //
         val hit = hityp_normalize (hie.hiexp_typ)
         val fl = funlab_make_cst_typ (d2c, tmparg, hit)
-        val fc = funlab_funclo_get (fl)
+        val fc = funlab_get_funclo (fl)
 (*
         val () = begin
           print "ccomp_impdec: aux: fl = "; print fl; print_newline ()
@@ -2658,9 +2662,9 @@ fn ccomp_impdec
               // HX-2011-01-15:
               // [d2c] is a partial function template instance
 *)
-              val name = funlab_name_get fl in tmpnamtbl_add (name, vp_lam)
+              val name = funlab_get_name (fl) in tmpnamtbl_add (name, vp_lam)
             end // end of [_ when ...]
-          | _ => begin case+ d2cst_kind_get d2c of
+          | _ => begin case+ d2cst_get_kind d2c of
             | $Syn.DCSTKINDval () => begin case+ fc of
               | $Syn.FUNCLOfun () => let
                   val () = the_glocstlst_add_fun (d2c)
@@ -2759,7 +2763,7 @@ fn ccomp_impdec_prfck
   val fl = funlab_make_cst_prfck (d2c)
   val vp_fun = valprim_funclo_make (fl)
   val (pf_funlab_mark | ()) = funlab_push (fl)
-  val () = funentry_lablst_add (fl)
+  val () = funentry_add_lablst (fl)
   val entry = funentry_make (loc, fl,
     0(*level*), $Set.set_nil (*fls*), $Set.set_nil(*vtps*), tmp_ret, inss
   ) where {

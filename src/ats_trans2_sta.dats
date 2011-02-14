@@ -106,7 +106,7 @@ end // end of [prerr_loc_interror]
 
 fn stacstuseloc_posmark
   (loc: loc_t, s2c: s2cst_t): void = let
-  val loc_s2c = s2cst_loc_get (s2c)
+  val loc_s2c = s2cst_get_loc (s2c)
   val loc_begoff = $Loc.location_begpos_toff loc
   val () = $PM.posmark_insert_stacstuse_beg (loc_begoff, loc_s2c)
   val loc_endoff = $Loc.location_endpos_toff loc
@@ -223,7 +223,7 @@ fn effvar_tr
   case+ the_s2expenv_find efv.i0de_sym of
   | ~Some_vt s2i => begin case+ s2i of
     | S2ITEMvar s2v => let
-        val () = s2var_tmplev_check (efv.i0de_loc, s2v)
+        val () = s2var_check_tmplev (efv.i0de_loc, s2v)
       in
         s2exp_var (s2v)
       end // end of [S2ITEMvar]
@@ -357,14 +357,14 @@ fun sp1at_argcheck
   ) : Option_vt s2var_t =
     case+ s2vs of
     | list_cons (s2v, s2vs) => begin
-        if (name = s2var_sym_get s2v) then Some_vt s2v else check (name, s2vs)
+        if (name = s2var_get_sym s2v) then Some_vt s2v else check (name, s2vs)
       end // end of [list_cons]
     | list_nil () => None_vt ()
   // end of [check]
 in
   case+ s2vs of
   | list_cons (s2v, s2vs) => let
-      val ans = check (s2var_sym_get s2v, s2vs) in case+ ans of
+      val ans = check (s2var_get_sym s2v, s2vs) in case+ ans of
       | Some_vt _ => (fold@ ans; ans) | ~None_vt () => sp1at_argcheck s2vs
     end // end of [list_cons]
   | list_nil () => None_vt ()
@@ -426,7 +426,7 @@ in
                 s2cs: s2cstlst, s2t_pat: s2rt, s2ts_arg: &s2rtlst
               ) : s2cstlst = case+ s2cs of
               | S2CSTLSTcons (s2c, s2cs1) => let
-                  val s2t_s2c = s2cst_srt_get s2c in case+ s2t_s2c of
+                  val s2t_s2c = s2cst_get_srt s2c in case+ s2t_s2c of
                   | S2RTfun (s2ts, s2t) => begin case+ 0 of
                     | _ when s2t_pat <= s2t => (s2ts_arg := s2ts; s2cs)
                     | _ => sel (s2cs1, s2t_pat, s2ts_arg)
@@ -605,8 +605,8 @@ fn s1exp_app_datconptr_tr_up
         end
       | nil () => nil ()
   } // end of [where]
-  val ns2es = $Lst.list_length s2es
-  val arity = d2con_arity_full_get d2c
+  val ns2es = $Lst.list_length (s2es)
+  val arity = d2con_get_arity_full (d2c)
   val () =
     if ns2es > arity then begin
       prerr_loc_error2 loc_app;
@@ -686,7 +686,7 @@ fun s1exp_qid_app_tr_up (
         end // end of [_]
     end // end of [S2ITEMcst]
   | S2ITEMvar s2v => let
-      val () = s2var_tmplev_check (loc_qid, s2v)
+      val () = s2var_check_tmplev (loc_qid, s2v)
     in
       s1exp_app_tr_up (loc_app, loc_qid, s2exp_var s2v, s1ess)
     end // end of [S2ITEMvar]
@@ -714,7 +714,7 @@ fn s1exp_qid_tr_up
 //
           val () = stacstuseloc_posmark (loc0, s2c)
 //
-          val s2t = s2cst_srt_get s2c; val s2e_s2c = s2exp_cst s2c
+          val s2t = s2cst_get_srt s2c; val s2e_s2c = s2exp_cst s2c
         in
           case+ s2t of
           | S2RTfun (nil (), _res) when s2rt_is_dat _res => begin
@@ -732,7 +732,7 @@ fn s1exp_qid_tr_up
       end // end of [S2ITEMcst]
     | S2ITEMe1xp e1xp => s1exp_tr_up (s1exp_make_e1xp (loc0, e1xp))
     | S2ITEMvar s2v => let
-        val () = s2var_tmplev_check (loc0, s2v) in s2exp_var s2v
+        val () = s2var_check_tmplev (loc0, s2v) in s2exp_var s2v
       end // end of [S2ITEMvar]
     | _ => begin
         prerr_loc_interror loc0;
@@ -1139,7 +1139,7 @@ end // end of [s1exp_app_unwind]
 (* ****** ****** *)
 
 fn s2rtlst_of_s2varlst
-  (s2vs: s2varlst): s2rtlst = $Lst.list_map_fun (s2vs, s2var_srt_get)
+  (s2vs: s2varlst): s2rtlst = $Lst.list_map_fun (s2vs, s2var_get_srt)
 // end of [s2rtlst_of_s2varlst]
 
 (* ****** ****** *)
@@ -1904,7 +1904,7 @@ fn d1atsrtdec_tr (
     , None () // argvar
     , None () // def
     ) // end of [s2cst_make]
-    val () = s2cst_tag_set (s2c, i)
+    val () = s2cst_set_tag (s2c, i)
   in
     the_s2expenv_add_scst s2c; s2c
   end // end of [aux]
@@ -2160,7 +2160,7 @@ in
             // definition binding is to be done in [ats_trans3_dec.dats]
 *)
             val s2t_s2e = s2e.s2exp_srt
-            val s2t_s2c = s2cst_srt_get s2c
+            val s2t_s2c = s2cst_get_srt s2c
           in
             if s2t_s2e <= s2t_s2c then begin
               s2aspdec_make (loc, s2c, s2e)
@@ -2225,7 +2225,7 @@ fn d1atcon_tr (
     | cons _ => s2vpslst := cons (@(s2vs0, nil ()), s2vpslst)
     | nil () => ()
   var os2ts_s2c_ind: s2rtlstopt = None ()
-  val () = case+ s2cst_srt_get s2c of
+  val () = case+ s2cst_get_srt s2c of
     | S2RTfun (s2ts, s2t) => (os2ts_s2c_ind := Some s2ts) | s2t => ()
   val npf = d1c.d1atcon_npf and s1es_arg = d1c.d1atcon_arg
   val s2es_arg = let
@@ -2302,7 +2302,7 @@ fn d1atdec_tr (
   s2c: s2cst_t, s2vs0: s2varlst, d1c: d1atdec
 ) : void = let
   val s2t_s2c = begin
-    case+ s2cst_srt_get s2c of S2RTfun (s2ts, s2t) => s2t | s2t => s2t
+    case+ s2cst_get_srt (s2c) of S2RTfun (s2ts, s2t) => s2t | s2t => s2t
   end // end of [val]
   val islin = s2rt_is_linear s2t_s2c and isprf = s2rt_is_proof s2t_s2c
   val d2cs = d1atconlst_tr
@@ -2310,7 +2310,7 @@ fn d1atdec_tr (
   // end of [val]
   val () = let // assigning tags to dynamic constructors
     fun aux (i: int, d2cs: d2conlst): void = case+ d2cs of
-      | D2CONLSTcons (d2c, d2cs) => (d2con_tag_set (d2c, i); aux (i+1, d2cs))
+      | D2CONLSTcons (d2c, d2cs) => (d2con_set_tag (d2c, i); aux (i+1, d2cs))
         // end of [D2CONLSTcons]
       | D2CONLSTnil () => ()
     // end of [aux]
@@ -2319,18 +2319,20 @@ fn d1atdec_tr (
   end // end of [val]
   val islst = (case+ d2cs of
     | D2CONLSTcons (d2c1, D2CONLSTcons (d2c2, D2CONLSTnil ())) =>
-        if d2con_arity_real_get d2c1 = 0 then begin
-          if d2con_arity_real_get d2c2 > 0 then Some @(d2c1, d2c2)
+        if d2con_get_arity_real (d2c1) = 0 then begin
+          if d2con_get_arity_real (d2c2) > 0 then Some @(d2c1, d2c2)
           else None ()
         end else begin
-          if d2con_arity_real_get d2c2 = 0 then Some @(d2c2, d2c1)
+          if d2con_get_arity_real (d2c2) = 0 then Some @(d2c2, d2c1)
           else None ()
         end
       // end of [D2CONLSTcons (_, D2CONSLSTcons (_, D2CONLSTnil))
     | _ => None ()
   ) : Option @(d2con_t, d2con_t)
+  val () = s2cst_set_islst (s2c, islst)
+  val () = s2cst_set_conlst (s2c, Some d2cs)
 in
-  s2cst_islst_set (s2c, islst); s2cst_conlst_set (s2c, Some d2cs)
+  // nothing
 end // end of [d1atdec_tr]
 
 implement
@@ -2439,7 +2441,7 @@ fn e1xndec_tr
   val () = the_s2expenv_pop (pf_s2expenv | (*none*))
   val d2c = d2con_make
     (loc, fil, id, s2c, 1(*vwtp*), s2vpslst, npf, s2es_arg, None(*ind*))
-  val () = d2con_tag_set (d2c, ~1)
+  val () = d2con_set_tag (d2c, ~1)
 in
   the_d2expenv_add_dcon d2c; d2c
 end // end of [e1xndec_tr]
@@ -2454,7 +2456,7 @@ fun d2conlst_revapp
 end // end of [d2conlst_revapp]
 
 implement
-e1xndeclst_tr (d1cs) = let
+e1xndeclst_tr (d1cs) = d2cs where {
   fun aux (s2c: s2cst_t, d1cs: e1xndeclst): d2conlst =
     case+ d1cs of
     | cons (d1c, d1cs) => let
@@ -2466,12 +2468,11 @@ e1xndeclst_tr (d1cs) = let
   // end of [aux]
   val s2c = s2cstref_cst_get (Exception_viewtype)
   val d2cs = aux (s2c, d1cs)
-  val d2cs0 = case+ s2cst_conlst_get s2c of
+  val d2cs0 = case+ s2cst_get_conlst (s2c) of
     | Some d2cs0 => d2conlst_revapp (d2cs, d2cs0) | None () => d2cs
   // end of [val]
-in
-  s2cst_conlst_set (s2c, Some d2cs0); d2cs
-end // end of [e1xndeclst_tr]
+  val () = s2cst_set_conlst (s2c, Some d2cs0)
+} // end of [e1xndeclst_tr]
 
 (* ****** ****** *)
 

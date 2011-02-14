@@ -308,7 +308,7 @@ implement the_s2expenv_add_scst (s2c) = let
     print_newline ()
   end // end of [val]
 *)
-  val id = s2cst_sym_get s2c
+  val id = s2cst_get_sym s2c
   val s2cs = (
     case+ the_s2expenv_find (id) of
     | ~Some_vt s2i => begin case+ s2i of
@@ -327,7 +327,7 @@ in
 end // end of [the_s2expenv_add_scst]
 
 implement the_s2expenv_add_svar (s2v) = let
-  val id = s2var_sym_get s2v in the_s2expenv_add (id, S2ITEMvar s2v)
+  val id = s2var_get_sym s2v in the_s2expenv_add (id, S2ITEMvar s2v)
 end // end of [the_s2expenv_add_svar]
 
 implement the_s2expenv_add_svarlst (s2vs) = begin
@@ -340,8 +340,9 @@ end // end of [the_s2expenv_add_svarlst]
 
 (* ****** ****** *)
 
-implement the_s2expenv_add_datconptr (d2c) = let
-  val sym = d2con_sym_get d2c
+implement
+the_s2expenv_add_datconptr (d2c) = let
+  val sym = d2con_get_sym d2c
   val name = $Sym.symbol_name sym
   val id = $Sym.symbol_make_string (name + "_unfold")
   val () = the_s2expenv_add (id, S2ITEMdatconptr d2c)
@@ -349,8 +350,9 @@ in
   // empty
 end // end of [the_s2expenv_add_datconptr]
 
-implement the_s2expenv_add_datcontyp (d2c) = let
-  val sym = d2con_sym_get d2c
+implement
+the_s2expenv_add_datcontyp (d2c) = let
+  val sym = d2con_get_sym d2c
   val name = $Sym.symbol_name sym
   val id = $Sym.symbol_make_string (name + "_pstruct")
   val () = the_s2expenv_add (id, S2ITEMdatcontyp d2c)
@@ -550,12 +552,13 @@ implement template_level_inc () =
 
 implement template_level_dec () =
   !the_template_level := !the_template_level - 1
+// end of [template_level_dec]
 
 end // end of [local]
 
 implement
-  s2var_tmplev_check (loc, s2v) = let
-  val s2v_tmplev = s2var_tmplev_get (s2v)
+s2var_check_tmplev (loc, s2v) = let
+  val s2v_tmplev = s2var_get_tmplev (s2v)
 in
   case+ 0 of
   | _ when s2v_tmplev > 0 => let
@@ -571,11 +574,14 @@ in
   | _ => () // not a template variable
 end // end of [s2var_tmplev_check]
 
-implement s2qualst_tmplev_set (s2vpss, tmplev) = let
-  fun aux_s2vs
-    (s2vs: s2varlst, tmplev: int): void = case+ s2vs of
+implement
+s2qualst_set_tmplev
+  (s2vpss, tmplev) = let
+  fun aux_s2vs (
+    s2vs: s2varlst, tmplev: int
+  ) : void = case+ s2vs of
     | cons (s2v, s2vs) => begin
-        s2var_tmplev_set (s2v, tmplev); aux_s2vs (s2vs, tmplev)
+        s2var_set_tmplev (s2v, tmplev); aux_s2vs (s2vs, tmplev)
       end // end of [cons]
     | nil () => ()
   fun aux_s2qualst (s2vpss: s2qualst, tmplev: int): void =
@@ -607,18 +613,21 @@ implement d2var_current_level_inc () =
     !the_d2var_current_level := n + 1; (unit_v () | ())
   end // end of [d2var_current_level_inc]
 
-implement d2var_current_level_inc_and_get () =
+implement
+d2var_current_level_incget () =
   let val n = !the_d2var_current_level; val n1 = n + 1 in
     !the_d2var_current_level := n1; (unit_v () | n1)
   end // end of [d2var_current_level_inc_and_get]
 
-implement d2var_current_level_dec (pf | (*none*)) = let
+implement
+d2var_current_level_dec (pf | (*none*)) = let
   prval unit_v () = pf; val n = !the_d2var_current_level
 in
   !the_d2var_current_level := n - 1
 end // end of [d2var_current_level_dec]
 
-implement d2var_current_level_dec_and_get (pf | (*none*)) = let
+implement
+d2var_current_level_decget (pf | (*none*)) = let
   prval unit_v () = pf; val n = !the_d2var_current_level; val n1 = n - 1
 in
   !the_d2var_current_level := n1; n1
@@ -631,13 +640,16 @@ end // end of [local]
 assume d2expenv_token = unit_v
 typedef d2expenv = $SymEnv.symenv_t (d2item)
 
+(* ****** ****** *)
+
 local
 
 val the_d2expenv: d2expenv = $SymEnv.symenv_make ()
 
 in // in of [local]
 
-implement the_d2expenv_add (id, d2i) = let
+implement
+the_d2expenv_add (id, d2i) = let
   val ans = $SymEnv.symenv_remove_fst (the_d2expenv, id)
   val () = begin
     case+ ans of ~Some_vt _ => () | ~None_vt () => ()
@@ -646,8 +658,9 @@ in
   $SymEnv.symenv_insert_fst (the_d2expenv, id, d2i)
 end // end of [the_d2expenv_add]
 
-implement the_d2expenv_add_dcon (d2c) = let
-  val id = d2con_sym_get d2c
+implement
+the_d2expenv_add_dcon (d2c) = let
+  val id = d2con_get_sym d2c
   val d2cs = (
     case+ the_d2expenv_find (id) of
     | ~Some_vt d2i => begin case+ d2i of
@@ -665,16 +678,18 @@ in
   ) // end of [$SymEnv.symenv_insert_fst]
 end // end of [the_d2expenv_add_dcon]
 
-implement the_d2expenv_add_dcst (d2c) = begin
-  let val id = d2cst_sym_get d2c in the_d2expenv_add (id, D2ITEMcst d2c) end
+implement
+the_d2expenv_add_dcst (d2c) = begin
+  let val id = d2cst_get_sym d2c in the_d2expenv_add (id, D2ITEMcst d2c) end
 end // end of [the_d2expenv_add_dcst]
 
-implement the_d2expenv_add_dmac_def (d2m) = let
-  val id = d2mac_sym_get d2m in the_d2expenv_add (id, D2ITEMmacdef d2m)
+implement
+the_d2expenv_add_dmac_def (d2m) = let
+  val id = d2mac_get_sym d2m in the_d2expenv_add (id, D2ITEMmacdef d2m)
 end // end of [the_d2expenv_add_dmac_def]
 
 implement the_d2expenv_add_dmac_var (d2v) = let
-  val id = d2var_sym_get d2v in the_d2expenv_add (id, D2ITEMmacvar d2v)
+  val id = d2var_get_sym d2v in the_d2expenv_add (id, D2ITEMmacvar d2v)
 end // end of [the_d2expenv_add_dmac_var]
 
 implement the_d2expenv_add_dmac_varlst (d2vs) = begin
@@ -682,7 +697,7 @@ implement the_d2expenv_add_dmac_varlst (d2vs) = begin
 end // end of [the_d2expenv_add_dmac_varlst]
 
 implement the_d2expenv_add_dvar (d2v) = let
-  val id = d2var_sym_get d2v in the_d2expenv_add (id, D2ITEMvar d2v)
+  val id = d2var_get_sym d2v in the_d2expenv_add (id, D2ITEMvar d2v)
 end // end of [the_d2expenv_add_dvar]
 
 implement the_d2expenv_add_dvarlst (d2vs) = begin

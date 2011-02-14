@@ -87,16 +87,18 @@ assume intinfset_t = List intinf_t // of increasing order
 
 implement intinflst_of_intinfset (xs) = xs
 
-fun intinfset_add
-  (xs0: intinfset_t, x0: intinf_t, err: &int): intinfset_t =
+fun intinfset_add (
+  xs0: intinfset_t, x0: intinf_t, err: &int
+) : intinfset_t =
   case+ xs0 of
   | cons (x, xs) => begin
       if x < x0 then x :: intinfset_add (xs, x0, err)
       else begin
         if x0 < x then x0 :: xs0 else (err := 1; xs0)
       end
-    end
-  | nil () => cons (x0, nil ())
+    end // end of [cons]
+  | nil () => cons (x0, nil ()) // end of [nil]
+// end of [intinfset_add]
 
 fun intinfset_sing (x: intinf_t): intinfset_t = cons (x, nil ())
 
@@ -139,7 +141,8 @@ fun labp2atcstlst_of_labp2atlst (lp2ts: labp2atlst): labp2atcstlst =
     end
   | _ => LABP2ATCSTLSTnil ()
 
-implement p2atcst_of_p2at p2t0 = begin
+implement
+p2atcst_of_p2at (p2t0) = begin
   case+ p2t0.p2at_node of
   | P2Tann (p2t, _) => p2atcst_of_p2at p2t
   | P2Tany () => P2TCany ()
@@ -167,7 +170,8 @@ implement p2atcst_of_p2at p2t0 = begin
   | P2Tvbox _ => P2TCany ()
 end // end of [p2atcst_of_p2at]
 
-implement p2atcstlst_of_p2atlst (p2ts) = case+ p2ts of
+implement
+p2atcstlst_of_p2atlst (p2ts) = case+ p2ts of
   | cons (p2t, p2ts) => begin
       cons (p2atcst_of_p2at p2t, p2atcstlst_of_p2atlst p2ts)
     end // end of [cons]
@@ -191,7 +195,8 @@ in
   aux (out, 0, xs)
 end // end of [fprint_intinfset]
 
-implement fprint_p2atcst (pf | out, p2tc) = let
+implement
+fprint_p2atcst (pf | out, p2tc) = let
   macdef prstr (s) = fprint1_string (pf | out, ,(s))  
 in
   case+ p2tc of
@@ -229,21 +234,41 @@ in
   | P2TCstring s => fprintf1_exn (pf | out, "\"%s\"", @(s))
 end // end of [fprint_p2atcst]
 
-implement fprint_p2atcstlst {m} (pf | out, p2tcs) = let
-  fun aux (out: &FILE m, i: int, p2tcs: p2atcstlst)
-    : void = begin case+ p2tcs of
+implement
+print_p2atcst (p2tc) = print_mac (fprint_p2atcst, p2tc)
+implement
+prerr_p2atcst (p2tc) = prerr_mac (fprint_p2atcst, p2tc)
+
+(* ****** ****** *)
+
+implement
+fprint_p2atcstlst
+  {m} (pf | out, p2tcs) = let
+  fun aux (
+    out: &FILE m, i: int, p2tcs: p2atcstlst
+  ) : void =
+    case+ p2tcs of
     | cons (p2tc, p2tcs) => begin
         if i > 0 then fprint1_string (pf | out, ", ");
         fprint_p2atcst (pf | out, p2tc); aux (out, i+1, p2tcs)
       end
     | nil () => ()
-  end // end of [aux]
+  // end of [aux]
 in
   aux (out, 0, p2tcs)
 end // end of [fprint_p2atcstlst]
 
-implement fprint_labp2atcstlst {m} (pf | out, lp2tcs) = let
-  fun aux (out: &FILE m, i: int, lp2tcs: labp2atcstlst): void =
+implement print_p2atcstlst (p2tcs) = print_mac (fprint_p2atcstlst, p2tcs)
+implement prerr_p2atcstlst (p2tcs) = prerr_mac (fprint_p2atcstlst, p2tcs)
+
+(* ****** ****** *)
+
+implement
+fprint_labp2atcstlst
+  {m} (pf | out, lp2tcs) = let
+  fun aux (
+    out: &FILE m, i: int, lp2tcs: labp2atcstlst
+  ) : void =
     case+ lp2tcs of
     | LABP2ATCSTLSTcons (l, p2tc, lp2tcs) => begin
         if i > 0 then fprint1_string (pf | out, ", ");
@@ -252,32 +277,36 @@ implement fprint_labp2atcstlst {m} (pf | out, lp2tcs) = let
         aux (out, i + 1, lp2tcs)
       end
     | LABP2ATCSTLSTnil () => ()
+  // end of [aux]
 in
   aux (out, 0, lp2tcs)
 end // end of [fprint_labp2atcstlst]
 
-implement fprint_p2atcstlstlst {m} (pf | out, p2tcss) = let
-  fun aux (out: &FILE m, p2tcss: p2atcstlstlst): void =
+(* ****** ****** *)
+
+implement
+fprint_p2atcstlstlst
+  {m} (pf | out, p2tcss) = let
+  fun aux (
+    out: &FILE m, p2tcss: p2atcstlstlst
+  ) : void =
     case+ p2tcss of
-    | cons (p2tcs, p2tcss) => begin
-        fprint_p2atcstlst (pf | out, p2tcs); fprint_newline (pf | out);
+    | cons (p2tcs, p2tcss) => let
+        val () = fprint_p2atcstlst (pf | out, p2tcs)
+        val () = fprint_newline (pf | out)
+      in
         aux (out, p2tcss)
-      end
-    | nil () => ()
+      end // end of [cons]
+    | nil () => () // end of [nil]
+  // end of [aux]
 in
   aux (out, p2tcss)
 end // end of [fprint_p2atcstlstlst]
 
-(* ****** ****** *)
-
-implement print_p2atcst (p2tc) = print_mac (fprint_p2atcst, p2tc)
-implement prerr_p2atcst (p2tc) = prerr_mac (fprint_p2atcst, p2tc)
-
-implement print_p2atcstlst (p2tcs) = print_mac (fprint_p2atcstlst, p2tcs)
-implement prerr_p2atcstlst (p2tcs) = prerr_mac (fprint_p2atcstlst, p2tcs)
-
-implement print_p2atcstlstlst (p2tcss) = print_mac (fprint_p2atcstlstlst, p2tcss)
-implement prerr_p2atcstlstlst (p2tcss) = prerr_mac (fprint_p2atcstlstlst, p2tcss)
+implement
+print_p2atcstlstlst (p2tcss) = print_mac (fprint_p2atcstlstlst, p2tcss)
+implement
+prerr_p2atcstlstlst (p2tcss) = prerr_mac (fprint_p2atcstlstlst, p2tcss)
 
 (* ****** ****** *)
 
@@ -302,7 +331,7 @@ fn p2atcst_con_complement
           aux (d2cs, res)
         end else let
           val p2tcs_any =
-            aux2 (d2con_arity_full_get d2c, nil ()) where {
+            aux2 (d2con_get_arity_full d2c, nil ()) where {
             fun aux2 (n: int, res: p2atcstlst): p2atcstlst =
               if n > 0 then aux2 (n-1, cons (P2TCany (), res))
               else res
@@ -318,16 +347,17 @@ in
   aux (d2cs, list_vt_nil ())
 end // end of [p2atcst_con_complement]
 
-implement p2atcst_complement (p2tc0) = begin case+ p2tc0 of
+implement
+p2atcst_complement (p2tc0) = begin case+ p2tc0 of
   | P2TCany () => nil ()
   | P2TCbool b => cons (P2TCbool ~b, nil ())
   | P2TCchar _ => singleton (P2TCany ()) // conservative estimation
   | P2TCcon (d2c0, p2tcs) => let
-      val tag = d2con_tag_get d2c0
-    in
+      val tag = d2con_get_tag (d2c0) in
       if tag >= 0 then let
-        val s2c0 = d2con_scst_get d2c0
-        val d2cs = (case+ s2cst_conlst_get s2c0 of
+        val s2c0 = d2con_get_scst (d2c0)
+        val d2cs = (
+          case+ s2cst_get_conlst s2c0 of
           | Some d2cs => d2cs | None _ => begin
               prerr_interror ();
               prerr ": p2atcst_complement: s2c0 = "; prerr s2c0; prerr_newline ();
@@ -362,7 +392,8 @@ implement p2atcst_complement (p2tc0) = begin case+ p2tc0 of
 *)
 end // end of [p2atcst_complement]
 
-implement p2atcstlst_complement {n} (p2tcs0) = begin
+implement
+p2atcstlst_complement {n} (p2tcs0) = begin
   case+ p2tcs0 of
   | p2tc1 :: p2tcs1 => let
       val p2tcs1_any = aux p2tcs1 where {
@@ -389,7 +420,8 @@ implement p2atcstlst_complement {n} (p2tcs0) = begin
   | nil () => nil () // end of [nil]
 end // end of [p2atcstlst_commplement]
 
-implement labp2atcstlst_complement (lp2tcs0) = begin
+implement
+labp2atcstlst_complement (lp2tcs0) = begin
   case+ lp2tcs0 of
   | LABP2ATCSTLSTcons (l1, p2tc1, lp2tcs1) => let
       val lp2tcs1_any = aux lp2tcs1 where {
@@ -426,7 +458,8 @@ end // end of [labp2atcstlst_commplement]
 
 (* ****** ****** *)
 
-implement c2lau_pat_complement (c2l) = begin
+implement
+c2lau_pat_complement (c2l) = begin
   case+ c2l.c2lau_gua of
   | list_cons _ => let // the most conservative estimation
       fun aux {i,j:nat} .<i>.
@@ -445,7 +478,8 @@ end // end of [c2lau_pat_complement]
 
 (* ****** ****** *)
 
-implement p2atcst_intersect_test (p2tc1, p2tc2) = begin
+implement
+p2atcst_intersect_test (p2tc1, p2tc2) = begin
   case+ (p2tc1, p2tc2) of
   | (P2TCany (), _) => true
   | (_, P2TCany ()) => true
@@ -495,7 +529,9 @@ implement p2atcstlst_intersect_test (p2tcs1, p2tcs2) =
   | nil () => true
 (* end of [p2atcstlst_intersect_test] *)
 
-implement labp2atcstlst_intersect_test (lp2tcs1, lp2tcs2) =
+implement
+labp2atcstlst_intersect_test
+  (lp2tcs1, lp2tcs2) = begin
   case+ (lp2tcs1, lp2tcs2) of
   | (LABP2ATCSTLSTcons (l1, p2tc1, lp2tcs1),
      LABP2ATCSTLSTcons (l2, p2tc2, lp2tcs2)) =>
@@ -504,11 +540,12 @@ implement labp2atcstlst_intersect_test (lp2tcs1, lp2tcs2) =
       else false
     // end of [LABP2ATCSTLSTcons, LABP2ATCSTLSTcons]
   | (_, _) => true
-(* end of [labp2atcstlst_intersect_test] *)
+end // end of [labp2atcstlst_intersect_test]
 
 (* ****** ****** *)
 
-implement p2atcst_difference (p2tc1, p2tc2) =
+implement
+p2atcst_difference (p2tc1, p2tc2) =
   case+ (p2tc1, p2tc2) of
   | (_, P2TCany ()) => nil ()
   | (P2TCany (), _) => p2atcst_complement p2tc2
@@ -559,7 +596,9 @@ implement p2atcst_difference (p2tc1, p2tc2) =
     end // end of [_, _]
 (* end of [p2atcst_difference] *)
 
-implement p2atcstlst_difference {n} (p2tcs1, p2tcs2) = begin
+implement
+p2atcstlst_difference
+  {n} (p2tcs1, p2tcs2) = begin
   case+ p2tcs1 of
   | cons (p2tc1, p2tcs1) => let
       val+ cons (p2tc2, p2tcs2) = p2tcs2
@@ -583,7 +622,9 @@ implement p2atcstlst_difference {n} (p2tcs1, p2tcs2) = begin
   | nil () => nil ()
 end (* end of [p2atcstlst_difference] *)
 
-implement labp2atcstlst_difference (lp2tcs1, lp2tcs2) = begin
+implement
+labp2atcstlst_difference
+  (lp2tcs1, lp2tcs2) = begin
   case+ (lp2tcs1, lp2tcs2) of
   | (LABP2ATCSTLSTcons (l1, p2tc1, lp2tcs1),
      LABP2ATCSTLSTcons (l2, p2tc2, lp2tcs2)) => let

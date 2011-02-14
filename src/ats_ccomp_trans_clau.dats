@@ -84,9 +84,10 @@ typedef matpnt = '{
 extern fun kont_matpnt (mpt: matpnt_t): kont
 extern fun matpnt_make (k: kont, xs: tmpmovlst): matpnt_t
 
-extern fun matpnt_tmpmovlst_get (mpt: matpnt_t): tmpmovlst
-extern fun matpnt_tmpmovlst_set (mpt: matpnt_t, _: tmpmovlst): void
-  = "atsccomp_matpnt_tmpmovlst_set"
+extern fun matpnt_get_tmpmovlst (mpt: matpnt_t): tmpmovlst
+extern fun matpnt_tmpmovlst_set
+  (mpt: matpnt_t, _: tmpmovlst): void = "atsopt_matpnt_set_tmpmovlst"
+// end of [matpnt_set_tmpmovlst]
 
 (* ****** ****** *)
 
@@ -107,14 +108,14 @@ extern typedef "matpnt_t" = matpnt
 implement kont_matpnt (mpt) = KONTmatpnt (mpt)
 
 implement matpnt_make (k, xs) = _matpnt_make (k, xs)
-implement matpnt_kont_get (mpt) = mpt.matpnt_kont
-implement matpnt_tmpmovlst_get (mpt) = mpt.matpnt_tmpmovlst
+implement matpnt_get_kont (mpt) = mpt.matpnt_kont
+implement matpnt_get_tmpmovlst (mpt) = mpt.matpnt_tmpmovlst
 
 implement
 emit_matpnt {m}
   (pf | out, mpt) = let
   val tmpmovlst =
-    matpnt_tmpmovlst_get (mpt)
+    matpnt_get_tmpmovlst (mpt)
   // end of [val]
   val () = aux (out, tmpmovlst) where {
     fun aux (
@@ -131,7 +132,7 @@ emit_matpnt {m}
       | TMPMOVLSTnil () => () // end of [TMPMOVLSTnil]
     end // end of [aux]
   } // end of [where]
-  val () = emit_kont (pf | out, matpnt_kont_get mpt)
+  val () = emit_kont (pf | out, matpnt_get_kont mpt)
 in
   // empty
 end // end of [emit_matpnt]
@@ -583,7 +584,7 @@ in
   res
 end // end of [aux_tmpmov]
 
-fun matpnt_kont_set_all
+fun matpnt_set_kont_all
   (xs: l0st, fail_default: kont): void = begin case+ xs of
   | L0STcons (tl, hicl, mpts, ompt, xs) => let
 //
@@ -596,7 +597,7 @@ fun matpnt_kont_set_all
         | ~Some_vt (tl_hicl) => let
             val tl = tl_hicl.0 and hicl = tl_hicl.1
             val j = aux_minor (i, hips0, hicl)
-            val () = matpnt_kont_set (mpt, kont) where {
+            val () = matpnt_set_kont (mpt, kont) where {
               val kont = KONTtmplabint (tl, j)
             } // end of [where]
             val () = matpnt_tmpmovlst_set (mpt, tmpmovlst) where {
@@ -605,7 +606,7 @@ fun matpnt_kont_set_all
           in
             // empty
           end // end of [Some_vt]
-        | ~None_vt () => matpnt_kont_set (mpt, fail_default)
+        | ~None_vt () => matpnt_set_kont (mpt, fail_default)
       end // end of [aux]
 //
       fun auxlst (
@@ -632,10 +633,10 @@ fun matpnt_kont_set_all
       } // end of [where]
 //
     in
-      matpnt_kont_set_all (xs, fail_default)
+      matpnt_set_kont_all (xs, fail_default)
     end // end ofl[L0STcons]
   | L0STnil () => () // end of [L0STnil]
-end // end of [matpnt_kont_set_all]
+end // end of [matpnt_set_kont_all]
 
 in // in of [local]
 
@@ -664,7 +665,7 @@ ccomp_hiclaulst (
 //
   var branchlst: branchlst_vt = list_vt_nil ()
   val xs(*l0st*) = auxlst (branchlst, hicls)
-  val () = matpnt_kont_set_all (xs, fail_default)
+  val () = matpnt_set_kont_all (xs, fail_default)
 //
 in
   $Lst.list_vt_reverse_list (branchlst)
@@ -677,18 +678,18 @@ end // end of [local]
 %{$
 
 ats_void_type
-atsccomp_matpnt_kont_set
+atsopt_matpnt_set_kont
   (ats_ptr_type mpt, ats_ptr_type kont) {
   ((matpnt_t)mpt)->atslab_matpnt_kont = kont ;
   return ;
-} // end of [atsccomp_matpnt_kont_set]
+} // end of [atsopt_matpnt_set_kont]
 
 ats_void_type
-atsccomp_matpnt_tmpmovlst_set
+atsopt_matpnt_set_tmpmovlst
   (ats_ptr_type mpt, ats_ptr_type tmpmovlst) {
   ((matpnt_t)mpt)->atslab_matpnt_tmpmovlst = tmpmovlst ;
   return ;
-} // end of [atsccomp_matpnt_tmpmovlst_set]
+} // end of [atsopt_matpnt_set_tmpmovlst]
 
 %} // end of [%{$]
 

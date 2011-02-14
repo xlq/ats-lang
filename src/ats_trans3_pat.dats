@@ -240,7 +240,7 @@ fn p2at_any_tr_dn
   val s2e = s2exp_opnexi_and_add (loc0, s2e0)
 (*
   // unnecessary as [None] is the default value
-  val () = d2var_typ_set (d2v, None ())
+  val () = d2var_set_typ (d2v, None ())
 *)
   val () = begin
     if s2exp_is_linear s2e then p3at_typ_lft_set (p3t, Some s2e)
@@ -312,7 +312,7 @@ end // end of [p2at_char_tr_dn]
 //
 fn s2cst_closure_make_predicative
   (loc0: loc_t, s2c: s2cst_t): s2exp = let
-  val s2t_s2c = s2cst_srt_get s2c in case+ un_s2rt_fun s2t_s2c of
+  val s2t_s2c = s2cst_get_srt s2c in case+ un_s2rt_fun s2t_s2c of
   | ~Some_vt (argres) (* @(s2rtlst, s2rt) *) => let
       var s2vs: s2varlst = list_nil () and s2es: s2explst = list_nil ()
       val () = loop (loc0, argres.0, s2vs, s2es) where {
@@ -359,22 +359,22 @@ fn p3at_con_free_update
 *)
   fun aux_var
     (d2v_ptr: d2var_t, s2e: s2exp): @(d2var_t, s2exp) = let
-    val s2v_addr = s2var_make_id_srt (d2var_sym_get d2v_ptr, s2rt_addr)
+    val s2v_addr = s2var_make_id_srt (d2var_get_sym d2v_ptr, s2rt_addr)
     val () = trans3_env_add_svar s2v_addr
     val s2e_addr = s2exp_var s2v_addr
     val s2e_ptr = s2exp_ptr_addr_type (s2e_addr)
     val os2e_ptr = Some s2e_ptr
-    val () = d2var_lin_set (d2v_ptr, ~1)
-    val () = d2var_addr_set (d2v_ptr, Some s2e_addr)
-    val () = d2var_mastyp_set (d2v_ptr, os2e_ptr)
-    val () = d2var_typ_set (d2v_ptr, os2e_ptr)
+    val () = d2var_set_lin (d2v_ptr, ~1)
+    val () = d2var_set_addr (d2v_ptr, Some s2e_addr)
+    val () = d2var_set_mastyp (d2v_ptr, os2e_ptr)
+    val () = d2var_set_typ (d2v_ptr, os2e_ptr)
     val d2v_view = d2var_ptr_viewat_make_none (d2v_ptr)
     val () = the_d2varset_env_add (d2v_view)
     val s2e_at = s2exp_at_viewt0ype_addr_view (s2e, s2e_addr)
     val os2e_at = Some s2e_at
-    val () = d2var_mastyp_set (d2v_view, os2e_at)
-    val () = d2var_typ_set (d2v_view, os2e_at)
-    val () = d2var_fin_set (d2v_view, D2VARFINnone ())
+    val () = d2var_set_mastyp (d2v_view, os2e_at)
+    val () = d2var_set_typ (d2v_view, os2e_at)
+    val () = d2var_set_fin (d2v_view, D2VARFINnone ())
   in
     (d2v_view, s2e_addr)
   end // end of [aux_var]
@@ -386,7 +386,7 @@ fn p3at_con_free_update
             | os2e => os2e
           ) : s2expopt
         in
-          d2var_typ_set (d2v, os2e); d2v
+          d2var_set_typ (d2v, os2e); d2v
         end (* end of [P3Tany] *)
       | P3Tvar (refknd, d2v) when refknd > 0 => d2v
       | P3Tas (refknd, d2v, p3t_as) when refknd > 0 => d2v
@@ -397,7 +397,7 @@ fn p3at_con_free_update
             | os2e => os2e
           ) : s2expopt
         in
-          d2var_typ_set (d2v, os2e); d2v
+          d2var_set_typ (d2v, os2e); d2v
         end (* end of [_] *)
     ) : d2var_t // end of [val]    
 (*
@@ -405,7 +405,7 @@ fn p3at_con_free_update
       print "p3at_con_free_update: aux_pat: d2v_ptr = "; print d2v_ptr; print_newline ()
     end // end of [val]
 *)
-    val s2e = d2var_typ_get_some (p3t.p3at_loc, d2v_ptr)
+    val s2e = d2var_get_typ_some (p3t.p3at_loc, d2v_ptr)
     val (d2v_view, s2e_addr) = aux_var (d2v_ptr, s2e)
     val () = // handling deconstruction
       if freeknd < 0  then let
@@ -419,7 +419,7 @@ fn p3at_con_free_update
             $Err.abort ()
           end // end of [if]
       in
-        d2var_typ_set (d2v_view, None ())
+        d2var_set_typ (d2v_view, None ())
       end // end of [if]
   in
     s2e_addr
@@ -511,8 +511,8 @@ fn p2at_con_tr_dn (
   , p2ts: p2atlst
   , s2e0: s2exp
   ) : p3at = let
-  val s2e0 = s2exp_whnf s2e0
-  val s2c = d2con_scst_get d2c
+  val s2e0 = s2exp_whnf (s2e0)
+  val s2c = d2con_get_scst (d2c)
   val s2e0 = (case+ s2e0.s2exp_node of
     | S2EVar s2V => let
         val s2e_s2c = (
@@ -576,7 +576,7 @@ fn p2at_con_tr_dn (
   end // end of [val]
   val flag_vwtp = (
     if isread then 0 else begin
-      if flag > 0 then 1 else d2con_vwtp_get d2c
+      if flag > 0 then 1 else d2con_get_vwtp (d2c)
     end // end of [if]
   ) : int // end of [val]
   val () = // checking for legality of destruction 
@@ -668,7 +668,7 @@ in
         fun aux (s2vs: s2varlst, s2vs0: s2varlst):<cloref1> stasub_t =
           case+ (s2vs, s2vs0) of
           | (list_cons (s2v, s2vs), list_cons (s2v0, s2vs0)) => let
-              val s2t = s2var_srt_get s2v and s2t0 = s2var_srt_get s2v0
+              val s2t = s2var_get_srt s2v and s2t0 = s2var_get_srt s2v0
             in
               if s2t0 <= s2t then
                 stasub_add (aux (s2vs, s2vs0), s2v, s2exp_var s2v0)
@@ -859,7 +859,7 @@ fn p2at_rec_tr_dn
           // end of [aux]
         } // end of [where]
         val s2e_rec = s2exp_tyrec (recknd, npf1, ls2es)
-        val s2t_s2V = s2Var_srt_get (s2V) and s2t_s2c_rec = s2e_rec.s2exp_srt
+        val s2t_s2V = s2Var_get_srt (s2V) and s2t_s2c_rec = s2e_rec.s2exp_srt
         val () = ( // sort checking
           if lte_s2rt_s2rt (s2t_s2c_rec, s2t_s2V) then () else begin
              prerr loc0; prerr ": error(3)";
@@ -916,9 +916,9 @@ fn p2at_var_tr_dn (
   ) : p3at = let
   val loc0 = p2t0.p2at_loc
   val s2e0 = s2exp_whnf s2e0
-  val () = d2var_mastyp_set (d2v, Some s2e0)
+  val () = d2var_set_mastyp (d2v, Some s2e0)
   val () = if s2exp_is_linear s2e0 then ( // linear var
-    d2var_lin_set (d2v, 0); d2var_fin_set (d2v, D2VARFINnone ())
+    d2var_set_lin (d2v, 0); d2var_set_fin (d2v, D2VARFINnone ())
   ) // end of [val]
 (*
   val () = begin
@@ -928,7 +928,7 @@ fn p2at_var_tr_dn (
   end // end of [val]
 *)
   val s2e = s2exp_opnexi_and_add (loc0, s2e0)
-  val () = d2var_typ_set (d2v, Some s2e)
+  val () = d2var_set_typ (d2v, Some s2e)
   val p3t0 = p3at_var (loc0, s2e0, refknd, d2v)
 (*
   val () = begin
@@ -958,13 +958,13 @@ fn p2at_vbox_tr_dn
 in
   case+ un_s2exp_vbox_view_prop (s2e0) of
   | ~Some_vt s2e_v => let
-      val () = d2var_mastyp_set (d2v, Some s2e_v)
+      val () = d2var_set_mastyp (d2v, Some s2e_v)
       val () = // linearity status
         if s2exp_is_linear s2e_v then begin
-          d2var_lin_set (d2v, 0); d2var_fin_set (d2v, D2VARFINvbox s2e_v)
+          d2var_set_lin (d2v, 0); d2var_set_fin (d2v, D2VARFINvbox s2e_v)
         end // end of [if]
       val s2e_v = s2exp_opnexi_and_add (loc0, s2e_v)
-      val () = d2var_typ_set (d2v, Some s2e_v)
+      val () = d2var_set_typ (d2v, Some s2e_v)
       val p3t0 = p3at_vbox (loc0, s2e0, d2v)
     in
       p3t0
@@ -1000,14 +1000,14 @@ in
   | P2Tas (refknd, d2v, p2t) => let
       val s2e0 = s2exp_whnf s2e0
       val p3t = p2at_tr_dn (p2t, s2e0)
-      val () = d2var_mastyp_set (d2v, Some s2e0)
+      val () = d2var_set_mastyp (d2v, Some s2e0)
       val s2e_d2v: s2exp = case+ p3t.p3at_typ_lft of
         | None () => s2exp_topize_1 p3t.p3at_typ (* problematic? *)
         | Some s2e => s2e 
       val () = if s2exp_is_linear s2e_d2v then ( // linear var
-        d2var_lin_set (d2v, 0); d2var_fin_set (d2v, D2VARFINnone ())
+        d2var_set_lin (d2v, 0); d2var_set_fin (d2v, D2VARFINnone ())
       ) : void // end of [val]
-      val () = d2var_typ_set (d2v, Some s2e_d2v)
+      val () = d2var_set_typ (d2v, Some s2e_d2v)
     in
       p3at_as (loc0, s2e0, refknd, d2v, p3t)
     end // end of [P2Tas]
@@ -1166,26 +1166,26 @@ implement p2at_arg_tr_dn (p2t0, s2e0) = let
           case+ refval of
           | _ when refval = 0 => let // call-by-value
               val p3t0 = p2at_var_tr_dn (p2t0, refknd, d2v, s2e_arg)
-              val () = d2var_mastyp_set (d2v, Some s2e_arg)
+              val () = d2var_set_mastyp (d2v, Some s2e_arg)
             in
               p3at_typ_set (p3t0, s2e0); p3t0
             end // end of [refval = 0]
           | _ (*refval = 1*) => let // call-by-reference
               val loc0 = p2t0.p2at_loc
               val s2e_arg_opn = s2exp_opnexi_and_add (loc0, s2e_arg)
-              val s2v_addr = s2var_make_id_srt (d2var_sym_get d2v, s2rt_addr)
+              val s2v_addr = s2var_make_id_srt (d2var_get_sym d2v, s2rt_addr)
               val s2e_addr = s2exp_var s2v_addr
               val () = trans3_env_add_svar s2v_addr
-              val () = d2var_addr_set (d2v, Some s2e_addr)
+              val () = d2var_set_addr (d2v, Some s2e_addr)
               val () = trans3_env_hypo_add_prop (loc0, s2p) where {
                 val s2p = s2exp_gt_addr_addr_bool (s2e_addr, s2exp_null_addr ())
               } // end of [val]
               val d2v_view = d2var_ptr_viewat_make_none (d2v)
-              val () = d2var_view_set (d2v, D2VAROPTsome d2v_view) // [d2v] is mutable
+              val () = d2var_set_view (d2v, D2VAROPTsome d2v_view) // [d2v] is mutable
               val () = the_d2varset_env_add (d2v_view)
               val s2e_arg_at = s2exp_at_viewt0ype_addr_view (s2e_arg, s2e_addr)
-              val () = d2var_mastyp_set (d2v_view, Some s2e_arg_at)
-              val () = d2var_typ_set (d2v_view, Some s2e_at) where {
+              val () = d2var_set_mastyp (d2v_view, Some s2e_arg_at)
+              val () = d2var_set_typ (d2v_view, Some s2e_at) where {
                 val s2e_at = s2exp_at_viewt0ype_addr_view (s2e_arg_opn, s2e_addr)
               } // end of [val]
             in
@@ -1201,8 +1201,8 @@ implement p2at_arg_tr_dn (p2t0, s2e0) = let
           | _ when refval = 0 => let // call-by-value
               val loc0 = p2t0.p2at_loc;
               val p3t = p2at_tr_dn (p2t, s2e_arg)
-              val () = d2var_mastyp_set (d2v, Some s2e_arg)
-              val () = d2var_typ_set (d2v, os2e) where { val os2e = (
+              val () = d2var_set_mastyp (d2v, Some s2e_arg)
+              val () = d2var_set_typ (d2v, os2e) where { val os2e = (
                 case+ p3t.p3at_typ_lft of
                 | None () => Some (s2exp_topize_1 p3t.p3at_typ) | os2e (*Some*) => os2e
                 ) : s2expopt
@@ -1213,19 +1213,19 @@ implement p2at_arg_tr_dn (p2t0, s2e0) = let
           | _ (*refval = 1*) => let // call-by-reference
               val loc0 = p2t0.p2at_loc;
               val p3t = p2at_tr_dn (p2t, s2e_arg)
-              val s2v_addr = s2var_make_id_srt (d2var_sym_get d2v, s2rt_addr)
+              val s2v_addr = s2var_make_id_srt (d2var_get_sym d2v, s2rt_addr)
               val s2e_addr = s2exp_var s2v_addr
               val () = trans3_env_add_svar s2v_addr
-              val () = d2var_addr_set (d2v, Some s2e_addr)
+              val () = d2var_set_addr (d2v, Some s2e_addr)
               val () = trans3_env_hypo_add_prop (loc0, s2p) where {
                 val s2p = s2exp_gt_addr_addr_bool (s2e_addr, s2exp_null_addr ())
               } // end of [where]
               val d2v_view = d2var_ptr_viewat_make_none (d2v)
-              val () = d2var_view_set (d2v, D2VAROPTsome d2v_view) // [d2v] is mutable
+              val () = d2var_set_view (d2v, D2VAROPTsome d2v_view) // [d2v] is mutable
               val () = the_d2varset_env_add (d2v_view)
               val s2e_arg_at = s2exp_at_viewt0ype_addr_view (s2e_arg, s2e_addr)
-              val () = d2var_mastyp_set (d2v_view, Some s2e_arg_at)
-              val () = d2var_typ_set (d2v_view, Some s2e_at) where {
+              val () = d2var_set_mastyp (d2v_view, Some s2e_arg_at)
+              val () = d2var_set_typ (d2v_view, Some s2e_at) where {
                 val s2e = (case+ p3t.p3at_typ_lft of
                   | Some s2e => s2e | None () => s2exp_topize_1 p3t.p3at_typ
                 ) : s2exp // end of [val]
@@ -1253,19 +1253,19 @@ implement p2at_arg_tr_dn (p2t0, s2e0) = let
           val loc0 = p2t0.p2at_loc
           val s2e_valst0 = s2exp_va_list_viewt0ype ()
           val s2e_valst1 = s2exp_va_list_types_viewt0ype (s2e_arg)
-          val s2v_addr = s2var_make_id_srt (d2var_sym_get d2v, s2rt_addr)
+          val s2v_addr = s2var_make_id_srt (d2var_get_sym d2v, s2rt_addr)
           val s2e_addr = s2exp_var s2v_addr
           val () = trans3_env_add_svar s2v_addr
-          val () = d2var_addr_set (d2v, Some s2e_addr)
+          val () = d2var_set_addr (d2v, Some s2e_addr)
           val d2v_view = d2var_ptr_viewat_make_none (d2v)
-          val () = d2var_view_set (d2v, D2VAROPTsome d2v_view) // [d2v] is mutable
+          val () = d2var_set_view (d2v, D2VAROPTsome d2v_view) // [d2v] is mutable
           val () = the_d2varset_env_add (d2v_view)
           val s2e_valst0_at = s2exp_at_viewt0ype_addr_view (s2e_valst0, s2e_addr)
-          val () = d2var_mastyp_set (d2v_view, Some s2e_valst0_at)
+          val () = d2var_set_mastyp (d2v_view, Some s2e_valst0_at)
           val s2e_valst1_at = s2exp_at_viewt0ype_addr_view (s2e_valst1, s2e_addr)
-          val () = d2var_typ_set (d2v_view, Some s2e_valst1_at)
+          val () = d2var_set_typ (d2v_view, Some s2e_valst1_at)
           // note that [va_end] is to be done explicitly!!!
-          val () = d2var_fin_set (d2v_view, D2VARFINsome s2e_valst0_top_at) where {
+          val () = d2var_set_fin (d2v_view, D2VARFINsome s2e_valst0_top_at) where {
             val s2e_valst0_top = s2exp_topize_0 (s2e_valst0)
             val s2e_valst0_top_at = s2exp_at_viewt0ype_addr_view (s2e_valst0_top, s2e_addr)
           } // end of [val]
@@ -1284,7 +1284,7 @@ end (* end of [p2at_arg_tr_dn] *)
 
 fn p2at_proofize (p2t: p2at) = let
   fun loop (d2vs: d2varlst): void = case+ d2vs of
-    | list_cons (d2v, d2vs) => (d2var_isprf_set (d2v, true); loop d2vs)
+    | list_cons (d2v, d2vs) => (d2var_set_isprf (d2v, true); loop d2vs)
     | list_nil () => ()
   // end of [loop]  
 in

@@ -95,8 +95,8 @@ fun s2exp_link_remove_flag
 in
   case+ s2e0.s2exp_node of
   | S2Ecst s2c => begin
-      if s2cst_isrec_get s2c then s2e0
-      else begin case+ s2cst_def_get s2c of
+      if s2cst_get_isrec s2c then s2e0
+      else begin case+ s2cst_get_def s2c of
         | Some s2e => begin
             flag := flag + 1; s2exp_link_remove_flag (s2e, flag)
           end // end of [Some]
@@ -104,7 +104,7 @@ in
       end (* end of [if] *)
     end // end of [S2Ecst]
     // the link of s2V should not be updated!!!
-  | S2EVar s2V => begin case+ s2Var_link_get (s2V) of
+  | S2EVar s2V => begin case+ s2Var_get_link (s2V) of
     | Some s2e => begin
         flag := flag + 1; s2exp_link_remove_flag (s2e, flag)
       end // end of [Some]
@@ -1588,7 +1588,7 @@ in
   if test then 1 else begin
     case+ s2e1.s2exp_node of
     | S2Ecst s2c1 => let
-        val s2es1 = s2cst_supcls_get s2c1 in s2explst_subclass_test (s2es1, s2e2)
+        val s2es1 = s2cst_get_supcls s2c1 in s2explst_subclass_test (s2es1, s2e2)
       end // end of [S2Ecst]
     | _ => 0
   end (* end of [if] *)

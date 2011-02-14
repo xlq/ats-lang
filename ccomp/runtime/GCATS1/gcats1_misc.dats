@@ -30,10 +30,10 @@
 *)
 
 (* ****** ****** *)
-
+//
 // Author: Hongwei Xi (hwxi AT cs DOT bu DOT edu)
 // Time: June 2008
-
+//
 (* ****** ****** *)
 
 #include "gcats1.hats"
@@ -44,7 +44,7 @@ staload "gcats1.sats"
 
 (* ****** ****** *)
 
-#define ATSCCOMP_NAMESPACE "gcats1_misc_"
+#define ATSOPT_NAMESPACE "gcats1_misc_"
 
 (* ****** ****** *)
 

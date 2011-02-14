@@ -111,8 +111,8 @@ in
 end // end of [s2var_make_srt]
 
 implement s2var_copy (s2v0) = let
-  val id0 = s2var_sym_get s2v0
-  val s2t0 = s2var_srt_get s2v0
+  val id0 = s2var_get_sym s2v0
+  val s2t0 = s2var_get_srt s2v0
   val id_new = s2var_name_make_prefix ($Sym.symbol_name id0)
 in
   s2var_make_id_srt (id_new, s2t0)
@@ -120,110 +120,58 @@ end // end of [s2var_copy]
 
 (* ****** ****** *)
 
-implement s2var_sym_get (s2v) =
+implement s2var_get_sym (s2v) =
   let val (vbox pf | p) = s2v in p->s2var_sym end
-// end of [s2var_sym_get]
+// end of [s2var_get_sym]
 
-implement s2var_srt_get (s2v) =
+implement s2var_get_srt (s2v) =
   let val (vbox pf | p) = s2v in p->s2var_srt end
-// end of [s2var_srt_get]
+// end of [s2var_get_srt]
 
-implement s2var_tmplev_get (s2v) =
+implement s2var_get_tmplev (s2v) =
   let val (vbox pf | p) = s2v in p->s2var_tmplev end
-// end of [s2var_tmplev_get]
+// end of [s2var_get_tmplev]
 
-implement s2var_tmplev_set (s2v, lev) =
+implement s2var_set_tmplev (s2v, lev) =
   let val (vbox pf | p) = s2v in p->s2var_tmplev := lev end
-// end of [s2var_tmplev_set]
+// end of [s2var_set_tmplev]
 
-implement s2var_sVarset_get (s2v) =
+implement s2var_get_sVarset (s2v) =
   let val (vbox pf | p) = s2v in p->s2var_sVarset end
-// end of [s2var_sVarset_get]
+// end of [s2var_get_sVarset]
 
-implement s2var_sVarset_set (s2v, sVs) =
+implement s2var_set_sVarset (s2v, sVs) =
   let val (vbox pf | p) = s2v in p->s2var_sVarset := sVs end
-// end of [s2var_sVarset_get]
+// end of [s2var_set_sVarset]
 
 implement
-s2varlst_sVarset_set (s2vs, sVs) = let
+s2varlst_set_sVarset (s2vs, sVs) = let
   fun loop (s2vs: s2varlst, sVs: s2Varset_t): void =
     case+ s2vs of
     | list_cons (s2v, s2vs) => (
-        s2var_sVarset_set (s2v, sVs); loop (s2vs, sVs)
+        s2var_set_sVarset (s2v, sVs); loop (s2vs, sVs)
       ) // end of [list_cons]
     | list_nil () => ()
   // end of [loop]
 in
   loop (s2vs, sVs)
-end // end of [s2varlst_sVarset_set]
+end // end of [s2varlst_set_sVarset]
 
-implement s2var_stamp_get (s2v) =
+implement s2var_get_stamp (s2v) =
   let val (vbox pf | p) = s2v in p->s2var_stamp end
-// end of [s2var_stamp_get]
+// end of [s2var_get_stamp]
 
 (* ****** ****** *)
 
-fn lt_s2var_s2var
-  (s2v1: s2var_t, s2v2: s2var_t): bool = let
-  val stamp1 =
-    let val (vbox pf1 | p1) = s2v1 in p1->s2var_stamp end
-  // end of [val]
-  val stamp2 =
-    let val (vbox pf2 | p2) = s2v2 in p2->s2var_stamp end
-  // end of [val]
-in
-  $Stamp.lt_stamp_stamp (stamp1, stamp2)
-end // end of [_lt_s2var_s2var]
+implement lt_s2var_s2var
+  (s2v1, s2v2) = compare_s2var_s2var (s2v1, s2v2) < 0
+implement lte_s2var_s2var
+  (s2v1, s2v2) = compare_s2var_s2var (s2v1, s2v2) <= 0
 
-//
-
-fn lte_s2var_s2var
-  (s2v1: s2var_t, s2v2: s2var_t): bool = let
-  val stamp1 =
-    let val (vbox pf1 | p1) = s2v1 in p1->s2var_stamp end
-  // end of [val]
-  val stamp2 =
-    let val (vbox pf2 | p2) = s2v2 in p2->s2var_stamp end
-  // end of [val]
-in
-  $Stamp.lte_stamp_stamp (stamp1, stamp2)
-end // end of [_lte_s2var_s2var]
-
-//
-
-fn _eq_s2var_s2var
-  (s2v1: s2var_t, s2v2: s2var_t): bool = let
-  val stamp1 =
-    let val (vbox pf1 | p1) = s2v1 in p1->s2var_stamp end
-  // end of [val]
-  val stamp2 =
-    let val (vbox pf2 | p2) = s2v2 in p2->s2var_stamp end
-  // end of [val]
-in
-  $Stamp.eq_stamp_stamp (stamp1, stamp2)
-end // end of [_eq_s2var_s2var]
-
-implement eq_s2var_s2var (s2v1, s2v2) =
-  $effmask_all ( _eq_s2var_s2var (s2v1, s2v2) )
-
-//
-
-fn _neq_s2var_s2var
-  (s2v1: s2var_t, s2v2: s2var_t): bool = let
-  val stamp1 =
-    let val (vbox pf1 | p1) = s2v1 in p1->s2var_stamp end
-  // end of [val]
-  val stamp2 =
-    let val (vbox pf2 | p2) = s2v2 in p2->s2var_stamp end
-  // end of [val]
-in
-  $Stamp.neq_stamp_stamp (stamp1, stamp2)
-end // end of [_neq_s2var_s2var]
-
-implement neq_s2var_s2var (s2v1, s2v2) =
-  $effmask_all ( _neq_s2var_s2var (s2v1, s2v2) )
-
-//
+implement eq_s2var_s2var
+  (s2v1, s2v2) = compare_s2var_s2var (s2v1, s2v2) = 0
+implement neq_s2var_s2var
+  (s2v1, s2v2) = compare_s2var_s2var (s2v1, s2v2) <> 0
 
 fn _compare_s2var_s2var
   (s2v1: s2var_t, s2v2: s2var_t): Sgn = let
@@ -240,10 +188,10 @@ end // end of [_compare_s2var_s2var]
 implement compare_s2var_s2var (s2v1, s2v2) =
   $effmask_all ( _compare_s2var_s2var (s2v1, s2v2) )
 
-//
+(* ****** ****** *)
 
 implement s2var_is_boxed (s2v) =
-  s2rt_is_boxed (s2var_srt_get s2v)
+  s2rt_is_boxed (s2var_get_srt s2v)
 // end of [s2var_is_boxed]
 
 implement s2var_is_unboxed (s2v) = ~(s2var_is_boxed s2v)
@@ -252,18 +200,25 @@ end // end of [local] // for assuming [s2var_t]
 
 (* ****** ****** *)
 
-implement fprint_s2var (pf | out, s2v) = let
-  val () = $Sym.fprint_symbol (pf | out, s2var_sym_get s2v)
+implement
+fprint_s2var (pf | out, s2v) = let
+  val () = $Sym.fprint_symbol (pf | out, s2var_get_sym s2v)
 // (*
   val () = fprint_string (pf | out, "(")
-  val () = $Stamp.fprint_stamp (pf | out, s2var_stamp_get s2v)
+  val () = $Stamp.fprint_stamp (pf | out, s2var_get_stamp s2v)
   val () = fprint_string (pf | out, ")")
 // *)
 in
   // empty
 end // end of [fprint_s2var]
 
-implement fprint_s2varlst {m} (pf | out, s2vs) = let
+implement print_s2var (s2v) = print_mac (fprint_s2var, s2v)
+implement prerr_s2var (s2v) = prerr_mac (fprint_s2var, s2v)
+
+(* ****** ****** *)
+
+implement
+fprint_s2varlst {m} (pf | out, s2vs) = let
   fun aux (out: &FILE m, i: int, s2vs: s2varlst)
     : void = begin case+ s2vs of
     | list_cons (s2v, s2vs) => begin
@@ -276,16 +231,13 @@ in
   aux (out, 0, s2vs)
 end // end of [fprint_s2varlst]
 
-
-implement print_s2var (s2v) = print_mac (fprint_s2var, s2v)
-implement prerr_s2var (s2v) = prerr_mac (fprint_s2var, s2v)
-
 implement print_s2varlst (s2vs) = print_mac (fprint_s2varlst, s2vs)
 implement prerr_s2varlst (s2vs) = prerr_mac (fprint_s2varlst, s2vs)
 
 (* ****** ****** *)
-
-// implementing [s2varset_t]
+//
+// HX: implementing [s2varset_t]
+//
 
 local
 
@@ -443,7 +395,7 @@ implement s2Var_make_var (loc, s2v) = let
 
 val cnt = $Cnt.counter_get_and_inc (s2Var_name_counter)
 val stamp = $Stamp.s2Var_stamp_make ()
-val s2t = s2var_srt_get s2v
+val s2t = s2var_get_srt s2v
 val (pf_gc, pf | p) = ptr_alloc_tsz {s2Var_struct} (sizeof<s2Var_struct>)
 prval () = free_gc_elim {s2Var_struct} (pf_gc)
 
@@ -470,61 +422,61 @@ end // end of [s2Var_make_var]
 
 (* ****** ****** *)
 
-implement s2Var_loc_get (s2V) =
+implement s2Var_get_loc (s2V) =
   let val (vbox pf | p) = s2V in p->s2Var_loc end
-// end of [s2Var_loc_get]
+// end of [s2Var_get_loc]
 
-implement s2Var_cnt_get (s2V) =
+implement s2Var_get_cnt (s2V) =
   let val (vbox pf | p) = s2V in p->s2Var_cnt end
-// end of [s2Var_cnt_get]
+// end of [s2Var_get_cnt]
 
-implement s2Var_srt_get (s2V) =
+implement s2Var_get_srt (s2V) =
   let val (vbox pf | p) = s2V in p->s2Var_srt end
-// end of [s2Var_srt_get]
+// end of [s2Var_get_srt]
 
-implement s2Var_srt_set (s2V, s2t) =
+implement s2Var_set_srt (s2V, s2t) =
   let val (vbox pf | p) = s2V in p->s2Var_srt := s2t end
-// end of [s2Var_srt_set]
+// end of [s2Var_set_srt]
 
-implement s2Var_svar_get (s2V) =
+implement s2Var_get_svar (s2V) =
   let val (vbox pf | p) = s2V in p->s2Var_svar end
-// end of [s2Var_svar_get]
+// end of [s2Var_get_svar]
 
-implement s2Var_link_get (s2V) =
+implement s2Var_get_link (s2V) =
   let val (vbox pf | p) = s2V in p->s2Var_link end
-// end of [s2Var_link_get]
+// end of [s2Var_get_link]
 
-implement s2Var_link_set (s2V, os2e) =
+implement s2Var_set_link (s2V, os2e) =
   let val (vbox pf | p) = s2V in p->s2Var_link := os2e end
-// end of [s2Var_link_set]
+// end of [s2Var_set_link]
 
-implement s2Var_lbs_get (s2V) =
+implement s2Var_get_lbs (s2V) =
   let val (vbox pf | p) = s2V in p->s2Var_lbs end
-// end of [s2Var_lbs_get]
+// end of [s2Var_get_lbs]
 
-implement s2Var_lbs_set (s2V, lbs) =
+implement s2Var_set_lbs (s2V, lbs) =
   let val (vbox pf | p) = s2V in p->s2Var_lbs := lbs end
-// end of [s2Var_lbs_set]
+// end of [s2Var_set_lbs]
 
-implement s2Var_ubs_get (s2V) =
+implement s2Var_get_ubs (s2V) =
   let val (vbox pf | p) = s2V in p->s2Var_ubs end
-// end of [s2Var_ubs_get]
+// end of [s2Var_get_ubs]
 
-implement s2Var_ubs_set (s2V, ubs) =
+implement s2Var_set_ubs (s2V, ubs) =
   let val (vbox pf | p) = s2V in p->s2Var_ubs := ubs end
-// end of [s2Var_ubs_set]
+// end of [s2Var_set_ubs]
 
-implement s2Var_sVarset_get (s2V) =
+implement s2Var_get_sVarset (s2V) =
   let val (vbox pf | p) = s2V in p->s2Var_sVarset end
-// end of [s2Var_sVarset_get]
+// end of [s2Var_get_sVarset]
 
-implement s2Var_sVarset_set (s2V, sVs) =
+implement s2Var_set_sVarset (s2V, sVs) =
   let val (vbox pf | p) = s2V in p->s2Var_sVarset := sVs end
-// end of [s2Var_sVarset_set]
+// end of [s2Var_set_sVarset]
 
-implement s2Var_stamp_get (s2V) =
+implement s2Var_get_stamp (s2V) =
   let val (vbox pf | p) = s2V in p->s2Var_stamp end
-// end of [s2Var_stamp_get]
+// end of [s2Var_get_stamp]
 
 (* ****** ****** *)
 
@@ -588,8 +540,9 @@ end // end of [local] // for assuming [s2Var_t]
 
 (* ****** ****** *)
 
-implement fprint_s2Var (pf | out, s2V) =
-  $Cnt.fprint_count (pf | out, s2Var_cnt_get s2V)
+implement
+fprint_s2Var (pf | out, s2V) =
+  $Cnt.fprint_count (pf | out, s2Var_get_cnt s2V)
 // end of [fprint_s2Var]
 
 implement print_s2Var (s2V) = print_mac (fprint_s2Var, s2V)
@@ -597,7 +550,9 @@ implement prerr_s2Var (s2V) = prerr_mac (fprint_s2Var, s2V)
 
 (* ****** ****** *)
 
-implement fprint_s2Varlst {m} (pf | out, s2Vs) = let
+implement
+fprint_s2Varlst
+  {m} (pf | out, s2Vs) = let
   fun aux (out: &FILE m, i: int, s2Vs: s2Varlst)
     : void = begin case+ s2Vs of
     | list_cons (s2V, s2Vs) => begin

@@ -247,8 +247,8 @@ fun v2aldeclst_rec_tr
 
 fn f2undec_tr (d2c: f2undec): d3exp = let
   val d2v_fun = d2c.f2undec_var
-  val d2v_loc = d2var_loc_get d2v_fun
-  val d2v_decarg = d2var_decarg_get d2v_fun
+  val d2v_loc = d2var_get_loc d2v_fun
+  val d2v_decarg = d2var_get_decarg d2v_fun
   val d2e_def = d2c.f2undec_def
 (*
   val () = begin
@@ -357,8 +357,8 @@ fn f2undeclst_tr
             os2ts0 := os2ts
           end
         val os2e_fun = Some s2e_fun
-        val () = d2var_typ_set (d2v_fun, os2e_fun)
-        val () = d2var_mastyp_set (d2v_fun, os2e_fun)
+        val () = d2var_set_typ (d2v_fun, os2e_fun)
+        val () = d2var_set_mastyp (d2v_fun, os2e_fun)
       in
         aux_ini (i+1, os2ts0, d2cs, d2vs_fun)
       end // end of [cons]
@@ -385,8 +385,8 @@ fn f2undeclst_tr
         val () = let
           val os2e_fun = Some s2e_fun
         in
-          d2var_typ_set (d2v_fun, os2e_fun);
-          d2var_mastyp_set (d2v_fun, os2e_fun);
+          d2var_set_typ (d2v_fun, os2e_fun);
+          d2var_set_mastyp (d2v_fun, os2e_fun);
         end
         val d3c = f3undec_make (d2c.f2undec_loc, d2v_fun, d3e_def)
         val d3cs = aux_fin (d2cs, d3es_def)
@@ -425,13 +425,13 @@ fn v2ardec_tr_sta (d2c: v2ardec): v3ardec = let
   end // end of [val]
   val s2e_ptr = s2exp_ptr_addr_type (s2e_addr)
   val os2e_ptr = Some s2e_ptr
-  val () = d2var_addr_set (d2v_ptr, Some s2e_addr)
-  val () = d2var_mastyp_set (d2v_ptr, os2e_ptr)
-  val () = d2var_typ_set (d2v_ptr, os2e_ptr)
+  val () = d2var_set_addr (d2v_ptr, Some s2e_addr)
+  val () = d2var_set_mastyp (d2v_ptr, os2e_ptr)
+  val () = d2var_set_typ (d2v_ptr, os2e_ptr)
   val od2v_view = d2c.v2ardec_wth
   val d2v_view = d2var_ptr_viewat_make (d2v_ptr, od2v_view)
   // make [d2v_ptr] a mutable variable
-  val () = d2var_view_set (d2v_ptr, D2VAROPTsome d2v_view)
+  val () = d2var_set_view (d2v_ptr, D2VAROPTsome d2v_view)
   val () = the_d2varset_env_add (d2v_view)
   var s2e_elt: s2exp // uninitialized
   val od3e_ini = (
@@ -442,12 +442,12 @@ fn v2ardec_tr_sta (d2c: v2ardec): v3ardec = let
         val s2e_ini = d3e_ini.d3exp_typ
         val s2e_ini_top = s2exp_topize_0 s2e_ini
         val s2e_view = s2exp_at_viewt0ype_addr_view (s2e_ini, s2e_addr)
-        val () = d2var_typ_set (d2v_view, Some s2e_view)
+        val () = d2var_set_typ (d2v_view, Some s2e_view)
         val s2e_view_fin = begin
           s2exp_at_viewt0ype_addr_view (s2e_ini_top, s2e_addr)
         end
-        val () = d2var_mastyp_set (d2v_view, Some s2e_view_fin)
-        val () = d2var_fin_set (d2v_view, D2VARFINsome (s2e_view_fin))
+        val () = d2var_set_mastyp (d2v_view, Some s2e_view_fin)
+        val () = d2var_set_fin (d2v_view, D2VARFINsome (s2e_view_fin))
        in
          s2e_elt := s2e_ini_top; Some d3e_ini
        end // end of [None, Some]
@@ -455,13 +455,13 @@ fn v2ardec_tr_sta (d2c: v2ardec): v3ardec = let
         val () = let
           val s2e = s2exp_at_viewt0ype_addr_view (s2e_ann, s2e_addr)
         in
-          d2var_mastyp_set (d2v_view, Some s2e)
+          d2var_set_mastyp (d2v_view, Some s2e)
         end // end of [val]
         val s2e_view = begin
           s2exp_at_viewt0ype_addr_view (s2exp_topize_0 s2e_ann, s2e_addr)
         end // end of [val]
-        val () = d2var_typ_set (d2v_view, Some s2e_view)
-        val () = d2var_fin_set (d2v_view, D2VARFINsome s2e_view)
+        val () = d2var_set_typ (d2v_view, Some s2e_view)
+        val () = d2var_set_fin (d2v_view, D2VARFINsome s2e_view)
       in
         s2e_elt := s2e_ann; None ()
       end // end of [Some, None]
@@ -471,14 +471,14 @@ fn v2ardec_tr_sta (d2c: v2ardec): v3ardec = let
         val s2e_ini = d3e_ini.d3exp_typ
         val () = $SOL.s2exp_tyleq_solve (loc0, s2e_ini, s2e_ann)
         val s2e_ann_view = s2exp_at_viewt0ype_addr_view (s2e_ann, s2e_addr)
-        val () = d2var_mastyp_set (d2v_view, Some s2e_ann_view)
+        val () = d2var_set_mastyp (d2v_view, Some s2e_ann_view)
         val s2e_ini_view = s2exp_at_viewt0ype_addr_view (s2e_ini, s2e_addr)
-        val () = d2var_typ_set (d2v_view, Some s2e_ini_view)
+        val () = d2var_set_typ (d2v_view, Some s2e_ini_view)
         val () = let
           val s2e_ann_top = s2exp_topize_0 s2e_ann
           val s2e_view_fin = s2exp_at_viewt0ype_addr_view (s2e_ann_top, s2e_addr)
         in
-          d2var_fin_set (d2v_view, D2VARFINsome s2e_view_fin)
+          d2var_set_fin (d2v_view, D2VARFINsome s2e_view_fin)
         end // end of [val]
       in
         s2e_elt := s2e_ann; Some d3e_ini
@@ -529,14 +529,14 @@ fn v2ardec_tr_dyn
   end // end of [val]
   val s2e_ptr = s2exp_ptr_addr_type (s2e_addr)
   val os2e_ptr = Some s2e_ptr
-  val () = d2var_addr_set (d2v_ptr, Some s2e_addr)
-  val () = d2var_mastyp_set (d2v_ptr, os2e_ptr)
-  val () = d2var_typ_set (d2v_ptr, os2e_ptr)
+  val () = d2var_set_addr (d2v_ptr, Some s2e_addr)
+  val () = d2var_set_mastyp (d2v_ptr, os2e_ptr)
+  val () = d2var_set_typ (d2v_ptr, os2e_ptr)
   val od2v_view = d2c.v2ardec_wth
   val d2v_view = d2var_ptr_viewat_make (d2v_ptr, od2v_view)
 (*
   // d2v_ptr is not mutable!!!
-  // val () = d2var_view_set (d2v_ptr, D2VAROPTsome d2v_view)
+  // val () = d2var_set_view (d2v_ptr, D2VAROPTsome d2v_view)
 *)
   val () = the_d2varset_env_add (d2v_view)
 
@@ -600,12 +600,12 @@ in
         val s2e_elt = s2exp_topize_0 s2e_elt in s2exp_tyarr (s2e_elt, s2ess_dim)
       end  // end of [val]
       val s2e_ann_view = s2exp_at_viewt0ype_addr_view (s2e_ann, s2e_addr)
-      val () = d2var_mastyp_set (d2v_view, Some s2e_ann_view)
+      val () = d2var_set_mastyp (d2v_view, Some s2e_ann_view)
       val s2e_ini = (case+ d3es_elt of list_cons _ => s2e_ann | _ => s2e_ann_top): s2exp
       val d3e_ini = d3exp_arrinit (loc_ini, s2e_ini, s2e_elt, od3e_asz, d3es_elt)
       val s2e_ini_view = s2exp_at_viewt0ype_addr_view (s2e_ini, s2e_addr)
-      val () = d2var_typ_set (d2v_view, Some s2e_ini_view)
-      val () = d2var_fin_set (d2v_view, D2VARFINsome s2e_fin_view) where {
+      val () = d2var_set_typ (d2v_view, Some s2e_ini_view)
+      val () = d2var_set_fin (d2v_view, D2VARFINsome s2e_fin_view) where {
         val s2e_fin_view = s2exp_at_viewt0ype_addr_view (s2e_ann_top, s2e_addr)
       }  // end of [val]
     in
@@ -615,11 +615,11 @@ in
       val d3e_ini = d2exp_tr_up (d2e_ini)
       val s2e_ini = d3e_ini.d3exp_typ
       val s2e_ini_view = s2exp_at_viewt0ype_addr_view (s2e_ini, s2e_addr)
-      val () = d2var_mastyp_set (d2v_view, Some s2e_ini_view)
+      val () = d2var_set_mastyp (d2v_view, Some s2e_ini_view)
       val s2e_fin = s2exp_topize_0 (s2e_ini)
       val s2e_fin_view = s2exp_at_viewt0ype_addr_view (s2e_fin, s2e_addr)
-      val () = d2var_typ_set (d2v_view, Some s2e_ini_view)
-      val () = d2var_fin_set (d2v_view, D2VARFINsome s2e_fin_view)
+      val () = d2var_set_typ (d2v_view, Some s2e_ini_view)
+      val () = d2var_set_fin (d2v_view, D2VARFINsome s2e_fin_view)
     in
       v3ardec_make (loc0, 1(*knd*), d2v_ptr, d2v_view, s2e_ini, Some d3e_ini)
     end // end of [D2Elam when ...]
@@ -707,8 +707,8 @@ in
       fun aux
         (sVs: s2Varset_t, s2cs: s2cstlst): void =
         case+ s2cs of
-        | S2CSTLSTcons (s2c, s2cs) => begin
-            s2cst_sVarset_set (s2c, sVs); aux (sVs, s2cs)
+        | S2CSTLSTcons (s2c, s2cs) => let
+            val () = s2cst_set_sVarset (s2c, sVs) in aux (sVs, s2cs)
           end // end of [S2CSTLSTcons]
         | S2CSTLSTnil () => ()
       // end of [aux]

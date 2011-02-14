@@ -1398,7 +1398,7 @@ fn s2cst_index_find {n:pos}
 (*
   val () = print "s2cst_index_find: s2c = "; print s2c; print_newline ()
 *)
-  val stamp = s2cst_stamp_get s2c
+  val stamp = s2cst_get_stamp s2c
 in
   case+ $Map.map_search (m, stamp) of
   | ~Some_vt (i) => if i < n then i else begin
@@ -1425,7 +1425,7 @@ fn s2var_index_find {n:pos}
 (*
   val () = print "s2var_index_find: s2v = "; print s2v; print_newline ()
 *)
-  val stamp = s2var_stamp_get s2v
+  val stamp = s2var_get_stamp s2v
 in
   case+ $Map.map_search (m, stamp) of
   | ~Some_vt (i) => if i < n then i else begin
@@ -1450,11 +1450,11 @@ end // end of [s2var_index_find]
 
 fn s2cst_index_insert
   (cim: !s2cst_index_map, s2c: s2cst_t, i: Pos): void =
-  $Map.map_insert (cim, s2cst_stamp_get s2c, i)
+  $Map.map_insert (cim, s2cst_get_stamp s2c, i)
 
 fn s2var_index_insert
   (vim: !s2var_index_map, s2v: s2var_t, i: Pos): void =
-  $Map.map_insert (vim, s2var_stamp_get s2v, i)
+  $Map.map_insert (vim, s2var_get_stamp s2v, i)
 
 (* ****** ****** *)
 

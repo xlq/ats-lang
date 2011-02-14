@@ -38,7 +38,7 @@
 
 %{^
 #include "ats_counter.cats" /* only needed for [ATS/Geizella] */
-%}
+%} // end of [%{^]
 
 (* ****** ****** *)
 
@@ -140,87 +140,61 @@ end // end of [d2con_make]
 
 (* ****** ****** *)
 
-implement d2con_fil_get (d2c) =
+implement d2con_get_fil (d2c) =
   let val (vbox pf | p) = d2c in p->d2con_fil end
 
-implement d2con_sym_get (d2c) =
+implement d2con_get_sym (d2c) =
   let val (vbox pf | p) = d2c in p->d2con_sym end
 
-implement d2con_scst_get (d2c) =
+implement d2con_get_scst (d2c) =
   let val (vbox pf | p) = d2c in p->d2con_scst end
 
-implement d2con_vwtp_get (d2c) =
+implement d2con_get_vwtp (d2c) =
   let val (vbox pf | p) = d2c in p->d2con_vwtp end
 
-implement d2con_qua_get (d2c) =
+implement d2con_get_qua (d2c) =
   let val (vbox pf | p) = d2c in p->d2con_qua end
 
-implement d2con_npf_get (d2c) =
+implement d2con_get_npf (d2c) =
   let val (vbox pf | p) = d2c in p->d2con_npf end
 
-implement d2con_arg_get (d2c) =
+implement d2con_get_arg (d2c) =
   let val (vbox pf | p) = d2c in p->d2con_arg end
 
-implement d2con_arity_full_get (d2c) =
+implement d2con_get_arity_full (d2c) =
   let val (vbox pf | p) = d2c in p->d2con_arity_full end
 
-implement d2con_arity_real_get (d2c) =
+implement d2con_get_arity_real (d2c) =
   let val (vbox pf | p) = d2c in p->d2con_arity_real end
 
-implement d2con_typ_get (d2c) =
+implement d2con_get_typ (d2c) =
   let val (vbox pf | p) = d2c in p->d2con_typ end
 
-implement d2con_ind_get (d2c) =
+implement d2con_get_ind (d2c) =
   let val (vbox pf | p) = d2c in p->d2con_ind end
 
-implement d2con_tag_get (d2c) =
+implement d2con_get_tag (d2c) =
   let val (vbox pf | p) = d2c in p->d2con_tag end
 
-implement d2con_tag_set (d2c, tag) =
+implement d2con_set_tag (d2c, tag) =
   let val (vbox pf | p) = d2c in p->d2con_tag := tag end
 
-implement d2con_stamp_get (d2c) =
+implement d2con_get_stamp (d2c) =
   let val (vbox pf | p) = d2c in p->d2con_stamp end
 
 (* ****** ****** *)
 
-implement lt_d2con_d2con (d2c1, d2c2) = let
-  val stamp1 =
-    let val (vbox pf1 | p1) = d2c1 in p1->d2con_stamp end
-  val stamp2 =
-    let val (vbox pf2 | p2) = d2c2 in p2->d2con_stamp end
-in
-  $Stamp.lt_stamp_stamp (stamp1, stamp2)
-end // end of [lt_d2con_d2con]
+implement lt_d2con_d2con
+  (d2c1, d2c2) = compare_d2con_d2con (d2c1, d2c2) < 0
 
-implement lte_d2con_d2con (d2c1, d2c2) = let
-  val stamp1 =
-    let val (vbox pf1 | p1) = d2c1 in p1->d2con_stamp end
-  val stamp2 =
-    let val (vbox pf2 | p2) = d2c2 in p2->d2con_stamp end
-in
-  $Stamp.lte_stamp_stamp (stamp1, stamp2)
-end // end of [lte_d2con_d2con]
+implement lte_d2con_d2con
+  (d2c1, d2c2) = compare_d2con_d2con (d2c1, d2c2) <= 0
 
-implement eq_d2con_d2con (d2c1, d2c2) = let
-  val stamp1 =
-    let val (vbox pf1 | p1) = d2c1 in p1->d2con_stamp end
-  val stamp2 =
-    let val (vbox pf2 | p2) = d2c2 in p2->d2con_stamp end
-in
-  $Stamp.eq_stamp_stamp (stamp1, stamp2)
-end // end of [eq_d2con_d2con]
+implement eq_d2con_d2con
+  (d2c1, d2c2) = compare_d2con_d2con (d2c1, d2c2) = 0
 
-implement neq_d2con_d2con (d2c1, d2c2) = let
-  val stamp1 =
-    let val (vbox pf1 | p1) = d2c1 in p1->d2con_stamp end
-  val stamp2 =
-    let val (vbox pf2 | p2) = d2c2 in p2->d2con_stamp end
-in
-  $Stamp.neq_stamp_stamp (stamp1, stamp2)
-end // end of [neq_d2con_d2con]
-
-//
+implement neq_d2con_d2con
+  (d2c1, d2c2) = compare_d2con_d2con (d2c1, d2c2) <> 0
 
 fn _compare_d2con_d2con
   (d2c1: d2con_t, d2c2: d2con_t) = let
@@ -232,34 +206,48 @@ in
   $Stamp.compare_stamp_stamp (stamp1, stamp2)
 end // end of [compare_d2con_d2con]
 
-implement compare_d2con_d2con (d2c1, d2c2) =
+implement
+compare_d2con_d2con (d2c1, d2c2) =
   $effmask_all ( _compare_d2con_d2con (d2c1, d2c2) )
+// end of [compare_d2con_d2con]
 
-//
+(* ****** ****** *)
 
 #define D2CON_TAG_EXN ~1
-implement d2con_is_exn (d2c) =
-  let val (vbox pf | p) = d2c in p->d2con_tag = D2CON_TAG_EXN end
+implement
+d2con_is_exn (d2c) = let
+  val (vbox pf | p) = d2c in p->d2con_tag = D2CON_TAG_EXN
+end // end of [d2con_is_exn]
 
 #define D2CON_TAG_MSG ~2
-implement d2con_is_msg (d2c) =
-  let val (vbox pf | p) = d2c in p->d2con_tag = D2CON_TAG_MSG end
+implement d2con_is_msg (d2c) = let
+  val (vbox pf | p) = d2c in p->d2con_tag = D2CON_TAG_MSG
+end // end of [d2con_is_msg]
 
-implement d2con_is_proof (d2c) = let
+implement
+d2con_is_proof (d2c) = let
   val s2c = let val (vbox pf | p) = d2c in p->d2con_scst end
 in
-  s2rt_is_proof_fun (s2cst_srt_get s2c)
+  s2rt_is_proof_fun (s2cst_get_srt s2c)
 end // end of [d2con_is_proof]
 
 end // end of [local] (for assuming d2con_t)
 
 (* ****** ****** *)
 
-implement fprint_d2con (pf_out | out, d2c) = begin
-  $Sym.fprint_symbol (pf_out | out, d2con_sym_get d2c)
-end
+implement
+fprint_d2con (pf_out | out, d2c) =
+  $Sym.fprint_symbol (pf_out | out, d2con_get_sym d2c)
+// end of [fprint_d2con]
 
-implement fprint_d2conlst {m} (pf | out, d2cs) = let
+implement print_d2con (d2c) = print_mac (fprint_d2con, d2c)
+implement prerr_d2con (d2c) = prerr_mac (fprint_d2con, d2c)
+
+(* ****** ****** *)
+
+implement
+fprint_d2conlst
+  {m} (pf | out, d2cs) = let
   fun aux (out: &FILE m, i:int, d2cs: d2conlst)
     : void = begin case+ d2cs of
     | D2CONLSTcons (d2c, d2cs) => begin
@@ -271,11 +259,6 @@ implement fprint_d2conlst {m} (pf | out, d2cs) = let
 in
   aux (out, 0, d2cs)
 end // end of [fprint_d2conlst]
-
-(* ****** ****** *)
-
-implement print_d2con (d2c) = print_mac (fprint_d2con, d2c)
-implement prerr_d2con (d2c) = prerr_mac (fprint_d2con, d2c)
 
 implement print_d2conlst (d2cs) = print_mac (fprint_d2conlst, d2cs)
 implement prerr_d2conlst (d2cs) = prerr_mac (fprint_d2conlst, d2cs)

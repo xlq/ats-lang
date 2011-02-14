@@ -161,16 +161,16 @@ fun d2cst_make (
 
 //
 
-fun d2cst_loc_get (_: d2cst_t): loc_t
-fun d2cst_fil_get (_: d2cst_t): fil_t
-fun d2cst_sym_get (_: d2cst_t): sym_t
-fun d2cst_kind_get (_: d2cst_t): $Syn.dcstkind
-fun d2cst_arilst_get (_: d2cst_t): List int
-fun d2cst_decarg_get (_: d2cst_t): s2qualst
-fun d2cst_decarg_set (_: d2cst_t, _: s2qualst): void
-fun d2cst_typ_get (_: d2cst_t): s2exp
-fun d2cst_extdef_get (_: d2cst_t): dcstextdef
-fun d2cst_stamp_get (_: d2cst_t): stamp_t
+fun d2cst_get_loc (_: d2cst_t): loc_t
+fun d2cst_get_fil (_: d2cst_t): fil_t
+fun d2cst_get_sym (_: d2cst_t): sym_t
+fun d2cst_get_kind (_: d2cst_t): $Syn.dcstkind
+fun d2cst_get_arilst (_: d2cst_t): List int
+fun d2cst_get_decarg (_: d2cst_t): s2qualst
+fun d2cst_set_decarg (_: d2cst_t, _: s2qualst): void
+fun d2cst_get_typ (_: d2cst_t): s2exp
+fun d2cst_get_extdef (_: d2cst_t): dcstextdef
+fun d2cst_get_stamp (_: d2cst_t): stamp_t
 
 //
 
@@ -189,7 +189,7 @@ overload <> with eq_d2cst_d2cst
 fun compare_d2cst_d2cst (_: d2cst_t, _: d2cst_t):<> Sgn
 overload compare with compare_d2cst_d2cst
 
-//
+(* ****** ****** *)
 
 fun d2cst_is_fun (d2c: d2cst_t):<> bool
 fun d2cst_is_castfn (d2c: d2cst_t):<> bool
@@ -200,9 +200,10 @@ fun d2cst_is_prval (d2c: d2cst_t):<> bool
 fun d2cst_is_proof (d2c: d2cst_t):<> bool
 fun d2cst_is_temp (d2c: d2cst_t):<> bool
 
+(* ****** ****** *)
 //
-
-// implemented in [ats_dynexp2_dcst.dats]
+// HX: implemented in [ats_dynexp2_dcst.dats]
+//
 fun fprint_d2cst {m:file_mode}
   (pf: file_mode_lte (m, w) | out: &FILE m, d2c: d2cst_t): void
 overload fprint with fprint_d2cst
@@ -240,7 +241,7 @@ overload prerr with prerr_d2mac
 fun d2var_make (_: loc_t, id: sym_t): d2var_t
 fun d2var_make_any (_: loc_t): d2var_t // for wildcard pattern
 
-//
+(* ****** ****** *)
 
 datatype d2var_fin =
   | D2VARFINdone
@@ -249,43 +250,41 @@ datatype d2var_fin =
   | D2VARFINvbox of s2exp
 // end of [d2var_fin]
 
-//
+(* ****** ****** *)
 
-fun d2var_loc_get (_: d2var_t): loc_t
-fun d2var_sym_get (_: d2var_t): sym_t
-fun d2var_isfix_get (_: d2var_t): bool
-fun d2var_isfix_set (_: d2var_t, _: bool): void
-fun d2var_isprf_get (_: d2var_t): bool
-fun d2var_isprf_set (_: d2var_t, _: bool): void
-fun d2var_lev_get (_: d2var_t): int
-fun d2var_lev_set (_: d2var_t, _: int): void
-fun d2var_lin_get (_: d2var_t): int
-fun d2var_lin_inc (_: d2var_t): void
-fun d2var_lin_set (_: d2var_t, _: int): void
-fun d2var_decarg_get (_: d2var_t): s2qualst
-fun d2var_decarg_set (_: d2var_t, _: s2qualst): void
-fun d2var_addr_get (_: d2var_t): s2expopt
-fun d2var_addr_set (_: d2var_t, _: s2expopt): void
-fun d2var_view_get (_: d2var_t): d2varopt
-fun d2var_view_set (_: d2var_t, _: d2varopt): void
-fun d2var_fin_get (_: d2var_t): d2var_fin
-fun d2var_fin_set (_: d2var_t, _: d2var_fin): void
-fun d2var_typ_get (_: d2var_t): s2expopt
-fun d2var_typ_set (_: d2var_t, _: s2expopt): void
-fun d2var_mastyp_get (_: d2var_t): s2expopt
-fun d2var_mastyp_set (_: d2var_t, _: s2expopt): void
-fun d2var_count_get (_: d2var_t): int
-fun d2var_count_inc (_: d2var_t): void
-fun d2var_stamp_get (_: d2var_t): stamp_t
+fun d2var_get_loc (_: d2var_t): loc_t
+fun d2var_get_sym (_: d2var_t): sym_t
+fun d2var_get_isfix (_: d2var_t): bool
+fun d2var_set_isfix (_: d2var_t, _: bool): void
+fun d2var_get_isprf (_: d2var_t): bool
+fun d2var_set_isprf (_: d2var_t, _: bool): void
+fun d2var_get_lev (_: d2var_t): int
+fun d2var_set_lev (_: d2var_t, _: int): void
+fun d2var_get_lin (_: d2var_t): int
+fun d2var_inc_lin (_: d2var_t): void
+fun d2var_set_lin (_: d2var_t, _: int): void
+fun d2var_get_decarg (_: d2var_t): s2qualst
+fun d2var_set_decarg (_: d2var_t, _: s2qualst): void
+fun d2var_get_addr (_: d2var_t): s2expopt
+fun d2var_set_addr (_: d2var_t, _: s2expopt): void
+fun d2var_get_view (_: d2var_t): d2varopt
+fun d2var_set_view (_: d2var_t, _: d2varopt): void
+fun d2var_get_fin (_: d2var_t): d2var_fin
+fun d2var_set_fin (_: d2var_t, _: d2var_fin): void
+fun d2var_get_typ (_: d2var_t): s2expopt
+fun d2var_set_typ (_: d2var_t, _: s2expopt): void
+fun d2var_get_mastyp (_: d2var_t): s2expopt
+fun d2var_set_mastyp (_: d2var_t, _: s2expopt): void
+fun d2var_get_count (_: d2var_t): int
+fun d2var_inc_count (_: d2var_t): void
+fun d2var_get_stamp (_: d2var_t): stamp_t
 
-//
+fun d2var_get_typ_some (_: loc_t, _: d2var_t): s2exp
+fun d2var_get_mastyp_some (_: loc_t, _: d2var_t): s2exp
+fun d2var_get_addr_some (_: loc_t, _: d2var_t): s2exp
+fun d2var_get_view_some (_: loc_t, _: d2var_t): d2var_t
 
-fun d2var_typ_get_some (_: loc_t, _: d2var_t): s2exp
-fun d2var_mastyp_get_some (_: loc_t, _: d2var_t): s2exp
-fun d2var_addr_get_some (_: loc_t, _: d2var_t): s2exp
-fun d2var_view_get_some (_: loc_t, _: d2var_t): d2var_t
-
-//
+(* ****** ****** *)
 
 fun lt_d2var_d2var (_: d2var_t, _: d2var_t):<> bool
 overload < with lt_d2var_d2var
@@ -302,9 +301,10 @@ overload <> with eq_d2var_d2var
 fun compare_d2var_d2var (_: d2var_t, _: d2var_t):<> Sgn
 overload compare with compare_d2var_d2var
 
+(* ****** ****** *)
 //
-
-// implemented in [ats_dynexp2_dvar.dats]
+// HX: implemented in [ats_dynexp2_dvar.dats]
+//
 fun fprint_d2var {m:file_mode}
   (pf: file_mode_lte (m, w) | out: &FILE m, d2c: d2var_t): void
 overload fprint with fprint_d2var
@@ -330,10 +330,10 @@ overload prerr with prerr_d2varlst
 fun d2var_is_linear (d2v: d2var_t): bool
 fun d2var_is_mutable (d2v: d2var_t): bool
 
-fun d2var_typ_reset
+fun d2var_reset_typ
   (d2v: d2var_t, s2e: s2exp): void
 
-fun d2var_typ_reset_at
+fun d2var_reset_typ_at
   (d2v: d2var_t, s2e: s2exp, s2l: s2exp): void
 
 fun d2var_ptr_viewat_make
@@ -848,8 +848,8 @@ and i2mpdec = '{
 
 (* ****** ****** *)
 
-fun d2cst_def_get (_: d2cst_t): d2expopt
-fun d2cst_def_set (_: d2cst_t, def: d2expopt): void
+fun d2cst_get_def (_: d2cst_t): d2expopt
+fun d2cst_set_def (_: d2cst_t, def: d2expopt): void
 
 (* ****** ****** *)
 
@@ -869,14 +869,14 @@ fun d2mac_make {narg:nat} (
   ) : d2mac_t narg
 // end of [d2mac_make]
 
-fun d2mac_loc_get (_: d2mac_t): loc_t
-fun d2mac_sym_get (_: d2mac_t): sym_t
-fun d2mac_kind_get (_: d2mac_t): int (* 1/0: long/short form *)
-fun d2mac_narg_get {narg:nat} (_: d2mac_t narg): int narg
-fun d2mac_arglst_get {narg:nat} (_: d2mac_t narg): macarglst narg
-fun d2mac_def_get (_: d2mac_t): d2exp
-fun d2mac_def_set (_: d2mac_t, _: d2exp): void
-fun d2mac_stamp_get (_: d2mac_t): stamp_t
+fun d2mac_get_loc (_: d2mac_t): loc_t
+fun d2mac_get_sym (_: d2mac_t): sym_t
+fun d2mac_get_kind (_: d2mac_t): int (* 1/0: long/short form *)
+fun d2mac_get_narg {narg:nat} (_: d2mac_t narg): int narg
+fun d2mac_get_arglst {narg:nat} (_: d2mac_t narg): macarglst narg
+fun d2mac_get_def (_: d2mac_t): d2exp
+fun d2mac_set_def (_: d2mac_t, _: d2exp): void
+fun d2mac_get_stamp (_: d2mac_t): stamp_t
 
 (* ****** ****** *)
 

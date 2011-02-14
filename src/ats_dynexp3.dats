@@ -437,17 +437,19 @@ implement d3exp_crypt (loc, s2e, knd, d3e) =  '{
 
 (* ****** ****** *)
 
-implement d3exp_cst (loc, d2c) = '{
+implement
+d3exp_cst (loc, d2c) = '{
   d3exp_loc= loc
-, d3exp_eff= S2EFFnil (), d3exp_typ= d2cst_typ_get d2c
+, d3exp_eff= S2EFFnil (), d3exp_typ= d2cst_get_typ d2c
 , d3exp_node= D3Ecst d2c
-}
+} // end of [d3exp_cst]
 
-implement d3exp_cstsp (loc, s2e, cst) = '{
+implement
+d3exp_cstsp (loc, s2e, cst) = '{
   d3exp_loc= loc
 , d3exp_eff= S2EFFnil (), d3exp_typ= s2e
 , d3exp_node= D3Ecstsp cst
-}
+} // end of [d3exp_cstsp]
 
 (* ****** ****** *)
 

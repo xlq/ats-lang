@@ -482,10 +482,10 @@ fun un_s2rt_tup (s2t: s2rt): Option_vt (s2rtlst)
 
 fun s2rtdat_make (id: sym_t): s2rtdat_t
 
-fun s2rtdat_sym_get (s2td: s2rtdat_t): sym_t
+fun s2rtdat_get_sym (s2td: s2rtdat_t): sym_t
 fun s2rtdat_conlst_get (s2td: s2rtdat_t): s2cstlst
 fun s2rtdat_conlst_set (s2td: s2rtdat_t, s2cs: s2cstlst): void
-fun s2rtdat_stamp_get (s2td: s2rtdat_t): stamp_t
+fun s2rtdat_get_stamp (s2td: s2rtdat_t): stamp_t
 
 fun eq_s2rtdat_s2rtdat (s2td1: s2rtdat_t, s2td2: s2rtdat_t): bool
 overload = with eq_s2rtdat_s2rtdat
@@ -521,38 +521,38 @@ fun s2cst_make_cls (
 
 (* ****** ****** *)
 
-fun s2cst_sym_get (_: s2cst_t): sym_t
-fun s2cst_loc_get (_: s2cst_t): loc_t
-fun s2cst_srt_get (_: s2cst_t): s2rt
-fun s2cst_isabs_get (_: s2cst_t): Option (s2expopt)
-fun s2cst_iscon_get (_: s2cst_t): bool
-fun s2cst_isrec_get (_: s2cst_t): bool
-fun s2cst_isasp_get (_: s2cst_t): bool
-fun s2cst_isasp_set (_: s2cst_t, _: bool): void
-fun s2cst_iscpy_get (_: s2cst_t): s2cstopt
-fun s2cst_iscpy_set (_: s2cst_t, _: s2cstopt): void
-fun s2cst_islst_get (_: s2cst_t): Option @(d2con_t, d2con_t)
-fun s2cst_islst_set (_: s2cst_t, _: Option @(d2con_t, d2con_t)): void
-fun s2cst_arilst_get (_: s2cst_t): List int // arity list
-fun s2cst_argvar_get (_: s2cst_t): Option (List @(symopt_t, s2rt, int))
-fun s2cst_conlst_get (_: s2cst_t): Option d2conlst
-fun s2cst_conlst_set (_: s2cst_t, _: Option d2conlst): void
-fun s2cst_def_get (_: s2cst_t): s2expopt
-fun s2cst_def_set (_: s2cst_t, _: s2expopt): void
+fun s2cst_get_loc (_: s2cst_t): loc_t
+fun s2cst_get_sym (_: s2cst_t): sym_t
+fun s2cst_get_srt (_: s2cst_t): s2rt
+fun s2cst_get_isabs (_: s2cst_t): Option (s2expopt)
+fun s2cst_get_iscon (_: s2cst_t): bool
+fun s2cst_get_isrec (_: s2cst_t): bool
+fun s2cst_get_isasp (_: s2cst_t): bool
+fun s2cst_set_isasp (_: s2cst_t, _: bool): void
+fun s2cst_get_iscpy (_: s2cst_t): s2cstopt
+fun s2cst_set_iscpy (_: s2cst_t, _: s2cstopt): void
+fun s2cst_get_islst (_: s2cst_t): Option @(d2con_t, d2con_t)
+fun s2cst_set_islst (_: s2cst_t, _: Option @(d2con_t, d2con_t)): void
+fun s2cst_get_arilst (_: s2cst_t): List int // arity list
+fun s2cst_get_argvar (_: s2cst_t): Option (List @(symopt_t, s2rt, int))
+fun s2cst_get_conlst (_: s2cst_t): Option d2conlst
+fun s2cst_set_conlst (_: s2cst_t, _: Option d2conlst): void
+fun s2cst_get_def (_: s2cst_t): s2expopt
+fun s2cst_set_def (_: s2cst_t, _: s2expopt): void
 //
-fun s2cst_sup_get (self: s2cst_t): s2cstlst
-fun s2cst_sup_add (self: s2cst_t, sup: s2cst_t): void
-fun s2cst_supcls_get (_: s2cst_t): s2explst
-fun s2cst_supcls_add (_: s2cst_t, sup: s2exp): void
+fun s2cst_get_sup (self: s2cst_t): s2cstlst
+fun s2cst_add_sup (self: s2cst_t, sup: s2cst_t): void
+fun s2cst_get_supcls (_: s2cst_t): s2explst
+fun s2cst_add_supcls (_: s2cst_t, sup: s2exp): void
 //
-fun s2cst_sVarset_get (_: s2cst_t): s2Varset_t
-fun s2cst_sVarset_set (_: s2cst_t, _: s2Varset_t): void
-fun s2cst_stamp_get (_: s2cst_t): stamp_t
-fun s2cst_stamp_set (_: s2cst_t, _: stamp_t): void
-fun s2cst_tag_get (s2c: s2cst_t): int
-fun s2cst_tag_set (s2c: s2cst_t, tag: int): void
+fun s2cst_get_sVarset (_: s2cst_t): s2Varset_t
+fun s2cst_set_sVarset (_: s2cst_t, _: s2Varset_t): void
+fun s2cst_get_stamp (_: s2cst_t): stamp_t
+fun s2cst_set_stamp (_: s2cst_t, _: stamp_t): void
+fun s2cst_get_tag (s2c: s2cst_t): int
+fun s2cst_set_tag (s2c: s2cst_t, tag: int): void
 
-//
+(* ****** ****** *)
 
 fun lt_s2cst_s2cst (_: s2cst_t, _: s2cst_t):<> bool
 overload < with lt_s2cst_s2cst
@@ -569,7 +569,7 @@ overload <> with eq_s2cst_s2cst
 fun compare_s2cst_s2cst (_: s2cst_t, _: s2cst_t):<> Sgn
 overload compare with compare_s2cst_s2cst
 
-//
+(* ****** ****** *)
 
 fun s2cst_is_abstract (s2c: s2cst_t): bool
 fun s2cst_is_data (s2c: s2cst_t): bool
@@ -577,9 +577,10 @@ fun s2cst_is_eqsup (s2c1: s2cst_t, s2c2: s2cst_t): bool
 fun s2cst_is_listlike (s2c: s2cst_t): bool
 fun s2cst_is_singular (s2c: s2cst_t): bool
 
+(* ****** ****** *)
 //
-
-// implemented in [ats_staexp2_scst.dats]
+// HX: implemented in [ats_staexp2_scst.dats]
+//
 fun fprint_s2cst {m:file_mode}
   (pf: file_mode_lte (m, w) | out: &FILE m, s2c: s2cst_t): void
 overload fprint with fprint_s2cst
@@ -608,18 +609,18 @@ fun s2var_make_id_srt (id: sym_t, s2t: s2rt): s2var_t
 fun s2var_make_srt (s2t: s2rt): s2var_t
 fun s2var_copy (s2v: s2var_t): s2var_t
 
-//
+(* ****** ****** *)
 
-fun s2var_sym_get (s2v: s2var_t): sym_t
-fun s2var_srt_get (s2v: s2var_t): s2rt
-fun s2var_tmplev_get (s2v: s2var_t): int
-fun s2var_tmplev_set (s2v: s2var_t, lev: int): void
-fun s2var_sVarset_get (_: s2var_t): s2Varset_t
-fun s2var_sVarset_set (_: s2var_t, _: s2Varset_t): void
-fun s2varlst_sVarset_set (_: s2varlst, _: s2Varset_t): void
-fun s2var_stamp_get (s2v: s2var_t): stamp_t
+fun s2var_get_sym (s2v: s2var_t): sym_t
+fun s2var_get_srt (s2v: s2var_t): s2rt
+fun s2var_get_tmplev (s2v: s2var_t): int
+fun s2var_set_tmplev (s2v: s2var_t, lev: int): void
+fun s2var_get_sVarset (_: s2var_t): s2Varset_t
+fun s2var_set_sVarset (_: s2var_t, _: s2Varset_t): void
+fun s2varlst_set_sVarset (_: s2varlst, _: s2Varset_t): void
+fun s2var_get_stamp (s2v: s2var_t): stamp_t
 
-//
+(* ****** ****** *)
 
 fun lt_s2var_s2var (_: s2var_t, _: s2var_t):<> bool
 overload < with lt_s2var_s2var
@@ -636,14 +637,15 @@ overload <> with eq_s2var_s2var
 fun compare_s2var_s2var (_: s2var_t, _: s2var_t):<> Sgn
 overload compare with compare_s2var_s2var
 
-//
+(* ****** ****** *)
 
 fun s2var_is_boxed (s2v: s2var_t): bool
 fun s2var_is_unboxed (s2v: s2var_t): bool
 
+(* ****** ****** *)
 //
-
-// implemented in [ats_staexp2_dcon.dats]
+// HX: implemented in [ats_staexp2_dcon.dats]
+//
 fun fprint_s2var {m:file_mode}
   (pf: file_mode_lte (m, w) | out: &FILE m, s2v: s2var_t): void
 overload fprint with fprint_s2var
@@ -681,36 +683,36 @@ fun s2varset_union (svs1: s2varset_t, svs2: s2varset_t): s2varset_t
 fun s2varset_ismem (svs: s2varset_t, s2v: s2var_t): bool
 
 (* ****** ****** *)
-
-// [s2Var_t] is assumed in [ats_staexp2_svVar.dats]
-
+//
+// HX: [s2Var_t] is assumed in [ats_staexp2_svVar.dats]
+//
 fun s2Var_make_srt (_: loc_t, s2t: s2rt): s2Var_t
 fun s2Var_make_var (_: loc_t, s2v: s2var_t): s2Var_t
 
-//
+(* ****** ****** *)
 
-fun s2Var_loc_get (_: s2Var_t): loc_t
-fun s2Var_cnt_get (_: s2Var_t): count_t
-fun s2Var_srt_get (_: s2Var_t): s2rt
-fun s2Var_srt_set (_: s2Var_t, _: s2rt): void
-fun s2Var_link_get (_: s2Var_t): Option s2exp
-fun s2Var_link_set (_: s2Var_t, _: s2expopt): void
-fun s2Var_svar_get (_: s2Var_t): Option s2var_t
-fun s2Var_lbs_get (_: s2Var_t): s2Varboundlst
-fun s2Var_lbs_set (_: s2Var_t, lbs: s2Varboundlst): void
-fun s2Var_ubs_get (_: s2Var_t): s2Varboundlst
-fun s2Var_ubs_set (_: s2Var_t, ubs: s2Varboundlst): void
-fun s2Var_sVarset_get (_: s2Var_t): s2Varset_t
-fun s2Var_sVarset_set (_: s2Var_t, sVs: s2Varset_t): void
-fun s2Var_stamp_get (_: s2Var_t): stamp_t
+fun s2Var_get_loc (_: s2Var_t): loc_t
+fun s2Var_get_cnt (_: s2Var_t): count_t
+fun s2Var_get_srt (_: s2Var_t): s2rt
+fun s2Var_set_srt (_: s2Var_t, _: s2rt): void
+fun s2Var_get_link (_: s2Var_t): Option s2exp
+fun s2Var_set_link (_: s2Var_t, _: s2expopt): void
+fun s2Var_get_svar (_: s2Var_t): Option s2var_t
+fun s2Var_get_lbs (_: s2Var_t): s2Varboundlst
+fun s2Var_set_lbs (_: s2Var_t, lbs: s2Varboundlst): void
+fun s2Var_get_ubs (_: s2Var_t): s2Varboundlst
+fun s2Var_set_ubs (_: s2Var_t, ubs: s2Varboundlst): void
+fun s2Var_get_sVarset (_: s2Var_t): s2Varset_t
+fun s2Var_set_sVarset (_: s2Var_t, sVs: s2Varset_t): void
+fun s2Var_get_stamp (_: s2Var_t): stamp_t
 
-//
+(* ****** ****** *)
 
 fun s2Varbound_make (loc: loc_t, s2e: s2exp): s2Varbound_t
 fun s2Varbound_loc_get (s2Vb: s2Varbound_t): loc_t
 fun s2Varbound_val_get (s2Vb: s2Varbound_t): s2exp
 
-//
+(* ****** ****** *)
 
 fun lt_s2Var_s2Var (_: s2Var_t, _: s2Var_t): bool
 overload < with lt_s2Var_s2Var
@@ -727,9 +729,10 @@ overload <> with eq_s2Var_s2Var
 fun compare_s2Var_s2Var (_: s2Var_t, _: s2Var_t): Sgn
 overload compare with compare_s2Var_s2Var
 
+(* ****** ****** *)
 //
-
-// implemented in [ats_staexp2_dcon.dats]
+// HX: implemented in [ats_staexp2_dcon.dats]
+//
 fun fprint_s2Var {m:file_mode}
   (pf: file_mode_lte (m, w) | out: &FILE m, s2V: s2Var_t): void
 overload fprint with fprint_s2Var
@@ -780,9 +783,9 @@ fun print_s2qualst (s2qs: s2qualst): void
 fun prerr_s2qualst (s2qs: s2qualst): void
 
 (* ****** ****** *)
-
-// [d2con_t] is assumed in [ats_staexp2_dcon.dats]
-
+//
+// HX: [d2con_t] is assumed in [ats_staexp2_dcon.dats]
+//
 fun d2con_make (
   loc: loc_t // location
 , fil: fil_t // filename
@@ -795,29 +798,29 @@ fun d2con_make (
 , ind: s2explstopt // indexes
 ) : d2con_t
 
-//
+(* ****** ****** *)
 
 fun d2con_make_list_nil (): d2con_t
 fun d2con_make_list_cons (): d2con_t
 
-//
+(* ****** ****** *)
 
-fun d2con_fil_get (_: d2con_t): fil_t
-fun d2con_sym_get (_: d2con_t): sym_t
-fun d2con_scst_get (_: d2con_t): s2cst_t
-fun d2con_vwtp_get (_: d2con_t): int
-fun d2con_qua_get (_: d2con_t): s2qualst
-fun d2con_npf_get (_: d2con_t): int
-fun d2con_arg_get (_: d2con_t): s2explst
-fun d2con_arity_full_get (_: d2con_t): int
-fun d2con_arity_real_get (_: d2con_t): int
-fun d2con_ind_get (_: d2con_t): s2explstopt
-fun d2con_typ_get (_: d2con_t): s2exp
-fun d2con_tag_get (_: d2con_t): int
-fun d2con_tag_set (_: d2con_t, _: int): void
-fun d2con_stamp_get (_: d2con_t): stamp_t
+fun d2con_get_fil (_: d2con_t): fil_t
+fun d2con_get_sym (_: d2con_t): sym_t
+fun d2con_get_scst (_: d2con_t): s2cst_t
+fun d2con_get_vwtp (_: d2con_t): int
+fun d2con_get_qua (_: d2con_t): s2qualst
+fun d2con_get_npf (_: d2con_t): int
+fun d2con_get_arg (_: d2con_t): s2explst
+fun d2con_get_arity_full (_: d2con_t): int
+fun d2con_get_arity_real (_: d2con_t): int
+fun d2con_get_ind (_: d2con_t): s2explstopt
+fun d2con_get_typ (_: d2con_t): s2exp
+fun d2con_get_tag (_: d2con_t): int
+fun d2con_set_tag (_: d2con_t, _: int): void
+fun d2con_get_stamp (_: d2con_t): stamp_t
 
-//
+(* ****** ****** *)
 
 fun lt_d2con_d2con (_: d2con_t, _: d2con_t): bool
 overload < with lt_d2con_d2con
@@ -834,15 +837,16 @@ overload <> with neq_d2con_d2con
 fun compare_d2con_d2con (_: d2con_t, _: d2con_t):<> Sgn
 overload compare with compare_d2con_d2con
 
-//
+(* ****** ****** *)
 
 fun d2con_is_exn (d2c: d2con_t): bool // exn constructor
 fun d2con_is_msg (d2c: d2con_t): bool // msg constructor
 fun d2con_is_proof (d2c: d2con_t): bool // proof constructor
 
+(* ****** ****** *)
 //
-
-// implemented in [ats_staexp2_dcon.dats]
+// HX: implemented in [ats_staexp2_dcon.dats]
+//
 fun fprint_d2con {m:file_mode}
   (pf: file_mode_lte (m, w) | out: &FILE m, d2c: d2con_t): void
 
@@ -938,12 +942,10 @@ fun fprint_labs2kexplst {m:file_mode}
   (pf: file_mode_lte (m, w) | out: &FILE m, ls2kes: labs2kexplst): void
 overload fprint with fprint_labs2kexplst
 
-//
 
 fun print_s2kexp (s2ke: s2kexp): void
-fun prerr_s2kexp (s2ke: s2kexp): void
-
 overload print with print_s2kexp
+fun prerr_s2kexp (s2ke: s2kexp): void
 overload prerr with prerr_s2kexp
 
 (* ****** ****** *)
@@ -977,9 +979,9 @@ fun s2exp_is_wth (s2e: s2exp): bool
 
 (* ****** ****** *)
 
-fun s2exp_srt_set
-  (s2e: s2exp, s2t: s2rt): void = "atsopt_s2exp_srt_set"
-// end of [s2exp_srt_set]
+fun s2exp_set_srt
+  (s2e: s2exp, s2t: s2rt): void = "atsopt_s2exp_set_srt"
+// end of [s2exp_set_srt]
 
 (* ****** ****** *)
 
@@ -1255,26 +1257,24 @@ fun s2exp_nfapp (s2e: s2exp): s2exp
 fun s2explst_nfapp {n:nat} (s2es: s2explst n): s2explst n
 
 (* ****** ****** *)
-
-// implemented in [ats_staexp2_util1.dats]
+//
+// HX: implemented in [ats_staexp2_util1.dats]
+//
 fun s2exp_absuni (s2e: s2exp): @(s2varlst, s2explst, s2exp)
 fun s2exp_opnexi (s2e: s2exp): @(s2varlst, s2explst, s2exp)
 fun s2explst_opnexi (s2es: s2explst): @(s2varlst, s2explst, s2explst)
 
 (* ****** ****** *)
-
-// implemented in [ats_staexp2_util2.dats]
+//
+// HX: implemented in [ats_staexp2_util2.dats]
+//
 
 fun labs2explst_lab_get (_: labs2explst, l0: lab_t): s2expopt_vt
 fun labs2explst_lab_set
   (_: labs2explst, l0: lab_t, s2e0: s2exp): Option_vt labs2explst
 // end of [labs2explst_lab_set]
 
-//
-
 fun labs2zexplst_lab_get (_: labs2zexplst, l0: lab_t): s2zexpopt_vt
-
-//
 
 fun s2exp_lab_get_restlin_cstr
   (loc0: loc_t, s2e0: s2exp, l0: lab_t, restlin: &int, cstr: &s2explst): s2exp
@@ -1283,8 +1283,6 @@ fun s2exp_slablst_get_restlin_cstr {n:nat}
   (loc0: loc_t, s2e0: s2exp, s2ls: list (s2lab, n), restlin: &int, cstr: &s2explst)
   : @(s2exp, list (s2lab, n))
 // end of [s2exp_slablst_get_restlin_cstr]
-
-//
 
 fun s2exp_lab_linget_cstr
   (loc0: loc_t, s2e0: s2exp, l0: lab_t, cstr: &s2explst): s2exp(*result*)
@@ -1309,22 +1307,22 @@ fun s2exp_lab_linset
 fun s2exp_slablst_lintry_cstr {n:nat}
   (loc0: loc_t, s2e0: s2exp, s2ls: list (s2lab, n), cstr: &s2explst)
   : list (s2lab, n)
-// end of ...
+// end of [s2exp_slablst_lintry_cstr]
 
 fun s2exp_slablst_linget_cstr {n:nat}
   (loc0: loc_t, s2e0: s2exp, s2ls: list (s2lab, n), cstr: &s2explst)
   : @(s2exp(*part*), s2exp(*whole*), list (s2lab, n))
-// end of ...
+// end of [s2exp_slablst_linget_cstr]
 
 fun s2exp_slablst_linset_cstr {n:nat}
   (loc0: loc_t, s2e0: s2exp, s2ls: list (s2lab, n), s2e_new: s2exp, cstr: &s2explst)
   : @(s2exp(*part*), s2exp(*whole*), list (s2lab, n))
-// end of ...
+// end of [s2exp_slablst_linset_cstr]
 
 fun s2exp_slablst_lindel_cstr {n:nat}
   (loc0: loc_t, s2e0: s2exp, s2ls: list (s2lab, n), cstr: &s2explst)
   : @(s2exp(*part*), s2exp(*whole*), list (s2lab, n))
-// end of ...
+// end of [s2exp_slablst_lindel_cstr]
 
 (* ****** ****** *)
 //

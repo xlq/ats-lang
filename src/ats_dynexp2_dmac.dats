@@ -111,37 +111,38 @@ in // in of [let]
 
 end // end of [d2mac_make]
 
-implement d2mac_loc_get (d2m) =
+implement d2mac_get_loc (d2m) =
   let val (vbox pf | p) = d2m in p->d2mac_loc end
 
-implement d2mac_sym_get (d2m) =
+implement d2mac_get_sym (d2m) =
   let val (vbox pf | p) = d2m in p->d2mac_sym end
 
-implement d2mac_kind_get (d2m) =
+implement d2mac_get_kind (d2m) =
   let val (vbox pf | p) = d2m in p->d2mac_kind end
 
-implement d2mac_narg_get (d2m) =
+implement d2mac_get_narg (d2m) =
   let val (vbox pf | p) = d2m in p->d2mac_narg end
 
-implement d2mac_arglst_get (d2m) =
+implement d2mac_get_arglst (d2m) =
   let val (vbox pf | p) = d2m in p->d2mac_arglst end
 
-implement d2mac_def_get (d2m) =
+implement d2mac_get_def (d2m) =
   let val (vbox pf | p) = d2m in p->d2mac_def end
 
-implement d2mac_def_set (d2m, def) =
+implement d2mac_set_def (d2m, def) =
   let val (vbox pf | p) = d2m in p->d2mac_def := def end
 
-implement d2mac_stamp_get (d2m) =
+implement d2mac_get_stamp (d2m) =
   let val (vbox pf | p) = d2m in p->d2mac_stamp end
 
 end // end of [d2mac_t] (for assuming d2mac_t)
 
 (* ****** ****** *)
 
-implement fprint_d2mac (pf_out | out, d2m) = begin
-  $Sym.fprint_symbol (pf_out | out, d2mac_sym_get d2m)
-end // end of [fprint_d2mac]
+implement
+fprint_d2mac (pf_out | out, d2m) =
+  $Sym.fprint_symbol (pf_out | out, d2mac_get_sym d2m)
+// end of [fprint_d2mac]
 
 implement print_d2mac (d2m) = print_mac (fprint_d2mac, d2m)
 implement prerr_d2mac (d2m) = prerr_mac (fprint_d2mac, d2m)

@@ -116,12 +116,18 @@ end // end of [s2cstref_cst_get]
 
 (* ****** ****** *)
 
-implement s2cstref_exp_get (s2cref, os2es) = let
-  val s2c = s2cstref_cst_get s2cref; val s2e = s2exp_cst s2c
+implement
+s2cstref_exp_get
+  (s2cref, os2es) = let
+  val s2c =
+    s2cstref_cst_get (s2cref)
+  // end of [val]
+  val s2e = s2exp_cst s2c
 in
   case+ os2es of
   | ~Some_vt s2es => let
-      val s2t_res = (case+ s2cst_srt_get s2c of
+      val s2t_res = (
+      case+ s2cst_get_srt s2c of
       | S2RTfun (_, s2t_res) => s2t_res
       | _ => begin
           prerr_interror ();
@@ -1000,61 +1006,66 @@ end // end of [s2exp_lte_addr_addr_bool]
 
 (* ****** ****** *)
 
-implement clo_viewt0ype_viewt0ype_assume () = let
+implement
+clo_viewt0ype_viewt0ype_assume () = let
   val s2c = s2cstref_cst_get (Clo_viewt0ype_viewt0ype)
-  val s2t_def = s2cst_srt_get s2c
+  val s2t_def = s2cst_get_srt s2c
   val s2v_arg = s2var_make_srt s2rt_viewt0ype
   val knd = 0(*clo*)
   val s2e_body = s2exp_clo_srt (s2rt_viewt0ype, knd, s2exp_var s2v_arg)
   val s2e_def = s2exp_lam_srt (s2t_def, '[s2v_arg], s2e_body)
 in
-  s2cst_def_set (s2c, Some s2e_def)
+  s2cst_set_def (s2c, Some s2e_def)
 end // end of [clo_viewt0ype_viewt0ype_assume]
 
-implement cloptr_viewt0ype_viewtype_assume () = let
+implement
+cloptr_viewt0ype_viewtype_assume () = let
   val s2c = s2cstref_cst_get (Cloptr_viewt0ype_viewtype)
-  val s2t_def = s2cst_srt_get s2c
+  val s2t_def = s2cst_get_srt s2c
   val s2v_arg = s2var_make_srt s2rt_viewt0ype
   val knd = 1(*cloptr*)
   val s2e_body = s2exp_clo_srt (s2rt_viewtype, knd, s2exp_var s2v_arg)
   val s2e_def = s2exp_lam_srt (s2t_def, '[s2v_arg], s2e_body)
 in
-  s2cst_def_set (s2c, Some s2e_def)
+  s2cst_set_def (s2c, Some s2e_def)
 end // end of [cloptr_viewt0ype_viewtype_assume]
 
-implement cloref_t0ype_type_assume () = let
+implement
+cloref_t0ype_type_assume () = let
   val s2c = s2cstref_cst_get (Cloref_t0ype_type)
-  val s2t_def = s2cst_srt_get s2c
+  val s2t_def = s2cst_get_srt s2c
   val s2v_arg = s2var_make_srt s2rt_t0ype
   val knd = ~1(*cloref*)
   val s2e_body = s2exp_clo_srt (s2rt_type, knd, s2exp_var s2v_arg)
   val s2e_def = s2exp_lam_srt (s2t_def, '[s2v_arg], s2e_body)
 in
-  s2cst_def_set (s2c, Some s2e_def)
+  s2cst_set_def (s2c, Some s2e_def)
 end // end of [cloptr_viewt0ype_viewtype_assume]
 
 (* ****** ****** *)
 
-implement crypt_viewt0ype_viewt0ype_assume () = let
+implement
+crypt_viewt0ype_viewt0ype_assume () = let
   val s2c = s2cstref_cst_get (Crypt_viewt0ype_viewt0ype)
-  val s2t_def = s2cst_srt_get s2c
+  val s2t_def = s2cst_get_srt s2c
   val s2v_arg = s2var_make_srt s2rt_viewt0ype
   val s2e_body = s2exp_crypt (s2exp_var s2v_arg)
   val s2e_def = s2exp_lam_srt (s2t_def, '[s2v_arg], s2e_body)
 in
-  s2cst_def_set (s2c, Some s2e_def)
+  s2cst_set_def (s2c, Some s2e_def)
 end // end of [crypt_viewt0ype_viewt0ype_assume]
 
 (* ****** ****** *)
 
-implement sizeof_viewt0ype_int_assume () = let
+implement
+sizeof_viewt0ype_int_assume () = let
   val s2c = s2cstref_cst_get (Sizeof_viewt0ype_int)
-  val s2t_def = s2cst_srt_get s2c
+  val s2t_def = s2cst_get_srt s2c
   val s2v_arg = s2var_make_srt s2rt_t0ype
   val s2e_body = s2exp_sizeof (s2exp_var s2v_arg)
   val s2e_def = s2exp_lam_srt (s2t_def, '[s2v_arg], s2e_body)
 in
-  s2cst_def_set (s2c, Some s2e_def)
+  s2cst_set_def (s2c, Some s2e_def)
 end // end of [sizeof_viewt0ype_int_assume]
 
 (* ****** ****** *)

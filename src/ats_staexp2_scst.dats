@@ -52,7 +52,8 @@ staload "ats_staexp2.sats"
 
 (* ****** ****** *)
 
-typedef s2cst_struct = @{ (* builtin or abstract *)
+typedef
+s2cst_struct = @{ (* builtin or abstract *)
   s2cst_sym= sym_t // the name
 , s2cst_loc= loc_t // the location of declaration
 , s2cst_srt= s2rt // the sort
@@ -132,79 +133,79 @@ end // end of [s2cst_make]
 
 (* ****** ****** *)
 
-implement s2cst_sym_get (s2c) =
+implement s2cst_get_sym (s2c) =
   let val (vbox pf | p) = s2c in p->s2cst_sym end
 
-implement s2cst_loc_get (s2c) =
+implement s2cst_get_loc (s2c) =
   let val (vbox pf | p) = s2c in p->s2cst_loc end
 
-implement s2cst_srt_get (s2c) =
+implement s2cst_get_srt (s2c) =
   let val (vbox pf | p) = s2c in p->s2cst_srt end
 
-implement s2cst_isabs_get (s2c) =
+implement s2cst_get_isabs (s2c) =
   let val (vbox pf | p) = s2c in p->s2cst_isabs end
 
-implement s2cst_iscon_get (s2c) =
+implement s2cst_get_iscon (s2c) =
   let val (vbox pf | p) = s2c in p->s2cst_iscon end
 
-implement s2cst_isrec_get (s2c) =
+implement s2cst_get_isrec (s2c) =
   let val (vbox pf | p) = s2c in p->s2cst_isrec end
 
-implement s2cst_isasp_get (s2c) =
+implement s2cst_get_isasp (s2c) =
   let val (vbox pf | p) = s2c in p->s2cst_isasp end
 
-implement s2cst_isasp_set (s2c, isasp) =
+implement s2cst_set_isasp (s2c, isasp) =
   let val (vbox pf | p) = s2c in p->s2cst_isasp := isasp end
 
-implement s2cst_iscpy_get (s2c) =
+implement s2cst_get_iscpy (s2c) =
   let val (vbox pf | p) = s2c in p->s2cst_iscpy end
 
-implement s2cst_iscpy_set (s2c, iscpy) =
+implement s2cst_set_iscpy (s2c, iscpy) =
   let val (vbox pf | p) = s2c in p->s2cst_iscpy := iscpy end
 
-implement s2cst_islst_get (s2c) =
+implement s2cst_get_islst (s2c) =
   let val (vbox pf | p) = s2c in p->s2cst_islst end
 
-implement s2cst_islst_set (s2c, islst) =
+implement s2cst_set_islst (s2c, islst) =
   let val (vbox pf | p) = s2c in p->s2cst_islst := islst end
 
-implement s2cst_arilst_get (s2c) =
+implement s2cst_get_arilst (s2c) =
   let val (vbox pf | p) = s2c in p->s2cst_arilst end
 
-implement s2cst_argvar_get (s2c) =
+implement s2cst_get_argvar (s2c) =
   let val (vbox pf | p) = s2c in p->s2cst_argvar end
 
-implement s2cst_conlst_get (s2c) =
+implement s2cst_get_conlst (s2c) =
   let val (vbox pf | p) = s2c in p->s2cst_conlst end
 
-implement s2cst_conlst_set (s2c, od2cs) =
+implement s2cst_set_conlst (s2c, od2cs) =
   let val (vbox pf | p) = s2c in p->s2cst_conlst := od2cs end
 
 (* ****** ****** *)
 
-implement s2cst_def_get (s2c) =
+implement s2cst_get_def (s2c) =
   let val (vbox pf | p) = s2c in p->s2cst_def end
 
-implement s2cst_def_set (s2c, def) =
+implement s2cst_set_def (s2c, def) =
   let val (vbox pf | p) = s2c in p->s2cst_def := def end
 
 (* ****** ****** *)
 
-implement s2cst_sup_get (s2c) =
+implement s2cst_get_sup (s2c) =
   let val (vbox pf | p) = s2c in p->s2cst_sup end
 // end of [s2cst_sup_get]
 
-implement s2cst_sup_add (s2c, sup) = let
+implement s2cst_add_sup (s2c, sup) = let
   val (vbox pf | p) = s2c; val sups = p->s2cst_sup
 in
   p->s2cst_sup := S2CSTLSTcons (sup, sups)
 end // end of [s2cst_sup_add]
 
-implement s2cst_supcls_get (s2c) =
+implement s2cst_get_supcls (s2c) =
   let val (vbox pf | p) = s2c in p->s2cst_supcls end
 
 implement
-s2cst_supcls_add (s2c, sup) = let
+s2cst_add_supcls (s2c, sup) = let
   val (vbox pf | p) = s2c; val sups = p->s2cst_supcls
 in
   p->s2cst_supcls := list_cons (sup, sups)
@@ -212,97 +213,41 @@ end // end of [s2cst_supcls_add]
 
 (* ****** ****** *)
 
-implement s2cst_sVarset_get (s2c) =
+implement s2cst_get_sVarset (s2c) =
   let val (vbox pf | p) = s2c in p->s2cst_sVarset end
 
-implement s2cst_sVarset_set (s2c, sVs) =
+implement s2cst_set_sVarset (s2c, sVs) =
   let val (vbox pf | p) = s2c in p->s2cst_sVarset := sVs end
 
-implement s2cst_stamp_get (s2c) =
+implement s2cst_get_stamp (s2c) =
   let val (vbox pf | p) = s2c in p->s2cst_stamp end
 
-implement s2cst_stamp_set (s2c, stamp) =
+implement s2cst_set_stamp (s2c, stamp) =
   let val (vbox pf | p) = s2c in p->s2cst_stamp := stamp end
 
-implement s2cst_tag_get (s2c) =
+implement s2cst_get_tag (s2c) =
   let val (vbox pf | p) = s2c in p->s2cst_tag end
 
-implement s2cst_tag_set (s2c, tag) =
+implement s2cst_set_tag (s2c, tag) =
   let val (vbox pf | p) = s2c in p->s2cst_tag := tag end
 
 (* ****** ****** *)
 
-fn _lt_s2cst_s2cst
-  (s2c1: s2cst_t, s2c2: s2cst_t): bool = let
-  val stamp1 =
-    let val (vbox pf1 | p1) = s2c1 in p1->s2cst_stamp end
-  // end of [val]
-  val stamp2 =
-    let val (vbox pf2 | p2) = s2c2 in p2->s2cst_stamp end
-  // end of [val]
-in
-  $Stamp.lt_stamp_stamp (stamp1, stamp2)
-end // end of [_lt_s2cst_s2cst]
+implement lt_s2cst_s2cst
+  (s2c1, s2c2) = compare_s2cst_s2cst (s2c1, s2c2) < 0
+// end of [lt_s2cst_s2cst]
 
-implement lt_s2cst_s2cst (s2c1, s2c2) =
-  $effmask_all ( _lt_s2cst_s2cst (s2c1, s2c2) )
+implement lte_s2cst_s2cst
+  (s2c1, s2c2) = compare_s2cst_s2cst (s2c1, s2c2) <= 0
+// end of [lte_s2cst_s2cst]
 
-//
+implement eq_s2cst_s2cst
+  (s2c1, s2c2) = compare_s2cst_s2cst (s2c1, s2c2) = 0
+// end of [eq_s2cst_s2cst]
 
-fn _lte_s2cst_s2cst
-  (s2c1: s2cst_t, s2c2: s2cst_t): bool = let
-  val stamp1 =
-    let val (vbox pf1 | p1) = s2c1 in p1->s2cst_stamp end
-  // end of [val]
-  val stamp2 =
-    let val (vbox pf2 | p2) = s2c2 in p2->s2cst_stamp end
-  // end of [val]
-in
-  $Stamp.lte_stamp_stamp (stamp1, stamp2)
-end // end of [_lte_s2cst_s2cst]
-
-implement lte_s2cst_s2cst (s2c1, s2c2) =
-  $effmask_all ( _lte_s2cst_s2cst (s2c1, s2c2) )
-
-//
-
-fn _eq_s2cst_s2cst
-  (s2c1: s2cst_t, s2c2: s2cst_t): bool = let
-  val stamp1 =
-    let val (vbox pf1 | p1) = s2c1 in p1->s2cst_stamp end
-  // end of [val]
-  val stamp2 =
-    let val (vbox pf2 | p2) = s2c2 in p2->s2cst_stamp end
-  // end of [val]
-(*
-  val () = (print "_eq_s2cst_s2cst: stamp1 = "; print_stamp stamp1; print_newline ())
-  val () = (print "_eq_s2cst_s2cst: stamp2 = "; print_stamp stamp2; print_newline ())
-*)
-in
-  $Stamp.eq_stamp_stamp (stamp1, stamp2)
-end // end of [_eq_s2cst_s2cst]
-
-implement eq_s2cst_s2cst (s2c1, s2c2) =
-  $effmask_all ( _eq_s2cst_s2cst (s2c1, s2c2) )
-
-//
-
-fn _neq_s2cst_s2cst
-  (s2c1: s2cst_t, s2c2: s2cst_t): bool = let
-  val stamp1 =
-    let val (vbox pf1 | p1) = s2c1 in p1->s2cst_stamp end
-  val stamp2 =
-    let val (vbox pf2 | p2) = s2c2 in p2->s2cst_stamp end
-in
-  $Stamp.neq_stamp_stamp (stamp1, stamp2)
-end // end of [_neq_s2cst_s2cst]
-
-implement
-neq_s2cst_s2cst (s2c1, s2c2) =
-  $effmask_all ( _neq_s2cst_s2cst (s2c1, s2c2) )
+implement neq_s2cst_s2cst
+  (s2c1, s2c2) = compare_s2cst_s2cst (s2c1, s2c2) <> 0
 // end of [neq_s2cst_s2cst]
-
-//
 
 fn _compare_s2cst_s2cst
   (s2c1: s2cst_t, s2c2: s2cst_t): Sgn = let
@@ -316,23 +261,27 @@ in
   $Stamp.compare_stamp_stamp (stamp1, stamp2)
 end // end of [_compare_s2cst_s2cst]
 
-implement compare_s2cst_s2cst (s2c1, s2c2) =
+implement
+compare_s2cst_s2cst (s2c1, s2c2) =
   $effmask_all ( _compare_s2cst_s2cst (s2c1, s2c2) )
 // end of [compare_s2cst_s2cst]
 
 (* ****** ****** *)
 
-implement s2cst_is_abstract (s2c) = let
+implement
+s2cst_is_abstract (s2c) = let
   val (vbox pf | p) = s2c in
   case+ p->s2cst_isabs of Some _ => true | None _ => false
 end // end of [s2cst_is_abstract]
 
-implement s2cst_is_data (s2c) = let
+implement
+s2cst_is_data (s2c) = let
   val (vbox pf | p) = s2c in
   case+ p->s2cst_isabs of Some _ => false | None _ => p->s2cst_iscon
 end // end of [s2cst_is_data]
 
-implement s2cst_is_eqsup (s2c1, s2c2) = let
+implement
+s2cst_is_eqsup (s2c1, s2c2) = let
   fun aux (s2c1: s2cst_t, stamp2: stamp_t): bool = let
     val stamp1 = begin
       let val (vbox pf1 | p1) = s2c1 in p1->s2cst_stamp end
@@ -404,7 +353,7 @@ implement s2cst_make_cls
       ) : s2rt = begin case+ s2vss of
       | list_cons (s2vs, s2vss) => let
           val res = aux (s2vss, res)
-          val s2ts_arg = $Lst.list_map_fun (s2vs, s2var_srt_get)
+          val s2ts_arg = $Lst.list_map_fun (s2vs, s2var_get_srt)
         in
           s2rt_fun (s2ts_arg, res)
         end // end of [list_cons]
@@ -428,11 +377,19 @@ end // end of [s2cst_make_cls]
 
 (* ****** ****** *)
 
-implement fprint_s2cst (pf_out | out, s2c) =
-  $Sym.fprint_symbol (pf_out | out, s2cst_sym_get s2c)
+implement
+fprint_s2cst (pf_out | out, s2c) =
+  $Sym.fprint_symbol (pf_out | out, s2cst_get_sym s2c)
 // end of [fprint_s2cst]
 
-implement fprint_s2cstlst {m} (pf | out, s2cs) = let
+implement print_s2cst (s2c) = print_mac (fprint_s2cst, s2c)
+implement prerr_s2cst (s2c) = prerr_mac (fprint_s2cst, s2c)
+
+(* ****** ****** *)
+
+implement
+fprint_s2cstlst
+  {m} (pf | out, s2cs) = let
   fun aux (out: &FILE m, i: int, s2cs: s2cstlst): void =
     case+ s2cs of
     | S2CSTLSTcons (s2c, s2cs) => begin
@@ -444,9 +401,6 @@ implement fprint_s2cstlst {m} (pf | out, s2cs) = let
 in
   aux (out, 0, s2cs)
 end // end of [fprint_s2cstlst]
-
-implement print_s2cst (s2c) = print_mac (fprint_s2cst, s2c)
-implement prerr_s2cst (s2c) = prerr_mac (fprint_s2cst, s2c)
 
 implement print_s2cstlst (s2cs) = print_mac (fprint_s2cstlst, s2cs)
 implement prerr_s2cstlst (s2cs) = prerr_mac (fprint_s2cstlst, s2cs)

@@ -103,8 +103,10 @@ fun template_level_get (): int
 fun template_level_inc (): void
 fun template_level_dec (): void
 
-fun s2var_tmplev_check (loc: loc_t, s2v: s2var_t): void
-fun s2qualst_tmplev_set (s2vpss: s2qualst, tmplev: int): void
+(* ****** ****** *)
+
+fun s2var_check_tmplev (loc: loc_t, s2v: s2var_t): void
+fun s2qualst_set_tmplev (s2vpss: s2qualst, tmplev: int): void
 
 (* ****** ****** *)
 
@@ -113,9 +115,9 @@ absview d2var_current_level_v
 fun d2var_current_level_get (): int
 fun d2var_current_level_set (n: int): void
 fun d2var_current_level_inc (): (d2var_current_level_v | void)
-fun d2var_current_level_inc_and_get (): (d2var_current_level_v | int)
+fun d2var_current_level_incget (): (d2var_current_level_v | int)
 fun d2var_current_level_dec (pf: d2var_current_level_v | (*none*)): void
-fun d2var_current_level_dec_and_get (pf: d2var_current_level_v | (*none*)): int
+fun d2var_current_level_decget (pf: d2var_current_level_v | (*none*)): int
 
 (* ****** ****** *)
 
@@ -129,8 +131,10 @@ fun the_d2expenv_add_dmac_varlst (d2vs: d2varlst): void
 fun the_d2expenv_add_dvar (d2v: d2var_t): void
 fun the_d2expenv_add_dvarlst (d2vs: d2varlst): void
 
+// HX:
 // [find] goes in the following order:
 // current env; namespace env; pervasive env
+//
 fun the_d2expenv_find (id: sym_t): d2itemopt_vt
 fun the_d2expenv_find_qua (q: $Syn.d0ynq, id: sym_t): d2itemopt_vt
 

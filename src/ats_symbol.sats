@@ -138,17 +138,24 @@ val symbol_MYCLS : symbol_t
 *)
 
 (* ****** ****** *)
-
+//
 // the prefix for function name generation
-val symbol_ATSCCOMP_NAMESPACE : symbol_t
+//
+val symbol_ATSOPT_NAMESPACE : symbol_t
 
+//
 // static loading at run-time is needed or not
+//
 val symbol_ATS_STALOADFLAG : symbol_t
 
+//
 // dynamic loading at run-time is needed or not
+//
 val symbol_ATS_DYNLOADFLAG : symbol_t
 
+//
 // the name of the dynamic loading function
+//
 val symbol_ATS_DYNLOADFUN_NAME : symbol_t
 
 (* ****** ****** *)

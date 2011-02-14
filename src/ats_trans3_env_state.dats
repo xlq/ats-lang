@@ -70,8 +70,9 @@ fn prerr_interror () = prerr "INTERNAL ERROR (ats_trans3_env_state)"
 
 (* ****** ****** *)
 
-implement stbefitem_make (d2v, lin) = let
-  val os2e = d2var_typ_get d2v in '{
+implement
+stbefitem_make (d2v, lin) = let
+  val os2e = d2var_get_typ d2v in '{
   stbefitem_var= d2v, stbefitem_lin= lin, stbefitem_typ= os2e
 } end // end of [stbefitem_make]
 
@@ -79,7 +80,7 @@ implement stbefitemlst_restore_typ (sbis) = let
   fun loop (sbis: stbefitemlst): void = case+ sbis of
     | list_cons (sbi, sbis) => let
         val d2v = sbi.stbefitem_var
-        val () = d2var_typ_set (d2v, sbi.stbefitem_typ)
+        val () = d2var_set_typ (d2v, sbi.stbefitem_typ)
       in
         loop (sbis)
       end // end of [list_cons]
@@ -93,8 +94,8 @@ implement stbefitemlst_restore_lin_typ (sbis) = let
   fun loop (sbis: stbefitemlst): void = case+ sbis of
     | list_cons (sbi, sbis) => let
         val d2v = sbi.stbefitem_var
-        val () = d2var_lin_set (d2v, sbi.stbefitem_lin)
-        val () = d2var_typ_set (d2v, sbi.stbefitem_typ)
+        val () = d2var_set_lin (d2v, sbi.stbefitem_lin)
+        val () = d2var_set_typ (d2v, sbi.stbefitem_typ)
       in
         loop (sbis)
       end // end of [list_cons]
@@ -186,16 +187,16 @@ typedef staftitem = '{
 assume staftitem_t = staftitem
 
 extern
-fun staftitem_lin_set
+fun staftitem_set_lin
   (sai: staftitem, lin: int): void
-  = "ats_trans3_env_state_staftitem_lin_set"
-// end of [staftitem_lin_set]
+  = "ats_trans3_env_state_staftitem_set_lin"
+// end of [staftitem_set_lin]
 
 extern
-fun staftitem_typ_set
+fun staftitem_set_typ
   (sai: staftitem, typ: saityplst): void
-  = "ats_trans3_env_state_staftitem_typ_set"
-// end of [staftitem_typ_set]
+  = "ats_trans3_env_state_staftitem_set_typ"
+// end of [staftitem_set_typ]
 
 (* ****** ****** *)
 
@@ -237,7 +238,7 @@ staftscstr_initialize (res, sbis) = let
     fun aux {n:nat}
       (sbis: stbefitemlst n): staftitemlst n = case+ sbis of
       | list_cons (sbi, sbis) => let
-          val d2v = sbi.stbefitem_var; val lin = d2var_lin_get d2v
+          val d2v = sbi.stbefitem_var; val lin = d2var_get_lin d2v
 (*
           val () = begin
             print "staftscstr_initialize: aux: d2v = "; print d2v; print_newline ();
@@ -269,7 +270,7 @@ fun staftscstr_stbefitemlst_merge_ifmetck {n:nat} (
   fn aux (loc0: loc_t, sai: staftitem, sbi: stbefitem): void = let
     val linbef = sbi.stbefitem_lin
     val d2v = sbi.stbefitem_var
-    val lincur = d2var_lin_get d2v
+    val lincur = d2var_get_lin d2v
     val linaft = sai.staftitem_lin
 (*
     val () = begin
@@ -284,7 +285,7 @@ fun staftscstr_stbefitemlst_merge_ifmetck {n:nat} (
 
     end // end of [val]
 *)
-    val saityp = case+ d2var_typ_get d2v of
+    val saityp = case+ d2var_get_typ d2v of
       | Some s2e => SAITYPsome (loc0, s2e) | None () => SAITYPnone loc0
     // end of [val]
 (*
@@ -294,7 +295,7 @@ fun staftscstr_stbefitemlst_merge_ifmetck {n:nat} (
     end // end of [val]
 *)
     val () = if lincur > linbef then begin
-      staftitem_lin_set (sai, linaft + lincur - linbef)
+      staftitem_set_lin (sai, linaft + lincur - linbef)
     end // end of [val]
     val saityps = sai.staftitem_typ
 (*
@@ -320,7 +321,7 @@ fun staftscstr_stbefitemlst_merge_ifmetck {n:nat} (
         | (_, _) => ()
         end // end of [list_cons]
       | list_nil () => ()
-    val () = staftitem_typ_set (sai, list_cons (saityp, saityps))
+    val () = staftitem_set_typ (sai, list_cons (saityp, saityps))
   in
     // empty
   end // end of [aux]
@@ -383,7 +384,7 @@ end // end [i2nvarlst_d2var_find]
 local
 
 fn d2var_is_done (d2v: d2var_t): bool = begin
-  case+ d2var_fin_get d2v of D2VARFINdone () => true | _ => false
+  case+ d2var_get_fin d2v of D2VARFINdone () => true | _ => false
 end // end of [d2var_is_done]
 
 fn aux_find (
@@ -395,8 +396,7 @@ fn aux_find (
 in
   case+ ans of
   | ~Some_vt arg => let
-      val os2e = (
-        case+ arg.i2nvarg_typ of
+      val os2e = (case+ arg.i2nvarg_typ of
         | Some s2e => Some (s2exp_subst (sub, s2e)) | None () => None ()
       ) : s2expopt
     in
@@ -444,7 +444,7 @@ fn aux_saityp (
             val () = used1 := used1 + 1 in case+ os2e of
             | Some s2e => s2e | None () => aux_item_errmsg1 (loc, d2v)
           end // end of [Some_vt]
-        | ~None_vt () => begin case+ d2var_mastyp_get d2v of
+        | ~None_vt () => begin case+ d2var_get_mastyp d2v of
             | Some s2e => s2e | None () => aux_item_errmsg1 (loc, d2v)
           end // end of [None_vt]
       ) : s2exp
@@ -490,7 +490,7 @@ in
   case+ xs of
   | list_cons (x, xs) => let
       val args = res.i2nvresstate_arg
-      val () = staftitem_typ_set (sai, xs)
+      val () = staftitem_set_typ (sai, xs)
     in
       aux_saityp (used, sub, res.i2nvresstate_arg, d2v, x)
     end // end of [list_cons]
@@ -628,7 +628,7 @@ fun aux_iter {n:nat} (
       end // end of [val]
 *)
       val () = begin
-        if linaft > linbef then d2var_lin_set (d2v, linaft)
+        if linaft > linbef then d2var_set_lin (d2v, linaft)
       end // end of [val]
       val () = let
         val ans = aux_find (args, d2v) in
@@ -636,16 +636,16 @@ fun aux_iter {n:nat} (
         | ~Some_vt os2e => let
             val os2e = s2expopt_opnexi_and_add (loc0, os2e)
           in
-            d2var_typ_set (d2v, os2e)
+            d2var_set_typ (d2v, os2e)
           end // end of [Some_vt]
         | ~None_vt () => begin case+ 0 of
           | _ when linaft > linbef => begin
-            case+ d2var_typ_get d2v of
+            case+ d2var_get_typ d2v of
             | Some _ => let
-                val os2e = d2var_mastyp_get d2v
+                val os2e = d2var_get_mastyp d2v
                 val os2e = s2expopt_opnexi_and_add (loc0, os2e)
               in
-                d2var_typ_set (d2v, os2e)
+                d2var_set_typ (d2v, os2e)
               end // end of [Some]
             | None _ => () // nothing to update
             end // end of [_ when ...]
@@ -678,16 +678,16 @@ extern typedef "staftitem_t" = staftitem
 %{$
 
 ats_void_type
-ats_trans3_env_state_staftitem_lin_set
+ats_trans3_env_state_staftitem_set_lin
   (ats_ptr_type sai, ats_int_type lin) {
   ((staftitem_t)sai)->atslab_staftitem_lin = lin; return ;
-} // end of [ats_trans3_env_state_staftitem_lin_set]
+} // end of [ats_trans3_env_state_staftitem_set_lin]
 
 ats_void_type
-ats_trans3_env_state_staftitem_typ_set
+ats_trans3_env_state_staftitem_set_typ
   (ats_ptr_type sai, ats_ptr_type os2es) {
   ((staftitem_t)sai)->atslab_staftitem_typ = os2es; return ;
-} // end of [ats_trans3_env_state_staftitem_typ_set]
+} // end of [ats_trans3_env_state_staftitem_set_typ]
 
 %} // end of [%{$]
 

@@ -58,11 +58,12 @@ fn tmpvarmap_add
   | ~Some_vt _ => () | ~None_vt () => $Map.map_insert (m, tmp, 0)
 end // end of [tmpvarmap_add]
 
-fn tmpvarmap_add_root
-  (m: &tmpvarmap, tmp: tmpvar_t): void = let
-  val tmp = (case+ tmpvar_root_get tmp of
+fn tmpvarmap_add_root (
+  m: &tmpvarmap, tmp: tmpvar_t
+) : void = let
+  val tmp = (case+ tmpvar_get_root tmp of
     | TMPVAROPTsome tmp => tmp | TMPVAROPTnone () => tmp
-  ) : tmpvar_t
+  ) : tmpvar_t // end of [val]
 in
   case+ $Map.map_search (m, tmp) of
   | ~Some_vt _ => () | ~None_vt () => $Map.map_insert (m, tmp, 0)
@@ -104,9 +105,9 @@ fn _emit_tmpvarmap_dec {m:file_mode} {l:addr} (
     prval @(pf_fil, pf_int) = pf
     val+ ENVcon (p_l, p_i, knd)= env
 //
-    extern fun tmpvar_top_set
-      (tmp: tmpvar_t, top: int): void = "atsccomp_tmpvar_top_set"
-    val () = if knd = 1 then tmpvar_top_set (tmp, 1) // static tmpvar
+    extern fun tmpvar_set_top
+      (tmp: tmpvar_t, top: int): void = "atsopt_tmpvar_set_top"
+    val () = if knd = 1 then tmpvar_set_top (tmp, 1) // static tmpvar
 //
     val () = (!p_i := !p_i + 1)
   in
@@ -126,7 +127,7 @@ fn _emit_tmpvarmap_dec {m:file_mode} {l:addr} (
           fprint1_string (pf_mod | !p_l, "ATSlocal (")
         val () = if knd = 1 then
           fprint1_string (pf_mod | !p_l, "ATSstatic (")
-        val () = emit_hityp (pf_mod | !p_l, tmpvar_typ_get tmp)
+        val () = emit_hityp (pf_mod | !p_l, tmpvar_get_typ tmp)
         val () = fprint1_string (pf_mod | !p_l, ", ")
         val () = emit_tmpvar (pf_mod | !p_l, tmp)
         val () = fprint1_string (pf_mod | !p_l, ") ;\n")
@@ -165,7 +166,7 @@ fn _emit_tmpvarmap_markroot {m:file_mode} {l:addr} (
           val () = fprint1_string (pf_mod | !p_l, "ATS_GC_MARKROOT(&")
           val () = emit_tmpvar (pf_mod | !p_l, tmp)
           val () = fprint1_string (pf_mod | !p_l, ", sizeof(")
-          val () = emit_hityp (pf_mod | !p_l, tmpvar_typ_get tmp)
+          val () = emit_hityp (pf_mod | !p_l, tmpvar_get_typ tmp)
           val () = fprint1_string (pf_mod | !p_l, ")) ;\n")
         in
           // empty
@@ -294,9 +295,10 @@ emit_tmpvarmap_markroot (pf | out, tmps) =
 (* ****** ****** *)
 
 implement
-funentry_tmpvarmap_add (tmps, entry) = () where {
-  val () = instrlst_tmpvarmap_add (tmps, funentry_body_get entry)
-  val () = tmpvarmap_add_root (tmps, funentry_ret_get entry)
+funentry_tmpvarmap_add
+  (tmps, entry) = () where {
+  val () = instrlst_tmpvarmap_add (tmps, funentry_get_body entry)
+  val () = tmpvarmap_add_root (tmps, funentry_get_ret entry)
 } // end of [funentry_tmpvarmap_add]
 
 (* ****** ****** *)

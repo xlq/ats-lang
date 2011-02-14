@@ -832,9 +832,11 @@ fn _vartyp_make
   vartyp_var= d2v, vartyp_typ= hit
 } // end of [_vartyp_make]
 
-implement vartyp_typ_get (vtp) = vtp.vartyp_typ
-implement vartyp_var_get (vtp) = vtp.vartyp_var
-implement vartyp_make (d2v, hit) = _vartyp_make (d2v, hit)
+implement
+vartyp_make (d2v, hit) = _vartyp_make (d2v, hit)
+
+implement vartyp_get_typ (vtp) = vtp.vartyp_typ
+implement vartyp_get_var (vtp) = vtp.vartyp_var
 
 implement
 eq_vartyp_vartyp (vtp1, vtp2) =
@@ -855,11 +857,11 @@ extern typedef "hipat_t" = hipat
 %{$
 
 ats_void_type
-ats_hiexp_hipat_asvar_set (
+atsopt_hipat_set_asvar (
   ats_ptr_type hip, ats_ptr_type od2v
 ) {
   ((hipat_t)hip)->atslab_hipat_asvar = od2v; return ;
-} // end of [ats_hiexp_hipat_asvar_set]
+} // end of [ats_hiexp_hipat_set_asvar]
 
 %} // end of [%{$]
 

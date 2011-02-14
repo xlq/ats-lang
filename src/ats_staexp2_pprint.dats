@@ -52,7 +52,7 @@ fun _fpprint_s2exp {m:file_mode} (
 in
   case+ s2e0.s2exp_node of
   | S2EVar s2V when n > 0 => let
-      val os2e = s2Var_link_get s2V in case+ os2e of
+      val os2e = s2Var_get_link s2V in case+ os2e of
       | Some s2e => _fpprint_s2exp (pf_mod | out, s2e, n-1)
       | None () => begin
           prstr "S2EVar("; fprint_s2Var (pf_mod | out, s2V); prstr ")"

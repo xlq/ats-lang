@@ -94,7 +94,7 @@ end // end of [metric_nat_check]
 implement metric_env_get (d2v_stamp) = let
   fun aux1 (d2vs: d2varlst, d2v_stamp: stamp_t): bool = case+ d2vs of
     | list_cons (d2v, d2vs) => begin
-        if d2var_stamp_get d2v = d2v_stamp then true else aux1 (d2vs, d2v_stamp)
+        if d2var_get_stamp d2v = d2v_stamp then true else aux1 (d2vs, d2v_stamp)
       end
     | list_nil () => false
 
@@ -160,7 +160,7 @@ implement s2exp_metfn_load (s2e0, d2v0) = let
             | list_nil () => list_nil ()
         } // end of [where]
       in
-        Some_vt (s2exp_metfn (Some (d2var_stamp_get d2v0), s2es, s2e))
+        Some_vt (s2exp_metfn (Some (d2var_get_stamp d2v0), s2es, s2e))
       end // end of [S2Emetfn]
     | S2Euni (s2vs, s2ps, s2e) => begin case+ aux (s2e, s2ts) of
       | ~Some_vt s2e => Some_vt (s2exp_uni (s2vs, s2ps, s2e))

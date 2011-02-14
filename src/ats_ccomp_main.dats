@@ -322,11 +322,12 @@ fn emit_datcstlst
     | D2CONLSTnil () => ()
   end // end of [aux_conlst]
 //
-  fn aux_cst
-    (out: &FILE m, s2c: s2cst_t)
-    : void = begin case+ s2cst_conlst_get (s2c) of
+  fn aux_cst (
+    out: &FILE m, s2c: s2cst_t
+  ) : void = (
+    case+ s2cst_get_conlst (s2c) of
     | Some d2cs => aux_conlst (out, d2cs) | None () => ()
-  end // end of [aux_cst]
+  ) // end of [aux_cst]
 //
   fun aux
     (out: &FILE m, i: int, s2cs: !datcstlst): int = begin
@@ -499,7 +500,7 @@ fn emit_dynconset {m:file_mode}
 fn emit_d2cst_dec
   {m:file_mode} // for a non-proof constant
   (pf: fmlte (m, w)| out: &FILE m, d2c: d2cst_t): void = let
-  val hit0 = d2cst_hityp_get_some (d2c); val hit1 = hityp_decode (hit0)
+  val hit0 = d2cst_get_hityp_some (d2c); val hit1 = hityp_decode (hit0)
 //
   macdef f_isprf_mac () = begin
     fprint1_string (pf | out, "ATSextern_prf(");
@@ -576,7 +577,7 @@ end // end of [emit_d2cst_dec]
 fn emit_d2cst_dec_prfck {m:file_mode} // for terminating constants
   (pf: fmlte (m, w)| out: &FILE m, d2c: d2cst_t): void = let
 //
-  val hit0 = d2cst_hityp_get_some (d2c); val hit1 = hityp_decode (hit0)
+  val hit0 = d2cst_get_hityp_some (d2c); val hit1 = hityp_decode (hit0)
 //
   macdef f_isprf_mac () = begin
     fprint1_string (pf | out, "extern\n");
@@ -625,7 +626,7 @@ fn _emit_dyncstset_proc
   fn f_cst_if (
     pf: !V | d2c: d2cst_t, env: !VT
   ) : void = begin
-    case+ d2cst_decarg_get (d2c) of
+    case+ d2cst_get_decarg (d2c) of
     | list_cons _ => () | list_nil _ => f_cst (pf | d2c, env)
   end // end of [f_cst_if]
   val env = ENV3con (p_l, &i, proc)
@@ -680,8 +681,8 @@ fun emit_funentry_lablst
   pf: fmlte (m, w) | out: &FILE m, fls0: !funlablst_vt
 ) : void = begin case+ fls0 of
   | list_vt_cons (fl, !fls) => let
-      val prfck = funlab_prfck_get fl
-      val entry = funlab_entry_get_some fl
+      val prfck = funlab_get_prfck fl
+      val entry = funlab_get_entry_some fl
       val () = if prfck > 0 then
         fprint1_string (pf | out, "#ifdef _ATS_PROOFCHECK\n")
       // end of [if]
@@ -703,7 +704,7 @@ fun emit_funentry_lablst_prototype
   pf: fmlte (m, w) | out: &FILE m, i: int, fls0: !funlablst_vt
 ) : int = begin case+ fls0 of
   | list_vt_cons (fl, !fls) => let
-      val entry = funlab_entry_get_some fl
+      val entry = funlab_get_entry_some fl
       val () = emit_funentry_prototype (pf | out, entry)
       val n = emit_funentry_lablst_prototype (pf | out, i+1, !fls)
     in
@@ -872,28 +873,32 @@ fn emit_staload
       : void = begin case+ d2cs of
       | D2CONLSTcons (d2c, d2cs) => let
           val () = begin // only needed for a constructor with no arguments!
-            if d2con_arity_real_get d2c > 0 then fprint1_string (pf | out, "// ")
+            if d2con_get_arity_real (d2c) > 0 then fprint1_string (pf | out, "// ")
           end // end of [val]
           val () = emit_d2con (pf | out, d2c);
-          val tag = d2con_tag_get d2c
+          val tag = d2con_get_tag (d2c)
           val () = fprintf1_exn (pf | out, ".tag = %i ;\n", @(tag))
         in
           aux_conlst (out, d2cs)
         end // end of [D2CONLSTcons]
       | D2CONLSTnil () => ()
     end // end of [aux_conlst]
-    fn aux_cst (out: &FILE m, s2c: s2cst_t)
-      : void = begin case+ s2cst_conlst_get (s2c) of
+    fn aux_cst (
+      out: &FILE m, s2c: s2cst_t
+    ) : void = (
+      case+ s2cst_get_conlst (s2c) of
       | Some d2cs => aux_conlst (out, d2cs) | None () => ()
-    end // end of [aux_cst]
-    fun aux (out: &FILE m, i: int, s2cs: !datcstlst): int = begin
+    ) // end of [aux_cst]
+    fun aux (
+      out: &FILE m, i: int, s2cs: !datcstlst
+    ) : int = begin
       case+ s2cs of
       | DATCSTLSTcons (s2c, !s2cs1) => let
           val () = aux_cst (out, s2c); val n = aux (out, i+1, !s2cs1)
         in
           fold@ s2cs; n
-        end
-      | DATCSTLSTnil () => (fold@ s2cs; i)
+        end // end of [DATCSTLSTcons]
+      | DATCSTLSTnil () => (fold@ s2cs; i) // end of [DATCSTLSTnil]
     end // end of [aux]
   in
     aux (out, 0, s2cs)
@@ -1218,7 +1223,7 @@ implement ccomp_main {m}
   var res: instrlst_vt = list_vt_nil ()
   val () = ccomp_declst (res, hids)
   val () = the_dynctx_free ()
-  val fls: funlablst_vt = funentry_lablst_get ()
+  val fls: funlablst_vt = funentry_get_lablst ()
   val res = $Lst.list_vt_reverse (res)
 //
   val () = emit_time_stamp (pf | out)

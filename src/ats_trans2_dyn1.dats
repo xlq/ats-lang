@@ -125,7 +125,7 @@ end // end of [prerr_loc_interror]
 
 fn dyncstuseloc_posmark
   (loc: loc_t, d2c: d2cst_t): void = let
-  val loc_d2c = d2cst_loc_get (d2c)
+  val loc_d2c = d2cst_get_loc (d2c)
   val loc_begoff = $Loc.location_begpos_toff loc
   val () = $PM.posmark_insert_dyncstuse_beg (loc_begoff, loc_d2c)
   val loc_endoff = $Loc.location_endpos_toff loc
@@ -195,7 +195,7 @@ end // end of [s1arglst_arg_tr]
 fun d2con_select_arity (d2cs: d2conlst, n: int): d2conlst = begin
   case+ d2cs of
   | D2CONLSTcons (d2c, d2cs) =>
-      if d2con_arity_full_get d2c = n then begin
+      if d2con_get_arity_full (d2c) = n then begin
         D2CONLSTcons (d2c, d2con_select_arity (d2cs, n))
       end else begin
         d2con_select_arity (d2cs, n)
@@ -280,17 +280,19 @@ fun aux1
       out := @(s2vs, s2ps) :: out; aux1 (d2c, sub, s2vpslst, out)
     end // end of [cons]
   | nil () => let
-      val npf = d2con_npf_get d2c
+      val npf = d2con_get_npf (d2c)
       val s2es_arg =
-        s2explst_subst (sub, d2con_arg_get d2c)
-      val s2c = d2con_scst_get d2c
-      val s2e_res: s2exp = case+ d2con_ind_get d2c of
+        s2explst_subst (sub, d2con_get_arg d2c)
+      val s2c = d2con_get_scst d2c
+      val s2e_res = (
+        case+ d2con_get_ind d2c of
         | Some s2es_ind => let
             val s2es_ind = s2explst_subst (sub, s2es_ind)
           in
             s2exp_cstapp (s2c, s2es_ind)
-          end
-        | None () => s2exp_cst s2c
+          end // end of [Some]
+        | None () => s2exp_cst s2c // end of [None]
+      ) : s2exp // end of [val]
     in
       out := s2qualst_reverse out;
       s2exp_confun (npf, s2es_arg, s2e_res)
@@ -350,7 +352,7 @@ fn p1at_con_tr (
     loc_dap: loc_t, loc_sap: loc_t
   , d2c: d2con_t, s1as: s1vararglst, npf: int, p1ts: p1atlst
   ) : p2at = let
-  val s2vpss = d2con_qua_get d2c
+  val s2vpss = d2con_get_qua (d2c)
   var out: s2qualst = nil ()
   val s2e = aux2 (loc_sap, d2c, stasub_nil, s2vpss, s1as, out)
   val p2ts = p1atlst_tr p1ts
@@ -361,7 +363,7 @@ end // end of [p1at_con_tr]
 implement
 p1at_con_instantiate (loc_sap, d2c) = let
   var out: s2qualst = nil (); val s2e = begin
-    aux2 (loc_sap, d2c, stasub_nil, d2con_qua_get d2c, nil (), out)
+    aux2 (loc_sap, d2c, stasub_nil, d2con_get_qua d2c, nil (), out)
   end // end of [val]
 in
   @(out, s2e)
@@ -437,12 +439,14 @@ fn p1at_qid_app_dyn_tr (
   val p1ts = if is_arg_omit then begin
     case+ p1ts of
     | cons (p1t, nil ()) => let
-        val npf = d2con_npf_get d2c
-        and s2es = d2con_arg_get d2c
-        fun aux (loc: loc_t, s2es: s2explst): p1atlst =
-          case+ s2es of
+        val npf = d2con_get_npf (d2c)
+        and s2es = d2con_get_arg (d2c)
+        fun aux (
+          loc: loc_t, s2es: s2explst
+        ) : p1atlst = case+ s2es of
           | cons (_, s2es) => cons (p1at_any loc, aux (loc, s2es))
           | nil () => nil ()
+        // end of [aux]
       in
         aux (p1t.p1at_loc, s2es)
       end // end of [cons (_, nil)]
@@ -606,7 +610,7 @@ val p2t0 = (
 // HX-2010-08-01: for handling [true] and [false] patterns
 //
         | D2ITEMcst d2c => let
-            val sym = d2cst_sym_get d2c in case+ 0 of
+            val sym = d2cst_get_sym d2c in case+ 0 of
             | _ when sym = $Sym.symbol_TRUE => p2at_bool (loc0, true)
             | _ when sym = $Sym.symbol_FALSE => p2at_bool (loc0, false)
             | _ => p2at_var (loc0, 0(*refknd*), d2var_make (loc0, id))
@@ -860,7 +864,7 @@ fn d1exp_qid_tr (
       end // end of [D2ITEMcst]
     | D2ITEMe1xp e1xp => d1exp_tr (d1exp_make_e1xp (loc0, e1xp))
     | D2ITEMmacdef d2m => let
-        val knd = d2mac_kind_get d2m
+        val knd = d2mac_get_kind d2m
         val () = macro_def_check (loc0, knd, id)
       in
         d2exp_mac (loc0, d2m)
@@ -1002,7 +1006,7 @@ in
         $Err.abort {d2exp} ()
       end // end of [D2ITEMe1xp]
     | D2ITEMmacdef d2m => let
-        val knd = d2mac_kind_get d2m
+        val knd = d2mac_get_kind d2m
         val () = macro_def_check (loc_qid, knd, id)
         val d2e_fun = d2exp_mac (loc_qid, d2m)
       in
@@ -1277,7 +1281,7 @@ fn sc2laulst_covercheck
       | list_cons (sc2l, sc2ls) => let
           val sp2t = sc2l.sc2lau_pat
           val+ SP2Tcon (s2c, _) = sp2t.sp2at_node
-          val tag = s2cst_tag_get (s2c); val tag = int1_of_int tag
+          val tag = s2cst_get_tag (s2c); val tag = int1_of_int tag
           val () = assert (tag >= 0); val () = assert (tag < n)
           val () = (p->[tag] := p->[tag] + 1) // end of [val]
         in
@@ -1549,7 +1553,7 @@ in
       d2exp_extval (loc0, s1exp_tr_dn_viewt0ype s1e, code)
   | D1Efix (knd, id, d1e_def) => let
       val d2v = d2var_make (id.i0de_loc, id.i0de_sym)
-      val () = d2var_isfix_set (d2v, true)
+      val () = d2var_set_isfix (d2v, true)
       val (pf_d2expenv | ()) = the_d2expenv_push ()
       val () = the_d2expenv_add_dvar d2v
       val d2e_def = d1exp_tr (d1e_def)

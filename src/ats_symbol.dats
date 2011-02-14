@@ -193,8 +193,8 @@ implement symbol_MYCLS = symbol_make_string "mycls"
 
 (* ****** ****** *)
 
-implement symbol_ATSCCOMP_NAMESPACE =
-  symbol_make_string "ATSCCOMP_NAMESPACE"
+implement symbol_ATSOPT_NAMESPACE =
+  symbol_make_string "ATSOPT_NAMESPACE"
 
 // static loading at run-time is needed or not
 implement symbol_ATS_STALOADFLAG =

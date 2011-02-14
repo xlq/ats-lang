@@ -179,9 +179,9 @@ fun the_dynconset_get (): dynconset_t
 fun the_dynconset_add (d2c: d2con_t): void
 
 (* ****** ****** *)
-
-// [abstype dyncstset_t] is in [ats_hiexp.sats]
-
+//
+// HX: [abstype dyncstset_t] is in [ats_hiexp.sats]
+//
 fun dyncstset_foreach_main
   {v:view} {vt:viewtype} {f:eff} (
     pf: !v
@@ -191,12 +191,15 @@ fun dyncstset_foreach_main
   ) :<f> void
 // end of [dyncstset_foreach_main]
 
-fun the_dyncstset_get (): dyncstset_t = "ats_ccomp_env_the_dyncstset_get"
-fun the_dyncstset_add_if (d2c: d2cst_t): void // [d2c] is added only if it has not been
-  = "ats_ccomp_env_the_dyncstset_add_if"
+fun the_dyncstset_get
+  (): dyncstset_t = "atsopt_the_dyncstset_get"
+fun the_dyncstset_add_if // [d2c] is added only if it has not been
+  (d2c: d2cst_t): void = "atsopt_the_dyncstset_add_if"
 
-fun the_dyncstsetlst_push (): void = "ats_ccomp_env_the_dyncstsetlst_push"
-fun the_dyncstsetlst_pop (): dyncstset_t = "ats_ccomp_env_the_dyncstsetlst_pop"
+fun the_dyncstsetlst_push
+  (): void = "atsopt_the_dyncstsetlst_push"
+fun the_dyncstsetlst_pop
+  (): dyncstset_t = "atsopt_the_dyncstsetlst_pop"
 
 (* ****** ****** *)
 
@@ -275,31 +278,31 @@ fun funentry_make (
   , inss: instrlst
   ) : funentry_t
 
-fun funentry_loc_get (entry: funentry_t): loc_t
-fun funentry_lab_get (entry: funentry_t): funlab_t
-fun funentry_lev_get (entry: funentry_t): int
-fun funentry_vtps_get (entry: funentry_t): vartypset
-fun funentry_vtps_set (entry: funentry_t, vtps: vartypset): void
-  = "ats_ccomp_env_funentry_vtps_set"
+fun funentry_get_loc (entry: funentry_t): loc_t
+fun funentry_get_lab (entry: funentry_t): funlab_t
+fun funentry_get_lev (entry: funentry_t): int
+fun funentry_get_vtps (entry: funentry_t): vartypset
+fun funentry_set_vtps
+  (entry: funentry_t, vtps: vartypset): void = "atsopt_funentry_set_vtps"
+// end of [funentry_set_vtps]
 
-fun funentry_vtps_flag_get (entry: funentry_t): int
-fun funentry_vtps_flag_set (entry: funentry_t): void // set to 1
-  = "ats_ccomp_env_funentry_vtps_flag_set"
+fun funentry_get_vtps_flag (entry: funentry_t): int
+fun funentry_set_vtps_flag // set to 1
+  (entry: funentry_t): void = "atsopt_funentry_set_vtps_flag"
+// end of [funentry_set_vtps_flag]
 
-fun funentry_labset_get (entry: funentry_t): funlabset
-fun funentry_ret_get (entry: funentry_t): tmpvar_t
-fun funentry_body_get (entry: funentry_t): instrlst
+fun funentry_get_labset (entry: funentry_t): funlabset
+fun funentry_get_ret (entry: funentry_t): tmpvar_t
+fun funentry_get_body (entry: funentry_t): instrlst
 
-//
+fun funentry_get_tailjoin (entry: funentry_t): tailjoinlst
+fun funentry_set_tailjoin
+  (entry: funentry_t, tjs: tailjoinlst): void = "atsopt_funentry_set_tailjoin"
+// end of [funentry_set_tailjoin]
 
-fun funentry_tailjoin_get (entry: funentry_t): tailjoinlst
-fun funentry_tailjoin_set (entry: funentry_t, tjs: tailjoinlst): void
-  = "ats_ccomp_env_funentry_tailjoin_set"
-
-//
  
 fun funentry_associate (entry: funentry_t): void
-fun funentry_vtps_get_all (entry: funentry_t): vartypset
+fun funentry_get_vtps_all (entry: funentry_t): vartypset
 
 //
 
@@ -311,8 +314,8 @@ fun funentry_varindmap_set (vtps: vartypset): void
 
 (* ****** ****** *)
 
-fun funentry_lablst_get (): funlablst_vt
-fun funentry_lablst_add (fl: funlab_t): void
+fun funentry_get_lablst (): funlablst_vt
+fun funentry_add_lablst (fl: funlab_t): void
 
 (* ****** ****** *)
 
@@ -354,8 +357,8 @@ fun the_topcstctx_find (d2c: d2cst_t): Option_vt (valprim)
 
 (* ****** ****** *)
 
-fun the_valprimlst_free_get (): valprimlst_vt
-fun the_valprimlst_free_add (vp: valprim): void
+fun the_valprimlst_get_free (): valprimlst_vt
+fun the_valprimlst_add_free (vp: valprim): void
 
 (* ****** ****** *)
 //

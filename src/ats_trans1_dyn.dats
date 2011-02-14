@@ -1883,26 +1883,26 @@ initialize () = () where {
 implement
 finalize () = () where {
 //
-  val () = aux_atsccomp_namespace () where {
-    fun aux_atsccomp_namespace (): void = begin
-    case+ the_e1xpenv_find ($Sym.symbol_ATSCCOMP_NAMESPACE) of
+  val () = aux_namespace () where {
+    fun aux_namespace (): void = begin
+    case+ the_e1xpenv_find ($Sym.symbol_ATSOPT_NAMESPACE) of
     | ~Some_vt e1xp => let
-        val v1al = e1xp_eval (e1xp)
-      in
+        val v1al = e1xp_eval (e1xp) in
         case+ v1al of
         | V1ALstring s => let
             val s = string1_of_string s in
-            $Glo.atsccomp_namespace_set (stropt_some s)
+            $Glo.atsopt_namespace_set (stropt_some s)
           end // end of [V1ALstring]
-        | _ => begin
-            prerr_loc_error1 e1xp.e1xp_loc;
-            prerr ": a string definition is required for [ATSCCOMP_NAMESPACE].";
-            prerr_newline ();
+        | _ => let
+            val () = prerr_loc_error1 e1xp.e1xp_loc
+            val () = prerr ": a string definition is required for [ATSOPT_NAMESPACE]."
+            val () = prerr_newline ()
+          in
             $Err.abort {void} ()
           end // end of [_]
       end // end of [Some_vt]
     | ~None_vt () => () // use the default value
-    end // end of [aux_atsccomp_namespace]
+    end // end of [aux_namespace]
   } // end of [where]
 //
   val () = aux_dynloadflag () where {

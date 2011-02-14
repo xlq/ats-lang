@@ -221,7 +221,7 @@ end // end of [prerr_the_s2varbindmap]
 
 implement
 the_s2varbindmap_add (s2v, s2e) = let
-  val stamp = s2var_stamp_get (s2v)
+  val stamp = s2var_get_stamp (s2v)
 (*
   val () = begin
     print "the_s2varbindmap_add: s2v = "; print s2v; print_newline ();
@@ -256,7 +256,7 @@ the_s2varbindmap_find (s2v) = let
     print "the_s2varbindmap_find: s2v = "; print s2v; print_newline ()
   end // end of [val]
 *)
-  val stamp = s2var_stamp_get (s2v)
+  val stamp = s2var_get_stamp (s2v)
   val (vbox pf | p) = ref_get_view_ptr (the_s2varbindmap)
 in
   $Map.map_search (!p, stamp)
@@ -273,7 +273,7 @@ the_s2varbindmap_pop () = let
     (pf: !s2varbindmap @ l | p: ptr l, s2vs: list (s2var_t, n)):<> void =
     case+ s2vs of
     | list_cons (s2v, s2vs) => let
-        val stamp = $effmask_all (s2var_stamp_get s2v)
+        val stamp = $effmask_all (s2var_get_stamp s2v)
         val ans = $Map.map_remove (!p, stamp)
         val () = case+ ans of ~None_vt () => () | ~Some_vt _ => ()
       in
@@ -403,14 +403,15 @@ fn d2var_fin_check
   val () = begin
     print "d2var_fin_check: d2v = "; print_d2var d2v; print_newline ()
   end // end of [val]
-  val os2e = d2var_typ_get (d2v)
+  val os2e = d2var_get_typ (d2v)
   val () = case+ os2e of
     | Some _ => (print "d2var_fin_check: os2e = Some _"; print_newline ())
     | None _ => (print "d2var_fin_check: os2e = None _"; print_newline ())
 *)
 in
-  case+ d2var_typ_get (d2v) of 
-  | Some s2e => begin case+ d2var_fin_get (d2v) of 
+  case+ d2var_get_typ (d2v) of 
+  | Some s2e => begin
+    case+ d2var_get_fin (d2v) of 
     | D2VARFINsome s2e0 => let
 (*
         val () = begin
@@ -424,7 +425,7 @@ in
         val knd = C3STRKINDvarfin (d2v, s2e, s2e0)
         val () = trans3_env_pop_sta_and_add (loc0, knd)
       in
-        d2var_typ_set (d2v, Some s2e0)
+        d2var_set_typ (d2v, Some s2e0)
       end // end of [D2VARFINsome]
     | D2VARFINvbox s2e0 => let
         val () = trans3_env_push_sta ()
@@ -432,7 +433,7 @@ in
         val knd = C3STRKINDvarfin (d2v, s2e, s2e0)
         val () = trans3_env_pop_sta_and_add (loc0, knd)
       in
-        d2var_typ_set (d2v, Some s2e0)
+        d2var_set_typ (d2v, Some s2e0)
       end // end of [D2VARFINvbox]
     | D2VARFINdone () => () // handled by [funarg_varfin_check]
     | D2VARFINnone () => let
@@ -447,10 +448,10 @@ in
           $Err.abort {void} ()
         end // end of [if]
       in
-        if d2var_lin_get d2v >= 0 then d2var_typ_set (d2v, None ())
+        if d2var_get_lin d2v >= 0 then d2var_set_typ (d2v, None ())
       end (* end of [D2VARFINnone] *)
     end // end of [Some]
-  | None () => begin case+ d2var_fin_get (d2v) of
+  | None () => begin case+ d2var_get_fin (d2v) of
     | D2VARFINdone () => () // handled by [funarg_varfin_check]
     | D2VARFINnone () => () | _ => begin
         prerr_loc_error3 loc0;
@@ -688,16 +689,18 @@ end // end of [the_d2varset_env_check]
 implement
 the_d2varset_env_check_llam (loc0) = let
   fn auxCK (d2v: d2var_t):<cloptr1> void = begin
-    case+ d2var_typ_get (d2v) of
+    case+ d2var_get_typ (d2v) of
     | Some s2e => begin
-        if s2exp_is_nonlin s2e then d2var_typ_set (d2v, None ())
-        else begin
-          prerr_loc_error3 loc0;
-          prerr ": the linear dynamic variable ["; prerr d2v;
-          prerr "] needs to be consumed but it is preserved with the type [";
-          prerr s2e;
-          prerr "] instead.";
-          prerr_newline ();
+        if s2exp_is_nonlin s2e then d2var_set_typ (d2v, None ())
+        else let
+          val () = prerr_loc_error3 loc0
+          val () = prerr ": the linear dynamic variable ["
+          val () = prerr d2v
+          val () = prerr "] needs to be consumed but it is preserved with the type ["
+          val () = prerr s2e
+          val () = prerr "] instead."
+          val () = prerr_newline ()
+        in
           $Err.abort {void} ()
         end // end of [if]
       end // end of [Some]
@@ -718,7 +721,7 @@ the_d2varset_env_find_view (s2e0) = let
   exception Found of d2var_t // local exception
   typedef env_t = s2exp; val env = s2e0 // closure environment
   fn f (pf: !unit_v | d2v: d2var_t, env: !env_t): void = begin
-    case+ d2var_typ_get d2v of
+    case+ d2var_get_typ d2v of
     | Some s2e => begin
         if s2exp_syneq (env, s2e) then $raise Found (d2v) else ()
       end // end of [Some]
@@ -762,7 +765,7 @@ the_d2varset_env_find_viewat (s2r0, s2ls0) = let
   dataviewtype env_vt = ENVcon of (s2exp, s2lablst)
 
   fn f (pf: !unit_v | d2v: d2var_t, env: !env_vt): void = begin
-    case+ d2var_typ_get d2v of
+    case+ d2var_get_typ d2v of
     | Some s2e => let val s2e = s2exp_whnf s2e in
         case+ un_s2exp_at_viewt0ype_addr_view s2e of
         | ~Some_vt (s2ts2a (*type/addr*)) => let
@@ -827,8 +830,10 @@ the_d2varset_env_stbefitemlst_save () = let
   var sbis: stbefitemlst = list_nil ()
   typedef sbisptr = ptr sbis
   viewdef V = stbefitemlst @ sbis
-  fun f (pf: !V | d2v: d2var_t, sbis: !sbisptr): void = let
-    val lin = d2var_lin_get d2v
+  fun f (
+    pf: !V | d2v: d2var_t, sbis: !sbisptr
+  ) : void = let
+    val lin = d2var_get_lin d2v
 (*
     val () = begin
       print "the_d2varset_env_stbefitemlst_save: f: d2v = "; print d2v; print_newline ();
@@ -1236,7 +1241,7 @@ end // end of [local]
 implement
 s2exp_Var_make_srt (loc, s2t) = let
   val s2V = s2Var_make_srt (loc, s2t)
-  val () = s2Var_sVarset_set (s2V, the_s2Varset_env_get_prev ())
+  val () = s2Var_set_sVarset (s2V, the_s2Varset_env_get_prev ())
 in
   trans3_env_add_sVar (s2V); s2exp_Var (s2V)
 end // end of [s2exp_Var_make_srt]
@@ -1249,7 +1254,7 @@ s2exp_Var_make_var (loc, s2v) = let
   end // end of [val]
 *)
   val s2V = s2Var_make_var (loc, s2v)
-  val () = s2Var_sVarset_set (s2V, the_s2Varset_env_get_prev ())
+  val () = s2Var_set_sVarset (s2V, the_s2Varset_env_get_prev ())
 (*
   val () = begin
     print "s2exp_Var_make_var: s2V = "; print s2V; print_newline ()
@@ -1300,7 +1305,7 @@ s2qua_instantiate_with_and_add
   fun aux (s2vs: s2varlst, s2es: s2explst):<cloptr1> stasub_t =
     case+ (s2vs, s2es) of
     | (list_cons (s2v, s2vs), list_cons (s2e, s2es)) => let
-        val s2t_s2v = s2var_srt_get s2v and s2t_s2e = s2e.s2exp_srt
+        val s2t_s2v = s2var_get_srt s2v and s2t_s2e = s2e.s2exp_srt
         val () = // sort-checking
           if s2t_s2e <= s2t_s2v then () else begin
             prerr_loc_error3 loc_arg;
@@ -1447,7 +1452,7 @@ funarg_varfin_check (loc0) = let
       print "funarg_varfin_check: auxvar: d2v (bef) = "; print_d2var d2v; print_newline ()
     end // end of [val]
 *)
-    val d2v = (case+ d2var_view_get d2v of
+    val d2v = (case+ d2var_get_view d2v of
       | D2VAROPTsome d2v => d2v | D2VAROPTnone () => d2v
     ) : d2var_t
 (*
@@ -1457,7 +1462,7 @@ funarg_varfin_check (loc0) = let
 *)
     val () = d2var_fin_check (loc0, d2v)
   in
-    d2var_fin_set (d2v, D2VARFINdone ()) // done!
+    d2var_set_fin (d2v, D2VARFINdone ()) // done!
   end // end of [auxvar]
 
   fun auxpatlst
@@ -1517,13 +1522,13 @@ s2exp_wth_instantiate (loc0, s2e0) = let
 *)
   in
     case+ refval of
-    | _ when refval = 0 => d2var_fin_set (d2v, D2VARFINsome s2e)
+    | _ when refval = 0 => d2var_set_fin (d2v, D2VARFINsome s2e)
     | _ (* refval = 1 *) => let
-        val d2v_view = d2var_view_get_some (loc0, d2v)
-        val s2e_addr = d2var_addr_get_some (loc0, d2v)
+        val d2v_view = d2var_get_view_some (loc0, d2v)
+        val s2e_addr = d2var_get_addr_some (loc0, d2v)
         val s2e_at = s2exp_at_viewt0ype_addr_view (s2e, s2e_addr)
       in
-        d2var_fin_set (d2v_view, D2VARFINsome s2e_at)
+        d2var_set_fin (d2v_view, D2VARFINsome s2e_at)
       end // end of [_]
   end // end of [aux]
   fun auxlst (loc0: loc_t, p3ts: p3atlst, wths2es: wths2explst): void =
@@ -1714,7 +1719,7 @@ s2exp_absuni_and_add (loc0, s2e0) = let
 *)
 //
   val s2vs: s2varlst = s2vss2pss2e.0
-  val () = s2varlst_sVarset_set (s2vs, the_s2Varset_env_get ())
+  val () = s2varlst_set_sVarset (s2vs, the_s2Varset_env_get ())
 //
   val () = trans3_env_add_svarlst (s2vss2pss2e.0)
   val () = trans3_env_hypo_add_proplst (loc0, s2vss2pss2e.1)
@@ -1743,7 +1748,7 @@ s2exp_opnexi_and_add (loc0, s2e0) = let
 *)
 //
   val s2vs: s2varlst = s2vss2pss2e.0
-  val () = s2varlst_sVarset_set (s2vs, the_s2Varset_env_get ())
+  val () = s2varlst_set_sVarset (s2vs, the_s2Varset_env_get ())
 //
   val () = trans3_env_add_svarlst (s2vs)
   val () = trans3_env_hypo_add_proplst (loc0, s2vss2pss2e.1)
@@ -1756,7 +1761,7 @@ s2explst_opnexi_and_add (loc0, s2es0) = let
   val s2vss2pss2es = s2explst_opnexi s2es0
 //
   val s2vs: s2varlst = s2vss2pss2es.0
-  val () = s2varlst_sVarset_set (s2vs, the_s2Varset_env_get ())
+  val () = s2varlst_set_sVarset (s2vs, the_s2Varset_env_get ())
 //
   val () = trans3_env_add_svarlst (s2vs)
   val () = trans3_env_hypo_add_proplst (loc0, s2vss2pss2es.1)
@@ -1972,57 +1977,57 @@ trans3_env_initialize () = () where {
 //
   val () = the_s2varbindmap_initialize ()
 //
-  val () = s2cst_sup_add (s2c1, s2c0) where {
+  val () = s2cst_add_sup (s2c1, s2c0) where {
     val s2c0 = s2cstref_cst_get (Bool_t0ype)
     val s2c1 = s2cstref_cst_get (Bool_bool_t0ype)
   } // end of [where]
 //
-  val () = s2cst_sup_add (s2c1, s2c0) where {
+  val () = s2cst_add_sup (s2c1, s2c0) where {
     val s2c0 = s2cstref_cst_get (Char_t0ype)
     val s2c1 = s2cstref_cst_get (Char_char_t0ype)
   } // end of [where]
 //
-  val () = s2cst_sup_add (s2c1, s2c0) where {
+  val () = s2cst_add_sup (s2c1, s2c0) where {
     val s2c0 = s2cstref_cst_get (Int_t0ype)
     val s2c1 = s2cstref_cst_get (Int_int_t0ype)
   } // end of [where]
 //
-  val () = s2cst_sup_add (s2c1, s2c0) where {
+  val () = s2cst_add_sup (s2c1, s2c0) where {
     val s2c0 = s2cstref_cst_get (Uint_t0ype)
     val s2c1 = s2cstref_cst_get (Uint_int_t0ype)
   } // end of [where]
 //
-  val () = s2cst_sup_add (s2c1, s2c0) where {
+  val () = s2cst_add_sup (s2c1, s2c0) where {
     val s2c0 = s2cstref_cst_get (Lint_t0ype)
     val s2c1 = s2cstref_cst_get (Lint_int_t0ype)
   } // end of [where]
 //
-  val () = s2cst_sup_add (s2c1, s2c0) where {
+  val () = s2cst_add_sup (s2c1, s2c0) where {
     val s2c0 = s2cstref_cst_get (Ulint_t0ype)
     val s2c1 = s2cstref_cst_get (Ulint_int_t0ype)
   } // end of [where]
 //
-  val () = s2cst_sup_add (s2c1, s2c0) where {
+  val () = s2cst_add_sup (s2c1, s2c0) where {
     val s2c0 = s2cstref_cst_get (Size_t0ype)
     val s2c1 = s2cstref_cst_get (Size_int_t0ype)
   } // end of [where]
 //
-  val () = s2cst_sup_add (s2c1, s2c0) where {
+  val () = s2cst_add_sup (s2c1, s2c0) where {
     val s2c0 = s2cstref_cst_get (Ssize_t0ype)
     val s2c1 = s2cstref_cst_get (Ssize_int_t0ype)
   } // end of [where]
 //
-  val () = s2cst_sup_add (s2c1, s2c0) where {
+  val () = s2cst_add_sup (s2c1, s2c0) where {
     val s2c0 = s2cstref_cst_get (Ptr_type)
     val s2c1 = s2cstref_cst_get (Ptr_addr_type)
   } // end of [where]
 //
-  val () = s2cst_sup_add (s2c1, s2c0) where {
+  val () = s2cst_add_sup (s2c1, s2c0) where {
     val s2c0 = s2cstref_cst_get (Strbuf_t0ype)
     val s2c1 = s2cstref_cst_get (Strbuf_int_int_t0ype)
   } // end of [where]
 //
-  val () = s2cst_sup_add (s2c1, s2c0) where {
+  val () = s2cst_add_sup (s2c1, s2c0) where {
     val s2c0 = s2cstref_cst_get (String_type)
     val s2c1 = s2cstref_cst_get (String_int_type)
   } // end of [where]

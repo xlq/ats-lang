@@ -99,7 +99,7 @@ in
         prerr_newline ();
         $Err.abort ()
       end // end of [if]
-      val () = d2var_typ_reset_at (d2v_view, s2e_vt, s2e_addr)
+      val () = d2var_reset_typ_at (d2v_view, s2e_vt, s2e_addr)
       val () = if s2exp_is_linear s2e_old then begin // linearity checking
         prerr loc0;
         prerr ": error(3)";
@@ -142,7 +142,7 @@ d2var_lin_slablst_assgn
     print "d2var_lin_slablst_assgn: d2v = "; print d2v; print_newline ()
   end // end of [val]
 *)
-  val s2e0 = (case+ d2var_typ_get d2v of
+  val s2e0 = (case+ d2var_get_typ d2v of
     | Some s2e => s2e | None () => s2exp_void_t0ype ()
   ) : s2exp // end of [val]
 (*
@@ -174,9 +174,9 @@ d2var_lin_slablst_assgn
       $Err.abort {void} ()
     end // end of [val]
   in
-    d2var_lin_inc (d2v)
+    d2var_inc_lin (d2v)
   end // end of [val]
-  val () = d2var_typ_set (d2v, Some s2e0)
+  val () = d2var_set_typ (d2v, Some s2e0)
 in
   s2ls
 end // end of [d2var_lin_slablst_assgn]
@@ -186,7 +186,7 @@ end // end of [d2var_lin_slablst_assgn]
 implement
 d2var_mut_slablst_assgn
   (loc0, d2v, s2ls, s2e_new) = let
-  val s2e_addr = (case+ d2var_addr_get d2v of
+  val s2e_addr = (case+ d2var_get_addr d2v of
     | Some s2e => s2e
     | None () => begin
         prerr loc0;

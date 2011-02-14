@@ -124,7 +124,7 @@ in
 (*
     | _ when s2rt_is_boxed s2t_app => hityp_ptr
 *)
-    | _ => begin case+ s2cst_isabs_get s2c of
+    | _ => begin case+ s2cst_get_isabs s2c of
       | Some (os2e) => begin case+ os2e of
         | Some s2e => begin case+ s2e.s2exp_node of
           | S2Elam (s2vs_arg, s2e_body) => let
@@ -168,13 +168,14 @@ fun s2Var_tr_named .<>. (
   loc0: loc_t
 , deep: int, s2V: s2Var_t, named: &bool
 ) : hityp = begin
-  case+ s2Var_lbs_get s2V of
+  case+ s2Var_get_lbs s2V of
   | list_cons (s2Vb, _) => let
       val s2elb = s2Varbound_val_get (s2Vb)
     in
       s2exp_tr_named (loc0, deep, s2elb, named)
     end // end of [list_cons]
-  | list_nil () => begin case+ s2Var_ubs_get s2V of
+  | list_nil () => begin
+    case+ s2Var_get_ubs s2V of
     | list_cons (s2Vb, _) => let
         val s2eub = s2Varbound_val_get (s2Vb)
       in
@@ -351,7 +352,7 @@ in
   | S2Ecrypt s2e => s2exp_tr_named (loc0, deep, s2e, named)
   | S2Ecst s2c => begin case+ s2t0 of
     | _ => begin
-      case+ s2cst_isabs_get s2c of
+      case+ s2cst_get_isabs s2c of
       | Some os2e => begin case+ os2e of
         | Some s2e => s2exp_tr_named (loc0, deep, s2e, named)
         | None () => hityp_ptr_abs (s2t0)
@@ -365,7 +366,7 @@ in
   | S2Edatconptr _ => hityp_ptr
   | S2Edatcontyp (d2c, s2es) => begin
       if deep > 0 then let
-        val npf = d2con_npf_get d2c
+        val npf = d2con_get_npf (d2c)
         val hits_arg = s2explst_npf_tr (loc0, npf, s2es)
       in
         hityp_tysumtemp (d2c, hits_arg)
@@ -486,9 +487,9 @@ end // end of [s2exp_tr]
 
 (* ****** ****** *)
 
-fn hipatlst_typ_get (hips: hipatlst): hityplst =
+fn hipatlst_get_type (hips: hipatlst): hityplst =
   $Lst.list_map_fun {hipat, hityp} (hips, lam hip =<> hip.hipat_typ)
-// end of [hipatlst_typ_get]
+// end of [hipatlst_get_type]
 
 fn p3at_is_proof (p3t: p3at): bool = s2exp_is_proof (p3t.p3at_typ)
 
@@ -548,7 +549,7 @@ in
     end // end of [P3Tann]
   | P3Tany _ => hipat_any (loc0, hit0)
   | P3Tas (refknd, d2v, p3t) => let
-      val () = d2var_count_inc (d2v)
+      val () = d2var_inc_count (d2v)
     in  
       hipat_as (loc0, hit0, refknd, d2v, p3at_tr p3t)
     end // end of [P3Tas]
@@ -565,7 +566,7 @@ in
           hipat_con_any (loc0, hit0, freeknd, d2c)
         // end of [_ when ...]
       | _ => let
-          val hits_arg = hipatlst_typ_get (hips_arg)
+          val hits_arg = hipatlst_get_type (hips_arg)
 (*
           val () = () where {
             val () = print "p3at_tr: P3Tcon: hits_arg = "
@@ -616,9 +617,9 @@ p3atlst_tr (p3ts) = $Lst.list_map_fun (p3ts, p3at_tr)
 
 (* ****** ****** *)
 
-fn hiexplst_typ_get (hies: hiexplst): hityplst =
+fn hiexplst_get_type (hies: hiexplst): hityplst =
   $Lst.list_map_fun {hiexp, hityp} (hies, lam hie =<> hie.hiexp_typ)
-// end of [hiexplst_typ_get]
+// end of [hiexplst_get_type]
 
 fn d3exp_is_proof (d3e: d3exp): bool = s2exp_is_proof (d3e.d3exp_typ)
 
@@ -764,7 +765,7 @@ end // end of [labd3explst_arg_tr]
 fn d3exp_cst_tr (
   loc0: loc_t, hit0: hityp, d2c: d2cst_t
 ) : hiexp = let
-  val sym = d2cst_sym_get d2c in
+  val sym = d2cst_get_sym d2c in
   case+ sym of
   | _ when sym = $Sym.symbol_TRUE => hiexp_bool (loc0, hit0, true)
   | _ when sym = $Sym.symbol_FALSE => hiexp_bool (loc0, hit0, false)
@@ -785,7 +786,7 @@ fn d3exp_tmpcst_tr (
     loc0: loc_t
   , hit0: hityp, d2c: d2cst_t, s2ess: s2explstlst
   ) : hiexp = let
-  val sym = d2cst_sym_get d2c in case+ sym of
+  val sym = d2cst_get_sym d2c in case+ sym of
   | _ when sym = $Sym.symbol_SIZEOF => begin case+ s2ess of
     | cons (cons (s2e, nil ()), nil ()) => begin
         hiexp_sizeof (loc0, hit0, s2exp_tr (loc0, 0(*deep*), s2e))
@@ -916,26 +917,22 @@ end // end of [c3laulst_tr]
 
 absview dyncstsetlst_push_token
 
-extern
-fun the_dyncstset_get
-  (): dyncstset_t = "ats_ccomp_env_the_dyncstset_get"
+extern fun the_dyncstset_get
+  (): dyncstset_t = "atsopt_the_dyncstset_get"
 // end of [extern]
 
-extern
-fun the_dyncstsetlst_push
-  (): (dyncstsetlst_push_token | void)
-  = "ats_ccomp_env_the_dyncstsetlst_push"
-// end of [extern]
+extern fun the_dyncstsetlst_push
+  (): (dyncstsetlst_push_token | void) = "atsopt_the_dyncstsetlst_push"
+// end of [the_dyncstsetlst_push]
 
-extern
-fun the_dyncstsetlst_pop (
+extern fun the_dyncstsetlst_pop (
   pf: dyncstsetlst_push_token | (*none*)
-) : dyncstset_t = "ats_ccomp_env_the_dyncstsetlst_pop"
+) : dyncstset_t = "atsopt_the_dyncstsetlst_pop"
 // end of [extern]
 
 extern // HX: implemented in [ats_ccomp_env.dats]
 fun the_dyncstset_add_if
-  (d2c: d2cst_t): void = "ats_ccomp_env_the_dyncstset_add_if"
+  (d2c: d2cst_t): void = "atsopt_the_dyncstset_add_if"
 // end of [extern]
 
 (* ****** ****** *)
@@ -1009,7 +1006,7 @@ in
       if d3exp_is_proof d3e_val then
         hiexp_empty (loc0, hityp_void)
       else let
-        val () = d2var_count_inc d2v_ptr
+        val () = d2var_inc_count d2v_ptr
         val hils = d3lab1lst_tr (d3ls)
         val hie_val = d3exp_tr d3e_val
       in
@@ -1053,7 +1050,7 @@ in
         print "d3exp_tr: hies_arg = "; print hies_arg; print_newline ()
       end // end of [val]
 *)
-      val hits_arg = hiexplst_typ_get hies_arg
+      val hits_arg = hiexplst_get_type hies_arg
       val hit_sum = hityp_tysumtemp (d2c, hits_arg)
     in
       hiexp_con (loc0, hit0, hit_sum, d2c, hies_arg)
@@ -1225,7 +1222,7 @@ in
     end // end of [D3Eptrof_ptr]
   | D3Eptrof_var (d2v, d3ls) => let
       val hit0 = s2exp_tr (loc0, 0(*deep*), s2e0)
-      val () = d2var_count_inc d2v; val hils = d3lab1lst_tr d3ls
+      val () = d2var_inc_count d2v; val hils = d3lab1lst_tr d3ls
     in
       hiexp_ptrof_var (loc0, hit0, d2v, hils)
     end // end of [D3Eptrof_var]
@@ -1269,7 +1266,7 @@ in
     end // end of [D3Esel_ptr]
   | D3Esel_var (d2v_ptr, d3ls) => let
       val hit0 = s2exp_tr (loc0, 0(*deep*), s2e0)
-      val () = d2var_count_inc d2v_ptr
+      val () = d2var_inc_count d2v_ptr
       val hils = d3lab1lst_tr d3ls
     in
       hiexp_sel_var (loc0, hit0, d2v_ptr, hils)
@@ -1319,7 +1316,7 @@ in
       hiexp_trywith (loc0, hit0, hie, hicls)
     end // end of [D3Etrywith]
   | D3Evar d2v => let
-      val () =  if d2var_isprf_get d2v then begin
+      val () =  if d2var_get_isprf d2v then begin
         prerr_loc_error4 loc0;
         prerr ": the dynamic variable ["; prerr_d2var d2v;
         prerr "] refers to a proof and thus should have been erased.";
@@ -1328,7 +1325,7 @@ in
       end // end of [val]
       val hit0 = s2exp_tr (loc0, 0(*deep*), s2e0)
     in
-      d2var_count_inc d2v; hiexp_var (loc0, hit0, d2v)
+      d2var_inc_count d2v; hiexp_var (loc0, hit0, d2v)
     end // end of [D3Evar]
   | D3Eviewat_assgn_ptr _ => hiexp_empty (loc0, hityp_void)
   | D3Eviewat_assgn_var _ => hiexp_empty (loc0, hityp_void)

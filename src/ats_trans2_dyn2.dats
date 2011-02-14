@@ -103,7 +103,7 @@ end // end of [prerr_loc_interror]
 
 fn dyncstimploc_posmark
   (loc: loc_t, d2c: d2cst_t): void = let
-  val loc_d2c = d2cst_loc_get (d2c)
+  val loc_d2c = d2cst_get_loc (d2c)
   val loc_begoff = $Loc.location_begpos_toff loc
   val () = $PM.posmark_insert_dyncstimp_beg (loc_begoff, loc_d2c)
   val loc_endoff = $Loc.location_endpos_toff loc
@@ -156,7 +156,7 @@ fn c1lassdec_tr
   val () = case+ sup of
     | Some s1e => let
         val s2e = s1exp_tr_dn_cls (s1e)
-        val () = s2cst_supcls_add (s2c, s2e)
+        val () = s2cst_add_supcls (s2c, s2e)
       in
         // nothing
       end // end of [Some]
@@ -302,8 +302,8 @@ fn f1undec_tr (
   , d2v: d2var_t
   , d1c: f1undec
   ) : f2undec = let
-  val () = d2var_lev_set (d2v, level)
-  val () = d2var_decarg_set (d2v, decarg)
+  val () = d2var_set_lev (d2v, level)
+  val () = d2var_set_decarg (d2v, decarg)
   val def = d1exp_tr (d1c.f1undec_def)
 (*
   val () = begin
@@ -330,8 +330,8 @@ fn f1undeclst_tr {n:nat} (
       : list (d2var_t, n) = begin case+ d1cs of
       | cons (d1c, d1cs) => let
           val d2v = d2var_make (d1c.f1undec_sym_loc, d1c.f1undec_sym)
-          val () = d2var_isfix_set (d2v, true)
-          val () = d2var_isprf_set (d2v, isprf)
+          val () = d2var_set_isfix (d2v, true)
+          val () = d2var_set_isprf (d2v, isprf)
         in
           cons (d2v, aux1 (isprf, d1cs))
         end
@@ -381,7 +381,7 @@ fn v1ardec_tr (d1c: v1ardec): v2ardec = let
   // [s2v_ptr] is introduced as a static variable of the
   val s2v_ptr = s2var_make_id_srt (sym, s2rt_addr) // same name
   val os2e_ptr = Some (s2exp_var s2v_ptr)
-  val () = d2var_addr_set (d2v_ptr, os2e_ptr)
+  val () = d2var_set_addr (d2v_ptr, os2e_ptr)
   val typ = (case+ d1c.v1ardec_typ of
     | Some s1e => Some (s1exp_tr_dn_impredicative s1e)
     | None () => None ()
@@ -436,9 +436,9 @@ fn s1arglst_bind_svarlst (
     ) : list (s2var_t, n) = case+ s1as of
     | cons (s1a, s1as) => let
         val+ cons (s2v, s2vs) = s2vs
-        val s2v_new = s1arg_var_tr_srt (s1a, s2var_srt_get s2v)
+        val s2v_new = s1arg_var_tr_srt (s1a, s2var_get_srt s2v)
         val () = if
-          ~(s2var_srt_get s2v <= s2var_srt_get s2v_new) then begin
+          ~(s2var_get_srt s2v <= s2var_get_srt s2v_new) then begin
           prerr_loc_error2 s1a.s1arg_loc;
           $Deb.debug_prerrf
             (": %s: s1arglst_bind_svarlst", @(THISFILENAME));
@@ -479,8 +479,9 @@ fn s1explst_bind_svarlst (
     , sub: &stasub_t
     ) : s2explst = begin case+ s1es of
     | cons (s1e, s1es) => let
-        val+ cons (s2v, s2vs) = s2vs; val s2e = s1exp_tr_up (s1e)
-        val s2t_s2v = s2var_srt_get s2v and s2t_s2e = s2e.s2exp_srt
+        val+ cons (s2v, s2vs) = s2vs
+        val s2e = s1exp_tr_up (s1e)
+        val s2t_s2v = s2var_get_srt s2v and s2t_s2e = s2e.s2exp_srt
         val () = if ~(s2t_s2e <= s2t_s2v) then begin
           prerr_loc_error2 s1e.s1exp_loc;
           $Deb.debug_prerrf (": %s: s1explst_bind_svarlst", @(THISFILENAME));
@@ -685,7 +686,7 @@ fn m1acdef_tr
   (knd: int, d2m: d2mac_t, d1c: m1acdef): void = let
   val loc = d1c.m1acdef_loc and name = d1c.m1acdef_sym
   val (pf_d2expenv | ()) = the_d2expenv_push ()
-  val () = aux (d2mac_arglst_get d2m) where {
+  val () = aux (d2mac_get_arglst d2m) where {
     fun aux (args: macarglst): void = begin case+ args of
       | cons (arg, args) => let
           val () = case+ arg of
@@ -703,7 +704,7 @@ fn m1acdef_tr
   val () = if knd > 0 then macro_level_inc (loc)
   val () = macdef_dec ()
   val () = the_d2expenv_pop (pf_d2expenv | (*none*))
-  val () = d2mac_def_set (d2m, def)
+  val () = d2mac_set_def (d2m, def)
 in
   // empty
 end // end of [m1acdef_tr]
@@ -740,7 +741,7 @@ fun m1acdeflst_tr (knd: int, d1cs: m1acdeflst): void = let
     : void = begin case+ d2ms of
     | cons (d2m, d2ms) => let
         val+ cons (d1c, d1cs) = d1cs
-        val knd = d2mac_kind_get (d2m)
+        val knd = d2mac_get_kind (d2m)
       in
         m1acdef_tr (knd, d2m, d1c);
         // [knd <= 1] : non-recursive
@@ -796,7 +797,7 @@ fn i1mpdec_tr_d2cst_select
     :<cloptr1> d2cstlst_vt = begin case+ d2is of
     | list_cons (d2i, d2is) => begin case+ d2i of
       | D2ITEMcst d2c => let
-          val ns = d2cst_arilst_get (d2c)
+          val ns = d2cst_get_arilst (d2c)
           val ismat = d1exp_arity_check (d1c.i1mpdec_def, ns)
         in 
           if (ismat) then list_vt_cons (d2c, aux d2is) else aux d2is
@@ -984,7 +985,7 @@ fn i1mpdec_tr
       end // end of [nil]
   end // end of [aux2_tmp]
   val loc_id = qid.impqi0de_loc
-  val decarg = d2cst_decarg_get d2c and s2e_d2c = d2cst_typ_get d2c
+  val decarg = d2cst_get_decarg d2c and s2e_d2c = d2cst_get_typ d2c
   val () = begin case+ decarg of
     | cons _ => begin case+ (i1mparg, t1mparg) of
       | (nil (), nil ()) => begin
@@ -1019,7 +1020,7 @@ fn i1mpdec_tr
 // val out_imp = $Lst.list_reverse (out_imp) // HX: a serious bug!!!
 *)
   val out_imp = s2qualst_reverse (out_imp)
-  val () = s2qualst_tmplev_set (out_imp, template_level_get ())
+  val () = s2qualst_set_tmplev (out_imp, template_level_get ())
   val out_tmparg = $Lst.list_reverse (out_tmparg: s2explstlst)
   val out_tmpgua = $Lst.list_reverse (out_tmpgua: s2explstlst)
   val s2e = s2exp_whnf (s2e)
@@ -1028,7 +1029,7 @@ fn i1mpdec_tr
     case+ decarg of cons _ => template_level_dec () | nil _ => ()
   end // end of [val]
   val () = the_s2expenv_pop (pf_s2expenv | (*none*))
-  val () = d2cst_def_set (d2c, Some d2e)
+  val () = d2cst_set_def (d2c, Some d2e)
 in
   i2mpdec_make (
     d1c.i1mpdec_loc, loc_id, d2c, out_imp, out_tmparg, out_tmpgua, d2e
@@ -1231,7 +1232,7 @@ d1ec_tr (d1c0) = begin
         case+ decarg of cons _ => template_level_inc () | nil _ => ()
       end // end of [val]
       val s2vpss = s1qualstlst_tr (decarg)
-      val () = s2qualst_tmplev_set (s2vpss, template_level_get ())
+      val () = s2qualst_set_tmplev (s2vpss, template_level_get ())
       val level = d2var_current_level_get ()
       val d2cs = f1undeclst_tr (funknd, level, s2vpss, d1cs)
       val () = the_s2expenv_pop (pf_s2expenv | (*none*))

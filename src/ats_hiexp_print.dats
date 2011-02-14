@@ -587,6 +587,11 @@ in
     end // end of [HIEvar]
 end // end of [fprint_hiexp]
 
+implement print_hiexp (hie) = print_mac (fprint_hiexp, hie)
+implement prerr_hiexp (hie) = prerr_mac (fprint_hiexp, hie)
+
+(* ****** ****** *)
+
 implement
 fprint_hiexplst {m}
   (pf | out, hies0) = let
@@ -603,6 +608,13 @@ fprint_hiexplst {m}
 in
   aux (out, 0, hies0)
 end // end of [fprint_hiexplst]
+
+implement
+print_hiexplst (hies) = print_mac (fprint_hiexplst, hies)
+implement
+prerr_hiexplst (hies) = prerr_mac (fprint_hiexplst, hies)
+
+(* ****** ****** *)
 
 implement
 fprint_hiexplstlst {m}
@@ -674,29 +686,15 @@ end // end of [fprint_hilablst]
 (* ****** ****** *)
 
 implement
-print_hiexp (hie) = print_mac (fprint_hiexp, hie)
-implement
-prerr_hiexp (hie) = prerr_mac (fprint_hiexp, hie)
-
-implement
-print_hiexplst (hies) = print_mac (fprint_hiexplst, hies)
-implement
-prerr_hiexplst (hies) = prerr_mac (fprint_hiexplst, hies)
-
-(* ****** ****** *)
-
-implement
 fprint_vartyp (pf | out, vtp) = begin
-  fprint_d2var (pf | out, vartyp_var_get vtp);
+  fprint_d2var (pf | out, vartyp_get_var vtp);
   fprint1_string (pf | out, "(");
-  fprint_hityp (pf | out, hityp_decode (vartyp_typ_get vtp));
+  fprint_hityp (pf | out, hityp_decode (vartyp_get_typ vtp));
   fprint1_string (pf | out, ")")
 end // end of [fprint_vartyp]
 
-implement
-print_vartyp (vtp) = print_mac (fprint_vartyp, vtp)
-implement
-prerr_vartyp (vtp) = prerr_mac (fprint_vartyp, vtp)
+implement print_vartyp (vtp) = print_mac (fprint_vartyp, vtp)
+implement prerr_vartyp (vtp) = prerr_mac (fprint_vartyp, vtp)
 
 (* ****** ****** *)
 

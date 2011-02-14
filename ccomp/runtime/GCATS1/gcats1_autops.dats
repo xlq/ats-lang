@@ -44,7 +44,7 @@ staload "gcats1.sats"
 
 (* ****** ****** *)
 
-#define ATSCCOMP_NAMESPACE "gcats1_autops_"
+#define ATSOPT_NAMESPACE "gcats1_autops_"
 
 (* ****** ****** *)
 

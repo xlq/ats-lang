@@ -30,10 +30,10 @@
 *)
 
 (* ****** ****** *)
-
+//
 // Author: Hongwei Xi (hwxi AT cs DOT bu DOT edu)
 // Time: July 2007
-
+//
 (* ****** ****** *)
 
 (* ats_global: handling some global variables *)
@@ -88,18 +88,18 @@ atsopt_dynloadfun_name_set
 
 static
 ats_ptr_type
-the_atsccomp_namespace = (ats_ptr_type)0 ;
+the_atsopt_namespace = (ats_ptr_type)0 ;
 
 ats_ptr_type
-atsccomp_namespace_get
-  () { return the_atsccomp_namespace ; }
-// end of [atsccomp_namespace_get]
+atsopt_namespace_get
+  () { return the_atsopt_namespace ; }
+// end of [atsopt_namespace_get]
 
 ats_void_type
-atsccomp_namespace_set
+atsopt_namespace_set
   (ats_ptr_type prfx) {
-  the_atsccomp_namespace = prfx ; return ;
-} // end of [atsccomp_namespace_set]
+  the_atsopt_namespace = prfx ; return ;
+} // end of [atsopt_namespace_set]
 
 %} // end of [%{$]
 
@@ -110,7 +110,7 @@ atsccomp_namespace_set
 ats_void_type
 atsopt_global_initialize () {
   ATS_GC_MARKROOT (&the_dynloadfun_name, sizeof(ats_ptr_type)) ;
-  ATS_GC_MARKROOT (&the_atsccomp_namespace, sizeof(ats_ptr_type)) ;
+  ATS_GC_MARKROOT (&the_atsopt_namespace, sizeof(ats_ptr_type)) ;
   return ;
 } // end of [atsopt_global_initialize]
 

@@ -170,9 +170,9 @@ in // in of [let]
   (pfbox | p)
 end // end of [s2rtdat_make]
 
-implement s2rtdat_sym_get (s2td) =
+implement s2rtdat_get_sym (s2td) =
   let val (vbox pf | p) = s2td in p->s2rtdat_sym end
-// end of [s2rtdat_sym_get]
+// end of [s2rtdat_get_sym]
 
 implement s2rtdat_conlst_get (s2td) =
   let val (vbox pf | p) = s2td in p->s2rtdat_conlst end
@@ -182,9 +182,9 @@ implement s2rtdat_conlst_set (s2td, s2cs) =
   let val (vbox pf | p) = s2td in p->s2rtdat_conlst := s2cs end
 // end of [s2rtdat_conlst_set]
 
-implement s2rtdat_stamp_get (s2td) =
+implement s2rtdat_get_stamp (s2td) =
   let val (vbox pf | p) = s2td in p->s2rtdat_stamp end
-// end of [s2rtdat_stamp_get]
+// end of [s2rtdat_get_stamp]
 
 implement eq_s2rtdat_s2rtdat (s2td1, s2td2) = let
   val stamp1 =
@@ -283,7 +283,7 @@ implement s2exp_crypt (s2e) = '{
 } // end of [s2exp_crypt]
 
 implement s2exp_cst (s2c) = '{
-  s2exp_srt= s2cst_srt_get s2c, s2exp_node= S2Ecst s2c
+  s2exp_srt= s2cst_get_srt s2c, s2exp_node= S2Ecst s2c
 } // end of [s2exp_cst]
 
 (* ****** ****** *)
@@ -291,7 +291,7 @@ implement s2exp_cst (s2c) = '{
 implement
 s2exp_cstapp
   (s2c_fun, s2es_arg) = let
-  val s2t_fun = s2cst_srt_get s2c_fun
+  val s2t_fun = s2cst_get_srt s2c_fun
   and s2e_fun = s2exp_cst s2c_fun
 in
   case+ un_s2rt_fun s2t_fun of
@@ -313,7 +313,7 @@ end // end of [s2exp_cstapp]
 
 implement
 s2exp_datconptr (d2c, s2es_arg) = let
-  val arity_real = d2con_arity_real_get d2c; val s2t =
+  val arity_real = d2con_get_arity_real d2c; val s2t =
     (if arity_real > 0 then s2rt_viewtype else s2rt_type): s2rt
 in '{
   s2exp_srt= s2t, s2exp_node= S2Edatconptr (d2c, s2es_arg)
@@ -498,12 +498,12 @@ s2exp_union_srt (s2t, stamp, s2i, ls2es) = '{
 
 implement
 s2exp_Var (s2V) = '{
-  s2exp_srt= s2Var_srt_get s2V, s2exp_node= S2EVar s2V
+  s2exp_srt= s2Var_get_srt s2V, s2exp_node= S2EVar s2V
 } // end of [s2exp_Var]
 
 implement
 s2exp_var (s2v) = '{
-  s2exp_srt= s2var_srt_get s2v, s2exp_node= S2Evar s2v
+  s2exp_srt= s2var_get_srt s2v, s2exp_node= S2Evar s2v
 } // end of [s2exp_var]
 
 implement
@@ -540,10 +540,10 @@ extern typedef "s2exp_t" = s2exp
 %{$
 //
 ats_void_type
-atsopt_s2exp_srt_set
+atsopt_s2exp_set_srt
   (ats_ptr_type s2e, ats_ptr_type s2t) {
   ((s2exp_t)s2e)->atslab_s2exp_srt = s2t ; return ;
-} /* end of [atsopt_s2exp_srt_set] */
+} /* end of [atsopt_s2exp_set_srt] */
 //
 ats_bool_type
 atsopt_eqref_s2exp_s2exp

@@ -30,10 +30,10 @@
 *)
 
 (* ****** ****** *)
-
+//
 // Author: Hongwei Xi (hwxi AT cs DOT bu DOT edu)
 // Time: June 2008
-
+//
 (* ****** ****** *)
 
 // the code handles accumulation of global roots for GC
@@ -48,7 +48,7 @@ staload "gcats1.sats"
 
 (* ****** ****** *)
 
-#define ATSCCOMP_NAMESPACE "gcats1_globalentry_"
+#define ATSOPT_NAMESPACE "gcats1_globalentry_"
 
 (* ****** ****** *)
 

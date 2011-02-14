@@ -40,12 +40,12 @@
 
 (* ****** ****** *)
 
-fun atsccomp_namespace_get
-  (): Stropt = "atsccomp_namespace_get"
+fun atsopt_namespace_get
+  (): Stropt = "atsopt_namespace_get"
 // end of ...
 
-fun atsccomp_namespace_set
-  (prfx: Stropt): void = "atsccomp_namespace_set"
+fun atsopt_namespace_set
+  (prfx: Stropt): void = "atsopt_namespace_set"
 // end of ...
 
 (* ****** ****** *)

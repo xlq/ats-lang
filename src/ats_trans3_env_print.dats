@@ -63,11 +63,13 @@ in
   | S3ITEMsVar s2V => let
       val () = prstr "S3ITEMsVar("
       val () = fprint_s2Var (pf | out, s2V)
-      val () = case+ s2Var_link_get (s2V) of
+      val () = (
+        case+ s2Var_get_link (s2V) of
         | Some s2e => begin
             prstr "= "; fprint_s2exp (pf | out, s2e)
-          end
-        | None () => ()
+          end // end of [Some]
+        | None () => () // end of [None]
+      ) : void // end of [val]
       val () = prstr ")"
     in
       // empty

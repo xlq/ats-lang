@@ -108,17 +108,21 @@ assume d2varlstord_t = d2varlst
 
 (* ****** ****** *)
 
-fn s2var_sym_lt (s2v1: s2var_t, s2v2: s2var_t): bool =
-  s2var_sym_get s2v1 < s2var_sym_get s2v2
+fn s2var_sym_lt
+  (s2v1: s2var_t, s2v2: s2var_t): bool =
+  s2var_get_sym s2v1 < s2var_get_sym s2v2
 
-fn s2var_sym_lte (s2v1: s2var_t, s2v2: s2var_t): bool =
-  s2var_sym_get s2v1 <= s2var_sym_get s2v2
+fn s2var_sym_lte
+  (s2v1: s2var_t, s2v2: s2var_t): bool =
+  s2var_get_sym s2v1 <= s2var_get_sym s2v2
 
-fn d2var_sym_lt (d2v1: d2var_t, d2v2: d2var_t): bool =
-  d2var_sym_get d2v1 < d2var_sym_get d2v2
+fn d2var_sym_lt
+  (d2v1: d2var_t, d2v2: d2var_t): bool =
+  d2var_get_sym d2v1 < d2var_get_sym d2v2
 
-fn d2var_sym_lte (d2v1: d2var_t, d2v2: d2var_t): bool =
-  d2var_sym_get d2v1 <= d2var_sym_get d2v2
+fn d2var_sym_lte
+  (d2v1: d2var_t, d2v2: d2var_t): bool =
+  d2var_get_sym d2v1 <= d2var_get_sym d2v2
 
 (* ****** ****** *)
 
@@ -1108,12 +1112,14 @@ loopi2nv_make (
 
 local
 
-fn i2nvarg_update (arg: i2nvarg): i2nvarg = let
+fn i2nvarg_update (
+  arg: i2nvarg
+) : i2nvarg = let
   val d2v = arg.i2nvarg_var
 in
-  case+ d2var_view_get d2v of
+  case+ d2var_get_view d2v of
   | D2VAROPTsome d2v_view => let
-      val s2e_addr = (case+ d2var_addr_get d2v of
+      val s2e_addr = (case+ d2var_get_addr d2v of
         | Some s2e_addr => s2e_addr
         | None => begin
             prerr_interror ();
@@ -1131,7 +1137,7 @@ in
   | D2VAROPTnone () => arg
 end (* end of [i2nvarg_update] *)
 
-in
+in // in of [local]
 
 implement
 i2nvresstate_update (res) = let

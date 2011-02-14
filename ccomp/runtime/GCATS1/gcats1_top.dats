@@ -30,17 +30,17 @@
 *)
 
 (* ****** ****** *)
-
+//
 // Author: Hongwei Xi (hwxi AT cs DOT bu DOT edu)
 // Time: June 2008
-
+//
 (* ****** ****** *)
 
 #include "prelude/params.hats"
 
 (* ****** ****** *)
 
-#define ATSCCOMP_NAMESPACE "gcats1_top_"
+#define ATSOPT_NAMESPACE "gcats1_top_"
 
 (* ****** ****** *)
 

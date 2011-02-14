@@ -268,8 +268,9 @@ fun hipatlst_is_unused (hips: hipatlst): bool
 
 (* ****** ****** *)
 
-fun hipat_asvar_set (hip: hipat, od2v: d2varopt): void
-  = "ats_hiexp_hipat_asvar_set"
+fun hipat_set_asvar
+  (hip: hipat, od2v: d2varopt): void = "atsopt_hipat_set_asvar"
+// end of [hipat_set_asvar]
 
 (* ****** ****** *)
 
@@ -784,7 +785,7 @@ fun hityp_decode (hit: hityp_t): hityp
 val hityp_t_ptr: hityp_t
 val hityp_t_void: hityp_t
 fun hityp_t_s2var (s2v: s2var_t): hityp_t
-fun hityp_t_name_get (hit: hityp_t): hityp_name
+fun hityp_t_get_name (hit: hityp_t): hityp_name
 
 fun hityp_t_is_void (hit: hityp_t): bool
 fun hityp_t_fun_is_void (hit: hityp_t): bool
@@ -811,11 +812,11 @@ fun prerr_hityp_t (hit: hityp_t): void
 
 //
 
-fun d2cst_hityp_get (_: d2cst_t): Option (hityp_t)
-fun d2cst_hityp_set (_: d2cst_t, _: Option hityp_t): void
-  = "ats_dynexp2_d2cst_hityp_set"
+fun d2cst_get_hityp (_: d2cst_t): Option (hityp_t)
+fun d2cst_set_hityp (_: d2cst_t, _: Option hityp_t): void
+  = "ats_dynexp2_d2cst_set_hityp"
 
-fun d2cst_hityp_get_some (_: d2cst_t): hityp_t
+fun d2cst_get_hityp_some (_: d2cst_t): hityp_t
 
 (* ****** ****** *)
 
@@ -823,8 +824,8 @@ abstype vartyp_t // boxed type
 
 fun vartyp_make (d2v: d2var_t, hit: hityp_t): vartyp_t
 
-fun vartyp_typ_get (vtp: vartyp_t):<> hityp_t
-fun vartyp_var_get (vtp: vartyp_t):<> d2var_t
+fun vartyp_get_typ (vtp: vartyp_t):<> hityp_t
+fun vartyp_get_var (vtp: vartyp_t):<> d2var_t
 
 fun eq_vartyp_vartyp (_: vartyp_t, _: vartyp_t):<> bool
 overload = with eq_vartyp_vartyp
@@ -871,8 +872,8 @@ abstype tmpdef_t
 
 // implemented in [ats_hiexp_util.dats]
 fun tmpdef_make (decarg: s2qualst, def: hiexp): tmpdef_t
-fun tmpdef_arg_get (def: tmpdef_t): s2qualst
-fun tmpdef_exp_get (def: tmpdef_t): hiexp
+fun tmpdef_get_arg (def: tmpdef_t): s2qualst
+fun tmpdef_get_exp (def: tmpdef_t): hiexp
 
 // implemented in [ats_hiexp_util.dats]
 fun tmpcstmap_add (d2c: d2cst_t, decarg: s2qualst, def: hiexp): void

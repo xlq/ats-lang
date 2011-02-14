@@ -30,10 +30,10 @@
 *)
 
 (* ****** ****** *)
-
+//
 // Author: Hongwei Xi (hwxi AT cs DOT bu DOT edu)
 // Time: January 2008
-
+//
 (* ****** ****** *)
 
 (* Mainly for handling dynamic dereferences during type-checking *)
@@ -94,7 +94,7 @@ in
         print "s2exp_add_slablst_deref; s2ls0_bk = "; print_s2lablst s2ls0_bk; print_newline ();
       end // end of [val]
 *)
-      val () = d2var_typ_reset_at (d2v_view, s2e_vt, s2e_addr)
+      val () = d2var_reset_typ_at (d2v_view, s2e_vt, s2e_addr)
     in
       (s2e_elt, s2ls0_bk)
     end // end of [Some_vt]
