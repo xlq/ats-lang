@@ -35,18 +35,82 @@
 // Time: July 2007
 //
 (* ****** ****** *)
-//
-// ats_fixity: for handing prefix, infix and postfix operators
-//
-(* ****** ****** *)
 
-staload Loc = "ats_location.sats"
+staload
+Loc = "ats_location.sats"
 typedef loc_t = $Loc.location_t
 
 (* ****** ****** *)
 
-staload Prec = "ats_fixity_prec.sats"
-typedef prec_t = $Prec.prec_t
+abst@ype prec_t = int (* precedence type *)
+
+(* ****** ****** *)
+
+val neginf_prec : prec_t // lowest legal precedence value
+val posinf_prec : prec_t // highest legal precedence value
+
+(* ****** ****** *)
+
+val app_prec : prec_t
+
+(* ****** ****** *)
+
+val select_prec : prec_t
+
+(* ****** ****** *)
+
+val backslash_prec : prec_t
+val infixtemp_prec : prec_t // for temp infix status
+
+(* ****** ****** *)
+
+val exi_prec_sta : prec_t
+and uni_prec_sta : prec_t
+
+val delay_prec_dyn : prec_t
+
+val dynload_prec_dyn : prec_t
+
+val exist_prec_dyn : prec_t
+
+val ptrof_prec_dyn : prec_t
+
+(* ****** ****** *)
+
+val foldat_prec_dyn : prec_t
+val freeat_prec_dyn : prec_t
+val viewat_prec_dyn : prec_t
+
+(* ****** ****** *)
+
+val invar_prec_sta : prec_t
+
+val qmark_prec_sta : prec_t
+
+val qmarkbang_prec_sta : prec_t
+
+val r0ead_prec_sta : prec_t
+
+val trans_prec_sta : prec_t
+
+(* ****** ****** *)
+
+val crypt_prec_dyn : prec_t
+
+val deref_prec_dyn : prec_t
+
+(* ****** ****** *)
+
+fun int_of_prec (p: prec_t): int
+fun prec_make_int (i: int): prec_t
+
+fun precedence_inc (p: prec_t, i: int): prec_t
+fun precedence_dec (p: prec_t, i: int): prec_t
+
+(* ****** ****** *)
+
+fun compare_prec_prec (p1: prec_t, p2: prec_t): Sgn
+overload compare with compare_prec_prec
 
 (* ****** ****** *)
 
@@ -54,6 +118,10 @@ datatype assoc = ASSOCnon | ASSOClft | ASSOCrgt
 
 (* ****** ****** *)
 
+(*
+// HX-2011-02-13:
+// it is exported mainly for pretty printing
+*)
 datatype fxty =
   | FXTYnon
   | FXTYinf of (prec_t, assoc)
@@ -108,18 +176,16 @@ fun item_app {a:type}
 (* ****** ****** *)
 
 fun oper_make_backslash {a:type} (
-    locf: a -<cloref1> loc_t
-  , appf: (loc_t, a, loc_t, List a) -<cloref1> a
-  ) : item a 
-// end of [oper_make_backslash]
+  locf: a -<cloref1> loc_t
+, appf: (loc_t, a, loc_t, List a) -<cloref1> a
+) : item a  // end of [oper_make_backslash]
 
 fun oper_make {a:type} (
-    locf: a -<cloref1> loc_t
-  , appf: (loc_t, a, loc_t, List a) -<cloref1> a
-  , opr: a
-  , fxty: fxty
-  ) : item a 
-// end of [oper_make]
+  locf: a -<cloref1> loc_t
+, appf: (loc_t, a, loc_t, List a) -<cloref1> a
+, opr: a
+, fxty: fxty
+) : item a // end of [oper_make]
 
 (* ****** ****** *)
 
@@ -129,4 +195,4 @@ fun fixity_resolve {a:type}
 
 (* ****** ****** *)
 
-(* end of [ats_fixity_fxty.sats] *)
+(* end of [ats_fixity.sats] *)

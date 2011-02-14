@@ -46,8 +46,7 @@ staload Sym = "ats_symbol.sats"
 
 (* ****** ****** *)
 
-staload "ats_fixity_prec.sats"
-staload "ats_fixity_fxty.sats"
+staload "ats_fixity.sats"
 
 (* ****** ****** *)
 

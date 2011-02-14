@@ -36,7 +36,7 @@
 //
 (* ****** ****** *)
 
-staload "ats_fixity_prec.sats"
+staload "ats_fixity.sats"
 
 (* ****** ****** *)
 

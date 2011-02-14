@@ -36,12 +36,8 @@
 //
 (* ****** ******* *)
 
-staload
-FX = "ats_fixity_fxty.sats"
-typedef fxty = $FX.fxty
-
-(* ****** ******* *)
-
+staload Fix = "ats_fixity.sats"
+typedef fxty = $Fix.fxty
 staload Sym = "ats_symbol.sats"
 typedef sym_t = $Sym.symbol_t
 

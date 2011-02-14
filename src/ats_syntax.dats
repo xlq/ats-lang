@@ -42,7 +42,7 @@
 
 staload Err = "ats_error.sats"
 staload Fil = "ats_filename.sats"
-staload FX = "ats_fixity_fxty.sats"
+staload Fix = "ats_fixity.sats"
 staload Glo = "ats_global.sats"
 staload Lab = "ats_label.sats"
 staload Lex = "ats_lexer.sats"
@@ -2607,9 +2607,9 @@ in // in of [local]
 implement d0ec_infix (t_infix, p, i, ids) = let
   val loc = aux2_loc (t_infix.t0kn_loc, ids)
   val assoc = (case+ i of 
-    | ~1 => $FX.ASSOClft
-    |  1 => $FX.ASSOCrgt
-    |  _ (*0*) => $FX.ASSOCnon
+    | ~1 => $Fix.ASSOClft
+    |  1 => $Fix.ASSOCrgt
+    |  _ (*0*) => $Fix.ASSOCnon
   ) : assoc // end of [val]
 in '{
   d0ec_loc= loc

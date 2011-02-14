@@ -42,8 +42,8 @@
 
 staload Fil = "ats_filename.sats"
 typedef fil_t = $Fil.filename_t
-staload FX = "ats_fixity_fxty.sats"
-typedef assoc = $FX.assoc
+staload Fix = "ats_fixity.sats"
+typedef assoc = $Fix.assoc
 staload Lab = "ats_label.sats"
 typedef lab_t = $Lab.label_t
 staload Loc = "ats_location.sats"
