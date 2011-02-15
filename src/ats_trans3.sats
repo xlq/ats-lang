@@ -38,6 +38,7 @@
 
 staload
 Loc = "ats_location.sats"
+typedef loc_t = $Loc.location_t
 staload Syn = "ats_syntax.sats"
 typedef funclo = $Syn.funclo
 
@@ -78,6 +79,7 @@ staload "ats_dynexp3.sats"
 
 fun d2exp_funclo_of_d2exp
   (d2e0: d2exp, fc0: &funclo): d2exp
+// end of [d2exp_funclo_of_d2exp]
 
 fun d2exp_s2eff_of_d2exp
   (d2e0: d2exp, s2fe0: &(s2eff?) >> s2eff) : d2exp
@@ -85,8 +87,8 @@ fun d2exp_s2eff_of_d2exp
 
 (* ****** ****** *)
 
-fun d2exp_cstsp_typ_syn (cst: $Syn.cstsp): s2exp
 fun d2exp_seq_typ_syn (d2es: d2explst): s2exp
+fun d2exp_cstsp_typ_syn (cst: $Syn.cstsp): s2exp
 
 (* ****** ****** *)
 
@@ -95,9 +97,9 @@ fun d3explst_open_and_add (d3es: d3explst): void
 
 (* ****** ****** *)
 
-fun d3explstlst_ind_get
+fun d3explstlst_get_ind
   (d3ess: d3explstlst): s2explstlst
-// end of [d3explstlst_ind_get]
+// end of [d3explstlst_get_ind]
 
 (* ****** ****** *)
 
@@ -114,65 +116,61 @@ fun p2atlst_arg_tr_dn {n:nat}
   (npf: int, _: p2atlst n, _: s2explst n): p3atlst n
 
 (* ****** ****** *)
+//
+// HX: implemented in [ats_trans3_assgn.dats]
+//
+fun s2exp_addr_assgn_slablst (
+  loc0: loc_t, s2e0: s2exp, s2ls: s2lablst, _new: s2exp
+) : s2lablst // end of [s2exp_addr_assgn_slablst]
 
-// implemented in [ats_trans3_assgn.dats]
+fun d2var_mut_assgn_slablst (
+  loc0: loc_t, d2v: d2var_t, s2ls: s2lablst, _new: s2exp
+) : s2lablst // end of [d2var_mut_assgn_slablst]
 
-fun s2exp_addr_slablst_assgn (
-  loc0: $Loc.location_t
-, s2e0: s2exp, s2ls: s2lablst, _new: s2exp
-) : s2lablst
+fun d2var_lin_assgn_slablst {n:nat} (
+  loc0: loc_t, d2v: d2var_t, s2ls: list (s2lab, n), _new: s2exp
+) : list (s2lab, n) // end of [d2var_lin_assgn_slablst]
 
-fun d2var_mut_slablst_assgn (
-  loc0: $Loc.location_t
-, d2v: d2var_t, s2ls: s2lablst, _new: s2exp
-) : s2lablst
-
-fun d2var_lin_slablst_assgn {n:nat} (
-  loc0: $Loc.location_t
-, d2v: d2var_t, s2ls: list (s2lab, n), _new: s2exp
-) : list (s2lab, n)
-
-// implemented in [ats_trans3_deref.dats]
-
-fun s2exp_addr_slablst_deref (
-  loc0: $Loc.location_t, s2e0: s2exp, s2ls: s2lablst
+(* ****** ****** *)
+//
+// HX: implemented in [ats_trans3_deref.dats]
+//
+fun s2exp_addr_deref_slablst (
+  loc0: loc_t, s2e0: s2exp, s2ls: s2lablst
 ) : (s2exp(*result*), s2lablst)
 
-// implemented in [ats_trans3_view.dats]
+(* ****** ****** *)
+//
+// HX: implemented in [ats_trans3_view.dats]
+//
+fun s2exp_addr_viewat_try_slablst (
+  loc0: loc_t, s2e0: s2exp, s2ls: s2lablst
+) : s2lablst // end of [s2exp_addr_viewat_try_slablst]
 
-fun s2exp_addr_viewat_slablst_try (
-  loc0: $Loc.location_t, s2e0: s2exp, s2ls: s2lablst
-) : s2lablst
-
-fun s2exp_addr_viewat_slablst_get (
-  loc0: $Loc.location_t, s2e0: s2exp, s2ls: s2lablst
+fun s2exp_addr_viewat_get_slablst (
+  loc0: loc_t, s2e0: s2exp, s2ls: s2lablst
 ) : (
   s2exp // result
 , s2lablst // path
 , d2var_t // viewroot
 , s2lablst // viewpath
-) // end of [s2exp_addr_viewat_slablst_get]
+) // end of [s2exp_addr_viewat_get_slablst]
 
-fun s2exp_addr_viewat_slablst_set (
-  loc0: $Loc.location_t
-, s2e0: s2exp, s2ls: s2lablst, s2e_new_at: s2exp
-) : s2lablst
+fun s2exp_addr_viewat_set_slablst (
+  loc0: loc_t, s2e0: s2exp, s2ls: s2lablst, s2e_new_at: s2exp
+) : s2lablst // end of [s2exp_addr_viewat_set_slablst]
 
 (* ****** ****** *)
 
-fun d3exp_lval_typ_set (
-  loc0: $Loc.location_t
-, refval: int
-, d3e0: d3exp
-, s2e: s2exp
-, err: &int
-) : void // end of [d3exp_lval_typ_set]
+fun d3exp_lval_set_typ (
+  loc0: loc_t, refval: int, d3e0: d3exp, s2e: s2exp, err: &int
+) : void // end of [d3exp_lval_set_typ]
 
-fun d3exp_lval_typ_set_arg
+fun d3exp_lval_set_typ_arg
   (refval: int, d3e0: d3exp, s2e: s2exp): int (*freeknd*)
-// end of [d3exp_lval_typ_set_arg]
+// end of [d3exp_lval_set_typ_arg]
 
-fun d3exp_lval_typ_set_pat (d3e0: d3exp, p3t: p3at): void
+fun d3exp_lval_set_typ_pat (d3e0: d3exp, p3t: p3at): void
 
 (* ****** ****** *)
 
@@ -184,14 +182,14 @@ fun d2exp_tr_up (_: d2exp): d3exp
 fun d2explst_tr_up {n:nat} (_: d2explst n): d3explst n
 fun d2explstlst_tr_up (_: d2explstlst): d3explstlst
 
-fun d2exp_cst_tr_up (_: $Loc.location_t, d2c: d2cst_t): d3exp
-fun d2exp_var_tr_up (_: $Loc.location_t, d2v: d2var_t): d3exp
+fun d2exp_cst_tr_up (_: loc_t, d2c: d2cst_t): d3exp
+fun d2exp_var_tr_up (_: loc_t, d2v: d2var_t): d3exp
 
 // 0/1: break/continue
-fun d2exp_loopexn_tr_up (_: $Loc.location_t, i: int): d3exp
+fun d2exp_loopexn_tr_up (_: loc_t, i: int): d3exp
 
 fun d2exp_loop_tr_up (
-  _: $Loc.location_t
+  _: loc_t
 , _inv: $DEXP2.loopi2nv
 , _init: d2expopt
 , _test: d2exp
@@ -202,14 +200,14 @@ fun d2exp_loop_tr_up (
 (* ****** ****** *)
 
 fun assert_bool_tr_dn
-  (loc: $Loc.location_t, b: bool, s2e: s2exp): void
+  (loc: loc_t, b: bool, s2e: s2exp): void
 // end of [assert_bool_tr_dn]
 
 fun d2exp_tr_dn (_: d2exp, _: s2exp): d3exp
 fun d2exp_tr_dn_rest (_: d2exp, _: s2exp): d3exp
 
 fun d2exp_if_tr_dn (
-  loc0: $Loc.location_t
+  loc0: loc_t
 , res: $DEXP2.i2nvresstate
 , d2e_cond: d2exp
 , d2e_then: d2exp
@@ -219,7 +217,7 @@ fun d2exp_if_tr_dn (
 
 fun d2exp_caseof_tr_dn
   {n:nat} (
-  loc: $Loc.location_t
+  loc: loc_t
 , casknd: int
 , res: $DEXP2.i2nvresstate
 , n: int n
@@ -229,7 +227,7 @@ fun d2exp_caseof_tr_dn
 ) : d3exp // end of [d2exp_caseof_tr_dn]
 
 fun d2exp_sif_tr_dn (
-  loc0: $Loc.location_t
+  loc0: loc_t
 , res: $DEXP2.i2nvresstate
 , s2p_cond: s2exp
 , d2e_then: d2exp
@@ -238,7 +236,7 @@ fun d2exp_sif_tr_dn (
 ) : d3exp // end of [d2exp_sif_tr_dn]
 
 fun d2exp_scaseof_tr_dn (
-  loc0: $Loc.location_t
+  loc0: loc_t
 , res: $DEXP2.i2nvresstate
 , s2e_val: s2exp
 , sc2ls: $DEXP2.sc2laulst
@@ -266,7 +264,7 @@ fun c2lau_tr_dn
 
 fun c2laulst_tr_dn
   {n:nat} (
-  loc0: $Loc.location_t
+  loc0: loc_t
 , cmplt: &int
 , casknd: int
 , res: $DEXP2.i2nvresstate
@@ -281,7 +279,7 @@ fun c2laulst_tr_dn
 
 fun d2ec_tr (_: $DEXP2.d2ec): d3ec
 fun d2eclst_tr (_: $DEXP2.d2eclst): d3eclst
-fun c3str_final_get (): $TRENV3.c3str
+fun c3str_get_final (): $TRENV3.c3str
 
 (* ****** ****** *)
 

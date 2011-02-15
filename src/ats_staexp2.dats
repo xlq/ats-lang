@@ -174,13 +174,13 @@ implement s2rtdat_get_sym (s2td) =
   let val (vbox pf | p) = s2td in p->s2rtdat_sym end
 // end of [s2rtdat_get_sym]
 
-implement s2rtdat_conlst_get (s2td) =
+implement s2rtdat_get_conlst (s2td) =
   let val (vbox pf | p) = s2td in p->s2rtdat_conlst end
-// end of [s2rtdat_conlst_get]
+// end of [s2rtdat_conlst]
 
-implement s2rtdat_conlst_set (s2td, s2cs) =
+implement s2rtdat_set_conlst (s2td, s2cs) =
   let val (vbox pf | p) = s2td in p->s2rtdat_conlst := s2cs end
-// end of [s2rtdat_conlst_set]
+// end of [s2rtdat_conlst]
 
 implement s2rtdat_get_stamp (s2td) =
   let val (vbox pf | p) = s2td in p->s2rtdat_stamp end

@@ -52,8 +52,8 @@ fun label_make_int (i: int): label_t
 fun label_make_string (str: string): label_t
 fun label_make_sym (sym: symbol_t): label_t
 
-fun label_int_get (l: label_t): Option_vt int
-fun label_sym_get (l: label_t): Option_vt symbol_t
+fun label_get_int (l: label_t): Option_vt int
+fun label_get_sym (l: label_t): Option_vt symbol_t
 
 (* ****** ****** *)
 

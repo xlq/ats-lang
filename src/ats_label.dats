@@ -59,13 +59,13 @@ implement label_make_sym s = LABsym s
 
 (* ****** ****** *)
 
-implement label_sym_get (l) = case+ l of
+implement label_get_sym (l) = case+ l of
   | LABsym s => Some_vt s | LABint _ => None_vt ()
-// end of [label_sym_get]
+// end of [label_get_sym]
  
-implement label_int_get (l) = case+ l of
+implement label_get_int (l) = case+ l of
   | LABint i => Some_vt i | LABsym _ => None_vt ()
-// end of [label_int_get]
+// end of [label_get_int]
 
 (* ****** ****** *)
 

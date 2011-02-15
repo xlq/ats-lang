@@ -76,7 +76,8 @@ stbefitem_make (d2v, lin) = let
   stbefitem_var= d2v, stbefitem_lin= lin, stbefitem_typ= os2e
 } end // end of [stbefitem_make]
 
-implement stbefitemlst_restore_typ (sbis) = let
+implement
+stbefitemlst_restore_typ (sbis) = let
   fun loop (sbis: stbefitemlst): void = case+ sbis of
     | list_cons (sbi, sbis) => let
         val d2v = sbi.stbefitem_var
@@ -90,7 +91,8 @@ in
   loop (sbis)
 end // end of [stbefitemlst_restore_typ]
 
-implement stbefitemlst_restore_lin_typ (sbis) = let
+implement
+stbefitemlst_restore_lin_typ (sbis) = let
   fun loop (sbis: stbefitemlst): void = case+ sbis of
     | list_cons (sbi, sbis) => let
         val d2v = sbi.stbefitem_var
@@ -111,9 +113,9 @@ datatype saityp =
   | SAITYPsome of (loc_t, s2exp) | SAITYPnone of loc_t
 typedef saityplst = List saityp
 
-fn saityp_loc_get (x: saityp): loc_t = case+ x of
+fn saityp_get_loc (x: saityp): loc_t = case+ x of
   | SAITYPsome (loc, _) => loc | SAITYPnone loc => loc
-// end of [saityp_loc_get]
+// end of [saityp_get_loc]
 
 fun print_saityp (x: saityp): void =
   case+ x of
@@ -168,7 +170,7 @@ in
   | (list_nil _, _) => 0
   | (_, list_nil _) => 1
   | (list_cons (x1, _), list_cons (x2, _)) => let
-      val loc1 = saityp_loc_get x1 and loc2 = saityp_loc_get x2
+      val loc1 = saityp_get_loc x1 and loc2 = saityp_get_loc x2
     in
       if $Loc.lte_location_location (loc1, loc2) then begin
         errmsg (d2v, x1); errmsg (d2v, x2); $Err.abort {int} ()
@@ -363,21 +365,21 @@ implement staftscstr_stbefitemlst_merge_skipmetck
 
 (* ****** ****** *)
 
-fun i2nvarglst_d2var_find
+fun i2nvarglst_find_d2var
   (args: i2nvarglst, d2v: d2var_t): Option_vt i2nvarg = let
 (*
   val () = begin
-    print "i2nvarglst_d2var_find: d2v = "; print d2v; print_newline ()
+    print "i2nvarglst_find_d2var: d2v = "; print d2v; print_newline ()
   end // end of [val]
 *)
 in
   case+ args of
   | list_cons (arg, args) => begin
       if eq_d2var_d2var (arg.i2nvarg_var, d2v) then Some_vt arg
-      else i2nvarglst_d2var_find (args, d2v)
+      else i2nvarglst_find_d2var (args, d2v)
     end // end of [list_cons]
   | list_nil () => None_vt ()
-end // end [i2nvarlst_d2var_find]
+end // end [i2nvarlst_find_d2var]
 
 (* ****** ****** *)
 
@@ -392,7 +394,7 @@ fn aux_find (
   , args: i2nvarglst
   , d2v: d2var_t
   ) : Option_vt (s2expopt) = let
-  val ans = i2nvarglst_d2var_find (args, d2v)
+  val ans = i2nvarglst_find_d2var (args, d2v)
 in
   case+ ans of
   | ~Some_vt arg => let
@@ -599,7 +601,7 @@ fun aux_find (
     args: i2nvarglst
   , d2v: d2var_t
   ) : Option_vt (s2expopt) = let
-  val ans = i2nvarglst_d2var_find (args, d2v)
+  val ans = i2nvarglst_find_d2var (args, d2v)
 in
   case+ ans of
   | ~Some_vt arg => Some_vt (arg.i2nvarg_typ)

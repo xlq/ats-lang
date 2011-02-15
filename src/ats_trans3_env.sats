@@ -470,10 +470,11 @@ absview lamloop_env_token
 //
 datatype lamloop =
   | LMLPlam of p3atlst (* function arguments *)
-  | LMLPloop0 
+  | LMLPloop0 of ()
   | {n:nat} LMLPloop1 of (* sbis, sac_init, sac_exit *)
       (stbefitemlst n, staftscstr_t n, staftscstr_t n, d2expopt)
-  | LMLPnone
+  | LMLPnone of ()
+// end of [lamloop]
 
 fun the_lamloop_env_top (): lamloop
 
@@ -481,7 +482,8 @@ fun the_lamloop_env_pop (pf: lamloop_env_token | (*none*)): void
 
 fun the_lamloop_env_push_lam (arg: p3atlst): (lamloop_env_token | void)
 
-fun the_lamloop_env_push_loop0 () : (lamloop_env_token | void)
+fun the_lamloop_env_push_loop0
+  () : (lamloop_env_token | void)
 fun the_lamloop_env_push_loop1 {n:nat} (
     sbis: stbefitemlst n
   , sac_init: staftscstr_t n

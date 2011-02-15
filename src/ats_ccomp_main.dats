@@ -1170,21 +1170,21 @@ end // end of [emit_extcodelst]
 (* ****** ****** *)
 
 fn main_void_is_implemented (): bool = let
-  val d2c = $SDC.d2cstref_cst_get ($SDC.Ats_main_void)
+  val d2c = $SDC.d2cstref_get_cst ($SDC.Ats_main_void)
 in
   case+ the_topcstctx_find (d2c) of
   | ~Some_vt _ => true | ~None_vt () => false
 end // end of [main_void_is_implemented]
 
 fn main_argc_argv_is_implemented (): bool = let
-  val d2c = $SDC.d2cstref_cst_get ($SDC.Ats_main_argc_argv)
+  val d2c = $SDC.d2cstref_get_cst ($SDC.Ats_main_argc_argv)
 in
   case+ the_topcstctx_find (d2c) of
   | ~Some_vt _ => true | ~None_vt () => false
 end // end of [main_argc_argv_is_implemented]
 
 fn main_dummy_is_implemented (): bool = let
-  val d2c = $SDC.d2cstref_cst_get ($SDC.Ats_main_dummy)
+  val d2c = $SDC.d2cstref_get_cst ($SDC.Ats_main_dummy)
 in
   case+ the_topcstctx_find (d2c) of
   | ~Some_vt _ => true | ~None_vt () => false

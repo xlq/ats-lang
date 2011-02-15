@@ -1271,7 +1271,7 @@ fn sc2laulst_covercheck
         $Err.abort {s2rtdat_t} ()
       end // end of [_]
   ) : s2rtdat_t // end of [val]
-  val s2cs = s2rtdat_conlst_get (s2tdat_pat)
+  val s2cs = s2rtdat_get_conlst (s2tdat_pat)
   val ns2cs = s2cstlst_length (s2cs)
   val (pf_gc, pf_arr | A) = $Arr.array_ptr_make_elt<int> (ns2cs, 0)
   val () = check (pf_arr | A, ns2cs, sc2ls) where {

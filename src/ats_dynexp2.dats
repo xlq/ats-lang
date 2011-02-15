@@ -1400,18 +1400,18 @@ extern typedef "d2exp_t" = d2exp
 %{$
 
 ats_void_type
-ats_dynexp2_p2at_typ_set (
+atsopt_p2at_set_typ (
   ats_ptr_type p2t, ats_ptr_type os2e
 ) {
   ((p2at_t)p2t)->atslab_p2at_typ = os2e ; return ;
-} // end of [ats_dynexp2_p2at_typ_set]
+} // end of [ats_dynexp2_p2at_set_typ]
 
 ats_void_type
-ats_dynexp2_d2exp_typ_set (
+atsopt_d2exp_set_typ (
   ats_ptr_type d2e, ats_ptr_type os2e
 ) {
   ((d2exp_t)d2e)->atslab_d2exp_typ = os2e ; return ;
-} // end of [ats_dynexp2_d2exp_typ_set]
+} // end of [ats_dynexp2_d2exp_set_typ]
 
 %} // end of [%{$]
 

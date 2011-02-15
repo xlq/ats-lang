@@ -131,7 +131,7 @@ fun s2lab0lst_of_d3lab0lst {n:nat} .<n>.
   case+ d3ls of
   | list_cons (d3l, d3ls) => let
       val s2l = case+ d3l.d3lab0_node of
-        | D3LAB0ind (d3ess) => S2LAB0ind (d3explstlst_ind_get d3ess)
+        | D3LAB0ind (d3ess) => S2LAB0ind (d3explstlst_get_ind d3ess)
         | D3LAB0lab l => S2LAB0lab l
     in
       list_cons (s2l, s2lab0lst_of_d3lab0lst d3ls)
@@ -148,7 +148,7 @@ fun s2lab1lst_of_d3lab1lst {n:nat} .<n>.
   case+ d3ls of
   | list_cons (d3l, d3ls) => let
       val s2l = case+ d3l.d3lab1_node of
-        | D3LAB1ind (d3ess, s2e) => S2LAB1ind (d3explstlst_ind_get d3ess, s2e)
+        | D3LAB1ind (d3ess, s2e) => S2LAB1ind (d3explstlst_get_ind d3ess, s2e)
         | D3LAB1lab (l, s2e) => S2LAB1lab (l, s2e)
     in
       list_cons (s2l, s2lab1lst_of_d3lab1lst d3ls)
@@ -222,7 +222,7 @@ fn d3exp_clo_restore (d3e: d3exp): d3exp = let
   val refval = (case+ fc0 of
     | $Syn.FUNCLOclo knd => if knd = 0 then 1 else 0 | $Syn.FUNCLOfun () => 0
   ) : int // end of [val refval]
-  val freeknd = d3exp_lval_typ_set_arg (refval, d3e, s2e_fun_new)
+  val freeknd = d3exp_lval_set_typ_arg (refval, d3e, s2e_fun_new)
 in
   d3exp_refarg (loc, s2e_fun_new, refval, freeknd, d3e)
 end // end of [d3exp_clo_restore]
@@ -263,7 +263,7 @@ fun d3explst_arg_restore
         print "d3explst_arg_restore: s2e_res = "; print s2e_res; print_newline ();
       end // end of [val]
 *)
-      val freeknd = d3exp_lval_typ_set_arg (refval, d3e, s2e_res)
+      val freeknd = d3exp_lval_set_typ_arg (refval, d3e, s2e_res)
       val d3e = d3exp_refarg (loc, s2e_res, refval, freeknd, d3e)
     in
       list_cons (d3e, d3explst_arg_restore (d3es, wths2es))
@@ -369,7 +369,7 @@ fn d23exp_app_tr_up
 *)
   val loc_fun = d3e_fun.d3exp_loc
   val s2e_fun = s2exp_uni_instantiate_all (loc_fun, d3e_fun.d3exp_typ)
-  val () = d3exp_typ_set (d3e_fun, s2e_fun)
+  val () = d3exp_set_typ (d3e_fun, s2e_fun)
 (*
   val () = begin
     print "d23exp_app_tr_up: s2e_fun = "; print s2e_fun; print_newline ()
@@ -658,9 +658,9 @@ fun aux1
       end // end of [D3EXPARGsta]
     | D3EXPARGdyn (loc_arg, npf, d3es_arg) => let
         val () = d3explst_open_and_add d3es_arg
-        val s2es_arg = d3explst_typ_get d3es_arg
+        val s2es_arg = d3explst_get_typ (d3es_arg)
         val s2e_fun = s2exp_uni_instantiate_all (loc0, d3e_fun.d3exp_typ)
-        val () = d3exp_typ_set (d3e_fun, s2e_fun)
+        val () = d3exp_set_typ (d3e_fun, s2e_fun)
 (*
         val () = begin
           print "d2exp_apps_sym_tr_up: aux1: s2e_fun = "; print s2e_fun;
@@ -911,7 +911,7 @@ in
           val d3e_r = d2exp_tr_up d2e_r
           val () = d3exp_open_and_add d3e_r
           val s2e_r = d3e_r.d3exp_typ
-          val s2ls = s2exp_addr_slablst_assgn (loc0, s2e_addr, s2ls_nt, s2e_r)
+          val s2ls = s2exp_addr_assgn_slablst (loc0, s2e_addr, s2ls_nt, s2e_r)
 (*
           val sgn = $Lst.list_length_compare (s2ls, s2ls_nt)
           val () = if (sgn <> 0) then begin
@@ -971,7 +971,7 @@ in
         $Err.abort {void} ()
       end // end of [if]
       val s2ls = begin
-        d2var_lin_slablst_assgn (loc0, d2v, s2ls_nt, s2e_r)
+        d2var_lin_assgn_slablst (loc0, d2v, s2ls_nt, s2e_r)
       end // end of [s2ls]
       val d3ls = d3lab1lst_of_d3lab0lst_s2lablst (d3ls_nt, s2ls)
     in
@@ -983,8 +983,8 @@ in
       val d3e_r = d2exp_tr_up d2e_r
       val () = d3exp_open_and_add d3e_r
       val s2ls = begin
-        d2var_mut_slablst_assgn (loc0, d2v, s2ls_nt, d3e_r.d3exp_typ)
-      end
+        d2var_mut_assgn_slablst (loc0, d2v, s2ls_nt, d3e_r.d3exp_typ)
+      end // end of [val]
       val d3ls = d3lab1lst_of_d3lab0lst_s2lablst (d3ls_nt, s2ls)
     in
       d3exp_assgn_var (loc0, d2v, d3ls, d3e_r)
@@ -1041,7 +1041,7 @@ in
   | ~Some_vt s2e_addr => let
       val d3ls_nt = d2lablst_tr_up d2ls
       val s2ls_nt = s2lab0lst_of_d3lab0lst d3ls_nt
-      val (s2e_elt, s2ls) = s2exp_addr_slablst_deref (loc0, s2e_addr, s2ls_nt)
+      val (s2e_elt, s2ls) = s2exp_addr_deref_slablst (loc0, s2e_addr, s2ls_nt)
 (*
       val () = begin
         print "d2exp_deref_tr_up: s2e_elt = "; print s2e_elt; print_newline ();
@@ -1243,7 +1243,7 @@ fn d2exp_foldat_freeat_tr_up
       in
         if isfold then let
           var err: int = 0
-          val () = d3exp_lval_typ_set (loc0, 0(*refval*), d3e, s2e_fun_res, err)
+          val () = d3exp_lval_set_typ (loc0, 0(*refval*), d3e, s2e_fun_res, err)
         in
           if err > 0 then begin
             prerr_loc_error3 loc0;
@@ -1440,7 +1440,7 @@ in
           val d3ls_nt = d2lablst_tr_up d2ls
           val s2ls_nt = s2lab0lst_of_d3lab0lst d3ls_nt
           val s2ls = begin
-            s2exp_addr_viewat_slablst_try (loc0, s2e_addr, s2ls_nt)
+            s2exp_addr_viewat_try_slablst (loc0, s2e_addr, s2ls_nt)
           end // end of [val]
           val d3ls = d3lab1lst_of_d3lab0lst_s2lablst (d3ls_nt, s2ls)
           val s2e_prj_addr = s2exp_projlst (s2e_addr, s2ls)
@@ -1458,7 +1458,7 @@ in
       | cons _ => let
           val d3ls_nt = d2lablst_tr_up d2ls
           val s2ls_nt = s2lab0lst_of_d3lab0lst d3ls_nt
-          val s2ls = s2exp_addr_viewat_slablst_try (loc0, s2e_addr, s2ls_nt)
+          val s2ls = s2exp_addr_viewat_try_slablst (loc0, s2e_addr, s2ls_nt)
           val d3ls = d3lab1lst_of_d3lab0lst_s2lablst (d3ls_nt, s2ls)
           val s2e_prj_addr = s2exp_projlst (s2e_addr, s2ls)
           val s2e_prj_ptr = s2exp_ptr_addr_type (s2e_prj_addr)
@@ -1535,8 +1535,10 @@ fn d2exp_rec_tr_up
     print "labd2explst_tr_up: ls2es = "; print ls2es; print_newline ()
   end // end of [val]
 *)
+//
   val () = if recknd = 2 then labd3explst_nonlin_check (ld3es)
-  val ls2es = labd3explst_typ_get ld3es
+//
+  val ls2es = labd3explst_get_typ ld3es
   val s2e_rec = s2exp_tyrec (recknd, npf, ls2es)
 in
   d3exp_rec (loc0, s2e_rec, recknd, npf, ld3es)
@@ -1552,7 +1554,7 @@ fn d3exp_sel_tr_up
       val s2ls_nt = s2lab0lst_of_d3lab0lst d3ls_nt
       var restlin: int = 0 and cstr: s2explst = nil ()
       val @(s2e_prj, s2ls) = begin
-        s2exp_slablst_get_restlin_cstr (loc0, d3e.d3exp_typ, s2ls_nt, restlin, cstr)
+        s2exp_get_slablst_restlin_cstr (loc0, d3e.d3exp_typ, s2ls_nt, restlin, cstr)
       end // end of [val]
       val () = if restlin > 0 then begin // restlin check
         prerr_loc_error3 loc0;
@@ -1586,7 +1588,7 @@ in
       val d3ls_nt = d2lablst_tr_up d2ls
       val s2ls_nt = s2lab0lst_of_d3lab0lst d3ls_nt
       val s2e_addr = d2var_get_addr_some (loc0, d2v)
-      val (s2e_elt, s2ls) = s2exp_addr_slablst_deref (loc0, s2e_addr, s2ls_nt)
+      val (s2e_elt, s2ls) = s2exp_addr_deref_slablst (loc0, s2e_addr, s2ls_nt)
 (*
       val () = begin
         print "d2exp_sel_tr_up: s2e_elt = "; print s2e_elt; print_newline ()
@@ -1616,7 +1618,7 @@ in
       val s2e_d2v = d2var_get_typ_some (loc0, d2v)
       var cstr: s2explst = list_nil ()
       val (s2e_prj, s2e_d2v, s2ls) =
-        s2exp_slablst_linget_cstr (loc0, s2e_d2v, s2ls_nt, cstr)
+        s2exp_linget_slablst_cstr (loc0, s2e_d2v, s2ls_nt, cstr)
       val () = trans3_env_add_proplst (loc0, cstr)
       val () = d2var_set_typ (d2v, Some s2e_d2v)
       val d3ls = d3lab1lst_of_d3lab0lst_s2lablst (d3ls_nt, s2ls)
@@ -1672,7 +1674,7 @@ fn d2exp_tmpid_tr_up (
     loc0: loc_t, d2e: d2exp, ts2ess: tmps2explstlst
   ) : d3exp = let
   fun aux (subs: List stasub_t): s2explstlst = case+ subs of
-    | cons (sub, subs) => cons (stasub_codomain_get_whnf sub, aux subs)
+    | cons (sub, subs) => cons (stasub_get_codomain_whnf sub, aux subs)
     | nil () => nil ()
   // end of [aux]
 in
@@ -1727,7 +1729,7 @@ in
       case+ un_s2exp_ptr_addr_type s2e_ptr of
       | ~Some_vt s2e_addr => let
           val (s2e_at, s2ls, d2v_view, s2ls_view) =
-            s2exp_addr_viewat_slablst_get (loc0, s2e_addr, s2ls_nt)
+            s2exp_addr_viewat_get_slablst (loc0, s2e_addr, s2ls_nt)
           val d3ls = d3lab1lst_of_d3lab0lst_s2lablst (d3ls_nt, s2ls)
         in
           d3exp_viewat_ptr (loc0, s2e_at, d3e_ptr, d3ls, d2v_view, s2ls_view)
@@ -1749,7 +1751,7 @@ in
       val s2ls_nt = s2lab0lst_of_d3lab0lst d3ls_nt
       val s2e_addr = d2var_get_addr_some (loc0, d2v)
       val @(s2e_at, s2ls, d2v_view, s2ls_view) =
-        s2exp_addr_viewat_slablst_get (loc0, s2e_addr, s2ls_nt)
+        s2exp_addr_viewat_get_slablst (loc0, s2e_addr, s2ls_nt)
       val d3ls = d3lab1lst_of_d3lab0lst_s2lablst (d3ls_nt, s2ls)
     in
       d3exp_viewat_var (loc0, s2e_at, d2v, d3ls, d2v_view, s2ls_view)
@@ -1797,8 +1799,8 @@ in
       case+ un_s2exp_ptr_addr_type s2e_ptr of
       | ~Some_vt s2e_addr => let
           val s2ls = begin
-            s2exp_addr_viewat_slablst_set (loc0, s2e_addr, s2ls_nt, s2e_r)
-          end
+            s2exp_addr_viewat_set_slablst (loc0, s2e_addr, s2ls_nt, s2e_r)
+          end // end of [val]
           val d3ls = d3lab1lst_of_d3lab0lst_s2lablst (d3ls_nt, s2ls)
         in
           d3exp_viewat_assgn_ptr (loc0, d3e_ptr, d3ls, d3e_r)
@@ -1809,7 +1811,7 @@ in
           prerr ", but it is given the type ["; prerr s2e_ptr; prerr "].";
           prerr_newline ();
           $Err.abort {d3exp} ()
-        end
+        end (* end of [None_vt] *)
     end // end of [L2VALptr]
   | L2VALvar_mut (d2v, d2ls) => let
       val d3ls_nt = d2lablst_tr_up d2ls
@@ -1821,8 +1823,8 @@ in
       | cons _ => let
           val s2e_addr = d2var_get_addr_some (loc0, d2v)
           val s2ls = begin
-            s2exp_addr_viewat_slablst_set (loc0, s2e_addr, s2ls_nt, s2e_r)
-          end
+            s2exp_addr_viewat_set_slablst (loc0, s2e_addr, s2ls_nt, s2e_r)
+          end // end of [val]
           val d3ls = d3lab1lst_of_d3lab0lst_s2lablst (d3ls_nt, s2ls)
         in
           d3exp_viewat_assgn_var (loc0, d2v, d3ls, d3e_r)
@@ -1873,7 +1875,8 @@ fun d2explst_elt_tr_dn (d2es: d2explst, s2e: s2exp): d3explst =
 
 (* ****** ****** *)
 
-implement d2exp_tr_up (d2e0) = let
+implement
+d2exp_tr_up (d2e0) = let
 //
 (*
 val () = begin
@@ -2307,12 +2310,14 @@ d3e0 (* the return value *)
 
 end // end of [d2exp_tr_up]
 
-implement d2explst_tr_up d2es = begin case+ d2es of
+implement
+d2explst_tr_up d2es = begin case+ d2es of
   | cons (d2e, d2es) => cons (d2exp_tr_up d2e, d2explst_tr_up d2es)
   | nil () => nil ()
 end // end of [d2explst_tr_up]
 
-implement d2explstlst_tr_up d2ess = begin case+ d2ess of
+implement
+d2explstlst_tr_up d2ess = begin case+ d2ess of
   | cons (d2es, d2ess) => cons (d2explst_tr_up d2es, d2explstlst_tr_up d2ess)
   | nil () => nil ()
 end // end of [d2explstlst_tr_up]
@@ -2332,7 +2337,7 @@ in
       end // end of [val]
       val s2ess = aux subs where {
         fun aux (subs: List stasub_t): s2explstlst = case+ subs of
-          | cons (sub, subs) => cons (stasub_codomain_get_whnf sub, aux subs)
+          | cons (sub, subs) => cons (stasub_get_codomain_whnf sub, aux subs)
           | nil () => nil ()
       } // end of [where]
     in
@@ -2353,7 +2358,7 @@ fn d2exp_var_mut_tr_up
   end // end of [val]
 *)
   val s2e_addr = d2var_get_addr_some (loc0, d2v)
-  val (s2e, _(*nil*)) = s2exp_addr_slablst_deref (loc0, s2e_addr, nil ())
+  val (s2e, _(*nil*)) = s2exp_addr_deref_slablst (loc0, s2e_addr, nil ())
 in
   d3exp_var (loc0, s2e, d2v)
 end // end of [d2exp_var_mut_tr_up]
@@ -2393,7 +2398,7 @@ in
       end // end of [val]
       val s2ess = aux subs where {
         fun aux (subs: List stasub_t): s2explstlst = case+ subs of
-          | cons (sub, subs) => cons (stasub_codomain_get_whnf sub, aux subs)
+          | cons (sub, subs) => cons (stasub_get_codomain_whnf sub, aux subs)
           | nil () => nil ()
       } // end of [where]
     in
@@ -2401,7 +2406,8 @@ in
     end // end of [cons]
 end // end of [d2exp_var_nonmut_tr_up]
 
-implement d2exp_var_tr_up (loc0, d2v) = begin case+ d2v of
+implement
+d2exp_var_tr_up (loc0, d2v) = begin case+ d2v of
   | _ when d2var_is_mutable d2v => d2exp_var_mut_tr_up (loc0, d2v)
   | _ => d2exp_var_nonmut_tr_up (loc0, d2v)
 end // end of [d2exp_var_tr_up]

@@ -281,7 +281,7 @@ d2exp_typ_syn (d2e0) = begin
   | D2Ewhile _ => s2exp_void_t0ype ()
   | _ => s2e where {
       val s2e = s2exp_Var_make_srt (d2e0.d2exp_loc, s2rt_t0ype)
-      val () = d2exp_typ_set (d2e0, Some s2e)
+      val () = d2exp_set_typ (d2e0, Some s2e)
     } // end of [_]
 end // end of [d2exp_typ_syn]
 
@@ -291,7 +291,7 @@ implement
 d3exp_open_and_add (d3e) = let
   val s2e = s2exp_opnexi_and_add (d3e.d3exp_loc, d3e.d3exp_typ)
 in
-  d3exp_typ_set (d3e, s2e)
+  d3exp_set_typ (d3e, s2e)
 end // end of [d3exp_open_and_add]
 
 implement
@@ -305,7 +305,7 @@ d3explst_open_and_add
 
 (* ****** ****** *)
 
-fn d3exp_ind_get
+fn d3exp_get_ind
   (d3e: d3exp): s2exp = let
 //
   val () = d3exp_open_and_add (d3e)
@@ -328,17 +328,17 @@ in
       prerr_newline ();
       $Err.abort {s2exp} ()
     end // end of [None_vt]
-end // end of [d3exp_ind_get]
+end // end of [d3exp_get_ind]
 
-fn d3explst_ind_get
+fn d3explst_get_ind
   (d3es: d3explst): s2explst =
-  $Lst.list_map_fun (d3es, d3exp_ind_get)
-// end of [d3explst_ind_get]
+  $Lst.list_map_fun (d3es, d3exp_get_ind)
+// end of [d3explst_get_ind]
 
 implement
-d3explstlst_ind_get (d3ess) =
-  $Lst.list_map_fun (d3ess, d3explst_ind_get)
-// end of [d3explstlst_ind_get]
+d3explstlst_get_ind (d3ess) =
+  $Lst.list_map_fun (d3ess, d3explst_get_ind)
+// end of [d3explstlst_get_ind]
 
 (* ****** ****** *)
 

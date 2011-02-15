@@ -630,7 +630,7 @@ fn do_trans123 (
 //
   val () =
     $CSTR.c3str_solve (c3t) where {
-    val c3t = $Trans3.c3str_final_get ()
+    val c3t = $Trans3.c3str_get_final ()
   } // end of [val]
 //
 (*

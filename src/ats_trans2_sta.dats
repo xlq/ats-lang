@@ -1923,12 +1923,14 @@ end // end of [d1atsrtdec_tr]
 
 implement
 d1atsrtdeclst_tr (d1cs) = let
+//
   viewtypedef VT = List_vt @(d1atsrtdec, s2rtdat_t, s2rt)
 //
-  fun loop1 (xs0: VT): void = case+ xs0 of
+  fun loop1 (xs0: VT): void =
+    case+ xs0 of
     | ~list_vt_cons (x, xs) => let
         val s2cs = d1atsrtdec_tr (x.2, x.0)
-        val () = s2rtdat_conlst_set (x.1, s2cs)
+        val () = s2rtdat_set_conlst (x.1, s2cs)
       in
         loop1 xs
       end // end of [list_vt_cons]
@@ -2466,7 +2468,7 @@ e1xndeclst_tr (d1cs) = d2cs where {
       end
     | nil () => D2CONLSTnil ()
   // end of [aux]
-  val s2c = s2cstref_cst_get (Exception_viewtype)
+  val s2c = s2cstref_get_cst (Exception_viewtype)
   val d2cs = aux (s2c, d1cs)
   val d2cs0 = case+ s2cst_get_conlst (s2c) of
     | Some d2cs0 => d2conlst_revapp (d2cs, d2cs0) | None () => d2cs

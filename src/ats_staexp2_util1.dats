@@ -638,13 +638,13 @@ s2exp_is_wth (s2e) = case+ s2e.s2exp_node of
 (* ****** ****** *)
 
 implement
-s2exp_head_get (s2e0) = let
+s2exp_get_head (s2e0) = let
   fun loop (s2e: s2exp): s2exp =
     case+ s2e.s2exp_node of S2Eapp (s2e, _) => loop s2e | _ => s2e
   // end of [loop]
 in
   loop (s2exp_whnf s2e0)
-end // end of [s2exp_head_get]
+end // end of [s2exp_get_head]
 
 (* ****** ****** *)
 
@@ -686,7 +686,7 @@ s2cst_select_s2explstlst (s2cs, s2ess) = let
         print s2c;
         print_newline ();
         print "s2cst_select_s2explstlst: filter: s2c_s2t = ";
-        print (s2cst_srt_get s2c);
+        print (s2cst_get_srt s2c);
         print_newline ();
 *)
         if test (s2cst_get_srt s2c, s2ess) then begin
@@ -846,8 +846,10 @@ end // end of [s2exp_union]
 
 implement
 s2kexp_make_s2exp (s2e0) = let
-  fun aux_s2var
-    (s2vss: s2varlstlst, s2v0: s2var_t): s2kexp =
+//
+  fun aux_s2var (
+    s2vss: s2varlstlst, s2v0: s2var_t
+  ) : s2kexp =
     case+ s2vss of
     | list_cons (s2vs, s2vss) => let
         fun test (s2vs: s2varlst, s2v0: s2var_t): bool =
@@ -861,10 +863,10 @@ s2kexp_make_s2exp (s2e0) = let
       end // end of [list_cons]
     | list_nil () => S2KEvar s2v0
   // end of [aux_s2var]
-
-  fun aux_s2exp
-    (pol: int, s2vss: s2varlstlst, s2e0: s2exp)
-    : s2kexp = let
+//
+  fun aux_s2exp (
+    pol: int, s2vss: s2varlstlst, s2e0: s2exp
+  ) : s2kexp = let
     val s2e0 = s2exp_whnf s2e0 in case+ s2e0.s2exp_node of
       | S2Eapp (s2e, s2es) => let
           val s2ke = aux_s2exp (0, s2vss, s2e)
@@ -899,36 +901,40 @@ s2kexp_make_s2exp (s2e0) = let
       | S2Ewth (s2e, _(*wths2es*)) => aux_s2exp (pol, s2vss, s2e)
       | _ => S2KEany ()
    end // end of [aux_s2exp]
-
-  and aux_s2explst (pol: int, s2vss: s2varlstlst, s2es: s2explst)
-    : s2kexplst = case+ s2es of
+//
+  and aux_s2explst (
+    pol: int, s2vss: s2varlstlst, s2es: s2explst
+  ) : s2kexplst = case+ s2es of
     | list_cons (s2e, s2es) => list_cons
         (aux_s2exp (pol, s2vss, s2e), aux_s2explst (pol, s2vss, s2es))
       // end of [list_cons]
     | list_nil () => list_nil ()
   // end of [aux_s2explst]
-
-  and aux_s2Varboundlst
-    (pol: int, s2vss: s2varlstlst, s2Vbs: s2Varboundlst): s2kexplst =
+//
+  and aux_s2Varboundlst (
+    pol: int, s2vss: s2varlstlst, s2Vbs: s2Varboundlst
+  ) : s2kexplst =
     case+ s2Vbs of
     | list_cons (s2Vb, s2Vbs) => let
-        val s2ke = aux_s2exp (pol, s2vss, s2Varbound_val_get s2Vb)
+        val s2ke = aux_s2exp (pol, s2vss, s2Varbound_get_val s2Vb)
       in
         list_cons (s2ke, aux_s2Varboundlst (pol, s2vss, s2Vbs))
       end // end of [list_cons]
     | list_nil () => list_nil ()
   // end of [aux_s2Varboundlst]
-
-  and aux_labs2explst
-    (pol: int, s2vss: s2varlstlst, ls2es: labs2explst): labs2kexplst =
+//
+  and aux_labs2explst (
+    pol: int, s2vss: s2varlstlst, ls2es: labs2explst
+  ) : labs2kexplst =
     case+ ls2es of
     | LABS2EXPLSTcons (l, s2e, ls2es) => LABS2KEXPLSTcons
         (l, aux_s2exp (pol, s2vss, s2e), aux_labs2explst (pol, s2vss, ls2es))
     | LABS2EXPLSTnil () => LABS2KEXPLSTnil ()
   // end of [aux_labs2explst]
-
-  and aux_s2explst_arg (pol: int, s2vss: s2varlstlst, s2es: s2explst)
-    : s2kexplst = case+ s2es of
+//
+  and aux_s2explst_arg (
+    pol: int, s2vss: s2varlstlst, s2es: s2explst
+  ) : s2kexplst = case+ s2es of
     | list_cons (s2e, s2es) => begin
         if s2exp_is_impredicative s2e then list_cons
           (aux_s2exp (pol, s2vss, s2e), aux_s2explst (pol, s2vss, s2es))
@@ -936,13 +942,15 @@ s2kexp_make_s2exp (s2e0) = let
       end // end of [list_cons]
     | list_nil () => list_nil ()
   // end of [aux_s2explst_arg]
-
-  and aux_s2Var
-    (pol: int, s2vss: s2varlstlst, s2V: s2Var_t): s2kexp = begin
+//
+  and aux_s2Var (
+    pol: int, s2vss: s2varlstlst, s2V: s2Var_t
+  ) : s2kexp =
     if pol > 0 then
       S2KEunion (aux_s2Varboundlst (pol, s2vss, s2Var_get_lbs s2V))
     else S2KEany ()
-  end // end of [aux_s2Var]
+  // end of [aux_s2Var]
+//
 in
   aux_s2exp (1, list_nil (), s2e0)
 end // end of [s2kexp_make]
@@ -1067,10 +1075,10 @@ end // end of [s2kexp_match_fun_arg]
 
 (* ****** ****** *)
 
-fun s2cst_root_get
+fun s2cst_get_root
   (s2c: s2cst_t): s2cst_t = case+ s2cst_get_sup s2c of
-  | S2CSTLSTcons (s2c, _) => s2cst_root_get s2c | S2CSTLSTnil () => s2c
-// end of [s2cst_root_get]
+  | S2CSTLSTcons (s2c, _) => s2cst_get_root s2c | S2CSTLSTnil () => s2c
+// end of [s2cst_get_root]
 
 fn s2zexp_make_s2cst
   (s2c: s2cst_t): s2zexp = S2ZEcst s2c
@@ -1135,7 +1143,7 @@ s2zexp_make_s2exp (s2e0) = let
         | Some (Some s2e_fun) => let
             val s2e = s2exp_app_srt (s2t, s2e_fun, s2es_arg) in aux_s2exp (s2vss, s2e)
           end // end of [Some (Some _)]
-        | _ => s2zexp_make_s2cst (s2cst_root_get s2c) // incorrect for certain constructors
+        | _ => s2zexp_make_s2cst (s2cst_get_root s2c) // incorrect for certain constructors
       end (* end of [S2Ecst] *)
     | _ => S2ZEbot () (* HX: ??? *)
   // end of [aux_s2exp_app]
@@ -1177,13 +1185,13 @@ s2zexp_make_s2exp (s2e0) = let
   in
     case+ lbs of
     | list_cons (lb, _) => let
-        val s2e = s2Varbound_val_get lb in aux_s2exp (s2vss, s2e)
+        val s2e = s2Varbound_get_val (lb) in aux_s2exp (s2vss, s2e)
       end // end of [list_cons]
     | list_nil () => let
         val ubs = s2Var_get_ubs s2V0 in
         case+ ubs of
         | list_cons (ub, _) => let
-            val s2e = s2Varbound_val_get ub in aux_s2exp (s2vss, s2e)
+            val s2e = s2Varbound_get_val (ub) in aux_s2exp (s2vss, s2e)
           end // end of [list_cons]
         | list_nil () => S2ZEbot () // no information
       end // end of [list_nil]
@@ -1248,20 +1256,22 @@ in
 end // end of [stasub_addlst]
 
 implement
-stasub_domain_get (sub) = case+ sub of
+stasub_get_domain
+  (sub) = case+ sub of
   | list_cons (s2vs2e, sub) =>
-      list_cons (s2vs2e.0, stasub_domain_get sub)
+      list_cons (s2vs2e.0, stasub_get_domain sub)
   | list_nil () => list_nil ()
-// end of stasub_domain_get
+// end of [stasub_get_domain]
 
 implement
-stasub_codomain_get_whnf (sub) = case+ sub of
+stasub_get_codomain_whnf
+  (sub) = case+ sub of
   | list_cons (s2vs2e, sub) => let
       val s2e = s2exp_whnf s2vs2e.1 in
-      list_cons (s2e, stasub_codomain_get_whnf sub)
+      list_cons (s2e, stasub_get_codomain_whnf sub)
     end // end of [list_cons]
   | list_nil () => list_nil ()
-// end of [stasub_codomain_get_whnf]
+// end of [stasub_get_codomain_whnf]
 
 (* ****** ****** *)
 

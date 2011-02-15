@@ -30,10 +30,10 @@
 *)
 
 (* ****** ****** *)
-
+//
 // Author: Hongwei Xi (hwxi AT cs DOT bu DOT edu)
 // Time: January 2008
-
+//
 (* ****** ****** *)
 
 staload Err = "ats_error.sats"
@@ -46,6 +46,9 @@ staload "ats_staexp2.sats"
 staload "ats_dynexp2.sats"
 staload "ats_stadyncst2.sats"
 staload "ats_dynexp3.sats"
+
+(* ****** ****** *)
+
 staload "ats_trans3_env.sats"
 
 (* ****** ****** *)
@@ -71,7 +74,7 @@ end // end of [prerr_loc_interror]
 (* ****** ****** *)
 
 implement
-s2exp_addr_viewat_slablst_try
+s2exp_addr_viewat_try_slablst
   (loc0, s2e0_addr, s2ls0) = let
   val (s2r0, s2ls0_ft) = s2exp_addr_normalize s2e0_addr
   val s2ls0 = $Lst.list_append (s2ls0_ft, s2ls0)
@@ -80,7 +83,7 @@ in
   | ~Some_vt ans => let
       val @(d2v_view, s2e_vt, s2e_addr, s2ls_ft, s2ls_bk_nt) = ans
       var cstr: s2explst = list_nil ()
-      val s2ls_bk = s2exp_slablst_lintry_cstr (loc0, s2e_vt, s2ls_bk_nt, cstr)
+      val s2ls_bk = s2exp_lintry_slablst_cstr (loc0, s2e_vt, s2ls_bk_nt, cstr)
       val () = trans3_env_add_proplst (loc0, cstr)
     in
       s2lablst_trim_s2lablst_s2lablst (s2ls0_ft, s2ls_ft, s2ls_bk)
@@ -102,7 +105,7 @@ end // end of [s2exp_addr_viewat_slablst_try]
 (* ****** ****** *)
 
 implement
-s2exp_addr_viewat_slablst_get
+s2exp_addr_viewat_get_slablst
   (loc0, s2e0_addr, s2ls0) = let
   val (s2r0, s2ls0_ft) = s2exp_addr_normalize s2e0_addr
   val s2ls0 = $Lst.list_append (s2ls0_ft, s2ls0)
@@ -112,8 +115,8 @@ in
       val @(d2v_view, s2e_vt, s2e_addr, s2ls_ft, s2ls_bk_nt) = ans
       var cstr: s2explst = list_nil ()
       val (s2e_out, s2e_vt, s2ls_bk) = begin
-        s2exp_slablst_lindel_cstr (loc0, s2e_vt, s2ls_bk_nt, cstr)
-      end
+        s2exp_lindel_slablst_cstr (loc0, s2e_vt, s2ls_bk_nt, cstr)
+      end // end of [val]
       val () = trans3_env_add_proplst (loc0, cstr)
       val () = d2var_reset_typ_at (d2v_view, s2e_vt, s2e_addr)
       val s2ls0_bk = begin
@@ -137,12 +140,12 @@ in
       $Err.abort ()
     end // end of [None_vt]
   // end of [case]
-end // end of [s2exp_addr_viewat_slablst_get]
+end // end of [s2exp_addr_viewat_get_slablst]
 
 (* ****** ****** *)
 
 implement
-s2exp_addr_viewat_slablst_set
+s2exp_addr_viewat_set_slablst
   (loc0, s2e0_addr, s2ls0, s2e_new_at) = let
   val @(s2e_new, s2e_new_addr) = (
     case+ un_s2exp_at_viewt0ype_addr_view s2e_new_at of
@@ -172,7 +175,7 @@ in
 //
       var cstr: s2explst = list_nil ()
       val @(s2e_old, s2e, s2ls_bk) = begin
-        s2exp_slablst_linset_cstr (loc0, s2e, s2ls_bk_nt, s2e_new, cstr)
+        s2exp_linset_slablst_cstr (loc0, s2e, s2ls_bk_nt, s2e_new, cstr)
       end // end of [val]
       val () = trans3_env_add_proplst (loc0, cstr)
 //
@@ -209,11 +212,11 @@ in
     in
       $Err.abort {s2lablst} ()
     end // end of [None_vt]
-end // end of [s2exp_addr_viewat_slablst_set]
+end // end of [s2exp_addr_viewat_set_slablst]
 
 (* ****** ****** *)
 
-fn d2var_view_viewat_slablst_set_main
+fn d2var_view_viewat_set_slablst_main
   (loc0: loc_t,
    d2v_view: d2var_t,
    s2e0: s2exp,
@@ -221,8 +224,11 @@ fn d2var_view_viewat_slablst_set_main
    s2ls_view: s2lablst,
    s2e_new_at: s2exp)
   : @(s2exp(*old*), s2lablst) = let
+//
   val s2e_new_at = s2exp_whnf s2e_new_at
+//
   typedef s2exp2 = @(s2exp, s2exp)
+//
   val @(s2e_new, s2e_new_addr) = (case+
     un_s2exp_at_viewt0ype_addr_view s2e_new_at of
     | ~Some_vt s2ts2a => s2ts2a
@@ -236,11 +242,14 @@ fn d2var_view_viewat_slablst_set_main
         $Err.abort {s2exp2} ()
       end // end of [None_vt]
   ) : s2exp2 // end of [val]
+//
   var cstr: s2explst = list_nil ()
+//
   val @(s2e_old, s2e0, s2ls) =
-    s2exp_slablst_linset_cstr (loc0, s2e0, s2ls_view, s2e_new, cstr)
+    s2exp_linset_slablst_cstr (loc0, s2e0, s2ls_view, s2e_new, cstr)
   val s2e_old_addr = s2exp_projlst (s2e0_addr, s2ls)
   val () = trans3_env_add_proplst (loc0, cstr)
+//
   val () =  if s2exp_syneq
     (s2e_old_addr, s2e_new_addr) then () else let
     val () = prerr_loc_error3 loc0
@@ -253,19 +262,24 @@ fn d2var_view_viewat_slablst_set_main
   in
     $Err.abort {void} ()
   end // end of [if]
+//
   val () = d2var_reset_typ_at (d2v_view, s2e0, s2e0_addr)
+//
 in
   (s2e_old, s2ls)
-end // end [d2var_view_viewat_slablst_set_main]
+end // end [d2var_view_viewat_set_slablst_main]
 
-fn d2var_view_viewat_slablst_set
-  (loc0: loc_t, d2v_view: d2var_t, s2ls: s2lablst, s2e_new_at: s2exp)
-  : (s2exp (*old*), s2lablst) = begin
+fn d2var_view_viewat_set_slablst (
+  loc0: loc_t
+, d2v_view: d2var_t
+, s2ls: s2lablst
+, s2e_new_at: s2exp
+) : (s2exp (*old*), s2lablst) =
   case+ d2var_get_typ d2v_view of
   | Some s2e_at => (case+
     un_s2exp_at_viewt0ype_addr_view s2e_at of
     | ~Some_vt s2ts2a => begin
-        d2var_view_viewat_slablst_set_main
+        d2var_view_viewat_set_slablst_main
           (loc0, d2v_view, s2ts2a.0, s2ts2a.1, s2ls, s2e_new_at)
       end // end of [Some_vt]
     | ~None_vt () => let
@@ -284,32 +298,34 @@ fn d2var_view_viewat_slablst_set
       val s2e0 = s2exp_void_t0ype ()
       val s2e0_addr = d2var_get_addr_some (loc0, d2v_view)
     in
-      d2var_view_viewat_slablst_set_main
+      d2var_view_viewat_set_slablst_main
         (loc0, d2v_view, s2e0, s2e0_addr, s2ls, s2e_new_at)
     end // end of [None]
-end // end of [d2var_view_viewat_slablst_set]
+// end of [d2var_view_viewat_set_slablst]
 
 (* ****** ****** *)
 
 fun s2lab0lst_of_d3lab1lst {n:nat} .<n>.
   (d3ls: list (d3lab1, n)): list (s2lab, n) = case+ d3ls of
   | list_cons (d3l, d3ls) => let
-      val s2l = case+ d3l.d3lab1_node of
-        | D3LAB1ind (d3ess, _) => S2LAB0ind (d3explstlst_ind_get d3ess)
+      val s2l = (case+ d3l.d3lab1_node of
+        | D3LAB1ind (d3ess, _) => S2LAB0ind (d3explstlst_get_ind d3ess)
         | D3LAB1lab (l, _) => S2LAB0lab l
+      ) : s2lab // end of [val]
     in
       list_cons (s2l, s2lab0lst_of_d3lab1lst d3ls)
-    end
+    end // end of [list_cons]
   | list_nil () => list_nil ()
+// end of [s2lab0lst_of_d3lab1lst]
 
 (* ****** ****** *)
 
 implement
-d3exp_lval_typ_set
+d3exp_lval_set_typ
   (loc0, refval, d3e0, s2e_new, err) = let
 (*
   val () = begin
-    print "d3exp_lval_typ_set: d3e0 = "; print d3e0; print_newline ()
+    print "d3exp_lval_set_typ: d3e0 = "; print d3e0; print_newline ()
   end // end of [val]
 *)
   fn refval_check (
@@ -325,21 +341,21 @@ d3exp_lval_typ_set
 in
   case+ d3e0.d3exp_node of
   | D3Eann_type (d3e, _(*s2e_ann*)) => begin
-      d3exp_lval_typ_set (loc0, refval, d3e, s2e_new, err)
+      d3exp_lval_set_typ (loc0, refval, d3e, s2e_new, err)
     end // end of [D3Eann_type]
   | D3Esel_ptr (d3e, d3ls) => begin
     case+ un_s2exp_ptr_addr_type d3e.d3exp_typ of
     | ~Some_vt s2e_addr => let
         val s2ls_nt = s2lab0lst_of_d3lab1lst d3ls
         val _(* s2lablst *) = begin
-          s2exp_addr_slablst_assgn (loc0, s2e_addr, s2ls_nt, s2e_new)
+          s2exp_addr_assgn_slablst (loc0, s2e_addr, s2ls_nt, s2e_new)
         end // end of [val]
       in
         (* empty *)
       end // end of [Some_vt]
     | ~None_vt () => begin
         prerr_loc_interror loc0;
-        prerr ": d3exp_lval_typ_set: D3Esel_ptr"; prerr_newline ();
+        prerr ": d3exp_lval_set_typ: D3Esel_ptr"; prerr_newline ();
         $Err.abort {void} ()
       end // end of [None_vt]
     end // end of [D3Esel_ptr]
@@ -347,7 +363,7 @@ in
       val () = refval_check (loc0, d2v, refval)
       val s2ls_nt = s2lab0lst_of_d3lab1lst d3ls
       val _(* s2lablst *) = begin
-        d2var_lin_slablst_assgn (loc0, d2v, s2ls_nt, s2e_new)
+        d2var_lin_assgn_slablst (loc0, d2v, s2ls_nt, s2e_new)
       end // end of [val]
     in
       (* empty *)
@@ -355,7 +371,7 @@ in
   | D3Esel_var (d2v, d3ls) when d2var_is_mutable d2v => let
       val s2ls_nt = s2lab0lst_of_d3lab1lst d3ls
       val _(* s2lablst *) = begin
-        d2var_mut_slablst_assgn (loc0, d2v, s2ls_nt, s2e_new)
+        d2var_mut_assgn_slablst (loc0, d2v, s2ls_nt, s2e_new)
       end // end of [val]
     in
       (* empty *)
@@ -364,7 +380,7 @@ in
   | D3Evar d2v when d2var_get_isfix (d2v) => (err := err + 1) 
   | D3Evar d2v when d2var_is_mutable d2v => let
       val _ (* nil *) = begin
-        d2var_mut_slablst_assgn (loc0, d2v, list_nil (), s2e_new)
+        d2var_mut_assgn_slablst (loc0, d2v, list_nil (), s2e_new)
       end // end of [val]
     in
       (* empty *)
@@ -379,7 +395,7 @@ in
   | D3Evar d2v => let
       val () = refval_check (loc0, d2v, refval)
       val _(* nil *) = begin
-        d2var_lin_slablst_assgn (loc0, d2v, list_nil (), s2e_new)
+        d2var_lin_assgn_slablst (loc0, d2v, list_nil (), s2e_new)
       end // end of [val]
     in
       (* empty *)
@@ -387,21 +403,25 @@ in
 //
   | D3Eviewat_ptr (d3e, d3ls, d2v_view, s2ls_nt) => let
       val (s2e_old, s2ls) = begin
-        d2var_view_viewat_slablst_set (loc0, d2v_view, s2ls_nt, s2e_new)
+        d2var_view_viewat_set_slablst (loc0, d2v_view, s2ls_nt, s2e_new)
       end // end of [val]
     in
       $SOL.s2exp_out_void_solve (loc0, s2e_old)
     end // end of [D3Eviewat_ptr]
   | D3Eviewat_var (d2v, d3ls, d2v_view, s2ls_nt) => let
       val (s2e_old, s2ls) = begin
-        d2var_view_viewat_slablst_set (loc0, d2v_view, s2ls_nt, s2e_new)
+        d2var_view_viewat_set_slablst (loc0, d2v_view, s2ls_nt, s2e_new)
       end // end of [val]
     in
       $SOL.s2exp_out_void_solve (loc0, s2e_old)
     end // end of [D3Eviewat_var]
   | _ => (err := err + 1)
   // end of [case]
-end (* end of [d3exp_lval_typ_set] *)
+end (* end of [d3exp_lval_set_typ] *)
+
+(* ****** ****** *)
+
+local
 
 fn s2exp_fun_is_freeptr
   (s2e: s2exp): bool = begin case+ s2e.s2exp_node of
@@ -413,12 +433,14 @@ fn s2exp_fun_is_freeptr
   | _ => false
 end // end of [s2exp_fun_is_freeptr]
 
+in // in of [local]
+
 implement
-d3exp_lval_typ_set_arg
+d3exp_lval_set_typ_arg
   (refval, d3e0, s2e_new) = let
   val loc0 = d3e0.d3exp_loc; var err: int = 0
   var freeknd: int = 0 // free the expression if it is set to 1
-  val () = d3exp_lval_typ_set (loc0, refval, d3e0, s2e_new, err)
+  val () = d3exp_lval_set_typ (loc0, refval, d3e0, s2e_new, err)
   val () = (if err > 0 then begin case+ 0 of
     | _ when s2exp_is_nonlin (s2e_new) => () // HX: safely discarded!
     | _ when s2exp_fun_is_freeptr s2e_new => (freeknd := 1)
@@ -432,14 +454,19 @@ d3exp_lval_typ_set_arg
   end) : void // end of [val]
 in
   freeknd // a linear value must be freed (freeknd = 1) if it cannot be returned
-end (* end of [d3exp_lval_typ_set_arg] *)
+end (* end of [d3exp_lval_set_typ_arg] *)
+
+end // end of [local]
+
+(* ****** ****** *)
 
 implement
-d3exp_lval_typ_set_pat (d3e0, p3t) = begin
+d3exp_lval_set_typ_pat
+  (d3e0, p3t) = begin
   case+ p3t.p3at_typ_lft of
   | Some s2e => let
       val loc0 = d3e0.d3exp_loc; var err: int = 0
-      val () = d3exp_lval_typ_set (loc0, 0(*val*), d3e0, s2e, err)
+      val () = d3exp_lval_set_typ (loc0, 0(*val*), d3e0, s2e, err)
     in
       if err > 0 then begin
         prerr_loc_error3 loc0;
@@ -449,7 +476,7 @@ d3exp_lval_typ_set_pat (d3e0, p3t) = begin
       end // end of [if]
     end // end of [Some]
   | None () => () // end of [None]
-end // end of [d3exp_lval_typ_set_pat]
+end // end of [d3exp_lval_set_typ_pat]
 
 (* ****** ****** *)
 

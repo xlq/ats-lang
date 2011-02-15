@@ -483,8 +483,8 @@ fun un_s2rt_tup (s2t: s2rt): Option_vt (s2rtlst)
 fun s2rtdat_make (id: sym_t): s2rtdat_t
 
 fun s2rtdat_get_sym (s2td: s2rtdat_t): sym_t
-fun s2rtdat_conlst_get (s2td: s2rtdat_t): s2cstlst
-fun s2rtdat_conlst_set (s2td: s2rtdat_t, s2cs: s2cstlst): void
+fun s2rtdat_get_conlst (s2td: s2rtdat_t): s2cstlst
+fun s2rtdat_set_conlst (s2td: s2rtdat_t, s2cs: s2cstlst): void
 fun s2rtdat_get_stamp (s2td: s2rtdat_t): stamp_t
 
 fun eq_s2rtdat_s2rtdat (s2td1: s2rtdat_t, s2td2: s2rtdat_t): bool
@@ -709,8 +709,8 @@ fun s2Var_get_stamp (_: s2Var_t): stamp_t
 (* ****** ****** *)
 
 fun s2Varbound_make (loc: loc_t, s2e: s2exp): s2Varbound_t
-fun s2Varbound_loc_get (s2Vb: s2Varbound_t): loc_t
-fun s2Varbound_val_get (s2Vb: s2Varbound_t): s2exp
+fun s2Varbound_get_loc (s2Vb: s2Varbound_t): loc_t
+fun s2Varbound_get_val (s2Vb: s2Varbound_t): s2exp
 
 (* ****** ****** *)
 
@@ -1146,7 +1146,7 @@ fun s2exparg_seq (loc: loc_t, s2es: s2explst): s2exparg
 (* ****** ****** *)
 
 // implemented in [ats_staexp2_util1.dats]
-fun s2exp_head_get (_: s2exp): s2exp
+fun s2exp_get_head (_: s2exp): s2exp
 
 fun s2cst_select_s2explstlst (_: s2cstlst, _: s2explstlst): s2cstlst
 
@@ -1184,8 +1184,8 @@ val stasub_nil : stasub_t
 fun stasub_add (_: stasub_t, _: s2var_t, _: s2exp): stasub_t
 fun stasub_addlst (_: stasub_t, _: s2varlst, _: s2explst): stasub_t
 
-fun stasub_domain_get (_: stasub_t): s2varlst
-fun stasub_codomain_get_whnf (_: stasub_t): s2explst
+fun stasub_get_domain (_: stasub_t): s2varlst
+fun stasub_get_codomain_whnf (_: stasub_t): s2explst
 
 fun stasub_extend_svarlst
   (sub: stasub_t, s2vs: s2varlst): @(stasub_t, s2varlst)
@@ -1269,60 +1269,61 @@ fun s2explst_opnexi (s2es: s2explst): @(s2varlst, s2explst, s2explst)
 // HX: implemented in [ats_staexp2_util2.dats]
 //
 
-fun labs2explst_lab_get (_: labs2explst, l0: lab_t): s2expopt_vt
-fun labs2explst_lab_set
+fun labs2explst_get_lab
+  (_: labs2explst, l0: lab_t): s2expopt_vt
+fun labs2explst_set_lab
   (_: labs2explst, l0: lab_t, s2e0: s2exp): Option_vt labs2explst
-// end of [labs2explst_lab_set]
+// end of [labs2explst_set_lab]
 
-fun labs2zexplst_lab_get (_: labs2zexplst, l0: lab_t): s2zexpopt_vt
+fun labs2zexplst_get_lab (_: labs2zexplst, l0: lab_t): s2zexpopt_vt
 
-fun s2exp_lab_get_restlin_cstr
+fun s2exp_get_lab_restlin_cstr
   (loc0: loc_t, s2e0: s2exp, l0: lab_t, restlin: &int, cstr: &s2explst): s2exp
 
-fun s2exp_slablst_get_restlin_cstr {n:nat}
+fun s2exp_get_slablst_restlin_cstr {n:nat}
   (loc0: loc_t, s2e0: s2exp, s2ls: list (s2lab, n), restlin: &int, cstr: &s2explst)
   : @(s2exp, list (s2lab, n))
-// end of [s2exp_slablst_get_restlin_cstr]
+// end of [s2exp_get_slablst_restlin_cstr]
 
-fun s2exp_lab_linget_cstr
+fun s2exp_linget_lab_cstr
   (loc0: loc_t, s2e0: s2exp, l0: lab_t, cstr: &s2explst): s2exp(*result*)
-// end of [s2exp_lab_linget_cstr]
+// end of [s2exp_linget_lab_cstr]
 
-fun s2exp_ind_linget_cstr
+fun s2exp_linget_ind_cstr
   (loc0: loc_t, s2e_arr: s2exp, s2ess_ind: s2explstlst, cstr: &s2explst)
   : s2exp(*element*)
-// end of [s2exp_ind_linget_cstr]
+// end of [s2exp_linget_ind_cstr]
 
-fun s2exp_slab_linget_cstr
+fun s2exp_linget_slab_cstr
   (loc0: loc_t, s2e0: s2exp, s2l: s2lab, cstr: &s2explst)
   : @(s2exp(*result*), s2lab(*updated label*))
-// end of [s2exp_slab_linget_cstr]
+// end of [s2exp_linget_slab_cstr]
 
-fun s2exp_lab_linset
+fun s2exp_linset_lab
   (loc0: loc_t, s2e0: s2exp, l0: lab_t, s2e_new: s2exp): s2exp
-// end of [s2exp_lab_linset]
+// end of [s2exp_linset_lab]
 
 (* ****** ****** *)
 
-fun s2exp_slablst_lintry_cstr {n:nat}
+fun s2exp_lintry_slablst_cstr {n:nat}
   (loc0: loc_t, s2e0: s2exp, s2ls: list (s2lab, n), cstr: &s2explst)
   : list (s2lab, n)
-// end of [s2exp_slablst_lintry_cstr]
+// end of [s2exp_lintry_slablst_cstr]
 
-fun s2exp_slablst_linget_cstr {n:nat}
+fun s2exp_linget_slablst_cstr {n:nat}
   (loc0: loc_t, s2e0: s2exp, s2ls: list (s2lab, n), cstr: &s2explst)
   : @(s2exp(*part*), s2exp(*whole*), list (s2lab, n))
-// end of [s2exp_slablst_linget_cstr]
+// end of [s2exp_linget_slablst_cstr]
 
-fun s2exp_slablst_linset_cstr {n:nat}
+fun s2exp_linset_slablst_cstr {n:nat}
   (loc0: loc_t, s2e0: s2exp, s2ls: list (s2lab, n), s2e_new: s2exp, cstr: &s2explst)
   : @(s2exp(*part*), s2exp(*whole*), list (s2lab, n))
-// end of [s2exp_slablst_linset_cstr]
+// end of [s2exp_linset_slablst_cstr]
 
-fun s2exp_slablst_lindel_cstr {n:nat}
+fun s2exp_lindel_slablst_cstr {n:nat}
   (loc0: loc_t, s2e0: s2exp, s2ls: list (s2lab, n), cstr: &s2explst)
   : @(s2exp(*part*), s2exp(*whole*), list (s2lab, n))
-// end of [s2exp_slablst_lindel_cstr]
+// end of [s2exp_lindel_slablst_cstr]
 
 (* ****** ****** *)
 //

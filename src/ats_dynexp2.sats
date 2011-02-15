@@ -455,8 +455,9 @@ and p2atopt = Option p2at
 
 (* ****** ****** *)
 
-fun p2at_typ_set (p2t: p2at, os2e: s2expopt): void
-  = "ats_dynexp2_p2at_typ_set"
+fun p2at_set_typ
+  (p2t: p2at, os2e: s2expopt): void = "atsopt_p2at_set_typ"
+// end of [p2at_set_typ]
 
 fun p2atlst_svs_union (_: p2atlst): s2varlstord_t
 fun p2atlst_dvs_union (_: p2atlst): d2varlstord_t
@@ -890,9 +891,9 @@ fun d2exp_var_cst_is_ptr (d2e: d2exp): bool
 
 (* ****** ****** *)
 
-fun d2exp_typ_set
-  (_: d2exp, _: s2expopt): void = "ats_dynexp2_d2exp_typ_set"
-// end of [d2exp_typ_set]
+fun d2exp_set_typ
+  (_: d2exp, _: s2expopt): void = "atsopt_d2exp_set_typ"
+// end of [d2exp_set_typ]
 
 (* ****** ****** *)
 

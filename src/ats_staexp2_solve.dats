@@ -104,6 +104,8 @@ datatype staerr =
 
 viewtypedef staerrlst_vt = List_vt (staerr)
 
+(* ****** ****** *)
+
 local
 
 var the_staerrlst: staerrlst_vt = list_vt_nil ()
@@ -114,7 +116,7 @@ val (pfbox_the_staerrlst | ()) =
   vbox_make_view_ptr {staerrlst_vt} (view@ (the_staerrlst) | p_the_staerrlst)
 // end of [val]
 
-in
+in // in of [local]
 
 fn the_staerrlst_add
   (x: staerr): void = let
@@ -199,7 +201,8 @@ end // end of [prerr_the_staerrlst]
 (* ****** ****** *)
 
 implement
-funclo_equal_solve (loc0, fc1, fc2) =
+funclo_equal_solve
+  (loc0, fc1, fc2) =
   if fc1 = fc2 then () else let
     val () = prerr_staerr_funclo_equal (loc0, fc1, fc2)
   in
@@ -208,7 +211,8 @@ funclo_equal_solve (loc0, fc1, fc2) =
 // end of [funclo_equal_solve]
 
 implement
-funclo_equal_solve_err (loc0, fc1, fc2, err) =
+funclo_equal_solve_err
+  (loc0, fc1, fc2, err) =
   if fc1 = fc2 then () else let
     val () = err := err + 1
     val () = the_staerrlst_add (STAERR_funclo_equal (loc0, fc1, fc2))
@@ -220,37 +224,44 @@ funclo_equal_solve_err (loc0, fc1, fc2, err) =
 (* ****** ****** *)
 
 implement
-clokind_equal_solve_err (loc, knd1, knd2, err) =
+clokind_equal_solve_err
+  (loc, knd1, knd2, err) =
   if knd1 = knd2 then () else (err := err + 1)
 // end of [clokind_equal_solve_err]
 
 implement
-label_equal_solve_err (loc, l1, l2, err) =
+label_equal_solve_err
+  (loc, l1, l2, err) =
   if l1 = l2 then () else (err := err + 1)
 // end of [label_equal_solve_err]
 
 implement
-linearity_equal_solve_err (loc, lin1, lin2, err) =
+linearity_equal_solve_err
+  (loc, lin1, lin2, err) =
   if lin1 = lin2 then () else (err := err + 1)
 // end of [linearity_equal_solve_err]
 
 implement
-pfarity_equal_solve_err (loc, npf1, npf2, err) =
+pfarity_equal_solve_err
+  (loc, npf1, npf2, err) =
   if npf1 = npf2 then () else (err := err + 1)
 // end of [pfarity_equal_solve_err]
 
 implement
-refval_equal_solve_err (loc0, refval1, refval2, err) =
+refval_equal_solve_err
+  (loc0, refval1, refval2, err) =
   if refval1 = refval2 then () else (err := err + 1)
 // end of [refval_equal_solve_err]
 
 implement
-stamp_equal_solve_err (loc, s1, s2, err) =
+stamp_equal_solve_err
+  (loc, s1, s2, err) =
   if s1 = s2 then () else (err := err + 1)
 // end of [stamp_equal_solve_err]
 
 implement
-tyreckind_equal_solve_err (loc, knd1, knd2, err) =
+tyreckind_equal_solve_err
+  (loc, knd1, knd2, err) =
   if knd1 = knd2 then () else (err := err + 1)
 // end of [tyreckind_equal_solve_err]
 
@@ -262,7 +273,7 @@ s2exp_out_void_solve (loc0, s2e) = let
   val s2e = s2exp_whnf s2e
   val () = case+ s2e.s2exp_node of
     | S2Ecst s2c =>
-        if s2cstref_cst_equ (Void_t0ype, s2c) then () else err := err + 1
+        if s2cstref_equ_cst (Void_t0ype, s2c) then () else err := err + 1
       // end of [S2Ecst]
     | S2Eout _ => ()
     | S2Etyrec (_knd, _npf, ls2es) => loop (loc0, ls2es) where {
@@ -299,8 +310,8 @@ end // end of [s2exp_out_void_solve_at]
 (* ****** ****** *)
 
 fn s2exp_nonlin_test_err (
-    loc: loc_t, s2e: s2exp, err: &int
-   ) : void =
+  loc: loc_t, s2e: s2exp, err: &int
+) : void =
   if s2exp_is_linear s2e then let
     val () = err := err + 1
     val () = the_staerrlst_add (STAERR_s2exp_linearity (loc, s2e))
@@ -310,13 +321,13 @@ fn s2exp_nonlin_test_err (
 // end of [s2exp_nonlin_test_err]
 
 fn s2exp_equal_solve_abscon_err (
+  loc0: loc_t, s2e1: s2exp, s2e2: s2exp, err: &int
+) : void = let
+//
+  fun aux_solve ( // nontailrec
     loc0: loc_t
   , s2e1: s2exp, s2e2: s2exp, err: &int
-  ) : void = let
-  fun aux_solve ( // nontailrec
-      loc0: loc_t
-    , s2e1: s2exp, s2e2: s2exp, err: &int
-    ) : void = begin
+  ) : void = begin
     case+ (s2e1.s2exp_node, s2e2.s2exp_node) of
     | (S2Eapp (s2e11, s2es12), S2Eapp (s2e21, s2es22)) => let
         val () = aux_solve (loc0, s2e11, s2e21, err)
@@ -326,25 +337,26 @@ fn s2exp_equal_solve_abscon_err (
       end // end of [S2Eapp, S2Eapp]
     | (_, _) => ()
   end // end of [aux_solve]
-
+//
   fun aux_check ( // tailrec
-      s2e1: s2exp, s2e2: s2exp
-    ) : bool = begin
+    s2e1: s2exp, s2e2: s2exp
+  ) : bool = begin
     case+ (s2e1.s2exp_node, s2e2.s2exp_node) of
     | (S2Ecst s2c1, S2Ecst s2c2) => eq_s2cst_s2cst (s2c1, s2c2)
     | (S2Eapp (s2e1, _), S2Eapp (s2e2, _)) => aux_check (s2e1, s2e2)
     | (_, _ ) => false
   end // end of [aux_check]
-
+//
   val coneq = aux_check (s2e1, s2e2)
+//
 in
   if coneq then aux_solve (loc0, s2e1, s2e2, err) else (err := err + 1)
 end // end of [s2exp_equal_solve_abscon_err]
 
 fn s2exp_equal_solve_appvar_err (
-    loc0: loc_t
-  , s2e1: s2exp, s2e2: s2exp, err: &int
-  ) : void = aux (loc0, s2e1, s2e2, err) where {
+  loc0: loc_t
+, s2e1: s2exp, s2e2: s2exp, err: &int
+) : void = let
   fun aux
     (loc0: loc_t, s2e1: s2exp, s2e2: s2exp, err: &int)
     : void = begin
@@ -355,7 +367,9 @@ fn s2exp_equal_solve_appvar_err (
       end // end of [S2Eapp, S2Eapp]
     | (_, _) => ()
   end // end of [aux]
-} // end of [s2exp_equal_solve_appvar_err]
+in
+  aux (loc0, s2e1, s2e2, err)
+end // end of [s2exp_equal_solve_appvar_err]
 
 (* ****** ****** *)
 
@@ -1003,11 +1017,12 @@ end // end of [s2eff_leq_solve_err]
 
 (* ****** ****** *)
 
-fun s2exp_tyleq_solve_lbs_err
-  (loc0: loc_t, lbs: s2Varboundlst, s2e: s2exp, err: &int): void =
+fun s2exp_tyleq_solve_lbs_err (
+  loc0: loc_t, lbs: s2Varboundlst, s2e: s2exp, err: &int
+) : void =
   case+ lbs of
   | cons (lb, lbs) => let
-      val lb_s2e = s2Varbound_val_get lb
+      val lb_s2e = s2Varbound_get_val (lb)
       val () = s2exp_tyleq_solve_err (loc0, lb_s2e, s2e, err)
     in
       s2exp_tyleq_solve_lbs_err (loc0, lbs, s2e, err)
@@ -1015,17 +1030,20 @@ fun s2exp_tyleq_solve_lbs_err
   | nil () => ()
 // end of [s2exp_tyleq_solve_lbs_err]
 
-fun s2exp_tyleq_solve_ubs_err
-  (loc0: loc_t, s2e: s2exp, ubs: s2Varboundlst, err: &int): void =
+fun s2exp_tyleq_solve_ubs_err (
+  loc0: loc_t, s2e: s2exp, ubs: s2Varboundlst, err: &int
+) : void =
   case+ ubs of
   | cons (ub, ubs) => let
-      val ub_s2e = s2Varbound_val_get ub
+      val ub_s2e = s2Varbound_get_val (ub)
       val () = s2exp_tyleq_solve_err (loc0, s2e, ub_s2e, err)
     in
       s2exp_tyleq_solve_ubs_err (loc0, s2e, ubs, err)
     end // end of [cons]
   | nil () => ()
 // end of [s2exp_tyleq_solve_ubs_err]
+
+(* ****** ****** *)
 
 implement
 s2exp_equal_solve_Var_err (loc0, s2V1, s2e1, s2e2, err) = let

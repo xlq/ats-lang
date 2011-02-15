@@ -187,16 +187,16 @@ extern typedef "p3at_t" = p3at
 %{$
 
 ats_void_type
-ats_dynexp3_p3at_typ_set (
+atsopt_p3at_set_typ (
   ats_ptr_type p3t, ats_ptr_type s2e) {
   ((p3at_t)p3t)->atslab_p3at_typ = s2e ; return ;
-}
+} // end of [atsopt_p3at_set_typ]
 
 ats_void_type
-ats_dynexp3_p3at_typ_lft_set (
+atsopt_p3at_set_typ_lft (
   ats_ptr_type p3t, ats_ptr_type os2e) {
   ((p3at_t)p3t)->atslab_p3at_typ_lft = os2e ; return ;
-}
+} // end of [atsopt_p3at_set_typ_lft]
 
 %} // end of [%{$]
 
@@ -358,7 +358,8 @@ in '{
 
 (* ****** ****** *)
 
-implement d3exp_assgn_ptr (loc, d3e_ptr, d3ls, d3e_val) = let
+implement d3exp_assgn_ptr
+  (loc, d3e_ptr, d3ls, d3e_val) = let
   val s2fe = d3e_ptr.d3exp_eff
   val s2fe = d3lab1lst_eff_union (s2fe, d3ls)
   val s2fe = d3exp_eff_union (s2fe, d3e_val)
@@ -407,7 +408,8 @@ implement d3exp_char
 , d3exp_node= D3Echar c
 } // end of [d3exp_char]
 
-implement d3exp_con (loc, s2e, d2c, npf, d3es_arg) = let
+implement d3exp_con
+  (loc, s2e, d2c, npf, d3es_arg) = let
   val isuni = aux d3es_arg where {
     fun aux (d3es: d3explst): bool = case+ d3es of
       | list_cons (d3e, d3es) => begin
@@ -418,7 +420,7 @@ implement d3exp_con (loc, s2e, d2c, npf, d3es_arg) = let
   var s2e: s2exp = s2e
   val () =
     if isuni then let
-      val s2es_arg = d3explst_typ_get d3es_arg
+      val s2es_arg = d3explst_get_typ d3es_arg
     in
       s2e := s2exp_datcontyp (d2c, s2es_arg)
     end 
@@ -429,11 +431,12 @@ in '{
 , d3exp_node= D3Econ (d2c, npf, d3es_arg)
 } end // end of [d3exp_con]
 
-implement d3exp_crypt (loc, s2e, knd, d3e) =  '{
+implement
+d3exp_crypt (loc, s2e, knd, d3e) =  '{
   d3exp_loc= loc
 , d3exp_eff= d3e.d3exp_eff, d3exp_typ= s2e
 , d3exp_node= D3Ecrypt (knd, d3e)
-}
+} // end of [d3exp_crypt]
 
 (* ****** ****** *)
 
@@ -984,31 +987,31 @@ extern typedef "d3exp_t" = d3exp
 %{$
 
 ats_void_type
-ats_dynexp3_d3exp_typ_set (
+ats_dynexp3_d3exp_set_typ (
   ats_ptr_type d3e, ats_ptr_type s2e
 ) {
   ((d3exp_t)d3e)->atslab_d3exp_typ = s2e ; return ;
-} // end of [ats_dynexp3_d3exp_typ_set]
+} // end of [ats_dynexp3_d3exp_set_typ]
 
 %} // end of [%{$]
 
 (* ****** ****** *)
 
 implement
-d3explst_typ_get
+d3explst_get_typ
   (d3es) = begin case+ d3es of
-  | cons (d3e, d3es) => cons (d3e.d3exp_typ, d3explst_typ_get d3es)
+  | cons (d3e, d3es) => cons (d3e.d3exp_typ, d3explst_get_typ d3es)
   | nil () => nil ()
-end // end of [d3explst_typ_get]
+end // end of [d3explst_get_typ]
 
 implement
-labd3explst_typ_get
+labd3explst_get_typ
   (ld3es) = begin case+ ld3es of
   | LABD3EXPLSTcons (l, d3e, ld3es) => begin
-      LABS2EXPLSTcons (l, d3e.d3exp_typ, labd3explst_typ_get ld3es)
+      LABS2EXPLSTcons (l, d3e.d3exp_typ, labd3explst_get_typ ld3es)
     end // end of [LABD3EXPLSTcons]
   | LABD3EXPLSTnil () => LABS2EXPLSTnil ()
-end // end of [labd3explst_typ_get]
+end // end of [labd3explst_get_typ]
 
 (* ****** ****** *)
 

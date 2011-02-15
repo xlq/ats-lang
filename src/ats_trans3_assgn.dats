@@ -49,6 +49,9 @@ staload SOL = "ats_staexp2_solve.sats"
 staload "ats_staexp2.sats"
 staload "ats_dynexp2.sats"
 staload "ats_stadyncst2.sats"
+
+(* ****** ****** *)
+
 staload "ats_trans3_env.sats"
 
 (* ****** ****** *)
@@ -62,7 +65,7 @@ overload prerr with $Loc.prerr_location
 (* ****** ****** *)
 
 implement
-s2exp_addr_slablst_assgn
+s2exp_addr_assgn_slablst
   (loc0, s2e0, s2ls0, s2e_new) = let
   val @(s2r0, s2ls0_ft) = s2exp_addr_normalize s2e0
   val s2ls0 = $Lst.list_append (s2ls0_ft, s2ls0)
@@ -74,14 +77,14 @@ in
         the_d2varset_env_d2var_is_llam_local d2v_view
       var cstr: s2explst = list_nil ()
       val (s2e_old, s2e_vt, s2ls_bk) = begin
-        s2exp_slablst_linset_cstr (loc0, s2e_vt, s2ls_bk, s2e_new, cstr)
+        s2exp_linset_slablst_cstr (loc0, s2e_vt, s2ls_bk, s2e_new, cstr)
       end // end of [val]
       val () = trans3_env_add_proplst (loc0, cstr)
 (*
       val () = begin
-        print "s2exp_addr_slablst_assgn: d2v_view = "; print d2v_view; print_newline ();
-        print "s2exp_addr_slablst_assgn: s2e_vt = "; print s2e_vt; print_newline ();
-        print "s2exp_addr_slablst_assgn: s2e_addr = "; print s2e_addr; print_newline ();
+        print "s2exp_addr_assgn_slablst: d2v_view = "; print d2v_view; print_newline ();
+        print "s2exp_addr_assgn_slablst: s2e_vt = "; print s2e_vt; print_newline ();
+        print "s2exp_addr_assgn_slablst: s2e_addr = "; print s2e_addr; print_newline ();
       end // end of [val]
 *)
       val s2ls0_bk = s2lablst_trim_s2lablst_s2lablst (s2ls0_ft, s2ls_ft, s2ls_bk)
@@ -125,12 +128,12 @@ in
       prerr_newline ();
       $Err.abort {s2lablst} ()
     end // end of [None_vt]
-end // end of [s2exp_addr_slablst_assgn]
+end // end of [s2exp_addr_assgn_slablst]
 
 (* ****** ****** *)
 
 implement
-d2var_lin_slablst_assgn
+d2var_lin_assgn_slablst
   (loc0, d2v, s2ls, s2e_new) = let
 //
 // HX-2010-10-20:
@@ -139,7 +142,7 @@ d2var_lin_slablst_assgn
 //
 (*
   val () = begin
-    print "d2var_lin_slablst_assgn: d2v = "; print d2v; print_newline ()
+    print "d2var_lin_assgn_slablst: d2v = "; print d2v; print_newline ()
   end // end of [val]
 *)
   val s2e0 = (case+ d2var_get_typ d2v of
@@ -147,16 +150,16 @@ d2var_lin_slablst_assgn
   ) : s2exp // end of [val]
 (*
   val () = begin
-    print "d2var_lin_slablst_assgn: s2e0 = "; print s2e0; print_newline ()
+    print "d2var_lin_assgn_slablst: s2e0 = "; print s2e0; print_newline ()
   end // end of [val]
 *)
   var cstr: s2explst = list_nil ()
   val (s2e_old, s2e0, s2ls) = begin
-    s2exp_slablst_linset_cstr (loc0, s2e0, s2ls, s2e_new, cstr)
+    s2exp_linset_slablst_cstr (loc0, s2e0, s2ls, s2e_new, cstr)
   end // end of [val]
 (*
   val () = begin
-    print "d2var_lin_slablst_assgn: s2e0 = "; print s2e0; print_newline ()
+    print "d2var_lin_assgn_slablst: s2e0 = "; print s2e0; print_newline ()
   end // end of [val]
 *)
   val () = trans3_env_add_proplst (loc0, cstr)
@@ -179,12 +182,12 @@ d2var_lin_slablst_assgn
   val () = d2var_set_typ (d2v, Some s2e0)
 in
   s2ls
-end // end of [d2var_lin_slablst_assgn]
+end // end of [d2var_lin_assgn_slablst]
 
 (* ****** ****** *)
 
 implement
-d2var_mut_slablst_assgn
+d2var_mut_assgn_slablst
   (loc0, d2v, s2ls, s2e_new) = let
   val s2e_addr = (case+ d2var_get_addr d2v of
     | Some s2e => s2e
@@ -198,8 +201,8 @@ d2var_mut_slablst_assgn
       end // end of [None]
   ) : s2exp // end of [val]
 in
-  s2exp_addr_slablst_assgn (loc0, s2e_addr, s2ls, s2e_new)
-end // end of [d2var_mut_slablst_assgn]
+  s2exp_addr_assgn_slablst (loc0, s2e_addr, s2ls, s2e_new)
+end // end of [d2var_mut_assgn_slablst]
 
 (* ****** ****** *)
 

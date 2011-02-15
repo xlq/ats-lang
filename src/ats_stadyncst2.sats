@@ -45,11 +45,11 @@ abstype s2cstref_t // boxed type
 
 fun s2cstref_make (name: string): s2cstref_t
 
-fun s2cstref_cst_get (_: s2cstref_t): s2cst_t
-fun s2cstref_exp_get (_: s2cstref_t, _: Option_vt s2explst): s2exp
-fun s2cstref_exp_unget (_: s2cstref_t, _: s2exp): Option_vt (s2explst)
-fun s2cstref_cst_equ (_: s2cstref_t, _: s2cst_t): bool
-fun s2cstref_exp_equ (_: s2cstref_t, _: s2exp): bool
+fun s2cstref_get_cst (_: s2cstref_t): s2cst_t
+fun s2cstref_get_exp (_: s2cstref_t, _: Option_vt s2explst): s2exp
+fun s2cstref_unget_exp (_: s2cstref_t, _: s2exp): Option_vt (s2explst)
+fun s2cstref_equ_cst (_: s2cstref_t, _: s2cst_t): bool
+fun s2cstref_equ_exp (_: s2cstref_t, _: s2exp): bool
 
 (* ****** ****** *)
 
@@ -257,7 +257,7 @@ val ThunkValue_vt_thunk : d2conref_t and ThunkValue_vt_value : d2conref_t
 abstype d2cstref_t // boxed type
 
 fun d2cstref_make (name: string): d2cstref_t
-fun d2cstref_cst_get (_: d2cstref_t): d2cst_t
+fun d2cstref_get_cst (_: d2cstref_t): d2cst_t
 
 val Ats_main_void : d2cstref_t
 val Ats_main_argc_argv : d2cstref_t

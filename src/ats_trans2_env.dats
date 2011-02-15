@@ -304,7 +304,7 @@ implement the_s2expenv_add_scst (s2c) = let
     print "s2expenv_add_scst: s2c = "; print s2c; print_newline ()
   end
   val () = begin
-    print "s2expenv_add_scst: s2c_s2t = "; print (s2cst_srt_get s2c);
+    print "s2expenv_add_scst: s2c_s2t = "; print (s2cst_get_srt s2c);
     print_newline ()
   end // end of [val]
 *)

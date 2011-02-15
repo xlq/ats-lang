@@ -193,13 +193,13 @@ fn d2exp_float_tr_dn
 in
   case+ s2e0.s2exp_node of
   | S2Ecst s2c => begin case+ s2c of
-    | _ when s2cstref_cst_equ (Double_t0ype, s2c) => begin
+    | _ when s2cstref_equ_cst (Double_t0ype, s2c) => begin
         d3exp_float (loc0, s2e0, fcst)
       end
-    | _ when s2cstref_cst_equ (Float_t0ype, s2c) => begin
+    | _ when s2cstref_equ_cst (Float_t0ype, s2c) => begin
         d3exp_float (loc0, s2e0, fcst)
       end
-    | _ when s2cstref_cst_equ (Double_long_t0ype, s2c) => begin
+    | _ when s2cstref_equ_cst (Double_long_t0ype, s2c) => begin
         d3exp_float (loc0, s2e0, fcst)
       end
     | _ => err (loc0, s2e0)
@@ -308,7 +308,7 @@ in
   | S2Eapp (s2e_fun, s2es_arg) => begin
     case+ s2e_fun.s2exp_node of
     | S2Ecst s2c => begin case+ s2c of
-      | _ when s2cstref_cst_equ (Int_int_t0ype, s2c) => let
+      | _ when s2cstref_equ_cst (Int_int_t0ype, s2c) => let
           val s2i = (case+ s2es_arg of
             | list_cons (s2e, _) => s2e
             | _ => begin
@@ -321,7 +321,7 @@ in
         in
           d3exp_int (loc0, s2e0, istr, icst)
         end // [Int_int_t0ype]
-      | _ when s2cstref_cst_equ (Size_int_t0ype, s2c) => let
+      | _ when s2cstref_equ_cst (Size_int_t0ype, s2c) => let
           val () = szcheck (loc0, icst)
           val s2i = (case+ s2es_arg of
             | list_cons (s2e, _) => s2e
@@ -340,10 +340,10 @@ in
     | _ => d2exp_tr_dn_rest (d2e0, s2e0)
     end // end [S2Eapp]
   | S2Ecst s2c => begin case+ s2c of
-    | _ when s2cstref_cst_equ (Int_t0ype, s2c) => begin
+    | _ when s2cstref_equ_cst (Int_t0ype, s2c) => begin
         d3exp_int (loc0, s2e0, istr, icst)
       end // end of [_ when ...]
-    | _ when s2cstref_cst_equ (Size_t0ype, s2c) => let
+    | _ when s2cstref_equ_cst (Size_t0ype, s2c) => let
         val () = szcheck (loc0, icst)
       in
         d3exp_int (loc0, s2e0, istr, icst)
@@ -444,7 +444,7 @@ in
   | S2Eapp (s2e_fun, s2es_arg) => begin
     case+ s2e_fun.s2exp_node of
     | S2Ecst s2c => begin case+ s2c of
-      | _ when s2cstref_cst_equ (String_int_type, s2c) => let
+      | _ when s2cstref_equ_cst (String_int_type, s2c) => let
           val s2i = (case+ s2es_arg of
             | list_cons (s2e, _) => s2e | _ => begin
                 prerr_interror ();
@@ -458,7 +458,7 @@ in
         in
           d3exp_string (loc0, s2e0, str, len)
         end // [String_int_type]
-      | _ when s2cstref_cst_equ (Printf_c_types_type, s2c) => let
+      | _ when s2cstref_equ_cst (Printf_c_types_type, s2c) => let
           val s2e_arg = (case+ s2es_arg of
             | list_cons (s2e, _) => s2e | list_nil () => begin
                 prerr_interror ();
@@ -492,7 +492,7 @@ in
     | _ => err (loc0, s2e0)
     end // end of [S2Eapp]
   | S2Ecst s2c => begin case+ s2c of
-    | _ when s2cstref_cst_equ (String_type, s2c) => begin
+    | _ when s2cstref_equ_cst (String_type, s2c) => begin
         d3exp_string (loc0, s2e0, str, len)
       end
     | _ => err (loc0, s2e0)
@@ -645,7 +645,7 @@ val d3e0 = case+ d2e0.d2exp_node of
           val () = trans3_env_hypo_add_proplst (loc0, s2ps)
           val d3e0 = d2exp_tr_dn (d2e0, s2e)
           val () = trans3_env_pop_sta_and_add_none (loc0)
-          val () = d3exp_typ_set (d3e0, s2e0)
+          val () = d3exp_set_typ (d3e0, s2e0)
         in
           d3e0
         end // end of [S2Euni]
@@ -708,7 +708,7 @@ val d3e0 = case+ d2e0.d2exp_node of
           val d3e0 = d2exp_tr_up d2e0
           val () = $SOL.s2exp_tyleq_solve (loc0, d3e0.d3exp_typ, s2e0)
           val () = if iswth > 0 then funarg_varfin_check (loc0)
-          val () = d3exp_typ_set (d3e0, s2e0)
+          val () = d3exp_set_typ (d3e0, s2e0)
         in
           d3e0
         end // end of [_]
@@ -826,7 +826,7 @@ d2exp_tr_dn_rest (d2e0, s2e0) = let
     end // end of [if]
   val () = $SOL.s2exp_tyleq_solve (loc0, d3e0.d3exp_typ, s2e0)
   val () = if iswth > 0 then funarg_varfin_check (loc0)
-  val () = d3exp_typ_set (d3e0, s2e0)
+  val () = d3exp_set_typ (d3e0, s2e0)
 in
   d3e0
 end // end of [d2exp_tr_dn_rest]
@@ -839,7 +839,7 @@ assert_bool_tr_dn (loc0, b, s2e0) = let
 in
   case+ s2e0.s2exp_node of
   | S2Eapp (s2e_fun, s2es_arg) when
-      s2cstref_exp_equ (Bool_bool_t0ype, s2e_fun) => let
+      s2cstref_equ_exp (Bool_bool_t0ype, s2e_fun) => let
       val s2e_arg = case+ s2es_arg of
       | cons (s2e, _) => s2e
       | nil _ => begin
@@ -872,7 +872,7 @@ fn m2atch_tr_up
       in
         None ()
       end // end of [None]
-  ) : p3atopt
+  ) : p3atopt // end of [val]
 in
   m3atch_make (loc0, d3e, op3t)
 end // end of [m2atch_tr_up]
@@ -907,9 +907,9 @@ implement c2lau_tr_dn
       | cons (d3e, d3es) => let
           val+ cons (p3t, p3ts) = p3ts
         in
-          d3exp_lval_typ_set_pat (d3e, p3t); aux (d3es, p3ts)
-        end
-      | nil () => ()
+          d3exp_lval_set_typ_pat (d3e, p3t); aux (d3es, p3ts)
+        end // end of [cons]
+      | nil () => () // end of [nil]
   } // end of [where]
 
   val gua = m2atchlst_tr_up (c2l.c2lau_gua)
@@ -1129,7 +1129,7 @@ d2exp_caseof_tr_dn
 *)
   val d3es = d2explst_tr_up d2es
   val () = d3explst_open_and_add d3es
-  val s2es_pat = d3explst_typ_get d3es
+  val s2es_pat = d3explst_get_typ d3es
   val r2es = i2nvresstate_update (r2es) // each var is replaced with its view
   var cmplt: int = 0
   val c3ls = c2laulst_tr_dn

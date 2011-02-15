@@ -188,7 +188,7 @@ p2at_typ_syn (p2t0) = let
       end // end of [P2Tvbox]
   ) : s2exp // end of [val]
 in
-  p2at_typ_set (p2t0, Some s2e0); s2e0
+  p2at_set_typ (p2t0, Some s2e0); s2e0
 end // end of [p2at_typ_syn]
 
 implement
@@ -243,7 +243,7 @@ fn p2at_any_tr_dn
   val () = d2var_set_typ (d2v, None ())
 *)
   val () = begin
-    if s2exp_is_linear s2e then p3at_typ_lft_set (p3t, Some s2e)
+    if s2exp_is_linear s2e then p3at_set_typ_lft (p3t, Some s2e)
   end // end of [val]
 in
   p3t
@@ -258,7 +258,7 @@ fn p2at_bool_tr_dn (
 in
   case+ s2e0.s2exp_node of
   | S2Eapp (s2e_fun, s2es_arg) when
-      s2cstref_exp_equ (Bool_bool_t0ype, s2e_fun) => let
+      s2cstref_equ_exp (Bool_bool_t0ype, s2e_fun) => let
       val s2e_arg = case+ s2es_arg of
       | list_cons (s2e, _) => s2e | list_nil _ => begin
           prerr_loc_interror loc0;
@@ -286,7 +286,7 @@ fn p2at_char_tr_dn
 in
   case+ s2e0.s2exp_node of
   | S2Eapp (s2e_fun, s2es_arg) when
-      s2cstref_exp_equ (Char_char_t0ype, s2e_fun) => let
+      s2cstref_equ_exp (Char_char_t0ype, s2e_fun) => let
       val s2e_arg = case+ s2es_arg of
       | list_cons (s2e, _) => s2e | list_nil _ => begin
           prerr_loc_interror loc0;
@@ -432,7 +432,7 @@ fn p3at_con_free_update
   } // end of [aux_p3atlst]
 in
   if freeknd > 0 then (
-    p3at_typ_lft_set (p3t0, Some (s2exp_datconptr (d2c, s2es_addr)))
+    p3at_set_typ_lft (p3t0, Some (s2exp_datconptr (d2c, s2es_addr)))
   ) // end of [if]
 end // end of [p3at_con_free_update]
 
@@ -555,7 +555,7 @@ fn p2at_con_tr_dn (
       end (* end of [Some_vt] *)
     | ~None_vt () => ()
   // end of [val]
-  val s2e_head = s2exp_head_get s2e0
+  val s2e_head = s2exp_get_head (s2e0)
   var flag: int = ~1 and freeknd: int = freeknd
   var s2es_arg_var: s2explst = list_nil ()
   val () = case+ s2e_head.s2exp_node of
@@ -1036,7 +1036,7 @@ in
     in
       case+ s2e0.s2exp_node of
       | S2Eapp (s2e_fun, s2es_arg) when
-          s2cstref_exp_equ (Int_int_t0ype, s2e_fun) => let
+          s2cstref_equ_exp (Int_int_t0ype, s2e_fun) => let
           val s2e_arg = case+ s2es_arg of
           | list_cons (s2e, _) => s2e | list_nil () => begin
               prerr_loc_interror loc0;
@@ -1066,7 +1066,7 @@ in
     in
       case+ s2e0.s2exp_node of
       | S2Eapp (s2e_fun, s2es_arg) when
-          s2cstref_exp_equ (String_int_type, s2e_fun) => let
+          s2cstref_equ_exp (String_int_type, s2e_fun) => let
           val s2e_arg = case+ s2es_arg of
           | list_cons (s2e, _) => s2e | list_nil _ => begin
               prerr_loc_interror loc0;
@@ -1168,7 +1168,7 @@ implement p2at_arg_tr_dn (p2t0, s2e0) = let
               val p3t0 = p2at_var_tr_dn (p2t0, refknd, d2v, s2e_arg)
               val () = d2var_set_mastyp (d2v, Some s2e_arg)
             in
-              p3at_typ_set (p3t0, s2e0); p3t0
+              p3at_set_typ (p3t0, s2e0); p3t0
             end // end of [refval = 0]
           | _ (*refval = 1*) => let // call-by-reference
               val loc0 = p2t0.p2at_loc

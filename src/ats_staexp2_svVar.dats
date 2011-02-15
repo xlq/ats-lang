@@ -321,7 +321,9 @@ assume s2Varbound_t =
 
 in // in of [local]
 
-implement s2Varbound_make (loc, s2e) = let
+implement
+s2Varbound_make
+  (loc, s2e) = let
   val (pf_gc, pf | p) = begin
     ptr_alloc_tsz {s2Varbound_struct} (sizeof<s2Varbound_struct>)
   end // end of [val]
@@ -332,17 +334,20 @@ in
   (pfbox | p)
 end // end of [s2Varbound_make]
 
-implement s2Varbound_loc_get (s2Vb) =
+implement s2Varbound_get_loc (s2Vb) =
   let val (vbox pf | p) = s2Vb in p->s2Varbound_loc end
+// end of [s2Varbound_get_loc]
 
-implement s2Varbound_val_get (s2Vb) =
+implement s2Varbound_get_val (s2Vb) =
   let val (vbox pf | p) = s2Vb in p->s2Varbound_val end
+// end of [s2Varbound_get_val]
 
 end // end of [local] // for assuming [s2Varbound_t]
 
 (* ****** ****** *)
 
-typedef s2Var_struct = @{
+typedef
+s2Var_struct = @{
   s2Var_loc= loc_t // location
 , s2Var_cnt= count_t // name count
 , s2Var_srt= s2rt // sort may be lowered
@@ -353,7 +358,7 @@ typedef s2Var_struct = @{
 , s2Var_ubs= s2Varboundlst // upper bounds
 , s2Var_sVarset = s2Varset_t // avoided variable set
 , s2Var_stamp= stamp_t // uniqueness
-}
+} // end of [s2Var_struct]
 
 local
 

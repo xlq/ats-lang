@@ -207,7 +207,7 @@ implement lamkind_atllam (t) = LAMKINDatllam (t)
 implement fixkind_fix (t) = LAMKINDfix (t)
 implement fixkind_atfix (t) = LAMKINDatfix (t)
 
-fun lamkind_loc_get
+fun lamkind_get_loc
   (knd: lamkind): loc_t = case+ knd of
   | LAMKINDlam tok => tok.t0kn_loc
   | LAMKINDatlam tok => tok.t0kn_loc
@@ -216,7 +216,7 @@ fun lamkind_loc_get
   | LAMKINDfix tok => tok.t0kn_loc
   | LAMKINDatfix tok => tok.t0kn_loc
   | LAMKINDifix loc => loc // HX: implicit FIX
-// end of [lamkind_loc_get]
+// end of [lamkind_get_loc]
 
 (* ****** ****** *)
 
@@ -1943,7 +1943,7 @@ in '{
 implement
 d0exp_fix
   (knd, id, arg, res, eff, d0e) = let
-  val loc_knd = lamkind_loc_get (knd)
+  val loc_knd = lamkind_get_loc (knd)
   val loc = combine (loc_knd, d0e.d0exp_loc)
 in '{
   d0exp_loc= loc, d0exp_node= D0Efix (knd, id, arg, res, eff, d0e)
@@ -2058,7 +2058,7 @@ implement d0exp_intsp (i) = '{
 
 implement d0exp_lam
   (knd, arg, res, eff, d0e) = let
-  val loc_knd = lamkind_loc_get (knd)
+  val loc_knd = lamkind_get_loc (knd)
   val loc = combine (loc_knd, d0e.d0exp_loc)
 in '{
   d0exp_loc= loc, d0exp_node= D0Elam (knd, arg, res, eff, d0e)

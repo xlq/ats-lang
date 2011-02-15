@@ -166,7 +166,7 @@ fn v2aldec_tr
       end
   end // end of [val]
 *)
-  val () = d3exp_lval_typ_set_pat (d3e_def, p3t)
+  val () = d3exp_lval_set_typ_pat (d3e_def, p3t)
   val () = the_d2varset_env_add_p2at (p2t)
 (*
   val () = let
@@ -230,7 +230,7 @@ fun v2aldeclst_rec_tr
           val d3e_def = d2exp_tr_dn (d2e_def, s2e_pat)
 (*
           // this is not needed as [s2e_pat] cannot be linear!
-          val () = d3exp_lval_typ_set_pat (d3e_def, p3t)
+          val () = d3exp_lval_set_typ_pat (d3e_def, p3t)
           val () = the_d2varset_env_add_p2at (d2c.v2aldec_pat)
 *)
 
@@ -284,19 +284,19 @@ fn f2undec_tr (d2c: f2undec): d3exp = let
 *)
 (*
   val s2e_fun_gen = s2exp_generalize s2e_fun
-  val () = d3exp_typ_set (d2e_def, s2e_fun_gen)
+  val () = d3exp_set_typ (d2e_def, s2e_fun_gen)
   val () = begin
     print "f2undec_tr: s2e_fun_gen = ";
     print d3e_def.d3exp_typ; print_newline ()
-  end
+  end // end of [val]
   val () = let
     val s3is = trans3_env_s3itemlst_copy ()
     val () = begin
       print "f2undec_tr: s3is = "; print_s3itemlst_vt s3is; print_newline ()
-    end
+    end // end of [val]
   in
     $Lst.list_vt_free (s3is)
-  end
+  end // end of [val]
 *)
 in
   d3e_def
@@ -823,18 +823,19 @@ implement d2eclst_tr (d2cs) = $Lst.list_map_fun (d2cs, d2ec_tr)
 
 (* ****** ****** *)
 
-implement c3str_final_get () = let
+implement
+c3str_get_final () = let
  val s3is = trans3_env_s3itemlst_get ()
  val s3is_rev = $Lst.list_vt_reverse_list s3is
 (*
  val () = begin
-   print "c3str_final_get: s3is_rev = "; print_s3itemlst s3is_rev;
+   print "c3str_get_final: s3is_rev = "; print_s3itemlst s3is_rev;
    print_newline ()
  end // end of [val]
 *)
 in
  c3str_itmlst ($Loc.location_none, C3STRKINDnone (), s3is_rev)
-end // end of [c3str_final_get]
+end // end of [c3str_get_final]
 
 (* ****** ****** *)
 

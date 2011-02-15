@@ -170,14 +170,14 @@ fun s2Var_tr_named .<>. (
 ) : hityp = begin
   case+ s2Var_get_lbs s2V of
   | list_cons (s2Vb, _) => let
-      val s2elb = s2Varbound_val_get (s2Vb)
+      val s2elb = s2Varbound_get_val (s2Vb)
     in
       s2exp_tr_named (loc0, deep, s2elb, named)
     end // end of [list_cons]
   | list_nil () => begin
     case+ s2Var_get_ubs s2V of
     | list_cons (s2Vb, _) => let
-        val s2eub = s2Varbound_val_get (s2Vb)
+        val s2eub = s2Varbound_get_val (s2Vb)
       in
         s2exp_tr_named (loc0, deep, s2eub, named)
       end // end of [list_cons]

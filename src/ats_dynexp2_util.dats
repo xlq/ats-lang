@@ -111,13 +111,13 @@ d2exp_var_cst_is_ptr (d2e) = begin
   | D2Evar d2v => let
       val os2e = d2var_get_typ d2v in case+ os2e of
       | Some s2e => begin
-          s2cstref_exp_equ (Ptr_addr_type, s2exp_whnf s2e)
+          s2cstref_equ_exp (Ptr_addr_type, s2exp_whnf s2e)
         end // end of [Some]
       | None () => false
     end // end of [D2Evar]
   | D2Ecst d2c => let
       val s2e = d2cst_get_typ d2c in
-      s2cstref_exp_equ (Ptr_addr_type, s2exp_whnf s2e)
+      s2cstref_equ_exp (Ptr_addr_type, s2exp_whnf s2e)
     end // end of [D2Ecst]
   | _ => begin
       $Loc.prerr_location d2e.d2exp_loc;

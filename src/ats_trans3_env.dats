@@ -1978,58 +1978,58 @@ trans3_env_initialize () = () where {
   val () = the_s2varbindmap_initialize ()
 //
   val () = s2cst_add_sup (s2c1, s2c0) where {
-    val s2c0 = s2cstref_cst_get (Bool_t0ype)
-    val s2c1 = s2cstref_cst_get (Bool_bool_t0ype)
+    val s2c0 = s2cstref_get_cst (Bool_t0ype)
+    val s2c1 = s2cstref_get_cst (Bool_bool_t0ype)
   } // end of [where]
 //
   val () = s2cst_add_sup (s2c1, s2c0) where {
-    val s2c0 = s2cstref_cst_get (Char_t0ype)
-    val s2c1 = s2cstref_cst_get (Char_char_t0ype)
+    val s2c0 = s2cstref_get_cst (Char_t0ype)
+    val s2c1 = s2cstref_get_cst (Char_char_t0ype)
   } // end of [where]
 //
   val () = s2cst_add_sup (s2c1, s2c0) where {
-    val s2c0 = s2cstref_cst_get (Int_t0ype)
-    val s2c1 = s2cstref_cst_get (Int_int_t0ype)
+    val s2c0 = s2cstref_get_cst (Int_t0ype)
+    val s2c1 = s2cstref_get_cst (Int_int_t0ype)
   } // end of [where]
 //
   val () = s2cst_add_sup (s2c1, s2c0) where {
-    val s2c0 = s2cstref_cst_get (Uint_t0ype)
-    val s2c1 = s2cstref_cst_get (Uint_int_t0ype)
+    val s2c0 = s2cstref_get_cst (Uint_t0ype)
+    val s2c1 = s2cstref_get_cst (Uint_int_t0ype)
   } // end of [where]
 //
   val () = s2cst_add_sup (s2c1, s2c0) where {
-    val s2c0 = s2cstref_cst_get (Lint_t0ype)
-    val s2c1 = s2cstref_cst_get (Lint_int_t0ype)
+    val s2c0 = s2cstref_get_cst (Lint_t0ype)
+    val s2c1 = s2cstref_get_cst (Lint_int_t0ype)
   } // end of [where]
 //
   val () = s2cst_add_sup (s2c1, s2c0) where {
-    val s2c0 = s2cstref_cst_get (Ulint_t0ype)
-    val s2c1 = s2cstref_cst_get (Ulint_int_t0ype)
+    val s2c0 = s2cstref_get_cst (Ulint_t0ype)
+    val s2c1 = s2cstref_get_cst (Ulint_int_t0ype)
   } // end of [where]
 //
   val () = s2cst_add_sup (s2c1, s2c0) where {
-    val s2c0 = s2cstref_cst_get (Size_t0ype)
-    val s2c1 = s2cstref_cst_get (Size_int_t0ype)
+    val s2c0 = s2cstref_get_cst (Size_t0ype)
+    val s2c1 = s2cstref_get_cst (Size_int_t0ype)
   } // end of [where]
 //
   val () = s2cst_add_sup (s2c1, s2c0) where {
-    val s2c0 = s2cstref_cst_get (Ssize_t0ype)
-    val s2c1 = s2cstref_cst_get (Ssize_int_t0ype)
+    val s2c0 = s2cstref_get_cst (Ssize_t0ype)
+    val s2c1 = s2cstref_get_cst (Ssize_int_t0ype)
   } // end of [where]
 //
   val () = s2cst_add_sup (s2c1, s2c0) where {
-    val s2c0 = s2cstref_cst_get (Ptr_type)
-    val s2c1 = s2cstref_cst_get (Ptr_addr_type)
+    val s2c0 = s2cstref_get_cst (Ptr_type)
+    val s2c1 = s2cstref_get_cst (Ptr_addr_type)
   } // end of [where]
 //
   val () = s2cst_add_sup (s2c1, s2c0) where {
-    val s2c0 = s2cstref_cst_get (Strbuf_t0ype)
-    val s2c1 = s2cstref_cst_get (Strbuf_int_int_t0ype)
+    val s2c0 = s2cstref_get_cst (Strbuf_t0ype)
+    val s2c1 = s2cstref_get_cst (Strbuf_int_int_t0ype)
   } // end of [where]
 //
   val () = s2cst_add_sup (s2c1, s2c0) where {
-    val s2c0 = s2cstref_cst_get (String_type)
-    val s2c1 = s2cstref_cst_get (String_int_type)
+    val s2c0 = s2cstref_get_cst (String_type)
+    val s2c1 = s2cstref_get_cst (String_int_type)
   } // end of [where]
 //
   val () = clo_viewt0ype_viewt0ype_assume ()

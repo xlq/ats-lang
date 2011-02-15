@@ -150,8 +150,8 @@ fun p3at_vbox (_: loc_t, _: s2exp, _: d2var_t): p3at
 
 (* ****** ****** *)
 
-fun p3at_typ_set (_: p3at, _: s2exp): void = "ats_dynexp3_p3at_typ_set"
-fun p3at_typ_lft_set (_: p3at, _: s2expopt): void = "ats_dynexp3_p3at_typ_lft_set"
+fun p3at_set_typ (_: p3at, _: s2exp): void = "atsopt_p3at_set_typ"
+fun p3at_set_typ_lft (_: p3at, _: s2expopt): void = "atsopt_p3at_set_typ_lft"
 
 (* ****** ****** *)
 
@@ -419,11 +419,11 @@ and i3mpdec = '{
 
 (* ****** ****** *)
 
-fun d3exp_typ_set (d3e: d3exp, s2e: s2exp): void
-  = "ats_dynexp3_d3exp_typ_set"
+fun d3exp_set_typ (d3e: d3exp, s2e: s2exp): void
+  = "ats_dynexp3_d3exp_set_typ"
 
-fun d3explst_typ_get {n:nat} (d3es: d3explst n): s2explst n
-fun labd3explst_typ_get (ld3es: labd3explst): labs2explst
+fun d3explst_get_typ {n:nat} (d3es: d3explst n): s2explst n
+fun labd3explst_get_typ (ld3es: labd3explst): labs2explst
 
 (* ****** ****** *)
 

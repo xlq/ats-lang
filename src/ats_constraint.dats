@@ -495,7 +495,7 @@ s3aexp_make_s2cst_s2explst
   end // end of [errmsg]
 in
   case+ 0 of // this looks prettier than [if-then-else] sequence
-  | _ when s2cstref_cst_equ (Add_addr_int_addr, s2c) => begin
+  | _ when s2cstref_equ_cst (Add_addr_int_addr, s2c) => begin
     case+ s2es of
     | list_cons (s2e1, list_cons (s2e2, list_nil ())) => begin
       case+ s3aexp_make_s2exp (s2e1, s2cs, fds) of
@@ -508,7 +508,7 @@ in
       end // end of [list_cons]
     | _ => errmsg s2c
     end // end of [Add_addr_int_addr]
-  | _ when s2cstref_cst_equ (Sub_addr_int_addr, s2c) => begin
+  | _ when s2cstref_equ_cst (Sub_addr_int_addr, s2c) => begin
     case+ s2es of
     | list_cons (s2e1, list_cons (s2e2, list_nil ())) => begin
       case+ s3aexp_make_s2exp (s2e1, s2cs, fds) of
@@ -561,7 +561,7 @@ s3bexp_make_s2cst_s2explst
 in
   case+ 0 of
   // boolean negation
-  | _ when s2cstref_cst_equ (Neg_bool_bool, s2c) => begin
+  | _ when s2cstref_equ_cst (Neg_bool_bool, s2c) => begin
     case+ s2es of
     | list_cons (s2e, list_nil ()) => begin
       case+ s3bexp_make_s2exp (s2e, s2cs, fds) of
@@ -570,7 +570,7 @@ in
     | _ => errmsg s2c
     end // end of [Neg_bool_bool]
   // boolean addition/disjunction
-  | _ when s2cstref_cst_equ (Add_bool_bool_bool, s2c) => begin
+  | _ when s2cstref_equ_cst (Add_bool_bool_bool, s2c) => begin
     case+ s2es of
     | list_cons (s2e1, list_cons (s2e2, list_nil ())) => begin
       case+ s3bexp_make_s2exp (s2e1, s2cs, fds) of
@@ -584,7 +584,7 @@ in
     | _ => errmsg s2c
     end // end of [Add_bool_bool_bool]
   // boolean multiplication/conjuction
-  | _ when s2cstref_cst_equ (Mul_bool_bool_bool, s2c) => begin
+  | _ when s2cstref_equ_cst (Mul_bool_bool_bool, s2c) => begin
     case+ s2es of
     | list_cons (s2e1, list_cons (s2e2, list_nil ())) => begin
       case+ s3bexp_make_s2exp (s2e1, s2cs, fds) of
@@ -598,7 +598,7 @@ in
     | _ => errmsg s2c
     end // end of [Mul_bool_bool_bool]
   // boolean equality
-  | _ when s2cstref_cst_equ (Eq_bool_bool_bool, s2c) => begin
+  | _ when s2cstref_equ_cst (Eq_bool_bool_bool, s2c) => begin
     case+ s2es of
     | list_cons (s2e1, list_cons (s2e2, list_nil ())) => begin
       case+ s3bexp_make_s2exp (s2e1, s2cs, fds) of
@@ -612,7 +612,7 @@ in
     | _ => errmsg s2c
     end // end of [Eq_bool_bool_bool]
   // boolean inequality
-  | _ when s2cstref_cst_equ (Neq_bool_bool_bool, s2c) => begin
+  | _ when s2cstref_equ_cst (Neq_bool_bool_bool, s2c) => begin
     case+ s2es of
     | list_cons (s2e1, list_cons (s2e2, list_nil ())) => begin
       case+ s3bexp_make_s2exp (s2e1, s2cs, fds) of
@@ -626,7 +626,7 @@ in
     | _ => errmsg s2c
     end // end of [Neq_bool_bool_bool]
   // charater GT relation
-  | _ when s2cstref_cst_equ (Gt_char_char_bool, s2c) => begin
+  | _ when s2cstref_equ_cst (Gt_char_char_bool, s2c) => begin
     case+ s2es of
     | list_cons (s2e1, list_cons (s2e2, list_nil ())) => begin
       case+ s3iexp_make_s2exp (s2e1, s2cs, fds) of
@@ -640,7 +640,7 @@ in
     | _ => errmsg s2c
     end // end of [Gt_char_char_bool]
   // character GTE relation
-  | _ when s2cstref_cst_equ (Gte_char_char_bool, s2c) => begin
+  | _ when s2cstref_equ_cst (Gte_char_char_bool, s2c) => begin
     case+ s2es of
     | list_cons (s2e1, list_cons (s2e2, list_nil ())) => begin
       case+ s3iexp_make_s2exp (s2e1, s2cs, fds) of
@@ -654,7 +654,7 @@ in
     | _ => errmsg s2c
     end // end of [Gte_char_char_bool]
   // character LT relation
-  | _ when s2cstref_cst_equ (Lt_char_char_bool, s2c) => begin
+  | _ when s2cstref_equ_cst (Lt_char_char_bool, s2c) => begin
     case+ s2es of
     | list_cons (s2e1, list_cons (s2e2, list_nil ())) => begin
       case+ s3iexp_make_s2exp (s2e1, s2cs, fds) of
@@ -668,7 +668,7 @@ in
     | _ => errmsg s2c
     end // end of [Lt_char_char_bool]
   // charater LTE relation
-  | _ when s2cstref_cst_equ (Lte_char_char_bool, s2c) => begin
+  | _ when s2cstref_equ_cst (Lte_char_char_bool, s2c) => begin
     case+ s2es of
     | list_cons (s2e1, list_cons (s2e2, list_nil ())) => begin
       case+ s3iexp_make_s2exp (s2e1, s2cs, fds) of
@@ -682,7 +682,7 @@ in
     | _ => errmsg s2c
     end // end of [Lte_char_char_bool]
   // character equality
-  | _ when s2cstref_cst_equ (Eq_char_char_bool, s2c) => begin
+  | _ when s2cstref_equ_cst (Eq_char_char_bool, s2c) => begin
     case+ s2es of
     | list_cons (s2e1, list_cons (s2e2, list_nil ())) => begin
       case+ s3iexp_make_s2exp (s2e1, s2cs, fds) of
@@ -696,7 +696,7 @@ in
     | _ => errmsg s2c
     end // end of [Eq_char_char_bool]
   // character inequality
-  | _ when s2cstref_cst_equ (Neq_char_char_bool, s2c) => begin
+  | _ when s2cstref_equ_cst (Neq_char_char_bool, s2c) => begin
     case+ s2es of
     | list_cons (s2e1, list_cons (s2e2, list_nil ())) => begin
       case+ s3iexp_make_s2exp (s2e1, s2cs, fds) of
@@ -710,7 +710,7 @@ in
     | _ => errmsg s2c
     end // end of [Neq_char_char_bool]
   // integer GT relation
-  | _ when s2cstref_cst_equ (Gt_int_int_bool, s2c) => begin
+  | _ when s2cstref_equ_cst (Gt_int_int_bool, s2c) => begin
     case+ s2es of
     | list_cons (s2e1, list_cons (s2e2, list_nil ())) => begin
       case+ s3iexp_make_s2exp (s2e1, s2cs, fds) of
@@ -724,7 +724,7 @@ in
     | _ => errmsg s2c
     end // end of [Gt_int_int_bool]
   // integer GTE relation
-  | _ when s2cstref_cst_equ (Gte_int_int_bool, s2c) => begin
+  | _ when s2cstref_equ_cst (Gte_int_int_bool, s2c) => begin
     case+ s2es of
     | list_cons (s2e1, list_cons (s2e2, list_nil ())) => begin
       case+ s3iexp_make_s2exp (s2e1, s2cs, fds) of
@@ -738,7 +738,7 @@ in
     | _ => errmsg s2c
     end // end of [Gte_int_int_bool]
   // integer LT relation
-  | _ when s2cstref_cst_equ (Lt_int_int_bool, s2c) => begin
+  | _ when s2cstref_equ_cst (Lt_int_int_bool, s2c) => begin
     case+ s2es of
     | list_cons (s2e1, list_cons (s2e2, list_nil ())) => begin
       case+ s3iexp_make_s2exp (s2e1, s2cs, fds) of
@@ -752,7 +752,7 @@ in
     | _ => errmsg s2c
     end // end of [Lt_int_int_bool]
   // integer LTE relation
-  | _ when s2cstref_cst_equ (Lte_int_int_bool, s2c) => begin
+  | _ when s2cstref_equ_cst (Lte_int_int_bool, s2c) => begin
     case+ s2es of
     | list_cons (s2e1, list_cons (s2e2, list_nil ())) => begin
       case+ s3iexp_make_s2exp (s2e1, s2cs, fds) of
@@ -766,7 +766,7 @@ in
     | _ => errmsg s2c
     end // end of [Lte_int_int_bool]
   // integer equality
-  | _ when s2cstref_cst_equ (Eq_int_int_bool, s2c) => begin
+  | _ when s2cstref_equ_cst (Eq_int_int_bool, s2c) => begin
     case+ s2es of
     | list_cons (s2e1, list_cons (s2e2, list_nil ())) => begin
       case+ s3iexp_make_s2exp (s2e1, s2cs, fds) of
@@ -780,7 +780,7 @@ in
     | _ => errmsg s2c
     end // end of [Eq_int_int_bool]
   // integer inequality
-  | _ when s2cstref_cst_equ (Neq_int_int_bool, s2c) => begin
+  | _ when s2cstref_equ_cst (Neq_int_int_bool, s2c) => begin
     case+ s2es of
     | list_cons (s2e1, list_cons (s2e2, list_nil ())) => begin
       case+ s3iexp_make_s2exp (s2e1, s2cs, fds) of
@@ -794,7 +794,7 @@ in
     | _ => errmsg s2c
     end // end of [Neq_int_int_bool]
   // address GT relation
-  | _ when s2cstref_cst_equ (Gt_addr_addr_bool, s2c) => begin
+  | _ when s2cstref_equ_cst (Gt_addr_addr_bool, s2c) => begin
     case+ s2es of
     | list_cons (s2e1, list_cons (s2e2, list_nil ())) => begin
       case+ s3aexp_make_s2exp (s2e1, s2cs, fds) of
@@ -808,7 +808,7 @@ in
     | _ => errmsg s2c
     end // end of [Gt_addr_addr_bool]
   // address GTE relation
-  | _ when s2cstref_cst_equ (Gte_addr_addr_bool, s2c) => begin
+  | _ when s2cstref_equ_cst (Gte_addr_addr_bool, s2c) => begin
     case+ s2es of
     | list_cons (s2e1, list_cons (s2e2, list_nil ())) => begin
       case+ s3aexp_make_s2exp (s2e1, s2cs, fds) of
@@ -822,7 +822,7 @@ in
     | _ => errmsg s2c
     end // end of [Gte_addr_addr_bool]
   // address LT relation
-  | _ when s2cstref_cst_equ (Lt_addr_addr_bool, s2c) => begin
+  | _ when s2cstref_equ_cst (Lt_addr_addr_bool, s2c) => begin
     case+ s2es of
     | list_cons (s2e1, list_cons (s2e2, list_nil ())) => begin
       case+ s3aexp_make_s2exp (s2e1, s2cs, fds) of
@@ -836,7 +836,7 @@ in
     | _ => errmsg s2c
     end // end of [Lt_addr_addr_bool]
   // address LTE relation
-  | _ when s2cstref_cst_equ (Lte_addr_addr_bool, s2c) => begin
+  | _ when s2cstref_equ_cst (Lte_addr_addr_bool, s2c) => begin
     case+ s2es of
     | list_cons (s2e1, list_cons (s2e2, list_nil ())) => begin
       case+ s3aexp_make_s2exp (s2e1, s2cs, fds) of
@@ -850,7 +850,7 @@ in
     | _ => errmsg s2c
     end // end of [Lte_addr_addr_bool]
   // address equality
-  | _ when s2cstref_cst_equ (Eq_addr_addr_bool, s2c) => begin
+  | _ when s2cstref_equ_cst (Eq_addr_addr_bool, s2c) => begin
     case+ s2es of
     | list_cons (s2e1, list_cons (s2e2, list_nil ())) => begin
       case+ s3aexp_make_s2exp (s2e1, s2cs, fds) of
@@ -864,7 +864,7 @@ in
     | _ => errmsg s2c
     end // end of [Eq_addr_addr_bool]
   // address inequality
-  | _ when s2cstref_cst_equ (Neq_addr_addr_bool, s2c) => begin
+  | _ when s2cstref_equ_cst (Neq_addr_addr_bool, s2c) => begin
     case+ s2es of
     | list_cons (s2e1, list_cons (s2e2, list_nil ())) => begin
       case+ s3aexp_make_s2exp (s2e1, s2cs, fds) of
@@ -878,7 +878,7 @@ in
     | _ => errmsg s2c
     end // end of [Neq_addr_addr_bool]
   // subclass relation
-  | _ when s2cstref_cst_equ (Lte_cls_cls_bool, s2c) => begin
+  | _ when s2cstref_equ_cst (Lte_cls_cls_bool, s2c) => begin
     case+ s2es of
     | list_cons (
         s2e1, list_cons (s2e2, list_nil ())
@@ -933,7 +933,7 @@ s3iexp_make_s2cst_s2explst
 in
   case+ 0 of
   // integer negation
-  | _ when s2cstref_cst_equ (Neg_int_int, s2c) => begin
+  | _ when s2cstref_equ_cst (Neg_int_int, s2c) => begin
     case+ s2es of
     | list_cons (s2e, list_nil ()) => begin
       case+ s3iexp_make_s2exp (s2e, s2cs, fds) of
@@ -942,7 +942,7 @@ in
     | _ => errmsg s2c
     end // end of [Neg_int_int]
   // integer addition
-  | _ when s2cstref_cst_equ (Add_int_int_int, s2c) => begin
+  | _ when s2cstref_equ_cst (Add_int_int_int, s2c) => begin
     case+ s2es of
     | list_cons (s2e1, list_cons (s2e2, list_nil ())) => begin
       case+ s3iexp_make_s2exp (s2e1, s2cs, fds) of
@@ -956,7 +956,7 @@ in
     | _ => errmsg s2c
     end // end of [Add_int_int_int]
   // integer subtraction
-  | _ when s2cstref_cst_equ (Sub_int_int_int, s2c) => begin
+  | _ when s2cstref_equ_cst (Sub_int_int_int, s2c) => begin
     case+ s2es of
     | list_cons (s2e1, list_cons (s2e2, list_nil ())) => begin
       case+ s3iexp_make_s2exp (s2e1, s2cs, fds) of
@@ -970,7 +970,7 @@ in
     | _ => errmsg s2c
     end // end of [Sub_int_int_int]
   // integer multiplication
-  | _ when s2cstref_cst_equ (Mul_int_int_int, s2c) => begin
+  | _ when s2cstref_equ_cst (Mul_int_int_int, s2c) => begin
     case+ s2es of
     | list_cons (s2e1, list_cons (s2e2, list_nil ())) => begin
       case+ s3iexp_make_s2exp (s2e1, s2cs, fds) of
@@ -996,7 +996,7 @@ in
     | _ => errmsg s2c
     end // end of [Mul_int_int_int]
   // addr difference
-  | _ when s2cstref_cst_equ (Sub_addr_addr_int, s2c) => begin
+  | _ when s2cstref_equ_cst (Sub_addr_addr_int, s2c) => begin
     case+ s2es of
     | list_cons (s2e1, list_cons (s2e2, list_nil ())) => begin
       case+ s3aexp_make_s2exp (s2e1, s2cs, fds) of
@@ -1010,7 +1010,7 @@ in
     | _ => errmsg s2c
     end // end of [Sub_addr_addr_int]
   // char difference
-  | _ when s2cstref_cst_equ (Sub_char_char_int, s2c) => begin
+  | _ when s2cstref_equ_cst (Sub_char_char_int, s2c) => begin
     case+ s2es of
     | list_cons (s2e1, list_cons (s2e2, list_nil ())) => begin
       case+ s3iexp_make_s2exp (s2e1, s2cs, fds) of
@@ -1024,42 +1024,42 @@ in
     | _ => errmsg s2c
     end // end of [Sub_addr_addr_int]
   // integer division
-  | _ when s2cstref_cst_equ (Div_int_int_int, s2c) => let
-      val s2c_rel = s2cstref_cst_get (Div_int_int_int_bool)
+  | _ when s2cstref_equ_cst (Div_int_int_int, s2c) => let
+      val s2c_rel = s2cstref_get_cst (Div_int_int_int_bool)
       val s2v = s2cfdeflst_replace (s2rt_int, s2c_rel, s2es, s2cs, fds)
     in
       Some_vt (s3iexp_var s2v)
     end
   // integer absolute value function
-  | _ when s2cstref_cst_equ (Abs_int_int, s2c) => let
-      val s2c_rel = s2cstref_cst_get (Abs_int_int_bool)
+  | _ when s2cstref_equ_cst (Abs_int_int, s2c) => let
+      val s2c_rel = s2cstref_get_cst (Abs_int_int_bool)
       val s2v = s2cfdeflst_replace (s2rt_int, s2c_rel, s2es, s2cs, fds)
     in
       Some_vt (s3iexp_var s2v)
     end
   // integer maximum
-  | _ when s2cstref_cst_equ (Max_int_int_int, s2c) => let
-      val s2c_rel = s2cstref_cst_get (Max_int_int_int_bool)
+  | _ when s2cstref_equ_cst (Max_int_int_int, s2c) => let
+      val s2c_rel = s2cstref_get_cst (Max_int_int_int_bool)
       val s2v = s2cfdeflst_replace (s2rt_int, s2c_rel, s2es, s2cs, fds)
     in
       Some_vt (s3iexp_var s2v)
     end
   // integer minimum
-  | _ when s2cstref_cst_equ (Min_int_int_int, s2c) => let
-      val s2c_rel = s2cstref_cst_get (Min_int_int_int_bool)
+  | _ when s2cstref_equ_cst (Min_int_int_int, s2c) => let
+      val s2c_rel = s2cstref_get_cst (Min_int_int_int_bool)
       val s2v = s2cfdeflst_replace (s2rt_int, s2c_rel, s2es, s2cs, fds)
     in
       Some_vt (s3iexp_var s2v)
     end
   // Natural number subtraction
-  | _ when s2cstref_cst_equ (Nsub_int_int_int, s2c) => let
-      val s2c_rel = s2cstref_cst_get (Nsub_int_int_int_bool)
+  | _ when s2cstref_equ_cst (Nsub_int_int_int, s2c) => let
+      val s2c_rel = s2cstref_get_cst (Nsub_int_int_int_bool)
       val s2v = s2cfdeflst_replace (s2rt_int, s2c_rel, s2es, s2cs, fds)
     in
       Some_vt (s3iexp_var s2v)
     end // end of [Nsub_int_int_int]
-  | _ when s2cstref_cst_equ (IntOfBool_bool_int, s2c) => let
-      val s2c_rel = s2cstref_cst_get (IntOfBool_bool_int_bool)
+  | _ when s2cstref_equ_cst (IntOfBool_bool_int, s2c) => let
+      val s2c_rel = s2cstref_get_cst (IntOfBool_bool_int_bool)
       val s2v = s2cfdeflst_replace (s2rt_int, s2c_rel, s2es, s2cs, fds)
     in
       Some_vt (s3iexp_var s2v)
@@ -1189,7 +1189,7 @@ in
     | _ => None_vt ()
     end // end of [S2Eapp]
   | S2Ecst s2c => begin case+ s2c of
-    | _ when s2cstref_cst_equ (Null_addr, s2c) => Some_vt (s3aexp_null)
+    | _ when s2cstref_equ_cst (Null_addr, s2c) => Some_vt (s3aexp_null)
     | _ => (s2cs := s2cstlst_add (s2cs, s2c); Some_vt (s3aexp_cst s2c))
     end // end of [S2Ecst]
   | S2Evar s2v => Some_vt (s3aexp_var s2v)
@@ -1298,8 +1298,8 @@ in
     | _ => None_vt ()
     end // end of [S2Eapp]
   | S2Ecst s2c => begin case+ s2c of
-    | _ when s2cstref_cst_equ (True_bool, s2c) => Some_vt (s3bexp_true)
-    | _ when s2cstref_cst_equ (False_bool, s2c) => Some_vt (s3bexp_false)
+    | _ when s2cstref_equ_cst (True_bool, s2c) => Some_vt (s3bexp_true)
+    | _ when s2cstref_equ_cst (False_bool, s2c) => Some_vt (s3bexp_false)
     | _ => (s2cs := s2cstlst_add (s2cs, s2c); Some_vt (s3bexp_cst s2c))
     end // end of [S2Ecst]
   | S2Evar s2v => Some_vt (s3bexp_var s2v)
@@ -1355,7 +1355,7 @@ in
   | S2Eint i => Some_vt (s3iexp_int i)
   | S2Eintinf i => Some_vt (s3iexp_intinf i)
   | S2Esize s2ze => let
-      val s2c_rel = s2cstref_cst_get (Size_int_int_bool)
+      val s2c_rel = s2cstref_get_cst (Size_int_int_bool)
       val s2v = s2cfdeflst_replace (s2rt_int, s2c_rel, '[s2e0], s2cs, fds)
     in
       Some_vt (s3iexp_var s2v)

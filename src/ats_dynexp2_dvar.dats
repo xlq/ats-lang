@@ -360,7 +360,7 @@ d2var_reset_typ_at (d2v, s2e, s2l) = let
   val os2e_at = (
     case+ s2e.s2exp_node of
     | S2Eout _ => None ()
-    | _ when s2cstref_exp_equ (Void_t0ype, s2e) => None ()
+    | _ when s2cstref_equ_exp (Void_t0ype, s2e) => None ()
     | _ => Some (s2exp_at_viewt0ype_addr_view (s2e, s2l))
   ) : s2expopt // end of [val]
   val () = d2var_inc_lin (d2v)
