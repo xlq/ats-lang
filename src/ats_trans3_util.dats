@@ -89,9 +89,11 @@ extern val "INTKINDnone" = $Syn.INTKINDnone ()
 %{$
 
 ats_ptr_type
-ats_trans3_floatkind_eval (ats_ptr_type s0) {
+atsopt_floatkind_eval
+  (ats_ptr_type s0) {
+//
   char *s ;
-
+//
   s = s0 ; while (*s) { ++s ; } ; --s ;
   switch (*s) {
     case 'f': case 'F': return FLOATKINDfloat ;
@@ -100,12 +102,14 @@ ats_trans3_floatkind_eval (ats_ptr_type s0) {
     default : ;
   }
   return FLOATKINDnone ;
-} // end of [ats_trans3_floatkind_eval]
+} // end of [atsopt_floatkind_eval]
 
 ats_ptr_type
-ats_trans3_intkind_eval
+atsopt_intkind_eval
   (ats_ptr_type s0) {
+//
   char c, *s ; int nL, nU ;
+//
   s = s0 ; nL = 0 ; nU = 0 ;
   while (c = *s) {
     s += 1 ; switch (c) {
@@ -131,7 +135,7 @@ ats_trans3_intkind_eval
   } // end of [if]
 //
   return INTKINDnone ;
-} // end of [ats_trans3_intkind_eval]
+} // end of [atsopt_intkind_eval]
 
 %} // end of [%{$]
 
@@ -143,9 +147,9 @@ fn prerr_loc_error3
 ) // end of [prerr_loc_error3]
 
 (* ****** ****** *)
-
+//
 // typedef funclo =  $Syn.funclo // declared in [ats_trans3.sats]
-
+//
 (* ****** ****** *)
 
 implement
@@ -305,6 +309,8 @@ d3explst_open_and_add
 
 (* ****** ****** *)
 
+local
+
 fn d3exp_get_ind
   (d3e: d3exp): s2exp = let
 //
@@ -319,13 +325,14 @@ fn d3exp_get_ind
 in
   case+ os2i of
   | ~Some_vt s2i => s2i
-  | ~None_vt () => begin
-      $Loc.prerr_location d3e.d3exp_loc;
-      prerr ": error(3)";
-      prerr ": the array index is assigned the type [";
-      prerr_s2exp s2e;
-      prerr "], which is not an indexed integer type.";
-      prerr_newline ();
+  | ~None_vt () => let
+      val () = $Loc.prerr_location d3e.d3exp_loc
+      val () = prerr ": error(3)"
+      val () = prerr ": the array index is assigned the type ["
+      val () = prerr_s2exp (s2e)
+      val () = prerr "], which is not an indexed integer type."
+      val () = prerr_newline ()
+    in
       $Err.abort {s2exp} ()
     end // end of [None_vt]
 end // end of [d3exp_get_ind]
@@ -335,10 +342,14 @@ fn d3explst_get_ind
   $Lst.list_map_fun (d3es, d3exp_get_ind)
 // end of [d3explst_get_ind]
 
+in // in of [local]
+
 implement
 d3explstlst_get_ind (d3ess) =
   $Lst.list_map_fun (d3ess, d3explst_get_ind)
 // end of [d3explstlst_get_ind]
+
+end // end of [local]
 
 (* ****** ****** *)
 

@@ -477,9 +477,9 @@ fun un_s2rt_fun (s2t: s2rt): Option_vt @(s2rtlst, s2rt)
 fun un_s2rt_tup (s2t: s2rt): Option_vt (s2rtlst)
 
 (* ****** ****** *)
-
-// [s2rtdat_t] is assumed in [ats_staexp2.dats]
-
+//
+// HX: [s2rtdat_t] is assumed in [ats_staexp2.dats]
+//
 fun s2rtdat_make (id: sym_t): s2rtdat_t
 
 fun s2rtdat_get_sym (s2td: s2rtdat_t): sym_t
@@ -491,9 +491,9 @@ fun eq_s2rtdat_s2rtdat (s2td1: s2rtdat_t, s2td2: s2rtdat_t): bool
 overload = with eq_s2rtdat_s2rtdat
 
 (* ****** ****** *)
-
-// [s2cst_t] is assumed in [ats_staexp2_scst.dats]
-
+//
+// HX: [s2cst_t] is assumed in [ats_staexp2_scst.dats]
+//
 fun s2cst_make (
   id: sym_t // the name
 , loc: loc_t // the location of declaration
@@ -602,9 +602,9 @@ overload print with print_s2cstlst
 overload prerr with prerr_s2cstlst
 
 (* ****** ****** *)
-
-// [s2var_t] is assumed in [ats_staexp2_svVar.dats]
-
+//
+// HX: [s2var_t] is assumed in [ats_staexp2_svVar.dats]
+//
 fun s2var_make_id_srt (id: sym_t, s2t: s2rt): s2var_t
 fun s2var_make_srt (s2t: s2rt): s2var_t
 fun s2var_copy (s2v: s2var_t): s2var_t

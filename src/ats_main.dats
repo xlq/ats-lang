@@ -635,17 +635,16 @@ fn do_trans123 (
 //
 (*
   val () = print_the_s3itemlst () where {
-    extern fun print_the_s3itemlst ()
-      : void = "ats_trans3_env_print_the_s3itemlst"
+    extern fun print_the_s3itemlst (): void = "atsopt_print_the_s3itemlst"
   } // end of [val]
 *)
-  // is this some sort of bug???
+  // HX: is this some sort of bug???
   val () = free_the_s3itemlst () where {
-    extern fun free_the_s3itemlst ()
-      : void = "ats_trans3_env_free_the_s3itemlst"
+    extern fun free_the_s3itemlst (): void = "atsopt_free_the_s3itemlst"
   } // end of [val]
 //
   val debug_flag = $Deb.debug_flag_get ()
+//
   val () = if debug_flag > 0 then begin
     print "The 3rd translation (typechecking) of [";
     print basename;

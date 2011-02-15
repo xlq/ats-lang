@@ -188,16 +188,12 @@ typedef staftitem = '{
 
 assume staftitem_t = staftitem
 
-extern
-fun staftitem_set_lin
-  (sai: staftitem, lin: int): void
-  = "ats_trans3_env_state_staftitem_set_lin"
+extern fun staftitem_set_lin
+  (sai: staftitem, lin: int): void = "atsopt_state_staftitem_set_lin"
 // end of [staftitem_set_lin]
 
-extern
-fun staftitem_set_typ
-  (sai: staftitem, typ: saityplst): void
-  = "ats_trans3_env_state_staftitem_set_typ"
+extern fun staftitem_set_typ
+  (sai: staftitem, typ: saityplst): void = "atsopt_state_staftitem_set_typ"
 // end of [staftitem_set_typ]
 
 (* ****** ****** *)
@@ -228,8 +224,8 @@ assume staftscstr_t (n:int) = staftscstr (n)
 
 extern
 fun staftscstr_cstr_set {n:nat} (
-    sac: staftscstr n, cstr: sascstrlst
-  ) : void = "ats_trans3_env_state_staftscstr_cstr_set"
+  sac: staftscstr n, cstr: sascstrlst
+) : void = "atsopt_state_staftscstr_cstr_set"
 // end of [staftscstr_cstr_set]
 
 (* ****** ****** *)
@@ -680,16 +676,16 @@ extern typedef "staftitem_t" = staftitem
 %{$
 
 ats_void_type
-ats_trans3_env_state_staftitem_set_lin
+atsopt_state_staftitem_set_lin
   (ats_ptr_type sai, ats_int_type lin) {
   ((staftitem_t)sai)->atslab_staftitem_lin = lin; return ;
-} // end of [ats_trans3_env_state_staftitem_set_lin]
+} // end of [atsopt_state_staftitem_set_lin]
 
 ats_void_type
-ats_trans3_env_state_staftitem_set_typ
+atsopt_state_staftitem_set_typ
   (ats_ptr_type sai, ats_ptr_type os2es) {
   ((staftitem_t)sai)->atslab_staftitem_typ = os2es; return ;
-} // end of [ats_trans3_env_state_staftitem_set_typ]
+} // end of [atsopt_state_staftitem_set_typ]
 
 %} // end of [%{$]
 
@@ -698,16 +694,16 @@ extern typedef "staftscstr_t" = [n:int] staftscstr (n)
 %{$
 
 ats_void_type
-ats_trans3_env_state_staftscstr_met_set
+atsopt_state_staftscstr_met_set
   (ats_ptr_type sac, ats_ptr_type met) {
   ((staftscstr_t)sac)->atslab_staftscstr_met = met ; return ;
-} // end of [ats_trans3_env_state_staftscstr_met_set]
+} // end of [atsopt_state_staftscstr_met_set]
 
 ats_void_type
-ats_trans3_env_state_staftscstr_cstr_set
+atsopt_state_staftscstr_cstr_set
   (ats_ptr_type sac, ats_ptr_type cstr) {
   ((staftscstr_t)sac)->atslab_staftscstr_cstr = cstr ; return ;
-} // end of [ats_trans3_env_state_staftscstr_cstr_set]
+} // end of [atsopt_state_staftscstr_cstr_set]
 
 %} // end of [%{$]
 

@@ -1888,10 +1888,10 @@ val () = begin
 end // end of [val]
 *)
 //
-extern fun floatkind_eval
-  (_: string): $Syn.floatkind = "ats_trans3_floatkind_eval"
 extern fun intkind_eval
-  (_: string): $Syn.intkind = "ats_trans3_intkind_eval"
+  (_: string): $Syn.intkind = "atsopt_intkind_eval"
+extern fun floatkind_eval
+  (_: string): $Syn.floatkind = "atsopt_floatkind_eval"
 //
 val loc0 = d2e0.d2exp_loc
 val d3e0 = (case+ d2e0.d2exp_node of

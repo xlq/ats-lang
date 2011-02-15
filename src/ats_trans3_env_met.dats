@@ -30,19 +30,19 @@
 *)
 
 (* ****** ****** *)
-
+//
 // Author: Hongwei Xi (hwxi AT cs DOT bu DOT edu)
 // Time: December 2007
-
+//
 (* ****** ****** *)
 
-(* Mainly for handling environments during the third translation *)
+(* Mainly for handling metric environment during the third translation *)
 
 (* ****** ****** *)
 
 %{^
 #include "ats_counter.cats" /* only needed for [ATS/Geizella] */
-%}
+%} // end of [%{^]
 
 (* ****** ****** *)
 
@@ -72,12 +72,16 @@ assume metric_env_token = unit_v
 viewtypedef metbindlst_vt = List_vt @(d2varlst, s2explst)
 val the_metbindlst: ref (metbindlst_vt) = ref_make_elt (list_vt_nil ())
 
-in
+in // in of [local]
 
 (* ****** ****** *)
 
-implement metric_nat_check (loc0, s2es_met) = let
-  fun aux (loc0: loc_t, s2es: s2explst): void = case+ s2es of
+implement
+metric_nat_check
+  (loc0, s2es_met) = let
+  fun aux (
+    loc0: loc_t, s2es: s2explst
+  ) : void = case+ s2es of
     | list_cons (s2e, s2es) => let
         val () =
           if s2e.s2exp_srt <= s2rt_int then begin
@@ -85,38 +89,48 @@ implement metric_nat_check (loc0, s2es_met) = let
           end
       in
         aux (loc0, s2es)
-      end
-    | list_nil () => ()
+      end // end of [list_cons]
+    | list_nil () => () // end of [list_nil]
+  // end of [aux]
 in
   aux (loc0, s2es_met)
 end // end of [metric_nat_check]
 
-implement metric_env_get (d2v_stamp) = let
-  fun aux1 (d2vs: d2varlst, d2v_stamp: stamp_t): bool = case+ d2vs of
+implement
+metric_env_get (d2v_stamp) = let
+//
+  fun aux1 (
+    d2vs: d2varlst, d2v_stamp: stamp_t
+  ) : bool = case+ d2vs of
     | list_cons (d2v, d2vs) => begin
         if d2var_get_stamp d2v = d2v_stamp then true else aux1 (d2vs, d2v_stamp)
-      end
+      end // end of [list_cons]
     | list_nil () => false
-
-  fun aux2 {n:nat} .<n>.
-    (xs: !list_vt (@(d2varlst, s2explst), n), d2v_stamp: stamp_t)
-    : s2explstopt = case+ xs of
+  // end of [aux1]
+//
+  fun aux2 {n:nat} .<n>. (
+    xs: !list_vt (@(d2varlst, s2explst), n), d2v_stamp: stamp_t
+  ) : s2explstopt = case+ xs of
     | list_vt_cons (x, !xs1) => let
         val ans = (
           if aux1 (x.0, d2v_stamp) then Some (x.1) else aux2 (!xs1, d2v_stamp)
         ) : s2explstopt
       in
         fold@ xs; ans
-      end
+      end // end of [list_vt_cons]
     | list_vt_nil () => (fold@ xs; None ())
+  // end of [aux2]
+//
   val (vbox pf | p) = ref_get_view_ptr (the_metbindlst)
+//
 in
   $effmask_all (aux2 (!p, d2v_stamp))
-end
+end // end of [metric_env_get]
 
 (* ****** ****** *)
 
-implement metric_env_pop (pf | (*none*)) = let
+implement
+metric_env_pop (pf | (*none*)) = let
   prval unit_v () = pf; var err: int = 0
   val () = let
     val (vbox pf | p) = ref_get_view_ptr (the_metbindlst)
@@ -130,10 +144,11 @@ in
     prerr "INTERNAL ERROR (ats_trans3_env_met)";
     prerr ": metric_env_pop: the_metbindlst is empty."; prerr_newline ();
     $Err.abort {void} ()
-  end
+  end (* end of [if] *)
 end // end of [metric_env_pop]
 
-implement metric_env_push (d2vs, s2es_met) =
+implement
+metric_env_push (d2vs, s2es_met) =
   let val (vbox pf | p) = ref_get_view_ptr (the_metbindlst) in
     !p := list_vt_cons (@(d2vs, s2es_met), !p); (unit_v () | ())
   end // end of [let]
@@ -143,9 +158,14 @@ end // end of [local]
 
 (* ****** ****** *)
 
-implement s2exp_metfn_load (s2e0, d2v0) = let
-  fun aux (s2e0: s2exp, s2ts: &s2rtlst)
-    :<cloptr1> Option_vt s2exp = begin case+ s2e0.s2exp_node of
+implement
+s2exp_metfn_load
+  (s2e0, d2v0) = let
+//
+  fun aux (
+    s2e0: s2exp, s2ts: &s2rtlst
+  ) :<cloptr1> Option_vt s2exp = begin
+    case+ s2e0.s2exp_node of
     | S2Efun (fc, lin, s2fe, npf, s2es, s2e) => begin
         case+ aux (s2e, s2ts) of
         | ~Some_vt s2e => Some_vt (
@@ -168,7 +188,9 @@ implement s2exp_metfn_load (s2e0, d2v0) = let
       end // end of [S2Euni]
     | _ => None_vt ()
   end // end of [aux]
+//
   var s2ts: s2rtlst = list_nil ()
+//
 in
   case+ aux (s2e0, s2ts) of
   | ~Some_vt s2e => Some_vt @(s2e, s2ts) | ~None_vt () => None_vt ()

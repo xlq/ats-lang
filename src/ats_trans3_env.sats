@@ -125,34 +125,38 @@ overload fprint with fprint_h3ypo
 
 (* ****** ****** *)
 
-fun print_s3itemlst (s3is: s3itemlst): void
-  = "ats_trans3_env_print_s3itemlst"
+fun print_s3itemlst
+  (s3is: s3itemlst): void = "atsopt_print_s3itemlst"
 overload print with print_s3itemlst
-fun prerr_s3itemlst (s3is: s3itemlst): void
-  = "ats_trans3_env_prerr_s3itemlst"
+
+fun prerr_s3itemlst
+  (s3is: s3itemlst): void = "atsopt_prerr_s3itemlst"
 overload prerr with prerr_s3itemlst
 
-fun print_s3itemlstlst (s3iss: s3itemlstlst): void
-  = "ats_trans3_env_print_s3itemlstlst"
+fun print_s3itemlstlst
+  (s3iss: s3itemlstlst): void = "atsopt_print_s3itemlstlst"
 overload print with print_s3itemlstlst
-fun prerr_s3itemlstlst (s3iss: s3itemlstlst): void
-  = "ats_trans3_env_prerr_s3itemlstlst"
+
+fun prerr_s3itemlstlst
+  (s3iss: s3itemlstlst): void = "atsopt_prerr_s3itemlstlst"
 overload prerr with prerr_s3itemlstlst
 
 //
 
-fun print_s3itemlst_vt (s3is: !s3itemlst_vt): void
-  = "ats_trans3_env_print_s3itemlst"
+fun print_s3itemlst_vt
+  (s3is: !s3itemlst_vt): void = "atsopt_print_s3itemlst"
 overload print with print_s3itemlst_vt
-fun prerr_s3itemlst_vt (s3is: !s3itemlst_vt): void
-  = "ats_trans3_env_prerr_s3itemlst"
+
+fun prerr_s3itemlst_vt
+  (s3is: !s3itemlst_vt): void = "atsopt_prerr_s3itemlst"
 overload prerr with prerr_s3itemlst_vt
 
-fun print_s3itemlstlst_vt (s3iss: !s3itemlstlst_vt): void
-  = "ats_trans3_env_print_s3itemlstlst"
+fun print_s3itemlstlst_vt
+  (s3iss: !s3itemlstlst_vt): void = "atsopt_print_s3itemlstlst"
 overload print with print_s3itemlstlst_vt
-fun prerr_s3itemlstlst_vt (s3iss: !s3itemlstlst_vt): void
-  = "ats_trans3_env_prerr_s3itemlstlst"
+
+fun prerr_s3itemlstlst_vt
+  (s3iss: !s3itemlstlst_vt): void = "atsopt_prerr_s3itemlstlst"
 overload prerr with prerr_s3itemlstlst_vt
 
 //
@@ -180,6 +184,8 @@ fun c3str_metric_dec {n:nat}
   (_: loc_t, met: s2explst n, met_bound: s2explst n): c3str
 fun c3str_pattern_match_exhaustiveness
   (_: loc_t, knd: int, p2tcs: p2atcstlst): c3str
+
+(* ****** ****** *)
 
 fun h3ypo_prop (_: loc_t, _: s2exp): h3ypo
 fun h3ypo_bind (_: loc_t, _: s2var_t, _: s2exp): h3ypo
@@ -226,7 +232,9 @@ fun the_s2varbindmap_push (): void
 absview metric_env_token
 
 fun metric_nat_check (loc0: loc_t, met: s2explst): void
+
 fun metric_env_get (d2v: stamp_t): s2explstopt
+
 fun metric_env_pop (pf: metric_env_token | (*none*)): void
 fun metric_env_push
   (d2vs: d2varlst, met: s2explst): (metric_env_token | void)
@@ -252,8 +260,6 @@ fun the_effect_env_push_eff
   (_: $Syn.effectlst): (effect_env_token | void)
 fun the_effect_env_push_effmask
   (_: $Syn.effectlst): (effect_env_token | void)
-
-//
 
 fun the_effect_env_check_exn (loc0: loc_t): void
 fun the_effect_env_check_ntm (loc0: loc_t): void
@@ -336,8 +342,6 @@ fun s2qua_hypo_instantiate_and_add
 fun s2exp_metric_instantiate
   (_: loc_t, d2vopt: Option stamp_t, met: s2explst): void
 
-//
-
 fun s2exp_exi_instantiate_all (_: loc_t, _: s2exp): s2exp
 fun s2exp_exi_instantiate_one (_: loc_t, _: s2exp): s2exp
 fun s2exp_exi_instantiate_seq
@@ -345,12 +349,10 @@ fun s2exp_exi_instantiate_seq
 
 fun s2exp_exi_instantiate_sexparg (_: loc_t, _: s2exp, _: s2exparg): s2exp
 
-//
-
 fun funarg_varfin_check (loc0: loc_t): void
 fun s2exp_wth_instantiate (loc: loc_t, _: s2exp): s2exp
 
-//
+(* ****** ****** *)
 
 fun s2exp_uni_instantiate_all (_: loc_t, _: s2exp): s2exp
 fun s2exp_uni_instantiate_one (_: loc_t, _: s2exp): s2exp
@@ -362,8 +364,9 @@ fun s2exp_uni_instantiate_sexparglst (_: loc_t, _: s2exp, _: s2exparglst): s2exp
 
 (* ****** ****** *)
 
-fun s2exp_template_instantiate
-  (_: loc_t, _: s2qualst, _: tmps2explstlst, s2e: s2exp): @(List stasub_t, s2exp)
+fun s2exp_template_instantiate (
+  _: loc_t, _: s2qualst, _: tmps2explstlst, s2e: s2exp
+) : @(List stasub_t, s2exp) // end of ...
 
 (* ****** ****** *)
 
@@ -374,8 +377,9 @@ fun s2explst_opnexi_and_add (loc: loc_t, _: s2explst): s2explst
 fun s2expopt_opnexi_and_add (loc: loc_t, _: s2expopt): s2expopt
 
 (* ****** ****** *)
-
-// for tracking linear dynamic variables
+//
+// HX: for tracking linear dynamic variables
+//
 absview d2varset_env_token
 
 fun the_d2varset_env_add (d2v: d2var_t): void
@@ -412,8 +416,9 @@ fun the_d2varset_env_find_viewat
   (root: s2exp, path: s2lablst): Option_vt d2varset_env_find_viewat_t
 
 (* ****** ****** *)
-
-// record linear dynamic variables before branching
+//
+// HX: record linear dynamic variables before branching
+//
 abstype stbefitem_t // assumed in [ats_trans3_env_state.dats]
 typedef stbefitemlst (n:int) = list (stbefitem_t, n)
 typedef stbefitemlst = [n:nat] stbefitemlst (n)
@@ -429,12 +434,14 @@ abstype staftitem_t // assumed in [ats_trans3_env_state.dats]
 typedef staftitemlst (n:int) = list (staftitem_t, n)
 
 (* ****** ****** *)
-
-abstype staftscstr_t (n:int) // assumed in [ats_trans3_env_state.dats]
+//
+// HX: assumed in [ats_trans3_env_state.dats]
+//
+abstype staftscstr_t (n:int)
 
 fun staftscstr_met_set {n:nat} (
     sac: staftscstr_t n, met: s2explstopt
-  ) : void = "ats_trans3_env_state_staftscstr_met_set"
+  ) : void = "atsopt_state_staftscstr_met_set"
 // end of [staftscstr_met_set]
 
 fun staftscstr_initialize {n:nat}
@@ -466,7 +473,7 @@ absview lamloop_env_token
 // [LMLPloop0]: for the first round typechecking
 // [LMLPloop1]: for the second round typechekcing
 //
-// The break/continue statements are skipped during the first round.
+// HX: the break/continue statements are skipped during the first round.
 //
 datatype lamloop =
   | LMLPlam of p3atlst (* function arguments *)
@@ -484,12 +491,15 @@ fun the_lamloop_env_push_lam (arg: p3atlst): (lamloop_env_token | void)
 
 fun the_lamloop_env_push_loop0
   () : (lamloop_env_token | void)
+
 fun the_lamloop_env_push_loop1 {n:nat} (
-    sbis: stbefitemlst n
-  , sac_init: staftscstr_t n
-  , sac_exit: staftscstr_t n
-  , post: d2expopt
-  ) : (lamloop_env_token | void)
+  sbis: stbefitemlst n
+, sac_init: staftscstr_t n
+, sac_exit: staftscstr_t n
+, post: d2expopt
+) : (
+  lamloop_env_token | void
+) // end of [the_lamloop_env_push_loop1]
 
 fun the_lamloop_env_arg_get (loc0: loc_t): Option_vt (p3atlst)
 
