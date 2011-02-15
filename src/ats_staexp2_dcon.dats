@@ -9,7 +9,7 @@
 (*
 ** ATS/Anairiats - Unleashing the Potential of Types!
 **
-** Copyright (C) 2002-2008 Hongwei Xi, Boston University
+** Copyright (C) 2002-2011 Hongwei Xi, Boston University
 **
 ** All rights reserved
 **
@@ -30,10 +30,10 @@
 *)
 
 (* ****** ****** *)
-
+//
 // Author: Hongwei Xi (hwxi AT cs DOT bu DOT edu)
-// Time: October 2007
-
+// Start Time: October 2007
+//
 (* ****** ****** *)
 
 %{^
@@ -50,7 +50,8 @@ staload "ats_staexp2.sats"
 
 (* ****** ****** *)
 
-typedef d2con_struct = @{ (* builtin or abstract *)
+typedef
+d2con_struct = @{
   d2con_loc= loc_t // location
 , d2con_fil= fil_t // filename
 , d2con_sym= sym_t // the name
@@ -75,9 +76,10 @@ assume d2con_t = [l:addr] (vbox (d2con_struct @ l) | ptr l)
 
 in // in of [local]
 
-implement d2con_make
-  (loc, fil, id, s2c, vwtp, qua, npf, arg, ind) = let
-
+implement d2con_make (
+  loc, fil, id, s2c, vwtp, qua, npf, arg, ind
+) = let
+//
 val stamp = $Stamp.d2con_stamp_make ()
 val arity_full = $Lst.list_length (arg)
 val arity_real = let
@@ -94,7 +96,7 @@ val arity_real = let
 in
   aux2 (0, aux1 (npf, arg))
 end // end of [val]
-
+//
 val s2e_d2c = let
   fun aux (s2e: s2exp, s2vpss: List @(s2varlst, s2explst)): s2exp =
     case+ s2vpss of
@@ -109,10 +111,10 @@ val s2e_d2c = let
 in
   aux (s2exp_confun (npf, arg, s2e_res), qua)
 end // end of [val]
-
+//
 val (pf_gc, pf | p) = ptr_alloc_tsz {d2con_struct} (sizeof<d2con_struct>)
 prval () = free_gc_elim {d2con_struct} (pf_gc)
-
+//
 val () = begin
 p->d2con_loc := loc;
 p->d2con_fil := fil;
@@ -129,13 +131,13 @@ p->d2con_typ := s2e_d2c;
 p->d2con_tag := ~1;
 p->d2con_stamp := stamp
 end // end of [val]
-
+//
 val (pfbox | ()) = vbox_make_view_ptr (pf | p)
-
+//
 in
-
+//
 (pfbox | p)
-
+//
 end // end of [d2con_make]
 
 (* ****** ****** *)
@@ -198,8 +200,10 @@ fn _compare_d2con_d2con
   (d2c1: d2con_t, d2c2: d2con_t) = let
   val stamp1 =
     let val (vbox pf1 | p1) = d2c1 in p1->d2con_stamp end
+  // end of [val]
   val stamp2 =
     let val (vbox pf2 | p2) = d2c2 in p2->d2con_stamp end
+  // end of [val]
 in
   $Stamp.compare_stamp_stamp (stamp1, stamp2)
 end // end of [compare_d2con_d2con]
@@ -212,6 +216,7 @@ compare_d2con_d2con (d2c1, d2c2) =
 (* ****** ****** *)
 
 #define D2CON_TAG_EXN ~1
+
 implement
 d2con_is_exn (d2c) = let
   val (vbox pf | p) = d2c in p->d2con_tag = D2CON_TAG_EXN
@@ -246,16 +251,20 @@ implement prerr_d2con (d2c) = prerr_mac (fprint_d2con, d2c)
 implement
 fprint_d2conlst
   {m} (pf | out, d2cs) = let
-  fun aux (out: &FILE m, i:int, d2cs: d2conlst)
-    : void = begin case+ d2cs of
-    | D2CONLSTcons (d2c, d2cs) => begin
-        if i > 0 then fprint1_string (pf | out, ", ");
-        fprint_d2con (pf | out, d2c); aux (out, i+1, d2cs)
+  fun aux (
+    out: &FILE m, d2cs: d2conlst, i:int
+  ) : void = begin case+ d2cs of
+    | D2CONLSTcons (d2c, d2cs) => let
+        val () = if i > 0 then
+          fprint1_string (pf | out, ", ")
+        val () = fprint_d2con (pf | out, d2c)
+      in
+        aux (out, d2cs, i+1)
       end // end of [D2CONLSTcons]
-    | D2CONLSTnil () => () // end of [D2CONLSTnil]
+    | D2CONLSTnil () => () // end of [nil]
   end // end of [aux]
 in
-  aux (out, 0, d2cs)
+  aux (out, d2cs, 0)
 end // end of [fprint_d2conlst]
 
 implement print_d2conlst (d2cs) = print_mac (fprint_d2conlst, d2cs)

@@ -264,29 +264,15 @@ fprint_d2cst (pf_out | out, d2c) = begin
   $Sym.fprint_symbol (pf_out | out, d2cst_get_sym d2c)
 end // end of [fprint_d2cst]
 
-implement
-fprint_d2cstlst
-  {m} (pf | out, d2cs) = let
-  fun aux (
-    out: &FILE m, i: int, d2cs: d2cstlst
-  ) : void =
-    case+ d2cs of
-    | cons (d2c, d2cs) => let
-        val () = if i > 0 then fprint1_string (pf | out, ", ")
-        val () = fprint_d2cst (pf | out, d2c)
-      in
-        aux (out, i+1, d2cs)
-      end // end of [cons]
-    | nil () => ()
-  // end of [aux]
-in
-  aux (out, 0, d2cs)
-end // end of [fprint_d2cstlst]
+implement print_d2cst (d2c) = print_mac (fprint_d2cst, d2c)
+implement prerr_d2cst (d2c) = prerr_mac (fprint_d2cst, d2c)
 
 (* ****** ****** *)
 
-implement print_d2cst (d2c) = print_mac (fprint_d2cst, d2c)
-implement prerr_d2cst (d2c) = prerr_mac (fprint_d2cst, d2c)
+implement
+fprint_d2cstlst (pf | out, cs) =
+  $Lst.fprintlst (pf | out, cs, ", ", fprint_d2cst)
+// end of [fprint_d2cstlst]
 
 implement print_d2cstlst (d2cs) = print_mac (fprint_d2cstlst, d2cs)
 implement prerr_d2cstlst (d2cs) = prerr_mac (fprint_d2cstlst, d2cs)
@@ -302,11 +288,11 @@ extern typedef "d2cst_struct" = d2cst_struct
 %{$
 
 ats_void_type
-ats_dynexp2_d2cst_set_hityp (
+atsopt_d2cst_set_hityp (
   ats_ptr_type d2c, ats_ptr_type ohit
 ) {
   ((d2cst_struct*)d2c)->atslab_d2cst_hityp = ohit ; return ;
-} /* end of [ats_dynexp2_d2cst_set_hityp] */
+} /* end of [atsopt_d2cst_set_hityp] */
 
 %} // end of [%{$]
 

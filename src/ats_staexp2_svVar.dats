@@ -30,19 +30,20 @@
 *)
 
 (* ****** ****** *)
-
+//
 // Author: Hongwei Xi (hwxi AT cs DOT bu DOT edu)
 // Time: October 2007
-
+//
 (* ****** ****** *)
 
 %{^
 #include "ats_counter.cats" /* only needed for [ATS/Geizella] */
-%}
+%} // end of [%{^]
 
 (* ****** ****** *)
 
 staload Cnt = "ats_counter.sats"
+staload Lst = "ats_list.sats"
 staload Stamp = "ats_stamp.sats"
 staload Sym = "ats_symbol.sats"
 
@@ -64,18 +65,20 @@ typedef s2var_struct = @{
 
 local
 
-assume s2var_t = [l:addr] (vbox (s2var_struct @ l) | ptr l)
+assume s2var_t =
+  [l:addr] (vbox (s2var_struct @ l) | ptr l)
+// end of [s2var_t]
 
 val s2var_name_counter = $Cnt.counter_make ()
 
 fn s2var_name_make (): sym_t = let
-  val n = $Cnt.counter_get_and_inc s2var_name_counter
+  val n = $Cnt.counter_getinc s2var_name_counter
 in
   $Sym.symbol_make_string ($Cnt.tostring_prefix_count ("$", n))
 end // end of [s2var_name_make]
 
 fn s2var_name_make_prefix (pre: string): sym_t = let
-  val n = $Cnt.counter_get_and_inc s2var_name_counter
+  val n = $Cnt.counter_getinc s2var_name_counter
 in
   $Sym.symbol_make_string (pre + $Cnt.tostring_prefix_count ("$", n))
 end // end of [s2var_name_make_prefix]
@@ -220,21 +223,14 @@ implement prerr_s2var (s2v) = prerr_mac (fprint_s2var, s2v)
 (* ****** ****** *)
 
 implement
-fprint_s2varlst {m} (pf | out, s2vs) = let
-  fun aux (out: &FILE m, i: int, s2vs: s2varlst)
-    : void = begin case+ s2vs of
-    | list_cons (s2v, s2vs) => begin
-        if i > 0 then fprint1_string (pf | out, ", ");
-        fprint_s2var (pf | out, s2v); aux (out, i+1, s2vs)
-      end // end of [list_cons]
-    | list_nil () => ()
-  end // end of [aux]
-in
-  aux (out, 0, s2vs)
-end // end of [fprint_s2varlst]
+fprint_s2varlst (pf | out, xs) =
+  $Lst.fprintlst (pf | out, xs, ", ", fprint_s2var)
+// end of [fprint_s2varlst]
 
-implement print_s2varlst (s2vs) = print_mac (fprint_s2varlst, s2vs)
-implement prerr_s2varlst (s2vs) = prerr_mac (fprint_s2varlst, s2vs)
+implement
+print_s2varlst (s2vs) = print_mac (fprint_s2varlst, s2vs)
+implement
+prerr_s2varlst (s2vs) = prerr_mac (fprint_s2varlst, s2vs)
 
 (* ****** ****** *)
 //
@@ -248,7 +244,9 @@ staload _(*anonymous*) = "ats_set_fun.dats"
 
 assume s2varset_t = $Set.set_t (s2var_t)
 
-fn cmp (s2v1: s2var_t, s2v2: s2var_t):<> Sgn =
+fn cmp (
+  s2v1: s2var_t, s2v2: s2var_t
+) :<> Sgn =
   $effmask_all (compare_s2var_s2var (s2v1, s2v2))
 
 fn fprint_s2varset_ptr
@@ -362,21 +360,25 @@ s2Var_struct = @{
 , s2Var_stamp= stamp_t // uniqueness
 } // end of [s2Var_struct]
 
+(* ****** ****** *)
+
 local
 
-assume s2Var_t = [l:addr] (vbox (s2Var_struct @ l) | ptr l)
+assume s2Var_t =
+  [l:addr] (vbox (s2Var_struct @ l) | ptr l)
+// end of [s2Var_t]
 
 val s2Var_name_counter = $Cnt.counter_make ()
 
 in // in of [local]
 
 implement s2Var_make_srt (loc, s2t) = let
-
-val cnt = $Cnt.counter_get_and_inc (s2Var_name_counter)
+//
+val cnt = $Cnt.counter_getinc (s2Var_name_counter)
 val stamp = $Stamp.s2Var_stamp_make ()
 val (pf_gc, pf | p) = ptr_alloc_tsz {s2Var_struct} (sizeof<s2Var_struct>)
 prval () = free_gc_elim {s2Var_struct} (pf_gc)
-
+//
 val () = begin
 p->s2Var_loc := loc;
 p->s2Var_cnt := cnt;
@@ -389,23 +391,23 @@ p->s2Var_ubs := list_nil ();
 p->s2Var_sVarset := s2Varset_nil;
 p->s2Var_stamp := stamp
 end // end of [val]
-
+//
 val (pfbox | ()) = vbox_make_view_ptr (pf | p)
-
+//
 in
-
+//
 (pfbox | p)
-
+//
 end // end of [s2Var_make_srt]
 
 implement s2Var_make_var (loc, s2v) = let
-
-val cnt = $Cnt.counter_get_and_inc (s2Var_name_counter)
+//
+val cnt = $Cnt.counter_getinc (s2Var_name_counter)
 val stamp = $Stamp.s2Var_stamp_make ()
 val s2t = s2var_get_srt s2v
 val (pf_gc, pf | p) = ptr_alloc_tsz {s2Var_struct} (sizeof<s2Var_struct>)
 prval () = free_gc_elim {s2Var_struct} (pf_gc)
-
+//
 val () = begin
 p->s2Var_loc := loc;
 p->s2Var_cnt := cnt;
@@ -418,13 +420,13 @@ p->s2Var_ubs := list_nil ();
 p->s2Var_sVarset := s2Varset_nil;
 p->s2Var_stamp := stamp
 end // end of [val]
-
+//
 val (pfbox | ()) = vbox_make_view_ptr (pf | p)
-
+//
 in
-
+//
 (pfbox | p)
-
+//
 end // end of [s2Var_make_var]
 
 (* ****** ****** *)
@@ -526,27 +528,17 @@ implement prerr_s2Var (s2V) = prerr_mac (fprint_s2Var, s2V)
 (* ****** ****** *)
 
 implement
-fprint_s2Varlst
-  {m} (pf | out, s2Vs) = let
-  fun aux (out: &FILE m, i: int, s2Vs: s2Varlst)
-    : void = begin case+ s2Vs of
-    | list_cons (s2V, s2Vs) => begin
-        if i > 0 then fprint1_string (pf | out, ", ");
-        fprint_s2Var (pf | out, s2V); aux (out, i+1, s2Vs)
-      end // end of [list_cons]
-    | list_nil () => () // end of [list_nil]
-  end // end of [aux]
-in
-  aux (out, 0, s2Vs)
-end // end of [fprint_s2Varlst]
+fprint_s2Varlst (pf | out, xs) =
+  $Lst.fprintlst (pf | out, xs, ", ", fprint_s2Var)
+// end of [fprint_s2Varlst]
 
 implement print_s2Varlst (s2Vs) = print_mac (fprint_s2Varlst, s2Vs)
 implement prerr_s2Varlst (s2Vs) = prerr_mac (fprint_s2Varlst, s2Vs)
 
 (* ****** ****** *)
-
-// implementing [s2Varset_t]
-
+//
+// HX: implementing [s2Varset_t]
+//
 local
 
 staload Set = "ats_set_fun.sats"
@@ -593,8 +585,10 @@ pf_out := pf.0; view@ pi := pf.1
 //
 end // end of [fprint_s2Varset_ptr]
 
-implement fprint_s2Varset (pf | out, sVs) = 
+implement
+fprint_s2Varset (pf | out, sVs) = 
   fprint_s2Varset_ptr (pf, view@ out | &out, sVs)
+// end of [fprint_s2Varset]
 
 implement s2Varset_nil = $Set.set_nil
 

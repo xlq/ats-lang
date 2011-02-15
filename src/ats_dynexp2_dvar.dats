@@ -62,6 +62,20 @@ staload "ats_stadyncst2.sats"
 
 (* ****** ****** *)
 
+fn prerr_loc_error3 (loc: loc_t): void =
+  ($Loc.prerr_location loc; prerr ": error(3)")
+// end of [prerr_loc_error3]
+
+(* ****** ****** *)
+
+fn prerr_interror (): void =
+  prerr "INTERNAL ERROR (ats_dynexp2_dvar)"
+fn prerr_loc_interror (loc: loc_t): void = begin
+  $Loc.prerr_location loc; prerr ": INTERNAL ERROR (ats_dynexp2_dvar)"
+end // end of [prerr_loc_interror]
+
+(* ****** ****** *)
+
 typedef d2var_struct = @{
   d2var_loc= loc_t // first location
 , d2var_sym= sym_t // name
@@ -77,7 +91,9 @@ typedef d2var_struct = @{
 , d2var_mastyp= s2expopt //
 , d2var_count= int //
 , d2var_stamp= stamp_t // uniqueness stamp
-}
+} // end of [d2var_struct]
+
+(* ****** ****** *)
 
 local
 
@@ -216,12 +232,15 @@ implement eq_d2var_d2var
 implement neq_d2var_d2var
   (d2v1, d2v2) = compare_d2var_d2var (d2v1, d2v2) <> 0
 
-fn _compare_d2var_d2var
-  (d2v1: d2var_t, d2v2: d2var_t): Sgn = let
+fn _compare_d2var_d2var (
+  d2v1: d2var_t, d2v2: d2var_t
+) : Sgn = let
   val stamp1 =
     let val (vbox pf1 | p1) = d2v1 in p1->d2var_stamp end
+  // end of [val]
   val stamp2 =
     let val (vbox pf2 | p2) = d2v2 in p2->d2var_stamp end
+  // end of [val]
 in
   $Stamp.compare_stamp_stamp (stamp1, stamp2)
 end // end of [_compare_d2var_d2var]
@@ -238,14 +257,14 @@ end // end of [local] (for assuming d2var_t)
 implement
 d2var_get_typ_some
   (loc0, d2v) = begin
-  case+ d2var_get_typ d2v of
-  | Some s2e => s2e | None () => begin
-      $Loc.prerr_location loc0;
-      prerr ": error(3)";
-      prerr ": there is no type for the dynamic variable [";
-      prerr d2v;
-      prerr "].";
-      prerr_newline ();
+  case+ d2var_get_typ (d2v) of
+  | Some s2e => s2e | None () => let
+      val () = prerr_loc_error3 (loc0)
+      val () = prerr ": there is no type for the dynamic variable ["
+      val () = prerr_d2var (d2v)
+      val () = prerr "]."
+      val () = prerr_newline ()
+    in
       $Err.abort {s2exp} ()
     end // end of [None]
 end // end of [d2var_get_typ_some]
@@ -253,29 +272,32 @@ end // end of [d2var_get_typ_some]
 implement
 d2var_get_mastyp_some
   (loc0, d2v) = begin
-  case+ d2var_get_mastyp d2v of
-  | Some s2e => s2e | None () => begin
-      $Loc.prerr_location loc0;
-      prerr ": error(3)";
-      prerr ": there is no master type for the dynamic variable [";
-      prerr d2v;
-      prerr "].";
-      prerr_newline ();
+  case+ d2var_get_mastyp (d2v) of
+  | Some s2e => s2e | None () => let
+      val () = prerr_loc_error3 (loc0)
+      val () = prerr ": there is no master type for the dynamic variable ["
+      val () = prerr_d2var (d2v)
+      val () = prerr "]."
+      val () = prerr_newline ()
+    in
       $Err.abort {s2exp} ()
     end // end of [None]
 end // end of [d2var_get_mastyp_some]
+
+(* ****** ****** *)
 
 implement
 d2var_get_addr_some
   (loc0, d2v) = begin
   case+ d2var_get_addr d2v of
-  | Some s2e => s2e | None () => begin
-      $Loc.prerr_location loc0;
-      prerr ": Internal Error: d2var_get_addr_some: ";
-      prerr ": there is no address for the dynamic variable [";
-      prerr d2v;
-      prerr "].";
-      prerr_newline ();
+  | Some s2e => s2e | None () => let
+      val () = prerr_loc_interror (loc0)
+      val () = prerr ": d2var_get_addr_some: "
+      val () = prerr ": there is no address for the dynamic variable ["
+      val () = prerr_d2var (d2v)
+      val () = prerr "]."
+      val () = prerr_newline ()
+    in
       $Err.abort {s2exp} ()
     end // end of [None]
 end // end of [d2var_get_addr_some]
@@ -285,13 +307,14 @@ d2var_get_view_some
   (loc0, d2v) = begin
   case+ d2var_get_view d2v of
   | D2VAROPTsome d2v_view => d2v_view
-  | D2VAROPTnone () => begin
-      $Loc.prerr_location loc0;
-      prerr ": Internal Error: d2var_view_get_some: ";
-      prerr ": there is no view attached to the dynamic variable [";
-      prerr d2v;
-      prerr "].";
-      prerr_newline ();
+  | D2VAROPTnone () => let
+      val () = prerr_loc_interror (loc0)
+      val () = prerr ": d2var_view_get_some: "
+      val () = prerr ": there is no view attached to the dynamic variable ["
+      val () = prerr_d2var (d2v)
+      val () = prerr "]."
+      val () = prerr_newline ()
+    in
       $Err.abort {d2var_t} ()
     end // end of [D2VAROPTnone]
 end // end of [d2var_get_view_some]
@@ -310,27 +333,20 @@ in
   // nothing
 end // end of [fprint_d2var]
 
-implement
-fprint_d2varlst {m} (pf | out, d2vs) = let
-  fun aux (out: &FILE m, i: int, d2vs: d2varlst): void =
-    case+ d2vs of
-    | cons (d2v, d2vs) => begin
-        if i > 0 then fprint1_string (pf | out, ", ");
-        fprint_d2var (pf | out, d2v); aux (out, i+1, d2vs)
-      end // end of [cons]
-    | nil () => ()
-  // end of [aux]
-in
-  aux (out, 0, d2vs)
-end // end of [fprint_d2varlst]
-
-//
-
 implement print_d2var (d2v) = print_mac (fprint_d2var, d2v)
 implement prerr_d2var (d2v) = prerr_mac (fprint_d2var, d2v)
 
-implement print_d2varlst (d2vs) = print_mac (fprint_d2varlst, d2vs)
-implement prerr_d2varlst (d2vs) = prerr_mac (fprint_d2varlst, d2vs)
+(* ****** ****** *)
+
+implement
+fprint_d2varlst (pf | out, xs) =
+  $Lst.fprintlst (pf | out, xs, ", ", fprint_d2var)
+// end of [fprint_d2varlst]
+
+implement
+print_d2varlst (d2vs) = print_mac (fprint_d2varlst, d2vs)
+implement
+prerr_d2varlst (d2vs) = prerr_mac (fprint_d2varlst, d2vs)
 
 (* ****** ****** *)
 
@@ -394,10 +410,14 @@ staload _(*anonymous*) = "ats_set_fun.dats"
 
 assume d2varset_t = $Set.set_t (d2var_t)
 
-fn cmp (d2v1: d2var_t, d2v2: d2var_t):<fun> Sgn =
+fn cmp (
+  d2v1: d2var_t, d2v2: d2var_t
+) :<fun> Sgn =
   $effmask_all (compare (d2v1, d2v2))
+// end of [cmp]
 
-fn fprint_d2varset_ptr {m:file_mode} {l:addr} (
+fn fprint_d2varset_ptr
+  {m:file_mode} {l:addr} (
     pf_mod: file_mode_lte (m, w)
   , pf_out: !FILE m @ l
   | p: ptr l
@@ -430,36 +450,49 @@ end // end of [fprint_d2varset_ptr]
 
 in // in of [local]
 
-implement fprint_d2varset (pf | out, dvs) = 
+implement
+fprint_d2varset (pf | out, dvs) = 
   fprint_d2varset_ptr (pf, view@ out | &out, dvs)
+// end of [fprint_d2varset]
+
+(* ****** ****** *)
 
 implement d2varset_nil = $Set.set_nil
 
-implement d2varset_add (dvs, d2v) = $Set.set_insert (dvs, d2v, cmp)
-implement d2varset_adds (dvs, d2vs) = case+ d2vs of
+implement
+d2varset_add (dvs, d2v) = $Set.set_insert (dvs, d2v, cmp)
+implement
+d2varset_adds (dvs, d2vs) = case+ d2vs of
   | list_cons (d2v, d2vs) => d2varset_adds (d2varset_add (dvs, d2v), d2vs)
   | list_nil () => dvs
 // end of [d2varset_adds]
 
-implement d2varset_del (dvs, d2v) = $Set.set_remove (dvs, d2v, cmp)
-implement d2varset_dels (dvs, d2vs) = case+ d2vs of
+implement
+d2varset_del (dvs, d2v) = $Set.set_remove (dvs, d2v, cmp)
+implement
+d2varset_dels (dvs, d2vs) = case+ d2vs of
   | list_cons (d2v, d2vs) => d2varset_dels (d2varset_del (dvs, d2v), d2vs)
   | list_nil () => dvs
 // end of [d2varset_dels]
 
-implement d2varset_union (dvs1, dvs2) = $Set.set_union (dvs1, dvs2, cmp)
+implement
+d2varset_union (dvs1, dvs2) = $Set.set_union (dvs1, dvs2, cmp)
 
 implement d2varset_ismem (dvs, d2v) = $Set.set_member (dvs, d2v, cmp)
 
-implement d2varset_foreach_main (pf | dvs, f, env) = begin
-  $Set.set_foreach_main (pf | dvs, f, env)
-end // end of [d2varset_foreach_main]
+implement
+d2varset_foreach_main
+  (pf | dvs, f, env) = $Set.set_foreach_main (pf | dvs, f, env)
+// end of [d2varset_foreach_main]
 
-implement d2varset_foreach_cloptr (dvs, f) = begin
-  $Set.set_foreach_cloptr (dvs, f)
-end // end of [d2varset_foreach_cloptr]
+implement
+d2varset_foreach_cloptr
+  (dvs, f) = $Set.set_foreach_cloptr (dvs, f)
+// end of [d2varset_foreach_cloptr]
 
 end // end of [local]
+
+(* ****** ****** *)
 
 implement print_d2varset (dvs) = print_mac (fprint_d2varset, dvs)
 implement prerr_d2varset (dvs) = prerr_mac (fprint_d2varset, dvs)

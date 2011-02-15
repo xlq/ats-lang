@@ -810,13 +810,17 @@ fun hityplstlst_is_cons (hitss: hityplstlst_t): bool
 fun print_hityp_t (hit: hityp_t): void
 fun prerr_hityp_t (hit: hityp_t): void
 
-//
+(* ****** ****** *)
 
-fun d2cst_get_hityp (_: d2cst_t): Option (hityp_t)
-fun d2cst_set_hityp (_: d2cst_t, _: Option hityp_t): void
-  = "ats_dynexp2_d2cst_set_hityp"
-
+fun d2cst_get_hityp
+  (_: d2cst_t): Option (hityp_t)
 fun d2cst_get_hityp_some (_: d2cst_t): hityp_t
+//
+// HX: implemented in [ats_dynexp2_dcst.dats]
+//
+fun d2cst_set_hityp
+  (_: d2cst_t, _: Option hityp_t): void = "atsopt_d2cst_set_hityp"
+// end of [d2cst_set_hityp]
 
 (* ****** ****** *)
 

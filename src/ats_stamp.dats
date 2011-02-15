@@ -80,57 +80,57 @@ implement tostring_stamp (s) = $Cnt.tostring_count (s)
 (* ****** ****** *)
 
 local val counter = $Cnt.counter_make () in
-implement s2rtdat_stamp_make () = $Cnt.counter_get_and_inc counter
+implement s2rtdat_stamp_make () = $Cnt.counter_getinc counter
 end // end of [local]
 
 local val counter = $Cnt.counter_make () in
-implement s2cst_stamp_make () = $Cnt.counter_get_and_inc counter
+implement s2cst_stamp_make () = $Cnt.counter_getinc counter
 end // end of [local]
 
 local val counter = $Cnt.counter_make () in
-implement s2var_stamp_make () = $Cnt.counter_get_and_inc counter
+implement s2var_stamp_make () = $Cnt.counter_getinc counter
 end // end of [local]
 
 local val counter = $Cnt.counter_make () in
-implement s2Var_stamp_make () = $Cnt.counter_get_and_inc counter
+implement s2Var_stamp_make () = $Cnt.counter_getinc counter
 end // end of [local]
 
 local val counter = $Cnt.counter_make () in
-implement s2exp_struct_stamp_make () = $Cnt.counter_get_and_inc counter
+implement s2exp_struct_stamp_make () = $Cnt.counter_getinc counter
 end // end of [local]
 
 local val counter = $Cnt.counter_make () in
-implement s2exp_union_stamp_make () = $Cnt.counter_get_and_inc counter
+implement s2exp_union_stamp_make () = $Cnt.counter_getinc counter
 end // end of [local]
 
 local val counter = $Cnt.counter_make () in
-implement d2con_stamp_make () = $Cnt.counter_get_and_inc counter
+implement d2con_stamp_make () = $Cnt.counter_getinc counter
 end // end of [local]
 
 local val counter = $Cnt.counter_make () in
-implement d2cst_stamp_make () = $Cnt.counter_get_and_inc counter
+implement d2cst_stamp_make () = $Cnt.counter_getinc counter
 end // end of [local]
 
 local val counter = $Cnt.counter_make () in
-implement d2mac_stamp_make () = $Cnt.counter_get_and_inc counter
+implement d2mac_stamp_make () = $Cnt.counter_getinc counter
 end // end of [local]
 
 local val counter = $Cnt.counter_make () in
-implement d2var_stamp_make () = $Cnt.counter_get_and_inc counter
+implement d2var_stamp_make () = $Cnt.counter_getinc counter
 end // end of [local]
 
 (* ****** ****** *)
 
 local val counter = $Cnt.counter_make () in
-implement funlab_stamp_make () = $Cnt.counter_get_and_inc counter
+implement funlab_stamp_make () = $Cnt.counter_getinc counter
 end // end of [local]
 
 local val counter = $Cnt.counter_make () in
-implement tmplab_stamp_make () = $Cnt.counter_get_and_inc counter
+implement tmplab_stamp_make () = $Cnt.counter_getinc counter
 end // end of [local]
 
 local val counter = $Cnt.counter_make () in
-implement tmpvar_stamp_make () = $Cnt.counter_get_and_inc counter
+implement tmpvar_stamp_make () = $Cnt.counter_getinc counter
 end // end of [local]
 
 (* ****** ****** *)

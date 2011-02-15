@@ -82,7 +82,7 @@ in
   case+ symopt of
   | Some sym => sym // end of [Some]
   | None () => let
-      val cnt = counter_get_and_inc (counter)
+      val cnt = counter_getinc (counter)
       val sym: symbol = '{ name= name, code= cnt }
 (*
       val () = begin

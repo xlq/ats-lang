@@ -38,7 +38,7 @@
 
 %{^
 #include "ats_counter.cats" /* only needed for [ATS/Geizella] */
-%}
+%} // end of [%{^]
 
 (* ****** ****** *)
 
@@ -384,16 +384,22 @@ implement prerr_s2cst (s2c) = prerr_mac (fprint_s2cst, s2c)
 implement
 fprint_s2cstlst
   {m} (pf | out, s2cs) = let
-  fun aux (out: &FILE m, i: int, s2cs: s2cstlst): void =
+  fun aux (
+    out: &FILE m, s2cs: s2cstlst, i: int
+  ) : void =
     case+ s2cs of
-    | S2CSTLSTcons (s2c, s2cs) => begin
-        if i > 0 then fprint1_string (pf | out, ", ");
-        fprint_s2cst (pf | out, s2c); aux (out, i+1, s2cs)
+    | S2CSTLSTcons (s2c, s2cs) => let
+        val () = if i > 0 then
+          fprint1_string (pf | out, ", ")
+        // end of [val]
+        val () = fprint_s2cst (pf | out, s2c)
+      in
+        aux (out, s2cs, i+1)
       end // end of [S2CSTLSTcons]
     | S2CSTLSTnil () => () // end of [S2CSTLSTnil]
   // end of [aux]
 in
-  aux (out, 0, s2cs)
+  aux (out, s2cs, 0)
 end // end of [fprint_s2cstlst]
 
 implement print_s2cstlst (s2cs) = print_mac (fprint_s2cstlst, s2cs)

@@ -100,21 +100,21 @@ atsopt_counter_reset
 
 ATSinline()
 atsopt_count_type
-atsopt_counter_get_and_inc
+atsopt_counter_getinc
   (ats_ptr_type cntr) { 
   atsopt_count_type cnt ;
   cnt = *(atsopt_count_type*)cntr ;
   *(atsopt_count_type*)cntr += 1 ;
   return cnt ;
-} // end of [atsopt_counter_get_and_inc]
+} // end of [atsopt_counter_getinc]
 
 ATSinline()
 atsopt_count_type
-atsopt_counter_inc_and_get
+atsopt_counter_incget
   (ats_ptr_type cntr) { 
   *((atsopt_count_type*)cntr) += 1 ;
   return *(atsopt_count_type*)cntr ;
-} // end of [atsopt_counter_inc_and_get]
+} // end of [atsopt_counter_incget]
 
 /* ****** ****** */
 

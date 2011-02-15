@@ -110,10 +110,10 @@ fun counter_set
 fun counter_reset
   (cntr: counter_t): void = "atsopt_counter_reset"
 //
-fun counter_get_and_inc
-  (cntr: counter_t): count_t = "atsopt_counter_get_and_inc"
-fun counter_inc_and_get
-  (cntr: counter_t): count_t = "atsopt_counter_inc_and_get"
+fun counter_getinc
+  (cntr: counter_t): count_t = "atsopt_counter_getinc"
+fun counter_incget
+  (cntr: counter_t): count_t = "atsopt_counter_incget"
 //
 (* ****** ****** *)
 
