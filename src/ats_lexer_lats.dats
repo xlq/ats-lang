@@ -401,8 +401,9 @@ macdef BACKQUOTELBRACE = $extval (token_t, "BACKQUOTELBRACE")
 macdef COMMALBRACE = $extval (token_t, "COMMALBRACE")
 
 (* ****** ****** *)
-
-// implemented in [ats_grammar.yats]
+//
+// HX: implemented in [ats_grammar.yats]
+//
 extern fun yylval_char_set (_: $Syn.c0har): void = "yylval_char_set"
 extern fun yylval_extcode_set (_: $Syn.e0xtcode): void = "yylval_extcode_set"
 extern fun yylval_float_set (_: $Syn.f0loat): void = "yylval_float_set"

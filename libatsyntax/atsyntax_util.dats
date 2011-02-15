@@ -29,12 +29,12 @@ in // in of [local]
 
 implement
 tostring_label (l) = let
-  val ans = $Lab.label_int_get (l)
+  val ans = $Lab.label_get_int (l)
 in
   case+ ans of
   | ~Some_vt (i) => tostring_int (i)
   | ~None_vt () => let
-      val ans = label_sym_get (l) in case+ ans of
+      val ans = label_get_sym (l) in case+ ans of
       | ~Some_vt s => symbol_name (s) | ~None_vt () => "" (*deadcode*)
     end // end of [None_vt]
 end // end of [tostring_label]

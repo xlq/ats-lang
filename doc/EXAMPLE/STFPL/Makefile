@@ -69,7 +69,7 @@ test:: stfpl
 
 xref::
 	$(ATSOPT) --posmark_xref=XREF \
-          -d ats_prelude_xref.dats > /dev/null
+          -d $(ATSHOME)/utils/xref/ats_prelude_xref.dats > /dev/null
 	$(ATSOPT) --posmark_xref=XREF \
           -d stfpl_main.dats > stfpl_main_dats.html
 	$(ATSOPT) --posmark_xref=XREF -d error.dats > error_dats.html
@@ -121,6 +121,8 @@ cleanall: clean
 	$(RMF) stfpl
 	$(RMF) *_?ats.html */*_?ats.html
 	$(RMF) XREF/*.html
+
+distclean:: cleanall
 
 ######
 

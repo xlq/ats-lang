@@ -77,8 +77,8 @@ Typechecker for STFPL.
 
 ######
 
-interp.dats
-interp.sats
+interp1.dats
+interp1.sats
 
 Interpreter for STFPL.
 
