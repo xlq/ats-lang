@@ -208,21 +208,13 @@ implement d2var_get_stamp (d2v) =
 
 implement lt_d2var_d2var
   (d2v1, d2v2) = compare_d2var_d2var (d2v1, d2v2) < 0
-// end of [lte_d2var_d2var]
-
 implement lte_d2var_d2var
   (d2v1, d2v2) = compare_d2var_d2var (d2v1, d2v2) <= 0
-// end of [lte_d2var_d2var]
 
 implement eq_d2var_d2var
   (d2v1, d2v2) = compare_d2var_d2var (d2v1, d2v2) = 0
-// end of [eq_d2var_d2var]
-
 implement neq_d2var_d2var
   (d2v1, d2v2) = compare_d2var_d2var (d2v1, d2v2) <> 0
-// end of [neq_d2var_d2var]
-
-(* ****** ****** *)
 
 fn _compare_d2var_d2var
   (d2v1: d2var_t, d2v2: d2var_t): Sgn = let

@@ -159,7 +159,7 @@ fun d2cst_make (
 , extdef: dcstextdef
 ) : d2cst_t
 
-//
+(* ****** ****** *)
 
 fun d2cst_get_loc (_: d2cst_t): loc_t
 fun d2cst_get_fil (_: d2cst_t): fil_t
@@ -172,7 +172,7 @@ fun d2cst_get_typ (_: d2cst_t): s2exp
 fun d2cst_get_extdef (_: d2cst_t): dcstextdef
 fun d2cst_get_stamp (_: d2cst_t): stamp_t
 
-//
+(* ****** ****** *)
 
 fun lt_d2cst_d2cst (_: d2cst_t, _: d2cst_t):<> bool
 overload < with lt_d2cst_d2cst

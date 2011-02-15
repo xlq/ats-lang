@@ -186,13 +186,11 @@ implement d2con_get_stamp (d2c) =
 
 implement lt_d2con_d2con
   (d2c1, d2c2) = compare_d2con_d2con (d2c1, d2c2) < 0
-
 implement lte_d2con_d2con
   (d2c1, d2c2) = compare_d2con_d2con (d2c1, d2c2) <= 0
 
 implement eq_d2con_d2con
   (d2c1, d2c2) = compare_d2con_d2con (d2c1, d2c2) = 0
-
 implement neq_d2con_d2con
   (d2c1, d2c2) = compare_d2con_d2con (d2c1, d2c2) <> 0
 

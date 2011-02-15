@@ -185,8 +185,10 @@ in
   $Stamp.compare_stamp_stamp (stamp1, stamp2)
 end // end of [_compare_s2var_s2var]
 
-implement compare_s2var_s2var (s2v1, s2v2) =
+implement
+compare_s2var_s2var (s2v1, s2v2) =
   $effmask_all ( _compare_s2var_s2var (s2v1, s2v2) )
+// end of [compare_s2var_s2var]
 
 (* ****** ****** *)
 
@@ -485,47 +487,15 @@ implement s2Var_get_stamp (s2V) =
 
 (* ****** ****** *)
 
-implement
-lt_s2Var_s2Var (s2V1, s2V2) = let
-  val stamp1 =
-    let val (vbox pf1 | p1) = s2V1 in p1->s2Var_stamp end
-  val stamp2 =
-    let val (vbox pf2 | p2) = s2V2 in p2->s2Var_stamp end
-in
-  $Stamp.lt_stamp_stamp (stamp1, stamp2)
-end // end of [lt_s2Var_s2Var]
+implement lt_s2Var_s2Var
+  (s2V1, s2V2) = compare_s2Var_s2Var (s2V1, s2V2) < 0
+implement lte_s2Var_s2Var
+  (s2V1, s2V2) = compare_s2Var_s2Var (s2V1, s2V2) <= 0
 
-implement
-lte_s2Var_s2Var (s2V1, s2V2) = let
-  val stamp1 =
-    let val (vbox pf1 | p1) = s2V1 in p1->s2Var_stamp end
-  val stamp2 =
-    let val (vbox pf2 | p2) = s2V2 in p2->s2Var_stamp end
-in
-  $Stamp.lte_stamp_stamp (stamp1, stamp2)
-end // end of [lte_s2Var_s2Var]
-
-implement
-eq_s2Var_s2Var (s2V1, s2V2) = let
-  val stamp1 =
-    let val (vbox pf1 | p1) = s2V1 in p1->s2Var_stamp end
-  val stamp2 =
-    let val (vbox pf2 | p2) = s2V2 in p2->s2Var_stamp end
-in
-  $Stamp.eq_stamp_stamp (stamp1, stamp2)
-end // end of [eq_s2Var_s2Var]
-
-implement
-neq_s2Var_s2Var (s2V1, s2V2) = let
-  val stamp1 =
-    let val (vbox pf1 | p1) = s2V1 in p1->s2Var_stamp end
-  // end of [val]
-  val stamp2 =
-    let val (vbox pf2 | p2) = s2V2 in p2->s2Var_stamp end
-  // end of [val]
-in
-  $Stamp.neq_stamp_stamp (stamp1, stamp2)
-end // end of [neq_s2Var_s2Var]
+implement eq_s2Var_s2Var
+  (s2V1, s2V2) = compare_s2Var_s2Var (s2V1, s2V2) = 0
+implement neq_s2Var_s2Var
+  (s2V1, s2V2) = compare_s2Var_s2Var (s2V1, s2V2) <> 0
 
 implement
 compare_s2Var_s2Var (s2V1, s2V2) = let

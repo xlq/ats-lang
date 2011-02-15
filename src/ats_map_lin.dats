@@ -30,10 +30,10 @@
 *)
 
 (* ****** ****** *)
-
+//
 // Author: Hongwei Xi (hwxi AT cs DOT bu DOT edu)
 // Time: October 2008
-
+//
 (* ****** ****** *)
 //
 // HX: A linear map implementation based on randomized binary search trees
@@ -50,7 +50,8 @@ staload "ats_map_lin.sats"
 
 (* ****** ****** *)
 
-dataviewtype bst (key:t@ype, itm:t@ype+, int) =
+dataviewtype
+bst (key:t@ype, itm:t@ype+, int) =
   | {nl,nr:nat} BSTcons (key, itm, 1+nl+nr) of
       (int (1+nl+nr), key, itm, bst (key, itm, nl), bst (key, itm, nr))
   | BSTnil (key, itm, 0)
@@ -58,7 +59,8 @@ dataviewtype bst (key:t@ype, itm:t@ype+, int) =
 
 (* ****** ****** *)
 
-fun{key,itm:t@ype} bst_free {n:nat} .<n>.
+fun{key,itm:t@ype}
+bst_free {n:nat} .<n>.
   (t: bst (key, itm, n)):<> void = begin case+ t of
   | ~BSTcons (_, _, _, tl, tr) => (bst_free tl; bst_free tr)
   | ~BSTnil () => ()
@@ -67,7 +69,7 @@ end // end of [bst_free]
 (* ****** ****** *)
 
 fn{key,itm:t@ype}
-  bst_size {n:nat} (t: !bst (key, itm, n)):<> int n = case+ t of
+bst_size {n:nat} (t: !bst (key, itm, n)):<> int n = case+ t of
   | BSTcons (n, _, _, _, _) => (fold@ t; n) | BSTnil _ => (fold@ t; 0) 
 // end of [bst_size]
 
@@ -132,9 +134,10 @@ atsopt_map_lin_dice (
 ) {
   double r = drand48 ();
   return ((m+n)*r < m) ? ats_true_bool : ats_false_bool ;
-} // end of [ats_map_lin_dice]
+} // end of [atsopt_map_lin_dice]
 
 %} // end of [%{^]
+
 extern
 fun dice {m,n:int | m > 0; n > 0}
   (m: int m, n: int n):<> bool = "atsopt_map_lin_dice"
@@ -266,8 +269,9 @@ in
 end // end of [bst_select]
 
 (* ****** ****** *)
-
+//
 // infix order listing
+//
 fn{key,itm:t@ype}
 bst_list_inf {n:nat} (
   t: !bst (key, itm, n)
@@ -289,8 +293,9 @@ in
 end // end of [bst_list_inf]
 
 (* ****** ****** *)
-
+//
 // infix order foreach
+//
 fun{key,itm:t@ype}
 bst_foreach_inf
   {v:view} {vt:viewtype}
@@ -391,7 +396,8 @@ end // end of [map_join]
 
 implement{key,itm}
 map_list_inf (m) = let
-  val+ MAP (_(*cmp*), !p_bst) = m; val ans = bst_list_inf<key,itm> !p_bst
+  val+ MAP (_(*cmp*), !p_bst) = m
+  val ans = bst_list_inf<key,itm> (!p_bst)
 in
   fold@ (m); ans
 end // end of [map_list_inf]

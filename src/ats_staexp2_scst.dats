@@ -235,19 +235,13 @@ implement s2cst_set_tag (s2c, tag) =
 
 implement lt_s2cst_s2cst
   (s2c1, s2c2) = compare_s2cst_s2cst (s2c1, s2c2) < 0
-// end of [lt_s2cst_s2cst]
-
 implement lte_s2cst_s2cst
   (s2c1, s2c2) = compare_s2cst_s2cst (s2c1, s2c2) <= 0
-// end of [lte_s2cst_s2cst]
 
 implement eq_s2cst_s2cst
   (s2c1, s2c2) = compare_s2cst_s2cst (s2c1, s2c2) = 0
-// end of [eq_s2cst_s2cst]
-
 implement neq_s2cst_s2cst
   (s2c1, s2c2) = compare_s2cst_s2cst (s2c1, s2c2) <> 0
-// end of [neq_s2cst_s2cst]
 
 fn _compare_s2cst_s2cst
   (s2c1: s2cst_t, s2c2: s2cst_t): Sgn = let

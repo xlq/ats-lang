@@ -55,6 +55,8 @@ test:: stfpl
 	./stfpl < TEST/fib.stfpl
 	./stfpl < TEST/evenodd.stfpl
 	./stfpl < TEST/twice.stfpl
+	./stfpl < TEST/coin.stfpl
+	./stfpl < TEST/bsearch_fun.stfpl
 	./stfpl < TEST/queens.stfpl
 
 ######
@@ -98,7 +100,7 @@ chmod::
 
 ######
 
-RMF = rm -f
+RMF=rm -f
 
 ######
 
