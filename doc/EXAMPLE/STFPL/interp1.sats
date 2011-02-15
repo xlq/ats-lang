@@ -44,4 +44,4 @@ fun interp_exp (e: $TRANS1.e1xp): v1al
 
 (* ****** ****** *)
 
-(* end of [interp.sats] *)
+(* end of [interp1.sats] *)

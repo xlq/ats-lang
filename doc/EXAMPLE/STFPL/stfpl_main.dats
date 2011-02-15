@@ -14,7 +14,7 @@
 staload "absyn.sats"
 staload "parser.sats"
 staload "trans1.sats"
-staload "interp.sats"
+staload "interp1.sats"
 
 (* ****** ****** *)
 
@@ -28,7 +28,7 @@ dynload "absyn.dats"
 dynload "fixity.dats"
 dynload "parser.dats"
 dynload "trans1.dats"
-dynload "interp.dats"
+dynload "interp1.dats"
 
 (* ****** ****** *)
 

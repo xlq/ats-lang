@@ -16,10 +16,10 @@ ATSOPT=$(ATSHOME)/bin/atsopt
 
 ######
 
-CCFLAGS=-O2 -g
 #CCFLAGS=
-GCFLAG=-D_ATS_GCATS
+CCFLAGS=-O2 -g
 #GCFLAG=
+GCFLAG=-D_ATS_GCATS
 
 ######
 
@@ -35,7 +35,7 @@ SOURCES=\
   fixity.sats fixity.dats \
   parser.sats parser.dats \
   trans1.sats trans1.dats \
-  interp.sats interp.dats \
+  interp1.sats interp1.dats \
 
 OBJECTS := $(SOURCES)
 OBJECTS := $(patsubst %.dats, %_dats.o, $(OBJECTS))
@@ -77,7 +77,8 @@ xref::
 	$(ATSOPT) --posmark_xref=XREF -d absyn.dats > absyn_dats.html
 	$(ATSOPT) --posmark_xref=XREF -d parser.dats > parser_dats.html
 	$(ATSOPT) --posmark_xref=XREF -d trans1.dats > trans1_dats.html
-	$(ATSOPT) --posmark_xref=XREF -d interp.dats > interp_dats.html
+	$(ATSOPT) --posmark_xref=XREF -s interp1.sats > interp1_sats.html
+	$(ATSOPT) --posmark_xref=XREF -d interp1.dats > interp1_dats.html
 
 ######
 

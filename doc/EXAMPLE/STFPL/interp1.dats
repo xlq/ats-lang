@@ -4,11 +4,11 @@
 ** Instructor: Hongwei Xi (hwxi AT cs DOT bu DOT edu)
 *)
 
+(* ****** ****** *)
 //
 // Author: Hongwei Xi (hwxi AT cs DOT bu DOT edu)
 // Time: June, 2009
 //
-
 (* ****** ****** *)
 
 //
@@ -25,7 +25,7 @@ staload "trans1.sats"
 
 (* ****** ****** *)
 
-staload "interp.sats"
+staload "interp1.sats"
 
 (* ****** ****** *)
 
@@ -257,4 +257,4 @@ end // end of [interp_exp]
 
 (* ****** ****** *)
 
-(* end of [interp.dats] *)
+(* end of [interp1.dats] *)
