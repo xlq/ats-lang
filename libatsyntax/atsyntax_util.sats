@@ -39,9 +39,9 @@ fun parse_from_string_i0de (inp: string): $Syn.i0de
 fun parse_from_string_s0rtid (inp: string): $Syn.i0de
 fun parse_from_string_si0de (inp: string): $Syn.i0de
 fun parse_from_string_di0de (inp: string): $Syn.i0de
-fun parse_from_string_s0exp (inp: string): $Syn.i0de
-fun parse_from_string_d0exp (inp: string): $Syn.i0de
-fun parse_from_string_d0ecseq_dyn (inp: string): $Syn.i0de
+fun parse_from_string_s0exp (inp: string): $Syn.s0exp
+fun parse_from_string_d0exp (inp: string): $Syn.d0exp
+fun parse_from_string_d0ecseq_dyn (inp: string): $Syn.d0eclst
 
 end // end of [local]
 
