@@ -35,13 +35,16 @@
 // Time: (month?) 2007
 //
 (* ****** ****** *)
-
-// HX: implementation of some basic list functions
-
+//
+// HX: totally ad-hoc implementation of some basic list functions
+// for use in atsopt
+//
 (* ****** ****** *)
 
 #define nil list_nil
 #define :: list_cons
+
+(* ****** ****** *)
 
 fun list_is_cons
   {a:type} {n:nat} (xs: list (a, n)): bool (n > 0)
@@ -73,10 +76,10 @@ fun list_length {a:type} {n:nat} (xs: list (a, n)):<> int n
 
 (* ****** ****** *)
 
-fun list_map_main
-  {a,b:type} {v:view} {vt:viewtype} {n:nat} {f:eff}
-  (pf: !v | xs: list (a, n), f: (!v | a, !vt) -<f> b, env: !vt):<f> list (b, n)
-// end of [list_map_main]
+fun list_map_main {a,b:type}
+  {v:view} {vt:viewtype} {n:nat} {f:eff} (
+  pf: !v | xs: list (a, n), f: (!v | a, !vt) -<f> b, env: !vt
+) :<f> list (b, n) // end of [list_map_main]
 
 fun list_map_fun
   {a,b:type} {n:nat} {f:eff}
@@ -101,34 +104,9 @@ fun list_reverse_list_vt
 (* ****** ****** *)
 
 fun list_length_compare
-  {a1,a2:type} {n1,n2:nat}
-  (xs1: list (a1, n1), xs2: list (a2, n2)):<> [i:int | sgn_r(n1-n2,i)] int(i)
-// end of [list_length_compare]
-
-(* ****** ****** *)
-
-fun{a:t@ype} list_vt_copy
-  {n:nat} (xs: !list_vt (a, n)):<> list_vt (a, n)
-fun list_vt_copy__boxed {a:type}
-  {n:nat} (xs: !list_vt (a, n)):<> list_vt (a, n)
-// end of [list_vt_copy__boxed]
-  
-(* ****** ****** *)
-
-fun{a:t@ype}
-list_vt_free
-  {n:nat} (xs: list_vt (a, n)):<> void
-fun list_vt_free__boxed
-  {a:type} {n:nat} (xs: list_vt (a, n)):<> void
-// end of [list_vt_free__boxed]
-
-(* ****** ****** *)
-
-fun{a:viewt@ype}
-list_vt_length {n:nat} (xs: !list_vt (a, n)):<> int n
-fun list_vt_length__boxed
-  {a:viewtype} {n:nat} (xs: !list_vt (a, n)):<> int n
-// end of [list_vt_length__boxed]
+  {a1,a2:type} {n1,n2:nat} (
+  xs1: list (a1, n1), xs2: list (a2, n2)
+) :<> [i:int | sgn_r(n1-n2,i)] int(i) // end of [list_length_compare]
 
 (* ****** ****** *)
 
@@ -150,13 +128,46 @@ fun list_vt_reverse
 
 (* ****** ****** *)
 
-fun list_vt_revapp_list {a:type} {m,n:nat}
-  (xs: list_vt (a, m), ys: list (a, n)):<> list (a, m+n)
+fun list_vt_revapp_list {a:type}
+  {m,n:nat} (xs: list_vt (a, m), ys: list (a, n)):<> list (a, m+n)
 // end of [list_vt_revapp_list]
 
 fun list_vt_reverse_list
   {a:type} {n:nat} (xs: list_vt (a, n)) :<> list (a, n)
 // end of [list_vt_reverse_list]
+
+(* ****** ****** *)
+
+fun{a:t@ype}
+list_vt_copy
+  {n:nat} (xs: !list_vt (a, n)):<> list_vt (a, n)
+// end of [list_vt_copy]
+
+fun list_vt_copy__boxed
+  {a:type} {n:nat} (xs: !list_vt (a, n)):<> list_vt (a, n)
+// end of [list_vt_copy__boxed]
+  
+(* ****** ****** *)
+
+fun{a:t@ype}
+list_vt_free
+  {n:nat} (xs: list_vt (a, n)):<> void
+// end of [list_vt_free]
+
+fun list_vt_free__boxed
+  {a:type} {n:nat} (xs: list_vt (a, n)):<> void
+// end of [list_vt_free__boxed]
+
+(* ****** ****** *)
+
+fun{a:viewt@ype}
+list_vt_length
+  {n:nat} (xs: !list_vt (a, n)):<> int n
+// end of [list_vt_length]
+
+fun list_vt_length__boxed
+  {a:viewtype} {n:nat} (xs: !list_vt (a, n)):<> int n
+// end of [list_vt_length__boxed]
 
 (* ****** ****** *)
 

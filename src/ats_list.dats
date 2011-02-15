@@ -47,18 +47,22 @@ staload "ats_list.sats"
 
 (* ****** ****** *)
 
-// list implementation
-
 #define nil list_nil
 #define cons list_cons
 #define :: list_cons
+
+(* ****** ****** *)
 
 implement
 list_is_cons (xs) =
   case+ xs of list_cons _ => true | list_nil _ => false
 // end of [list_is_cons]
 
-(* tail-recursive implementation *)
+(* ****** ****** *)
+
+(*
+** HX: tail-recursive implementation
+*)
 implement
 list_append
   {a} (xs, ys) = let
@@ -78,6 +82,8 @@ list_append
 in
   aux (xs, ys, res); res
 end // end of [list_append]
+
+(* ****** ****** *)
 
 implement
 list_extend (xs, x) = begin
@@ -116,7 +122,9 @@ end // end of [list_length]
 
 (* ****** ****** *)
 
-(* tail-recursive implementation *)
+(*
+** HX: tail-recursive implementation
+*)
 implement
 list_map_main
   {a,b} {v} {vt} {n} {f:eff} (pf | xs, f, env) = let
@@ -152,7 +160,8 @@ in
 end // end of [list_map_fun]
 
 implement
-list_map_cloptr {a,b} {n} {f:eff} (xs, f) = let
+list_map_cloptr
+  {a,b} {n} {f:eff} (xs, f) = let
   viewtypedef cloptr_t = a -<cloptr,f> b
   fn app (pf: !unit_v | x: a, f: !cloptr_t):<f> b = f (x)
   prval pf = unit_v ()
@@ -167,6 +176,7 @@ end // end of [list_map_cloptr]
 implement
 list_revapp (xs, ys) = case+ xs of
   | x :: xs => list_revapp (xs, x :: ys) | nil () => ys
+// end of [list_revapp]
 
 implement list_reverse (xs) = list_revapp (xs, nil ())
 
@@ -180,7 +190,8 @@ end // end of [list_reverse_list_vt]
 (* ****** ****** *)
 
 implement
-list_length_compare (xs1, xs2) = case+ xs1 of
+list_length_compare
+  (xs1, xs2) = case+ xs1 of
   | _ :: xs1 => begin case+ xs2 of
     | _ :: xs2 => list_length_compare (xs1, xs2) | nil () => 1
     end // end of [::]
@@ -191,27 +202,85 @@ list_length_compare (xs1, xs2) = case+ xs1 of
 
 (* ****** ****** *)
 
-implement{a}
-list_vt_length (xs) = let
-  fun aux {i,j:nat} .<i>.
-    (xs: !list_vt (a, i), j: int j):<> int (i+j) =
-    case+ xs of
-    | list_vt_cons (_, !xs1) => begin
-        let val n = aux (!xs1, j + 1) in fold@ xs; n end
-      end
-    | list_vt_nil () => (fold@ xs; j)
-  // end of [aux]
-in
-  aux (xs, 0)
-end // end of [list_vt_length]
-
+(*
+** HX: tail-recursive implementation
+*)
 implement
-list_vt_length__boxed {a} (xs) = list_vt_length<a> (xs)
+list_vt_append {a} (xs0, ys0) = let
+//
+fun loop {n1,n2:nat} .<n1>.
+  (xs0: &list_vt (a, n1) >> list_vt (a, n1+n2), ys0: list_vt (a, n2))
+  :<> void = begin case+ xs0 of
+  | list_vt_cons (_, !xs) => (loop (!xs, ys0); fold@ xs0)
+  | list_vt_nil () => (xs0 := ys0)
+end // end of [loop]
+//
+var xs0 = xs0
+//
+in
+  loop (xs0, ys0); xs0
+end // end of [list_vt_append]
 
 (* ****** ****** *)
 
-(* tail-recursive implementation *)
-implement{a} list_vt_copy (xs) = let
+(*
+** HX: tail-recursive implementation
+*)
+implement
+list_vt_prefix {a} (xs, i) = let
+//
+fun loop {n,i:nat | i <= n} .<i>. (
+    xs: &list_vt (a, n) >> list_vt (a, n-i)
+  , i: int i
+  , res: &(List_vt a)? >> list_vt (a, i)
+  ) :<> void = begin
+  if i > 0 then let
+    val () = res := xs
+    val+ list_vt_cons (_, !xs_nxt) = res; val () = xs := !xs_nxt
+  in
+    loop (xs, i-1, !xs_nxt); fold@ {a} (res)
+  end else begin
+    res := list_vt_nil {a} ()
+  end
+end // end of [loop]
+//
+var res: List_vt a // uninitialized
+//
+in
+  loop (xs, i, res); res
+end // end of [list_vt_prefix]
+
+(* ****** ****** *)
+
+implement
+list_vt_revapp
+  (xs, ys) = case+ xs of
+  | ~list_vt_cons (x, xs) => list_vt_revapp (xs, list_vt_cons (x, ys))
+  | ~list_vt_nil () => ys
+// end of [list_vt_revapp]
+
+implement
+list_vt_reverse (xs) = list_vt_revapp (xs, list_vt_nil ())
+
+(* ****** ****** *)
+
+implement
+list_vt_revapp_list
+  (xs, ys) = case+ xs of
+  | ~list_vt_cons (x, xs) => list_vt_revapp_list (xs, list_cons (x, ys))
+  | ~list_vt_nil () => ys
+// end of [list_vt_revapp_list]
+
+implement
+list_vt_reverse_list (xs) = list_vt_revapp_list (xs, list_nil ())
+
+(* ****** ****** *)
+
+(*
+** HX: tail-recursive implementation
+*)
+implement{a}
+list_vt_copy (xs) = let
   fun aux {n:nat} .<n>.
     (xs: !list_vt (a, n), res: &(List_vt a)? >> list_vt (a, n))
     :<> void = begin case+ xs of
@@ -247,70 +316,22 @@ list_vt_free__boxed {a} (xs) = list_vt_free<a> (xs)
 
 (* ****** ****** *)
 
-(* tail-recursive implementation *)
-implement
-list_vt_append {a} (xs0, ys0) = let
-//
-fun loop {n1,n2:nat} .<n1>.
-  (xs0: &list_vt (a, n1) >> list_vt (a, n1+n2), ys0: list_vt (a, n2))
-  :<> void = begin case+ xs0 of
-  | list_vt_cons (_, !xs) => (loop (!xs, ys0); fold@ xs0)
-  | list_vt_nil () => (xs0 := ys0)
-end // end of [loop]
-//
-var xs0 = xs0
-//
+implement{a}
+list_vt_length (xs) = let
+  fun aux {i,j:nat} .<i>.
+    (xs: !list_vt (a, i), j: int j):<> int (i+j) =
+    case+ xs of
+    | list_vt_cons (_, !xs1) => begin
+        let val n = aux (!xs1, j + 1) in fold@ xs; n end
+      end
+    | list_vt_nil () => (fold@ xs; j)
+  // end of [aux]
 in
-  loop (xs0, ys0); xs0
-end // end of [list_vt_append]
-
-(* ****** ****** *)
-
-(* tail-recursive implementation *)
-implement
-list_vt_prefix {a} (xs, i) = let
-
-fun loop {n,i:nat | i <= n} .<i>. (
-    xs: &list_vt (a, n) >> list_vt (a, n-i)
-  , i: int i
-  , res: &(List_vt a)? >> list_vt (a, i)
-  ) :<> void = begin
-  if i > 0 then let
-    val () = res := xs
-    val+ list_vt_cons (_, !xs_nxt) = res; val () = xs := !xs_nxt
-  in
-    loop (xs, i-1, !xs_nxt); fold@ {a} (res)
-  end else begin
-    res := list_vt_nil {a} ()
-  end
-end // end of [loop]
-
-var res: List_vt a // uninitialized
-
-in
-  loop (xs, i, res); res
-end // end of [list_vt_prefix]
-
-(* ****** ****** *)
+  aux (xs, 0)
+end // end of [list_vt_length]
 
 implement
-list_vt_revapp (xs, ys) = case+ xs of
-  | ~list_vt_cons (x, xs) => list_vt_revapp (xs, list_vt_cons (x, ys))
-  | ~list_vt_nil () => ys
-
-implement
-list_vt_reverse (xs) = list_vt_revapp (xs, list_vt_nil ())
-
-(* ****** ****** *)
-
-implement
-list_vt_revapp_list (xs, ys) = case+ xs of
-  | ~list_vt_cons (x, xs) => list_vt_revapp_list (xs, list_cons (x, ys))
-  | ~list_vt_nil () => ys
-// end of [list_vt_revapp_list]
-
-implement
-list_vt_reverse_list (xs) = list_vt_revapp_list (xs, list_nil ())
+list_vt_length__boxed {a} (xs) = list_vt_length<a> (xs)
 
 (* ****** ****** *)
 
