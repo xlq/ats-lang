@@ -85,8 +85,8 @@ parse_from_string_di0de (inp) = id where {
 } // end of [parse_from_string_di0de]
 
 implement
-parse_from_string_s0exp (inp) = d0e where {
-  val- YYRESs0exp (d0e) = parse_from_string_yyres (YYBEGs0exp, inp)
+parse_from_string_s0exp (inp) = s0e where {
+  val- YYRESs0exp (s0e) = parse_from_string_yyres (YYBEGs0exp, inp)
 } // end of [parse_from_string_s0exp]
 
 implement
