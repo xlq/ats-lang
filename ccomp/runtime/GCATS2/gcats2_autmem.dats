@@ -46,7 +46,7 @@
 
 (* ****** ****** *)
 
-#define ATSCCOMP_NAMESPACE "gcats2_autmem_"
+#define ATSOPT_NAMESPACE "gcats2_autmem_"
 
 (* ****** ****** *)
 

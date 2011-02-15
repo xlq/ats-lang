@@ -40,7 +40,7 @@
 
 (* ****** ****** *)
 
-#define ATSCCOMP_NAMESPACE "gcats2_globalrts_"
+#define ATSOPT_NAMESPACE "gcats2_globalrts_"
 
 (* ****** ****** *)
 

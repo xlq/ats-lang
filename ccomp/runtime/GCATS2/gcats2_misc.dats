@@ -40,7 +40,7 @@
 
 (* ****** ****** *)
 
-#define ATSCCOMP_NAMESPACE "gcats2_misc_"
+#define ATSOPT_NAMESPACE "gcats2_misc_"
 
 (* ****** ****** *)
 

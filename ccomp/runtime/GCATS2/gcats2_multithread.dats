@@ -40,7 +40,7 @@
 
 (* ****** ****** *)
 
-#define ATSCCOMP_NAMESPACE "gcats2_multithread_"
+#define ATSOPT_NAMESPACE "gcats2_multithread_"
 
 (* ****** ****** *)
 
