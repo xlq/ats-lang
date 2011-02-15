@@ -30,10 +30,10 @@
 *)
 
 (* ****** ****** *)
-
+//
 // Author: Hongwei Xi (hwxi AT cs DOT bu DOT edu)
-// Time: February 2008
-
+// Start Time: February 2008
+//
 (* ****** ****** *)
 
 (* for representing and handling constraints *)
@@ -158,7 +158,7 @@ s3bexp_bneq (s3be1, s3be2) = begin case+ s3be1 of
     end // end of [_]
 end // end of [s3bexp_beq]
 
-//
+(* ****** ****** *)
 
 implement
 s3bexp_badd (s3be1, s3be2) = begin
@@ -180,7 +180,7 @@ s3bexp_bmul (s3be1, s3be2) = begin
     end // end of [_]
 end // end of [s3bexp_bmul]
 
-//
+(* ****** ****** *)
 
 implement
 s3bexp_iexp (knd, s3ie) = begin case+ s3ie of
@@ -209,7 +209,7 @@ s3bexp_iexp (knd, s3ie) = begin case+ s3ie of
   | _ => S3BEiexp (knd, s3ie)
 end // end of [s3bexp_iexp]
 
-//
+(* ****** ****** *)
 
 implement s3bexp_igt (s3ie1, s3ie2) =
   s3bexp_iexp (~2(*lt*), s3iexp_isub (s3ie2, s3ie1))
@@ -227,7 +227,7 @@ implement s3bexp_ilte (s3ie1, s3ie2) =
   s3bexp_iexp (2(*gte*), s3iexp_isub (s3ie2, s3ie1))
 // end of [s3bexp_ilte]
 
-//
+(* ****** ****** *)
 
 implement s3bexp_ieq (s3ie1, s3ie2) =
   s3bexp_iexp (1(*eq*), s3iexp_isub (s3ie1, s3ie2))
@@ -237,7 +237,7 @@ implement s3bexp_ineq (s3ie1, s3ie2) =
   s3bexp_iexp (~1(*neq*), s3iexp_isub (s3ie1, s3ie2))
 // end of [s3bexp_ineq]
 
-//
+(* ****** ****** *)
 
 implement s3bexp_pgt (s3ae1, s3ae2) =
   s3bexp_iexp (~2(*lt*), s3iexp_pdiff (s3ae2, s3ae1))
@@ -353,7 +353,7 @@ fun s2cfdeflst_free
   | ~S2CFDEFLSTnil () => ()
 end // end of [s2cfdeflst_free]
 
-//
+(* ****** ****** *)
 
 fn s2cfdeflst_pop
   (fds0: &s2cfdeflst_vt): void = let
@@ -402,7 +402,7 @@ end // end of [s2cfdeflst_find]
 
 (* ****** ****** *)
 //
-// for handling a special static function
+// HX: for handling a special static function
 //
 fn s2cfdeflst_add
   (s2c: s2cst_t, s2es: s2explst, s2v: s2var_t,
@@ -424,7 +424,7 @@ in
 end // end of [s2cfdeflst_add]
 
 //
-// for handling a generic static function
+// HX: for handling a generic static function
 //
 fn s2cfdeflst_add_none
   (s2c: s2cst_t, s2es: s2explst, s2v: s2var_t,
@@ -442,7 +442,7 @@ end // end of [s2cfdeflst_add_none]
 
 (* ****** ****** *)
 //
-// for handling a special static function
+// HX: for handling a special static function
 //
 fn s2cfdeflst_replace (
     s2t: s2rt
@@ -460,7 +460,7 @@ fn s2cfdeflst_replace (
 // end of [s2cfdeflst_replace]
 
 //
-// for handling a generic static function
+// HX: for handling a generic static function
 //
 fn s2cfdeflst_replace_none (
     s2t: s2rt

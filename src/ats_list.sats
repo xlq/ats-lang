@@ -171,4 +171,13 @@ fun list_vt_length__boxed
 
 (* ****** ****** *)
 
+fun fprintlst
+  {a:type} {m:file_mode} (
+  pf: file_mode_lte (m, w)
+| out: &FILE m, xs: List a, sep: string
+, fprint: (file_mode_lte (m, w) | &FILE m, a) -> void
+) : void // end of [fprintlst]
+
+(* ****** ****** *)
+
 (* end of [ats_list.sats] *)

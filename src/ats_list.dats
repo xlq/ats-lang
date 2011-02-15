@@ -335,4 +335,28 @@ list_vt_length__boxed {a} (xs) = list_vt_length<a> (xs)
 
 (* ****** ****** *)
 
+implement
+fprintlst {a} {m} (
+  pf | out, xs, sep, fprint
+) = let
+  fun aux (
+    out: &FILE m, xs: List a, i: int
+  ) :<cloref1> void =
+    case+ xs of
+    | list_cons (x, xs) => let
+        val () = if i > 0 then
+          fprint1_string (pf | out, sep)
+        // end of [val]
+        val () = fprint (pf | out, x)
+      in
+         aux (out, xs, i+1)
+      end // end of [list_cons]
+    | list_nil () => () // end of [list_nil]
+  // end of [aux]
+in
+  aux (out, xs, 0)
+end // end of [fprint_kontlst]
+
+(* ****** ****** *)
+
 (* end of [ats_list.dats] *)

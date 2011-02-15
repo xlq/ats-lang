@@ -30,25 +30,30 @@
 *)
 
 (* ****** ****** *)
-
-// Time: November 2007
+//
 // Author: Hongwei Xi (hwxi AT cs DOT bu DOT edu)
-
+// Time: November 2007
+//
 (* ****** ****** *)
 
 staload Sym = "ats_symbol.sats"
-typedef symbol_t = $Sym.symbol_t
+typedef name = $Sym.symbol_t
+
+fun the_namespace_add (name: name): void
+
+fun the_namespace_search
+  {a:type} (f: !name -<cloptr1> Option_vt a): Option_vt a
+// end of [the_namespace_search]
 
 (* ****** ****** *)
-
-fun the_namespace_add (name: symbol_t): void
-fun the_namespace_search {a:type} (f: !symbol_t -<cloptr1> Option_vt a): Option_vt a
 
 fun the_namespace_pop (): void
 fun the_namespace_push (): void
 fun the_namespace_restore (): void
 fun the_namespace_save (): void
 fun the_namespace_localjoin (): void
+
+(* ****** ****** *)
 
 fun the_namespace_initialize (): void
 

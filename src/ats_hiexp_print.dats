@@ -43,6 +43,7 @@
 staload Fil = "ats_filename.sats"
 staload IntInf = "ats_intinf.sats"
 staload Lab = "ats_label.sats"
+staload Lst = "ats_list.sats"
 
 (* ****** ****** *)
 
@@ -114,50 +115,28 @@ in
 end // end of [fprint_hityp]
 
 implement
-fprint_hityplst {m}
-  (pf | out, hits0) = let
-  fun aux (
-    out: &FILE m, i: int, hits: hityplst
-  ) : void =
-    case+ hits of
-    | list_cons (hit, hits) => begin
-        if i > 0 then fprint1_string (pf | out, ", ");
-        fprint_hityp (pf | out, hit); aux (out, i+1, hits)
-      end // end of [list_cons]
-    | list_nil () => () // end of [list_nil]
-  // end of [aux]
-in
-  aux (out, 0, hits0)
-end // end of [fprint_hityplst]
-
+print_hityp (hit) = print_mac (fprint_hityp, hit)
 implement
-fprint_hityplstlst {m}
-  (pf | out, hitss0) = let
-  fun aux (
-    out: &FILE m, i: int, hitss: hityplstlst
-  ) : void =
-    case+ hitss of
-    | list_cons (hits, hitss) => begin
-        if i > 0 then fprint1_string (pf | out, ", ");
-        fprint_hityplst (pf | out, hits); aux (out, i+1, hitss)
-      end // end of [list_cons]
-    | list_nil () => () // end of [list_nil]
-  // end of [aux]
-in
-  aux (out, 0, hitss0)
-end // end of [fprint_hityplstlst]
+prerr_hityp (hit) = prerr_mac (fprint_hityp, hit)
 
 (* ****** ****** *)
 
 implement
-print_hityp (hit) = print_mac (fprint_hityp, hit)
-implement
-prerr_hityp (hit) = prerr_mac (fprint_hityp, hit)
+fprint_hityplst (pf | out, xs) =
+  $Lst.fprintlst {hityp} (pf | out, xs, ", ", fprint_hityp)
+// end of [fprint_hityplst]
 
 implement
 print_hityplst (hits) = print_mac (fprint_hityplst, hits)
 implement
 prerr_hityplst (hits) = prerr_mac (fprint_hityplst, hits)
+
+(* ****** ****** *)
+
+implement
+fprint_hityplstlst (pf | out, xss) =
+  $Lst.fprintlst {hityplst} (pf | out, xss, "; ", fprint_hityplst)
+// end of [fprint_hityplstlst]
 
 (* ****** ****** *)
 
@@ -245,21 +224,23 @@ in
 end // end of [fprint_hipat]
 
 implement
-fprint_hipatlst {m}
-  (pf | out, hips0) = let
-  fun aux (
-    out: &FILE m, i: int, hips: hipatlst
-  ) : void =
-    case+ hips of
-    | list_cons (hip, hips) => begin
-        if i > 0 then fprint1_string (pf | out, ", ");
-        fprint_hipat (pf | out, hip); aux (out, i+1, hips)
-      end (* end of [list_cons] *)
-    | list_nil () => () // end of [list_nil]
-  // end of [aux]
-in
-  aux (out, 0, hips0)
-end // end of [fprint_hipatlst]
+print_hipat (hip) = print_mac (fprint_hipat, hip)
+implement
+prerr_hipat (hip) = prerr_mac (fprint_hipat, hip)
+
+(* ****** ****** *)
+
+implement
+fprint_hipatlst (pf | out, xs) =
+  $Lst.fprintlst {hipat} (pf | out, xs, ", ", fprint_hipat)
+// end of [fprint_hipatlst]
+
+implement
+print_hipatlst (hips) = print_mac (fprint_hipatlst, hips)
+implement
+prerr_hipatlst (hips) = prerr_mac (fprint_hipatlst, hips)
+
+(* ****** ****** *)
 
 implement
 fprint_labhipatlst {m}
@@ -283,18 +264,6 @@ fprint_labhipatlst {m}
 in
   aux (out, 0, lhips0)
 end // end of [fprint_labhipatlst]
-
-(* ****** ****** *)
-
-implement
-print_hipat (hip) = print_mac (fprint_hipat, hip)
-implement
-prerr_hipat (hip) = prerr_mac (fprint_hipat, hip)
-
-implement
-print_hipatlst (hips) = print_mac (fprint_hipatlst, hips)
-implement
-prerr_hipatlst (hips) = prerr_mac (fprint_hipatlst, hips)
 
 (* ****** ****** *)
 
@@ -593,21 +562,9 @@ implement prerr_hiexp (hie) = prerr_mac (fprint_hiexp, hie)
 (* ****** ****** *)
 
 implement
-fprint_hiexplst {m}
-  (pf | out, hies0) = let
-  fun aux (
-    out: &FILE m, i: int, hies: hiexplst
-  ) : void =
-    case+ hies of
-    | list_cons (hie, hies) => begin
-        if i > 0 then fprint1_string (pf | out, ", ");
-        fprint_hiexp (pf | out, hie); aux (out, i+1, hies)
-      end // end of [list_cons]
-    | list_nil () => () // end of [list_nil]
-  // end of [aux]
-in
-  aux (out, 0, hies0)
-end // end of [fprint_hiexplst]
+fprint_hiexplst (pf | out, xs) =
+  $Lst.fprintlst {hiexp} (pf | out, xs, ", ", fprint_hiexp)
+// end of [fprint_hiexplst]
 
 implement
 print_hiexplst (hies) = print_mac (fprint_hiexplst, hies)
@@ -617,21 +574,9 @@ prerr_hiexplst (hies) = prerr_mac (fprint_hiexplst, hies)
 (* ****** ****** *)
 
 implement
-fprint_hiexplstlst {m}
-  (pf | out, hiess0) = let
-  fun aux (
-    out: &FILE m, i: int, hiess: hiexplstlst
-  ) : void =
-    case+ hiess of
-    | list_cons (hies, hiess) => begin
-        if i > 0 then fprint1_string (pf | out, "; ");
-        fprint_hiexplst (pf | out, hies); aux (out, i+1, hiess)
-      end // end of [list_cons]
-    | list_nil () => () // end of [list_nil]
-  // end of [aux]
-in
-  aux (out, 0, hiess0)
-end // end of [fprint_hiexplstlst]
+fprint_hiexplstlst (pf | out, xss) =
+  $Lst.fprintlst {hiexplst} (pf | out, xss, "; ", fprint_hiexplst)
+// end of [fprint_hiexplstlst]
 
 implement
 fprint_labhiexplst {m}
@@ -653,6 +598,8 @@ in
   aux (out, 0, lhies0)
 end // end of [fprint_labhiexplst]
 
+(* ****** ****** *)
+
 implement
 fprint_hilab (pf | out, hil) = let
   macdef prstr (s) = fprint1_string (pf | out, ,(s))
@@ -667,21 +614,9 @@ in
 end // end of [fprint_hilab]
 
 implement
-fprint_hilablst {m}
-  (pf | out, hils0) = let
-  fun aux (
-    out: &FILE m, i: int, hils: hilablst
-  ) : void =
-    case+ hils of
-    | list_cons (hil, hils) => begin
-        if i > 0 then fprint1_string (pf | out, ", ");
-        fprint_hilab (pf | out, hil); aux (out, i+1, hils)
-      end // end of [list_cons]
-    | list_nil () => () // end of [list_nil]
-  // end of [aux]
-in
-  aux (out, 0, hils0)
-end // end of [fprint_hilablst]
+fprint_hilablst (pf | out, xs) =
+  $Lst.fprintlst {hilab} (pf | out, xs, ", ", fprint_hilab)
+// end of [fprint_hilablst]
 
 (* ****** ****** *)
 

@@ -30,9 +30,13 @@
 *)
 
 (* ****** ****** *)
-
+//
 // Author: Hongwei Xi (hwxi AT cs DOT bu DOT edu)
-// Time: January 2008
+// Start Time: January 2008
+//
+(* ****** ****** *)
+
+staload Lst = "ats_list.sats"
 
 (* ****** ****** *)
 
@@ -41,7 +45,8 @@ staload "ats_trans3_env.sats"
 
 (* ****** ****** *)
 
-implement fprint_s3item (pf | out, s3i) = let
+implement
+fprint_s3item (pf | out, s3i) = let
   macdef prstr (s) = fprint1_string (pf | out, ,(s))
 in
   case+ s3i of
@@ -76,43 +81,30 @@ in
     end // end of [S3ITEMsVar]
 end // end of [fprint_s3item]
 
-implement fprint_s3itemlst {m} (pf | out, s3is) = let
-  fun aux (out: &FILE m, i: int, s3is: s3itemlst): void =
-    case+ s3is of
-    | list_cons (s3i, s3is) => begin
-        if i > 0 then fprint1_string (pf | out, ", ");
-        fprint_s3item (pf | out, s3i); aux (out, i + 1, s3is)
-      end // end of [list_cons]
-    | list_nil () => ()
-  // end of [aux]
-in
-  aux (out, 0, s3is)
-end // end of [fprint_s3itemlst]
-
-implement fprint_s3itemlstlst {m} (pf | out, s3iss) = let
-  fun aux (out: &FILE m, i: int, s3iss: s3itemlstlst): void =
-    case+ s3iss of
-    | list_cons (s3is, s3iss) => begin
-        if i > 0 then fprint1_string (pf | out, "; ");
-        fprint_s3itemlst (pf | out, s3is); aux (out, i + 1, s3iss)
-      end // end of [list_cons]
-    | list_nil () => ()
-  // end of [aux]
-in
-  aux (out, 0, s3iss)
-end // end of [fprint_s3itemlstlst]
-
 (* ****** ****** *)
+
+implement
+fprint_s3itemlst (pf | out, xs) =
+  $Lst.fprintlst (pf | out, xs, ", ", fprint_s3item)
+// end of [fprint_s3itemlst]
 
 implement print_s3itemlst (s3is) = print_mac (fprint_s3itemlst, s3is)
 implement prerr_s3itemlst (s3is) = prerr_mac (fprint_s3itemlst, s3is)
+
+(* ****** ****** *)
+
+implement
+fprint_s3itemlstlst (pf | out, xss) =
+  $Lst.fprintlst (pf | out, xss, "; ", fprint_s3itemlst)
+// end of [fprint_s3itemlstlst]
 
 implement print_s3itemlstlst (s3iss) = print_mac (fprint_s3itemlstlst, s3iss)
 implement prerr_s3itemlstlst (s3iss) = prerr_mac (fprint_s3itemlstlst, s3iss)
 
 (* ****** ****** *)
 
-implement fprint_c3strkind (pf | out, knd) = let
+implement
+fprint_c3strkind (pf | out, knd) = let
   macdef prstr (s) = fprint1_string (pf | out, ,(s))
 in
   case+ knd of
@@ -125,6 +117,8 @@ in
       prstr "loop("; fprint1_int (pf | out, knd); prstr ")"
     end (* end of [C3STRKINDloop] *)
 end // end of [fprint_c3strkind]
+
+(* ****** ****** *)
 
 implement fprint_c3str (pf | out, c3t) = let
   macdef prstr (s) = fprint1_string (pf | out, ,(s))
@@ -145,6 +139,11 @@ in
       prstr ")"
     end // end of [C3STRitmlst]
 end // end of [fprint_c3str]
+
+implement print_c3str (c3t) = print_mac (fprint_c3str, c3t)
+implement prerr_c3str (c3t) = prerr_mac (fprint_c3str, c3t)
+
+(* ****** ****** *)
 
 implement fprint_h3ypo (pf | out, h3p) = let
   macdef prstr (s) = fprint1_string (pf | out, ,(s))
@@ -168,11 +167,6 @@ in
       prstr ")"
     end // end of [H3YPOeqeq]
 end // end of [fprint_h3ypo]
-
-(* ****** ****** *)
-
-implement print_c3str (c3t) = print_mac (fprint_c3str, c3t)
-implement prerr_c3str (c3t) = prerr_mac (fprint_c3str, c3t)
 
 implement print_h3ypo (h3p) = print_mac (fprint_h3ypo, h3p)
 implement prerr_h3ypo (h3p) = prerr_mac (fprint_h3ypo, h3p)

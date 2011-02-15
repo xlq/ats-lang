@@ -30,10 +30,10 @@
 *)
 
 (* ****** ****** *)
-
-// Time: November 2007
+//
 // Author: Hongwei Xi (hwxi AT cs DOT bu DOT edu)
-
+// Time: November 2007
+//
 (* ****** ****** *)
 
 staload Lst = "ats_list.sats"
@@ -54,7 +54,9 @@ staload _(*anonymous*) = "ats_reference.dats"
 
 (* ****** ****** *)
 
-typedef name = $Sym.symbol_t
+(*
+typedef name = $Sym.symbol_t // HX: defined in [ats_namespace.sats]
+*)
 typedef namelst = List name
 typedef namelstlst = List namelst
 typedef saved = @(namelst, namelstlst)
@@ -72,13 +74,16 @@ fn prerr_interror () = prerr "INTERNAL ERROR (ats_namespace)"
 
 (* ****** ****** *)
 
-implement the_namespace_add name = begin
+implement
+the_namespace_add name = begin
   !the_namelst := list_cons (name, !the_namelst)
 end // end of [the_namespace_add]
 
 (* ****** ****** *)
 
-implement the_namespace_search {a} (f) = let
+implement
+the_namespace_search {a} (f) = let
+//
   fun auxlst (f: !name -<cloptr1> Option_vt a, ns: namelst): Option_vt a =
     case+ ns of
     | list_cons (n, ns) => begin
@@ -86,6 +91,7 @@ implement the_namespace_search {a} (f) = let
       end // end of [list_cons]
     | list_nil () => None_vt () // end of [list_nil]
   // end of [auxlst]
+//
   fun auxlstlst (f: !name -<cloptr1> Option_vt a, nss: namelstlst): Option_vt a =
     case+ nss of
     | list_cons (ns, nss) => begin
@@ -93,85 +99,104 @@ implement the_namespace_search {a} (f) = let
       end // end of [auxlstlst]
     | list_nil () => None_vt () // end of [list_nil]
   // end of [auxlstlst]
+//
 in
+//
   case+ auxlst (f, !the_namelst) of
   | ~None_vt () => auxlstlst (f, !the_namelstlst) | ans => ans
+//
 end // end of [the_namespace_search]
 
 (* ****** ****** *)
 
-implement the_namespace_pop () = let
-
+implement
+the_namespace_pop () = let
+//
 fn pop_err (): void = begin
   prerr_interror ();
   prerr ": pop_err: the_namlstlst is empty"; prerr_newline ();
   exit (1)
 end // end of [pop_err]
-
+//
 in
+//
   case+ !the_namelstlst of
   | list_cons (ns: namelst, nss: namelstlst) =>
       (!the_namelst := ns; !the_namelstlst := nss)
   | list_nil () => pop_err ()
+//
 end // end of [the_namespace_pop]
 
-implement the_namespace_push () = begin
+implement
+the_namespace_push () = begin
   !the_namelstlst := list_cons (!the_namelst, !the_namelstlst);
   !the_namelst := list_nil (); 
 end // end of [the_namespace_push]
 
 (* ****** ****** *)
 
-implement the_namespace_save () = let
-
+implement
+the_namespace_save () = let
+//
 val ns: namelst = !the_namelst
 val () = !the_namelst := list_nil ()
 val nss: namelstlst = !the_namelstlst
 val () = !the_namelstlst := list_nil ()
-
+//
 in
-
+//
 !the_savedlst := list_cons (@(ns, nss), !the_savedlst)
-
+//
 end // end of [the_namespace_save]
 
 (* ****** ****** *)
 
-implement the_namespace_restore () = let
-  fn err (): void = begin
-    prerr_interror ();
-    prerr ": the_namespace_restore: the_savedlst is empty"; prerr_newline ();
-    exit (1)
-  end // end of [err]
+implement
+the_namespace_restore () = let
+//
+fn err (): void = begin
+  prerr_interror ();
+  prerr ": the_namespace_restore: the_savedlst is empty"; prerr_newline ();
+  exit (1)
+end // end of [err]
+//
 in
+//
   case+ !the_savedlst of
   | list_cons (x, xs) => begin
       !the_savedlst := xs; !the_namelst := x.0; !the_namelstlst := x.1
     end // end of [list_cons]
   | list_nil () => err () // end of [list_nil]
+//
 end // end of [the_namespace_restore]
 
 (* ****** ****** *)
 
-implement the_namespace_localjoin () = let
-  fn err (): void = begin
-    prerr_interror ();
-    prerr ": the_namespace_localjoin: the_namelstlst is too short";
-    prerr_newline ();
-    exit (1)
-  end // end of [err]
+implement
+the_namespace_localjoin () = let
+//
+fn err (): void = begin
+  prerr_interror ();
+  prerr ": the_namespace_localjoin: the_namelstlst is too short";
+  prerr_newline ();
+  exit (1)
+end // end of [err]
+//
 in
+//
   case+ !the_namelstlst of
   | list_cons (_, list_cons (ns, nss)) => begin
       !the_namelst := $Lst.list_append (!the_namelst, ns);
       !the_namelstlst := nss
     end // end of [list_cons]
   | _ => err () // nil or singleton
+//
 end // end of [the_namespace_localjoin]
 
 (* ****** ****** *)
 
-implement the_namespace_initialize () = let
+implement
+the_namespace_initialize () = let
   val () = !the_namelst := list_nil ()
   val () = !the_namelstlst := list_nil ()
   val () = !the_savedlst := list_nil ()

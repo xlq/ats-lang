@@ -30,14 +30,15 @@
 *)
 
 (* ****** ****** *)
-
+//
 // Author: Hongwei Xi (hwxi AT cs DOT bu DOT edu)
 // Time: January 2008
-
+//
 (* ****** ****** *)
 
 staload Eff = "ats_effect.sats"
 staload Lab = "ats_label.sats"
+staload Lst = "ats_list.sats"
 
 (* ****** ****** *)
 
@@ -57,7 +58,8 @@ macdef fprint_label = $Lab.fprint_label
 
 (* ****** ****** *)
 
-implement fprint_p3at (pf | out, p3t) = let
+implement
+fprint_p3at (pf | out, p3t) = let
   macdef prstr (s) = fprint1_string (pf | out, ,(s))
 in
   case+ p3t.p3at_node of
@@ -143,27 +145,20 @@ in
 *)
 end // end of [fprint_p3at]
 
-implement fprint_p3atlst {m} (pf | out, p3ts) = let
-  fun aux (out: &FILE m, i: int, p3ts: p3atlst)
-    : void = begin case+ p3ts of
-    | cons (p3t, p3ts) => begin
-        if (i > 0) then fprint1_string (pf | out, ", ");
-        fprint_p3at (pf | out, p3t); aux (out, i + 1, p3ts)
-      end // end of [cons]
-    | nil () => () // end of [nil]
-  end // end of [aux]
-in
-  aux (out, 0, p3ts)
-end // end of [fprint_p3atlst]
-
-(* ****** ****** *)
-
 implement print_p3at (p3t) = print_mac (fprint_p3at, p3t)
 implement prerr_p3at (p3t) = prerr_mac (fprint_p3at, p3t)
 
 (* ****** ****** *)
 
-implement fprint_d3exp (pf | out, d3e) = let
+implement
+fprint_p3atlst (pf | out, xs) =
+  $Lst.fprintlst {p3at} (pf | out, xs, ", ", fprint_p3at)
+// end of [fprint_p3atlst]
+
+(* ****** ****** *)
+
+implement
+fprint_d3exp (pf | out, d3e) = let
   macdef prstr (s) = fprint1_string (pf | out, ,(s))
 in
   case+ d3e.d3exp_node of
@@ -537,34 +532,37 @@ in
 *)
 end // end of [fprint_d3exp]
 
-implement fprint_d3explst {m} (pf | out, d3es) = let
-  fun aux (out: &FILE m, i: int, d3es: d3explst)
-    : void = begin case+ d3es of
-    | cons (d3e, d3es) => begin
-        if (i > 0) then fprint1_string (pf | out, ", ");
-        fprint_d3exp (pf | out, d3e); aux (out, i + 1, d3es)
-      end // end of [cons]
-    | nil () => () // end of [nil]
-  end // end of [aux]
-in
-  aux (out, 0, d3es)
-end // end of [fprint_d3explst]
+implement print_d3exp (d3e) = print_mac (fprint_d3exp, d3e)
+implement prerr_d3exp (d3e) = prerr_mac (fprint_d3exp, d3e)
 
-implement fprint_d3explstlst {m} (pf | out, d3ess) = let
-  fun aux (out: &FILE m, i: int, d3ess: d3explstlst)
-    : void = begin case+ d3ess of
-    | cons (d3es, d3ess) => begin
-        if (i > 0) then fprint1_string (pf | out, ", ");
-        fprint_d3explst (pf | out, d3es); aux (out, i + 1, d3ess)
-      end // end of [cons]
-    | nil () => () // end of [nil]
-  end // end of [aux]
-in
-  aux (out, 0, d3ess)
-end // end of [fprint_d3explstlst]
+(* ****** ****** *)
 
-implement fprint_labd3explst {m} (pf | out, ld3es0) = let
-  fun aux (out: &FILE m, i: int, ld3es: labd3explst): void = let
+implement
+fprint_d3explst (pf | out, xs) =
+  $Lst.fprintlst {d3exp} (pf | out, xs, ", ", fprint_d3exp)
+// end of [fprint_d3explst]
+
+implement print_d3explst (d3es) = print_mac (fprint_d3explst, d3es)
+implement prerr_d3explst (d3es) = prerr_mac (fprint_d3explst, d3es)
+
+(* ****** ****** *)
+
+implement
+fprint_d3explstlst (pf | out, xss) =
+  $Lst.fprintlst {d3explst} (pf | out, xss, "; ", fprint_d3explst)
+// end of [fprint_d3explstlst]
+
+implement print_d3explstlst (d3ess) = print_mac (fprint_d3explstlst, d3ess)
+implement prerr_d3explstlst (d3ess) = prerr_mac (fprint_d3explstlst, d3ess)
+
+(* ****** ****** *)
+
+implement
+fprint_labd3explst
+  {m} (pf | out, ld3es0) = let
+  fun aux (
+    out: &FILE m, i: int, ld3es: labd3explst
+  ) : void = let
     macdef prstr (s) = fprint1_string (pf | out, ,(s))
   in
     case+ ld3es of
@@ -579,9 +577,13 @@ in
   aux (out, 0, ld3es0)
 end // end of [fprint_labd3explst]
 
+implement print_labd3explst (ld3es) = print_mac (fprint_labd3explst, ld3es)
+implement prerr_labd3explst (ld3es) = prerr_mac (fprint_labd3explst, ld3es)
+
 (* ****** ****** *)
 
-implement fprint_d3lab1 (pf | out, d3l) = let
+implement
+fprint_d3lab1 (pf | out, d3l) = let
   macdef prstr (s) = fprint1_string (pf | out, ,(s))
 in
   case+ d3l.d3lab1_node of
@@ -599,32 +601,10 @@ in
     end // end of [D3LAB1ind]
 end // end of [fprint_d3lab1]
 
-implement fprint_d3lab1lst {m} (pf | out, d3ls) = let
-  fun aux (out: &FILE m, i: int, d3ls: d3lab1lst)
-    : void = begin case+ d3ls of
-    | cons (d3l, d3ls) => begin
-        if (i > 0) then fprint1_string (pf | out, ", ");
-        fprint_d3lab1 (pf | out, d3l); aux (out, i + 1, d3ls)
-      end // end of [cons]
-    | nil () => () // end of [nil]
-  end // end of [aux]
-in
-  aux (out, 0, d3ls)
-end // end of [fprint_d3lab1lst]
-
-(* ****** ****** *)
-
-implement print_d3exp (d3e) = print_mac (fprint_d3exp, d3e)
-implement prerr_d3exp (d3e) = prerr_mac (fprint_d3exp, d3e)
-
-implement print_d3explst (d3es) = print_mac (fprint_d3explst, d3es)
-implement prerr_d3explst (d3es) = prerr_mac (fprint_d3explst, d3es)
-
-implement print_d3explstlst (d3ess) = print_mac (fprint_d3explstlst, d3ess)
-implement prerr_d3explstlst (d3ess) = prerr_mac (fprint_d3explstlst, d3ess)
-
-implement print_labd3explst (ld3es) = print_mac (fprint_labd3explst, ld3es)
-implement prerr_labd3explst (ld3es) = prerr_mac (fprint_labd3explst, ld3es)
+implement
+fprint_d3lab1lst (pf | out, xs) =
+  $Lst.fprintlst {d3lab1} (pf | out, xs, ", ", fprint_d3lab1)
+// end of [fprint_d3lab1lst]
 
 (* ****** ****** *)
 

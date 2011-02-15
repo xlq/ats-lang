@@ -43,6 +43,7 @@
 (* ****** ****** *)
 
 staload Lab = "ats_label.sats"
+staload Lst = "ats_list.sats"
 staload Stamp = "ats_stamp.sats"
 staload Sym = "ats_symbol.sats"
 
@@ -151,42 +152,22 @@ in
     end // end of [S2RTtup]
 end (* end of [fprint_s2rt] *)
 
-(* ****** ****** *)
-
-implement
-fprint_s2rtlst {m} (pf | out, s2ts) = let
-  fun aux (out: &FILE m, s2ts: s2rtlst, i: int): void =
-    case+ s2ts of
-    | cons (s2t, s2ts) => aux (out, s2ts, i+1) where {
-        val () = if i > 0 then fprint1_string (pf | out, ", ")
-        val () = fprint_s2rt (pf | out, s2t)
-      } // end of [cons]
-    | nil () => () // end of [nil]
-  // end of [aux]
-in
-  aux (out, s2ts, 0)
-end (* end of [fprint_s2rtlst] *)
-
-implement
-fprint_s2rtlstlst {m} (pf | out, s2tss) = let
-  fun aux (out: &FILE m, s2tss: s2rtlstlst, i: int): void =
-    case+ s2tss of
-    | cons (s2ts, s2tss) => aux (out, s2tss, i+1) where {
-        val () = if i > 0 then fprint1_string (pf | out, ", ")
-        val () = fprint_s2rtlst (pf | out, s2ts)
-      } // end of [cons]
-    | nil () => () // end of [nil]
-  // end of [aux]
-in
-  aux (out, s2tss, 0)
-end // end of [fprint_s2rtlstlst]
-
-(* ****** ****** *)
-
 implement
 print_s2rt (s2t) = print_mac (fprint_s2rt, s2t)
 implement
 prerr_s2rt (s2t) = prerr_mac (fprint_s2rt, s2t)
+
+(* ****** ****** *)
+
+implement
+fprint_s2rtlst (pf | out, xs) =
+  $Lst.fprintlst (pf | out, xs, ", ", fprint_s2rt)
+// end of [fprint_s2rtlst]
+
+implement
+fprint_s2rtlstlst (pf | out, xss) =
+  $Lst.fprintlst (pf | out, xss, "; ", fprint_s2rtlst)
+// end of [fprint_s2rtlstlst]
 
 (* ****** ****** *)
 
@@ -509,38 +490,21 @@ prerr_s2exp (s2e) = prerr_mac (fprint_s2exp, s2e)
 (* ****** ****** *)
 
 implement
-fprint_s2explst
-  {m} (pf | out, s2es) = let
-  fun aux (
-    out: &FILE m, s2es: s2explst, i: int
-  ) : void =
-    case+ s2es of
-    | cons (s2e, s2es) => aux (out, s2es, i+1) where {
-        val () = if i > 0 then fprint1_string (pf | out, ", ")
-        val () = fprint_s2exp (pf | out, s2e)
-      } // end of [cons]
-    | nil () => () // end of [nil]
-  // end of [aux]
-in
-  aux (out, s2es, 0)
-end (* end of [fprint_s2explst] *)
+fprint_s2explst (pf | out, xs) =
+  $Lst.fprintlst (pf | out, xs, ", ", fprint_s2exp)
+(* end of [fprint_s2explst] *)
 
 implement
-fprint_s2explstlst
-  {m} (pf | out, s2ess) = let
-  fun aux (
-    out: &FILE m, s2ess: s2explstlst, i: int
-  ) : void =
-    case+ s2ess of
-    | cons (s2es, s2ess) => aux (out, s2ess, i+1) where {
-        val () = if i > 0 then fprint1_string (pf | out, "; ")
-        val () = fprint_s2explst (pf | out, s2es)
-      } // end of [cons]
-    | nil () => () // end of [nil]
-  // end of [aux]
-in
-  aux (out, s2ess, 0)
-end (* end of [fprint_s2explstlst] *)
+print_s2explst (s2es) = print_mac (fprint_s2explst, s2es)
+implement
+prerr_s2explst (s2es) = prerr_mac (fprint_s2explst, s2es)
+
+(* ****** ****** *)
+
+implement
+fprint_s2explstlst (pf | out, xss) =
+  $Lst.fprintlst (pf | out, xss, "; ", fprint_s2explst)
+(* end of [fprint_s2explstlst] *)
 
 (* ****** ****** *)
 
@@ -581,6 +545,11 @@ in
   aux (out, ls2es, 0)
 end (* end of [fprint_labs2explst] *)
 
+implement
+print_labs2explst (ls2es) = print_mac (fprint_labs2explst, ls2es)
+implement
+prerr_labs2explst (ls2es) = prerr_mac (fprint_labs2explst, ls2es)
+
 (* ****** ****** *)
 
 implement
@@ -605,12 +574,10 @@ fprint_tmps2explstlst
   // end of [aux]
 } // end of [fprint_s2explstlst]
 
-implement
-print_tmps2explstlst (ts2ess) =
-  print_mac (fprint_tmps2explstlst, ts2ess)
-implement
-prerr_tmps2explstlst (ts2ess) =
-  prerr_mac (fprint_tmps2explstlst, ts2ess)
+implement print_tmps2explstlst
+  (ts2ess) = print_mac (fprint_tmps2explstlst, ts2ess)
+implement prerr_tmps2explstlst
+  (ts2ess) = prerr_mac (fprint_tmps2explstlst, ts2ess)
 
 (* ****** ****** *)
 
@@ -675,20 +642,9 @@ prerr_s2lab (s2l) = prerr_mac (fprint_s2lab, s2l)
 (* ****** ****** *)
 
 implement
-fprint_s2lablst {m} (pf | out, s2ls) = let
-  fun aux (out: &FILE m, s2ls: s2lablst, i: int): void =
-    case+ s2ls of
-    | cons (s2l, s2ls) => let
-        val () = if i > 0 then fprint1_string (pf | out, ", ")
-        val () = fprint_s2lab (pf | out, s2l)
-      in
-        aux (out, s2ls, i+1)
-      end // end of [cons]
-    | nil () => () // end of [nil]
-  // end of [aux]
-in
-  aux (out, s2ls, 0)
-end (* end of [fprint_s2lablst] *)
+fprint_s2lablst (pf | out, xs) =
+  $Lst.fprintlst (pf | out, xs, ", ", fprint_s2lab)
+(* end of [fprint_s2lablst] *)
 
 implement
 print_s2lablst (s2ls) = print_mac (fprint_s2lablst, s2ls)
@@ -741,21 +697,18 @@ in
 end // end of [fprint_sk2exp]
 
 implement
-fprint_s2kexplst
-  {m} (pf | out, s2kes) = let
-  fun aux (
-    out: &FILE m, s2kes: s2kexplst, i: int
-  ) : void =
-    case+ s2kes of
-    | cons (s2ke, s2kes) => aux (out, s2kes, i+1) where {
-        val () = if i > 0 then fprint1_string (pf | out, ", ")
-        val () = fprint_s2kexp (pf | out, s2ke)
-      } // end of [cons]
-    | nil () => () // end of [nil]
-  // end of [aux]
-in
-  aux (out, s2kes, 0)
-end // end of [fprint_s2kexplst]
+print_s2kexp (s2ke) = print_mac (fprint_s2kexp, s2ke)
+implement
+prerr_s2kexp (s2ke) = prerr_mac (fprint_s2kexp, s2ke)
+
+(* ****** ****** *)
+
+implement
+fprint_s2kexplst (pf | out, xs) =
+  $Lst.fprintlst (pf | out, xs, ", ", fprint_s2kexp)
+// end of [fprint_s2kexplst]
+
+(* ****** ****** *)
 
 implement
 fprint_labs2kexplst
@@ -780,13 +733,6 @@ fprint_labs2kexplst
 in
   aux (out, ls2kes, 0)
 end (* end of [fprint_labs2kexplst] *)
-
-(* ****** ****** *)
-
-implement
-print_s2kexp (s2ke) = print_mac (fprint_s2kexp, s2ke)
-implement
-prerr_s2kexp (s2ke) = prerr_mac (fprint_s2kexp, s2ke)
 
 (* ****** ****** *)
 
@@ -848,24 +794,9 @@ prerr_s2zexp (s2ze) = prerr_mac (fprint_s2zexp, s2ze)
 (* ****** ****** *)
 
 implement
-fprint_s2zexplst
-  {m} (pf | out, s2zes) = let
-  fun aux (
-    out: &FILE m, s2zes: s2zexplst, i: int
-  ) : void =
-    case+ s2zes of
-    | cons (s2ze, s2zes) => let
-        val () = if i > 0 then
-          fprint1_string (pf | out, ", ")
-        val () = fprint_s2zexp (pf | out, s2ze)
-      in
-        aux (out, s2zes, i+1)
-      end // end of [cons]
-    | nil () => () // end of [nil]
-  // end of [aux]
-in
-  aux (out, s2zes, 0)
-end (* end of [fprint_s2zexplst] *)
+fprint_s2zexplst (pf | out, xs) =
+  $Lst.fprintlst (pf | out, xs, ", ", fprint_s2zexp)
+(* end of [fprint_s2zexplst] *)
 
 (* ****** ****** *)
 
@@ -891,20 +822,6 @@ end (* end of [fprint_labs2zexplst] *)
 (* ****** ****** *)
 
 implement
-print_s2explst (s2es) = print_mac (fprint_s2explst, s2es)
-implement
-prerr_s2explst (s2es) = prerr_mac (fprint_s2explst, s2es)
-
-(* ****** ****** *)
-
-implement
-print_labs2explst (ls2es) = print_mac (fprint_labs2explst, ls2es)
-implement
-prerr_labs2explst (ls2es) = prerr_mac (fprint_labs2explst, ls2es)
-
-(* ****** ****** *)
-
-implement
 fprint_s2exparg (pf | out, s2a) =
   case+ s2a.s2exparg_node of
   | S2EXPARGone() => fprint1_string (pf | out, "..")
@@ -912,25 +829,12 @@ fprint_s2exparg (pf | out, s2a) =
   | S2EXPARGseq s2es => fprint_s2explst (pf | out, s2es)
 // end of [fprint_s2exparg]
 
+(* ****** ****** *)
+
 implement
-fprint_s2exparglst
-  {m} (pf | out, s2as) = let
-  fun aux (
-    out: &FILE m, s2as: s2exparglst, i: int
-  ) : void =
-    case+ s2as of
-    | cons (s2a, s2as) => let
-        val () = if i > 0 then
-          fprint1_string (pf | out, ", ")
-        val () = fprint_s2exparg (pf | out, s2a)
-      in
-        aux (out, s2as, i+1)
-      end // end of [cons]
-    | nil () => () // end of [nil]
-  // end of [aux]
-in
-  aux (out, s2as, 0)
-end (* end of [fprint_s2exparglst] *)
+fprint_s2exparglst (pf | out, xs) =
+  $Lst.fprintlst (pf | out, xs, ", ", fprint_s2exparg)
+(* end of [fprint_s2exparglst] *)
 
 implement
 print_s2exparglst (s2as) = print_mac (fprint_s2exparglst, s2as)
@@ -940,13 +844,16 @@ prerr_s2exparglst (s2as) = prerr_mac (fprint_s2exparglst, s2as)
 (* ****** ****** *)
 
 implement
-fprint_s2qua (pf | out, s2q) = begin
+fprint_s2qua
+  (pf | out, s2q) = begin
   fprint_string (pf | out, "(");
   fprint_s2varlst (pf | out, s2q.0);
   fprint_string (pf | out, " | ");
   fprint_s2explst (pf | out, s2q.1);
   fprint_string (pf | out, ")");
 end // end of [fprint_s2qua]
+
+(* ****** ****** *)
 
 implement
 fprint_s2qualst
@@ -967,8 +874,6 @@ fprint_s2qualst
 in
   aux (out, 0, s2qs)
 end // end of [fprint_s2qualst]
-
-(* ****** ****** *)
 
 implement
 print_s2qualst (s2qs) = print_mac (fprint_s2qualst, s2qs)

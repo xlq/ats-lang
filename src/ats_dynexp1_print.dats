@@ -30,14 +30,15 @@
 *)
 
 (* ****** ****** *)
-
+//
 // Author: Hongwei Xi (hwxi AT cs DOT bu DOT edu)
 // Time: October 2007
-
+//
 (* ****** ****** *)
 
 staload Eff = "ats_effect.sats"
 staload Fil = "ats_filename.sats"
+staload Lst = "ats_list.sats"
 staload Sym = "ats_symbol.sats"
 staload Syn = "ats_syntax.sats"
 
@@ -62,7 +63,8 @@ macdef fprint_label = $Lab.fprint_label
 
 (* ****** ****** *)
 
-implement fprint_p1at (pf | out, p1t) = let
+implement
+fprint_p1at (pf | out, p1t) = let
   macdef prstr (s) = fprint1_string (pf | out, ,(s))
 in
   case+ p1t.p1at_node of
@@ -179,21 +181,22 @@ in
 *)
 end // end of [fprint_p1at]
 
-implement fprint_p1atlst {m} (pf | out, p1ts0) = let
-  fun aux (out: &FILE m, i: int, p1ts: p1atlst): void =
-    case+ p1ts of
-    | list_cons (p1t, p1ts) => begin
-        if i > 0 then fprint1_string (pf | out, ", "); 
-        fprint_p1at (pf | out, p1t); aux (out, i+1, p1ts)
-      end // end of [list_cons]
-    | list_nil () => () // end of [list_nil]
-  // end of [aux]
-in
-  aux (out, 0, p1ts0)
-end // end of [fprint_p1atlst]
+implement print_p1at (p1t) = print_mac (fprint_p1at, p1t)
+implement prerr_p1at (p1t) = prerr_mac (fprint_p1at, p1t)
 
-implement fprint_labp1atlst {m} (pf | out, lp1ts0) = let
-  fun aux (out: &FILE m, i: int, lp1ts: labp1atlst): void = let
+(* ****** ****** *)
+
+implement
+fprint_p1atlst (pf | out, xs) =
+  $Lst.fprintlst {p1at} (pf | out, xs, ", ", fprint_p1at)
+// end of [fprint_p1atlst]
+
+implement
+fprint_labp1atlst
+  {m} (pf | out, lp1ts0) = let
+  fun aux (
+    out: &FILE m, i: int, lp1ts: labp1atlst
+  ) : void = let
     macdef prstr (s) = fprint1_string (pf | out, ,(s))
   in
     case+ lp1ts of
@@ -212,14 +215,10 @@ in
   aux (out, 0, lp1ts0)
 end // end of [fprint_labp1atlst]
 
-//
-
-implement print_p1at (p1t) = print_mac (fprint_p1at, p1t)
-implement prerr_p1at (p1t) = prerr_mac (fprint_p1at, p1t)
-
 (* ****** ****** *)
 
-implement fprint_d1exp (pf | out, d1e0) = let
+implement
+fprint_d1exp (pf | out, d1e0) = let
   macdef prstr (s) = fprint1_string (pf | out, ,(s))
 in
   case+ d1e0.d1exp_node of
@@ -275,7 +274,7 @@ in
       prstr "D1Earrsize(";
       begin case+ os1e_elt of
       | Some s1e => fprint_s1exp (pf | out, s1e) | None () => ()
-      end;
+      end; // end of [begin]
       prstr "; ";
       fprint_d1explst (pf | out, d1es_elt);
       prstr ")"
@@ -610,42 +609,27 @@ in
 *)
 end // end of [fprint_d1exp]
 
-//
+implement print_d1exp (d1e) = print_mac (fprint_d1exp, d1e)
+implement prerr_d1exp (d1e) = prerr_mac (fprint_d1exp, d1e)
 
-implement fprint_d1explst {m} (pf | out, d1es0) = let
-  fun aux (out: &FILE m, i: int, d1es: d1explst): void =
-    case+ d1es of
-    | list_cons (d1e, d1es) => let
-        val () = if i > 0 then fprint1_string (pf | out, ", ")
-      in
-        fprint_d1exp (pf | out, d1e); aux (out, i+1, d1es)
-      end // end of [list_cons]
-    | list_nil () => () // end of [list_nil]
-  // end of [aux]
-in
-  aux (out, 0, d1es0)
-end // end of [fprint_d1explst]
+(* ****** ****** *)
 
-//
+implement
+fprint_d1explst (pf | out, xs) =
+  $Lst.fprintlst {d1exp} (pf | out, xs, ", ", fprint_d1exp)
+// end of [fprint_d1explst]
 
-implement fprint_d1explstlst {m} (pf | out, d1ess0) = let
-  fun aux (out: &FILE m, i: int, d1ess: d1explstlst): void =
-    case+ d1ess of
-    | list_cons (d1es, d1ess) => let
-        val () = if i > 0 then fprint1_string (pf | out, "; ")
-      in
-        fprint_d1explst (pf | out, d1es); aux (out, i+1, d1ess)
-      end // end of [list_cons]
-    | list_nil () => () // end of [list_nil]
-  // end of [aux]
-in
-  aux (out, 0, d1ess0)
-end // end of [fprint_d1explstlst]
+implement
+fprint_d1explstlst (pf | out, xs) =
+  $Lst.fprintlst {d1explst} (pf | out, xs, "; ", fprint_d1explst)
+// end of [fprint_d1explstlst]
 
-//
-
-implement fprint_labd1explst {m} (pf | out, ld1es0) = let
-  fun aux (out: &FILE m, i: int, ld1es: labd1explst): void = let
+implement
+fprint_labd1explst
+  {m} (pf | out, ld1es0) = let
+  fun aux (
+    out: &FILE m, i: int, ld1es: labd1explst
+  ) : void = let
     macdef prstr (s) = fprint1_string (pf | out, ,(s))
   in
     case+ ld1es of
@@ -663,12 +647,8 @@ end // end of [fprint_labd1explst]
 
 (* ****** ****** *)
 
-implement print_d1exp (d1e) = print_mac (fprint_d1exp, d1e)
-implement prerr_d1exp (d1e) = prerr_mac (fprint_d1exp, d1e)
-
-(* ****** ****** *)
-
-implement fprint_d1lab (pf | out, d1l) = let
+implement
+fprint_d1lab (pf | out, d1l) = let
   macdef prstr (s) = fprint1_string (pf | out, ,(s))
 in
   case+ d1l.d1lab_node of

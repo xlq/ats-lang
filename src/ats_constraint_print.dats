@@ -30,17 +30,19 @@
 *)
 
 (* ****** ****** *)
-
+//
 // Author: Hongwei Xi (hwxi AT cs DOT bu DOT edu)
-// Time: February 2008
-
+// Start Time: February 2008
+//
 (* ****** ****** *)
 
 (* for representing and handling constraints *)
 
 (* ****** ****** *)
 
-staload IntInf = "ats_intinf.sats"
+staload
+IntInf = "ats_intinf.sats"
+staload Lst = "ats_list.sats"
 
 (* ****** ****** *)
 
@@ -49,7 +51,8 @@ staload "ats_constraint.sats"
 
 (* ****** ****** *)
 
-implement fprint_s3aexp (pf | out, s3ae0) = let
+implement
+fprint_s3aexp (pf | out, s3ae0) = let
   macdef prstr (s) = fprint1_string (pf | out, ,(s))
 in
   case+ s3ae0 of
@@ -74,9 +77,13 @@ in
     end // end of [S3AEnull]
 end // end of [fprint_s3aexp]
 
+implement print_s3aexp (s3ae) = print_mac (fprint_s3aexp, s3ae)
+implement prerr_s3aexp (s3ae) = prerr_mac (fprint_s3aexp, s3ae)
+
 (* ****** ****** *)
 
-implement fprint_s3bexp (pf | out, s3be0) = let
+implement
+fprint_s3bexp (pf | out, s3be0) = let
   macdef prstr (s) = fprint1_string (pf | out, ,(s))
 in
   case+ s3be0 of
@@ -119,23 +126,23 @@ in
     end // end of [S3BEiexp]
 end // end of [fprint_s3bexp]
 
-implement fprint_s3bexplst
-  {m} (pf | out, s3bes) = let
-  fun aux (out: &FILE m, i: int, s3bes: s3bexplst)
-    : void = begin case+ s3bes of
-    | list_cons (s3be, s3bes) => begin
-        if i > 0 then fprint1_string (pf | out, ", ");
-        fprint_s3bexp (pf | out, s3be); aux (out, i+1, s3bes)
-      end // end of [list_cons]
-    | list_nil () => () // end of [list_nil]
-  end // end [aux]
-in
-  aux (out, 0, s3bes)
-end // end of [fprint_s3bexplst]
+implement print_s3bexp (s3be) = print_mac (fprint_s3bexp, s3be)
+implement prerr_s3bexp (s3be) = prerr_mac (fprint_s3bexp, s3be)
 
 (* ****** ****** *)
 
-implement fprint_s3iexp (pf | out, s3ie0) = let
+implement
+fprint_s3bexplst (pf | out, xs) =
+  $Lst.fprintlst (pf | out, xs, ", ", fprint_s3bexp)
+// end of [fprint_s3bexplst]
+
+implement print_s3bexplst (s3bes) = print_mac (fprint_s3bexplst, s3bes)
+implement prerr_s3bexplst (s3bes) = prerr_mac (fprint_s3bexplst, s3bes)
+
+(* ****** ****** *)
+
+implement
+fprint_s3iexp (pf | out, s3ie0) = let
   macdef prstr (s) = fprint1_string (pf | out, ,(s))
 in
   case+ s3ie0 of
@@ -188,17 +195,6 @@ in
       prstr ")"
     end // end of [S3IEdiff]
 end // end of [fprint_s3iexp]
-
-(* ****** ****** *)
-
-implement print_s3aexp (s3ae) = print_mac (fprint_s3aexp, s3ae)
-implement prerr_s3aexp (s3ae) = prerr_mac (fprint_s3aexp, s3ae)
-
-implement print_s3bexp (s3be) = print_mac (fprint_s3bexp, s3be)
-implement prerr_s3bexp (s3be) = prerr_mac (fprint_s3bexp, s3be)
-
-implement print_s3bexplst (s3bes) = print_mac (fprint_s3bexplst, s3bes)
-implement prerr_s3bexplst (s3bes) = prerr_mac (fprint_s3bexplst, s3bes)
 
 implement print_s3iexp (s3ie) = print_mac (fprint_s3iexp, s3ie)
 implement prerr_s3iexp (s3ie) = prerr_mac (fprint_s3iexp, s3ie)
