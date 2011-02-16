@@ -140,6 +140,13 @@ longestline: longestline.dats
 cleanall:: ; $(RMF) longestline
 
 #
+#
+#
+checkall:: myfind
+myfind: myfind.dats ; $(ATSCC) -o $@ $< && ./$@ "."
+cleanall:: ; $(RMF) myfind
+
+#
 # generating a password randomly
 #
 checkall:: passwdgen

@@ -46,6 +46,9 @@ all_GTK: ; make -C GTK all
 all:: all_ProjectEuler
 all_ProjectEuler: ; make -C ProjectEuler all
 
+all:: all_SCRIPTING
+all_SCRIPTING: ; make -C SCRIPTING all
+
 all:: all_SHOOTOUT
 all_SHOOTOUT: ; make -C SHOOTOUT all
 

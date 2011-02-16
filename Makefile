@@ -136,42 +136,47 @@ test::
 all:: all-anairiats
 
 #
-# HX: [all1] is the entry point for bootstrapping with ATS/Anairiats
-#
-all-anairiats:: \
-  atsopt0-anairiats all1
-
-#
 # HX: [all1] is the entry point for bootstrapping with ATS/Geizella
 #
-all-geizella:: \
-  atsopt0-geizella all1
+all-geizella:: atsopt0-geizella
+all-geizella::all1
 
-all1:: \
-  bootstrapping \
-  atsopt1 \
-  bin/atscc \
-  bin/atslib \
-  libfiles libfiles_mt \
-  bin/atspack \
-  bin/atslex \
-  ccomp/runtime/GCATS/gc.o \
-  ccomp/runtime/GCATS/gc_mt.o \
-  atsopt1_gc \
-  contrib
-	@echo "ATS/Anairiats has been built up successfully!"
-	@echo "The value of ATSHOME for this build is \"$(ATSHOME)\"."
-	@echo "The value of ATSHOMERELOC for this build is \"$(ATSHOMERELOC)\"."
+#
+# HX: [all1] is the entry point for bootstrapping with ATS/Anairiats
+#
+all-anairiats:: atsopt0-anairiats
+all-anairiats:: all1
+
+######
+
+all1:: bootstrapping
+all1:: atsopt1
+all1:: bin/atscc
+all1:: bin/atslib
+all1:: libfiles libfiles_mt
+all1:: bin/atspack
+all1:: bin/atslex
+all1:: ccomp/runtime/GCATS/gc.o
+all1:: ccomp/runtime/GCATS/gc_mt.o
+all1:: atsopt1_gc
+all1:: contrib
+all1:: ; @echo "ATS/Anairiats has been built up successfully!"
+all1:: ; @echo "The value of ATSHOME for this build is \"$(ATSHOME)\"."
+all1:: ; @echo "The value of ATSHOMERELOC for this build is \"$(ATSHOMERELOC)\"."
 
 ###### w/o GC ######
 
 atsopt0:: atsopt0-anairiats
 
-atsopt0-anairiats::
-	$(MAKE) -C bootstrap0 -f ./Makefile atsopt
+#
+# bootstrapping via ocaml
+#
+atsopt0-geizella: ; $(MAKE) -C bootstrap0 -f ./Makefile atsopt
 
-atsopt0-geizella::
-	$(MAKE) -C bootstrap0 -f ./Makefile atsopt
+#
+# bootstrapping via gcc
+#
+atsopt0-anairiats: ; $(MAKE) -C bootstrap0 -f ./Makefile atsopt
 
 ###### bootstrapping ######
 
@@ -179,15 +184,13 @@ bootstrapping:: ; $(MAKE) -C src -f ./Makefile_srcbootstrap all
 
 ###### w/o GC ######
 
-atsopt1::
-	$(MAKE) -C bootstrap1 -f ../Makefile_bootstrap atsopt
-	cp bootstrap1/atsopt $(ATSHOMEBIN)/atsopt
+atsopt1:: ; $(MAKE) -C bootstrap1 -f ../Makefile_bootstrap atsopt
+atsopt1:: ; $(CPF) bootstrap1/atsopt $(ATSHOMEBIN)/atsopt
 
 ###### with GC ######
 
-atsopt1_gc::
-	$(MAKE) -C bootstrap1 -f ../Makefile_bootstrap atsopt_gc
-	cp bootstrap1/atsopt_gc $(ATSHOMEBIN)/atsopt
+atsopt1_gc:: ; $(MAKE) -C bootstrap1 -f ../Makefile_bootstrap atsopt_gc
+atsopt1_gc:: ; $(CPF) bootstrap1/atsopt_gc $(ATSHOMEBIN)/atsopt
 
 ###### contrib libraries ######
 
@@ -207,12 +210,15 @@ endif
 ###### some toplevel commands ######
 
 bin/atscc bin/atslib:
-	cd utils/scripts; $(MAKE) atscc; cp atscc $(ATSHOMEBIN)
-	cd utils/scripts; $(MAKE) atslib; cp atslib $(ATSHOMEBIN)
-	cd utils/scripts; $(MAKE) clean
+	$(MAKE) -C utils/scripts atscc
+	$(CPF) utils/scripts/atscc $(ATSHOMEBIN)
+	$(MAKE) -C utils/scripts atslib
+	$(CPF) utils/scripts/atslib $(ATSHOMEBIN)
+	$(MAKE) -C utils/scripts clean
 
 bin/atspack:
-	cd utils/scripts; $(MAKE) atspack; cp atspack $(ATSHOMEBIN)
+	$(MAKE) -C utils/scripts atspack
+	$(CPF) utils/scripts/atspack $(ATSHOMEBIN)
 
 ###### library ######
 
@@ -248,16 +254,19 @@ libfiles_mt: .libfiles_mt_local
 ###### a lexer for ATS ######
 
 bin/atslex:
-	cd utils/atslex; $(MAKE) atslex; cp atslex $(ATSHOMEBIN)
-	cd utils/atslex; $(MAKE) clean
+	$(MAKE) -C utils/atslex atslex
+	$(CPF) utils/atslex/atslex $(ATSHOMEBIN)
+	$(MAKE) -C utils/atslex atslex clean
 
 ###### GC runtime ######
 
 ccomp/runtime/GCATS/gc.o:
-	cd ccomp/runtime/GCATS; $(MAKE) gc.o; $(MAKE) clean
+	$(MAKE) -C ccomp/runtime/GCATS gc.o
+	$(MAKE) -C ccomp/runtime/GCATS clean
 
 ccomp/runtime/GCATS/gc_mt.o:
-	cd ccomp/runtime/GCATS; $(MAKE) gc_mt.o; $(MAKE) clean
+	$(MAKE) -C ccomp/runtime/GCATS gc_mt.o
+	$(MAKE) -C ccomp/runtime/GCATS clean
 
 ######
 
@@ -274,16 +283,20 @@ precompiled::
 ######
 
 srclines::
-	cd src; make lines
+	$(MAKE) -C src lines
 
 liblines::
 	wc -l \
-          prelude/*/*.?ats prelude/*/*/*.?ats \
-          libc/*/*.?ats libc/*/*/*.?ats \
-          libats/*/*.?ats libats/*/*/*.?ats
+          prelude/*/*.?ats \
+          prelude/*/*/*.?ats \
+          libc/*/*.?ats \
+          libc/*/*/*.?ats \
+          libats/*/*.?ats \
+          libats/*/*/*.?ats \
 
 ######
 
+CPF=cp -f
 RMF=rm -f
 
 ######
