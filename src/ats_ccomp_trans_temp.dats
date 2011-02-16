@@ -93,7 +93,8 @@ extern fun the_stactx_pop (pf: stactx_token_v | (*none*)): void
 
 (* ****** ****** *)
 
-fn prerr_interror () = prerr "INTERNAL ERROR (ats_ccomp_trans_temp)"
+fn prerr_interror () =
+  prerr "INTERNAL ERROR (ats_ccomp_trans_temp)"
 fn prerr_loc_interror (loc: loc_t) = begin
   $Loc.prerr_location loc; prerr ": INTERNAL ERROR (ats_ccomp_trans_temp)"
 end // end of [prerr_loc_interror]

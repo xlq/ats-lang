@@ -2619,8 +2619,9 @@ end // end of [ccomp_vardeclst]
 
 (* ****** ****** *)
 
-fn ccomp_impdec
-  (res: &instrlst_vt, impdec: hiimpdec): void = let
+fn ccomp_impdec (
+  res: &instrlst_vt, impdec: hiimpdec
+) : void = let
   fun aux (
       res: &instrlst_vt
     , loc0: loc_t
@@ -2643,18 +2644,6 @@ fn ccomp_impdec
 *)
         val vp_lam = valprim_funclo_make (fl)
         val () = the_topcstctx_add (d2c, vp_lam)
-//
-        val (pf_tailcallst_mark | ()) = the_tailcallst_mark ()
-        val () = the_tailcallst_add (fl, list_nil ())
-        val _(*funentry*) =
-          ccomp_exp_arg_body_funlab (
-            loc, prolog, hips_arg, hie_body, fl
-          ) where {
-            val loc = hie.hiexp_loc
-            val ins = instr_funlab (fl); val prolog = '[ins]
-          } // end of [where]
-        // end of [val]
-        val () = the_tailcallst_unmark (pf_tailcallst_mark | (*none*))
 //
         val () = (case+ 0 of
           | _ when $Lst.list_is_cons tmparg => let
@@ -2680,6 +2669,18 @@ fn ccomp_impdec
             | _ => () // end of [_]
             end // end of [_]
          ) : void // end of [val]
+//
+        val (pf_tailcallst_mark | ()) = the_tailcallst_mark ()
+        val () = the_tailcallst_add (fl, list_nil ())
+        val _(*funentry*) =
+          ccomp_exp_arg_body_funlab (
+            loc, prolog, hips_arg, hie_body, fl
+          ) where {
+            val loc = hie.hiexp_loc
+            val ins = instr_funlab (fl); val prolog = '[ins]
+          } // end of [where]
+        // end of [val]
+        val () = the_tailcallst_unmark (pf_tailcallst_mark | (*none*))
 //
       in
         // empty
@@ -2727,6 +2728,7 @@ fn ccomp_impdec
   end // end of [aux]
 //
   val d2c = impdec.hiimpdec_cst // [d2c] must not be a proof constant!
+//
 (*
   val () = begin
     print "ccomp_impdec: d2c = "; print d2c; print_newline ()
