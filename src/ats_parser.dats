@@ -41,12 +41,11 @@
 %} // end of [%{^]
 
 (* ****** ****** *)
-//
-// staload "libc/SATS/stdio.sats"
-//
-extern fun fopen_exn {m:file_mode}
-  (s: string, m: file_mode m): [l:addr] (FILE m @ l | ptr l)
-  = "atslib_fopen_exn"
+
+extern
+fun fopen_exn {m:file_mode}
+  (s: string, m: file_mode m)
+  : [l:addr] (FILE m @ l | ptr l) = "atslib_fopen_exn"
 // end of [fopen_exn]
 
 (* ****** ****** *)
@@ -77,21 +76,27 @@ fn flag_is_dyn (flag: int): bool = (flag > 0)
 (* ****** ****** *)
 
 local
-
+//
+// HX: these functions are needed in [ats_grammar.yats] 
+//
 extern
-fun yyres_i0de (id: i0de): yyres = "atsopt_yyres_i0de"
+fun yyres_i0de
+  (id: i0de): yyres = "atsopt_yyres_i0de"
 implement yyres_i0de (id) = YYRESi0de (id)
 
 extern
-fun yyres_s0exp (s0e: s0exp): yyres = "atsopt_yyres_s0exp"
+fun yyres_s0exp
+  (s0e: s0exp): yyres = "atsopt_yyres_s0exp"
 implement yyres_s0exp (s0e) = YYRESs0exp (s0e)
 
 extern
-fun yyres_d0exp (d0e: d0exp): yyres = "atsopt_yyres_d0exp"
+fun yyres_d0exp
+  (d0e: d0exp): yyres = "atsopt_yyres_d0exp"
 implement yyres_d0exp (d0e) = YYRESd0exp (d0e)
 
 extern
-fun yyres_d0eclst (d0cs: d0eclst): yyres = "atsopt_yyres_d0eclst"
+fun yyres_d0eclst
+  (d0cs: d0eclst): yyres = "atsopt_yyres_d0eclst"
 implement yyres_d0eclst (d0cs) = YYRESd0eclst (d0cs)
 
 in // in of [local]
@@ -134,16 +139,21 @@ parse_from_stdin_yyres
   val yyres = yyparse_main (tok0)
 //
   val () = $LEXING.lexing_lexbuf_free ()
+//
 } // end of [parse_from_stdin_yyres]
 
 implement
 parse_from_stdin_d0eclst
   (flag) = d0cs where {
+//
   var tok0: yybeg = YYBEGnone ()
+//
   val () = if flag_is_sta flag then tok0 := YYBEGd0ecseq_sta ()
   val () = if flag_is_dyn flag then tok0 := YYBEGd0ecseq_dyn ()
+//
   val yyres = parse_from_stdin_yyres (tok0)
   val- YYRESd0eclst (d0cs) = yyres
+//
 } // end of [parse_from_stdin_d0eclst]
 
 (* ****** ****** *)
@@ -153,7 +163,9 @@ parse_from_filename_yyres
   (tok0, filename) = yyres where {
 (*
   val () = begin
-    print "parse_from_filename: "; $Fil.print_filename filename; print_newline ()
+    print "parse_from_filename_yyres: ";
+    $Fil.print_filename (filename);
+    print_newline ();
   end // end of [val]
 *)
 //
@@ -175,11 +187,16 @@ parse_from_filename_yyres
 implement
 parse_from_filename_d0eclst
   (flag, filename) = d0cs where {
+//
   var tok0: yybeg = YYBEGnone ()
+//
   val () = if flag_is_sta flag then tok0 := YYBEGd0ecseq_sta ()
   val () = if flag_is_dyn flag then tok0 := YYBEGd0ecseq_dyn ()
+//
   val yyres = parse_from_filename_yyres (tok0, filename)
+//
   val- YYRESd0eclst (d0cs) = yyres
+//
 } // end of [parse_from_filename_d0eclst]
 
 (* ****** ****** *)

@@ -30,10 +30,10 @@
 *)
 
 (* ****** ****** *)
-
+//
 // Author: Hongwei Xi (hwxi AT cs DOT bu DOT edu)
-// Time: December 2007
-
+// Start Time: December 2007
+//
 (* ****** ****** *)
 
 %{^
@@ -1200,7 +1200,8 @@ end // end of [s2exp_tyleq_solve_Var_r_err]
 (* ****** ****** *)
 
 implement
-s2exp_tyleq_solve (loc0, s2e10, s2e20) = let
+s2exp_tyleq_solve
+  (loc0, s2e10, s2e20) = let
   var err: int = 0
   val () = s2exp_tyleq_solve_err (loc0, s2e10, s2e20, err)
 in
@@ -1233,7 +1234,7 @@ s2explst_arg_tyleq_solve (loc0, s2es10, s2es20) = let
       assert (sgn = 0)
     end else begin
       () // [sgn = 0] holds!
-    end
+    end (* end of [if] *)
   ) : [sgn==0] void
 in
   aux (loc0, s2es10, s2es20)
@@ -1241,8 +1242,9 @@ end // end of [s2explst_arg_tyleq_solve]
 
 (* ****** ****** *)
 
-fn s2exp_hypo_equal_solve_con
-  (loc0: loc_t, s2e1: s2exp, s2e2: s2exp): void = let
+fn s2exp_hypo_equal_solve_con (
+  loc0: loc_t, s2e1: s2exp, s2e2: s2exp
+) : void = let
 (*
   val () = begin
     print "s2exp_hypo_equal_solve_con: s2e1 = "; print s2e1; print_newline ();
@@ -1270,7 +1272,8 @@ in
 end // end of [s2exp_hypo_equal_solve_con]
 
 implement
-s2exp_hypo_equal_solve (loc0, s2e1, s2e2) = let
+s2exp_hypo_equal_solve
+  (loc0, s2e1, s2e2) = let
   val s2e1 = s2exp_whnf s2e1 and s2e2 = s2exp_whnf s2e2
 (*
   val () = begin
@@ -1338,7 +1341,8 @@ in
 end // end of [s2exp_hypo_equal_solve]
 
 implement
-s2explst_hypo_equal_solve (loc0, s2es1, s2es2) =
+s2explst_hypo_equal_solve
+  (loc0, s2es1, s2es2) = begin
   case+ (s2es1, s2es2) of
   | (cons (s2e1, s2es1), cons (s2e2, s2es2)) => begin
       s2exp_hypo_equal_solve (loc0, s2e1, s2e2);
@@ -1348,7 +1352,7 @@ s2explst_hypo_equal_solve (loc0, s2es1, s2es2) =
   | (_, _) => begin
       trans3_env_hypo_add_prop (loc0, s2exp_bool false)
     end // end of [_, _]
-// end of [s2explst_hypo_equal_solve]
+end // end of [s2explst_hypo_equal_solve]
 
 (* ****** ****** *)
 

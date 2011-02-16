@@ -2873,7 +2873,7 @@ extern ats_ptr_type lexing_fstpos_get () ;
 extern ats_void_type lexing_prerr_position (ats_ptr_type) ;
 //
 void
-yyerror(char *s) {
+yyerror (char *s) {
   fprintf (stderr, "%s: ", s) ;
   atsopt_filename_prerr () ;
   fprintf (stderr, ": [") ;
@@ -2888,7 +2888,7 @@ yyparse_main (
   ats_int_type tok0
 ) {
 /*
-** HX: must take care of garbage collection
+** HX: we must take care of garbage collection
 */
   // fprintf (stderr, "yyparse_main: &yyss = %p\n", &yyss) ;
   // ATS_GC_MARKROOT (&yyss, sizeof(short*)) ; // [ats_malloc_ngc] is used

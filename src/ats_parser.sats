@@ -42,7 +42,9 @@ staload Fil = "ats_filename.sats"
 typedef fil_t = $Fil.filename_t
 
 (* ****** ****** *)
-
+//
+// HX: for indicating which kind of syntactic entity is to be parsed
+//
 datatype yybeg =
   | YYBEGnone of ()
 //

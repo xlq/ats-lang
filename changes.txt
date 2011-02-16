@@ -5,15 +5,21 @@ ats-lang-anairiats-0.2.4:
 1. Adding the package contrib/testing to facilitate construction of
    testing code.
 2. Adding support for value templates.
-3. Adding various examples in doc/EXAMPLE/PCPV to demonstate a style of
-   program verification that is described as being programmer-centric.
+3. Adding various examples in doc/EXAMPLE/PCPV to demonstrate a style
+   of program verification that is described as being programmer-centric.
 4. Adding the package contrib/scripting to support scripting in ATS.
 5. Bison is now the default tool for generate [ats_grammar_yats.c].
 6. Adding some functions in prelude/list.
 7. Adding some functions in prelude/lazy_vt.
 8. ATS/Anairiats is kept up-to-date for bootstrapping.
-9. ATS/contrib/glib/glist: overhauling various function interfaces.
-10. ats_fixity is splitted into ats_fixity_prec and ats_fixity_fxty.
+9. $ATSHOME/contrib/glib/glist: overhauling many function interfaces.
+10. The file ats_fixity.dats is splitted into the following two files:
+    ats_fixity_prec.dats and ats_fixity_fxty.dats.
+11. Adding some functions for parsing various syntax trees.
+12. Renaming various 'get' and 'set' functions according to some adopted
+    naming convention.
+13. Starting to build API in $ATSHOME/contrib/linux for supporting linux
+    kernel programming. This is going to be a long journey!
 
 ########################################################################
 
