@@ -377,7 +377,8 @@ end // end of [s2rt_prf_lin_fc]
 (* ****** ****** *)
 
 implement
-s2eff_union_eff (s2fe, eff) = case+ s2fe of
+s2eff_union_eff
+  (s2fe, eff) = case+ s2fe of
   | S2EFFall () => S2EFFall ()
   | S2EFFnil () => S2EFFset
       ($Eff.effset_add ($Eff.effset_nil, eff), list_nil ())
@@ -419,8 +420,9 @@ in
   | _ => false
 end // end of [s2exp_contain_eff]
 
-and s2explst_contain_eff
-  (s2es: s2explst, eff: $Syn.effect_t): bool = begin case+ s2es of
+and s2explst_contain_eff (
+  s2es: s2explst, eff: $Syn.effect_t
+) : bool = begin case+ s2es of
   | list_cons (s2e, s2es) => begin
       if s2exp_contain_eff (s2e, eff) then
         true else s2explst_contain_eff (s2es, eff)
@@ -449,12 +451,14 @@ end // end of [s2eff_contain_eff]
 
 implement
 s2eff_contain_effset (s2fe, efs) = let
-  fun aux (xs: $Syn.effectlst):<cloptr1> bool = case+ xs of
-    | list_cons (x, xs) => begin
+  fun aux (
+    xs: $Syn.effectlst
+  ) :<cloptr1> bool = case+ xs of
+    | list_cons (x, xs) => (
         if $Eff.effset_contain (efs, x) then
           if s2eff_contain_eff (s2fe, x) then aux (xs) else false
         else aux (xs)
-      end
+      ) // end of [list_cons]
     | list_nil () => true
   // end of [aux]
 in
@@ -479,16 +483,20 @@ in
   | _ => false
 end // end of [s2exp_contain_effvar]
 
-and s2explst_contain_effvar (s2es0: s2explst, s2v0: s2var_t): bool =
+and s2explst_contain_effvar (
+  s2es0: s2explst, s2v0: s2var_t
+) : bool = begin
   case+ s2es0 of
   | list_cons (s2e, s2es) => begin
       if s2exp_contain_effvar (s2e, s2v0) then true
       else s2explst_contain_effvar (s2es, s2v0)
     end // end of [list_cons]
   | list_nil () => false // end of [list_nil]
-// end of [s2explist_contain_effvar]
+end // end of [s2explist_contain_effvar]
 
-implement s2eff_contain_effvar (s2fe, s2v) = case+ s2fe of
+implement
+s2eff_contain_effvar
+  (s2fe, s2v) = case+ s2fe of
   | S2EFFall () => true
   | S2EFFnil () => false
   | S2EFFset (efs, s2es) => s2explst_contain_effvar (s2es, s2v)
@@ -512,7 +520,9 @@ in
   | _ => false
 end // end of [s2eff_contain_s2exp]
 
-and s2eff_contain_s2explst (s2fe: s2eff, s2es: s2explst): bool = begin
+and s2eff_contain_s2explst (
+  s2fe: s2eff, s2es: s2explst
+) : bool = begin
   case+ s2es of
   | list_cons (s2e, s2es) => begin
       if s2eff_contain_s2exp (s2fe, s2e) then s2eff_contain_s2explst (s2fe, s2es)
@@ -522,7 +532,8 @@ and s2eff_contain_s2explst (s2fe: s2eff, s2es: s2explst): bool = begin
 end // end of [s2eff_contain_s2explst]
 
 implement
-s2eff_contain_s2eff (s2fe1, s2fe2) = case+ s2fe1 of
+s2eff_contain_s2eff
+  (s2fe1, s2fe2) = case+ s2fe1 of
   | S2EFFall () => true
   | _ => begin case+ s2fe2 of
     | S2EFFall () => s2eff_contain_effset (s2fe1, $Eff.effset_all)
@@ -591,29 +602,37 @@ end // end of [s2lablst_trim_s2lablst_s2lablst]
 
 (* ****** ****** *)
 
-implement s2exp_is_proof (s2e) = s2rt_is_proof (s2e.s2exp_srt)
-implement s2exp_is_proof_fun (s2e) = s2rt_is_proof_fun (s2e.s2exp_srt)
-implement s2exp_is_linear (s2e) = s2rt_is_linear (s2e.s2exp_srt)
-implement s2exp_is_nonlin (s2e) =
+implement
+s2exp_is_proof (s2e) = s2rt_is_proof (s2e.s2exp_srt)
+implement
+s2exp_is_proof_fun (s2e) = s2rt_is_proof_fun (s2e.s2exp_srt)
+
+implement
+s2exp_is_linear (s2e) = s2rt_is_linear (s2e.s2exp_srt)
+implement
+s2exp_is_nonlin (s2e) =
   if s2rt_is_linear s2e.s2exp_srt then false else true
 // end of [s2exp_is_nonlin]
-implement s2exp_is_impredicative (s2e) = s2rt_is_impredicative (s2e.s2exp_srt)
+
+implement s2exp_is_impredicative
+  (s2e) = s2rt_is_impredicative (s2e.s2exp_srt)
 implement s2exp_is_types (s2e) = s2rt_is_types (s2e.s2exp_srt)
 
 (* ****** ****** *)
 
 implement
-s2exp_is_abscon (s2e) = begin
+s2exp_is_abscon (s2e) =
   case+ s2e.s2exp_node of
   | S2Ecst s2c => begin
       if s2cst_is_abstract s2c then true else s2cst_get_iscon s2c
     end // end of [S2Ecst]
   | S2Eapp (s2e, _) => s2exp_is_abscon s2e
   | _ => false
-end // end  of [s2exp_is_abscon]
+// end  of [s2exp_is_abscon]
 
 implement
-s2exp_is_non_fun (s2e) = case+ s2e.s2exp_node of
+s2exp_is_non_fun (s2e) =
+  case+ s2e.s2exp_node of
   | S2Efun _ => false
   | S2EVar _ => false
   | S2Eexi (_, _, s2e) => s2exp_is_non_fun s2e
@@ -622,7 +641,8 @@ s2exp_is_non_fun (s2e) = case+ s2e.s2exp_node of
 // end of [s2exp_is_non_fun]
 
 implement
-s2exp_is_non_tyrec (s2e) = case+ s2e.s2exp_node of
+s2exp_is_non_tyrec (s2e) =
+  case+ s2e.s2exp_node of
   | S2Etyrec _ => false
   | S2EVar _ => false
   | S2Eexi (_, _, s2e) => s2exp_is_non_tyrec s2e
@@ -703,7 +723,8 @@ end // end of [s2cst_select_s2explstlst]
 (* ****** ****** *)
 
 implement
-s2rt_lin_prg_boxed (lin, prg, boxed) =
+s2rt_lin_prg_boxed
+  (lin, prg, boxed) =
   if lin > 0 then begin
     if prg > 0 then
       if boxed > 0 then s2rt_viewtype else s2rt_viewt0ype
@@ -715,8 +736,9 @@ s2rt_lin_prg_boxed (lin, prg, boxed) =
   end (* end of [if] *)
 // end of [s2rt_lin_prg_boxed]
 
-fn labs2explst_is_singleton
-  (npf: int, ls2es: labs2explst): Option_vt s2exp = let
+fn labs2explst_is_singleton (
+  npf: int, ls2es: labs2explst
+) : Option_vt s2exp = let
   fun aux0 (npf: int, ls2es: labs2explst): Option_vt s2exp =
     if npf > 0 then begin case+ ls2es of
       | LABS2EXPLSTcons (_, _, ls2es) => aux0 (npf - 1, ls2es)
@@ -803,7 +825,9 @@ in
 end // end of [s2exp_tyrec]
 
 implement
-s2exp_union (isbox, stamp, s2i, ls2es) = let
+s2exp_union (
+  isbox, stamp, s2i, ls2es
+) = let
   fun aux1 (ls2es: labs2explst, lin: &int): void =
     case+ ls2es of
     | LABS2EXPLSTcons (_, s2e, ls2es) => begin
@@ -957,8 +981,9 @@ end // end of [s2kexp_make]
 
 (* ****** ****** *)
 
-fun s2kexp_match_union_approx
-  (s2kes1: s2kexplst, s2ke2: s2kexp, approx: &int): bool = begin
+fun s2kexp_match_union_approx (
+  s2kes1: s2kexplst, s2ke2: s2kexp, approx: &int
+) : bool = begin
   case+ s2kes1 of
   | list_cons (s2ke1, s2kes1) => begin
       if s2kexp_match_approx (1, s2ke1, s2ke2, approx) then
@@ -975,7 +1000,8 @@ fun s2kexp_match_union
 end // end of [s2kexp_match_union]
 
 implement
-s2kexp_match_approx (pol, s2ke1, s2ke2, approx) = let
+s2kexp_match_approx
+  (pol, s2ke1, s2ke2, approx) = let
 (*
   val () = begin
     print "s2kexp_match_approx: s2ke1 = "; print s2ke1; print_newline ();
@@ -1025,14 +1051,14 @@ implement
 s2kexplst_match_approx
   (pol, s2kes1, s2kes2, approx) = let
   val ret = (case+ (s2kes1, s2kes2) of
-  | (s2ke1 :: s2kes1, s2ke2 :: s2kes2) => begin
-      if s2kexp_match_approx (pol, s2ke1, s2ke2, approx) then
-        s2kexplst_match_approx (pol, s2kes1, s2kes2, approx)
-      else false
-    end // end of [::, ::]
-  | (nil _, nil _) => true
-  | (_, _) => false
-  ) : bool
+    | (s2ke1 :: s2kes1, s2ke2 :: s2kes2) => (
+        if s2kexp_match_approx (pol, s2ke1, s2ke2, approx)
+          then s2kexplst_match_approx (pol, s2kes1, s2kes2, approx) else false
+        // end of [if]
+      ) // end of [::, ::]
+    | (nil _, nil _) => true
+    | (_, _) => false
+  ) : bool // end of [val]
 in
   ret // return value
 end // end of [s2kexplst_match_approx]
@@ -1080,9 +1106,7 @@ fun s2cst_get_root
   | S2CSTLSTcons (s2c, _) => s2cst_get_root s2c | S2CSTLSTnil () => s2c
 // end of [s2cst_get_root]
 
-fn s2zexp_make_s2cst
-  (s2c: s2cst_t): s2zexp = S2ZEcst s2c
-// end of [s2zexp_make_s2cst]
+fn s2zexp_make_s2cst (s2c: s2cst_t): s2zexp = S2ZEcst s2c
 
 implement
 s2zexp_make_s2exp (s2e0) = let
@@ -1243,8 +1267,9 @@ implement stasub_nil = list_nil ()
 implement stasub_add (sub, s2v, s2e) = @(s2v, s2e) :: sub
 implement
 stasub_addlst (sub, s2vs, s2es) = let
-  fun loop
-    (sub: stasub_t, s2vs: s2varlst, s2es: s2explst): stasub_t =
+  fun loop (
+    sub: stasub_t, s2vs: s2varlst, s2es: s2explst
+  ) : stasub_t =
     case+ (s2vs, s2es) of
     | (list_cons (s2v, s2vs), list_cons (s2e, s2es)) => let
         val sub = stasub_add (sub, s2v, s2e) in loop (sub, s2vs, s2es)
@@ -1277,8 +1302,9 @@ stasub_get_codomain_whnf
 
 implement
 stasub_extend_svarlst (sub, s2vs) = let
-  typedef T = s2varlst
-  fun loop (sub: stasub, s2vs1: T, s2vs: T): @(stasub, s2varlst) =
+  fun loop (
+    sub: stasub, s2vs1: s2varlst, s2vs: s2varlst
+  ) : @(stasub, s2varlst) =
     case+ s2vs of
     | list_cons (s2v, s2vs) => let
         val s2v1 = s2var_copy s2v
@@ -1294,8 +1320,7 @@ end // end of [stasub_extend_svarlst]
 implement
 stasub_extend_sarglst_svarlst
   (loc0, sub, s2as, s2vs) = let
-  typedef T1 =  s2arglst and T2 = s2varlst 
-  
+//  
   fn err1 (loc0: loc_t, s2t: s2rt, s2a: s2arg): s2rt = begin
     prerr_loc_error2 loc0;
     prerr ": the static argument [";
@@ -1304,24 +1329,26 @@ stasub_extend_sarglst_svarlst
     prerr_newline ();
     $Err.abort {s2rt} ()
   end // end of [err1]
-
+//
   fn err2 (loc0: loc_t): @(stasub, s2varlst) = begin
     prerr_loc_error2 loc0;
     prerr ": the static application is expected to have less arguments.";
     prerr_newline ();
     $Err.abort ()
   end // end of [err2]
-
+//
   fn err3 (loc0: loc_t): @(stasub, s2varlst) = begin
     prerr_loc_error2 loc0;
     prerr ": the static application is expected to have more arguments.";
     prerr_newline ();
     $Err.abort ()
   end // end of [err3]
-
-  fun aux
-    (loc0: loc_t, sub: stasub, s2vs1: T2, s2as: T1, s2vs: T2)
-    : @(stasub, s2varlst) = case+ (s2as, s2vs) of
+//
+  fun aux (
+    loc0: loc_t, sub: stasub
+  , s2vs1: s2varlst, s2as: s2arglst, s2vs: s2varlst
+  ) : @(stasub, s2varlst) =
+    case+ (s2as, s2vs) of
     | (nil (), nil ()) => (sub, $Lst.list_reverse s2vs1)
     | (s2a :: s2as, s2v :: s2vs) => let
         val s2t_s2v = s2var_get_srt s2v
@@ -1345,8 +1372,9 @@ end (* end of [stasub_extend_sarg] *)
 
 (* ****** ****** *)
 
-fun s2var_subst
-  (sub: stasub, s2v0: s2var_t): Option_vt s2exp = begin
+fun s2var_subst (
+  sub: stasub, s2v0: s2var_t
+) : Option_vt s2exp = begin
   case+ sub of
   | s2vs2e :: sub => begin
       if s2v0 = s2vs2e.0 then Some_vt s2vs2e.1 else s2var_subst (sub, s2v0)
