@@ -127,6 +127,8 @@ fun S_ISREG (m: mode_t): bool = "atslib_S_ISREG"
 fun S_ISLNK (m: mode_t): bool = "atslib_S_ISLNK"
 fun S_ISSOCK (m: mode_t): bool = "atslib_S_ISSOCK"
 
+(* ****** ****** *)
+
 //
 // HX: (0/1/-1 : false/true/error)
 //
@@ -151,11 +153,11 @@ fun mkdir_exn (path: string, mode: mode_t): void
 (* ****** ****** *)
 
 fun stat_err (
-    name: string, st: &stat? >> opt (stat, i==0)
+    path: string, st: &stat? >> opt (stat, i==0)
   ) : #[i:int | i <= 0] int i
   = "#atslib_stat_err" // macro!
 fun stat_exn
-  (name: string, st: &stat? >> stat): void = "atslib_stat_exn"
+  (path: string, st: &stat? >> stat): void = "atslib_stat_exn"
 // end of [stat_exn]
 
 fun fstat_err {fd:nat} (
@@ -167,11 +169,11 @@ fun fstat_exn {fd:nat}
 // end of [fstat_exn]
 
 fun lstat_err (
-    name: string, st: &stat? >> opt (stat, i==0)
+    path: string, st: &stat? >> opt (stat, i==0)
   ) : #[i:int | i <= 0] int i
   = "#atslib_lstat_err" // macro!
 fun lstat_exn
-  (name: string, buf: &stat? >> stat): void = "atslib_lstat_exn"
+  (path: string, buf: &stat? >> stat): void = "atslib_lstat_exn"
 // end of [lstat_exn]
 
 (* ****** ****** *)

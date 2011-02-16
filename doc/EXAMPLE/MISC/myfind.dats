@@ -20,11 +20,11 @@ fun dirent_stream_vt_make_DIR {l_dir:addr}
 (* ****** ****** *)
 
 extern
-fun{a:t@ype}
-doit {l:agz} (dirname: string, name: !strptr l): void
+fun doit {l:agz}
+  (dirname: string, name: !strptr l): void
+// end of [doit]
 
-fun{a:t@ype}
-myfind (dirname: string): void = let
+fun myfind (dirname: string): void = let
   val (pf_dir | p_dir) = opendir_exn (dirname)
   val xs = dirent_stream_vt_make_DIR (pf_dir | p_dir)
   fun loop (
@@ -35,14 +35,14 @@ myfind (dirname: string): void = let
     case+ xs_con of
     | stream_vt_cons (!p_x, xs) => let
         val (fpf_name | name) = dirent_get_d_name (!p_x)
-        val () = doit<a> (dirname, name)
+        val () = doit (dirname, name)
         prval () = fpf_name (name)
         val () = free@ {dirent} (xs_con)
       in
         loop (xs)
       end // end of [stream_vt_cons]
     | ~stream_vt_nil () => ()
-  end // endof [loop]
+  end // end of [loop]
   val () = loop (xs)
 in
   // nothing
@@ -50,18 +50,28 @@ end // end of [myfind]
 
 (* ****** ****** *)
 
+staload S = "libc/sys/SATS/stat.sats"
+staload T = "libc/sys/SATS/types.sats"
 staload UN = "prelude/SATS/unsafe.sats"
 
 (* ****** ****** *)
 
+fun isexec (x: int) = let
+  val m = $T.uint_of_mode ($S.S_IXUSR) land (uint_of_int (x))
+in
+  if m > 0U then true else false
+end // end of [isexec]
+
+(* ****** ****** *)
+
 implement
-doit<void> (dirname, name) = let
+doit (dirname, name) = let
   val () = case+ $UN.castvwtp1 {string} (name) of
     | "." => ()
     | ".." => ()
     | name when test_file_isdir (name) => let
         val dirname = sprintf ("%s/%s", @(dirname, name))
-        val () = myfind<void> ($UN.castvwtp1 {string} (dirname))
+        val () = myfind ($UN.castvwtp1 {string} (dirname))
         val () = strptr_free (dirname)
       in
         // nothing
@@ -70,11 +80,40 @@ doit<void> (dirname, name) = let
   // end of [val]
 in
   // nothing
-end // end of [doit<void>]
+end // end of [doit]
+
+(*
+implement
+doit (dirname, name) = let
+  val () = case+ $UN.castvwtp1 {string} (name) of
+    | "." => ()
+    | ".." => ()
+    | name when test_file_isdir (name) => let
+        val () = $S.chmod_exn (name, $T.mode_of_int (0755))
+        val dirname = sprintf ("%s/%s", @(dirname, name))
+        val () = myfind ($UN.castvwtp1 {string} (dirname))
+        val () = strptr_free (dirname)
+      in
+        // nothing
+      end // end of [_ when ...]
+    | name when test_file_islnk (name) => ()
+    | name when test_file_isreg (name) => let
+        val m = (
+          if test_file_mode (name, isexec) then 0755 else 0644
+        ) : int // end of [val]
+      in
+        $S.chmod_exn (name, $T.mode_of_int (m))
+      end // end of [_ when ...]
+    | _ => () // end of [_]
+  // end of [val]
+in
+  // nothing
+end // end of [doit]
+*)
 
 (* ****** ****** *)
 
-implement main () = myfind<void> (".")
+implement main () = myfind (".")
 
 (* ****** ****** *)
 

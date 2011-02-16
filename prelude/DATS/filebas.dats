@@ -34,14 +34,12 @@
 (* author: Hongwei Xi (hwxi AT cs DOT bu DOT edu) *)
 
 (* ****** ****** *)
-
 //
 // HX-2010-03-14: Here are some basic IO operations which
 // are mostly for prototype implementation. If something more
 // efficient is needed, please use the functions in declared
 // in the following file: libc/SATS/stdio.sats
 //
-
 (* ****** ****** *)
 
 #define ATS_DYNLOADFLAG 0 // no initialization is needed
@@ -180,6 +178,67 @@ output_line (fil, line) = (
 
 (* ****** ****** *)
 
+local
+//
+staload "libc/sys/SATS/stat.sats"
+staload T = "libc/sys/SATS/types.sats"
+//
+macdef i2m = $T.mode_of_int
+macdef m2i = $T.int_of_mode
+//
+in // in of [local]
+
+implement
+test_file_exists (path) = let
+  var st: stat?
+  val ret = stat_err (path, st)
+in
+  if ret = 0 then let
+    prval () = opt_unsome {stat} (st) in true
+  end else let
+    prval () = opt_unnone {stat} (st) in false
+  end (* end of [if] *)
+end // end of [test_file_fun]
+
+implement
+test_file_mode (path, f) = let
+  var st: stat? ; val ret = stat_err (path, st)
+in
+  if ret = 0 then let
+    prval () = opt_unsome {stat} (st) in f (m2i(st.st_mode))
+  end else let
+    prval () = opt_unnone {stat} (st) in false
+  end (* end of [if] *)
+end // end of [test_file_mode]
+
+implement test_file_isblk
+  (path) = test_file_mode (path, lam x => S_ISBLK (i2m(x)))
+// end of [test_file_isblk]
+
+implement test_file_ischr
+  (path) = test_file_mode (path, lam x => S_ISCHR (i2m(x)))
+// end of [test_file_ischr]
+
+implement test_file_isdir
+  (path) = test_file_mode (path, lam x => S_ISDIR (i2m(x)))
+// end of [test_file_isdir]
+
+implement test_file_isfifo
+  (path) = test_file_mode (path, lam x => S_ISFIFO (i2m(x)))
+// end of [test_file_isfifo]
+
+implement test_file_islnk
+  (path) = test_file_mode (path, lam x => S_ISLNK (i2m(x)))
+// end of [test_file_islnk]
+
+implement test_file_isreg
+  (path) = test_file_mode (path, lam x => S_ISREG (i2m(x)))
+// end of [test_file_isreg]
+
+end // end of [local]
+
+(* ****** ****** *)
+
 implement
 char_stream_make_file
   (fil) = $delay (let
@@ -281,39 +340,6 @@ fclose1_exn (pf_fil | p_fil) // HX: for cleanup
 ) // end of [$ldelay]
 //
 end // end of [char_stream_vt_make_file]
-
-(* ****** ****** *)
-
-%{$
-
-ats_bool_type
-atspre_test_file_exists
-  (ats_ptr_type path) {
-  int ret ;
-  struct stat buf ;
-  ret = stat ((char*)path, &buf) ;
-  if (!ret) {
-    return ats_true_bool ; // ret == 0
-  } else {
-    return ats_false_bool ; // ret == -1
-  } // end of [if]
-} /* test_file_exists */
-
-ats_bool_type
-atspre_test_file_isdir
-  (ats_ptr_type path) {
-  int ret ;
-  struct stat buf ; mode_t mode ;
-  ret = stat ((char*)path, &buf) ;
-  if (!ret) { // ret == 0
-    mode = buf.st_mode ;
-    return (S_ISDIR(mode) ? ats_true_bool : ats_false_bool) ;
-  } else { // ret == -1
-    return ats_false_bool ;
-  } // end of [if]
-} /* atspre_test_file_dir */
-
-%} // end of [%{$]
 
 (* ****** ****** *)
 

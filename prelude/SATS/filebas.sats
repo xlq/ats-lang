@@ -103,7 +103,18 @@ fun fflush_exn (fil: FILEref): void = "atslib_fflush_exn"
 (* ****** ****** *)
 
 fun test_file_eof (fil: FILEref): bool = "atslib_feof"
-fun test_file_exists (path: string): bool = "atspre_test_file_exists"
+
+(* ****** ****** *)
+//
+// HX-2011-02-16: [f] checks the mode of a given file
+//
+fun test_file_mode (path: string, f: int -> bool): bool
+
+(* ****** ****** *)
+
+fun test_file_exists
+  (path: string): bool = "atspre_test_file_exists"
+// end of [test_file_exists]
 
 fun test_file_isblk (path: string): bool = "atspre_test_file_isblk"
 fun test_file_ischr (path: string): bool = "atspre_test_file_ischr"
@@ -111,7 +122,6 @@ fun test_file_isdir (path: string): bool = "atspre_test_file_isdir"
 fun test_file_isfifo (path: string): bool = "atspre_test_file_isfifo"
 fun test_file_isreg (path: string): bool = "atspre_test_file_isreg"
 fun test_file_islnk (path: string): bool = "atspre_test_file_islnk"
-fun test_file_issock (path: string): bool = "atspre_test_file_issock"
 
 (* ****** ****** *)
 
