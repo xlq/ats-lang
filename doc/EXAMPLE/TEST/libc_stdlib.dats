@@ -61,6 +61,7 @@ main (argc, argv) = let
   prval () = tmp.1 := pfstr
   prval $F.open_v_succ (pffil) = pfopt
   val () = $F.close_exn (pffil | i)
+  val () = assertloc ($UNI.unlink ($UN.cast (tmp.2)) = 0) // remove it!
   val () = strbufptr_free (tmp)
 //
   val tmp = $STR.strdup_gc ("bar-XXXXXX")

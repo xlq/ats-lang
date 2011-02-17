@@ -208,8 +208,8 @@ end // end of [DIRmode]
 
 (* ****** ****** *)
 
-fn file_isdir (path: string): bool = test_file_isdir (path)
 fn file_isexi (path: string): bool = test_file_exists (path)
+fn file_isdir (path: string): bool = test_file_isdir (path) > 0
 
 (* ****** ****** *)
 

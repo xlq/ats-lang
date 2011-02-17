@@ -39,13 +39,14 @@
 GCC=gcc
 ATSCC="${ATSHOME}"/bin/atscc
 
+#CCFLAG=
+CCFLAG=-O2
 #ATSCCFLAG=-g
 #ATSCCFLAG=-DGCATS_DEBUG
-#ATSCCFLAG=-g
-ATSCCFLAG=-O3 -g
-#ATSCCFLAG=-O3
-#CCFLAG=
-CCFLAG=-O3
+#ATSCCFLAG=-O2
+ATSCCFLAG=-O2 -g
+
+######
 
 SOURCES := \
   gcats1_misc.dats \
@@ -165,7 +166,7 @@ gcats1_manops_dats.o: gcats1_manops_dats.c
 
 ######
 
-lines::
+srclines::
 	wc -l *.?ats
 
 ######
