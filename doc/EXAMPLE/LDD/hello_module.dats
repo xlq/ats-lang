@@ -3,6 +3,11 @@
 // Time: February, 2011
 //
 (* ****** ****** *)
+//
+// How to compile:
+//   atscc -IATS $ATSHOME/contrib/linux -cc hello_module.dats
+//
+(* ****** ****** *)
 
 staload "linux/SATS/kernel.sats"
 
