@@ -105,23 +105,30 @@ fun fflush_exn (fil: FILEref): void = "atslib_fflush_exn"
 fun test_file_eof (fil: FILEref): bool = "atslib_feof"
 
 (* ****** ****** *)
-//
-// HX-2011-02-16: [f] checks the mode of a given file
-//
-fun test_file_mode (path: string, f: int -> bool): bool
 
-(* ****** ****** *)
-
-fun test_file_exists
+fun test_file_exists // [stat] is called
   (path: string): bool = "atspre_test_file_exists"
 // end of [test_file_exists]
 
-fun test_file_isblk (path: string): bool = "atspre_test_file_isblk"
-fun test_file_ischr (path: string): bool = "atspre_test_file_ischr"
-fun test_file_isdir (path: string): bool = "atspre_test_file_isdir"
-fun test_file_isfifo (path: string): bool = "atspre_test_file_isfifo"
-fun test_file_isreg (path: string): bool = "atspre_test_file_isreg"
-fun test_file_islnk (path: string): bool = "atspre_test_file_islnk"
+(* ****** ****** *)
+//
+// HX-2011-02-16:
+// [stat] is called to obtain the mode of a given file
+// for [f] to be applied to it.
+//
+fun test_file_mode (path: string, f: uint -> bool): Int
+//
+// HX: [stat] is called // ~1/0/1: error/false/true
+//
+fun test_file_isblk (path: string): int = "atspre_test_file_isblk"
+fun test_file_ischr (path: string): int = "atspre_test_file_ischr"
+fun test_file_isdir (path: string): int = "atspre_test_file_isdir"
+fun test_file_isfifo (path: string): int = "atspre_test_file_isfifo"
+fun test_file_isreg (path: string): int = "atspre_test_file_isreg"
+//
+// HX: [lstat] is called // ~1/0/1: error/false/true
+//
+fun test_file_islnk (path: string): int = "atspre_test_file_islnk"
 
 (* ****** ****** *)
 

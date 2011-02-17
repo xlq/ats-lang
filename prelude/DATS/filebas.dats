@@ -183,8 +183,8 @@ local
 staload "libc/sys/SATS/stat.sats"
 staload T = "libc/sys/SATS/types.sats"
 //
-macdef i2m = $T.mode_of_int
-macdef m2i = $T.int_of_mode
+macdef u2m = $T.mode_of_uint
+macdef m2u = $T.uint_of_mode
 //
 in // in of [local]
 
@@ -200,40 +200,58 @@ in
   end (* end of [if] *)
 end // end of [test_file_fun]
 
+(* ****** ****** *)
+
 implement
-test_file_mode (path, f) = let
+test_file_mode
+  (path, f) = let
   var st: stat? ; val ret = stat_err (path, st)
 in
   if ret = 0 then let
-    prval () = opt_unsome {stat} (st) in f (m2i(st.st_mode))
+    prval () = opt_unsome {stat} (st)
+  in
+    if f (m2u(st.st_mode)) then 1 else 0
   end else let
-    prval () = opt_unnone {stat} (st) in false
+    prval () = opt_unnone {stat} (st) in ~1 (*error*)
   end (* end of [if] *)
 end // end of [test_file_mode]
 
+(* ****** ****** *)
+
 implement test_file_isblk
-  (path) = test_file_mode (path, lam x => S_ISBLK (i2m(x)))
+  (path) = test_file_mode (path, lam x => S_ISBLK (u2m(x)))
 // end of [test_file_isblk]
 
 implement test_file_ischr
-  (path) = test_file_mode (path, lam x => S_ISCHR (i2m(x)))
+  (path) = test_file_mode (path, lam x => S_ISCHR (u2m(x)))
 // end of [test_file_ischr]
 
 implement test_file_isdir
-  (path) = test_file_mode (path, lam x => S_ISDIR (i2m(x)))
+  (path) = test_file_mode (path, lam x => S_ISDIR (u2m(x)))
 // end of [test_file_isdir]
 
 implement test_file_isfifo
-  (path) = test_file_mode (path, lam x => S_ISFIFO (i2m(x)))
+  (path) = test_file_mode (path, lam x => S_ISFIFO (u2m(x)))
 // end of [test_file_isfifo]
 
-implement test_file_islnk
-  (path) = test_file_mode (path, lam x => S_ISLNK (i2m(x)))
-// end of [test_file_islnk]
-
 implement test_file_isreg
-  (path) = test_file_mode (path, lam x => S_ISREG (i2m(x)))
+  (path) = test_file_mode (path, lam x => S_ISREG (u2m(x)))
 // end of [test_file_isreg]
+
+(* ****** ****** *)
+
+implement
+test_file_islnk (path) = let
+  var st: stat? ; val ret = lstat_err (path, st)
+in
+  if ret = 0 then let
+    prval () = opt_unsome {stat} (st)
+  in
+    if S_ISLNK (st.st_mode) then 1 else 0
+  end else let
+    prval () = opt_unnone {stat} (st) in ~1 (*error*)
+  end (* end of [if] *)
+end // end of [test_file_islnk]
 
 end // end of [local]
 

@@ -56,8 +56,8 @@ staload UN = "prelude/SATS/unsafe.sats"
 
 (* ****** ****** *)
 
-fun isexec (x: int) = let
-  val m = $T.uint_of_mode ($S.S_IXUSR) land (uint_of_int (x))
+fun isexec (x: uint): bool = let
+  val m = $T.uint_of_mode ($S.S_IXUSR) land (x)
 in
   if m > 0U then true else false
 end // end of [isexec]
@@ -70,7 +70,8 @@ doit (dirname, basename) = let
   val () = case+ basename of
     | "." => ()
     | ".." => ()
-    | name when test_file_isdir (basename) => let
+    | name when
+        test_file_isdir (basename) > 0 => let
         val fullname = sprintf ("%s/%s", @(dirname, basename))
         val () = myfind ($UN.castvwtp1 {string} (fullname))
         val () = strptr_free (fullname)
@@ -85,8 +86,6 @@ end // end of [doit]
 
 (* ****** ****** *)
 
-macdef ignore (x) = let val _ = ,(x) in () end
-
 (*
 implement
 doit (dirname, basename) = let
@@ -99,19 +98,21 @@ doit (dirname, basename) = let
   val () = case+ $UN.castvwtp1 {string} (basename) of
     | "." => ()
     | ".." => ()
-    | _ when test_file_isdir (fullname) => let
+    | _ when
+        test_file_isdir (fullname) > 0 => let
         val () = $S.chmod_exn (fullname, $T.mode_of_int (0755))
         val () = myfind (fullname)
       in
         // nothing
       end // end of [_ when ...]
-    | _ when test_file_islnk (fullname) => ()
-    | _ when test_file_isreg (fullname) => let
+    | _ when test_file_islnk (fullname) > 0 => ()
+    | _ when test_file_isreg (fullname) > 0 => let
         val m = (
-          if test_file_mode (fullname, isexec) then 0755 else 0644
+          if test_file_mode (fullname, isexec) > 0 then 0755 else 0644
         ) : int // end of [val]
+        val () = $S.chmod_exn (fullname, $T.mode_of_int (m))
       in
-        ignore ($S.chmod_err (fullname, $T.mode_of_int (m)))
+        // nothing
       end // end of [_ when ...]
     | _ => () // end of [_]
   // end of [val]
