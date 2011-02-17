@@ -65,47 +65,57 @@ end // end of [isexec]
 (* ****** ****** *)
 
 implement
-doit (dirname, name) = let
-  val () = case+ $UN.castvwtp1 {string} (name) of
+doit (dirname, basename) = let
+  val basename = $UN.castvwtp1 {string} (basename)
+  val () = case+ basename of
     | "." => ()
     | ".." => ()
-    | name when test_file_isdir (name) => let
-        val dirname = sprintf ("%s/%s", @(dirname, name))
-        val () = myfind ($UN.castvwtp1 {string} (dirname))
-        val () = strptr_free (dirname)
+    | name when test_file_isdir (basename) => let
+        val fullname = sprintf ("%s/%s", @(dirname, basename))
+        val () = myfind ($UN.castvwtp1 {string} (fullname))
+        val () = strptr_free (fullname)
       in
         // nothing
       end // end of [_ when ...]
-    | name => println! (dirname, "/", name)
+    | name => println! (dirname, "/", basename)
   // end of [val]
 in
   // nothing
 end // end of [doit]
 
+(* ****** ****** *)
+
+macdef ignore (x) = let val _ = ,(x) in () end
+
 (*
 implement
-doit (dirname, name) = let
-  val () = case+ $UN.castvwtp1 {string} (name) of
+doit (dirname, basename) = let
+  val fullname1 = sprintf
+    ("%s/%s", @(dirname, basename)) where {
+    val basename = $UN.castvwtp1 {string} (basename)
+  } // end of [val]
+  val fullname = $UN.castvwtp1 {string} (fullname1)
+  val () = println! ("doit: fullname = ", fullname)
+  val () = case+ $UN.castvwtp1 {string} (basename) of
     | "." => ()
     | ".." => ()
-    | name when test_file_isdir (name) => let
-        val () = $S.chmod_exn (name, $T.mode_of_int (0755))
-        val dirname = sprintf ("%s/%s", @(dirname, name))
-        val () = myfind ($UN.castvwtp1 {string} (dirname))
-        val () = strptr_free (dirname)
+    | _ when test_file_isdir (fullname) => let
+        val () = $S.chmod_exn (fullname, $T.mode_of_int (0755))
+        val () = myfind (fullname)
       in
         // nothing
       end // end of [_ when ...]
-    | name when test_file_islnk (name) => ()
-    | name when test_file_isreg (name) => let
+    | _ when test_file_islnk (fullname) => ()
+    | _ when test_file_isreg (fullname) => let
         val m = (
-          if test_file_mode (name, isexec) then 0755 else 0644
+          if test_file_mode (fullname, isexec) then 0755 else 0644
         ) : int // end of [val]
       in
-        $S.chmod_exn (name, $T.mode_of_int (m))
+        ignore ($S.chmod_err (fullname, $T.mode_of_int (m)))
       end // end of [_ when ...]
     | _ => () // end of [_]
   // end of [val]
+  val () = strptr_free (fullname1)
 in
   // nothing
 end // end of [doit]
@@ -113,7 +123,13 @@ end // end of [doit]
 
 (* ****** ****** *)
 
-implement main () = myfind (".")
+implement
+main (argc, argv) = let
+  var dirname: string = "."
+  val () = if argc >= 2 then dirname := argv.[1]
+in
+  myfind (dirname)
+end // end of [main]
 
 (* ****** ****** *)
 

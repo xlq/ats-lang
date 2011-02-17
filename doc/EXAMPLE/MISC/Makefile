@@ -143,7 +143,7 @@ cleanall:: ; $(RMF) longestline
 #
 #
 checkall:: myfind
-myfind: myfind.dats ; $(ATSCC) -o $@ $< && ./$@ "."
+myfind: myfind.dats ; $(ATSCC) -o $@ $<
 cleanall:: ; $(RMF) myfind
 
 #
