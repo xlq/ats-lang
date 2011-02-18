@@ -43,8 +43,8 @@
 
 /* ****** ****** */
 
-#define atsctrb_linux_module_init module_init"
-#define atsctrb_linux_module_exit module_exit"
+#define atsctrb_linux_module_init module_init
+#define atsctrb_linux_module_exit module_exit
 
 /* ****** ****** */
 

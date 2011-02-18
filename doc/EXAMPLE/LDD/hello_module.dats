@@ -9,6 +9,10 @@
 //
 (* ****** ****** *)
 
+#define ATS_DYNLOADFLAG 0
+
+(* ****** ****** *)
+
 staload "linux/SATS/kernel.sats"
 
 (* ****** ****** *)
@@ -18,14 +22,21 @@ staload "linux/SATS/module.sats"
 
 (* ****** ****** *)
 
+staload "hello_module.sats"
+
+(* ****** ****** *)
+
 extern
 fun hello_init (): int = "hello_init"
 extern
 fun hello_exit (): void = "hello_exit"
+
+(*
 %{$
 module_init (hello_init) ;
 module_exit (hello_exit) ;
 %} // end [%{$]
+*)
 
 (* ****** ****** *)
 
@@ -36,6 +47,14 @@ end // end of [hello_init]
 implement hello_exit () = let
   val () = printk (KERN_ALERT "Goodbye, cruel world\n", @()) in ()
 end // end of [hello_exit]
+
+(* ****** ****** *)
+
+implement
+main () = () where {
+  val _ = hello_init ()
+  val () = hello_exit ()
+}
 
 (* ****** ****** *)
 

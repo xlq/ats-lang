@@ -36,7 +36,7 @@
 (* ****** ****** *)
 
 %{#
-#include "linux/cdev.cats"
+#include "linux/CATS/cdev.cats"
 %} // end of [%{#]
 
 (* ****** ****** *)

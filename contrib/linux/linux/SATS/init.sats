@@ -36,8 +36,12 @@
 (* ****** ****** *)
 
 %{#
-#include "linux/init.cats"
+#include "linux/CATS/init.cats"
 %} // end of [%{#]
+
+(* ****** ****** *)
+
+#define ATS_STALOADFLAG 0 // no need for staloading at run-time
 
 (* ****** ****** *)
 

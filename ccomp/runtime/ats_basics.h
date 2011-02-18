@@ -48,15 +48,31 @@
 #define ATSextern(ty, var) extern ty var
 #define ATSextern_prf(cst) /* proof constant */
 #define ATSextern_val(ty, val) extern ty val
+
 #define ATSstatic(ty, var) static ty var
 #define ATSstatic_void(var)
-#define ATSunused __attribute__ ((unused))
+
 #define ATSlocal(ty, var) ty ATSunused var
 #define ATSlocal_void(var)
+
 #define ATSglobal(ty, var) ty var
+
 #define ATScastfn(castfn, val) val
 
+/* ****** ****** */
+//
+// HX-2011-02-17:
+// if the following definition is problematic, please change it to:
+// #define ATSstrcst(x) x
+//
 #define ATSstrcst(x) ((ats_ptr_type)x) // HX-2011-02-17
+
+//
+// HX-2011-02-17:
+// if the following definition is not supporten, please change it to:
+// #define Atsunused
+//
+#define ATSunused __attribute__ ((unused))
 
 /* ****** ****** */
 
@@ -64,7 +80,6 @@
 #define ATSinline() static inline
 
 /* ****** ****** */
-
 //
 // HX-2010-05-24:
 // if TLS is not supported, then please compile with the flag -D_ATSTLS_NONE

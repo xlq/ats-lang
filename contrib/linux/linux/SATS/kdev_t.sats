@@ -40,7 +40,7 @@ staload "types.sats"
 (* ****** ****** *)
 
 %{#
-#include "linux/kdev_t.cats"
+#include "linux/CATS/kdev_t.cats"
 %} // end of [%{#]
 
 (* ****** ****** *)
