@@ -4,10 +4,6 @@
 
 ######
 
-ATSHOME=/tmp/ATS-0.2.4
-
-######
-
 ATSCC=$(ATSHOME)/bin/atscc
 ATSOPT=$(ATSHOME)/bin/atsopt
 

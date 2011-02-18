@@ -914,8 +914,7 @@ atsopt_emit_valprim_string (
 ) {
   char *s = str; int i; char c;
 //
-  fputs ("(ats_ptr_type)", (FILE*)out);
-  fputc ('"', (FILE*)out);
+  fputs ("ATSstrcst(\"", (FILE*)out);
 //
   for (i = 0; i < len; i += 1, s += 1) {
     c = *s;
@@ -933,7 +932,7 @@ atsopt_emit_valprim_string (
     } // end of [switch]
   } // end of [for]
 //
-  fputc ('"', (FILE*)out);
+  fputs ("\")", (FILE*)out);
 //
   return ;
 } // end of [atsopt_emit_valprim_string]

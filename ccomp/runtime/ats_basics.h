@@ -56,6 +56,8 @@
 #define ATSglobal(ty, var) ty var
 #define ATScastfn(castfn, val) val
 
+#define ATSstrcst(x) ((ats_ptr_type)x) // HX-2011-02-17
+
 /* ****** ****** */
 
 #define ATSextfun() extern

@@ -41,7 +41,7 @@ ats_void_type
   fputs ((char*)s, stdout) ; return ;
 }
 
-%}
+%} // end of [%{^]
 
 extern fun print_string (str: string): void = "print_string"
 
