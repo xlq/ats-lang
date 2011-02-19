@@ -39,7 +39,7 @@
 
 /* ****** ****** */
 
-#include <fs.h>
+#include <linux/fs.h>
 
 /* ****** ****** */
 

@@ -39,7 +39,7 @@
 
 /* ****** ****** */
 
-#include <module.h>
+#include <linux/module.h>
 
 /* ****** ****** */
 

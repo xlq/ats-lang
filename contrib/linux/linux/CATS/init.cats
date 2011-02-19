@@ -39,7 +39,7 @@
 
 /* ****** ****** */
 
-#include <init.h>
+#include <linux/init.h>
 
 /* ****** ****** */
 

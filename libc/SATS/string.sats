@@ -151,7 +151,7 @@ fun strpbrk {m,n:nat} {l:addr}
 //
 fun strdup_gc
   {n:nat} (str: !READ(string n))
-  :<> [l:addr] (free_gc_v (n+1, l), strbuf (n+1, n) @ l | ptr l)
+  :<> [l:addr] (freebyte_gc_v (n+1, l), strbuf (n+1, n) @ l | ptr l)
   = "atslib_strdup_gc"
 // end of [strdup_gc]
 

@@ -687,32 +687,26 @@ typedef ssizeBtw (lb:int, ub:int) = [i: int | lb <= i; i < ub] ssize_t i
 typedef ssizeBtwe (lb:int, ub:int) = [i: int | lb <= i; i <= ub] ssize_t i
 
 (* ****** ****** *)
-
-// for memory deallocation (with/without GC)
-
+//
+// HX: for memory deallocation (with/without GC)
+//
 absview free_gc_addr_view (l:addr)
-absview free_ngc_addr_view (l:addr)
 stadef free_gc_v = free_gc_addr_view
+absview free_ngc_addr_view (l:addr)
 stadef free_ngc_v = free_ngc_addr_view
 
-//
-
 absview free_gc_viewt0ype_addr_view (a:viewt@ype+, l:addr)
-absview free_ngc_viewt0ype_addr_view (a:viewt@ype+, l:addr)
 stadef free_gc_v = free_gc_viewt0ype_addr_view
+absview free_ngc_viewt0ype_addr_view (a:viewt@ype+, l:addr)
 stadef free_ngc_v = free_ngc_viewt0ype_addr_view
 
-//
-
 absview free_gc_viewt0ype_addr_int_view (a:viewt@ype+, n:int, l:addr)
-absview free_ngc_viewt0ype_addr_int_view (a:viewt@ype+, n:int, l: addr)
 stadef free_gc_v = free_gc_viewt0ype_addr_int_view
+absview free_ngc_viewt0ype_addr_int_view (a:viewt@ype+, n:int, l: addr)
 stadef free_ngc_v = free_ngc_viewt0ype_addr_int_view
 
-//
-
-viewdef free_gc_v (n:int, l:addr) = free_gc_v (byte, n, l)
-viewdef free_ngc_v (n:int, l:addr) = free_ngc_v (byte, n, l)
+viewdef freebyte_gc_v (n:int, l:addr) = free_gc_v (byte, n, l)
+viewdef freebyte_ngc_v (n:int, l:addr) = free_ngc_v (byte, n, l)
 
 (* ****** ****** *)
 //

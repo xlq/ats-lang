@@ -39,7 +39,7 @@
 
 /* ****** ****** */
 
-#include <semaphore.h>
+#include <linux/semaphore.h>
 
 /* ****** ****** */
 

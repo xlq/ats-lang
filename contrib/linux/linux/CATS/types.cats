@@ -39,7 +39,7 @@
 
 /* ****** ****** */
 
-#include <types.h>
+#include <linux/types.h>
 
 /* ****** ****** */
 

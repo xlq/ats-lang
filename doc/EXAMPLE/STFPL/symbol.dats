@@ -83,7 +83,7 @@ in
     prval () = fpf_x (x)  
   in
     sym
-  end // end of [None_vt]
+  end // end of [if]
 end // end of [symbol_make]
 
 implement symbol_get_name (x) = x.symbol_name

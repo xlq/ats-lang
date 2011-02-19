@@ -39,7 +39,7 @@
 
 /* ****** ****** */
 
-#include <cdev.h>
+#include <linux/cdev.h>
 
 /* ****** ****** */
 

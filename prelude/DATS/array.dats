@@ -284,6 +284,31 @@ end // end of [array_ptr_initialize_clo_tsz]
 (* ****** ****** *)
 
 implement
+array_ptr_clear_fun_tsz
+  {a} {v} {n} (pf | base, asz, f, tsz) = let
+  fun clear {n:nat} {l:addr} .<n>. (
+      pf: !v,
+      pf_arr: !array_v (a, n, l) >> array_v (a?, n, l)
+    | p_arr: ptr l, n: size_t n
+    , f: &(!v | &a >> a?) -<fun> void, tsz: sizeof_t a
+    ) :<> void =
+    if n > 0 then let
+      prval (pf1_at, pf2_arr) = array_v_uncons {a} (pf_arr)
+      val () = f (pf | !p_arr)
+      val () = clear (pf, pf2_arr | p_arr + tsz, n-1, f, tsz)
+    in
+      pf_arr := array_v_cons {a?} (pf1_at, pf2_arr)
+    end else let
+      prval () = array_v_unnil {a} (pf_arr)
+    in
+      pf_arr := array_v_nil {a?} ()
+    end // end of [if]
+  // end of [clear]
+in
+  clear (pf, view@ base | &base, asz, f, tsz)
+end // end of [array_ptr_clear_fun_tsz]
+
+implement
 array_ptr_clear_clo_tsz
   {a} {v} {n} (pf | base, asz, f, tsz) = let
   fun clear {n:nat} {l:addr} .<n>. (
@@ -527,7 +552,7 @@ in
   loop (pf, view@ base | &base, f, asz, tsz, env)
 end // end of [array_ptr_foreach_fun_tsz__main]
 
-//
+(* ****** ****** *)
 
 implement{a}
 array_ptr_foreach_fun (pf_v | A, f, asz) =
@@ -546,7 +571,7 @@ in
   // end of [array_ptr_foreach_...]
 end // end of [array_ptr_foreach_fun_tsz]
 
-//
+(* ****** ****** *)
 
 implement{a}
 array_ptr_foreach_clo (pf_v | A, f, asz) =
@@ -600,7 +625,7 @@ in
   loop (pf, view@ base | &base, f, asz, 0, tsz, env)
 end // end of [array_ptr_iforeach_fun_tsz__main]
 
-//
+(* ****** ****** *)
 
 implement{a}
 array_ptr_iforeach_fun (pf_v | A, f, asz) =
@@ -619,7 +644,7 @@ in
   array_ptr_iforeach_fun_tsz__main {a} {v} {ptr} (pf_v | A, f, asz, tsz, null)
 end // end of [array_ptr_foreach_fun_tsz]
 
-//
+(* ****** ****** *)
 
 implement{a}
 array_ptr_iforeach_clo (pf_v | A, f, asz) =
@@ -646,9 +671,9 @@ in
 end // end of [array_ptr_iforeach_clo_tsz]
 
 (* ****** ****** *)
-
-// various [foreach] functions on persistent arrays
-
+//
+// HX: various [foreach] functions on persistent arrays
+//
 (* ****** ****** *)
 
 implement{a}

@@ -26,6 +26,12 @@ staload "hello_module.sats"
 
 (* ****** ****** *)
 
+%{^
+MODULE_LICENSE("Dual BSD/GPL") ;
+%} // end of [%{^]
+
+(* ****** ****** *)
+
 extern
 fun hello_init (): int = "hello_init"
 extern

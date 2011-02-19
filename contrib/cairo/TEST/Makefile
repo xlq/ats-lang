@@ -41,48 +41,41 @@ cleanall:: clean
 checkall:: test1-1
 cleanall:: test1-1
 test1-1: cairo-test1-1.dats
-	$(ATSCC) -o test1-1 `pkg-config cairo --cflags --libs` \
-          cairo-test1-1.dats \
+	$(ATSCC) -o test1-1 $(XRFLAGS) cairo-test1-1.dats \
      && ./test1-1
 
 checkall:: test1-2
 cleanall:: test1-2
 test1-2: cairo-test1-2.dats
-	$(ATSCC) -o test1-2 `pkg-config gtk+-2.0 --cflags --libs` \
-          cairo-test1-2.dats \
+	$(ATSCC) -o test1-2 $(XRFLAGS) cairo-test1-2.dats \
      # && ./test1-2
 
 ######
 
 checkall:: test2
-cleanall:: test2
 test2: cairo-test2.dats
-	$(ATSCC) -o test2 $(XRFLAGS) cairo-test2.dats \
-     && ./test2
+	$(ATSCC) -o $@ $(XRFLAGS) $< && ./@
+cleanall:: test2
 
 checkall:: test3
-cleanall:: test3
 test3: cairo-test3.dats
-	$(ATSCC) -o test3 $(XRFLAGS) cairo-test3.dats -lm \
-     && ./test3
+	$(ATSCC) -o $@ $(XRFLAGS) $< -lm && ./@
+cleanall:: test3
 
 checkall:: test4
-cleanall:: test4
 test4: cairo-test4.dats
-	$(ATSCC) -o test4 $(XRFLAGS) cairo-test4.dats -lm \
-     && ./test4
+	$(ATSCC) -o $@ $(XRFLAGS) $< -lm && ./@
+cleanall:: test4
 
 checkall:: test5
-cleanall:: test5
 test5: cairo-test5.dats
-	$(ATSCC) -o test5 $(XRFLAGS) cairo-test5.dats -lm \
-     && ./test5
+	$(ATSCC) -o $@ $(XRFLAGS) $< -lm && ./@
+cleanall:: test5
 
 checkall:: test6
-cleanall:: test6
 test6: cairo-test6.dats
-	$(ATSCC) -o test6 $(XRFLAGS) cairo-test6.dats \
-     && ./test6
+	$(ATSCC) -o $@ $(XRFLAGS) $< && ./@
+cleanall:: test6
 
 ######
 

@@ -676,7 +676,7 @@ extern fun main_loop {fd:int} {l_buf:addr}
 extern fun strbuf_make_bytes
   {n:nat} {st,ln:nat | st + ln <= n}
   (buf: &bytes n, st: size_t st, ln: size_t ln)
-  :<> [l:addr] (free_gc_v (ln+1, l), strbuf (ln+1,ln) @ l | ptr l)
+  :<> [l:addr] (freebyte_gc_v (ln+1, l), strbuf (ln+1,ln) @ l | ptr l)
   = "atspre_string_make_substring"
 
 implement main_loop

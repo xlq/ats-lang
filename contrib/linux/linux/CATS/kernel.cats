@@ -39,7 +39,7 @@
 
 /* ****** ****** */
 
-#include <kernel.h>
+#include <linux/kernel.h>
 
 /* ****** ****** */
 

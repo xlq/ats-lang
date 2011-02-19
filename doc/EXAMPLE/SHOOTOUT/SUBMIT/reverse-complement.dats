@@ -15,7 +15,9 @@ extern fun iub_comp_build (): void = "iub_comp_build"
 
 viewdef bytes_v (n:int,l:addr) = bytes n @ l
 
-(* [reverse buf] reverse-complement the string [buf] in place. *)
+(*
+** [reverse buf] reverse-complement the string [buf] in place.
+*)
 fn reverse_buf {pos,bsz:nat | pos <= bsz} {l_buf:addr} 
   (pf: !bytes_v (bsz, l_buf) | buf: ptr l_buf, pos: int pos)
   : void = let
@@ -86,11 +88,14 @@ extern fun fread_buf_line
 
 implement main (argc, argv) = let
 
-fun loop {pos,bsz:nat | bsz > 0} {l_buf:addr} (
-    pf_gc: free_gc_v (bsz, l_buf)
-  , pf_buf: bytes_v (bsz, l_buf)
-  | inp: &FILE r, buf: ptr l_buf, bsz: int bsz, pos: int pos
-  ) : void = begin
+fun loop
+  {pos:nat}
+  {bsz:int | bsz > 0}
+  {l_buf:addr} (
+  pf_gc: freebyte_gc_v (bsz, l_buf)
+, pf_buf: bytes_v (bsz, l_buf)
+| inp: &FILE r, buf: ptr l_buf, bsz: int bsz, pos: int pos
+) : void = begin
   if pos + LINE <= bsz then let
     val pos_new = fread_buf_line (pf_buf | buf, pos, LINE, inp)
   in

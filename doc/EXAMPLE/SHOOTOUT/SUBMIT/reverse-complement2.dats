@@ -123,13 +123,16 @@ end (* end of [fread_buf_line] *)
 
 (* ****** ****** *)
 
-implement main (argc, argv) = let
-
+implement
+main (argc, argv) = let
+//
 macdef GT = byte_of_char '>' 
-fun loop {pos,bsz:nat | bsz > 0} {l_buf:addr} (
-    pf_gc: free_gc_v (bsz, l_buf), pf_buf: bytes (bsz) @ l_buf
-  | inp: &FILE r, p_buf: ptr l_buf, bsz: size_t bsz, pos: size_t pos
-  ) : void = begin
+//
+fun loop {pos:nat}
+  {bsz:int | bsz > 0} {l_buf:addr} (
+  pf_gc: freebyte_gc_v (bsz, l_buf), pf_buf: bytes (bsz) @ l_buf
+| inp: &FILE r, p_buf: ptr l_buf, bsz: size_t bsz, pos: size_t pos
+) : void = begin
   if pos + LINE <= bsz then let
     val pos_new = fread_buf_line (pf_buf | p_buf, pos, LINE, inp)
   in
@@ -167,7 +170,8 @@ end (* end of [loop] *)
 
 val () = iubcmpltarr_initialize () where {
   extern fun iubcmpltarr_initialize (): void = "iubcmpltarr_initialize"
-}
+} // end of [val]
+
 val (pf_gc, pf_buf | p_buf) = malloc_gc (BUFSZ)
 prval pf_buf = bytes_v_of_b0ytes_v pf_buf
 val (pf_stdin | p_stdin) = stdin_get ()
@@ -199,7 +203,7 @@ static unsigned char iubpairs[][2] = {
 #define BYTE_MAX 255
 static unsigned char iubcmpltarr[1+BYTE_MAX];
 
-static inline
+ATSinline()
 ats_void_type iubcmpltarr_initialize () {
   int i;
   for (i=0; i <= BYTE_MAX; i++) {
@@ -216,17 +220,19 @@ ats_void_type iubcmpltarr_initialize () {
 // locked/unlocked: does it really matter?
 
 ats_void_type
-fasta_fputc (ats_char_type c, ats_ptr_type out) {
+fasta_fputc (
+  ats_char_type c, ats_ptr_type out
+) {
   fputc_unlocked ((char)c, (FILE*)out) ; return ;
-}
+} // end of [fasta_fputc]
 
 ats_size_type
 fasta_fwrite_byte
   (ats_ptr_type buf, ats_size_type n, ats_ptr_type fil) {
   return fwrite_unlocked ((void*)buf, (size_t)1, (size_t)n, (FILE*)fil) ;
-}
+} // end of [fasta_fwrite_byte]
 
-%}
+%} // end of [%{^]
 
 (* ****** ****** *)
 

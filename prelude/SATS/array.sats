@@ -257,6 +257,18 @@ fun array_ptr_initialize_clo_tsz
 (*
 // implemented in ATS (prelude/DATS/array.dats)
 *)
+fun array_ptr_clear_fun_tsz
+  {a:viewt@ype} {v:view} {n:nat} (
+  pf: !v
+| base: &(@[a][n]) >> @[a?][n]
+, asz: size_t n
+, f: &(!v | &a >> a?) -<fun> void
+, tsz: sizeof_t (a)
+) :<> void // end of [array_ptr_clear_fun_tsz]
+
+(*
+// implemented in ATS (prelude/DATS/array.dats)
+*)
 fun array_ptr_clear_clo_tsz
   {a:viewt@ype} {v:view} {n:nat} (
   pf: !v
@@ -452,6 +464,8 @@ fun array_ptr_foreach_fun_tsz__main
 , f: (!v | &a, !vt) -<> void, asz: size_t n, tsz: sizeof_t a
 , env: !vt
 ) :<> void // end of [array_ptr_foreach_fun_tsz__main]
+
+(* ****** ****** *)
 
 fun{a:viewt@ype}
 array_ptr_foreach_fun {v:view} {n:nat} (

@@ -34,15 +34,20 @@
 //
 /* ****** ****** */
 
-#ifndef ATSCTRB_LINUX_KDEV_T_CATS
-#define ATSCTRB_LINUX_KDEV_T_CATS
+#ifndef ATSCTRB_LINUX_SLAB_CATS
+#define ATSCTRB_LINUX_SLAB_CATS
 
 /* ****** ****** */
 
-#include <linux/kdev_t.h>
+#include <linux/slab.h>
 
 /* ****** ****** */
 
-#endif /* ATSCTRB_LINUX_KDEV_T_CATS */
+#define atsctrb_linux_kmalloc kmalloc
+#define atsctrb_linux_kfree kfree
 
-/* end of [kdev_t.cats] */
+/* ****** ****** */
+
+#endif /* ATSCTRB_LINUX_SLAB_CATS */
+
+/* end of [slab.cats] */

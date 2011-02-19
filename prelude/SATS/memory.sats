@@ -109,26 +109,26 @@ fun gc_chunk_count_limit_max_set (n: int): void
 
 fun malloc_gc
   {n:nat} (n: size_t n)
-  :<> [l:agz] (free_gc_v (n, l), b0ytes n @ l | ptr l)
+  :<> [l:agz] (freebyte_gc_v (n, l), b0ytes n @ l | ptr l)
   = "ats_malloc_gc"
 // end of [malloc_gc]
 
 fun calloc_gc
   {a:viewt@ype} {n:nat}
   (n: size_t n, tsz: sizeof_t a)
-  :<> [l:agz] (free_gc_v (n, l), @[a?][n] @ l | ptr l)
+  :<> [l:agz] (freebyte_gc_v (n, l), @[a?][n] @ l | ptr l)
   = "ats_calloc_gc"
 // end of [calloc_gc]
 
 fun free_gc {n:nat} {l:addr}
-  (_: free_gc_v (n, l), _: b0ytes n @ l | p: ptr l):<> void
+  (_: freebyte_gc_v (n, l), _: b0ytes n @ l | p: ptr l):<> void
   = "ats_free_gc"
 // end of [free_gc]
 
 fun realloc_gc
   {n0,n:nat} {l0:addr} (
-    _: free_gc_v (n0, l0), _: b0ytes n0 @ l0 | _: ptr l0, _: size_t n
-  ) :<> [l:agz] (free_gc_v (n, l), b0ytes n @ l | ptr l)
+  pfgc: freebyte_gc_v (n0, l0), pfarr: b0ytes n0 @ l0 | _: ptr l0, _: size_t n
+) :<> [l:agz] (freebyte_gc_v (n, l), b0ytes n @ l | ptr l)
   = "ats_realloc_gc"
 // end of [realloc_gc]
 
@@ -137,7 +137,7 @@ fun realloc_gc
 dataview
 malloc_v (n:int, addr) =
   | {l:agz}
-    malloc_v_succ (n, l) of (free_ngc_v (n, l), b0ytes n @ l)
+    malloc_v_succ (n, l) of (freebyte_ngc_v (n, l), b0ytes n @ l)
   | malloc_v_fail (n, null) of ()
 // end of [malloc_v]
 fun malloc_ngc {n:nat}
@@ -147,7 +147,7 @@ fun malloc_ngc {n:nat}
 dataview
 calloc_v (a:viewt@ype, n:int, addr) =
   | {l:agz}
-    calloc_v_succ (a, n, l) of (free_ngc_v (n, l), @[a?][n] @ l)
+    calloc_v_succ (a, n, l) of (freebyte_ngc_v (n, l), @[a?][n] @ l)
   | calloc_v_fail (a, n, null) of ()
 fun calloc_ngc
   {a:viewt@ype} {n:nat}
@@ -155,24 +155,24 @@ fun calloc_ngc
   :<> [l:addr] (calloc_v (a, n, l) | ptr l) = "ats_calloc_ngc"
 // end of [calloc_ngc]
 
-fun free_ngc {n:nat} {l:addr}
-  (_: free_ngc_v (n, l), _: b0ytes n @ l | p: ptr l):<> void= "ats_free_ngc"
-// end of [free_ngc]
+fun free_ngc {n:nat} {l:addr} (
+  _: freebyte_ngc_v (n, l), _: b0ytes n @ l | p: ptr l
+) :<> void= "ats_free_ngc" // end of [free_ngc]
 
 dataview
 realloc_v (
 n0:int, n:int(*new*), addr, addr
 ) =
   | {l0,l:agz}
-    realloc_v_succ (n0, n, l0, l) of (free_ngc_v (n, l), b0ytes n @ l)
+    realloc_v_succ (n0, n, l0, l) of (freebyte_ngc_v (n, l), b0ytes n @ l)
   | {l0:agz}
-    realloc_v_fail (n0, n, l0, null) of (free_ngc_v (n0, l0), b0ytes n0 @ l0)
+    realloc_v_fail (n0, n, l0, null) of (freebyte_ngc_v (n0, l0), b0ytes n0 @ l0)
 fun realloc_ngc
   {n0,n:nat} {l0:addr} (
-    _: free_ngc_v (n0, l0), _: b0ytes n0 @ l0
-  | _: ptr l0, _: size_t n
-  ) :<> [l:addr] (realloc_v (n0, n, l0, l) | ptr l) = "ats_realloc_ngc"
-// en  dof [realloc_ngc]
+  pfgc: freebyte_ngc_v (n0, l0), pfarr: b0ytes n0 @ l0
+| _: ptr l0, _: size_t n
+) :<> [l:addr] (realloc_v (n0, n, l0, l) | ptr l) = "ats_realloc_ngc"
+// end of [realloc_ngc]
 
 (* ****** ****** *)
 

@@ -18,6 +18,13 @@ IATSFLAGS=-IATS $(ATSHOME)/contrib/linux
 
 ######
 
+depend:: ; $(ATSOPT) -o .depend -dep1 -s hello_module.sats
+depend:: ; $(ATSOPT) -o .depend -dep1 -d hello_module.dats
+
+include .depend
+
+######
+
 RMF=rm -f
 
 ######

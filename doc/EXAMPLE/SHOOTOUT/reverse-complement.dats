@@ -24,7 +24,7 @@ staload "libc/SATS/stdio.sats"
 
 %{^
 
-static inline
+ATSinline()
 ats_void_type fasta_fputc
   (ats_char_type c, ats_ptr_type out) {
   fputc ((char)c, (FILE*)out) ; return ;
@@ -97,15 +97,18 @@ extern fun fread_buf_line
 #define c2b byte_of_char
 
 implement main (argc, argv) = let
-
-fun loop {pos,bsz:nat | bsz > 0} {l_buf:addr} (
-    pf_gc: free_gc_v (bsz, l_buf)
-  , pf_buf: bytes bsz @ l_buf
-  | inp: &FILE r
-  , p_buf: ptr l_buf
-  , bsz: int bsz
-  , pos: int pos
-  ) : void = begin
+//
+fun loop
+  {pos:nat}
+  {bsz:int | bsz > 0}
+  {l_buf:addr} (
+  pf_gc: freebyte_gc_v (bsz, l_buf)
+, pf_buf: bytes bsz @ l_buf
+| inp: &FILE r
+, p_buf: ptr l_buf
+, bsz: int bsz
+, pos: int pos
+) : void = begin
   if pos + LINE <= bsz then let
     val pos_new = fread_buf_line (!p_buf, pos, LINE, inp)
   in
@@ -145,15 +148,17 @@ fun loop {pos,bsz:nat | bsz > 0} {l_buf:addr} (
     loop (pf_gc, pf_buf | inp, p_buf, bsz, pos)
   end // end of [if]
 end // end of [loop]
-
+//
 val () = buildIubComplement ()
 val (pf_stdin | stdin) = stdin_get ()
 val (pf_gc, pf_buf | buf) = malloc_gc (BUFSZ)
 prval () = pf_buf := bytes_v_of_b0ytes_v (pf_buf)
-
+//
+val () = loop (pf_gc, pf_buf | !stdin, buf, BUFSZ, 0)
+val () = stdin_view_set (pf_stdin | (*none*))
+//
 in
-  loop (pf_gc, pf_buf | !stdin, buf, BUFSZ, 0);
-  stdin_view_set (pf_stdin | (*none*))
+  // nothing
 end // end of [main]
 
 //
@@ -176,7 +181,7 @@ static unsigned char iubpairs[][2] = {
 static unsigned char iubComplement[1+UCHAR_MAX];
 
 // I got a bit lazy; I copied code from the following C program
-static inline
+ATSinline()
 ats_void_type
 buildIubComplement () {
   int i;
@@ -187,13 +192,11 @@ buildIubComplement () {
     iubComplement[tolower (iubpairs[i][0])] = iubpairs[i][1];
     iubComplement[tolower (iubpairs[i][1])] = iubpairs[i][0];
   }
-}
+} // end of [buildIubComplement]
 
-static inline
+ATSinline()
 ats_byte_type
 complement (ats_byte_type b) { return iubComplement[b] ; }
-
-//
 
 ats_int_type
 fread_buf_line
@@ -216,12 +219,12 @@ fread_buf_line
     return src[n-1] == '\n' ? (pos+n-1) : (pos+n) ;
   }
   return pos ;
-}
+} // end of [fread_buf_line]
 
 ats_void_type
-fwrite_buf 
-  (ats_ptr_type buf, ats_int_type pos, ats_int_type len, ats_ptr_type file)
-{
+fwrite_buf (
+  ats_ptr_type buf, ats_int_type pos, ats_int_type len, ats_ptr_type file
+) {
   int n;
   char *src ;
   src = (char *)buf + pos ;
@@ -230,9 +233,9 @@ fwrite_buf
     ats_exit_errmsg (errno, "Exit: [fwrite_buf] failed.\n") ;
   }
   return ;
-}  
+} // end of [fwrite_buf]
 
-%}
+%} // end of [%{^]
 
 ////
 

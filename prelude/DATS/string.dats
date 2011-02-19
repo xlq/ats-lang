@@ -38,8 +38,9 @@
 #define ATS_DYNLOADFLAG 0 // loaded by [main_prelude]
 
 (* ****** ****** *)
-
-// declared in [prelude/SATS/string.sats]
+//
+// HX: declared in [prelude/SATS/string.sats]
+//
 implement strbuf_vsubr_lemma0 () = vsubr_refl ()
 
 (* ****** ****** *)
@@ -94,31 +95,33 @@ implement prerr_strbuf (buf) = fprint0_strbuf (stderr_ref, buf)
 (* ****** ****** *)
 
 %{^
-static inline
+ATSinline()
 ats_ptr_type
-_string_alloc (const ats_size_type n) {
+atspre_string_string_alloc
+  (ats_size_type n) {
   char *p ;
   p = ATS_MALLOC(n+1); p[n] = '\000'; return p ;
-} // end of [_string_alloc]
+} // end of [atspre_string_string_alloc]
 %} // end of [%{^]
 
 (* ****** ****** *)
-
+//
 // implement string_empty = "" // this requires dynamic loading
-
+//
 (* ****** ****** *)
 
+#define NUL '\000'
 #define i2sz size1_of_int1 
 
 (* ****** ****** *)
 
-#define NUL '\000'
-
-implement string_make_list_int (cs, n) = let
-  val (pf_gc, pf_sb | p_sb) = _string_alloc (i2sz n) where {
-    extern fun _string_alloc {n:nat} (n: size_t n)
-      :<> [l:addr] (free_gc_v (n+1, l), strbuf (n+1, n) @ l | ptr l)
-      = "_string_alloc"
+implement
+string_make_list_int (cs, n) = let
+  val (pf_gc, pf_sb | p_sb) =
+    string_alloc (i2sz n) where {
+    extern fun string_alloc {n:nat} (n: size_t n)
+      :<> [l:addr] (freebyte_gc_v (n+1, l), strbuf (n+1, n) @ l | ptr l)
+      = "atspre_string_string_alloc"
   } // end of [val]
   val () = loop (!p_sb, n, 0, cs) where {
     fun loop {m,n:nat} {i,j:nat | i + j == n} .<n-i>.
@@ -141,11 +144,13 @@ in
   #[.. | (pf_gc, pf_sb | p_sb)]
 end // end of [string_make_list_int]
 
-implement string_make_list_rev_int (cs, n) = let
-  val (pf_gc, pf_sb | p_sb) = _string_alloc (i2sz n) where {
-    extern fun _string_alloc {n:nat} (n: size_t n)
-      :<> [l:addr] (free_gc_v (n+1, l), strbuf (n+1, n) @ l | ptr l)
-      = "_string_alloc"
+implement
+string_make_list_rev_int (cs, n) = let
+  val (pf_gc, pf_sb | p_sb) =
+    string_alloc (i2sz n) where {
+    extern fun string_alloc {n:nat} (n: size_t n)
+      :<> [l:addr] (freebyte_gc_v (n+1, l), strbuf (n+1, n) @ l | ptr l)
+      = "atspre_string_string_alloc"
   } // end of [val]
   val () = loop (!p_sb, n-1, 0, cs) where {
     fun loop {m,n:nat} {i,j:nat | i + j == n} .<n-i>.
@@ -198,10 +203,12 @@ stringlst_concat (ss) = let
       end // end of [list_cons]
     | list_nil () => () // loop exists
   end (* end of [loop2] *)
-  val [l:addr] (pf_gc, pf_sb | p_sb) = _string_alloc n0 where {
-    extern fun _string_alloc {n:nat} (n: size_t n)
-      :<> [l:addr] (free_gc_v (n+1, l), strbuf (n+1, n) @ l | ptr l)
-      = "_string_alloc"
+  val [l:addr] (
+    pf_gc, pf_sb | p_sb
+  ) = string_alloc (n0) where {
+    extern fun string_alloc {n:nat} (n: size_t n)
+      :<> [l:addr] (freebyte_gc_v (n+1, l), strbuf (n+1, n) @ l | ptr l)
+      = "atspre_string_string_alloc"
   } // end of [val]
   val () = loop2 (!p_sb, n0, 0, ss)
 in
@@ -210,7 +217,8 @@ end // end of [stringlst_concat]
 
 (* ****** ****** *)
 
-implement string_explode (s) = let
+implement
+string_explode (s) = let
   fun loop {n,i:int | 0 <= i; i <= n} .<i+1>. (
       s: string n, i: size_t i, cs: list_vt (char, n-i)
     ) :<> list_vt (char, n) =
@@ -226,7 +234,8 @@ in
   loop (s, n, list_vt_nil ())
 end // end of [string1_explode]
 
-implement string_implode (cs) =
+implement
+string_implode (cs) =
   string_make_list_int (cs, loop (cs, 0)) where {
   fun loop {i,j:nat} .<i>.
     (cs: list (char, i), j: int j):<> int (i+j) = case+ cs of
@@ -236,7 +245,8 @@ implement string_implode (cs) =
 
 (* ****** ****** *)
 
-implement string_foreach__main {v} {vt} {n} {f:eff}
+implement
+string_foreach__main {v} {vt} {n} {f:eff}
   (pf | buf, f, env) =  loop (pf | buf, f, env, 0) where {
   fun loop {i:nat | i <= n} .<n-i>. (
       pf: !v
@@ -250,8 +260,9 @@ implement string_foreach__main {v} {vt} {n} {f:eff}
 
 local
 
-fn string_make_fun {n:nat}
-  (s: string n, f: c1har -<> c1har):<> [l:addr] strbufptr_gc (n+1, n, l) = let
+fn string_make_fun {n:nat} (
+  s: string n, f: c1har -<> c1har
+) :<> [l:addr] strbufptr_gc (n+1, n, l) = let
   val n = string1_length (s)
   val [l:addr] (pf_gc, pf_buf | p_buf) = malloc_gc (n+1)
   val () = loop (pf_buf | p_buf, 0) where {

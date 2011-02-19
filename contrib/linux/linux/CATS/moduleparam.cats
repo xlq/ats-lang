@@ -39,7 +39,7 @@
 
 /* ****** ****** */
 
-#include <moduleparam.h>
+#include <linux/moduleparam.h>
 
 /* ****** ****** */
 
