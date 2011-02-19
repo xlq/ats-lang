@@ -52,7 +52,7 @@
 
 (* ****** ****** *)
 
-staload "libats/SATS/slseg.sats"
+staload "libats/SATS/slist.sats"
 staload "libats/SATS/linqueue_lst.sats"
 
 (* ****** ****** *)
@@ -171,7 +171,7 @@ in
     prval () = p2->1 := null
     prval pf_sl_new = slseg_v_extend {a} (pf_sl, pf_gc, pf_at)
   in
-    list_vt_of_sllst (pf_sl_new | p1)
+    list_vt_of_slist (pf_sl_new | p1)
   end else let
     prval () = slseg1_v_decode0 (q.pf)
     prval () = __assert (q)

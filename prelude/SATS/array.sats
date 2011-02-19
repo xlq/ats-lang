@@ -262,7 +262,7 @@ fun array_ptr_clear_fun_tsz
   pf: !v
 | base: &(@[a][n]) >> @[a?][n]
 , asz: size_t n
-, f: &(!v | &a >> a?) -<fun> void
+, f: (!v | &a >> a?) -<fun> void
 , tsz: sizeof_t (a)
 ) :<> void // end of [array_ptr_clear_fun_tsz]
 

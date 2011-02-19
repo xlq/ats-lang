@@ -46,7 +46,7 @@ abst@ype SDL_EventType = $extype"SDL_EventType"
 typedef SDL_Event =
   $extype_struct "SDL_Event" of {
   type= SDL_EventType
-, _rest= undefined // this field cannot be accessed
+, _rest= undefined_t // this field cannot be accessed
 } // end of [SDL_Event]
 
 propdef SDL_Event_castdn_t (a:t@ype) = {l:addr}

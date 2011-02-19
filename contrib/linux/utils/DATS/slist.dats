@@ -9,7 +9,7 @@
 (*
 ** ATS - Unleashing the Potential of Types!
 **
-** Copyright (C) 2002-2008 Hongwei Xi, Boston University
+** Copyright (C) 2002-2011 Hongwei Xi, Boston University
 **
 ** All rights reserved
 **
@@ -48,11 +48,11 @@ implement{a}
 slist_foreach_clo 
   (pf | xs, f) =
   if slist_isnot_nil (xs) then let
-    val (pfat | xs1) = slist_uncons (xs)
     val p = ptr_of {a} (xs)
+    val (pfat | xs1) = slseg_uncons (xs)
     val () = f (pf | !p)
     val () = slist_foreach_clo (pf | xs1, f)
-    prval () = slist_fold {a} (pfat | xs, xs1)
+    prval () = slseg_fold {a} (pfat | xs, xs1)
   in
     // nothing
   end else ()

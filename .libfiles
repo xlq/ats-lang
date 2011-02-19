@@ -325,8 +325,8 @@ libats/DATS/regexp.dats
 #endif
 
 /* singly-linked list implementation */
-libats/SATS/slseg.sats
-libats/DATS/slseg.dats
+libats/SATS/slist.sats
+libats/DATS/slist.dats
 
 /* dynamically resizable array implementation */
 libats/SATS/vector.sats

@@ -75,7 +75,7 @@ viewtypedef SDL_PixelFormat =
 , Rmask= Uint32, Gmask= Uint32, Bmask= Uint32, Amask= Uint32
 , colorkey= Uint32
 , alpha= Uint8
-, rest= undefined // fields that are not exported
+, rest= undefined_t // fields that are not exported
 } // end of [SDL_PixelFormat]
 
 (* ****** ****** *)

@@ -161,6 +161,7 @@ abst@ype empty_t0ype = $extype"ats_empty_type" // sizeof(empty) = 0
 // HX-2011-02-11: [ats_undefined_type] is undefined
 //
 abst@ype undefined_t0ype = $extype"ats_undefined_type"
+abst@ype undefined_viewt0ype = $extype"ats_undefined_type"
 //
 (* ****** ****** *)
 //
@@ -633,7 +634,8 @@ stadef strptrlen = strptr_addr_int_viewtype // for linear strings with length
 
 stadef void = void_t0ype // sizeof(void) = 1
 stadef empty = empty_t0ype // sizeof(empty) = 0
-stadef undefined= undefined_t0ype // sizeof(undefined) = ?
+stadef undefined_t= undefined_t0ype // sizeof(undefined) = ?
+stadef undefined_vt= undefined_viewt0ype // sizeof(undefined_vt) = ?
 
 (* ****** ****** *)
 

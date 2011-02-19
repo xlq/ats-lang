@@ -54,7 +54,7 @@ dataview slseg_v
   | {l:addr} slseg_v_nil (a, l, l, 0)
 // end of [slseg_v]
 
-viewdef sllst_v (a: viewt@ype, l:addr, n:int) = slseg_v (a, l, null, n)
+viewdef slist_v (a: viewt@ype, l:addr, n:int) = slseg_v (a, l, null, n)
   
 (* ****** ****** *)
 
@@ -105,18 +105,18 @@ slseg_foreach_clo
 
 (* ****** ****** *)
 //
-// HX: [sllst] and [list_vt] are really the same!
+// HX: [slist] and [list_vt] are really the same!
 //
-castfn list_vt_of_sllst
+castfn list_vt_of_slist
 {a:viewt@ype} {n:nat} {l:addr}
-  (pf: sllst_v (a, l, n) | p: ptr l):<> list_vt (a, n)
-// end of [list_vt_of_sllst]
+  (pf: slist_v (a, l, n) | p: ptr l):<> list_vt (a, n)
+// end of [list_vt_of_slist]
 
-castfn sllst_of_list_vt
+castfn slist_of_list_vt
 {a:viewt@ype} {n:nat} {l:addr}
-  (xs: list_vt (a, n)):<> [l:addr] (sllst_v (a, l, n) | ptr l)
-// end of [sllst_of_list_vt]
+  (xs: list_vt (a, n)):<> [l:addr] (slist_v (a, l, n) | ptr l)
+// end of [slist_of_list_vt]
 
 (* ****** ****** *)
 
-(* end of [slseg.sats] *)
+(* end of [slist.sats] *)

@@ -38,11 +38,12 @@
 
 absview kfree_addr_view (l:addr)
 stadef kfree_v = kfree_addr_view
+
 absview kfree_viewt0ype_addr_view  (a:viewt@ype+, l:addr)
 stadef kfree_v = kfree_viewt0ype_addr_view
+
 absview kfree_viewt0ype_int_addr_view  (a:viewt@ype+, n:int, l:addr)
 stadef kfree_v = kfree_viewt0ype_int_addr_view
-
 viewdef kfreebyte_v (n:int, l:addr) = kfree_v (byte, n, l)
 
 (* ****** ****** *)

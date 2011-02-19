@@ -78,8 +78,8 @@ array_ptr_xch_elt_at__intsz {n:int}
 (* ****** ****** *)
 
 fun{a:viewt@ype}
-array_ptr_kalloc {n:nat} (asz: size_t n)
-  :<> [l:agz] (kfree_v (a, n, l), array_v (a?, n, l) | ptr l)
+array_ptr_kalloc {n:nat}
+  (asz: size_t n):<> [l:agz] (kfree_v (a, n, l), array_v (a?, n, l) | ptr l)
 // end of [array_ptr_kalloc]
 
 (*
@@ -99,7 +99,7 @@ fun array_ptr_kalloc_tsz
 *)
 fun array_ptr_kfree
   {a:viewt@ype} {n:int} {l:addr} (
-  pf_gc: free_gc_v (a, n, l), pf_arr: array_v (a?, n, l) | p_arr: ptr l
+  pf_gc: kfree_v (a, n, l), pf_arr: array_v (a?, n, l) | p_arr: ptr l
 ) :<> void = "atsctrb_linux_array_ptr_kfree"
 
 (* ****** ****** *)
@@ -137,8 +137,7 @@ array_ptr_clear_fun
   pf: !v
 | base: &(@[a][n]) >> @[a?][n]
 , asz: size_t n
-, f: &(!v | &a >> a?) -<fun> void
-, tsz: sizeof_t (a)
+, f: (!v | &a >> a?) -<fun> void
 ) :<> void // end of [array_ptr_clear_fun]
 
 fun{a:viewt@ype}
@@ -148,7 +147,6 @@ array_ptr_clear_clo
 | base: &(@[a][n]) >> @[a?][n]
 , asz: size_t n
 , f: &(!v | &a >> a?) -<clo> void
-, tsz: sizeof_t (a)
 ) :<> void // end of [array_ptr_clear_clo]
 
 (* ****** ****** *)
