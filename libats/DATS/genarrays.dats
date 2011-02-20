@@ -174,7 +174,7 @@ end // end of [GEVEC_ptr_copy]
 (* ****** ****** *)
 
 implement
-GEVEC_ptr_foreach_fun_tsz__main
+GEVEC_ptr_foreach_funenv_tsz
   {a} {v} {vt} {n} {d}
   (pf | base, f, vsz, inc, tsz, env) = let
   val (pf_mul | ofs) = mul2_size1_size1 (inc, tsz)
@@ -194,18 +194,24 @@ GEVEC_ptr_foreach_fun_tsz__main
   (* end of [loop] *)
 in
   loop (pf, view@ base | &base, vsz, env)
-end // end of [GEVEC_ptr_foreach_fun_tsz__main]
+end // end of [GEVEC_ptr_foreach_funenv_tsz]
 
 //
 
 implement{a}
 GEVEC_ptr_foreach_fun
-  {v} (pf | base, f, n, inc) = let
+  {v} (base, f, n, inc) = let
   val f = coerce (f) where { extern castfn
-    coerce (f: (!v | &a) -<> void) :<> (!v | &a, !ptr) -<> void
+    coerce (f: (&a) -<> void) :<> (!unit_v | &a, !ptr) -<> void
   } // end of [where]
+//
+  prval pfu = unit_v ()
+  val () = GEVEC_ptr_foreach_funenv_tsz
+    {a} {unit_v} {ptr} (pfu | base, f, n, inc, sizeof<a>, null)
+  prval unit_v () = pfu
+//
 in
-  GEVEC_ptr_foreach_fun_tsz__main {a} {v} {ptr} (pf | base, f, n, inc, sizeof<a>, null)
+  // nothing
 end // end of [GEVEC_ptr_foreach_fun_tsz]
 
 //
@@ -221,7 +227,7 @@ GEVEC_ptr_foreach_clo
     prval (pf1, pf2) = pf in !p_f (pf1 | x); pf := @(pf1, pf2)
   end // end of [app]
   prval pf = (pf_v, view@ f)
-  val () = GEVEC_ptr_foreach_fun_tsz__main
+  val () = GEVEC_ptr_foreach_funenv_tsz
     {a} {V} {ptr l_f} (pf | base, app, vsz, inc, sizeof<a>, p_f)
   prval (pf1, pf2) = pf
   prval () = (pf_v := pf1; view@ f := pf2)
@@ -232,7 +238,7 @@ end // end of [GEVEC_ptr_foreach_clo]
 (* ****** ****** *)
 
 implement
-GEVEC_ptr_iforeach_fun_tsz__main
+GEVEC_ptr_iforeach_funenv_tsz
   {a} {v} {vt} {n} {d}
   (pf | base, f, vsz, inc, tsz, env) = let
   val (pf_mul | ofs) = mul2_size1_size1 (inc, tsz)
@@ -253,26 +259,31 @@ GEVEC_ptr_iforeach_fun_tsz__main
   (* end of [loop] *)
 in
   loop (pf, view@ base | &base, vsz, env)
-end // end of [GEVEC_ptr_iforeach_fun_tsz__main]
-
-//
+end // end of [GEVEC_ptr_iforeach_funenv_tsz]
 
 implement{a}
 GEVEC_ptr_iforeach_fun
-  {v} {n} (pf | base, f, n, inc) = let
+  {n} (base, f, n, inc) = let
+//
   val f = coerce (f) where {
     extern castfn coerce
-      (f: (!v | sizeLt n, &a) -<> void)
-      :<> (!v | sizeLt n, &a, !ptr) -<> void
+      (f: (sizeLt n, &a) -<> void)
+      :<> (!unit_v | sizeLt n, &a, !ptr) -<> void
   } // end of [where]
+//
+  prval pfu = unit_v ()
+  val () = GEVEC_ptr_iforeach_funenv_tsz
+    {a} {unit_v} {ptr} (pfu | base, f, n, inc, sizeof<a>, null)
+  prval unit_v () = pfu
+//
 in
-  GEVEC_ptr_iforeach_fun_tsz__main {a} {v} {ptr} (pf | base, f, n, inc, sizeof<a>, null)
+  // nothing
 end // end of [GEVEC_ptr_iforeach_fun_tsz]
 
 (* ****** ****** *)
 
 implement
-GEVEC_ptr_iforeach_clo_tsz__main
+GEVEC_ptr_iforeach_cloenv_tsz
   {a} {v} {vt} {n} {d}
   (pf | base, f, vsz, inc, tsz, env) = let
   val (pf_mul | ofs) = mul2_size1_size1 (inc, tsz)
@@ -295,7 +306,7 @@ GEVEC_ptr_iforeach_clo_tsz__main
   (* end of [loop] *)
 in
   loop (pf, view@ base | &base, f, vsz, env)
-end // end of [GEVEC_ptr_iforeach_clo_tsz__main]
+end // end of [GEVEC_ptr_iforeach_cloenv_tsz]
 
 //
 
@@ -309,7 +320,8 @@ GEVEC_ptr_iforeach_clo
   prval () = view@ f := coerce (view@ f) where {
     extern prfun coerce (pf_clo: clo_t @ l_f): clo1_t @ l_f
   } // end of [where]
-  val () = GEVEC_ptr_iforeach_clo_tsz__main {a} {v} {ptr} (pf | base, f, n, inc, sizeof<a>, null)
+  val () = GEVEC_ptr_iforeach_cloenv_tsz
+    {a} {v} {ptr} (pf | base, f, n, inc, sizeof<a>, null)
   prval () = view@ f := coerce (view@ f) where {
     extern prfun coerce (pf_clo: clo1_t @ l_f): clo_t @ l_f
   } // end of [prval]
@@ -612,12 +624,12 @@ end // end of [GEMAT_ptr_initialize_elt]
 
 implement{a}
 GEMAT_ptr_initialize_fun
-  {v} {ord} {m,n} {ld} (pf | ord, X, m, n, ld, f) = () where {
+  {ord} {m,n} {ld} (ord, X, m, n, ld, f) = () where {
   val _(*ptr*) = __cast (X) where {
     extern castfn __cast
       (X: &GEMAT (a?, m, n, ord, ld) >> GEMAT (a, m, n, ord, ld)):<> ptr
   } // end of [val]
-  val () = GEMAT_ptr_iforeach_fun<a> (pf | ord, X, f, ord, m, n, ld)
+  val () = GEMAT_ptr_iforeach_fun<a> (ord, X, f, ord, m, n, ld)
 } // end of [GEMAT_ptr_initialize_fun]
 
 implement{a}
@@ -704,7 +716,7 @@ end // end of [GEMAT_ptr_copy_tsz]
 (* ****** ****** *)
 
 implement
-GEMAT_ptr_foreach_fun_tsz__main
+GEMAT_ptr_foreach_funenv_tsz
   {a} {v} {vt} {ord1,ord2} {m,n} {ld}
   (pf | ord1, M, f, ord2, m, n, ld, tsz, env) = let
   fun loop_row {n > 0}
@@ -721,7 +733,7 @@ GEMAT_ptr_foreach_fun_tsz__main
     prval (pf1_inc, pf1_vec, fpf1_mat) =
       GEVEC_v_of_GEMAT_v_row (pf1_mat)
     val inc = MATVECINC_get (pf1_inc | ORDERrow, ord1, ld)
-    val () = GEVEC_ptr_foreach_fun_tsz__main
+    val () = GEVEC_ptr_foreach_funenv_tsz
       {a} {v} (pf | !p1, f, n, inc, tsz, env) // end of [val]
     prval () = pf1_mat := fpf1_mat (pf1_vec)
     val () = loop_row (pf, pf2_mat | p2, mi-1, env)
@@ -743,7 +755,7 @@ GEMAT_ptr_foreach_fun_tsz__main
     prval (pf1_inc, pf1_vec, fpf1_mat) =
       GEVEC_v_of_GEMAT_v_col (pf1_mat)
     val inc = MATVECINC_get (pf1_inc | ORDERcol, ord1, ld)
-    val () = GEVEC_ptr_foreach_fun_tsz__main
+    val () = GEVEC_ptr_foreach_funenv_tsz
       {a} {v} (pf | !p1, f, m, inc, tsz, env) // end of [val]
     prval () = pf1_mat := fpf1_mat (pf1_vec)
     val () = loop_col (pf, pf2_mat | p2, ni-1, env)
@@ -767,22 +779,25 @@ in
     end else begin
       // nothing
     end // end of [ORDERcol]
-end (* end of [GEMAT_ptr_foreach_fun_tsz__main] *)
+end (* end of [GEMAT_ptr_foreach_funenv_tsz] *)
 
 (* ****** ****** *)
 
 implement{a}
 GEMAT_ptr_foreach_fun
-  {v} {ord1,ord2} {m,n}
-  (pf | ord1, base, f, ord2, m, n, ld) = let
+  {ord1,ord2} {m,n}
+  (ord1, base, f, ord2, m, n, ld) = let
   val f = coerce (f) where {
     extern castfn coerce
-      (f: (!v | &a) -<> void):<> (!v | &a, !ptr) -<> void
+      (f: (&a) -<> void):<> (!unit_v | &a, !ptr) -<> void
   } // end of [where]
+  prval pfu = unit_v ()
+  val () = GEMAT_ptr_foreach_funenv_tsz
+    {a} {unit_v} {ptr} (pfu | ord1, base, f, ord2, m, n, ld, sizeof<a>, null)
+  prval unit_v () = pfu
 in
-  GEMAT_ptr_foreach_fun_tsz__main {a} {v} {ptr}
-    (pf | ord1, base, f, ord2, m, n, ld, sizeof<a>, null)
-end // end of [GEMAT_ptr_foreach_fun_tsz]
+  // nothing
+end // end of [GEMAT_ptr_foreach_fun]
 
 implement{a}
 GEMAT_ptr_foreach_clo
@@ -796,18 +811,18 @@ GEMAT_ptr_foreach_clo
     prval (pf1, pf2) = pf; val () = !p_f (pf1 | x) in pf := (pf1, pf2)
   end // end of [app]
   prval pf = (pf_v, view@ f)
-  val () = GEMAT_ptr_foreach_fun_tsz__main
+  val () = GEMAT_ptr_foreach_funenv_tsz
     {a} {V} {ptr l_f} (pf | ord1, M, app, ord2, m, n, ld, sizeof<a>, p_f)
   prval (pf1, pf2) = pf
   prval () = (pf_v := pf1; view@ f := pf2)
 in
   // empty
-end // end of [GEMAT_ptr_foreach_clo_tsz]
+end // end of [GEMAT_ptr_foreach_clo]
 
 (* ****** ****** *)
 
 implement
-GEMAT_ptr_iforeach_fun_tsz__main
+GEMAT_ptr_iforeach_funenv_tsz
   {a} {v} {vt} {ord1,ord2} {m,n} {ld}
   (pf | ord1, M, f, ord2, m, n, ld, tsz, env) = let
   fun loop_row {n > 0}
@@ -824,7 +839,7 @@ GEMAT_ptr_iforeach_fun_tsz__main
     prval (pf1_inc, pf1_vec, fpf1_mat) =
       GEVEC_v_of_GEMAT_v_row (pf1_mat)
     val inc = MATVECINC_get (pf1_inc | ORDERrow, ord1, ld)
-    val () = GEVEC_ptr_iforeach_clo_tsz__main
+    val () = GEVEC_ptr_iforeach_cloenv_tsz
       {a} {v} (pf | !p1, !p_clo, n, inc, tsz, env) where {
       val i = m - mi
       var !p_clo = @lam
@@ -851,7 +866,7 @@ GEMAT_ptr_iforeach_fun_tsz__main
     prval (pf1_inc, pf1_vec, fpf1_mat) =
       GEVEC_v_of_GEMAT_v_col (pf1_mat)
     val inc = MATVECINC_get (pf1_inc | ORDERcol, ord1, ld)
-    val () = GEVEC_ptr_iforeach_clo_tsz__main
+    val () = GEVEC_ptr_iforeach_cloenv_tsz
       {a} {v} (pf | !p1, !p_clo, m, inc, tsz, env) where {
       val j = n-nj
       var !p_clo = @lam
@@ -880,23 +895,26 @@ in
     end else begin
       // nothing
     end // end of [ORDERcol]
-end (* end of [GEMAT_ptr_iforeach_fun_tsz__main] *)
+end (* end of [GEMAT_ptr_iforeach_funenv_tsz] *)
 
 (* ****** ****** *)
 
 implement{a}
 GEMAT_ptr_iforeach_fun
-  {v} {ord1,ord2} {m,n}
-  (pf | ord1, base, f, ord2, m, n, ld) = let
+  {ord1,ord2} {m,n}
+  (ord1, base, f, ord2, m, n, ld) = let
   val f = coerce (f) where {
     extern castfn coerce
-      (f: (!v | sizeLt m, sizeLt n, &a) -<> void)
-      :<> (!v | sizeLt m, sizeLt n, &a, !ptr) -<> void
+      (f: (sizeLt m, sizeLt n, &a) -<> void)
+      :<> (!unit_v | sizeLt m, sizeLt n, &a, !ptr) -<> void
   } // end of [where]
+  prval pfu = unit_v ()
+  val () = GEMAT_ptr_iforeach_funenv_tsz
+    {a} {unit_v} {ptr} (pfu | ord1, base, f, ord2, m, n, ld, sizeof<a>, null)
+  prval unit_v () = pfu
 in
-  GEMAT_ptr_iforeach_fun_tsz__main {a} {v} {ptr}
-    (pf | ord1, base, f, ord2, m, n, ld, sizeof<a>, null)
-end // end of [GEMAT_ptr_iforeach_fun_tsz]
+  // nothing
+end // end of [GEMAT_ptr_iforeach_fun]
 
 (* ****** ****** *)
 
@@ -915,13 +933,13 @@ GEMAT_ptr_iforeach_clo
     prval (pf1, pf2) = pf; val () = !p_f (pf1 | i, j, x) in pf := (pf1, pf2)
   end // end of [app]
   prval pf = (pf_v, view@ f)
-  val () = GEMAT_ptr_iforeach_fun_tsz__main
+  val () = GEMAT_ptr_iforeach_funenv_tsz
     {a} {V} {ptr l_f} (pf | ord1, M, app, ord2, m, n, ld, sizeof<a>, p_f)
   prval (pf1, pf2) = pf
   prval () = (pf_v := pf1; view@ f := pf2)
 in
   // empty
-end // end of [GEMAT_ptr_iforeach_clo_tsz]
+end // end of [GEMAT_ptr_iforeach_clo]
 
 (* ****** ****** *)
 

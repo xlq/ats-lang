@@ -58,11 +58,10 @@ implement main () = let
   #define X 10
   val (pf1_mat | p1, fp1) = GEMAT_row_ptr_allocfree<T> (X, X)
 //
-  prval pfunit = unit_v ()
   val () = GEMAT_ptr_initialize_fun<T> (
-    pfunit | ORDERrow, !p1, X, X, X, lam (pfunit | i, j, x) => x := sz2i i - sz2i j
+    ORDERrow, !p1, X, X, X, lam (i, j, x) => x := sz2i i - sz2i j
   ) // end of [val]
-  prval unit_v () = pfunit
+//
   val () = print ("M1 =\n")
   val () = GEMAT_fprint (stdout_ref, ORDERrow, !p1, X, X, X)
   val () = print_newline ()

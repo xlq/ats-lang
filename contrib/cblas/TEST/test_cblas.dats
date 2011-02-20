@@ -138,17 +138,14 @@ randgen_arr {n:nat} .<>. (n: int n)
   val (pf_gc, pf_arr | p_arr) =
     array_ptr_alloc_tsz {a} (n_sz, tsz)
   // end of [val]
-  prval pf = unit_v
   val () = array_ptr_initialize_fun_tsz
-    {a} {unit_v} (pf | !p_arr, n_sz, f, tsz) where {
+    {a} (!p_arr, n_sz, f, tsz) where {
     val f = lam (
-        pf: !unit_v
-      | _: sizeLt n, x: &(a?) >> a
-      ) : void =<fun>
+      _: sizeLt n, x: &(a?) >> a
+    ) : void =<fun>
       x :=  $effmask_ref (randgen_elt<a> ())
     // end of [val]
   } // end of [val]
-  prval unit_v () = pf
 in
   (pf_gc, pf_arr | p_arr)
 end // end of [rangen_arr]
@@ -1013,13 +1010,12 @@ gbmv_test (): void = () where {
   val (pfY_gc, pfY_arr | pY_arr) =
     array_ptr_alloc_tsz {a} (M, sizeof<a>)
   // end of [val]
-  prval pf_unit = unit_v
+//
   val () = array_ptr_initialize_fun_tsz
-    {a} (pf_unit | !pY_arr, M, f, sizeof<a>) where {
+    {a} (!pY_arr, M, f, sizeof<a>) where {
     fun f .<>. (
-        pf : !unit_v
-      | i : sizeLt M, x : &(a?) >> a
-      ) :<> void = let
+      i : sizeLt M, x : &(a?) >> a
+    ) :<> void = let
       val i = sz2i i
       val x0 = (
         if i < KL then
@@ -1038,7 +1034,7 @@ gbmv_test (): void = () where {
       x := of_int<a> x0
     end // end of [f]
   } // end of [val]
-  prval unit_v () = pf_unit
+//
   prval pfY_gev = GEVEC_v_of_array_v {a} (pfY_arr)
   val incY = 1
 //
@@ -1872,14 +1868,13 @@ hbmv_test (): void = () where {
   prval pfX_gev = GEVEC_v_of_array_v {a} (pfX_arr)
   val incX = 1
   val (pfY_gc, pfY_arr | pY_arr) = array_ptr_alloc<a> (M)
-  prval pf_unit = unit_v
+//
   val () = array_ptr_initialize_fun_tsz
-    {a} (pf_unit | !pY_arr, M, f, sizeof<a>) where {
+    {a} (!pY_arr, M, f, sizeof<a>) where {
     fn f (
-        pf : !unit_v
-      | i : sizeLt M
-      , y : &(a?) >> a
-      ) :<> void = let
+      i : sizeLt M
+    , y : &(a?) >> a
+    ) :<> void = let
       val i = sz2i i
       val y0 = (
         if i < K then
@@ -1894,7 +1889,7 @@ hbmv_test (): void = () where {
       y := of_int<a> y0
     end // end of [f]
   } // end of [val]
-  prval unit_v () = pf_unit
+//
   prval pfY_gev = GEVEC_v_of_array_v {a} (pfY_arr)
   val incY = 1
 //
@@ -1960,10 +1955,10 @@ hpmv_test (): void = () where {
   prval () = mul_elim {M,M+1} {2*L} (pf_mml2)
   val L_sz = size1_of_int1 L
   val (pfA_gc, pfA_arr | pA_arr) = array_ptr_alloc<a> (L_sz)
-  prval pf_unit = unit_v
-  val () = array_ptr_initialize_fun_tsz {a} {unit_v}
-    (pf_unit | !pA_arr, L_sz, f, sizeof<a>) where {
-    fn f (pf : !unit_v | i : sizeLt L, A : &(a?) >> a) :<> void = let
+//
+  val () = array_ptr_initialize_fun_tsz {a}
+    (!pA_arr, L_sz, f, sizeof<a>) where {
+    fn f (i : sizeLt L, A : &(a?) >> a) :<> void = let
       val i = sz2i i
       val c = int_of_double (($M.sqrt (1.0 + 8.0 * (double_of_int i)) - 1.0) / 2.0)
       val r = i - (c * (c + 1)) / 2
@@ -1971,7 +1966,7 @@ hpmv_test (): void = () where {
       A := of_int<a> (c - r)
     end // end of [f]
   } // end of [val]
-  prval unit_v () = pf_unit
+//
   prval (pfA_hpmat, fpfA_arr) = HPMAT_v_of_array_v (pf_mml2,
     pfA_arr, M, ORDERcol, UPLOupper)
 //
@@ -1980,17 +1975,17 @@ hpmv_test (): void = () where {
   prval pfX_gev = GEVEC_v_of_array_v {a} (pfX_arr)
   val incX = 1
   val (pfY_gc, pfY_arr | pY_arr) = array_ptr_alloc<a> (M)
-  prval pf_unit = unit_v
+//
   val () = array_ptr_initialize_fun_tsz {a}
-    (pf_unit | !pY_arr, M, f, sizeof<a>) where {
+    (!pY_arr, M, f, sizeof<a>) where {
     fn f (
-        pf : !unit_v | i : sizeLt M, y : &(a?) >> a
-      ) :<> void =
+       i : sizeLt M, y : &(a?) >> a
+    ) :<> void =
       y := of_int<a> let
         val i = sz2i i in (i * (i + 1) + (M - i - 1) * (M - i)) / 2
       end
   } // end of [val]
-  prval unit_v () = pf_unit
+//
   prval pfY_gev = GEVEC_v_of_array_v {a} (pfY_arr)
   val incY = 1
 //

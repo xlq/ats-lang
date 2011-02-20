@@ -420,13 +420,15 @@ funmap_remove (m, k0, cmp) = funmap_takeout_ptr<key,itm> (m, k0, cmp, null)
 (* ****** ****** *)
 
 (*
-fun{key,itm:t@ype} funmap_foreach_main {v:view} {vt:viewtype}
-  (pf: !v | m: map (key, itm), f: (!v | key, itm, !vt) -<clo> void, env: !vt):<> void
-// end of [funmap_foreach_main]
+fun{key,itm:t@ype}
+funmap_foreach_funenv
+  {v:view} {vt:viewtype} (
+  pf: !v | m: map (key, itm), f: (!v | key, itm, !vt) -<clo> void, env: !vt
+) :<> void // end of [funmap_foreach_funenv]
 *)
 
 implement{key,itm}
-funmap_foreach_main {v} {vt}
+funmap_foreach_funenv {v} {vt}
   (pf | m, f, env) = foreach (pf | m, env) where {
   fun foreach {h:nat} .<h>.
     (pf: !v | t: avltree (key, itm, h), env: !vt):<cloref> void =
@@ -436,7 +438,26 @@ funmap_foreach_main {v} {vt}
       end // end of [B]
     | E () => ()
   // end of [foreach]
-} // end of [funmap_foreach_main]
+} // end of [funmap_foreach_funenv]
+
+implement{key,itm}
+funmap_foreach_fun
+  (m, f) = let
+//
+  val f = coerce (f) where {
+    extern castfn coerce
+      (f: (key, itm) -<fun> void):<> (!unit_v | key, itm, !ptr) -<fun> void
+  } // end of [val]
+//
+  prval pfu = unit_v ()
+  val () = funmap_foreach_funenv<key,itm> {unit_v} {ptr} (pfu | m, f, null)
+  prval unit_v () = pfu
+//  
+in
+  // nothing
+end // end of [funmap_foreach_fun]
+
+(* ****** ****** *)
 
 implement{key,itm}
 funmap_foreach_clo {v}

@@ -121,7 +121,7 @@ main (argc, argv) = let
       val () = !p_i := !p_i + 1
       val () = print x
     } // end of [f]
-    val () = list_app__main {int @ i} {ptr i} (view@ i | xs, f, &i)
+    val () = list_app_funenv {int @ i} {ptr i} (view@ i | xs, f, &i)
     val () = print_newline ()
   } // end of [val]
 //

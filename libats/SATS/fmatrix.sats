@@ -243,7 +243,7 @@ prfun GBMAT_v_of_fmatrix_v
 
 (* ****** ****** *)
 
-fun fmatrix_ptr_foreach_fun_tsz__main
+fun fmatrix_ptr_foreach_funenv_tsz
   {a:viewt@ype}
   {v:view} {vt:viewtype}
   {ord:order} {m,n:nat} (
@@ -254,16 +254,14 @@ fun fmatrix_ptr_foreach_fun_tsz__main
   , tsz: sizeof_t a
   , env: !vt
   ) :<> void
-// end of [fmatrix_foreach_fun_tsz__main]
+// end of [fmatrix_foreach_funenv_tsz]
 
 fun{a:viewt@ype}
-fmatrix_ptr_foreach_fun {v:view} {ord:order} {m,n:nat} (
-    pf: !v
-  | M: &fmatrix (a, m, n)
-  , f: (!v | &a) -<fun> void
-  , ord: ORDER ord, m: size_t m, n: size_t n
-  ) :<> void
-// end of [fmatrix_foreach_fun]
+fmatrix_ptr_foreach_fun {ord:order} {m,n:nat} (
+  M: &fmatrix (a, m, n)
+, f: (&a) -<fun> void
+, ord: ORDER ord, m: size_t m, n: size_t n
+) :<> void // end of [fmatrix_foreach_fun]
 
 fun{a:viewt@ype}
 fmatrix_ptr_foreach_clo {v:view} {ord:order} {m,n:nat} (
@@ -276,7 +274,7 @@ fmatrix_ptr_foreach_clo {v:view} {ord:order} {m,n:nat} (
 
 (* ****** ****** *)
 
-fun fmatrix_ptr_iforeach_fun_tsz__main
+fun fmatrix_ptr_iforeach_funenv_tsz
   {a:viewt@ype}
   {v:view} {vt:viewtype}
   {ord:order} {m,n:nat} (
@@ -287,15 +285,14 @@ fun fmatrix_ptr_iforeach_fun_tsz__main
   , tsz: sizeof_t a
   , env: !vt
   ) :<> void
-// end of [fmatrix_iforeach_fun_tsz__main]
+// end of [fmatrix_iforeach_funenv_tsz]
 
 fun{a:viewt@ype}
-fmatrix_ptr_iforeach_fun {v:view} {ord:order} {m,n:nat} (
-    pf: !v
-  | M: &fmatrix (a, m, n), f: (!v | sizeLt m, sizeLt n, &a) -<fun> void
-  , ord: ORDER ord, m: size_t m, n: size_t n
-  ) :<> void
-// end of [fmatrix_iforeach_fun]
+fmatrix_ptr_iforeach_fun
+  {ord:order} {m,n:nat} (
+  M: &fmatrix (a, m, n), f: (sizeLt m, sizeLt n, &a) -<fun> void
+, ord: ORDER ord, m: size_t m, n: size_t n
+) :<> void // end of [fmatrix_iforeach_fun]
 
 fun{a:viewt@ype}
 fmatrix_ptr_iforeach_clo {v:view} {ord:order} {m,n:nat} (

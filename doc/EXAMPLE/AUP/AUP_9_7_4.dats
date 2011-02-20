@@ -43,7 +43,7 @@ fun fprint_bytes_size
   prval (pf1, pf2) = array_v_split {byte} {n1} {n2} (pfmul, view@ (buf))
   prval pfu = unit_v ()
   typedef env = FILEref
-  val () = array_ptr_foreach_fun_tsz__main {byte} {unit_v} {env}
+  val () = array_ptr_foreach_funenv_tsz {byte} {unit_v} {env}
     (pfu | !p_buf, lam (pf | x, out) =<> $effmask_ref (fprint_byte (out, x)), n2, sizeof<byte>, out)
   prval unit_v () = pfu
   prval () = view@ (buf) := array_v_unsplit {byte} {n2,n1-n2} (pfmul, pf1, pf2)

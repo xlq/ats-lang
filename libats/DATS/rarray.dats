@@ -133,7 +133,7 @@ end // end of [rarray2array_ptr]
 (* ****** ****** *)
 
 implement
-rarray_ptr_foreach_fun_tsz__main
+rarray_ptr_foreach_funenv_tsz
   {a} {v} {vt} {n}
   (pf, pfarr | p, f, asz, tsz, env) = let
   fun loop {i:nat | i <= n} {l:addr} .<i>. (
@@ -158,28 +158,32 @@ rarray_ptr_foreach_fun_tsz__main
     end // end of [if]
 in
   loop (pf, pfarr | p, f, asz, tsz, env)
-end // end of [rarray_ptr_foreach_fun_tsz__main]
+end // end of [rarray_ptr_foreach_funenv_tsz]
 
-//
+(* ****** ****** *)
 
 implement{a}
-rarray_ptr_foreach_fun (pf, pfarr | p, f, asz) =
-  rarray_ptr_foreach_fun_tsz {a} (pf, pfarr | p, f, asz, sizeof<a>)
+rarray_ptr_foreach_fun (pfarr | p, f, asz) =
+  rarray_ptr_foreach_fun_tsz {a} (pfarr | p, f, asz, sizeof<a>)
 // end of [implement]
 
 implement
 rarray_ptr_foreach_fun_tsz
-  {a} {v} {n} (pf, pfarr | p, f, asz, tsz) = let
-  viewtypedef fun0_t = (!v | &a) -<fun> void
-  viewtypedef fun1_t = (!v | &a, !ptr) -<fun> void
+  {a} {v} {n} (pfarr | p, f, asz, tsz) = let
+  viewtypedef fun0_t = (&a) -<fun> void
+  viewtypedef fun1_t = (!unit_v | &a, !ptr) -<fun> void
   val f = __cast (f) where { extern castfn __cast (f: fun0_t):<> fun1_t }
+//
+  prval pfu = unit_v ()
+  val () = rarray_ptr_foreach_funenv_tsz
+    {a} {unit_v} {ptr} (pfu, pfarr | p, f, asz, tsz, null)
+  prval unit_v () = pfu
+//
 in
-  rarray_ptr_foreach_fun_tsz__main
-    {a} {v} {ptr} (pf, pfarr | p, f, asz, tsz, null)
-  // end of [rarray_ptr_foreach_...]
+  // nothing
 end // end of [rarray_ptr_foreach_fun_tsz]
 
-//
+(* ****** ****** *)
 
 implement{a}
 rarray_ptr_foreach_clo (pf, pfarr | p, f, asz) =
@@ -197,7 +201,7 @@ rarray_ptr_foreach_clo_tsz
     prval (pf1, pf2) = pf; val () = !p_f (pf1 | x) in pf := (pf1, pf2)
   end // end of [app]
   prval pf = (pfv, view@ f)
-  val () = rarray_ptr_foreach_fun_tsz__main
+  val () = rarray_ptr_foreach_funenv_tsz
     {a} {V} {ptr l_f} (pf, pfarr | p, app, asz, tsz, p_f)
   prval (pf1, pf2) = pf
   prval () = (pfv := pf1; view@ f := pf2)

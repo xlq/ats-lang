@@ -165,66 +165,63 @@ fun{a:t@ype} GEVEC_ptr_copy {m:nat} {d1,d2:inc} (
 
 (* ****** ****** *)
 
-fun GEVEC_ptr_foreach_fun_tsz__main
+fun GEVEC_ptr_foreach_funenv_tsz
   {a:viewt@ype} {v:view} {vt:viewtype} {n:nat} {d:inc} (
-    pf: !v
-  | base: &GEVEC (a, n, d)
-  , f: (!v | &a, !vt) -<> void, vsz: size_t n, inc: size_t d, tsz: sizeof_t a
-  , env: !vt
-  ) :<> void
-  = "atslib_GEVEC_ptr_foreach_fun_tsz__main"
-// end of [fun]
+  pf: !v
+| base: &GEVEC (a, n, d)
+, f: (!v | &a, !vt) -<> void, vsz: size_t n, inc: size_t d, tsz: sizeof_t a
+, env: !vt
+) :<> void
+  = "atslib_GEVEC_ptr_foreach_funenv_tsz"
+// end of [GEVEC_ptr_foreach_funenv_tsz]
 
-fun{a:viewt@ype} GEVEC_ptr_foreach_fun
-  {v:view} {n:nat} {d:inc} (
-    pf: !v
-  | base: &GEVEC (a, n, d)
-  , f: (!v | &a) -<fun> void, vsz: size_t n, inc: size_t d
-  ) :<> void
-// end of [fun]
+fun{a:viewt@ype}
+GEVEC_ptr_foreach_fun
+  {n:nat} {d:inc} (
+  base: &GEVEC (a, n, d)
+, f: (&a) -<fun> void, vsz: size_t n, inc: size_t d
+) :<> void // end of [GEVEC_ptr_foreach_fun]
 
-fun{a:viewt@ype} GEVEC_ptr_foreach_clo
+fun{a:viewt@ype}
+GEVEC_ptr_foreach_clo
   {v:view} {n:nat} {d:inc} (
-    pf: !v
-  | base: &GEVEC (a, n, d)
-  , f: &(!v | &a) -<clo> void, vsz: size_t n, inc: size_t d
-  ) :<> void
-// end of [fun]
+  pf: !v
+| base: &GEVEC (a, n, d)
+, f: &(!v | &a) -<clo> void, vsz: size_t n, inc: size_t d
+) :<> void // end of [GEVEC_ptr_foreach_clo]
 
 (* ****** ****** *)
 
-fun GEVEC_ptr_iforeach_fun_tsz__main
+fun GEVEC_ptr_iforeach_funenv_tsz
   {a:viewt@ype} {v:view} {vt:viewtype} {n:nat} {d:inc} (
-    pf: !v
-  | base: &GEVEC (a, n, d)
-  , f: (!v | sizeLt n, &a, !vt) -<> void
-  , vsz: size_t n
-  , inc: size_t d
-  , tsz: sizeof_t a
-  , env: !vt
-  ) :<> void
-  = "atslib_GEVEC_ptr_iforeach_fun_tsz__main"
-// end of [fun]
+  pf: !v
+| base: &GEVEC (a, n, d)
+, f: (!v | sizeLt n, &a, !vt) -<> void
+, vsz: size_t n
+, inc: size_t d
+, tsz: sizeof_t a
+, env: !vt
+) :<> void
+  = "atslib_GEVEC_ptr_iforeach_funenv_tsz"
+// end of [GEVEC_ptr_iforeach_funenv_tsz]
 
 fun{a:viewt@ype}
-  GEVEC_ptr_iforeach_fun {v:view} {n:nat} {d:inc} (
-    pf: !v
-  | base: &GEVEC (a, n, d)
-  , f: (!v | sizeLt n, &a) -<fun> void, vsz: size_t n, inc: size_t d
-  ) :<> void
-// end of [fun]
+GEVEC_ptr_iforeach_fun {n:nat} {d:inc} (
+  base: &GEVEC (a, n, d)
+, f: (sizeLt n, &a) -<fun> void, vsz: size_t n, inc: size_t d
+) :<> void // end of [fun]
 
-fun GEVEC_ptr_iforeach_clo_tsz__main
+fun GEVEC_ptr_iforeach_cloenv_tsz
   {a:viewt@ype} {v:view} {vt:viewtype} {n:nat} {d:inc} (
-    pf: !v
-  | base: &GEVEC (a, n, d)
-  , f: &(!v | sizeLt n, &a, !vt) -<clo> void
-  , vsz: size_t n
-  , inc: size_t d
-  , tsz: sizeof_t a
-  , env: !vt
-  ) :<> void
-  = "atslib_GEVEC_ptr_iforeach_clo_tsz__main"
+  pf: !v
+| base: &GEVEC (a, n, d)
+, f: &(!v | sizeLt n, &a, !vt) -<clo> void
+, vsz: size_t n
+, inc: size_t d
+, tsz: sizeof_t a
+, env: !vt
+) :<> void
+  = "atslib_GEVEC_ptr_iforeach_cloenv_tsz"
 // end of [fun]
 
 fun{a:viewt@ype}
@@ -633,25 +630,27 @@ fun{a:t@ype}
 fun{a:t@ype}
   GEMAT_ptr_initialize_elt
   {ord:order} {m,n:nat} {ld:inc} (
-    ord: ORDER ord
-  , X: &GEMAT (a?, m, n, ord, ld) >> GEMAT (a, m, n, ord, ld)
-  , m: size_t m, n: size_t n, ld: size_t ld
-  , alpha: a
-  ) :<> void
-// end of [GEMAT_ptr_initialize_elt]
+  ord: ORDER ord
+, X: &GEMAT (a?, m, n, ord, ld) >> GEMAT (a, m, n, ord, ld)
+, m: size_t m, n: size_t n, ld: size_t ld
+, alpha: a
+) :<> void // end of [GEMAT_ptr_initialize_elt]
 
-// based on [GEMAT_ptr_iforeach_fun]
-fun{a:t@ype} GEMAT_ptr_initialize_fun
-  {v:view} {ord:order} {m,n:nat} {ld:inc} (
-    pf: !v
-  | ord: ORDER ord
-  , M: &GEMAT (a?, m, n, ord, ld) >> GEMAT (a, m, n, ord, ld)
-  , m: size_t m, n: size_t n, ld: size_t ld
-  , f: (!v | sizeLt m, sizeLt n, &(a?) >> a) -<> void
-  ) :<> void
-// end of [GEMAT_ptr_initialize_fun]
+//
+// HX: based on [GEMAT_ptr_iforeach_fun]
+//
+fun{a:t@ype}
+GEMAT_ptr_initialize_fun
+  {ord:order} {m,n:nat} {ld:inc} (
+  ord: ORDER ord
+, M: &GEMAT (a?, m, n, ord, ld) >> GEMAT (a, m, n, ord, ld)
+, m: size_t m, n: size_t n, ld: size_t ld
+, f: (sizeLt m, sizeLt n, &(a?) >> a) -<> void
+) :<> void // end of [GEMAT_ptr_initialize_fun]
 
-// based on [GEMAT_ptr_iforeach_clo]
+//
+// HX: based on [GEMAT_ptr_iforeach_clo]
+//
 fun{a:t@ype} GEMAT_ptr_initialize_clo
   {v:view} {ord:order} {m,n:nat} {ld:inc} (
     pf: !v
@@ -687,7 +686,7 @@ fun GEMAT_ptr_copy_tsz {a:t@ype}
 
 (* ****** ****** *)
 
-fun GEMAT_ptr_foreach_fun_tsz__main
+fun GEMAT_ptr_foreach_funenv_tsz
   {a:viewt@ype} {v:view} {vt:viewtype}
   {ord1,ord2:order} {m,n:nat} {ld:inc} (
     pf: !v
@@ -699,33 +698,32 @@ fun GEMAT_ptr_foreach_fun_tsz__main
   , tsz: sizeof_t a
   , env: !vt
   ) :<> void
-// end of [GEMAT_ptr_foreach_fun_tsz__main]
+// end of [GEMAT_ptr_foreach_funenv_tsz]
 
-fun{a:viewt@ype} GEMAT_ptr_foreach_fun
-  {v:view} {ord1,ord2:order} {m,n:nat} {ld:inc} (
-    pf: !v
-  | ord1: ORDER ord1
-  , M: &GEMAT (a, m, n, ord1, ld)
-  , f: (!v | &a) -<fun> void
-  , ord2: ORDER ord2
-  , m: size_t m, n: size_t n, ld: size_t ld
-  ) :<> void
-// end of [GEMAT_ptr_foreach_fun]
+fun{a:viewt@ype}
+GEMAT_ptr_foreach_fun
+  {ord1,ord2:order} {m,n:nat} {ld:inc} (
+  ord1: ORDER ord1
+, M: &GEMAT (a, m, n, ord1, ld)
+, f: (&a) -<fun> void
+, ord2: ORDER ord2
+, m: size_t m, n: size_t n, ld: size_t ld
+) :<> void // end of [GEMAT_ptr_foreach_fun]
 
-fun{a:viewt@ype} GEMAT_ptr_foreach_clo
+fun{a:viewt@ype}
+GEMAT_ptr_foreach_clo
   {v:view} {ord1,ord2:order} {m,n:nat} {ld:inc} (
-    pf: !v
-  | ord1: ORDER ord1
-  , M: &GEMAT (a, m, n, ord1, ld)
-  , f: &(!v | &a) -<clo> void
-  , ord2: ORDER ord2
-  , m: size_t m, n: size_t n, ld: size_t ld
-  ) :<> void
-// end of [GEMAT_ptr_foreach_clo]
+  pf: !v
+| ord1: ORDER ord1
+, M: &GEMAT (a, m, n, ord1, ld)
+, f: &(!v | &a) -<clo> void
+, ord2: ORDER ord2
+, m: size_t m, n: size_t n, ld: size_t ld
+) :<> void // end of [GEMAT_ptr_foreach_clo]
 
 (* ****** ****** *)
 
-fun GEMAT_ptr_iforeach_fun_tsz__main
+fun GEMAT_ptr_iforeach_funenv_tsz
   {a:viewt@ype} {v:view} {vt:viewtype}
   {ord1,ord2:order} {m,n:nat} {ld:inc} (
     pf: !v
@@ -737,20 +735,20 @@ fun GEMAT_ptr_iforeach_fun_tsz__main
   , tsz: sizeof_t a
   , env: !vt
   ) :<> void
-// end of [GEMAT_ptr_iforeach_fun_tsz__main]
+// end of [GEMAT_ptr_iforeach_funenv_tsz]
 
-fun{a:viewt@ype} GEMAT_ptr_iforeach_fun
-  {v:view} {ord1,ord2:order} {m,n:nat} {ld:inc} (
-    pf: !v
-  | ord1: ORDER ord1
-  , M: &GEMAT (a, m, n, ord1, ld)
-  , f: (!v | sizeLt m, sizeLt n, &a) -<fun> void
-  , ord2: ORDER ord2
-  , m: size_t m, n: size_t n, ld: size_t ld
-  ) :<> void
-// end of [GEMAT_ptr_iforeach_fun]
+fun{a:viewt@ype}
+GEMAT_ptr_iforeach_fun
+  {ord1,ord2:order} {m,n:nat} {ld:inc} (
+  ord1: ORDER ord1
+, M: &GEMAT (a, m, n, ord1, ld)
+, f: (sizeLt m, sizeLt n, &a) -<fun> void
+, ord2: ORDER ord2
+, m: size_t m, n: size_t n, ld: size_t ld
+) :<> void // end of [GEMAT_ptr_iforeach_fun]
 
-fun{a:viewt@ype} GEMAT_ptr_iforeach_clo
+fun{a:viewt@ype}
+GEMAT_ptr_iforeach_clo
   {v:view} {ord1,ord2:order} {m,n:nat} {ld:inc} (
     pf: !v
   | ord1: ORDER ord1

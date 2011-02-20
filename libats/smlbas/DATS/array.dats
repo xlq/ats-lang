@@ -133,7 +133,7 @@ implement{a} app (f, [n:int] A) = () where {
   prval pf = unit_v ()
   fn _app
     (pf: !v | x: &a, f: !vt):<> void = $effmask_all (f x)
-  val () = array_ptr_foreach_fun_tsz__main {a} {v} {vt} (pf | !p_arr, _app, A.1, sizeof<a>, f)
+  val () = array_ptr_foreach_funenv_tsz {a} {v} {vt} (pf | !p_arr, _app, A.1, sizeof<a>, f)
   prval unit_v () = pf
 } // end of [app]
 
@@ -143,7 +143,7 @@ implement{a} appi (f, [n:int] A) = () where {
   prval pf = unit_v ()
   fn _app
     (pf: !v | i: sizeLt n, x: &a, f: !vt):<> void = $effmask_all (f (i, x))
-  val () = array_ptr_iforeach_fun_tsz__main {a} {v} {vt} (pf | !p_arr, _app, A.1, sizeof<a>, f)
+  val () = array_ptr_iforeach_funenv_tsz {a} {v} {vt} (pf | !p_arr, _app, A.1, sizeof<a>, f)
   prval unit_v () = pf
 } // end of [appi]
 
@@ -154,7 +154,7 @@ implement{a} modify (f, [n:int] A) = () where {
   viewdef v = unit_v; viewdef vt = (a) -<cloref1> a
   prval pf = unit_v ()
   fn _app (pf: !v | x: &a, f: !vt):<> void = x := $effmask_all (f (x))
-  val () = array_ptr_foreach_fun_tsz__main {a} {v} {vt} (pf | !p_arr, _app, A.1, sizeof<a>, f)
+  val () = array_ptr_foreach_funenv_tsz {a} {v} {vt} (pf | !p_arr, _app, A.1, sizeof<a>, f)
   prval unit_v () = pf
 } // end of [modify]
 
@@ -163,7 +163,7 @@ implement{a} modifyi (f, [n:int] A) = () where {
   viewdef v = unit_v; viewdef vt = (size_t, a) -<cloref1> a
   prval pf = unit_v ()
   fn _app (pf: !v | i: sizeLt n, x: &a, f: !vt):<> void = x := $effmask_all (f (i, x))
-  val () = array_ptr_iforeach_fun_tsz__main {a} {v} {vt} (pf | !p_arr, _app, A.1, sizeof<a>, f)
+  val () = array_ptr_iforeach_funenv_tsz {a} {v} {vt} (pf | !p_arr, _app, A.1, sizeof<a>, f)
   prval unit_v () = pf
 } // end of [modifyi]
 

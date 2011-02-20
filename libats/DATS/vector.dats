@@ -386,7 +386,7 @@ end // end of [vector_resize]
 (* ****** ****** *)
 
 implement
-vector_foreach_fun_tsz__main
+vector_foreach_funenv_tsz
   {a} {v} {vt} {m,n}
   (pf | V, f, tsz, env) = let
   prval () = __assert () where {
@@ -396,12 +396,12 @@ vector_foreach_fun_tsz__main
   prval pfmul = mul_istot {n,sizeof a} ()
   prval (pf1, pf2) = vector_v_decode {a} (pfmul, pf0)
   val p = V.ptr
-  val () = array_ptr_foreach_fun_tsz__main (pf | !p, f, V.n, tsz, env)
+  val () = array_ptr_foreach_funenv_tsz (pf | !p, f, V.n, tsz, env)
   prval pf0 = vector_v_encode {a} (pfmul, pf1, pf2)
   prval () = VECTOR_encode {a} (pf0 | V)
 in
   // nothing
-end // end of [vector_foreach_fun_tsz__main]
+end // end of [vector_foreach_funenv_tsz]
 
 (* ****** ****** *)
 
@@ -416,7 +416,7 @@ vector_foreach_clo
     prval (pf1, pf2) = pf; val () = !p_f (pf1 | x) in pf := (pf1, pf2)
   end // end of [app]
   prval pf = (pf_v, view@ f)
-  val () = vector_foreach_fun_tsz__main
+  val () = vector_foreach_funenv_tsz
     {a} {V} {ptr l_f} (pf | V, app, sizeof<a>, p_f)
   prval (pf1, pf2) = pf
   prval () = (pf_v := pf1; view@ f := pf2)
@@ -427,7 +427,7 @@ end // end of [vector_foreach_clo]
 (* ****** ****** *)
 
 implement
-vector_iforeach_fun_tsz__main
+vector_iforeach_funenv_tsz
   {a} {v} {vt} {m,n}
   (pf | V, f, tsz, env) = let
   prval () = __assert () where {
@@ -437,12 +437,12 @@ vector_iforeach_fun_tsz__main
   prval pfmul = mul_istot {n,sizeof a} ()
   prval (pf1, pf2) = vector_v_decode {a} (pfmul, pf0)
   val p = V.ptr
-  val () = array_ptr_iforeach_fun_tsz__main (pf | !p, f, V.n, tsz, env)
+  val () = array_ptr_iforeach_funenv_tsz (pf | !p, f, V.n, tsz, env)
   prval pf0 = vector_v_encode {a} (pfmul, pf1, pf2)
   prval () = VECTOR_encode {a} (pf0 | V)
 in
   // nothing
-end // end of [vector_iforeach_fun_tsz__main]
+end // end of [vector_iforeach_funenv_tsz]
 
 (* ****** ****** *)
 
@@ -457,7 +457,7 @@ vector_iforeach_clo
     prval (pf1, pf2) = pf; val () = !p_f (pf1 | i, x) in pf := (pf1, pf2)
   end // end of [app]
   prval pf = (pf_v, view@ f)
-  val () = vector_iforeach_fun_tsz__main
+  val () = vector_iforeach_funenv_tsz
     {a} {V} {ptr l_f} (pf | A, app, sizeof<a>, p_f)
   prval (pf1, pf2) = pf
   prval () = (pf_v := pf1; view@ f := pf2)

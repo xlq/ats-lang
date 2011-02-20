@@ -42,9 +42,9 @@
 #include "ats_types.h"
 
 /* ****** ****** */
-
-// it is currently empty
-
+//
+// HX: it is currently empty
+//
 /* ****** ****** */
 
 #endif /* ATS_PRELUDE_MATRIX_CATS */

@@ -243,7 +243,7 @@ end // end of [queue_remove]
 (* ****** ****** *)
 
 implement{a}
-queue_foreach_main
+queue_foreach_funenv
   {v} {vt} {n} (pf | q, f, env) = let
   val p1 = q.ptr1
 in
@@ -270,7 +270,26 @@ in
   in
     // nothing
   end (* end of [if] *)
-end // end of [queue_foreach_main]
+end // end of [queue_foreach_funenv]
+
+(* ****** ****** *)
+
+implement{a}
+queue_foreach_fun
+  {n} (q, f) = let
+//
+  val f = coerce (f) where {
+    extern castfn coerce
+      (f: (&a) -<fun> void):<> (!unit_v | &a, !ptr) -<fun> void
+  } // end of [val]
+//
+  prval pfu = unit_v ()
+  val () = queue_foreach_funenv<a> {unit_v} {ptr} (pfu | q, f, null)
+  prval unit_v () = pfu
+//
+in
+  // empty
+end // end of [queue_foreach_fun]
 
 (* ****** ****** *)
 
@@ -290,7 +309,7 @@ queue_foreach_clo
     // nothing
   end // end of [app]
   prval pf1 = (pf, view@ f)
-  val () = queue_foreach_main<a> {v1} {vt} (pf1 | q, app, p_f)
+  val () = queue_foreach_funenv<a> {v1} {vt} (pf1 | q, app, p_f)
   prval () = pf := pf1.0
   prval () = view@ f := pf1.1
 in

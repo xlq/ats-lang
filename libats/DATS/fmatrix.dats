@@ -262,28 +262,31 @@ end // end of [fmatrix_ptr_copy]
 // HX: loop proceeds column by column
 //
 implement
-fmatrix_ptr_foreach_fun_tsz__main
+fmatrix_ptr_foreach_funenv_tsz
   {a} {v} {vt} {ord} {m,n}
   (pf | M, f, ord, m, n, tsz, env) = if m > 0 then let
   prval (pf_mat, fpf) = GEMAT_v_of_fmatrix_v {a} (view@ M)
-  val () = GEMAT_ptr_foreach_fun_tsz__main
+  val () = GEMAT_ptr_foreach_funenv_tsz
     (pf | ORDERcol, M, f, ord, m, n, m, tsz, env)
   prval () = view@ M := fpf (pf_mat)
 in
   // nothing
-end (* end of [fmatrix_ptr_foreach_fun_tsz__main] *)
+end (* end of [fmatrix_ptr_foreach_funenv_tsz] *)
 
 (* ****** ****** *)
 
 implement{a}
 fmatrix_ptr_foreach_fun
-  {v} (pf | M, f, ord, m, n) = let
+  (M, f, ord, m, n) = let
   val f = coerce (f) where { extern castfn
-    coerce (f: (!v | &a) -<> void) :<> (!v | &a, !ptr) -<> void
+    coerce (f: (&a) -<> void) :<> (!unit_v | &a, !ptr) -<> void
   } // end of [where]
+  prval pfu = unit_v ()
+  val () = fmatrix_ptr_foreach_funenv_tsz
+    {a} {unit_v} {ptr} (pfu | M, f, ord, m, n, sizeof<a>, null)
+  prval unit_v () = pfu
 in
-  fmatrix_ptr_foreach_fun_tsz__main
-    {a} {v} {ptr} (pf | M, f, ord, m, n, sizeof<a>, null)
+  // nothing
 end // end of [fmatrix_ptr_foreach_fun]
 
 (* ****** ****** *)
@@ -299,7 +302,7 @@ fmatrix_ptr_foreach_clo
     prval (pf1, pf2) = pf in !p_f (pf1 | x); pf := @(pf1, pf2)
   end // end of [app]
   prval pf = (pf_v, view@ f)
-  val () = fmatrix_ptr_foreach_fun_tsz__main
+  val () = fmatrix_ptr_foreach_funenv_tsz
     {a} {V} {ptr l_f} (pf | M, app, ord, m, n, sizeof<a>, p_f)
   prval (pf1, pf2) = pf
   prval () = (pf_v := pf1; view@ f := pf2)
@@ -312,24 +315,24 @@ end // end of [fmatrix_ptr_foreach_clo_tsz]
 // HX: loop proceeds column by column
 //
 implement
-fmatrix_ptr_iforeach_fun_tsz__main
+fmatrix_ptr_iforeach_funenv_tsz
   {a} {v} {vt} {ord} {m,n}
   (pf | M, f, ord, m, n, tsz, env) = if m > 0 then let
   prval (pf_mat, fpf) = GEMAT_v_of_fmatrix_v {a} (view@ M)
-  val () = GEMAT_ptr_iforeach_fun_tsz__main
+  val () = GEMAT_ptr_iforeach_funenv_tsz
     (pf | ORDERcol, M, f, ord, m, n, m, tsz, env)
   prval () = view@ M := fpf (pf_mat)
 in
   // nothing
-end (* end of [fmatrix_ptr_iforeach_fun_tsz__main] *)
+end (* end of [fmatrix_ptr_iforeach_funenv_tsz] *)
 
 (* ****** ****** *)
 
 implement{a}
-fmatrix_ptr_iforeach_fun {v} {ord} {m,n}
-  (pf | M, f, ord, m, n) = if m > 0 then let
+fmatrix_ptr_iforeach_fun {ord} {m,n}
+  (M, f, ord, m, n) = if m > 0 then let
   prval (pf_mat, fpf) = GEMAT_v_of_fmatrix_v {a} (view@ M)
-  val () = GEMAT_ptr_iforeach_fun<a> (pf | ORDERcol, M, f, ord, m, n, m)
+  val () = GEMAT_ptr_iforeach_fun<a> (ORDERcol, M, f, ord, m, n, m)
   prval () = view@ M := fpf (pf_mat)
 in
   // nothing

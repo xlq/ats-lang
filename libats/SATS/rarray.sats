@@ -100,44 +100,41 @@ rarray2array_ptr
 ** HX-2010-09-20: implemented in ATS (libats/DATS/rarray.dats)
 *)
 
-fun rarray_ptr_foreach_fun_tsz__main
-  {a:viewt@ype} {v:view} {vt:viewtype} {n:nat} {l:addr} (
-    pf: !v, pfarr: !rarray_v (a, n, l)
-  | p: ptr l
-  , f: (!v | &a, !vt) -<> void, asz: size_t n, tsz: sizeof_t a
-  , env: !vt
-  ) :<> void
-// end of [rarray_ptr_foreach_fun_tsz__main]
+fun rarray_ptr_foreach_funenv_tsz
+  {a:viewt@ype}
+  {v:view} {vt:viewtype}
+  {n:nat} {l:addr} (
+  pf: !v, pfarr: !rarray_v (a, n, l)
+| p: ptr l
+, f: (!v | &a, !vt) -<> void, asz: size_t n, tsz: sizeof_t a
+, env: !vt
+) :<> void // end of [rarray_ptr_foreach_funenv_tsz]
 
 fun{a:viewt@ype}
 rarray_ptr_foreach_fun
-  {v:view} {n:nat} {l:addr} (
-    pf: !v, pfarr: !rarray_v (a, n, l)
-  | p: ptr l, f: (!v | &a) -<fun> void, asz: size_t n
-  ) :<> void
-// end of [rarray_ptr_foreach_fun]
+  {n:nat} {l:addr} (
+  pfarr: !rarray_v (a, n, l)
+| p: ptr l, f: (&a) -<fun> void, asz: size_t n
+) :<> void // end of [rarray_ptr_foreach_fun]
 
 fun rarray_ptr_foreach_fun_tsz
   {a:viewt@ype} {v:view} {n:nat} {l:addr} (
-    pf: !v, pfarr: !rarray_v (a, n, l)
-  | p: ptr l, f: (!v | &a) -<fun> void, asz: size_t n, tsz: sizeof_t a
-  ) :<> void
-// end of [rarray_ptr_foreach_fun_tsz]
+  pfarr: !rarray_v (a, n, l)
+| p: ptr l, f: (&a) -<fun> void, asz: size_t n, tsz: sizeof_t a
+) :<> void // end of [rarray_ptr_foreach_fun_tsz]
 
 fun{a:viewt@ype}
 rarray_ptr_foreach_clo
   {v:view} {n:nat} {l:addr} (
-    pf: !v, pfarr: !rarray_v (a, n, l)
-  | p: ptr l, f: &(!v | &a) -<clo> void, asz: size_t n
-  ) :<> void
-// end of [rarray_ptr_foreach_clo]
+  pf: !v, pfarr: !rarray_v (a, n, l)
+| p: ptr l, f: &(!v | &a) -<clo> void, asz: size_t n
+) :<> void // end of [rarray_ptr_foreach_clo]
 
 fun rarray_ptr_foreach_clo_tsz
   {a:viewt@ype} {v:view} {n:nat} {l:addr} (
-    pf: !v, pfarr: !rarray_v (a, n, l)
-  | p: ptr l, f: &(!v | &a) -<clo> void, asz: size_t n, tsz: sizeof_t a
-  ) :<> void
-// end of [rarray_ptr_foreach_clo_tsz]
+  pf: !v, pfarr: !rarray_v (a, n, l)
+| p: ptr l, f: &(!v | &a) -<clo> void, asz: size_t n, tsz: sizeof_t a
+) :<> void // end of [rarray_ptr_foreach_clo_tsz]
 
 (* ****** ****** *)
 

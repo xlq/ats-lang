@@ -253,7 +253,7 @@ end // end of [list_vt_concat]
 (* ****** ****** *)
 
 implement{a}
-list_vt_tabulate__main
+list_vt_tabulate_funenv
   {v} {vt} {n} {f} (pf | f, n, env) = let
   var res: List_vt a // uninitialized
   fun loop {i:nat | i <= n} .<n-i>. (
@@ -272,7 +272,7 @@ list_vt_tabulate__main
   // end of [loop]
 in
   loop (pf | n, 0, f, env, res); res
-end // end of [list_vt_tabulate__main]
+end // end of [list_vt_tabulate_funenv]
 
 implement{a}
 list_vt_tabulate_fun {n} {f:eff} (f, n) = let
@@ -280,7 +280,7 @@ list_vt_tabulate_fun {n} {f:eff} (f, n) = let
     coerce (f: natLt n -<f> a):<> (!unit_v | natLt n, !ptr) -<f> a
   } // end of [where]
   prval pf = unit_v ()
-  val ans = list_vt_tabulate__main<a> {..} {ptr} (pf | f, n, null)
+  val ans = list_vt_tabulate_funenv<a> {..} {ptr} (pf | f, n, null)
   prval unit_v () = pf
 in
   ans
@@ -300,7 +300,7 @@ list_vt_tabulate_clo
     x
   end // end of [app]
   prval pf = (pf1, view@ f)
-  val ans = list_vt_tabulate__main<a> {V} {ptr l_f} (pf | app, n, p_f)
+  val ans = list_vt_tabulate_funenv<a> {V} {ptr l_f} (pf | app, n, p_f)
   prval () = pf1 := pf.0
   prval () = view@ f := pf.1
 in
@@ -310,7 +310,7 @@ end // end of [list_vt_tabulate_clo]
 (* ****** ****** *)
 
 implement{a}
-list_vt_foreach__main
+list_vt_foreach_funenv
   {v} {vt} {n} {f} (pf | xs0, f, env) = let
   viewtypedef fun_t = (!v | &a, !vt) -<f> void
   fun loop {i:nat} .<i>.
@@ -323,7 +323,7 @@ list_vt_foreach__main
   // end of [loop]
 in
   loop (pf | xs0, f, env)
-end // end of [list_vt_foreach__main]
+end // end of [list_vt_foreach_funenv]
 
 implement{a}
 list_vt_foreach_fun
@@ -332,7 +332,7 @@ list_vt_foreach_fun
   typedef fun1_t = (!unit_v | &a, !ptr) -<fun,f> void
   val f = __cast (f) where { extern castfn __cast (f: fun0_t):<> fun1_t }
   prval pf = unit_v ()
-  val () = list_vt_foreach__main<a> {unit_v} {ptr} (pf | xs, f, null)
+  val () = list_vt_foreach_funenv<a> {unit_v} {ptr} (pf | xs, f, null)
   prval unit_v () = pf
 in
   // nothing
@@ -350,7 +350,7 @@ list_vt_foreach_clo
     prval () = pf := (pf1, pf2)
   } // end of [val]
   prval pf = (pf1, view@ f)
-  val ans = list_vt_foreach__main<a> {V} {ptr l_f} (pf | xs, app, p_f)
+  val ans = list_vt_foreach_funenv<a> {V} {ptr l_f} (pf | xs, app, p_f)
   prval () = pf1 := pf.0 and () = view@ f := pf.1
 in
   ans
@@ -359,7 +359,7 @@ end // end of [list_vt_foreach_clo]
 (* ****** ****** *)
 
 implement{a}
-list_vt_iforeach__main
+list_vt_iforeach_funenv
   {v} {vt} {n} {f} (pf | xs0, f, env) = let
   viewtypedef fun_t = (!v | natLt n, &a, !vt) -<f> void
   fun loop {i:nat | i <= n} .<n-i>.
@@ -372,7 +372,7 @@ list_vt_iforeach__main
   // end of [loop]
 in
   loop (pf | 0, xs0, f, env)
-end // end of [list_vt_iforeach__main]
+end // end of [list_vt_iforeach_funenv]
 
 implement{a}
 list_vt_iforeach_fun
@@ -381,7 +381,7 @@ list_vt_iforeach_fun
   typedef fun1_t = (!unit_v | natLt n, &a, !ptr) -<fun,f> void
   val f = __cast (f) where { extern castfn __cast (f: fun0_t):<> fun1_t }
   prval pf = unit_v ()
-  val () = list_vt_iforeach__main<a> {unit_v} {ptr} (pf | xs, f, null)
+  val () = list_vt_iforeach_funenv<a> {unit_v} {ptr} (pf | xs, f, null)
   prval unit_v () = pf
 in
   // nothing
@@ -399,7 +399,7 @@ list_vt_iforeach_clo
     prval () = pf := (pf1, pf2)
   } // end of [val]
   prval pf = (pf1, view@ f)
-  val () = list_vt_iforeach__main<a> {V} {ptr l_f} (pf | xs, app, p_f)
+  val () = list_vt_iforeach_funenv<a> {V} {ptr l_f} (pf | xs, app, p_f)
   prval () = pf1 := pf.0 and () = view@ f := pf.1
 in
   // empty

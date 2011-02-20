@@ -125,13 +125,12 @@ fn{a:t@ype} print_fmatrix {m,n:nat}
     // end of [for*]
   end // end of [val]
 *)
-  prval pf = unit_v ()
+//
   val () = fmatrix_ptr_iforeach_fun<a>
-    (pf | M, pr, ORDERrow, m, n) where {
+    (M, pr, ORDERrow, m, n) where {
     val pr = lam (
-        pf: !unit_v
-      | i: size_t, j: size_t, x: &a
-      ) : void =<fun> $effmask_all let
+      i: size_t, j: size_t, x: &a
+    ) : void =<fun> $effmask_all let
       val () = if j > 0 then print ", "
       val () = if (i > 0 andalso j = 0) then print "\n" 
       val () = print_elt<a> (x)
@@ -139,7 +138,6 @@ fn{a:t@ype} print_fmatrix {m,n:nat}
       // empty
     end // end of [val]
   } // end of [val]
-  prval unit_v () = pf
 //
 in
   // empty

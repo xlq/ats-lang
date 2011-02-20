@@ -113,17 +113,17 @@ randgen_arr {n:nat} .<>. (n: int n)
   val (pf_gc, pf_arr | p_arr) =
     array_ptr_alloc_tsz {t} (n_sz, tsz)
   // end of [val]
-  prval pf = unit_v
-  val () = array_ptr_initialize_fun_tsz
-    {t} {unit_v} (pf | !p_arr, n_sz, f, tsz) where {
+//
+  val () =
+    array_ptr_initialize_fun_tsz
+    {t} (!p_arr, n_sz, f, tsz) where {
     val f = lam (
-        pf: !unit_v
-      | _: sizeLt n, x: &(t?) >> t
-      ) : void =<fun>
+      _: sizeLt n, x: &(t?) >> t
+    ) : void =<fun>
       x :=  $effmask_ref (randgen_elt<t> ())
     // end of [val]
   } // end of [val]
-  prval unit_v () = pf
+//
 in
   (pf_gc, pf_arr | p_arr)
 end // end of [rangen_arr]
@@ -150,23 +150,20 @@ end // end of [randgen_fmat]
 fn{a:t@ype}
 print_fmat {m,n:nat} (
     M: &fmatrix (a, m, n), m: size_t m, n: size_t n
-  ) : void = () where {
-  prval pf = unit_v ()
-  val () = fmatrix_ptr_iforeach_fun<a>
-    (pf | M, pr, ORDERrow, m, n) where {
+  ) : void =
+  fmatrix_ptr_iforeach_fun<a>
+    (M, pr, ORDERrow, m, n) where {
     val pr = lam (
-        pf: !unit_v
-      | i: size_t, j: size_t, x: &a
-      ) : void =<fun> $effmask_all let
+      i: size_t, j: size_t, x: &a
+    ) : void =<fun> $effmask_all let
       val () = if j > 0 then print ", "
       val () = if (i > 0 andalso j = 0) then print "\n" 
       val () = print_elt<a> (x)
     in
-      // empty
-    end // end of [val]
-  } // end of [val]
-  prval unit_v () = pf
-} // end of [print_fmat]
+      // nothing
+    end // end of [let]
+  } // end of [fmatrix_ptr_iforeach_fun]
+// end of [print_fmat]
 
 (* ****** ****** *)
 
@@ -186,18 +183,17 @@ in
 end // end of [randgen_gemat]
 
 fn{a:t@ype}
-print_gemat {ord:order} {m,n:nat} {lda:pos} (
-    ord: ORDER ord, 
-    M: &GEMAT (a, m, n, ord, lda)
-  , m: size_t m, n: size_t n, lda: size_t lda
-  ) : void = () where {
-  prval pf = unit_v ()
+print_gemat
+  {ord:order} {m,n:nat} {lda:pos} (
+  ord: ORDER ord, 
+  M: &GEMAT (a, m, n, ord, lda)
+, m: size_t m, n: size_t n, lda: size_t lda
+) : void = let
   val () = GEMAT_ptr_iforeach_fun<a>
-    (pf | ord, M, pr, ORDERrow, m, n, lda) where {
+    (ord, M, pr, ORDERrow, m, n, lda) where {
     val pr = lam (
-        pf: !unit_v
-      | i: size_t, j: size_t, x: &a
-      ) : void =<fun> $effmask_all let
+      i: size_t, j: size_t, x: &a
+    ) : void =<fun> $effmask_all let
       val () = if j > 0 then print ", "
       val () = if (i > 0 andalso j = 0) then print "\n" 
       val () = print_elt<a> (x)
@@ -205,26 +201,30 @@ print_gemat {ord:order} {m,n:nat} {lda:pos} (
       // empty
     end // end of [val]
   } // end of [val]
-  prval unit_v () = pf
-} // end of [print_gemat]
+in
+  // nothing
+end // end of [print_gemat]
 
 (* ****** ****** *)
-
-// Fill matrix with random FP numbers
+//
+// SC: Fill matrix with random FP numbers
+//
 fn{t:t@ype}
-GEMAT_rand {ord:order} {m,n:nat} {lda:pos} (
+GEMAT_rand
+  {ord:order} {m,n:nat} {lda:pos} (
   ord: ORDER ord, m: size_t m, n: size_t n
 , A: &GEMAT(t?, m, n, ord, lda) >> GEMAT (t, m, n, ord, lda)
 , lda: size_t lda
 ) : void = let
-  var f = lam (
-    pf : !unit_v | i: sizeLt m, j: sizeLt n, x: &t? >> t
+//
+  val f = lam (
+    i: sizeLt m, j: sizeLt n, x: &t? >> t
   ) : void =<>
     x := $effmask_ref (randgen_elt<t> ())
-  // end of [var]
-  prval pf = unit_v ()
-  val () = GEMAT_ptr_initialize_fun<t> (pf | ord, A, m, n, lda, f)
-  prval unit_v () = pf
+  // end of [val]
+//
+  val () = GEMAT_ptr_initialize_fun<t> (ord, A, m, n, lda, f)
+//
 in
   // nothing
 end // end of [GEMAT_rand]
@@ -588,16 +588,16 @@ gesv_test () = () where {
   val (pf_gc_A, pf_arr_A | p_A) = randgen_arr<t> (MM)
   prval pf_fmat_A = fmatrix_v_of_array_v (pf_MM, pf_arr_A)
   // Add M to diagonal to improve condition number
-  prval pf = unit_v ()
-  val () = fmatrix_ptr_iforeach_fun<t>
-    (pf | !p_A, f, ORDERcol, M, M) where {
+//
+  val () =
+    fmatrix_ptr_iforeach_fun<t>
+      (!p_A, f, ORDERcol, M, M) where {
     val f = lam (
-        pf: !unit_v
-      | i: size_t, j: size_t, x: &t
-      ) : void =<fun>
+      i: size_t, j: size_t, x: &t
+    ) : void =<fun>
       if i = j then x := $F2C.add<t> (x, of_int<t> M)
     } // end of [val]
-  prval unit_v () = pf
+//
   prval (pf_gmat_A, fpf_fmat_A) = GEMAT_v_of_fmatrix_v (pf_fmat_A)
 // Make X
   val (pf_MNRHS | MNRHS) = M imul2 NRHS

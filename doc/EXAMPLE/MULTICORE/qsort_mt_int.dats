@@ -134,18 +134,19 @@ end // end of [array_ptr_print]
 
 #define N 100000000
 
-fn random_array_ptr_gen {n:nat} (n: size_t n):<>
-  [l:addr | l <> null] (free_gc_v (T, n, l), array_v (T, n, l) | ptr l) = let
+fn random_array_ptr_gen
+  {n:nat} (n: size_t n):<>
+  [l:addr | l <> null] (
+  free_gc_v (T, n, l), array_v (T, n, l) | ptr l
+) = let
   val (pfgc, pfarr | parr) = array_ptr_alloc_tsz {T} (n, sizeof<T>)
-  prval pf = unit_v
-  val () = array_ptr_initialize_fun_tsz {T} {unit_v} (
-    pf
-  | !parr
-  , n
-  , lam (pf | i, x) => x := $effmask_ref ($RAND.randint (N))
+//
+  val () = array_ptr_initialize_fun_tsz {T} (
+    !parr, n
+  , lam (i, x) => x := $effmask_ref ($RAND.randint (N))
   , sizeof<T>
   ) // end of [array_ptr_make_fun_tsz_cloptr]
-  prval unit_v () = pf
+//
 in
   (pfgc, pfarr | parr)
 end // end of [random_array_ptr_gen]

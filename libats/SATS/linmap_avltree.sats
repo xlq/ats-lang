@@ -122,14 +122,18 @@ linmap_remove (m: &map (key, itm), k0: key, cmp: cmp key):<> bool
 //
 
 fun{key:t0p;itm:vt0p}
-linmap_foreach_main
+linmap_foreach_funenv
   {v:view} {vt:viewtype} (
-    pf: !v
-  | m: !map (key, itm)
-  , f: (!v | key, &itm, !vt) -<fun> void
-  , env: !vt
-  ) :<> void
-// end of [linmap_foreach_main]
+  pf: !v
+| m: !map (key, itm)
+, f: (!v | key, &itm, !vt) -<fun> void
+, env: !vt
+) :<> void // end of [linmap_foreach_funenv]
+
+fun{key:t0p;itm:vt0p}
+linmap_foreach_fun (
+  m: !map (key, itm), f: (key, &itm) -<fun> void
+) :<> void // end of [linmap_foreach_fun]
 
 fun{key:t0p;itm:vt0p}
 linmap_foreach_clo {v:view} (

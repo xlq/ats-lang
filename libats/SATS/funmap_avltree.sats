@@ -113,9 +113,16 @@ fun{key,itm:t@ype} funmap_remove
 (* ****** ****** *)
 
 fun{key,itm:t@ype}
-funmap_foreach_main {v:view} {vt:viewtype}
-  (pf: !v | xs: map (key, itm), f: (!v | key, itm, !vt) -<fun> void, env: !vt):<> void
-// end of [funmap_foreach_main]
+funmap_foreach_funenv
+  {v:view} {vt:viewtype} (
+  pf: !v 
+| xs: map (key, itm), f: (!v | key, itm, !vt) -<fun> void, env: !vt
+) :<> void // end of [funmap_foreach_funenv]
+
+fun{key,itm:t@ype}
+funmap_foreach_fun
+  (xs: map (key, itm), f: (key, itm) -<fun> void):<> void
+// end of [funmap_foreach_fun]
 
 fun{key,itm:t@ype}
 funmap_foreach_clo {v:view}

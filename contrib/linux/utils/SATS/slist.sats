@@ -175,6 +175,13 @@ slist_split {n,i:nat} {la:addr} (
 (* ****** ****** *)
 
 fun{a:viewt@ype} // generic
+slist_foreach_fun {n:nat} {l:addr}
+  (xs: !slist (a, n, l), f: (&a) -<fun> void):<> void
+// end of [slist_foreach_fun]
+
+(* ****** ****** *)
+
+fun{a:viewt@ype} // generic
 slist_foreach_clo {v:view} {n:nat} {l:addr}
   (pf: !v | xs: !slist (a, n, l), f: &(!v | &a) -<clo> void):<> void
 // end of [slist_foreach_clo]

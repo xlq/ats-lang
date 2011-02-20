@@ -46,12 +46,13 @@
 
 (* ****** ****** *)
 
-fun foreach_main {v:view} {vt: viewtype} {n:nat} {f:eff}
+fun foreach_funenv
+  {v:view} {vt: viewtype} {n:nat} {f:eff}
   (pf: !v | n: int n, f: (!v | natLt n, !vt) -<f> void, env: !vt):<f> void
-// end of [foreach_main]
+// end of [foreach_funenv]
 
-fun foreach_fun {v:view} {n:nat} {f:eff}
-  (pf: !v | n: int n, f: (!v | natLt n) -<f> void):<f> void
+fun foreach_fun {n:nat} {f:eff}
+  (n: int n, f: (natLt n) -<f> void):<f> void
 // end of [foreach_fun]
 
 fun foreach_clo {v:view} {n:nat} {f:eff}
@@ -69,16 +70,16 @@ fun foreach_cloref {n:nat} {f:eff}
 // HX-2010-03-23:
 // the implementation for this function is row-major
 //
-fun foreach2_main {v:view} {vt: viewtype} {m,n:nat} {f:eff} (
-    pf: !v
-  | m: int m, n: int n
-  , f: (!v | natLt m, natLt n, !vt) -<f> void
-  , env: !vt
-  ) :<f> void
-// end of [foreach2_main]
+fun foreach2_funenv
+  {v:view} {vt: viewtype} {m,n:nat} {f:eff} (
+  pf: !v
+| m: int m, n: int n
+, f: (!v | natLt m, natLt n, !vt) -<f> void
+, env: !vt
+) :<f> void // end of [foreach2_funenv]
 
-fun foreach2_fun {v:view} {m,n:nat} {f:eff}
-  (pf: !v | m: int m, n: int n, f: (!v | natLt m, natLt n) -<f> void) :<f> void
+fun foreach2_fun {m,n:nat} {f:eff}
+  (m: int m, n: int n, f: (natLt m, natLt n) -<f> void) :<f> void
 // end of [foreach2_fun]
 
 fun foreach2_clo {v:view} {m,n:nat} {f:eff}
@@ -92,13 +93,12 @@ fun foreach2_cloref {m,n:nat} {f:eff}
 
 (* ****** ****** *)
 
-fun repeat_main {v:view} {vt:viewtype} {n:nat} {f:eff}
+fun repeat_funenv
+  {v:view} {vt:viewtype} {n:nat} {f:eff}
   (pf: !v | n: int n, f: (!v | !vt) -<f> void, env: !vt):<f> void
-// end of [repeat_main]
+// end of [repeat_funenv]
 
-fun repeat_fun {v:view} {n:nat} {f:eff}
-  (pf: !v | n: int n, f: (!v | (*none*)) -<f> void):<f> void
-// end of [repeat_fun]
+fun repeat_fun {n:nat} {f:eff} (n: int n, f: () -<f> void):<f> void
 
 fun repeat_clo {v:view} {n:nat} {f:eff}
   (pf: !v | n: int n, f: &(!v | (*none*)) -<clo,f> void):<f> void

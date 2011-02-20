@@ -127,11 +127,11 @@ list_vt_concat (xss: List_vt (List_vt (a))):<> List_vt (a)
 (* ****** ****** *)
 
 fun{a:viewt@ype}
-list_vt_tabulate__main
+list_vt_tabulate_funenv
   {v:view} {vt:viewtype} {n:nat} {f:eff}
   (pf: !v | f: (!v | natLt n, !vt) -<f> a, n: int n, env: !vt)
   :<f> list_vt (a, n)
-// end of [list_vt_tabulate__main]
+// end of [list_vt_tabulate_funenv]
 
 fun{a:viewt@ype}
 list_vt_tabulate_fun {n:nat} {f:eff}
@@ -146,11 +146,11 @@ list_vt_tabulate_clo {v:view} {n:nat} {f:eff}
 (* ****** ****** *)
 
 fun{a:viewt@ype}
-list_vt_foreach__main
+list_vt_foreach_funenv
   {v:view} {vt:viewtype} {n:nat} {f:eff}
   (pf: !v | xs: !list_vt (a, n), f: !(!v | &a, !vt) -<f> void, env: !vt)
   :<f> void
-// end of [list_vt_foreach__main]
+// end of [list_vt_foreach_funenv]
 
 fun{a:viewt@ype} list_vt_foreach_fun {n:nat} {f:eff}
   (xs: !list_vt (a, n), f: (&a) -<fun,f> void):<f> void
@@ -163,12 +163,12 @@ fun{a:viewt@ype} list_vt_foreach_clo {v:view} {n:nat} {f:eff}
 (* ****** ****** *)
 
 fun{a:viewt@ype}
-list_vt_iforeach__main
+list_vt_iforeach_funenv
   {v:view} {vt:viewtype} {n:nat} {f:eff} (
     pf: !v
   | xs: !list_vt (a, n), f: (!v | natLt n, &a, !vt) -<fun,f> void, env: !vt
   ) :<f> void
-// end of [list_vt_iforeach__main]
+// end of [list_vt_iforeach_funenv]
 
 fun{a:viewt@ype}
 list_vt_iforeach_fun {n:nat} {f:eff}

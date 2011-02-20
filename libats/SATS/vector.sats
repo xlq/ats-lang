@@ -168,13 +168,12 @@ vector_resize {m,n:int} {m1:int | n <= m1}
 
 (* ****** ****** *)
 
-fun vector_foreach_fun_tsz__main
+fun vector_foreach_funenv_tsz
   {a:viewt@ype} {v:view} {vt:viewtype} {m,n:int} (
-    pf: !v
-  | V: &VECTOR (a, m, n)
-  , f: (!v | &a, !vt) -<> void, tsz: sizeof_t a, env: !vt
-  ) :<> void
-// end of [vector_foreach_fun_tsz__main]
+  pf: !v
+| V: &VECTOR (a, m, n)
+, f: (!v | &a, !vt) -<> void, tsz: sizeof_t a, env: !vt
+) :<> void // end of [vector_foreach_funenv_tsz]
 
 fun{a:viewt@ype}
 vector_foreach_clo {v:view} {m,n:int}
@@ -183,13 +182,12 @@ vector_foreach_clo {v:view} {m,n:int}
 
 (* ****** ****** *)
 
-fun vector_iforeach_fun_tsz__main
+fun vector_iforeach_funenv_tsz
   {a:viewt@ype} {v:view} {vt:viewtype} {m,n:int} (
-    pf: !v
-  | V: &VECTOR (a, m, n)
-  , f: (!v | sizeLt n, &a, !vt) -<> void, tsz: sizeof_t a, env: !vt
-  ) :<> void
-// end of [vector_iforeach_fun_tsz__main]
+  pf: !v
+| V: &VECTOR (a, m, n)
+, f: (!v | sizeLt n, &a, !vt) -<> void, tsz: sizeof_t a, env: !vt
+) :<> void // end of [vector_iforeach_funenv_tsz]
 
 fun{a:viewt@ype}
 vector_iforeach_clo {v:view} {m,n:int}

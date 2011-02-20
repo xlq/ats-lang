@@ -23,20 +23,21 @@ implement
 main (argc, argv) = let
   val () = () where {
     #define asz 10
-    val A = array_make_arrsz {int}
-      ($arrsz (0, 1, 2, 3, 4, 5, 6, 7, 8, 9))
-    prval pf = unit_v ()
-    // testing [array_iforeach_fun]
+    val A = array_make_arrsz
+      {int} ($arrsz (0, 1, 2, 3, 4, 5, 6, 7, 8, 9))
+    // end of [val]
+// testing [array_iforeach_fun]
     val () = print "A (0-9) = "
-    val () = array_iforeach_fun {unit_v} (pf | A, f, asz) where {
+    val () = array_iforeach_fun (A, f, asz) where {
       fn f (
-          pf: !unit_v | i: sizeLt asz, x: &int
-        ) :<> void = $effmask_all let
+        i: sizeLt asz, x: &int
+      ) :<> void = $effmask_all let
         val () = if i > 0 then print ", " in print x
       end // end of [f]
     } // end of [val]
     val () = print_newline ()
-    // testing [array_iforeach_clo]
+// testing [array_iforeach_clo]
+    prval pf = unit_v ()
     val () = print "A (0-9) = "
     val () = array_iforeach_clo {unit_v} (pf | A, !p_f, asz) where {
       var !p_f = @lam

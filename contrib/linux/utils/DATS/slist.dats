@@ -37,6 +37,7 @@
 (* ****** ****** *)
 
 #define ATS_STALOADFLAG 0
+#define ATS_DYNLOADFLAG 0
 
 (* ****** ****** *)
 
@@ -117,6 +118,20 @@ in
 end // end of [slist_split]
 
 (* ****** ****** *)
+
+implement{a}
+slist_foreach_fun
+  (xs, f) =
+  if slist_isnot_nil (xs) then let
+    val p = ptr_of {a} (xs)
+    val (pfat | xs1) = slseg_uncons (xs)
+    val () = f (!p)
+    val () = slist_foreach_fun (xs1, f)
+    prval () = slseg_fold {a} (pfat | xs, xs1)
+  in
+    // nothing
+  end else ()
+// end of [slist_foreach_fun]
 
 implement{a}
 slist_foreach_clo 

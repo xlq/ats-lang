@@ -41,31 +41,31 @@ dynloadall_dats.o: dynloadall.dats; $(ATSCC) -O2 -c -o $@ $<
 ######
 
 parcomb_sats.o: SATS/parcomb.sats
-	$(ATSCC) -O2 -c -o parcomb_sats.o $<
+	$(ATSCC) -O2 -c -o $@ $<
 parcomb_dats.o: DATS/parcomb.dats
-	$(ATSCC) -O2 -c -o parcomb_dats.o $<
+	$(ATSCC) -O2 -c -o $@ $<
 
 ######
 
 posloc_sats.o: SATS/posloc.sats
-	$(ATSCC) -O2 -c -o posloc_sats.o $<
+	$(ATSCC) -O2 -c -o $@ $<
 posloc_dats.o: DATS/posloc.dats
-	$(ATSCC) -O2 -c -o posloc_dats.o $<
+	$(ATSCC) -O2 -c -o $@ $<
 
 tokenize_sats.o: SATS/tokenize.sats
-	$(ATSCC) -O2 -c -o tokenize_sats.o $<
+	$(ATSCC) -O2 -c -o $@ $<
 tokenize_dats.o: DATS/tokenize.dats
-	$(ATSCC) -O2 -c -o tokenize_dats.o $<
+	$(ATSCC) -O2 -c -o $@ $<
 
 ######
 
-RMF = rm -f
+RMF=rm -f
 
 ######
 
-clean::
-	$(RMF) *~
-	$(RMF) *_?ats.c *_?ats.o
+clean:: ; $(RMF) *~
+clean:: ; $(RMF) *_?ats.c
+clean:: ; $(RMF) *_?ats.o
 
 cleanall: clean
 	$(RMF) atsctrb_parcomb.o

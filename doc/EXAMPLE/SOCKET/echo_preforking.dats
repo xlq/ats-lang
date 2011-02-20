@@ -121,14 +121,11 @@ implement main (argc, argv) = let
   val () = array_ptr_initialize_clo_tsz {pid_t}
     (pf_sock_s | !p_children, NCHILD, !p_clo, sizeof<pid_t>)
 //
-  prval pfu = unit_v ()
-  val () = array_ptr_foreach_fun<pid_t> {unit_v} (
-    pfu
-  | !p_children
-  , lam (pf | pid): void => $effmask_all(printf("Forked: %d\n", @((int)pid)))
+  val () = array_ptr_foreach_fun<pid_t> (
+    !p_children
+  , lam (pid) => $effmask_all(printf("Forked: %d\n", @((int)pid)))
   , NCHILD
   ) // end of [val]
-  prval unit_v () = pfu
 //
   var status:int = 0
   viewdef V = int @ status

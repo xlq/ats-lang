@@ -92,11 +92,11 @@ slseg_length
 (* ****** ****** *)
 
 fun{a:viewt@ype}
-slseg_foreach_main
+slseg_foreach_funenv
 {v:view} {vt:viewtype} {l1,l2:addr} {n:nat} (
   pf: !v, pf_sl: !slseg_v (a, l1, l2, n)
 | p: ptr l1, n: int n, f: (!v | &a, !vt) -<fun> void, env: !vt
-) :<> void // end of [slseg_foreach_main]
+) :<> void // end of [slseg_foreach_funenv]
 
 fun{a:viewt@ype}
 slseg_foreach_clo

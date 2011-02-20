@@ -81,21 +81,23 @@ fun matrix_ptr_takeout_tsz {a:viewt@ype}
 (* ****** ****** *)
 
 fun matrix_make_arrsz
-  {a:viewt@ype} {m,n:nat}
-  (m: size_t m, n: size_t n, arrsz: arraysize (a, m*n))
-  :<> matrix (a, m, n)
-  = "atspre_matrix_make_arrsz__main"
-// end of [matrix_make_arrsz]
+  {a:viewt@ype} {m,n:nat} (
+  m: size_t m, n: size_t n, arrsz: arraysize (a, m*n)
+) :<> matrix (a, m, n) // end of [matrix_make_arrsz]
 
-// implemented in [prelude/DATS/matrix.das]
+macdef matrix (m, n) (asz) =
+  matrix_make_arrsz (,(m), ,(n), ,(asz))
+// end of [macdef]
+
+//
+// HX: implemented in [prelude/DATS/matrix.dats]
+//
 fun matrix_make_arrsz__main
   {a:viewt@ype} {m,n:nat} {mn:int}
   (pf: MUL (m, n, mn) | m: size_t m, n: size_t n, arrsz: arraysize (a, mn))
   :<> matrix (a, m, n)
   = "atspre_matrix_make_arrsz__main"
 // end of [matrix_make_arrsz__main]
-
-macdef matrix (m, n) asz = matrix_make_arrsz (,(m), ,(n), ,(asz))
 
 (* ****** ****** *)
 
@@ -104,125 +106,127 @@ fun{a:t@ype} matrix_make_elt {m,n:pos}
 
 (* ****** ****** *)
 
-fun matrix_make_fun_tsz__main
+fun matrix_make_funenv_tsz
   {a:viewt@ype} {v:view} {vt:viewtype} {m,n:pos} (
-    pf: !v
-  | row: size_t m, col: size_t n
-  , f: (!v | sizeLt m, sizeLt n, &(a?) >> a, !vt) -<> void
-  , tsz: sizeof_t a
-  , env: !vt
-  ) :<> matrix (a, m, n)
+  pf: !v
+| row: size_t m, col: size_t n
+, f: (!v | sizeLt m, sizeLt n, &(a?) >> a, !vt) -<> void
+, tsz: sizeof_t a
+, env: !vt
+) :<> matrix (a, m, n)
 
 fun matrix_make_fun_tsz
-  {a:viewt@ype} {v:view} {m,n:pos} (
-    pf: !v
-  | row: size_t m, col: size_t n
-  , f: (!v | sizeLt m, sizeLt n, &(a?) >> a) -<fun> void
-  , tsz: sizeof_t a
-  ) :<> matrix (a, m, n)
+  {a:viewt@ype} {m,n:pos} (
+  row: size_t m, col: size_t n
+, f: (sizeLt m, sizeLt n, &(a?) >> a) -<fun> void
+, tsz: sizeof_t a
+) :<> matrix (a, m, n) // end of [matrix_make_fun_tsz]
 
 fun matrix_make_clo_tsz
   {a:viewt@ype} {v:view} {m,n:pos} (
-    pf: !v
-  | row: size_t m, col: size_t n
-  , f: &(!v | sizeLt m, sizeLt n, &(a?) >> a) -<clo> void
-  , tsz: sizeof_t a
-  ) :<> matrix (a, m, n)
+  pf: !v
+| row: size_t m, col: size_t n
+, f: &(!v | sizeLt m, sizeLt n, &(a?) >> a) -<clo> void
+, tsz: sizeof_t a
+) :<> matrix (a, m, n) // end of [matrix_make_clo_tsz]
 
 (* ****** ****** *)
 
-fun{a:t@ype} matrix_get_elt_at {m,n:int} {i,j:nat | i < m; j < n}
+fun{a:t@ype}
+matrix_get_elt_at {m,n:int} {i,j:nat | i < m; j < n}
   (A: matrix (a, m, n), i: size_t i, n: size_t n, j: size_t j):<!ref> a
-fun{a:t@ype} matrix_set_elt_at {m,n:int} {i,j:nat | i < m; j < n}
-  (A: matrix (a, m, n), i: size_t i, n: size_t n, j: size_t j, x: a):<!ref> void
 overload [] with matrix_get_elt_at
+
+fun{a:t@ype}
+matrix_set_elt_at {m,n:int} {i,j:nat | i < m; j < n}
+  (A: matrix (a, m, n), i: size_t i, n: size_t n, j: size_t j, x: a):<!ref> void
 overload [] with matrix_set_elt_at
 
 (* ****** ****** *)
 
-fun{a:t@ype} matrix_get_elt_at__intsz {m,n:int} {i,j:nat | i < m; j < n}
+fun{a:t@ype}
+matrix_get_elt_at__intsz {m,n:int} {i,j:nat | i < m; j < n}
   (A: matrix (a, m, n), i: int i, n: int n, j: int j):<!ref> a
-fun{a:t@ype} matrix_set_elt_at__intsz {m,n:int} {i,j:nat | i < m; j < n}
-  (A: matrix (a, m, n), i: int i, n: int n, j: int j, x: a):<!ref> void
-
 overload [] with matrix_get_elt_at__intsz
+
+fun{a:t@ype}
+matrix_set_elt_at__intsz {m,n:int} {i,j:nat | i < m; j < n}
+  (A: matrix (a, m, n), i: int i, n: int n, j: int j, x: a):<!ref> void
 overload [] with matrix_set_elt_at__intsz
 
 (* ****** ****** *)
 
 //
-// these functions are just as easy to be implemented on the spot (HX)
+// HX: these functions are just as easy to be implemented on the spot (HX)
 //
 
 (*
 // implemented in ATS (prelude/DATS/matrix.dats)
 *)
 fun{a:viewt@ype}
-matrix_foreach_fun__main
+matrix_foreach_funenv
   {v:view} {vt:viewtype} {m,n:nat} (
     pf: !v
   | M: matrix (a, m, n)
   , f: (!v | &a, !vt) -<fun> void, m: size_t m, n: size_t n
   , env: !vt
   ) :<!ref> void
-// end of [matrix_foreach_fun__main]
+// end of [matrix_foreach_funenv]
 
 fun{a:viewt@ype}
-matrix_foreach_fun {v:view} {m,n:nat} (
-    pf: !v
-  | M: matrix (a, m, n)
-  , f: (!v | &a) -<fun> void, m: size_t m, n: size_t n
-  ) :<!ref> void
+matrix_foreach_fun {m,n:nat} (
+  M: matrix (a, m, n)
+, f: (&a) -<fun> void, m: size_t m, n: size_t n
+) :<!ref> void // end of [matrix_foreach_fun]
 
 fun{a:viewt@ype}
 matrix_foreach_clo {v:view} {m,n:nat} (
-    pf: !v
-  | M: matrix (a, m, n)
-  , f: &(!v | &a) -<clo> void, m: size_t m, n: size_t n
-  ) :<!ref> void
+  pf: !v
+| M: matrix (a, m, n)
+, f: &(!v | &a) -<clo> void, m: size_t m, n: size_t n
+) :<!ref> void // end of [matrix_foreach_clo]
 
 fun{a:viewt@ype}
 matrix_foreach_cloref {m,n:nat} (
-    M: matrix (a, m, n), f: (&a) -<cloref> void, m: size_t m, n: size_t n
-  ) :<!ref> void
+  M: matrix (a, m, n), f: (&a) -<cloref> void, m: size_t m, n: size_t n
+) :<!ref> void // end of [matrix_foreach_cloref]
 
 (* ****** ****** *)
 
 //
-// these functions are just as easy to be implemented on the spot (HX)
+// HX: these functions are just as easy to be implemented on the spot (HX)
 //
 
 (*
 // implemented in ATS (prelude/DATS/matrix.dats)
 *)
 fun{a:viewt@ype}
-matrix_iforeach_fun__main
+matrix_iforeach_funenv
   {v:view} {vt:viewtype} {m,n:nat} (
-    pf: !v
-  | M: matrix (a, m, n)
-  , f: (!v | sizeLt m, sizeLt n, &a, !vt) -<fun> void, m: size_t m, n: size_t n
-  , env: !vt
-  ) :<!ref> void
+  pf: !v
+| M: matrix (a, m, n)
+, f: (!v | sizeLt m, sizeLt n, &a, !vt) -<fun> void, m: size_t m, n: size_t n
+, env: !vt
+) :<!ref> void // end of [matrix_iforeach_funenv]
 
 fun{a:viewt@ype}
-matrix_iforeach_fun {v:view} {m,n:nat} (
-    pf: !v
-  | M: matrix (a, m, n)
-  , f: (!v | sizeLt m, sizeLt n, &a) -<fun> void, m: size_t m, n: size_t n
-  ) :<!ref> void
+matrix_iforeach_fun {m,n:nat} (
+ M: matrix (a, m, n)
+, f: (sizeLt m, sizeLt n, &a) -<fun> void, m: size_t m, n: size_t n
+) :<!ref> void // end of [matrix_iforeach_fun]
 
 fun{a:viewt@ype}
 matrix_iforeach_clo {v:view} {m,n:nat} (
-    pf: !v
-  | M: matrix (a, m, n)
-  , f: &(!v | sizeLt m, sizeLt n, &a) -<clo> void, m: size_t m, n: size_t n
-  ) :<!ref> void
+  pf: !v
+| M: matrix (a, m, n)
+, f: &(!v | sizeLt m, sizeLt n, &a) -<clo> void, m: size_t m, n: size_t n
+) :<!ref> void // end of [matrix_iforeach_clo]
 
 fun{a:viewt@ype}
 matrix_iforeach_cloref {m,n:nat} (
-    M: matrix (a, m, n)
-  , f: (sizeLt m, sizeLt n, &a) -<cloref1> void, m: size_t m, n: size_t n
-  ) :<fun1> void
+  M: matrix (a, m, n)
+, f: (sizeLt m, sizeLt n, &a) -<cloref1> void, m: size_t m, n: size_t n
+) :<fun1> void // end of [matrix_iforeach_cloref]
 
 (* ****** ****** *)
 
