@@ -127,35 +127,37 @@ fun d2lablst_tr_up
 // end of [d2lablst_tr_up]
 
 fun s2lab0lst_of_d3lab0lst {n:nat} .<n>.
-  (d3ls: list (d3lab0, n)): list (s2lab, n) = begin
+  (d3ls: list (d3lab0, n)): list (s2lab, n) =
   case+ d3ls of
   | list_cons (d3l, d3ls) => let
-      val s2l = case+ d3l.d3lab0_node of
+      val s2l = (case+ d3l.d3lab0_node of
         | D3LAB0ind (d3ess) => S2LAB0ind (d3explstlst_get_ind d3ess)
         | D3LAB0lab l => S2LAB0lab l
+      ) : s2lab // end of [val]
     in
       list_cons (s2l, s2lab0lst_of_d3lab0lst d3ls)
     end // end of [cons]
   | list_nil () => list_nil ()
-end // end of [s2lab0lst_of_d3lab0lst]
+// end of [s2lab0lst_of_d3lab0lst]
 
 (*
 //
 // HX-2010-11-01: why is this commented out?
 //
 fun s2lab1lst_of_d3lab1lst {n:nat} .<n>.
-  (d3ls: list (d3lab1, n)): list (s2lab, n) = begin
+  (d3ls: list (d3lab1, n)): list (s2lab, n) =
   case+ d3ls of
   | list_cons (d3l, d3ls) => let
-      val s2l = case+ d3l.d3lab1_node of
-        | D3LAB1ind (d3ess, s2e) => S2LAB1ind (d3explstlst_get_ind d3ess, s2e)
+      val s2l = (case+ d3l.d3lab1_node of
+        | D3LAB1ind (d3ess, s2e) =>
+            S2LAB1ind (d3explstlst_get_ind d3ess, s2e)
         | D3LAB1lab (l, s2e) => S2LAB1lab (l, s2e)
+      ) : s2lab // end of [val]
     in
       list_cons (s2l, s2lab1lst_of_d3lab1lst d3ls)
     end // end of [cons]
   | list_nil () => list_nil ()
-end // end of [s2lab2lst_of_d3lab1lst]
-
+// end of [s2lab2lst_of_d3lab1lst]
 *)
 
 fun d3lab1lst_of_d3lab0lst_s2lablst
@@ -1551,19 +1553,24 @@ fn d3exp_sel_tr_up
   case+ d3ls_nt of
   | cons _ => let
       val () = d3exp_open_and_add d3e
+//
       val s2ls_nt = s2lab0lst_of_d3lab0lst d3ls_nt
       var restlin: int = 0 and cstr: s2explst = nil ()
       val @(s2e_prj, s2ls) = begin
         s2exp_get_slablst_restlin_cstr (loc0, d3e.d3exp_typ, s2ls_nt, restlin, cstr)
       end // end of [val]
-      val () = if restlin > 0 then begin // restlin check
-        prerr_loc_error3 loc0;
-        prerr ": a linear component is abandoned by label selection.";
-        prerr_newline ();
+//
+      val () = if restlin > 0 then let // restlin check
+        val () = prerr_loc_error3 (loc0)
+        val () = prerr ": a linear component is abandoned by label selection."
+        val () = prerr_newline ()
+      in
         $Err.abort {void} ()
       end // end of [val]
+//
       val () = trans3_env_add_proplst (loc0, cstr)
       val d3ls = d3lab1lst_of_d3lab0lst_s2lablst (d3ls_nt, s2ls)
+//
     in
       d3exp_sel (loc0, s2e_prj, d3e, d3ls)
     end // end of [cons]
@@ -1619,6 +1626,7 @@ in
       var cstr: s2explst = list_nil ()
       val (s2e_prj, s2e_d2v, s2ls) =
         s2exp_linget_slablst_cstr (loc0, s2e_d2v, s2ls_nt, cstr)
+      // end of [val]
       val () = trans3_env_add_proplst (loc0, cstr)
       val () = d2var_set_typ (d2v, Some s2e_d2v)
       val d3ls = d3lab1lst_of_d3lab0lst_s2lablst (d3ls_nt, s2ls)
@@ -1673,8 +1681,12 @@ end // end of [d2exp_seq_tr_up]
 fn d2exp_tmpid_tr_up (
     loc0: loc_t, d2e: d2exp, ts2ess: tmps2explstlst
   ) : d3exp = let
-  fun aux (subs: List stasub_t): s2explstlst = case+ subs of
-    | cons (sub, subs) => cons (stasub_get_codomain_whnf sub, aux subs)
+  fun aux (
+    subs: List stasub_t
+  ) : s2explstlst = case+ subs of
+    | cons (sub, subs) =>
+        cons (stasub_get_codomain_whnf sub, aux subs)
+      // end of [cons]
     | nil () => nil ()
   // end of [aux]
 in
@@ -1684,8 +1696,8 @@ in
       val s2vpss = d2cst_get_decarg (d2c)
       val (subs, s2e_tmp) = begin
         s2exp_template_instantiate (loc0, s2vpss, ts2ess, s2e_d2c)
-      end
-      val s2ess = aux subs
+      end // end of [val]
+      val s2ess = aux (subs)
     in
       d3exp_tmpcst (loc0, s2e_tmp, d2c, s2ess)
     end // end of [D2Ecst]
@@ -1694,16 +1706,19 @@ in
       val s2vpss = d2var_get_decarg (d2v)
       val (subs, s2e_tmp) = begin
         s2exp_template_instantiate (loc0, s2vpss, ts2ess, s2e_d2v)
-      end
-      val s2ess = aux subs
+      end // end of [val]
+      val s2ess = aux (subs)
     in
       d3exp_tmpvar (loc0, s2e_tmp, d2v, s2ess)
     end // end of [D2Evar]
-  | _ => begin
-      prerr_loc_error3 loc0;
-      $Deb.debug_prerrf (": %s: d2exp_tmpid_tr_up", @(THISFILENAME));
-      prerr ": the dynamic expression is expected to be a constant or a variable.";
-      prerr_newline ();
+  | _ => let
+      val () = prerr_loc_error3 (loc0)
+      val () = $Deb.debug_prerrf (": %s: d2exp_tmpid_tr_up", @(THISFILENAME))
+      val () = prerr
+        ": the dynamic expression is expected to be a constant or a variable."
+      // end of [val]
+      val () = prerr_newline ()
+    in
       $Err.abort {d3exp} ()
     end // end of [_]
 end (* end of [d2exp_tmpid_tr_up] *)
@@ -1730,6 +1745,7 @@ in
       | ~Some_vt s2e_addr => let
           val (s2e_at, s2ls, d2v_view, s2ls_view) =
             s2exp_addr_viewat_get_slablst (loc0, s2e_addr, s2ls_nt)
+          // end of [val]
           val d3ls = d3lab1lst_of_d3lab0lst_s2lablst (d3ls_nt, s2ls)
         in
           d3exp_viewat_ptr (loc0, s2e_at, d3e_ptr, d3ls, d2v_view, s2ls_view)
@@ -1750,8 +1766,9 @@ in
       val d3ls_nt = d2lablst_tr_up d2ls
       val s2ls_nt = s2lab0lst_of_d3lab0lst d3ls_nt
       val s2e_addr = d2var_get_addr_some (loc0, d2v)
-      val @(s2e_at, s2ls, d2v_view, s2ls_view) =
+      val (s2e_at, s2ls, d2v_view, s2ls_view) =
         s2exp_addr_viewat_get_slablst (loc0, s2e_addr, s2ls_nt)
+      // end of [val]
       val d3ls = d3lab1lst_of_d3lab0lst_s2lablst (d3ls_nt, s2ls)
     in
       d3exp_viewat_var (loc0, s2e_at, d2v, d3ls, d2v_view, s2ls_view)
@@ -1822,18 +1839,19 @@ in
       case+ d2ls of
       | cons _ => let
           val s2e_addr = d2var_get_addr_some (loc0, d2v)
-          val s2ls = begin
+          val s2ls =
             s2exp_addr_viewat_set_slablst (loc0, s2e_addr, s2ls_nt, s2e_r)
-          end // end of [val]
+          // end of [val]
           val d3ls = d3lab1lst_of_d3lab0lst_s2lablst (d3ls_nt, s2ls)
         in
           d3exp_viewat_assgn_var (loc0, d2v, d3ls, d3e_r)
         end // end of [cons]
       | nil _ => let
           val d2v_view = d2var_get_view_some (loc0, d2v)
-          val () = case+ d2var_get_typ (d2v_view) of
+          val () = (case+ d2var_get_typ (d2v_view) of
             | Some s2e_at => $SOL.s2exp_out_void_solve_at (loc0, s2e_at)
             | None () => ()
+          ) : void // end of [val]
           val () = d2var_set_typ (d2v_view, Some s2e_r)
         in
           d3exp_viewat_assgn_var (loc0, d2v, nil (), d3e_r)
@@ -2327,17 +2345,21 @@ end // end of [d2explstlst_tr_up]
 implement
 d2exp_cst_tr_up
   (loc0, d2c) = let
-  val s2e_d2c = d2cst_get_typ d2c
-  val s2vpss = d2cst_get_decarg d2c
+  val s2e_d2c = d2cst_get_typ (d2c)
+  val s2vpss = d2cst_get_decarg (d2c)
 in
   case+ s2vpss of
   | cons _ => let
-      val (subs, s2e_tmp) = begin
-        s2exp_template_instantiate (loc0, s2vpss, TMPS2EXPLSTLSTnil (), s2e_d2c)
-      end // end of [val]
+      val (
+        subs, s2e_tmp
+      ) = s2exp_template_instantiate
+        (loc0, s2vpss, TMPS2EXPLSTLSTnil (), s2e_d2c)
+      // end of [val]
       val s2ess = aux subs where {
-        fun aux (subs: List stasub_t): s2explstlst = case+ subs of
-          | cons (sub, subs) => cons (stasub_get_codomain_whnf sub, aux subs)
+        fun aux (
+          subs: List stasub_t
+        ) : s2explstlst = case+ subs of
+          | cons (sub, subs) => cons (stasub_get_codomain_whnf (sub), aux subs)
           | nil () => nil ()
       } // end of [where]
     in
@@ -2348,8 +2370,9 @@ end // end of [d2exp_cst_tr_up]
 
 (* ****** ****** *)
 
-fn d2exp_var_mut_tr_up
-  (loc0: loc_t, d2v: d2var_t): d3exp = let
+fn d2exp_var_mut_tr_up (
+  loc0: loc_t, d2v: d2var_t
+) : d3exp = let
 (*
   val () = begin
     print "d2exp_var_mut_tr_up: d2v = "; print d2v; print_newline ();
@@ -2363,8 +2386,9 @@ in
   d3exp_var (loc0, s2e, d2v)
 end // end of [d2exp_var_mut_tr_up]
 
-fn d2exp_var_nonmut_tr_up
-  (loc0: loc_t, d2v: d2var_t): d3exp = let
+fn d2exp_var_nonmut_tr_up (
+  loc0: loc_t, d2v: d2var_t
+) : d3exp = let
   val lin_d2v = d2var_get_lin (d2v)
   val s2e_d2v = d2var_get_typ_some (loc0, d2v)
 (*
@@ -2407,7 +2431,8 @@ in
 end // end of [d2exp_var_nonmut_tr_up]
 
 implement
-d2exp_var_tr_up (loc0, d2v) = begin case+ d2v of
+d2exp_var_tr_up
+  (loc0, d2v) = begin case+ d2v of
   | _ when d2var_is_mutable d2v => d2exp_var_mut_tr_up (loc0, d2v)
   | _ => d2exp_var_nonmut_tr_up (loc0, d2v)
 end // end of [d2exp_var_tr_up]

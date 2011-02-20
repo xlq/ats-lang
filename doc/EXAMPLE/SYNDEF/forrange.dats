@@ -1,5 +1,9 @@
 (*
-** some code for testing the "for ... in_range ... do ..." syntax
+**
+** Some code for testing the following syntax:
+**
+** for! ... in_range ... do ...
+**
 *)
 
 (* ****** ****** *)
@@ -58,6 +62,8 @@ val () = for!
 } // end of [val]
 val () = print_newline ()
 val () = println! ("The product of the array = ", prod)
+
+(* ****** ****** *)
 
 implement main () = ()
 

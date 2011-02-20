@@ -1,5 +1,9 @@
 (*
-** some code for testing the "for ... in_list ... do ..." syntax
+**
+** Some code for testing the following syntax:
+**
+** for! ... in_list ... do ...
+**
 *)
 
 (* ****** ****** *)
@@ -48,6 +52,8 @@ val () = for!
 } // end of [val]
 val () = print_newline ()
 val () = printf ("The product of the list = %i\n", @(prod))
+
+(* ****** ****** *)
 
 implement main () = ()
 
