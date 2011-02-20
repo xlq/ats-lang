@@ -9,7 +9,7 @@ ATSLIBQ="$(ATSHOME)"
 ifeq ("$(ATSHOME)","")
 ATSUSRQ="/usr"
 ATSLIBQ="/usr/lib/ats-anairiats-0.2.3"
-endif
+endif # end of [ifeq]
 
 ######
 
@@ -119,18 +119,17 @@ cleanall:: ; $(RMF) test19
 ######
 
 checkall:: test20
-test20: gtk-test20.dats ; $(ATSCC) -o $@ $< $(GTKFLAGS)
+test20: gtk-test20.dats ; $(ATSCC) -o $@ $< $(GTKFLAGS) $(ATSGTKLIB)
 cleanall:: ; $(RMF) test20
 
 ######
 
-RMF = rm -f
+RMF=rm -f
 
 ######
 
-clean::
-	$(RMF) *~
-	$(RMF) *_?ats.c
-	$(RMF) *_?ats.o
+clean:: ; $(RMF) *~
+clean:: ; $(RMF) *_?ats.c
+clean:: ; $(RMF) *_?ats.o
 
 ###### end of [Makefile] ######

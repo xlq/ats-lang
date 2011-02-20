@@ -62,10 +62,10 @@ overload ptrnul_of with ptrnul_of_slseg
 
 (* ****** ****** *)
 
-fun slist_make_nil {a:viewt@ype} (): slist (a, 0, null) // poly
+fun slist_make_nil {a:viewt@ype} ():<> slist (a, 0, null) // poly
 
 fun slseg_free_nil
-  {a:viewt@ype} {la,lz:addr} (xs: slseg (a, 0, la, lz)): void // poly
+  {a:viewt@ype} {la,lz:addr} (xs: slseg (a, 0, la, lz)):<> void // poly
 // end of [slseg_free_nil]
 
 (* ****** ****** *)
@@ -94,11 +94,12 @@ slsegopt_unsome {a:viewt@ype} {la:agz}
 
 (* ****** ****** *)
 
-fun{} // specific
-slseg_node_free
-  {a:viewt@ype} {la,lb:addr}
-  (pf: a? @ la | xs: slseg_node (a, la, lb)): void
-// end of [slseg_node_free]
+typedef
+slseg_node_free_type (a:viewt@ype) =
+  {la,lb:addr} (a? @ la | slseg_node (a, la, lb)) -<fun> void
+// end of [slseg_node_free_type]
+
+fun{a:viewt@ype} slseg_node_free : slseg_node_free_type (a)
 
 (* ****** ****** *)
 
@@ -179,12 +180,20 @@ slist_foreach_fun {n:nat} {l:addr}
   (xs: !slist (a, n, l), f: (&a) -<fun> void):<> void
 // end of [slist_foreach_fun]
 
-(* ****** ****** *)
-
 fun{a:viewt@ype} // generic
 slist_foreach_clo {v:view} {n:nat} {l:addr}
   (pf: !v | xs: !slist (a, n, l), f: &(!v | &a) -<clo> void):<> void
 // end of [slist_foreach_clo]
+
+(* ****** ****** *)
+
+fun{a:t@ype} // generic
+slist_free {n:nat} {l:addr} (xs: slist (a, n, l)):<> void
+
+fun{a:viewt@ype} // generic
+slist_free_fun {n:nat} {l:addr}
+  (xs: slist (a, n, l), f: (&a >> a?) -<fun> void):<> void
+// end of [slist_free_fun]
 
 (* ****** ****** *)
 

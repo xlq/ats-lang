@@ -2012,7 +2012,7 @@ local
       end // end of [nil]
   end // end of [part]
 
-in // end of [local]
+in // in of [local]
 
 implement{a}
 list_quicksort (xs, lte, env) = qsrt (lte, xs, env)

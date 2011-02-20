@@ -143,7 +143,8 @@ end // end of [list_vt_of_arraysize]
 (* ****** ****** *)
 
 implement{a}
-list_vt_copy (xs0) = let
+list_vt_copy
+  (xs0) = res where {
   fun loop {n:nat} .<n>.
     (xs: !list_vt (a, n), res: &List_vt a? >> list_vt (a, n))
     :<> void = case+ xs of
@@ -155,9 +156,8 @@ list_vt_copy (xs0) = let
       end // end of [cons]
     | list_vt_nil () => (fold@ xs; res := list_vt_nil ())
   var res: List_vt a // uninitialized
-in
-  loop (xs0, res); res
-end // end of [list_vt_copy]
+  val () = loop (xs0, res)
+} // end of [list_vt_copy]
 
 (* ****** ****** *)
 
@@ -165,10 +165,23 @@ implement{a}
 list_vt_free (xs0) = let
   fun loop {n:nat} .<n>. (xs: list_vt (a, n)):<> void =
     case+ xs of ~list_vt_cons (_, xs) => loop xs | ~list_vt_nil () => ()
-  // end of [list_vt_free]
+  // end of [loop]
 in
   loop (xs0)
 end // end of [list_vt_free]
+
+implement{a}
+list_vt_free_fun (xs0, f) = let
+  fun loop {n:nat} .<n>.
+    (xs: list_vt (a, n)):<cloref> void =
+    case+ xs of
+    | list_vt_cons (!p_x, xs1) =>
+        (f (!p_x); free@ {a} {0} (xs); loop (xs1))
+    | ~list_vt_nil () => ()
+  // end of [loop]
+in
+  loop (xs0)
+end // end of [list_vt_free_fun]
 
 (* ****** ****** *)
 
@@ -288,14 +301,17 @@ end // end of [list_vt_tabulate_fun]
 
 implement{a}
 list_vt_tabulate_clo
-  {v} {n} {f:eff} (pf1 | f, n) = let
+  {v} {n} {f:eff}
+  (pf1 | f, n) = ans where {
   typedef clo_t = (!v | natLt n) -<clo,f> a
   stavar l_f: addr; val p_f: ptr l_f = &f
   viewdef V = (v, clo_t @ l_f)
-  fn app (pf: !V | i: natLt n, p_f: !ptr l_f):<f> a = let
-    prval (pf1, pf2) = pf
-    val x = !p_f (pf1 | i)
-    prval () = pf := (pf1, pf2)
+  fn app (
+    pf: !V | i: natLt n, p_f: !ptr l_f
+  ) :<f> a = let
+    prval pfclo = pf.1
+    val x = !p_f (pf.0 | i)
+    prval () = pf.1 := pfclo
   in
     x
   end // end of [app]
@@ -303,9 +319,7 @@ list_vt_tabulate_clo
   val ans = list_vt_tabulate_funenv<a> {V} {ptr l_f} (pf | app, n, p_f)
   prval () = pf1 := pf.0
   prval () = view@ f := pf.1
-in
-  ans
-end // end of [list_vt_tabulate_clo]
+} // end of [list_vt_tabulate_clo]
 
 (* ****** ****** *)
 
@@ -340,7 +354,8 @@ end // end of [list_vt_foreach_fun]
 
 implement{a}
 list_vt_foreach_clo
-  {v} {n} {f:eff} (pf1 | xs, f) = let
+  {v} {n} {f:eff}
+  (pf1 | xs, f) = () where {
   typedef clo_t = (!v | &a) -<clo,f> void
   stavar l_f: addr; val p_f: ptr l_f = &f
   viewdef V = (v, clo_t @ l_f)
@@ -350,11 +365,9 @@ list_vt_foreach_clo
     prval () = pf := (pf1, pf2)
   } // end of [val]
   prval pf = (pf1, view@ f)
-  val ans = list_vt_foreach_funenv<a> {V} {ptr l_f} (pf | xs, app, p_f)
+  val () = list_vt_foreach_funenv<a> {V} {ptr l_f} (pf | xs, app, p_f)
   prval () = pf1 := pf.0 and () = view@ f := pf.1
-in
-  ans
-end // end of [list_vt_foreach_clo]
+} // end of [list_vt_foreach_clo]
 
 (* ****** ****** *)
 
@@ -412,7 +425,7 @@ local
 staload STDLIB = "libc/SATS/stdlib.sats"
 typedef cmp (a:viewt@ype) = (&a, &a) -<clo> Sgn
 
-in // end of [val]
+in // in of [local]
 
 implement{a}
 list_vt_mergesort

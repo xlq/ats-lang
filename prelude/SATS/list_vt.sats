@@ -88,11 +88,20 @@ list_vt_of_arraysize
 fun{a:t@ype}
 list_vt_copy {n:nat} (xs: !list_vt (a, n)):<> list_vt (a, n)
 
-fun{a:t@ype} list_vt_free (xs: List_vt a):<> void
-
 (* ****** ****** *)
 
-// this one is more general than [list_length] as [a] can be linear
+fun{a:t@ype}
+list_vt_free (xs: List_vt a):<> void
+
+fun{a:t@ype}
+list_vt_free_fun (
+  xs: List_vt a, f: (&a >> a?) -<fun> void
+) :<> void // end of [list_vt_free_fun]
+
+(* ****** ****** *)
+//
+// HX: this one is more general than [list_length] as [a] can be linear
+//
 fun{a:viewt@ype}
 list_vt_length {n:nat} (xs: !list_vt (a, n)):<> int n
 

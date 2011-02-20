@@ -149,4 +149,34 @@ slist_foreach_clo
 
 (* ****** ****** *)
 
+implement{a}
+slist_free (xs) =
+  if slist_isnot_nil (xs) then let
+    val p = ptr_of {a} (xs)
+    val (pfat | xs1) = slseg_uncons (xs)
+    val () = slseg_node_free<a> (pfat | xs)
+    val () = slist_free (xs1)
+  in
+    // nothing
+  end else slseg_free_nil (xs)
+// end of [slist_free]
+
+(* ****** ****** *)
+
+implement{a}
+slist_free_fun
+  (xs, f) =
+  if slist_isnot_nil (xs) then let
+    val p = ptr_of {a} (xs)
+    val (pfat | xs1) = slseg_uncons (xs)
+    val () = f (!p)
+    val () = slseg_node_free<a> (pfat | xs)
+    val () = slist_free_fun (xs1, f)
+  in
+    // nothing
+  end else slseg_free_nil (xs)
+// end of [slist_free_fun]
+
+(* ****** ****** *)
+
 (* end of [slist.dats] *)
