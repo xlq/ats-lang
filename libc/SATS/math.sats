@@ -48,130 +48,126 @@ macdef M_PI_4 = 0.78539816339744830962	/* pi/4 */
 
 (* ****** ****** *)
 
-fun ceil (d: double):<> double = "atslib_ceil"
-fun ceilf (f: float):<> float = "atslib_ceilf"
-fun ceill (ld: ldouble):<> ldouble = "atslib_ceill"
+fun ceil (d: double):<> double = "#atslib_ceil"
+fun ceilf (f: float):<> float = "#atslib_ceilf"
+fun ceill (ld: ldouble):<> ldouble = "#atslib_ceill"
 
 (* ****** ****** *)
 
-fun exp (d: double):<> double = "atslib_exp"
-fun expf (f: float):<> float = "atslib_expf"
-fun expl (ld: ldouble):<> ldouble = "atslib_expl"
+fun floor (d: double):<> double = "#atslib_floor"
+fun floorf (f: float):<> float = "#atslib_floorf"
+fun floorl (ld: ldouble):<> ldouble = "#atslib_floorl"
 
 (* ****** ****** *)
 
-fun floor (d: double):<> double = "atslib_floor"
-fun floorf (f: float):<> float = "atslib_floorf"
-fun floorl (ld: ldouble):<> ldouble = "atslib_floorl"
+fun round (d: double):<> double = "#atslib_round"
+fun roundf (f: float):<> float = "#atslib_roundf"
+fun roundl (ld: ldouble):<> ldouble = "#atslib_roundl"
 
 (* ****** ****** *)
 
-fun round (d: double):<> double = "atslib_round"
-fun roundf (f: float):<> float = "atslib_roundf"
-fun roundl (ld: ldouble):<> ldouble = "atslib_roundl"
+fun trunc (d: double):<> double = "#atslib_trunc"
+fun truncf (f: float):<> float = "#atslib_truncf"
+fun truncl (ld: ldouble):<> ldouble = "#atslib_truncl"
 
 (* ****** ****** *)
 
-fun trunc (d: double):<> double = "atslib_trunc"
-fun truncf (f: float):<> float = "atslib_truncf"
-fun truncl (ld: ldouble):<> ldouble = "atslib_truncl"
-
-(* ****** ****** *)
-
-fun fmod (d1: double, d2: double):<> double = "atslib_fmod"
-fun fmodf (f1: float, f2: float):<> float = "atslib_fmodf"
-fun fmodl (ld1: ldouble, ld2: ldouble):<> ldouble = "atslib_fmodl"
+fun fmod (d1: double, d2: double):<> double = "#atslib_fmod"
+fun fmodf (f1: float, f2: float):<> float = "#atslib_fmodf"
+fun fmodl (ld1: ldouble, ld2: ldouble):<> ldouble = "#atslib_fmodl"
 
 (* ****** ****** *)
 //
 // HX: already available in [prelude/SATS/float.sats]
 //
-fun sqrt (d: double):<> double = "atslib_sqrt"
-fun sqrtf (f: float):<> float = "atslib_sqrtf"
-fun sqrtl (ld: ldouble):<> ldouble = "atslib_sqrtl"
+fun sqrt (d: double):<> double = "#atslib_sqrt"
+fun sqrtf (f: float):<> float = "#atslib_sqrtf"
+fun sqrtl (ld: ldouble):<> ldouble = "#atslib_sqrtl"
 
-fun cbrt (d: double):<> double = "atslib_cbrt"
-fun cbrtf (f: float):<> float = "atslib_cbrtf"
-fun cbrtl (ld: ldouble):<> ldouble = "atslib_cbrtl"
+fun cbrt (d: double):<> double = "#atslib_cbrt"
+fun cbrtf (f: float):<> float = "#atslib_cbrtf"
+fun cbrtl (ld: ldouble):<> ldouble = "#atslib_cbrtl"
 
-fun pow (d1: double, d2: double):<> double = "atslib_pow"
-fun powf (f1: float, f2: float):<> float = "atslib_powf"
-fun powl (ld1: ldouble, ld2: ldouble):<> ldouble = "atslib_powl"
-
-(* ****** ****** *)
-
-fun log (d: double):<> double = "atslib_log"
-fun logf (f: float):<> float = "atslib_logf"
-fun logl (ld: ldouble):<> ldouble = "atslib_logl"
-
-fun log10 (d: double):<> double = "atslib_log10"
-fun log10f (f: float):<> float = "atslib_log10f"
-fun log10l (ld: ldouble):<> ldouble = "atslib_log10l"
+fun pow (d1: double, d2: double):<> double = "#atslib_pow"
+fun powf (f1: float, f2: float):<> float = "#atslib_powf"
+fun powl (ld1: ldouble, ld2: ldouble):<> ldouble = "#atslib_powl"
 
 (* ****** ****** *)
 
-fun acos (d: double):<> double = "atslib_acos"
-fun acosf (f: float):<> float = "atslib_acosf"
-fun acosl (ld: ldouble):<> ldouble = "atslib_acosl"
-
-fun acosh (d: double):<> double = "atslib_acosh"
-fun acoshf (f: float):<> float ="atslib_acoshf"
-fun acoshl (ld: ldouble):<> ldouble ="atslib_acoshl"
+fun exp (d: double):<> double = "#atslib_exp"
+fun expf (f: float):<> float = "#atslib_expf"
+fun expl (ld: ldouble):<> ldouble = "#atslib_expl"
 
 (* ****** ****** *)
 
-fun asin (d: double):<> double = "atslib_asin"
-fun asinf (f: float):<> float = "atslib_asinf"
-fun asinl (ld: ldouble):<> ldouble = "atslib_asinl"
+fun log (d: double):<> double = "#atslib_log"
+fun logf (f: float):<> float = "#atslib_logf"
+fun logl (ld: ldouble):<> ldouble = "#atslib_logl"
 
-fun asinh (d: double):<> double = "atslib_asinh"
-fun asinhf (f: float):<> float = "atslib_asinhf"
-fun asinhl (ld: ldouble):<> ldouble = "atslib_asinhl"
-
-(* ****** ****** *)
-
-fun atan (d: double):<> double = "atslib_atan"
-fun atanf (f: float):<> float = "atslib_atanf"
-fun atanl (ld: ldouble):<> ldouble = "atslib_atanl"
-
-fun atan2 (d1: double, d2: double):<> double = "atslib_atan2"
-fun atan2f (f1: float, f2: float):<> float = "atslib_atan2f"
-fun atan2l (ld1: ldouble, ld2: ldouble):<> ldouble = "atslib_atan2l"
+fun log10 (d: double):<> double = "#atslib_log10"
+fun log10f (f: float):<> float = "#atslib_log10f"
+fun log10l (ld: ldouble):<> ldouble = "#atslib_log10l"
 
 (* ****** ****** *)
 
-fun cos (d: double):<> double = "atslib_cos"
-fun cosf (f: float):<> float = "atslib_cosf"
-fun cosl (ld: ldouble):<> ldouble = "atslib_cosl"
+fun asin (d: double):<> double = "#atslib_asin"
+fun asinf (f: float):<> float = "#atslib_asinf"
+fun asinl (ld: ldouble):<> ldouble = "#atslib_asinl"
 
-fun cosh (d: double):<> double = "atslib_cosh"
-fun coshf (f: float):<> float = "atslib_coshf"
-fun coshl (ld: ldouble):<> ldouble = "atslib_coshl"
+fun acos (d: double):<> double = "#atslib_acos"
+fun acosf (f: float):<> float = "#atslib_acosf"
+fun acosl (ld: ldouble):<> ldouble = "#atslib_acosl"
 
-(* ****** ****** *)
+fun atan (d: double):<> double = "#atslib_atan"
+fun atanf (f: float):<> float = "#atslib_atanf"
+fun atanl (ld: ldouble):<> ldouble = "#atslib_atanl"
 
-fun sin (d: double):<> double = "atslib_sin"
-fun sinf (f: float):<> float = "atslib_sinf"
-fun sinl (ld: ldouble):<> ldouble = "atslib_sinl"
-
-fun sinh (d: double):<> double = "atslib_sinh"
-fun sinhf (f: float):<> float = "atslib_sinhf"
-fun sinhl (ld: ldouble):<> ldouble = "atslib_sinhl"
+fun atan2 (d1: double, d2: double):<> double = "#atslib_atan2"
+fun atan2f (f1: float, f2: float):<> float = "#atslib_atan2f"
+fun atan2l (ld1: ldouble, ld2: ldouble):<> ldouble = "#atslib_atan2l"
 
 (* ****** ****** *)
 
-fun tan (d: double):<> double = "atslib_tan"
-fun tanf (f: float):<> float = "atslib_tanf"
-fun tanl (ld: ldouble):<> ldouble = "atslib_tanl"
+fun asinh (d: double):<> double = "#atslib_asinh"
+fun asinhf (f: float):<> float = "#atslib_asinhf"
+fun asinhl (ld: ldouble):<> ldouble = "#atslib_asinhl"
 
-fun tanh (d: double):<> double = "atslib_tanh"
-fun tanhf (f: float):<> float = "atslib_tanhf"
-fun tanhl (ld: ldouble):<> ldouble = "atslib_tanhl"
+fun acosh (d: double):<> double = "#atslib_acosh"
+fun acoshf (f: float):<> float = "#atslib_acoshf"
+fun acoshl (ld: ldouble):<> ldouble = "#atslib_acoshl"
 
 (* ****** ****** *)
 
-fun isinf (d: double):<> int = "atslib_isinf"
-fun isnan (d: double):<> int = "atslib_isnan"
+fun sin (d: double):<> double = "#atslib_sin"
+fun sinf (f: float):<> float = "#atslib_sinf"
+fun sinl (ld: ldouble):<> ldouble = "#atslib_sinl"
+
+fun cos (d: double):<> double = "#atslib_cos"
+fun cosf (f: float):<> float = "#atslib_cosf"
+fun cosl (ld: ldouble):<> ldouble = "#atslib_cosl"
+
+fun tan (d: double):<> double = "#atslib_tan"
+fun tanf (f: float):<> float = "#atslib_tanf"
+fun tanl (ld: ldouble):<> ldouble = "#atslib_tanl"
+
+(* ****** ****** *)
+
+fun sinh (d: double):<> double = "#atslib_sinh"
+fun sinhf (f: float):<> float = "#atslib_sinhf"
+fun sinhl (ld: ldouble):<> ldouble = "#atslib_sinhl"
+
+fun cosh (d: double):<> double = "#atslib_cosh"
+fun coshf (f: float):<> float = "#atslib_coshf"
+fun coshl (ld: ldouble):<> ldouble = "#atslib_coshl"
+
+fun tanh (d: double):<> double = "#atslib_tanh"
+fun tanhf (f: float):<> float = "#atslib_tanhf"
+fun tanhl (ld: ldouble):<> ldouble = "#atslib_tanhl"
+
+(* ****** ****** *)
+
+fun isinf (d: double):<> int = "#atslib_isinf"
+fun isnan (d: double):<> int = "#atslib_isnan"
 
 (* ****** ****** *)
 
