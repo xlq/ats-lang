@@ -44,13 +44,9 @@ absviewtype slseg (
   a:viewt@ype, n:int, la:addr, lz:addr
 ) // end of [slseg]
 
-absviewtype slseg_node (a:viewt@ype, la:addr, lb:addr)
-
 viewtypedef slist
   (a:viewt@ype, n:int, l:addr) = slseg (a, n, l, null)
 // end of [slist]
-
-(* ****** ****** *)
 
 castfn ptr_of_slseg {a:viewt@ype}
   {n:int} {la,lz:addr} (xs: !slseg (a, n, la, lz)):<> ptr (la)
@@ -62,13 +58,8 @@ overload ptrnul_of with ptrnul_of_slseg
 
 (* ****** ****** *)
 
-fun slist_make_nil {a:viewt@ype} ():<> slist (a, 0, null) // poly
-
-fun slseg_free_nil
-  {a:viewt@ype} {la,lz:addr} (xs: slseg (a, 0, la, lz)):<> void // poly
-// end of [slseg_free_nil]
-
-(* ****** ****** *)
+absviewtype
+slseg_node (a:viewt@ype, la:addr, lb:addr)
 
 absviewtype
 slsegopt (a:viewt@ype+, la:addr)
@@ -83,12 +74,20 @@ overload ptrnul_of with ptrnul_of_slsegopt
 
 (* ****** ****** *)
 
-typedef slseg_node_alloc_type
+fun slist_make_nil {a:viewt@ype} ():<> slist (a, 0, null) // poly
+
+fun slseg_free_nil
+  {a:viewt@ype} {la,lz:addr} (xs: slseg (a, 0, la, lz)):<> void // poly
+// end of [slseg_free_nil]
+
+(* ****** ****** *)
+
+typedef
+slseg_node_alloc_type
   (a:viewt@ype) = () -<fun> [la:agez] slsegopt (a, la)
 fun{a:viewt@ype} slseg_node_alloc : slseg_node_alloc_type (a)
 
-prfun
-slsegopt_unsome {a:viewt@ype} {la:agz}
+prfun slsegopt_unsome {a:viewt@ype} {la:agz}
   (x: !slsegopt (a, la) >> slseg_node (a, la, lb)): #[lb:addr] (a? @ la | void)
 // end of [slsegopt_unsome]
 

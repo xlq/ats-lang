@@ -18,7 +18,9 @@
 
 (* ****** ****** *)
 
-staload POSLOC = "contrib/parcomb/SATS/posloc.sats"
+staload
+POSLOC = "contrib/parcomb/SATS/posloc.sats"
+macdef prerr_loc = $POSLOC.prerr_location
 
 (* ****** ****** *)
 
@@ -269,7 +271,7 @@ implement d1ec_make_val (loc, isrec, vds) = '{
 
 fn typerr_mismatch
   (loc: loc, t1: t1yp, t2: t1yp): void = begin
-  $POSLOC.prerr_location loc;
+  prerr_loc (loc);
   prerr ": exit(STFPL): type mismatch: ";
   prerr_t1yp t1; prerr " <> "; prerr_t1yp t2;
   prerr_newline ();
@@ -288,7 +290,7 @@ fun ctx_extend_arglst
         val loc = arg.a0rg_loc and sym = arg.a0rg_nam
         val t = (case+ arg.a0rg_typ of
           | Some t => trans1_typ t | None _ => abort{t1yp} (1) where {
-              val () = $POSLOC.prerr_location loc
+              val () = prerr_loc (loc)
               val () = prerr ": exit(STFPL)"
               val () = prerr ": the function arugment needs to be assigned a type."
               val () = prerr_newline ()
@@ -337,7 +339,7 @@ trans1_exp (e) =
             e1xp_make_app (loc0, e1, e2, t_res)
           end // end of [T1YPfun]
         | _ => abort {e1xp} (1) where {
-            val () = $POSLOC.prerr_location loc0
+            val () = prerr_loc (loc0)
             val () = prerr ": exit(STFPL)"
             val () = prerr ": the expression should be assigned a function type: ";
             val () = prerr_t1yp (t_fun)
@@ -357,7 +359,7 @@ trans1_exp (e) =
         ) : t1yp
         val t_res = (case+ oty of
           | Some t => trans1_typ (t) | None _ => abort {t1yp} (1) where {
-              val () = $POSLOC.prerr_location loc0
+              val () = prerr_loc (loc0)
               val () = prerr ": exit(STFPL)"
               val () = prerr ": the return type of a recursive function needs to be given."
               val () = prerr_newline ()
@@ -391,13 +393,13 @@ trans1_exp (e) =
             | (list_cons (_, es), list_cons (_, ts)) => loop (es, ts)
             | (list_nil (), list_nil ()) => ()
             | (list_cons _, list_nil ()) => abort (1) where {
-                val () = $POSLOC.prerr_location loc0
+                val () = prerr_loc (loc0)
                 val () = prerr ": exit(STFPL)"
                 val () = prerr ": arity mismatch: less arguments are expected."
                 val () = prerr_newline ()
               } // end of [list_cons, list_nil]
             | (list_nil (), list_cons _) => abort (1) where {
-                val () = $POSLOC.prerr_location loc0
+                val () = prerr_loc (loc0)
                 val () = prerr ": exit(STFPL)"
                 val () = prerr ": arity mismatch: more arguments are expected."
                 val () = prerr_newline ()
@@ -458,7 +460,7 @@ trans1_exp (e) =
     | E0XPproj (e, i) => let
         val [i:int] i = int1_of_int (i)
         val () = (if i >= 0 then () else begin
-          $POSLOC.prerr_location loc0;
+          prerr_loc (loc0);
           prerr ": exit(STFPL)"; prerr ": negative index is illegal";
           prerr_newline ();
           abort (1)
@@ -471,7 +473,7 @@ trans1_exp (e) =
                 case+ ts of
                 | list_cons (t, ts) => if i > 0 then loop (ts, i-1) else t
                 | list_nil () => begin
-                    $POSLOC.prerr_location loc0;
+                    prerr_loc (loc0);
                     prerr ": exit(STFPL)";
                     prerr ": index is too large for the tuple expression.";
                     prerr_newline ();
@@ -480,7 +482,7 @@ trans1_exp (e) =
               // end of [loop]    
             } // end of [T1YPtup]
           | _ => begin
-              $POSLOC.prerr_location loc0;
+              prerr_loc (loc0);
               prerr ": exit(STFPL)";
               prerr ": a tuple type for the expression is expected: ";
               prerr_t1yp t_tup;
@@ -514,7 +516,7 @@ trans1_exp (e) =
           prval () = opt_unsome {v1ar} (res) in e1xp_make_var (loc0, res)
         end else let
           prval () = opt_unnone {v1ar} (res)
-          val () = $POSLOC.prerr_location loc0
+          val () = prerr_loc (loc0)
           val () = prerr ": exit(STFPL)"
           val () = (prerr ": unbound variable ["; prerr sym; prerr "]")
           val () = prerr_newline ()
@@ -562,14 +564,15 @@ trans1_exp (e) =
     case+ 0 of
     | _ when isrec => let
         val xs = aux (vds) where {
-          fun aux {n:nat} .<n>.
-            (vds: list (v0aldec, n)): list (v1ar, n) = case+ vds of
+          fun aux {n:nat} .<n>. (
+            vds: list (v0aldec, n)
+          ) : list (v1ar, n) = case+ vds of
             | list_cons (vd, vds) => let
                 val loc = vd.v0aldec_loc and sym = vd.v0aldec_nam
                 val t_val = (case+ vd.v0aldec_ann of
                   | Some t => trans1_typ t
                   | None () => abort (1) where {
-                      val () = $POSLOC.prerr_location loc
+                      val () = prerr_loc (loc)
                       val () = prerr ": exit(STFPL)"
                       val () = prerr ": a recursive declaration needs to be annotated with a type."
                       val () = prerr_newline ()

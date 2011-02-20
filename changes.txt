@@ -20,6 +20,10 @@ ats-lang-anairiats-0.2.4:
     naming convention.
 13. Starting to build API in $ATSHOME/contrib/linux for supporting linux
     kernel programming. This is going to be a long journey!
+14: Renaming: fun__main -> funenv
+    Renaming: fun_tsz__main -> funenv_tsz
+    Renaming: clo_tsz__main -> cloenv_tsz
+    Renaming: __main -> _funenv (for various higher-order functions)
 
 ########################################################################
 
