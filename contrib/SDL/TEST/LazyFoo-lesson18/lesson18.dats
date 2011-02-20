@@ -305,7 +305,7 @@ implement main () = () where {
     , @(7, 19, 6, 1)  
     ) // end of [val]
     val () = Dot_init (myDot, 0, 0, boxlst1)
-    val boxlst2 = list_map_fun<box,box> (
+    val boxlst2 = list_map_fun<box><box> (
       boxlst1, lam bx =<fun> @(bx.0 + 20, bx.1 + 20, bx.2, bx.3)
     )
     val boxlst2 = list_of_list_vt (boxlst2)

@@ -36,6 +36,13 @@
 //
 (* ****** ****** *)
 
+(*
+abst@ype (* HX: template parameters *)
+KERNEL = $extype "KERNEL" and USER = $extype "USER"
+*)
+
+(* ****** ****** *)
+
 absview kfree_addr_view (l:addr)
 stadef kfree_v = kfree_addr_view
 

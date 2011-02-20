@@ -9,7 +9,7 @@
 (*
 ** ATS - Unleashing the Potential of Types!
 **
-** Copyright (C) 2002-2008 Hongwei Xi, Boston University
+** Copyright (C) 2002-2010 Hongwei Xi, Boston University
 **
 ** All rights reserved
 **
@@ -59,7 +59,8 @@ viewdef slist_v (a: viewt@ype, l:addr, n:int) = slseg_v (a, l, null, n)
 (* ****** ****** *)
 
 prfun slseg_v_extend
-{a:viewt@ype} {l1,l2,l3:addr} {n:nat} (
+  {a:viewt@ype}
+  {l1,l2,l3:addr} {n:nat} (
   pf_sl: slseg_v (a, l1, l2, n)
 , pf_gc: free_gc_v (@(a, ptr), l2)
 , pf_at: (a, ptr l3) @ l2
@@ -69,7 +70,7 @@ prfun slseg_v_extend
 (* ****** ****** *)
 
 prfun slseg_v_append
-{a:viewt@ype} {l1,l2,l3:addr} {n1,n2:nat} (
+  {a:viewt@ype} {l1,l2,l3:addr} {n1,n2:nat} (
   pf1_sl: slseg_v (a, l1, l2, n1), pf2_sl: slseg_v (a, l2, l3, n2)
 ) :<prf> slseg_v (a, l1, l3, n1+n2) // end of [slseg_v_append]
 

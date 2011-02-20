@@ -44,6 +44,80 @@ staload "contrib/linux/utils/SATS/slist.sats"
 
 (* ****** ****** *)
 
+implement
+slist_make_nil
+  {a} () = __cast (null) where {
+  extern castfn __cast (p: ptr null):<> slist (a, 0, null)
+} // end of [slist_make_nil]
+
+implement
+slseg_free_nil
+  {a} {la,lz} (xs) = let
+  val ptr = ptrnul_of (xs) in (* nothing *)
+end // end of [slist_free_nil]
+
+(* ****** ****** *)
+
+implement{a}
+slist_length (xs) = let
+  fun loop {i,j:nat}
+    {la:addr} .<i>. (
+    xs: !slist (a, i, la), j: size_t (j)
+  ) :<> size_t (i+j) =
+    if slist_isnot_nil (xs) then let
+      val (pfat | xs1) = slseg_uncons (xs)
+      val res = loop (xs1, j+1)
+      prval () = slseg_fold (pfat | xs, xs1)
+    in
+      res
+    end else j // end of [if]
+  // end of [loop]
+in
+  loop (xs, 0)
+end // end of [slist_length]
+
+(* ****** ****** *)
+
+implement{a}
+slseg_split
+  {n,i} {la,lz} (xs, i) = let
+  extern castfn split0 (
+    xs: !slseg (a, n, la, lz) >> slseg (a, 0, la, la)
+  ) :<> slseg (a, n, la, lz)
+in
+  if i > 0 then let
+    val (pfat | xs1) = slseg_uncons<a> (xs)
+    val res = slseg_split (xs1, i-1)
+    prval () = slseg_fold (pfat | xs, xs1)
+  in
+    res
+  end else
+    split0 (xs)
+  // end of [if]
+end // end of [slist_split]
+
+implement{a}
+slist_split
+  {n,i} {la} (xs, i) = let
+  extern castfn split0 (
+    xs: !slist (a, n, la) >> slseg (a, 0, la, la)
+  ) :<> slist (a, n, la)
+in
+  if i > 0 then (
+    if slist_isnot_nil (xs) then let
+      val (pfat | xs1) = slseg_uncons<a> (xs)
+      val res = slist_split (xs1, i-1)
+      prval () = slseg_fold (pfat | xs, xs1)
+    in
+      res
+    end else
+      slist_make_nil ()
+    // end of [if]
+  ) else split0 (xs)
+end // end of [slist_split]
+
+(* ****** ****** *)
+
 implement{a}
 slist_foreach_clo 
   (pf | xs, f) =

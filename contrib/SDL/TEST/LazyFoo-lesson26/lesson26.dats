@@ -52,7 +52,7 @@ implement apply_surface
 
 (* ****** ****** *)
 
-viewtypedef Window (l:addr) = struct {
+viewtypedef Window (l:addr) = @{
   windowed= bool
 , windowOK= bool
 , pfscr= Video_v l

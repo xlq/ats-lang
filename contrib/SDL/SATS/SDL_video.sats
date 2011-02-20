@@ -103,8 +103,8 @@ overload ref_isnot_null with SDL_Surface_ref_isnot_null
 
 (* ****** ****** *)
 
-fun SDL_Surface_flags {l:agz} (sf: !SDL_Surface_ref l): Uint32
-  = "#atsctrb_SDL_Surface_flags"
+fun SDL_Surface_flags {l:agz}
+  (sf: !SDL_Surface_ref l): Uint32 = "#atsctrb_SDL_Surface_flags"
 
 fun SDL_Surface_format {l:agz} (
     sf: !SDL_Surface_ref l
@@ -115,14 +115,14 @@ fun SDL_Surface_format {l:agz} (
   ) = "#atsctrb_SDL_Surface_format"
 // end of [SDL_Surface_format]
 
-fun SDL_Surface_w {l:agz} (sf: !SDL_Surface_ref l): int
-  = "#atsctrb_SDL_Surface_w"
+fun SDL_Surface_w {l:agz}
+  (sf: !SDL_Surface_ref l): int = "#atsctrb_SDL_Surface_w"
 
-fun SDL_Surface_h {l:agz} (sf: !SDL_Surface_ref l): int
-  = "#atsctrb_SDL_Surface_h"
+fun SDL_Surface_h {l:agz}
+  (sf: !SDL_Surface_ref l): int = "#atsctrb_SDL_Surface_h"
 
-fun SDL_Surface_pitch {l:agz} (sf: !SDL_Surface_ref l): Uint16
-  = "#atsctrb_SDL_Surface_pitch"
+fun SDL_Surface_pitch {l:agz}
+  (sf: !SDL_Surface_ref l): Uint16 = "#atsctrb_SDL_Surface_pitch"
 
 fun SDL_Surface_clip_rect {l:agz} (
     sf: !SDL_Surface_ref l
@@ -133,8 +133,8 @@ fun SDL_Surface_clip_rect {l:agz} (
   ) = "#atsctrb_SDL_Surface_clip_rect"
 // end of [SDL_Surface_clip_rect]
 
-fun SDL_Surface_refcount {l:agz} (sf: !SDL_Surface_ref l): int
-  = "#atsctrb_SDL_Surface_refcount"
+fun SDL_Surface_refcount {l:agz}
+  (sf: !SDL_Surface_ref l): int = "#atsctrb_SDL_Surface_refcount"
 
 (* ****** ****** *)
 
@@ -253,13 +253,14 @@ fun SDL_UpdateRects {l:agz} {n:nat}
   
 (* ****** ****** *)
 
-fun SDL_Flip {l:agz} (screen: !SDL_Surface_ref l): int (*err*)
-  = "#atsctrb_SDL_Flip"
+fun SDL_Flip {l:agz}
+  (screen: !SDL_Surface_ref l): int (*err*) = "#atsctrb_SDL_Flip"
 
 (* ****** ****** *)
 
-fun SDL_SetGamma (red: float, green: float, blue: float): int (*err*)
-  = "atsctrb_SDL_SetGamma"
+fun SDL_SetGamma (
+  red: float, green: float, blue: float
+) : int (*err*) = "atsctrb_SDL_SetGamma"
 
 (* ****** ****** *)
 
@@ -386,12 +387,16 @@ fun SDL_DisplayFormatAlpha {l:agz}
 
 (* ****** ****** *)
 
-fun SDL_WM_SetCaption (title: Stropt, icon: Stropt): void
-  = "#atsctrb_SDL_WM_SetCaption"
+fun SDL_WM_GetCaption (
+  title: &Stropt? >> Stropt, icon: &Stropt? >> Stropt
+) : void = "#atsctrb_SDL_WM_GetCaption"
 
-fun SDL_WM_GetCaption
-  (title: &Stropt? >> Stropt, icon: &Stropt? >> Stropt): void
-  = "#atsctrb_SDL_WM_GetCaption"
+(*
+** HX: the passed string can be freed after the call
+*)
+fun SDL_WM_SetCaption
+  (title: Stropt, icon: Stropt): void= "#atsctrb_SDL_WM_SetCaption"
+// end of [SDL_WM_SetCaption]
 
 (* ****** ****** *)
 

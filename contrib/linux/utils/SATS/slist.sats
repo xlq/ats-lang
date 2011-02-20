@@ -52,32 +52,63 @@ viewtypedef slist
 
 (* ****** ****** *)
 
-castfn ptr_of_slseg
-  {a:viewt@ype} {n:int} {la,lz:addr} (xs: !slseg (a, n, la, lz)):<> ptr (la)
+castfn ptr_of_slseg {a:viewt@ype}
+  {n:int} {la,lz:addr} (xs: !slseg (a, n, la, lz)):<> ptr (la)
 overload ptr_of with ptr_of_slseg
+
+castfn ptrnul_of_slseg
+  {a:viewt@ype} {la,lz:addr} (xs: slseg (a, 0, la, lz)):<> ptr (la)
+overload ptrnul_of with ptrnul_of_slseg
 
 (* ****** ****** *)
 
+fun slist_make_nil {a:viewt@ype} (): slist (a, 0, null) // poly
+
 fun slseg_free_nil
-  {a:viewt@ype} {la,lz:addr} (xs: slseg (a, 0, la, lz)): void
+  {a:viewt@ype} {la,lz:addr} (xs: slseg (a, 0, la, lz)): void // poly
 // end of [slseg_free_nil]
 
 (* ****** ****** *)
 
-fun slseg_node_free
+absviewtype
+slsegopt (a:viewt@ype+, la:addr)
+
+castfn ptr_of_slsegopt
+  {a:viewt@ype} {la:addr} (x: !slsegopt (a, la)):<> ptr (la)
+overload ptr_of with ptr_of_slsegopt
+
+castfn ptrnul_of_slsegopt
+  {a:viewt@ype} {la:addr} (x: slsegopt (a, null)):<> ptr (null)
+overload ptrnul_of with ptrnul_of_slsegopt
+
+(* ****** ****** *)
+
+typedef slseg_node_alloc_type
+  (a:viewt@ype) = () -<fun> [la:agez] slsegopt (a, la)
+fun{a:viewt@ype} slseg_node_alloc : slseg_node_alloc_type (a)
+
+prfun
+slsegopt_unsome {a:viewt@ype} {la:agz}
+  (x: !slsegopt (a, la) >> slseg_node (a, la, lb)): #[lb:addr] (a? @ la | void)
+// end of [slsegopt_unsome]
+
+(* ****** ****** *)
+
+fun{} // specific
+slseg_node_free
   {a:viewt@ype} {la,lb:addr}
   (pf: a? @ la | xs: slseg_node (a, la, lb)): void
 // end of [slseg_node_free]
 
 (* ****** ****** *)
 
-fun slist_is_nil
-  {a:viewt@ype} {n:nat} {l:addr}
+fun slist_is_nil // poly
+  {a:viewt@ype} {n:int} {l:addr}
   (xs: !slist (a, n, l)):<> bool (n==0) = "atspre_ptr_is_null"
 // end of [slist_is_nil]
 
-fun slist_isnot_nil
-  {a:viewt@ype} {n:nat} {l:addr}
+fun slist_isnot_nil // poly
+  {a:viewt@ype} {n:int} {l:addr}
   (xs: !slist (a, n, l)):<> bool (n > 0) = "atspre_ptr_isnot_null"
 // end of [slist_isnot_nil]
 
@@ -93,22 +124,57 @@ slseg_fold
 , t: slseg (a, n, lb, lz)
 ) :<prf> void // end of [slseg_fold]
 
-(* ****** ****** *)
-
-fun{a:viewt@ype}
-slseg_cons {n:nat} {la,lb1:addr} {lb2,lz:addr} (
-  pf: a @ la
-| h: !slseg_node (a, la, lb1) >> slseg (a, n+1, la, lz), t: slseg (a, n, lb2, lz)
-) :<> void // end of [slseg_cons]
-
-fun{a:viewt@ype}
-slseg_uncons {n:pos} {la,lz:addr} (
-  xs: !slseg (a, n, la, lz) >> slseg_node (a, la, lb)
-) :<> #[lb:addr] (a @ la | slseg (a, n-1, lb, lz)) // end of [slseg_uncons]
+(*
+prfun slseg_unfold :  this is just the proof version of [slseg_uncons]
+*)
 
 (* ****** ****** *)
 
-fun{a:viewt@ype}
+typedef
+slseg_cons_type
+  (a:viewt@ype) =
+  {n:nat} {la,lb1:addr} {lb2,lz:addr} (
+  a @ la
+| slseg_node (a, la, lb1), slseg (a, n, lb2, lz)
+) -<fun>
+  slseg (a, n+1, la, lz)
+// end of [slseg_cons_type]
+
+fun{a:viewt@ype} slseg_cons : slseg_cons_type (a) // specific
+
+(* ****** ****** *)
+
+typedef
+slseg_uncons_type
+  (a:viewt@ype) =
+  {n:pos} {la,lz:addr} (
+  !slseg (a, n, la, lz) >> slseg_node (a, la, lb)
+) -<fun> #[lb:addr] (
+  a @ la | slseg (a, n-1, lb, lz)
+) // end of [slseg_uncons_type]
+
+fun{a:viewt@ype} slseg_uncons : slseg_uncons_type (a) // specific
+
+(* ****** ****** *)
+
+fun{a:viewt@ype} // generic
+slist_length {n:nat} {la:addr} (xs: !slist (a, n, la)):<> size_t (n)
+
+(* ****** ****** *)
+
+fun{a:viewt@ype} // generic
+slseg_split {n,i:nat | i <= n} {la,lz:addr} (
+  xs: !slseg (a, n, la, lz) >> slseg (a, i, la, lm), i: size_t (i)
+) : #[lm:addr] slseg (a, n-i, lm, lz)
+
+fun{a:viewt@ype} // generic
+slist_split {n,i:nat} {la:addr} (
+  xs: !slist (a, n, la) >> slseg (a, k, la, lm), i: size_t (i)
+) : #[k:int;lm:addr | k==min(n,i)] slist (a, n-k, lm)
+
+(* ****** ****** *)
+
+fun{a:viewt@ype} // generic
 slist_foreach_clo {v:view} {n:nat} {l:addr}
   (pf: !v | xs: !slist (a, n, l), f: &(!v | &a) -<clo> void):<> void
 // end of [slist_foreach_clo]
