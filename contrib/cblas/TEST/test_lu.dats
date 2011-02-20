@@ -437,21 +437,18 @@ fun{a1,a2:t@ype} test
     print "A =\n"; print_matrix<a2> (A1, N, N); print_newline ()
   end // end of [val]
 //
-  prval pf = unit_v ()
   val () =
     matrix_iforeach_fun<a2>
-      (pf | A, f, N, N) where {
+      (A, f, N, N) where {
     val N = size1_of_int1 (N)
     fn f (
-        pf: !unit_v
-      | i: sizeLt N, j: sizeLt N, x: &a2
-      ) :<> void = let
+     i: sizeLt N, j: sizeLt N, x: &a2
+    ) :<> void = let
       val i = int_of_size i and j = int_of_size j
     in
       x := of_double<a2> (double_of (min (i, j) + 2))
     end // end of [f]
   } // end of [val]
-  prval unit_v () = pf
 //
   local
 //

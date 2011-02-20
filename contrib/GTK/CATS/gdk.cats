@@ -28,10 +28,10 @@
 */
 
 /* ****** ****** */
-
+//
 // Author of the file: Hongwei Xi (hwxi AT cs DOT bu DOT edu)
 // Starting time: April, 2010
-
+//
 /* ****** ****** */
 
 #ifndef ATSCTRB_GDK_CATS
@@ -64,7 +64,8 @@
 ATSinline()
 ats_void_type
 atsctrb_gdk_color3_set (
-  ats_ptr_type p_color, ats_uint_type r, ats_uint_type b, ats_uint_type g
+  ats_ptr_type p_color
+, ats_uint_type r, ats_uint_type b, ats_uint_type g
 ) {
   ((GdkColor*)p_color)->red = (guint16)r ;
   ((GdkColor*)p_color)->blue = (guint16)b ;
@@ -76,7 +77,8 @@ ATSinline()
 ats_void_type
 atsctrb_gdk_color4_set (
   ats_ptr_type p_color
-, ats_uint_type pix, ats_uint_type r, ats_uint_type b, ats_uint_type g
+, ats_uint_type pix
+, ats_uint_type r, ats_uint_type b, ats_uint_type g
 ) {
   ((GdkColor*)p_color)->pixel = (guint32)pix ;
   ((GdkColor*)p_color)->red = (guint16)r ;

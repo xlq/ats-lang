@@ -35,166 +35,119 @@ all:: cleanall
 checkall::
 cleanall:: clean
 
-
 ######
 
 checkall:: test1-1
-cleanall:: test1-1
 test1-1: cairo-test1-1.dats
-	$(ATSCC) -o test1-1 $(XRFLAGS) cairo-test1-1.dats \
-     && ./test1-1
+	$(ATSCC) -o $@ $(XRFLAGS) $< && ./$@
+cleanall:: ; $(RMF) test1-1 cairo-test1-1.png
 
 checkall:: test1-2
-cleanall:: test1-2
-test1-2: cairo-test1-2.dats
-	$(ATSCC) -o test1-2 $(XRFLAGS) cairo-test1-2.dats \
-     # && ./test1-2
+test1-2: cairo-test1-2.dats ; $(ATSCC) -o $@ $(GTKFLAGS) $<
+cleanall:: ; $(RMF) test1-2
 
 ######
 
 checkall:: test2
-test2: cairo-test2.dats
-	$(ATSCC) -o $@ $(XRFLAGS) $< && ./@
-cleanall:: test2
+test2: cairo-test2.dats ; $(ATSCC) -o $@ $(XRFLAGS) $< && ./$@
+cleanall:: ; $(RMF) test2 cairo-test2.png
+
 
 checkall:: test3
-test3: cairo-test3.dats
-	$(ATSCC) -o $@ $(XRFLAGS) $< -lm && ./@
-cleanall:: test3
+test3: cairo-test3.dats ; $(ATSCC) -o $@ $(XRFLAGS) $< -lm && ./$@
+cleanall:: ; $(RMF) test3 cairo-test3.png
 
 checkall:: test4
-test4: cairo-test4.dats
-	$(ATSCC) -o $@ $(XRFLAGS) $< -lm && ./@
-cleanall:: test4
+test4: cairo-test4.dats ; $(ATSCC) -o $@ $(XRFLAGS) $< -lm && ./$@
+cleanall:: ; $(RMF) test4 cairo-test4.png
+
 
 checkall:: test5
-test5: cairo-test5.dats
-	$(ATSCC) -o $@ $(XRFLAGS) $< -lm && ./@
-cleanall:: test5
+test5: cairo-test5.dats ; $(ATSCC) -o $@ $(XRFLAGS) $< -lm && ./$@
+cleanall:: ; $(RMF) test5 cairo-test5.png
 
 checkall:: test6
-test6: cairo-test6.dats
-	$(ATSCC) -o $@ $(XRFLAGS) $< && ./@
-cleanall:: test6
+test6: cairo-test6.dats ; $(ATSCC) -o $@ $(XRFLAGS) $< && ./$@
+cleanall:: ; $(RMF) test6 cairo-test6.png
 
 ######
 
 checkall:: test7-1
-cleanall:: test7-1
 test7-1: cairo-test7-1.dats
-	$(ATSCC) -o test7-1 $(XRFLAGS) cairo-test7-1.dats \
-     && ./test7-1
+	$(ATSCC) -o $@ $(XRFLAGS) $< && ./$@
+cleanall:: ; $(RMF) test7-1 cairo-test7-1.png
 
 checkall:: test7-2
-cleanall:: test7-2
-test7-2: cairo-test7-2.dats
-	$(ATSCC) -o test7-2 `pkg-config --cflags --libs gtk+-2.0` cairo-test7-2.dats
+test7-2: cairo-test7-2.dats ; $(ATSCC) -o $@ $(GTKFLAGS) $<
+cleanall:: ; $(RMF) test7-2
 
 ######
 
 checkall:: test8-1
-cleanall:: test8-1
 test8-1: cairo-test8-1.dats
-	$(ATSCC) -o test8-1 $(XRFLAGS) cairo-test8-1.dats -lm \
-     && ./test8-1
+	$(ATSCC) -o $@ $(XRFLAGS) $< -lm && ./$@
+cleanall:: ; $(RMF) test8-1 cairo-test8-1.png
 
 checkall:: test8-2
-cleanall:: test8-2
 test8-2: cairo-test8-2.dats
-	$(ATSCC) -o test8-2 $(XRFLAGS) cairo-test8-2.dats -lX11 -lm \
-     # && ./test8-2
+	$(ATSCC) -o test8-2 $(XRFLAGS) cairo-test8-2.dats -lX11 -lm
+cleanall:: ; $(RMF) test8-2
 
 checkall:: test8-3
-cleanall:: test8-3
 test8-3: cairo-test8-3.dats
-	$(ATSCC) -o test8-3 $(GTKFLAGS) cairo-test8-3.dats -lX11 -lm \
-     # && ./test8-3
+	$(ATSCC) -o $@ $(GTKFLAGS) $< -lX11 -lm
+cleanall:: ; $(RMF) test8-3
 
 ######
 
 checkall:: test9
-cleanall:: test9
-test9: cairo-test9.dats
-	$(ATSCC) -o test9 $(GTKFLAGS) cairo-test9.dats
+test9: cairo-test9.dats ; $(ATSCC) -o $@ $(GTKFLAGS) $<
+cleanall:: ; $(RMF) test9
 
 ######
 
 checkall:: test10
-cleanall:: test10
-test10: cairo-test10.dats
-	$(ATSCC) -o test10 $(XRFLAGS) cairo-test10.dats \
-     && ./test10
+test10: cairo-test10.dats ; $(ATSCC) -o $@ $(XRFLAGS) $< && ./$@
+cleanall:: ; $(RMF) test10 cairo-test10.ps
 
 ######
 
 checkall:: test11
-cleanall:: test11
-test11: cairo-test11.dats
-	$(ATSCC) -o test11 $(XRFLAGS) cairo-test11.dats \
-     && ./test11
+test11: cairo-test11.dats ; $(ATSCC) -o $@ $(XRFLAGS) $< && ./$@
+cleanall:: ; $(RMF) test11 cairo-test11.png
 
 ######
 
 checkall:: test12
-cleanall:: test12
-test12: cairo-test12.dats
-	$(ATSCC) -o test12 $(GTKFLAGS) cairo-test12.dats \
+test12: cairo-test12.dats ; $(ATSCC) -o $@ $(GTKFLAGS) $<
+cleanall:: ; $(RMF) test12
 
 ######
 
 checkall:: test13
-cleanall:: test13
-test13: cairo-test13.dats
-	$(ATSCC) -o test13 $(XRFLAGS) cairo-test13.dats \
-     && ./test13
+test13: cairo-test13.dats ; $(ATSCC) -o $@ $(XRFLAGS) $< && ./$@
+cleanall:: ; $(RMF) test13 cairo-test13.png
 
 checkall:: test14
-cleanall:: test14
-test14: cairo-test14.dats
-	$(ATSCC) -o test14 $(XRFLAGS) cairo-test14.dats \
-     && ./test14
+test14: cairo-test14.dats ; $(ATSCC) -o $@ $(XRFLAGS) $< && ./$@
+cleanall:: ; $(RMF) test14 cairo-test14.png
 
 checkall:: test15
-cleanall:: test15
-test15: cairo-test15.dats
-	$(ATSCC) -o test15 $(XRFLAGS) cairo-test15.dats \
-     && ./test15
+test15: cairo-test15.dats ; $(ATSCC) -o $@ $(XRFLAGS) $< && ./$@
+cleanall:: ; $(RMF) test15 cairo-test15.png
 
 checkall:: test16
-cleanall:: test16
-test16: cairo-test16.dats
-	$(ATSCC) -o test16 $(XRFLAGS) cairo-test16.dats \
-     && ./test16
+test16: cairo-test16.dats ; $(ATSCC) -o $@ $(XRFLAGS) $< && ./$@
+cleanall:: ; $(RMF) test16 cairo-test16.png
 
 ######
 
-RMF = rm -f
+RMF=rm -f
 
 ######
 
-clean::
-	$(RMF) *~
-	$(RMF) *_?ats.c *_?ats.o
-
-cleanall: clean
-	$(RMF) test1-1 cairo-test1-1.png
-	$(RMF) test1-2
-	$(RMF) test2 cairo-test2.png
-	$(RMF) test3 cairo-test3.png
-	$(RMF) test4 cairo-test4.png
-	$(RMF) test5 cairo-test5.png
-	$(RMF) test6 cairo-test6.png
-	$(RMF) test7-1 cairo-test7-1.png
-	$(RMF) test7-2
-	$(RMF) test8-1 cairo-test8-1.png
-	$(RMF) test8-2 test8-3
-	$(RMF) test9
-	$(RMF) test10 cairo-test10.ps
-	$(RMF) test11 cairo-test11.png
-	$(RMF) test12
-	$(RMF) test13 cairo-test13.png
-	$(RMF) test14 cairo-test14.png
-	$(RMF) test15 cairo-test15.png
-	$(RMF) test16 cairo-test16.png
+clean:: ; $(RMF) *~
+clean:: ; $(RMF) *_?ats.c
+clean:: ; $(RMF) *_?ats.o
 
 ###### end of [Makefile] ######
