@@ -37,7 +37,7 @@
 (* ****** ****** *)
 
 %{#
-#include "contrib/linux/CATS/linux/module.cats"
+#include "contrib/linux/linux/CATS/module.cats"
 %} // end of [%{#]
 
 (* ****** ****** *)

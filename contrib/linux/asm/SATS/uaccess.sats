@@ -37,7 +37,7 @@
 (* ****** ****** *)
 
 %{#
-#include "contrib/linux/CATS/asm/uaccess.cats"
+#include "contrib/linux/asm/CATS/uaccess.cats"
 %} // end of [%{#]
 
 (* ****** ****** *)
@@ -60,4 +60,4 @@ fun copy_from_user {n:nat}
 
 (* ****** ****** *)
 
-(* end of [asm.sats] *)
+(* end of [uaccess.sats] *)

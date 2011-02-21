@@ -36,7 +36,7 @@
 (* ****** ****** *)
 
 %{#
-#include "contrib/linux/CATS/linux/slab.cats"
+#include "contrib/linux/linux/CATS/slab.cats"
 %} // end of [%{#]
 
 (* ****** ****** *)

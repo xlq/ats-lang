@@ -113,11 +113,10 @@ array_ptr_initialize_elt {n:nat} (
 
 fun{a:viewt@ype}
 array_ptr_initialize_fun
-  {v:view} {n:nat} (
-  pf: !v
-| base: &(@[a?][n]) >> @[a][n]
+  {n:nat} (
+  base: &(@[a?][n]) >> @[a][n]
 , asz: size_t n
-, f: (!v | sizeLt n, &(a?) >> a) -<fun> void
+, f: (sizeLt n, &(a?) >> a) -<fun> void
 ) :<> void // end of [array_ptr_initialize_fun]
 
 fun{a:viewt@ype}
@@ -133,11 +132,10 @@ array_ptr_initialize_clo
 
 fun{a:viewt@ype}
 array_ptr_clear_fun
-  {v:view} {n:nat} (
-  pf: !v
-| base: &(@[a][n]) >> @[a?][n]
+  {n:nat} (
+  base: &(@[a][n]) >> @[a?][n]
 , asz: size_t n
-, f: (!v | &a >> a?) -<fun> void
+, f: (&a >> a?) -<fun> void
 ) :<> void // end of [array_ptr_clear_fun]
 
 fun{a:viewt@ype}
@@ -199,9 +197,8 @@ array_ptr_exch
 (* ****** ****** *)
 
 fun{a:viewt@ype}
-array_ptr_foreach_fun {v:view} {n:nat} (
-  pf: !v
-| base: &(@[a][n]), f: (!v | &a) -<fun> void, asz: size_t n
+array_ptr_foreach_fun {n:nat} (
+  base: &(@[a][n]), f: (&a) -<fun> void, asz: size_t n
 ) :<> void // end of [array_ptr_foreach_fun]
 
 fun{a:viewt@ype}
@@ -213,12 +210,9 @@ array_ptr_foreach_clo {v:view} {n:nat} (
 (* ****** ****** *)
 
 fun{a:viewt@ype}
-array_ptr_iforeach_fun {v:view} {n:nat} (
-  pf: !v
-| base: &(@[a][n]), f: (!v | sizeLt n, &a) -<fun> void, asz: size_t n
+array_ptr_iforeach_fun {n:nat} (
+  base: &(@[a][n]), f: (sizeLt n, &a) -<fun> void, asz: size_t n
 ) :<> void // end of [array_ptr_iforeach_fun]
-
-(* ****** ****** *)
 
 fun{a:viewt@ype}
 array_ptr_iforeach_clo {v:view} {n:nat} (

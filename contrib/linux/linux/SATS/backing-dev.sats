@@ -36,7 +36,7 @@
 (* ****** ****** *)
 
 %{#
-#include "contrib/linux/CATS/linux/backing-dev.cats"
+#include "contrib/linux/linux/CATS/backing-dev.cats"
 %} // end of [%{#]
 
 (* ****** ****** *)

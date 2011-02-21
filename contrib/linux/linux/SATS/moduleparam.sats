@@ -36,7 +36,7 @@
 (* ****** ****** *)
 
 %{#
-#include "contrib/linux/CATS/linux/moduleparam.cats"
+#include "contrib/linux/linux/CATS/moduleparam.cats"
 %} // end of [%{#]
 
 (* ****** ****** *)

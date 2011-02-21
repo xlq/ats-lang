@@ -43,8 +43,6 @@
 
 /* ****** ****** */
 
-/* ****** ****** */
-
 #endif /* ATSCTRB_LINUX_ASM_UACCESS_CATS */
 
 /* end of [uaccess.cats] */
