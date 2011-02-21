@@ -30,9 +30,10 @@
 *)
 
 (* ****** ****** *)
-
-(* author: Hongwei Xi (hwxi AT cs DOT bu DOT edu) *)
-
+//
+// Author: Hongwei Xi (hwxi AT cs DOT bu DOT edu) *)
+// Start Time: 2008
+//
 (* ****** ****** *)
 
 %{#
@@ -46,9 +47,9 @@ typedef errno_t = $ERRNO.errno_t
 
 (* ****** ****** *)
 
-fun strcmp
-  (str1: !READ(string), str2: !READ(string)): int = "atslib_strcmp"
-// end of [strcmp]
+fun strcmp (
+  str1: !READ(string), str2: !READ(string)
+) : int = "#atslib_strcmp" // end of [strcmp]
 
 fun substrcmp
   {n1:int} {i1:nat | i1 <= n1}
@@ -59,10 +60,9 @@ fun substrcmp
 
 (* ****** ****** *)
 
-fun strncmp {n:nat}
-  (str1: !READ(string), str2: !READ(string), n: size_t n):<> int
-  = "atslib_strncmp"
-// end of [strncmp]
+fun strncmp {n:nat} (
+  str1: !READ(string), str2: !READ(string), n: size_t n
+) :<> int = "#atslib_strncmp" // end of [strncmp]
 
 fun substrncmp
   {n1:int} {i1:nat | i1 <= n1}
@@ -108,7 +108,7 @@ fun strcspn {n:nat}
 (* ****** ****** *)
 
 fun strcpy
-  {m,n:nat | n < m} {l:addr} {ofs:int} (
+  {m:int} {n:nat | n < m} {l:addr} {ofs:int} (
   pf_buf: !b0ytes m @ l >> strbuf (m, n) @ l | sbf: ptr l, str: !READ(string n)
 ) :<> ptr l = "#atslib_strcpy" // macro!
 // end of [strcpy]
@@ -116,7 +116,7 @@ fun strcpy
 (* ****** ****** *)
 
 fun strcat
-  {m,n1,n2:nat | n1 + n2 < m} {l:addr} (
+  {m:int} {n1,n2:nat | n1 + n2 < m} {l:addr} (
   pf_buf: !strbuf (m, n1) @ l >> strbuf (m, n1+n2) @ l
 | sbf: ptr l, str: !READ(string n2)
 ) :<> ptr l = "#atslib_strcat" // macro!
@@ -139,10 +139,12 @@ strpbrk_p (l:addr, n:int, l_ret:addr) =
   | {l_ret == null} strpbrk_p_none (l, n, l_ret)
 // end of [strpbrk_p]
 
-fun strpbrk {m,n:nat} {l:addr}
-  (pf: !strbuf (m, n) @ l | p: ptr l, accept: !READ(string))
-  :<> [l_ret:addr] (strpbrk_p (l, n, l_ret) | ptr l_ret)
-  = "atslib_strpbrk"
+fun strpbrk
+  {m,n:nat} {l:addr} (
+  pf: !strbuf (m, n) @ l
+| p: ptr l, accept: !READ(string)
+) :<> [l_ret:addr] (strpbrk_p (l, n, l_ret) | ptr l_ret)
+  = "#atslib_strpbrk" // macro!
 // end of [strpbrk]
 
 (* ****** ****** *)
@@ -157,63 +159,70 @@ fun strdup_gc
 
 (* ****** ****** *)
 
+dataprop
+memchr_p (
+  l:addr, n:int, addr(*ret*)
+) = // [l] should be positive
+  | {i:nat | i < n} memchr_p_some (l, n, l+i)
+  | memchr_p_none (l, n, null)
+// end of [memchr_p]
+
+fun memchr {n:nat}
+  {n1:int | n <= n1} {l:addr} (
+  pf: !bytes n1 @ l | p: ptr l, chr: int, n: size_t n
+) : [l_ret:addr] (memchr_p (l, n, l_ret) | ptr l_ret) = "#atslib_memchr"
+// end of [memchr]
+
+(* ****** ****** *)
+
 fun memcmp {n:nat}
-  {n1,n2:nat | n <= n1; n <= n2}
-  (buf1: &bytes n1, buf2: &bytes n2, n: size_t n):<> int
-  = "atslib_memcmp"
-// end of [memcmp]
+  {n1,n2:int | n <= n1; n <= n2} (
+  buf1: &bytes n1, buf2: &bytes n2, n: size_t n
+) :<> int = "#atslib_memcmp" // end of [memcmp]
 
 (* ****** ****** *)
 
 fun memcpy {n:nat}
-  {n1,n2:nat | n <= n1; n <= n2} {l:addr} (
-    pf_dst: !bytes n1 @ l | p_dst: ptr l, p_src: &bytes n2, n: size_t n
-  ) :<> ptr l = "atslib_memcpy"
-// end of [memcpy]
+  {n1,n2:int | n <= n1; n <= n2} {l:addr} (
+  pf_dst: !bytes n1 @ l | p_dst: ptr l, p_src: &bytes n2, n: size_t n
+) :<> ptr l = "#atslib_memcpy" // end of [memcpy]
 
 (* ****** ****** *)
 
 fun memset {n:nat}
-  {n1:nat | n <= n1} {l:addr}
-  (pf: !bytes n1 @ l | p: ptr l, chr: int, n: size_t n):<> ptr l
-  = "atslib_memset"
-// end of [memset]
-
-(* ****** ****** *)
-
-dataprop
-memchr_p (l:addr, n:int, l_ret:addr) =
-  | {i:nat | i < n} {l_ret == l+i} memchr_p_some (l, n, l_ret)
-  | {l_ret == null} memchr_p_none (l, n, l_ret)
-// end of [memchr_p]
-
-fun memchr {n:nat}
-  {n1:nat | n <= n1} {l:addr} (
-    pf: !bytes n1 @ l | p: ptr l, chr: int, n: size_t n
-  ) : [l_ret:addr] (memchr_p (l, n, l_ret) | ptr l_ret)
-  = "atslib_memchr"
-// end of [memchr]
+  {n1:int | n <= n1} {l:addr} (
+  pf: !bytes n1 @ l | p: ptr l, chr: int, n: size_t n
+) :<> ptr l = "#atslib_memset" // end of [memset]
 
 (* ****** ****** *)
 //
-// HX: [strerror] is not reentrant
+// HX: [strerror] is not reentrant:
+// memory for the returned string is statically allocated
 //
-fun strerror (errno: $ERRNO.errno_t)
-  :<!ref> [l:agz] (strptr l -<lin,prf> void | strptr l) = "#atslib_strerror"
+fun strerror (
+  errno: errno_t
+) :<!ref> [l:agz] (strptr l -<lin,prf> void | strptr l)
+  = "#atslib_strerror" // macro!
 // end of [strerror]
 
+(* ****** ****** *)
+
 dataview
-strerror_v (m:int, l:addr, int(*err*)) =
-  | {n:nat} strerror_succ (m, l, 0) of strbuf (m, n) @ l
+strerror_v (
+  m:int, l:addr, int(*err*)
+) =
+  | {n:nat}
+    strerror_succ (m, l,  0) of strbuf (m, n) @ l
   | strerror_fail (m, l, ~1) of b0ytes m @ l
 // end of [strerror_v]
+
 //
 // HX: [strerror_r] is reentrant // this is the POSIX version
 //
-fun strerror_r {m:nat} {l:addr} (
-    pf: b0ytes m @ l | errno: errno_t, p_buf: ptr l, m: size_t m
-  ) : [i:int] @(strerror_v (m, l, i) | int i)
-  = "atslib_strerror_r"
+fun strerror_r
+  {m:nat} {l:addr} (
+  pf: b0ytes m @ l | errno: errno_t, p_buf: ptr l, m: size_t m
+) : [i:int] @(strerror_v (m, l, i) | int i) = "#atslib_strerror_r"
 // end of [strerror_r]
   
 (* ****** ****** *)

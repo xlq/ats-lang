@@ -42,13 +42,7 @@
 
 /* ****** ****** */
 
-ATSinline()
-ats_int_type
-atslib_strcmp (
-  ats_ptr_type str1, ats_ptr_type str2
-) {
-  return strcmp(str1, str2) ;
-} /* end of [atslib_strcmp] */
+#define atslib_strcmp strcmp
 
 ATSinline()
 ats_int_type
@@ -61,13 +55,7 @@ atslib_substrcmp (
 
 /* ****** ****** */
 
-ATSinline()
-ats_int_type
-atslib_strncmp (
-  ats_ptr_type str1, ats_ptr_type str2, ats_size_type n
-) {
-  return strncmp(str1, str2, n) ;
-} /* end of [atslib_strncmp] */
+#define atslib_strncmp strncmp
 
 ATSinline()
 ats_int_type
@@ -101,71 +89,19 @@ atslib_substrncmp (
 
 /* ****** ****** */
 
-ATSinline()
-ats_ptr_type
-atslib_strpbrk (
-  ats_ptr_type buf, ats_ptr_type accept
-) {
-  return strpbrk((char*)buf, (char*)accept) ;
-} // end of [atslib_strpbrk]
+#define atslib_strpbrk strpbrk
 
 /* ****** ****** */
 
-ATSinline()
-ats_ptr_type
-atslib_memchr (
-  ats_ptr_type buf, ats_int_type chr, ats_size_type n
-) {
-  return memchr((void*)buf, (int)chr, (size_t)n) ;
-} // end of [atslib_memchr]
-
-/* ****** ****** */
-
-ATSinline()
-ats_int_type
-atslib_memcmp (
-  ats_ptr_type buf1, ats_ptr_type buf2, ats_size_type n
-) {
-  return memcmp((void*)buf1, (void*)buf2, (size_t)n) ;
-} // end of [atslib_memcmp]
-
-/* ****** ****** */
-
-ATSinline()
-ats_ptr_type
-atslib_memcpy (
-  ats_ptr_type dst, ats_ptr_type src, ats_size_type n
-) {
-  return memcpy((void*)dst, (void*)src, (size_t)n) ;
-} // end of [atslib_memcpy]
-
-/* ****** ****** */
-
-ATSinline()
-ats_ptr_type
-atslib_memset (
-  ats_ptr_type buf, ats_int_type chr, ats_size_type n
-) {
-  return memset((void*)buf, (int)chr, (size_t)n) ;
-} // end of [atslib_memset]
+#define atslib_memchr memchr
+#define atslib_memcmp memcmp
+#define atslib_memcpy memcpy
+#define atslib_memset memset
 
 /* ****** ****** */
 
 #define atslib_strerror strerror
-
-#if (0) // this one is commented out
-
-ATSinline()
-ats_int_type
-atslib_strerror_r (
-  ats_int_type errno
-, ats_ptr_type buf
-, ats_size_type bsz
-) {
-  return strerror_r(errno, (char*)buf, bsz) ;
-} // end of [atslib_strerror_r]
-
-#endif // end of [#if(0)]
+#define atslib_strerror_r strerror_r
 
 /* ****** ****** */
 

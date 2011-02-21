@@ -194,9 +194,11 @@ end // end of [e1xpitm_backslash]
 local
 
 fn e0xp_tr_errmsg_opr
-  (loc: loc_t): e1xp = begin
-  prerr_loc_error1 loc;
-  prerr ": the operator needs to be applied.\n";
+  (loc: loc_t): e1xp = let
+  val () = prerr_loc_error1 (loc)
+  val () = prerr ": the operator needs to be applied."
+  val () = prerr_newline ()
+in
   $Err.abort {e1xp} ()
 end // end of [e0xp_tr_errmsg_opr]
 
@@ -298,9 +300,11 @@ end // end of [s1rtitm_backslash]
 local
 
 fn s0rt_tr_errmsg_opr
-  (loc: loc_t): s1rt = begin
-  prerr_loc_error1 loc;
-  prerr ": the operator needs to be applied";
+  (loc: loc_t): s1rt = let
+  val () = prerr_loc_error1 (loc)
+  val () = prerr ": the operator needs to be applied."
+  val () = prerr_newline ()
+in
   $Err.abort {s1rt} ()
 end // end of [s0rt_tr_errmsg_opr]
 
@@ -666,9 +670,11 @@ s0qualstlst_tr (s0qss) = $Lst.list_map_fun (s0qss, s0qualst_tr)
 local
 
 fn s0exp_tr_errmsg_opr
-  (loc: loc_t): s1exp = begin
-  prerr_loc_error1 loc;
-  prerr ": the operator needs to be applied";
+  (loc: loc_t): s1exp = let
+  val () = prerr_loc_error1 (loc)
+  val () = prerr ": the operator needs to be applied."
+  val () = prerr_newline ()
+in
   $Err.abort {s1exp} ()
 end // end of [s0exp_tr_errmsg_opr]
 

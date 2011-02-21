@@ -72,19 +72,21 @@ ats_void_type the_token_set (ats_int_type n) { the_token = n ; return ; }
 
 absview ticket_v
 
-extern fun the_answer_get (pf: !ticket_v | (*nil*)): int = "the_answer_get"
-extern fun the_answer_set (pf: !ticket_v | n: int): void = "the_answer_set"
+extern fun the_answer_get
+  (pf: !ticket_v | (*nil*)): int = "the_answer_get"
+extern fun the_answer_set
+  (pf: !ticket_v | n: int): void = "the_answer_set"
 
 extern fun the_token_get (pf: !ticket_v | (*nil*)): int = "the_token_get"
 extern fun the_token_set (pf: !ticket_v | n: int): void = "the_token_set"
 
 (* ****** ****** *)
 
-extern fun lock_acquire (i: natLte NTHREAD): (ticket_v | void)
-  = "lock_acquire"
+extern fun lock_acquire
+  (i: natLte NTHREAD): (ticket_v | void) = "lock_acquire"
 
-extern fun lock_release (pf: ticket_v | i: natLte NTHREAD): void
-  = "lock_release"
+extern fun lock_release
+  (pf: ticket_v | i: natLte NTHREAD): void = "lock_release"
 
 (* ****** ****** *)
 
@@ -118,7 +120,8 @@ extern fun initialization (n: Nat): (ticket_v | void) = "initialization"
 
 %{$
 
-ats_void_type initialization (ats_int_type n) {
+ats_void_type
+initialization (ats_int_type n) {
   int i;
   pthread_t tid ;
   pthread_mutex_t *p_mutex ;

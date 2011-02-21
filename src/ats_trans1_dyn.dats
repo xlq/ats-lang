@@ -347,9 +347,12 @@ fn s0vararg_tr (s0a: s0vararg): s1vararg =
 
 (* ****** ****** *)
 
-fn p0at_tr_errmsg_opr (loc: loc_t): p1at = begin
-  prerr_loc_error1 loc;
-  prerr ": the operator needs to be applied"; prerr_newline ();
+fn p0at_tr_errmsg_opr
+  (loc: loc_t): p1at = let
+  val () = prerr_loc_error1 (loc)
+  val () = prerr ": the operator needs to be applied."
+  val () = prerr_newline ()
+in
   $Err.abort {p1at} ()
 end // end of [p0at_tr_errmsg_opr]
 
@@ -854,7 +857,7 @@ d0exp_tr d0e0 = let
 fn opr_errmsg
   (d0e: d0exp): d1exp = let
   val () = prerr_loc_error1 (d0e.d0exp_loc)
-  val () = prerr ": the operator needs to be applied"
+  val () = prerr ": the operator needs to be applied."
   val () = prerr_newline ()
 in
   $Err.abort {d1exp} ()
