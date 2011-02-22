@@ -30,15 +30,15 @@
 *)
 
 (* ****** ****** *)
-
+//
 // Author: Hongwei Xi (hwxi AT cs DOT bu DOT edu)
 // Time: November 2007
-
+//
 (* ****** ****** *)
 
 %{^
 #include "ats_counter.cats" /* only needed for [ATS/Geizella] */
-%}
+%} // end of [%{^]
 
 (* ****** ****** *)
 
@@ -783,7 +783,9 @@ end // end of [s1exp_read_tr_up]
 
 (* ****** ****** *)
 
-fn s1exp_top_tr_up (knd: int, s1e: s1exp): s2exp = let
+fn s1exp_top_tr_up (
+  knd: int, s1e: s1exp
+) : s2exp = let
   val s2e = s1exp_tr_up s1e
   val s2t_fun = s2e.s2exp_srt
   val s2t_res = s2rt_base_fun s2t_fun
@@ -881,7 +883,7 @@ s1exp_res_tr_dn_impredicative
 //
   fun auxres (
     s1e: s1exp, wths1es: wths1explst
-  ) : s2exp = begin
+  ) : s2exp =
     case+ s1e.s1exp_node of
     | S1Eexi (1(*funres*), s1qs, s1e_scope) => let
         val (pf_s2expenv | ()) = the_s2expenv_push ()
@@ -890,19 +892,19 @@ s1exp_res_tr_dn_impredicative
         val () = the_s2expenv_pop (pf_s2expenv | (*none*))
       in
         s2exp_exi (s2vs, s2ps, s2e_scope)
-      end
+      end // end of [S1Eexi]
     | _ => let
         val s2e = s1exp_tr_dn_impredicative (s1e)
         val wths2es = auxwth wths1es
       in
         s2exp_wth (s2e, wths2es)
-      end
-    end // end of [_]
-  // end of [auxres]
+      end // end of [_]
+  (* end of [auxres] *)
 //
 in
-  if wths1explst_is_none (wths1es) then s1exp_tr_dn_impredicative (s1e0)
-  else auxres (s1e0, wths1es)
+  if wths1explst_is_none (wths1es)
+    then s1exp_tr_dn_impredicative (s1e0) else auxres (s1e0, wths1es)
+  // end of [if]
 end // end of [s1exp_res_tr_dn_impredicative]
 
 (* ****** ****** *)
@@ -1043,8 +1045,9 @@ end // end of [s1rtext_tr]
 
 implement s1qualst_tr (s1qs) = let
 //
-fun loop
-  (s1qs: s1qualst, s2vs: &s2varlst, s2ps: &s2explst): void = begin
+fun loop (
+  s1qs: s1qualst, s2vs: &s2varlst, s2ps: &s2explst
+) : void = begin
   case+ s1qs of
   | cons (s1q, s1qs) => begin case+ s1q.s1qua_node of
     | S1Qprop s1e => let
@@ -1065,26 +1068,33 @@ fun loop
             | nil () => ()          
         in
           aux (s2t1, ids, s2vs); loop (s1qs, s2vs, s2ps)
-        end
+        end // end of [S2TEsrt]
       | S2TEsub (s2v1, s2t1, s2ps1) => let
-          fun aux1 (s2ps1: s2explst, s2v: s2var_t, s2ps: &s2explst)
-            :<cloref1> void = case+ s2ps1 of
+//
+          fun aux1 (
+            s2ps1: s2explst, s2v: s2var_t, s2ps: &s2explst
+          ) :<cloref1> void = case+ s2ps1 of
             | cons (s2p1, s2ps1) => let
                 val s2p = s2exp_alpha (s2v1, s2v, s2p1)
               in
                 s2ps := cons (s2p, s2ps); aux1 (s2ps1, s2v, s2ps)
-              end
+              end // end of [cons]
             | nil () => ()
-          fun aux2 (ids: i0delst, s2vs: &s2varlst, s2ps: &s2explst)
-            :<cloref1> void = case+ ids of
+          // end of [aux1]
+//
+          fun aux2 (
+            ids: i0delst, s2vs: &s2varlst, s2ps: &s2explst
+          ) :<cloref1> void = case+ ids of
             | cons (id, ids) => let
                 val s2v = s2var_make_id_srt (id.i0de_sym, s2t1)
               in
                 the_s2expenv_add_svar s2v;
                 s2vs := cons (s2v, s2vs); aux1 (s2ps1, s2v, s2ps);
                 aux2 (ids, s2vs, s2ps)
-              end
+              end // end of [cons]
             | nil () => ()
+          // end of [aux2]
+//
         in
           aux2 (ids, s2vs, s2ps); loop (s1qs, s2vs, s2ps)
         end // end of [S2TEsub]
@@ -1103,7 +1113,8 @@ in // in of [let]
 end // end of [s1qualst_tr]
 
 implement
-s1qualstlst_tr (s1qss) = begin case+ s1qss of
+s1qualstlst_tr
+  (s1qss) = begin case+ s1qss of
   | list_cons (s1qs, s1qss) => begin
       list_cons (s1qualst_tr s1qs, s1qualstlst_tr s1qss)
     end // end of [list_cons]
@@ -1112,8 +1123,9 @@ end // end of [s1qualstlst_tr]
 
 (* ****** ****** *)
 
-fun s1exp_app_unwind
-  (s1e: s1exp, s1ess: &s1explstlst): s1exp = begin
+fun s1exp_app_unwind (
+  s1e: s1exp, s1ess: &s1explstlst
+) : s1exp = begin
   case+ s1e.s1exp_node of
   | S1Eapp (s1e, _(*loc_arg*), s1es) => begin
       s1ess := s1es :: s1ess; s1exp_app_unwind (s1e, s1ess)
@@ -1133,7 +1145,7 @@ fun s1exp_app_unwind
       end // end of [$Syn.S0TAQnone]
     | _ => s1e
     end (* end of [S1Eqid] *)
-  | _ => s1e
+  | _ => s1e // end of [_]
 end // end of [s1exp_app_unwind]
 
 (* ****** ****** *)
@@ -1450,8 +1462,12 @@ s1exp_tr_up (s1e0) = let
 *)
 in
   case+ s1e0.s1exp_node of
-  | S1Eann (s1e, s1t) => begin
-      let val s2t = s1rt_tr s1t in s1exp_tr_dn (s1e, s2t) end
+  | S1Eann (s1e, s1t) => let
+      val s2t = s1rt_tr s1t
+      val s2e = s1exp_tr_dn (s1e, s2t)
+      val () = s2exp_set_srt (s2e, s2t)
+    in
+      s2e (* [s2e] is of the sort [s2t] *)
     end // end of [S1Eann]
   | S1Eany () => s1exp_any_tr_up (s1e0.s1exp_loc)
   | S1Eapp (s1e, _(*loc_arg*), s1es) => let

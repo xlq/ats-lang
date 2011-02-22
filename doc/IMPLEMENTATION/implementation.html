@@ -88,18 +88,11 @@ It is also possible to use the ATS/Geizella compiler (written in Objective
 Caml) for bootstrapping ATS/Anairiats. This can be done by checking out the
 following svn directory and name it as the local directory "FOO/bootstrap0":
 
-<PRE>svn co https://ats-lang.svn.sourceforge.net/svnroot/ats-lang/bootstrap/tags/geizella-x.x.x \
-  FOO/bootstrap0</PRE>
-
-Note that "x.x.x" should be replaced with the latest version number
-available for bootstrapping, which currently is "0.1.3".  It also works
-(most of the time) if one checks out the code for bootstrapping as follows:
-
 <PRE>svn co https://ats-lang.svn.sourceforge.net/svnroot/ats-lang/bootstrap/geizella \
   FOO/bootstrap0</PRE>
 
-After this is done, please go into the directory "FOO" and execute the
-command 'aclocal' and then the command 'autoconf' and then do 'make all-geizella'.
+After this is done, please go into the directory "FOO" and then execute
+'make all-geizella'.
 <P>
 
 <HR SIZE=2 ALIGN=LEFT COLOR="000000"><P>

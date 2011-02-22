@@ -205,7 +205,7 @@ in
     end // end of [Some_vt]
   | ~None_vt () => let
       val () = prerr_loc_error3 loc0
-      val () =  prerr ": the @-view associated with the location ["
+      val () = prerr ": the @-view associated with the location ["
       val () = prerr s2r0
       val () = prerr "] cannot be found."
       val () = prerr_newline ()
@@ -250,7 +250,7 @@ fn d2var_view_viewat_set_slablst_main
   val s2e_old_addr = s2exp_projlst (s2e0_addr, s2ls)
   val () = trans3_env_add_proplst (loc0, cstr)
 //
-  val () =  if s2exp_syneq
+  val () = if s2exp_syneq
     (s2e_old_addr, s2e_new_addr) then () else let
     val () = prerr_loc_error3 loc0
     val () = prerr ": address mismatch for @-view restoration: ["
@@ -305,8 +305,10 @@ fn d2var_view_viewat_set_slablst (
 
 (* ****** ****** *)
 
-fun s2lab0lst_of_d3lab1lst {n:nat} .<n>.
-  (d3ls: list (d3lab1, n)): list (s2lab, n) = case+ d3ls of
+fun s2lab0lst_of_d3lab1lst
+  {n:nat} .<n>. (
+  d3ls: list (d3lab1, n)
+) : list (s2lab, n) = case+ d3ls of
   | list_cons (d3l, d3ls) => let
       val s2l = (case+ d3l.d3lab1_node of
         | D3LAB1ind (d3ess, _) => S2LAB0ind (d3explstlst_get_ind d3ess)
@@ -321,8 +323,9 @@ fun s2lab0lst_of_d3lab1lst {n:nat} .<n>.
 (* ****** ****** *)
 
 implement
-d3exp_lval_set_typ
-  (loc0, refval, d3e0, s2e_new, err) = let
+d3exp_lval_set_typ (
+  loc0, refval, d3e0, s2e_new, err
+) = let
 (*
   val () = begin
     print "d3exp_lval_set_typ: d3e0 = "; print d3e0; print_newline ()
@@ -331,10 +334,12 @@ d3exp_lval_set_typ
   fn refval_check (
       loc0: loc_t, d2v: d2var_t, refval: int
     ) : void = 
-    if refval > 1 then begin
-      prerr_loc_error3 loc0;
-      prerr ": the dynamic variable ["; prerr d2v;
-      prerr "] is required to be mutable in order to support call-by-reference.";
+    if refval > 1 then let
+      val () = prerr_loc_error3 (loc0)
+      val () = prerr ": the dynamic variable ["
+      val () = prerr_d2var (d2v)
+      val () = prerr "] is required to be mutable for supporting call-by-reference."
+    in
       $Err.abort {void} ()
     end // end of [if]
   // end of [refval_check]
@@ -359,7 +364,8 @@ in
         $Err.abort {void} ()
       end // end of [None_vt]
     end // end of [D3Esel_ptr]
-  | D3Esel_var (d2v, d3ls) when d2var_is_linear d2v => let
+  | D3Esel_var (d2v, d3ls)
+      when d2var_is_linear d2v => let
       val () = refval_check (loc0, d2v, refval)
       val s2ls_nt = s2lab0lst_of_d3lab1lst d3ls
       val _(* s2lablst *) = begin
@@ -368,7 +374,8 @@ in
     in
       (* empty *)
     end // end of [D3Esel_var when d2var_is_linear]
-  | D3Esel_var (d2v, d3ls) when d2var_is_mutable d2v => let
+  | D3Esel_var (d2v, d3ls)
+      when d2var_is_mutable d2v => let
       val s2ls_nt = s2lab0lst_of_d3lab1lst d3ls
       val _(* s2lablst *) = begin
         d2var_mut_assgn_slablst (loc0, d2v, s2ls_nt, s2e_new)
@@ -377,8 +384,10 @@ in
       (* empty *)
     end // end of [D3Esel_var when d2var_is_mutable]
 //
-  | D3Evar d2v when d2var_get_isfix (d2v) => (err := err + 1) 
-  | D3Evar d2v when d2var_is_mutable d2v => let
+  | D3Evar d2v
+      when d2var_get_isfix (d2v) => (err := err + 1) 
+  | D3Evar d2v
+      when d2var_is_mutable d2v => let
       val _ (* nil *) = begin
         d2var_mut_assgn_slablst (loc0, d2v, list_nil (), s2e_new)
       end // end of [val]
@@ -387,12 +396,12 @@ in
     end // end of [D2Evar when d2var_is_mutable]
 (*
 //
-// HX-2010-10-20:
-// there is no need for checking that [d2v] is linear:
-// if [d2v] is not linear, then it cannot be updated!!!
+// HX-2011-02-22:
+// checking that [d2v] is linear is a must!
 //
 *)
-  | D3Evar d2v => let
+  | D3Evar d2v
+      when d2var_is_linear (d2v) => let
       val () = refval_check (loc0, d2v, refval)
       val _(* nil *) = begin
         d2var_lin_assgn_slablst (loc0, d2v, list_nil (), s2e_new)
@@ -401,14 +410,18 @@ in
       (* empty *)
     end // end of [D2Evar]
 //
-  | D3Eviewat_ptr (d3e, d3ls, d2v_view, s2ls_nt) => let
+  | D3Eviewat_ptr (
+      d3e, d3ls, d2v_view, s2ls_nt
+    ) => let
       val (s2e_old, s2ls) = begin
         d2var_view_viewat_set_slablst (loc0, d2v_view, s2ls_nt, s2e_new)
       end // end of [val]
     in
       $SOL.s2exp_out_void_solve (loc0, s2e_old)
     end // end of [D3Eviewat_ptr]
-  | D3Eviewat_var (d2v, d3ls, d2v_view, s2ls_nt) => let
+  | D3Eviewat_var (
+      d2v, d3ls, d2v_view, s2ls_nt
+    ) => let
       val (s2e_old, s2ls) = begin
         d2var_view_viewat_set_slablst (loc0, d2v_view, s2ls_nt, s2e_new)
       end // end of [val]

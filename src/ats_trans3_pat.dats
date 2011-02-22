@@ -915,9 +915,17 @@ fn p2at_var_tr_dn (
   , s2e0: s2exp
   ) : p3at = let
   val loc0 = p2t0.p2at_loc
-  val s2e0 = s2exp_whnf s2e0
+//
+// HX-2011-02-22:
+// this allows a val to be linear although its value is not
+// for instance:
+// val x = null : ptr : viewtype
+//
+  val islin = s2exp_is_linear (s2e0)
+//
+  val s2e0 = s2exp_whnf (s2e0) // sort of [s2e0] may change
   val () = d2var_set_mastyp (d2v, Some s2e0)
-  val () = if s2exp_is_linear s2e0 then ( // linear var
+  val () = if islin then ( // linear var
     d2var_set_lin (d2v, 0); d2var_set_fin (d2v, D2VARFINnone ())
   ) // end of [val]
 (*

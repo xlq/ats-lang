@@ -30,10 +30,10 @@
 *)
 
 (* ****** ****** *)
-
+//
 // Author: Hongwei Xi (hwxi AT cs DOT bu DOT edu)
 // Time: December 2007
-
+//
 (* ****** ****** *)
 
 (* Mainly for handling dynamic expressions during type-checking *)
@@ -42,7 +42,7 @@
 
 %{^
 #include "ats_intinf.cats" // this for the ATS/Geizeilla compiler
-%}
+%} // end of [%{^]
 
 (* ****** ****** *)
 
@@ -103,8 +103,9 @@ end // end of [prerr_loc_interror]
 
 (* ****** ****** *)
 
-fn pfarity_check_rec
-  (loc_rec: loc_t, npf1: int, npf2: int): void =
+fn pfarity_check_rec (
+  loc_rec: loc_t, npf1: int, npf2: int
+) : void =
   if npf1 = npf2 then () else begin
     prerr_loc_error3 loc_rec;
     prerr ": the proof arity of the record is [";
@@ -119,8 +120,9 @@ fn pfarity_check_rec
 
 (* ****** ****** *)
 
-fn reckind_check
-  (loc_rec: loc_t, k1: int, k2: tyreckind): void = begin
+fn reckind_check (
+  loc_rec: loc_t, k1: int, k2: tyreckind
+) : void = begin
   if k1 > 0 then begin case+ k2 of
     | TYRECKINDbox () => () | _ => begin
         prerr_loc_error3 loc_rec;

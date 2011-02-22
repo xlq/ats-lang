@@ -113,7 +113,8 @@ fn pfarity_check_fun
 
 (* ****** ****** *)
 
-fn d2lab_tr_up (d2l: d2lab): d3lab0 = case+ d2l.d2lab_node of
+fn d2lab_tr_up
+  (d2l: d2lab): d3lab0 = case+ d2l.d2lab_node of
   | D2LABind d2ess => d3lab0_ind (d2l.d2lab_loc, d2explstlst_tr_up d2ess)
   | D2LABlab l => d3lab0_lab (d2l.d2lab_loc, l)
 // end of [d2lab_tr_up]
@@ -160,10 +161,12 @@ fun s2lab1lst_of_d3lab1lst {n:nat} .<n>.
 // end of [s2lab2lst_of_d3lab1lst]
 *)
 
-fun d3lab1lst_of_d3lab0lst_s2lablst
-  (d3ls: d3lab0lst, s2ls: s2lablst): d3lab1lst = begin
+fun d3lab1lst_of_d3lab0lst_s2lablst (
+  d3ls: d3lab0lst, s2ls: s2lablst
+): d3lab1lst = begin
   case+ (d3ls, s2ls) of
-  | (list_cons (d3l, d3ls), list_cons (s2l, s2ls)) => let
+  | (list_cons (d3l, d3ls),
+     list_cons (s2l, s2ls)) => let
       val d3l_new = (case+ d3l.d3lab0_node of
         | D3LAB0ind d3ess => begin case+ s2l of
           | S2LAB1ind (_, s2e_elt) => begin
@@ -177,28 +180,33 @@ fun d3lab1lst_of_d3lab0lst_s2lablst
           end (* end of [D3LAB0ind] *)
         | D3LAB0lab l => begin case+ s2l of
           | S2LAB1lab (l, s2e) => d3lab1_lab (d3l.d3lab0_loc, l, s2e)
-          | _ => begin
-              prerr_interror ();
-              prerr ": d3lab1lst_of_d3lab0lst_s2lablst: D3LAB0lab: s2l = "; prerr_s2lab s2l;
-              prerr_newline ();
+          | _ => let
+              val () = prerr_interror ()
+              val () = prerr ": d3lab1lst_of_d3lab0lst_s2lablst: D3LAB0lab: s2l = "
+              val () = prerr_s2lab s2l
+              val () = prerr_newline ()
+            in
               $Err.abort {d3lab1} ()
             end // end of [_]
           end (* end of [D3LAB0lab] *)
-      ) : d3lab1
+      ) : d3lab1 // end of [list_cons, list_cons]
     in
       list_cons (d3l_new, d3lab1lst_of_d3lab0lst_s2lablst (d3ls, s2ls))
     end // end of [cons, cons]
   | (list_nil (), list_nil ()) => list_nil ()
-  | (_, _) => begin
-      prerr_interror ();
-      prerr ": d3lab1lst_of_d3lab0lst_s2lablst: length mismatch"; prerr_newline ();
+  | (_, _) => let
+      val () = prerr_interror ()
+      val () = prerr ": d3lab1lst_of_d3lab0lst_s2lablst: length mismatch"
+      val () = prerr_newline ()
+    in
       $Err.abort ()
     end // end of [_, _]
 end // end of [d3lab1lst_of_d3lab0lst_s2lablst]
 
 (* ****** ****** *)
 
-fn d3exp_clo_restore (d3e: d3exp): d3exp = let
+fn d3exp_clo_restore
+  (d3e: d3exp): d3exp = let
   val loc = d3e.d3exp_loc
   val s2e_fun = d3e.d3exp_typ
   var fc0: $Syn.funclo = $Syn.FUNCLOfun ()
@@ -216,9 +224,12 @@ fn d3exp_clo_restore (d3e: d3exp): d3exp = let
             $Err.abort {s2exp} ()
           end // end of [_]
       end // end of [S2Efun]
-    | _ => begin
-        prerr_loc_interror loc;
-        prerr ": d3exp_clo_restore: s2e_fun = "; prerr s2e_fun; prerr_newline ();
+    | _ => let
+        val () = prerr_loc_interror (loc)
+        val () = prerr ": d3exp_clo_restore: s2e_fun = "
+        val () = prerr (s2e_fun)
+        val () = prerr_newline ()
+      in
         $Err.abort {s2exp} ()
       end // end of [_]
   ) : s2exp // end of [val s2e_fun_new]
@@ -259,13 +270,13 @@ fun d3explst_arg_restore
       val- list_cons (d3e, d3es) = d3es
       val loc = d3e.d3exp_loc
       val s2e_res = s2exp_opnexi_and_add (loc, s2e_res)
-// (*
+(*
       val () = begin
         print "d3explst_arg_restore: d3e = "; print d3e; print_newline ();
         print "d3explst_arg_restore: d3e.typ = "; print d3e.d3exp_typ; print_newline ();
         print "d3explst_arg_restore: s2e_res = "; print s2e_res; print_newline ();
       end // end of [val]
-// *)
+*)
       val freeknd = d3exp_lval_set_typ_arg (refval, d3e, s2e_res)
       val d3e = d3exp_refarg (loc, s2e_res, refval, freeknd, d3e)
     in
@@ -296,7 +307,7 @@ fun d23explst_tr_up
   | cons (d23e, d23es) => let
       val d3e = (case+ d23e of
         | D23Ed2exp d2e => d2exp_tr_up d2e | D23Ed3exp d3e => d3e
-      ) : d3exp
+      ) : d3exp // end of [val]
     in
       cons (d3e, d23explst_tr_up d23es)
     end // end of [cons]
@@ -406,7 +417,7 @@ in
       val s2e_fun_res = s2exp_whnf s2e_fun_res
       var s2e_res: s2exp = s2e_fun_res
       var wths2es: wths2explst = WTHS2EXPLSTnil ()
-      val iswth = s2exp_is_wth s2e_fun_res
+      val iswth = s2exp_is_wth (s2e_fun_res)
       val () = if iswth then let
         val s2e_fun_res = s2exp_opnexi_and_add (loc_app, s2e_fun_res)
       in
@@ -887,7 +898,7 @@ extern fun d2exp_viewat_assgn_tr_up
 
 fn d2exp_assgn_tr_up
   (loc0: loc_t, d2e_l: d2exp, d2e_r: d2exp): d3exp = let
-  val l2val = l2val_make_d2exp d2e_l
+  val l2val = l2val_make_d2exp (d2e_l)
 in
   case+ l2val of
   | L2VALarrsub (
@@ -901,10 +912,13 @@ in
       in
         d2exp_apps_sym_tr_up (loc_arg, d2s_brackets, '[d2a])
       end // end of [cons (nil)]
-    | _ => begin
-        prerr_loc_error3 loc0;
-        prerr ": the format for array subscripts ["; prerr d2ess_ind;
-        prerr "] is not supported."; prerr_newline ();
+    | _ => let
+        val () = prerr_loc_error3 (loc0)
+        val () = prerr ": the format for array subscripts ["
+        val () = prerr_d2explstlst (d2ess_ind)
+        val () = prerr "] is not supported."
+        val () = prerr_newline ()
+      in
         $Err.abort {d3exp} ()
       end // end of [_]
     end // end of [L2VALarrsub]
@@ -946,7 +960,8 @@ in
       | ~None_vt () => begin case+ d2ls of
         | nil () => begin case+ un_s2exp_ref_viewt0ype_type s2e0 of
           | ~Some_vt s2e_elt => let
-              val () = the_effect_env_check_ref (loc0) // write to a reference is effectful
+              val () = the_effect_env_check_ref
+                (loc0) // HX: write to a reference is effectful
               val () = if s2exp_is_linear (s2e_elt) then let // linearity checking
                 val () = prerr_loc_error3 (d2e0.d2exp_loc)
                 val () = prerr ": a reference to a linear value cannot be updated directly."
@@ -981,7 +996,7 @@ in
           end // end of [list_cons]
         end // end of [None_vt]
       // end of [case]
-    end
+    end // end of [L2VALptr]
   | L2VALvar_lin (d2v, d2ls) => let
       val d3ls_nt = d2lablst_tr_up d2ls
       val s2ls_nt = s2lab0lst_of_d3lab0lst d3ls_nt
@@ -1097,9 +1112,9 @@ in
   | ~None_vt () => begin case+ d2ls of
     | nil () => begin case+ un_s2exp_ref_viewt0ype_type s2e0 of
       | ~Some_vt s2e_elt => let
-          val () = the_effect_env_check_ref (loc0) // read from a reference is effectful
-          val () = // linearity checking
-            if s2exp_is_linear s2e_elt then let
+          val () = the_effect_env_check_ref
+            (loc0) // HX: read from a reference is effectful
+          val () = if s2exp_is_linear s2e_elt then let // linearity checking
               val () = prerr_loc_error3 (d2e0.d2exp_loc)
               val () = prerr ": a reference to a linear value cannot be accessed directly."
               val () = prerr_newline ()
@@ -1208,9 +1223,14 @@ fn d2exp_foldat_freeat_tr_up (
 , s2as: s2exparglst
 , d2e: d2exp
 ) : d3exp = let
-  fn aux (loc0: loc_t, s2e_addr: s2exp): s2exp =
+//
+  fn aux (
+    loc0: loc_t, s2e_addr: s2exp
+  ) : s2exp =
     case+ the_d2varset_env_find_viewat (s2e_addr, nil ()) of
-    | ~Some_vt ans => (d2var_set_typ (ans.0, None ()); ans.1)
+    | ~Some_vt ans => let
+        val () = d2var_set_typ (ans.0, None ()) in ans.1
+      end // end of [Some_vt]
     | ~None_vt () => let
         val () = prerr_loc_interror (loc0)
         val () = prerr ": Internal Error: d2exp_foldat_freeat_tr_up: no view at ["
@@ -1220,7 +1240,8 @@ fn d2exp_foldat_freeat_tr_up (
       in
         $Err.abort {s2exp} ()
       end // end of [None_vt]
-  // end of [aux]
+  (* end of [aux] *)
+//
   fun auxlst (
     loc0: loc_t, s2es_addr: s2explst
   ) : s2explst =
@@ -1228,7 +1249,8 @@ fn d2exp_foldat_freeat_tr_up (
     | cons (s2e_addr, s2es_addr) =>
         cons (aux (loc0, s2e_addr), auxlst (loc0, s2es_addr))
     | nil () => nil ()
-  // end of [auxlst]
+  (* end of [auxlst] *)
+//
   val d3e = d2exp_tr_up d2e
   val () = d3exp_open_and_add d3e
   val s2e = d3e.d3exp_typ
@@ -1247,13 +1269,17 @@ fn d2exp_foldat_freeat_tr_up (
         $Err.abort {d2con_t} ()
       end // end of [_]
   ) : d2con_t // end of [val]
+//
   val s2es_arg = auxlst (loc0, s2es_addr)
   val s2e_d2c = d2con_get_typ (d2c)
   val s2e_d2c = s2exp_uni_instantiate_sexparglst (loc0, s2e_d2c, s2as)
   val s2e_d2c = s2exp_uni_instantiate_all (loc0, s2e_d2c)
+//
   var err: int = 0
   val () = (case+ s2e_d2c.s2exp_node of
-    | S2Efun (_, _, _, _, s2es_fun_arg, s2e_fun_res) => let
+    | S2Efun (
+        _, _, _, _, s2es_fun_arg, s2e_fun_res
+      ) => let
         val s2es_fun_arg = (
           if isfold then s2es_fun_arg else begin
             $Lst.list_map_fun (s2es_fun_arg, s2exp_topize_0)
@@ -1279,21 +1305,27 @@ fn d2exp_foldat_freeat_tr_up (
           print_newline ();
         end // end of [if]
 *)
-        val () = // error checking
-          if err > 0 then begin
-            prerr_loc_error3 loc0;
-            if isfold then begin
-              prerr ": argument type mismatch for folding"
-            end else begin
-              prerr ": argument type mismatch for freeing"
-            end;
-            prerr_newline ();
-            $Err.abort {void} ()
-          end
+//
+// HX: error checking is performed:
+//
+        val () = if err > 0 then let
+          val () = prerr_loc_error3 (loc0)
+          val () = if isfold then begin
+            prerr ": argument type mismatch for folding"
+          end else begin
+            prerr ": argument type mismatch for freeing"
+          end // end of [if]
+          val () = prerr_newline ()
+        in
+          $Err.abort {void} ()
+        end // end of [if] // end of [val]
+//
       in
         if isfold then let
           var err: int = 0
-          val () = d3exp_lval_set_typ (loc0, 0(*refval*), d3e, s2e_fun_res, err)
+          val () = d3exp_lval_set_typ
+            (loc0, 0(*refval*), d3e, s2e_fun_res, err)
+          // end of [val]
         in
           if err > 0 then begin
             prerr_loc_error3 loc0;
@@ -1304,10 +1336,13 @@ fn d2exp_foldat_freeat_tr_up (
           end // end of [if]
         end (* end of [if] *)
       end // end of [S2Efun]
-    | _ => begin
-        prerr_loc_interror loc0;
-        prerr ": d2exp_foldat_freeat_tr_up";
-        prerr ": s2e_d2c = "; prerr s2e_d2c; prerr_newline ();
+    | _ => let
+        val () = prerr_loc_interror (loc0)
+        val () = prerr ": d2exp_foldat_freeat_tr_up"
+        val () = prerr ": s2e_d2c = "
+        val () = prerr_s2exp (s2e_d2c)
+        val () = prerr_newline ()
+      in
         $Err.abort {void} ()
       end // end of [_]
   ) : void // end of [val]
@@ -1402,14 +1437,16 @@ end // end of [d2exp_arg_body_tr_up]
 
 (* ****** ****** *)
 
-fn d2exp_lazy_delay_tr_up
-  (loc0: loc_t, d2e_eval: d2exp): d3exp = let
+fn d2exp_lazy_delay_tr_up (
+  loc0: loc_t, d2e_eval: d2exp
+) : d3exp = let
   val d3e_eval = d2exp_tr_up d2e_eval
   val s2e_eval = d3e_eval.d3exp_typ
-  val () = if s2exp_is_linear s2e_eval then begin // linearity checking
-    prerr_loc_error3 loc0;
-    prerr ": the keyword [$ldelay] is needed to form a linear lazy value.";
-    prerr_newline ();
+  val () = if s2exp_is_linear s2e_eval then let // linearity checking
+    val () = prerr_loc_error3 (loc0)
+    val () = prerr ": the keyword [$ldelay] is needed to form a linear lazy value."
+    val () = prerr_newline ()
+  in
     $Err.abort {void} ()
   end // end of [val]
   val s2e_lazy = s2exp_lazy_t0ype_type s2e_eval
@@ -1419,8 +1456,9 @@ end // end of [d2exp_lazy_delay_tr_up]
 
 (* ****** ****** *)
 
-fn d2exp_lazy_ldelay_tr_up
-  (loc0: loc_t, d2e_eval: d2exp, d2e_free: d2exp): d3exp = let
+fn d2exp_lazy_ldelay_tr_up (
+  loc0: loc_t, d2e_eval: d2exp, d2e_free: d2exp
+) : d3exp = let
   val sbis = the_d2varset_env_stbefitemlst_save ()
   val sac = staftscstr_initialize (i2nvresstate_nil, sbis)
 
@@ -1548,16 +1586,18 @@ end // end of [d2exp_ptrof_tr_up]
 (* ****** ****** *)
 
 fn d3exp_nonlin_check
-  (d3e: d3exp): void = begin
-  if s2exp_is_linear (d3e.d3exp_typ) then begin
-    prerr_loc_error3 d3e.d3exp_loc;
-    prerr ": the dynamic expression is linear but it should not be.";
-    prerr_newline ();
+  (d3e: d3exp): void =
+  if s2exp_is_linear (d3e.d3exp_typ) then let
+    val () = prerr_loc_error3 (d3e.d3exp_loc)
+    val () = prerr ": the dynamic expression is linear but it should not be."
+    val () = prerr_newline ()
+  in
     $Err.abort {void} ()
   end (* end of [if] *)
-end // end of [d3exp_sort_check]
+// end of [d3exp_sort_check]
 
-fun labd3explst_nonlin_check (ld3es: labd3explst): void = begin
+fun labd3explst_nonlin_check
+  (ld3es: labd3explst): void = begin
   case+ ld3es of
   | LABD3EXPLSTcons (_(*lab*), d3e, ld3es) => begin
       d3exp_nonlin_check (d3e); labd3explst_nonlin_check (ld3es)
@@ -1565,19 +1605,23 @@ fun labd3explst_nonlin_check (ld3es: labd3explst): void = begin
   | LABD3EXPLSTnil () => ()
 end // end of [labd3explst_nonlin_check]
 
-fn d2exp_rec_tr_up
-  (loc0: loc_t, recknd: int, npf: int, ld2es: labd2explst)
-  : d3exp = let
+fn d2exp_rec_tr_up (
+  loc0: loc_t
+, recknd: int, npf: int
+, ld2es: labd2explst
+) : d3exp = let
 (*
   val () = begin
     print "labd2explst_tr_up: ld2es = "; print ld2es; print_newline ()
   end // end of [val]
 *)
-  fun aux (ld2es: labd2explst): labd3explst =
+  fun aux (
+    ld2es: labd2explst
+  ) : labd3explst =
     case+ ld2es of
     | LABD2EXPLSTcons (l, d2e, ld2es) => begin
         LABD3EXPLSTcons (l, d2exp_tr_up d2e, aux ld2es)
-      end
+      end // end of [LABD2EXPLSTcons]
     | LABD2EXPLSTnil () => LABD3EXPLSTnil ()
   val ld3es = aux ld2es
 (*
@@ -1590,14 +1634,17 @@ fn d2exp_rec_tr_up
 //
   val ls2es = labd3explst_get_typ ld3es
   val s2e_rec = s2exp_tyrec (recknd, npf, ls2es)
+//
 in
   d3exp_rec (loc0, s2e_rec, recknd, npf, ld3es)
 end // end of [d2exp_rec_tr_up]  
 
 (* ****** ****** *)
 
-fn d3exp_sel_tr_up
-  (loc0: loc_t, d3e: d3exp, d3ls_nt: d3lab0lst): d3exp = begin
+fn d3exp_sel_tr_up (
+  loc0: loc_t
+, d3e: d3exp, d3ls_nt: d3lab0lst
+) : d3exp = begin
   case+ d3ls_nt of
   | cons _ => let
       val () = d3exp_open_and_add d3e
@@ -2452,12 +2499,13 @@ fn d2exp_var_nonmut_tr_up (
   in
     if is_llam_local then begin
       d2var_set_lin (d2v, 1+lin_d2v); d2var_set_typ (d2v, None ())
-    end else begin
-      prerr_loc_error3 loc0;
-      prerr ": the linear dynamic variable [";
-      prerr d2v;
-      prerr "] is expected to be local but it is not.";
-      prerr_newline ();
+    end else let
+      val () = prerr_loc_error3 (loc0)
+      val () = prerr ": the linear dynamic variable ["
+      val () = prerr_d2var (d2v)
+      val () = prerr "] is expected to be local but it is not."
+      val () = prerr_newline ()
+    in
       $Err.abort {void} ()
     end // end of [if]
   end (* end of [val] *)
