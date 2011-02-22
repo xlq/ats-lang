@@ -43,6 +43,14 @@ KERNEL = $extype "KERNEL" and USER = $extype "USER"
 
 (* ****** ****** *)
 
+(*
+** HX-2011-02-20:
+** a pointer is in kernel space by default
+*)
+abstype uptr (l:addr) // user space pointers
+
+(* ****** ****** *)
+
 absview kfree_addr_view (l:addr)
 stadef kfree_v = kfree_addr_view
 

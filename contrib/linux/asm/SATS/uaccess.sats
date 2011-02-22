@@ -46,15 +46,23 @@
 
 (* ****** ****** *)
 
+staload "contrib/linux/basics.sats"
+
+(* ****** ****** *)
+
 fun copy_to_user {n:nat}
-  {n1,n2:nat | n <= n1; n <= n2} (
-  to: &bytes(n1), from: &bytes(n2), count: ulint (n)
+  {n1,n2:nat | n <= n1; n <= n2}
+  {l:addr} (
+  pf: bytes(n1) @ l
+| to: uptr l, from: &bytes(n2), count: ulint (n)
 ) : [nleft:nat | nleft <= n] ulint (nleft)
   = "#atsctrb_linux_copy_to_user" // macro!
 
 fun copy_from_user {n:nat}
-  {n1,n2:nat | n <= n1; n <= n2} (
-  to: &bytes(n1), from: &bytes(n2), count: ulint (n)
+  {n1,n2:nat | n <= n1; n <= n2}
+  {l:addr} (
+  pf: bytes(n2) @ l
+| to: &bytes(n1), from: uptr l, count: ulint (n)
 ) : [nleft:nat | nleft <= n] ulint (nleft)
   = "#atsctrb_linux_copy_from_user" // macro!
 
