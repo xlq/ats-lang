@@ -208,10 +208,11 @@ fn d3exp_clo_restore (d3e: d3exp): d3exp = let
         | _ when lin = 1 => s2exp_fun_srt
             (s2rt_type, fc, ~1(*topized*), s2fe, npf, s2es_arg, s2e_res)
         | _ when lin = 0 => s2e_fun
-        | _ (* lin = ~1 *) => begin
-            prerr_loc_error3 loc;
-            prerr ": a linear function cannot be applied repeatedly.";
-            prerr_newline ();
+        | _ (* lin = ~1 *) => let
+            val () = prerr_loc_error3 (loc)
+            val () = prerr ": a linear function cannot be applied repeatedly."
+            val () = prerr_newline ()
+          in
             $Err.abort {s2exp} ()
           end // end of [_]
       end // end of [S2Efun]
@@ -258,13 +259,13 @@ fun d3explst_arg_restore
       val- list_cons (d3e, d3es) = d3es
       val loc = d3e.d3exp_loc
       val s2e_res = s2exp_opnexi_and_add (loc, s2e_res)
-(*
+// (*
       val () = begin
         print "d3explst_arg_restore: d3e = "; print d3e; print_newline ();
         print "d3explst_arg_restore: d3e.typ = "; print d3e.d3exp_typ; print_newline ();
         print "d3explst_arg_restore: s2e_res = "; print s2e_res; print_newline ();
       end // end of [val]
-*)
+// *)
       val freeknd = d3exp_lval_set_typ_arg (refval, d3e, s2e_res)
       val d3e = d3exp_refarg (loc, s2e_res, refval, freeknd, d3e)
     in
@@ -285,10 +286,12 @@ end // end of [d3explst_arg_restore]
 
 (* ****** ****** *)
 
-datatype d23exp = D23Ed2exp of d2exp | D23Ed3exp of d3exp
+datatype d23exp =
+  D23Ed2exp of d2exp | D23Ed3exp of d3exp
 typedef d23explst = List d23exp
 
-fun d23explst_tr_up (d23es: d23explst): d3explst = begin
+fun d23explst_tr_up
+  (d23es: d23explst): d3explst =
   case+ d23es of
   | cons (d23e, d23es) => let
       val d3e = (case+ d23e of
@@ -298,11 +301,11 @@ fun d23explst_tr_up (d23es: d23explst): d3explst = begin
       cons (d3e, d23explst_tr_up d23es)
     end // end of [cons]
   | nil () => nil () // end of [nil]
-end // end of [d23explst_tr_up]
+// end of [d23explst_tr_up]
 
-fn d23explst_tr_dn {n:nat}
-  (loc0: loc_t, d23es: d23explst, s2es: s2explst n)
-  : d3explst n = let
+fn d23explst_tr_dn {n:nat} (
+  loc0: loc_t, d23es: d23explst, s2es: s2explst n
+) : d3explst n = let
   fun aux {n:nat}
     (d23es: list (d23exp, n), s2es: s2explst n)
     : d3explst n = begin case+ d23es of
@@ -319,14 +322,18 @@ fn d23explst_tr_dn {n:nat}
     | nil () => nil ()
     end (* end of [aux] *)
   val [sgn:int] sgn = $Lst.list_length_compare (d23es, s2es)
-  val () = (if sgn <> 0 then begin
-    prerr_loc_error3 loc0;
-    $Deb.debug_prerrf (": %s: d23explst_tr_dn", @(THISFILENAME));
-    if sgn > 0 then prerr ": arity mismatch: less arguments are needed.";
-    if sgn < 0 then prerr ": arity mismatch: more arguments are needed.";
-    prerr_newline ();
-    $Err.abort {void} ();
-    assert (sgn = 0) // deadcode
+  val () = (if sgn <> 0 then let
+    val () = prerr_loc_error3 loc0
+    val () = $Deb.debug_prerrf (": %s: d23explst_tr_dn", @(THISFILENAME))
+    val () = if sgn > 0 then
+      prerr ": arity mismatch: less arguments are needed."
+    val () = if sgn < 0 then
+      prerr ": arity mismatch: more arguments are needed."
+    val () = prerr_newline ()
+    val () = $Err.abort {void} ()
+    val () = assert (sgn = 0) // deadcode
+  in
+    // nothing
   end else begin
     () // [sgn = 0] holds!
   end) : [sgn==0] void // end of [val]
@@ -335,7 +342,8 @@ in
 end // end of [d23explst_tr_dn]
 
 fun d2explst_arg_tr_up
-  (d2es: d2explst): d23explst = begin case+ d2es of
+  (d2es: d2explst): d23explst = begin
+  case+ d2es of
   | cons (d2e, d2es) => let
       val d23e = (
         if d2exp_is_varlamcst d2e then D23Ed2exp d2e else D23Ed3exp (d2exp_tr_up d2e)
@@ -346,7 +354,8 @@ fun d2explst_arg_tr_up
   | nil () => nil () // end of [nil]
 end // end of [d2explst_arg_tr_up]
 
-fun d23explst_open_and_add (d23es: d23explst): void = begin
+fun d23explst_open_and_add
+  (d23es: d23explst): void = begin
   case+ d23es of
   | cons (d23e, d23es) => let
       val () = (case+ d23e of
@@ -360,9 +369,11 @@ end (* end of [d23explst_open_and_add] *)
 
 (* ****** ****** *)
 
-fn d23exp_app_tr_up
-  (d3e_fun: d3exp, loc_arg: loc_t, npf: int, d23es_arg: d23explst)
-  : d3exp = let
+fn d23exp_app_tr_up (
+  d3e_fun: d3exp
+, loc_arg: loc_t, npf: int
+, d23es_arg: d23explst
+) : d3exp = let
 (*
   val () = begin
     print "d23exp_app_tr_up: d3e_fun.d3exp_typ = "; print d3e_fun.d3exp_typ;
@@ -418,15 +429,16 @@ in
           :<cloptr1> s2explst n = begin case+ d3es of
           | cons (d3e, d3es) => let
               val s2e = d3e.d3exp_typ; val s2t = s2e.s2exp_srt
-              val s2t_arg: s2rt =
+              val s2t_arg = (
                 if i > 0 then
                   (if s2rt_is_linear s2t then s2rt_view else s2rt_prop)
                 else s2t
+              ) : s2rt // end of [val]
               val s2e_arg = s2exp_Var_make_srt (loc_fun, s2t_arg)
               val () = $SOL.s2exp_tyleq_solve (d3e.d3exp_loc, s2e, s2e_arg)
             in
               cons (s2e_arg, aux (i-1, d3es))
-            end
+            end // end of [cons]
           | nil () => nil ()
         end // end of [aux]
       } // end of [where]
@@ -440,20 +452,23 @@ in
     in
       d3exp_app_dyn (loc_app, s2e_res, s2fe, d3e_fun, npf, d3es_arg)
     end // end of [S2EVar]
-  | _ => begin
-      prerr_loc_error3 loc_fun;
-      $Deb.debug_prerrf (": %s: d23exp_app_tr_dn", @(THISFILENAME));
-      prerr ": the dynamic expression is applied but its type is [";
-      prerr s2e_fun;
-      prerr "].";
-      prerr_newline ();
+  | _ => let
+      val () = prerr_loc_error3 (loc_fun)
+      val () = $Deb.debug_prerrf (": %s: d23exp_app_tr_dn", @(THISFILENAME))
+      val () = prerr ": the dynamic expression is applied but its type is ["
+      val () = prerr_s2exp (s2e_fun)
+      val () = prerr "]."
+      val () = prerr_newline ()
+    in
       $Err.abort {d3exp} ()
     end // end of [_]
 end // end of [d23exp_app_tr_up]
 
 (* ****** ****** *)
 
-fun d2exp_apps_tr_up (d3e_fun: d3exp, d2as: d2exparglst): d3exp =
+fun d2exp_apps_tr_up (
+  d3e_fun: d3exp, d2as: d2exparglst
+) : d3exp =
   case+ d2as of
   | cons (d2a, d2as) => begin case+ d2a of
     | D2EXPARGsta (s2as) => begin
@@ -466,8 +481,9 @@ fun d2exp_apps_tr_up (d3e_fun: d3exp, d2as: d2exparglst): d3exp =
   | nil () => d3e_fun
 // end of [d2exp_apps_tr_up]
 
-and d2exp_apps_sta_tr_up
-  (d3e_fun: d3exp, s2as: s2exparglst, d2as: d2exparglst): d3exp = let
+and d2exp_apps_sta_tr_up (
+  d3e_fun: d3exp, s2as: s2exparglst, d2as: d2exparglst
+) : d3exp = let
   val () = d3exp_open_and_add d3e_fun
   val s2e_fun = d3e_fun.d3exp_typ
   val loc_app = aux (d3e_fun.d3exp_loc, s2as) where {
@@ -484,10 +500,11 @@ in
   d2exp_apps_tr_up (d3e_fun, d2as)
 end // end of [d2exp_apps_sta_tr_up]
 
-and d2exp_apps_dyn_tr_up
-  (d3e_fun: d3exp,
-   loc_arg: loc_t, npf: int, d2es_arg: d2explst, d2as: d2exparglst)
-  : d3exp = let
+and d2exp_apps_dyn_tr_up (
+  d3e_fun: d3exp
+, loc_arg: loc_t, npf: int
+, d2es_arg: d2explst, d2as: d2exparglst
+) : d3exp = let
   val loc_app = $Loc.location_combine (d3e_fun.d3exp_loc, loc_arg)
   val () = d3exp_open_and_add d3e_fun; val s2e_fun = d3e_fun.d3exp_typ
 in
@@ -930,30 +947,36 @@ in
         | nil () => begin case+ un_s2exp_ref_viewt0ype_type s2e0 of
           | ~Some_vt s2e_elt => let
               val () = the_effect_env_check_ref (loc0) // write to a reference is effectful
-              val () = // linearity checking
-                if s2exp_is_linear s2e_elt then begin
-                  prerr_loc_error3 d2e0.d2exp_loc;
-                  prerr ": a reference to a linear value cannot be updated directly.";
-                  prerr_newline ();
-                  $Err.abort {void} ()
-                end
+              val () = if s2exp_is_linear (s2e_elt) then let // linearity checking
+                val () = prerr_loc_error3 (d2e0.d2exp_loc)
+                val () = prerr ": a reference to a linear value cannot be updated directly."
+                val () = prerr_newline ()
+              in
+                $Err.abort {void} ()
+              end (* end of [if] *)
               val d3e_r = d2exp_tr_dn (d2e_r, s2e_elt)
             in
               d3exp_assgn_ptr (loc0, d3e0, nil (), d3e_r)
-            end
-          | ~None_vt () => begin
-              prerr_loc_error3 d2e0.d2exp_loc;
-              prerr ": the dynamic expression is expected to be a pointer or reference";
-              prerr ", but it is assigned the type ["; prerr s2e0; prerr "]";
-              prerr_newline ();
+            end // end of [Some_vt]
+          | ~None_vt () => let
+              val () = prerr_loc_error3 (d2e0.d2exp_loc)
+              val () = prerr ": the dynamic expression is expected to be a pointer or reference"
+              val () = prerr ", but it is assigned the type ["
+              val () = prerr_s2exp (s2e0)
+              val () = prerr "]"
+              val () = prerr_newline ()
+            in
               $Err.abort {d3exp} ()
             end // end of [None_vt]
           end // end of [list_nil]
-        | list_cons _ => begin
-            prerr_loc_error3 d2e0.d2exp_loc;
-            prerr ": the dynamic expression is expected to be a pointer";
-            prerr ", but it is assigned the type ["; prerr s2e0; prerr "]";
-            prerr_newline ();
+        | list_cons _ => let
+            val () = prerr_loc_error3 (d2e0.d2exp_loc)
+            val () = prerr ": the dynamic expression is expected to be a pointer"
+            val () = prerr ", but it is assigned the type ["
+            val () = prerr_s2exp (s2e0)
+            val () = prerr "]"
+            val () = prerr_newline ()
+          in
             $Err.abort {d3exp} ()
           end // end of [list_cons]
         end // end of [None_vt]
@@ -965,11 +988,13 @@ in
       val d3e_r = d2exp_tr_up d2e_r
       val () = d3exp_open_and_add d3e_r
       val s2e_r = d3e_r.d3exp_typ
-      val () = if s2exp_is_proof s2e_r then () else begin
-        prerr_loc_error3 d2e_l.d2exp_loc;
-        prerr ": the linear dynamic variable ["; prerr d2v;
-        prerr "] can support proof assignment but not value assignment.";
-        prerr_newline ();
+      val () = if s2exp_is_proof s2e_r then () else let
+        val () = prerr_loc_error3 (d2e_l.d2exp_loc)
+        val () = prerr ": the linear dynamic variable ["
+        val () = prerr_d2var (d2v)
+        val () = prerr "] can support proof assignment but not value assignment."
+        val () = prerr_newline ()
+      in
         $Err.abort {void} ()
       end // end of [if]
       val s2ls = begin
@@ -993,11 +1018,12 @@ in
     end // end of [L2VALvar_mut]
   | L2VALnone d2e_l => begin case+ d2e_l.d2exp_node of
     | D2Eviewat d2e1_l => d2exp_viewat_assgn_tr_up (loc0, d2e1_l, d2e_r)
-    | _ => begin
-        prerr loc0;
-        prerr ": the dynamic expression is expected to be a left-value";
-        prerr ", but it is not.";
-        prerr_newline ();
+    | _ => let
+        val () = prerr_loc_error3 (loc0)
+        val () = prerr ": the dynamic expression is expected to be a left-value"
+        val () = prerr ", but it is not."
+        val () = prerr_newline ()
+      in
         $Err.abort {d3exp} ()
       end // end of [_]
     end // end of [L2VALnone]
@@ -1012,11 +1038,13 @@ fn d3exp_s2exp_lazy_force_tr_up
   | ~Some_vt (s2e_elt) => d3exp_lazy_force (loc0, s2e_elt, 0(*lin*), d3e0)
   | ~None_vt () => begin case+ un_s2exp_lazy_viewt0ype_viewtype s2e0 of
     | ~Some_vt (s2e_elt) => d3exp_lazy_force (loc0, s2e_elt, 1(*lin*), d3e0)
-    | ~None_vt () => begin
-        prerr_loc_error3 d3e0.d3exp_loc;
-        prerr ": the dynamic expression is assigned the type ["; prerr s2e0;
-        prerr "], but a pointer, reference, or delayed computation is expected.";
-        prerr_newline ();
+    | ~None_vt () => let
+        val () = prerr_loc_error3 (d3e0.d3exp_loc)
+        val () = prerr ": the dynamic expression is assigned the type ["
+        val () = prerr_s2exp (s2e0)
+        val () = prerr "], but a pointer, reference, or delayed computation is expected."
+        val () = prerr_newline ()
+      in
         $Err.abort {d3exp} ()
       end // end of [None_vt]
     end // end of [None_vt]
@@ -1071,10 +1099,11 @@ in
       | ~Some_vt s2e_elt => let
           val () = the_effect_env_check_ref (loc0) // read from a reference is effectful
           val () = // linearity checking
-            if s2exp_is_linear s2e_elt then begin
-              prerr_loc_error3 d2e0.d2exp_loc;
-              prerr ": a reference to a linear value cannot be accessed directly.";
-              prerr_newline ();
+            if s2exp_is_linear s2e_elt then let
+              val () = prerr_loc_error3 (d2e0.d2exp_loc)
+              val () = prerr ": a reference to a linear value cannot be accessed directly."
+              val () = prerr_newline ()
+            in
               $Err.abort {void} ()
             end // end of [if]
         in
@@ -1082,11 +1111,14 @@ in
         end // end of [Some_vt]
       | ~None_vt () => d3exp_s2exp_lazy_force_tr_up (loc0, d3e0, s2e0)
       end // end of [nil]
-    | cons _ => begin
-        prerr_loc_error3 d2e0.d2exp_loc;
-        prerr ": the dynamic expression is expected to be a pointer";
-        prerr ", but it is assigned the type ["; prerr s2e0; prerr "]";
-        prerr_newline ();
+    | cons _ => let
+        val () = prerr_loc_error3 (d2e0.d2exp_loc)
+        val () = prerr ": the dynamic expression is expected to be a pointer"
+        val () = prerr ", but it is assigned the type ["
+        val () = prerr_s2exp (s2e0)
+        val () = prerr "]"
+        val () = prerr_newline ()
+      in
         $Err.abort {d3exp} ()
       end // end of [cons]
     end // end of [None_vt]
@@ -1113,15 +1145,16 @@ in
     in
       d3exp_con (loc0, s2e_fun_res, d2c, npf, d3es)
     end // end of [S2Efun]
-  | _ => begin
-      prerr_loc_error3 loc0;
-      $Deb.debug_prerrf (": %s: d2exp_con_tr_up", @(THISFILENAME));
-      prerr ": the dynamic constructor [";
-      prerr d2c;
-      prerr "] is applied but its type [";
-      prerr s2e_d2c;
-      prerr "] indicates that it should not be.";
-      prerr_newline ();
+  | _ => let
+      val () = prerr_loc_error3 (loc0)
+      val () = $Deb.debug_prerrf (": %s: d2exp_con_tr_up", @(THISFILENAME))
+      val () = prerr ": the dynamic constructor ["
+      val () = prerr_d2con (d2c)
+      val () = prerr "] is applied but its type ["
+      val () = prerr_s2exp (s2e_d2c)
+      val () = prerr "] indicates that it should not be."
+      val () = prerr_newline ()
+    in
       $Err.abort {d3exp} ()
     end // end of [_]
 end // end [d2exp_con_tr_up]
@@ -1132,14 +1165,20 @@ fn d2exp_decrypt_tr_up
   (loc0: loc_t, d2e: d2exp): d3exp = let
   val d3e = d2exp_tr_up d2e
   val s2e_crypt = d3e.d3exp_typ
-  val s2e = case+ s2e_crypt.s2exp_node of
-    | S2Ecrypt s2e => s2e | _ => begin
-        prerr_loc_error3 loc0;
-        prerr ": the dynamic expression is expected to be crypted";
-        prerr ", but it is assigned the type ["; prerr s2e_crypt; prerr "].";
+  val s2e = (case+
+    s2e_crypt.s2exp_node of
+    | S2Ecrypt s2e => s2e
+    | _ => let
+        val () = prerr_loc_error3 (loc0)
+        val () = prerr ": the dynamic expression is expected to be crypted"
+        val () = prerr ", but it is assigned the type ["
+        val () = prerr (s2e_crypt)
+        val () = prerr "]."
+        val () = prerr_newline ()
+      in
         $Err.abort {s2exp} ()
       end // end of [_]
-  // end of [val]
+  ) : s2exp  // end of [val]
 in
   d3exp_crypt (loc0, s2e, ~1(*decrypt*), d3e)
 end // end of [d2exp_decrypt_tr_up]
@@ -1163,19 +1202,28 @@ end // end of [d2exp_crypt_tr_up]
 
 (* ****** ****** *)
 
-fn d2exp_foldat_freeat_tr_up
-  (loc0: loc_t, isfold: bool, s2as: s2exparglst, d2e: d2exp): d3exp = let
+fn d2exp_foldat_freeat_tr_up (
+  loc0: loc_t
+, isfold: bool
+, s2as: s2exparglst
+, d2e: d2exp
+) : d3exp = let
   fn aux (loc0: loc_t, s2e_addr: s2exp): s2exp =
     case+ the_d2varset_env_find_viewat (s2e_addr, nil ()) of
     | ~Some_vt ans => (d2var_set_typ (ans.0, None ()); ans.1)
-    | ~None_vt () => begin
-        prerr loc0;
-        prerr ": Internal Error: d2exp_foldat_freeat_tr_up: no view at [";
-        prerr s2e_addr; prerr "]."; prerr_newline ();
+    | ~None_vt () => let
+        val () = prerr_loc_interror (loc0)
+        val () = prerr ": Internal Error: d2exp_foldat_freeat_tr_up: no view at ["
+        val () = prerr_s2exp (s2e_addr)
+        val () = prerr "]."
+        val () = prerr_newline ()
+      in
         $Err.abort {s2exp} ()
       end // end of [None_vt]
   // end of [aux]
-  fun auxlst (loc0: loc_t, s2es_addr: s2explst): s2explst =
+  fun auxlst (
+    loc0: loc_t, s2es_addr: s2explst
+  ) : s2explst =
     case+ s2es_addr of
     | cons (s2e_addr, s2es_addr) =>
         cons (aux (loc0, s2e_addr), auxlst (loc0, s2es_addr))

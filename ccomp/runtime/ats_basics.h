@@ -50,10 +50,10 @@
 #define ATSextern_val(ty, val) extern ty val
 
 #define ATSstatic(ty, var) static ty var
-#define ATSstatic_void(var)
+#define ATSstatic_void(var) // void var
 
 #define ATSlocal(ty, var) ty ATSunused var
-#define ATSlocal_void(var)
+#define ATSlocal_void(var) // void var
 
 #define ATSglobal(ty, var) ty var
 
