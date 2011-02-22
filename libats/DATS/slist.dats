@@ -43,6 +43,11 @@ staload "libats/SATS/slist.sats"
 
 (* ****** ****** *)
 
+extern
+castfn p2p {l:addr} (p: !ptr l):<> ptr l
+
+(* ****** ****** *)
+
 implement
 slseg_v_extend
   {a} (pfseg, pfnod) = let
@@ -85,6 +90,24 @@ end // end of [slseg_v_append]
 (* ****** ****** *)
 
 implement{a}
+slist_nil () =
+  slist_encode (slseg_v_nil | null)
+// end of [slist_nil]
+
+implement{a}
+slist_cons (
+  pfnod | p_nod, xs
+) = let
+  val (pflst | p_xs) = slist_decode (xs)
+  val () = node_set_next (pfnod | p_nod, p_xs)
+  prval pflst = slseg_v_cons (pfnod, pflst)
+in
+  slist_encode (pflst | p_nod)
+end // end of [slist_cons]
+
+(* ****** ****** *)
+
+implement{a}
 slist_free (xs) = let
   fun free {n:nat} {la:addr} .<n>. (
     pfseg: slist_v (a, n, la) | p: ptr la
@@ -99,10 +122,40 @@ slist_free (xs) = let
       let prval slseg_v_nil () = pfseg in () end
     end // end of [if]
   // end of [free]
-  prval (pfseg | p_xs) = slist_decode (xs)
+  val (pfseg | p_xs) = slist_decode (xs)
 in
   free (pfseg | p_xs)
 end (* end of [slist_free] *)
+
+(* ****** ****** *)
+
+implement{a}
+slist_length (xs) = let
+  fun loop
+    {la:addr}
+    {n,k:nat} .<n>. (
+    pfseg: !slist_v (a, n, la)
+  | p: !ptr la, k: size_t (k)
+  ) :<> size_t (n+k) =
+  if slist_is_cons (pfseg | p) then let
+    prval slseg_v_cons (pfnod, pf1seg) = pfseg
+    val p1 = node_get_next<a> (pfnod | p)
+    val res = loop (pf1seg | p1, k + 1)
+    prval () = pfseg := slseg_v_cons (pfnod, pf1seg)
+  in
+    res
+  end else k // end of [if]
+//
+  prval (
+    pfseg | ()
+  ) = slist_unfold (xs)
+  val p_xs = p2p (xs)
+  val res = loop (pfseg | p_xs, 0)
+  prval () = slist_fold (pfseg | xs)
+//
+in
+  res
+end // end of [slist_length]
 
 (* ****** ****** *)
 
@@ -133,20 +186,19 @@ slist_append (xs, ys) = let
     end (* end of [if] *)
   end // end of [loop]
 //
-  prval (pf1lst | p_xs) = slist_decode (xs)
-  prval (pf2lst | p_ys) = slist_decode (ys)
+  val (pf1lst | p_xs) = slist_decode (xs)
+  val (pf2lst | p_ys) = slist_decode (ys)
 //
 in
   if slist_is_cons (pf1lst | p_xs) then let
     prval slseg_v_cons (pf1nod, pf1lst1) = pf1lst
-    prval (pflst1 | ()) = loop (pf1nod, pf1lst1, pf2lst | p_xs, ys)
-    prval () = slist_encode {a} (slseg_v_cons (pf1nod, pflst1) | xs)
+    prval (pflst1 | ()) = loop (pf1nod, pf1lst1, pf2lst | p_xs, p_ys)
+    val xs = slist_encode {a} (slseg_v_cons (pf1nod, pflst1) | p_xs)
   in
     xs
   end else let
-    prval _ = xs
     prval slseg_v_nil () = pf1lst
-    val () = slist_encode {a} (pf2lst | ys)
+    val ys = slist_encode {a} (pf2lst | p_ys)
   in
     ys
   end (* end of [if] *)
@@ -155,31 +207,28 @@ end // end of [slist_append]
 (* ****** ****** *)
 
 implement{a}
-slist_length (xs) = let
-  fun loop
-    {la:addr}
-    {n,k:nat} .<n>. (
-    pfseg: !slist_v (a, n, la)
-  | p: !ptr la, k: size_t (k)
-  ) :<> size_t (n+k) =
-  if slist_is_cons (pfseg | p) then let
-    prval slseg_v_cons (pfnod, pf1seg) = pfseg
-    val p1 = node_get_next<a> (pfnod | p)
-    val res = loop (pf1seg | p1, k + 1)
-    prval () = pfseg := slseg_v_cons (pfnod, pf1seg)
+slist_reverse (xs) = let
+  fun reverse {i,j:nat} .<i>. (
+    xs: slist (a, i), ys: slist (a, j)
+  ) :<> slist (a, i+j) = let
+    val (pflst | p_xs) = slist_decode (xs)
   in
-    res
-  end else k // end of [if]
-//
-  prval (
-    pfseg | p_xs
-  ) = slist_decode (xs)
-  val res = loop (pfseg | p_xs, 0)
-  prval () = slist_encode (pfseg | xs)
-//
+    if slist_is_cons (pflst | p_xs) then let
+      prval slseg_v_cons (pfnod, pf1lst) = pflst
+      val p_xs1 = node_get_next<a> (pfnod | p_xs)
+      val xs1 = slist_encode {a} (pf1lst | p_xs1)
+      val ys = slist_cons<a> (pfnod | p_xs, ys)
+    in
+      reverse (xs1, ys)
+    end else let
+      prval slseg_v_nil () = pflst
+    in
+      ys
+    end (* end of [if] *)
+  end // end of [reverse]
 in
-  res
-end // end of [slist_length]
+  reverse (xs, slist_nil<a> ())
+end // end of [slist_reverse]
 
 (* ****** ****** *)
 
@@ -194,7 +243,7 @@ slist_foreach_funenv
   ) :<> void =
     if slist_is_cons (pfseg | p) then let
       prval slseg_v_cons (pfnod, pf1seg) = pfseg
-      prval (pfat, fpfnod) = node_v_takeout1 {a} (pfnod)
+      prval (pfat, fpfnod) = node_v_takeout1_val {a} (pfnod)
       val () = f (pfv | !p, env)
       prval () = pfnod := fpfnod (pfat)
       val p1 = node_get_next (pfnod | p)
@@ -206,13 +255,28 @@ slist_foreach_funenv
 //
   prval (
     pfseg | p_xs
-  ) = slist_decode (xs)
+  ) = slist_unfold (xs)
+  val p_xs = p2p (xs)
   val () = loop (pfv, pfseg | p_xs, f, env)
-  prval () = slist_encode (pfseg | xs)
+  prval () = slist_fold (pfseg | xs)
 //
 in
   // nothing
 end // end of [slist_foreach_funenv]
+
+(* ****** ****** *)
+
+implement{a}
+slist_foreach_fun (xs, f) = let
+  val f = coerce (f) where { extern castfn
+    coerce (f: (&a) -<> void):<> (!unit_v | &a, !ptr) -<> void
+  } // end of [where]
+  prval pf = unit_v ()
+  val () = slist_foreach_funenv<a> {unit_v} {ptr} (pf | xs, f, null)
+  prval unit_v () = pf
+in
+  // nothing
+end // end of [slist_foreach_fun]
 
 (* ****** ****** *)
 

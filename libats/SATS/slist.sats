@@ -54,43 +54,47 @@ node_v (a:viewt@ype+, la: addr, lb: addr)
 
 (* ****** ****** *)
 
-fun{a:vt0p}
-node_get_next {la,lb:addr} (
-  pf: !node_v (a, la, lb) | p: ptr la
-) :<> ptr lb // end of [node_get_next]
+typedef
+node_get_next_type
+  (a:viewt@ype) = {la,lb:addr} (
+  !node_v (a, la, lb) | ptr la
+) -<fun> ptr lb // end of [node_get_next_type]
+fun{a:vt0p} node_get_next : node_get_next_type (a) // specific
 
-fun{a:vt0p}
-node_set_next {la,lb1,lb2:addr} (
-  pf: !node_v (a, la, lb1) >> node_v (a, la, lb2)
-| pa: ptr la, pb: ptr lb2
-) :<> void // end of [node_set_next]
+typedef
+node_set_next_type
+  (a:viewt@ype) = {la,lb1,lb2:addr} (
+  !node_v (a, la, lb1) >> node_v (a, la, lb2) | ptr la, ptr lb2
+) -<fun> void // end of [node_set_next_type]
+fun{a:vt0p} node_set_next : node_set_next_type (a) // specific
 
 (* ****** ****** *)
 
 prfun
-node_v_takeout0
+node_v_takeout0_val
   {a:vt0p} {la,lb:addr}
   (pf: node_v (a?, la, lb))
   : (a? @ la, a @ la -<lin,prf> node_v (a, la, lb))
-// end of [node_v_takeout0]
+// end of [node_v_takeout0_val]
 
 prfun
-node_v_takeout1
+node_v_takeout1_val
   {a:vt0p} {la,lb:addr}
-  (pf: node_v (a, la, lb)): (a @ la, a @ la -<lin,prf> node_v (a, la, lb))
-// end of [node_v_takeout1]
+  (pf: node_v (a, la, lb))
+  : (a @ la, a @ la -<lin,prf> node_v (a, la, lb))
+// end of [node_v_takeout1_val]
 
 (* ****** ****** *)
 
-fun{a:vt0p}
-node_alloc ()
-  : [la,lb:addr] (option_v (node_v (a?, la, lb), la > null) | ptr la)
-// end of [node_alloc]
+typedef
+node_alloc_type (a:viewt@ype) = () -<fun>
+  [la,lb:addr] (option_v (node_v (a?, la, lb), la > null) | ptr la)
+fun{a:vt0p} node_alloc : node_alloc_type (a) // specific
 
-fun{a:vt0p}
-node_free {la,lb:addr}
-  (pf: node_v (a, la, lb) | p: ptr la):<> void
-// end of [node_free]
+typedef
+node_free_type (a:viewt@ype) =
+  {la,lb:addr} (node_v (a, la, lb) | ptr la) -<fun> void
+fun{a:vt0p} node_free : node_free_type (a) // specifc
 
 (* ****** ****** *)
 
@@ -140,15 +144,35 @@ prfun slseg_v_extend
 
 absviewtype slist (a:viewt@ype+, n:int)
 
-prfun slist_encode
+prfun slist_fold
   {a:vt0p} {n:int} {la:addr}
-  (pf: slist_v (a, n, la) | p: !ptr la >> slist (a, n)): void
+  (pflst: slist_v (a, n, la) | p: !ptr la >> slist (a, n)): void
+// end of [slist_fold]
+
+prfun slist_unfold
+  {a:vt0p} {n:int}
+  (xs: !slist (a, n) >> ptr la):<> #[la:addr] (slist_v (a, n, la) | void)
+// end of [slist_fold]
+
+castfn slist_encode
+  {a:vt0p} {n:int} {la:addr}
+  (pflst: slist_v (a, n, la) | p: ptr la):<> slist (a, n)
 // end of [slist_encode]
 
 castfn slist_decode
   {a:vt0p} {n:int}
-  (xs: !slist (a, n) >> ptr la):<> #[la:addr] (slist_v (a, n, la) | ptr la)
+  (xs: slist (a, n)):<> [la:addr] (slist_v (a, n, la) | ptr la)
 // end of [slist_decode]
+
+(* ****** ****** *)
+
+fun{a:vt0p}
+slist_nil ():<> slist (a, 0)
+
+fun{a:vt0p}
+slist_cons {n:nat} {la,lb:addr} (
+  pfnod: node_v (a, la, lb) | p: ptr la, xs: slist (a, n)
+) :<> slist (a, n+1) // end of [slist_cons]
 
 (* ****** ****** *)
 
@@ -170,11 +194,22 @@ slist_append {m,n:nat}
 (* ****** ****** *)
 
 fun{a:vt0p}
+slist_reverse {n:nat} (xs: slist (a, n)):<> slist (a, n)
+
+(* ****** ****** *)
+
+fun{a:vt0p}
 slist_foreach_funenv
   {v:view} {vt:viewtype} {n:nat} (
   pfv: !v
 | xs: !slist (a, n), f: (!v | &a, !vt) -<fun> void, env: !vt
 ) :<> void // end of [slist_foreach_funenv]
+
+fun{a:vt0p}
+slist_foreach_fun
+  {n:nat} (
+  xs: !slist (a, n), f: (&a) -<fun> void
+) :<> void // end of [slist_foreach_fun]
 
 fun{a:vt0p}
 slist_foreach_clo

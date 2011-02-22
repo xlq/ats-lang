@@ -1121,7 +1121,7 @@ list_foreach_fun {f:eff} (xs, f) = let
     coerce (f: (a) -<f> void):<> (!unit_v | a, !ptr) -<f> void
   } // end of [where]
   prval pf = unit_v ()
-  val () = list_foreach_funenv<a> {..} {ptr} (pf | xs, f, null)
+  val () = list_foreach_funenv<a> {unit_v} {ptr} (pf | xs, f, null)
   prval unit_v () = pf
 in
   // empty

@@ -213,13 +213,12 @@ fun assert_errmsg_bool1_string1 {b:bool}
 overload assert_errmsg with assert_errmsg_bool1_string1
 
 (* ****** ****** *)
-
 //
+// HX:
 // If [main_dummy] is implemented, then it indicates that [mainats]
 // is implemented in C
 //
-
-prval main_dummy (): void
+prfun main_dummy (): void
 
 (* ****** ****** *)
 //
@@ -424,7 +423,7 @@ fprint_viewt0ype_type (a:viewt@ype) = {m:file_mode}
 
 (* ****** ****** *)
 //
-// print functions for newlines
+// HX: print functions for newlines
 //
 symintr fprint_newline
 fun fprint0_newline
