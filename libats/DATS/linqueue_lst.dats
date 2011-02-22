@@ -163,7 +163,8 @@ prfun slseg1_v_decode1
   (pf: slseg1_v (a, n, l1, l2))
 :<> [n > 0] (
   slseg_v (a, n-1, l1, l2)
-, free_gc_v ((a, ptr), l2), (a, ptr?) @ l2
+, free_gc_v ((a, ptr), l2)
+, (a, ptr?) @ l2
 ) // end of [slseg1_v_decode1]
 
 extern
@@ -171,7 +172,8 @@ prfun slseg1_v_encode1
   {a:viewt@ype}
   {n:int} {l1,l2:addr} (
   pf_sl: slseg_v (a, n, l1, l2)
-, pf_gc: free_gc_v ((a, ptr), l2), pf_at: (a, ptr?) @ l2
+, pf_gc: free_gc_v ((a, ptr), l2)
+, pf_at: (a, ptr?) @ l2
 ) :<> slseg1_v (a, n+1, l1, l2) // end of [slseg1_v_encode1]
 
 (* ****** ****** *)
@@ -191,7 +193,12 @@ viewtypedef QUEUE0_vt (a:viewt@ype) = QUEUE_vt (a, 0, null, null)?
 
 (* ****** ****** *)
 
-assume QUEUE (a:viewt@ype, n:int) = [l1,l2:addr] QUEUE_vt (a, n, l1, l2)
+assume
+QUEUE (
+  a:viewt@ype, n:int
+) =
+  [l1,l2:addr] QUEUE_vt (a, n, l1, l2)
+// end of [QUEUE]
 
 (* ****** ****** *)
 

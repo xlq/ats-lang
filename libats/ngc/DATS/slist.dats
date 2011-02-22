@@ -35,11 +35,12 @@
 //
 (* ****** ****** *)
 
+#define ATS_STALOADFLAG 0 // there is no need for staloading at run-time
 #define ATS_DYNLOADFLAG 0 // there is no need for dynloading at run-time
 
 (* ****** ****** *)
 
-staload "libats/SATS/slist_ngc.sats"
+staload "libats/ngc/SATS/slist.sats"
 
 (* ****** ****** *)
 
@@ -312,4 +313,4 @@ end // end of [slist_foreach_clo]
   
 (* ****** ****** *)
 
-(* end of [slist_ngc.dats] *)
+(* end of [slist.dats] *)

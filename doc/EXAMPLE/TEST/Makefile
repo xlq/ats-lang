@@ -302,40 +302,41 @@ cleanall:: ; $(RMF) libats_vector
 
 ######
 
+checkall:: libats_ngc_slist
+libats_ngc_slist: libats_ngc_slist.dats
+	$(ATSCC) -O2 -o $@ $< && ./$@
+cleanall:: ; $(RMF) libats_ngc_slist
+
+######
+
 checkall:: libats_smlbas_array
 libats_smlbas_array: libats_smlbas_array.dats
-	$(ATSCC) -O2 -o libats_smlbas_array libats_smlbas_array.dats -lats_smlbas \
-     && ./libats_smlbas_array
+	$(ATSCC) -O2 -o $@ $< -lats_smlbas && ./$@
 cleanall:: ; $(RMF) libats_smlbas_array
 
 checkall:: libats_smlbas_array2
 libats_smlbas_array2: libats_smlbas_array2.dats
-	$(ATSCC) -O2 -o libats_smlbas_array2 libats_smlbas_array2.dats -lats_smlbas \
-     && ./libats_smlbas_array2
+	$(ATSCC) -O2 -o $@ $< -lats_smlbas && ./$@
 cleanall:: ; $(RMF) libats_smlbas_array2
 
 checkall:: libats_smlbas_char
 libats_smlbas_char: libats_smlbas_char.dats
-	$(ATSCC) -O2 -o libats_smlbas_char libats_smlbas_char.dats -lats_smlbas \
-     && ./libats_smlbas_char
+	$(ATSCC) -O2 -o $@ $< -lats_smlbas && ./$@
 cleanall:: ; $(RMF) libats_smlbas_char
 
 checkall:: libats_smlbas_list
 libats_smlbas_list: libats_smlbas_list.dats
-	$(ATSCC) -O2 -o libats_smlbas_list libats_smlbas_list.dats -lats_smlbas \
-     && ./libats_smlbas_list
+	$(ATSCC) -O2 -o $@ $< -lats_smlbas && ./$@
 cleanall:: ; $(RMF) libats_smlbas_list
 
 checkall:: libats_smlbas_string
 libats_smlbas_string: libats_smlbas_string.dats
-	$(ATSCC) -O2 -o libats_smlbas_string libats_smlbas_string.dats -lats_smlbas \
-     && ./libats_smlbas_string
+	$(ATSCC) -O2 -o $@ $< -lats_smlbas && ./$@
 cleanall:: ; $(RMF) libats_smlbas_string
 
 checkall:: libats_smlbas_time
 libats_smlbas_time: libats_smlbas_time.dats
-	$(ATSCC) -O2 -o libats_smlbas_time libats_smlbas_time.dats -lats_smlbas -lm \
-     && ./libats_smlbas_time
+	$(ATSCC) -O2 -o $@ $< -lm -lats_smlbas && ./$@
 cleanall:: ; $(RMF) libats_smlbas_time
 
 ######

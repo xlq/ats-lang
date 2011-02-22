@@ -32,13 +32,8 @@
 (* ****** ****** *)
 //
 // Author: Hongwei Xi (hwxi AT cs DOT bu DOT edu) *)
+// Start Time: February, 2011
 //
-(* ****** ****** *)
-
-%{#
-#include "libats/CATS/slist.cats"
-%} // end of [%{#]
-
 (* ****** ****** *)
 
 #define ATS_STALOADFLAG 0 // there is no need for staloading at run-time
@@ -219,4 +214,4 @@ slist_foreach_clo
 
 (* ****** ****** *)
 
-(* end of [slist_ngc.sats] *)
+(* end of [slist.sats] *)

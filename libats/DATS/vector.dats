@@ -114,8 +114,8 @@ end // end of [vector_clear]
 (* ****** ****** *)
 
 implement{a}
-vector_clear_vt
-  {v} {m,n} (pf | V, f) = let
+vector_clear_fun
+  {m,n} (V, f) = let
   prval () = __assert () where { extern prfun __assert (): [m>=n;n>=0] void }
   prval pf0 = VECTOR_decode {a} (V)
 //
@@ -124,7 +124,7 @@ vector_clear_vt
 //
   val n = V.n
   val p = V.ptr
-  val () = array_ptr_clear_clo_tsz {a} {v} (pf | !p, n, f, sizeof<a>)
+  val () = array_ptr_clear_fun_tsz {a} (!p, n, f, sizeof<a>)
 //
   prval pf = array_v_unsplit {a?} (pfmul, pf1, pf2)
 //
@@ -134,7 +134,7 @@ vector_clear_vt
   prval () = VECTOR_encode {a} (pf | V)
 in
   // nothing  
-end // end of [vector_clear_vt]
+end // end of [vector_clear_fun]
 
 (* ****** ****** *)
 

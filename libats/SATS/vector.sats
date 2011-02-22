@@ -54,17 +54,21 @@
 
 (* ****** ****** *)
 
-absview vector_v (a:viewt@ype+, m: int, n: int, l:addr)
+absview vector_v (
+  a:viewt@ype+, m: int, n: int, l:addr
+) // end of [vector_v]
 
 prfun vector_v_encode
   {a:viewt@ype} {n1,n2:int} {l:addr} {ofs:int} (
-    pf1: MUL (n1, sizeof a, ofs), pf21: array_v (a, n1, l), pf22: array_v (a?, n2, l+ofs)
-  ) : vector_v (a, n1+n2, n1, l)
+  pf1: MUL (n1, sizeof a, ofs)
+, pf21: array_v (a, n1, l), pf22: array_v (a?, n2, l+ofs)
+) : vector_v (a, n1+n2, n1, l)
 // end of [vector_v_encode]
 
 prfun vector_v_decode
-  {a:viewt@ype} {m,n:int} {l:addr} {ofs:int}
-  (pf1: MUL (n, sizeof a, ofs), pf: vector_v (a, m, n, l)): (array_v (a, n, l), array_v (a?, m-n, l+ofs))
+  {a:viewt@ype} {m,n:int} {l:addr} {ofs:int} (
+  pf1: MUL (n, sizeof a, ofs), pf: vector_v (a, m, n, l)
+): (array_v (a, n, l), array_v (a?, m-n, l+ofs))
 // end of [vector_v_decode]
 
 (* ****** ****** *)
@@ -98,13 +102,17 @@ prfun VECTOR_decode {a:viewt@ype} {m,n:int} {l:addr}
 
 (* ****** ****** *)
 
-fun vector_get_cap {a:viewt@ype} {m,n:int} (V: &VECTOR (a, m, n)):<> size_t m
-fun vector_get_size {a:viewt@ype} {m,n:int} (V: &VECTOR (a, m, n)):<> size_t n
+fun vector_get_cap
+  {a:viewt@ype} {m,n:int} (V: &VECTOR (a, m, n)):<> size_t m
+fun vector_get_size
+  {a:viewt@ype} {m,n:int} (V: &VECTOR (a, m, n)):<> size_t n
 
 (* ****** ****** *)
 
 fun{a:viewt@ype}
-vector_initialize {m:nat} (V: &VSHELL0? >> VECTOR (a, m, 0), m: size_t m):<> void
+vector_initialize {m:nat} (
+  V: &VSHELL0? >> VECTOR (a, m, 0), m: size_t m
+) :<> void // end of [vector_initialize]
 
 (* ****** ****** *)
 
@@ -113,9 +121,9 @@ fun vector_clear {a:t@ype}
 // end of [vector_clear]
 
 fun{a:viewt@ype}
-vector_clear_vt {v:view} {m,n:int} (
-  pf: !v | V: &VECTOR (a, m, n) >> VECTOR (a, m, 0), f: &(!v | &a >> a?) -<clo> void
-) :<> void // end of [vector_clear_vt]
+vector_clear_fun {m,n:int} (
+  V: &VECTOR (a, m, n) >> VECTOR (a, m, 0), f: (&a >> a?) -<fun> void
+) :<> void // end of [vector_clear_fun]
 
 (* ****** ****** *)
 
