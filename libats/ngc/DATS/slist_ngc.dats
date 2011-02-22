@@ -39,7 +39,7 @@
 
 (* ****** ****** *)
 
-staload "libats/SATS/slist.sats"
+staload "libats/SATS/slist_ngc.sats"
 
 (* ****** ****** *)
 
@@ -312,4 +312,4 @@ end // end of [slist_foreach_clo]
   
 (* ****** ****** *)
 
-(* end of [slist.dats] *)
+(* end of [slist_ngc.dats] *)
