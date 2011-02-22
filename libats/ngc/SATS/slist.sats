@@ -40,6 +40,7 @@
 
 (* ****** ****** *)
 
+sortdef t0p = t@ype
 sortdef vt0p = viewt@ype
 
 (* ****** ****** *)
@@ -66,18 +67,11 @@ fun{a:vt0p} node_set_next : node_set_next_type (a) // specific
 (* ****** ****** *)
 
 prfun
-node_v_takeout0_val
-  {a:vt0p} {la,lb:addr}
-  (pf: node_v (a?, la, lb))
-  : (a? @ la, a @ la -<lin,prf> node_v (a, la, lb))
-// end of [node_v_takeout0_val]
-
-prfun
-node_v_takeout1_val
+node_v_takeout_val
   {a:vt0p} {la,lb:addr}
   (pf: node_v (a, la, lb))
-  : (a @ la, a @ la -<lin,prf> node_v (a, la, lb))
-// end of [node_v_takeout1_val]
+  : (a @ la, {a:vt0p} a @ la -<lin,prf> node_v (a, la, lb))
+// end of [node_v_takeout_val]
 
 (* ****** ****** *)
 
@@ -88,7 +82,7 @@ fun{a:vt0p} node_alloc : node_alloc_type (a) // specific
 
 typedef
 node_free_type (a:viewt@ype) =
-  {la,lb:addr} (node_v (a, la, lb) | ptr la) -<fun> void
+  {la,lb:addr} (node_v (a?, la, lb) | ptr la) -<fun> void
 fun{a:vt0p} node_free : node_free_type (a) // specifc
 
 (* ****** ****** *)
@@ -137,6 +131,15 @@ prfun slseg_v_extend
 
 (* ****** ****** *)
 
+fun{a:vt0p}
+slist_split_at
+  {n:int} {i:nat | i < n} {la:addr}
+  (pflst: slist_v (a, n, la) | p: ptr la, i: size_t i)
+  : [lm:addr] (slseg_v (a, i, la, lm), slist_v (a, n-i, lm) | ptr lm)
+// end of [slist_split_at]
+
+(* ****** ****** *)
+
 absviewtype slist (a:viewt@ype+, n:int)
 
 prfun slist_fold
@@ -171,8 +174,13 @@ slist_cons {n:nat} {la,lb:addr} (
 
 (* ****** ****** *)
 
-fun{a:vt0p}
+fun{a:t0p}
 slist_free {n:nat} (xs: slist (a, n)):<> void
+
+fun{a:vt0p}
+slist_free_fun {n:nat}
+  (xs: slist (a, n), f: (&a >> a?) -<fun> void):<> void
+// end of [slist_free_fun]
 
 (* ****** ****** *)
 
