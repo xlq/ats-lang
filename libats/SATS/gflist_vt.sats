@@ -36,7 +36,7 @@
 //
 (* ****** ****** *)
 //
-// HX: generic fully indexed lists 
+// HX: generic fully indexed linear lists (linear gflists)
 //
 (* ****** ****** *)
 

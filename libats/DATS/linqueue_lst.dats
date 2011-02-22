@@ -41,32 +41,150 @@
 *)
 
 (* ****** ****** *)
-
 //
 // License: LGPL 3.0 (available at http://www.gnu.org/licenses/lgpl.txt)
 //
-
 (* ****** ****** *)
 
 #define ATS_DYNLOADFLAG 0 // no static loading at run-time
 
 (* ****** ****** *)
 
-staload "libats/SATS/slist.sats"
 staload "libats/SATS/linqueue_lst.sats"
 
 (* ****** ****** *)
 
-absview slseg1_v (a:viewt@ype+, l1:addr, l2:addr, n:int)
+dataview
+slseg_v (
+  a:viewt@ype+, int, addr, addr
+) =
+  | {n:nat} {la,lb,lz:addr}
+    slseg_v_cons (a, n+1, la, lz) of (
+      free_gc_v ((a, ptr), la), (a, ptr lb) @ la, slseg_v (a, n, lb, lz)
+    ) // end of [slseg_v_cons]
+  | {la:addr} slseg_v_nil (a, 0, la, la)
+// end of [slseg_v]
+
+viewdef slist_v
+  (a: viewt@ype, n:int, l:addr) = slseg_v (a, n, l, null)
+// end of [slist_v]
 
 (* ****** ****** *)
 
-viewtypedef QUEUE_vt (
-  a:viewt@ype, n:int, l1: addr, l2: addr
-) = $extype_struct "atslib_linqueue_lst_QUEUE" of {
-  pf= slseg1_v (a, l1, l2, n)
-, ptr1= ptr (l1)
-, ptr2= ptr (l2)
+extern
+prfun slseg_v_extend
+  {a:viewt@ype}
+  {n:nat}
+  {la,ly,lz:addr} (
+  pf_sl: slseg_v (a, n, la, ly)
+, pf_gc: free_gc_v ((a, ptr), ly)
+, pf_at: (a, ptr lz) @ ly
+) :<prf> slseg_v (a, n+1, la, lz)
+// end of [slseg_v_extend]
+
+implement
+slseg_v_extend
+  {a} (pf_sl, pf_gc, pf_at) = let
+  prfun extend
+    {n:nat} {la,ly,lz:addr} .<n>. (
+      pf_sl: slseg_v (a, n, la, ly)
+    , pf_gc: free_gc_v ((a, ptr), ly)
+    , pf_at: (a, ptr lz) @ ly
+    ) :<prf> slseg_v (a, n+1, la, lz) =
+    case+ pf_sl of
+    | slseg_v_cons (pf1_gc, pf1_at, pf1_sl) => begin
+        slseg_v_cons (pf1_gc, pf1_at, slseg_v_extend (pf1_sl, pf_gc, pf_at))
+      end // end of [slseg_v_cons]
+    | slseg_v_nil () => slseg_v_cons (pf_gc, pf_at, slseg_v_nil ())
+  // end of [extend]
+in
+  extend (pf_sl, pf_gc, pf_at)
+end // end of [slseg_v_extend]
+
+(* ****** ****** *)
+
+extern
+fun{a:viewt@ype}
+slseg_length
+  {n:nat} {la,lz:addr} (
+  pf_sl: !slseg_v (a, n, la, lz) | p1: ptr la, p2: ptr lz
+) :<> size_t (n) // end of [slseg_length]
+
+implement{a}
+slseg_length
+  {n} {la,lz} (pf_sl | p1, p2) = let
+  fun loop
+    {la,lz:addr} {n,k:nat} .<n>. (
+    pf_sl: !slseg_v (a, n, la, lz)
+  | p1: ptr la, p2: ptr lz, k: size_t k
+  ) :<> size_t (n+k) =
+  if p1 <> p2 then let
+    prval slseg_v_cons (pf_gc, pf_at, pf1_sl) = pf_sl
+    val res = loop (pf1_sl | p1->1, p2, k+1)
+    prval () = pf_sl := slseg_v_cons (pf_gc, pf_at, pf1_sl)
+  in
+    res
+  end else let
+    prval () = __assert () where {
+      extern prfun __assert (): [n <= 0] void
+    } // end of [prval]
+  in
+    k
+  end // end of [if]
+in
+  loop (pf_sl | p1, p2, 0)
+end // end of [slseg_length]
+
+(* ****** ****** *)
+
+absview slseg1_v (
+  a:viewt@ype+, n:int, la:addr, lz:addr
+) // end of [slseg1_v]
+
+(* ****** ****** *)
+
+extern
+prfun slseg1_v_decode0
+  {a:viewt@ype} {n:nat} {l2:addr}
+  (pf: slseg1_v (a, n, null, l2)):<> [n == 0] void
+// end of [slseg1_v_decode0]
+
+extern
+prfun slseg1_v_encode0
+  {a:viewt@ype} {l2:addr} (): slseg1_v (a, 0, null, l2)
+// end of [slseg1_v_encode0]
+
+(* ****** ****** *)
+
+extern
+prfun slseg1_v_decode1
+  {a:viewt@ype}
+  {n:int} {l1,l2:addr | l1 > null}
+  (pf: slseg1_v (a, n, l1, l2))
+:<> [n > 0] (
+  slseg_v (a, n-1, l1, l2)
+, free_gc_v ((a, ptr), l2), (a, ptr?) @ l2
+) // end of [slseg1_v_decode1]
+
+extern
+prfun slseg1_v_encode1
+  {a:viewt@ype}
+  {n:int} {l1,l2:addr} (
+  pf_sl: slseg_v (a, n, l1, l2)
+, pf_gc: free_gc_v ((a, ptr), l2), pf_at: (a, ptr?) @ l2
+) :<> slseg1_v (a, n+1, l1, l2) // end of [slseg1_v_encode1]
+
+(* ****** ****** *)
+
+viewtypedef
+QUEUE_vt (
+  a:viewt@ype
+, n:int
+, l1: addr
+, l2: addr
+) = $extype_struct
+  "atslib_linqueue_lst_QUEUE" of {
+  pf= slseg1_v (a, n, l1, l2), ptr1= ptr (l1), ptr2= ptr (l2)
 } // end of [QUEUE_vt]
 
 viewtypedef QUEUE0_vt (a:viewt@ype) = QUEUE_vt (a, 0, null, null)?
@@ -74,34 +192,6 @@ viewtypedef QUEUE0_vt (a:viewt@ype) = QUEUE_vt (a, 0, null, null)?
 (* ****** ****** *)
 
 assume QUEUE (a:viewt@ype, n:int) = [l1,l2:addr] QUEUE_vt (a, n, l1, l2)
-
-(* ****** ****** *)
-
-extern
-prfun slseg1_v_decode0
-{a:viewt@ype} {l2:addr} {n:nat}
-  (pf: slseg1_v (a, null, l2, n)):<> [n == 0] void
-// end of [slseg_v_decode0]
-
-extern
-prfun slseg1_v_encode0
-{a:viewt@ype} {l2:addr} (): slseg1_v (a, null, l2, 0)
-// end of [slseg_v_encode0]
-
-extern
-prfun slseg1_v_decode1
-{a:viewt@ype} {l1,l2:addr | l1 > null} {n:int}
-  (pf: slseg1_v (a, l1, l2, n))
-:<> [n > 0] (
-  slseg_v (a, l1, l2, n-1), free_gc_v (@(a, ptr), l2), (a, ptr?) @ l2
-) // end of [slseg_v_decode1]
-
-extern
-prfun slseg1_v_encode1
-{a:viewt@ype} {l1,l2:addr} {n:int} (
-  pf_sl: slseg_v (a, l1, l2, n)
-, pf_gc: free_gc_v (@(a, ptr), l2), pf_at: (a, ptr?) @ l2
-) :<> slseg1_v (a, l1, l2, n+1) // end of [slseg_v_encode1]
 
 (* ****** ****** *)
 
@@ -117,7 +207,7 @@ in
     n1 + 1
   end else let
     stavar l2:addr; prval p2 = q.ptr2 : ptr l2
-    prval () = slseg1_v_decode0 {a} {..} {n} (q.pf)
+    prval () = slseg1_v_decode0 {a} {n} (q.pf)
     prval () = q.pf := slseg1_v_encode0 {a} {l2} ()
   in
     size1_of_int1 (0)
@@ -159,6 +249,16 @@ queue_initialize
 
 (* ****** ****** *)
 
+local
+
+extern
+castfn list_vt_of_slist
+  {a:viewt@ype} {n:nat} {la:addr}
+  (pf: slist_v (a, n, la) | p: ptr la):<> list_vt (a, n)
+// end of [list_vt_of_slist]
+
+in // in of [local]
+
 implement{a}
 queue_uninitialize (q) = let
   val p1 = q.ptr1; prval () = ptr_is_gtez (p1)
@@ -179,6 +279,8 @@ in
     list_vt_nil ()
   end (* end of [if] *)
 end // end of [queue_uninitialize]
+
+end // end of [local]
 
 (* ****** ****** *)
 
@@ -248,13 +350,21 @@ queue_foreach_funenv
   val p1 = q.ptr1
 in
   if p1 > null then let
+//
     val p2 = q.ptr2
-    prval (pf_sl, pf_gc, pf_at) = slseg1_v_decode1 {a} (q.pf)
-    val () = loop (pf, pf_sl | p1, p2, f, env) where {
-      fun loop {l1,l2:addr} {n:nat} .<n>. (
-          pf: !v, pf_sl: !slseg_v (a, l1, l2, n)
-        | p1: ptr l1, p2: ptr l2, f: (!v | &a, !vt) -<fun> void, env: !vt
-        ) :<> void =
+    prval (
+      pf_sl, pf_gc, pf_at
+    ) =
+      slseg1_v_decode1 {a} (q.pf)
+    // end of [prval]
+//
+    val () = loop (
+      pf, pf_sl | p1, p2, f, env
+    ) where {
+      fun loop {n:nat} {l1,l2:addr} .<n>. (
+        pf: !v, pf_sl: !slseg_v (a, n, l1, l2)
+      | p1: ptr l1, p2: ptr l2, f: (!v | &a, !vt) -<fun> void, env: !vt
+      ) :<> void =
         if (p1 <> p2) then let
           prval slseg_v_cons (pf1_gc, pf1_at, pf1_sl) = pf_sl
           val () = f (pf | p1->0, env)
@@ -265,8 +375,10 @@ in
           // nothing
         end // end of [if]
     } // end of [val]
+//
     val () = f (pf | p2->0, env)
     prval () = q.pf := slseg1_v_encode1 {a} (pf_sl, pf_gc, pf_at)
+//
   in
     // nothing
   end (* end of [if] *)

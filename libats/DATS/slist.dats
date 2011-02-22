@@ -9,7 +9,7 @@
 (*
 ** ATS - Unleashing the Potential of Types!
 **
-** Copyright (C) 2002-2008 Hongwei Xi, Boston University
+** Copyright (C) 2002-2011 Hongwei Xi, Boston University
 **
 ** All rights reserved
 **
@@ -30,9 +30,9 @@
 *)
 
 (* ****** ****** *)
-
-(* author: Hongwei Xi (hwxi AT cs DOT bu DOT edu) *)
-
+//
+// Author: Hongwei Xi (hwxi AT cs DOT bu DOT edu) *)
+//
 (* ****** ****** *)
 
 #define ATS_DYNLOADFLAG 0 // there is no need for dynloading at run-time
@@ -45,129 +45,206 @@ staload "libats/SATS/slist.sats"
 
 implement
 slseg_v_extend
-  {a} (pf_sl, pf_gc, pf_at) = let
-  prfun extend {l1,l2,l3:addr} {n:nat} .<n>. (
-      pf_sl: slseg_v (a, l1, l2, n)
-    , pf_gc: free_gc_v (@(a, ptr), l2)
-    , pf_at: (a, ptr l3) @ l2
-    ) :<prf> slseg_v (a, l1, l3, n+1) = begin case+ pf_sl of
-    | slseg_v_cons (pf1_gc, pf1_at, pf1_sl) => begin
-        slseg_v_cons (pf1_gc, pf1_at, slseg_v_extend (pf1_sl, pf_gc, pf_at))
-      end // end of [slseg_v_cons]
-    | slseg_v_nil () => slseg_v_cons (pf_gc, pf_at, slseg_v_nil ())
-  end // end of [extend]
+  {a} (pfseg, pfnod) = let
+  prfun extend
+    {n:nat} {la,ly,lz:addr} .<n>. (
+      pfseg: slseg_v (a, n, la, ly)
+    , pfnod: node_v (a, ly, lz)
+    ) :<prf> slseg_v (a, n+1, la, lz) =
+    case+ pfseg of
+    | slseg_v_cons (pf1nod, pf1seg) =>
+        slseg_v_cons (pf1nod, slseg_v_extend (pf1seg, pfnod))
+      // end of [slseg_v_cons]
+    | slseg_v_nil () => slseg_v_cons (pfnod, slseg_v_nil ())
+  // end of [extend]
 in
-  extend (pf_sl, pf_gc, pf_at)
+  extend (pfseg, pfnod)
 end // end of [slseg_v_extend]
 
 (* ****** ****** *)
 
 implement
 slseg_v_append
-  {a} (pf1_sl, pf2_sl) = let
-  prfun append {l1,l2,l3:addr} {n1,n2:nat} .<n1>. (
-      pf1_sl: slseg_v (a, l1, l2, n1)
-    , pf2_sl: slseg_v (a, l2, l3, n2)
-    ) :<prf> slseg_v (a, l1, l3, n1+n2) = begin case+ pf1_sl of
-    | slseg_v_cons (pf1_gc, pf1_at, pf1_sl) => begin
-        slseg_v_cons (pf1_gc, pf1_at, slseg_v_append (pf1_sl, pf2_sl))
-      end // end of [slseg_v_cons]
-    | slseg_v_nil () => pf2_sl
+  {a} (pf1seg, pf2seg) = let
+  prfun append
+    {n1,n2:nat}
+    {la,lm,lz:addr} .<n1>. (
+      pf1seg: slseg_v (a, n1, la, lm)
+    , pf2seg: slseg_v (a, n2, lm, lz)
+    ) :<prf> slseg_v (a, n1+n2, la, lz) = begin
+    case+ pf1seg of
+    | slseg_v_cons (pf1nod, pf1seg) =>
+        slseg_v_cons (pf1nod, slseg_v_append (pf1seg, pf2seg))
+      // end of [slseg_v_cons]
+    | slseg_v_nil () => pf2seg
   end // end of [append]
 in
-  append (pf1_sl, pf2_sl)
+  append (pf1seg, pf2seg)
 end // end of [slseg_v_append]
 
 (* ****** ****** *)
 
 implement{a}
-slseg_free
-  (pf_sl | p, n) = _free (pf_sl | p, n) where {
-  typedef T = @(a, ptr)
-  fun _free {l1,l2:addr} {n:nat} .<n>. (
-      pf_sl: slseg_v (a, l1, l2, n) | p: ptr l1, n: int n
-    ) :<> void =
-    if n > 0 then let
-      prval slseg_v_cons (pf_gc, pf_at, pf1_sl) = pf_sl
-      val p1 = p->1; val () = ptr_free {T} (pf_gc, pf_at | p)
+slist_free (xs) = let
+  fun free {n:nat} {la:addr} .<n>. (
+    pfseg: slist_v (a, n, la) | p: ptr la
+  ) :<> void =
+    if slist_is_cons (pfseg | p) then let
+      prval slseg_v_cons (pfnod, pf1seg) = pfseg
+      val p1 = node_get_next<a> (pfnod | p)
+      val () = node_free<a> (pfnod | p)
     in
-      _free (pf1_sl | p1, n-1)
+      free (pf1seg | p1)
     end else begin
-      let prval slseg_v_nil () = pf_sl in () end
+      let prval slseg_v_nil () = pfseg in () end
     end // end of [if]
-  // end of [_free]
-} (* end of [slseg_free] *)
+  // end of [free]
+  prval (pfseg | p_xs) = slist_decode (xs)
+in
+  free (pfseg | p_xs)
+end (* end of [slist_free] *)
 
 (* ****** ****** *)
 
 implement{a}
-slseg_length
-  {l1,l2} {n} (pf_sl | p1, p2) = let
+slist_append (xs, ys) = let
+//
+  fun loop {m,n:nat}
+    {la1,lb1:addr} {la2:addr} .<m>. (
+    pfnod: !node_v (a, la1, lb1) >> node_v (a, la1, lb1)
+  , pf1lst: slist_v (a, m, lb1)
+  , pf2lst: slist_v (a, n, la2)
+  | p1: ptr la1, p2: ptr la2
+  ) :<> #[lb1:addr] (
+    slist_v (a, m+n, lb1) | void
+  ) = let
+    val p11 = node_get_next<a> (pfnod | p1)
+  in
+    if slist_is_cons (pf1lst | p11) then let
+      prval slseg_v_cons (pf1nod, pf1lst1) = pf1lst
+      val (pflst1 | ()) = loop (pf1nod, pf1lst1, pf2lst | p11, p2)
+    in
+      (slseg_v_cons (pf1nod, pflst1) | ())
+    end else let
+      prval slseg_v_nil () = pf1lst
+      val () = node_set_next (pfnod | p1, p2)
+    in
+      (pf2lst | ())
+    end (* end of [if] *)
+  end // end of [loop]
+//
+  prval (pf1lst | p_xs) = slist_decode (xs)
+  prval (pf2lst | p_ys) = slist_decode (ys)
+//
+in
+  if slist_is_cons (pf1lst | p_xs) then let
+    prval slseg_v_cons (pf1nod, pf1lst1) = pf1lst
+    prval (pflst1 | ()) = loop (pf1nod, pf1lst1, pf2lst | p_xs, ys)
+    prval () = slist_encode {a} (slseg_v_cons (pf1nod, pflst1) | xs)
+  in
+    xs
+  end else let
+    prval _ = xs
+    prval slseg_v_nil () = pf1lst
+    val () = slist_encode {a} (pf2lst | ys)
+  in
+    ys
+  end (* end of [if] *)
+end // end of [slist_append]
+
+(* ****** ****** *)
+
+implement{a}
+slist_length (xs) = let
   fun loop
-    {l1,l2:addr} {n,k:nat} .<n>. (
-    pf_sl: !slseg_v (a, l1, l2, n)
-  | p1: ptr l1, p2: ptr l2, k: size_t k
+    {la:addr}
+    {n,k:nat} .<n>. (
+    pfseg: !slist_v (a, n, la)
+  | p: !ptr la, k: size_t (k)
   ) :<> size_t (n+k) =
-  if p1 <> p2 then let
-    prval slseg_v_cons (pf_gc, pf_at, pf1_sl) = pf_sl
-    val res = loop (pf1_sl | p1->1, p2, k+1)
-    prval () = pf_sl := slseg_v_cons (pf_gc, pf_at, pf1_sl)
+  if slist_is_cons (pfseg | p) then let
+    prval slseg_v_cons (pfnod, pf1seg) = pfseg
+    val p1 = node_get_next<a> (pfnod | p)
+    val res = loop (pf1seg | p1, k + 1)
+    prval () = pfseg := slseg_v_cons (pfnod, pf1seg)
   in
     res
-  end else let
-    prval () = __assert () where {
-      extern prfun __assert (): [n <= 0] void
-    } // end of [prval]
-  in
-    k
-  end // end of [if]
+  end else k // end of [if]
+//
+  prval (
+    pfseg | p_xs
+  ) = slist_decode (xs)
+  val res = loop (pfseg | p_xs, 0)
+  prval () = slist_encode (pfseg | xs)
+//
 in
-  loop (pf_sl | p1, p2, 0)
-end // end of [slseg_length]
+  res
+end // end of [slist_length]
 
 (* ****** ****** *)
 
 implement{a}
-slseg_foreach_funenv
-  {v} {vt} {l1,l2} {n}
-  (pf, pf_sl | p, n, f, env) = let
-  fun loop {l1,l2:addr} {n:nat} .<n>. (
-    pf: !v, pf_sl: !slseg_v (a, l1, l2, n)
-  | p: ptr l1, n: int n, f: (!v | &a, !vt) -<fun> void, env: !vt
+slist_foreach_funenv
+  {v} {vt}
+  (pfv | xs, f, env) = let
+//
+  fun loop {la,lz:addr} {n:nat} .<n>. (
+    pfv: !v, pfseg: !slist_v (a, n, la)
+  | p: !ptr la, f: (!v | &a, !vt) -<fun> void, env: !vt
   ) :<> void =
-    if n > 0 then let
-      prval slseg_v_cons (pf_gc, pf_at, pf1_sl) = pf_sl
-      val () = f (pf | p->0, env); val () = loop (pf, pf1_sl | p->1, n-1, f, env)
+    if slist_is_cons (pfseg | p) then let
+      prval slseg_v_cons (pfnod, pf1seg) = pfseg
+      prval (pfat, fpfnod) = node_v_takeout1 {a} (pfnod)
+      val () = f (pfv | !p, env)
+      prval () = pfnod := fpfnod (pfat)
+      val p1 = node_get_next (pfnod | p)
+      val () = loop (pfv, pf1seg | p1, f, env)
     in
-      pf_sl := slseg_v_cons (pf_gc, pf_at, pf1_sl)
+      pfseg := slseg_v_cons (pfnod, pf1seg)
     end // end of [if]
-  // end of [loop]
+  (* end of [loop] *)
+//
+  prval (
+    pfseg | p_xs
+  ) = slist_decode (xs)
+  val () = loop (pfv, pfseg | p_xs, f, env)
+  prval () = slist_encode (pfseg | xs)
+//
 in
-  loop (pf, pf_sl | p, n, f, env)
-end // end of [slseg_foreach_funenv]
+  // nothing
+end // end of [slist_foreach_funenv]
+
+(* ****** ****** *)
 
 implement{a}
-slseg_foreach_clo
-  {v} {l1,l2} {n} (pf, pf_sl | p, n, f) = let
+slist_foreach_clo
+  {v} (pfv | xs, f) = let
+//
   stavar l_f: addr
   val p_f: ptr l_f = &f
+//
   typedef clo_t = (!v | &a) -<clo> void
   typedef vt = ptr l_f
-  viewdef v1 = (v, clo_t @ l_f)
-  fn app (pf1: !v1 | x: &a, p_f: !vt):<> void = let
-    prval pf11 = pf1.1
-    val () = !p_f (pf1.0 | x)
-    prval () = pf1.1 := pf11
+  viewdef V = (v, clo_t @ l_f)
+//
+  fn app (
+    pf: !V | x: &a, p_f: !vt
+  ) :<> void = let
+    prval pf1 = pf.1
+    val () = !p_f (pf.0 | x)
+    prval () = pf.1 := pf1
   in
     // nothing
   end // end of [app]
-  prval pf1 = (pf, view@ f)
-  val () = slseg_foreach_funenv<a> {v1} {vt} (pf1, pf_sl | p, n, app, p_f)
-  prval () = pf := pf1.0
-  prval () = view@ f := pf1.1
+//
+  prval pfV = (pfv, view@ f)
+  val () = slist_foreach_funenv<a> {V} {vt} (pfV | xs, app, p_f)
+  prval () = pfv := pfV.0
+  prval () = view@ f := pfV.1
+//
 in
   // nothing
-end // end of [slseg_foreach_clo]
+end // end of [slist_foreach_clo]
   
 (* ****** ****** *)
 

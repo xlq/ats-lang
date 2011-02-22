@@ -57,9 +57,8 @@
 #define ATS_STALOADFLAG 0 // no static loading at run-time
 
 (* ****** ****** *)
-
 //
-// a: item type; n: current size
+// HX: a: item type; n: current size
 //
 absviewt@ype
 QUEUE (a:viewt@ype+, n: int) =
@@ -70,9 +69,16 @@ viewtypedef QUEUE1 (a:viewt@ype) = [n:nat] QUEUE (a, n)
 
 (* ****** ****** *)
 
-fun{a:viewt@ype} queue_size {n:nat} (q: &QUEUE (a, n)):<> size_t n
-fun queue_is_empty {a:viewt@ype} {n:nat} (q: &QUEUE (a, n)):<> bool (n <= 0)
-fun queue_isnot_empty {a:viewt@ype} {n:nat} (q: &QUEUE (a, n)):<> bool (n > 0)
+fun{a:viewt@ype}
+queue_size {n:nat} (q: &QUEUE (a, n)):<> size_t n
+
+fun queue_is_empty
+  {a:viewt@ype} {n:nat} (q: &QUEUE (a, n)):<> bool (n <= 0)
+// end of [queue_is_empty]
+
+fun queue_isnot_empty
+  {a:viewt@ype} {n:nat} (q: &QUEUE (a, n)):<> bool (n > 0)
+// end of [queue_isnot_empty]
 
 (* ****** ****** *)
 

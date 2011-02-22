@@ -30,13 +30,13 @@
 *)
 
 (* ****** ****** *)
-
-(* author: Hongwei Xi (hwxi AT cs DOT bu DOT edu) *)
-
+//
+// Author: Hongwei Xi (hwxi AT cs DOT bu DOT edu) *)
+//
 (* ****** ****** *)
 
 %{#
-#include "libats/CATS/slseg.cats"
+#include "libats/CATS/slist.cats"
 %} // end of [%{#]
 
 (* ****** ****** *)
@@ -45,78 +45,142 @@
 
 (* ****** ****** *)
 
-dataview slseg_v
-  (a:viewt@ype+, addr, addr, int) =
-  | {n:nat} {l1,l2,l3:addr}
-    slseg_v_cons (a, l1, l3, n+1) of (
-      free_gc_v (@(a, ptr), l1), (a, ptr l2) @ l1, slseg_v (a, l2, l3, n)
-    ) // end of [slseg_v_cons]
-  | {l:addr} slseg_v_nil (a, l, l, 0)
-// end of [slseg_v]
+sortdef vt0p = viewt@ype
 
-viewdef slist_v (a: viewt@ype, l:addr, n:int) = slseg_v (a, l, null, n)
-  
 (* ****** ****** *)
 
-prfun slseg_v_extend
-  {a:viewt@ype}
-  {l1,l2,l3:addr} {n:nat} (
-  pf_sl: slseg_v (a, l1, l2, n)
-, pf_gc: free_gc_v (@(a, ptr), l2)
-, pf_at: (a, ptr l3) @ l2
-) :<prf> slseg_v (a, l1, l3, n+1)
-// end of [slseg_v_extend]
+absview
+node_v (a:viewt@ype+, la: addr, lb: addr)
+
+(* ****** ****** *)
+
+fun{a:vt0p}
+node_get_next {la,lb:addr} (
+  pf: !node_v (a, la, lb) | p: ptr la
+) :<> ptr lb // end of [node_get_next]
+
+fun{a:vt0p}
+node_set_next {la,lb1,lb2:addr} (
+  pf: !node_v (a, la, lb1) >> node_v (a, la, lb2)
+| pa: ptr la, pb: ptr lb2
+) :<> void // end of [node_set_next]
+
+(* ****** ****** *)
+
+prfun
+node_v_takeout0
+  {a:vt0p} {la,lb:addr}
+  (pf: node_v (a?, la, lb))
+  : (a? @ la, a @ la -<lin,prf> node_v (a, la, lb))
+// end of [node_v_takeout0]
+
+prfun
+node_v_takeout1
+  {a:vt0p} {la,lb:addr}
+  (pf: node_v (a, la, lb)): (a @ la, a @ la -<lin,prf> node_v (a, la, lb))
+// end of [node_v_takeout1]
+
+(* ****** ****** *)
+
+fun{a:vt0p}
+node_alloc ()
+  : [la,lb:addr] (option_v (node_v (a?, la, lb), la > null) | ptr la)
+// end of [node_alloc]
+
+fun{a:vt0p}
+node_free {la,lb:addr}
+  (pf: node_v (a, la, lb) | p: ptr la):<> void
+// end of [node_free]
+
+(* ****** ****** *)
+
+dataview
+slseg_v (
+  a:viewt@ype+, int, addr, addr
+) =
+  | {n:nat} {la,lb,lz:addr}
+    slseg_v_cons (a, n+1, la, lz) of (
+      node_v (a, la, lb), slseg_v (a, n, lb, lz)
+    ) // end of [slseg_v_cons]
+  | {la:addr} slseg_v_nil (a, 0, la, la)
+// end of [slseg_v]
+
+viewdef slist_v
+  (a: viewt@ype, n:int, l:addr) = slseg_v (a, n, l, null)
+// end of [slist_v]
+
+(* ****** ****** *)
+
+fun slist_is_nil
+  {a:vt0p} {n:int} {l:addr} (
+  pf: !slist_v (a, n, l) | p: ptr l
+) :<> bool (n==0) = "atspre_ptr_is_null"
+
+fun slist_is_cons
+  {a:vt0p} {n:int} {l:addr} (
+  pf: !slist_v (a, n, l) | p: ptr l
+) :<> bool (n > 0) = "atspre_ptr_isnot_null"
 
 (* ****** ****** *)
 
 prfun slseg_v_append
-  {a:viewt@ype} {l1,l2,l3:addr} {n1,n2:nat} (
-  pf1_sl: slseg_v (a, l1, l2, n1), pf2_sl: slseg_v (a, l2, l3, n2)
-) :<prf> slseg_v (a, l1, l3, n1+n2) // end of [slseg_v_append]
+  {a:vt0p} {n1,n2:nat} {la,lm,lz:addr} (
+  pf1seg: slseg_v (a, n1, la, lm), pf2seg: slseg_v (a, n2, lm, lz)
+) :<prf> slseg_v (a, n1+n2, la, lz) // end of [slseg_v_append]
 
 (* ****** ****** *)
 
-fun{a:t@ype}
-slseg_free {l1,l2:addr} {n:nat}
-  (pf_sl: slseg_v (a, l1, l2, n) | p: ptr l1, n: int n):<> void
-// end of [slseg_free]
+prfun slseg_v_extend
+  {a:vt0p} {n:nat} {la,ly,lz:addr} (
+  pfseg: slseg_v (a, n, la, ly), pfnod: node_v (a, ly, lz)
+) :<prf> slseg_v (a, n+1, la, lz)
+// end of [slseg_v_extend]
 
 (* ****** ****** *)
 
-fun{a:viewt@ype}
-slseg_length
-{l1,l2:addr} {n:nat} (
-  pf_sl: !slseg_v (a, l1, l2, n) | p1: ptr l1, p2: ptr l2
-) :<> size_t (n) // end of [slseg_length]
+absviewtype slist (a:viewt@ype+, n:int)
+
+prfun slist_encode
+  {a:vt0p} {n:int} {la:addr}
+  (pf: slist_v (a, n, la) | p: !ptr la >> slist (a, n)): void
+// end of [slist_encode]
+
+castfn slist_decode
+  {a:vt0p} {n:int}
+  (xs: !slist (a, n) >> ptr la):<> #[la:addr] (slist_v (a, n, la) | ptr la)
+// end of [slist_decode]
 
 (* ****** ****** *)
 
-fun{a:viewt@ype}
-slseg_foreach_funenv
-{v:view} {vt:viewtype} {l1,l2:addr} {n:nat} (
-  pf: !v, pf_sl: !slseg_v (a, l1, l2, n)
-| p: ptr l1, n: int n, f: (!v | &a, !vt) -<fun> void, env: !vt
-) :<> void // end of [slseg_foreach_funenv]
-
-fun{a:viewt@ype}
-slseg_foreach_clo
-{v:view} {l1,l2:addr} {n:nat} (
-  pf: !v, pf_sl: !slseg_v (a, l1, l2, n) | p: ptr l1, n: int n, f: &(!v | &a) -<clo> void
-) :<> void // end of [slseg_foreach_clo]
+fun{a:vt0p}
+slist_free {n:nat} (xs: slist (a, n)):<> void
 
 (* ****** ****** *)
-//
-// HX: [slist] and [list_vt] are really the same!
-//
-castfn list_vt_of_slist
-{a:viewt@ype} {n:nat} {l:addr}
-  (pf: slist_v (a, l, n) | p: ptr l):<> list_vt (a, n)
-// end of [list_vt_of_slist]
 
-castfn slist_of_list_vt
-{a:viewt@ype} {n:nat} {l:addr}
-  (xs: list_vt (a, n)):<> [l:addr] (slist_v (a, l, n) | ptr l)
-// end of [slist_of_list_vt]
+fun{a:vt0p}
+slist_length {n:nat} (xs: !slist (a, n)):<> size_t (n)
+
+(* ****** ****** *)
+
+fun{a:vt0p}
+slist_append {m,n:nat}
+  (xs: slist (a, m), ys: slist (a, n)):<> slist (a, m+n)
+// end of [slist_append]
+
+(* ****** ****** *)
+
+fun{a:vt0p}
+slist_foreach_funenv
+  {v:view} {vt:viewtype} {n:nat} (
+  pfv: !v
+| xs: !slist (a, n), f: (!v | &a, !vt) -<fun> void, env: !vt
+) :<> void // end of [slist_foreach_funenv]
+
+fun{a:vt0p}
+slist_foreach_clo
+  {v:view} {n:nat} (
+  pfv: !v | xs: !slist (a, n), f: &(!v | &a) -<clo> void
+) :<> void // end of [slist_foreach_clo]
 
 (* ****** ****** *)
 
