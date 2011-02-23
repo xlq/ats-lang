@@ -114,9 +114,9 @@ fn _emit_tmpvarmap_dec {m:file_mode} {l:addr} (
     case+ 0 of
     | _ when tmpvar_is_void (tmp) => let
         val () = if knd = 0 then
-          fprint1_string (pf_mod | !p_l, "ATSlocal_void (")
+          fprint1_string (pf_mod | !p_l, "// ATSlocal_void (")
         val () = if knd = 1 then
-          fprint1_string (pf_mod | !p_l, "ATSstatic_void (")
+          fprint1_string (pf_mod | !p_l, "// ATSstatic_void (")
         val () = emit_tmpvar (pf_mod | !p_l, tmp)
         val () = fprint1_string (pf_mod | !p_l, ") ;\n")
       in

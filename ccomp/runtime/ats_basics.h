@@ -44,18 +44,22 @@
 
 /* ****** ****** */
 
-/* [ATSextern] -> [ATSextern_val] */
+/*
+** [ATSextern] -> [ATSextern_val]
+*/
 #define ATSextern(ty, var) extern ty var
-#define ATSextern_prf(cst) /* proof constant */
+#define ATSextern_prf(cst) // proof constant
 #define ATSextern_val(ty, val) extern ty val
 
-#define ATSstatic(ty, var) static ty var
-#define ATSstatic_void(var) // void var
-
-#define ATSlocal(ty, var) ty ATSunused var
-#define ATSlocal_void(var) // void var
-
 #define ATSglobal(ty, var) ty var
+#define ATSlocal(ty, var) ty ATSunused var
+#define ATSstatic(ty, var) static ty var
+
+//
+// HX-2011-02-23: retired
+//
+#define ATSlocal_void(var) // void var
+#define ATSstatic_void(var) // void var
 
 #define ATScastfn(castfn, val) val
 
