@@ -54,13 +54,16 @@ staload "libats/SATS/linqueue_lst.sats"
 
 (* ****** ****** *)
 
+viewtypedef
+wptr(a:viewt@ype) = (a, ptr) // with [ptr]
+
 dataview
 slseg_v (
   a:viewt@ype+, int, addr, addr
 ) =
   | {n:nat} {la,lb,lz:addr}
     slseg_v_cons (a, n+1, la, lz) of (
-      free_gc_v ((a, ptr)?, la), (a, ptr lb) @ la, slseg_v (a, n, lb, lz)
+      free_gc_v (wptr(a), la), (a, ptr lb) @ la, slseg_v (a, n, lb, lz)
     ) // end of [slseg_v_cons]
   | {la:addr} slseg_v_nil (a, 0, la, la)
 // end of [slseg_v]
@@ -77,7 +80,7 @@ prfun slseg_v_extend
   {n:nat}
   {la,ly,lz:addr} (
   pf_sl: slseg_v (a, n, la, ly)
-, pf_gc: free_gc_v ((a, ptr)?, ly)
+, pf_gc: free_gc_v (wptr(a), ly)
 , pf_at: (a, ptr lz) @ ly
 ) :<prf> slseg_v (a, n+1, la, lz)
 // end of [slseg_v_extend]
@@ -88,7 +91,7 @@ slseg_v_extend
   prfun extend
     {n:nat} {la,ly,lz:addr} .<n>. (
       pf_sl: slseg_v (a, n, la, ly)
-    , pf_gc: free_gc_v ((a, ptr)?, ly)
+    , pf_gc: free_gc_v (wptr(a), ly)
     , pf_at: (a, ptr lz) @ ly
     ) :<prf> slseg_v (a, n+1, la, lz) =
     case+ pf_sl of
@@ -163,7 +166,7 @@ prfun slseg1_v_decode1
   (pf: slseg1_v (a, n, l1, l2))
 :<> [n > 0] (
   slseg_v (a, n-1, l1, l2)
-, free_gc_v ((a, ptr)?, l2)
+, free_gc_v (wptr(a), l2)
 , (a, ptr?) @ l2
 ) // end of [slseg1_v_decode1]
 
@@ -172,7 +175,7 @@ prfun slseg1_v_encode1
   {a:viewt@ype}
   {n:int} {l1,l2:addr} (
   pf_sl: slseg_v (a, n, l1, l2)
-, pf_gc: free_gc_v ((a, ptr)?, l2)
+, pf_gc: free_gc_v (wptr(a), l2)
 , pf_at: (a, ptr?) @ l2
 ) :<> slseg1_v (a, n+1, l1, l2) // end of [slseg1_v_encode1]
 
@@ -293,7 +296,7 @@ end // end of [local]
 
 implement{a}
 queue_insert (q, x) = let
-  viewtypedef VT = @(a, ptr) and VT0 = @(a, ptr?)
+  viewtypedef VT = wptr(a) and VT0 = @(a, ptr?)
   val (pf_gc_new, pf_at_new | p_new) = ptr_alloc<VT> ()
   val () = p_new->0 := x
   val p1 = q.ptr1; prval () = ptr_is_gtez (p1)
@@ -321,7 +324,7 @@ end // end of [queue_insert]
 
 implement{a}
 queue_remove {n} (q) = let
-  viewtypedef VT = @(a, ptr)
+  viewtypedef VT = wptr(a)
   stavar l1:addr; val p1 = q.ptr1 : ptr l1
   stavar l2:addr; val p2 = q.ptr2 : ptr l2
   prval () = __assert () where {

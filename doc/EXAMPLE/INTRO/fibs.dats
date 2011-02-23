@@ -68,14 +68,14 @@ fun fib5 {n:nat} (x: int n)
       val (pf0_gc, pf0_at | p_a0) = a0
       val (pf1_gc, pf1_at | p_a1) = a1
       val a2 = !p_a0 + !p_a1
-      val () = intinf_free (pf0_gc, pf0_at | p_a0)
+      val () = intinfptr_free @(pf0_gc, pf0_at | p_a0)
       val a1 = (pf1_gc, pf1_at | p_a1)
     in
       loop (pf1, FIB_ind (pf0, pf1) | x-1, a1, a2)
     end else let
       val (pf1_gc, pf1_at | p_a1) = a1
     in
-      intinf_free (pf1_gc, pf1_at | p_a1); (pf0 | a0)
+      intinfptr_free @(pf1_gc, pf1_at | p_a1); (pf0 | a0)
     end // end of [if]
   val intinf_0 = intinf_make 0 and intinf_1 = intinf_make 1
 in
@@ -126,7 +126,7 @@ val () = let
     printf ("fib5(%i) = ", @(n)); print !p; print_newline ()
   end // end of [val]
 in
-  intinf_free (pf_gc, pf_at | p)
+  intinfptr_free @(pf_gc, pf_at | p)
 end // end of [let]
 //
 in

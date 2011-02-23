@@ -508,7 +508,7 @@ viewtypedef Strlin = Strbufptr_gc
 
 viewtypedef entlst = List_vt (Strlin)
 viewtypedef entarrptr_gc (n: int, l:addr) =
-  (free_gc_v (Strlin?, n, l), @[Strlin][n] @ l | ptr l)
+  (free_gc_v (Strlin, n, l), @[Strlin][n] @ l | ptr l)
 
 fun dirent_name_get_all
   (dir: &DIR, asz: &size_t 0? >> size_t n): #[n:nat][l:addr] entarrptr_gc (n, l) = let

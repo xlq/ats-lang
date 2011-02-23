@@ -138,7 +138,7 @@ in
       lemma (pf1_mul, pf_mul)
     end // end of [val]
     val (pf2_P3 | p2) = P3main (!p_n2)
-    val () = intinf_free (pf_n2_gc, pf_n2 | p_n2)
+    val () = intinfptr_free @(pf_n2_gc, pf_n2 | p_n2)
     prval pf_P3 = P3_ft2 (pf_mul, pf1_P3, pf2_P3)
   in
     (pf_P3 | max (p1, p2))
@@ -161,7 +161,7 @@ implement main () = () where {
   val N1 = 13195
   val (pf_N1_gc, pf_N1 | p_N1) = intinf_make (N1)
   val (pf_P3 | p) = P3main (!p_N1)
-  val () = intinf_free (pf_N1_gc, pf_N1 | p_N1)
+  val () = intinfptr_free @(pf_N1_gc, pf_N1 | p_N1)
   val () = printf ("The largest prime factor of [%i] is [%i].\n", @(N1,p))
 //
   val N2 = 600851475143LL
@@ -178,7 +178,7 @@ implement main () = () where {
   val [_:int] (pf_mul | N3obj) = square (!p_N21)
 *)
 //
-  val () = intinf_free (pf_N21_gc, pf_N21 | p_N21)
+  val () = intinfptr_free @(pf_N21_gc, pf_N21 | p_N21)
 //
 (*
   // HX-2010-02-06: I added this one

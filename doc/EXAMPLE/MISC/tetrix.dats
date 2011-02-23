@@ -467,7 +467,7 @@ viewtypedef shapeObj (m:int, n:int) = @{
 }
 
 viewtypedef shapeObj = [m,n:pos] shapeObj (m, n)
-viewtypedef shapeObj0 = shapeObj(0, 0)?
+viewtypedef shapeObj0 = shapeObj(0, 0)
 
 //
 

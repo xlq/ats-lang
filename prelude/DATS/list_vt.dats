@@ -497,14 +497,19 @@ end // end of [list_vt_mergesort]
 implement{a}
 list_vt_quicksort {n} (xs, cmp) = let
 //
-// use an array to do quicksorting and then copy the sorted array back
+// HX-2010:
+// I use an array to do quicksorting and then copy the sorted
+// array back in to the list. Note that this style of hacking
+// should probably not imitated :)
 //
   abst@ype a1 = a?
   val _ = __cast (xs) where {
-    extern castfn __cast (xs: !list_vt (a, n) >> list_vt (a1, n)):<> ptr
+    extern castfn __cast
+      (xs: !list_vt (a, n) >> list_vt (a1, n)):<> ptr
   } // end of [val]
   val cmp = __cast (cmp) where {
-    extern castfn __cast (cmp: (&a, &a) -<fun> Sgn):<> (&a1, &a1) -<fun> Sgn
+    extern castfn
+      __cast (cmp: (&a, &a) -<fun> Sgn):<> (&a1, &a1) -<fun> Sgn
   } // end of [val]
   val asz = size1_of_int1 (list_vt_length xs)
   val (
@@ -537,7 +542,7 @@ list_vt_quicksort {n} (xs, cmp) = let
         end // end of [list_vt_nil]
     // end of [loop]
   } // end of [val]
-  val () = array_ptr_free {a} (pf_gc, pf_arr | p_arr)
+  val () = array_ptr_free {a1} (pf_gc, pf_arr | p_arr)
   val _ = __cast (xs) where {
     extern castfn __cast (xs: !list_vt (a1, n) >> list_vt (a, n)):<> ptr
   } // end of val]

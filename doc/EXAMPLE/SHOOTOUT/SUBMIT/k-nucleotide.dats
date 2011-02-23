@@ -48,18 +48,23 @@ extern fun symtbl_dna (tbl: symtbl_t): dna_t
 
 abst@ype tblent_t = $extype "tblent_t"
 
-viewtypedef symtbl (sz:int, n:int, l:addr) = @{
+viewtypedef
+symtbl (
+  sz:int, n:int, l:addr
+) = @{
   dna= dna_t
 , ptr= ptr l
 , view_arr= @[tblent_t][sz] @ l
-, view_arr_gc= free_gc_v (tblent_t?, sz, l)
+, view_arr_gc= free_gc_v (tblent_t, sz, l)
 , size= int sz
 , nitm= int n
-}
+} // end of [symtbl]
 
 viewtypedef symtbl0 = symtbl (0, 0, null)
-viewtypedef symtbl = [sz,n:nat | sz > 0] [l:addr] symtbl (sz, n, l)
-assume symtbl_t = [l_tbl: addr] (vbox (symtbl @ l_tbl) | ptr l_tbl)
+viewtypedef symtbl =
+  [sz,n:nat | sz > 0] [l:addr] symtbl (sz, n, l)
+assume symtbl_t =
+  [l_tbl: addr] (vbox (symtbl @ l_tbl) | ptr l_tbl)
 
 (* ****** ****** *)
 
@@ -144,7 +149,7 @@ extern
 fun tblent_array_make
   {sz: nat} (sz: int sz)
   :<> [l:addr] (
-  free_gc_v (tblent_t?, sz, l), array_v (tblent_t, sz, l) | ptr l
+  free_gc_v (tblent_t, sz, l), array_v (tblent_t, sz, l) | ptr l
 ) = "tblent_array_make"
 
 %{^
@@ -158,11 +163,14 @@ tblent_array_make (ats_int_type sz) {
 
 (* ****** ****** *)
 
-implement symtbl_make (dna, sz) = let
+implement
+symtbl_make
+  (dna, sz) = let
+//
 val sz = max (sz, 1)
 val (pf_tbl_gc, pf_tbl | p_tbl) = ptr_alloc_tsz {symtbl0} (sizeof<symtbl0>)
 val (pf_arr_gc, pf_arr | p_arr) = tblent_array_make (sz)
-
+//
 val () = begin
   p_tbl->dna := dna;
   p_tbl->ptr := p_arr;
@@ -170,11 +178,11 @@ val () = begin
   p_tbl->view_arr_gc := pf_arr_gc;
   p_tbl->size := sz;
   p_tbl->nitm := 0
-end
-
+end // end of [val]
+//
 prval () = free_gc_elim {symtbl0} (pf_tbl_gc)
 val (pfbox | ()) = vbox_make_view_ptr (pf_tbl | p_tbl)
-
+//
 in
   (pfbox | p_tbl)
 end // symtbl_make
@@ -194,22 +202,22 @@ tblent_array_clear (ats_ptr_type p, ats_int_type sz) {
 
 %}
 
-implement symtbl_clear (tbl) = let
-
+implement
+symtbl_clear (tbl) = let
+//
 val (vbox pf_tbl | p_tbl) = tbl
-
+//
 in
 
 tblent_array_clear (p_tbl->view_arr |  p_tbl->ptr, p_tbl->size);
 p_tbl->nitm := 0
-
-end
-
 //
+end // end of [symtbl_clear]
 
 (* ****** ****** *)
-
-// linear probing
+//
+// HX: linear probing
+//
 extern fun symtbl_search_probe {sz,i:nat | i < sz} {l:addr}
   (pf: !array_v(tblent_t, sz, l) |
   dna: dna_t, p: ptr l, sz: int sz, name: string, i: int i):<> int

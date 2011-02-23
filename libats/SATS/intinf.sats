@@ -57,39 +57,40 @@
 staload "libc/SATS/gmp.sats"
 
 (* ****** ****** *)
-
-absviewt@ype intinf (int) // a linear type of unspecified size
-viewtypedef Intinf = [n:int] intinf n
+//
+// HX: a linear type of unspecified size
+//
+absviewt@ype intinf (int)
+absviewt@ype intinf0 = intinf (0)
+viewtypedef Intinf = [i:int] intinf (i)
 
 viewtypedef intinfptr_gc (i: int) =
-  [l:addr] (free_gc_v (Intinf?, l), intinf i @ l | ptr l)
+  [l:addr] (free_gc_v (intinf0, l), intinf i @ l | ptr l)
 viewtypedef Intinfptr_gc = [i:int] intinfptr_gc (i)
   
 (* ****** ****** *)
 
 symintr intinf_make
 
-fun intinf_make_int {i:int} (i: int i)
-  : [l:addr] (free_gc_v (Intinf?, l), intinf i @ l | ptr l)
+fun intinf_make_int
+  {i:int} (i: int i): intinfptr_gc (i)
 overload intinf_make with intinf_make_int
 
-fun intinf_make_lint {i:int} (i: lint i)
-  : [l:addr] (free_gc_v (Intinf?, l), intinf i @ l | ptr l)
+fun intinf_make_lint
+  {i:int} (i: lint i): intinfptr_gc (i)
 overload intinf_make with intinf_make_lint
 
-fun intinf_make_llint {i:int} (i: llint i)
-  : [l:addr] (free_gc_v (Intinf?, l), intinf i @ l | ptr l)
+fun intinf_make_llint
+  {i:int} (i: llint i): intinfptr_gc (i)
 overload intinf_make with intinf_make_llint
 
-fun intinf_make_double (i: double)
-  : [l:addr] (free_gc_v (Intinf?, l), Intinf @ l | ptr l)
+fun intinf_make_double
+  (d: double): Intinfptr_gc // [d] should be integral
 overload intinf_make with intinf_make_double
 
 (* ****** ****** *)
 
-fun intinf_free {l:addr}
-  (pf_gc: free_gc_v (Intinf?, l), pf_at: Intinf @ l | p: ptr l): void
-// end of [intinf_free]
+fun intinfptr_free (x: Intinfptr_gc): void
 
 (* ****** ****** *)
 

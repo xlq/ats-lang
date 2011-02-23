@@ -126,19 +126,19 @@ prfun array_v_unsing
 
 (* ****** ****** *)
 
-praxi free_gc_t0ype_addr_trans
+praxi free_gc_viewt0ype_int_addr_trans
   {a1,a2:viewt@ype | sizeof a1 == sizeof a2}
   {n1,n2:int} {l:addr} {asz:int} (
   pf1_mul: MUL (n1, sizeof a1, asz)
 , pf2_mul: MUL (n2, sizeof a2, asz) 
-, pf_gc: !free_gc_v (a1?, n1, l) >> free_gc_v (a2?, n2, l)
-) : void // end of [free_gc_t0ype_addr_trans]
+, pf_gc: !free_gc_v (a1, n1, l) >> free_gc_v (a2, n2, l)
+) : void // end of [free_gc_viewt0ype_int_addr_trans]
 
 (* ****** ****** *)
 
 fun{a:viewt@ype}
 array_ptr_alloc {n:nat} (asz: size_t n)
-  :<> [l:agz] (free_gc_v (a?, n, l), array_v (a?, n, l) | ptr l)
+  :<> [l:agz] (free_gc_v (a, n, l), array_v (a?, n, l) | ptr l)
 // end of [array_ptr_alloc]
 
 (*
@@ -147,7 +147,7 @@ array_ptr_alloc {n:nat} (asz: size_t n)
 fun array_ptr_alloc_tsz
   {a:viewt@ype} {n:nat} (
   asz: size_t n, tsz: sizeof_t a
-) :<> [l:agz] (free_gc_v (a?, n, l), array_v (a?, n, l) | ptr l)
+) :<> [l:agz] (free_gc_v (a, n, l), array_v (a?, n, l) | ptr l)
   = "atspre_array_ptr_alloc_tsz"
 // end of [array_ptr_alloc_tsz]
 
@@ -158,25 +158,31 @@ fun array_ptr_alloc_tsz
 *)
 fun array_ptr_free
   {a:viewt@ype} {n:int} {l:addr} (
-  pf_gc: free_gc_v (a?, n, l), pf_arr: array_v (a?, n, l) | p_arr: ptr l
+  pf_gc: free_gc_v (a, n, l), pf_arr: array_v (a?, n, l) | p_arr: ptr l
 ) :<> void = "atspre_array_ptr_free"
 
 (* ****** ****** *)
 
 (*
-** [array_ptr_allocfree] does not save much; if one does not want to deal with the
-** view [free_gc_v] directly, then please use it.
+** HX-2009:
+** [array_ptr_allocfree] does not really save much.
+** However, if one does not want to deal with the view
+** [free_gc_v] directly, then please use it.
 *)
 
 fun{a:viewt@ype}
-array_ptr_allocfree {n:nat} (asz: size_t n):<>
-    [l:agz] (array_v (a?, n, l) | ptr l, (array_v (a?, n, l) | ptr l) -<lin> void)
-// end of [array_ptr_allocfree]
+array_ptr_allocfree
+  {n:nat} (asz: size_t n)
+  :<> [l:agz] (
+  array_v (a?, n, l) | ptr l, (array_v (a?, n, l) | ptr l) -<lin> void
+) // end of [array_ptr_allocfree]
 
 fun array_ptr_allocfree_tsz
-  {a:viewt@ype} {n:nat} (asz: size_t n, tsz: sizeof_t a):<>
-    [l:agz] (array_v (a?, n, l) | ptr l, (array_v (a?, n, l) | ptr l) -<lin> void)
-// end of [array_ptr_allocfree_tsz]
+  {a:viewt@ype} {n:nat} (
+  asz: size_t n, tsz: sizeof_t a
+) :<> [l:agz] (
+  array_v (a?, n, l) | ptr l, (array_v (a?, n, l) | ptr l) -<lin> void
+) // end of [array_ptr_allocfree_tsz]
 
 (* ****** ****** *)
 

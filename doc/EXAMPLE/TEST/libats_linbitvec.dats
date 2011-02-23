@@ -18,8 +18,12 @@ staload "libats/SATS/linbitvec.sats"
 
 (* ****** ****** *)
 
-fun bitvec_make_rand {n:nat}
-  (n: size_t n): [l:addr] (free_gc_v l, BITVEC n @ l | ptr l) = let
+fun bitvec_make_rand
+  {n:nat} (
+  n: size_t n
+) : [l:addr] (
+  free_gc_v l, BITVEC n @ l | ptr l
+) = let
   val (pf_gc, pf_vec | p_vec) = bitvec_make (n)
   val () = loop (!p_vec, n, 0) where {
     fun loop {i:nat | i <= n} .<n-i>.

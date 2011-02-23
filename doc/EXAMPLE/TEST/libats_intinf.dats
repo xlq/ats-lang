@@ -19,13 +19,13 @@ fun fact (x: int): Intinfptr_gc =
   val x = int1_of_int x
   val (pf_gc, pf_at | res) = intinf_make (1)
   fun loop {i:int} {res:addr} (
-      pf_gc: free_gc_v (Intinf?, res)
+      pf_gc: free_gc_v (intinf0, res)
     , pf_at: Intinf @ res
     | x: int i, res: ptr res
     ) : Intinfptr_gc =
     if x > 0 then let
       val (pf_mul | (pf1_gc, pf1_at | res1)) = !res * x
-      val () = intinf_free (pf_gc, pf_at | res)
+      val () = intinfptr_free @(pf_gc, pf_at | res)
     in
       loop (pf1_gc, pf1_at | x - 1, res1)
     end else begin
@@ -50,7 +50,7 @@ implement main (argc, argv) = let
   val () = begin
     printf ("fact (%i) = ", @(n)); print !res; print_newline ()
   end // end of [val]
-  val () = intinf_free (pf_gc, pf_at | res)
+  val () = intinfptr_free @(pf_gc, pf_at | res)
 in
   // empty
 end // end of [main]

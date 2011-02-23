@@ -104,12 +104,18 @@ end // end of [prerr_intvec]
 
 (* ****** ****** *)
 
-fn intvec_ptr_alloc {n:nat} (n: int n)
-  :<> [l:addr] (free_gc_v (i0nt?, n, l), (intvec n)? @ l | ptr l) =
+fn intvec_ptr_alloc
+  {n:nat} (n: int n)
+  :<> [l:addr] (
+  free_gc_v (i0nt, n, l), (intvec n)? @ l | ptr l
+) =
   array_ptr_alloc_tsz {i0nt} (size1_of_int1 n, sizeof<i0nt>)
+// end of [intvec_ptr_alloc]
 
-fn intvec_ptr_free {n:int} {l:addr}
-  (pf_gc: free_gc_v (i0nt?, n, l), pf_arr: (intvec n)? @ l | p: ptr l):<> void =
+fn intvec_ptr_free
+  {n:int} {l:addr} (
+  pf_gc: free_gc_v (i0nt, n, l), pf_arr: (intvec n)? @ l | p: ptr l
+) :<> void =
   array_ptr_free {i0nt} (pf_gc, pf_arr | p)
 // end of [intvec_ptr_free]
 
@@ -118,7 +124,7 @@ fn intvec_ptr_free {n:int} {l:addr}
 local
 
 assume intvecptr_t (n:int) =
-  [l:addr] @(free_gc_v (i0nt?, n, l), intvec n @ l | ptr l)
+  [l:addr] @(free_gc_v (i0nt, n, l), intvec n @ l | ptr l)
 // end of [intvecptr_t]
 
 in
@@ -234,7 +240,9 @@ end // end of [local]
 
 dataviewtype intveclst (int) =
   | {n:pos} {l:addr}
-    INTVECLSTcons (n) of (free_gc_v (i0nt?, n, l), intvec n @ l | ptr l, intveclst n)
+    INTVECLSTcons (n) of (
+      free_gc_v (i0nt, n, l), intvec n @ l | ptr l, intveclst n
+    ) // end of [INTVECLSTcons]
   | {n:pos} INTVECLSTnil (n)
 // end of [intveclst]
 
@@ -522,10 +530,12 @@ end // end of [intvec_absmin_coeff_index_get]
 (* ****** ****** *)
 
 extern
-fun intvec_copy {n:nat} (vec: &intvec n, n: int n)
-  :<> [l:addr] (free_gc_v (i0nt?, n, l), intvec n @ l | ptr l)
-  = "ats_solver_fm_intvec_copy"
-// end of [intvec_copy]
+fun intvec_copy
+  {n:nat} (
+  vec: &intvec n, n: int n
+) :<> [l:addr] (
+  free_gc_v (i0nt, n, l), intvec n @ l | ptr l
+) = "ats_solver_fm_intvec_copy"
 
 implement
 intvec_copy (vec, n) = let
@@ -538,11 +548,12 @@ end // end of [intvec_copy]
 (* ****** ****** *)
 
 extern
-fun intvecptr_copy {n:nat}
-  (vec: !intvecptr_t n, n: int n)
-  :<> [l:addr] (free_gc_v (i0nt?, n, l), intvec n @ l | ptr l)
-  = "ats_solver_fm_intvec_copy"
-// end of [intvecptr_copy]
+fun intvecptr_copy
+  {n:nat} (
+  vec: !intvecptr_t n, n: int n
+) :<> [l:addr] (
+  free_gc_v (i0nt, n, l), intvec n @ l | ptr l
+) = "ats_solver_fm_intvec_copy"
 
 (* ****** ****** *)
 
@@ -581,13 +592,16 @@ end // end of [intvec_scale]
 (* ****** ****** *)
 
 extern
-fun intvec_copy_and_scale {n:nat}
-  (vec: &intvec n, n: int n, c: i0nt)
-  :<> [l:addr] (free_gc_v (i0nt?, n, l), intvec n @ l | ptr l)
-// end of [intvec_copy_and_scale]
+fun intvec_copy_and_scale
+  {n:nat} (
+  vec: &intvec n, n: int n, c: i0nt
+) :<> [l:addr] (
+  free_gc_v (i0nt, n, l), intvec n @ l | ptr l
+) // end of [intvec_copy_and_scale]
 
 implement
-intvec_copy_and_scale (vec, n, c) = begin
+intvec_copy_and_scale
+  (vec, n, c) = begin
   if c <> 1 then let
     // this could be done in one-loop, but ...
     val (pf_gc, pf_arr | p) = intvec_copy (vec, n)
@@ -600,7 +614,6 @@ intvec_copy_and_scale (vec, n, c) = begin
 end // end of [intvec_copy_and_scale]
 
 (* ****** ****** *)
-
 //
 // HX: [vec1 := vec1 + vec2]
 //
@@ -667,13 +680,18 @@ end // end of [intvec_add_by_scale]
 
 extern
 fun intvec_combine_at
-  {n,i:int | 0 < i; i < n}
-  (_pos: &intvec n, _neg: &intvec n, n: int n, i: int i)
-  :<> [l:addr] (free_gc_v (i0nt?, n, l), intvec n @ l | ptr l)
-// end of [intvec_combine_at]
+  {n,i:int | 0 < i; i < n} (
+  _pos: &intvec n
+, _neg: &intvec n
+, n: int n, i: int i
+) :<> [l:addr] (
+  free_gc_v (i0nt, n, l), intvec n @ l | ptr l
+) // end of [intvec_combine_at]
 
 implement
-intvec_combine_at (vec_pos, vec_neg, n, i) = let
+intvec_combine_at (
+  vec_pos, vec_neg, n, i
+) = let
   val c_pos = vec_pos.[i] and c_neg = ~(vec_neg.[i])
   val (pf_gc, pf_arr | p) = intvec_copy_and_scale (vec_neg, n, c_pos)
   val () = intvec_add_by_scale (!p, vec_pos, n, c_neg)
@@ -682,7 +700,6 @@ in
 end // end of [intvec_combine_at]
 
 (* ****** ****** *)
-
 //
 // HX: [~1] is returned if contradiction is reached; otherwise, [0] is returned
 //
@@ -851,8 +868,9 @@ end // end of [intveclst_elim_at]
 
 dataviewtype
 intveclst1 (int) =
-  | {n:pos} {l:addr} INTVECLST1cons (n) of (
-      free_gc_v (i0nt?, n, l), intvec n @ l
+  | {n:pos} {l:addr}
+    INTVECLST1cons (n) of (
+      free_gc_v (i0nt, n, l), intvec n @ l
     | int(*stamp*), ptr l, intBtw (0, n) (*0:gte/1+:eq*), intveclst1 n
     ) // end of [INTVECLST1cons]
   | {n:pos} INTVECLST1mark (n) of intveclst1 n
@@ -872,16 +890,18 @@ fun intveclst1_backtrack {n:pos}
   (v1ecs: intveclst1 n): intveclst1 n = begin case+ v1ecs of
   | ~INTVECLST1cons (pf_gc, pf_arr | _, p, _, v1ecs) => begin
       intvec_ptr_free (pf_gc, pf_arr | p); intveclst1_backtrack v1ecs
-    end
+    end // end of [INTVECLST1cons]
   | ~INTVECLST1mark (v1ecs) => v1ecs
   | ~INTVECLST1nil () => INTVECLST1nil ()
 end // end of [intveclst1_backtrack]
 
 (* ****** ****** *)
 
-fun fprint_intveclst1 {m:file_mode} {n:pos}
-  (pf_mod: file_mode_lte (m, w) | out: &FILE m, v1ecs: !intveclst1 n, n: int n)
-  : void = begin case+ v1ecs of
+fun fprint_intveclst1
+  {m:file_mode} {n:pos} (
+  pf_mod: file_mode_lte (m, w)
+| out: &FILE m, v1ecs: !intveclst1 n, n: int n
+) : void = begin case+ v1ecs of
   | INTVECLST1cons (_, !pf_arr  | stamp, p, i, !v1ecs_nxt) => let
       prval pf = !pf_arr
       val () = fprintf1_exn (pf_mod | out, "(%i;%i): ", @(stamp,i))
@@ -891,7 +911,7 @@ fun fprint_intveclst1 {m:file_mode} {n:pos}
       val () = fprint_intveclst1 (pf_mod | out, !v1ecs_nxt, n)
     in
       fold@ (v1ecs)
-    end
+    end // end of [INTVECLST1cons]
   | INTVECLST1mark (!v1ecs_nxt) => let
       val () = fprint_intveclst1 (pf_mod | out, !v1ecs_nxt, n)
     in
@@ -900,8 +920,10 @@ fun fprint_intveclst1 {m:file_mode} {n:pos}
   | INTVECLST1nil () => (fold@ v1ecs)
 end // end of [fprint_intveclst1]
 
-fun print_intveclst1 {n:pos}
-  (v1ecs: !intveclst1 n, n: int n): void = let
+fun print_intveclst1
+  {n:pos} (
+  v1ecs: !intveclst1 n, n: int n
+): void = let
   val (pf_stdout | ptr_stdout) = stdout_get ()
 in
   fprint_intveclst1 (file_mode_lte_w_w | !ptr_stdout, v1ecs, n);
@@ -910,12 +932,15 @@ end // end of [print_intveclst1]
 
 (* ****** ****** *)
 
-extern fun intvec_elimlst_at {n:pos}
-  (stamp: int, vec: &intvec n, v1ecs_eq: !intveclst1 n, n: int n): void
-// end of [intvec_elimlst_at]
+extern
+fun intvec_elimlst_at {n:pos} (
+  stamp: int, vec: &intvec n, v1ecs_eq: !intveclst1 n, n: int n
+) : void // end of [intvec_elimlst_at]
 
 implement
-intvec_elimlst_at (stamp0, vec, v1ecs_eq, n) = begin
+intvec_elimlst_at (
+  stamp0, vec, v1ecs_eq, n
+) = begin
   case+ v1ecs_eq of
   | INTVECLST1cons (_, !pf_arr | stamp, p, i, !v1ecs_eq_nxt) => begin
       if stamp0 <= stamp then let
@@ -932,24 +957,27 @@ intvec_elimlst_at (stamp0, vec, v1ecs_eq, n) = begin
         val () = intvec_elimlst_at (stamp0, vec, !v1ecs_eq_nxt, n)
       in
         fold@ v1ecs_eq
-      end
-    end
+      end (* end of [if] *)
+    end // end of [INTVECLST1cons]
   | INTVECLST1mark (!v1ecs_eq_nxt) => let
       val () = intvec_elimlst_at (stamp0, vec, !v1ecs_eq_nxt, n)
     in
       fold@ v1ecs_eq
-    end
+    end // end of [INTVECLST1mark]
   | INTVECLST1nil () => (fold@ v1ecs_eq)
 end // end of [intvec_elimlst_at]
 
 (* ****** ****** *)
 
-extern fun intveclst_make {n:nat}
-  (v1ecs: !intveclst1 n, v1ecs_eq: !intveclst1 n, n: int n): intveclst n
-// end of [intveclst_make]
+extern
+fun intveclst_make {n:nat} (
+  v1ecs: !intveclst1 n, v1ecs_eq: !intveclst1 n, n: int n
+) : intveclst n // end of [intveclst_make]
 
 implement
-intveclst_make {n} (v1ecs, v1ecs_eq, n) = let
+intveclst_make {n}
+  (v1ecs, v1ecs_eq, n) = let
+//
   fun loop (
       v1ecs: !intveclst1 n
     , v1ecs_eq: !intveclst1 n
@@ -973,8 +1001,10 @@ intveclst_make {n} (v1ecs, v1ecs_eq, n) = let
         res := INTVECLSTnil (); fold@ v1ecs
       end
   end // end of [loop]
+//
   var vecs: intveclst n // uninitialized
   val () = loop (v1ecs, v1ecs_eq, n, vecs)
+//
 in
   vecs
 end // end of [intveclst]
@@ -1027,10 +1057,10 @@ fun aux_main {s:nat} (
                 val () = intveclst_free (vecs)
               in
                 ~1 // a contradiction is reached!
-              end
+              end (* end of [if] *)
           in
             fold@ (!ic); fold@ (ics); ans
-          end
+          end (* end of [if] *)
         end // end of [2(*gte*) and ~2(*lt*)]
       | _ when knd = 1(*eq*) => let
           val (pf_gc, pf_arr | p) = intvecptr_copy (!ivp, n)

@@ -90,7 +90,7 @@ fmatrix_ptr_alloc
   {m,n:nat} (
   m: size_t m, n: size_t n
 ) :<> [mn:nat] [l:agz] (
-  free_gc_v (a?, mn, l)
+  free_gc_v (a, mn, l)
 , MUL (m, n, mn)
 , fmatrix_v (a?, m, n, l)
 | ptr l
@@ -101,7 +101,7 @@ fmatrix_ptr_alloc
 fun fmatrix_ptr_free
   {a:viewt@ype}
   {m,n,mn:nat} {l:addr} (
-  pf_gc: free_gc_v (a?, mn, l)
+  pf_gc: free_gc_v (a, mn, l)
 , pf_mn: MUL (m, n, mn)
 , pf_fmat: fmatrix_v (a?, m, n, l)
 | p: ptr l

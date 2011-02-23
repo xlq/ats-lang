@@ -199,15 +199,21 @@ end // end of [redef_find]
 
 (* ****** ****** *)
 
-extern fun array_of_CSIlst {n:nat} (lst: CSIlst n, n: int n)
-  :<> [l:addr] (free_gc_v (CSI?, n, l), array_v (CSI, n, l) | ptr l) =
-  "array_of_CSIlst"
+extern
+fun array_of_CSIlst
+  {n:nat} (
+  lst: CSIlst n, n: int n
+) :<> [l:addr] (
+  free_gc_v (CSI, n, l), array_v (CSI, n, l) | ptr l
+) = "array_of_CSIlst"
 
 %{
 
 typedef ats_ptr_type CSI ;
 ats_ptr_type
-array_of_CSIlst (ats_ptr_type lst, ats_int_type n) {
+array_of_CSIlst (
+  ats_ptr_type lst, ats_int_type n
+) {
   CSI *p0, *p ;
   p0 = atspre_array_ptr_alloc_tsz(n, sizeof(CSI)) ;
   p = p0 + (n-1) ;
@@ -215,15 +221,16 @@ array_of_CSIlst (ats_ptr_type lst, ats_int_type n) {
     *p = CSI_uncons (&lst) ; --n ; --p ;
   }
   return p0 ;
-}
+} // end of [array_of_CSIlst]
 
 %}
 
 (* ****** ****** *)
 
-fun regex_mark_str {i,l:nat | i <= l} .<l-i>.
-  (env: redef, x0: &T, i: size_t i, l: size_t l, s: string l, r1e: regex1)
-  : regex1 = begin
+fun regex_mark_str
+  {i,l:nat | i <= l} .<l-i>. (
+  env: redef, x0: &T, i: size_t i, l: size_t l, s: string l, r1e: regex1
+) : regex1 = begin
   if i < l then let
     val cs = charset_singleton s[i]
     val r1e = regex1_seq (r1e, regex1_chars (x0, cs))
@@ -234,10 +241,10 @@ end // end of [regex_mark_str]
 
 (* ****** ****** *)
 
-fun regex_mark (env: redef, x0: &T, r0e: regex)
-  : regex1 = begin case+ r0e of
-  | REGalt (r0e1, r0e2) =>
-    let
+fun regex_mark (
+  env: redef, x0: &T, r0e: regex
+) : regex1 = begin case+ r0e of
+  | REGalt (r0e1, r0e2) => let
       val r1e1 = regex_mark (env, x0, r0e1)
       val r1e2 = regex_mark (env, x0, r0e2)
     in
@@ -252,22 +259,22 @@ fun regex_mark (env: redef, x0: &T, r0e: regex)
           prerrf ("Undefined identifier: %s\n", @(id));
           $raise Fatal ()
         end
-    end
+    end (* end of [REGid] *)
   | REGopt (r0e0) => regex1_opt (regex_mark (env, x0, r0e0))
   | REGplus (r0e0) => regex1_plus (regex_mark (env, x0, r0e0))
   | REGrep (r0e0, i) =>
-    if i > 0 then
-      let val r1e0 = regex_mark (env, x0, r0e0) in
+      if i > 0 then let
+        val r1e0 = regex_mark (env, x0, r0e0)
+      in
         regex_mark_rep (env, x0, i-1, r0e0, r1e0)
-      end
-    else regex1_nil ()
-  | REGseq (r0e1, r0e2) =>
-    let
+      end else regex1_nil ()
+    // end of [REGrep]
+  | REGseq (r0e1, r0e2) => let
       val r1e1 = regex_mark (env, x0, r0e1)
       val r1e2 = regex_mark (env, x0, r0e2)
     in
       regex1_seq (r1e1, r1e2)
-    end
+    end // end of [REGseq]
   | REGstar (r0e0) => regex1_star (regex_mark (env, x0, r0e0))
   | REGstr (str) => let
       val str = string1_of_string str
@@ -276,22 +283,23 @@ fun regex_mark (env: redef, x0: &T, r0e: regex)
     end // end of [REGstr]
 end // end of [regex_mark]
 
-and regex_mark_rep
-  (env: redef, x0: &T, i: int, r0e: regex, r1e: regex1)
-  : regex1 = begin
+and regex_mark_rep (
+  env: redef, x0: &T, i: int, r0e: regex, r1e: regex1
+) : regex1 =
   if i > 0 then let
     val r1e' = regex_mark (env, x0, r0e)
   in
     regex_mark_rep (env, x0, i-1, r0e, regex1_seq (r1e, r1e'))
   end else r1e // end of [if]
-end (* end of [regex_mark_rep] *)
+// end of [regex_mark_rep]
 
 (* ****** ****** *)
 
-fun followpos {n:nat}
-  (n0: int n, r: regex1)
-  : [l:addr] (
-  free_gc_v (intset_t?, n, l), array_v (intset_t, n, l) | ptr l
+fun followpos
+  {n:nat} (
+  n0: int n, r: regex1
+) : [l:addr] (
+  free_gc_v (intset_t, n, l), array_v (intset_t, n, l) | ptr l
 ) = let
   fun aux {l:addr}
     (pf: !array_v (intset_t, n, l) | A: ptr l, n0: int n, r: regex1): void =
@@ -383,8 +391,12 @@ end // end of [followpos]
 
 (* ****** ****** *)
 
-fn rules_mark (env: redef, x0: &T, rls: rules): regex1 = let
-  fun aux (env: redef, x0: &T, irule: int, rls: rules): regex1 =
+fn rules_mark (
+  env: redef, x0: &T, rls: rules
+) : regex1 = let
+  fun aux (
+    env: redef, x0: &T, irule: int, rls: rules
+  ) : regex1 =
     case+ rls of
     | rules_cons (r0e, act, rls) => let
         val r1e1 = regex_mark (env, x0, r0e)
@@ -394,34 +406,45 @@ fn rules_mark (env: redef, x0: &T, rls: rules): regex1 = let
         regex1_alt (r1e_seq, aux (env, x0, irule+1, rls))
       end
     | rules_nil () => regex1_null ()
+  // end of [aux]
 in
    aux (env, x0, 1, rls) // irule starts from 1!
 end (* rules_mark *)
 
 (* ****** ****** *)
 
-dataviewtype acclst =
+dataviewtype
+acclst =
   | acclst_nil
   | acclst_cons of (int (*state*), int (*rule*), acclst)
+// end of [acclst]
 
-dataviewtype intlst =
-  | intlst_nil | intlst_cons of (int, intlst)
+dataviewtype
+intlst = intlst_nil | intlst_cons of (int, intlst)
 
-dataviewtype statelst =
+dataviewtype
+statelst =
   | statelst_nil | statelst_cons of (intset_t, statelst)
+// end of [statelst]
 
-dataviewtype translst (int) =
+dataviewtype
+translst (int) =
   | translst_nil (0)
   | {n:nat} translst_cons (n+1) of (int, intlst, translst n)
+// end of [translst]
 
 viewtypedef Translst = [n:nat] translst n
 
 (* ****** ****** *)
 
-fn transition_char {n:nat} {l_csi,l_pos:addr} (
-    pf1: !array_v (CSI, n, l_csi), pf2: !array_v (intset_t, n, l_pos)
-  | A_csi: ptr l_csi, A_pos: ptr l_pos, n: int n, st: intset_t, c: char
-  ) : intset_t = let
+fn transition_char
+  {n:nat} {l_csi,l_pos:addr} (
+  pf1: !array_v (CSI, n, l_csi)
+, pf2: !array_v (intset_t, n, l_pos)
+| A_csi: ptr l_csi
+, A_pos: ptr l_pos
+, n: int n, st: intset_t, c: char
+) : intset_t = let
 (*
   val () = prerrf ("transition_char: c = %i\n", @(int_of c))
 *)

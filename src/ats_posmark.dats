@@ -454,9 +454,10 @@ fn posmarklst_sort
     end // end of [if]
   end // end of [cmp]
 //
-  fun loop {n,i:int | 0 <= i + 1; i + 1 <= n}
-    (A: &(@[ppm][n]), i: int i, res: list_vt (ppm, n-i-1))
-    : list_vt (ppm, n) =
+  fun loop
+    {n,i:int | 0 <= i + 1; i + 1 <= n} (
+    A: &(@[ppm][n]), i: int i, res: list_vt (ppm, n-i-1)
+  ) : list_vt (ppm, n) =
     if i >= 0 then begin
       loop (A, i-1, list_vt_cons (A.[i], res))
     end else begin

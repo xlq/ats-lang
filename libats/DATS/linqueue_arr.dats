@@ -94,7 +94,7 @@ viewtypedef QUEUE_vt (
 , qarr_fst= ptr l_fst
 , qarr_lst= ptr l_lst
 , pfqarr= QUEUEarr_v (a, m, n, l_beg, l_end, l_fst, l_lst)
-, pfqarr_gc= free_gc_v (a?, m, l_beg)
+, pfqarr_gc= free_gc_v (a, m, l_beg)
 } // end of [QUEUE_vt]
 
 typedef QUEUE0_vt

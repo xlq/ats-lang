@@ -81,15 +81,18 @@ STACKarr_v_clear {a:t@ype}
 
 (* ****** ****** *)
 
-viewtypedef STACK_vt (
-  a:viewt@ype, m:int, n:int, l_beg:addr, l_cur:addr
+viewtypedef
+STACK_vt (
+  a:viewt@ype
+, m:int, n:int
+, l_beg:addr, l_cur:addr
 ) = $extype_struct "atslib_linstack_arr_STACK" of {
   cap= size_t m
 , nitm= size_t n // = (l_beg - l_cur) / sizeof(a)
 , sarr_beg = ptr l_beg // this is definitely needed if GC is involved
 , sarr_cur = ptr l_cur
 , pfsarr= STACKarr_v (a, m, n, l_beg, l_cur)
-, pfsarr_gc= free_gc_v (a?, m, l_beg)
+, pfsarr_gc= free_gc_v (a, m, l_beg)
 } // end of [STACK_vt]
 
 typedef STACK0_vt

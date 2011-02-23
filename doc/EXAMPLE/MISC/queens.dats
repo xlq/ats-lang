@@ -60,7 +60,7 @@ end // end of [print_board]
 
 fn board_make {sz:nat}
   (sz: int sz):<> [l:addr] (
-  free_gc_v (int?, sz, l), array_v (Nat, sz, l) | ptr l
+  free_gc_v (Nat, sz, l), array_v (Nat, sz, l) | ptr l
 ) = let
   val sz = size1_of_int1 sz
   val (pf_gc, pf | p) =

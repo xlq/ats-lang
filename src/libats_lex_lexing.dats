@@ -89,8 +89,10 @@ implement
 infile_make_string (s) = let
   val [n:int] s = string1_of_string s; val n = string_length s
   typedef T = sizeLte n
-  val [l:addr] (pf_gc, pf_at | p) = ptr_alloc_tsz {T} (sizeof<T>)
-  viewdef V = @(free_gc_v (T?, l), T @ l)
+  val [l:addr] (
+    pf_gc, pf_at | p
+  ) = ptr_alloc_tsz {T} (sizeof<T>)
+  viewdef V = (free_gc_v (T, l), T @ l)
   fn _free (pf: V | (*none*)):<cloref1> void = begin
      ptr_free {T} (pf.0, pf.1 | p)
   end // end of [_free]
@@ -98,7 +100,7 @@ infile_make_string (s) = let
     prval pf_at = (pf.1: T @ l)
     val i = !p; val ans: int = begin
       if i < n then (!p := i+1; int_of_char s[i]) else ~1
-    end
+    end // end of [val]
   in
     pf.1 := pf_at; ans
   end // end of [_getc]

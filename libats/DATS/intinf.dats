@@ -40,10 +40,8 @@
 (* ****** ****** *)
 
 %{^
-
 #include "libc/CATS/gmp.cats"
-
-%}
+%} // end of [%{^]
 
 (* ****** ****** *)
 
@@ -52,12 +50,14 @@ staload "libats/SATS/intinf.sats"
 
 (* ****** ****** *)
 
+assume intinf0 = mpz_vt
 assume intinf (i:int) = mpz_vt // [i] is a fake
 
 (* ****** ****** *)
 
-implement intinf_make_int (i) = let
-  val @(pf_gc, pf_at | p) = ptr_alloc_tsz {mpz_vt} (sizeof<mpz_vt>)
+implement
+intinf_make_int {i} (i) = let
+  val (pf_gc, pf_at | p) = ptr_alloc_tsz {mpz_vt} (sizeof<mpz_vt>)
   val () = mpz_init_set_int (!p, i)
 in
   @(pf_gc, pf_at | p)
@@ -82,9 +82,10 @@ end // end of [intinf_of_llint1]
 
 (* ****** ****** *)
 
-implement intinf_free (pf_gc, pf_at | p) =
-  (mpz_clear (!p); ptr_free {Intinf} (pf_gc, pf_at | p))
-// end of [intinf_free]
+implement
+intinfptr_free @(pf_gc, pf_at | p) =
+  (mpz_clear (!p); ptr_free {intinf0} (pf_gc, pf_at | p))
+// end of [intinfptr_free]
 
 (* ****** ****** *)
 
@@ -222,7 +223,7 @@ implement fmod_intinf_int {m,n} (intinf, i) = let
   val r = mpz_get_int (!p)
   val [r1:int] r = int1_of_int r
   prval () = __assert () where { extern prfun __assert (): [r==r1] void }
-  val () = intinf_free (pf_gc, pf_at | p)
+  val () = intinfptr_free @(pf_gc, pf_at | p)
 in
   #[q,r | @(pf_mul | r)]
 end // end of [fmod_intinf_int]

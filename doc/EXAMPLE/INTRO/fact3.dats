@@ -39,7 +39,7 @@ fun fact3 {n:nat} .<n>. (n: int n): [r:int] (FACT (n, r) | intinfptr_gc r) =
     val n1 = pred n
     val (pf1 | (pf1_gc, pf1_at | p1)) = fact3 (n1)
     val (pf_mul | r) = n * !p1
-    val () = intinf_free (pf1_gc, pf1_at | p1)
+    val () = intinfptr_free @(pf1_gc, pf1_at | p1)
   in
     (FACTsucc (pf1, pf_mul) | r)
   end else begin
@@ -69,7 +69,7 @@ main (argc, argv) =
       print "The factorial of "; print n0; print " = "; print !p_res; print_newline ()
     end // end of [val]
   in
-    intinf_free (pf_gc, pf_at | p_res)
+    intinfptr_free @(pf_gc, pf_at | p_res)
   end else begin
     fact3_usage (argv.[0]); exit (1)
   end // end of [if]
