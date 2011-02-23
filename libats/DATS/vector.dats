@@ -84,7 +84,7 @@ vector_initialize {m} (V, m) = let
   val [l:addr] (pf_gc, pf | p) = array_ptr_alloc<a> (m)
   prval pf = vector_v_encode01 {a} (pf)
   prval pf_gc = __cast (pf_gc) where {
-    extern prfun __cast (pf: free_gc_v (a, m, l)): free_gc_v l
+    extern prfun __cast (pf: free_gc_v (a?, m, l)): free_gc_v l
   } // end of [prval]
   val () = V.m := m
   val () = V.n := size1_of_int1 (0)

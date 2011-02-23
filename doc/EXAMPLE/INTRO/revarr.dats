@@ -86,7 +86,7 @@ implement main () = let
       end // end of [if]
   } // end of [pr]
   val N = 10
-  val A = array_make_arrsz $arrsz {int} (0, 1, 2, 3, 4, 5, 6, 7, 8, 9)
+  val A = array_make_arrsz {int} $arrsz(0, 1, 2, 3, 4, 5, 6, 7, 8, 9)
   val () = pr (A, N)
   val () = print_newline ()
   val () = revarr<int> (A, N)

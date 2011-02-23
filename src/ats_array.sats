@@ -37,20 +37,20 @@
 (* ****** ****** *)
 
 fun{a:viewt@ype} array_ptr_alloc {n:nat} (asz: int n):<>
-    [l:addr | l <> null] (free_gc_v (a, n, l), array_v (a?, n, l) | ptr l)
+    [l:addr | l <> null] (free_gc_v (a?, n, l), array_v (a?, n, l) | ptr l)
   = "ats_array_ptr_alloc_tsz"
 
 fun array_ptr_alloc_tsz
   {a:viewt@ype} {n:nat} (asz: int n, tsz: sizeof_t a):<>
-    [l:addr | l <> null] (free_gc_v (a, n, l), array_v (a?, n, l) | ptr l)
+    [l:addr | l <> null] (free_gc_v (a?, n, l), array_v (a?, n, l) | ptr l)
   = "ats_array_ptr_alloc_tsz"
 
 (* ****** ****** *)
 
 fun array_ptr_free
-  {a:viewt@ype} {n:int} {l:addr}
-  (_: free_gc_v (a, n, l), _: array_v (a?, n, l) | _: ptr l):<> void
-  = "ats_array_ptr_free" 
+  {a:viewt@ype} {n:int} {l:addr} (
+  pfgc: free_gc_v (a?, n, l), pfarr: array_v (a?, n, l) | p: ptr l
+) :<> void = "ats_array_ptr_free" 
 
 (* ****** ****** *)
 
@@ -58,32 +58,39 @@ fun{a:t@ype} array_ptr_initialize_elt {n:nat}
   (base: &(@[a?][n]) >> @[a][n], asz: int n, x: a):<> void
 // end of [array_ptr_initialize_elt]
 
-fun{a:t@ype} array_ptr_make_elt {n:nat} (asz: int n, x:a)
-  :<> [l:addr | l <> null] (free_gc_v (a, n, l), array_v (a, n, l) | ptr l)
+fun{a:t@ype}
+array_ptr_make_elt {n:nat} (asz: int n, x:a)
+  :<> [l:addr | l <> null] (free_gc_v (a?, n, l), array_v (a, n, l) | ptr l)
 // end of [array_ptr_make_elt]
 
 (* ****** ****** *)
 
-fun{a:t@ype} array_ptr_initialize_lst {n:nat} (
-    base: &(@[a?][n]) >> @[a][n], xs: list (a, n)
-  ) :<> void
+fun{a:t@ype}
+array_ptr_initialize_lst {n:nat} (
+  base: &(@[a?][n]) >> @[a][n], xs: list (a, n)
+) :<> void // end of [array_ptr_initialize_lst]
 
-fun{a:t@ype} array_ptr_make_lst {n:nat} (
-    asz: int n, xs: list (a, n)
-  ) :<> [l:addr | l <> null] (
-    free_gc_v (a, n, l), array_v (a, n, l) | ptr l
-  ) // end of [array_ptr_make_lst]
+fun{a:t@ype}
+array_ptr_make_lst {n:nat} (
+  asz: int n, xs: list (a, n)
+) :<> [l:addr | l <> null] (
+  free_gc_v (a?, n, l), array_v (a, n, l) | ptr l
+) // end of [array_ptr_make_lst]
 
-// not used
-fun{a:viewt@ype} array_ptr_initialize_lst_vt {n:nat} (
-    base: &(@[a?][n]) >> @[a][n], xs: list_vt (a, n)
-  ) :<> void
+//
+// HX: not used
+//
+fun{a:viewt@ype}
+array_ptr_initialize_lst_vt {n:nat} (
+  base: &(@[a?][n]) >> @[a][n], xs: list_vt (a, n)
+) :<> void // end of [array_ptr_initialize_lst_vt]
 
-fun{a:viewt@ype} array_ptr_make_lst_vt {n:nat} (
+fun{a:viewt@ype}
+array_ptr_make_lst_vt {n:nat} (
     asz: int n, xs: list_vt (a, n)
   ) :<> [l:addr | l <> null] (
-    free_gc_v (a, n, l), array_v (a, n, l) | ptr l
-  ) // end of [array_ptr_make_lst]
+    free_gc_v (a?, n, l), array_v (a, n, l) | ptr l
+  ) // end of [array_ptr_make_lst_vt]
 
 (* ****** ****** *)
 

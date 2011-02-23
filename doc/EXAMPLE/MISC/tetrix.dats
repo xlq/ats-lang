@@ -467,7 +467,7 @@ viewtypedef shapeObj (m:int, n:int) = @{
 }
 
 viewtypedef shapeObj = [m,n:pos] shapeObj (m, n)
-viewtypedef shapeObj0 = shapeObj (0, 0)
+viewtypedef shapeObj0 = shapeObj(0, 0)?
 
 //
 
@@ -716,7 +716,8 @@ in
   S
 end // end of [shape_6]
 
-val shape_arr: array (shape, 7) = array_make_arrsz $arrsz(
+val shape_arr =
+  array_make_arrsz {shape} $arrsz(
   shape_0
 , shape_1
 , shape_2
@@ -724,43 +725,46 @@ val shape_arr: array (shape, 7) = array_make_arrsz $arrsz(
 , shape_4
 , shape_5
 , shape_6
-)
+) // end of [shape_arr]
 
-//
+(* ****** ****** *)
 
-extern fun natrand48 {n:pos} (range: int n):<!ref> natLt n
-  = "natrand48"
+extern fun natrand48
+  {n:pos} (range: int n):<!ref> natLt n = "natrand48"
 
-%{
-
-ats_int_type natrand48 (ats_int_type range) {
+%{^
+ats_int_type
+natrand48 (
+  ats_int_type range
+) {
   return (range * atslib_drand48 ()) ;
-}
+} // end of [natrand48]
+%} // end of [%{^]
 
-%}
-
-fn gen_shape_obj ()
-  : [l:addr] (free_gc_v (shapeObj0, l), shapeObj @ l | ptr l) = let
+fn gen_shape_obj
+  (): [l:addr] (
+  free_gc_v (shapeObj0, l), shapeObj @ l | ptr l
+) = let
   val i = natrand48 (7)
 in
   shapeObj_make (shape_arr[i])
 end // end of [gen_shape_obj]
 
-//
+(* ****** ****** *)
 
 fn tetrix (): void = let
-
-val () = srand48_with_time ()
-val (pf_stdin | ptr_stdin) = stdin_get ()
-
-fun loop (): void = let
-  val (pf_gc, pf | p) = gen_shape_obj ()
-in
-  shapeObj_falling !p;
-  ptr_free {shapeObj0} (pf_gc, pf | p) ;
-  loop ()
-end // end of [loop]
-
+//
+  val () = srand48_with_time ()
+  val (pf_stdin | ptr_stdin) = stdin_get ()
+//
+  fun loop (): void = let
+    val (pf_gc, pf | p) = gen_shape_obj ()
+  in
+    shapeObj_falling !p;
+    ptr_free {shapeObj0} (pf_gc, pf | p) ;
+    loop ()
+  end // end of [loop]
+//
 in
   save_set_keyboard ();
   print_string clear;
@@ -784,7 +788,7 @@ in
     restore_keyboard ()
   end ;
   stdin_view_set (pf_stdin | (*none*)); // deadcode
-end
+end // end of [tetrix]
 
 implement main (argc, argv) = begin
   try tetrix () with exn => (restore_keyboard (); $raise exn)
@@ -793,7 +797,6 @@ end // end of [main]
 (* ****** ****** *)
 
 %{$
-
 
 #include <stdio.h>
 #include <curses.h>
@@ -867,7 +870,7 @@ ats_int_type readch () {
   return -1;
 }
 
-%}
+%} // end of [%{$]
 
 (* ****** ****** *)
 

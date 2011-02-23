@@ -144,14 +144,15 @@ val (pf_gc, pf_arr | ptr, len) = $arrsz {string2} (
 , ("wav",  "audio/x-wav")
 , ("zip",  "application/zip")
 ) // end of [val]
-
+//
 stavar l: addr and n: int; typedef T = @[string2][n]
-
-prval () = free_gc_elim (pf_gc)
+//
+prval () = free_gc_elim {string2} (pf_gc)
+//
 val (the_doctype_map_prop | ()) = vbox_make_view_ptr {T} {l} (pf_arr | ptr)
 val the_doctype_map_ptr : ptr l = ptr
 val the_doctype_map_len : size_t n = len
-
+//
 val () = if the_doctype_map_len >= 2 then let
   prval vbox pf = the_doctype_map_prop
   val sfx0 = !the_doctype_map_ptr.[0].0
@@ -507,7 +508,7 @@ viewtypedef Strlin = Strbufptr_gc
 
 viewtypedef entlst = List_vt (Strlin)
 viewtypedef entarrptr_gc (n: int, l:addr) =
-  (free_gc_v (Strlin, n, l), @[Strlin][n] @ l | ptr l)
+  (free_gc_v (Strlin?, n, l), @[Strlin][n] @ l | ptr l)
 
 fun dirent_name_get_all
   (dir: &DIR, asz: &size_t 0? >> size_t n): #[n:nat][l:addr] entarrptr_gc (n, l) = let

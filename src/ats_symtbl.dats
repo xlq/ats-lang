@@ -56,7 +56,7 @@ tblent = Option symbol_t
 viewtypedef
 symtbl (sz:int, n:int, l:addr) = @{
   ptr= ptr l
-, view= @(free_gc_v (tblent, sz, l), @[tblent][sz] @ l)
+, view= @(free_gc_v (tblent?, sz, l), @[tblent][sz] @ l)
 , size= int sz
 , nitm= int n
 } // end of [symtbl]

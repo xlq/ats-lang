@@ -183,7 +183,7 @@ extern fun count_pattern_match {n:nat} {l:addr}
 (* ****** ****** *)
 
 #define variants_length 9
-val variants: array (string, variants_length) = array_make_arrsz $arrsz{string}(
+val variants = array_make_arrsz {string} $arrsz(
   "agggtaaa|tttaccct"
 , "[cgt]gggtaaa|tttaccc[acg]"
 , "a[act]ggtaaa|tttacc[agt]t"
@@ -284,7 +284,7 @@ extern fun subst_pattern_string {n:nat} {l:addr}
 (* ****** ****** *)
 
 #define subst_length 22
-val subst: array (string, subst_length) = array_make_arrsz $arrsz{string}(
+val subst = array_make_arrsz {string} $arrsz(
   "B", "(c|g|t)"
 , "D", "(a|g|t)"
 , "H", "(a|c|t)"

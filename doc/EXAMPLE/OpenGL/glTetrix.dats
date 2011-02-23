@@ -132,7 +132,7 @@ overload <> with neq_color_color
 
 abstype shape_t (m: int, n: int)
 
-typedef shape0_t = [m,n:nat] shape_t (m, n)
+typedef shape0 = [m,n:nat] shape_t (m, n)
 
 extern fun shape_make {m,n:nat}
   (xlen: int m, ylen: int n, mat: matrix (color_t, m, n), pts: int): shape_t (m, n)
@@ -140,7 +140,7 @@ extern fun shape_make {m,n:nat}
 extern fun shape_xlen_get {m,n:nat} (S: shape_t (m, n)): int m
 extern fun shape_ylen_get {m,n:nat} (S: shape_t (m, n)): int n
 extern fun shape_matrix_get {m,n:nat} (S: shape_t (m, n)): matrix (color_t, m, n)
-extern fun shape_points_get (S: shape0_t): int 
+extern fun shape_points_get (S: shape0): int 
 
 (* ****** ****** *)
 
@@ -157,19 +157,19 @@ extern fun the_rotkind_set (rk: rotkind): void = "the_rotkind_set"
 
 // flag = 1: draw; flag = 0: undraw
 extern fun shape_draw_atrot
-  (flag: int, S: shape0_t, ix_center: int, iy_center: int, rk: rotkind): void
+  (flag: int, S: shape0, ix_center: int, iy_center: int, rk: rotkind): void
 
 (* ****** ****** *)
 
 #define NSHAPE 7
 
-extern val theShapeArray : array (shape0_t, NSHAPE)
+extern val theShapeArray : array (shape0, NSHAPE)
 extern val theShapeColorArray : array (color_t, NSHAPE)
 
 (* ****** ****** *)
 
-extern val theNextShapeRef : ref (shape0_t)
-extern val theCurrentShapeRef : ref (shape0_t)
+extern val theNextShapeRef : ref (shape0)
+extern val theCurrentShapeRef : ref (shape0)
 
 (* ****** ****** *)
 
@@ -439,11 +439,11 @@ in
 end // end of [glColor3d_color]
 
 // flag = 1: draw; flag = 0: undraw
-fn shape_draw (flag: int, S: shape0_t): void = let
+fn shape_draw (flag: int, S: shape0): void = let
   fn loop_row {m,n:nat} (
-      flag: int
-    , mat: matrix (color_t, m, n), m: int m, n: int n, j: natLt n
-    ) : void = let
+    flag: int
+  , mat: matrix (color_t, m, n), m: int m, n: int n, j: natLt n
+  ) : void = let
     var i: Nat // uninitialize
   in
     for (i := 0; i < m; i := i + 1) let
@@ -494,8 +494,10 @@ end // end of [shape_draw_atrot]
 
 (* ****** ****** *)
 
-extern fun shape_absorb_atrot
-  (flag: int, S: shape0_t, ix_center: int, iy_center: int, rk: rotkind): int
+extern
+fun shape_absorb_atrot (
+  flag: int, S: shape0, ix_center: int, iy_center: int, rk: rotkind
+) : int // end of [shape_absorb_atrot]
 
 implement shape_absorb_atrot
   (flag, S, ix_center, iy_center, rk) = let
@@ -631,10 +633,15 @@ end // end of [shape_absorb_atrot]
 
 (* ****** ****** *)
 
-extern fun shape_position_test
-  (S: shape0_t, ix_center: int, iy_center: int, rk: rotkind): bool
+extern
+fun shape_position_test (
+  S: shape0, ix_center: int, iy_center: int, rk: rotkind
+) : bool // end of [shape_position_test]
 
-implement shape_position_test (S, ix_center, iy_center, rk) = let
+implement
+shape_position_test (
+  S, ix_center, iy_center, rk
+) = let
   val xlen = shape_xlen_get S and ylen = shape_ylen_get S
   val xlen20 = xlen / 2 and ylen20 = ylen / 2
   val xlen21 = xlen - xlen20 and ylen21 = ylen - ylen20
@@ -754,7 +761,7 @@ extern fun theCurrentShape_freefall (): void
 
 implement theCurrentShape_freefall (): void = let
   #define FreeFallTimeInterval 2048
-  fun loop (S: shape0_t): void = let
+  fun loop (S: shape0): void = let
     val () = usleep (FreeFallTimeInterval)
     val res = theCurrentShape_ymove_if (~1)
   in
@@ -1215,7 +1222,7 @@ val SHAPE6_matrix
 (* ****** ****** *)
   
 implement theShapeArray =
-  array_make_arrsz $arrsz {shape0_t} (
+  array_make_arrsz{shape0} $arrsz(
   SHAPE0, SHAPE1, SHAPE2, SHAPE3, SHAPE4, SHAPE5, SHAPE6
 ) where {
   val SHAPE0 = shape_make (SHAPE0_X, SHAPE0_Y, SHAPE0_matrix, SHAPE0_points)
@@ -1230,13 +1237,13 @@ implement theShapeArray =
 implement theNextShapeRef = let
   val S = array_get_elt_at (theShapeArray, 0)
 in
-  ref_make_elt<shape0_t> (S)
+  ref_make_elt<shape0> (S)
 end // end of [theNextShapeRef]
 
 implement theCurrentShapeRef = let
   val S = array_get_elt_at (theShapeArray, 0)
 in
-  ref_make_elt<shape0_t> (S)
+  ref_make_elt<shape0> (S)
 end // end of [theCurrentShapeRef]
 
 (* ****** ****** *)
@@ -1286,12 +1293,17 @@ ats_int_type the_iy_center_get () { return the_iy_center ; }
 ats_void_type
 the_iy_center_set (ats_int_type y) { the_iy_center = y; return  ; }
 
-%}
+%} // end of [%{$]
+
+(* ****** ****** *)
 
 %{$
 
-ats_void_type mainats
-  (ats_int_type argc, ats_ptr_type argv) {
+ats_void_type
+mainats (
+  ats_int_type argc
+, ats_ptr_type argv
+) {
   glutInit ((int*)&argc, (char**)argv) ;
   glutInitDisplayMode (GLUT_DOUBLE | GLUT_RGB) ;
   glutInitWindowSize (600, 600) ;
@@ -1306,7 +1318,7 @@ ats_void_type mainats
   return ; /* deadcode */
 } /* end of [mainats] */
 
-%}
+%} // end of [%{$]
 
 (* ****** ****** *)
 

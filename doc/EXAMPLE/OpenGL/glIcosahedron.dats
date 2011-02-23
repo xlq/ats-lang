@@ -63,34 +63,37 @@ end
 
 (* ****** ****** *)
 
-extern fun add_float_3_float_3
-  (v1: & @[float][3], v2: & @[float][3])
-  : [l:addr] (free_gc_v (float, 3, l), float_3_v l | ptr l)
+extern
+fun add_float_3_float_3 (
+  v1: & @[float][3], v2: & @[float][3]
+) : [l:addr] (free_gc_v (float?, 3, l), float_3_v l | ptr l)
   = "add_float_3_float_3"
-
 overload + with add_float_3_float_3
 
 %{^
 
-ats_ptr_type add_float_3_float_3 (ats_ptr_type v1, ats_ptr_type v2) {
+ats_ptr_type
+add_float_3_float_3
+  (ats_ptr_type v1, ats_ptr_type v2) {
   int i ; float *v = ats_malloc_gc (3 * sizeof(float)) ;
   for (i = 0; i < 3; ++i) v[i] = ((float*)v1)[i] + ((float*)v2)[i] ;
   return v ;
-}
+} // end of [add_float_3_float_3]
 
-%}
+%} // end of [%{^]
+
+(* ****** ****** *)
 
 fn drawTriangle {l1,l2,l3:addr} (
-    pf1: !float_3_v l1 , pf2: !float_3_v l2 , pf3: !float_3_v l3
-  | p1: ptr l1, p2: ptr l2, p3: ptr l3
-  ) : void = let
-
-  extern fun glNormal3fv {l:addr} (pf: !float_3_v l | p: ptr l): void
-    = "#atsctrb_glNormal3fv"
-
-  extern fun glVertex3fv {l:addr} (pf: !float_3_v l | p: ptr l): void
-    = "#atsctrb_glVertex3fv"
-
+  pf1: !float_3_v l1 , pf2: !float_3_v l2 , pf3: !float_3_v l3
+| p1: ptr l1, p2: ptr l2, p3: ptr l3
+) : void = let
+//
+  extern fun glNormal3fv {l:addr}
+    (pf: !float_3_v l | p: ptr l): void = "#atsctrb_glNormal3fv"
+  extern fun glVertex3fv {l:addr}
+    (pf: !float_3_v l | p: ptr l): void = "#atsctrb_glVertex3fv"
+//
   val (pf | ()) = glBegin (GL_TRIANGLES)
   val () = glNormal3fv (pf1 | p1)
   val () = glVertex3fv (pf1 | p1)
@@ -99,17 +102,23 @@ fn drawTriangle {l1,l2,l3:addr} (
   val () = glNormal3fv (pf3 | p3)
   val () = glVertex3fv (pf3 | p3)
   val () = glEnd (pf | (*none*))
+//
 in
   // empty
 end // end of [drawTriangle]
 
-extern fun subdivide {n:nat} {l1,l2,l3:addr} (
-    pf1: !float_3_v l1 , pf2: !float_3_v l2 , pf3: !float_3_v l3
-  | p1: ptr l1, p2: ptr l2, p3: ptr l3, n: int n
-  ) : void
-  = "subdivide"
+extern
+fun subdivide {n:nat} {l1,l2,l3:addr} (
+  pf1: !float_3_v l1
+, pf2: !float_3_v l2
+, pf3: !float_3_v l3
+| p1: ptr l1, p2: ptr l2, p3: ptr l3, n: int n
+) : void = "subdivide"
 
-implement subdivide (pf1, pf2, pf3 | p1, p2, p3, n) =
+implement
+subdivide (
+  pf1, pf2, pf3 | p1, p2, p3, n
+) =
   if n > 0 then let
     val (pf12_gc, pf12 | p12) = !p1 + !p2
     val (pf23_gc, pf23 | p23) = !p2 + !p3
@@ -141,21 +150,22 @@ macdef Z = $extval (float, "0.850650808352039932")
 
 typedef float_12_3 = array (float_3, 12)
 
-val vdata00 = array $arrsz {float} (~X,  0.0,  Z)
-val vdata01 = array $arrsz {float} ( X,  0.0,  Z)
-val vdata02 = array $arrsz {float} (~X,  0.0, ~Z)
-val vdata03 = array $arrsz {float} ( X,  0.0, ~Z)
-val vdata10 = array $arrsz {float} ( 0.0,  Z,  X)
-val vdata11 = array $arrsz {float} ( 0.0,  Z, ~X)
-val vdata12 = array $arrsz {float} ( 0.0, ~Z,  X)
-val vdata13 = array $arrsz {float} ( 0.0, ~Z, ~X)
-val vdata20 = array $arrsz {float} ( Z,  X,  0.0)
-val vdata21 = array $arrsz {float} (~Z,  X,  0.0)
-val vdata22 = array $arrsz {float} ( Z, ~X,  0.0)
-val vdata23 = array $arrsz {float} (~Z, ~X,  0.0)
+val vdata00 = array_make_arrsz {float} $arrsz(~X,  0.0f,  Z)
+val vdata01 = array_make_arrsz {float} $arrsz( X,  0.0f,  Z)
+val vdata02 = array_make_arrsz {float} $arrsz(~X,  0.0f, ~Z)
+val vdata03 = array_make_arrsz {float} $arrsz( X,  0.0f, ~Z)
+val vdata10 = array_make_arrsz {float} $arrsz( 0.0f,  Z,  X)
+val vdata11 = array_make_arrsz {float} $arrsz( 0.0f,  Z, ~X)
+val vdata12 = array_make_arrsz {float} $arrsz( 0.0f, ~Z,  X)
+val vdata13 = array_make_arrsz {float} $arrsz( 0.0f, ~Z, ~X)
+val vdata20 = array_make_arrsz {float} $arrsz( Z,  X,  0.0f)
+val vdata21 = array_make_arrsz {float} $arrsz(~Z,  X,  0.0f)
+val vdata22 = array_make_arrsz {float} $arrsz( Z, ~X,  0.0f)
+val vdata23 = array_make_arrsz {float} $arrsz(~Z, ~X,  0.0f)
 
 val vdata
-  : float_12_3 = array $arrsz {float_3} (
+  : float_12_3 =
+  array_make_arrsz {float_3} $arrsz(
   vdata00, vdata01, vdata02, vdata03
 , vdata10, vdata11, vdata12, vdata13
 , vdata20, vdata21, vdata22, vdata23
@@ -165,32 +175,33 @@ typedef nat12 = natLt (12)
 typedef int_3 = array (nat12, 3)
 typedef int_20_3 = array (int_3, 20)
 
-val tind00 = array $arrsz {nat12} (1, 4, 0)
-val tind01 = array $arrsz {nat12} (4, 9, 0)
-val tind02 = array $arrsz {nat12} (4, 5, 9)
-val tind03 = array $arrsz {nat12} (8, 5, 4)
-val tind04 = array $arrsz {nat12} (1, 8, 4)
+val tind00 = array_make_arrsz {nat12} $arrsz(1, 4, 0)
+val tind01 = array_make_arrsz {nat12} $arrsz(4, 9, 0)
+val tind02 = array_make_arrsz {nat12} $arrsz(4, 5, 9)
+val tind03 = array_make_arrsz {nat12} $arrsz(8, 5, 4)
+val tind04 = array_make_arrsz {nat12} $arrsz(1, 8, 4)
 
-val tind10 = array $arrsz {nat12} (1, 10, 8)
-val tind11 = array $arrsz {nat12} (10, 3, 8)
-val tind12 = array $arrsz {nat12} (8, 3, 5)
-val tind13 = array $arrsz {nat12} (3, 2, 5)
-val tind14 = array $arrsz {nat12} (3, 7, 2)
+val tind10 = array_make_arrsz {nat12} $arrsz(1, 10, 8)
+val tind11 = array_make_arrsz {nat12} $arrsz(10, 3, 8)
+val tind12 = array_make_arrsz {nat12} $arrsz(8, 3, 5)
+val tind13 = array_make_arrsz {nat12} $arrsz(3, 2, 5)
+val tind14 = array_make_arrsz {nat12} $arrsz(3, 7, 2)
 
-val tind20 = array $arrsz {nat12} (3, 10, 7)
-val tind21 = array $arrsz {nat12} (10, 6, 7)
-val tind22 = array $arrsz {nat12} (6, 11, 7)
-val tind23 = array $arrsz {nat12} (6, 0, 11)
-val tind24 = array $arrsz {nat12} (6, 1, 0)
+val tind20 = array_make_arrsz {nat12} $arrsz(3, 10, 7)
+val tind21 = array_make_arrsz {nat12} $arrsz(10, 6, 7)
+val tind22 = array_make_arrsz {nat12} $arrsz(6, 11, 7)
+val tind23 = array_make_arrsz {nat12} $arrsz(6, 0, 11)
+val tind24 = array_make_arrsz {nat12} $arrsz(6, 1, 0)
 
-val tind30 = array $arrsz {nat12} (10, 1, 6)
-val tind31 = array $arrsz {nat12} (11, 0, 9)
-val tind32 = array $arrsz {nat12} (2, 11, 9)
-val tind33 = array $arrsz {nat12} (5, 2, 9)
-val tind34 = array $arrsz {nat12} (11, 2, 7)
+val tind30 = array_make_arrsz {nat12} $arrsz(10, 1, 6)
+val tind31 = array_make_arrsz {nat12} $arrsz(11, 0, 9)
+val tind32 = array_make_arrsz {nat12} $arrsz(2, 11, 9)
+val tind33 = array_make_arrsz {nat12} $arrsz(5, 2, 9)
+val tind34 = array_make_arrsz {nat12} $arrsz(11, 2, 7)
 
 val tindices
-  : int_20_3 = array $arrsz {int_3} (
+  : int_20_3 =
+  array_make_arrsz {int_3}  $arrsz(
   tind00, tind01, tind02, tind03, tind04
 , tind10, tind11, tind12, tind13, tind14
 , tind20, tind21, tind22, tind23, tind24
@@ -264,9 +275,10 @@ void initialize () {
   return ;
 }
 
-ats_void_type mainats
-  (ats_int_type argc, ats_ptr_type argv) {
-
+ats_void_type
+mainats (
+  ats_int_type argc, ats_ptr_type argv
+) {
   glutInit ((int*)&argc, (char**)argv) ;
   glutInitDisplayMode (GLUT_SINGLE | GLUT_RGB) ;
   glutInitWindowSize (500, 500) ;
@@ -276,9 +288,9 @@ ats_void_type mainats
   glutDisplayFunc (display) ;
   glutMainLoop () ;
   return ; /* deadcode */
-}
+} // end of [mainats]
 
-%}
+%} // end of [%{$]
 
 (* ****** ****** *)
 

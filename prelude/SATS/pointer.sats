@@ -207,21 +207,21 @@ overload tostring with tostring_ptr
 
 praxi free_gc_viewt0ype_addr_trans
   {a1,a2:viewt@ype | sizeof a1 == sizeof a2} {l:addr}
-  (pf_gc: !free_gc_v (a1, l) >> free_gc_v (a2, l)): void
+  (pf_gc: !free_gc_v (a1?, l) >> free_gc_v (a2?, l)): void
 // end of [free_gc_viewt0ype_addr_trans]
 
 (* ****** ****** *)
 
 fun{a:viewt@ype} ptr_alloc ()
-  :<> [l:addr | l > null] (free_gc_v (a, l), a? @ l | ptr l)
+  :<> [l:addr | l > null] (free_gc_v (a?, l), a? @ l | ptr l)
 // end of [ptr_alloc]
 
 fun ptr_alloc_tsz {a:viewt@ype} (tsz: sizeof_t a)
-  :<> [l:addr | l > null] (free_gc_v (a, l), a? @ l | ptr l)
+  :<> [l:addr | l > null] (free_gc_v (a?, l), a? @ l | ptr l)
   = "atspre_ptr_alloc_tsz"
 
 fun ptr_free {a:viewt@ype} {l:addr}
-  (_: free_gc_v (a, l), _: a? @ l | _: ptr l):<> void = "atspre_ptr_free"
+  (_: free_gc_v (a?, l), _: a? @ l | _: ptr l):<> void = "atspre_ptr_free"
 // end of [ptr_free]
 
 (* ****** ****** *)

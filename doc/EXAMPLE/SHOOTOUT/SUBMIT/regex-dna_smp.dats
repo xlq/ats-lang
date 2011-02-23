@@ -168,7 +168,7 @@ extern fun count_pattern_match {n:nat} {l:addr}
 (* ****** ****** *)
 
 #define variants_length 9
-val variants: array (string, variants_length) = array_make_arrsz $arrsz{string}(
+val variants = array_make_arrsz{string} $arrsz(
   "agggtaaa|tttaccct"
 , "[cgt]gggtaaa|tttaccc[acg]"
 , "a[act]ggtaaa|tttacc[agt]t"
@@ -378,15 +378,18 @@ int_ptr_type subst_pattern_string
 
 (* ****** ****** *)
 
-extern fun subst_pattern_string {n:nat} {l:addr}
-  (pf: !bytes n @ l | n: int n, p: ptr l, pat: string, sub: string)
-  : [n:nat] [l:addr] @(bytes n @ l | int n, ptr l)
+extern
+fun subst_pattern_string
+  {n:nat} {l:addr} (
+  pf: !bytes n @ l | n: int n, p: ptr l, pat: string, sub: string
+) : [n:nat] [l:addr] @(bytes n @ l | int n, ptr l)
   = "subst_pattern_string"
+// end of [subst_pattern_string]
 
 (* ****** ****** *)
 
 #define subst_length 22
-val subst: array (string, subst_length) = array_make_arrsz $arrsz{string}(
+val subst = array_make_arrsz{string} $arrsz(
   "B", "(c|g|t)"
 , "D", "(a|g|t)"
 , "H", "(a|c|t)"
@@ -398,7 +401,7 @@ val subst: array (string, subst_length) = array_make_arrsz $arrsz{string}(
 , "V", "(a|c|g)"
 , "W", "(a|t)"
 , "Y", "(c|t)"
-)
+) // end of [val]
 
 (* ****** ****** *)
 

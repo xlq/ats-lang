@@ -96,7 +96,7 @@ matrix_make_arrsz
   prval pfmul = mul_istot {m,n} ()
   prval () = mul_elim (pfmul)
 in
-  matrix_make_arrsz__main (pfmul | m, n, arrsz)
+  matrix_make_arrsz__main {a} (pfmul | m, n, arrsz)
 end // end of [matrix_make_arrsz]
 
 implement

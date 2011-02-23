@@ -254,10 +254,10 @@ praxi free_gc_addr_elim // return the certificate to the GC
   {l:addr} (pf: free_gc_v l):<> void
 overload free_gc_elim with free_gc_addr_elim
 praxi free_gc_t0ype_addr_elim // return the certificate to the GC
-  {a:viewt@ype} {l:addr} (pf: free_gc_v (a, l)):<> void
+  {a:viewt@ype} {l:addr} (pf: free_gc_v (a?, l)):<> void
 overload free_gc_elim with free_gc_t0ype_addr_elim
 praxi free_gc_t0ype_int_addr_elim // return the certificate to the GC
-  {a:viewt@ype} {n:int} {l:addr} (pf: free_gc_v (a, n, l)):<> void
+  {a:viewt@ype} {n:int} {l:addr} (pf: free_gc_v (a?, n, l)):<> void
 overload free_gc_elim with free_gc_t0ype_int_addr_elim
 
 (* ****** ****** *)

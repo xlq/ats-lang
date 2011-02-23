@@ -24,6 +24,7 @@ ats-lang-anairiats-0.2.4:
     Renaming: fun_tsz__main -> funenv_tsz
     Renaming: clo_tsz__main -> cloenv_tsz
     Renaming: __main -> _funenv (for various higher-order functions)
+15: free_gc_v (viewt@ype) -> free_gc_v (t@ype)
 
 ########################################################################
 

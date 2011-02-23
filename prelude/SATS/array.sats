@@ -126,27 +126,28 @@ prfun array_v_unsing
 
 (* ****** ****** *)
 
-praxi free_gc_viewt0ype_addr_trans
+praxi free_gc_t0ype_addr_trans
   {a1,a2:viewt@ype | sizeof a1 == sizeof a2}
   {n1,n2:int} {l:addr} {asz:int} (
   pf1_mul: MUL (n1, sizeof a1, asz)
 , pf2_mul: MUL (n2, sizeof a2, asz) 
-, pf_gc: !free_gc_v (a1, n1, l) >> free_gc_v (a2, n2, l)
-) : void // end of [free_gc_viewt0ype_addr_trans]
+, pf_gc: !free_gc_v (a1?, n1, l) >> free_gc_v (a2?, n2, l)
+) : void // end of [free_gc_t0ype_addr_trans]
 
 (* ****** ****** *)
 
 fun{a:viewt@ype}
 array_ptr_alloc {n:nat} (asz: size_t n)
-  :<> [l:agz] (free_gc_v (a, n, l), array_v (a?, n, l) | ptr l)
+  :<> [l:agz] (free_gc_v (a?, n, l), array_v (a?, n, l) | ptr l)
 // end of [array_ptr_alloc]
 
 (*
 // implemented in C
 *)
 fun array_ptr_alloc_tsz
-  {a:viewt@ype} {n:nat} (asz: size_t n, tsz: sizeof_t a):<>
-    [l:agz] (free_gc_v (a, n, l), array_v (a?, n, l) | ptr l)
+  {a:viewt@ype} {n:nat} (
+  asz: size_t n, tsz: sizeof_t a
+) :<> [l:agz] (free_gc_v (a?, n, l), array_v (a?, n, l) | ptr l)
   = "atspre_array_ptr_alloc_tsz"
 // end of [array_ptr_alloc_tsz]
 
@@ -157,7 +158,7 @@ fun array_ptr_alloc_tsz
 *)
 fun array_ptr_free
   {a:viewt@ype} {n:int} {l:addr} (
-  pf_gc: free_gc_v (a, n, l), pf_arr: array_v (a?, n, l) | p_arr: ptr l
+  pf_gc: free_gc_v (a?, n, l), pf_arr: array_v (a?, n, l) | p_arr: ptr l
 ) :<> void = "atspre_array_ptr_free"
 
 (* ****** ****** *)
@@ -256,6 +257,15 @@ fun array_ptr_initialize_clo_tsz
 (*
 // implemented in ATS (prelude/DATS/array.dats)
 *)
+
+fun{a:viewt@ype}
+array_ptr_clear_fun
+  {n:nat} (
+  base: &(@[a][n]) >> @[a?][n]
+, asz: size_t n
+, f: (&a >> a?) -<fun> void
+) :<> void // end of [array_ptr_clear_fun]
+
 fun array_ptr_clear_fun_tsz
   {a:viewt@ype} {n:nat} (
   base: &(@[a][n]) >> @[a?][n]
@@ -263,18 +273,6 @@ fun array_ptr_clear_fun_tsz
 , f: (&a >> a?) -<fun> void
 , tsz: sizeof_t (a)
 ) :<> void // end of [array_ptr_clear_fun_tsz]
-
-(*
-// implemented in ATS (prelude/DATS/array.dats)
-*)
-fun array_ptr_clear_clo_tsz
-  {a:viewt@ype} {v:view} {n:nat} (
-  pf: !v
-| base: &(@[a][n]) >> @[a?][n]
-, asz: size_t n
-, f: &(!v | &a >> a?) -<clo> void
-, tsz: sizeof_t (a)
-) :<> void // end of [array_ptr_clear_clo_tsz]
 
 (* ****** ****** *)
 

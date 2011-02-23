@@ -92,7 +92,7 @@ fun permNext {n:nat} {l:addr}
 (* ****** ****** *)
 
 val DA: array (int, 9) =
-  array_make_arrsz ($arrsz{int} (1,2,3,4,5,6,7,8,9))
+  array_make_arrsz{int} $arrsz(1,2,3,4,5,6,7,8,9)
 // end of [val]
 
 fun DA_next (): int = let

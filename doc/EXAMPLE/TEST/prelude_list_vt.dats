@@ -54,8 +54,7 @@ implement main (argc, argv) = let
     } // end of [val]
   } // end of [lstpr]
 //
-  val xs = list_vt_of_arraysize
-    ($arrsz {int} (1, 2, 3, 4, 5, 6, 7, 8, 9))
+  val xs = list_vt_of_arraysize<int> $arrsz(1, 2, 3, 4, 5, 6, 7, 8, 9)
   val () = list_vt_free (xs)
 //
   val () = $RAND.srand48_with_time () // a new seed is generated
@@ -67,7 +66,7 @@ implement main (argc, argv) = let
     val () = print_newline ()
   } // end of [val]
 //
-  val ys = list_vt_of_arraysize $arrsz{int} (0, 1, 2, 3, 4, 5, 6, 7, 8, 9)
+  val ys = list_vt_of_arraysize<int> $arrsz(0, 1, 2, 3, 4, 5, 6, 7, 8, 9)
 //
   val () = () where {
     val () = print "ys (0-9) = " // for testing [list_vt_of_arraysize]

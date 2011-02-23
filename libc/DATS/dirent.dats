@@ -100,7 +100,7 @@ direntptr_stream_vt_make_DIR
     val islast = if (err <> 0) then true else (ret = null)
   in
     if islast then let
-      val () = ptr_free (pf_ent_gc, pf_ent | p_ent)
+      val () = ptr_free {dirent} (pf_ent_gc, pf_ent | p_ent)
       val () = $effmask_exn (closedir_exn (pf_dir | p_dir))
     in
       res := stream_vt_nil ()

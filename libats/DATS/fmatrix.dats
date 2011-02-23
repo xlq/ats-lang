@@ -76,11 +76,11 @@ end // end of [fmatrix_ptr_alloc]
 (* ****** ****** *)
 
 implement
-fmatrix_ptr_free 
+fmatrix_ptr_free {a}
   (pf_gc, pf_mn, pf_fmat | p_fmat) = let
   prval (pf2_mn, pf_arr) = array_v_of_fmatrix_v (pf_fmat)
   prval () = mul_isfun (pf2_mn, pf_mn)
-  val () = array_ptr_free (pf_gc, pf_arr | p_fmat)
+  val () = array_ptr_free {a} (pf_gc, pf_arr | p_fmat)
 in
   // nothing
 end // end of [fmatrix_ptr_free]
@@ -91,7 +91,9 @@ implement{a}
 fmatrix_ptr_allocfree (m, n) = let
   val (pf_mn | mn) = mul2_size1_size1 (m, n)
   prval () = mul_nat_nat_nat (pf_mn)
-  val [l:addr] (pf_gc, pf_arr | p_arr) = array_ptr_alloc_tsz {a} (mn, sizeof<a>)
+  val [l:addr] (
+    pf_gc, pf_arr | p_arr
+  ) = array_ptr_alloc_tsz {a} (mn, sizeof<a>)
   prval pf_fmat = fmatrix_v_of_array_v (pf_mn, pf_arr)
 in #[l | (
   pf_fmat
@@ -100,7 +102,7 @@ in #[l | (
     prval (pf2_mn, pf_arr) = array_v_of_fmatrix_v (pf_fmat)
     prval () = mul_isfun (pf2_mn, pf_mn)
   in
-    array_ptr_free (pf_gc, pf_arr | p_arr)
+    array_ptr_free {a} (pf_gc, pf_arr | p_arr)
   end
 ) ] end // end of [fmatrix_ptr_allocfree]
 

@@ -46,7 +46,7 @@ fun mpz_test
   val () = mpz_init2 (!px, 64UL); val () = mpz_set (!px, SQRT2)
   val () = assert (mpz_get_ulint (!px) = SQRT2)
   val () = mpz_clear (!px)
-  val () = ptr_free (pfx_gc, pfx | px)
+  val () = ptr_free {mpz_vt} (pfx_gc, pfx | px)
 //
   var fac10: mpz_vt
   val () = mpz_init (fac10)

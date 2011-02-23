@@ -102,7 +102,7 @@ end // end of [isprime]
 (* ****** ****** *)
 
 val A7: array (int, 7) =
-  array_make_arrsz ($arrsz{int} (7, 6, 5, 4, 3, 2, 1))
+  array_make_arrsz {int} $arrsz(7, 6, 5, 4, 3, 2, 1)
 // end of [val]
 
 fun A7_get (): int = let

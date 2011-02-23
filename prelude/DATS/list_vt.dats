@@ -507,7 +507,9 @@ list_vt_quicksort {n} (xs, cmp) = let
     extern castfn __cast (cmp: (&a, &a) -<fun> Sgn):<> (&a1, &a1) -<fun> Sgn
   } // end of [val]
   val asz = size1_of_int1 (list_vt_length xs)
-  val (pf_gc, pf_arr | p_arr) = array_ptr_alloc_tsz {a1} (asz, sizeof<a1>)
+  val (
+    pf_gc, pf_arr | p_arr
+  ) = array_ptr_alloc_tsz {a1} (asz, sizeof<a1>)
   val () = array_ptr_initialize_lst<a1> (!p_arr, __cast xs) where {
     extern castfn __cast
       (xs: !list_vt (a1, n) >> list_vt (a1?, n)):<> list (a1, n) // good hacking :)  
@@ -535,7 +537,7 @@ list_vt_quicksort {n} (xs, cmp) = let
         end // end of [list_vt_nil]
     // end of [loop]
   } // end of [val]
-  val () = array_ptr_free (pf_gc, pf_arr | p_arr)
+  val () = array_ptr_free {a} (pf_gc, pf_arr | p_arr)
   val _ = __cast (xs) where {
     extern castfn __cast (xs: !list_vt (a1, n) >> list_vt (a, n)):<> ptr
   } // end of val]

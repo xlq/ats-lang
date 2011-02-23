@@ -89,7 +89,7 @@ viewtypedef STACK_vt (
 , sarr_beg = ptr l_beg // this is definitely needed if GC is involved
 , sarr_cur = ptr l_cur
 , pfsarr= STACKarr_v (a, m, n, l_beg, l_cur)
-, pfsarr_gc= free_gc_v (a, m, l_beg)
+, pfsarr_gc= free_gc_v (a?, m, l_beg)
 } // end of [STACK_vt]
 
 typedef STACK0_vt
@@ -196,7 +196,7 @@ stack_uninitialize
   prval pfmul = mul_make {0,sizeof(a)} ()
   prval pfsarr = STACKarr_v_clear {a} {m} {n,0} (pfmul, s.pfsarr)
   prval pfarr = STACKarr_v_decode (pfsarr)
-  val () = array_ptr_free (s.pfsarr_gc, pfarr | s.sarr_beg)
+  val () = array_ptr_free {a} (s.pfsarr_gc, pfarr | s.sarr_beg)
   prval () = __assert (s) where {
     extern prfun __assert (s: &STACK0_vt a >> STACK0 a):<> void
   } // end of [val]
@@ -206,7 +206,7 @@ implement
 stack_uninitialize_vt
   {a} {m} (s) = () where {
   prval pfarr = STACKarr_v_decode (s.pfsarr)
-  val () = array_ptr_free (s.pfsarr_gc, pfarr | s.sarr_beg)
+  val () = array_ptr_free {a} (s.pfsarr_gc, pfarr | s.sarr_beg)
   prval () = __assert (s) where {
     extern prfun __assert (s: &STACK0_vt a >> STACK0 a):<> void
   } // end of [val]

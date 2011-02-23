@@ -109,8 +109,9 @@ val (pf_gc, pf_arr | ptr, len) = $arrsz {string2} (
 in
 
 stavar len: int
-
-prval () = free_gc_elim (pf_gc)
+//
+prval () = free_gc_elim {string2} (pf_gc)
+//
 val (
   the_doctype_map_prop | ()
 ) = vbox_make_view_ptr (pf_arr | ptr)

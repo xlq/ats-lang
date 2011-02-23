@@ -133,21 +133,11 @@ array_ptr_initialize_clo
 
 fun{a:viewt@ype}
 array_ptr_clear_fun
-  {v:view} {n:nat} (
-  pf: !v
-| base: &(@[a][n]) >> @[a?][n]
+  {n:nat} (
+  base: &(@[a][n]) >> @[a?][n]
 , asz: size_t n
-, f: (!v | &a >> a?) -<fun> void
+, f: (&a >> a?) -<fun> void
 ) :<> void // end of [array_ptr_clear_fun]
-
-fun{a:viewt@ype}
-array_ptr_clear_clo
-  {v:view} {n:nat} (
-  pf: !v
-| base: &(@[a][n]) >> @[a?][n]
-, asz: size_t n
-, f: &(!v | &a >> a?) -<clo> void
-) :<> void // end of [array_ptr_clear_clo]
 
 (* ****** ****** *)
 

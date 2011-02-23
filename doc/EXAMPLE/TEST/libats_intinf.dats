@@ -19,7 +19,7 @@ fun fact (x: int): Intinfptr_gc =
   val x = int1_of_int x
   val (pf_gc, pf_at | res) = intinf_make (1)
   fun loop {i:int} {res:addr} (
-      pf_gc: free_gc_v (Intinf, res)
+      pf_gc: free_gc_v (Intinf?, res)
     , pf_at: Intinf @ res
     | x: int i, res: ptr res
     ) : Intinfptr_gc =

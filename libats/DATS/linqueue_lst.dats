@@ -60,7 +60,7 @@ slseg_v (
 ) =
   | {n:nat} {la,lb,lz:addr}
     slseg_v_cons (a, n+1, la, lz) of (
-      free_gc_v ((a, ptr), la), (a, ptr lb) @ la, slseg_v (a, n, lb, lz)
+      free_gc_v ((a, ptr)?, la), (a, ptr lb) @ la, slseg_v (a, n, lb, lz)
     ) // end of [slseg_v_cons]
   | {la:addr} slseg_v_nil (a, 0, la, la)
 // end of [slseg_v]
@@ -77,7 +77,7 @@ prfun slseg_v_extend
   {n:nat}
   {la,ly,lz:addr} (
   pf_sl: slseg_v (a, n, la, ly)
-, pf_gc: free_gc_v ((a, ptr), ly)
+, pf_gc: free_gc_v ((a, ptr)?, ly)
 , pf_at: (a, ptr lz) @ ly
 ) :<prf> slseg_v (a, n+1, la, lz)
 // end of [slseg_v_extend]
@@ -88,14 +88,14 @@ slseg_v_extend
   prfun extend
     {n:nat} {la,ly,lz:addr} .<n>. (
       pf_sl: slseg_v (a, n, la, ly)
-    , pf_gc: free_gc_v ((a, ptr), ly)
+    , pf_gc: free_gc_v ((a, ptr)?, ly)
     , pf_at: (a, ptr lz) @ ly
     ) :<prf> slseg_v (a, n+1, la, lz) =
     case+ pf_sl of
     | slseg_v_cons (pf1_gc, pf1_at, pf1_sl) => begin
-        slseg_v_cons (pf1_gc, pf1_at, slseg_v_extend (pf1_sl, pf_gc, pf_at))
+        slseg_v_cons {a} (pf1_gc, pf1_at, slseg_v_extend (pf1_sl, pf_gc, pf_at))
       end // end of [slseg_v_cons]
-    | slseg_v_nil () => slseg_v_cons (pf_gc, pf_at, slseg_v_nil ())
+    | slseg_v_nil () => slseg_v_cons {a} (pf_gc, pf_at, slseg_v_nil ())
   // end of [extend]
 in
   extend (pf_sl, pf_gc, pf_at)
@@ -121,7 +121,7 @@ slseg_length
   if p1 <> p2 then let
     prval slseg_v_cons (pf_gc, pf_at, pf1_sl) = pf_sl
     val res = loop (pf1_sl | p1->1, p2, k+1)
-    prval () = pf_sl := slseg_v_cons (pf_gc, pf_at, pf1_sl)
+    prval () = pf_sl := slseg_v_cons {a} (pf_gc, pf_at, pf1_sl)
   in
     res
   end else let
@@ -163,7 +163,7 @@ prfun slseg1_v_decode1
   (pf: slseg1_v (a, n, l1, l2))
 :<> [n > 0] (
   slseg_v (a, n-1, l1, l2)
-, free_gc_v ((a, ptr), l2)
+, free_gc_v ((a, ptr)?, l2)
 , (a, ptr?) @ l2
 ) // end of [slseg1_v_decode1]
 
@@ -172,7 +172,7 @@ prfun slseg1_v_encode1
   {a:viewt@ype}
   {n:int} {l1,l2:addr} (
   pf_sl: slseg_v (a, n, l1, l2)
-, pf_gc: free_gc_v ((a, ptr), l2)
+, pf_gc: free_gc_v ((a, ptr)?, l2)
 , pf_at: (a, ptr?) @ l2
 ) :<> slseg1_v (a, n+1, l1, l2) // end of [slseg1_v_encode1]
 
@@ -309,7 +309,7 @@ in
     // nothing
   end else let
     prval () = slseg1_v_decode0 {a} (q.pf)
-    prval () = q.pf := slseg1_v_encode1 (slseg_v_nil (), pf_gc_new, pf_at_new)
+    prval () = q.pf := slseg1_v_encode1 {a} (slseg_v_nil (), pf_gc_new, pf_at_new)
     val () = q.ptr1 := p_new
     val () = q.ptr2 := p_new
   in
@@ -377,7 +377,7 @@ in
           val () = f (pf | p1->0, env)
           val p1_nxt = p1->1
           val () = loop (pf, pf1_sl | p1_nxt, p2, f, env) // HX: tail-call
-          prval () = pf_sl := slseg_v_cons (pf1_gc, pf1_at, pf1_sl)
+          prval () = pf_sl := slseg_v_cons {a} (pf1_gc, pf1_at, pf1_sl)
         in
           // nothing
         end // end of [if]

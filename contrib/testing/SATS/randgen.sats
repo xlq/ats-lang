@@ -62,7 +62,7 @@ array_randgen {n:nat} (n: size_t n): array (a, n)
 
 fun{a:t@ype}
 array_ptr_randgen {n:nat} (n: size_t n)
-  : [l:agz] (free_gc_v (a, n, l), array_v (a, n, l) | ptr l)
+  : [l:agz] (free_gc_v (a?, n, l), array_v (a, n, l) | ptr l)
 // end of [array_ptr_randgen]
 
 fun{a:t@ype}

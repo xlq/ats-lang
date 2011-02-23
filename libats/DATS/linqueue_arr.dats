@@ -94,7 +94,7 @@ viewtypedef QUEUE_vt (
 , qarr_fst= ptr l_fst
 , qarr_lst= ptr l_lst
 , pfqarr= QUEUEarr_v (a, m, n, l_beg, l_end, l_fst, l_lst)
-, pfqarr_gc= free_gc_v (a, m, l_beg)
+, pfqarr_gc= free_gc_v (a?, m, l_beg)
 } // end of [QUEUE_vt]
 
 typedef QUEUE0_vt
@@ -236,7 +236,7 @@ queue_uninitialize
   {a} {m,n} (q) = () where {
   prval pfqarr = QUEUEarr_v_clear (q.pfqarr)
   prval pfarr = QUEUEarr_v_decode (pfqarr)
-  val () = array_ptr_free (q.pfqarr_gc, pfarr | q.qarr_beg)
+  val () = array_ptr_free {a} (q.pfqarr_gc, pfarr | q.qarr_beg)
   prval () = __assert (q) where {
     extern prfun __assert (q: &QUEUE0_vt a >> QUEUE0 a):<> void
   } // end of [val]
@@ -246,7 +246,7 @@ implement
 queue_uninitialize_vt
   {a} {m} (q) = () where {
   prval pfarr = QUEUEarr_v_decode (q.pfqarr)
-  val () = array_ptr_free (q.pfqarr_gc, pfarr | q.qarr_beg)
+  val () = array_ptr_free {a} (q.pfqarr_gc, pfarr | q.qarr_beg)
   prval () = __assert (q) where {
     extern prfun __assert (q: &QUEUE0_vt a >> QUEUE0 a):<> void
   } // end of [val]

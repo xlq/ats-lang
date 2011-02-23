@@ -53,7 +53,8 @@ extern fun symtbl_symlen_set (tbl: symtbl_t, len: int): void = "symtbl_symlen_se
 
 abst@ype tblent_t = $extype "tblent_t"
 
-viewtypedef symtbl (sz:int, n:int, l:addr) = @{
+viewtypedef
+symtbl (sz:int, n:int, l:addr) = @{
   dna= dna_t
 , ptr= ptr l
 , view_arr= @[tblent_t][sz] @ l
@@ -168,7 +169,7 @@ implement symtbl_make (dna, sz) = (pfbox | p_tbl) where {
     p_tbl->nitm := 0
   end (* end of [val] *)
 
-  prval () = free_gc_elim (pf_tbl_gc)
+  prval () = free_gc_elim {symtbl0} (pf_tbl_gc)
   val (pfbox | ()) = vbox_make_view_ptr (pf_tbl | p_tbl)
 } // symtbl_make
 

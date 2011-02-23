@@ -235,14 +235,16 @@ ats_int_type count_pattern_match
 
 (* ****** ****** *)
 
-extern fun count_pattern_match {n:nat} {l:addr}
-  (pf: !bytes_v (n, l) | n: int n, p: ptr l, pat: string): int
-  = "count_pattern_match"
+extern
+fun count_pattern_match
+  {n:nat} {l:addr} (
+  pf: !bytes_v (n, l) | n: int n, p: ptr l, pat: string
+) : int = "count_pattern_match"
 
 (* ****** ****** *)
 
 #define variants_length 9
-val variants: array (string, variants_length) = array_make_arrsz $arrsz{string} (
+val variants = array_make_arrsz {string} $arrsz(
   "agggtaaa|tttaccct"
 , "[cgt]gggtaaa|tttaccc[acg]"
 , "a[act]ggtaaa|tttacc[agt]t"
@@ -268,33 +270,51 @@ fun count_loop {i:nat} {n:nat} {l:addr}
 
 (* ****** ****** *)
 
-datatype seglst (int) =
-  | {n:nat} seglst_cons (n+1) of (int(*beg*), int(*len*), seglst n)
+datatype
+seglst (int) =
+  | {n:nat}
+    seglst_cons (n+1) of (int(*beg*), int(*len*), seglst n)
   | seglst_nil (0)
+// end of [seglst]
 
 typedef seglst0 = seglst 0
 typedef seglst = [n:nat] seglst (n)
 
-extern typedef "seglst_cons_pstruct" =
+extern
+typedef "seglst_cons_pstruct" =
   seglst_cons_pstruct (int, int, seglst)
 
-extern fun seglst_cons_make
-  (beg: int, len: int): seglst_cons_pstruct (int, int, seglst0?)
+extern
+fun seglst_cons_make (
+  beg: int, len: int
+) : seglst_cons_pstruct (int, int, seglst0?)
   = "seglst_cons_make"
 
-implement seglst_cons_make (beg, len) = seglst_cons {0} (beg, len, ?)
+implement
+seglst_cons_make
+  (beg, len) = seglst_cons {0} (beg, len, ?)
+// end of [seglst_cons_make]
+
+(* ****** ****** *)
 
 extern typedef "int_ptr_type" = @(void | int, ptr)
 
 %{$
 
 ats_void_type subst_copy (
-  char *dst, char *src, int nsrc, seglst_cons_pstruct sgs, char *sub, int nsub
+  char *dst
+, char *src
+, int nsrc
+, seglst_cons_pstruct sgs
+, char *sub
+, int nsub
 ) {
-  int ofs, beg, len ; seglst_cons_pstruct sgs_nxt ;
-
+//
+  int ofs, beg, len ;
+  seglst_cons_pstruct sgs_nxt ;
+//
   ofs = 0 ;
-
+//
   while (sgs) {
 /*
     fprintf (stderr, "subst_copy: ofs = %i\n", ofs) ;
@@ -324,8 +344,12 @@ ats_void_type subst_copy (
   return ;
 } /* end of [subst_copy] */
 
-int_ptr_type subst_pattern_string
-  (ats_int_type nsrc, ats_ptr_type src, ats_ptr_type pat, ats_ptr_type sub) {
+int_ptr_type subst_pattern_string (
+  ats_int_type nsrc
+, ats_ptr_type src
+, ats_ptr_type pat
+, ats_ptr_type sub
+) {
   char *dst ; int ndst, nsub ; int beg, len, nxt ;
   pcre *re; pcre_extra *re_ex ; const char *re_e ;
   int err, re_eo, m[3], pos ;
@@ -369,7 +393,8 @@ int_ptr_type subst_pattern_string
 
 (* ****** ****** *)
 
-extern fun subst_pattern_string {n:nat} {l:addr}
+extern
+fun subst_pattern_string {n:nat} {l:addr}
   (pf: !bytes_v (n, l) | n: int n, p: ptr l, pat: string, sub: string)
   : [n:nat] [l:addr] @(bytes_v (n, l) | int n, ptr l)
   = "subst_pattern_string"
@@ -377,7 +402,7 @@ extern fun subst_pattern_string {n:nat} {l:addr}
 (* ****** ****** *)
 
 #define subst_length 22
-val subst: array (string, subst_length) = array_make_arrsz $arrsz{string}(
+val subst = array_make_arrsz {string} $arrsz(
   "B", "(c|g|t)"
 , "D", "(a|g|t)"
 , "H", "(a|c|t)"
@@ -389,12 +414,14 @@ val subst: array (string, subst_length) = array_make_arrsz $arrsz{string}(
 , "V", "(a|c|g)"
 , "W", "(a|t)"
 , "Y", "(c|t)"
-)
+) // end of [val]
 
 (* ****** ****** *)
 
-fun subst_loop {i:nat} {n:nat} {l:addr}
-  (pf: bytes_v (n, l) | n: int n, p: ptr l, i: int i): int =
+fun subst_loop
+  {i:nat} {n:nat} {l:addr} (
+  pf: bytes_v (n, l) | n: int n, p: ptr l, i: int i
+) : int =
   if i < subst_length - 1 then let
     val pat = subst[i]; val sub = subst[i+1]
     val (pf1 | n1, p1) = subst_pattern_string (pf | n, p, pat, sub)

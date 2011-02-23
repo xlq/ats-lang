@@ -99,7 +99,7 @@ fun telldir (dir: &DIR): off_t = "#atslib_telldir"
 (* ****** ****** *)
 
 viewtypedef direntptr_gc =
-  [l:addr] (free_gc_v (dirent, l), dirent @ l | ptr l)
+  [l:addr] (free_gc_v (dirent?, l), dirent @ l | ptr l)
 // end of [direntptr_gc]
 
 //
