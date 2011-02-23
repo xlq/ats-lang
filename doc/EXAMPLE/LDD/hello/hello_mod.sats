@@ -4,7 +4,13 @@
 //
 (* ****** ****** *)
 
+#define ATS_STALOADFLAG 0
+
+(* ****** ****** *)
+
 %{#
+//
+#include "hello_mod.h"
 //
 // for handling a call like: printk (KERN_INFO "...")
 //
@@ -17,4 +23,4 @@
 
 (* ****** ****** *)
 
-(* end of [hello_module.sats] *)
+(* end of [hello_mod.sats] *)

@@ -1,38 +1,36 @@
 #
-# A simple Makefile
+# A simple Makefile for building modules
 #
 
 ######
 
-ATSCC=$(ATSHOME)/bin/atscc
-ATSOPT=$(ATSHOME)/bin/atsopt
+KVERS = $(shell uname -r)
 
 ######
 
-IATSFLAGS=-IATS $(ATSHOME)/contrib/linux
+# Kernel modules
+obj-m += hello_mod_dats.o
+
+#
+# Specify flags for the module compilation.
+#
+EXTRA_CFLAGS = \
+  -I$(ATSHOME) \
+  -D_ATS_HEADER_NONE -D_ATS_PRELUDE_NONE \
+  -g
 
 ######
 
-%_sats.c: %.sats ; $(ATSOPT) $(IATSFLAGS) -o $@ -s $<
-%_dats.c: %.dats ; $(ATSOPT) $(IATSFLAGS) -o $@ -d $<
+build: kernel_modules
 
 ######
 
-depend:: ; $(ATSOPT) -o .depend -dep1 -s hello_module.sats
-depend:: ; $(ATSOPT) -o .depend -dep1 -d hello_module.dats
-
-include .depend
+kernel_modules:
+	make -C /lib/modules/$(KVERS)/build M=$(CURDIR) modules
 
 ######
 
-RMF=rm -f
-
-######
-
-clean:: ; $(RMF) *~
-clean:: ; $(RMF) *_?ats.c
-clean:: ; $(RMF) *_?ats.o
-
-cleanall:: clean
+clean:
+	make -C /lib/modules/$(KVERS)/build M=$(CURDIR) clean
 
 ###### end of [Makefile] ######
