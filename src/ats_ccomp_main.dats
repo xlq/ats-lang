@@ -834,25 +834,28 @@ fn emit_staload
 ) : void = let
 //
   fun aux_staload_dec (
-    out: &FILE m, fils: !stafilelst
+    out: &FILE m, fils: !stafilelst, i: int
   ) : void = begin case+ fils of
     | STAFILELSTcons (fil, loadflag, !fils_rest) => let
         val () =
           if (loadflag = 0) then fprint1_string (pf | out, "// ")
         // end of [val]
-        val () = fprint1_string (pf | out, "extern ")
-        val () = fprint1_string (pf | out, "ats_void_type ")
+        val () = fprint1_string (pf | out, "extern ats_void_type ")
         val () = emit_filename (pf | out, fil)
         val () = fprint1_string (pf | out, "__staload (void) ;\n")
-        val () = aux_staload_dec (out, !fils_rest)
+        val () = aux_staload_dec (out, !fils_rest, i+1)
       in
         fold@ fils
       end // end of [STAFILELSTcons]
-    | STAFILELSTnil () => fold@ fils
+    | STAFILELSTnil () => let
+        val () = if i > 0 then fprint_char (pf | out, '\n')
+      in
+        fold@ fils
+      end // [STAFIELSTnil]
   end // end of [ats_staload_dec]
 //
   fun aux_staload_app (
-    out: &FILE m, fils: !stafilelst
+    out: &FILE m, fils: !stafilelst, i: int
   ) : void = begin case+ fils of
     | STAFILELSTcons (fil, loadflag, !fils_rest) => let
         val () =
@@ -860,17 +863,23 @@ fn emit_staload
         // end of [val]
         val () = emit_filename (pf | out, fil)
         val () = fprint1_string (pf | out, "__staload () ;\n")
-        val () = aux_staload_app (out, !fils_rest)
+        val () = aux_staload_app (out, !fils_rest, i+1)
       in
         fold@ fils
       end // end of [STAFILELSTcons]
-    | STAFILELSTnil () => fold@ fils
+    | STAFILELSTnil () => let
+        val () = if i > 0 then fprint_char (pf | out, '\n')
+      in
+        fold@ fils
+      end // end of [STAFILELSTnil]
   end // end of [ats_staload_app]
 //
-  fun aux_staload_datcstlst
-    (out: &FILE m, s2cs: !datcstlst): int = let
-    fun aux_conlst (out: &FILE m, d2cs: d2conlst)
-      : void = begin case+ d2cs of
+  fun aux_staload_datcstlst (
+    out: &FILE m, s2cs: !datcstlst
+  ) : int = let
+    fun aux_conlst (
+      out: &FILE m, d2cs: d2conlst
+    ) : void = begin case+ d2cs of
       | D2CONLSTcons (d2c, d2cs) => let
           val () = begin // only needed for a constructor with no arguments!
             if d2con_get_arity_real (d2c) > 0 then fprint1_string (pf | out, "// ")
@@ -890,23 +899,26 @@ fn emit_staload
       | Some d2cs => aux_conlst (out, d2cs) | None () => ()
     ) // end of [aux_cst]
     fun aux (
-      out: &FILE m, i: int, s2cs: !datcstlst
+      out: &FILE m, s2cs: !datcstlst, i: int
     ) : int = begin
       case+ s2cs of
       | DATCSTLSTcons (s2c, !s2cs1) => let
-          val () = aux_cst (out, s2c); val n = aux (out, i+1, !s2cs1)
+          val () = aux_cst (out, s2c); val n = aux (out, !s2cs1, i+1)
         in
           fold@ s2cs; n
         end // end of [DATCSTLSTcons]
       | DATCSTLSTnil () => (fold@ s2cs; i) // end of [DATCSTLSTnil]
     end // end of [aux]
   in
-    aux (out, 0, s2cs)
+    aux (out, s2cs, 0)
   end // end of [aux_staload_datcstlst]
 //
-  fun aux_staload_exnconlst
-    (out: &FILE m, d2cs: !exnconlst): int = let
-    fun aux (out: &FILE m, i: int, d2cs: !exnconlst): int = begin
+  fun aux_staload_exnconlst (
+    out: &FILE m, d2cs: !exnconlst
+  ) : int = let
+    fun aux (
+      out: &FILE m, d2cs: !exnconlst, i: int
+    ) : int = begin
       case+ d2cs of
       | EXNCONLSTcons (d2c, !d2cs1) => let
           val () = emit_d2con (pf | out, d2c)
@@ -922,34 +934,35 @@ fn emit_staload
 *)
           val () = emit_d2con (pf | out, d2c)
           val () = fprint1_string (pf | out, "\" ;\n")
-          val n = aux (out, i+1, !d2cs1)
+          val n = aux (out, !d2cs1, i+1)
         in
           fold@ d2cs; n
         end // end of [EXNCONLSTcons]
       | EXNCONLSTnil () => (fold@ d2cs; i)
     end // end of [aux]
   in
-    aux (out, 0, d2cs)
+    aux (out, d2cs, 0)
   end // end of [aux_staload_exnconlst]
 (*  
   // *_staload function should always be defined!
   val () = fprint1_string (pf | out, "#ifndef _ATS_STALOADFUN_NONE\n")
 *)
-  val () = aux_staload_dec (out, stafils)
+  val () = aux_staload_dec (out, stafils, 0)
 //
-  val () = fprint1_string (pf | out, "static int ")
-  val () = emit_filename (pf | out, fil)
-  val () = fprint1_string (pf | out, "__staload_flag = 0 ;\n\n")
   val () = fprint1_string (pf | out, "ats_void_type\n")
   val () = emit_filename (pf | out, fil)
   val () = fprint1_string (pf | out, "__staload () {\n")
+//
+  val () = fprint1_string (pf | out, "static int ")
+  val () = emit_filename (pf | out, fil)
+  val () = fprint1_string (pf | out, "__staload_flag = 0 ;\n")
   val () = fprint1_string (pf | out, "if (");
   val () = emit_filename (pf | out, fil)
   val () = fprint1_string (pf | out, "__staload_flag) return ;\n")
   val () = emit_filename (pf | out, fil)
-  val () = fprint1_string (pf | out, "__staload_flag = 1 ;\n")
+  val () = fprint1_string (pf | out, "__staload_flag = 1 ;\n\n")
 //
-  val () = aux_staload_app (out, stafils)
+  val () = aux_staload_app (out, stafils, 0)
 //
   val () = stafilelst_free (stafils)
 //
@@ -957,7 +970,7 @@ fn emit_staload
   val _(*int*) = aux_staload_exnconlst (out, d2cs)
 //
   val () = fprint1_string (pf | out, "return ;\n")
-  val () = fprint1_string (pf | out, "} /* staload function */\n")
+  val () = fprint1_string (pf | out, "} /* staload function */\n\n")
 (*
   val () = fprint1_string (pf | out, "#endif /* [_ATS_STALOADFUN_NONE] */\n\n")
 *)
@@ -978,37 +991,43 @@ fn emit_dynload
   , exts: !extvallst
   ) : void = let
 //
-  // code for dynamic loading
+// HX: code for dynamic loading
+//
   val dynfils = the_dynfilelst_get ()
-  val () = aux_dynload_dec (out, dynfils) where {
-    fun aux_dynload_dec
-      (out: &FILE m, fils: !dynfilelst): void = case+ fils of
+  val () = aux_dynload_dec (out, dynfils, 0) where {
+    fun aux_dynload_dec (
+      out: &FILE m, fils: !dynfilelst, i: int
+    ) : void = case+ fils of
       | DYNFILELSTcons (fil, !fils_rest) => let
-          val () = fprint1_string (pf | out, "int ")
+//
+          val () = fprint1_string (pf | out, "ats_int_type ")
           val () = emit_filename (pf | out, fil)
           val () = fprint1_string (pf | out, "__dynload_flag = 0 ;\n")
-          val () = fprint1_string (pf | out, "extern\n")
-          val () = fprint1_string (pf | out, "ats_void_type ")
+//
+          val () = fprint1_string (pf | out, "extern ats_void_type ")
           val () = emit_filename (pf | out, fil)
           val () = fprint1_string (pf | out, "__dynload (void) ;\n")
-          val () = aux_dynload_dec (out, !fils_rest)
+//
+          val () = aux_dynload_dec (out, !fils_rest, i + 1)
         in
           fold@ fils
         end // end of [DYNFILELSTcons]
-      | DYNFILELSTnil () => fold@ fils
+      | DYNFILELSTnil () => let
+          val () = if i > 0 then fprint_char (pf | out, '\n')
+        in
+          fold@ fils
+        end // end of [DYNFILELSTnil]
     // end of [aux_dynload_dec]
   } // end of [where]
   val () = dynfilelst_free (dynfils)
 //
   val () = fprint1_string
-    (pf | out, "// (external) dynload flag declaration\n")
+    (pf | out, "// dynload flag declaration\n")
   // end of [val]
 //
   val () = let
     val () = if dynloadflag = 0 then fprint1_string (pf | out, "// ")
-    val () = fprint1_string (pf | out, "extern\n")
-    val () = if dynloadflag = 0 then fprint1_string (pf | out, "// ")
-    val () = fprint1_string (pf | out, "int ")
+    val () = fprint1_string (pf | out, "extern ats_int_type ")
     val () = emit_filename (pf | out, fil)
     val () = fprint1_string (pf | out, "__dynload_flag ;\n\n")
   in
@@ -1030,7 +1049,7 @@ fn emit_dynload
 //
   // code for static loading
   val () = emit_filename (pf | out, fil)
-  val () = fprint1_string (pf | out, "__staload () ;\n")
+  val () = fprint1_string (pf | out, "__staload () ;\n\n")
 //
   // code for termination checking
   val () = fprint1_string (pf | out, "#ifdef _ATS_PROOFCHECK\n")
