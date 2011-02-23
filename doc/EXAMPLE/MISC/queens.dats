@@ -7,11 +7,21 @@
 **
 *)
 
+(* ****** ****** *)
+
+staload _(*anon*) = "prelude/DATS/array.dats"
+
+(* ****** ****** *)
+
 staload "libc/SATS/stdlib.sats"
 staload "libc/SATS/time.sats"
 staload "libc/SATS/unistd.sats"
 
-// Implementing the eight-queen problem
+(* ****** ****** *)
+//
+// HX: poor man's animation: solving the eight-queens puzzle
+//
+(* ****** ****** *)
 
 val clear = "[H[2J" // clear the screen
 val home = "[H" // moving the the home position (upper left corner )
@@ -58,29 +68,37 @@ end // end of [print_board]
 
 //
 
-fn board_make {sz:nat}
-  (sz: int sz):<> [l:addr] (
-  free_gc_v (Nat, sz, l), array_v (Nat, sz, l) | ptr l
+fn board_make
+  {sz:nat} (
+  sz: int sz
+) :<> [l:addr] (
+  free_gc_v (int, sz, l), array_v (Nat, sz, l) | ptr l
 ) = let
   val sz = size1_of_int1 sz
   val (pf_gc, pf | p) =
-    array_ptr_alloc_tsz {Nat} (sz, sizeof<Nat>)
+    array_ptr_alloc<Nat> (sz)
+  // end of [val]
   var x: Nat = 0; val () =
-    array_ptr_initialize_elt_tsz {Nat} (!p, sz, x, sizeof<Nat>)
+    array_ptr_initialize_elt<Nat> (!p, sz, x)
+  // end of [val]
 in
   (pf_gc, pf | p)
 end // end of [board_make]
 
 (* ****** ****** *)
 
-fun play {sz:int | sz > 0}
-  (npause: Nat, len: int sz): void = let
+fun play
+  {sz:int | sz > 0} (
+  npause: Nat, len: int sz
+) : void = let
+//
   var nsol: Nat = 0
   val [l:addr] (pf_gc, pf_board | board) = board_make (len)
-
-  fun test {i,j:nat | j <= i && i < sz}
-    (pf1: !array_v (Nat, sz, l) | j: int j, i: int i, qi: Nat)
-    :<cloptr1> Bool =
+//
+  fun test
+    {i,j:nat | j <= i && i < sz} (
+    pf1: !array_v (Nat, sz, l) | j: int j, i: int i, qi: Nat
+  ) :<cloptr1> Bool =
     if j < i then let
       val (qj: Nat) = board[j]
     in
@@ -89,11 +107,12 @@ fun play {sz:int | sz > 0}
       else test (pf1 | j + 1, i, qi)
     end else begin
       true
-    end
-
-  fun loop {i:nat | i < sz}
-    (pf1: !array_v (Nat, sz, l), pf2: !Nat @ nsol | i: int i)
-    :<cloptr1> void = let
+    end // end of [if]
+  (* end of [test] *)
+//
+  fun loop {i:nat | i < sz} (
+    pf1: !array_v (Nat, sz, l), pf2: !Nat @ nsol | i: int i
+  ) :<cloptr1> void = let
     val next = board[i] + 1
   in
     if next > len then let
@@ -133,33 +152,40 @@ fun play {sz:int | sz > 0}
       end // end of [if]
     end // end of [if]
   end // end of [loop]
+//
 in
+//
   print (clear);
   loop (pf_board, view@ nsol | 0);
-  array_ptr_free {Nat} (pf_gc, pf_board | board);
+  array_ptr_free {int} (pf_gc, pf_board | board);
   repeat (len, lam () => print cuu)
+//
 end // end of [play]
 
-//
+(* ****** ****** *)
 
 fn prerr_usage (): void = begin
   print ("The board size needs to be positive!\n")
 end // end of [prerr_usage]
 
-//
+(* ****** ****** *)
 
-implement main (argc, argv) = let
+implement
+main (
+  argc, argv
+) = let
   var len: Nat = 8
   var npause: Nat = 4
 in
+//
   if argc >= 2 then let
     val i = atoi argv.[1] in len := max (4, int1_of_int i)
-  end;
-
+  end ;
+//
   if argc >= 3 then let
     val n = atoi argv.[2] in npause := min (max (0, int1_of_int n), 8)
-  end;
-
+  end ;
+//
   let val n = len in
     if n > 0 then let
       val start = time ()
@@ -173,6 +199,7 @@ in
       prerr_usage () // abnormal exit
     end // end of [if]
   end // end of [let]
+//
 end // end of [main]
 
 (* ****** ****** *)
