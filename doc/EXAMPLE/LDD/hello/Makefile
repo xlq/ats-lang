@@ -4,6 +4,11 @@
 
 ######
 
+ATSCC=$(ATSHOME)/bin/atscc
+ATSOPT=$(ATSHOME)/bin/atsopt
+
+######
+
 KVERS = $(shell uname -r)
 
 ######
@@ -21,7 +26,12 @@ EXTRA_CFLAGS = \
 
 ######
 
-build: kernel_modules
+build:: hello_mod_dats.c
+build:: kernel_modules
+
+######
+
+hello_mod_dats.c: hello_mod.dats ; make -f Makefile_src all
 
 ######
 

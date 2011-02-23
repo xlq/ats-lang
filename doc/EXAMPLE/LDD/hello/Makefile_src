@@ -13,6 +13,10 @@ IATSFLAGS=-IATS $(ATSHOME)/contrib/linux
 
 ######
 
+all:: hello_mod_dats.c
+
+######
+
 hello_mod_dats.c: \
   hello_mod.dats hello_mod.sats ; $(ATSOPT) $(IATSFLAGS) -o $@ -d $<
 
