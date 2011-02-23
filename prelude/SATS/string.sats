@@ -34,9 +34,9 @@
 (* author: Hongwei Xi (hwxi AT cs DOT bu DOT edu) *)
 
 (* ****** ****** *)
-
-// some string operations
-
+//
+// HX: some string operations
+//
 (* ****** ****** *)
 
 #include "prelude/params.hats"

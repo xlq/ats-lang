@@ -50,7 +50,7 @@ overload ptr_of with ptr_of_REGEXPptr
 (* ****** ****** *)
 
 fun regexp_compile // implemented in C
-  (pattern: string): REGEXPptr0 = "atslib_regexp_compile"
+  (pattern: !READ(string)): REGEXPptr0 = "atslib_regexp_compile"
 // end of [regexp_compile]
 fun regexp_compile_exn (pattern: string): REGEXPptr1
 
@@ -101,8 +101,9 @@ fun regexp_split_string_list {l:agz}
 // end of [regexp_string_split_list]
 
 fun regexp_split_substring_list
-  {l:agz} {n:int} {i,ln:nat | i+ln <= n}
-  (re: !REGEXPptr l, str: string n, ofs: int i, len: int ln): List_vt (strptr1)
+  {l:agz} {n:int} {i,ln:nat | i+ln <= n} (
+  re: !REGEXPptr l, str: !READ(string n), ofs: int i, len: int ln
+) : List_vt (strptr1)
 // end of [regexp_string_split_list]
 
 (* ****** ****** *)

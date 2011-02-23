@@ -256,6 +256,11 @@ atslib_regexp_split_substring_search (
 implement
 regexp_split_string_list
   (re, str) = let
+//
+  val str =
+    $UN.castvwtp1 {string} (str)
+  // end of [val]
+//
   val str = string1_of_string (str)
   val len = string1_length (str)
   val len = int1_of_size1 (len)
@@ -321,6 +326,10 @@ regexp_split_substring_list
           end // end of [_]
       end // end of [_ when (i < n)]
     | _ (* i = n *) => (res := list_vt_nil)
+//
+  val str =
+    $UN.castvwtp1 {string(n)} (str)
+  // end of [val]
 //
   var !p_arr with pf_arr = @[int][3]()
   var res: res? // uninitialized

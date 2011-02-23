@@ -111,7 +111,9 @@ in
 stavar len: int
 
 prval () = free_gc_elim (pf_gc)
-val (the_doctype_map_prop | ()) = vbox_make_view_ptr (pf_arr | ptr)
+val (
+  the_doctype_map_prop | ()
+) = vbox_make_view_ptr (pf_arr | ptr)
 val the_doctype_map_ptr = ptr
 val the_doctype_map_len: int len = int1_of_size1 (len)
 
@@ -149,17 +151,21 @@ end // end of let
 
 //
 
-extern fun doctype_find (sfx: string): Stropt
+extern
+fun doctype_find
+  (sfx: string): Stropt
+// end of [doctype_find]
 implement doctype_find (sfx) = let
 (*
   val () = printf ("doctype_find: sfx = %s\n", @(sfx))
 *)
-  fun loop {i,j,n:int | 0 <= i; i <= j+1; j+1 <= n} {l:addr} .<j-i+1>.
-    (pf: !array_v ((string, string), n, l) | A: ptr l, i: int i, j: int j)
-    :<cloptr> Stropt =
+  fun loop
+    {i,j,n:int | 0 <= i; i <= j+1; j+1 <= n}
+    {l:addr} .<j-i+1>. (
+    pf: !array_v ((string, string), n, l) | A: ptr l, i: int i, j: int j
+  ) :<cloptr> Stropt =
     if i <= j then let
-      val m = i + (j - i) / 2
-      val key = !A.[m].0
+      val m = i + (j - i) / 2 ; val key = !A.[m].0
 (*
       val () = printf ("doctype_find: key = %s\n", @(key))
 *)
@@ -180,7 +186,10 @@ end // end of [doctype_find]
 
 //
 
-extern fun suffix_of_filename (filename: string): Stropt
+extern
+fun suffix_of_filename
+  (filename: string): Stropt
+// end of [suffix_of_filename]
 implement suffix_of_filename filename = let
   val filename = string1_of_string filename
   val i = string_index_of_char_from_right (filename, '.')
@@ -197,15 +206,18 @@ in
   end // end of [if]
 end // end of [suffix_of_filename]
 
-//
+(* ****** ****** *)
 
-extern fun filename_extract {n:nat}
+extern
+fun filename_extract {n:nat}
   (msg: string n, n: size_t n): Stropt = "filename_extract"
+// end of [filename_extract]
 
 %{$
-
 ats_ptr_type
-filename_extract(ats_ptr_type msg, ats_size_type n) {
+filename_extract (
+  ats_ptr_type msg, ats_size_type n
+) {
   size_t i = 5 ;
   char *s = (char *)msg + i;
 /*
@@ -223,13 +235,15 @@ filename_extract(ats_ptr_type msg, ats_size_type n) {
   } else {
     return (char *)0 ;
   }
-}
-
-%}
+} // end of [filename_extract]
+%} // end of [%{$]
 
 //
 
-extern fun doctype_of_filename (filename: string): string
+extern
+fun doctype_of_filename
+  (filename: string): string
+// end of [doctype_of_filename]
 implement doctype_of_filename (filename: string) = let
   val sfx_opt = suffix_of_filename filename
   val dt_opt = (if stropt_is_none sfx_opt then
@@ -246,21 +260,28 @@ in
   else stropt_unsome dt_opt
 end // end of [doctype_of_filename]
 
-//
+(* ****** ****** *)
 
-extern fun socket_write_all {fd:int} {n,sz:nat | n <= sz}
-  (pf_socket: !socket_v (fd, conn) | fd: int fd, buf: &bytes sz, n: size_t n)
-  : void = "socket_write_all"
+extern
+fun socket_write_all
+  {fd:int} {n,sz:nat | n <= sz} (
+  pf_socket: !socket_v (fd, conn)
+| fd: int fd, buf: &bytes sz, n: size_t n
+) : void = "socket_write_all"
 
-extern fun socket_write_substring_all
+extern
+fun socket_write_substring_all
   {fd:int} {i,n,sz:nat | i+n <= sz} (
-    pf_socket: !socket_v (fd, conn) | socket_id: int fd, s: string sz, start: size_t i, n: size_t n
-  ) : void = "socket_write_substring_all"
+  pf_socket: !socket_v (fd, conn)
+| socket_id: int fd, s: string sz, start: size_t i, n: size_t n
+) : void = "socket_write_substring_all"
 // end of [socket_write_substring_all]
+
+(* ****** ****** *)
 
 %{^
 
-static inline
+ATSinline()
 ats_void_type
 socket_write_all (
   ats_int_type fd, ats_ref_type buf, ats_size_type cnt
@@ -279,7 +300,7 @@ socket_write_all (
   return ;
 } // end of [socket_write_all]
 
-static inline
+ATSinline()
 ats_void_type
 socket_write_substring_all (
   ats_int_type fd, ats_ptr_type buf, ats_size_type start, ats_size_type cnt
@@ -290,7 +311,7 @@ socket_write_substring_all (
 
 %} // end of [%{^]
 
-//
+(* ****** ****** *)
 
 val msg404_str = "\
 HTTP/1.0 404 not found\r\nServer: ATS/Vanilla\r\nContent-type: text/html\r\n
@@ -302,15 +323,19 @@ fun msg404_send {fd:int}
   (pf_conn: !socket_v (fd, conn) | socket_id: int fd): void = 
   socket_write_substring_all (pf_conn | socket_id, msg404_str, 0, msg404_len)
 
-//
+(* ****** ****** *)
 
-extern fun size_of_filename (filename: string): lint = "size_of_filename"
+extern
+fun size_of_filename
+  (filename: string): lint = "size_of_filename"
+// end of [size_of_filename]
 
 %{^
-
-static inline
+ATSinline()
 ats_lint_type
-size_of_filename(ats_ptr_type filename) {
+size_of_filename (
+  ats_ptr_type filename
+) {
   int res ;
   struct stat buf ;
   
@@ -319,31 +344,33 @@ size_of_filename(ats_ptr_type filename) {
   if (res < 0) {
     perror ("stat") ;
     atspre_exit_prerrf(1, "Exit: [stat(%s)] failed.\n", filename) ;
-  }
+  } // end of [if]
 
   return buf.st_size ;
-}
+} // end of [size_of_filename]
+%} // end of [%{^]
 
-%}
-
-fun msg200_of_filename (filename: string): string = let
-
+fun msg200_of_filename
+  (filename: string): string = let
+//
 val sz = size_of_filename filename
 val dt = doctype_of_filename filename
-
+//
 in
-
+//
 string_of_strptr (sprintf (
 "HTTP/1.0 200 OK\r\nServer: ATS/Vanilla\r\nContent-length: %li\r\nContent-type: %s\r\n\r\n",
 @(sz, dt)
 ) // end of [sprintf]
 ) // end of [string_of_strptr]
-
+//
 end // end of [msg200_of_filename]
+
+(* ****** ****** *)
 
 fun file_send_main {fd: int} (
     pf_conn: !socket_v (fd, conn)
-  | fd: int fd, file: &FILE r, filename: !READ(string)
+  | fd: int fd, file: &FILE r, filename: string
   ) : void = let
 //
 val [l_buf:addr]
@@ -375,8 +402,10 @@ free_ngc (pf_ngc, pf_buf | p_buf);
 //
 end // end of [file_send_main]
 
+(* ****** ****** *)
+
 extern fun file_send {fd: int}
-  (pf_conn: !socket_v (fd, conn) | fd: int fd, filename: !READ(string)): void
+  (pf_conn: !socket_v (fd, conn) | fd: int fd, filename: string): void
 // end of [file_send]
 
 implement file_send
@@ -397,29 +426,27 @@ end // end of [if]
 //
 end // end of [file_send]
 
-//
+(* ****** ****** *)
 
 val dir_msg1_str =
   "HTTP/1.0 200 OK\nServer: ATS/Vanilla\nContent-type: text/html\n\n"
-
 val dir_msg1_len = string_length dir_msg1_str
-
-//
 
 val dir_msg2_str = "<H1>\
 A simple web server implemented in <A HREF=\"http://www.ats-lang.org/\">ATS</A>\
 </H1>"
-
 val dir_msg2_len = string_length dir_msg2_str
 
-//
+(* ****** ****** *)
 
-extern fun ctime_get (): String = "server_ctime_get"
+extern
+fun ctime_get (): String = "server_ctime_get"
 
 %{^
 
 static
-ats_ptr_type server_ctime_get (void) {
+ats_ptr_type
+server_ctime_get (void) {
   time_t t ;
   char c, *buf, *p;
 
@@ -430,9 +457,11 @@ ats_ptr_type server_ctime_get (void) {
     ++p ;
   }
   return buf ;
-}
+} // end of [server_ctime_get]
 
 %}
+
+(* ****** ****** *)
 
 val dir_msg30_str = "<pre>starting time: "
 val dir_msg30_len = string_length dir_msg30_str
@@ -441,16 +470,20 @@ val dir_msg31_len = string_length dir_msg31_str
 val dir_msg32_str = "</pre>"
 val dir_msg32_len = string_length dir_msg32_str
 
-//
+(* ****** ****** *)
 
 (*
 
-dataviewtype entlst = entlst_nil | entlst_cons of (String, entlst)
+dataviewtype
+entlst = entlst_nil | entlst_cons of (String, entlst)
 
-fun entlst_append (xs0: &entlst >> entlst, ys: entlst): void =
+fun entlst_append (
+  xs0: &entlst >> entlst, ys: entlst
+) : void =
   case+ xs0 of
   | entlst_cons (x, !xs) => (entlst_append (!xs, ys); fold@ xs0)
   | ~entlst_nil () => (xs0 := ys)
+// end of [entlst_append]
 
 fun qsort (xs: entlst): entlst =
   case+ xs of
@@ -498,7 +531,7 @@ dirent_get_name(ats_ptr_type dir) {
     return (char*)0 ;
   }
 }  /* end of [dirent_get_name_get] */ 
-%}
+%} // end of [%{$]
 
 fun dirent_name_get
   (dir: &DIR): Stropt = let
@@ -558,47 +591,54 @@ filename_type(ats_ptr_type filename) {
 
 %}
 
-extern fun directory_send_loop {fd:int}
-  (pf_conn: !socket_v (fd, conn) | fd: int fd, parent: String, ents: entlst): void
+extern
+fun directory_send_loop {fd:int} (
+  pf_conn: !socket_v (fd, conn)
+| fd: int fd, parent: String, ents: entlst
+) : void // end of [directory_send_loop]
 
-implement directory_send_loop (pf_conn | fd, parent, ents): void =
-  case+ ents of
-    | ~entlst_cons (ent, ents) => let
+implement
+directory_send_loop (
+  pf_conn | fd, parent, ents
+) = case+ ents of
+  | ~entlst_cons (ent, ents) => let
 (*
-        val () = printf ("directory_send_loop: parent = %s\n", @(parent))
-        val () = printf ("directory_send_loop: ent = %s\n", @(ent))
+      val () = printf ("directory_send_loop: parent = %s\n", @(parent))
+      val () = printf ("directory_send_loop: ent = %s\n", @(ent))
 *)
-        val ft = case ent of
-          | "." => 1 | ".." => 1
-          | _ => let
-              val name = string1_of_strbuf (parent + ent) in filename_type name
-            end // end of [_]
-      in
-        case+ ft of
-        | 0 => let
-            val msg = sprintf ("<A HREF=\"%s\">%s</A><BR>", @(ent, ent))
-            val msg = string1_of_strptr (msg)
-            val len = string_length (msg)
-          in
-            socket_write_substring_all (pf_conn | fd, msg, 0, len);
-            directory_send_loop (pf_conn | fd, parent, ents)
-          end
-        | 1 => let
-            val msg = tostringf ("<A HREF=\"%s/\">%s/</A><BR>", @(ent, ent))
-            val msg = string1_of_strptr (msg)
-          in
-            socket_write_substring_all (pf_conn | fd, msg, 0, string_length msg);
-            directory_send_loop (pf_conn | fd, parent, ents)
-          end
-        | _ => directory_send_loop (pf_conn | fd, parent, ents)
-      end // end of [cons]
-    | ~entlst_nil () => ()
+      val ft = case ent of
+        | "." => 1 | ".." => 1
+        | _ => let
+            val name = string1_of_strbuf (parent + ent) in filename_type name
+          end // end of [_]
+    in
+      case+ ft of
+      | 0 => let
+          val msg = sprintf ("<A HREF=\"%s\">%s</A><BR>", @(ent, ent))
+          val msg = string1_of_strptr (msg)
+          val len = string_length (msg)
+        in
+          socket_write_substring_all (pf_conn | fd, msg, 0, len);
+          directory_send_loop (pf_conn | fd, parent, ents)
+        end
+      | 1 => let
+          val msg = tostringf ("<A HREF=\"%s/\">%s/</A><BR>", @(ent, ent))
+          val msg = string1_of_strptr (msg)
+        in
+          socket_write_substring_all (pf_conn | fd, msg, 0, string_length msg);
+          directory_send_loop (pf_conn | fd, parent, ents)
+        end
+      | _ => directory_send_loop (pf_conn | fd, parent, ents)
+    end // end of [cons]
+  | ~entlst_nil () => ()
 // end of [directory_send_loop]
 
 (* ****** ****** *)
 
-extern fun directory_send {fd: int}
+extern
+fun directory_send {fd: int}
   (pf_conn: !socket_v (fd, conn) | fd: int fd, dirname: string): void
+// end of [directory_send]
 
 implement directory_send {fd}
   (pf_conn | fd, dirname): void = let
@@ -624,7 +664,8 @@ end // end of [directory_send]
 
 (* ****** ****** *)
 
-fun request_is_get {n:nat} (s: string n): bool =
+fun request_is_get
+  {n:nat} (s: string n): bool =
   if string_is_at_end (s, 0) then false
   else if s[0] <> 'G' then false
   else if string_is_at_end (s, 1) then false
@@ -638,11 +679,12 @@ fun request_is_get {n:nat} (s: string n): bool =
 
 (* ****** ****** *)
 
-extern fun main_loop_get {fd:int} {n:nat} {l_buf:addr} (
-    pf_conn: socket_v (fd, conn)
-  , pf_buf: !bytes BUFSZ @ l_buf
-  | fd: int fd, buf: ptr l_buf, msg: string n, n: size_t n
-  ) : void
+extern
+fun main_loop_get {fd:int} {n:nat} {l_buf:addr} (
+  pf_conn: socket_v (fd, conn)
+, pf_buf: !bytes BUFSZ @ l_buf
+| fd: int fd, buf: ptr l_buf, msg: string n, n: size_t n
+) : void // end of [main_loop_get]
 
 implement
 main_loop_get
@@ -710,21 +752,23 @@ end (* end of [main_loop] *)
 
 (* ****** ****** *)
 
-extern fun sigpipe_ignore (): void = "sigpipe_ignore"
+extern
+fun sigpipe_ignore (): void = "sigpipe_ignore"
 
 %{^
-
-static inline
-ats_void_type sigpipe_ignore () {
+ATSinline()
+ats_void_type
+sigpipe_ignore () {
   int err = sigignore(SIGPIPE) ;
   if (err < 0) {
     perror("sigignore") ;
     ats_exit_errmsg (1, "Exit: [sigpipe_ignore] failed.\n") ;
   }
   return ;
-}
+} // end of [sigpipe_ignore]
+%} // end of [%{^]
 
-%}
+(* ****** ****** *)
 
 dynload "libc/sys/DATS/socket.dats"
 

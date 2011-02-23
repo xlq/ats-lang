@@ -348,14 +348,15 @@ end // end of [msg200_of_filename]
 
 fn file_send_main {fd: int} (
     pf_conn: !socket_v (fd, conn)
-  | fd: int fd, file: &FILE r, filename: !READ(string)
+  | fd: int fd, file: &FILE r, filename: string
   ) : void = let
+//
   var !p_buf with pf_buf = @[byte][BUFSZ]() // uninitialized
   prval () = pf_buf := bytes_v_of_b0ytes_v (pf_buf)
   var !p_msg with pf_msg = @[byte][NMSG200]() // uninitialized
   val msg200_str = msg200_of_filename (pf_msg | p_msg, filename)
   val msg200_len = strbuf_length (!p_msg)
-
+//
   fun loop
     (pf_conn: !socket_v (fd, conn),
      pf_buf: !bytes BUFSZ @ p_buf | fd: int fd, file: &FILE r)
@@ -376,7 +377,7 @@ end // end of [file_send_main]
 (* ****** ****** *)
 
 extern fun file_send {fd: int} (
-  pf_conn: !socket_v (fd, conn) | fd: int fd, filename: !READ(string)
+  pf_conn: !socket_v (fd, conn) | fd: int fd, filename: string
 ) : void // end of [file_send]
 
 implement file_send
