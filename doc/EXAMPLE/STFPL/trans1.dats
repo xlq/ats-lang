@@ -376,7 +376,7 @@ trans1_exp (e) =
               val () = prerr ": the return type of a recursive function needs to be given."
               val () = prerr_newline ()
             } // end of [val]
-        ) : t1yp
+        ) : t1yp // end of [val]
         val t_fun = T1YPfun (t_arg, t_res)
         val f = v1ar_make (loc0, sym, t_fun)
         val _already = $M.funmap_insert (G, sym, f, cmp_sym_sym)
