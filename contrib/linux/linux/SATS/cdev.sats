@@ -93,7 +93,9 @@ absviewtype cdev_ref (l:addr, sd: int) // sd: static(0)/dynamic(1)
 (* ****** ****** *)
 
 fun cdev_get_owner
-  {l:agz} {sd:int} (dev: cdev_ref (l, sd)): [l1: agz] (
+  {l:agz} {sd:int} (
+  dev: cdev_ref (l, sd)
+) : [l1: agz] (
   minus (cdev_ref (l, sd), module_ref (l1)) | module_ref (l1)
 ) // end of [cdev_get_owner]
 

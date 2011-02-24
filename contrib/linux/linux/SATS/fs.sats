@@ -47,6 +47,7 @@ inode = $extype_struct "inode" of {
 , i_state= ulint
 , dirtied_when= ulint (* jiffies or first dirtying *)
 , i_flags= uint
+, _res= undefined_t
 } // end of [inode]
 
 (* ****** ****** *)

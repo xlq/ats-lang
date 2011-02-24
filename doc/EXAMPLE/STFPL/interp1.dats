@@ -18,6 +18,11 @@
 
 (* ****** ****** *)
 
+staload "prelude/DATS/list.dats"
+staload "prelude/DATS/reference.dats"
+
+(* ****** ****** *)
+
 staload "error.sats"
 staload "symbol.sats"
 staload "absyn.sats"
@@ -48,6 +53,7 @@ in
   | V1ALtup (vs) => begin
       prstr "V1ALtup("; fprint_v1allst (out, vs); prstr ")"
     end // end of [V1ALtup]
+  | V1ALref (r) => fprint_v1al (out, !r)
 end // end of [fprint_v1al]
 
 implement fprint_v1allst
@@ -67,38 +73,26 @@ implement prerr_v1al (v) = fprint_v1al (stderr_ref, v)
 
 (* ****** ****** *)
 
-fun v1al_is_some
-  (v: v1al) = let
-  val p = __cast (v) where {
-    extern castfn __cast (v: v1al): ptr
-  } // end of [val]
-in
-  p > null
-end // end of [v1al_is_some]
+typedef v1alref = ref (v1al)
+typedef v1alreflst = List (v1alref)
 
-fun v1ar_get_val
-  (x: v1ar): v1al = let
-  extern castfn __cast (v: ptr): v1al
-in
-  __cast (x.v1ar_val)
-end // end of [v1ar_get_val]
-
-extern
-fun v1ar_set_val
-  (x: v1ar, v: v1al): void = "interp1_v1ar_set_val"
-// end of [v1ar_set_val]
-
-(* ****** ****** *)
+val v1al_dummy = V1ALint (0)
 
 implement interp_exp (e0) = let
   #define :: list_cons; #define nil list_nil
 //
-  fun auxExp (env: env, e0: e1xp): v1al = begin
+  fun auxExp (
+    env: env, e0: e1xp
+  ) : v1al = begin
     case+ e0.e1xp_node of
     | E1XPann (e, t) => auxExp (env, e)
-    | E1XPapp (e1, e2) => auxExp (env1, body) where {
-        val- V1ALclo (env1, xs, body) = auxExp (env, e1)
+    | E1XPapp (e1, e2) => let
+        val v1 = auxExp (env, e1)
+        val v1 = (
+          case+ v1 of V1ALref r => !r | _ => v1
+        ) : v1al
         val v2 = auxExp (env, e2)
+        val- V1ALclo (env1, xs, body) = v1
         val env1 = (case+ xs of
           | x :: nil () =>
               list_cons (@(x, v2), env1)
@@ -118,10 +112,15 @@ implement interp_exp (e0) = let
               val- V1ALtup vs = v2
             } // end of [_]
         ) : env // end of [val]
-      } (* end of [E1XPapp] *)
+      in
+        auxExp (env1, body)
+      end (* end of [E1XPapp] *)
     | E1XPbool (b) => V1ALbool (b)
-    | E1XPfix (f, xs, body) => v where {
-        val v = V1ALclo (env, xs, body); val () = v1ar_set_val (f, v)
+    | E1XPfix (f, xs, body) => !r where {
+        val r = ref<v1al> (v1al_dummy)
+        val v = V1ALref (r)
+        val env = list_cons ((f, v), env)
+        val () = !r := V1ALclo (env, xs, body)
       } // end of [E1XPfix]
     | E1XPif (e1, e2, oe3) => let
         val- V1ALbool b = auxExp (env, e1)
@@ -156,7 +155,9 @@ implement interp_exp (e0) = let
 *)
   end // end of [auxExp]    
 //
-  and auxExp_list (env: env, es: e1xplst): List v1al = case+ es of
+  and auxExp_list (
+    env: env, es: e1xplst
+  ) : List v1al = case+ es of
     | list_cons (e, es) => list_cons (auxExp (env, e), auxExp_list (env, es))
     | list_nil () => list_nil ()
   (* end of [auxExp_list] *)
@@ -240,21 +241,13 @@ implement interp_exp (e0) = let
   and auxVar (
     env: env, x: v1ar
   ) : v1al = let
-    val ans = v1ar_get_val (x)
-  in
-    if v1al_is_some (ans) then ans else auxVarNone (env, x)
-  end // end of [auxVar]
-  
-  and auxVarNone (
-    env: env, x: v1ar
-  ) : v1al = let
 (*
     val () = (print "x = "; print (x.v1ar_nam); print_newline ())
 *)
     val- list_cons (xv, env1) = env
   in
-    if x = xv.0 then xv.1 else auxVarNone (env1, x)
-  end // end of [auxVarNone]
+    if x = xv.0 then xv.1 else auxVar (env1, x)
+  end // end of [auxVar]
 //
   and auxDec (env: env, dec: d1ec): env =
     case+ dec.d1ec_node of
@@ -265,18 +258,35 @@ implement interp_exp (e0) = let
     env: env, isrec: bool, vds: v1aldeclst
   ) : env =
     case+ 0 of
-    | _ when isrec => loop (env, vds) where {
-        fun loop (env: env, vds: v1aldeclst): env =
+    | _ when isrec => env where {
+        fun loop1 (
+          env: env, vds: v1aldeclst, res: env, rs: v1alreflst
+        ) : (env, v1alreflst)  =
           case+ vds of
           | list_cons (vd, vds) => let
               val x = vd.v1aldec_var
-              val def = auxExp (env, vd.v1aldec_def)
-              val () = v1ar_set_val (x, def)
+              val r = ref<v1al> (v1al_dummy)
+              val v = V1ALref (r)
+              val res = list_cons ((x, v), res)
+              val rs = list_cons (r, rs)
             in
-              loop (env, vds)
+              loop1 (env, vds, res, rs)
             end // end of [list_cons]
-          | list_nil () => env
+          | list_nil () => (res, rs)
         // end of [loop]  
+        val (env, rs) = loop1 (env, vds, env, list_nil)
+        val rs = list_reverse (rs)
+        val rs = list_of_list_vt (rs)
+        fun loop2 (
+          env: env, vds: v1aldeclst, rs: v1alreflst
+        ) : void =
+          case+ (vds, rs) of
+          | (list_cons (vd, vds), list_cons (r, rs)) => (
+              !r := auxExp (env, vd.v1aldec_def); loop2 (env, vds, rs)
+            ) // end of [list_cons, list_cons]
+          | (_, _) => ()
+        // end of [loop2]
+        val () = loop2 (env, vds, rs)
       } // end of [_ (*rec*) ]
     | _ (*nonrec*) => loop (env, vds, env) where {
         fun loop (env: env, vds: v1aldeclst, res: env): env =
@@ -305,19 +315,6 @@ implement interp_exp (e0) = let
 in
   auxExp (env0, e0)
 end // end of [interp_exp]
-
-(* ****** ****** *)
-
-extern typedef "v1ar_t" = v1ar
-
-%{$
-ats_void_type
-interp1_v1ar_set_val (
-  ats_ptr_type x, ats_ptr_type v
-) {
-  ((v1ar_t)x)->atslab_v1ar_val = v ; return ;
-} // end of [v1ar_set_val]
-%}
 
 (* ****** ****** *)
 

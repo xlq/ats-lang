@@ -214,7 +214,6 @@ v1ar_make (
 , v1ar_nam= sym
 , v1ar_typ= typ
 , v1ar_def= None ()
-, v1ar_val= null
 } // end of ...
 
 (* ****** ****** *)

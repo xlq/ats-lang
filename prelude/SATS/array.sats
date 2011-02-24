@@ -301,40 +301,67 @@ prfun array_v_unsplit {a:viewt@ype}
 (* ***** ***** *)
 
 prfun array_v_extend :
-  {a:viewt@ype} {n:nat} {l:addr} {ofs:int}
-  (MUL (n, sizeof a, ofs), array_v (a, n, l), a @ l+ofs) -<prf> array_v (a, n+1, l)
-// end of [array_v_extend]
+  {a:viewt@ype}
+  {n:nat}
+  {l:addr}
+  {ofs:int} (
+  MUL (n, sizeof a, ofs), array_v (a, n, l), a @ l+ofs
+) -<prf> array_v (a, n+1, l) // end of [array_v_extend]
 
-prfun array_v_unextend : {a:viewt@ype}
-  {n:int | n > 0} {l:addr} {ofs:int}
-  (MUL (n, sizeof a, ofs), array_v (a, n, l)) -<prf> (array_v (a, n-1, l), a @ l+ofs-sizeof a)
-// end of [array_v_unextend]
+prfun array_v_unextend :
+  {a:viewt@ype}
+  {n:int | n > 0}
+  {l:addr}
+  {ofs:int} (
+  MUL (n, sizeof a, ofs), array_v (a, n, l)
+) -<prf> (
+  array_v (a, n-1, l), a @ l+ofs-sizeof a
+) // end of [array_v_unextend]
 
-prfun array_v_takeout : {a:viewt@ype}
-  {n:int} {i:nat | i < n} {l:addr} {ofs:int}
-  (MUL (i, sizeof a, ofs), array_v (a, n, l)) -<prf> (a @ l+ofs, a @ l+ofs -<lin> array_v (a, n, l))
-// end of [array_v_takeout]
+prfun array_v_takeout :
+  {a:viewt@ype}
+  {n:int}
+  {i:nat | i < n}
+  {l:addr}
+  {ofs:int} (
+  MUL (i, sizeof a, ofs), array_v (a, n, l)
+) -<prf> (
+  a @ l+ofs, a @ l+ofs -<lin> array_v (a, n, l)
+) // end of [array_v_takeout]
 
-prfun array_v_takeout2 : {a:viewt@ype}
-  {n:int} {i1,i2:nat | i1 < n; i2 < n; i1 <> i2} {l:addr} {ofs1,ofs2:int}
-    (MUL (i1, sizeof a, ofs1), MUL (i2, sizeof a, ofs2), array_v (a, n, l)) -<prf>
-    (a @ l+ofs1, a @ l+ofs2, (a @ l+ofs1, a @ l+ofs2) -<lin> array_v (a, n, l))
-// end of [array_v_takeou2]
+prfun array_v_takeout2 :
+  {a:viewt@ype}
+  {n:int}
+  {i1,i2:nat | i1 < n; i2 < n; i1 <> i2}
+  {l:addr}
+  {ofs1,ofs2:int} (
+  MUL (i1, sizeof a, ofs1)
+, MUL (i2, sizeof a, ofs2)
+, array_v (a, n, l)
+) -<prf> (
+  a @ l+ofs1
+, a @ l+ofs2
+, (a @ l+ofs1, a @ l+ofs2) -<lin> array_v (a, n, l)
+) // end of [array_v_takeou2]
 
 (* ***** ***** *)
-
-prfun array_v_clear : // not really needed as [array_v] is covariant
+//
+// HX: this is not really needed as [array_v] is covariant
+//
+prfun array_v_clear :
   {a:t@ype} {n:nat} {l:addr} array_v (a, n, l) -<prf> array_v (a?, n, l)
 // end of [array_v_clear]
 
 (* ***** ***** *)
 
-prfun array_v_group : {a:viewt@ype} {m,n:nat} {l:addr} {mn:int}
-  (MUL (m, n, mn) | array_v (a, mn, l)) -<prf> array_v (@[a][n], m, l)
+prfun array_v_group :
+  {a:viewt@ype} {m,n:nat} {l:addr} {mn:int}
+  (MUL (m, n, mn), array_v (a, mn, l)) -<prf> array_v (@[a][n], m, l)
 // end of [array_v_group]
 
-prfun array_v_ungroup : {a:viewt@ype} {m,n:nat} {l:addr} {mn:int}
-  (MUL (m, n, mn) | array_v (@[a][n], m, l)) -<prf> array_v (a, mn, l)
+prfun array_v_ungroup :
+  {a:viewt@ype} {m,n:nat} {l:addr} {mn:int}
+  (MUL (m, n, mn), array_v (@[a][n], m, l)) -<prf> array_v (a, mn, l)
 // end of [array_v_ungroup]
 
 (* ****** ****** *)

@@ -28,6 +28,7 @@ datatype v1al =
   | V1ALstr of string
   | V1ALtup of List v1al 
   | V1ALclo of (env, $TRANS1.v1arlst, $TRANS1.e1xp)
+  | V1ALref of ref (v1al)
 
 where env = List @($TRANS1.v1ar, v1al)
 

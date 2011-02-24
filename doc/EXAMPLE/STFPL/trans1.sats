@@ -85,7 +85,6 @@ and v1ar = '{
 , v1ar_nam= sym
 , v1ar_typ= t1yp
 , v1ar_def= e1xpopt
-, v1ar_val= ptr
 } // end of [v1ar]
 and v1arlst = List (v1ar)
 
