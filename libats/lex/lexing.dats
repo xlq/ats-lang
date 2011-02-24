@@ -30,12 +30,10 @@
 *)
 
 (* ****** ****** *)
-
 //
 // Author: Hongwei Xi (hwxi AT cs DOT bu DOT edu)
 // Time: July 2007
 //
-
 (* ****** ****** *)
 
 %{^
@@ -112,9 +110,13 @@ infile_getc (pf | infil) = infil.getc (pf | (*none*))
 (* ****** ****** *)
 
 implement
-infile_make_string (s) = let
+infile_make_string
+  (inp) = let
 //
-  val [n:int] s = string1_of_string s; val n = string_length s
+  val [n:int] str =
+    string1_of_string (inp)
+  // end of [val]
+  val n = string_length (str)
 //
   typedef T = sizeLte n
   val [l:addr] (pf_gc, pf_at | p) = ptr_alloc_tsz {T} (sizeof<T>)
@@ -131,7 +133,7 @@ infile_make_string (s) = let
   ) :<cloref1> int = let
     prval pf_at = (pf.1: T @ l)
     val i = !p; val ans: int = begin
-      if i < n then (!p := i+1; int_of_char s[i]) else ~1
+      if i < n then (!p := i+1; int_of_char str[i]) else ~1
     end // end of [val]
   in
     pf.1 := pf_at; ans
@@ -139,9 +141,9 @@ infile_make_string (s) = let
 //
   val () = !p := size1_of_int1 (0); 
 //
-in
-  #[ V | (@(pf_gc, pf_at) | @{ free= _free, getc= _getc }) ]
-end // end of [infile_make_string]
+in #[
+  V | ( @(pf_gc, pf_at) | @{ free= _free, getc= _getc } )
+] end // end of [infile_make_string]
 
 (* ****** ****** *)
 

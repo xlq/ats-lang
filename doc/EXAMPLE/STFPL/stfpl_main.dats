@@ -13,6 +13,7 @@
 
 staload "absyn.sats"
 staload "parser.sats"
+staload "interp0.sats"
 staload "trans1.sats"
 staload "interp1.sats"
 
@@ -27,6 +28,7 @@ dynload "symbol.dats"
 dynload "absyn.dats"
 dynload "fixity.dats"
 dynload "parser.dats"
+dynload "interp0.dats"
 dynload "trans1.dats"
 dynload "interp1.dats"
 
@@ -60,11 +62,18 @@ implement main () = () where {
   val () = print "prog =\n"
   val () = fprint_e0xp (stdout_ref, prog) 
   val () = print_newline ()
+//
+(*
+  val v0al = interp0_exp (prog)
+  val () = (print "v0al = "; print_v0al v0al; print_newline ())
+*)
+//
   val e1xp = trans1_exp (prog)
   val t1yp = e1xp.e1xp_typ
   val () = (print "t1yp = "; print_t1yp t1yp; print_newline ())
-  val v1al = interp_exp (e1xp)
+  val v1al = interp1_exp (e1xp)
   val () = (print "v1al = "; print_v1al v1al; print_newline ())
+//
 } // end of [main]
 
 (* ****** ****** *)

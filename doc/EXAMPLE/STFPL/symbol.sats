@@ -70,10 +70,13 @@ val symbol_PRINT_INT : symbol_t
 
 abstype symenv_t (a: t@ype) // hashtable-based implementation
 
-fun{a:t@ype} symenv_make (): symenv_t (a)
+fun{a:t@ype} symenv_make_nil (): symenv_t (a)
 
-fun{a:t@ype} symenv_lookup (env: symenv_t a, sym: symbol_t): Option_vt a
-fun{a:t@ype} symenv_insert (env: symenv_t a, sym: symbol_t, x: a): void
+fun{a:t@ype}
+symenv_lookup (env: symenv_t a, sym: symbol_t): Option_vt a
+
+fun{a:t@ype}
+symenv_insert (env: symenv_t a, sym: symbol_t, x: a): symenv_t a
 
 (* ****** ****** *)
 

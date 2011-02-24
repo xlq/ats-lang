@@ -34,6 +34,7 @@ SOURCES=\
   absyn.sats absyn.dats \
   fixity.sats fixity.dats \
   parser.sats parser.dats \
+  interp0.sats interp0.dats \
   trans1.sats trans1.dats \
   interp1.sats interp1.dats \
 

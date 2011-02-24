@@ -4,17 +4,19 @@
 ** Instructor: Hongwei Xi (hwxi AT cs DOT bu DOT edu)
 *)
 
+(* ****** ****** *)
 //
 // Author: Hongwei Xi (hwxi AT cs DOT bu DOT edu)
 // Time: June, 2009
 //
-
 (* ****** ****** *)
-
 //
 // An interpreter for STFPL (a simple typed functional programming language)
 // The code was originally written by Hongwei Xi in May 2005
 //
+(* ****** ****** *)
+
+staload "symbol.sats"
 
 (* ****** ****** *)
 
@@ -30,7 +32,7 @@ datatype v1al =
   | V1ALclo of (env, $TRANS1.v1arlst, $TRANS1.e1xp)
   | V1ALref of ref (v1al)
 
-where env = List @($TRANS1.v1ar, v1al)
+where env = symenv_t (v1al)
 
 (* ****** ****** *)
 
@@ -41,7 +43,7 @@ fun print_v1al (v: v1al): void and prerr_v1al (v: v1al): void
 
 (* ****** ****** *)
 
-fun interp_exp (e: $TRANS1.e1xp): v1al
+fun interp1_exp (e: $TRANS1.e1xp): v1al
 
 (* ****** ****** *)
 

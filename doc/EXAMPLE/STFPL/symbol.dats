@@ -147,42 +147,48 @@ implement symbol_PRINT_INT = symbol_make_name "print_int"
 
 local
 
-typedef sym = symbol_t
-assume symenv_t (a:t@ype) = HASHTBLref (symbol_t, a)
+staload M = "libats/SATS/funmap_avltree.sats"
+staload _(*M*) = "libats/DATS/funmap_avltree.dats"
+assume symenv_t (a:t@ype) = $M.map (symbol_t, a)
+typedef key = symbol_t
+fn{} cmp (k1:key, k2:key):<cloref> Sgn = compare (k1, k2)
 
 in // in of [local]
 
-implement{itm}
-symenv_make () = let
-  val hash = lam (x: sym) =<cloref> string_hash_33 (symbol_get_name x)
-  val eq = lam (x1: sym, x2: sym) =<cloref> x1 = x2
-  val x = $H.hashtbl_make {sym,itm} (hash, eq)
-in
-  HASHTBLref_encode (x)
-end // end of [symenv_make]
+implement{a}
+symenv_make_nil () = $M.funmap_make_nil ()
 
-implement{itm}
-symenv_lookup (tbl, sym) = let
-  var res: itm?
-  val (fpf_x | x) = HASHTBLref_decode (tbl)
-  val ans = $H.hashtbl_search<sym,itm> (x, sym, res)
-  prval () = fpf_x (x)
+(*
+fun{key,itm:t@ype}
+funmap_search (
+  m: map (key, itm), k0: key, cmp: cmp key, res: &itm? >> opt (itm, b)
+) :<> #[b:bool] bool b
+// end of [funmap_search]
+*)
+implement{a}
+symenv_lookup (env, k0) = let
+  var res: a?
+  val ans =
+    $M.funmap_search<key,a> (env, k0, cmp, res)
+  // end of [val]
 in
   if ans then let
-    prval () = opt_unsome (res) in Some_vt res
+    prval () = opt_unsome {a} (res) in Some_vt (res)
   end else let
-    prval () = opt_unnone (res) in None_vt ()
-  end (* end of [if] *)
+    prval () = opt_unnone {a} (res) in None_vt ()
+  end // end of [if]
 end // end of [symenv_lookup]
 
-implement{itm}
-symenv_insert (tbl, sym, itm) = let
-  val (fpf_x | x) = HASHTBLref_decode (tbl)
-  val () = $H.hashtbl_insert<sym,itm> (x, sym, itm)
-  prval () = fpf_x (x)
-in
-  // nothing
-end // end of [symenv_insert]
+(*
+fun{key,itm:t@ype} funmap_insert (
+  m: &map (key, itm), k0: key, x0: itm, cmp: cmp key
+) :<> bool(*[k0] alreay exists in [m]*) // end of [funmap_insert]
+*)
+implement{a}
+symenv_insert (env, k, i) = env where {
+  var env = env
+  val ans(*discarded*) = $M.funmap_insert<key,a> (env, k, i, cmp)
+} // end of [symenv_insert]
 
 end // end of [local]
 

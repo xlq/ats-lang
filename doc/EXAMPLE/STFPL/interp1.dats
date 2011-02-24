@@ -10,12 +10,10 @@
 // Time: June, 2009
 //
 (* ****** ****** *)
-
 //
 // An interpreter for STFPL (a simple typed functional programming language)
 // The code was originally written by Hongwei Xi in May 2005
 //
-
 (* ****** ****** *)
 
 staload "prelude/DATS/list.dats"
@@ -25,6 +23,7 @@ staload "prelude/DATS/reference.dats"
 
 staload "error.sats"
 staload "symbol.sats"
+staload _(*anon*) = "symbol.dats"
 staload "absyn.sats"
 staload "trans1.sats"
 
@@ -78,7 +77,7 @@ typedef v1alreflst = List (v1alref)
 
 val v1al_dummy = V1ALint (0)
 
-implement interp_exp (e0) = let
+implement interp1_exp (e0) = let
   #define :: list_cons; #define nil list_nil
 //
   fun auxExp (
@@ -93,9 +92,9 @@ implement interp_exp (e0) = let
         ) : v1al
         val v2 = auxExp (env, e2)
         val- V1ALclo (env1, xs, body) = v1
-        val env1 = (case+ xs of
+        val env = (case+ xs of
           | x :: nil () =>
-              list_cons (@(x, v2), env1)
+             symenv_insert (env1, x.v1ar_nam, v2)
             // unary function call  
           | _ => loop (env1, xs, vs) where {
               fun loop (
@@ -103,7 +102,7 @@ implement interp_exp (e0) = let
                 ) : env = case+ vs of
                 | list_cons (v, vs) => let
                     val- list_cons (x, xs) = xs 
-                    val env1 = list_cons (@(x, v), env1)
+                    val env1 = symenv_insert (env1, x.v1ar_nam, v)
                   in
                     loop (env1, xs, vs)
                   end // end of [list_cons]  
@@ -113,13 +112,13 @@ implement interp_exp (e0) = let
             } // end of [_]
         ) : env // end of [val]
       in
-        auxExp (env1, body)
+        auxExp (env, body)
       end (* end of [E1XPapp] *)
     | E1XPbool (b) => V1ALbool (b)
     | E1XPfix (f, xs, body) => !r where {
         val r = ref<v1al> (v1al_dummy)
         val v = V1ALref (r)
-        val env = list_cons ((f, v), env)
+        val env = symenv_insert (env, f.v1ar_nam, v)
         val () = !r := V1ALclo (env, xs, body)
       } // end of [E1XPfix]
     | E1XPif (e1, e2, oe3) => let
@@ -244,12 +243,14 @@ implement interp_exp (e0) = let
 (*
     val () = (print "x = "; print (x.v1ar_nam); print_newline ())
 *)
-    val- list_cons (xv, env1) = env
+    val- ~Some_vt (v) = symenv_lookup (env, x.v1ar_nam)
   in
-    if x = xv.0 then xv.1 else auxVar (env1, x)
+    v
   end // end of [auxVar]
 //
-  and auxDec (env: env, dec: d1ec): env =
+  and auxDec (
+    env: env, dec: d1ec
+  ) : env =
     case+ dec.d1ec_node of
     | D1ECval (isrec, vds) => auxValdeclst (env, isrec, vds)
   (* end of [auxDec] *)
@@ -267,7 +268,7 @@ implement interp_exp (e0) = let
               val x = vd.v1aldec_var
               val r = ref<v1al> (v1al_dummy)
               val v = V1ALref (r)
-              val res = list_cons ((x, v), res)
+              val res = symenv_insert (res, x.v1ar_nam, v)
               val rs = list_cons (r, rs)
             in
               loop1 (env, vds, res, rs)
@@ -288,22 +289,27 @@ implement interp_exp (e0) = let
         // end of [loop2]
         val () = loop2 (env, vds, rs)
       } // end of [_ (*rec*) ]
-    | _ (*nonrec*) => loop (env, vds, env) where {
-        fun loop (env: env, vds: v1aldeclst, res: env): env =
+    | _ (*nonrec*) => res where {
+        fun loop (
+          env: env, vds: v1aldeclst, res: env
+        ) : env =
           case+ vds of
           | list_cons (vd, vds) => let
               val x = vd.v1aldec_var
               val def = auxExp (env, vd.v1aldec_def)
-              val res = list_cons ((x, def), res)
+              val res = symenv_insert (res, x.v1ar_nam, def)
             in
               loop (env, vds, res)
             end // end of [list_cons]
           | list_nil () => res
-        // end of [loop]  
+        // end of [loop]
+        val res = loop (env, vds, env)
       } // end of [_ (*nonrec*) ]
   (* end of [auxValdeclst] *)
 //
-  and auxDeclst (env: env, decs: d1eclst): env = begin
+  and auxDeclst (
+    env: env, decs: d1eclst
+  ) : env = begin
     case+ decs of
     | list_cons (dec, decs) => let
         val env = auxDec (env, dec) in auxDeclst (env, decs)
@@ -311,10 +317,10 @@ implement interp_exp (e0) = let
     | list_nil () => env
   end // end of [auxDeclst]     
 //
-  val env0 = list_nil ()
+  val env0: env = symenv_make_nil ()
 in
   auxExp (env0, e0)
-end // end of [interp_exp]
+end // end of [interp1_exp]
 
 (* ****** ****** *)
 

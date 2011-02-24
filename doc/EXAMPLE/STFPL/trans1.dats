@@ -4,18 +4,16 @@
 ** Instructor: Hongwei Xi (hwxi AT cs DOT bu DOT edu)
 *)
 
+(* ****** ****** *)
 //
 // Author: Hongwei Xi (hwxi AT cs DOT bu DOT edu)
 // Time: June, 2009
 //
-
 (* ****** ****** *)
-
 //
 // A typechecker for STFPL (a simple typed functional programming language)
 // The code was originally written by Hongwei Xi in May 2005
 //
-
 (* ****** ****** *)
 
 staload
@@ -26,6 +24,7 @@ macdef prerr_loc = $POSLOC.prerr_location
 
 staload "error.sats"
 staload "symbol.sats"
+staload _(*anon*) = "symbol.dats"
 staload "absyn.sats"
 
 (* ****** ****** *)
@@ -289,10 +288,11 @@ fn typerr_mismatch
   abort {void} (1)
 end // end of [typerr_mismatch]
 
-typedef ctx = $M.map (sym, v1ar)
+typedef ctx = symenv_t (v1ar)
 
-fun ctx_extend_arglst
-  (G: &ctx, args: a0rglst): v1arlst = xs where {
+fun ctx_extend_arglst (
+  G: &ctx, args: a0rglst
+) : v1arlst = xs where {
   var xs: List_vt v1ar = list_vt_nil ()
   fun loop (
       G: &ctx, args: a0rglst, xs: &List_vt v1ar
@@ -309,7 +309,7 @@ fun ctx_extend_arglst
         ) : t1yp // end of [val]     
         val x = v1ar_make (loc, sym, t)
         val () = xs := list_vt_cons (x, xs)
-        val _already = $M.funmap_insert (G, sym, x, cmp_sym_sym)
+        val () = G := symenv_insert (G, sym, x)
       in
         loop (G, args, xs)
       end // end of [list_cons]  
@@ -326,7 +326,7 @@ implement
 trans1_exp (e) =
   auxExp (G0, e) where {
   #define cmp cmp_sym_sym
-  val G0: ctx = $M.funmap_make_nil ()
+  val G0: ctx = symenv_make_nil ()
   fun auxExp (G: ctx, e0: e0xp): e1xp = let
 (*
     val () = begin
@@ -378,7 +378,7 @@ trans1_exp (e) =
         ) : t1yp // end of [val]
         val t_fun = T1YPfun (t_arg, t_res)
         val f = v1ar_make (loc0, sym, t_fun)
-        val _already = $M.funmap_insert (G, sym, f, cmp_sym_sym)
+        val () = G := symenv_insert (G, sym, f)
         val body = auxExpCK (G, body, t_res)
         val e_fix = e1xp_make_fix (loc0, f, xs, body, t_fun)
         val () = v1ar_def_set (f, Some e_fix)
@@ -520,20 +520,18 @@ trans1_exp (e) =
         e1xp_make_tup (loc0, es, T1YPtup ts)
       end // end of [E0XPtup]
     | E0XPvar sym => let
-        var res: v1ar?
-        val ans = $M.funmap_search (G, sym, cmp, res)
+        val ans = symenv_lookup (G, sym)
       in
-        if ans then let
-          prval () = opt_unsome {v1ar} (res) in e1xp_make_var (loc0, res)
-        end else let
-          prval () = opt_unnone {v1ar} (res)
-          val () = prerr_loc (loc0)
-          val () = prerr ": exit(STFPL)"
-          val () = (prerr ": unbound variable ["; prerr sym; prerr "]")
-          val () = prerr_newline ()
-        in
-          abort {e1xp} (1)
-        end // end of [None_vt]
+        case+ ans of
+        | ~Some_vt (x) => e1xp_make_var (loc0, x)
+        | ~None_vt () => let
+            val () = prerr_loc (loc0)
+            val () = prerr ": exit(STFPL)"
+            val () = (prerr ": unbound variable ["; prerr sym; prerr "]")
+            val () = prerr_newline ()
+          in
+            abort {e1xp} (1)
+          end // end of [None_vt]
       end (* end of [E0XPvar] *)
 (*
     | _ => exit (1)
@@ -597,11 +595,11 @@ trans1_exp (e) =
           // end of [aux]   
         } // end of [val]
         val () = loop (G, xs) where {
-          fun loop (G: &ctx, xs: v1arlst): void = case+ xs of
+          fun loop (
+            G: &ctx, xs: v1arlst
+          ) : void = case+ xs of
             | list_cons (x, xs) => let
-                val _already = $M.funmap_insert (G, x.v1ar_nam, x, cmp_sym_sym)
-              in
-                loop (G, xs)
+                val () = G := symenv_insert (G, x.v1ar_nam, x) in loop (G, xs)
               end // end of [list_cons]
             | list_nil () => ()
           // end of [loop]  
@@ -653,7 +651,7 @@ trans1_exp (e) =
                 val loc = vd.v0aldec_loc and sym = vd.v0aldec_nam
                 val x = v1ar_make (loc, sym, def.e1xp_typ)
                 val vd = v1aldec_make (loc, x, def)
-                val _already = $M.funmap_insert (G, sym, x, cmp_sym_sym)
+                val () = G := symenv_insert (G, sym, x)
                 val vds = aux (G, vds, defs)
               in
                 list_cons (vd, vds)
