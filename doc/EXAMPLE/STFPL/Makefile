@@ -16,9 +16,9 @@ ATSOPT=$(ATSHOME)/bin/atsopt
 
 ######
 
-#CCFLAGS=
-CCFLAGS=-O2 -g
-#GCFLAG=
+CCFLAGS=
+CCFLAGS=-O2
+GCFLAG=
 GCFLAG=-D_ATS_GCATS
 
 ######
@@ -44,7 +44,7 @@ OBJECTS := $(patsubst %.sats, %_sats.o, $(OBJECTS))
 ######
 
 stfpl: $(OBJECTS)
-	$(ATSCC) $(GCFLAG) -o stfpl $(OBJECTS) $(LIBPARCOMB)
+	$(ATSCC) $(CCFLAGS) $(GCFLAG) -o stfpl $(OBJECTS) $(LIBPARCOMB)
 
 ######
 
@@ -62,10 +62,10 @@ test:: stfpl
 ######
 
 %_sats.o: %.sats
-	$(ATSCC) $(ATSCCFLAGS) -o $@ -c $< || touch $@
+	$(ATSCC) $(CCFLAGS) -o $@ -c $< || touch $@
 
 %_dats.o: %.dats
-	$(ATSCC) $(ATSCCFLAGS) -o $@ -c $< || touch $@
+	$(ATSCC) $(CCFLAGS) -o $@ -c $< || touch $@
 
 ######
 

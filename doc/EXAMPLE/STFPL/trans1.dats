@@ -179,8 +179,9 @@ end // end of [local]
 
 (* ****** ****** *)
 
-fun lte_t1yp_t1yp
-  (t1: t1yp, t2: t1yp): bool = case+ (t1, t2) of
+fun lte_t1yp_t1yp (
+  t1: t1yp, t2: t1yp
+) : bool = case+ (t1, t2) of
     | (T1YPbase sym1, T1YPbase sym2) => sym1 = sym2
     | (T1YPfun (t11, t12), T1YPfun (t21, t22)) =>
         lte_t1yp_t1yp (t21, t11) andalso lte_t1yp_t1yp (t12, t22)
@@ -189,7 +190,9 @@ fun lte_t1yp_t1yp
     | (_, _) => false
 // end of [lte_t1yp_t1yp]
 
-and lte_t1yplst_t1yplst (ts1: t1yplst, ts2: t1yplst): bool =
+and lte_t1yplst_t1yplst (
+  ts1: t1yplst, ts2: t1yplst
+) : bool =
   case+ (ts1, ts2) of
   | (list_cons (t1, ts1), list_cons (t2, ts2)) =>
       lte_t1yp_t1yp (t1, t2) andalso lte_t1yplst_t1yplst (ts1, ts2)
@@ -203,9 +206,18 @@ implement prerr_t1yp (t) = fprint_t1yp (stderr_ref, t)
 
 (* ****** ****** *)
 
-implement v1ar_make (loc, sym, t) = '{
-  v1ar_loc= loc, v1ar_nam= sym, v1ar_typ= t, v1ar_def= None ()
-}
+implement
+v1ar_make (
+  loc, sym, typ
+) = '{
+  v1ar_loc= loc
+, v1ar_nam= sym
+, v1ar_typ= typ
+, v1ar_def= None ()
+, v1ar_val= null
+} // end of ...
+
+(* ****** ****** *)
 
 implement e1xp_make_ann (loc, e, t) = '{
   e1xp_loc= loc, e1xp_node = E1XPann (e, t), e1xp_typ= t

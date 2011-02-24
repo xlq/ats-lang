@@ -81,7 +81,11 @@ and e1xplst = List (e1xp)
 and e1xpopt = Option (e1xp)
 
 and v1ar = '{
-  v1ar_loc= loc, v1ar_nam= sym, v1ar_typ= t1yp, v1ar_def= e1xpopt
+  v1ar_loc= loc
+, v1ar_nam= sym
+, v1ar_typ= t1yp
+, v1ar_def= e1xpopt
+, v1ar_val= ptr
 } // end of [v1ar]
 and v1arlst = List (v1ar)
 
@@ -99,7 +103,9 @@ and v1aldeclst = List (v1aldec)
 
 (* ****** ****** *)
 
-// fun fprint_e1xp (out: FILEref, e: e1xp): void
+fun fprint_v1ar (out: FILEref, v: v1ar): void
+
+fun fprint_e1xp (out: FILEref, e: e1xp): void
 
 (* ****** ****** *)
 
