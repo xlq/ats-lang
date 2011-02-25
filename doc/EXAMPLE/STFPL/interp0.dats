@@ -95,8 +95,9 @@ fun eval (env: env, e: e0xp): v0al
 
 val v0al_void = V0ALtup (nil)
 
-fun evalopt
-  (env: env, oe: e0xpopt): v0al =
+fun evalopt (
+  env: env, oe: e0xpopt
+) : v0al =
   case+ oe of
   | Some (e) => eval (env, e) | None () => v0al_void
 // end of [evalopt]
@@ -104,8 +105,7 @@ fun evalopt
 fun evallst (
   env: env, es: e0xplst
 ) : List v0al = let
-  val es = list_map_cloref<e0xp><v0al>
-    (es, lam e =<cloref> $effmask_all (eval (env, e)))
+  val es = list_map_cloref<e0xp><v0al> (es, lam e =<cloref1> eval (env, e))
 in
   list_of_list_vt (es)
 end // end of [evallst]
@@ -251,14 +251,14 @@ in
       val env = argenv_extend (env, args, v2)
     in
       eval (env, e_body)
-    end
+    end // end of [V0ALclo]
   | V0ALfix (env, e_fix) => let
       val- E0XPfix (f, args, _, e_body) = e_fix.e0xp_node
       val env = argenv_extend (env, args, v2)
       val env = symenv_insert (env, f, v1)
     in
       eval (env, e_body)
-    end
+    end // end of [V0ALclo]
   | V0ALref r => let
 (*
       val () = println! ("eval_app: !r = ", !r)
@@ -268,7 +268,7 @@ in
       val env = argenv_extend (env, args, v2)
     in
       eval (env, e_body)
-    end
+    end // end of [V0ALref]
   | _ => $raise TypeError ()
 end // end of [eval_app]
 

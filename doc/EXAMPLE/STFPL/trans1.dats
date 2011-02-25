@@ -325,7 +325,6 @@ fun ctx_extend_arglst (
 implement
 trans1_exp (e) =
   auxExp (G0, e) where {
-  #define cmp cmp_sym_sym
   val G0: ctx = symenv_make_nil ()
   fun auxExp (G: ctx, e0: e0xp): e1xp = let
 (*

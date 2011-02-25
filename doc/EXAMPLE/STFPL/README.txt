@@ -70,6 +70,13 @@ used for reporting type error message.
 
 ######
 
+interp0.dats
+interp0.sats
+
+Interpreter for STFPL (using AST at level 0)
+
+######
+
 trans1.dats
 trans1.sats
 
@@ -80,7 +87,7 @@ Typechecker for STFPL.
 interp1.dats
 interp1.sats
 
-Interpreter for STFPL.
+Interpreter for STFPL (using AST at level 1)
 
 ######
 

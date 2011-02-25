@@ -59,7 +59,8 @@
 //
 // HX: indexed by deque size
 //
-abstype deque_t0ype_int_type (elt:t@ype+, n:int)
+abstype
+deque_t0ype_int_type (elt:t@ype+, n:int)
 stadef deque = deque_t0ype_int_type
 
 (* ****** ****** *)

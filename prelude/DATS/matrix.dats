@@ -147,8 +147,10 @@ matrix_make_funenv_tsz
   (pf | m, n, f, tsz, env) = let
   val [mn:int] (pf_mul | mn) = m szmul2 n
   prval () = mul_nat_nat_nat pf_mul
-  val (pf_gc, pf_arr | p_arr) = array_ptr_alloc_tsz {a} (mn, tsz)
-  prval () = free_gc_elim {a} (pf_gc) // return the certificate
+  val (
+    pf_gc, pf_arr | p_arr
+  ) = array_ptr_alloc_tsz {a} (mn, tsz)
+  prval () = free_gc_elim {a} (pf_gc) // return the certificate to GC
   viewtypedef fun_t =
     (!v | &(a?) >> a, sizeLt m, natLt n, !vt) -<> void
   var !p_f1 = @lam
@@ -176,9 +178,11 @@ matrix_make_fun_tsz
   val f = coerce (f) where {
     extern castfn coerce (f: fun0_t):<> fun1_t
   } // end of [val]
+//
   prval pfu = unit_v ()
   val M = matrix_make_funenv_tsz {a} {unit_v} {ptr} (pfu | m, n, f, tsz, null)
   prval unit_v () = pfu
+//
 in
   M // : matrix (a, m, n)
 end // end of [matrix_make_fun_tsz]
@@ -207,9 +211,9 @@ matrix_make_clo_tsz
     // nothing
   end // end of [app]
 //
-  prval pf = (pfv, view@ f)
-  val M = matrix_make_funenv_tsz {a} {V} {ptr l_f} (pf | m, n, app, tsz, p_f)
-  prval () = (pfv := pf.0; view@ f := pf.1)
+  prval pfV = (pfv, view@ f)
+  val M = matrix_make_funenv_tsz {a} {V} {ptr l_f} (pfV | m, n, app, tsz, p_f)
+  prval () = (pfv := pfV.0; view@ f := pfV.1)
 } // end of [matrix_make_clo_tsz]
 
 (* ****** ****** *)
@@ -283,14 +287,16 @@ end // end of [local]
 (* ****** ****** *)
 
 implement{a}
-matrix_get_elt_at__intsz (M, i, n, j) = let
+matrix_get_elt_at__intsz
+  (M, i, n, j) = let
   val i = i2sz i; val n = i2sz n; val j = i2sz j
 in
   matrix_get_elt_at<a> (M, i, n, j)
 end // end of [matrix_get_elt_at__intsz]
 
 implement{a}
-matrix_set_elt_at__intsz (M, i, n, j, x) = let
+matrix_set_elt_at__intsz
+  (M, i, n, j, x) = let
   val i = i2sz i; val n = i2sz n; val j = i2sz j
 in
   matrix_set_elt_at<a> (M, i, n, j, x)
