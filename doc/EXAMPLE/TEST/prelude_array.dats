@@ -49,6 +49,28 @@ main (argc, argv) = let
     val () = print_newline ()
     prval unit_v () = pf
   } // end of [val]
+//
+  val () = () where {
+//
+// HX: testing array_v_group and array_v_ungroup
+//
+    typedef T = int
+    #define M 2; #define N 5; #define MN %(M*N)
+    prval pfmn = mul_make {M,N} ()
+    var !parr with pfarr = @[T][MN](0)
+    prval pfarr2 = array_v_group {T} (pfmn, pfarr)
+    val (pf, fpf | p) = array2_ptr_takeout<T> (pfarr2 | parr, N, 1)
+    val () = array_ptr_iforeach_fun<T> (!p, f, N) where {
+      val f = lam (i: sizeLt N, x: &T): void =<fun> x := int1_of_size1 (i+1)
+    } // end of [val]
+    prval () = pfarr2 := fpf (pf)
+    prval () = pfarr := array_v_ungroup {T} (pfmn, pfarr2)
+    val () = array_ptr_iforeach_fun<T> (!parr, f, MN) where {
+      val f = lam (i: sizeLt MN, x: &T): void =<fun> $effmask_all (if i > 0 then print ","; print x)
+    } // end of [val]
+    val () = print_newline ()
+  } // end of [val]
+//
 in
   print "The run of [prelude_array.dats] is done successfully!\n"
 end // end of [main]

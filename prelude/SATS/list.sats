@@ -96,37 +96,47 @@ castfn list_of_list_vt
 // end of [list_of_list_vt]
 
 (* ****** ****** *)
+//
+// HX: always inlining
+//
+fun{} list_is_empty {a:t@ype} {n:nat} (xs: list (a, n)):<> bool (n == 0)
+fun{} list_isnot_empty {a:t@ype} {n:nat} (xs: list (a, n)):<> bool (n > 0)
+overload ~ with list_isnot_empty
 
-fun{a:t@ype} list_app_funenv
+(* ****** ****** *)
+
+fun{a:t@ype}
+list_app_funenv
   {v:view} {vt:viewtype} {f:eff} (
   pf: !v | xs: List a, f: (!v | a, !vt) -<fun,f> void, env: !vt
 ) :<f> void // end of [list_app_funenv]
 
-fun{a:t@ype} list_app_fun {f:eff}
-  (xs: List a, f: a -<fun,f> void):<f> void
+fun{a:t@ype}
+list_app_fun {f:eff} (xs: List a, f: a -<fun,f> void):<f> void
 
-fun{a:t@ype} list_app_clo {v:view} {f:eff}
+fun{a:t@ype}
+list_app_clo {v:view} {f:eff}
   (pf: !v | xs: List a, f: &(!v | a) -<clo,f> void):<f> void
 
-fun{a:t@ype} list_app_cloptr {v:view} {f:eff}
+fun{a:t@ype}
+list_app_cloptr {v:view} {f:eff}
   (pf: !v | xs: List a, f: !(!v | a) -<cloptr,f> void):<f> void
 
-fun{a:t@ype} list_app_cloref {f:eff}
-  (xs: List a, f: (a -<cloref,f> void)):<f> void
+fun{a:t@ype}
+list_app_cloref {f:eff} (xs: List a, f: (a -<cloref,f> void)):<f> void
 
 (*
-
 symintr list_app
 overload list_app with list_app_fun
 overload list_app with list_app_clo
 overload list_app with list_app_cloptr
 overload list_app with list_app_cloref
-
 *)
 
 (* ****** ****** *)
 
-fun{a1,a2:t@ype} list_app2_funenv
+fun{a1,a2:t@ype}
+list_app2_funenv
   {v:view} {vt:viewtype} {n:nat} {f:eff} (
     pf: !v
   | xs: list (a1, n)
@@ -136,28 +146,32 @@ fun{a1,a2:t@ype} list_app2_funenv
   ) :<f> void
 // end of [list_app2_funenv]
 
-fun{a1,a2:t@ype} list_app2_fun {n:nat} {f:eff}
-  (xs: list (a1, n), ys: list (a2, n), f: (a1, a2) -<fun,f> void):<f> void
+fun{a1,a2:t@ype}
+list_app2_fun {n:nat} {f:eff} (
+  xs: list (a1, n), ys: list (a2, n), f: (a1, a2) -<fun,f> void
+) :<f> void // end of [list_app2_fun]
 
-fun{a1,a2:t@ype} list_app2_clo {v:view} {n:nat} {f:eff} (
-    pf: !v | xs: list (a1, n), ys: list (a2, n), f: &(!v | a1, a2) -<clo,f> void
-  ) :<f> void
+fun{a1,a2:t@ype}
+list_app2_clo {v:view} {n:nat} {f:eff} (
+  pf: !v | xs: list (a1, n), ys: list (a2, n), f: &(!v | a1, a2) -<clo,f> void
+) :<f> void // end of [list_app2_clo]
 
-fun{a1,a2:t@ype} list_app2_cloptr {v:view} {n:nat} {f:eff} (
-    pf: !v | xs: list (a1, n), ys: list (a2, n), f: !(!v | a1, a2) -<cloptr,f> void
-  ):<f> void
+fun{a1,a2:t@ype}
+list_app2_cloptr {v:view} {n:nat} {f:eff} (
+  pf: !v | xs: list (a1, n), ys: list (a2, n), f: !(!v | a1, a2) -<cloptr,f> void
+) :<f> void // end of [list_app2_cloptr]
 
-fun{a1,a2:t@ype} list_app2_cloref {n:nat} {f:eff}
+fun{a1,a2:t@ype}
+list_app2_cloref {n:nat} {f:eff}
   (xs: list (a1, n), ys: list (a2, n), f: (a1, a2) -<cloref,f> void):<f> void
+// end of [list_app2_cloref]
 
 (*
-
 symintr list_app2
 overload list_app2 with list_app2_fun
 overload list_app2 with list_app2_clo
 overload list_app2 with list_app2_cloptr
 overload list_app2 with list_app2_cloref
-
 *)
 
 (* ****** ****** *)
@@ -177,26 +191,31 @@ fun{a:t@ype} list_append2_vt {i,j:nat}
 (* ****** ****** *)
 
 fun{a1,a2:t@ype}
-list_assoc_funenv {v:view} {vt: viewtype} {eq:eff}
-  (pf: !v | xs: List @(a1, a2), eq: (!v | a1, a1, !vt) -<fun,eq> bool, x: a1, env: !vt)
-  :<eq> Option_vt a2
-// end of [list_assoc_funenv]
+list_assoc_funenv
+  {v:view} {vt: viewtype} {eq:eff} (
+  pf: !v
+| xs: List @(a1, a2), eq: (!v | a1, a1, !vt) -<fun,eq> bool, x: a1, env: !vt
+) :<eq> Option_vt a2 // end of [list_assoc_funenv]
 
-fun{a1,a2:t@ype} list_assoc_fun {eq:eff}
-  (xs: List @(a1, a2), eq: (a1, a1) -<fun,eq> bool, x: a1)
-  :<eq> Option_vt a2
+fun{a1,a2:t@ype}
+list_assoc_fun {eq:eff} (
+  xs: List @(a1, a2), eq: (a1, a1) -<fun,eq> bool, x: a1
+) :<eq> Option_vt a2 // end of [list_assoc_fun]
 
-fun{a1,a2:t@ype} list_assoc_clo {v:view} {eq:eff}
-  (pf: !v | xs: List @(a1, a2), eq: &(!v | a1, a1) -<clo,eq> bool, x: a1)
-  :<eq> Option_vt a2
+fun{a1,a2:t@ype}
+list_assoc_clo {v:view} {eq:eff} (
+  pf: !v | xs: List @(a1, a2), eq: &(!v | a1, a1) -<clo,eq> bool, x: a1
+) :<eq> Option_vt a2 // end of [list_assoc_clo]
 
-fun{a1,a2:t@ype} list_assoc_cloptr {v:view} {eq:eff}
-  (pf: !v | xs: List @(a1, a2), eq: !(!v | a1, a1) -<cloptr,eq> bool, x: a1)
-  :<eq> Option_vt a2
+fun{a1,a2:t@ype}
+list_assoc_cloptr {v:view} {eq:eff} (
+  pf: !v | xs: List @(a1, a2), eq: !(!v | a1, a1) -<cloptr,eq> bool, x: a1
+) :<eq> Option_vt a2 // end of [list_assoc_cloptr]
 
-fun{a1,a2:t@ype} list_assoc_cloref {eq:eff}
-  (xs: List @(a1, a2), eq: (a1, a1) -<cloref,eq> bool, x: a1)
-  :<eq> Option_vt a2
+fun{a1,a2:t@ype}
+list_assoc_cloref {eq:eff} (
+  xs: List @(a1, a2), eq: (a1, a1) -<cloref,eq> bool, x: a1
+) :<eq> Option_vt a2 // end of [list_assoc_cloref]
 
 (* ****** ****** *)
 
@@ -204,43 +223,51 @@ fun{a:t@ype} list_concat (xs: List (List a)):<> List_vt a
 
 (* ****** ****** *)
 
-fun{a:t@ype} list_drop
+fun{a:t@ype}
+list_drop
   {n:int} {i:nat | i <= n}
   (xs: list (a, n), i: int i):<> list (a, n-i)
+// end of [list_drop]
 
-fun{a:t@ype} list_drop_exn {n,i:nat}
+fun{a:t@ype}
+list_drop_exn {n,i:nat}
   (xs: list (a, n), i: int i):<!exn> [i <= n] list (a, n-i)
+// end of [list_drop_exn]
 
 (* ****** ****** *)
 
-fun{a:t@ype} list_exists_funenv {v:view} {vt:viewtype} {p:eff}
-  (pf: !v | xs: List a, p: (!v | a, !vt) -<fun,p> bool, env: !vt):<p> bool
+fun{a:t@ype}
+list_exists_funenv
+  {v:view} {vt:viewtype} {p:eff} (
+  pf: !v | xs: List a, p: (!v | a, !vt) -<fun,p> bool, env: !vt
+) :<p> bool // end of [list_exists_funenv]
 
-fun{a:t@ype} list_exists_fun {p:eff}
-  (xs: List a, p: a -<p> bool):<p> bool
+fun{a:t@ype}
+list_exists_fun {p:eff} (xs: List a, p: a -<p> bool):<p> bool
 
-fun{a:t@ype} list_exists_clo {v:view} {p:eff}
+fun{a:t@ype}
+list_exists_clo {v:view} {p:eff}
   (pf: !v | xs: List a, p: &(!v | a) -<clo,p> bool):<p> bool
 
-fun{a:t@ype} list_exists_cloptr {v:view} {p:eff}
+fun{a:t@ype}
+list_exists_cloptr {v:view} {p:eff}
   (pf: !v | xs: List a, p: !(!v | a) -<cloptr,p> bool):<p> bool
 
-fun{a:t@ype} list_exists_cloref {p:eff}
-  (xs: List a, p: a -<cloref,p> bool):<p> bool
+fun{a:t@ype}
+list_exists_cloref {p:eff} (xs: List a, p: a -<cloref,p> bool):<p> bool
 
 (*
-
 symintr list_exists
 overload list_exists with list_exists_fun
 overload list_exists with list_exists_clo
 overload list_exists with list_exists_cloptr
 overload list_exists with list_exists_cloref
-
 *)
 
 (* ****** ****** *)
 
-fun{a1,a2:t@ype} list_exists2_funenv
+fun{a1,a2:t@ype}
+list_exists2_funenv
   {v:view} {vt:viewtype} {n:nat} {p:eff} (
     pf: !v
   | xs1: list (a1, n)
@@ -250,72 +277,87 @@ fun{a1,a2:t@ype} list_exists2_funenv
   ) :<p> bool
 // end of [list_exists2_funenv]
 
-fun{a1,a2:t@ype} list_exists2_fun {n:nat} {p:eff}
+fun{a1,a2:t@ype}
+list_exists2_fun {n:nat} {p:eff}
   (xs: list (a1, n), ys: list (a2, n), p: (a1, a2) -<p> bool):<p> bool
 
-fun{a1,a2:t@ype} list_exists2_clo {v:view} {n:nat} {p:eff} (
-    pf: !v | xs: list (a1, n), ys: list (a2, n), p: &(!v | a1, a2) -<clo,p> bool
-  ) :<p> bool
+fun{a1,a2:t@ype}
+list_exists2_clo {v:view} {n:nat} {p:eff} (
+  pf: !v | xs: list (a1, n), ys: list (a2, n), p: &(!v | a1, a2) -<clo,p> bool
+) :<p> bool // end of [list_exists2_clo]
 
-fun{a1,a2:t@ype} list_exists2_cloptr {v:view} {n:nat} {p:eff} (
-    pf: !v | xs: list (a1, n), ys: list (a2, n), p: !(!v | a1, a2) -<cloptr,p> bool
-  ) :<p> bool
+fun{a1,a2:t@ype}
+list_exists2_cloptr {v:view} {n:nat} {p:eff} (
+  pf: !v | xs: list (a1, n), ys: list (a2, n), p: !(!v | a1, a2) -<cloptr,p> bool
+) :<p> bool // end of [list_exists2_cloptr]
 
-fun{a1,a2:t@ype} list_exists2_cloref {n:nat} {p:eff}
+fun{a1,a2:t@ype}
+list_exists2_cloref {n:nat} {p:eff}
   (xs: list (a1, n), ys: list (a2, n), p: (a1, a2) -<cloref,p> bool):<p> bool
+// end of [list_exists2_cloref]
 
 (*
-
 symintr list_exists2
 overload list_exists2 with list_exists2_fun
 overload list_exists2 with list_exists2_fun
 overload list_exists2 with list_exists2_cloptr
 overload list_exists2 with list_exists2_cloref
-
 *)
 
 (* ****** ****** *)
 
-fun{a:t@ype} list_extend {n:nat}
-  (xs: list (a, n), y: a):<> list_vt (a, n+1)
+fun{a:t@ype} // HX: this function is O(n)-time
+list_extend {n:nat} (xs: list (a, n), y: a):<> list_vt (a, n+1)
 
 (* ****** ****** *)
 
-fun{a:t@ype} list_filter_funenv
-  {v:view} {vt:viewtype} {n:nat} {p:eff}
-  (pf: !v | xs: list (a, n), p: (!v | a, !vt) -<fun,p> bool, env: !vt)
-  :<p> [n':nat | n' <= n] list_vt (a, n')
+fun{a:t@ype}
+list_filter_funenv
+  {v:view} {vt:viewtype} {n:nat} {p:eff} (
+  pf: !v | xs: list (a, n), p: (!v | a, !vt) -<fun,p> bool, env: !vt
+) :<p> [n':nat | n' <= n] list_vt (a, n')
 
-fun{a:t@ype} list_filter_fun {n:nat} {p:eff}
+fun{a:t@ype}
+list_filter_fun {n:nat} {p:eff}
   (xs: list (a, n), p: a -<fun,p> bool):<p> [n':nat | n' <= n] list_vt (a, n')
+// end of [list_filter_fun]
 
-fun{a:t@ype} list_filter_clo {v:view} {n:nat} {p:eff} (
-    pf: !v | xs: list (a, n), p: &(!v | a) -<clo,p> bool
-  ) :<p> [n':nat | n' <= n] list_vt (a, n')
+fun{a:t@ype}
+list_filter_clo {v:view} {n:nat} {p:eff} (
+  pf: !v | xs: list (a, n), p: &(!v | a) -<clo,p> bool
+) :<p> [n':nat | n' <= n] list_vt (a, n')
 
-fun{a:t@ype} list_filter_cloptr {v:view} {n:nat} {p:eff} (
-    pf: !v | xs: list (a, n), p: !(!v | a) -<cloptr,p> bool
-  ) :<p> [n':nat | n' <= n] list_vt (a, n')
+fun{a:t@ype}
+list_filter_cloptr {v:view} {n:nat} {p:eff} (
+  pf: !v | xs: list (a, n), p: !(!v | a) -<cloptr,p> bool
+) :<p> [n':nat | n' <= n] list_vt (a, n')
 
-fun{a:t@ype} list_filter_cloref {n:nat} {p:eff}
+fun{a:t@ype}
+list_filter_cloref {n:nat} {p:eff}
   (xs: list (a, n), p: a -<cloref,p> bool):<p> [n':nat | n' <= n] list_vt (a, n')
+// end of [list_filter_cloref]
 
 (* ****** ****** *)
 
-fun{a:t@ype} list_find_funenv {v:view} {vt:viewtype} {p:eff}
-  (pf: !v | xs: List a, p: (!v | a, !vt) -<fun,p> bool, env: !vt):<p> Option_vt a
+fun{a:t@ype}
+list_find_funenv
+  {v:view} {vt:viewtype} {p:eff} (
+  pf: !v | xs: List a, p: (!v | a, !vt) -<fun,p> bool, env: !vt
+) :<p> Option_vt a // end of [list_find_funenv]
 
-fun{a:t@ype} list_find_fun {p:eff}
-  (xs: List a, p: a -<fun,p> bool):<p> Option_vt a
+fun{a:t@ype}
+list_find_fun {p:eff} (xs: List a, p: a -<fun,p> bool):<p> Option_vt a
 
-fun{a:t@ype} list_find_clo {v:view} {p:eff}
+fun{a:t@ype}
+list_find_clo {v:view} {p:eff}
   (pf: !v | xs: List a, p: &(!v | a) -<clo,p> bool):<p> Option_vt a
 
-fun{a:t@ype} list_find_cloptr {v:view} {p:eff}
+fun{a:t@ype}
+list_find_cloptr {v:view} {p:eff}
   (pf: !v | xs: List a, p: !(!v | a) -<cloptr,p> bool):<p> Option_vt a
 
-fun{a:t@ype} list_find_cloref {p:eff}
-  (xs: List a, p: a -<cloref,p> bool):<p> Option_vt a
+fun{a:t@ype}
+list_find_cloref {p:eff} (xs: List a, p: a -<cloref,p> bool):<p> Option_vt a
 
 (* ****** ****** *)
 
@@ -350,17 +392,18 @@ list_fold_left_cloref {f:eff}
 fun{init:t@ype}{a1,a2:t@ype}
 list_fold2_left_funenv
   {v:view} {vt:viewtype} {n:nat} {f:eff} (
-    pf: !v
-  | f: (!v | init, a1, a2, !vt) -<fun,f> init
-  , ini: init
-  , xs1: list (a1, n)
-  , xs2: list (a2, n)
-  , env: !vt
-  ) :<f> init
+  pf: !v
+| f: (!v | init, a1, a2, !vt) -<fun,f> init
+, ini: init
+, xs1: list (a1, n)
+, xs2: list (a2, n)
+, env: !vt
+) :<f> init
 // end of [list_fold2_left_funenv]
 
 fun{init:t@ype}{a1,a2:t@ype}
-list_fold2_left_cloptr {v:view} {n:nat} {f:eff} (
+list_fold2_left_cloptr
+  {v:view} {n:nat} {f:eff} (
   pf: !v
 | f: !(!v | init, a1, a2) -<cloptr,f> init
 , ini: init, xs1: list (a1, n), xs2: list (a2, n)
@@ -374,9 +417,10 @@ list_fold2_left_cloref {n:nat} {f:eff} (
 (* ****** ****** *)
 
 fun{a:t@ype}{sink:t@ype}
-list_fold_right_funenv {v:view} {vt:viewtype} {f:eff}
-  (pf: !v | f: (!v | a, sink, !vt) -<fun,f> sink, xs: List a, snk: sink, env: !vt):<f> sink
-// end of [list_fold_right_funenv]
+list_fold_right_funenv
+  {v:view} {vt:viewtype} {f:eff} (
+  pf: !v | f: (!v | a, sink, !vt) -<fun,f> sink, xs: List a, snk: sink, env: !vt
+) :<f> sink // end of [list_fold_right_funenv]
 
 fun{a:t@ype}{sink:t@ype}
 list_fold_right_fun {f:eff}
@@ -403,13 +447,13 @@ list_fold_right_cloref {f:eff}
 fun{a1,a2:t@ype}{sink:t@ype}
 list_fold2_right_funenv
   {v:view} {vt:viewtype} {n:nat} {f:eff} (
-    pf: !v
-  | f: (!v | a1, a2, sink, !vt) -<fun,f> sink
-  , xs1: list (a1, n)
-  , xs2: list (a2, n)
-  , snk: sink
-  , env: !vt
-  ) :<f> sink
+  pf: !v
+| f: (!v | a1, a2, sink, !vt) -<fun,f> sink
+, xs1: list (a1, n)
+, xs2: list (a2, n)
+, snk: sink
+, env: !vt
+) :<f> sink
 // end of [list_fold2_right_funenv]
 
 (* ****** ****** *)
@@ -419,26 +463,26 @@ list_forall_funenv {v:view} {vt:viewtype} {p:eff}
   (pf: !v | xs: List a, p: (!v | a, !vt) -<fun,p> bool, env: !vt):<p> bool
 // end of [list_forall_funenv]
 
-fun{a:t@ype} list_forall_fun {p:eff}
-  (xs: List a, p: a -<p> bool):<p> bool
+fun{a:t@ype}
+list_forall_fun {p:eff} (xs: List a, p: a -<p> bool):<p> bool
 
-fun{a:t@ype} list_forall_clo {v:view} {p:eff}
+fun{a:t@ype}
+list_forall_clo {v:view} {p:eff}
   (pf: !v | xs: List a, p: &(!v | a) -<clo,p> bool):<p> bool
 
-fun{a:t@ype} list_forall_cloptr {v:view} {p:eff}
+fun{a:t@ype}
+list_forall_cloptr {v:view} {p:eff}
   (pf: !v | xs: List a, p: !(!v | a) -<cloptr,p> bool):<p> bool
 
-fun{a:t@ype} list_forall_cloref {p:eff}
-  (xs: List a, p: a -<cloref,p> bool):<p> bool
+fun{a:t@ype}
+list_forall_cloref {p:eff} (xs: List a, p: a -<cloref,p> bool):<p> bool
 
 (*
-
 symintr list_forall
 overload list_forall with list_forall_fun
 overload list_forall with list_forall_clo
 overload list_forall with list_forall_cloptr
 overload list_forall with list_forall_cloref
-
 *)
 
 (* ****** ****** *)
@@ -446,50 +490,52 @@ overload list_forall with list_forall_cloref
 fun{a1,a2:t@ype}
 list_forall2_funenv
   {v:view} {vt:viewtype} {n:nat} {p:eff} (
-    pf: !v
-  | xs1: list (a1, n)
-  , xs2: list (a2, n)
-  , p: (!v | a1, a2, !vt) -<fun,p> bool
-  , env: !vt
-  ) :<p> bool
+  pf: !v
+| xs1: list (a1, n)
+, xs2: list (a2, n)
+, p: (!v | a1, a2, !vt) -<fun,p> bool
+, env: !vt
+) :<p> bool
 // end of [list_forall2_funenv]
 
-fun{a1,a2:t@ype} list_forall2_fun {n:nat} {p:eff}
+fun{a1,a2:t@ype}
+list_forall2_fun {n:nat} {p:eff}
   (xs: list (a1, n), ys: list (a2, n), p: (a1, a2) -<p> bool):<p> bool
 
-fun{a1,a2:t@ype} list_forall2_clo {v:view} {n:nat} {p:eff} (
-    pf: !v| xs: list (a1, n), ys: list (a2, n), p: &(!v | a1, a2) -<clo,p> bool
-  ) :<p> bool
+fun{a1,a2:t@ype}
+list_forall2_clo {v:view} {n:nat} {p:eff} (
+  pf: !v| xs: list (a1, n), ys: list (a2, n), p: &(!v | a1, a2) -<clo,p> bool
+) :<p> bool
 
-fun{a1,a2:t@ype} list_forall2_cloptr {v:view} {n:nat} {p:eff} (
-    pf: !v
-  | xs: list (a1, n), ys: list (a2, n), p: !(!v | a1, a2) -<cloptr,p> bool
-  ) :<p> bool
+fun{a1,a2:t@ype}
+list_forall2_cloptr {v:view} {n:nat} {p:eff} (
+  pf: !v
+| xs: list (a1, n), ys: list (a2, n), p: !(!v | a1, a2) -<cloptr,p> bool
+) :<p> bool
 
-fun{a1,a2:t@ype} list_forall2_cloref {n:nat} {p:eff}
-  (xs: list (a1, n), ys: list (a2, n), p: (a1, a2) -<cloref,p> bool):<p> bool
+fun{a1,a2:t@ype}
+list_forall2_cloref {n:nat} {p:eff} (
+  xs: list (a1, n), ys: list (a2, n), p: (a1, a2) -<cloref,p> bool
+) :<p> bool // end of [list_forall2_cloref]
 
 (*
-
 symintr list_forall2
 overload list_forall2 with list_forall2_fun
 overload list_forall2 with list_forall2_clo
 overload list_forall2 with list_forall2_cloptr
 overload list_forall2 with list_forall2_cloref
-
 *)
 
 (* ****** ****** *)
 
 fun{a:t@ype}
-list_foreach_funenv {v:view} {vt:viewtype} {f:eff}
-  (pf: !v | xs: List a, f: (!v | a, !vt) -<fun,f> void, env: !vt):<f> void
-// end of [list_foreach_funenv]
+list_foreach_funenv
+  {v:view} {vt:viewtype} {f:eff} (
+  pf: !v | xs: List a, f: (!v | a, !vt) -<fun,f> void, env: !vt
+) :<f> void // end of [list_foreach_funenv]
 
 fun{a:t@ype}
-list_foreach_fun {f:eff}
-  (xs: List a, f: a -<fun,f> void):<f> void
-// end of [list_foreach_fun]
+list_foreach_fun {f:eff} (xs: List a, f: a -<fun,f> void):<f> void
 
 fun{a:t@ype}
 list_foreach_clo {v:view} {f:eff}
@@ -501,9 +547,8 @@ list_foreach_cloptr {v:view} {f:eff}
   (pf: !v | xs: List a, f: !(!v | a) -<cloptr,f> void):<f> void
 // end of [list_foreach_cloptr]
 
-fun{a:t@ype} list_foreach_cloref
-  {f:eff} (xs: List a, f: (a) -<cloref,f> void):<f> void
-// end of [list_foreach_cloref]
+fun{a:t@ype}
+list_foreach_cloref {f:eff} (xs: List a, f: (a) -<cloref,f> void):<f> void
 
 (* ****** ****** *)
 
@@ -523,7 +568,8 @@ list_foreach2_fun {n:nat} {f:eff} (
 ) :<f> void // end of [list_foreach2_fun]
 
 fun{a1,a2:t@ype}
-list_foreach2_clo {v:view} {n:nat} {f:eff} (
+list_foreach2_clo
+  {v:view} {n:nat} {f:eff} (
   pf: !v
 | xs: list (a1, n)
 , ys: list (a2, n)
@@ -531,7 +577,8 @@ list_foreach2_clo {v:view} {n:nat} {f:eff} (
 ) :<f> void // end of [list_foreach2_clo]
 
 fun{a1,a2:t@ype}
-list_foreach2_cloptr {v:view} {n:nat} {f:eff} (
+list_foreach2_cloptr
+  {v:view} {n:nat} {f:eff} (
   pf: !v
 | xs: list (a1, n)
 , ys: list (a2, n)
@@ -627,14 +674,6 @@ fun{a:t@ype} list_head {n:pos} (xs: list (a, n)):<> a
 fun{a:t@ype} list_head_exn {n:nat} (xs: list (a, n)):<!exn> [n>0] a
 
 (* ****** ****** *)
-//
-// HX: always inlining
-//
-fun{} list_is_empty {a:t@ype} {n:nat} (xs: list (a, n)):<> bool (n == 0)
-fun{} list_isnot_empty {a:t@ype} {n:nat} (xs: list (a, n)):<> bool (n > 0)
-overload ~ with list_isnot_empty
-
-(* ****** ****** *)
 
 fun{a:t@ype} list_last {n:pos} (xs: list (a, n)):<> a
 fun{a:t@ype} list_last_exn {n:nat} (xs: list (a, n)):<!exn> [n>0] a
@@ -667,23 +706,24 @@ list_map_fun {n:nat} {f:eff}
 fun{a:t@ype}{b:viewt@ype}
 list_map_clo {v:view} {n:nat} {f:eff}
   (pf: !v | xs: list (a, n), f: &(!v | a) -<clo,f> b):<f> list_vt (b, n)
+// end of [list_map_clo]
 
 fun{a:t@ype}{b:viewt@ype}
 list_map_cloptr {v:view} {n:nat} {f:eff}
   (pf: !v | xs: list (a, n), f: !(!v | a) -<cloptr,f> b):<f> list_vt (b, n)
+// end of [list_map_cloptr]
 
 fun{a:t@ype}{b:viewt@ype}
 list_map_cloref {n:nat} {f:eff}
   (xs: list (a, n), f: (a -<cloref,f> b)):<f> list_vt (b, n)
+// end of [list_map_cloref]
 
 (*
-
 symintr list_map
 overload list_map with list_map_fun
 overload list_map with list_map_clo
 overload list_map with list_map_cloptr
 overload list_map with list_map_cloref
-
 *)
 
 (* ****** ****** *)
@@ -722,20 +762,21 @@ list_map2_cloref {n:nat} {f:eff} (
 ) :<f> list_vt (b, n) // end of [list_map2_cloref]
 
 (*
-
 symintr list_map2
 overload list_map2 with list_map2_fun
 overload list_map2 with list_map2_clo
 overload list_map2 with list_map2_cloptr
 overload list_map2 with list_map2_cloref
-
 *)
 
 (* ****** ****** *)
 
-fun{a:t@ype} list_nth {n:nat} (xs: list (a, n), i: natLt n):<> a
-fun{a:t@ype} list_nth_exn {n:nat} (xs: list (a, n), i: Nat):<!exn> [n>0] a
-fun{a:t@ype} list_nth_opt (xs: List a, i: Nat):<> Option_vt a
+fun{a:t@ype}
+list_nth {n:nat} (xs: list (a, n), i: natLt n):<> a
+fun{a:t@ype}
+list_nth_exn {n:nat} (xs: list (a, n), i: Nat):<!exn> [n>0] a
+fun{a:t@ype}
+list_nth_opt (xs: List a, i: Nat):<> Option_vt a
 
 (* ****** ****** *)
 
@@ -829,9 +870,9 @@ list_zipwth_cloptr {v:view} {n:nat} {f:eff} (
 ) :<f> list_vt (b, n) // end of [list_zipwth_cloptr]
 
 fun{a1,a2:t@ype}{b:viewt@ype}
-list_zipwth_cloref {n:nat} {f:eff}
-  (xs: list (a1, n), ys: list (a2, n), f: (a1, a2) -<cloref,f> b):<f> list_vt (b, n)
-// end of [list_zipwth_cloref]
+list_zipwth_cloref {n:nat} {f:eff} (
+  xs: list (a1, n), ys: list (a2, n), f: (a1, a2) -<cloref,f> b
+) :<f> list_vt (b, n) // end of [list_zipwth_cloref]
 
 (* ****** ****** *)
 
@@ -848,9 +889,10 @@ list_unzip {n:nat}
 ** please try to use [list_vt_mergesort] instead
 *)
 fun{a:t@ype}
-list_mergesort {env:viewtype} {n:nat}
-  (xs: list (a, n), lte: (a, a, !env) -<fun> bool, env: !env):<> list (a, n)
-// end of [list_mergesort]
+list_mergesort
+  {env:viewtype} {n:nat} (
+  xs: list (a, n), lte: (a, a, !env) -<fun> bool, env: !env
+) :<> list (a, n) // end of [list_mergesort]
 
 (*
 ** HX:

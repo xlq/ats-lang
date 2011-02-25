@@ -453,7 +453,8 @@ fun array_ptr_takeout2_tsz {a:viewt@ype}
 (*
 // implemented in C (prelude/CATS/array.cats)
 *)
-fun array_ptr_copy_tsz {a:t@ype} {n:nat} (
+fun array_ptr_copy_tsz
+  {a:t@ype} {n:nat} (
   A: &(@[a][n]), B: &(@[a?][n]) >> @[a][n], n: size_t n
 , tsz: sizeof_t a
 ) :<> void = "atspre_array_ptr_copy_tsz"
@@ -462,7 +463,8 @@ fun array_ptr_copy_tsz {a:t@ype} {n:nat} (
 (*
 // implemented in C (prelude/CATS/array.cats)
 *)
-fun array_ptr_move_tsz {a:viewt@ype} {n:nat} (
+fun array_ptr_move_tsz
+  {a:viewt@ype} {n:nat} (
   A: &(@[a][n]) >> @[a?][n], B: &(@[a?][n]) >> @[a][n], n: size_t n
 , tsz: sizeof_t a
 ) :<> void = "atspre_array_ptr_move_tsz"
@@ -476,6 +478,37 @@ array_ptr_exch
   {n:int} {i1,i2:nat | i1 < n; i2 < n; i1 <> i2}
   (A: &(@[a][n]), i1: size_t i1, i2: size_t i2):<> void
 // end of [array_ptr_exch]
+
+(* ****** ****** *)
+
+fun{a:viewt@ype}
+array2_ptr_takeout
+  {m,n:int}
+  {i:nat | i < m}
+  {l0:addr} (
+  pf: array_v (@[a][n], m, l0)
+| pbase: ptr l0, n: size_t n, i: size_t i
+) : [l:addr] (
+  array_v (a, n, l)
+, array_v (a, n, l) -<> array_v (@[a][n], m, l0)
+| ptr l // l = l0 + i*(n*sizeof<a>)
+) // end of [array2_ptr_takeout]
+
+(*
+// HX: implemented in C (prelude/CATS/array.cats)
+*)
+fun array2_ptr_takeout_tsz
+  {a:viewt@ype}
+  {m,n:int}
+  {i:nat | i < m}
+  {l0:addr} (
+  pf: array_v (@[a][n], m, l0)
+| pbase: ptr l0, n: size_t n, i: size_t i, tsz: sizeof_t a
+) : [l:addr] (
+  array_v (a, n, l)
+, array_v (a, n, l) -<> array_v (@[a][n], m, l0)
+| ptr l // l = l0 + i*(n*sizeof<a>)
+) = "atspre_array2_ptr_takeout_tsz"
 
 (* ****** ****** *)
 

@@ -353,6 +353,13 @@ in
 end // end of [array_ptr_takeout2_tsz]
 
 (* ****** ****** *)
+
+implement{a}
+array2_ptr_takeout (pf | A, n, i) =
+  array2_ptr_takeout_tsz {a} (pf | A, n, i, sizeof<a>)
+// end of [array2_ptr_takeout]
+
+(* ****** ****** *)
 //
 // HX: persistent arrays that can only be reclaimed by GC
 //

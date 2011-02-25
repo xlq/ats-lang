@@ -74,23 +74,24 @@ praxi mul_expand_linear
 //
 // HX: (a1x1+a2x2+b)*(c1y1+c2y2+d) = ...
 //
-praxi mul_expand2_linear // a1,b1,c1,a2,b2,c2: constants!
-  {a1,a2,b:int} {c1,c2,d:int}
-  {x1,x2:int} {y1,y2:int} {x1y1,x1y2,x2y1,x2y2:int} (
-    pf11: MUL (x1, y1, x1y1), pf12: MUL (x1, y2, x1y2)
-  , pf21: MUL (x2, y1, x2y1), pf22: MUL (x2, y2, x2y2)
-  ) :<prf> MUL (
-      a1*x1+a2*x2+b
-    , c1*y1+c2*y2+d
-    , a1*c1*x1y1
-    + a1*c2*x1y2
-    + a2*c1*x2y1
-    + a2*c2*x2y2
-    + a1*d*x1 + a2*d*x2
-    + b*c1*y1 + b*c2*y2
-    + b*d
-    ) // end of [MUL]
-// end of [mul_expand2_linear]
+praxi
+mul_expand2_linear // a1,b1,c1,a2,b2,c2: constants!
+  {a1,a2,b:int}
+  {c1,c2,d:int}
+  {x1,x2:int}
+  {y1,y2:int}
+  {x1y1,x1y2,x2y1,x2y2:int} (
+  pf11: MUL (x1, y1, x1y1), pf12: MUL (x1, y2, x1y2)
+, pf21: MUL (x2, y1, x2y1), pf22: MUL (x2, y2, x2y2)
+) :<prf> MUL (
+  a1*x1+a2*x2+b
+, c1*y1+c2*y2+d
+, a1*c1*x1y1 + a1*c2*x1y2 +
+  a2*c1*x2y1 + a2*c2*x2y2 +
+  a1*d*x1 + a2*d*x2 +
+  b*c1*y1 + b*c2*y2 +
+  b*d
+) // end of [mul_expand2_linear]
 
 (* ****** ****** *)
 
@@ -103,6 +104,8 @@ prfun mul_isfun {m,n:int} {p1,p2:int}
 
 prfun mul_nat_nat_nat :
   {m,n:nat} {p:int} MUL (m, n, p) -<prf> [p >= 0] void
+prfun mul_pos_pos_pos :
+  {m,n:pos} {p:int} MUL (m, n, p) -<prf> [p >= m; p >= n] void
 
 (* ****** ****** *)
 
@@ -126,12 +129,15 @@ prfun mul_distribute2 {m1,m2,n:int} {p1,p2:int}
 
 (* ****** ****** *)
 
-prfun mul_associate {x,y,z:int} {xy,yz,xy_z,x_yz:int} (
-    pf1: MUL (x, y, xy)
-  , pf2: MUL (y, z, yz)
-  , pf3: MUL (xy, z, xy_z)
-  , pf4: MUL (x, yz, x_yz)
-  ) :<prf> [xy_z==x_yz] void
+prfun
+mul_associate
+  {x,y,z:int}
+  {xy,yz,xy_z,x_yz:int} (
+  pf1: MUL (x, y, xy)
+, pf2: MUL (y, z, yz)
+, pf3: MUL (xy, z, xy_z)
+, pf4: MUL (x, yz, x_yz)
+) :<prf> [xy_z==x_yz] void
 
 (* ****** ****** *)
 //
@@ -192,20 +198,29 @@ dataprop EXP2 (int, int) =
   | EXP2bas (0, 1)
 // end of [EXP2]
 
-// proven in [arith.dats]
+//
+// HX: proven in [arith.dats]
+//
 prfun EXP2_istot {n:nat} (): [p:nat] EXP2 (n, p)
 prfun EXP2_isfun {n:nat} {p1,p2:int}
   (pf1: EXP2 (n, p1), pf2: EXP2 (n, p2)): [p1==p2] void
 // end of [EXP2_isfun]
 
-// proven in [arith.dats]
-prfun EXP2_monotone {n1,n2:nat | n1 <= n2} {p1,p2:int}
+//
+// HX: proven in [arith.dats]
+//
+prfun EXP2_monotone
+  {n1,n2:nat | n1 <= n2} {p1,p2:int}
   (pf1: EXP2 (n1, p1), pf2: EXP2 (n2, p2)): [p1 <= p2] void
+// end of [EXP2_monotone]
 
-// proven in [arith.dats]
-prfun EXP2_mul {n1,n2:nat | n1 <= n2} {p1,p2:nat} {p:int}
-  (pf1: EXP2 (n1, p1), pf2: EXP2 (n2, p2), pf3: MUL (p1, p2, p))
-  : EXP2 (n1+n2, p)
+//
+// HX: proven in [arith.dats]
+//
+prfun EXP2_mul
+  {n1,n2:nat | n1 <= n2} {p1,p2:nat} {p:int} (
+  pf1: EXP2 (n1, p1), pf2: EXP2 (n2, p2), pf3: MUL (p1, p2, p)
+) : EXP2 (n1+n2, p) // end of [EXP2_mul]
 
 (* ****** ****** *)
 

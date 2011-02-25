@@ -65,7 +65,8 @@ end // end of [mul_istot]
 
 (* ****** ****** *)
 
-implement mul_nat_nat_nat (pf) = let
+implement
+mul_nat_nat_nat (pf) = let
   prfun aux {m,n:nat} {p:int} .<m>.
     (pf: MUL (m, n, p)): [p>=0] void = begin
     case+ pf of MULbas () => () | MULind pf => aux pf
@@ -74,17 +75,37 @@ in
   aux pf
 end // end of [mul_nat_nat_nat]
 
-implement mul_negate (pf) = let
-  prfn aux {m,n,p:int} (pf: MUL (m, n, p)): MUL (~m, n, ~p) =
+implement
+mul_pos_pos_pos (pf) = let
+  prfun aux {m,n:pos} {p:int} .<m>.
+    (pf: MUL (m, n, p)): [p>=n] void = begin
+    case+ pf of MULind pf => mul_nat_nat_nat (pf)
+  end // end of [aux]
+  val () = aux (pf)
+  prval pf = mul_commute (pf)
+  val () = aux (pf)
+in
+  // nothing
+end // end of [mul_pos_pos_pos]
+
+(* ****** ****** *)
+
+implement
+mul_negate (pf) = let
+  prfn aux {m,n,p:int}
+    (pf: MUL (m, n, p)): MUL (~m, n, ~p) =
     sif m > 0 then MULneg pf
     else sif m < 0 then begin
       let prval MULneg pf = pf in pf end
     end else begin
       let prval MULbas () = pf in pf end
     end // end of [sif]
+  // end of [aux]
 in
   aux (pf)
 end // end of [mul_negate]
+
+(* ****** ****** *)
 
 prfun mul_m_n1_mnm
   {m,n:int} {p:int} .<max(2*m, 2*(~m)+1)>.
@@ -106,14 +127,13 @@ end // end of [mul_m_neg_n_neg_mn]
 
 (* ****** ****** *)
 
-implement mul_commute {m,n} (pf) = let
+implement
+mul_commute {m,n} (pf) = let
   prfun aux {m:nat;n:int} {p:int} .<m>.
     (pf: MUL (m, n, p)): MUL (n, m, p) = case+ pf of
-    | MULbas () => let
+    | MULbas () => pf where {
         prval pf = mul_istot {n,0} (); prval () = mul_elim pf
-      in
-        pf
-      end // end of [MULbas]
+      } // end of [MULbas]
     | MULind pf => mul_m_n1_mnm (aux pf)
   // end of [aux]
 in
@@ -124,13 +144,18 @@ end // end of [mul_commute]
 
 (* ****** ****** *)
 
-implement mul_distribute (pf1, pf2) = let
-  prfun aux {m,n1,n2:int} {p1,p2:int} .<max(2*m, 2*(~m)+1)>.
+implement
+mul_distribute (pf1, pf2) = let
+  prfun aux
+    {m,n1,n2:int}
+    {p1,p2:int}
+    .<max(2*m, 2*(~m)+1)>.
     (pf1: MUL (m, n1, p1), pf2: MUL (m, n2, p2)): MUL (m, n1+n2, p1+p2) =
     case+ (pf1, pf2) of
     | (MULbas (), MULbas ()) => MULbas ()
     | (MULind pf1, MULind pf2) => MULind (aux (pf1, pf2))
     | (MULneg pf1, MULneg pf2) => MULneg (aux (pf1, pf2))
+  // end of [aux]
 in
   aux (pf1, pf2)
 end // end of [mul_distribute]

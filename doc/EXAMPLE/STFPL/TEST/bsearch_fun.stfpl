@@ -16,6 +16,7 @@
 let
   val rec bsearch_fun
     : (int -> int, int, int, int) -> int =
+//
     lam (f: int -> int, x0: int, lb: int, ub: int): int =>
       if lb <= ub then let
         val mid = lb + (ub - lb) / 2
@@ -26,8 +27,8 @@ let
           bsearch_fun (f, x0, mid+1, ub)
         // end of [if]
       end else ub // end of [if]
-    // end of [bsearch_fun]
-  
+    /* end of [bsearch_fun] */
+//  
   val ISQRT_MAX = 65535
   val isqrt = lam(x: int): int =>
     bsearch_fun (lam(i: int): int => i * i, x, 0, ISQRT_MAX)
