@@ -53,21 +53,25 @@ staload "libats/smlbas/SATS/array2.sats"
 (* ****** ****** *)
 
 (*
-** note that RowMajor representation is assumed
+** HX: note that RowMajor representation is assumed
 *)
-assume array2_t0ype_type (a: t@ype) = [m,n:nat] [l:addr] '{
+assume
+array2_t0ype_type (a: t@ype) = [m,n:nat] [l:addr] '{
   data= ptr l, view= vbox (matrix_v (a, m, n, l)), row= size_t m,  col= size_t n
 } // end of [array2_t0ype_type]
 
 (* ****** ****** *)
 
-extern fun vbox_make_view_ptr_matrix {a:viewt@ype} {m,n:int} {l:addr} 
-  (pf: matrix_v (a, m, n, l) | p: ptr l):<> (vbox (matrix_v (a, m, n, l)) | void)
-  = "atspre_vbox_make_view_ptr"
+extern
+fun vbox_make_view_ptr_matrix
+  {a:viewt@ype} {m,n:int} {l:addr} (
+  pf: matrix_v (a, m, n, l) | p: ptr l):<> (vbox (matrix_v (a, m, n, l)) | void
+) = "atspre_vbox_make_view_ptr" // end of [vbox_make_view_ptr_matrix]
 
 (* ****** ****** *)
 
-implement{a} array (row, col, ini) = let
+implement{a}
+array (row, col, ini) = let
   val [m:int] m = size1_of_size row
   and [n:int] n = size1_of_size col
   val (pf_mul | mn) = mul2_size1_size1 (m, n)
@@ -85,10 +89,12 @@ end // end of [array]
 
 (* ****** ****** *)
 
-extern fun{a:t@ype} array_ptr_initialize_lstlst {m,n:nat} {mn:int} (
-  pf_mul: MUL (m, n, mn) | base: &(@[a?][mn]) >> @[a][mn], m: size_t m, xss: list (list (a, m), n)
-) :<> void
-// end of [array_ptr_initialize_lstlst]
+extern fun{a:t@ype}
+array_ptr_initialize_lstlst
+  {m,n:nat} {mn:int} (
+  pf_mul: MUL (m, n, mn)
+| base: &(@[a?][mn]) >> @[a][mn], m: size_t m, xss: list (list (a, m), n)
+) :<> void // end of [array_ptr_initialize_lstlst]
 
 implement{a} array_ptr_initialize_lstlst
   {m,n}{mn} (pf_mul | base, m, xss) = let
@@ -119,7 +125,8 @@ end // end of [array_ptr_initialize_lstlst]
 
 (* ****** ****** *)
 
-implement{a} fromList (xss) = let
+implement{a}
+fromList (xss) = let
   val n = list0_length (xss)
   val [n:int] n = int1_of_int (n)
   val () = (if (n > 0) then () else $raise Size ()): [n > 0] void
@@ -158,7 +165,8 @@ end // end of [fromList]
 
 (* ****** ****** *)
 
-implement{a} tabulate (trv, m, n, f) = let
+implement{a}
+tabulate (trv, m, n, f) = let
   val [m:int] m = size1_of_size (m) and [n:int] n = size1_of_size (n)
   val () = (if m > 0 then () else $raise Size ()): [m > 0] void
   val () = (if n > 0 then () else $raise Size ()): [n > 0] void
@@ -209,6 +217,8 @@ end // end of [tabulate]
 
 (* ****** ****** *)
 
+local
+
 prfun lemma_for_matrix_subscripting
   {m,n:nat} {i:nat | i < m} {mn,p:int} .<m>.
   (pf1: MUL (m, n, mn), pf2: MUL (i, n, p)): [p+n <= mn] void = let
@@ -223,14 +233,17 @@ in
   end // end of [sif]
 end // end of [lemma_for_matrix_subscripting]
 
-implement{a} sub (M, i, j) = let
+in // in of [local]
+
+implement{a}
+sub (M, i, j) = let
   val m = M.row and n = M.col
   val i = size1_of_size (i) and j = size1_of_size (j)
 in
   if i < m then
     if j < n then let
       prval vbox pf_mat = M.view
-      prval (pf_mul_mn, pf_arr) = array_v_of_matrix_v (pf_mat)
+      prval (pf_mul_mn, pf_arr) = array_v_of_matrix_v {a} (pf_mat)
       val (pf_mul_i_n | i_n) = mul2_size1_size1 (i, n)
       prval () = mul_nat_nat_nat pf_mul_i_n
       prval () = lemma_for_matrix_subscripting (pf_mul_mn, pf_mul_i_n)
@@ -247,14 +260,15 @@ in
   end // end of [if] 
 end (* end of [sub] *) 
 
-implement{a} update (M, i, j, x) = let
+implement{a}
+update (M, i, j, x) = let
   val m = M.row and n = M.col
   val i = size1_of_size (i) and j = size1_of_size (j)
 in
   if i < m then
     if j < n then let
       prval vbox pf_mat = M.view
-      prval (pf_mul_mn, pf_arr) = array_v_of_matrix_v (pf_mat)
+      prval (pf_mul_mn, pf_arr) = array_v_of_matrix_v {a} (pf_mat)
       val (pf_mul_i_n | i_n) = mul2_size1_size1 (i, n)
       prval () = mul_nat_nat_nat pf_mul_i_n
       prval () = lemma_for_matrix_subscripting (pf_mul_mn, pf_mul_i_n)
@@ -271,6 +285,8 @@ in
   end // end of [if] 
 end (* end of [sub] *) 
 
+end // end of [local]
+
 (* ****** ****** *)
 
 implement dimensions (M) = @(M.row, M.col) 
@@ -280,10 +296,15 @@ implement nCols (M) = M.col
 
 (* ****** ****** *)
 
-implement{a} app (trv, f, [m,n:int] [l:addr] M) = let
+implement{a}
+app (
+  trv, f, [m,n:int] [l:addr] M
+) = let
   val p_arr = M.data; prval vbox pf_mat = M.view
   val m = M.row and n = M.col
-  prval [mn:int] (pf_mul_mn, pf_arr) = array_v_of_matrix_v (pf_mat)
+  prval [mn:int] (
+    pf_mul_mn, pf_arr
+  ) = array_v_of_matrix_v {a} (pf_mat)
   val _0 = size1_of_int1 0 and _1 = size1_of_int1 1
   val () = case+ trv of
     | RowMajor () => let
@@ -320,10 +341,15 @@ end // end of [app]
   
 (* ****** ****** *)
 
-implement{a,b} fold (trv, f, ini, [m,n:int] [l:addr] M) = let
+implement{a,b}
+fold (
+  trv, f, ini, [m,n:int] [l:addr] M
+) = let
   val p_arr = M.data; prval vbox pf_mat = M.view
   val m = M.row and n = M.col
-  prval [mn:int] (pf_mul_mn, pf_arr) = array_v_of_matrix_v (pf_mat)
+  prval [mn:int] (
+    pf_mul_mn, pf_arr
+  ) = array_v_of_matrix_v {a} (pf_mat)
   val _0 = size1_of_int1 0 and _1 = size1_of_int1 1
   var res: b = ini
   val () = case+ trv of
@@ -361,10 +387,15 @@ end // end of [fold]
 
 (* ****** ****** *)
 
-implement{a} modify (trv, f, [m,n:int] [l:addr] M) = let
+implement{a}
+modify (
+  trv, f, [m,n:int] [l:addr] M
+) = let
   val p_arr = M.data; prval vbox pf_mat = M.view
   val m = M.row and n = M.col
-  prval [mn:int] (pf_mul_mn, pf_arr) = array_v_of_matrix_v (pf_mat)
+  prval [mn:int] (
+    pf_mul_mn, pf_arr
+  ) = array_v_of_matrix_v {a} (pf_mat)
   val _0 = size1_of_int1 0 and _1 = size1_of_int1 1
   val () = case+ trv of
     | RowMajor () => let

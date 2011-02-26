@@ -137,9 +137,11 @@ end // end of [emit_include_header]
 
 fn emit_include_cats {m:file_mode}
   (pf: fmlte (m, w) | out: &FILE m): void = let
+//
+// HX: primary data structure
+//
   val () = fprint1_string (pf | out, "/* include some .cats files */\n")
   val () = fprint1_string (pf | out, "#ifndef _ATS_PRELUDE_NONE\n")
-  val () = fprint1_string (pf | out, "#include \"prelude/CATS/array.cats\"\n")
   val () = fprint1_string (pf | out, "#include \"prelude/CATS/basics.cats\"\n")
   val () = fprint1_string (pf | out, "#include \"prelude/CATS/bool.cats\"\n")
   val () = fprint1_string (pf | out, "#include \"prelude/CATS/byte.cats\"\n")
@@ -155,9 +157,12 @@ fn emit_include_cats {m:file_mode}
   val () = fprint1_string (pf | out, "#include \"prelude/CATS/reference.cats\"\n")
   val () = fprint1_string (pf | out, "#include \"prelude/CATS/sizetype.cats\"\n")
   val () = fprint1_string (pf | out, "#include \"prelude/CATS/string.cats\"\n")
-  // common data structures
+//
+// HX: secondary data structures
+//
   val () = fprint1_string (pf | out, "#include \"prelude/CATS/array.cats\"\n")
   val () = fprint1_string (pf | out, "#include \"prelude/CATS/list.cats\"\n")
+  val () = fprint1_string (pf | out, "#include \"prelude/CATS/matrix.cats\"\n")
   val () = fprint1_string (pf | out, "#include \"prelude/CATS/option.cats\"\n")
   val () = fprint1_string (pf | out, "#endif /* _ATS_PRELUDE_NONE */\n")
 in

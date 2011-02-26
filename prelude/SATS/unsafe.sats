@@ -48,7 +48,7 @@
 //
 // HX: [castvwtp1] : it is mostly used in a situation
 // where a linear value is passed as a read-only value;
-// for instance, casting strptr to string
+// for instance, casting [strptr] to [string]
 //
 castfn cast {to:t@ype} {from:t@ype} (x: from):<> to
 castfn castvwtp1 {to:t@ype} {from:viewt@ype} (x: !from):<> to

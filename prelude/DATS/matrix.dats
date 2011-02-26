@@ -51,19 +51,30 @@
 
 local
 
+(*
 assume matrix_v
   (a:viewt@ype, m:int, n:int, l:addr) =
   [mn:int | m >= 0; n >= 0] (MUL (m, n, mn), array_v (a, mn, l))
 // end of [assume]
+*)
+assume mtrxt (a:viewt@ype, m:int, n:int) = @[@[a][n]][m]
 
 in // in of [local]
 
 implement
-array_v_of_matrix_v (pf_mat) = let
-  prval () = mul_nat_nat_nat (pf_mat.0) in pf_mat
+array_v_of_matrix_v
+  {a} {m,n} (pfmat) = let
+  prval pfmn = mul_istot {m,n} ()
+  prval () = mul_nat_nat_nat (pfmn)
+  prval pfarr = array_v_ungroup (pfmn, pfmat)
+in
+  (pfmn, pfarr)
 end // end of [array_v_of_matrix_v]
 
-implement matrix_v_of_array_v (pf_mul, pf_arr) = @(pf_mul, pf_arr)
+implement
+matrix_v_of_array_v
+  (pf_mul, pfarr) = array_v_group (pf_mul, pfarr)
+// end of [matrix_v_of_array_v]
 
 end // end of [local]
 
@@ -131,15 +142,15 @@ implement{a}
 matrix_make_elt (m, n, x) = let
   val (pf_mul | mn) = mul2_size1_size1 (m, n)
   prval () = mul_nat_nat_nat pf_mul
-  val (pf_gc, pf_arr | p_arr) =
+  val (pfgc, pfarr | p_arr) =
     array_ptr_alloc_tsz {a} (mn, sizeof<a>)
   // end of [val]
-  prval () = free_gc_elim {a} (pf_gc) // return the certificate
+  prval () = free_gc_elim {a} (pfgc) // return the certificate
   val () = array_ptr_initialize_elt<a> (!p_arr, mn, x)
-  prval pf_mat = matrix_v_of_array_v (pf_mul, pf_arr)
-  val (pf_mat_box | ()) = vbox_make_view_ptr_matrix (pf_mat | p_arr)
+  prval pfmat = matrix_v_of_array_v (pf_mul, pfarr)
+  val (pfmat_box | ()) = vbox_make_view_ptr_matrix (pfmat | p_arr)
 in @{
-  data= p_arr, view= pf_mat_box
+  data= p_arr, view= pfmat_box
 } end // end of [matrix_make_elt]
 
 (* ****** ****** *)
@@ -164,9 +175,9 @@ matrix_make_funenv_tsz
   val [mn:int] (pf_mul | mn) = m szmul2 n
   prval () = mul_nat_nat_nat pf_mul
   val (
-    pf_gc, pf_arr | p_arr
+    pfgc, pfarr | p_arr
   ) = array_ptr_alloc_tsz {a} (mn, tsz)
-  prval () = free_gc_elim {a} (pf_gc) // return the certificate to GC
+  prval () = free_gc_elim {a} (pfgc) // return the certificate to GC
   viewtypedef fun_t =
     (!v | &(a?) >> a, sizeLt m, natLt n, !vt) -<> void
   var !p_f1 = @lam
@@ -178,10 +189,10 @@ matrix_make_funenv_tsz
   val () = begin
     array_ptr_initialize_cloenv_tsz {a} {v} {vt} (pf | !p_arr, mn, !p_f1, tsz, env)
   end // end of [val]
-  prval pf_mat = matrix_v_of_array_v (pf_mul, pf_arr)
-  val (pf_mat_box | ()) = vbox_make_view_ptr_matrix (pf_mat | p_arr)
+  prval pfmat = matrix_v_of_array_v (pf_mul, pfarr)
+  val (pfmat_box | ()) = vbox_make_view_ptr_matrix (pfmat | p_arr)
 in @{
-  data= p_arr, view= pf_mat_box
+  data= p_arr, view= pfmat_box
 } end // end of [matrix_make_funenv_tsz]
 
 implement
@@ -236,6 +247,10 @@ matrix_make_clo_tsz
 
 local
 
+(*
+//
+// HX-2011-02-26: commented out
+//
 prfun lemma_for_matrix_subscripting
   {m,n:nat} {i:nat | i < m} {mn,p:int} .<m>.
   (pf1: MUL (m, n, mn), pf2: MUL (i, n, p)): [p+n <= mn] void = let
@@ -249,33 +264,28 @@ in
     // empty
   end // end of [sif]
 end // end of [lemma_for_matrix_subscripting]
+*)
 
 in // in of [local]
 
 implement{a}
 matrix_get_elt_at (M, i, n, j) = let
-  prval vbox pf_mat = M.view
-  prval (pf_mul_mn, pf_arr) = array_v_of_matrix_v (pf_mat)
-  val (pf_mul_i_n | i_n) = i szmul2 n
-  prval () = mul_nat_nat_nat pf_mul_i_n
-  prval () = lemma_for_matrix_subscripting (pf_mul_mn, pf_mul_i_n)
-  val M_data = M.data
-  val x = !M_data.[i_n+j]
-  prval () = pf_mat := matrix_v_of_array_v (pf_mul_mn, pf_arr)
+  prval vbox pfmat = M.view
+  val (pfat, fpfmat | p) =
+    matrix_ptr_takeout_elt<a> (pfmat | M.data, i, n, j)
+  val x = !p
+  prval () = pfmat := fpfmat (pfat)
 in
   x // return value
 end // end of [matrix_get_elt_at]
 
 implement{a}
 matrix_set_elt_at (M, i, n, j, x) = let
-  prval vbox pf_mat = M.view
-  prval (pf_mul_mn, pf_arr) = array_v_of_matrix_v (pf_mat)
-  val (pf_mul_i_n | i_n) = i szmul2 n
-  prval () = mul_nat_nat_nat pf_mul_i_n
-  prval () = lemma_for_matrix_subscripting (pf_mul_mn, pf_mul_i_n)
-  val M_data = M.data
-  val () = !M_data.[i_n+j] := x
-  prval () = pf_mat := matrix_v_of_array_v (pf_mul_mn, pf_arr)
+  prval vbox pfmat = M.view
+  val (pfat, fpfmat | p) =
+    matrix_ptr_takeout_elt<a> (pfmat | M.data, i, n, j)
+  val () = !p := x
+  prval () = pfmat := fpfmat (pfat)
 in
   // empty
 end // end of [matrix_set_elt_at]
@@ -326,11 +336,11 @@ matrix_foreach_funenv
     ) :<!ref> void = begin
     if j < n then let
       val () = () where {
-        prval vbox pf_mat = M.view
+        prval vbox pfmat = M.view
         val (pf1, fpf2 | p_ij) =
-          matrix_ptr_takeout_elt_tsz (pf_mat | M.data, i, n, j, sizeof<a>)
+          matrix_ptr_takeout_elt_tsz (pfmat | M.data, i, n, j, sizeof<a>)
         val () = f (pf | !p_ij, env)
-        val () = pf_mat := fpf2 (pf1)
+        val () = pfmat := fpf2 (pf1)
       } // end of [val]
     in
       loop2 (pf | M, f, m, n, i, j+1, env)
@@ -416,11 +426,11 @@ matrix_iforeach_funenv
     ) :<!ref> void = begin
     if j < n then let
       val () = () where {
-        prval vbox pf_mat = M.view
+        prval vbox pfmat = M.view
         val (pf1, fpf2 | p_ij) =
-          matrix_ptr_takeout_elt_tsz (pf_mat | M.data, i, n, j, sizeof<a>)
+          matrix_ptr_takeout_elt_tsz (pfmat | M.data, i, n, j, sizeof<a>)
         val () = f (pf | i, j, !p_ij, env)
-        val () = pf_mat := fpf2 (pf1)
+        val () = pfmat := fpf2 (pf1)
       } // end of [val]
     in
       loop2 (pf | M, f, m, n, i, j+1, env)

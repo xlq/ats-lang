@@ -59,15 +59,19 @@
 staload "libats/SATS/genarrays.sats"
 
 (* ****** ****** *)
-
+//
+// HX: [fmatrix] is column-major
+//
 absviewt@ype
-fmatrix_viewt0ype_int_int_viewt0ype (a:viewt@ype+,row:int,col:int)
-// [end of fmatrix_viewt0ype_int_int_viewt0ype]
+fmatrix_viewt0ype_int_int_viewt0ype
+  (a:viewt@ype+,row:int,col:int) = @[@[a][row]][col]
+stadef fmatrix =
+  fmatrix_viewt0ype_int_int_viewt0ype
 
-stadef fmatrix = fmatrix_viewt0ype_int_int_viewt0ype
-viewdef fmatrix_v
-  (a:viewt@ype, row:int, col:int, l:addr) = fmatrix (a, row, col) @ l
-// end of [fmatrix_v]
+viewdef
+fmatrix_v (
+  a:viewt@ype, row:int, col:int, l:addr
+) = fmatrix (a, row, col) @ l
 
 (* ****** ****** *)
 

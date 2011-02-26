@@ -65,7 +65,7 @@ atspre_matrix_ptr_takeout_elt_tsz (
 , ats_size_type jofs
 , ats_size_type tsz
 ) {
-  return (ats_ptr_type)((char*)base + (iofs * ncol + jofs) * tsz
+  return (ats_ptr_type)((char*)base + (iofs * ncol + jofs) * tsz) ;
 } /* end of [atspre_matrix_ptr_takeout_tsz_tsz] */
 
 /* ****** ****** */

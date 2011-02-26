@@ -45,14 +45,21 @@
 
 (* ****** ****** *)
 //
-// HX: [matrix_v] is row-major
+// HX: [mtrxt] is row-major
 //
-absview matrix_v
-  (a:viewt@ype, m:int, n:int, l:addr)
+absviewt@ype
+mtrxt // flat matrix type
+  (a:viewt@ype+, row:int, col:int) = @[@[a][col]][row]
+// end of [mtrxt]
+
+viewdef matrix_v
+  (a:viewt@ype, m:int, n:int, l:addr) = mtrxt (a, m, n) @ l
 // end of [matrix_v]
 
+(* ****** ****** *)
+
 prfun array_v_of_matrix_v
-  {a:viewt@ype} {m,n:int} {l:addr} (
+  {a:viewt@ype} {m,n:nat} {l:addr} (
   pf_mat: matrix_v (a, m, n, l)
 ) :<> [mn:nat] (MUL (m, n, mn), array_v (a, mn, l))
 
