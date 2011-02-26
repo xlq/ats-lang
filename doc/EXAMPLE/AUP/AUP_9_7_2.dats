@@ -83,7 +83,9 @@ in
     val leftover1 = mysleep0 (leftover0)
     val () = if leftover1 > 0U then let
       val (pf_alarm | _) = alarm_set (leftover1)
-      prval unit_v () = $UNSAFE.castvw {unit_v} (pf_alarm)
+      prval () = __assert (pf_alarm) where {
+        extern prfun __assert {i:nat} (pf: alarm_v i): void
+      } // end of [prval]
     in
       // nothing
     end // end of [val]
@@ -93,7 +95,9 @@ in
     val diff = leftover0 - nsec
     val leftover1 = mysleep0 (nsec)
     val (pf_alarm | _) = alarm_set (diff + leftover1)
-    prval unit_v () = $UNSAFE.castvw {unit_v} (pf_alarm)
+    prval () = __assert (pf_alarm) where {
+      extern prfun __assert {i:nat} (pf: alarm_v i): void
+    } // end of [prval]
   in
     leftover1
   end // end of [if]

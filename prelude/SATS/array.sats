@@ -45,10 +45,6 @@
 
 (* ****** ****** *)
 
-exception ArraySubscriptException of ()
-
-(* ****** ****** *)
-
 fun{a:t@ype}
 array_ptr_get_elt_at {n:int}
   {i:nat | i < n} (A: &(@[a][n]), i: size_t i):<> a
@@ -65,12 +61,10 @@ array_ptr_xch_elt_at {n:int}
 // end of [array_ptr_xch_elt_at]
 
 (* ****** ****** *)
-
 //
-// these functions are present mostly for convenience as a programmer
-// ofter uses values of the type int as array indices:
+// HX: these functions are present mostly for convenience as a
+// programmer ofter uses values of the type int as array indices:
 //
-
 fun{a:t@ype}
 array_ptr_get_elt_at__intsz
   {n:int} {i:nat | i < n} (A: &(@[a][n]), i: int i):<> a
@@ -142,7 +136,7 @@ array_ptr_alloc {n:nat} (asz: size_t n)
 // end of [array_ptr_alloc]
 
 (*
-// implemented in C
+** HX: implemented in C
 *)
 fun array_ptr_alloc_tsz
   {a:viewt@ype} {n:nat} (
@@ -154,7 +148,7 @@ fun array_ptr_alloc_tsz
 (* ****** ****** *)
 
 (*
-// implemented in C
+** HX: implemented in C
 *)
 fun array_ptr_free
   {a:viewt@ype} {n:int} {l:addr} (
@@ -192,7 +186,7 @@ array_ptr_initialize_elt {n:nat}
 // end of [array_ptr_initialize_elt]
 
 (*
-// implemented in C
+** HX: implemented in C
 *)
 fun array_ptr_initialize_elt_tsz {a:t@ype} {n:nat}
   (base: &(@[a?][n]) >> @[a][n], asz: size_t n, ini: &a, tsz: sizeof_t a):<> void
@@ -214,7 +208,7 @@ fun{a:viewt@ype} array_ptr_initialize_lst_vt {n:nat}
 (* ****** ****** *)
 
 (*
-// implemented in ATS (prelude/DATS/array.dats)
+** HX: implemented in ATS (prelude/DATS/array.dats)
 *)
 fun array_ptr_initialize_funenv_tsz
   {a:viewt@ype} {v:view} {vt:viewtype} {n:nat} (
@@ -237,7 +231,7 @@ fun array_ptr_initialize_fun_tsz
 (* ****** ****** *)
 
 (*
-// implemented in ATS (prelude/DATS/array.dats)
+** HX: implemented in ATS (prelude/DATS/array.dats)
 *)
 fun array_ptr_initialize_cloenv_tsz
   {a:viewt@ype} {v:view} {vt:viewtype} {n:nat} (
@@ -261,7 +255,7 @@ fun array_ptr_initialize_clo_tsz
 (* ****** ****** *)
 
 (*
-// implemented in ATS (prelude/DATS/array.dats)
+** HX: implemented in ATS (prelude/DATS/array.dats)
 *)
 
 fun{a:viewt@ype}
@@ -282,17 +276,19 @@ fun array_ptr_clear_fun_tsz
 
 (* ****** ****** *)
 
-prfun array_v_split {a:viewt@ype}
-  {n:int} {i:nat | i <= n} {l:addr} {ofs:int} (
+prfun array_v_split
+  {a:viewt@ype}
+  {n:int} {i:nat | i <= n}
+  {l:addr} {ofs:int} (
   pf_mul: MUL (i, sizeof a, ofs), pf_arr: array_v (a, n, l)
 ) :<prf> @(
   array_v (a, i, l), array_v (a, n-i, l+ofs)
 ) // end of [array_v_split]
 
-(* ***** ***** *)
-
-prfun array_v_unsplit {a:viewt@ype}
-  {n1,n2:int} {l:addr} {ofs:int} (
+prfun array_v_unsplit
+  {a:viewt@ype}
+  {n1,n2:int}
+  {l:addr} {ofs:int} (
   pf_mul: MUL (n1, sizeof a, ofs)
 , pf1_arr: array_v (a, n1, l), pf2_arr: array_v (a, n2, l+ofs)
 ) :<prf> array_v (a, n1+n2, l)
@@ -318,6 +314,8 @@ prfun array_v_unextend :
   array_v (a, n-1, l), a @ l+ofs-sizeof a
 ) // end of [array_v_unextend]
 
+(* ***** ***** *)
+
 prfun array_v_takeout :
   {a:viewt@ype}
   {n:int}
@@ -342,7 +340,7 @@ prfun array_v_takeout2 :
   a @ l+ofs1
 , a @ l+ofs2
 , (a @ l+ofs1, a @ l+ofs2) -<lin> array_v (a, n, l)
-) // end of [array_v_takeou2]
+) // end of [array_v_takeout2]
 
 (* ***** ***** *)
 //
@@ -353,18 +351,6 @@ prfun array_v_clear :
 // end of [array_v_clear]
 
 (* ***** ***** *)
-
-prfun array_v_group :
-  {a:viewt@ype} {m,n:nat} {l:addr} {mn:int}
-  (MUL (m, n, mn), array_v (a, mn, l)) -<prf> array_v (@[a][n], m, l)
-// end of [array_v_group]
-
-prfun array_v_ungroup :
-  {a:viewt@ype} {m,n:nat} {l:addr} {mn:int}
-  (MUL (m, n, mn), array_v (@[a][n], m, l)) -<prf> array_v (a, mn, l)
-// end of [array_v_ungroup]
-
-(* ****** ****** *)
 
 fun{a:viewt@ype}
 array_ptr_split
@@ -377,7 +363,7 @@ array_ptr_split
 ) // end of [array_ptr_split]
 
 (*
-// implemented in C (prelude/CATS/array.cats)
+** HX: implemented in C (prelude/CATS/array.cats)
 *)
 fun array_ptr_split_tsz
   {a:viewt@ype}
@@ -403,7 +389,7 @@ array_ptr_takeout
 ) // end of [array_ptr_takeout]
 
 (*
-// implemented in C (prelude/CATS/array.cats)
+** HX: implemented in C (prelude/CATS/array.cats)
 *)
 fun array_ptr_takeout_tsz
   {a:viewt@ype}
@@ -433,7 +419,7 @@ array_ptr_takeout2 {n:int}
 ) // end of [array_ptr_takeout2]
 
 (*
-// implemented in ATS (prelude/DATS/array.dats)
+** HX: implemented in ATS (prelude/DATS/array.dats)
 *)
 fun array_ptr_takeout2_tsz {a:viewt@ype}
   {n:int} {i1,i2:nat | i1 < n; i2 < n; i1 <> i2} {l0:addr} (
@@ -451,7 +437,14 @@ fun array_ptr_takeout2_tsz {a:viewt@ype}
 (* ****** ****** *)
 
 (*
-// implemented in C (prelude/CATS/array.cats)
+** HX: if you want to take out more pointers, please
+** try the proof function [vtakeout] declared in unsafe.sats
+*)
+
+(* ****** ****** *)
+
+(*
+** HX: implemented in C (prelude/CATS/array.cats)
 *)
 fun array_ptr_copy_tsz
   {a:t@ype} {n:nat} (
@@ -461,7 +454,7 @@ fun array_ptr_copy_tsz
 // end of [array_ptr_copy_tsz]
 
 (*
-// implemented in C (prelude/CATS/array.cats)
+** HX: implemented in C (prelude/CATS/array.cats)
 *)
 fun array_ptr_move_tsz
   {a:viewt@ype} {n:nat} (
@@ -471,7 +464,7 @@ fun array_ptr_move_tsz
 // end of [array_ptr_move_tsz]
 
 (*
-// implemented in ATS (prelude/DATS/array.dats)
+** HX: implemented in ATS (prelude/DATS/array.dats)
 *)
 fun{a:viewt@ype}
 array_ptr_exch
@@ -480,45 +473,15 @@ array_ptr_exch
 // end of [array_ptr_exch]
 
 (* ****** ****** *)
-
-fun{a:viewt@ype}
-array2_ptr_takeout
-  {m,n:int}
-  {i:nat | i < m}
-  {l0:addr} (
-  pf: array_v (@[a][n], m, l0)
-| pbase: ptr l0, n: size_t n, i: size_t i
-) : [l:addr] (
-  array_v (a, n, l)
-, array_v (a, n, l) -<> array_v (@[a][n], m, l0)
-| ptr l // l = l0 + i*(n*sizeof<a>)
-) // end of [array2_ptr_takeout]
-
-(*
-// HX: implemented in C (prelude/CATS/array.cats)
-*)
-fun array2_ptr_takeout_tsz
-  {a:viewt@ype}
-  {m,n:int}
-  {i:nat | i < m}
-  {l0:addr} (
-  pf: array_v (@[a][n], m, l0)
-| pbase: ptr l0, n: size_t n, i: size_t i, tsz: sizeof_t a
-) : [l:addr] (
-  array_v (a, n, l)
-, array_v (a, n, l) -<> array_v (@[a][n], m, l0)
-| ptr l // l = l0 + i*(n*sizeof<a>)
-) = "atspre_array2_ptr_takeout_tsz"
-
+//
+// HX:
+// these foreach-functions are just as easy to be
+// implemented on the spot
+//
 (* ****** ****** *)
-
-(*
-// these functions are just as easy to be implemented on the spot (HX)
-*)
-
-(*
-// implemented in ATS (prelude/DATS/array.dats)
-*)
+//
+// HX: implemented in ATS (prelude/DATS/array.dats)
+//
 fun array_ptr_foreach_funenv_tsz
   {a:viewt@ype} {v:view} {vt:viewtype} {n:nat} (
   pf: !v
@@ -555,14 +518,15 @@ fun array_ptr_foreach_clo_tsz
 ) :<> void // end of [array_ptr_foreach_clo_tsz]
 
 (* ****** ****** *)
-
-(*
-// these functions are just as easy to be implemented on the spot (HX)
-*)
-
-(*
-// implemented in ATS (prelude/DATS/array.dats)
-*)
+//
+// HX:
+// these iforeach-functions are just as easy to be
+// implemented on the spot
+//
+(* ****** ****** *)
+//
+// HX: implemented in ATS (prelude/DATS/array.dats)
+//
 fun array_ptr_iforeach_funenv_tsz
   {a:viewt@ype} {v:view} {vt:viewtype} {n:nat} (
   pf: !v
@@ -613,12 +577,59 @@ array_ptr_to_list {n:nat}
 // end of [array_ptr_to_list]
 
 (* ****** ****** *)
+//
+// HX: array of arrays: this may just be a curiosity
+//
+prfun array_v_group :
+  {a:viewt@ype} {m,n:nat} {l:addr} {mn:int}
+  (MUL (m, n, mn), array_v (a, mn, l)) -<prf> array_v (@[a][n], m, l)
+// end of [array_v_group]
+
+prfun array_v_ungroup :
+  {a:viewt@ype} {m,n:nat} {l:addr} {mn:int}
+  (MUL (m, n, mn), array_v (@[a][n], m, l)) -<prf> array_v (a, mn, l)
+// end of [array_v_ungroup]
+
+fun{a:viewt@ype}
+array2_ptr_takeout
+  {m,n:int}
+  {i:nat | i < m}
+  {l0:addr} (
+  pf: array_v (@[a][n], m, l0)
+| pbase: ptr l0, i: size_t i, n: size_t n
+) : [l:addr] (
+  array_v (a, n, l)
+, array_v (a, n, l) -<> array_v (@[a][n], m, l0)
+| ptr l // l = l0 + i*(n*sizeof<a>)
+) // end of [array2_ptr_takeout]
+
+(*
+** HX: implemented in C (prelude/CATS/array.cats)
+*)
+fun array2_ptr_takeout_tsz
+  {a:viewt@ype}
+  {m,n:int}
+  {i:nat | i < m}
+  {l0:addr} (
+  pf: array_v (@[a][n], m, l0)
+| pbase: ptr l0, i: size_t i, n: size_t n, tsz: sizeof_t a
+) : [l:addr] (
+  array_v (a, n, l)
+, array_v (a, n, l) -<> array_v (@[a][n], m, l0)
+| ptr l // l = l0 + i*(n*sizeof<a>)
+) = "atspre_array2_ptr_takeout_tsz"
+
+(* ****** ****** *)
 
 (*
 **
 ** persistent arrays
 **
 *)
+
+(* ****** ****** *)
+
+exception ArraySubscriptException of ()
 
 (* ****** ****** *)
 
@@ -642,25 +653,28 @@ macdef array (x) = array_make_arrsz ,(x)
 
 (* ****** ****** *)
 
-fun{a:t@ype} array_make_elt
+fun{a:t@ype}
+array_make_elt
   {n:nat} (asz: size_t n, elt: a):<> array (a, n)
 // end of [array_make_elt]
 
-fun{a:t@ype} array_make_lst {n:nat}
+fun{a:t@ype}
+array_make_lst {n:nat}
   (asz: size_t n, xs: list (a, n)):<> array (a, n)
 // end of [array_make_lst]
 
-fun{a:viewt@ype} array_make_lst_vt {n:nat}
+fun{a:viewt@ype}
+array_make_lst_vt {n:nat}
   (asz: size_t n, xs: list_vt (a, n)):<> array (a, n)
 // end of [array_make_lst_vt]
 
 (* ****** ****** *)
 
 (*
-** template
+** HX: template
 *)
 fun{a:viewt@ype}
-  array_make_clo {v:view} {n:nat} (
+array_make_clo {v:view} {n:nat} (
     pf: !v
   | asz: size_t n
   , f: &(!v | sizeLt n, &(a?) >> a) -<clo> void
@@ -668,7 +682,7 @@ fun{a:viewt@ype}
 // end of [array_make_clo_tsz]
 
 (*
-** function
+** HX: function
 *)
 fun array_make_clo_tsz
   {a:viewt@ype} {v:view} {n:nat} (
@@ -682,7 +696,7 @@ fun array_make_clo_tsz
 (* ****** ****** *)
 
 (*
-** template
+** HX: template
 *)
 fun{a:viewt@ype}
 array_make_cloref {n:nat} (
@@ -692,7 +706,7 @@ array_make_cloref {n:nat} (
 // end of [array_make_cloref_tsz]
 
 (*
-** function
+** HX: function
 *)
 fun array_make_cloref_tsz
   {a:viewt@ype} {n:nat} (

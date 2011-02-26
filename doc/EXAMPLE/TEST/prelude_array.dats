@@ -14,6 +14,7 @@
 
 (* ****** ****** *)
 
+staload UN = "prelude/SATS/unsafe.sats"
 staload _(*anonymous*) = "prelude/DATS/list_vt.dats"
 staload _(*anonymous*) = "prelude/DATS/array.dats"
 
@@ -59,12 +60,25 @@ main (argc, argv) = let
     prval pfmn = mul_make {M,N} ()
     var !parr with pfarr = @[T][MN](0)
     prval pfarr2 = array_v_group {T} (pfmn, pfarr)
-    val (pf, fpf | p) = array2_ptr_takeout<T> (pfarr2 | parr, N, 1)
-    val () = array_ptr_iforeach_fun<T> (!p, f, N) where {
-      val f = lam (i: sizeLt N, x: &T): void =<fun> x := int1_of_size1 (i+1)
-    } // end of [val]
+//
+    val [l0:addr] (pf, fpf | p0) = array2_ptr_takeout<T> (pfarr2 | parr, 0, N)
+    prval (pf0, fpf0) = $UN.vtakeout {array_v (T, N, l0)} (pf)
     prval () = pfarr2 := fpf (pf)
+    val [l1:addr] (pf, fpf | p1) = array2_ptr_takeout<T> (pfarr2 | parr, 1, N)
+    prval (pf1, fpf1) = $UN.vtakeout {array_v (T, N, l1)} (pf)
+    prval () = pfarr2 := fpf (pf)
+//
+    val () = array_ptr_iforeach_fun<T> (!p0, f, N) where {
+      val f = lam (i: sizeLt N, x: &T): void =<fun> x := int1_of_size1 (i)
+    } // end of [val]
+    prval () = fpf0 (pf0)
+    val () = array_ptr_iforeach_fun<T> (!p1, f, N) where {
+      val f = lam (i: sizeLt N, x: &T): void =<fun> x := int1_of_size1 (i+N)
+    } // end of [val]
+    prval () = fpf1 (pf1)
+//
     prval () = pfarr := array_v_ungroup {T} (pfmn, pfarr2)
+//
     val () = array_ptr_iforeach_fun<T> (!parr, f, MN) where {
       val f = lam (i: sizeLt MN, x: &T): void =<fun> $effmask_all (if i > 0 then print ","; print x)
     } // end of [val]

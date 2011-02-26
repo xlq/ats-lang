@@ -44,31 +44,90 @@
 #endif // end of [VERBOSE_PRELUDE]
 
 (* ****** ****** *)
+//
+// HX: [matrix_v] is row-major
+//
+absview matrix_v
+  (a:viewt@ype, m:int, n:int, l:addr)
+// end of [matrix_v]
 
-absview matrix_v (a:viewt@ype, m:int, n:int, l:addr)
+prfun array_v_of_matrix_v
+  {a:viewt@ype} {m,n:int} {l:addr} (
+  pf_mat: matrix_v (a, m, n, l)
+) :<> [mn:nat] (MUL (m, n, mn), array_v (a, mn, l))
 
-prfun array_v_of_matrix_v {a:viewt@ype} {m,n:int} {l:addr}
-  (pf_mat: matrix_v (a, m, n, l)):<> [mn:nat] (MUL (m, n, mn), array_v (a, mn, l))
-
-prfun matrix_v_of_array_v {a:viewt@ype} {m,n:nat} {mn:int} {l:addr}
-  (pf_mul: MUL (m, n, mn), pf_arr: array_v (a, mn, l)):<> matrix_v (a, m, n, l)
+prfun matrix_v_of_array_v
+  {a:viewt@ype} {m,n:nat} {mn:int} {l:addr} (
+  pf_mul: MUL (m, n, mn), pf_arr: array_v (a, mn, l)
+) :<> matrix_v (a, m, n, l)
 
 (* ****** ****** *)
 
-exception MatrixSubscriptException of ()
+fun{a:viewt@ype}
+matrix_ptr_takeout_row
+  {m,n:int} {i:int | i < m} {l0:addr} (
+  pf_mat: matrix_v (a, m, n, l0)
+| base: ptr l0, i: size_t i, n: size_t n
+) :<> [l:addr] (
+  array_v (a, n, l)
+, array_v (a, n, l) -<lin,prf> matrix_v (a, m, n, l0)
+| ptr l
+) // end of [matrix_ptr_takeout_row]
+
+fun matrix_ptr_takeout_row_tsz
+  {a:viewt@ype}
+  {m,n:int} {i:int | i < m} {l0:addr} (
+  pf_mat: matrix_v (a, m, n, l0)
+| base: ptr l0, i: size_t i, n: size_t n, tsz: sizeof_t a
+) :<> [l:addr] (
+  array_v (a, n, l)
+, array_v (a, n, l) -<lin,prf> matrix_v (a, m, n, l0)
+| ptr l
+) = "atspre_matrix_ptr_takeout_row_tsz"
+
+(*
+//
+// HX: this is not a completely safe version, but ...
+//
+fun{a:viewt@ype}
+matrix_ptr_vtakeout_row
+  {m,n:int}
+  {i:nat | i < m}
+  {l0:addr} (
+  pf_mat: matrix_v (a, m, n, l0)
+| base: ptr l0
+, i: size_t i
+, n: size_t n
+) : [l:addr] (
+  array_v (a, n, l)
+, array_v (a, n, l) -<> void
+| ptr l // l = l0 + i*n*sizeof<a>
+) // end of [matrix_ptr_vtakeout_row]
+*)
 
 (* ****** ****** *)
 
-fun matrix_ptr_takeout_tsz {a:viewt@ype}
+fun{a:viewt@ype}
+matrix_ptr_takeout_elt
   {m,n:int} {i,j:nat | i < m; j < n} {l0:addr} (
-    pf_mat: matrix_v (a, m, n, l0)
-  | base: ptr l0, i: size_t i, n: size_t n, j: size_t j, tsz: sizeof_t a
-  ) :<> [l:addr] (
-    a @ l
-  , a @ l -<lin,prf> matrix_v (a, m, n, l0)
-  | ptr l
-  ) // end of [matrix_ptr_takeout_tsz]
-(* end of [matrix_ptr_takeout_tsz] *)
+  pf_mat: matrix_v (a, m, n, l0)
+| base: ptr l0, i: size_t i, n: size_t n, j: size_t j
+) :<> [l:addr] (
+  a @ l
+, a @ l -<lin,prf> matrix_v (a, m, n, l0)
+| ptr l
+) // end of [matrix_ptr_takeout_elt]
+
+fun matrix_ptr_takeout_elt_tsz
+  {a:viewt@ype}
+  {m,n:int} {i,j:nat | i < m; j < n} {l0:addr} (
+  pf_mat: matrix_v (a, m, n, l0)
+| base: ptr l0, i: size_t i, n: size_t n, j: size_t j, tsz: sizeof_t a
+) :<> [l:addr] (
+  a @ l
+, a @ l -<lin,prf> matrix_v (a, m, n, l0)
+| ptr l
+) = "atspre_matrix_ptr_takeout_elt_tsz"
 
 (* ****** ****** *)
 
@@ -77,6 +136,10 @@ fun matrix_ptr_takeout_tsz {a:viewt@ype}
 ** persistent matrices
 **
 *)
+
+(* ****** ****** *)
+
+exception MatrixSubscriptException of ()
 
 (* ****** ****** *)
 
@@ -101,8 +164,10 @@ fun matrix_make_arrsz__main
 
 (* ****** ****** *)
 
-fun{a:t@ype} matrix_make_elt {m,n:pos}
+fun{a:t@ype}
+matrix_make_elt {m,n:pos}
   (row: size_t m, col: size_t n, elt: a):<> matrix (a, m, n)
+// end of [matrix_make_elt]
 
 (* ****** ****** *)
 
@@ -155,13 +220,14 @@ matrix_set_elt_at__intsz {m,n:int} {i,j:nat | i < m; j < n}
 overload [] with matrix_set_elt_at__intsz
 
 (* ****** ****** *)
-
 //
-// HX: these functions are just as easy to be implemented on the spot (HX)
+// HX:
+// these foreach-functions are just as easy to be
+// implemented on the spot
 //
-
+(* ****** ****** *)
 (*
-// implemented in ATS (prelude/DATS/matrix.dats)
+** HX: implemented in ATS (prelude/DATS/matrix.dats)
 *)
 fun{a:viewt@ype}
 matrix_foreach_funenv
@@ -192,13 +258,14 @@ matrix_foreach_cloref {m,n:nat} (
 ) :<!ref> void // end of [matrix_foreach_cloref]
 
 (* ****** ****** *)
-
 //
-// HX: these functions are just as easy to be implemented on the spot (HX)
+// HX:
+// these iforeach-functions are just as easy to be
+// implemented on the spot
 //
-
+(* ****** ****** *)
 (*
-// implemented in ATS (prelude/DATS/matrix.dats)
+** HX: implemented in ATS (prelude/DATS/matrix.dats)
 *)
 fun{a:viewt@ype}
 matrix_iforeach_funenv

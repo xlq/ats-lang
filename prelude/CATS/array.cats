@@ -110,17 +110,6 @@ atspre_array_ptr_takeout_tsz (
   return (ats_ptr_type)((char*)base + offset * tsz) ;
 } /* end of [atspre_array_ptr_takeout_tsz] */
 
-ATSinline()
-ats_ptr_type
-atspre_array2_ptr_takeout_tsz (
-  ats_ptr_type base
-, ats_size_type col
-, ats_size_type offset
-, ats_size_type tsz
-) {
-  return (ats_ptr_type)((char*)base + col * (offset * tsz)) ;
-} /* end of [atspre_array2_ptr_takeout_tsz] */
-
 /* ****** ****** */
 
 ATSinline()
@@ -144,6 +133,19 @@ atspre_array_ptr_move_tsz (
 ) {
   memcpy (p2, p1, asz * tsz) ; return ;
 } /* end of [atspre_array_ptr_move_tsz] */
+
+/* ****** ****** */
+
+ATSinline()
+ats_ptr_type
+atspre_array2_ptr_takeout_tsz (
+  ats_ptr_type base
+, ats_size_type iofs
+, ats_size_type ncol
+, ats_size_type tsz
+) {
+  return (ats_ptr_type)((char*)base + (iofs * ncol) * tsz) ;
+} /* end of [atspre_array2_ptr_takeout_tsz] */
 
 /* ****** ****** */
 

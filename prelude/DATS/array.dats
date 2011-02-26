@@ -353,10 +353,12 @@ in
 end // end of [array_ptr_takeout2_tsz]
 
 (* ****** ****** *)
-
+//
+// HX: array of arrays: this may just be a curiosity
+//
 implement{a}
-array2_ptr_takeout (pf | A, n, i) =
-  array2_ptr_takeout_tsz {a} (pf | A, n, i, sizeof<a>)
+array2_ptr_takeout (pf | A, i, n) =
+  array2_ptr_takeout_tsz {a} (pf | A, i, n, sizeof<a>)
 // end of [array2_ptr_takeout]
 
 (* ****** ****** *)
@@ -700,10 +702,10 @@ array_foreach_funenv
   {v} {vt} {n} (pf | A, f, asz, env) = let
   typedef fun_t = (!v | &a, !vt) -<> void
   fun loop {i:nat | i <= n} .<n-i>. (
-      pf: !v
-    | A: array (a, n), f: fun_t, n: size_t n, i: size_t i
-    , env: !vt
-    ) :<!ref> void =
+    pf: !v
+  | A: array (a, n), f: fun_t, n: size_t n, i: size_t i
+  , env: !vt
+  ) :<!ref> void =
     if i < n then let
       val () = () where {
         val (vbox pf_arr | p) = array_get_view_ptr (A)
@@ -769,9 +771,9 @@ array_iforeach_funenv
   {v} {vt} {n} (pf | A, f, asz, env) = let
   viewtypedef fun_t = (!v | sizeLt n, &a, !vt) -<fun> void
   fun loop {i:nat | i <= n} .<n-i>. (
-      pf: !v
-    | A: array (a, n), f: fun_t, n: size_t n, i: size_t i, env: !vt
-    ) :<!ref> void =
+    pf: !v
+  | A: array (a, n), f: fun_t, n: size_t n, i: size_t i, env: !vt
+  ) :<!ref> void =
     if i < n then let
       val () = () where {
         val (vbox pf_arr | p) = array_get_view_ptr (A)

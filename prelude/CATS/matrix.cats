@@ -42,9 +42,32 @@
 #include "ats_types.h"
 
 /* ****** ****** */
-//
-// HX: it is currently empty
-//
+
+ATSinline()
+ats_ptr_type
+atspre_matrix_ptr_takeout_row_tsz (
+  ats_ptr_type base
+, ats_size_type iofs
+, ats_size_type ncol
+, ats_size_type tsz
+) {
+  return (ats_ptr_type)((char*)base + (iofs * ncol) * tsz) ;
+} /* end of [atspre_matrix_ptr_takeout_row_tsz] */
+
+/* ****** ****** */
+
+ATSinline()
+ats_ptr_type
+atspre_matrix_ptr_takeout_elt_tsz (
+  ats_ptr_type base
+, ats_size_type iofs
+, ats_size_type ncol
+, ats_size_type jofs
+, ats_size_type tsz
+) {
+  return (ats_ptr_type)((char*)base + (iofs * ncol + jofs) * tsz
+} /* end of [atspre_matrix_ptr_takeout_tsz_tsz] */
+
 /* ****** ****** */
 
 #endif /* ATS_PRELUDE_MATRIX_CATS */

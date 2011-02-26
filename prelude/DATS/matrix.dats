@@ -49,10 +49,6 @@
 
 (* ****** ****** *)
 
-(* persistent matrices *)
-
-(* ****** ****** *)
-
 local
 
 assume matrix_v
@@ -70,6 +66,26 @@ end // end of [array_v_of_matrix_v]
 implement matrix_v_of_array_v (pf_mul, pf_arr) = @(pf_mul, pf_arr)
 
 end // end of [local]
+
+(* ****** ****** *)
+
+implement{a}
+matrix_ptr_takeout_row (pf | p, i, n) =
+  matrix_ptr_takeout_row_tsz (pf | p, i, n, sizeof<a>)
+// end of [matrix_ptr_takeout_row]
+
+implement{a}
+matrix_ptr_takeout_elt (pf | p, i, n, j) =
+  matrix_ptr_takeout_elt_tsz (pf | p, i, n, j, sizeof<a>)
+// end of [matrix_ptr_takeout_elt]
+
+(* ****** ****** *)
+
+(*
+**
+** persistent matrices
+**
+*)
 
 (* ****** ****** *)
 
@@ -264,24 +280,6 @@ in
   // empty
 end // end of [matrix_set_elt_at]
 
-implement
-matrix_ptr_takeout_tsz
-  {a} {m,n} {i,j} {l0}
-  (pf_mat | base, i, n, j, tsz) = let
-  prval (pf_mul_mn, pf_arr) = array_v_of_matrix_v {a} (pf_mat)
-  val (pf_mul_i_n | i_n) = i szmul2 n
-  prval () = mul_nat_nat_nat pf_mul_i_n
-  prval () = lemma_for_matrix_subscripting (pf_mul_mn, pf_mul_i_n)
-  val [l:addr] (pf1, fpf2 | p_ofs) =
-    array_ptr_takeout_tsz {a} (pf_arr | base, i_n + j, tsz)
-  // end of [val]
-  prval fpf2 =
-    llam (pf1: a @ l) =<prf> matrix_v_of_array_v (pf_mul_mn, fpf2 pf1)
-  // end of [prval]
-in
-  (pf1, fpf2 | p_ofs)
-end // end of [val]
-
 end // end of [local]
 
 (* ****** ****** *)
@@ -330,7 +328,7 @@ matrix_foreach_funenv
       val () = () where {
         prval vbox pf_mat = M.view
         val (pf1, fpf2 | p_ij) =
-          matrix_ptr_takeout_tsz (pf_mat | M.data, i, n, j, sizeof<a>)
+          matrix_ptr_takeout_elt_tsz (pf_mat | M.data, i, n, j, sizeof<a>)
         val () = f (pf | !p_ij, env)
         val () = pf_mat := fpf2 (pf1)
       } // end of [val]
@@ -420,7 +418,7 @@ matrix_iforeach_funenv
       val () = () where {
         prval vbox pf_mat = M.view
         val (pf1, fpf2 | p_ij) =
-          matrix_ptr_takeout_tsz (pf_mat | M.data, i, n, j, sizeof<a>)
+          matrix_ptr_takeout_elt_tsz (pf_mat | M.data, i, n, j, sizeof<a>)
         val () = f (pf | i, j, !p_ij, env)
         val () = pf_mat := fpf2 (pf1)
       } // end of [val]

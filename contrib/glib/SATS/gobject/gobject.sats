@@ -30,36 +30,38 @@
 *)
 
 (* ****** ****** *)
-
 //
 // Author: Hongwei Xi (hwxi AT cs DOT bu DOT edu)
 // Time: April, 2010
 //
-
 (* ****** ****** *)
 
 fun g_object_is_floating
-  {c:cls | c <= GObject} {l:agz} (x: !gobjref (c, l)): bool
-  = "#atsctrb_g_object_is_floating"
-// end of [g_object_is_floating]
+  {c:cls | c <= GObject}
+  {l:agz} (
+  x: !gobjref (c, l)
+) : bool = "#atsctrb_g_object_is_floating"
 
 (* ****** ****** *)
 
 fun g_object_ref_count
-  {c:cls} {l:addr} (x: !gobjref (c, l)): int = "#atsctrb_g_object_ref_count"
-// end of [g_object_ref_count]
+  {c:cls} {l:addr} (
+  x: !gobjref (c, l)
+) : int = "#atsctrb_g_object_ref_count"
 
 (* ****** ****** *)
 
 fun g_object_ref
-  {c:cls | c <= GObject} {l:agz} (x: !gobjref (c, l)): gobjref (c, l)
-  = "#atsctrb_g_object_ref"
-// end of [g_object_ref]
+  {c:cls | c <= GObject}
+  {l:agz} (
+  x: !gobjref (c, l)
+) : gobjref (c, l) = "#atsctrb_g_object_ref"
 
 fun g_object_unref
-  {c:cls | c <= GObject} {l:agz} (x: gobjref (c, l)): void
-  = "#atsctrb_g_object_unref"
-// end of [g_object_unref]
+  {c:cls | c <= GObject}
+  {l:agz} (
+  x: gobjref (c, l)
+) : void = "#atsctrb_g_object_unref"
 
 (* ****** ****** *)
 

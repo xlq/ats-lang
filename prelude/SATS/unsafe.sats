@@ -46,13 +46,12 @@
 
 (* ****** ****** *)
 //
-// HX: the generic ones:
+// HX: [castvwtp1] : it is mostly used in a situation
+// where a linear value is passed as a read-only value;
+// for instance, casting strptr to string
 //
 castfn cast {to:t@ype} {from:t@ype} (x: from):<> to
-praxi castvw {to:view} {from:view} (x: from):<> to
-praxi castvw1 {to:view} {from:view} (x: !from):<> to
-castfn castvwtp {to:viewt@ype} {from:viewt@ype} (x: from):<> to
-castfn castvwtp1 {to:viewt@ype} {from:viewt@ype} (x: !from):<> to
+castfn castvwtp1 {to:t@ype} {from:viewt@ype} (x: !from):<> to
 
 (* ****** ****** *)
 
@@ -64,9 +63,17 @@ castfn cast2size {a:t@ype} (x: a):<> size_t
 castfn cast2ssize {a:t@ype} (x: a):<> ssize_t
 
 (* ****** ****** *)
-
+//
+// HX: only if you know what you are doing ...
+//
 fun{a:viewt@ype} ptrget {l:agz} (p: ptr l): a
 fun{a:viewt@ype} ptrset {l:agz} (p: ptr l, x: a): void
+
+(* ****** ****** *)
+//
+// HX: vtakeout: virtual takeout
+//
+prfun vtakeout {v:view} (pf: !v) : (v, v -<lin,prf> void)
 
 (* ****** ****** *)
 
