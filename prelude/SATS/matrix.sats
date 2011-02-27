@@ -179,28 +179,31 @@ matrix_make_elt {m,n:pos}
 (* ****** ****** *)
 
 fun matrix_make_funenv_tsz
-  {a:viewt@ype} {v:view} {vt:viewtype} {m,n:pos} (
+  {a:viewt@ype}
+  {v:view} {vt:viewtype}
+  {m,n:pos} {f:eff} (
   pf: !v
 | row: size_t m, col: size_t n
-, f: (!v | sizeLt m, sizeLt n, &(a?) >> a, !vt) -<> void
+, f: (!v | sizeLt m, sizeLt n, &(a?) >> a, !vt) -<fun,f> void
 , tsz: sizeof_t a
 , env: !vt
-) :<> matrix (a, m, n)
+) :<f> matrix (a, m, n)
 
-fun matrix_make_fun_tsz
-  {a:viewt@ype} {m,n:pos} (
+fun{a:viewt@ype}
+matrix_make_fun
+  {m,n:pos} {f:eff} (
   row: size_t m, col: size_t n
-, f: (sizeLt m, sizeLt n, &(a?) >> a) -<fun> void
-, tsz: sizeof_t a
-) :<> matrix (a, m, n) // end of [matrix_make_fun_tsz]
+, f: (sizeLt m, sizeLt n, &(a?) >> a) -<fun,f> void
+) :<f> matrix (a, m, n) // end of [matrix_make_fun_tsz]
 
-fun matrix_make_clo_tsz
-  {a:viewt@ype} {v:view} {m,n:pos} (
-  pf: !v
+fun{a:viewt@ype}
+matrix_make_clo
+  {v:view}
+  {m,n:pos} {f:eff} (
+  pfv: !v
 | row: size_t m, col: size_t n
-, f: &(!v | sizeLt m, sizeLt n, &(a?) >> a) -<clo> void
-, tsz: sizeof_t a
-) :<> matrix (a, m, n) // end of [matrix_make_clo_tsz]
+, f: &(!v | sizeLt m, sizeLt n, &(a?) >> a) -<clo,f> void
+) :<f> matrix (a, m, n) // end of [matrix_make_clo_tsz]
 
 (* ****** ****** *)
 
@@ -239,11 +242,11 @@ overload [] with matrix_set_elt_at__intsz
 fun{a:viewt@ype}
 matrix_foreach_funenv
   {v:view} {vt:viewtype} {m,n:nat} (
-    pf: !v
-  | M: matrix (a, m, n)
-  , f: (!v | &a, !vt) -<fun> void, m: size_t m, n: size_t n
-  , env: !vt
-  ) :<!ref> void
+  pf: !v
+| M: matrix (a, m, n)
+, f: (!v | &a, !vt) -<fun> void, m: size_t m, n: size_t n
+, env: !vt
+) :<!ref> void
 // end of [matrix_foreach_funenv]
 
 fun{a:viewt@ype}

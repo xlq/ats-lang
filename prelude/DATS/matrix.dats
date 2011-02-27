@@ -170,7 +170,7 @@ infixl ( * ) szmul2; infixl ( mod ) szmod1
 
 implement
 matrix_make_funenv_tsz
-  {a} {v} {vt} {m,n}
+  {a} {v} {vt} {m,n} {f:eff}
   (pf | m, n, f, tsz, env) = let
   val [mn:int] (pf_mul | mn) = m szmul2 n
   prval () = mul_nat_nat_nat pf_mul
@@ -181,7 +181,7 @@ matrix_make_funenv_tsz
   viewtypedef fun_t =
     (!v | &(a?) >> a, sizeLt m, natLt n, !vt) -<> void
   var !p_f1 = @lam
-    (pf: !v | i: sizeLt mn, x: &(a?) >> a, env: !vt): void =<clo> let
+    (pf: !v | i: sizeLt mn, x: &(a?) >> a, env: !vt): void =<clo,f> let
     val d = szdiv (pf_mul | i, n) and r = i szmod1 n
   in
     f (pf | d, r, x, env)
@@ -195,42 +195,42 @@ in @{
   data= p_arr, view= pfmat_box
 } end // end of [matrix_make_funenv_tsz]
 
-implement
-matrix_make_fun_tsz
-  {a} {m,n} (m, n, f, tsz) = let
+implement{a}
+matrix_make_fun
+  {m,n} {f:eff} (m, n, f) = let
   typedef fun0_t =
-    (sizeLt m, sizeLt n, &(a?) >> a) -<fun> void
+    (sizeLt m, sizeLt n, &(a?) >> a) -<fun,f> void
   typedef fun1_t =
-    (!unit_v | sizeLt m, sizeLt n, &(a?) >> a, !ptr) -<fun> void
+    (!unit_v | sizeLt m, sizeLt n, &(a?) >> a, !ptr) -<fun,f> void
   val f = coerce (f) where {
     extern castfn coerce (f: fun0_t):<> fun1_t
   } // end of [val]
 //
   prval pfu = unit_v ()
-  val M = matrix_make_funenv_tsz {a} {unit_v} {ptr} (pfu | m, n, f, tsz, null)
+  val M = matrix_make_funenv_tsz {a} {unit_v} {ptr} (pfu | m, n, f, sizeof<a>, null)
   prval unit_v () = pfu
 //
 in
   M // : matrix (a, m, n)
 end // end of [matrix_make_fun_tsz]
 
-implement
-matrix_make_clo_tsz
-  {a} {v} {m,n}
-  (pfv | m, n, f, tsz) = M where {
+implement{a}
+matrix_make_clo
+  {v} {m,n} {f:eff}
+  (pfv | m, n, f) = M where {
 //
   stavar l_f: addr
   val p_f: ptr l_f = &f
 //
   typedef clo_t =
-    (!v | sizeLt m, sizeLt n, &(a?) >> a) -<clo> void
+    (!v | sizeLt m, sizeLt n, &(a?) >> a) -<clo,f> void
   // end of [typedef]
   viewdef V = (v, clo_t @ l_f)
 //
   fn app (
     pf: !V
   | i: sizeLt m, j: sizeLt n, x: &(a?) >> a, p_f: !ptr l_f
-  ) :<> void = let
+  ) :<f> void = let
     prval pfclo = pf.1 // HX: taking it out to support [!p_f]
     val () = !p_f (pf.0 | i, j, x)
     prval () = pf.1 := pfclo
@@ -239,7 +239,7 @@ matrix_make_clo_tsz
   end // end of [app]
 //
   prval pfV = (pfv, view@ f)
-  val M = matrix_make_funenv_tsz {a} {V} {ptr l_f} (pfV | m, n, app, tsz, p_f)
+  val M = matrix_make_funenv_tsz {a} {V} {ptr l_f} (pfV | m, n, app, sizeof<a>, p_f)
   prval () = (pfv := pfV.0; view@ f := pfV.1)
 } // end of [matrix_make_clo_tsz]
 

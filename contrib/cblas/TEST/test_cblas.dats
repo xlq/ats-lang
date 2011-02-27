@@ -128,7 +128,9 @@ implement randgen_elt<zcmplx> () = zrandgen_elt ()
 (* ****** ****** *)
 
 fun{a:t@ype}
-randgen_arr {n:nat} .<>. (n: int n)
+randgen_arr
+  {n:nat} .<>.
+  (n: int n)
   :<!ref> [l:addr] (
     free_gc_v (a, n, l), array_v (a, n, l)
   | ptr l
@@ -138,12 +140,12 @@ randgen_arr {n:nat} .<>. (n: int n)
   val (pf_gc, pf_arr | p_arr) =
     array_ptr_alloc_tsz {a} (n_sz, tsz)
   // end of [val]
-  val () = array_ptr_initialize_fun_tsz
-    {a} (!p_arr, n_sz, f, tsz) where {
+  val () = array_ptr_initialize_fun<a> (!p_arr, n_sz, f) where {
     val f = lam (
-      _: sizeLt n, x: &(a?) >> a
-    ) : void =<fun>
-      x :=  $effmask_ref (randgen_elt<a> ())
+      _: sizeLt n
+    , x: &(a?) >> a
+    ) : void =<fun,!ref>
+      x :=  randgen_elt<a> ()
     // end of [val]
   } // end of [val]
 in
@@ -1011,8 +1013,7 @@ gbmv_test (): void = () where {
     array_ptr_alloc_tsz {a} (M, sizeof<a>)
   // end of [val]
 //
-  val () = array_ptr_initialize_fun_tsz
-    {a} (!pY_arr, M, f, sizeof<a>) where {
+  val () = array_ptr_initialize_fun<a> (!pY_arr, M, f) where {
     fun f .<>. (
       i : sizeLt M, x : &(a?) >> a
     ) :<> void = let
@@ -1869,8 +1870,7 @@ hbmv_test (): void = () where {
   val incX = 1
   val (pfY_gc, pfY_arr | pY_arr) = array_ptr_alloc<a> (M)
 //
-  val () = array_ptr_initialize_fun_tsz
-    {a} (!pY_arr, M, f, sizeof<a>) where {
+  val () = array_ptr_initialize_fun<a> (!pY_arr, M, f) where {
     fn f (
       i : sizeLt M
     , y : &(a?) >> a
@@ -1956,8 +1956,7 @@ hpmv_test (): void = () where {
   val L_sz = size1_of_int1 L
   val (pfA_gc, pfA_arr | pA_arr) = array_ptr_alloc<a> (L_sz)
 //
-  val () = array_ptr_initialize_fun_tsz {a}
-    (!pA_arr, L_sz, f, sizeof<a>) where {
+  val () = array_ptr_initialize_fun<a> (!pA_arr, L_sz, f) where {
     fn f (i : sizeLt L, A : &(a?) >> a) :<> void = let
       val i = sz2i i
       val c = int_of_double (($M.sqrt (1.0 + 8.0 * (double_of_int i)) - 1.0) / 2.0)
@@ -1976,14 +1975,13 @@ hpmv_test (): void = () where {
   val incX = 1
   val (pfY_gc, pfY_arr | pY_arr) = array_ptr_alloc<a> (M)
 //
-  val () = array_ptr_initialize_fun_tsz {a}
-    (!pY_arr, M, f, sizeof<a>) where {
+  val () = array_ptr_initialize_fun<a> (!pY_arr, M, f) where {
     fn f (
        i : sizeLt M, y : &(a?) >> a
     ) :<> void =
       y := of_int<a> let
         val i = sz2i i in (i * (i + 1) + (M - i - 1) * (M - i)) / 2
-      end
+      end // end of [let]
   } // end of [val]
 //
   prval pfY_gev = GEVEC_v_of_array_v {a} (pfY_arr)

@@ -114,13 +114,11 @@ randgen_arr {n:nat} .<>. (n: int n)
     array_ptr_alloc_tsz {t} (n_sz, tsz)
   // end of [val]
 //
-  val () =
-    array_ptr_initialize_fun_tsz
-    {t} (!p_arr, n_sz, f, tsz) where {
+  val () = array_ptr_initialize_fun<t> (!p_arr, n_sz, f) where {
     val f = lam (
       _: sizeLt n, x: &(t?) >> t
-    ) : void =<fun>
-      x :=  $effmask_ref (randgen_elt<t> ())
+    ) : void =<fun,!ref>
+      x :=  randgen_elt<t> ()
     // end of [val]
   } // end of [val]
 //
