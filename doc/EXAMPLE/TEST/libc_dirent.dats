@@ -97,19 +97,20 @@ in
       "The entries in the directory [%s] are listed as follows:\n", @(dirname)
     ) // end of [val]
 //
-    prval pf = unit_v ()
-    val () = array_ptr_foreach_clo_tsz (
-      pf | !p_arr, !p_f, nent_sz, sizeof<direntptr_gc>
-    ) where {
-      var !p_f = @lam (pf: !unit_v | p_ent: &direntptr_gc)
-        : void =<clo> begin
-          $effmask_all (print_direntptr (p_ent); print_newline ())
-        end // end of [@lam]
-    } // end of [val]
-    prval unit_v () = pf
+    prval pfu = unit_v ()
+    val () = let
+      var !p_f = @lam (
+        pfu: !unit_v | p_ent: &direntptr_gc
+      ) : void =<clo>
+        $effmask_all (print_direntptr (p_ent); print_newline ())
+      // end of [@lam]
+    in
+      array_ptr_foreach_clo<direntptr_gc> (pfu | !p_arr, !p_f, nent_sz)
+    end // end of [val]
+    prval unit_v () = pfu
 //    
     val () = array_ptr_clear_fun<direntptr_gc> (
-      !p_arr, nent_sz, lam p => ptr_free {dirent} (p.0, p.1 | p.2)
+      !p_arr, nent_sz, lam p =<fun> ptr_free {dirent} (p.0, p.1 | p.2)
     ) // end of [val]
 //
   in

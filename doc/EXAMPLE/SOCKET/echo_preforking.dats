@@ -118,12 +118,12 @@ implement main (argc, argv) = let
     pf: !V | _: sizeLt NCHILD, x: &pid_t? >> pid_t
   ) : void =<clo> x := $effmask_all (fork_child (pf | sockfd, fchild))
   // end of [var]
-  val () = array_ptr_initialize_clo_tsz {pid_t}
-    (pf_sock_s | !p_children, NCHILD, !p_clo, sizeof<pid_t>)
+  val () = array_ptr_initialize_clo<pid_t>
+    (pf_sock_s | !p_children, NCHILD, !p_clo)
 //
   val () = array_ptr_foreach_fun<pid_t> (
     !p_children
-  , lam (pid) => $effmask_all(printf("Forked: %d\n", @((int)pid)))
+  , lam (pid) =<fun> $effmask_all(printf("Forked: %d\n", @((int)pid)))
   , NCHILD
   ) // end of [val]
 //

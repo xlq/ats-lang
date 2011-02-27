@@ -8,6 +8,7 @@
 
 (* ****** ****** *)
 
+staload _(*anonymous*) = "prelude/DATS/array.dats"
 staload _(*anonymous*) = "prelude/DATS/pointer.dats"
 
 (* ****** ****** *)
@@ -117,15 +118,17 @@ staload RAND = "libc/SATS/random.sats"
 
 (* ****** ****** *)
 
-fn array_ptr_print {n:nat} {l:addr}
-  (pf_arr: !array_v (T, n, l) | A: ptr l, n: size_t n): void = let
+fn array_ptr_print
+  {n:nat} {l:addr} (
+  pf_arr: !array_v (T, n, l) | A: ptr l, n: size_t n
+) : void = let
   var !p_f = @lam (
     pf: !unit_v | i: sizeLt n, x: &T
   ) : void =<clo> begin
     $effmask_all (if i > 0 then print ", "; printf ("%.2f", @(x)))
   end // end of [var]
   prval pf = unit_v ()
-  val () = array_ptr_iforeach_clo_tsz {T} (pf | !A, !p_f, n, sizeof<T>)
+  val () = array_ptr_iforeach_clo<T> (pf | !A, !p_f, n)
   prval unit_v () = pf
 in
   // nothing
@@ -140,12 +143,12 @@ fn random_array_ptr_gen
   [l:addr | l <> null] (
   free_gc_v (T, n, l), array_v (T, n, l) | ptr l
 ) = let
-  val (pfgc, pfarr | parr) = array_ptr_alloc_tsz {T} (n, sizeof<T>)
-  val () = array_ptr_initialize_fun_tsz {T} (
-    !parr, n
-  , lam (i, x) => x := $effmask_ref (N * $RAND.drand48 ())
-  , sizeof<T>
-  ) // end of [array_ptr_make_fun_tsz_cloptr]
+  val (
+    pfgc, pfarr | parr
+  ) = array_ptr_alloc<T> (n)
+  val () = array_ptr_initialize_fun<T> (
+    !parr, n, lam (i, x) =<fun> x := $effmask_all (N * $RAND.drand48 ())
+  ) // end of [array_ptr_initialize_fun]
 in
   (pfgc, pfarr | parr)
 end // end of [random_array_ptr_gen]

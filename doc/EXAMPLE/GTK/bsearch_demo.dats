@@ -124,8 +124,8 @@ val () = srand48_with_time ()
 val key0 = randint (N)
 val A0: array (int, ASZ) = let
   val (pf_gc, pf_arr | p_arr) = array_ptr_alloc<int> (ASZ)
-  val () = array_ptr_initialize_fun_tsz {int} (
-    !p_arr, ASZ, lam (_, x) => x := $effmask_ref (randint (N)), sizeof<int>
+  val () = array_ptr_initialize_fun<int> (
+    !p_arr, ASZ, lam (_, x) =<fun> x := $effmask_ref (randint (N))
   ) // end of [val]
   val () = qsort {int} (!p_arr, ASZ, sizeof<int>, lam (x1, x2) => compare (x1, x2))
   prval () = free_gc_elim {int} (pf_gc)

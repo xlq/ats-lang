@@ -243,8 +243,7 @@ static void scull_remove_proc(void)
 #endif /* SCULL_DEBUG */
 
 
-
-
+/* ****** ****** */
 
 /*
  * Open and close
@@ -271,6 +270,7 @@ int scull_release(struct inode *inode, struct file *filp)
 {
 	return 0;
 }
+#if(0)
 /*
  * Follow the list
  */
@@ -299,6 +299,7 @@ struct scull_qset *scull_follow(struct scull_dev *dev, int n)
 	}
 	return qs;
 }
+#endif // end of [#if(0)]
 
 /*
  * Data management: read and write
