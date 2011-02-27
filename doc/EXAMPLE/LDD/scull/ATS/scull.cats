@@ -15,6 +15,7 @@
 
 /* ****** ****** */
 
+#include "contrib/kernel/CATS/integer.cats"
 #include "contrib/kernel/CATS/pointer.cats"
 #include "contrib/kernel/CATS/sizetype.cats"
 
