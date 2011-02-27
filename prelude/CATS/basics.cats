@@ -57,6 +57,14 @@ ats_ptr_type
 atspre_castfn_ptr (ats_ptr_type p) { return p ; }
 
 /* ****** ****** */
+/*
+** HX-2011-02-26:
+** this one is used to prevent tail-recursion optimization
+*/
+ATSinline()
+ats_void_type atspre_donothing () { return ; }
+
+/* ****** ****** */
 
 /*
 ** HX: cutting the corners? yes. worth it? probably.
@@ -236,8 +244,8 @@ atspre_stderr_view_set () {
 } // end of [atspre_stderr_view_set]
 
 /* ****** ****** */
-
 //
+// HX:
 // printing a newline on a given stream also fflushes the buffer
 // associated with the stream.
 //

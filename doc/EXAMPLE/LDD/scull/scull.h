@@ -84,6 +84,7 @@ struct scull_qset {
 	struct scull_qset *next;
 };
 
+#if(0)
 struct scull_dev {
 	struct scull_qset *data;  /* Pointer to first quantum set */
 	int quantum;              /* the current quantum size */
@@ -93,6 +94,25 @@ struct scull_dev {
 	struct semaphore sem;     /* mutual exclusion semaphore     */
 	struct cdev cdev;	  /* Char device structure		*/
 };
+#endif
+struct scull_dev {
+  int m_qset;               // the current array size
+  int n_quantum;            // the current quantum size
+//
+  struct scull_qset *data;  // pointer to first quantum set
+  int ln_qlst;              // the current qsetlst length
+//
+  unsigned long size;       // amount of data stored here
+//
+  unsigned int access_key;  // used by sculluid and scullpriv
+//
+  struct semaphore sem;     // mutual exclusion semaphore
+//
+  struct cdev cdev;	    // char device structure
+//
+} ; // end of [scull_dev]
+
+/* ****** ****** */
 
 /*
  * Split minors in two parts

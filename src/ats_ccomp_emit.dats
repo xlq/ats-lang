@@ -247,8 +247,7 @@ end // end of [emit_funlab_prefix]
 
 implement
 emit_funlab (pf | out, fl) = let
-  val () = (
-    case+ funlab_get_qua fl of
+  val () = (case+ funlab_get_qua fl of
     | D2CSTOPTsome d2c => let // global function
         val () = emit_d2cst (pf | out, d2c) in (*empty*)
       end // end of [D2CSTOPTsome]
@@ -363,12 +362,22 @@ end // end of [_emit_hityplst_sep]
 (* ****** ****** *)
 
 implement
-emit_hityp (pf | out, hit) =
-  _emit_hityp (pf | out, hityp_decode hit)
-// end of [emit_hityp]
+emit_hityp (
+  pf | out, hit
+) = let
+  val hit = hityp_decode (hit)
+in
+  case+ hit.hityp_node of
+  | HITcltype (fl) => () where {
+      val () = emit_funlab (pf | out, fl)
+      val () = fprint1_string (pf | out, "_closure_type")
+    } // end of [HITcltype]  
+  | _ => _emit_hityp (pf | out, hit)
+end // end of [emit_hityp]
 
-implement emit_hityp_ptr (pf | out, hit) =
-  _emit_hityp_ptr (pf | out, hityp_decode hit)
+implement
+emit_hityp_ptr (pf | out, hit) =
+  _emit_hityp_ptr (pf | out, hityp_decode (hit))
 // end of [emit_hityp_ptr]
 
 implement
@@ -530,16 +539,16 @@ end (* end of [emit_valprim_char] *)
 
 (* ****** ****** *)
 
-fn emit_valprim_clo_init {m:file_mode} (
+fn emit_tmpvar_cloptr_init {m:file_mode} (
     pf: fmlte (m, w)
   | out: &FILE m, knd: int
-  , vp_clo: valprim, fl: funlab_t, map: envmap_t
+  , tmp_ptr: tmpvar_t, fl: funlab_t, map: envmap_t
   ) : void = let
   val entry = funlab_get_entry_some (fl)
   val vtps = funentry_get_vtps_all (entry)
   val () = emit_funlab (pf | out, fl)
   val () = fprint1_string (pf | out, "_closure_init (")
-  val () = emit_valprim (pf | out, vp_clo)
+  val () = emit_tmpvar (pf | out, tmp_ptr)
   val _(*int*) = emit_cloenv (pf | out, map, vtps, 1)
   val () = fprint1_string (pf | out, ")")
 in
@@ -1424,17 +1433,18 @@ end // end of [emit_move_con]
 
 (* ****** ****** *)
 
-fn emit_instr_assgn_arr {m:file_mode} (
-    pf: fmlte (m, w)
-  | out: &FILE m
-  , vp_arr: valprim, vp_asz: valprim
-  , tmp_elt: tmpvar_t, vp_tsz: valprim
-  ) : void = let
+fn emit_instr_assgn_arr
+  {m:file_mode} (
+  pf: fmlte (m, w)
+| out: &FILE m
+, tmp_arr: tmpvar_t
+, vp_asz: valprim, tmp_elt: tmpvar_t, vp_tsz: valprim
+) : void = let
   val () = fprint1_string
     (pf | out, "/* array initialization */\n")
   val () = fprint1_string
     (pf | out, "atspre_array_ptr_initialize_elt_tsz (")
-  val () = emit_valprim (pf | out, vp_arr)
+  val () = emit_tmpvar (pf | out, tmp_arr)
   val () = fprint1_string (pf | out, ", ")
   val () = emit_valprim (pf | out, vp_asz)
   val () = fprint1_string (pf | out, ", ")
@@ -1662,14 +1672,20 @@ in
   | INSTRassgn_arr (vp_arr, vp_asz, tmp_elt, vp_tsz) => begin
       emit_instr_assgn_arr (pf | out, vp_arr, vp_asz, tmp_elt, vp_tsz)
     end // end of [INSTRassgn_arr]
-  | INSTRassgn_clo (vp_clo, fl, env) => begin
-      emit_valprim (pf | out, vp_clo);
-      fprint1_string (pf  | out, " = ATS_ALLOCA(sizeof(");
-      emit_funlab (pf | out, fl);
-      fprint1_string (pf | out, "_closure_type)) ;\n");
-      emit_valprim_clo_init (pf | out, 0(*unboxed*), vp_clo, fl, env);
-      fprint1_string (pf | out, " ; // closure initialization");
-    end // end of [INSTRassgn_clo]
+  | INSTRassgn_clo (
+      tmp_ptr, tmp_clo, fl, env
+    ) => () where {
+//
+      val () = emit_tmpvar (pf | out, tmp_ptr)
+      val () = fprint1_string (pf | out, " = &(")
+      val () = emit_tmpvar (pf | out, tmp_clo)
+      val () = fprint1_string (pf | out, ") ;\n")
+//
+      val () = emit_tmpvar_cloptr_init
+        (pf | out, 0(*unboxed*), tmp_ptr, fl, env) 
+      val () = fprint1_string (pf | out, " ; // closure initialization")
+//
+    } // end of [INSTRassgn_clo]
   | INSTRcall (tmp, hit_fun, vp_fun, vps_arg) => begin
       emit_instr_call (pf | out, tmp, hit_fun, vp_fun, vps_arg)
     end // end of [INSTRcall]
@@ -2716,7 +2732,7 @@ emit_funentry
 //
   val istailjoin = (case+ tjs of
     | TAILJOINLSTcons _ => true | TAILJOINLSTnil () => false
-  ) : bool
+  ) : bool // end of [val]
   val () = begin
     if istailjoin then emit_tailjoinlst (pf | out, tjs)
   end // end of [val]

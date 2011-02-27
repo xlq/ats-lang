@@ -345,12 +345,12 @@ static void scull_access_setup (dev_t devno, struct scull_adev_info *devinfo)
 {
 	struct scull_dev *dev = devinfo->sculldev;
 	int err;
-
+//
 	/* Initialize the device structure */
-	dev->quantum = scull_quantum;
-	dev->qset = scull_qset;
+	dev->m_qset = scull_qset;
+	dev->n_quantum = scull_quantum;
 	sema_init(&dev->sem, 1);
-
+//
 	/* Do the cdev stuff. */
 	cdev_init(&dev->cdev, devinfo->fops);
 	kobject_set_name(&dev->cdev.kobj, devinfo->name);

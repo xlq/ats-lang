@@ -36,6 +36,10 @@
 //
 (* ****** ****** *)
 
+#define ATS_STALOADFLAG 0
+
+(* ****** ****** *)
+
 (*
 abst@ype (* HX: template parameters *)
 KERNEL = $extype "KERNEL" and USER = $extype "USER"

@@ -35,16 +35,24 @@ main (argc, argv) = () where {
   var n: int = N
   val () = begin
     if argc >= 2 then n := int_of_string (argv.[1])
-  end
+  end // end of [val]
   val [n:int] n = (int1_of_int)n
-  val () = assert_errmsg (n > 0, #LOCATION)
-  val xs = genlist (n)
 //
+  val () = assertloc (n > 0)
+  val xs = genlist (n)
   val () = assertloc (n = $RA.funralist_length xs)
 //
   var i: int = 0
-  val () = $RA.funralist_foreach_clo<int> {int@i} (view@ i | xs, !p_f) where {
-    var !p_f = @lam (pf: !int @ i | x: int): void =<clo> $effmask_exn (i := i + 1; assert (x = i))
+  val () =
+    $RA.funralist_foreach_clo<int>
+    {int@i} (view@ i | xs, !p_f) where {
+    var !p_f = @lam (
+      pf: !int @ i | x: int
+    ) : void =<clo> $effmask_all let
+      val () = i := i + 1; val () = assert (x = i)
+    in
+      // nothing
+    end // end of [...]
   } // end of [val]
 //
   val () = loop (xs, n, 1) where {

@@ -160,11 +160,17 @@ strposlst_make_arrptr
   typedef int2 = (int, int)
   stavar l:addr
   val p = (&A): ptr l
+//
   viewdef V1 = array_v (int, n+n, l) and V2 = array_v (int2, n, l)
-  prval pf1 = view@ (A)
-  prval pf2 = $UN.castvw {V2} (pf1)
+//
+  prval () = __assert (view@ (A)) where {
+    extern prfun __assert (pf: !V1 >> V2): void
+  } // end of [prval]
   val xs = list_vt_make_array<int2> (A, size1_of_int1 (n))
-  prval () = view@ (A) := $UN.castvw {V1} (pf2)
+  prval () = __assert (view@ (A)) where {
+    extern prfun __assert (pf: !V2 >> V1): void
+  } // end of [prval]
+//
 in
   xs
 end // end of [strposlst_make_arrptr]

@@ -382,9 +382,11 @@ in
       fprint_hityp (pf | out, hityp_decode hit_elt);
       prstr ")";
     end // end of [INSTRarr_stack]
-  | INSTRassgn_arr (vp_arr, vp_asz, tmp_elt, vp_tsz) => begin
+  | INSTRassgn_arr (
+      tmp_ptr, vp_asz, tmp_elt, vp_tsz
+    ) => begin
       prstr "INSTRassgn_arr(";
-      fprint_valprim (pf | out, vp_arr);
+      fprint_tmpvar (pf | out, tmp_ptr);
       prstr "; ";
       fprint_valprim (pf | out, vp_asz);
       prstr "; ";
@@ -393,9 +395,13 @@ in
       fprint_valprim (pf | out, vp_tsz);
       prstr ")";
     end // end of [INSTRassgn_arr]
-  | INSTRassgn_clo (vp_clo, fl, env) => begin
+  | INSTRassgn_clo (
+      tmp_ptr, tmp_clo, fl, env
+    ) => begin
       prstr "INSTRassgn_clo(";
-      fprint_valprim (pf | out, vp_clo);
+      fprint_tmpvar (pf | out, tmp_ptr);
+      prstr "; ";
+      fprint_tmpvar (pf | out, tmp_clo);
       prstr "; ";
       fprint_funlab (pf | out, fl);
       prstr "; ";

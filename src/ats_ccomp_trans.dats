@@ -121,10 +121,8 @@ end // end of [local]
 
 local
 
-viewtypedef dynctx =
-  $Map.map_vt (d2var_t, valprim)
-// end of [dynctx]
-
+viewtypedef
+dynctx = $Map.map_vt (d2var_t, valprim)
 assume dynctx_vt = dynctx
 
 viewtypedef dynctxlst = List_vt (dynctx)
@@ -416,14 +414,13 @@ ccomp_patck_sum (
     | HIPas (_(*knd*), _(*d2v*), hip) => aux (res, hip, i)
     | HIPvar _ => ()
     | _ => let
-        val d2v = (
-          case+ hip.hipat_asvar of
+        val d2v = (case+ hip.hipat_asvar of
           | D2VAROPTnone () => d2v where {
               val d2v = d2var_make_any (loc)
               val () = hipat_set_asvar (hip, D2VAROPTsome d2v)
             } // end of [D2VAROPTnone]
           | D2VAROPTsome d2v => d2v // may happen in template compilation
-        ) : d2var_t
+        ) : d2var_t // end of [val]
         val hit = hityp_normalize (hip.hipat_typ)
         val tmp = tmpvar_make (hit)
         val () = instr_add_selcon (res, loc, tmp, vp_sum, hit_sum, i)
@@ -1492,12 +1489,12 @@ end // end of [instrlst_add_freeptr]
 (* ****** ****** *)
 
 fn tailcall_arg_move (
-    res: &instrlst_vt
-  , loc0: loc_t
-  , knd: int // 0/1: self/other
-  , tmps_arg: tmpvarlst
-  , vps_arg: valprimlst
-  ) : void = let
+  res: &instrlst_vt
+, loc0: loc_t
+, knd: int // 0/1: self/other
+, tmps_arg: tmpvarlst
+, vps_arg: valprimlst
+) : void = let
 (*
   val () = begin
 //
@@ -1519,9 +1516,11 @@ fn tailcall_arg_move (
   end // end of [valmov]
 //
   fun aux1_arg (
-      res: &instrlst_vt
-    , loc0: loc_t, i: int, vps: valprimlst
-    ) : valprimlst_vt = begin case+ vps of
+    res: &instrlst_vt
+  , loc0: loc_t
+  , i: int, vps: valprimlst
+  ) : valprimlst_vt = begin
+    case+ vps of
     | list_cons (vp, vps) => let
         val vp = (case+ vp.valprim_node of
           | VParg i_arg when i_arg < i => valprim_mov (res, loc0, vp)
@@ -1530,7 +1529,7 @@ fn tailcall_arg_move (
             end // end of [VPptrof]
           | VPclo _ => valprim_mov (res, loc0, vp)
           | _ => vp
-        ) : valprim
+        ) : valprim // end of [val]
       in
         list_vt_cons (vp, aux1_arg (res, loc0, i+1, vps))
       end // end of [list_vt_cons]
@@ -1538,15 +1537,15 @@ fn tailcall_arg_move (
   end // end of [aux1_arg]
 //
   fun aux2_arg (
-      res: &instrlst_vt
-    , loc0: loc_t
-    , vps: valprimlst
-    ) : valprimlst_vt = begin case+ vps of
+    res: &instrlst_vt
+  , loc0: loc_t
+  , vps: valprimlst
+  ) : valprimlst_vt = case+ vps of
     | list_cons (vp, vps) => begin
         list_vt_cons (vp, aux2_arg (res, loc0, vps))
       end // end of [list_cons]
     | list_nil () => list_vt_nil ()
-  end // end of [aux2_arg]
+  (* end of [aux2_arg] *)
 //
   val vps_arg = (
     case+ knd of
@@ -1555,25 +1554,25 @@ fn tailcall_arg_move (
   ) : valprimlst_vt
 //
   fun aux1_mov (
-      res: &instrlst_vt
-    , loc0: loc_t
-    , i: int
-    , vps: valprimlst_vt
-    ) : void = begin case+ vps of
+    res: &instrlst_vt
+  , loc0: loc_t
+  , i: int
+  , vps: valprimlst_vt
+  ) : void = case+ vps of
     | ~list_vt_cons (vp, vps) => let
         val () = instr_add_move_arg (res, loc0, i, vp)
       in
         aux1_mov (res, loc0, i+1, vps)
       end // end of [list_vt_cons]
     | ~list_vt_nil () => ()
-  end // end of [aux1_mov]
+  (* end of [aux1_mov] *)
 //
   fun aux2_mov (
-      res: &instrlst_vt
-    , loc0: loc_t
-    , tmps: tmpvarlst
-    , vps: valprimlst_vt
-    ) : void = begin case+ vps of
+    res: &instrlst_vt
+  , loc0: loc_t
+  , tmps: tmpvarlst
+  , vps: valprimlst_vt
+  ) : void = case+ vps of
     | ~list_vt_cons (vp, vps) => begin case+ tmps of
       | list_cons (tmp, tmps) => let
           val () = instr_add_move_val (res, loc0, tmp, vp)
@@ -1583,7 +1582,7 @@ fn tailcall_arg_move (
       | list_nil () => aux2_mov (res, loc0, tmps, vps) // deadcode
       end // end of [list_vt_cons]
     | ~list_vt_nil () => ()
-  end // end of [aux2_mov]
+  (* // end of [aux2_mov] *)
 in
   case+ tmps_arg of
   | list_cons _ =>
@@ -1591,17 +1590,17 @@ in
   | list_nil () => aux1_mov (res, loc0, 0, vps_arg)
 end // end of [tailcall_arg_move]
 
-//
+(* ****** ****** *)
 
 fn ccomp_exp_app_tmpvar (
-    res: &instrlst_vt
-  , loc0: loc_t
-  , level: int
-  , hit_fun: hityp_t
-  , hie_fun: hiexp
-  , hies_arg: hiexplst
-  , tmp_res: tmpvar_t
-  ) : void = let
+  res: &instrlst_vt
+, loc0: loc_t
+, level: int
+, hit_fun: hityp_t
+, hie_fun: hiexp
+, hies_arg: hiexplst
+, tmp_res: tmpvar_t
+) : void = let
 //
   var vps_free: valprimlst_vt = list_vt_nil {valprim} ()
 //
@@ -1716,10 +1715,9 @@ end // end of [ccomp_exp_app_tmpvar]
 (* ****** ****** *)
 
 fn ccomp_exp_assgn_arr (
-    res: &instrlst_vt
-  , vp_arr: valprim, hit_elt: hityp_t
-  , hies_elt: hiexplst
-  ) : void = let
+  res: &instrlst_vt
+, vp_arr: valprim, hit_elt: hityp_t, hies_elt: hiexplst
+) : void = let
   fun aux (
     res: &instrlst_vt, i: int, hies: hiexplst
   ) :<cloref1> void =
@@ -1744,15 +1742,14 @@ end // end of [ccomp_exp_assgn_arr]
 (* ****** ****** *)
 
 fn ccomp_exp_arrinit_tmpvar (
-    res: &instrlst_vt
-  , loc0: loc_t
-  , level: int
-  , hit_elt: hityp_t
-  , ohie_asz: hiexpopt
-  , hies_elt: hiexplst
-  , tmp_arr: tmpvar_t
-  ) : void = let
-  val vp_arr = valprim_tmp (tmp_arr)
+  res: &instrlst_vt
+, loc0: loc_t
+, level: int
+, hit_elt: hityp_t
+, ohie_asz: hiexpopt
+, hies_elt: hiexplst
+, tmp_arr: tmpvar_t
+) : void = let
   val vp_asz = (case+ ohie_asz of
     | Some hie_asz => ccomp_exp (res, hie_asz)
     | None () => let
@@ -1772,22 +1769,26 @@ in
         val () = ccomp_exp_tmpvar (res, hie_elt, tmp_elt)
         val vp_tsz = valprim_sizeof (hit_elt)
       in
-        instr_add_assgn_arr (res, loc0, vp_arr, vp_asz, tmp_elt, vp_tsz)
+        instr_add_assgn_arr (res, loc0, tmp_arr, vp_asz, tmp_elt, vp_tsz)
       end // end of [list_cons]
     | list_nil () => ()
     end // end of [Some]
-  | None () => ccomp_exp_assgn_arr (res, vp_arr, hit_elt, hies_elt)
+  | None () => let
+      val vp_arr = valprim_tmp (tmp_arr)
+    in
+      ccomp_exp_assgn_arr (res, vp_arr, hit_elt, hies_elt)
+    end // end of [None]
 end // end of [ccomp_exp_arrinit_tmpvar]
 
 (* ****** ****** *)
 
 fn ccomp_exp_arrsize_tmpvar (
-    res: &instrlst_vt
-  , loc0: loc_t
-  , hit_elt: hityp_t
-  , hies_elt: hiexplst
-  , tmp_res: tmpvar_t
-  ) : void = let
+  res: &instrlst_vt
+, loc0: loc_t
+, hit_elt: hityp_t
+, hies_elt: hiexplst
+, tmp_res: tmpvar_t
+) : void = let
   val asz = $Lst.list_length hies_elt
   val () = instr_add_arr_heap (res, loc0, tmp_res, asz, hit_elt)
   val tmp_arr = tmpvar_make (hityp_encode hityp_ptr)
@@ -1816,20 +1817,20 @@ end // end of [ccomp_exp_arrsize_tmpvar]
 (* ****** ****** *)
 
 fun ccomp_exp_lst_tmpvar_rest (
-    res: &instrlst_vt
-  , loc0: loc_t
-  , d2c_nil: d2con_t
-  , hit_nil: hityp_t
-  , d2c_cons: d2con_t
-  , hit_cons: hityp_t
-  , hies: hiexplst
-  , vp_top: valprim
-  , offs: offsetlst
-  , tmp_fst: tmpvar_t
-  , vp_fst: valprim
-  , tmp_nxt: tmpvar_t
-  , vp_nxt: valprim
-  ) : void = begin case+ hies of
+  res: &instrlst_vt
+, loc0: loc_t
+, d2c_nil: d2con_t
+, hit_nil: hityp_t
+, d2c_cons: d2con_t
+, hit_cons: hityp_t
+, hies: hiexplst
+, vp_top: valprim
+, offs: offsetlst
+, tmp_fst: tmpvar_t
+, vp_fst: valprim
+, tmp_nxt: tmpvar_t
+, vp_nxt: valprim
+) : void = begin case+ hies of
   | list_cons (hie, hies) => let
       val loc = hie.hiexp_loc
       val vp = ccomp_exp (res, hie)
@@ -1857,13 +1858,13 @@ fun ccomp_exp_lst_tmpvar_rest (
 end // end of [ccomp_exp_lst_tmpvar_rest]
 
 fn ccomp_exp_lst_tmpvar (
-    res: &instrlst_vt
-  , loc0: loc_t
-  , knd: int
-  , hit_elt: hityp_t
-  , hies: hiexplst
-  , tmp_res: tmpvar_t
-  ) : void = let
+  res: &instrlst_vt
+, loc0: loc_t
+, knd: int
+, hit_elt: hityp_t
+, hies: hiexplst
+, tmp_res: tmpvar_t
+) : void = let
   val d2conref_nil = (
     if knd > 0 then List_vt_nil else List_nil
   ) : d2conref_t
@@ -1907,7 +1908,7 @@ in
       , d2c_nil, hit_nil, d2c_cons, hit_cons
       , hies, vp_top, offs
       , tmp_fst, vp_fst, tmp_nxt, vp_nxt
-      )
+      ) // end of [ccomp_exp_list_tmpvar_rest]
     end // end of [list_cons]
   | list_nil () => begin
       instr_add_move_con (res, loc0, tmp_res, hit_nil, d2c_nil, '[])
@@ -1917,25 +1918,24 @@ end // end of [ccomp_exp_lst_with_tmpvar]
 (* ****** ****** *)
 
 fn ccomp_exp_seq_tmpvar (
+  res: &instrlst_vt
+, hies: hiexplst, tmp_res: tmpvar_t
+) : void = let
+  fun aux (
     res: &instrlst_vt
+  , hie0: hiexp
   , hies: hiexplst
   , tmp_res: tmpvar_t
-  ) : void = let
-  fun aux (
-      res: &instrlst_vt
-    , hie0: hiexp
-    , hies: hiexplst
-    , tmp_res: tmpvar_t
-    ) : void = begin case+ hies of
+  ) : void = case+ hies of
     | list_cons (hie, hies) => let
         val _(*void*) = ccomp_exp (res, hie0)
       in
         aux (res, hie, hies, tmp_res)
-      end
+      end // end of [list_cons]
     | list_nil () => begin
         ccomp_exp_tmpvar (res, hie0, tmp_res)
-      end
-  end // end of [aux]
+      end // end of [list_nil]
+  // end of [aux]
 in
   case+ hies of
   | list_cons (hie, hies) => aux (res, hie, hies, tmp_res)
@@ -2194,7 +2194,8 @@ end // end of [ccomp_exp_tmpvar]
 (* ****** ****** *)
 
 implement
-ccomp_hilab (res, hil) = begin
+ccomp_hilab
+  (res, hil) = begin
   case+ hil.hilab_node of
   | HILind (hiess_ind, hit_elt) => let
       val hit_elt = hityp_normalize (hit_elt)
@@ -2210,20 +2211,21 @@ ccomp_hilab (res, hil) = begin
 end // end of [ccomp_hilab]
 
 implement
-ccomp_hilablst (res, hils) = begin
-  case+ hils of
+ccomp_hilablst
+  (res, hils) = case+ hils of
   | list_cons (hil, hils) => let
       val off = ccomp_hilab (res, hil)
     in
       list_cons (off, ccomp_hilablst (res, hils))
     end
   | list_nil () => list_nil ()
-end // end of [ccomp_hilablst]
+// end of [ccomp_hilablst]
 
 (* ****** ****** *)
 
 fn d2var_typ_ptr_get
   (d2v: d2var_t): s2exp = s2e_elt where {
+//
   val d2v_view = (
     case+ d2var_get_view d2v of
     | D2VAROPTsome d2v_view => d2v_view
@@ -2233,6 +2235,7 @@ fn d2var_typ_ptr_get
         $Err.abort {d2var_t} ()
       end // end of [D2VAROPTnone]
   ) : d2var_t // end of [val d2v_view]
+//
   val s2e_view = (
     case+ d2var_get_mastyp (d2v_view) of
     | Some s2e_view => s2e_view | None () => begin
@@ -2241,6 +2244,7 @@ fn d2var_typ_ptr_get
         $Err.abort {s2exp} ()
       end // end of [None]
   ) : s2exp // end of [val s2e_view]
+//
   val s2e_elt = (
     case+ un_s2exp_at_viewt0ype_addr_view (s2e_view) of
     | ~Some_vt (s2es2e) => s2es2e.0 | ~None_vt () => begin
@@ -2249,6 +2253,7 @@ fn d2var_typ_ptr_get
         $Err.abort {s2exp} ()
       end // end of [None_vt]
   ) : s2exp // end of [val s2e_elt]
+//
 } (* end of [d2var_typ_ptr_get] *)
 
 (* ****** ****** *)
@@ -2275,10 +2280,9 @@ end (* end of [ccomp_fundeclst_init] *)
 //
 
 fn ccomp_fntdeclst_main {n:nat} (
-    loc0: loc_t
-  , fundecs: list (hifundec, n)
-  , fls: list_vt (funlab_t, n)
-  ) : void = let
+  loc0: loc_t
+, fundecs: list (hifundec, n), fls: list_vt (funlab_t, n)
+) : void = let
   val (pf_tailcallst_mark | ()) = the_tailcallst_mark ()
   val () = auxlst_push (fls) where {
     fn aux_push (fl: funlab_t): void = let
@@ -2344,9 +2348,9 @@ end // end of [ccomp_fntdeclst_main]
 
 //
 
-fun ccomp_fundeclst_main {n:nat} (
-    fundecs: list (hifundec, n), fls: list_vt (funlab_t, n)
-  ) : void = begin case+ fls of
+fun ccomp_fundeclst_main {n:nat} .<n>. (
+  fundecs: list (hifundec, n), fls: list_vt (funlab_t, n)
+) : void = begin case+ fls of
   | ~list_vt_cons (fl, fls) => let
       val+ list_cons (fundec, fundecs) = fundecs
       val hie_def = fundec.hifundec_def
@@ -2378,11 +2382,11 @@ end // end of [ccomp_fundeclst_main]
 (* ****** ****** *)
 
 fn ccomp_valdeclst (
-    res: &instrlst_vt
-  , level: int
-  , valknd: $Syn.valkind
-  , valdecs: hivaldeclst
-  ) : void = let
+  res: &instrlst_vt
+, level: int
+, valknd: $Syn.valkind
+, valdecs: hivaldeclst
+) : void = let
   fun aux (res: &instrlst_vt, valdecs: hivaldeclst)
     :<cloref1> void = begin case+ valdecs of
     | list_cons (valdec, valdecs) => let
@@ -2445,9 +2449,9 @@ fn ccomp_valdeclst_rec (
 
 (* ****** ****** *)
 
-fn ccomp_vardec_sta
-  (res: &instrlst_vt, level: int, vardec: hivardec)
-  : void = let
+fn ccomp_vardec_sta (
+  res: &instrlst_vt, level: int, vardec: hivardec
+) : void = let
   val loc = vardec.hivardec_loc
   val d2v = vardec.hivardec_ptr
   val () = d2var_set_lev (d2v, level)
@@ -2484,6 +2488,7 @@ fn ccomp_vardec_dyn (
   } // end of [val]
   val tmp_ptr =
     tmpvar_make (hityp_normalize hit_ptr)
+  // end of [val]
   val () = instr_add_vardec (res, loc_var, tmp_ptr)
   val () = the_dynctx_add (d2v, valprim_tmp tmp_ptr)
   val hie_ini = (
@@ -2496,10 +2501,12 @@ fn ccomp_vardec_dyn (
   ) : hiexp // end of [val]
 //
   fn aux_laminit (
-      res: &instrlst_vt
-    , tmp_ptr: tmpvar_t, hie: hiexp
-    , ovpr: Option_vt (valprimref) // HX: for tail-call optimization
-    ) : void =
+    res: &instrlst_vt
+  , level: int
+  , tmp_ptr: tmpvar_t
+  , hie: hiexp
+  , ovpr: Option_vt (valprimref) // HX: for tail-call optimization
+  ) : void =
     case+ hie.hiexp_node of
     | HIElaminit (hips_arg, hie_body) => let
         val loc = hie.hiexp_loc
@@ -2518,9 +2525,17 @@ fn ccomp_vardec_dyn (
           ccomp_exp_arg_body_funlab (loc, prolog, hips_arg, hie_body, fl)
         end // end of [val]
         val () = the_tailcallst_unmark (pf_tailcallst_mark | (*none*))
-        val vp_clo = valprim_tmp (tmp_ptr)
+//
+        val hit_clo = ( // HX: no environment for toplevel closure
+          if level > 0 then hityp_cltype (fl) else hityp_clo (*toplevel*)
+        ) : hityp // end of [val]
+        val hit_clo = hityp_encode (hit_clo)
+        val tmp_clo = tmpvar_make (hit_clo)
+//
         val env = cloenv_make ()
-        val () = instr_add_assgn_clo (res, loc, vp_clo, fl, env)
+//
+        val () = instr_add_assgn_clo (res, loc, tmp_ptr, tmp_clo, fl, env)
+//
       in
         // nothing
       end // end of [HIElaminit]
@@ -2534,14 +2549,16 @@ fn ccomp_vardec_dyn (
       in
         $Err.abort () // HX: deadcode
       end // end of [_]
-  // end of [aux_laminit]
+  (* end of [aux_laminit] *)
 //
   fn aux_lamfixinit (
-      res: &instrlst_vt
-    , tmp_ptr: tmpvar_t, hie: hiexp
-    ) : void = case+ hie.hiexp_node of
+    res: &instrlst_vt
+  , level: int
+  , tmp_ptr: tmpvar_t
+  , hie: hiexp
+  ) : void = case+ hie.hiexp_node of
     | HIElaminit _ =>
-        aux_laminit (res, tmp_ptr, hie, None_vt ())
+        aux_laminit (res, level, tmp_ptr, hie, None_vt ())
       // end of [HIElaminit]
     | HIEfix (
         knd, d2v_fix, hie_def
@@ -2551,7 +2568,7 @@ fn ccomp_vardec_dyn (
         val vp_fix = valprim_fix (vpr, hityp_t_ptr)
         val (pf_dynctx_mark | ()) = the_dynctx_mark ()
         val () = the_dynctx_add (d2v_fix, vp_fix)
-        val () = aux_laminit (res, tmp_ptr, hie_def, Some_vt (vpr))
+        val () = aux_laminit (res, level, tmp_ptr, hie_def, Some_vt (vpr))
         val () = the_dynctx_unmark (pf_dynctx_mark | (*none*))
       in
         // nothing
@@ -2563,7 +2580,7 @@ fn ccomp_vardec_dyn (
       in
         $Err.abort () // HX: deadcode
       end // end of [_]
-  // end of [aux_lamfixinit]
+  (* end of [aux_lamfixinit] *)
 //
 in
   case+ hie_ini.hiexp_node of
@@ -2576,7 +2593,8 @@ in
         res, loc_ini, level, hit_elt, ohie_asz, hies_elt, tmp_ptr
       ) // end of [ccomp_exp_arrinit_tmpvar]
     end // end of [HIEarrinit]
-  |  _ when hiexp_is_laminit (hie_ini) => aux_lamfixinit (res, tmp_ptr, hie_ini)
+  |  _ when hiexp_is_laminit (hie_ini) =>
+       aux_lamfixinit (res, level, tmp_ptr, hie_ini)
   | _ => let
       val () = prerr_interror ()
       val () = prerr ": ccomp_vardec_dyn: hie_ini = "

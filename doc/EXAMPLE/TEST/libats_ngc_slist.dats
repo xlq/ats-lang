@@ -61,27 +61,27 @@ viewtypedef personlst (n:int) = slist (person, n)
 
 extern
 fun person_alloc
-  : node_alloc_type (person) = "person_alloc"
-implement node_alloc<person> () = person_alloc ()
+  : slnode_alloc_type (person) = "person_alloc"
+implement slnode_alloc<person> () = person_alloc ()
 
 (* ****** ****** *)
 
 extern
 fun person_free
-  : node_free_type (person) = "person_free"
-implement node_free<person> (pf | x) = person_free (pf | x)
+  : slnode_free_type (person) = "person_free"
+implement slnode_free<person> (pf | x) = person_free (pf | x)
 
 (* ****** ****** *)
 
 extern
 fun person_get_next
-  : node_get_next_type (person) = "person_get_next"
-implement node_get_next<person> (pf | x) = person_get_next (pf | x)
+  : slnode_get_next_type (person) = "person_get_next"
+implement slnode_get_next<person> (pf | x) = person_get_next (pf | x)
 
 extern
 fun person_set_next
-  : node_set_next_type (person) = "person_set_next"
-implement node_set_next<person> (pf | x, p) = person_set_next (pf | x, p)
+  : slnode_set_next_type (person) = "person_set_next"
+implement slnode_set_next<person> (pf | x, p) = person_set_next (pf | x, p)
 
 (* ****** ****** *)
 
@@ -98,7 +98,7 @@ in
     val (pfopt | p) = person_alloc ()
     val () = assertloc (p > null)
     prval Some_v (pfnod) = pfopt
-    prval (pfat, fpfnod) = node_v_takeout_val {a?} (pfnod)
+    prval (pfat, fpfnod) = slnode_v_takeout_val {a?} (pfnod)
 //
     val id = randint (10)
     val () = p->name := sprintf ("XYZ-%1d", @(id))

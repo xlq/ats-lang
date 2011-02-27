@@ -50,7 +50,8 @@ staload _(*anonymous*)= "ats_map_lin.dats"
 
 (* ****** ****** *)
 
-viewtypedef tmpvarmap = $Map.map_vt (tmpvar_t, int)
+viewtypedef
+tmpvarmap = $Map.map_vt (tmpvar_t, int)
 
 fn tmpvarmap_add
   (m: &tmpvarmap, tmp: tmpvar_t): void = begin
@@ -92,7 +93,8 @@ dataviewtype ENV
   (l:addr, i:addr) = ENVcon (l, i) of (ptr l, ptr i, int)
 // end of [ENV]
 
-fn _emit_tmpvarmap_dec {m:file_mode} {l:addr} (
+fn _emit_tmpvarmap_dec
+  {m:file_mode} {l:addr} (
     pf_mod: file_mode_lte (m, w)
   , pf_fil: !FILE m @ l
   | l: ptr l, knd: int (*local/static*)
@@ -212,21 +214,29 @@ instr_tmpvarmap_add (m, ins) = let
   end // end of [aux_branchlst]
 in
   case+ ins.instr_node of
+//
   | INSTRarr_heap (tmp, _, _) => tmpvarmap_add_root (m, tmp)
   | INSTRarr_stack (tmp, _, _, _) => tmpvarmap_add_root (m, tmp)
+//
+  | INSTRassgn_clo (_, tmp_clo, _, _) => tmpvarmap_add (m, tmp_clo)
+//
   | INSTRcall (tmp, _, _, _) => tmpvarmap_add_root (m, tmp)
 (*
   | INSTRcall_tail fl => ()
 *)
-  | INSTRcond (_, inss_then, inss_else) => begin
-      instrlst_tmpvarmap_add (m, inss_then);
-      instrlst_tmpvarmap_add (m, inss_else);
-    end
-  | INSTRfunction (tmp_ret_all, vps_arg, inss_body, tmp_ret) => begin
-      tmpvarmap_add_root (m, tmp_ret_all);
-      instrlst_tmpvarmap_add (m, inss_body);
-      tmpvarmap_add_root (m, tmp_ret);
-    end // end of [INSTRfunction]
+  | INSTRcond (
+      _, inss_then, inss_else
+    ) => () where {
+      val () = instrlst_tmpvarmap_add (m, inss_then)
+      val () = instrlst_tmpvarmap_add (m, inss_else)
+    } // end of [INSTRcond]
+  | INSTRfunction (
+      tmp_ret_all, vps_arg, inss_body, tmp_ret
+    ) => () where {
+      val () = tmpvarmap_add_root (m, tmp_ret_all)
+      val () = instrlst_tmpvarmap_add (m, inss_body)
+      val () = tmpvarmap_add_root (m, tmp_ret)
+    } // end of [INSTRfunction]
   | INSTRload_ptr (tmp, _) => tmpvarmap_add_root (m, tmp)
   | INSTRload_ptr_offs (tmp, _, _) => tmpvarmap_add_root (m, tmp)
   | INSTRload_var (tmp, _) => tmpvarmap_add_root (m, tmp)

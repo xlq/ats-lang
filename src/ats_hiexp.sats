@@ -48,8 +48,18 @@ staload "ats_staexp2.sats"
 staload "ats_dynexp2.sats"
 
 (* ****** ****** *)
+//
+// HX: implemented in [ats_ccomp.dats]
+//
+abstype funlab_t // boxed type
+typedef funlablst = List funlab_t
+viewtypedef funlablst_vt = List_vt (funlab_t)
+
+(* ****** ****** *)
 
 datatype hityp_node =
+  | HITcltype of (* closure type *)
+      funlab_t
   | HITextype of (* externally named type *)
       (string(*extname*), hityplstlst(*arglst*))
   | HITfun of (* function type *)
@@ -128,6 +138,10 @@ val hityp_void : hityp
 
 (* ****** ****** *)
 
+fun hityp_cltype
+  (fl: funlab_t): hityp // for stack-allocated closures
+// end of [hityp_cltype]
+
 fun hityp_extype
   (name: string, _arg: hityplstlst): hityp
 fun hityp_extype_nil (name: string): hityp
@@ -168,10 +182,14 @@ fun hityp_is_tyrecsin (hit: hityp): bool // singular (flat) record
 fun label_is_tyarr (hit_rec: hityp, lab: lab_t): bool
 
 (* ****** ****** *)
-
-abstype tmpvar_t // implemented in [ats_ccomp.dats]
+//
+// HX: implemented in [ats_ccomp.dats]
+//
+abstype tmpvar_t
 typedef tmpvarlst = List (tmpvar_t)
-datatype tmpvaropt = TMPVAROPTsome of tmpvar_t | TMPVAROPTnone
+datatype tmpvaropt =
+  | TMPVAROPTsome of tmpvar_t | TMPVAROPTnone
+// end of [tmpvaropt]
 
 (* ****** ****** *)
 

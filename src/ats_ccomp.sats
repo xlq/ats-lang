@@ -68,15 +68,11 @@ overload prerr with prerr_tmplab
 
 (* ****** ****** *)
 
-abstype funlab_t // boxed type
-typedef funlablst = List funlab_t
-viewtypedef funlablst_vt = List_vt (funlab_t)
-
 abstype funentry_t
 typedef funentrylst = List funentry_t
 typedef funentryopt = Option funentry_t
 
-//
+(* ****** ****** *)
 
 fun fprint_funlab {m:file_mode}
   (pf: file_mode_lte (m, w) | out: &FILE m, fl: funlab_t): void
@@ -424,10 +420,14 @@ instr_node =
   | INSTRarr_stack of (* stack array allcation *)
       (tmpvar_t, int(*level*), valprim(*size*), hityp_t(*element type*))
 //
-  | INSTRassgn_arr of (* array initialization *)
-      (valprim(*arr*), valprim(*asz*), tmpvar_t(*elt*), valprim(*tsz*))
+  | INSTRassgn_arr of (
+      tmpvar_t(*arrptr*), valprim(*asz*), tmpvar_t(*elt*), valprim(*tsz*)
+    ) // end of [INSTRassgn_arr]
+//
+// HX: [cloptr] is the address of [clo]
+//
   | INSTRassgn_clo of (* closure initialization *)
-      (valprim(*clo*), funlab_t, envmap_t)
+      (tmpvar_t(*cloptr*), tmpvar_t(*clo*), funlab_t, envmap_t)
 //
   | INSTRcall of (* function call *)
       (tmpvar_t, hityp_t, valprim, valprimlst)
@@ -614,16 +614,17 @@ fun instr_add_arr_stack (
 fun instr_add_assgn_arr (
     res: &instrlst_vt
   , loc: loc_t
-  , vp_arr: valprim
-  , vp_asz: valprim
-  , tmp_elt: tmpvar_t
-  , vp_tsz: valprim
+  , tmp_ptr: tmpvar_t
+  , vp_asz: valprim, tmp_elt: tmpvar_t, vp_tsz: valprim
   ) : void // end of [instr_add_assgn_arr]
 
 fun instr_add_assgn_clo (
     res: &instrlst_vt
   , loc: loc_t
-  , vp_clo: valprim
+//
+// HX: tmp_ptr is the address of tmp_clo
+//
+  , tmp_ptr: tmpvar_t, tmp_clo: tmpvar_t
   , fl: funlab_t, env: envmap_t
   ) : void // end of [instr_add_assgn_clo]
 

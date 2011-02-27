@@ -28,13 +28,10 @@
 */
 
 /* ****** ****** */
-
-/*
-**
-** Author: Hongwei Xi (hwxi AT cs DOT bu DOT edu) 
-**
-*/
-
+//
+// Author: Hongwei Xi (hwxi AT cs DOT bu DOT edu) 
+// Start Time: February, 2011
+//
 /* ****** ****** */
 
 #ifndef	ATS_MEMORY_H
@@ -42,75 +39,8 @@
 
 /* ****** ****** */
 
-#include <stdlib.h>
-#include "ats_types.h"
-
-/* ****** ****** */
-
-// the function [alloca] is declared in
-extern void *alloca (size_t nsz) ; // [alloca.h]
-
-#define ATS_ALLOCA(sz) alloca(sz)
-#define ATS_ALLOCA2(n, sz) alloca((n)*(sz))
-
-/* ****** ****** */
-
-#define ATS_GC_INIT ats_gc_init
-#define ATS_GC_MARKROOT ats_gc_markroot
-
-/* ****** ****** */
-
-#define ATS_FREE ats_free_gc
-#define ATS_MALLOC ats_malloc_gc
-#define ATS_MALLOC2(n, sz) ATS_MALLOC((n)*(sz))
-#define ATS_CALLOC ats_calloc_gc
-#define ATS_REALLOC ats_realloc_gc
-
-/* ****** ****** */
-
-extern
-ats_void_type ats_gc_init () ;
-
-extern
-ats_void_type
-ats_gc_markroot (ats_ptr_type p, ats_size_type bsz) ;
-
-/* ****** ****** */
-
-extern
-ats_ptr_type
-ats_malloc_ngc (ats_size_type n) ;
-
-extern
-ats_ptr_type
-ats_calloc_ngc (ats_size_type nmemb, ats_size_type bsz) ;
-
-extern
-ats_void_type
-ats_free_ngc (const ats_ptr_type p) ;
-
-extern
-ats_ptr_type
-ats_realloc_ngc (const ats_ptr_type p, ats_size_type n) ;
-
-/* ****** ****** */
-
-extern
-ats_ptr_type
-ats_malloc_gc (ats_size_type bsz) ;
-
-extern
-ats_ptr_type
-ats_calloc_gc
-(ats_size_type nmemb, ats_size_type bsz) ;
-
-extern
-ats_void_type
-ats_free_gc (const ats_ptr_type p) ;
-
-extern
-ats_ptr_type
-ats_realloc_gc (const ats_ptr_type p, ats_size_type bsz) ;
+#define ATS_FREE(ptr) kfree(ptr)
+#define ATS_MALLOC(bsz) kmalloc(bsz, GFP_KERNEL)
 
 /* ****** ****** */
 

@@ -188,14 +188,14 @@ cleanall:: ; $(RMF) libats_fundeque_fingertree
 
 checkall:: libats_funheap_braun
 libats_funheap_braun: libats_funheap_braun.dats
-	$(ATSCC) -D_ATS_GCATS -O2 -o $@ $< && ./libats_funheap_braun 100000
+	$(ATSCC) -D_ATS_GCATS -O2 -o $@ $< && ./$@ 100000
 cleanall:: ; $(RMF) libats_funheap_braun
 
 ######
 
 checkall:: libats_funmap_avltree
 libats_funmap_avltree: libats_funmap_avltree.dats
-	$(ATSCC) -D_ATS_GCATS -O2 -o $@ $< && ./libats_funmap_avltree 100000
+	$(ATSCC) -D_ATS_GCATS -O2 -o $@ $< && ./$@ 100000
 cleanall:: ; $(RMF) libats_funmap_avltree
 
 
@@ -203,7 +203,7 @@ cleanall:: ; $(RMF) libats_funmap_avltree
 
 checkall:: libats_funralist_nested
 libats_funralist_nested: libats_funralist_nested.dats
-	$(ATSCC) -D_ATS_GCATS -O2 -o $@ $< && ./libats_funralist_nested 100000
+	$(ATSCC) -D_ATS_GCATS -O2 -o $@ $< && ./$@ 100000
 cleanall:: ; $(RMF) libats_funralist_nested
 
 ######

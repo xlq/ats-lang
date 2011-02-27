@@ -253,9 +253,16 @@ end // end of [funralist_update]
 local
 
 fun{a:t@ype}
-foreach {v:view} {n:nat} {f:eff} .<n>. (
-  pf0: !v | xs: ralist (a, n), f: (!v | a) -<cloref,f> void
-) :<f> void = case+ xs of
+foreach
+  {v:view}
+  {n:nat}
+  {f:eff} .<n>. (
+  pf0: !v
+| xs: ralist (a, n), f: (!v | a) -<cloref,f> void
+) :<f> void = let
+  extern fun donothing ():<> void = "atspre_donothing"
+in
+  case+ xs of
   | RAnil () => ()
   | RAevn xxs => let
       var !p_f2 with pf_f2 = @lam
@@ -265,8 +272,9 @@ foreach {v:view} {n:nat} {f:eff} .<n>. (
       val f2 = __encode (pf_f2 | p_f2) where { // cutting a corner here!
         extern castfn __encode (pf: !clo_type @ p_f2 | p: ptr p_f2):<> cloref_type
       } // end of [val]
+      val () = foreach<P a a> (pf0 | xxs, f2)
     in
-      foreach<P a a> (pf0 | xxs, f2)
+      donothing () // HX-2011-02-26: prevent tail-recursion optimization
     end // end of [RAevn]
   | RAodd (x, xxs) => let
       val () = f (pf0 | x) in case+ xxs of
@@ -278,11 +286,12 @@ foreach {v:view} {n:nat} {f:eff} .<n>. (
           val f2 = __encode (pf_f2 | p_f2) where { // cutting a corner here!
             extern castfn __encode (pf: !clo_type @ p_f2 | p: ptr p_f2):<> cloref_type
           } // end of [val]
+          val () = foreach<P a a> (pf0 | xxs, f2)
         in
-          foreach<P a a> (pf0 | xxs, f2)
+           donothing () // HX-2011-02-26: prevent tail-recursion optimization
         end // end of [_]
     end // end of [RAodd]
-// end of [foreach]
+end // end of [foreach]
 
 in // in of [local]
 

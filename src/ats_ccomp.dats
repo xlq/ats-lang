@@ -687,12 +687,12 @@ end // end of [instr_add_arr_heap]
 (* ****** ****** *)
 
 fun instr_arr_stack (
-    loc: loc_t
-  , tmp_res: tmpvar_t
-  , level: int // top: level = 0; inner: level > 0
-  , vp_asz: valprim
-  , hit_elt: hityp_t
-  ) : instr = '{
+  loc: loc_t
+, tmp_res: tmpvar_t
+, level: int // top: level = 0; inner: level > 0
+, vp_asz: valprim
+, hit_elt: hityp_t
+) : instr = '{
   instr_loc= loc
 , instr_node= INSTRarr_stack (tmp_res, level, vp_asz, hit_elt)
 } // end of [instr_arr_stack]
@@ -706,14 +706,12 @@ end // end of [instr_add_arr_stack]
 (* ****** ****** *)
 
 fun instr_assgn_arr (
-    loc: loc_t
-  , vp_arr: valprim
-  , vp_asz: valprim
-  , tmp_elt: tmpvar_t
-  , vp_tsz: valprim
-  ) : instr = '{
+  loc: loc_t
+, tmp_ptr: tmpvar_t
+, vp_asz: valprim, tmp_elt: tmpvar_t, vp_tsz: valprim
+) : instr = '{
   instr_loc= loc
-, instr_node= INSTRassgn_arr (vp_arr, vp_asz, tmp_elt, vp_tsz)
+, instr_node= INSTRassgn_arr (tmp_ptr, vp_asz, tmp_elt, vp_tsz)
 } // end of [instr_assgn_arr]
 
 implement
@@ -725,19 +723,20 @@ instr_add_assgn_arr
 (* ****** ****** *)
 
 fun instr_assgn_clo (
-    loc: loc_t
-  , vp_clo: valprim
-  , fl: funlab_t
-  , env: envmap_t
-  ) : instr = '{
+  loc: loc_t
+, tmp_ptr: tmpvar_t
+, tmp_clo: tmpvar_t
+, fl: funlab_t
+, env: envmap_t
+) : instr = '{
   instr_loc= loc
-, instr_node= INSTRassgn_clo (vp_clo, fl, env)
+, instr_node= INSTRassgn_clo (tmp_ptr, tmp_clo, fl, env)
 } // end of [instr_assgn_clo]
 
 implement
 instr_add_assgn_clo
-  (res, loc, vp_clo, fl, env) =
-  res := list_vt_cons (instr_assgn_clo (loc, vp_clo, fl, env), res)
+  (res, loc, vp_clo, tmp_clo, fl, env) =
+  res := list_vt_cons (instr_assgn_clo (loc, vp_clo, tmp_clo, fl, env), res)
 // end of [instr_add_assgn_clo]
 
 (* ****** ****** *)

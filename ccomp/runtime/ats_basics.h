@@ -43,24 +43,30 @@
 */
 
 /* ****** ****** */
+//
+// HX-2011-02-17:
+// if the following definition is not supporten, please change it to:
+// #define ATSunused
+//
+#define ATSunused __attribute__ ((unused))
 
-/*
-** [ATSextern] -> [ATSextern_val]
-*/
+/* ****** ****** */
+//
+// [ATSextern] -> [ATSextern_val]
+//
 #define ATSextern(ty, var) extern ty var
 #define ATSextern_prf(cst) // proof constant
 #define ATSextern_val(ty, val) extern ty val
-
+//
 #define ATSglobal(ty, var) ty var
 #define ATSlocal(ty, var) ty ATSunused var
 #define ATSstatic(ty, var) static ty var
-
 //
-// HX-2011-02-23: retired
+// HX-2011-02-23: these two are retired
 //
 #define ATSlocal_void(var) // void var
 #define ATSstatic_void(var) // void var
-
+//
 #define ATScastfn(castfn, val) val
 
 /* ****** ****** */
@@ -70,13 +76,6 @@
 // #define ATSstrcst(x) x
 //
 #define ATSstrcst(x) ((ats_ptr_type)x) // HX-2011-02-17
-
-//
-// HX-2011-02-17:
-// if the following definition is not supporten, please change it to:
-// #define Atsunused
-//
-#define ATSunused __attribute__ ((unused))
 
 /* ****** ****** */
 
@@ -97,16 +96,19 @@
 /* ****** ****** */
 
 #define ATSdeadcode() \
-  do { \
-    fprintf ( \
-      stderr, \
-      "Error in the file %s on line %d: the deadcode is executed!\n", \
-      __FILE__, __LINE__ \
-    ); \
-    abort (); \
-  } while (0);
+do { \
+  fprintf ( \
+    stderr, \
+    "abort(ATS): file = %s and line = %d: the deadcode is executed!\n", \
+    __FILE__, __LINE__ \
+  ) ; \
+  abort (); \
+} while (0);
 
-/* boolean values */
+/* ****** ****** */
+//
+// HX: boolean values
+//
 #define ats_true_bool 1
 #define ats_false_bool 0
 
@@ -117,13 +119,15 @@
 #define __strcmpats(s1, s2) strcmp((char*)(s1), (char*)(s2))
 
 /* ****** ****** */
-
-/* closure function selection */
+//
+// HX: closure function selection
+//
 #define ats_closure_fun(f) ((ats_clo_ptr_type)f)->closure_fun
 
 /* ****** ****** */
-
-/* handling castfn */
+//
+// HX: handling cast functions
+//
 #define ats_castfn_mac(hit, vp) ((hit)vp)
 
 /* ****** ****** */
@@ -151,18 +155,22 @@
 #define ats_ptrget_mac(ty, x) (*(ty*)(x))
 
 /* ****** ****** */
-
-/* for/while loop */
+//
+// HX: handling for/while loops
+//
 #define ats_loop_beg_mac(init) while(ats_true_bool) { init:
 #define ats_loop_end_mac(init, fini) goto init ; fini: break ; }
 
-/* while loop: deprecated!!! */
+//
+// HX: handling while loop: deprecated!!!
+//
 #define ats_while_beg_mac(clab) while(ats_true_bool) { clab:
 #define ats_while_end_mac(blab, clab) goto clab ; blab: break ; }
 
 /* ****** ****** */
-
-/* for initializing a reference */
+//
+// HX: for initializing a reference
+//
 #define ats_instr_move_ref_mac(tmp, hit, val) \
   do { tmp = ATS_MALLOC (sizeof(hit)) ; *(hit*)tmp = val ; } while (0)
 
@@ -170,23 +178,29 @@
 //
 // HX: for proof checking at run-time
 //
-#define ats_proofcheck_beg_mac(dyncst) \
-  static int dyncst ## _flag = 0 ; \
-  do { \
-    if (dyncst ## _flag > 0) return ; \
-    if (dyncst ## _flag < 0) { \
-      fprintf (stderr, "exit(ATS): termination checking failure: [%s] is cyclically defined!\n", # dyncst) ; \
-      exit (1) ; \
-    } \
-    dyncst ## _flag = -1 ; \
-  } while (0) ;
+#define \
+ats_proofcheck_beg_mac(dyncst)                                            \
+static int dyncst ## _flag = 0 ;                                          \
+do {                                                                      \
+  if (dyncst ## _flag > 0) return ;                                       \
+  if (dyncst ## _flag < 0) {                                              \
+    fprintf (stderr,                                                      \
+      "exit(ATS): proof checking failure: [%s] is cyclically defined!\n", \
+      # dyncst                                                            \
+    ) ;                                                                   \
+    exit (1) ;                                                            \
+  }                                                                       \
+  dyncst ## _flag = -1 ;                                                  \
+} while (0) ;
 /* end of [ats_proofcheck_beg_mac] */
 
-#define ats_proofcheck_end_mac(dyncst) { dyncst ## _flag =  1 ; }
+#define \
+ats_proofcheck_end_mac(dyncst) { dyncst ## _flag =  1 ; }
 
 /* ****** ****** */
 
 /*
+** HX:
 ** [mainats_prelude] is called in the function [main]
 ** it is implemented in [$ATSHOME/prelude/ats_main_prelude.dats]
 ** where it is given the name [main_prelude].
@@ -196,6 +210,7 @@ extern void mainats_prelude () ;
 /* ****** ****** */
 
 /*
+** HX:
 ** functions for handling match failures
 ** the implementation is given in [ats_prelude.c]
 */

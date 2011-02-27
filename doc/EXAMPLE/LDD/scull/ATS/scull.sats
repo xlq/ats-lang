@@ -8,11 +8,17 @@
 
 (* ****** ****** *)
 
+%{#
+#include "ATS/scull.cats"
+%} // end of [%{#]
+
+(* ****** ****** *)
+
 staload "libats/ngc/SATS/slist.sats"
 
 (* ****** ****** *)
 
-staload "contrib/linux/basics.sats"
+staload "contrib/kernel/basics.sats"
 
 (* ****** ****** *)
 
@@ -64,13 +70,72 @@ prfun qset_data_v_takeout_all {m,n:nat} {l:agz}
 // end of [qset_data_v_takeout_all]
 
 fun qset_dataptr_free
-  {m,n:nat} (p: qset_dataptr (m, n), m: size_t m): void
+  {m,n:nat} (p: qset_dataptr (m, n), m: int m):<> void
 // end of [qset_dataptr_free]
 
 (* ****** ****** *)
 
-absviewt@ype qset
-viewdef qsetlst (ln: int) = slist (qset, ln)
+viewtypedef
+qset (m:int, n:int) =
+$extype_struct
+  "scull_qset_struct" of {
+  empty= empty
+, data= qset_dataptr (m, n)
+, _rest= undefined_t
+} // end of [qset]
+viewdef qsetlst (m: int, n: int, ln: int) = slist (qset (m, n), ln)
+
+(* ****** ****** *)
+//
+// HX: m: qset data size; n: quantum size; ln: qsetlst length
+//
+(*
+struct scull_dev {
+  int m_qset;               // the current array size
+  int n_quantum;            // the current quantum size
+//
+  struct scull_qset *data;  // pointer to first quantum set
+  int ln_qlst;              // the current qsetlst length
+//
+  unsigned long size;       // amount of data stored here
+//
+  unsigned int access_key;  // used by sculluid and scullpriv
+//
+  struct semaphore sem;     // mutual exclusion semaphore
+//
+  struct cdev cdev;	    // char device structure
+//
+} ; // end of [scull_dev]
+*)
+viewtypedef
+scull_dev (
+  m: int
+, n: int
+, ln: int
+, sz: int
+) =
+$extype_struct
+  "scull_dev_struct" of {
+  empty=empty
+, m_qset= int (m)
+, n_quantum= int (n)
+, data= qsetlst (m, n, ln)
+, ln_qlst= int (ln)
+, size= ulint (sz)
+, _rest= undefined_vt
+} // end of [scull_dev]
+
+(* ****** ****** *)
+
+fun scull_trim_main
+  {m0,n0:nat}
+  {ln:nat}
+  {sz:nat}
+  {m,n:pos} (
+  dev: &scull_dev (m0, n0, ln, sz) >> scull_dev (m, n, 0, 0)
+, m: int m
+, n: int n
+) : void = "scull_trim_main"
 
 (* ****** ****** *)
 

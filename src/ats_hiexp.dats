@@ -117,8 +117,16 @@ val hityp_name_vararg = HITNAM (0(*non*), "...")
 (* ****** ****** *)
 
 implement
+hityp_cltype (fl) = '{
+  hityp_name= HITNAM(0(*non*), CLO_TYPE_NAME)
+, hityp_node = HITcltype (fl)
+} // end of [hityp_cltype]
+
+(* ****** ****** *)
+
+implement
 hityp_extype
-  (name, arglst): hityp = '{
+  (name, arglst) = '{
   hityp_name= HITNAM (0(*non*), name)
 , hityp_node= HITextype (name, arglst)
 } // end of [hityp_extype]

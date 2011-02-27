@@ -54,7 +54,10 @@ MODULE_LICENSE("Dual BSD/GPL");
 
 struct scull_dev *scull_devices;	/* allocated in scull_init_module */
 
-
+#if(0)
+//
+// HX: this one is moved out to ATS
+//
 /*
  * Empty out the scull device; must be called with the device
  * semaphore held.
@@ -81,6 +84,19 @@ int scull_trim(struct scull_dev *dev)
 	dev->data = NULL;
 	return 0;
 }
+#endif // end of [if(0)]
+
+extern
+void scull_trim_main (
+  struct scull_dev *dev, int m, int n
+) ; // end of [scull_trim_main]
+int scull_trim(struct scull_dev *dev) {
+  scull_trim_main (dev, scull_qset, scull_quantum) ;
+  return 0 ;
+} // end of [scull_trim]
+
+/* ****** ****** */
+
 #ifdef SCULL_DEBUG /* use proc only if debugging */
 /*
  * The proc filesystem: function to read and entry
@@ -293,7 +309,10 @@ ssize_t scull_read(struct file *filp, char __user *buf, size_t count,
 {
 	struct scull_dev *dev = filp->private_data; 
 	struct scull_qset *dptr;	/* the first listitem */
-	int quantum = dev->quantum, qset = dev->qset;
+//
+        int qset = dev->m_qset;
+	int quantum = dev->n_quantum;
+//
 	int itemsize = quantum * qset; /* how many bytes in the listitem */
 	int item, s_pos, q_pos, rest;
 	ssize_t retval = 0;
@@ -337,7 +356,10 @@ ssize_t scull_write(struct file *filp, const char __user *buf, size_t count,
 {
 	struct scull_dev *dev = filp->private_data;
 	struct scull_qset *dptr;
-	int quantum = dev->quantum, qset = dev->qset;
+//
+        int qset = dev->m_qset;
+	int quantum = dev->n_quantum;
+//
 	int itemsize = quantum * qset;
 	int item, s_pos, q_pos, rest;
 	ssize_t retval = -ENOMEM; /* value used in "goto out" statements */
@@ -645,8 +667,8 @@ int scull_init_module(void)
 
         /* Initialize each device. */
 	for (i = 0; i < scull_nr_devs; i++) {
-		scull_devices[i].quantum = scull_quantum;
-		scull_devices[i].qset = scull_qset;
+		scull_devices[i].m_qset = scull_qset;
+		scull_devices[i].n_quantum = scull_quantum;
 		sema_init(&scull_devices[i].sem, 1);
 		scull_setup_cdev(&scull_devices[i], i);
 	}
