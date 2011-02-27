@@ -81,11 +81,12 @@ viewtypedef
 qset (m:int, n:int) =
 $extype_struct
   "scull_qset_struct" of {
-  empty= empty
-, data= qset_dataptr (m, n)
+  data= qset_dataptr (m, n)
+(*
 , _rest= undefined_t
+*)
 } // end of [qset]
-viewdef qsetlst (m: int, n: int, ln: int) = slist (qset (m, n), ln)
+viewtypedef qsetlst (m: int, n: int, ln: int) = slist (qset (m, n), ln)
 
 (* ****** ****** *)
 //
@@ -138,6 +139,25 @@ fun scull_trim_main
 , m: int m
 , n: int n
 ) : void = "scull_trim_main"
+
+(* ****** ****** *)
+
+(*
+fun{a:vt0p}
+slist_split_at
+  {n:int} {i:nat | i < n} {la:addr}
+  (pflst: slist_v (a, n, la) | p: ptr la, i: size_t i)
+  : [lm:addr] (slseg_v (a, i, la, lm), slist_v (a, n-i, lm) | ptr lm)
+// end of [slist_split_at]
+*)
+fun scull_follow_main
+  {m,n:nat} {ln0:nat} {ln:nat} (
+  xs: &slist (qset(m, n), ln0) >> slist (qset(m, n), ln0)
+, ln0: &int(ln0) >> int (ln0)
+, ln: int (ln)
+) : #[ln0:nat;lm:addr] ptr (lm)
+  = "scull_follow_main"
+// end of [fun]
 
 (* ****** ****** *)
 

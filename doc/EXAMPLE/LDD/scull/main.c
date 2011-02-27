@@ -91,8 +91,7 @@ void scull_trim_main (
   struct scull_dev *dev, int m, int n
 ) ; // end of [scull_trim_main]
 int scull_trim(struct scull_dev *dev) {
-  scull_trim_main (dev, scull_qset, scull_quantum) ;
-  return 0 ;
+  scull_trim_main (dev, scull_qset, scull_quantum) ; return 0 ;
 } // end of [scull_trim]
 
 /* ****** ****** */
@@ -270,7 +269,11 @@ int scull_release(struct inode *inode, struct file *filp)
 {
 	return 0;
 }
+
 #if(0)
+//
+// HX: this one is moved out to ATS
+//
 /*
  * Follow the list
  */
@@ -300,6 +303,16 @@ struct scull_qset *scull_follow(struct scull_dev *dev, int n)
 	return qs;
 }
 #endif // end of [#if(0)]
+extern
+struct scull_qset*
+scull_follow_main
+  (struct scull_qset **qsetlst_ref, int *ln_ref, int n) ;
+// end of [scull_follow_main]
+struct scull_qset*
+scull_follow(struct scull_dev *dev, int n) {
+  return scull_follow_main (&dev->data, &dev->ln_qlst, n) ;
+}
+
 
 /*
  * Data management: read and write

@@ -177,7 +177,9 @@ matrix_make_elt {m,n:pos}
 // end of [matrix_make_elt]
 
 (* ****** ****** *)
-
+//
+// HX: implemented in [prelude/DATS/matrix.dats]
+//
 fun matrix_make_funenv_tsz
   {a:viewt@ype}
   {v:view} {vt:viewtype}
@@ -188,6 +190,8 @@ fun matrix_make_funenv_tsz
 , tsz: sizeof_t a
 , env: !vt
 ) :<f> matrix (a, m, n)
+  = "atspre_matrix_make_funenv_tsz"
+// end of [fun]
 
 fun{a:viewt@ype}
 matrix_make_fun

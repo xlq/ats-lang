@@ -76,8 +76,11 @@ slnode_v_takeout_val
 (* ****** ****** *)
 
 typedef
-slnode_alloc_type (a:viewt@ype) = () -<fun>
-  [la,lb:addr] (option_v (slnode_v (a?, la, lb), la > null) | ptr la)
+slnode_alloc_type
+  (a:viewt@ype) =
+  () -<fun> [la,lb:addr] (
+  option_v (slnode_v (a?, la, lb), la > null) | ptr la
+) // end of [typedef]
 fun{a:vt0p} slnode_alloc : slnode_alloc_type (a) // specific
 
 typedef

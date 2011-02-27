@@ -27,6 +27,7 @@ ats-lang-anairiats-0.2.4:
 15: matrix_v (a, m, n, l) is now defined as mtrxt (a, m, n) @ l
 16: stack-allocated closures are now statically allocated (instead of
     being dynamically allocated via alloca) (svn-version: 2519)
+17: prelude/array and prelude/matrix have been cleaned up considerably
 
 ########################################################################
 
