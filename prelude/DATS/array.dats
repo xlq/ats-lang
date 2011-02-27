@@ -41,6 +41,7 @@
 
 (* ****** ****** *)
 
+#define ATS_STALOADFLAG 0 // no dynamic staloading
 #define ATS_DYNLOADFLAG 0 // loaded by [ats_main_prelude]
 
 (* ****** ****** *)
@@ -220,9 +221,9 @@ in
   loop (pf, view@ base | &base, asz, 0, f, tsz, env)
 end // end of [array_ptr_initialize_funenv_tsz]
 
-implement
-array_ptr_initialize_fun_tsz
-  {a} {n} (base, asz, f, tsz) = let
+implement{a}
+array_ptr_initialize_fun
+  {n} (base, asz, f) = let
 //
   typedef fun_t = (sizeLt n, &(a?) >> a) -<> void
   typedef fun1_t = (!unit_v | sizeLt n, &(a?) >> a, !ptr) -<> void
@@ -232,7 +233,7 @@ array_ptr_initialize_fun_tsz
 //
   prval pfu = unit_v ()
   val () = array_ptr_initialize_funenv_tsz
-    {a} {unit_v} {ptr} (pfu | base, asz, f1, tsz, null)
+    {a} {unit_v} {ptr} (pfu | base, asz, f1, sizeof<a>, null)
   prval unit_v () = pfu
 //
 in
@@ -268,10 +269,9 @@ in
   loop (pf, view@ base | &base, asz, 0, f, tsz, env)
 end // end of [array_ptr_initialize_cloenv_tsz]
 
-implement
-array_ptr_initialize_clo_tsz
-  {a} {v} {n}
-  (pf | base, asz, f, tsz) = let
+implement{a}
+array_ptr_initialize_clo
+  {v} {n} (pf | base, asz, f) = let
   val p_f = &f; prval pf_f = view@ f
   viewtypedef clo_t = (!v | sizeLt n, &(a?) >> a) -<clo> void
   viewtypedef clo1_t = (!v | sizeLt n, &(a?) >> a, !ptr) -<clo> void
@@ -279,7 +279,7 @@ array_ptr_initialize_clo_tsz
     extern praxi coerce {l:addr} (pf: clo_t @ l): clo1_t @ l
   } // end of [prval]
   val () = array_ptr_initialize_cloenv_tsz
-    {a} {v} {ptr} (pf | base, asz, !p_f, tsz, null)
+    {a} {v} {ptr} (pf | base, asz, !p_f, sizeof<a>, null)
   prval pf_f = coerce (pf1_f) where {
     extern praxi coerce {l:addr} (pf: clo1_t @ l): clo_t @ l
   } // end of [prval]
@@ -291,13 +291,8 @@ end // end of [array_ptr_initialize_clo_tsz]
 (* ****** ****** *)
 
 implement{a}
-array_ptr_clear_fun (base, asz, f) =
-  array_ptr_clear_fun_tsz (base, asz, f, sizeof<a>)
-// end of [array_ptr_clear_fun]
-
-implement
-array_ptr_clear_fun_tsz
-  {a} {n} (base, asz, f, tsz) = let
+array_ptr_clear_fun
+  {n} (base, asz, f) = let
   fun clear {n:nat} {l:addr} .<n>. (
       pf_arr: !array_v (a, n, l) >> array_v (a?, n, l)
     | p_arr: ptr l, n: size_t n
@@ -316,8 +311,8 @@ array_ptr_clear_fun_tsz
     end // end of [if]
   // end of [clear]
 in
-  clear (view@ base | &base, asz, f, tsz)
-end // end of [array_ptr_clear_fun_tsz]
+  clear (view@ base | &base, asz, f, sizeof<a>)
+end // end of [array_ptr_clear_fun]
 
 (* ****** ****** *)
 
@@ -416,16 +411,14 @@ end // end of [array_make_lst]
 (* ****** ****** *)
 
 implement{a}
-array_make_clo (pf | asz, f) =
-  array_make_clo_tsz {a} (pf | asz, f, sizeof<a>)
-// end of ...
-
-implement
-array_make_clo_tsz
-  {a} (pf | asz, f, tsz) = let
-  val (pf_gc, pf_arr | p_arr) = array_ptr_alloc_tsz {a} (asz, tsz)
-  prval () = free_gc_elim {a} (pf_gc) // return the certificate to GC
-  val () = array_ptr_initialize_clo_tsz {a} (pf | !p_arr, asz, f, tsz)
+array_make_clo
+  (pf | asz, f) = let
+  val (
+    pf_gc, pf_arr | p_arr
+  ) = array_ptr_alloc_tsz {a} (asz, sizeof<a>)
+  prval () = free_gc_elim {a}
+    (pf_gc) // return the certificate to GC
+  val () = array_ptr_initialize_clo<a> (pf | !p_arr, asz, f)
   val (pfbox | ()) = vbox_make_view_ptr (pf_arr | p_arr)
 in
   @{ data= p_arr, view= pfbox }

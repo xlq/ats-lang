@@ -1,7 +1,7 @@
 ######
 
 ATSCC=$(ATSHOME)/bin/atscc
-ATSOPT=$(ATSHOME)/src/atsopt
+ATSOPT=$(ATSHOME)/bin/atsopt
 
 ######
 

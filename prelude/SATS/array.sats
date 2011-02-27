@@ -220,13 +220,13 @@ fun array_ptr_initialize_funenv_tsz
 , env: !vt
 ) :<> void // end of [array_ptr_initialize_funenv_tsz]
 
-fun array_ptr_initialize_fun_tsz
-  {a:viewt@ype} {n:nat} (
+fun{a:viewt@ype}
+array_ptr_initialize_fun
+ {n:nat} (
   base: &(@[a?][n]) >> @[a][n]
 , asz: size_t n
 , f: (sizeLt n, &(a?) >> a) -<fun> void
-, tsz: sizeof_t a
-) :<> void // end of [array_ptr_initialize_fun_tsz]
+) :<> void // end of [array_ptr_initialize_fun]
 
 (* ****** ****** *)
 
@@ -243,13 +243,13 @@ fun array_ptr_initialize_cloenv_tsz
 , env: !vt
 ) :<> void // end of [array_ptr_initialize_cloenv_tsz]
 
-fun array_ptr_initialize_clo_tsz
-  {a:viewt@ype} {v:view} {n:nat} (
+fun{a:viewt@ype}
+array_ptr_initialize_clo
+  {v:view} {n:nat} (
   pf: !v 
 | base: &(@[a?][n]) >> @[a][n]
 , asz: size_t n
 , f: &(!v | sizeLt n, &(a?) >> a) -<clo> void
-, tsz: sizeof_t a
 ) :<> void // end of [array_ptr_initialize_clo_tsz]
 
 (* ****** ****** *)
@@ -265,14 +265,6 @@ array_ptr_clear_fun
 , asz: size_t n
 , f: (&a >> a?) -<fun> void
 ) :<> void // end of [array_ptr_clear_fun]
-
-fun array_ptr_clear_fun_tsz
-  {a:viewt@ype} {n:nat} (
-  base: &(@[a][n]) >> @[a?][n]
-, asz: size_t n
-, f: (&a >> a?) -<fun> void
-, tsz: sizeof_t (a)
-) :<> void // end of [array_ptr_clear_fun_tsz]
 
 (* ****** ****** *)
 
@@ -679,19 +671,7 @@ array_make_clo {v:view} {n:nat} (
   | asz: size_t n
   , f: &(!v | sizeLt n, &(a?) >> a) -<clo> void
   ) :<> array (a, n)
-// end of [array_make_clo_tsz]
-
-(*
-** HX: function
-*)
-fun array_make_clo_tsz
-  {a:viewt@ype} {v:view} {n:nat} (
-  pf: !v
-| asz: size_t n
-, f: &(!v | sizeLt n, &(a?) >> a) -<clo> void
-, tsz: sizeof_t a
-) :<> array (a, n)
-// end of [array_make_clo_tsz]
+// end of [array_make_clo]
 
 (* ****** ****** *)
 

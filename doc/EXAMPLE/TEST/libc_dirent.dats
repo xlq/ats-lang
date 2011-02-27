@@ -17,6 +17,7 @@ staload UN = "prelude/SATS/unsafe.sats"
 
 (* ****** ****** *)
 
+staload _(*anon*) = "prelude/DATS/array.dats"
 staload _(*anon*) = "prelude/DATS/list_vt.dats"
 staload _(*anon*) = "prelude/DATS/lazy_vt.dats"
 
@@ -107,8 +108,8 @@ in
     } // end of [val]
     prval unit_v () = pf
 //    
-    val () = array_ptr_clear_fun_tsz {direntptr_gc} (
-      !p_arr, nent_sz, lam p => ptr_free {dirent} (p.0, p.1 | p.2), sizeof<direntptr_gc>
+    val () = array_ptr_clear_fun<direntptr_gc> (
+      !p_arr, nent_sz, lam p => ptr_free {dirent} (p.0, p.1 | p.2)
     ) // end of [val]
 //
   in

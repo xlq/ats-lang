@@ -75,7 +75,7 @@ fun array_ptr_kalloc_tsz
 fun array_ptr_kfree
   {a:viewt@ype} {n:int} {l:addr} (
   pf_gc: kfree_v (a, n, l), pf_arr: array_v (a?, n, l) | p_arr: ptr l
-) :<> void = "atsctrb_kernel_array_ptr_kfree"
+) :<> void = "#atsctrb_kernel_array_ptr_kfree"
 
 (* ****** ****** *)
 

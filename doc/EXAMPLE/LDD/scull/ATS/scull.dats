@@ -45,7 +45,7 @@ viewtypedef qtmptr = qtmptr (n)
 extern fun array_ptr_kfree
   {a:viewt@ype} {n:int} {l:addr} (
   pf_gc: kfree_v l, pf_arr: array_v (a?, n, l) | p_arr: ptr l
-) :<> void = "atsctrb_kernel_array_ptr_kfree"
+) :<> void = "#atsctrb_kernel_array_ptr_kfree"
 //
 fun free_agz {l:agz} .<>. (
   pf: qset_data_v (m, n, l) | p: ptr l, m: int m
@@ -78,12 +78,14 @@ abst@ype qset = $extype "scull_qset_struct"
 in
 
 extern
-fun qset_get_next : slnode_get_next_type (qset)
+fun qset_get_next
+  : slnode_get_next_type (qset) = "scull_qset_get_next"
 implement
 slnode_get_next<qset> (pf | p) = qset_get_next (pf | p)
 
 extern
-fun qset_free : slnode_free_type (qset)
+fun qset_free
+  : slnode_free_type (qset) = "scull_qset_free"
 implement
 slnode_free<qset> (pf | p) = qset_free (pf | p)
 

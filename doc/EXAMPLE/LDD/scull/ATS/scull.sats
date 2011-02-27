@@ -40,7 +40,9 @@ prfun qtm_v_takeout
   {n:nat} {l:agz} () : takeout_p (qtm_v (n, l), bytes (n) @ l)
 // end of [qtm_v]
 
-fun qtmptr_free {n:nat} (p: qtmptr (n)):<> void
+fun qtmptr_free {n:nat}
+  (p: qtmptr (n)):<> void = "scull_qtmptr_free"
+// end of [qtmptr_free]
 
 (* ****** ****** *)
 //

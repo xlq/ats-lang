@@ -69,18 +69,26 @@ end // end of [array]
 
 (* ****** ****** *)
 
-implement{a} fromList (xs) = let
+implement{a}
+fromList (xs) = let
   val [n:int] xs = list1_of_list0 (xs)
   val asz = size1_of_int1 (list_length xs)
   val A = array_make_lst (asz, xs) in '(A, asz)
 end // end of [fromList]
 
-implement{a} tabulate (asz, f) = let
+implement{a}
+tabulate (asz, f) = let
   val [n:int] asz = size1_of_size (asz)
-  val (pf_gc, pf_arr | p_arr) = array_ptr_alloc_tsz {a} (asz, sizeof<a>)
-  var !p_clo = @lam (pf: !unit_v | i: sizeLt n, x: &(a?) >> a): void =<clo> (x := $effmask_all (f i))
+  val (
+    pf_gc, pf_arr | p_arr
+  ) = array_ptr_alloc_tsz {a} (asz, sizeof<a>)
+//
+  var !p_clo = @lam
+    (pf: !unit_v | i: sizeLt n, x: &(a?) >> a): void =<clo> $effmask_all (x := f i)
+  (* end of [var] *)
+//
   prval pf = unit_v ()
-  val () = array_ptr_initialize_clo_tsz {a} {unit_v} {n} (pf | !p_arr, asz, !p_clo, sizeof<a>)
+  val () = array_ptr_initialize_clo<a> {unit_v} {n} (pf | !p_arr, asz, !p_clo)
   prval unit_v () = pf
   prval () = free_gc_elim {a} (pf_gc)
   val A = array_make_view_ptr (pf_arr | p_arr)

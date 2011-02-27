@@ -124,7 +124,7 @@ vector_clear_fun
 //
   val n = V.n
   val p = V.ptr
-  val () = array_ptr_clear_fun_tsz {a} (!p, n, f, sizeof<a>)
+  val () = array_ptr_clear_fun<a> (!p, n, f)
 //
   prval pf = array_v_unsplit {a?} (pfmul, pf1, pf2)
 //
