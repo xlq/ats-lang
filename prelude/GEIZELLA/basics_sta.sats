@@ -631,8 +631,8 @@ stadef free_ngc_v = free_ngc_viewt0ype_addr_int_view
 
 //
 
-viewdef free_gc_v (n:int, l:addr) = free_gc_v (byte, n, l)
-viewdef free_ngc_v (n:int, l:addr) = free_ngc_v (byte, n, l)
+viewdef freebyte_gc_v (n:int, l:addr) = free_gc_v (byte, n, l)
+viewdef freebyte_ngc_v (n:int, l:addr) = free_ngc_v (byte, n, l)
 
 (* ****** ****** *)
 

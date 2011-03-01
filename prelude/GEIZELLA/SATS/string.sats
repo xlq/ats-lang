@@ -78,7 +78,7 @@ prfun strbuf_vsubr_lemma0 // implemneted in [string.dats]
 (* ****** ****** *)
 
 viewtypedef strbufptr_gc
-  (m:int, n:int, l:addr) = @(free_gc_v (m, l), strbuf_v (m, n, l) | ptr l)
+  (m:int, n:int, l:addr) = @(freebyte_gc_v (m, l), strbuf_v (m, n, l) | ptr l)
 // end of [strbufptr_gc]
 
 viewdef strbufptr_gc
