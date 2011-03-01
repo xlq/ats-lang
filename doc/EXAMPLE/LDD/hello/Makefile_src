@@ -9,7 +9,7 @@ ATSOPT=$(ATSHOME)/bin/atsopt
 
 ######
 
-IATSFLAGS=-IATS $(ATSHOME)/contrib/kernel
+IATSFLAGS=-IATS $(ATSHOME)/contrib/linux
 
 ######
 

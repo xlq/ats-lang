@@ -10,8 +10,8 @@
 
 %{#
 //
-#include "contrib/kernel/include/ats_types.h"
-#include "contrib/kernel/include/ats_basics.h"
+#include "contrib/linux/include/ats_types.h"
+#include "contrib/linux/include/ats_basics.h"
 //
 // for handling a call like: printk (KERN_INFO "...")
 //

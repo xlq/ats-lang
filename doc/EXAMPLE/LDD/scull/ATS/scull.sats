@@ -23,7 +23,7 @@ staload "libats/ngc/SATS/slist.sats"
 
 (* ****** ****** *)
 
-staload "contrib/kernel/basics.sats"
+staload "contrib/linux/basics.sats"
 
 (* ****** ****** *)
 

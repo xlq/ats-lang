@@ -13,8 +13,8 @@ staload _(*anon*) = "libats/ngc/DATS/slist.dats"
 
 (* ****** ****** *)
 
-staload "contrib/kernel/basics.sats"
-staload "contrib/kernel/SATS/utils.sats"
+staload "contrib/linux/basics.sats"
+staload "contrib/linux/SATS/utils.sats"
 
 (* ****** ****** *)
 
