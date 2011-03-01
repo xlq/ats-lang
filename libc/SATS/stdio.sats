@@ -768,9 +768,9 @@ macdef _IOLBF = $extval (bufmode_t, "_IOLBF") // line buffered
 macdef _IONBF = $extval (bufmode_t, "_IONBF") // no buffering
 
 symintr setbuf_null
-fun setbuf0_null (f: FILEref): void = "atslib_setbuf_null"
+fun setbuf0_null (f: FILEref): void = "mac#atslib_setbuf_null"
 overload setbuf_null with setbuf0_null
-fun setbuf1_null {m:fm} (f: &FILE m): void = "atslib_setbuf_null"
+fun setbuf1_null {m:fm} (f: &FILE m): void = "mac#atslib_setbuf_null"
 overload setbuf_null with setbuf1_null
 
 //
@@ -781,35 +781,35 @@ overload setbuf_null with setbuf1_null
 symintr setbuffer
 fun setbuffer0 {n1,n2:nat | n2 <= n1} {l:addr}
   (pf_buf: !b0ytes n1 @ l | f: FILEref, p_buf: ptr l, n2: size_t n2): void
-  = "#atslib_setbuffer"
+  = "mac#atslib_setbuffer"
 overload setbuffer with setbuffer0
 fun setbuffer1 {m:fm} {n1,n2:nat | n2 <= n1} {l:addr}
   (pf_buf: !b0ytes n1 @ l | f: &FILE m, p_buf: ptr l, n2: size_t n2): void
-  = "#atslib_setbuffer"
+  = "mac#atslib_setbuffer"
 overload setbuffer with setbuffer1
 
 symintr setlinebuf
-fun setlinebuf0 (f: FILEref): void = "#atslib_setlinebuf"
+fun setlinebuf0 (f: FILEref): void = "mac#atslib_setlinebuf"
 overload setlinebuf with setlinebuf0
-fun setlinebuf1 {m:fm} (f: &FILE m): void = "#atslib_setlinebuf"
+fun setlinebuf1 {m:fm} (f: &FILE m): void = "mac#atslib_setlinebuf"
 overload setlinebuf with setlinebuf1
 
 symintr setvbuf_null
 fun setvbuf0_null
-  (f: FILEref, mode: bufmode_t): int = "atslib_setvbuf_null"
+  (f: FILEref, mode: bufmode_t): int = "mac#atslib_setvbuf_null"
 overload setvbuf_null with setvbuf0_null
 fun setvbuf1_null {m:fm}
-  (f: &FILE m, mode: bufmode_t): int = "atslib_setvbuf_null"
+  (f: &FILE m, mode: bufmode_t): int = "mac#atslib_setvbuf_null"
 overload setvbuf_null with setvbuf1_null
 
 symintr setvbuf
 fun setvbuf0 {n1,n2:nat | n2 <= n1} {l:addr}
   (pf_buf: !b0ytes(n1) @ l | fil: FILEref, mode: bufmode_t, n2: size_t n2): int
-  = "#ats_setvbuf"
+  = "mac#ats_setvbuf"
 overload setvbuf with setvbuf0
 fun setvbuf1 {m:fm} {n1,n2:nat | n2 <= n1} {l:addr}
   (pf_buf: !b0ytes(n1) @ l | fil: &FILE m, mode: bufmode_t, n2: size_t n2): int
-  = "#ats_setvbuf"
+  = "mac#ats_setvbuf"
 overload setvbuf with setvbuf1
 
 // ------------------------------------------------

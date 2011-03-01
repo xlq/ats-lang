@@ -150,12 +150,12 @@ fun scale_set_default_values
 
 extern
 fun gtk_label_new0
-  (name: string): GtkLabel_ref1 = "#atsctrb_gtk_label_new"
+  (name: string): GtkLabel_ref1 = "mac#atsctrb_gtk_label_new"
 // end of [gtk_label_new]
 
 extern
 fun gtk_menu_item_new_with_label0
-  (name: string): GtkMenuItem_ref1 = "#atsctrb_gtk_menu_item_new_with_label"
+  (name: string): GtkMenuItem_ref1 = "mac#atsctrb_gtk_menu_item_new_with_label"
 // end of [gtk_menu_item_new_with_label]
 
 (* ****** ****** *)

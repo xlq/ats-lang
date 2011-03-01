@@ -54,13 +54,14 @@ in
     prval malloc_v_succ (pfngc, pfbuf) = pfopt
     val _p = __copy (pfbuf | p, nameval) where {
       extern fun __copy (
-        pf: !b0ytes (n+1) @ l1 >> strbuf (n+1, n) @ l1 | p: ptr l1, name: !strptr l
-      ) :<> void = "#atslib_strcpy"
+        pf: !b0ytes (n+1) @ l1 >> strbuf (n+1, n) @ l1
+      | p: ptr l1, name: !strptr l
+      ) :<> void = "mac#atslib_strcpy"
     } // end of [val]
     val (pfopt | err) = __putenv (pfbuf | p) where {
       extern fun __putenv {m,n:int} {l:addr}
         (pfbuf: strbuf (n+1, n) @ l1 | p: ptr l1)
-        : [i:int] (option_v (bytes(n+1) @ l1, i <> 0) | int i)= "#putenv"
+        : [i:int] (option_v (bytes(n+1) @ l1, i <> 0) | int i)= "mac#putenv"
     } // end of [val]
     val () = if err = 0 then let
       prval None_v () = pfopt

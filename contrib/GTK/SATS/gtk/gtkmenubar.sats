@@ -39,7 +39,7 @@
 (* ****** ****** *)
 
 fun gtk_menu_bar_new
-  (): GtkMenuBar_ref1 = "#atsctrb_gtk_menu_bar_new"
+  (): GtkMenuBar_ref1 = "mac#atsctrb_gtk_menu_bar_new"
 // end of [gtk_menu_bar_new]
 
 (* ****** ****** *)

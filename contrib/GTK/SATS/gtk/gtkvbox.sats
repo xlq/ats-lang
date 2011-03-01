@@ -38,8 +38,9 @@
 
 (* ****** ****** *)
 
-fun gtk_vbox_new
-  (homo: gboolean, spacing: gint): GtkVBox_ref1 = "#atsctrb_gtk_vbox_new"
+fun gtk_vbox_new (
+  homo: gboolean, spacing: gint
+) : GtkVBox_ref1 = "mac#atsctrb_gtk_vbox_new"
 // end of [gtk_vbox_new]
 
 (* ****** ****** *)

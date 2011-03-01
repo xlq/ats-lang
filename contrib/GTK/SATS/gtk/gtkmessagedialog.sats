@@ -62,30 +62,32 @@ macdef GTK_BUTTONS_OK_CANCEL = $extval (GtkButtonsType, "GTK_BUTTONS_OK_CANCEL")
 //
 fun gtk_message_dialog_new0
   {l:addr} (
-    flags: GtkDialogFlags
-  , _type: GtkMessageType
-  , buttons: GtkButtonsType
-  , message: !gstring l
-  ) : GtkMessageDialog_ref1
+  flags: GtkDialogFlags
+, _type: GtkMessageType
+, buttons: GtkButtonsType
+, message: !gstring l
+) : GtkMessageDialog_ref1
   = "atsctrb_gtk_message_dialog_new0" // function!
 // end of [gtk_message_dialog_new]
 
 fun gtk_message_dialog_new0_with_markup
   {l:addr} (
-    flags: GtkDialogFlags
-  , _type: GtkMessageType
-  , buttons: GtkButtonsType
-  , message: !gstring l
-  ) : GtkMessageDialog_ref1
+  flags: GtkDialogFlags
+, _type: GtkMessageType
+, buttons: GtkButtonsType
+, message: !gstring l
+) : GtkMessageDialog_ref1
   = "atsctrb_gtk_message_dialog_new0_with_markup" // function!
 // end of [gtk_message_dialog_new0_with_markup]
 
 (* ****** ****** *)
 
 fun gtk_message_dialog_set_markup
-  {c:cls | c <= GtkMessageDialog} {l1,l2:agz}
-  (dialog: !gobjref (c, l1), markup: !gstring l2): void
-  = "#atsctrb_gtk_message_dialog_set_markup" // macro
+  {c:cls | c <= GtkMessageDialog}
+  {l1,l2:agz} (
+  dialog: !gobjref (c, l1), markup: !gstring l2
+) : void
+  = "mac#atsctrb_gtk_message_dialog_set_markup" // macro
 // end of [gtk_message_dialog_set_markup]
 
 (* ****** ****** *)
@@ -96,8 +98,9 @@ fun gtk_message_dialog_set_markup
 fun gtk_messgage_dialog_get_image
   {c:cls | c <= GtkMessageDialog} {l:agz}
   (dialog: !gobjref (c, l)): [l1:agz] (
-    minus (gobjref (c, l), gobjref (GtkImage, l1)) | gobjref (GtkImage, l1)
-  ) = "#atsctrb_gtk_messgage_dialog_get_image"
+  minus (gobjref (c, l), gobjref (GtkImage, l1))
+| gobjref (GtkImage, l1)
+) = "mac#atsctrb_gtk_messgage_dialog_get_image"
 // end of [gtk_messgage_dialog_get_image]
 
 //
@@ -105,9 +108,10 @@ fun gtk_messgage_dialog_get_image
 //
 fun gtk_messgage_dialog_set_image
   {c1,c2:cls | c1 <= GtkMessageDialog; c2 <= GtkImage}
-  {l1,l2:addr | l1 > null}
-  (dialog: !gobjref (c1, l1), image: !gobjref (c2, l2)): void
-  = "#atsctrb_gtk_messgage_dialog_set_image"
+  {l1,l2:addr | l1 > null} (
+  dialog: !gobjref (c1, l1), image: !gobjref (c2, l2)
+) : void
+  = "mac#atsctrb_gtk_messgage_dialog_set_image"
 // end of [gtk_messgage_dialog_set_image]
 
 (* ****** ****** *)

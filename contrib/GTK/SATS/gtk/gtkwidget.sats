@@ -30,12 +30,10 @@
 *)
 
 (* ****** ****** *)
-
 //
 // Author: Hongwei Xi (hwxi AT cs DOT bu DOT edu)
 // Start Time: April, 2010
 //
-
 (* ****** ****** *)
 
 typedef GtkAllocation =
@@ -54,19 +52,19 @@ macdef GTK_CAN_DEFAULT = $extval (GTK_WIDGET_FLAG, "GTK_CAN_DEFAULT")
 fun GTK_WIDGET_SET_FLAGS
   {c:cls | c <= GtkWidget} {l:agz}
   (widget: !gobjref (c, l), flag: GTK_WIDGET_FLAG): void
-  = "#atsctrb_GTK_WIDGET_SET_FLAGS"
+  = "mac#atsctrb_GTK_WIDGET_SET_FLAGS"
 // end of [GTK_WIDGET_SET_FLAGS]
 
 (* ****** ****** *)
 
 fun GTK_WIDGET_STATE
   {c:cls | c <= GtkWidget} {l:agz} (wid: !gobjref (c, l)): GtkStateType
-  = "#atsctrb_GTK_WIDGET_STATE"
+  = "mac#atsctrb_GTK_WIDGET_STATE"
 // end of [GTK_WIDGET_STATE]
 
 fun GTK_WIDGET_SAVED_STATE
   {c:cls | c <= GtkWidget} {l:agz} (wid: !gobjref (c, l)): GtkStateType
-  = "#atsctrb_GTK_WIDGET_SAVED_STATE"
+  = "mac#atsctrb_GTK_WIDGET_SAVED_STATE"
 // end of [GTK_WIDGET_SAVED_STATE]
 
 (* ****** ****** *)
@@ -76,33 +74,33 @@ fun GTK_WIDGET_SAVED_STATE
 //
 fun gtk_widget_destroy
   {c:cls | c <= GtkWidget} {l:agz} (widget: gobjref (c, l)): void
-  = "#atsctrb_gtk_widget_destroy"
+  = "mac#atsctrb_gtk_widget_destroy"
 
 (* ****** ****** *)
 
 fun gtk_widget_map
   {c:cls | c <= GtkWidget} {l:agz} (widget: !gobjref (c, l)): void
-  = "#atsctrb_gtk_widget_map"
+  = "mac#atsctrb_gtk_widget_map"
 
 fun gtk_widget_unmap
   {c:cls | c <= GtkWidget} {l:agz} (widget: !gobjref (c, l)): void
-  = "#atsctrb_gtk_widget_unmap"
+  = "mac#atsctrb_gtk_widget_unmap"
 
 (* ****** ****** *)
 
 fun gtk_widget_realize
   {c:cls | c <= GtkWidget} {l:agz} (widget: !gobjref (c, l)): void
-  = "#atsctrb_gtk_widget_realize"
+  = "mac#atsctrb_gtk_widget_realize"
 
 fun gtk_widget_unrealize
   {c:cls | c <= GtkWidget} {l:agz} (widget: !gobjref (c, l)): void
-  = "#atsctrb_gtk_widget_unrealize"
+  = "mac#atsctrb_gtk_widget_unrealize"
 
 (* ****** ****** *)
 
 fun gtk_widget_show
   {c:cls | c <= GtkWidget} {l:agz} (widget: !gobjref (c, l)): void
-  = "#atsctrb_gtk_widget_show"
+  = "mac#atsctrb_gtk_widget_show"
 
 //
 // HX-2010-05-08:
@@ -117,29 +115,31 @@ fun gtk_widget_show_unref
 
 fun gtk_widget_show_now
   {c:cls | c <= GtkWidget} {l:agz} (widget: !gobjref (c, l)): void
-  = "#atsctrb_gtk_widget_show_now"
+  = "mac#atsctrb_gtk_widget_show_now"
 
 fun gtk_widget_show_all
   {c:cls | c <= GtkWidget} {l:agz} (widget: !gobjref (c, l)): void
-  = "#atsctrb_gtk_widget_show_all"
+  = "mac#atsctrb_gtk_widget_show_all"
 
 (* ****** ****** *)
 
 fun gtk_widget_hide
   {c:cls | c <= GtkWidget} {l:agz} (widget: !gobjref (c, l)): void
-  = "#atsctrb_gtk_widget_hide"
+  = "mac#atsctrb_gtk_widget_hide"
 
 (* ****** ****** *)
 
 fun gtk_widget_get_sensitive
-  {c:cls | c <= GtkWidget} {l:agz}
-  (widget: !gobjref (c, l)): gboolean = "#atsctrb_gtk_widget_get_sensitive"
+  {c:cls | c <= GtkWidget}
+  {l:agz} (
+  widget: !gobjref (c, l)
+) : gboolean = "mac#atsctrb_gtk_widget_get_sensitive"
 // end of [gtk_widget_get_sensitive]
 
 fun gtk_widget_set_sensitive
   {c:cls | c <= GtkWidget} {l:agz}
   (widget: !gobjref (c, l), sensitive: gboolean): void
-  = "#atsctrb_gtk_widget_set_sensitive"
+  = "mac#atsctrb_gtk_widget_set_sensitive"
 // end of [gtk_widget_set_sensitive]
 
 (* ****** ****** *)
@@ -149,27 +149,30 @@ fun gtk_widget_set_sensitive
 //
 fun gtk_widget_set_size_request
   {c:cls | c <= GtkWidget} {l:agz} (
-    widegt: !gobjref (c, l), width: gint, height: gint
-  ) : void = "#atsctrb_gtk_widget_set_size_request"
+  widegt: !gobjref (c, l), width: gint, height: gint
+) : void = "mac#atsctrb_gtk_widget_set_size_request"
 // end of [gtk_widget_set_size_request]
 
 (* ****** ****** *)
 
 fun gtk_widget_grab_focus
   {c:cls | c <= GtkWidget} {l:agz} (widget: !gobjref (c, l)): void
-  = "#atsctrb_gtk_widget_grab_focus"
+  = "mac#atsctrb_gtk_widget_grab_focus"
 // end of [gtk_widget_grab_focus]
 
 fun gtk_widget_grab_default
   {c:cls | c <= GtkWidget} {l:agz} (widget: !gobjref (c, l)): void
-  = "#atsctrb_gtk_widget_grab_default"
+  = "mac#atsctrb_gtk_widget_grab_default"
 // end of [gtk_widget_grab_default]
 
 (* ****** ****** *)
 
 fun gtk_widget_set_events
-  {c:cls | c <= GtkWidget} {l:agz} (widget: !gobjref (c, l), events: gint): void
-  = "#atsctrb_gtk_widget_set_events"
+  {c:cls | c <= GtkWidget}
+  {l:agz} (
+  widget: !gobjref (c, l), events: gint
+) : void
+  = "mac#atsctrb_gtk_widget_set_events"
 // end of [gtk_widget_set_events]
 
 (* ****** ****** *)
@@ -177,23 +180,23 @@ fun gtk_widget_set_events
 fun gtk_widget_add_accelerator
   {c1,c2:cls | c1 <= GtkWidget; c2 <= GtkAccelGroup}
   {l1,l2:agz} (
-    widget: !gobjref (c1, l1)
-  , signal: gsignal
-  , aclgrp: !gobjref (c2, l2)
-  , aclkey: guint
-  , aclmod: GdkModifierType
-  , aclflg: GtkAccelFlags
-  ) : void = "#atsctrb_gtk_widget_add_accelerator"
+  widget: !gobjref (c1, l1)
+, signal: gsignal
+, aclgrp: !gobjref (c2, l2)
+, aclkey: guint
+, aclmod: GdkModifierType
+, aclflg: GtkAccelFlags
+) : void = "mac#atsctrb_gtk_widget_add_accelerator"
 // end of [gtk_widget_add_accelerator]
 
 fun gtk_widget_remove_accelerator
   {c1,c2:cls | c1 <= GtkWidget; c2 <= GtkAccelGroup}
   {l1,l2:agz} (
-    widget: !gobjref (c1, l1)
-  , aclgrp: !gobjref (c2, l2)
-  , aclkey: guint
-  , aclmod: GdkModifierType
-  ) : void = "#atsctrb_gtk_widget_remove_accelerator"
+  widget: !gobjref (c1, l1)
+, aclgrp: !gobjref (c2, l2)
+, aclkey: guint
+, aclmod: GdkModifierType
+) : void = "mac#atsctrb_gtk_widget_remove_accelerator"
 // end of [gtk_widget_remove_accelerator]
 
 (* ****** ****** *)
@@ -202,25 +205,34 @@ fun gtk_widget_remove_accelerator
 // HX-2010-04-18: this is probably safe enough :)
 //
 fun gtk_widget_get_window(*GDK*)
-  {c:cls | c <= GtkWidget} {l:agz} (widget: !gobjref (c, l))
-  : [l_win:addr] (
-    minus (gobjref (c, l), gobjref (GdkWindow, l_win)) | gobjref (GdkWindow, l_win)
-  ) = "atsctrb_gtk_widget_get_window" // function!
+  {c:cls | c <= GtkWidget}
+  {l:agz} (
+  widget: !gobjref (c, l)
+) : [l_win:addr] (
+  minus (gobjref (c, l), gobjref (GdkWindow, l_win))
+| gobjref (GdkWindow, l_win)
+) = "atsctrb_gtk_widget_get_window" // function!
 // end of [gtk_widget_get_window]
 
 (* ****** ****** *)
 
 // HX: since GTK-2.18
 fun gtk_widget_get_allocation
-  {c:cls | c <= GtkWidget} {l:agz}
-  (widget: !gobjref (c, l), alloc: &GtkAllocation? >> GtkAllocation): void
-  = "#atsctrb_gtk_widget_get_allocation"
+  {c:cls | c <= GtkWidget}
+  {l:agz} (
+  widget: !gobjref (c, l)
+, alloc: &GtkAllocation? >> GtkAllocation
+) : void
+  = "mac#atsctrb_gtk_widget_get_allocation"
 // end of [gtk_widget_get_allocation]
 
 // HX: since GTK-2.18
 fun gtk_widget_set_allocation
-  {c:cls | c <= GtkWidget} {l:agz} (widget: !gobjref (c, l), alloc: &GtkAllocation): void
-  = "#atsctrb_gtk_widget_set_allocation"
+  {c:cls | c <= GtkWidget}
+  {l:agz} (
+  widget: !gobjref (c, l), alloc: &GtkAllocation
+) : void
+  = "mac#atsctrb_gtk_widget_set_allocation"
 // end of [gtk_widget_set_allocation]
 
 fun gtk_widget_getref_allocation
@@ -237,21 +249,24 @@ fun gtk_widget_getref_allocation
 fun gtk_widget_modify_fg
   {c:cls | c <= GtkWidget} {l:agz}
   (widget: !gobjref (c, l), state: GtkStateType, color: &GdkColor): void
-  = "#atsctrb_gtk_widget_modify_fg"
+  = "mac#atsctrb_gtk_widget_modify_fg"
 // end of [gtk_widget_modify_fg]
 
 fun gtk_widget_modify_bg
   {c:cls | c <= GtkWidget} {l:agz}
   (widget: !gobjref (c, l), state: GtkStateType, color: &GdkColor): void
-  = "#atsctrb_gtk_widget_modify_bg"
+  = "mac#atsctrb_gtk_widget_modify_bg"
 // end of [gtk_widget_modify_bg]
 
 (* ****** ****** *)
 
 fun gtk_widget_get_toplevel
-  {c:cls | c <= GtkWidget} {l:agz} (widget: !gobjref (c, l))
-  : [c1:cls;l1:agz | c1 <= GtkWidget] (gobjref (c1, l1) -<lin,prf> void | gobjref (c1, l1))
-  = "#atsctrb_gtk_widget_get_toplevel"
+  {c:cls | c <= GtkWidget}
+  {l:agz} (
+  widget: !gobjref (c, l)
+) : [c1:cls;l1:agz | c1 <= GtkWidget] (
+  gobjref (c1, l1) -<lin,prf> void | gobjref (c1, l1)
+) = "mac#atsctrb_gtk_widget_get_toplevel"
 // end of [gtk_widget_get_toplevel]
 
 (* ****** ****** *)
@@ -261,8 +276,8 @@ fun gtk_widget_get_toplevel
 fun gtk_widget_get_colormap
   {c:cls | c <= GtkWidget} {l:agz}
   (widget: !gobjref (c, l)): [l1:agz] (
-    minus (gobjref (c, l), GdkColormap_ref l1) | GdkColormap_ref l1
-  ) = "#atsctrb_gtk_widget_get_colormap"
+  minus (gobjref (c, l), GdkColormap_ref l1) | GdkColormap_ref l1
+) = "mac#atsctrb_gtk_widget_get_colormap"
 // end of [gtk_widget_get_colormap]
 
 (* ****** ****** *)
@@ -270,7 +285,7 @@ fun gtk_widget_get_colormap
 fun gtk_widget_modify_font
   {c:cls | c <= GtkWidget} {l1,l2:agz}
   (widget: !gobjref (c, l1), fd: !PangoFontDescription_ptr l2): void
-  = "#atsctrb_gtk_widget_modify_font"
+  = "mac#atsctrb_gtk_widget_modify_font"
 // end of [gtk_widget_modify_font]
 
 (* ****** ****** *)
@@ -278,21 +293,21 @@ fun gtk_widget_modify_font
 fun gtk_widget_queue_draw_area
   {c:cls | c <= GtkWidget} {l:agz}
   (widget: !gobjref (c, l), x: gint, y: gint, width: gint, height: gint): void
-  = "#atsctrb_gtk_widget_queue_draw_area"
+  = "mac#atsctrb_gtk_widget_queue_draw_area"
 // end of [gtk_widget_queue_draw_area]
 
 (* ****** ****** *)
 
 fun gtk_widget_create_pango_context
   {c:cls | c <= GtkWidget} {l:agz} (widget: !gobjref (c, l)): PangoContext_ref1
-  = "#atsctrb_gtk_widget_create_pango_context"
+  = "mac#atsctrb_gtk_widget_create_pango_context"
 // end of [gtk_widget_create_pango_context]
   
 fun gtk_widget_get_pango_context
   {c:cls | c <= GtkWidget} {l:agz}
   (widget: !gobjref (c, l)): [l1:agz] (
-    minus (gobjref (c, l), PangoContext_ref l1) | PangoContext_ref l1
-  ) = "#atsctrb_gtk_widget_get_pango_context"
+  minus (gobjref (c, l), PangoContext_ref l1) | PangoContext_ref l1
+) = "mac#atsctrb_gtk_widget_get_pango_context"
 // end of [gtk_widget_get_pango_context]
   
 (* ****** ****** *)
@@ -300,7 +315,7 @@ fun gtk_widget_get_pango_context
 fun gtk_widget_create_pango_layout
   {c:cls | c <= GtkWidget} {l1,l2:agz}
   (widget: !gobjref (c, l1), text: !gstring l2): PangoLayout_ref1
-  = "#atsctrb_gtk_widget_create_pango_layout"
+  = "mac#atsctrb_gtk_widget_create_pango_layout"
 // end of [gtk_widget_create_pango_layout]
 
 (* ****** ****** *)
@@ -310,14 +325,14 @@ fun gtk_widget_create_pango_layout
 fun gtk_widget_get_style
   {c:cls | c <= GtkWidget} {l:agz}
   (widget: !gobjref (c, l)): [l1:addr] (
-    minus (gobjref (c, l), gobjref (GtkStyle, l1)) | gobjref (GtkStyle, l1)
-  ) = "#atsctrb_gtk_widget_get_style"
+  minus (gobjref (c, l), gobjref (GtkStyle, l1)) | gobjref (GtkStyle, l1)
+  ) = "mac#atsctrb_gtk_widget_get_style"
 // end of [gtk_widget_get_style]
 
 fun gtk_widget_set_style
   {c1,c2:cls | c1 <= GtkWidget; c2 <= GtkStyle}
   {l1,l2:agz} (widget: !gobjref (c1, l1), style: gobjref (c2, l2)): void
-  = "#atsctrb_gtk_widget_set_style"
+  = "mac#atsctrb_gtk_widget_set_style"
 // end of [gtk_widget_set_style]
 
 (* ****** ****** *)

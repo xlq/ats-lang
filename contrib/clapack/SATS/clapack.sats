@@ -233,7 +233,8 @@ dataview langework_v
 
 // |t1| = t2
 typedef
-lange_type (t1:t@ype, t2:t@ype) =
+lange_type
+  (t1:t@ype, t2:t@ype) =
   {c:char} {m,n:nat} {lda:inc}
   {m1:pos | m <= m1} {l_work:addr} (
     (*pf: *) !langework_v (t2, c, m1, l_work)
@@ -242,6 +243,7 @@ lange_type (t1:t@ype, t2:t@ype) =
   , (*a:*) &GEMAT (t1, m, n, lda), (*lda:*) integer lda
   , (*p_work:*) ptr l_work
   ) -<fun> t2
+// end of [lange_type]
 
 fun{t1,t2:t@ype} lange: lange_type (t1, t2)
 fun slange: lange_type (real, real) = "atsctrb_clapack_slange"
@@ -300,11 +302,12 @@ int dlacpy_(
 typedef
 lacpy_type (t:t@ype) =
   {m,n:nat} {lda,ldb:inc} (
-    (*uln:*) CLAPACK_UPLO_OPT_t
-  , (*m:*) integer m, (*n:*) integer n
-  , (*a:*) &GEMAT (t, m, n, lda), (*lda:*) integer lda
-  , (*b:*) &GEMAT (t, m, n, ldb), (*ldb:*) integer ldb
-  ) -<fun> void
+  (*uln:*) CLAPACK_UPLO_OPT_t
+, (*m:*) integer m, (*n:*) integer n
+, (*a:*) &GEMAT (t, m, n, lda), (*lda:*) integer lda
+, (*b:*) &GEMAT (t, m, n, ldb), (*ldb:*) integer ldb
+) -<fun> void
+// end of [typedef]
 
 fun{t:t@ype} lacpy: lacpy_type (t)
 fun slacpy: lacpy_type (real) = "atsctrb_clapack_slacpy"
@@ -366,17 +369,16 @@ typedef
 gelqf_type (t:t@ype) =
   {m,n:nat} {mn:int | mn==min(m,n)} {lda:inc} {la,ltau:addr}
   {lwork:pos | lwork >= m} (
-    GEMAT (t, m, n, lda) @ la    // a
-  , array_v (t?, mn, ltau) // tau
-  | integer m
-  , integer n
-  , ptr la, integer lda          // a, lda
-  , ptr ltau                     // tau
-  , &(@[t?][lwork]), integer lwork
-  ) -<fun> [err:int] (
-    LQMAT_err_v (t, m, n, mn, lda, la, ltau, err) | int err
-  )
-// end of [gelqf_type]
+  GEMAT (t, m, n, lda) @ la    // a
+, array_v (t?, mn, ltau) // tau
+| integer m
+, integer n
+, ptr la, integer lda          // a, lda
+, ptr ltau                     // tau
+, &(@[t?][lwork]), integer lwork
+) -<fun> [err:int] (
+  LQMAT_err_v (t, m, n, mn, lda, la, ltau, err) | int err
+) // end of [gelqf_type]
 
 fun{t:t@ype} gelqf: gelqf_type (t)
 fun sgelqf: gelqf_type (real) = "atsctrb_clapack_sgelqf"
@@ -387,17 +389,16 @@ fun zgelqf: gelqf_type (doublecomplex) = "atsctrb_clapack_zgelqf"
 fun{t:t@ype} gelqf_exn
   {m,n:nat} {mn:int | mn==min(m,n)} {lda:inc} {la,ltau:addr}
   {lwork:pos | lwork >= m} (
-    pfa: GEMAT (t, m, n, lda) @ la      // a
-  , pftau: array_v (t?, mn, ltau) // tau
-  | m: integer m
-  , n: integer n
-  , la: ptr la, lda: integer lda        // a, lda
-  , ltau: ptr ltau                      // tau
-  , work: &(@[t?][lwork]), lwork: integer lwork
-  ) :<> [err:int] (
-    LQMAT_v (t, m, n, mn, lda, la, ltau) | void
-  )
-// end of [gelqf_exn]
+  pfa: GEMAT (t, m, n, lda) @ la      // a
+, pftau: array_v (t?, mn, ltau) // tau
+| m: integer m
+, n: integer n
+, la: ptr la, lda: integer lda        // a, lda
+, ltau: ptr ltau                      // tau
+, work: &(@[t?][lwork]), lwork: integer lwork
+) :<> [err:int] (
+  LQMAT_v (t, m, n, mn, lda, la, ltau) | void
+) // end of [gelqf_exn]
 
 fun{t:t@ype} gelqf_work_query
   {m,n:nat} (m: integer m, n: integer n)
@@ -446,16 +447,15 @@ unmlq_type (t:t@ype) =
   {lr:side} {tr:transpose}
   {lwork:pos | lwork >= m+n-na}
   {la,ltau:addr} (
-    (*side:*) sidedim_p (lr, m, n, na)
-  , (*lqmat:*) !LQMAT_v (t, ma, na, k, lda, la, ltau)
-  | (*side:*) CLAPACK_SIDE_t lr
-  , (*trans:*) CLAPACK_TRANSPOSE_t tr
-  , (*m:*) integer m, (*n:*) integer n, (*k:*) integer k
-  , (*a:*) ptr la, (*lda:*) integer lda, (*tau:*) ptr ltau
-  , (*c__:*) &GEMAT (t, m, n, ldc), (*ldc:*) integer ldc
-  , (*work:*) &(@[t?][lwork]), (*lwork:*) integer lwork
-  ) -<fun> int
-// end of [unmlq_type]
+  (*side:*) sidedim_p (lr, m, n, na)
+, (*lqmat:*) !LQMAT_v (t, ma, na, k, lda, la, ltau)
+| (*side:*) CLAPACK_SIDE_t lr
+, (*trans:*) CLAPACK_TRANSPOSE_t tr
+, (*m:*) integer m, (*n:*) integer n, (*k:*) integer k
+, (*a:*) ptr la, (*lda:*) integer lda, (*tau:*) ptr ltau
+, (*c__:*) &GEMAT (t, m, n, ldc), (*ldc:*) integer ldc
+, (*work:*) &(@[t?][lwork]), (*lwork:*) integer lwork
+) -<fun> int // end of [unmlq_type]
 
 fun{t:t@ype} unmlq: unmlq_type (t)
 fun cunmlq: unmlq_type (complex) = "atsctrb_clapack_cunmlq"
@@ -466,10 +466,10 @@ fun{t:t@ype} unmlq_work_query
   {na:nat | k <= na}
   {lr:side}
   {tr:transpose} (
-    pf: sidedim_p (lr, m, n, na)
-  | side: CLAPACK_SIDE_t lr, trans: CLAPACK_TRANSPOSE_t tr
-  , m: integer m, n: integer n, k: integer k
-  ) :<> [lwork:pos | lwork >= m+n-na] integer (lwork)
+  pf: sidedim_p (lr, m, n, na)
+| side: CLAPACK_SIDE_t lr, trans: CLAPACK_TRANSPOSE_t tr
+, m: integer m, n: integer n, k: integer k
+) :<> [lwork:pos | lwork >= m+n-na] integer (lwork)
 // end of [unmlq_work_query]
 
 (* ****** ****** *)
@@ -484,10 +484,10 @@ fun{t:t@ype} ormlq_work_query
   {na:nat | k <= na}
   {lr:side}
   {tr:transpose} (
-    pf: sidedim_p (lr, m, n, na)
-  | side: CLAPACK_SIDE_t lr, trans: CLAPACK_TRANSPOSE_t tr
-  , m: integer m, n: integer n, k: integer k
-  ) :<> [lwork:pos | lwork >= m+n-na] integer (lwork)
+  pf: sidedim_p (lr, m, n, na)
+| side: CLAPACK_SIDE_t lr, trans: CLAPACK_TRANSPOSE_t tr
+, m: integer m, n: integer n, k: integer k
+) :<> [lwork:pos | lwork >= m+n-na] integer (lwork)
 // end of [ormlq_work_query]
 
 (* ****** ****** *)
@@ -501,11 +501,10 @@ prfun QLMAT_err_v_elim
   {a:t@ype}
   {m,n,k:int} {lda:int} {la,ltau:addr}
   {err:int} (
-    pflq: QLMAT_err_v (a, m, n, k, lda, la, ltau, err)
-  ) : (
-    GEMAT (a?, m, n, lda) @ la, array_v (a, k, ltau)
-  )
-// end of [QLMAT_err_v_elim]
+  pflq: QLMAT_err_v (a, m, n, k, lda, la, ltau, err)
+) : (
+  GEMAT (a?, m, n, lda) @ la, array_v (a, k, ltau)
+) // end of [QLMAT_err_v_elim]
 
 viewdef QLMAT_v (
   a: t@ype, m: int, n: int, k:int, lda: int, la:addr, ltau:addr
@@ -514,26 +513,24 @@ viewdef QLMAT_v (
 prfun TRMAT_v_of_QLMAT_v
   {a:t@ype} {m,n,k:nat | m >= n}
   {lda:inc} {la,ltau:addr} {ofs:int} (
-    pf_mul: MUL (m-n, sizeof a, ofs)
-  , pf_qlmat: QLMAT_v (a, m, n, k, lda, la, ltau)
-  ) :<prf> (
-    TRMAT (a, n, lower, nonunit, lda) @ la+ofs
-  , TRMAT (a, n, lower, nonunit, lda) @ la+ofs -<lin,prf> QLMAT_v (a, m, n, k, lda, la, ltau)
-  )
-// end of [TRMAT_v_of_QLMAT_v]
+  pf_mul: MUL (m-n, sizeof a, ofs)
+, pf_qlmat: QLMAT_v (a, m, n, k, lda, la, ltau)
+) :<prf> (
+  TRMAT (a, n, lower, nonunit, lda) @ la+ofs
+, TRMAT (a, n, lower, nonunit, lda) @ la+ofs -<lin,prf> QLMAT_v (a, m, n, k, lda, la, ltau)
+) // end of [TRMAT_v_of_QLMAT_v]
 
 fun{a:t@ype}
   TRMAT_of_QLMAT
   {m,n,k:nat | m >= n}
   {lda:inc} {la,ltau:addr} (
-    pf_qlmat: QLMAT_v (a, m, n, k, lda, la, ltau)
-  | m: integer m, n: integer n, pa: ptr la
-  ) :<> [la_ofs:addr] ( // la_ofs: la + ofs
-    TRMAT (a, n, lower, nonunit, lda) @ la_ofs
-  , TRMAT (a, n, lower, nonunit, lda) @ la_ofs -<lin,prf> QLMAT_v (a, m, n, k, lda, la, ltau)
-  | ptr la_ofs
-  )
-// end of [TRMAT_of_QLMAT]
+  pf_qlmat: QLMAT_v (a, m, n, k, lda, la, ltau)
+| m: integer m, n: integer n, pa: ptr la
+) :<> [la_ofs:addr] ( // la_ofs: la + ofs
+  TRMAT (a, n, lower, nonunit, lda) @ la_ofs
+, TRMAT (a, n, lower, nonunit, lda) @ la_ofs -<lin,prf> QLMAT_v (a, m, n, k, lda, la, ltau)
+| ptr la_ofs
+) // end of [TRMAT_of_QLMAT]
 
 (* ****** ****** *)
 
@@ -557,15 +554,14 @@ typedef
 geqlf_type (t:t@ype) =
   {m,n:nat} {mn:int | mn==min(m,n)} {lda:inc} {la,ltau:addr}
   {lwork:pos | lwork >= n} (
-    (*a:*) GEMAT (t, m, n, lda) @ la
-  , (*tau*) array_v (t?, mn, ltau)
-  | (*m:*) integer m, (*n:*) integer n
-  , (*a:*) ptr la, (*lda:*) integer lda, (*tau:*) ptr ltau
-  , (*work:*) &(@[t?][lwork]), (*lwork:*) integer lwork
-  ) -<fun> [err:int] (
-    QLMAT_err_v (t, m, n, mn, lda, la, ltau, err) | int err
-  )
-// end of [geqlf_type]
+  (*a:*) GEMAT (t, m, n, lda) @ la
+, (*tau*) array_v (t?, mn, ltau)
+| (*m:*) integer m, (*n:*) integer n
+, (*a:*) ptr la, (*lda:*) integer lda, (*tau:*) ptr ltau
+, (*work:*) &(@[t?][lwork]), (*lwork:*) integer lwork
+) -<fun> [err:int] (
+  QLMAT_err_v (t, m, n, mn, lda, la, ltau, err) | int err
+) // end of [geqlf_type]
 
 fun{t:t@ype} geqlf: geqlf_type (t)
 fun sgeqlf: geqlf_type (real) = "atsctrb_clapack_sgeqlf"
@@ -576,19 +572,20 @@ fun zgeqlf: geqlf_type (doublecomplex) = "atsctrb_clapack_zgeqlf"
 fun{t:t@ype} geqlf_exn
   {m,n:nat} {mn:int | mn==min(m,n)} {lda:inc} {la,ltau:addr}
   {lwork:pos | lwork >= n} (
-    pfa: GEMAT (t, m, n, lda) @ la
-  , pftau: array_v (t, mn, ltau)
-  | m: integer m, n: integer n
-  , a: ptr la, lda: integer lda, tau: ptr ltau
-  , work: &(@[t?][lwork]), lwork: integer lwork
-  ) :<!exn> (
-    QLMAT_v (t, m, n, mn, lda, la, ltau) | void
-  )
-// end of [geqlf_exn]
+  pfa: GEMAT (t, m, n, lda) @ la
+, pftau: array_v (t, mn, ltau)
+| m: integer m, n: integer n
+, a: ptr la, lda: integer lda, tau: ptr ltau
+, work: &(@[t?][lwork]), lwork: integer lwork
+) :<!exn> (
+  QLMAT_v (t, m, n, mn, lda, la, ltau) | void
+) // end of [geqlf_exn]
 
-fun{t:t@ype} geqlf_work_query
-  {m,n:nat} (m: integer m, n: integer n)
-  :<> [lwork:int | lwork >= n] integer (lwork)
+fun{t:t@ype}
+geqlf_work_query
+  {m,n:nat} (
+  m: integer m, n: integer n
+) :<> [lwork:int | lwork >= n] integer (lwork)
 
 (* ****** ****** *)
 
@@ -621,16 +618,15 @@ unmql_type (t:t@ype) =
   {lr:side} {tr:transpose}
   {lwork:pos | lwork >= m+n-ma}
   {la,ltau:addr} (
-    (*pf:*) sidedim_p (lr, m, n, ma)
-  , (*qlmat*) !QLMAT_v (t, ma, na, k, lda, la, ltau)
-  | (*side:*) CLAPACK_SIDE_t lr
-  , (*trans:*) CLAPACK_TRANSPOSE_t tr
-  , (*m:*) integer m, (*n:*) integer n, (*k:*) integer k
-  , (*a:*) ptr la, (*lda:*) integer lda, (*tau:*) ptr ltau
-  , (*c__:*) &GEMAT (t, m, n, ldc), (*ldc:*) integer ldc
-  , (*work:*) &(@[t?][lwork]), (*lwork:*) integer lwork
-  ) -<fun> int
-// end of [unmql_type]
+  (*pf:*) sidedim_p (lr, m, n, ma)
+, (*qlmat*) !QLMAT_v (t, ma, na, k, lda, la, ltau)
+| (*side:*) CLAPACK_SIDE_t lr
+, (*trans:*) CLAPACK_TRANSPOSE_t tr
+, (*m:*) integer m, (*n:*) integer n, (*k:*) integer k
+, (*a:*) ptr la, (*lda:*) integer lda, (*tau:*) ptr ltau
+, (*c__:*) &GEMAT (t, m, n, ldc), (*ldc:*) integer ldc
+, (*work:*) &(@[t?][lwork]), (*lwork:*) integer lwork
+) -<fun> int // end of [unmql_type]
 
 stadef ormql_type = unmql_type
 
@@ -647,10 +643,10 @@ fun{t:t@ype} ormql_work_query
   {ma:nat | k <= ma}
   {lr:side}
   {tr:transpose} (
-    pf: sidedim_p (lr, m, n, ma)
-  | side: CLAPACK_SIDE_t lr, trans: CLAPACK_TRANSPOSE_t tr
-  , m: integer m, n: integer n, k: integer k
-  ) :<> [lwork:pos | lwork >= m+n-ma] integer (lwork)
+  pf: sidedim_p (lr, m, n, ma)
+| side: CLAPACK_SIDE_t lr, trans: CLAPACK_TRANSPOSE_t tr
+, m: integer m, n: integer n, k: integer k
+) :<> [lwork:pos | lwork >= m+n-ma] integer (lwork)
 // end of [ormql_work_query]
 
 fun{t:t@ype} unmql_work_query
@@ -658,10 +654,10 @@ fun{t:t@ype} unmql_work_query
   {ma:nat | k <= ma}
   {lr:side}
   {tr:transpose} (
-    pf: sidedim_p (lr, m, n, ma)
-  | side: CLAPACK_SIDE_t lr, trans: CLAPACK_TRANSPOSE_t tr
-  , m: integer m, n: integer n, k: integer k
-  ) :<> [lwork:pos | lwork >= m+n-ma] integer (lwork)
+  pf: sidedim_p (lr, m, n, ma)
+| side: CLAPACK_SIDE_t lr, trans: CLAPACK_TRANSPOSE_t tr
+, m: integer m, n: integer n, k: integer k
+) :<> [lwork:pos | lwork >= m+n-ma] integer (lwork)
 // end of [unmql_work_query]
 
 (* ****** ****** *)
@@ -675,11 +671,10 @@ prfun QRMAT_err_v_elim
   {a:t@ype}
   {m,n,k:int} {lda:int} {la,ltau:addr}
   {err:int} (
-    pfqr: QRMAT_err_v (a, m, n, k, lda, la, ltau, err)
-  ) : (
-    GEMAT (a?, m, n, lda) @ la, array_v (a, k, ltau)
-  )
-// end of [QRMAT_err_v_elim]
+  pfqr: QRMAT_err_v (a, m, n, k, lda, la, ltau, err)
+) : (
+  GEMAT (a?, m, n, lda) @ la, array_v (a, k, ltau)
+) // end of [QRMAT_err_v_elim]
 
 viewdef QRMAT_v (
   a: t@ype, m: int, n: int, k:int, lda: int, la:addr, ltau:addr
@@ -687,13 +682,12 @@ viewdef QRMAT_v (
 
 prfun TRMAT_v_of_QRMAT_v {a:t@ype}
   {m,n,k:nat | m >= n} {lda:inc} {la,ltau:addr} (
-    pf_qrmat: QRMAT_v (a, m, n, k, lda, la, ltau)
-  ) :<prf> (
-    $GA.TRMAT_v (a, n, col, upper, nonunit, lda, la)
-  , $GA.TRMAT_v (a, n, col, upper, nonunit, lda, la) -<lin,prf>
-    QRMAT_v (a, m, n, k, lda, la, ltau)
-  )
-// end of [TRMAT_v_of_QRMAT_v]
+  pf_qrmat: QRMAT_v (a, m, n, k, lda, la, ltau)
+) :<prf> (
+  $GA.TRMAT_v (a, n, col, upper, nonunit, lda, la)
+, $GA.TRMAT_v (a, n, col, upper, nonunit, lda, la) -<lin,prf>
+  QRMAT_v (a, m, n, k, lda, la, ltau)
+) // end of [TRMAT_v_of_QRMAT_v]
 
 (* ****** ****** *)
 
@@ -716,17 +710,16 @@ typedef
 geqrf_type (t:t@ype) =
   {m,n:nat} {mn:int | mn==min(m,n)} {lda:inc} {la,ltau:addr}
   {lwork:pos | lwork >= n} (
-    GEMAT (t, m, n, lda) @ la    // a
-  , array_v (t?, mn, ltau) // tau
-  | integer m
-  , integer n
-  , ptr la, integer lda         // a, lda
-  , ptr ltau                    // tau
-  , &(@[t?][lwork]), integer lwork
-  ) -<fun> [err:int] (
-    QRMAT_err_v (t, m, n, mn, lda, la, ltau, err) | int err
-  )
-// end of [geqrf_type]
+  GEMAT (t, m, n, lda) @ la    // a
+, array_v (t?, mn, ltau) // tau
+| integer m
+, integer n
+, ptr la, integer lda         // a, lda
+, ptr ltau                    // tau
+, &(@[t?][lwork]), integer lwork
+) -<fun> [err:int] (
+  QRMAT_err_v (t, m, n, mn, lda, la, ltau, err) | int err
+) // end of [geqrf_type]
 
 fun{t:t@ype} geqrf: geqrf_type (t)
 fun sgeqrf: geqrf_type (real) = "atsctrb_clapack_sgeqrf"
@@ -737,15 +730,14 @@ fun zgeqrf: geqrf_type (doublecomplex) = "atsctrb_clapack_zgeqrf"
 fun{t:t@ype} geqrf_exn
   {m,n:nat} {mn:int | mn==min(m,n)} {lda:inc} {la,ltau:addr}
   {lwork:pos | lwork >= n} (
-    pfa: GEMAT (t, m, n, lda) @ la
-  , pftau: array_v (t, mn, ltau)
-  | m: integer m, n: integer n
-  , a: ptr la, lda: integer lda, tau: ptr ltau
-  , work: &(@[t?][lwork]), lwork: integer lwork
-  ) : (
-    QRMAT_v (t, m, n, mn, lda, la, ltau) | void
-  )
-// end of [geqrf_exn]
+  pfa: GEMAT (t, m, n, lda) @ la
+, pftau: array_v (t, mn, ltau)
+| m: integer m, n: integer n
+, a: ptr la, lda: integer lda, tau: ptr ltau
+, work: &(@[t?][lwork]), lwork: integer lwork
+) : (
+  QRMAT_v (t, m, n, mn, lda, la, ltau) | void
+) // end of [geqrf_exn]
 
 fun{t:t@ype} geqrf_work_query {m,n:nat}
   (m: integer m, n: integer n)
@@ -761,16 +753,15 @@ unmqr_type (t:t@ype) =
   {lr:side} {tr:transpose}
   {lwork:pos | lwork >= m+n-ma}
   {la,ltau:addr} (
-    (*pf:*) sidedim_p (lr, m, n, ma)
-  , (*qrmat*) !QRMAT_v (t, ma, na, k, lda, la, ltau)
-  | (*side:*) CLAPACK_SIDE_t lr
-  , (*trans:*) CLAPACK_TRANSPOSE_t tr
-  , (*m:*) integer m, (*n:*) integer n, (*k:*) integer k
-  , (*a:*) ptr la, (*lda:*) integer lda, (*tau:*) ptr ltau
-  , (*c:*) &GEMAT (t, m, n, ldc), (*ldc:*) integer ldc
-  , (*work:*) &(@[t?][lwork]), (*lwork:*) integer lwork
-  ) -<fun> int
-// end of [unmqr_type]
+  (*pf:*) sidedim_p (lr, m, n, ma)
+, (*qrmat*) !QRMAT_v (t, ma, na, k, lda, la, ltau)
+| (*side:*) CLAPACK_SIDE_t lr
+, (*trans:*) CLAPACK_TRANSPOSE_t tr
+, (*m:*) integer m, (*n:*) integer n, (*k:*) integer k
+, (*a:*) ptr la, (*lda:*) integer lda, (*tau:*) ptr ltau
+, (*c:*) &GEMAT (t, m, n, ldc), (*ldc:*) integer ldc
+, (*work:*) &(@[t?][lwork]), (*lwork:*) integer lwork
+) -<fun> int // end of [unmqr_type]
 
 stadef ormqr_type = unmqr_type
 
@@ -787,10 +778,10 @@ fun{t:t@ype} ormqr_work_query
   {ma:nat | k <= ma}
   {lr:side}
   {tr:transpose} (
-    pf: sidedim_p (lr, m, n, ma)
-  | side: CLAPACK_SIDE_t lr, trans: CLAPACK_TRANSPOSE_t tr
-  , m: integer m, n: integer n, k: integer k
-  ) :<> [lwork:pos | lwork >= m+n-ma] integer (lwork)
+  pf: sidedim_p (lr, m, n, ma)
+| side: CLAPACK_SIDE_t lr, trans: CLAPACK_TRANSPOSE_t tr
+, m: integer m, n: integer n, k: integer k
+) :<> [lwork:pos | lwork >= m+n-ma] integer (lwork)
 // end of [ormqr_work_query]
 
 fun{t:t@ype} unmqr_work_query
@@ -798,10 +789,10 @@ fun{t:t@ype} unmqr_work_query
   {ma:nat | k <= ma}
   {lr:side}
   {tr:transpose} (
-    pf: sidedim_p (lr, m, n, ma)
-  | side: CLAPACK_SIDE_t lr, trans: CLAPACK_TRANSPOSE_t tr
-  , m: integer m, n: integer n, k: integer k
-  ) :<> [lwork:pos | lwork >= m+n-ma] integer (lwork)
+  pf: sidedim_p (lr, m, n, ma)
+| side: CLAPACK_SIDE_t lr, trans: CLAPACK_TRANSPOSE_t tr
+, m: integer m, n: integer n, k: integer k
+) :<> [lwork:pos | lwork >= m+n-ma] integer (lwork)
 // end of [unmqr_work_query]
 
 (* ****** ****** *)
@@ -815,11 +806,10 @@ prfun RQMAT_err_v_elim
   {a:t@ype}
   {m,n,k:int} {lda:int} {la,ltau:addr}
   {err:int} (
-    pfrq: RQMAT_err_v (a, m, n, k, lda, la, ltau, err)
-  ) : (
-    GEMAT (a?, m, n, lda) @ la, array_v (a, k, ltau)
-  )
-// end of [RQMAT_err_v_elim]
+  pfrq: RQMAT_err_v (a, m, n, k, lda, la, ltau, err)
+) : (
+  GEMAT (a?, m, n, lda) @ la, array_v (a, k, ltau)
+) // end of [RQMAT_err_v_elim]
 
 viewdef RQMAT_v (
   a: t@ype, m: int, n: int, k:int, lda: int, la:addr, ltau:addr
@@ -830,30 +820,28 @@ prfun TRMAT_v_of_RQMAT_v
   {m,n,k:nat | m <= n}
   {lda:inc} {la,ltau:addr}
   {ofs1,ofs:int} (
-    pf_mul1: MUL (n-m, lda, ofs1)
-  , pf_mul: MUL (ofs1, sizeof a, ofs)
-  , pf_rqmat: RQMAT_v (a, m, n, k, lda, la, ltau)
-  ) :<prf> (
-    $GA.TRMAT_v (a, m, col, upper, nonunit, lda, la+ofs)
-  , $GA.TRMAT_v (a, m, col, upper, nonunit, lda, la+ofs) -<lin,prf>
-    RQMAT_v (a, m, n, k, lda, la, ltau)
-  )
-// end of [TRMAT_v_of_RQMAT_v]
+  pf_mul1: MUL (n-m, lda, ofs1)
+, pf_mul: MUL (ofs1, sizeof a, ofs)
+, pf_rqmat: RQMAT_v (a, m, n, k, lda, la, ltau)
+) :<prf> (
+  $GA.TRMAT_v (a, m, col, upper, nonunit, lda, la+ofs)
+, $GA.TRMAT_v (a, m, col, upper, nonunit, lda, la+ofs) -<lin,prf>
+  RQMAT_v (a, m, n, k, lda, la, ltau)
+) // end of [TRMAT_v_of_RQMAT_v]
 
 fun{a:t@ype}
   TRMAT_of_RQMAT
   {m,n,k:nat | m <= n}
   {lda:inc} {la,ltau:addr}
   {ofs:int} (
-    pf_rqmat: RQMAT_v (a, m, n, k, lda, la, ltau)
-  | m: integer m, n: integer n, lda: integer lda, pa: ptr la
-  ) :<> [l:addr] (
-    $GA.TRMAT_v (a, m, col, upper, nonunit, lda, l)
-  , $GA.TRMAT_v (a, m, col, upper, nonunit, lda, l) -<lin,prf>
-    RQMAT_v (a, m, n, k, lda, la, ltau)
-  | ptr l
-  )
-// end of [TRMAT_of_RQMAT]
+  pf_rqmat: RQMAT_v (a, m, n, k, lda, la, ltau)
+| m: integer m, n: integer n, lda: integer lda, pa: ptr la
+) :<> [l:addr] (
+  $GA.TRMAT_v (a, m, col, upper, nonunit, lda, l)
+, $GA.TRMAT_v (a, m, col, upper, nonunit, lda, l) -<lin,prf>
+  RQMAT_v (a, m, n, k, lda, la, ltau)
+| ptr l
+) // end of [TRMAT_of_RQMAT]
 
 
 (* ****** ****** *)
@@ -879,15 +867,14 @@ typedef
 gerqf_type (t:t@ype) =
   {m,n:nat} {mn:int | mn==min(m,n)} {lda:inc} {la,ltau:addr}
   {lwork:pos | lwork >= m} (
-    (*a*) GEMAT (t, m, n, lda) @ la
-  , (*tau*) array_v (t?, mn, ltau)
-  | (*m:*) integer m, (*n:*) integer n
-  , (*a:*) ptr la, (*lda:*) integer lda, (*tau :*) ptr ltau
-  , (*work:*) &(@[t?][lwork]), (*lwork:*) integer lwork
-  ) -<fun> [err:int] (
-    RQMAT_err_v (t, m, n, mn, lda, la, ltau, err) | int err
-  )
-// end of [gerqf_type]
+  (*a*) GEMAT (t, m, n, lda) @ la
+, (*tau*) array_v (t?, mn, ltau)
+| (*m:*) integer m, (*n:*) integer n
+, (*a:*) ptr la, (*lda:*) integer lda, (*tau :*) ptr ltau
+, (*work:*) &(@[t?][lwork]), (*lwork:*) integer lwork
+) -<fun> [err:int] (
+  RQMAT_err_v (t, m, n, mn, lda, la, ltau, err) | int err
+) // end of [gerqf_type]
 
 fun{t:t@ype} gerqf: gerqf_type (t)
 fun sgerqf: gerqf_type (real) = "atsctrb_clapack_sgerqf"
@@ -898,19 +885,20 @@ fun zgerqf: gerqf_type (doublecomplex) = "atsctrb_clapack_zgerqf"
 fun{t:t@ype} gerqf_exn
   {m,n:nat} {mn:int | mn==min(m,n)} {lda:inc} {la,ltau:addr}
   {lwork:pos | lwork >= m} (
-    pfa: GEMAT (t, m, n, lda) @ la
-  , pftau: array_v (t, mn, ltau)
-  | m: integer m, n: integer n
-  , a: ptr la, lda: integer lda, tau: ptr ltau
-  , work: &(@[t?][lwork]), lwork: integer lwork
-  ) : (
-    RQMAT_v (t, m, n, mn, lda, la, ltau) | void
-  )
-// end of [gerqf_exn]
+  pfa: GEMAT (t, m, n, lda) @ la
+, pftau: array_v (t, mn, ltau)
+| m: integer m, n: integer n
+, a: ptr la, lda: integer lda, tau: ptr ltau
+, work: &(@[t?][lwork]), lwork: integer lwork
+) : (
+  RQMAT_v (t, m, n, mn, lda, la, ltau) | void
+) // end of [gerqf_exn]
 
-fun{t:t@ype} gerqf_work_query {m,n:nat}
+fun{t:t@ype}
+gerqf_work_query {m,n:nat}
   (m: integer m, n: integer n)
   :<> [lwork:int | lwork >= m] integer lwork
+// end of [fun]
 
 (* ****** ****** *)
 
@@ -942,16 +930,15 @@ unmrq_type (t:t@ype) =
   {lr:side} {tr:transpose}
   {lwork:pos | lwork >= m+n-na}
   {la,ltau:addr} (
-    (*pf:*) sidedim_p (lr, m, n, na)
-  , (*rqmat*) !RQMAT_v (t, ma, na, k, lda, la, ltau)
-  | (*side:*) CLAPACK_SIDE_t lr
-  , (*trans:*) CLAPACK_TRANSPOSE_t tr
-  , (*m:*) integer m, (*n:*) integer n, (*k:*) integer k
-  , (*a:*) ptr la, (*lda:*) integer lda, (*tau:*) ptr ltau
-  , (*c__:*) &GEMAT (t, m, n, ldc), (*ldc:*) integer ldc
-  , (*work:*) &(@[t?][lwork]), (*lwork:*) integer lwork
-  ) -<fun> int
-// end of [unmrq_type]
+  (*pf:*) sidedim_p (lr, m, n, na)
+, (*rqmat*) !RQMAT_v (t, ma, na, k, lda, la, ltau)
+| (*side:*) CLAPACK_SIDE_t lr
+, (*trans:*) CLAPACK_TRANSPOSE_t tr
+, (*m:*) integer m, (*n:*) integer n, (*k:*) integer k
+, (*a:*) ptr la, (*lda:*) integer lda, (*tau:*) ptr ltau
+, (*c__:*) &GEMAT (t, m, n, ldc), (*ldc:*) integer ldc
+, (*work:*) &(@[t?][lwork]), (*lwork:*) integer lwork
+) -<fun> int // end of [unmrq_type]
 
 stadef ormrq_type = unmrq_type
 
@@ -979,10 +966,10 @@ fun{t:t@ype} unmrq_work_query
   {na:nat | k <= na}
   {lr:side}
   {tr:transpose} (
-    pf: sidedim_p (lr, m, n, na)
-  | side: CLAPACK_SIDE_t lr, trans: CLAPACK_TRANSPOSE_t tr
-  , m: integer m, n: integer n, k: integer k
-  ) :<> [lwork:pos | lwork >= m+n-na] integer (lwork)
+  pf: sidedim_p (lr, m, n, na)
+| side: CLAPACK_SIDE_t lr, trans: CLAPACK_TRANSPOSE_t tr
+, m: integer m, n: integer n, k: integer k
+) :<> [lwork:pos | lwork >= m+n-na] integer (lwork)
 // end of [unmrq_work_query]
 
 (* ****** ****** *)
@@ -1023,16 +1010,15 @@ gels_type (t:t@ype) =
   {tr:transpose}
   {m,n:nat} {nrhs:nat} {lda,ldb:inc}
   {lwork:pos} (
-   (*pf_lwork:*) gels_lwork_p (tr, m, n, nrhs, lwork)
- | (*trans:*) CLAPACK_TRANSPOSE_t tr
- , (*m:*) integer m, (*n:*) integer n, (*nrhs:*) integer nrhs
- , (*a:*) &GEMAT (t, m, n, lda) >> GEMAT (t?, m, n, lda)
- , (*lda:*) integer lda
- , (*b:*) &GEMAT (t, max(m,n), nrhs, ldb)
- , (*ldb:*) integer ldb
- , (*work:*) &(@[t?][lwork]), (*lwork:*) integer lwork
- ) -<fun> int
-// end of [gels_type]
+  (*pf_lwork:*) gels_lwork_p (tr, m, n, nrhs, lwork)
+| (*trans:*) CLAPACK_TRANSPOSE_t tr
+, (*m:*) integer m, (*n:*) integer n, (*nrhs:*) integer nrhs
+, (*a:*) &GEMAT (t, m, n, lda) >> GEMAT (t?, m, n, lda)
+, (*lda:*) integer lda
+, (*b:*) &GEMAT (t, max(m,n), nrhs, ldb)
+, (*ldb:*) integer ldb
+, (*work:*) &(@[t?][lwork]), (*lwork:*) integer lwork
+) -<fun> int // end of [gels_type]
 
 fun{t:t@ype} gels: gels_type (t) = "atsctrb_clapack_gels"
 fun sgels : gels_type (real) = "atsctrb_clapack_sgels"
@@ -1074,14 +1060,13 @@ trtrs_type (t:t@ype) =
   {dg:diag}
   {n:nat} {nrhs:nat}
   {lda,ldb:inc} (
-    (*uplo:*) CLAPACK_UPLO_t ul
-  , (*trans:*) CLAPACK_TRANSPOSE_t tr
-  , (*diag:*) CLAPACK_DIAG_t dg
-  , (*n:*) integer n, (*nrhs:*) integer nrhs
-  , (*a:*) &TRMAT (t, n, ul, dg, lda), (*lda:*) integer lda
-  , (*b:*) &GEMAT (t, n, nrhs, ldb), (*ldb:*) integer ldb
-  ) -<fun> int
-// end of [trtrs_type]
+  (*uplo:*) CLAPACK_UPLO_t ul
+, (*trans:*) CLAPACK_TRANSPOSE_t tr
+, (*diag:*) CLAPACK_DIAG_t dg
+, (*n:*) integer n, (*nrhs:*) integer nrhs
+, (*a:*) &TRMAT (t, n, ul, dg, lda), (*lda:*) integer lda
+, (*b:*) &GEMAT (t, n, nrhs, ldb), (*ldb:*) integer ldb
+) -<fun> int // end of [trtrs_type]
 
 fun{t:t@ype} trtrs: trtrs_type (t)
 fun strtrs: trtrs_type (real) = "atsctrb_clapack_strtrs"
@@ -1103,13 +1088,12 @@ prfun LUMAT_err_v_elim {a:t@ype}
 prfun TRMAT_LU_v_of_LUMAT_v
   {a:t@ype} {m,n:nat | m <= n}
   {lda:inc} {la:addr} {err:nat} {ofs:int} (
-    pf_ofs: MUL (n, sizeof a, ofs)
-  , pf_lumat: LUMAT_err_v (a, m, n, lda, la, err)
-  ) :<prf> (
-    TRMAT (a, n, lower, unit, lda) @ la
-  , TRMAT (a, m, lower, unit, lda) @ la -<lin,prf> LUMAT_err_v (a, m, n, lda, la, err)
-  )
-// end of [TRMAT_LU_v_of_LUMAT_v]
+  pf_ofs: MUL (n, sizeof a, ofs)
+, pf_lumat: LUMAT_err_v (a, m, n, lda, la, err)
+) :<prf> (
+  TRMAT (a, n, lower, unit, lda) @ la
+, TRMAT (a, m, lower, unit, lda) @ la -<lin,prf> LUMAT_err_v (a, m, n, lda, la, err)
+) // end of [TRMAT_LU_v_of_LUMAT_v]
 
 prfun TRMAT_UN_v_of_LUMAT_v
   {a:t@ype} {m,n:nat | m >= n}
@@ -1220,13 +1204,12 @@ laswp_type (t:t@ype) =
   {m,n:nat} {lda:inc}
   {k1,k2:nat | k1 <= k2 && k2 <= m}
   {k:nat | k2 <= k} {incx:int | incx == 1 || incx == ~1} (
-    (*n:*) integer n
-  , (*a:*) &GEMAT (t, m, n, lda), (*lda:*) integer lda
-  , (*k1*) integer k1, (*k2*) integer k2
-  , (*ipiv:*) &(@[integer][k])
-  , (*incx*) integer incx
-  ) -<> void
-// end of [laswp_type]
+  (*n:*) integer n
+, (*a:*) &GEMAT (t, m, n, lda), (*lda:*) integer lda
+, (*k1*) integer k1, (*k2*) integer k2
+, (*ipiv:*) &(@[integer][k])
+, (*incx*) integer incx
+) -<> void // end of [laswp_type]
 
 //
 
@@ -1264,15 +1247,14 @@ int dgesv_ (
 typedef
 gesv_type (t:t@ype) =
   {n,nrhs:nat} {lda,ldb:inc} {la:addr} (
-    (*a*) GEMAT (t, n, n, lda) @ la
-  | (*n:*) integer n, (*nrhs:*) integer nrhs
-  , (*a:*) ptr la, (*lda:*) integer lda
-  , (*ipiv:*) &(@[integer?][n]) >> @[integerBtwe(1,n)][n]
-  , (*b:*) &GEMAT (t, n, nrhs, ldb), (*ldb:*) integer ldb
-  ) -<fun> [err:int] (
-    LUMAT_err_v (t, n, n, lda, la, err) | int err
-  )
-// end of [gesv_type]
+  (*a*) GEMAT (t, n, n, lda) @ la
+| (*n:*) integer n, (*nrhs:*) integer nrhs
+, (*a:*) ptr la, (*lda:*) integer lda
+, (*ipiv:*) &(@[integer?][n]) >> @[integerBtwe(1,n)][n]
+, (*b:*) &GEMAT (t, n, nrhs, ldb), (*ldb:*) integer ldb
+) -<fun> [err:int] (
+  LUMAT_err_v (t, n, n, lda, la, err) | int err
+) // end of [gesv_type]
 
 fun{t:t@ype} gesv: gesv_type (t)
 fun sgesv: gesv_type (real) = "atsctrb_clapack_sgesv"
@@ -1311,7 +1293,8 @@ int dgesvd_(
 absprop
 gesvd_lwork_p (m:int, n:int, lwork:int)
 
-prfun lemma_gesvd_lwork // implemented in [clapack.dats]
+prfun
+lemma_gesvd_lwork // implemented in [clapack.dats]
   { m, n, lwork : nat
   | lwork >= 1
   ; lwork >= 3*min(m,n) + max(m,n)
@@ -1327,20 +1310,19 @@ prfun lemma_gesvd_lwork // implemented in [clapack.dats]
 typedef
 gesvd_type (t1:t@ype, t2:t@ype) =
   {m,n:nat} {mn:int | mn==min(m,n)} {lda,ldu,ldvt:inc} {lwork:pos} (
-    (*pf_lwork:*) gesvd_lwork_p (m, n, lwork)
-  | (*m:*)        integer m
-  , (*n:*)        integer n
-  , (*a:*)        &(GEMAT (t1, m, n, lda)) >> GEMAT(t1?, m, n, lda)
-  , (*lda:*)      integer lda
-  , (*s:*)        &(@[t2?][mn]) >> @[t2][mn]
-  , (*u:*)        &(GEMAT (t1?, m, m, ldu)) >> GEMAT (t1, m, m, ldu)
-  , (*ldu:*)      integer ldu
-  , (*vt:*)       &(GEMAT (t1?, n, n, ldvt)) >> GEMAT (t1, n, n, ldvt)
-  , (*ldvt:*)     integer ldvt
-  , (*work:*)     &(@[t1?][lwork])
-  , (*lwork:*)    integer lwork
-  ) -<fun> int
-// end of [gesvd_type]
+  (*pf_lwork:*) gesvd_lwork_p (m, n, lwork)
+| (*m:*)        integer m
+, (*n:*)        integer n
+, (*a:*)        &(GEMAT (t1, m, n, lda)) >> GEMAT(t1?, m, n, lda)
+, (*lda:*)      integer lda
+, (*s:*)        &(@[t2?][mn]) >> @[t2][mn]
+, (*u:*)        &(GEMAT (t1?, m, m, ldu)) >> GEMAT (t1, m, m, ldu)
+, (*ldu:*)      integer ldu
+, (*vt:*)       &(GEMAT (t1?, n, n, ldvt)) >> GEMAT (t1, n, n, ldvt)
+, (*ldvt:*)     integer ldvt
+, (*work:*)     &(@[t1?][lwork])
+, (*lwork:*)    integer lwork
+) -<fun> int // end of [gesvd_type]
 
 fun{t1,t2:t@ype} gesvd: gesvd_type (t1, t2)
 
@@ -1359,20 +1341,19 @@ gesvd_work_query
 typedef
 gesvd_econ_type (t1:t@ype, t2:t@ype) =
   {m,n:nat} {mn:int | mn==min(m,n)} {lda,ldu,ldvt:inc} {lwork:pos} (
-    (*pf_lwork:*) gesvd_lwork_p (m, n, lwork)
-  | (*m:*)        integer m
-  , (*n:*)        integer n
-  , (*a:*)        &(GEMAT (t1, m, n, lda)) >> GEMAT(t1?, m, n, lda)
-  , (*lda:*)      integer lda
-  , (*s:*)        &(@[t2?][mn]) >> @[t2][mn]
-  , (*u:*)        &(GEMAT (t1?, m, mn, ldu)) >> GEMAT (t1, m, mn, ldu)
-  , (*ldu:*)      integer ldu
-  , (*vt:*)       &(GEMAT (t1?, mn, n, ldvt)) >> GEMAT (t1, mn, n, ldvt)
-  , (*ldvt:*)     integer ldvt
-  , (*work:*)     &(@[t1?][lwork])
-  , (*lwork:*)    integer lwork
-  ) -<fun> int
-// end of [gesvd_econ_type]
+  (*pf_lwork:*) gesvd_lwork_p (m, n, lwork)
+| (*m:*)        integer m
+, (*n:*)        integer n
+, (*a:*)        &(GEMAT (t1, m, n, lda)) >> GEMAT(t1?, m, n, lda)
+, (*lda:*)      integer lda
+, (*s:*)        &(@[t2?][mn]) >> @[t2][mn]
+, (*u:*)        &(GEMAT (t1?, m, mn, ldu)) >> GEMAT (t1, m, mn, ldu)
+, (*ldu:*)      integer ldu
+, (*vt:*)       &(GEMAT (t1?, mn, n, ldvt)) >> GEMAT (t1, mn, n, ldvt)
+, (*ldvt:*)     integer ldvt
+, (*work:*)     &(@[t1?][lwork])
+, (*lwork:*)    integer lwork
+) -<fun> int // end of [gesvd_econ_type]
 
 fun{t1,t2:t@ype} gesvd_econ: gesvd_econ_type (t1, t2)
 
@@ -1391,16 +1372,15 @@ gesvd_econ_work_query
 typedef
 gesvd_sing_type (t1:t@ype, t2:t@ype) =
   {m,n:nat} {mn:int | mn==min(m,n)} {lda:inc} {lwork:pos} (
-    (*pf_lwork:*) gesvd_lwork_p (m, n, lwork)
-  | (*m:*)        integer m
-  , (*n:*)        integer n
-  , (*a:*)        &(GEMAT (t1, m, n, lda)) >> GEMAT(t1?, m, n, lda)
-  , (*lda:*)      integer lda
-  , (*s:*)        &(@[t2?][mn]) >> @[t2][mn]
-  , (*work:*)     &(@[t1?][lwork])
-  , (*lwork:*)    integer lwork
-  ) -<fun> int
-// end of [gesvd_sing_type]
+  (*pf_lwork:*) gesvd_lwork_p (m, n, lwork)
+| (*m:*)        integer m
+, (*n:*)        integer n
+, (*a:*)        &(GEMAT (t1, m, n, lda)) >> GEMAT(t1?, m, n, lda)
+, (*lda:*)      integer lda
+, (*s:*)        &(@[t2?][mn]) >> @[t2][mn]
+, (*work:*)     &(@[t1?][lwork])
+, (*lwork:*)    integer lwork
+) -<fun> int // end of [gesvd_sing_type]
 
 fun{t1,t2:t@ype} gesvd_sing: gesvd_sing_type (t1, t2)
 
@@ -1419,16 +1399,15 @@ gesvd_sing_work_query
 typedef
 gesvd_left_type (t1:t@ype, t2:t@ype) =
   {m,n:nat | m >= n} {lda:inc} {lwork:pos} (
-    (*pf_lwork:*) gesvd_lwork_p (m, n, lwork)
-  | (*m:*)        integer m
-  , (*n:*)        integer n
-  , (*a:*)        &(GEMAT (t1, m, n, lda))
-  , (*lda:*)      integer lda
-  , (*s:*)        &(@[t2?][n]) >> @[t2][n]
-  , (*work:*)     &(@[t1?][lwork])
-  , (*lwork:*)    integer lwork
-  ) -<fun> int
-// end of [gesvd_left_type]
+  (*pf_lwork:*) gesvd_lwork_p (m, n, lwork)
+| (*m:*)        integer m
+, (*n:*)        integer n
+, (*a:*)        &(GEMAT (t1, m, n, lda))
+, (*lda:*)      integer lda
+, (*s:*)        &(@[t2?][n]) >> @[t2][n]
+, (*work:*)     &(@[t1?][lwork])
+, (*lwork:*)    integer lwork
+) -<fun> int // end of [gesvd_left_type]
 
 fun{t1,t2:t@ype} gesvd_left: gesvd_left_type (t1, t2)
 
@@ -1445,18 +1424,18 @@ gesvd_left_work_query
 *)
 
 typedef
-gesvd_right_type (t1:t@ype, t2:t@ype) =
+gesvd_right_type
+  (t1:t@ype, t2:t@ype) =
   {m,n:nat | m <= n} {lda:inc} {lwork:pos} (
-    (*pf_lwork:*) gesvd_lwork_p (m, n, lwork)
-  | (*m:*)        integer m
-  , (*n:*)        integer n
-  , (*a:*)        &(GEMAT (t1, m, n, lda))
-  , (*lda:*)      integer lda
-  , (*s:*)        &(@[t2?][m]) >> @[t2][m]
-  , (*work:*)     &(@[t1?][lwork])
-  , (*lwork:*)    integer lwork
-  ) -<fun> int
-// end of [gesvd_right_type]
+  (*pf_lwork:*) gesvd_lwork_p (m, n, lwork)
+| (*m:*)        integer m
+, (*n:*)        integer n
+, (*a:*)        &(GEMAT (t1, m, n, lda))
+, (*lda:*)      integer lda
+, (*s:*)        &(@[t2?][m]) >> @[t2][m]
+, (*work:*)     &(@[t1?][lwork])
+, (*lwork:*)    integer lwork
+) -<fun> int // end of [gesvd_right_type]
 
 fun{t1,t2:t@ype} gesvd_right: gesvd_right_type (t1, t2)
 
@@ -1473,20 +1452,20 @@ gesvd_right_work_query
 *)
 
 typedef
-gesvd_skinny_type (t1:t@ype, t2:t@ype) =
+gesvd_skinny_type
+  (t1:t@ype, t2:t@ype) =
   {m,n:nat | m >= n} {lda,ldvt:inc} {lwork:pos} (
-    (*pf_lwork:*) gesvd_lwork_p (m, n, lwork)
-  | (*m:*)        integer m
-  , (*n:*)        integer n
-  , (*a:*)        &(GEMAT (t1, m, n, lda))
-  , (*lda:*)      integer lda
-  , (*s:*)        &(@[t2?][n]) >> @[t2][n]
-  , (*vt:*)       &(GEMAT (t1?, n, n, ldvt)) >> GEMAT (t1, n, n, ldvt)
-  , (*ldvt:*)     integer ldvt
-  , (*work:*)     &(@[t1?][lwork])
-  , (*lwork:*)    integer lwork
-  ) -<fun> int
-// end of [gesvd_skinny_type]
+  (*pf_lwork:*) gesvd_lwork_p (m, n, lwork)
+| (*m:*)        integer m
+, (*n:*)        integer n
+, (*a:*)        &(GEMAT (t1, m, n, lda))
+, (*lda:*)      integer lda
+, (*s:*)        &(@[t2?][n]) >> @[t2][n]
+, (*vt:*)       &(GEMAT (t1?, n, n, ldvt)) >> GEMAT (t1, n, n, ldvt)
+, (*ldvt:*)     integer ldvt
+, (*work:*)     &(@[t1?][lwork])
+, (*lwork:*)    integer lwork
+) -<fun> int // end of [gesvd_skinny_type]
 
 fun{t1,t2:t@ype} gesvd_skinny: gesvd_skinny_type (t1, t2)
 
@@ -1531,20 +1510,20 @@ gesvd_skinny_right_work_query
 *)
 
 typedef
-gesvd_fat_type (t1:t@ype, t2:t@ype) =
+gesvd_fat_type
+  (t1:t@ype, t2:t@ype) =
   {m,n:nat | m <= n} {lda,ldu:inc} {lwork:pos} (
-    (*pf_lwork:*) gesvd_lwork_p (m, n, lwork)
-  | (*m:*)        integer m
-  , (*n:*)        integer n
-  , (*a:*)        &(GEMAT (t1, m, n, lda))
-  , (*lda:*)      integer lda
-  , (*s:*)        &(@[t2?][m]) >> @[t2][m]
-  , (*u:*)        &(GEMAT (t1?, m, m, ldu)) >> GEMAT (t1, m, m, ldu)
-  , (*ldu:*)      integer ldu
-  , (*work:*)     &(@[t1?][lwork])
-  , (*lwork:*)    integer lwork
-  ) -<fun> int
-// end of [gesvd_fat_type]
+  (*pf_lwork:*) gesvd_lwork_p (m, n, lwork)
+| (*m:*)        integer m
+, (*n:*)        integer n
+, (*a:*)        &(GEMAT (t1, m, n, lda))
+, (*lda:*)      integer lda
+, (*s:*)        &(@[t2?][m]) >> @[t2][m]
+, (*u:*)        &(GEMAT (t1?, m, m, ldu)) >> GEMAT (t1, m, m, ldu)
+, (*ldu:*)      integer ldu
+, (*work:*)     &(@[t1?][lwork])
+, (*lwork:*)    integer lwork
+) -<fun> int // end of [gesvd_fat_type]
 
 fun{t1,t2:t@ype} gesvd_fat: gesvd_fat_type (t1, t2)
 

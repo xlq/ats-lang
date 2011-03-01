@@ -79,7 +79,7 @@ void *dlopen(const char *filename, int flag);
 fun dlopen
   (filename: string, flag: dlopen_flag_t)
   :<> [l:addr] (option_v (dlopen_v l, l > null) | ptr l)
-  = "#atslib_dlopen"
+  = "mac#atslib_dlopen"
 // end of [dlopen]
 
 fun dlopen_exn
@@ -94,7 +94,7 @@ fun dlopen_exn
 fun dlclose {l:agz} (
     pf: !dlopen_v l >> option_v (dlopen_v l, i > 0) | handle: ptr l
   ) :<> #[i:int | i >= 0] int(i) (*err*)
-  = "#atslib_dlclose"
+  = "mac#atslib_dlclose"
 // end of [dlclose]
 
 fun dlclose_exn {l:agz}
@@ -110,7 +110,7 @@ fun dlclose_exn {l:agz}
 //
 fun dlerror ()
   : [l:addr] (strptr (l) -<lin,prf> void | strptr (l))
-  = "#atslib_dlerror"
+  = "mac#atslib_dlerror"
 // end of [dlerror]
 
 fun dlerror_clr (): void // end of [dlerror_clr]
@@ -119,7 +119,7 @@ fun dlerror_clr (): void // end of [dlerror_clr]
 
 fun dlsym {l:addr}
   (pf: !dlopen_v l | handle: ptr l, sym: string): ptr
-  = "#atslib_dlsym"
+  = "mac#atslib_dlsym"
 // end of [dlsym]
 
 (* ****** ****** *)

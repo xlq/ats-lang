@@ -63,7 +63,7 @@ curl_easy_setopt_exn {l} {ts}
   (curl, option, arg) = let
   extern fun Curl_setopt (
     curl: !CURLptr l, option: CURLoption, arg: &va_list ts >> va_list
-  ) : CURLcode = "#atsctrb_Curl_setopt" // declared in lib/url.h
+  ) : CURLcode = "mac#atsctrb_Curl_setopt" // declared in lib/url.h
   val err = Curl_setopt (curl, option, arg)
   val () = va_end (arg) // a type error is reported if [va_end] is not called
   val () = if (err <> CURLE_OK) then let

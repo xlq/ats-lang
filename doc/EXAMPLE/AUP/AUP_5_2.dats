@@ -16,7 +16,7 @@ staload "libc/SATS/stdlib.sats" // for getenv
 (*
 extern
 fun getenv (name: string)
-  : [l:addr] (strptr l -<lin,prf> void | strptr l) = "#atslib_getenv"
+  : [l:addr] (strptr l -<lin,prf> void | strptr l) = "mac#atslib_getenv"
 // end of [atslib_getenv]
 *)
 

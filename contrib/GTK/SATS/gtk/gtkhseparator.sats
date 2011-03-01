@@ -38,7 +38,9 @@
 
 (* ****** ****** *)
 
-fun gtk_hseparator_new (): GtkHSeparator_ref1 = "#atsctrb_gtk_hseparator_new"
+fun gtk_hseparator_new
+  (): GtkHSeparator_ref1 = "mac#atsctrb_gtk_hseparator_new"
+// end of [gtk_hseparator_new]
 
 (* ****** ****** *)
 

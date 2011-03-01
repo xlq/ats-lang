@@ -45,7 +45,7 @@ macdef SDL_APPACTIVE =
 
 (* ****** ****** *)
 
-fun SDL_GetAppState (): Uint8 = "#atsctrb_SDL_GetAppState"
+fun SDL_GetAppState (): Uint8 = "mac#atsctrb_SDL_GetAppState"
 
 (* ****** ****** *)
 

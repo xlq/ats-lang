@@ -77,8 +77,10 @@ macdef GDK_OWNER_CHANGE = $extval (GdkEventType, "GDK_OWNER_CHANGE")
 macdef GDK_GRAB_BROKEN = $extval (GdkEventType, "GDK_GRAB_BROKEN")
 macdef GDK_DAMAGE = $extval (GdkEventType, "GDK_DAMAGE")
 
-fun eq_GdkEventType_GdkEventType
-  (x1: GdkEventType, x2: GdkEventType): bool = "#atsctrb_eq_GdkEventType_GdkEventType"
+fun eq_GdkEventType_GdkEventType (
+  x1: GdkEventType, x2: GdkEventType
+) : bool
+  = "mac#atsctrb_eq_GdkEventType_GdkEventType"
 overload = with eq_GdkEventType_GdkEventType
 
 (* ****** ****** *)

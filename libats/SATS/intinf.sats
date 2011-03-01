@@ -95,7 +95,7 @@ fun intinfptr_free (x: Intinfptr_gc): void
 (* ****** ****** *)
 
 fun intinf_get_int // this is unsafe because of potential
-  {n:int} (n: &intinf n): int n = "#atslib_mpz_get_int" // overflow
+  {n:int} (n: &intinf n): int n = "mac#atslib_mpz_get_int" // overflow
 // end of [intinf_get_int]
 
 (* ****** ****** *)

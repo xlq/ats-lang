@@ -38,7 +38,9 @@
 
 (* ****** ****** *)
 
-fun gtk_drawing_area_new (): GtkDrawingArea_ref1 = "#atsctrb_gtk_drawing_area_new"
+fun gtk_drawing_area_new
+  (): GtkDrawingArea_ref1 = "mac#atsctrb_gtk_drawing_area_new"
+// end of [gtk_drawing_area_new]
 
 (* ****** ****** *)
 

@@ -78,7 +78,7 @@ if err = 0 then let
               val () = close_exn (pf2 | fd2)
               val _ = execlp ("wc", "wc", "-l", null) where {
                 extern fun execlp
-                  (_: string, _: string, _: string, _: ptr null): int = "#atslib_execlp"
+                  (_: string, _: string, _: string, _: ptr null): int = "mac#atslib_execlp"
                 // end of [execl]
               } // end of [val]
               val () = errptexit (EXIT_FAILURE)
@@ -106,7 +106,7 @@ if err = 0 then let
       val () = close_exn (pf2 | fd2)
       val _ = execlp ("who", "who", null) where {
         extern fun execlp
-          (_: string, _: string, _: ptr null): int = "#atslib_execlp"
+          (_: string, _: string, _: ptr null): int = "mac#atslib_execlp"
         } // end of [val]
       val () = errptexit (EXIT_FAILURE)
     in

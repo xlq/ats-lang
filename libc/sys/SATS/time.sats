@@ -61,8 +61,10 @@ typedef timeval = timeval_struct
 
 (*
 // HX: these macros seem only available in BSD
-fun timerisset (tv: &timeval):<> bool = "#atslib_timerisset"
-fun timerclear (tv: &timeval >> timeval):<> bool = "#atslib_timerclear"
+fun timerisset
+  (tv: &timeval):<> bool = "mac#atslib_timerisset"
+fun timerclear
+  (tv: &timeval >> timeval):<> bool = "mac#atslib_timerclear"
 *)
 
 (* ****** ****** *)
@@ -78,14 +80,15 @@ typedef timezone = timezone_struct
 //
 symintr gettimeofday
 //
-fun gettimeofday_tv
-  (tv: &timeval? >> opt (timeval, i==0))
-  :<> #[i:int | i <= 0] int i = "#atslib_gettimeofday_tv"
+fun gettimeofday_tv (
+  tv: &timeval? >> opt (timeval, i==0)
+) :<> #[i:int | i <= 0] int i = "mac#atslib_gettimeofday_tv"
 overload gettimeofday with gettimeofday_tv
 //
-fun gettimeofday_tz
-  (tz: &timezone? >> opt (timezone, i==0))
-  :<> #[i:int | i <= 0] int i = "#atslib_gettimeofday_tz"
+fun gettimeofday_tz (
+  tz: &timezone? >> opt (timezone, i==0)
+) :<> #[i:int | i <= 0] int i
+  = "mac#atslib_gettimeofday_tz"
 overload gettimeofday with gettimeofday_tz
 //
 (* ****** ****** *)
@@ -93,30 +96,34 @@ overload gettimeofday with gettimeofday_tz
 symintr settimeofday
 //
 fun settimeofday_tv
-  (tv: &timeval):<> [i:int | i <= 0] int i = "#atslib_settimeofday_tv"
+  (tv: &timeval):<> [i:int | i <= 0] int i = "mac#atslib_settimeofday_tv"
 overload settimeofday with settimeofday_tv
 //
 fun settimeofday_tz
-  (tz: &timezone):<> [i:int | i <= 0] int i = "#atslib_settimeofday_tz"
+  (tz: &timezone):<> [i:int | i <= 0] int i = "mac#atslib_settimeofday_tz"
 overload settimeofday with settimeofday_tz
 //
-fun settimeofday_tvtz
-  (tv: &timeval, tz: &timezone):<> [i:int | i <= 0] int i = "#atslib_settimeofday_tvtz"
+fun settimeofday_tvtz (
+  tv: &timeval, tz: &timezone
+) :<> [i:int | i <= 0] int i
+  = "mac#atslib_settimeofday_tvtz"
 overload settimeofday with settimeofday_tvtz
 //
 (* ****** ****** *)
 
-fun utimes // -1 on error // errno set
-  (path: string, buf: &(@[timeval][2])): int = "#atslib_utimes"
+fun utimes ( // -1 on error // errno set
+  path: string, buf: &(@[timeval][2])
+) : int = "mac#atslib_utimes"
 // end of [utimes]
 
-fun futimes {fd:int} // -1 on error // errno set
-  (pf: fildes_v fd | fd: int fd, buf: &(@[timeval][2])): int
-  = "#atslib_futimes"
+fun futimes {fd:int} ( // -1 on error // errno set
+  pf: fildes_v fd | fd: int fd, buf: &(@[timeval][2])
+) : int = "mac#atslib_futimes"
 // end of [futimes]
 
-fun futimesat // -1 on error // errno set
-  (dirfd: int, path: string, buf: &(@[timeval][2])): int = "#atslib_futimesat"
+fun futimesat ( // -1 on error // errno set
+  dirfd: int, path: !READ(string), buf: &(@[timeval][2])
+) : int = "mac#atslib_futimesat"
 // end of [futimesat]
 
 (* ****** ****** *)
@@ -136,18 +143,22 @@ typedef itimerval = itimerval_struct
 // HX: -1/0 : succ/fail // errno set
 //
 fun getitimer (
-    which: itimerknd_t, itval: &itimerval? >> opt (itimerval, i==0)
-  ) : #[i:int | i <= 0] int(i) = "#atslib_getitimer"
+  which: itimerknd_t
+, itval: &itimerval? >> opt (itimerval, i==0)
+) : #[i:int | i <= 0] int(i) = "mac#atslib_getitimer"
 // end of [getitimer]
 
 fun setitimer (
-    which: itimerknd_t
-  , itval: &itimerval, itval_old: &itimerval? >> opt (itimerval, i==0)
-  ) : #[i:int | i <= 0] int(i) = "#atslib_setitimer"
+  which: itimerknd_t
+, itval: &itimerval
+, itval_old: &itimerval? >> opt (itimerval, i==0)
+) : #[i:int | i <= 0] int(i) = "mac#atslib_setitimer"
 // end of [setitimer]
 
-fun setitimer_null
-  (which: itimerknd_t, itval: &itimerval): int = "#atslib_setitimer_null"
+fun setitimer_null (
+  which: itimerknd_t
+, itval: &itimerval
+) : int = "mac#atslib_setitimer_null"
 // end of [setitimer_null]
 
 (* ****** ****** *)

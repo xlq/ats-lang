@@ -95,33 +95,42 @@ fun stderr_fildes_view_set
 
 (* ****** ****** *)
 
-fun dup {fd:int}
-  (pf: !fildes_v fd | fd: int fd)
-  : [fd1: int] (option_v (fildes_v fd1, fd1 >= 0) | int fd1) = "#atslib_dup"
+fun dup {fd:int} (
+  pf: !fildes_v fd | fd: int fd
+) : [fd1: int] (
+  option_v (fildes_v fd1, fd1 >= 0) | int fd1
+) = "mac#atslib_dup"
 // end of [dup]
 
 symintr dup2
 
-fun dup2_exi {fd:int;fd2:nat}
-  (pf1: !fildes_v fd, pf2: !fildes_v (fd2) | fd: int fd, fd2: int fd2)
-  : [i:int | i <= 0] int i = "#atslib_dup2"
+fun dup2_exi {fd:int;fd2:nat} (
+  pf: !fildes_v fd
+, pf2: !fildes_v fd2
+| fd: int fd
+, fd2: int fd2
+) : [i:int | i <= 0] int i
+  = "mac#atslib_dup2"
 overload dup2 with dup2_exi
 
-fun dup2_noexi {fd:int;fd2:nat}
-  (pf: !fildes_v fd | fd: int fd, fd2: int fd2)
-  : [i:int | i <= 0] (option_v (fildes_v fd2, i == 0) | int i) = "#atslib_dup2"
+fun dup2_noexi {fd:int;fd2:nat} (
+  pf: !fildes_v fd
+| fd: int fd, fd2: int fd2
+) : [i:int | i <= 0] (
+  option_v (fildes_v fd2, i == 0) | int i
+) = "mac#atslib_dup2"
 overload dup2 with dup2_noexi
 
 (* ****** ****** *)
 
-fun _exit (status: int): void = "#atslib__exit" // !macro
+fun _exit (status: int): void = "mac#atslib__exit" // !macro
 
 (* ****** ****** *)
 
 fun execv {n:pos}
-  (path: !READ(string), argv: &ptrarr(n)): int = "#atslib_execv"
+  (path: !READ(string), argv: &ptrarr(n)): int = "mac#atslib_execv"
 fun execvp {n:pos}
-  (path: !READ(string), argv: &ptrarr(n)): int = "#atslib_execvp"
+  (path: !READ(string), argv: &ptrarr(n)): int = "mac#atslib_execvp"
 
 (* ****** ****** *)
 
@@ -153,14 +162,18 @@ fun fork_exec_and_wait_cloptr_exn
 
 (* ****** ****** *)
 
-dataview getcwd_v (m:int, l:addr, addr) =
-  | {l>null} {n:nat} getcwd_v_succ (m, l, l) of strbuf_v (m, n, l)
+dataview
+getcwd_v (m:int, l:addr, addr) =
+  | {l>null} {n:nat}
+    getcwd_v_succ (m, l, l) of strbuf_v (m, n, l)
   | getcwd_v_fail (m, l, null) of b0ytes (m) @ l
 // end of [getcwd_v]
 
-fun getcwd {m:nat} {l:addr}
-  (pf: !b0ytes (m) @ l >> getcwd_v (m, l, l1) | p: ptr l, m: size_t m)
-  : #[l1:addr] ptr l1 = "#atslib_getcwd"
+fun getcwd {m:nat} {l:addr} (
+  pf: !b0ytes (m) @ l >> getcwd_v (m, l, l1)
+| p: ptr l, m: size_t m
+) : #[l1:addr] ptr l1
+  = "mac#atslib_getcwd"
 // end of [getcwd]
 
 (* ****** ****** *)
@@ -177,17 +190,17 @@ fun getcwd0 (): strptr1 = "atslib_getcwd0"
 absview alarm_v (int)
 praxi alarm_v_elim (pf: alarm_v (0)): void
 fun alarm_set {i:nat}
-  (t: uint i): (alarm_v (i) | uInt) = "#atslib_alarm_set"
+  (t: uint i): (alarm_v (i) | uInt) = "mac#atslib_alarm_set"
 // end of [alarm_set]
 fun alarm_cancel {i:int}
-  (pf: alarm_v (i) | (*none*)): uInt = "#atslib_alarm_cancel"
+  (pf: alarm_v (i) | (*none*)): uInt = "mac#atslib_alarm_cancel"
 // end of [alarm_cancel]
 
 (* ****** ****** *)
 
 // [sleep] may be implemented using SIGARM
 fun sleep {i:nat}
-  (t: int i): [j:nat | j <= i] int j = "#atslib_sleep"
+  (t: int i): [j:nat | j <= i] int j = "mac#atslib_sleep"
 // end of [sleep]
 
 (* ****** ****** *)
@@ -200,69 +213,115 @@ fun usleep
 
 (* ****** ****** *)
 
-fun getpagesize ():<> int = "#atslib_getpagesize" // macro
+fun getpagesize ():<> int = "mac#atslib_getpagesize" // macro
 
 (* ****** ****** *)
 
-fun getuid ():<> uid_t = "#atslib_getuid" // !macro // user
-fun geteuid ():<> uid_t = "#atslib_geteuid" // !macro // effective user
+fun getuid ():<> uid_t = "mac#atslib_getuid" // user
+fun geteuid ():<> uid_t = "mac#atslib_geteuid" // effective user
+
+(* ****** ****** *)
 // 
 // HX: for superuser // 0/-1 : succ/fail
 //
-fun setuid (uid: uid_t):<> int = "#atslib_setuid" // !macro
-fun seteuid (uid: uid_t):<> int = "#atslib_seteuid" // 0/-1 : succ/fail
+fun setuid (
+  uid: uid_t
+) :<> int
+  = "mac#atslib_setuid"
+// end of [setuid]
+
+fun seteuid (
+  uid: uid_t
+) :<> int
+  = "mac#atslib_seteuid" // 0/-1 : succ/fail
+// end of [seteuid]
 
 (* ****** ****** *)
 
-fun getgid ():<> gid_t = "#atslib_getgid" // !macro // group
-fun getegid ():<> gid_t = "#atslib_getegid" // !macro // effective group
+fun getgid ():<> gid_t = "mac#atslib_getgid" // group
+fun getegid ():<> gid_t = "mac#atslib_getegid" // effective group
+
+(* ****** ****** *)
 // 
 // HX: for superuser // 0/-1 : succ/fail
 //
-fun setgid (gid: gid_t):<> int = "#atslib_setgid" // !macro
-fun setegid (gid: gid_t):<> int = "#atslib_setegid" // 0/-1 : succ/fail
+fun setgid (
+  gid: gid_t
+) :<> int 
+  = "mac#atslib_setgid" // !macro
+// end of [setgid]
+
+fun setegid (
+  gid: gid_t
+) :<> int
+  = "mac#atslib_setegid" // 0/-1 : succ/fail
+// end of [setegid]
 
 (* ****** ****** *)
 
-fun getpid (): pid_t = "#atslib_getpid" // !macro // process ID
-fun getppid (): pid_t = "#atslib_getppid" // !macro // parent process ID
+fun getpid (): pid_t = "mac#atslib_getpid" // process ID
+fun getppid (): pid_t = "mac#atslib_getppid" // parent process ID
 
 (* ****** ****** *)
 //
 // HX: session IDs
 //
-fun setsid (): pid_t = "#atslib_setsid" // -1 is returned on error
-fun getsid (pid: pid_t): pid_t = "#atslib_getsid" // -1 is returned on error
+fun setsid (): pid_t = "mac#atslib_setsid" // -1 is returned on error
+fun getsid (pid: pid_t): pid_t = "mac#atslib_getsid" // -1 is returned on error
 
 (* ****** ****** *)
 //
 // HX: process group IDs
 //
+fun getpgid (
+  pid: pid_t
+) :<> pid_t
+  = "mac#atslib_getpgid" // -1 is returned on error
+// end of [fun]
+
 fun setpgid (
   pid: pid_t, pgid: pid_t
-) : int = "#atslib_setpgid" // 0/-1 : succ/fail
-fun getpgid (pid: pid_t): pid_t = "#atslib_getpgid" // -1 is returned on error
+) : int
+  = "mac#atslib_setpgid" // 0/-1 : succ/fail
+// end of [fun]
 
-fun getpgrp
-  (): pid_t = "#atslib_getpgrp" // = getpgid (0) // no error
-fun setpgrp (): int = "#atslib_setpgrp" // = setpgid (0, 0)
+fun getpgrp (
+// there is no argument
+) : pid_t
+  = "mac#atslib_getpgrp" // = getpgid (0) // no error
+// end of [getpgrp]
+
+fun setpgrp (
+// there is no argument
+) : int
+  = "mac#atslib_setpgrp" // = setpgid (0, 0)
+// end of [setpgrp]
 
 (* ****** ****** *)
 //
 // HX: non-reentrant version
 //
-fun getlogin ()
-  :<!ref> [l:addr] (strptr l -<lin,prf> void | strptr l)
-  = "#atslib_getlogin" // macro
+fun getlogin (
+// there is no argument
+) :<!ref> [l:addr] (
+  strptr l -<lin,prf> void | strptr l
+) = "mac#atslib_getlogin" // macro
 // end of [getlogin]
 
-dataview getlogin_v (m:int, l:addr, int) =
-  | {n:nat} getlogin_v_succ (m, l, 0) of strbuf_v (m, n, l)
-  | {i:int | i <> 0} getlogin_v_fail (m, l, i) of b0ytes (m) @ l
-fun getlogin_r {m:int} {l:addr}
-  (pf: !b0ytes (m) @ l >> getlogin_v (m, l, i) | p: ptr l, n: size_t)
-  : #[i:int] int i // 0/!0: succ/fail
-// end of [getlogin_r]
+dataview
+getlogin_v (m:int, l:addr, int) =
+  | {n:nat}
+    getlogin_v_succ (m, l, 0) of strbuf_v (m, n, l)
+  | {i:int | i <> 0}
+    getlogin_v_fail (m, l, i) of b0ytes (m) @ l
+// end of [getlogin_v]
+
+fun getlogin_r
+  {m:int} {l:addr} (
+  pf: !b0ytes (m) @ l >> getlogin_v (m, l, i) | p: ptr l, n: size_t
+) : #[i:int] int i
+  = "mac#atslib_getlogin_r" // 0/!0: succ/fail
+// end of [fun]
 
 (* ****** ****** *)
 //
@@ -272,40 +331,41 @@ macdef X_OK = $extval (uint, "X_OK") // test for execute permission
 macdef F_OK = $extval (uint, "F_OK") // test for existence
 //
 fun access
-  (path: !READ(string), mode: uint): int = "#atslib_access"
+  (path: !READ(string), mode: uint): int = "mac#atslib_access"
 // end of [access]
 
 (* ****** ****** *)
 
 fun chroot
-  (path: !READ(string)): int = "#atslib_chroot" // 0/-1 : succ/fail
+  (path: !READ(string)): int = "mac#atslib_chroot" // 0/-1 : succ/fail
 // end of [chroot]
 
 (* ****** ****** *)
 
 fun chdir
-  (path: !READ(string)): int(*err*) = "#atslib_chdir"
+  (path: !READ(string)): int(*err*) = "mac#atslib_chdir"
 fun fchdir {fd:int}
-  (pf: !fildes_v (fd) | fd: int): int(*err*) = "#atslib_fchdir"
+  (pf: !fildes_v (fd) | fd: int): int(*err*) = "mac#atslib_fchdir"
 // end of [fchdir]
 
 (* ****** ****** *)
 
 fun nice
-  (incr: int): int = "#atslib_nice" // NZERO/-1 : succ/fail // errno set
+  (incr: int): int = "mac#atslib_nice" // NZERO/-1 : succ/fail // errno set
 // end of [nice]
 
 (* ****** ****** *)
 //
 // HX: succ/fail: 0/-1
 //
-fun rmdir (path: !READ(string)): int = "#atslib_rmdir" // macro!
+fun rmdir (path: !READ(string)): int = "mac#atslib_rmdir"
 
 (* ****** ****** *)
 
-fun link
-  (src: !READ(string), dst: !READ(string)): int = "#atslib_link"
-fun unlink (path: !READ(string)): int = "#atslib_unlink" // macro!
+fun link (
+  src: !READ(string), dst: !READ(string)
+) : int = "mac#atslib_link"
+fun unlink (path: !READ(string)): int = "mac#atslib_unlink"
 
 (* ****** ****** *)
 
@@ -338,16 +398,16 @@ fun pwrite
 
 (* ****** ****** *)
 
-fun sync (): void = "#atslib_sync"
+fun sync (): void = "mac#atslib_sync"
 
 // [fsync] returns 0 on success or -1 on error
 fun fsync {fd:int} // (sets errno)
-  (pf: !fildes_v (fd) | fd: int fd): int = "#atslib_fsync"
+  (pf: !fildes_v (fd) | fd: int fd): int = "mac#atslib_fsync"
 // end of [fsync]
 
 // [fdatasync] returns 0 on success or -1 on error
 fun fdatasync {fd:int} // (sets errno)
-  (pf: !fildes_v (fd) | fd: int fd): int = "#atslib_fdatasync"
+  (pf: !fildes_v (fd) | fd: int fd): int = "mac#atslib_fdatasync"
 // end of [fdatasync]
 
 (* ****** ****** *)
@@ -356,7 +416,7 @@ fun readlink
   {n:nat} {l:addr} (
   pf: !b0ytes(n) @ l >> bytes(n) @ l
 | path: !READ(string), p: ptr l, n: size_t n
-) : [n1:int | n1 <= n] ssize_t (n1) = "#atslib_readlink"
+) : [n1:int | n1 <= n] ssize_t (n1) = "mac#atslib_readlink"
 // end of [readlink]
 
 (* ****** ****** *)
@@ -370,18 +430,22 @@ fun pipe (
 
 (* ****** ****** *)
 
-fun tcsetpgrp {fd:nat}
-  (fd: int fd, pgid: pid_t): int = "#atslib_tcsetpgrp" // 0/-1 : succ/fail
+fun tcsetpgrp {fd:nat} (
+  fd: int fd, pgid: pid_t
+) : int
+  = "mac#atslib_tcsetpgrp" // 0/-1 : succ/fail
 // end of [tcsetpgrp]
 fun tcgetpgrp {fd:nat}
-  (fd: int fd): pid_t = "#atslib_tcgetpgrp" // -1 is returned on error
+  (fd: int fd): pid_t = "mac#atslib_tcgetpgrp" // -1 is returned on error
 // end of [tcgetpgrp]
 
 (* ****** ****** *)
 
-fun ttyname {fd:nat}
-  (fd: int fd) :<!ref> [l:addr] (strptr l -<lin,prf> void | strptr l)
-  = "#atslib_ttyname"
+fun ttyname {fd:nat} (
+  fd: int fd
+) :<!ref> [l:addr] (
+  strptr l -<lin,prf> void | strptr l
+) = "mac#atslib_ttyname"
 // end of [ttyname]
 
 dataview
@@ -394,13 +458,13 @@ fun ttyname_r
     pf: b0ytes m @ l
   | fd: int fd, p: ptr l, m: size_t m
   ) :<> [i:int | i >= 0] (ttyname_v (m, l, i) | int i)
-  = "#atslib_ttyname_r" // if it fails, errno is returned
+  = "mac#atslib_ttyname_r" // if it fails, errno is returned
 // end of [ttyname_r]
 
 (* ****** ****** *)
 
 fun isatty {fd:nat}
-  (fd: int fd): int = "#atslib_isatty" // 1/0 : yes/no
+  (fd: int fd): int = "mac#atslib_isatty" // 1/0 : yes/no
 // end of [isatty]
 
 (* ****** ****** *)
@@ -420,15 +484,19 @@ gethostname_v (m:int, l:addr, int) =
     gethostname_v_succ (m, l,  0) of strbuf_v (m, n, l)
 // end of [gethostname_v]
 
-fun gethostname {m:pos} {l:addr} (
+fun gethostname
+  {m:pos} {l:addr} (
   pf: b0ytes(m) @ l | p: ptr l, m: size_t m
-) : [i:nat] (gethostname_v (m, l, i) | int i) = "atslib_gethostname" // fun!
+) : [i:nat] (
+  gethostname_v (m, l, i) | int i
+) = "atslib_gethostname" // function!
 // end of [gethostname]
+
 //
 // HX: [m] should most likely be [n+1].
 //
 fun sethostname {m,n:nat | n < m}
-  (name: !READ(string n), m: size_t m): int = "#atslib_sethostname"
+  (name: !READ(string n), m: size_t m): int = "mac#atslib_sethostname"
 // end of [sethostname]
 
 (* ****** ****** *)
@@ -443,18 +511,20 @@ getdomainname_v (m:int, l:addr, int) =
 fun getdomainname
   {m:pos} {l:addr} (
   pf: b0ytes(m) @ l | p: ptr l, m: size_t m
-) : [i:nat] (getdomainname_v (m, l, i) | int i) = "atslib_getdomainname" // fun!
+) : [i:nat] (
+  getdomainname_v (m, l, i) | int i
+) = "atslib_getdomainname" // function!
 // end of [getdomainname]
 //
 // HX: [m] should most likely be [n+1].
 //
 fun setdomainname {m,n:nat | n < m}
-  (name: !READ(string n), m: size_t m): int = "#atslib_setdomainname"
+  (name: !READ(string n), m: size_t m): int = "mac#atslib_setdomainname"
 // end of [setdomainname]
 
 (* ****** ****** *)
 
-fun pause (): int = "#atslib_pause" // if it returns, the return value is -1
+fun pause (): int = "mac#atslib_pause" // if it returns, the return value is -1
 
 (* ****** ****** *)
 

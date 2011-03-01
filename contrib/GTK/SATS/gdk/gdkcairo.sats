@@ -38,55 +38,81 @@
 
 (* ****** ****** *)
 
-staload CAIRO = "contrib/cairo/SATS/cairo.sats"
+staload
+CAIRO = "contrib/cairo/SATS/cairo.sats"
 stadef cairo_ref = $CAIRO.cairo_ref
 stadef cairo_ref1 = $CAIRO.cairo_ref1
 
 (* ****** ****** *)
 
 fun gdk_cairo_create
-  {c:cls | c <= GdkDrawable} {l:agz} (widget: !gobjref (c, l)): cairo_ref1
-  = "#atsctrb_gdk_cairo_create"
+  {c:cls | c <= GdkDrawable}
+  {l:agz} (
+  widget: !gobjref (c, l)
+) : cairo_ref1
+  = "mac#atsctrb_gdk_cairo_create"
 // end of [gdk_cairo_create]
 
 (* ****** ****** *)
 
 fun gdk_cairo_set_source_color
-  {l:agz} (cr: !cairo_ref l, color: &GdkColor): void
-  = "#atsctrb_gdk_cairo_set_source_color"
+  {l:agz} (
+  cr: !cairo_ref l, color: &GdkColor
+) : void
+  = "mac#atsctrb_gdk_cairo_set_source_color"
 // end of [gdk_cairo_set_source_color]
 
 (* ****** ****** *)
 
 fun gdk_cairo_set_source_pixbuf
-  {c:cls | c <= GdkPixbuf} {l1,l2:agz}
-  (cr: !cairo_ref l1, pixbuf: !gobjref (c, l2), x: double, y: double): void
-  = "#atsctrb_gdk_cairo_set_source_pixbuf"
+  {c:cls | c <= GdkPixbuf}
+  {l1,l2:agz} (
+  cr: !cairo_ref l1
+, pixbuf: !gobjref (c, l2)
+, x: double, y: double
+) : void
+  = "mac#atsctrb_gdk_cairo_set_source_pixbuf"
 // end of [gdk_cairo_set_source_pixbuf]
 
 fun gdk_cairo_set_source_pixmap
-  {c:cls | c <= GdkPixmap} {l1,l2:agz}
-  (cr: !cairo_ref l1, pixmap: !gobjref (c, l2), x: double, y: double): void
-  = "#atsctrb_gdk_cairo_set_source_pixmap"
+  {c:cls | c <= GdkPixmap}
+  {l1,l2:agz} (
+  cr: !cairo_ref l1
+, pixmap: !gobjref (c, l2)
+, x: double, y: double
+) : void
+  = "mac#atsctrb_gdk_cairo_set_source_pixmap"
 // end of [gdk_cairo_set_source_pixmap]
 
 (* ****** ****** *)
 
-fun gdk_cairo_rectangle {l:agz}
-  (cr: !cairo_ref l, rect: &GdkRectangle): void = "#atsctrb_gdk_cairo_rectangle"
+fun gdk_cairo_rectangle
+  {l:agz} (
+  cr: !cairo_ref l
+, rect: &GdkRectangle
+) : void
+  = "mac#atsctrb_gdk_cairo_rectangle"
 // end of [gdk_cairo_rectangle]
 
 (* ****** ****** *)
 
-fun gdk_cairo_region {l:agz}
-  (cr: !cairo_ref l, reg: &GdkRegion): void = "#atsctrb_gdk_cairo_region"
+fun gdk_cairo_region
+  {l:agz} (
+  cr: !cairo_ref l
+, reg: &GdkRegion
+) : void
+  = "mac#atsctrb_gdk_cairo_region"
 // end of [gdk_cairo_region]
 
 (* ****** ****** *)
 
 fun gdk_cairo_reset_clip
-  {c:cls | c <= GdkDrawable} {l1,l2:agz}
-  (cr: !cairo_ref l1, drw: !gobjref (c, l2)): void = "#atsctrb_gdk_cairo_reset_clip"
+  {c:cls | c <= GdkDrawable}
+  {l1,l2:agz} (
+  cr: !cairo_ref l1
+, drw: !gobjref (c, l2)
+) : void
+  = "mac#atsctrb_gdk_cairo_reset_clip"
 // end of [gdk_cairo_reset_clip]
 
 (* ****** ****** *)

@@ -19,8 +19,9 @@ staload "libc/SATS/unistd.sats"
 %{^
 #define atslib_read1(c) read(STDIN_FILENO, c, 1)
 %} // end of [%{^]
-extern fun read1
-  (pf: !fildes_v (STDIN_FILENO) | c: &char): ssize_t = "#atslib_read1"
+extern fun read1 (
+  pf: !fildes_v (STDIN_FILENO) | c: &char
+) : ssize_t = "mac#atslib_read1"
 // end of [read1]
 
 fun getch

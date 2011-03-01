@@ -38,7 +38,8 @@
 
 (* ****** ****** *)
 
-abst@ype GtkToolbarSpaceStyle = $extype"GtkToolbarSpaceStyle"
+abst@ype
+GtkToolbarSpaceStyle = $extype"GtkToolbarSpaceStyle"
 macdef GTK_TOOLBAR_SPACE_EMPTY =
   $extval (GtkToolbarSpaceStyle, "GTK_TOOLBAR_SPACE_EMPTY")
 macdef GTK_TOOLBAR_SPACE_LINE =
@@ -47,30 +48,36 @@ macdef GTK_TOOLBAR_SPACE_LINE =
 (* ****** ****** *)
 
 fun gtk_toolbar_new
-  (): GtkToolbar_ref1 = "#atsctrb_gtk_toolbar_new"
+  (): GtkToolbar_ref1 = "mac#atsctrb_gtk_toolbar_new"
 // end of [gtk_toolbar_new]
 
 (* ****** ****** *)
 
 fun gtk_toolbar_get_style
-  {c:cls | c <= GtkToolbar} {l:agz}
-  (toolbar: !gobjref (c, l))
-  : GtkToolbarStyle = "#atsctrb_gtk_toolbar_get_style"
+  {c:cls | c <= GtkToolbar}
+  {l:agz} (
+  toolbar: !gobjref (c, l)
+) : GtkToolbarStyle = "mac#atsctrb_gtk_toolbar_get_style"
 // end of [gtk_toolbar_get_style]
 
 fun gtk_toolbar_set_style
-  {c:cls | c <= GtkToolbar} {l:agz}
-  (toolbar: !gobjref (c, l), style: GtkToolbarStyle): void
-  = "#atsctrb_gtk_toolbar_set_style"
+  {c:cls | c <= GtkToolbar}
+  {l:agz} (
+  toolbar: !gobjref (c, l), style: GtkToolbarStyle
+) : void
+  = "mac#atsctrb_gtk_toolbar_set_style"
 // end of [gtk_toolbar_set_style]
 
 (* ****** ****** *)
 
 fun gtk_toolbar_insert
   {c1,c2:cls | c1 <= GtkToolbar; c2 <= GtkToolItem}
-  {l1,l2:agz}
-  (bar: !gobjref (c1, l1), itm: !gobjref (c2, l2), position: gint): void
-  = "#atsctrb_gtk_toolbar_insert"
+  {l1,l2:agz} (
+  bar: !gobjref (c1, l1)
+, itm: !gobjref (c2, l2)
+, position: gint
+) : void
+  = "mac#atsctrb_gtk_toolbar_insert"
 // end of [gtk_toolbar_insert]
 
 (* ****** ****** *)

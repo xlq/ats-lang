@@ -46,13 +46,15 @@ staload "contrib/SDL/SATS/SDL.sats"
 
 (* ****** ****** *)
 
-macdef SDL_IMAGE_MAJOR_VERSION = $extval (int, "SDL_IMAGE_MAJOR_VERSION")
-macdef SDL_IMAGE_MINOR_VERSION = $extval (int, "SDL_IMAGE_MINOR_VERSION")
+macdef
+SDL_IMAGE_MAJOR_VERSION = $extval (int, "SDL_IMAGE_MAJOR_VERSION")
+macdef
+SDL_IMAGE_MINOR_VERSION = $extval (int, "SDL_IMAGE_MINOR_VERSION")
 macdef SDL_IMAGE_PATCHLEVEL = $extval (int, "SDL_IMAGE_PATCHLEVEL")
 
 (* ****** ****** *)
   
-fun IMG_Load (filename: string): SDL_Surface_ref0 = "#atsctrb_IMG_Load"
+fun IMG_Load (filename: string): SDL_Surface_ref0 = "mac#atsctrb_IMG_Load"
 
 (* ****** ****** *)
 

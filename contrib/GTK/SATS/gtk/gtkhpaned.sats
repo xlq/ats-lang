@@ -38,7 +38,9 @@
 
 (* ****** ****** *)
 
-fun gtk_hpaned_new (): GtkHPaned_ref1 = "#atsctrb_gtk_hpaned_new"
+fun gtk_hpaned_new
+  (): GtkHPaned_ref1 = "mac#atsctrb_gtk_hpaned_new"
+// end of [gtk_hpaned_new]
 
 (* ****** ****** *)
 

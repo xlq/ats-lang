@@ -17,7 +17,7 @@
 #define likely(x) __builtin_expect((x), 1)
 #define unlikely(x) __builtin_expect((x), 0)
 %} // end of [{%^]
-extern fun unlikely0 (x: bool): bool = "#unlikely"
+extern fun unlikely0 (x: bool): bool = "mac#unlikely"
 
 (* ****** ****** *)
 

@@ -44,6 +44,12 @@
 #define ATS_DYNLOADFLAG 0 // loaded by [ats_main_prelude]
 
 (* ****** ****** *)
+//
+// HX: this is a proof function
+//
+implement ptr_is_gtez {l} (p) = addr_is_gtez {l} ()
+
+(* ****** ****** *)
 
 implement{a} ptr_alloc () = ptr_alloc_tsz {a} (sizeof<a>)
 

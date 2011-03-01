@@ -140,96 +140,125 @@ overload ptr_of with ptr_of_PangoFontDescription_ptr
 (* ****** ****** *)
 
 fun pango_font_description_new
-  (): PangoFontDescription_ptr1 = "#atsctrb_pango_font_description_new"
+  (): PangoFontDescription_ptr1 = "mac#atsctrb_pango_font_description_new"
 // end of [pango_font_description_new]
 
 fun pango_font_description_copy
-  {l:agz} (fd: !PangoFontDescription_ptr l): PangoFontDescription_ptr l
-  = "#atsctrb_pango_font_description_copy"
+  {l:agz} (
+  fd: !PangoFontDescription_ptr l
+) : PangoFontDescription_ptr l
+  = "mac#atsctrb_pango_font_description_copy"
 // end of [pango_font_description_copy]
 
 fun pango_font_description_copy_static // shallow copy
-  {l:agz} (fd: !PangoFontDescription_ptr l): PangoFontDescription_ptr l
-  = "#atsctrb_pango_font_description_copy_static"
+  {l:agz} (
+  fd: !PangoFontDescription_ptr l
+) : PangoFontDescription_ptr l
+  = "mac#atsctrb_pango_font_description_copy_static"
 // end of [pango_font_description_copy]
 
 fun pango_font_description_hash
-  {l:agz} (fd: !PangoFontDescription_ptr l): guint
-  = "#atsctrb_pango_font_description_hash"
+  {l:agz} (
+  fd: !PangoFontDescription_ptr l
+) : guint
+  = "mac#atsctrb_pango_font_description_hash"
 // end of [pango_font_description_hash]
 
 fun pango_font_description_equal
   {l1,l2:agz} (
-    fd1: !PangoFontDescription_ptr l1, fd2: !PangoFontDescription_ptr l2
-  ) : gboolean
-  = "#atsctrb_pango_font_description_hash"
+  fd1: !PangoFontDescription_ptr l1, fd2: !PangoFontDescription_ptr l2
+) : gboolean
+  = "mac#atsctrb_pango_font_description_hash"
 // end of [pango_font_description_hash]
 
 fun pango_font_description_free
   {l:agz} (fd: PangoFontDescription_ptr l): void
-  = "#atsctrb_pango_font_description_free"
+  = "mac#atsctrb_pango_font_description_free"
 // end of [pango_font_description_free]
 
 (* ****** ****** *)
 
 fun pango_font_description_get_family
-  {l:agz} (fd: !PangoFontDescription_ptr l)
-  : [l1:addr] (minus (PangoFontDescription_ptr l, gstring l1) | gstring l1)
-  = "#atsctrb_pango_font_description_get_family"
+  {l:agz} (
+  fd: !PangoFontDescription_ptr l
+) : [l1:addr] (
+  minus (PangoFontDescription_ptr l, gstring l1)
+| gstring l1
+) = "mac#atsctrb_pango_font_description_get_family"
 
 fun pango_font_description_set_family
-  {l1,l2:agz} (fd: !PangoFontDescription_ptr l1, family: !gstring l2): void
-  = "#atsctrb_pango_font_description_set_family"
+  {l1,l2:agz} (
+  fd: !PangoFontDescription_ptr l1, family: !gstring l2
+) : void
+  = "mac#atsctrb_pango_font_description_set_family"
 
 fun pango_font_description_get_stretch
-  {l:agz} (fd: !PangoFontDescription_ptr l): PangoStretch
-  = "#atsctrb_pango_font_description_get_stretch"
+  {l:agz} (
+  fd: !PangoFontDescription_ptr l
+) : PangoStretch
+  = "mac#atsctrb_pango_font_description_get_stretch"
 
 fun pango_font_description_set_stretch
-  {l:agz} (fd: !PangoFontDescription_ptr l, stretch: PangoStretch): void
-  = "#atsctrb_pango_font_description_set_stretch"
+  {l:agz} (
+  fd: !PangoFontDescription_ptr l, stretch: PangoStretch
+) : void
+  = "mac#atsctrb_pango_font_description_set_stretch"
 
 fun pango_font_description_get_style
   {l:agz} (fd: !PangoFontDescription_ptr l): PangoStyle
-  = "#atsctrb_pango_font_description_get_style"
+  = "mac#atsctrb_pango_font_description_get_style"
 
 fun pango_font_description_set_style
   {l:agz} (fd: !PangoFontDescription_ptr l, style: PangoStyle): void
-  = "#atsctrb_pango_font_description_set_style"
+  = "mac#atsctrb_pango_font_description_set_style"
 
 fun pango_font_description_get_variant
   {l:agz} (fd: !PangoFontDescription_ptr l): PangoVariant
-  = "#atsctrb_pango_font_description_get_variant"
+  = "mac#atsctrb_pango_font_description_get_variant"
 
 fun pango_font_description_set_variant
-  {l:agz} (fd: !PangoFontDescription_ptr l, variant: PangoVariant): void
-  = "#atsctrb_pango_font_description_set_variant"
+  {l:agz} (
+  fd: !PangoFontDescription_ptr l, variant: PangoVariant
+) : void
+  = "mac#atsctrb_pango_font_description_set_variant"
 
 fun pango_font_description_get_weight
-  {l:agz} (fd: !PangoFontDescription_ptr l): PangoWeight
-  = "#atsctrb_pango_font_description_get_weight"
+  {l:agz} (
+  fd: !PangoFontDescription_ptr l
+) : PangoWeight
+  = "mac#atsctrb_pango_font_description_get_weight"
 
 fun pango_font_description_set_weight
-  {l:agz} (fd: !PangoFontDescription_ptr l, weight: PangoWeight): void
-  = "#atsctrb_pango_font_description_set_weight"
+  {l:agz} (
+  fd: !PangoFontDescription_ptr l, weight: PangoWeight
+) : void
+  = "mac#atsctrb_pango_font_description_set_weight"
 
 (* ****** ****** *)
 
 fun pango_font_description_get_size
-  {l:agz} (fd: !PangoFontDescription_ptr l): gint
-  = "#atsctrb_pango_font_description_get_size"
+  {l:agz} (
+  fd: !PangoFontDescription_ptr l
+) : gint
+  = "mac#atsctrb_pango_font_description_get_size"
 
 fun pango_font_description_set_size
-  {l:agz} (fd: !PangoFontDescription_ptr l, size: gint): void
-  = "#atsctrb_pango_font_description_set_size"
+  {l:agz} (
+  fd: !PangoFontDescription_ptr l, size: gint
+) : void
+  = "mac#atsctrb_pango_font_description_set_size"
 
 fun pango_font_description_set_absolute_size
-  {l:agz} (fd: !PangoFontDescription_ptr l, size: gdouble): void
-  = "#atsctrb_pango_font_description_set_absolute_size"
+  {l:agz} (
+  fd: !PangoFontDescription_ptr l, size: gdouble
+) : void
+  = "mac#atsctrb_pango_font_description_set_absolute_size"
   
 fun pango_font_description_get_size_is_absolute
-  {l:agz} (fd: !PangoFontDescription_ptr l): gboolean
-  = "#atsctrb_pango_font_description_get_size_is_absolute"
+  {l:agz} (
+  fd: !PangoFontDescription_ptr l
+) : gboolean
+  = "mac#atsctrb_pango_font_description_get_size_is_absolute"
 
 (* ****** ****** *)
 
@@ -237,39 +266,49 @@ fun pango_font_description_get_size_is_absolute
 
 fun pango_font_description_get_gravity
   {l:agz} (fd: !PangoFontDescription_ptr l): PangoGravity
-  = "#atsctrb_pango_font_description_get_gravity"
+  = "mac#atsctrb_pango_font_description_get_gravity"
 
 fun pango_font_description_set_gravity
   {l:agz} (fd: !PangoFontDescription_ptr l, gravity: PangoGravity): void
-  = "#atsctrb_pango_font_description_set_gravity"
+  = "mac#atsctrb_pango_font_description_set_gravity"
 
 *)
 
 (* ****** ****** *)
 
 fun pango_font_description_get_set_fields
-  {l:agz} (fd: !PangoFontDescription_ptr l): PangoFontMask
-  = "#atsctrb_pango_font_description_get_set_fields"
+  {l:agz} (
+  fd: !PangoFontDescription_ptr l
+) : PangoFontMask
+  = "mac#atsctrb_pango_font_description_get_set_fields"
 
 fun pango_font_description_unset_fields
-  {l:agz} (fd: !PangoFontDescription_ptr l, mask: PangoFontMask): void
-  = "#atsctrb_pango_font_description_unset_fields"
+  {l:agz} (
+  fd: !PangoFontDescription_ptr l, mask: PangoFontMask
+) : void
+  = "mac#atsctrb_pango_font_description_unset_fields"
 
 (* ****** ****** *)
 
 fun pango_font_description_from_string
-  {l:agz} (name: !gstring l): PangoFontDescription_ptr1
-  = "#atsctrb_pango_font_description_from_string"
+  {l:agz} (
+  name: !gstring l
+) : PangoFontDescription_ptr1
+  = "mac#atsctrb_pango_font_description_from_string"
 // end of [pango_font_description_from_string]
 
 fun pango_font_description_to_string
-  {l:agz} (fd: !PangoFontDescription_ptr l): gstring1
-  = "#atsctrb_pango_font_description_to_string"
+  {l:agz} (
+  fd: !PangoFontDescription_ptr l
+) : gstring1
+  = "mac#atsctrb_pango_font_description_to_string"
 // end of [pango_font_description_to_string]
 
 fun pango_font_description_to_filename
-  {l:agz} (fd: !PangoFontDescription_ptr l): gstring1
-  = "#atsctrb_pango_font_description_to_filename"
+  {l:agz} (
+  fd: !PangoFontDescription_ptr l
+) : gstring1
+  = "mac#atsctrb_pango_font_description_to_filename"
 // end of [pango_font_description_to_filename]
 
 (* ****** ****** *)

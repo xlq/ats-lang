@@ -38,47 +38,64 @@
 
 (* ****** ****** *)
 
-fun gtk_label_new {l:agz}
-  (name: !gstring l): GtkLabel_ref1 = "#atsctrb_gtk_label_new"
+fun gtk_label_new
+  {l:agz} (
+  name: !gstring l
+) : GtkLabel_ref1
+  = "mac#atsctrb_gtk_label_new"
 // end of [gtk_label_new]
 
 (* ****** ****** *)
 
 fun gtk_label_get_text
-  {c:cls | c <= GtkLabel} {l1:agz}
-  (label: !gobjref (c, l1)): [l2:addr] (minus (gobjref (c, l1), gstring l2) | gstring l2)
-  = "#atsctrb_gtk_label_get_text"
-// end of [gtk_label_get_text]
+  {c:cls | c <= GtkLabel}
+  {l1:agz} (
+  label: !gobjref (c, l1)
+) : [l2:addr] (
+  minus (gobjref (c, l1), gstring l2) | gstring l2
+) = "mac#atsctrb_gtk_label_get_text"
 
 fun gtk_label_set_text
-  {c:cls | c <= GtkLabel} {l1,l2:agz}
-  (label: !gobjref (c, l1), name: !gstring l2): void = "#atsctrb_gtk_label_set_text"
-// end of [gtk_label_set_text]
+  {c:cls | c <= GtkLabel}
+  {l1,l2:agz} (
+  label: !gobjref (c, l1), name: !gstring l2
+) : void = "mac#atsctrb_gtk_label_set_text"
+// end of [fun]
 
 (* ****** ****** *)
 
 fun gtk_label_get_justify
-  {c:cls | c <= GtkLabel} {l:agz}
-  (label: !gobjref (c, l)): GtkJustification = "#atsctrb_gtk_label_get_justify"
+  {c:cls | c <= GtkLabel}
+  {l:agz} (
+  label: !gobjref (c, l)
+) : GtkJustification
+  = "mac#atsctrb_gtk_label_get_justify"
 // end of [gtk_label_get_justify]
 
 fun gtk_label_set_justify
-  {c:cls | c <= GtkLabel} {l:agz}
-  (label: !gobjref (c, l), jtype: GtkJustification): void
-  = "#atsctrb_gtk_label_set_justify"
+  {c:cls | c <= GtkLabel}
+  {l:agz} (
+  label: !gobjref (c, l), jtype: GtkJustification
+) : void
+  = "mac#atsctrb_gtk_label_set_justify"
 // end of [gtk_label_set_justify]
 
 (* ****** ****** *)
 
 fun gtk_label_get_line_wrap
-  {c:cls | c <= GtkLabel} {l:agz}
-  (label: !gobjref (c, l)): gboolean = "#atsctrb_gtk_label_get_line_wrap"
+  {c:cls | c <= GtkLabel}
+  {l:agz} (
+  label: !gobjref (c, l)
+) : gboolean
+  = "mac#atsctrb_gtk_label_get_line_wrap"
 // end of [gtk_label_get_line_wrap]
 
 fun gtk_label_set_line_wrap
-  {c:cls | c <= GtkLabel} {l:agz}
-  (label: !gobjref (c, l), wrap: gboolean): void
-  = "#atsctrb_gtk_label_set_line_wrap"
+  {c:cls | c <= GtkLabel}
+  {l:agz} (
+  label: !gobjref (c, l), wrap: gboolean
+) : void
+  = "mac#atsctrb_gtk_label_set_line_wrap"
 // end of [gtk_label_set_line_wrap]
 
 (* ****** ****** *)

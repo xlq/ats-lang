@@ -30,10 +30,10 @@
 *)
 
 (* ****** ****** *)
-
+//
 // Author of the file: Hongwei Xi (hwxi AT cs DOT bu DOT edu)
 // Starting time: January, 2010
-
+//
 (* ****** ****** *)
 
 #include "contrib/SDL/SATS/SDL_keysym.sats"
@@ -51,7 +51,7 @@ typedef SDL_keysym =
 
 (* ****** ****** *)
 
-fun SDL_EnableUNICODE (enable: int): int = "#atsctrb_SDL_EnableUNICODE"
+fun SDL_EnableUNICODE (enable: int): int = "mac#atsctrb_SDL_EnableUNICODE"
 
 (* ****** ****** *)
 
@@ -59,12 +59,14 @@ fun SDL_EnableUNICODE (enable: int): int = "#atsctrb_SDL_EnableUNICODE"
 #define SDL_DEFAULT_REPEAT_INTERVAL 30
 
 fun SDL_EnableKeyRepeat
-  (delay: int, interval: int): int = "#atsctrb_SDL_EnableKeyRepeat"
+  (delay: int, interval: int): int = "mac#atsctrb_SDL_EnableKeyRepeat"
 // end of [SDL_EnableKeyRepeat]
 
-fun SDL_GetKeyRepeat
-  (delay: &int? >> int, interval: &int? >> int): void = "#atsctrb_SDL_GetKeyRepeat"
-// end of [SDL_GetKeyRepeat]
+fun SDL_GetKeyRepeat (
+  delay: &int? >> int, interval: &int? >> int
+) : void
+  = "mac#atsctrb_SDL_GetKeyRepeat"
+// end of [fun]
 
 (* ****** ****** *)
 
@@ -73,7 +75,7 @@ typedef SDL_KeyStateArr = [n:nat] SDL_KeyStateArr n
 
 fun SDL_GetKeyState
   (numkeys: &int? >> int n): #[n:nat] SDL_KeyStateArr (n)
-  = "#atsctrb_SDL_GetKeyState"
+  = "mac#atsctrb_SDL_GetKeyState"
 
 fun SDL_GetKeyState_null (): [n:nat] SDL_KeyStateArr (n)
   = "atsctrb_SDL_GetKeyState_null" // this is a function!
@@ -85,12 +87,12 @@ overload [] with SDL_KeyStateArr_get
 
 (* ****** ****** *)
 
-fun SDL_GetModState (): SDLMod = "#atsctrb_SDL_GetModState"
-fun SDL_SetModState (state: SDLMod): void = "#atsctrb_SDL_SetModState"
+fun SDL_GetModState (): SDLMod = "mac#atsctrb_SDL_GetModState"
+fun SDL_SetModState (state: SDLMod): void = "mac#atsctrb_SDL_SetModState"
 
 (* ****** ****** *)
 
-fun SDL_GetKeyName (key: SDLKey): string = "#atsctrb_SDL_GetKeyName"
+fun SDL_GetKeyName (key: SDLKey): string = "mac#atsctrb_SDL_GetKeyName"
 
 (* ****** ****** *)
 

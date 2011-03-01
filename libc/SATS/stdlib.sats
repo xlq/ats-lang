@@ -51,16 +51,19 @@ macdef EXIT_FAILURE = $extval (int, "EXIT_FAILURE")
 
 (* ****** ****** *)
 
-fun atoi (inp: !READ(string)):<> int = "#atslib_atoi"
-fun atof (inp: !READ(string)):<> double = "#atslib_atof"
-fun atol (inp: !READ(string)):<> lint = "#atslib_atol"
-fun atoll (inp: !READ(string)):<> llint = "#atslib_atoll"
+fun atoi (inp: !READ(string)):<> int = "mac#atslib_atoi"
+fun atof (inp: !READ(string)):<> double = "mac#atslib_atof"
+fun atol (inp: !READ(string)):<> lint = "mac#atslib_atol"
+fun atoll (inp: !READ(string)):<> llint = "mac#atslib_atoll"
 
 (* ****** ****** *)
 
-fun getenv (name: !READ(string))
-  : [l:addr] (strptr l -<lin,prf> void | strptr l) = "#atslib_getenv"
-// end of [atslib_getenv]
+fun getenv (
+  name: !READ(string)
+) : [l:addr] (
+  strptr l -<lin,prf> void | strptr l
+) = "mac#atslib_getenv"
+// end of [getenv]
 
 //
 // HX-201-09-29:
@@ -76,40 +79,42 @@ fun putenv {l:agz} (nameval: !strptr l): int // 0/nz : succ/fail
 //
 fun setenv ( // 0/-1 : succ/fail
   name: !READ(string), value: !READ(string), overwrite: int
-) : int = "#atslib_setenv" // end of [atslib_setenv]
+) : int = "mac#atslib_setenv" // end of [atslib_setenv]
 
 fun unsetenv
-  (name: !READ(string)): int = "#atslib_unsetenv" // 0/-1: succ/fail
+  (name: !READ(string)): int = "mac#atslib_unsetenv" // 0/-1: succ/fail
 // end of [unsetenv]
 
 (* ****** ****** *)
 
-fun system (cmd: !READ(string)): int = "#atslib_system" // !macro
+fun system (cmd: !READ(string)): int = "mac#atslib_system"
 
 (* ****** ****** *)
 
-fun abort (): void = "#atslib_abort"
+fun abort (): void = "mac#atslib_abort"
 
 (* ****** ****** *)
 
-fun _Exit (status: int): void = "#atslib__Exit" // !macro
-fun atexit (f: () -> void): int = "#atslib_atexit" // !macro
+fun _Exit (status: int): void = "mac#atslib__Exit"
+fun atexit (f: () -> void): int = "mac#atslib_atexit"
 
 (* ****** ****** *)
 //
 // HX: the last six characters of path much be XXXXXX
 //
 fun mkstemp
-  {m,n:int | n >= 6}
-  (path: &strbuf (m, n)): [i:int] (open_v (i) | int i)
-  = "#atslib_mkstemp"
+  {m,n:int | n >= 6} (
+  path: &strbuf (m, n)
+) : [i:int] (
+  open_v (i) | int i
+) = "mac#atslib_mkstemp"
 // end of [mkstemp]
 
 fun mkdtemp
   {m,n:int | n >= 6} {l:addr} (
   pf: !strbuf (m, n) @ l | p: ptr l
 ) : [l1:addr | l1==l || l1==null] ptr (l1)
-  = "#atslib_mkdtemp" // null/nonnull: fail/succ
+  = "mac#atslib_mkdtemp" // null/nonnull: fail/succ
 // end of [mkdtemp]
 
 (* ****** ****** *)

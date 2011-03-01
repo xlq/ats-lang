@@ -216,26 +216,17 @@ in
     in
       // nothing
     end // end of [DCSTEXTDEFnone]
-  | $Syn.DCSTEXTDEFsome_fun name => emit_identifier (pf | out, name)
-  | $Syn.DCSTEXTDEFsome_mac name => let // [name] = "#..."
-(*
-** HX: this is a bit ugly but rather convenient
-*)
-      val p_name = __cast name where {
-        extern castfn __cast (x: string):<> [l:addr] ptr l
-      } // end of [val]
-      val p_name1 = p_name + sizeof<char>
-      val name1 = __cast (p_name1) where {
-        extern castfn __cast {l:addr} (x: ptr l):<> string
-      } // end of [val]
-    in
-      emit_identifier (pf | out, name1)
-    end // end of [DCSTEXTDEFcall]
+  | $Syn.DCSTEXTDEFsome_ext name => emit_identifier (pf | out, name)
+  | $Syn.DCSTEXTDEFsome_sta name => emit_identifier (pf | out, name)
+  | $Syn.DCSTEXTDEFsome_mac name => emit_identifier (pf | out, name)
 end // end of [emit_d2cst]
 
-fn emit_funlab_prefix {m:file_mode}
-  (pf: fmlte (m, w) | out: &FILE m)
-  : void = let
+(* ****** ****** *)
+
+fn emit_funlab_prefix
+  {m:file_mode} (
+  pf: fmlte (m, w) | out: &FILE m
+) : void = let
   val prfx = $Glo.atsopt_namespace_get ()
 in
   if stropt_is_some prfx then let

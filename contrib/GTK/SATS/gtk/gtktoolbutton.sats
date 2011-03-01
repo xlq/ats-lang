@@ -39,8 +39,10 @@
 (* ****** ****** *)
 
 fun gtk_tool_button_new_from_stock
-  {l:agz} (stock_id: !gstring l): GtkToolButton_ref1
-  = "#atsctrb_gtk_tool_button_new_from_stock"
+  {l:agz} (
+  stock_id: !gstring l
+) : GtkToolButton_ref1
+  = "mac#atsctrb_gtk_tool_button_new_from_stock"
 // end of [gtk_tool_button_new_from_stock]
 
 (* ****** ****** *)

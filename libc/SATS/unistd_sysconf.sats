@@ -322,7 +322,7 @@ macdef _SC_THREAD_ROBUST_PRIO_PROTEC =
   
 (* ****** ****** *)
 
-fun sysconf (name: sysconfname_t): lint = "#atslib_sysconf"
+fun sysconf (name: sysconfname_t): lint = "mac#atslib_sysconf"
 
 (* ****** ****** *)
 

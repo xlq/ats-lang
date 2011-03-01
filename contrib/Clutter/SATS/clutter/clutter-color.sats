@@ -47,20 +47,22 @@ typedef ClutterColor =
 (* ****** ****** *)
 
 fun clutter_color_new (
-    red: guint8, green: guint, blue: guint, alpha: guint
-  ) : [l:addr] (ClutterFree_v l, ClutterColor @ l | ptr l)
-  = "#atsctrb_clutter_color_new"
+  red: guint8, green: guint, blue: guint, alpha: guint
+) : [l:addr] (
+  ClutterFree_v l, ClutterColor @ l | ptr l
+) = "mac#atsctrb_clutter_color_new"
 // end of [clutter_color_new]
 
 fun clutter_color_copy (
-    color: &ClutterColor
-  ) : [l:addr] (ClutterFree_v l, ClutterColor @ l | ptr l)
-  = "#atsctrb_clutter_color_copy"
+  color: &ClutterColor
+) : [l:addr] (
+  ClutterFree_v l, ClutterColor @ l | ptr l
+) = "mac#atsctrb_clutter_color_copy"
 // end of [clutter_color_copy]
 
 fun clutter_color_free {l:addr}
   (pf1: ClutterFree_v l, pf2: ClutterColor? @ l | p: ptr l): void
-  = "#atsctrb_clutter_color_free"
+  = "mac#atsctrb_clutter_color_free"
 // end of [clutter_color_free]
 
 (* ****** ****** *)

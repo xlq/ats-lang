@@ -30,30 +30,36 @@
 *)
 
 (* ****** ****** *)
-
+//
 // Author of the file: Hongwei Xi (hwxi AT cs DOT bu DOT edu)
 // Starting time: January, 2010
-
+//
 (* ****** ****** *)
 
 absviewtype SDL_Thread_ptr // SDL_Thread*
 
 (* ****** ****** *)
 
-fun SDL_ThreadID ():<> Uint32 = "#atsctrb_SDL_ThreadID"
+fun SDL_ThreadID ():<> Uint32 = "mac#atsctrb_SDL_ThreadID"
 
 (* ****** ****** *)
 
-fun SDL_CreateThread {vt:viewtype}
-  (threadfun: vt -<fun> int, env: vt): SDL_Thread_ptr
-  = "#atsctrb_SDL_CreateThread"
+fun SDL_CreateThread
+  {vt:viewtype} (
+  threadfun: vt -<fun> int, env: vt
+) : SDL_Thread_ptr
+  = "mac#atsctrb_SDL_CreateThread"
+// end of [fun]
 
-fun SDL_KillThread (thread: SDL_Thread_ptr):<> void
-  = "#atsctrb_SDL_KillThread"
+fun SDL_KillThread
+  (thread: SDL_Thread_ptr):<> void = "mac#atsctrb_SDL_KillThread"
+// end of [fun]
 
-fun SDL_WaitThread
-  (thread: SDL_Thread_ptr, status: &int? >> int):<> void
-  = "#atsctrb_SDL_WaitThread"
+fun SDL_WaitThread (
+  thread: SDL_Thread_ptr, status: &int? >> int
+) :<> void
+  = "mac#atsctrb_SDL_WaitThread"
+// end of [fun]
 
 (* ****** ****** *)
 

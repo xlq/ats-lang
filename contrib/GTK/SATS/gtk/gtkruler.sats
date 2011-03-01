@@ -39,9 +39,11 @@
 (* ****** ****** *)
 
 fun gtk_ruler_set_metric
-  {c:cls | c <= GtkRuler} {l:agz}
-  (ruler: !gobjref (c, l), metric: GtkMetricType): void
-  = "#atsctrb_gtk_ruler_set_metric"
+  {c:cls | c <= GtkRuler}
+  {l:agz} (
+  ruler: !gobjref (c, l), metric: GtkMetricType
+) : void
+  = "mac#atsctrb_gtk_ruler_set_metric"
 // end of [gtk_ruler_set_metric]
 
 (* ****** ****** *)
@@ -58,11 +60,14 @@ gtk_ruler_set_range_type (a:t@ype) =
 
 symintr gtk_ruler_set_range  
 
-fun gtk_ruler_set_range__type: gtk_ruler_set_range_type (double)
-  = "#atsctrb_gtk_ruler_set_range"
+fun gtk_ruler_set_range__type
+  : gtk_ruler_set_range_type (double)
+  = "mac#atsctrb_gtk_ruler_set_range"
 overload gtk_ruler_set_range with gtk_ruler_set_range__type 
-fun gtk_ruler_set_range__gtype: gtk_ruler_set_range_type (gdouble)
-  = "#atsctrb_gtk_ruler_set_range"
+
+fun gtk_ruler_set_range__gtype
+  : gtk_ruler_set_range_type (gdouble)
+  = "mac#atsctrb_gtk_ruler_set_range"
 overload gtk_ruler_set_range with gtk_ruler_set_range__gtype 
 
 (* ****** ****** *)

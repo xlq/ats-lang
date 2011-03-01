@@ -49,7 +49,7 @@ typedef errno_t = $ERRNO.errno_t
 
 fun strcmp (
   str1: !READ(string), str2: !READ(string)
-) : int = "#atslib_strcmp" // end of [strcmp]
+) : int = "mac#atslib_strcmp" // end of [strcmp]
 
 fun substrcmp
   {n1:int} {i1:nat | i1 <= n1}
@@ -62,7 +62,7 @@ fun substrcmp
 
 fun strncmp {n:nat} (
   str1: !READ(string), str2: !READ(string), n: size_t n
-) :<> int = "#atslib_strncmp" // end of [strncmp]
+) :<> int = "mac#atslib_strncmp" // end of [strncmp]
 
 fun substrncmp
   {n1:int} {i1:nat | i1 <= n1}
@@ -77,7 +77,7 @@ fun substrncmp
 (* ****** ****** *)
 
 fun strlen {n:nat}
-  (str: !READ(string n)):<> size_t n = "#atslib_strlen" // !mac
+  (str: !READ(string n)):<> size_t n = "mac#atslib_strlen" // !mac
 // end of [strlen]
 
 (* ****** ****** *)
@@ -97,12 +97,12 @@ please use [string_index_of_string] in [prelude/SATS/string.sats]
 
 fun strspn {n:nat}
   (str: !READ(string n), accept: !READ(string)):<> sizeLte n
-  = "#atslib_strspn" // macro!
+  = "mac#atslib_strspn" // macro!
 // end of [strspn]
 
 fun strcspn {n:nat}
   (str: !READ(string n), reject: !READ(string)):<> sizeLte n
-  = "#atslib_strcspn" // macro!
+  = "mac#atslib_strcspn" // macro!
 // end of [strcspn]
 
 (* ****** ****** *)
@@ -110,7 +110,7 @@ fun strcspn {n:nat}
 fun strcpy
   {m:int} {n:nat | n < m} {l:addr} {ofs:int} (
   pf_buf: !b0ytes m @ l >> strbuf (m, n) @ l | sbf: ptr l, str: !READ(string n)
-) :<> ptr l = "#atslib_strcpy" // macro!
+) :<> ptr l = "mac#atslib_strcpy" // macro!
 // end of [strcpy]
 
 (* ****** ****** *)
@@ -119,7 +119,7 @@ fun strcat
   {m:int} {n1,n2:nat | n1 + n2 < m} {l:addr} (
   pf_buf: !strbuf (m, n1) @ l >> strbuf (m, n1+n2) @ l
 | sbf: ptr l, str: !READ(string n2)
-) :<> ptr l = "#atslib_strcat" // macro!
+) :<> ptr l = "mac#atslib_strcat" // macro!
 // end of [strcat]
 
 (*
@@ -144,7 +144,7 @@ fun strpbrk
   pf: !strbuf (m, n) @ l
 | p: ptr l, accept: !READ(string)
 ) :<> [l_ret:addr] (strpbrk_p (l, n, l_ret) | ptr l_ret)
-  = "#atslib_strpbrk" // macro!
+  = "mac#atslib_strpbrk" // macro!
 // end of [strpbrk]
 
 (* ****** ****** *)
@@ -170,7 +170,7 @@ memchr_p (
 fun memchr {n:nat}
   {n1:int | n <= n1} {l:addr} (
   pf: !bytes n1 @ l | p: ptr l, chr: int, n: size_t n
-) : [l_ret:addr] (memchr_p (l, n, l_ret) | ptr l_ret) = "#atslib_memchr"
+) : [l_ret:addr] (memchr_p (l, n, l_ret) | ptr l_ret) = "mac#atslib_memchr"
 // end of [memchr]
 
 (* ****** ****** *)
@@ -178,21 +178,21 @@ fun memchr {n:nat}
 fun memcmp {n:nat}
   {n1,n2:int | n <= n1; n <= n2} (
   buf1: &bytes n1, buf2: &bytes n2, n: size_t n
-) :<> int = "#atslib_memcmp" // end of [memcmp]
+) :<> int = "mac#atslib_memcmp" // end of [memcmp]
 
 (* ****** ****** *)
 
 fun memcpy {n:nat}
   {n1,n2:int | n <= n1; n <= n2} {l:addr} (
   pf_dst: !bytes n1 @ l | p_dst: ptr l, p_src: &bytes n2, n: size_t n
-) :<> ptr l = "#atslib_memcpy" // end of [memcpy]
+) :<> ptr l = "mac#atslib_memcpy" // end of [memcpy]
 
 (* ****** ****** *)
 
 fun memset {n:nat}
   {n1:int | n <= n1} {l:addr} (
   pf: !bytes n1 @ l | p: ptr l, chr: int, n: size_t n
-) :<> ptr l = "#atslib_memset" // end of [memset]
+) :<> ptr l = "mac#atslib_memset" // end of [memset]
 
 (* ****** ****** *)
 //
@@ -202,7 +202,7 @@ fun memset {n:nat}
 fun strerror (
   errno: errno_t
 ) :<!ref> [l:agz] (strptr l -<lin,prf> void | strptr l)
-  = "#atslib_strerror" // macro!
+  = "mac#atslib_strerror" // macro!
 // end of [strerror]
 
 (* ****** ****** *)
@@ -222,7 +222,7 @@ strerror_v (
 fun strerror_r
   {m:nat} {l:addr} (
   pf: b0ytes m @ l | errno: errno_t, p_buf: ptr l, m: size_t m
-) : [i:int] @(strerror_v (m, l, i) | int i) = "#atslib_strerror_r"
+) : [i:int] @(strerror_v (m, l, i) | int i) = "mac#atslib_strerror_r"
 // end of [strerror_r]
   
 (* ****** ****** *)
@@ -233,7 +233,7 @@ fun strerror_r
 // this one is moved into libc/SATS/signal.sats:
 //
 fun strsignal (sgn: signum_t)
-  : [l:addr] (strptr(l) -<lin,prf> void | strptr(l)) = "#atslib_strsignal"
+  : [l:addr] (strptr(l) -<lin,prf> void | strptr(l)) = "mac#atslib_strsignal"
 // end of [strsignal]
 *)
 

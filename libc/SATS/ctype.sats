@@ -41,19 +41,19 @@
 
 (* ****** ****** *)
 
-fun isalnum (c: int):<> int = "#atslib_isalnum"
-fun isalpha (c: int):<> int = "#atslib_isalpha"
-fun isascii (c: int):<> int = "#atslib_isascii"
-fun isblank (c: int):<> int = "#atslib_isblank"
-fun iscntrl (c: int):<> int = "#atslib_iscntrl"
-fun isdigit (c: int):<> int = "#atslib_isdigit"
-fun isgraph (c: int):<> int = "#atslib_isgraph"
-fun islower (c: int):<> int = "#atslib_islower"
-fun isprint (c: int):<> int = "#atslib_isprint"
-fun ispunct (c: int):<> int = "#atslib_ispunct"
-fun isspace (c: int):<> int = "#atslib_isspace"
-fun isupper (c: int):<> int = "#atslib_isupper"
-fun isxdigit (c: int):<> int = "#atslib_isxdigit"
+fun isalnum (c: int):<> int = "mac#atslib_isalnum"
+fun isalpha (c: int):<> int = "mac#atslib_isalpha"
+fun isascii (c: int):<> int = "mac#atslib_isascii"
+fun isblank (c: int):<> int = "mac#atslib_isblank"
+fun iscntrl (c: int):<> int = "mac#atslib_iscntrl"
+fun isdigit (c: int):<> int = "mac#atslib_isdigit"
+fun isgraph (c: int):<> int = "mac#atslib_isgraph"
+fun islower (c: int):<> int = "mac#atslib_islower"
+fun isprint (c: int):<> int = "mac#atslib_isprint"
+fun ispunct (c: int):<> int = "mac#atslib_ispunct"
+fun isspace (c: int):<> int = "mac#atslib_isspace"
+fun isupper (c: int):<> int = "mac#atslib_isupper"
+fun isxdigit (c: int):<> int = "mac#atslib_isxdigit"
 
 (* ****** ****** *)
 

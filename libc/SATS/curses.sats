@@ -51,38 +51,43 @@ macdef ERR = $extval (int, "ERR") // ERR = -1
 (* ****** ****** *)
 
 fun initscr ()
-  : ptr = "#atslib_initscr" // the return value points to stdscr
-fun endwin (): int = "#atslib_endwin"
-fun isendwin (): bool = "#atslib_isendwin"
+  : ptr = "mac#atslib_initscr" // the return value points to stdscr
+fun endwin (): int = "mac#atslib_endwin"
+fun isendwin (): bool = "mac#atslib_isendwin"
 
 (* ****** ****** *)
 
-fun raw (): int = "#atslib_raw"
-fun noraw (): int = "#atslib_noraw"
+fun raw (): int = "mac#atslib_raw"
+fun noraw (): int = "mac#atslib_noraw"
 
 (* ****** ****** *)
 
-fun clear (): int = "#atslib_clear"
-fun clrtobot (): int = "#atslib_clrtobot"
-fun clrtoeol (): int = "#atslib_clrtoeol"
-fun erase (): int = "#atslib_erase"
+fun clear (): int = "mac#atslib_clear"
+fun clrtobot (): int = "mac#atslib_clrtobot"
+fun clrtoeol (): int = "mac#atslib_clrtoeol"
+fun erase (): int = "mac#atslib_erase"
 
 (* ****** ****** *)
 
-fun beep (): int = "#atslib_beep"
-fun flush (): int = "#atslib_flush"
+fun beep (): int = "mac#atslib_beep"
+fun flush (): int = "mac#atslib_flush"
 
 (* ****** ****** *)
 
-fun addstr (str: strcst): int = "#atslib_addstr"
-fun addnstr (str: strcst, n: int): int = "#atslib_addnstr"
-fun mvaddstr (y: int, x: int, str: strcst): int = "#atslib_mvaddstr"
-fun mvaddnstr (y: int, x: int, str: strcst, n: int): int = "#atslib_mvaddnstr"
+fun addstr (str: strcst): int = "mac#atslib_addstr"
+fun addnstr (str: strcst, n: int): int = "mac#atslib_addnstr"
+
+fun mvaddstr (
+  y: int, x: int, str: strcst
+) : int = "mac#atslib_mvaddstr"
+fun mvaddnstr (
+  y: int, x: int, str: strcst, n: int
+) : int = "mac#atslib_mvaddnstr"
 
 (* ****** ****** *)
 
-fun refresh (): int = "#atslib_refresh"
-fun doupdate (): int = "#atslib_doupdate"
+fun refresh (): int = "mac#atslib_refresh"
+fun doupdate (): int = "mac#atslib_doupdate"
 
 (* ****** ****** *)
 

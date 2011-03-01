@@ -39,17 +39,17 @@
 (* ****** ****** *)
 
 fun gtk_image_menu_item_new
-  (): GtkImageMenuItem_ref1 = "atsctrb_gtk_image_menu_item_new"
+  (): GtkImageMenuItem_ref1 = "mac#atsctrb_gtk_image_menu_item_new"
 // end of [gtk_image_menu_item_new]
 
 fun gtk_image_menu_item_new_with_label
   {l:agz} (name: !gstring l): GtkImageMenuItem_ref1
-  = "atsctrb_gtk_image_menu_item_new_with_label"
+  = "mac#atsctrb_gtk_image_menu_item_new_with_label"
 // end of [gtk_image_menu_item_new_with_label]
 
 fun gtk_image_menu_item_new_with_mnemonic
   {l:agz} (name: !gstring l): GtkImageMenuItem_ref1
-  = "atsctrb_gtk_image_menu_item_new_with_mnemonic"
+  = "mac#atsctrb_gtk_image_menu_item_new_with_mnemonic"
 // end of [gtk_image_menu_item_new_with_mnemonic]
 
 (* ****** ****** *)
@@ -57,12 +57,12 @@ fun gtk_image_menu_item_new_with_mnemonic
 fun gtk_image_menu_item_new_from_stock
   {c:cls | c <= GtkAccelGroup} {l1:agz;l2:addr}
   (name: !gstring l1, aclgrp: !gobjref (c, l2)): GtkImageMenuItem_ref1
-  = "atsctrb_gtk_image_menu_item_new_from_stock"
+  = "mac#atsctrb_gtk_image_menu_item_new_from_stock"
 // end of [gtk_image_menu_item_new_from_stock]
 
 fun gtk_image_menu_item_new_from_stock_null
   {l:agz} (name: !gstring l): GtkImageMenuItem_ref1
-  = "#atsctrb_gtk_image_menu_item_new_from_stock_null"
+  = "mac#atsctrb_gtk_image_menu_item_new_from_stock_null"
 // end of [gtk_image_menu_item_new_from_stock_null]
 
 (* ****** ****** *)

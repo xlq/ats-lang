@@ -40,8 +40,8 @@ staload "contrib/FUSE/SATS/fuse.sats"
 static char *hello_str = "Hello, world!\n" ;
 static char *hello_path = "/hello" ;
 %} // end of [%{^]
-extern val hello_str : string = "#hello_str"
-extern val hello_path : string = "#hello_path"
+extern val hello_str : string = "mac#hello_str"
+extern val hello_path : string = "mac#hello_path"
 
 (* ****** ****** *)
 
@@ -61,9 +61,9 @@ hellolog_unlock () {
 } // end of [hellolog_unlock]
 %} // end of [{%{^]
 extern
-fun hellolog_lock ():<> (hellolog_v | void) = "#hellolog_lock"
+fun hellolog_lock ():<> (hellolog_v | void) = "mac#hellolog_lock"
 extern
-fun hellolog_unlock (pf: hellolog_v | (*none*)):<> void = "#hellolog_unlock"
+fun hellolog_unlock (pf: hellolog_v | (*none*)):<> void = "mac#hellolog_unlock"
 
 (* ****** ****** *)
 
@@ -277,7 +277,7 @@ int hello_open (
 */
 extern
 fun hello_open
-  (path: string, fi: &fuse_file_info): int = "hello_open"
+  (path: string, fi: &fuse_file_info): int = "sta#hello_open"
 // end of [hello_open]
 implement
 hello_open (path, fi) = let
@@ -327,8 +327,10 @@ int hello_read (
 //
 extern
 fun hello_read_main {n1,n2:nat} {l:addr} (
-    pf: !bytes n1 @ l
-  | path: string, p_buf: ptr l, n1: size_t n1, ofs: size_t n2, fi: &fuse_file_info
+  pf: !bytes n1 @ l
+| path: string
+, p_buf: ptr l, n1: size_t n1, ofs: size_t n2
+, fi: &fuse_file_info
 ) : sizeLte (n1) = "hello_read_main"
 implement
 hello_read_main {n1,n2}
@@ -340,10 +342,13 @@ in
 if ofs <= len then let
   stavar len1: int
   val len1: size_t (len1) = min (n1, len-ofs)
-  val (fpf_ofs, pf_ofs | p_ofs) = __takeout (str, ofs) where {
-     extern fun __takeout {n2 + len1 <= len} (x: string len, ofs: size_t n2)
-       :<> [l_ofs:addr] (bytes len1 @ l_ofs -<lin,prf> void, bytes len1 @ l_ofs | ptr l_ofs)
-       = "#atspre_padd_size"
+  val (pf_ofs, fpf_ofs | p_ofs) = __takeout (str, ofs) where {
+     extern fun __takeout
+       {n2 + len1 <= len} (
+       x: string len, ofs: size_t n2
+     ) :<> [l_ofs:addr] (
+       bytes len1 @ l_ofs, bytes len1 @ l_ofs -<lin,prf> void | ptr l_ofs
+     ) = "mac#atspre_padd_size"
      // end of [__takeout]
   } // end of [val]
   val _err = memcpy (pf | p_buf, !p_ofs, len1)

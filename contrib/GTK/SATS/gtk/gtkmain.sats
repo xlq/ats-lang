@@ -38,15 +38,16 @@
 
 (* ****** ****** *)
 
-fun gtk_main (): void = "#atsctrb_gtk_main"
-fun gtk_main_level (): guint = "#atsctrb_gtk_main_level"
-fun gtk_main_quit (): void = "#atsctrb_gtk_main_quit"
+fun gtk_main (): void = "mac#atsctrb_gtk_main"
+fun gtk_main_level (): guint = "mac#atsctrb_gtk_main_level"
+fun gtk_main_quit (): void = "mac#atsctrb_gtk_main_quit"
 
 (* ****** ****** *)
 
-fun gtk_timeout_add
-  (interval: guint32, f: GtkFunction, data: gpointer): guint
-  = "#atsctrb_gtk_timeout_add"
+fun gtk_timeout_add (
+  interval: guint32, f: GtkFunction, data: gpointer
+) : guint
+  = "mac#atsctrb_gtk_timeout_add"
 // end of [gtk_timeout_add]
 
 (* ****** ****** *)

@@ -10,6 +10,7 @@ typedef void *ats_ptr_type ;
 // from ${ATSHOME}/ccomp/runtime/ats_basic.h
 //
 #define ATSunused __attribute__ ((unused))
+#define ATSstatic_fun(ty, name) static ty name
 #define ATSlocal(ty, var) ty ATSunused var
 #define ATSlocal_void(var) // void var
 //

@@ -38,14 +38,16 @@
 
 fun clutter_stage_get_default ()
   : [l:agz] (ClutterStage_ref l -<lin,prf> void | ClutterStage_ref l)
-  = "#atsctrb_clutter_stage_get_default"
+  = "mac#atsctrb_clutter_stage_get_default"
 // end of [clutter_stage_get_default]
 
-fun clutter_stage_new (): [l:agz] ClutterStage_ref l = "#atsctrb_clutter_stage_new"
+fun clutter_stage_new
+  (): [l:agz] ClutterStage_ref l = "mac#atsctrb_clutter_stage_new"
+// end of [clutter_stage_new]
 
 fun clutter_stage_is_default
   {c:cls | c <= ClutterStage} {l:agz} (stage: !gobjref (c, l)): gboolean
-  = "#atsctrb_clutter_stage_is_default"
+  = "mac#atsctrb_clutter_stage_is_default"
 // end of [clutter_stage_get_is_default]
 
 (* ****** ****** *)
@@ -53,13 +55,13 @@ fun clutter_stage_is_default
 fun clutter_stage_get_color
   {c:cls | c <= ClutterStage} {l:agz}
   (stage: !gobjref (c, l), color: &ClutterColor? >> ClutterColor): void
-  = "#atsctrb_clutter_stage_get_color"
+  = "mac#atsctrb_clutter_stage_get_color"
 // end of [clutter_stage_get_color]
 
 fun clutter_stage_set_color
   {c:cls | c <= ClutterStage} {l:agz}
   (stage: !gobjref (c, l), color: &ClutterColor): void
-  = "#atsctrb_clutter_stage_set_color"
+  = "mac#atsctrb_clutter_stage_set_color"
 // end of [clutter_stage_set_color]
 
 (* ****** ****** *)
@@ -68,38 +70,38 @@ fun clutter_stage_get_title
   {c:cls | c <= ClutterStage}
   {l:agz} (stage: !gobjref (c, l))
   : [l1:addr] (minus (gobjref (c, l), gstring l1) | gstring l1)
-  = "#atsctrb_clutter_stage_get_title"
+  = "mac#atsctrb_clutter_stage_get_title"
 // end of [clutter_stage_get_title]
 
 fun clutter_stage_set_title
   {c:cls | c <= ClutterStage}
   {l,l1:addr | l > null} (stage: !gobjref (c, l), title: !gstring l1): void
-  = "#atsctrb_clutter_stage_set_title"
+  = "mac#atsctrb_clutter_stage_set_title"
 // end of [clutter_stage_set_title]
 
 (* ****** ****** *)
 
 fun clutter_stage_get_fullscreen
   {c:cls | c <= ClutterStage} {l:agz} (stage: !gobjref (c, l)): gboolean
-  = "#atsctrb_clutter_stage_get_fullscreen"
+  = "mac#atsctrb_clutter_stage_get_fullscreen"
 // end of [clutter_stage_get_fullscreen]
 
 fun clutter_stage_set_fullscreen
   {c:cls | c <= ClutterStage} {l:agz}
   (stage: !gobjref (c, l), fullscreen: gboolean): void
-  = "#atsctrb_clutter_stage_set_fullscreen"
+  = "mac#atsctrb_clutter_stage_set_fullscreen"
 // end of [clutter_stage_set_fullscreen]
 
 (* ****** ****** *)
 
 fun clutter_stage_show_cursor
   {c:cls | c <= ClutterStage} {l:agz} (stage: !gobjref (c, l)): void
-  = "#atsctrb_clutter_stage_show_cursor"
+  = "mac#atsctrb_clutter_stage_show_cursor"
 // end of [clutter_stage_get_show_cursor]
 
 fun clutter_stage_hide_cursor
   {c:cls | c <= ClutterStage} {l:agz} (stage: !gobjref (c, l)): void
-  = "#atsctrb_clutter_stage_hide_cursor"
+  = "mac#atsctrb_clutter_stage_hide_cursor"
 // end of [clutter_stage_get_hide_cursor]
 
 (* ****** ****** *)

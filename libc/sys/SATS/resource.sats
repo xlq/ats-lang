@@ -90,17 +90,21 @@ PRIO_MAX = $extval (int, "PRIO_MAX")
 (* ****** ****** *)
 
 fun getrlimit ( // 0/-1 : succ/fail/ errno set
-  res: resource_t, lim: &rlimit? >> opt (rlimit, i==0)
-): #[i:int | i <= 0] int i = "#atslib_getrlimit"
+  res: resource_t
+, lim: &rlimit? >> opt (rlimit, i==0)
+) : #[i:int | i <= 0] int i
+  = "mac#atslib_getrlimit"
 // end of [getrlimit]
 
-fun setrlimit // 0/-1 : succ/fail/ errno set
-  (res: resource_t, lim: &rlimit(*const*)): int = "#atslib_setrlimit"
+fun setrlimit ( // 0/-1 : succ/fail/ errno set
+  res: resource_t
+, lim: &rlimit(*const*)
+) : int
+  = "mac#atslib_setrlimit"
 // end of [setrlimit]
 
 (* ****** ****** *)
 
-abst@ype rusage_rest
 typedef rusage_struct =
 $extype_struct "ats_rusage_struct" of {
   ru_utime= timeval // user time used
@@ -121,21 +125,20 @@ $extype_struct "ats_rusage_struct" of {
 , ru_nvcsw= lint // voluntary context switch
 , ru_nivcsw= lint // involuntary context switch
 *)
-, _rest = rusage_rest // unknown quantity
+, _rest = undefined_t // unknown quantity
 } // en dof [rusage_struct]
 typedef rusage = rusage_struct
 
 fun getrusage ( // 0/-1 : succ/fail/ errno set
   who: int, rusage: &rusage? >> opt (rusage, i==0)
-) : #[i:int | i <= 0] int(i) = "#atslib_getrusage"
+) : #[i:int | i <= 0] int(i) = "mac#atslib_getrusage"
 // end of [getrusage]
 
 (* ****** ****** *)
 
 abst@ype priowhich_t = int
 castfn int_of_priowhich (x: priowhich_t):<> int
-macdef PRIO_PROCESS =
-  $extval (priowhich_t, "PRIO_PROCESS")
+macdef PRIO_PROCESS = $extval (priowhich_t, "PRIO_PROCESS")
 macdef PRIO_PGRP = $extval (priowhich_t, "PRIO_PGRP")
 macdef PRIO_USER = $extval (priowhich_t, "PRIO_USER")
 
@@ -143,14 +146,16 @@ macdef PRIO_USER = $extval (priowhich_t, "PRIO_USER")
 //
 // HX: -1 maybe a legitimate return value for getpriority
 //
-fun getpriority
-  (which: priowhich_t, who: int): int = "#atslib_getpriority"
+fun getpriority (
+  which: priowhich_t, who: int
+) : int = "mac#atslib_getpriority"
 // end of [getpriority]
 //
 // HX: 0/-1 : succ/fail // errno set
 //
-fun setpriority
-  (which: priowhich_t, who: int, prio: int): int = "#atslib_setpriority"
+fun setpriority (
+  which: priowhich_t, who: int, prio: int
+) : int = "mac#atslib_setpriority"
 // end of [setpriority]
 
 (* ****** ****** *)

@@ -38,22 +38,28 @@
 
 (* ****** ****** *)
 
-fun gtk_text_tag_table_new ()
-  : GtkTextTagTable_ref1 = "#atsctrb_gtk_text_tag_table_new"
+fun gtk_text_tag_table_new (
+// there is no argument for this function
+) : GtkTextTagTable_ref1
+  = "mac#atsctrb_gtk_text_tag_table_new"
 // end of [gtk_text_tag_table_new]
 
 (* ****** ****** *)
 
 fun gtk_text_tag_table_add
   {c1,c2:cls | c1 <= GtkTextTagTable; c2 <= GtkTextTag}
-  {l1,l2:agz} (tbl: !gobjref (c1, l1), tag: !gobjref (c2, l2)): void
-  = "#atsctrb_gtk_text_tag_table_add"
+  {l1,l2:agz} (
+  tbl: !gobjref (c1, l1), tag: !gobjref (c2, l2)
+) : void
+  = "mac#atsctrb_gtk_text_tag_table_add"
 // end of [gtk_text_tag_table_add]
 
 fun gtk_text_tag_table_remove
   {c1,c2:cls | c1 <= GtkTextTagTable; c2 <= GtkTextTag}
-  {l1,l2:agz} (tbl: !gobjref (c1, l1), tag: !gobjref (c2, l2)): void
-  = "#atsctrb_gtk_text_tag_table_add"
+  {l1,l2:agz} (
+  tbl: !gobjref (c1, l1), tag: !gobjref (c2, l2)
+) : void
+  = "mac#atsctrb_gtk_text_tag_table_add"
 // end of [gtk_text_tag_table_add]
 
 (* ****** ****** *)

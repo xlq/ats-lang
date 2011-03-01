@@ -108,11 +108,14 @@ fun s0explst_posmark (s0es: s0explst): void =
 
 fn s0expopt_posmark (os0e: s0expopt): void =
   case+ os0e of Some s0e => s0exp_posmark s0e | None () => ()
+// end of [s0expopt_posmark]
 
-fn s0explstlst_posmark (s0ess: s0explstlst): void =
+fn s0explstlst_posmark
+  (s0ess: s0explstlst): void =
   $Lst.list_foreach_fun (s0ess, s0explst_posmark) 
 
-fun labs0explst_posmark (ls0es: labs0explst): void =
+fun labs0explst_posmark
+  (ls0es: labs0explst): void =
   case+ ls0es of
   | LABS0EXPLSTcons (lab, s0e, ls0es) => let
       val loc1 = lab.l0ab_loc and loc2 = s0e.s0exp_loc
@@ -126,7 +129,8 @@ fun labs0explst_posmark (ls0es: labs0explst): void =
   | LABS0EXPLSTnil () => ()
 // end of [labs0explst_posmark]
 
-fun t1mps0explstlst_posmark (ts0ess: t1mps0explstlst): void =
+fun t1mps0explstlst_posmark
+  (ts0ess: t1mps0explstlst): void =
   case+ ts0ess of
   | T1MPS0EXPLSTLSTcons (_(*loc*), s0es, ts0ess) => begin
       s0explst_posmark s0es; t1mps0explstlst_posmark ts0ess
@@ -190,7 +194,8 @@ fun labp0atlst_posmark (lp0ts: labp0atlst): void =
   | _ => ()
 // end of [labp0atlst_posmark]
 
-implement p0at_posmark (p0t) = case+ p0t.p0at_node of
+implement
+p0at_posmark (p0t) = case+ p0t.p0at_node of
   | P0Tann (p0t, s0e) => begin
       p0at_posmark p0t; staexploc_posmark (s0e.s0exp_loc);
     end
@@ -262,14 +267,16 @@ fn f0arglst_posmark (f0as: f0arglst): void =
 
 (* ****** ****** *)
 
-fun i0nvarglst_posmark (args: i0nvarglst): void = case+ args of
+fun i0nvarglst_posmark
+  (args: i0nvarglst): void = case+ args of
   | arg :: args => begin
       s0expopt_posmark arg.i0nvarg_typ; i0nvarglst_posmark args
     end // end of [::]
   | nil () => ()
 // end of [i0nvarglst_posmark]
 
-fn i0nvresstate_posmark (res: i0nvresstate): void = let
+fn i0nvresstate_posmark
+  (res: i0nvresstate): void = let
   val () = case+ res.i0nvresstate_qua of
     | Some s0qs => s0qualst_posmark s0qs | None () => ()
   // end of [val]

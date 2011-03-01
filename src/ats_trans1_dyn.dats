@@ -107,21 +107,32 @@ typedef efcopt = Option efc
 
 (* ****** ****** *)
 
+extern
+fun extnam_ismac
+  (ext: string, ext_new: &string): bool = "atsopt_extnam_ismac"
+// end of [extnam_ismac]
+extern
+fun extnam_issta
+  (ext: string, ext_new: &string): bool = "atsopt_extnam_issta"
+// end of [extnam_issta]
+
 fn dcstextdef_tr
   (ext: Stropt): dcstextdef =
   if stropt_is_none ext then DCSTEXTDEFnone ()
   else let
     val ext = stropt_unsome ext
-    var ismac : bool = false
-    val () =
-      if string_isnot_at_end (ext, 0) then let
-        val c = ext[0]
-      in
-        if (c = '#') then (ismac := true)
-      end // end of [if]
-    // end of [val]
+    var ext_new: string = ext
   in
-    if ismac then DCSTEXTDEFsome_mac ext else DCSTEXTDEFsome_fun ext
+    case+ 0 of
+(*
+    | _ when extnam_isext
+        (ext, ext_new) => DCSTEXTDEFsome_ext ext_new
+*)
+    | _ when extnam_ismac
+        (ext, ext_new) => DCSTEXTDEFsome_mac ext_new
+    | _ when extnam_issta
+        (ext, ext_new) => DCSTEXTDEFsome_sta ext_new
+    | _ => DCSTEXTDEFsome_ext ext_new
   end // end of [if]
 // end of [dcstextdef_tr]
 
@@ -1945,6 +1956,52 @@ finalize () = () where {
   } // end of [where]
 //
 } // end of [finalize]
+
+(* ****** ****** *)
+
+%{$
+
+extern
+char *atspre_string_make_substring (char*, int, int) ;
+
+ats_bool_type
+atsopt_extnam_ismac (
+  ats_ptr_type ext, ats_ptr_type ext_new
+) {
+  int sgn ;
+  char* p ; int len ; 
+/*
+  sgn = strncmp ((char*)ext, "#", 1) ;
+  if (sgn) sgn = strncmp ((char*)ext, "mac#", 4) ;
+*/
+  sgn = strncmp ((char*)ext, "mac#", 4) ;
+//
+  if (sgn == 0) {
+    p = strchr ((char*)ext, '#') ;
+    len = strlen (p) ;
+    *(char**)ext_new = (char*)atspre_string_make_substring(p, 1, len-1) ;
+    return ats_true_bool ;
+  } // end of [if]
+  return ats_false_bool ;
+} // end of [atsopt_extnam_ismac]
+
+ats_bool_type
+atsopt_extnam_issta (
+  ats_ptr_type ext, ats_ptr_type ext_new
+) {
+  int sgn ;
+  char* p ; int len ; 
+  sgn = strncmp ((char*)ext, "sta#", 4) ;
+  if (sgn == 0) {
+    p = strchr ((char*)ext, '#') ;
+    len = strlen (p) ;
+    *(char**)ext_new = (char*)atspre_string_make_substring(p, 1, len-1) ;
+    return ats_true_bool ;
+  } // end of [if]
+  return ats_false_bool ;
+} // end of [atsopt_extnam_issta]
+
+%} // end of [%{$]
 
 (* ****** ****** *)
 

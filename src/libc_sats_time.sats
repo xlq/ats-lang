@@ -95,9 +95,15 @@ fun difftime (finish: time_t, start: time_t):<> double
 // HX: [localtime_r] is not reentrant
 //
 // [localtime] is non-reentrant
-fun localtime (time: &time_t):<!ref> [l:addr] (
-    option_v ((tm_struct @ l, tm_struct @ l -<prf> void), l>null) | ptr l
-  ) = "#atslib_localtime"
+//
+viewdef
+viewout (v: view) = (v, v -<prf> void)
+fun localtime (
+  time: &time_t
+) :<!ref> [l:addr] (
+  option_v (viewout (tm_struct @ l), l > null)
+| ptr l
+) = "mac#atslib_localtime"
 // end of [localtime]
 
 (* ****** ****** *)

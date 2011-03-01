@@ -39,15 +39,21 @@
 (* ****** ****** *)
 
 fun gtk_misc_set_alignment
-  {c:cls | c <= GtkMisc} {l:agz}
-  (misc: !gobjref (c, l), xalign: gfloat, yalign: gfloat): void
-  = "#atsctrb_gtk_misc_set_alignment"
+  {c:cls | c <= GtkMisc}
+  {l:agz} (
+  misc: !gobjref (c, l)
+, xalign: gfloat, yalign: gfloat
+) : void
+  = "mac#atsctrb_gtk_misc_set_alignment"
 // end of [gtk_misc_set_alignment]
 
 fun gtk_misc_get_alignment
-  {c:cls | c <= GtkMisc} {l:agz}
-  (misc: !gobjref (c, l), xalign: &gfloat? >> gfloat, yalign: &gfloat? >> gfloat): void
-  = "#atsctrb_gtk_misc_get_alignment"
+  {c:cls | c <= GtkMisc}
+  {l:agz} (
+  misc: !gobjref (c, l)
+, xalign: &gfloat? >> gfloat, yalign: &gfloat? >> gfloat
+) : void
+  = "mac#atsctrb_gtk_misc_get_alignment"
 // end of [gtk_misc_get_alignment]
 
 (* ****** ****** *)

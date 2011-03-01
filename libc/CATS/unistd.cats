@@ -128,6 +128,7 @@ atslib_usleep (ats_int_type n) { usleep (n) ; return ; }
 /* ****** ****** */
 
 #define atslib_getlogin getlogin
+#define atslib_getlogin_r getlogin_r
 
 /* ****** ****** */
 

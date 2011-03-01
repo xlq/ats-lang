@@ -8,14 +8,6 @@
 
 (* ****** ****** *)
 
-(*
-staload
-"prelude/SATS/array.sats" // loaded by atsopt
-*)
-staload _(*anon*) = "prelude/DATS/array.dats"
-
-(* ****** ****** *)
-
 staload "libats/ngc/SATS/slist.sats"
 staload _(*anon*) = "libats/ngc/DATS/slist.dats"
 
@@ -30,57 +22,11 @@ staload "scull.sats"
 
 (* ****** ****** *)
 
-(*
-fun qset_dataptr_free
-  {m,n:nat} (p: qset_dataptr (m, n), m: int m): void
-// end of [qset_dataptr_free]
-*)
-
-fun qset_dataptr_nil
-  {m,n:nat} .<>. ():<> qset_dataptr (m,n) = let
-  prval pf = qset_data_v_nil () in qset_dataptr_encode (pf | null)
-end // end of [fun]
-
-implement
-qset_dataptr_free
-  {m,n} (p, m) = let
-//
-viewtypedef qtmptr = qtmptr (n)
-//
-extern fun array_ptr_kfree
-  {a:viewt@ype} {n:int} {l:addr} (
-  pf_gc: kfree_v l, pf_arr: array_v (a?, n, l) | p_arr: ptr l
-) :<> void = "#atsctrb_kernel_array_ptr_kfree"
-//
-fun free_agz {l:agz} .<>. (
-  pf: qset_data_v (m, n, l) | p: ptr l, m: int m
-) :<> void = let
-  prval (pfgc, pfarr) = qset_data_v_takeout_all (pf)
-  val m = size1_of_int1 (m)
-  val () = array_ptr_clear_fun<qtmptr> (!p, m, lam x =<fun> qtmptr_free (x))
-in
-  array_ptr_kfree {ptr} (pfgc, pfarr | p)
-end // end of [free_agz]
-//
-val (pf | p) = qset_dataptr_decode (p)
-//
-in
-  if p > null then
-    free_agz (pf | p, m)
-  else let
-    prval () = qset_data_v_unnil (pf)
-  in
-    // nothing
-  end (* end of [if] *)
-end // end of [qset_dataptr_free]
-
-(* ****** ****** *)
-
 local
 
 abst@ype qset = $extype "scull_qset_struct"
 
-in
+in // in of [local]
 
 extern
 fun qset_get_next
@@ -113,7 +59,7 @@ fun qsetlst_free
   stadef V = unit_v
   var !p_clo = @lam (
     pf: !V | x: &T >> T?
-  ) : void =<clo> qset_dataptr_free (x.data, m)
+  ) : void =<clo> qdatptr_free (x.data, m)
   prval pfv = unit_v ()
   val () = slist_free_clo<T> {V} (pfv | xs, !p_clo)
   prval unit_v () = pfv
@@ -156,7 +102,7 @@ fun qsetlst_make
       if p > null then let
         prval Some_v (pf) = pfopt
         prval (pfat, fpf) = slnode_v_takeout_val {qset?} (pf)
-        val () = p->data := qset_dataptr_nil {m,n} ()
+        val () = p->data := qdatptr_make_null {m,n} ()
         prval () = pf := fpf (pfat)
         val res = slist_cons (pf | p, res)
         val () = ln_res := ln_res + 1
@@ -192,19 +138,29 @@ fun scull_follow_main
   = "scull_follow_main"
 *)
 
-fun scull_follow_main_lt
+fun scull_follow_lessthan
   {m,n:nat}
   {ln0:int}
   {ln:nat | ln < ln0} (
   xs: !slist (qset(m, n), ln0), ln: int (ln)
-) : [lm:addr] ptr (lm) = pm where {
+) : [lm:agz] (
+  viewout (qset(m, n) @ lm) | ptr lm
+) = (pfout | pm) where {
   viewtypedef qset = qset (m, n)
   prval (pflst | ()) = slist_unfold {qset} (xs)
   val p_xs = p2p (xs)
   val ln = size1_of_int1 (ln)
-  val (pf1, pf2 | pm) = slist_split_at<qset> (pflst | p_xs, ln)
+  val [lm:addr] (pf1, pf2 | pm) =
+    slist_split_at<qset> (pflst | p_xs, ln)
+//
+  prval slseg_v_cons (pf21, pf22) = pf2
+  prval (pfat, fpf21) = slnode_v_takeout_val {qset} (pf21)
+  prval pfout = $UN.vtakeout {qset @ lm} (pfat)
+  prval () = pf21 := fpf21 (pfat)
+  prval pf2 = slseg_v_cons (pf21, pf22)
+//
   prval () = slist_fold {qset} (slseg_v_append (pf1, pf2) | xs)
-} // end of [scull_follow_main_lt]
+} // end of [scull_follow_lessthan]
 
 implement
 scull_follow_main
@@ -212,17 +168,30 @@ scull_follow_main
   (xs, ln0, ln) = let
   viewtypedef qset = qset (m, n)
 in
-  if ln < ln0 then
-    scull_follow_main_lt (xs, ln)
-  else let
-    var ln0_new: int?
-    val xs_new = qsetlst_make (ln-ln0+1, ln0_new)
-    val () = xs := slist_append<qset> (xs, xs_new)
-    val () = ln0 := ln0 + ln0_new
+  if ln < ln0 then let
+    val (pfout | pm) =
+      scull_follow_lessthan (xs, ln)
+    // end of [val]
   in
-    if ln < ln0 then
-      scull_follow_main_lt (xs, ln)
-    else null (* out-of-memory *)
+    (Some_v (pfout) | pm)
+  end else let
+    val df = ln-ln0
+    var ln0_add: int?
+    val xs_add = qsetlst_make (df+1, ln0_add)
+    val () = ln0 := ln0 + ln0_add
+  in
+    if ln0_add > df then let
+      val (pfout | pm) =
+        scull_follow_lessthan (xs_add, df)
+      // end of [val]
+      val () = xs := slist_append<qset> (xs, xs_add)
+    in
+      (Some_v (pfout) | pm)
+    end else let
+      val () = xs := slist_append<qset> (xs, xs_add)
+    in
+      (None_v () | null) // out-of-memory
+    end // end of [if]
   end // end of [if]
 end // end of [scull_follow_main]
 

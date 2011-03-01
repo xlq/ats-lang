@@ -41,16 +41,17 @@
 fun gdk_pixbuf_render_threshold_alpha
   {c1,c2:cls | c1 <= GdkPixbuf; c2 <= GdkBitmap}
   {l1,l2:agz} (
-    pixbuf: !gobjref (c1, l1)
-  , bitmap: !gobjref (c2, l2)
-  , src_x: int
-  , src_y: int
-  , dst_x: int
-  , dst_y: int
-  , width: int
-  , height: int
-  , alpha_threshold: int
-  ) : void = "#atsctrb_gdk_pixbuf_render_threshold_alpha"
+  pixbuf: !gobjref (c1, l1)
+, bitmap: !gobjref (c2, l2)
+, src_x: int
+, src_y: int
+, dst_x: int
+, dst_y: int
+, width: int
+, height: int
+, alpha_threshold: int
+) : void 
+  = "mac#atsctrb_gdk_pixbuf_render_threshold_alpha"
 // end of [gdk_pixbuf_render_threshold_alpha]
 
 (* ****** ****** *)

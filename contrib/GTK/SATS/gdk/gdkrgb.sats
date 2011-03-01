@@ -39,8 +39,11 @@
 (* ****** ****** *)
 
 fun gdk_rgb_find_color
-  {c:cls | c <= GdkColormap} {l:agz}
-  (cm: !gobjref (c, l), color: &GdkColor): void = "#atsctrb_gdk_rgb_find_color"
+  {c:cls | c <= GdkColormap}
+  {l:agz} (
+  cm: !gobjref (c, l), color: &GdkColor
+) : void
+  = "mac#atsctrb_gdk_rgb_find_color"
 // end of [gdk_rgb_find_color]
 
 (* ****** ****** *)

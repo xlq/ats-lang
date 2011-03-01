@@ -39,14 +39,19 @@
 (* ****** ****** *)
 
 fun gtk_vscale_new
-  {c:cls | c <= GtkAdjustment} {l:agz}
-  (adj: !gobjref (c, l)): GtkVScale_ref1 = "#atsctrb_gtk_vscale_new"
+  {c:cls | c <= GtkAdjustment}
+  {l:agz} (
+  adj: !gobjref (c, l)
+) : GtkVScale_ref1
+  = "mac#atsctrb_gtk_vscale_new"
 // end of [gtk_vscale_new]
 
 fun gtk_vscale_new_with_range
-  {c:cls | c <= GtkAdjustment} {l:agz}
-  (min: gdouble, max: gdouble, step: gdouble): GtkVScale_ref1
-  = "#atsctrb_gtk_vscale_new_with_range"
+  {c:cls | c <= GtkAdjustment}
+  {l:agz} (
+  min: gdouble, max: gdouble, step: gdouble
+) : GtkVScale_ref1
+  = "mac#atsctrb_gtk_vscale_new_with_range"
 // end of [gtk_vscale_new_with_rangle]
 
 (* ****** ****** *)

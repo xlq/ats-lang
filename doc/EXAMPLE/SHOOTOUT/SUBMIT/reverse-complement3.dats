@@ -30,8 +30,8 @@ end // end of [iubcmplt_get]
 
 (* ****** ****** *)
 
-extern fun ptrget (p: ptr): byte = "#theBuffer_ptrget"
-extern fun ptrset (p: ptr, b: byte): void = "#theBuffer_ptrset"
+extern fun ptrget (p: ptr): byte = "mac#theBuffer_ptrget"
+extern fun ptrset (p: ptr, b: byte): void = "mac#theBuffer_ptrset"
 
 (* ****** ****** *)
 
@@ -74,13 +74,13 @@ main () = () where {
     extern fun _init (): void = "iubcmpltarr_initialize"
   }
   val () = _initset () where {
-    extern fun _initset (): void = "#theBuffer_initset"
+    extern fun _initset (): void = "mac#theBuffer_initset"
   }
   val () = _reverse () where {
-    extern fun _reverse (): void = "#theBuffer_reverse"
+    extern fun _reverse (): void = "mac#theBuffer_reverse"
   }
   val () = _print () where {
-    extern fun _print (): void = "#theBuffer_print"
+    extern fun _print (): void = "mac#theBuffer_print"
   }
 } // end of [main]
 

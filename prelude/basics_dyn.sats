@@ -98,7 +98,6 @@ praxi eqsize_char_uchar (): [sizeof char == sizeof uchar] void
 // HX-2010-04-18: there are no negative addresses
 //
 praxi addr_is_gtez {l:addr} ():<> [l >= null] void
-prfun ptr_is_gtez {l:addr} (p: ptr l):<> [l >= null] void
 
 (* ****** ****** *)
 
@@ -142,8 +141,8 @@ val empval : empty = "ats_empty_value" // the empty value in ATS
 // HX: In $ATSHOME/ccomp/runtime:
 // ats_true_bool/ats_true_false are mapped to 1/0, respectively
 //
-val true  : bool (true)  = "#ats_true_bool"
-and false : bool (false) = "#ats_false_bool"
+val true  : bool (true)  = "mac#ats_true_bool" // macro
+and false : bool (false) = "mac#ats_false_bool" // macro
 
 (* ****** ****** *)
 //
@@ -155,22 +154,36 @@ fun crash // crash() = (void)*(int*)0
 
 (* ****** ****** *)
 
-fun exit {a:viewt@ype} (status: int):<!exn> a = "#ats_exit"
+fun exit
+  {a:viewt@ype} (
+  status: int
+) :<!exn> a
+  = "mac#ats_exit"
+// end of [fun]
 
 fun exit_main
-  {a:viewt@ype} {v_in:view} {v_out:view}
-  (pf: !v_in >> v_out | status: int):<!exn> a = "#ats_exit"
-// end of [exit_main]
-
-(* ****** ****** *)
+  {a:viewt@ype}
+  {v_in:view}
+  {v_out:view} (
+  pf: !v_in >> v_out | status: int
+) :<!exn> a
+  = "mac#ats_exit"
+// end of [fun]
 
 fun exit_errmsg
-  {a:viewt@ype} (status: int, msg: string): a = "#ats_exit_errmsg"
-// end of [exit_errmsg]
+  {a:viewt@ype} (
+  status: int, msg: string
+) : a
+  = "mac#ats_exit_errmsg"
+// end of [fun]
 
-fun exit_prerrf {a:viewt@ype} {ts:types}
-  (status: int, fmt: printf_c ts, args: ts): a = "#atspre_exit_prerrf"
-// end of [exit_prerrf]
+fun exit_prerrf
+  {a:viewt@ype}
+  {ts:types} (
+  status: int, fmt: printf_c ts, args: ts
+) : a
+  = "mac#atspre_exit_prerrf"
+// end of [fun]
 
 (* ****** ****** *)
 //

@@ -290,8 +290,9 @@ fn global_cst_name_make
   val extdef = d2cst_get_extdef (d2c) in
   case+ extdef of
   | $Syn.DCSTEXTDEFnone () => $Sym.symbol_name (d2cst_get_sym d2c)
-  | $Syn.DCSTEXTDEFsome_fun name => name
-  | $Syn.DCSTEXTDEFsome_mac _name => begin
+  | $Syn.DCSTEXTDEFsome_ext name => name
+  | $Syn.DCSTEXTDEFsome_sta name => name
+  | $Syn.DCSTEXTDEFsome_mac name => begin
       prerr_interror ();
       prerr ": global_cst_name_make: DCSTEXTDEFcall: d2c = "; prerr_d2cst d2c;
       prerr_newline ();

@@ -39,14 +39,17 @@
 (* ****** ****** *)
 
 fun gtk_check_menu_item_new
-  (): GtkCheckMenuItem_ref1 = "#atsctrb_gtk_check_menu_item_new"
+  (): GtkCheckMenuItem_ref1 = "mac#atsctrb_gtk_check_menu_item_new"
+// end of [gtk_check_menu_item_new]
 
-fun gtk_check_menu_item_new_with_label {l:agz}
-  (name: !gstring l): GtkCheckMenuItem_ref1 = "#atsctrb_gtk_check_menu_item_new_with_label"
+fun gtk_check_menu_item_new_with_label
+  {l:agz} (name: !gstring l): GtkCheckMenuItem_ref1
+  = "mac#atsctrb_gtk_check_menu_item_new_with_label"
 // end of [gtk_check_menu_item_new_with_label]
 
-fun gtk_check_menu_item_new_with_mnemonic {l:agz}
-  (name: !gstring l): GtkCheckMenuItem_ref1 = "#atsctrb_gtk_check_menu_item_new_with_mnemonic"
+fun gtk_check_menu_item_new_with_mnemonic
+  {l:agz} (name: !gstring l): GtkCheckMenuItem_ref1
+  = "mac#atsctrb_gtk_check_menu_item_new_with_mnemonic"
 // end of [gtk_check_menu_item_new_with_mnemonic]
 
 (* ****** ****** *)
@@ -54,20 +57,20 @@ fun gtk_check_menu_item_new_with_mnemonic {l:agz}
 fun gtk_check_menu_item_get_active
   {c:cls | c <= GtkCheckMenuItem} {l:agz}
   (item: !gobjref (c, l)): gboolean
-  = "#atsctrb_gtk_check_menu_item_get_active"
+  = "mac#atsctrb_gtk_check_menu_item_get_active"
 // end of [gtk_check_menu_item_get_active]
 
 fun gtk_check_menu_item_set_active
   {c:cls | c <= GtkCheckMenuItem} {l:agz}
   (item: !gobjref (c, l), active: gboolean): void
-  = "#atsctrb_gtk_check_menu_item_set_active"
+  = "mac#atsctrb_gtk_check_menu_item_set_active"
 // end of [gtk_check_menu_item_set_active]
 
 (* ****** ****** *)
 
 fun gtk_check_menu_item_toggled
   {c:cls | c <= GtkCheckMenuItem} {l:agz}
-  (item: !gobjref (c, l)): void = "#atsctrb_gtk_check_menu_item_toggled"
+  (item: !gobjref (c, l)): void = "mac#atsctrb_gtk_check_menu_item_toggled"
 // end of [gtk_check_menu_item_toggled]
 
 (* ****** ****** *)
@@ -75,13 +78,13 @@ fun gtk_check_menu_item_toggled
 fun gtk_check_menu_item_get_inconsistent
   {c:cls | c <= GtkCheckMenuItem} {l:agz}
   (item: !gobjref (c, l)): gboolean
-  = "#atsctrb_gtk_check_menu_item_get_inconsistent"
+  = "mac#atsctrb_gtk_check_menu_item_get_inconsistent"
 // end of [gtk_check_menu_item_get_inconsistent]
 
 fun gtk_check_menu_item_set_inconsistent
   {c:cls | c <= GtkCheckMenuItem} {l:agz}
   (item: !gobjref (c, l), inconsistent: gboolean): void
-  = "#atsctrb_gtk_check_menu_item_set_inconsistent"
+  = "mac#atsctrb_gtk_check_menu_item_set_inconsistent"
 // end of [gtk_check_menu_item_set_inconsistent]
 
 (* ****** ****** *)
@@ -89,13 +92,13 @@ fun gtk_check_menu_item_set_inconsistent
 fun gtk_check_menu_item_get_draw_as_radio
   {c:cls | c <= GtkCheckMenuItem} {l:agz}
   (item: !gobjref (c, l)): gboolean
-  = "#atsctrb_gtk_check_menu_item_get_draw_as_radio"
+  = "mac#atsctrb_gtk_check_menu_item_get_draw_as_radio"
 // end of [gtk_check_menu_item_get_draw_as_radio]
 
 fun gtk_check_menu_item_set_draw_as_radio
   {c:cls | c <= GtkCheckMenuItem} {l:agz}
   (item: !gobjref (c, l), draw_as_radio: gboolean): void
-  = "#atsctrb_gtk_check_menu_item_set_draw_as_radio"
+  = "mac#atsctrb_gtk_check_menu_item_set_draw_as_radio"
 // end of [gtk_check_menu_item_set_draw_as_radio]
 
 (* ****** ****** *)

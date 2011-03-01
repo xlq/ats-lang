@@ -38,8 +38,10 @@
 
 (* ****** ****** *)
 
-fun gtk_hbox_new
-  (homo: gboolean, spacing: gint): GtkHBox_ref1 = "#atsctrb_gtk_hbox_new"
+fun gtk_hbox_new (
+  homo: gboolean, spacing: gint
+) : GtkHBox_ref1
+  = "mac#atsctrb_gtk_hbox_new"
 // end of [gtk_hbox_new]
 
 (* ****** ****** *)

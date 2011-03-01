@@ -75,11 +75,12 @@ void theTorus_initset
 GLuint theTorus_get () { return theTorus ; }
 %} // end of [%{$]
 extern
-fun theTorus_initset {n:int} (n: GLlist n): void = "#theTorus_initset"
+fun theTorus_initset {n:int}
+  (n: GLlist n): void = "mac#theTorus_initset"
 extern
 fun theTorus_get (): [n:pos]
-  (GLlist n -<lin,prf> void | GLlist n) = "#theTorus_get"
-// end of ...
+  (GLlist n -<lin,prf> void | GLlist n) = "mac#theTorus_get"
+// end of [fun]
 
 (* ****** ****** *)
 

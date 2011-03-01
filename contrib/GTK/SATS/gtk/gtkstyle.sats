@@ -112,24 +112,34 @@ fun gtk_style_get_font_desc
 
 (* ****** ****** *)
 
-fun gtk_style_new (): GtkStyle_ref1 = "#atsctrb_gtk_style_new"
+fun gtk_style_new
+  (): GtkStyle_ref1 = "mac#atsctrb_gtk_style_new"
+// end of [gtk_style_new]
 
 fun gtk_style_copy
-  {c:cls | c <= GtkStyle} {l:agz} (x: !gobjref (c, l)): GtkStyle_ref1
-  = "#atsctrb_gtk_style_copy"
+  {c:cls | c <= GtkStyle}
+  {l:agz} (
+  x: !gobjref (c, l)
+) : GtkStyle_ref1
+  = "mac#atsctrb_gtk_style_copy"
 // end of [gtk_style_copy]
 
 (* ****** ****** *)
 
 fun gtk_style_attach
-  {c1,c2:cls | c1 <= GtkStyle; c2 <= GdkWindow} {l1,l2:agz}
-  (x: gobjref (c1, l1), win: !gobjref (GdkWindow, l2)): GtkStyle_ref1
-  = "#atsctrb_gtk_style_attach"
+  {c1,c2:cls | c1 <= GtkStyle; c2 <= GdkWindow}
+  {l1,l2:agz} (
+  x: gobjref (c1, l1), win: !gobjref (GdkWindow, l2)
+) : GtkStyle_ref1
+  = "mac#atsctrb_gtk_style_attach"
 // end of [gtk_style_attach]
 
 fun gtk_style_detach
-  {c:cls | c <= GtkStyle} {l:agz} (x: !gobjref (c, l)): void
-  = "#atsctrb_gtk_style_detach"
+  {c:cls | c <= GtkStyle}
+  {l:agz} (
+  x: !gobjref (c, l)
+) : void
+  = "mac#atsctrb_gtk_style_detach"
 // end of [gtk_style_detach]
 
 (* ****** ****** *)

@@ -72,64 +72,81 @@ typedef passwd = passwd_struct
 
 (* ****** ****** *)
 
-fun passwd_get_pw_name
-  (pwd: &READ(passwd)): [l:addr] (strptr l -<lin,prf> void | strptr l)
-  = "atslib_passwd_get_pw_name" // fun!
+fun passwd_get_pw_name (
+  pwd: &READ(passwd)
+) : [l:addr] (
+  strptr l -<lin,prf> void | strptr l
+) = "atslib_passwd_get_pw_name" // function!
 // end of [passwd_get_pw_name]
 
-fun passwd_get_pw_passwd
-  (pwd: &READ(passwd)): [l:addr] (strptr l -<lin,prf> void | strptr l)
-  = "atslib_passwd_get_pw_passwd" // fun!
+fun passwd_get_pw_passwd (
+  pwd: &READ(passwd)
+) : [l:addr] (
+  strptr l -<lin,prf> void | strptr l
+) = "atslib_passwd_get_pw_passwd" // function!
 // end of [passwd_get_pw_passwd]
 
-fun passwd_get_pw_gecos
-  (pwd: &READ(passwd)): [l:addr] (strptr l -<lin,prf> void | strptr l)
-  = "atslib_passwd_get_pw_gecos" // fun!
+fun passwd_get_pw_gecos (
+  pwd: &READ(passwd)
+) : [l:addr] (
+  strptr l -<lin,prf> void | strptr l
+) = "atslib_passwd_get_pw_gecos" // function!
 // end of [passwd_get_pw_gecos]
 
-fun passwd_get_pw_dir
-  (pwd: &READ(passwd)): [l:addr] (strptr l -<lin,prf> void | strptr l)
-  = "atslib_passwd_get_pw_dir" // fun!
+fun passwd_get_pw_dir (
+  pwd: &READ(passwd)
+) : [l:addr] (
+  strptr l -<lin,prf> void | strptr l
+) = "atslib_passwd_get_pw_dir" // function!
 // end of [passwd_get_pw_dir]
 
-fun passwd_get_pw_shell
-  (pwd: &READ(passwd)): [l:addr] (strptr l -<lin,prf> void | strptr l)
-  = "atslib_passwd_get_pw_shell" // fun!
+fun passwd_get_pw_shell (
+  pwd: &READ(passwd)
+) : [l:addr] (
+  strptr l -<lin,prf> void | strptr l
+) = "atslib_passwd_get_pw_shell" // function!
 // end of [passwd_get_pw_shell]
 
 (* ****** ****** *)
 
 // HX: non-reentrant
-fun getpwnam
-  (nam: !READ(string)):<!ref> [l:addr] (vptroutopt (passwd, l) | ptr l)
-  = "#atslib_getpwnam"
+fun getpwnam (
+  nam: !READ(string)
+) :<!ref> [l:addr] (
+  vptroutopt (passwd, l) | ptr l
+) = "mac#atslib_getpwnam"
 // end of [getpwnam]
 
 // HX: reentrant
 fun getpwnam_r {n:nat} (
-    nam: !READ(string)
-  , pwbuf: &passwd? >> opt (passwd, i==0)
-  , buf: &b0ytes(n) >> bytes(n), n: size_t (n)
-  , ppwbuf: &ptr? >> ptr
-  ) :<> #[i:int | i >= 0] int (i)
-  = "#atslib_getpwnam_r"
+  nam: !READ(string)
+, pwbuf: &passwd? >> opt (passwd, i==0)
+, buf: &b0ytes(n) >> bytes(n)
+, n: size_t (n)
+, ppwbuf: &ptr? >> ptr
+) :<> #[i:int | i >= 0] int (i) = "mac#atslib_getpwnam_r"
 // end of [getpwnam_r]
 
 (* ****** ****** *)
 
 // HX: non-reentrant
-fun getpwuid (uid: uid_t):<!ref>
-  [l:addr] (vptroutopt (passwd, l) | ptr l) = "#atslib_getpwuid"
+fun getpwuid (
+  uid: uid_t
+) :<!ref> [l:addr] (
+  vptroutopt (passwd, l) | ptr l
+) = "mac#atslib_getpwuid"
 // end of [getpwuid]
 
 // HX: reentrant
-fun getpwuid_r {n:nat} (
-    uid: uid_t
-  , pwbuf: &passwd? >> opt (passwd, i==0)
-  , buf: &b0ytes(n) >> bytes(n), n: size_t (n)
-  , ppwbuf: &ptr? >> ptr
-  ) :<> #[i:int | i >= 0] int (i)
-  = "#atslib_getpwuid_r"
+fun getpwuid_r
+  {n:nat} (
+  uid: uid_t
+, pwbuf: &passwd? >> opt (passwd, i==0)
+, buf: &b0ytes(n) >> bytes(n)
+, n: size_t (n)
+, ppwbuf: &ptr? >> ptr
+) :<> #[i:int | i >= 0] int (i)
+  = "mac#atslib_getpwuid_r"
 // end of [getpwuid_r]
 
 (* ****** ****** *)

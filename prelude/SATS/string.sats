@@ -430,8 +430,9 @@ fun string_make_list_rev_int
 fun string_takeout_bufptr
   {n:int} {st:nat} {ln:nat | st+ln <= n}
   (x: string n, st: size_t st)
-  :<!ref> [l:addr] (bytes(ln) @ l, bytes(ln) @ l -<lin,prf> void | ptr l)
-  = "#atspre_padd_size"
+  :<!ref> [l:addr] (
+  bytes(ln) @ l, bytes(ln) @ l -<lin,prf> void | ptr l
+) = "mac#atspre_padd_size"
 // end of [string_takeout_bufptr]
 
 fun string_make_substring
@@ -681,10 +682,14 @@ castfn stropt_gc_none
 castfn stropt_gc_unnone
   {n:int} (x: stropt_gc (0, n)):<> ptr (null)
 *)
-fun stropt_gc_none
-  ():<> stropt_gc (0, 0) = "#atspre_stropt_gc_none"
-fun stropt_gc_unnone {n:int}
-  (x: stropt_gc (0, n)):<> void = "#atspre_stropt_gc_unnone"
+fun stropt_gc_none (
+// there is no argument
+) :<> stropt_gc (0, 0)
+  = "mac#atspre_stropt_gc_none"
+fun stropt_gc_unnone
+  {n:int} (
+  x: stropt_gc (0, n)
+) :<> void = "mac#atspre_stropt_gc_unnone"
 // end of [stropt_gc_unnone]
 
 castfn stropt_gc_some
@@ -705,16 +710,22 @@ fun stropt_gc_is_some
 viewtypedef Stropt_gc = [m,n:nat] stropt_gc (m, n)
 
 (* ****** ****** *)
-
 //
 // HX-2010-08-10: linear strings
 //
-fun strptr_null ():<> strptr (null) = "#atspre_strptr_null"
+fun strptr_null (
+// there is no argument
+) :<> strptr (null)
+  = "mac#atspre_strptr_null"
 //
 fun strptr_is_null
-  {l:addr} (x: !strptr l):<> bool (l==null) = "#atspre_ptr_is_null"
+  {l:addr} (
+  x: !strptr l
+) :<> bool (l==null) = "mac#atspre_ptr_is_null"
 fun strptr_isnot_null
-  {l:addr} (x: !strptr l):<> bool (l > null) = "#atspre_ptr_isnot_null"
+  {l:addr} (
+  x: !strptr l
+) :<> bool (l > null) = "mac#atspre_ptr_isnot_null"
 //
 castfn ptr_of_strptr {l:addr} (x: !strptr l):<> ptr l
 overload ptr_of with ptr_of_strptr

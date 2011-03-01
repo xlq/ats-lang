@@ -55,11 +55,15 @@ propdef SDL_Event_castdn_t (a:t@ype) = {l:addr}
 
 (* ****** ****** *)
 
-castfn int_of_SDL_EventType (x: SDL_EventType):<> int
+castfn
+int_of_SDL_EventType
+  (x: SDL_EventType):<> int
 overload int_of with int_of_SDL_EventType
 //
-fun eq_SDL_EventType_SDL_EventType
-  (x1: SDL_EventType, x2: SDL_EventType):<> bool
+fun
+eq_SDL_EventType_SDL_EventType (
+  x1: SDL_EventType, x2: SDL_EventType
+) :<> bool
   = "atsctrb_eq_SDL_EventType_SDL_EventType"
 overload = with eq_SDL_EventType_SDL_EventType
 //
@@ -82,7 +86,7 @@ macdef SDL_VIDEORESIZE = $extval (SDL_EventType, "SDL_VIDEORESIZE")
 macdef SDL_VIDEOEXPOSE = $extval (SDL_EventType, "SDL_VIDEOEXPOSE")
 
 fun SDL_Event_type
-  (x: &SDL_Event):<> SDL_EventType = "#atsctrb_SDL_Event_type"
+  (x: &SDL_Event):<> SDL_EventType = "mac#atsctrb_SDL_Event_type"
 // end of [SDL_Event_type]
 
 (* ****** ****** *)
@@ -193,11 +197,14 @@ typedef SDL_QuitEvent =
 
 (* ****** ****** *)
 
-fun SDL_PollEvent
-  (event: &SDL_Event? >> opt (SDL_Event, i>0)): #[i:two] int i
-  = "#atsctrb_SDL_PollEvent"
+fun SDL_PollEvent (
+  event: &SDL_Event? >> opt (SDL_Event, i>0)
+) : #[i:two] int i
+  = "mac#atsctrb_SDL_PollEvent"
 
-fun SDL_PollEvent_null (): [i:two] int i = "#atsctrb_SDL_PollEvent_null"
+fun SDL_PollEvent_null
+  (): [i:two] int i = "mac#atsctrb_SDL_PollEvent_null"
+// end of [SDL_PollEvent_null]
 
 (* ****** ****** *)
 

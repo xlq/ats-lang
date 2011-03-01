@@ -61,11 +61,11 @@ GLAPI void GLAPIENTRY gluCylinder (
 );
 *)
 fun gluCylinder {n,sk:nat} (
-    qobj: &GLUquadricObj
-  , base: GLdouble, top: GLdouble, height: GLdouble
-  , slices: int n, stacks: int sk
-  ) : void
-  = "#atsctrb_gluCylinder"
+  qobj: &GLUquadricObj
+, base: GLdouble, top: GLdouble, height: GLdouble
+, slices: int n, stacks: int sk
+) : void
+  = "mac#atsctrb_gluCylinder"
 // end of [gluCylinder]
 
 (* ****** ****** *)
@@ -73,8 +73,11 @@ fun gluCylinder {n,sk:nat} (
 (*
 GLAPI void GLAPIENTRY gluDeleteQuadric (GLUquadric* quad);
 *)
-fun gluDeleteQuadric {l:addr} (pf: GLUquadricObj @ l | p: ptr l): void
-  = "#atsctrb_gluDeleteQuadric"
+fun gluDeleteQuadric
+  {l:addr} (
+  pf: GLUquadricObj @ l | p: ptr l
+) : void
+  = "mac#atsctrb_gluDeleteQuadric"
 // end of [gluDeleteQuadric]
 
 (* ****** ****** *)
@@ -85,8 +88,9 @@ GLAPI void GLAPIENTRY gluDisk (
 ) ;
 *)
 fun gluDisk {n,lp:nat} (
-    qobj: &GLUquadricObj, inner: GLdouble, outer: GLdouble, slices: int n, loops: int lp
-  ) : void = "#atsctrb_gluDisk"
+  qobj: &GLUquadricObj
+, inner: GLdouble, outer: GLdouble, slices: int n, loops: int lp
+) : void = "mac#atsctrb_gluDisk"
 // end of [gluDisk]
 
 (* ****** ****** *)
@@ -106,22 +110,26 @@ typedef gluLookAt_type (a:t@ype) = (
 
 symintr gluLookAt
 
-fun gluLookAt_double : gluLookAt_type (double)
-  = "#atsctrb_gluLookAt"
+fun gluLookAt_double
+  : gluLookAt_type (double) = "mac#atsctrb_gluLookAt"
 overload gluLookAt with gluLookAt_double
 
-fun gluLookAt_GLdouble : gluLookAt_type (GLdouble)
-  = "#atsctrb_gluLookAt"
+fun gluLookAt_GLdouble
+  : gluLookAt_type (GLdouble) = "mac#atsctrb_gluLookAt"
 overload gluLookAt with gluLookAt_GLdouble
 
 (* ****** ****** *)
 
-fun gluNewQuadric ()
-  : [l:addr] (option_v (GLUquadricObj @ l, l <> null) | ptr l)
-  = "#atsctrb_gluNewQuadric"
+fun gluNewQuadric (
+// there is no argument
+) : [l:addr] (
+  option_v (GLUquadricObj @ l, l <> null) | ptr l
+) = "mac#atsctrb_gluNewQuadric"
 // end of [gluNewQuadric]
 
-fun gluNewQuadric_exn (): [l:addr] (GLUquadricObj @ l | ptr l)
+fun gluNewQuadric_exn (
+// there is no argument
+) : [l:addr] (GLUquadricObj @ l | ptr l)
   = "atsctrb_gluNewQuadric_exn" // this is a function!
 // end of [gluNewQuadric_exn]
 
@@ -137,12 +145,12 @@ typedef gluOrtho2D_type (a:t@ype) =
 
 symintr gluOrtho2D
 
-fun gluOrtho2D_double : gluOrtho2D_type (double)
-  = "#atsctrb_gluOrtho2D"
+fun gluOrtho2D_double
+  : gluOrtho2D_type (double) = "mac#atsctrb_gluOrtho2D"
 overload gluOrtho2D with gluOrtho2D_double
 
-fun gluOrtho2D_GLdouble : gluOrtho2D_type (GLdouble)
-  = "#atsctrb_gluOrtho2D"
+fun gluOrtho2D_GLdouble
+  : gluOrtho2D_type (GLdouble) = "mac#atsctrb_gluOrtho2D"
 overload gluOrtho2D with gluOrtho2D_GLdouble
 
 (* ****** ****** *)
@@ -153,11 +161,13 @@ GLAPI void GLAPIENTRY gluPartialDisk (
 , GLdouble start, GLdouble sweep
 ) ;
 *)
-fun gluPartialDisk {n,lp:nat} (
-    qobj: &GLUquadricObj, inner: GLdouble, outer: GLdouble, slices: int n, loops: int lp
-  , start: GLdouble, sweep: GLdouble
-  ) : void
-  = "#atsctrb_gluPartialDisk"
+fun gluPartialDisk
+  {n,lp:nat} (
+  qobj: &GLUquadricObj, inner: GLdouble, outer: GLdouble, slices: int n, loops: int lp
+, start: GLdouble, sweep: GLdouble
+) : void
+  = "mac#atsctrb_gluPartialDisk"
+// end of [fun]
 
 (* ****** ****** *)
 
@@ -170,12 +180,14 @@ typedef gluPerspective_type (a:t@ype) =
 
 symintr gluPerspective
 
-fun gluPerspective_double : gluPerspective_type (double)
-  = "#atsctrb_gluPerspective"
+fun gluPerspective_double
+  : gluPerspective_type (double)
+  = "mac#atsctrb_gluPerspective"
 overload gluPerspective with gluPerspective_double
 
-fun gluPerspective_GLdouble : gluPerspective_type (GLdouble)
-  = "#atsctrb_gluPerspective"
+fun gluPerspective_GLdouble
+  : gluPerspective_type (GLdouble)
+  = "mac#atsctrb_gluPerspective"
 overload gluPerspective with gluPerspective_GLdouble
 
 (* ****** ****** *)
@@ -183,36 +195,50 @@ overload gluPerspective with gluPerspective_GLdouble
 (*
 GLAPI void GLAPIENTRY gluQuadricDrawStyle (GLUquadric* quad, GLenum draw);
 *)
-fun gluQuadricDrawStyle (qobj: &GLUquadricObj, draw: GLenum): void
-  = "#atsctrb_gluQuadricDrawStyle"
+fun gluQuadricDrawStyle (
+  qobj: &GLUquadricObj, draw: GLenum
+) : void
+  = "mac#atsctrb_gluQuadricDrawStyle"
+// end of [fun]
 
 (*
 GLAPI void GLAPIENTRY gluQuadricNormals (GLUquadric* quad, GLenum normal);
 *)
-fun gluQuadricNormals (qobj: &GLUquadricObj, normal: GLenum): void
-  = "#atsctrb_gluQuadricNormals"
+fun gluQuadricNormals (
+  qobj: &GLUquadricObj, normal: GLenum
+) : void
+  = "mac#atsctrb_gluQuadricNormals"
+// end of [fun]
 
 (*
 GLAPI void GLAPIENTRY gluQuadricOrientation (GLUquadric* quad, GLenum orientation);
 *)
-fun gluQuadricTexture (qobj: &GLUquadricObj, orientation: GLenum): void
-  = "#atsctrb_gluQuadricOrientation"
+fun gluQuadricTexture (
+  qobj: &GLUquadricObj, orientation: GLenum
+) : void
+  = "mac#atsctrb_gluQuadricOrientation"
+// end of [fun]
 
 (*
 GLAPI void GLAPIENTRY gluQuadricTexture (GLUquadric* quad, GLboolean texture);
 *)
-fun gluQuadricTexture (qobj: &GLUquadricObj, texture: GLboolean): void
-  = "#atsctrb_gluQuadricTexture"
+fun gluQuadricTexture (
+  qobj: &GLUquadricObj, texture: GLboolean
+) : void
+  = "mac#atsctrb_gluQuadricTexture"
+// end of [fun]
 
 (* ****** ****** *)
 
 (*
 GLAPI void GLAPIENTRY gluSphere (GLUquadric* quad, GLdouble radius, GLint slices, GLint stacks);
 *)
-fun gluSphere {n,lp:nat} (
-    qobj: &GLUquadricObj, radius: GLdouble, slices: int n, loops: int lp
-  ) : void
-  = "#atsctrb_gluSphere"
+fun gluSphere
+  {n,lp:nat} (
+  qobj: &GLUquadricObj
+, radius: GLdouble, slices: int n, loops: int lp
+) : void
+  = "mac#atsctrb_gluSphere"
 
 (* ****** ****** *)
 
@@ -225,17 +251,18 @@ GLAPI GLint GLAPIENTRY gluUnProject (
 ) ;
 *)
 fun gluUnProject (
-    winX: GLdouble
-  , winY: GLdouble
-  , winZ: GLdouble
-  , model: &(@[GLdouble][16])
-  , project: &(@[GLdouble][16])
-  , viewport: &(@[GLint][4])
-  , objX: &GLdouble? >> GLdouble
-  , objY: &GLdouble? >> GLdouble
-  , objZ: &GLdouble? >> GLdouble
-  ) : GLint
-  = "#atsctrb_gluUnProject"
+  winX: GLdouble
+, winY: GLdouble
+, winZ: GLdouble
+, model: &(@[GLdouble][16])
+, project: &(@[GLdouble][16])
+, viewport: &(@[GLint][4])
+, objX: &GLdouble? >> GLdouble
+, objY: &GLdouble? >> GLdouble
+, objZ: &GLdouble? >> GLdouble
+) : GLint
+  = "mac#atsctrb_gluUnProject"
+// end of [fun]
 
 (* ****** ****** *)
 

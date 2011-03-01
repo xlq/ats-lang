@@ -68,7 +68,7 @@ fun dirent_get_d_name
 
 fun opendir_err (s: string)
   : [l_dir:addr] (option_v (DIR @ l_dir, l_dir > null) | ptr l_dir)
-  = "#atslib_opendir_err" // macro!
+  = "mac#atslib_opendir_err" // macro!
 
 fun opendir_exn (s: string)
   : [l_dir:addr] (DIR @ l_dir | ptr l_dir) = "atslib_opendir_exn"
@@ -78,7 +78,7 @@ fun opendir_exn (s: string)
 
 fun closedir_err {l_dir:addr} (
   pf: DIR @ l_dir | p: ptr l_dir
-) :<> int = "#atslib_closedir_err" // macro!
+) :<> int = "mac#atslib_closedir_err" // macro!
 
 fun closedir_exn {l_dir:addr} (
   pf: DIR @ l_dir | p: ptr l_dir
@@ -86,15 +86,19 @@ fun closedir_exn {l_dir:addr} (
 
 (* ****** ****** *)
 
-fun readdir (dir: &DIR):<> [l_ent:addr]
-  (vptroutopt (dirent, l_ent) | ptr l_ent) = "#atslib_readdir"
+fun readdir (
+  dir: &DIR
+) :<> [l_ent:addr] (
+  vptroutopt (dirent, l_ent)
+| ptr l_ent
+) = "mac#atslib_readdir"
 // end of [readdir]
 
 (* ****** ****** *)
 
-fun rewinddir (dir: &DIR): void = "#atslib_rewinddir"
-fun seekdir (dir: &DIR, off: off_t): void = "#atslib_seekdir"
-fun telldir (dir: &DIR): off_t = "#atslib_telldir"
+fun rewinddir (dir: &DIR): void = "mac#atslib_rewinddir"
+fun seekdir (dir: &DIR, off: off_t): void = "mac#atslib_seekdir"
+fun telldir (dir: &DIR): off_t = "mac#atslib_telldir"
 
 (* ****** ****** *)
 

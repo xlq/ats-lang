@@ -30,12 +30,10 @@
 *)
 
 (* ****** ****** *)
-
 //
 // Author: Hongwei Xi (hwxi AT cs DOT bu DOT edu)
 // Time: June, 2010
 //
-
 (* ****** ****** *)
 //
 // source: curl/easy.h
@@ -43,15 +41,15 @@
 (* ****** ****** *)
 
 fun curl_easy_init
-  ((*none*)): CURLptr0 = "#atsctrb_curl_easy_init"
+  ((*none*)): CURLptr0 = "mac#atsctrb_curl_easy_init"
 // end of [curl_easy_init]
 
 (* ****** ****** *)
 
 fun curl_easy_setopt
   {l:agz} {ts:types} (
-    curl: !CURLptr l, option: CURLoption, args: ts
-  ) : [i:int] (CURLerr_v i | CURLcode i) = "#atsctrb_curl_easy_setopt"
+  curl: !CURLptr l, option: CURLoption, args: ts
+) : [i:int] (CURLerr_v i | CURLcode i) = "mac#atsctrb_curl_easy_setopt"
 // end of [curl_easy_setopt]
 
 //
@@ -66,13 +64,16 @@ fun curl_easy_setopt_exn
 (* ****** ****** *)
 
 fun curl_easy_perform
-  {l:agz} (curl: !CURLptr l): [i:int] (CURLerr_v i | CURLcode i)
-  = "#atsctrb_curl_easy_perform"
+  {l:agz} (
+  curl: !CURLptr l
+) : [i:int] (
+  CURLerr_v i | CURLcode i
+) = "mac#atsctrb_curl_easy_perform"
 // end of [curl_easy_perform]
 
 (* ****** ****** *)
 
-fun curl_easy_cleanup (curl: CURLptr1): void = "#atsctrb_curl_easy_cleanup"
+fun curl_easy_cleanup (curl: CURLptr1): void = "mac#atsctrb_curl_easy_cleanup"
 
 (* ****** ****** *)
 

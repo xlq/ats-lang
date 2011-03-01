@@ -309,59 +309,76 @@ macdef GLUT_GAME_MODE_DISPLAY_CHANGED = $extval (GLenum, "GLUT_GAME_MODE_DISPLAY
 extern void glutInit( int* pargc, char** argv );
 *)
 
-fun glutInitWindowPosition (x: int, y: int): void
-  = "#atsctrb_glutInitWindowPosition"
+fun glutInitWindowPosition (
+  x: int, y: int
+) : void
+  = "mac#atsctrb_glutInitWindowPosition"
+// end of [fun]
 
-fun glutInitWindowSize (width: int, height: int): void
-  = "#atsctrb_glutInitWindowSize"
+fun glutInitWindowSize
+  (width: int, height: int): void = "mac#atsctrb_glutInitWindowSize"
+// end of [fun]
 
-fun glutInitDisplayMode (display: uint): void
-  = "#atsctrb_glutInitDisplayMode"
+fun glutInitDisplayMode
+  (display: uint): void = "mac#atsctrb_glutInitDisplayMode"
+// end of [fun]
 
-fun glutInitDisplayString (display: string): void
-  = "#atsctrb_glutInitDisplayString"
+fun glutInitDisplayString
+  (display: string): void = "mac#atsctrb_glutInitDisplayString"
+// end of [fun]
 
 (* ****** ****** *)
-
-// Process loop function, see freeglut_main.c
-fun glutMainLoop (): void = "#atsctrb_glutMainLoop"
+//
+// HX: Process loop function, see freeglut_main.c
+//
+fun glutMainLoop (): void = "mac#atsctrb_glutMainLoop"
 
 (* ****** ****** *)
 
 (*
 ** Window management functions, see freeglut_window.c
 *)
-fun glutCreateWindow (title: string): int
-  = "#atsctrb_glutCreateWindow"
+fun glutCreateWindow
+  (title: string): int = "mac#atsctrb_glutCreateWindow"
 
-fun glutCreateSubWindow
-  (window: int, x: int, y: int, width: int, height: int): int
-  = "#atsctrb_glutCreateSubWindow"
+fun glutCreateSubWindow (
+  window: int, x: int, y: int, width: int, height: int
+) : int
+  = "mac#atsctrb_glutCreateSubWindow"
+// end of [fun]
 
-fun glutDestroyWindow (window: int): void
-  = "#atsctrb_glutDestroyWindow"
+fun glutDestroyWindow
+  (window: int): void = "mac#atsctrb_glutDestroyWindow"
 
-fun glutGetWindow (): int = "#atsctrb_glutGetWindow"
-fun glutSetWindow (window: int): void = "#atsctrb_glutSetWindow"
+fun glutGetWindow
+  (): int = "mac#atsctrb_glutGetWindow"
+fun glutSetWindow
+  (window: int): void = "mac#atsctrb_glutSetWindow"
 
-fun glutSetWindowTitle (title: string): void
-  = "#atsctrb_glutSetWindowTitle"
+fun glutSetWindowTitle
+  (title: string): void = "mac#atsctrb_glutSetWindowTitle"
 
-fun glutSetIconTitle (title: string): void
-  = "#atsctrb_glutSetIconTitle"
+fun glutSetIconTitle
+  (title: string): void = "mac#atsctrb_glutSetIconTitle"
   
-fun glutReshapeWindow (width: int, height: int): void
-  = "#atsctrb_glutReshapeWindow"
+fun glutReshapeWindow (
+  width: int, height: int
+) : void
+  = "mac#atsctrb_glutReshapeWindow"
+// end of [fun]
 
-fun glutPositionWindow (x: int, y: int): void
-  = "#atsctrb_glutPositionWindow"
+fun glutPositionWindow (
+  x: int, y: int
+) : void
+  = "mac#atsctrb_glutPositionWindow"
+// end of [fun]
 
-fun glutShowWindow (): void = "#atsctrb_glutShowWindow"
-fun glutHideWindow (): void = "#atsctrb_glutHideWindow"
-fun glutIconifyWindow (): void = "#atsctrb_glutIconifyWindow"
-fun glutPushWindow (): void = "#atsctrb_glutPushWindow"
-fun glutPopWindow (): void = "#atsctrb_glutPopWindow"
-fun glutFullScreen (): void = "#atsctrb_glutFullScreen"
+fun glutShowWindow (): void = "mac#atsctrb_glutShowWindow"
+fun glutHideWindow (): void = "mac#atsctrb_glutHideWindow"
+fun glutIconifyWindow (): void = "mac#atsctrb_glutIconifyWindow"
+fun glutPushWindow (): void = "mac#atsctrb_glutPushWindow"
+fun glutPopWindow (): void = "mac#atsctrb_glutPopWindow"
+fun glutFullScreen (): void = "mac#atsctrb_glutFullScreen"
 
 (* ****** ****** *)
 
@@ -369,24 +386,37 @@ fun glutFullScreen (): void = "#atsctrb_glutFullScreen"
 ** Display-connected functions, see freeglut_display.c
 *)
 
-fun glutPostWindowRedisplay (window: int): void
-  = "#atsctrb_glutPostWindowRedisplay"
+fun
+glutPostWindowRedisplay (
+  window: int
+) : void
+  = "mac#atsctrb_glutPostWindowRedisplay"
+// end of [fun]
 
-fun glutPostRedisplay (): void = "#atsctrb_glutPostRedisplay"
+fun
+glutPostRedisplay
+  (): void = "mac#atsctrb_glutPostRedisplay"
+// end of [fun]
 
-fun glutSwapBuffers (): void = "#atsctrb_glutSwapBuffers"
+fun
+glutSwapBuffers
+  (): void = "mac#atsctrb_glutSwapBuffers"
+// end of [fun]
 
 (* ****** ****** *)
 
 (*
 ** Global callback functions, see freeglut_callbacks.c
 *)
-fun glutTimerFunc
-  (time: uint, callback: (int) -> void, value: int): void
-  = "#atsctrb_glutTimerFunc"
+fun glutTimerFunc (
+  time: uint, callback: (int) -> void, value: int
+) : void
+  = "mac#atsctrb_glutTimerFunc"
 
-fun glutIdleFunc (callback: () -> void): void
-  = "#atsctrb_glutIdleFunc"
+fun glutIdleFunc (
+  callback: () -> void
+) : void
+  = "mac#atsctrb_glutIdleFunc"
 
 fun glutIdleFunc_null
   (): void = "atsctrb_glutIdleFunc_null" // this is a function!
@@ -397,51 +427,60 @@ fun glutIdleFunc_null
 (*
 ** Window-specific callback functions, see freeglut_callbacks.c
 *)
-fun glutKeyboardFunc
-  (callback: (uchar, int, int) -> void): void
-  = "#atsctrb_glutKeyboardFunc"
+fun glutKeyboardFunc (
+  callback: (uchar, int, int) -> void
+) : void
+  = "mac#atsctrb_glutKeyboardFunc"
 
-fun glutMouseFunc
-  (callback: (int, int, int, int) -> void): void
-  = "#atsctrb_glutMouseFunc"
+fun glutMouseFunc (
+  callback: (int, int, int, int) -> void
+) : void
+  = "mac#atsctrb_glutMouseFunc"
 
-fun glutSpecialFunc
-  (callback: (int, int, int) -> void): void
-  = "#atsctrb_glutSpecialFunc"
+fun glutSpecialFunc (
+  callback: (int, int, int) -> void
+ ) : void
+  = "mac#atsctrb_glutSpecialFunc"
 
-fun glutReshapeFunc
-  (callback: (int, int) -> void): void
-  = "#atsctrb_glutReshapeFunc"
+fun glutReshapeFunc (
+  callback: (int, int) -> void
+) : void
+  = "mac#atsctrb_glutReshapeFunc"
 
-fun glutVisibilityFunc
-  (callback: (int) -> void): void = "#atsctrb_glutVisibilityFunc"
-// end of [glutVisibilityFunc]
+fun glutVisibilityFunc (
+  callback: (int) -> void
+) : void
+  = "mac#atsctrb_glutVisibilityFunc"
 
-fun glutDisplayFunc
-  (callback: () -> void): void = "#atsctrb_glutDisplayFunc"
-// end of [glutDisplayFunc]
+fun glutDisplayFunc (
+  callback: () -> void
+) : void
+  = "mac#atsctrb_glutDisplayFunc"
 
-fun glutMotionFunc
-  (callback: (int, int) -> void): void
-  = "#atsctrb_glutMotionFunc"
+fun glutMotionFunc (
+  callback: (int, int) -> void
+) : void
+  = "mac#atsctrb_glutMotionFunc"
 
-fun glutPassiveMotionFunc
-  (callback: (int, int) -> void): void
-  = "#atsctrb_glutPassiveMotionFunc"
+fun glutPassiveMotionFunc (
+  callback: (int, int) -> void
+) : void
+  = "mac#atsctrb_glutPassiveMotionFunc"
 
-fun glutEntryFunc
-  (callback: (int) -> void): void = "#atsctrb_glutEntryFunc"
-// end of [glutEntryFunc]
+fun glutEntryFunc (
+  callback: (int) -> void
+) : void
+  = "mac#atsctrb_glutEntryFunc"
 
 (* ****** ****** *)
 
 (*
 ** State setting and retrieval functions, see freeglut_state.c
 *)
-fun glutGet (query: GLenum): int = "#atsctrb_glutGet"
-fun glutDeviceGet (query: GLenum): int = "#atsctrb_glutDeviceGet"
-fun glutGetModifiers (): int = "#atsctrb_glutGetModifiers"
-fun glutLayerGet (query: GLenum): int = "#atsctrb_glutLayerGet"
+fun glutGet (query: GLenum): int = "mac#atsctrb_glutGet"
+fun glutDeviceGet (query: GLenum): int = "mac#atsctrb_glutDeviceGet"
+fun glutGetModifiers (): int = "mac#atsctrb_glutGetModifiers"
+fun glutLayerGet (query: GLenum): int = "mac#atsctrb_glutLayerGet"
 
 (* ****** ****** *)
 
@@ -453,16 +492,25 @@ macdef GLUT_STROKE_ROMAN =
 macdef GLUT_STROKE_MONO_ROMAN =
   $extval (GLUTfontref_stroke, "GLUT_STROKE_MONO_ROMAN")
 
-fun glutStrokeCharacter (font: GLUTfontref_stroke, c: char): void
-  = "#atsctrb_glutStrokeCharacter"
-fun glutStrokeWidth (font: GLUTfontref_stroke, c: char): int
-  = "#atsctrb_glutStrokeWidth"
-fun glutStrokeLength (font: GLUTfontref_stroke, txt: string): int
-  = "#atsctrb_glutStrokeLength"
+fun glutStrokeCharacter (
+  font: GLUTfontref_stroke, c: char
+) : void
+  = "mac#atsctrb_glutStrokeCharacter"
+fun glutStrokeWidth (
+  font: GLUTfontref_stroke, c: char
+) : int
+  = "mac#atsctrb_glutStrokeWidth"
+fun glutStrokeLength (
+  font: GLUTfontref_stroke, txt: string
+ ) : int
+  = "mac#atsctrb_glutStrokeLength"
+
 //
 // HX: implemented in [glut.dats]
 //
-fun glutStrokeString (font: GLUTfontref_stroke, s: string): void
+fun glutStrokeString
+  (font: GLUTfontref_stroke, s: string): void
+// end of [glutStrokeString]
 
 (* ****** ****** *)
 
@@ -488,11 +536,11 @@ macdef GLUT_BITMAP_HELVETICA_18 =
   $extval (GLUTfontref_bitmap, "GLUT_BITMAP_HELVETICA_18")
 
 fun glutBitmapCharacter (font: GLUTfontref_bitmap, c: char): void
-  = "#atsctrb_glutBitmapCharacter"
+  = "mac#atsctrb_glutBitmapCharacter"
 fun glutBitmapWidth (font: GLUTfontref_bitmap, c: char): int
-  = "#atsctrb_glutBitmapWidth"
+  = "mac#atsctrb_glutBitmapWidth"
 fun glutBitmapLength (font: GLUTfontref_bitmap, txt: string): int
-  = "#atsctrb_glutBitmapLength"
+  = "mac#atsctrb_glutBitmapLength"
 //
 // HX: implemented in [glut.dats]
 //
@@ -500,62 +548,84 @@ fun glutBitmapString (font: GLUTfontref_bitmap, s: string): void
 
 (* ****** ****** *)
 
-fun glutWireCube (size: GLdouble): void = "#atsctrb_glutWireCube"
-fun glutSolidCube (size: GLdouble): void = "#atsctrb_glutSolidCube"
+fun glutWireCube
+  (size: GLdouble): void = "mac#atsctrb_glutWireCube"
+fun glutSolidCube
+  (size: GLdouble): void = "mac#atsctrb_glutSolidCube"
 
 fun glutWireSphere
   (radius: GLdouble, slices: GLint, stacks: GLint): void
-  = "#atsctrb_glutWireSphere"
+  = "mac#atsctrb_glutWireSphere"
 
 fun glutSolidSphere
   (radius: GLdouble, slices: GLint, stacks: GLint): void
-  = "#atsctrb_glutSolidSphere"
+  = "mac#atsctrb_glutSolidSphere"
 
 (* ****** ****** *)
 
-fun glutWireCone
-  (base: GLdouble, height: GLdouble, slices: GLint, stacks: GLint): void
-  = "#atsctrb_glutWireCone"
+fun glutWireCone (
+  base: GLdouble, height: GLdouble, slices: GLint, stacks: GLint
+) : void
+  = "mac#atsctrb_glutWireCone"
+// end of [fun]
 
-fun glutSolidCone
-  (base: GLdouble, height: GLdouble, slices: GLint, stacks: GLint): void
-  = "#atsctrb_glutSolidCone"
+fun glutSolidCone (
+  base: GLdouble, height: GLdouble, slices: GLint, stacks: GLint
+) : void
+  = "mac#atsctrb_glutSolidCone"
+// end of [fun]
 
 (* ****** ****** *)
 
 fun glutWireTorus (
-    innerRadius: GLdouble, outerRadius: GLdouble, sides: GLint, rings: GLint
-  ) : void
-  = "#atsctrb_glutWireTorus"
+  innerRadius: GLdouble
+, outerRadius: GLdouble
+, sides: GLint
+, rings: GLint
+) : void
+  = "mac#atsctrb_glutWireTorus"
+// end of [fun]
 
 fun glutSolidTorus (
-    innerRadius: GLdouble, outerRadius: GLdouble, sides: GLint, rings: GLint
-  ) : void
-  = "#atsctrb_glutSolidTorus"
+  innerRadius: GLdouble
+, outerRadius: GLdouble
+, sides: GLint
+, rings: GLint
+) : void
+  = "mac#atsctrb_glutSolidTorus"
+// end of [fun]
 
 (* ****** ****** *)
 
 fun glutWireTeapot
-  (size: GLdouble): void = "#atsctrb_glutWireTeapot"
+  (size: GLdouble): void = "mac#atsctrb_glutWireTeapot"
 // end of [glutWireTeapot]
 
 fun glutSolidTeapot
-  (size: GLdouble): void = "#atsctrb_glutSolidTeapot"
+  (size: GLdouble): void = "mac#atsctrb_glutSolidTeapot"
 // end of [glutSolidTeapot]
 
 (* ****** ****** *)
 
-fun glutWireDodecahedron (): void = "#atsctrb_glutWireDodecahedron"
-fun glutSolidDodecahedron (): void = "#atsctrb_glutSolidDodecahedron"
+fun glutWireDodecahedron
+  (): void = "mac#atsctrb_glutWireDodecahedron"
+fun glutSolidDodecahedron
+  (): void = "mac#atsctrb_glutSolidDodecahedron"
 
-fun glutWireOctahedron (): void = "#atsctrb_glutWireOctahedron"
-fun glutSolidOctahedron (): void = "#atsctrb_glutSolidOctahedron"
+fun glutWireOctahedron
+  (): void = "mac#atsctrb_glutWireOctahedron"
+fun glutSolidOctahedron
+  (): void = "mac#atsctrb_glutSolidOctahedron"
 
-fun glutWireTetrahedron (): void = "#atsctrb_glutWireTetrahedron"
-fun glutSolidTetrahedron (): void = "#atsctrb_glutSolidTetrahedron"
+fun glutWireTetrahedron
+  (): void = "mac#atsctrb_glutWireTetrahedron"
+fun glutSolidTetrahedron
+  (): void = "mac#atsctrb_glutSolidTetrahedron"
 
-fun glutWireIcosahedron (): void = "#atsctrb_glutWireIcosahedron"
-fun glutSolidIcosahedron (): void = "#atsctrb_glutSolidIcosahedron"
+fun glutWireIcosahedron
+  (): void = "mac#atsctrb_glutWireIcosahedron"
+fun glutSolidIcosahedron
+  (): void = "mac#atsctrb_glutSolidIcosahedron"
 
 (* ****** ****** *)
 

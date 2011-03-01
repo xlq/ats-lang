@@ -39,15 +39,18 @@
 (* ****** ****** *)
 
 fun gtk_arrow_new (
-    arrow_type: GtkArrowType, shadow_type: GtkShadowType
-  ) : GtkArrow_ref1 = "#atsctrb_gtk_arrow_new"
+  arrow_type: GtkArrowType, shadow_type: GtkShadowType
+) : GtkArrow_ref1
+  = "mac#atsctrb_gtk_arrow_new"
 // end of [gtk_arrow_new]
 
 fun gtk_arrow_set
-  {c:cls | c <= GtkArrow} {l:agz} (
-    arrow: !gobjref (c, l)
-  , arrow_type: GtkArrowType, shadow_type: GtkShadowType
-  ) : void = "#atsctrb_gtk_arrow_set"
+  {c:cls | c <= GtkArrow}
+  {l:agz} (
+  arrow: !gobjref (c, l)
+, arrow_type: GtkArrowType, shadow_type: GtkShadowType
+) : void
+  = "mac#atsctrb_gtk_arrow_set"
 // end of [gtk_arrow_set]
 
 (* ****** ****** *)

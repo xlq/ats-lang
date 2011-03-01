@@ -39,18 +39,21 @@
 (* ****** ****** *)
 
 fun GTK_IS_WINDOW
-  {c:cls | c <= GObject} {l:agz}
-  (x: !gobjref (c, l)): bool (c <= GtkWindow) = "#atsctrb_GTK_IS_WINDOW"
+  {c:cls | c <= GObject}
+  {l:agz} (
+  x: !gobjref (c, l)
+) : bool (c <= GtkWindow)
+  = "mac#atsctrb_GTK_IS_WINDOW"
 // end of [GTK_IS_WINDOW]
 
 (* ****** ****** *)
 
 fun gtk_window_new
-  (tp: GtkWindowType): GtkWindow_ref1 = "#atsctrb_gtk_window_new"
+  (tp: GtkWindowType)
+  : GtkWindow_ref1 = "mac#atsctrb_gtk_window_new"
 // end of [gtk_window_new]
 
 (* ****** ****** *)
-
 //
 // HX-2010-05-14: checked: this is a 'get0' function
 //
@@ -58,13 +61,13 @@ fun gtk_window_get_title
   {c:cls | c <= GtkWindow} {l1:agz}
   (window: !gobjref (c, l1))
   : [l2:addr] (minus (gobjref (c, l1), gstring l2) | gstring l2)
-  = "#atsctrb_gtk_window_get_title"
+  = "mac#atsctrb_gtk_window_get_title"
 // end of [gtk_window_get_title]
 
 fun gtk_window_set_title
   {c:cls | c <= GtkWindow} {l1,l2:agz}
   (window: !gobjref (c, l1), title: !gstring l2): void
-  = "#atsctrb_gtk_window_set_title"
+  = "mac#atsctrb_gtk_window_set_title"
 // end of [gtk_window_set_title]
 
 (* ****** ****** *)
@@ -72,56 +75,69 @@ fun gtk_window_set_title
 fun gtk_window_set_position
   {c:cls | c <= GtkWindow} {l:agz}
   (window: !gobjref (c, l), pos: GtkWindowPosition): void
-  = "#atsctrb_gtk_window_set_position"
+  = "mac#atsctrb_gtk_window_set_position"
 // end of [gtk_window_set_position]
 
 (* ****** ****** *)
 
 fun gtk_window_get_transient_for
-  {c1:cls | c1 <= GtkWindow} {l1:agz}
-  (window: !gobjref (c1, l1))
-  : [c2:cls;l2:addr | c2 <= GtkWindow] (
-    minus (gobjref (c1, l1), gobjref (c2, l2)) | gobjref (c2, l2)
-  ) = "#atsctrb_gtk_window_get_transient_for"
+  {c1:cls | c1 <= GtkWindow}
+  {l1:agz} (
+  window: !gobjref (c1, l1)
+) : [c2:cls;l2:addr | c2 <= GtkWindow] (
+  minus (gobjref (c1, l1), gobjref (c2, l2))
+| gobjref (c2, l2)
+) = "mac#atsctrb_gtk_window_get_transient_for"
 // end of [gtk_window_get_transient_for]
 
 fun gtk_window_set_transient_for
   {c1,c2:cls | c1 <= GtkWindow; c2 <= GtkWindow}
-  {l1,l2:agz} (window: !gobjref (c1, l1), parent: !gobjref (c2, l2)): void
-  = "#atsctrb_gtk_window_set_transient_for"
+  {l1,l2:agz} (
+  window: !gobjref (c1, l1), parent: !gobjref (c2, l2)
+) : void
+  = "mac#atsctrb_gtk_window_set_transient_for"
 // end of [gtk_window_set_transient_for]
 
 (* ****** ****** *)
 
 fun gtk_window_get_size
-  {c:cls | c <= GtkWindow} {l:agz} (
-    window: !gobjref (c, l), width: &gint? >> gint, height: &gint? >> gint
-  ) : void = "#atsctrb_gtk_window_get_size"
+  {c:cls | c <= GtkWindow}
+  {l:agz} (
+  window: !gobjref (c, l)
+, width: &gint? >> gint, height: &gint? >> gint
+) : void
+  = "mac#atsctrb_gtk_window_get_size"
 // end of [gtk_window_get_size]
 
 (* ****** ****** *)
-
 //
+// HX:
 // [width = -1] means unset
 // [height = -1] means unset
 //
 fun gtk_window_set_default_size
-  {c:cls | c <= GtkWindow} {l:agz}
-  (window: !gobjref (c, l), width: gint, height: gint): void
-  = "#atsctrb_gtk_window_set_default_size"
+  {c:cls | c <= GtkWindow}
+  {l:agz} (
+  window: !gobjref (c, l), width: gint, height: gint
+) : void
+  = "mac#atsctrb_gtk_window_set_default_size"
 // end of [gtk_window_set_default_size]
 
 (* ****** ****** *)
 
 fun gtk_window_get_resizable
-  {c:cls | c <= GtkWindow} {l:agz}
-  (window: !gobjref (c, l)): gboolean = "#atsctrb_gtk_window_get_resizeable"
+  {c:cls | c <= GtkWindow}
+  {l:agz} (
+  window: !gobjref (c, l)
+) : gboolean
+  = "mac#atsctrb_gtk_window_get_resizeable"
 // end of [gtk_window_get_resizeable]
 
 fun gtk_window_set_resizable
-  {c:cls | c <= GtkWindow} {l:agz}
-  (window: !gobjref (c, l), resizable: gboolean): void
-  = "#atsctrb_gtk_window_set_resizable"
+  {c:cls | c <= GtkWindow} {l:agz} (
+  window: !gobjref (c, l), resizable: gboolean
+) : void
+  = "mac#atsctrb_gtk_window_set_resizable"
 // end of [gtk_window_set_resizable]
 
 (* ****** ****** *)
@@ -129,29 +145,37 @@ fun gtk_window_set_resizable
 fun gtk_window_add_accel_group
   {c1,c2:cls | c1 <= GtkWindow; c2 <= GtkAccelGroup}
   {l1,l2:agz} (
-    window: !gobjref (c1, l1), aclgrp: !gobjref (c2, l2)
-  ) : void = "#atsctrb_gtk_window_add_accel_group"
+  window: !gobjref (c1, l1), aclgrp: !gobjref (c2, l2)
+) : void
+  = "mac#atsctrb_gtk_window_add_accel_group"
 // end of [gtk_window_add_accel_group]
 
 fun gtk_window_remove_accel_group
   {c1,c2:cls | c1 <= GtkWindow; c2 <= GtkAccelGroup}
   {l1,l2:agz} (
-    window: !gobjref (c1, l1), aclgrp: !gobjref (c2, l2)
-  ) : void = "#atsctrb_gtk_window_remove_accel_group"
+  window: !gobjref (c1, l1), aclgrp: !gobjref (c2, l2)
+) : void
+  = "mac#atsctrb_gtk_window_remove_accel_group"
 // end of [gtk_window_remove_accel_group]
 
 (* ****** ****** *)
 
 fun gtk_window_get_window_type
-  {c:cls | c <= GtkWindow} {l:agz}
-  (window: !gobjref (c, l)): GtkWindowType = "#atsctrb_gtk_window_get_window_type"
+  {c:cls | c <= GtkWindow}
+  {l:agz} (
+  window: !gobjref (c, l)
+) : GtkWindowType
+  = "mac#atsctrb_gtk_window_get_window_type"
 // end of [gtk_window_get_window_type]
 
 (* ****** ****** *)
 
 fun gtk_window_get_type_hint
-  {c:cls | c <= GtkWindow} {l:agz}
-  (window: !gobjref (c, l)): GdkWindowTypeHint = "#atsctrb_gtk_window_get_type_hint"
+  {c:cls | c <= GtkWindow}
+  {l:agz} (
+  window: !gobjref (c, l)
+) : GdkWindowTypeHint
+  = "mac#atsctrb_gtk_window_get_type_hint"
 // end of [gtk_window_get_type_hint]
 
 (* ****** ****** *)
@@ -159,7 +183,7 @@ fun gtk_window_get_type_hint
 fun gtk_window_move
   {c:cls | c <= GtkWindow} {l:agz}
   (window: !gobjref (c, l), x: gint, y: gint): void
-  = "#atsctrb_gtk_window_move"
+  = "mac#atsctrb_gtk_window_move"
 // end of [gtk_window_move]
 
 (* ****** ****** *)
@@ -167,13 +191,13 @@ fun gtk_window_move
 fun gtk_window_reshow_with_initial_size
   {c:cls | c <= GtkWindow} {l:agz}
   (window: !gobjref (c, l)): void
-  = "#atsctrb_gtk_window_reshow_with_initial_size"
+  = "mac#atsctrb_gtk_window_reshow_with_initial_size"
 // end of [gtk_window_reshow_with_initial_size]
 
 fun gtk_window_resize
   {c:cls | c <= GtkWindow} {l:agz}
   (window: !gobjref (c, l), width: gint, height: gint): void
-  = "#atsctrb_gtk_window_resize"
+  = "mac#atsctrb_gtk_window_resize"
 // end of [gtk_window_resize]
 
 (* ****** ****** *)
@@ -181,13 +205,13 @@ fun gtk_window_resize
 fun gtk_window_get_opacity
   {c:cls | c <= GtkWindow} {l:agz}
   (window: !gobjref (c, l)): gdouble
-  = "#atsctrb_gtk_window_get_opacity"
+  = "mac#atsctrb_gtk_window_get_opacity"
 // end of [gtk_window_get_opacity]
 
 fun gtk_window_set_opacity
   {c:cls | c <= GtkWindow} {l:agz}
   (window: !gobjref (c, l), opacity: gdouble): void
-  = "#atsctrb_gtk_window_set_opacity"
+  = "mac#atsctrb_gtk_window_set_opacity"
 // end of [gtk_window_set_opacity]
 
 (* ****** ****** *)
@@ -195,13 +219,13 @@ fun gtk_window_set_opacity
 fun gtk_window_get_mnemonics_visible
   {c:cls | c <= GtkWindow} {l:agz}
   (window: !gobjref (c, l)): gboolean
-  = "#atsctrb_gtk_window_get_mnemonics_visible"
+  = "mac#atsctrb_gtk_window_get_mnemonics_visible"
 // end of [gtk_window_get_mnemonics_visible]
 
 fun gtk_window_set_mnemonics_visible
   {c:cls | c <= GtkWindow} {l:agz}
   (window: !gobjref (c, l), visible: gboolean): void
-  = "#atsctrb_gtk_window_set_mnemonics_visible"
+  = "mac#atsctrb_gtk_window_set_mnemonics_visible"
 // end of [gtk_window_set_mnemonics_visible]
 
 (* ****** ****** *)

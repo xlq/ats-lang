@@ -46,7 +46,8 @@
 
 (* ****** ****** *)
 
-staload TYPES = "libc/sys/SATS/types.sats"
+staload
+TYPES = "libc/sys/SATS/types.sats"
 typedef pid_t = $TYPES.pid_t
 
 (* ****** ****** *)
@@ -54,6 +55,7 @@ typedef pid_t = $TYPES.pid_t
 typedef sched_param_struct =
 $extype_struct "ats_sched_param_type" of {
   sched_priority= int
+, _rest = undefined_t // for unknown fields
 } // end of [sched_param]
 typedef sched_param = sched_param_struct
 
@@ -79,30 +81,34 @@ fun cpusetsize_get
 (* ****** ****** *)
 
 //
-// pid=0: myself
+// HX: pid=0: myself
 //
 
-fun sched_setaffinity {n:nat}
-  (pid: pid_t, n: size_t n, cs: &cpu_set_t n): int(*err*)
-  = "atslib_sched_setaffinity"
-
 fun sched_getaffinity {n:nat} (
-    pid: pid_t, n: size_t n, cs: &cpu_set_t n): int(*err*)
+  pid: pid_t, n: size_t n, cs: &cpu_set_t n
+) : int(*err*)
   = "atslib_sched_getaffinity"
+// end of [fun]
+
+fun sched_setaffinity {n:nat} (
+  pid: pid_t, n: size_t n, cs: &cpu_set_t n
+) : int(*err*)
+  = "atslib_sched_setaffinity"
+// end of [fun]
 
 (* ****** ****** *)
 
 fun CPU_ZERO {n:nat} (cpuset: &cpu_set_t n):<> void
-  = "#atslib_CPU_ZERO"
+  = "mac#atslib_CPU_ZERO"
 
 fun CPU_CLR {n,i:nat | i < 8*n} (cpu: int i, cpuset: &cpu_set_t n):<> void
-  = "#atslib_CPU_CLR"
+  = "mac#atslib_CPU_CLR"
 
 fun CPU_SET {n,i:nat | i < 8*n} (cpu: int i, cpuset: &cpu_set_t n):<> void
-  = "#atslib_CPU_SET"
+  = "mac#atslib_CPU_SET"
 
 fun CPU_ISSET {n,i:nat | i < 8*n} (cpu: int i, cpuset: &cpu_set_t n):<> int
-  = "#atslib_CPU_ISSET"
+  = "mac#atslib_CPU_ISSET"
 
 (* ****** ****** *)
 

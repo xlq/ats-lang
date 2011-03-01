@@ -65,7 +65,9 @@
 
 (* ****** ****** *)
 
-staload GLIB = "contrib/glib/SATS/glib.sats"
+staload GLIB =
+  "contrib/glib/SATS/glib.sats"
+//
 stadef gboolean = $GLIB.gboolean
 //
 stadef gchar = $GLIB.gchar
@@ -91,11 +93,12 @@ stadef GSList_ptr1 = $GLIB.GSList_ptr1
 //
 (* ****** ****** *)
 
-staload GOBJ = "contrib/glib/SATS/glib-object.sats"
-
+staload GOBJ =
+  "contrib/glib/SATS/glib-object.sats"
+//
 stadef gobjref = $GOBJ.gobjref
 stadef gsignal = $GOBJ.gsignal
-
+//
 (* ****** ****** *)
 
 staload "contrib/pango/SATS/pango.sats"

@@ -39,45 +39,64 @@
 (* ****** ****** *)
 
 fun gtk_statusbar_new
-  (): GtkStatusbar_ref1 = "#atsctrb_gtk_statusbar_new"
+  (): GtkStatusbar_ref1 = "mac#atsctrb_gtk_statusbar_new"
 // end of [gtk_statusbar_new]
 
 fun gtk_statusbar_get_context_id
-  {c:cls | c <= GtkStatusbar} {l1,l2:agz}
-  (bar: !gobjref (c, l1), context: !gstring l2): guint
-  = "#atsctrb_gtk_statusbar_get_context_id"
+  {c:cls | c <= GtkStatusbar}
+  {l1,l2:agz} (
+  bar: !gobjref (c, l1)
+, context: !gstring l2
+) : guint
+  = "mac#atsctrb_gtk_statusbar_get_context_id"
 // end of [gtk_statusbar_get_context_id]
 
 (* ****** ****** *)
 
 fun gtk_statusbar_push
-  {c:cls | c <= GtkStatusbar} {l1,l2:agz}
-  (bar: !gobjref (c, l1), context_id: guint, text: !gstring l2): guint(*msgid*)
-  = "#atsctrb_gtk_statusbar_push"
+  {c:cls | c <= GtkStatusbar}
+  {l1,l2:agz} (
+  bar: !gobjref (c, l1)
+, context_id: guint
+, text: !gstring l2
+) : guint(*msgid*)
+  = "mac#atsctrb_gtk_statusbar_push"
 // end of [gtk_statusbar_push]
 
 fun gtk_statusbar_pop
-  {c:cls | c <= GtkStatusbar} {l:agz}
-  (bar: !gobjref (c, l), context_id: guint): void
-  = "#atsctrb_gtk_statusbar_pop"
+  {c:cls | c <= GtkStatusbar}
+  {l:agz} (
+  bar: !gobjref (c, l), context_id: guint
+ ) : void
+  = "mac#atsctrb_gtk_statusbar_pop"
 // end of [gtk_statusbar_pop]
 
 fun gtk_statusbar_remove
-  {c:cls | c <= GtkStatusbar} {l:agz}
-  (bar: !gobjref (c, l), context_id: guint, message_id: guint): void
-  = "#atsctrb_gtk_statusbar_remove"
+  {c:cls | c <= GtkStatusbar}
+  {l:agz} (
+  bar: !gobjref (c, l)
+, context_id: guint
+, message_id: guint
+) : void
+  = "mac#atsctrb_gtk_statusbar_remove"
 // end of [gtk_statusbar_remvoe]
 
 (* ****** ****** *)
 
 fun gtk_statusbar_get_has_resize_grip
-  {c:cls | c <= GtkStatusbar} {l:agz} (bar: !gobjref (c, l)): gboolean
-  = "#atsctrb_gtk_statusbar_get_has_resize_grip"
+  {c:cls | c <= GtkStatusbar}
+  {l:agz} (
+  bar: !gobjref (c, l)
+) : gboolean
+  = "mac#atsctrb_gtk_statusbar_get_has_resize_grip"
 // end of [gtk_statusbar_get_has_resize_grip]
 
 fun gtk_statusbar_set_has_resize_grip
-  {c:cls | c <= GtkStatusbar} {l:agz} (bar: !gobjref (c, l), setting: gboolean): void
-  = "#atsctrb_gtk_statusbar_set_has_resize_grip"
+  {c:cls | c <= GtkStatusbar}
+  {l:agz} (
+  bar: !gobjref (c, l), setting: gboolean
+) : void
+  = "mac#atsctrb_gtk_statusbar_set_has_resize_grip"
 // end of [gtk_statusbar_set_has_resize_grip]
 
 (* ****** ****** *)

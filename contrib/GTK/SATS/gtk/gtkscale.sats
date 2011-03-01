@@ -39,19 +39,28 @@
 (* ****** ****** *)
 
 fun gtk_scale_set_draw_value
-  {c:cls | c <= GtkScale} {l:agz}
-  (scale: !gobjref (c, l), draw_value: gboolean): void
-  = "#atsctrb_gtk_scale_set_draw_value"
+  {c:cls | c <= GtkScale}
+  {l:agz} (
+  scale: !gobjref (c, l), draw_value: gboolean
+) : void
+  = "mac#atsctrb_gtk_scale_set_draw_value"
+// end of [fun]
 
 fun gtk_scale_set_digits
-  {c:cls | c <= GtkScale} {l:agz}
-  (scale: !gobjref (c, l), digits: gint): void
-  = "#atsctrb_gtk_scale_set_digits"
+  {c:cls | c <= GtkScale}
+  {l:agz} (
+  scale: !gobjref (c, l), digits: gint
+) : void
+  = "mac#atsctrb_gtk_scale_set_digits"
+// end of [fun]
 
 fun gtk_scale_set_value_pos
-  {c:cls | c <= GtkScale} {l:agz}
-  (scale: !gobjref (c, l), pos: GtkPositionType): void
-  = "#atsctrb_gtk_scale_set_value_pos"
+  {c:cls | c <= GtkScale}
+  {l:agz} (
+  scale: !gobjref (c, l), pos: GtkPositionType
+) : void
+  = "mac#atsctrb_gtk_scale_set_value_pos"
+// end of [fun]
 
 (* ****** ****** *)
 

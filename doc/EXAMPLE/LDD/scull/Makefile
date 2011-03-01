@@ -31,6 +31,7 @@ ifneq ($(KERNELRELEASE),)
 
 scull-objs := main.o
 scull-objs += scull_dats.o
+scull-objs += scull_data_dats.o
 scull-objs += pipe.o
 scull-objs += access.o
 
@@ -48,7 +49,11 @@ endif
 
 ######
 
-scull_dats.c: ATS/scull.dats ; $(ATSOPT) -IATS ATS -o $@ -d $<
+scullats: scull_dats.c scull_data_dats.c
+scull_dats.c: \
+  ATS/scull.dats ATS/scull.sats ; $(ATSOPT) -IATS ATS -o $@ -d $<
+scull_data_dats.c: \
+  ATS/scull_data.dats ATS/scull.sats ; $(ATSOPT) -IATS ATS -o $@ -d $<
 
 ######
 

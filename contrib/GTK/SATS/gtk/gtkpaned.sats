@@ -41,15 +41,17 @@
 fun gtk_paned_add1
   {c1,c2:cls | c1 <= GtkPaned; c2 <= GtkWidget}
   {l1,l2:agz} (
-    paned: !gobjref (c1, l1), child: !gobjref (c2, l2)
-  ) : void = "#atsctrb_gtk_paned_add1"
+  paned: !gobjref (c1, l1)
+, child: !gobjref (c2, l2)
+) : void = "mac#atsctrb_gtk_paned_add1"
 // end of [gtk_paned_add1]
 
 fun gtk_paned_add2
   {c1,c2:cls | c1 <= GtkPaned; c2 <= GtkWidget}
   {l1,l2:agz} (
-    paned: !gobjref (c1, l1), child: !gobjref (c2, l2)
-  ) : void = "#atsctrb_gtk_paned_add2"
+  paned: !gobjref (c1, l1)
+, child: !gobjref (c2, l2)
+) : void = "mac#atsctrb_gtk_paned_add2"
 // end of [gtk_paned_add2]
 
 (* ****** ****** *)
@@ -57,15 +59,21 @@ fun gtk_paned_add2
 fun gtk_paned_pack1
   {c1,c2:cls | c1 <= GtkPaned; c2 <= GtkWidget}
   {l1,l2:agz} (
-    paned: !gobjref (c1, l1), child: !gobjref (c2, l2), expand: gboolean, shrink: gboolean
-  ) : void = "#atsctrb_gtk_paned_pack1"
+  paned: !gobjref (c1, l1)
+, child: !gobjref (c2, l2)
+, expand: gboolean
+, shrink: gboolean
+) : void = "mac#atsctrb_gtk_paned_pack1"
 // end of [gtk_paned_pack1]
 
 fun gtk_paned_pack2
   {c1,c2:cls | c1 <= GtkPaned; c2 <= GtkWidget}
   {l1,l2:agz} (
-    paned: !gobjref (c1, l1), child: !gobjref (c2, l2), expand: gboolean, shrink: gboolean
-  ) : void = "#atsctrb_gtk_paned_pack2"
+  paned: !gobjref (c1, l1)
+, child: !gobjref (c2, l2)
+, expand: gboolean
+, shrink: gboolean
+) : void = "mac#atsctrb_gtk_paned_pack2"
 // end of [gtk_paned_pack2]
 
 (* ****** ****** *)
@@ -75,40 +83,47 @@ fun gtk_paned_pack2
 //
 fun gtk_paned_get_child1
   {c1:cls | c1 <= GtkPaned} {l1:agz} (
-    paned: !gobjref (c1, l1)
-  ) : [c2:cls;l2:addr | c2 <= GtkWidget] (
-    minus (gobjref (c1, l1), gobjref (c2, l2)) | gobjref (c2, l2)
-  ) = "#atsctrb_gtk_paned_get_child1"
+  paned: !gobjref (c1, l1)
+) : [c2:cls;l2:addr | c2 <= GtkWidget] (
+  minus (gobjref (c1, l1), gobjref (c2, l2)) | gobjref (c2, l2)
+) = "mac#atsctrb_gtk_paned_get_child1"
 // end of [gtk_paned_get_child1]
 
 fun gtk_paned_get_child2
   {c1:cls | c1 <= GtkPaned} {l1:agz} (
-    paned: !gobjref (c1, l1)
-  ) : [c2:cls;l2:addr | c2 <= GtkWidget] (
-    minus (gobjref (c1, l1), gobjref (c2, l2)) | gobjref (c2, l2)
-  ) = "#atsctrb_gtk_paned_get_child2"
+  paned: !gobjref (c1, l1)
+) : [c2:cls;l2:addr | c2 <= GtkWidget] (
+  minus (gobjref (c1, l1), gobjref (c2, l2)) | gobjref (c2, l2)
+) = "mac#atsctrb_gtk_paned_get_child2"
 // end of [gtk_paned_get_child2]
 
 (* ****** ****** *)
 
 fun gtk_paned_get_position
-  {c:cls | c <= GtkPaned} {l:agz} (paned: !gobjref (c, l)): gint
-  = "#atsctrb_gtk_paned_get_position"
+  {c:cls | c <= GtkPaned}
+  {l:agz} (
+  paned: !gobjref (c, l)
+ ) : gint
+  = "mac#atsctrb_gtk_paned_get_position"
 // end of [gtk_paned_get_position]
 
 fun gtk_paned_set_position
-  {c:cls | c <= GtkPaned} {l:agz} (paned: !gobjref (c, l), position: gint): void
-  = "#atsctrb_gtk_paned_set_position"
+  {c:cls | c <= GtkPaned}
+  {l:agz} (
+  paned: !gobjref (c, l), position: gint
+) : void
+  = "mac#atsctrb_gtk_paned_set_position"
 // end of [gtk_paned_set_position]
 
 (* ****** ****** *)
 
 fun gtk_paned_get_handle_window
   {c1:cls | c1 <= GtkPaned} {l1:agz} (
-    paned: !gobjref (c1, l1)
-  ) : [l2:addr] (
-    minus (gobjref (c1, l1), gobjref (GtkWindow, l2)) | gobjref (GtkWindow, l2)
-  ) = "#atsctrb_gtk_paned_get_handle_window"
+  paned: !gobjref (c1, l1)
+) : [l2:addr] (
+  minus (gobjref (c1, l1), gobjref (GtkWindow, l2))
+| gobjref (GtkWindow, l2)
+) = "mac#atsctrb_gtk_paned_get_handle_window"
 // end of [gtk_paned_get_handle_window]
 
 (* ****** ****** *)

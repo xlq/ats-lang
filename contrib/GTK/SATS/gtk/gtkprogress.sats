@@ -45,13 +45,17 @@
 (* ****** ****** *)
 
 fun gtk_progress_get_value
-  {c:cls | c <= GtkProgress} {l:agz}
-  (progress: !gobjref (c, l)): gdouble = "#atsctrb_gtk_progress_get_value"
+  {c:cls | c <= GtkProgress}
+  {l:agz} (
+  progress: !gobjref (c, l)
+) : gdouble = "mac#atsctrb_gtk_progress_get_value"
 // end of [gtk_progress_get_value]
 
 fun gtk_progress_set_value
-  {c:cls | c <= GtkProgress} {l:agz}
-  (progress: !gobjref (c, l), value: gdouble): void = "#atsctrb_gtk_progress_set_value"
+  {c:cls | c <= GtkProgress}
+  {l:agz} (
+  progress: !gobjref (c, l), value: gdouble
+) : void = "mac#atsctrb_gtk_progress_set_value"
 // end of [gtk_progress_set_value]
 
 (* ****** ****** *)

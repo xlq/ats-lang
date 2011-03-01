@@ -55,7 +55,7 @@ main {n} (argc, argv) = () where {
   ) : string
   val () = argv.[cmdarg] := cmdname
   val _err = execvp (cmdpath, argv.[cmdarg]) where {
-    extern fun execvp (arg0: string, argv: &string): int = "#atslib_execvp"
+    extern fun execvp (arg0: string, argv: &string): int = "mac#atslib_execvp"
   } // end of [val]
   val () = exit (EXIT_FAILURE)
 } // end of [main]

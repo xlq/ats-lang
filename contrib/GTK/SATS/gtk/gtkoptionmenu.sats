@@ -30,22 +30,22 @@
 *)
 
 (* ****** ****** *)
-
 //
 // Author: Hongwei Xi (hwxi AT cs DOT bu DOT edu)
 // Time: April, 2010
 //
-
 (* ****** ****** *)
 
 fun gtk_option_menu_new
-  (): GtkOptionMenu_ref1 = "#atsctrb_gtk_option_menu_new"
+  (): GtkOptionMenu_ref1 = "mac#atsctrb_gtk_option_menu_new"
 // end of [gtk_option_menu_new]
 
 fun gtk_option_menu_set_menu
   {c1,c2:cls | c1 <= GtkOptionMenu;c2 <= GtkMenu}
-  {l1,l2:agz} (opt: !gobjref (c1, l1), menu: !gobjref (c2, l2)): void
-  = "#atsctrb_gtk_option_menu_set_menu"
+  {l1,l2:agz} (
+  opt: !gobjref (c1, l1), menu: !gobjref (c2, l2)
+) : void
+  = "mac#atsctrb_gtk_option_menu_set_menu"
 // end of [gtk_option_menu_set_menu]
 
 (* ****** ****** *)

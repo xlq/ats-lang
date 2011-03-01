@@ -30,17 +30,18 @@
 *)
 
 (* ****** ****** *)
-
 //
 // Author: Hongwei Xi (hwxi AT cs DOT bu DOT edu)
 // Time: April, 2010
 //
-
 (* ****** ****** *)
 
-fun gtk_table_new
-  (nrow: guint, ncol: guint, homo: gboolean): GtkTable_ref1
-  = "#atsctrb_gtk_table_new"
+fun gtk_table_new (
+  nrow: guint
+, ncol: guint
+, homo: gboolean
+) : GtkTable_ref1
+  = "mac#atsctrb_gtk_table_new"
 // end of [gtk_table_new]
 
 (* ****** ****** *)
@@ -58,25 +59,26 @@ typedef
 gtk_table_attach_type (a:t@ype) =
   {c1,c2:cls | c1 <= GtkTable; c2 <= GtkWidget}
   {l1,l2:agz} (
-    !gobjref (c1, l1) // table
-  , !gobjref (c2, l2) // widget
-  , a // left
-  , a // right
-  , a // top
-  , a // bot
-  , GtkAttachOptions // xopt
-  , GtkAttachOptions // yopt
-  , a // xpadding
-  , a // ypadding
-  ) -<fun1> void
-// end of [gtk_table_attach_type]
+  !gobjref (c1, l1) // table
+, !gobjref (c2, l2) // widget
+, a // left
+, a // right
+, a // top
+, a // bot
+, GtkAttachOptions // xopt
+, GtkAttachOptions // yopt
+, a // xpadding
+, a // ypadding
+) -<fun1> void // end of [gtk_table_attach_type]
 
-fun gtk_table_attach__type: gtk_table_attach_type (uint)
-  = "#atsctrb_gtk_table_attach"
+fun gtk_table_attach__type
+  : gtk_table_attach_type (uint)
+  = "mac#atsctrb_gtk_table_attach"
 overload gtk_table_attach with gtk_table_attach__type
 
-fun gtk_table_attach__gtype: gtk_table_attach_type (guint)
-  = "#atsctrb_gtk_table_attach"
+fun gtk_table_attach__gtype
+  : gtk_table_attach_type (guint)
+  = "mac#atsctrb_gtk_table_attach"
 overload gtk_table_attach with gtk_table_attach__gtype
 
 (* ****** ****** *)
@@ -87,30 +89,32 @@ typedef
 gtk_table_attach_defaults_type (a:t@ype) =
   {c1,c2:cls | c1 <= GtkTable; c2 <= GtkWidget}
   {l1,l2:agz} (
-    !gobjref (c1, l1) // table
-  , !gobjref (c2, l2) // widget
-  , a // left
-  , a // right
-  , a // top
-  , a // bot
-  ) -<fun1> void
-// end of [gtk_table_attach_defaults_type]
+  !gobjref (c1, l1) // table
+, !gobjref (c2, l2) // widget
+, a // left
+, a // right
+, a // top
+, a // bot
+) -<fun1> void // end of [gtk_table_attach_defaults_type]
 
 fun gtk_table_attach_defaults__type
   : gtk_table_attach_defaults_type (uint)
-  = "#atsctrb_gtk_table_attach_defaults"
+  = "mac#atsctrb_gtk_table_attach_defaults"
 overload gtk_table_attach_defaults with gtk_table_attach_defaults__type
 
 fun gtk_table_attach_defaults__gtype
   : gtk_table_attach_defaults_type (guint)
-  = "#atsctrb_gtk_table_attach_defaults"
+  = "mac#atsctrb_gtk_table_attach_defaults"
 overload gtk_table_attach_defaults with gtk_table_attach_defaults__gtype
 
 (* ****** ****** *)
 
-fun gtk_table_resize {c:cls | c <= GtkTable} {l:addr}
-  (table: !gobjref (c, l), nrow: guint, ncol: guint): void
-  = "#atsctrb_gtk_table_resize"
+fun gtk_table_resize
+  {c:cls | c <= GtkTable}
+  {l:addr} (
+  table: !gobjref (c, l), nrow: guint, ncol: guint
+) : void
+  = "mac#atsctrb_gtk_table_resize"
 // end of [gtk_table_resize]
 
 (* ****** ****** *)
@@ -118,27 +122,31 @@ fun gtk_table_resize {c:cls | c <= GtkTable} {l:addr}
 fun gtk_table_set_row_spacing
   {c:cls | c <= GtkTable} {l:addr}
   (table: !gobjref (c, l), row: guint, spacing: guint): void
-  = "#atsctrb_gtk_table_set_row_spacing"
+  = "mac#atsctrb_gtk_table_set_row_spacing"
 // end of [gtk_table_set_row_spacing]
 
 fun gtk_table_set_col_spacing
   {c:cls | c <= GtkTable} {l:addr}
   (table: !gobjref (c, l), col: guint, spacing: guint): void
-  = "#atsctrb_gtk_table_set_col_spacing"
+  = "mac#atsctrb_gtk_table_set_col_spacing"
 // end of [gtk_table_set_col_spacing]
 
 (* ****** ****** *)
 
 fun gtk_table_set_row_spacings
-  {c:cls | c <= GtkTable} {l:addr}
-  (table: !gobjref (c, l), spacing: guint): void
-  = "#atsctrb_gtk_table_set_row_spacings"
+  {c:cls | c <= GtkTable}
+  {l:addr} (
+  table: !gobjref (c, l), spacing: guint
+) : void
+  = "mac#atsctrb_gtk_table_set_row_spacings"
 // end of [gtk_table_set_row_spacings]
 
 fun gtk_table_set_col_spacings
-  {c:cls | c <= GtkTable} {l:addr}
-  (table: !gobjref (c, l), spacing: guint): void
-  = "#atsctrb_gtk_table_set_col_spacings"
+  {c:cls | c <= GtkTable}
+  {l:addr} (
+  table: !gobjref (c, l), spacing: guint
+) : void
+  = "mac#atsctrb_gtk_table_set_col_spacings"
 // end of [gtk_table_set_col_spacings]
 
 (* ****** ****** *)

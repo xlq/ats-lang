@@ -32,6 +32,10 @@ typedef struct scull_qset scull_qset_struct ;
 
 /* ****** ****** */
 
+#define scull_ptr_make_null() (NULL)
+
+/* ****** ****** */
+
 ATSinline()
 ats_void_type
 scull_qtmptr_free

@@ -63,6 +63,21 @@ atslib_cpusetsize_get
 /* ****** ****** */
 
 /*
+fun sched_getaffinity {n:nat} (
+  pid: pid_t, n: size_t n, cs: &cpu_set_t n? >> opt (cpu_set_t n, i==0)
+) : #[i:int | i <= 0] int i(*err*) = "atslib_sched_getaffinity"
+// end of [sched_getaffinity]
+*/
+
+ATSinline()
+ats_int_type
+atslib_sched_getaffinity (
+  ats_pid_type pid, ats_size_type n, ats_ref_type mask
+) {
+  return sched_getaffinity (pid, n, (cpu_set_t*)mask) ;
+} // end of [atslib_sched_getaffinity]
+
+/*
 fun sched_setaffinity {n:nat}
   (pid: pid_t, n: size_t n, mask: &cpu_set_t n): int(*err*)
   = "atslib_sched_setaffinity"
@@ -75,21 +90,6 @@ atslib_sched_setaffinity (
 ) {
   return sched_setaffinity (pid, n, (cpu_set_t*)mask) ;
 } // end of [atslib_sched_setaffinity]
-
-/*
-fun sched_getaffinity {n:nat} (
-    pid: pid_t, n: size_t n, cs: &cpu_set_t n? >> opt (cpu_set_t n, i==0)
-  ) : #[i:int | i <= 0] int i(*err*) = "atslib_sched_getaffinity"
-// end of [sched_getaffinity]
-*/
-
-ATSinline()
-ats_int_type
-atslib_sched_getaffinity (
-  ats_pid_type pid, ats_size_type n, ats_ref_type mask
-) {
-  return sched_getaffinity (pid, n, (cpu_set_t*)mask) ;
-} // end of [atslib_sched_getaffinity]
 
 /* ****** ****** */
 

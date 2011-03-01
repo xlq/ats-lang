@@ -36,7 +36,7 @@ GLubyte checkImage[checkImageHeight][checkImageWidth][3] ;
 #define checkImageHeight 64
 sta l_image : addr
 viewdef image_v = GLarray3 (GLubyte, checkImageWidth, checkImageHeight, 3) @ l_image
-extern val p_checkImage : ptr l_image = "#checkImage"
+extern val p_checkImage : ptr l_image = "mac#checkImage"
 extern prfun checkImage_get (): (image_v, image_v -<lin,prf> void)
 
 (* ****** ****** *)

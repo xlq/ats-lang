@@ -48,9 +48,10 @@ macdef GTK_DIALOG_DESTROY_WITH_PARENT =
 macdef GTK_DIALOG_NO_SEPARATOR =
   $extval (GtkDialogFlags, "GTK_DIALOG_NO_SEPARATOR")
 
-fun lor_GtkDialogFlags_GtkDialogFlags
-  (x1: GtkDialogFlags, x2: GtkDialogFlags):<> GtkDialogFlags
-  = "#atsctrb_lor_GtkDialogFlags_GtkDialogFlags"
+fun lor_GtkDialogFlags_GtkDialogFlags (
+  x1: GtkDialogFlags, x2: GtkDialogFlags
+) :<> GtkDialogFlags
+  = "mac#atsctrb_lor_GtkDialogFlags_GtkDialogFlags"
 overload lor with lor_GtkDialogFlags_GtkDialogFlags
 
 (* ****** ****** *)
@@ -107,7 +108,7 @@ macdef GTK_RESPONSE_HELP = $extval (GtkResponseType, "GTK_RESPONSE_HELP")
 (* ****** ****** *)
 
 fun gtk_dialog_new ()
-  : GtkDialog_ref1 = "#atsctrb_gtk_dialog_new"
+  : GtkDialog_ref1 = "mac#atsctrb_gtk_dialog_new"
 // end of [gtk_dialog_new]
 
 (*
@@ -134,22 +135,22 @@ fun gtk_dialog_get_window
   {c:cls | c <= GtkDialog} {l:agz}
   (dialog: !gobjref (c, l))
   :<> [l_win:agz] ( // this one is actually 'getref'
-    minus (gobjref (c, l), gobjref (GtkWindow, l_win)) | gobjref (GtkWindow, l_win)
-  ) = "#atsctrb_gtk_dialog_get_window"
+  minus (gobjref (c, l), gobjref (GtkWindow, l_win)) | gobjref (GtkWindow, l_win)
+) = "mac#atsctrb_gtk_dialog_get_window"
 // end of [gtk_dialog_get_window]
 
 fun gtk_dialog_get_vbox
   {c:cls | c <= GtkDialog} {l:agz}
   (dialog: !gobjref (c, l)):<> [l_box:agz] (
-    minus (gobjref (c, l), gobjref (GtkVBox, l_box)) | gobjref (GtkVBox, l_box)
-  ) = "#atsctrb_gtk_dialog_get_vbox"
+  minus (gobjref (c, l), gobjref (GtkVBox, l_box)) | gobjref (GtkVBox, l_box)
+) = "mac#atsctrb_gtk_dialog_get_vbox"
 // end of [gtk_dialog_get_vbox]
 
 fun gtk_dialog_get_action_area
   {c:cls | c <= GtkDialog} {l:agz}
   (dialog: !gobjref (c, l)):<> [l_box:agz] (
-    minus (gobjref (c, l), gobjref (GtkHBox, l_box)) | gobjref (GtkHBox, l_box)
-  ) = "#atsctrb_gtk_dialog_get_action_area"
+  minus (gobjref (c, l), gobjref (GtkHBox, l_box)) | gobjref (GtkHBox, l_box)
+) = "mac#atsctrb_gtk_dialog_get_action_area"
 // end of [gtk_dialog_get_action_area]
 
 (* ****** ****** *)
@@ -157,26 +158,28 @@ fun gtk_dialog_get_action_area
 fun gtk_dialog_add_button
   {c:cls | c <= GtkDialog} {l1,l2:agz}
   (dialog: !gobjref (c, l1), name: !gstring l2, response_id: GtkResponseType)
-  : [l3:agz] (minus (gobjref (c, l1), gobjref (GtkButton, l3)) | gobjref (GtkButton, l3))
-  = "#atsctrb_gtk_dialog_add_button"
+  : [l3:agz] (
+  minus (gobjref (c, l1), gobjref (GtkButton, l3)) | gobjref (GtkButton, l3)
+) = "mac#atsctrb_gtk_dialog_add_button"
 // end of [gtk_dialog_add_button]
 
 (* ****** ****** *)
-
 //
 // HX-2010-04-10:
 // If the diaglog widget is destroyed in the middle, all bets are off!!!
 //
 fun gtk_dialog_run
   {c:cls | c <= GtkDialog} {l:agz}
-  (dialog: !gobjref (c, l)): gint = "#atsctrb_gtk_dialog_run"
+  (dialog: !gobjref (c, l)): gint = "mac#atsctrb_gtk_dialog_run"
 // end of [gtk_dialog_run]
 
 (* ****** ****** *)
 
 fun gtk_dialog_response
-  {c:cls | c <= GtkDialog} {l:agz}
-  (dialog: !gobjref (c, l), response_id: gint): void = "#atsctrb_gtk_dialog_response"
+  {c:cls | c <= GtkDialog}
+  {l:agz} (
+  dialog: !gobjref (c, l), response_id: gint
+) : void = "mac#atsctrb_gtk_dialog_response"
 // end of [gtk_dialog_response]
 
 (* ****** ****** *)

@@ -107,7 +107,7 @@ in
       val () = close_exn (pfin2 | fdin2)
       val () = (if (err < 0) then errptexit (EXIT_FAILURE) else ()): void
       val _int = execlp ("sort", "sort", null) where {
-        extern fun execlp (_: string, _: string, _: ptr null): int = "#atslib_execlp"
+        extern fun execlp (_: string, _: string, _: ptr null): int = "mac#atslib_execlp"
       } // end of [val]
 //
     in

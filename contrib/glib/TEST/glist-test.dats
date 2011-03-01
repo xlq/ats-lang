@@ -31,9 +31,9 @@ int more_nums[N] = { 8, 9, 7, 0, 3, 2, 5, 1, 4, 6 } ;
 #define ptr_read(p) (*(int*)(p))
 %} // end of [%{^]
 
-extern fun ptr_read (p: ptr):<> int = "#ptr_read"
-extern fun test_ptr {i:nat} (i: int i): ptr = "#test_ptr"
-extern fun more_ptr {i:nat} (i: int i): ptr = "#more_ptr"
+extern fun ptr_read (p: ptr):<> int = "mac#ptr_read"
+extern fun test_ptr {i:nat} (i: int i): ptr = "mac#test_ptr"
+extern fun more_ptr {i:nat} (i: int i): ptr = "mac#more_ptr"
 
 fun my_g_list_free
   {a:vwtp} {r:nat}

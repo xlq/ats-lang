@@ -367,6 +367,7 @@ implement{a}
 vector_resize
   {m,n} {m1} (V, m1) = let
   prval pf = VECTOR_decode {a} (V)
+//
   val p1 = realloc (
     V.vfree, pf | V.ptr, m1, sizeof<a>
   ) where {
@@ -374,8 +375,9 @@ vector_resize
       pf_gc: !free_gc_v l >> free_gc_v l
     , pf: !vector_v (a, m, n, l) >> vector_v (a, m1, n, l)
     | p: ptr l, m1: size_t m1, tsz: sizeof_t a
-    ) :<> #[l:addr] ptr l = "#atslib_vector_realloc"
+    ) :<> #[l:addr] ptr l = "mac#atslib_vector_realloc"
   } // end of[ val]
+//
   val () = V.m := m1
   val () = V.ptr := p1
   prval () = VECTOR_encode {a} (pf | V)

@@ -122,9 +122,9 @@ viewtypedef symtbl1 = [l:addr | l > null] symtbl l
 (* ****** ****** *)
 
 extern fun succ_symbol
-  (x: symbol_t): symbol_t = "#atspre_psucc"
+  (x: symbol_t): symbol_t = "mac#atspre_psucc"
 extern fun add_symbol_size
-  (x: symbol_t, n: size_t): symbol_t = "#atspre_padd_size"
+  (x: symbol_t, n: size_t): symbol_t = "mac#atspre_padd_size"
 
 fn dna_count_one {l:agz} {n1,n2:nat}
   (tbl: !symtbl l, dna: dna_t, n1: size_t n1, n2: size_t n2): void = let

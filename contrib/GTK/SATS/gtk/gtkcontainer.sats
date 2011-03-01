@@ -40,21 +40,28 @@
 
 fun gtk_container_add
   {c1,c2:cls | c1 <= GtkContainer; c2 <= GtkWidget}
-  {l1,l2:agz} (container: !gobjref (c1, l1), widget: !gobjref (c2, l2)): void
-  = "#atsctrb_gtk_container_add"
+  {l1,l2:agz} (
+  container: !gobjref (c1, l1), widget: !gobjref (c2, l2)
+) : void
+  = "mac#atsctrb_gtk_container_add"
 // end of [gtk_container_add]
 
 fun gtk_container_remove
   {c1,c2:cls | c1 <= GtkContainer; c2 <= GtkWidget}
-  {l1,l2:agz} (container: !gobjref (c1, l1), widget: !gobjref (c2, l2)): void
-  = "#atsctrb_gtk_container_remove"
+  {l1,l2:agz} (
+  container: !gobjref (c1, l1), widget: !gobjref (c2, l2)
+) : void
+  = "mac#atsctrb_gtk_container_remove"
 // end of [gtk_container_remove]
 
 (* ****** ****** *)
 
 fun gtk_container_set_border_width
-  {c:cls | c <= GtkContainer} {l:agz} (container: !gobjref (c, l), width: guint): void
-  = "#atsctrb_gtk_container_set_border_width"
+  {c:cls | c <= GtkContainer}
+  {l:agz} (
+  container: !gobjref (c, l), width: guint
+) : void
+  = "mac#atsctrb_gtk_container_set_border_width"
 // end of [gtk_container_set_border_width]
 
 (* ****** ****** *)

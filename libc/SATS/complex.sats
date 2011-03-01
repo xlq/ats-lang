@@ -203,7 +203,7 @@ fun pow_ccmplx_ccmplx (c1: ccmplx, c2: ccmplx):<> ccmplx
   = "atslib_cpowf"
 overload pow with pow_ccmplx_ccmplx
 fun pow_ccmplx_float (c1: ccmplx, c2: float):<> ccmplx
-  = "#atslib_pow_ccmplx_float" // macro!
+  = "mac#atslib_pow_ccmplx_float" // macro!
 overload pow with pow_ccmplx_float
 
 (* ****** ****** *)
@@ -372,7 +372,7 @@ fun pow_zcmplx_zcmplx (z1: zcmplx, z2: zcmplx):<> zcmplx
   = "atslib_cpow"
 overload pow with pow_zcmplx_zcmplx
 fun pow_zcmplx_double (z1: zcmplx, z2: double):<> zcmplx
-  = "#atslib_pow_zcmplx_double" // macro!
+  = "mac#atslib_pow_zcmplx_double" // macro!
 overload pow with pow_zcmplx_double
 
 (* ****** ****** *)

@@ -71,8 +71,10 @@ overload double_of with double_of_time
 
 (* ****** ****** *)
 
-fun difftime
-  (finish: time_t, start: time_t):<> double = "#atslib_difftime"
+fun difftime (
+  finish: time_t, start: time_t
+) :<> double
+  = "mac#atslib_difftime"
 // end of [difftime]
 
 (* ****** ****** *)
@@ -117,70 +119,102 @@ overload time with time_get_and_set
 //
 // HX: [ctime] is non-reentrant
 //
-fun ctime (t: &READ(time_t)):<!ref>
-  [l:addr] (strptr l -<lin,prf> void | strptr l) = "#atslib_ctime"
+fun ctime (
+  t: &READ(time_t)
+) :<!ref> [l:addr] (
+  strptr l -<lin,prf> void | strptr l
+) = "mac#atslib_ctime"
 // end of [ctime]
 
-#define CTIME_BUFLEN 26
+//
+// HX: reentrant version of [ctime]
+//
+ #define CTIME_BUFLEN 26
 dataview ctime_v (m:int, addr, addr) =
   | {l:addr | l > null}
     ctime_v_succ (m, l, l) of strbuf (m, CTIME_BUFLEN - 1) @ l
   | {l:addr} ctime_v_fail (m, l, null) of b0ytes (m) @ l
-fun ctime_r // reentrant version of [ctime]
-  {m:int | m >= CTIME_BUFLEN} {l:addr} (
-    pf: ! b0ytes (m) @ l >> ctime_v (m, l, l1) | t: &READ(time_t), p_buf: ptr l
-  ) :<> #[l1:addr] ptr l1 = "#atslib_ctime_r"
+fun ctime_r
+  {m:int | m >= CTIME_BUFLEN}
+  {l:addr} (
+  pf: ! b0ytes (m) @ l >> ctime_v (m, l, l1)
+| t: &READ(time_t), p_buf: ptr l
+) :<> #[l1:addr] ptr l1
+  = "mac#atslib_ctime_r"
 // end of [ctime_r]
 
 (* ****** ****** *)
 //
 // HX: [localtime] is non-reentrant
 //
-fun localtime (time: &READ(time_t)):<!ref>
-  [l:addr] (vptroutopt (tm_struct, l) | ptr l) = "#atslib_localtime"
+fun localtime (
+  time: &READ(time_t)
+) :<!ref>
+  [l:addr] (
+  vptroutopt (tm_struct, l)
+| ptr l
+) = "mac#atslib_localtime"
 // end of [localtime]
 //
 // HX: [localtime_r] is reentrant
 //
 fun localtime_r (
-    time: &READ(time_t), tm: &tm_struct? >> opt (tm_struct, l > null)
-  ) :<> #[l:addr] ptr l = "#atslib_localtime_r"
+  time: &READ(time_t)
+, tm: &tm_struct? >> opt (tm_struct, l > null)
+) :<> #[l:addr] ptr l
+  = "mac#atslib_localtime_r"
 // end of [localtime_r]
 
 (* ****** ****** *)
 //
 // HX: [gmtime] is non-reentrant
 //
-fun gmtime (time: &READ(time_t)):<!ref>
-  [l:addr] (vptroutopt (tm_struct, l) | ptr l) = "#atslib_gmtime"
+fun gmtime (
+  time: &READ(time_t)
+) :<!ref>
+  [l:addr] (
+  vptroutopt (tm_struct, l)
+| ptr l
+) = "mac#atslib_gmtime"
 // end of [gmtime]
 //
 // HX: [gmtime_r] is reentrant
 //
 fun gmtime_r (
-    time: &READ(time_t), tm: &tm_struct? >> opt (tm_struct, l > null)
-  ) :<> #[l:addr] ptr l = "#atslib_gmtime_r"
+  time: &READ(time_t), tm: &tm_struct? >> opt (tm_struct, l > null)
+) :<> #[l:addr] ptr l = "mac#atslib_gmtime_r"
 // end of [gmtime_r]
 
 (* ****** ****** *)
 
-fun mktime
-  (tm: &READ(tm_struct)): time_t = "#atslib_mktime" // returns -1 on error
+fun mktime (
+  tm: &READ(tm_struct)
+) : time_t
+  = "mac#atslib_mktime" // returns -1 on error
 // end of [mktime]
 
 (* ****** ****** *)
 
-fun asctime (tm: &READ(tm_struct)):<!ref>
-  [l:addr] (strptr l -<lin,prf> void | strptr l) = "#atslib_asctime"
+fun asctime (
+  tm: &READ(tm_struct)
+) :<!ref>
+  [l:addr] (
+  strptr l -<lin,prf> void
+| strptr l
+) = "mac#atslib_asctime"
 // end of [asctime]
 
 (* ****** ****** *)
 
-fun strftime {m:pos} {l:addr} (
-    pf: !b0ytes m @ l >> strbuf (m, n) @ l
-  | p: ptr l, m: size_t m, fmt: !READ(string), tm: &READ(tm_struct)
-  ) :<> #[n:nat | n < m] size_t n
-  = "#atslib_strftime" // this a macro!
+fun strftime
+  {m:pos} {l:addr} (
+  pf: !b0ytes m @ l >> strbuf (m, n) @ l
+| p: ptr l
+, m: size_t m
+, fmt: !READ(string)
+, tm: &READ(tm_struct)
+) :<> #[n:nat | n < m] size_t n
+  = "mac#atslib_strftime" // this a macro!
 // end of [strftime]
 
 (* ****** ****** *)
@@ -194,7 +228,7 @@ fun strftime {m:pos} {l:addr} (
 fun getdate_err_get ():<> int = "atslib_getdate_err_get"
 fun getdate_err_set (x: int):<> void = "atslib_getdate_err_set"
 fun getdate (str: !READ(string)):<!ref>
-  [l:addr] (ptroutopt (tm_struct, l) | ptr l) = "#atslib_getdate"
+  [l:addr] (ptroutopt (tm_struct, l) | ptr l) = "mac#atslib_getdate"
 // end of [getdate]
 *)
 
@@ -202,9 +236,10 @@ fun getdate (str: !READ(string)):<!ref>
 // -D_XOPEN_SOURCE
 //
 fun strptime (
-    str: !READ(string), fmt: !READ(string)
-  , tm: &tm_struct? >> opt (tm_struct, l > null)
-  ) : #[l:addr] ptr l = "#atslib_strptime" // HX: it returns NULL on error
+  str: !READ(string), fmt: !READ(string)
+, tm: &tm_struct? >> opt (tm_struct, l > null)
+) : #[l:addr] ptr l
+  = "mac#atslib_strptime" // HX: it returns NULL on error
 // end of [strptime]
 
 (* ****** ****** *)
@@ -214,7 +249,7 @@ extern int daylight ; // not in FreeBSD or Darwin
 extern long int timezone ; // not in FreeBSD or Darwin
 extern char *tzname[2] ; // not in FreeBSD or Darwin
 *)
-fun tzsset ():<!ref> void = "#atslib_tzset"
+fun tzsset ():<!ref> void = "mac#atslib_tzset"
 
 (* ****** ****** *)
 
@@ -228,7 +263,7 @@ overload lint_of with lint_of_clock
 fun double_of_clock (c: clock_t):<> double = "atslib_double_of_clock"
 overload double_of with double_of_clock
 //
-fun clock (): clock_t = "#atslib_clock" // HX: it returns -1 on error
+fun clock (): clock_t = "mac#atslib_clock" // HX: it returns -1 on error
 
 (* ****** ****** *)
 
@@ -246,12 +281,13 @@ typedef timespec = timespec_struct
 // HX: 0/-1 : succ/fail // errno set to EINTR
 //
 fun nanosleep (
-  nsec: &READ(timespec), rem: &timespec? >> opt (timespec, i==0)
-) : #[i:int | i <= 0] int(i) = "#atslib_nanosleep"
+  nsec: &READ(timespec)
+, rem: &timespec? >> opt (timespec, i==0)
+) : #[i:int | i <= 0] int(i) = "mac#atslib_nanosleep"
 // end of [nanosleep]
 
 fun nanosleep_null
-  (nsec: &READ(timespec)): int = "#atslib_nanosleep_null"
+  (nsec: &READ(timespec)): int = "mac#atslib_nanosleep_null"
 // end of [nanosleep]
 
 (* ****** ****** *)
@@ -271,7 +307,7 @@ macdef CLOCK_PROCESS_CPUTIME_ID = $extval (clockid_t, "CLOCK_PROCESS_CPUTIME_ID"
 fun clock_gettime (
   id: clockid_t
 , tp: &timespec? >> opt (timespec, i==0)
-) : #[i:int | i <= 0] int(i) = "#atslib_clock_gettime"
+) : #[i:int | i <= 0] int(i) = "mac#atslib_clock_gettime"
 // end of [clock_gettime]
 //
 // HX: 0/-1 : succ/fail // errno set
@@ -279,12 +315,13 @@ fun clock_gettime (
 fun clock_getres (
   id: clockid_t
 , tp: &timespec? >> opt (timespec, i==0)
-) : #[i:int | i <= 0] int(i) = "#atslib_clock_getres"
+) : #[i:int | i <= 0] int(i) = "mac#atslib_clock_getres"
 // end of [clock_getres]
 
 // HX: superuser privilege is needed for this one
-fun clock_settime // HX: 0/-1 : succ/fail // errno set
-  (id: clockid_t, tp: &READ(timespec)): int = "#atslib_clock_settime"
+fun clock_settime ( // HX: 0/-1 : succ/fail // errno set
+  id: clockid_t, tp: &READ(timespec)
+) : int = "mac#atslib_clock_settime"
 // end of [clock_settime]
 
 (* ****** ****** *)
@@ -308,17 +345,22 @@ typedef itimerspec = itimerspec_struct
 // HX: 0/-1 : succ/fail // errno set
 //
 fun timer_create_null (
-  cid: clockid_t, tid: &timer_t? >> opt (timer_t(id), i==0)
-) : #[i,id:int | i <= 0] (option_v (timer_v(id), i==0) | int(i))
-  = "#atslib_timer_create_null"
+  cid: clockid_t
+, tid: &timer_t? >> opt (timer_t(id), i==0)
+) : #[i,id:int | i <= 0] (
+  option_v (timer_v(id), i==0)
+| int (i)
+) = "mac#atslib_timer_create_null"
 // end of [timer_create_null]
 
 //
 // HX: 0/-1 : succ/fail // errno set
 //
 fun timer_delete {id:int} (
-    pf: !timer_v(id) >> option_v (timer_v(id), i < 0) | tid: timer_t (id)
-  ) : #[i:int | i <= 0] int (i) = "#atslib_timer_delete"
+  pf: !timer_v(id) >> option_v (timer_v(id), i < 0)
+| tid: timer_t (id)
+) : #[i:int | i <= 0] int (i)
+  = "mac#atslib_timer_delete"
 // end of [timer_delete]
 
 (* ****** ****** *)
@@ -326,26 +368,31 @@ fun timer_delete {id:int} (
 // HX: 0/-1 : succ/fail // errno set
 //
 fun timer_gettime {id:int} (
-    pf: !timer_v (id)
-  | tid: timer_t (id)
-  , itp: &itimerspec? >> opt (itimerspec, i==0)
-  ) : #[i: int | i <= 0] int i = "#atslib_timer_gettime"
+  pf: !timer_v (id)
+| tid: timer_t (id)
+, itp: &itimerspec? >> opt (itimerspec, i==0)
+) : #[i: int | i <= 0] int (i)
+  = "mac#atslib_timer_gettime"
 // end of [timer_gettime]
 
 fun timer_settime {id:int} (
-    pf: !timer_v (id)
-  | tid: timer_t (id)
-  , newitp: &READ(itimerspec)
-  , olditp: &itimerspec? >> opt (itimerspec, i==0)
-  ) : #[i: int | i <= 0] int i = "#atslib_timer_settime"
+  pf: !timer_v (id)
+| tid: timer_t (id)
+, newitp: &READ(itimerspec)
+, olditp: &itimerspec? >> opt (itimerspec, i==0)
+) : #[i: int | i <= 0] int (i)
+  = "mac#atslib_timer_settime"
 // end of [timer_settime]
 
 (* ****** ****** *)
 //
 // HX: 0/-1 : succ/fail // errno set
 //
-fun timer_getoverrun {id:int}
-  (pf: !timer_v (id) | tid: timer_t (id)): intGte (~1) = "#atslib_timer_getoverrun"
+fun timer_getoverrun
+  {id:int} (
+  pf: !timer_v (id) | tid: timer_t (id)
+) : intGte (~1)
+  = "mac#atslib_timer_getoverrun"
 // end of [timer_getoverrun]
 
 (* ****** ****** *)

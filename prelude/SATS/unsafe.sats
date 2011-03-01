@@ -50,8 +50,13 @@
 // where a linear value is passed as a read-only value;
 // for instance, casting [strptr] to [string]
 //
-castfn cast {to:t@ype} {from:t@ype} (x: from):<> to
-castfn castvwtp1 {to:t@ype} {from:viewt@ype} (x: !from):<> to
+castfn cast
+  {to:t@ype} {from:t@ype} (x: from):<> to
+// end of [cast]
+
+castfn castvwtp1
+  {to:t@ype} {from:viewt@ype} (x: !from):<> to
+// end of [castvwtp1]
 
 (* ****** ****** *)
 
@@ -71,9 +76,13 @@ fun{a:viewt@ype} ptrset {l:agz} (p: ptr l, x: a): void
 
 (* ****** ****** *)
 //
-// HX: vtakeout: virtual takeout
+// HX-2011-02-26: virtual takeout
 //
-prfun vtakeout {v:view} (pf: !v) : (v, v -<lin,prf> void)
+absview viewout (v:view) // invariant!
+prfun vtakeout {v:view} (pf: !v): viewout (v)
+prfun viewout_decode
+  {v:view} (pf: viewout (v)): (v, v -<lin,prf> void)
+// end of [viewout_decode]
 
 (* ****** ****** *)
 

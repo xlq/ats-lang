@@ -36,17 +36,17 @@
 
 (* ****** ****** *)
 
-staload "contrib/Xlib/SATS/Xlib.sats"
+staload "contrib/X11/SATS/Xlib.sats"
 
 (* ****** ****** *)
 
 abst@ype GLXFBConfig = $extype"GLXFBConfig"
 
-fun glXGetFBConfigs {l:anz} (
-    dpy: !Display_ptr l, screen: int, nelements: &int 0 >> int n
-  ) : #[n:nat] [l:addr] (
-    XFree_v (GLXFBConfig, n, l), @[GLXFBConfig][n] @ l | ptr l
-  ) = "#atsctrb_glXGetFBConfigs"
+fun glXGetFBConfigs {l:agz} (
+  dpy: !Display_ptr l, screen: int, nelements: &int 0 >> int n
+) : #[n:nat] [l:addr] (
+  XFree_v (l), @[GLXFBConfig][n] @ l | ptr l
+) = "mac#atsctrb_glXGetFBConfigs"
 
 (* ****** ****** *)
 

@@ -43,20 +43,24 @@ fun gtk_font_selection_new ()
 // end of [gtk_font_selection_new]
 
 (* ****** ****** *)
-
+//
 // HX-2010-05-25:
 // this is a 'get0' functionl; the return value cannot be NULL
+//
 fun gtk_font_selection_get_preview_text
   {c:cls | c <= GtkFontSelection} {l:agz}
-  (fsd: !gobjref (c, l)): [l1:agz] (minus (gobjref (c, l), gstring l1) | gstring l1)
-  = "#atsctrb_gtk_font_selection_get_preview_text"
-// end of [gtk_font_selection_get_preview_text]
+  (fsd: !gobjref (c, l))
+  : [l1:agz] (
+  minus (gobjref (c, l), gstring l1) | gstring l1
+) = "mac#atsctrb_gtk_font_selection_get_preview_text"
 
 fun gtk_font_selection_set_preview_text
-  {c:cls | c <= GtkFontSelection} {l,l1:agz}
-  (fsd: !gobjref (c, l), text: !gstring l1): void
-  = "#atsctrb_gtk_font_selection_set_preview_text"
-// end of [gtk_font_selection_set_preview_text]
+  {c:cls | c <= GtkFontSelection}
+  {l,l1:agz} (
+  fsd: !gobjref (c, l), text: !gstring l1
+) : void
+  = "mac#atsctrb_gtk_font_selection_set_preview_text"
+// end of [fun]
 
 (* ****** ****** *)
 
@@ -74,16 +78,18 @@ fun gtk_font_selection_dialog_new
 fun gtk_font_selection_dialog_get_ok_button
   {c:cls | c <= GtkFontSelectionDialog} {l:agz}
   (fsd: !gobjref (c, l)): [l1:agz] (
-    minus (gobjref (c, l), GtkButton_ref l1) |  GtkButton_ref l1
-  ) = "#atsctrb_gtk_font_selection_dialog_get_ok_button"
+  minus (gobjref (c, l), GtkButton_ref l1)
+|  GtkButton_ref l1
+) = "mac#atsctrb_gtk_font_selection_dialog_get_ok_button"
 // end of [gtk_font_selection_dialog_get_ok_button]
 
 // HX: this is a 'get0' function
 fun gtk_font_selection_dialog_get_cancel_button
   {c:cls | c <= GtkFontSelectionDialog} {l:agz}
   (fsd: !gobjref (c, l)): [l1:agz] (
-    minus (gobjref (c, l), GtkButton_ref l1) |  GtkButton_ref l1
-  ) = "#atsctrb_gtk_font_selection_dialog_get_cancel_button"
+  minus (gobjref (c, l), GtkButton_ref l1)
+|  GtkButton_ref l1
+) = "mac#atsctrb_gtk_font_selection_dialog_get_cancel_button"
 // end of [gtk_font_selection_dialog_get_cancel_button]
 
 (* ****** ****** *)
@@ -91,13 +97,15 @@ fun gtk_font_selection_dialog_get_cancel_button
 // HX-2010-05-25: the return value can be NULL
 fun gtk_font_selection_dialog_get_font_name
   {c:cls | c <= GtkFontSelectionDialog} {l:agz} (fsd: !gobjref (c, l)): gstring0
-  = "#atsctrb_gtk_font_selection_dialog_get_font_name"
+  = "mac#atsctrb_gtk_font_selection_dialog_get_font_name"
 // end of [gtk_font_selection_dialog_get_font_name]
 
 fun gtk_font_selection_dialog_set_font_name
-  {c:cls | c <= GtkFontSelectionDialog} {l,l1:agz}
-  (fsd: !gobjref (c, l), fontname: !gstring l1): gboolean
-  = "#atsctrb_gtk_font_selection_dialog_set_font_name"
+  {c:cls | c <= GtkFontSelectionDialog}
+  {l,l1:agz} (
+  fsd: !gobjref (c, l), fontname: !gstring l1
+) : gboolean
+  = "mac#atsctrb_gtk_font_selection_dialog_set_font_name"
 // end of [gtk_font_selection_dialog_set_font_name]  
 
 (* ****** ****** *)
@@ -105,15 +113,20 @@ fun gtk_font_selection_dialog_set_font_name
 // HX-2010-05-25:
 // this is a 'get0' functionl; the return value cannot be NULL
 fun gtk_font_selection_dialog_get_preview_text
-  {c:cls | c <= GtkFontSelectionDialog} {l:agz}
-  (fsd: !gobjref (c, l)): [l1:agz] (minus (gobjref (c, l), gstring l1) | gstring l1)
-  = "#atsctrb_gtk_font_selection_dialog_get_preview_text"
+  {c:cls | c <= GtkFontSelectionDialog}
+  {l:agz} (
+  fsd: !gobjref (c, l)
+) : [l1:agz] (
+  minus (gobjref (c, l), gstring l1) | gstring l1
+) = "mac#atsctrb_gtk_font_selection_dialog_get_preview_text"
 // end of [gtk_font_selection_dialog_get_preview_text]
 
 fun gtk_font_selection_dialog_set_preview_text
-  {c:cls | c <= GtkFontSelectionDialog} {l,l1:agz}
-  (fsd: !gobjref (c, l), text: !gstring l1): void
-  = "#atsctrb_gtk_font_selection_dialog_set_preview_text"
+  {c:cls | c <= GtkFontSelectionDialog}
+  {l,l1:agz} (
+  fsd: !gobjref (c, l), text: !gstring l1
+ ) : void
+  = "mac#atsctrb_gtk_font_selection_dialog_set_preview_text"
 // end of [gtk_font_selection_dialog_set_preview_text]
 
 (* ****** ****** *)

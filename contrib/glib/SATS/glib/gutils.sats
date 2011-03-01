@@ -41,10 +41,13 @@
 
 (* ****** ****** *)
 
-fun g_snprintf {n:pos} {l:addr} {ts:types} (
-    pf: b0ytes n @ l | p: ptr l, n: gulong n, fmt: printf_c ts, arg: ts
-  ) : (gstring_v l, gstring l -<lin,prf> b0ytes n @ l | gint)
-  = "#atsctrb_g_snprintf"
+fun g_snprintf
+  {n:pos} {l:addr} {ts:types} (
+  pf: b0ytes n @ l
+| p: ptr l, n: gulong n, fmt: printf_c ts, arg: ts
+) : (
+  gstring_v l, gstring l -<lin,prf> b0ytes n @ l | gint
+) = "mac#atsctrb_g_snprintf"
 // end of [g_strdup_printf]
 
 (* ****** ****** *)

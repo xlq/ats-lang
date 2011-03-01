@@ -75,12 +75,12 @@ drawLetter (CP *A) {
 
 abstype CPref
 extern castfn ptr_of_CPref (x: CPref): ptr
-extern val Adata : CPref = "#Adata"
-extern val Edata : CPref = "#Edata"
-extern val Pdata : CPref = "#Pdata"
-extern val Rdata : CPref = "#Rdata"
-extern val Sdata : CPref = "#Sdata"
-extern fun drawLetter (x: CPref): void = "#drawLetter"
+extern val Adata : CPref = "mac#Adata"
+extern val Edata : CPref = "mac#Edata"
+extern val Pdata : CPref = "mac#Pdata"
+extern val Rdata : CPref = "mac#Rdata"
+extern val Sdata : CPref = "mac#Sdata"
+extern fun drawLetter (x: CPref): void = "mac#drawLetter"
 
 val test1 = "A SPARE SERAPE APPEARS AS"
 val test2 = "APES PREPARE RARE PEPPERS"
@@ -107,7 +107,9 @@ initialize () = () where {
   val () = theFontOffset_set (base)
   val base = (uint_of_GLuint)base
   val () = assert (base <> 0U)
-  extern fun glNewList (lst: uint, mode: GLenum): (glNewList_v | void) = "#glNewList"
+  extern fun glNewList
+    (lst: uint, mode: GLenum): (glNewList_v | void) = "mac#glNewList"
+  (* end of [extern] *)
 //
   val (pf | ()) = glNewList (base+(uint_of)'A', GL_COMPILE)
   val () = drawLetter (Adata)
@@ -145,8 +147,8 @@ fun printStrokedString
   val () = (print "printStrokenString: len = "; print len; print_newline ())
 *)
   val () = glCallLists (len, GL_BYTE, txt) where {
-    extern fun glCallLists {n:nat} (_: size_t n, _: GLenum_type GLbyte, _: string n): void
-      = "#glCallLists"
+    extern fun glCallLists {n:nat}
+      (_: size_t n, _: GLenum_type GLbyte, _: string n): void = "mac#glCallLists"
   } // end of [val]
 in
   // nothing

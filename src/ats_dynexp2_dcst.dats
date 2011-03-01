@@ -191,7 +191,7 @@ in
   $Syn.dcstkind_is_fun (knd)
 end // end of [d2cst_is_fun]
 
-//
+(* ****** ****** *)
 
 implement d2cst_is_extmac (d2c) = let
   val extdef = $effmask_ref (
@@ -201,7 +201,16 @@ in
   $Syn.dcstextdef_is_mac (extdef)
 end // end of [d2cst_is_callfn]
 
-//
+
+implement d2cst_is_extsta (d2c) = let
+  val extdef = $effmask_ref (
+    let val (vbox pf | p) = d2c in p->d2cst_extdef end
+  ) // end of [val]
+in
+  $Syn.dcstextdef_is_sta (extdef)
+end // end of [d2cst_is_callfn]
+
+(* ****** ****** *)
 
 implement d2cst_is_castfn (d2c) = let
   val knd = $effmask_ref (

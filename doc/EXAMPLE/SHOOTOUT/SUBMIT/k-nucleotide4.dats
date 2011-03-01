@@ -138,7 +138,7 @@ viewtypedef symtbl (l:addr) = $H.HASHTBLptr (symbol_t, int, l)
 
 (* ****** ****** *)
 
-extern fun succ_symbol (x: symbol_t): symbol_t = "#atspre_psucc"
+extern fun succ_symbol (x: symbol_t): symbol_t = "mac#atspre_psucc"
 
 fun dna_count {n,k:pos | k <= n} {l:agz}
   (tbl: !symtbl l, dna: dna_t, n: size_t n, k: size_t k): void = let

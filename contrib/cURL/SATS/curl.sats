@@ -59,12 +59,12 @@ overload ptr_of with ptr_of_curlptr
 
 castfn curlptr_free_null (x: CURLptr null):<> ptr null
 
-fun curlptr_is_null {l:addr} (x: !CURLptr l):<> bool (l == null)
-  = "#atspre_ptr_is_null"
+fun curlptr_is_null {l:addr}
+  (x: !CURLptr l):<> bool (l == null) = "mac#atspre_ptr_is_null"
 // end of [curlptr_is_null]
 
-fun curlptr_isnot_null {l:addr} (x: !CURLptr l):<> bool (l > null)
-  = "#atspre_ptr_isnot_null"
+fun curlptr_isnot_null {l:addr}
+  (x: !CURLptr l):<> bool (l > null) = "mac#atspre_ptr_isnot_null"
 // end of [curlptr_isnot_null]
   
 (* ****** ****** *)
@@ -190,11 +190,11 @@ macdef CURLE_SSL_ISSUER_ERROR = $extval (CURLcode, "CURLE_SSL_ISSUER_ERROR")
 macdef CURL_LAST = $extval (CURLcode, "CURL_LAST") // HX: it should never be used!
 
 castfn int_of_CURLcode {i:int} (x: CURLcode i) :<> int i
-fun eq_CURLcode_CURLcode {i,j:int} (x: CURLcode i, y: CURLcode j):<> bool (i==j)
-  = "#atspre_eq_int_int"
+fun eq_CURLcode_CURLcode {i,j:int}
+  (x: CURLcode i, y: CURLcode j):<> bool (i==j) = "mac#atspre_eq_int_int"
 overload = with eq_CURLcode_CURLcode
-fun neq_CURLcode_CURLcode {i,j:int} (x: CURLcode i, y: CURLcode j):<> bool (i <> j)
-  = "#atspre_neq_int_int"
+fun neq_CURLcode_CURLcode {i,j:int}
+  (x: CURLcode i, y: CURLcode j):<> bool (i <> j) = "mac#atspre_neq_int_int"
 overload <> with neq_CURLcode_CURLcode
 
 (* ****** ****** *)
@@ -384,15 +384,19 @@ macdef CURL_GLOBAL_DEFAULT = $extval (lint, "CURL_GLOBAL_DEFAULT") // = CURL_GLO
 ** This function is not thread-safe!
 *)
 absview CURLglobal_v (i:int)
-fun curl_global_init
-  (flags: lint): [i:int] (CURLglobal_v i | CURLcode i)
-  = "#atsctrb_curl_global_init"
+fun curl_global_init (
+  flags: lint
+) : [i:int] (
+  CURLglobal_v i | CURLcode i
+) = "mac#atsctrb_curl_global_init"
 // end of [curl_global_init]
 
 (* ****** ****** *)
 
-fun curl_global_cleanup
-  (pf: CURLglobal_v 0 | (*none*)): void = "#atsctrb_curl_global_cleanup"
+fun curl_global_cleanup (
+  pf: CURLglobal_v 0 | (*none*)
+) : void
+  = "mac#atsctrb_curl_global_cleanup"
 // end of [curl_global_cleanup]
 
 (* ****** ****** *)

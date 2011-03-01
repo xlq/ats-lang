@@ -55,7 +55,11 @@ macdef GDK_PIXBUF_ERROR_FAILED =
 
 (* ****** ****** *)
 
-// fun gdk_pixbuf_error_quark (): GQuark = "#atsctrb_gdk_pixbuf_error_quark"
+(*
+fun gdk_pixbuf_error_quark
+  (): GQuark = "#atsctrb_gdk_pixbuf_error_quark"
+// end of [gdk_pixbuf_error_quark]
+*)
 
 (* ****** ****** *)
 
@@ -85,43 +89,49 @@ int           gdk_pixbuf_get_rowstride       (const GdkPixbuf *pixbuf);
 *)
 
 fun gdk_pixbuf_get_colorspace
-  {c:cls | c <= GdkPixbuf} {l:agz} (pixbuf: !gobjref (c, l)): GdkColorspace
-  = "#atsctrb_gdk_pixbuf_get_colorspace"
+  {c:cls | c <= GdkPixbuf}
+  {l:agz} (
+  pixbuf: !gobjref (c, l)
+) : GdkColorspace
+  = "mac#atsctrb_gdk_pixbuf_get_colorspace"
 // end of [gdk_pixbuf_get_colorspace]
 
 fun gdk_pixbuf_get_n_channels
   {c:cls | c <= GdkPixbuf} {l:agz} (pixbuf: !gobjref (c, l)): int
-  = "#atsctrb_gdk_pixbuf_get_n_channels"
+  = "mac#atsctrb_gdk_pixbuf_get_n_channels"
 // end of [gdk_pixbuf_get_n_channels]
 
 fun gdk_pixbuf_get_has_alpha
   {c:cls | c <= GdkPixbuf} {l:agz} (pixbuf: !gobjref (c, l)): gboolean
-  = "#atsctrb_gdk_pixbuf_get_has_alpha"
+  = "mac#atsctrb_gdk_pixbuf_get_has_alpha"
 // end of [gdk_pixbuf_get_has_alpha]
 
 fun gdk_pixbuf_get_bits_per_sample
   {c:cls | c <= GdkPixbuf} {l:agz} (pixbuf: !gobjref (c, l)): int
-  = "#atsctrb_gdk_pixbuf_get_bits_per_sample"
+  = "mac#atsctrb_gdk_pixbuf_get_bits_per_sample"
 // end of [gdk_pixbuf_get_bits_per_sample]
 
 fun gdk_pixbuf_get_pixels
-  {c:cls | c <= GdkPixbuf} {l:agz} (pixbuf: !gobjref (c, l)): gpointer // guchar*
-  = "#atsctrb_gdk_pixbuf_get_pixels"
+  {c:cls | c <= GdkPixbuf}
+  {l:agz} (
+  pixbuf: !gobjref (c, l)
+) : gpointer // guchar*
+  = "mac#atsctrb_gdk_pixbuf_get_pixels"
 // end of [gdk_pixbuf_get_pixels]
 
 fun gdk_pixbuf_get_width
   {c:cls | c <= GdkPixbuf} {l:agz} (pixbuf: !gobjref (c, l)): int
-  = "#atsctrb_gdk_pixbuf_get_width"
+  = "mac#atsctrb_gdk_pixbuf_get_width"
 // end of [gdk_pixbuf_get_width]
 
 fun gdk_pixbuf_get_height
   {c:cls | c <= GdkPixbuf} {l:agz} (pixbuf: !gobjref (c, l)): int
-  = "#atsctrb_gdk_pixbuf_get_height"
+  = "mac#atsctrb_gdk_pixbuf_get_height"
 // end of [gdk_pixbuf_get_height]
 
 fun gdk_pixbuf_get_rowstride
   {c:cls | c <= GdkPixbuf} {l:agz} (pixbuf: !gobjref (c, l)): int
-  = "#atsctrb_gdk_pixbuf_get_rowstride"
+  = "mac#atsctrb_gdk_pixbuf_get_rowstride"
 // end of [gdk_pixbuf_get_rowstride]
 
 (* ****** ****** *)

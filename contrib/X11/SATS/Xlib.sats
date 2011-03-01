@@ -91,16 +91,29 @@ viewtypedef XStrarr1 (n:int) = [l:addr | l > null] XStrarr (n, l)
 
 (* ****** ****** *)
 
-fun XPtrFree {a:viewt@ype} {l:addr} (x: XPtr (a, l)): void
-  = "#atsctrb_XFree"
+fun XPtrFree
+  {a:viewt@ype}
+  {l:addr} (
+  x: XPtr (a, l)
+) : void
+  = "mac#atsctrb_XFree"
 // end of [XPtrFree]
 
-fun XArrayFree {a:viewt@ype} {n:nat} {l:addr} (x: XArray (a, n, l)): void
-  = "#atsctrb_XFree"
+fun XArrayFree
+  {a:viewt@ype}
+  {n:nat}
+  {l:addr} (
+  x: XArray (a, n, l)
+) : void
+  = "mac#atsctrb_XFree"
 // end of [XArrayFree]
 
-fun XStringFree {a:viewt@ype} {l:addr} (x: XString l): void
-  = "#atsctrb_XFree"
+fun XStringFree
+  {a:viewt@ype}
+  {l:addr} (
+  x: XString l
+) : void
+  = "mac#atsctrb_XFree"
 // end of [XStringFree]
 
 (* ****** ****** *)
@@ -146,7 +159,7 @@ abstype GCref = $extype"GC" // this one should never be freed!
 //
 (* ****** ****** *)
 
-fun XOpenDisplay (name: Stropt): Display_ptr0 = "#atsctrb_XOpenDisplay"
+fun XOpenDisplay (name: Stropt): Display_ptr0 = "mac#atsctrb_XOpenDisplay"
 
 fun Display_ptr_is_null {l:addr} (p_dpy: !Display_ptr l): bool (l == null)
   = "atspre_ptr_is_null" // defined in $ATSHOME/prelude/CATS/pointer.cats
@@ -163,125 +176,139 @@ fun Display_ptr_isnot_null {l:addr} (p_dpy: !Display_ptr l): bool (l > null)
 //
 (* ****** ****** *)
 
-fun XAllPlanes (): ulint = "#atsctrb_XAllPlanes"
+fun XAllPlanes (): ulint = "mac#atsctrb_XAllPlanes"
 
 fun XBlackPixel {l:agz}
   (dpy: !Display_ptr l, nscr: int):<> ulint
-  = "#atsctrb_XBlackPixel"
+  = "mac#atsctrb_XBlackPixel"
 fun XWhitePixel {l:agz}
   (dpy: !Display_ptr l, nscr: int):<> ulint
-  = "#atsctrb_XWhitePixel"
+  = "mac#atsctrb_XWhitePixel"
 
 fun XConnectionNumber {l:agz} (dpy: !Display_ptr l):<> int
-  = "#atsctrb_XConnectionNumber"
+  = "mac#atsctrb_XConnectionNumber"
 
 fun XDefaultColormap {l:agz}
   (dpy: !Display_ptr l, nscr: int):<> Colormap
-  = "#atsctrb_XDefaultColormap"
+  = "mac#atsctrb_XDefaultColormap"
 
 (* ****** ****** *)
 
 fun XDefaultDepth {l:agz}
   (dpy: !Display_ptr l, nscr: int):<> int
-  = "#atsctrb_XDefaultDepth"
+  = "mac#atsctrb_XDefaultDepth"
 
 fun XListDepths {l:agz} (
-    dpy: !Display_ptr l
-  , nscr: int, cnt: &int? >> opt (int n, la > null)
-  ) : #[n:nat;la:addr] XArray (int, n, la)
-  = "#atsctrb_XListDepths"
+  dpy: !Display_ptr l
+, nscr: int, cnt: &int? >> opt (int n, la > null)
+) : #[n:nat;la:addr] XArray (int, n, la)
+  = "mac#atsctrb_XListDepths"
 // end of [XListDepths]
 
 (* ****** ****** *)
 
-fun XDefaultGC {l:agz} (dpy: !Display_ptr l, nscr: int): GCref
-  = "#atsctrb_XDefaultGC"
+fun XDefaultGC
+  {l:agz} (
+  dpy: !Display_ptr l, nscr: int
+) : GCref
+  = "mac#atsctrb_XDefaultGC"
 // end of [XDefaultGC]
 
 (* ****** ****** *)
 
-fun XDefaultRootWindow {l:agz} (dpy: !Display_ptr l): Window
-  = "#atsctrb_XDefaultRootWindow"
+fun XDefaultRootWindow
+  {l:agz} (
+  dpy: !Display_ptr l
+) : Window
+  = "mac#atsctrb_XDefaultRootWindow"
+// end of [XDefaultRootWindow]
 
 fun XDefaultScreenOfDisplay
-  {l1:agz} (dpy: !Display_ptr l1)
-  : [l2:agz] (
-    minus (Display_ptr l1, Screen_ptr l2) | Screen_ptr l2
-  ) = "#atsctrb_XDefaultScreenOfDisplay"
+  {l1:agz} (
+  dpy: !Display_ptr l1
+  ) : [l2:agz] (
+  minus (Display_ptr l1, Screen_ptr l2) | Screen_ptr l2
+) = "mac#atsctrb_XDefaultScreenOfDisplay"
 // end of [XDefaultScreenOfDisplay]
 
 fun XScreenOfDisplay
-  {l1:agz} (dpy: !Display_ptr l1, nsrc: int)
-  : [l2:agz] (
-    minus (Display_ptr l1, Screen_ptr l2) | Screen_ptr l2
-  ) = "#atsctrb_XDefaultScreenOfDisplay"
+  {l1:agz} (
+  dpy: !Display_ptr l1, nsrc: int
+) : [l2:agz] (
+  minus (Display_ptr l1, Screen_ptr l2) | Screen_ptr l2
+) = "mac#atsctrb_XDefaultScreenOfDisplay"
 // end of [XDefaultScreenOfDisplay]
 
 fun XDefaultScreen {l:agz} (dpy: !Display_ptr l): int(*nscr*)
-  = "#atsctrb_XDefaultScreen"
+  = "mac#atsctrb_XDefaultScreen"
 
 fun XDefaultVisual
-  {l1:agz} (dpy: !Display_ptr l1, nsrc: int)
-  : [l2:agz] (
-    minus (Display_ptr l1, Visual_ptr l2) | Visual_ptr l2
-  ) = "#atsctrb_XDefaultVisual"
+  {l1:agz} (
+  dpy: !Display_ptr l1, nsrc: int
+) : [l2:agz] (
+  minus (Display_ptr l1, Visual_ptr l2) | Visual_ptr l2
+) = "mac#atsctrb_XDefaultVisual"
 // end of [XDefaultVisual]
 
 // number of entries in the default colormap
 fun XDisplayCells {l:agz}
   (dpy: !Display_ptr l, nscr: int): int(*ncell*)
-  = "#atsctrb_XDisplayCells"
+  = "mac#atsctrb_XDisplayCells"
 
 // the depth of the root window
 fun XDisplayPlanes {l:agz}
   (dpy: !Display_ptr l, nscr: int): int(*depth*)
-  = "#atsctrb_XDisplayPlanes"
+  = "mac#atsctrb_XDisplayPlanes"
 
 // the name passed to XOpenDisplay
 fun XDisplayString {l:agz} (dpy: !Display_ptr l): string
-  = "#atsctrb_XDisplayString"
+  = "mac#atsctrb_XDisplayString"
 
 (* ****** ****** *)
 
 fun XMaxRequestSize {l:agz}
   (dpy: !Display_ptr l): lint // in 4-byte units
-  = "#atsctrb_XMaxRequestSize"
+  = "mac#atsctrb_XMaxRequestSize"
 
 // the full serial number for the last processed request
 fun XLastKnownRequestProcessed {l:agz} (dpy: !Display_ptr l): ulint
-  = "#atsctrb_XLastKnownRequestProcessed"
+  = "mac#atsctrb_XLastKnownRequestProcessed"
 
 // the full serial number to be used for the next request
 fun XNextRequest {l:agz} (dpy: !Display_ptr l): ulint
-  = "#atsctrb_XNextRequest"
+  = "mac#atsctrb_XNextRequest"
 
 (* ****** ****** *)
 
 fun XProtocolVersion {l:agz} (dpy: !Display_ptr l): int
-  = "#atsctrb_XProtocolVersion"
+  = "mac#atsctrb_XProtocolVersion"
 
 fun XProtocolRevision {l:agz} (dpy: !Display_ptr l): int
-  = "#atsctrb_XProtocolRevision"
+  = "mac#atsctrb_XProtocolRevision"
 
 (* ****** ****** *)
 
 // the length of the event queue for [dpy]
 fun XQLength {l:agz} (dpy: !Display_ptr l): int
-  = "#atsctrb_XQLength"
+  = "mac#atsctrb_XQLength"
 
 (* ****** ****** *)
 
-fun XRootWindow {l:agz} (dpy: !Display_ptr l, nscr: int): Window
-  = "#atsctrb_XRootWindow"
+fun XRootWindow
+  {l:agz} (
+  dpy: !Display_ptr l, nscr: int
+) : Window
+  = "mac#atsctrb_XRootWindow"
+// end of [fun]
 
 fun XScreenCount {l:agz} (dpy: !Display_ptr l): int
-  = "#atsctrb_XScreenCount"
+  = "mac#atsctrb_XScreenCount"
 
 fun XServerVendor {l:agz} (dpy: !Display_ptr l): string
-  = "#atsctrb_XServerVendor"
+  = "mac#atsctrb_XServerVendor"
 
 fun XVendorRelease {l:agz} (dpy: !Display_ptr l): int
-  = "#atsctrb_XVendorRelease"
+  = "mac#atsctrb_XVendorRelease"
 
 (* ****** ****** *)
 //
@@ -294,37 +321,38 @@ typedef XPixmapFormatValues =
   depth= int, bits_per_pixel= int, scanline_pad= int
 } // end of [XPixmapFormatValues]
 
-fun XListPixmapFormats {l:agz}
-  (dpy: !Display_ptr l, n: &int? >> opt (int n, la > null))
-  : #[n:nat;la:addr] XArray (XPixmapFormatValues, n, la)
-  = "#atsctrb_XListPixmapFormats"
+fun XListPixmapFormats
+  {l:agz} (
+  dpy: !Display_ptr l, n: &int? >> opt (int n, la > null)
+) : #[n:nat;la:addr] XArray (XPixmapFormatValues, n, la)
+  = "mac#atsctrb_XListPixmapFormats"
 
 macdef LSBFirst = $extval (int, "LSBFirst")
 macdef MSBFirst = $extval (int, "MSBFirst")
 
 fun XImageByteOrder {l:agz} (dpy: !Display_ptr l): int
-  = "#atsctrb_XImageByteOrder"
+  = "mac#atsctrb_XImageByteOrder"
 
 fun XBitmapUnit {l:agz} (dpy: !Display_ptr l): int
-  = "#atsctrb_XBitmapUnit"
+  = "mac#atsctrb_XBitmapUnit"
 
 fun XBitmapOrder {l:agz} (dpy: !Display_ptr l): int
-  = "#atsctrb_XBitmapOrder"
+  = "mac#atsctrb_XBitmapOrder"
 
 fun XBitmapPad {l:agz} (dpy: !Display_ptr l): int
-  = "#atsctrb_XBitmapPad"
+  = "mac#atsctrb_XBitmapPad"
 
 fun XDisplayHeight {l:agz} (dpy: !Display_ptr l, nscr: int): int
-  = "#atsctrb_XDisplayHeight"
+  = "mac#atsctrb_XDisplayHeight"
 
 fun XDisplayHeightMM {l:agz} (dpy: !Display_ptr l, nscr: int): int
-  = "#atsctrb_XDisplayHeightMM"
+  = "mac#atsctrb_XDisplayHeightMM"
 
 fun XDisplayWidth {l:agz} (dpy: !Display_ptr l, nscr: int): int
-  = "#atsctrb_XDisplayWidth"
+  = "mac#atsctrb_XDisplayWidth"
 
 fun XDisplayWidthMM {l:agz} (dpy: !Display_ptr l, nscr: int): int
-  = "#atsctrb_XDisplayWidthMM"
+  = "mac#atsctrb_XDisplayWidthMM"
 
 (* ****** ****** *)
 //
@@ -333,61 +361,61 @@ fun XDisplayWidthMM {l:agz} (dpy: !Display_ptr l, nscr: int): int
 (* ****** ****** *)
 
 fun XBlackPixelOfScreen {l:agz} (scr: !Screen_ptr l): ulint
-  = "#atsctrb_XBlackPixelOfScreen"
+  = "mac#atsctrb_XBlackPixelOfScreen"
 
 fun XWhitePixelOfScreen {l:agz} (scr: !Screen_ptr l): ulint
-  = "#atsctrb_XWhitePixelOfScreen"
+  = "mac#atsctrb_XWhitePixelOfScreen"
 
 fun XCellsOfScreen {l:agz} (scr: !Screen_ptr l): int
-  = "#atsctrb_XCellsOfScreen"
+  = "mac#atsctrb_XCellsOfScreen"
 
 fun XDefaultColormapOfScreen {l:agz} (scr: !Screen_ptr l): Colormap
-  = "#atsctrb_XDefaultColormapOfScreen"
+  = "mac#atsctrb_XDefaultColormapOfScreen"
 
 fun XDefaultDepthOfScreen {l:agz} (scr: !Screen_ptr l): int
-  = "#atsctrb_XDefaultDepthOfScreen"
+  = "mac#atsctrb_XDefaultDepthOfScreen"
 
 fun XDefaultGCOfScreen {l:agz} (scr: !Screen_ptr l): GCref
-  = "#atsctrb_XDefaultGCOfScreen"
+  = "mac#atsctrb_XDefaultGCOfScreen"
 
 //
 // HX: the function returns WhenMapped, NotUseful or Always
 //
 fun XDoesBackingStore {l:agz} (scr: !Screen_ptr l): int
-  = "#atsctrb_XDoesBackingStore"
+  = "mac#atsctrb_XDoesBackingStore"
 
 fun XDoesSaveUnders {l:agz} (scr: !Screen_ptr l): bool
-  = "#atsctrb_XDoesSaveUnders"
+  = "mac#atsctrb_XDoesSaveUnders"
 
 fun XScreenNumberOfScreen {l:agz} (scr: !Screen_ptr l): int
-  = "#atsctrb_XScreenNumberofScreen"
+  = "mac#atsctrb_XScreenNumberofScreen"
 
 fun XEventMaskOfScreen {l:agz} (scr: !Screen_ptr l): lint
-  = "#atsctrb_XEventMaskOfScreen"
+  = "mac#atsctrb_XEventMaskOfScreen"
 
 fun XWidthOfScreen {l:agz} (scr: !Screen_ptr l): int
-  = "#atsctrb_XWidthOfScreen"
+  = "mac#atsctrb_XWidthOfScreen"
 
 fun XWidthMMOfScreen {l:agz} (scr: !Screen_ptr l): int
-  = "#atsctrb_XWidthMMOfScreen"
+  = "mac#atsctrb_XWidthMMOfScreen"
 
 fun XHeightOfScreen {l:agz} (scr: !Screen_ptr l): int
-  = "#atsctrb_XHeightOfScreen"
+  = "mac#atsctrb_XHeightOfScreen"
 
 fun XHeightMMOfScreen {l:agz} (scr: !Screen_ptr l): int
-  = "#atsctrb_XHeightMMOfScreen"
+  = "mac#atsctrb_XHeightMMOfScreen"
 
 fun XMaxCmapsOfScreen {l:agz} (scr: !Screen_ptr l): int
-  = "#atsctrb_XMaxCmapsOfScreen"
+  = "mac#atsctrb_XMaxCmapsOfScreen"
 
 fun XMinCmapsOfScreen {l:agz} (scr: !Screen_ptr l): int
-  = "#atsctrb_XMinCmapsOfScreen"
+  = "mac#atsctrb_XMinCmapsOfScreen"
 
 fun XPlanesOfScreen {l:agz} (scr: !Screen_ptr l): int
-  = "#atsctrb_XPlanesOfScreen"
+  = "mac#atsctrb_XPlanesOfScreen"
 
 fun XRootWindowOfScreen {l:agz} (scr: !Screen_ptr l): Window
-  = "#atsctrb_XRootWindowOfScreen"
+  = "mac#atsctrb_XRootWindowOfScreen"
 
 (* ****** ****** *)
 //
@@ -396,7 +424,7 @@ fun XRootWindowOfScreen {l:agz} (scr: !Screen_ptr l): Window
 (* ****** ****** *)
 
 fun XNoOp {l:agz} (dpy: !Display_ptr l): void
-  = "#atsctrb_XNoOp"
+  = "mac#atsctrb_XNoOp"
 
 (* ****** ****** *)
 //
@@ -407,7 +435,7 @@ fun XNoOp {l:agz} (dpy: !Display_ptr l): void
 absview XFree_v (l:addr)
 
 fun XFree0 {l:addr}
-  (pf: XFree_v l | p: ptr l): void = "#atsctrb_XFree"
+  (pf: XFree_v l | p: ptr l): void = "mac#atsctrb_XFree"
 // end of [XFree0]
 
 symintr XFree
@@ -422,15 +450,18 @@ overload XFree with XStringFree
 //
 (* ****** ****** *)
 
-fun XCloseDisplay (dpy: Display_ptr1): void = "#atsctrb_XCloseDisplay"
+fun XCloseDisplay (dpy: Display_ptr1): void = "mac#atsctrb_XCloseDisplay"
 
 abst@ype close_mode_t = int
 macdef DestroyAll = $extval (close_mode_t, "DestroyAll")
 macdef RetainPermanent = $extval (close_mode_t, "RetainPermanent")
 macdef RetainTemporary = $extval (close_mode_t, "RetainTemporary")
-
+//
 // [XSetCloseDownMode] may generate a BadValue error
-fun XSetCloseDownMode {l:agz} (dpy: Display_ptr l, mode: close_mode_t): void
+//
+fun XSetCloseDownMode
+  {l:agz} (dpy: Display_ptr l, mode: close_mode_t): void
+// end of [XSetCloseDownMode]
 
 (* ****** ****** *)
 //
@@ -445,7 +476,7 @@ fun XSetCloseDownMode {l:agz} (dpy: Display_ptr l, mode: close_mode_t): void
 (* ****** ****** *)
 
 fun XVisualIDFromVisual {l:agz} (visual: !Visual_ptr l): VisualID
-  = "#atsctrb_XVisualIDFromVisual"
+  = "mac#atsctrb_XVisualIDFromVisual"
   
 (* ****** ****** *)
 //
@@ -479,30 +510,30 @@ typedef XSetWindowAttributes =
 (* ****** ****** *)
 
 fun XCreateWindow {ld,lv:agz} (
-    dpy: !Display_ptr ld
-  , parent: Window
-  , x: int, y: int
-  , width: uint, height: uint
-  , border_width: uint
-  , depth: uint // can [depth] be negative?
-  , _class: uint
-  , visual: !Visual_ptr lv
-  , valuemask: ulint
-  , attr: &XSetWindowAttributes
-  ) : Window
-  = "#atsctrb_XCreateWindow"
+  dpy: !Display_ptr ld
+, parent: Window
+, x: int, y: int
+, width: uint, height: uint
+, border_width: uint
+, depth: uint // can [depth] be negative?
+, _class: uint
+, visual: !Visual_ptr lv
+, valuemask: ulint
+, attr: &XSetWindowAttributes
+) : Window
+  = "mac#atsctrb_XCreateWindow"
 // end of [XCreateWindow]
 
 fun XCreateSimpleWindow {ld:agz} (
-    dpy: !Display_ptr ld
-  , parent: Window
-  , x: int, y: int
-  , width: uint, height: uint
-  , border_width: uint // in pixels
-  , border: ulint // border pixel value
-  , background: ulint // background pixel value
-  ) : Window
-  = "#atsctrb_XCreateSimpleWindow"
+  dpy: !Display_ptr ld
+, parent: Window
+, x: int, y: int
+, width: uint, height: uint
+, border_width: uint // in pixels
+, border: ulint // border pixel value
+, background: ulint // background pixel value
+) : Window
+  = "mac#atsctrb_XCreateSimpleWindow"
 // end of [XCreateSimpleWindow]
 
 (* ****** ****** *)
@@ -513,11 +544,11 @@ fun XCreateSimpleWindow {ld:agz} (
 
 fun XDestroyWindow {l:agz}
   (dpy: !Display_ptr l, win: Window): void
-  = "#atsctrb_XDestroyWindow"
+  = "mac#atsctrb_XDestroyWindow"
 
 fun XDestroySubwindows {l:agz}
   (dpy: !Display_ptr l, win: Window): void
-  = "#atsctrb_XDestroyWindow"
+  = "mac#atsctrb_XDestroyWindow"
 
 (* ****** ****** *)
 //
@@ -527,15 +558,15 @@ fun XDestroySubwindows {l:agz}
 
 fun XMapWindow {l:agz}
   (dpy: !Display_ptr l, win: Window): void
-  = "#atsctrb_XMapWindow"
+  = "mac#atsctrb_XMapWindow"
 
 fun XMapRaised {l:agz}
   (dpy: !Display_ptr l, win: Window): void
-  = "#atsctrb_XMapRaised"
+  = "mac#atsctrb_XMapRaised"
 
 fun XMapSubwindows {l:agz}
   (dpy: !Display_ptr l, win: Window): void
-  = "#atsctrb_XMapSubwindows"
+  = "mac#atsctrb_XMapSubwindows"
 
 (* ****** ****** *)
 //
@@ -545,11 +576,11 @@ fun XMapSubwindows {l:agz}
 
 fun XUnmapWindow {l:agz}
   (dpy: !Display_ptr l, win: Window): void
-  = "#atsctrb_XUnmapWindow"
+  = "mac#atsctrb_XUnmapWindow"
 
 fun XUnmapSubwindows {l:agz}
   (dpy: !Display_ptr l, win: Window): void
-  = "#atsctrb_XUnmapSubwindows"
+  = "mac#atsctrb_XUnmapSubwindows"
 
 (* ****** ****** *)
 //
@@ -567,26 +598,29 @@ typedef XWindowChanges =
 } // end of [XWindowChanges]
 
 fun XConfigureWindow {l:agz} (
-    dpy: !Display_ptr l, win: Window, valmask: uint, values: &XWindowChanges
-  ) : void
-  = "#atsctrb_XConfigureWindow"
+  dpy: !Display_ptr l
+, win: Window
+, valmask: uint
+, values: &XWindowChanges
+) : void
+  = "mac#atsctrb_XConfigureWindow"
 
 fun XMoveWindow {l:agz}
   (dpy: !Display_ptr l, win: Window, x: int, y: int): void
-  = "#atsctrb_XMoveWindow"
+  = "mac#atsctrb_XMoveWindow"
 
 fun XResizeWindow {l:agz}
   (dpy: !Display_ptr l, win: Window, width: uint, height: uint): void
-  = "#atsctrb_XResizeWindow"
+  = "mac#atsctrb_XResizeWindow"
 
 fun XMoveResizeWindow {l:agz} (
-    dpy: !Display_ptr l, win: Window, x: int, y: int, width: uint, height: uint
-  ) : void
-  = "#atsctrb_XMoveResizeWindow"
+  dpy: !Display_ptr l, win: Window, x: int, y: int, width: uint, height: uint
+) : void
+  = "mac#atsctrb_XMoveResizeWindow"
 
 fun XSetWindowBorderWidth {l:agz}
   (dpy: !Display_ptr l, win: Window, border_width: uint): void
-  = "#atsctrb_XSetWindowBorderWidth"
+  = "mac#atsctrb_XSetWindowBorderWidth"
 
 (* ****** ****** *)
 //
@@ -596,27 +630,27 @@ fun XSetWindowBorderWidth {l:agz}
 
 fun XRaiseWindow {l:agz}
   (dpy: !Display_ptr l, win: Window): void
-  = "#atsctrb_XRaiseWindow"
+  = "mac#atsctrb_XRaiseWindow"
 
 fun XLowerWindow {l:agz}
   (dpy: !Display_ptr l, win: Window): void
-  = "#atsctrb_XLowerWindow"
+  = "mac#atsctrb_XLowerWindow"
 
 fun XCirculateSubwindows {l:agz}
   (dpy: !Display_ptr l, win: Window, dir: int): void
-  = "#atsctrb_XCirculateSubwindows"
+  = "mac#atsctrb_XCirculateSubwindows"
 
 fun XCirculateSubwindowsUp {l:agz}
   (dpy: !Display_ptr l, win: Window): void
-  = "#atsctrb_XCirculateSubwindowsUp"
+  = "mac#atsctrb_XCirculateSubwindowsUp"
 
 fun XCirculateSubwindowsDown {l:agz}
   (dpy: !Display_ptr l, win: Window): void
-  = "#atsctrb_XCirculateSubwindowsDown"
+  = "mac#atsctrb_XCirculateSubwindowsDown"
 
 fun XRestackWindows {l:agz} {n:nat}
   (dpy: !Display_ptr l, wins: &(@[Window][n]), nwin: int n): void
-  = "#atsctrb_XRestackWindows"
+  = "mac#atsctrb_XRestackWindows"
 
 (* ****** ****** *)
 //
@@ -625,36 +659,39 @@ fun XRestackWindows {l:agz} {n:nat}
 (* ****** ****** *)
 
 fun XChangeWindowAttributes {l:agz} (
-    dpy: !Display_ptr l, win: Window, valmask: ulint, attr: &XSetWindowAttributes
-  ) : void
-  = "#atsctrb_XChangeWindowAttributes"
+  dpy: !Display_ptr l
+, win: Window
+, valmask: ulint
+, attr: &XSetWindowAttributes
+) : void
+  = "mac#atsctrb_XChangeWindowAttributes"
 
 fun XSetWindowBackground {l:agz}
   (dpy: !Display_ptr l, win: Window, bg_pixel: ulint): void
-  = "#atsctrb_XSetWindowBackground"
+  = "mac#atsctrb_XSetWindowBackground"
 
 fun XSetWindowBackgroundPixmap {l:agz}
   (dpy: !Display_ptr l, win: Window, bg_pixmap: Pixmap): void
-  = "#atsctrb_XSetWindowBackgroundPixmap"
+  = "mac#atsctrb_XSetWindowBackgroundPixmap"
 
 fun XSetWindowBorder {l:agz}
   (dpy: !Display_ptr l, win: Window, bd_pixel: ulint): void
-  = "#atsctrb_XSetWindowBorder"
+  = "mac#atsctrb_XSetWindowBorder"
 
 fun XSetWindowBorderPixmap {l:agz}
   (dpy: !Display_ptr l, win: Window, bd_pixmap: Pixmap): void
-  = "#atsctrb_XSetWindowBorderPixmap"
+  = "mac#atsctrb_XSetWindowBorderPixmap"
 
 fun XSetWindowColormap {l:agz}
   (dpy: !Display_ptr l, win: Window, colormap: Colormap): void
-  = "#atsctrb_XSetWindowColormap"
+  = "mac#atsctrb_XSetWindowColormap"
 
 fun XDefineCursor {l:agz}
   (dpy: !Display_ptr l, win: Window, cursor: Cursor): void
-  = "#atsctrb_XDefineCursor"
+  = "mac#atsctrb_XDefineCursor"
 
 fun XUndefineCursor {l:agz} (dpy: !Display_ptr l, win: Window): void
-  = "#atsctrb_XUndefineCursor"
+  = "mac#atsctrb_XUndefineCursor"
 
 (* ****** ****** *)
 //
@@ -670,13 +707,14 @@ castfn int_of_Status {i:int} (x: Status i):<> int i
 overload int_of with int_of_Status
 
 fun XQueryTree {l:agz} (
-    dpy: !Display_ptr l
-  , win: Window
-  , root: &Window? >> Window
-  , parent: &Window? >> Window
-  , children: &ptr? >> opt (XArray1 (Window, n), i <> 0)
-  , nchilren: &int? >> opt (int n, i <> 0)
-  ) : #[i:int;n:nat] Status i = "#atsctrb_XQueryTree"
+  dpy: !Display_ptr l
+, win: Window
+, root: &Window? >> Window
+, parent: &Window? >> Window
+, children: &ptr? >> opt (XArray1 (Window, n), i <> 0)
+, nchilren: &int? >> opt (int n, i <> 0)
+) : #[i:int;n:nat] Status i
+  = "mac#atsctrb_XQueryTree"
 // end of [XQueryTree]
 
 typedef XWindowAttributes =
@@ -705,20 +743,21 @@ typedef XWindowAttributes =
 } // end of [XWindowAttributes]
 
 fun XGetWindowAttributes {l:agz} (
-    dpy: !Display_ptr l, win: Window
-  , attr: &XWindowAttributes? >> opt (XWindowAttributes, i <> 0)
-  ) : #[i:int] Status i
-  = "#atsctrb_XGetWindowAttributes"
+  dpy: !Display_ptr l, win: Window
+, attr: &XWindowAttributes? >> opt (XWindowAttributes, i <> 0)
+) : #[i:int] Status i
+  = "mac#atsctrb_XGetWindowAttributes"
 
 fun XGetGeometry {l:agz} (
-    dpy: !Display_ptr l, drw: Drawable
-  , root: &Window? >> Window
-  , x: &int? >> int, y: &int? >> int
-  , width: &uint? >> uint, height: &uint? >> uint
-  , border_width: &uint? >> uint
-  , depth: &uint? >> uint
-  ) : Status // ...
-  = "#atsctrb_XGetWindowAttributes"
+  dpy: !Display_ptr l, drw: Drawable
+, root: &Window? >> Window
+, x: &int? >> int, y: &int? >> int
+, width: &uint? >> uint, height: &uint? >> uint
+, border_width: &uint? >> uint
+, depth: &uint? >> uint
+) : Status // ...
+  = "mac#atsctrb_XGetWindowAttributes"
+// end of [fun]
 
 (* ****** ****** *)
 //
@@ -727,23 +766,25 @@ fun XGetGeometry {l:agz} (
 (* ****** ****** *)
 
 fun XTranslateCoordinates {l:agz} (
-    dpy: !Display_ptr l
-  , win_src: Window, win_dst: Window
-  , x_src: int, y_src: int
-  , x_dst: &int? >> int, y_dst: &int? >> int
-  , child: &Window? >> Window
-  ) : bool
-  = "#atsctrb_XTranslateCoordinates"
+  dpy: !Display_ptr l
+, win_src: Window, win_dst: Window
+, x_src: int, y_src: int
+, x_dst: &int? >> int, y_dst: &int? >> int
+, child: &Window? >> Window
+) : bool
+  = "mac#atsctrb_XTranslateCoordinates"
+// end of [fun]
 
 fun XQueryPointer {l:agz} (
-    dpy: !Display_ptr l
-  , win: Window
-  , root: &Window? >> Window, child: &Window? >> Window
-  , x_root: &int? >> int, y_root: &int? >> int
-  , x_win: &int? >> int, y_win: &int? >> int
-  , mask: &uint? >> uint
-  ) : bool
-  = "#atsctrb_XQueryPointer"
+  dpy: !Display_ptr l
+, win: Window
+, root: &Window? >> Window, child: &Window? >> Window
+, x_root: &int? >> int, y_root: &int? >> int
+, x_win: &int? >> int, y_win: &int? >> int
+, mask: &uint? >> uint
+) : bool
+  = "mac#atsctrb_XQueryPointer"
+// end of [fun]
 
 (* ****** ****** *)
 //
@@ -752,13 +793,14 @@ fun XQueryPointer {l:agz} (
 (* ****** ****** *)
 
 fun XInternAtom {l:agz} (
-    dpy: !Display_ptr l, atom_name: string, only_if_exists: bool
-  ) : Atom = "#atsctrb_XInternAtom"
+  dpy: !Display_ptr l, atom_name: string, only_if_exists: bool
+) : Atom = "mac#atsctrb_XInternAtom"
 // end of [XInternAtom]
 
-fun XGetAtomName {l:agz}
-  (dpy: !Display_ptr l, atom: Atom): XString0
-  = "#atsctrb_XGetAtomName"
+fun XGetAtomName {l:agz} (
+  dpy: !Display_ptr l, atom: Atom
+) : XString0
+  = "mac#atsctrb_XGetAtomName"
 // end of [XGetAtomName]
 
 (* ****** ****** *)
@@ -778,14 +820,15 @@ fun XGetAtomName {l:agz}
 (* ****** ****** *)
 
 fun XCreatePixmap {l:agz} (
-    dpy: !Display_ptr l
-  , drw: Drawable, width: uint, height: uint, depth: uint
-  ) : Pixmap
-  = "#atsctrb_XCreatePixmap"
+  dpy: !Display_ptr l
+, drw: Drawable, width: uint, height: uint, depth: uint
+) : Pixmap
+  = "mac#atsctrb_XCreatePixmap"
+// end of [fun]
 
 fun XFreePixmap
   {l:agz} (dpy: !Display_ptr l, pixmap: Pixmap): void
-  = "#atsctrb_XFreePixmap"
+  = "mac#atsctrb_XFreePixmap"
 // end of [XFreePixmap]
 
 (* ****** ****** *)
@@ -797,12 +840,18 @@ fun XFreePixmap
 (* ****** ****** *)
 
 fun XCreateFontCursor
-  {l:agz} (dpy: !Display_ptr l, shape: uint) : Cursor
-  = "#atsctrb_XCreateFontCursor"
+  {l:agz} (
+  dpy: !Display_ptr l, shape: uint
+) : Cursor
+  = "mac#atsctrb_XCreateFontCursor"
+// end of [fun]
 
 fun XFreeCursor
-  {l:agz} (dpy: !Display_ptr l, cursor: Cursor): void
-  = "#atsctrb_XFreeCursor"
+  {l:agz} (
+  dpy: !Display_ptr l, cursor: Cursor
+) : void
+  = "mac#atsctrb_XFreeCursor"
+// end of [fun]
 
 (* ****** ****** *)
 //
@@ -830,18 +879,25 @@ typedef XColor =
 (* ****** ****** *)
 
 fun XCreateColormap {l1,l2:agz} (
-    dsp: !Display_ptr l1
-  , win: Window, visual: !Visual_ptr l2, alloc: int
-  ) : Colormap
-  = "#atsctrb_XCreateColormap"
+  dsp: !Display_ptr l1
+, win: Window, visual: !Visual_ptr l2, alloc: int
+) : Colormap
+  = "mac#atsctrb_XCreateColormap"
+// end of [fun]
 
-fun XCopyColormapAndFree {l:agz}
-  (dpy: !Display_ptr l, colormap: Colormap): void
-  = "#atsctrb_XCopyColormapAndFree"
+fun XCopyColormapAndFree
+  {l:agz} (
+  dpy: !Display_ptr l, colormap: Colormap
+) : void
+  = "mac#atsctrb_XCopyColormapAndFree"
+// end of [fun]
 
-fun XFreeColormap {l:agz}
-  (dpy: !Display_ptr l, colormap: Colormap): void
-  = "#atsctrb_XFreeColormap"
+fun XFreeColormap
+  {l:agz} (
+  dpy: !Display_ptr l, colormap: Colormap
+) : void
+  = "mac#atsctrb_XFreeColormap"
+// end of [fun]
 
 (* ****** ****** *)
 //
@@ -850,21 +906,21 @@ fun XFreeColormap {l:agz}
 (* ****** ****** *)
 
 fun XLookupColor {l:agz} (
-    dpy: !Display_ptr l
-  , colormap: Colormap, color_name: string
-  , exact_def: &XColor? >> opt (XColor, i <> 0)
-  , screen_def: &XColor? >> opt (XColor, i <> 0)
-  ) : #[i:int] Status i // nonzero if the name is resolved
-  = "#atsctrb_XLookupColor"
+  dpy: !Display_ptr l
+, colormap: Colormap, color_name: string
+, exact_def: &XColor? >> opt (XColor, i <> 0)
+, screen_def: &XColor? >> opt (XColor, i <> 0)
+) : #[i:int] Status i // nonzero if the name is resolved
+  = "mac#atsctrb_XLookupColor"
 // end of [XLookupColor]
 
 fun XParseColor {l:agz} (
-    dpy: !Display_ptr l
-  , colormap: Colormap
-  , spec: string
-  , exact_def: &XColor? >> opt (XColor, i <> 0)
-  ) : #[i:int] Status i // nonzero if the name is resolved
-  = "#atsctrb_XParseColor"
+  dpy: !Display_ptr l
+, colormap: Colormap
+, spec: string
+, exact_def: &XColor? >> opt (XColor, i <> 0)
+) : #[i:int] Status i // nonzero if the name is resolved
+  = "mac#atsctrb_XParseColor"
 // end of [XParseColor]
 
 (*
@@ -878,10 +934,10 @@ fun XcmsLookupColor (...)
 (* ****** ****** *)
 
 fun XAllocColor {l:agz} (
-    dpy: !Display_ptr l
-  , colormap: Colormap, screen_in_out: &XColor >> opt (XColor, i <> 0)
-  ) : #[i:int] Status i
-  = "#atsctrb_XAllocColor"
+  dpy: !Display_ptr l
+, colormap: Colormap, screen_in_out: &XColor >> opt (XColor, i <> 0)
+) : #[i:int] Status i
+  = "mac#atsctrb_XAllocColor"
 // end of [XAllocColor]
 
 (*
@@ -889,13 +945,13 @@ fun XcmsAllocColor (...)
 *)
 
 fun XAllocNamedColor {l:agz} (
-    dpy: !Display_ptr l
-  , colormap: Colormap
-  , color_name: string
-  , screen_def: &XColor? >> opt (XColor, i <> 0)
-  , exact_def: &XColor? >> opt (XColor, i <> 0)
-  ) : #[i:int] Status i
-  = "#atsctrb_XAllocNamedColor"
+  dpy: !Display_ptr l
+, colormap: Colormap
+, color_name: string
+, screen_def: &XColor? >> opt (XColor, i <> 0)
+, exact_def: &XColor? >> opt (XColor, i <> 0)
+) : #[i:int] Status i
+  = "mac#atsctrb_XAllocNamedColor"
 // end of [XAllocNamedColor]
 
 (*
@@ -918,14 +974,14 @@ fun XFreeColors (...)
 (* ****** ****** *)
 
 fun XStoreColor {l:agz} (
-    dpy: !Display_ptr l, colormap: Colormap, color: &XColor
-  ) : void = "#atsctrb_XStoreColor"
+  dpy: !Display_ptr l, colormap: Colormap, color: &XColor
+) : void = "mac#atsctrb_XStoreColor"
 // end of [XStoreColor]
 
 fun XStoreColors {l:agz} {n:nat} (
-    dpy: !Display_ptr l
-  , colormap: Colormap, colors: &(@[XColor][n]), ncolor: int n
-  ) : void = "#atsctrb_XStoreColors"
+  dpy: !Display_ptr l
+, colormap: Colormap, colors: &(@[XColor][n]), ncolor: int n
+) : void = "mac#atsctrb_XStoreColors"
 // end of [XStoreColors]
 
 (*
@@ -934,21 +990,21 @@ XcmsStoreColors (...)
 *)
 
 fun XStoreNamedColor {l:agz} (
-    dpy: !Display_ptr l
-  , colormap: Colormap, color_name: string, pixel: ulint, flags: int
-  ) : void = "#atsctrb_XStoreNamedColor"
+  dpy: !Display_ptr l
+, colormap: Colormap, color_name: string, pixel: ulint, flags: int
+) : void = "mac#atsctrb_XStoreNamedColor"
 // end of [XStoreNamedColor]
 
 fun XQueryColor {l:agz} (
-    dpy: !Display_ptr l
-    , colormap: Colormap, def_in_out: &XColor >> XColor
-  ) : void = "#atsctrb_XQueryColor"
+  dpy: !Display_ptr l
+, colormap: Colormap, def_in_out: &XColor >> XColor
+) : void = "mac#atsctrb_XQueryColor"
 // end of [XQueryColor]
 
 fun XQueryColors {l:agz} {n:nat} (
-    dpy: !Display_ptr l
-  , colormap: Colormap, defs_in_out: &(@[XColor][n]), ncolor: int n
-  ) : void = "#atsctrb_XQueryColors"
+  dpy: !Display_ptr l
+, colormap: Colormap, defs_in_out: &(@[XColor][n]), ncolor: int n
+) : void = "mac#atsctrb_XQueryColors"
 // end of [XQueryColors]
 
 (*
@@ -1044,32 +1100,32 @@ fun GCptr_isnot_null {l:addr} (p_dpy: !GCptr l): bool (l > null)
   = "atspre_ptr_isnot_null" // defined in $ATSHOME/prelude/CATS/pointer.cats
 
 fun XCreateGC {l:agz} ( // [values] can be uninitialized ...
-    dpy: !Display_ptr l, drw: Drawable, mask: ulint, values: &XGCValues?
-  ) : GCptr1 // HX-2010-04-18: should it be GCptr0?
-  = "#atsctrb_XCreateGC"
+  dpy: !Display_ptr l, drw: Drawable, mask: ulint, values: &XGCValues?
+) : GCptr1 // HX-2010-04-18: should it be GCptr0?
+  = "mac#atsctrb_XCreateGC"
 // end of [XCreateGC]
 
 fun XCopyGC {l1,l2,l3:agz}
   (dpy: !Display_ptr l1, src: !GCptr l2, dst: !GCptr l3, mask: ulint): void
-  = "#atsctrb_XCopyGC"
+  = "mac#atsctrb_XCopyGC"
 // end of [XCopyGC]
 
 fun XChangeGC {l1,l2:agz}
   (dpy: !Display_ptr l1, gc: !GCptr l2, mask: ulint, values: &XGCValues): void
-  = "#atsctrb_XChangeGC"
+  = "mac#atsctrb_XChangeGC"
 // end of [XChangeGC]
 
 fun XGetGCValues {l1,l2:agz} (
-    dpy: !Display_ptr l1, gc: !GCptr l2, mask: ulint, values: &XGCValues? >> XGCValues
-  ) : void = "#atsctrb_XGetGCValues"
+  dpy: !Display_ptr l1, gc: !GCptr l2, mask: ulint, values: &XGCValues? >> XGCValues
+) : void = "mac#atsctrb_XGetGCValues"
 // end of [XGetGCValues]
 
 fun XFreeGC {l1,l2:agz}
-  (dpy: !Display_ptr l1, gc: GCptr l2): void = "#atsctrb_XFreeGC"
+  (dpy: !Display_ptr l1, gc: GCptr l2): void = "mac#atsctrb_XFreeGC"
 // end of [XFreeGC]
 
 fun XFlushGC {l1,l2:agz}
-  (dpy: !Display_ptr l1, gc: !GCptr l2): void = "#atsctrb_XFlushGC"
+  (dpy: !Display_ptr l1, gc: !GCptr l2): void = "mac#atsctrb_XFlushGC"
 // end of [XFlushGC]
 
 (* ****** ****** *)
@@ -1080,40 +1136,40 @@ fun XFlushGC {l1,l2:agz}
 
 fun XSetForeground {l1,l2:agz}
   (dpy: !Display_ptr l1, gc: !GCptr l2, foreground: ulint): void
-  = "#atsctrb_XSetForeground"
+  = "mac#atsctrb_XSetForeground"
 // end of [XSetForeground]
 
 fun XSetBackground {l1,l2:agz}
   (dpy: !Display_ptr l1, gc: !GCptr l2, background: ulint): void
-  = "#atsctrb_XSetBackground"
+  = "mac#atsctrb_XSetBackground"
 // end of [XSetBackground]                                    
 
 fun XSetFunction {l1,l2:agz}
   (dpy: !Display_ptr l1, gc: !GCptr l2, _function: int): void
-  = "#atsctrb_XSetFunction"
+  = "mac#atsctrb_XSetFunction"
 // end of [XSetFunction]                                    
 
 fun XSetPlaneMask {l1,l2:agz}
   (dpy: !Display_ptr l1, gc: !GCptr l2, plane_mask: ulint): void
-  = "#atsctrb_XSetPlaneMask"
+  = "mac#atsctrb_XSetPlaneMask"
 // end of [XSetPlaneMask]                                    
 
 fun XSetFont {l1,l2:agz}
   (dpy: !Display_ptr l1, gc: !GCptr l2, font: Font): void
-  = "#atsctrb_XSetFont"
+  = "mac#atsctrb_XSetFont"
 // end of [XSetFont]
 
 fun XSetLineAttributes {l1,l2:agz} (
-    dpy: !Display_ptr l1, gc: !GCptr l2
-  , line_width: uint, line_style: int, cap_style: int, join_style: int
-  ) : void = "#atsctrb_XSetLineAttributes"
+  dpy: !Display_ptr l1, gc: !GCptr l2
+, line_width: uint, line_style: int, cap_style: int, join_style: int
+) : void = "mac#atsctrb_XSetLineAttributes"
 // end of [XSetLineAttributes]
 
 fun XSetDashes {l1,l2:agz} {n:nat} (
-    dpy: !Display_ptr l1, gc: !GCptr l2
-  , dash_offset: int, dash_list: &(@[char][n]), n: int n
-  ) : void
-  = "#atsctrb_XSetDashes"
+  dpy: !Display_ptr l1, gc: !GCptr l2
+, dash_offset: int, dash_list: &(@[char][n]), n: int n
+) : void
+  = "mac#atsctrb_XSetDashes"
 // end of [XSetDashes]
 
 (* ****** ****** *)
@@ -1129,16 +1185,17 @@ fun XSetDashes {l1,l2:agz} {n:nat} (
 (* ****** ****** *)
 
 fun XClearArea {l:agz} (
-    dsp: !Display_ptr l
-  , win: Window
-  , x: int, y: int
-  , width: uint, height: uint
-  , exposures: XBool
-  ) : void
-  = "#atsctrb_XClearArea"
+  dsp: !Display_ptr l
+, win: Window
+, x: int, y: int
+, width: uint, height: uint
+, exposures: XBool
+) : void
+  = "mac#atsctrb_XClearArea"
+// end of [fun]
 
 fun XClearWindow {l:agz} (dsp: !Display_ptr l, win: Window) : void
-  = "#atsctrb_XClearWindow"
+  = "mac#atsctrb_XClearWindow"
 // end of [XClearWindow]
 
 (* ****** ****** *)
@@ -1149,26 +1206,28 @@ fun XClearWindow {l:agz} (dsp: !Display_ptr l, win: Window) : void
 
 fun XCopyArea
   {l1,l2:agz} (
-    dpy: !Display_ptr l1
-  , src: Drawable, dst: Drawable
-  , gc: !GCptr l2
-  , x_src: int, y_src: int
-  , width: uint, height: uint
-  , x_dst: int, y_dst: int
-  ) : void
-  = "#atsctrb_XCopyArea"
+  dpy: !Display_ptr l1
+, src: Drawable, dst: Drawable
+, gc: !GCptr l2
+, x_src: int, y_src: int
+, width: uint, height: uint
+, x_dst: int, y_dst: int
+) : void
+  = "mac#atsctrb_XCopyArea"
+// end of [fun]
 
 fun XCopyPlane
   {l1,l2:agz} (
-    dpy: !Display_ptr l1
-  , src: Drawable, dst: Drawable
-  , gc: !GCptr l2
-  , x_src: int, y_src: int
-  , width: uint, height: uint
-  , x_dst: int, y_dst: int
-  , plane: ulint // set exactly one-bit to 1
-  ) : void
-  = "#atsctrb_XCopyPlane"
+  dpy: !Display_ptr l1
+, src: Drawable, dst: Drawable
+, gc: !GCptr l2
+, x_src: int, y_src: int
+, width: uint, height: uint
+, x_dst: int, y_dst: int
+, plane: ulint // set exactly one-bit to 1
+) : void
+  = "mac#atsctrb_XCopyPlane"
+// end of [fun]
 
 (* ****** ****** *)
 //
@@ -1204,14 +1263,14 @@ typedef XArc =
 (* ****** ****** *)
 
 fun XDrawPoint {l1,l2:agz} (
-    dpy: !Display_ptr l1, drw: Drawable, gc: !GCptr l2, x: int, y: int
-  ) : void = "#atsctrb_XDrawPoint"
+  dpy: !Display_ptr l1, drw: Drawable, gc: !GCptr l2, x: int, y: int
+) : void = "mac#atsctrb_XDrawPoint"
 // end of [XDrawPoint]
 
 fun XDrawPoints {l1,l2:agz} {n:nat} (
-    dpy: !Display_ptr l1
-  , drw: Drawable, gc: !GCptr l2, points: &(@[XPoint][n]), n: int n, mode: int
-  ) : void = "#atsctrb_XDrawPoints"
+  dpy: !Display_ptr l1
+, drw: Drawable, gc: !GCptr l2, points: &(@[XPoint][n]), n: int n, mode: int
+) : void = "mac#atsctrb_XDrawPoints"
 // end of [XDrawPoints]
 
 (* ****** ****** *)
@@ -1221,21 +1280,21 @@ fun XDrawPoints {l1,l2:agz} {n:nat} (
 (* ****** ****** *)
 
 fun XDrawLine {l1,l2:agz} (
-    dpy: !Display_ptr l1
-  , drw: Drawable, gc: !GCptr l2, x1: int, y1: int, x2: int, y2: int
-  ) : void = "#atsctrb_XDrawLine"
+  dpy: !Display_ptr l1
+, drw: Drawable, gc: !GCptr l2, x1: int, y1: int, x2: int, y2: int
+) : void = "mac#atsctrb_XDrawLine"
 // end of [XDrawLine]
 
 fun XDrawLines {l1,l2:agz} {n:nat} (
-    dpy: !Display_ptr l1
-  , drw: Drawable, gc: !GCptr l2, points: &(@[XPoint][n]), n: int n, mode: int
-  ) : void = "#atsctrb_XDrawLines"
+  dpy: !Display_ptr l1
+, drw: Drawable, gc: !GCptr l2, points: &(@[XPoint][n]), n: int n, mode: int
+) : void = "mac#atsctrb_XDrawLines"
 // end of [XDrawLines]
 
 fun XDrawSegments {l1,l2:agz} {n:nat} (
-    dpy: !Display_ptr l1
-  , drw: Drawable, gc: !GCptr l2, segments: &(@[XSegment][n]), n: int n
-  ) : void = "#atsctrb_XDrawSegments"
+  dpy: !Display_ptr l1
+, drw: Drawable, gc: !GCptr l2, segments: &(@[XSegment][n]), n: int n
+) : void = "mac#atsctrb_XDrawSegments"
 // end of [XDrawSegments]
 
 (* ****** ****** *)
@@ -1245,15 +1304,15 @@ fun XDrawSegments {l1,l2:agz} {n:nat} (
 (* ****** ****** *)
 
 fun XDrawRectangle {l1,l2:agz} (
-    dpy: !Display_ptr l1
-  , drw: Drawable, gc: !GCptr l2, x: int, y: int, width: uint, height: uint
-  ) : void = "#atsctrb_XDrawRectangle"
+  dpy: !Display_ptr l1
+, drw: Drawable, gc: !GCptr l2, x: int, y: int, width: uint, height: uint
+) : void = "mac#atsctrb_XDrawRectangle"
 // end of [XDrawRectangle]
 
 fun XDrawRectangles {l1,l2:agz} {n:nat} (
-    dpy: !Display_ptr l1
-  , drw: Drawable, gc: !GCptr l2, rectangles: &(@[XRectangle][n]), n: int n
-  ) : void = "#atsctrb_XDrawRectangles"
+  dpy: !Display_ptr l1
+, drw: Drawable, gc: !GCptr l2, rectangles: &(@[XRectangle][n]), n: int n
+) : void = "mac#atsctrb_XDrawRectangles"
 // end of [XDrawRectangles]
 
 (* ****** ****** *)
@@ -1263,16 +1322,18 @@ fun XDrawRectangles {l1,l2:agz} {n:nat} (
 (* ****** ****** *)
 
 fun XDrawArc {l1,l2:agz} (
-    dpy: !Display_ptr l1
-  , drw: Drawable, gc: !GCptr l2
-  , x: int, y: int, width: uint, height: uint, angle1: int, angle2: int
-  ) : void = "#atsctrb_XDrawArc"
+  dpy: !Display_ptr l1
+, drw: Drawable, gc: !GCptr l2
+, x: int, y: int, width: uint, height: uint, angle1: int, angle2: int
+) : void
+  = "mac#atsctrb_XDrawArc"
 // end of [XDrawArc]
 
 fun XDrawArcs {l1,l2:agz} {n:nat} (
-    dpy: !Display_ptr l1
-  , drw: Drawable, gc: !GCptr l2, arcs: &(@[XArc][n]), n: int n
-  ) : void = "#atsctrb_XDrawArcs"
+  dpy: !Display_ptr l1
+, drw: Drawable, gc: !GCptr l2, arcs: &(@[XArc][n]), n: int n
+) : void
+  = "mac#atsctrb_XDrawArcs"
 // end of [XDrawArcs]
 
 (* ****** ****** *)
@@ -1288,13 +1349,13 @@ fun XDrawArcs {l1,l2:agz} {n:nat} (
 fun XFillRectangle {l1,l2:agz} (
     dpy: !Display_ptr l1
   , drw: Drawable, gc: !GCptr l2, x: int, y: int, width: uint, height: uint
-  ) : void = "#atsctrb_XFillRectangle"
+  ) : void = "mac#atsctrb_XFillRectangle"
 // end of [XFillRectangle]
 
 fun XFillRectangles {l1,l2:agz} {n:nat} (
     dpy: !Display_ptr l1
   , drw: Drawable, gc: !GCptr l2, rectangles: &(@[XRectangle][n]), n: int n
-  ) : void = "#atsctrb_XFillRectangles"
+  ) : void = "mac#atsctrb_XFillRectangles"
 // end of [XFillRectangles]
 
 (* ****** ****** *)
@@ -1304,10 +1365,10 @@ fun XFillRectangles {l1,l2:agz} {n:nat} (
 (* ****** ****** *)
 
 fun XFillPolygon {l1,l2:agz} {n:nat} (
-    dpy: !Display_ptr l1
-  , drw: Drawable, gc: !GCptr l2, points: &(@[XPoint][n]), n: int n
-  , shape: int, mode: int
-  ) : void = "#atsctrb_XFillPolygon"
+  dpy: !Display_ptr l1
+, drw: Drawable, gc: !GCptr l2, points: &(@[XPoint][n]), n: int n
+, shape: int, mode: int
+) : void = "mac#atsctrb_XFillPolygon"
 // end of [XFillPolygon]
 
 (* ****** ****** *)
@@ -1317,16 +1378,16 @@ fun XFillPolygon {l1,l2:agz} {n:nat} (
 (* ****** ****** *)
 
 fun XFillArc {l1,l2:agz} (
-    dpy: !Display_ptr l1
-  , drw: Drawable, gc: !GCptr l2
-  , x: int, y: int, width: uint, height: uint, angle1: int, angle2: int
-  ) : void = "#atsctrb_XFillArc"
+  dpy: !Display_ptr l1
+, drw: Drawable, gc: !GCptr l2
+, x: int, y: int, width: uint, height: uint, angle1: int, angle2: int
+) : void = "mac#atsctrb_XFillArc"
 // end of [XFillArc]
 
 fun XFillArcs {l1,l2:agz} {n:nat} (
-    dpy: !Display_ptr l1
-  , drw: Drawable, gc: !GCptr l2, arcs: &(@[XArc][n]), n: int n
-  ) : void = "#atsctrb_XFillArcs"
+  dpy: !Display_ptr l1
+, drw: Drawable, gc: !GCptr l2, arcs: &(@[XArc][n]), n: int n
+) : void = "mac#atsctrb_XFillArcs"
 // end of [XFillArcs]
 
 (* ****** ****** *)
@@ -1379,24 +1440,26 @@ absview XFreeFont_v (l:addr)
 prfun XFreeFont_v_unnull (pf: XFreeFont_v null): void
 
 fun XLoadFont {l:agz}
-  (dpy: !Display_ptr l, name: string): Font = "#atsctrb_XLoadFont"
+  (dpy: !Display_ptr l, name: string): Font = "mac#atsctrb_XLoadFont"
 // end of [XLoadFont]
 
 fun XQueryFont {l:agz}
   (dpy: !Display_ptr l, font_id: XID)
-  : [l:agez] (XFreeFont_v l, optvar_v (XFontStruct, l) | ptr l)
-  = "#atsctrb_XQueryFont"
+  : [l:agez] (
+  XFreeFont_v l, optvar_v (XFontStruct, l) | ptr l
+) = "mac#atsctrb_XQueryFont"
 // end of [XQueryFont]
 
 fun XLoadQueryFont {l:agz}
   (dpy: !Display_ptr l, name: string)
-  : [l:agez] (XFreeFont_v l, optvar_v (XFontStruct, l) | ptr l)
-  = "#atsctrb_XLoadQueryFont"
+  : [l:agez] (
+  XFreeFont_v l, optvar_v (XFontStruct, l) | ptr l
+) = "mac#atsctrb_XLoadQueryFont"
 // end of [XLoadQueryFont]
 
 fun XFreeFont {l1,l2:addr} (
-    pf1: XFreeFont_v l2, pf2: XFontStruct @ l2 | dpy: !Display_ptr l1, p_font_struct: ptr l2
-  ) : void  = "#atsctrb_XFreeFont"
+  pf1: XFreeFont_v l2, pf2: XFontStruct @ l2 | dpy: !Display_ptr l1, p_font_struct: ptr l2
+) : void  = "mac#atsctrb_XFreeFont"
 // end of [XFreeFont]
             
 (* ****** ****** *)
@@ -1407,12 +1470,12 @@ fun XFreeFont {l1,l2:addr} (
 
 fun XTextWidth {n:nat}
   (ftinfo: &XFontStruct, str: string n, nstr: int n): int
-  = "#atsctrb_XTextWidth"
+  = "mac#atsctrb_XTextWidth"
 // end of [XTextWidth]
 
 fun XTextWidth16 {n:nat}
   (ftinfo: &XFontStruct, str: array (XChar2b, n), nstr: int n): int
-  = "#atsctrb_XTextWidth16"
+  = "mac#atsctrb_XTextWidth16"
 // end of [XTextWidth]
 
 (* ****** ****** *)
@@ -1427,24 +1490,24 @@ fun XTextWidth16 {n:nat}
 
 fun XDrawString
   {l1,l2:agz} {n:nat} (
-    dpy: !Display_ptr l1
-  , drw: Drawable
-  , gc: !GCptr l2
-  , x: int, y: int
-  , str: string n
-  , len: int n
-  ) : void = "#atsctrb_XDrawString"
+  dpy: !Display_ptr l1
+, drw: Drawable
+, gc: !GCptr l2
+, x: int, y: int
+, str: string n
+, len: int n
+) : void = "mac#atsctrb_XDrawString"
 // end of [XDrawString]
 
 fun XDrawString16
   {l1,l2:agz} {n:nat} (
-    dpy: !Display_ptr l1
-  , drw: Drawable
-  , gc: !GCptr l2
-  , x: int, y: int
-  , str: array (XChar2b, n)
-  , len: int n
-  ) : void = "#atsctrb_XDrawString16"
+  dpy: !Display_ptr l1
+, drw: Drawable
+, gc: !GCptr l2
+, x: int, y: int
+, str: array (XChar2b, n)
+, len: int n
+) : void = "mac#atsctrb_XDrawString16"
 // end of [XDrawString16]
 
 (* ****** ****** *)
@@ -1455,24 +1518,24 @@ fun XDrawString16
 
 fun XDrawImageString
   {l1,l2:agz} {n:nat} (
-    dpy: !Display_ptr l1
-  , drw: Drawable
-  , gc: !GCptr l2
-  , x: int, y: int
-  , str: string n
-  , len: int n
-  ) : void = "#atsctrb_XDrawImageString"
+  dpy: !Display_ptr l1
+, drw: Drawable
+, gc: !GCptr l2
+, x: int, y: int
+, str: string n
+, len: int n
+) : void = "mac#atsctrb_XDrawImageString"
 // end of [XDrawImageString]
 
 fun XDrawImageString16
   {l1,l2:agz} {n:nat} (
-    dpy: !Display_ptr l1
-  , drw: Drawable
-  , gc: !GCptr l2
-  , x: int, y: int
-  , str: array (XChar2b, n)
-  , len: int n
-  ) : void = "#atsctrb_XDrawImageString16"
+  dpy: !Display_ptr l1
+, drw: Drawable
+, gc: !GCptr l2
+, x: int, y: int
+, str: array (XChar2b, n)
+, len: int n
+) : void = "mac#atsctrb_XDrawImageString16"
 // end of [XDrawImageString16]
 
 (* ****** ****** *)
@@ -1487,9 +1550,15 @@ fun XDrawImageString16
 //
 (* ****** ****** *)
 
-fun XReparentWindow {l:agz}
-  (dpy: !Display_ptr l, win: Window, parent: Window, x: int, y: int): void
-  = "#atsctrb_XReparentWindow"
+fun XReparentWindow
+  {l:agz} (
+  dpy: !Display_ptr l
+, win: Window
+, parent: Window
+, x: int
+, y: int
+) : void
+  = "mac#atsctrb_XReparentWindow"
 // end of [XReparentWindow]
 
 (* ****** ****** *)
@@ -1500,15 +1569,15 @@ fun XReparentWindow {l:agz}
 
 fun XChangeSaveSet {l:agz}
   (dpy: !Display_ptr l, win: Window, mode: int): void
-  = "#atsctrb_XChangeSaveSet"
+  = "mac#atsctrb_XChangeSaveSet"
 // end of [atsctrb_XChangeSaveSet]
 
 fun XAddSaveSet {l:agz}
-  (dpy: !Display_ptr l, win: Window): void = "#atsctrb_XAddSaveSet"
+  (dpy: !Display_ptr l, win: Window): void = "mac#atsctrb_XAddSaveSet"
 // end of [XAddSaveSet]
 
 fun XRemoveFromSaveSet {l:agz}
-  (dpy: !Display_ptr l, win: Window): void = "#atsctrb_XRemoveFromSaveSet"
+  (dpy: !Display_ptr l, win: Window): void = "mac#atsctrb_XRemoveFromSaveSet"
 // end of [XRemoveFromSaveSet]
 
 (* ****** ****** *)
@@ -1518,17 +1587,17 @@ fun XRemoveFromSaveSet {l:agz}
 (* ****** ****** *)
 
 fun XInstallColormap {l:agz}
-  (dpy: !Display_ptr l, colormap: Colormap): void = "#atsctrb_XInstallColormap"
+  (dpy: !Display_ptr l, colormap: Colormap): void = "mac#atsctrb_XInstallColormap"
 // end of [XInstallColormap]
 
 fun XUninstallColormap {l:agz}
-  (dpy: !Display_ptr l, colormap: Colormap): void = "#atsctrb_XUninstallColormap"
+  (dpy: !Display_ptr l, colormap: Colormap): void = "mac#atsctrb_XUninstallColormap"
 // end of [XUninstallColormap]
 
 fun XListInstalledColormaps {l:agz} (
-    dpy: !Display_ptr l, win: Window, nmap: &int? >> opt (int n, la > null)
-  ) : #[n:nat;la:addr] XArray (Colormap, n, la)
-  = "#atsctrb_XListInstalledColormaps"
+  dpy: !Display_ptr l, win: Window, nmap: &int? >> opt (int n, la > null)
+) : #[n:nat;la:addr] XArray (Colormap, n, la)
+  = "mac#atsctrb_XListInstalledColormaps"
 // end of [XListInstalledColormaps]
 
 (* ****** ****** *)
@@ -1542,11 +1611,11 @@ fun XListInstalledColormaps {l:agz} (
 (* ****** ****** *)
 
 fun XGrabServer {l:agz}
-  (dpy: !Display_ptr l): void = "#atsctrb_XGrabServer"
+  (dpy: !Display_ptr l): void = "mac#atsctrb_XGrabServer"
 // end of [XGrabServer]
 
 fun XUngrabServer {l:agz}
-  (dpy: !Display_ptr l): void = "#atsctrb_XUngrabServer"
+  (dpy: !Display_ptr l): void = "mac#atsctrb_XUngrabServer"
 // end of [XUngrabServer]
 
 (* ****** ****** *)
@@ -1556,7 +1625,7 @@ fun XUngrabServer {l:agz}
 (* ****** ****** *)
 
 fun XKillClient {l:agz}
-  (dpy: !Display_ptr l, resource: XID): void = "#atsctrb_XKillClient"
+  (dpy: !Display_ptr l, resource: XID): void = "mac#atsctrb_XKillClient"
 // end of [XKillClient]
 
 (* ****** ****** *)
@@ -1566,30 +1635,33 @@ fun XKillClient {l:agz}
 (* ****** ****** *)
 
 fun XSetScreenSaver {l:agz} (
-    dpy: !Display_ptr l
-  , timeout: int, interval: int, prefer_blanking: int, allow_exposures: int
-  ) : void = "#atsctrb_XSetScreenSaver"
+  dpy: !Display_ptr l
+, timeout: int, interval: int, prefer_blanking: int, allow_exposures: int
+) : void = "mac#atsctrb_XSetScreenSaver"
 // end of [XSetScreenSaver]
 
 fun XForceScreenSaver
-  {l:agz} (dpy: !Display_ptr l, mode: int): void = "#atsctrb_XForceScreenSaver"
+  {l:agz} (
+  dpy: !Display_ptr l, mode: int
+) : void = "mac#atsctrb_XForceScreenSaver"
 // end of [XForceScreenSaver]
 
 fun XActivateScreenSaver
-  {l:agz} (dpy: !Display_ptr l): void = "#atsctrb_XActivateScreenSaver"
+  {l:agz} (dpy: !Display_ptr l): void = "mac#atsctrb_XActivateScreenSaver"
 // end of [XActivateScreenSaver]
 
 fun XResetScreenSaver
-  {l:agz} (dpy: !Display_ptr l): void = "#atsctrb_XResetScreenSaver"
+  {l:agz} (dpy: !Display_ptr l): void = "mac#atsctrb_XResetScreenSaver"
 // end of [XResetScreenSaver]
 
 fun XGetScreenSaver {l:agz} (
-    dpy: !Display_ptr l
-  , timeout: &int? >> int
-  , interval: &int? >> int
-  , prefer_blanking: &int? >> int
-  , allow_exposures: &int? >> int
-  ) : void = "#atsctrb_XGetScreenSaver"
+  dpy: !Display_ptr l
+, timeout: &int? >> int
+, interval: &int? >> int
+, prefer_blanking: &int? >> int
+, allow_exposures: &int? >> int
+) : void
+  = "mac#atsctrb_XGetScreenSaver"
 // end of [XGetScreenSaver]
 
 (* ****** ****** *)
@@ -1609,30 +1681,32 @@ typedef XHostAddress = $extype_struct "XHostAddress" of {
 } // end of [XHostAddress]
 
 fun XAddHost {l:agz}
-  (dpy: !Display_ptr l, host: &XHostAddress): void = "#atsctrb_XAddHost"
+  (dpy: !Display_ptr l, host: &XHostAddress): void = "mac#atsctrb_XAddHost"
 // end of [XAddHost]
 
-fun XAddHosts {l:agz} {n:nat}
-  (dpy: !Display_ptr l, hosts: &(@[XHostAddress][n]), n: int n): void
-  = "#atsctrb_XAddHosts"
+fun XAddHosts
+  {l:agz} {n:nat} (
+  dpy: !Display_ptr l, hosts: &(@[XHostAddress][n]), n: int n
+) : void
+  = "mac#atsctrb_XAddHosts"
 // end of [XAddHosts]
 
 fun XListHosts {l:agz} (
-    dpy: !Display_ptr l
-  , nhost: &int? >> opt (int n, la > null)
-  , state: &XBool? >> opt (XBool, la > null)
-  ) : #[n:nat;la:addr] XArray (XHostAddress, n, la)
-  = "#atsctrb_XListHosts"
+  dpy: !Display_ptr l
+, nhost: &int? >> opt (int n, la > null)
+, state: &XBool? >> opt (XBool, la > null)
+) : #[n:nat;la:addr] XArray (XHostAddress, n, la)
+  = "mac#atsctrb_XListHosts"
 // end of [XListHosts]
 
 fun XRemoveHost {l:agz}
   (dpy: !Display_ptr l, host: &XHostAddress): void
-  = "#atsctrb_XRemoveHost"
+  = "mac#atsctrb_XRemoveHost"
 // end of [XRemoveHost]
 
 fun XRemoveHosts {l:agz} {n:nat}
   (dpy: !Display_ptr l, hosts: &(@[XHostAddress][n]), n: int n): void
-  = "#atsctrb_XRemoveHosts"
+  = "mac#atsctrb_XRemoveHosts"
 // end of [XRemoveHosts]
 
 (* ****** ****** *)
@@ -1642,15 +1716,15 @@ fun XRemoveHosts {l:agz} {n:nat}
 (* ****** ****** *)
 
 fun XSetAccessControl {l:agz}
-  (dpy: !Display_ptr l, mode: int): void = "#atsctrb_XSetAccessControl"
+  (dpy: !Display_ptr l, mode: int): void = "mac#atsctrb_XSetAccessControl"
 // end of [XSetAccessControl]
 
 fun XEnableAccessControl {l:agz}
-  (dpy: !Display_ptr l): void = "#atsctrb_XEnableAccessControl"
+  (dpy: !Display_ptr l): void = "mac#atsctrb_XEnableAccessControl"
 // end of [XEnableAccessControl]
 
 fun XDisableAccessControl {l:agz}
-  (dpy: !Display_ptr l): void = "#atsctrb_XDisableAccessControl"
+  (dpy: !Display_ptr l): void = "mac#atsctrb_XDisableAccessControl"
 // end of [XDisableAccessControl]
 
 (* ****** ****** *)
@@ -1928,7 +2002,7 @@ praxi XEvent_xdestroywindow_castdn : XEvent_castdn_t (XDestroyWindowEvent)
 
 fun XSelectInput {l:agz}
   (dpy: !Display_ptr l, win: Window, eventmask: InputEventMask_t): void
-  = "#atsctrb_XSelectInput"
+  = "mac#atsctrb_XSelectInput"
 // end of [XSelectInput]
 
 (* ****** ****** *)
@@ -1938,11 +2012,11 @@ fun XSelectInput {l:agz}
 (* ****** ****** *)
 
 fun XFlush {l:agz} (dpy: !Display_ptr l): void
-  = "#atsctrb_XFlush"
+  = "mac#atsctrb_XFlush"
 // end of [XFlush]
 
 fun XSync {l:agz} (dpy: !Display_ptr l, discard: bool): void
-  = "#atsctrb_XSync"
+  = "mac#atsctrb_XSync"
 // end of [XSync]
 
 (* ****** ****** *)
@@ -1954,11 +2028,11 @@ macdef QueuedAfterReading = $extval (int, "QueuedAfterReading")
 macdef QueuedAfterFlush = $extval (int, "QueuedAfterFlush")
 
 fun XEventsQueued {l:agz} (dpy: Display_ptr l, mode: int): int
-  = "#atsctrb_XEventsQueued"
+  = "mac#atsctrb_XEventsQueued"
 // end of [XEventsQueued]
 
 // this one is equivalent to XEventsQueued (QueuedAfterFlush)
-fun XPending {l:agz} (dpy: Display_ptr l): int = "#atsctrb_XPending"
+fun XPending {l:agz} (dpy: Display_ptr l): int = "mac#atsctrb_XPending"
 
 (* ****** ****** *)
 //
@@ -1971,11 +2045,11 @@ fun XPending {l:agz} (dpy: Display_ptr l): int = "#atsctrb_XPending"
 (* ****** ****** *)
 
 fun XNextEvent {l:agz}
-  (dpy: !Display_ptr l, event: &XEvent? >> XEvent): void = "#atsctrb_XNextEvent"
+  (dpy: !Display_ptr l, event: &XEvent? >> XEvent): void = "mac#atsctrb_XNextEvent"
 // end of [XNextEvent]
 
 fun XPeekEvent {l:agz}
-  (dpy: !Display_ptr l, event: &XEvent? >> XEvent): void = "#atsctrb_XPeekEvent"
+  (dpy: !Display_ptr l, event: &XEvent? >> XEvent): void = "mac#atsctrb_XPeekEvent"
 // end of [XPeekEvent]
 
 (* ****** ****** *)
@@ -2017,20 +2091,24 @@ macdef XStdICCTextStyle = $extval (XICCEncodingStyle, "XStdICCTextStyle")
 //
 (* ****** ****** *)
 
-fun XIconifyWindow {l:agz}
-  (dpy: !Display_ptr l, win: Window, nscr: int): Status
-  = "#atsctrb_XIconifyWindow"
+fun XIconifyWindow
+  {l:agz} (
+  dpy: !Display_ptr l, win: Window, nscr: int
+) : Status
+  = "mac#atsctrb_XIconifyWindow"
 // end of [XIconifyWindow]
 
-fun XWithdrawWindow {l:agz}
-  (dpy: !Display_ptr l, win: Window, nscr: int): Status
-  = "#atsctrb_XWithdrawWindow"
+fun XWithdrawWindow
+  {l:agz} (
+  dpy: !Display_ptr l, win: Window, nscr: int
+) : Status
+  = "mac#atsctrb_XWithdrawWindow"
 // end of [XWithdrawWindow]
 
 fun XReconfigureWMWindow {l:agz} (
-    dpy: !Display_ptr l
-  , win: Window, nscr: int, mask: uint, values: &XWindowChanges?
-  ) : Status = "#atsctrb_XReconfigureWMWindow"
+  dpy: !Display_ptr l
+, win: Window, nscr: int, mask: uint, values: &XWindowChanges?
+) : Status = "mac#atsctrb_XReconfigureWMWindow"
 // end of [XReconfigureWMWindow]
 
 (* ****** ****** *)
@@ -2039,35 +2117,35 @@ fun XReconfigureWMWindow {l:agz} (
 //
 (* ****** ****** *)
 
-fun XDefaultString (): string = "#atsctrb_XDefaultString"
+fun XDefaultString (): string = "mac#atsctrb_XDefaultString"
 
 //
 
 fun XStringToTextProperty (
-    str: string
-  , text: &XTextProperty? >> opt (XTextProperty l, i <> 0)
-  ) : #[i:int;l:addr] (XFree_v l | Status i)
+  str: string
+, text: &XTextProperty? >> opt (XTextProperty l, i <> 0)
+) : #[i:int;l:addr] (XFree_v l | Status i)
   = "atsctrb_XStringToTextProperty"
 // end of [XStringToTextProperty]
 
 fun XStringListToTextProperty {n:nat} (
-    list: &(@[string][n]), n: int n
-  , text: &XTextProperty? >> opt (XTextProperty l, i <> 0)
-  ) : #[i:int;l:addr] (XFree_v l | Status i)
-  = "#atsctrb_XStringListToTextProperty"
+  list: &(@[string][n]), n: int n
+, text: &XTextProperty? >> opt (XTextProperty l, i <> 0)
+) : #[i:int;l:addr] (XFree_v l | Status i)
+  = "mac#atsctrb_XStringListToTextProperty"
 // end of [XStringListToTextProperty]
 
 //
 
 fun XTextPropertyToStringList {l:addr} (
-    text: &XTextProperty l
-  , list: &XStrarr? >> opt (XStrarr1 n, i <> 0)
-  , n: &int? >> opt (int n, i <> 0)
-  ) : #[i:int;n:nat] Status i = "#atsctrb_XTextPropertyToStringList"
+  text: &XTextProperty l
+, list: &XStrarr? >> opt (XStrarr1 n, i <> 0)
+, n: &int? >> opt (int n, i <> 0)
+) : #[i:int;n:nat] Status i = "mac#atsctrb_XTextPropertyToStringList"
 // end of [XTextPropertyToStringList]
 
 fun XFreeStringList
-  {n:nat} {l:addr} (list: XStrarr (n, l)): void = "#atsctrb_XFreeStringList"
+  {n:nat} {l:addr} (list: XStrarr (n, l)): void = "mac#atsctrb_XFreeStringList"
 // end of [XFreeStringList]
 
 (* ****** ****** *)
@@ -2077,19 +2155,19 @@ fun XFreeStringList
 (* ****** ****** *)
 
 fun XSetTextProperty {l:agz} (
-    dpy: !Display_ptr l
-  , win: Window
-  , text: &XTextProperty
-  , property: Atom
-  ) : void = "#atsctrb_XSetTextProperty"
+  dpy: !Display_ptr l
+, win: Window
+, text: &XTextProperty
+, property: Atom
+) : void = "mac#atsctrb_XSetTextProperty"
 // end of [XSetTextProperty]
 
 fun XGetTextProperty {l:agz} (
-    dpy: !Display_ptr l
-  , win: Window
-  , text: &XTextProperty? >> opt (XTextProperty, i <> 0)
-  , property: Atom
-  ) : #[i:int] Status i = "#atsctrb_XGetTextProperty"
+  dpy: !Display_ptr l
+, win: Window
+, text: &XTextProperty? >> opt (XTextProperty, i <> 0)
+, property: Atom
+) : #[i:int] Status i = "mac#atsctrb_XGetTextProperty"
 // end of [XGetTextProperty]
 
 (* ****** ****** *)
@@ -2099,33 +2177,33 @@ fun XGetTextProperty {l:agz} (
 (* ****** ****** *)
 
 fun XSetWMName {l:agz} (
-    dpy: !Display_ptr l
-  , win: Window
-  , text: &XTextProperty
-  ) : void = "#atsctrb_XSetWMName"
+  dpy: !Display_ptr l
+, win: Window
+, text: &XTextProperty
+) : void = "mac#atsctrb_XSetWMName"
 // end of [XSetWMName]
 
 fun XGetWMName {l:agz} (
-    dpy: !Display_ptr l
-  , win: Window
-  , text: &XTextProperty >> opt (XTextProperty, i <> 0)
-  ) : #[i:int] Status i = "#atsctrb_XGetWMName"
+  dpy: !Display_ptr l
+, win: Window
+, text: &XTextProperty >> opt (XTextProperty, i <> 0)
+) : #[i:int] Status i = "mac#atsctrb_XGetWMName"
 // end of [XGetWMName]
 
 fun XStoreName {l:agz} (
-    dpy: !Display_ptr l
-  , win: Window
-  , window_name: string // the name is copied into ...
-  ) : void = "#atsctrb_XStoreName"
+  dpy: !Display_ptr l
+, win: Window
+, window_name: string // the name is copied into ...
+) : void = "mac#atsctrb_XStoreName"
 // end of [XStoreName]
 
 absviewtype XString
 fun XFetchName {l:agz} (
-    dpy: !Display_ptr l
-  , win: Window
-  , window_name: &XString? >> opt (XString0, i <> 0)
-  ) : #[i:int] Status i
-  = "#atsctrb_XFetchName"
+  dpy: !Display_ptr l
+, win: Window
+, window_name: &XString? >> opt (XString0, i <> 0)
+) : #[i:int] Status i
+  = "mac#atsctrb_XFetchName"
 // end of [XFetchName]
 
 (* ****** ****** *)
@@ -2135,31 +2213,31 @@ fun XFetchName {l:agz} (
 (* ****** ****** *)
 
 fun XSetWMIconName {l:agz} (
-    dpy: !Display_ptr l
-  , win: Window
-  , text: &XTextProperty
-  ) : void = "#atsctrb_XSetWMIconName"
+  dpy: !Display_ptr l
+, win: Window
+, text: &XTextProperty
+) : void = "mac#atsctrb_XSetWMIconName"
 // end of [XSetWMIconName]
 
 fun XGetWMIconName {l:agz} (
-    dpy: !Display_ptr l
-  , win: Window
-  , text: &XTextProperty >> opt (XTextProperty, i <> 0)
-  ) : #[i:int] Status i = "#atsctrb_XGetWMIconName"
+  dpy: !Display_ptr l
+, win: Window
+, text: &XTextProperty >> opt (XTextProperty, i <> 0)
+) : #[i:int] Status i = "mac#atsctrb_XGetWMIconName"
 // end of [XGetWMIconName]
 
 fun XSetIconName {l:agz} (
-    dpy: !Display_ptr l
-  , win: Window
-  , icon_name: string // copied into ...
-  ) : void = "#atsctrb_XSetIconName"
+  dpy: !Display_ptr l
+, win: Window
+, icon_name: string // copied into ...
+) : void = "mac#atsctrb_XSetIconName"
 // end of [XSetIconName]
 
 fun XGetIconName {l:agz} (
-    dpy: !Display_ptr l
-  , win: Window
-  , icon_name: &XString? >> opt (XString0, i <> 0)
-  ) : #[i:int] Status i = "#atsctrb_XGetIconName"
+  dpy: !Display_ptr l
+, win: Window
+, icon_name: &XString? >> opt (XString0, i <> 0)
+) : #[i:int] Status i = "mac#atsctrb_XGetIconName"
 // end of [XGetIconName]
 
 (* ****** ****** *)
@@ -2197,17 +2275,17 @@ typedef XWMHints =
 } // end of [XWMHints]
 
 fun XAllocWMHints
-  (): XPtr0 (XWMHints) = "#atsctrb_XAllocWMHints"
+  (): XPtr0 (XWMHints) = "mac#atsctrb_XAllocWMHints"
 // end of [XAllocWMHints]
 
 fun XSetWNHints {l:agz}
   (dpy: !Display_ptr l, win: Window, wmhints: &XWMHints): void
-  = "#atsctrb_XSetWNHints"
+  = "mac#atsctrb_XSetWNHints"
 // end of [XSetWNHints]
 
 fun XGetWNHints {l:agz}
   (dpy: !Display_ptr l, win: Window): XPtr0 (XWMHints)
-  = "#atsctrb_XGetWNHints"
+  = "mac#atsctrb_XGetWNHints"
 // end of [XGetWNHints]
 
 (* ****** ****** *)
@@ -2245,36 +2323,42 @@ typedef XSizeHints =
 } // end of [XSizeHints]
 
 fun XAllocSizeHints ()
-  : XPtr0 (XSizeHints) = "#atsctrb_XAllocSizeHints"
+  : XPtr0 (XSizeHints) = "mac#atsctrb_XAllocSizeHints"
 // end of [XAllocSizeHints]
 
 //
 
 fun XSetWMNormalHints {l:agz}
   (dpy: !Display_ptr l, win: Window, hints: &XSizeHints): void
-  = "#atsctrb_XSetWMNormalHints"
+  = "mac#atsctrb_XSetWMNormalHints"
 // end of [XSetWMNormalHints]
 
 fun XGetWMNormalHints {l:agz} (
-    dpy: !Display_ptr l, win: Window
-  , hints: &XSizeHints? >> opt (XSizeHints, i <> 0), supplied: &lint? >> lint
-  ) : #[i:int] Status i
-  = "#atsctrb_XGetWMNormalHints"
+  dpy: !Display_ptr l, win: Window
+, hints: &XSizeHints? >> opt (XSizeHints, i <> 0)
+, supplied: &lint? >> lint
+) : #[i:int] Status i
+  = "mac#atsctrb_XGetWMNormalHints"
 // end of [XGetWMNormalHints]
 
 //
 
-fun XSetWMSizeHints {l:agz}
-  (dpy: !Display_ptr l, win: Window, hints: &XSizeHints, property: Atom): void
-  = "#atsctrb_XSetWMSizeHints"
+fun XSetWMSizeHints
+  {l:agz} (
+  dpy: !Display_ptr l
+, win: Window
+, hints: &XSizeHints
+, property: Atom
+) : void
+  = "mac#atsctrb_XSetWMSizeHints"
 // end of [XSetWMSizeHints]
 
 fun XGetWMSizeHints {l:agz} (
-    dpy: !Display_ptr l, win: Window
-  , hints: &XSizeHints? >> opt (XSizeHints, i <> 0)
-  , supplied: &lint? >> lint, property: Atom
-  ) : #[i:int] Status i
-  = "#atsctrb_XGetWMSizeHints"
+  dpy: !Display_ptr l, win: Window
+, hints: &XSizeHints? >> opt (XSizeHints, i <> 0)
+, supplied: &lint? >> lint, property: Atom
+) : #[i:int] Status i
+  = "mac#atsctrb_XGetWMSizeHints"
 // end of [XGetWMSizeHints]
 
 (* ****** ****** *)
@@ -2289,19 +2373,19 @@ typedef XClassHint = $extype_struct "XClassHint" of {
 } // end of [XClassHint]
 
 fun XAllocClassHint ()
-  : XPtr0 (XClassHint) = "#atsctrb_XAllocClassHint"
+  : XPtr0 (XClassHint) = "mac#atsctrb_XAllocClassHint"
 // end of [XAllocClassHint]
 
 fun XSetClassHint {l:agz}
   (dpy: !Display_ptr l, win: Window, class_hint: XClassHint): void
-  = "#atsctrb_XSetClassHint"
+  = "mac#atsctrb_XSetClassHint"
 
 fun XGetClassHint {l:agz} (
-    dpy: !Display_ptr l
-  , win: Window
-  , class_hint: &XClassHint? >> opt (XClassHint, i <> 0)
-  ) : #[i:int] Status i
-  = "#atsctrb_XGetClassHint"
+  dpy: !Display_ptr l
+, win: Window
+, class_hint: &XClassHint? >> opt (XClassHint, i <> 0)
+) : #[i:int] Status i
+  = "mac#atsctrb_XGetClassHint"
 
 (* ****** ****** *)
 //
@@ -2310,14 +2394,14 @@ fun XGetClassHint {l:agz} (
 (* ****** ****** *)
 
 fun XSetTransientForHint {l:agz} (
-    dpy: !Display_ptr l, win: Window, prop_window: Window
-  ) : void = "#atsctrb_XSetTransientForHint"
+  dpy: !Display_ptr l, win: Window, prop_window: Window
+) : void = "mac#atsctrb_XSetTransientForHint"
 // end of [XSetTransientForHint]
 
 fun XGetTransientForHint {l:agz} (
-    dpy: !Display_ptr l
-  , win: Window, prop_window: &Window? >> opt (Window, i <> 0)
-  ) : #[i:int] Status i = "#atsctrb_XGetTransientForHint"
+  dpy: !Display_ptr l
+, win: Window, prop_window: &Window? >> opt (Window, i <> 0)
+) : #[i:int] Status i = "mac#atsctrb_XGetTransientForHint"
 // end of [XGetTransientForHint]
 
 (* ****** ****** *)
@@ -2328,15 +2412,15 @@ fun XGetTransientForHint {l:agz} (
 
 fun XSetWMProperties
   {l:agz} {l1,l2:addr} {n:nat} (
-    dpy: !Display_ptr l
-  , win: Window
-  , win_name: &XTextProperty l1, icon_name: &XTextProperty l2
-  , argv: &(@[string][n])
-  , argc: int n
-  , normal_hints: &XSizeHints // partially init
-  , wm_hints: &XWMHints // partially init
-  , class_hint: &XClassHint // partially init
-  ) : void = "#atsctrb_XSetWMProperties"
+  dpy: !Display_ptr l
+, win: Window
+, win_name: &XTextProperty l1, icon_name: &XTextProperty l2
+, argv: &(@[string][n])
+, argc: int n
+, normal_hints: &XSizeHints // partially init
+, wm_hints: &XWMHints // partially init
+, class_hint: &XClassHint // partially init
+) : void = "mac#atsctrb_XSetWMProperties"
 // end of [XSetWMProperties]
 
 (* ****** ****** *)
@@ -2352,18 +2436,18 @@ fun XSetWMProperties
 (* ****** ****** *)
 
 fun XCreatePixmapFromBitmapData {l:agz} (
-    dpy: !Display_ptr l
-  , drw: Drawable, data: ptr(*chars*)
-  , width: uint, height: uint, fg: ulint, bg: ulint, depth: uint
-  ) : Pixmap
-  = "#atsctrb_XCreatePixmapFromBitmapData"
+  dpy: !Display_ptr l
+, drw: Drawable, data: ptr(*chars*)
+, width: uint, height: uint, fg: ulint, bg: ulint, depth: uint
+) : Pixmap
+  = "mac#atsctrb_XCreatePixmapFromBitmapData"
 // end of [XCreatePixmapFromBitmapData]
 
 fun XCreateBitmapFromData {l:agz} (
-    dpy: !Display_ptr l
-  , drw: Drawable, data: ptr(*chars*), width: uint, height: uint
-  ) : Pixmap
-  = "#atsctrb_XCreateBitmapFromData"
+  dpy: !Display_ptr l
+, drw: Drawable, data: ptr(*chars*), width: uint, height: uint
+) : Pixmap
+  = "mac#atsctrb_XCreateBitmapFromData"
 // end of [XCreateBitmapFromData]
 
 (* ****** ****** *)

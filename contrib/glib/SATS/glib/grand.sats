@@ -40,13 +40,11 @@
 %} // end of [%{#]
 
 (* ****** ****** *)
-
 //
 // HX-2010-02-27:
 // This is only needed for individual testing
 // staload "contrib/glib/SATS/glib/gtypes.sats"
 //
-
 (* ****** ****** *)
 
 absviewtype GRand_ptr (l:addr) // = GRand*
@@ -55,79 +53,93 @@ viewtypedef GRand_ptr = [l:addr] GRand_ptr l
 (* ****** ****** *)
 
 fun g_rand_new_with_seed
-  (seed: guint32): GRand_ptr = "#atsctrb_g_rand_new_with_seed"
+  (seed: guint32): GRand_ptr = "mac#atsctrb_g_rand_new_with_seed"
 // end of [g_rand_new_with_seed]
 
 fun g_rand_new_with_seed_array {n:nat}
   (seed: &(@[guint32][n]), n: gint n): GRand_ptr
-  = "#atsctrb_g_rand_new_with_seed_array"
+  = "mac#atsctrb_g_rand_new_with_seed_array"
 // end of [g_rand_new_with_seed_array]
 
 (* ****** ****** *)
 
-fun g_rand_new (): GRand_ptr = "#atsctrb_g_rand_new"
-fun g_rand_copy {l:addr} (rand: !GRand_ptr l): GRand_ptr = "#atsctrb_g_rand_copy"
-fun g_rand_free (rand: GRand_ptr): void = "#atsctrb_g_rand_free"
+fun g_rand_new (): GRand_ptr = "mac#atsctrb_g_rand_new"
+fun g_rand_copy {l:addr}
+  (rand: !GRand_ptr l): GRand_ptr = "mac#atsctrb_g_rand_copy"
+fun g_rand_free
+  (rand: GRand_ptr): void = "mac#atsctrb_g_rand_free"
 
 (* ****** ****** *)
 
 fun g_rand_set_seed
-  {l:addr} (rand: !GRand_ptr l, seed: guint32): void = "#atsctrb_g_rand_set_seed"
+  {l:addr} (
+  rand: !GRand_ptr l, seed: guint32
+) : void = "mac#atsctrb_g_rand_set_seed"
 // end of [g_rand_set_seed]
 
 fun g_rand_set_seed_array
-  {l:addr} {n:nat} (rand: !GRand_ptr l, seed: &(@[guint32][n]), n: gint n): void
-  = "#atsctrb_g_rand_set_seed_array"
+  {l:addr} {n:nat} (
+  rand: !GRand_ptr l, seed: &(@[guint32][n]), n: gint n
+) : void
+  = "mac#atsctrb_g_rand_set_seed_array"
 // end of [g_rand_set_seed_array]
 
 (* ****** ****** *)
 
 fun g_rand_boolean
-  {l:addr} (rand: !GRand_ptr l): gboolean = "#atsctrb_g_rand_boolean"
+  {l:addr} (
+  rand: !GRand_ptr l
+) : gboolean = "mac#atsctrb_g_rand_boolean"
 // end of [g_rand_boolean]
 
 fun g_rand_int
-  {l:addr} (rand: !GRand_ptr l): guint32 = "#atsctrb_g_rand_int"
+  {l:addr} (
+  rand: !GRand_ptr l
+) : guint32 = "mac#atsctrb_g_rand_int"
 // end of [g_rand_int]
 
 fun g_rand_int_range
-  {l:addr} (rand: !GRand_ptr l, _beg: gint32, _end: gint32): gint32
-  = "#atsctrb_g_rand_int_range"
+  {l:addr} (
+  rand: !GRand_ptr l, _beg: gint32, _end: gint32
+) : gint32
+  = "mac#atsctrb_g_rand_int_range"
 // end of [g_rand_int_range]
 
 fun g_rand_double
-  {l:addr} (rand: !GRand_ptr l): gdouble = "#atsctrb_g_rand_double"
+  {l:addr} (rand: !GRand_ptr l): gdouble = "mac#atsctrb_g_rand_double"
 // end of [g_rand_double]
 
 fun g_rand_double_range
-  {l:addr} (rand: !GRand_ptr l, _beg: gdouble, _end: gdouble): gdouble
-  = "#atsctrb_g_rand_double_range"
+  {l:addr} (
+  rand: !GRand_ptr l, _beg: gdouble, _end: gdouble
+) : gdouble
+  = "mac#atsctrb_g_rand_double_range"
 // end of [g_rand_double_range]
 
 (* ****** ****** *)
 
 fun g_random_set_seed
-  (seed: guint32): void = "#atsctrb_g_random_set_seed"
+  (seed: guint32): void = "mac#atsctrb_g_random_set_seed"
 // end of [g_random_set_seed]
 
 (* ****** ****** *)
 
 fun g_random_boolean
-  (): gboolean = "#atsctrb_g_random_boolean"
+  (): gboolean = "mac#atsctrb_g_random_boolean"
 // end of [g_random_boolean]
 
-fun g_random_int (): guint32 = "#atsctrb_g_random_int"
+fun g_random_int (): guint32 = "mac#atsctrb_g_random_int"
 // end of [g_random_int]
 
 fun g_random_int_range
-  (_beg: gint32, _end: gint32): gint32 = "#atsctrb_g_random_int_range"
+  (_beg: gint32, _end: gint32): gint32 = "mac#atsctrb_g_random_int_range"
 // end of [g_random_int_range]
 
-fun g_random_double (): gdouble = "#atsctrb_g_random_double"
+fun g_random_double (): gdouble = "mac#atsctrb_g_random_double"
 // end of [g_random_double]
 
 fun g_random_double_range
-  (_beg: gdouble, _end: gdouble): gdouble = "#atsctrb_g_random_double_range"
+  (_beg: gdouble, _end: gdouble): gdouble = "mac#atsctrb_g_random_double_range"
 // end of [g_random_double_range]
 
 (* ****** ****** *)

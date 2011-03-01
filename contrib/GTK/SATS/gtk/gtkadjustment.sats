@@ -42,20 +42,22 @@ symintr gtk_adjustment_new
 
 typedef
 gtk_adjustment_new_type (a:t@ype) = (
-    a // value
-  , a // lower
-  , a // upper
-  , a // step_increment
-  , a // page_increment
-  , a // page_size
-  ) -<fun1> GtkAdjustment_ref1
+  a // value
+, a // lower
+, a // upper
+, a // step_increment
+, a // page_increment
+, a // page_size
+) -<fun1> GtkAdjustment_ref1
 
-fun gtk_adjustment_new__type : gtk_adjustment_new_type (double)
-  = "#atsctrb_gtk_adjustment_new"
+fun gtk_adjustment_new__type
+  : gtk_adjustment_new_type (double)
+  = "mac#atsctrb_gtk_adjustment_new"
 overload gtk_adjustment_new with gtk_adjustment_new__type
 
-fun gtk_adjustment_new__gtype : gtk_adjustment_new_type (gdouble)
-  = "#atsctrb_gtk_adjustment_new"
+fun gtk_adjustment_new__gtype
+  : gtk_adjustment_new_type (gdouble)
+  = "mac#atsctrb_gtk_adjustment_new"
 overload gtk_adjustment_new with gtk_adjustment_new__gtype
 
 (* ****** ****** *)
@@ -63,19 +65,19 @@ overload gtk_adjustment_new with gtk_adjustment_new__gtype
 fun gtk_adjustment_changed
   {c:cls | c <= GtkAdjustment}
   {l:agz} (adj: !gobjref (c, l)): void
-  = "#atsctrb_gtk_adjustment_changed"
+  = "mac#atsctrb_gtk_adjustment_changed"
 // end of [gtk_adjustment_changed]
 
 fun gtk_adjustment_value_changed
   {c:cls | c <= GtkAdjustment}
   {l:agz} (adj: !gobjref (c, l)): void
-  = "#atsctrb_gtk_adjustment_value_changed"
+  = "mac#atsctrb_gtk_adjustment_value_changed"
 // end of [gtk_adjustment_value_changed]
 
 fun gtk_adjustment_clamp_page
   {c:cls | c <= GtkAdjustment} {l:agz}
   (adj: !gobjref (c, l), lower: gdouble, upper: gdouble): void
-  = "#atsctrb_gtk_adjustment_clamp_page"
+  = "mac#atsctrb_gtk_adjustment_clamp_page"
 // end of [gtk_adjustment_clamp_page]
 
 (* ****** ****** *)
@@ -83,13 +85,13 @@ fun gtk_adjustment_clamp_page
 fun gtk_adjustment_get_value
   {c:cls | c <= GtkAdjustment}
   {l:agz} (adj: !gobjref (c, l)): gdouble
-  = "#atsctrb_gtk_adjustment_get_value"
+  = "mac#atsctrb_gtk_adjustment_get_value"
 // end of [gtk_adjustment_get_value]
 
 fun gtk_adjustment_set_value
   {c:cls | c <= GtkAdjustment}
   {l:agz} (adj: !gobjref (c, l), value: gdouble): void
-  = "#atsctrb_gtk_adjustment_set_value"
+  = "mac#atsctrb_gtk_adjustment_set_value"
 // end of [gtk_adjustment_set_value]
 
 (* ****** ****** *)

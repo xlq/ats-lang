@@ -40,14 +40,14 @@ fun g_object_is_floating
   {c:cls | c <= GObject}
   {l:agz} (
   x: !gobjref (c, l)
-) : bool = "#atsctrb_g_object_is_floating"
+) : bool = "mac#atsctrb_g_object_is_floating"
 
 (* ****** ****** *)
 
 fun g_object_ref_count
   {c:cls} {l:addr} (
   x: !gobjref (c, l)
-) : int = "#atsctrb_g_object_ref_count"
+) : int = "mac#atsctrb_g_object_ref_count"
 
 (* ****** ****** *)
 
@@ -55,13 +55,13 @@ fun g_object_ref
   {c:cls | c <= GObject}
   {l:agz} (
   x: !gobjref (c, l)
-) : gobjref (c, l) = "#atsctrb_g_object_ref"
+) : gobjref (c, l) = "mac#atsctrb_g_object_ref"
 
 fun g_object_unref
   {c:cls | c <= GObject}
   {l:agz} (
   x: gobjref (c, l)
-) : void = "#atsctrb_g_object_unref"
+) : void = "mac#atsctrb_g_object_unref"
 
 (* ****** ****** *)
 

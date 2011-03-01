@@ -60,7 +60,7 @@ fun readany {n:nat} (
     fds: &(@[int][n]), n: int n, which: &int
   ) : int = let
 //
-  extern fun read1 (fd: int, c: &char): ssize_t = "#atslib_read1"
+  extern fun read1 (fd: int, c: &char): ssize_t = "mac#atslib_read1"
 //
   var nerr: int = 0
   var i: natLte n = 0

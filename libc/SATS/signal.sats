@@ -98,21 +98,21 @@ overload sighandler with sighandler_of_fun
 abst@ype sigset_t = $extype"sigset_t"
 fun sigemptyset // 0/-1 : fail/succ // errno set: EINVAL
   (set: &sigset_t? >> opt (sigset_t, i==0))
-  : #[i:int | i <= 0] int (i) = "#atslib_sigemptyset"
+  : #[i:int | i <= 0] int (i) = "mac#atslib_sigemptyset"
 // end of [sigemptyset]
 fun sigfillset  // 0/-1 : fail/succ // errno set: EINVAL
   (set: &sigset_t? >> opt (sigset_t, i==0))
-  : #[i:int | i <= 0] int (i) = "#atslib_sigfillset"
+  : #[i:int | i <= 0] int (i) = "mac#atslib_sigfillset"
 // end of [sigfillset]
 fun sigaddset   // 0/-1 : fail/succ // errno set: EINVAL
-  (set: &sigset_t, sgn: signum_t): int = "#atslib_sigaddset"
+  (set: &sigset_t, sgn: signum_t): int = "mac#atslib_sigaddset"
 // end of [sigaddset]
 fun sigdelset   // 0/-1 : fail/succ // errno set: EINVAL
-  (set: &sigset_t, sgn: signum_t): int = "#atslib_sigdelset"
+  (set: &sigset_t, sgn: signum_t): int = "mac#atslib_sigdelset"
 // end of [sigdelset]
 
 fun sigismember // 0/1/-1 : false/true/error // errno set: EINVAL
-  (set: &sigset_t, sgn: signum_t): int = "#atslib_sigismember"
+  (set: &sigset_t, sgn: signum_t): int = "mac#atslib_sigismember"
 // end of [sigismember]
 
 (* ****** ****** *)
@@ -128,17 +128,17 @@ macdef SIG_NONBLOCK = $extval (sigmaskhow_t, "SIG_NONBLOCK")
 fun pthread_sigmask (
   how: sigmaskhow_t
 , newset: &sigset_t, oldset: &sigset_t? >> opt (sigset_t, i==0)
-) : #[i:int | i <= 0] int (i) = "#atslib_pthread_sigmask"
+) : #[i:int | i <= 0] int (i) = "mac#atslib_pthread_sigmask"
 fun pthread_sigmask_null
-  (how: sigmaskhow_t, newset: &sigset_t): int = "#atslib_pthread_sigmask"
+  (how: sigmaskhow_t, newset: &sigset_t): int = "mac#atslib_pthread_sigmask"
 // end of [pthread_sigmask_null]
 
 fun sigprocmask (
   how: sigmaskhow_t
 , newset: &sigset_t, oldset: &sigset_t? >> opt (sigset_t, i==0)
-) : #[i:int | i <= 0] int (i) = "#atslib_sigprocmask"
+) : #[i:int | i <= 0] int (i) = "mac#atslib_sigprocmask"
 fun sigprocmask_null
-  (how: sigmaskhow_t, newset: &sigset_t): int = "#atslib_sigprocmask_null"
+  (how: sigmaskhow_t, newset: &sigset_t): int = "mac#atslib_sigprocmask_null"
 // end of [sigprocmask_null]
 
 (* ****** ****** *)
@@ -181,21 +181,21 @@ $extype_struct "siginfo_t" of {
 // HX: this one is deprecated; please use [sigaction]
 //
 fun signal
-  (sgn: signum_t, act: sighandler_t): sighandler_t = "#atslib_signal"
+  (sgn: signum_t, act: sighandler_t): sighandler_t = "mac#atslib_signal"
 // end of [signal]
 
 fun sigset
-  (sgn: signum_t, act: sighandler_t): sighandler_t = "#atslib_sigset"
+  (sgn: signum_t, act: sighandler_t): sighandler_t = "mac#atslib_sigset"
 // end of [sigset]
 
 // HX: for unblocking a signal
-fun sigrelse (sgn: signum_t): int = "#atslib_sigrelse" // 0/-1 : succ/fail
+fun sigrelse (sgn: signum_t): int = "mac#atslib_sigrelse" // 0/-1 : succ/fail
 
 // HX: sighold(sgn) = sigset (sgn, SIG_HOLD)
-fun sighold (sgn: signum_t): int = "#atslib_sighold" // 0/-1 : succ/fail
+fun sighold (sgn: signum_t): int = "mac#atslib_sighold" // 0/-1 : succ/fail
 
 // HX: sigignore(sgn) = sigset (sgn, SIG_IGN)
-fun sigignore (sgn: signum_t): int = "#atslib_sigignore" // 0/-1 : succ/fail
+fun sigignore (sgn: signum_t): int = "mac#atslib_sigignore" // 0/-1 : succ/fail
 
 (* ****** ****** *)
 
@@ -212,37 +212,37 @@ typedef sigaction = sigaction_struct
 fun sigaction (
   sgn: signum_t
 , newact: &sigaction, oldact: &sigaction? >> opt (sigaction, i==0)
-) : #[i:int | i <= 0] int i = "#atslib_sigaction" // 0/-1 : succ/fail
+) : #[i:int | i <= 0] int i = "mac#atslib_sigaction" // 0/-1 : succ/fail
 fun sigaction_null
-  (sgn: signum_t, newact: &sigaction): int = "#atslib_sigaction_null"
+  (sgn: signum_t, newact: &sigaction): int = "mac#atslib_sigaction_null"
 // end of [sigaction_null]
 
 (* ****** ****** *)
 
 fun kill // 0/-1 : succ/fail // errno set
-  (proc: pid_t, sgn: signum_t): int = "#atslib_kill"
+  (proc: pid_t, sgn: signum_t): int = "mac#atslib_kill"
 // end of [kill]
 //
 // HX: killpg (pgrp, sgn) = kill (-pgrp, sgn)
 //
 fun killpg // 0/-1 : succ/fail // errno set
-  (pgrp: pid_t, sgn: signum_t): int = "#atslib_killpg"
+  (pgrp: pid_t, sgn: signum_t): int = "mac#atslib_killpg"
 // end of [killpg]
 fun pthread_kill // 0/errno : succ/fail
-  (tid: pthread_t, sgn: signum_t): int = "#atslib_pthread_kill"
+  (tid: pthread_t, sgn: signum_t): int = "mac#atslib_pthread_kill"
 // end of [pthread_kill]
 //
 // HX: raise(sgn) = pthread_kill (pthread_self, sgn)
 //
 fun raise // 0/errno : succ/fail
-  (sgn: signum_t): int = "#atslib_raise" // 0/nz : succ/fail
+  (sgn: signum_t): int = "mac#atslib_raise" // 0/nz : succ/fail
 // end of [raise]
 
 (* ****** ****** *)
 
 fun sigwait ( // 0/errno : succ/fail
     set: &sigset_t, sgn: &signum_t? >> opt (signum_t, i==0)
-  ) : #[i:int | i >= 0] int(i) = "#atslib_sigwait"
+  ) : #[i:int | i >= 0] int(i) = "mac#atslib_sigwait"
 // end of [sigwait]
 
 (* ****** ****** *)
@@ -251,36 +251,36 @@ fun sigwait ( // 0/errno : succ/fail
 // HX: deprecated; please use [sigsuspend]
 //
 fun sigpause // -1: fail // errno set
-  (sgn: signum_t): int = "#atslib_pause"
+  (sgn: signum_t): int = "mac#atslib_pause"
 // end of [sigpause]
 
 //
 // HX: -1: fail // errno set // normally, EINTR is set
 //
-fun sigsuspend (mask: &sigset_t): int = "#atslib_sigsuspend"
+fun sigsuspend (mask: &sigset_t): int = "mac#atslib_sigsuspend"
 
 (* ****** ****** *)
 
 fun sigpending ( // 0/-1: succ/fail // errno set
   set: &sigset_t? >> opt (sigset_t, i==0)
-) : #[i:int | i <= 0] int i = "#atslib_sigpending"
+) : #[i:int | i <= 0] int i = "mac#atslib_sigpending"
 // end of [sigpending]
 
 (* ****** ****** *)
 
 fun siginterrupt // 0/-1 : succ/fail // errno set
-  (sgn: signum_t, flag: int): int = "#atslib_siginterrupt"
+  (sgn: signum_t, flag: int): int = "mac#atslib_siginterrupt"
 // end of [siginterrupt]
 
 (* ****** ****** *)
 
 // HX: print onto stderr
 fun psignal
-  (sgn: signum_t, msg: !READ(string)): void = "#atslib_psignal"
+  (sgn: signum_t, msg: !READ(string)): void = "mac#atslib_psignal"
 // end of [psignal]
 
 fun strsignal (sgn: signum_t) // HX: errno set?
-  :<!ref> [l:addr] (strptr(l) -<lin,prf> void | strptr(l)) = "#atslib_strsignal"
+  :<!ref> [l:addr] (strptr(l) -<lin,prf> void | strptr(l)) = "mac#atslib_strsignal"
 // end of [strsignal]
 
 (* ****** ****** *)

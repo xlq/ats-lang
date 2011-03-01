@@ -34,9 +34,9 @@ MODULE_LICENSE("Dual BSD/GPL") ;
 (* ****** ****** *)
 
 extern
-fun hello_init (): int = "hello_init"
+fun hello_init (): int = "sta#hello_init"
 extern
-fun hello_exit (): void = "hello_exit"
+fun hello_exit (): void = "sta#hello_exit"
 
 %{$
 module_init (hello_init) ;

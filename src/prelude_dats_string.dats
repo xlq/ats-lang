@@ -103,11 +103,12 @@ end // end of [stringlst_concat]
 (* ****** ****** *)
 
 %{$
-
+//
 // a commonly used simple hash function
-
+//
 ats_ulint_type
-atspre_string_hash_33 (ats_ptr_type s0) {
+atspre_string_hash_33
+  (ats_ptr_type s0) {
   unsigned long int hash_val ; unsigned char *s; int c;
   hash_val = 31415926UL ; // randomly chosen
   s = (unsigned char*)s0 ; while (1) {
@@ -125,9 +126,11 @@ atspre_string_hash_33 (ats_ptr_type s0) {
 %{$
 
 ats_ptr_type
-atspre_string_make_substring
-  (const ats_ptr_type src0, const ats_int_type start, const ats_int_type len)
-{
+atspre_string_make_substring (
+  const ats_ptr_type src0
+, const ats_int_type start
+, const ats_int_type len
+) {
   char *des, *src ;
   des = ATS_MALLOC(len+1) ;
   src = ((char*)src0) + start ;

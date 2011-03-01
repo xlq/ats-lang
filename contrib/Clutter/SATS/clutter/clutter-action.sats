@@ -39,18 +39,18 @@
 fun clutter_actor_add_action
   {c1,c2:cls | c1 <= ClutterActor; c2 <= ClutterAction}
   {l1,l2:agz} (self: !gobjref (c1, l1), action: !gobjref (c2, l2)): void
-  = "#atsctrb_clutter_actor_add_action"
+  = "mac#atsctrb_clutter_actor_add_action"
 // end of [clutter_actor_add_action]
 
 fun clutter_actor_remove_action
   {c1,c2:cls | c1 <= ClutterActor; c2 <= ClutterAction}
   {l1,l2:agz} (self: !gobjref (c1, l1), action: !gobjref (c2, l2)): void
-  = "#atsctrb_clutter_actor_remove_action"
+  = "mac#atsctrb_clutter_actor_remove_action"
 // end of [clutter_actor_remove_action]
 
 fun clutter_actor_clear_actions
   {c:cls | c <= ClutterActor} {l:agz} (self: !gobjref (c, l)): void
-  = "#atsctrb_clutter_actor_clear_actions"
+  = "mac#atsctrb_clutter_actor_clear_actions"
 // end of [clutter_actor_clear_actions]
 
 (* ****** ****** *)

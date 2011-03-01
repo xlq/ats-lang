@@ -62,10 +62,12 @@ main (argc, argv) = let
     prval pfarr2 = array_v_group {T} (pfmn, pfarr)
 //
     val [l0:addr] (pf, fpf | p0) = array2_ptr_takeout<T> (pfarr2 | parr, 0, N)
-    prval (pf0, fpf0) = $UN.vtakeout {array_v (T, N, l0)} (pf)
+    prval pfout = $UN.vtakeout {array_v (T, N, l0)} (pf)
+    prval (pf0, fpf0) = $UN.viewout_decode (pfout)
     prval () = pfarr2 := fpf (pf)
     val [l1:addr] (pf, fpf | p1) = array2_ptr_takeout<T> (pfarr2 | parr, 1, N)
-    prval (pf1, fpf1) = $UN.vtakeout {array_v (T, N, l1)} (pf)
+    prval pfout = $UN.vtakeout {array_v (T, N, l1)} (pf)
+    prval (pf1, fpf1) = $UN.viewout_decode (pfout)
     prval () = pfarr2 := fpf (pf)
 //
     val () = array_ptr_iforeach_fun<T> (!p0, f, N) where {

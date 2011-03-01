@@ -59,8 +59,8 @@ GLubyte theLetters[][13] = {
 ats_ptr_type getLetter (ats_int_type i) { return &theLetters[i] ; }
 
 %} // end of [%{^]
-extern val theSpace: ptr = "#theSpace"
-extern fun getLetter {i:nat | i < 26} (i: int i): ptr = "#getLetter"
+extern val theSpace: ptr = "mac#theSpace"
+extern fun getLetter {i:nat | i < 26} (i: int i): ptr = "mac#getLetter"
 
 (* ****** ****** *)
 
@@ -84,8 +84,9 @@ fun printString
   val (pf | ()) = glPushAttrib (GL_LIST_BIT)
   val () = glListBase (theFontOffset_get ())
   val () = glCallLists (len, GL_BYTE, txt) where {
-    extern fun glCallLists {n:nat} (_: size_t n, _: GLenum_type GLbyte, _: string n): void
-      = "#glCallLists"
+    extern fun glCallLists {n:nat} (
+      _: size_t n, _: GLenum_type GLbyte, _: string n
+    ) : void = "mac#glCallLists" // end of [extern]
   } // end of [val]
   val () = glPopAttrib (pf | (*none*))
 in
@@ -104,9 +105,9 @@ fun makeRasterFont () = () where {
   val () = theFontOffset_set (base)
   val base = (uint_of_GLuint)base
 //
-  extern fun glNewList (lst: uint, mode: GLenum): (glNewList_v | void) = "#glNewList"
+  extern fun glNewList (lst: uint, mode: GLenum): (glNewList_v | void) = "mac#glNewList"
   extern fun glBitmap
-    (w:int, h:int, _:double, _:double, _:double, _:double, _: ptr) : void = "#glBitmap"
+    (w:int, h:int, _:double, _:double, _:double, _:double, _: ptr) : void = "mac#glBitmap"
   // end of [glBitmap]
 //
   val (pf | ()) = glNewList (base+(uint_of_char)' ', GL_COMPILE)

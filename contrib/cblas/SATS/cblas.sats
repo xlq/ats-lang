@@ -195,36 +195,37 @@ void cblas_drotg
 //
 // givens(c, s) [a b]' -> [a 0]
 //
-fun{t:t@ype} cblas_rotg
+fun{t:t@ype}
+cblas_rotg
   (a: &t, b: &t, c: &t? >> t, s: &t? >> t) :<> void
 // end of [cblas_rotg]
 
 fun cblas_srotg ( // givens(c, s) [a b]' -> [a 0]
-    a: &float, b: &float
-  , c: &float? >> float, s: &float? >> float
-  ) :<> void
-    = "#atsctrb_cblas_srotg"
+  a: &float, b: &float
+, c: &float? >> float, s: &float? >> float
+) :<> void
+  = "mac#atsctrb_cblas_srotg"
 // end of [cblas_srotg]
 
 fun cblas_drotg ( // givens(c, s) [a b]' -> [a 0]
-    a: &double, b: &double
-  , c: &double? >> double, s: &double? >> double
-  ) :<> void
-    = "#atsctrb_cblas_drotg"
+  a: &double, b: &double
+, c: &double? >> double, s: &double? >> double
+) :<> void
+  = "mac#atsctrb_cblas_drotg"
 // end of [cblas_drotg]
 
 fun cblas_crotg ( // givens(c, s) [a b]' -> [a 0]
-    a: &ccmplx, b: &ccmplx
-  , c: &ccmplx? >> ccmplx, s: &ccmplx? >> ccmplx
-  ) :<> void
-    = "#atsctrb_cblas_crotg"
+  a: &ccmplx, b: &ccmplx
+, c: &ccmplx? >> ccmplx, s: &ccmplx? >> ccmplx
+) :<> void
+  = "mac#atsctrb_cblas_crotg"
 // end of [cblas_crotg]
 
 fun cblas_zrotg ( // givens(c, s) [a b]' -> [a 0]
-    a: &zcmplx, b: &zcmplx
-  , c: &zcmplx? >> zcmplx, s: &zcmplx? >> zcmplx
-  ) :<> void
-    = "#atsctrb_cblas_zrotg"
+  a: &zcmplx, b: &zcmplx
+, c: &zcmplx? >> zcmplx, s: &zcmplx? >> zcmplx
+) :<> void
+  = "mac#atsctrb_cblas_zrotg"
 // end of [cblas_zrotg]
 
 (* ****** ****** *)
@@ -246,25 +247,25 @@ void cblas_drotmg (
 //
 // mod_givens(P) [sqrt(d1)*b1 sqrt(d2)*b2]' -> [a 0]
 //
-fun{a:t@ype} cblas_rotmg (
-    d1: &a, d2: &a, b1: &a, b2: a, P: &GEVEC (a, 5, 1)
-  ) :<> void
-// end of [cblas_rotmg]
+fun{a:t@ype}
+cblas_rotmg (
+  d1: &a, d2: &a, b1: &a, b2: a, P: &GEVEC (a, 5, 1)
+) :<> void // end of [cblas_rotmg]
 
 fun cblas_srotmg (
-    d1: &float, d2: &float
-  , b1: &float, b2: float
-  , P: &GEVEC (float, 5, 1)
-  ) :<> void
-  = "#atsctrb_cblas_srotmg"
+  d1: &float, d2: &float
+, b1: &float, b2: float
+, P: &GEVEC (float, 5, 1)
+) :<> void
+  = "mac#atsctrb_cblas_srotmg"
 // end of [cblas_srotmg]
 
 fun cblas_drotmg (
-    d1: &double, d2: &double
-  , b1: &double, b2: double
-  , P: &GEVEC (double, 5, 1)
-  ) :<> void
-  = "#atsctrb_cblas_drotmg"
+  d1: &double, d2: &double
+, b1: &double, b2: double
+, P: &GEVEC (double, 5, 1)
+) :<> void
+  = "mac#atsctrb_cblas_drotmg"
 // end of [cblas_srotmg]
 
 (* ****** ****** *)
@@ -291,34 +292,34 @@ void cblas_zdrot (
 
 *)
 
-fun{a:t@ype} cblas_rot // givens(c, s) [x y]'
+fun{a:t@ype}
+cblas_rot // givens(c, s) [x y]'
   {n:nat} {dx,dy:inc} (
-    N: int n
-  , X: &GEVEC (a, n, dx), incX: int (dx)
-  , Y: &GEVEC (a, n, dy), incY: int (dy)
-  , c: a, s: a
-  ) :<> void
-// end of [cblas_rot]
+  N: int n
+, X: &GEVEC (a, n, dx), incX: int (dx)
+, Y: &GEVEC (a, n, dy), incY: int (dy)
+, c: a, s: a
+) :<> void // end of [cblas_rot]
 
 fun cblas_srot
   {n:nat} {dx,dy:inc} (
-    N: int n
-  , X: &GEVEC (float, n, dx), incX: int (dx)
-  , Y: &GEVEC (float, n, dy), incY: int (dy)
-  , c: float, s: float
-  ) :<> void
-    = "#atsctrb_cblas_srot"
+  N: int n
+, X: &GEVEC (float, n, dx), incX: int (dx)
+, Y: &GEVEC (float, n, dy), incY: int (dy)
+, c: float, s: float
+) :<> void
+  = "mac#atsctrb_cblas_srot"
 // end of [cblas_srot]
 
 
 fun cblas_drot
   {n:nat} {dx,dy:inc} (
-    N: int n
-  , X: &GEVEC (double, n, dx), incX: int (dx)
-  , Y: &GEVEC (double, n, dy), incY: int (dy)
-  , c: double, s: double
-  ) :<> void
-    = "#atsctrb_cblas_drot"
+  N: int n
+, X: &GEVEC (double, n, dx), incX: int (dx)
+, Y: &GEVEC (double, n, dy), incY: int (dy)
+, c: double, s: double
+) :<> void
+  = "mac#atsctrb_cblas_drot"
 // end of [cblas_drot]
 
 (*
@@ -326,22 +327,22 @@ fun cblas_drot
 // not in CBLAS proper
 fun cblas_csrot
   {n:nat} {dx,dy:inc} (
-    N: int n
-  , X: &GEVEC (ccmplx, n, dx), incX: int (dx)
-  , Y: &GEVEC (ccmplx, n, dy), incY: int (dy)
-  , c: float, s: float
-  ) :<> void
-    = "#atsctrb_cblas_csrot"
+  N: int n
+, X: &GEVEC (ccmplx, n, dx), incX: int (dx)
+, Y: &GEVEC (ccmplx, n, dy), incY: int (dy)
+, c: float, s: float
+) :<> void
+  = "mac#atsctrb_cblas_csrot"
 // end of [cblas_csrot]
 
 fun cblas_zdrot
   {n:nat} {dx,dy:inc} (
-    N: int n
-  , X: &GEVEC (zcmplx, n, dx), incX: int (dx)
-  , Y: &GEVEC (zcmplx, n, dy), incY: int (dy)
-  , c: double, s: double
-  ) :<> void
-    = "#atsctrb_cblas_zdrot"
+  N: int n
+, X: &GEVEC (zcmplx, n, dx), incX: int (dx)
+, Y: &GEVEC (zcmplx, n, dy), incY: int (dy)
+, c: double, s: double
+) :<> void
+  = "mac#atsctrb_cblas_zdrot"
 // end of [cblas_zdrot]
 
 *)
@@ -363,33 +364,33 @@ void cblas_drotm (
 
 *)
 
-fun{a:t@ype} cblas_rotm // mod_givens(P) [x y]'
+fun{a:t@ype}
+cblas_rotm // mod_givens(P) [x y]'
   {n:nat} {dx,dy:inc} (
-    N: int n
-  , X: &GEVEC (a, n, dx), incX: int (dx)
-  , Y: &GEVEC (a, n, dy), incY: int (dy)
-  , P: &GEVEC (a, 5, 1)
-  ) :<> void
-// end of [cblas_rotm]
+  N: int n
+, X: &GEVEC (a, n, dx), incX: int (dx)
+, Y: &GEVEC (a, n, dy), incY: int (dy)
+, P: &GEVEC (a, 5, 1)
+) :<> void // end of [cblas_rotm]
 
 fun cblas_srotm
   {n:nat} {dx,dy:inc} (
-    N: int n
-  , X: &GEVEC (float, n, dx), incX: int (dx)
-  , Y: &GEVEC (float, n, dy), incY: int (dy)
-  , P: &GEVEC (float, 5, 1)
-  ) :<> void
-  = "#atsctrb_cblas_srotm"
+  N: int n
+, X: &GEVEC (float, n, dx), incX: int (dx)
+, Y: &GEVEC (float, n, dy), incY: int (dy)
+, P: &GEVEC (float, 5, 1)
+) :<> void
+  = "mac#atsctrb_cblas_srotm"
 // end of [cblas_srotm]
 
 fun cblas_drotm
   {n:nat} {dx,dy:inc} (
-    N: int n
-  , X: &GEVEC (double, n, dx), incX: int (dx)
-  , Y: &GEVEC (double, n, dy), incY: int (dy)
-  , P: &GEVEC (double, 5, 1)
-  ) :<> void
-  = "#atsctrb_cblas_drotm"
+  N: int n
+, X: &GEVEC (double, n, dx), incX: int (dx)
+, Y: &GEVEC (double, n, dy), incY: int (dy)
+, P: &GEVEC (double, 5, 1)
+) :<> void
+  = "mac#atsctrb_cblas_drotm"
 // end of [cblas_drotm]
 
 (* ****** ****** *)
@@ -409,29 +410,30 @@ double cblas_ddot(
 
 *)
 
-fun{a:t@ype} cblas_dot // dot product
+fun{a:t@ype}
+cblas_dot // dot product
   {n:nat} {dx,dy:inc} (
-    N: int n
-  , X: &GEVEC (a, n, dx), incX: int (dx)
-  , Y: &GEVEC (a, n, dy), incY: int (dy)
-  ) :<> a
-// end of [cblas_dot]
+  N: int n
+, X: &GEVEC (a, n, dx), incX: int (dx)
+, Y: &GEVEC (a, n, dy), incY: int (dy)
+) :<> a // end of [cblas_dot]
 
 fun cblas_sdot // dot product for single precision
   {n:nat} {dx,dy:inc} (
-    N: int n
-  , X: &GEVEC (float, n, dx), incX: int (dx)
-  , Y: &GEVEC (float, n, dy), incY: int (dy)
-  ) :<> float
-    = "#atsctrb_cblas_sdot"
+  N: int n
+, X: &GEVEC (float, n, dx), incX: int (dx)
+, Y: &GEVEC (float, n, dy), incY: int (dy)
+) :<> float
+  = "mac#atsctrb_cblas_sdot"
 
 fun cblas_ddot // dot product for double precision
   {n:nat} {dx,dy:inc} (
-    N: int n
-  , X: &GEVEC (double, n, dx), incX: int (dx)
-  , Y: &GEVEC (double, n, dy), incY: int (dy)
-  ) :<> double
-    = "#atsctrb_cblas_ddot"
+  N: int n
+, X: &GEVEC (double, n, dx), incX: int (dx)
+, Y: &GEVEC (double, n, dy), incY: int (dy)
+) :<> double
+  = "mac#atsctrb_cblas_ddot"
+// end of [fun]
 
 (* ****** ****** *)
 
@@ -454,22 +456,22 @@ double cblas_dsdot(
 // dot product for
 fun cblas_sdsdot // single precision computed in double precision
   {n:nat} {dx,dy:inc} (
-    N: int n
-  , alpha: float
-  , X: &GEVEC (float, n, dx), incX: int (dx)
-  , Y: &GEVEC (float, n, dy), incY: int (dy)
-  ) :<> float
-    = "#atsctrb_cblas_sdsdot"
+  N: int n
+, alpha: float
+, X: &GEVEC (float, n, dx), incX: int (dx)
+, Y: &GEVEC (float, n, dy), incY: int (dy)
+) :<> float
+  = "mac#atsctrb_cblas_sdsdot"
 // end of [cblas_sdsdot]
 
 // dot product for
 fun cblas_dsdot // single precision computed in double precision
   {n:nat} {dx,dy:inc} (
-    N: int n
-  , X: &GEVEC (float, n, dx), incX: int (dx)
-  , Y: &GEVEC (float, n, dy), incY: int (dy)
-  ) :<> double
-    = "#atsctrb_cblas_dsdot"
+  N: int n
+, X: &GEVEC (float, n, dx), incX: int (dx)
+, Y: &GEVEC (float, n, dy), incY: int (dy)
+) :<> double
+  = "mac#atsctrb_cblas_dsdot"
 // end of [cblas_dsdot]
 
 (* ****** ****** *)
@@ -492,31 +494,30 @@ void cblas_cdotu_sub(
 fun{a:t@ype}
 cblas_dotu_sub // dot product for complex
   {n:nat} {dx,dy:inc} (
-    N: int n
-  , X: &GEVEC (a, n, dx), incX: int (dx)
-  , Y: &GEVEC (a, n, dy), incY: int (dy)
-  , dotu: &a? >> a
-  ) :<> void
-// end of [cblas_dotu_sub]
+  N: int n
+, X: &GEVEC (a, n, dx), incX: int (dx)
+, Y: &GEVEC (a, n, dy), incY: int (dy)
+, dotu: &a? >> a
+) :<> void // end of [cblas_dotu_sub]
 
 fun cblas_cdotu_sub // dot product for complex single precision
   {n:nat} {dx,dy:inc} (
-    N: int n
-  , X: &GEVEC (ccmplx, n, dx), incX: int (dx)
-  , Y: &GEVEC (ccmplx, n, dy), incY: int (dy)
-  , dotu: &ccmplx? >> ccmplx
-  ) :<> void
-    = "#atsctrb_cblas_cdotu_sub"
+  N: int n
+, X: &GEVEC (ccmplx, n, dx), incX: int (dx)
+, Y: &GEVEC (ccmplx, n, dy), incY: int (dy)
+, dotu: &ccmplx? >> ccmplx
+) :<> void
+  = "mac#atsctrb_cblas_cdotu_sub"
 // end of [cblas_cdotu_sub]
 
 fun cblas_zdotu_sub // dot product for complex double precision
   {n:nat} {dx,dy:inc} (
-    N: int n
-  , X: &GEVEC (zcmplx, n, dx), incX: int (dx)
-  , Y: &GEVEC (zcmplx, n, dy), incY: int (dy)
-  , dotu: &zcmplx? >> zcmplx
-  ) :<> void
-    = "#atsctrb_cblas_zdotu_sub"
+  N: int n
+, X: &GEVEC (zcmplx, n, dx), incX: int (dx)
+, Y: &GEVEC (zcmplx, n, dy), incY: int (dy)
+, dotu: &zcmplx? >> zcmplx
+) :<> void
+  = "mac#atsctrb_cblas_zdotu_sub"
 // end of [cblas_zdotu_sub]
 
 (* ****** ****** *)
@@ -539,31 +540,30 @@ void cblas_cdotc_sub (
 fun{a:t@ype}
 cblas_dotc_sub // conjugate dot product for complex
   {n:nat} {dx,dy:inc} (
-    N: int n
-  , X: &GEVEC (a, n, dx), incX: int (dx)
-  , Y: &GEVEC (a, n, dy), incY: int (dy)
-  , dotc: &a? >> a
-  ) :<> void
-// end of [cblas_dotc_sub]
+  N: int n
+, X: &GEVEC (a, n, dx), incX: int (dx)
+, Y: &GEVEC (a, n, dy), incY: int (dy)
+, dotc: &a? >> a
+) :<> void // end of [cblas_dotc_sub]
 
 fun cblas_cdotc_sub // conjugate dot product for complex single precision
   {n:nat} {dx,dy:inc} (
-    N: int n
-  , X: &GEVEC (ccmplx, n, dx), incX: int (dx)
-  , Y: &GEVEC (ccmplx, n, dy), incY: int (dy)
-  , dotc: &ccmplx? >> ccmplx
-  ) :<> void
-    = "#atsctrb_cblas_cdotc_sub"
+  N: int n
+, X: &GEVEC (ccmplx, n, dx), incX: int (dx)
+, Y: &GEVEC (ccmplx, n, dy), incY: int (dy)
+, dotc: &ccmplx? >> ccmplx
+) :<> void
+  = "mac#atsctrb_cblas_cdotc_sub"
 // end of [cblas_cdotc_sub]
 
 fun cblas_zdotc_sub // conjugate dot product for complex double precision
   {n:nat} {dx,dy:inc} (
-    N: int n
-  , X: &GEVEC (zcmplx, n, dx), incX: int (dx)
-  , Y: &GEVEC (zcmplx, n, dy), incY: int (dy)
-  , dotc: &zcmplx? >> zcmplx
-  ) :<> void
-    = "#atsctrb_cblas_zdotc_sub"
+  N: int n
+, X: &GEVEC (zcmplx, n, dx), incX: int (dx)
+, Y: &GEVEC (zcmplx, n, dy), incY: int (dy)
+, dotc: &zcmplx? >> zcmplx
+) :<> void
+  = "mac#atsctrb_cblas_zdotc_sub"
 // end of [cblas_zdotc_sub]
 
 (* ****** ****** *)
@@ -575,11 +575,10 @@ fun cblas_zdotc_sub // conjugate dot product for complex double precision
 fun{a:t@ype}
 cblas_dotu // dot product unconjugated
   {n:nat} {dx,dy:inc} (
-    N: int n
-  , X: &GEVEC (a, n, dx), incX: int (dx)
-  , Y: &GEVEC (a, n, dy), incY: int (dy)
-  ) :<> a
-// end of [cblas_dotu]
+  N: int n
+, X: &GEVEC (a, n, dx), incX: int (dx)
+, Y: &GEVEC (a, n, dy), incY: int (dy)
+) :<> a // end of [cblas_dotu]
 
 //
 // DOTC: C, Z // extended with S, D
@@ -588,11 +587,10 @@ cblas_dotu // dot product unconjugated
 fun{a:t@ype}
 cblas_dotc // dot product conjugated
   {n:nat} {dx,dy:inc} (
-    N: int n
-  , X: &GEVEC (a, n, dx), incX: int (dx)
-  , Y: &GEVEC (a, n, dy), incY: int (dy)
-  ) :<> a
-// end of [cblas_dotc]
+  N: int n
+, X: &GEVEC (a, n, dx), incX: int (dx)
+, Y: &GEVEC (a, n, dy), incY: int (dy)
+) :<> a // end of [cblas_dotc]
 
 (* ****** ****** *)
 
@@ -611,36 +609,35 @@ double cblas_dznrm2(const int N, const void *X, const int incX);
 
 fun{a1,a2:t@ype}
 cblas_nrm2 {n:nat} {dx:inc} (
-    N: int n, X: &GEVEC (a2, n, dx), incX: int dx
-  ) :<> a1
-// end of [atsctrb_cblas_nrm2]
+  N: int n, X: &GEVEC (a2, n, dx), incX: int dx
+) :<> a1 // end of [atsctrb_cblas_nrm2]
 
 fun cblas_snrm2
   {n:nat} {dx:inc} (
-    N: int n, X: &GEVEC (float, n, dx), incX: int dx
-  ) :<> float
-  = "#atsctrb_cblas_snrm2"
+  N: int n, X: &GEVEC (float, n, dx), incX: int dx
+) :<> float
+  = "mac#atsctrb_cblas_snrm2"
 // end of [cblas_snrm2]
 
 fun cblas_dnrm2
   {n:nat} {dx:inc} (
-    N: int n, X: &GEVEC (double, n, dx), incX: int dx
-  ) :<> double
-  = "#atsctrb_cblas_dnrm2"
+  N: int n, X: &GEVEC (double, n, dx), incX: int dx
+) :<> double
+  = "mac#atsctrb_cblas_dnrm2"
 // end of [cblas_dnrm2]
 
 fun cblas_scnrm2
   {n:nat} {dx:inc} (
-    N: int n, X: &GEVEC (ccmplx, n, dx), incX: int dx
-  ) :<> float
-  = "#atsctrb_cblas_scnrm2"
+  N: int n, X: &GEVEC (ccmplx, n, dx), incX: int dx
+) :<> float
+  = "mac#atsctrb_cblas_scnrm2"
 // end of [cblas_scnrm2]
 
 fun cblas_dznrm2
   {n:nat} {dx:inc} (
-    N: int n, X: &GEVEC (zcmplx, n, dx), incX: int dx
-  ) :<> double
-  = "#atsctrb_cblas_dznrm2"
+  N: int n, X: &GEVEC (zcmplx, n, dx), incX: int dx
+) :<> double
+  = "mac#atsctrb_cblas_dznrm2"
 // end of [cblas_dznrm2]
 
 (* ****** ****** *)
@@ -661,36 +658,36 @@ double cblas_dzasum(const int N, const void *X, const int incX);
 fun{a1,a2:t@ype}
 cblas_asum // 1-norm of a vector
   {n:nat} {dx:inc} (
-    N: int n, X: &GEVEC (a1, n, dx), incX: int dx
-  ) :<> a2
+  N: int n, X: &GEVEC (a1, n, dx), incX: int dx
+) :<> a2
 // end of [atsctrb_cblas_asum]
 
 fun cblas_sasum // 1-norm of a vector in single precision
   {n:nat} {dx:inc} (
-    N: int n, X: &GEVEC (float, n, dx), incX: int dx
-  ) :<> float
-  = "#atsctrb_cblas_sasum"
+  N: int n, X: &GEVEC (float, n, dx), incX: int dx
+) :<> float
+  = "mac#atsctrb_cblas_sasum"
 // end of [cblas_sasum]
 
 fun cblas_dasum // 1-norm of a vector in double precision
   {n:nat} {dx:inc} (
-    N: int n, X: &GEVEC (double, n, dx), incX: int dx
-  ) :<> double
-  = "#atsctrb_cblas_dasum"
+  N: int n, X: &GEVEC (double, n, dx), incX: int dx
+) :<> double
+  = "mac#atsctrb_cblas_dasum"
 // end of [cblas_dasum]
 
 fun cblas_scasum // 1-norm of a vector in single precision complex
   {n:nat} {dx:inc} (
-    N: int n, X: &GEVEC (ccmplx, n, dx), incX: int dx
-  ) :<> float
-  = "#atsctrb_cblas_scasum"
+  N: int n, X: &GEVEC (ccmplx, n, dx), incX: int dx
+) :<> float
+  = "mac#atsctrb_cblas_scasum"
 // end of [cblas_scasum]
 
 fun cblas_dzasum // 1-norm of a vector in double precision complex
   {n:nat} {dx:inc} (
-    N: int n, X: &GEVEC (zcmplx, n, dx), incX: int dx
-  ) :<> double
-  = "#atsctrb_cblas_dzasum"
+  N: int n, X: &GEVEC (zcmplx, n, dx), incX: int dx
+) :<> double
+  = "mac#atsctrb_cblas_dzasum"
 // end of [cblas_dzasum]
 
 (* ****** ****** *)
@@ -711,35 +708,39 @@ CBLAS_INDEX cblas_izamax(const int N, const void   *X, const int incX);
 
 typedef CBLAS_INDEX = int // should it be made abstract?
 
-fun{a:t@ype} cblas_iamax // arg infty-norm of a vector
+fun{a:t@ype}
+cblas_iamax // arg infty-norm of a vector
   {n:nat} {dx:inc} (
-    N: int n, X: &GEVEC (a, n, dx), incX: int dx
-  ) :<> CBLAS_INDEX
-// end of [atsctrb_cblas_iamax]
+  N: int n, X: &GEVEC (a, n, dx), incX: int dx
+) :<> CBLAS_INDEX // end of [atsctrb_cblas_iamax]
 
 fun cblas_isamax // arg infty-norm of a vector in single precision
   {n:nat} {dx:inc} (
-    N: int n, X: &GEVEC (float, n, dx), incX: int dx
-  ) :<> CBLAS_INDEX
-  = "#atsctrb_cblas_isamax"
+  N: int n, X: &GEVEC (float, n, dx), incX: int dx
+) :<> CBLAS_INDEX
+  = "mac#atsctrb_cblas_isamax"
+// end of [fun]
 
 fun cblas_idamax // arg infty-norm of a vector in double precision
   {n:nat} {dx:inc} (
-    N: int n, X: &GEVEC (double, n, dx), incX: int dx
-  ) :<> CBLAS_INDEX
-  = "#atsctrb_cblas_idamax"
+  N: int n, X: &GEVEC (double, n, dx), incX: int dx
+) :<> CBLAS_INDEX
+  = "mac#atsctrb_cblas_idamax"
+// end of [fun]
 
 fun cblas_icamax // arg infty-norm of a vector in single precision complex
   {n:nat} {dx:inc} (
-    N: int n, X: &GEVEC (ccmplx, n, dx), incX: int dx
-  ) :<> CBLAS_INDEX
-  = "#atsctrb_cblas_icamax"
+  N: int n, X: &GEVEC (ccmplx, n, dx), incX: int dx
+) :<> CBLAS_INDEX
+  = "mac#atsctrb_cblas_icamax"
+// end of [fun]
 
 fun cblas_izamax // arg infty-norm of a vector in double precision complex
   {n:nat} {dx:inc} (
-    N: int n, X: &GEVEC (zcmplx, n, dx), incX: int dx
-  ) :<> CBLAS_INDEX
-  = "#atsctrb_cblas_izamax"
+  N: int n, X: &GEVEC (zcmplx, n, dx), incX: int dx
+) :<> CBLAS_INDEX
+  = "mac#atsctrb_cblas_izamax"
+// end of [fun]
 
 (* ****** ****** *)
 
@@ -757,45 +758,49 @@ void cblas_dswap (
 
 *)
 
-fun{a:t@ype} cblas_swap // X <-> Y
+fun{a:t@ype}
+cblas_swap // X <-> Y
   {n:nat} {dx,dy:inc} (
-    N: int n
-  , X: &GEVEC (a, n, dx), incX: int dx
-  , Y: &GEVEC (a, n, dy), incY: int dy
-  ) :<> void
-// end of [cblas_swap]
+  N: int n
+, X: &GEVEC (a, n, dx), incX: int dx
+, Y: &GEVEC (a, n, dy), incY: int dy
+) :<> void // end of [cblas_swap]
 
 fun cblas_sswap
   {n:nat} {dx,dy:inc} (
-    N: int n
-  , X: &GEVEC (float, n, dx), incX: int dx
-  , Y: &GEVEC (float, n, dy), incY: int dy
-  ) :<> void
-    = "#atsctrb_cblas_sswap"
+  N: int n
+, X: &GEVEC (float, n, dx), incX: int dx
+, Y: &GEVEC (float, n, dy), incY: int dy
+) :<> void
+  = "mac#atsctrb_cblas_sswap"
+// end of [fun]
 
 fun cblas_dswap
   {n:nat} {dx,dy:inc} (
-    N: int n
-  , X: &GEVEC (double, n, dx), incX: int dx
-  , Y: &GEVEC (double, n, dy), incY: int dy
-  ) :<> void
-    = "#atsctrb_cblas_dswap"
+  N: int n
+, X: &GEVEC (double, n, dx), incX: int dx
+, Y: &GEVEC (double, n, dy), incY: int dy
+) :<> void
+  = "mac#atsctrb_cblas_dswap"
+// end of [fun]
 
 fun cblas_cswap
   {n:nat} {dx,dy:inc} (
-    N: int n
-  , X: &GEVEC (ccmplx, n, dx), incX: int dx
-  , Y: &GEVEC (ccmplx, n, dy), incY: int dy
-  ) :<> void
-    = "#atsctrb_cblas_cswap"
+  N: int n
+, X: &GEVEC (ccmplx, n, dx), incX: int dx
+, Y: &GEVEC (ccmplx, n, dy), incY: int dy
+) :<> void
+  = "mac#atsctrb_cblas_cswap"
+// end of [fun]
 
 fun cblas_zswap
   {n:nat} {dx,dy:inc} (
-    N: int n
-  , X: &GEVEC (zcmplx, n, dx), incX: int dx
-  , Y: &GEVEC (zcmplx, n, dy), incY: int dy
-  ) :<> void
-    = "#atsctrb_cblas_zswap"
+  N: int n
+, X: &GEVEC (zcmplx, n, dx), incX: int dx
+, Y: &GEVEC (zcmplx, n, dy), incY: int dy
+) :<> void
+  = "mac#atsctrb_cblas_zswap"
+// end of [fun]
 
 (* ****** ****** *)
 
@@ -814,55 +819,59 @@ void cblas_dcopy (
 
 *)
 
-fun{a:t@ype} cblas_copy // copy vector X to Y (Y <- X)
+fun{a:t@ype}
+cblas_copy // copy vector X to Y (Y <- X)
   {n:nat} {dx,dy:inc} (
-    N: int n
-  , X: &GEVEC (a, n, dx)
-  , incX: int dx
-  , Y: &GEVEC (a?, n, dy) >> GEVEC (a, n, dy)
-  , incY: int dy
-  ) :<> void
-// end of [cblas_copy]
+  N: int n
+, X: &GEVEC (a, n, dx)
+, incX: int dx
+, Y: &GEVEC (a?, n, dy) >> GEVEC (a, n, dy)
+, incY: int dy
+) :<> void // end of [cblas_copy]
 
 fun cblas_scopy
   {n:nat} {dx,dy:inc} (
-    N: int n
-  , X: &GEVEC (float, n, dx)
-  , incX: int dx
-  , Y: &GEVEC (float?, n, dy) >> GEVEC (float, n, dy)
-  , incY: int dy
-  ) :<> void
-    = "#atsctrb_cblas_scopy"
+  N: int n
+, X: &GEVEC (float, n, dx)
+, incX: int dx
+, Y: &GEVEC (float?, n, dy) >> GEVEC (float, n, dy)
+, incY: int dy
+) :<> void
+  = "mac#atsctrb_cblas_scopy"
+// end of [fun]
 
 fun cblas_dcopy
   {n:nat} {dx,dy:inc} (
-    N: int n
-  , X: &GEVEC (double, n, dx)
-  , incX: int dx
-  , Y: &GEVEC (double?, n, dy) >> GEVEC (double, n, dy)
-  , incY: int dy
-  ) :<> void
-    = "#atsctrb_cblas_dcopy"
+  N: int n
+, X: &GEVEC (double, n, dx)
+, incX: int dx
+, Y: &GEVEC (double?, n, dy) >> GEVEC (double, n, dy)
+, incY: int dy
+) :<> void
+  = "mac#atsctrb_cblas_dcopy"
+// end of [fun]
 
 fun cblas_ccopy
   {n:nat} {dx,dy:inc} (
-    N: int n
-  , X: &GEVEC (ccmplx, n, dx)
-  , incX: int dx
-  , Y: &GEVEC (ccmplx?, n, dy) >> GEVEC (ccmplx, n, dy)
-  , incY: int dy
-  ) :<> void
-    = "#atsctrb_cblas_ccopy"
+  N: int n
+, X: &GEVEC (ccmplx, n, dx)
+, incX: int dx
+, Y: &GEVEC (ccmplx?, n, dy) >> GEVEC (ccmplx, n, dy)
+, incY: int dy
+) :<> void
+  = "mac#atsctrb_cblas_ccopy"
+// end of [fun]
 
 fun cblas_zcopy
   {n:nat} {dx,dy:inc} (
-    N: int n
-  , X: &GEVEC (zcmplx, n, dx)
-  , incX: int dx
-  , Y: &GEVEC (zcmplx?, n, dy) >> GEVEC (zcmplx, n, dy)
-  , incY: int dy
-  ) :<> void
-    = "#atsctrb_cblas_zcopy"
+  N: int n
+, X: &GEVEC (zcmplx, n, dx)
+, incX: int dx
+, Y: &GEVEC (zcmplx?, n, dy) >> GEVEC (zcmplx, n, dy)
+, incY: int dy
+) :<> void
+  = "mac#atsctrb_cblas_zcopy"
+// end of [fun]
 
 (* ****** ****** *)
 
@@ -881,50 +890,54 @@ void cblas_daxpy (
 
 *)
 
-fun{a:t@ype} cblas_axpy // Y <- alpha * X + Y
+fun{a:t@ype}
+cblas_axpy // Y <- alpha * X + Y
   {n:nat} {dx,dy:inc} (
-    N: int n
-  , alpha: a
-  , X: &GEVEC (a, n, dx), incX: int dx
-  , Y: &GEVEC (a, n, dy), incY: int dy
-  ) :<> void
-// end of [cblas_axpy]
+  N: int n
+, alpha: a
+, X: &GEVEC (a, n, dx), incX: int dx
+, Y: &GEVEC (a, n, dy), incY: int dy
+) :<> void // end of [cblas_axpy]
 
 fun cblas_saxpy
   {n:nat} {dx,dy:inc} (
-    N: int n
-  , alpha: float
-  , X: &GEVEC (float, n, dx), incX: int dx
-  , Y: &GEVEC (float, n, dy), incY: int dy
-  ) :<> void
-    = "#atsctrb_cblas_saxpy"
+  N: int n
+, alpha: float
+, X: &GEVEC (float, n, dx), incX: int dx
+, Y: &GEVEC (float, n, dy), incY: int dy
+) :<> void
+  = "mac#atsctrb_cblas_saxpy"
+// end of [fun]
 
 fun cblas_daxpy
   {n:nat} {dx,dy:inc} (
-    N: int n
-  , alpha: double
-  , X: &GEVEC (double, n, dx), incX: int dx
-  , Y: &GEVEC (double, n, dy), incY: int dy
-  ) :<> void
-    = "#atsctrb_cblas_daxpy"
+  N: int n
+, alpha: double
+, X: &GEVEC (double, n, dx), incX: int dx
+, Y: &GEVEC (double, n, dy), incY: int dy
+) :<> void
+  = "mac#atsctrb_cblas_daxpy"
+// end of [fun]
 
 fun cblas_caxpy
   {n:nat} {dx,dy:inc} (
-    N: int n
-  , alpha: &ccmplx
-  , X: &GEVEC (ccmplx, n, dx), incX: int dx
-  , Y: &GEVEC (ccmplx, n, dy), incY: int dy
-  ) :<> void
-    = "#atsctrb_cblas_caxpy"
+  N: int n
+, alpha: &ccmplx
+, X: &GEVEC (ccmplx, n, dx), incX: int dx
+, Y: &GEVEC (ccmplx, n, dy), incY: int dy
+) :<> void
+  = "mac#atsctrb_cblas_caxpy"
+// end of [fun]
 
 fun cblas_zaxpy
   {n:nat} {dx,dy:inc} (
-    N: int n
-  , alpha: &zcmplx
-  , X: &GEVEC (zcmplx, n, dx), incX: int dx
-  , Y: &GEVEC (zcmplx, n, dy), incY: int dy
-  ) :<> void
-    = "#atsctrb_cblas_zaxpy"
+  N: int n
+, alpha: &zcmplx
+, X: &GEVEC (zcmplx, n, dx), incX: int dx
+, Y: &GEVEC (zcmplx, n, dy), incY: int dy
+) :<> void
+  = "mac#atsctrb_cblas_zaxpy"
+// end of [fun]
 
 (* ****** ****** *)
 
@@ -941,54 +954,60 @@ void cblas_csscal(const int N, const float alpha, void *X, const int incX);
 void cblas_zdscal(const int N, const double alpha, void *X, const int incX);
 *)
 
-fun{a1,a2:t@ype} cblas_scal // X <- alpha * X
+fun{a1,a2:t@ype}
+cblas_scal // X <- alpha * X
   {n:nat} {dx:inc} (
-    N: int n, alpha: a2
-  , X: &GEVEC (a1, n, dx), incX: int (dx)
-  ) :<> void
-// end of [cblas_scal]
+  N: int n, alpha: a2
+, X: &GEVEC (a1, n, dx), incX: int (dx)
+) :<> void // end of [cblas_scal]
 
 fun cblas_sscal
   {n:nat} {dx:inc} (
-    N: int n, alpha: float
-  , X: &GEVEC (float, n, dx), incX: int (dx)
-  ) :<> void
-    = "#atsctrb_cblas_sscal"
+  N: int n, alpha: float
+, X: &GEVEC (float, n, dx), incX: int (dx)
+) :<> void
+  = "mac#atsctrb_cblas_sscal"
+// end of [fun]
 
 fun cblas_dscal
   {n:nat} {dx:inc} (
-    N: int n, alpha: double
-  , X: &GEVEC (double, n, dx), incX: int (dx)
-  ) :<> void
-    = "#atsctrb_cblas_dscal"
+  N: int n, alpha: double
+, X: &GEVEC (double, n, dx), incX: int (dx)
+) :<> void
+  = "mac#atsctrb_cblas_dscal"
+// end of [fun]
 
 fun cblas_cscal
   {n:nat} {dx:inc} (
-    N: int n, alpha: &ccmplx
-  , X: &GEVEC (ccmplx, n, dx), incX: int (dx)
-  ) :<> void
-    = "#atsctrb_cblas_cscal"
+  N: int n, alpha: &ccmplx
+, X: &GEVEC (ccmplx, n, dx), incX: int (dx)
+) :<> void
+  = "mac#atsctrb_cblas_cscal"
+// end of [fun]
 
 fun cblas_zscal
   {n:nat} {dx:inc} (
-    N: int n, alpha: &zcmplx
-  , X: &GEVEC (zcmplx, n, dx), incX: int (dx)
-  ) :<> void
-    = "#atsctrb_cblas_zscal"
+  N: int n, alpha: &zcmplx
+, X: &GEVEC (zcmplx, n, dx), incX: int (dx)
+) :<> void
+  = "mac#atsctrb_cblas_zscal"
+// end of [fun]
 
 fun cblas_csscal
   {n:nat} {dx:inc} (
-    N: int n, alpha: float
-  , X: &GEVEC (ccmplx, n, dx), incX: int (dx)
-  ) :<> void
-    = "#atsctrb_cblas_csscal"
+  N: int n, alpha: float
+, X: &GEVEC (ccmplx, n, dx), incX: int (dx)
+) :<> void
+  = "mac#atsctrb_cblas_csscal"
+// end of [fun]
 
 fun cblas_zdscal
   {n:nat} {dx:inc} (
-    N: int n, alpha: double
-  , X: &GEVEC (zcmplx, n, dx), incX: int (dx)
-  ) :<> void
-    = "#atsctrb_cblas_zdscal"
+  N: int n, alpha: double
+, X: &GEVEC (zcmplx, n, dx), incX: int (dx)
+) :<> void
+  = "mac#atsctrb_cblas_zdscal"
+// end of [fun]
 
 (* ****** ****** *)
 
@@ -1017,7 +1036,8 @@ void cblas_dgemv (
 
 *)
 
-fun{a:t@ype} cblas_gemv
+fun{a:t@ype}
+cblas_gemv
   {ord:order} {trA:transpose}
   {ma,na:nat} {lda:pos}
   {nx,ny:nat} {dx,dy:inc} (
@@ -1030,7 +1050,7 @@ fun{a:t@ype} cblas_gemv
 , X: &GEVEC (a, nx, dx), incX: int dx
 , beta: a
 , Y: &GEVEC (a, ny, dy), incY: int dy
-) :<> void
+) :<> void // end of [cblas_gemv]
 
 fun cblas_sgemv
   {ord:order} {trA:transpose}
@@ -1046,7 +1066,8 @@ fun cblas_sgemv
 , beta: float
 , Y: &GEVEC (float, ny, dy), incY: int dy
 ) :<> void
-  = "#atsctrb_cblas_sgemv"
+  = "mac#atsctrb_cblas_sgemv"
+// end of [fun]
 
 fun cblas_dgemv
   {ord:order} {trA:transpose}
@@ -1062,7 +1083,8 @@ fun cblas_dgemv
 , beta: double
 , Y: &GEVEC (double, ny, dy), incY: int dy
 ) :<> void
-  = "#atsctrb_cblas_dgemv"
+  = "mac#atsctrb_cblas_dgemv"
+// end of [fun]
 
 fun cblas_cgemv
   {ord:order} {trA:transpose}
@@ -1078,7 +1100,8 @@ fun cblas_cgemv
 , beta: &ccmplx
 , Y: &GEVEC (ccmplx, ny, dy), incY: int dy
 ) :<> void
-  = "#atsctrb_cblas_cgemv"
+  = "mac#atsctrb_cblas_cgemv"
+// end of [fun]
 
 fun cblas_zgemv
   {ord:order} {trA:transpose}
@@ -1094,7 +1117,8 @@ fun cblas_zgemv
 , beta: &zcmplx
 , Y: &GEVEC (zcmplx, ny, dy), incY: int dy
 ) :<> void
-  = "#atsctrb_cblas_zgemv"
+  = "mac#atsctrb_cblas_zgemv"
+// end of [fun]
 
 (* ****** ****** *)
 
@@ -1118,7 +1142,8 @@ void cblas_dgbmv (
 
 *)
 
-fun{a:t@ype} cblas_gbmv
+fun{a:t@ype}
+cblas_gbmv
   {ord:order} {trA:transpose}
   {ma,na:nat} {kl,ku:nat} {lda:pos}
   {nx,ny:nat} {dx,dy:inc} (
@@ -1132,8 +1157,7 @@ fun{a:t@ype} cblas_gbmv
 , X: &GEVEC (a, nx, dx), incX: int dx
 , beta: a
 , Y: &GEVEC (a, ny, dy), incY: int dy
-) :<> void
-// end of [cblas_gbmv]
+) :<> void // end of [cblas_gbmv]
 
 fun cblas_sgbmv
   {ord:order} {trA:transpose}
@@ -1150,7 +1174,8 @@ fun cblas_sgbmv
 , beta: float
 , Y: &GEVEC (float, ny, dy), incY: int dy
 ) :<> void
-  = "#atsctrb_cblas_sgbmv"
+  = "mac#atsctrb_cblas_sgbmv"
+// end of [fun]
 
 fun cblas_dgbmv
   {ord:order} {trA:transpose}
@@ -1167,7 +1192,8 @@ fun cblas_dgbmv
 , beta: double
 , Y: &GEVEC (double, ny, dy), incY: int dy
 ) :<> void
-  = "#atsctrb_cblas_dgbmv"
+  = "mac#atsctrb_cblas_dgbmv"
+// end of [fun]
 
 fun cblas_cgbmv
   {ord:order} {trA:transpose}
@@ -1184,7 +1210,8 @@ fun cblas_cgbmv
 , beta: &ccmplx
 , Y: &GEVEC (ccmplx, ny, dy), incY: int dy
 ) :<> void
-  = "#atsctrb_cblas_cgbmv"
+  = "mac#atsctrb_cblas_cgbmv"
+// end of [fun]
 
 fun cblas_zgbmv
   {ord:order} {trA:transpose}
@@ -1201,14 +1228,14 @@ fun cblas_zgbmv
 , beta: &zcmplx
 , Y: &GEVEC (zcmplx, ny, dy), incY: int dy
 ) :<> void
-  = "#atsctrb_cblas_zgbmv"
+  = "mac#atsctrb_cblas_zgbmv"
+// end of [fun]
 
 (* ****** ****** *)
 
 //
 // TRMV: S, D, C, Z
 //
-
 
 (*
 
@@ -1224,75 +1251,79 @@ void cblas_dtrmv(
 
 *)
 
-fun{a:t@ype} cblas_trmv
+fun{a:t@ype}
+cblas_trmv
   {ord:order} {ul:uplo}
   {trA:transpose} {dg:diag}
   {n:nat} {lda:pos} {dx:inc} (
-    Order: CBLAS_ORDER_t (ord)
-  , Uplo: CBLAS_UPLO_t (ul)
-  , TransA: CBLAS_TRANSPOSE_t (trA)
-  , Diag: CBLAS_DIAG_t (dg)
-  , N: int n
-  , A: &TRMAT (a, n, ord, ul, dg, lda), lda: int lda
-  , X: &GEVEC (a, n, dx), incX: int dx
-  ) :<> void
-// end of [cblas_trmv]
+  Order: CBLAS_ORDER_t (ord)
+, Uplo: CBLAS_UPLO_t (ul)
+, TransA: CBLAS_TRANSPOSE_t (trA)
+, Diag: CBLAS_DIAG_t (dg)
+, N: int n
+, A: &TRMAT (a, n, ord, ul, dg, lda), lda: int lda
+, X: &GEVEC (a, n, dx), incX: int dx
+) :<> void // end of [cblas_trmv]
 
 fun cblas_strmv
   {ord:order} {ul:uplo}
   {trA:transpose} {dg:diag}
   {n:nat} {lda:pos} {dx:inc} (
-    Order: CBLAS_ORDER_t (ord)
-  , Uplo: CBLAS_UPLO_t (ul)
-  , TransA: CBLAS_TRANSPOSE_t (trA)
-  , Diag: CBLAS_DIAG_t (dg)
-  , N: int n
-  , A: &TRMAT (float, n, ord, ul, dg, lda), lda: int lda
-  , X: &GEVEC (float, n, dx), incX: int dx
-  ) :<> void
-    = "#atsctrb_cblas_strmv"
+  Order: CBLAS_ORDER_t (ord)
+, Uplo: CBLAS_UPLO_t (ul)
+, TransA: CBLAS_TRANSPOSE_t (trA)
+, Diag: CBLAS_DIAG_t (dg)
+, N: int n
+, A: &TRMAT (float, n, ord, ul, dg, lda), lda: int lda
+, X: &GEVEC (float, n, dx), incX: int dx
+) :<> void
+  = "mac#atsctrb_cblas_strmv"
+// end of [fun]
 
 fun cblas_dtrmv
   {ord:order} {ul:uplo}
   {trA:transpose} {dg:diag}
   {n:nat} {lda:pos} {dx:inc} (
-    Order: CBLAS_ORDER_t (ord)
-  , Uplo: CBLAS_UPLO_t (ul)
-  , TransA: CBLAS_TRANSPOSE_t (trA)
-  , Diag: CBLAS_DIAG_t (dg)
-  , N: int n
-  , A: &TRMAT (double, n, ord, ul, dg, lda), lda: int lda
-  , X: &GEVEC (double, n, dx), incX: int dx
-  ) :<> void
-    = "#atsctrb_cblas_dtrmv"
+  Order: CBLAS_ORDER_t (ord)
+, Uplo: CBLAS_UPLO_t (ul)
+, TransA: CBLAS_TRANSPOSE_t (trA)
+, Diag: CBLAS_DIAG_t (dg)
+, N: int n
+, A: &TRMAT (double, n, ord, ul, dg, lda), lda: int lda
+, X: &GEVEC (double, n, dx), incX: int dx
+) :<> void
+  = "mac#atsctrb_cblas_dtrmv"
+// end of [fun]
 
 fun cblas_ctrmv
   {ord:order} {ul:uplo}
   {trA:transpose} {dg:diag}
   {n:nat} {lda:pos} {dx:inc} (
-    Order: CBLAS_ORDER_t (ord)
-  , Uplo: CBLAS_UPLO_t (ul)
-  , TransA: CBLAS_TRANSPOSE_t (trA)
-  , Diag: CBLAS_DIAG_t (dg)
-  , N: int n
-  , A: &TRMAT (ccmplx, n, ord, ul, dg, lda), lda: int lda
-  , X: &GEVEC (ccmplx, n, dx), incX: int dx
-  ) :<> void
-    = "#atsctrb_cblas_ctrmv"
+  Order: CBLAS_ORDER_t (ord)
+, Uplo: CBLAS_UPLO_t (ul)
+, TransA: CBLAS_TRANSPOSE_t (trA)
+, Diag: CBLAS_DIAG_t (dg)
+, N: int n
+, A: &TRMAT (ccmplx, n, ord, ul, dg, lda), lda: int lda
+, X: &GEVEC (ccmplx, n, dx), incX: int dx
+) :<> void
+  = "mac#atsctrb_cblas_ctrmv"
+// end of [fun]
 
 fun cblas_ztrmv
   {ord:order} {ul:uplo}
   {trA:transpose} {dg:diag}
   {n:nat} {lda:pos} {dx:inc} (
-    Order: CBLAS_ORDER_t (ord)
-  , Uplo: CBLAS_UPLO_t (ul)
-  , TransA: CBLAS_TRANSPOSE_t (trA)
-  , Diag: CBLAS_DIAG_t (dg)
-  , N: int n
-  , A: &TRMAT (zcmplx, n, ord, ul, dg, lda), lda: int lda
-  , X: &GEVEC (zcmplx, n, dx), incX: int dx
-  ) :<> void
-    = "#atsctrb_cblas_ztrmv"
+  Order: CBLAS_ORDER_t (ord)
+, Uplo: CBLAS_UPLO_t (ul)
+, TransA: CBLAS_TRANSPOSE_t (trA)
+, Diag: CBLAS_DIAG_t (dg)
+, N: int n
+, A: &TRMAT (zcmplx, n, ord, ul, dg, lda), lda: int lda
+, X: &GEVEC (zcmplx, n, dx), incX: int dx
+) :<> void
+  = "mac#atsctrb_cblas_ztrmv"
+// end of [fun]
 
 (* ****** ****** *)
 
@@ -1314,7 +1345,8 @@ void cblas_dtbmv (
 
 *)
 
-fun{a:t@ype} cblas_tbmv
+fun{a:t@ype}
+cblas_tbmv
   {ord:order} {ul:uplo} {dg:diag} {trA:transpose}
   {n:nat} {k:nat} {lda:pos} {dx:inc} (
   Order: CBLAS_ORDER_t ord
@@ -1324,8 +1356,7 @@ fun{a:t@ype} cblas_tbmv
 , N: int n, K: int k
 , A: &TBMAT (a, n, ord, ul, dg, k, lda), lda: int lda
 , X: &GEVEC (a, n, dx), incX: int dx
-) :<> void
-// end of [cblas_tbmv]
+) :<> void // end of [cblas_tbmv]
 
 fun cblas_stbmv
   {ord:order} {ul:uplo} {dg:diag} {trA:transpose}
@@ -1338,7 +1369,8 @@ fun cblas_stbmv
 , A: &TBMAT (float, n, ord, ul, dg, k, lda), lda: int lda
 , X: &GEVEC (float, n, dx), incX: int dx
 ) :<> void
-  = "#atsctrb_cblas_stbmv"
+  = "mac#atsctrb_cblas_stbmv"
+// end of [fun]
 
 fun cblas_dtbmv
   {ord:order} {ul:uplo} {dg:diag} {trA:transpose}
@@ -1351,7 +1383,8 @@ fun cblas_dtbmv
 , A: &TBMAT (double, n, ord, ul, dg, k, lda), lda: int lda
 , X: &GEVEC (double, n, dx), incX: int dx
 ) :<> void
-  = "#atsctrb_cblas_dtbmv"
+  = "mac#atsctrb_cblas_dtbmv"
+// end of [fun]
 
 fun cblas_ctbmv
   {ord:order} {ul:uplo} {dg:diag} {trA:transpose}
@@ -1364,7 +1397,8 @@ fun cblas_ctbmv
 , A: &TBMAT (ccmplx, n, ord, ul, dg, k, lda), lda: int lda
 , X: &GEVEC (ccmplx, n, dx), incX: int dx
 ) :<> void
-  = "#atsctrb_cblas_ctbmv"
+  = "mac#atsctrb_cblas_ctbmv"
+// end of [fun]
 
 fun cblas_ztbmv
   {ord:order} {ul:uplo} {dg:diag} {trA:transpose}
@@ -1377,7 +1411,8 @@ fun cblas_ztbmv
 , A: &TBMAT (zcmplx, n, ord, ul, dg, k, lda), lda: int lda
 , X: &GEVEC (zcmplx, n, dx), incX: int dx
 ) :<> void
-  = "#atsctrb_cblas_ztbmv"
+  = "mac#atsctrb_cblas_ztbmv"
+// end of [fun]
 
 (* ****** ****** *)
 
@@ -1399,7 +1434,8 @@ void cblas_dtpmv (
 
 *)
 
-fun{a:t@ype} cblas_tpmv
+fun{a:t@ype}
+cblas_tpmv
   {ord:order} {ul:uplo} {dg:diag} {trA:transpose}
   {n:nat} {dx:inc} (
   Order: CBLAS_ORDER_t (ord)
@@ -1409,8 +1445,7 @@ fun{a:t@ype} cblas_tpmv
 , N: int n
 , Ap: &TPMAT (a, n, ord, ul, dg)
 , X: &GEVEC (a, n, dx), incX: int dx
-) :<> void
-// end of [cblas_tpmv]
+) :<> void // end of [cblas_tpmv]
 
 fun cblas_stpmv
   {ord:order} {ul:uplo} {dg:diag} {trA:transpose}
@@ -1423,7 +1458,8 @@ fun cblas_stpmv
 , Ap: &TPMAT (float, n, ord, ul, dg)
 , X: &GEVEC (float, n, dx), incX: int dx
 ) :<> void
-  = "#atsctrb_cblas_stpmv"
+  = "mac#atsctrb_cblas_stpmv"
+// end of [fun]
 
 fun cblas_dtpmv
   {ord:order} {ul:uplo} {dg:diag} {trA:transpose}
@@ -1436,7 +1472,8 @@ fun cblas_dtpmv
 , Ap: &TPMAT (double, n, ord, ul, dg)
 , X: &GEVEC (double, n, dx), incX: int dx
 ) :<> void
-  = "#atsctrb_cblas_dtpmv"
+  = "mac#atsctrb_cblas_dtpmv"
+// end of [fun]
 
 fun cblas_ctpmv
   {ord:order} {ul:uplo} {dg:diag} {trA:transpose}
@@ -1449,7 +1486,8 @@ fun cblas_ctpmv
 , Ap: &TPMAT (ccmplx, n, ord, ul, dg)
 , X: &GEVEC (ccmplx, n, dx), incX: int dx
 ) :<> void
-  = "#atsctrb_cblas_ctpmv"
+  = "mac#atsctrb_cblas_ctpmv"
+// end of [fun]
 
 fun cblas_ztpmv
   {ord:order} {ul:uplo} {dg:diag} {trA:transpose}
@@ -1462,7 +1500,8 @@ fun cblas_ztpmv
 , Ap: &TPMAT (zcmplx, n, ord, ul, dg)
 , X: &GEVEC (zcmplx, n, dx), incX: int dx
 ) :<> void
-  = "#atsctrb_cblas_ztpmv"
+  = "mac#atsctrb_cblas_ztpmv"
+// end of [fun]
 
 (* ****** ****** *)
 
@@ -1484,75 +1523,79 @@ void cblas_dtrsv (
 
 *)
 
-fun{a:t@ype} cblas_trsv
+fun{a:t@ype}
+cblas_trsv
   {ord:order} {ul:uplo}
   {trA:transpose} {dg:diag}
   {n:nat} {lda:pos} {dx:inc} (
-    Order: CBLAS_ORDER_t (ord)
-  , Uplo: CBLAS_UPLO_t (ul)
-  , TransA: CBLAS_TRANSPOSE_t (trA)
-  , Diag: CBLAS_DIAG_t (dg)
-  , N: int n
-  , A: &TRMAT (a, n, ord, ul, dg, lda), lda: int lda
-  , X: &GEVEC (a, n, dx), incX: int dx
-  ) :<> void
-// end of [cblas_trsv]
+  Order: CBLAS_ORDER_t (ord)
+, Uplo: CBLAS_UPLO_t (ul)
+, TransA: CBLAS_TRANSPOSE_t (trA)
+, Diag: CBLAS_DIAG_t (dg)
+, N: int n
+, A: &TRMAT (a, n, ord, ul, dg, lda), lda: int lda
+, X: &GEVEC (a, n, dx), incX: int dx
+) :<> void // end of [cblas_trsv]
 
 fun cblas_strsv
   {ord:order} {ul:uplo}
   {trA:transpose} {dg:diag}
   {n:nat} {lda:pos} {dx:inc} (
-    Order: CBLAS_ORDER_t (ord)
-  , Uplo: CBLAS_UPLO_t (ul)
-  , TransA: CBLAS_TRANSPOSE_t (trA)
-  , Diag: CBLAS_DIAG_t (dg)
-  , N: int n
-  , A: &TRMAT (float, n, ord, ul, dg, lda), lda: int lda
-  , X: &GEVEC (float, n, dx), incX: int dx
-  ) :<> void
-    = "#atsctrb_cblas_strsv"
+  Order: CBLAS_ORDER_t (ord)
+, Uplo: CBLAS_UPLO_t (ul)
+, TransA: CBLAS_TRANSPOSE_t (trA)
+, Diag: CBLAS_DIAG_t (dg)
+, N: int n
+, A: &TRMAT (float, n, ord, ul, dg, lda), lda: int lda
+, X: &GEVEC (float, n, dx), incX: int dx
+) :<> void
+  = "mac#atsctrb_cblas_strsv"
+// end of [fun]
 
 fun cblas_dtrsv
   {ord:order} {ul:uplo}
   {trA:transpose} {dg:diag}
   {n:nat} {lda:pos} {dx:inc} (
-    Order: CBLAS_ORDER_t (ord)
-  , Uplo: CBLAS_UPLO_t (ul)
-  , TransA: CBLAS_TRANSPOSE_t (trA)
-  , Diag: CBLAS_DIAG_t (dg)
-  , N: int n
-  , A: &TRMAT (double, n, ord, ul, dg, lda), lda: int lda
-  , X: &GEVEC (double, n, dx), incX: int dx
-  ) :<> void
-    = "#atsctrb_cblas_dtrsv"
+  Order: CBLAS_ORDER_t (ord)
+, Uplo: CBLAS_UPLO_t (ul)
+, TransA: CBLAS_TRANSPOSE_t (trA)
+, Diag: CBLAS_DIAG_t (dg)
+, N: int n
+, A: &TRMAT (double, n, ord, ul, dg, lda), lda: int lda
+, X: &GEVEC (double, n, dx), incX: int dx
+) :<> void
+  = "mac#atsctrb_cblas_dtrsv"
+// end of [fun]
 
 fun cblas_ctrsv
   {ord:order} {ul:uplo}
   {trA:transpose} {dg:diag}
   {n:nat} {lda:pos} {dx:inc} (
-    Order: CBLAS_ORDER_t (ord)
-  , Uplo: CBLAS_UPLO_t (ul)
-  , TransA: CBLAS_TRANSPOSE_t (trA)
-  , Diag: CBLAS_DIAG_t (dg)
-  , N: int n
-  , A: &TRMAT (ccmplx, n, ord, ul, dg, lda), lda: int lda
-  , X: &GEVEC (ccmplx, n, dx), incX: int dx
-  ) :<> void
-    = "#atsctrb_cblas_ctrsv"
+  Order: CBLAS_ORDER_t (ord)
+, Uplo: CBLAS_UPLO_t (ul)
+, TransA: CBLAS_TRANSPOSE_t (trA)
+, Diag: CBLAS_DIAG_t (dg)
+, N: int n
+, A: &TRMAT (ccmplx, n, ord, ul, dg, lda), lda: int lda
+, X: &GEVEC (ccmplx, n, dx), incX: int dx
+) :<> void
+  = "mac#atsctrb_cblas_ctrsv"
+// end of [fun]
 
 fun cblas_ztrsv
   {ord:order} {ul:uplo}
   {trA:transpose} {dg:diag}
   {n:nat} {lda:pos} {dx:inc} (
-    Order: CBLAS_ORDER_t (ord)
-  , Uplo: CBLAS_UPLO_t (ul)
-  , TransA: CBLAS_TRANSPOSE_t (trA)
-  , Diag: CBLAS_DIAG_t (dg)
-  , N: int n
-  , A: &TRMAT (zcmplx, n, ord, ul, dg, lda), lda: int lda
-  , X: &GEVEC (zcmplx, n, dx), incX: int dx
-  ) :<> void
-    = "#atsctrb_cblas_ztrsv"
+  Order: CBLAS_ORDER_t (ord)
+, Uplo: CBLAS_UPLO_t (ul)
+, TransA: CBLAS_TRANSPOSE_t (trA)
+, Diag: CBLAS_DIAG_t (dg)
+, N: int n
+, A: &TRMAT (zcmplx, n, ord, ul, dg, lda), lda: int lda
+, X: &GEVEC (zcmplx, n, dx), incX: int dx
+) :<> void
+  = "mac#atsctrb_cblas_ztrsv"
+// end of [fun]
 
 (* ****** ****** *)
 
@@ -1574,7 +1617,8 @@ void cblas_dtbsv (
 
 *)
 
-fun{a:t@ype} cblas_tbsv
+fun{a:t@ype}
+cblas_tbsv
   {ord:order} {ul:uplo} {dg:diag} {trA:transpose}
   {n:nat} {k:nat} {lda:pos} {dx:inc} (
   Order: CBLAS_ORDER_t ord
@@ -1584,8 +1628,7 @@ fun{a:t@ype} cblas_tbsv
 , N: int n, K: int k
 , A: &TBMAT (a, n, ord, ul, dg, k, lda), lda: int lda
 , X: &GEVEC (a, n, dx), incX: int dx
-) :<> void
-// end of [cblas_tbsv]
+) :<> void // end of [cblas_tbsv]
 
 fun cblas_stbsv
   {ord:order} {ul:uplo} {dg:diag} {trA:transpose}
@@ -1598,7 +1641,8 @@ fun cblas_stbsv
 , A: &TBMAT (float, n, ord, ul, dg, k, lda), lda: int lda
 , X: &GEVEC (float, n, dx), incX: int dx
 ) :<> void
-  = "#atsctrb_cblas_stbsv"
+  = "mac#atsctrb_cblas_stbsv"
+// end of [fun]
 
 fun cblas_dtbsv
   {ord:order} {ul:uplo} {dg:diag} {trA:transpose}
@@ -1611,7 +1655,8 @@ fun cblas_dtbsv
 , A: &TBMAT (double, n, ord, ul, dg, k, lda), lda: int lda
 , X: &GEVEC (double, n, dx), incX: int dx
 ) :<> void
-  = "#atsctrb_cblas_dtbsv"
+  = "mac#atsctrb_cblas_dtbsv"
+// end of [fun]
 
 fun cblas_ctbsv
   {ord:order} {ul:uplo} {dg:diag} {trA:transpose}
@@ -1624,7 +1669,8 @@ fun cblas_ctbsv
 , A: &TBMAT (ccmplx, n, ord, ul, dg, k, lda), lda: int lda
 , X: &GEVEC (ccmplx, n, dx), incX: int dx
 ) :<> void
-  = "#atsctrb_cblas_ctbsv"
+  = "mac#atsctrb_cblas_ctbsv"
+// end of [fun]
 
 fun cblas_ztbsv
   {ord:order} {ul:uplo} {dg:diag} {trA:transpose}
@@ -1637,7 +1683,8 @@ fun cblas_ztbsv
 , A: &TBMAT (zcmplx, n, ord, ul, dg, k, lda), lda: int lda
 , X: &GEVEC (zcmplx, n, dx), incX: int dx
 ) :<> void
-  = "#atsctrb_cblas_ztbsv"
+  = "mac#atsctrb_cblas_ztbsv"
+// end of [fun]
 
 (* ****** ****** *)
 
@@ -1659,7 +1706,8 @@ void cblas_dtpsv (
 
 *)
 
-fun{a:t@ype} cblas_tpsv
+fun{a:t@ype}
+cblas_tpsv
   {ord:order} {ul:uplo} {dg:diag} {trA:transpose}
   {n:nat} {dx:inc} (
   Order: CBLAS_ORDER_t (ord)
@@ -1669,8 +1717,7 @@ fun{a:t@ype} cblas_tpsv
 , N: int n
 , Ap: &TPMAT (a, n, ord, ul, dg)
 , X: &GEVEC (a, n, dx), incX: int dx
-) :<> void
-// end of [cblas_tpsv]
+) :<> void // end of [cblas_tpsv]
 
 fun cblas_stpsv
   {ord:order} {ul:uplo} {dg:diag} {trA:transpose}
@@ -1683,7 +1730,8 @@ fun cblas_stpsv
 , Ap: &TPMAT (float, n, ord, ul, dg)
 , X: &GEVEC (float, n, dx), incX: int dx
 ) :<> void
-  = "#atsctrb_cblas_stpsv"
+  = "mac#atsctrb_cblas_stpsv"
+// end of [fun]
 
 fun cblas_dtpsv
   {ord:order} {ul:uplo} {dg:diag} {trA:transpose}
@@ -1696,7 +1744,8 @@ fun cblas_dtpsv
 , Ap: &TPMAT (double, n, ord, ul, dg)
 , X: &GEVEC (double, n, dx), incX: int dx
 ) :<> void
-  = "#atsctrb_cblas_dtpsv"
+  = "mac#atsctrb_cblas_dtpsv"
+// end of [fun]
 
 fun cblas_ctpsv
   {ord:order} {ul:uplo} {dg:diag} {trA:transpose}
@@ -1709,7 +1758,8 @@ fun cblas_ctpsv
 , Ap: &TPMAT (ccmplx, n, ord, ul, dg)
 , X: &GEVEC (ccmplx, n, dx), incX: int dx
 ) :<> void
-  = "#atsctrb_cblas_ctpsv"
+  = "mac#atsctrb_cblas_ctpsv"
+// end of [fun]
 
 fun cblas_ztpsv
   {ord:order} {ul:uplo} {dg:diag} {trA:transpose}
@@ -1722,7 +1772,8 @@ fun cblas_ztpsv
 , Ap: &TPMAT (zcmplx, n, ord, ul, dg)
 , X: &GEVEC (zcmplx, n, dx), incX: int dx
 ) :<> void
-  = "#atsctrb_cblas_ztpsv"
+  = "mac#atsctrb_cblas_ztpsv"
+// end of [fun]
 
 (* ****** ****** *)
 
@@ -1745,47 +1796,49 @@ void cblas_dsymv(
 
 *)
 
-fun{a:t@ype} cblas_symv
+fun{a:t@ype}
+cblas_symv
   {ord:order} {ul:uplo}
   {n:nat} {lda:pos} {dx,dy:inc} (
-    Order: CBLAS_ORDER_t (ord)
-  , Uplo: CBLAS_UPLO_t (ul)  
-  , N: int n
-  , alpha: a
-  , A: &SYMAT (a, n, ord, ul, lda), lda: int lda
-  , X: &GEVEC (a, n, dx), incX: int dx
-  , beta: a
-  , Y: &GEVEC (a, n, dy), incY: int dy
-  ) :<> void
-// end of [cblas_symv]
+  Order: CBLAS_ORDER_t (ord)
+, Uplo: CBLAS_UPLO_t (ul)  
+, N: int n
+, alpha: a
+, A: &SYMAT (a, n, ord, ul, lda), lda: int lda
+, X: &GEVEC (a, n, dx), incX: int dx
+, beta: a
+, Y: &GEVEC (a, n, dy), incY: int dy
+) :<> void // end of [cblas_symv]
 
 fun cblas_ssymv
   {ord:order} {ul:uplo}
   {n:nat} {lda:pos} {dx,dy:inc} (
-    Order: CBLAS_ORDER_t (ord)
-  , Uplo: CBLAS_UPLO_t (ul)  
-  , N: int n
-  , alpha: float
-  , A: &SYMAT (float, n, ord, ul, lda), lda: int lda
-  , X: &GEVEC (float, n, dx), incX: int dx
-  , beta: float
-  , Y: &GEVEC (float, n, dy), incY: int dy
-  ) :<> void
-    = "#atsctrb_cblas_ssymv"
+  Order: CBLAS_ORDER_t (ord)
+, Uplo: CBLAS_UPLO_t (ul)  
+, N: int n
+, alpha: float
+, A: &SYMAT (float, n, ord, ul, lda), lda: int lda
+, X: &GEVEC (float, n, dx), incX: int dx
+, beta: float
+, Y: &GEVEC (float, n, dy), incY: int dy
+) :<> void
+  = "mac#atsctrb_cblas_ssymv"
+// end of [fun]
 
 fun cblas_dsymv
   {ord:order} {ul:uplo}
   {n:nat} {lda:pos} {dx,dy:inc} (
-    Order: CBLAS_ORDER_t (ord)
-  , Uplo: CBLAS_UPLO_t (ul)  
-  , N: int n
-  , alpha: double
-  , A: &SYMAT (double, n, ord, ul, lda), lda: int lda
-  , X: &GEVEC (double, n, dx), incX: int dx
-  , beta: double
-  , Y: &GEVEC (double, n, dy), incY: int dy
-  ) :<> void
-    = "#atsctrb_cblas_dsymv"
+  Order: CBLAS_ORDER_t (ord)
+, Uplo: CBLAS_UPLO_t (ul)  
+, N: int n
+, alpha: double
+, A: &SYMAT (double, n, ord, ul, lda), lda: int lda
+, X: &GEVEC (double, n, dx), incX: int dx
+, beta: double
+, Y: &GEVEC (double, n, dy), incY: int dy
+) :<> void
+  = "mac#atsctrb_cblas_dsymv"
+// end of [fun]
 
 (* ****** ****** *)
 
@@ -1808,48 +1861,48 @@ void cblas_dsbmv (
 
 *)
 
-fun{a:t@ype} cblas_sbmv
+fun{a:t@ype}
+cblas_sbmv
   {ord:order} {ul:uplo}
   {n,k:nat | k < n} {lda:pos} {dx,dy:inc} (
-    Order: CBLAS_ORDER_t (ord)
-  , Uplo: CBLAS_UPLO_t (ul)
-  , N: int n, K: int k
-  , alpha: a
-  , A: &SBMAT (a, n, ord, ul, k, lda), lda: int lda
-  , X: &GEVEC (a, n, dx), incX: int dx
-  , beta: a
-  , Y: &GEVEC (a, n, dy), incY: int dy
-  ) :<> void
-// end of [cblas_sbmv]
+  Order: CBLAS_ORDER_t (ord)
+, Uplo: CBLAS_UPLO_t (ul)
+, N: int n, K: int k
+, alpha: a
+, A: &SBMAT (a, n, ord, ul, k, lda), lda: int lda
+, X: &GEVEC (a, n, dx), incX: int dx
+, beta: a
+, Y: &GEVEC (a, n, dy), incY: int dy
+) :<> void // end of [cblas_sbmv]
 
 fun cblas_ssbmv
   {ord:order} {ul:uplo}
   {n,k:nat | k < n} {lda:pos} {dx,dy:inc} (
-    Order: CBLAS_ORDER_t (ord)
-  , Uplo: CBLAS_UPLO_t (ul)
-  , N: int n, K: int k
-  , alpha: float
-  , A: &SBMAT (float, n, ord, ul, k, lda), lda: int lda
-  , X: &GEVEC (float, n, dx), incX: int dx
-  , beta: float
-  , Y: &GEVEC (float, n, dy), incY: int dy
-  ) :<> void
-    = "#atsctrb_cblas_ssbmv"
+  Order: CBLAS_ORDER_t (ord)
+, Uplo: CBLAS_UPLO_t (ul)
+, N: int n, K: int k
+, alpha: float
+, A: &SBMAT (float, n, ord, ul, k, lda), lda: int lda
+, X: &GEVEC (float, n, dx), incX: int dx
+, beta: float
+, Y: &GEVEC (float, n, dy), incY: int dy
+) :<> void
+  = "mac#atsctrb_cblas_ssbmv"
 // end of [cblas_ssbmv]
 
 fun cblas_dsbmv
   {ord:order} {ul:uplo}
   {n,k:nat | k < n} {lda:pos} {dx,dy:inc} (
-    Order: CBLAS_ORDER_t (ord)
-  , Uplo: CBLAS_UPLO_t (ul)
-  , N: int n, K: int k
-  , alpha: double
-  , A: &SBMAT (double, n, ord, ul, k, lda), lda: int lda
-  , X: &GEVEC (double, n, dx), incX: int dx
-  , beta: double
-  , Y: &GEVEC (double, n, dy), incY: int dy
-  ) :<> void
-    = "#atsctrb_cblas_dsbmv"
+  Order: CBLAS_ORDER_t (ord)
+, Uplo: CBLAS_UPLO_t (ul)
+, N: int n, K: int k
+, alpha: double
+, A: &SBMAT (double, n, ord, ul, k, lda), lda: int lda
+, X: &GEVEC (double, n, dx), incX: int dx
+, beta: double
+, Y: &GEVEC (double, n, dy), incY: int dy
+) :<> void
+  = "mac#atsctrb_cblas_dsbmv"
 // end of [cblas_dsbmv]
 
 (* ****** ****** *)
@@ -1872,19 +1925,19 @@ void cblas_dspmv (
 
 *)
 
-fun{a:t@ype} cblas_spmv
+fun{a:t@ype}
+cblas_spmv
   {ord:order} {ul:uplo}
   {n:nat} {dx,dy:inc} (
-    Order: CBLAS_ORDER_t ord
-  , Uplo: CBLAS_UPLO_t ul
-  , N: int n
-  , alpha: a
-  , Ap: &SPMAT (a, n, ord, ul)
-  , X: &GEVEC (a, n, dx), incX: int dx
-  , beta: a
-  , Y: &GEVEC (a, n, dy), incY: int dy
-  ) :<> void
-// end of [cblas_spmv]
+  Order: CBLAS_ORDER_t ord
+, Uplo: CBLAS_UPLO_t ul
+, N: int n
+, alpha: a
+, Ap: &SPMAT (a, n, ord, ul)
+, X: &GEVEC (a, n, dx), incX: int dx
+, beta: a
+, Y: &GEVEC (a, n, dy), incY: int dy
+) :<> void // end of [cblas_spmv]
 
 fun cblas_sspmv
   {ord:order} {ul:uplo}
@@ -1898,7 +1951,8 @@ fun cblas_sspmv
 , beta: float
 , Y: &GEVEC (float, n, dy), incY: int dy
 ) :<> void
-  = "#atsctrb_cblas_sspmv"
+  = "mac#atsctrb_cblas_sspmv"
+// end of [fun]
 
 fun cblas_dspmv
   {ord:order} {ul:uplo}
@@ -1912,7 +1966,8 @@ fun cblas_dspmv
 , beta: double
 , Y: &GEVEC (double, n, dy), incY: int dy
 ) :<> void
-  = "#atsctrb_cblas_dspmv"
+  = "mac#atsctrb_cblas_dspmv"
+// end of [fun]
 
 (* ****** ****** *)
 
@@ -1933,42 +1988,42 @@ void cblas_dger(
 
 *)
 
-fun{a:t@ype} cblas_ger
+fun{a:t@ype}
+cblas_ger
   {ord:order} {m,n:nat}
   {dx,dy:inc} {lda:pos} (
-    Order: CBLAS_ORDER_t (ord)
-  , M: int m, N: int n
-  , alpha: a
-  , X: &GEVEC (a, m, dx), incX: int dx
-  , Y: &GEVEC (a, n, dy), incY: int dy  
-  , A: &GEMAT (a, m, n, ord, lda), lda: int lda
-  ) :<> void
-// end of [cblas_ger]
+  Order: CBLAS_ORDER_t (ord)
+, M: int m, N: int n
+, alpha: a
+, X: &GEVEC (a, m, dx), incX: int dx
+, Y: &GEVEC (a, n, dy), incY: int dy  
+, A: &GEMAT (a, m, n, ord, lda), lda: int lda
+) :<> void // end of [cblas_ger]
 
 fun cblas_sger
   {ord:order} {m,n:nat}
   {dx,dy:inc} {lda:pos} (
-    Order: CBLAS_ORDER_t (ord)
-  , M: int m, N: int n
-  , alpha: float
-  , X: &GEVEC (float, m, dx), incX: int dx
-  , Y: &GEVEC (float, n, dy), incY: int dy  
-  , A: &GEMAT (float, m, n, ord, lda), lda: int lda
-  ) :<> void
-    = "#atsctrb_cblas_sger"
+  Order: CBLAS_ORDER_t (ord)
+, M: int m, N: int n
+, alpha: float
+, X: &GEVEC (float, m, dx), incX: int dx
+, Y: &GEVEC (float, n, dy), incY: int dy  
+, A: &GEMAT (float, m, n, ord, lda), lda: int lda
+) :<> void
+  = "mac#atsctrb_cblas_sger"
 // end of [cblas_sger]
 
 fun cblas_dger
   {ord:order} {m,n:nat}
   {dx,dy:inc} {lda:pos} (
-    Order: CBLAS_ORDER_t (ord)
-  , M: int m, N: int n
-  , alpha: double
-  , X: &GEVEC (double, m, dx), incX: int dx
-  , Y: &GEVEC (double, n, dy), incY: int dy  
-  , A: &GEMAT (double, m, n, ord, lda), lda: int lda
-  ) :<> void
-    = "#atsctrb_cblas_dger"
+  Order: CBLAS_ORDER_t (ord)
+, M: int m, N: int n
+, alpha: double
+, X: &GEVEC (double, m, dx), incX: int dx
+, Y: &GEVEC (double, n, dy), incY: int dy  
+, A: &GEMAT (double, m, n, ord, lda), lda: int lda
+) :<> void
+  = "mac#atsctrb_cblas_dger"
 // end of [cblas_dger]
 
 (* ****** ****** *)
@@ -1990,42 +2045,42 @@ void cblas_dsyr (
 
 *)
 
-fun{a:t@ype} cblas_syr
+fun{a:t@ype}
+cblas_syr
   {ord:order} {ul:uplo}
   {n:nat} {lda:pos} {dx:inc} (
-    Order: CBLAS_ORDER_t (ord)
-  , Uplo: CBLAS_UPLO_t (ul)  
-  , N: int n
-  , alpha: a
-  , X: &GEVEC (a, n, dx), incX: int dx
-  , A: &SYMAT (a, n, ord, ul, lda), lda: int lda
-  ) :<> void
-// end of [cblas_syr]
+  Order: CBLAS_ORDER_t (ord)
+, Uplo: CBLAS_UPLO_t (ul)  
+, N: int n
+, alpha: a
+, X: &GEVEC (a, n, dx), incX: int dx
+, A: &SYMAT (a, n, ord, ul, lda), lda: int lda
+) :<> void // end of [cblas_syr]
 
 fun cblas_ssyr
   {ord:order} {ul:uplo}
   {n:nat} {lda:pos} {dx:inc} (
-    Order: CBLAS_ORDER_t (ord)
-  , Uplo: CBLAS_UPLO_t (ul)  
-  , N: int n
-  , alpha: float
-  , X: &GEVEC (float, n, dx), incX: int dx
-  , A: &SYMAT (float, n, ord, ul, lda), lda: int lda
-  ) :<> void
-    = "#atsctrb_cblas_ssyr"
+  Order: CBLAS_ORDER_t (ord)
+, Uplo: CBLAS_UPLO_t (ul)  
+, N: int n
+, alpha: float
+, X: &GEVEC (float, n, dx), incX: int dx
+, A: &SYMAT (float, n, ord, ul, lda), lda: int lda
+) :<> void
+  = "mac#atsctrb_cblas_ssyr"
 // end of [cblas_ssyr]
 
 fun cblas_dsyr
   {ord:order} {ul:uplo}
   {n:nat} {lda:pos} {dx:inc} (
-    Order: CBLAS_ORDER_t (ord)
-  , Uplo: CBLAS_UPLO_t (ul)  
-  , N: int n
-  , alpha: double
-  , X: &GEVEC (double, n, dx), incX: int dx
-  , A: &SYMAT (double, n, ord, ul, lda), lda: int lda
-  ) :<> void
-    = "#atsctrb_cblas_dsyr"
+  Order: CBLAS_ORDER_t (ord)
+, Uplo: CBLAS_UPLO_t (ul)  
+, N: int n
+, alpha: double
+, X: &GEVEC (double, n, dx), incX: int dx
+, A: &SYMAT (double, n, ord, ul, lda), lda: int lda
+) :<> void
+  = "mac#atsctrb_cblas_dsyr"
 // end of [cblas_dsyr]
 
 (* ****** ****** *)
@@ -2034,45 +2089,45 @@ fun cblas_dsyr
 // SYR2: S, D
 //
 
-fun{a:t@ype} cblas_syr2
+fun{a:t@ype}
+cblas_syr2
   {ord:order} {ul:uplo}
   {n:nat} {lda:pos} {dx,dy:inc} (
-    Order: CBLAS_ORDER_t (ord)
-  , Uplo: CBLAS_UPLO_t (ul)  
-  , N: int n
-  , alpha: a
-  , X: &GEVEC (a, n, dx), incX: int dx
-  , Y: &GEVEC (a, n, dy), incY: int dy
-  , A: &SYMAT (a, n, ord, ul, lda), lda: int lda
-  ) :<> void
-// end of [cblas_syr2]
+  Order: CBLAS_ORDER_t (ord)
+, Uplo: CBLAS_UPLO_t (ul)  
+, N: int n
+, alpha: a
+, X: &GEVEC (a, n, dx), incX: int dx
+, Y: &GEVEC (a, n, dy), incY: int dy
+, A: &SYMAT (a, n, ord, ul, lda), lda: int lda
+) :<> void // end of [cblas_syr2]
 
 fun cblas_ssyr2
   {ord:order} {ul:uplo}
   {n:nat} {lda:pos} {dx,dy:inc} (
-    Order: CBLAS_ORDER_t (ord)
-  , Uplo: CBLAS_UPLO_t (ul)  
-  , N: int n
-  , alpha: float
-  , X: &GEVEC (float, n, dx), incX: int dx
-  , Y: &GEVEC (float, n, dy), incY: int dy
-  , A: &SYMAT (float, n, ord, ul, lda), lda: int lda
-  ) :<> void
-    = "#atsctrb_cblas_ssyr2"
+  Order: CBLAS_ORDER_t (ord)
+, Uplo: CBLAS_UPLO_t (ul)  
+, N: int n
+, alpha: float
+, X: &GEVEC (float, n, dx), incX: int dx
+, Y: &GEVEC (float, n, dy), incY: int dy
+, A: &SYMAT (float, n, ord, ul, lda), lda: int lda
+) :<> void
+  = "mac#atsctrb_cblas_ssyr2"
 // end of [cblas_ssyr2]
 
 fun cblas_dsyr2
   {ord:order} {ul:uplo}
   {n:nat} {lda:pos} {dx,dy:inc} (
-    Order: CBLAS_ORDER_t (ord)
-  , Uplo: CBLAS_UPLO_t (ul)  
-  , N: int n
-  , alpha: double
-  , X: &GEVEC (double, n, dx), incX: int dx
-  , Y: &GEVEC (double, n, dy), incY: int dy
-  , A: &SYMAT (double, n, ord, ul, lda), lda: int lda
-  ) :<> void
-    = "#atsctrb_cblas_dsyr2"
+  Order: CBLAS_ORDER_t (ord)
+, Uplo: CBLAS_UPLO_t (ul)  
+, N: int n
+, alpha: double
+, X: &GEVEC (double, n, dx), incX: int dx
+, Y: &GEVEC (double, n, dy), incY: int dy
+, A: &SYMAT (double, n, ord, ul, lda), lda: int lda
+) :<> void
+  = "mac#atsctrb_cblas_dsyr2"
 // end of [cblas_dsyr2]
 
 (* ****** ****** *)
@@ -2094,42 +2149,42 @@ void cblas_dspr (
 
 *)
 
-fun{a:t@ype} cblas_spr
+fun{a:t@ype}
+cblas_spr
   {ord:order} {ul:uplo}
   {n:nat} {dx:inc} (
-    Order: CBLAS_ORDER_t (ord)
-  , Uplo: CBLAS_UPLO_t (ul)  
-  , N: int n
-  , alpha: a
-  , X: &GEVEC (a, n, dx), incX: int dx
-  , Ap: &SPMAT (a, n, ord, ul)
-  ) :<> void
-// end of [cblas_spr]
+  Order: CBLAS_ORDER_t (ord)
+, Uplo: CBLAS_UPLO_t (ul)  
+, N: int n
+, alpha: a
+, X: &GEVEC (a, n, dx), incX: int dx
+, Ap: &SPMAT (a, n, ord, ul)
+) :<> void // end of [cblas_spr]
 
 fun cblas_sspr
   {ord:order} {ul:uplo}
   {n:nat} {dx:inc} (
-    Order: CBLAS_ORDER_t (ord)
-  , Uplo: CBLAS_UPLO_t (ul)  
-  , N: int n
-  , alpha: float
-  , X: &GEVEC (float, n, dx), incX: int dx
-  , Ap: &SPMAT (float, n, ord, ul)
-  ) :<> void
-    = "#atsctrb_cblas_sspr"
+  Order: CBLAS_ORDER_t (ord)
+, Uplo: CBLAS_UPLO_t (ul)  
+, N: int n
+, alpha: float
+, X: &GEVEC (float, n, dx), incX: int dx
+, Ap: &SPMAT (float, n, ord, ul)
+) :<> void
+  = "mac#atsctrb_cblas_sspr"
 // end of [cblas_sspr]
 
 fun cblas_dspr
   {ord:order} {ul:uplo}
   {n:nat} {dx:inc} (
-    Order: CBLAS_ORDER_t (ord)
-  , Uplo: CBLAS_UPLO_t (ul)  
-  , N: int n
-  , alpha: double
-  , X: &GEVEC (double, n, dx), incX: int dx
-  , Ap: &SPMAT (double, n, ord, ul)
-  ) :<> void
-    = "#atsctrb_cblas_dspr"
+  Order: CBLAS_ORDER_t (ord)
+, Uplo: CBLAS_UPLO_t (ul)  
+, N: int n
+, alpha: double
+, X: &GEVEC (double, n, dx), incX: int dx
+, Ap: &SPMAT (double, n, ord, ul)
+) :<> void
+  = "mac#atsctrb_cblas_dspr"
 // end of [cblas_dspr]
 
 (* ****** ****** *)
@@ -2152,45 +2207,45 @@ void cblas_dspr2 (
 
 *)
 
-fun{a:t@ype} cblas_spr2
+fun{a:t@ype}
+cblas_spr2
   {ord:order} {ul:uplo}
   {n:nat} {dx,dy:inc} (
-    Order: CBLAS_ORDER_t (ord)
-  , Uplo: CBLAS_UPLO_t (ul)  
-  , N: int n
-  , alpha: a
-  , X: &GEVEC (a, n, dx), incX: int dx
-  , Y: &GEVEC (a, n, dy), incY: int dy
-  , A: &SPMAT (a, n, ord, ul)
-  ) :<> void
-// end of [cblas_spr2]
+  Order: CBLAS_ORDER_t (ord)
+, Uplo: CBLAS_UPLO_t (ul)  
+, N: int n
+, alpha: a
+, X: &GEVEC (a, n, dx), incX: int dx
+, Y: &GEVEC (a, n, dy), incY: int dy
+, A: &SPMAT (a, n, ord, ul)
+) :<> void // end of [cblas_spr2]
 
 fun cblas_sspr2
   {ord:order} {ul:uplo}
   {n:nat} {dx,dy:inc} (
-    Order: CBLAS_ORDER_t (ord)
-  , Uplo: CBLAS_UPLO_t (ul)  
-  , N: int n
-  , alpha: float
-  , X: &GEVEC (float, n, dx), incX: int dx
-  , Y: &GEVEC (float, n, dy), incY: int dy
-  , A: &SPMAT (float, n, ord, ul)
-  ) :<> void
-    = "#atsctrb_cblas_sspr2"
+  Order: CBLAS_ORDER_t (ord)
+, Uplo: CBLAS_UPLO_t (ul)  
+, N: int n
+, alpha: float
+, X: &GEVEC (float, n, dx), incX: int dx
+, Y: &GEVEC (float, n, dy), incY: int dy
+, A: &SPMAT (float, n, ord, ul)
+) :<> void
+  = "mac#atsctrb_cblas_sspr2"
 // end of [cblas_sspr2]
 
 fun cblas_dspr2
   {ord:order} {ul:uplo}
   {n:nat} {dx,dy:inc} (
-    Order: CBLAS_ORDER_t (ord)
-  , Uplo: CBLAS_UPLO_t (ul)  
-  , N: int n
-  , alpha: double
-  , X: &GEVEC (double, n, dx), incX: int dx
-  , Y: &GEVEC (double, n, dy), incY: int dy
-  , A: &SPMAT (double, n, ord, ul)
-  ) :<> void
-    = "#atsctrb_cblas_dspr2"
+  Order: CBLAS_ORDER_t (ord)
+, Uplo: CBLAS_UPLO_t (ul)  
+, N: int n
+, alpha: double
+, X: &GEVEC (double, n, dx), incX: int dx
+, Y: &GEVEC (double, n, dy), incY: int dy
+, A: &SPMAT (double, n, ord, ul)
+) :<> void
+  = "mac#atsctrb_cblas_dspr2"
 // end of [cblas_dspr2]
 
 (* ****** ****** *)
@@ -2214,47 +2269,49 @@ void cblas_chemv (
 
 *)
 
-fun{a:t@ype} cblas_hemv
+fun{a:t@ype}
+cblas_hemv
   {ord:order} {ul:uplo}
   {n:nat} {lda:pos} {dx,dy:inc} (
-    Order: CBLAS_ORDER_t (ord)
-  , Uplo: CBLAS_UPLO_t (ul)  
-  , N: int n
-  , alpha: a
-  , A: &HEMAT (a, n, ord, ul, lda), lda: int lda
-  , X: &GEVEC (a, n, dx), incX: int dx
-  , beta: a
-  , Y: &GEVEC (a, n, dy), incY: int dy
-  ) :<> void
-// end of [cblas_hemv]
+  Order: CBLAS_ORDER_t (ord)
+, Uplo: CBLAS_UPLO_t (ul)  
+, N: int n
+, alpha: a
+, A: &HEMAT (a, n, ord, ul, lda), lda: int lda
+, X: &GEVEC (a, n, dx), incX: int dx
+, beta: a
+, Y: &GEVEC (a, n, dy), incY: int dy
+) :<> void // end of [cblas_hemv]
 
 fun cblas_chemv
   {ord:order} {ul:uplo}
   {n:nat} {lda:pos} {dx,dy:inc} (
-    Order: CBLAS_ORDER_t (ord)
-  , Uplo: CBLAS_UPLO_t (ul)  
-  , N: int n
-  , alpha: &ccmplx
-  , A: &HEMAT (ccmplx, n, ord, ul, lda), lda: int lda
-  , X: &GEVEC (ccmplx, n, dx), incX: int dx
-  , beta: &ccmplx
-  , Y: &GEVEC (ccmplx, n, dy), incY: int dy
-  ) :<> void
-    = "#atsctrb_cblas_chemv"
+  Order: CBLAS_ORDER_t (ord)
+, Uplo: CBLAS_UPLO_t (ul)  
+, N: int n
+, alpha: &ccmplx
+, A: &HEMAT (ccmplx, n, ord, ul, lda), lda: int lda
+, X: &GEVEC (ccmplx, n, dx), incX: int dx
+, beta: &ccmplx
+, Y: &GEVEC (ccmplx, n, dy), incY: int dy
+) :<> void
+  = "mac#atsctrb_cblas_chemv"
+// end of [fun]
 
 fun cblas_zhemv
   {ord:order} {ul:uplo}
   {n:nat} {lda:pos} {dx,dy:inc} (
-    Order: CBLAS_ORDER_t (ord)
-  , Uplo: CBLAS_UPLO_t (ul)  
-  , N: int n
-  , alpha: &zcmplx
-  , A: &HEMAT (zcmplx, n, ord, ul, lda), lda: int lda
-  , X: &GEVEC (zcmplx, n, dx), incX: int dx
-  , beta: &zcmplx
-  , Y: &GEVEC (zcmplx, n, dy), incY: int dy
-  ) :<> void
-    = "#atsctrb_cblas_zhemv"
+  Order: CBLAS_ORDER_t (ord)
+, Uplo: CBLAS_UPLO_t (ul)  
+, N: int n
+, alpha: &zcmplx
+, A: &HEMAT (zcmplx, n, ord, ul, lda), lda: int lda
+, X: &GEVEC (zcmplx, n, dx), incX: int dx
+, beta: &zcmplx
+, Y: &GEVEC (zcmplx, n, dy), incY: int dy
+) :<> void
+  = "mac#atsctrb_cblas_zhemv"
+// end of [fun]
 
 (* ****** ****** *)
 
@@ -2277,48 +2334,48 @@ void cblas_chbmv (
 
 *)
 
-fun{a:t@ype} cblas_hbmv
+fun{a:t@ype}
+cblas_hbmv
   {ord:order} {ul:uplo}
   {n,k:nat | k < n} {lda:pos} {dx,dy:inc} (
-    Order: CBLAS_ORDER_t (ord)
-  , Uplo: CBLAS_UPLO_t (ul)
-  , N: int n, K: int k
-  , alpha: a
-  , A: &HBMAT (a, n, ord, ul, k, lda), lda: int lda
-  , X: &GEVEC (a, n, dx), incX: int dx
-  , beta: a
-  , Y: &GEVEC (a, n, dy), incY: int dy
-  ) :<> void
-// end of [cblas_hbmv]
+  Order: CBLAS_ORDER_t (ord)
+, Uplo: CBLAS_UPLO_t (ul)
+, N: int n, K: int k
+, alpha: a
+, A: &HBMAT (a, n, ord, ul, k, lda), lda: int lda
+, X: &GEVEC (a, n, dx), incX: int dx
+, beta: a
+, Y: &GEVEC (a, n, dy), incY: int dy
+) :<> void // end of [cblas_hbmv]
 
 fun cblas_chbmv
   {ord:order} {ul:uplo}
   {n,k:nat | k < n} {lda:pos} {dx,dy:inc} (
-    Order: CBLAS_ORDER_t (ord)
-  , Uplo: CBLAS_UPLO_t (ul)
-  , N: int n, K: int k
-  , alpha: &ccmplx
-  , A: &HBMAT (ccmplx, n, ord, ul, k, lda), lda: int lda
-  , X: &GEVEC (ccmplx, n, dx), incX: int dx
-  , beta: &ccmplx
-  , Y: &GEVEC (ccmplx, n, dy), incY: int dy
-  ) :<> void
-    = "#atsctrb_cblas_chbmv"
+  Order: CBLAS_ORDER_t (ord)
+, Uplo: CBLAS_UPLO_t (ul)
+, N: int n, K: int k
+, alpha: &ccmplx
+, A: &HBMAT (ccmplx, n, ord, ul, k, lda), lda: int lda
+, X: &GEVEC (ccmplx, n, dx), incX: int dx
+, beta: &ccmplx
+, Y: &GEVEC (ccmplx, n, dy), incY: int dy
+) :<> void
+  = "mac#atsctrb_cblas_chbmv"
 // end of [cblas_chbmv]
 
 fun cblas_zhbmv
   {ord:order} {ul:uplo}
   {n,k:nat | k < n} {lda:pos} {dx,dy:inc} (
-    Order: CBLAS_ORDER_t (ord)
-  , Uplo: CBLAS_UPLO_t (ul)
-  , N: int n, K: int k
-  , alpha: &zcmplx
-  , A: &HBMAT (zcmplx, n, ord, ul, k, lda), lda: int lda
-  , X: &GEVEC (zcmplx, n, dx), incX: int dx
-  , beta: &zcmplx
-  , Y: &GEVEC (zcmplx, n, dy), incY: int dy
-  ) :<> void
-    = "#atsctrb_cblas_zhbmv"
+  Order: CBLAS_ORDER_t (ord)
+, Uplo: CBLAS_UPLO_t (ul)
+, N: int n, K: int k
+, alpha: &zcmplx
+, A: &HBMAT (zcmplx, n, ord, ul, k, lda), lda: int lda
+, X: &GEVEC (zcmplx, n, dx), incX: int dx
+, beta: &zcmplx
+, Y: &GEVEC (zcmplx, n, dy), incY: int dy
+) :<> void
+  = "mac#atsctrb_cblas_zhbmv"
 // end of [cblas_zhbmv]
 
 (* ****** ****** *)
@@ -2340,47 +2397,49 @@ void cblas_chpmv (
 
 *)
 
-fun{a:t@ype} cblas_hpmv
+fun{a:t@ype}
+cblas_hpmv
   {ord:order} {ul:uplo}
   {n:nat} {dx,dy:inc} (
-    Order: CBLAS_ORDER_t ord
-  , Uplo: CBLAS_UPLO_t ul
-  , N: int n
-  , alpha: a
-  , Ap: &HPMAT (a, n, ord, ul)
-  , X: &GEVEC (a, n, dx), incX: int dx
-  , beta: a
-  , Y: &GEVEC (a, n, dy), incY: int dy
-  ) :<> void
-// end of [cblas_hpmv]
+  Order: CBLAS_ORDER_t ord
+, Uplo: CBLAS_UPLO_t ul
+, N: int n
+, alpha: a
+, Ap: &HPMAT (a, n, ord, ul)
+, X: &GEVEC (a, n, dx), incX: int dx
+, beta: a
+, Y: &GEVEC (a, n, dy), incY: int dy
+) :<> void // end of [cblas_hpmv]
 
 fun cblas_chpmv
   {ord:order} {ul:uplo}
   {n:nat} {dx,dy:inc} (
-    Order: CBLAS_ORDER_t ord
-  , Uplo: CBLAS_UPLO_t ul
-  , N: int n
-  , alpha: &ccmplx
-  , Ap: &HPMAT (ccmplx, n, ord, ul)
-  , X: &GEVEC (ccmplx, n, dx), incX: int dx
-  , beta: &ccmplx
-  , Y: &GEVEC (ccmplx, n, dy), incY: int dy
-  ) :<> void
-  = "#atsctrb_cblas_chpmv"
+  Order: CBLAS_ORDER_t ord
+, Uplo: CBLAS_UPLO_t ul
+, N: int n
+, alpha: &ccmplx
+, Ap: &HPMAT (ccmplx, n, ord, ul)
+, X: &GEVEC (ccmplx, n, dx), incX: int dx
+, beta: &ccmplx
+, Y: &GEVEC (ccmplx, n, dy), incY: int dy
+) :<> void
+  = "mac#atsctrb_cblas_chpmv"
+// end of [fun]
 
 fun cblas_zhpmv
   {ord:order} {ul:uplo}
   {n:nat} {dx,dy:inc} (
   Order: CBLAS_ORDER_t ord
-  , Uplo: CBLAS_UPLO_t ul
-  , N: int n
-  , alpha: &zcmplx
-  , Ap: &HPMAT (zcmplx, n, ord, ul)
-  , X: &GEVEC (zcmplx, n, dx), incX: int dx
-  , beta: &zcmplx
-  , Y: &GEVEC (zcmplx, n, dy), incY: int dy
-  ) :<> void
-  = "#atsctrb_cblas_zhpmv"
+, Uplo: CBLAS_UPLO_t ul
+, N: int n
+, alpha: &zcmplx
+, Ap: &HPMAT (zcmplx, n, ord, ul)
+, X: &GEVEC (zcmplx, n, dx), incX: int dx
+, beta: &zcmplx
+, Y: &GEVEC (zcmplx, n, dy), incY: int dy
+) :<> void
+  = "mac#atsctrb_cblas_zhpmv"
+// end of [fun]
 
 (* ****** ****** *)
 
@@ -2401,41 +2460,43 @@ void cblas_cgeru(
 
 *)
 
-fun{a:t@ype} cblas_geru
+fun{a:t@ype}
+cblas_geru
   {ord:order} {m,n:nat}
   {dx,dy:inc} {lda:pos} (
-    Order: CBLAS_ORDER_t (ord)
-  , M: int m, N: int n
-  , alpha: a
-  , X: &GEVEC (a, m, dx), incX: int dx
-  , Y: &GEVEC (a, n, dy), incY: int dy  
-  , A: &GEMAT (a, m, n, ord, lda), lda: int lda
-  ) :<> void
-// end of [cblas_geru]
+  Order: CBLAS_ORDER_t (ord)
+, M: int m, N: int n
+, alpha: a
+, X: &GEVEC (a, m, dx), incX: int dx
+, Y: &GEVEC (a, n, dy), incY: int dy  
+, A: &GEMAT (a, m, n, ord, lda), lda: int lda
+) :<> void // end of [cblas_geru]
 
 fun cblas_cgeru
   {ord:order} {m,n:nat}
   {dx,dy:inc} {lda:pos} (
-    Order: CBLAS_ORDER_t (ord)
-  , M: int m, N: int n
-  , alpha: &ccmplx
-  , X: &GEVEC (ccmplx, m, dx), incX: int dx
-  , Y: &GEVEC (ccmplx, n, dy), incY: int dy  
-  , A: &GEMAT (ccmplx, m, n, ord, lda), lda: int lda
-  ) :<> void
-    = "#atsctrb_cblas_cgeru"
+  Order: CBLAS_ORDER_t (ord)
+, M: int m, N: int n
+, alpha: &ccmplx
+, X: &GEVEC (ccmplx, m, dx), incX: int dx
+, Y: &GEVEC (ccmplx, n, dy), incY: int dy  
+, A: &GEMAT (ccmplx, m, n, ord, lda), lda: int lda
+) :<> void
+  = "mac#atsctrb_cblas_cgeru"
+// end of [fun]
 
 fun cblas_zgeru
   {ord:order} {m,n:nat}
   {dx,dy:inc} {lda:pos} (
-    Order: CBLAS_ORDER_t (ord)
-  , M: int m, N: int n
-  , alpha: &zcmplx
-  , X: &GEVEC (zcmplx, m, dx), incX: int dx
-  , Y: &GEVEC (zcmplx, n, dy), incY: int dy  
-  , A: &GEMAT (zcmplx, m, n, ord, lda), lda: int lda
-  ) :<> void
-    = "#atsctrb_cblas_zgeru"
+  Order: CBLAS_ORDER_t (ord)
+, M: int m, N: int n
+, alpha: &zcmplx
+, X: &GEVEC (zcmplx, m, dx), incX: int dx
+, Y: &GEVEC (zcmplx, n, dy), incY: int dy  
+, A: &GEMAT (zcmplx, m, n, ord, lda), lda: int lda
+) :<> void
+  = "mac#atsctrb_cblas_zgeru"
+// end of [fun]
 
 (* ****** ****** *)
 
@@ -2456,41 +2517,43 @@ void cblas_cgerc(
 
 *)
 
-fun{a:t@ype} cblas_gerc
+fun{a:t@ype}
+cblas_gerc
   {ord:order} {m,n:nat}
   {dx,dy:inc} {lda:pos} (
-    Order: CBLAS_ORDER_t (ord)
-  , M: int m, N: int n
-  , alpha: a
-  , X: &GEVEC (a, m, dx), incX: int dx
-  , Y: &GEVEC (a, n, dy), incY: int dy  
-  , A: &GEMAT (a, m, n, ord, lda), lda: int lda
-  ) :<> void
-// end of [cblas_gerc]
+  Order: CBLAS_ORDER_t (ord)
+, M: int m, N: int n
+, alpha: a
+, X: &GEVEC (a, m, dx), incX: int dx
+, Y: &GEVEC (a, n, dy), incY: int dy  
+, A: &GEMAT (a, m, n, ord, lda), lda: int lda
+) :<> void // end of [cblas_gerc]
 
 fun cblas_cgerc
   {ord:order} {m,n:nat}
   {dx,dy:inc} {lda:pos} (
-    Order: CBLAS_ORDER_t (ord)
-  , M: int m, N: int n
-  , alpha: &ccmplx
-  , X: &GEVEC (ccmplx, m, dx), incX: int dx
-  , Y: &GEVEC (ccmplx, n, dy), incY: int dy  
-  , A: &GEMAT (ccmplx, m, n, ord, lda), lda: int lda
-  ) :<> void
-    = "#atsctrb_cblas_cgerc"
+  Order: CBLAS_ORDER_t (ord)
+, M: int m, N: int n
+, alpha: &ccmplx
+, X: &GEVEC (ccmplx, m, dx), incX: int dx
+, Y: &GEVEC (ccmplx, n, dy), incY: int dy  
+, A: &GEMAT (ccmplx, m, n, ord, lda), lda: int lda
+) :<> void
+  = "mac#atsctrb_cblas_cgerc"
+// end of [fun]
 
 fun cblas_zgerc
   {ord:order} {m,n:nat}
   {dx,dy:inc} {lda:pos} (
-    Order: CBLAS_ORDER_t (ord)
-  , M: int m, N: int n
-  , alpha: &zcmplx
-  , X: &GEVEC (zcmplx, m, dx), incX: int dx
-  , Y: &GEVEC (zcmplx, n, dy), incY: int dy  
-  , A: &GEMAT (zcmplx, m, n, ord, lda), lda: int lda
-  ) :<> void
-    = "#atsctrb_cblas_zgerc"
+  Order: CBLAS_ORDER_t (ord)
+, M: int m, N: int n
+, alpha: &zcmplx
+, X: &GEVEC (zcmplx, m, dx), incX: int dx
+, Y: &GEVEC (zcmplx, n, dy), incY: int dy  
+, A: &GEMAT (zcmplx, m, n, ord, lda), lda: int lda
+) :<> void
+  = "mac#atsctrb_cblas_zgerc"
+// end of [fun]
 
 (* ****** ****** *)
 
@@ -2511,42 +2574,42 @@ void cblas_cher(
 
 *)
 
-fun{a1,a2:t@ype} cblas_her
+fun{a1,a2:t@ype}
+cblas_her
   {ord:order} {ul:uplo}
   {n:nat} {lda:pos} {dx:inc} (
-    Order: CBLAS_ORDER_t (ord)
-  , Uplo: CBLAS_UPLO_t (ul)  
-  , N: int n
-  , alpha: a1
-  , X: &GEVEC (a2, n, dx), incX: int dx
-  , A: &HEMAT (a2, n, ord, ul, lda), lda: int lda
-  ) :<> void
-// end of [cblas_her]
+  Order: CBLAS_ORDER_t (ord)
+, Uplo: CBLAS_UPLO_t (ul)  
+, N: int n
+, alpha: a1
+, X: &GEVEC (a2, n, dx), incX: int dx
+, A: &HEMAT (a2, n, ord, ul, lda), lda: int lda
+) :<> void // end of [cblas_her]
 
 fun cblas_cher
   {ord:order} {ul:uplo}
   {n:nat} {lda:pos} {dx:inc} (
-    Order: CBLAS_ORDER_t (ord)
-  , Uplo: CBLAS_UPLO_t (ul)  
-  , N: int n
-  , alpha: float
-  , X: &GEVEC (ccmplx, n, dx), incX: int dx
-  , A: &HEMAT (ccmplx, n, ord, ul, lda), lda: int lda
-  ) :<> void
-    = "#atsctrb_cblas_cher"
+  Order: CBLAS_ORDER_t (ord)
+, Uplo: CBLAS_UPLO_t (ul)  
+, N: int n
+, alpha: float
+, X: &GEVEC (ccmplx, n, dx), incX: int dx
+, A: &HEMAT (ccmplx, n, ord, ul, lda), lda: int lda
+) :<> void
+  = "mac#atsctrb_cblas_cher"
 // end of [cblas_cher]
 
 fun cblas_zher
   {ord:order} {ul:uplo}
   {n:nat} {lda:pos} {dx:inc} (
-    Order: CBLAS_ORDER_t (ord)
-  , Uplo: CBLAS_UPLO_t (ul)  
-  , N: int n
-  , alpha: double
-  , X: &GEVEC (zcmplx, n, dx), incX: int dx
-  , A: &HEMAT (zcmplx, n, ord, ul, lda), lda: int lda
-  ) :<> void
-    = "#atsctrb_cblas_zher"
+  Order: CBLAS_ORDER_t (ord)
+, Uplo: CBLAS_UPLO_t (ul)  
+, N: int n
+, alpha: double
+, X: &GEVEC (zcmplx, n, dx), incX: int dx
+, A: &HEMAT (zcmplx, n, ord, ul, lda), lda: int lda
+) :<> void
+  = "mac#atsctrb_cblas_zher"
 // end of [cblas_zher]
 
 (* ****** ****** *)
@@ -2569,45 +2632,45 @@ void cblas_cher2 (
 
 *)
 
-fun{a:t@ype} cblas_her2
+fun{a:t@ype}
+cblas_her2
   {ord:order} {ul:uplo}
   {n:nat} {lda:pos} {dx,dy:inc} (
-    Order: CBLAS_ORDER_t (ord)
-  , Uplo: CBLAS_UPLO_t (ul)  
-  , N: int n
-  , alpha: a
-  , X: &GEVEC (a, n, dx), incX: int dx
-  , Y: &GEVEC (a, n, dy), incY: int dy
-  , A: &HEMAT (a, n, ord, ul, lda), lda: int lda
-  ) :<> void
-// end of [cblas_her2]
+  Order: CBLAS_ORDER_t (ord)
+, Uplo: CBLAS_UPLO_t (ul)  
+, N: int n
+, alpha: a
+, X: &GEVEC (a, n, dx), incX: int dx
+, Y: &GEVEC (a, n, dy), incY: int dy
+, A: &HEMAT (a, n, ord, ul, lda), lda: int lda
+) :<> void // end of [cblas_her2]
 
 fun cblas_cher2
   {ord:order} {ul:uplo}
   {n:nat} {lda:pos} {dx,dy:inc} (
-    Order: CBLAS_ORDER_t (ord)
-  , Uplo: CBLAS_UPLO_t (ul)  
-  , N: int n
-  , alpha: &ccmplx
-  , X: &GEVEC (ccmplx, n, dx), incX: int dx
-  , Y: &GEVEC (ccmplx, n, dy), incY: int dy
-  , A: &HEMAT (ccmplx, n, ord, ul, lda), lda: int lda
-  ) :<> void
-    = "#atsctrb_cblas_cher2"
+  Order: CBLAS_ORDER_t (ord)
+, Uplo: CBLAS_UPLO_t (ul)  
+, N: int n
+, alpha: &ccmplx
+, X: &GEVEC (ccmplx, n, dx), incX: int dx
+, Y: &GEVEC (ccmplx, n, dy), incY: int dy
+, A: &HEMAT (ccmplx, n, ord, ul, lda), lda: int lda
+) :<> void
+  = "mac#atsctrb_cblas_cher2"
 // end of [cblas_cher2]
 
 fun cblas_zher2
   {ord:order} {ul:uplo}
   {n:nat} {lda:pos} {dx,dy:inc} (
-    Order: CBLAS_ORDER_t (ord)
-  , Uplo: CBLAS_UPLO_t (ul)  
-  , N: int n
-  , alpha: &zcmplx
-  , X: &GEVEC (zcmplx, n, dx), incX: int dx
-  , Y: &GEVEC (zcmplx, n, dy), incY: int dy
-  , A: &HEMAT (zcmplx, n, ord, ul, lda), lda: int lda
-  ) :<> void
-    = "#atsctrb_cblas_zher2"
+  Order: CBLAS_ORDER_t (ord)
+, Uplo: CBLAS_UPLO_t (ul)  
+, N: int n
+, alpha: &zcmplx
+, X: &GEVEC (zcmplx, n, dx), incX: int dx
+, Y: &GEVEC (zcmplx, n, dy), incY: int dy
+, A: &HEMAT (zcmplx, n, ord, ul, lda), lda: int lda
+) :<> void
+  = "mac#atsctrb_cblas_zher2"
 // end of [cblas_zher2]
 
 (* ****** ****** *)
@@ -2629,42 +2692,42 @@ void cblas_chpr (
 
 *)
 
-fun{a1,a2:t@ype} cblas_hpr
+fun{a1,a2:t@ype}
+cblas_hpr
   {ord:order} {ul:uplo}
   {n:nat} {dx:inc} (
-    Order: CBLAS_ORDER_t (ord)
-  , Uplo: CBLAS_UPLO_t (ul)  
-  , N: int n
-  , alpha: a1
-  , X: &GEVEC (a2, n, dx), incX: int dx
-  , A: &HPMAT (a2, n, ord, ul)
-  ) :<> void
-// end of [cblas_hpr]
+  Order: CBLAS_ORDER_t (ord)
+, Uplo: CBLAS_UPLO_t (ul)  
+, N: int n
+, alpha: a1
+, X: &GEVEC (a2, n, dx), incX: int dx
+, A: &HPMAT (a2, n, ord, ul)
+) :<> void // end of [cblas_hpr]
 
 fun cblas_chpr
   {ord:order} {ul:uplo}
   {n:nat} {dx:inc} (
-    Order: CBLAS_ORDER_t (ord)
-  , Uplo: CBLAS_UPLO_t (ul)  
-  , N: int n
-  , alpha: float
-  , X: &GEVEC (ccmplx, n, dx), incX: int dx
-  , A: &HPMAT (ccmplx, n, ord, ul)
-  ) :<> void
-    = "#atsctrb_cblas_chpr"
+  Order: CBLAS_ORDER_t (ord)
+, Uplo: CBLAS_UPLO_t (ul)  
+, N: int n
+, alpha: float
+, X: &GEVEC (ccmplx, n, dx), incX: int dx
+, A: &HPMAT (ccmplx, n, ord, ul)
+) :<> void
+  = "mac#atsctrb_cblas_chpr"
 // end of [cblas_chpr]
 
 fun cblas_zhpr
   {ord:order} {ul:uplo}
   {n:nat} {dx:inc} (
-    Order: CBLAS_ORDER_t (ord)
-  , Uplo: CBLAS_UPLO_t (ul)  
-  , N: int n
-  , alpha: double
-  , X: &GEVEC (zcmplx, n, dx), incX: int dx
-  , A: &HPMAT (zcmplx, n, ord, ul)
-  ) :<> void
-    = "#atsctrb_cblas_zhpr"
+  Order: CBLAS_ORDER_t (ord)
+, Uplo: CBLAS_UPLO_t (ul)  
+, N: int n
+, alpha: double
+, X: &GEVEC (zcmplx, n, dx), incX: int dx
+, A: &HPMAT (zcmplx, n, ord, ul)
+) :<> void
+  = "mac#atsctrb_cblas_zhpr"
 // end of [cblas_zhpr]
 
 (* ****** ****** *)
@@ -2687,45 +2750,45 @@ void cblas_chpr2 (
 
 *)
 
-fun{a:t@ype} cblas_hpr2
+fun{a:t@ype}
+cblas_hpr2
   {ord:order} {ul:uplo}
   {n:nat} {dx,dy:inc} (
-    Order: CBLAS_ORDER_t (ord)
-  , Uplo: CBLAS_UPLO_t (ul)  
-  , N: int n
-  , alpha: a
-  , X: &GEVEC (a, n, dx), incX: int dx
-  , Y: &GEVEC (a, n, dy), incY: int dy
-  , Ap: &HPMAT (a, n, ord, ul)
-  ) :<> void
-// end of [cblas_hpr2]
+  Order: CBLAS_ORDER_t (ord)
+, Uplo: CBLAS_UPLO_t (ul)  
+, N: int n
+, alpha: a
+, X: &GEVEC (a, n, dx), incX: int dx
+, Y: &GEVEC (a, n, dy), incY: int dy
+, Ap: &HPMAT (a, n, ord, ul)
+) :<> void // end of [cblas_hpr2]
 
 fun cblas_chpr2
   {ord:order} {ul:uplo}
   {n:nat} {dx,dy:inc} (
-    Order: CBLAS_ORDER_t (ord)
-  , Uplo: CBLAS_UPLO_t (ul)  
-  , N: int n
-  , alpha: &ccmplx
-  , X: &GEVEC (ccmplx, n, dx), incX: int dx
-  , Y: &GEVEC (ccmplx, n, dy), incY: int dy
-  , Ap: &HPMAT (ccmplx, n, ord, ul)
-  ) :<> void
-    = "#atsctrb_cblas_chpr2"
+  Order: CBLAS_ORDER_t (ord)
+, Uplo: CBLAS_UPLO_t (ul)  
+, N: int n
+, alpha: &ccmplx
+, X: &GEVEC (ccmplx, n, dx), incX: int dx
+, Y: &GEVEC (ccmplx, n, dy), incY: int dy
+, Ap: &HPMAT (ccmplx, n, ord, ul)
+) :<> void
+  = "mac#atsctrb_cblas_chpr2"
 // end of [cblas_chpr2]
 
 fun cblas_zhpr2
   {ord:order} {ul:uplo}
   {n:nat} {dx,dy:inc} (
-    Order: CBLAS_ORDER_t (ord)
-  , Uplo: CBLAS_UPLO_t (ul)  
-  , N: int n
-  , alpha: &zcmplx
-  , X: &GEVEC (zcmplx, n, dx), incX: int dx
-  , Y: &GEVEC (zcmplx, n, dy), incY: int dy
-  , Ap: &HPMAT (zcmplx, n, ord, ul)
-  ) :<> void
-    = "#atsctrb_cblas_zhpr2"
+  Order: CBLAS_ORDER_t (ord)
+, Uplo: CBLAS_UPLO_t (ul)  
+, N: int n
+, alpha: &zcmplx
+, X: &GEVEC (zcmplx, n, dx), incX: int dx
+, Y: &GEVEC (zcmplx, n, dy), incY: int dy
+, Ap: &HPMAT (zcmplx, n, ord, ul)
+) :<> void
+  = "mac#atsctrb_cblas_zhpr2"
 // end of [cblas_zhpr2]
 
 (* ****** ****** *)
@@ -2757,21 +2820,22 @@ void cblas_dgemm (
 
 *)
 
-fun{t:t@ype} cblas_gemm
+fun{t:t@ype}
+cblas_gemm
   {ord:order} {trA,trB:transpose}
   {m,n,k:nat} {ma,na:nat} {mb,nb:nat} {lda,ldb,ldc:pos} (
-    pfa: trandim_p (trA, ma, na, m, k)
-  , pfb: trandim_p (trB, mb, nb, k, n)   
-  | Order: CBLAS_ORDER_t ord
-  , TransA: CBLAS_TRANSPOSE_t (trA)
-  , TransB: CBLAS_TRANSPOSE_t (trB)
-  , M: int m, N: int n, K: int k
-  , alpha: t
-  , A: &GEMAT (t, ma, na, ord, lda), lda: int lda
-  , B: &GEMAT (t, mb, nb, ord, ldb), ldb: int ldb
-  , beta: t
-  , C: &GEMAT (t, m, n, ord, ldc), ldc: int ldc
-  ) :<> void = "atsctrb_cblas_gemm"
+  pfa: trandim_p (trA, ma, na, m, k)
+, pfb: trandim_p (trB, mb, nb, k, n)   
+| Order: CBLAS_ORDER_t ord
+, TransA: CBLAS_TRANSPOSE_t (trA)
+, TransB: CBLAS_TRANSPOSE_t (trB)
+, M: int m, N: int n, K: int k
+, alpha: t
+, A: &GEMAT (t, ma, na, ord, lda), lda: int lda
+, B: &GEMAT (t, mb, nb, ord, ldb), ldb: int ldb
+, beta: t
+, C: &GEMAT (t, m, n, ord, ldc), ldc: int ldc
+) :<> void = "atsctrb_cblas_gemm"
 
 fun cblas_sgemm
   {ord:order} {trA,trB:transpose}
@@ -2788,7 +2852,8 @@ fun cblas_sgemm
 , beta: float
 , C: &GEMAT (float, m, n, ord, ldc), ldc: int ldc
 ) :<> void
-  = "#atsctrb_cblas_sgemm"
+  = "mac#atsctrb_cblas_sgemm"
+// end of [fun]
 
 fun cblas_dgemm
   {ord:order} {trA,trB:transpose}
@@ -2805,7 +2870,8 @@ fun cblas_dgemm
 , beta: double
 , C: &GEMAT (double, m, n, ord, ldc), ldc: int ldc
 ) :<> void
-  = "#atsctrb_cblas_dgemm"
+  = "mac#atsctrb_cblas_dgemm"
+// end of [fun]
 
 fun cblas_cgemm
   {ord:order} {trA,trB:transpose}
@@ -2822,7 +2888,8 @@ fun cblas_cgemm
 , beta: &ccmplx
 , C: &GEMAT (ccmplx, m, n, ord, ldc), ldc: int ldc
 ) :<> void
-  = "#atsctrb_cblas_cgemm"
+  = "mac#atsctrb_cblas_cgemm"
+// end of [fun]
 
 fun cblas_zgemm
   {ord:order} {trA,trB:transpose}
@@ -2839,29 +2906,33 @@ fun cblas_zgemm
 , beta: &zcmplx
 , C: &GEMAT (zcmplx, m, n, ord, ldc), ldc: int ldc
 ) :<> void
-  = "#atsctrb_cblas_zgemm"
+  = "mac#atsctrb_cblas_zgemm"
+// end of [fun]
 
-// this one is correct but too cumbersome to use!
-fun{t:t@ype} cblas_gemm__main
+//
+// HX: this one is correct but too cumbersome to use!
+//
+fun{t:t@ype}
+cblas_gemm__main
   {v:view}
   {ord:order} {trA,trB:transpose}
   {m,n,k:nat} {ma,na:nat} {mb,nb:nat}
   {lda,ldb,ldc:pos} {la,lb:addr} (
-    pf: !v
-  , pfa1: trandim_p (trA, ma, na, m, k)
-  , pfa2: GEMAT_v (t, ma, na, ord, lda, la) <= v // containment
-  , pfb1: trandim_p (trB, mb, nb, k, n)   
-  , pfb2: GEMAT_v (t, mb, nb, ord, ldb, lb) <= v // containment
-  | Order: CBLAS_ORDER_t ord
-  , TransA: CBLAS_TRANSPOSE_t (trA)
-  , TransB: CBLAS_TRANSPOSE_t (trB)
-  , M: int m, N: int n, K: int k
-  , alpha: t
-  , pA: ptr la, lda: int lda
-  , pB: ptr lb, ldb: int ldb
-  , beta: t
-  , C: &GEMAT (t, m, n, ord, ldc), ldc: int ldc
-  ) :<> void = "atsctrb_cblas_gemm"
+  pf: !v
+, pfa1: trandim_p (trA, ma, na, m, k)
+, pfa2: GEMAT_v (t, ma, na, ord, lda, la) <= v // containment
+, pfb1: trandim_p (trB, mb, nb, k, n)   
+, pfb2: GEMAT_v (t, mb, nb, ord, ldb, lb) <= v // containment
+| Order: CBLAS_ORDER_t ord
+, TransA: CBLAS_TRANSPOSE_t (trA)
+, TransB: CBLAS_TRANSPOSE_t (trB)
+, M: int m, N: int n, K: int k
+, alpha: t
+, pA: ptr la, lda: int lda
+, pB: ptr lb, ldb: int ldb
+, beta: t
+, C: &GEMAT (t, m, n, ord, ldc), ldc: int ldc
+) :<> void = "atsctrb_cblas_gemm"
 
 (* ****** ****** *)
 
@@ -2884,80 +2955,84 @@ void cblas_dsyrk (
 
 *)
 
-fun{a:t@ype} cblas_syrk
+fun{a:t@ype}
+cblas_syrk
   {ord:order} {ul:uplo} {trA:transpose}
   {n,k:nat} {ma,na:nat} {lda,ldc:pos} (
-    pfa: trandim_p (trA, ma, na, n, k)
-  | Order: CBLAS_ORDER_t (ord)
-  , Uplo: CBLAS_UPLO_t (ul)
-  , Trans: CBLAS_TRANSPOSE_t (trA)
-  , N: int n, K: int k
-  , alpha: a
-  , A: &GEMAT (a, ma, na, ord, lda), lda: int lda
-  , beta: a
-  , C: &SYMAT (a, n, ord, ul, ldc), ldc: int ldc
-  ) :<> void
-// end of [cblas_syrk]
+  pfa: trandim_p (trA, ma, na, n, k)
+| Order: CBLAS_ORDER_t (ord)
+, Uplo: CBLAS_UPLO_t (ul)
+, Trans: CBLAS_TRANSPOSE_t (trA)
+, N: int n, K: int k
+, alpha: a
+, A: &GEMAT (a, ma, na, ord, lda), lda: int lda
+, beta: a
+, C: &SYMAT (a, n, ord, ul, ldc), ldc: int ldc
+) :<> void // end of [cblas_syrk]
 
 fun cblas_ssyrk
   {ord:order} {ul:uplo} {trA:transpose}
   {n,k:nat} {ma,na:nat} {lda,ldc:pos} (
-    pfa: trandim_p (trA, ma, na, n, k)
-  | Order: CBLAS_ORDER_t (ord)
-  , Uplo: CBLAS_UPLO_t (ul)
-  , Trans: CBLAS_TRANSPOSE_t (trA)
-  , N: int n, K: int k
-  , alpha: float
-  , A: &GEMAT (float, ma, na, ord, lda), lda: int lda
-  , beta: float
-  , C: &SYMAT (float, n, ord, ul, ldc), ldc: int ldc
-  ) :<> void
-  = "#atsctrb_cblas_ssyrk"
+  pfa: trandim_p (trA, ma, na, n, k)
+| Order: CBLAS_ORDER_t (ord)
+, Uplo: CBLAS_UPLO_t (ul)
+, Trans: CBLAS_TRANSPOSE_t (trA)
+, N: int n, K: int k
+, alpha: float
+, A: &GEMAT (float, ma, na, ord, lda), lda: int lda
+, beta: float
+, C: &SYMAT (float, n, ord, ul, ldc), ldc: int ldc
+) :<> void
+  = "mac#atsctrb_cblas_ssyrk"
+// end of [fun]
 
 fun cblas_dsyrk
   {ord:order} {ul:uplo} {trA:transpose}
   {n,k:nat} {ma,na:nat} {lda,ldc:pos} (
-    pfa: trandim_p (trA, ma, na, n, k)
-  | Order: CBLAS_ORDER_t (ord)
-  , Uplo: CBLAS_UPLO_t (ul)
-  , Trans: CBLAS_TRANSPOSE_t (trA)
-  , N: int n, K: int k
-  , alpha: double
-  , A: &GEMAT (double, ma, na, ord, lda), lda: int lda
-  , beta: double
-  , C: &SYMAT (double, n, ord, ul, ldc), ldc: int ldc
-  ) :<> void
-  = "#atsctrb_cblas_dsyrk"
+  pfa: trandim_p (trA, ma, na, n, k)
+| Order: CBLAS_ORDER_t (ord)
+, Uplo: CBLAS_UPLO_t (ul)
+, Trans: CBLAS_TRANSPOSE_t (trA)
+, N: int n, K: int k
+, alpha: double
+, A: &GEMAT (double, ma, na, ord, lda), lda: int lda
+, beta: double
+, C: &SYMAT (double, n, ord, ul, ldc), ldc: int ldc
+) :<> void
+  = "mac#atsctrb_cblas_dsyrk"
+// end of [fun]
 
 fun cblas_csyrk
   {ord:order} {ul:uplo} {trA:transpose}
   {n,k:nat} {ma,na:nat} {lda,ldc:pos} (
-    pfa: trandim_p (trA, ma, na, n, k)
-  | Order: CBLAS_ORDER_t (ord)
-  , Uplo: CBLAS_UPLO_t (ul)
-  , Trans: CBLAS_TRANSPOSE_t (trA)
-  , N: int n, K: int k
-  , alpha: &ccmplx
-  , A: &GEMAT (ccmplx, ma, na, ord, lda), lda: int lda
-  , beta: &ccmplx
-  , C: &SYMAT (ccmplx, n, ord, ul, ldc), ldc: int ldc
-  ) :<> void
-  = "#atsctrb_cblas_csyrk"
+  pfa: trandim_p (trA, ma, na, n, k)
+| Order: CBLAS_ORDER_t (ord)
+, Uplo: CBLAS_UPLO_t (ul)
+, Trans: CBLAS_TRANSPOSE_t (trA)
+, N: int n, K: int k
+, alpha: &ccmplx
+, A: &GEMAT (ccmplx, ma, na, ord, lda), lda: int lda
+, beta: &ccmplx
+, C: &SYMAT (ccmplx, n, ord, ul, ldc), ldc: int ldc
+) :<> void
+  = "mac#atsctrb_cblas_csyrk"
+// end of [fun]
 
 fun cblas_zsyrk
   {ord:order} {ul:uplo} {trA:transpose}
   {n,k:nat} {ma,na:nat} {lda,ldc:pos} (
   pfa: trandim_p (trA, ma, na, n, k)
-  | Order: CBLAS_ORDER_t (ord)
-  , Uplo: CBLAS_UPLO_t (ul)
-  , Trans: CBLAS_TRANSPOSE_t (trA)
-  , N: int n, K: int k
-  , alpha: &zcmplx
-  , A: &GEMAT (zcmplx, ma, na, ord, lda), lda: int lda
-  , beta: &zcmplx
-  , C: &SYMAT (zcmplx, n, ord, ul, ldc), ldc: int ldc
-  ) :<> void
-  = "#atsctrb_cblas_zsyrk"
+| Order: CBLAS_ORDER_t (ord)
+, Uplo: CBLAS_UPLO_t (ul)
+, Trans: CBLAS_TRANSPOSE_t (trA)
+, N: int n, K: int k
+, alpha: &zcmplx
+, A: &GEMAT (zcmplx, ma, na, ord, lda), lda: int lda
+, beta: &zcmplx
+, C: &SYMAT (zcmplx, n, ord, ul, ldc), ldc: int ldc
+) :<> void
+  = "mac#atsctrb_cblas_zsyrk"
+// end of [fun]
 
 (* ****** ****** *)
 
@@ -2981,85 +3056,89 @@ void cblas_dsyr2k (
 
 *)
 
-fun{a:t@ype} cblas_syr2k
+fun{a:t@ype}
+cblas_syr2k
   {ord:order} {ul:uplo} {trA:transpose}
   {n,k:nat} {ma,na:nat} {lda,ldb,ldc:pos} (
-    pfa: trandim_p (trA, ma, na, n, k)
-  | Order: CBLAS_ORDER_t (ord)
-  , Uplo: CBLAS_UPLO_t (ul)
-  , Trans: CBLAS_TRANSPOSE_t (trA)
-  , N: int n, K: int k
-  , alpha: a
-  , A: &GEMAT (a, ma, na, ord, lda), lda: int lda
-  , B: &GEMAT (a, ma, na, ord, ldb), ldb: int ldb
-  , beta: a
-  , C: &SYMAT (a, n, ord, ul, ldc), ldc: int ldc
-  ) :<> void
-// end of [cblas_syr2k]
+  pfa: trandim_p (trA, ma, na, n, k)
+| Order: CBLAS_ORDER_t (ord)
+, Uplo: CBLAS_UPLO_t (ul)
+, Trans: CBLAS_TRANSPOSE_t (trA)
+, N: int n, K: int k
+, alpha: a
+, A: &GEMAT (a, ma, na, ord, lda), lda: int lda
+, B: &GEMAT (a, ma, na, ord, ldb), ldb: int ldb
+, beta: a
+, C: &SYMAT (a, n, ord, ul, ldc), ldc: int ldc
+) :<> void // end of [cblas_syr2k]
 
 fun cblas_ssyr2k
   {ord:order} {ul:uplo} {trA:transpose}
   {n,k:nat} {ma,na:nat} {lda,ldb,ldc:pos} (
-    pfa: trandim_p (trA, ma, na, n, k)
-  | Order: CBLAS_ORDER_t (ord)
-  , Uplo: CBLAS_UPLO_t (ul)
-  , Trans: CBLAS_TRANSPOSE_t (trA)
-  , N: int n, K: int k
-  , alpha: float
-  , A: &GEMAT (float, ma, na, ord, lda), lda: int lda
-  , B: &GEMAT (float, ma, na, ord, ldb), ldb: int ldb
-  , beta: float
-  , C: &SYMAT (float, n, ord, ul, ldc), ldc: int ldc
-  ) :<> void
-  = "#atsctrb_cblas_ssyr2k"
+  pfa: trandim_p (trA, ma, na, n, k)
+| Order: CBLAS_ORDER_t (ord)
+, Uplo: CBLAS_UPLO_t (ul)
+, Trans: CBLAS_TRANSPOSE_t (trA)
+, N: int n, K: int k
+, alpha: float
+, A: &GEMAT (float, ma, na, ord, lda), lda: int lda
+, B: &GEMAT (float, ma, na, ord, ldb), ldb: int ldb
+, beta: float
+, C: &SYMAT (float, n, ord, ul, ldc), ldc: int ldc
+) :<> void
+  = "mac#atsctrb_cblas_ssyr2k"
+// end of [fun]
 
 fun cblas_dsyr2k
   {ord:order} {ul:uplo} {trA:transpose}
   {n,k:nat} {ma,na:nat} {lda,ldb,ldc:pos} (
-    pfa: trandim_p (trA, ma, na, n, k)
-  | Order: CBLAS_ORDER_t (ord)
-  , Uplo: CBLAS_UPLO_t (ul)
-  , Trans: CBLAS_TRANSPOSE_t (trA)
-  , N: int n, K: int k
-  , alpha: double
-  , A: &GEMAT (double, ma, na, ord, lda), lda: int lda
-  , B: &GEMAT (double, ma, na, ord, ldb), ldb: int ldb
-  , beta: double
-  , C: &SYMAT (double, n, ord, ul, ldc), ldc: int ldc
-  ) :<> void
-  = "#atsctrb_cblas_dsyr2k"
+  pfa: trandim_p (trA, ma, na, n, k)
+| Order: CBLAS_ORDER_t (ord)
+, Uplo: CBLAS_UPLO_t (ul)
+, Trans: CBLAS_TRANSPOSE_t (trA)
+, N: int n, K: int k
+, alpha: double
+, A: &GEMAT (double, ma, na, ord, lda), lda: int lda
+, B: &GEMAT (double, ma, na, ord, ldb), ldb: int ldb
+, beta: double
+, C: &SYMAT (double, n, ord, ul, ldc), ldc: int ldc
+) :<> void
+  = "mac#atsctrb_cblas_dsyr2k"
+// end of [fun]
 
 fun cblas_csyr2k
   {ord:order} {ul:uplo} {trA:transpose}
   {n,k:nat} {ma,na:nat} {lda,ldb,ldc:pos} (
-    pfa: trandim_p (trA, ma, na, n, k)
-  | Order: CBLAS_ORDER_t (ord)
-  , Uplo: CBLAS_UPLO_t (ul)
-  , Trans: CBLAS_TRANSPOSE_t (trA)
-  , N: int n, K: int k
-  , alpha: &ccmplx
-  , A: &GEMAT (ccmplx, ma, na, ord, lda), lda: int lda
-  , B: &GEMAT (ccmplx, ma, na, ord, ldb), ldb: int ldb
-  , beta: &ccmplx
-  , C: &SYMAT (ccmplx, n, ord, ul, ldc), ldc: int ldc
-  ) :<> void
-  = "#atsctrb_cblas_csyr2k"
+  pfa: trandim_p (trA, ma, na, n, k)
+| Order: CBLAS_ORDER_t (ord)
+, Uplo: CBLAS_UPLO_t (ul)
+, Trans: CBLAS_TRANSPOSE_t (trA)
+, N: int n, K: int k
+, alpha: &ccmplx
+, A: &GEMAT (ccmplx, ma, na, ord, lda), lda: int lda
+, B: &GEMAT (ccmplx, ma, na, ord, ldb), ldb: int ldb
+, beta: &ccmplx
+, C: &SYMAT (ccmplx, n, ord, ul, ldc), ldc: int ldc
+) :<> void
+  = "mac#atsctrb_cblas_csyr2k"
+// end of [fun]
 
 fun cblas_zsyr2k
   {ord:order} {ul:uplo} {trA:transpose}
   {n,k:nat} {ma,na:nat} {lda,ldb,ldc:pos} (
-    pfa: trandim_p (trA, ma, na, n, k)
-  | Order: CBLAS_ORDER_t (ord)
-  , Uplo: CBLAS_UPLO_t (ul)
-  , Trans: CBLAS_TRANSPOSE_t (trA)
-  , N: int n, K: int k
-  , alpha: &zcmplx
-  , A: &GEMAT (zcmplx, ma, na, ord, lda), lda: int lda
-  , B: &GEMAT (zcmplx, ma, na, ord, ldb), ldb: int ldb
-  , beta: &zcmplx
-  , C: &SYMAT (zcmplx, n, ord, ul, ldc), ldc: int ldc
-  ) :<> void
-  = "#atsctrb_cblas_zsyr2k"
+  pfa: trandim_p (trA, ma, na, n, k)
+| Order: CBLAS_ORDER_t (ord)
+, Uplo: CBLAS_UPLO_t (ul)
+, Trans: CBLAS_TRANSPOSE_t (trA)
+, N: int n, K: int k
+, alpha: &zcmplx
+, A: &GEMAT (zcmplx, ma, na, ord, lda), lda: int lda
+, B: &GEMAT (zcmplx, ma, na, ord, ldb), ldb: int ldb
+, beta: &zcmplx
+, C: &SYMAT (zcmplx, n, ord, ul, ldc), ldc: int ldc
+) :<> void
+  = "mac#atsctrb_cblas_zsyr2k"
+// end of [fun]
 
 (* ****** ****** *)
 
@@ -3083,85 +3162,89 @@ void cblas_dsymm (
 
 *)
 
-fun{a:t@ype} cblas_symm
+fun{a:t@ype}
+cblas_symm
   {ord:order} {lr:side} {ul:uplo}
   {m,n:nat} {na:nat} {lda,ldb,ldc:pos} (
   pfa: sidedim_p (lr, m, n, na)
-  | Order: CBLAS_ORDER_t ord
-  , Side: CBLAS_SIDE_t (lr)
-  , Uplo: CBLAS_UPLO_t (ul)
-  , M: int m, N: int n
-  , alpha: a
-  , A: &SYMAT (a, na, ord, ul, lda), lda: int lda
-  , B: &GEMAT (a, m, n, ord, ldb), ldb: int ldb
-  , beta: a
-  , C: &GEMAT (a, m, n, ord, ldc), ldc: int ldc
-  ) :<> void
-// end of [cblas_symm]
+| Order: CBLAS_ORDER_t ord
+, Side: CBLAS_SIDE_t (lr)
+, Uplo: CBLAS_UPLO_t (ul)
+, M: int m, N: int n
+, alpha: a
+, A: &SYMAT (a, na, ord, ul, lda), lda: int lda
+, B: &GEMAT (a, m, n, ord, ldb), ldb: int ldb
+, beta: a
+, C: &GEMAT (a, m, n, ord, ldc), ldc: int ldc
+) :<> void // end of [cblas_symm]
 
 fun cblas_ssymm
   {ord:order} {lr:side} {ul:uplo}
   {m,n:nat} {na:nat} {lda,ldb,ldc:pos} (
-    pfa: sidedim_p (lr, m, n, na)
-  | Order: CBLAS_ORDER_t ord
-  , Side: CBLAS_SIDE_t (lr)
-  , Uplo: CBLAS_UPLO_t (ul)
-  , M: int m, N: int n
-  , alpha: float
-  , A: &SYMAT (float, na, ord, ul, lda), lda: int lda
-  , B: &GEMAT (float, m, n, ord, ldb), ldb: int ldb
-  , beta: float
-  , C: &GEMAT (float, m, n, ord, ldc), ldc: int ldc
-  ) :<> void
-  = "#atsctrb_cblas_ssymm"
+  pfa: sidedim_p (lr, m, n, na)
+| Order: CBLAS_ORDER_t ord
+, Side: CBLAS_SIDE_t (lr)
+, Uplo: CBLAS_UPLO_t (ul)
+, M: int m, N: int n
+, alpha: float
+, A: &SYMAT (float, na, ord, ul, lda), lda: int lda
+, B: &GEMAT (float, m, n, ord, ldb), ldb: int ldb
+, beta: float
+, C: &GEMAT (float, m, n, ord, ldc), ldc: int ldc
+) :<> void
+  = "mac#atsctrb_cblas_ssymm"
+// end of [fun]
 
 fun cblas_dsymm
   {ord:order} {lr:side} {ul:uplo}
   {m,n:nat} {na:nat} {lda,ldb,ldc:pos} (
-    pfa: sidedim_p (lr, m, n, na)
-  | Order: CBLAS_ORDER_t ord
-  , Side: CBLAS_SIDE_t (lr)
-  , Uplo: CBLAS_UPLO_t (ul)
-  , M: int m, N: int n
-  , alpha: double
-  , A: &SYMAT (double, na, ord, ul, lda), lda: int lda
-  , B: &GEMAT (double, m, n, ord, ldb), ldb: int ldb
-  , beta: double
-  , C: &GEMAT (double, m, n, ord, ldc), ldc: int ldc
-  ) :<> void
-  = "#atsctrb_cblas_dsymm"
+  pfa: sidedim_p (lr, m, n, na)
+| Order: CBLAS_ORDER_t ord
+, Side: CBLAS_SIDE_t (lr)
+, Uplo: CBLAS_UPLO_t (ul)
+, M: int m, N: int n
+, alpha: double
+, A: &SYMAT (double, na, ord, ul, lda), lda: int lda
+, B: &GEMAT (double, m, n, ord, ldb), ldb: int ldb
+, beta: double
+, C: &GEMAT (double, m, n, ord, ldc), ldc: int ldc
+) :<> void
+  = "mac#atsctrb_cblas_dsymm"
+// end of [fun]
 
 fun cblas_csymm
   {ord:order} {lr:side} {ul:uplo}
   {m,n:nat} {na:nat} {lda,ldb,ldc:pos} (
-    pfa: sidedim_p (lr, m, n, na)
-  | Order: CBLAS_ORDER_t ord
-  , Side: CBLAS_SIDE_t (lr)
-  , Uplo: CBLAS_UPLO_t (ul)
-  , M: int m, N: int n
-  , alpha: &ccmplx
-  , A: &SYMAT (ccmplx, na, ord, ul, lda), lda: int lda
-  , B: &GEMAT (ccmplx, m, n, ord, ldb), ldb: int ldb
-  , beta: &ccmplx
-  , C: &GEMAT (ccmplx, m, n, ord, ldc), ldc: int ldc
-  ) :<> void
-  = "#atsctrb_cblas_csymm"
+  pfa: sidedim_p (lr, m, n, na)
+| Order: CBLAS_ORDER_t ord
+, Side: CBLAS_SIDE_t (lr)
+, Uplo: CBLAS_UPLO_t (ul)
+, M: int m, N: int n
+, alpha: &ccmplx
+, A: &SYMAT (ccmplx, na, ord, ul, lda), lda: int lda
+, B: &GEMAT (ccmplx, m, n, ord, ldb), ldb: int ldb
+, beta: &ccmplx
+, C: &GEMAT (ccmplx, m, n, ord, ldc), ldc: int ldc
+) :<> void
+  = "mac#atsctrb_cblas_csymm"
+// end of [fun]
 
 fun cblas_zsymm
   {ord:order} {lr:side} {ul:uplo}
   {m,n:nat} {na:nat} {lda,ldb,ldc:pos} (
-    pfa: sidedim_p (lr, m, n, na)
-  | Order: CBLAS_ORDER_t ord
-  , Side: CBLAS_SIDE_t (lr)
-  , Uplo: CBLAS_UPLO_t (ul)
-  , M: int m, N: int n
-  , alpha: &zcmplx
-  , A: &SYMAT (zcmplx, na, ord, ul, lda), lda: int lda
-  , B: &GEMAT (zcmplx, m, n, ord, ldb), ldb: int ldb
-  , beta: &zcmplx
-  , C: &GEMAT (zcmplx, m, n, ord, ldc), ldc: int ldc
-  ) :<> void
-  = "#atsctrb_cblas_zsymm"
+  pfa: sidedim_p (lr, m, n, na)
+| Order: CBLAS_ORDER_t ord
+, Side: CBLAS_SIDE_t (lr)
+, Uplo: CBLAS_UPLO_t (ul)
+, M: int m, N: int n
+, alpha: &zcmplx
+, A: &SYMAT (zcmplx, na, ord, ul, lda), lda: int lda
+, B: &GEMAT (zcmplx, m, n, ord, ldb), ldb: int ldb
+, beta: &zcmplx
+, C: &GEMAT (zcmplx, m, n, ord, ldc), ldc: int ldc
+) :<> void
+  = "mac#atsctrb_cblas_zsymm"
+// end of [fun]
 
 (* ****** ****** *)
 
@@ -3186,90 +3269,93 @@ void cblas_dtrmm (
 
 *)
 
-fun{a:t@ype} cblas_trmm
+fun{a:t@ype}
+cblas_trmm
   {ord:order} {lr:side}
   {ul:uplo} {trA:transpose} {dg:diag}
   {m,n:nat} {na:nat} {lda,ldb:pos} (
-    pfa: sidedim_p (lr, m, n, na)
-  | Order: CBLAS_ORDER_t (ord)
-  , Side: CBLAS_SIDE_t (lr)
-  , Uplo: CBLAS_UPLO_t (ul)
-  , transA: CBLAS_TRANSPOSE_t (trA)
-  , Diag: CBLAS_DIAG_t (dg)
-  , M: int m, N: int n
-  , alpha: a
-  , A: &TRMAT (a, na, ord, ul, dg, lda), lda: int lda
-  , B: &GEMAT (a, m, n, ord, ldb), ldb: int ldb
-  ) :<> void
-// end of [cblas_trmm]
+  pfa: sidedim_p (lr, m, n, na)
+| Order: CBLAS_ORDER_t (ord)
+, Side: CBLAS_SIDE_t (lr)
+, Uplo: CBLAS_UPLO_t (ul)
+, transA: CBLAS_TRANSPOSE_t (trA)
+, Diag: CBLAS_DIAG_t (dg)
+, M: int m, N: int n
+, alpha: a
+, A: &TRMAT (a, na, ord, ul, dg, lda), lda: int lda
+, B: &GEMAT (a, m, n, ord, ldb), ldb: int ldb
+) :<> void // end of [cblas_trmm]
 
 fun cblas_strmm
   {ord:order} {lr:side}
   {ul:uplo} {trA:transpose} {dg:diag}
   {m,n:nat} {na:nat} {lda,ldb:pos} (
-    pfa: sidedim_p (lr, m, n, na)
-  | Order: CBLAS_ORDER_t (ord)
-  , Side: CBLAS_SIDE_t (lr)
-  , Uplo: CBLAS_UPLO_t (ul)
-  , transA: CBLAS_TRANSPOSE_t (trA)
-  , Diag: CBLAS_DIAG_t (dg)
-  , M: int m, N: int n
-  , alpha: float
-  , A: &TRMAT (float, na, ord, ul, dg, lda), lda: int lda
-  , B: &GEMAT (float, m, n, ord, ldb), ldb: int ldb
-  ) :<> void
-  = "#atsctrb_cblas_strmm"
+  pfa: sidedim_p (lr, m, n, na)
+| Order: CBLAS_ORDER_t (ord)
+, Side: CBLAS_SIDE_t (lr)
+, Uplo: CBLAS_UPLO_t (ul)
+, transA: CBLAS_TRANSPOSE_t (trA)
+, Diag: CBLAS_DIAG_t (dg)
+, M: int m, N: int n
+, alpha: float
+, A: &TRMAT (float, na, ord, ul, dg, lda), lda: int lda
+, B: &GEMAT (float, m, n, ord, ldb), ldb: int ldb
+) :<> void
+  = "mac#atsctrb_cblas_strmm"
 
 fun cblas_dtrmm
   {ord:order} {lr:side}
   {ul:uplo} {trA:transpose} {dg:diag}
   {m,n:nat} {na:nat} {lda,ldb:pos} (
-    pfa: sidedim_p (lr, m, n, na)
-  | Order: CBLAS_ORDER_t (ord)
-  , Side: CBLAS_SIDE_t (lr)
-  , Uplo: CBLAS_UPLO_t (ul)
-  , transA: CBLAS_TRANSPOSE_t (trA)
-  , Diag: CBLAS_DIAG_t (dg)
-  , M: int m, N: int n
-  , alpha: double
-  , A: &TRMAT (double, na, ord, ul, dg, lda), lda: int lda
-  , B: &GEMAT (double, m, n, ord, ldb), ldb: int ldb
-  ) :<> void
-  = "#atsctrb_cblas_dtrmm"
+  pfa: sidedim_p (lr, m, n, na)
+| Order: CBLAS_ORDER_t (ord)
+, Side: CBLAS_SIDE_t (lr)
+, Uplo: CBLAS_UPLO_t (ul)
+, transA: CBLAS_TRANSPOSE_t (trA)
+, Diag: CBLAS_DIAG_t (dg)
+, M: int m, N: int n
+, alpha: double
+, A: &TRMAT (double, na, ord, ul, dg, lda), lda: int lda
+, B: &GEMAT (double, m, n, ord, ldb), ldb: int ldb
+) :<> void
+  = "mac#atsctrb_cblas_dtrmm"
+// end of [fun]
 
 fun cblas_ctrmm
   {ord:order} {lr:side}
   {ul:uplo} {trA:transpose} {dg:diag}
   {m,n:nat} {na:nat} {lda,ldb:pos} (
-    pfa: sidedim_p (lr, m, n, na)
-  | Order: CBLAS_ORDER_t (ord)
-  , Side: CBLAS_SIDE_t (lr)
-  , Uplo: CBLAS_UPLO_t (ul)
-  , transA: CBLAS_TRANSPOSE_t (trA)
-  , Diag: CBLAS_DIAG_t (dg)
-  , M: int m, N: int n
-  , alpha: &ccmplx
-  , A: &TRMAT (ccmplx, na, ord, ul, dg, lda), lda: int lda
-  , B: &GEMAT (ccmplx, m, n, ord, ldb), ldb: int ldb
-  ) :<> void
-  = "#atsctrb_cblas_ctrmm"
+  pfa: sidedim_p (lr, m, n, na)
+| Order: CBLAS_ORDER_t (ord)
+, Side: CBLAS_SIDE_t (lr)
+, Uplo: CBLAS_UPLO_t (ul)
+, transA: CBLAS_TRANSPOSE_t (trA)
+, Diag: CBLAS_DIAG_t (dg)
+, M: int m, N: int n
+, alpha: &ccmplx
+, A: &TRMAT (ccmplx, na, ord, ul, dg, lda), lda: int lda
+, B: &GEMAT (ccmplx, m, n, ord, ldb), ldb: int ldb
+) :<> void
+  = "mac#atsctrb_cblas_ctrmm"
+// end of [fun]
 
 fun cblas_ztrmm
   {ord:order} {lr:side}
   {ul:uplo} {trA:transpose} {dg:diag}
   {m,n:nat} {na:nat} {lda,ldb:pos} (
-    pfa: sidedim_p (lr, m, n, na)
-  | Order: CBLAS_ORDER_t (ord)
-  , Side: CBLAS_SIDE_t (lr)
-  , Uplo: CBLAS_UPLO_t (ul)
-  , transA: CBLAS_TRANSPOSE_t (trA)
-  , Diag: CBLAS_DIAG_t (dg)
-  , M: int m, N: int n
-  , alpha: &zcmplx
-  , A: &TRMAT (zcmplx, na, ord, ul, dg, lda), lda: int lda
-  , B: &GEMAT (zcmplx, m, n, ord, ldb), ldb: int ldb
-  ) :<> void
-  = "#atsctrb_cblas_ztrmm"
+  pfa: sidedim_p (lr, m, n, na)
+| Order: CBLAS_ORDER_t (ord)
+, Side: CBLAS_SIDE_t (lr)
+, Uplo: CBLAS_UPLO_t (ul)
+, transA: CBLAS_TRANSPOSE_t (trA)
+, Diag: CBLAS_DIAG_t (dg)
+, M: int m, N: int n
+, alpha: &zcmplx
+, A: &TRMAT (zcmplx, na, ord, ul, dg, lda), lda: int lda
+, B: &GEMAT (zcmplx, m, n, ord, ldb), ldb: int ldb
+) :<> void
+  = "mac#atsctrb_cblas_ztrmm"
+// end of [fun]
 
 (* ****** ****** *)
 
@@ -3294,90 +3380,94 @@ void cblas_dtrsm (
 
 *)
 
-fun{a:t@ype} cblas_trsm
+fun{a:t@ype}
+cblas_trsm
   {ord:order} {lr:side}
   {ul:uplo} {trA: transpose} {dg:diag}
   {m,n:nat} {na:nat} {lda,ldb:pos} (
-    pfa: sidedim_p (lr, m, n, na)
-  | Order: CBLAS_ORDER_t (ord)
-  , Side: CBLAS_SIDE_t (lr)
-  , Uplo: CBLAS_UPLO_t (ul)
-  , transA: CBLAS_TRANSPOSE_t (trA)
-  , Diag: CBLAS_DIAG_t (dg)
-  , M: int m, N: int n
-  , alpha: a
-  , A: &TRMAT (a, na, ord, ul, dg, lda), lda: int lda
-  , B: &GEMAT (a, m, n, ord, ldb), ldb: int ldb
-  ) :<> void
-// end of [cblas_trmm]
+  pfa: sidedim_p (lr, m, n, na)
+| Order: CBLAS_ORDER_t (ord)
+, Side: CBLAS_SIDE_t (lr)
+, Uplo: CBLAS_UPLO_t (ul)
+, transA: CBLAS_TRANSPOSE_t (trA)
+, Diag: CBLAS_DIAG_t (dg)
+, M: int m, N: int n
+, alpha: a
+, A: &TRMAT (a, na, ord, ul, dg, lda), lda: int lda
+, B: &GEMAT (a, m, n, ord, ldb), ldb: int ldb
+) :<> void // end of [cblas_trmm]
 
 fun cblas_strsm
   {ord:order} {lr:side}
   {ul:uplo} {trA: transpose} {dg:diag}
   {m,n:nat} {na:nat} {lda,ldb:pos} (
-    pfa: sidedim_p (lr, m, n, na)
-  | Order: CBLAS_ORDER_t (ord)
-  , Side: CBLAS_SIDE_t (lr)
-  , Uplo: CBLAS_UPLO_t (ul)
-  , transA: CBLAS_TRANSPOSE_t (trA)
-  , Diag: CBLAS_DIAG_t (dg)
-  , M: int m, N: int n
-  , alpha: float
-  , A: &TRMAT (float, na, ord, ul, dg, lda), lda: int lda
-  , B: &GEMAT (float, m, n, ord, ldb), ldb: int ldb
-  ) :<> void
-  = "#atsctrb_cblas_strsm"
+  pfa: sidedim_p (lr, m, n, na)
+| Order: CBLAS_ORDER_t (ord)
+, Side: CBLAS_SIDE_t (lr)
+, Uplo: CBLAS_UPLO_t (ul)
+, transA: CBLAS_TRANSPOSE_t (trA)
+, Diag: CBLAS_DIAG_t (dg)
+, M: int m, N: int n
+, alpha: float
+, A: &TRMAT (float, na, ord, ul, dg, lda), lda: int lda
+, B: &GEMAT (float, m, n, ord, ldb), ldb: int ldb
+) :<> void
+  = "mac#atsctrb_cblas_strsm"
+// end of [fun]
 
 fun cblas_dtrsm
   {ord:order} {lr:side}
   {ul:uplo} {trA: transpose} {dg:diag}
   {m,n:nat} {na:nat} {lda,ldb:pos} (
-    pfa: sidedim_p (lr, m, n, na)
-  | Order: CBLAS_ORDER_t (ord)
-  , Side: CBLAS_SIDE_t (lr)
-  , Uplo: CBLAS_UPLO_t (ul)
-  , transA: CBLAS_TRANSPOSE_t (trA)
-  , Diag: CBLAS_DIAG_t (dg)
-  , M: int m, N: int n
-  , alpha: double
-  , A: &TRMAT (double, na, ord, ul, dg, lda), lda: int lda
-  , B: &GEMAT (double, m, n, ord, ldb), ldb: int ldb
-  ) :<> void
-  = "#atsctrb_cblas_dtrsm"
+  pfa: sidedim_p (lr, m, n, na)
+| Order: CBLAS_ORDER_t (ord)
+, Side: CBLAS_SIDE_t (lr)
+, Uplo: CBLAS_UPLO_t (ul)
+, transA: CBLAS_TRANSPOSE_t (trA)
+, Diag: CBLAS_DIAG_t (dg)
+, M: int m, N: int n
+, alpha: double
+, A: &TRMAT (double, na, ord, ul, dg, lda), lda: int lda
+, B: &GEMAT (double, m, n, ord, ldb), ldb: int ldb
+) :<> void
+  = "mac#atsctrb_cblas_dtrsm"
+// end of [fun]
 
 fun cblas_ctrsm
   {ord:order} {lr:side}
   {ul:uplo} {trA: transpose} {dg:diag}
   {m,n:nat} {na:nat} {lda,ldb:pos} (
-    pfa: sidedim_p (lr, m, n, na)
-  | Order: CBLAS_ORDER_t (ord)
-  , Side: CBLAS_SIDE_t (lr)
-  , Uplo: CBLAS_UPLO_t (ul)
-  , transA: CBLAS_TRANSPOSE_t (trA)
-  , Diag: CBLAS_DIAG_t (dg)
-  , M: int m, N: int n
-  , alpha: &ccmplx
-  , A: &TRMAT (ccmplx, na, ord, ul, dg, lda), lda: int lda
-  , B: &GEMAT (ccmplx, m, n, ord, ldb), ldb: int ldb
-  ) :<> void
-  = "#atsctrb_cblas_ctrsm"
+  pfa: sidedim_p (lr, m, n, na)
+| Order: CBLAS_ORDER_t (ord)
+, Side: CBLAS_SIDE_t (lr)
+, Uplo: CBLAS_UPLO_t (ul)
+, transA: CBLAS_TRANSPOSE_t (trA)
+, Diag: CBLAS_DIAG_t (dg)
+, M: int m, N: int n
+, alpha: &ccmplx
+, A: &TRMAT (ccmplx, na, ord, ul, dg, lda), lda: int lda
+, B: &GEMAT (ccmplx, m, n, ord, ldb), ldb: int ldb
+) :<> void
+  = "mac#atsctrb_cblas_ctrsm"
+// end of [fun]
 
 fun cblas_ztrsm
   {ord:order} {lr:side}
   {ul:uplo} {trA: transpose} {dg:diag}
   {m,n:nat} {na:nat} {lda,ldb:pos} (
-    pfa: sidedim_p (lr, m, n, na)
-  | Order: CBLAS_ORDER_t (ord)
-  , Side: CBLAS_SIDE_t (lr)
-  , Uplo: CBLAS_UPLO_t (ul)
-  , transA: CBLAS_TRANSPOSE_t (trA)
-  , Diag: CBLAS_DIAG_t (dg)
-  , M: int m, N: int n
-  , alpha: &zcmplx
-  , A: &TRMAT (zcmplx, na, ord, ul, dg, lda), lda: int lda
-  , B: &GEMAT (zcmplx, m, n, ord, ldb), ldb: int ldb
-  ) :<> void
-  = "#atsctrb_cblas_ztrsm"
+  pfa: sidedim_p (lr, m, n, na)
+| Order: CBLAS_ORDER_t (ord)
+, Side: CBLAS_SIDE_t (lr)
+, Uplo: CBLAS_UPLO_t (ul)
+, transA: CBLAS_TRANSPOSE_t (trA)
+, Diag: CBLAS_DIAG_t (dg)
+, M: int m, N: int n
+, alpha: &zcmplx
+, A: &TRMAT (zcmplx, na, ord, ul, dg, lda), lda: int lda
+, B: &GEMAT (zcmplx, m, n, ord, ldb), ldb: int ldb
+) :<> void
+  = "mac#atsctrb_cblas_ztrsm"
+// end of [fun]
 
 (* ****** ****** *)
 
@@ -3401,53 +3491,55 @@ void cblas_chemm(
 
 *)
 
-fun{a:t@ype} cblas_hemm
+fun{a:t@ype}
+cblas_hemm
   {ord:order} {lr:side} {ul:uplo}
   {m,n:nat} {na:nat} {lda,ldb,ldc:pos} (
-    pfa: sidedim_p (lr, m, n, na)
-  | Order: CBLAS_ORDER_t ord
-  , Side: CBLAS_SIDE_t (lr)
-  , Uplo: CBLAS_UPLO_t (ul)
-  , M: int m, N: int n
-  , alpha: a
-  , A: &HEMAT (a, na, ord, ul, lda), lda: int lda
-  , B: &GEMAT (a, m, n, ord, ldb), ldb: int ldb
-  , beta: a
-  , C: &GEMAT (a, m, n, ord, ldc), ldc: int ldc
-  ) :<> void
-// end of [cblas_hemm]
+  pfa: sidedim_p (lr, m, n, na)
+| Order: CBLAS_ORDER_t ord
+, Side: CBLAS_SIDE_t (lr)
+, Uplo: CBLAS_UPLO_t (ul)
+, M: int m, N: int n
+, alpha: a
+, A: &HEMAT (a, na, ord, ul, lda), lda: int lda
+, B: &GEMAT (a, m, n, ord, ldb), ldb: int ldb
+, beta: a
+, C: &GEMAT (a, m, n, ord, ldc), ldc: int ldc
+) :<> void // end of [cblas_hemm]
 
 fun cblas_chemm
   {ord:order} {lr:side} {ul:uplo}
   {m,n:nat} {na:nat} {lda,ldb,ldc:pos} (
-    pfa: sidedim_p (lr, m, n, na)
-  | Order: CBLAS_ORDER_t ord
-  , Side: CBLAS_SIDE_t (lr)
-  , Uplo: CBLAS_UPLO_t (ul)
-  , M: int m, N: int n
-  , alpha: &ccmplx
-  , A: &HEMAT (ccmplx, na, ord, ul, lda), lda: int lda
-  , B: &GEMAT (ccmplx, m, n, ord, ldb), ldb: int ldb
-  , beta: &ccmplx
-  , C: &GEMAT (ccmplx, m, n, ord, ldc), ldc: int ldc
-  ) :<> void
-  = "#atsctrb_cblas_chemm"
+  pfa: sidedim_p (lr, m, n, na)
+| Order: CBLAS_ORDER_t ord
+, Side: CBLAS_SIDE_t (lr)
+, Uplo: CBLAS_UPLO_t (ul)
+, M: int m, N: int n
+, alpha: &ccmplx
+, A: &HEMAT (ccmplx, na, ord, ul, lda), lda: int lda
+, B: &GEMAT (ccmplx, m, n, ord, ldb), ldb: int ldb
+, beta: &ccmplx
+, C: &GEMAT (ccmplx, m, n, ord, ldc), ldc: int ldc
+) :<> void
+  = "mac#atsctrb_cblas_chemm"
+// end of [fun]
 
 fun cblas_zhemm
   {ord:order} {lr:side} {ul:uplo}
   {m,n:nat} {na:nat} {lda,ldb,ldc:pos} (
-    pfa: sidedim_p (lr, m, n, na)
-  | Order: CBLAS_ORDER_t ord
-  , Side: CBLAS_SIDE_t (lr)
-  , Uplo: CBLAS_UPLO_t (ul)
-  , M: int m, N: int n
-  , alpha: &zcmplx
-  , A: &HEMAT (zcmplx, na, ord, ul, lda), lda: int lda
-  , B: &GEMAT (zcmplx, m, n, ord, ldb), ldb: int ldb
-  , beta: &zcmplx
-  , C: &GEMAT (zcmplx, m, n, ord, ldc), ldc: int ldc
-  ) :<> void
-  = "#atsctrb_cblas_zhemm"
+  pfa: sidedim_p (lr, m, n, na)
+| Order: CBLAS_ORDER_t ord
+, Side: CBLAS_SIDE_t (lr)
+, Uplo: CBLAS_UPLO_t (ul)
+, M: int m, N: int n
+, alpha: &zcmplx
+, A: &HEMAT (zcmplx, na, ord, ul, lda), lda: int lda
+, B: &GEMAT (zcmplx, m, n, ord, ldb), ldb: int ldb
+, beta: &zcmplx
+, C: &GEMAT (zcmplx, m, n, ord, ldc), ldc: int ldc
+) :<> void
+  = "mac#atsctrb_cblas_zhemm"
+// end of [fun]
 
 (* ****** ****** *)
 
@@ -3470,50 +3562,53 @@ void cblas_cherk (
 
 *)
 
-fun{a1,a2:t@ype} cblas_herk
+fun{a1,a2:t@ype}
+cblas_herk
   {ord:order} {ul:uplo} {trA:transpose}
   {n,k:nat} {ma,na:nat} {lda,ldc:pos} (
-    pfa: trandim_p (trA, ma, na, n, k)
-  | Order: CBLAS_ORDER_t (ord)
-  , Uplo: CBLAS_UPLO_t (ul)
-  , Trans: CBLAS_TRANSPOSE_t (trA)
-  , N: int n, K: int k
-  , alpha: a2
-  , A: &GEMAT (a1, ma, na, ord, lda), lda: int lda
-  , beta: a2
-  , C: &HEMAT (a1, n, ord, ul, ldc), ldc: int ldc
-  ) :<> void
+  pfa: trandim_p (trA, ma, na, n, k)
+| Order: CBLAS_ORDER_t (ord)
+, Uplo: CBLAS_UPLO_t (ul)
+, Trans: CBLAS_TRANSPOSE_t (trA)
+, N: int n, K: int k
+, alpha: a2
+, A: &GEMAT (a1, ma, na, ord, lda), lda: int lda
+, beta: a2
+, C: &HEMAT (a1, n, ord, ul, ldc), ldc: int ldc
+) :<> void
 // end of [cblas_herk]
 
 fun cblas_cherk
   {ord:order} {ul:uplo} {trA:transpose}
   {n,k:nat} {ma,na:nat} {lda,ldc:pos} (
-    pfa: trandim_p (trA, ma, na, n, k)
-  | Order: CBLAS_ORDER_t (ord)
-  , Uplo: CBLAS_UPLO_t (ul)
-  , Trans: CBLAS_TRANSPOSE_t (trA)
-  , N: int n, K: int k
-  , alpha: float
-  , A: &GEMAT (ccmplx, ma, na, ord, lda), lda: int lda
-  , beta: float
-  , C: &HEMAT (ccmplx, n, ord, ul, ldc), ldc: int ldc
-  ) :<> void
-  = "#atsctrb_cblas_cherk"
+  pfa: trandim_p (trA, ma, na, n, k)
+| Order: CBLAS_ORDER_t (ord)
+, Uplo: CBLAS_UPLO_t (ul)
+, Trans: CBLAS_TRANSPOSE_t (trA)
+, N: int n, K: int k
+, alpha: float
+, A: &GEMAT (ccmplx, ma, na, ord, lda), lda: int lda
+, beta: float
+, C: &HEMAT (ccmplx, n, ord, ul, ldc), ldc: int ldc
+) :<> void
+  = "mac#atsctrb_cblas_cherk"
+// end of [fun]
 
 fun cblas_zherk
   {ord:order} {ul:uplo} {trA:transpose}
   {n,k:nat} {ma,na:nat} {lda,ldc:pos} (
-    pfa: trandim_p (trA, ma, na, n, k)
-  | Order: CBLAS_ORDER_t (ord)
-  , Uplo: CBLAS_UPLO_t (ul)
-  , Trans: CBLAS_TRANSPOSE_t (trA)
-  , N: int n, K: int k
-  , alpha: double
-  , A: &GEMAT (zcmplx, ma, na, ord, lda), lda: int lda
-  , beta: double
-  , C: &HEMAT (zcmplx, n, ord, ul, ldc), ldc: int ldc
-  ) :<> void
-  = "#atsctrb_cblas_zherk"
+  pfa: trandim_p (trA, ma, na, n, k)
+| Order: CBLAS_ORDER_t (ord)
+, Uplo: CBLAS_UPLO_t (ul)
+, Trans: CBLAS_TRANSPOSE_t (trA)
+, N: int n, K: int k
+, alpha: double
+, A: &GEMAT (zcmplx, ma, na, ord, lda), lda: int lda
+, beta: double
+, C: &HEMAT (zcmplx, n, ord, ul, ldc), ldc: int ldc
+) :<> void
+  = "mac#atsctrb_cblas_zherk"
+// end of [fun]
 
 (* ****** ****** *)
 
@@ -3537,53 +3632,56 @@ void cblas_cher2k (
 
 *)
 
-fun{a1,a2:t@ype} cblas_her2k
+fun{a1,a2:t@ype}
+cblas_her2k
   {ord:order} {ul:uplo} {trA:transpose}
   {n,k:nat} {ma,na:nat} {lda,ldb,ldc:pos} (
-    pfa: trandim_p (trA, ma, na, n, k)
-  | Order: CBLAS_ORDER_t (ord)
-  , Uplo: CBLAS_UPLO_t (ul)
-  , Trans: CBLAS_TRANSPOSE_t (trA)
-  , N: int n, K: int k
-  , alpha: a1
-  , A: &GEMAT (a1, ma, na, ord, lda), lda: int lda
-  , B: &GEMAT (a1, ma, na, ord, ldb), ldb: int ldb
-  , beta: a2
-  , C: &HEMAT (a1, n, ord, ul, ldc), ldc: int ldc
-  ) :<> void
+  pfa: trandim_p (trA, ma, na, n, k)
+| Order: CBLAS_ORDER_t (ord)
+, Uplo: CBLAS_UPLO_t (ul)
+, Trans: CBLAS_TRANSPOSE_t (trA)
+, N: int n, K: int k
+, alpha: a1
+, A: &GEMAT (a1, ma, na, ord, lda), lda: int lda
+, B: &GEMAT (a1, ma, na, ord, ldb), ldb: int ldb
+, beta: a2
+, C: &HEMAT (a1, n, ord, ul, ldc), ldc: int ldc
+) :<> void
 // end of [cblas_her2k]
 
 fun cblas_cher2k
   {ord:order} {ul:uplo} {trA:transpose}
   {n,k:nat} {ma,na:nat} {lda,ldb,ldc:pos} (
-    pfa: trandim_p (trA, ma, na, n, k)
-  | Order: CBLAS_ORDER_t (ord)
-  , Uplo: CBLAS_UPLO_t (ul)
-  , Trans: CBLAS_TRANSPOSE_t (trA)
-  , N: int n, K: int k
-  , alpha: &ccmplx
-  , A: &GEMAT (ccmplx, ma, na, ord, lda), lda: int lda
-  , B: &GEMAT (ccmplx, ma, na, ord, ldb), ldb: int ldb
-  , beta: float
-  , C: &HEMAT (ccmplx, n, ord, ul, ldc), ldc: int ldc
-  ) :<> void
-  = "#atsctrb_cblas_cher2k"
+  pfa: trandim_p (trA, ma, na, n, k)
+| Order: CBLAS_ORDER_t (ord)
+, Uplo: CBLAS_UPLO_t (ul)
+, Trans: CBLAS_TRANSPOSE_t (trA)
+, N: int n, K: int k
+, alpha: &ccmplx
+, A: &GEMAT (ccmplx, ma, na, ord, lda), lda: int lda
+, B: &GEMAT (ccmplx, ma, na, ord, ldb), ldb: int ldb
+, beta: float
+, C: &HEMAT (ccmplx, n, ord, ul, ldc), ldc: int ldc
+) :<> void
+ = "mac#atsctrb_cblas_cher2k"
+// end of [fun]
 
 fun cblas_zher2k
   {ord:order} {ul:uplo} {trA:transpose}
   {n,k:nat} {ma,na:nat} {lda,ldb,ldc:pos} (
-    pfa: trandim_p (trA, ma, na, n, k)
-  | Order: CBLAS_ORDER_t (ord)
-  , Uplo: CBLAS_UPLO_t (ul)
-  , Trans: CBLAS_TRANSPOSE_t (trA)
-  , N: int n, K: int k
-  , alpha: &zcmplx
-  , A: &GEMAT (zcmplx, ma, na, ord, lda), lda: int lda
-  , B: &GEMAT (zcmplx, ma, na, ord, ldb), ldb: int ldb
-  , beta: double
-  , C: &HEMAT (zcmplx, n, ord, ul, ldc), ldc: int ldc
-  ) :<> void
-  = "#atsctrb_cblas_zher2k"
+  pfa: trandim_p (trA, ma, na, n, k)
+| Order: CBLAS_ORDER_t (ord)
+, Uplo: CBLAS_UPLO_t (ul)
+, Trans: CBLAS_TRANSPOSE_t (trA)
+, N: int n, K: int k
+, alpha: &zcmplx
+, A: &GEMAT (zcmplx, ma, na, ord, lda), lda: int lda
+, B: &GEMAT (zcmplx, ma, na, ord, ldb), ldb: int ldb
+, beta: double
+, C: &HEMAT (zcmplx, n, ord, ul, ldc), ldc: int ldc
+) :<> void
+  = "mac#atsctrb_cblas_zher2k"
+// end of [fun]
 
 (* ****** ****** *)
 

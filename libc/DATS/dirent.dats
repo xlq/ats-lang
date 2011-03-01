@@ -53,11 +53,11 @@ dirent_stream_vt_make_DIR
 ) where {
   extern fun readdir_r
     (_: &DIR, _: &dirent? >> dirent, _: &ptr? >> Ptr):<> int
-    = "#atslib_readdir_r"
+    = "mac#atslib_readdir_r"
   fn f (
-      pf_dir: DIR @ l_dir
-    | p_dir: ptr l_dir, res: &stream_vt_con dirent? >> stream_vt_con dirent
-    ) :<!laz> void = let
+    pf_dir: DIR @ l_dir
+  | p_dir: ptr l_dir, res: &stream_vt_con dirent? >> stream_vt_con dirent
+  ) :<!laz> void = let
     var ret: ptr // uninitialized
     val () = (res := stream_vt_cons {dirent} (?, ?))
     val+ stream_vt_cons (!p_x, !p_xs) = res
@@ -88,7 +88,7 @@ direntptr_stream_vt_make_DIR
 ) where {
   extern fun readdir_r
     (_: &DIR, _: &dirent? >> dirent, _: &ptr? >> Ptr):<> int
-    = "#atslib_readdir_r"
+    = "mac#atslib_readdir_r"
   fn f (
       pf_dir: DIR @ l_dir
     | p_dir: ptr l_dir

@@ -1566,16 +1566,22 @@ implement dcstextdef_is_mac (x) =
   case+ x of DCSTEXTDEFsome_mac _ => true | _ => false
 // end of [dcstextdef_is_mac]
 
+implement dcstextdef_is_sta (x) =
+  case+ x of DCSTEXTDEFsome_sta _ => true | _ => false
+// end of [dcstextdef_is_sta]
+
+(* ****** ****** *)
+
 implement extnamopt_none () = stropt_none
 implement extnamopt_some (ext) = let
 (*
   val () = begin
     print "extnamopt_some: ext = "; print ext.s0tring_val; print_newline ()
-  end
+  end // end of [val]
 *)
 in
   stropt_some (string1_of_string ext.s0tring_val)
-end
+end // end of [extnamopt_some]
 
 implement d0cstdec_make
   (id, arg, eff, res, extdef) = let

@@ -40,12 +40,12 @@
 
 fun gtk_clipboard_get (selection: GdkAtom)
   : [l:agz] (GtkClipBoard_ref l -<lin,prf> void | GtkClipBoard_ref l)
-  = "#atsctrb_gtk_clipboard_get"
+  = "mac#atsctrb_gtk_clipboard_get"
 // end of [gtk_clipboard_get]
 
 fun gtk_clipboard_wait_is_text_available
   {c:cls | c <= GtkClipBoard} {l:agz} (cb: !gobjref (c, l)): gboolean
-  = "#atsctrb_gtk_clipboard_wait_is_text_available"
+  = "mac#atsctrb_gtk_clipboard_wait_is_text_available"
 // end of [gtk_clipboard_wait_is_text_available]
 
 (* ****** ****** *)

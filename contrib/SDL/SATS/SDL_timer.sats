@@ -30,10 +30,10 @@
 *)
 
 (* ****** ****** *)
-
+//
 // Author of the file: Hongwei Xi (hwxi AT cs DOT bu DOT edu)
 // Starting time: January, 2010
-
+//
 (* ****** ****** *)
 
 (*
@@ -46,24 +46,28 @@ macdef SDL_TIMESLICE = 10
 *)
 macdef TIMER_RESOLUTION = 10 (* Experimentally determined *)
 
-fun SDL_GetTicks (): Uint32 = "#atsctrb_SDL_GetTicks"
+fun SDL_GetTicks (): Uint32 = "mac#atsctrb_SDL_GetTicks"
 
 (* ****** ****** *)
 
-fun SDL_Delay (ms: Uint32): void = "#atsctrb_SDL_Delay"
+fun SDL_Delay (ms: Uint32): void = "mac#atsctrb_SDL_Delay"
 
 (* ****** ****** *)
 
 typedef SDL_TimerCallback = (Uint32(*interval*)) -<fun1> Uint32
 
-fun SDL_SetTimer (interval: Uint32, callback: SDL_TimerCallback): int
-  = "#atsctrb_SDL_SetTimer"
+fun SDL_SetTimer (
+  interval: Uint32, callback: SDL_TimerCallback
+) : int
+  = "mac#atsctrb_SDL_SetTimer"
+// end of [fun]
 
 //
 // SDL_CancelTimer () = SDL_SetTimer (0, NULL)
 //
-fun SDL_CancelTimer (): int // cancel the current running timer
-  = "#atsctrb_SDL_CancelTimer"
+fun SDL_CancelTimer
+  (): int // cancel the current running timer
+  = "mac#atsctrb_SDL_CancelTimer"
 
 (* ****** ****** *)
 

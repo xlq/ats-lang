@@ -96,11 +96,11 @@ extern fun the_val_label_set (x: !GtkLabel_ref1): void = "the_val_label_set"
 staload PRINTF = "libc/SATS/printf.sats"
 
 extern fun snprintf0
-  (buf: ptr, sz: int, fmt: string, v: int): int = "#snprintf"
+  (buf: ptr, sz: int, fmt: string, v: int): int = "mac#snprintf"
 // end of [snprintf0]
 
 extern fun snprintf1
-  (buf: ptr, sz: int, fmt: string, np: uint, v: double): int = "#snprintf"
+  (buf: ptr, sz: int, fmt: string, np: uint, v: double): int = "mac#snprintf"
 // end of [snprintf1]
 
 fun get_value
@@ -144,7 +144,7 @@ mainats (ats_int_type argc, ats_ptr_type argv) ;
 
 extern
 fun gtk_label_new0
-  (name: string): GtkLabel_ref1 = "#atsctrb_gtk_label_new"
+  (name: string): GtkLabel_ref1 = "mac#atsctrb_gtk_label_new"
 // end of [gtk_label_new0]
 
 (* ****** ****** *)

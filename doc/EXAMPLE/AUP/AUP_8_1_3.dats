@@ -161,7 +161,7 @@ if sfd >= 0 then let
     val () = read_set := set
     val rtn = select0 (fd_hwm+1, read_set, null, null, null) where {
       extern fun select0
-        (n: int, set: &fd_set, _: ptr, _: ptr, _: ptr): int = "#atslib_select"
+        (n: int, set: &fd_set, _: ptr, _: ptr, _: ptr): int = "mac#atslib_select"
       // end of [extern]
     } // end of [val]
 (*

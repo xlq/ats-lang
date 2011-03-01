@@ -49,6 +49,12 @@
 
 (* ****** ****** *)
 
+prfun ptr_is_gtez
+  {l:addr} (p: ptr l):<> [l >= null] void
+// end of [ptr_is_gtez]
+
+(* ****** ****** *)
+
 fun add_ptr_int
   (p: ptr, i: int):<> ptr = "atspre_padd_int"
 overload + with add_ptr_int

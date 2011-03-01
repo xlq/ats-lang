@@ -305,19 +305,20 @@ struct scull_qset *scull_follow(struct scull_dev *dev, int n)
 #endif // end of [#if(0)]
 extern
 struct scull_qset*
-scull_follow_main
-  (struct scull_qset **qsetlst_ref, int *ln_ref, int n) ;
-// end of [scull_follow_main]
+scull_follow_main (
+  struct scull_qset **qsetlst_ref, int *ln_ref, int n
+) ; // end of [scull_follow_main]
 struct scull_qset*
-scull_follow(struct scull_dev *dev, int n) {
+scull_follow (struct scull_dev *dev, int n) {
+//
+// HX: the qsetlst may be extended
+//
   return scull_follow_main (&dev->data, &dev->ln_qlst, n) ;
 }
-
 
 /*
  * Data management: read and write
  */
-
 ssize_t scull_read(struct file *filp, char __user *buf, size_t count,
                 loff_t *f_pos)
 {

@@ -22,7 +22,7 @@ staload "contrib/GTK/SATS/gtk.sats"
 
 extern
 fun gtk_label_new0
-  (name: string): GtkLabel_ref1 = "#atsctrb_gtk_label_new"
+  (name: string): GtkLabel_ref1 = "mac#atsctrb_gtk_label_new"
 // end of [gtk_label_new0]
 
 (* ****** ****** *)

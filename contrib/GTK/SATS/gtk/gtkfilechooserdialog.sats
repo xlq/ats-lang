@@ -75,8 +75,9 @@ gtk_file_chooser_dialog_new (
 fun gtk_file_chooser_dialog_get_chooser
   {c:cls | c <= GtkFileChooserDialog} {l:agz}
   (chooserdlg: !gobjref (c, l)): [l1:agz] (
-    minus (gobjref (c, l), gobjref (GtkFileChooser, l1)) | gobjref (GtkFileChooser, l1)
-  ) = "#atsctrb_GTK_FILE_CHOOSER"
+  minus (gobjref (c, l), gobjref (GtkFileChooser, l1))
+| gobjref (GtkFileChooser, l1)
+) = "mac#atsctrb_GTK_FILE_CHOOSER"
 // end of [gtk_file_chooser_dialog_get_chooser]
 
 (* ****** ****** *)

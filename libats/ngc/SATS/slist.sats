@@ -48,6 +48,12 @@ sortdef vt0p = viewt@ype
 absview
 slnode_v (a:viewt@ype+, la: addr, lb: addr)
 
+prfun
+slnode_ptr_is_gtz
+  {a:viewt@ype} {la,lb:addr}
+  (pf: !slnode_v (a, la, lb)): [la > null] void
+// end of [slnode_ptr_is_gtz]
+
 (* ****** ****** *)
 
 typedef
@@ -94,7 +100,8 @@ dataview
 slseg_v (
   a:viewt@ype+, int, addr, addr
 ) =
-  | {n:nat} {la,lb,lz:addr}
+  | {n:nat}
+    {la,lb,lz:addr | la > null}
     slseg_v_cons (a, n+1, la, lz) of (
       slnode_v (a, la, lb), slseg_v (a, n, lb, lz)
     ) // end of [slseg_v_cons]

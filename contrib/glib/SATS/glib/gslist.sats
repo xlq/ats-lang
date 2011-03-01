@@ -54,11 +54,11 @@ viewtypedef GSList_ptr1 (a:vwtp) = [n:pos] GSList_ptr (a, n)
 (* ****** ****** *)
 
 fun g_slist_new_nil
-  {a:vwtp} (): GSList_ptr (a, 0) = "#atsctrb_g_slist_new_nil"
+  {a:vwtp} (): GSList_ptr (a, 0) = "mac#atsctrb_g_slist_new_nil"
 // end of [g_slist_new_nil]
 
 fun g_slist_free_nil
-  {a:vwtp} (xs: GSList_ptr (a, 0)):<> void = "#atsctrb_g_slist_free_nil"
+  {a:vwtp} (xs: GSList_ptr (a, 0)):<> void = "mac#atsctrb_g_slist_free_nil"
 // end of [g_slist_free_nil]
 
 (* ****** ****** *)

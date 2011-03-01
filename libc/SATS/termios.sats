@@ -261,42 +261,64 @@ macdef TCSAFLUSH = $extval (int, "TCSAFLUSH")
 
 (* ****** ****** *)
 
-fun tcgetattr {fd:nat} // 0/-1 : succ/fail // set errno
-  (fd: int, tm: &termios): int = "#atslib_tcgetattr"
+fun tcgetattr // 0/-1 : succ/fail // set errno
+  {fd:nat} (
+  fd: int, tm: &termios
+) : int
+  = "mac#atslib_tcgetattr"
 // end of [tcgetattr]
 
-fun tcsetattr {fd:nat} // 0/-1 : succ/fail // set errno
-  (fd: int fd, actions: int, tm: &termios): int = "#atslib_tcsetattr"
+fun tcsetattr // 0/-1 : succ/fail // set errno
+  {fd:nat} (
+  fd: int fd, actions: int, tm: &termios
+) : int
+  = "mac#atslib_tcsetattr"
 // end of [tcsetattr]
 
 (* ****** ****** *)
 
 fun cfgetispeed
-  (tm: &termios):<> speed_t = "#atslib_cfgetispeed" // no error
+  (tm: &termios):<> speed_t = "mac#atslib_cfgetispeed" // no error
 fun cfsetispeed
-  (tm: &termios, x: speed_t):<> int = "#atslib_cfsetispeed" // 0/-1: succ/fail
+  (tm: &termios, x: speed_t):<> int = "mac#atslib_cfsetispeed" // 0/-1: succ/fail
 fun cfgetospeed
-  (tm: &termios):<> speed_t = "#atslib_cfgetospeed"// no error
+  (tm: &termios):<> speed_t = "mac#atslib_cfgetospeed"// no error
 fun cfsetospeed
-  (tm: &termios, x: speed_t):<> int = "#atslib_cfsetospeed"// 0/-1 : succ/fail
+  (tm: &termios, x: speed_t):<> int = "mac#atslib_cfsetospeed"// 0/-1 : succ/fail
 
 (* ****** ****** *)
 
-fun tcflow {fd:nat}
-  (fd: int fd, action: int): int = "#atslib_tcflow" // 0/-1 : succ/fail
+fun tcflow
+  {fd:nat} (
+  fd: int fd, action: int
+) : int
+  = "mac#atslib_tcflow" // 0/-1 : succ/fail
+// end of [fun]
+
 fun tcdrain {fd:nat}
-  (fd: int fd): int = "#atslib_tcdrain" // 0/-1 : succ/fail
-fun tcflush {fd:nat}
-  (fd: int fd, queue: int): int = "#atslib_tcflush" // 0/-1 : succ/fail
-fun tcsendbreak {fd:nat}
-  (fd: int fd, dura: int): int = "#atslib_tcsendbreak" // 0/-1 : succ/fail
+  (fd: int fd): int = "mac#atslib_tcdrain" // 0/-1 : succ/fail
+// end of [fun]
+
+fun tcflush
+  {fd:nat} (
+  fd: int fd, queue: int
+) : int
+  = "mac#atslib_tcflush" // 0/-1 : succ/fail
+// end of [tcflush]
+
+fun tcsendbreak
+  {fd:nat} (
+  fd: int fd, dura: int
+) : int
+  = "mac#atslib_tcsendbreak" // 0/-1 : succ/fail
+// end of [fun]
 
 (* ****** ****** *)
 //
 // HX-2010-09-27: only available on SUS systems; not on FreeBSD
 //
 fun tcgetsid {fd:nat}
-  (fd: int fd): pid_t = "#atslib_tcgetsid" // -1 is returned on error
+  (fd: int fd): pid_t = "mac#atslib_tcgetsid" // -1 is returned on error
 // end of [tcgetsid]
 
 (* ****** ****** *)

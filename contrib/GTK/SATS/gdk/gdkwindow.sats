@@ -189,8 +189,10 @@ macdef GDK_WINDOW_EDGE_SOUTH_EAST =
 (* ****** ****** *)
 
 fun gdk_window_set_background
-  {c:cls | c <= GdkWindow} {l:agz}
-  (window: !gobjref (c, l), color: &GdkColor): void = "#atsctrb_gdk_window_set_background"
+  {c:cls | c <= GdkWindow}
+  {l:agz} (
+  window: !gobjref (c, l), color: &GdkColor
+) : void = "mac#atsctrb_gdk_window_set_background"
 // end of [gdk_window_set_background]
 
 (* ****** ****** *)

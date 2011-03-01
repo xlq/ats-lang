@@ -295,11 +295,11 @@ castfn gpointer_of_viewtype {a:viewtype} (x: !a):<> gpointer
 overload gpointer_vt with gpointer_of_viewtype
 
 fun GPOINTER_TO_INT
-  (x: gpointer): gint = "#atsctrb_GPOINTER_TO_INT"
+  (x: gpointer): gint = "mac#atsctrb_GPOINTER_TO_INT"
 // end of [GPOINTER_TO_INT]
 
 fun GINT_TO_POINTER
-  (x: gint): gpointer = "#atsctrb_GINT_TO_POINTER"
+  (x: gint): gpointer = "mac#atsctrb_GINT_TO_POINTER"
 // end of [GINT_TO_POINTER]
 
 (* ****** ****** *)
@@ -333,20 +333,19 @@ fun compare_gstring0_gstring0
 
 (* ****** ****** *)
 
-fun g_strdup {l:agz} (x: !gstring l): gstring1
-  = "#atsctrb_g_strdup"
-fun g_strdup0 {l:addr} (x: !gstring l): gstring0
-  = "#atsctrb_g_strdup"
+fun g_strdup {l:agz} (x: !gstring l): gstring1 = "mac#atsctrb_g_strdup"
+fun g_strdup0 {l:addr} (x: !gstring l): gstring0 = "mac#atsctrb_g_strdup"
 
-fun g_strndup {l:agz} (x: !gstring l): gstring1
-  = "#atsctrb_g_strndup"
-// end of [g_strndup]
+fun g_strndup {l:agz} (x: !gstring l): gstring1 = "mac#atsctrb_g_strndup"
 
-fun g_strdup_printf {ts:types}
-  (fmt: printf_c ts, arg: ts): gstring1 = "#atsctrb_g_strdup_printf"
+fun g_strdup_printf
+  {ts:types} (
+  fmt: printf_c ts, arg: ts
+) : gstring1
+  = "mac#atsctrb_g_strdup_printf"
 // end of [g_strdup_printf]
 
-fun g_strnfill (n: gsize, c: gchar): gstring1 = "#atsctrb_g_strnfill"
+fun g_strnfill (n: gsize, c: gchar): gstring1 = "mac#atsctrb_g_strnfill"
 
 (* ****** ****** *)
 

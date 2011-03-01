@@ -82,7 +82,11 @@ slseg_v_extend
     | slseg_v_cons (pf1nod, pf1seg) =>
         slseg_v_cons (pf1nod, slseg_v_extend (pf1seg, pfnod))
       // end of [slseg_v_cons]
-    | slseg_v_nil () => slseg_v_cons (pfnod, slseg_v_nil ())
+    | slseg_v_nil () => let
+        prval () = slnode_ptr_is_gtz (pfnod)
+      in
+        slseg_v_cons (pfnod, slseg_v_nil ())
+      end // end of [slseg_v_nil]
   // end of [extend]
 in
   extend (pfseg, pfnod)
@@ -115,6 +119,7 @@ implement{a}
 slist_cons (
   pfnod | p_nod, xs
 ) = let
+  prval () = slnode_ptr_is_gtz (pfnod)
   val (pflst | p_xs) = slist_decode (xs)
   val () = slnode_set_next (pfnod | p_nod, p_xs)
   prval pflst = slseg_v_cons (pfnod, pflst)

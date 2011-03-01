@@ -60,7 +60,9 @@ fun getln2 {nmax:pos} (
     s: &bytes(nmax), nmax: size_t nmax, iseof: &bool 
   ) : bool = let
 //
-  extern fun read1 (pf: !fildes_v (STDIN_FILENO) | c: &char): ssize_t = "#atslib_read1"
+  extern fun read1
+    (pf: !fildes_v (STDIN_FILENO) | c: &char): ssize_t = "mac#atslib_read1"
+  (* end of [extern] *)
 //
   var c: char = '\000'
   val (pf_fd | ()) = stdin_fildes_view_get ()

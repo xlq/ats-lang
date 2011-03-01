@@ -76,39 +76,41 @@ fun g_list_isnot_nil {a:vwtp} {l,r:nat}
 (* ****** ****** *)
 
 fun g_list_new_nil
-  {a:vwtp} (): GList_ptr (a, 0, 0) = "#atsctrb_g_list_new_nil"
+  {a:vwtp} (): GList_ptr (a, 0, 0) = "mac#atsctrb_g_list_new_nil"
 // end of [g_list_new_nil]
 
 fun g_list_free_nil
-  {a:vwtp} (xs: GList_ptr (a, 0, 0)):<> void = "#atsctrb_g_list_free_nil"
+  {a:vwtp} (xs: GList_ptr (a, 0, 0)):<> void = "mac#atsctrb_g_list_free_nil"
 // end of [g_list_free_nil]
 
 (* ****** ****** *)
 
 fun g_list_free
-  {a:vwtp} (list: GList_ptr0 (a?)): void = "#atsctrb_g_list_free"
+  {a:vwtp} (list: GList_ptr0 (a?)): void = "mac#atsctrb_g_list_free"
 // end of [g_list]
 
 fun g_list_free1
-  {a:vwtp} (list: GList_ptr (a?, 0, 1)): void = "#atsctrb_g_list_free1"
+  {a:vwtp} (list: GList_ptr (a?, 0, 1)): void = "mac#atsctrb_g_list_free1"
 // end of [g_list_free11]
 
 (* ****** ****** *)
 
 fun g_list_next {a:vwtp} {f:nat;r:int | r >= 2} 
-  (list: GList_ptr (a, f, r)): GList_ptr (a, f+1, r-1) = "#atsctrb_g_list_next"
+  (list: GList_ptr (a, f, r)): GList_ptr (a, f+1, r-1) = "mac#atsctrb_g_list_next"
 // end of [g_list_next]
 
 fun g_list_previous {a:vwtp} {f:pos;r:nat} 
-  (list: GList_ptr (a, f, r)): GList_ptr (a, f-1, r+1) = "#atsctrb_g_list_previous"
+  (list: GList_ptr (a, f, r)): GList_ptr (a, f-1, r+1) = "mac#atsctrb_g_list_previous"
 // end of [g_list_previous]
 
 fun g_list_last {a:vwtp} {f:nat;r:pos}
-  (list: GList_ptr (a, f, r)): GList_ptr (a, f+r-1, 1) = "#atsctrb_g_list_last"
+  (list: GList_ptr (a, f, r)): GList_ptr (a, f+r-1, 1) = "mac#atsctrb_g_list_last"
 // end of [g_list_last]
 
-fun g_list_first {a:vwtp} {f,r:nat}
-  (list: GList_ptr (a, f, r)): GList_ptr (a, 0, f+r) = "#atsctrb_g_list_first"
+fun g_list_first
+  {a:vwtp} {f,r:nat} (
+  list: GList_ptr (a, f, r)
+) : GList_ptr (a, 0, f+r) = "mac#atsctrb_g_list_first"
 // end of [g_list_first]
 
 (* ****** ****** *)
@@ -118,7 +120,7 @@ fun g_list_first {a:vwtp} {f,r:nat}
 fun g_list_append
   {a:vwtp} {f,r:nat} ( // its complexity is O(n)
   list: GList_ptr (a, f, r), x: !a >> a?!
-) : GList_ptr (a, f, r+1) = "#atsctrb_g_list_append"
+) : GList_ptr (a, f, r+1) = "mac#atsctrb_g_list_append"
 // end of [g_list_append]
 
 (* ****** ****** *)
@@ -128,13 +130,13 @@ fun g_list_append
 fun g_list_prepend
   {a:vwtp} {f,r:nat} ( // its complexity is O(1)
   list: GList_ptr (a, f, r), x: !a >> a?!
-) : GList_ptr (a, f, r+1) = "#atsctrb_g_list_prepend"
+) : GList_ptr (a, f, r+1) = "mac#atsctrb_g_list_prepend"
 // end of [g_list_prepend]
 
 (* ****** ****** *)
 
 fun g_list_length {a:vwtp} {f,r:nat}
-  (list: !GList_ptr (a, f, r)): gint r = "#atsctrb_g_list_length"
+  (list: !GList_ptr (a, f, r)): gint r = "mac#atsctrb_g_list_length"
 // end of [g_list_length]
 
 (* ****** ****** *)
@@ -143,13 +145,13 @@ fun g_list_insert_at
   {a:vwtp} {f,r:nat}
   {i:nat | i <= r} ( // its complexity is O(i)
   list: GList_ptr (a, f, r), x: !a >> a?!, i: gint i
-) : GList_ptr (a, f, r+1) = "#atsctrb_g_list_insert"
+) : GList_ptr (a, f, r+1) = "mac#atsctrb_g_list_insert"
 // end of [g_list_insert_at]
 
 fun g_list_insert_sorted
   {a:vwtp} {f,r:nat} ( // its complexity is O(n)
   list: GList_ptr (a, f, r), x: !a >> a?!, cmp: (!a, !a) -<fun> gint
-) : GList_ptr (a, f, r+1) = "#atsctrb_g_list_insert_sorted"
+) : GList_ptr (a, f, r+1) = "mac#atsctrb_g_list_insert_sorted"
 // end of [g_list_insert_sorted]
 
 (* ****** ****** *)
@@ -164,19 +166,19 @@ fun g_list_remove_current
 fun g_list_concat
   {a:vwtp} {l1,r1:nat} {r2:nat} (
   list1: GList_ptr (a, l1, r1), list2: GList_ptr (a, 0, r2)
-) : GList_ptr (a, l1, r1+r2) = "#atsctrb_g_list_concat"
+) : GList_ptr (a, l1, r1+r2) = "mac#atsctrb_g_list_concat"
 // end of [g_list_concat]
 
 (* ****** ****** *)
 
 fun g_list_copy {a:type} {f,r:nat}
-  (list: !GList_ptr (a, f, r)): GList_ptr (a, 0, r) = "#atsctrb_g_list_copy"
+  (list: !GList_ptr (a, f, r)): GList_ptr (a, 0, r) = "mac#atsctrb_g_list_copy"
 // end of [g_list_copy]
 
 (* ****** ****** *)
 
 fun g_list_reverse {a:vwtp} {r:nat}
-  (list: GList_ptr (a, 0, r)): GList_ptr (a, 0, r) = "#atsctrb_g_list_reverse"
+  (list: GList_ptr (a, 0, r)): GList_ptr (a, 0, r) = "mac#atsctrb_g_list_reverse"
 // end of [g_list_reverse]
 
 (* ****** ****** *)
@@ -185,15 +187,17 @@ fun g_list_reverse {a:vwtp} {r:nat}
 // HX-2010-02-28:
 // these sorting functions are based on mergesort implementation
 //
-fun g_list_sort {a:vwtp} {r:nat}
-  (list: GList_ptr (a, 0, r), cmp: (!a, !a) -<fun> gint): GList_ptr (a, 0, r)
-  = "#atsctrb_g_list_sort"
+fun g_list_sort
+  {a:vwtp} {r:nat} (
+  list: GList_ptr (a, 0, r), cmp: (!a, !a) -<fun> gint
+) : GList_ptr (a, 0, r)
+  = "mac#atsctrb_g_list_sort"
 // end of [g_list_sort]
 
 fun g_list_sort_with_data
   {a:vwtp} {vt:viewtype} {r:nat} (
   list: GList_ptr (a, 0, r), cmp: (!a, !a, !vt) -<fun> gint, env: !vt
-) : GList_ptr (a, 0, r) = "#atsctrb_g_list_sort_with_data"
+) : GList_ptr (a, 0, r) = "mac#atsctrb_g_list_sort_with_data"
 // end of [g_list_sort_with_data]
 
 (* ****** ****** *)
@@ -201,25 +205,27 @@ fun g_list_sort_with_data
 fun g_list_foreach
   {a:vwtp} {vt:viewtype} {f,r:nat} (
   list: !GList_ptr (a, f, r), f: (!a, !vt) -<fun> void, env: !vt
-) : void = "#atsctrb_g_list_foreach" // end of [g_list_foreach]
+) : void = "mac#atsctrb_g_list_foreach" // end of [g_list_foreach]
 
 (* ****** ****** *)
 
 fun g_list_nth
   {a:vwtp} {f,r:nat} {i:nat | i < r} (
   list: GList_ptr (a, f, r), i: int (i)
-) : GList_ptr (a, f+i, r-i) = "#atsctrb_g_list_nth"
+) : GList_ptr (a, f+i, r-i) = "mac#atsctrb_g_list_nth"
 // end of [g_list_nth]
 
 fun g_list_nth_data
-  {a:type} {f,r:nat} (list: !GList_ptr (a, f, r), i: natLt r): a
-  = "#atsctrb_g_list_nth_data"
+  {a:type} {f,r:nat} (
+  list: !GList_ptr (a, f, r), i: natLt r
+) : a
+  = "mac#atsctrb_g_list_nth_data"
 // end of [g_list_nth_data]
 
 fun g_list_nth_prev
   {a:vwtp} {f,r:nat} {i:nat | i <= f}
   (list: GList_ptr (a, f, r), i: int i): GList_ptr (a, f-i, r+i)
-  = "#atsctrb_g_list_nth"
+  = "mac#atsctrb_g_list_nth"
 // end of [g_list_nth_prev]
 
 (* ****** ****** *)
@@ -227,7 +233,7 @@ fun g_list_nth_prev
 fun g_list_index
   {a:type} {f,r:nat} (
   list: !GList_ptr (a, f, r), x: !a
-) : [i:int | ~1 <= i; i < r] gint i = "#atsctrb_g_list_index"
+) : [i:int | ~1 <= i; i < r] gint i = "mac#atsctrb_g_list_index"
 // end of [g_list_index]
   
 (* ****** ****** *)

@@ -39,9 +39,14 @@
 (* ****** ****** *)
 
 fun gdk_pixmap_new
-  {c:cls | c <= GdkDrawable} {l:agz}
-  (drawable: !gobjref (c, l), height: gint, width: gint, depth: gint): GdkPixmap_ref1
-  = "#atsctrb_gdk_pixmap_new"
+  {c:cls | c <= GdkDrawable}
+  {l:agz} (
+  drawable: !gobjref (c, l)
+, height: gint
+, width: gint
+, depth: gint
+) : GdkPixmap_ref1
+  = "mac#atsctrb_gdk_pixmap_new"
 // end of [gdk_pixmap_new]
 
 (* ****** ****** *)

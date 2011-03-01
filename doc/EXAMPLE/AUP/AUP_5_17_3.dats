@@ -23,9 +23,11 @@ static pthread_mutex_t mtx = PTHREAD_MUTEX_INITIALIZER ;
 var theX: lint = 0L
 val p_theX = &theX
 extern
-fun lock_theX (): (lint @ theX | void) = "#lock_theX"
+fun lock_theX
+  () : (lint @ theX | void) = "mac#lock_theX"
 extern
-fun unlock_theX (pf: lint @ theX | (*none*)): void = "#unlock_theX"
+fun unlock_theX
+  (pf: lint @ theX | (*none*)): void = "mac#unlock_theX"
 
 (* ****** ****** *)
 

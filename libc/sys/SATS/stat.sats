@@ -138,54 +138,67 @@ fun isfdtype {fd:nat}
 
 (* ****** ****** *)
 
-fun chmod_err (path: string, mode: mode_t): int
-  = "#atslib_chmod_err" // macro!
-fun chmod_exn (path: string, mode: mode_t): void
+fun chmod_err
+  (path: !READ(string), mode: mode_t): int
+  = "mac#atslib_chmod_err" // macro!
+fun chmod_exn
+  (path: !READ(string), mode: mode_t): void
   = "atslib_chmod_exn" // function!
 
 (* ****** ****** *)
 
-fun mkdir_err (path: string, mode: mode_t): int
-  = "#atslib_mkdir_err" // macro!
-fun mkdir_exn (path: string, mode: mode_t): void
+fun mkdir_err
+  (path: !READ(string), mode: mode_t): int
+  = "mac#atslib_mkdir_err" // macro!
+fun mkdir_exn
+  (path: !READ(string), mode: mode_t): void
   = "atslib_mkdir_exn" // function!
 
 (* ****** ****** *)
 
 fun stat_err (
-    path: string, st: &stat? >> opt (stat, i==0)
-  ) : #[i:int | i <= 0] int i
-  = "#atslib_stat_err" // macro!
-fun stat_exn
-  (path: string, st: &stat? >> stat): void = "atslib_stat_exn"
+  path: !READ(string)
+, st: &stat? >> opt (stat, i==0)
+) : #[i:int | i <= 0] int i
+  = "mac#atslib_stat_err" // macro!
+fun stat_exn (
+  path: !READ(string), st: &stat? >> stat
+) : void
+  = "atslib_stat_exn"
 // end of [stat_exn]
 
-fun fstat_err {fd:nat} (
-    fd: int fd, st: &stat? >> opt (stat, i==0)
-  ) : #[i:int | i <= 0] int i
-  = "#atslib_fstat_err" // macro!
+fun fstat_err
+  {fd:nat} (
+  fd: int fd
+, st: &stat? >> opt (stat, i==0)
+) : #[i:int | i <= 0] int i
+  = "mac#atslib_fstat_err" // macro!
 fun fstat_exn {fd:nat}
   (fd: int fd, st: &stat? >> stat): void = "atslib_fstat_exn"
 // end of [fstat_exn]
 
 fun lstat_err (
-    path: string, st: &stat? >> opt (stat, i==0)
-  ) : #[i:int | i <= 0] int i
-  = "#atslib_lstat_err" // macro!
-fun lstat_exn
-  (path: string, buf: &stat? >> stat): void = "atslib_lstat_exn"
+  path: !READ(string)
+, st: &stat? >> opt (stat, i==0)
+) : #[i:int | i <= 0] int i
+  = "mac#atslib_lstat_err" // macro!
+fun lstat_exn (
+  path: !READ(string), buf: &stat? >> stat
+) : void = "atslib_lstat_exn"
 // end of [lstat_exn]
 
 (* ****** ****** *)
 
-fun umask // this one *always* succeeds
-  (mask_new: mode_t(*new*)): mode_t(*old*) = "#atslib_umask"
+fun umask (
+  mask_new: mode_t(*new*)
+) : mode_t(*old*) // this one *always* succeeds
+  = "mac#atslib_umask"
 // end of [umask]
 
 (* ****** ****** *)
 
 fun mkfifo // 0/-1 : succ/fail // errno set
-  (path: string, perm: mode_t): int = "#atslib_mkfifo"
+  (path: !READ(string), perm: mode_t): int = "mac#atslib_mkfifo"
 // end of [mkfifo]
 
 (* ****** ****** *)

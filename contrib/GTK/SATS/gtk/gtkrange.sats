@@ -37,9 +37,11 @@
 (* ****** ****** *)
 
 fun gtk_range_set_update_policy
-  {c:cls | c <= GtkRange} {l:agz}
-  (range: !gobjref (c, l), policy: GtkUpdateType): void
-  = "#atsctrb_gtk_range_set_update_policy"
+  {c:cls | c <= GtkRange}
+  {l:agz} (
+  range: !gobjref (c, l), policy: GtkUpdateType
+) : void
+  = "mac#atsctrb_gtk_range_set_update_policy"
 // end of [gtk_range_set_update_policy]
 
 (* ****** ****** *)
@@ -47,10 +49,13 @@ fun gtk_range_set_update_policy
 // HX-2010-04: this one is 'get0' in ATS:
 //
 fun gtk_range_get_adjustment
-  {c:cls | c <= GtkRange} {l:agz}
-  (range: !gobjref (c, l)): [l1:addr] (
-    minus (gobjref (c, l), gobjref (GtkAdjustment, l1)) | gobjref (GtkAdjustment, l1)
-  ) = "#atsctrb_gtk_range_get_adjustment"
+  {c:cls | c <= GtkRange}
+  {l:agz} (
+  range: !gobjref (c, l)
+) : [l1:addr] (
+  minus (gobjref (c, l), gobjref (GtkAdjustment, l1))
+| gobjref (GtkAdjustment, l1)
+) = "mac#atsctrb_gtk_range_get_adjustment"
 // end of [gtk_range_get_adjustment]
 
 //
@@ -58,9 +63,11 @@ fun gtk_range_get_adjustment
 // this one is 'set1': [g_object_ref] is called on [adj] if it is added!
 //
 fun gtk_range_set_adjustment
-  {c:cls | c <= GtkRange} {l1,l2:agz}
-  (range: !gobjref (c, l1), adj: !gobjref (GtkAdjustment, l2)): void
-  = "#atsctrb_gtk_range_set_adjustment"
+  {c:cls | c <= GtkRange}
+  {l1,l2:agz} (
+  range: !gobjref (c, l1), adj: !gobjref (GtkAdjustment, l2)
+) : void
+  = "mac#atsctrb_gtk_range_set_adjustment"
 // end of [gtk_range_set_adjustment]
 
 (* ****** ****** *)

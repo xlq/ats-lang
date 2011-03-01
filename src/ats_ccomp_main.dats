@@ -469,11 +469,13 @@ fn _emit_dynconset
     prval @(pf_fil, pf_int) = pf
     val+ ENV2con (p_l, p_i)= env
     val i = !p_i; val () = (!p_i := i + 1)
-    val () = fprint1_string (pf_mod | !p_l, "ATSextern_val(")
+//
+   val () = fprint1_string (pf_mod | !p_l, "ATSextern_val(")
+//
     val () = (case+ 0 of
       | _ when d2con_is_exn d2c => begin
           fprint1_string (pf_mod | !p_l, "ats_exn_type, ")
-        end
+        end // end of [_ when ...]
       | _ => begin
           fprint1_string (pf_mod | !p_l, "ats_sum_type, ")
         end // end of [_]
@@ -502,6 +504,34 @@ fn emit_dynconset {m:file_mode}
 
 (* ****** ****** *)
 
+fn emit_d2cst_fun_class // static/extern
+  {m:file_mode} (
+  pf: fmlte (m, w) | out: &FILE m, d2c: d2cst_t
+) : void = let
+  val issta = d2cst_is_extsta (d2c)
+in
+  if issta then
+    fprint1_string (pf | out, "ATSstatic_fun")
+   else
+     fprint1_string (pf | out, "ATSextern_fun")        
+   // end of [if]
+end // end of [emit_d2cst_fun_class]
+
+fn emit_d2cst_val_class // static/extern
+  {m:file_mode} (
+  pf: fmlte (m, w) | out: &FILE m, d2c: d2cst_t
+) : void = let
+  val issta = d2cst_is_extsta (d2c)
+in
+  if issta then
+    fprint1_string (pf | out, "ATSstatic_val")
+   else
+     fprint1_string (pf | out, "ATSextern_val")        
+   // end of [if]
+end // end of [emit_d2cst_val_class]
+
+(* ****** ****** *)
+
 fn emit_d2cst_dec
   {m:file_mode} // for a non-proof constant
   (pf: fmlte (m, w)| out: &FILE m, d2c: d2cst_t): void = let
@@ -520,8 +550,8 @@ fn emit_d2cst_dec
     val hit_res = hityp_encode ,(hit_res)
 *)
    in
-     fprint1_string (pf | out, "ATSextern_val(");
-     fprint1_string (pf | out, "ats_ptr_type, "); // HX: is [ats_clo_ptr_type]
+     emit_d2cst_val_class (pf | out, d2c);
+     fprint1_string (pf | out, "(ats_ptr_type, "); // HX: is [ats_clo_ptr_type]
      emit_d2cst (pf | out, d2c);
      fprint1_string (pf | out, ") ;\n");
    end // end of [macdef]
@@ -538,18 +568,20 @@ fn emit_d2cst_dec
         val hits_arg = hityplst_encode ,(hits_arg)
         val hit_res = hityp_encode ,(hit_res)
       in
-        fprint1_string (pf | out, "extern\n");
+        emit_d2cst_fun_class (pf | out, d2c);
+        fprint1_string (pf | out, "(");
         emit_hityp (pf | out, hit_res);
-        fprint1_char (pf | out, ' ');
+        fprint1_string (pf | out, ", ");
         emit_d2cst (pf | out, d2c);
-        fprint1_string (pf | out, " (");
+        fprint1_string (pf | out, ") (");
         emit_hityplst_sep (pf | out, hits_arg, HITARGSEP);
         fprint1_string (pf | out, ") ;\n")
        end // end of [_ when ...]
      | _ when d2cst_is_castfn d2c => () // casting function
-     | _ => begin // function value
-         fprint1_string (pf | out, "ATSextern_val(");
-         fprint1_string (pf | out, "ats_ptr_type, "); // HX: is [ats_fun_ptr_type]
+     | _ => let // function value
+       in
+         emit_d2cst_val_class (pf | out, d2c);
+         fprint1_string (pf | out, "(ats_ptr_type, "); // HX: is [ats_fun_ptr_type]
          emit_d2cst (pf | out, d2c);
          fprint1_string (pf | out, ") ;\n");
        end // end of [_]
@@ -557,7 +589,8 @@ fn emit_d2cst_dec
   end // end of [macdef]
 //
   macdef f_isnotfun_mac () = () where {
-    val () = fprint1_string (pf | out, "ATSextern_val(")
+    val () = emit_d2cst_val_class (pf | out, d2c);
+    val () = fprint1_string (pf | out, "(");
     val () = emit_hityp (pf | out, hit0)
     val () = fprint1_string (pf | out, ", ")
     val () = emit_d2cst (pf | out, d2c)
@@ -740,17 +773,19 @@ end // end of [instrlst_vt_tmpvarmap_gen]
 
 fn emit_extvallst_dec
   {m:file_mode} (
-  pf: fmlte (m, w) | out: &FILE m, exts: !extvallst
+  pf: fmlte (m, w)
+| out: &FILE m, exts: !extvallst
 ) : int = let
-  fun aux (out: &FILE m, i: int, exts: !extvallst)
-    : int = begin case+ exts of
+  fun aux (
+    out: &FILE m, i: int, exts: !extvallst
+  ) : int = begin case+ exts of
     | EXTVALLSTcons (name, vp, !exts_rest) => let
         val () = emit_hityp (pf | out, vp.valprim_typ)
         val () = fprintf1_exn (pf | out, " %s ;\n", @(name))
         val n = aux (out, i+1, !exts_rest)
       in
         fold@ exts; n
-      end
+      end // end of [EXTVALLSTcons]
     | EXTVALLSTnil () => (fold@ exts; i)
   end // end of [aux]
 in

@@ -38,8 +38,12 @@
 
 (* ****** ****** *)
 
-fun gtk_hscrollbar_new {c:cls | c <= GtkAdjustment} {l:agz}
-  (adj: !gobjref (c, l)): GtkHScrollbar_ref1 = "#atsctrb_gtk_hscrollbar_new"
+fun gtk_hscrollbar_new
+  {c:cls | c <= GtkAdjustment}
+  {l:agz} (
+  adj: !gobjref (c, l)
+) : GtkHScrollbar_ref1
+  = "mac#atsctrb_gtk_hscrollbar_new"
 // end of [gtk_hscrollbar_new]
 
 (* ****** ****** *)

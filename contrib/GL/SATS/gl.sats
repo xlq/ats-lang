@@ -68,12 +68,14 @@ abst@ype GLenum_format (n:int) = GLenum
 (* ****** ****** *)
 
 // typedef GLbitfield = int
-abst@ype GLbitfield = $extype"ats_GLbitfield_type"
+abst@ype
+GLbitfield = $extype"ats_GLbitfield_type"
 
 (* ****** ****** *)
 
 // typedef GLboolean = uchar
-abst@ype GLboolean = $extype"ats_GLboolean_type"
+abst@ype
+GLboolean = $extype"ats_GLboolean_type"
 
 (* ****** ****** *)
 
@@ -86,16 +88,20 @@ abst@ype GLubyte = $extype"ats_GLubyte_type"
 castfn GLubyte_of_byte (x: byte):<> GLubyte
 
 (* ****** ****** *)
-
+//
 // typedef GLshort = short // 2-byte signed
+//
 abst@ype GLshort = $extype"ats_GLshort_type"
 
+//
 // typedef GLushort = usint // 2-byte unsigned
+//
 abst@ype GLushort = $extype"ats_GLushort_type"
 
 (* ****** ****** *)
 
-abst@ype GLint (n:int) = $extype"ats_GLint_type" // 4-byte signed
+abst@ype
+GLint (n:int) = $extype"ats_GLint_type" // 4-byte signed
 typedef GLint = [n:int] GLint (n)
 castfn GLint_of_int (x: int):<> GLint
 castfn int_of_GLint (x: GLint):<> int
@@ -103,7 +109,8 @@ castfn GLint_of_int1 {n:int} (x: int n):<> GLint n
 castfn int1_of_GLint {n:int} (x: GLint n):<> int n
 castfn GLint_of_GLenum (x: GLenum):<> GLint
 
-abst@ype GLuint (n:int) = $extype"ats_GLuint_type" // 4-byte unsigned
+abst@ype
+GLuint (n:int) = $extype"ats_GLuint_type" // 4-byte unsigned
 typedef GLuint = [n:nat] GLuint (n)
 castfn GLuint_of_uint (x: uint):<> GLuint
 castfn uint_of_GLuint (x: GLuint):<> uint
@@ -111,31 +118,41 @@ castfn GLuint_of_uint1 {n:int} (x: uint n):<> GLuint n
 castfn uint1_of_GLuint {n:int} (x: GLuint n):<> uint n
 
 (* ****** ****** *)
-
+//
 // typedef GLsizei = int // 4-byte signed
-abst@ype GLsizei (i: int) = $extype"ats_GLsizei_type"
+//
+abst@ype
+GLsizei (i: int) = $extype"ats_GLsizei_type"
 typedef GLsizei = [i:int] GLsizei (i)
 
 (* ****** ****** *)
 
-abst@ype GLdouble = $extype"ats_GLdouble_type" // double precision
+abst@ype
+GLdouble = $extype"ats_GLdouble_type" // double precision
 castfn GLdouble_of_double (x: double):<> GLdouble
 castfn double_of_GLdouble (x: GLdouble):<> double
 overload double_of with double_of_GLdouble
 
+//
 // typedef GLclampd = double // double precision float in [0,1]
-abst@ype GLclampd = $extype"ats_GLclampd_type"
+//
+abst@ype
+GLclampd = $extype"ats_GLclampd_type"
 castfn GLclampd_of_double (x: double):<> GLclampd
 
 (* ****** ****** *)
 
-abst@ype GLfloat = $extype"ats_GLfloat_type" // single precision
+abst@ype
+GLfloat = $extype"ats_GLfloat_type" // single precision
 castfn GLfloat_of_float (x: float):<> GLfloat
 castfn float_of_GLfloat (x: GLfloat):<> float
 overload float_of with float_of_GLfloat
 
+//
 // typedef GLclampf = float // single precision float in [0,1]
-abst@ype GLclampf = $extype"ats_GLclampf_type"
+//
+abst@ype
+GLclampf = $extype"ats_GLclampf_type"
 castfn GLclampf_of_float (x: float):<> GLclampf
 
 (* ****** ****** *)
@@ -828,7 +845,9 @@ macdef GL_CLIENT_ALL_ATTRIB_BITS = $extval (GLenum, "GL_CLIENT_ALL_ATTRIB_BITS")
 
 (* ****** ****** *)
 
-fun glClearIndex (c: GLfloat): void = "#atsctrb_glClearIndex"
+fun glClearIndex
+  (c: GLfloat): void = "mac#atsctrb_glClearIndex"
+// end of [glClearIndex]
 
 //
 
@@ -838,44 +857,48 @@ typedef glClearColor_type (a:t@ype) =
 
 symintr glClearColor
 
-fun glClearColor_double : glClearColor_type (double)
-  = "#atsctrb_glClearColor"
+fun glClearColor_double
+  : glClearColor_type (double) = "mac#atsctrb_glClearColor"
 overload glClearColor with glClearColor_double
 
-fun glClearColor_GLclampf : glClearColor_type (GLclampf)
-  = "#atsctrb_glClearColor"
+fun glClearColor_GLclampf
+  : glClearColor_type (GLclampf) = "mac#atsctrb_glClearColor"
 overload glClearColor with glClearColor_GLclampf
 
 //
 
-fun glClear (mask: GLbitfield): void = "#atsctrb_glClear"
+fun glClear (mask: GLbitfield): void = "mac#atsctrb_glClear"
 
-fun glIndexMask (mask: GLuint): void = "#atsctrb_glIndexMask"
+fun glIndexMask (mask: GLuint): void = "mac#atsctrb_glIndexMask"
 
-fun glColorMask (red: GLboolean, green: GLboolean, blue: GLboolean, alpha: GLboolean): void
-  = "#atsctrb_glColorMask"
+fun glColorMask (
+  red: GLboolean, green: GLboolean, blue: GLboolean, alpha: GLboolean
+) : void
+  = "mac#atsctrb_glColorMask"
 
-fun glAlphaFunc (func: GLenum, ref: GLclampf): void = "#atsctrb_glAlphaFunc"
+fun glAlphaFunc
+  (func: GLenum, ref: GLclampf): void = "mac#atsctrb_glAlphaFunc"
 
-fun glBlendFunc (sfactor: GLenum, dfactor: GLenum): void = "#atsctrb_glBlendFunc"
+fun glBlendFunc
+  (sfactor: GLenum, dfactor: GLenum): void = "mac#atsctrb_glBlendFunc"
 
-fun glLogicOp (opcode: GLenum): void = "#atsctrb_glLogicOp"
+fun glLogicOp (opcode: GLenum): void = "mac#atsctrb_glLogicOp"
 
 (* ****** ****** *)
 
-fun glCullFace (mode: GLenum): void = "#atsctrb_glCullFace"
-fun glFrontFace (mode: GLenum): void  = "#atsctrb_glFrontFace"
+fun glCullFace (mode: GLenum): void = "mac#atsctrb_glCullFace"
+fun glFrontFace (mode: GLenum): void  = "mac#atsctrb_glFrontFace"
 
 (* ****** ****** *)
 
 symintr glPointSize
 
 fun glPointSize_double
-  (size: double): void = "#atsctrb_glPointSize"
+  (size: double): void = "mac#atsctrb_glPointSize"
 overload glPointSize with glPointSize_double
 
 fun glPointSize_GLfloat
-  (size: GLfloat): void = "#atsctrb_glPointSize"
+  (size: GLfloat): void = "mac#atsctrb_glPointSize"
 overload glPointSize with glPointSize_GLfloat
 
 (* ****** ****** *)
@@ -883,11 +906,11 @@ overload glPointSize with glPointSize_GLfloat
 symintr glLineWidth
 
 fun glLineWidth_double
-  (width: double): void = "#atsctrb_glLineWidth"
+  (width: double): void = "mac#atsctrb_glLineWidth"
 overload glLineWidth with glLineWidth_double
 
 fun glLineWidth_GLfloat
-  (width: GLfloat): void = "#atsctrb_glLineWidth"
+  (width: GLfloat): void = "mac#atsctrb_glLineWidth"
 overload glLineWidth with glLineWidth_GLfloat
 
 (* ****** ****** *)
@@ -895,61 +918,67 @@ overload glLineWidth with glLineWidth_GLfloat
 typedef glLineStipple_type (a:t@ype) =
   {n:int | 1 <= n; n <= 256} (int n(*factor*), a(*pattern*)) -<fun1> void
 
-fun glLineStipple : glLineStipple_type (GLushort) = "#atsctrb_glLineStipple"
+fun glLineStipple
+  : glLineStipple_type (GLushort) = "mac#atsctrb_glLineStipple"
+// end of [glLineStipple]
 
 (* ****** ****** *)
 
-fun glPolygonMode (face: GLenum, mode: GLenum): void
-  = "#atsctrb_glPolygonMode"
+fun glPolygonMode
+  (face: GLenum, mode: GLenum): void
+  = "mac#atsctrb_glPolygonMode"
 
-fun glPolygonOffset (factor: GLfloat, units: GLfloat): void
-  = "#atsctrb_glPolygonOffset"
+fun glPolygonOffset
+  (factor: GLfloat, units: GLfloat): void
+  = "mac#atsctrb_glPolygonOffset"
 
-fun glPolygonStipple (mask: &GLarray2 (GLubyte, 32, 32)): void
-  = "#atsctrb_glPolygonStipple"
+fun glPolygonStipple
+  (mask: &GLarray2 (GLubyte, 32, 32)): void
+  = "mac#atsctrb_glPolygonStipple"
 
-fun glGetPolygonStipple (mask: &GLarray2 (GLubyte, 32, 32)): void
-  = "#atsctrb_glGetPolygonStipple"
+fun glGetPolygonStipple
+  (mask: &GLarray2 (GLubyte, 32, 32)): void
+  = "mac#atsctrb_glGetPolygonStipple"
 
-fun glEdgeFlag (flag: GLboolean): void = "#atsctrb_glEdgeFlag"
-fun glEdgeFlagv (flag: &GLboolean): void = "#atsctrb_glEdgeFlagv"
+fun glEdgeFlag (flag: GLboolean): void = "mac#atsctrb_glEdgeFlag"
+fun glEdgeFlagv (flag: &GLboolean): void = "mac#atsctrb_glEdgeFlagv"
 
 fun glScissor
   (x: GLint, y: GLint, width: GLsizei, height: GLsizei): void
-  = "#atsctrb_glScissor"
+  = "mac#atsctrb_glScissor"
 
 (* ****** ****** *)
 
 fun glClipPlane
   (plane: GLenum, eqn: &(@[GLdouble][4])): void
-  = "#atsctrb_glClipPlane"
+  = "mac#atsctrb_glClipPlane"
 
 fun glGetClipPlane
   (plane: GLenum, eqn: &(@[GLdouble][4]) >> @[GLdouble][4]): void
-  = "#atsctrb_glGetClipPlane"
+  = "mac#atsctrb_glGetClipPlane"
 
 (* ****** ****** *)
 
-fun glDrawBuffer (mode: GLenum): void = "#atsctrb_glDrawBuffer"
-fun glReadBuffer (mode: GLenum): void = "#atsctrb_glReadBuffer"
+fun glDrawBuffer (mode: GLenum): void = "mac#atsctrb_glDrawBuffer"
+fun glReadBuffer (mode: GLenum): void = "mac#atsctrb_glReadBuffer"
 
 (* ****** ****** *)
 
-fun glEnable (cap: GLenum): void = "#atsctrb_glEnable"
-fun glDisable (cap: GLenum): void = "#atsctrb_glDisable"
-fun glIsEnabled (cap: GLenum): GLboolean = "#atsctrb_glIsEnabled"
+fun glEnable (cap: GLenum): void = "mac#atsctrb_glEnable"
+fun glDisable (cap: GLenum): void = "mac#atsctrb_glDisable"
+fun glIsEnabled (cap: GLenum): GLboolean = "mac#atsctrb_glIsEnabled"
 
 //
 
 (*
 // OpenGL 1.1
 fun glEnableClientState
-  (cap: GLenum): void = "#atsctrb_glEnableClientState"
+  (cap: GLenum): void = "mac#atsctrb_glEnableClientState"
 // end of [glEnableClientState]
 
 // version 1.1
 fun glDisableClientState
-  (cap: GLenum): void = "#atsctrb_glDisableClientState"
+  (cap: GLenum): void = "mac#atsctrb_glDisableClientState"
 // end of [glDisableClientState]
 *)
 
@@ -964,67 +993,76 @@ typedef glGetParams_type
 
 fun glGetBooleanv
   : {n:nat} glGetParams_type (GLboolean, n)
-  = "#atsctrb_glGetBooleanv"
+  = "mac#atsctrb_glGetBooleanv"
 
 fun glGetDoublev : {n:nat} glGetParams_type (GLdouble, n)
-  = "#atsctrb_glGetDoublev"
+  = "mac#atsctrb_glGetDoublev"
 
 fun glGetFloatv : {n:nat} glGetParams_type (GLfloat, n)
-  = "#atsctrb_glGetFloatv"
+  = "mac#atsctrb_glGetFloatv"
 
 fun glGetIntegerv : {n:nat} glGetParams_type (GLint, n)
-  = "#atsctrb_glGetIntegerv"
+  = "mac#atsctrb_glGetIntegerv"
 
 (* ****** ****** *)
 
 absview glPushAttrib_v
 fun glPushAttrib
-  (mask: GLbitfield): (glPushAttrib_v | void) = "#atsctrb_glPushAttrib"
+  (mask: GLbitfield): (glPushAttrib_v | void) = "mac#atsctrb_glPushAttrib"
 // end of [glPushAttrib]
-fun glPopAttrib (pf: glPushAttrib_v | (*none*)): void = "#atsctrb_glPopAttrib"
+fun glPopAttrib (pf: glPushAttrib_v | (*none*)): void = "mac#atsctrb_glPopAttrib"
 
 (*
 // OpenGL 1.1
-fun glPushClientAttrib (mask: GLbitfield): void = "#atsctrb_glPushClientAttrib"
-fun glPopClientAttrib (): void = "#atsctrb_glPopClientAttrib"
+fun glPushClientAttrib (mask: GLbitfield): void = "mac#atsctrb_glPushClientAttrib"
+fun glPopClientAttrib (): void = "mac#atsctrb_glPopClientAttrib"
 *)
 
 (* ****** ****** *)
 
-fun glRenderMode (mode: GLenum): GLint = "#atsctrb_glRenderMode"
+fun glRenderMode (mode: GLenum): GLint = "mac#atsctrb_glRenderMode"
 
-fun glGetError (): GLenum = "#atsctrb_glGetError"
+fun glGetError (): GLenum = "mac#atsctrb_glGetError"
 
-fun glGetString (name: GLenum): string = "#atsctrb_glGetString"
+fun glGetString (name: GLenum): string = "mac#atsctrb_glGetString"
 
-fun glFinish (): void = "#atsctrb_glFinish"
+fun glFinish (): void = "mac#atsctrb_glFinish"
 
-fun glFlush (): void = "#atsctrb_glFlush"
+fun glFlush (): void = "mac#atsctrb_glFlush"
 
-fun glHint (target: GLenum, mode: GLenum): void = "#atsctrb_glHint"
+fun glHint (target: GLenum, mode: GLenum): void = "mac#atsctrb_glHint"
 
 (* ****** ****** *)
 
 // Depth Buffer
 
-fun glClearDepth (depth: GLclampd): void
-  = "#atsctrb_glClearDepth"
+fun glClearDepth
+  (depth: GLclampd): void = "mac#atsctrb_glClearDepth"
+// end of [glClearDepth]
 
-fun glDepthFunc (func: GLenum): void = "#atsctrb_glDepthFunc"
-fun glDepthMask (flag: GLboolean): void = "#atsctrb_glDepthMask"
+fun glDepthFunc
+  (func: GLenum): void = "mac#atsctrb_glDepthFunc"
+fun glDepthMask
+  (flag: GLboolean): void = "mac#atsctrb_glDepthMask"
 
-fun glDepthRange (near_val: GLclampd, far_val: GLclampd): void
-  = "#atsctrb_glDepthRange"
+fun glDepthRange (
+  near_val: GLclampd, far_val: GLclampd
+) : void
+  = "mac#atsctrb_glDepthRange"
+// end of [glDepthRange]
 
 (* ****** ****** *)
 
 // Accumulation Buffer
 
-fun glClearAccum
-  (red: GLfloat, green: GLfloat, blue: GLfloat, alpha: GLfloat): void
-  = "#atsctrb_glClearAccum"
+fun glClearAccum (
+  red: GLfloat, green: GLfloat, blue: GLfloat, alpha: GLfloat
+) : void
+  = "mac#atsctrb_glClearAccum"
 
-fun glAccum (opr: GLenum, value: GLfloat): void = "#atsctrb_glAccum"
+fun glAccum
+  (opr: GLenum, value: GLfloat): void = "mac#atsctrb_glAccum"
+// end of [glAccum]
 
 (* ****** ****** *)
 
@@ -1032,7 +1070,8 @@ fun glAccum (opr: GLenum, value: GLfloat): void = "#atsctrb_glAccum"
 // Transformation
 //
 
-fun glMatrixMode (mode: GLenum): void = "#atsctrb_glMatrixMode"
+fun glMatrixMode
+  (mode: GLenum): void = "mac#atsctrb_glMatrixMode"
 
 (* ****** ****** *)
 
@@ -1045,11 +1084,11 @@ typedef glOrtho_type (a:t@ype) = (
 symintr glOrtho
 
 fun glOrtho_double : glOrtho_type (double)
-  = "#atsctrb_glOrtho"
+  = "mac#atsctrb_glOrtho"
 overload glOrtho with glOrtho_double
 
 fun glOrtho_GLdouble : glOrtho_type (GLdouble)
-  = "#atsctrb_glOrtho"
+  = "mac#atsctrb_glOrtho"
 overload glOrtho with glOrtho_GLdouble
 
 (* ****** ****** *)
@@ -1063,11 +1102,11 @@ typedef glFrustum_type (a:t@ype) = (
 symintr glFrustum
 
 fun glFrustum_double : glFrustum_type (double)
-  = "#atsctrb_glFrustum"
+  = "mac#atsctrb_glFrustum"
 overload glFrustum with glFrustum_double
 
 fun glFrustum_GLdouble : glFrustum_type (GLdouble)
-  = "#atsctrb_glFrustum"
+  = "mac#atsctrb_glFrustum"
 overload glFrustum with glFrustum_GLdouble
 
 (* ****** ****** *)
@@ -1076,43 +1115,43 @@ symintr glViewport
 
 fun glViewport_type
   (x: int, y: int, width: int, height: int): void
-  = "#atsctrb_glViewport"
+  = "mac#atsctrb_glViewport"
 overload glViewport with glViewport_type
 
 fun glViewport_GLtype
   (x: GLint, y: GLint, width: GLsizei, height: GLsizei): void
-  = "#atsctrb_glViewport"
+  = "mac#atsctrb_glViewport"
 overload glViewport with glViewport_GLtype
 
 (* ****** ****** *)
 
 absview glPushMatrix_v
 fun glPushMatrix (): (glPushMatrix_v | void)
-  = "#atsctrb_glPushMatrix"
+  = "mac#atsctrb_glPushMatrix"
 fun glPopMatrix (pf: glPushMatrix_v | (*none*)): void
-  = "#atsctrb_glPopMatrix"
+  = "mac#atsctrb_glPopMatrix"
 
 (* ****** ****** *)
 
-fun glLoadIdentity (): void = "#atsctrb_glLoadIdentity"
+fun glLoadIdentity (): void = "mac#atsctrb_glLoadIdentity"
 
 (* ****** ****** *)
 
 typedef glLoadMatrix_type (a:t@ype) = (&(@[a][16])) -<fun1> void
 
 fun glLoadMatrixd : glLoadMatrix_type (GLdouble)
-  = "#atsctrb_glLoadMatrixd"
+  = "mac#atsctrb_glLoadMatrixd"
 fun glLoadMatrixf : glLoadMatrix_type (GLfloat)
-  = "#atsctrb_glLoadMatrixf"
+  = "mac#atsctrb_glLoadMatrixf"
 
 (* ****** ****** *)
 
 typedef glMultMatrix_type (a:t@ype) = (&(@[a][16])) -<fun1> void
 
 fun glMultMatrixd : glMultMatrix_type (GLdouble)
-  = "#atsctrb_glMultMatrixd"
+  = "mac#atsctrb_glMultMatrixd"
 fun glMultMatrixf : glMultMatrix_type (GLfloat)
-  = "#atsctrb_glMultMatrixf"
+  = "mac#atsctrb_glMultMatrixf"
 
 (* ****** ****** *)
 
@@ -1122,14 +1161,14 @@ typedef glRotate_type (a:t@ype) =
 symintr glRotated
 
 fun glRotated_double : glRotate_type (double)
-  = "#atsctrb_glRotated"
+  = "mac#atsctrb_glRotated"
 overload glRotated with glRotated_double
 
 fun glRotated_GLdouble : glRotate_type (GLdouble)
-  = "#atsctrb_glRotated"
+  = "mac#atsctrb_glRotated"
 overload glRotated with glRotated_GLdouble
 
-fun glRotatef : glRotate_type (GLfloat) = "#atsctrb_glRotatef"
+fun glRotatef : glRotate_type (GLfloat) = "mac#atsctrb_glRotatef"
 
 (* ****** ****** *)
 
@@ -1139,14 +1178,14 @@ typedef glScale_type (a:t@ype) =
 symintr glScaled
 
 fun glScaled_double : glScale_type (double)
-  = "#atsctrb_glScaled"
+  = "mac#atsctrb_glScaled"
 overload glScaled with glScaled_double
 
 fun glScaled_GLdouble : glScale_type (GLdouble)
-  = "#atsctrb_glScaled"
+  = "mac#atsctrb_glScaled"
 overload glScaled with glScaled_GLdouble
 
-fun glScalef : glScale_type (GLfloat) = "#atsctrb_glScalef"
+fun glScalef : glScale_type (GLfloat) = "mac#atsctrb_glScalef"
 
 (* ****** ****** *)
 
@@ -1156,14 +1195,16 @@ typedef glTranslate_type (a:t@ype) =
 symintr glTranslated
 
 fun glTranslated_double : glTranslate_type (double)
-  = "#atsctrb_glTranslated"
+  = "mac#atsctrb_glTranslated"
 overload glTranslated with glTranslated_double 
 
 fun glTranslated_GLdouble : glTranslate_type (GLdouble)
-  = "#atsctrb_glTranslated"
+  = "mac#atsctrb_glTranslated"
 overload glTranslated with glTranslated_GLdouble 
 
-fun glTranslatef : glTranslate_type (GLfloat) = "#atsctrb_glTranslatef"
+fun glTranslatef
+  : glTranslate_type (GLfloat) = "mac#atsctrb_glTranslatef"
+// end of [glTranslatef]
 
 (* ****** ****** *)
 
@@ -1186,7 +1227,7 @@ castfn GLlist_decode {n:int} (lst: GLlist n):<> @(GLlist_v n | GLuint n)
 // if glIsList(lst) returns true, then we can expect a split as follows:
 // (GLlist_v (n) -<lin,prf> void, GLlist_v (n))
 //
-fun glIsList {n:nat} (lst: GLuint n): GLboolean = "#atsctrb_glIsList"
+fun glIsList {n:nat} (lst: GLuint n): GLboolean = "mac#atsctrb_glIsList"
 
 fun glDeleteList {n:int} (lst: GLlist n): void = "atsctrb_glDeleteList" // function!
 
@@ -1217,11 +1258,13 @@ overload glNewList with glNewList_new
 fun glNewList_clear {n:int} (lst: !GLlist n, mode: GLenum): @(glNewList_v | void)
   = "atsctrb_glNewList_clear"
 overload glNewList with glNewList_clear
-fun glEndList (pf: glNewList_v | (*none*)): void = "#atsctrb_glEndList"
 
-fun glCallList {n:int} (lst: !GLlist n): void = "#atsctrb_glCallList"
+fun glEndList
+  (pf: glNewList_v | (*none*)): void = "mac#atsctrb_glEndList"
 
-fun glListBase (base: GLuint): void = "#atsctrb_glListBase"
+fun glCallList {n:int} (lst: !GLlist n): void = "mac#atsctrb_glCallList"
+
+fun glListBase (base: GLuint): void = "mac#atsctrb_glListBase"
 (*
 // HX: this one is difficult to handle
 fun glCallLists (n: GLsizei, typ: GLenum, lst: GLvoid* ): void
@@ -1235,9 +1278,9 @@ fun glCallLists (n: GLsizei, typ: GLenum, lst: GLvoid* ): void
 
 absview glBegin_v
 
-fun glBegin (mode: GLenum): @(glBegin_v | void)
-  = "#atsctrb_glBegin"
-fun glEnd (pf: glBegin_v | (*none*)): void = "#atsctrb_glEnd"
+fun glBegin
+  (mode: GLenum): @(glBegin_v | void) = "mac#atsctrb_glBegin"
+fun glEnd (pf: glBegin_v | (*none*)): void = "mac#atsctrb_glEnd"
 
 (* ****** ****** *)
 
@@ -1249,24 +1292,24 @@ typedef glVertex2_type
 
 symintr glVertex2d
 
-fun glVertex2d_double : glVertex2_type (double)
-  = "#atsctrb_glVertex2d"
+fun glVertex2d_double
+  : glVertex2_type (double) = "mac#atsctrb_glVertex2d"
 overload glVertex2d with glVertex2d_double
 
-fun glVertex2d_GLdouble : glVertex2_type (GLdouble)
-  = "#atsctrb_glVertex2d"
+fun glVertex2d_GLdouble
+  : glVertex2_type (GLdouble) = "mac#atsctrb_glVertex2d"
 overload glVertex2d with glVertex2d_GLdouble
 
-fun glVertex2f : glVertex2_type (GLfloat) = "#atsctrb_glVertex2f"
-fun glVertex2i : glVertex2_type (GLint) = "#atsctrb_glVertex2i"
-fun glVertex2s : glVertex2_type (GLshort) = "#atsctrb_glVertex2s"
+fun glVertex2f : glVertex2_type (GLfloat) = "mac#atsctrb_glVertex2f"
+fun glVertex2i : glVertex2_type (GLint) = "mac#atsctrb_glVertex2i"
+fun glVertex2s : glVertex2_type (GLshort) = "mac#atsctrb_glVertex2s"
 
 typedef glVertex2v (a:t@ype) = (&(@[a][2])) -<fun1> void
 
-fun glVertex2dv : glVertex2v (GLdouble) = "#atsctrb_glVertex2dv"
-fun glVertex2fv : glVertex2v (GLfloat) = "#atsctrb_glVertex2fv"
-fun glVertex2iv : glVertex2v (GLint) = "#atsctrb_glVertex2iv"
-fun glVertex2sv : glVertex2v (GLshort) = "#atsctrb_glVertex2sv"
+fun glVertex2dv : glVertex2v (GLdouble) = "mac#atsctrb_glVertex2dv"
+fun glVertex2fv : glVertex2v (GLfloat) = "mac#atsctrb_glVertex2fv"
+fun glVertex2iv : glVertex2v (GLint) = "mac#atsctrb_glVertex2iv"
+fun glVertex2sv : glVertex2v (GLshort) = "mac#atsctrb_glVertex2sv"
 
 (* ****** ****** *)
 
@@ -1276,24 +1319,24 @@ typedef glVertex3_type
 
 symintr glVertex3d
 
-fun glVertex3d_double : glVertex3_type (double)
-  = "#atsctrb_glVertex3d"
+fun glVertex3d_double
+  : glVertex3_type (double) = "mac#atsctrb_glVertex3d"
 overload glVertex3d with glVertex3d_double
 
-fun glVertex3d_GLdouble : glVertex3_type (GLdouble)
-  = "#atsctrb_glVertex3d"
+fun glVertex3d_GLdouble
+  : glVertex3_type (GLdouble) = "mac#atsctrb_glVertex3d"
 overload glVertex3d with glVertex3d_GLdouble
 
-fun glVertex3f : glVertex3_type (GLfloat) = "#atsctrb_glVertex3f"
-fun glVertex3i : glVertex3_type (GLint) = "#atsctrb_glVertex3i"
-fun glVertex3s : glVertex3_type (GLshort) = "#atsctrb_glVertex3s"
+fun glVertex3f : glVertex3_type (GLfloat) = "mac#atsctrb_glVertex3f"
+fun glVertex3i : glVertex3_type (GLint) = "mac#atsctrb_glVertex3i"
+fun glVertex3s : glVertex3_type (GLshort) = "mac#atsctrb_glVertex3s"
 
 typedef glVertex3v (a:t@ype) = (&(@[a][3])) -<fun1> void
 
-fun glVertex3dv : glVertex3v (GLdouble) = "#atsctrb_glVertex3dv"
-fun glVertex3fv : glVertex3v (GLfloat) = "#atsctrb_glVertex3fv"
-fun glVertex3iv : glVertex3v (GLint) = "#atsctrb_glVertex3iv"
-fun glVertex3sv : glVertex3v (GLshort) = "#atsctrb_glVertex3sv"
+fun glVertex3dv : glVertex3v (GLdouble) = "mac#atsctrb_glVertex3dv"
+fun glVertex3fv : glVertex3v (GLfloat) = "mac#atsctrb_glVertex3fv"
+fun glVertex3iv : glVertex3v (GLint) = "mac#atsctrb_glVertex3iv"
+fun glVertex3sv : glVertex3v (GLshort) = "mac#atsctrb_glVertex3sv"
 
 (* ****** ****** *)
 
@@ -1302,51 +1345,51 @@ typedef glVertex4_type (a:t@ype) =
 
 symintr glVertex4d
 
-fun glVertex4d_double : glVertex4_type (double)
-  = "#atsctrb_glVertex4d"
+fun glVertex4d_double
+  : glVertex4_type (double) = "mac#atsctrb_glVertex4d"
 overload glVertex4d with glVertex4d_double
 
-fun glVertex4d_GLdouble : glVertex4_type (GLdouble)
-  = "#atsctrb_glVertex4d"
+fun glVertex4d_GLdouble
+  : glVertex4_type (GLdouble) = "mac#atsctrb_glVertex4d"
 overload glVertex4d with glVertex4d_GLdouble
 
-fun glVertex4f : glVertex4_type (GLfloat) = "#atsctrb_glVertex4f"
-fun glVertex4i : glVertex4_type (GLint) = "#atsctrb_glVertex4i"
-fun glVertex4s : glVertex4_type (GLshort) = "#atsctrb_glVertex4s"
+fun glVertex4f : glVertex4_type (GLfloat) = "mac#atsctrb_glVertex4f"
+fun glVertex4i : glVertex4_type (GLint) = "mac#atsctrb_glVertex4i"
+fun glVertex4s : glVertex4_type (GLshort) = "mac#atsctrb_glVertex4s"
 
 typedef glVertex4v (a:t@ype) = (&(@[a][4])) -<fun1> void
 
-fun glVertex4dv : glVertex4v (GLdouble) = "#atsctrb_glVertex4dv"
-fun glVertex4fv : glVertex4v (GLfloat) = "#atsctrb_glVertex4fv"
-fun glVertex4iv : glVertex4v (GLint) = "#atsctrb_glVertex4iv"
-fun glVertex4sv : glVertex4v (GLshort) = "#atsctrb_glVertex4sv"
+fun glVertex4dv : glVertex4v (GLdouble) = "mac#atsctrb_glVertex4dv"
+fun glVertex4fv : glVertex4v (GLfloat) = "mac#atsctrb_glVertex4fv"
+fun glVertex4iv : glVertex4v (GLint) = "mac#atsctrb_glVertex4iv"
+fun glVertex4sv : glVertex4v (GLshort) = "mac#atsctrb_glVertex4sv"
 
 (* ****** ****** *)
 
 typedef glNormal3_type (a:t@ype) =
   (a(*nx*), a(*ny*), a(*nz*)) -<fun1> void
 
-fun glNormal3b : glNormal3_type (GLbyte) = "#atsctrb_glNormal3b"
-fun glNormal3d : glNormal3_type (GLdouble) = "#atsctrb_glNormal3d"
-fun glNormal3f : glNormal3_type (GLfloat) = "#atsctrb_glNormal3f"
-fun glNormal3i : glNormal3_type (GLint) = "#atsctrb_glNormal3i"
-fun glNormal3s : glNormal3_type (GLshort) = "#atsctrb_glNormal3s"
+fun glNormal3b : glNormal3_type (GLbyte) = "mac#atsctrb_glNormal3b"
+fun glNormal3d : glNormal3_type (GLdouble) = "mac#atsctrb_glNormal3d"
+fun glNormal3f : glNormal3_type (GLfloat) = "mac#atsctrb_glNormal3f"
+fun glNormal3i : glNormal3_type (GLint) = "mac#atsctrb_glNormal3i"
+fun glNormal3s : glNormal3_type (GLshort) = "mac#atsctrb_glNormal3s"
 
 typedef glNormal3v_type (a:t@ype) = (&(@[a][3])) -<fun1> void
 
-fun glNormal3bv : glNormal3v_type (GLbyte) = "#atsctrb_glNormal3bv"
-fun glNormal3dv : glNormal3v_type (GLdouble) = "#atsctrb_glNormal3dv"
-fun glNormal3fv : glNormal3v_type (GLfloat) = "#atsctrb_glNormal3fv"
-fun glNormal3iv : glNormal3v_type (GLint) = "#atsctrb_glNormal3iv"
-fun glNormal3sv : glNormal3v_type (GLshort) = "#atsctrb_glNormal3sv"
+fun glNormal3bv : glNormal3v_type (GLbyte) = "mac#atsctrb_glNormal3bv"
+fun glNormal3dv : glNormal3v_type (GLdouble) = "mac#atsctrb_glNormal3dv"
+fun glNormal3fv : glNormal3v_type (GLfloat) = "mac#atsctrb_glNormal3fv"
+fun glNormal3iv : glNormal3v_type (GLint) = "mac#atsctrb_glNormal3iv"
+fun glNormal3sv : glNormal3v_type (GLshort) = "mac#atsctrb_glNormal3sv"
 
 (* ****** ****** *)
 
-fun glIndexd (c: GLdouble): void = "#atsctrb_glIndexd"
-fun glIndexf (c: GLfloat): void = "#atsctrb_glIndexf"
-fun glIndexi (c: GLint): void = "#atsctrb_glIndexi"
-fun glIndexs (c: GLshort): void = "#atsctrb_glIndexs"
-fun glIndexub (c: GLubyte): void = "#atsctrb_glIndexub" // OpenGL 1.1
+fun glIndexd (c: GLdouble): void = "mac#atsctrb_glIndexd"
+fun glIndexf (c: GLfloat): void = "mac#atsctrb_glIndexf"
+fun glIndexi (c: GLint): void = "mac#atsctrb_glIndexi"
+fun glIndexs (c: GLshort): void = "mac#atsctrb_glIndexs"
+fun glIndexub (c: GLubyte): void = "mac#atsctrb_glIndexub" // OpenGL 1.1
 
 (*
 GLAPI void GLAPIENTRY glIndexdv( const GLdouble *c );
@@ -1362,39 +1405,53 @@ typedef glColor3_type (a:t@ype) =
   (a(*red*), a(*green*), a(*blue*)) -<fun1> void
 // end of [glColor3_type]
 
-fun glColor3b : glColor3_type (GLbyte) = "#atsctrb_glColor3b"
+fun glColor3b : glColor3_type (GLbyte) = "mac#atsctrb_glColor3b"
 
 //
 
 symintr glColor3d
 
-fun glColor3d_double : glColor3_type (double)
-  = "#atsctrb_glColor3d"
+fun glColor3d_double
+  : glColor3_type (double) = "mac#atsctrb_glColor3d"
 overload glColor3d with glColor3d_double
 
-fun glColor3d_GLdouble : glColor3_type (GLdouble)
-  = "#atsctrb_glColor3d"
+fun glColor3d_GLdouble
+  : glColor3_type (GLdouble) = "mac#atsctrb_glColor3d"
 overload glColor3d with glColor3d_GLdouble
 
 //
 
-fun glColor3f : glColor3_type (GLfloat) = "#atsctrb_glColor3f"
-fun glColor3i : glColor3_type (GLint) = "#atsctrb_glColor3i"
-fun glColor3s : glColor3_type (GLshort) = "#atsctrb_glColor3s"
-fun glColor3ub : glColor3_type (GLubyte) = "#atsctrb_glColor3ub"
-fun glColor3ui : glColor3_type (GLuint) = "#atsctrb_glColor3ui"
-fun glColor3us : glColor3_type (GLushort) = "#atsctrb_glColor3us"
+fun glColor3f
+  : glColor3_type (GLfloat) = "mac#atsctrb_glColor3f"
+fun glColor3i
+  : glColor3_type (GLint) = "mac#atsctrb_glColor3i"
+fun glColor3s
+  : glColor3_type (GLshort) = "mac#atsctrb_glColor3s"
+fun glColor3ub
+  : glColor3_type (GLubyte) = "mac#atsctrb_glColor3ub"
+fun glColor3ui
+  : glColor3_type (GLuint) = "mac#atsctrb_glColor3ui"
+fun glColor3us
+  : glColor3_type (GLushort) = "mac#atsctrb_glColor3us"
 
 typedef glColor3v_type (a:t@ype) = (&(@[a][3])) -<fun1> void
 
-fun glColor3bv : glColor3v_type (GLbyte) = "#atsctrb_glColor3bv"
-fun glColor3dv : glColor3v_type (GLdouble) = "#atsctrb_glColor3dv"
-fun glColor3fv : glColor3v_type (GLfloat) = "#atsctrb_glColor3fv"
-fun glColor3iv : glColor3v_type (GLint) = "#atsctrb_glColor3iv"
-fun glColor3iv : glColor3v_type (GLshort) = "#atsctrb_glColor3sv"
-fun glColor3ubv : glColor3v_type (GLubyte) = "#atsctrb_glColor3ubv"
-fun glColor3uiv : glColor3v_type (GLuint) = "#atsctrb_glColor3uiv"
-fun glColor3uiv : glColor3v_type (GLushort) = "#atsctrb_glColor3usv"
+fun glColor3bv
+  : glColor3v_type (GLbyte) = "mac#atsctrb_glColor3bv"
+fun glColor3dv
+  : glColor3v_type (GLdouble) = "mac#atsctrb_glColor3dv"
+fun glColor3fv
+  : glColor3v_type (GLfloat) = "mac#atsctrb_glColor3fv"
+fun glColor3iv
+  : glColor3v_type (GLint) = "mac#atsctrb_glColor3iv"
+fun glColor3iv
+  : glColor3v_type (GLshort) = "mac#atsctrb_glColor3sv"
+fun glColor3ubv
+  : glColor3v_type (GLubyte) = "mac#atsctrb_glColor3ubv"
+fun glColor3uiv
+  : glColor3v_type (GLuint) = "mac#atsctrb_glColor3uiv"
+fun glColor3uiv
+  : glColor3v_type (GLushort) = "mac#atsctrb_glColor3usv"
 
 (* ****** ****** *)
 
@@ -1404,37 +1461,53 @@ typedef glColor4_type (a:t@ype) =
 
 //
 
-fun glColor4b : glColor4_type (GLbyte) = "#atsctrb_glColor4b"
+fun glColor4b : glColor4_type (GLbyte) = "mac#atsctrb_glColor4b"
 
 //
 
 symintr glColor4d
 
-fun glColor4d_double : glColor4_type (double) = "#atsctrb_glColor4d"
+fun glColor4d_double
+  : glColor4_type (double) = "mac#atsctrb_glColor4d"
 overload glColor4d with glColor4d_double
-fun glColor4d_GLdouble : glColor4_type (GLdouble) = "#atsctrb_glColor4d"
+fun glColor4d_GLdouble
+  : glColor4_type (GLdouble) = "mac#atsctrb_glColor4d"
 overload glColor4d with glColor4d_GLdouble
 
 //
 
-fun glColor4f : glColor4_type (GLfloat) = "#atsctrb_glColor4f"
-fun glColor4i : glColor4_type (GLint) = "#atsctrb_glColor4i"
-fun glColor4s : glColor4_type (GLshort) = "#atsctrb_glColor4s"
-fun glColor4ub : glColor4_type (GLubyte) = "#atsctrb_glColor4ub"
-fun glColor4ui : glColor4_type (GLuint) = "#atsctrb_glColor4ui"
-fun glColor4us : glColor4_type (GLushort) = "#atsctrb_glColor4us"
+fun glColor4f
+  : glColor4_type (GLfloat) = "mac#atsctrb_glColor4f"
+fun glColor4i
+  : glColor4_type (GLint) = "mac#atsctrb_glColor4i"
+fun glColor4s
+  : glColor4_type (GLshort) = "mac#atsctrb_glColor4s"
+fun glColor4ub
+  : glColor4_type (GLubyte) = "mac#atsctrb_glColor4ub"
+fun glColor4ui
+  : glColor4_type (GLuint) = "mac#atsctrb_glColor4ui"
+fun glColor4us
+  : glColor4_type (GLushort) = "mac#atsctrb_glColor4us"
 
 (* ****** ****** *)
 
 typedef glColor4v_type (a:t@ype) = (&(@[a][4])) -<fun1> void
-fun glColor4bv : glColor4v_type (GLbyte) = "#atsctrb_glColor4bv"
-fun glColor4dv : glColor4v_type (GLdouble) = "#atsctrb_glColor4dv"
-fun glColor4fv : glColor4v_type (GLfloat) = "#atsctrb_glColor4fv"
-fun glColor4iv : glColor4v_type (GLint) = "#atsctrb_glColor4iv"
-fun glColor4iv : glColor4v_type (GLshort) = "#atsctrb_glColor4sv"
-fun glColor4ubv : glColor4v_type (GLubyte) = "#atsctrb_glColor4ubv"
-fun glColor4uiv : glColor4v_type (GLuint) = "#atsctrb_glColor4uiv"
-fun glColor4uiv : glColor4v_type (GLushort) = "#atsctrb_glColor4usv"
+fun glColor4bv
+  : glColor4v_type (GLbyte) = "mac#atsctrb_glColor4bv"
+fun glColor4dv
+  : glColor4v_type (GLdouble) = "mac#atsctrb_glColor4dv"
+fun glColor4fv
+  : glColor4v_type (GLfloat) = "mac#atsctrb_glColor4fv"
+fun glColor4iv
+  : glColor4v_type (GLint) = "mac#atsctrb_glColor4iv"
+fun glColor4iv
+  : glColor4v_type (GLshort) = "mac#atsctrb_glColor4sv"
+fun glColor4ubv
+  : glColor4v_type (GLubyte) = "mac#atsctrb_glColor4ubv"
+fun glColor4uiv
+  : glColor4v_type (GLuint) = "mac#atsctrb_glColor4uiv"
+fun glColor4uiv
+  : glColor4v_type (GLushort) = "mac#atsctrb_glColor4usv"
 
 (* ****** ****** *)
 
@@ -1444,19 +1517,22 @@ typedef glTexCoord1_type (a:t@ype) = (a(*s*)) -<fun1> void
 
 symintr glTexCoord1d
 
-fun glTexCoord1d_double : glTexCoord1_type (double)
-  = "#atsctrb_glTexCoord1d"
+fun glTexCoord1d_double
+  : glTexCoord1_type (double) = "mac#atsctrb_glTexCoord1d"
 overload glTexCoord1d with glTexCoord1d_double
 
-fun glTexCoord1d_GLdouble : glTexCoord1_type (GLdouble)
-  = "#atsctrb_glTexCoord1d"
+fun glTexCoord1d_GLdouble
+  : glTexCoord1_type (GLdouble) = "mac#atsctrb_glTexCoord1d"
 overload glTexCoord1d with glTexCoord1d_GLdouble
 
 //
 
-fun glTexCoord1f : glTexCoord1_type (GLfloat) = "#atsctrb_glTexCoord1f"
-fun glTexCoord1i : glTexCoord1_type (GLint) = "#atsctrb_glTexCoord1i"
-fun glTexCoord1s : glTexCoord1_type (GLshort) = "#atsctrb_glTexCoord1s"
+fun glTexCoord1f
+  : glTexCoord1_type (GLfloat) = "mac#atsctrb_glTexCoord1f"
+fun glTexCoord1i
+  : glTexCoord1_type (GLint) = "mac#atsctrb_glTexCoord1i"
+fun glTexCoord1s
+  : glTexCoord1_type (GLshort) = "mac#atsctrb_glTexCoord1s"
 
 (* ****** ****** *)
 
@@ -1468,19 +1544,22 @@ typedef glTexCoord2_type
 
 symintr glTexCoord2d
 
-fun glTexCoord2d_double : glTexCoord2_type (double)
-  = "#atsctrb_glTexCoord2d"
+fun glTexCoord2d_double
+  : glTexCoord2_type (double) = "mac#atsctrb_glTexCoord2d"
 overload glTexCoord2d with glTexCoord2d_double
 
-fun glTexCoord2d_GLdouble : glTexCoord2_type (GLdouble)
-  = "#atsctrb_glTexCoord2d"
+fun glTexCoord2d_GLdouble
+  : glTexCoord2_type (GLdouble) = "mac#atsctrb_glTexCoord2d"
 overload glTexCoord2d with glTexCoord2d_GLdouble
 
 //
 
-fun glTexCoord2f : glTexCoord2_type (GLfloat) = "#atsctrb_glTexCoord2f"
-fun glTexCoord2i : glTexCoord2_type (GLint) = "#atsctrb_glTexCoord2i"
-fun glTexCoord2s : glTexCoord2_type (GLshort) = "#atsctrb_glTexCoord2s"
+fun glTexCoord2f
+  : glTexCoord2_type (GLfloat) = "mac#atsctrb_glTexCoord2f"
+fun glTexCoord2i
+  : glTexCoord2_type (GLint) = "mac#atsctrb_glTexCoord2i"
+fun glTexCoord2s
+  : glTexCoord2_type (GLshort) = "mac#atsctrb_glTexCoord2s"
 
 (* ****** ****** *)
 
@@ -1492,19 +1571,22 @@ typedef glTexCoord3_type
 
 symintr glTexCoord3d
 
-fun glTexCoord3d_double : glTexCoord3_type (double)
-  = "#atsctrb_glTexCoord3d"
+fun glTexCoord3d_double
+  : glTexCoord3_type (double) = "mac#atsctrb_glTexCoord3d"
 overload glTexCoord3d with glTexCoord3d_double
 
-fun glTexCoord3d_GLdouble : glTexCoord3_type (GLdouble)
-  = "#atsctrb_glTexCoord3d"
+fun glTexCoord3d_GLdouble
+  : glTexCoord3_type (GLdouble) = "mac#atsctrb_glTexCoord3d"
 overload glTexCoord3d with glTexCoord3d_GLdouble
 
 //
 
-fun glTexCoord3f : glTexCoord3_type (GLfloat) = "#atsctrb_glTexCoord3f"
-fun glTexCoord3i : glTexCoord3_type (GLint) = "#atsctrb_glTexCoord3i"
-fun glTexCoord3s : glTexCoord3_type (GLshort) = "#atsctrb_glTexCoord3s"
+fun glTexCoord3f
+  : glTexCoord3_type (GLfloat) = "mac#atsctrb_glTexCoord3f"
+fun glTexCoord3i
+  : glTexCoord3_type (GLint) = "mac#atsctrb_glTexCoord3i"
+fun glTexCoord3s
+  : glTexCoord3_type (GLshort) = "mac#atsctrb_glTexCoord3s"
 
 (* ****** ****** *)
 
@@ -1512,36 +1594,56 @@ typedef glTexCoord4_type
   (a:t@ype) = (a(*s*), a(*t*), a(*r*), a(*q*)) -<fun1> void
 // end of [glTexCoord4_type]
 
-fun glTexCoord4d : glTexCoord4_type (GLdouble) = "#atsctrb_glTexCoord4d"
-fun glTexCoord4f : glTexCoord4_type (GLfloat) = "#atsctrb_glTexCoord4f"
-fun glTexCoord4i : glTexCoord4_type (GLint) = "#atsctrb_glTexCoord4i"
-fun glTexCoord4s : glTexCoord4_type (GLshort) = "#atsctrb_glTexCoord4s"
+fun glTexCoord4d
+  : glTexCoord4_type (GLdouble) = "mac#atsctrb_glTexCoord4d"
+fun glTexCoord4f
+  : glTexCoord4_type (GLfloat) = "mac#atsctrb_glTexCoord4f"
+fun glTexCoord4i
+  : glTexCoord4_type (GLint) = "mac#atsctrb_glTexCoord4i"
+fun glTexCoord4s
+  : glTexCoord4_type (GLshort) = "mac#atsctrb_glTexCoord4s"
 
 (* ****** ****** *)
 
 typedef glTexCoord1v_type (a:t@ype) = (&(@[a][1])) -<fun1> void
-fun glTexCoord1dv : glTexCoord1v_type (GLdouble) = "#atsctrb_glTexCoord1dv"
-fun glTexCoord1fv : glTexCoord1v_type (GLfloat) = "#atsctrb_glTexCoord1fv"
-fun glTexCoord1iv : glTexCoord1v_type (GLint) = "#atsctrb_glTexCoord1iv"
-fun glTexCoord1sv : glTexCoord1v_type (GLshort) = "#atsctrb_glTexCoord1sv"
+fun glTexCoord1dv
+  : glTexCoord1v_type (GLdouble) = "mac#atsctrb_glTexCoord1dv"
+fun glTexCoord1fv
+  : glTexCoord1v_type (GLfloat) = "mac#atsctrb_glTexCoord1fv"
+fun glTexCoord1iv
+  : glTexCoord1v_type (GLint) = "mac#atsctrb_glTexCoord1iv"
+fun glTexCoord1sv
+  : glTexCoord1v_type (GLshort) = "mac#atsctrb_glTexCoord1sv"
 
 typedef glTexCoord2v_type (a:t@ype) = (&(@[a][2])) -<fun1> void
-fun glTexCoord2dv : glTexCoord2v_type (GLdouble) = "#atsctrb_glTexCoord2dv"
-fun glTexCoord2fv : glTexCoord2v_type (GLfloat) = "#atsctrb_glTexCoord2fv"
-fun glTexCoord2iv : glTexCoord2v_type (GLint) = "#atsctrb_glTexCoord2iv"
-fun glTexCoord2sv : glTexCoord2v_type (GLshort) = "#atsctrb_glTexCoord2sv"
+fun glTexCoord2dv
+  : glTexCoord2v_type (GLdouble) = "mac#atsctrb_glTexCoord2dv"
+fun glTexCoord2fv
+  : glTexCoord2v_type (GLfloat) = "mac#atsctrb_glTexCoord2fv"
+fun glTexCoord2iv
+  : glTexCoord2v_type (GLint) = "mac#atsctrb_glTexCoord2iv"
+fun glTexCoord2sv
+  : glTexCoord2v_type (GLshort) = "mac#atsctrb_glTexCoord2sv"
 
 typedef glTexCoord3v_type (a:t@ype) = (&(@[a][3])) -<fun1> void
-fun glTexCoord3dv : glTexCoord3v_type (GLdouble) = "#atsctrb_glTexCoord3dv"
-fun glTexCoord3fv : glTexCoord3v_type (GLfloat) = "#atsctrb_glTexCoord3fv"
-fun glTexCoord3iv : glTexCoord3v_type (GLint) = "#atsctrb_glTexCoord3iv"
-fun glTexCoord3sv : glTexCoord3v_type (GLshort) = "#atsctrb_glTexCoord3sv"
+fun glTexCoord3dv
+  : glTexCoord3v_type (GLdouble) = "mac#atsctrb_glTexCoord3dv"
+fun glTexCoord3fv
+  : glTexCoord3v_type (GLfloat) = "mac#atsctrb_glTexCoord3fv"
+fun glTexCoord3iv
+  : glTexCoord3v_type (GLint) = "mac#atsctrb_glTexCoord3iv"
+fun glTexCoord3sv
+  : glTexCoord3v_type (GLshort) = "mac#atsctrb_glTexCoord3sv"
 
 typedef glTexCoord4v_type (a:t@ype) = (&(@[a][4])) -<fun1> void
-fun glTexCoord4dv : glTexCoord4v_type (GLdouble) = "#atsctrb_glTexCoord4dv"
-fun glTexCoord4fv : glTexCoord4v_type (GLfloat) = "#atsctrb_glTexCoord4fv"
-fun glTexCoord4iv : glTexCoord4v_type (GLint) = "#atsctrb_glTexCoord4iv"
-fun glTexCoord4sv : glTexCoord4v_type (GLshort) = "#atsctrb_glTexCoord4sv"
+fun glTexCoord4dv
+  : glTexCoord4v_type (GLdouble) = "mac#atsctrb_glTexCoord4dv"
+fun glTexCoord4fv
+  : glTexCoord4v_type (GLfloat) = "mac#atsctrb_glTexCoord4fv"
+fun glTexCoord4iv
+  : glTexCoord4v_type (GLint) = "mac#atsctrb_glTexCoord4iv"
+fun glTexCoord4sv
+  : glTexCoord4v_type (GLshort) = "mac#atsctrb_glTexCoord4sv"
 
 (* ****** ****** *)
 
@@ -1550,13 +1652,19 @@ typedef glRasterPos2_type
 // end of [glRasterPos2_type]
 
 symintr glRasterPos2d
-fun glRasterPos2d_double : glRasterPos2_type (double) = "#atsctrb_glRasterPos2d"
+fun glRasterPos2d_double
+  : glRasterPos2_type (double) = "mac#atsctrb_glRasterPos2d"
 overload glRasterPos2d with glRasterPos2d_double
-fun glRasterPos2d_GLdouble : glRasterPos2_type (GLdouble) = "#atsctrb_glRasterPos2d"
+fun glRasterPos2d_GLdouble
+  : glRasterPos2_type (GLdouble) = "mac#atsctrb_glRasterPos2d"
 overload glRasterPos2d with glRasterPos2d_GLdouble
-fun glRasterPos2f : glRasterPos2_type (GLfloat) = "#atsctrb_glRasterPos2f"
-fun glRasterPos2i : glRasterPos2_type (GLint) = "#atsctrb_glRasterPos2i"
-fun glRasterPos2s : glRasterPos2_type (GLshort) = "#atsctrb_glRasterPos2s"
+
+fun glRasterPos2f
+  : glRasterPos2_type (GLfloat) = "mac#atsctrb_glRasterPos2f"
+fun glRasterPos2i
+  : glRasterPos2_type (GLint) = "mac#atsctrb_glRasterPos2i"
+fun glRasterPos2s
+  : glRasterPos2_type (GLshort) = "mac#atsctrb_glRasterPos2s"
 
 (* ****** ****** *)
 
@@ -1564,10 +1672,14 @@ typedef glRasterPos3_type
   (a:t@ype) = (a(*x*), a(*y*), a(*z*)) -<fun1> void
 // end of [glRasterPos3_type]
 
-fun glRasterPos3d : glRasterPos3_type (GLdouble) = "#atsctrb_glRasterPos3d"
-fun glRasterPos3f : glRasterPos3_type (GLfloat)  = "#atsctrb_glRasterPos3f"
-fun glRasterPos3i : glRasterPos3_type (GLint) = "#atsctrb_glRasterPos3i"
-fun glRasterPos3s : glRasterPos3_type (GLshort) = "#atsctrb_glRasterPos3s"
+fun glRasterPos3d
+  : glRasterPos3_type (GLdouble) = "mac#atsctrb_glRasterPos3d"
+fun glRasterPos3f
+  : glRasterPos3_type (GLfloat)  = "mac#atsctrb_glRasterPos3f"
+fun glRasterPos3i
+  : glRasterPos3_type (GLint) = "mac#atsctrb_glRasterPos3i"
+fun glRasterPos3s
+  : glRasterPos3_type (GLshort) = "mac#atsctrb_glRasterPos3s"
 
 (* ****** ****** *)
 
@@ -1575,32 +1687,48 @@ typedef glRasterPos4_type
   (a:t@ype) = (a(*x*), a(*y*), a(*z*), a(*w*)) -<fun1> void
 // end of [glRasterPos4_type]
 
-fun glRasterPos4d : glRasterPos4_type (GLdouble) = "#atsctrb_glRasterPos4d"
-fun glRasterPos4f : glRasterPos4_type (GLfloat)  = "#atsctrb_glRasterPos4f"
-fun glRasterPos4i : glRasterPos4_type (GLint) = "#atsctrb_glRasterPos4i"
-fun glRasterPos4s : glRasterPos4_type (GLshort) = "#atsctrb_glRasterPos4s"
+fun glRasterPos4d
+  : glRasterPos4_type (GLdouble) = "mac#atsctrb_glRasterPos4d"
+fun glRasterPos4f
+  : glRasterPos4_type (GLfloat)  = "mac#atsctrb_glRasterPos4f"
+fun glRasterPos4i
+  : glRasterPos4_type (GLint) = "mac#atsctrb_glRasterPos4i"
+fun glRasterPos4s
+  : glRasterPos4_type (GLshort) = "mac#atsctrb_glRasterPos4s"
 
 (* ****** ****** *)
 
 typedef glRasterPos2v_type (a:t@ype) = (&(@[a][2])) -<fun1> void
-fun glRasterPos2dv : glRasterPos2v_type (GLdouble) = "#atsctrb_glRasterPos2dv"
-fun glRasterPos2fv : glRasterPos2v_type (GLfloat) = "#atsctrb_glRasterPos2fv"
-fun glRasterPos2iv : glRasterPos2v_type (GLint) = "#atsctrb_glRasterPos2iv"
-fun glRasterPos2sv : glRasterPos2v_type (GLshort) = "#atsctrb_glRasterPos2sv"
+fun glRasterPos2dv
+  : glRasterPos2v_type (GLdouble) = "mac#atsctrb_glRasterPos2dv"
+fun glRasterPos2fv
+  : glRasterPos2v_type (GLfloat) = "mac#atsctrb_glRasterPos2fv"
+fun glRasterPos2iv
+  : glRasterPos2v_type (GLint) = "mac#atsctrb_glRasterPos2iv"
+fun glRasterPos2sv
+  : glRasterPos2v_type (GLshort) = "mac#atsctrb_glRasterPos2sv"
 
 typedef glRasterPos3v_type (a:t@ype) = (&(@[a][3])) -<fun1> void
 
-fun glRasterPos3dv : glRasterPos3v_type (GLdouble) = "#atsctrb_glRasterPos3dv"
-fun glRasterPos3fv : glRasterPos3v_type (GLfloat) = "#atsctrb_glRasterPos3fv"
-fun glRasterPos3iv : glRasterPos3v_type (GLint) = "#atsctrb_glRasterPos3iv"
-fun glRasterPos3sv : glRasterPos3v_type (GLshort) = "#atsctrb_glRasterPos3sv"
+fun glRasterPos3dv
+  : glRasterPos3v_type (GLdouble) = "mac#atsctrb_glRasterPos3dv"
+fun glRasterPos3fv
+  : glRasterPos3v_type (GLfloat) = "mac#atsctrb_glRasterPos3fv"
+fun glRasterPos3iv
+  : glRasterPos3v_type (GLint) = "mac#atsctrb_glRasterPos3iv"
+fun glRasterPos3sv
+  : glRasterPos3v_type (GLshort) = "mac#atsctrb_glRasterPos3sv"
 
 typedef glRasterPos4v_type (a:t@ype) = (&(@[a][4])) -<fun1> void
 
-fun glRasterPos4dv : glRasterPos4v_type (GLdouble) = "#atsctrb_glRasterPos4dv"
-fun glRasterPos4fv : glRasterPos4v_type (GLfloat) = "#atsctrb_glRasterPos4fv"
-fun glRasterPos4iv : glRasterPos4v_type (GLint) = "#atsctrb_glRasterPos4iv"
-fun glRasterPos4sv : glRasterPos4v_type (GLshort) = "#atsctrb_glRasterPos4sv"
+fun glRasterPos4dv
+  : glRasterPos4v_type (GLdouble) = "mac#atsctrb_glRasterPos4dv"
+fun glRasterPos4fv
+  : glRasterPos4v_type (GLfloat) = "mac#atsctrb_glRasterPos4fv"
+fun glRasterPos4iv
+  : glRasterPos4v_type (GLint) = "mac#atsctrb_glRasterPos4iv"
+fun glRasterPos4sv
+  : glRasterPos4v_type (GLshort) = "mac#atsctrb_glRasterPos4sv"
 
 (* ****** ****** *)
 
@@ -1611,19 +1739,22 @@ typedef glRect_type (a:t@ype) =
 
 symintr glRectd
 
-fun glRectd_double : glRect_type (double)
-  = "#atsctrb_glRectd"
+fun glRectd_double
+  : glRect_type (double) = "mac#atsctrb_glRectd"
 overload glRectd with glRectd_double
 
-fun glRectd_GLdouble : glRect_type (GLdouble)
-  = "#atsctrb_glRectd"
+fun glRectd_GLdouble
+  : glRect_type (GLdouble) = "mac#atsctrb_glRectd"
 overload glRectd with glRectd_GLdouble
 
 //
 
-fun glRectf : glRect_type (GLfloat) = "#atsctrb_glRectf"
-fun glRecti : glRect_type (GLint) = "#atsctrb_glRecti"
-fun glRects : glRect_type (GLshort) = "#atsctrb_glRects"
+fun glRectf
+  : glRect_type (GLfloat) = "mac#atsctrb_glRectf"
+fun glRecti
+  : glRect_type (GLint) = "mac#atsctrb_glRecti"
+fun glRects
+  : glRect_type (GLshort) = "mac#atsctrb_glRects"
 
 (* ****** ****** *)
 
@@ -1631,10 +1762,14 @@ typedef glRectv_type
   (a:t@ype) = (&(@[a][2]), &(@[a][2])) -<fun1> void
 // end of [glRectv_type]
 
-fun glRectdv : glRectv_type (GLdouble) = "#atsctrb_glRectdv"
-fun glRectfv : glRectv_type (GLfloat) = "#atsctrb_glRectdf"
-fun glRectiv : glRectv_type (GLint) = "#atsctrb_glRectdi"
-fun glRectsv : glRectv_type (GLshort) = "#atsctrb_glRectds"
+fun glRectdv
+  : glRectv_type (GLdouble) = "mac#atsctrb_glRectdv"
+fun glRectfv
+  : glRectv_type (GLfloat) = "mac#atsctrb_glRectdf"
+fun glRectiv
+  : glRectv_type (GLint) = "mac#atsctrb_glRectdi"
+fun glRectsv
+  : glRectv_type (GLshort) = "mac#atsctrb_glRectds"
 
 (* ****** ****** *)
 
@@ -1644,15 +1779,19 @@ fun glRectsv : glRectv_type (GLshort) = "#atsctrb_glRectds"
 
 (* ****** ****** *)
 
-fun glShadeModel (mode: GLenum): void = "#atsctrb_glShadeModel"
+fun glShadeModel
+  (mode: GLenum): void = "mac#atsctrb_glShadeModel"
+// end of [glShadeModel]
 
 (* ****** ****** *)
 
 typedef glLight_type (a:t@ype) =
   (GLenum(*light*), GLenum(*pname*), a(*param*)) -<fun1> void
 
-fun glLightf : glLight_type (GLfloat) = "#atsctrb_glLightf"
-fun glLighti : glLight_type (GLint) = "#atsctrb_glLighti"
+fun glLightf
+  : glLight_type (GLfloat) = "mac#atsctrb_glLightf"
+fun glLighti
+  : glLight_type (GLint) = "mac#atsctrb_glLighti"
 
 (* ****** ****** *)
 
@@ -1660,21 +1799,26 @@ fun glLighti : glLight_type (GLint) = "#atsctrb_glLighti"
 // these are really unsafe functions!!!
 //
 
-typedef glLightv_type (a:t@ype, n:int) =
-  (GLenum(*light*), GLenum(*pname*), &(@[a][n])(*param*)) -<fun1> void
-// end of [glLightv_type]
+typedef
+glLightv_type (a:t@ype, n:int) = (
+  GLenum(*light*), GLenum(*pname*), &(@[a][n])(*param*)
+) -<fun1> void // end of [glLightv_type]
 
-fun glLightfv : {n:nat} glLightv_type (GLfloat, n) = "#atsctrb_glLightfv"
-fun glLightiv : {n:nat} glLightv_type (GLint, n) = "#atsctrb_glLightiv"
+fun glLightfv
+  : {n:nat} glLightv_type (GLfloat, n) = "mac#atsctrb_glLightfv"
+fun glLightiv
+  : {n:nat} glLightv_type (GLint, n) = "mac#atsctrb_glLightiv"
 
-typedef glGetLightv_type (a:t@ype, n:int) = (
+typedef
+glGetLightv_type (a:t@ype, n:int) = (
   GLenum(*light*), GLenum(*pname*), &(@[a?][n]) >> @[a][n](*param*)
 ) -<fun1> void
 // end of [glGetLightv_type]
 
 fun glGetLightfv
-  : {n:nat} glGetLightv_type (GLfloat, n) = "#atsctrb_glGetLightfv"
-fun glGetLightiv : {n:nat} glGetLightv_type (GLint, n) = "#atsctrb_glGetLightiv"
+  : {n:nat} glGetLightv_type (GLfloat, n) = "mac#atsctrb_glGetLightfv"
+fun glGetLightiv
+  : {n:nat} glGetLightv_type (GLint, n) = "mac#atsctrb_glGetLightiv"
 
 (* ****** ****** *)
 
@@ -1682,8 +1826,10 @@ typedef glLightModel_type
   (a:t@ype) = (GLenum(*pname*), a(*param*)) -<fun1> void
 // end of [glLightModel_type]
 
-fun glLightModelf : glLightModel_type (GLfloat) = "#atsctrb_glLightModelf"
-fun glLightModeli : glLightModel_type (GLint) = "#atsctrb_glLightModeli"
+fun glLightModelf
+  : glLightModel_type (GLfloat) = "mac#atsctrb_glLightModelf"
+fun glLightModeli
+  : glLightModel_type (GLint) = "mac#atsctrb_glLightModeli"
 
 (* ****** ****** *)
 
@@ -1691,11 +1837,13 @@ typedef glLightModelv_type (a:t@ype, n:int) =
   (GLenum(*pname*), &(@[a][n])(*params*)) -<fun1> void
 // end of [glLightModelv_type]
 
-fun glLightModelfv : {n:nat} glLightModelv_type (GLfloat, n)
-  = "#atsctrb_glLightModelfv"
+fun glLightModelfv
+  : {n:nat} glLightModelv_type (GLfloat, n)
+  = "mac#atsctrb_glLightModelfv"
 
-fun glLightModeliv : {n:nat} glLightModelv_type (GLint, n)
-  = "#atsctrb_glLightModeliv"
+fun glLightModeliv
+  : {n:nat} glLightModelv_type (GLint, n)
+  = "mac#atsctrb_glLightModeliv"
 
 (* ****** ****** *)
 
@@ -1703,34 +1851,45 @@ typedef glMaterial_type (a:t@ype) =
   (GLenum(*face*), GLenum(*pname*), a(*param*)) -<fun1> void
 // end of [glMaterial_type]
 
-fun glMaterialf : glMaterial_type (GLfloat) = "#atsctrb_glMaterialf"
-fun glMateriali : glMaterial_type (GLint) = "#atsctrb_glMateriali"
+fun glMaterialf
+  : glMaterial_type (GLfloat)= "mac#atsctrb_glMaterialf"
+fun glMateriali
+  : glMaterial_type (GLint) = "mac#atsctrb_glMateriali"
 
 (* ****** ****** *)
 
-typedef glMaterialv_type (a:t@ype, n:int) =
+typedef
+glMaterialv_type (a:t@ype, n:int) =
   (GLenum(*face*), GLenum(*pname*), &(@[a][n])) -<fun1> void
 // end of [glMaterialv_type]
 
-fun glMaterialfv : {n:nat} glMaterialv_type (GLfloat, n)
-  = "#atsctrb_glMaterialfv"
+fun glMaterialfv
+  : {n:nat} glMaterialv_type (GLfloat, n)
+  = "mac#atsctrb_glMaterialfv"
 
-fun glMaterialiv : {n:nat} glMaterialv_type (GLint, n)
-  = "#atsctrb_glMaterialiv"
+fun glMaterialiv
+  : {n:nat} glMaterialv_type (GLint, n)
+  = "mac#atsctrb_glMaterialiv"
 
 (* ****** ****** *)
 
-typedef glGetMaterialv_type (a:t@ype, n:int) =
-  (GLenum(*face*), GLenum(*pname*), &(@[a?][n]) >> @[a][n]) -<fun1> void
-// end of [glGetMaterialv_type]
+typedef
+glGetMaterialv_type (a:t@ype, n:int) = (
+  GLenum(*face*), GLenum(*pname*), &(@[a?][n]) >> @[a][n]
+) -<fun1> void // end of [glGetMaterialv_type]
 
 fun glGetMaterialfv
-  : {n:nat} glGetMaterialv_type (GLfloat, n) = "#atsctrb_glGetMaterialfv"
-fun glGetMaterialiv : {n:nat} glGetMaterialv_type (GLint, n) = "#atsctrb_glGetMaterialiv"
+  : {n:nat} glGetMaterialv_type (GLfloat, n)
+  = "mac#atsctrb_glGetMaterialfv"
+fun glGetMaterialiv
+  : {n:nat} glGetMaterialv_type (GLint, n)
+  = "mac#atsctrb_glGetMaterialiv"
 
 (* ****** ****** *)
 
-fun glColorMaterial (face: GLenum, mode: GLenum): void = "#atsctrb_glColorMaterial"
+fun glColorMaterial
+  (face: GLenum, mode: GLenum): void = "mac#atsctrb_glColorMaterial"
+// end of [glColorMaterial]
 
 (* ****** ****** *)
 
@@ -1741,7 +1900,7 @@ fun glColorMaterial (face: GLenum, mode: GLenum): void = "#atsctrb_glColorMateri
 (* ****** ****** *)
 
 fun glPixelZoom
-  (xfactor: GLfloat, yfactor: GLfloat): void = "#atsctrb_glPixelZoom"
+  (xfactor: GLfloat, yfactor: GLfloat): void = "mac#atsctrb_glPixelZoom"
 // end of [glPixelZoom]
 
 (* ****** ****** *)
@@ -1750,40 +1909,50 @@ typedef glPixelStore_type (a:t@ype) =
   (GLenum(*pname*), a(*param*)) -<fun1> void
 // end of [glPixelStore_type]
 
-fun glPixelStoref : glPixelStore_type (GLfloat) = "#atsctrb_glPixelStoref"
-fun glPixelStorei : glPixelStore_type (GLint) = "#atsctrb_glPixelStorei"
+fun glPixelStoref
+  : glPixelStore_type (GLfloat) = "mac#atsctrb_glPixelStoref"
+fun glPixelStorei
+  : glPixelStore_type (GLint) = "mac#atsctrb_glPixelStorei"
 
 (* ****** ****** *)
 
 fun glBitmap {w8:nat}
   {w,h:nat | w <= 8*w8} {n:nat} {p:int | p <= n} (
-    pf: MUL (w8, h, p)
-  | width: GLsizei w, height: GLsizei h
-  , xorig: GLfloat, yorig: GLfloat, xmove: GLfloat, ymove: GLfloat
-  , bitmap: &(@[GLubyte][n])
-  ) : void = "#atsctrb_glBitmap"
+  pf: MUL (w8, h, p)
+| width: GLsizei w, height: GLsizei h
+, xorig: GLfloat, yorig: GLfloat, xmove: GLfloat, ymove: GLfloat
+, bitmap: &(@[GLubyte][n])
+) : void
+  = "mac#atsctrb_glBitmap"
 // end of [glBitmap]
 
 (* ****** ****** *)
 
 fun glReadPixels
   {a:t@ype} {w,h:nat} {n:nat} (
-    x: GLint, y: GLint
-  , w: GLsizei w, h: GLsizei h
-  , fmt: GLenum_format n, type: GLenum_type a, pixels: &GLarray3 (a, w, h, n)
-  ) : void = "#atsctrb_glReadPixels"
+  x: GLint, y: GLint
+, w: GLsizei w, h: GLsizei h
+, fmt: GLenum_format n
+, type: GLenum_type a
+, pixels: &GLarray3 (a, w, h, n)
+) : void
+  = "mac#atsctrb_glReadPixels"
 // end of [glReadPixels]
 
 fun glDrawPixels
   {a:t@ype} {w,h:nat} {n:nat} (
-    w: GLsizei w, h: GLsizei h
-  , fmt: GLenum_format n, type: GLenum_type a, pixels: &GLarray3 (a, w, h, n)
-  ) : void = "#atsctrb_glDrawPixels"
+  w: GLsizei w, h: GLsizei h
+, fmt: GLenum_format n
+, type: GLenum_type a
+, pixels: &GLarray3 (a, w, h, n)
+) : void
+  = "mac#atsctrb_glDrawPixels"
 // end of [glDrawPixels]
 
 fun glCopyPixels {w,h:nat} (
-    x: GLint, y: GLint, w: GLsizei w, h: GLsizei h, type: GLenum
-  ) : void = "#atsctrb_glCopyPixels"
+  x: GLint, y: GLint, w: GLsizei w, h: GLsizei h, type: GLenum
+) : void
+  = "mac#atsctrb_glCopyPixels"
 // end of [glCopyPixels]
 
 (* ****** ****** *)
@@ -1797,44 +1966,47 @@ typedef glTexParameter_type (a:t@ype) =
 // end of [glTexParameter_type]
 
 fun glTexParameterf
-  : glTexParameter_type (GLfloat) = "#atsctrb_glTexParameterf"
-fun glTexParameteri : glTexParameter_type (GLint) = "#atsctrb_glTexParameteri"
+  : glTexParameter_type (GLfloat) = "mac#atsctrb_glTexParameterf"
+fun glTexParameteri
+  : glTexParameter_type (GLint) = "mac#atsctrb_glTexParameteri"
 
 typedef glTexEnv_type (a:t@ype) =
   (GLenum(*target*), GLenum(*pname*), a(*param*)) -<fun1> void
 // end of [glTexEnv]
 
-fun glTexEnvf : glTexEnv_type (GLfloat) = "#atsctrb_glTexEnvf"
-fun glTexEnvi : glTexEnv_type (GLint) = "#atsctrb_glTexEnvi"
+fun glTexEnvf : glTexEnv_type (GLfloat) = "mac#atsctrb_glTexEnvf"
+fun glTexEnvi : glTexEnv_type (GLint) = "mac#atsctrb_glTexEnvi"
 
 (* ****** ****** *)
 
 fun glTexImage1D
   {a:t@ype} {w:nat} {n:int} (
-    target: GLenum
-  , level: GLint
-  , interalFormat: GLint
-  , width: GLsizei w // height = 1
-  , border: natLt(2)
-  , format: GLenum_format n
-  , type: GLenum_type (a)
-  , texels: &GLarray2 (a, w, n)
-  ) : void
-  = "#atsctrb_glTexImage1D"
+  target: GLenum
+, level: GLint
+, interalFormat: GLint
+, width: GLsizei w // height = 1
+, border: natLt(2)
+, format: GLenum_format n
+, type: GLenum_type (a)
+, texels: &GLarray2 (a, w, n)
+) : void
+  = "mac#atsctrb_glTexImage1D"
+// end of [fun]
 
 fun glTexImage2D
   {a:t@ype} {w,h:int} {n:int} (
-    target: GLenum
-  , level: GLint
-  , interalFormat: GLint
-  , width: GLsizei w
-  , height: GLsizei h
-  , border: natLt(2)
-  , format: GLenum_format n
-  , type: GLenum_type (a)
-  , texels: &GLarray3 (a, w, h, n)
-  ) : void
-  = "#atsctrb_glTexImage2D"
+  target: GLenum
+, level: GLint
+, interalFormat: GLint
+, width: GLsizei w
+, height: GLsizei h
+, border: natLt(2)
+, format: GLenum_format n
+, type: GLenum_type (a)
+, texels: &GLarray3 (a, w, h, n)
+) : void
+  = "mac#atsctrb_glTexImage2D"
+// end of [fun]
 
 (* ****** ****** *)
 
@@ -1848,22 +2020,31 @@ viewtypedef GLtexture = [n:int] GLtexture (n)
 fun glGenTexture
   (texture: &GLtexture? >> GLtexture): void
   = "atsctrb_glGenTexture" // this is a function!
+// end of [glGenTexture]
 
-fun glGenTextures {n:pos}
-  (n: GLsizei n, textures: &(@[GLtexture?][n]) >> @[GLtexture][n]): void
-  = "#atsctrb_glGenTextures"
+fun glGenTextures
+  {n:pos} (
+  n: GLsizei n
+, textures: &(@[GLtexture?][n]) >> @[GLtexture][n]
+) : void
+  = "mac#atsctrb_glGenTextures"
 // end of [glGenTextures]
 
 fun glDeleteTexture
   (texture: GLtexture): void = "atsctrb_glDeleteTexture" // this is a function!
 // end of [glDeleteTexture]
 
-fun glDeleteTextures {n:pos}
-  (n: GLsizei n, textures: &(@[GLtexture][n])): void = "#atsctrb_glDeleteTextures"
+fun glDeleteTextures {n:pos} (
+  n: GLsizei n, textures: &(@[GLtexture][n])
+) : void
+  = "mac#atsctrb_glDeleteTextures"
 // end of [glDeleteTextures]
 
-fun glBindTexture {i:int}
-  (target: GLenum, texture: !GLtexture i): void = "#atsctrb_glBindTexture"
+fun glBindTexture
+  {i:int} (
+  target: GLenum, texture: !GLtexture i
+) : void
+  = "mac#atsctrb_glBindTexture"
 // end of [glBindTexture]
 
 (* ****** ****** *)
@@ -1874,10 +2055,10 @@ typedef glFogv_type
   (a:t@ype) = {n:nat} (GLenum(*pname*), &(@[a][n])(*params*)) -<fun1> void
 // end of [glFogv_type]
 
-fun glFogf : glFog_type (GLfloat) = "#atsctrb_glFogf"
-fun glFogi : glFog_type (GLint) = "#atsctrb_glFogi"
-fun glFogfv : glFogv_type (GLfloat) = "#atsctrb_glFogfv"
-fun glFogiv : glFogv_type (GLint) = "#atsctrb_glFogiv"
+fun glFogf : glFog_type (GLfloat) = "mac#atsctrb_glFogf"
+fun glFogi : glFog_type (GLint) = "mac#atsctrb_glFogi"
+fun glFogfv : glFogv_type (GLfloat) = "mac#atsctrb_glFogfv"
+fun glFogiv : glFogv_type (GLint) = "mac#atsctrb_glFogiv"
 
 (* ****** ****** *)
 

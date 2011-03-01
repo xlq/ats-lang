@@ -71,14 +71,14 @@ macdef _PC_2_SYMLINK = $extval (pathconfname_t, "_PC_2_SYMLINK")
 
 fun pathconf (
   path: !READ(string), name: pathconfname_t
-) : lint = "#atslib_pathconf" // end of [pathconf]
+) : lint = "mac#atslib_pathconf" // end of [pathconf]
 
 (* ****** ****** *)
 //
 // HX-2010-09-21: for simplicity, [fd] is assumed to be valid
 //
 fun fpathconf {fd:nat}
-  (fd: int fd, name: pathconfname_t): lint = "#atslib_fpathconf"
+  (fd: int fd, name: pathconfname_t): lint = "mac#atslib_fpathconf"
 // end of [fpathconf]
 
 (* ****** ****** *)

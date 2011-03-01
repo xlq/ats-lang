@@ -19,10 +19,9 @@ obj-m += hello_mod_dats.o
 #
 # Specify flags for the module compilation.
 #
-EXTRA_CFLAGS = \
-  -I$(ATSHOME) \
-  -D_ATS_HEADER_NONE -D_ATS_PRELUDE_NONE \
-  -g
+EXTRA_CFLAGS += -I$(ATSHOME)
+EXTRA_CFLAGS += -D_ATS_HEADER_NONE -D_ATS_PRELUDE_NONE
+EXTRA_CFLAGS += -g
 
 ######
 
@@ -40,6 +39,7 @@ kernel_modules:
 
 ######
 
+clean:: ; rm -f *~
 clean:: ; rm -f *_?ats.c *_?ats.o
 clean:: ; make -C /lib/modules/$(KVERS)/build M=$(CURDIR) clean
 

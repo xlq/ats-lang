@@ -28,7 +28,7 @@ getargs_v (n0:int, l:addr, int) =
 extern
 fun getargs {n0:nat} {l:addr} (
   pfargv: ptrarr0 (n0) @ l | pargv: ptr l, n0: int n0, iseof: &bool? >> bool
-) : [n:int] (getargs_v (n0, l, n) | int n) = "#getargs"
+) : [n:int] (getargs_v (n0, l, n) | int n) = "mac#getargs"
 // end of [getargs]
 
 (* ****** ****** *)
@@ -87,7 +87,7 @@ void execute (
 %} // end of [%{^]
 extern
 fun execute {n:pos}
-  (argc: int n, argv: &(@[string][n])): void = "#execute"
+  (argc: int n, argv: &(@[string][n])): void = "mac#execute"
 // end of [execute]
 
 implement

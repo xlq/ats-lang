@@ -39,7 +39,7 @@
 (* ****** ****** *)
 
 fun gtk_color_selection_new
-  (): GtkColorSelection_ref1 = "#atsctrb_gtk_color_selection_new"
+  (): GtkColorSelection_ref1 = "mac#atsctrb_gtk_color_selection_new"
 // end of [gtk_color_selection_new]
 
 (* ****** ****** *)
@@ -47,7 +47,7 @@ fun gtk_color_selection_new
 fun gtk_color_selection_set_has_palette
   {c:cls | c <= GtkColorSelection} {l:agz}
   (dialog: !gobjref (c, l), has_palette: gboolean): void
-  = "#atsctrb_gtk_color_selection_set_has_palette"
+  = "mac#atsctrb_gtk_color_selection_set_has_palette"
 // end of [gtk_color_selection_set_has_palette]
 
 (* ****** ****** *)
@@ -55,7 +55,7 @@ fun gtk_color_selection_set_has_palette
 fun gtk_color_selection_set_has_opacitiy_control
   {c:cls | c <= GtkColorSelection} {l:agz}
   (dialog: !gobjref (c, l), has_opacity: gboolean): void
-  = "#atsctrb_gtk_color_selection_set_has_opacitiy_control"
+  = "mac#atsctrb_gtk_color_selection_set_has_opacitiy_control"
 // end of [gtk_color_selection_set_has_opacitiy_control]
 
 (* ****** ****** *)
@@ -63,13 +63,13 @@ fun gtk_color_selection_set_has_opacitiy_control
 fun gtk_color_selection_get_previous_color
   {c:cls | c <= GtkColorSelection} {l:agz}
   (dialog: !gobjref (c, l), color: &GdkColor? >> GdkColor): void
-  = "#atsctrb_gtk_color_selection_get_previous_color"
+  = "mac#atsctrb_gtk_color_selection_get_previous_color"
 // end of [gtk_color_selection_get_previous_color]
 
 fun gtk_color_selection_set_previous_color
   {c:cls | c <= GtkColorSelection} {l:agz}
   (dialog: !gobjref (c, l), color: &GdkColor): void
-  = "#atsctrb_gtk_color_selection_set_previous_color"
+  = "mac#atsctrb_gtk_color_selection_set_previous_color"
 // end of [gtk_color_selection_set_previous_color]
 
 (* ****** ****** *)
@@ -77,13 +77,13 @@ fun gtk_color_selection_set_previous_color
 fun gtk_color_selection_get_current_color
   {c:cls | c <= GtkColorSelection} {l:agz}
   (dialog: !gobjref (c, l), color: &GdkColor? >> GdkColor): void
-  = "#atsctrb_gtk_color_selection_get_current_color"
+  = "mac#atsctrb_gtk_color_selection_get_current_color"
 // end of [gtk_color_selection_get_current_color]
 
 fun gtk_color_selection_set_current_color
   {c:cls | c <= GtkColorSelection} {l:agz}
   (dialog: !gobjref (c, l), color: &GdkColor): void
-  = "#atsctrb_gtk_color_selection_set_current_color"
+  = "mac#atsctrb_gtk_color_selection_set_current_color"
 // end of [gtk_color_selection_set_current_color]
 
 (* ****** ****** *)
@@ -91,13 +91,13 @@ fun gtk_color_selection_set_current_color
 fun gtk_color_selection_get_previous_alpha
   {c:cls | c <= GtkColorSelection} {l:agz}
   (dialog: !gobjref (c, l), alpha: &guint16? >> guint16): void
-  = "#atsctrb_gtk_color_selection_get_previous_alpha"
+  = "mac#atsctrb_gtk_color_selection_get_previous_alpha"
 // end of [gtk_color_selection_get_previous_alpha]
 
 fun gtk_color_selection_set_previous_alpha
   {c:cls | c <= GtkColorSelection} {l:agz}
   (dialog: !gobjref (c, l), alpha: guint16): void
-  = "#atsctrb_gtk_color_selection_set_previous_alpha"
+  = "mac#atsctrb_gtk_color_selection_set_previous_alpha"
 // end of [gtk_color_selection_set_previous_alpha]
 
 (* ****** ****** *)
@@ -105,13 +105,13 @@ fun gtk_color_selection_set_previous_alpha
 fun gtk_color_selection_get_current_alpha
   {c:cls | c <= GtkColorSelection} {l:agz}
   (dialog: !gobjref (c, l), alpha: &guint16? >> guint16): void
-  = "#atsctrb_gtk_color_selection_get_current_alpha"
+  = "mac#atsctrb_gtk_color_selection_get_current_alpha"
 // end of [gtk_color_selection_get_current_alpha]
 
 fun gtk_color_selection_set_current_alpha
   {c:cls | c <= GtkColorSelection} {l:agz}
   (dialog: !gobjref (c, l), alpha: guint16): void
-  = "#atsctrb_gtk_color_selection_set_current_alpha"
+  = "mac#atsctrb_gtk_color_selection_set_current_alpha"
 // end of [gtk_color_selection_set_current_alpha]
 
 (* ****** ****** *)

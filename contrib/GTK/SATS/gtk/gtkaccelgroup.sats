@@ -39,18 +39,21 @@
 (* ****** ****** *)
 
 abst@ype GtkAccelFlags = $extype"GtkAccelFlags"
-macdef GTK_ACCEL_VISIBLE = $extval (GtkAccelFlags, "GTK_ACCEL_VISIBLE")
 macdef GTK_ACCEL_LOCKED = $extval (GtkAccelFlags, "GTK_ACCEL_LOCKED")
 macdef GTK_ACCEL_MASK = $extval (GtkAccelFlags, "GTK_ACCEL_MASK")
+macdef GTK_ACCEL_VISIBLE = $extval (GtkAccelFlags, "GTK_ACCEL_VISIBLE")
 
-fun lor_GtkAccelFlags_GtkAccelFlags
-  (x1: GtkAccelFlags, x2: GtkAccelFlags):<> GtkAccelFlags
+fun lor_GtkAccelFlags_GtkAccelFlags (
+  x1: GtkAccelFlags, x2: GtkAccelFlags
+) :<> GtkAccelFlags
   = "atsctrb_lor_GtkAccelFlags_GtkAccelFlags"
 overload lor with lor_GtkAccelFlags_GtkAccelFlags
 
 (* ****** ****** *)
 
-fun gtk_accel_group_new (): GtkAccelGroup_ref1 = "#atsctrb_gtk_accel_group_new"
+fun gtk_accel_group_new
+  (): GtkAccelGroup_ref1 = "mac#atsctrb_gtk_accel_group_new"
+// end of [gtk_accel_group_new]
 
 (* ****** ****** *)
 

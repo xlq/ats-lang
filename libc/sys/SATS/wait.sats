@@ -103,7 +103,7 @@ fun WCOREDUMP {s:int}
 (* ****** ****** *)
 
 fun wait_null (): pid_t = "atslib_wait_null"
-fun wait (status: &int? >> int): pid_t = "#atslib_wait" // !macro
+fun wait (status: &int? >> int): pid_t = "mac#atslib_wait"
 
 (* ****** ****** *)
 
@@ -121,7 +121,7 @@ overload lor with lor_waitopt_waitopt
 
 fun waitpid (
     chldpid: pid_t, status: &int? >> int, options: waitopt_t
-  ) : pid_t = "#atslib_waitpid" // macro!
+  ) : pid_t = "mac#atslib_waitpid" // macro!
 // end of [waitpid]
 
 (* ****** ****** *)

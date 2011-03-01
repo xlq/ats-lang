@@ -71,8 +71,10 @@ macdef AI_NUMERICSERV = $extval (ai_flag_t, "AI_NUMERICSERV")
 macdef AI_PASSIVE = $extval (ai_flag_t, "AI_PASSIVE")
 macdef AI_V4MAPPED = $extval (ai_flag_t, "AI_V4MAPPED")
 //
-fun lor_ai_flag_ai_flag
-  (x1: ai_flag_t, x2: ai_flag_t): ai_flag_t = "atspre_lor_uint_uint"
+fun lor_ai_flag_ai_flag (
+  x1: ai_flag_t, x2: ai_flag_t
+) : ai_flag_t
+  = "mac#atspre_lor_uint_uint"
 overload lor with lor_ai_flag_ai_flag
 
 (* ****** ****** *)
@@ -94,77 +96,100 @@ absviewtype addrinfoptr (l:addr) = ptr
 viewtypedef addrinfoptr = [l:addr] addrinfoptr(l)
 
 fun addrinfoptr_is_null
-  {l:addr} (x: !addrinfoptr l): bool (l==null) = "atspre_ptr_is_null"
+  {l:addr} (
+  x: !addrinfoptr l
+) : bool (l==null) = "mac#atspre_ptr_is_null"
 fun addrinfoptr_isnot_null
-  {l:addr} (x: !addrinfoptr l): bool (l > null) = "atspre_ptr_isnot_null"
+  {l:addr} (
+  x: !addrinfoptr l
+) : bool (l > null) = "mac#atspre_ptr_isnot_null"
 
 fun addrinfoptr_get_next
   {l:agz} (x: !addrinfoptr l)
-  :<> [l1:addr] (minus (addrinfoptr l, addrinfoptr l1) |  addrinfoptr l1)
-  = "#atslib_addrinfoptr_get_next"
+  :<> [l1:addr] (
+  minus (addrinfoptr l, addrinfoptr l1)
+| addrinfoptr l1
+) = "mac#atslib_addrinfoptr_get_next"
 // end of [addrinfoptr_get_next]
 
-fun addrinfoptr_get_canonname {l:agz}
-  (x: !addrinfoptr l):<> [l1:addr] (minus (addrinfoptr l, strptr l1) |  strptr l1)
-  = "#atslib_addrinfoptr_get_canonname"
+fun addrinfoptr_get_canonname
+  {l:agz} (
+  x: !addrinfoptr l
+) :<> [l1:addr] (
+  minus (addrinfoptr l, strptr l1)
+| strptr l1
+) = "mac#atslib_addrinfoptr_get_canonname"
 // end of [addrinfoptr_get_cannonname]
 
 fun addrinfoptr_get_family
-  {l:agz} (x: !addrinfoptr l):<> sa_family_t = "#atslib_addrinfoptr_get_family"
+  {l:agz} (x: !addrinfoptr l):<> sa_family_t = "mac#atslib_addrinfoptr_get_family"
 // end of [addrinfoptr_get_family]
 fun addrinfoptr_get_socktype
-  {l:agz} (x: !addrinfoptr l):<> socktype_t = "#atslib_addrinfoptr_get_socktype"
+  {l:agz} (x: !addrinfoptr l):<> socktype_t = "mac#atslib_addrinfoptr_get_socktype"
 // end of [addrinfoptr_get_socktype]
 fun addrinfoptr_get_protocol
-  {l:agz} (x: !addrinfoptr l):<> sockprot_t = "#atslib_addrinfoptr_get_protocol"
+  {l:agz} (x: !addrinfoptr l):<> sockprot_t = "mac#atslib_addrinfoptr_get_protocol"
 // end of [addrinfoptr_get_protocol]
 
 (* ****** ****** *)
 //
 // HX: if the info is obtained by setting hint.ai_family = AF_INET
 //
-fun addrinfoptr_get_addr_in {l:agz} (x: !addrinfoptr l)
-  :<> [l1:addr] (sockaddr_in @ l1, minus (addrinfoptr l, sockaddr_in @ l1) |  ptr l1)
-  = "#atslib_addrinfoptr_get_addr"
-// end of [addrinfoptr_get_addr_in]
+fun addrinfoptr_get_addr_in
+  {l:agz} (
+  x: !addrinfoptr l
+) :<> [l1:addr] (
+  sockaddr_in @ l1, minus (addrinfoptr l, sockaddr_in @ l1)
+|  ptr l1
+) = "mac#atslib_addrinfoptr_get_addr"
+// end of [fun]
 
 //
 // HX: if the info is obtained by setting hint.ai_family = AF_INET6
 //
-fun addrinfoptr_get_addr_in6 {l:agz} (x: !addrinfoptr l)
-  :<> [l1:addr] (sockaddr_in6 @ l1, minus (addrinfoptr l, sockaddr_in6 @ l1) |  ptr l1)
-  = "#atslib_addrinfoptr_get_addr"
-// end of [addrinfoptr_get_addr_in6]
+fun addrinfoptr_get_addr_in6
+  {l:agz} (
+  x: !addrinfoptr l
+) :<> [l1:addr] (
+  sockaddr_in6 @ l1, minus (addrinfoptr l, sockaddr_in6 @ l1)
+| ptr l1
+) = "mac#atslib_addrinfoptr_get_addr"
+// end of [fun]
 
 (*
 // HX-2010-10-13: I doubt this is usefull
 fun addrinfoptr_get_addr_un {l:agz} (x: !addrinfoptr l)
-  :<> [l1:addr] (sockaddr_un @ l1, minus (addrinfoptr l, sockaddr_un @ l1) |  ptr l1)
-  = "#atslib_addrinfoptr_get_addr"
+  :<> [l1:addr] (
+  sockaddr_un @ l1, minus (addrinfoptr l, sockaddr_un @ l1)
+|  ptr l1
+) = "mac#atslib_addrinfoptr_get_addr"
 // end of [addrinfoptr_get_addr_un]
 *)
 
 (* ****** ****** *)
 
 fun getaddrinfo (
-    nodename: string
-  , portname: string
-  , hint: &addrinfo(0)
-  , infop: &addrinfoptr? >> opt (addrinfoptr, i == 0)
-  ) : #[i:int | i <= 0] int (i) // HX: error codes are negative
-  = "#atslib_getaddrinfo"
+  nodename: string
+, portname: string
+, hint: &addrinfo(0)
+, infop: &addrinfoptr? >> opt (addrinfoptr, i == 0)
+) : #[i:int | i <= 0] int (i) // HX: error codes are negative
+  = "mac#atslib_getaddrinfo"
 // end of [getaddrinfo]
 
 (* ****** ****** *)
 
-fun gai_strerror
-  (code: int): [l:agz] (strptr l -<lin,prf> void | strptr l)
-  = "#atslib_gai_strerror"
-// end of [gai_strerror]
+fun gai_strerror (
+  code: int
+) : [l:agz] (
+  strptr l -<lin,prf> void | strptr l
+) = "mac#atslib_gai_strerror"
 
 (* ****** ****** *)
 
-fun freeaddrinfo (infop: addrinfoptr): void = "#atslib_freeaddrinfo"
+fun freeaddrinfo
+  (infop: addrinfoptr): void = "mac#atslib_freeaddrinfo"
+// end of [freeaddrinfo]
 
 (* ****** ****** *)
 
@@ -180,38 +205,53 @@ $extype_struct
 } // end of [hostent_struct]
 typedef hostent = hostent_struct
 
-fun hostent_get_name (h: &hostent)
-  :<!ref> [l:agz] (strptr l -<lin,prf> void | strptr l)
-  = "#atslib_hostent_get_name"
+fun hostent_get_name (
+  h: &hostent
+) :<!ref> [l:agz] (
+  strptr l -<lin,prf> void
+| strptr l
+) = "mac#atslib_hostent_get_name"
 // end of [hostent_get_name]
 
-fun hostent_get_aliases (h: &hostent)
-  :<!ref> [n:nat] [l:agz] (ptrarr n @ l, ptrarr n @ l -<lin,prf> void | ptr l)
-  = "#atslib_hostent_get_aliases"
+fun hostent_get_aliases (
+  h: &hostent
+) :<!ref> [n:nat;l:agz] (
+  ptrarr n @ l, ptrarr n @ l -<lin,prf> void
+| ptr l
+) = "mac#atslib_hostent_get_aliases"
 // end of [hostent_get_aliases]
 
-fun hostent_get_addr_list (h: &hostent)
-  :<!ref> [n:nat] [l:agz] (ptrarr n @ l, ptrarr n @ l -<lin,prf> void | ptr l)
-  = "#atslib_hostent_get_addr_list"
+fun hostent_get_addr_list (
+  h: &hostent
+) :<!ref> [n:nat;l:agz] (
+  ptrarr n @ l, ptrarr n @ l -<lin,prf> void
+| ptr l
+) = "mac#atslib_hostent_get_addr_list"
 // end of [hostent_get_addr_list]
 
 (* ****** ****** *)
 
 absview sethostent_v
 
-fun sethostent {b:bool}
-  (stayopen: bool (b)): (sethostent_v | void)
-  = "#atslib_sethostent"
+fun sethostent
+  {b:bool} (
+  stayopen: bool (b)
+) : (
+  sethostent_v | void
+) = "mac#atslib_sethostent"
 // end of [sethostent]
 
-fun gethostent
-  (pf: !sethostent_v | (*none*))
-  :<!ref> [l:addr] (vptroutopt (hostent, l) | ptr l)
-  = "#atslib_gethostent"
+fun gethostent (
+  pf: !sethostent_v | (*none*)
+) :<!ref> [l:addr] (
+  vptroutopt (hostent, l)
+| ptr l
+) = "mac#atslib_gethostent"
 // end of [gethostent]
 
-fun endhostent
-  (pf: sethostent_v | (*none*)): void = "#atslib_endhostent"
+fun endhostent (
+  pf: sethostent_v | (*none*)
+) : void = "mac#atslib_endhostent"
 // end of [endhostent]
 
 (* ****** ****** *)
@@ -219,16 +259,24 @@ fun endhostent
 //
 // HX: [gethostbyname] does not handle [IPv6] addresses
 //
-fun gethostbyname (name: string)
-  :<!ref> [l:addr] (vptroutopt (hostent, l) | ptr l) = "#atslib_gethostbyname"
+fun gethostbyname (
+  name: string
+) :<!ref> [l:addr] (
+  vptroutopt (hostent, l)
+| ptr l
+) = "mac#atslib_gethostbyname"
 // end of [gethostbyname]
 
 //
 // HX: [addr] is often obtained by calling [inet_addr]
 //
-fun gethostbyaddr {a:t@ype}
-  (addr: &a, n: sizeof_t(a), af: sa_family_t)
-  :<!ref> [l:addr] (vptroutopt (hostent, l) | ptr l) = "#atslib_gethostbyaddr"
+fun gethostbyaddr
+  {a:t@ype} (
+  addr: &a, n: sizeof_t(a), af: sa_family_t
+) :<!ref> [l:addr] (
+  vptroutopt (hostent, l)
+| ptr l
+) = "mac#atslib_gethostbyaddr"
 // end of [gethostbyaddr]
 
 (* ****** ****** *)
@@ -252,13 +300,13 @@ fun getnameinfo{a:t@ype} {n1,n2:nat} (
   , nodename: &b0ytes(n1) >> bytes(n1), nodelen: size_t(n1)
   , servname: &b0ytes(n2) >> bytes(n2), servlen: size_t(n1)
   , flags: niflag_t
-  ) : [i:int | i <= 0] int (i) = "#atslib_getnameinfo" // 0/neg : succ/fail
+  ) : [i:int | i <= 0] int (i) = "mac#atslib_getnameinfo" // 0/neg : succ/fail
 // end of [getnameinfo]
 
 (* ****** ****** *)
 
-fun gethostid (): lint = "#atslib_gethostid"
-fun sethostid (id: lint): int = "#atslib_sethostid" // for superuser only
+fun gethostid (): lint = "mac#atslib_gethostid"
+fun sethostid (id: lint): int = "mac#atslib_sethostid" // for superuser only
 
 (* ****** ****** *)
 

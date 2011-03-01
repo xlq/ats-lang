@@ -47,7 +47,6 @@ typedef fsfilcnt_t = $T.fsfilcnt_t
 
 (* ****** ****** *)
 
-abst@ype statvs_rest
 typedef
 statvfs_struct =
 $extype_struct "ats_statvfs_type" of {
@@ -62,20 +61,20 @@ $extype_struct "ats_statvfs_type" of {
 , f_fsid= ulint
 , f_flag= ulint
 , f_namemax= ulint
-, _rest = statvs_rest // unknown quantity
+, _rest = undefined_t // unknown quantity
 } // end of [statvfs]
 typedef statvfs = statvfs_struct
 
 (* ****** ****** *)
 
 fun statvfs ( // -1 on error // errno set
-    path: string, buf: &statvfs? >> opt (statvfs, i==0)
-) : #[i:int | i <= 0] int i = "#atslib_statvfs"
+  path: !READ(string), buf: &statvfs? >> opt (statvfs, i==0)
+) : #[i:int | i <= 0] int i = "mac#atslib_statvfs"
 // end of [statvfs]
 
 fun fstatvfs {fd:nat} ( // -1 on error // errno set
-    fd: int fd, buf: &statvfs? >> opt (statvfs, i==0)
-) : #[i:int | i <= 0] int i = "#atslib_fstatvfs"
+  fd: int fd, buf: &statvfs? >> opt (statvfs, i==0)
+) : #[i:int | i <= 0] int i = "mac#atslib_fstatvfs"
 // end of [fstatvfs]
 
 (* ****** ****** *)

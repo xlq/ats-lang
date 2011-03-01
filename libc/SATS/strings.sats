@@ -59,7 +59,7 @@
 // note that position starts from 1 until 32 or 64; 0 is returned
 // if no bit is set
 //
-fun ffs (i: int): [n:int | n >= 0] int n = "#atslib_ffs"
+fun ffs (i: int): [n:int | n >= 0] int n = "mac#atslib_ffs"
 
 (* ****** ****** *)
 //
@@ -67,7 +67,7 @@ fun ffs (i: int): [n:int | n >= 0] int n = "#atslib_ffs"
 //
 fun strcasecmp (
   str1: !READ(string), str2: !READ(string)
-) : int= "#atslib_strcasecmp" // end of [strcasecmp]
+) : int= "mac#atslib_strcasecmp" // end of [strcasecmp]
 
 (* ****** ****** *)
 //
@@ -75,7 +75,7 @@ fun strcasecmp (
 //
 fun strncasecmp {n:nat} (
   str1: !READ(string), str2: !READ(string), n: size_t n
-) : int = "#atslib_strncasecmp" // end of [strncasecmp]
+) : int = "mac#atslib_strncasecmp" // end of [strncasecmp]
 
 (* ****** ****** *)
 

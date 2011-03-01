@@ -334,7 +334,7 @@ fun lsl_uint_int1
 overload << with lsl_uint_int1
 
 fun lsl_uint_uint
-  (u: uint, n: uint):<> uint = "#atspre_lsl_uint_uint"
+  (u: uint, n: uint):<> uint = "mac#atspre_lsl_uint_uint"
 overload << with lsl_uint_uint
 
 fun lsr_uint_int1
@@ -342,7 +342,7 @@ fun lsr_uint_int1
 overload >> with lsr_uint_int1
 
 fun lsr_uint_uint
-  (u: uint, n: uint):<> uint = "#atspre_lsr_uint_uint"
+  (u: uint, n: uint):<> uint = "mac#atspre_lsr_uint_uint"
 overload >> with lsr_uint_uint
 
 (* ****** ****** *)
@@ -479,11 +479,13 @@ fun nmod2 {i,j:int | i >= 0; j > 0}
   = "atspre_nmod1"
 
 (* ****** ****** *)
-
 //
-// HX: not supported by ATS/Geizella
+// HX: it is always inlined
+// HX: it is not supported by ATS/Geizella
+// HX: DIVMOD is declard in prelude/SATS/arith.sats
 //
-fun divmod_int1_int1
+fun{}
+divmod_int1_int1
   {m:nat; n:int | n > 0} (
   m: int m, n: int n
 , r: &int? >> int r

@@ -46,9 +46,9 @@ macdef CLUTTER_INIT_INTERNAL = $extval (ClutterInitError, "CLUTTER_INIT_INTERNAL
 
 (* ****** ****** *)
 
-fun clutter_main (): void = "#atsctrb_clutter_main"
-fun clutter_main_quit (): void = "#atsctrb_clutter_main_quit"
-fun clutter_main_level (): gint = "#atsctrb_clutter_main_level"
+fun clutter_main (): void = "mac#atsctrb_clutter_main"
+fun clutter_main_quit (): void = "mac#atsctrb_clutter_main_quit"
+fun clutter_main_level (): gint = "mac#atsctrb_clutter_main_level"
 
 (* ****** ****** *)
 

@@ -52,32 +52,32 @@ typedef utsname = utsname_struct
 
 fun utsname_get_sysname
   (x: &utsname):<> [l:agz] (strptr l -<lin,prf> void | strptr l)
-  = "#atslib_utsname_get_sysname"
+  = "mac#atslib_utsname_get_sysname"
 // end of [utsname_get_sysname]
 
 fun utsname_get_nodename
   (x: &utsname):<> [l:agz] (strptr l -<lin,prf> void | strptr l)
-  = "#atslib_utsname_get_nodename"
+  = "mac#atslib_utsname_get_nodename"
 // end of [utsname_get_nodename]
 
 fun utsname_get_release
   (x: &utsname):<> [l:agz] (strptr l -<lin,prf> void | strptr l)
-  = "#atslib_utsname_get_release"
+  = "mac#atslib_utsname_get_release"
 // end of [utsname_get_release]
 
 fun utsname_get_version
   (x: &utsname):<> [l:agz] (strptr l -<lin,prf> void | strptr l)
-  = "#atslib_utsname_get_version"
+  = "mac#atslib_utsname_get_version"
 // end of [utsname_get_version]
 
 fun utsname_get_machine
   (x: &utsname):<> [l:agz] (strptr l -<lin,prf> void | strptr l)
-  = "#atslib_utsname_get_machine"
+  = "mac#atslib_utsname_get_machine"
 // end of [utsname_get_machine]
 
 fun utsname_get_domainname
   (x: &utsname):<> [l:agz] (strptr l -<lin,prf> void | strptr l)
-  = "#atslib_utsname_get_domainname"
+  = "mac#atslib_utsname_get_domainname"
 // end of [utsname_get_domainname]
 
 (* ****** ****** *)
@@ -86,7 +86,7 @@ fun utsname_get_domainname
 //
 fun uname (
   x: &utsname? >> opt (utsname, i==0)
-) : #[i:int | i <= 0] int i = "#atslib_uname"
+) : #[i:int | i <= 0] int i = "mac#atslib_uname"
 // end of [uname]
 
 (* ****** ****** *)

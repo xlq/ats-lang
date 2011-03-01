@@ -30,10 +30,10 @@
 *)
 
 (* ****** ****** *)
-
+//
 // Author of the file: Hongwei Xi (hwxi AT cs DOT bu DOT edu)
 // Starting time: January, 2010
-
+//
 (* ****** ****** *)
 
 macdef SDL_ALPHA_OPAQUE = 255
@@ -66,7 +66,8 @@ fun SDL_Color_init (
 
 (* ****** ****** *)
 
-viewtypedef SDL_PixelFormat =
+viewtypedef
+SDL_PixelFormat =
   $extype_struct "SDL_PixelFormat" of {
   BitsPerPixel= Uint8
 , BytesPerPixel= Uint8
@@ -79,8 +80,9 @@ viewtypedef SDL_PixelFormat =
 } // end of [SDL_PixelFormat]
 
 (* ****** ****** *)
-
-// [SDL_Surface_ref] is reference counted
+//
+// HX: [SDL_Surface_ref] is reference counted
+//
 absviewtype SDL_Surface_ref (l:addr) // SDL_Surface* or null
 viewtypedef SDL_Surface_ref0 = [l:agez] SDL_Surface_ref l
 viewtypedef SDL_Surface_ref1 = [l:addr | l > null] SDL_Surface_ref l
@@ -103,38 +105,44 @@ overload ref_isnot_null with SDL_Surface_ref_isnot_null
 
 (* ****** ****** *)
 
-fun SDL_Surface_flags {l:agz}
-  (sf: !SDL_Surface_ref l): Uint32 = "#atsctrb_SDL_Surface_flags"
+fun SDL_Surface_flags
+  {l:agz} (
+  sf: !SDL_Surface_ref l
+) : Uint32
+  = "mac#atsctrb_SDL_Surface_flags"
+// end of [fun]
 
 fun SDL_Surface_format {l:agz} (
-    sf: !SDL_Surface_ref l
-  ) : [l_format:addr] (
-    minus (SDL_Surface_ref l, SDL_PixelFormat @ l_format)
-  , SDL_PixelFormat @ l_format
-  | ptr l_format
-  ) = "#atsctrb_SDL_Surface_format"
-// end of [SDL_Surface_format]
+  sf: !SDL_Surface_ref l
+) : [l_format:addr] (
+  minus (SDL_Surface_ref l, SDL_PixelFormat @ l_format)
+, SDL_PixelFormat @ l_format
+| ptr l_format
+) = "mac#atsctrb_SDL_Surface_format"
 
 fun SDL_Surface_w {l:agz}
-  (sf: !SDL_Surface_ref l): int = "#atsctrb_SDL_Surface_w"
+  (sf: !SDL_Surface_ref l): int = "mac#atsctrb_SDL_Surface_w"
+// end of [fun]
 
 fun SDL_Surface_h {l:agz}
-  (sf: !SDL_Surface_ref l): int = "#atsctrb_SDL_Surface_h"
+  (sf: !SDL_Surface_ref l): int = "mac#atsctrb_SDL_Surface_h"
+// end of [fun]
 
 fun SDL_Surface_pitch {l:agz}
-  (sf: !SDL_Surface_ref l): Uint16 = "#atsctrb_SDL_Surface_pitch"
+  (sf: !SDL_Surface_ref l): Uint16 = "mac#atsctrb_SDL_Surface_pitch"
+// end of [fun]
 
 fun SDL_Surface_clip_rect {l:agz} (
-    sf: !SDL_Surface_ref l
-  ) : [l_rect:addr] (
-    minus (SDL_Surface_ref l, SDL_Rect @ l_rect)
-  , SDL_Rect @ l_rect
-  | ptr l_rect
-  ) = "#atsctrb_SDL_Surface_clip_rect"
-// end of [SDL_Surface_clip_rect]
+  sf: !SDL_Surface_ref l
+) : [l_rect:addr] (
+  minus (SDL_Surface_ref l, SDL_Rect @ l_rect)
+, SDL_Rect @ l_rect
+| ptr l_rect
+) = "mac#atsctrb_SDL_Surface_clip_rect"
 
 fun SDL_Surface_refcount {l:agz}
-  (sf: !SDL_Surface_ref l): int = "#atsctrb_SDL_Surface_refcount"
+  (sf: !SDL_Surface_ref l): int = "mac#atsctrb_SDL_Surface_refcount"
+// end of [fun]
 
 (* ****** ****** *)
 
@@ -213,194 +221,246 @@ absview Video_v (l:addr)
 praxi Video_v_unnull (pf: Video_v null): void
 
 fun SDL_SetVideoMode (
-    width: int
-  , height: int
-  , bpp: int
-  , flags: Uint32
-  ) : [l:agez] (Video_v l | SDL_Surface_ref l)
-  = "#atsctrb_SDL_SetVideoMode"
+  width: int
+, height: int
+, bpp: int
+, flags: Uint32
+) : [l:agez] (Video_v l | SDL_Surface_ref l)
+  = "mac#atsctrb_SDL_SetVideoMode"
+// end of [fun]
 
 fun SDL_SetVideoMode_exn (
-    width: int
-  , height: int
-  , bpp: int
-  , flags: Uint32
-  ) : [l:agz] (Video_v l | SDL_Surface_ref l)
+  width: int
+, height: int
+, bpp: int
+, flags: Uint32
+) : [l:agz] (
+  Video_v l | SDL_Surface_ref l
+) // end of [fun]
 
 fun SDL_ResetVideoMode {l:addr} (
-    pf: Video_v l
-  | surf: SDL_Surface_ref l
-  , width: int
-  , height: int
-  , bpp: int
-  , flags: Uint32
-  ) : [l:agez] (Video_v l | SDL_Surface_ref l)
+  pf: Video_v l
+| surf: SDL_Surface_ref l
+, width: int
+, height: int
+, bpp: int
+, flags: Uint32
+) : [l:agez] (Video_v l | SDL_Surface_ref l)
   = "atsctrb_SDL_ResetVideoMode"
+// end of [fun]
 
 (* ****** ****** *)
-
 //
-// note: x=y=w=h=0 means the whole screen!
+// HX: note: x=y=w=h=0 means the whole screen!
 //
 fun SDL_UpdateRect {l:agz} (
-    screen: !SDL_Surface_ref l, x: Sint32, y: Sint32, w: Uint32, h: Uint32
-  ) : void
-  = "#atsctrb_SDL_UpdateRect"
+  screen: !SDL_Surface_ref l, x: Sint32, y: Sint32, w: Uint32, h: Uint32
+) : void
+  = "mac#atsctrb_SDL_UpdateRect"
+// end of [fun]
   
-fun SDL_UpdateRects {l:agz} {n:nat}
-  (screen: !SDL_Surface_ref l, n: int n, rects: &(@[SDL_Rect][n])): void
-  = "#atsctrb_SDL_UpdateRects"
-  
+fun SDL_UpdateRects
+  {l:agz} {n:nat} (
+  screen: !SDL_Surface_ref l, n: int n, rects: &(@[SDL_Rect][n])
+) : void
+  = "mac#atsctrb_SDL_UpdateRects"
+// end of [fun]
+
 (* ****** ****** *)
 
-fun SDL_Flip {l:agz}
-  (screen: !SDL_Surface_ref l): int (*err*) = "#atsctrb_SDL_Flip"
+fun SDL_Flip
+  {l:agz} (
+  screen: !SDL_Surface_ref l
+) : int (*err*)
+  = "mac#atsctrb_SDL_Flip"
+// end of [fun]
 
 (* ****** ****** *)
 
 fun SDL_SetGamma (
   red: float, green: float, blue: float
-) : int (*err*) = "atsctrb_SDL_SetGamma"
+) : int (*err*)
+  = "atsctrb_SDL_SetGamma"
+// end of [fun]
 
 (* ****** ****** *)
 
 fun SDL_GetGammaRamp (
-    red: &(@[Uint16?][256]) >> @[Uint16?][256]
-  , green: &(@[Uint16?][256]) >> @[Uint16?][256]
-  , blue: &(@[Uint16?][256]) >> @[Uint16?][256]
-  ) : int (*err*)
+  red: &(@[Uint16?][256]) >> @[Uint16?][256]
+, green: &(@[Uint16?][256]) >> @[Uint16?][256]
+, blue: &(@[Uint16?][256]) >> @[Uint16?][256]
+) : int (*err*)
   = "atsctrb_SDL_GetGammaRamp"
+// end of [fun]
 
 fun SDL_SetGammaRamp (
-    red: &(@[Uint16][256]), green: &(@[Uint16][256]), blue: &(@[Uint16][256])
-  ) : int (*err*)
+  red: &(@[Uint16][256]), green: &(@[Uint16][256]), blue: &(@[Uint16][256])
+) : int (*err*)
   = "atsctrb_SDL_SetGammaRamp"
+// end of [fun]
 
 (* ****** ****** *)
 
 fun SDL_MapRGB (
-    format: &SDL_PixelFormat, r: Uint8, g: Uint8, b: Uint8
-  ) : Uint32
-  = "#atsctrb_SDL_MapRGB"
+  format: &SDL_PixelFormat, r: Uint8, g: Uint8, b: Uint8
+) : Uint32
+  = "mac#atsctrb_SDL_MapRGB"
+// end of [fun]
 
 fun SDL_MapRGBA (
-    format: &SDL_PixelFormat, r: Uint8, g: Uint8, b: Uint8, a: Uint8
-  ) : Uint32
-  = "#atsctrb_SDL_MapRGBA"
+  format: &SDL_PixelFormat, r: Uint8, g: Uint8, b: Uint8, a: Uint8
+) : Uint32
+  = "mac#atsctrb_SDL_MapRGBA"
+// end of [fun]
 
 (* ****** ****** *)
 
 fun SDL_CreateRGBSurface (
-    flags: Uint32
-  , width: int, height: int, depth: int
-  , Rmask: Uint32, Gmask: Uint32, Bmask: Uint32, Amask: Uint32
-  ) : SDL_Surface_ref0
-  = "#atsctrb_SDL_CreateRGBSurface"
+  flags: Uint32
+, width: int, height: int, depth: int
+, Rmask: Uint32, Gmask: Uint32, Bmask: Uint32, Amask: Uint32
+) : SDL_Surface_ref0
+  = "mac#atsctrb_SDL_CreateRGBSurface"
+// end of [fun]
 
 fun SDL_CreateRGBSurfaceFrom (
-    data: ptr // this is unsafe
-  , width: int, height: int, depth: int, pitch: int
-  , Rmask: Uint32, Gmask: Uint32, Bmask: Uint32, Amask: Uint32
-  ) : SDL_Surface_ref0
-  = "#atsctrb_SDL_CreateRGBSurfaceFrom"
+  data: ptr // this is unsafe
+, width: int, height: int, depth: int, pitch: int
+, Rmask: Uint32, Gmask: Uint32, Bmask: Uint32, Amask: Uint32
+) : SDL_Surface_ref0
+  = "mac#atsctrb_SDL_CreateRGBSurfaceFrom"
+// end of [fun]
 
-fun SDL_FreeSurface (surface: SDL_Surface_ref1): void = "#atsctrb_SDL_FreeSurface"
+fun SDL_FreeSurface
+  (surface: SDL_Surface_ref1): void = "mac#atsctrb_SDL_FreeSurface"
+// end of [SDL_FreeSurface]
 
 (* ****** ****** *)
 
 absview SDL_Surface_v (l:addr)
 
-fun SDL_LockSurface {l:agz} (surface: !SDL_Surface_ref l)
-  : [i:int | i <= 0] (option_v (SDL_Surface_v l, i==0) | int i)
+fun SDL_LockSurface
+  {l:agz} (
+  surface: !SDL_Surface_ref l
+) : [i:int | i <= 0] (option_v (SDL_Surface_v l, i==0) | int i)
   = "atsctrb_SDL_LockSurface"
+// end of [fun]
 
-fun SDL_LockSurface_exn {l:agz}
-  (surface: !SDL_Surface_ref l): (SDL_Surface_v l | void)
+fun SDL_LockSurface_exn
+  {l:agz} (
+  surface: !SDL_Surface_ref l
+) : (SDL_Surface_v l | void)
   = "atsctrb_SDL_LockSurface_exn"
+// end of [fun]
 
-fun SDL_UnlockSurface {l:agz}
-  (pf: SDL_Surface_v l | surface: !SDL_Surface_ref l): int
- = "atsctrb_SDL_UnlockSurface"
+fun SDL_UnlockSurface
+  {l:agz} (
+  pf: SDL_Surface_v l | surface: !SDL_Surface_ref l
+) : int
+  = "atsctrb_SDL_UnlockSurface"
+// end of [fun]
 
 (* ****** ****** *)
 
 fun SDL_LoadBMP
-  (filename: string) : SDL_Surface_ref0 = "#atsctrb_SDL_LoadBMP"
+  (filename: string) : SDL_Surface_ref0 = "mac#atsctrb_SDL_LoadBMP"
 // end of [SDL_LoadBMP]
 
 fun SDL_LoadBMP_exn (filename: string): SDL_Surface_ref1
 
 (* ****** ****** *)
 
-fun SDL_SetColorKey {l:agz}
-  (surface: !SDL_Surface_ref l, flag: Uint32, key: Uint32): int (*err*)
-  = "#atsctrb_SDL_SetColorKey"
+fun SDL_SetColorKey
+  {l:agz} (
+  surface: !SDL_Surface_ref l, flag: Uint32, key: Uint32
+) : int (*err*)
+  = "mac#atsctrb_SDL_SetColorKey"
 
-fun SDL_SetAlpha {l:agz}
-  (surface: !SDL_Surface_ref l, flag: Uint32, alpha: Uint8): int (*err*)
-  = "#atsctrb_SDL_SetAlpha"
+fun SDL_SetAlpha
+  {l:agz} (
+  surface: !SDL_Surface_ref l, flag: Uint32, alpha: Uint8
+) : int (*err*)
+  = "mac#atsctrb_SDL_SetAlpha"
 
 (* ****** ****** *)
 
-fun SDL_GetClipRect {l:agz}
-  (surface: !SDL_Surface_ref l, rect: &SDL_Rect? >> SDL_Rect): void
-  = "#atsctrb_SDL_GetClipRect"
+fun SDL_GetClipRect
+  {l:agz} (
+  surface: !SDL_Surface_ref l, rect: &SDL_Rect? >> SDL_Rect
+) : void
+  = "mac#atsctrb_SDL_GetClipRect"
+// end of [fun]
 
 fun SDL_SetClipRect {l:agz}
   (surface: !SDL_Surface_ref l, rect: &SDL_Rect): int(*SDL_TRUE/SDL_FALSE*)
-  = "#atsctrb_SDL_SetClipRect"
+  = "mac#atsctrb_SDL_SetClipRect"
+// end of [fun]
 
 (* ****** ****** *)
 
 fun SDL_UpperBlit {l1,l2:agz} (
-    src: !SDL_Surface_ref l1, srcrect: &SDL_Rect
-  , dst: !SDL_Surface_ref l2, dstrect: &SDL_Rect
-  ) : int (*err*)
-  = "#atsctrb_SDL_UpperBlit"
+  src: !SDL_Surface_ref l1, srcrect: &SDL_Rect
+, dst: !SDL_Surface_ref l2, dstrect: &SDL_Rect
+) : int (*err*)
+  = "mac#atsctrb_SDL_UpperBlit"
+// end of [fun]
 
 fun SDL_UpperBlit_ptr {l1,l2:agz} (
-    src: !SDL_Surface_ref l1, srcrect: ptr, dst: !SDL_Surface_ref l2, dstrect: ptr
-  ) : int (*err*)
-  = "#atsctrb_SDL_UpperBlit"
+  src: !SDL_Surface_ref l1, srcrect: ptr, dst: !SDL_Surface_ref l2, dstrect: ptr
+) : int (*err*)
+  = "mac#atsctrb_SDL_UpperBlit"
+// end of [fun]
 
 (* ****** ****** *)
 
 fun SDL_FillRect {l:agz} (
-    dst: !SDL_Surface_ref l, dstrect: &SDL_Rect, color: Uint32
-  ) : int (*err*)
-  = "#atsctrb_SDL_FillRect"
+  dst: !SDL_Surface_ref l, dstrect: &SDL_Rect, color: Uint32
+) : int (*err*)
+  = "mac#atsctrb_SDL_FillRect"
+// end of [fun]
 
 fun SDL_FillRect_ptr {l:agz} ( // use only if dstrect=NULL
-    dst: !SDL_Surface_ref l, dstrect: ptr, color: Uint32
-  ) : int (*err*)
-  = "#atsctrb_SDL_FillRect"
+  dst: !SDL_Surface_ref l, dstrect: ptr, color: Uint32
+) : int (*err*)
+  = "mac#atsctrb_SDL_FillRect"
+// end of [fun]
 
 (* ****** ****** *)
 
-fun SDL_DisplayFormat {l:agz}
-  (surface: !SDL_Surface_ref l): SDL_Surface_ref0
-  = "#atsctrb_SDL_DisplayFormat"
+fun SDL_DisplayFormat
+  {l:agz} (
+  surface: !SDL_Surface_ref l
+) : SDL_Surface_ref0
+  = "mac#atsctrb_SDL_DisplayFormat"
+// end of [fun]
 
-fun SDL_DisplayFormatAlpha {l:agz}
-  (surface: !SDL_Surface_ref l): SDL_Surface_ref0
-  = "#atsctrb_SDL_DisplayFormatAlpha"
+fun SDL_DisplayFormatAlpha
+  {l:agz} (
+  surface: !SDL_Surface_ref l
+) : SDL_Surface_ref0
+  = "mac#atsctrb_SDL_DisplayFormatAlpha"
+// end of [fun]
 
 (* ****** ****** *)
 
 fun SDL_WM_GetCaption (
   title: &Stropt? >> Stropt, icon: &Stropt? >> Stropt
-) : void = "#atsctrb_SDL_WM_GetCaption"
+) : void
+  = "mac#atsctrb_SDL_WM_GetCaption"
+// end of [fun]
 
 (*
 ** HX: the passed string can be freed after the call
 *)
-fun SDL_WM_SetCaption
-  (title: Stropt, icon: Stropt): void= "#atsctrb_SDL_WM_SetCaption"
-// end of [SDL_WM_SetCaption]
+fun SDL_WM_SetCaption (
+  title: Stropt, icon: Stropt
+) : void
+  = "mac#atsctrb_SDL_WM_SetCaption"
+// end of [fun]
 
 (* ****** ****** *)
 
-fun SDL_GL_SwapBuffers (): void = "#atsctrb_SDL_GL_SwapBuffers"
+fun SDL_GL_SwapBuffers (): void = "mac#atsctrb_SDL_GL_SwapBuffers"
 
 (* ****** ****** *)
 

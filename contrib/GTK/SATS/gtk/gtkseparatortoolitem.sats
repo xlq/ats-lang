@@ -39,19 +39,26 @@
 (* ****** ****** *)
 
 fun gtk_separator_tool_item_new
-  (): GtkSeparatorToolItem_ref1 = "#atsctrb_gtk_separator_tool_item_new"
+  (): GtkSeparatorToolItem_ref1
+  = "mac#atsctrb_gtk_separator_tool_item_new"
 // end of [gtk_separator_tool_item_new]
 
 (* ****** ****** *)
 
 fun gtk_separator_tool_item_get_draw
-  {c:cls | c <= GtkSeparatorToolItem} {l:agz}
-  (itm: !gobjref (c, l)): gboolean = "#atsctrb_gtk_separator_tool_item_get_draw"
+  {c:cls | c <= GtkSeparatorToolItem}
+  {l:agz} (
+  itm: !gobjref (c, l)
+) : gboolean
+  = "mac#atsctrb_gtk_separator_tool_item_get_draw"
 // end of [gtk_separator_tool_item_get_draw]
 
 fun gtk_separator_tool_item_set_draw
-  {c:cls | c <= GtkSeparatorToolItem} {l:agz}
-  (itm: !gobjref (c, l), draw: gboolean): void = "#atsctrb_gtk_separator_tool_item_set_draw"
+  {c:cls | c <= GtkSeparatorToolItem}
+  {l:agz} (
+  itm: !gobjref (c, l), draw: gboolean
+) : void
+  = "mac#atsctrb_gtk_separator_tool_item_set_draw"
 // end of [gtk_separator_tool_item_set_draw]
 
 (* ****** ****** *)

@@ -140,8 +140,9 @@ castfn lint_of_off (off: off_t):<> lint
 castfn off_of_size (sz: size_t):<> off_t
 
 (* ****** ****** *)
-
-// for process IDs // a signed integer type
+//
+// HX: for process IDs // a signed integer type
+//
 abst@ype
 pid_t = $extype"ats_pid_type"
 castfn pid_of_int (int: int):<> pid_t

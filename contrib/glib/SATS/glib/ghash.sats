@@ -63,8 +63,9 @@
 //
 
 (* ****** ****** *)
-
+//
 // HX-2010-02-24: [GHashTable_ref] is refcounted
+//
 absviewtype GHashTable_ref
   (key:type, itm: type, l:addr) = $extype"GHashTable_ref"
 viewtypedef GHashTable_ref
@@ -73,41 +74,49 @@ viewtypedef GHashTable_ref
 
 (* ****** ****** *)
 
-fun g_hash_table_new {key,itm:type}
-  (hash_func: GHashFunc key, key_equal_func: GEqualFunc key)
-  : GHashTable_ref (key,itm) = "#atslib_g_hash_table_new"
+fun g_hash_table_new
+  {key,itm:type} (
+  hash_func: GHashFunc key, key_equal_func: GEqualFunc key
+) : GHashTable_ref (key,itm) = "mac#atslib_g_hash_table_new"
 // end of [g_hash_table_new]
 
-fun g_hash_table_destroy {key,itm:type}
-  (hash_table: GHashTable_ref (key,itm)): void = "#atslib_g_hash_table_destroy"
+fun g_hash_table_destroy
+  {key,itm:type} (
+  hash_table: GHashTable_ref (key,itm)
+) : void = "mac#atslib_g_hash_table_destroy"
 // end of [g_hash_table_destroy]
 
 (* ****** ****** *)
 
 fun g_hash_table_insert
-  {key,itm:type} {l:addr}
-  (hash_table: !GHashTable_ref (key, itm, l), key: key, itm: itm): void
-  = "#atsctrb_g_hash_table_insert"
+  {key,itm:type} {l:addr} (
+  hash_table: !GHashTable_ref (key, itm, l), key: key, itm: itm
+) : void
+  = "mac#atsctrb_g_hash_table_insert"
 // end of [g_hash_table_insert]
 
 (* ****** ****** *)
 
 fun g_hash_table_size
-  {key,itm:type} {l:addr} (hash_table: !GHashTable_ref (key, itm, l)): guint
-  = "#atsctrb_g_hash_table_size"
+  {key,itm:type} {l:addr} (
+  hash_table: !GHashTable_ref (key, itm, l)
+) : guint
+  = "mac#atsctrb_g_hash_table_size"
 // end of [g_hash_table_size]
 
 (* ****** ****** *)
 
-fun g_hash_table_lookup {key,itm:type} {l:addr}
-  (hash_table: !GHashTable_ref (key, itm, l), key: key)
-  : [lp:addr] ({lp <> null} (!ptr lp >> itm) -<prf> void | ptr lp)
-  = "#atslib_g_hash_table_lookup"
+fun g_hash_table_lookup
+  {key,itm:type} {l:addr} (
+  hash_table: !GHashTable_ref (key, itm, l), key: key
+) : [lp:addr] (
+  {lp <> null} (!ptr lp >> itm) -<prf> void | ptr lp
+) = "mac#atslib_g_hash_table_lookup"
 // end of [g_hash_table_lookup]
 
 (* ****** ****** *)
 
-fun g_str_hash (str: string): guint = "#atsctrb_g_str_hash"
+fun g_str_hash (str: string): guint = "mac#atsctrb_g_str_hash"
 
 (* ****** ****** *)
 

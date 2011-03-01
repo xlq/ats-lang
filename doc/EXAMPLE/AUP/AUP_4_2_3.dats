@@ -44,8 +44,9 @@ fun readany2 {n:nat} (
   val nfd = select (
     maxfd + 1, fdset_rd, null, null, null
   ) where {
-    extern fun select
-      (_: intGte 1, fdset: &fd_set, _: ptr, _: ptr, _: ptr): int = "#atslib_select"
+    extern fun select (
+      _: intGte 1, fdset: &fd_set, _: ptr, _: ptr, _: ptr
+    ) : int = "mac#atslib_select"
   } // end of [val]
   val () = if nfd < 0 then nerr := nerr + 1
 //
@@ -60,7 +61,8 @@ fun readany2 {n:nat} (
       if FD_ISSET (fd, fdset_rd) then let
         val () = c := '\0'
 //
-extern fun read1 (fd: int, c: &char): ssize_t = "#atslib_read1"
+        extern fun read1
+          (fd: int, c: &char): ssize_t = "mac#atslib_read1"
 //
         val nread = read1 (fd, c)
         val nread = int_of_ssize (nread)

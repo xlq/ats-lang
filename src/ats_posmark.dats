@@ -66,9 +66,13 @@ extern fun fputc_exn {m:file_mode}
 //
 // staload "libc/SATS/stdlib.sats"
 //
-extern fun qsort {a:viewt@ype} {n:nat} {f:eff} (
-  base: &(@[a][n]), nmemb: size_t n, size: sizeof_t a, compar: (&a, &a) -<f> int
-) : void = "#atslib_qsort"
+extern fun qsort
+  {a:viewt@ype} {n:nat} {f:eff} (
+  base: &(@[a][n])
+, nmemb: size_t n
+, size: sizeof_t a
+, compar: (&a, &a) -<f> int
+) : void = "mac#atslib_qsort"
 
 (* ****** ****** *)
 
@@ -180,7 +184,8 @@ end // end of [the_posmarklst_get]
 fn the_posmarklst_insert
   (p: lint, pm: posmark): void =
   if !the_posmark_flag > 0 then let
-    val (vbox pf | p_ref) = ref_get_view_ptr (the_posmarklst) in
+    val (vbox pf | p_ref) = ref_get_view_ptr (the_posmarklst)
+  in
     !p_ref := list_vt_cons ((p, pm), !p_ref)
   end // end of [if]
 // (* end of [posmark_insert] *)
@@ -441,8 +446,9 @@ local
 "
 (* ****** ****** *)
 
-fn posmarklst_sort
-  (ppms: lintposmarklst): lintposmarklst = let
+fn posmarklst_sort (
+  ppms: lintposmarklst
+) : lintposmarklst = let
 //
   typedef ppm = lintposmark
 //
@@ -479,20 +485,20 @@ end // end of [posmarklst_sort]
 (* ****** ****** *)
 
 fn posmark_file_file (
-    isall: bool // header+body or body only
-  , proc: (&FILE w, lint, posmark) -<fun1> void
-  , fputchr: (char, &FILE w) -<fun1> void
-  , fil_s: &FILE r, fil_d: &FILE w
-  ) : void = let
+  isall: bool // header+body or body only
+, proc: (&FILE w, lint, posmark) -<fun1> void
+, fputchr: (char, &FILE w) -<fun1> void
+, fil_s: &FILE r, fil_d: &FILE w
+) : void = let
 //
   typedef ppm =  lintposmark
 //
   fun lpfin1 (
-      fil_s: &FILE r
-    , fil_d: &FILE w
-    , p: lint, pm: posmark
-    , ppms: List_vt ppm
-    ) :<cloref1> void = let
+    fil_s: &FILE r
+  , fil_d: &FILE w
+  , p: lint, pm: posmark
+  , ppms: List_vt ppm
+  ) :<cloref1> void = let
     val () = proc (fil_d, p, pm)
   in
     case+ ppms of
@@ -501,7 +507,9 @@ fn posmark_file_file (
     | ~list_vt_nil () => ()
   end // end of [lpfin1]
 //
-  fun lpfin2 (fil_s: &FILE r, fil_d: &FILE w):<cloref1> void = let
+  fun lpfin2 (
+    fil_s: &FILE r, fil_d: &FILE w
+  ) :<cloref1> void = let
     val c = fgetc_err (file_mode_lte_r_r | fil_s)
   in
     if (c >= 0) then begin
@@ -563,8 +571,9 @@ end // end of [posmark_file_file]
 
 (* ****** ****** *)
 
-fn posmark_process_htm
-  (fil_d: &FILE w, p: lint, pm: posmark): void = let
+fn posmark_process_htm (
+  fil_d: &FILE w, p: lint, pm: posmark
+): void = let
   fn fprint_stadyncstpos (
       pf_mod: file_mode_lte (w, w) | fil_d: &FILE w, name: string
     ) : void = let

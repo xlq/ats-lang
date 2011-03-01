@@ -65,14 +65,18 @@ typedef group = group_struct
 
 (* ****** ****** *)
 
-fun group_get_gr_name
-  (grp: &READ(group)): [l:addr] (strptr l -<lin,prf> void | strptr l)
-  = "atslib_group_get_gr_name" // fun!
+fun group_get_gr_name (
+  grp: &READ(group)
+) : [l:addr] (
+  strptr l -<lin,prf> void | strptr l
+) = "atslib_group_get_gr_name" // function!
 // end of [group_get_gr_name]
 
-fun group_get_gr_passwd
-  (grp: &READ(group)): [l:addr] (strptr l -<lin,prf> void | strptr l)
-  = "atslib_group_get_gr_passwd" // fun!
+fun group_get_gr_passwd (
+  grp: &READ(group)
+) : [l:addr] (
+  strptr l -<lin,prf> void | strptr l
+) = "atslib_group_get_gr_passwd" // function!
 // end of [group_get_gr_passwd]
 
 (* ****** ****** *)
@@ -86,14 +90,19 @@ fun group_get_gr_mem
 (* ****** ****** *)
 
 // HX: non-reentrant
-fun getgrnam
-  (nam: !READ(string)):<!ref> [l:addr] (vptroutopt (group, l) | ptr l)
-  = "#atslib_getgrnam"
+fun getgrnam (
+  nam: !READ(string)
+) :<!ref> [l:addr] (
+  vptroutopt (group, l) | ptr l
+) = "mac#atslib_getgrnam"
 // end of [getgrnam]
 
 // HX: non-reentrant
-fun getgrgid (gid: gid_t):<!ref>
-  [l:addr] (vptroutopt (group, l) | ptr l) = "#atslib_getgrgid"
+fun getgrgid (
+  gid: gid_t
+) :<!ref> [l:addr] (
+  vptroutopt (group, l) | ptr l
+) = "mac#atslib_getgrgid"
 // end of [getgrgid]
 
 (* ****** ****** *)

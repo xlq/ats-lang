@@ -492,8 +492,9 @@ template_cst_name_make
       in
         string_of_strptr (name)
       end // end of [if]
-    | $Syn.DCSTEXTDEFsome_fun name => name
-    | $Syn.DCSTEXTDEFsome_mac _name => let
+    | $Syn.DCSTEXTDEFsome_ext name => name
+    | $Syn.DCSTEXTDEFsome_sta name => name
+    | $Syn.DCSTEXTDEFsome_mac name => let
         val () = prerr_interror (); val () =  (
           prerr ": tmpnamtbl_cst_name_make: d2c = "; prerr d2c
         ) // end of [val]
@@ -501,7 +502,7 @@ template_cst_name_make
       in
         $Err.abort {string} ()
       end // end of [DCSTEXTDEFsome_mac]
-  ) : string
+  ) : string // end of [val]
 in
   template_name_make (base, hitss)
 end // end of [template_cst_name_make]

@@ -30,12 +30,10 @@
 *)
 
 (* ****** ****** *)
-
 //
 // Author: Hongwei Xi (hwxi AT cs DOT bu DOT edu)
 // Time: June, 2010
 //
-
 (* ****** ****** *)
 
 abst@ype GtkProgressBarStyle = $extype"GtkProgressBarStyle"
@@ -55,60 +53,78 @@ macdef GTK_PROGRESS_TOP_TO_BOTTOM =
 
 (* ****** ****** *)
 
-fun gtk_progress_bar_new (): GtkProgressBar_ref1 = "#atsctrb_gtk_progress_bar_new"
+fun gtk_progress_bar_new
+  (): GtkProgressBar_ref1 = "mac#atsctrb_gtk_progress_bar_new"
+// end of [gtk_progress_bar_new]
 
 //
 // HX-2010-06-03: this one is deprecated!
 // HX-2010-06-03: checked: [adj] can be NULL
 //
 fun gtk_progress_bar_new_with_adjustment
-  {c:cls | c <= GtkAdjustment} {l:addr} (adj: !gobjref (c, l)): GtkProgressBar_ref1
-  = "#atsctrb_gtk_progress_bar_new_with_adjustment"
+  {c:cls | c <= GtkAdjustment}
+  {l:addr} (
+  adj: !gobjref (c, l)
+) : GtkProgressBar_ref1
+  = "mac#atsctrb_gtk_progress_bar_new_with_adjustment"
 // end of [gtk_progress_bar_new_with_adjustment]
 
 (* ****** ****** *)
 
 fun gtk_progress_bar_pulse
-  {c:cls | c <= GtkProgressBar} {l:agz} (pbar: !gobjref (c, l)): void
-  = "#atsctrb_gtk_progress_bar_pulse"
+  {c:cls | c <= GtkProgressBar}
+  {l:agz} (
+  pbar: !gobjref (c, l)
+) : void
+  = "mac#atsctrb_gtk_progress_bar_pulse"
 // end of [gtk_progress_bar_pulse]
 
 (* ****** ****** *)
 
 fun gtk_progress_bar_get_text
-  {c:cls | c <= GtkProgressBar} {l:agz}
-  (pbar: !gobjref (c, l)): [l1:addr] (minus (gobjref (c, l), gstring l1) | gstring l1)
-  = "#atsctrb_gtk_progress_bar_get_text"
+  {c:cls | c <= GtkProgressBar}
+  {l:agz} (
+  pbar: !gobjref (c, l)
+) : [l1:addr] (
+  minus (gobjref (c, l), gstring l1) | gstring l1
+) = "mac#atsctrb_gtk_progress_bar_get_text"
 // end of [gtk_progress_bar_get_text]
 
 fun gtk_progress_bar_set_text
   {c:cls | c <= GtkProgressBar}
   {l,l1:addr | l > null} (pbar: !gobjref (c, l), text: !gstring l1): void
-  = "#atsctrb_gtk_progress_bar_set_text"
+  = "mac#atsctrb_gtk_progress_bar_set_text"
 // end of [gtk_progress_bar_set_text]
 
 (* ****** ****** *)
 
 fun gtk_progress_bar_get_fraction
   {c:cls | c <= GtkProgressBar} {l:agz}
-  (pbar: !gobjref (c, l)): gdouble = "#atsctrb_gtk_progress_bar_get_fraction"
+  (pbar: !gobjref (c, l)): gdouble = "mac#atsctrb_gtk_progress_bar_get_fraction"
 // end of [gtk_progress_bar_get_fraction]
 
 fun gtk_progress_bar_set_fraction
-  {c:cls | c <= GtkProgressBar} {l:agz}
-  (pbar: !gobjref (c, l), frac: gdouble): void = "#atsctrb_gtk_progress_bar_set_fraction"
+  {c:cls | c <= GtkProgressBar}
+  {l:agz} (
+  pbar: !gobjref (c, l), frac: gdouble
+) : void
+  = "mac#atsctrb_gtk_progress_bar_set_fraction"
 // end of [gtk_progress_bar_set_fraction]
 
 (* ****** ****** *)
 
 fun gtk_progress_bar_get_pulse_step
-  {c:cls | c <= GtkProgressBar} {l:agz}
-  (pbar: !gobjref (c, l)): gdouble = "#atsctrb_gtk_progress_bar_get_pulse_step"
+  {c:cls | c <= GtkProgressBar}
+  {l:agz} (
+  pbar: !gobjref (c, l)
+) : gdouble
+  = "mac#atsctrb_gtk_progress_bar_get_pulse_step"
 // end of [gtk_progress_bar_get_pulse_step]
 
 fun gtk_progress_bar_set_pulse_step
   {c:cls | c <= GtkProgressBar} {l:agz}
-  (pbar: !gobjref (c, l), frac: gdouble): void = "#atsctrb_gtk_progress_bar_set_pulse_step"
+  (pbar: !gobjref (c, l), frac: gdouble): void
+  = "mac#atsctrb_gtk_progress_bar_set_pulse_step"
 // end of [gtk_progress_bar_set_pulse_step]
 
 (* ****** ****** *)
@@ -116,13 +132,13 @@ fun gtk_progress_bar_set_pulse_step
 fun gtk_progress_bar_get_orientation
   {c:cls | c <= GtkProgressBar} {l:agz}
   (pbar: !gobjref (c, l)): GtkProgressBarOrientation
-  = "#atsctrb_gtk_progress_bar_get_orientation"
+  = "mac#atsctrb_gtk_progress_bar_get_orientation"
 // end of [gtk_progress_bar_get_orientation]
 
 fun gtk_progress_bar_set_orientation
   {c:cls | c <= GtkProgressBar} {l:agz}
   (pbar: !gobjref (c, l), orient: GtkProgressBarOrientation): void
-  = "#atsctrb_gtk_progress_bar_set_orientation"
+  = "mac#atsctrb_gtk_progress_bar_set_orientation"
 // end of [gtk_progress_bar_set_orientation]
 
 (* ****** ****** *)
@@ -130,13 +146,13 @@ fun gtk_progress_bar_set_orientation
 fun gtk_progress_bar_get_ellipsize
   {c:cls | c <= GtkProgressBar} {l:agz}
   (pbar: !gobjref (c, l)): PangoEllipsizeMode
-  = "#atsctrb_gtk_progress_bar_get_ellipsize"
+  = "mac#atsctrb_gtk_progress_bar_get_ellipsize"
 // end of [gtk_progress_bar_get_ellipsize]
 
 fun gtk_progress_bar_set_ellipsize
   {c:cls | c <= GtkProgressBar} {l:agz}
   (pbar: !gobjref (c, l), mode: PangoEllipsizeMode): void
-  = "#atsctrb_gtk_progress_bar_set_ellipsize"
+  = "mac#atsctrb_gtk_progress_bar_set_ellipsize"
 // end of [gtk_progress_bar_set_ellipsize]
 
 (* ****** ****** *)

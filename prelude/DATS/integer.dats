@@ -39,7 +39,7 @@
 
 (* ****** ****** *)
 
-implement
+implement{}
 divmod_int1_int1
   {m,n} (m, n, r) = let
 //

@@ -39,8 +39,10 @@
 (* ****** ****** *)
 
 fun gtk_vscrollbar_new
-  {c:cls | c <= GtkAdjustment} {l:agz}
-  (adj: !gobjref (c, l)): GtkVScrollbar_ref1 = "#atsctrb_gtk_vscrollbar_new"
+  {c:cls | c <= GtkAdjustment}
+  {l:agz} (
+  adj: !gobjref (c, l)
+) : GtkVScrollbar_ref1 = "mac#atsctrb_gtk_vscrollbar_new"
 // end of [gtk_vscrollbar_new]
 
 (* ****** ****** *)

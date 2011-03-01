@@ -38,18 +38,23 @@
 
 (* ****** ****** *)
 
-fun gtk_color_selection_dialog_new {l:agz}
-  (title: !gstring l): GtkColorSelectionDialog_ref1 = "#atsctrb_gtk_color_selection_dialog_new"
+fun gtk_color_selection_dialog_new
+  {l:agz} (
+  title: !gstring l
+) : GtkColorSelectionDialog_ref1
+  = "mac#atsctrb_gtk_color_selection_dialog_new"
 // end of [gtk_color_selection_dialog_new]
 
 (* ****** ****** *)
 
 fun gtk_color_selection_dialog_get_colorsel
-  {c:cls | c <= GtkColorSelectionDialog} {l:agz} (dialog: !gobjref (c, l))
-  : [l_sel:agz] (
-    minus (gobjref (c, l), gobjref (GtkColorSelection, l_sel)) | gobjref (GtkColorSelection, l_sel)
-  ) = "#atsctrb_gtk_color_selection_dialog_get_colorsel"
-// end of [gtk_color_selection_dialog_get_colorsel]
+  {c:cls | c <= GtkColorSelectionDialog}
+  {l:agz} (
+  dialog: !gobjref (c, l)
+) : [l_sel:agz] (
+  minus (gobjref (c, l), gobjref (GtkColorSelection, l_sel))
+| gobjref (GtkColorSelection, l_sel)
+) = "mac#atsctrb_gtk_color_selection_dialog_get_colorsel"
 
 (* ****** ****** *)
 

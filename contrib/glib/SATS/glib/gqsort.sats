@@ -48,13 +48,14 @@
 
 (* ****** ****** *)
 
-fun g_qsort_with_data {a:viewt@ype} {vt:viewtype} {n:nat} (
-    pbase: &(@[a][n])
-  , n: gint n
-  , size: sizeof_t a
-  , compare_func: GCompareDataFuncRef (a, vt)
-  , env: !vt
-  ) :<> void = "#atsctrb_g_qsort_with_data"
+fun g_qsort_with_data
+  {a:viewt@ype} {vt:viewtype} {n:nat} (
+  pbase: &(@[a][n])
+, n: gint n
+, size: sizeof_t a
+, compare_func: GCompareDataFuncRef (a, vt)
+, env: !vt
+) :<> void = "mac#atsctrb_g_qsort_with_data"
 // end of [g_qsort_with_data]
 
 (* ****** ****** *)

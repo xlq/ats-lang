@@ -1365,11 +1365,13 @@ fun m0acarglst_cons (x: m0acarg, xs: m0acarglst): m0acarglst
 
 datatype dcstextdef =
   | DCSTEXTDEFnone of ()
-  | DCSTEXTDEFsome_fun of string
-  | DCSTEXTDEFsome_mac of string
+  | DCSTEXTDEFsome_ext of string // extern
+  | DCSTEXTDEFsome_mac of string // macro
+  | DCSTEXTDEFsome_sta of string // static
 // end of [dcstextdef]
 
 fun dcstextdef_is_mac (x: dcstextdef):<> bool
+fun dcstextdef_is_sta (x: dcstextdef):<> bool
 
 (* ****** ****** *)
 

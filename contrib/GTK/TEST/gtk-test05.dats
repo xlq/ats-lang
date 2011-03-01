@@ -39,7 +39,7 @@ end // end of [delete_event]
 
 extern
 fun gtk_button_new_with_label0
-  (label: string): GtkButton_ref1 = "#atsctrb_gtk_button_new_with_label"
+  (label: string): GtkButton_ref1 = "mac#atsctrb_gtk_button_new_with_label"
 // end of [gtk_button_new_with_label0]
 
 fun make_box (
@@ -95,7 +95,7 @@ end // end of [make_box]
 
 extern
 fun gtk_label_new0
-  (name: string): GtkLabel_ref1 = "#atsctrb_gtk_label_new"
+  (name: string): GtkLabel_ref1 = "mac#atsctrb_gtk_label_new"
 // end of [gtk_label_new0]
 
 (* ****** ****** *)

@@ -47,17 +47,17 @@ absview gfree_v (l:addr)
 
 fun gptr_alloc
   {a:viewt@ype} (n: sizeof_t a)
-  : [l:addr] (gfree_v l, a? @ l | ptr l) = "#atsctrb_gptr_alloc"
+  : [l:addr] (gfree_v l, a? @ l | ptr l) = "mac#atsctrb_gptr_alloc"
 // end of [gptr_alloc]
 
 fun gptr_free {a:viewt@ype} {l:addr}
-  (pf1: gfree_v l, pf2: a? @ l | p: ptr l): void = "#atsctrb_g_free"
+  (pf1: gfree_v l, pf2: a? @ l | p: ptr l): void = "mac#atsctrb_g_free"
 // end of [gptr_free]
 
 (* ****** ****** *)
 
 castfn gstring_free_null (x: gstring null):<> ptr null
-fun gstring_free {l:addr} (x: gstring l): void = "#atsctrb_g_free"
+fun gstring_free {l:addr} (x: gstring l): void = "mac#atsctrb_g_free"
 
 (* ****** ****** *)
 

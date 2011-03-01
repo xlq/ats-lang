@@ -38,12 +38,9 @@
 
 (* ****** ****** *)
 
-
-
-
-(* ****** ****** *)
-
-fun gtk_text_tag_new (): GtkTextTag_ref1 = "#atsctrb_gtk_text_tag_new"
+fun gtk_text_tag_new
+  (): GtkTextTag_ref1 = "mac#atsctrb_gtk_text_tag_new"
+// end of [gtk_text_tag_new]
 
 (* ****** ****** *)
 
