@@ -20,15 +20,18 @@ staload _(*anon*) = "prelude/DATS/array.dats"
 
 (* ****** ****** *)
 
-staload "contrib/linux/basics.sats"
-staload "contrib/linux/SATS/utils.sats"
+staload "libats/ngc/SATS/slist.sats"
+staload _(*anon*) = "libats/ngc/DATS/slist.dats"
 
 (* ****** ****** *)
 
-staload
-UACC = "contrib/linux/asm/SATS/uaccess.sats"
-macdef copy_to_user = $UACC.copy_to_user
-macdef copy_from_user = $UACC.copy_from_user
+staload "libats/ngc/SATS/slist.sats"
+staload _(*anon*) = "libats/ngc/DATS/slist.dats"
+
+(* ****** ****** *)
+
+staload "contrib/linux/basics.sats"
+staload "contrib/linux/SATS/utils.sats"
 
 (* ****** ****** *)
 
@@ -126,15 +129,59 @@ end // end of [qdatptr_free]
 
 (* ****** ****** *)
 
-macdef
-ENOMEM = $extval (Pos, "ENOMEM")
-macdef
-EFAULT = $extval (Pos, "EFAULT")
+#include "scull_qsetlst.hats"
 
-extern
-fun add_loff_int {i,j:int}
-  (x: loff_t i, y: int j): loff_t (i+j) = "mac#add_loff_int"
-// end of [fun]
+(* ****** ****** *)
+
+implement
+qsetlst_make
+  {m,n} {ln0} (
+  ln0, ln_res
+) = let
+  viewtypedef qset = qset (m, n)
+  fun loop {i0,j0:nat} .<i0>. (
+    i0: int i0
+  , res: qsetlst (m, n, j0)
+  , ln_res: &int j0 >> int j
+  ) :<> #[j:nat | j <= i0+j0] qsetlst (m, n, j) =
+    if i0 > 0 then let
+      val (pfopt | p) = slnode_alloc<qset> ()
+    in
+      if p > null then let
+        prval Some_v (pf) = pfopt
+        prval (pfat, fpf) = slnode_v_takeout_val {qset?} (pf)
+        val () = p->data := qdatptr_make_null {m,n} ()
+        prval () = pf := fpf (pfat)
+        val res = slist_cons (pf | p, res)
+        val () = ln_res := ln_res + 1
+      in
+        loop (i0-1, res, ln_res)
+      end else let
+        prval None_v () = pfopt
+      in
+        res
+      end (* end of [if] *)
+    end else res
+  // end of [loop]
+  val () = ln_res := 0
+in
+  loop (ln0, slist_nil<qset> (), ln_res)
+end // end of [qsetlst_make]
+
+implement qsetlst_free
+  {m,n} {ln}
+  (xs, m) = let
+  stadef T = qset (m, n)
+  stadef V = unit_v
+  var !p_clo = @lam (
+    pf: !V | x: &T >> T?
+  ) : void =<clo> qdatptr_free (x.data, m)
+  prval pfv = unit_v ()
+  val () = slist_free_clo<T> {V} (pfv | xs, !p_clo)
+  prval unit_v () = pfv
+in
+  // nothing
+end // end of [qsetlst_free]
 
 (* ****** ****** *)
 
@@ -144,14 +191,6 @@ prfun qtmptr_vtakeout_bytes_read
   (p: !qtmptr (n, l)): (
   option_v (viewout (bytes(n) @ l), l > null)
 ) // end of [qtmptr_vtakeout_bytes_read]
-
-extern
-fun qdatptr_vtakeout_bytes_read
-  {m,n:nat} {l0:addr} (
-  p: !qdatptr (m, n, l0), i: natLt m
-) : [l:addr] (
-  option_v (viewout (bytes(n) @ l), l > null) | ptr l
-) = "scull_qdatptr_vtakeout_bytes_read"
 
 implement
 qdatptr_vtakeout_bytes_read
@@ -176,67 +215,6 @@ in
   ) (* end of [if] *)
 end // end of [qdatptr_vtakeout_bytes_read]
 
-(* ****** ****** *)
-
-(*
-fun scull_read_main
-  {m,n:nat}
-  {ln0:nat}
-  {lbf:addr}
-  {cnt:nat}
-  {tot:nat} (
-  pfbuf: !bytes(cnt) @ lbf
-| m: int m, n: int n
-, xs: !slist (qset(m, n), ln0)
-, ln: natLt (ln0), i: natLt (m), j: natLt (n)
-, pbf: uptr (lbf)
-, cnt: int (cnt)
-, fpos: &loff_t(tot) >> loff_t(tot+max(0, cnt1))
-) : #[cnt1:int | cnt1 <= cnt] intLte (cnt1) = "scull_read_main"
-// end of [fun]
-*)
-implement
-scull_read_main
-  {m,n}
-  {ln0}
-  {lb}
-  {cnt}
-  {tot} (
-  pfbuf
-| m, n, xs, ln, i, j, pbf, cnt, fpos
-) = let
-  stadef qset = qset (m, n)
-  val [lm:addr] (pfout | pm) = scull_follow_lessthan {m,n} (xs, ln)
-  prval (pfqs, fpfqs) = viewout_decode {qset@lm} (pfout)
-  val (pfopt | pqtm) = qdatptr_vtakeout_bytes_read (pm->data, i)
-  prval () = fpfqs (pfqs)
-in
-  if pqtm > null then let
-    prval Some_v pfout = pfopt
-    prval (pf, fpf) = viewout_decode (pfout)
-    stavar j: int
-    val j = j : int j
-    prval (pf1, pf2) = bytes_v_split {n} {j} (pf)
-    val [cnt:int] cnt = imin (cnt, n-j)
-(*
-    prval () = verify_constraint {n-j > 0} ()
-*)
-    val cnt_ul = $UN.cast {ulint(cnt)} (cnt)
-    val nleft = copy_to_user (pfbuf | pbf, !(pqtm+j), cnt_ul)
-    prval () = fpf (bytes_v_unsplit (pf1, pf2))
-  in
-    if nleft = 0UL then let
-      val () = fpos := add_loff_int (fpos, cnt) in #[cnt | cnt]
-    end else let
-      val [x:int] x = EFAULT in #[~x | ~x]
-    end // end of [if]
-  end else let
-    prval None_v () = pfopt
-  in
-    #[0 | 0] (* unavailable *)
-  end // end of [if]
-end // end of [scull_read_main]
-  
 (* ****** ****** *)
 
 extern
@@ -267,17 +245,6 @@ in
   end (* end of [if] *)
 end // end of [qtmptr_vtakeout_bytes_write]
 
-extern
-fun qdatptr_vtakeout_bytes_write
-  {m,n:nat} {l0:addr} (
-  p: &qdatptr (m, n, l0) >> qdatptr (m, n, l0)
-, m: int m, n: int n
-, i: natLt m
-, ntry: int
-) : #[l0,l:addr] (
-  option_v (viewout (bytes(n) @ l), l > null) | ptr l
-) = "scull_qdatptr_vtakeout_bytes_write"
-
 implement
 qdatptr_vtakeout_bytes_write
   {m,n}
@@ -306,81 +273,6 @@ in
   end // end of [if]
 end // end of [qdatptr_vtakeout_bytes_read]
 
-(* ****** ****** *)
-
-(*
-fun scull_write_main
-  {m,n:nat}
-  {ln0.ln:nat}
-  {lbf:addr}
-  {cnt:nat}
-  {tot:nat} (
-  pfbuf: !bytes(cnt) @ lbf
-| m: int m, n: int n
-, xs: &slist (qset(m, n), ln0) >> slist (qset(m, n), ln1)
-, ln0: int (ln0), ln: int (ln)
-, i: natLt (m), j: natLt (n)
-, pbf: uptr (lbf)
-, cnt: int (cnt)
-, fpos: &loff_t(tot) >> loff_t(tot+max(0, cnt1))
-) : #[
-  ln1,cnt1:int
-| ln0 <= ln1
-; cnt1 <= cnt
-] intLte (cnt1) = "scull_write_main"
-// end of [fun]
-*)
-implement
-scull_write_main
-  {m,n}
-  {ln0,ln}
-  {lbf}
-  {cnt}
-  {tot} (
-  pfbuf
-| m, n, xs, ln0, ln, i, j, pbf, cnt, fpos
-) = let
-  val (pfopt | pm) = scull_follow_main (xs, ln0, ln)
-  stavar ln1: int
-  val ln1 = ln0: int (ln1)
-in
-//
-if pm > null then let
-  prval Some_v pfout = pfopt
-  prval (pf, fpf) = viewout_decode (pfout)
-  val (pfopt | pqtm) = qdatptr_vtakeout_bytes_write (pm->data, m, n, i, 0)
-  prval () = fpf (pf)
-in
-  if pqtm > null then let  
-    prval Some_v pfout = pfopt
-    prval (pf, fpf) = viewout_decode (pfout)
-    stavar j: int
-    val j = j : int j
-    prval (pf1, pf2) = bytes_v_split {n} {j} (pf)
-    val [cnt:int] cnt = imin (cnt, n-j)
-(*
-    prval () = verify_constraint {n-j > 0} ()
-*)
-    val cnt_ul = $UN.cast {ulint(cnt)} (cnt)
-    val nleft = copy_from_user (pfbuf | !(pqtm+j), pbf, cnt_ul)
-    prval () = fpf (bytes_v_unsplit (pf1, pf2))
-  in
-    if nleft = 0UL then let
-      val () = fpos := add_loff_int (fpos, cnt) in #[ln1, cnt | cnt]
-    end else let
-      val [x:int] x = EFAULT in #[ln1, ~x | ~x]
-    end // end of [if]
-  end else let
-    prval None_v () = pfopt
-    val [x:int] x = ENOMEM in #[ln1, ~x | ~x] // out-of_memory
-  end (* end of [if] *)
-end else let
-  prval None_v () = pfopt
-  val [x:int] x = ENOMEM in #[ln1, ~x | ~x] // out-of_memory
-end (* end of [if] *)
-//
-end // end of [scull_write_main]
-  
 (* ****** ****** *)
 
 (* end of [scull_data.dats] *)

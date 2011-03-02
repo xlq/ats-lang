@@ -93,6 +93,19 @@ $extype_struct "scull_qset_struct" of {
 viewtypedef qsetlst (m: int, n: int, ln: int) = slist (qset (m, n), ln)
 
 (* ****** ****** *)
+
+fun qsetlst_make
+  {m,n:nat} {ln0:nat} (
+  ln0: int ln0
+, ln_res: &int? >> int ln
+) :<> #[ln:nat | ln <= ln0] qsetlst (m, n, ln)
+
+fun qsetlst_free
+  {m,n:nat} {ln:nat} (
+  xs: qsetlst (m, n, ln), m: int m
+) : void // end of [qsetlst_free]
+
+(* ****** ****** *)
 //
 // HX: m: qset data size; n: quantum size; ln: qsetlst length
 //
@@ -120,8 +133,7 @@ scull_dev (
 , n: int
 , ln: int
 , sz: int
-) =
-$extype_struct "scull_dev_struct" of {
+) = $extype_struct "scull_dev_struct" of {
   empty=empty
 , m_qset= int (m)
 , n_quantum= int (n)
@@ -130,6 +142,10 @@ $extype_struct "scull_dev_struct" of {
 , size= ulint (sz)
 , _rest= undefined_vt
 } // end of [scull_dev]
+
+(* ****** ****** *)
+
+abst@ype loff_t (i:int) = $extype"loff_t"
 
 (* ****** ****** *)
 
@@ -176,7 +192,12 @@ fun scull_follow_main
 
 (* ****** ****** *)
 
-abst@ype loff_t (i:int) = $extype"loff_t"
+fun qdatptr_vtakeout_bytes_read
+  {m,n:nat} {l0:addr} (
+  p: !qdatptr (m, n, l0), i: natLt m
+) : [l:addr] (
+  option_v (viewout (bytes(n) @ l), l > null) | ptr l
+) = "scull_qdatptr_vtakeout_bytes_read"
 
 fun scull_read_main
   {m,n:nat}
@@ -195,6 +216,16 @@ fun scull_read_main
 // end of [fun]
 
 (* ****** ****** *)
+
+fun qdatptr_vtakeout_bytes_write
+  {m,n:nat} {l0:addr} (
+  p: &qdatptr (m, n, l0) >> qdatptr (m, n, l0)
+, m: int m, n: int n
+, i: natLt m
+, ntry: int
+) : #[l0,l:addr] (
+  option_v (viewout (bytes(n) @ l), l > null) | ptr l
+) // end of [fun]
 
 fun scull_write_main
   {m,n:nat}
