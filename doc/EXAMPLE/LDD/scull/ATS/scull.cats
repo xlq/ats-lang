@@ -32,8 +32,15 @@ typedef unsigned long int ulint ;
 /* ****** ****** */
 
 #define scull_ptr_make_null() (NULL)
+#define scull_ptr_free_null(p) (NULL)
 
 /* ****** ****** */
+
+ATSinline()
+ats_ptr_type
+scull_qtmptr_make
+  (int n) { return ATS_MALLOC(n) ; }
+// end of [scull_qtmptr_make]
 
 ATSinline()
 ats_void_type
@@ -41,6 +48,18 @@ scull_qtmptr_free
   (ats_ptr_type p) {
   if (p) ATS_FREE(p) ; return ;
 } // end of [scull_qtmptr_free]
+
+/* ****** ****** */
+
+ATSinline()
+ats_ptr_type
+scull_qdatptr_make
+  (int m) {
+  size_t bsz = m*sizeof(ats_ptr_type) ;
+  ats_ptr_type *p = ATS_MALLOC(bsz) ;
+  if (p != NULL) memset (p, 0, bsz) ;
+  return p ;
+} // end of [scull_qdatptr_make]
 
 /* ****** ****** */
 

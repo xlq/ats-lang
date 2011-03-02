@@ -52,6 +52,8 @@ fun qtmptr_make_null
 
 fun qtmptr_free {n:nat}
   (p: qtmptr (n)):<> void = "scull_qtmptr_free"
+fun qtmptr_free_null {n:nat}
+  (p: qtmptr (n, null)):<> void = "mac#atspre_ptr_free_null"
 
 (* ****** ****** *)
 //
@@ -75,7 +77,8 @@ fun qdatptr_make_null
 
 fun qdatptr_free {m,n:nat}
   (p: qdatptr (m, n), m: int m):<> void // implemented in ATS
-// end of [qdatptr_free]
+fun qdatptr_free_null {m, n:nat}
+  (p: qdatptr (m, n, null)):<> void = "mac#atspre_ptr_free_null"
 
 (* ****** ****** *)
 
@@ -163,10 +166,10 @@ fun scull_follow_lessthan
 
 fun scull_follow_main
   {m,n:nat} {ln0:nat} {ln:nat} (
-  xs: &slist (qset(m, n), ln0) >> slist (qset(m, n), ln0)
-, ln0: &int(ln0) >> int (ln0)
+  xs: &slist (qset(m, n), ln0) >> slist (qset(m, n), ln1)
+, ln0: &int(ln0) >> int (ln1)
 , ln: int (ln)
-) : #[ln0:nat;lm:addr] (
+) : #[ln1:int;lm:addr | ln0 <= ln1] (
   option_v (viewout (qset(m, n) @ lm), lm > null) | ptr (lm)
 ) = "scull_follow_main"
 // end of [fun]
@@ -189,6 +192,30 @@ fun scull_read_main
 , cnt: int (cnt)
 , fpos: &loff_t(tot) >> loff_t(tot+max(0, cnt1))
 ) : #[cnt1:int | cnt1 <= cnt] intLte (cnt1) = "scull_read_main"
+// end of [fun]
+
+(* ****** ****** *)
+
+fun scull_write_main
+  {m,n:nat}
+  {ln0,ln:nat}
+  {lbf:addr}
+  {cnt:nat}
+  {tot:nat} (
+  pfbuf: !bytes(cnt) @ lbf
+| m: int m, n: int n
+, xs: &slist (qset(m, n), ln0) >> slist (qset(m, n), ln1)
+, ln0: &int (ln0) >> int (ln1)
+, ln: int (ln)
+, i: natLt (m), j: natLt (n)
+, pbf: uptr (lbf)
+, cnt: int (cnt)
+, fpos: &loff_t(tot) >> loff_t(tot+max(0, cnt1))
+) : #[
+  ln1,cnt1:int
+| ln0 <= ln1
+; cnt1 <= cnt
+] intLte (cnt1) = "scull_write_main"
 // end of [fun]
 
 (* ****** ****** *)

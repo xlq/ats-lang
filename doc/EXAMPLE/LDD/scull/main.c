@@ -319,8 +319,11 @@ scull_follow (struct scull_dev *dev, int n) {
 }
 
 #if(0)
+//
+// HX: moved into ATS
+//
 /*
- * Data management: read and write
+ * Data management: read
  */
 ssize_t scull_read(struct file *filp, char __user *buf, size_t count,
                 loff_t *f_pos)
@@ -397,7 +400,7 @@ scull_read (
 //
   int nm = n * m; /* how many bytes in the listitem */
   int ln, s_pos, q_pos, rest;
-  ssize_t retval = 0;
+  ssize_t retval ;
 //
   if (down_interruptible(&dev->sem)) return -ERESTARTSYS;
   if (*f_pos >= dev->size) goto out;
@@ -417,6 +420,13 @@ scull_read (
 
 /* ****** ****** */
 
+#if(0)
+//
+// HX: moved into ATS
+//
+/*
+ * Data management: write
+ */
 ssize_t scull_write(struct file *filp, const char __user *buf, size_t count,
                 loff_t *f_pos)
 {
@@ -472,6 +482,50 @@ ssize_t scull_write(struct file *filp, const char __user *buf, size_t count,
 	up(&dev->sem);
 	return retval;
 }
+#endif // end of [if(0)]
+extern
+ats_int_type
+scull_write_main (
+  ats_int_type m
+, ats_int_type n
+, ats_ref_type xs
+, ats_ref_type ln0
+, ats_int_type ln
+, ats_int_type i
+, ats_int_type j
+, ats_ptr_type pbf
+, ats_int_type cnt
+, ats_ref_type f_pos
+) ;
+ssize_t
+scull_write (
+  struct file *filp
+, const char __user *buf, size_t count
+, loff_t *f_pos
+) {
+  struct scull_dev *dev = filp->private_data ; 
+//
+  int m = dev->m_qset;
+  int n = dev->n_quantum;
+//
+  int nm = n * m; /* how many bytes in the listitem */
+  int ln, s_pos, q_pos, rest;
+  ssize_t retval ;
+//
+  if (down_interruptible(&dev->sem)) return -ERESTARTSYS;
+//
+  ln = (long)*f_pos / nm ;
+  rest = (long)*f_pos % nm ;
+  s_pos = rest / n; q_pos = rest % n;
+//
+  retval = scull_write_main (
+    m, n, dev->data, dev->ln_qlst, ln, s_pos, q_pos, buf, count, f_pos
+  ) ; // end of [scull_read_main]
+//
+  out: up(&dev->sem) ; return retval ;
+//
+} // end of [scull_write]
+
 
 /*
  * The ioctl() implementation

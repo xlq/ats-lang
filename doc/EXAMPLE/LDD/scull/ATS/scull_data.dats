@@ -28,12 +28,14 @@ staload "contrib/linux/SATS/utils.sats"
 staload
 UACC = "contrib/linux/asm/SATS/uaccess.sats"
 macdef copy_to_user = $UACC.copy_to_user
+macdef copy_from_user = $UACC.copy_from_user
 
 (* ****** ****** *)
 
 staload "scull.sats"
 
 #define i2sz size1_of_int1
+macdef viewout_decode = $UN.viewout_decode
 
 (* ****** ****** *)
 
@@ -45,15 +47,6 @@ extern
 prfun qtm_v_takeout
   {n:nat} {l:agz} () : ftakeout_p (qtm_v (n, l), bytes (n) @ l)
 // end of [qtm_v]
-
-(* ****** ****** *)
-
-extern
-prfun qtmptr_vtakeout_bytes_read
-  {n:nat} {l:addr}
-  (p: !qtmptr (n, l)): (
-  option_v (viewout (bytes(n) @ l), l > null)
-) // end of [qtmptr_vtakeout_bytes_read]
 
 (* ****** ****** *)
 
@@ -133,6 +126,25 @@ end // end of [qdatptr_free]
 
 (* ****** ****** *)
 
+macdef
+ENOMEM = $extval (Pos, "ENOMEM")
+macdef
+EFAULT = $extval (Pos, "EFAULT")
+
+extern
+fun add_loff_int {i,j:int}
+  (x: loff_t i, y: int j): loff_t (i+j) = "mac#add_loff_int"
+// end of [fun]
+
+(* ****** ****** *)
+
+extern
+prfun qtmptr_vtakeout_bytes_read
+  {n:nat} {l:addr}
+  (p: !qtmptr (n, l)): (
+  option_v (viewout (bytes(n) @ l), l > null)
+) // end of [qtmptr_vtakeout_bytes_read]
+
 extern
 fun qdatptr_vtakeout_bytes_read
   {m,n:nat} {l0:addr} (
@@ -173,14 +185,14 @@ fun scull_read_main
   {lbf:addr}
   {cnt:nat}
   {tot:nat} (
-  pfbuf: bytes @ lbf
+  pfbuf: !bytes(cnt) @ lbf
 | m: int m, n: int n
-, xs: &slist (qset(m, n), ln0)
-, ln: intLt (ln0), i: intLt (m), j: intLt (n)
+, xs: !slist (qset(m, n), ln0)
+, ln: natLt (ln0), i: natLt (m), j: natLt (n)
 , pbf: uptr (lbf)
 , cnt: int (cnt)
-, fpos: &loff_t(tot) >> loff_t(tot+max(0, cnt))
-) : #[cnt:int] intLte (cnt) = "scull_read_main"
+, fpos: &loff_t(tot) >> loff_t(tot+max(0, cnt1))
+) : #[cnt1:int | cnt1 <= cnt] intLte (cnt1) = "scull_read_main"
 // end of [fun]
 *)
 implement
@@ -191,28 +203,17 @@ scull_read_main
   {cnt}
   {tot} (
   pfbuf
-| m, n, xs
-, ln, i, j
-, pbf
-, cnt
-, fpos
+| m, n, xs, ln, i, j, pbf, cnt, fpos
 ) = let
-//
-macdef
-EFAULT = $extval (Pos, "EFAULT")
-extern
-fun add_loff_int {i,j:int}
-  (x: loff_t i, y: int j): loff_t (i+j) = "mac#add_loff_int"
-//
   stadef qset = qset (m, n)
   val [lm:addr] (pfout | pm) = scull_follow_lessthan {m,n} (xs, ln)
-  prval (pfqs, fpfqs) = $UN.viewout_decode {qset@lm} (pfout)
+  prval (pfqs, fpfqs) = viewout_decode {qset@lm} (pfout)
   val (pfopt | pqtm) = qdatptr_vtakeout_bytes_read (pm->data, i)
   prval () = fpfqs (pfqs)
 in
   if pqtm > null then let
     prval Some_v pfout = pfopt
-    prval (pf, fpf) = $UN.viewout_decode (pfout)
+    prval (pf, fpf) = viewout_decode (pfout)
     stavar j: int
     val j = j : int j
     prval (pf1, pf2) = bytes_v_split {n} {j} (pf)
@@ -236,7 +237,150 @@ in
   end // end of [if]
 end // end of [scull_read_main]
   
+(* ****** ****** *)
+
+extern
+fun qtmptr_vtakeout_bytes_write
+  {n:nat} {l:addr} (
+  p: &qtmptr (n, l) >> qtmptr (n, l), n: int n, ntry: int
+) : #[l:addr] (
+  option_v (viewout (bytes(n) @ l), l > null) | ptr l
+) // end of [qtmptr_vtakeout_bytes_write]
+
+implement
+qtmptr_vtakeout_bytes_write
+  {n} {l} (
+  r, n, ntry
+) = let
+  val p = ptr_of (r)
+in
+  if p > null then
+    (qtmptr_vtakeout_bytes_read (r) | p)
+  else if ntry > 0 then
+    (qtmptr_vtakeout_bytes_read (r) | p)
+  else let
+    prval () = ptr_is_gtez (p)
+    val () = qtmptr_free_null (r)
+    val () = r := qtmptr_make (n)
+  in
+    qtmptr_vtakeout_bytes_write (r, n, ntry+1)
+  end (* end of [if] *)
+end // end of [qtmptr_vtakeout_bytes_write]
+
+extern
+fun qdatptr_vtakeout_bytes_write
+  {m,n:nat} {l0:addr} (
+  p: &qdatptr (m, n, l0) >> qdatptr (m, n, l0)
+, m: int m, n: int n
+, i: natLt m
+, ntry: int
+) : #[l0,l:addr] (
+  option_v (viewout (bytes(n) @ l), l > null) | ptr l
+) = "scull_qdatptr_vtakeout_bytes_write"
+
+implement
+qdatptr_vtakeout_bytes_write
+  {m,n}
+  (r, m, n, i, ntry) = let
+  val p = ptr_of (r)
+in
+  if p > null then let
+    prval (pfdat | ()) = qdatptr_unfold (r)
+    prval (pfarr, fpfdat) = qdat_v_takeout (pfdat)
+    val i = i2sz (i)
+    val (pfat, fpfarr | p_i) = array_ptr_takeout<qtmptr(n)> (pfarr | p, i)
+    val (pfopt | pqtm) = qtmptr_vtakeout_bytes_write (!p_i, n, 0)
+    prval () = pfarr := fpfarr (pfat)
+    prval () = pfdat := fpfdat (pfarr)
+    prval () = qdatptr_fold (pfdat | r)
+  in
+    #[ .. | (pfopt | pqtm) ]
+  end else if ntry > 0 then
+    #[.. | (None_v () | null)]
+  else let
+    prval () = ptr_is_gtez (p)
+    val () = qdatptr_free_null (r)
+    val () = r := qdatptr_make {m,n} (m)
+  in
+    qdatptr_vtakeout_bytes_write (r, m, n, i, ntry+1)
+  end // end of [if]
+end // end of [qdatptr_vtakeout_bytes_read]
 
 (* ****** ****** *)
 
+(*
+fun scull_write_main
+  {m,n:nat}
+  {ln0.ln:nat}
+  {lbf:addr}
+  {cnt:nat}
+  {tot:nat} (
+  pfbuf: !bytes(cnt) @ lbf
+| m: int m, n: int n
+, xs: &slist (qset(m, n), ln0) >> slist (qset(m, n), ln1)
+, ln0: int (ln0), ln: int (ln)
+, i: natLt (m), j: natLt (n)
+, pbf: uptr (lbf)
+, cnt: int (cnt)
+, fpos: &loff_t(tot) >> loff_t(tot+max(0, cnt1))
+) : #[
+  ln1,cnt1:int
+| ln0 <= ln1
+; cnt1 <= cnt
+] intLte (cnt1) = "scull_write_main"
+// end of [fun]
+*)
+implement
+scull_write_main
+  {m,n}
+  {ln0,ln}
+  {lbf}
+  {cnt}
+  {tot} (
+  pfbuf
+| m, n, xs, ln0, ln, i, j, pbf, cnt, fpos
+) = let
+  val (pfopt | pm) = scull_follow_main (xs, ln0, ln)
+  stavar ln1: int
+  val ln1 = ln0: int (ln1)
+in
+//
+if pm > null then let
+  prval Some_v pfout = pfopt
+  prval (pf, fpf) = viewout_decode (pfout)
+  val (pfopt | pqtm) = qdatptr_vtakeout_bytes_write (pm->data, m, n, i, 0)
+  prval () = fpf (pf)
+in
+  if pqtm > null then let  
+    prval Some_v pfout = pfopt
+    prval (pf, fpf) = viewout_decode (pfout)
+    stavar j: int
+    val j = j : int j
+    prval (pf1, pf2) = bytes_v_split {n} {j} (pf)
+    val [cnt:int] cnt = imin (cnt, n-j)
+(*
+    prval () = verify_constraint {n-j > 0} ()
+*)
+    val cnt_ul = $UN.cast {ulint(cnt)} (cnt)
+    val nleft = copy_from_user (pfbuf | !(pqtm+j), pbf, cnt_ul)
+    prval () = fpf (bytes_v_unsplit (pf1, pf2))
+  in
+    if nleft = 0UL then let
+      val () = fpos := add_loff_int (fpos, cnt) in #[ln1, cnt | cnt]
+    end else let
+      val [x:int] x = EFAULT in #[ln1, ~x | ~x]
+    end // end of [if]
+  end else let
+    prval None_v () = pfopt
+    val [x:int] x = ENOMEM in #[ln1, ~x | ~x] // out-of_memory
+  end (* end of [if] *)
+end else let
+  prval None_v () = pfopt
+  val [x:int] x = ENOMEM in #[ln1, ~x | ~x] // out-of_memory
+end (* end of [if] *)
+//
+end // end of [scull_write_main]
+  
+(* ****** ****** *)
 
+(* end of [scull_data.dats] *)
