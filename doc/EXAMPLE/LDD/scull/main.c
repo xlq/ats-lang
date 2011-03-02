@@ -398,7 +398,7 @@ scull_read (
 //
   int nm = n * m; /* how many bytes in the listitem */
   int ln, s_pos, q_pos, rest;
-  ssize_t retval ;
+  ssize_t retval = 0 ;
 //
   if (down_interruptible(&dev->sem)) return -ERESTARTSYS;
   if (*f_pos >= dev->size) goto out;
@@ -517,7 +517,7 @@ scull_write (
   s_pos = rest / n; q_pos = rest % n;
 //
   retval = scull_write_main (
-    m, n, dev->data, dev->ln_qlst, ln, s_pos, q_pos, buf, count, f_pos
+    m, n, &dev->data, &dev->ln_qlst, ln, s_pos, q_pos, buf, count, f_pos
   ) ; // end of [scull_read_main]
 //
   if (retval >= 0) {
