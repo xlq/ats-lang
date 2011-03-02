@@ -87,7 +87,6 @@ int scull_trim(struct scull_dev *dev)
 	return 0;
 }
 #endif // end of [if(0)]
-
 extern
 void scull_trim_main (
   struct scull_dev *dev, int m, int n
@@ -375,16 +374,15 @@ ssize_t scull_read(struct file *filp, char __user *buf, size_t count,
 extern
 ats_int_type
 scull_read_main (
-  ats_int_type m
-, ats_int_type n
-, ats_ptr_type xs
-, ats_int_type ln
-, ats_int_type i
-, ats_int_type j
-, ats_ptr_type pbf
-, ats_int_type cnt
-, ats_ref_type f_pos
-) ;
+  int m
+, int n
+, struct scull_qset *xs
+, int ln
+, int i, int j
+, char __user *pbf
+, int cnt
+, loff_t *f_pos
+) ; // end of [scull_read_main]
 ssize_t
 scull_read (
   struct file *filp
@@ -398,10 +396,10 @@ scull_read (
 //
   int nm = n * m; /* how many bytes in the listitem */
   int ln, s_pos, q_pos, rest;
-  ssize_t retval = 0 ;
+  ssize_t retval ;
 //
   if (down_interruptible(&dev->sem)) return -ERESTARTSYS;
-  if (*f_pos >= dev->size) goto out;
+  if (*f_pos >= dev->size) { retval = 0 ; goto out ; }
   if (*f_pos + count > dev->size) count = dev->size - *f_pos;
 //
   ln = (long)*f_pos / nm ;
@@ -412,7 +410,8 @@ scull_read (
     m, n, dev->data, ln, s_pos, q_pos, buf, count, f_pos
   ) ; // end of [scull_read_main]
 //
-  out: up(&dev->sem) ; return retval ;
+  out:
+  up(&dev->sem) ; return retval ;
 //
 } // end of [scull_read]
 
@@ -484,17 +483,16 @@ ssize_t scull_write(struct file *filp, const char __user *buf, size_t count,
 extern
 ats_int_type
 scull_write_main (
-  ats_int_type m
-, ats_int_type n
-, ats_ref_type xs
-, ats_ref_type ln0
-, ats_int_type ln
-, ats_int_type i
-, ats_int_type j
-, ats_ptr_type pbf
-, ats_int_type cnt
-, ats_ref_type f_pos
-) ;
+  int m
+, int n
+, struct scull_qset **xs
+, int *ln0
+, int ln
+, int i, int j
+, const char __user *pbf
+, int cnt
+, loff_t *f_pos
+) ; // end of [scull_write_main]
 ssize_t
 scull_write (
   struct file *filp
@@ -524,7 +522,10 @@ scull_write (
     if (dev->size < *f_pos) dev->size = *f_pos ;
   } // end of [if]
 //
-  out: up(&dev->sem) ; return retval ;
+/*
+  out:
+*/
+  up(&dev->sem) ; return retval ;
 //
 } // end of [scull_write]
 
