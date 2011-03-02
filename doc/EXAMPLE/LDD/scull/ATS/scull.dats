@@ -28,6 +28,14 @@ macdef viewout_decode = $UN.viewout_decode
 (* ****** ****** *)
 
 staload
+ERRNO = "contrib/linux/linux/SATS/errno.sats"
+macdef e2i = $ERRNO.int_of_errno
+macdef EFAULT = $ERRNO.EFAULT
+macdef ENOMEM = $ERRNO.ENOMEM
+
+(* ****** ****** *)
+
+staload
 UACC = "contrib/linux/asm/SATS/uaccess.sats"
 macdef copy_to_user = $UACC.copy_to_user
 macdef copy_from_user = $UACC.copy_from_user
@@ -122,9 +130,6 @@ end // end of [scull_follow_main]
 
 (* ****** ****** *)
 
-macdef ENOMEM = $extval (Pos, "ENOMEM")
-macdef EFAULT = $extval (Pos, "EFAULT")
-
 extern
 fun add_loff_int {i,j:int}
   (x: loff_t i, y: int j): loff_t (i+j) = "mac#add_loff_int"
@@ -165,7 +170,7 @@ in
     if nleft = 0UL then let
       val () = fpos := add_loff_int (fpos, cnt) in #[cnt | cnt]
     end else let
-      val [x:int] x = EFAULT in #[~x | ~x]
+      val [x:int] x = (e2i)EFAULT in #[~x | ~x]
     end // end of [if]
   end else let
     prval None_v () = pfopt
@@ -212,17 +217,17 @@ in
     prval () = fpf (bytes_v_unsplit (pf1, pf2))
   in
     if nleft = 0UL then let
-      val () = fpos := add_loff_int (fpos, cnt) in #[ln1, cnt | cnt]
+      val () = fpos := add_loff_int (fpos, cnt) in cnt
     end else let
-      val [x:int] x = EFAULT in #[ln1, ~x | ~x]
+      val [x:int] x = (e2i)EFAULT in ~x // I/O fault
     end // end of [if]
   end else let
     prval None_v () = pfopt
-    val [x:int] x = ENOMEM in #[ln1, ~x | ~x] // out-of_memory
+    val [x:int] x = (e2i)ENOMEM in ~x // out-of-memory
   end (* end of [if] *)
 end else let
   prval None_v () = pfopt
-  val [x:int] x = ENOMEM in #[ln1, ~x | ~x] // out-of_memory
+  val [x:int] x = (e2i)ENOMEM in ~x // out-of-memory
 end (* end of [if] *)
 //
 end // end of [scull_write_main]

@@ -37,7 +37,7 @@ propdef ftakeout_p
 // n: quantum size; l: location
 //
 absviewtype
-qtmptr (n: int, l:addr) = ptr
+qtmptr (n:int, l:addr) = ptr
 viewtypedef qtmptr (n: int) = [l:addr] qtmptr (n, l)
 
 castfn ptr_of_qtmptr
@@ -212,7 +212,7 @@ fun scull_read_main
 , pbf: uptr (lbf)
 , cnt: int (cnt)
 , fpos: &loff_t(tot) >> loff_t(tot+max(0, cnt1))
-) : #[cnt1:int | cnt1 <= cnt] intLte (cnt1) = "scull_read_main"
+) : #[cnt1:int | cnt1 <= cnt] int (cnt1) = "scull_read_main"
 // end of [fun]
 
 (* ****** ****** *)
@@ -246,7 +246,7 @@ fun scull_write_main
   ln1,cnt1:int
 | ln0 <= ln1
 ; cnt1 <= cnt
-] intLte (cnt1) = "scull_write_main"
+] int (cnt1) = "scull_write_main"
 // end of [fun]
 
 (* ****** ****** *)
