@@ -150,6 +150,17 @@ slist_split_at
   : [lm:addr] (slseg_v (a, i, la, lm), slist_v (a, n-i, lm) | ptr lm)
 // end of [slist_split_at]
 *)
+fun scull_follow_lessthan
+  {m,n:nat}
+  {ln0:int}
+  {ln:nat | ln < ln0} (
+  xs: !slist (qset(m, n), ln0), ln: int (ln)
+) : [lm:agz] (
+  viewout (qset(m, n) @ lm) | ptr lm
+) = "scull_follow_lessthan"
+
+(* ****** ****** *)
+
 fun scull_follow_main
   {m,n:nat} {ln0:nat} {ln:nat} (
   xs: &slist (qset(m, n), ln0) >> slist (qset(m, n), ln0)
@@ -158,6 +169,26 @@ fun scull_follow_main
 ) : #[ln0:nat;lm:addr] (
   option_v (viewout (qset(m, n) @ lm), lm > null) | ptr (lm)
 ) = "scull_follow_main"
+// end of [fun]
+
+(* ****** ****** *)
+
+abst@ype loff_t (i:int) = $extype"loff_t"
+
+fun scull_read_main
+  {m,n:nat}
+  {ln0:nat}
+  {lbf:addr}
+  {cnt:nat}
+  {tot:nat} (
+  pfbuf: !bytes(cnt) @ lbf
+| m: int m, n: int n
+, xs: !slist (qset(m, n), ln0)
+, ln: natLt (ln0), i: natLt (m), j: natLt (n)
+, pbf: uptr (lbf)
+, cnt: int (cnt)
+, fpos: &loff_t(tot) >> loff_t(tot+max(0, cnt1))
+) : #[cnt1:int | cnt1 <= cnt] intLte (cnt1) = "scull_read_main"
 // end of [fun]
 
 (* ****** ****** *)

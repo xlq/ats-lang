@@ -127,22 +127,12 @@ castfn p2p {l:addr} (p: !ptr l):<> ptr l
 
 (* ****** ****** *)
 
-(*
-fun scull_follow_main
-  {m,n:nat}
-  {ln0:int}
-  {ln:nat | ln < ln0} (
-  xs: &qsetlst (m, n, ln0) >> qsetlst (m, n, ln)
-, ln: int ln
-) :<> #[ln0:int | ln < ln] qsetlst (m, n, ln0-ln)
-  = "scull_follow_main"
-*)
-
-fun scull_follow_lessthan
-  {m,n:nat}
-  {ln0:int}
-  {ln:nat | ln < ln0} (
-  xs: !slist (qset(m, n), ln0), ln: int (ln)
+implement
+scull_follow_lessthan
+  {m,n}
+  {ln0}
+  {ln} (
+  xs, ln
 ) : [lm:agz] (
   viewout (qset(m, n) @ lm) | ptr lm
 ) = (pfout | pm) where {

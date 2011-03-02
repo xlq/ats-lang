@@ -33,6 +33,8 @@
 
 #include "scull.h"		/* local definitions */
 
+#include "contrib/linux/include/ats_types.h" /* ats types */
+
 /*
  * Our parameters which can be set at load time.
  */
@@ -316,6 +318,7 @@ scull_follow (struct scull_dev *dev, int n) {
   return scull_follow_main (&dev->data, &dev->ln_qlst, n) ;
 }
 
+#if(0)
 /*
  * Data management: read and write
  */
@@ -365,6 +368,54 @@ ssize_t scull_read(struct file *filp, char __user *buf, size_t count,
 	up(&dev->sem);
 	return retval;
 }
+#endif // end of [if(0)]
+
+extern
+ats_int_type
+scull_read_main (
+  ats_int_type m
+, ats_int_type n
+, ats_ptr_type xs
+, ats_int_type ln
+, ats_int_type i
+, ats_int_type j
+, ats_ptr_type pbf
+, ats_int_type cnt
+, ats_ref_type f_pos
+) ;
+
+ssize_t
+scull_read (
+  struct file *filp
+, char __user *buf, size_t count
+, loff_t *f_pos
+) {
+  struct scull_dev *dev = filp->private_data ; 
+//
+  int m = dev->m_qset;
+  int n = dev->n_quantum;
+//
+  int nm = n * m; /* how many bytes in the listitem */
+  int ln, s_pos, q_pos, rest;
+  ssize_t retval = 0;
+//
+  if (down_interruptible(&dev->sem)) return -ERESTARTSYS;
+  if (*f_pos >= dev->size) goto out;
+  if (*f_pos + count > dev->size) count = dev->size - *f_pos;
+//
+  ln = (long)*f_pos / nm ;
+  rest = (long)*f_pos % nm ;
+  s_pos = rest / n; q_pos = rest % n;
+//
+  retval = scull_read_main (
+    m, n, dev->data, ln, s_pos, q_pos, buf, count, f_pos
+  ) ; // end of [scull_read_main]
+//
+  out: up(&dev->sem) ; return retval ;
+//
+} // end of [scull_read]
+
+/* ****** ****** */
 
 ssize_t scull_write(struct file *filp, const char __user *buf, size_t count,
                 loff_t *f_pos)

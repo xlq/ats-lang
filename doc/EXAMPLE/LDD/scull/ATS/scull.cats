@@ -32,6 +32,11 @@ typedef struct scull_qset scull_qset_struct ;
 
 /* ****** ****** */
 
+typedef unsigned long int ulint ;
+#define add_loff_int(x, y) (((ulint)x) + ((ulint)y))
+
+/* ****** ****** */
+
 #define scull_ptr_make_null() (NULL)
 
 /* ****** ****** */
