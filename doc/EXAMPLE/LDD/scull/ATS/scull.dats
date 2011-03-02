@@ -8,6 +8,10 @@
 
 (* ****** ****** *)
 
+staload "myheader.sats"
+
+(* ****** ****** *)
+
 staload "libats/ngc/SATS/slist.sats"
 staload _(*anon*) = "libats/ngc/DATS/slist.dats"
 

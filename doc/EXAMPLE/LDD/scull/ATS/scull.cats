@@ -9,12 +9,6 @@
 
 /* ****** ****** */
 
-#include "contrib/linux/include/ats_types.h"
-#include "contrib/linux/include/ats_basics.h"
-#include "contrib/linux/include/ats_memory.h"
-
-/* ****** ****** */
-
 #include "contrib/linux/CATS/integer.cats"
 #include "contrib/linux/CATS/pointer.cats"
 #include "contrib/linux/CATS/sizetype.cats"

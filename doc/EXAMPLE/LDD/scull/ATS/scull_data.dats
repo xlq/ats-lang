@@ -8,6 +8,10 @@
 
 (* ****** ****** *)
 
+staload "myheader.sats"
+
+(* ****** ****** *)
+
 (*
 // loaded by atsopt:
 staload "prelude/SATS/array.sats"
