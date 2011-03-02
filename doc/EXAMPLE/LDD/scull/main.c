@@ -372,7 +372,6 @@ ssize_t scull_read(struct file *filp, char __user *buf, size_t count,
 	return retval;
 }
 #endif // end of [if(0)]
-
 extern
 ats_int_type
 scull_read_main (
@@ -386,7 +385,6 @@ scull_read_main (
 , ats_int_type cnt
 , ats_ref_type f_pos
 ) ;
-
 ssize_t
 scull_read (
   struct file *filp
@@ -521,6 +519,10 @@ scull_write (
   retval = scull_write_main (
     m, n, dev->data, dev->ln_qlst, ln, s_pos, q_pos, buf, count, f_pos
   ) ; // end of [scull_read_main]
+//
+  if (retval >= 0) {
+    if (dev->size < *f_pos) dev->size = *f_pos ;
+  } // end of [if]
 //
   out: up(&dev->sem) ; return retval ;
 //
