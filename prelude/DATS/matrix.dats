@@ -159,9 +159,11 @@ in @{
 #define atspre_matrix_szdiv(i, n) (i / n)
 %}
 extern
-fun szdiv {m,n:pos; mn,i:nat | i < mn}
-  (pf: MUL (m, n, mn) | i: size_t i, n: size_t n):<> [d:nat | d < m] size_t d
-  = "#atspre_matrix_szdiv" // macro!
+fun szdiv
+  {m,n:pos; mn,i:nat | i < mn} (
+  pf: MUL (m, n, mn) | i: size_t i, n: size_t n
+) :<> [d:nat | d < m] size_t d
+  = "mac#atspre_matrix_szdiv" // macro!
 // end of [szdiv]
 
 (* ****** ****** *)
