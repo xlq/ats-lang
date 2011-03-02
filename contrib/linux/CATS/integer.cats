@@ -33,8 +33,8 @@
 
 /* ****** ****** */
 
-#ifndef ATSCTRB_KERNEL_INTEGER_CATS
-#define ATSCTRB_KERNEL_INTEGER_CATS
+#ifndef ATSCTRB_LINUX_INTEGER_CATS
+#define ATSCTRB_LINUX_INTEGER_CATS
 
 /* ****** ****** */
 //
@@ -144,11 +144,13 @@ atspre_neq_int_int (ats_int_type i1, ats_int_type i2) {
 
 ATSinline()
 ats_int_type
-atspre_compare_int_int (ats_int_type i1, ats_int_type i2) {
+atspre_compare_int_int (
+  ats_int_type i1, ats_int_type i2
+) {
   if (i1 < i2) return (-1) ;
-  else if (i1 > i2) return ( 1) ;
-  else return (0) ;
-}
+  if (i1 > i2) return ( 1) ;
+  return (0) ;
+} // end of [atspre_compare_int_int]
 
 ATSinline()
 ats_int_type
@@ -185,7 +187,7 @@ atspre_pow_int_int1 (
     if (n % 2 > 0) { res *= x ; x = x * x ; }
     else { x = x * x ; }
     n = n >> 1 ;
-  }
+  } // end of [while]
 //
   return res ;
 } // end of [atspre_pow_int_int1]
@@ -1060,6 +1062,6 @@ atspre_min_ullint_ullint (
 
 /* ****** ****** */
 
-#endif /* ATSCTRB_KERNEL_INTEGER_CATS */
+#endif /* ATSCTRB_LINUX_INTEGER_CATS */
 
 /* end of [integer.cats] */

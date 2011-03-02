@@ -33,15 +33,15 @@
 
 /* ****** ****** */
 
-#ifndef ATSCTRB_KERNEL_UTILS_CATS
-#define ATSCTRB_KERNEL_UTILS_CATS
+#ifndef ATSCTRB_LINUX_UTILS_CATS
+#define ATSCTRB_LINUX_UTILS_CATS
 
 /* ****** ****** */
 
-#define atsctrb_kernel_array_ptr_kfree kfree
+#define atsctrb_linux_array_ptr_kfree kfree
 
 /* ****** ****** */
 
-#endif /* ATSCTRB_KERNEL_UTILS_CATS */
+#endif /* ATSCTRB_LINUX_UTILS_CATS */
 
 /* end of [utils.cats] */

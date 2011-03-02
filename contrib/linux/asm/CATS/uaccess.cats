@@ -43,6 +43,11 @@
 
 /* ****** ****** */
 
+#define atsctrb_linux_copy_to_user copy_to_user
+#define atsctrb_linux_copy_from_user copy_from_user
+
+/* ****** ****** */
+
 #endif /* ATSCTRB_LINUX_ASM_UACCESS_CATS */
 
 /* end of [uaccess.cats] */

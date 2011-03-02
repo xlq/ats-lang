@@ -36,7 +36,7 @@
 (* ****** ****** *)
 
 %{#
-#include "contrib/kernel/linux/CATS/types.cats"
+#include "contrib/linux/linux/CATS/types.cats"
 %} // end of [%{#]
 
 (* ****** ****** *)

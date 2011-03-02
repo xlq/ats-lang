@@ -41,12 +41,25 @@
 (* ****** ****** *)
 
 %{#
-#include "contrib/kernel/CATS/utils.cats"
+#include "contrib/linux/CATS/utils.cats"
 %} // end of [%{#]
 
 (* ****** ****** *)
 
-staload "contrib/kernel/basics.sats"
+staload "contrib/linux/basics.sats"
+
+(* ****** ****** *)
+
+
+prfun bytes_v_split
+  {n:int} {i:nat | i <= n} {l:addr}
+  (pf: bytes(n) @ l): (bytes (i) @ l, bytes (n-i) @ l+i)
+// end of [bytes_v_split]
+
+prfun bytes_v_unsplit
+  {n1,n2:nat} {l:addr}
+  (pf1: bytes(n1) @ l, pf2: bytes(n2) @ l+n1): bytes(n1+n2) @ l
+// end of [bytes_v_unsplit]
 
 (* ****** ****** *)
 
@@ -61,10 +74,11 @@ array_ptr_kalloc
 // implemented in C
 *)
 fun array_ptr_kalloc_tsz
-  {a:viewt@ype} {n:nat} (
+  {a:viewt@ype}
+  {n:nat} (
   asz: size_t n, tsz: sizeof_t a
 ) :<> [l:agz] (kfree_v (a, n, l), array_v (a?, n, l) | ptr l)
-  = "atsctrb_kernel_array_ptr_kalloc_tsz"
+  = "atsctrb_linux_array_ptr_kalloc_tsz"
 // end of [array_ptr_kalloc_tsz]
 
 (* ****** ****** *)
@@ -73,9 +87,13 @@ fun array_ptr_kalloc_tsz
 // implemented in C
 *)
 fun array_ptr_kfree
-  {a:viewt@ype} {n:int} {l:addr} (
-  pf_gc: kfree_v (a, n, l), pf_arr: array_v (a?, n, l) | p_arr: ptr l
-) :<> void = "mac#atsctrb_kernel_array_ptr_kfree"
+  {a:viewt@ype}
+  {n:int}
+  {l:addr} (
+  pf_gc: kfree_v (a, n, l)
+, pf_arr: array_v (a?, n, l)
+| p_arr: ptr l
+) :<> void = "mac#atsctrb_linux_array_ptr_kfree"
 
 (* ****** ****** *)
 

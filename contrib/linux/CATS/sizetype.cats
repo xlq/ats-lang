@@ -33,8 +33,8 @@
 
 /* ****** ****** */
 
-#ifndef ATSCTRB_KERNEL_SIZETYPE_CATS
-#define ATSCTRB_KERNEL_SIZETYPE_CATS
+#ifndef ATSCTRB_LINUX_SIZETYPE_CATS
+#define ATSCTRB_LINUX_SIZETYPE_CATS
 
 /* ****** ****** */
 
@@ -483,6 +483,6 @@ atspre_neq_ssize1_ssize1
 
 /* ****** ****** */
 
-#endif /* ATSCTRB_KERNEL_SIZETYPE_CATS */
+#endif /* ATSCTRB_LINUX_SIZETYPE_CATS */
 
 /* end of [sizetype.cats] */

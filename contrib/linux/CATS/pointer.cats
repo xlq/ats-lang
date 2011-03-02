@@ -33,8 +33,8 @@
 
 /* ****** ****** */
 
-#ifndef ATSCTRB_KERNEL_POINTER_CATS
-#define ATSCTRB_KERNEL_POINTER_CATS
+#ifndef ATSCTRB_LINUX_POINTER_CATS
+#define ATSCTRB_LINUX_POINTER_CATS
 
 /* ****** ****** */
 
@@ -167,6 +167,6 @@ atspre_compare_ptr_ptr (
 
 /* ****** ****** */
 
-#endif /* ATSCTRB_KERNEL_POINTER_CATS */
+#endif /* ATSCTRB_LINUX_POINTER_CATS */
 
 /* end of [pointer.cats] */

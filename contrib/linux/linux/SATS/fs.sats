@@ -36,7 +36,7 @@
 (* ****** ****** *)
 
 %{#
-#include "contrib/kernel/linux/CATS/fs.cats"
+#include "contrib/linux/linux/CATS/fs.cats"
 %} // end of [%{#]
 
 (* ****** ****** *)
