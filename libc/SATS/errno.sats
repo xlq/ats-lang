@@ -42,8 +42,7 @@
 
 (* ****** ****** *)
 
-abst@ype
-errno_t = $extype"ats_int_type"
+abst@ype errno_t = int
 castfn int_of_errno (e: errno_t):<> [i:nat] int i
 overload int_of with int_of_errno
 castfn errno_of_int {i:nat} (i: int i):<> errno_t

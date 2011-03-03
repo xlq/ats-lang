@@ -40,11 +40,10 @@ ATSinline()
 ats_ptr_type
 scull_qtmptr_make
   (int n) {
-  ats_ptr_type p = ATS_MALLOC(n) ;
-  if (p) memset (p, 0, n) ;
+  ats_ptr_type p = (ats_ptr_type)ATS_MALLOC(n) ;
+  if (p != NULL) memset(p, 0, n) ;
   return p ;
-}
-// end of [scull_qtmptr_make]
+} // end of [scull_qtmptr_make]
 
 ATSinline()
 ats_void_type
@@ -60,8 +59,8 @@ ats_ptr_type
 scull_qdatptr_make
   (int m) {
   size_t bsz = m*sizeof(ats_ptr_type) ;
-  ats_ptr_type *p = ATS_MALLOC(bsz) ;
-  if (p != NULL) memset (p, 0, bsz) ;
+  ats_ptr_type *p = (ats_ptr_type)ATS_MALLOC(bsz) ;
+  if (p != NULL) memset(p, 0, bsz) ;
   return p ;
 } // end of [scull_qdatptr_make]
 

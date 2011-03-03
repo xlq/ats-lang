@@ -587,6 +587,8 @@ fun instr_function (
 
 fun instr_funlab (fl: funlab_t): instr
 
+(* ****** ****** *)
+
 fun instr_prfck_beg (d2c: d2cst_t):<> instr
 fun instr_prfck_tst (d2c: d2cst_t):<> instr
 fun instr_prfck_end (d2c: d2cst_t):<> instr

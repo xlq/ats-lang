@@ -122,10 +122,10 @@ fun mkdtemp
 // HX: this one returns an integer (not a pointer)!
 //
 fun bsearch {a:viewt@ype} {n:nat} (
-    key: &a
-  , base: &(@[a][n]), nmemb: size_t n, size: sizeof_t a
-  , compar: (&a, &a) -<fun> int
-  ) :<> intBtw (~1, n)
+  key: &a
+, base: &(@[a][n]), nmemb: size_t n, size: sizeof_t a
+, compar: (&a, &a) -<fun> int
+) :<> intBtw (~1, n)
   = "atslib_bsearch" // function!
 // end of [bsearch]
 
@@ -135,10 +135,10 @@ fun bsearch {a:viewt@ype} {n:nat} (
 //
 fun qsort
   {a:viewt@ype} {n:nat} (
-    base: &(@[a][n])
-  , nmemb: size_t n, size: sizeof_t a
-  , compar: (&a, &a) -<fun> int
-  ) :<> void
+  base: &(@[a][n])
+, nmemb: size_t n, size: sizeof_t a
+, compar: (&a, &a) -<fun> int
+) :<> void
   = "atslib_qsort" // function!
 // end of [qsort]
 

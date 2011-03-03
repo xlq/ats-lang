@@ -170,7 +170,7 @@ scull_read_main
     nleft
   end else let
     prval None_v () = pfopt
-    val nleft = clear_user (pfbuf | pbf, cnt_ul)
+    val nleft = clear_user (pfbuf | pbf, cnt_ul) // pack the buf with 0's
   in
     nleft
   end) : ulint // end of [if]
@@ -221,16 +221,14 @@ in
   in
     if nleft = 0UL then let
       val () = fpos := add_loff_int (fpos, cnt) in cnt
-    end else let
-      val [x:int] x = (e2i)EFAULT in ~x // I/O fault
-    end // end of [if]
+    end else
+      ~(e2i)EFAULT // I/O fault
+    // end of [if]
   end else let
-    prval None_v () = pfopt
-    val [x:int] x = (e2i)ENOMEM in ~x // out-of-memory
+    prval None_v () = pfopt in ~(e2i)ENOMEM // out-of-memory
   end (* end of [if] *)
 end else let
-  prval None_v () = pfopt
-  val [x:int] x = (e2i)ENOMEM in ~x // out-of-memory
+  prval None_v () = pfopt in ~(e2i)ENOMEM // out-of-memory
 end (* end of [if] *)
 //
 end // end of [scull_write_main]

@@ -107,21 +107,23 @@ castfn ptr1_of_ptr (p: ptr): [l:addr] ptr l
 
 val null : ptr null = "atspre_null_ptr"
 
-fun ptr_is_null {l:addr} (p: ptr l):<> bool (l == null)
+fun ptr_is_null
+  {l:addr} (p: ptr l):<> bool (l == null)
   = "atspre_ptr_is_null"
 
-fun ptr_isnot_null {l:addr} (p: ptr l):<> bool (l > null)
+fun ptr_isnot_null
+  {l:addr} (p: ptr l):<> bool (l > null)
   = "atspre_ptr_isnot_null"
 overload ~ with ptr_isnot_null
 
 (* ****** ****** *)
 
-fun psucc {l:addr} (p: ptr l):<> ptr (l + 1)
-  = "atspre_psucc"
+fun psucc
+  {l:addr} (p: ptr l):<> ptr (l + 1) = "atspre_psucc"
 overload succ with psucc
 
-fun ppred {l:addr} (p: ptr l):<> ptr (l - 1)
-  = "atspre_ppred"
+fun ppred
+  {l:addr} (p: ptr l):<> ptr (l - 1) = "atspre_ppred"
 overload pred with ppred
 
 (* ****** ****** *)
@@ -229,14 +231,19 @@ fun ptr_alloc_tsz
 
 fun ptr_free
   {a:viewt@ype} {l:addr} (
-  _: free_gc_v (a, l), _: a? @ l | _: ptr l
+  pfgc: free_gc_v (a, l), pfat: a? @ l | p: ptr l
 ) :<> void = "atspre_ptr_free" // end of [ptr_free]
 
 (* ****** ****** *)
 
-fun{a:viewt@ype} ptr_zero (x: &a? >> a):<> void
-fun ptr_zero_tsz {a:viewt@ype}
-  (x: &a? >> a, tsz: sizeof_t a):<> void = "atspre_ptr_zero_tsz"
+fun{a:viewt@ype}
+ptr_zero (x: &a? >> a):<> void
+
+fun ptr_zero_tsz
+  {a:viewt@ype} (
+  x: &a? >> a
+, tsz: sizeof_t a
+) :<> void = "atspre_ptr_zero_tsz"
 // end of [ptr_zero_tsz]
 
 (* ****** ****** *)
