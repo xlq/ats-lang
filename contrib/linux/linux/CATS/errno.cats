@@ -30,26 +30,19 @@
 /* ****** ****** */
 //
 // Author: Hongwei Xi (hwxi AT cs DOT bu DOT edu)
-// Start Time: February, 2011
+// Start Time: March, 2011
 //
 /* ****** ****** */
 
-#ifndef ATSCTRB_LINUX_ASM_UACCESS_CATS
-#define ATSCTRB_LINUX_ASM_UACCESS_CATS
+#ifndef ATSCTRB_LINUX_LINUX_ERRNO_CATS
+#define ATSCTRB_LINUX_LINUX_ERRNO_CATS
 
 /* ****** ****** */
 
-#include <asm/uaccess.h>
+#include <linux/errno.h>
 
 /* ****** ****** */
 
-#define atsctrb_linux_clear_user clear_user
-#define atsctrb_linux_copy_to_user copy_to_user
-#define atsctrb_linux_copy_from_user copy_from_user
-#define atsctrb_linux_strlen_user strlen_user
+#endif /* ATSCTRB_LINUX_LINUX_ERRNO_CATS */
 
-/* ****** ****** */
-
-#endif /* ATSCTRB_LINUX_ASM_UACCESS_CATS */
-
-/* end of [uaccess.cats] */
+/* end of [errno.cats] */

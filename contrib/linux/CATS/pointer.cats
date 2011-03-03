@@ -59,7 +59,6 @@ atspre_ptr_isnot_null (ats_ptr_type p) {
 ATSinline()
 ats_void_type
 atspre_ptr_free_null (ats_ptr_type p) { return ; }
-// end of [atspre_ptr_free_null]
 
 /* ****** ****** */
 
@@ -67,13 +66,13 @@ ATSinline()
 ats_ptr_type
 atspre_psucc (ats_ptr_type p) {
   return (ats_ptr_type)((ats_byte_type*)p + 1) ;
-}
+} // end of [atspre_psucc]
 
 ATSinline()
 ats_ptr_type
 atspre_ppred (ats_ptr_type p) {
   return (ats_ptr_type)((ats_byte_type*)p - 1) ;
-}
+} // end of [atspre_ppred]
 
 /* ****** ****** */
 

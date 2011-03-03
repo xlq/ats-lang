@@ -31,13 +31,13 @@
 
 (* ****** ****** *)
 //
-// Author: Hongwei Xi (hwxi AT cs DOT bu DOT edu) *)
-// Start Time: February, 2011
+// Author: Hongwei Xi (hwxi AT cs DOT bu DOT edu)
+// Start Time: March, 2011
 //
 (* ****** ****** *)
 
 %{#
-#include "contrib/linux/asm/CATS/uaccess.cats"
+#include "contrib/linux/linux/CATS/module.cats"
 %} // end of [%{#]
 
 (* ****** ****** *)
@@ -46,48 +46,16 @@
 
 (* ****** ****** *)
 
-staload "contrib/linux/basics.sats"
+abst@ype errno_t = int
+castfn int_of_errno (e: errno_t):<> [i:nat] int i
+overload int_of with int_of_errno
+castfn errno_of_int {i:nat} (i: int i):<> errno_t
 
 (* ****** ****** *)
 
-fun clear_user
-  {n1:nat}
-  {n2:int | n1 <= n2}
-  {l:addr} (
-  pf: !bytes(n2) @ l
-| p: uptr l, n1: ulint(n1)
-) : [nleft:nat | nleft <= n1] ulint (nleft)
-  = "mac#atsctrb_linux_clear_user"
+macdef EFAULT = $extval (errno_t, "EFAULT")
+macdef ENOMEM = $extval (errno_t, "ENOMEM")
 
 (* ****** ****** *)
 
-fun copy_to_user {n:nat}
-  {n1,n2:nat | n <= n1; n <= n2}
-  {l:addr} (
-  pf: !bytes(n1) @ l
-| to: uptr l, from: &bytes(n2), count: ulint (n)
-) : [nleft:nat | nleft <= n] ulint (nleft)
-  = "mac#atsctrb_linux_copy_to_user" // macro!
-
-fun copy_from_user {n:nat}
-  {n1,n2:nat | n <= n1; n <= n2}
-  {l:addr} (
-  pf: !bytes(n2) @ l
-| to: &bytes(n1), from: uptr l, count: ulint (n)
-) : [nleft:nat | nleft <= n] ulint (nleft)
-  = "mac#atsctrb_linux_copy_from_user" // macro!
-
-(* ****** ****** *)
-//
-// HX: [n] cannot be too large (e.g., < 2^15)
-// HX: the return value is 0 if exception occurs
-//
-fun strlen_user
-  {n:nat} (
-  str: string n // the last NUL is counted!
-) : size_t (n+1)
-  = "mac#atsctrb_linux_strlen_user"
-
-(* ****** ****** *)
-
-(* end of [uaccess.sats] *)
+(* end of [errno.sats] *)
