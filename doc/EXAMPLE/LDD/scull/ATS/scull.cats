@@ -39,7 +39,11 @@ typedef unsigned long int ulint ;
 ATSinline()
 ats_ptr_type
 scull_qtmptr_make
-  (int n) { return ATS_MALLOC(n) ; }
+  (int n) {
+  ats_ptr_type p = ATS_MALLOC(n) ;
+  if (p) memset (p, 0, n) ;
+  return p ;
+}
 // end of [scull_qtmptr_make]
 
 ATSinline()

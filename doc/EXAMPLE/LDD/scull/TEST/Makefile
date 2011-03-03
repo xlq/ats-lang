@@ -44,6 +44,10 @@ test01: test01.dats
 	$(ATSCC) $(ATSGCFLAG) $(ATSCCFLAGS) -o $@ $< || touch $@
 cleanall:: ; $(RMF) test01
 
+test02: test02.dats
+	$(ATSCC) $(ATSGCFLAG) $(ATSCCFLAGS) -o $@ $< || touch $@
+cleanall:: ; $(RMF) test02
+
 ######
 #
 # HX: these are rules you may use
