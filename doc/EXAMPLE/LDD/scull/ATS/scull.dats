@@ -37,6 +37,7 @@ macdef ENOMEM = $ERRNO.ENOMEM
 
 staload
 UACC = "contrib/linux/asm/SATS/uaccess.sats"
+macdef clear_user = $UACC.clear_user
 macdef copy_to_user = $UACC.copy_to_user
 macdef copy_from_user = $UACC.copy_from_user
 
@@ -152,30 +153,32 @@ scull_read_main
   prval (pfqs, fpfqs) = viewout_decode {qset@lm} (pfout)
   val (pfopt | pqtm) = qdatptr_vtakeout_bytes_read (pm->data, i)
   prval () = fpfqs (pfqs)
-in
-  if pqtm > null then let
+  val [cnt:int] cnt = imin (cnt, n-j)
+  val cnt_ul = $UN.cast {ulint(cnt)} (cnt)
+  val nleft = (if pqtm > null then let
     prval Some_v pfout = pfopt
     prval (pf, fpf) = viewout_decode (pfout)
     stavar j: int
     val j = j : int j
     prval (pf1, pf2) = bytes_v_split {n} {j} (pf)
-    val [cnt:int] cnt = imin (cnt, n-j)
 (*
     prval () = verify_constraint {n-j > 0} ()
 *)
-    val cnt_ul = $UN.cast {ulint(cnt)} (cnt)
     val nleft = copy_to_user (pfbuf | pbf, !(pqtm+j), cnt_ul)
     prval () = fpf (bytes_v_unsplit (pf1, pf2))
   in
-    if nleft = 0UL then let
-      val () = fpos := add_loff_int (fpos, cnt) in #[cnt | cnt]
-    end else let
-      val [x:int] x = (e2i)EFAULT in #[~x | ~x]
-    end // end of [if]
+    nleft
   end else let
     prval None_v () = pfopt
+    val nleft = clear_user (pfbuf | pbf, cnt_ul)
   in
-    #[0 | 0] (* unavailable *)
+    nleft
+  end) : ulint // end of [if]
+in  
+  if nleft = 0UL then let
+    val () = fpos := add_loff_int (fpos, cnt) in cnt
+  end else let
+    val x = (e2i)EFAULT in ~x
   end // end of [if]
 end // end of [scull_read_main]
   
