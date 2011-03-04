@@ -46,13 +46,13 @@
 
 /* ****** ****** */
 
-#include "libats/CATS/linqueue_arr.cats"
+#include "libats/ngc/CATS/queue_arr.cats"
 
 /* ****** ****** */
 
 typedef struct {
   pthread_mutex_t WSmut ;
-  atslib_linqueue_arr_QUEUE WQ ;
+  atslib_ngc_queue_arr_QUEUE WQ ;
   pthread_cond_t WQemp ;
   pthread_cond_t WQful ;
   ats_int_type nworker ;

@@ -65,7 +65,7 @@ fun{a:vt0p} slnode_get_next : slnode_get_next_type (a) // specific
 
 typedef
 slnode_set_next_type
-  (a:viewt@ype) = {la,lb1,lb2:addr} (
+  (a:viewt@ype) = {la,lb1:addr} {lb2:addr} (
   !slnode_v (a, la, lb1) >> slnode_v (a, la, lb2) | ptr la, ptr lb2
 ) -<fun> void // end of [slnode_set_next_type]
 fun{a:vt0p} slnode_set_next : slnode_set_next_type (a) // specific
@@ -160,7 +160,7 @@ prfun slist_fold
 prfun slist_unfold
   {a:vt0p} {n:int}
   (xs: !slist (a, n) >> ptr la):<> #[la:addr] (slist_v (a, n, la) | void)
-// end of [slist_fold]
+// end of [slist_unfold]
 
 castfn slist_encode
   {a:vt0p} {n:int} {la:addr}

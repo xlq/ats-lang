@@ -57,10 +57,10 @@ typedef ullint = uint_long_long_t0ype
 
 (* ****** ****** *)
 
-abst@ype float_t0ype = $extype "ats_float_type"
+abst@ype float_t0ype = $extype"ats_float_type"
 stadef float = float_t0ype
 
-abst@ype double_long_t0ype = $extype "ats_ldouble_type"
+abst@ype double_long_t0ype = $extype"ats_ldouble_type"
 stadef ldouble = double_long_t0ype
 
 (* ****** ****** *)
@@ -135,31 +135,44 @@ overload abs with abs_float
 fun neg_float (f: float):<> float = "atspre_neg_float"
 overload ~ with neg_float
 
+(* ****** ****** *)
+
 fun succ_float (f: float):<> float = "atspre_succ_float"
 and pred_float (f: float):<> float = "atspre_pred_float"
 overload succ with succ_float
 overload pred with pred_float
 
+(* ****** ****** *)
+
 fun add_float_float (f1: float, f2: float):<> float
   = "atspre_add_float_float"
-and sub_float_float (f1: float, f2: float):<> float
-  = "atspre_sub_float_float"
 overload + with add_float_float
+
+fun sub_float_float (f1: float, f2: float):<> float
+  = "atspre_sub_float_float"
 overload - with sub_float_float
+
+(* ****** ****** *)
 
 fun mul_float_float
   (f1: float, f2: float):<> float = "atspre_mul_float_float"
-and mul_int_float (i1: int, f2: float):<> float = "atspre_mul_int_float"
-and mul_float_int (f1: float, i2: int):<> float = "atspre_mul_float_int"
+and mul_int_float
+  (i1: int, f2: float):<> float = "atspre_mul_int_float"
+and mul_float_int
+  (f1: float, i2: int):<> float = "atspre_mul_float_int"
 overload * with mul_float_float
 overload * with mul_int_float
 overload * with mul_float_int
 
 fun div_float_float
   (f1: float, f2: float):<> float = "atspre_div_float_float"
-and div_float_int (f1: float, i2: int):<> float = "atspre_div_float_int"
+and div_float_int
+  (f1: float, i2: int):<> float = "atspre_div_float_int"
+and div_int_float
+  (i1: int, f2: float):<> float = "atspre_div_int_float"
 overload / with div_float_float
 overload / with div_float_int
+overload / with div_int_float
 
 (* ****** ****** *)
 

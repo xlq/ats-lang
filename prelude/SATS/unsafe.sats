@@ -50,13 +50,8 @@
 // where a linear value is passed as a read-only value;
 // for instance, casting [strptr] to [string]
 //
-castfn cast
-  {to:t@ype} {from:t@ype} (x: from):<> to
-// end of [cast]
-
-castfn castvwtp1
-  {to:t@ype} {from:viewt@ype} (x: !from):<> to
-// end of [castvwtp1]
+castfn cast {to:t@ype} {from:t@ype} (x: from):<> to
+castfn castvwtp1 {to:t@ype} {from:viewt@ype} (x: !from):<> to
 
 (* ****** ****** *)
 

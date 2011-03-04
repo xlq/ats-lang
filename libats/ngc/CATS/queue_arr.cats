@@ -37,8 +37,8 @@
 
 /* ****** ****** */
 
-#ifndef ATS_LIBATS_LINQUEUE_ARR_CATS
-#define ATS_LIBATS_LINQUEUE_ARR_CATS
+#ifndef ATS_LIBATS_NGC_QUEUE_ARR_CATS
+#define ATS_LIBATS_NGC_QUEUE_ARR_CATS
 
 /* ****** ****** */
 
@@ -49,10 +49,25 @@ typedef struct {
   ats_ptr_type qarr_end ;
   ats_ptr_type qarr_fst ;
   ats_ptr_type qarr_lst ;
-} atslib_linqueue_arr_QUEUE ;
+} atslib_ngc_queue_arr_QUEUE ;
 
 /* ****** ****** */
 
-#endif /* ATS_LIBATS_LINQUEUE_ARR_CATS */
+extern
+ats_void_type
+atslib_ngc_queue_arr_queue_initialize_tsz (
+  ats_ptr_type pq
+, ats_size_type qsz
+, ats_ptr_type parr
+, ats_size_type tsz
+) ; // end of [atslib_ngc_queue_arr_queue_initialize_tsz]
 
-/* end of [linqueue_arr.cats] */ 
+extern
+ats_ptr_type
+atslib_ngc_queue_arr_queue_uninitialize (ats_ptr_type) ;
+
+/* ****** ****** */
+
+#endif /* ATS_LIBATS_NGC_QUEUE_ARR_CATS */
+
+/* end of [queue_arr.cats] */ 

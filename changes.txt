@@ -28,6 +28,9 @@ ats-lang-anairiats-0.2.4:
 16: stack-allocated closures are now statically allocated (instead of
     being dynamically allocated via alloca) (svn-version: 2519)
 17: prelude/array and prelude/matrix have been cleaned up considerably
+18: naming change: "#foo" -> "mac#foo" (for external macros)
+19: using names like "sta#foo" to support external static functions
+20: adding contrib/linux to support linux kernel programming
 
 ########################################################################
 

@@ -44,8 +44,8 @@
 
 (* ****** ****** *)
 
-staload LQ = "libats/SATS/linqueue_arr.sats"
-staload _(*anon*) = "libats/DATS/linqueue_arr.dats"
+staload LQ = "libats/ngc/SATS/queue_arr.sats"
+staload _(*anon*) = "libats/ngc/DATS/queue_arr.dats"
 stadef QUEUE = $LQ.QUEUE1
 
 (* ****** ****** *)
@@ -62,19 +62,19 @@ staload "libats/SATS/parworkshop.sats"
 
 %{^
 
-extern ats_void_type
-atslib_linqueue_arr_queue_initialize_tsz
-  (ats_ptr_type pq, ats_size_type qsz, ats_size_type tsz) ;
-// end of [atslib_linqueue_arr_queue_initialize_tsz]
-
 ats_ptr_type
 atslib_parworkshop_workshop_make_tsz (
   ats_size_type qsz, ats_fun_ptr_type fwork, ats_size_type tsz
 ) {
+  ats_ptr_type parr ;
   atslib_parworkshop_WORKSHOP *p ;
+//
   p = ATS_MALLOC (sizeof(atslib_parworkshop_WORKSHOP)) ;
   pthread_mutex_init (&p->WSmut, (pthread_mutexattr_t*)0) ;
-  atslib_linqueue_arr_queue_initialize_tsz (&p->WQ, qsz, tsz) ;
+//
+  parr = ATS_MALLOC(qsz * tsz) ;
+  atslib_ngc_queue_arr_queue_initialize_tsz (&p->WQ, qsz, parr, tsz) ;
+//
   pthread_cond_init (&p->WQemp, (pthread_condattr_t*)0) ;
   pthread_cond_init (&p->WQful, (pthread_condattr_t*)0) ;
   p->nworker = 0 ;
@@ -86,7 +86,9 @@ atslib_parworkshop_workshop_make_tsz (
   pthread_cond_init (&p->WSequ2, (pthread_condattr_t*)0) ;
   p->fwork = fwork ;
   p->refcount = 0 ;
+//
   return (p) ;
+//
 } // end of [atslib_parworkshop_workshop_make_tsz]
 
 %} // end of [%{^]
@@ -98,9 +100,13 @@ atslib_parworkshop_workshop_make_tsz (
 ats_void_type
 atslib_parworkshop_workshop_free_lin
   (ats_ptr_type p0, ats_int_type lin) {
+//
+  ats_ptr_type parr ;
   atslib_parworkshop_WORKSHOP *p = (atslib_parworkshop_WORKSHOP*)p0 ;
-  atslib_linqueue_arr_QUEUE *p_WQ = &(p->WQ) ;
+  atslib_ngc_queue_arr_QUEUE *p_WQ = &(p->WQ) ;
+//
   pthread_mutex_lock (&p->WSmut);
+//
   while (1) {
     if (p->nworker != 0) {
       pthread_cond_wait (&p->WSisz, &p->WSmut) ;
@@ -114,7 +120,9 @@ atslib_parworkshop_workshop_free_lin
     , "exit(ATS): [atslib_parworkshop_workshop_free_lin]: work queue is not empty\n"
     ) ; exit (1) ;
   } // end of [if]
-  atslib_linqueue_arr_queue_uninitialize (p_WQ) ;
+//
+  parr = atslib_ngc_queue_arr_queue_uninitialize (p_WQ) ; ATS_FREE(parr) ;
+//
   pthread_mutex_destroy (&p->WSmut) ;
   pthread_cond_destroy (&p->WQemp) ;
   pthread_cond_destroy (&p->WQful) ;
@@ -122,7 +130,9 @@ atslib_parworkshop_workshop_free_lin
   pthread_cond_destroy (&p->WSpaused) ;
   pthread_cond_destroy (&p->WSequ1) ;
   pthread_cond_destroy (&p->WSequ2) ;
+//
   ATS_FREE(p) ;
+//
   return ;
 } // end of [atslib_parworkshop_workshop_free_lin]
 

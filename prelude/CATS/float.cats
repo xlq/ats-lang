@@ -192,6 +192,14 @@ atspre_div_float_int
 // end of [atspre_div_float_int]
 
 ATSinline()
+ats_float_type
+atspre_div_int_float
+  (ats_float_type i1, ats_int_type f2) { return ((float)i1 / f2) ; }
+// end of [atspre_div_int_float]
+
+//
+
+ATSinline()
 ats_bool_type
 atspre_lt_float_float (
   ats_float_type f1, ats_float_type f2

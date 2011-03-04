@@ -49,7 +49,7 @@
 (* ****** ****** *)
 
 %{#
-#include "libats/CATS/linqueue_arr.cats"
+#include "libats/ngc/CATS/queue_arr.cats"
 %} // end of [%{#]
 
 (* ****** ****** *)
@@ -57,44 +57,56 @@
 #define ATS_STALOADFLAG 0 // no static loading at run-time
 
 (* ****** ****** *)
-
 //
+// HX:
 // a: item type
 // m: maximal capacity
 // n: current size
 //
 absviewt@ype QUEUE
   (a:viewt@ype+, m: int, n: int)
-  = $extype "atslib_linqueue_arr_QUEUE"
+  = $extype "atslib_ngc_queue_arr_QUEUE"
 // end of [QUEUE]
 typedef QUEUE0 (a:viewt@ype) = QUEUE (a, 0, 0)?
 viewtypedef QUEUE1 (a:viewt@ype) = [m,n:nat] QUEUE (a, m, n)
 
 (* ****** ****** *)
 
-fun queue_cap {a:viewt@ype} {m,n:int} (q: &QUEUE (a, m, n)):<> size_t m
-fun queue_size {a:viewt@ype} {m,n:int} (q: &QUEUE (a, m, n)):<> size_t n
+fun queue_cap {a:viewt@ype}
+  {m,n:int} (q: &QUEUE (a, m, n)):<> size_t m
+fun queue_size {a:viewt@ype}
+  {m,n:int} (q: &QUEUE (a, m, n)):<> size_t n
 
 (* ****** ****** *)
 
-fun queue_is_empty {a:viewt@ype} {m,n:nat} (q: &QUEUE (a, m, n)):<> bool (n <= 0)
-fun queue_isnot_empty {a:viewt@ype} {m,n:nat} (q: &QUEUE (a, m, n)):<> bool (n > 0)
+fun queue_is_empty {a:viewt@ype}
+  {m,n:nat} (q: &QUEUE (a, m, n)):<> bool (n <= 0)
+fun queue_isnot_empty {a:viewt@ype}
+  {m,n:nat} (q: &QUEUE (a, m, n)):<> bool (n > 0)
 
-fun queue_is_full {a:viewt@ype} {m,n:nat} (q: &QUEUE (a, m, n)):<> bool (m <= n)
-fun queue_isnot_full {a:viewt@ype} {m,n:nat} (q: &QUEUE (a, m, n)):<> bool (m > n)
+fun queue_is_full {a:viewt@ype}
+  {m,n:nat} (q: &QUEUE (a, m, n)):<> bool (m <= n)
+fun queue_isnot_full {a:viewt@ype}
+  {m,n:nat} (q: &QUEUE (a, m, n)):<> bool (m > n)
 
 (* ****** ****** *)
-
-// initializing to a queue of capacity [m]
+//
+// HX: initializing to a queue of capacity [m]
+//
 fun{a:viewt@ype}
-queue_initialize {m:nat}
-  (q: &QUEUE0 a >> QUEUE (a, m, 0), m: size_t m):<> void
+queue_initialize
+  {m:nat} {l:addr} (
+  pfgc: free_gc_v (a, m, l), pfarr: array_v (a?, m, l)
+| q: &QUEUE0 a >> QUEUE (a, m, 0), m: size_t m, p: ptr l
+) :<> void
 // end of [queue_initialize]
 
-// initializing to a queue of capacity [m]
-fun queue_initialize_tsz {a:viewt@ype} {m:nat}
-  (q: &QUEUE0 a >> QUEUE (a, m, 0), m: size_t m, tsz: sizeof_t a):<> void
-  = "atslib_linqueue_arr_queue_initialize_tsz"
+fun queue_initialize_tsz
+  {a:viewt@ype} {m:nat} {l:addr} (
+  pfgc: free_gc_v (a, m, l), pfarr: array_v (a?, m, l)
+| q: &QUEUE0 a >> QUEUE (a, m, 0), m: size_t m, p: ptr l, tsz: sizeof_t a
+) :<> void
+  = "atslib_ngc_queue_arr_queue_initialize_tsz"
 // end of [queue_initialize_tsz]
 
 (* ****** ****** *)
@@ -111,19 +123,31 @@ queue_remove (*first*)
 // end of [queue_remove]
 
 (* ****** ****** *)
-
-fun queue_uninitialize {a:t@ype}
-  {m,n:nat} {l:addr} (q: &QUEUE (a, m, n) >> QUEUE0 a):<> void
-  = "atslib_linqueue_arr_queue_uninitialize"
+//
+// HX: uninitializeing a queue of capacity [m]
+//
+fun queue_uninitialize
+  {a:t@ype}
+  {m,n:nat} (
+  q: &QUEUE (a, m, n) >> QUEUE0 a
+) :<> [l:addr] (
+  free_gc_v (a, m, l), array_v (a?, m, l)
+| ptr l
+) = "atslib_ngc_queue_arr_queue_uninitialize"
 // end of [queue_uninitialize]
 
 //
-// uninitializeing an empty queue of capacity [m]
+// HX: uninitializeing an empty queue of capacity [m]
 //
-fun queue_uninitialize_vt {a:viewt@ype}
-  {m:nat} {l:addr} (q: &QUEUE (a, m, 0) >> QUEUE0 a):<> void
-// end of [queue_uninitialize_vt]
+fun queue_uninitialize_vt
+  {a:viewt@ype}
+  {m:nat} (
+  q: &QUEUE (a, m, 0) >> QUEUE0 a
+) :<> [l:addr] (
+  free_gc_v (a, m, l), array_v (a?, m, l)
+| ptr l
+) // end of [queue_uninitialize_vt]
 
 (* ****** ****** *)
 
-(* end of [linqueue_arr.sats] *)
+(* end of [queue_arr.sats] *)

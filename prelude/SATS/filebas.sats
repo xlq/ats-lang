@@ -148,7 +148,7 @@ fun output_line (fil: FILEref, line: string): void
 
 (* ****** ****** *)
 //
-// making a lazy char stream out of a file handle
+// HX: making a lazy char stream out of a file handle
 //
 fun char_stream_make_file (fil: FILEref):<!laz> stream (char)
 
@@ -158,7 +158,7 @@ fun line_stream_make_file (fil: FILEref):<!laz> stream (string)
 
 (* ****** ****** *)
 //
-// making a _linear_ lazy char stream out of a file handle
+// HX: making a _linear_ lazy char stream out of a file handle
 //
 fun char_stream_vt_make_file {m:file_mode} {l:addr}
   (pf_mod: file_mode_lte (m, r), pf_fil: FILE m @ l | p_fil: ptr l)
@@ -167,8 +167,10 @@ fun char_stream_vt_make_file {m:file_mode} {l:addr}
 
 (* ****** ****** *)
 //
+// HX:
 // making a _linear_ lazy line stream out of a file handle
 // note that the newline character at the end of each line is dropped
+//
 fun line_stream_vt_make_file {m:file_mode} {l:addr}
   (pf_mod: file_mode_lte (m, r), pf_fil: FILE m @ l | p_fil: ptr l)
   :<!laz> stream_vt (string)

@@ -10,11 +10,11 @@ staload RAND = "libc/SATS/random.sats"
 
 (* ****** ****** *)
 
-staload Q = "libats/SATS/linqueue_arr.sats"
+staload Q = "libats/ngc/SATS/queue_arr.sats"
 stadef QUEUE = $Q.QUEUE
 stadef QUEUE0 = $Q.QUEUE0
 
-staload _(*anon*) = "libats/DATS/linqueue_arr.dats"
+staload _(*anon*) = "libats/ngc/DATS/queue_arr.dats"
 
 (* ****** ****** *)
 
@@ -30,7 +30,8 @@ staload _(*anon*) = "libats/DATS/linqueue_arr.dats"
 implement main () = () where {
   typedef itm = int
   var q: QUEUE0 (itm)
-  val () = $Q.queue_initialize<itm> (q, CAP)
+  val (pfgc, pfarr | parr) = array_ptr_alloc<itm> (CAP)
+  val () = $Q.queue_initialize<itm> (pfgc, pfarr | q, CAP, parr)
 //
   val () = loop (q, N1, 0) where {
     fun loop {i,j:nat | i+j <= CAP} .<i>.
@@ -74,7 +75,8 @@ implement main () = () where {
     // end of [loop]
   } // end of [val]
 //
-  val () = $Q.queue_uninitialize_vt {itm} (q)
+  val (pfgc, pfarr | parr) = $Q.queue_uninitialize_vt {itm} (q)
+  val () = array_ptr_free (pfgc, pfarr | parr)
 //
   val () = print "[libats_linqueue_arr.dats] testing passes!\n"
 //

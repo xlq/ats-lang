@@ -253,13 +253,6 @@ cleanall:: ; $(RMF) libats_linmap_avltree
 
 ######
 
-checkall:: libats_linqueue_arr
-libats_linqueue_arr: libats_linqueue_arr.dats
-	$(ATSCC) -D_ATS_GCATS -O2 -o $@ $< && ./libats_linqueue_arr 1000000
-cleanall:: ; $(RMF) libats_linqueue_arr
-
-######
-
 checkall:: libats_linqueue_lst
 libats_linqueue_lst: libats_linqueue_lst.dats
 	$(ATSCC) -D_ATS_GCATS -O2 -o $@ $< && ./libats_linqueue_lst 1000000
@@ -299,6 +292,13 @@ checkall:: libats_vector
 libats_vector: libats_vector.dats
 	$(ATSCC) -O2 -o libats_vector libats_vector.dats && ./libats_vector
 cleanall:: ; $(RMF) libats_vector
+
+######
+
+checkall:: libats_ngc_queue_arr
+libats_ngc_queue_arr: libats_ngc_queue_arr.dats
+	$(ATSCC) -D_ATS_GCATS -O2 -o $@ $< && ./libats_ngc_queue_arr 1000000
+cleanall:: ; $(RMF) libats_ngc_queue_arr
 
 ######
 
