@@ -96,7 +96,20 @@ array_v (
 // end of [array_v]
 *)
 
-viewdef array_v (a:viewt@ype, n:int, l: addr) = @[a][n] @ l
+viewdef
+array_v (a:viewt@ype, n:int, l: addr) = @[a][n] @ l
+
+(* ****** ****** *)
+
+dataview
+arrayopt_v (
+  a:viewt@ype+, int, addr, bool
+) =
+  | {n:nat} {l:addr}
+    arrayopt_v_some (a, n, l, true) of array_v (a, n, l)
+  | {n:nat} {l:addr}
+    arrayopt_v_none (a, n, l, false) of array_v (a?, n, l)
+// end of [arrayopt_v]
 
 (* ****** ****** *)
 

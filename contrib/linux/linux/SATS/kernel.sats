@@ -57,35 +57,35 @@
 *)
 
 fun KERN_EMERG {ts:types}
-  (fmt: printf_c (ts)): printf_c (ts) = "#atsctrb_linux_KERN_EMERG"
+  (fmt: printf_c (ts)): printf_c (ts) = "mac#atsctrb_linux_KERN_EMERG"
 // end of [KERN_EMERG]
 
 fun KERN_ALERT {ts:types}
-  (fmt: printf_c (ts)): printf_c (ts) = "#atsctrb_linux_KERN_ALERT"
+  (fmt: printf_c (ts)): printf_c (ts) = "mac#atsctrb_linux_KERN_ALERT"
 // end of [KERN_ALERT]
 
 fun KERN_CRIT {ts:types}
-  (fmt: printf_c (ts)): printf_c (ts) = "#atsctrb_linux_KERN_CRIT"
+  (fmt: printf_c (ts)): printf_c (ts) = "mac#atsctrb_linux_KERN_CRIT"
 // end of [KERN_CRIT]
 
 fun KERN_ERR {ts:types}
-  (fmt: printf_c (ts)): printf_c (ts) = "#atsctrb_linux_KERN_ERR"
+  (fmt: printf_c (ts)): printf_c (ts) = "mac#atsctrb_linux_KERN_ERR"
 // end of [KERN_ERR]
 
 fun KERN_WARNING {ts:types}
-  (fmt: printf_c (ts)): printf_c (ts) = "#atsctrb_linux_KERN_WARNING"
+  (fmt: printf_c (ts)): printf_c (ts) = "mac#atsctrb_linux_KERN_WARNING"
 // end of [KERN_WARNING]
 
 fun KERN_NOTICE {ts:types}
-  (fmt: printf_c (ts)): printf_c (ts) = "#atsctrb_linux_KERN_NOTICE"
+  (fmt: printf_c (ts)): printf_c (ts) = "mac#atsctrb_linux_KERN_NOTICE"
 // end of [KERN_NOTICE]
 
 fun KERN_INFO {ts:types}
-  (fmt: printf_c (ts)): printf_c (ts) = "#atsctrb_linux_KERN_INFO"
+  (fmt: printf_c (ts)): printf_c (ts) = "mac#atsctrb_linux_KERN_INFO"
 // end of [KERN_INFO]
 
 fun KERN_DEBUG {ts:types}
-  (fmt: printf_c (ts)): printf_c (ts) = "#atsctrb_linux_KERN_DEBUG"
+  (fmt: printf_c (ts)): printf_c (ts) = "mac#atsctrb_linux_KERN_DEBUG"
 // end of [KERN_DEBUG]
 
 (* ****** ****** *)
@@ -94,7 +94,7 @@ fun KERN_DEBUG {ts:types}
 // HX: [printf_c] is just an approximation
 *)
 fun printk {ts:types}
-  (fmt: printf_c (ts), arg: ts): void = "#atsctrb_linux_printk"
+  (fmt: printf_c (ts), arg: ts): void = "mac#atsctrb_linux_printk"
 // end of [printk]
 
 (* ****** ****** *)

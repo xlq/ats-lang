@@ -1282,25 +1282,28 @@ end // end of [local]
 
 local
 
-fun aux01
-  (ls1es: labs1explst, lin: &int, prg: &int): labs2explst = begin
+fun aux01 (
+  ls1es: labs1explst, lin: &int, prg: &int
+) : labs2explst = begin
   case+ ls1es of
-  | LABS1EXPLSTcons (lab, s1e, ls1es) => let
-      val s2e = s1exp_tr_up s1e
+  | LABS1EXPLSTcons
+      (lab, s1e, ls1es) => let
+      val s2e = s1exp_tr_dn_impredicative (s1e)
       val s2t = s2e.s2exp_srt
-      val () = if s2rt_is_linear s2t then (lin := lin+1)
-      val () = if ~(s2rt_is_proof s2t) then (prg := prg+1)
+      val () = if s2rt_is_linear (s2t) then (lin := lin+1)
+      val () = if not (s2rt_is_proof s2t) then (prg := prg+1)
     in
       LABS2EXPLSTcons (lab, s2e, aux01 (ls1es, lin, prg))
-    end
+    end // end of [LABS1EXPLSTcons]
   | LABS1EXPLSTnil () => LABS2EXPLSTnil ()
 end // end of [aux01]
 
 fun aux23 (
-    s2t: s2rt, ls1es: labs1explst
-  ) : labs2explst = begin
+  s2t: s2rt, ls1es: labs1explst
+) : labs2explst = begin
   case+ ls1es of
-  | LABS1EXPLSTcons (lab, s1e, ls1es) => let
+  | LABS1EXPLSTcons
+      (lab, s1e, ls1es) => let
       val s2e = s1exp_tr_dn (s1e, s2t)
     in
       LABS2EXPLSTcons (lab, s2e, aux23 (s2t, ls1es))

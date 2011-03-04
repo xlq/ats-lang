@@ -119,15 +119,15 @@ dlseg_v (
   a:viewt@ype+, int, addr, addr, addr, addr
 ) =
   | {n:nat}
-    {l,lp:addr}
-    {r,rn:addr}
-    {ln:addr}
-    dlseg_v_cons (a, n+1, l, lp, r, rn) of (
-      dlnode_v (a, l, lp, ln), dlseg_v (a, n, ln, l, r, rn)
+    {lf,lfp:addr}
+    {lr,lrn:addr}
+    {lfn:addr}
+    dlseg_v_cons (a, n+1, lf, lfp, lr, lrn) of (
+      dlnode_v (a, lf, lfp, lfn), dlseg_v (a, n, lfn, lf, lr, lrn)
     ) // end of [dlseg_v_cons]
-  | {l:addr}
-    {r:addr}
-    dlseg_v_nil (a, 0, l, r, r, l)
+  | {lf:addr}
+    {lr:addr}
+    dlseg_v_nil (a, 0, lf, lr, lr, lf)
 // end of [dlseg_v]
 
 dataview
@@ -135,24 +135,38 @@ rdlseg_v (
   a:viewt@ype+, int, addr, addr, addr, addr
 ) =
   | {n:nat}
-    {l,lp:addr}
-    {r,rn:addr}
-    {rp:addr}
-    rdlseg_v_cons (a, n+1, l, lp, r, rn) of (
-      rdlseg_v (a, n, l, lp, rp, r), dlnode_v (a, r, rp, rn)
+    {lf,lfp:addr}
+    {lr,lrn:addr}
+    {lrp:addr}
+    rdlseg_v_cons (a, n+1, lf, lfp, lr, lrn) of (
+      rdlseg_v (a, n, lf, lfp, lrp, lr), dlnode_v (a, lr, lrp, lrn)
     ) // end of [dlseg_v_cons]
-  | {l:addr}
-    {r:addr}
-    rdlseg_v_nil (a, 0, l, r, r, l)
+  | {lf:addr}
+    {lr:addr}
+    rdlseg_v_nil (a, 0, lf, lr, lr, lf)
 // end of [rdlseg_v]
 
 (* ****** ****** *)
 
-fun dlist_is_nil
-  {a:vt0p} {n:int} {l,r:addr} (
-  pf: !dlist_v (a, n, l, r) | p: ptr l
-) :<> bool (n==0) = "atspre_ptr_is_null"
+dataview
+dlist_v (
+  a:viewt@ype, int, int, lm:addr
+) =
+  | {nf:nat;nr:pos}
+    {lf,lmp,lr:addr}
+    dlist_v_cons (a, nf, nr, lm) of (
+      rdlseg_v (a, nf, lf, null, lmp, lm), dlseg_v (a, nr, lm, lmp, lr, null)
+    ) // end of [dlist_v_cons]
+  | dlist_v_nil (a, 0, 0, null) of ()
+// end of [dlist_v]
 
+(* ****** ****** *)
+
+fun dlist_is_nil
+  {a:vt0p} {nf,nr:int} {l,r:addr} (
+  pf: !dlist_v (a, nf, nr, l) | p: ptr l
+) :<> bool (nr==0) = "atspre_ptr_is_null"
+////
 (* ****** ****** *)
 
 absviewtype dlist (a:viewt@ype+, n:int)

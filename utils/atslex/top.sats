@@ -31,10 +31,10 @@
  *)
 
 (* ****** ****** *)
-
-// July 2007
+//
 // Author: Hongwei Xi (hwxi AT cs DOT bu DOT edu)
-
+// Time: July 2007
+//
 (* ****** ****** *)
 
 abstype pos_t (* defined in position.dats *)
@@ -42,7 +42,8 @@ abstype charset_t (* defined in [charset.dats] *)
 abstype intset_t (* defined in [intset.dats] *)
 absviewtype states_t (* defined in [states.dats] *)
 
-datatype token = // type for tokens
+datatype
+token = // type for tokens
   | TOKchar of char
   | TOKcode of string
   | TOKint of int
@@ -51,6 +52,7 @@ datatype token = // type for tokens
   | TOKlit of char
   | TOKmark of string
   | TOKeof
+// end of [token]
 
 datatype regex = // type for regular expressions
   | REGalt of (regex, regex)
@@ -85,13 +87,13 @@ fun the_atslex_input_set {l:addr} (pf: FILE r @ l | p: ptr l): void
 fun atslex_getchar (): int = "atslex_getchar"
 
 (* ****** ****** *)
-
-// implemented in [token.sats]
-
-fun pos_line_get (): int = "pos_line_get"
-fun pos_char_get (): int = "pos_char_get"
-fun pos_line_prev_get (): int = "pos_line_prev_get"
-fun pos_char_prev_get (): int = "pos_char_prev_get"
+//
+// HX: implemented in [token.dats]
+//
+fun pos_get_line (): int = "pos_get_line"
+fun pos_get_char (): int = "pos_get_char"
+fun pos_get_line_prev (): int = "pos_get_line_prev"
+fun pos_get_char_prev (): int = "pos_get_char_prev"
 
 fun token_get (): token = "token_get"
 fun token_update (): void = "token_update"

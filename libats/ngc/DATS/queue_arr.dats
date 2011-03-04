@@ -210,34 +210,6 @@ queue_initialize_tsz
 } // end of [queue_initialize_tsz]
 
 (* ****** ****** *)
-
-implement{a}
-queue_insert (q, x) = let
-  val p_lst = q.qarr_lst
-  val (pf_nxt | p_lst1) = QUEUEptrnxt (q, p_lst)
-  prval (pf_at, fpf) = QUEUEarr_takeout_lst {a} (q.pfqarr, pf_nxt)
-  val () = !p_lst := x
-  val () = q.nitm := q.nitm + 1
-  val () = q.qarr_lst := p_lst1
-  prval () = q.pfqarr := fpf (pf_at)
-in
- // nothing
-end // end of [queue_insert]
-
-(* ****** ****** *)
-
-implement{a}
-queue_remove (q) = x where {
-  val p_fst = q.qarr_fst
-  val (pf_nxt | p_fst1) = QUEUEptrnxt (q, p_fst)
-  prval (pf_at, fpf) = QUEUEarr_takeout_fst {a} (q.pfqarr, pf_nxt)
-  val x = !p_fst
-  val () = q.nitm := q.nitm - 1
-  val () = q.qarr_fst := p_fst1
-  prval () = q.pfqarr := fpf (pf_at)
-} // end of [queue_remove]
-
-(* ****** ****** *)
 //
 // HX-2010-03-29:
 // the function is given the external name:
@@ -269,6 +241,53 @@ queue_uninitialize_vt
 in
   (pfgc, pfarr | parr)
 end // end of [queue_uninitialize_vt]
+
+(* ****** ****** *)
+
+implement{a}
+queue_enque (q, x) = let
+  val p_lst = q.qarr_lst
+  val (pf_nxt | p_lst1) = QUEUEptrnxt (q, p_lst)
+  prval (pf_at, fpf) = QUEUEarr_takeout_lst {a} (q.pfqarr, pf_nxt)
+  val () = !p_lst := x
+  val () = q.nitm := q.nitm + 1
+  val () = q.qarr_lst := p_lst1
+  prval () = q.pfqarr := fpf (pf_at)
+in
+ // nothing
+end // end of [queue_enque]
+
+implement{a}
+queue_enque_many (q, k, xs) =
+  queue_enque_many_tsz {a} (q, k, xs, sizeof<a>)
+// end of [queue_enque_many]
+
+(* ****** ****** *)
+
+implement{a}
+queue_deque (q) = x where {
+  val p_fst = q.qarr_fst
+  val (pf_nxt | p_fst1) = QUEUEptrnxt (q, p_fst)
+  prval (pf_at, fpf) = QUEUEarr_takeout_fst {a} (q.pfqarr, pf_nxt)
+  val x = !p_fst
+  val () = q.nitm := q.nitm - 1
+  val () = q.qarr_fst := p_fst1
+  prval () = q.pfqarr := fpf (pf_at)
+} // end of [queue_deque]
+
+implement{a}
+queue_deque_many (q, k, xs) =
+  queue_deque_many_tsz {a} (q, k, xs, sizeof<a>)
+// end of [queue_deque_many]
+
+(* ****** ****** *)
+
+implement{a}
+queue_update_capacity (
+  pfgc2, pfarr2 | q, m2, xs
+) =
+  queue_update_capacity_tsz {a} (pfgc2, pfarr2 | q, m2, xs, sizeof<a>)
+// end of [queue_update_capacity]
 
 (* ****** ****** *)
 

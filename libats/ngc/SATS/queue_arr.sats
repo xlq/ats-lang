@@ -72,6 +72,13 @@ viewtypedef QUEUE1 (a:viewt@ype) = [m,n:nat] QUEUE (a, m, n)
 
 (* ****** ****** *)
 
+prfun queue_param_lemma
+  {a:viewt@ype} {m,n:int}
+  (x: &QUEUE (a, m, n)): [0 <= n; n <= m] void
+// end of [queue_lemma]
+
+(* ****** ****** *)
+
 fun queue_cap {a:viewt@ype}
   {m,n:int} (q: &QUEUE (a, m, n)):<> size_t m
 fun queue_size {a:viewt@ype}
@@ -98,8 +105,7 @@ queue_initialize
   {m:nat} {l:addr} (
   pfgc: free_gc_v (a, m, l), pfarr: array_v (a?, m, l)
 | q: &QUEUE0 a >> QUEUE (a, m, 0), m: size_t m, p: ptr l
-) :<> void
-// end of [queue_initialize]
+) :<> void // end of [queue_initialize]
 
 fun queue_initialize_tsz
   {a:viewt@ype} {m:nat} {l:addr} (
@@ -108,19 +114,6 @@ fun queue_initialize_tsz
 ) :<> void
   = "atslib_ngc_queue_arr_queue_initialize_tsz"
 // end of [queue_initialize_tsz]
-
-(* ****** ****** *)
-
-fun{a:viewt@ype}
-queue_insert (*last*)
-  {m,n:nat | m > n}
-  (q: &QUEUE (a, m, n) >> QUEUE (a, m, n+1), x: a):<> void
-// end of [queue_insert]
-
-fun{a:viewt@ype}
-queue_remove (*first*)
-  {m,n:nat | n > 0} (q: &QUEUE (a, m, n) >> QUEUE (a, m, n-1)):<> a
-// end of [queue_remove]
 
 (* ****** ****** *)
 //
@@ -147,6 +140,96 @@ fun queue_uninitialize_vt
   free_gc_v (a, m, l), array_v (a?, m, l)
 | ptr l
 ) // end of [queue_uninitialize_vt]
+
+(* ****** ****** *)
+
+fun{a:viewt@ype}
+queue_enque (*last*)
+  {m,n:nat | m > n}
+  (q: &QUEUE (a, m, n) >> QUEUE (a, m, n+1), x: a):<> void
+// end of [queue_enque]
+
+fun{a:viewt@ype}
+queue_enque_many
+  {m,n:nat}
+  {k:nat | n+k <= m} (
+  q: &QUEUE (a, m, n) >> QUEUE (a, m, n+k)
+, k: size_t k
+, xs: &(@[a][k]) >> @[a?!][k]
+) :<> void // end of [queue_enque_many]
+
+fun
+queue_enque_many_tsz
+  {a:viewt@ype}
+  {m,n:nat}
+  {k:nat | n+k <= m} (
+  q: &QUEUE (a, m, n) >> QUEUE (a, m, n+k)
+, k: size_t k
+, xs: &(@[a][k]) >> @[a?!][k]
+, tsz: sizeof_t (a)
+) :<> void // end of [queue_enque_many_tsz]
+  = "atslib_ngc_queue_arr_queue_enque_many_tsz"
+
+(* ****** ****** *)
+
+fun{a:viewt@ype}
+queue_deque (*first*)
+  {m,n:nat | n > 0} (
+  q: &QUEUE (a, m, n) >> QUEUE (a, m, n-1)
+) :<> a // end of [queue_deque]
+
+fun{a:viewt@ype}
+queue_deque_many
+  {m,n:nat}
+  {k:nat | k <= n} (
+  q: &QUEUE (a, m, n) >> QUEUE (a, m, n-k)
+, k: size_t k
+, xs: &(@[a?][k]) >> @[a][k]
+) :<> void // end of [queue_deque_many]
+
+fun
+queue_deque_many_tsz
+  {a:viewt@ype}
+  {m,n:nat}
+  {k:nat | k <= n} (
+  q: &QUEUE (a, m, n) >> QUEUE (a, m, n-k)
+, k: size_t k
+, xs: &(@[a?][k]) >> @[a][k]
+, tsz: sizeof_t a
+) :<> void // end of [queue_deque_many_tsz]
+  = "atslib_ngc_queue_arr_queue_deque_many_tsz"
+
+(* ****** ****** *)
+
+fun{a:viewt@ype}
+queue_update_capacity
+  {m1,n:nat}
+  {m2:nat | n <= m2}
+  {l:addr} (
+  pfgc: free_gc_v (a, m2, l)
+, pfarr: array_v (a?, m2, l)
+| q: &QUEUE (a, m1, n) >> QUEUE (a, m2, n)
+, m2: size_t (m2), parr: ptr l
+) : [l:addr] (
+  free_gc_v (a, m1, l), array_v (a?!, m1, l)
+| ptr l
+) // end of [queue_update_capcity]
+
+fun
+queue_update_capacity_tsz
+  {a:viewt@ype}
+  {m1,n:nat}
+  {m2:nat | n <= m2}
+  {l:addr} (
+  pfgc: free_gc_v (a, m2, l)
+, pfarr: array_v (a?, m2, l)
+| q: &QUEUE (a, m1, n) >> QUEUE (a, m2, n)
+, m2: size_t (m2), parr: ptr l
+, tsz: sizeof_t (a)
+) : [l:addr] (
+  free_gc_v (a, m1, l), array_v (a?!, m1, l)
+| ptr l
+) = "atslib_ngc_queue_arr_queue_update_capacity_tsz"
 
 (* ****** ****** *)
 

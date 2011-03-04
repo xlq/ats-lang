@@ -104,7 +104,7 @@ fun cdev_get_owner
 struct cdev *cdev_alloc(void);
 */
 fun cdev_alloc // HX: dynamically allocated cdev
-  () : [l:agez] cdev_ref (l, 1) = "#atsctrb_linux_cdev_alloc"
+  () : [l:agez] cdev_ref (l, 1) = "mac#atsctrb_linux_cdev_alloc"
 // end of [cdev_alloc]
 
 (* ****** ****** *)
@@ -123,7 +123,7 @@ fun cdev_init {l:agz} (
 void cdev_put(struct cdev *p);
 */
 fun cdev_put {l:agz} {sd:int}
-  (dev: cdev_ref (l, sd)): void = "#atsctrb_linux_cdev_put"
+  (dev: cdev_ref (l, sd)): void = "mac#atsctrb_linux_cdev_put"
 // end of [cdev_put]
 
 (* ****** ****** *)
@@ -140,7 +140,7 @@ void cdev_del(struct cdev *);
 */
 fun cdev_del {l:addr} {sd:int} (
   dev: !cdev_ref (l, sd) >> ptr l
-) : (option_v (cdev? @ l, sd==0) | void) = "#atsctrb_linux_cdev_del"
+) : (option_v (cdev? @ l, sd==0) | void) = "mac#atsctrb_linux_cdev_del"
 // end of [cdev_del]
 
 (* ****** ****** *)
@@ -155,7 +155,7 @@ fun cdev_index
 /*
 void cd_forget(struct inode *);
 */
-fun cd_forget (inode: &inode): int = "#atsctrb_linux_cd_forget"
+fun cd_forget (inode: &inode): int = "mac#atsctrb_linux_cd_forget"
 
 (* ****** ****** *)
 /*

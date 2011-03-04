@@ -31,10 +31,10 @@
 *)
 
 (* ****** ****** *)
-
-// July 2007
+//
 // Author: Hongwei Xi (hwxi AT cs DOT bu DOT edu)
-
+// Time: July 2007
+//
 (* ****** ****** *)
 
 staload "top.sats"
@@ -68,28 +68,25 @@ static int the_line_cnt_prev = 1 ;
 static int the_char_cnt = 0 ;
 static int the_char_cnt_prev = 0 ;
 
-//static inline
-ats_int_type pos_line_get () { return the_line_cnt ; }
+ats_int_type pos_get_line () { return the_line_cnt ; }
+ats_int_type pos_get_char () { return the_char_cnt ; }
 
-//static inline
-ats_int_type pos_char_get () { return the_char_cnt ; }
+ats_int_type pos_get_line_prev () { return the_line_cnt_prev ; }
+ats_int_type pos_get_char_prev () { return the_char_cnt_prev ; }
 
-//static inline
-ats_int_type pos_line_prev_get () { return the_line_cnt_prev ; }
-
-//static inline
-ats_int_type pos_char_prev_get () { return the_char_cnt_prev ; }
-
-static inline
-ats_void_type pos_prev_reset () {
+ATSinline()
+ats_void_type
+pos_prev_reset (
+// there is no argument for this fun
+) {
   the_line_cnt_prev = the_line_cnt ;
   the_char_cnt_prev = the_char_cnt ;
   return ;  
-}
+} // end of [pos_prev_reset]
 
 //
 
-static inline
+ATSinline()
 ats_void_type
 pos_advance (ats_char_type c) {
   switch (c) {
@@ -102,26 +99,29 @@ pos_advance (ats_char_type c) {
 
 static ats_int_type the_char ;
 
-static inline
+ATSinline()
 ats_int_type char_get() { return the_char ; }
 
-static inline
-ats_void_type char_update() { 
+ATSinline()
+ats_void_type
+char_update() { 
   the_char = atslex_getchar () ;
   pos_advance (the_char) ;
   return ;
 }
 
-static inline
-ats_int_type char_get_update() {
+ATSinline()
+ats_int_type
+char_get_update() {
   int c = the_char ;
   the_char = atslex_getchar () ;
   pos_advance (the_char) ;
   return c ;
 }
 
-static inline
-ats_int_type char_update_get() {
+ATSinline()
+ats_int_type
+char_update_get() {
   the_char = atslex_getchar () ;
   pos_advance (the_char) ;
   return the_char ;
@@ -144,24 +144,29 @@ extern fun chars_is_nil {n:nat} (cs: !chars n): bool (n == 0) =
 implement chars_is_nil (cs) = case+ cs of
   | nil () => (fold@ cs; true) | _ :: _ => (fold@ cs; false)
 
-extern fun
-chars_uncons {n:pos} (cs: &chars n >> chars (n-1)): char =
-  "chars_uncons"
+extern
+fun chars_uncons {n:pos}
+  (cs: &chars n >> chars (n-1)): char = "chars_uncons"
 
 implement chars_uncons (cs) =
   let val+ ~(c :: cs1) = cs in cs := cs1; c end
+// end of [chars_uncons]
 
 fun chars_free {n:nat} (cs: chars n): void =
   case+ cs of ~(c :: cs) => chars_free cs | ~nil () => ()
+// end of [chars_free]
 
 (* ****** ****** *)
 
-extern fun // [cs] must not contain null bytes
-string_make_charlst_rev_int
-  {n:nat} (cs: chars n, n: int n): string n =
+extern // [cs] must not contain null bytes
+fun string_make_charlst_rev_int
+  {n:nat} (
+  cs: chars n, n: int n
+) : string n =
   "string_make_charlst_rev_int"
+// end of [fun]
 
-%{
+%{$
 
 ats_ptr_type
 string_make_charlst_rev_int
@@ -172,7 +177,7 @@ string_make_charlst_rev_int
   return s0 ;
 } /* string_make_charlst_rev_int */
 
-%}
+%} // end of [%{$]
 
 (* ****** ****** *)
 
@@ -189,7 +194,9 @@ implement tokenize_line_comment () = loop () where {
 
 (* ****** ****** *)
 
-implement tokenize_rest_text () = loop (nil (), 0) where {
+implement
+tokenize_rest_text () =
+  loop (nil (), 0) where {
   fun loop {n:nat} (cs: chars n, n: int n): string = let
     val c = char_get () in
     if c >= 0 then let
@@ -202,7 +209,8 @@ implement tokenize_rest_text () = loop (nil (), 0) where {
 
 (* ****** ****** *)
 
-fn errmsg_unclosed_logue (): string = let
+fn errmsg_unclosed_logue
+  (): string = let
   val pos = position_prev_get ()
 in
   prerr_string ("The logue starting at [");
@@ -212,7 +220,9 @@ in
   exit {string} (1)
 end // end of [errmsg_unclosed_logue]
 
-implement tokenize_logue () = loop (nil (), 0, 0) where {
+implement
+tokenize_logue () =
+  loop (nil (), 0, 0) where {
   fun loop {n,level:nat}
     (cs: chars n, n: int n, level: int level): string = let
     val c = char_get ()
@@ -247,7 +257,8 @@ implement tokenize_logue () = loop (nil (), 0, 0) where {
 
 (* ****** ****** *)
 
-fn errmsg_unclosed_funarg (): string = let
+fn errmsg_unclosed_funarg
+  (): string = let
   val pos = position_prev_get ()
 in
   prerr_string ("The function argument starting at [");
@@ -257,7 +268,9 @@ in
   exit {string} (1)
 end // end of [errmsg_unclosed_funarg]
 
-implement tokenize_funarg () = loop (nil (), 0) where {
+implement
+tokenize_funarg () =
+  loop (nil (), 0) where {
   fun loop {n:nat} (cs: chars n, n: int n): string = let
     val c = char_get ()
   in
@@ -275,7 +288,8 @@ implement tokenize_funarg () = loop (nil (), 0) where {
 
 (* ****** ****** *)
 
-fn errmsg_char_esc (): char = let
+fn errmsg_char_esc
+  (): char = let
   val pos = position_prev_get ()
 in
   prerr_string ("The escaped char at [");
@@ -287,14 +301,13 @@ end // end of [errmsg_char_esc]
 
 fun tokenize_char_esc_code (ci: int, i: int): int =
   if i < 2 then let
-    val c = char_get ()
-  in
+    val c = char_get () in
     if c >= 0 then let
       val c = i2c c in case+ 0 of 
       | _ when char_isdigit c => begin
           char_update (); tokenize_char_esc_code (BASE * ci + (c - '0'), i+1)
         end // end of [_ when ...]
-      | _ => ci
+      | _ => ci // end of [_]
     end else ci
   end else begin
     ci // function returns: an error is to be reported later
@@ -304,8 +317,7 @@ fun tokenize_char_esc_code (ci: int, i: int): int =
 fun tokenize_char_esc (): char = let
   val c = char_get_update () in case+ 0 of
   | _ when c >= 0 => let
-      val c = i2c c
-    in
+      val c = i2c c in
       if char_isdigit c then
         char_of_int (tokenize_char_esc_code (c - '0', 0))
       else begin case+ c of
@@ -352,7 +364,8 @@ end // end of [tokenize_char]
 
 (* ****** ****** *)
 
-fn errmsg_unclosed_code (): string = let
+fn errmsg_unclosed_code
+  (): string = let
   val pos = position_prev_get ()
 in
   prerr_string ("The code starting at [");
@@ -362,8 +375,10 @@ in
   exit {string} (1)
 end // end of [errmsg_unclosed_code]
 
-fun tokenize_code {n,level:nat}
-  (cs: chars n, n: int n, level: int level): string = let
+fun tokenize_code
+  {n,level:nat} (
+  cs: chars n, n: int n, level: int level
+) : string = let
   val c = char_get ()
 in
   if c >= 0 then let
@@ -387,7 +402,8 @@ end // end of [tokenize_code]
 
 (* ****** ****** *)
 
-fn errmsg_unclosed_comment (): void = let
+fn errmsg_unclosed_comment
+  (): void = let
   val pos = position_prev_get ()
 in
   prerr_string ("The comment starting at [");
@@ -397,7 +413,8 @@ in
   exit {void} (1)
 end // end of [errmsg_unclosed_comment]
 
-fun tokenize_comment {level:nat} (level: int level): void = let
+fun tokenize_comment
+  {level:nat} (level: int level): void = let
   val c = char_get ()
 in
   if c >= 0 then let
@@ -429,9 +446,9 @@ end // end of [tokenize_comment]
 
 (* ****** ****** *)
 
-fun tokenize_int (i: int): int = let
-  val c = char_get ()
-in
+fun tokenize_int
+  (i: int): int = let
+  val c = char_get () in
   case+ 0 of
   | _ when c >= 0 => let val c = i2c c in
       if char_isdigit c then
@@ -499,8 +516,10 @@ fun tokenize_word_sym {n:nat}
   | _ (* c = EOF *) => string_make_charlst_rev_int (cs, n)
 end // end of [tokenize_word_sym]
 
-fun tokenize_word_ide {n:nat}
-  (cs: chars n, n: int n): string = let
+fun tokenize_word_ide
+  {n:nat} (
+  cs: chars n, n: int n
+) : string = let
   val c = char_get () in case+ 0 of
   | _ when c >= 0 => let
       val c = i2c c in if char_islttr c then
@@ -520,8 +539,10 @@ fprint_token {m:file_mode}
   (pf_mod: file_mode_lte (m, w) | fil: &FILE m, tok: token): void =
   "fprint_token"
 
-implement fprint_token
-  (pf_mod | fil, tok): void = begin case+ tok of
+implement
+fprint_token (
+  pf_mod | fil, tok
+) = begin case+ tok of
   | TOKchar c => fprintf (pf_mod | fil, "char(%c)", @(c))
   | TOKcode s => fprintf (pf_mod | fil, "code(%s)", @(s))
   | TOKint i => fprintf (pf_mod | fil, "int(%i)", @(i))
@@ -532,33 +553,35 @@ implement fprint_token
   | TOKeof () => fprint_string (pf_mod | fil, "EOF")
 end // end of [fprint_token]
 
-implement print_token (tok) = let
+implement
+print_token (tok) = () where {
   val (pf_stdout | ptr_stdout) = stdout_get ()
-in
-  fprint_token (file_mode_lte_w_w | !ptr_stdout, tok);
-  stdout_view_set (pf_stdout | (*none*))
-end // end of [print_token]
+  val () = fprint_token (file_mode_lte_w_w | !ptr_stdout, tok)
+  val () = stdout_view_set (pf_stdout | (*none*))
+} // end of [print_token]
 
-implement prerr_token (tok) = let
+implement
+prerr_token (tok) = () where {
   val (pf_stderr | ptr_stderr) = stderr_get ()
-in
-  fprint_token (file_mode_lte_w_w | !ptr_stderr, tok);
-  stderr_view_set (pf_stderr | (*none*))
-end // end of [prerr_token]
+  val () = fprint_token (file_mode_lte_w_w | !ptr_stderr, tok)
+  val () = stderr_view_set (pf_stderr | (*none*))
+} // end of [prerr_token]
 
 (* ****** ****** *)
 
-fun pos_prev_reset_and_char_update (): void =
-  (pos_prev_reset (); char_update ())
+fun pos_prev_reset_and_char_update
+  (): void = (pos_prev_reset (); char_update ())
+// end of [fun]
 
 extern fun tokenize (): token = "tokenize"
 
-implement tokenize () = let
+implement
+tokenize () = let
   val c = char_get () in case+ 0 of
   | _ when c >= 0 => tokenize_main (i2c c)
   | _ (* c = EOF *) => TOKeof ()
 end where {
-
+//
 fun tokenize_main (c: char) = case+ c of
   | '\'' => let
       val () = pos_prev_reset_and_char_update ()
@@ -642,32 +665,36 @@ fun tokenize_main (c: char) = case+ c of
     in
       TOKlit c
     end // end of [_]
-// end of [tokenize_main]
+(* end of [tokenize_main] *)
+//
 } // end of [tokenize ... where ...]
 
-//
+(* ****** ****** *)
 
-%{
+%{$
 
 static ats_ptr_type the_token ;
 
 ats_ptr_type token_get () { return the_token ; }
 
-ats_void_type token_update () {
-  the_token = tokenize () ;
-  return ;
+ats_void_type
+token_update () {
+  the_token = tokenize () ; return ;
 }
 
-ats_ptr_type token_get_update () {
-  ats_ptr_type tok = the_token ;
-  the_token = tokenize () ;
-  return tok;
-}
+ats_ptr_type
+token_get_update () {
+  ats_ptr_type tok = the_token ; the_token = tokenize () ; return tok;
+} // end of [token_get_update]
 
-%}
+%} // end of [%{$]
 
-// initialization
-implement token_initialization () = let
+(* ****** ****** *)
+//
+// HX: initialization
+//
+implement
+token_initialization () = let
   val () = char_update () // flush out a junk value
   val () = token_update () // flush out a junk value
 in

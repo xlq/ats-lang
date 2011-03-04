@@ -303,10 +303,6 @@ libats/DATS/linbitvec.dats
 libats/SATS/linmap_avltree.sats
 libats/DATS/linmap_avltree.dats
 
-/* linear array-based queue implementation */
-libats/SATS/linqueue_arr.sats
-libats/DATS/linqueue_arr.dats
-
 /* linear list-based queue implementation */
 libats/SATS/linqueue_lst.sats
 libats/DATS/linqueue_lst.dats
@@ -327,6 +323,12 @@ libats/DATS/regexp.dats
 /* dynamically resizable array implementation */
 libats/SATS/vector.sats
 libats/DATS/vector.dats
+
+/* ****** ****** */
+
+/* linear array-based queue implementation */
+libats/ngc/SATS/queue_arr.sats
+libats/ngc/DATS/queue_arr.dats
 
 /* ****** ****** */
 

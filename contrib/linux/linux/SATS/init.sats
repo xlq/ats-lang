@@ -49,7 +49,7 @@
 #define module_init(x)	__initcall(x);
 *)
 fun module_init
-  (init: () -> int): void = "#atsctrb_linux_module_init"
+  (init: () -> int): void = "mac#atsctrb_linux_module_init"
 // end of [module_init]
 
 (* ****** ****** *)
@@ -58,7 +58,7 @@ fun module_init
 #define module_exit(x)	__exitcall(x);
 *)
 fun module_exit
-  (init: () -> void): void = "#atsctrb_linux_module_exit"
+  (init: () -> void): void = "mac#atsctrb_linux_module_exit"
 // end of [module_exit]
 
 (* ****** ****** *)
