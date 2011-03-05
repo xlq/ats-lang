@@ -121,7 +121,7 @@ DEQUEptrprv_p (
 extern
 fun{a:viewt@ype}
 DEQUEptrprv
-  {m,n:nat}
+  {m,n:int}
   {lft,rgt,l_beg,l_end:addr}
   {l:addr} (
   q: &DEQUE_vt (a, m, n, lft, rgt, l_beg, l_end)
@@ -153,7 +153,7 @@ DEQUEptrnxt_p (
 extern
 fun{a:viewt@ype}
 DEQUEptrnxt
-  {m,n:nat} {lft,rgt,l_beg,l_end:addr} {l:addr}
+  {m,n:int} {lft,rgt,l_beg,l_end:addr} {l:addr}
   (q: &DEQUE_vt (a, m, n, lft, rgt, l_beg, l_end), p: ptr l)
   :<> [l_nxt:addr] (DEQUEptrnxt_p (a, lft, rgt, l, l_nxt) | ptr l_nxt)
 // end of [DEQUEptrnxt_p]
@@ -187,11 +187,25 @@ assume DEQUE (
 implement deque_cap (q) = q.cap
 implement deque_size (q) = q.nitm
 
-implement deque_is_empty (q) = (q.nitm <= 0)
-implement deque_isnot_empty (q) = (q.nitm > 0)
+implement
+deque_is_empty (q) = let
+  prval () = deque_param_lemma (q) in (q.nitm = 0)
+end // end of [deque_is_empty]
 
-implement deque_is_full (q) = (q.cap <= q.nitm)
-implement deque_isnot_full (q) = (q.cap > q.nitm)
+implement
+deque_isnot_empty (q) = let
+  prval () = deque_param_lemma (q) in (q.nitm > 0)
+end // end of [deque_isnot_empty]
+
+implement
+deque_is_full (q) = let
+  prval () = deque_param_lemma (q) in (q.cap = q.nitm)
+end // end of [deque_is_full]
+
+implement
+deque_isnot_full (q) = let
+  prval () = deque_param_lemma (q) in (q.cap > q.nitm)
+end // end of [deque_isnot_full]
 
 (* ****** ****** *)
 
@@ -236,6 +250,9 @@ deque_initialize_tsz
 implement
 deque_uninitialize
   {a} {m,n} (q) = let
+//
+  prval () = deque_param_lemma (q)
+//
   prval pfgc = q.pfqarr_gc
   prval pfqarr = DEQUEarr_v_clear (q.pfqarr)
   prval pfarr = DEQUEarr_v_decode (pfqarr)
@@ -250,6 +267,9 @@ end // end of [deque_uninitialize]
 implement
 deque_uninitialize_vt
   {a} {m} (q) = let
+//
+  prval () = deque_param_lemma (q)
+//
   prval pfgc = q.pfqarr_gc
   prval pfarr = DEQUEarr_v_decode (q.pfqarr)
   val parr = q.qarr_lft
@@ -274,7 +294,10 @@ prfun DEQUEarr_insert_beg
 ) // end of [DEQUEarr_insert_beg]
 
 implement{a}
-deque_insert_beg (q, x) = let
+deque_insert_beg (q, x) = () where {
+//
+  prval () = deque_param_lemma (q)
+//
   val p_beg = q.qarr_beg
   val (pf_prv | p1_beg) = DEQUEptrprv (q, p_beg)
   prval (pf_at, fpf) = DEQUEarr_insert_beg {a} (q.pfqarr, pf_prv)
@@ -282,9 +305,7 @@ deque_insert_beg (q, x) = let
   val () = q.nitm := q.nitm + 1
   val () = q.qarr_beg := p1_beg
   prval () = q.pfqarr := fpf (pf_at)
-in
- // nothing
-end // end of [deque_insert_beg]
+} // end of [deque_insert_beg]
 
 (* ****** ****** *)
 
@@ -301,6 +322,9 @@ prfun DEQUEarr_insert_end
 
 implement{a}
 deque_insert_end (q, x) = let
+//
+  prval () = deque_param_lemma (q)
+//
   val p_end = q.qarr_end
   val (pf_nxt | p1_end) = DEQUEptrnxt (q, p_end)
   prval (pf_at, fpf) = DEQUEarr_insert_end {a} (q.pfqarr, pf_nxt)
@@ -332,6 +356,9 @@ prfun DEQUEarr_remove_beg
 
 implement{a}
 deque_remove_beg (q) = x where {
+//
+  prval () = deque_param_lemma (q)
+//
   val p_beg = q.qarr_beg
   val (pf_nxt | p1_beg) = DEQUEptrnxt (q, p_beg)
   prval (pf_at, fpf) = DEQUEarr_remove_beg {a} (q.pfqarr, pf_nxt)
@@ -358,6 +385,78 @@ prfun DEQUEarr_remove_end
   a @ l1_end
 , a? @ l1_end -<lin> DEQUEarr_v (a, m, n-1, lft, rgt, l_beg, l1_end)
 ) // end of [DEQUEarr_remove_end]
+
+implement{a}
+deque_remove_end (q) = x where {
+//
+  prval () = deque_param_lemma (q)
+//
+  val p_end = q.qarr_end
+  val (pf_prv | p1_end) = DEQUEptrprv (q, p_end)
+  prval (pf_at, fpf) = DEQUEarr_remove_end {a} (q.pfqarr, pf_prv)
+  val x = !p1_end
+  val () = q.nitm := q.nitm - 1
+  val () = q.qarr_end := p1_end
+  prval () = q.pfqarr := fpf (pf_at)
+} // end of [deque_remove_end]
+
+(* ****** ****** *)
+
+implement{a}
+deque_clear_beg
+  {m,n1} {n2} (q, n2) = () where {
+  val tsz = sizeof<a>
+  val n1 = q.nitm
+  val p_rgt = q.qarr_rgt
+  val p_beg = q.qarr_beg
+//
+  extern castfn pdf2sz {i:int} (df: ptrdiff_t i):<> size_t
+//
+  var p1_beg: ptr = p_beg + n2 * tsz
+  val () = if p1_beg >= p_rgt then
+    p1_beg := q.qarr_lft + pdf2sz (p1_beg \pdiff p_rgt)
+  val p1_beg = ptr1_of_ptr (p1_beg)
+  stavar l1_beg: addr
+  prval _ = p1_beg: ptr (l1_beg)
+//
+  prval () = __assert (q.pfqarr) where {
+    extern prfun __assert {lft,rgt,l_beg,l_end:addr} (
+      pf: !DEQUEarr_v (a, m, n1, lft, rgt, l_beg, l_end)
+        >> DEQUEarr_v (a, m, n1-n2, lft, rgt, l1_beg, l_end)
+    ) : void // end of [extern]
+  } // end of [prval]
+//
+  val () = q.nitm := n1-n2
+  val () = q.qarr_beg := p1_beg
+} // end of [deque_clear_beg]
+
+implement{a}
+deque_clear_end
+  {m,n1} {n2} (q, n2) = () where {
+  val tsz = sizeof<a>
+  val n1 = q.nitm
+  val p_rgt = q.qarr_rgt
+  val p_beg = q.qarr_beg
+//
+  extern castfn pdf2sz {i:int} (df: ptrdiff_t i):<> size_t
+//
+  var p1_end: ptr = p_beg + (n1-n2) * tsz
+  val () = if p1_end >= p_rgt then
+    p1_end := q.qarr_lft + pdf2sz (p1_end \pdiff p_rgt)
+  val p1_end = ptr1_of_ptr (p1_end)
+  stavar l1_end: addr
+  prval _ = p1_end: ptr (l1_end)
+//
+  prval () = __assert (q.pfqarr) where {
+    extern prfun __assert {lft,rgt,l_beg,l_end:addr} (
+      pf: !DEQUEarr_v (a, m, n1, lft, rgt, l_beg, l_end)
+        >> DEQUEarr_v (a, m, n1-n2, lft, rgt, l_beg, l1_end)
+    ) : void // end of [extern]
+  } // end of [prval]
+//
+  val () = q.nitm := n1-n2
+  val () = q.qarr_end := p1_end
+} // end of [deque_clear_end]
 
 (* ****** ****** *)
 

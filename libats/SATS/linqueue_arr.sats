@@ -64,7 +64,14 @@ absviewt@ype QUEUE
   = $extype "atslib_linqueue_arr_QUEUE"
 // end of [QUEUE]
 typedef QUEUE0 (a:viewt@ype) = QUEUE (a, 0, 0)?
-viewtypedef QUEUE1 (a:viewt@ype) = [m,n:nat] QUEUE (a, m, n)
+viewtypedef QUEUE1 (a:viewt@ype) = [m,n:int] QUEUE (a, m, n)
+
+(* ****** ****** *)
+
+prfun queue_param_lemma
+  {a:viewt@ype} {m,n:int}
+  (x: &QUEUE (a, m, n)): [0 <= n; n <= m] void
+// end of [queue_param_lemma]
 
 (* ****** ****** *)
 
@@ -75,11 +82,15 @@ fun queue_size
 
 (* ****** ****** *)
 
-fun queue_is_empty {a:viewt@ype} {m,n:nat} (q: &QUEUE (a, m, n)):<> bool (n <= 0)
-fun queue_isnot_empty {a:viewt@ype} {m,n:nat} (q: &QUEUE (a, m, n)):<> bool (n > 0)
+fun queue_is_empty
+  {a:viewt@ype} {m,n:int} (q: &QUEUE (a, m, n)):<> bool (n <= 0)
+fun queue_isnot_empty
+  {a:viewt@ype} {m,n:int} (q: &QUEUE (a, m, n)):<> bool (n > 0)
 
-fun queue_is_full {a:viewt@ype} {m,n:nat} (q: &QUEUE (a, m, n)):<> bool (m <= n)
-fun queue_isnot_full {a:viewt@ype} {m,n:nat} (q: &QUEUE (a, m, n)):<> bool (m > n)
+fun queue_is_full
+  {a:viewt@ype} {m,n:int} (q: &QUEUE (a, m, n)):<> bool (m <= n)
+fun queue_isnot_full
+  {a:viewt@ype} {m,n:int} (q: &QUEUE (a, m, n)):<> bool (m > n)
 
 (* ****** ****** *)
 //
@@ -106,7 +117,7 @@ fun queue_initialize_tsz
 //
 fun queue_uninitialize
   {a:t@ype}
-  {m,n:nat}
+  {m,n:int}
   {l:addr} (
   q: &QUEUE (a, m, n) >> QUEUE0 a
 ) :<> void
@@ -118,7 +129,7 @@ fun queue_uninitialize
 //
 fun queue_uninitialize_vt
   {a:viewt@ype}
-  {m:nat}
+  {m:int}
   {l:addr} (
   q: &QUEUE (a, m, 0) >> QUEUE0 a
 ) :<> void
@@ -128,16 +139,27 @@ fun queue_uninitialize_vt
 
 fun{a:viewt@ype}
 queue_insert (*last*)
-  {m,n:nat | m > n} (
+  {m,n:int | m > n} (
   q: &QUEUE (a, m, n) >> QUEUE (a, m, n+1), x: a
 ) :<> void
 // end of [queue_insert]
 
 fun{a:viewt@ype}
 queue_remove (*first*)
-  {m,n:nat | n > 0} (
+  {m,n:int | n > 0} (
   q: &QUEUE (a, m, n) >> QUEUE (a, m, n-1)
 ) :<> a // end of [queue_remove]
+
+(* ****** ****** *)
+
+fun{a:viewt@ype}
+queue_update_capacity
+  {m1,n:int}
+  {m2:nat | n <= m2}
+  {l:addr} (
+  q: &QUEUE (a, m1, n) >> QUEUE (a, m2, n)
+, m2: size_t (m2)
+) : void // end of [queue_update_capcity]
 
 (* ****** ****** *)
 

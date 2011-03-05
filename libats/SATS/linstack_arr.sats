@@ -45,6 +45,12 @@
 
 (* ****** ****** *)
 
+%{#
+#include "libats/CATS/linstack_arr.cats"
+%} // end of [%{#]
+
+(* ****** ****** *)
+
 #define ATS_STALOADFLAG 0 // no static loading at run-time
 
 (* ****** ****** *)
@@ -54,34 +60,36 @@
 // n: current size
 //
 absviewt@ype STACK
-  (a:viewt@ype+, m: int, n: int)
+  (a:viewt@ype+, m:int, n:int)
   = $extype "atslib_linstack_arr_STACK"
 // end of [STACK]
 typedef STACK0 (a:viewt@ype) = STACK (a, 0, 0)?
 
 (* ****** ****** *)
 
-fun stack_get_cap
-  {a:viewt@ype} {m,n:nat} (s: &STACK (a, m, n)):<> size_t m
-fun stack_get_size
-  {a:viewt@ype} {m,n:nat} (s: &STACK (a, m, n)):<> size_t n
+fun stack_cap
+  {a:viewt@ype} {m,n:int} (s: &STACK (a, m, n)):<> size_t m
+fun stack_size
+  {a:viewt@ype} {m,n:int} (s: &STACK (a, m, n)):<> size_t n
 
 (* ****** ****** *)
 
 fun stack_is_empty
-  {a:viewt@ype} {m,n:nat} (s: &STACK (a, m, n)):<> bool (n==0)
+  {a:viewt@ype} {m,n:int} (s: &STACK (a, m, n)):<> bool (n <= 0)
 fun stack_isnot_empty
-  {a:viewt@ype} {m,n:nat} (s: &STACK (a, m, n)):<> bool (n > 0)
+  {a:viewt@ype} {m,n:int} (s: &STACK (a, m, n)):<> bool (n > 0)
 
 fun stack_is_full
-  {a:viewt@ype} {m,n:nat} (s: &STACK (a, m, n)):<> bool (m==n)
+  {a:viewt@ype} {m,n:int} (s: &STACK (a, m, n)):<> bool (m <= n)
 fun stack_isnot_full
-  {a:viewt@ype} {m,n:nat} (s: &STACK (a, m, n)):<> bool (m > n)
+  {a:viewt@ype} {m,n:int} (s: &STACK (a, m, n)):<> bool (m > n)
 
 (* ****** ****** *)
-
-// initializing to a stack of capacity [m]
-fun{a:viewt@ype} stack_initialize {m:nat}
+//
+// HX: initializing to a stack of capacity [m]
+//
+fun{a:viewt@ype}
+stack_initialize {m:nat}
   (s: &STACK0 a >> STACK (a, m, 0), m: size_t m):<> void
 // end of [linstackarr_initialize]
 
@@ -89,21 +97,21 @@ fun{a:viewt@ype} stack_initialize {m:nat}
 
 fun{a:viewt@ype}
 stack_insert (*last*) // HX: stack_push
-  {m,n:nat | m > n}
+  {m,n:int | m > n}
   (s: &STACK (a, m, n) >> STACK (a, m, n+1), x: a):<> void
 // end of [stack_insert]
 
 fun{a:viewt@ype}
 stack_remove (*first*) // HX: stack_pop
-  {m,n:nat | n > 0} (s: &STACK (a, m, n) >> STACK (a, m, n-1)):<> a
+  {m,n:int | n > 0} (s: &STACK (a, m, n) >> STACK (a, m, n-1)):<> a
 // end of [stack_remove]
 
 (* ****** ****** *)
 
 fun{a:t@ype}
 stack_clear
-  {m:int} {n1,n2:nat | n1 >= n2}
-  (s: &STACK (a, m, n1) >> STACK (a, m, n2), n2: size_t n2):<> void
+  {m,n1:int} {n2:nat | n2 <= n1}
+  (s: &STACK (a, m, n1) >> STACK (a, m, n1-n2), n2: size_t n2):<> void
 // end of [stack_clear]
 
 (* ****** ****** *)
@@ -111,14 +119,14 @@ stack_clear
 // HX: uninitializing a stack of nonlinear elements
 //
 fun stack_uninitialize {a:t@ype}
-  {m,n:nat} {l:addr} (s: &STACK (a, m, n) >> STACK0 a):<> void
+  {m,n:int} {l:addr} (s: &STACK (a, m, n) >> STACK0 a):<> void
 // end of [stack_uninitialize]
 
 //
 // HX: uninitializeing an empty stack of capacity [m]
 //
 fun stack_uninitialize_vt {a:viewt@ype}
-  {m:nat} {l:addr} (s: &STACK (a, m, 0) >> STACK0 a):<> void
+  {m:int} {l:addr} (s: &STACK (a, m, 0) >> STACK0 a):<> void
 // end of [stack_unintialize_vt]
 
 (* ****** ****** *)

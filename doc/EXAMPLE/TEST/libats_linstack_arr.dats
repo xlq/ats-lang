@@ -10,15 +10,16 @@ staload RAND = "libc/SATS/random.sats"
 
 (* ****** ****** *)
 
-staload _(*anon*) = "prelude/DATS/reference.dats"
-
-(* ****** ****** *)
-
 staload S = "libats/SATS/linstack_arr.sats"
 stadef STACK = $S.STACK
 stadef STACK0 = $S.STACK0
 
+(* ****** ****** *)
+
+staload _(*anon*) = "prelude/DATS/array.dats"
+staload _(*anon*) = "prelude/DATS/reference.dats"
 staload _(*anon*) = "libats/DATS/linstack_arr.dats"
+staload _(*anon*) = "libats/ngc/DATS/deque_arr.dats"
 
 (* ****** ****** *)
 
@@ -36,9 +37,9 @@ implement main () = let
   var S: STACK0 (itm)
   val () = $S.stack_initialize<itm> (S, N)
 //
-  val cap = $S.stack_get_cap (S)
+  val cap = $S.stack_cap (S)
   val () = assert_errmsg (cap = N, #LOCATION)
-  val size = $S.stack_get_size (S)
+  val size = $S.stack_size (S)
   val () = assert_errmsg (size = 0, #LOCATION)
 //
   val () = loop (S, N, 0) where {

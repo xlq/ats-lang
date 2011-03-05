@@ -42,12 +42,12 @@
 
 /* ****** ****** */
 
-typedef struct {
-  ats_size_type cap ;
-  ats_size_type nitm ;
-  ats_ptr_type sarr_beg ;
-  ats_ptr_type sarr_cur ;
-} atslib_linstack_arr_STACK ;
+#include "libats/ngc/CATS/deque_arr.cats"
+
+/* ****** ****** */
+
+typedef 
+atslib_ngc_deque_arr_DEQUE atslib_linstack_arr_STACK ;
 
 /* ****** ****** */
 

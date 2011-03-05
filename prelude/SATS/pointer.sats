@@ -101,7 +101,7 @@ castfn uintptr_of_ptr (p: ptr): uintptr // = "atspre_uintptr_of_ptr"
 
 (* ****** ****** *)
 
-castfn ptr1_of_ptr (p: ptr): [l:addr] ptr l
+castfn ptr1_of_ptr (p: ptr):<> [l:addr] ptr l
 
 (* ****** ****** *)
 
@@ -154,8 +154,8 @@ overload psub with psub_size
 
 (* ****** ****** *)
 
-fun pdiff {l1,l2:addr} (p1: ptr l1, p2: ptr l2):<> ptrdiff_t (l1 - l2)
-  = "atspre_pdiff"
+fun pdiff {l1,l2:addr}
+  (p1: ptr l1, p2: ptr l2):<> ptrdiff_t (l1 - l2) = "atspre_pdiff"
 overload - with pdiff
 
 (* ****** ****** *)

@@ -76,11 +76,19 @@ implement queue_isnot_full (q) = $DQ.deque_isnot_full (q)
 
 implement{a}
 queue_initialize
-  {m} (q, m) = let
+  (q, m) = let
   val (pfgc, pfarr | parr) = array_ptr_alloc<a> (m)
 in
-  $DQ.deque_initialize<a> {m} (pfgc, pfarr | q, m, parr)
+  $DQ.deque_initialize<a> (pfgc, pfarr | q, m, parr)
 end // end of [queue_initialize]
+
+implement
+queue_initialize_tsz
+  {a} (q, m, tsz) = let
+  val (pfgc, pfarr | parr) = array_ptr_alloc_tsz {a} (m, tsz)
+in
+  $DQ.deque_initialize_tsz {a} (pfgc, pfarr | q, m, parr, tsz)
+end // end of [queue_initialize_tsz]
 
 (* ****** ****** *)
 //
@@ -90,14 +98,14 @@ end // end of [queue_initialize]
 //
 implement
 queue_uninitialize
-  {a} {m,n} (q) = () where {
+  {a} (q) = () where {
   val (pfgc, pfarr | parr) = $DQ.deque_uninitialize (q)
   val () = array_ptr_free (pfgc, pfarr | parr)
 } // end of [queue_uninitialize]
 
 implement
 queue_uninitialize_vt
-  {a} {m} (q) = () where {
+  {a} (q) = () where {
   val (pfgc, pfarr | parr) = $DQ.deque_uninitialize_vt (q)
   val () = array_ptr_free (pfgc, pfarr | parr)
 } // end of [queue_uninitialize_vt]
@@ -105,12 +113,23 @@ queue_uninitialize_vt
 (* ****** ****** *)
 
 implement{a}
-queue_insert (q, x) =
-  $DQ.deque_insert_end (q, x)
+queue_insert
+  (q, x) = $DQ.deque_insert_end (q, x)
 // end of [queue_insert]
 
 implement{a}
 queue_remove (q) = $DQ.deque_remove_beg (q)
+
+(* ****** ****** *)
+
+implement{a}
+queue_update_capacity
+  (q, m2) = () where {
+  val (pfgc, pfarr | parr) = array_ptr_alloc<a> (m2)
+  val (pfgc, pfarr | parr) =
+    $DQ.deque_update_capacity (pfgc, pfarr | q, m2, parr)
+  val () = array_ptr_free (pfgc, pfarr | parr)
+} // end of [queue_update_capacity]
 
 (* ****** ****** *)
 

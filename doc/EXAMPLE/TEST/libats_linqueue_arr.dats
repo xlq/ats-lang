@@ -10,11 +10,15 @@ staload RAND = "libc/SATS/random.sats"
 
 (* ****** ****** *)
 
-staload Q = "libats/ngc/SATS/queue_arr.sats"
+staload Q = "libats/SATS/linqueue_arr.sats"
 stadef QUEUE = $Q.QUEUE
 stadef QUEUE0 = $Q.QUEUE0
 
-staload _(*anon*) = "libats/ngc/DATS/queue_arr.dats"
+(* ****** ****** *)
+
+staload _(*anon*) = "prelude/DATS/array.dats"
+staload _(*anon*) = "libats/DATS/linqueue_arr.dats"
+staload _(*anon*) = "libats/ngc/DATS/deque_arr.dats"
 
 (* ****** ****** *)
 
@@ -27,16 +31,14 @@ implement
 main () = () where {
   typedef itm = int
   var q: QUEUE0 (itm)
-  val (
-    pfgc, pfarr | parr
-  ) = array_ptr_alloc_tsz {itm} (CAP, sizeof<itm>)
-  val () = $Q.queue_initialize<itm> (pfgc, pfarr | q, CAP, parr)
+//
+  val () = $Q.queue_initialize<itm> (q, CAP)
 //
   val () = loop (q, N1, 0) where {
     fun loop {i,j:nat | i+j <= CAP} .<i>.
       (q: &QUEUE (itm, CAP, j) >> QUEUE (itm, CAP, i+j), i: int i, j: int j): void =
       if i > 0 then let
-        val () = $Q.queue_enque<itm> (q, j) in loop (q, i-1, j+1)
+        val () = $Q.queue_insert<itm> (q, j) in loop (q, i-1, j+1)
       end // end of [val]
     // end of [loop]
   } // end of [val]
@@ -45,7 +47,7 @@ main () = () where {
     fun loop {i:nat | i <= N2} .<N2-i>.
       (q: &QUEUE (itm, CAP, N1-i) >> QUEUE (itm, CAP, N1-N2), i: int i): void =
       if i < N2 then let
-        val x = $Q.queue_deque<itm> (q)
+        val x = $Q.queue_remove<itm> (q)
         val () = assert_errmsg (x = i, #LOCATION)
       in
         loop (q, i+1)
@@ -57,24 +59,19 @@ main () = () where {
     fun loop {i,j:nat | i <= N2} .<i>.
       (q: &QUEUE (itm, CAP, N1-i) >> QUEUE (itm, CAP, N1), i: int i, j: int j): void =
       if i > 0 then let
-        val () = $Q.queue_enque<itm> (q, j) in loop (q, i-1, j+1)
+        val () = $Q.queue_insert<itm> (q, j) in loop (q, i-1, j+1)
       end // end of [val]
     // end of [loop]
   } // end of [val]
 //
   #define CAP2 N1
-  val (
-    pfgc, pfarr | parr
-  ) = array_ptr_alloc_tsz {itm} (CAP2, sizeof<itm>)
-  val (pfgc, pfarr | parr) =
-    $Q.queue_update_capacity<itm> (pfgc, pfarr | q, CAP2, parr)
-  val () = array_ptr_free (pfgc, pfarr | parr)
+  val () = $Q.queue_update_capacity<itm> (q, CAP2)
 //
   val () = loop (q, 0) where {
     fun loop {i:nat | i <= N1} .<N1-i>.
       (q: &QUEUE (itm, CAP2, N1-i) >> QUEUE (itm, CAP2, 0), i: int i): void =
       if i < N1 then let
-        val x = $Q.queue_deque<itm> (q)
+        val x = $Q.queue_remove<itm> (q)
         val () = assert_errmsg (x = N2+i, #LOCATION)
       in
         loop (q, i+1)
@@ -82,8 +79,7 @@ main () = () where {
     // end of [loop]
   } // end of [val]
 //
-  val (pfgc, pfarr | parr) = $Q.queue_uninitialize_vt {itm} (q)
-  val () = array_ptr_free (pfgc, pfarr | parr)
+  val () = $Q.queue_uninitialize_vt {itm} (q)
 //
   val () = print "[libats_ngc_queue_arr.dats] testing passes!\n"
 //

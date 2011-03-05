@@ -67,14 +67,14 @@ absviewt@ype DEQUE (
   a:viewt@ype+, m: int, n: int
 ) = $extype "atslib_ngc_deque_arr_DEQUE"
 typedef DEQUE0 (a:viewt@ype) = DEQUE (a, 0, 0)?
-viewtypedef DEQUE1 (a:viewt@ype) = [m,n:nat] DEQUE (a, m, n)
+viewtypedef DEQUE1 (a:viewt@ype) = [m,n:int] DEQUE (a, m, n)
 
 (* ****** ****** *)
 
 prfun deque_param_lemma
   {a:viewt@ype} {m,n:int}
   (x: &DEQUE (a, m, n)): [0 <= n; n <= m] void
-// end of [deque_lemma]
+// end of [deque_param_lemma]
 
 (* ****** ****** *)
 
@@ -86,14 +86,14 @@ fun deque_size {a:viewt@ype}
 (* ****** ****** *)
 
 fun deque_is_empty {a:viewt@ype}
-  {m,n:nat} (q: &DEQUE (a, m, n)):<> bool (n <= 0)
+  {m,n:int} (q: &DEQUE (a, m, n)):<> bool (n <= 0)
 fun deque_isnot_empty {a:viewt@ype}
-  {m,n:nat} (q: &DEQUE (a, m, n)):<> bool (n > 0)
+  {m,n:int} (q: &DEQUE (a, m, n)):<> bool (n > 0)
 
 fun deque_is_full {a:viewt@ype}
-  {m,n:nat} (q: &DEQUE (a, m, n)):<> bool (m <= n)
+  {m,n:int} (q: &DEQUE (a, m, n)):<> bool (m <= n)
 fun deque_isnot_full {a:viewt@ype}
-  {m,n:nat} (q: &DEQUE (a, m, n)):<> bool (m > n)
+  {m,n:int} (q: &DEQUE (a, m, n)):<> bool (m > n)
 
 (* ****** ****** *)
 //
@@ -107,7 +107,8 @@ deque_initialize
 ) :<> void // end of [deque_initialize]
 
 fun deque_initialize_tsz
-  {a:viewt@ype} {m:nat} {l:addr} (
+  {a:viewt@ype}
+  {m:nat} {l:addr} (
   pfgc: free_gc_v (a, m, l), pfarr: array_v (a?, m, l)
 | q: &DEQUE0 a >> DEQUE (a, m, 0), m: size_t m, p: ptr l, tsz: sizeof_t a
 ) :<> void
@@ -116,11 +117,11 @@ fun deque_initialize_tsz
 
 (* ****** ****** *)
 //
-// HX: uninitializeing a deque of capacity [m]
+// HX: uninitializeing a deque of nonlinear elements
 //
 fun deque_uninitialize
   {a:t@ype}
-  {m,n:nat} (
+  {m,n:int} (
   q: &DEQUE (a, m, n) >> DEQUE0 a
 ) :<> [l:addr] (
   free_gc_v (a, m, l), array_v (a?, m, l)
@@ -133,7 +134,7 @@ fun deque_uninitialize
 //
 fun deque_uninitialize_vt
   {a:viewt@ype}
-  {m:nat} (
+  {m:int} (
   q: &DEQUE (a, m, 0) >> DEQUE0 a
 ) :<> [l:addr] (
   free_gc_v (a, m, l), array_v (a?, m, l)
@@ -144,7 +145,7 @@ fun deque_uninitialize_vt
 
 fun{a:viewt@ype}
 deque_insert_beg (*last*)
-  {m,n:nat | m > n}
+  {m,n:int | m > n}
   (q: &DEQUE (a, m, n) >> DEQUE (a, m, n+1), x: a):<> void
 // end of [deque_insert_beg]
 
@@ -152,13 +153,13 @@ deque_insert_beg (*last*)
 
 fun{a:viewt@ype}
 deque_insert_end (*last*)
-  {m,n:nat | m > n}
+  {m,n:int | m > n}
   (q: &DEQUE (a, m, n) >> DEQUE (a, m, n+1), x: a):<> void
 // end of [deque_insert_end]
 
 fun{a:viewt@ype}
 deque_insert_end_many
-  {m,n:nat}
+  {m,n:int}
   {k:nat | n+k <= m} (
   q: &DEQUE (a, m, n) >> DEQUE (a, m, n+k)
 , k: size_t k
@@ -168,7 +169,7 @@ deque_insert_end_many
 fun
 deque_insert_end_many_tsz
   {a:viewt@ype}
-  {m,n:nat}
+  {m,n:int}
   {k:nat | n+k <= m} (
   q: &DEQUE (a, m, n) >> DEQUE (a, m, n+k)
 , k: size_t k
@@ -181,13 +182,13 @@ deque_insert_end_many_tsz
 
 fun{a:viewt@ype}
 deque_remove_beg (*first*)
-  {m,n:nat | n > 0} (
+  {m,n:int | n > 0} (
   q: &DEQUE (a, m, n) >> DEQUE (a, m, n-1)
 ) :<> a // end of [deque_remove_beg]
 
 fun{a:viewt@ype}
 deque_remove_beg_many
-  {m,n:nat}
+  {m,n:int}
   {k:nat | k <= n} (
   q: &DEQUE (a, m, n) >> DEQUE (a, m, n-k)
 , k: size_t k
@@ -197,7 +198,7 @@ deque_remove_beg_many
 fun
 deque_remove_beg_many_tsz
   {a:viewt@ype}
-  {m,n:nat}
+  {m,n:int}
   {k:nat | k <= n} (
   q: &DEQUE (a, m, n) >> DEQUE (a, m, n-k)
 , k: size_t k
@@ -209,8 +210,30 @@ deque_remove_beg_many_tsz
 (* ****** ****** *)
 
 fun{a:viewt@ype}
+deque_remove_end (*first*)
+  {m,n:int | n > 0} (
+  q: &DEQUE (a, m, n) >> DEQUE (a, m, n-1)
+) :<> a // end of [deque_remove_end]
+
+(* ****** ****** *)
+
+fun{a:t@ype}
+deque_clear_beg
+  {m,n1:int} {n2:nat | n2 <= n1} (
+  q: &DEQUE (a, m, n1) >> DEQUE (a, m, n1-n2), n2: size_t n2
+) :<> void // end of [deque_clear_beg]
+
+fun{a:t@ype}
+deque_clear_end
+  {m,n1:int} {n2:nat | n2 <= n1} (
+  q: &DEQUE (a, m, n1) >> DEQUE (a, m, n1-n2), n2: size_t n2
+) :<> void // end of [deque_clear_end]
+
+(* ****** ****** *)
+
+fun{a:viewt@ype}
 deque_update_capacity
-  {m1,n:nat}
+  {m1,n:int}
   {m2:nat | n <= m2}
   {l:addr} (
   pfgc: free_gc_v (a, m2, l)
@@ -225,7 +248,7 @@ deque_update_capacity
 fun
 deque_update_capacity_tsz
   {a:viewt@ype}
-  {m1,n:nat}
+  {m1,n:int}
   {m2:nat | n <= m2}
   {l:addr} (
   pfgc: free_gc_v (a, m2, l)

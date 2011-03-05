@@ -45,10 +45,10 @@
 typedef struct {
   ats_size_type cap ;
   ats_size_type nitm ;
+  ats_ptr_type qarr_lft ;
+  ats_ptr_type qarr_rgt ;
   ats_ptr_type qarr_beg ;
   ats_ptr_type qarr_end ;
-  ats_ptr_type qarr_fst ;
-  ats_ptr_type qarr_lst ;
 } atslib_ngc_deque_arr_DEQUE ;
 
 /* ****** ****** */
@@ -90,19 +90,19 @@ atslib_ngc_deque_arr_enque_many_tsz (
 ) {
   atslib_ngc_deque_arr_DEQUE *q = (atslib_ngc_deque_arr_DEQUE*)q0 ;
   char *p_xs = (char*)p0_xs ;
-  char *p_beg = q->qarr_beg ;
+  char *p_lft = q->qarr_lft ;
+  char *p_rgt = q->qarr_rgt ;
   char *p_end = q->qarr_end ;
-  char *p_lst = q->qarr_lst ;
   size_t ktsz = k * tsz ;
-  size_t diff = p_end - p_lst ;
+  size_t diff = p_rgt - p_end ;
   q->nitm += k ;
   if (ktsz <= diff) {
-    memcpy(p_lst, p_xs, ktsz) ;
-    q->qarr_lst = p_lst + ktsz ;
+    memcpy(p_end, p_xs, ktsz) ;
+    q->qarr_end = p_end + ktsz ;
   } else {
-    memcpy(p_lst, p_xs, diff) ;
-    memcpy(p_beg, p_xs+diff, ktsz-diff) ;
-    q->qarr_lst = p_beg + ktsz-diff ;
+    memcpy(p_end, p_xs, diff) ;
+    memcpy(p_lft, p_xs+diff, ktsz-diff) ;
+    q->qarr_end = p_lft + ktsz-diff ;
   } // end of [if]
   return ;
 } // end of [atslib_ngc_deque_arr_enque_many_tsz]
@@ -119,19 +119,19 @@ atslib_ngc_deque_arr_deque_many_tsz (
 ) {
   atslib_ngc_deque_arr_DEQUE *q = (atslib_ngc_deque_arr_DEQUE*)q0 ;
   char *p_xs = (char*)p0_xs ;
+  char *p_lft = q->qarr_lft ;
+  char *p_rgt = q->qarr_rgt ;
   char *p_beg = q->qarr_beg ;
-  char *p_end = q->qarr_end ;
-  char *p_fst = q->qarr_fst ;
   size_t ktsz = k * tsz ;
-  size_t diff = p_end - p_fst ;
+  size_t diff = p_rgt - p_beg ;
   q->nitm -= k ;
   if (ktsz <= diff) {
-    memcpy(p_xs, p_fst, ktsz) ;
-    q->qarr_fst = p_fst + ktsz ;
+    memcpy(p_xs, p_beg, ktsz) ;
+    q->qarr_beg = p_beg + ktsz ;
   } else {
-    memcpy(p_xs, p_fst, diff) ;
-    memcpy(p_xs+diff, p_beg, ktsz-diff) ;
-    q->qarr_fst = p_beg + ktsz-diff ;
+    memcpy(p_xs, p_beg, diff) ;
+    memcpy(p_xs+diff, p_lft, ktsz-diff) ;
+    q->qarr_beg = p_lft + ktsz-diff ;
   } // end of [if]
   return ;
 } // end of [atslib_ngc_deque_arr_deque_many_tsz]
@@ -148,26 +148,26 @@ atslib_ngc_deque_arr_deque_update_capacity_tsz (
 ) {
   atslib_ngc_deque_arr_DEQUE *q = (atslib_ngc_deque_arr_DEQUE*)q0 ;
   char *p_xs = (char*)p0_xs ;
+  char *p_lft = q->qarr_lft ;
+  char *p_rgt = q->qarr_rgt ;
   char *p_beg = q->qarr_beg ;
-  char *p_end = q->qarr_end ;
-  char *p_fst = q->qarr_fst ;
   size_t ntsz = q->nitm * tsz ;
-  size_t diff = p_end - p_fst ;
+  size_t diff = p_rgt - p_beg ;
 //
   q->cap = m2 ; 
+  q->qarr_lft = p_xs ;
+  q->qarr_rgt = p_xs + m2 * tsz ;
   q->qarr_beg = p_xs ;
-  q->qarr_end = p_xs + m2 * tsz ;
-  q->qarr_fst = p_xs ;
-  q->qarr_lst = p_xs + ntsz ;
+  q->qarr_end = p_xs + ntsz ;
 //
   if (ntsz <= diff) {
-    memcpy(p_xs, p_fst, ntsz) ;
+    memcpy(p_xs, p_beg, ntsz) ;
   } else {
-    memcpy(p_xs, p_fst, diff) ;
-    memcpy(p_xs+diff, p_beg, ntsz-diff) ;
+    memcpy(p_xs, p_beg, diff) ;
+    memcpy(p_xs+diff, p_lft, ntsz-diff) ;
   } // end of [if]
 //
-  return p_beg ;
+  return p_lft ;
 //
 } // end of [atslib_ngc_deque_arr_deque_update_capacity_tsz]
 
