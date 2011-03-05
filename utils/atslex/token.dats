@@ -68,11 +68,15 @@ static int the_line_cnt_prev = 1 ;
 static int the_char_cnt = 0 ;
 static int the_char_cnt_prev = 0 ;
 
-ats_int_type pos_get_line () { return the_line_cnt ; }
-ats_int_type pos_get_char () { return the_char_cnt ; }
+ats_int_type
+pos_get_line () { return the_line_cnt ; }
+ats_int_type
+pos_get_char () { return the_char_cnt ; }
 
-ats_int_type pos_get_line_prev () { return the_line_cnt_prev ; }
-ats_int_type pos_get_char_prev () { return the_char_cnt_prev ; }
+ats_int_type
+pos_get_line_prev () { return the_line_cnt_prev ; }
+ats_int_type
+pos_get_char_prev () { return the_char_cnt_prev ; }
 
 ATSinline()
 ats_void_type
@@ -84,7 +88,7 @@ pos_prev_reset (
   return ;  
 } // end of [pos_prev_reset]
 
-//
+/* ****** ****** */
 
 ATSinline()
 ats_void_type
@@ -108,7 +112,7 @@ char_update() {
   the_char = atslex_getchar () ;
   pos_advance (the_char) ;
   return ;
-}
+} // end of [char_update]
 
 ATSinline()
 ats_int_type
@@ -117,7 +121,7 @@ char_get_update() {
   the_char = atslex_getchar () ;
   pos_advance (the_char) ;
   return c ;
-}
+} // end of [char_get_update]
 
 ATSinline()
 ats_int_type
@@ -125,34 +129,42 @@ char_update_get() {
   the_char = atslex_getchar () ;
   pos_advance (the_char) ;
   return the_char ;
-}
+} // end of [char_update_get]
 
-%}
+%} // end of [%{^]
 
 (* ****** ****** *)
 
 dataviewtype chars (int) =
   | chars_nil (0)
   | {n:nat} chars_cons (n+1) of (char, chars n)
+// end of [chars]
 
 #define nil chars_nil
 #define :: chars_cons
 
-extern fun chars_is_nil {n:nat} (cs: !chars n): bool (n == 0) =
-  "chars_is_nil"
+extern
+fun chars_is_nil
+  {n:nat} (cs: !chars n): bool (n == 0) = "chars_is_nil"
+// end of [chars_is_nil]
 
-implement chars_is_nil (cs) = case+ cs of
+implement
+chars_is_nil (cs) = case+ cs of
   | nil () => (fold@ cs; true) | _ :: _ => (fold@ cs; false)
+// end of [chars_is_nil]
 
 extern
 fun chars_uncons {n:pos}
   (cs: &chars n >> chars (n-1)): char = "chars_uncons"
+// end of [chars_uncons]
 
-implement chars_uncons (cs) =
+implement
+chars_uncons (cs) =
   let val+ ~(c :: cs1) = cs in cs := cs1; c end
 // end of [chars_uncons]
 
-fun chars_free {n:nat} (cs: chars n): void =
+fun chars_free
+  {n:nat} (cs: chars n): void =
   case+ cs of ~(c :: cs) => chars_free cs | ~nil () => ()
 // end of [chars_free]
 
@@ -181,7 +193,8 @@ string_make_charlst_rev_int
 
 (* ****** ****** *)
 
-implement tokenize_line_comment () = loop () where {
+implement
+tokenize_line_comment () = loop () where {
   fun loop (): void = let
     val c = char_get () in
     if c >= 0 then let
@@ -195,8 +208,7 @@ implement tokenize_line_comment () = loop () where {
 (* ****** ****** *)
 
 implement
-tokenize_rest_text () =
-  loop (nil (), 0) where {
+tokenize_rest_text () = loop (nil (), 0) where {
   fun loop {n:nat} (cs: chars n, n: int n): string = let
     val c = char_get () in
     if c >= 0 then let

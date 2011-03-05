@@ -37,8 +37,8 @@
 
 /* ****** ****** */
 
-#ifndef ATS_LIBATS_NGC_QUEUE_ARR_CATS
-#define ATS_LIBATS_NGC_QUEUE_ARR_CATS
+#ifndef ATS_LIBATS_NGC_DEQUE_ARR_CATS
+#define ATS_LIBATS_NGC_DEQUE_ARR_CATS
 
 /* ****** ****** */
 
@@ -49,7 +49,7 @@ typedef struct {
   ats_ptr_type qarr_end ;
   ats_ptr_type qarr_fst ;
   ats_ptr_type qarr_lst ;
-} atslib_ngc_queue_arr_QUEUE ;
+} atslib_ngc_deque_arr_DEQUE ;
 
 /* ****** ****** */
 
@@ -67,28 +67,28 @@ void *memcpy (void *dst, const void* src, size_t n) ;
 //
 extern
 ats_void_type
-atslib_ngc_queue_arr_queue_initialize_tsz (
+atslib_ngc_deque_arr_deque_initialize_tsz (
   ats_ptr_type pq
 , ats_size_type qsz
 , ats_ptr_type parr
 , ats_size_type tsz
-) ; // end of [atslib_ngc_queue_arr_queue_initialize_tsz]
+) ; // end of [atslib_ngc_deque_arr_deque_initialize_tsz]
 
 extern
 ats_ptr_type
-atslib_ngc_queue_arr_queue_uninitialize (ats_ptr_type) ;
+atslib_ngc_deque_arr_deque_uninitialize (ats_ptr_type) ;
 
 /* ****** ****** */
 
 ATSinline()
 ats_void_type
-atslib_ngc_queue_arr_enque_many_tsz (
+atslib_ngc_deque_arr_enque_many_tsz (
   ats_ptr_type q0
 , ats_size_type k
 , ats_ptr_type p0_xs /* buffer */
 , ats_size_type tsz
 ) {
-  atslib_ngc_queue_arr_QUEUE *q = (atslib_ngc_queue_arr_QUEUE*)q0 ;
+  atslib_ngc_deque_arr_DEQUE *q = (atslib_ngc_deque_arr_DEQUE*)q0 ;
   char *p_xs = (char*)p0_xs ;
   char *p_beg = q->qarr_beg ;
   char *p_end = q->qarr_end ;
@@ -105,19 +105,19 @@ atslib_ngc_queue_arr_enque_many_tsz (
     q->qarr_lst = p_beg + ktsz-diff ;
   } // end of [if]
   return ;
-} // end of [atslib_ngc_queue_arr_enque_many_tsz]
+} // end of [atslib_ngc_deque_arr_enque_many_tsz]
 
 /* ****** ****** */
 
 ATSinline()
 ats_void_type
-atslib_ngc_queue_arr_deque_many_tsz (
+atslib_ngc_deque_arr_deque_many_tsz (
   ats_ptr_type q0
 , ats_size_type k
 , ats_ptr_type p0_xs /* buffer */
 , ats_size_type tsz
 ) {
-  atslib_ngc_queue_arr_QUEUE *q = (atslib_ngc_queue_arr_QUEUE*)q0 ;
+  atslib_ngc_deque_arr_DEQUE *q = (atslib_ngc_deque_arr_DEQUE*)q0 ;
   char *p_xs = (char*)p0_xs ;
   char *p_beg = q->qarr_beg ;
   char *p_end = q->qarr_end ;
@@ -134,19 +134,19 @@ atslib_ngc_queue_arr_deque_many_tsz (
     q->qarr_fst = p_beg + ktsz-diff ;
   } // end of [if]
   return ;
-} // end of [atslib_ngc_queue_arr_deque_many_tsz]
+} // end of [atslib_ngc_deque_arr_deque_many_tsz]
 
 /* ****** ****** */
 
 ATSinline()
 ats_ptr_type
-atslib_ngc_queue_arr_queue_update_capacity_tsz (
+atslib_ngc_deque_arr_deque_update_capacity_tsz (
   ats_ptr_type q0
 , ats_size_type m2
 , ats_ptr_type p0_xs /* buffer */
 , ats_size_type tsz
 ) {
-  atslib_ngc_queue_arr_QUEUE *q = (atslib_ngc_queue_arr_QUEUE*)q0 ;
+  atslib_ngc_deque_arr_DEQUE *q = (atslib_ngc_deque_arr_DEQUE*)q0 ;
   char *p_xs = (char*)p0_xs ;
   char *p_beg = q->qarr_beg ;
   char *p_end = q->qarr_end ;
@@ -169,10 +169,10 @@ atslib_ngc_queue_arr_queue_update_capacity_tsz (
 //
   return p_beg ;
 //
-} // end of [atslib_ngc_queue_arr_queue_update_capacity_tsz]
+} // end of [atslib_ngc_deque_arr_deque_update_capacity_tsz]
 
 /* ****** ****** */
 
-#endif /* ATS_LIBATS_NGC_QUEUE_ARR_CATS */
+#endif /* ATS_LIBATS_NGC_DEQUE_ARR_CATS */
 
-/* end of [queue_arr.cats] */ 
+/* end of [deque_arr.cats] */ 

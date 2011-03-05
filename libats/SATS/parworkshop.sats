@@ -9,7 +9,7 @@
 (*
 ** ATS - Unleashing the Potential of Types!
 **
-** Copyright (C) 2002-2009 Hongwei Xi, Boston University
+** Copyright (C) 2002-2010 Hongwei Xi, Boston University
 **
 ** All rights reserved
 **
@@ -41,7 +41,6 @@
 (* ****** ****** *)
 
 %{#
-#include "libc/CATS/pthread.cats"
 #include "libats/CATS/parworkshop.cats"
 %} // end of [%{#]
 
@@ -62,13 +61,16 @@ viewtypedef WORKSHOPptr (a:viewt@ype) =
 // return status = ~1 : the worker is to pause // this is uncommon
 //
 fun{a:viewt@ype}
-workshop_make {n:pos} (
+workshop_make
+  {n:pos} (
   qsz: size_t n
 , fwork: {l:agz} (!WORKSHOPptr (a, l), &a >> a?) -<fun1> int
 ) : WORKSHOPptr a
 // end of [workshop_make]
 
-fun workshop_make_tsz {a:viewt@ype} {n:pos} (
+fun workshop_make_tsz
+  {a:viewt@ype}
+  {n:pos} (
   qsz: size_t n
 , fwork: {l:agz} (!WORKSHOPptr (a, l), &a >> a?) -<fun1> int
 , tsz: sizeof_t a
@@ -90,7 +92,10 @@ fun workshop_get_nworker
 // locking/unlocking
 //
 fun workshop_get_npaused
-  {a:viewt@ype} {l:agz} (ws: !WORKSHOPptr (a, l)):<> int
+  {a:viewt@ype}
+  {l:agz} (
+  ws: !WORKSHOPptr (a, l)
+) :<> int
   = "atslib_parworkshop_workshop_get_npaused"
 // end of [workshop_get_npaused]
 
@@ -98,7 +103,10 @@ fun workshop_get_npaused
 // locking/unlocking
 //
 fun workshop_get_nblocked
-  {a:viewt@ype} {l:agz} (ws: !WORKSHOPptr (a, l)):<> int
+  {a:viewt@ype}
+  {l:agz} (
+  ws: !WORKSHOPptr (a, l)
+) :<> int
   = "atslib_parworkshop_workshop_get_nblocked"
 // end of [workshop_get_nblocked]
 
@@ -150,12 +158,18 @@ fun workshop_wait_blocked_all
 //
 
 fun workshop_free
-  {a:t@ype} {l:agz} (ws: WORKSHOPptr (a, l)): void
+  {a:t@ype}
+  {l:agz} (
+  ws: WORKSHOPptr (a, l)
+) : void
   = "atslib_parworkshop_workshop_free"
 // end of [workshop_free]
 
 fun workshop_free_vt_exn
-  {a:viewt@ype} {l:agz} (ws: WORKSHOPptr (a, l)): void
+  {a:viewt@ype}
+  {l:agz} (
+  ws: WORKSHOPptr (a, l)
+) : void
   = "atslib_parworkshop_workshop_free_vt_exn"
 // end of [workshop_free_vt_exn]
 

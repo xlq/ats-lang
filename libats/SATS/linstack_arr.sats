@@ -32,12 +32,9 @@
 (* ****** ****** *)
 
 (*
-**
-** A array-based stack implementation
-**
-** Contributed by Hongwei Xi (hwxi AT cs DOT bu DOT edu)
-** Time: March, 2010 // based on a version done in October, 2008
-**
+** An array-based stack implementation
+** Author: hwxi AT cs DOT bu DOT edu
+** Time: March, 2011
 *)
 
 (* ****** ****** *)
@@ -45,12 +42,6 @@
 //
 // License: LGPL 3.0 (available at http://www.gnu.org/licenses/lgpl.txt)
 //
-
-(* ****** ****** *)
-
-%{#
-#include "libats/CATS/linstack_arr.cats"
-%} // end of [%{#]
 
 (* ****** ****** *)
 
@@ -116,13 +107,15 @@ stack_clear
 // end of [stack_clear]
 
 (* ****** ****** *)
-
+//
+// HX: uninitializing a stack of nonlinear elements
+//
 fun stack_uninitialize {a:t@ype}
   {m,n:nat} {l:addr} (s: &STACK (a, m, n) >> STACK0 a):<> void
 // end of [stack_uninitialize]
 
 //
-// uninitializeing an empty stack of capacity [m]
+// HX: uninitializeing an empty stack of capacity [m]
 //
 fun stack_uninitialize_vt {a:viewt@ype}
   {m:nat} {l:addr} (s: &STACK (a, m, 0) >> STACK0 a):<> void

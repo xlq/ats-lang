@@ -44,9 +44,12 @@
 
 (* ****** ****** *)
 
-staload LQ = "libats/ngc/SATS/queue_arr.sats"
-staload _(*anon*) = "libats/ngc/DATS/queue_arr.dats"
+staload LQ = "libats/SATS/linqueue_arr.sats"
 stadef QUEUE = $LQ.QUEUE1
+staload _(*anon*) = "libats/DATS/linqueue_arr.dats"
+staload _(*anon*) =
+  "libats/ngc/DATS/deque_arr.dats" // implements [queue]
+// end of [staload]
 
 (* ****** ****** *)
 
@@ -66,14 +69,12 @@ ats_ptr_type
 atslib_parworkshop_workshop_make_tsz (
   ats_size_type qsz, ats_fun_ptr_type fwork, ats_size_type tsz
 ) {
-  ats_ptr_type parr ;
   atslib_parworkshop_WORKSHOP *p ;
 //
   p = ATS_MALLOC (sizeof(atslib_parworkshop_WORKSHOP)) ;
   pthread_mutex_init (&p->WSmut, (pthread_mutexattr_t*)0) ;
 //
-  parr = ATS_MALLOC(qsz * tsz) ;
-  atslib_ngc_queue_arr_queue_initialize_tsz (&p->WQ, qsz, parr, tsz) ;
+  atslib_linqueue_arr_queue_initialize_tsz (&p->WQ, qsz, tsz) ;
 //
   pthread_cond_init (&p->WQemp, (pthread_condattr_t*)0) ;
   pthread_cond_init (&p->WQful, (pthread_condattr_t*)0) ;
@@ -101,9 +102,8 @@ ats_void_type
 atslib_parworkshop_workshop_free_lin
   (ats_ptr_type p0, ats_int_type lin) {
 //
-  ats_ptr_type parr ;
   atslib_parworkshop_WORKSHOP *p = p0 ;
-  atslib_ngc_queue_arr_QUEUE *p_WQ = &(p->WQ) ;
+  atslib_linqueue_arr_QUEUE *p_WQ = &(p->WQ) ;
 //
   pthread_mutex_lock (&p->WSmut);
 //
@@ -122,8 +122,7 @@ atslib_parworkshop_workshop_free_lin
     ) ; exit (1) ;
   } // end of [if]
 //
-  parr = atslib_ngc_queue_arr_queue_uninitialize (p_WQ) ;
-  ATS_FREE(parr) ;
+  atslib_linqueue_arr_queue_uninitialize (p_WQ) ;
 //
   pthread_mutex_destroy (&p->WSmut) ;
   pthread_cond_destroy (&p->WQemp) ;
@@ -502,7 +501,7 @@ workshop_insert_work {l} (ws, wk) = let
       val isemp =
         $LQ.queue_is_empty {a} (p_ws->WQ)
       // end of [val]
-      val () = $LQ.queue_enque<a> (p_ws->WQ, wk)
+      val () = $LQ.queue_insert<a> (p_ws->WQ, wk)
       val () = if isemp then let
 //
         val () = p_ws->nblocked := 0
@@ -560,7 +559,7 @@ workshop_remove_work {l} (ws) = let
       val isful =
         $LQ.queue_is_full {a} (p_ws->WQ)
       // end of [val]
-      val wk = $LQ.queue_deque<a> (p_ws->WQ)
+      val wk = $LQ.queue_remove<a> (p_ws->WQ)
       val () = if isful then let
         val [l_ful:addr] (pf_ful, fpf_ful | p_ful) = 
           workshop_get_WQful {a} {l} (pf_ws | p_ws)
