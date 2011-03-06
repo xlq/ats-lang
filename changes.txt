@@ -30,7 +30,9 @@ ats-lang-anairiats-0.2.4:
 17: prelude/array and prelude/matrix have been cleaned up considerably
 18: naming change: "#foo" -> "mac#foo" (for external macros)
 19: using names like "sta#foo" to support external static functions
-20: adding contrib/linux to support linux kernel programming
+20: adding contrib/linux to support linux kernel programming (very long term)
+21: adding libats/ngc/deque_arr
+22: basing libats/linqueue_arr and libats/linstack_arr on libats/ngc/deque_arr
 
 ########################################################################
 

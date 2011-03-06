@@ -89,14 +89,14 @@ end // end of [stack_initialize]
 implement
 stack_uninitialize
   {a} {m,n} (s) = () where {
-  val (pfgc, pfarr | parr) = $DQ.deque_uninitialize (s)
+  val (pfgc, pfarr | parr) = $DQ.deque_uninitialize {a} (s)
   val () = array_ptr_free (pfgc, pfarr | parr)
 } // end of [stack_uninitialize]
 
 implement
 stack_uninitialize_vt
   {a} {m} (s) = () where {
-  val (pfgc, pfarr | parr) = $DQ.deque_uninitialize_vt (s)
+  val (pfgc, pfarr | parr) = $DQ.deque_uninitialize_vt {a} (s)
   val () = array_ptr_free (pfgc, pfarr | parr)
 } // end of [stack_uninitialize_vt]
 
@@ -104,18 +104,32 @@ stack_uninitialize_vt
 
 implement{a}
 stack_insert
-  (s, x) = $DQ.deque_insert_end (s, x)
+  (s, x) = $DQ.deque_insert_end<a> (s, x)
 // end of [stack_insert]
 
 implement{a}
-stack_remove (s) = $DQ.deque_remove_end (s)
+stack_remove (s) = $DQ.deque_remove_end<a> (s)
 
 (* ****** ****** *)
 
 implement{a}
 stack_clear
-  (s, n2) = $DQ.deque_clear_end (s, n2)
+  (s, n2) = $DQ.deque_clear_end<a> (s, n2)
 // end of [stack_clear]
+
+implement
+stack_clear_all (s) = $DQ.deque_clear_all (s)
+
+(* ****** ****** *)
+
+implement{a}
+stack_update_capacity
+  (s, m2) = () where {
+  val (pfgc, pfarr | parr) = array_ptr_alloc<a> (m2)
+  val (pfgc, pfarr | parr) =
+    $DQ.deque_update_capacity (pfgc, pfarr | s, m2, parr)
+  val () = array_ptr_free (pfgc, pfarr | parr)
+} // end of [stack_update_capacity]
 
 (* ****** ****** *)
 

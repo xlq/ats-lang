@@ -458,6 +458,28 @@ deque_clear_end
   val () = q.qarr_end := p1_end
 } // end of [deque_clear_end]
 
+implement
+deque_clear_all
+  {a} {m,n} (q) = () where {
+//
+  prval () =
+    __assert (q.pfqarr) where {
+    extern prfun __assert
+      {lft,rgt,l_beg,l_end:addr} (
+      pf: !DEQUEarr_v (
+        a, m, n, lft, rgt, l_beg, l_end
+      ) >> DEQUEarr_v (a, m, 0, lft, rgt, lft, lft)
+    ) : void // end of [extern]
+  } // end of [prval]
+//
+  #define i2sz size1_of_int1
+//
+  val () = q.nitm := (i2sz)0
+  val p_lft = q.qarr_lft
+  val () = q.qarr_beg := p_lft
+  val () = q.qarr_end := p_lft
+} // end of [deque_clear_all]
+
 (* ****** ****** *)
 
 implement{a}

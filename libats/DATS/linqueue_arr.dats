@@ -118,7 +118,29 @@ queue_insert
 // end of [queue_insert]
 
 implement{a}
+queue_insert_many
+  (q, k, xs) = $DQ.deque_insert_end_many (q, k, xs)
+// end of [queue_insert_many]
+
+(* ****** ****** *)
+
+implement{a}
 queue_remove (q) = $DQ.deque_remove_beg (q)
+
+implement{a}
+queue_remove_many
+  (q, k, xs) = $DQ.deque_remove_beg_many (q, k, xs)
+// end of [queue_remove_many]
+
+(* ****** ****** *)
+
+implement{a}
+queue_clear
+  (q, n2) = $DQ.deque_clear_beg<a> (q, n2)
+// end of [queue_clear]
+
+implement
+queue_clear_all (q) = $DQ.deque_clear_all (q)
 
 (* ****** ****** *)
 

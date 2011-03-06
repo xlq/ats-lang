@@ -145,10 +145,43 @@ queue_insert (*last*)
 // end of [queue_insert]
 
 fun{a:viewt@ype}
+queue_insert_many
+  {m,n:int}
+  {k:nat | n+k <= m} (
+  q: &QUEUE (a, m, n) >> QUEUE (a, m, n+k)
+, k: size_t k
+, xs: &(@[a][k]) >> @[a?!][k]
+) :<> void // end of [queue_insert_many]
+
+(* ****** ****** *)
+
+fun{a:viewt@ype}
 queue_remove (*first*)
   {m,n:int | n > 0} (
   q: &QUEUE (a, m, n) >> QUEUE (a, m, n-1)
 ) :<> a // end of [queue_remove]
+
+fun{a:viewt@ype}
+queue_remove_many
+  {m,n:int}
+  {k:nat | k <= n} (
+  q: &QUEUE (a, m, n) >> QUEUE (a, m, n-k)
+, k: size_t k
+, xs: &(@[a?][k]) >> @[a][k]
+) :<> void // end of [queue_remove_many]
+
+(* ****** ****** *)
+
+fun{a:t@ype}
+queue_clear
+  {m,n1:int} {n2:nat | n2 <= n1} (
+  q: &QUEUE (a, m, n1) >> QUEUE (a, m, n1-n2), n2: size_t n2
+) :<> void // end of [queue_clear]
+
+fun queue_clear_all
+  {a:t@ype} {m,n:int}
+  (s: &QUEUE (a, m, n) >> QUEUE (a, m, 0)):<> void
+// end of [queue_clear_all]
 
 (* ****** ****** *)
 

@@ -229,6 +229,11 @@ deque_clear_end
   q: &DEQUE (a, m, n1) >> DEQUE (a, m, n1-n2), n2: size_t n2
 ) :<> void // end of [deque_clear_end]
 
+fun deque_clear_all
+  {a:t@ype} {m,n:int} (
+  q: &DEQUE (a, m, n) >> DEQUE (a, m, 0)
+) :<> void // end of [deque_clear_all]
+
 (* ****** ****** *)
 
 fun{a:viewt@ype}

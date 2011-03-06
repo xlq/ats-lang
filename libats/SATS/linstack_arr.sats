@@ -94,6 +94,21 @@ stack_initialize {m:nat}
 // end of [linstackarr_initialize]
 
 (* ****** ****** *)
+//
+// HX: uninitializing a stack of nonlinear elements
+//
+fun stack_uninitialize {a:t@ype}
+  {m,n:int} {l:addr} (s: &STACK (a, m, n) >> STACK0 a):<> void
+// end of [stack_uninitialize]
+
+//
+// HX: uninitializeing an empty stack of capacity [m]
+//
+fun stack_uninitialize_vt {a:viewt@ype}
+  {m:int} {l:addr} (s: &STACK (a, m, 0) >> STACK0 a):<> void
+// end of [stack_unintialize_vt]
+
+(* ****** ****** *)
 
 fun{a:viewt@ype}
 stack_insert (*last*) // HX: stack_push
@@ -110,24 +125,25 @@ stack_remove (*first*) // HX: stack_pop
 
 fun{a:t@ype}
 stack_clear
-  {m,n1:int} {n2:nat | n2 <= n1}
-  (s: &STACK (a, m, n1) >> STACK (a, m, n1-n2), n2: size_t n2):<> void
-// end of [stack_clear]
+  {m,n1:int} {n2:nat | n2 <= n1} (
+  s: &STACK (a, m, n1) >> STACK (a, m, n1-n2), n2: size_t n2
+) :<> void // end of [stack_clear]
+
+fun stack_clear_all
+  {a:t@ype} {m,n:int}
+  (s: &STACK (a, m, n) >> STACK (a, m, 0)):<> void
+// end of [stack_clear_all]
 
 (* ****** ****** *)
-//
-// HX: uninitializing a stack of nonlinear elements
-//
-fun stack_uninitialize {a:t@ype}
-  {m,n:int} {l:addr} (s: &STACK (a, m, n) >> STACK0 a):<> void
-// end of [stack_uninitialize]
 
-//
-// HX: uninitializeing an empty stack of capacity [m]
-//
-fun stack_uninitialize_vt {a:viewt@ype}
-  {m:int} {l:addr} (s: &STACK (a, m, 0) >> STACK0 a):<> void
-// end of [stack_unintialize_vt]
+fun{a:viewt@ype}
+stack_update_capacity
+  {m1,n:int}
+  {m2:nat | n <= m2}
+  {l:addr} (
+  q: &STACK (a, m1, n) >> STACK (a, m2, n)
+, m2: size_t (m2)
+) : void // end of [stack_update_capcity]
 
 (* ****** ****** *)
 

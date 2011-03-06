@@ -19,7 +19,12 @@ staload "libc/SATS/unistd.sats"
 staload S = "libats/SATS/linstack_arr.sats"
 stadef STACK = $S.STACK
 stadef STACK0 = $S.STACK0
+
+(* ****** ****** *)
+
+staload _(*anon*) = "prelude/DATS/array.dats"
 staload _(*anon*) = "libats/DATS/linstack_arr.dats"
+staload _(*anon*) = "libats/ngc/DATS/deque_arr.dats"
 
 (* ****** ****** *)
 
@@ -38,7 +43,7 @@ implement backward (path) = let
 //
   fun print_stack {i:nat} .<i>.
     (S: &T i >> T 0): void = let
-    val i = $S.stack_get_size (S)
+    val i = $S.stack_size (S)
   in
     if i > 0 then let
       val c = $S.stack_remove<itm> (S) in print c; print_stack (S)
@@ -75,7 +80,7 @@ implement backward (path) = let
 *)
 //
     val () = if :(S: T0) => (c = '\n') then print_stack (S)
-    val nitm = $S.stack_get_size (S)
+    val nitm = $S.stack_size (S)
     val () = if :(S: T0) => (nitm < BUFSZ)
       then $S.stack_insert<itm> (S, c) else errno_set (E2BIG) // line too long
     // end of [val]

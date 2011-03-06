@@ -43,8 +43,6 @@
 
 ######
 
-DIR=.
-
 MAKE=make
 #MAKE=gmake
 
@@ -327,19 +325,21 @@ lines:
 
 ######
 
+DIR=.
+
+######
+
 RMF=rm -f
 
 ######
 
-clean::
-	$(RMF) $(DIR)/*_?ats.o
-	$(RMF) $(DIR)/*_sats.c
-	$(RMF) $(DIR)/*_dats.c
-	$(RMF) $(DIR)/*_?ats.html
-	$(RMF) $(DIR)/*_lats.dats
-	$(RMF) $(DIR)/libats_lex.o
-	$(RMF) $(DIR)/ats_grammar_yats.output
-	$(RMF) $(DIR)/*~
+clean:: ; $(RMF) $(DIR)/*~
+clean:: ; $(RMF) $(DIR)/*_?ats.o
+clean:: ; $(RMF) $(DIR)/*_?ats.c
+clean:: ; $(RMF) $(DIR)/*_?ats.html
+clean:: ; $(RMF) $(DIR)/*_lats.dats
+clean:: ; $(RMF) $(DIR)/libats_lex.o
+clean:: ; $(RMF) $(DIR)/ats_grammar_yats.output
 
 cleanall: clean
 	$(RMF) ats_grammar_yats.c
