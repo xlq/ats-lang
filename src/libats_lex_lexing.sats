@@ -104,78 +104,107 @@ fun infile_make_stdin (): [v:view] (v | infile_t v)
 absviewt@ype lexbuf_t (* implemented externally in lexing.dats*)
 
 (* ****** ****** *)
-
-// implemented externally in lexing.dats
-fun lexbuf_fstpos_get (lb: &lexbuf_t): position_t = "lexbuf_fstpos_get"
+//
+// HX: implemented externally in lexing.dats
+//
+fun lexbuf_fstpos_get
+  (lb: &lexbuf_t): position_t = "lexbuf_fstpos_get"
 fun lexbuf_fstpos_set (lb: &lexbuf_t): void = "lexbuf_fstpos_set"
 
-fun lexbuf_lstpos_get (lb: &lexbuf_t): position_t = "lexbuf_lstpos_get"
+fun lexbuf_lstpos_get
+  (lb: &lexbuf_t): position_t = "lexbuf_lstpos_get"
 fun lexbuf_lstpos_set (lb: &lexbuf_t): void = "lexbuf_lstpos_set"
 
-fun lexbuf_curpos_get (lb: &lexbuf_t): position_t = "lexbuf_curpos_get"
+fun lexbuf_curpos_get
+  (lb: &lexbuf_t): position_t = "lexbuf_curpos_get"
 fun lexbuf_curpos_set (lb: &lexbuf_t): void = "lexbuf_curpos_set"
 
 fun lexbuf_size_get (lb: &lexbuf_t): Nat = "lexbuf_size_get"
 fun lexbuf_char_next (lb: &lexbuf_t): int = "lexbuf_char_next"
 fun lexbuf_is_eof (lb: &lexbuf_t): bool = "lexbuf_is_eof"
 
-fun lexing_engine_lexbuf
-  (lb: &lexbuf_t, transtbl: transition_table_t, acctbl: accept_table_t)
-  : int (*nstate*)
+fun
+lexing_engine_lexbuf (
+  lb: &lexbuf_t, transtbl: transition_table_t, acctbl: accept_table_t
+) : int (*nstate*)
   = "lexing_engine_lexbuf"
+// end of [fun]
 
 (* ****** ****** *)
+//
+// HX: this function makes a lexbuf from an infile.
+//
+fun lexbuf_make_infile
+  {v:view} (
+  pf: v | f: infile_t v
+) : [l:addr] (
+  lexbuf_t @ l | ptr l
+) = "lexbuf_make_infile"
 
-// This function makes a lexbuf from an infile.
-fun lexbuf_make_infile {v:view}
-  (pf: v | f: infile_t v): [l:addr] (lexbuf_t @ l | ptr l) =
-  "lexbuf_make_infile"
-
-// This function frees a lexbuf.
-fun lexbuf_free {l:addr} (pf: lexbuf_t @ l | p: ptr l): void
+//
+// HX: this function frees a lexbuf.
+//
+fun lexbuf_free
+  {l:addr} (
+  pf: lexbuf_t @ l | p: ptr l
+) : void
   = "lexbuf_free"
+// end of [fun]
 
 (* ****** ****** *)
-
-// This function gets the default lexbuf.
-fun lexing_lexbuf_get (): [l:addr] (lexbuf_t @ l | ptr l)
+//
+// HX: this function gets the default lexbuf.
+//
+fun lexing_lexbuf_get
+  (): [l:addr] (lexbuf_t @ l | ptr l)
   = "lexing_lexbuf_get"
 
-// This function sets the default lexbuf.
-fun lexing_lexbuf_set {l:addr} (pf: lexbuf_t @ l | p: ptr l): void
+//
+// HX: this function sets the default lexbuf.
+//
+fun lexing_lexbuf_set
+  {l:addr} (pf: lexbuf_t @ l | p: ptr l): void
   = "lexing_lexbuf_set"
 
-// This function frees the default lexbuf.
+//
+// HX: this function frees the default lexbuf.
+//
 fun lexing_lexbuf_free (): void = "lexing_lexbuf_free"
 
-fun lexing_engine
-  (transtbl: transition_table_t, acctbl: accept_table_t): int
-  = "lexing_engine"
+fun lexing_engine (
+  transtbl: transition_table_t, acctbl: accept_table_t
+) : int = "lexing_engine"
 
 (* ****** ****** *)
 
-fun lexeme_get_lexbuf (lb: &lexbuf_t, index: int): char
-  = "lexeme_get_lexbuf"
+fun lexeme_get_lexbuf (
+  lb: &lexbuf_t, index: int
+) : char = "lexeme_get_lexbuf"
 fun lexeme_get (index: int): char = "lexeme_get"
 
-fun lexeme_set_lexbuf (lb: &lexbuf_t, index: int, c: char): void
-  = "lexeme_set_lexbuf"
+fun lexeme_set_lexbuf (
+  lb: &lexbuf_t, index: int, c: char
+) : void = "lexeme_set_lexbuf"
 fun lexeme_set (index: int, c: char): void = "lexeme_set"
 
-fun lexeme_string_lexbuf (lb: &lexbuf_t): string
-  = "lexeme_string_lexbuf"
+fun lexeme_string_lexbuf
+  (lb: &lexbuf_t): string = "lexeme_string_lexbuf"
 fun lexeme_string (): string = "lexeme_string"
 
-fun lexeme_lint_lexbuf (lb: &lexbuf_t, base: int): lint
-  = "lexeme_lint_lexbuf"
+fun lexeme_lint_lexbuf (
+  lb: &lexbuf_t, base: int
+) : lint = "lexeme_lint_lexbuf"
 fun lexeme_lint (base: int): lint = "lexeme_lint"
 
-// This function is for reading out an integer from the lexbuf.
+//
+// HX: this function is for reading out an integer from the lexbuf.
+//
 fun lexeme_int (base: int): int = "lexeme_int"
 
 (* ****** ****** *)
-
-// This function is for testing whether the lexbuf reaches the end.
+//
+// HX: this function is for testing whether the lexbuf reaches the end.
+//
 fun lexing_is_eof (): bool = "lexing_is_eof"
 
 (* ****** ****** *)
@@ -189,9 +218,10 @@ fun lexing_curpos_prerr (): void = "lexing_curpos_prerr"
 (* ****** ****** *)
 
 exception LexingErrorException
-
-// This function reports a lexing error; it raises the exception
+//
+// HX: this function reports a lexing error by raising the exception
 // [LexingErrorException]
+//
 fun lexing_error {a:viewt@ype} (): a
 
 (* ****** ****** *)

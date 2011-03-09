@@ -74,8 +74,9 @@ fn prerr_interror () = prerr "INTERNAL ERROR (ats_filename)"
 
 local
 
-#include "prelude/params_system.hats"
-#if OPERATING_SYSTEM_IS_UNIX_LIKE #then
+#include
+"prelude/params_system.hats"
+#if SYSTEM_IS_UNIX_LIKE #then
 //
 val theDirsep: char = '/'
 val theCurdir: string = "./"
@@ -83,7 +84,7 @@ val thePredir: string = "../"
 //
 #endif
 
-in
+in // in of [local]
 
 //
 // staload "libc/SATS/unistd.sats"
