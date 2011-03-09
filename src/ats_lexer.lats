@@ -1029,18 +1029,16 @@ digit_oct = [ '0'-'7' ]
 digit_hex = [ '0'-'9' 'a'-'f' 'A'-'F']
 digit = $digit_dec
 
-symbolic1 = [
-  '%' '&' '+' '-' '.' '/' ':' '=' '@' '~' '`' '^' '|' '*' '!' '$' '#' '?'
-]
-
-symbolic2 = [
-  '%' '&' '+' '-' '.' '/' ':' '=' '@' '~' '`' '^' '|' '*' '<' '>'
-]
-
 identfst = [ 'A'-'Z' 'a'-'z' '_' ]
 identrst = [ '0'-'9' 'A'-'Z' 'a'-'z' '_' '\'' ]
-
 identifier_alp = $identfst $identrst*
+
+symbolic1 = [
+  '%' '&' '+' '-' '.' '/' ':' '=' '@' '~' '`' '^' '|' '*' '<' '>'
+]
+symbolic2 = [
+  '%' '&' '+' '-' '.' '/' ':' '=' '@' '~' '`' '^' '|' '*' '!' '$' '#' '?'
+]
 identifier_sym = ($symbolic1+ | $symbolic2+)
 
 char_escaped = [
@@ -1248,7 +1246,8 @@ ats_lexer_lats_initialize () {
 ** HX: it declared in ats_lexer.sats
 */
 ats_bool_type
-atsopt_token_is_valid (ats_int_type tok) {
+atsopt_token_is_valid
+  (ats_int_type tok) {
   return (tok >= 0 ? ats_true_bool : ats_false_bool) ;
 } // end of [token_is_valid]
 
