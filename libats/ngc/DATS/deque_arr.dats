@@ -227,7 +227,7 @@ deque_initialize_tsz
   pfgc, pfarr | q, m, parr, tsz
 ) = () where {
   prval () = __assert (q) where {
-    extern prfun __assert (q: &DEQUE0 a >> DEQUE0_vt a):<> void
+    extern prfun __assert (q: &DEQUE0(a)? >> DEQUE0_vt a):<> void
   } // end of [val]
   val () = q.cap := m
   val () = q.nitm := (size1_of_int1)0
@@ -258,7 +258,7 @@ deque_uninitialize
   prval pfarr = DEQUEarr_v_decode (pfqarr)
   val parr = q.qarr_lft
   prval () = __assert (q) where {
-    extern prfun __assert (q: &DEQUE0_vt a >> DEQUE0 a):<> void
+    extern prfun __assert (q: &DEQUE0_vt a >> DEQUE0(a)?):<> void
   } // end of [val]
 in
   (pfgc, pfarr | parr)
@@ -274,11 +274,33 @@ deque_uninitialize_vt
   prval pfarr = DEQUEarr_v_decode (q.pfqarr)
   val parr = q.qarr_lft
   prval () = __assert (q) where {
-    extern prfun __assert (q: &DEQUE0_vt a >> DEQUE0 a):<> void
+    extern prfun __assert (q: &DEQUE0_vt a >> DEQUE0(a)?):<> void
   } // end of [val]
 in
   (pfgc, pfarr | parr)
 end // end of [deque_uninitialize_vt]
+
+(* ****** ****** *)
+
+implement{a}
+deque_get_elt_at
+  (q, i) = x where {
+  val (
+    pfat, fpfat | p
+  ) = deque_takeout_tsz {a} (q, i, sizeof<a>)
+  val x = !p
+  prval () = fpfat (pfat)
+} // end of [deque_arr_get_elt_at]
+
+implement{a}
+deque_set_elt_at
+  (q, i, x) = () where {
+  val (
+    pfat, fpfat | p
+  ) = deque_takeout_tsz {a} (q, i, sizeof<a>)
+  val () = !p := x
+  prval () = fpfat (pfat)
+} // end of [deque_arr_set_elt_at]
 
 (* ****** ****** *)
 
@@ -479,6 +501,13 @@ deque_clear_all
   val () = q.qarr_beg := p_lft
   val () = q.qarr_end := p_lft
 } // end of [deque_clear_all]
+
+(* ****** ****** *)
+
+implement{a}
+deque_copyout_beg (q, k, xs) =
+  deque_copyout_beg_tsz {a} (q, k, xs, sizeof<a>)
+// end of [deque_copyout_beg]
 
 (* ****** ****** *)
 

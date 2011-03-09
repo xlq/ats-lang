@@ -62,17 +62,22 @@ fun substrcmp
 
 fun strncmp {n:nat} (
   str1: !READ(string), str2: !READ(string), n: size_t n
-) :<> int = "mac#atslib_strncmp" // end of [strncmp]
+) :<> int
+  = "mac#atslib_strncmp"
+// end of [strncmp]
 
 fun substrncmp
-  {n1:int} {i1:nat | i1 <= n1}
-  {n2:int} {i2:nat | i2 <= n2}
+  {n1:int}
+  {i1:nat | i1 <= n1}
+  {n2:int}
+  {i2:nat | i2 <= n2}
   {n:nat} (
   str1: !READ(string n1), i1: size_t i1
 , str2: !READ(string n2), i2: size_t i2
 , n: size_t n
-) :<> int = "atslib_substrncmp"
-// end of [substrncmp]
+) :<> int
+  = "mac#atslib_substrncmp"
+// end of [fun]
 
 (* ****** ****** *)
 

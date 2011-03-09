@@ -54,12 +54,13 @@
 (* ****** ****** *)
 
 fun fprintf_err
-  {m:file_mode} {ts:types} (
-    pf: file_mode_lte (m, w)
-  | out: &FILE m
-  , fmt: printf_c ts
-  , arg: ts
-  ) :<!ref> int
+  {m:file_mode}
+  {ts:types} (
+  pf: file_mode_lte (m, w)
+| out: &FILE m
+, fmt: printf_c ts
+, arg: ts
+) :<!ref> int
   = "atspre_fprintf_err"
 // end of [fprintf_err]
 
@@ -67,16 +68,22 @@ fun fprintf_err
 
 symintr fprintf
 
-fun fprintf0_exn {ts:types}
-  (out: FILEref, fmt: printf_c ts, arg: ts):<!exnref> void
+fun fprintf0_exn
+  {ts:types} (
+  out: FILEref, fmt: printf_c ts, arg: ts
+) :<!exnref> void
   = "atspre_fprintf_exn"
-fun fprintf1_exn {m:file_mode} {ts:types} (
-    pf: file_mode_lte (m, w)
-  | out: &FILE m
-  , fmt: printf_c ts
-  , arg: ts
-  ) :<!exnref> void
+// end of [fun]
+
+fun fprintf1_exn
+  {m:file_mode} {ts:types} (
+  pf: file_mode_lte (m, w)
+| out: &FILE m
+, fmt: printf_c ts
+, arg: ts
+) :<!exnref> void
   = "atspre_fprintf_exn"
+// end of [fun]
 overload fprintf with fprintf0_exn
 overload fprintf with fprintf1_exn
 
@@ -91,13 +98,17 @@ fun prerrf {ts:types} (fmt: printf_c ts, arg: ts):<!exnref> void
 
 symintr assert_prerrf
  
-fun assert_prerrf_bool {ts:types}
-  (assertion: bool, fmt: printf_c ts, arg: ts):<!exn> void
+fun assert_prerrf_bool
+  {ts:types} (
+  assertion: bool, fmt: printf_c ts, arg: ts
+) :<!exn> void
   = "atspre_assert_prerrf"
 overload assert_prerrf with assert_prerrf_bool
 
-fun assert_prerrf_bool1 {b:bool} {ts:types}
-  (assertion: bool b, fmt: printf_c ts, arg: ts):<!exn> [b] void
+fun assert_prerrf_bool1
+  {b:bool} {ts:types} (
+  assertion: bool b, fmt: printf_c ts, arg: ts
+) :<!exn> [b] void
   = "atspre_assert_prerrf"
 overload assert_prerrf with assert_prerrf_bool1
 
@@ -124,20 +135,25 @@ fun sprintf {ts:types} // HX: the same as [tostringf]
 // Note that it is by design that [vsprintf_size] returns a strptr0
 // while [vsprintf] returns a strptr1
 //
-fun vsprintf_size {ts:types}
-  (guess: size_t, fmt: printf_c ts, arg: &va_list (ts) >> va_list):<> strptr0
+fun vsprintf_size
+  {ts:types} (
+  guess: size_t
+, fmt: printf_c ts, arg: &va_list (ts) >> va_list
+) :<> strptr0
   = "atspre_vsprintf_size"
 // end of [vsprintf]
 
-fun vsprintf {ts:types}
-  (fmt: printf_c ts, arg: &va_list (ts) >> va_list):<> strptr1
+fun vsprintf
+  {ts:types} (
+  fmt: printf_c ts, arg: &va_list (ts) >> va_list
+) :<> strptr1
   = "atspre_vsprintf"
 // end of [vsprintf]
 
 (* ****** ****** *)
 
 (*
-// HX: [fprintf_ats] is to be implemented as a macro if there is a need.
+** HX: [fprintf_ats] is to be implemented as a macro if there is a need.
 *)
 
 (* ****** ****** *)

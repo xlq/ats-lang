@@ -188,6 +188,7 @@ and neq_char_char
   (c1: char, c2: char):<> bool = "atspre_neq_char_char"
 overload = with eq_char_char
 overload <> with neq_char_char
+overload != with neq_char_char
 
 fun compare_char_char
   (c1: char, c2: char):<> Sgn = "atspre_compare_char_char"

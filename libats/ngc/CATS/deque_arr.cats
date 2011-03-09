@@ -81,9 +81,29 @@ atslib_ngc_deque_arr_deque_uninitialize (ats_ptr_type) ;
 /* ****** ****** */
 
 ATSinline()
+ats_ptr_type
+atslib_ngc_deque_arr_deque_takeout_tsz (
+  ats_ref_type q0
+, ats_size_type i
+, ats_size_type tsz
+) {
+  atslib_ngc_deque_arr_DEQUE *q = (atslib_ngc_deque_arr_DEQUE*)q0 ;
+  char *p_lft = q->qarr_lft ;
+  char *p_rgt = q->qarr_rgt ;
+  char *p_beg = q->qarr_beg ;
+  char *p_elt = p_beg + i * tsz ;
+  if (p_elt >= p_rgt) {
+    p_elt = p_lft + (p_elt - p_rgt) ;
+  } // end of [if]
+  return p_elt ;
+} // end of [atslib_ngc_deque_arr_deque_takeout_tsz]
+
+/* ****** ****** */
+
+ATSinline()
 ats_void_type
-atslib_ngc_deque_arr_enque_many_tsz (
-  ats_ptr_type q0
+atslib_ngc_deque_arr_deque_insert_end_many_tsz (
+  ats_ref_type q0
 , ats_size_type k
 , ats_ptr_type p0_xs /* buffer */
 , ats_size_type tsz
@@ -102,17 +122,17 @@ atslib_ngc_deque_arr_enque_many_tsz (
   } else {
     memcpy(p_end, p_xs, diff) ;
     memcpy(p_lft, p_xs+diff, ktsz-diff) ;
-    q->qarr_end = p_lft + ktsz-diff ;
+    q->qarr_end = p_lft + (ktsz-diff) ;
   } // end of [if]
   return ;
-} // end of [atslib_ngc_deque_arr_enque_many_tsz]
+} // end of [atslib_ngc_deque_arr_deque_insert_end_many_tsz]
 
 /* ****** ****** */
 
 ATSinline()
 ats_void_type
-atslib_ngc_deque_arr_deque_many_tsz (
-  ats_ptr_type q0
+atslib_ngc_deque_arr_deque_remove_beg_many_tsz (
+  ats_ref_type q0
 , ats_size_type k
 , ats_ptr_type p0_xs /* buffer */
 , ats_size_type tsz
@@ -131,17 +151,43 @@ atslib_ngc_deque_arr_deque_many_tsz (
   } else {
     memcpy(p_xs, p_beg, diff) ;
     memcpy(p_xs+diff, p_lft, ktsz-diff) ;
-    q->qarr_beg = p_lft + ktsz-diff ;
+    q->qarr_beg = p_lft + (ktsz-diff) ;
   } // end of [if]
   return ;
-} // end of [atslib_ngc_deque_arr_deque_many_tsz]
+} // end of [atslib_ngc_deque_arr_deque_remove_beg_many_tsz]
+
+/* ****** ****** */
+
+ATSinline()
+ats_void_type
+atslib_ngc_deque_arr_deque_copyout_beg_tsz (
+  ats_ref_type q0
+, ats_size_type k
+, ats_ptr_type p0_xs /* buffer */
+, ats_size_type tsz
+) {
+  atslib_ngc_deque_arr_DEQUE *q = (atslib_ngc_deque_arr_DEQUE*)q0 ;
+  char *p_xs = (char*)p0_xs ;
+  char *p_lft = q->qarr_lft ;
+  char *p_rgt = q->qarr_rgt ;
+  char *p_beg = q->qarr_beg ;
+  size_t ktsz = k * tsz ;
+  size_t diff = p_rgt - p_beg ;
+  if (ktsz <= diff) {
+    memcpy(p_xs, p_beg, ktsz) ;
+  } else {
+    memcpy(p_xs, p_beg, diff) ;
+    memcpy(p_xs+diff, p_lft, ktsz-diff) ;
+  } // end of [if]
+  return ;
+} // end of [atslib_ngc_deque_arr_deque_copyout_beg_tsz]
 
 /* ****** ****** */
 
 ATSinline()
 ats_ptr_type
 atslib_ngc_deque_arr_deque_update_capacity_tsz (
-  ats_ptr_type q0
+  ats_ref_type q0
 , ats_size_type m2
 , ats_ptr_type p0_xs /* buffer */
 , ats_size_type tsz

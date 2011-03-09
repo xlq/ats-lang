@@ -77,6 +77,9 @@ castfn HASHTBLref_make_ptr
   (x: HASHTBLptr (key, itm, l)):<> HASHTBLref (key, itm)
 // end of [HASHTBLref_make_ptr]
 
+//
+// HX: unsafe but convenient ...
+//
 castfn HASHTBLref_takeout_ptr
 {key:t@ype;itm:viewt@ype} (
   x: HASHTBLref (key, itm)

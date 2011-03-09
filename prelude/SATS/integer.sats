@@ -294,16 +294,15 @@ overload <> with neq_uint_uint
 
 (* ****** ****** *)
 
-fun compare_uint_uint (u1: uint, u2: uint):<> Sgn
-  = "atspre_compare_uint_uint"
+fun compare_uint_uint (
+  u1: uint, u2: uint
+) :<> Sgn = "atspre_compare_uint_uint"
 overload compare with compare_uint_uint
 
-fun max_uint_uint (u1: uint, u2: uint):<> uint
-  = "atspre_max_uint_uint"
-
-and min_uint_uint (u1: uint, u2: uint):<> uint
-  = "atspre_min_uint_uint"
-
+fun max_uint_uint
+  (u1: uint, u2: uint):<> uint = "atspre_max_uint_uint"
+and min_uint_uint
+  (u1: uint, u2: uint):<> uint = "atspre_min_uint_uint"
 overload max with max_uint_uint
 overload min with min_uint_uint
 
@@ -520,11 +519,9 @@ fun icompare {i,j:int}
 overload compare with icompare
 
 fun imax {i,j:int}
-  (i: int i, j: int j):<> [k:int | max_r (i, j, k)] int k
-  = "atspre_imax"
+  (i: int i, j: int j):<> int (max (i,j)) = "atspre_imax"
 and imin {i,j:int}
-  (i: int i, j: int j):<> [k:int | min_r (i, j, k)] int k
-  = "atspre_imin"
+  (i: int i, j: int j):<> int (min (i,j)) = "atspre_imin"
 overload max with imax
 overload min with imin
 
@@ -533,11 +530,13 @@ overload pow with ipow
 
 fun npow (base: Int, exponent: Nat):<> Nat = "atspre_npow"
 
-fun ihalf {i:int} (i: int i):<> [q:int | div_r (i, 2, q)] int q
-  = "atspre_ihalf"
+fun ihalf {i:int}
+  (i: int i):<> [q:int | div_r (i, 2, q)] int q = "atspre_ihalf"
+// end of [ihalf]
 
-fun nhalf {n:nat} (n: int n):<> [q:nat | ndiv_r (n, 2, q)] int q
-  = "atspre_nhalf"
+fun nhalf {n:nat}
+  (n: int n):<> [q:nat | ndiv_r (n, 2, q)] int q = "atspre_nhalf"
+// end of [nhalf]
 
 (* ****** ****** *)
 
@@ -638,11 +637,17 @@ castfn lint1_of_lint (i: lint):<> [i:int] lint i
 
 fun lint_of_int (i: int):<> lint = "atspre_lint_of_int"
 overload lint_of with lint_of_int
-
 fun int_of_lint (li: lint):<> int = "atspre_int_of_lint"
 overload int_of with int_of_lint
 
-// This function is based on [atol] in [stdlib.h]
+fun lint_of_uint (u: uint):<> lint = "atspre_lint_of_uint"
+overload lint_of with lint_of_uint
+fun uint_of_lint (li: lint):<> uint = "atspre_uint_of_lint"
+overload uint_of with uint_of_lint
+
+//
+// HX: this function is based on [atol] in [stdlib.h]
+//
 fun lint_of_string (s: string):<> lint = "atspre_lint_of_string"
 overload lint_of with lint_of_string
 

@@ -63,7 +63,7 @@ atslib_substrncmp (
   ats_ptr_type str1, ats_size_type i1
 , ats_ptr_type str2, ats_size_type i2
 , ats_size_type n) {
-  return strncmp((char*)str1+i1, (char*)str2+i2, n) ;
+  return strncmp(((char*)str1)+i1, ((char*)str2)+i2, n) ;
 } // end of [atslib_substrncmp]
 
 /* ****** ****** */

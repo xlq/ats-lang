@@ -616,6 +616,16 @@ atspre_int_of_lint (ats_lint_type li) { return li ; }
 
 ATSinline()
 ats_lint_type
+atspre_lint_of_uint (ats_uint_type u) { return u ; }
+
+ATSinline()
+ats_uint_type
+atspre_uint_of_lint (ats_lint_type li) { return li ; }
+
+/* ****** ****** */
+
+ATSinline()
+ats_lint_type
 atspre_lint_of_string
   (ats_ptr_type s) { return atol ((char*)s) ; }
 // end of [atspre_lint_of_string]

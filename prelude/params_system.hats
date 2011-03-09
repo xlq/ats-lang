@@ -48,7 +48,7 @@
 //
 // The following one is OS-dependent!
 //
-#define OPERATING_SYSTEM_IS_UNIX_LIKE 1
+#define SYSTEM_IS_UNIX_LIKE 1
 
 (* ****** ****** *)
 

@@ -440,12 +440,14 @@ overload <> with neq_size1_size1
 
 // ------ ------
 
-fun max_size1_size1 {i,j:nat}
-  (i: size_t i, j: size_t j):<> size_t (max (i, j))
-  = "atspre_max_size1_size1"
-and min_size1_size1 {i,j:nat}
-  (i: size_t i, j: size_t j):<> size_t (min (i, j))
-  = "atspre_min_size1_size1"
+fun max_size1_size1
+  {i,j:nat} (
+  i: size_t i, j: size_t j
+) :<> size_t (max (i, j)) = "atspre_max_size1_size1"
+and min_size1_size1
+  {i,j:nat} (
+  i: size_t i, j: size_t j
+) :<> size_t (min (i, j)) = "atspre_min_size1_size1"
 overload max with max_size1_size1
 overload min with min_size1_size1
 

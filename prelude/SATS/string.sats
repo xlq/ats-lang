@@ -75,8 +75,10 @@ prfun strbuf_vsubr_lemma0 // implemneted in [string.dats]
 
 (* ****** ****** *)
 
-viewtypedef strbufptr_gc
-  (m:int, n:int, l:addr) = @(
+viewtypedef
+strbufptr_gc (
+  m:int, n:int, l:addr
+) = @(
   freebyte_gc_v (m, l), strbuf_v (m, n, l) | ptr l
 ) // end of [strbufptr_gc]
 
@@ -130,24 +132,32 @@ praxi strbuf_v_uncons
 (* ****** ****** *)
 
 prfun strbuf_v_split
-  {m,n:int} {i:nat | i <= n} {l:addr} {ofs:int} (
-    pf_mul: MUL (i, sizeof char, ofs), pf_str: strbuf_v (m, n, l)
-  ) : (c1hars i @ l, strbuf_v (m-i, n-i, l+ofs))
+  {m,n:int}
+  {i:nat | i <= n}
+  {l:addr}
+  {ofs:int} (
+  pf_mul: MUL (i, sizeof char, ofs), pf_str: strbuf_v (m, n, l)
+) : (c1hars i @ l, strbuf_v (m-i, n-i, l+ofs))
 // end of [strbuf_v_split]
 
 prfun strbuf_v_unsplit
-  {n1:nat} {m2,n2:nat} {l:addr} {ofs:int} (
-    pf_mul: MUL (n1, sizeof char, ofs)
-  , pf_buf: c1hars n1 @ l, pf_str: strbuf_v (m2, n2, l+ofs)
-  ) : strbuf_v (n1+m2, n1+n2, l)
+  {n1:nat}
+  {m2,n2:nat}
+  {l:addr}
+  {ofs:int} (
+  pf_mul: MUL (n1, sizeof char, ofs)
+, pf_buf: c1hars n1 @ l, pf_str: strbuf_v (m2, n2, l+ofs)
+) : strbuf_v (n1+m2, n1+n2, l)
 // end of [strbuf_v_unsplit]
 
 (* ****** ****** *)
 
 fun bytes_strbuf_trans
-  {m,n:nat | n < m} {l:addr}
-  (pf: !b0ytes m @ l >> strbuf (m, n1) @ l | p: ptr l, n: size_t n)
-  :<> #[n1: nat | n1 <= n] void
+  {m,n:nat | n < m}
+  {l:addr} (
+  pf: !b0ytes m @ l >> strbuf (m, n1) @ l
+| p: ptr l, n: size_t n
+) :<> #[n1: nat | n1 <= n] void
   = "atspre_bytes_strbuf_trans"
 // end of [bytes_strbuf_trans]
 
@@ -208,10 +218,9 @@ overload <= with lte_string_string
 
 fun lte_string_string__main
   {v:view} {l1,l2:addr} (
-    pf: !v, pf1: vsubr_p (strbuf_v l1, v), pf2: vsubr_p (strbuf_v l2, v)
-  | p1: ptr l1, p2: ptr l2
-  ) :<> bool = "atspre_lte_string_string"
-// end of [lte_string_string__main]
+  pf: !v, pf1: vsubr_p (strbuf_v l1, v), pf2: vsubr_p (strbuf_v l2, v)
+| p1: ptr l1, p2: ptr l2
+) :<> bool = "atspre_lte_string_string"
 
 (* ****** ****** *)
 
@@ -221,10 +230,9 @@ overload > with gt_string_string
 
 fun gt_string_string__main
   {v:view} {l1,l2:addr} (
-    pf: !v, pf1: vsubr_p (strbuf_v l1, v), pf2: vsubr_p (strbuf_v l2, v)
-  | p1: ptr l1, p2: ptr l2
-  ) :<> bool = "atspre_gt_string_string"
-// end of [gt_string_string__main]
+  pf: !v, pf1: vsubr_p (strbuf_v l1, v), pf2: vsubr_p (strbuf_v l2, v)
+| p1: ptr l1, p2: ptr l2
+) :<> bool = "atspre_gt_string_string"
 
 (* ****** ****** *)
 
@@ -234,10 +242,9 @@ overload >= with gte_string_string
 
 fun gte_string_string__main
   {v:view} {l1,l2:addr} (
-    pf: !v, pf1: vsubr_p (strbuf_v l1, v), pf2: vsubr_p (strbuf_v l2, v)
-  | p1: ptr l1, p2: ptr l2
-  ) :<> bool = "atspre_gte_string_string"
-// end of [gte_string_string__main]
+  pf: !v, pf1: vsubr_p (strbuf_v l1, v), pf2: vsubr_p (strbuf_v l2, v)
+| p1: ptr l1, p2: ptr l2
+) :<> bool = "atspre_gte_string_string"
 
 (* ****** ****** *)
 
@@ -247,10 +254,9 @@ overload = with eq_string_string
 
 fun eq_string_string__main
   {v:view} {l1,l2:addr} (
-    pf: !v, pf1: vsubr_p (strbuf_v l1, v), pf2: vsubr_p (strbuf_v l2, v)
-  | p1: ptr l1, p2: ptr l2
-  ) :<> bool = "atspre_eq_string_string"
-// end of [eq_string_string__main]
+  pf: !v, pf1: vsubr_p (strbuf_v l1, v), pf2: vsubr_p (strbuf_v l2, v)
+| p1: ptr l1, p2: ptr l2
+) :<> bool = "atspre_eq_string_string"
 
 (* ****** ****** *)
 
@@ -260,10 +266,9 @@ overload <> with neq_string_string
 
 fun neq_string_string__main
   {v:view} {l1,l2:addr} (
-    pf: !v, pf1: vsubr_p (strbuf_v l1, v), pf2: vsubr_p (strbuf_v l2, v)
-  | p1: ptr l1, p2: ptr l2
-  ) :<> bool = "atspre_neq_string_string"
-// end of [neq_string_string__main]
+  pf: !v, pf1: vsubr_p (strbuf_v l1, v), pf2: vsubr_p (strbuf_v l2, v)
+| p1: ptr l1, p2: ptr l2
+) :<> bool = "atspre_neq_string_string"
 
 (* ****** ****** *)
 
@@ -273,27 +278,29 @@ overload compare with compare_string_string
 
 fun compare_string_string__main
   {v:view} {l1,l2:addr} (
-    pf: !v, pf1: vsubr_p (strbuf_v l1, v), pf2: vsubr_p (strbuf_v l2, v)
-  | p1: ptr l1, p2: ptr l2
-  ) :<> Sgn = "atspre_compare_string_string"
-// end of [compare_string_string__main]
+  pf: !v, pf1: vsubr_p (strbuf_v l1, v), pf2: vsubr_p (strbuf_v l2, v)
+| p1: ptr l1, p2: ptr l2
+) :<> Sgn = "atspre_compare_string_string"
 
 (* ****** ****** *)
 
 symintr fprint_string
 
-fun fprint0_string (out: FILEref, x: string):<!exnref> void
-  = "atspre_fprint_string"
+fun fprint0_string (
+  out: FILEref, x: string
+) :<!exnref> void = "atspre_fprint_string"
 overload fprint_string with fprint0_string
-fun fprint1_string {m:file_mode}
-  (pf: file_mode_lte (m, w) | out: &FILE m, x: string):<!exnref> void
-  = "atspre_fprint_string"
+fun fprint1_string
+  {m:file_mode} (
+  pf: file_mode_lte (m, w) | out: &FILE m, x: string
+) :<!exnref> void = "atspre_fprint_string"
 overload fprint_string with fprint1_string
 overload fprint with fprint_string
 
-fun fprint1_string__main {v:view} {l:addr}
-  (pf: !v, fpf: vsubr_p (strbuf_v l, v) | out: FILEref, p: ptr l):<!exnref> void
-  = "atspre_fprint_string"
+fun fprint1_string__main
+  {v:view} {l:addr} (
+  pf: !v, fpf: vsubr_p (strbuf_v l, v) | out: FILEref, p: ptr l
+) :<!exnref> void = "atspre_fprint_string"
 // end of [fprint1_string__main]
 
 fun print_string (b: string):<!ref> void = "atspre_print_string"
@@ -304,13 +311,18 @@ overload prerr with prerr_string
 (* ****** ****** *)
 
 fun strbuf_get_char_at
-  {m,n:int} {i:nat | i < n}
-  (sbf: &strbuf (m, n), i: size_t i):<> c1har
+  {m,n:int}
+  {i:nat | i < n} (
+  sbf: &strbuf (m, n), i: size_t i
+) :<> c1har
   = "atspre_string_get_char_at"
 overload [] with strbuf_get_char_at
 
-fun string_get_char_at {n:int} {i:nat | i < n}
-  (str: string n, i: size_t i):<> c1har // no effect
+fun string_get_char_at
+  {n:int}
+  {i:nat | i < n} (
+  str: string n, i: size_t i
+) :<> c1har
   = "atspre_string_get_char_at"
 overload [] with string_get_char_at
 
@@ -335,14 +347,18 @@ overload [] with string_get_char_at__intsz
 (* ****** ****** *)
 
 fun strbuf_set_char_at
-  {m,n:int} {i:nat | i < n}
-  (sbf: &strbuf (m, n), i: size_t i, c: c1har):<> void
+  {m,n:int}
+  {i:nat | i < n} (
+  sbf: &strbuf (m, n), i: size_t i, c: c1har
+) :<> void
   = "atspre_strbuf_set_char_at"
 overload [] with strbuf_set_char_at
 
 fun string_set_char_at
-  {n:int} {i:nat | i < n}
-  (str: string n, i: size_t i, c: c1har):<!ref> void // with effect!
+  {n:int}
+  {i:nat | i < n} (
+  str: string n, i: size_t i, c: c1har
+) :<!ref> void // with effect!
   = "atspre_strbuf_set_char_at"
 overload [] with string_set_char_at
 
@@ -354,28 +370,37 @@ overload [] with string_set_char_at
 //
 
 fun strbuf_set_char_at__intsz
-  {m,n:int} {i:nat | i < n}
-  (sbf: &strbuf (m, n), i: int i, c: c1har):<> void
+  {m,n:int}
+  {i:nat | i < n} (
+  sbf: &strbuf (m, n), i: int i, c: c1har
+) :<> void
   = "atspre_strbuf_set_char_at__intsz"
 overload [] with strbuf_set_char_at__intsz
 
 fun string_set_char_at__intsz
-  {n:int} {i:nat | i < n}
-  (str: string n, i: int i, c: c1har):<!ref> void // with effect!
+  {n:int} {i:nat | i < n} (
+  str: string n, i: int i, c: c1har
+) :<!ref> void // with effect!
   = "atspre_strbuf_set_char_at__intsz"
 overload [] with string_set_char_at__intsz
 
 (* ****** ****** *)
 
 fun strbuf_test_char_at {m,n:int}
-  {i:nat | i <= n} (sbf: &strbuf (m, n), i: size_t i)
-  :<> [c:char | (c <> NUL && i < n) || (c == NUL && i >= n)] char c
+  {i:nat | i <= n} (
+  sbf: &strbuf (m, n), i: size_t i
+) :<> [
+  c:char | (c <> NUL && i < n) || (c == NUL && i >= n)
+] char c
   = "atspre_string_test_char_at"
 // end of [strbuf_test_char_at]
 
 fun string_test_char_at {n:int}
-  {i:nat | i <= n} (str: string n, i: size_t i)
-  :<> [c:char | (c <> NUL && i < n) || (c == NUL && i >= n)] char c
+  {i:nat | i <= n} (
+  str: string n, i: size_t i
+) :<> [
+  c:char | (c <> NUL && i < n) || (c == NUL && i >= n)
+] char c
   = "atspre_string_test_char_at"
 // end of [string_test_char_at]
 
@@ -386,68 +411,91 @@ fun string_test_char_at {n:int}
 // values of the type [int] are often used as array indices:
 //
 
-fun strbuf_test_char_at__intsz {m,n:int}
-  {i:nat | i <= n} (sbf: &strbuf (m, n), i: size_t i)
-  :<> [c:char | (c <> NUL && i < n) || (c == NUL && i >= n)] char c
+fun strbuf_test_char_at__intsz
+  {m,n:int}
+  {i:nat | i <= n} (
+  sbf: &strbuf (m, n), i: size_t i
+) :<> [
+  c:char | (c <> NUL && i < n) || (c == NUL && i >= n)
+] char c
   = "atspre_string_test_char_at__intsz"
+// end of [strbuf_test_char_at__intsz]
 
-fun string_test_char_at__intsz {n:int}
-  {i:nat | i <= n} (str: string n, i: size_t i)
-  :<> [c:char | (c <> NUL && i < n) || (c == NUL && i >= n)] char c
+fun string_test_char_at__intsz
+  {n:int}
+  {i:nat | i <= n} (
+  str: string n, i: size_t i
+) :<> [
+  c:char | (c <> NUL && i < n) || (c == NUL && i >= n)
+] char c
   = "atspre_string_test_char_at__intsz"
+// end of [string_test_char_at__intsz]
 
 (* ****** ****** *)
 
-fun strbuf_initialize_substring {bsz:int}
-  {n:int} {st,ln:nat | st+ln <= n; ln < bsz} {l:addr} (
-    pf: !b0ytes bsz @ l >> strbuf (bsz, ln) @ l
-  | p: ptr l, str: string n, st: size_t st, ln: size_t ln
-  ) : void = "atspre_strbuf_initialize_substring"
-// end of [strbuf_initialize_substring]
+fun strbuf_initialize_substring
+  {bsz:int}
+  {n:int}
+  {st,ln:nat | st+ln <= n; ln < bsz}
+  {l:addr} (
+  pf: !b0ytes bsz @ l >> strbuf (bsz, ln) @ l
+| p: ptr l, str: string n, st: size_t st, ln: size_t ln
+) : void = "atspre_strbuf_initialize_substring"
 
 (* ****** ****** *)
 
-fun string_make_char {n:nat}
-  (n: size_t n, c: char):<> strbufptr_gc n = "atspre_string_make_char"
-// end of [string_make_char]
+fun string_make_char
+  {n:nat} (
+  n: size_t n, c: char
+) :<> strbufptr_gc n
+  = "atspre_string_make_char"
+// end of [fun]
 
 (* ****** ****** *)
 
 fun string_make_list_int
-  {n:nat} (cs: list (char, n), n: int n):<> strbufptr_gc n
+  {n:nat} (
+  cs: list (char, n), n: int n
+) :<> strbufptr_gc n
   = "atspre_string_make_list_int"
-// end of [string_make_list_int]
+// end of [fun]
 
 (* ****** ****** *)
 
 fun string_make_list_rev_int
-  {n:nat} (cs: list (char, n), n: int n):<> strbufptr_gc n
+  {n:nat} (
+  cs: list (char, n), n: int n
+) :<> strbufptr_gc n
   = "atspre_string_make_list_rev_int"
-// end of [string_make_list_rev_int]
+// end of [fun]
 
 (* ****** ****** *)
-
+//
+// HX: unsafe but convenient ...
+//
 fun string_takeout_bufptr
   {n:int} {st:nat} {ln:nat | st+ln <= n}
   (x: string n, st: size_t st)
   :<!ref> [l:addr] (
   bytes(ln) @ l, bytes(ln) @ l -<lin,prf> void | ptr l
 ) = "mac#atspre_padd_size"
-// end of [string_takeout_bufptr]
+// end of [fun]
 
 fun string_make_substring
-  {n:int} {st,ln:nat | st + ln <= n}
-  (str: string n, st: size_t st, ln: size_t ln):<> strbufptr_gc ln
+  {n:int}
+  {st,ln:nat | st + ln <= n} (
+  str: string n, st: size_t st, ln: size_t ln
+) :<> strbufptr_gc ln
   = "atspre_string_make_substring"
-// end of [string_make_substring]
+// end of [fun]
 
 fun string_make_substring__main {v:view}
   {m,n:int} {st,ln:nat | st+ln <= n} {l:addr} (
-    pf: !v
-  , pf_con: vsubr_p (strbuf_v (m, n, l), v) | p: ptr l, st: size_t st, ln: size_t ln
-  ) :<> strbufptr_gc ln
+  pf: !v
+, pf_con: vsubr_p (strbuf_v (m, n, l), v) | p: ptr l, st: size_t st, ln: size_t ln
+) :<> strbufptr_gc ln
   = "atspre_string_make_substring"
-// end of [string_make_substring__main]
+// end of [fun]
 
 (* ****** ****** *)
 
@@ -463,18 +511,19 @@ overload + with string1_append
 
 fun string1_append__main {v:view}
   {m1,i:nat} {m2,j:nat} {l1,l2:addr} (
-    pf: !v
-  , pf1: vsubr_p (strbuf_v (m1, i, l1), v), pf2: vsubr_p (strbuf_v (m2, j, l2), v)
-  | p1: ptr l1, p2: ptr l2
-  ) :<> strbufptr_gc (i+j)
+  pf: !v
+, pf1: vsubr_p (strbuf_v (m1, i, l1), v), pf2: vsubr_p (strbuf_v (m2, j, l2), v)
+| p1: ptr l1, p2: ptr l2
+) :<> strbufptr_gc (i+j)
   = "atspre_string_append"
-// end of [string1_append__main]
 
 (* ****** ****** *)
 
-fun string_compare
-  (s1: string, s2: string):<> Sgn = "atspre_compare_string_string"
-// end of [string_compare]
+fun string_compare (
+  s1: string, s2: string
+) :<> Sgn
+  = "atspre_compare_string_string"
+// end of [fun]
 
 (* ****** ****** *)
 

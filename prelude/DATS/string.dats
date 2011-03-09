@@ -47,9 +47,13 @@ implement strbuf_vsubr_lemma0 () = vsubr_refl ()
 
 implement strbuf_v_split
   (pf_mul, pf_str) = split (pf_mul, pf_str) where {
-  prfun split {m,n:int} {i:nat | i <= n} {l:addr} {ofs:int} .<n>.
-    (pf_mul: MUL (i, sizeof char, ofs), pf_str: strbuf_v (m, n, l))
-    : (c1hars i @ l, strbuf_v (m-i, n-i, l+ofs)) =
+  prfun split
+    {m,n:int}
+    {i:nat | i <= n}
+    {l:addr}
+    {ofs:int} .<n>. (
+    pf_mul: MUL (i, sizeof char, ofs), pf_str: strbuf_v (m, n, l)
+  ) : (c1hars i @ l, strbuf_v (m-i, n-i, l+ofs)) =
     sif i == 0 then let
       prval () = mul_elim {0, sizeof char} (pf_mul)
     in

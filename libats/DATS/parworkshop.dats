@@ -45,7 +45,6 @@
 (* ****** ****** *)
 
 staload LQ = "libats/SATS/linqueue_arr.sats"
-stadef QUEUE = $LQ.QUEUE1
 staload _(*anon*) = "libats/DATS/linqueue_arr.dats"
 staload _(*anon*) =
   "libats/ngc/DATS/deque_arr.dats" // implements [queue]
@@ -186,7 +185,7 @@ WORKSHOP (a:viewt@ype) =
 //
 // WSmut = $PT.mutex_vt
 //
-  WQ = $LQ.QUEUE1 (a)
+  WQ = $LQ.QUEUE0 (a)
 , WQemp = $PT.cond_vt
 , WQful = $PT.cond_vt
 , nworker = int // number of workers affiliated with the workshop

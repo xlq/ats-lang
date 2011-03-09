@@ -24,7 +24,7 @@ stadef HASHTBLptr = $H.HASHTBLptr
 %{^
 typedef ats_ptr_type absptr ;
 %} // end of [%{^]
-abstype absptr = $extype "absptr"
+abstype absptr = $extype"absptr"
 extern castfn enstr (x: string):<> absptr
 extern castfn destr (x: absptr):<> string
 

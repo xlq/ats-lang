@@ -52,15 +52,16 @@ exception Fatal of string
 
 local
 
-#include "prelude/params_system.hats"
+#include
+"prelude/params_system.hats"
 
 in // in of [local]
 
-#if OPERATING_SYSTEM_IS_UNIX_LIKE #then
-
+#if SYSTEM_IS_UNIX_LIKE #then
+//
 val dirsep: char = '/'
 val dirsep_str: string = "/"
-
+//
 #endif
 
 end // end of [local]

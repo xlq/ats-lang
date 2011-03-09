@@ -63,7 +63,8 @@ absviewt@ype STACK
   (a:viewt@ype+, m:int, n:int)
   = $extype "atslib_linstack_arr_STACK"
 // end of [STACK]
-typedef STACK0 (a:viewt@ype) = STACK (a, 0, 0)?
+viewtypedef
+STACK0 (a:viewt@ype) = [m,n:int] STACK (a, m, n)
 
 (* ****** ****** *)
 
@@ -90,7 +91,7 @@ fun stack_isnot_full
 //
 fun{a:viewt@ype}
 stack_initialize {m:nat}
-  (s: &STACK0 a >> STACK (a, m, 0), m: size_t m):<> void
+  (s: &STACK0(a)? >> STACK (a, m, 0), m: size_t m):<> void
 // end of [linstackarr_initialize]
 
 (* ****** ****** *)
@@ -98,14 +99,14 @@ stack_initialize {m:nat}
 // HX: uninitializing a stack of nonlinear elements
 //
 fun stack_uninitialize {a:t@ype}
-  {m,n:int} {l:addr} (s: &STACK (a, m, n) >> STACK0 a):<> void
+  {m,n:int} {l:addr} (s: &STACK (a, m, n) >> STACK0(a)?):<> void
 // end of [stack_uninitialize]
 
 //
 // HX: uninitializeing an empty stack of capacity [m]
 //
 fun stack_uninitialize_vt {a:viewt@ype}
-  {m:int} {l:addr} (s: &STACK (a, m, 0) >> STACK0 a):<> void
+  {m:int} {l:addr} (s: &STACK (a, m, 0) >> STACK0(a)?):<> void
 // end of [stack_unintialize_vt]
 
 (* ****** ****** *)

@@ -1061,11 +1061,12 @@ literal_intsp = $literal_int ($IS)+
 
 exp = ['e' 'E'] ['+' '-']? $digit+
 ufloat0 = $digit+ $exp
-ufloat1 = $digit+ '.' $digit* ($exp)?
+// ufloat1 = $digit+ '.' $digit* ($exp)?
 ufloat2 = $digit+ '.' $digit+ ($exp)? // [$digit+] should not be replaced with [$digit*]!
 
 FS = [ 'd' 'D' 'f' 'F' 'l' 'L' ]
-ufloat = $ufloat0 | $ufloat1 | $ufloat2
+// ufloat = $ufloat0 | $ufloat1
+ufloat = $ufloat0 | $ufloat2
 literal_float = ['~']? $ufloat
 literal_floatsp = $literal_float $FS
 

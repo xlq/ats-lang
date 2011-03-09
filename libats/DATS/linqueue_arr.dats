@@ -113,6 +113,18 @@ queue_uninitialize_vt
 (* ****** ****** *)
 
 implement{a}
+queue_get_elt_at
+  (q, i) = $DQ.deque_get_elt_at (q, i)
+// end of [queue_get_elt_at]
+
+implement{a}
+queue_set_elt_at
+  (q, i, x) = $DQ.deque_set_elt_at (q, i, x)
+// end of [queue_set_elt_at]
+
+(* ****** ****** *)
+
+implement{a}
 queue_insert
   (q, x) = $DQ.deque_insert_end (q, x)
 // end of [queue_insert]
@@ -141,6 +153,13 @@ queue_clear
 
 implement
 queue_clear_all (q) = $DQ.deque_clear_all (q)
+
+(* ****** ****** *)
+
+implement{a}
+queue_copyout
+  (q, k, xs) = $DQ.deque_copyout_beg (q, k, xs)
+// end of [queue_copyout]
 
 (* ****** ****** *)
 

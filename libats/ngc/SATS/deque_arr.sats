@@ -66,8 +66,8 @@
 absviewt@ype DEQUE (
   a:viewt@ype+, m: int, n: int
 ) = $extype "atslib_ngc_deque_arr_DEQUE"
-typedef DEQUE0 (a:viewt@ype) = DEQUE (a, 0, 0)?
-viewtypedef DEQUE1 (a:viewt@ype) = [m,n:int] DEQUE (a, m, n)
+viewtypedef
+DEQUE0 (a:viewt@ype) = [m,n:int] DEQUE (a, m, n)
 
 (* ****** ****** *)
 
@@ -103,14 +103,14 @@ fun{a:viewt@ype}
 deque_initialize
   {m:nat} {l:addr} (
   pfgc: free_gc_v (a, m, l), pfarr: array_v (a?, m, l)
-| q: &DEQUE0 a >> DEQUE (a, m, 0), m: size_t m, p: ptr l
+| q: &DEQUE0(a)? >> DEQUE (a, m, 0), m: size_t m, p: ptr l
 ) :<> void // end of [deque_initialize]
 
 fun deque_initialize_tsz
   {a:viewt@ype}
   {m:nat} {l:addr} (
   pfgc: free_gc_v (a, m, l), pfarr: array_v (a?, m, l)
-| q: &DEQUE0 a >> DEQUE (a, m, 0), m: size_t m, p: ptr l, tsz: sizeof_t a
+| q: &DEQUE0(a)? >> DEQUE (a, m, 0), m: size_t m, p: ptr l, tsz: sizeof_t a
 ) :<> void
   = "atslib_ngc_deque_arr_deque_initialize_tsz"
 // end of [deque_initialize_tsz]
@@ -122,7 +122,7 @@ fun deque_initialize_tsz
 fun deque_uninitialize
   {a:t@ype}
   {m,n:int} (
-  q: &DEQUE (a, m, n) >> DEQUE0 a
+  q: &DEQUE (a, m, n) >> DEQUE0(a)?
 ) :<> [l:addr] (
   free_gc_v (a, m, l), array_v (a?, m, l)
 | ptr l
@@ -135,11 +135,42 @@ fun deque_uninitialize
 fun deque_uninitialize_vt
   {a:viewt@ype}
   {m:int} (
-  q: &DEQUE (a, m, 0) >> DEQUE0 a
+  q: &DEQUE (a, m, 0) >> DEQUE0(a)?
 ) :<> [l:addr] (
   free_gc_v (a, m, l), array_v (a?, m, l)
 | ptr l
 ) // end of [deque_uninitialize_vt]
+
+(* ****** ****** *)
+//
+// HX-2011-03-06: unsafe but convenient!
+//
+fun
+deque_takeout_tsz
+  {a:viewt@ype}
+  {m,n:int}
+  {i:nat | i < n} (
+  q: &DEQUE (a, m, n)
+, i: size_t i, tsz: sizeof_t a
+) :<> [l:addr] (
+  a @ l, a @ l -<lin,prf> void | ptr l
+) = "atslib_ngc_deque_arr_deque_takeout_tsz"
+
+(* ****** ****** *)
+
+fun{a:t@ype}
+deque_get_elt_at
+  {m,n:int}
+  {i:nat | i < n} (
+  q: &DEQUE (a, m, n), i: size_t i
+) :<> a // end of [deque_get_elt_at]
+
+fun{a:t@ype}
+deque_set_elt_at
+  {m,n:int}
+  {i:nat | i < n} (
+  q: &DEQUE (a, m, n), i: size_t i, x: a
+) :<> void // end of [deque_set_elt_at]
 
 (* ****** ****** *)
 
@@ -175,9 +206,10 @@ deque_insert_end_many_tsz
 , k: size_t k
 , xs: &(@[a][k]) >> @[a?!][k]
 , tsz: sizeof_t (a)
-) :<> void // end of [deque_insert_end_many_tsz]
+) :<> void
   = "atslib_ngc_deque_arr_deque_insert_end_many_tsz"
-
+// end of [deque_insert_end_many_tsz]
+ 
 (* ****** ****** *)
 
 fun{a:viewt@ype}
@@ -204,9 +236,10 @@ deque_remove_beg_many_tsz
 , k: size_t k
 , xs: &(@[a?][k]) >> @[a][k]
 , tsz: sizeof_t a
-) :<> void // end of [deque_remove_beg_many_tsz]
+) :<> void
   = "atslib_ngc_deque_arr_deque_remove_beg_many_tsz"
-
+// end of [deque_remove_beg_many_tsz]
+ 
 (* ****** ****** *)
 
 fun{a:viewt@ype}
@@ -233,6 +266,30 @@ fun deque_clear_all
   {a:t@ype} {m,n:int} (
   q: &DEQUE (a, m, n) >> DEQUE (a, m, 0)
 ) :<> void // end of [deque_clear_all]
+
+(* ****** ****** *)
+
+fun
+deque_copyout_beg_tsz
+  {a:t@ype}
+  {m,n:int}
+  {k:nat | k <= n} (
+  q: &DEQUE (a, m, n)
+, k: size_t k
+, xs: &(@[a?][k]) >> @[a][k]
+, tsz: sizeof_t a
+) :<> void
+  = "atslib_ngc_deque_arr_deque_copyout_beg_tsz"
+// end of [deque_copyout_beg_tsz]
+
+fun{a:t@ype}
+deque_copyout_beg
+  {m,n:int}
+  {k:nat | k <= n} (
+  q: &DEQUE (a, m, n)
+, k: size_t k
+, xs: &(@[a?][k]) >> @[a][k]
+) :<> void // end of [deque_copyout_beg_tsz]
 
 (* ****** ****** *)
 

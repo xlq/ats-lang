@@ -59,12 +59,12 @@
 // m: maximal capacity
 // n: current size
 //
-absviewt@ype QUEUE
-  (a:viewt@ype+, m: int, n: int)
-  = $extype "atslib_linqueue_arr_QUEUE"
-// end of [QUEUE]
-typedef QUEUE0 (a:viewt@ype) = QUEUE (a, 0, 0)?
-viewtypedef QUEUE1 (a:viewt@ype) = [m,n:int] QUEUE (a, m, n)
+absviewt@ype
+QUEUE (
+  a:viewt@ype+, m: int, n: int
+) = $extype "atslib_linqueue_arr_QUEUE"
+viewtypedef
+QUEUE0 (a:viewt@ype) = [m,n:int] QUEUE (a, m, n)
 
 (* ****** ****** *)
 
@@ -98,7 +98,7 @@ fun queue_isnot_full
 //
 fun{a:viewt@ype}
 queue_initialize {m:nat}
-  (q: &QUEUE0 a >> QUEUE (a, m, 0), m: size_t m):<> void
+  (q: &QUEUE0(a)? >> QUEUE (a, m, 0), m: size_t m):<> void
 // end of [queue_initialize]
 
 //
@@ -106,7 +106,7 @@ queue_initialize {m:nat}
 //
 fun queue_initialize_tsz
   {a:viewt@ype} {m:nat} (
-  q: &QUEUE0 a >> QUEUE (a, m, 0), m: size_t m, tsz: sizeof_t a
+  q: &QUEUE0(a)? >> QUEUE (a, m, 0), m: size_t m, tsz: sizeof_t a
 ) :<> void
   = "atslib_linqueue_arr_queue_initialize_tsz"
 // end of [queue_initialize_tsz]
@@ -119,7 +119,7 @@ fun queue_uninitialize
   {a:t@ype}
   {m,n:int}
   {l:addr} (
-  q: &QUEUE (a, m, n) >> QUEUE0 a
+  q: &QUEUE (a, m, n) >> QUEUE0(a)?
 ) :<> void
   = "atslib_linqueue_arr_queue_uninitialize"
 // end of [queue_uninitialize]
@@ -131,9 +131,23 @@ fun queue_uninitialize_vt
   {a:viewt@ype}
   {m:int}
   {l:addr} (
-  q: &QUEUE (a, m, 0) >> QUEUE0 a
+  q: &QUEUE (a, m, 0) >> QUEUE0(a)?
 ) :<> void
 // end of [queue_uninitialize_vt]
+
+(* ****** ****** *)
+
+fun{a:t@ype}
+queue_get_elt_at
+  {m,n:int} {i:nat | i < n} (
+  q: &QUEUE (a, m, n), i: size_t i
+) :<> a // end of [queue_get_elt_at]
+
+fun{a:t@ype}
+queue_set_elt_at
+  {m,n:int} {i:nat | i < n} (
+  q: &QUEUE (a, m, n), i: size_t i, x: a
+) :<> void // end of [queue_set_elt_at]
 
 (* ****** ****** *)
 
@@ -182,6 +196,17 @@ fun queue_clear_all
   {a:t@ype} {m,n:int}
   (s: &QUEUE (a, m, n) >> QUEUE (a, m, 0)):<> void
 // end of [queue_clear_all]
+
+(* ****** ****** *)
+
+fun{a:t@ype}
+queue_copyout
+  {m,n:int}
+  {k:nat | k <= n} (
+  q: &QUEUE (a, m, n)
+, k: size_t k
+, xs: &(@[a?][k]) >> @[a][k]
+) :<> void // end of [queue_copyout]
 
 (* ****** ****** *)
 
