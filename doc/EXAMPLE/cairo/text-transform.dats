@@ -8,6 +8,10 @@
 
 (* ****** ****** *)
 
+staload _(*anon*) = "prelude/DATS/array.dats"
+
+(* ****** ****** *)
+
 staload "libc/SATS/math.sats"
 
 (* ****** ****** *)
@@ -24,7 +28,7 @@ staload "contrib/cairo/SATS/cairo.sats"
 
 extern
 fun cairo_show_text0 {l:agz}
-  (cr: !cairo_ref l, utf8: string): void = "#atsctrb_cairo_show_text"
+  (cr: !cairo_ref l, utf8: string): void = "mac#atsctrb_cairo_show_text"
 // end of [cairo_show_text]
 
 (* ****** ****** *)

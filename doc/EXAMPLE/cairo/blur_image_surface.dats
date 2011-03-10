@@ -14,6 +14,10 @@
 
 (* ****** ****** *)
 
+staload _(*anon*) = "prelude/DATS/array.dats"
+
+(* ****** ****** *)
+
 staload MATH = "libc/SATS/math.sats"
 
 (* ****** ****** *)
@@ -63,7 +67,7 @@ fun kernel_initialize {n:nat} (
     x := uint8_of_uint(uint_of(int_of(d)))
   end // end of [var]
   val n = size1_of_int1 (n)
-  val () = array_ptr_initialize_clo_tsz {a} (pf | kernel, n, !p_clo, sizeof<a>)
+  val () = array_ptr_initialize_clo<a> (pf | kernel, n, !p_clo)
   prval unit_v () = pf
 } // end of [kernel_intialize]
 
