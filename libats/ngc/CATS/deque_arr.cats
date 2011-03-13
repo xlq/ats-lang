@@ -160,8 +160,9 @@ atslib_ngc_deque_arr_deque_remove_beg_many_tsz (
 
 ATSinline()
 ats_void_type
-atslib_ngc_deque_arr_deque_copyout_beg_tsz (
+atslib_ngc_deque_arr_deque_copyout_tsz (
   ats_ref_type q0
+, ats_size_type i
 , ats_size_type k
 , ats_ptr_type p0_xs /* buffer */
 , ats_size_type tsz
@@ -171,16 +172,21 @@ atslib_ngc_deque_arr_deque_copyout_beg_tsz (
   char *p_lft = q->qarr_lft ;
   char *p_rgt = q->qarr_rgt ;
   char *p_beg = q->qarr_beg ;
+  size_t itsz = i * tsz ;
+  char *p_i = p_beg + itsz ;
+  if (p_i >= p_rgt) {
+    p_i = p_lft + (p_i - p_rgt) ;
+  }
   size_t ktsz = k * tsz ;
-  size_t diff = p_rgt - p_beg ;
+  size_t diff = p_rgt - p_i ;
   if (ktsz <= diff) {
-    memcpy(p_xs, p_beg, ktsz) ;
+    memcpy(p_xs, p_i, ktsz) ;
   } else {
-    memcpy(p_xs, p_beg, diff) ;
+    memcpy(p_xs, p_i, diff) ;
     memcpy(p_xs+diff, p_lft, ktsz-diff) ;
   } // end of [if]
   return ;
-} // end of [atslib_ngc_deque_arr_deque_copyout_beg_tsz]
+} // end of [atslib_ngc_deque_arr_deque_copyout_tsz]
 
 /* ****** ****** */
 

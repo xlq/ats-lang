@@ -89,7 +89,9 @@ in
 *)
       val s2ls0_bk = s2lablst_trim_s2lablst_s2lablst (s2ls0_ft, s2ls_ft, s2ls_bk)
       var err: int = 0
-      val () = $SOL.s2exp_size_equal_solve_err (loc0, s2e_new, s2e_old, err)
+      val () = if ~s2exp_is_proof(s2e_new) then
+        $SOL.s2exp_size_equal_solve_err (loc0, s2e_new, s2e_old, err)
+      // end of [val]
       val () = if err > 0 then begin // error checking
         prerr loc0;
         prerr ": error(3)";

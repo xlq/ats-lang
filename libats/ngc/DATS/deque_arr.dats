@@ -505,9 +505,9 @@ deque_clear_all
 (* ****** ****** *)
 
 implement{a}
-deque_copyout_beg (q, k, xs) =
-  deque_copyout_beg_tsz {a} (q, k, xs, sizeof<a>)
-// end of [deque_copyout_beg]
+deque_copyout (q, i, k, xs) =
+  deque_copyout_tsz {a} (q, i, k, xs, sizeof<a>)
+// end of [deque_copyout]
 
 (* ****** ****** *)
 

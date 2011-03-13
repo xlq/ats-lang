@@ -158,7 +158,7 @@ queue_clear_all (q) = $DQ.deque_clear_all (q)
 
 implement{a}
 queue_copyout
-  (q, k, xs) = $DQ.deque_copyout_beg (q, k, xs)
+  (q, i, k, xs) = $DQ.deque_copyout (q, i, k, xs)
 // end of [queue_copyout]
 
 (* ****** ****** *)

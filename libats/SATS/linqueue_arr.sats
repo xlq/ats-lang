@@ -202,8 +202,9 @@ fun queue_clear_all
 fun{a:t@ype}
 queue_copyout
   {m,n:int}
-  {k:nat | k <= n} (
+  {i,k:nat | i+k <= n} (
   q: &QUEUE (a, m, n)
+, i: size_t i
 , k: size_t k
 , xs: &(@[a?][k]) >> @[a][k]
 ) :<> void // end of [queue_copyout]

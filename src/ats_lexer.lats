@@ -32,7 +32,7 @@
 (* ****** ****** *)
 //
 // Author: Hongwei Xi (hwxi AT cs DOT bu DOT edu)
-// July 2007
+// Start Time: July 2007
 //
 (* ****** ****** *)
 
@@ -685,16 +685,17 @@ in
   yylval_char_set ($Syn.c0har_make (loc, chr))
 end // end of [process_char]
 
-fn char_for_escaped (c: char): char = begin
+fn char_for_escaped
+  (c: char): char = begin
   case+ c of
-    | 'a' => '\007' (* alert *)
-    | 'b' => '\010' (* backspace *)
-    | 'f' => '\014' (* line feed *)
-    | 't' => '\011' (* horizontal tab *)
-    | 'n' => '\012' (* newline *)
-    | 'r' => '\015' (* carriage return *)
-    | 'v' => '\013' (* vertical tab *)
-    |  _  => c
+  | 'n' => '\012' (* newline *)
+  | 't' => '\011' (* horizontal tab *)
+  | 'v' => '\013' (* vertical tab *)
+  | 'b' => '\010' (* backspace *)
+  | 'r' => '\015' (* carriage return *)
+  | 'f' => '\014' (* line feed *)
+  | 'a' => '\007' (* alert *)
+  |  _  => c
 end // end of [char_for_escaped]
 
 fn process_char_escaped
@@ -1042,7 +1043,7 @@ symbolic2 = [
 identifier_sym = ($symbolic1+ | $symbolic2+)
 
 char_escaped = [
-  'n' 't' 'v' 'b' 'r' 'f' 'a' '\\' '?' '\'' '"' '(' '[' '{'
+  'n' 't' 'v' 'b' 'r' 'f' 'a' '\\' '?' '\'' '"' '\(' '\[' '\{'
 ]
 
 newline = '\n'
@@ -1076,54 +1077,69 @@ MAIN () =
   | $blanks { MAIN () }
   | "case-" { process_keyword (); CASEMINUS }
   | "case+" { process_keyword (); CASEPLUS }
+//
   | "fn*" { process_keyword (); FNSTAR }
-  | "for*" { process_keyword (); FORSTAR }
+//
 (*
   | "method*" { process_keyword (); METHODSTAR }
 *)
-  | "prop-" { process_token (); PROPMINUS }
-  | "prop+" { process_token (); PROPPLUS }
-  | "type-" { process_token (); TYPEMINUS }
-  | "type+" { process_token (); TYPEPLUS }
-  | "val-" { process_keyword (); VALMINUS }
-  | "val+" { process_keyword (); VALPLUS }
-  | "view-" { process_token (); VIEWMINUS }
-  | "view+" { process_token (); VIEWPLUS }
-  | "viewtype-" { process_token (); VIEWTYPEMINUS }
-  | "viewtype+" { process_token (); VIEWTYPEPLUS }
+//
+  | "for*" { process_keyword (); FORSTAR }
   | "while*" { process_keyword (); WHILESTAR }
-  | "fold@" { process_token (); FOLDAT }
-  | "free@" { process_token (); FREEAT }
-  | "view@" { process_token (); VIEWAT }
-  | "@lam" { process_token (); ATLAM }
-  | "@llam" { process_token (); ATLLAM }
-  | "@fix" { process_token (); ATFIX }
-  | "r@ead" { process_token (); R0EAD }
+//
+  | "abst@ype" { process_keyword (); ABST0YPE }
+  | "absviewt@ype" { process_keyword (); ABSVIEWT0YPE }
+//
+  | "prop+" { process_token (); PROPPLUS }
+  | "prop-" { process_token (); PROPMINUS }
+  | "type+" { process_token (); TYPEPLUS }
+  | "type-" { process_token (); TYPEMINUS }
   | "t@ype" { process_token (); T0YPE }
   | "t@ype+" { process_token (); T0YPEPLUS }
   | "t@ype-" { process_token (); T0YPEMINUS }
+//
+  | "view+" { process_token (); VIEWPLUS }
+  | "view-" { process_token (); VIEWMINUS }
+  | "viewtype+" { process_token (); VIEWTYPEPLUS }
+  | "viewtype-" { process_token (); VIEWTYPEMINUS }
   | "viewt@ype" { process_token (); VIEWT0YPE }
   | "viewt@ype+" { process_token (); VIEWT0YPEPLUS }
   | "viewt@ype-" { process_token (); VIEWT0YPEMINUS }
-  | "abst@ype" { process_keyword (); ABST0YPE }
-  | "absviewt@ype" { process_keyword (); ABSVIEWT0YPE }
+//
+  | "val+" { process_keyword (); VALPLUS }
+  | "val-" { process_keyword (); VALMINUS }
+//
+  | "fold@" { process_token (); FOLDAT }
+  | "free@" { process_token (); FREEAT }
+  | "view@" { process_token (); VIEWAT }
+//
+  | "@lam" { process_token (); ATLAM }
+  | "@llam" { process_token (); ATLLAM }
+  | "@fix" { process_token (); ATFIX }
+//
+  | "r@ead" { process_token (); R0EAD }
+//
   | "////" { process_comment_rest_open (); COMMENT_REST (); TOKEN_eof }
   | "//" { process_comment_line_open (); COMMENT_LINE (); MAIN () }
   | "/*" { COMMENT0_CLIKE (); MAIN () }
   | "(*" { COMMENT0 (); MAIN () }
   | $identifier_alp { tokenize_identifier_alp () }
-  | $identifier_alp '\[' { tokenize_identifier_arr () }
-  | $identifier_alp '\<' { tokenize_identifier_tmp () }
-  | $identifier_alp '!' { tokenize_identifier_ext () }
-  | '$' $identifier_alp { tokenize_identifier_dlr () }
-  | '#' $identifier_alp { tokenize_identifier_srp () }
+//
+  | $identifier_alp "[" { tokenize_identifier_arr () }
+  | $identifier_alp "<" { tokenize_identifier_tmp () }
+  | $identifier_alp "!" { tokenize_identifier_ext () }
+//
+  | "$" $identifier_alp { tokenize_identifier_dlr () }
+  | "#" $identifier_alp { tokenize_identifier_srp () }
+//
   | $identifier_sym { tokenize_identifier_sym () }
+//
   | $literal_int { process_literal_int (); LITERAL_int }
   | $literal_intsp { process_literal_intsp (); LITERAL_intsp }
   | $literal_float { process_literal_float (); LITERAL_float }
   | $literal_floatsp { process_literal_floatsp (); LITERAL_floatsp }
-  | '(' { process_keyword (); LPAREN }
-  | ')' { process_keyword (); RPAREN }
+  | "(" { process_keyword (); LPAREN }
+  | ")" { process_keyword (); RPAREN }
   | "[" { process_keyword (); LBRACKET }
   | "]" { process_keyword (); RBRACKET }
   | "{" { process_keyword (); LBRACE }
@@ -1149,8 +1165,8 @@ MAIN () =
   | "`{" { process_keyword (); BACKQUOTELBRACE } (* distributed meta-programming syntax *)
   | ",{" { process_keyword (); COMMALBRACE } (* distributed meta-programming syntax *)
 *)
-  | '\"' { STRING0 () }
-  | '\'' { CHAR0 () }
+  | "\"" { STRING0 () }
+  | "\'" { CHAR0 () }
   | "%{^" { EXTCODE0 (0) }
   | "%{" { EXTCODE0 (1) }
   | "%{$" { EXTCODE0 (2) }

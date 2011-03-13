@@ -52,8 +52,10 @@
 
 (* ****** ****** *)
 
-typedef hash (key: t@ype) = (key) -<cloref> ulint
-typedef eqfn (key: t@ype) = (key, key) -<cloref> bool
+typedef
+hash (key: t@ype) = (key) -<cloref> ulint
+typedef
+eqfn (key: t@ype) = (key, key) -<cloref> bool
 
 absviewtype HASHTBLptr (key:t@ype, itm:viewt@ype+, l:addr)
 viewtypedef HASHTBLptr0
@@ -72,15 +74,19 @@ overload ptr_of with ptr_of_HASHTBLptr
 abstype
 HASHTBLref (key:t@ype, itm:viewt@ype)
 
-castfn HASHTBLref_make_ptr
-{key:t@ype;itm:viewt@ype} {l:agz}
-  (x: HASHTBLptr (key, itm, l)):<> HASHTBLref (key, itm)
-// end of [HASHTBLref_make_ptr]
+castfn
+HASHTBLref_make_ptr
+  {key:t@ype;itm:viewt@ype}
+  {l:agz} (
+  x: HASHTBLptr (key, itm, l)
+) :<> HASHTBLref (key, itm)
+// end of [castfn]
 
 //
 // HX: unsafe but convenient ...
 //
-castfn HASHTBLref_takeout_ptr
+castfn
+HASHTBLref_takeout_ptr
 {key:t@ype;itm:viewt@ype} (
   x: HASHTBLref (key, itm)
 ) :<!ref> [l:agz] (

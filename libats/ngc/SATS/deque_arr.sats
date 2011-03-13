@@ -63,11 +63,14 @@
 // m: maximal capacity
 // n: current size
 //
-absviewt@ype DEQUE (
+absviewt@ype
+DEQUE (
   a:viewt@ype+, m: int, n: int
-) = $extype "atslib_ngc_deque_arr_DEQUE"
+) = $extype"atslib_ngc_deque_arr_DEQUE"
 viewtypedef
-DEQUE0 (a:viewt@ype) = [m,n:int] DEQUE (a, m, n)
+DEQUE0 (
+  a:viewt@ype
+) = [m,n:int] DEQUE (a, m, n)
 
 (* ****** ****** *)
 
@@ -102,15 +105,21 @@ fun deque_isnot_full {a:viewt@ype}
 fun{a:viewt@ype}
 deque_initialize
   {m:nat} {l:addr} (
-  pfgc: free_gc_v (a, m, l), pfarr: array_v (a?, m, l)
-| q: &DEQUE0(a)? >> DEQUE (a, m, 0), m: size_t m, p: ptr l
+  pfgc: free_gc_v (a, m, l)
+, pfarr: array_v (a?, m, l)
+| q: &DEQUE0(a)? >> DEQUE (a, m, 0)
+, m: size_t m, p: ptr l
 ) :<> void // end of [deque_initialize]
 
 fun deque_initialize_tsz
   {a:viewt@ype}
   {m:nat} {l:addr} (
-  pfgc: free_gc_v (a, m, l), pfarr: array_v (a?, m, l)
-| q: &DEQUE0(a)? >> DEQUE (a, m, 0), m: size_t m, p: ptr l, tsz: sizeof_t a
+  pfgc: free_gc_v (a, m, l)
+, pfarr: array_v (a?, m, l)
+| q: &DEQUE0(a)? >> DEQUE (a, m, 0)
+, m: size_t m
+, p: ptr l
+, tsz: sizeof_t a
 ) :<> void
   = "atslib_ngc_deque_arr_deque_initialize_tsz"
 // end of [deque_initialize_tsz]
@@ -143,7 +152,8 @@ fun deque_uninitialize_vt
 
 (* ****** ****** *)
 //
-// HX-2011-03-06: unsafe but convenient!
+// HX-2011-03-06:
+// slightly unsafe but greatly convenient!
 //
 fun
 deque_takeout_tsz
@@ -176,17 +186,17 @@ deque_set_elt_at
 
 fun{a:viewt@ype}
 deque_insert_beg (*last*)
-  {m,n:int | m > n}
-  (q: &DEQUE (a, m, n) >> DEQUE (a, m, n+1), x: a):<> void
-// end of [deque_insert_beg]
+  {m,n:int | m > n} (
+  q: &DEQUE (a, m, n) >> DEQUE (a, m, n+1), x: a
+) :<> void // end of [deque_insert_beg]
 
 (* ****** ****** *)
 
 fun{a:viewt@ype}
 deque_insert_end (*last*)
-  {m,n:int | m > n}
-  (q: &DEQUE (a, m, n) >> DEQUE (a, m, n+1), x: a):<> void
-// end of [deque_insert_end]
+  {m,n:int | m > n} (
+  q: &DEQUE (a, m, n) >> DEQUE (a, m, n+1), x: a
+) :<> void // end of [deque_insert_end]
 
 fun{a:viewt@ype}
 deque_insert_end_many
@@ -270,26 +280,28 @@ fun deque_clear_all
 (* ****** ****** *)
 
 fun
-deque_copyout_beg_tsz
+deque_copyout_tsz
   {a:t@ype}
   {m,n:int}
-  {k:nat | k <= n} (
+  {i,k:nat | i+k <= n} (
   q: &DEQUE (a, m, n)
+, i: size_t i
 , k: size_t k
 , xs: &(@[a?][k]) >> @[a][k]
 , tsz: sizeof_t a
 ) :<> void
-  = "atslib_ngc_deque_arr_deque_copyout_beg_tsz"
+  = "atslib_ngc_deque_arr_deque_copyout_tsz"
 // end of [deque_copyout_beg_tsz]
 
 fun{a:t@ype}
-deque_copyout_beg
+deque_copyout
   {m,n:int}
-  {k:nat | k <= n} (
+  {i,k:nat | i+k <= n} (
   q: &DEQUE (a, m, n)
+, i: size_t i
 , k: size_t k
 , xs: &(@[a?][k]) >> @[a][k]
-) :<> void // end of [deque_copyout_beg_tsz]
+) :<> void // end of [deque_copyout]
 
 (* ****** ****** *)
 

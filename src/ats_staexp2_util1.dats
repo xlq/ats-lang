@@ -1117,7 +1117,8 @@ s2zexp_make_s2exp (s2e0) = let
 (*
     val () = (print "s2zexp_make_s2exp: aux_s2exp: s2e0 = "; print s2e0; print_newline ())
 *)
-    val s2e0 = s2exp_whnf s2e0 in case+ s2e0.s2exp_node of
+    val s2e0 = s2exp_whnf s2e0 in
+      case+ s2e0.s2exp_node of
       | S2Eapp (s2e_fun, s2es_arg) =>
           aux_s2exp_app (s2vss, s2e0.s2exp_srt, s2e_fun, s2es_arg)
         // end of [S2Eapp]
@@ -1180,13 +1181,19 @@ s2zexp_make_s2exp (s2e0) = let
     | list_nil () => list_nil ()
   // end of [aux_s2explst]
 //
-  and aux_labs2explst (s2vss: s2varlstlst, ls2es: labs2explst)
-    : labs2zexplst = case+ ls2es of
-    | LABS2EXPLSTcons (l, s2e, ls2es) => let
-        val s2ze = aux_s2exp (s2vss, s2e)
-      in
-        LABS2ZEXPLSTcons (l, s2ze, aux_labs2explst (s2vss, ls2es))
-      end // end of [LABS2EXPLSTcons]
+  and aux_labs2explst (
+    s2vss: s2varlstlst, ls2es: labs2explst
+  ) : labs2zexplst = case+ ls2es of
+    | LABS2EXPLSTcons (l, s2e, ls2es) =>
+        if s2exp_is_proof (s2e) then
+          aux_labs2explst (s2vss, ls2es)
+        else let
+          val s2ze = aux_s2exp (s2vss, s2e)
+          val ls2zes = aux_labs2explst (s2vss, ls2es)
+        in
+          LABS2ZEXPLSTcons (l, s2ze, ls2zes)
+        end // end of [if]
+      // end of [LABS2EXPLSTcons]
     | LABS2EXPLSTnil () => LABS2ZEXPLSTnil ()
   // end of [aux_labs2explst]
 //

@@ -45,7 +45,7 @@ end // end of [keyitem_nullify]
 implement
 $H.keyitem_isnot_null<keyitm> (ki) = let
   prval () = __assert (ki) where {
-    extern prfun __assert (x: !($H.Opt keyitm) >> keyitm):<> void
+    extern prfun __assert (x: &($H.Opt keyitm) >> keyitm):<> void
   } // end of [prval]
   val i = ki.1
   extern castfn __cast (x: absptr):<> ptr

@@ -108,11 +108,12 @@ ats_void_type
 atsopt_keyval_table_initialize (
   // no argument for this function
 ) {
-
-/*
+//
 // HX: [theKeywordTable] is already initialized:
+//
+#if(0)
 memset (&theKeywordTable[0], 0, sizeof(theKeywordTable)) ;
-*/
+#endif
 
 //
 // HX: symbolic keywords
@@ -151,10 +152,8 @@ keyval_insert(":<>", COLONLTGT) ;
 //
 keyval_insert("absprop", ABSPROP) ;
 keyval_insert("abstype", ABSTYPE) ;
-keyval_insert("abst@ype", ABST0YPE) ;
 keyval_insert("absview", ABSVIEW) ;
 keyval_insert("absviewtype", ABSVIEWTYPE) ;
-keyval_insert("absviewt@ype", ABSVIEWT0YPE) ;
 keyval_insert("and", AND) ;
 keyval_insert("as", AS) ;
 keyval_insert("assume", ASSUME) ;
@@ -272,7 +271,9 @@ keyval_insert("$rec_vt", DLRREC_VT) ;
 keyval_insert("$tup_t", DLRTUP_T) ;
 keyval_insert("$tup_vt", DLRTUP_VT) ;
 keyval_insert("$typeof", DLRTYPEOF) ;
+/*
 keyval_insert("$unfold", DLRUNFOLD) ;
+*/
 //
 keyval_insert("#assert", SRPASSERT) ;
 keyval_insert("#define", SRPDEFINE) ;

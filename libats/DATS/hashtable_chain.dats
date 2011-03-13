@@ -112,10 +112,11 @@ chain_insert {n:nat} (
 (* ****** ****** *)
 
 stadef b2i = int_of_bool
-fun{key:t0p;itm:vt0p} chain_remove {n:nat} .<n>. (
-    kis: &chain (key,itm,n) >> chain (key,itm,n-b2i b)
-  , k0: key, eqfn: eqfn key, res: &itm? >> opt (itm, b)
-  ) :<> #[b:bool | b2i b <= n] bool b = begin case+ kis of
+fun{key:t0p;itm:vt0p}
+chain_remove {n:nat} .<n>. (
+  kis: &chain (key,itm,n) >> chain (key,itm,n-b2i b)
+, k0: key, eqfn: eqfn key, res: &itm? >> opt (itm, b)
+) :<> #[b:bool | b2i b <= n] bool b = begin case+ kis of
   | CHAINcons (k, !i, !kis1) => let
       val keq = equal_key_key (k0, k, eqfn)
     in
@@ -204,10 +205,10 @@ hashtbl_total {key,itm} (ptbl) = tot where {
 fun{key:t0p;itm:t0p}
 hashtbl_ptr_clear
   {sz,tot:nat} {l_beg,l_end:addr} .<sz>. (
-     pf: !hashtbl_v (key, itm, sz, tot, l_beg, l_end)
-           >> hashtbl_v (key, itm, sz, 0(*tot*), l_beg, l_end)
-  | sz: size_t sz, p_beg: ptr l_beg
-  ) :<> void = begin
+   pf: !hashtbl_v (key, itm, sz, tot, l_beg, l_end)
+         >> hashtbl_v (key, itm, sz, 0(*tot*), l_beg, l_end)
+| sz: size_t sz, p_beg: ptr l_beg
+) :<> void = begin
   if sz > 0 then let
     prval hashtbl_v_cons (pf1, pf2) = pf
     val () = chain_free (!p_beg); val () = !p_beg := CHAINnil ()
@@ -235,19 +236,18 @@ hashtbl_clear (ptbl) = () where {
 extern fun hashtbl_ptr_make
   {key:t0p;itm:vt0p} {sz:pos} (sz: size_t sz)
   :<> [l_beg,l_end:addr] @(
-    free_gc_v l_beg
-  , hashtbl_v (key, itm, sz, 0(*tot*), l_beg, l_end)
-  | ptr l_beg
-  ) // end of [hashtbl_ptr_make]
-  = "atslib_hashtbl_ptr_make__chain"
+  free_gc_v l_beg
+, hashtbl_v (key, itm, sz, 0(*tot*), l_beg, l_end)
+| ptr l_beg
+) = "atslib_hashtbl_ptr_make__chain"
 // end of [hashtbl_ptr_make]
 
 extern fun hashtbl_ptr_free
   {key:t0p;itm:vt0p} {sz:pos} {l_beg,l_end:addr} (
-    pf_gc: free_gc_v l_beg
-  , pf_tbl: hashtbl_v (key, itm, sz, 0(*tot*), l_beg, l_end)
-  | p_beg: ptr l_beg
-  ) :<> void
+  pf_gc: free_gc_v l_beg
+, pf_tbl: hashtbl_v (key, itm, sz, 0(*tot*), l_beg, l_end)
+| p_beg: ptr l_beg
+) :<> void
   = "atslib_hashtbl_ptr_free__chain"
 // end of [hashtbl_ptr_free]
 
@@ -256,33 +256,34 @@ extern fun hashtbl_ptr_free
 extern prfun // proof is omitted
 hashtbl_v_split {key:t0p;itm:vt0p}
   {sz,sz1,tot:nat | sz1 <= sz} {l_beg,l_end:addr} {ofs:int} (
-    pf_mul: MUL (sz1, chainsz, ofs)
-  , pf_tbl: hashtbl_v (key, itm, sz, tot, l_beg, l_end)
-  ) :<> [tot1:nat | tot1 <= tot] @(
-    hashtbl_v (key, itm, sz1, tot1, l_beg, l_beg+ofs)
-  , hashtbl_v (key, itm, sz-sz1, tot-tot1, l_beg+ofs, l_end)
-  ) // end of [hashtbl_v_split]
+  pf_mul: MUL (sz1, chainsz, ofs)
+, pf_tbl: hashtbl_v (key, itm, sz, tot, l_beg, l_end)
+) :<> [tot1:nat | tot1 <= tot] @(
+  hashtbl_v (key, itm, sz1, tot1, l_beg, l_beg+ofs)
+, hashtbl_v (key, itm, sz-sz1, tot-tot1, l_beg+ofs, l_end)
+) // end of [hashtbl_v_split]
 
 extern prfun // proof is omitted
 hashtbl_v_unsplit {key:t0p;itm:vt0p}
   {sz1,sz2,tot1,tot2:nat} {l_beg,l_mid,l_end:addr} (
-    pf1: hashtbl_v (key, itm, sz1, tot1, l_beg, l_mid)
-  , pf2: hashtbl_v (key, itm, sz2, tot2, l_mid, l_end)
-  ) :<prf> hashtbl_v (
-    key, itm, sz1+sz2, tot1+tot2, l_beg, l_end
-  ) // end of [hashtbl_v_unsplit]
+  pf1: hashtbl_v (key, itm, sz1, tot1, l_beg, l_mid)
+, pf2: hashtbl_v (key, itm, sz2, tot2, l_mid, l_end)
+) :<prf> hashtbl_v (
+  key, itm, sz1+sz2, tot1+tot2, l_beg, l_end
+) // end of [hashtbl_v_unsplit]
 
 (* ****** ****** *)
 
-fn{key:t0p;itm:vt0p} hashtbl_ptr_split 
+fn{key:t0p;itm:vt0p}
+hashtbl_ptr_split 
   {sz,sz1,tot:nat | sz1 <= sz} {l_beg,l_end:addr} (
-    pf_tbl: hashtbl_v (key, itm, sz, tot, l_beg, l_end)
-  | p_beg: ptr l_beg, sz1: size_t sz1
-  ) :<> [tot1:nat | tot1 <= tot] [l_mid:addr] @(
-      hashtbl_v (key, itm, sz1, tot1, l_beg, l_mid)
-    , hashtbl_v (key, itm, sz-sz1, tot-tot1, l_mid, l_end)
-    | ptr l_mid
-    ) = let
+  pf_tbl: hashtbl_v (key, itm, sz, tot, l_beg, l_end)
+| p_beg: ptr l_beg, sz1: size_t sz1
+) :<> [tot1:nat | tot1 <= tot] [l_mid:addr] @(
+  hashtbl_v (key, itm, sz1, tot1, l_beg, l_mid)
+, hashtbl_v (key, itm, sz-sz1, tot-tot1, l_mid, l_end)
+| ptr l_mid
+) = let
   val (pf_mul | ofs) = mul2_size1_size1 (sz1, sizeof<chain0>)
   prval (pf1_tbl, pf2_tbl) = hashtbl_v_split {key,itm} (pf_mul, pf_tbl)
 in
@@ -303,9 +304,9 @@ extern castfn size1_of_ulint (x: ulint):<> [i:nat] size_t i
 fn{key:t0p;itm:vt0p}
 hashtbl_ptr_search_ofs
   {sz,ofs,tot:nat | ofs < sz} {l_beg,l_end:addr} (
-    pf: !hashtbl_v (key, itm, sz, tot, l_beg, l_end)
-  | p_beg: ptr l_beg, k0: key, eqfn: eqfn key, ofs: size_t ofs
-  ) :<> Ptr (* null or pointing to the found item *) = let
+  pf: !hashtbl_v (key, itm, sz, tot, l_beg, l_end)
+| p_beg: ptr l_beg, k0: key, eqfn: eqfn key, ofs: size_t ofs
+) :<> Ptr (* null or pointing to the found item *) = let
   val (pf1, pf2 | p_mid) =
     hashtbl_ptr_split<key,itm> {sz,ofs,tot} (pf | p_beg, ofs)
   prval hashtbl_v_cons (pf21, pf22) = pf2
@@ -352,10 +353,10 @@ end // end of [hashtbl_search]
 fn{key:t0p;itm:vt0p}
 hashtbl_ptr_insert_ofs
   {sz,ofs,tot:nat | ofs < sz} {l_beg,l_end:addr} (
-    pf: !hashtbl_v (key, itm, sz, tot, l_beg, l_end)
-          >> hashtbl_v (key, itm, sz, tot+1, l_beg, l_end)
-  | p_beg: ptr l_beg, k: key, i: itm, ofs: size_t ofs
-  ) :<> void = let
+  pf: !hashtbl_v (key, itm, sz, tot, l_beg, l_end)
+        >> hashtbl_v (key, itm, sz, tot+1, l_beg, l_end)
+| p_beg: ptr l_beg, k: key, i: itm, ofs: size_t ofs
+) :<> void = let
   val (pf1, pf2 | p_mid) =
     hashtbl_ptr_split<key,itm> {sz,ofs,tot} (pf | p_beg, ofs)
   prval hashtbl_v_cons (pf21, pf22) = pf2
@@ -371,11 +372,11 @@ end // end of [hashtbl_ptr_insert_ofs]
 fn{key:t0p;itm:vt0p}
 hashtbl_ptr_remove_ofs
   {sz,ofs,tot:nat | ofs < sz} {l_beg,l_end:addr} (
-    pf: !hashtbl_v (key, itm, sz, tot, l_beg, l_end)
-          >> hashtbl_v (key, itm, sz, tot-b2i b, l_beg, l_end)
-  | p_beg: ptr l_beg, k0: key, eqfn: eqfn key, ofs: size_t ofs
-  , res: &itm? >> opt (itm, b)
-  ) :<> #[b:bool | b2i b <= tot] bool b = let
+  pf: !hashtbl_v (key, itm, sz, tot, l_beg, l_end)
+        >> hashtbl_v (key, itm, sz, tot-b2i b, l_beg, l_end)
+| p_beg: ptr l_beg, k0: key, eqfn: eqfn key, ofs: size_t ofs
+, res: &itm? >> opt (itm, b)
+) :<> #[b:bool | b2i b <= tot] bool b = let
   val (pf1, pf2 | p_mid) =
     hashtbl_ptr_split<key,itm> {sz,ofs,tot} (pf | p_beg, ofs)
   prval hashtbl_v_cons (pf21, pf22) = pf2
@@ -391,13 +392,13 @@ end // end of [hashtbl_ptr_remove_ofs]
 fun{key:t0p;itm:vt0p}
 hashtbl_ptr_insert_chain
   {sz:pos;tot,n:nat} {l_beg,l_end:addr} .<n>. (
-    pf: !hashtbl_v (key, itm, sz, tot, l_beg, l_end)
-          >> hashtbl_v (key, itm, sz, tot+n, l_beg, l_end)
-  | sz: size_t sz
-  , p_beg: ptr l_beg
-  , kis: chain (key, itm, n)
-  , hash: hash key
-  ) :<> void = begin case+ kis of
+  pf: !hashtbl_v (key, itm, sz, tot, l_beg, l_end)
+        >> hashtbl_v (key, itm, sz, tot+n, l_beg, l_end)
+| sz: size_t sz
+, p_beg: ptr l_beg
+, kis: chain (key, itm, n)
+, hash: hash key
+) :<> void = begin case+ kis of
   | ~CHAINcons (k, i, kis) => let
       // insertion must be done in the reverse order!
       val () = hashtbl_ptr_insert_chain (pf | sz, p_beg, kis, hash)
@@ -422,13 +423,13 @@ fun{key:t0p;itm:vt0p}
 hashtbl_ptr_relocate
   {sz1:nat;sz2:pos;tot1,tot2:nat} .<sz1>.
   {l1_beg,l2_beg,l1_end,l2_end:addr} (
-    pf1: !hashtbl_v (key, itm, sz1, tot1, l1_beg, l1_end)
-          >> hashtbl_v (key, itm, sz1, 0(*tot*), l1_beg, l1_end)
-  , pf2: !hashtbl_v (key, itm, sz2, tot2, l2_beg, l2_end)
-          >> hashtbl_v (key, itm, sz2, tot1+tot2, l2_beg, l2_end)
-  | sz1: size_t sz1, sz2: size_t sz2, p1_beg: ptr l1_beg, p2_beg: ptr l2_beg
-  , hash: hash key
-  ) :<> void = begin
+  pf1: !hashtbl_v (key, itm, sz1, tot1, l1_beg, l1_end)
+        >> hashtbl_v (key, itm, sz1, 0(*tot*), l1_beg, l1_end)
+, pf2: !hashtbl_v (key, itm, sz2, tot2, l2_beg, l2_end)
+        >> hashtbl_v (key, itm, sz2, tot1+tot2, l2_beg, l2_end)
+| sz1: size_t sz1, sz2: size_t sz2, p1_beg: ptr l1_beg, p2_beg: ptr l2_beg
+, hash: hash key
+) :<> void = begin
   if sz1 > 0 then let
     prval hashtbl_v_cons (pf11, pf12) = pf1
     val kis = !p1_beg; val () = !p1_beg := CHAINnil ()
