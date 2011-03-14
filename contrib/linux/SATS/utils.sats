@@ -50,7 +50,6 @@ staload "contrib/linux/basics.sats"
 
 (* ****** ****** *)
 
-
 prfun bytes_v_split
   {n:int} {i:nat | i <= n} {l:addr}
   (pf: bytes(n) @ l): (bytes (i) @ l, bytes (n-i) @ l+i)
@@ -63,11 +62,23 @@ prfun bytes_v_unsplit
 
 (* ****** ****** *)
 
+dataview
+array_ptr_kalloc_v (
+  a:viewt@ype, int, addr
+) =
+  | {n:int} {l:agz}
+    array_ptr_kalloc_v_some (a, n, l) of
+      (kfree_v (a, n, l), array_v (a?, n, l))
+  | {n:int}
+    array_ptr_kalloc_v_none (a, n, null) of ()
+// end of [array_ptr_kalloc_v]
+
 fun{a:viewt@ype}
 array_ptr_kalloc
   {n:nat} (
   asz: size_t n
-) :<> [l:agz] (kfree_v (a, n, l), array_v (a?, n, l) | ptr l
+) :<> [l:addr] (
+  array_ptr_kalloc_v (a, n, l) | ptr l
 ) // end of [array_ptr_kalloc]
 
 (*
@@ -77,8 +88,9 @@ fun array_ptr_kalloc_tsz
   {a:viewt@ype}
   {n:nat} (
   asz: size_t n, tsz: sizeof_t a
-) :<> [l:agz] (kfree_v (a, n, l), array_v (a?, n, l) | ptr l)
-  = "atsctrb_linux_array_ptr_kalloc_tsz"
+) :<> [l:addr] (
+  array_ptr_kalloc_v (a, n, l) | ptr l
+) = "mac#atsctrb_linux_array_ptr_kalloc_tsz"
 // end of [array_ptr_kalloc_tsz]
 
 (* ****** ****** *)

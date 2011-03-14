@@ -90,8 +90,8 @@ overload || with alt_parser_parser
 // symintr seq // infix
 fun{a1,a2:t@ype}{t:t@ype}
 seq_parser_parser (
-    p1: parser_t (a1, t), p2: parser_t (a2, t)
-  ) :<> parser_t (@(a1,a2), t)
+  p1: parser_t (a1, t), p2: parser_t (a2, t)
+) :<> parser_t (@(a1,a2), t)
 overload && with seq_parser_parser
 
 (* ****** ****** *)
@@ -100,43 +100,43 @@ symintr wth // infix
 
 fun{a:t@ype;b:t@ype}{t:t@ype}
 seq1wth_parser_fun (
-    p1: parser_t (a, t), f: (a) -<fun> b
-  ) :<> parser_t (b, t)
+  p1: parser_t (a, t), f: (a) -<fun> b
+) :<> parser_t (b, t)
 overload wth with seq1wth_parser_fun
 
 fun{a:t@ype;b:t@ype}{t:t@ype}
 seq1wth_parser_cloref (
-    p1: parser_t (a, t), f: (a) -<cloref> b
-  ) :<> parser_t (b, t)
+  p1: parser_t (a, t), f: (a) -<cloref> b
+) :<> parser_t (b, t)
 overload wth with seq1wth_parser_cloref
 
 (* ****** ****** *)
 
 fun{a1,a2,b:t@ype}{t:t@ype}
 seq2wth_parser_fun (
-    p1: parser_t (a1, t)
-  , p2: parser_t (a2, t)
-  , f: (a1, a2) -<fun> b
-  ) :<> parser_t (b, t)
+  p1: parser_t (a1, t)
+, p2: parser_t (a2, t)
+, f: (a1, a2) -<fun> b
+) :<> parser_t (b, t)
 // end of [seq2wth_parser_fun]
 
 fun{a1,a2,b:t@ype}{t:t@ype}
 seq2wth_parser_cloref (
-    p1: parser_t (a1, t)
-  , p2: parser_t (a2, t)
-  , f: (a1, a2) -<cloref> b
-  ) :<> parser_t (b, t)
+  p1: parser_t (a1, t)
+, p2: parser_t (a2, t)
+, f: (a1, a2) -<cloref> b
+) :<> parser_t (b, t)
 // end of [seq2wth_parser_cloref]
 
 (* ****** ****** *)
 
 fun{a1,a2,a3,b:t@ype}{t:t@ype}
 seq3wth_parser_fun (
-    p1: parser_t (a1, t)
-  , p2: parser_t (a2, t)
-  , p3: parser_t (a3, t)  
-  , f: (a1, a2, a3) -<fun> b
-  ) :<> parser_t (b, t)
+  p1: parser_t (a1, t)
+, p2: parser_t (a2, t)
+, p3: parser_t (a3, t)  
+, f: (a1, a2, a3) -<fun> b
+) :<> parser_t (b, t)
 // end of [seq3wth_parser_fun]
 
 fun{a1,a2,a3,b:t@ype}{t:t@ype}
@@ -152,130 +152,130 @@ seq3wth_parser_cloref (
 
 fun{a1,a2,a3,a4,b:t@ype}{t:t@ype}
 seq4wth_parser_fun (
-    p1: parser_t (a1, t)
-  , p2: parser_t (a2, t)
-  , p3: parser_t (a3, t)  
-  , p4: parser_t (a4, t)  
-  , f: (a1, a2, a3, a4) -<fun> b
-  ) :<> parser_t (b, t)
+  p1: parser_t (a1, t)
+, p2: parser_t (a2, t)
+, p3: parser_t (a3, t)  
+, p4: parser_t (a4, t)  
+, f: (a1, a2, a3, a4) -<fun> b
+) :<> parser_t (b, t)
 // end of [seq4wth_parser_fun]
 
 fun{a1,a2,a3,a4,b:t@ype}{t:t@ype}
 seq4wth_parser_cloref (
-    p1: parser_t (a1, t)
-  , p2: parser_t (a2, t)
-  , p3: parser_t (a3, t)  
-  , p4: parser_t (a4, t)  
-  , f: (a1, a2, a3, a4) -<cloref> b
-  ) :<> parser_t (b, t)
+  p1: parser_t (a1, t)
+, p2: parser_t (a2, t)
+, p3: parser_t (a3, t)  
+, p4: parser_t (a4, t)  
+, f: (a1, a2, a3, a4) -<cloref> b
+) :<> parser_t (b, t)
 // end of [seq4wth_parser_cloref]
 
 (* ****** ****** *)
 
 fun{a1,a2,a3,a4,a5,b:t@ype}{t:t@ype}
 seq5wth_parser_fun (
-    p1: parser_t (a1, t)
-  , p2: parser_t (a2, t)
-  , p3: parser_t (a3, t)  
-  , p4: parser_t (a4, t)  
-  , p5: parser_t (a5, t)  
-  , f: (a1, a2, a3, a4, a5) -<fun> b
-  ) :<> parser_t (b, t)
+  p1: parser_t (a1, t)
+, p2: parser_t (a2, t)
+, p3: parser_t (a3, t)  
+, p4: parser_t (a4, t)  
+, p5: parser_t (a5, t)  
+, f: (a1, a2, a3, a4, a5) -<fun> b
+) :<> parser_t (b, t)
 // end of [seq5wth_parser_fun]
 
 fun{a1,a2,a3,a4,a5,b:t@ype}{t:t@ype}
 seq5wth_parser_cloref (
-    p1: parser_t (a1, t)
-  , p2: parser_t (a2, t)
-  , p3: parser_t (a3, t)  
-  , p4: parser_t (a4, t)  
-  , p5: parser_t (a5, t)  
-  , f: (a1, a2, a3, a4, a5) -<cloref> b
-  ) :<> parser_t (b, t)
+  p1: parser_t (a1, t)
+, p2: parser_t (a2, t)
+, p3: parser_t (a3, t)  
+, p4: parser_t (a4, t)  
+, p5: parser_t (a5, t)  
+, f: (a1, a2, a3, a4, a5) -<cloref> b
+) :<> parser_t (b, t)
 // end of [seq5wth_parser_cloref]
 
 (* ****** ****** *)
 
 fun{a1,a2,a3,a4,a5,a6,b:t@ype}{t:t@ype}
 seq6wth_parser_fun (
-    p1: parser_t (a1, t)
-  , p2: parser_t (a2, t)
-  , p3: parser_t (a3, t)  
-  , p4: parser_t (a4, t)  
-  , p5: parser_t (a5, t)
-  , p6: parser_t (a6, t)
-  , f: (a1, a2, a3, a4, a5, a6) -<fun> b
-  ) :<> parser_t (b, t)
+  p1: parser_t (a1, t)
+, p2: parser_t (a2, t)
+, p3: parser_t (a3, t)  
+, p4: parser_t (a4, t)  
+, p5: parser_t (a5, t)
+, p6: parser_t (a6, t)
+, f: (a1, a2, a3, a4, a5, a6) -<fun> b
+) :<> parser_t (b, t)
 // end of [seq6wth_parser_fun]
 
 fun{a1,a2,a3,a4,a5,a6,b:t@ype}{t:t@ype}
 seq6wth_parser_cloref (
-    p1: parser_t (a1, t)
-  , p2: parser_t (a2, t)
-  , p3: parser_t (a3, t)  
-  , p4: parser_t (a4, t)  
-  , p5: parser_t (a5, t)
-  , p6: parser_t (a6, t)
-  , f: (a1, a2, a3, a4, a5, a6) -<cloref> b
-  ) :<> parser_t (b, t)
+  p1: parser_t (a1, t)
+, p2: parser_t (a2, t)
+, p3: parser_t (a3, t)  
+, p4: parser_t (a4, t)  
+, p5: parser_t (a5, t)
+, p6: parser_t (a6, t)
+, f: (a1, a2, a3, a4, a5, a6) -<cloref> b
+) :<> parser_t (b, t)
 // end of [seq6wth_parser_cloref]
 
 (* ****** ****** *)
 
 fun{a1,a2,a3,a4,a5,a6,a7,b:t@ype}{t:t@ype}
 seq7wth_parser_fun (
-    p1: parser_t (a1, t)
-  , p2: parser_t (a2, t)
-  , p3: parser_t (a3, t)  
-  , p4: parser_t (a4, t)  
-  , p5: parser_t (a5, t)
-  , p6: parser_t (a6, t)
-  , p7: parser_t (a7, t)
-  , f: (a1, a2, a3, a4, a5, a6, a7) -<fun> b
-  ) :<> parser_t (b, t)
+  p1: parser_t (a1, t)
+, p2: parser_t (a2, t)
+, p3: parser_t (a3, t)  
+, p4: parser_t (a4, t)  
+, p5: parser_t (a5, t)
+, p6: parser_t (a6, t)
+, p7: parser_t (a7, t)
+, f: (a1, a2, a3, a4, a5, a6, a7) -<fun> b
+) :<> parser_t (b, t)
 // end of [seq7wth_parser_fun]
 
 fun{a1,a2,a3,a4,a5,a6,a7,b:t@ype}{t:t@ype}
 seq7wth_parser_cloref (
-    p1: parser_t (a1, t)
-  , p2: parser_t (a2, t)
-  , p3: parser_t (a3, t)  
-  , p4: parser_t (a4, t)  
-  , p5: parser_t (a5, t)
-  , p6: parser_t (a6, t)
-  , p7: parser_t (a7, t)
-  , f: (a1, a2, a3, a4, a5, a6, a7) -<cloref> b
-  ) :<> parser_t (b, t)
+  p1: parser_t (a1, t)
+, p2: parser_t (a2, t)
+, p3: parser_t (a3, t)  
+, p4: parser_t (a4, t)  
+, p5: parser_t (a5, t)
+, p6: parser_t (a6, t)
+, p7: parser_t (a7, t)
+, f: (a1, a2, a3, a4, a5, a6, a7) -<cloref> b
+) :<> parser_t (b, t)
 // end of [seq7wth_parser_cloref]
 
 (* ****** ****** *)
 
 fun{a1,a2,a3,a4,a5,a6,a7,a8,b:t@ype}{t:t@ype}
 seq8wth_parser_fun (
-    p1: parser_t (a1, t)
-  , p2: parser_t (a2, t)
-  , p3: parser_t (a3, t)  
-  , p4: parser_t (a4, t)  
-  , p5: parser_t (a5, t)
-  , p6: parser_t (a6, t)
-  , p7: parser_t (a7, t)
-  , p8: parser_t (a8, t)
-  , f: (a1, a2, a3, a4, a5, a6, a7, a8) -<fun> b
-  ) :<> parser_t (b, t)
+  p1: parser_t (a1, t)
+, p2: parser_t (a2, t)
+, p3: parser_t (a3, t)  
+, p4: parser_t (a4, t)  
+, p5: parser_t (a5, t)
+, p6: parser_t (a6, t)
+, p7: parser_t (a7, t)
+, p8: parser_t (a8, t)
+, f: (a1, a2, a3, a4, a5, a6, a7, a8) -<fun> b
+) :<> parser_t (b, t)
 // end of [seq8wth_parser_fun]
 
 fun{a1,a2,a3,a4,a5,a6,a7,a8,b:t@ype}{t:t@ype}
 seq8wth_parser_cloref (
-    p1: parser_t (a1, t)
-  , p2: parser_t (a2, t)
-  , p3: parser_t (a3, t)  
-  , p4: parser_t (a4, t)  
-  , p5: parser_t (a5, t)
-  , p6: parser_t (a6, t)
-  , p7: parser_t (a7, t)
-  , p8: parser_t (a8, t)
-  , f: (a1, a2, a3, a4, a5, a6, a7, a8) -<cloref> b
-  ) :<> parser_t (b, t)
+  p1: parser_t (a1, t)
+, p2: parser_t (a2, t)
+, p3: parser_t (a3, t)  
+, p4: parser_t (a4, t)  
+, p5: parser_t (a5, t)
+, p6: parser_t (a6, t)
+, p7: parser_t (a7, t)
+, p8: parser_t (a8, t)
+, f: (a1, a2, a3, a4, a5, a6, a7, a8) -<cloref> b
+) :<> parser_t (b, t)
 // end of [seq8wth_parser_cloref]
 
 (* ****** ****** *)
@@ -345,9 +345,8 @@ repeat1_sep_parser
 
 fun{a:t@ype}{t:t@ype}
 apply_parser (
-    p: parser_t (a, t), tks: &stream t, ncur: &int, nmax: &int
-  ) :<!laz> Option_vt a
-// end of [apply_parser]
+  p: parser_t (a, t), tks: &stream t, ncur: &int, nmax: &int
+) :<!laz> Option_vt a // end of [apply_parser]
 
 (* ****** ****** *)
 

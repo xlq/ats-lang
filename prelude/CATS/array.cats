@@ -69,7 +69,8 @@ ats_size_type n, ats_size_type tsz
 
 ATSinline()
 ats_void_type
-atspre_array_ptr_free (ats_ptr_type base) { 
+atspre_array_ptr_free
+  (ats_ptr_type base) { 
   ATS_FREE(base); return ;
 } /* end of [atspre_array_ptr_free] */
 

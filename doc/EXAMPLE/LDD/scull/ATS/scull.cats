@@ -9,6 +9,7 @@
 
 /* ****** ****** */
 
+#include "contrib/linux/CATS/array.cats"
 #include "contrib/linux/CATS/integer.cats"
 #include "contrib/linux/CATS/pointer.cats"
 #include "contrib/linux/CATS/sizetype.cats"

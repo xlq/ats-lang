@@ -153,7 +153,8 @@ scull_read_main
   prval (pfqs, fpfqs) = viewout_decode {qset@lm} (pfout)
   val (pfopt | pqtm) = qdatptr_vtakeout_bytes_read (pm->data, i)
   prval () = fpfqs (pfqs)
-  val [cnt:int] cnt = imin (cnt, n-j)
+  stavar cnt: int
+  val cnt = imin (cnt, n-j): int (cnt)
   val cnt_ul = $UN.cast {ulint(cnt)} (cnt)
   val nleft = (if pqtm > null then let
     prval Some_v pfout = pfopt
@@ -211,7 +212,8 @@ in
     stavar j: int
     val j = j : int j
     prval (pf1, pf2) = bytes_v_split {n} {j} (pf)
-    val [cnt:int] cnt = imin (cnt, n-j)
+    stavar cnt: int
+    val cnt = imin (cnt, n-j): int (cnt)
 (*
     prval () = verify_constraint {n-j > 0} ()
 *)
