@@ -255,7 +255,9 @@ in
     prval (pfdat | ()) = qdatptr_unfold (r)
     prval (pfarr, fpfdat) = qdat_v_takeout (pfdat)
     val i = i2sz (i)
-    val (pfat, fpfarr | p_i) = array_ptr_takeout<qtmptr(n)> (pfarr | p, i)
+    val (
+      pfat, fpfarr | p_i
+    ) = array_ptr_takeout<qtmptr(n)> (pfarr | p, i)
     val (pfopt | pqtm) = qtmptr_vtakeout_bytes_write (!p_i, n, 0)
     prval () = pfarr := fpfarr (pfat)
     prval () = pfdat := fpfdat (pfarr)

@@ -33,7 +33,9 @@
 
 #include "scull.h"		/* local definitions */
 
+//
 #include "contrib/linux/include/ats_types.h" /* ats types */
+//
 
 /*
  * Our parameters which can be set at load time.
