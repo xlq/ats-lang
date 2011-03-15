@@ -47,6 +47,8 @@
 (* ****** ****** *)
 
 staload "contrib/linux/basics.sats"
+staload GFP = "contrib/linux/linux/SATS/gfp.sats"
+typedef gfp_t = $GFP.gfp_t
 
 (* ****** ****** *)
 
@@ -76,7 +78,7 @@ array_ptr_kalloc_v (
 fun{a:viewt@ype}
 array_ptr_kalloc
   {n:nat} (
-  asz: size_t n
+  asz: size_t n, flags: gfp_t
 ) :<> [l:addr] (
   array_ptr_kalloc_v (a, n, l) | ptr l
 ) // end of [array_ptr_kalloc]
@@ -87,7 +89,7 @@ array_ptr_kalloc
 fun array_ptr_kalloc_tsz
   {a:viewt@ype}
   {n:nat} (
-  asz: size_t n, tsz: sizeof_t a
+  asz: size_t n, flags: gfp_t, tsz: sizeof_t a
 ) :<> [l:addr] (
   array_ptr_kalloc_v (a, n, l) | ptr l
 ) = "mac#atsctrb_linux_array_ptr_kalloc_tsz"

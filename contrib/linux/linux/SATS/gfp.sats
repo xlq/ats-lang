@@ -9,7 +9,7 @@
 (*
 ** ATS - Unleashing the Potential of Types!
 **
-** Copyright (C) 2002-2010 Hongwei Xi, Boston University
+** Copyright (C) 2002-2011 Hongwei Xi, Boston University
 **
 ** All rights reserved
 **
@@ -36,75 +36,38 @@
 (* ****** ****** *)
 
 %{#
-#include "libc/CATS/grp.cats"
+#include "contrib/linux/linux/CATS/gfp.cats"
 %} // end of [%{#]
 
 (* ****** ****** *)
 
-staload T = "libc/sys/SATS/types.sats"
-typedef gid_t = $T.gid_t
+#define ATS_STALOADFLAG 0 // no need for staloading at run-time
 
 (* ****** ****** *)
 
-(*
-struct group {
-  char *gr_name;		/* Group name.	*/
-  char *gr_passwd;		/* Password.	*/
-  __gid_t gr_gid;		/* Group ID.	*/
-  char **gr_mem;		/* Member list.	*/ // null-terminated
-} ;
-*)
-abst@ype
-group_rest // unknown quantity
-typedef group_struct =
-$extype_struct "ats_group_type" of {
-  gr_gid= gid_t
-, _rest= undefined_t
-} // end of [group]
-typedef group = group_struct
+abst@ype gfp_t = $extype"gfp_t"
+macdef GFP_KERNEL = $extval (gfp_t, "GFP_KERNEL")
+macdef GFP_ATOMIC = $extval (gfp_t, "GFP_ATOMIC")
+macdef GFP_NOWAIT = $extval (gfp_t, "GFP_NOWAIT")
+macdef GFP_NOIO = $extval (gfp_t, "GFP_NOIO")
+macdef GFP_NOFS = $extval (gfp_t, "GFP_NOFS")
+macdef GFP_IOFS = $extval (gfp_t, "GFP_IOFS")
+macdef GFP_TEMPORARY = $extval (gfp_t, "GFP_TEMPORARY")
+macdef GFP_USER = $extval (gfp_t, "GFP_USER")
+macdef GFP_HIGHUSER = $extval (gfp_t, "GFP_HIGHUSER")
+
+abst@ype disjgfp_t = $extype"gfp_t"
+macdef __GFP_DMA = $extval (disjgfp_t, "__GFP_DMA")
+macdef __GFP_HIGHMEM = $extval (disjgfp_t, "__GFP_HIGHMEM")
+macdef __GFP_DMA32 = $extval (disjgfp_t, "__GFP_DMA32")
+macdef __GFP_MOVABLE = $extval (disjgfp_t, "__GFP_MOVABLE")
 
 (* ****** ****** *)
 
-fun group_get_gr_name (
-  grp: &READ(group)
-) : [l:addr] (
-  strptr l -<lin,prf> void | strptr l
-) = "atslib_group_get_gr_name" // function!
-// end of [group_get_gr_name]
-
-fun group_get_gr_passwd (
-  grp: &READ(group)
-) : [l:addr] (
-  strptr l -<lin,prf> void | strptr l
-) = "atslib_group_get_gr_passwd" // function!
-// end of [group_get_gr_passwd]
-
-(* ****** ****** *)
-//
-// HX: please use with caution!
-//
-fun group_get_gr_mem
-  (grp: &READ(group)): ptr = "atslib_group_get_gr_mem" // fun!
-// end of [group_get_gr_mem]
+fun lor_gfp_disjgfp
+  (f: gfp_t, df: disjgfp_t): gfp_t = "mac#atsctrb_linux_lor_gfp_disjgfp"
+overload lor with lor_gfp_disjgfp
 
 (* ****** ****** *)
 
-// HX: non-reentrant
-fun getgrnam (
-  nam: !READ(string)
-) :<!ref> [l:addr] (
-  vptroutopt (group, l) | ptr l
-) = "mac#atslib_getgrnam"
-// end of [getgrnam]
-
-// HX: non-reentrant
-fun getgrgid (
-  gid: gid_t
-) :<!ref> [l:addr] (
-  vptroutopt (group, l) | ptr l
-) = "mac#atslib_getgrgid"
-// end of [getgrgid]
-
-(* ****** ****** *)
-
-(* end of [grp.sats] *)
+(* end of [kernel.sats] *)

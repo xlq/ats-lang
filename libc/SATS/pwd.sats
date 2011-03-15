@@ -66,7 +66,7 @@ typedef passwd_struct =
 $extype_struct "ats_passwd_type" of {
   pw_uid= uid_t
 , pw_gid= gid_t
-, _rest= passwd_rest
+, _rest= undefined_t
 } // end of [passwd]
 typedef passwd = passwd_struct
 

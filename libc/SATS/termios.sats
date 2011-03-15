@@ -62,7 +62,8 @@ castfn uint_of_speed (x: speed_t):<> uint
 //
 abst@ype termios_rest
 typedef termios_struct =
-$extype_struct "ats_termios_type" of {
+$extype_struct
+"ats_termios_type" of {
   c_iflag= tcflag_t
 , c_oflag= tcflag_t
 , c_cflag= tcflag_t
@@ -73,7 +74,7 @@ $extype_struct "ats_termios_type" of {
 , c_ispeed= speed_t // not documented
 , c_ospeed= speed_t // not documented
 *)
-, _rest= termios_rest // unknown quantity
+, _rest= undefined_t // unknown quantity
 } // end of [termios_struct]
 typedef termios = termios_struct
 
