@@ -43,6 +43,15 @@
 
 /* ****** ****** */
 
+typedef struct inode inode_struct ;
+typedef struct super_block super_block_struct ;
+
+/* ****** ****** */
+
+#define atsctrb_linux_new_inode new_inode
+
+/* ****** ****** */
+
 #endif /* ATSCTRB_LINUX_LINUX_FS_CATS */
 
 /* end of [fs.cats] */

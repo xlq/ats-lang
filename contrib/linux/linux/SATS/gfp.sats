@@ -46,6 +46,8 @@
 (* ****** ****** *)
 
 abst@ype gfp_t = $extype"gfp_t"
+castfn uint_of_gfp (x: gfp_t): uint
+castfn gfp_of_uint (x: uint): gfp_t
 macdef GFP_KERNEL = $extval (gfp_t, "GFP_KERNEL")
 macdef GFP_ATOMIC = $extval (gfp_t, "GFP_ATOMIC")
 macdef GFP_NOWAIT = $extval (gfp_t, "GFP_NOWAIT")

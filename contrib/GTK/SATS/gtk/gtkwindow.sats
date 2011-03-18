@@ -58,23 +58,27 @@ fun gtk_window_new
 // HX-2010-05-14: checked: this is a 'get0' function
 //
 fun gtk_window_get_title
-  {c:cls | c <= GtkWindow} {l1:agz}
-  (window: !gobjref (c, l1))
-  : [l2:addr] (minus (gobjref (c, l1), gstring l2) | gstring l2)
-  = "mac#atsctrb_gtk_window_get_title"
-// end of [gtk_window_get_title]
+  {c:cls | c <= GtkWindow}
+  {l1:agz} (
+  window: !gobjref (c, l1)
+) : [l2:addr] (
+  minus (gobjref (c, l1), gstring l2) | gstring l2
+) = "mac#atsctrb_gtk_window_get_title"
 
 fun gtk_window_set_title
-  {c:cls | c <= GtkWindow} {l1,l2:agz}
-  (window: !gobjref (c, l1), title: !gstring l2): void
-  = "mac#atsctrb_gtk_window_set_title"
-// end of [gtk_window_set_title]
+  {c:cls | c <= GtkWindow}
+  {l1,l2:agz} (
+  window: !gobjref (c, l1), title: !gstring l2
+) : void = "mac#atsctrb_gtk_window_set_title"
 
 (* ****** ****** *)
 
 fun gtk_window_set_position
-  {c:cls | c <= GtkWindow} {l:agz}
-  (window: !gobjref (c, l), pos: GtkWindowPosition): void
+  {c:cls | c <= GtkWindow}
+  {l:agz} (
+  window: !gobjref (c, l)
+, pos: GtkWindowPosition
+) : void
   = "mac#atsctrb_gtk_window_set_position"
 // end of [gtk_window_set_position]
 
@@ -181,50 +185,64 @@ fun gtk_window_get_type_hint
 (* ****** ****** *)
 
 fun gtk_window_move
-  {c:cls | c <= GtkWindow} {l:agz}
-  (window: !gobjref (c, l), x: gint, y: gint): void
+  {c:cls | c <= GtkWindow}
+  {l:agz} (
+  window: !gobjref (c, l), x: gint, y: gint
+) : void
   = "mac#atsctrb_gtk_window_move"
 // end of [gtk_window_move]
 
 (* ****** ****** *)
 
 fun gtk_window_reshow_with_initial_size
-  {c:cls | c <= GtkWindow} {l:agz}
-  (window: !gobjref (c, l)): void
+  {c:cls | c <= GtkWindow}
+  {l:agz} (
+  window: !gobjref (c, l)
+) : void
   = "mac#atsctrb_gtk_window_reshow_with_initial_size"
 // end of [gtk_window_reshow_with_initial_size]
 
 fun gtk_window_resize
-  {c:cls | c <= GtkWindow} {l:agz}
-  (window: !gobjref (c, l), width: gint, height: gint): void
+  {c:cls | c <= GtkWindow}
+  {l:agz} (
+  window: !gobjref (c, l), width: gint, height: gint
+) : void
   = "mac#atsctrb_gtk_window_resize"
 // end of [gtk_window_resize]
 
 (* ****** ****** *)
 
 fun gtk_window_get_opacity
-  {c:cls | c <= GtkWindow} {l:agz}
-  (window: !gobjref (c, l)): gdouble
+  {c:cls | c <= GtkWindow}
+  {l:agz} (
+  window: !gobjref (c, l)
+) : gdouble
   = "mac#atsctrb_gtk_window_get_opacity"
 // end of [gtk_window_get_opacity]
 
 fun gtk_window_set_opacity
-  {c:cls | c <= GtkWindow} {l:agz}
-  (window: !gobjref (c, l), opacity: gdouble): void
+  {c:cls | c <= GtkWindow}
+  {l:agz} (
+  window: !gobjref (c, l), opacity: gdouble
+) : void
   = "mac#atsctrb_gtk_window_set_opacity"
 // end of [gtk_window_set_opacity]
 
 (* ****** ****** *)
 
 fun gtk_window_get_mnemonics_visible
-  {c:cls | c <= GtkWindow} {l:agz}
-  (window: !gobjref (c, l)): gboolean
+  {c:cls | c <= GtkWindow}
+  {l:agz} (
+  window: !gobjref (c, l)
+) : gboolean
   = "mac#atsctrb_gtk_window_get_mnemonics_visible"
 // end of [gtk_window_get_mnemonics_visible]
 
 fun gtk_window_set_mnemonics_visible
-  {c:cls | c <= GtkWindow} {l:agz}
-  (window: !gobjref (c, l), visible: gboolean): void
+  {c:cls | c <= GtkWindow}
+  {l:agz} (
+  window: !gobjref (c, l), visible: gboolean
+) : void
   = "mac#atsctrb_gtk_window_set_mnemonics_visible"
 // end of [gtk_window_set_mnemonics_visible]
 

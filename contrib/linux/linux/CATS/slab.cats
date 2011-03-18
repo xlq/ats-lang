@@ -48,6 +48,18 @@
 
 /* ****** ****** */
 
+#define atsctrb_linux_slab_is_available slab_is_available
+#define atsctrb_linux_kmem_cache_size kmem_cache_size
+#define atsctrb_linux_kmem_cache_name kmem_cache_name
+
+#define atsctrb_linux_kmem_cache_create kmem_cache_create
+#define atsctrb_linux_kmem_cache_destroy kmem_cache_destroy
+
+#define atsctrb_linux_kmem_cache_alloc kmem_cache_alloc
+#define atsctrb_linux_kmem_cache_free kmem_cache_free
+
+/* ****** ****** */
+
 #endif /* ATSCTRB_LINUX_LINUX_SLAB_CATS */
 
 /* end of [slab.cats] */

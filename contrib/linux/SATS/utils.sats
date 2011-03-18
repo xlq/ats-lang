@@ -52,29 +52,21 @@ typedef gfp_t = $GFP.gfp_t
 
 (* ****** ****** *)
 
-prfun bytes_v_split
-  {n:int} {i:nat | i <= n} {l:addr}
-  (pf: bytes(n) @ l): (bytes (i) @ l, bytes (n-i) @ l+i)
-// end of [bytes_v_split]
-
-prfun bytes_v_unsplit
-  {n1,n2:nat} {l:addr}
-  (pf1: bytes(n1) @ l, pf2: bytes(n2) @ l+n1): bytes(n1+n2) @ l
-// end of [bytes_v_unsplit]
-
-(* ****** ****** *)
-
 dataview
 array_ptr_kalloc_v (
   a:viewt@ype, int, addr
 ) =
   | {n:int} {l:agz}
-    array_ptr_kalloc_v_some (a, n, l) of
+    array_ptr_kalloc_v_succ (a, n, l) of
       (kfree_v (a, n, l), array_v (a?, n, l))
   | {n:int}
-    array_ptr_kalloc_v_none (a, n, null) of ()
+    array_ptr_kalloc_v_fail (a, n, null) of ()
 // end of [array_ptr_kalloc_v]
 
+//
+// HX: for portability,
+// the total number bytes should not exceed 128K
+//
 fun{a:viewt@ype}
 array_ptr_kalloc
   {n:nat} (
