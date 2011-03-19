@@ -72,7 +72,9 @@ implement{key} compare_key_key (x1, x2, cmp) = cmp (x1, x2)
 
 (* ****** ****** *)
 
-datatype avltree (key:t@ype, itm:t@ype+, int(*height*)) =
+datatype avltree (
+  key:t@ype, itm:t@ype+, int(*height*)
+) =
   | {hl,hr:nat | hl <= hr+HTDF; hr <= hl+HTDF}
     B (key, itm, 1+max(hl,hr)) of
       (int (1+max(hl,hr)), key, itm, avltree (key, itm, hl), avltree (key, itm, hr))
@@ -89,7 +91,10 @@ typedef avltree_dec (key:t@ype, itm:t@ype, h:int) =
 
 (* ****** ****** *)
 
-assume map_t0ype_type (key:t@ype, itm:t@ype) = [h:nat] avltree (key, itm, h)
+assume
+map_t0ype_type (
+  key:t@ype, itm:t@ype
+) = [h:nat] avltree (key, itm, h)
 
 (* ****** ****** *)
 
@@ -473,7 +478,7 @@ funmap_foreach_clo {v}
 } // end of [funmap_foreach_clo]
 
 implement{key,itm}
-  funmap_foreach_cloref (m, f) = let
+funmap_foreach_cloref (m, f) = let
   val f = __cast (f) where { extern castfn __cast
     (f: (key, itm) -<cloref> void):<> (!unit_v | key, itm) -<cloref> void
   } // end of [val]
@@ -486,6 +491,31 @@ implement{key,itm}
 in
   // empty
 end // end of [funmap_foreach_cloref]
+
+(* ****** ****** *)
+
+implement{key,itm}
+funmap_listize (xs) = let
+  typedef keyitm = @(key, itm)
+  viewtypedef res_vt = List_vt keyitm
+  fun listize {h:nat} .<h>. (
+    t: avltree (key, itm, h), res: res_vt
+  ) :<> res_vt =
+    case+ t of
+    | B (
+        _(*h*), k, x, tl, tr
+      ) => let
+        val res = listize (tr, res)
+        val res = list_vt_cons {keyitm} ((k, x), res)
+        val res = listize (tl, res)
+      in
+        res
+      end // end of [B]
+    | E () => res
+  // end of [listize]
+in
+  listize (xs, list_vt_nil ())
+end // end of [funmap_listize]
 
 (* ****** ****** *)
 

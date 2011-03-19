@@ -58,30 +58,36 @@ stadef map = map_t0ype_type
 (* ****** ****** *)
 
 typedef cmp (key:t@ype) = (key, key) -<cloref> Sgn
-fun{key:t@ype} compare_key_key (x1: key, x2: key, cmp: cmp key):<> Sgn
+fun{key:t@ype}
+compare_key_key (x1: key, x2: key, cmp: cmp key):<> Sgn
 
 (* ****** ****** *)
-
+//
+// HX: cross-module inlining is supported by templatization
+//
 fun{} funmap_make_nil {key,itm:t@ype} ():<> map (key, itm)
-
-(* ****** ****** *)
-
+//
 fun{} funmap_is_nil {key,itm:t@ype} (m: map (key, itm)):<> bool
 fun{} funmap_isnot_nil {key,itm:t@ype} (m: map (key, itm)):<> bool
-
+//
 (* ****** ****** *)
-
-// this function is O(n)-time and non-tail-recursive
+//
+// HX: this function is O(n)-time and non-tail-recursive
+//
 fun{key,itm:t@ype} funmap_size (m: map (key, itm)):<> size_t
-
-// this function is O(1) // for gathering stats
+//
+// HX: this function is O(1) // for gathering stats
+//
 fun{key,itm:t@ype} funmap_height (m: map (key, itm)):<> Nat
 
 (* ****** ****** *)
 
 fun{key,itm:t@ype}
 funmap_search (
-  m: map (key, itm), k0: key, cmp: cmp key, res: &itm? >> opt (itm, b)
+  m: map (key, itm)
+, k0: key
+, cmp: cmp key
+, res: &itm? >> opt (itm, b)
 ) :<> #[b:bool] bool b
 // end of [funmap_search]
 
@@ -91,23 +97,39 @@ funmap_search (
 // HX-2010-03-25:
 // if [k0] occurs in [m], [x0] replaces the original value associated with [k0]
 //
-fun{key,itm:t@ype} funmap_insert (
-  m: &map (key, itm), k0: key, x0: itm, cmp: cmp key
+fun{key,itm:t@ype}
+funmap_insert (
+  m: &map (key, itm)
+, k0: key
+, x0: itm
+, cmp: cmp key
 ) :<> bool(*[k0] alreay exists in [m]*) // end of [funmap_insert]
 
-fun{key,itm:t@ype} funmap_insert_clo (
-  m: &map (key, itm), k0: key, x0: itm, f: &(itm(*new*), itm) -<clo> itm, cmp: cmp key
+fun{key,itm:t@ype}
+funmap_insert_clo (
+  m: &map (key, itm)
+, k0: key
+, x0: itm
+, f: &(itm(*new*), itm) -<clo> itm
+, cmp: cmp key
 ) :<> void // end of [funmap_insert_clo]
 
 (* ****** ****** *)
 
-fun{key,itm:t@ype} funmap_takeout (
-  m: &map (key, itm), k0: key, cmp: cmp key, res: &itm? >> opt (itm, b)
+fun{key,itm:t@ype}
+funmap_takeout (
+  m: &map (key, itm)
+, k0: key
+, cmp: cmp key, res: &itm? >> opt (itm, b)
 ) :<> #[b:bool] bool b
 // end of [funmap_takeout]
 
-fun{key,itm:t@ype} funmap_remove
-  (m: &map (key, itm), k0: key, cmp: cmp key):<> bool(*removed/not: true/false*)
+fun{key,itm:t@ype}
+funmap_remove
+  (m: &map (key, itm)
+, k0: key
+, cmp: cmp key
+) :<> bool(*removed/not: true/false*)
 // end of [funmap_remove]
 
 (* ****** ****** *)
@@ -116,22 +138,34 @@ fun{key,itm:t@ype}
 funmap_foreach_funenv
   {v:view} {vt:viewtype} (
   pf: !v 
-| xs: map (key, itm), f: (!v | key, itm, !vt) -<fun> void, env: !vt
+| xs: map (key, itm)
+, f: (!v | key, itm, !vt) -<fun> void
+, env: !vt
 ) :<> void // end of [funmap_foreach_funenv]
 
 fun{key,itm:t@ype}
-funmap_foreach_fun
-  (xs: map (key, itm), f: (key, itm) -<fun> void):<> void
-// end of [funmap_foreach_fun]
+funmap_foreach_fun (
+  xs: map (key, itm)
+, f: (key, itm) -<fun> void
+) :<> void // end of [funmap_foreach_fun]
 
 fun{key,itm:t@ype}
-funmap_foreach_clo {v:view}
-  (pf: !v | xs: map (key, itm), f: &(!v | key, itm) -<clo> void):<> void
-// end of [funmap_foreach_clo]
+funmap_foreach_clo {v:view} (
+  pf: !v
+| xs: map (key, itm)
+, f: &(!v | key, itm) -<clo> void
+) :<> void // end of [funmap_foreach_clo]
 
 fun{key,itm:t@ype}
-funmap_foreach_cloref (xs: map (key, itm), f: (key, itm) -<cloref> void):<!ref> void
-// end of [funmap_foreach_cloref]
+funmap_foreach_cloref (
+  xs: map (key, itm)
+, f: (key, itm) -<cloref> void
+) :<!ref> void // end of [funmap_foreach_cloref]
+
+(* ****** ****** *)
+
+fun{key,itm:t@ype}
+funmap_listize (xs: map (key, itm)):<> List_vt @(key, itm)
 
 (* ****** ****** *)
 
