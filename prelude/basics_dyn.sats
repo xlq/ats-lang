@@ -87,12 +87,12 @@ praxi cleanup_top {a:viewt@ype} (x: a?):<> void
 // HX: should this be assumed?
 // HX-2010-10-12: of course, it should
 //
-praxi eqsize_byte_one (): [sizeof byte == 1] void
+praxi eqsize_byte_one (): [sizeof(byte)==1] void
 //
-praxi eqsize_byte_char (): [sizeof byte == sizeof char] void
-praxi eqsize_int_uint (): [sizeof int == sizeof uint] void
-praxi eqsize_char_schar (): [sizeof char == sizeof schar] void
-praxi eqsize_char_uchar (): [sizeof char == sizeof uchar] void
+praxi eqsize_byte_char (): [sizeof(byte)==sizeof(char)] void
+praxi eqsize_int_uint (): [sizeof(int)==sizeof(uint)] void
+praxi eqsize_char_schar (): [sizeof(char)==sizeof(schar)] void
+praxi eqsize_char_uchar (): [sizeof(char)==sizeof uchar] void
 
 //
 // HX-2010-04-18: there are no negative addresses
@@ -134,7 +134,9 @@ val{elt:viewt@ype} sizeof : size_t (sizeof elt)
 //
 // HX: note that sizeof(empty) = 0 and sizeof(void) = 1
 //
-val empval : empty = "ats_empty_value" // the empty value in ATS
+val empval
+  : empty = "mac#ats_empty_value" // the empty value in ATS
+// end of [empval]
 
 (* ****** ****** *)
 //
@@ -199,30 +201,30 @@ fun assert_bool
   (assertion: bool):<!exn> void = "atspre_assert"
 overload assert with assert_bool
 
-fun assert_bool1 {b:bool}
-  (assertion: bool b):<!exn> [b] void = "atspre_assert"
+fun assert_bool1
+  {b:bool} (
+  assertion: bool b
+) :<!exn> [b] void = "atspre_assert"
 overload assert with assert_bool1
 
 (* ****** ****** *)
 
-fun assert_errmsg_bool
-  (assertion: bool, msg: string):<!exn> void
-  = "atspre_assert_errmsg"
+fun assert_errmsg_bool (
+  assertion: bool, msg: string
+) :<!exn> void = "atspre_assert_errmsg"
 overload assert_errmsg with assert_errmsg_bool
 
-fun assert_errmsg_bool1 {b:bool}
-  (assertion: bool b, msg: string):<!exn> [b] void
+fun assert_errmsg_bool1
+  {b:bool} (
+  assertion: bool b, msg: string
+) :<!exn> [b] void
   = "atspre_assert_errmsg"
 overload assert_errmsg with assert_errmsg_bool1
 
-(* ****** ****** *)
-
-fun assert_errmsg_bool_string1
-  (assertion: bool, msg: String):<!exn> void = "atspre_assert_errmsg"
-overload assert_errmsg with assert_errmsg_bool_string1
-
-fun assert_errmsg_bool1_string1 {b:bool}
-  (assertion: bool b, msg: String):<!exn> [b] void = "atspre_assert_errmsg"
+fun assert_errmsg_bool1_string1
+  {b:bool} (
+  assertion: bool b, msg: String
+) :<!exn> [b] void = "atspre_assert_errmsg"
 overload assert_errmsg with assert_errmsg_bool1_string1
 
 (* ****** ****** *)

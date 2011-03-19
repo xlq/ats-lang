@@ -25,9 +25,9 @@ fn fact2_usage (cmd: string): void =
 implement main (argc, argv) =
   if argc >= 2 then let
     val n = int1_of argv.[1] // turning string into integer
-    val () = assert_errmsg
+    val () = assert_errmsg_bool1
       (n >= 0, "The integer argument needs to be nonnegative.\n")
-    val res = fact2 n
+    val res = fact2 (n)
   in
     printf ("factorial of %i = %i\n", @(n, res))
   end else begin

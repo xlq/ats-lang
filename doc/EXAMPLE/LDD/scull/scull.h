@@ -128,7 +128,10 @@ extern int scull_major;     /* main.c */
 extern int scull_nr_devs;
 extern int scull_quantum;
 extern int scull_qset;
-
+//
+#define scull_quantum_get() scull_quantum
+#define scull_qset_get() scull_qset
+//
 extern int scull_p_buffer;	/* pipe.c */
 
 

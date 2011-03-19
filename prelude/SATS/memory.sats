@@ -45,17 +45,29 @@
 
 (* ****** ****** *)
 
+typedef bytes (n:int) = @[byte][n]
 typedef b0ytes (n:int) = @[byte?][n]
 
-// two axioms
+(* ****** ****** *)
+
+prfun bytes_v_split
+  {n:int} {i:nat | i <= n} {l:addr}
+  (pf: bytes(n) @ l): (bytes (i) @ l, bytes (n-i) @ l+i)
+// end of [bytes_v_split]
+
+prfun bytes_v_unsplit
+  {n1,n2:nat} {l:addr}
+  (pf1: bytes(n1) @ l, pf2: bytes(n2) @ l+n1): bytes(n1+n2) @ l
+// end of [bytes_v_unsplit]
+
+(* ****** ****** *)
+//
+// HX: two axioms for view conversion
+//
 praxi ptr_to_b0ytes_v
   : {a:viewt@ype} {l:addr} a? @ l -<prf> b0ytes (sizeof a) @ l
 praxi ptr_of_b0ytes_v
   : {a:viewt@ype} {l:addr} b0ytes (sizeof a) @ l -<prf> a? @ l
-
-prfun array_v_of_byte_v
-  {a:viewt@ype} {n:nat} {l:addr} {nsz:int}
-  (pf_mul: MUL (n, sizeof a, nsz), pf_arr: b0ytes (nsz) @ l):<prf> @[a?][n] @ l
 
 (* ****** ****** *)
 //
@@ -114,13 +126,15 @@ fun malloc_gc
 // end of [malloc_gc]
 
 fun calloc_gc
-  {a:viewt@ype} {n:nat}
-  (n: size_t n, tsz: sizeof_t a)
-  :<> [l:agz] (freebyte_gc_v (n, l), @[a?][n] @ l | ptr l)
+  {a:viewt@ype}
+  {n:nat} (
+  n: size_t n, tsz: sizeof_t a
+) :<> [l:agz] (freebyte_gc_v (n, l), @[a?][n] @ l | ptr l)
   = "ats_calloc_gc"
 // end of [calloc_gc]
 
-fun free_gc {n:nat} {l:addr}
+fun free_gc
+  {n:nat} {l:addr}
   (_: freebyte_gc_v (n, l), _: b0ytes n @ l | p: ptr l):<> void
   = "ats_free_gc"
 // end of [free_gc]

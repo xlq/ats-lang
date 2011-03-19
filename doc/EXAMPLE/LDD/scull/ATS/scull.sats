@@ -24,12 +24,8 @@ staload "libats/ngc/SATS/slist.sats"
 (* ****** ****** *)
 
 staload "contrib/linux/basics.sats"
-
-(* ****** ****** *)
-
-propdef ftakeout_p
-  (v1: view, v2: view) = v1 -<prf> (v2, v2 -<lin,prf> v1)
-// end of [ftakeout_p]
+staload FS = "contrib/linux/linux/SATS/fs.sats"
+stadef file = $FS.file
 
 (* ****** ****** *)
 //
@@ -131,6 +127,19 @@ viewtypedef
 scull_dev (
   m: int
 , n: int
+) = $extype_struct "scull_dev_struct" of {
+  empty=empty
+, m_qset= int (m)
+, n_quantum= int (n)
+, _rest= undefined_vt
+} // end of [scull_dev]
+viewtypedef
+scull_dev = [m,n:nat] scull_dev (m, n)
+
+viewtypedef
+scull_dev_owned (
+  m: int
+, n: int
 , ln: int
 , sz: int
 ) = $extype_struct "scull_dev_struct" of {
@@ -141,7 +150,31 @@ scull_dev (
 , ln_qlst= int (ln)
 , size= ulint (sz)
 , _rest= undefined_vt
-} // end of [scull_dev]
+} // end of [scull_dev_owned]
+
+(* ****** ****** *)
+
+dataview
+scull_dev_acquire_v
+  (m: int, n: int, l: addr, int) =
+  | {ln:nat} {sz:nat}
+    scull_dev_acquire_v_succ (m, n, l, 0) of scull_dev_owned (m, n, ln, sz) @ l
+  | {i:neg}
+    scull_dev_acquire_v_fail (m, n, l, i) of scull_dev (m, n) @ l
+// end of [scull_dev_acquire_v]
+
+fun scull_dev_acquire
+  {m,n:int} {ln:int} {sz:int} {l:addr}
+  (pf: scull_dev (m, n) @ l | p: ptr l)
+  : [i:int] (scull_dev_acquire_v (m, n, l, i) | int i)
+  = "mac#scull_dev_acquire"
+// end of [scull_dev_acquire]
+
+fun scull_dev_release
+  {m,n:int} {ln:int} {sz:int}
+  (dev: &scull_dev_owned (m,n,ln,sz) >> scull_dev (m, n)): void
+  = "mac#scull_dev_release"
+// end of [scull_dev_release]
 
 (* ****** ****** *)
 
@@ -154,7 +187,7 @@ fun scull_trim_main
   {ln:nat}
   {sz:nat}
   {m,n:pos} (
-  dev: &scull_dev (m0, n0, ln, sz) >> scull_dev (m, n, 0, 0)
+  dev: &scull_dev_owned (m0, n0, ln, sz) >> scull_dev_owned (m, n, 0, 0)
 , m: int m
 , n: int n
 ) : void = "scull_trim_main"
@@ -188,6 +221,13 @@ fun scull_follow_main
 ) : #[ln1:int;lm:addr | ln0 <= ln1] (
   option_v (viewout (qset(m, n) @ lm), lm > null) | ptr (lm)
 ) = "scull_follow_main"
+// end of [fun]
+
+(* ****** ****** *)
+
+fun scull_open_main
+  (dev: &scull_dev, file: &file): [i:int | i <= 0] int i
+  = "scull_open_main"
 // end of [fun]
 
 (* ****** ****** *)

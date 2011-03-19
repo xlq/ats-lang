@@ -40,10 +40,9 @@
 
 (* ****** ****** *)
 
-(*
-abst@ype (* HX: template parameters *)
-KERNEL = $extype "KERNEL" and USER = $extype "USER"
-*)
+propdef ftakeout
+  (v1:view, v2:view) = v1 -<prf> (v2, v2 -<lin,prf> v1)
+// end of [ftakeout]
 
 (* ****** ****** *)
 

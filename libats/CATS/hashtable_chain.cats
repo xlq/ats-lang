@@ -9,7 +9,7 @@
 /*
 ** ATS - Unleashing the Potential of Types!
 **
-** Copyright (C) 2002-2011 Hongwei Xi.
+** Copyright (C) 2002-2009 Hongwei Xi.
 **
 ** ATS is  free software;  you can redistribute it and/or modify it under
 ** the  terms of the  GNU General Public License as published by the Free
@@ -22,36 +22,51 @@
 ** for more details.
 ** 
 ** You  should  have  received  a  copy of the GNU General Public License
-** along  with  ATS;  see the  file COPYING.  If not, please write to the
-** Free Software Foundation,  51 Franklin Street, Fifth Floor, Boston, MA
+** along  with  ATS;  see  the  file  COPYING.  If not, write to the Free
+** Software Foundation, 51  Franklin  Street,  Fifth  Floor,  Boston,  MA
 ** 02110-1301, USA.
 */
 
 /* ****** ****** */
-//
-// Author: Hongwei Xi (hwxi AT cs DOT bu DOT edu)
-// Start Time: February, 2011
-//
-/* ****** ****** */
 
-#ifndef ATSCTRB_LINUX_LINUX_SEMAPHORE_CATS
-#define ATSCTRB_LINUX_LINUX_SEMAPHORE_CATS
-
-/* ****** ****** */
-
-#include <linux/semaphore.h>
+/*
+** A dynamically resizable vector implementation
+**
+** Contributed by Hongwei Xi (hwxi AT cs DOT bu DOT edu)
+** Time: Secptember, 2010
+*/
 
 /* ****** ****** */
 
-typedef struct semaphore semaphore_struct ;
+#ifndef ATS_LIBATS_HASHTABLE_CHAIN_CATS
+#define ATS_LIBATS_HASHTABLE_CHAIN_CATS
 
 /* ****** ****** */
 
-#define atsctrb_linux_up up
-#define atsctrb_linux_down_interruptible down_interruptible
+ATSinline()
+ats_void_type
+atslib_hashtbl_ptr_free__chain
+  (ats_ptr_type pbeg) { ATS_FREE(pbeg) ; return ; }
+// end of [atslib_hashtbl_ptr_free__chain]
 
 /* ****** ****** */
 
-#endif /* ATSCTRB_LINUX_SEMAPHORE_CATS */
+ATSinline()
+ats_ptr_type
+atslib_hashtbl_make_null__chain
+  (/*argumentless*/) { return (void*)0; }
+// end of [atslib_hashtbl_make_null__chain]
 
-/* end of [semaphore.cats] */
+/* ****** ****** */
+
+ATSinline()
+ats_void_type
+atslib_hashtbl_free_null__chain
+  (ats_ptr_type ptbl) { return ; }
+// end of [atslib_hashtbl_free_null__chain]
+
+/* ****** ****** */
+
+#endif /* ATS_LIBATS_HASHTABLE_CHAIN_CATS */
+
+/* end of [hashtable_chain.cats] */

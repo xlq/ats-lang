@@ -49,6 +49,12 @@
 
 (* ****** ****** *)
 
+%{#
+#include "libats/CATS/hashtable_chain.cats"
+%} // end of [%{#]
+
+(* ****** ****** *)
+
 #define ATS_STALOADFLAG 0 // no static loading at run-time
 
 (* ****** ****** *)
@@ -156,44 +162,52 @@ hashtbl_remove {l:agz} (
 
 (* ****** ****** *)
 
-fun{key:t@ype;itm:viewt@ype}
+sortdef t0p = t@ype and vt0p = viewt@ype
+
+fun{key:t0p;itm:vt0p}
 hashtbl_foreach_clo {v:view} {l:agz} (
   pf: !v
 | ptbl: !HASHTBLptr (key, itm, l), f: &(!v | key, &itm) -<clo> void
 ) :<> void // end of [hashtbl_foreach_clo]
 
-fun{key:t@ype;itm:viewt@ype}
+fun{key:t0p;itm:vt0p}
 hashtbl_foreach_cloref {l:agz} (
   ptbl: !HASHTBLptr (key, itm, l), f: !(key, &itm) -<cloref> void
 ) :<> void // end of [hashtbl_foreach_cloref]
 
 (* ****** ****** *)
 
-fun hashtbl_make {key:t@ype;itm:viewt@ype}
-  (fhash: hash key, eqfn: eqfn key): HASHTBLptr1 (key, itm)
-// end of [hashtbl_make]
+fun hashtbl_make
+  {key:t0p;itm:vt0p} (
+  fhash: hash key, eqfn: eqfn key
+) : HASHTBLptr1 (key, itm) // end of [hashtbl_make]
 
-fun hashtbl_make_hint {key:t@ype;itm:viewt@ype}
-  (fhash: hash key, eqfn: eqfn key, hint: size_t): HASHTBLptr1 (key, itm)
+fun hashtbl_make_hint
+  {key:t0p;itm:vt0p} (
+  fhash: hash key, eqfn: eqfn key, hint: size_t
+) : HASHTBLptr1 (key, itm)
   = "atslib_hashtbl_make_hint__chain"
 // end of [hashtbl_make_hint]
 
 fun hashtbl_make_null
-  {key:t@ype;itm:viewt@ype} (): HASHTBLptr (key, itm, null)
+  {key:t0p;itm:vt0p} (): HASHTBLptr (key, itm, null)
   = "atslib_hashtbl_make_null__chain"
 // end of [hashtbl_make_null]
 
 (* ****** ****** *)
 
 fun hashtbl_free
-  {key:t@ype;itm:t@ype} {l:agz}
-  (tbl: HASHTBLptr (key, itm, l)):<> void
+  {key:t0p;itm:t0p}
+  {l:agz} (
+  tbl: HASHTBLptr (key, itm, l)
+) :<> void
   = "atslib_hashtbl_free__chain"
 // end of [hashtbl_free]
 
 fun hashtbl_free_null
-  {key:t@ype;itm:viewt@ype}
-  (tbl: HASHTBLptr (key, itm, null)):<> void
+  {key:t0p;itm:vt0p} (
+  tbl: HASHTBLptr (key, itm, null)
+) :<> void
   = "atslib_hashtbl_free_null__chain"
 // end of [hashtbl_free_null]
 
@@ -202,7 +216,8 @@ fun hashtbl_free_null
 // [hashtbl_clear_vt] may need to be called first to clear up
 //
 fun hashtbl_free_vt
-  {key:t@ype;itm:viewt@ype} {l:agz} (
+  {key:t0p;itm:vt0p}
+  {l:agz} (
   tbl: !HASHTBLptr (key, itm, l) >> opt (HASHTBLptr (key, itm, l), b)
 ) :<> #[b:bool] bool b(*~freed*) = "atslib_hashtbl_free_vt__chain"
 // end of [hashtbl_free_vt]
@@ -213,7 +228,7 @@ fun hashtbl_free_vt
 //
 // HX-2010-07-01: it can be readily implemented based on [foreach]
 //
-fun{key:t@ype;itm:t@ype}
+fun{key:t0p;itm:t0p}
 hashtbl_listize {l:agz} (tbl: !HASHTBLptr (key, itm, l)): List_vt @(key, itm)
 *)
 

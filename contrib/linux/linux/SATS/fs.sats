@@ -41,13 +41,19 @@
 
 (* ****** ****** *)
 
-staload TYPES = "contrib/linux/linux/SATS/types.sats"
-typedef dev_t = $TYPES.dev_t
+staload "contrib/linux/basics.sats"
 
 (* ****** ****** *)
 
-propdef ftakeout_p
-  (v1:view, v2:view) = v1 -<prf> (v2, v2 -<lin,prf> v1)
+staload TYPES = "contrib/linux/linux/SATS/types.sats"
+typedef dev_t = $TYPES.dev_t
+typedef fmode_t = $TYPES.fmode_t
+typedef loff_t = $TYPES.loff_t
+//
+typedef uid_t = $TYPES.uid_t
+typedef gid_t = $TYPES.gid_t
+//
+typedef uint64= $TYPES.uint64
 
 (* ****** ****** *)
 
@@ -55,18 +61,39 @@ viewtypedef
 inode_struct =
 $extype_struct "inode_struct" of {
   empty= empty
+(*
+, i_count= atomic_t
+*)
+, i_nlink= uint
+, i_uid= uid_t
+, i_gid= gid_t
+, i_rdev= dev_t
+, i_blkbits= uint
+, i_version= uint64
+, i_size= loff_t
+//
 , i_state= ulint
 , dirtied_when= ulint (* jiffies or first dirtying *)
 , i_flags= uint
+//
 , _rest= undefined_vt
 } // end of [inode]
 viewtypedef inode = inode_struct
+
+(*
+//
+// HX: it is in cdev.sats
+//
+fun inode_get_i_cdev
+  (inode: &inode): [l:agz] (cdev_ref (l) -<lin,prf> void | cdev_ref (l))
+// end of [inode_get_i_cdev]
+*)
 
 (* ****** ****** *)
 
 absview inode_v (l:addr)
 prfun inode_v_takeout
-  : {l:addr} ftakeout_p (inode_v l, inode @ l)
+  : {l:addr} ftakeout (inode_v l, inode @ l)
 // end of [inode_v_takeout]
 
 //
@@ -93,6 +120,21 @@ inode_ref_fold
 castfn ptr_of_inode {l:addr} (x: inode_ref (l)):<> ptr (l)
 overload ptr_of with ptr_of_inode
 //
+(* ****** ****** *)
+
+viewtypedef
+file_struct =
+$extype_struct "file_struct" of {
+  empty= empty
+(*
+, f_count= atomic_long_t
+*)
+, f_flags= uint
+, f_mode= fmode_t
+, f_pos= loff_t
+} // end of [file_struct]
+viewtypedef file = file_struct
+
 (* ****** ****** *)
 
 viewtypedef

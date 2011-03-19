@@ -60,23 +60,32 @@ implement{key} equal_key_key (x1, x2, eqfn) = eqfn (x1, x2)
 
 (* ****** ****** *)
 
-dataviewtype chain
-  (key:t@ype, itm:viewt@ype+, int) =
-  | {n:nat} CHAINcons (key, itm, n+1) of (key, itm, chain (key, itm, n))
+dataviewtype chain (
+  key:t@ype, itm:viewt@ype+, int
+) =
+  | {n:nat}
+    CHAINcons (key, itm, n+1) of (key, itm, chain (key, itm, n))
   | CHAINnil (key, itm, 0)
 // end of [chain]
 
-viewtypedef chain (key:t0p,itm:vt0p) = [n:nat] chain (key, itm, n)
-viewtypedef chain0 = chain (void, void, 0)
+viewtypedef
+chain (
+  key:t0p
+, itm:vt0p
+) = [n:nat] chain (key, itm, n)
 
+viewtypedef
+chain0 = chain (void, void, 0)
 stadef chainsz = sizeof (chain0)
 extern typedef "chain0" = chain0
 
 (* ****** ****** *)
 
 fun{key:t0p;itm:t0p}
-chain_free {n:nat} .<n>.
-  (kis: chain (key, itm, n)):<> void = begin case+ kis of
+chain_free
+  {n:nat} .<n>. (
+  kis: chain (key, itm, n)
+) :<> void = begin case+ kis of
   | ~CHAINcons (_(*key*), _(*itm*), kis) => chain_free (kis)
   | ~CHAINnil () => ()
 end // end of [chain_free]
@@ -84,8 +93,11 @@ end // end of [chain_free]
 (* ****** ****** *)
 
 fun{key:t0p;itm:vt0p}
-chain_search {n:nat} .<n>. (
-  kis: !chain (key,itm,n), k0: key, eqfn: eqfn key
+chain_search
+  {n:nat} .<n>. (
+  kis: !chain (key, itm, n)
+, k0: key
+, eqfn: eqfn key
 ) :<> Ptr =
   case+ kis of
   | CHAINcons (k, !i, !kis1) => let
@@ -160,8 +172,11 @@ dataview hashtbl_v // it is just an array of chains
   | {l:addr} hashtbl_v_nil (key, itm, 0, 0, l, l)
 // end of [hashtbl_v]
 
-viewtypedef HASHTBL (
-  key: t0p, itm: vt0p, sz: int, tot: int, l_beg: addr, l_end: addr
+viewtypedef
+HASHTBL (
+  key: t0p, itm: vt0p
+, sz: int, tot: int
+, l_beg: addr, l_end: addr
 ) = @{
   pfgc= free_gc_v (l_beg)
 , pftbl= hashtbl_v (key, itm, sz, tot, l_beg, l_end)
@@ -172,30 +187,43 @@ viewtypedef HASHTBL (
 , eqfn = eqfn key
 } // end of [HASHTBL]
 
-viewtypedef HASHTBL (key: t0p, itm: vt0p) =
-  [sz,tot:int;l_beg,l_end:addr] [0 < sz; 0 <= tot] HASHTBL (key, itm, sz, tot, l_beg, l_end)
+viewtypedef
+HASHTBL (
+  key: t0p, itm: vt0p
+) = [
+  sz,tot:int;l_beg,l_end:addr;0 < sz; 0 <= tot
+] HASHTBL (key, itm, sz, tot, l_beg, l_end)
 // end of [HASHTBL]
 
 extern typedef "HASHTBL" = HASHTBL (void, void)
 
+(* ****** ****** *)
+
 extern
-castfn HASHTBLptr_tblget
-  {key:t0p;itm:vt0p} {l:agz} (ptbl: !HASHTBLptr (key, itm, l))
-  :<> (HASHTBL (key, itm) @ l, minus (HASHTBLptr (key, itm, l), HASHTBL (key, itm) @ l) | ptr l)
-// end of [HASHTBLptr_get]
+castfn HASHTBLptr_get_hashtbl
+  {key:t0p;itm:vt0p}
+  {l:agz} (
+  ptbl: !HASHTBLptr (key, itm, l)
+) :<> (
+  HASHTBL (key, itm) @ l
+, minus (HASHTBLptr (key, itm, l), HASHTBL (key, itm) @ l)
+| ptr l
+) // end of [HASHTBLptr_get_hashtble]
 
 (* ****** ****** *)
 
 implement
-hashtbl_size {key,itm} (ptbl) = sz where {
-  val (pf, fpf | p) = HASHTBLptr_tblget {key,itm} (ptbl)
+hashtbl_size
+  {key,itm} (ptbl) = sz where {
+  val (pf, fpf | p) = HASHTBLptr_get_hashtbl {key,itm} (ptbl)
   val sz = p->sz
   prval () = minus_addback (fpf, pf | ptbl)
 } // end of [hashtbl_size]  
 
 implement
-hashtbl_total {key,itm} (ptbl) = tot where {
-  val (pf, fpf | p) = HASHTBLptr_tblget {key,itm} (ptbl)
+hashtbl_total
+  {key,itm} (ptbl) = tot where {
+  val (pf, fpf | p) = HASHTBLptr_get_hashtbl {key,itm} (ptbl)
   val tot = p->tot
   prval () = minus_addback (fpf, pf | ptbl)
 } // end of [hashtbl_total]  
@@ -225,7 +253,7 @@ end // end of [hashtbl_ptr_clear]
 
 implement{key,itm}
 hashtbl_clear (ptbl) = () where {
-  val (pf, fpf | p) = HASHTBLptr_tblget {key,itm} (ptbl)
+  val (pf, fpf | p) = HASHTBLptr_get_hashtbl {key,itm} (ptbl)
   val () = hashtbl_ptr_clear<key,itm> (p->pftbl | p->sz, p->pbeg)
   val () = p->tot := (size1_of_int1)0 // reset it to zero
   prval () = minus_addback (fpf, pf | ptbl)
@@ -303,7 +331,8 @@ extern castfn size1_of_ulint (x: ulint):<> [i:nat] size_t i
 
 fn{key:t0p;itm:vt0p}
 hashtbl_ptr_search_ofs
-  {sz,ofs,tot:nat | ofs < sz} {l_beg,l_end:addr} (
+  {sz,ofs,tot:nat | ofs < sz}
+  {l_beg,l_end:addr} (
   pf: !hashtbl_v (key, itm, sz, tot, l_beg, l_end)
 | p_beg: ptr l_beg, k0: key, eqfn: eqfn key, ofs: size_t ofs
 ) :<> Ptr (* null or pointing to the found item *) = let
@@ -319,7 +348,7 @@ end // end of [hashtbl_ptr_search_ofs]
 
 implement{key,itm}
 hashtbl_search_ref (ptbl, k0) = let
-  val (pf, fpf | p) = HASHTBLptr_tblget {key,itm} (ptbl)
+  val (pf, fpf | p) = HASHTBLptr_get_hashtbl {key,itm} (ptbl)
   val h = hash_key (k0, p->hash)
   val h = size1_of_ulint (h); val ofs = sz1mod (h, p->sz)
   val [l:addr] p_itm =
@@ -352,7 +381,8 @@ end // end of [hashtbl_search]
 
 fn{key:t0p;itm:vt0p}
 hashtbl_ptr_insert_ofs
-  {sz,ofs,tot:nat | ofs < sz} {l_beg,l_end:addr} (
+  {sz,ofs,tot:nat | ofs < sz}
+  {l_beg,l_end:addr} (
   pf: !hashtbl_v (key, itm, sz, tot, l_beg, l_end)
         >> hashtbl_v (key, itm, sz, tot+1, l_beg, l_end)
 | p_beg: ptr l_beg, k: key, i: itm, ofs: size_t ofs
@@ -371,7 +401,8 @@ end // end of [hashtbl_ptr_insert_ofs]
 
 fn{key:t0p;itm:vt0p}
 hashtbl_ptr_remove_ofs
-  {sz,ofs,tot:nat | ofs < sz} {l_beg,l_end:addr} (
+  {sz,ofs,tot:nat | ofs < sz}
+  {l_beg,l_end:addr} (
   pf: !hashtbl_v (key, itm, sz, tot, l_beg, l_end)
         >> hashtbl_v (key, itm, sz, tot-b2i b, l_beg, l_end)
 | p_beg: ptr l_beg, k0: key, eqfn: eqfn key, ofs: size_t ofs
@@ -391,7 +422,8 @@ end // end of [hashtbl_ptr_remove_ofs]
 
 fun{key:t0p;itm:vt0p}
 hashtbl_ptr_insert_chain
-  {sz:pos;tot,n:nat} {l_beg,l_end:addr} .<n>. (
+  {sz:pos;tot,n:nat}
+  {l_beg,l_end:addr} .<n>. (
   pf: !hashtbl_v (key, itm, sz, tot, l_beg, l_end)
         >> hashtbl_v (key, itm, sz, tot+n, l_beg, l_end)
 | sz: size_t sz
@@ -421,13 +453,15 @@ end // end of [hashtbl_ptr_insert_chain]
 
 fun{key:t0p;itm:vt0p}
 hashtbl_ptr_relocate
-  {sz1:nat;sz2:pos;tot1,tot2:nat} .<sz1>.
-  {l1_beg,l2_beg,l1_end,l2_end:addr} (
+  {sz1:nat;sz2:pos;tot1,tot2:nat}
+  {l1_beg,l2_beg,l1_end,l2_end:addr}
+  .<sz1>. (
   pf1: !hashtbl_v (key, itm, sz1, tot1, l1_beg, l1_end)
         >> hashtbl_v (key, itm, sz1, 0(*tot*), l1_beg, l1_end)
 , pf2: !hashtbl_v (key, itm, sz2, tot2, l2_beg, l2_end)
         >> hashtbl_v (key, itm, sz2, tot1+tot2, l2_beg, l2_end)
-| sz1: size_t sz1, sz2: size_t sz2, p1_beg: ptr l1_beg, p2_beg: ptr l2_beg
+| sz1: size_t sz1, sz2: size_t sz2
+, p1_beg: ptr l1_beg, p2_beg: ptr l2_beg
 , hash: hash key
 ) :<> void = begin
   if sz1 > 0 then let
@@ -452,7 +486,7 @@ fn{key:t0p;itm:vt0p}
 hashtbl_resize {l:agz} {sz_new:pos} (
   ptbl: !HASHTBLptr (key, itm, l), sz_new: size_t sz_new
 ) :<> void = () where {
-  val (pf, fpf | p) = HASHTBLptr_tblget {key,itm} (ptbl)
+  val (pf, fpf | p) = HASHTBLptr_get_hashtbl {key,itm} (ptbl)
   val (pfgc2, pftbl2 | pbeg2) = hashtbl_ptr_make (sz_new)
   val () = hashtbl_ptr_relocate
     (p->pftbl, pftbl2 | p->sz, sz_new, p->pbeg, pbeg2, p->hash)
@@ -467,15 +501,22 @@ hashtbl_resize {l:agz} {sz_new:pos} (
 
 (* ****** ****** *)
 
+%{^
 #define HASHTBL_MINSZ 97
+%} // end of [%{^]
+#define HASHTBL_MINSZ 97 // it is chosen, more or less, arbitrarily
 #define HASHTABLE_DOUBLE_FACTOR 5.0
 #assert (HASHTABLE_DOUBLE_FACTOR > 2.0)
 #define HASHTABLE_HALF_FACTOR 0.5
 #assert (HASHTABLE_HALF_FACTOR < 1.0)
 
+(* ****** ****** *)
+
 fn{key:t0p;itm:vt0p}
 hashtbl_resize_double
-  {l:agz} (ptbl: !HASHTBLptr (key, itm, l)):<> void = let
+  {l:agz} (
+  ptbl: !HASHTBLptr (key, itm, l)
+) :<> void = let
   val sz = hashtbl_size (ptbl)
   val sz = size1_of_size (sz) // casting: no op
 in
@@ -484,7 +525,9 @@ end // end of [hashtbl_resize_double]
 
 fn{key:t0p;itm:vt0p}
 hashtbl_resize_half
-  {l:agz} (ptbl: !HASHTBLptr (key, itm, l)):<> void = let
+  {l:agz} (
+  ptbl: !HASHTBLptr (key, itm, l)
+) :<> void = let
   val sz = hashtbl_size (ptbl)
   val sz = size1_of_size (sz) // casting: no op
   val sz2 = sz / 2
@@ -497,9 +540,10 @@ end // end of [hashtbl_resize_half]
 (* ****** ****** *)
 
 implement{key,itm}
-hashtbl_insert (ptbl, k, i) = () where {
+hashtbl_insert
+  (ptbl, k, i) = () where {
   var ratio: double = 0.0
-  val (pf, fpf | p) = HASHTBLptr_tblget (ptbl)
+  val (pf, fpf | p) = HASHTBLptr_get_hashtbl (ptbl)
   val tot1 = p->tot + 1
   val () = ratio := double_of_size (tot1) / double_of_size (p->sz)
   val h = hash_key (k, p->hash)
@@ -515,9 +559,10 @@ hashtbl_insert (ptbl, k, i) = () where {
 (* ****** ****** *)
 
 implement{key,itm}
-hashtbl_remove {l} (ptbl, k0, res) = ans where {
+hashtbl_remove
+  {l} (ptbl, k0, res) = ans where {
   var ratio: double = 1.0
-  val (pf, fpf | p) = HASHTBLptr_tblget {key,itm} (ptbl)
+  val (pf, fpf | p) = HASHTBLptr_get_hashtbl {key,itm} (ptbl)
   val h = hash_key (k0, p->hash)
   val h = size1_of_ulint (h); val ofs = sz1mod (h, p->sz)
   val ans = hashtbl_ptr_remove_ofs<key,itm>
@@ -542,7 +587,9 @@ hashtbl_remove {l} (ptbl, k0, res) = ans where {
 
 fun{key:t0p;itm:vt0p}
 hashtbl_ptr_foreach_clo {v:view}
-  {sz,tot:nat} {l_beg,l_end:addr} {f:eff} .<sz>. (
+  {sz,tot:nat}
+  {l_beg,l_end:addr}
+  {f:eff} .<sz>. (
   pf: !v, pf_tbl: !hashtbl_v (key, itm, sz, tot, l_beg, l_end)
 | sz: size_t sz, p_beg: ptr l_beg, f: &(!v | key, &itm) -<clo,f> void
 ) :<f> void = begin
@@ -559,9 +606,9 @@ hashtbl_ptr_foreach_clo {v:view}
 end // end of [hashtbl_ptr_foreach_clo]
 
 implement{key,itm}
-hashtbl_foreach_clo {v}
-  (pf0 | ptbl, f) = () where {
-  val (pf, fpf | p) = HASHTBLptr_tblget {key,itm} (ptbl)  
+hashtbl_foreach_clo
+  {v} (pf0 | ptbl, f) = () where {
+  val (pf, fpf | p) = HASHTBLptr_get_hashtbl {key,itm} (ptbl)  
   val () = begin
     hashtbl_ptr_foreach_clo {v} (pf0, p->pftbl | p->sz, p->pbeg, f)
   end // end of [val]
@@ -569,7 +616,8 @@ hashtbl_foreach_clo {v}
 } // end of [hashtbl_foreach_clo]
 
 implement{key,itm}
-hashtbl_foreach_cloref (tbl, f) = let
+hashtbl_foreach_cloref
+  (tbl, f) = () where {
   val f = __cast (f) where { extern castfn __cast
     (f: (key, &itm) -<cloref> void):<> (!unit_v | key, &itm) -<cloref> void
   } // end of [val]
@@ -583,9 +631,7 @@ hashtbl_foreach_cloref (tbl, f) = let
   val () = hashtbl_foreach_clo<key,itm> {unit_v} (pf0 | tbl, !p_f)
   prval unit_v () = pf0
   prval () = fpf (pf)
-in
-  // empty
-end // end of [hashtbl_foreach_cloref]
+} // end of [hashtbl_foreach_cloref]
 
 (* ****** ****** *)
 
@@ -622,41 +668,31 @@ end // end of [hashtbl_listize]
 
 %{$
 //
+// HX: shortcuts? yes. worth it? probably.
+//
 ats_ptr_type
 atslib_hashtbl_ptr_make__chain
   (ats_size_type sz) {
   ats_ptr_type pbeg ;
 /*
-** HX:
-** it is mandatory to initialize with zeros!
+** HX: it is mandatory to initialize with zeros!
 */
   pbeg = ATS_CALLOC(sz, sizeof(chain0)) ;
   return pbeg ;
 } // end of [atslib_hashtbl_ptr_make__chain]
-//
-ats_void_type
-atslib_hashtbl_ptr_free__chain
-  (ats_ptr_type pbeg) { ATS_FREE(pbeg) ; return ; }
-// end of [atslib_hashtbl_ptr_free__chain]
-//
-%} // end of [%{$]
 
-(* ****** ****** *)
-
-%{$
-//
-// HX: shortcuts? yes. worth it? probably.
-//
-#define HASHTABLE_MINSZ 97 // it is chosen arbitrarily
-//
 ats_ptr_type
 atslib_hashtbl_make_hint__chain (
-  ats_clo_ref_type hash, ats_clo_ref_type eqfn, ats_size_type hint
+  ats_clo_ref_type hash
+, ats_clo_ref_type eqfn
+, ats_size_type hint
 ) {
   size_t sz ;
   HASHTBL *ptbl ; void *pbeg ;
   ptbl = ATS_MALLOC(sizeof(HASHTBL)) ;
-  sz = (hint > 0 ? hint : HASHTABLE_MINSZ) ;
+  sz = (
+    hint > 0 ? hint : HASHTBL_MINSZ
+  ) ;
   /* zeroing the allocated memory is mandatory! */
   pbeg = ATS_CALLOC(sz, sizeof(chain0)) ;
   ptbl->atslab_sz = sz ;
@@ -666,29 +702,22 @@ atslib_hashtbl_make_hint__chain (
   ptbl->atslab_eqfn = eqfn ;
   return ptbl ;
 } // end of [atslib_hashtbl_make_hint__chain]
-//
-ats_ptr_type
-atslib_hashtbl_make_null__chain
-  (/*argumentless*/) { return (void*)0; }
-// end of [atslib_hashtbl_make_null__chain]
-//
+
 %} // end of [%{$]
 
 (* ****** ****** *)
 
 %{$
-//
+
+ATSinline()
 ats_int_type
 atslib_hashtbl_free__chain
   (ats_ptr_type ptbl) {
-  ATS_FREE(((HASHTBL*)ptbl)->atslab_pbeg) ; ATS_FREE(ptbl) ; return ;
+  ATS_FREE(((HASHTBL*)ptbl)->atslab_pbeg) ; ATS_FREE(ptbl) ;
+  return ;
 } // end of [atslib_hashtbl_free__chain]
-//
-ats_void_type
-atslib_hashtbl_free_null__chain
-  (ats_ptr_type ptbl) { return ; }
-// end of [atslib_hashtbl_free_null__chain]
-//
+
+ATSinline()
 ats_int_type
 atslib_hashtbl_free_vt__chain
   (ats_ptr_type ptbl) {
@@ -697,7 +726,7 @@ atslib_hashtbl_free_vt__chain
   ATS_FREE(((HASHTBL*)ptbl)->atslab_pbeg) ; ATS_FREE(ptbl) ;
   return ats_false_bool ;
 } // end of [atslib_hashtbl_free_vt__chain]
-//
+
 %} // end of [%{$]
 
 (* ****** ****** *)

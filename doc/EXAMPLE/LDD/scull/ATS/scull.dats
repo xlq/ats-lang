@@ -32,6 +32,7 @@ ERRNO = "contrib/linux/linux/SATS/errno.sats"
 macdef e2i = $ERRNO.int_of_errno
 macdef EFAULT = $ERRNO.EFAULT
 macdef ENOMEM = $ERRNO.ENOMEM
+macdef ERESTARTSYS = $ERRNO.ERESTARTSYS
 
 (* ****** ****** *)
 
@@ -40,6 +41,13 @@ UACC = "contrib/linux/asm/SATS/uaccess.sats"
 macdef clear_user = $UACC.clear_user
 macdef copy_to_user = $UACC.copy_to_user
 macdef copy_from_user = $UACC.copy_from_user
+
+(* ****** ****** *)
+
+staload
+FCNTL = "contrib/linux/linux/SATS/fcntl.sats"
+macdef O_ACCMODE = $FCNTL.O_ACCMODE
+macdef O_WRONLY = $FCNTL.O_WRONLY
 
 (* ****** ****** *)
 
@@ -235,6 +243,67 @@ end (* end of [if] *)
 //
 end // end of [scull_write_main]
   
+(* ****** ****** *)
+
+(*
+int scull_open(struct inode *inode, struct file *filp)
+{
+	struct scull_dev *dev; /* device information */
+
+	dev = container_of(inode->i_cdev, struct scull_dev, cdev);
+	filp->private_data = dev; /* for other methods */
+
+	/* now trim to 0 the length of the device if open was write-only */
+	if ( (filp->f_flags & O_ACCMODE) == O_WRONLY) {
+		if (down_interruptible(&dev->sem))
+			return -ERESTARTSYS;
+		scull_trim(dev); /* ignore errors */
+		up(&dev->sem);
+	}
+	return 0;          /* success */
+}
+*)
+
+extern
+fun scull_qset_get
+  (): [m:pos] int m = "mac#scull_qset_get"
+// end of [fun]
+extern
+fun scull_quantum_get
+  (): [n:pos] int n = "mac#scull_quantum_get"
+// end of [fun]
+
+implement
+scull_open_main
+  (dev, file) = let
+  val iswronly =
+    (file.f_flags land O_ACCMODE) = O_WRONLY
+  // end of [val]
+in
+  if iswronly then let
+    val p_dev = &dev
+    prval pf_dev = view@ (dev)
+    val (pf_dev | i) = scull_dev_acquire (pf_dev | &dev)
+  in
+    if i >= 0 then let
+      prval scull_dev_acquire_v_succ (pf_dev) = pf_dev
+      val m = scull_qset_get () and n = scull_quantum_get ()
+      val () = scull_trim_main (dev, m, n)
+      val () = scull_dev_release (dev)
+      prval () = view@ (dev) := pf_dev
+    in
+      0 (* normal *)
+    end else let
+      prval scull_dev_acquire_v_fail (pf_dev) = pf_dev
+      prval () = view@ (dev) := pf_dev
+    in
+      ~(e2i)ERESTARTSYS
+    end // end of [if]
+  end else
+    0 (* nothing is done in this case *)
+  // end of [if]
+end // end of [scull_open_main]
+
 (* ****** ****** *)
 
 (* end of [scull.dats] *)

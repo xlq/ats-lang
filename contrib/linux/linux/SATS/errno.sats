@@ -55,6 +55,7 @@ castfn errno_of_int {i:nat} (i: int i):<> errno_t
 
 macdef EFAULT = $extval (errno_t, "EFAULT")
 macdef ENOMEM = $extval (errno_t, "ENOMEM")
+macdef ERESTARTSYS = $extval (errno_t, "ERESTARTSYS")
 
 (* ****** ****** *)
 

@@ -58,16 +58,22 @@ absview vector_v (
   a:viewt@ype+, m: int, n: int, l:addr
 ) // end of [vector_v]
 
-prfun vector_v_encode
-  {a:viewt@ype} {n1,n2:int} {l:addr} {ofs:int} (
-  pf1: MUL (n1, sizeof a, ofs)
-, pf21: array_v (a, n1, l), pf22: array_v (a?, n2, l+ofs)
+prfun
+vector_v_encode
+  {a:viewt@ype}
+  {n1,n2:int} {l:addr}
+  {ofs:int} (
+  pfmul: MUL (n1, sizeof a, ofs)
+, pfarr1: array_v (a, n1, l), pfarr2: array_v (a?, n2, l+ofs)
 ) : vector_v (a, n1+n2, n1, l)
 // end of [vector_v_encode]
 
-prfun vector_v_decode
-  {a:viewt@ype} {m,n:int} {l:addr} {ofs:int} (
-  pf1: MUL (n, sizeof a, ofs), pf: vector_v (a, m, n, l)
+prfun
+vector_v_decode
+  {a:viewt@ype}
+  {m,n:int} {l:addr}
+  {ofs:int} (
+  pfmul: MUL (n, sizeof a, ofs), pfarr: vector_v (a, m, n, l)
 ): (array_v (a, n, l), array_v (a?, m-n, l+ofs))
 // end of [vector_v_decode]
 
@@ -83,7 +89,8 @@ VSHELL (
 , vfree= free_gc_v l
 } // end of [VECTOR0]
 
-viewtypedef VSHELL0 = VSHELL (0, 0, null)
+viewtypedef
+VSHELL0 = VSHELL (0, 0, null)
 
 (* ****** ****** *)
 
@@ -146,24 +153,28 @@ vector_set_elt_at {m,n:int} (V: &VECTOR (a, m, n), i: sizeLt n, x: a):<> void
 (* ****** ****** *)
 
 fun{a:viewt@ype}
-vector_append {m,n:int | n < m}
+vector_append
+  {m,n:int | n < m}
   (V: &VECTOR (a, m, n) >> VECTOR (a, m, n+1), x: a):<> void
 // end of [vector_append]
 
 fun{a:viewt@ype}
-vector_prepend {m,n:int | n < m}
+vector_prepend
+  {m,n:int | n < m}
   (V: &VECTOR (a, m, n) >> VECTOR (a, m, n+1), x: a):<> void
 // end of [vector_prepend]
 
 (* ****** ****** *)
 
 fun{a:viewt@ype}
-vector_insert_at {m,n:int | n < m} {i:nat | i <= n}
+vector_insert_at
+  {m,n:int | n < m} {i:nat | i <= n}
   (V: &VECTOR (a, m, n) >> VECTOR (a, m, n+1), i: size_t i, x: &a >> a?!):<> void
 // end of [vector_insert]
 
 fun{a:viewt@ype}
-vector_remove_at {m,n:int} {i:nat | i < n}
+vector_remove_at
+  {m,n:int} {i:nat | i < n}
   (V: &VECTOR (a, m, n) >> VECTOR (a, m, n-1), i: size_t i, x: &a? >> a ):<> void
 // end of [vector_remove]
 

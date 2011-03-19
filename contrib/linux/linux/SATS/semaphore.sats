@@ -45,7 +45,14 @@
 
 (* ****** ****** *)
 
-absviewtype semaphore (v: view)
+viewtypedef
+semaphore_struct (v: view) =
+$extype_struct "semaphore_struct" of {
+  __rest= undefined_vt
+} // end of [semaphore_struct]
+stadef semaphore = semaphore_struct
+
+(* ****** ****** *)
 
 fun up {v:view} (
   pf: v | sem: &semaphore (v)
@@ -54,8 +61,10 @@ fun up {v:view} (
 fun down_interruptible
   {v:view} (
   sem: &semaphore (v)
-) : [i:int | i <= 0] (option_v (v, i==0) | int i)
-  = "mac#atsctrb_linux_down_interruptible"
+) : [i:int | i <= 0] (
+  option_v (v, i==0) | int i
+) = "mac#atsctrb_linux_down_interruptible"
+// end of [down_interruptible]
 
 (* ****** ****** *)
 

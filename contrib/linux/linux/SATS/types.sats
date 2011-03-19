@@ -57,16 +57,18 @@ abst@ype mqd_t = $extype "mqd_t"
 
 (* ****** ****** *)
 
-abst@ype uid32_t = $extype "uid_t"
-abst@ype gid32_t = $extype "gid_t"
 abst@ype uid16_t = $extype "uid16_t"
+abst@ype uid_t = $extype "uid_t" // uid32_t
 abst@ype gid16_t = $extype "gid16_t"
+abst@ype gid_t = $extype "gid_t" // gid32_t
 
 (* ****** ****** *)
 
 abst@ype uintptr_t = $extype "uintptr_t"
 
 (* ****** ****** *)
+
+abst@ype fmode_t = $extype "fmode_t"
 
 abst@ype loff_t = $extype "loff_t"
 

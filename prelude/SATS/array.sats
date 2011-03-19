@@ -45,6 +45,36 @@
 
 (* ****** ****** *)
 
+praxi array_v_of_bytes_v
+  {a:viewt@ype}
+  {n:nat}
+  {l:addr}
+  {bsz:int} (
+  pf1: MUL (n, sizeof a, bsz)
+, pf2: b0ytes (bsz) @ l
+) : @[a?][n] @ l // end of [array_v_of_bytes_v]
+
+praxi bytes_v_of_array_v
+  {a:viewt@ype}
+  {n:nat}
+  {l:addr}
+  (pf: @[a?][n] @ l)
+  : [bsz:int] (
+  MUL (n, sizeof(a), bsz), bytes (bsz) @ l
+) // end of [bytes_v_of_array_v]
+
+(* ****** ****** *)
+
+praxi free_gc_trans
+  {a:viewt@ype}
+  {n:int} {l:addr} (
+  pf_gc: free_gc_v (a, n, l)
+) : [bsz:int] (
+  MUL (n, sizeof(a), bsz), freebyte_gc_v (bsz, l)
+) // end of [free_gc_trans]
+
+(* ****** ****** *)
+
 fun{a:t@ype}
 array_ptr_get_elt_at {n:int}
   {i:nat | i < n} (A: &(@[a][n]), i: size_t i):<> a
@@ -131,16 +161,6 @@ prfun array_v_sing
   {a:viewt@ype} {l:addr} (pf: a @ l): array_v (a, 1, l)
 prfun array_v_unsing
   {a:viewt@ype} {l:addr} (pf: array_v (a, 1, l)): a @ l
-
-(* ****** ****** *)
-
-praxi free_gc_viewt0ype_int_addr_trans
-  {a1,a2:viewt@ype | sizeof a1 == sizeof a2}
-  {n1,n2:int} {l:addr} {asz:int} (
-  pf1_mul: MUL (n1, sizeof a1, asz)
-, pf2_mul: MUL (n2, sizeof a2, asz) 
-, pf_gc: !free_gc_v (a1, n1, l) >> free_gc_v (a2, n2, l)
-) : void // end of [free_gc_viewt0ype_int_addr_trans]
 
 (* ****** ****** *)
 

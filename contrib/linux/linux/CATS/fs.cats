@@ -44,6 +44,7 @@
 /* ****** ****** */
 
 typedef struct inode inode_struct ;
+typedef struct file file_struct ;
 typedef struct super_block super_block_struct ;
 
 /* ****** ****** */

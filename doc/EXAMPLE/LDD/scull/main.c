@@ -247,10 +247,10 @@ static void scull_remove_proc(void)
 
 /* ****** ****** */
 
+#if(0)
 /*
- * Open and close
- */
-
+** Open and close
+*/
 int scull_open(struct inode *inode, struct file *filp)
 {
 	struct scull_dev *dev; /* device information */
@@ -267,6 +267,20 @@ int scull_open(struct inode *inode, struct file *filp)
 	}
 	return 0;          /* success */
 }
+#endif // end of [if(0)]
+extern
+int scull_open_main (
+  struct scull_dev *dev, struct file *filp
+) ; // end of [scull_open_main]
+int scull_open(struct inode *inode, struct file *filp)
+{
+	struct scull_dev *dev; /* device information */
+
+	dev = container_of(inode->i_cdev, struct scull_dev, cdev);
+	filp->private_data = dev; /* for other methods */
+        return scull_open_main (dev, filp) ;
+}
+
 
 int scull_release(struct inode *inode, struct file *filp)
 {

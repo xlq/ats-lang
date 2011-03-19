@@ -49,6 +49,9 @@ typedef mode_t = $TYPES.mode_t
 
 abst@ype
 flag_t = $extype"ats_fcntlflag_type"
+(*
+castfn flag_of_uint (u: uint):<> flag_t
+*)
 castfn uint_of_flag (f: flag_t):<> uint
 overload uint_of with uint_of_flag
 abst@ype disjflag_t = flag_t // for [lor]

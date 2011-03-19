@@ -27,6 +27,22 @@ typedef struct scull_qset scull_qset_struct ;
 
 /* ****** ****** */
 
+ATSinline()
+ats_int_type
+scull_dev_acquire
+  (scull_dev_struct *dev) {
+  return down_interruptible(&dev->sem) ;
+} // end of [scull_dev_acquire]
+
+ATSinline()
+ats_void_type
+scull_dev_release
+  (scull_dev_struct *dev) {
+  up(&dev->sem) ; return ;
+} // end of [scull_dev_release]
+
+/* ****** ****** */
+
 typedef unsigned long int ulint ;
 #define add_loff_int(x, y) (((ulint)x) + ((ulint)y))
 

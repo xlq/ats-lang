@@ -48,7 +48,7 @@ extern
 prfun qtm_v_nil {n:nat} (): qtm_v (n, null)
 extern
 prfun qtm_v_takeout
-  {n:nat} {l:agz} () : ftakeout_p (qtm_v (n, l), bytes (n) @ l)
+  {n:nat} {l:agz} () : ftakeout (qtm_v (n, l), bytes (n) @ l)
 // end of [qtm_v]
 
 (* ****** ****** *)
@@ -71,7 +71,7 @@ prfun qdat_v_unnil
 
 extern
 prfun qdat_v_takeout : {m,n:nat} {l:agz}
-  ftakeout_p (qdat_v (m, n, l), array_v (qtmptr (n), m, l))
+  ftakeout (qdat_v (m, n, l), array_v (qtmptr (n), m, l))
 // end of [qdat_v_takeout]
 
 extern

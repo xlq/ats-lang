@@ -98,6 +98,12 @@ absview cdev_v (l:addr)
 absviewtype cdev_ref (l:addr)
 //
 (* ****** ****** *)
+
+fun inode_get_i_cdev
+  (inode: &inode): [l:agz] (cdev_ref (l) -<lin,prf> void | cdev_ref (l))
+// end of [inode_get_i_cdev]
+
+(* ****** ****** *)
 /*
 void cdev_init(struct cdev *, const struct file_operations *);
 */

@@ -1147,6 +1147,7 @@ s2zexp_make_s2exp (s2e0) = let
         end // end of [S2Etyarr]
       | S2Etyrec (knd, npf, ls2es) => begin case+ knd of
         | TYRECKINDbox () => S2ZEptr ()
+        | TYRECKINDflt_ext (name) => S2ZEextype (name)
         | _ => S2ZEtyrec (knd, aux_labs2explst (s2vss, ls2es))
         end // end of [S2Etyrec]
       | S2Euni (s2vs, _(*s2ps*), s2e) => aux_s2exp (s2vs :: s2vss, s2e)
