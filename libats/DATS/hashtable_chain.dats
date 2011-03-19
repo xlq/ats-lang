@@ -77,7 +77,7 @@ chain (
 viewtypedef
 chain0 = chain (void, void, 0)
 stadef chainsz = sizeof (chain0)
-extern typedef "chain0" = chain0
+extern typedef "chain0_ptr" = chain0
 
 (* ****** ****** *)
 
@@ -195,7 +195,7 @@ HASHTBL (
 ] HASHTBL (key, itm, sz, tot, l_beg, l_end)
 // end of [HASHTBL]
 
-extern typedef "HASHTBL" = HASHTBL (void, void)
+extern typedef "HASHTBL_struct" = HASHTBL (void, void)
 
 (* ****** ****** *)
 
@@ -239,7 +239,8 @@ hashtbl_ptr_clear
 ) :<> void = begin
   if sz > 0 then let
     prval hashtbl_v_cons (pf1, pf2) = pf
-    val () = chain_free (!p_beg); val () = !p_beg := CHAINnil ()
+    val () = chain_free (!p_beg)
+    val () = !p_beg := CHAINnil ()
     val () = hashtbl_ptr_clear<key,itm> (pf2 | sz-1, p_beg+sizeof<chain0>)
     prval () = pf := hashtbl_v_cons (pf1, pf2)
   in
@@ -590,15 +591,16 @@ hashtbl_ptr_foreach_clo {v:view}
   {sz,tot:nat}
   {l_beg,l_end:addr}
   {f:eff} .<sz>. (
-  pf: !v, pf_tbl: !hashtbl_v (key, itm, sz, tot, l_beg, l_end)
+  pfv: !v
+, pf_tbl: !hashtbl_v (key, itm, sz, tot, l_beg, l_end)
 | sz: size_t sz, p_beg: ptr l_beg, f: &(!v | key, &itm) -<clo,f> void
 ) :<f> void = begin
   if sz > 0 then let
     prval hashtbl_v_cons (pf1_tbl, pf2_tbl) = pf_tbl
-    val () = chain_foreach_clo (pf | !p_beg, f)
+    val () = chain_foreach_clo (pfv | !p_beg, f)
     val () = // segfault during typechecking if {v} is not provided!!!
       hashtbl_ptr_foreach_clo<key,itm> {v}
-        (pf, pf2_tbl | sz-1, p_beg+sizeof<chain0>, f)
+        (pfv, pf2_tbl | sz-1, p_beg+sizeof<chain0>, f)
     prval () = pf_tbl := hashtbl_v_cons (pf1_tbl, pf2_tbl)
   in
     // empty
@@ -607,10 +609,10 @@ end // end of [hashtbl_ptr_foreach_clo]
 
 implement{key,itm}
 hashtbl_foreach_clo
-  {v} (pf0 | ptbl, f) = () where {
+  {v} (pfv | ptbl, f) = () where {
   val (pf, fpf | p) = HASHTBLptr_get_hashtbl {key,itm} (ptbl)  
   val () = begin
-    hashtbl_ptr_foreach_clo {v} (pf0, p->pftbl | p->sz, p->pbeg, f)
+    hashtbl_ptr_foreach_clo {v} (pfv, p->pftbl | p->sz, p->pbeg, f)
   end // end of [val]
   prval () = minus_addback (fpf, pf | ptbl)
 } // end of [hashtbl_foreach_clo]
@@ -677,7 +679,7 @@ atslib_hashtbl_ptr_make__chain
 /*
 ** HX: it is mandatory to initialize with zeros!
 */
-  pbeg = ATS_CALLOC(sz, sizeof(chain0)) ;
+  pbeg = ATS_CALLOC(sz, sizeof(chain0_ptr)) ;
   return pbeg ;
 } // end of [atslib_hashtbl_ptr_make__chain]
 
@@ -688,13 +690,14 @@ atslib_hashtbl_make_hint__chain (
 , ats_size_type hint
 ) {
   size_t sz ;
-  HASHTBL *ptbl ; void *pbeg ;
-  ptbl = ATS_MALLOC(sizeof(HASHTBL)) ;
+  HASHTBL_struct *ptbl ;
+  void *pbeg ;
+  ptbl = ATS_MALLOC(sizeof(HASHTBL_struct)) ;
   sz = (
     hint > 0 ? hint : HASHTBL_MINSZ
   ) ;
   /* zeroing the allocated memory is mandatory! */
-  pbeg = ATS_CALLOC(sz, sizeof(chain0)) ;
+  pbeg = ATS_CALLOC(sz, sizeof(chain0_ptr)) ;
   ptbl->atslab_sz = sz ;
   ptbl->atslab_tot = 0 ;
   ptbl->atslab_pbeg = pbeg ;
@@ -713,7 +716,7 @@ ATSinline()
 ats_int_type
 atslib_hashtbl_free__chain
   (ats_ptr_type ptbl) {
-  ATS_FREE(((HASHTBL*)ptbl)->atslab_pbeg) ; ATS_FREE(ptbl) ;
+  ATS_FREE(((HASHTBL_struct*)ptbl)->atslab_pbeg) ; ATS_FREE(ptbl) ;
   return ;
 } // end of [atslib_hashtbl_free__chain]
 
@@ -721,9 +724,9 @@ ATSinline()
 ats_int_type
 atslib_hashtbl_free_vt__chain
   (ats_ptr_type ptbl) {
-  if (((HASHTBL*)ptbl)->atslab_tot != 0)
+  if (((HASHTBL_struct*)ptbl)->atslab_tot != 0)
     return ats_true_bool ;
-  ATS_FREE(((HASHTBL*)ptbl)->atslab_pbeg) ; ATS_FREE(ptbl) ;
+  ATS_FREE(((HASHTBL_struct*)ptbl)->atslab_pbeg) ; ATS_FREE(ptbl) ;
   return ats_false_bool ;
 } // end of [atslib_hashtbl_free_vt__chain]
 
