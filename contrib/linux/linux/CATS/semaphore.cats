@@ -43,6 +43,11 @@
 
 /* ****** ****** */
 
+#define atsctrb_linux_up up
+#define atsctrb_linux_down_interruptible down_interruptible
+
+/* ****** ****** */
+
 #endif /* ATSCTRB_LINUX_SEMAPHORE_CATS */
 
 /* end of [semaphore.cats] */

@@ -36,84 +36,17 @@
 (* ****** ****** *)
 
 %{#
-#include "contrib/linux/linux/CATS/fs.cats"
+#include "contrib/linux/linux/CATS/kobject.cats"
 %} // end of [%{#]
 
 (* ****** ****** *)
 
-staload TYPES = "contrib/linux/linux/SATS/types.sats"
-typedef dev_t = $TYPES.dev_t
-
-(* ****** ****** *)
-
-propdef ftakeout_p
-  (v1:view, v2:view) = v1 -<prf> (v2, v2 -<lin,prf> v1)
-
-(* ****** ****** *)
-
+absviewtype kobject_ref (l:addr)
 viewtypedef
-inode_struct =
-$extype_struct "inode_struct" of {
-  empty= empty
-, i_state= ulint
-, dirtied_when= ulint (* jiffies or first dirtying *)
-, i_flags= uint
-, _rest= undefined_vt
-} // end of [inode]
-viewtypedef inode = inode_struct
-
-(* ****** ****** *)
-
-absview inode_v (l:addr)
-prfun inode_v_takeout
-  : {l:addr} ftakeout_p (inode_v l, inode @ l)
-// end of [inode_v_takeout]
-
-//
-// HX-2011-03-18: [ref] means ref-counted
-//
-absviewtype inode_ref (l:addr) = ptr
-viewtypedef inode_ref0 = [l:agez] inode_ref (l)
-viewtypedef inode_ref1 = [l:addr | l > null] inode_ref (l)
-//
-prfun
-inode_ref_unfold
-  {l:agz} (
-  x: !inode_ref (l) >> ptr l
-) : (
-  inode_v l | void
-) // end of [inode_ref_unfold]
-//
-prfun
-inode_ref_fold
-  {l:addr} (
-  pf: inode_v l | x: !ptr l >> inode_ref l
-) : void // end of [inode_ref_fold]
-//
-castfn ptr_of_inode {l:addr} (x: inode_ref (l)):<> ptr (l)
-overload ptr_of with ptr_of_inode
-//
-(* ****** ****** *)
-
+kobject_ref0 = [l:agez] kobject_ref (l)
 viewtypedef
-super_block =
-$extype_struct "super_block_struct" of {
-  empty= empty
-, s_dev= dev_t
-, s_blocksize= ulint
-, s_blocksize_bits= uchar
-, s_dirt= uchar
-, s_maxbytes= ullint
-, _rest= undefined_vt
-} // end of [super_block]
+kobject_ref1 = [l:addr | l > null] kobject_ref (l)
 
 (* ****** ****** *)
 
-fun new_inode (
-  sb: &super_block
-) : inode_ref0 = "mac#atsctrb_linux_new_inode"
-// end of [new_inode]
-
-(* ****** ****** *)
-
-(* end of [fs.sats] *)
+(* end of [kobject.sats] *)

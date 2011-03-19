@@ -42,12 +42,14 @@
 (* ****** ****** *)
 
 viewtypedef
-backing_dev_info =
+backing_dev_info_struct =
 $extype_struct
   "backing_dev_info_struct" of {
   empty= empty
 , _rest = undefined_vt
 } // end of [viewtypedef]
+viewtypedef 
+backing_dev_info = backing_dev_info_struct
 
 (* ****** ****** *)
 

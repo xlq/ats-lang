@@ -42,16 +42,20 @@
 (* ****** ****** *)
 
 staload
-FS = "linux/SATS/fs.sats"
+KOBJ = "contrib/linux/linux/SATS/kobject.sats"
+stadef kobject_ref0 = $KOBJ.kobject_ref0
+
+staload
+FS = "contrib/linux/linux/SATS/fs.sats"
 stadef inode = $FS.inode
 
 staload
-MOD = "linux/SATS/module.sats"
+MOD = "contrib/linux/linux/SATS/module.sats"
 stadef module_ref = $MOD.module_ref
 stadef module_ref1 = $MOD.module_ref1
 
 staload
-TYPES = "linux/SATS/types.sats"
+TYPES = "contrib/linux/linux/SATS/types.sats"
 stadef dev_t = $TYPES.dev_t
 
 (* ****** ****** *)
@@ -73,7 +77,7 @@ struct cdev {
 
 viewtypedef
 cdev_struct =
-  $extype_struct "cdev_struct" of {
+$extype_struct "cdev_struct" of {
   empty= empty
 , module= module_ref1
 , ops= file_operations_ptr
@@ -84,63 +88,77 @@ cdev_struct =
 viewtypedef cdev = cdev_struct
 
 (* ****** ****** *)
+
+absview cdev_v (l:addr)
+
 //
 // HX-2011-02-10:
 // this type is ref-counted
 //
-absviewtype cdev_ref (l:addr, sd: int) // sd: static(0)/dynamic(1)
+absviewtype cdev_ref (l:addr)
 //
 (* ****** ****** *)
-
-fun cdev_get_owner
-  {l:agz} {sd:int} (
-  dev: cdev_ref (l, sd)
-) : [l1: agz] (
-  minus (cdev_ref (l, sd), module_ref (l1)) | module_ref (l1)
-) // end of [cdev_get_owner]
+/*
+void cdev_init(struct cdev *, const struct file_operations *);
+*/
+fun cdev_init
+  {l:agz} (
+  dev: &cdev? >> cdev
+, fops: file_operations_ptr
+) : void = "mac#atsctrb_linux_cdev_init"
 
 (* ****** ****** *)
 /*
 struct cdev *cdev_alloc(void);
 */
 fun cdev_alloc // HX: dynamically allocated cdev
-  () : [l:agez] cdev_ref (l, 1) = "mac#atsctrb_linux_cdev_alloc"
+  () : [l:agez] cdev_ref (l) = "mac#atsctrb_linux_cdev_alloc"
 // end of [cdev_alloc]
 
 (* ****** ****** *)
+//
+// HX-2011-02-10: ref-count increment
+//
 /*
-void cdev_init(struct cdev *, const struct file_operations *);
+struct kobject *cdev_get(struct cdev *p);
 */
-fun cdev_init {l:agz} (
-  pf: cdev? @ l | p: ptr l, fops: file_operations_ptr
-) : cdev_ref (l, 0) = "atsctrb_linux_cdev_init"
+fun cdev_get
+  {l:addr} (
+  dev: cdev_ref (l) // HX: no-op if l = null
+) : kobject_ref0 = "mac#atsctrb_linux_cdev_get"
+// end of [cdev_get]
 
-(* ****** ****** *)
 //
 // HX-2011-02-10: ref-count decrement
 //
 /*
 void cdev_put(struct cdev *p);
 */
-fun cdev_put {l:agz} {sd:int}
-  (dev: cdev_ref (l, sd)): void = "mac#atsctrb_linux_cdev_put"
+fun cdev_put
+  {l:addr} (
+  dev: cdev_ref (l) // HX: no-op if l = null
+) : void = "mac#atsctrb_linux_cdev_put"
 // end of [cdev_put]
 
 (* ****** ****** *)
 /*
 int cdev_add(struct cdev *, dev_t, unsigned);
 */
-fun cdev_add {l:agz} {sd:int} (
-  dev: !cdev_ref (l, sd), num: dev_t, count: uint
-) : #[i:int | i <= 0] int (i) = "atsctrb_linux_cdev_add"
+fun cdev_add
+  {l:agz} (
+  dev: !cdev_ref (l), num: dev_t, count: uint
+) : [i:int | i <= 0] int (i)
+  = "mac#atsctrb_linux_cdev_add"
+// end of [cdev_add]
 
 (* ****** ****** *)
 /*
 void cdev_del(struct cdev *);
 */
-fun cdev_del {l:addr} {sd:int} (
-  dev: !cdev_ref (l, sd) >> ptr l
-) : (option_v (cdev? @ l, sd==0) | void) = "mac#atsctrb_linux_cdev_del"
+fun cdev_del
+  {l:addr} (
+  dev: cdev_ref (l)
+) : void = "mac#atsctrb_linux_cdev_del"
 // end of [cdev_del]
 
 (* ****** ****** *)
@@ -148,14 +166,16 @@ fun cdev_del {l:addr} {sd:int} (
 int cdev_index(struct inode *inode);
 */
 fun cdev_index
-  (inode: &inode): int = "atsctrb_linux_cdev_index"
+  (inode: &inode): int = "mac#atsctrb_linux_cdev_index"
 // end of [cdev_index]
 
 (* ****** ****** *)
 /*
 void cd_forget(struct inode *);
 */
-fun cd_forget (inode: &inode): int = "mac#atsctrb_linux_cd_forget"
+fun cd_forget (
+  inode: &inode
+) : int = "mac#atsctrb_linux_cd_forget"
 
 (* ****** ****** *)
 /*
@@ -165,10 +185,10 @@ extern struct backing_dev_info directly_mappable_cdev_bdi;
 local
 
 staload
-BDI = "linux/SATS/backing-dev.sats"
+BDI = "contrib/linux/linux/SATS/backing-dev.sats"
 stadef backing_dev_info = $BDI.backing_dev_info
 
-in
+in // in of [local]
 
 fun directly_mappable_cdev_bdi_get (): [l:addr]
   (backing_dev_info @ l, backing_dev_info @ l -<lin,prf> void | ptr l)

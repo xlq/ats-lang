@@ -34,32 +34,15 @@
 //
 /* ****** ****** */
 
-#ifndef ATSCTRB_LINUX_LINUX_CDEV_CATS
-#define ATSCTRB_LINUX_LINUX_CDEV_CATS
+#ifndef ATSCTRB_LINUX_LINUX_KOBJECT_CATS
+#define ATSCTRB_LINUX_LINUX_KOBJECT_CATS
 
 /* ****** ****** */
 
-#include <linux/cdev.h>
+#include <linux/kobject.h>
 
 /* ****** ****** */
 
-#define atsctrb_linux_cdev_init cdev_init
-#define atsctrb_linux_cdev_alloc cdev_alloc
+#endif /* ATSCTRB_LINUX_LINUX_KOBJECT_CATS */
 
-/* ****** ****** */
-
-#define atsctrb_linux_cdev_get cdev_get
-#define atsctrb_linux_cdev_put cdev_put
-
-#define atsctrb_linux_cdev_add cdev_add
-
-/* ****** ****** */
-
-#define atsctrb_linux_cdev_index cdev_index
-#define atsctrb_linux_cd_forget cd_forget
-
-/* ****** ****** */
-
-#endif /* ATSCTRB_LINUX_LINUX_CDEV_CATS */
-
-/* end of [cdev.cats] */
+/* end of [kobject.cats] */
