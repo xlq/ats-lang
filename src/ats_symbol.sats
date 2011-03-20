@@ -76,7 +76,7 @@ val symbol_OR : symbol_t
 val symbol_QMARK : symbol_t
 val symbol_QMARKBANG : symbol_t
 val symbol_SUB : symbol_t
-val symbol_TILDA : symbol_t
+val symbol_TILDE : symbol_t
 val symbol_UNDERSCORE : symbol_t
 //
 val symbol_FALSE : symbol_t

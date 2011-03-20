@@ -932,7 +932,7 @@ fn symbol_is_unary (sym: sym_t) = begin
   case+ sym of
   | _ when sym = $Sym.symbol_EVALMAC => true
   | _ when sym = $Sym.symbol_LIFTMAC => true
-  | _ when sym = $Sym.symbol_TILDA => true
+  | _ when sym = $Sym.symbol_TILDE => true
   | _ when sym = $Sym.symbol_IS_NIL => true
   | _ when sym = $Sym.symbol_IS_CONS => true
   | _ when sym = $Sym.symbol_TUP_HEAD => true
@@ -1057,7 +1057,7 @@ in
       | _ when sym = $Sym.symbol_LIFTMAC => begin
           eval0_exp_app_lift (loc0, v2al)
         end
-      | _ when sym = $Sym.symbol_TILDA => begin
+      | _ when sym = $Sym.symbol_TILDE => begin
           eval0_exp_app_neg (loc0, v2al)
         end
       | _ when sym = $Sym.symbol_IS_NIL => begin

@@ -315,7 +315,7 @@ fun i0de_make_lt (t: t0kn): i0de = "i0de_make_lt"
 fun i0de_make_minusgt (t: t0kn): i0de = "i0de_make_minusgt"
 fun i0de_make_minusltgt (t: t0kn): i0de = "i0de_make_minusltgt"
 fun i0de_make_r0ead (t: t0kn): i0de = "i0de_make_r0ead"
-fun i0de_make_tilda (t: t0kn): i0de = "i0de_make_tilda"
+fun i0de_make_tilde (t: t0kn): i0de = "i0de_make_tilde"
 fun i0de_make_t0ype (t: t0kn): i0de = "i0de_make_t0ype"
 fun i0de_make_viewt0ype (t: t0kn): i0de = "i0de_make_viewt0ype"
 
@@ -1518,7 +1518,7 @@ fun p0at_exist (t_beg: t0kn, qua: s0arglst, t_end: t0kn): p0at = "p0at_exist"
 
 fun p0at_float (_: f0loat): p0at = "p0at_float"
 
-fun p0at_free (t_tilda: t0kn, _: p0at): p0at = "p0at_free"
+fun p0at_free (t_tilde: t0kn, _: p0at): p0at = "p0at_free"
 
 fun p0at_ide (_: i0de): p0at = "p0at_ide"
 

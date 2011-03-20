@@ -312,8 +312,8 @@ implement i0de_make_minusltgt (tok) =
   '{ i0de_loc= tok.t0kn_loc, i0de_sym= $Sym.symbol_MINUSLTGT }
 implement i0de_make_r0ead (tok) =
   '{ i0de_loc= tok.t0kn_loc, i0de_sym= $Sym.symbol_R0EAD }
-implement i0de_make_tilda (tok) =
-  '{ i0de_loc= tok.t0kn_loc, i0de_sym= $Sym.symbol_TILDA }
+implement i0de_make_tilde (tok) =
+  '{ i0de_loc= tok.t0kn_loc, i0de_sym= $Sym.symbol_TILDE }
 
 implement i0de_make_t0ype (tok) =
   '{ i0de_loc= tok.t0kn_loc, i0de_sym= $Sym.symbol_T0YPE }
@@ -1648,8 +1648,8 @@ implement p0at_float (f) = '{
   p0at_loc= f.f0loat_loc, p0at_node= P0Tfloat f.f0loat_val
 }
 
-implement p0at_free (t_tilda, p0t) =
-  let val loc = combine (t_tilda.t0kn_loc, p0t.p0at_loc) in
+implement p0at_free (t_tilde, p0t) =
+  let val loc = combine (t_tilde.t0kn_loc, p0t.p0at_loc) in
     '{ p0at_loc= loc, p0at_node= P0Tfree p0t }
   end
 

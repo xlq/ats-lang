@@ -127,7 +127,7 @@ keyval_insert("$", DOLLAR) ;
 keyval_insert(".", DOT) ;
 keyval_insert("=", EQ) ;
 keyval_insert("#", HASH) ;
-keyval_insert("~", TILDA) ;
+keyval_insert("~", TILDE) ;
 keyval_insert("..", DOTDOT) ;
 keyval_insert("...", DOTDOTDOT) ;
 keyval_insert("=>", EQGT) ; // implication without decoration

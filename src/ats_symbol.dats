@@ -132,7 +132,7 @@ implement symbol_OR = symbol_make_string "||"
 implement symbol_QMARK = symbol_make_string "?" 
 implement symbol_QMARKBANG = symbol_make_string "?!" 
 implement symbol_SUB = symbol_make_string "-" 
-implement symbol_TILDA = symbol_make_string "~"
+implement symbol_TILDE = symbol_make_string "~"
 implement symbol_UNDERSCORE = symbol_make_string "_"
 
 implement symbol_FALSE = symbol_make_string "false"

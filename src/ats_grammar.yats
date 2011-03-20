@@ -9,7 +9,7 @@
 /* ****** ****** */
 
 /*
-** Time of Generation: Sun Feb 13 14:50:56 2011
+** Time of Generation: Sat Mar 19 23:06:43 2011
 */
 
 /* ****** ****** */
@@ -244,7 +244,7 @@ extern i0de_t i0de_make_minuslt (t0kn_t) ;
 extern i0de_t i0de_make_minusltgt (t0kn_t) ;
 extern i0de_t i0de_make_module (t0kn_t) ;
 extern i0de_t i0de_make_r0ead (t0kn_t) ;
-extern i0de_t i0de_make_tilda (t0kn_t) ;
+extern i0de_t i0de_make_tilde (t0kn_t) ;
 extern i0de_t i0de_make_t0ype (t0kn_t) ;
 extern i0de_t i0de_make_viewt0ype (t0kn_t) ;
 
@@ -1192,7 +1192,7 @@ d0eclst_t d0eclst ;
 %token <t0kn> GT
 %token <t0kn> DOLLAR
 %token <t0kn> HASH
-%token <t0kn> TILDA
+%token <t0kn> TILDE
 %token <t0kn> DOTDOT
 %token <t0kn> DOTDOTDOT
 %token <t0kn> EQLT
@@ -1642,7 +1642,7 @@ i0de
   | LT  { $$ = i0de_make_lt($1) ; }
   | MINUSGT  { $$ = i0de_make_minusgt($1) ; }
   | MINUSLTGT  { $$ = i0de_make_minusltgt($1) ; }
-  | TILDA  { $$ = i0de_make_tilda($1) ; }
+  | TILDE  { $$ = i0de_make_tilde($1) ; }
 ; /* i0de */
 
 i0de_dlr
@@ -1713,7 +1713,7 @@ e0ffid
 
 e0fftag
   : BANG e0ffid  { $$ = e0fftag_cst (0, $2) ; }
-  | TILDA e0ffid  { $$ = e0fftag_cst (1, $2) ; }
+  | TILDE e0ffid  { $$ = e0fftag_cst (1, $2) ; }
   | e0ffid  { $$ = e0fftag_var($1) ; }
   | FUN  { $$ = e0fftag_var_fun($1) ; }
   | LITERAL_int  { $$ = e0fftag_int($1) ; }
@@ -1836,7 +1836,7 @@ si0de
   | GT  { $$ = i0de_make_gt($1) ; }
   | LT  { $$ = i0de_make_lt($1) ; }
   | MINUSGT  { $$ = i0de_make_minusgt($1) ; }
-  | TILDA  { $$ = i0de_make_tilda($1) ; }
+  | TILDE  { $$ = i0de_make_tilde($1) ; }
 ; /* si0de */
 
 sqi0de
@@ -1858,7 +1858,7 @@ di0de
   | GT  { $$ = i0de_make_gt($1) ; }
   | GTLT  { $$ = i0de_make_gtlt($1) ; }
   | LT  { $$ = i0de_make_lt($1) ; }
-  | TILDA  { $$ = i0de_make_tilda($1) ; }
+  | TILDE  { $$ = i0de_make_tilde($1) ; }
 ; /* di0de */
 
 dqi0de
@@ -2267,7 +2267,7 @@ p0at
   | p0at COLON s0exp  { $$ = p0at_ann($1, $3) ; }
   | pi0de AS p0at  { $$ = p0at_as($1, $3) ; }  %prec PATAS
   | BANG pi0de AS p0at  { $$ = p0at_refas($1, $2, $4) ; }  %prec PATAS
-  | TILDA p0at  { $$ = p0at_free($1, $2) ; }  %prec PATFREE
+  | TILDE p0at  { $$ = p0at_free($1, $2) ; }  %prec PATFREE
 ; /* p0at */
 
 atmp0at
@@ -2888,7 +2888,7 @@ yyparse_main (
   ats_int_type tok0
 ) {
 /*
-** HX: we must take care of garbage collection
+** HX: we must take care of garbage collection!
 */
   // fprintf (stderr, "yyparse_main: &yyss = %p\n", &yyss) ;
   // ATS_GC_MARKROOT (&yyss, sizeof(short*)) ; // [ats_malloc_ngc] is used
