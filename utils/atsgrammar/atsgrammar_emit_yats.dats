@@ -265,7 +265,7 @@ extern i0de_t i0de_make_minuslt (t0kn_t) ;\n\
 extern i0de_t i0de_make_minusltgt (t0kn_t) ;\n\
 extern i0de_t i0de_make_module (t0kn_t) ;\n\
 extern i0de_t i0de_make_r0ead (t0kn_t) ;\n\
-extern i0de_t i0de_make_tilda (t0kn_t) ;\n\
+extern i0de_t i0de_make_tilde (t0kn_t) ;\n\
 extern i0de_t i0de_make_t0ype (t0kn_t) ;\n\
 extern i0de_t i0de_make_viewt0ype (t0kn_t) ;\n\
 \n\

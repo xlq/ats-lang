@@ -50,7 +50,6 @@ val symbol_empty : symbol_t
 
 val symbol_ADD : symbol_t
 val symbol_AMPERSAND : symbol_t
-val symbol_AND : symbol_t
 val symbol_AT : symbol_t
 val symbol_BACKSLASH : symbol_t
 val symbol_BANG : symbol_t
@@ -63,6 +62,8 @@ val symbol_GT : symbol_t
 val symbol_GTEQ : symbol_t
 val symbol_GTGT : symbol_t
 val symbol_GTLT : symbol_t
+val symbol_LAND : symbol_t
+val symbol_LOR : symbol_t
 val symbol_LRBRACKETS : symbol_t
 val symbol_LT : symbol_t
 val symbol_LTEQ : symbol_t
@@ -72,7 +73,6 @@ val symbol_MINUSLTGT : symbol_t
 val symbol_MUL : symbol_t
 val symbol_NEQ : symbol_t
 val symbol_NEQEQ : symbol_t
-val symbol_OR : symbol_t
 val symbol_QMARK : symbol_t
 val symbol_QMARKBANG : symbol_t
 val symbol_SUB : symbol_t

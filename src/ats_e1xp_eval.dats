@@ -267,10 +267,10 @@ in
   end else if id = $Sym.symbol_NEQEQ then begin case+ es of
     | cons (e1, cons (e2, nil ())) => e1xp_eval_neq (loc, e1, e2)
     | _ => e1xp_eval_appid_errmsg_arity (loc, id)
-  end else if id = $Sym.symbol_AND then begin case+ es of
+  end else if id = $Sym.symbol_LAND then begin case+ es of
     | cons (e1, cons (e2, nil ())) => e1xp_eval_and (loc, e1, e2)
     | _ => e1xp_eval_appid_errmsg_arity (loc, id)
-  end else if id = $Sym.symbol_OR then begin case+ es of
+  end else if id = $Sym.symbol_LOR then begin case+ es of
     | cons (e1, cons (e2, nil ())) => e1xp_eval_or (loc, e1, e2)
     | _ => e1xp_eval_appid_errmsg_arity (loc, id)
   end else if id = $Sym.symbol_LTLT then begin case+ es of
@@ -482,7 +482,7 @@ in
       else V1ALint 1
     end // end of [V1ALstring, V1ALstring]
   | (_, _) => begin
-      e1xp_eval_opr_errmsg (loc, $Sym.symbol_AND)
+      e1xp_eval_opr_errmsg (loc, $Sym.symbol_LAND)
     end // end of [(_, _)]
 end // end of [e1xp_eval_and]
 
@@ -505,7 +505,7 @@ in
       else V1ALint 0
     end // end of [V1ALstring, V1ALstring]
   | (_, _) => begin
-      e1xp_eval_opr_errmsg (loc, $Sym.symbol_OR)
+      e1xp_eval_opr_errmsg (loc, $Sym.symbol_LOR)
     end // end of [_, _]
 end // end of [e1xp_eval_or]
 

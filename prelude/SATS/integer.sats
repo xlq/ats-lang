@@ -78,9 +78,7 @@ fun neg_int (i: int):<> int = "atspre_neg_int"
 overload ~ with neg_int
 
 fun succ_int (i: int):<> int = "atspre_succ_int"
-
 and pred_int (i: int):<> int = "atspre_pred_int"
-
 overload succ with succ_int
 overload pred with pred_int
 
@@ -122,10 +120,11 @@ overload >= with gte_int_int
 
 fun eq_int_int (i1: int, i2: int):<> bool
   = "atspre_eq_int_int"
-and neq_int_int (i1: int, i2: int):<> bool
+fun neq_int_int (i1: int, i2: int):<> bool
   = "atspre_neq_int_int"
 overload = with eq_int_int
 overload <> with neq_int_int
+overload != with neq_int_int
 
 fun compare_int_int (i1: int, i2: int):<> Sgn
   = "atspre_compare_int_int"
@@ -291,6 +290,7 @@ and neq_uint_uint (u1: uint, u2: uint):<> bool
   = "atspre_neq_uint_uint"
 overload = with eq_uint_uint
 overload <> with neq_uint_uint
+overload != with neq_uint_uint
 
 (* ****** ****** *)
 
@@ -512,6 +512,7 @@ and ineq {i,j:int} (i: int i, j: int j):<> bool (i <> j)
   = "atspre_ineq"
 overload = with ieq
 overload <> with ineq
+overload != with ineq
 
 fun icompare {i,j:int}
   (i: int i, j: int j):<> [k:int | sgn_r (i-j, k)] int k
@@ -610,6 +611,7 @@ overload > with ugt
 overload >= with ugte
 overload = with ueq
 overload <> with uneq
+overload != with uneq
 
 fun umax {i,j:nat}
   (i: uint i, j: uint j):<> [k:int | max_r (i, j, k)] uint k
@@ -703,6 +705,7 @@ and neq_lint_lint (i: lint, j: lint):<> bool
   = "atspre_neq_lint_lint"
 overload = with eq_lint_lint
 overload <> with neq_lint_lint
+overload != with neq_lint_lint
 
 fun compare_lint_lint (i1: lint, i2: lint):<> Sgn
   = "atspre_compare_lint_lint"
@@ -773,6 +776,7 @@ and neq_lint1_lint1 {i,j:int} (i: lint i, j: lint j):<> bool (i <> j)
   = "atspre_lte_lint_lint"
 overload = with eq_lint1_lint1
 overload <> with neq_lint1_lint1
+overload != with neq_lint1_lint1
 
 fun compare_lint1_lint1
   {i,j:int} (i: lint i, j: lint j):<> [k:int | sgn_r (i-j, k)] int k
@@ -856,6 +860,7 @@ and neq_ulint_ulint (i: ulint, j: ulint):<> bool
   = "atspre_neq_ulint_ulint"
 overload = with eq_ulint_ulint
 overload <> with neq_ulint_ulint
+overload != with neq_ulint_ulint
 
 fun compare_ulint_ulint (i1: ulint, i2: ulint):<> Sgn
   = "atspre_compare_ulint_ulint"
@@ -1016,6 +1021,7 @@ and neq_llint_llint (i: llint, j: llint):<> bool
   = "atspre_neq_llint_llint"
 overload = with eq_llint_llint
 overload <> with neq_llint_llint
+overload != with neq_llint_llint
 
 fun compare_llint_llint (i1: llint, i2: llint):<> Sgn
   = "atspre_compare_llint_llint"
@@ -1143,6 +1149,7 @@ and neq_ullint_ullint (i: ullint, j: ullint):<> bool
   = "atspre_neq_ullint_ullint"
 overload = with eq_ullint_ullint
 overload <> with neq_ullint_ullint
+overload != with neq_ullint_ullint
 
 //
 // compare, max and min

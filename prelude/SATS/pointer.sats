@@ -55,6 +55,11 @@ prfun ptr_is_gtez
 
 (* ****** ****** *)
 
+fun ptr_is_null (p: ptr):<> bool = "atspre_ptr_is_null"
+fun ptr_isnot_null (p: ptr):<> bool = "atspre_ptr_isnot_null"
+
+(* ****** ****** *)
+
 fun add_ptr_int
   (p: ptr, i: int):<> ptr = "atspre_padd_int"
 overload + with add_ptr_int
@@ -87,9 +92,9 @@ overload >= with gte_ptr_ptr
 
 fun eq_ptr_ptr (p1: ptr, p2: ptr):<> bool = "atspre_peq"
 and neq_ptr_ptr (p1: ptr, p2: ptr):<> bool = "atspre_pneq"
-
 overload = with eq_ptr_ptr
 overload <> with neq_ptr_ptr
+overload != with neq_ptr_ptr
 
 (* ****** ****** *)
 
@@ -105,86 +110,94 @@ castfn ptr1_of_ptr (p: ptr):<> [l:addr] ptr l
 
 (* ****** ****** *)
 
-val null : ptr null = "atspre_null_ptr"
+val null
+  : ptr null = "atspre_null_ptr"
+// end of [val]
 
-fun ptr_is_null
-  {l:addr} (p: ptr l):<> bool (l == null)
-  = "atspre_ptr_is_null"
-
-fun ptr_isnot_null
-  {l:addr} (p: ptr l):<> bool (l > null)
-  = "atspre_ptr_isnot_null"
-overload ~ with ptr_isnot_null
+fun ptr1_is_null {l:addr}
+  (p: ptr l):<> bool (l==null) = "atspre_ptr_is_null"
+fun ptr1_isnot_null {l:addr}
+  (p: ptr l):<> bool (l > null) = "atspre_ptr_isnot_null"
+overload ~ with ptr1_isnot_null
 
 (* ****** ****** *)
 
 fun psucc
   {l:addr} (p: ptr l):<> ptr (l + 1) = "atspre_psucc"
-overload succ with psucc
-
 fun ppred
   {l:addr} (p: ptr l):<> ptr (l - 1) = "atspre_ppred"
+overload succ with psucc
 overload pred with ppred
 
 (* ****** ****** *)
 
 symintr padd
-fun padd_int {l:addr} {i:int} (p: ptr l, i: int i):<> ptr (l + i)
-  = "atspre_padd_int"
+fun padd_int
+  {l:addr}
+  {i:int} (
+  p: ptr l, i: int i
+) :<> ptr (l + i) = "atspre_padd_int"
 overload + with padd_int
 overload padd with padd_int
 
-fun padd_size {l:addr} {i:int} (p: ptr l, i: size_t i):<> ptr (l + i)
-  = "atspre_padd_size"
+fun padd_size
+  {l:addr}
+  {i:int} (
+  p: ptr l, i: size_t i
+) :<> ptr (l + i) = "atspre_padd_size"
 overload + with padd_size
 overload padd with padd_size
 
 (* ****** ****** *)
 
 symintr psub
-fun psub_int {l:addr} {i:int} (p: ptr l, i: int i):<> ptr (l - i)
-  = "atspre_psub_int"
+fun psub_int
+  {l:addr}
+  {i:int} (
+  p: ptr l, i: int i
+) :<> ptr (l - i) = "atspre_psub_int"
 overload - with psub_int
 overload psub with psub_int
 
-fun psub_size {l:addr} {i:int} (p: ptr l, i: size_t i):<> ptr (l - i)
-  = "atspre_psub_size"
+fun psub_size
+  {l:addr}
+  {i:int} (
+  p: ptr l, i: size_t i
+) :<> ptr (l - i) = "atspre_psub_size"
 overload - with psub_size
 overload psub with psub_size
 
 (* ****** ****** *)
 
-fun pdiff {l1,l2:addr}
-  (p1: ptr l1, p2: ptr l2):<> ptrdiff_t (l1 - l2) = "atspre_pdiff"
+fun pdiff
+  {l1,l2:addr} (
+  p1: ptr l1, p2: ptr l2
+) :<> ptrdiff_t (l1 - l2) = "atspre_pdiff"
 overload - with pdiff
 
 (* ****** ****** *)
 
-fun plt {l1,l2:addr} (p1: ptr l1, p2: ptr l2):<> bool (l1 < l2)
-  = "atspre_plt"
-
-and plte {l1,l2:addr} (p1: ptr l1, p2: ptr l2):<> bool (l1 <= l2)
-  = "atspre_plte"
-
-and pgt {l1,l2:addr} (p1: ptr l1, p2: ptr l2):<> bool (l1 > l2)
-  = "atspre_pgt"
-
-and pgte {l1,l2:addr} (p1: ptr l1, p2: ptr l2):<> bool (l1 >= l2)
-  = "atspre_pgte"
-
+fun plt {l1,l2:addr}
+  (p1: ptr l1, p2: ptr l2):<> bool (l1 < l2) = "atspre_plt"
+and plte {l1,l2:addr}
+  (p1: ptr l1, p2: ptr l2):<> bool (l1 <= l2) = "atspre_plte"
 overload < with plt
 overload <= with plte
+
+fun pgt {l1,l2:addr}
+  (p1: ptr l1, p2: ptr l2):<> bool (l1 > l2) = "atspre_pgt"
+and pgte {l1,l2:addr}
+  (p1: ptr l1, p2: ptr l2):<> bool (l1 >= l2) = "atspre_pgte"
 overload > with pgt
 overload >= with pgte
 
-fun peq {l1,l2:addr} (p1: ptr l1, p2: ptr l2):<> bool (l1 == l2)
-  = "atspre_peq"
-
-and pneq {l1,l2:addr} (p1: ptr l1, p2: ptr l2):<> bool (l1 <> l2)
-  = "atspre_pneq"
-
+fun peq {l1,l2:addr}
+  (p1: ptr l1, p2: ptr l2):<> bool (l1 == l2) = "atspre_peq"
+and pneq {l1,l2:addr}
+  (p1: ptr l1, p2: ptr l2):<> bool (l1 <> l2) = "atspre_pneq"
 overload = with peq
 overload <> with pneq
+overload != with pneq
 
 (* ****** ****** *)
 

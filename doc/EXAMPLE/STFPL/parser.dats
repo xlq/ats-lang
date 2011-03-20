@@ -399,7 +399,8 @@ and lp_e0xplist: LP e0xplst = $delay (
 
 (* ****** ****** *)
 
-and lp_e0xp_if: LP e0xp = $delay (seq4wth_parser_fun
+and lp_e0xp_if
+  : LP e0xp = $delay (seq4wth_parser_fun
   (IF, !lp_e0xp, THEN >> !lp_e0xp, (ELSE >> !lp_e0xp)^?, f_if)
 ) where {
   fn f_if
@@ -415,7 +416,8 @@ and lp_e0xp_if: LP e0xp = $delay (seq4wth_parser_fun
 
 (* ****** ****** *)
 
-and lp_a0rg: LP a0rg = $delay (
+and lp_a0rg
+  : LP a0rg = $delay (
   seq2wth_parser_fun (p_ident, !lp_typann, f_a0rg) 
 ) where {
   fn f_a0rg
@@ -425,11 +427,13 @@ and lp_a0rg: LP a0rg = $delay (
   } end // end of [f_a0rg]
 } (* end of [lp_a0rg] *)
 
-and lp_a0rglist: LP a0rglst = $delay (
+and lp_a0rglist
+  : LP a0rglst = $delay (
   repeat0_sep_parser<a0rg,token> (!lp_a0rg, COMMA)
 ) // end of [p_explst]
 
-and lp_e0xp_lam: LP e0xp = $delay (
+and lp_e0xp_lam
+  : LP e0xp = $delay (
   seq4wth_parser_fun (
     LAM, LPAREN >> !lp_a0rglist << RPAREN, !lp_typann, EQGT >> !lp_e0xp, f_lam
   ) // end of [seq5wth]
@@ -446,7 +450,8 @@ and lp_e0xp_lam: LP e0xp = $delay (
   end // end of [f_lam]  
 } // end of [lp_e0xp_lam]
 
-and lp_e0xp_fix: LP e0xp = $delay (
+and lp_e0xp_fix
+  : LP e0xp = $delay (
   seq5wth_parser_fun (
     FIX,  p_ident, LPAREN >> !lp_a0rglist << RPAREN, !lp_typann, EQGT >> !lp_e0xp, f_fix
   ) // end of [seq5wth]
@@ -467,7 +472,8 @@ and lp_e0xp_fix: LP e0xp = $delay (
 
 (* ****** ****** *)
 
-and lp_e0xp0: LP e0xp = $delay ( // ordering is significant!
+and lp_e0xp0
+  : LP e0xp = $delay ( // ordering is significant!
   TRUE wth f_true ||
   FALSE wth f_false ||
   p_ident wth f_var ||
@@ -518,7 +524,8 @@ and lp_e0xp0: LP e0xp = $delay ( // ordering is significant!
 
 (* ****** ****** *)
 
-and lp_opre0xp0: LP (fixitm e0xp) = $delay (
+and lp_opre0xp0
+  : LP (fixitm e0xp) = $delay (
   p_opr wth f_opr ||
   seq2wth_parser_fun (DOT, p_number, f_proj) ||
   !lp_e0xp0 wth f_e0xp
@@ -546,7 +553,8 @@ and lp_opre0xp0: LP (fixitm e0xp) = $delay (
 
 (* ****** ****** *)
 
-and lp_e0xp1: LP (e0xp) = $delay (
+and lp_e0xp1
+  : LP (e0xp) = $delay (
   (repeat1_parser !lp_opre0xp0) wth f
 ) where {
   typedef T = fixitm e0xp
@@ -602,7 +610,8 @@ and lp_e0xp1: LP (e0xp) = $delay (
   end // end of [f]
 } // end of [lp_e0xp1]
 
-and lp_e0xp1c: LP (e0xpc) = $delay (
+and lp_e0xp1c
+  : LP (e0xpc) = $delay (
   COLON >> !lp_t0yp wth f_ann || return_parser<e0xpc> (lam e => e)
 ) where {
   fn f_ann (t: t0yp):<> e0xpc = lam e => let
@@ -639,7 +648,8 @@ and lp_v0aldeclist: LP (List1 v0aldec) = $delay (
 
 (* ****** ****** *)
 
-and lp_d0ec: LP (d0ec) = $delay (
+and lp_d0ec
+  : LP (d0ec) = $delay (
   seq3wth_parser_fun (VAL, (REC)^?, !lp_v0aldeclist, f_v0al)
 ) where {
   fn f_v0al (
@@ -664,7 +674,8 @@ and lp_d0eclist: LP (d0eclst) = $delay (repeat0_parser<d0ec> (!lp_d0ec))
 extern fun parse_failure
   (toks: stream token, ncur: int, nmax: int): void
 
-implement parse_failure (toks, ncur, nmax) = let
+implement
+parse_failure (toks, ncur, nmax) = let
   fun loop
     (toks: stream token, n: int): Option_vt (token) =
     case+ !toks of
@@ -690,7 +701,9 @@ end // end of [parse_failure]
 
 (* ****** ****** *)
 
-fn parse_from_charstream (cs: stream char): e0xp = let
+fun
+parse_from_charstream
+  (cs: stream char): e0xp = let
   val toks0 = tokenstream_make_charstream (cs)
   var toks: stream token = toks0
   var ncur: int = 0 and nmax: int = 0
@@ -719,7 +732,8 @@ end // end of [parse_from_charstream]
 
 (* ****** ****** *)
 
-implement parse_from_stdin () = let
+implement
+parse_from_stdin () = let
   val () = filename_push (filename_stdin)
   val cs = char_stream_make_file stdin_ref
   val res = parse_from_charstream (cs)
@@ -728,7 +742,8 @@ in
   res
 end // end of [parse_from_stdin]
 
-implement parse_from_file (filename) = let
+implement
+parse_from_file (filename) = let
   val fileref = open_file_exn (filename, file_mode_r)
   val () = filename_push (filename) where
     { val filename = filename_make_string (filename) }

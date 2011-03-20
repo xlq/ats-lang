@@ -159,7 +159,7 @@ extern i0de_t i0de_make_minuslt (t0kn_t) ;
 extern i0de_t i0de_make_minusltgt (t0kn_t) ;
 extern i0de_t i0de_make_module (t0kn_t) ;
 extern i0de_t i0de_make_r0ead (t0kn_t) ;
-extern i0de_t i0de_make_tilda (t0kn_t) ;
+extern i0de_t i0de_make_tilde (t0kn_t) ;
 extern i0de_t i0de_make_t0ype (t0kn_t) ;
 extern i0de_t i0de_make_viewt0ype (t0kn_t) ;
 
@@ -1410,7 +1410,7 @@ guad0ec_t guad0ec ;
 %token <t0kn> LT GT
 %token <t0kn> DOLLAR
 %token <t0kn> HASH
-%token <t0kn> TILDA
+%token <t0kn> TILDE
 %token <t0kn> DOTDOT DOTDOTDOT
 %token <t0kn> EQLT EQGT
 %token <t0kn> EQLTGT
@@ -1969,7 +1969,7 @@ i0de /* identifier */
   | LT                                  { $$ = i0de_make_lt($1) ; }
   | MINUSGT                             { $$ = i0de_make_minusgt($1) ; }
   | MINUSLTGT                           { $$ = i0de_make_minusltgt($1) ; }
-  | TILDA                               { $$ = i0de_make_tilda($1) ; }
+  | TILDE                               { $$ = i0de_make_tilde($1) ; }
 ; /* end of [i0de] */
 
 i0de_dlr /* identifier beginning with $ */
@@ -2052,7 +2052,7 @@ e0ffid /* alphanum identifier for effects */
 
 e0fftag /* effect tag */
   : BANG e0ffid                         { $$ = e0fftag_cst (0, $2) ; }
-  | TILDA e0ffid                        { $$ = e0fftag_cst (1, $2) ; }
+  | TILDE e0ffid                        { $$ = e0fftag_cst (1, $2) ; }
   | e0ffid                              { $$ = e0fftag_var($1) ; }
   | FUN                                 { $$ = e0fftag_var_fun($1) ; }
   | LITERAL_int                         { $$ = e0fftag_int($1) ; }
@@ -2190,7 +2190,7 @@ si0de /* static identifiers */
   | GT                                  { $$ = i0de_make_gt($1) ; }
   | LT                                  { $$ = i0de_make_lt($1) ; }
   | MINUSGT                             { $$ = i0de_make_minusgt($1) ; }
-  | TILDA                               { $$ = i0de_make_tilda($1) ; }
+  | TILDE                               { $$ = i0de_make_tilde($1) ; }
 ; /* end of [si0de] */
 
 sqi0de /* qualified static identifier */
@@ -2215,7 +2215,7 @@ di0de /* dynamic identifier */
   | GT                                  { $$ = i0de_make_gt($1) ; }
   | GTLT                                { $$ = i0de_make_gtlt($1) ; }  
   | LT                                  { $$ = i0de_make_lt($1) ; }
-  | TILDA                               { $$ = i0de_make_tilda($1) ; }
+  | TILDE                               { $$ = i0de_make_tilde($1) ; }
 ; /* end of [di0de] */
 
 dqi0de /* qualified dynamic identifier */
@@ -2767,7 +2767,7 @@ p0at
   | p0at COLON s0exp                    { $$ = p0at_ann($1, $3) ; }
   | pi0de AS p0at %prec PATAS           { $$ = p0at_as($1, $3) ; }
   | BANG pi0de AS p0at %prec PATAS      { $$ = p0at_refas($1, $2, $4) ; }
-  | TILDA p0at %prec PATFREE            { $$ = p0at_free($1, $2) ; }
+  | TILDE p0at %prec PATFREE            { $$ = p0at_free($1, $2) ; }
 ; /* end of [p0at] */
 
 atmp0at

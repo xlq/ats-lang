@@ -814,9 +814,9 @@ val HASH = symbol_make ("HASH")
 val () = symbol_set_fullname (HASH, "\"#\"")
 val () = symbol_set_tyname (HASH, t0kn_tyname)
 //
-val TILDA = symbol_make ("TILDA")
-val () = symbol_set_fullname (TILDA, "\"~\"")
-val () = symbol_set_tyname (TILDA, t0kn_tyname)
+val TILDE = symbol_make ("TILDE")
+val () = symbol_set_fullname (TILDE, "\"~\"")
+val () = symbol_set_tyname (TILDE, t0kn_tyname)
 //
 val DOTDOT = symbol_make ("DOTDOT")
 val () = symbol_set_fullname (DOTDOT, "\"..\"")
@@ -2045,7 +2045,7 @@ i0de /* identifier */
   | LT                                  { $$ = i0de_make_lt($1) ; }
   | MINUSGT                             { $$ = i0de_make_minusgt($1) ; }
   | MINUSLTGT                           { $$ = i0de_make_minusltgt($1) ; }
-  | TILDA                               { $$ = i0de_make_tilda($1) ; }
+  | TILDE                               { $$ = i0de_make_tilde($1) ; }
 ; /* end of [i0de] */
 *)
 fun i0de_proc
@@ -2075,8 +2075,8 @@ val gr = grmrule_append (MINUSGT)
 val () = grmrule_set_action (gr, "{ $$ = i0de_make_minusgt($1) ; }")
 val gr = grmrule_append (MINUSLTGT)
 val () = grmrule_set_action (gr, "{ $$ = i0de_make_minusltgt($1) ; }")
-val gr = grmrule_append (TILDA)
-val () = grmrule_set_action (gr, "{ $$ = i0de_make_tilda($1) ; }")
+val gr = grmrule_append (TILDE)
+val () = grmrule_set_action (gr, "{ $$ = i0de_make_tilde($1) ; }")
 //
 val () = symbol_close (pf | i0de)
 //
@@ -2376,7 +2376,7 @@ val () = symbol_close (pf | e0ffid)
 (*
 e0fftag /* effect tag */
   : BANG e0ffid                         { $$ = e0fftag_cst (0, $2) ; }
-  | TILDA e0ffid                        { $$ = e0fftag_cst (1, $2) ; }
+  | TILDE e0ffid                        { $$ = e0fftag_cst (1, $2) ; }
   | e0ffid                              { $$ = e0fftag_var($1) ; }
   | FUN                                 { $$ = e0fftag_var_fun($1) ; }
   | LITERAL_int                         { $$ = e0fftag_int($1) ; }
@@ -2389,7 +2389,7 @@ val (pf | ()) = symbol_open (e0fftag)
 //
 val gr = grmrule_append ($lst_t {symbol} (tupz! BANG e0ffid))
 val () = grmrule_set_action (gr, "{ $$ = e0fftag_cst (0, $2) ; }")
-val gr = grmrule_append ($lst_t {symbol} (tupz! TILDA e0ffid))
+val gr = grmrule_append ($lst_t {symbol} (tupz! TILDE e0ffid))
 val () = grmrule_set_action (gr, "{ $$ = e0fftag_cst (1, $2) ; }")
 val gr = grmrule_append (e0ffid)
 val () = grmrule_set_action (gr, "{ $$ = e0fftag_var($1) ; }")
@@ -2878,7 +2878,7 @@ si0de /* static identifiers */
   | GT                                  { $$ = i0de_make_gt($1) ; }
   | LT                                  { $$ = i0de_make_lt($1) ; }
   | MINUSGT                             { $$ = i0de_make_minusgt($1) ; }
-  | TILDA                               { $$ = i0de_make_tilda($1) ; }
+  | TILDE                               { $$ = i0de_make_tilde($1) ; }
 ; /* end of [si0de] */
 *)
 fun si0de_proc
@@ -2906,8 +2906,8 @@ val gr = grmrule_append (LT)
 val () = grmrule_set_action (gr, "{ $$ = i0de_make_lt($1) ; }")
 val gr = grmrule_append (MINUSGT)
 val () = grmrule_set_action (gr, "{ $$ = i0de_make_minusgt($1) ; }")
-val gr = grmrule_append (TILDA)
-val () = grmrule_set_action (gr, "{ $$ = i0de_make_tilda($1) ; }")
+val gr = grmrule_append (TILDE)
+val () = grmrule_set_action (gr, "{ $$ = i0de_make_tilde($1) ; }")
 //
 val () = symbol_close (pf | si0de)
 //
@@ -2973,7 +2973,7 @@ di0de /* dynamic identifier */
   | GT                                  { $$ = i0de_make_gt($1) ; }
   | GTLT                                { $$ = i0de_make_gtlt($1) ; }
   | LT                                  { $$ = i0de_make_lt($1) ; }
-  | TILDA                               { $$ = i0de_make_tilda($1) ; }
+  | TILDE                               { $$ = i0de_make_tilde($1) ; }
 ; /* end of [di0de] */
 *)
 fun di0de_proc
@@ -2998,8 +2998,8 @@ val gr = grmrule_append (GTLT)
 val () = grmrule_set_action (gr, "{ $$ = i0de_make_gtlt($1) ; }")
 val gr = grmrule_append (LT)
 val () = grmrule_set_action (gr, "{ $$ = i0de_make_lt($1) ; }")
-val gr = grmrule_append (TILDA)
-val () = grmrule_set_action (gr, "{ $$ = i0de_make_tilda($1) ; }")
+val gr = grmrule_append (TILDE)
+val () = grmrule_set_action (gr, "{ $$ = i0de_make_tilde($1) ; }")
 //
 val () = symbol_close (pf | di0de)
 //
@@ -4794,7 +4794,7 @@ p0at
   | p0at COLON s0exp                    { $$ = p0at_ann($1, $3) ; }
   | pi0de AS p0at %prec PATAS           { $$ = p0at_as($1, $3) ; }
   | BANG pi0de AS p0at %prec PATAS      { $$ = p0at_refas($1, $2, $4) ; }
-  | TILDA p0at %prec PATFREE            { $$ = p0at_free($1, $2) ; }
+  | TILDE p0at %prec PATFREE            { $$ = p0at_free($1, $2) ; }
 ; /* end of [p0at] */
 *)
 fun p0at_proc (): void = () where {
@@ -4811,7 +4811,7 @@ val () = grmrule_set_precval (gr, "%prec PATAS")
 val gr = grmrule_append ($lst_t {symbol} (tupz! BANG pi0de AS p0at))
 val () = grmrule_set_action (gr, "{ $$ = p0at_refas($1, $2, $4) ; }")
 val () = grmrule_set_precval (gr, "%prec PATAS") 
-val gr = grmrule_append ($lst_t {symbol} (tupz! TILDA p0at))
+val gr = grmrule_append ($lst_t {symbol} (tupz! TILDE p0at))
 val () = grmrule_set_action (gr, "{ $$ = p0at_free($1, $2) ; }")
 val () = grmrule_set_precval (gr, "%prec PATFREE") 
 //

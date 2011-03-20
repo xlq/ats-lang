@@ -712,7 +712,6 @@ atslib_hashtbl_make_hint__chain (
 
 %{$
 
-ATSinline()
 ats_int_type
 atslib_hashtbl_free__chain
   (ats_ptr_type ptbl) {
@@ -720,7 +719,6 @@ atslib_hashtbl_free__chain
   return ;
 } // end of [atslib_hashtbl_free__chain]
 
-ATSinline()
 ats_int_type
 atslib_hashtbl_free_vt__chain
   (ats_ptr_type ptbl) {
