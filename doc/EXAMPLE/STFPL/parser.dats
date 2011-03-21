@@ -313,7 +313,8 @@ end // end of [local]
 typedef t0ypc = t0yp -<cloref> t0yp
 
 val
-rec lp_t0yp: LP (t0yp) = $delay (
+rec lp_t0yp
+  : LP (t0yp) = $delay (
   seq2wth_parser_fun (lzeta lp_t0yp1, lzeta lp_t0ypc, f)
 ) where {
   val f = lam (t: t0yp, tc: t0ypc) =<fun> tc (t) 
@@ -323,7 +324,8 @@ and lp_t0yplist: LP t0yplst = $delay (
   repeat0_sep_parser<t0yp,token> (!lp_t0yp, COMMA)
 ) // end of [lp_t0yplst]
 
-and lp_t0yp1: LP (t0yp) = $delay (
+and lp_t0yp1
+  : LP (t0yp) = $delay (
   p_ident wth f_ident ||
   seq3wth_parser_fun (LPAREN, lzeta lp_t0yplist, RPAREN, f_tup)
 ) where {
@@ -343,7 +345,8 @@ and lp_t0yp1: LP (t0yp) = $delay (
   end // end of [lam]     
 } (* end of [lp_t0yp1] *)
 
-and lp_t0ypc: LP (t0ypc) = $delay (
+and lp_t0ypc
+  : LP (t0ypc) = $delay (
   seq2wth_parser_fun
     (MINUSGT, !lp_t0yp, f) ||
   return_parser<t0ypc> (lam t => t) 
@@ -358,7 +361,8 @@ and lp_t0ypc: LP (t0ypc) = $delay (
 
 (* ****** ****** *)
 
-val lp_typann: LP (t0ypopt) = $delay (
+val lp_typann
+  : LP (t0ypopt) = $delay (
   seq2wth_parser_fun (COLON, !lp_t0yp, f_some) ||
   return_parser (None ())
 ) where {
@@ -367,7 +371,8 @@ val lp_typann: LP (t0ypopt) = $delay (
 
 (* ****** ****** *)
 
-val app_e0xp : fixitm e0xp = let
+val app_e0xp
+  : fixitm e0xp = let
   val f = lam
     (e1: e0xp, e2: e0xp): e0xp =<cloref> let
     val loc = location_combine (e1.e0xp_loc, e2.e0xp_loc)
@@ -420,8 +425,9 @@ and lp_a0rg
   : LP a0rg = $delay (
   seq2wth_parser_fun (p_ident, !lp_typann, f_a0rg) 
 ) where {
-  fn f_a0rg
-    (tok_ide: token, oty: t0ypopt):<> a0rg = let
+  fn f_a0rg (
+    tok_ide: token, oty: t0ypopt
+  ) :<> a0rg = let
     val sym = symbol_make_token (tok_ide) in @{
     a0rg_loc= tok_ide.token_loc, a0rg_nam= sym, a0rg_typ= oty
   } end // end of [f_a0rg]
