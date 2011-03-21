@@ -41,6 +41,10 @@
 
 (* ****** ****** *)
 
+#define ATS_STALOADFLAG 0 // no need for staloading at run-time
+
+(* ****** ****** *)
+
 macdef O_ACCMODE = $extval (uint, "O_ACCMODE")
 macdef O_RDONLY	= $extval (uint, "O_RDONLY")
 macdef O_WRONLY	= $extval (uint, "O_WRONLY")
