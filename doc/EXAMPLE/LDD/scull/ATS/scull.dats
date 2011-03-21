@@ -245,25 +245,6 @@ end // end of [scull_write_main]
   
 (* ****** ****** *)
 
-(*
-int scull_open(struct inode *inode, struct file *filp)
-{
-	struct scull_dev *dev; /* device information */
-
-	dev = container_of(inode->i_cdev, struct scull_dev, cdev);
-	filp->private_data = dev; /* for other methods */
-
-	/* now trim to 0 the length of the device if open was write-only */
-	if ( (filp->f_flags & O_ACCMODE) == O_WRONLY) {
-		if (down_interruptible(&dev->sem))
-			return -ERESTARTSYS;
-		scull_trim(dev); /* ignore errors */
-		up(&dev->sem);
-	}
-	return 0;          /* success */
-}
-*)
-
 extern
 fun scull_qset_get
   (): [m:pos] int m = "mac#scull_qset_get"
@@ -272,6 +253,8 @@ extern
 fun scull_quantum_get
   (): [n:pos] int n = "mac#scull_quantum_get"
 // end of [fun]
+
+(* ****** ****** *)
 
 implement
 scull_open_main
