@@ -370,8 +370,9 @@ in
 end // end of [stai0de_make]
 
 (* ****** ****** *)
-
-// omitted precedence is assumed to equal 0
+//
+// HX: omitted precedence is assumed to equal 0
+//
 implement p0rec_emp () = P0RECint 0
 implement p0rec_int (i) = P0RECint (int_of_string i.i0nt_val)
 implement p0rec_ide (id) = P0RECide (id)

@@ -355,7 +355,7 @@ fprintlst {a} {m} (
   // end of [aux]
 in
   aux (out, xs, 0)
-end // end of [fprint_kontlst]
+end // end of [fprintlst]
 
 (* ****** ****** *)
 

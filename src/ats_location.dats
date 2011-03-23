@@ -76,9 +76,6 @@ implement location_none = '{
 , endpos_toff= ~1L
 } // end of [location_none]
 
-fn location_is_none (loc: location):<> bool =
-  (loc.begpos_toff < 0L)
-
 implement location_make (fname, begpos, endpos) = '{
   filename= fname
 , begpos_line= position_line begpos
@@ -100,6 +97,12 @@ in '{
 } end // end of [location_end_make]
 
 (* ****** ****** *)
+
+local
+
+fn location_is_none
+  (loc: location):<> bool =
+  (loc.begpos_toff < 0L)
 
 fn location_combine_main
   (loc1: location, loc2: location):<> location = let
@@ -142,12 +145,16 @@ in '{
 , endpos_toff= endpos_toff
 } end // end of [location_combine_main]
 
+in // in of [local]
+
 implement location_combine (loc1, loc2) = begin
   case+ 0 of
   | _ when location_is_none loc1 => loc2
   | _ when location_is_none loc2 => loc1
   | _ => location_combine_main (loc1, loc2)
 end // end of [location_combine]
+
+end // end of [local]
 
 (* ****** ****** *)
 

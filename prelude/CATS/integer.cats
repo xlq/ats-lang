@@ -999,6 +999,12 @@ atspre_llint_of_int
   (ats_int_type i) { return ((ats_llint_type)i) ; }
 // end of [atspre_llint_of_int]
 
+ATSinline()
+ats_int_type
+atspre_int_of_llint
+  (ats_llint_type lli) { return ((ats_int_type)lli) ; }
+// end of [atspre_int_of_llint]
+
 #if (0)
 //
 // HX: defined in $ATSHOME/prelude/CATS/float.cats

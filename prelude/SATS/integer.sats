@@ -951,36 +951,36 @@ typedef llint = int_long_long_t0ype // unindexed
 
 castfn llint1_of_llint (i: llint):<> [i:int] llint i
 
-// Note that the following coersion is automatic
-fun llint_of_int (i: int):<> llint
-  = "atspre_llint_of_int"
+fun llint_of_int (i: int):<> llint = "atspre_llint_of_int"
 overload llint_of with llint_of_int
+fun int_of_llint (lli: llint):<> int = "atspre_int_of_llint"
+overload int_of with int_of_llint
 
-fun llint_of_double (d: double):<> llint
-  = "atspre_llint_of_double"
+fun llint_of_double
+  (d: double):<> llint = "atspre_llint_of_double"
 overload llint_of with llint_of_double
 
-// This function is based on [atoll] in [stdlib.h]
-fun llint_of_string (s: string):<> llint
-  = "atspre_llint_of_string"
+//
+// HX: This function is based on [atoll] in [stdlib.h]
+//
+fun llint_of_string
+  (s: string):<> llint = "atspre_llint_of_string"
 overload llint_of with llint_of_string
 
 // arithmetic functions and comparison functions
 
-fun abs_llint (lli: llint):<> llint
-  = "atspre_abs_llint"
+fun abs_llint
+  (lli: llint):<> llint = "atspre_abs_llint"
 overload abs with abs_llint
 
-fun neg_llint (lli: llint):<> llint
-  = "atspre_neg_llint"
+fun neg_llint
+  (lli: llint):<> llint = "atspre_neg_llint"
 overload ~ with neg_llint
 
-fun succ_llint (lli: llint):<> llint
-  = "atspre_succ_llint"
-
-and pred_llint (lli: llint):<> llint
-  = "atspre_pred_llint"
-
+fun succ_llint
+  (lli: llint):<> llint = "atspre_succ_llint"
+and pred_llint
+  (lli: llint):<> llint = "atspre_pred_llint"
 overload succ with succ_llint
 overload pred with pred_llint
 
