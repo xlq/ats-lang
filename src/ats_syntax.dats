@@ -2611,7 +2611,10 @@ fun aux2_loc (loc0: loc_t, ids: i0delst): loc_t =
 
 in // in of [local]
 
-implement d0ec_infix (t_infix, p, i, ids) = let
+implement
+d0ec_infix (
+  t_infix, p, i, ids
+) = let
   val loc = aux2_loc (t_infix.t0kn_loc, ids)
   val assoc = (case+ i of 
     | ~1 => $Fix.ASSOClft

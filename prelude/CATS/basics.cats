@@ -104,7 +104,9 @@ atspre_vbox_make_view_ptr_gc (ats_ptr_type p) { return ; }
 
 /* ****** ****** */
 
-/* functions for exits */
+/*
+** HX: various functions for exits
+*/
 
 // implemented in [prelude/DATS/basics.dats]
 extern ats_void_type ats_exit (const ats_int_type n) ;
@@ -122,8 +124,14 @@ atspre_exit_prerrf (ats_int_type code, ats_ptr_type fmt, ...) ;
 
 /* ****** ****** */
 
-// int ats_stdin_view_lock = 1 ;
+//
+// HX: these will probably be removed in ATS/Postiats
+//
 extern int ats_stdin_view_lock ;
+extern int ats_stdout_view_lock ;
+extern int ats_stderr_view_lock ;
+
+/* ****** ****** */
 
 ATSinline()
 ats_ptr_type
@@ -163,9 +171,6 @@ atspre_stdin_view_set () {
 
 /* ****** ****** */
 
-// int ats_stdout_view_lock = 1 ;
-extern int ats_stdout_view_lock ;
-
 ATSinline()
 ats_ptr_type
 atspre_stdout_get () {
@@ -203,9 +208,6 @@ atspre_stdout_view_set () {
 } // end of [atspre_stdout_view_set]
 
 /* ****** ****** */
-
-// int ats_stderr_view_lock = 1 ;
-extern int ats_stderr_view_lock ;
 
 ATSinline()
 ats_ptr_type

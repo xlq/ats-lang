@@ -209,6 +209,13 @@ prfun EXP2_isfun {n:nat} {p1,p2:int}
 //
 // HX: proven in [arith.dats]
 //
+prfun EXP2_ispos
+  {n:nat} {p:int} (pf: EXP2 (n, p)): [p >= 1] void
+// end of [EXP2_ispos]
+
+//
+// HX: proven in [arith.dats]
+//
 prfun EXP2_monotone
   {n1,n2:nat | n1 <= n2} {p1,p2:int}
   (pf1: EXP2 (n1, p1), pf2: EXP2 (n2, p2)): [p1 <= p2] void

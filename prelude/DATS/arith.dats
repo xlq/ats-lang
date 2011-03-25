@@ -242,6 +242,17 @@ implement EXP2_isfun
   // end of [isfun]
 } // end of [EXP2_isfun]
 
+implement EXP2_ispos
+  (pf) = ispos (pf) where {
+  prfun ispos
+    {n:nat} {p:int} .<n>.
+    (pf: EXP2 (n, p)): [p >= 1] void =
+    case+ pf of
+    | EXP2ind (pf) => ispos (pf)
+    | EXP2bas () => ()
+  // end of [ispos]
+} // end of [EXP2_ispos]
+
 implement EXP2_monotone
   (pf1, pf2) = lemma (pf1, pf2) where {
   prfun lemma {n1,n2:nat | n1 <= n2} {p1,p2:int} .<n2>.

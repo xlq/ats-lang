@@ -60,8 +60,9 @@ extern void ats_exit_errmsg (int err, char *msg) ;
 ats_empty_type ats_empty_value ;
 
 /* ****** ****** */
-
-// The following variables are used in basics.dats
+//
+// HX: The following variables are used in basics.dats
+//
 int ats_stdin_view_lock = 1 ;
 int ats_stdout_view_lock = 1 ;
 int ats_stderr_view_lock = 1 ;
