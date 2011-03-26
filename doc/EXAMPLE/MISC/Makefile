@@ -132,6 +132,13 @@ montecarlo: montecarlo.dats
 cleanall:: ; $(RMF) montecarlo
 
 #
+# mycat
+#
+checkall:: mycat
+mycat: mycat.dats ; $(ATSCC) -O2 -o $@ $< # && ./$@ < mycat.dats
+cleanall:: ; $(RMF) mycat
+
+#
 # An example of linear lazy evaluation
 #
 checkall:: longestline
