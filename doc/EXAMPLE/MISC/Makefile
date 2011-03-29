@@ -135,7 +135,7 @@ cleanall:: ; $(RMF) montecarlo
 # mycat
 #
 checkall:: mycat
-mycat: mycat.dats ; $(ATSCC) -O2 -o $@ $< # && ./$@ < mycat.dats
+mycat: mycat.dats ; $(ATSCC) -O2 -o $@ $< && ./$@ -A mycat.dats
 cleanall:: ; $(RMF) mycat
 
 #

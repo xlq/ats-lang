@@ -8,7 +8,8 @@
 
 (* ****** ****** *)
 
-staload UN = "prelude/SATS/unsafe.sats"
+staload
+UN = "prelude/SATS/unsafe.sats"
 
 staload
 FCNTL = "libc/SATS/fcntl.sats"
@@ -102,11 +103,11 @@ fn is_quoted_output
 typedef
 struct {
   int fildes ;
-} envinp ;
+} envinp_t ;
 %}
 viewtypedef
 envinp (fd:int) =
-$extype_struct "envinp" of {
+$extype_struct "envinp_t" of {
   fildes= int (fd) // file descriptor
 , fildes_v= fildes_v (fd) // file descriptor view
 } // end of [envinp]
@@ -115,16 +116,13 @@ $extype_struct "envinp" of {
 typedef
 struct {
   int dummy ;
-} envstdout ;
+} envstdout_t ;
 %}
 viewtypedef
 envstdout () =
-$extype_struct "envstdout" of {
+$extype_struct "envstdout_t" of {
   dummy= int
 }
-absviewt@ype envstdout = envstdout ()
-extern prfun envstdout_encode (env: &envstdout() >> envstdout): void
-extern prfun envstdout_decode (env: &envstdout >> envstdout()): void
 
 (* ****** ****** *)
 
@@ -140,7 +138,7 @@ end // end of [end]
 end // end of [local]
 
 implement
-putchars<envstdout> (env, buf, n1) = let
+putchars<envstdout()> (env, buf, n1) = let
   val (pf_stdout | ()) = $UNISTD.stdout_fildes_view_get ()
   val n1 = $FCNTL.write_all_err (pf_stdout | STDOUT_FILENO, buf, n1)
   val () = $UNISTD.stdout_fildes_view_set (pf_stdout | (*none*))
@@ -160,15 +158,13 @@ fun readout_raw
   prval () = env1.fildes_v := pf
   var env2: envstdout ()
   val () = env2.dummy := 0
-  prval () = envstdout_encode (env2)
 //
-  #define BUFSZ 1024
+  #define BUFSZ 4096
   var !p_buf with pf_buf = @[byte][BUFSZ]()
   prval () = pf_buf := bytes_v_of_b0ytes_v (pf_buf)
-  val () = catloop<envinp(fd),envstdout> (env1, env2, !p_buf, BUFSZ)
+  val () = catloop<envinp(fd),envstdout()> (env1, env2, !p_buf, BUFSZ)
 //
   prval () = pf := env1.fildes_v
-  prval () = envstdout_decode (env2)
 in
   // nothing
 end // end of [readout_raw]
@@ -378,7 +374,7 @@ fun readout_quoted
   var env2: envstdoutq
   val () = envstdoutq_initialize (env2, params)
 //
-  #define BUFSZ 2048
+  #define BUFSZ 4096
   var !p_buf with pf_buf = @[byte][BUFSZ]()
   prval () = pf_buf := bytes_v_of_b0ytes_v (pf_buf)
   val () = catloop<envinp(fd),envstdoutq> (env1, env2, !p_buf, BUFSZ)
