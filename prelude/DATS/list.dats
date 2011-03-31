@@ -1469,7 +1469,8 @@ end // end of [list_is_not_empty]
 (* ****** ****** *)
 
 implement{a}
-list_last (xs0) = loop (x, xs) where {
+list_last (xs0) =
+  loop (x, xs) where {
   fun loop {n:nat} .<n>.
     (x0: a, xs: list (a, n)):<> a = case+ xs of
     | list_cons (x, xs) => loop (x, xs) | list_nil () => x0
@@ -1478,11 +1479,17 @@ list_last (xs0) = loop (x, xs) where {
 } // end of [list_last]
 
 implement{a}
-list_last_exn (xs) = case+ xs of
-  | _ :: _ => list_last (xs) | nil () => begin
-      $raise ListSubscriptException
-    end // end of [nil]
+list_last_exn (xs) =
+  case+ xs of
+  | list_cons _ => list_last (xs)
+  | list_nil () => $raise ListSubscriptException
 // end of [list_last_exn]
+
+implement{a}
+list_last_opt (xs) = case+ xs of
+  | list_cons _ => Some_vt (list_last (xs))
+  | list_nil () => None_vt
+// end of [list_last_opt]
 
 (* ****** ****** *)
 

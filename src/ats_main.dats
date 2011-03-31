@@ -397,6 +397,7 @@ fn prelude_load (ATSHOME: string): void = let
 //
   val () = pervasive_load (ATSHOME, "prelude/SATS/option.sats")
   val () = pervasive_load (ATSHOME, "prelude/SATS/option0.sats")
+  val () = pervasive_load (ATSHOME, "prelude/SATS/option_vt.sats")
 //
   val () = pervasive_load (ATSHOME, "prelude/SATS/ptrarr.sats")
 //

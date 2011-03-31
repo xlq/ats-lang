@@ -956,13 +956,15 @@ stadef lazy_vt = lazy_viewt0ype_viewtype
 //
 // HX: lazy streams
 //
-datatype stream_con (a:t@ype+) =
+datatype
+stream_con (a:t@ype+) =
   | stream_nil (a) | stream_cons (a) of (a, stream a)
 where stream (a:t@ype) = lazy (stream_con a)
 //
 // HX: lazy linear streams
 //
-dataviewtype stream_vt_con (a:viewt@ype+) =
+dataviewtype
+stream_vt_con (a:viewt@ype+) =
   | stream_vt_nil (a) | stream_vt_cons (a) of (a, stream_vt a)
 where stream_vt (a:viewt@ype) = lazy_vt (stream_vt_con a)
 //

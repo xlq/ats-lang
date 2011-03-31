@@ -57,9 +57,9 @@ ats_exit_errmsg(ats_int_type n, ats_ptr_type msg) ;
 /* ****** ****** */
 
 /*
-
-// these are now casting functions:
-
+//
+// HX: these are now casting functions:
+//
 ATSinline()
 ats_char_type
 atspre_char_of_schar (ats_schar_type c) { return c ; }
@@ -85,8 +85,26 @@ ats_char_type
 atspre_char_of_int (ats_int_type i) { return i ; }
 
 ATSinline()
+ats_schar_type
+atspre_schar_of_int (ats_int_type i) { return i ; }
+
+ATSinline()
+ats_uchar_type
+atspre_uchar_of_int (ats_int_type i) { return i ; }
+
+/* ****** ****** */
+
+ATSinline()
 ats_char_type
 atspre_char_of_uint (ats_uint_type u) { return u ; }
+
+ATSinline()
+ats_schar_type
+atspre_schar_of_uint (ats_uint_type u) { return u ; }
+
+ATSinline()
+ats_uchar_type
+atspre_uchar_of_uint (ats_uint_type u) { return u ; }
 
 /* ****** ****** */
 

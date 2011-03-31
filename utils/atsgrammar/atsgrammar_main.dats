@@ -6627,7 +6627,6 @@ d0ec
   | MACDEF REC m0acdef andm0acdefseq    { $$ = d0ec_macdefs(-1/*error*/, $3, $4) ; }
   | MACRODEF m0acdef andm0acdefseq      { $$ = d0ec_macdefs(1, $2, $3) ; }
   | MACRODEF REC m0acdef andm0acdefseq  { $$ = d0ec_macdefs(2, $3, $4) ; }
-  | DYNLOAD LITERAL_string              { $$ = d0ec_dynload($2) ; }
   | STALOAD LITERAL_string              { $$ = d0ec_staload_none($2) ; }
   | STALOAD stai0de EQ LITERAL_string   { $$ = d0ec_staload_some($2, $4) ; }
 ; /* end of [d0ec] */
@@ -6696,8 +6695,6 @@ val gr = grmrule_append ($lst_t {symbol} (tupz! MACRODEF m0acdef andm0acdefseq))
 val () = grmrule_set_action (gr, "{ $$ = d0ec_macdefs(1, $2, $3) ; }")
 val gr = grmrule_append ($lst_t {symbol} (tupz! MACRODEF REC m0acdef andm0acdefseq))
 val () = grmrule_set_action (gr, "{ $$ = d0ec_macdefs(2, $3, $4) ; }")
-val gr = grmrule_append ($lst_t {symbol} (tupz! DYNLOAD LITERAL_string))
-val () = grmrule_set_action (gr, "{ $$ = d0ec_dynload($2) ; }")
 val gr = grmrule_append ($lst_t {symbol} (tupz! STALOAD LITERAL_string))
 val () = grmrule_set_action (gr, "{ $$ = d0ec_staload_none($2) ; }")
 val gr = grmrule_append ($lst_t {symbol} (tupz! STALOAD stai0de EQ LITERAL_string))
@@ -6909,6 +6906,7 @@ d0ec_dyn
   | LITERAL_extcode                     { $$ = d0ec_extcode_dyn($1) ; }
   | srpifkind guad0ec_dyn               { $$ = d0ec_guadec($1, $2) ; }
   | SRPINCLUDE LITERAL_string           { $$ = d0ec_include(1/*dyn*/, $2) ; }
+  | DYNLOAD LITERAL_string              { $$ = d0ec_dynload($2) ; }
 ; /* end of [d0ec_dyn] */
 *)
 fun d0ec_dyn_proc (): void = () where {
@@ -6944,6 +6942,8 @@ val gr = grmrule_append ($lst_t {symbol} (tupz! srpifkind guad0ec_dyn))
 val () = grmrule_set_action (gr, "{ $$ = d0ec_guadec($1, $2) ; }")
 val gr = grmrule_append ($lst_t {symbol} (tupz! SRPINCLUDE LITERAL_string))
 val () = grmrule_set_action (gr, "{ $$ = d0ec_include(1/*dyn*/, $2) ; }")
+val gr = grmrule_append ($lst_t {symbol} (tupz! DYNLOAD LITERAL_string))
+val () = grmrule_set_action (gr, "{ $$ = d0ec_dynload($2) ; }")
 //
 val () = symbol_close (pf | d0ec_dyn)
 //

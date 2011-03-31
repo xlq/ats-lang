@@ -48,8 +48,9 @@
 #include "ats_memory.h"
 
 /* ****** ****** */
-
-// implemented in [prelude/DATS/basics.dats]
+//
+// HX: implemented in [prelude/DATS/basics.dats]
+//
 extern void ats_exit_errmsg (int err, char *msg) ;
 
 /* ****** ****** */
@@ -80,14 +81,12 @@ ATSthreadlocalstorage() // thread-local storage
 ats_ptr_type *the_ats_exception_stack = NULL ;
 
 /* ****** ****** */
-
-// some common exceptions
-
+//
+// HX: some common exceptions
+//
 ats_exn_type
 AssertionExceptionCon = { 10, "AssertionException" } ;
 ats_exn_ptr_type AssertionException = &AssertionExceptionCon ;
-
-/* ****** ****** */
 
 ats_exn_type
 OverflowExceptionCon = { 20, "OverflowException" } ;
@@ -102,8 +101,8 @@ SubscriptExceptionCon = { 40, "SubscriptException" } ;
 ats_exn_ptr_type SubscriptException = &SubscriptExceptionCon ;
 
 /* ****** ****** */
-
-// the numbers less than 1000 are all
+//
+// HX: the numbers less than 1000 are all
 int ats_exception_con_tag = 1000 ; // reserved for special use
 
 /*
@@ -147,7 +146,7 @@ ats_funarg_match_failure_handle (
 /* ****** ****** */
 
 /*
-**functions for memory allocation and deallocation
+** functions for memory allocation and deallocation
 */
 
 #ifdef _ATS_NGC // no GC

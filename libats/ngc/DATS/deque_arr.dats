@@ -520,4 +520,4 @@ deque_update_capacity (
 
 (* ****** ****** *)
 
-(* end of [lindeque_arr.dats] *)
+(* end of [deque_arr.dats] *)

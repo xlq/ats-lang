@@ -677,6 +677,7 @@ fun{a:t@ype} list_head_exn {n:nat} (xs: list (a, n)):<!exn> [n>0] a
 
 fun{a:t@ype} list_last {n:pos} (xs: list (a, n)):<> a
 fun{a:t@ype} list_last_exn {n:nat} (xs: list (a, n)):<!exn> [n>0] a
+fun{a:t@ype} list_last_opt {n:nat} (xs: list (a, n)):<> Option_vt (a)
 
 (* ****** ****** *)
 

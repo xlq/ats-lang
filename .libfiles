@@ -91,10 +91,8 @@ prelude/HATS/number_hats.dats
 //
 prelude/SATS/option.sats
 prelude/DATS/option.dats
-/*
 prelude/SATS/option_vt.sats
 prelude/DATS/option_vt.dats
-*/
 prelude/SATS/option0.sats
 prelude/DATS/option0.dats
 //

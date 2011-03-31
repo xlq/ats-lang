@@ -83,41 +83,41 @@ fun char_of_uint1
 (* ****** ****** *)
 
 fun schar_of_int
-  (i: int):<> schar = "atspre_char_of_int"
+  (i: int):<> schar = "atspre_schar_of_int"
 // end of [schar_of_int]
 
 fun schar_of_int1
   {i: nat | i <= UCHAR_MAX} (i: int i):<> schar
-  = "atspre_char_of_int"
+  = "atspre_schar_of_int"
 // end of [schar_of_int1]
 
 fun schar_of_uint
-  (u: uint):<> schar = "atspre_char_of_uint"
+  (u: uint):<> schar = "atspre_schar_of_uint"
 // end of [schar_of_uint]
 
 fun schar_of_uint1
   {i: nat | i <= UCHAR_MAX} (u: uint i):<> schar
-  = "atspre_char_of_uint"
+  = "atspre_schar_of_uint"
 // end of [schar_of_uint1]
 
 (* ****** ****** *)
 
 fun uchar_of_int
-  (i: int):<> uchar = "atspre_char_of_int"
+  (i: int):<> uchar = "atspre_uchar_of_int"
 // end of [uchar_of_int]
 
 fun uchar_of_int1
   {i: nat | i <= UCHAR_MAX} (i: int i):<> uchar
-  = "atspre_char_of_int"
+  = "atspre_uchar_of_int"
 // end of [uchar_of_int1]
 
 fun uchar_of_uint
-  (u: uint):<> uchar = "atspre_char_of_uint"
+  (u: uint):<> uchar = "atspre_uchar_of_uint"
 // end of [uchar_of_uint]
 
 fun uchar_of_uint1
   {i: nat | i <= UCHAR_MAX} (u: uint i):<> uchar
-  = "atspre_char_of_uint"
+  = "atspre_uchar_of_uint"
 // end of [uchar_of_uint1]
 
 (* ****** ****** *)

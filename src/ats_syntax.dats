@@ -1406,10 +1406,10 @@ implement s0tavarlst_cons (x, xs) = cons (x, xs)
 (* ****** ****** *)
 
 implement
-s0expdef_make (id, arg, res, def) = let
-
-val loc = combine (id.i0de_loc, def.s0exp_loc)
-
+s0expdef_make (
+ id, arg, res, def
+) = let
+  val loc = combine (id.i0de_loc, def.s0exp_loc)
 in '{
   s0expdef_loc= loc
 , s0expdef_sym= id.i0de_sym
@@ -1417,35 +1417,38 @@ in '{
 , s0expdef_arg= arg
 , s0expdef_res= res
 , s0expdef_def= def
-} end
+} end // end of [s0expdef_make]
 
 implement s0expdeflst_nil () = nil ()
 implement s0expdeflst_cons (x, xs) = cons (x, xs)
 
 (* ****** ****** *)
 
-implement s0aspdec_make (qid, arg, res, def) = let
-
-val loc = combine (qid.sqi0de_loc, def.s0exp_loc)
-
+implement
+s0aspdec_make
+  (qid, arg, res, def) = let
+  val loc = combine (qid.sqi0de_loc, def.s0exp_loc)
 in '{
   s0aspdec_loc= loc
 , s0aspdec_qid= qid
 , s0aspdec_arg= arg
 , s0aspdec_res= res
 , s0aspdec_def= def
-} end
+} end // end of [s0aspdec_make]
 
 (* ****** ****** *)
 
-implement d0atcon_make (qua, id, ind, arg) = let
+implement
+d0atcon_make (
+  qua, id, ind, arg
+) = let
   val loc = id.i0de_loc
   val loc = (case+ arg of
     | Some s0e => combine (loc, s0e.s0exp_loc)
     | None () => begin case+ ind of
       | Some s0e => combine (loc, s0e.s0exp_loc) | _ => loc
       end // end of [None]
-  ) : loc_t
+  ) : loc_t // end of [val]
 in '{
   d0atcon_loc= loc
 , d0atcon_sym= id.i0de_sym

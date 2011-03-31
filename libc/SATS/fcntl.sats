@@ -208,16 +208,16 @@ fun write_exn
 //
 fun write_all_err
   {fd:int} {sz,n:nat | n <= sz} (
-    pf: !fildes_v (fd) | fd: int fd, buf: &bytes sz, ntotal: size_t n
-  ) : ssizeBtw(~1, n+1) = "atslib_fildes_write_all_err"
+  pf: !fildes_v (fd) | fd: int fd, buf: &bytes sz, ntotal: size_t n
+) : ssizeBtw(~1, n+1) = "atslib_fildes_write_all_err"
 // end of [write_all_err]
 // 
 // HX: all bytes must have been written if this function returns
 //
 fun write_all_exn
   {fd:int} {sz,n:nat | n <= sz} (
-    pf: !fildes_v (fd) | fd: int fd, buf: &bytes sz, ntotal: size_t n
-  ) : void = "atslib_fildes_write_all_exn"
+  pf: !fildes_v (fd) | fd: int fd, buf: &bytes sz, ntotal: size_t n
+) : void = "atslib_fildes_write_all_exn"
 // end of [write_all_exn]
 
 (* ****** ****** *)
