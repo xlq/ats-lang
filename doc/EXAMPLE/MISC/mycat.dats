@@ -459,52 +459,65 @@ Examples:
 )
 
 (* ****** ****** *)
+/*
+** SN: suppose that current parameter is a file path to cat()
+*/
+fun parse_file_path
+  {n:int | n >= 1}
+  {m:nat | m < n } (
+  params: &params, argc: int n, argv: &(@[string][n]), current: int m
+) : void = let
+  val () = assert(current < argc)
+  val path = string1_of_string (argv.[current])
+  val () = assert_errmsg(
+    gte_size1_int1(string1_length(path),1),"path must contain at least one character!"
+  ) // end of [val]
+  val () = cat_file(params, path)
+  val next = current+1
+in
+  if next = argc then
+    ()
+  else
+    parse_file_path(params, argc, argv, next)
+  // end of [if]
+end (* end of [parse_file_path] *)
 
-/* suppose that current parameter is a file path to cat() */
-fun parse_file_path {n:int | n >= 1} {m:nat | m < n } (params: &params, argc: int n, argv: &(@[string][n]), current: int m) : void =
-	let
-		val () = assert(current < argc)
-		val path = string1_of_string (argv.[current])
-		val () = assert_errmsg( gte_size1_int1(string1_length(path),1),"path must contain at least one character!" )
-		val () = cat_file(params, path)
-		val next = current+1
-	in
-		if next = argc
-		then
-			()
-		else
-			parse_file_path(params, argc, argv, next)
-	end
-// ---------------------------------------------------------------------
-/* suppose that current parameter is not a file path */
-fun parse_non_file_parameters {n:int | n >= 1} {m:nat | m < n } (params: &params, argc: int n, argv: &(@[string][n]), current: int m) : bool =
-	let
-		val () = assert(current < argc)
-		val param = string1_of_string (argv.[current])
-	in
-		case+ param of
-			| "--help" => ( help(); exit(0); )
-			| "--version" => ( version(); exit(0); )
-			| "-A" => ( show_nonprinting(params); show_ends(params); show_tabs(params); false; )
-			| "--show-all" => ( show_nonprinting(params); show_ends(params); show_tabs(params); false; )
-			| "-b" => ( number_nonblank(params); false; )
-			| "--number-nonblank" => ( number_nonblank(params); false; )
-			| "-e" => ( show_nonprinting(params); show_ends(params); false; )
-			| "-E" => ( show_ends(params); false; )
-			| "--show-ends" => ( show_ends(params); false; )
-			| "-n" => ( number(params); false; )
-			| "--number" => ( number(params); false; )
-			| "-s" => ( squeeze_blank(params); false; )
-			| "--squeeze-blank" => ( squeeze_blank(params); false; )
-			| "-t" => ( show_tabs(params) ; show_nonprinting(params); false; )
-			| "-T" => ( show_tabs(params); false; )
-			| "--show-tabs" => ( show_tabs(params); false; )
-			| "-u" => (* IGNORED*) false
-			| "-v" => ( show_nonprinting(params); false; )
-			| "--show-nonprinting" => ( show_nonprinting(params); false; )
-			| _ =>> (* unknown parameter => file path? *) true
-	end
-// ---------------------------------------------------------------------
+(* ****** ****** *)
+/*
+** SN: suppose that current parameter is not a file path
+*/
+fun parse_non_file_parameters
+  {n:int | n >= 1}
+  {m:nat | m < n } (
+  params: &params, argc: int n, argv: &(@[string][n]), current: int m
+) : bool = let
+  val () = assert(current < argc)
+  val param = string1_of_string (argv.[current])
+in
+  case+ param of
+  | "--help" => ( help(); exit(0); )
+  | "--version" => ( version(); exit(0); )
+  | "-A" => ( show_nonprinting(params); show_ends(params); show_tabs(params); false; )
+  | "--show-all" => ( show_nonprinting(params); show_ends(params); show_tabs(params); false; )
+  | "-b" => ( number_nonblank(params); false; )
+  | "--number-nonblank" => ( number_nonblank(params); false; )
+  | "-e" => ( show_nonprinting(params); show_ends(params); false; )
+  | "-E" => ( show_ends(params); false; )
+  | "--show-ends" => ( show_ends(params); false; )
+  | "-n" => ( number(params); false; )
+  | "--number" => ( number(params); false; )
+  | "-s" => ( squeeze_blank(params); false; )
+  | "--squeeze-blank" => ( squeeze_blank(params); false; )
+  | "-t" => ( show_tabs(params) ; show_nonprinting(params); false; )
+  | "-T" => ( show_tabs(params); false; )
+  | "--show-tabs" => ( show_tabs(params); false; )
+  | "-u" => (* IGNORED*) false
+  | "-v" => ( show_nonprinting(params); false; )
+  | "--show-nonprinting" => ( show_nonprinting(params); false; )
+  | _ =>> (* unknown parameter => file path? *) true
+end // end of [parse_non_file_parameters]
+
+(* ****** ****** *)
 
 fun parse_parameters
   {n:int | n >= 1}
@@ -515,11 +528,13 @@ fun parse_parameters
   val next = current + 1
 in
   case+ isfilepath of
-  | false => (if next = argc then cat_stdin(params) else parse_parameters(params, argc,argv,next) )
+  | false => (
+      if next = argc then cat_stdin(params) else parse_parameters(params, argc,argv,next)
+    ) // end of [false]
   | true => parse_file_path(params, argc,argv,current)
-end
+end // end of [parse_parameters]
 
-// ---------------------------------------------------------------------
+(* ****** ****** *)
 
 implement
 main(argc, argv) = let

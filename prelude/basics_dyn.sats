@@ -79,7 +79,7 @@ symintr ptr_of ptrnul_of // many, many, many, ...
 
 (* ****** ****** *)
 
-praxi cleanup_top {a:viewt@ype} (x: a?):<> void
+praxi cleanup_top {a:viewt@ype} (x: a?): void
 
 (* ****** ****** *)
 
@@ -97,7 +97,7 @@ praxi eqsize_char_uchar (): [sizeof(char)==sizeof uchar] void
 //
 // HX-2010-04-18: there are no negative addresses
 //
-praxi addr_is_gtez {l:addr} ():<> [l >= null] void
+praxi addr_is_gtez {l:addr} (): [l >= null] void
 
 (* ****** ****** *)
 
@@ -268,13 +268,13 @@ overload main with main_argc_argv
 symintr free_gc_elim
 
 praxi free_gc_addr_elim // return the certificate to the GC
-  {l:addr} (pf: free_gc_v l):<> void
+  {l:addr} (pf: free_gc_v l): void
 overload free_gc_elim with free_gc_addr_elim
 praxi free_gc_viewt0ype_addr_elim // return the certificate to the GC
-  {a:viewt@ype} {l:addr} (pf: free_gc_v (a, l)):<> void
+  {a:viewt@ype} {l:addr} (pf: free_gc_v (a, l)): void
 overload free_gc_elim with free_gc_viewt0ype_addr_elim
 praxi free_gc_viewt0ype_int_addr_elim // return the certificate to the GC
-  {a:viewt@ype} {n:int} {l:addr} (pf: free_gc_v (a, n, l)):<> void
+  {a:viewt@ype} {n:int} {l:addr} (pf: free_gc_v (a, n, l)): void
 overload free_gc_elim with free_gc_viewt0ype_int_addr_elim
 
 (* ****** ****** *)
@@ -525,7 +525,7 @@ overload ~ with lazy_vt_free
 (* ****** ****** *)
 
 #if VERBOSE_PRELUDE #then
-#print "Loading [basics_dyn.ats] finishes!\n"
+#print "Loading [basics_dyn.sats] finishes!\n"
 #endif // end of [VERBOSE_PRELUDE]
 
 (* end of [basics_dyn.sats] *)

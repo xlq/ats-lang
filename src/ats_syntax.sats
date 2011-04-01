@@ -1123,6 +1123,8 @@ fun s0tacstlst_nil (): s0tacstlst = "s0tacstlst_nil"
 fun s0tacstlst_cons (x: s0tacst, xs: s0tacstlst): s0tacstlst
   = "s0tacstlst_cons"
 
+(* ****** ****** *)
+
 typedef s0tavar = '{
   s0tavar_loc= loc_t
 , s0tavar_sym= sym_t

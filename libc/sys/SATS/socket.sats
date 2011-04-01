@@ -329,16 +329,22 @@ fun socket_fdopen_err
 
 (* ****** ****** *)
 
-fun setsockopt {a:t@ype} {fd:nat}
-  (fd: int fd, level: int, option: int, value: &a, valen: sizeof_t a): int
+fun setsockopt
+  {a:t@ype} {fd:nat} (
+  fd: int fd
+, level: int
+, option: int
+, value: &a
+, valen: sizeof_t a
+) : int
   = "atslib_setsockopt" // function!
 // end of [setsockopt]
 
 fun getsockopt_err {a:t@ype} {fd:nat} (
-    fd: int fd
-  , level: int, option: int
-  , value: &a? >> opt (a, i==0), valen: sizeof_t a
-  ) : #[i:int | i <= 0] int i = "atslib_getsockopt_err" // function!
+  fd: int fd
+, level: int, option: int
+, value: &a? >> opt (a, i==0), valen: sizeof_t a
+) : #[i:int | i <= 0] int i = "atslib_getsockopt_err" // function!
 // end of [getsockopt_err]
 
 (* ****** ****** *)

@@ -58,7 +58,8 @@ stadef heap = heap_t0ype_type
 (* ****** ****** *)
 
 typedef cmp (elt:t@ype) = (elt, elt) -<cloref> Sgn
-fun{elt:t@ype} compare_elt_elt (x1: elt, x2: elt, cmp: cmp elt):<> Sgn
+fun{elt:t@ype}
+compare_elt_elt (x1: elt, x2: elt, cmp: cmp elt):<> Sgn
 
 (* ****** ****** *)
 
@@ -77,9 +78,9 @@ funheap_insert (t: &heap (elt), x: elt, cmp: cmp elt):<> void
 (* ****** ****** *)
 
 fun{elt:t@ype}
-funheap_delmin
-  (t: &heap (elt), res: &elt? >> opt (elt, b), cmp: cmp elt):<> #[b:bool] bool b
-// end of [funheap_delim]
+funheap_delmin (
+  t: &heap (elt), res: &elt? >> opt (elt, b), cmp: cmp elt
+) :<> #[b:bool] bool b // end of [funheap_delim]
 
 (* ****** ****** *)
 

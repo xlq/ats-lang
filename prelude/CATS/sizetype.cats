@@ -46,13 +46,28 @@
 #include "ats_types.h"
 
 /* ****** ****** */
+//
+// unsigned size type
+//
+/* ****** ****** */
+
+ATSinline()
+ats_size_type
+atspre_size_of_int
+  (ats_int_type i) {
+  if (i < 0) {
+    fprintf (stderr, "[atspre_size_of_int(%i)] failed\n", i) ;
+    exit (1) ;
+  } /* end of [if] */
+  return ((ats_size_type)i) ;
+} // end of [atspre_size_of_int]
 
 #define atspre_int_of_size atspre_int1_of_size1
 #define atspre_size_of_int1 atspre_size1_of_int1
 #define atspre_uint_of_size atspre_uint1_of_size1
 #define atspre_size_of_uint atspre_size1_of_uint1
-#define atspre_int_of_ssize atspre_int1_of_ssize1
-#define atspre_ssize_of_int atspre_ssize1_of_int1
+
+/* ****** ****** */
 
 #define atspre_add_size_int atspre_add_size1_int1
 #define atspre_add_size_size atspre_add_size1_size1
@@ -88,58 +103,21 @@
 
 ATSinline()
 ats_size_type
-atspre_size_of_int
-  (ats_int_type i) {
-  if (i < 0) {
-    fprintf (stderr, "[atspre_size_of_int(%i)] failed\n", i) ;
-    exit (1) ;
-  } /* end of [if] */
-  return ((ats_size_type)i) ;
-} // end of [atspre_size_of_int]
-
-/* ****** ****** */
-
-//
-// unsigned size type
-//
-
-/* ****** ****** */
-
-ATSinline()
-ats_int_type
-atspre_int1_of_size1
-  (ats_size_type sz) {
-  if (INT_MAX < sz) {
-    fprintf (stderr, "[atspre_int_of_size(%lu)] failed\n", (ats_ulint_type)sz) ;
-    exit (1) ;
-  } /* end of [if] */
-  return ((ats_int_type)sz) ;
-} // end of [atspre_int1_of_size1]
-
-ATSinline()
-ats_uint_type
-atspre_uint1_of_size1
-  (ats_size_type sz) {
-  if (UINT_MAX < sz) {
-    fprintf (stderr, "[atspre_uint_of_size(%lu)] failed\n", (ats_ulint_type)sz) ;
-    exit (1) ;
-  } /* end of [if] */
-  return ((ats_uint_type)sz) ;
-} // end of [atspre_uint1_of_size1]
-
-/* ****** ****** */
+atspre_land_size_size (ats_size_type x, ats_size_type y) {
+  return (x & y) ;
+}
 
 ATSinline()
 ats_size_type
-atspre_size1_of_int1 (ats_int_type i) { return (ats_size_type)i ; }
+atspre_lor_size_size (ats_size_type x, ats_size_type y) {
+  return (x | y) ;
+}
 
 ATSinline()
 ats_size_type
-atspre_size1_of_uint1 (ats_uint_type u) { return (ats_size_type)u ; }
-
-ATSinline()
-ats_size_type
-atspre_size1_of_ptrdiff1 (ats_ptrdiff_type x) { return (ats_size_type)x ; }
+atspre_lxor_size_size (ats_size_type x, ats_size_type y) {
+  return (x ^ y) ;
+}
 
 /* ****** ****** */
 
@@ -184,6 +162,48 @@ atspre_prerr_size (ats_size_type sz) {
 //  atspre_stderr_view_set () ;
   return ;
 }
+
+/* ****** ****** */
+//
+// unsigned size type (indexed)
+//
+/* ****** ****** */
+
+ATSinline()
+ats_int_type
+atspre_int1_of_size1
+  (ats_size_type sz) {
+  if (INT_MAX < sz) {
+    fprintf (stderr, "[atspre_int_of_size(%lu)] failed\n", (ats_ulint_type)sz) ;
+    exit (1) ;
+  } /* end of [if] */
+  return ((ats_int_type)sz) ;
+} // end of [atspre_int1_of_size1]
+
+ATSinline()
+ats_uint_type
+atspre_uint1_of_size1
+  (ats_size_type sz) {
+  if (UINT_MAX < sz) {
+    fprintf (stderr, "[atspre_uint_of_size(%lu)] failed\n", (ats_ulint_type)sz) ;
+    exit (1) ;
+  } /* end of [if] */
+  return ((ats_uint_type)sz) ;
+} // end of [atspre_uint1_of_size1]
+
+/* ****** ****** */
+
+ATSinline()
+ats_size_type
+atspre_size1_of_int1 (ats_int_type i) { return (ats_size_type)i ; }
+
+ATSinline()
+ats_size_type
+atspre_size1_of_uint1 (ats_uint_type u) { return (ats_size_type)u ; }
+
+ATSinline()
+ats_size_type
+atspre_size1_of_ptrdiff1 (ats_ptrdiff_type x) { return (ats_size_type)x ; }
 
 /* ****** ****** */
 
@@ -360,8 +380,6 @@ atspre_gt_size1_int1
   return (sz1 > (ats_size_type)i2 ? ats_true_bool : ats_false_bool) ;
 } // end of [atspre_gt_size1_int1]
 
-// ------ ------
-
 ATSinline()
 ats_bool_type
 atspre_gte_size1_size1
@@ -426,15 +444,22 @@ atspre_min_size1_size1
 
 /* ****** ****** */
 //
-// signed size type (unindexed)
+// signed size type
 //
 /* ****** ****** */
+
+#define atspre_int_of_ssize atspre_int1_of_ssize1
+#define atspre_ssize_of_int atspre_ssize1_of_int1
 
 #define atspre_add_ssize_ssize atspre_add_ssize1_ssize1
 #define atspre_sub_ssize_ssize atspre_sub_ssize1_ssize1
 #define atspre_mul_ssize_ssize atspre_mul_ssize1_ssize1
 #define atspre_div_ssize_ssize atspre_div_ssize1_ssize1
 
+/* ****** ****** */
+//
+// signed size type (indexed)
+//
 /* ****** ****** */
 
 ATSinline()
@@ -498,8 +523,6 @@ atspre_lt_ssize1_int1
   return (ssz1 < i2 ? ats_true_bool : ats_false_bool) ;
 } // end of [atspre_lt_ssize1_int1]
 
-// ------ ------
-
 ATSinline()
 ats_bool_type
 atspre_lte_ssize1_int1
@@ -515,8 +538,6 @@ atspre_gt_ssize1_int1
   (ats_ssize_type ssz1, ats_int_type i2) {
   return (ssz1 > i2 ? ats_true_bool : ats_false_bool) ;
 } // end of [atspre_gt_ssize1_int1]
-
-// ------ ------
 
 ATSinline()
 ats_bool_type
