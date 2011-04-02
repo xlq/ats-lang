@@ -1592,7 +1592,7 @@ fn s0taload_tr (
   ) : d1ec = let
   val fullname = $Fil.filename_full fil
   val oflagd1cs = staload_file_search fullname
-  var loadflag: int = 1
+  var loadflag: int = 1 // HX: this is for ATS_STALOADFLAG
   val d1cs = (case+ oflagd1cs of
     | ~Some_vt (flagd1cs) => let
 (*

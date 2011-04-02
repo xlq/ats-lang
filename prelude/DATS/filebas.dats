@@ -46,7 +46,10 @@
 
 (* ****** ****** *)
 
-staload "prelude/SATS/filebas.sats"
+%{^
+#include "libc/CATS/stdio.cats"
+#include <libc/sys/CATS/stat.cats>
+%} // end of [%{#]
 
 (* ****** ****** *)
 

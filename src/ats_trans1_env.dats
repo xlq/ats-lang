@@ -243,7 +243,7 @@ staload_file_insert (fullname, flag, d1cs) = let
   val ans = $HT.hashtbl_insert (theHashTable, fullname, @(flag,d1cs))
 in
   case+ ans of
-  | ~Some_vt (d1c) => begin
+  | ~Some_vt _ => begin
       prerr_interror ();
       prerr ": [staload_file_insert] failed."; prerr_newline ();
       exit {void} (1)

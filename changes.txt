@@ -67,6 +67,8 @@ ats-lang-anairiats-0.2.3:
 22. [ptrself] is introduced as a named type of the name "ats_ptrself_type"
 23. The '$fun' suffix is no longer in use. If a function is declared as a
     'val', then the function is now treated as an ordinary value.
+24. ATSstaticdec() and ATSglobaldec() are now employed in emitted C code
+    for indicating whether a function is global or static.
 
 ########################################################################
 

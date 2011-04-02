@@ -452,7 +452,8 @@ implement filename_full_sym f = f.filename_full_sym
 
 (* ****** ****** *)
 
-implement filename_make_absolute (fullname) = let
+implement
+filename_make_absolute (fullname) = let
   val fullname_id = fullname
   val fullname_sym = $Sym.symbol_make_string fullname
 in '{

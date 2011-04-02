@@ -531,10 +531,10 @@ end (* end of [emit_valprim_char] *)
 (* ****** ****** *)
 
 fn emit_tmpvar_cloptr_init {m:file_mode} (
-    pf: fmlte (m, w)
-  | out: &FILE m, knd: int
-  , tmp_ptr: tmpvar_t, fl: funlab_t, map: envmap_t
-  ) : void = let
+  pf: fmlte (m, w)
+| out: &FILE m, knd: int
+, tmp_ptr: tmpvar_t, fl: funlab_t, map: envmap_t
+) : void = let
   val entry = funlab_get_entry_some (fl)
   val vtps = funentry_get_vtps_all (entry)
   val () = emit_funlab (pf | out, fl)
@@ -546,10 +546,11 @@ in
   // empty
 end // end of [emit_valprim_clo_init]
 
-fn emit_valprim_clo_make {m:file_mode} (
-    pf: fmlte (m, w)
-  | out: &FILE m, knd: int, fl: funlab_t, map: envmap_t
-  ) : void = let
+fn emit_valprim_clo_make
+  {m:file_mode} (
+  pf: fmlte (m, w)
+| out: &FILE m, knd: int, fl: funlab_t, map: envmap_t
+) : void = let
   val entry = funlab_get_entry_some (fl)
   val vtps = funentry_get_vtps_all (entry)
   val () = emit_funlab (pf | out, fl)
@@ -2684,6 +2685,13 @@ emit_funentry
 //
 // function head
 //
+  val () = let
+    val qua = funlab_get_qua (fl)
+  in
+    case+ qua of
+    | D2CSTOPTsome _ => fprint1_string (pf | out, "ATSglobaldec()\n")
+    | D2CSTOPTnone _ => fprint1_string (pf | out, "ATSstaticdec()\n")
+  end // end of [val]
   val () = begin
      emit_hityp (pf | out, hit_res); fprint1_char (pf | out, '\n')
   end // end of [val]

@@ -59,13 +59,6 @@
 
 (* ****** ****** *)
 
-%{#
-#include "libc/CATS/stdio.cats"
-#include <libc/sys/CATS/stat.cats>
-%} // end of [%{#]
-
-(* ****** ****** *)
-
 typedef file_mode = [m:file_mode] file_mode (m)
 
 (* ****** ****** *)

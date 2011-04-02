@@ -1,5 +1,5 @@
 (*
-**
+** My own [find] function for traversing file trees.
 *)
 
 (* ****** ****** *)

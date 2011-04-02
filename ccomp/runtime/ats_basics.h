@@ -79,6 +79,9 @@
 
 /* ****** ****** */
 
+#define ATSglobaldec()
+#define ATSstaticdec() static
+
 #define ATSextfun() extern
 #define ATSinline() static inline
 

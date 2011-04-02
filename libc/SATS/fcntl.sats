@@ -108,6 +108,12 @@ fun open_flag_err
   = "atslib_open_flag_err"
 // end of [open_flag_err]
 
+fun open_flag_mode_err (
+  path: !READ(string), flag: flag_t, mode: mode_t
+) : [i: int] (open_v (i) | int i)
+  = "atslib_open_flag_mode_err"
+// end of [open_flag_mode_err]
+
 fun open_flag_exn
   (path: !READ(string), flag: flag_t): [i: int] (fildes_v i | int i)
   = "atslib_open_flag_exn"

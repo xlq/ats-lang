@@ -217,12 +217,12 @@ staload SEXP1 = "ats_staexp1.sats"
 staload DEXP1 = "ats_dynexp1.sats"
 staload DEXP2 = "ats_dynexp2.sats"
 staload DEXP3 = "ats_dynexp3.sats"
-staload TransEnv1 = "ats_trans1_env.sats"
 staload Trans1 = "ats_trans1.sats"
-staload TransEnv2 = "ats_trans2_env.sats"
+staload TransEnv1 = "ats_trans1_env.sats"
 staload Trans2 = "ats_trans2.sats"
-staload TransEnv3 = "ats_trans3_env.sats"
+staload TransEnv2 = "ats_trans2_env.sats"
 staload Trans3 = "ats_trans3.sats"
+staload TransEnv3 = "ats_trans3_env.sats"
 staload CSTR = "ats_constraint.sats"
 staload Trans4 = "ats_trans4.sats"
 staload CC = "ats_ccomp.sats"
@@ -327,6 +327,9 @@ fn pervasive_load
 *)
   val () = $Fil.the_filenamelst_pop ()
   val d1cs = $Trans1.d0eclst_tr (d0cs)
+// (*
+  val () = $TransEnv1.staload_file_insert (fullname, 0(*loadflag*), list_nil)
+// *)
   val _(*d2cs*) = $Trans2.d1eclst_tr d1cs
 in
   // empty
