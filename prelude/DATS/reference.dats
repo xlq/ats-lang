@@ -43,6 +43,10 @@
 
 (* ****** ****** *)
 
+staload "prelude/SATS/reference.sats"
+
+(* ****** ****** *)
+
 (*
 
 assume ref_viewt0ype_type (a:viewt@ype) =

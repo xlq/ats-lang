@@ -38,8 +38,14 @@
 #define ATS_DYNLOADFLAG 0 // loaded by [ats_main_prelude]
 
 (* ****** ****** *)
-
+//
 // list0 implementation
+//
+(* ****** ****** *)
+
+staload "prelude/SATS/list0.sats"
+
+(* ****** ****** *)
 
 #define nil list0_nil
 #define cons list0_cons
@@ -379,13 +385,6 @@ list0_drop_exn (xs, n) = res where {
   ) : list0 a
   val () = if err > 0 then $raise ListSubscriptException ()
 } // end of [list0_drop_exn]
-
-(* ****** ****** *)
-
-// [list0.sats] is already loaded by a call to [pervasive_load]
-staload _(*anonymous*) = "prelude/SATS/list0.sats" // this forces that the static
-// loading function for [list0.sats] is to be called at run-time
-// this is really needed only if some datatypes are declared in [list0.sats]
 
 (* ****** ****** *)
 

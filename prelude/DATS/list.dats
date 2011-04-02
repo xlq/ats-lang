@@ -42,6 +42,10 @@
 
 (* ****** ****** *)
 
+staload "prelude/SATS/list.sats"
+
+(* ****** ****** *)
+
 // list implementation
 
 #define nil list_nil
@@ -2025,13 +2029,6 @@ implement{a}
 list_quicksort (xs, lte, env) = qsrt (lte, xs, env)
 
 end // end of [local]
-
-(* ****** ****** *)
-
-// [list.sats] is already loaded by a call to [pervasive_load]
-staload _(*anonymous*) = "prelude/SATS/list.sats" // this forces that the static
-// loading function for [list.sats] is to be called at run-time
-// this is really needed only if some datatypes are declared in [list.sats]
 
 (* ****** ****** *)
 

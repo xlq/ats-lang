@@ -39,6 +39,10 @@
 
 (* ****** ****** *)
 
+staload "prelude/SATS/option.sats"
+
+(* ****** ****** *)
+
 // this is a casting function
 implement
 option_of_option_vt (ov) = case+ ov of
@@ -71,13 +75,6 @@ implement{a,b}
 option_map (ov, f) =
   case+ ov of Some v => Some (f v) | None () => None
 // end of [option_map]
-
-(* ****** ****** *)
-
-// [option.sats] is already loaded by a call to [pervasive_load]
-staload _(*anonymous*) = "prelude/SATS/option.sats" // this forces that the static
-// loading function for [option.sats] is to be called at run-time
-// this is really needed only if some datatypes are declared in [option.sats]
 
 (* ****** ****** *)
 

@@ -39,6 +39,10 @@
 
 (* ****** ****** *)
 
+staload "prelude/SATS/lazy.sats"
+
+(* ****** ****** *)
+
 (*
 
 local // for call-by-need lazy evaluation

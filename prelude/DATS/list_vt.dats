@@ -46,6 +46,10 @@
 
 (* ****** ****** *)
 
+staload "prelude/SATS/list_vt.sats"
+
+(* ****** ****** *)
+
 implement list_vt_length_is_nonnegative (xs) = begin
   case+ xs of list_vt_cons _ => fold@ xs | list_vt_nil () => fold@ xs
 end // end of [list_vt_length_is_nonnegative]
@@ -551,13 +555,6 @@ in
 end // end of [list_vt_quicksort]
 
 end // end of [local]
-
-(* ****** ****** *)
-
-// [list_vt.sats] is already loaded by a call to [pervasive_load]
-staload _(*anonymous*) = "prelude/SATS/list_vt.sats" // this forces that the static
-// loading function for [list_vt.sats] is to be called at run-time
-// this is really needed only if some datatypes are declared in [list_vt.sats]
 
 (* ****** ****** *)
 

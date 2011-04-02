@@ -39,6 +39,10 @@
 
 (* ****** ****** *)
 
+staload "prelude/SATS/sizetype.sats"
+
+(* ****** ****** *)
+
 implement
 divmod_size1_size1
   {m,n} (m, n, r) = let

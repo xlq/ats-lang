@@ -46,6 +46,10 @@
 
 (* ****** ****** *)
 
+staload "prelude/SATS/array.sats"
+
+(* ****** ****** *)
+
 #define i2sz size1_of_int1
 
 (* ****** ****** *)

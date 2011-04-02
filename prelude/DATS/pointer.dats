@@ -44,6 +44,10 @@
 #define ATS_DYNLOADFLAG 0 // loaded by [ats_main_prelude]
 
 (* ****** ****** *)
+
+staload "prelude/SATS/pointer.sats"
+
+(* ****** ****** *)
 //
 // HX: this is a proof function
 //

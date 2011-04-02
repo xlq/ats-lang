@@ -39,6 +39,10 @@
 
 (* ****** ****** *)
 
+staload "prelude/SATS/arith.sats"
+
+(* ****** ****** *)
+
 implement mul_isfun (pf1, pf2) = let
   prfun isfun {m:nat;n:int} {p1,p2:int} .<m>.
     (pf1: MUL (m, n, p1), pf2: MUL (m, n, p2)): [p1==p2] void =

@@ -45,6 +45,10 @@
 
 (* ****** ****** *)
 
+staload "prelude/SATS/matrix.sats"
+
+(* ****** ****** *)
+
 #define i2sz size1_of_int1
 
 (* ****** ****** *)
@@ -512,13 +516,6 @@ matrix_iforeach_cloref
 in
   // empty
 end // end of [matrix_iforeach_cloref]
-
-(* ****** ****** *)
-
-// [matrix.sats] is already loaded by a call to [pervasive_load]
-staload _(*anonymous*) = "prelude/SATS/matrix.sats" // this forces that the static
-// loading function for [matrix.sats] is to be called at run-time
-// this is really needed only if some datatypes are declared in [matrix.sats]
 
 (* ****** ****** *)
 

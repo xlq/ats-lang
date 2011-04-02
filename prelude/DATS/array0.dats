@@ -42,11 +42,12 @@
 #define i2sz size1_of_int1
 
 (* ****** ****** *)
-
-// array0 implementation
-
+//
+// HX: array0 implementation
+//
 (* ****** ****** *)
 
+staload "prelude/SATS/array0.sats"
 staload _(*anonymous*) = "prelude/DATS/reference.dats"
 
 (* ****** ****** *)
@@ -228,13 +229,6 @@ array0_tabulate (asz, f) = let
 in
   array0_make_arrsz {a} {n0} @(pf_gc, pf_arr | p_arr, asz)
 end // end of [array0_tabulate]
-
-(* ****** ****** *)
-
-// [array0.sats] is already loaded by a call to [pervasive_load]
-staload _(*anonymous*) = "prelude/SATS/array0.sats" // this forces that the static
-// loading function for [array0.sats] is to be called at run-time
-// this is really needed only if some datatypes are declared in [array0.sats]
 
 (* ****** ****** *)
 

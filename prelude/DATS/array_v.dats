@@ -39,6 +39,10 @@
 
 (* ****** ****** *)
 
+staload "prelude/SATS/array.sats"
+
+(* ****** ****** *)
+
 implement
 array_v_sing {a}
   (pf) = array_v_cons {a} (pf, array_v_nil ())

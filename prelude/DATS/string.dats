@@ -38,6 +38,10 @@
 #define ATS_DYNLOADFLAG 0 // loaded by [main_prelude]
 
 (* ****** ****** *)
+
+staload "prelude/SATS/string.sats"
+
+(* ****** ****** *)
 //
 // HX: declared in [prelude/SATS/string.sats]
 //

@@ -43,6 +43,10 @@ staload "libc/SATS/stdarg.sats"
 
 (* ****** ****** *)
 
+staload "prelude/SATS/printf.sats"
+
+(* ****** ****** *)
+
 %{^
 #define ATSPRE_SPRINTF_GUESS 16
 %} // end of [%{]

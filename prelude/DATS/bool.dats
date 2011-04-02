@@ -39,6 +39,10 @@
 
 (* ****** ****** *)
 
+staload "prelude/SATS/bool.sats"
+
+(* ****** ****** *)
+
 %{$
 
 ats_void_type

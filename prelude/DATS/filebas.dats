@@ -53,6 +53,10 @@
 
 (* ****** ****** *)
 
+staload "prelude/SATS/filebas.sats"
+
+(* ****** ****** *)
+
 (*
 //
 // HX: implemented in [prelude/DATS/basics.dats]

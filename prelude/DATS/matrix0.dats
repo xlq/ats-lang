@@ -34,20 +34,21 @@
 (* author: Hongwei Xi (hwxi AT cs DOT bu DOT edu) *)
 
 (* ****** ****** *)
+//
+// matrix0 implementation
+//
+(* ****** ****** *)
 
 #define ATS_DYNLOADFLAG 0 // loaded by [ats_main_prelude]
 
 (* ****** ****** *)
 
-#define i2sz size1_of_int1
-
-(* ****** ****** *)
-
-// matrix0 implementation
-
-(* ****** ****** *)
-
+staload "prelude/SATS/matrix0.sats"
 staload _(*anonymous*) = "prelude/DATS/reference.dats"
+
+(* ****** ****** *)
+
+#define i2sz size1_of_int1
 
 (* ****** ****** *)
 

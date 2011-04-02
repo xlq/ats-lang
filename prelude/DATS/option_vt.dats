@@ -39,6 +39,10 @@
 
 (* ****** ****** *)
 
+staload "prelude/SATS/option_vt.sats"
+
+(* ****** ****** *)
+
 implement{a}
 option_vt_free (x) = 
   case+ x of ~Some_vt _ => () | ~None_vt _ => ()

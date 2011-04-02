@@ -39,6 +39,10 @@
 
 (* ****** ****** *)
 
+staload "prelude/SATS/float.sats"
+
+(* ****** ****** *)
+
 //
 // The following kind of code duplication should really be avoided!
 //
