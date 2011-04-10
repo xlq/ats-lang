@@ -943,14 +943,19 @@ fn Anairiats_libats_dir_copy () = let
   val DSTROOTlibats = DSTROOT ++ "libats/"
   val () = mkdir_exn (DSTROOTlibats, DIRmode)
   val () = libdir_copy (SRCROOTlibats, DSTROOTlibats)
-  // the code for sml basis library lexer is in [libats/smlbas]
+  // the code for [libats/ngc]
+  val SRCROOTlibats_ngc = SRCROOTlibats ++ "ngc/"
+  val DSTROOTlibats_ngc = DSTROOTlibats ++ "ngc/"
+  val () = mkdir_exn (DSTROOTlibats_ngc, DIRmode)
+  val () = libdir_copy (SRCROOTlibats_ngc, DSTROOTlibats_ngc)
+  // the code for sml basis library is in [libats/smlbas]
   val SRCROOTlibats_smlbas = SRCROOTlibats ++ "smlbas/"
   val DSTROOTlibats_smlbas = DSTROOTlibats ++ "smlbas/"
   val () = mkdir_exn (DSTROOTlibats_smlbas, DIRmode)
-  val () = libdir_copy (SRCROOTlibats_smlbas, DSTROOTlibats_smlbas)
   val () = fcopy_exn (
     SRCROOTlibats_smlbas++".libfiles", DSTROOTlibats_smlbas++".libfiles"
   ) (* end of [val] *)
+  val () = libdir_copy (SRCROOTlibats_smlbas, DSTROOTlibats_smlbas)
   // the code for ATS lexer is in [libats/lex]
   val SRCROOTlibatslex = SRCROOTlibats ++ "lex/"
   val DSTROOTlibatslex = DSTROOTlibats ++ "lex/"

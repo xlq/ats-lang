@@ -9,7 +9,7 @@
 /* ****** ****** */
 
 /*
-** Time of Generation: Sat Mar 19 23:06:43 2011
+** Time of Generation: Sun Apr 10 14:50:47 2011
 */
 
 /* ****** ****** */
@@ -2582,7 +2582,7 @@ i0nvqua
 i0nvmet
   : /*(empty)*/  { $$ = s0explstopt_none() ; }
   | DOTLT s0expseq GTDOT  { $$ = s0explstopt_some($2) ; }
-  | DOTLTGTDOT  { $$ = s0explstopt_some(s0explstopt_none()) ; }
+  | DOTLTGTDOT  { $$ = s0explstopt_some(s0explst_nil()) ; }
 ; /* i0nvmet */
 
 i0nvarg

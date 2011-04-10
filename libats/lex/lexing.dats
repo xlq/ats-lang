@@ -155,15 +155,19 @@ local
 //
 // staload "libc/SATS/stdio.sats"
 //
-extern fun fclose_exn {m:file_mode} {l:addr}
-  (pf: FILE m @ l | p: ptr l):<!exnref> void
-  = "atslib_fclose_exn"
+extern
+fun fclose_exn
+  {m:file_mode} {l:addr}
+  (pf: FILE m @ l | p: ptr l): void = "mac#atslib_fclose_exn"
+// end of [fclose_exn]
 
-extern fun fgetc_err {m:file_mode}
-  (pf: file_mode_lte (m, r) | f: &FILE m): int
-  = "atslib_fgetc_err"
+extern
+fun fgetc_err
+  {m:file_mode}
+  (pf: file_mode_lte (m, r) | f: &FILE m) : int = "mac#atslib_fgetc_err"
+// end of [fgetc_err]
 
-extern fun getchar (): int = "atslib_getchar"
+extern fun getchar (): int = "mac#atslib_getchar"
 
 in // in of [local]
 
