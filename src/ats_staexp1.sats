@@ -189,8 +189,10 @@ fun s1rtpol_make (_: loc_t, _: s1rt, pol: int): s1rtpol
 
 (* ****** ****** *)
 
-datatype d1atarg_node =
+datatype
+d1atarg_node =
   | D1ATARGsrt of s1rtpol | D1ATARGidsrt of (sym_t, s1rtpol)
+// end of [d1atarg_node]
 
 typedef d1atarg = '{
   d1atarg_loc= loc_t, d1atarg_node= d1atarg_node

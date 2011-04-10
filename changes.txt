@@ -33,6 +33,9 @@ ats-lang-anairiats-0.2.4:
 20: adding contrib/linux to support linux kernel programming (very long term)
 21: adding libats/ngc/deque_arr
 22: basing libats/linqueue_arr and libats/linstack_arr on libats/ngc/deque_arr
+24. ATSstaticdec() and ATSglobaldec() are now employed in emitted C code
+    for indicating whether a function is global or static.
+25. reloading a pervasive .sats file is allowed; doing so is like a no-op.
 
 ########################################################################
 
@@ -67,8 +70,6 @@ ats-lang-anairiats-0.2.3:
 22. [ptrself] is introduced as a named type of the name "ats_ptrself_type"
 23. The '$fun' suffix is no longer in use. If a function is declared as a
     'val', then the function is now treated as an ordinary value.
-24. ATSstaticdec() and ATSglobaldec() are now employed in emitted C code
-    for indicating whether a function is global or static.
 
 ########################################################################
 

@@ -700,7 +700,7 @@ local
 typedef dynconset = $Set.set_t (d2con_t)
 assume dynconset_t = dynconset
 
-val the_dynconset = ref_make_elt<dynconset> ($Set.set_nil) 
+val the_dynconset = ref_make_elt<dynconset> ($Set.set_nil)
 
 in // in of [local]
 
@@ -729,7 +729,7 @@ assume dyncstset_t = dyncstset
 
 viewtypedef dyncstsetlst = List_vt (dyncstset)
 
-val the_dyncstset = ref_make_elt<dyncstset> ($Set.set_nil) 
+val the_dyncstset = ref_make_elt<dyncstset> ($Set.set_nil)
 val the_dyncstsetlst = ref_make_elt<dyncstsetlst> (list_vt_nil ())
 
 fn dyncstset_add (

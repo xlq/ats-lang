@@ -45,23 +45,33 @@
 #include "libc/CATS/stdlib.cats"
 %} // end of [%{^]
 
+//
 // staload "libc/SATS/stdio.sats"
-
-extern fun fopen_exn {m:file_mode}
-  (s: string, m: file_mode m): [l:addr] (FILE m @ l | ptr l)
+//
+extern
+fun fopen_exn
+  {m:file_mode} (
+  s: string, m: file_mode m
+) : [l:addr] (FILE m @ l | ptr l)
   = "atslib_fopen_exn"
+// end of [fun]
 
-extern fun fclose_exn {m:file_mode} {l:addr}
-  (pf: FILE m @ l | p: ptr l):<!exnref> void
-  = "atslib_fclose_exn"
+extern
+fun fclose_exn
+  {m:file_mode} {l:addr} (
+  pf: FILE m @ l | p: ptr l
+) :<!exnref> void = "atslib_fclose_exn"
 
-extern fun fgetc_err {m:file_mode}
-  (pf: file_mode_lte (m, r) | f: &FILE m): int
-  = "atslib_fgetc_err"
+extern
+fun fgetc_err
+  {m:file_mode} (
+  pf: file_mode_lte (m, r) | f: &FILE m
+) : int = "mac#atslib_fgetc_err"
 
-extern fun fputc_exn {m:file_mode}
-  (pf: file_mode_lte (m, w) | c: char, f: &FILE m): void
-  = "atslib_fputc_exn"
+extern
+fun fputc_exn {m:file_mode} (
+  pf: file_mode_lte (m, w) | c: char, f: &FILE m
+) : void = "atslib_fputc_exn"
 
 //
 // staload "libc/SATS/stdlib.sats"

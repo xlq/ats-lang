@@ -188,7 +188,7 @@ castfn string1_of_strbuf
   {n:nat} (bufptr: strbufptr_gc n):<> string n
 
 castfn strbuf_of_string1 {n:nat} (str: string n)
-  :<> [m:int | n < m] [l:addr] (vbox (strbuf (m, n) @ l) | ptr l)
+  :<> [m:int;l:addr | m > n] (vbox (strbuf (m, n) @ l) | ptr l)
 // end of [strbuf_of_string1]
 
 (* ****** ****** *)
@@ -205,9 +205,9 @@ overload < with lt_string_string
 
 fun lt_string_string__main
   {v:view} {l1,l2:addr} (
-    pf: !v, pf1: vsubr_p (strbuf_v l1, v), pf2: vsubr_p (strbuf_v l2, v)
-  | p1: ptr l1, p2: ptr l2
-  ) :<> bool = "atspre_lt_string_string"
+  pf: !v, pf1: vsubr_p (strbuf_v l1, v), pf2: vsubr_p (strbuf_v l2, v)
+| p1: ptr l1, p2: ptr l2
+) :<> bool = "atspre_lt_string_string"
 // end of [lt_string_string__main]
 
 (* ****** ****** *)

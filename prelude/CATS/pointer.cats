@@ -67,7 +67,8 @@ atspre_ptr_isnot_null (ats_ptr_type p) {
 /* ****** ****** */
 
 //
-// HX-2010-04-19: this one is to be used by various "free_null" functions
+// HX-2010-04-19:
+// this one is to be used by various "free_null" functions
 //
 ATSinline()
 ats_void_type

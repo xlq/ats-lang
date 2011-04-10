@@ -1435,6 +1435,14 @@ fun s0vararg_seq (seq: s0arglst):  s0vararg = "s0vararg_seq"
 
 (* ****** ****** *)
 
+typedef s0elop = '{
+  s0elop_loc= loc_t, s0elop_knd= int
+} // end of [s0elop]
+
+fun s0elop_make (knd: int, t: t0kn): s0elop = "s0elop_make"
+
+(* ****** ****** *)
+
 datatype s0exparg =
   | S0EXPARGone (* {..} *)
   | S0EXPARGall (* {...} *)
@@ -1446,14 +1454,6 @@ typedef s0expargopt = Option s0exparg
 fun s0exparg_one ():  s0exparg = "s0exparg_one"
 fun s0exparg_all ():  s0exparg = "s0exparg_all"
 fun s0exparg_seq (seq: s0explst):  s0exparg = "s0exparg_seq"
-
-(* ****** ****** *)
-
-typedef s0elop = '{
-  s0elop_loc= loc_t, s0elop_knd= int
-} // end of [s0elop]
-
-fun s0elop_make (knd: int, t: t0kn): s0elop = "s0elop_make"
 
 (* ****** ****** *)
 
@@ -1567,9 +1567,9 @@ fun labp0atlst_cons (l: l0ab, x: p0at, xs: labp0atlst): labp0atlst
 (* ****** ****** *)
 
 datatype f0arg_node =
+  | F0ARGdyn of p0at
   | F0ARGsta1 of s0qualst
   | F0ARGsta2 of s0arglst
-  | F0ARGdyn of p0at
   | F0ARGmet of s0explst
 // end of [f0arg_node]
 
@@ -1623,9 +1623,8 @@ typedef loopi0nv = '{
 typedef loopi0nvopt = Option loopi0nv
 
 fun loopi0nv_make (
-    qua: s0qualstopt, met: s0explstopt, arg: i0nvarglst, res: i0nvresstate
-  ) : loopi0nv = "loopi0nv_make"
-// end of [loopi0nv_make]
+  qua: s0qualstopt, met: s0explstopt, arg: i0nvarglst, res: i0nvresstate
+) : loopi0nv = "loopi0nv_make" // end of [loopi0nv_make]
 
 (* ****** ****** *)
 
@@ -1726,9 +1725,9 @@ datatype d0exp_node =
   | D0Escaseof of (* static caseof *)
       (casehead, s0exp, sc0laulst)
   | D0Esel_lab of (* dot label selection *)
-      (int (*ptr*), lab_t)
+      (int (*non/ptr*), lab_t)
   | D0Esel_ind of (* dot index selection *)
-      (int (*ptr*), d0explstlst)
+      (int (*non/ptr*), d0explstlst)
   | D0Eseq of (* sequencing *)
       d0explst
   | D0Esexparg of (* static expression sequence *)
@@ -2074,13 +2073,15 @@ fun d0exp_foldat
   (t_foldat: t0kn, _: d0explst): d0exp = "d0exp_foldat"
 // end of [d0exp_foldat]
 
-fun d0exp_for_itp (
-  hd: loophead, itp: initestpost, body: d0exp
-) : d0exp = "d0exp_for_itp"
-
 fun d0exp_freeat
   (t_freeat: t0kn, _: d0explst): d0exp = "d0exp_freeat"
 // end of [d0exp_freeat]
+
+(* ****** ****** *)
+
+fun d0exp_for_itp (
+  hd: loophead, itp: initestpost, body: d0exp
+) : d0exp = "d0exp_for_itp"
 
 (* ****** ****** *)
 

@@ -3576,6 +3576,7 @@ val () = symbol_close (pf | exts0exp)
 s0expelt /* type for array or list elements */
   : /* empty */                         { $$ = s0expopt_none () ; }
   | LBRACE s0exp RBRACE                 { $$ = s0expopt_some ($2) ; }
+  | LBRACKET s0exp RBRACEKET            { $$ = s0expopt_some ($2) ; }
 ; /* end of [s0expelt] */
 *)
 fun s0expelt_proc
@@ -3586,6 +3587,8 @@ val (pf | ()) = symbol_open (s0expelt)
 val gr = grmrule_append ()
 val () = grmrule_set_action (gr, "{ $$ = s0expopt_none () ; }")
 val gr = grmrule_append ($lst_t {symbol} (tupz! LBRACE s0exp RBRACE))
+val () = grmrule_set_action (gr, "{ $$ = s0expopt_some ($2) ; }")
+val gr = grmrule_append ($lst_t {symbol} (tupz! LBRACKET s0exp RBRACKET))
 val () = grmrule_set_action (gr, "{ $$ = s0expopt_some ($2) ; }")
 //
 val () = symbol_close (pf | s0expelt)
@@ -6104,7 +6107,7 @@ val () = symbol_close (pf | i0nvqua)
 i0nvmet
   : /* empty */                         { $$ = s0explstopt_none() ; }
   | DOTLT s0expseq GTDOT                { $$ = s0explstopt_some($2) ; }
-  | DOTLTGTDOT                          { $$ = s0explstopt_some(s0explstopt_none()) ; }
+  | DOTLTGTDOT                          { $$ = s0explstopt_some(s0explst_nil()) ; }
 ; /* end of [i0nvmet] */ /* end of [i0nvmet] */
 *)
 fun i0nvmet_proc (): void = () where {
@@ -6116,7 +6119,7 @@ val () = grmrule_set_action (gr, "{ $$ = s0explstopt_none() ; }")
 val gr = grmrule_append ($lst_t {symbol} (tupz! DOTLT s0expseq GTDOT))
 val () = grmrule_set_action (gr, "{ $$ = s0explstopt_some($2) ; }")
 val gr = grmrule_append ($lst_t {symbol} (tupz! DOTLTGTDOT))
-val () = grmrule_set_action (gr, "{ $$ = s0explstopt_some(s0explstopt_none()) ; }")
+val () = grmrule_set_action (gr, "{ $$ = s0explstopt_some(s0explst_nil()) ; }")
 //
 val () = symbol_close (pf | i0nvmet)
 //

@@ -84,7 +84,7 @@ fun copy_from_user {n:nat}
 //
 fun strlen_user
   {n:nat} (
-  str: string n // the last NUL is counted!
+  str: !READ(string n) // the last NUL is counted!
 ) : size_t (n+1)
   = "mac#atsctrb_linux_strlen_user"
 

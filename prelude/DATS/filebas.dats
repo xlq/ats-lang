@@ -98,17 +98,18 @@ macdef EOF = $extval (int, "EOF")
 
 (* ****** ****** *)
 
-extern fun feof0 (f: FILEref):<> int = "atslib_feof"
+extern
+fun feof0 (f: FILEref):<> int = "mac#atslib_feof"
 
 extern
-fun fgetc0_err (fil: FILEref):<> int = "atslib_fgetc_err"
+fun fgetc0_err (fil: FILEref):<> int = "mac#atslib_fgetc_err"
 // end of [fgetc0_err]
 
 extern
-fun fgetc1_err {m:file_mode} {l:addr}
-  (pf_mod: file_mode_lte (m, r) | fil: &FILE m):<> int
-  = "atslib_fgetc_err"
-// end of [fgetc1_err]
+fun fgetc1_err
+  {m:file_mode} {l:addr} (
+  pf_mod: file_mode_lte (m, r) | fil: &FILE m
+) :<> int = "mac#atslib_fgetc_err"
 
 extern
 fun fclose0_exn (fil: FILEref):<!exn> void = "atslib_fclose_exn"

@@ -949,7 +949,8 @@ implement s0arglstlst_cons_ide (id, xss) =
 
 (* static patterns *)
 
-implement sp0at_con (qid, xs, t_end) = let
+implement
+sp0at_con (qid, xs, t_end) = let
   val loc = combine (qid.sqi0de_loc, t_end.t0kn_loc)
 in '{
   sp0at_loc= loc, sp0at_node= SP0Tcon (qid, xs)
@@ -1247,7 +1248,9 @@ impqi0de_make_none (qid) = '{
 , impqi0de_arg= gtlt_t1mps0expseqseq_nil ()
 } // end of [impqi0de_make_none]
 
-implement impqi0de_make_some (qid, arg, args, t_gt) = let
+implement
+impqi0de_make_some
+  (qid, arg, args, t_gt) = let
   val loc_qid = qid.tmpqi0de_loc
   val loc_qid_end = $Loc.location_end_make loc_qid
   val loc = combine (loc_qid, t_gt.t0kn_loc)
@@ -1768,15 +1771,15 @@ implement f0arglst_cons(x, xs) = cons (x, xs)
 
 (* ****** ****** *)
 
-implement s0exparg_one () = S0EXPARGone ()
-implement s0exparg_all () = S0EXPARGall ()
-implement s0exparg_seq (s0es) = S0EXPARGseq s0es
-
-(* ****** ****** *)
-
 implement s0elop_make (knd, t) = '{
   s0elop_loc= t.t0kn_loc, s0elop_knd= knd
 }
+
+(* ****** ****** *)
+
+implement s0exparg_one () = S0EXPARGone ()
+implement s0exparg_all () = S0EXPARGall ()
+implement s0exparg_seq (s0es) = S0EXPARGseq s0es
 
 (* ****** ****** *)
 
@@ -2231,25 +2234,33 @@ in
   | nil () => d0exp_empty (loc)
 end // end of [d0exp_seq]
 
-implement d0exp_sexparg (t_beg, s0a, t_end) = let
+implement
+d0exp_sexparg
+  (t_beg, s0a, t_end) = let
   val loc = combine (t_beg.t0kn_loc, t_end.t0kn_loc)
 in '{
   d0exp_loc= loc, d0exp_node= D0Esexparg s0a
 } end // end of [d0exp_sexparg]
 
-implement d0exp_sif (hd, s0e_cond, d0e_then, d0e_else) = let
+implement
+d0exp_sif (
+  hd, s0e_cond, d0e_then, d0e_else
+) = let
   val t_sif = hd.ifhead_tok
   val loc = combine (t_sif.t0kn_loc, d0e_else.d0exp_loc)
 in '{
   d0exp_loc= loc, d0exp_node= D0Esif (hd, s0e_cond, d0e_then, d0e_else)
 } end // end of [d0exp_sif]
 
-implement d0exp_string (s) = '{
+implement
+d0exp_string (s) = '{
   d0exp_loc= s.s0tring_loc
 , d0exp_node= D0Estring (s.s0tring_val, s.s0tring_len)
 } // end of [d0exp_string]
 
-implement d0exp_tmpid (qid, arg, args, t_gt) = let
+implement
+d0exp_tmpid
+  (qid, arg, args, t_gt) = let
   val loc_qid = qid.tmpqi0de_loc
   val loc_qid_end = $Loc.location_end_make loc_qid
   val loc = combine (loc_qid, t_gt.t0kn_loc)
@@ -2360,11 +2371,13 @@ end // end of [initestpost_make]
 
 // ------ ------
 
-implement m0atch_make_none (d0e) = '{
+implement
+m0atch_make_none (d0e) = '{
   m0atch_loc= d0e.d0exp_loc, m0atch_exp= d0e, m0atch_pat= p0atopt_none ()
 } // end of [m0atch_make_none]
 
-implement m0atch_make_some (d0e, p0t) = let
+implement
+m0atch_make_some (d0e, p0t) = let
   val loc = combine (d0e.d0exp_loc, p0t.p0at_loc)
 in '{
   m0atch_loc= d0e.d0exp_loc, m0atch_exp= d0e, m0atch_pat= p0atopt_some p0t
@@ -2421,9 +2434,10 @@ implement tryhead_make (t_try) = '{
   tryhead_tok= t_try, tryhead_inv= i0nvresstate_none ()
 } // end of [tryhead_make]
 
-// ------ ------
+(* ****** ****** *)
 
-implement c0lau_make (gp0t, seq, neg, body) = let
+implement
+c0lau_make (gp0t, seq, neg, body) = let
   val loc = combine (gp0t.guap0at_loc, body.d0exp_loc)
 in '{
   c0lau_loc= loc
@@ -2436,9 +2450,8 @@ in '{
 implement c0laulst_nil () = nil ()
 implement c0laulst_cons (x, xs) = cons (x, xs)
 
-// ------ ------
-
-implement sc0lau_make (sp0t, d0e) = let
+implement
+sc0lau_make (sp0t, d0e) = let
   val loc = combine (sp0t.sp0at_loc, d0e.d0exp_loc)
 in '{
   sc0lau_loc= loc, sc0lau_pat= sp0t, sc0lau_body= d0e
@@ -2567,7 +2580,8 @@ implement v0ardeclst_cons (x, xs) = cons (x, xs)
 
 (* ****** ****** *)
 
-implement m0acdef_make (id, arg, def) = let
+implement
+m0acdef_make (id, arg, def) = let
   val loc = combine (id.i0de_loc, def.d0exp_loc)
 in '{
   m0acdef_loc= loc
@@ -2581,7 +2595,9 @@ implement m0acdeflst_cons (x, xs) = cons (x, xs)
 
 (* ****** ****** *)
 
-implement i0mpdec_make (qid, arg, res, def) = let
+implement
+i0mpdec_make
+  (qid, arg, res, def) = let
   val loc = combine (qid.impqi0de_loc, def.d0exp_loc)
 in '{
   i0mpdec_loc= loc
@@ -3015,7 +3031,8 @@ end // end of [local]
 
 (* ****** ****** *)
 
-implement d0ec_fundecs (k, arg, x0, xs) = let
+implement
+d0ec_fundecs (k, arg, x0, xs) = let
   fun aux_loc
     (x0: f0undec, x: f0undec, xs: f0undeclst): loc_t =
     case+ xs of
@@ -3031,33 +3048,40 @@ in '{
 
 (* ****** ****** *)
 
-implement d0ec_vardecs (x0, xs) = let
-  fun aux_loc
-    (x0: v0ardec, x: v0ardec, xs: v0ardeclst): loc_t =
+implement
+d0ec_vardecs (x0, xs) = let
+  fun aux_loc (
+    x0: v0ardec, x: v0ardec, xs: v0ardeclst
+  ) : loc_t =
     case+ xs of
     | cons (x, xs) => aux_loc (x0, x, xs)
     | nil () => combine (x0.v0ardec_loc, x.v0ardec_loc)
   val loc = case+ xs of
     | cons (x, xs) => aux_loc (x0, x, xs) | nil () => x0.v0ardec_loc
-in
-  '{ d0ec_loc= loc, d0ec_node= D0Cvardecs (x0, xs) } 
-end // end of [d0ec_vardecs]
+  // end of [val]
+in '{
+  d0ec_loc= loc, d0ec_node= D0Cvardecs (x0, xs)
+} end // end of [d0ec_vardecs]
 
 (* ****** ****** *)
 
-implement d0ec_macdefs (knd, x0, xs) = let
-  // knd: 0/1/2 => short/long/long rec
-
+implement
+d0ec_macdefs
+  (knd, x0, xs) = let
+//
+// knd: 0/1/2 => short/long/long rec
+//
   fun aux_loc
     (x0: m0acdef, x: m0acdef, xs: m0acdeflst): loc_t =
     case+ xs of
     | cons (x, xs) => aux_loc (x0, x, xs)
     | nil () => combine (x0.m0acdef_loc, x.m0acdef_loc)
-
+  // end of [aux_loc]
+//
   val loc = (case+ xs of
     | cons (x, xs) => aux_loc (x0, x, xs) | nil () => x0.m0acdef_loc
-  ) : loc_t
-
+  ) : loc_t // end of [val]
+//
   val () = if knd < 0 then begin // error checking
     prerr_loc_error0 (loc);
     prerr ": only a macro in long form can be recursively defined";
@@ -3065,14 +3089,18 @@ implement d0ec_macdefs (knd, x0, xs) = let
     prerr_newline ();
     $Err.abort {void} ()
   end // end of [val]
+//
 in '{
   d0ec_loc= loc, d0ec_node= D0Cmacdefs (knd, x0, xs)
 } end // end of [d0ec_macdefs]
 
 (* ****** ****** *)
-
+//
 // [d0ecarg: s0arglstlst]
-implement d0ec_impdec (t_implement, i0mparg, i0mpdec) = let
+//
+implement
+d0ec_impdec
+  (t_implement, i0mparg, i0mpdec) = let
   val loc = combine (t_implement.t0kn_loc, i0mpdec.i0mpdec_loc)
 in '{
   d0ec_loc= loc, d0ec_node= D0Cimpdec (i0mparg, i0mpdec)
@@ -3080,7 +3108,8 @@ in '{
 
 (* ****** ****** *)
 
-implement d0ec_local
+implement
+d0ec_local
   (t_local, d0cs1, d0cs2, t_end) = let
   val loc = combine (t_local.t0kn_loc, t_end.t0kn_loc)
 in '{
@@ -3089,7 +3118,8 @@ in '{
 
 (* ****** ****** *)
 
-implement d0ec_guadec (kndtok, gd0c) = let
+implement
+d0ec_guadec (kndtok, gd0c) = let
   val SRPIFKINDTOK (knd, t_srpif) = kndtok
   val loc = combine (t_srpif.t0kn_loc, gd0c.guad0ec_loc)
 in '{

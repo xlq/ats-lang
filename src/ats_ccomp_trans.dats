@@ -68,6 +68,7 @@ staload _(*anonymous*) = "ats_reference.dats"
 (* ****** ****** *)
 
 staload _(*anonymous*) = "ats_map_lin.dats"
+staload _(*anonymous*) = "ats_set_fun.dats"
 
 (* ****** ****** *)
 

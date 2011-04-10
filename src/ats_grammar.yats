@@ -1988,6 +1988,7 @@ exts0exp
 s0expelt
   : /*(empty)*/  { $$ = s0expopt_none () ; }
   | LBRACE s0exp RBRACE  { $$ = s0expopt_some ($2) ; }
+  | LBRACKET s0exp RBRACKET  { $$ = s0expopt_some ($2) ; }
 ; /* s0expelt */
 
 s0arrind

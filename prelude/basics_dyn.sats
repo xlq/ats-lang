@@ -77,6 +77,8 @@ symintr ssint_of ussint_of // signed/unsigned short short integers
 symintr float_of double_of ldouble_of // single/double/long double
 symintr ptr_of ptrnul_of // many, many, many, ...
 
+symintr encode decode // many, many, many
+
 (* ****** ****** *)
 
 praxi cleanup_top {a:viewt@ype} (x: a?): void
@@ -193,7 +195,9 @@ fun exit_prerrf
 // the function should be used in a position
 // where it is deadcode!
 //
-fun assertfalse ():<!exn> [false] void = "atspre_assertfalse"
+fun assertfalse
+  ():<!exn> [false] void = "atspre_assertfalse"
+// end of [assertfalse]
 
 (* ****** ****** *)
 

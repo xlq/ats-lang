@@ -3177,7 +3177,7 @@ i0nvqua
 i0nvmet
   : /* empty */                         { $$ = s0explstopt_none() ; }
   | DOTLT s0expseq GTDOT                { $$ = s0explstopt_some($2) ; }
-  | DOTLTGTDOT                          { $$ = s0explstopt_some(s0explstopt_none()) ; }
+  | DOTLTGTDOT                          { $$ = s0explstopt_some(s0explst_nil()) ; }
 ; /* end of [i0nvmet] */ /* end of [i0nvmet] */
 
 i0nvarg

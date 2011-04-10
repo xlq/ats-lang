@@ -40,12 +40,15 @@ typedef cmp_t (a:t@ype) = (a, a) -<fun> Sgn
 
 (* ****** ****** *)
 
-datatype avl (a:t@ype+, int (*height*), int (*size*)) =
+datatype avl (
+  a:t@ype+, int (*height*), int (*size*)
+) =
   | E (a, 0, 0)
   | {lh,ls,rh,rs:nat | rh <= lh; lh <= rh+1}
-      Bl(a, 1+lh, 1+ls+rs) of (a, int(1+lh), avl (a, lh, ls), avl (a, rh, rs))
+    Bl(a, 1+lh, 1+ls+rs) of (a, int(1+lh), avl (a, lh, ls), avl (a, rh, rs))
   | {lh,ls,rh,rs:nat | lh <= rh; rh <= lh+1}
-      Br(a, 1+rh, 1+ls+rs) of (a, int(1+rh), avl (a, lh, ls),  avl (a, rh, rs))
+    Br(a, 1+rh, 1+ls+rs) of (a, int(1+rh), avl (a, lh, ls),  avl (a, rh, rs))
+// end of [avl]
 
 typedef avl_dec (a:t@ype, h:int, s:int) = [h1:nat | h1 <= h; h <= h1+1] avl (a, h1, s)
 typedef avl_inc (a:t@ype, h:int, s:int) = [h1:nat | h <= h1; h1 <= h+1] avl (a, h1, s)

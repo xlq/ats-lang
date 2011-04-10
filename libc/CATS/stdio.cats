@@ -82,11 +82,7 @@ atslib_clearerr
 
 /* --------------------------------------- */
 
-ATSinline()
-ats_int_type
-atslib_fclose_err
-  (ats_ptr_type fil) { return fclose((FILE*)fil) ; }
-// end of [atslib_fclose_err]
+#define atslib_fclose_err close
 
 ATSinline()
 ats_void_type
@@ -122,31 +118,12 @@ atslib_fclose_stderr() {
 
 /* --------------------------------------- */
 
-ATSinline()
-ats_int_type
-atslib_feof (
-  ats_ptr_type fil
-) {
-  return feof((FILE*)fil) ;
-}
-
-ATSinline()
-ats_int_type
-atslib_ferror(
-  ats_ptr_type fil
-) {
-  return ferror((FILE*)fil) ;
-}
+#define atslib_feof feof
+#define atslib_ferror ferror
 
 /* --------------------------------------- */
 
-ATSinline()
-ats_int_type
-atslib_fflush_err(
-  ats_ptr_type fil
-) {
-  return fflush((FILE*)fil) ;
-}
+#define atslib_fflush_err fflush
 
 ATSinline()
 ats_void_type
@@ -172,9 +149,7 @@ atslib_fflush_stdout (void) {
 
 /* --------------------------------------- */
 
-ATSinline()
-ats_int_type
-atslib_fgetc_err (ats_ptr_type fil) { return fgetc((FILE*)fil) ; }
+#define atslib_fgetc_err fgetc
 
 ATSinline()
 ats_int_type
@@ -186,15 +161,7 @@ atslib_getchar () {
 
 /* --------------------------------------- */
 
-ATSinline()
-ats_ptr_type
-atslib_fgets_err (
-  ats_ptr_type buf
-, ats_int_type n
-, ats_ptr_type fil
-) {
-  return fgets((char*)buf, (int)n, (FILE*)fil) ;
-}
+#define atslib_fgets_err fgets
 
 ATSinline()
 ats_void_type
@@ -218,19 +185,15 @@ atslib_fgets_exn (
 
 /* --------------------------------------- */
 
-ATSinline()
-ats_int_type
-atslib_fileno(ats_ptr_type fil) { return fileno((FILE*)fil) ; }
+#define atslib_fgetpos fgetpos
 
 /* --------------------------------------- */
 
-ATSinline()
-ats_ptr_type
-atslib_fopen_err (
-  ats_ptr_type name, ats_ptr_type mode
-) {
-  return fopen((char*)name, (char*)mode) ;
-}
+#define atslib_fileno fileno
+
+/* --------------------------------------- */
+
+#define atslib_fopen_err fopen
 
 ATSinline()
 ats_ptr_type
@@ -248,13 +211,7 @@ atslib_fopen_exn (
 
 /* --------------------------------------- */
 
-ATSinline()
-ats_int_type
-atslib_fputc_err (
-  ats_char_type c, ats_ptr_type fil
-) {
-  return fputc((unsigned char)c, (FILE*)fil) ;
-} // end of [atslib_fputc_err]
+#define atslib_fputc_err fputc
 
 ATSinline()
 ats_void_type
@@ -271,13 +228,7 @@ atslib_fputc_exn (
 
 /* --------------------------------------- */
 
-ATSinline()
-ats_int_type
-atslib_fputs_err(
-  ats_ptr_type s, ats_ptr_type fil
-) {
-  return fputs ((char*)s, (FILE*)fil) ;
-} // end of [atslib_fputs_err]
+#define atslib_fputs_err fputs
 
 ATSinline()
 ats_void_type
@@ -294,16 +245,7 @@ atslib_fputs_exn(
 
 /* --------------------------------------- */
 
-ATSinline()
-ats_size_type
-atslib_fread (
-  ats_ptr_type buf
-, ats_size_type sz
-, ats_size_type n
-, ats_ptr_type fil
-) {
-  return fread ((void*)buf, sz, n, (FILE*)fil) ;
-} // end of [atslib_fread]
+#define atslib_fread fread
 
 ATSinline()
 ats_size_type
@@ -333,15 +275,7 @@ atslib_fread_byte_exn (
 
 /* --------------------------------------- */
 
-ATSinline()
-ats_ptr_type
-atslib_freopen_err (
-  ats_ptr_type name
-, ats_ptr_type mode
-, ats_ptr_type fil
-) {
-  return freopen(name, mode, (FILE*)fil) ;
-}
+#define atslib_freopen_err freopen
 
 ATSinline()
 ats_void_type
@@ -411,15 +345,7 @@ atslib_freopen_stderr
 
 /* --------------------------------------- */
 
-ATSinline()
-ats_int_type
-atslib_fseek_err (
-  ats_ptr_type fil
-, ats_lint_type offset
-, ats_int_type whence
-) {
-  return fseek ((FILE*)fil, offset, whence) ;
-} // end of [atslib_fseek_err]
+#define atslib_fseek_err fseek
 
 ATSinline()
 ats_void_type
@@ -439,13 +365,7 @@ atslib_fseek_exn (
 
 /* --------------------------------------- */
 
-ATSinline()
-ats_lint_type
-atslib_ftell_err(
-  ats_ptr_type fil
-) {
-  return ftell((FILE*)fil) ;
-}
+#define atslib_ftell_err ftell
 
 ATSinline()
 ats_lint_type
@@ -462,16 +382,7 @@ atslib_ftell_exn(
 
 /* --------------------------------------- */
 
-ATSinline()
-ats_size_type
-atslib_fwrite (
-  ats_ptr_type buf
-, ats_size_type sz
-, ats_size_type n
-, ats_ptr_type fil
-) {
-  return fwrite((void*)buf, sz, n, (FILE*)fil) ;
-} /* end of [atslib_fwrite] */
+#define atslib_fwrite fwrite
 
 ATSinline()
 ats_size_type
@@ -558,13 +469,7 @@ atslib_puts_exn(
 
 /* --------------------------------------- */
 
-ATSinline()
-ats_int_type
-atslib_remove_err (
-  ats_ptr_type path
-) {
-  return remove((char*)path) ;
-}
+#define atslib_remove_err remove
 
 ATSinline()
 ats_void_type
@@ -581,13 +486,7 @@ atslib_remove_exn(
 
 /* --------------------------------------- */
 
-ATSinline()
-ats_int_type
-atslib_rename_err(
-  ats_ptr_type oldpath, ats_ptr_type newpath
-) {
-  return rename((char*)oldpath, (char*)newpath) ;
-} // end of [atslib_rename_err]
+#define atslib_rename_err rename
 
 ATSinline()
 ats_void_type
@@ -604,19 +503,11 @@ atslib_rename_exn(
 
 /* --------------------------------------- */
 
-ATSinline()
-ats_void_type
-atslib_rewind (
-  ats_ptr_type fil
-) {
-  rewind((FILE*)fil) ; return ;
-} // end of [atslib_rewind]
+#define atslib_rewind rewind
 
 /* --------------------------------------- */
 
-ATSinline()
-ats_ptr_type
-atslib_tmpfile_err () { return tmpfile() ; }
+#define atslib_tmpfile_err tmpfile
 
 ATSinline()
 ats_ptr_type
@@ -631,13 +522,7 @@ atslib_tmpfile_exn () {
 
 /* --------------------------------------- */
 
-ATSinline()
-ats_int_type
-atslib_ungetc_err (
-  ats_char_type c, ats_ptr_type fil
-) {
-  return ungetc((unsigned char)c, (FILE*)fil) ;
-} // end of [atslib_ungetc_err]
+#define atslib_ungetc_err ungetc
 
 ATSinline()
 ats_void_type
