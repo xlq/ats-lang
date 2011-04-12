@@ -226,16 +226,16 @@ fn* resolve (xs: IS, m: I, ys: IS)
   :<cloref1> a = begin case+ (xs, m, ys) of
   | (_, ITEMatm _, _) => begin case+ ys of
     | ITEMatm _ :: _ => resolve_app (xs, m, ys)
-    | _ => next (xs, m :: ys)
+    | _ => pushup (xs, m :: ys)
     end // end of [begin]
   | (_, ITEMopr opr, _) => begin case+ (opr, ys) of
-    | (OPERpre _, _) => next (xs, m :: ys)
-    | (OPERinf _, _ :: nil ()) => next (xs, m :: ys)
+    | (OPERpre _, _) => pushup (xs, m :: ys)
+    | (OPERinf _, _ :: nil ()) => pushup (xs, m :: ys)
     | (OPERinf _, _ :: ITEMopr opr1 :: _) => let
         val p = oper_precedence opr and p1 = oper_precedence opr1
       in
         case+ compare (p, p1) of
-        |  1 => next (xs, m :: ys)
+        |  1 => pushup (xs, m :: ys)
         | ~1 => reduce (m :: xs, ys)
         |  _ (* 0 *) => let
              val assoc = oper_associativity opr
@@ -243,7 +243,7 @@ fn* resolve (xs: IS, m: I, ys: IS)
            in
              case+ (assoc, assoc1) of
              | (ASSOClft (), ASSOClft ()) => reduce (m :: xs, ys)
-             | (ASSOCrgt (), ASSOCrgt ()) => next (xs, m :: ys)
+             | (ASSOCrgt (), ASSOCrgt ()) => pushup (xs, m :: ys)
              | (_, _) => err (loc0)
            end // end of [_ (* 0 *)]
       end // end of [let]
@@ -266,36 +266,36 @@ and resolve_app
       val sgn = compare (app_prec, p1): Sgn
     in
       case+ sgn of
-      | 1 => next (xs, m :: app :: ys) | ~1 => reduce (m :: xs, ys)
+      | 1 => pushup (xs, m :: app :: ys) | ~1 => reduce (m :: xs, ys)
       | _ (*0*) => let
            val assoc1 = oper_associativity opr1 in case+ assoc1 of
              | ASSOClft () => reduce (m :: xs, ys) | _ => err (loc0)
          end // end of [_]
     end // end of [_ :: ITERMopr :: _]
-  | _ :: nil () => next (xs, m :: app :: ys)
+  | _ :: nil () => pushup (xs, m :: app :: ys)
   | _ => err (loc0)
 (* end of [resolve_app] *)
 //
 and reduce
   (xs: IS, ys: IS):<cloref1> a = case+ ys of
   | ITEMatm t :: ITEMopr (OPERpre (_, f)) :: ys =>
-    next (f t :: xs, ys)
+    pushup (f t :: xs, ys)
   | ITEMatm t1 :: ITEMopr (OPERinf (_, _, f)) :: ITEMatm t2 :: ys =>
-    next (f (t2, t1) :: xs, ys)
+    pushup (f (t2, t1) :: xs, ys)
   | ITEMopr (OPERpos (_, f)) :: ITEMatm t :: ys =>
-    next (xs, f t :: ys)
+    pushup (xs, f t :: ys)
   | _ => err (loc0)
 (* end of [reduce] *)
 //
-and next (xs: IS, ys: IS):<cloref1> a = case+ (xs, ys) of
+and pushup (xs: IS, ys: IS):<cloref1> a = case+ (xs, ys) of
   | (nil (), ITEMatm t :: nil ()) => t
   | (nil (), ys) => reduce (nil (), ys)
   | (x :: xs, ys) => resolve (xs, x, ys)
-(* end of [next] *)
+(* end of [pushup] *)
 //
 in
 //
-next (xs, nil ())
+pushup (xs, nil ())
 //
 end // end of [fixity_resolve]
 

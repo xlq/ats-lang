@@ -95,33 +95,39 @@ fun symenv_make {itm:t@ype} (): symenv_t (itm)
 
 (* ****** ****** *)
 
-fun{itm:t@ype} symenv_insert_fst
+fun{itm:t@ype}
+symenv_insert_fst
   (env: symenv_t itm, k: sym_t, i: itm): void
 // end of [symenv_insert_fst]
 
-fun{itm:t@ype} symenv_remove_fst
+fun{itm:t@ype}
+symenv_remove_fst
   (env: symenv_t itm, k: sym_t): Option_vt itm
 // end of [symenv_remove_fst]
 
 (* ****** ****** *)
 
-fun{itm:t@ype} symenv_search_all
+fun{itm:t@ype}
+symenv_search_all
   (env: symenv_t itm, k: sym_t): Option_vt itm
 // end of [symenv_search_all]
 
 (* ****** ****** *)
 
-fun{itm:t@ype} symenv_pervasive_search
+fun{itm:t@ype}
+symenv_pervasive_search
   (env: symenv_t itm, k: sym_t): Option_vt itm
 // end of [symenv_pervasive_search]
 
-fun{itm:t@ype} symenv_pervasive_replace
+fun{itm:t@ype}
+symenv_pervasive_replace
   (env: symenv_t itm, k: sym_t, i: itm): Option_vt itm
 // end of [symenv_pervasive_replace]
 
 (* ****** ****** *)
 
-fun{itm:t@ype} symenv_pop (env: symenv_t itm): void
+fun{itm:t@ype}
+symenv_pop (env: symenv_t itm): void
 
 fun symenv_push {itm:t@ype} (env: symenv_t itm): void
 
@@ -134,17 +140,22 @@ fun symenv_swap
 
 (* ****** ****** *)
 
-fun symenv_top_get {itm:t@ype} (env: symenv_t itm): symmap_t itm
-fun symenv_reftop_get {itm:t@ype} (env: symenv_t itm): ref (symmap_t itm)
+fun symenv_top_get
+  {itm:t@ype} (env: symenv_t itm): symmap_t itm
+fun symenv_reftop_get
+  {itm:t@ype} (env: symenv_t itm): ref (symmap_t itm)
 
 (* ****** ****** *)
 
-fun{itm:t@ype} symenv_localjoin (env: symenv_t itm): void
+fun{itm:t@ype}
+symenv_localjoin (env: symenv_t itm): void
 
 (* ****** ****** *)
 
-fun symenv_save {itm:t@ype} (env: symenv_t itm): void
-fun{itm:t@ype} symenv_restore (env: symenv_t itm): void
+fun symenv_save
+  {itm:t@ype} (env: symenv_t itm): void
+fun{itm:t@ype}
+symenv_restore (env: symenv_t itm): void
 
 (* ****** ****** *)
 

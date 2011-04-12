@@ -625,6 +625,8 @@ fn Anairiats_doc_dir_copy () = let
     val () = cp "kmp.dats"
     val () = cp "longestline.dats"
     val () = cp "montecarlo.dats"
+    val () = cp "mycat.dats"
+    val () = cp "myfind.dats"
     val () = cp "passwdgen.dats"
     val () = cp "pi_lazy.dats"
     val () = cp "Peano.dats"
@@ -728,6 +730,8 @@ fn Anairiats_doc_dir_copy () = let
     val () = cp "libats_regexp.dats"
     val () = cp "libats_parworkshop.dats"  
     val () = cp "libats_vector.dats"
+//
+    val () = cp "libats_ngc_slist.dats"
 //
     val () = cp "libats_smlbas_array.dats"
     val () = cp "libats_smlbas_array2.dats"
@@ -939,6 +943,7 @@ in
 end // end of [Anairiats_libc_dir_copy]
 
 fn Anairiats_libats_dir_copy () = let
+  // the code for libats
   val SRCROOTlibats = SRCROOT ++ "libats/"
   val DSTROOTlibats = DSTROOT ++ "libats/"
   val () = mkdir_exn (DSTROOTlibats, DIRmode)

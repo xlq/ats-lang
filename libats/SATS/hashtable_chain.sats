@@ -59,19 +59,24 @@
 
 (* ****** ****** *)
 
-typedef hash (key: t@ype) = (key) -<cloref> ulint
-typedef eqfn (key: t@ype) = (key, key) -<cloref> bool
+sortdef t0p = t@ype and vt0p = viewt@ype
 
-absviewtype HASHTBLptr (key:t@ype, itm:viewt@ype+, l:addr)
+(* ****** ****** *)
+
+typedef hash (key:t0p) = (key) -<cloref> ulint
+typedef eqfn (key:t0p) = (key, key) -<cloref> bool
+
+absviewtype
+HASHTBLptr (key:t@ype, itm:viewt@ype+, l:addr)
 viewtypedef HASHTBLptr0
-  (key:t@ype, itm:viewt@ype) = [l:agez] HASHTBLptr (key, itm, l)
+  (key:t0p, itm:vt0p) = [l:agez] HASHTBLptr (key, itm, l)
 // end of [HASHTBLptr0]
 viewtypedef HASHTBLptr1
-  (key:t@ype, itm:viewt@ype) = [l:addr | l > null] HASHTBLptr (key, itm, l)
+  (key:t0p, itm:vt0p) = [l:addr | l > null] HASHTBLptr (key, itm, l)
 // end of [HASHTBLptr1]
 
 castfn ptr_of_HASHTBLptr
-  {key:t@ype} {itm:viewt@ype} {l:addr} (x: !HASHTBLptr (key, itm, l)):<> ptr l
+  {key:t0p} {itm:vt0p} {l:addr} (x: !HASHTBLptr (key, itm, l)):<> ptr l
 overload ptr_of with ptr_of_HASHTBLptr
 
 (* ****** ****** *)
@@ -80,12 +85,12 @@ abstype
 HASHTBLref (key:t@ype, itm:viewt@ype)
 
 castfn HASHTBLref_make_ptr
-{key:t@ype;itm:viewt@ype} {l:agz}
+{key:t0p;itm:vt0p} {l:agz}
   (x: HASHTBLptr (key, itm, l)):<> HASHTBLref (key, itm)
 // end of [HASHTBLref_make_ptr]
 
 castfn HASHTBLref_takeout_ptr
-{key:t@ype;itm:viewt@ype} (
+{key:t0p;itm:vt0p} (
   x: HASHTBLref (key, itm)
 ) :<!ref> [l:agz] (
   HASHTBLptr (key, itm, l) -<lin,prf> void | HASHTBLptr (key, itm, l)
@@ -93,38 +98,38 @@ castfn HASHTBLref_takeout_ptr
 
 (* ****** ****** *)
 
-fun{key:t@ype}
+fun{key:t0p}
 hash_key (x: key, fhash: hash key):<> ulint
 // end of [hash_key]
 
-fun{key:t@ype}
+fun{key:t0p}
 equal_key_key (x1: key, x2: key, eqfn: eqfn key):<> bool
 // end of [equal_key_key]
 
 (* ****** ****** *)
 
 fun hashtbl_size // the (array) size of the hashtable
-  {key:t@ype;itm:viewt@ype} {l:agz} (p: !HASHTBLptr (key, itm, l)):<> size_t
+  {key:t0p;itm:vt0p} {l:agz} (p: !HASHTBLptr (key, itm, l)):<> size_t
 // end of [hashtbl_size]
 
 fun hashtbl_total // the total number of elements present in the hashtable
-  {key:t@ype;itm:viewt@ype} {l:agz} (tbl: !HASHTBLptr (key, itm, l)):<> size_t
+  {key:t0p;itm:vt0p} {l:agz} (tbl: !HASHTBLptr (key, itm, l)):<> size_t
 // end of [hashtbl_total]
 
 //
 // HX: clear the hashtable: all the chains are freed
 //
-fun{key:t@ype;itm:t@ype}
+fun{key:t0p;itm:t0p}
 hashtbl_clear {l:agz} (ptbl: !HASHTBLptr (key, itm, l)):<> void
 // end of [hashtbl_clear]
 
 //
 // HX: clear the hashtable: all the chains are freed
 //
-fun{key:t@ype;itm:t@ype}
-hashtbl_clear_vt
-  {l:agz} (ptbl: !HASHTBLptr (key, itm, l), f: (&itm >> itm?) -<> void):<> void
-// end of [hashtbl_clear_vt]
+fun{key:t0p;itm:vt0p}
+hashtbl_clear_fun {l:agz}
+  (ptbl: !HASHTBLptr (key, itm, l), f: (&itm >> itm?) -<> void):<> void
+// end of [hashtbl_clear_fun]
 
 (* ****** ****** *)
 
@@ -133,7 +138,7 @@ hashtbl_clear_vt
 // if the returned pointer is used, it must be done before the hashtable
 // is changed!
 //
-fun{key:t@ype;itm:viewt@ype} // unsafe but ...
+fun{key:t0p;itm:vt0p} // unsafe but ...
 hashtbl_search_ref {l:agz} (ptbl: !HASHTBLptr (key, itm, l), k0: key):<> Ptr
 // end of [hashtbl_search_ptr]
 
@@ -141,7 +146,7 @@ hashtbl_search_ref {l:agz} (ptbl: !HASHTBLptr (key, itm, l), k0: key):<> Ptr
 // HX-2010-03-20:
 // this one is a safe version, but it can only handle non-linear items
 //
-fun{key:t@ype;itm:t@ype}
+fun{key:t0p;itm:t0p}
 hashtbl_search {l:agz} (
   ptbl: !HASHTBLptr (key, itm, l), k0: key, res: &itm? >> opt (itm, b)
 ) :<> #[b:bool] bool b
@@ -149,20 +154,18 @@ hashtbl_search {l:agz} (
 
 (* ****** ****** *)
 
-fun{key:t@ype;itm:viewt@ype}
+fun{key:t0p;itm:vt0p}
 hashtbl_insert {l:agz}
   (ptbl: !HASHTBLptr (key, itm, l), k: key, i: itm):<> void
 // end of [hashtbl_insert]
 
-fun{key:t@ype;itm:viewt@ype}
+fun{key:t0p;itm:vt0p}
 hashtbl_remove {l:agz} (
   ptbl: !HASHTBLptr (key, itm, l), k0: key, res: &itm? >> opt (itm, b)
 ) :<> #[b:bool] bool b
 // end of [hashtbl_remove]
 
 (* ****** ****** *)
-
-sortdef t0p = t@ype and vt0p = viewt@ype
 
 fun{key:t0p;itm:vt0p}
 hashtbl_foreach_clo {v:view} {l:agz} (
@@ -213,7 +216,7 @@ fun hashtbl_free_null
 
 //
 // HX-2010-03-21:
-// [hashtbl_clear_vt] may need to be called first to clear up
+// [hashtbl_clear_fun] may need to be called first to clear up
 //
 fun hashtbl_free_vt
   {key:t0p;itm:vt0p}
@@ -228,9 +231,13 @@ fun hashtbl_free_vt
 //
 // HX-2010-07-01: it can be readily implemented based on [foreach]
 //
-fun{key:t0p;itm:t0p}
-hashtbl_listize {l:agz} (tbl: !HASHTBLptr (key, itm, l)): List_vt @(key, itm)
 *)
+fun{key:t0p;itm:t0p}
+hashtbl_listize {l:agz}
+  (tbl: !HASHTBLptr (key, itm, l)): List_vt @(key, itm)
+fun{key:t0p;itm:vt0p}
+hashtbl_listize_free
+  {l:agz} (tbl: HASHTBLptr (key, itm, l)): List_vt @(key, itm)
 
 (* ****** ****** *)
 

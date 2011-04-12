@@ -93,7 +93,7 @@ list_vt_copy {n:nat} (xs: !list_vt (a, n)):<> list_vt (a, n)
 fun{a:t@ype}
 list_vt_free (xs: List_vt a):<> void
 
-fun{a:t@ype}
+fun{a:viewt@ype}
 list_vt_free_fun (
   xs: List_vt a, f: (&a >> a?) -<fun> void
 ) :<> void // end of [list_vt_free_fun]

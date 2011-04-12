@@ -299,7 +299,7 @@ array_ptr_clear_fun
   fun clear {n:nat} {l:addr} .<n>. (
       pf_arr: !array_v (a, n, l) >> array_v (a?, n, l)
     | p_arr: ptr l, n: size_t n
-    , f: &(&a >> a?) -<fun,f> void, tsz: sizeof_t a
+    , f: (&a >> a?) -<fun,f> void, tsz: sizeof_t a
     ) :<f> void =
     if n > 0 then let
       prval (pf1_at, pf2_arr) = array_v_uncons {a} (pf_arr)

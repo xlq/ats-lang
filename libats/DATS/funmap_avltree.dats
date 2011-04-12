@@ -502,9 +502,7 @@ funmap_listize (xs) = let
     t: avltree (key, itm, h), res: res_vt
   ) :<> res_vt =
     case+ t of
-    | B (
-        _(*h*), k, x, tl, tr
-      ) => let
+    | B (_(*h*), k, x, tl, tr) => let
         val res = listize (tr, res)
         val res = list_vt_cons {keyitm} ((k, x), res)
         val res = listize (tl, res)

@@ -1,5 +1,12 @@
 ########################################################################
 
+ats-lang-anairiats-0.2.5:
+
+1. Fixing a bug in handling call-by-reference. I was really surprised that
+   the bug had not shown up earlier.
+
+########################################################################
+
 ats-lang-anairiats-0.2.4:
 
 1. Adding the package contrib/testing to facilitate construction of

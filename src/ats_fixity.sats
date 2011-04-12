@@ -138,8 +138,8 @@ fun fxty_pos (p: prec_t): fxty
 
 (* ****** ****** *)
 
-val selptr_fixity_dyn : fxty
 val deref_fixity_dyn : fxty // for dereference
+val selptr_fixity_dyn : fxty // for lab/ind selection
 
 (* ****** ****** *)
 
@@ -176,12 +176,12 @@ fun item_app {a:type}
 (* ****** ****** *)
 
 fun oper_make_backslash {a:type} (
-  locf: a -<cloref1> loc_t
+  locf: a -> loc_t
 , appf: (loc_t, a, loc_t, List a) -<cloref1> a
 ) : item a  // end of [oper_make_backslash]
 
 fun oper_make {a:type} (
-  locf: a -<cloref1> loc_t
+  locf: a -> loc_t
 , appf: (loc_t, a, loc_t, List a) -<cloref1> a
 , opr: a
 , fxty: fxty

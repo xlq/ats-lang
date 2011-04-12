@@ -405,7 +405,7 @@ fun cat_stdin
 ** open, dump and close file
 */
 fun cat_file (
-  params: params, path: string
+  params: &params, path: string
 ) : void = let
   val (pf_fd | fd) = $FCNTL.open_flag_exn(path, O_RDONLY)
   val isq = is_quoted_output (params)

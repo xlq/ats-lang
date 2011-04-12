@@ -91,7 +91,7 @@ fn prerr_loc_error1 (loc: loc_t): void =
   ($Loc.prerr_location loc; prerr ": error(1)")
 // end of [prerr_loc_error1]
 
-fn prerr_interror () = prerr "INTERNAL ERROR (ats_trans1_sta)"
+fn prerr_interror (): void = prerr "INTERNAL ERROR (ats_trans1_sta)"
 
 (* ****** ****** *)
 

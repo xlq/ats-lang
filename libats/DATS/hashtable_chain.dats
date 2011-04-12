@@ -60,7 +60,8 @@ implement{key} equal_key_key (x1, x2, eqfn) = eqfn (x1, x2)
 
 (* ****** ****** *)
 
-dataviewtype chain (
+dataviewtype
+chain (
   key:t@ype, itm:viewt@ype+, int
 ) =
   | {n:nat}
@@ -70,8 +71,7 @@ dataviewtype chain (
 
 viewtypedef
 chain (
-  key:t0p
-, itm:vt0p
+  key:t0p, itm:vt0p
 ) = [n:nat] chain (key, itm, n)
 
 viewtypedef
@@ -89,6 +89,18 @@ chain_free
   | ~CHAINcons (_(*key*), _(*itm*), kis) => chain_free (kis)
   | ~CHAINnil () => ()
 end // end of [chain_free]
+
+fun{key:t0p;itm:vt0p}
+chain_free_fun
+  {n:nat} .<n>. (
+  kis: chain (key, itm, n), f: (&itm >> itm?) -<> void
+) :<> void = begin case+ kis of
+  | CHAINcons (_(*key*), !p_itm, kis1) => let
+      val () = f (!p_itm)
+      val () = free@ {key,itm} {0} (kis) in chain_free_fun (kis1, f)
+    end (* end of [CHAINcon] *)
+  | ~CHAINnil () => ()
+end // end of [chain_free_fun]
 
 (* ****** ****** *)
 
@@ -262,6 +274,40 @@ hashtbl_clear (ptbl) = () where {
 
 (* ****** ****** *)
 
+fun{key:t0p;itm:vt0p}
+hashtbl_ptr_clear_fun
+  {sz,tot:nat} {l_beg,l_end:addr} .<sz>. (
+   pf: !hashtbl_v (key, itm, sz, tot, l_beg, l_end)
+         >> hashtbl_v (key, itm, sz, 0(*tot*), l_beg, l_end)
+| sz: size_t sz
+, p_beg: ptr l_beg
+, f: (&itm >> itm?) -<> void
+) :<> void = begin
+  if sz > 0 then let
+    prval hashtbl_v_cons (pf1, pf2) = pf
+    val () = chain_free_fun (!p_beg, f)
+    val () = !p_beg := CHAINnil ()
+    val () = hashtbl_ptr_clear_fun<key,itm> (pf2 | sz-1, p_beg+sizeof<chain0>, f)
+    prval () = pf := hashtbl_v_cons (pf1, pf2)
+  in
+    // empty
+  end else let
+    prval hashtbl_v_nil () = pf; prval () = pf := hashtbl_v_nil ()
+  in
+    // empty
+  end // end of [if]
+end // end of [hashtbl_ptr_clear]
+
+implement{key,itm}
+hashtbl_clear_fun (ptbl, f) = () where {
+  val (pf, fpf | p) = HASHTBLptr_get_hashtbl {key,itm} (ptbl)
+  val () = hashtbl_ptr_clear_fun<key,itm> (p->pftbl | p->sz, p->pbeg, f)
+  val () = p->tot := (size1_of_int1)0 // reset it to zero
+  prval () = minus_addback (fpf, pf | ptbl)
+} // end of [hashtbl_clear]  
+
+(* ****** ****** *)
+
 extern fun hashtbl_ptr_make
   {key:t0p;itm:vt0p} {sz:pos} (sz: size_t sz)
   :<> [l_beg,l_end:addr] @(
@@ -282,7 +328,7 @@ extern fun hashtbl_ptr_free
 
 (* ****** ****** *)
 
-extern prfun // proof is omitted
+extern prfun // HX: proof is omitted
 hashtbl_v_split {key:t0p;itm:vt0p}
   {sz,sz1,tot:nat | sz1 <= sz} {l_beg,l_end:addr} {ofs:int} (
   pf_mul: MUL (sz1, chainsz, ofs)
@@ -292,7 +338,7 @@ hashtbl_v_split {key:t0p;itm:vt0p}
 , hashtbl_v (key, itm, sz-sz1, tot-tot1, l_beg+ofs, l_end)
 ) // end of [hashtbl_v_split]
 
-extern prfun // proof is omitted
+extern prfun // HX: proof is omitted
 hashtbl_v_unsplit {key:t0p;itm:vt0p}
   {sz1,sz2,tot1,tot2:nat} {l_beg,l_mid,l_end:addr} (
   pf1: hashtbl_v (key, itm, sz1, tot1, l_beg, l_mid)
@@ -649,7 +695,6 @@ hashtbl_make {key,itm}
 
 (* ****** ****** *)
 
-(*
 implement{key,itm}
 hashtbl_listize (ptbl) = let
   typedef keyitm = @(key, itm)
@@ -657,14 +702,28 @@ hashtbl_listize (ptbl) = let
   viewdef V = List_vt keyitm @ res
   var !p_clo = @lam (
     pf: !V | k: key, x: &itm
-  ): void =<clo>
+  ) : void =<clo>
     (res := list_vt_cons ((k, x), res))
   // end of [var]
   val () = hashtbl_foreach_clo<key,itm> {V} (view@ res | ptbl, !p_clo)
 in
   list_vt_reverse (res) // list-reversing for the shadowing semantics
 end // end of [hashtbl_listize]
-*)
+
+implement{key,itm}
+hashtbl_listize_free
+  {l} (ptbl) = kis where {
+  typedef keyitm0 = @(key, itm?)
+  viewtypedef keyitm = @(key, itm)
+  val ptbl = __cast (ptbl) where {
+    extern castfn __cast (x: HASHTBLptr (key, itm, l)): HASHTBLptr (key, itm?, l)
+  } // end of [val]
+  val kis = hashtbl_listize<key,itm?> (ptbl)
+  val () = hashtbl_free (ptbl)
+  val kis = __cast (kis) where {
+    extern castfn __cast {n:int} (x: list_vt (keyitm0, n)): list_vt (keyitm, n)
+  } // end of [val]
+} // end of [hashtbl_listize_free]
 
 (* ****** ****** *)
 
@@ -712,14 +771,14 @@ atslib_hashtbl_make_hint__chain (
 
 %{$
 
-ats_int_type
+ats_void_type
 atslib_hashtbl_free__chain
   (ats_ptr_type ptbl) {
   ATS_FREE(((HASHTBL_struct*)ptbl)->atslab_pbeg) ; ATS_FREE(ptbl) ;
   return ;
 } // end of [atslib_hashtbl_free__chain]
 
-ats_int_type
+ats_bool_type
 atslib_hashtbl_free_vt__chain
   (ats_ptr_type ptbl) {
   if (((HASHTBL_struct*)ptbl)->atslab_tot != 0)

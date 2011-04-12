@@ -51,11 +51,18 @@ forrange: forrange_dats.c
 forrange_dats.c: forrange.dats
 	$(ATSOPT) -o $@ -d $<
 
+checkall:: multable
+multable: multable_dats.c
+	$(ATSCC) -o multable multable_dats.c -lats && ./multable
+multable_dats.c: multable.dats
+	$(ATSOPT) -o $@ -d $<
+
 ######
 
 html:: ; $(ATSOPT) --posmark_html -d fact.dats > fact_dats.html
 html:: ; $(ATSOPT) --posmark_html -d forlist.dats > forlist_dats.html
 html:: ; $(ATSOPT) --posmark_html -d forrange.dats > forrange_dats.html
+html:: ; $(ATSOPT) --posmark_html -d multable.dats > multable_dats.html
 
 ######
 
@@ -64,6 +71,7 @@ xref:: ; $(ATSOPT) --posmark_xref=XREF -d \
 xref:: ; $(ATSOPT) --posmark_xref=XREF -d fact.dats > fact_dats.html
 xref:: ; $(ATSOPT) --posmark_xref=XREF -d forlist.dats > forlist_dats.html
 xref:: ; $(ATSOPT) --posmark_xref=XREF -d forrange.dats > forrange_dats.html
+xref:: ; $(ATSOPT) --posmark_xref=XREF -d multable.dats > multable_dats.html
 
 ######
 
@@ -82,5 +90,6 @@ cleanall:: clean
 	$(RMF) fact
 	$(RMF) forlist
 	$(RMF) forrange
+	$(RMF) multable
 
 ###### end of [Makefile] ######

@@ -452,7 +452,8 @@ end // end of [hashtbl_ptr_reinsert]
 (* ****** ****** *)
 
 implement{key,itm}
-hashtbl_insert (ptbl, k0, i0) = found where {
+hashtbl_insert
+  (ptbl, k0, i0, res) = found where {
   val (pf0, fpf0 | p) = HASHTBLptr_tblget {key,itm} (ptbl)
   val h = hash_key (k0, p->hash)
   val h = size1_of_ulint (h)
@@ -463,15 +464,15 @@ hashtbl_insert (ptbl, k0, i0) = found where {
   val [l:addr] pkeyitm =
     hashtbl_ptr_probe_ofs<key,itm> (p->pftbl | p->pbeg, k0, p->eqfn, sz, ofs, found)
   val [b:bool] found = bool1_of_bool (found)
-  val () = (if :(i0: opt (itm, b)) => found then let
+  val () = (if :(res: opt (itm, b)) => found then let
     prval (pf, fpf) = __assert () where {
       extern prfun __assert (): ((key,itm) @ l, (key,itm) @ l -<prf> void)
     } // end of [prval]
     val i = pkeyitm->1
     val () = pkeyitm->1 := i0
-    val () = i0 := i
+    val () = res := i
     prval () = fpf (pf)
-    prval () = opt_some {itm} (i0)
+    prval () = opt_some {itm} (res)
   in
     // nothing
   end else let
@@ -485,7 +486,7 @@ hashtbl_insert (ptbl, k0, i0) = found where {
     val () = pkeyitm->1 := i0
     prval () = fpf (pf)
 //
-    prval () = opt_none {itm} (i0)
+    prval () = opt_none {itm} (res)
 //
     val () = if (
       HASHTABLE_DOUBLE_FACTOR * (double_of_size)tot >= (double_of_size)sz
@@ -610,7 +611,7 @@ fun hashtbl_make_hint_tsz
 , eqfn: eqfn key
 , hint: size_t
 , keyitmsz: sizeof_t @(key,itm)
-) : HASHTBLptr1 (key, itm) // tot = 0
+) :<> HASHTBLptr1 (key, itm) // tot = 0
   = "atslib_hashtbl_make_hint_tsz__linprb"
 // end of [hashtbl_make_hint_tsz]
 
@@ -629,7 +630,6 @@ end // end of [hashtbl_make_hint]
 
 (* ****** ****** *)
 
-(*
 //
 // HX-2010-07-01: is this really needed?
 //
@@ -647,7 +647,21 @@ hashtbl_listize (ptbl) = let
 in
   res
 end // end of [hashtbl_listize]
-*)
+
+implement{key,itm}
+hashtbl_listize_free
+  {l} (ptbl) = kis where {
+  typedef keyitm0 = @(key, itm?)
+  viewtypedef keyitm = @(key, itm)
+  val ptbl = __cast (ptbl) where {
+    extern castfn __cast (x: HASHTBLptr (key, itm, l)):<> HASHTBLptr (key, itm?, l)
+  } // end of [val]
+  val kis = hashtbl_listize<key,itm?> (ptbl)
+  val () = hashtbl_free (ptbl)
+  val kis = __cast (kis) where {
+    extern castfn __cast {n:int} (x: list_vt (keyitm0, n)):<> list_vt (keyitm, n)
+  } // end of [val]
+} // end of [hashtbl_listize_free]
 
 (* ****** ****** *)
 
@@ -711,7 +725,7 @@ atslib_hashtbl_make_hint_tsz__linprb (
   return ptbl ;
 } // end of [atslib_hashtbl_make_hint_tsz__linprb]
 //
-ats_int_type
+ats_void_type
 atslib_hashtbl_free__linprb (ats_ptr_type ptbl) {
   ATS_FREE(((HASHTBL*)ptbl)->atslab_pbeg) ; ATS_FREE(ptbl) ; return ;
 } // end of [atslib_hashtbl_free__linprb]

@@ -120,10 +120,11 @@ implement main (argc, argv) = let
 *)
     val key = i
     // val key = $RAND.randint n
-    var itm0 : itm = enstr (tostring key) // = sprintf ("%i", @(key))
+    val itm : itm = enstr (tostring key) // = sprintf ("%i", @(key))
+    var res : itm
     // val () = printf ("key = %i and itm = %s\n", @(key, itm))
-    val ans = $H.hashtbl_insert<key,itm> (ptbl, key, itm0)
-    prval () = opt_clear (itm0)
+    val ans = $H.hashtbl_insert<key,itm> (ptbl, key, itm, res)
+    prval () = opt_clear (res)
   in
     // nothing
   end // end [for]

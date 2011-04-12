@@ -99,7 +99,9 @@ linmap_search (
 fun{key:t0p;itm:vt0p}
 linmap_insert (
   m: &map (key, itm)
-, k0: key, x0: itm, cmp: cmp key, res: &itm? >> opt (itm, b)
+, k0: key, x0: itm
+, cmp: cmp key
+, res: &itm? >> opt (itm, b)
 ) :<> #[b:bool] bool b // end of [linmap_insert]
 
 (* ****** ****** *)
@@ -165,7 +167,6 @@ linmap_free_vt (
 // HX: listization is done in the in-order fashion
 //
 
-(*
 //
 // HX-2010-07-01:
 // this one can be readily implemented based on [foreach]
@@ -173,7 +174,6 @@ linmap_free_vt (
 fun{key:t0p;itm:t0p}
 linmap_listize (m: !map (key, itm)):<> List_vt @(key, itm)
 // end of [linmap_listize]
-*)
 
 fun{key:t0p;itm:vt0p}
 linmap_listize_free (m: map (key, itm)):<> List_vt @(key, itm)

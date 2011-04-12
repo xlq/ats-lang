@@ -617,11 +617,16 @@ extern fun emit_valprim_intsp {m:file_mode}
 fn emit_valprim_ptrof {m:file_mode}
   (pf: fmlte (m, w) | out: &FILE m, vp: valprim)
   : void = begin case+ vp.valprim_node of
+(*
+//
+// HX-2011-04-12: this is embarrassingly wrong!
+//
   | VParg ind => begin
       fprint1_string (pf | out, "(&");
       emit_valprim_arg (pf | out, ind);
       fprint1_string (pf | out, ")")
     end
+*)
   | VPargref ind => emit_valprim_arg (pf | out, ind)
   | VPenv vtp => let
       val ind = varindmap_find_some (vartyp_get_var vtp)

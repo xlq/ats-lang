@@ -1,6 +1,10 @@
 (*
 ** testing some functions declared in
 ** contrib/linux/utils/SATS/slist.sats
+**
+** Author: Hongwei Xi (hwxi AT cs DOT bu DOT edu)
+** Time: March, 2011
+**
 *)
 
 (* ****** ****** *)

@@ -617,10 +617,8 @@ linmap_free_vt (m) = let
 end // end of [linmap_free]
 
 (* ****** ****** *)
-
-(*
 //
-// HX: if needed, it can be implemented based on [foreach]
+// HX: it can also be implemented based on [foreach]
 //
 implement{key,itm}
 linmap_listize (m) = let
@@ -641,7 +639,6 @@ linmap_listize (m) = let
 in
   aux (m, list_vt_nil)
 end // end of [linmap_listize]
-*)
 
 (* ****** ****** *)
 

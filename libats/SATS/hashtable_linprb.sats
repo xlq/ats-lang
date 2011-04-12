@@ -41,32 +41,33 @@
 *)
 
 (* ****** ****** *)
-
 //
 // License: LGPL 3.0 (available at http://www.gnu.org/licenses/lgpl.txt)
 //
-
 (* ****** ****** *)
 
 #define ATS_STALOADFLAG 0 // no static loading at run-time
 
 (* ****** ****** *)
 
-typedef
-hash (key: t@ype) = (key) -<cloref> ulint
-typedef
-eqfn (key: t@ype) = (key, key) -<cloref> bool
+sortdef t0p = t@ype and vt0p = viewt@ype
 
-absviewtype HASHTBLptr (key:t@ype, itm:viewt@ype+, l:addr)
+(* ****** ****** *)
+
+typedef hash (key:t0p) = (key) -<cloref> ulint
+typedef eqfn (key:t0p) = (key, key) -<cloref> bool
+
+absviewtype
+HASHTBLptr (key:t@ype, itm:viewt@ype+, l:addr)
 viewtypedef HASHTBLptr0
-  (key:t@ype, itm:viewt@ype) = [l:agez] HASHTBLptr (key, itm, l)
+  (key:t0p, itm:vt0p) = [l:agez] HASHTBLptr (key, itm, l)
 // end of [HASHTBLptr0]
 viewtypedef HASHTBLptr1
-  (key:t@ype, itm:viewt@ype) = [l:addr | l > null] HASHTBLptr (key, itm, l)
+  (key:t0p, itm:vt0p) = [l:addr | l > null] HASHTBLptr (key, itm, l)
 // end of [HASHTBLptr1]
 
 castfn ptr_of_HASHTBLptr
-  {key:t@ype} {itm:viewt@ype} {l:addr} (x: !HASHTBLptr (key, itm, l)):<> ptr l
+  {key:t0p} {itm:vt0p} {l:addr} (x: !HASHTBLptr (key, itm, l)):<> ptr l
 overload ptr_of with ptr_of_HASHTBLptr
 
 (* ****** ****** *)
@@ -76,7 +77,7 @@ HASHTBLref (key:t@ype, itm:viewt@ype)
 
 castfn
 HASHTBLref_make_ptr
-  {key:t@ype;itm:viewt@ype}
+  {key:t0p;itm:vt0p}
   {l:agz} (
   x: HASHTBLptr (key, itm, l)
 ) :<> HASHTBLref (key, itm)
@@ -87,7 +88,7 @@ HASHTBLref_make_ptr
 //
 castfn
 HASHTBLref_takeout_ptr
-{key:t@ype;itm:viewt@ype} (
+{key:t0p;itm:vt0p} (
   x: HASHTBLref (key, itm)
 ) :<!ref> [l:agz] (
   HASHTBLptr (key, itm, l) -<lin,prf> void | HASHTBLptr (key, itm, l)
@@ -95,40 +96,40 @@ HASHTBLref_takeout_ptr
 
 (* ****** ****** *)
 
-fun{key:t@ype}
+fun{key:t0p}
 hash_key (x: key, hash: hash key):<> ulint
 // end of [hash_key]
 
-fun{key:t@ype}
+fun{key:t0p}
 equal_key_key (x1: key, x2: key, eqfn: eqfn key):<> bool
 // end of [equal_key_key]
 
 (* ****** ****** *)
 
 absviewt@ype Opt (a:viewt@ype) = a
-prfun Opt_none {keyitm:viewt@ype} (x: !keyitm? >> Opt keyitm):<> void
-prfun Opt_some {keyitm:viewt@ype} (x: !(keyitm) >> Opt keyitm):<> void
+prfun Opt_none {keyitm:vt0p} (x: !keyitm? >> Opt keyitm):<> void
+prfun Opt_some {keyitm:vt0p} (x: !(keyitm) >> Opt keyitm):<> void
 prfun Opt_encode
-  {keyitm:viewt@ype} {b:bool} (x: !opt (keyitm, b) >> Opt keyitm):<> void
+  {keyitm:vt0p} {b:bool} (x: !opt (keyitm, b) >> Opt keyitm):<> void
 // end of [Opt_encode]
 
-fun{keyitm:viewt@ype}
+fun{keyitm:vt0p}
 keyitem_nullify (x: &keyitm? >> Opt keyitm):<> void
 
-fun{keyitm:viewt@ype}
+fun{keyitm:vt0p}
 keyitem_isnot_null (x: &Opt keyitm >> opt (keyitm, b)):<> #[b:bool] bool b
 
 (* ****** ****** *)
 
 fun hashtbl_size // the (array) size of the hashtable
-  {key:t@ype;itm:viewt@ype} {l:agz} (p: !HASHTBLptr (key, itm, l)):<> size_t
+  {key:t0p;itm:vt0p} {l:agz} (p: !HASHTBLptr (key, itm, l)):<> size_t
 // end of [hashtbl_size]
 
 fun hashtbl_total // the total number of elements present in the hashtable
-  {key:t@ype;itm:viewt@ype} {l:agz} (tbl: !HASHTBLptr (key, itm, l)):<> size_t
+  {key:t0p;itm:vt0p} {l:agz} (tbl: !HASHTBLptr (key, itm, l)):<> size_t
 // end of [hashtbl_total]
 
-fun{key:t@ype;itm:t@ype} // clear the hashtable
+fun{key:t0p;itm:t0p} // clear the hashtable
 hashtbl_clear {l:agz} (ptbl: !HASHTBLptr (key, itm, l)):<> void
 // end of [hashtbl_clear]
 
@@ -139,7 +140,7 @@ hashtbl_clear {l:agz} (ptbl: !HASHTBLptr (key, itm, l)):<> void
 // if the returned pointer is used, it must be done before the hashtable
 // is changed!
 //
-fun{key:t@ype;itm:viewt@ype} // unsafe but ...
+fun{key:t0p;itm:vt0p} // unsafe but ...
 hashtbl_search_ref {l:agz} (ptbl: !HASHTBLptr (key, itm, l), k0: key): Ptr
 // end of [hashtbl_search_ptr]
 
@@ -147,7 +148,7 @@ hashtbl_search_ref {l:agz} (ptbl: !HASHTBLptr (key, itm, l), k0: key): Ptr
 // HX-2010-03-20:
 // this one is a safe version, but it can only handle non-linear items
 //
-fun{key:t@ype;itm:t@ype}
+fun{key:t0p;itm:t0p}
 hashtbl_search {l:agz} (
   ptbl: !HASHTBLptr (key, itm, l), k0: key, res: &itm? >> opt (itm, b)
 ) :<> #[b:bool] bool b
@@ -159,9 +160,10 @@ hashtbl_search {l:agz} (
 // HX-2010-04-03:
 // if [k] is already in the table, [i] replaces the original one
 //
-fun{key:t@ype;itm:viewt@ype}
+fun{key:t0p;itm:vt0p}
 hashtbl_insert {l:agz} (
-  ptbl: !HASHTBLptr (key, itm, l), k: key, i: &itm >> opt (itm, b)
+  ptbl: !HASHTBLptr (key, itm, l)
+, k: key, i: itm, res: &itm? >> opt (itm, b)
 ) :<> #[b:bool] bool b
 // end of [hashtbl_insert]
 
@@ -169,29 +171,31 @@ hashtbl_insert {l:agz} (
 // HX-2010-04-03:
 // removal seems to be quite efficient as well
 //
-fun{key:t@ype;itm:viewt@ype}
+fun{key:t0p;itm:vt0p}
 hashtbl_remove {l:agz} (
-  ptbl: !HASHTBLptr (key, itm, l), k0: key, res: &itm? >> opt (itm, b)
+  ptbl: !HASHTBLptr (key, itm, l)
+, k0: key, res: &itm? >> opt (itm, b)
 ) :<> #[b:bool] bool b
 // end of [hashtbl_remove]
 
 (* ****** ****** *)
 
-fun{key:t@ype;itm:viewt@ype}
-hashtbl_foreach_clo {v:view} {l:agz}
-  (pf: !v | ptbl: !HASHTBLptr (key, itm, l), f: &(!v | key, &itm) -<clo> void):<> void
-// end of [hashtbl_foreach_clo]
+fun{key:t0p;itm:vt0p}
+hashtbl_foreach_clo
+  {v:view} {l:agz} (
+  pf: !v | ptbl: !HASHTBLptr (key, itm, l), f: &(!v | key, &itm) -<clo> void
+) :<> void // end of [hashtbl_foreach_clo]
 
-fun{key:t@ype;itm:viewt@ype}
+fun{key:t0p;itm:vt0p}
 hashtbl_foreach_cloref {l:agz}
   (ptbl: !HASHTBLptr (key, itm, l), f: !(key, &itm) -<cloref> void):<> void
 // end of [hashtbl_foreach_cloref]
 
 (* ****** ****** *)
 
-fun{key:t@ype;itm:viewt@ype}
+fun{key:t0p;itm:vt0p}
 hashtbl_make
-  (hash: hash key, eqfn: eqfn key): HASHTBLptr1 (key, itm)
+  (hash: hash key, eqfn: eqfn key):<> HASHTBLptr1 (key, itm)
 // end of [hashtbl_make]
 
 (*
@@ -199,39 +203,41 @@ hashtbl_make
 53, 97, 193, 389, 769, 1543, 3079, 6151, 12289, 24593, 49157, 98317, 196613, 393241, 786433, 1572869, 3145739, 6291469, 12582917, 25165843, 50331653, 100663319, 201326611, 402653189, 805306457, 1610612741
 *)
 
-fun{key:t@ype;itm:viewt@ype}
-hashtbl_make_hint 
-  (hash: hash key, eqfn: eqfn key, hint: size_t): HASHTBLptr1 (key, itm)
+fun{key:t0p;itm:vt0p}
+hashtbl_make_hint (
+  hash: hash key, eqfn: eqfn key, hint: size_t
+) :<> HASHTBLptr1 (key, itm)
   = "atslib_hashtbl_make_hint__linprb"
 // end of [hashtbl_make_hint]
 
 (* ****** ****** *)
 
 fun hashtbl_free
-  {key:t@ype;itm:t@ype} {l:agz} (tbl: HASHTBLptr (key, itm, l)): void
+  {key:t0p;itm:t0p}
+  {l:agz} (
+  tbl: HASHTBLptr (key, itm, l)
+) :<> void
   = "atslib_hashtbl_free__linprb"
 // end of [hashtbl_free]
 
-//
-// HX-2010-03-21:
-// [hashtbl_clear_vt] may need to be called first to clear up the hashtable
-//
 fun hashtbl_free_vt
-  {key:t@ype;itm:viewt@ype} {l:agz}
-  (tbl: !HASHTBLptr (key, itm, l) >> opt (HASHTBLptr (key, itm, l), b))
-  : #[b:bool] bool b(*~freed*) = "atslib_hashtbl_free_vt__linprb"
+  {key:t0p;itm:vt0p}
+  {l:agz} (
+  tbl: !HASHTBLptr (key, itm, l) >> opt (HASHTBLptr (key, itm, l), b)
+) :<> #[b:bool] bool b(*~freed*) = "atslib_hashtbl_free_vt__linprb"
 // end of [hashtbl_free_vt]
 
 (* ****** ****** *)
 
-(*
 //
 // HX-2010-07-01: it can be readily implemented based on [foreach]
 //
-fun{key:t@ype;itm:t@ype}
-hashtbl_listize {l:agz} (tbl: !HASHTBLptr (key, itm, l)): List_vt @(key, itm)
-// end of [hashtbl_listize]
-*)
+fun{key:t0p;itm:t0p}
+hashtbl_listize {l:agz}
+  (tbl: !HASHTBLptr (key, itm, l)):<> List_vt @(key, itm)
+fun{key:t0p;itm:vt0p}
+hashtbl_listize_free
+  {l:agz} (tbl: HASHTBLptr (key, itm, l)):<> List_vt @(key, itm)
 
 (* ****** ****** *)
 
