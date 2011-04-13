@@ -14,18 +14,31 @@ staload _(*anonymous*) = "prelude/DATS/array.dats"
 
 (* ****** ****** *)
 
-macdef iarr (n) = array_make_elt (,(n)+1, 0)
-typedef iarr (n:int) = array (natLte n, n+1)
+abst@ype usi (n:int) = $extype"ats_usi_type"
+typedef usi = [n:nat] usi (n)
+typedef usiLte (n:int) = [i:nat | i <= n] usi (i)
+
+extern castfn u2i {i:nat} (x: usi (i)):<> int (i)
+extern castfn i2u {i:nat} (x: int (i)):<> usi (i)
+
+typedef iarr (n:int) = array (usiLte n, n+1)
+macdef iarr (n) = array_make_elt (,(n)+1, (i2u)0)
 
 (* ****** ****** *)
 
 %{^
+//
+typedef ats_uint_type ats_usi_type ; // HX: seems the best
+//
 // HX: it is really difficult to beat [memcpy] :)
-static inline
-ats_void_type iarr_copy
-  (ats_ptr_type src, ats_ptr_type dst, ats_int_type n) {
-  memcpy ((int*)dst+1, (int*)src+1,  n * sizeof(ats_int_type)) ;
-  return ;
+ATSinline()
+ats_void_type
+iarr_copy (
+  ats_ptr_type src
+, ats_ptr_type dst
+, ats_int_type bsz
+) {
+  memcpy (dst, src, (bsz+1)*sizeof(ats_usi_type)) ; return ;
 } // end of iarr_copy
 %} // end of [%{^]
 extern fun iarr_copy {n:nat}
@@ -35,9 +48,9 @@ extern fun iarr_copy {n:nat}
 (* ****** ****** *)
 
 fn fprint_iarr {n:nat}
-  (out: FILEref, A: iarr n, n: int n): void = () where {
+  (out: FILEref, A: iarr n, n: int n): void = {
   var i: intGte 1 = 1
-  val () = while (i <= n) (fprint_int (out, A[i]); i := i+1)
+  val () = while (i <= n) (fprint_int (out, (u2i)A[i]); i := i+1)
   val () = fprint_char (out, '\n')
 } (* end of [fprint_iarr] *)
 macdef print_iarr (A, n) = fprint_iarr (stdout_ref, ,(A), ,(n))
@@ -69,15 +82,16 @@ fun perm_rotate
   val () = P[i] := P1
 } (* end of [perm_rotate] *)
 
-fun perm_next {n,i:int | 1 <= i; i <= n} (
-    C: iarr n, P: iarr n, n: int n, i: int i
-  ) : natLte (n+1) = let
-  val x = C[i]; val x1 = x-1; val () = perm_rotate {n,i} (P, i)
+fun perm_next
+  {n,i:int | 1 <= i; i <= n} (
+  C: iarr n, P: iarr n, n: int n, i: int i
+) : natLte (n+1) = let
+  val x = (u2i)C[i]; val x1 = x-1; val () = perm_rotate {n,i} (P, i)
 in
   case+ 0 of
-  | _ when x1 > 0 => (C[i] := x1; i)
+  | _ when x1 > 0 => (C[i] := (i2u)x1; i)
   | _ (* x1 = 0 *) => let
-      val () = C[i] := i; val i1 = i + 1
+      val () = C[i] := (i2u)i; val i1 = i + 1
     in
       if i1 <= n then perm_next (C, P, n, i1) else i1
     end
@@ -94,16 +108,16 @@ fun fannkuch_count {n:int | n >= 2}
     end
   fn fannkuch_rev1
     {u:int | 1 < u; u <= n} (S: iarr n, u: int u): void = let
-    val tmp = S[u] in
-    S[u] := S[1]; S[1] := tmp; if tmp <> 1 then rev0 (S, 2, u-1)
+    val tmp = (u2i)S[u] in
+    S[u] := S[1]; S[1] := (i2u)tmp; if tmp <> 1 then rev0 (S, 2, u-1)
   end // end of [fannkuch_rev1]
   var max: int = max
-  val () = if P[1] <> 1 then let
+  val () = if (u2i)P[1] <> 1 then let
     var cnt: int = 0
     val () = iarr_copy (P, S, n)
-    var S1: natLte n = S[1]
+    var S1: natLte n = (u2i)S[1]
     val () = while (S1 > 1) begin
-      cnt := cnt + 1; fannkuch_rev1 (S, S1); S1 := S[1]
+      cnt := cnt + 1; fannkuch_rev1 (S, S1); S1 := (u2i)S[1]
     end (* end of [val] *)
     val () = if max < cnt then max := cnt
     val thePermCnt = thePermCnt_get ()
@@ -120,7 +134,7 @@ in
 end (* end of [fannkuch] *)
 
 fun iarr_init {n:nat} (A: iarr n, n: int n): void =
-  let var i: intGte 1 = 1 in while (i <= n) (A[i] := i; i := i+1) end
+  let var i: intGte 1 = 1 in while (i <= n) (A[i] := (i2u)i; i := i+1) end
 // end of [iarr_init]
 
 (* ****** ****** *)

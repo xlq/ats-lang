@@ -94,6 +94,11 @@ cleanall:: ; $(RMF) fannkuch-redux
 fannkuch-redux: fannkuch-redux.dats
 	$(ATSCC) -fomit-frame-pointer -O3 fannkuch-redux.dats -o fannkuch-redux
 
+checkall:: fannkuch2-redux
+cleanall:: ; $(RMF) fannkuch2-redux
+fannkuch2-redux: fannkuch2-redux.dats
+	$(ATSCC) -fomit-frame-pointer -O3 fannkuch2-redux.dats -o fannkuch2-redux
+
 ######
 
 checkall:: fasta
