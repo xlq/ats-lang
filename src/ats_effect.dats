@@ -70,20 +70,23 @@ overload prerr with $Loc.prerr_location
 typedef effect = int
 assume $Syn.effect_t = effect
 extern typedef "atsopt_effect_t" = effect
-
-// the maximal effect number
-#define MAX_EFFECT_NUMBER 3
-// #assert (MAX_EFFECT_NUMBER <= __WORDSIZE)
+//
+// HX the maximal effect number
+//
+#define MAX_EFFECT_NUMBER 4
+// #assert (MAX_EFFECT_NUMBER < __WORDSIZE)
 
 macdef EFFexn = 1 // exception
 macdef EFFntm = 2 // nontermination
 macdef EFFref = 3 // reference
-// macdef EFFwrt = 4 // not supported
+macdef EFFwrt = 4 // write // not supported
 
 implement effect_exn = EFFexn
 implement effect_ntm = EFFntm
 implement effect_ref = EFFref
-// implement effect_wrt = EFFwrt // not supported
+(*
+implement effect_wrt = EFFwrt // not supported
+*)
 implement effectlst_all = '[ EFFexn, EFFntm, EFFref ]
 
 implement eq_effect_effect

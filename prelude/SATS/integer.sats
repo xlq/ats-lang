@@ -154,13 +154,12 @@ overload pow with pow_int_int1
 // bit operations
 //
 
-fun asl_int_int1 (i: int, n: Nat):<> int
-  = "atspre_asl_int_int1"
-
-and asr_int_int1 (i: int, n: Nat):<> int
-  = "atspre_asr_int_int1"
-
+fun asl_int_int1
+  (i: int, n: Nat):<> int = "atspre_asl_int_int1"
 overload << with asl_int_int1
+
+fun asr_int_int1
+  (i: int, n: Nat):<> int = "atspre_asr_int_int1"
 overload >> with asr_int_int1
 
 (* ****** ****** *)
@@ -270,24 +269,24 @@ overload cube with cube_uint
 
 (* ****** ****** *)
 
-fun lt_uint_uint (u1: uint, u2: uint):<> bool
-  = "atspre_lt_uint_uint"
-and lte_uint_uint (u1: uint, u2: uint):<> bool
-  = "atspre_lte_uint_uint"
+fun lt_uint_uint
+  (u1: uint, u2: uint):<> bool = "atspre_lt_uint_uint"
+and lte_uint_uint
+  (u1: uint, u2: uint):<> bool = "atspre_lte_uint_uint"
 overload < with lt_uint_uint
 overload <= with lte_uint_uint
 
-fun gt_uint_uint (u1: uint, u2: uint):<> bool
-  = "atspre_gt_uint_uint"
-and gte_uint_uint (u1: uint, u2: uint):<> bool
-  = "atspre_gte_uint_uint"
+fun gt_uint_uint
+  (u1: uint, u2: uint):<> bool = "atspre_gt_uint_uint"
+and gte_uint_uint
+  (u1: uint, u2: uint):<> bool = "atspre_gte_uint_uint"
 overload > with gt_uint_uint
 overload >= with gte_uint_uint
 
-fun eq_uint_uint (u1: uint, u2: uint):<> bool
-  = "atspre_eq_uint_uint"
-and neq_uint_uint (u1: uint, u2: uint):<> bool
-  = "atspre_neq_uint_uint"
+fun eq_uint_uint
+  (u1: uint, u2: uint):<> bool = "atspre_eq_uint_uint"
+and neq_uint_uint
+  (u1: uint, u2: uint):<> bool = "atspre_neq_uint_uint"
 overload = with eq_uint_uint
 overload <> with neq_uint_uint
 overload != with neq_uint_uint
@@ -310,8 +309,8 @@ overload min with min_uint_uint
 
 // bit operations
 
-fun lnot_uint (u: uint):<> uint
-  = "atspre_lnot_uint" (* bitwise *)
+fun lnot_uint
+  (u: uint):<> uint = "atspre_lnot_uint" (* bitwise *)
 overload ~ with lnot_uint
 
 fun land_uint_uint

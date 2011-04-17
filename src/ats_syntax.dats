@@ -1070,7 +1070,10 @@ fn s0exp_lam ( // lam-expression construction
   s0exp_loc= loc , s0exp_node= S0Elam (arg, res, body)
 } // end of [s0exp_lam]
  
-implement s0exp_lams (t_beg, args, res, body) = let
+implement
+s0exp_lams (
+  t_beg, args, res, body
+) = let
   val loc = combine (t_beg.t0kn_loc, body.s0exp_loc)
   fun aux
     (arg0: s0arglst, args: s0arglstlst):<cloptr1> s0exp =
@@ -1079,6 +1082,7 @@ implement s0exp_lams (t_beg, args, res, body) = let
         s0exp_lam (loc, arg0, s0rtopt_none (), aux (arg, args))
       end
     | nil () => s0exp_lam (loc, arg0, res, body)
+  // end of [val]
 in
   case+ args of
   | cons (arg, args) => aux (arg, args) | nil () => body

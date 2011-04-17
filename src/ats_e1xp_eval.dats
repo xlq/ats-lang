@@ -217,74 +217,7 @@ end (* end of [e1xp_eval_int] *)
 
 (* ****** ****** *)
 
-fun e1xp_eval_appid
-  (loc: loc_t, id: sym_t, es: e1xplst): v1al = let
-(*
-  val () = begin
-    print "e1xp_eval_appid: id = "; $Sym.print_symbol id; print_newline ()
-  end // end of [val]
-*)
-in
-  if id = $Sym.symbol_DEFINED then begin case+ es of
-    | cons (e, nil ()) => e1xp_eval_defined (loc, e)
-    | _ => e1xp_eval_appid_errmsg_arity (loc, id)
-  end else if id = $Sym.symbol_UNDEFINED then begin case+ es of
-    | cons (e, nil ()) => e1xp_eval_undefined (loc, e)
-    | _ => e1xp_eval_appid_errmsg_arity (loc, id)
-  end else if id = $Sym.symbol_ADD then begin case+ es of
-    | cons (e1, cons (e2, nil ())) => e1xp_eval_add (loc, e1, e2)
-    | _ => e1xp_eval_appid_errmsg_arity (loc, id)
-  end else if id = $Sym.symbol_SUB then begin case+ es of
-    | cons (e1, cons (e2, nil ())) => e1xp_eval_sub (loc, e1, e2)
-    | _ => e1xp_eval_appid_errmsg_arity (loc, id)
-  end else if id = $Sym.symbol_MUL then begin case+ es of
-    | cons (e1, cons (e2, nil ())) => e1xp_eval_mul (loc, e1, e2)
-    | _ => e1xp_eval_appid_errmsg_arity (loc, id)
-  end else if id = $Sym.symbol_DIV then begin case+ es of
-    | cons (e1, cons (e2, nil ())) => e1xp_eval_div (loc, e1, e2)
-    | _ => e1xp_eval_appid_errmsg_arity (loc, id)
-  end else if id = $Sym.symbol_LT then begin case+ es of
-    | cons (e1, cons (e2, nil ())) => e1xp_eval_lt (loc, e1, e2)
-    | _ => e1xp_eval_appid_errmsg_arity (loc, id)
-  end else if id = $Sym.symbol_LTEQ then begin case+ es of
-    | cons (e1, cons (e2, nil ())) => e1xp_eval_lte (loc, e1, e2)
-    | _ => e1xp_eval_appid_errmsg_arity (loc, id)
-  end else if id = $Sym.symbol_GT then begin case+ es of
-    | cons (e1, cons (e2, nil ())) => e1xp_eval_gt (loc, e1, e2)
-    | _ => e1xp_eval_appid_errmsg_arity (loc, id)
-  end else if id = $Sym.symbol_GTEQ then begin case+ es of
-    | cons (e1, cons (e2, nil ())) => e1xp_eval_gte (loc, e1, e2)
-    | _ => e1xp_eval_appid_errmsg_arity (loc, id)
-  end else if id = $Sym.symbol_EQ then begin case+ es of
-    | cons (e1, cons (e2, nil ())) => e1xp_eval_eq (loc, e1, e2)
-    | _ => e1xp_eval_appid_errmsg_arity (loc, id)
-  end else if id = $Sym.symbol_EQEQ then begin case+ es of
-    | cons (e1, cons (e2, nil ())) => e1xp_eval_eq (loc, e1, e2)
-    | _ => e1xp_eval_appid_errmsg_arity (loc, id)
-  end else if id = $Sym.symbol_NEQ then begin case+ es of
-    | cons (e1, cons (e2, nil ())) => e1xp_eval_neq (loc, e1, e2)
-    | _ => e1xp_eval_appid_errmsg_arity (loc, id)
-  end else if id = $Sym.symbol_NEQEQ then begin case+ es of
-    | cons (e1, cons (e2, nil ())) => e1xp_eval_neq (loc, e1, e2)
-    | _ => e1xp_eval_appid_errmsg_arity (loc, id)
-  end else if id = $Sym.symbol_LAND then begin case+ es of
-    | cons (e1, cons (e2, nil ())) => e1xp_eval_and (loc, e1, e2)
-    | _ => e1xp_eval_appid_errmsg_arity (loc, id)
-  end else if id = $Sym.symbol_LOR then begin case+ es of
-    | cons (e1, cons (e2, nil ())) => e1xp_eval_or (loc, e1, e2)
-    | _ => e1xp_eval_appid_errmsg_arity (loc, id)
-  end else if id = $Sym.symbol_LTLT then begin case+ es of
-    | cons (e1, cons (e2, nil ())) => e1xp_eval_asl (loc, e1, e2)
-    | _ => e1xp_eval_appid_errmsg_arity (loc, id)
-  end else if id = $Sym.symbol_GTGT then begin case+ es of
-    | cons (e1, cons (e2, nil ())) => e1xp_eval_asr (loc, e1, e2)
-    | _ => e1xp_eval_appid_errmsg_arity (loc, id)
-  end else begin
-    e1xp_eval_appid_errmsg_opr (loc, id)
-  end // end of [if]
-end // end of [e1xp_eval_appid]
-
-and e1xp_eval_defined
+fun e1xp_eval_defined
   (loc: loc_t, e: e1xp): v1al = begin
   case+ e.e1xp_node of
   | E1XPide id => V1ALint (i) where {
@@ -312,7 +245,7 @@ and e1xp_eval_undefined
     end // end of [_]
 end // end of [e1xp_eval_undefined]
   
-and e1xp_eval_add (
+fun e1xp_eval_add (
   loc: loc_t, e1: e1xp, e2: e1xp
 ) : v1al = let
   val v1 = e1xp_eval e1; val v2 = e1xp_eval e2
@@ -365,7 +298,7 @@ in
     end // end of [(_, _)]
 end // end of [e1xp_eval_div]
 
-and e1xp_eval_lt (
+fun e1xp_eval_lt (
   loc: loc_t, e1: e1xp, e2: e1xp
 ) : v1al = let
   val v1 = e1xp_eval e1; val v2 = e1xp_eval e2
@@ -463,7 +396,7 @@ in
     end // end of [(_, _)]
 end // end of [e1xp_eval_neq]
 
-and e1xp_eval_and (
+fun e1xp_eval_and (
   loc: loc_t, e1: e1xp, e2: e1xp
 ) : v1al = let
   val v1 = e1xp_eval e1; val v2 = e1xp_eval e2
@@ -510,7 +443,7 @@ in
 end // end of [e1xp_eval_or]
 
 (* arithmetic shift to the left *)
-and e1xp_eval_asl (
+fun e1xp_eval_asl (
   loc: loc_t, e1: e1xp, e2: e1xp
 ) : v1al = let
   val v1 = e1xp_eval e1; val v2 = e1xp_eval e2
@@ -565,6 +498,75 @@ end // end of [e1xp_eval_asr]
 
 (* ****** ****** *)
 
+fun e1xp_eval_appid
+  (loc: loc_t, id: sym_t, es: e1xplst): v1al = let
+(*
+  val () = begin
+    print "e1xp_eval_appid: id = "; $Sym.print_symbol id; print_newline ()
+  end // end of [val]
+*)
+in
+  if id = $Sym.symbol_DEFINED then begin case+ es of
+    | cons (e, nil ()) => e1xp_eval_defined (loc, e)
+    | _ => e1xp_eval_appid_errmsg_arity (loc, id)
+  end else if id = $Sym.symbol_UNDEFINED then begin case+ es of
+    | cons (e, nil ()) => e1xp_eval_undefined (loc, e)
+    | _ => e1xp_eval_appid_errmsg_arity (loc, id)
+  end else if id = $Sym.symbol_ADD then begin case+ es of
+    | cons (e1, cons (e2, nil ())) => e1xp_eval_add (loc, e1, e2)
+    | _ => e1xp_eval_appid_errmsg_arity (loc, id)
+  end else if id = $Sym.symbol_SUB then begin case+ es of
+    | cons (e1, cons (e2, nil ())) => e1xp_eval_sub (loc, e1, e2)
+    | _ => e1xp_eval_appid_errmsg_arity (loc, id)
+  end else if id = $Sym.symbol_MUL then begin case+ es of
+    | cons (e1, cons (e2, nil ())) => e1xp_eval_mul (loc, e1, e2)
+    | _ => e1xp_eval_appid_errmsg_arity (loc, id)
+  end else if id = $Sym.symbol_DIV then begin case+ es of
+    | cons (e1, cons (e2, nil ())) => e1xp_eval_div (loc, e1, e2)
+    | _ => e1xp_eval_appid_errmsg_arity (loc, id)
+  end else if id = $Sym.symbol_LT then begin case+ es of
+    | cons (e1, cons (e2, nil ())) => e1xp_eval_lt (loc, e1, e2)
+    | _ => e1xp_eval_appid_errmsg_arity (loc, id)
+  end else if id = $Sym.symbol_LTEQ then begin case+ es of
+    | cons (e1, cons (e2, nil ())) => e1xp_eval_lte (loc, e1, e2)
+    | _ => e1xp_eval_appid_errmsg_arity (loc, id)
+  end else if id = $Sym.symbol_GT then begin case+ es of
+    | cons (e1, cons (e2, nil ())) => e1xp_eval_gt (loc, e1, e2)
+    | _ => e1xp_eval_appid_errmsg_arity (loc, id)
+  end else if id = $Sym.symbol_GTEQ then begin case+ es of
+    | cons (e1, cons (e2, nil ())) => e1xp_eval_gte (loc, e1, e2)
+    | _ => e1xp_eval_appid_errmsg_arity (loc, id)
+  end else if id = $Sym.symbol_EQ then begin case+ es of
+    | cons (e1, cons (e2, nil ())) => e1xp_eval_eq (loc, e1, e2)
+    | _ => e1xp_eval_appid_errmsg_arity (loc, id)
+  end else if id = $Sym.symbol_EQEQ then begin case+ es of
+    | cons (e1, cons (e2, nil ())) => e1xp_eval_eq (loc, e1, e2)
+    | _ => e1xp_eval_appid_errmsg_arity (loc, id)
+  end else if id = $Sym.symbol_NEQ then begin case+ es of
+    | cons (e1, cons (e2, nil ())) => e1xp_eval_neq (loc, e1, e2)
+    | _ => e1xp_eval_appid_errmsg_arity (loc, id)
+  end else if id = $Sym.symbol_NEQEQ then begin case+ es of
+    | cons (e1, cons (e2, nil ())) => e1xp_eval_neq (loc, e1, e2)
+    | _ => e1xp_eval_appid_errmsg_arity (loc, id)
+  end else if id = $Sym.symbol_LAND then begin case+ es of
+    | cons (e1, cons (e2, nil ())) => e1xp_eval_and (loc, e1, e2)
+    | _ => e1xp_eval_appid_errmsg_arity (loc, id)
+  end else if id = $Sym.symbol_LOR then begin case+ es of
+    | cons (e1, cons (e2, nil ())) => e1xp_eval_or (loc, e1, e2)
+    | _ => e1xp_eval_appid_errmsg_arity (loc, id)
+  end else if id = $Sym.symbol_LTLT then begin case+ es of
+    | cons (e1, cons (e2, nil ())) => e1xp_eval_asl (loc, e1, e2)
+    | _ => e1xp_eval_appid_errmsg_arity (loc, id)
+  end else if id = $Sym.symbol_GTGT then begin case+ es of
+    | cons (e1, cons (e2, nil ())) => e1xp_eval_asr (loc, e1, e2)
+    | _ => e1xp_eval_appid_errmsg_arity (loc, id)
+  end else begin
+    e1xp_eval_appid_errmsg_opr (loc, id)
+  end // end of [if]
+end // end of [e1xp_eval_appid]
+
+(* ****** ****** *)
+
 implement
 e1xp_eval (e0) = let
 (*
@@ -576,8 +578,7 @@ in
   case+ e0.e1xp_node of
   | E1XPapp (e, _(*loc_arg*), es) => (
       case+ e.e1xp_node of
-      | E1XPide id =>
-          e1xp_eval_appid (e.e1xp_loc, id, es)
+      | E1XPide id => e1xp_eval_appid (e.e1xp_loc, id, es)
       | _ => e1xp_eval_errmsg_app e.e1xp_loc
     ) // end of [E1XPapp]
   | E1XPchar c => V1ALchar c

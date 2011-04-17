@@ -64,17 +64,20 @@ fun atsopt_fxtyenv_print (): void // mostly for debugging
 
 (* ****** ******* *)
 
-absview trans1_level_token // to avoid entering negative level
+absview
+trans1_level_v // for avoiding negative levels
 fun trans1_level_get (): int
-fun trans1_level_dec (pf: trans1_level_token | (*none*)): void
-fun trans1_level_inc (): (trans1_level_token | void)
+fun trans1_level_dec (pf: trans1_level_v | (*none*)): void
+fun trans1_level_inc (): (trans1_level_v | void)
 
 (* ****** ******* *)
 
 fun trans1_env_pop (): void
 fun trans1_env_push (): void
 
-(* <env_localjoin> is for handling <local ... in ... end> *)
+(*
+** HX: for handling <local ... in ... end>
+*)
 fun trans1_env_localjoin (): void
 
 fun trans1_env_save (): void

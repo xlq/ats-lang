@@ -180,3 +180,5 @@ in
 end
 
 (* ****** ****** *)
+
+(* end of [fannkuch2-redux.dats] *)

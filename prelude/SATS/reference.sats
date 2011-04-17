@@ -110,11 +110,14 @@ fun{a:t@ype} refconst_get_elt (r: refconst a):<> a
 //
 // HX: implemented in [prelude/CATS/reference.cats]
 //
+castfn ref_get_ptr
+  {a:viewt@ype} (r: ref a):<> [l:agz] ptr (l)
 castfn ref_get_view_ptr
-  {a:viewt@ype} (r: ref a):<> [l:addr] (vbox (a @ l) | ptr l)
+  {a:viewt@ype} (r: ref a):<> [l:agz] (vbox (a @ l) | ptr l)
   = "atspre_ref_get_view_ptr"
 // end of [ref_get_view_ptr]
 
+(* ****** ****** *)
 //
 // HX: implemented in [prelude/DATS/reference.dats]
 //

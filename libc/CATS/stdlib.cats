@@ -60,6 +60,12 @@ atspre_exit_prerrf(ats_int_type code, ats_ptr_type fmt, ...) ;
 
 /* ****** ****** */
 
+#define atslib_strtoi_errnul(str, base) strtoi(str, NULL, base)
+#define atslib_strtol_errnul(str, base) strtol(str, NULL, base)
+#define atslib_strtoll_errnul(str, base) strtoll(str, NULL, base)
+
+/* ****** ****** */
+
 #define atslib_getenv getenv 
 #define atslib_putenv putenv
 #define atslib_setenv setenv

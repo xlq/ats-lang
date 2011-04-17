@@ -170,7 +170,7 @@ end // end of [ats_fxtyenv_print]
 
 local
 
-assume trans1_level_token = unit_v
+assume trans1_level_v = unit_v
 val the_trans1_level : ref int = ref_make_elt<int> 0
 
 in // in of [local]

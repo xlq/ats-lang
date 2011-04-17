@@ -182,8 +182,7 @@ fun getcwd {m:nat} {l:addr} (
 //
 fun getcwd0 (): strptr1 = "atslib_getcwd0"
 //
-// HX:
-// [get_current_dir_name] is available if _GNU_SOURCE is on
+// HX: [get_current_dir_name] is available if _GNU_SOURCE is on
 //
 (* ****** ****** *)
 

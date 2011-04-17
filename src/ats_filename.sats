@@ -30,10 +30,10 @@
 *)
 
 (* ****** ****** *)
-
+//
 // Author: Hongwei Xi (hwxi AT cs DOT bu DOT edu)
 // Time: July 2007
-
+//
 (* ****** ****** *)
 
 staload Sym = "ats_symbol.sats"
@@ -64,8 +64,8 @@ val filename_stdin : filename_t
 
 //
 
-fun filename_is_exist (name: string): bool
-  = "atsopt_filename_is_exist"
+fun filename_isexi
+  (name: string): bool = "atsopt_filename_isexi"
 fun filename_is_relative (name: string): bool
 fun filename_append (dir: string, bas: string): string
   = "atsopt_filename_append"
@@ -140,7 +140,6 @@ fun the_prepathlst_push (p: string): void
 
 fun the_filename_get (): filename_t
 fun the_filenamelst_pop (): void
-
 fun the_filenamelst_push (f: filename_t): void
 
 //

@@ -137,9 +137,9 @@ fn dcstextdef_tr
 // end of [dcstextdef_tr]
 
 (* ****** ****** *)
-
-// translation of dynamic constants
-
+//
+// HX: translation of dynamic constants
+//
 local // defining [d0cstdec_tr]
 
 fun aux1 (xs: p0arglst): s1explst = begin
@@ -182,7 +182,7 @@ fun aux2
       end // end of [D0ARGdyn]
     | D0ARGdyn2 (ys1, ys2) => let
         val loc_x = x.d0arg_loc
-        val s1es_arg = s1exp_list2 (loc_x, aux1 ys1, aux1 ys2)
+        val s1e_arg = s1exp_list2 (loc_x, aux1 ys1, aux1 ys2)
         val s1e_res = aux2 (fc, lin, prf, oefc, fst+1, lst, xs, s1e_res)
         val loc_res = s1e_res.s1exp_loc
         val loc = $Loc.location_combine (loc_x, loc_res)
@@ -194,7 +194,7 @@ fun aux2
             s1exp_imp (loc_res, fc, lin, prf, oefc)
           end // end of [if]
       in
-        lst := lst + 1; s1exp_app (loc, imp, loc, '[s1es_arg, s1e_res])
+        lst := lst + 1; s1exp_app (loc, imp, loc, '[s1e_arg, s1e_res])
       end // end of [D0ARGdyn2]
     | D0ARGsta s0qs => let
         val loc_x = x.d0arg_loc
@@ -290,9 +290,9 @@ fun d0cstdeclst_tr
 end // end of [local]
 
 (* ****** ****** *)
-
-// translation of dynamic patterns
-
+//
+// HX: translation of dynamic patterns
+//
 typedef p1atitm = $Fix.item p1at
 typedef p1atitmlst = List p1atitm
 
@@ -1740,15 +1740,7 @@ d0ec_tr d0c0 = begin
   | D0Csaspdec (d0c) => begin
       d1ec_saspdec (d0c0.d0ec_loc, s0aspdec_tr d0c)
     end // end of [D0Csaspdec]
-  | D0Cdcstdecs (dck, s0qss, d0c, d0cs) => let
-      val isfun = dcstkind_is_fun dck
-      and isprf = dcstkind_is_proof dck
-      val s1qss = s0qualstlst_tr s0qss
-      val d1c = d0cstdec_tr (isfun, isprf, d0c)
-      and d1cs = d0cstdeclst_tr (isfun, isprf, d0cs)
-    in
-      d1ec_dcstdecs (d0c0.d0ec_loc, dck, s1qss, d1c :: d1cs)
-    end // end of [D0Cdcstdecs]
+//
   | D0Cdatdecs (dk, d0c1, d0cs1, d0cs2) => let
       val d1c1 = d0atdec_tr d0c1 and d1cs1 = d0atdeclst_tr d0cs1
       val d1cs2 = s0expdeflst_tr d0cs2
@@ -1760,6 +1752,17 @@ d0ec_tr d0c0 = begin
     in
       d1ec_exndecs (d0c0.d0ec_loc, d1c :: d1cs)
     end // end of [D0Cexndecs]
+//
+  | D0Cdcstdecs (dck, s0qss, d0c, d0cs) => let
+      val isfun = dcstkind_is_fun dck
+      and isprf = dcstkind_is_proof dck
+      val s1qss = s0qualstlst_tr s0qss
+      val d1c = d0cstdec_tr (isfun, isprf, d0c)
+      and d1cs = d0cstdeclst_tr (isfun, isprf, d0cs)
+    in
+      d1ec_dcstdecs (d0c0.d0ec_loc, dck, s1qss, d1c :: d1cs)
+    end // end of [D0Cdcstdecs]
+//
   | D0Cclassdec (id, sup) => let
       val sup = s0expopt_tr (sup) in
       d1ec_classdec (d0c0.d0ec_loc, id, sup)
@@ -2000,6 +2003,22 @@ atsopt_extnam_issta (
   } // end of [if]
   return ats_false_bool ;
 } // end of [atsopt_extnam_issta]
+
+ats_bool_type
+atsopt_extnam_isext (
+  ats_ptr_type ext, ats_ptr_type ext_new
+) {
+  int sgn ;
+  char* p ; int len ; 
+  sgn = strncmp ((char*)ext, "ext#", 4) ;
+  if (sgn == 0) {
+    p = strchr ((char*)ext, '#') ;
+    len = strlen (p) ;
+    *(char**)ext_new = (char*)atspre_string_make_substring(p, 1, len-1) ;
+    return ats_true_bool ;
+  } // end of [if]
+  return ats_false_bool ;
+} // end of [atsopt_extnam_isext]
 
 %} // end of [%{$]
 

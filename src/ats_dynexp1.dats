@@ -844,6 +844,8 @@ implement s1aspdec_make (loc, qid, arg, res, def) = '{
 , s1aspdec_def= def
 } // end of [s1aspdec_make]
 
+(* ****** ****** *)
+
 implement d1cstdec_make (loc, fil, id, s1e, extdef) = '{
   d1cstdec_loc= loc
 , d1cstdec_fil= fil
@@ -877,6 +879,8 @@ implement e1xndec_make (loc, fil, id, qua, npf, arg) = '{
 , e1xndec_npf= npf
 , e1xndec_arg= arg
 } // end of [e1xndec_make]
+
+(* ****** ****** *)
 
 implement v1aldec_make (loc, p1t, d1e, ann) = '{
   v1aldec_loc= loc

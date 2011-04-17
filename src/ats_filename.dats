@@ -30,10 +30,10 @@
 *)
 
 (* ****** ****** *)
-
+//
 // Author: Hongwei Xi (hwxi AT cs DOT bu DOT edu)
 // Time: July 2007
-
+//
 (* ****** ****** *)
 
 (* ats_filename: handling the names of files *)
@@ -95,7 +95,6 @@ implement theDirsep_get () = theDirsep
 implement theCurdir_get () = theCurdir
 implement thePredir_get () = thePredir
 
-
 end // end of [local]
 
 (* ****** ****** *)
@@ -118,11 +117,11 @@ end // [filename_is_relative]
 //
 ATSinline()
 ats_bool_type
-atsopt_filename_is_exist
+atsopt_filename_isexi
   (ats_ptr_type name) {
   struct stat st ;
   return stat ((char*)name, &st) ? ats_false_bool : ats_true_bool ;
-} /* end of [atsopt_filename_is_exist] */
+} /* end of [atsopt_filename_isexi] */
 //
 %} // end of [%{^]
 
@@ -148,7 +147,7 @@ atsopt_filename_append (
   if (n > n1 + n2) { dirbas[n1] = dirsep ; n1 += 1 ; }
   memcpy (dirbas + n1, bas, n2) ;
   dirbas[n] = '\000' ;
-
+//
   return dirbas ;
 } /* end of [atsopt_filename_append] */
 
@@ -223,18 +222,23 @@ implement prerr_filename_base (x) = prerr_mac (fprint_filename_base, x)
 
 typedef path = string
 
+local
+
 staload "ats_list.sats"
 staload _(*anon*) = "ats_list.dats"
+
+in // in of [local]
+
 fun path_normalize (s0: path): path = let
   fun loop1 {n0,i0:nat | i0 <= n0} (
-      dirsep: char
-    , s0: string n0, n0: size_t n0, i0: size_t i0, dirs: &List_vt string
-    ) : void =
+    dirsep: char
+  , s0: string n0, n0: size_t n0, i0: size_t i0, dirs: &List_vt string
+  ) : void =
     if i0 < n0 then loop2 (dirsep, s0, n0, i0, i0, dirs) else ()
   and loop2 {n0,i0,i:nat | i0 < n0; i0 <= i; i <= n0} (
-      dirsep: char
-    , s0: string n0, n0: size_t n0, i0: size_t i0, i: size_t i, dirs: &List_vt string
-    ) : void =
+    dirsep: char
+  , s0: string n0, n0: size_t n0, i0: size_t i0, i: size_t i, dirs: &List_vt string
+   ) : void =
     if i < n0 then let
 (*
       // empty
@@ -308,6 +312,8 @@ in
   string_of_strptr (fullname)
 end // end of [path_normalize]
 
+end // end of [local]
+
 (* ****** ****** *)
 
 typedef pathlst = List path
@@ -322,7 +328,8 @@ in // in of [local]
 fn the_pathlst_get (): pathlst = !the_pathlst
 fn the_pathlst_reset () = !the_pathlst := list_nil ()
 
-implement the_pathlst_pop () = begin
+implement
+the_pathlst_pop () = begin
   case+ !the_pathlst of
   | list_cons (_, ps) => !the_pathlst := ps
   | list_nil () => begin
@@ -332,13 +339,14 @@ implement the_pathlst_pop () = begin
     end // end of [list_nil]
 end // end of [the_pathlst_pop]
 
-implement the_pathlst_push (dirname) = let
+implement
+the_pathlst_push (dirname) = let
   val dirname_full = (case+ 0 of
     | _ when filename_is_relative dirname => let
         val cwd = getcwd0 () in filename_append (cwd, dirname)
       end // end of [_ when ...]
     | _ => dirname
-  ) : string
+  ) : string // end of [val]
   val dirname_full = path_normalize (dirname_full)
 (*
   val () = begin
@@ -354,7 +362,8 @@ end // end of [the_pathlst_push]
 
 fun the_prepathlst_get (): pathlst = !the_prepathlst
 
-implement the_prepathlst_push (dirname) = let
+implement
+the_prepathlst_push (dirname) = let
   val () = if filename_is_relative dirname then begin
     prerr_interror ();
     // the directory name [dirname] is not absolute
@@ -389,7 +398,8 @@ val the_filenamelst_pop_err = lam () =<fun1> begin
   exit (1)
 end // end of [the_filenamelst_pop_err]
 
-implement the_filenamelst_pop () = begin
+implement
+the_filenamelst_pop () = begin
   case+ !the_filenamelst of
   | list_cons (f, fs) => begin
       !the_filename := f; !the_filenamelst := fs
@@ -422,7 +432,7 @@ the_filenamelst_push_xit (loc0, f0) = let
     // end of [loop1]
   } // end of [val isexi]
   val () = if isexi then let
-    val () = $Loc. prerr_location loc0
+    val () = $Loc.prerr_location loc0
     val () = prerr (": error(0)")
     val () = prerr (": loading or including the file [");
     val () = prerr_filename (f0)
@@ -453,7 +463,8 @@ implement filename_full_sym f = f.filename_full_sym
 (* ****** ****** *)
 
 implement
-filename_make_absolute (fullname) = let
+filename_make_absolute
+  (fullname) = let
   val fullname_id = fullname
   val fullname_sym = $Sym.symbol_make_string fullname
 in '{
@@ -476,7 +487,7 @@ filenameopt_make_relative (basename) = let
 *)
       in
         case+ 0 of
-        | _ when filename_is_exist (fullname) => stropt_some fullname
+        | _ when filename_isexi (fullname) => stropt_some fullname
         | _ => aux_try (paths, basename)
       end
     | list_nil () => stropt_none
@@ -485,7 +496,7 @@ filenameopt_make_relative (basename) = let
   in
     case+ 0 of
     | _ when stropt_is_some fullnameopt => fullnameopt
-    | _ when filename_is_exist basename => let
+    | _ when filename_isexi basename => let
         val cwd = getcwd0 ()
         val fullname = filename_append (cwd, basename)
         val fullname = string1_of_string fullname
@@ -493,11 +504,11 @@ filenameopt_make_relative (basename) = let
         stropt_some fullname
       end
     | _ => aux_try (the_pathlst_get (), basename)
-  end
+  end // end of [aux_relative]
   val fullnameopt = (case+ 0 of
     | _ when filename_is_relative basename => aux_relative basename
-    | _ => begin
-        if filename_is_exist basename then stropt_some basename else stropt_none
+    | _ => begin // [basename] is absolute
+        if filename_isexi basename then stropt_some basename else stropt_none
       end // end of [_]
   ) : Stropt // end of [val]
 in
@@ -509,7 +520,7 @@ in
   end else begin
     None_vt ()
   end // end of [if]
-end // end of [filenameopt_make]
+end // end of [filenameopt_make_relative]
 
 (* ****** ****** *)
 

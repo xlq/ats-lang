@@ -58,6 +58,20 @@ fun atoll (inp: !READ(string)):<> llint = "mac#atslib_atoll"
 
 (* ****** ****** *)
 
+fun strtoi_errnul (
+  inp: !READ(string), base: intBtw (2, 36+1)
+) :<> int = "mac#atslib_strtoi_errnul"
+
+fun strtol_errnul (
+  inp: !READ(string), base: intBtw (2, 36+1)
+) :<> lint = "mac#atslib_strtol_errnul"
+
+fun strtoll_errnul (
+  inp: !READ(string), base: intBtw (2, 36+1)
+) :<> llint = "mac#atslib_strtoll_errnul"
+
+(* ****** ****** *)
+
 fun getenv (
   name: !READ(string)
 ) : [l:addr] (

@@ -236,15 +236,15 @@ implement e0xp_tr (e0) = let
   end // end of [aux_item]
 //
   and aux_itemlst (e0: e0xp): e1xpitmlst = let
-    fun aux (res: e1xpitmlst, e0: e0xp): e1xpitmlst =
+    fun loop (res: e1xpitmlst, e0: e0xp): e1xpitmlst =
       case+ e0.e0xp_node of
       | E0XPapp (e1, e2) => begin
-          let val res = aux_item e2 :: res in aux (res, e1) end
+          let val res = aux_item e2 :: res in loop (res, e1) end
         end // end of [E0XPapp]
       | _ => aux_item e0 :: res
-    // end of [aux]
+    // end of [loop]
   in
-    aux (nil (), e0)
+    loop (nil (), e0)
   end // end of [aux_itemlst]
 //
 in
@@ -333,21 +333,21 @@ end // end of [aux_item]
 //
 and aux_itemlst
   (s0t0: s0rt): s1rtitmlst = let
-  fun aux (res: s1rtitmlst, s0t0: s0rt): s1rtitmlst =
+  fun loop (res: s1rtitmlst, s0t0: s0rt): s1rtitmlst =
     case+ s0t0.s0rt_node of
     | S0RTapp (s0t1, s0t2) => let
-        val res = aux_item s0t2 :: res in aux (res, s0t1)
+        val res = aux_item s0t2 :: res in loop (res, s0t1)
       end // end of [S0RTapp]
     | _ => aux_item s0t0 :: res // end of [_]
-  // end of [aux]
+  // end of [loop]
 in
-  aux (nil (), s0t0)
+  loop (nil (), s0t0)
 end // end of [aux_itemlst]
 //
 in
   case+ aux_item s0t0 of
-    | $Fix.ITEMatm (s1t) => s1t
-    | $Fix.ITEMopr _ => s0rt_tr_errmsg_opr s0t0.s0rt_loc
+  | $Fix.ITEMatm (s1t) => s1t
+  | $Fix.ITEMopr _ => s0rt_tr_errmsg_opr s0t0.s0rt_loc
   // end of [case]
 end // end of [s0rt_tr]
 
@@ -378,7 +378,8 @@ fn s0rtpol_srt_tr (s0tp: s0rtpol): s1rt =
 
 (* ****** ****** *)
 
-fn d0atarg_tr (d0a: d0atarg): d1atarg = begin
+fn d0atarg_tr
+  (d0a: d0atarg): d1atarg = begin
   case+ d0a.d0atarg_node of
   | D0ATARGsrt s0tp => begin
       d1atarg_srt (d0a.d0atarg_loc, s0rtpol_tr s0tp)
@@ -388,13 +389,15 @@ fn d0atarg_tr (d0a: d0atarg): d1atarg = begin
     end
 end // end of [d0atarg_tr]
 
-fun d0atarglst_tr (d0as: d0atarglst): d1atarglst =
+fun d0atarglst_tr
+  (d0as: d0atarglst): d1atarglst =
   case+ d0as of
   | cons (d0a, d0as) => cons (d0atarg_tr d0a, d0atarglst_tr d0as)
   | nil () => nil ()
 // end of [d0atarglst_tr]
 
-fun d0atarglst_srtlst_tr (d0as: d0atarglst): s1rtlst = begin
+fun d0atarglst_srtlst_tr
+  (d0as: d0atarglst): s1rtlst = begin
   case+ d0as of
   | cons (d0a, d0as) => let
       val s0tp: s0rtpol = case+ d0a.d0atarg_node of
@@ -402,7 +405,7 @@ fun d0atarglst_srtlst_tr (d0as: d0atarglst): s1rtlst = begin
       val s1t = s0rtpol_srt_tr s0tp
     in
       cons (s1t, d0atarglst_srtlst_tr d0as)
-    end
+    end (* end of [cons] *)
   | nil () => nil ()
 end // end of [d0atarglst_srtlst_tr]
 
@@ -698,6 +701,7 @@ s0exp_tr s0e0 = let
         $Fix.ITEMatm (s1e_app)
       end // end of [S0Eapp]
     | S0Echar c => $Fix.ITEMatm (s1exp_char (loc0, c))
+//
     | S0Eexi (knd(*funres*), s0qs) => let
         val s1qs = s0qualst_tr s0qs
         fn f (body: s1exp):<cloref1> s1expitm =
@@ -905,18 +909,20 @@ s0exp_tr s0e0 = let
         $Err.abort {s1expitm} ()
       end // end of [_]
   end // end of [aux_item]
-
-  and aux_itemlst (s0e0: s0exp): s1expitmlst = let
-    fun aux (res: s1expitmlst, s0e0: s0exp): s1expitmlst =
+//
+  and aux_itemlst
+    (s0e0: s0exp): s1expitmlst = let
+    fun loop (res: s1expitmlst, s0e0: s0exp): s1expitmlst =
       case+ s0e0.s0exp_node of
       | S0Eapp (s0e1, s0e2) => let
-          val res = aux_item s0e2 :: res in aux (res, s0e1)
+          val res = aux_item s0e2 :: res in loop (res, s0e1)
         end // end of [S0Eapp]
       | _ => aux_item s0e0 :: res
-    // end of [aux]
+    // end of [loop]
   in
-    aux (nil (), s0e0)
+    loop (nil (), s0e0)
   end // end of [aux_itemlist]
+//
 in
   case+ aux_item s0e0 of
   | $Fix.ITEMatm (s1e) => s1e
@@ -1102,19 +1108,19 @@ end // end of [d0atdeclst_tr]
 implement
 e0xndec_tr (d) = let
   val qua = s0qualstlst_tr (d.e0xndec_qua)
-  var npf_r: int = 0
+  var npf0: int = 0
   val arg = (case+ d.e0xndec_arg of
     | Some s0e => let
         val s1e = s0exp_tr s0e in
         case+ s1e.s1exp_node of
-        | S1Elist (npf, s1es) => (npf_r := npf; s1es)
+        | S1Elist (npf, s1es) => (npf0 := npf; s1es)
         | _ => cons (s1e, nil ())
       end // end of [Some]
     | None () => nil ()
   ) : s1explst // end of [val]
 in
   e1xndec_make (
-    d.e0xndec_loc, d.e0xndec_fil, d.e0xndec_sym, qua, npf_r, arg
+    d.e0xndec_loc, d.e0xndec_fil, d.e0xndec_sym, qua, npf0, arg
   ) // end of [e1xndec_make]
 end // end of [e0xndec_tr]
 

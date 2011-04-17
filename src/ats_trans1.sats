@@ -48,8 +48,18 @@ staload DEXP = "ats_dynexp1.sats"
 
 (* ****** ****** *)
 
+fun do_e0xpact_assert
+  (loc: $Loc.location_t, v: $SEXP.v1al): void
+fun do_e0xpact_error
+  (loc: $Loc.location_t, v: $SEXP.v1al): void
+fun do_e0xpact_prerr (v: $SEXP.v1al): void
+
+(* ****** ****** *)
+
 fun e0xp_tr (_: $Syn.e0xp): $SEXP.e1xp
 fun e0xplst_tr (_: $Syn.e0xplst): $SEXP.e1xplst
+
+(* ****** ****** *)
 
 fun s0rt_tr (_: $Syn.s0rt): $SEXP.s1rt
 fun s0rtlst_tr (_: $Syn.s0rtlst): $SEXP.s1rtlst
@@ -105,14 +115,6 @@ fun d0exp_lams_dyn_tr (
 fun d0ec_fixity_tr
   (f0xty: $Syn.f0xty, ids: $Syn.i0delst): void
 fun d0ec_nonfix_tr (ids: $Syn.i0delst): void
-
-fun do_e0xpact_assert
-  (loc: $Loc.location_t, v: $SEXP.v1al): void
-
-fun do_e0xpact_error
-  (loc: $Loc.location_t, v: $SEXP.v1al): void
-
-fun do_e0xpact_prerr (v: $SEXP.v1al): void
 
 (* ****** ****** *)
 
