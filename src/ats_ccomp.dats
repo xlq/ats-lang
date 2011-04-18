@@ -466,6 +466,13 @@ valprim_argref (n, hit) = '{
 } // end of [valprim_argref]
 
 implement
+valprim_argtmpref (n, hit) = '{
+  valprim_node= VPargtmpref (n), valprim_typ= hit
+} // end of [valprim_argtmpref]
+
+(* ****** ****** *)
+
+implement
 valprim_bool (b) = '{
   valprim_node= VPbool b, valprim_typ= hityp_encode (hityp_bool)
 } // end of [valprim_bool]

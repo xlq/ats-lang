@@ -73,32 +73,35 @@ val the_filenamelst = ref_make_elt<filenamelst_vt> (list_vt_nil)
 in // in of [local]
 
 implement filename_push (x) = let
-  val (pfbox | p) = ref_get_view_ptr (the_filenamelst)
-  prval vbox pf = pfbox
+  val (vbox pf | p) = ref_get_view_ptr (the_filenamelst)
 in
   !p := list_vt_cons (x, !p)
 end // end of [filename_push]
 
 implement filename_pop () = let
-  val (pfbox | p) = ref_get_view_ptr (the_filenamelst)
-  prval vbox pf = pfbox
+  val (vbox pf | p) = ref_get_view_ptr (the_filenamelst)
 in
   case+ !p of
   | ~list_vt_cons (x, xs) => (!p := xs)
   | list_vt_nil () => let
+(*
+//
+// HX: there is no check!!!
+//
       val () = $effmask_ref begin
         prerr "exit(ATS/PARCOMB)";
-        prerr ": INTERNAL ERROR: filename_pop: empty stack"; prerr_newline ();
+        prerr ": ERROR: filename_pop: empty stack"; prerr_newline ();
       end // end of [val]
       val () = $effmask_exn (exit 1)
+*)
     in
       fold@ !p
     end // end of [list_vt_nil]
 end (* end of [filename_get] *)
 
-implement filename_get () = $effmask_all let
-  val (pfbox | p) = ref_get_view_ptr (the_filenamelst)
-  prval vbox pf = pfbox
+implement
+filename_get_current () = $effmask_all let
+  val (vbox pf | p) = ref_get_view_ptr (the_filenamelst)
 in
   case+ !p of
   | list_vt_cons (x, _) => (fold@ !p; x)
@@ -152,27 +155,6 @@ typedef location = '{
 
 assume location_t = location
 
-implement
-fprint_location (out, loc) = begin
-  fprint_filename (out, loc.filename);
-  fprint_string (out, ": ");
-  fprint_lint (out, loc.begpos_toff+1L);
-  fprint_string (out, "(line=");
-  fprint_int (out, loc.begpos_line+1);
-  fprint_string (out, ", offs=");
-  fprint_int (out, loc.begpos_loff+1);
-  fprint_string (out, ") -- ");
-  fprint_lint (out, loc.endpos_toff+1L);
-  fprint_string (out, "(line=");
-  fprint_int (out, loc.endpos_line+1);
-  fprint_string (out, ", offs=");
-  fprint_int (out, loc.endpos_loff+1);
-  fprint_string (out, ")");
-end // end of [fprint_location]
-
-implement print_location (loc) = fprint_location (stdout_ref, loc)
-implement prerr_location (loc) = fprint_location (stderr_ref, loc)
-
 (* ****** ****** *)
 
 implement location_none = '{
@@ -189,8 +171,10 @@ fn location_is_none (loc: location):<> bool = (loc.begpos_toff < 0L)
 
 (* ****** ****** *)
 
-implement location_make (begpos, endpos) = '{
-  filename= filename_get ()
+implement
+location_make
+  (begpos, endpos) = '{
+  filename= filename_get_current ()
 , begpos_line= position_line begpos
 , begpos_loff= position_loff begpos
 , begpos_toff= position_toff begpos
@@ -246,6 +230,62 @@ implement location_combine (loc1, loc2) = begin
   | _ when location_is_none loc2 => loc1
   | _ => location_combine_main (loc1, loc2)
 end // end of [location_combine]
+
+(* ****** ****** *)
+
+implement
+fprint_location (out, loc) = begin
+  fprint_filename (out, loc.filename);
+  fprint_string (out, ": ");
+  fprint_lint (out, loc.begpos_toff+1L);
+  fprint_string (out, "(line=");
+  fprint_int (out, loc.begpos_line+1);
+  fprint_string (out, ", offs=");
+  fprint_int (out, loc.begpos_loff+1);
+  fprint_string (out, ") -- ");
+  fprint_lint (out, loc.endpos_toff+1L);
+  fprint_string (out, "(line=");
+  fprint_int (out, loc.endpos_line+1);
+  fprint_string (out, ", offs=");
+  fprint_int (out, loc.endpos_loff+1);
+  fprint_string (out, ")");
+end // end of [fprint_location]
+
+implement print_location (loc) = fprint_location (stdout_ref, loc)
+implement prerr_location (loc) = fprint_location (stderr_ref, loc)
+
+(* ****** ****** *)
+
+local
+
+staload "libc/SATS/stdio.sats"
+
+in // in of [local]
+
+implement
+tostring_location (loc) = let
+  #define EMPSTR ""
+  val (pfopt | filp) = tmpfile_err ()
+in
+  if filp > null then let
+    prval Some_v (pffil) = pfopt
+    prval pfmod = file_mode_lte_rw_w ()
+    extern castfn __cast (p: ptr): FILEref
+    val () = fprint_location (__cast (filp), loc)
+    val _(*int*) = fflush_err (pfmod | !filp)
+    val _(*int*) = fseek_err (!filp, 0l, SEEK_SET)
+    val stropt = input_line (__cast (filp))
+    val () = fclose_exn (pffil | filp)
+  in
+    if stropt_is_some (stropt)
+      then stropt_unsome (stropt) else EMPSTR
+    // end of [if]
+  end else let
+    prval None_v () = pfopt in EMPSTR
+  end (* end of [if] *)
+end // end of [tostring_location]
+
+end // end of [local]
 
 (* ****** ****** *)
 

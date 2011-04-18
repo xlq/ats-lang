@@ -18,6 +18,9 @@
 
 staload
 POSLOC = "contrib/parcomb/SATS/posloc.sats"
+(*
+typedef loc_t = $POSLOC.location_t
+*)
 macdef prerr_loc = $POSLOC.prerr_location
 
 (* ****** ****** *)

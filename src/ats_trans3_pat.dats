@@ -1122,7 +1122,8 @@ implement p2atlst_tr_dn (p2ts, s2es) = case+ p2ts of
 
 (* ****** ****** *)
 
-implement p2at_arg_tr_up (p2t0) = let
+implement
+p2at_arg_tr_up (p2t0) = let
 (*
   val () = begin
     print "p2at_arg_tr_up: p2t0 = "; print p2t0; print_newline ();
@@ -1141,7 +1142,8 @@ in
     end (* end of [_] *)
 end (* end of [p2at_arg_tr_up] *)
 
-implement p2at_arg_tr_dn (p2t0, s2e0) = let
+implement
+p2at_arg_tr_dn (p2t0, s2e0) = let
 //
 (*
   val () = begin
@@ -1273,13 +1275,15 @@ implement p2at_arg_tr_dn (p2t0, s2e0) = let
           val s2e_valst1_at = s2exp_at_viewt0ype_addr_view (s2e_valst1, s2e_addr)
           val () = d2var_set_typ (d2v_view, Some s2e_valst1_at)
           // note that [va_end] is to be done explicitly!!!
-          val () = d2var_set_fin (d2v_view, D2VARFINsome s2e_valst0_top_at) where {
+          val () = d2var_set_fin (
+            d2v_view, D2VARFINsome s2e_valst0_top_at
+          ) where {
             val s2e_valst0_top = s2exp_topize_0 (s2e_valst0)
             val s2e_valst0_top_at = s2exp_at_viewt0ype_addr_view (s2e_valst0_top, s2e_addr)
           } // end of [val]
         in
-          p3at_var (loc0, s2e0, refknd, d2v)
-        end // end of [refval = 1]
+          p3at_var (loc0, s2e0, refknd, d2v) // HX: this one translates to argtmpref
+        end // end of [P2Tvar]
       | _ => begin
           prerr p2t0.p2at_loc; prerr ": error(3)";
           prerr ": the pattern is expected to be a variable but it is not.";

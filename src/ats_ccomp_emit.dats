@@ -628,6 +628,11 @@ fn emit_valprim_ptrof {m:file_mode}
     end
 *)
   | VPargref ind => emit_valprim_arg (pf | out, ind)
+  | VPargtmpref ind => begin
+      fprint1_string (pf | out, "(&");
+      emit_valprim_arg (pf | out, ind);
+      fprint1_string (pf | out, ")")
+    end
   | VPenv vtp => let
       val ind = varindmap_find_some (vartyp_get_var vtp)
     in
@@ -639,7 +644,7 @@ fn emit_valprim_ptrof {m:file_mode}
       val () = fprint1_string (pf | out, ")")
     in
       // empty
-    end // end of [VPtmp]
+    end // end of [VPtmpref]
   | _ => let
 (*
       val () = prerr_interror ()
@@ -973,6 +978,7 @@ emit_valprim
   | VPargref ind => begin
       emit_valprim_argref (pf | out, ind, vp0.valprim_typ)
     end // end of [VPargref]
+  | VPargtmpref ind => emit_valprim_arg (pf | out, ind)
   | VPbool b => emit_valprim_bool (pf | out, b)
   | VPcastfn (_d2c, vp_arg) => let
       val () = fprint1_string

@@ -210,9 +210,9 @@ the global variable errno is set to indicate the error.
 symintr fflush_err
 fun fflush0_err (f: FILEref):<> int = "mac#atslib_fflush_err"
 overload fflush_err with fflush0_err
-fun fflush1_err {m:fm}
-  (pf: file_mode_lte (m, w) | f: &FILE m):<> [i:int | i <= 0] int i
-  = "mac#atslib_fflush_err"
+fun fflush1_err {m:fm} (
+  pf: file_mode_lte (m, w) | f: &FILE m
+) :<> [i:int | i <= 0] int (i) = "mac#atslib_fflush_err"
 overload fflush_err with fflush1_err
 
 //
@@ -731,7 +731,7 @@ overload rewind with rewind1
 // ------------------------------------------------
 
 fun tmpfile_err (
-) :<> [l:addr] (FILEopt_v (rw, l) | ptr l)
+) :<> [l:agez] (FILEopt_v (rw, l) | ptr l)
   = "mac#atslib_tmpfile_err"
 fun tmpfile_exn (
 ) :<!exn> [l:addr] (FILE_v (rw, l) | ptr l)

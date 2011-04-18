@@ -206,6 +206,7 @@ abstype envmap_t // boxed type
 datatype valprim_node =
   | VParg of int
   | VPargref of int (* call-by-reference *)
+  | VPargtmpref of int // call-by-reference // it is treated as a tmpvar
   | VPbool of bool
   | VPcastfn of (d2cst_t, valprim)
   | VPchar of char
@@ -292,6 +293,7 @@ fun valprim_is_mutable (vp: valprim): bool
 
 fun valprim_arg (i: int, hit: hityp_t): valprim
 fun valprim_argref (i: int, hit: hityp_t): valprim
+fun valprim_argtmpref (i: int, hit: hityp_t): valprim
 //
 fun valprim_bool (b: bool): valprim
 //

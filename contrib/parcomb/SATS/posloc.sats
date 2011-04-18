@@ -60,7 +60,7 @@ val filename_stdin: filename_t
 fun filename_pop (): void
 fun filename_push (x: filename_t): void
 
-fun filename_get ():<> filename_t
+fun filename_get_current ():<> filename_t
 
 (* ****** ****** *)
 
@@ -100,6 +100,10 @@ overload <> with neq_position_position
 
 abstype location_t // boxed type
 
+val location_none: location_t
+fun location_make (_1: position_t, _2: position_t):<> location_t
+fun location_combine (_1: location_t, _2: location_t):<> location_t
+
 fun fprint_location
   (out: FILEref, loc: location_t): void
 overload fprint with fprint_location
@@ -108,9 +112,7 @@ overload print with print_location
 fun prerr_location (loc: location_t): void
 overload prerr with prerr_location
 
-val location_none: location_t
-fun location_make (_1: position_t, _2: position_t):<> location_t
-fun location_combine (_1: location_t, _2: location_t):<> location_t
+fun tostring_location (loc: location_t): string
 
 (* ****** ****** *)
 

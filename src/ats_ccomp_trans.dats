@@ -886,10 +886,10 @@ fn funarg_valprim_make
   (n: int, hit0: hityp): valprim = begin
   case+ hit0.hityp_node of
   | HITrefarg (refval, hit) => let
-      val hit = hityp_normalize (hit)
-    in
-      if refval > 0 then valprim_argref (n, hit) else valprim_arg (n, hit)
+      val hit = hityp_normalize (hit) in
+      if refval = 0 then valprim_arg (n, hit) else valprim_argref (n, hit)
     end // end of [HITrefarg]
+  | HITvararg () => valprim_argtmpref (n, hityp_encode (hit0))
   | _ => valprim_arg (n, hityp_normalize hit0)
 end // end of [funarg_valprim_make]
 

@@ -602,9 +602,7 @@ in
       hipat_rec (loc0, hit0, knd, lhips, hit_rec)
     end // end of [P3Trec]
   | P3Tstring str => hipat_string (loc0, hit0, str)
-  | P3Tvar (refknd, d2v) => begin
-      hipat_var (loc0, hit0, refknd, d2v)
-    end // end of [P3Tvar]
+  | P3Tvar (refknd, d2v) => hipat_var (loc0, hit0, refknd, d2v)
   | _ => begin
       prerr_interror ();
       prerr ": p3at_tr: p3t0 = "; prerr_p3at p3t0; prerr_newline ();

@@ -111,6 +111,9 @@ in
   | VPargref i => begin
       prstr "VPargref("; fprint1_int (pf | out, i); prstr ")"
     end // end of [VPargref]
+  | VPargtmpref i => begin // HX: for handling variadic arg
+      prstr "VPargtmpref("; fprint1_int (pf | out, i); prstr ")"
+    end // end of [VPargtmpref]
   | VPbool b => begin
       prstr "VPbool("; fprint1_bool (pf | out, b); prstr ")"
     end // end of [VPbool]

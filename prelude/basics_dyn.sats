@@ -372,8 +372,8 @@ dataprop file_mode_lte
   | {m1,m2,m3:file_mode}
       file_mode_lte_tran (m1, m3) of
         (file_mode_lte (m1, m2), file_mode_lte (m2, m3))
-  | {m:file_mode} file_mode_lte_rw_r (rw, r)
-  | {m:file_mode} file_mode_lte_rw_w (rw, w)
+  | {m:file_mode} file_mode_lte_rw_r (rw, r) of ()
+  | {m:file_mode} file_mode_lte_rw_w (rw, w) of ()
 // end of [file_mode_lte]
 
 prval file_mode_lte_r_r: file_mode_lte (r, r) // implemented in [file.dats]
