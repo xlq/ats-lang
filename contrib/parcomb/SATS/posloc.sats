@@ -112,7 +112,7 @@ overload print with print_location
 fun prerr_location (loc: location_t): void
 overload prerr with prerr_location
 
-fun tostring_location (loc: location_t): string
+fun tostrptr_location (loc: location_t): strptr0
 
 (* ****** ****** *)
 

@@ -124,7 +124,7 @@ fun fclose1_exn {m:file_mode} {l:addr}
 
 extern
 fun string_make_charlst_rev
-  {n:nat} (sz: int n, cs: list_vt (char, n)):<> String
+  {n:nat} (sz: int n, cs: list_vt (char, n)):<> strptr1
   = "string_make_charlst_rev"
 // end of [string_make_charlst_rev]
 
@@ -133,10 +133,10 @@ fun string_make_charlst_rev
 // HX: if the last character is '\n', it is dropped
 //
 implement
-input_line (fil) = let
+input_line_vt (fil) = let
   fun loop {n:nat} (
       fil: FILEref, n: int n, cs: list_vt (char, n)
-    ) : Stropt = let
+    ) : strptr0 = let
     val c = fgetc0_err (fil)
   in
     if c <> EOF then let
@@ -145,18 +145,23 @@ input_line (fil) = let
       if (c <> '\n') then
         loop (fil, n+1, list_vt_cons (c, cs))
       else 
-        stropt_some (string_make_charlst_rev (n, cs))
+        string_make_charlst_rev (n, cs) // linear string
       // end of [if]
     end else begin
       if n = 0 then let
-        val+ ~list_vt_nil () = cs in stropt_none
+        val+ ~list_vt_nil () = cs in strptr_null ()
       end else
-        stropt_some (string_make_charlst_rev (n, cs))
+        string_make_charlst_rev (n, cs) // linear string
       // end of [if]
     end  // end of [if]
   end // end of [loop]
 in
   loop (fil, 0, list_vt_nil ())
+end // end of [input_line_vt]
+
+implement
+input_line (fil) = let
+  val str = input_line_vt (fil) in stropt_of_strptr (str)
 end // end of [input_line]
 
 (* ****** ****** *)
@@ -328,7 +333,7 @@ line_stream_vt_make_file
 fun loop {n:nat} (
     pf_fil: FILE m @ l
   | p_fil: ptr l, n: int n, cs: list_vt (char, n)
-  ) :<!laz> stream_vt_con (string) = let
+  ) :<!laz> stream_vt_con (strptr1) = let
   val c = fgetc1_err (pf_mod | !p_fil)
 in
   if c >= 0 then let
@@ -346,8 +351,7 @@ in
     val () = fclose1_exn (pf_fil | p_fil)
   in
     if n > 0 then let
-      val line = string_make_charlst_rev (n, cs)
-    in
+      val line = string_make_charlst_rev (n, cs) in
       stream_vt_cons (line, $ldelay stream_vt_nil)
     end else let
       val+ ~list_vt_nil () = cs in stream_vt_nil ()

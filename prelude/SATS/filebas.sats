@@ -132,6 +132,7 @@ fun test_file_islnk (path: string): int = "atspre_test_file_islnk"
 ** starts, then stropt_none (a null pointer) is returned.
 *)
 fun input_line (fil: FILEref): Stropt
+fun input_line_vt (fil: FILEref): strptr0
 
 (*
 ** [output_line] writes to a given file handle a string plus a newline
@@ -153,10 +154,10 @@ fun line_stream_make_file (fil: FILEref):<!laz> stream (string)
 //
 // HX: making a _linear_ lazy char stream out of a file handle
 //
-fun char_stream_vt_make_file {m:file_mode} {l:addr}
-  (pf_mod: file_mode_lte (m, r), pf_fil: FILE m @ l | p_fil: ptr l)
-  :<!laz> stream_vt (char)
-// end of [char_stream_vt_make_file]
+fun char_stream_vt_make_file
+  {m:file_mode} {l:addr} (
+  pf_mod: file_mode_lte (m, r), pf_fil: FILE m @ l | p_fil: ptr l
+) :<!laz> stream_vt (char) // end of [char_stream_vt_make_file]
 
 (* ****** ****** *)
 //
@@ -164,10 +165,10 @@ fun char_stream_vt_make_file {m:file_mode} {l:addr}
 // making a _linear_ lazy line stream out of a file handle
 // note that the newline character at the end of each line is dropped
 //
-fun line_stream_vt_make_file {m:file_mode} {l:addr}
-  (pf_mod: file_mode_lte (m, r), pf_fil: FILE m @ l | p_fil: ptr l)
-  :<!laz> stream_vt (string)
-// end of [line_stream_vt_make_file]
+fun line_stream_vt_make_file
+  {m:file_mode} {l:addr} (
+  pf_mod: file_mode_lte (m, r), pf_fil: FILE m @ l | p_fil: ptr l
+) :<!laz> stream_vt (strptr1) // end of [line_stream_vt_make_file]
 
 (* ****** ****** *)
 

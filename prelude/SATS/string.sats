@@ -779,6 +779,8 @@ fun strptr_isnot_null
 castfn ptr_of_strptr {l:addr} (x: !strptr l):<> ptr l
 overload ptr_of with ptr_of_strptr
 //
+castfn stropt_of_strptr (x: strptr0):<> Stropt
+//
 castfn string_of_strptr (x: strptr1):<> string
 castfn string1_of_strptr (x: strptr1):<> String
 castfn string1_of_strptrlen

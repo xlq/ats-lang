@@ -263,8 +263,7 @@ staload "libc/SATS/stdio.sats"
 in // in of [local]
 
 implement
-tostring_location (loc) = let
-  #define EMPSTR ""
+tostrptr_location (loc) = let
   val (pfopt | filp) = tmpfile_err ()
 in
   if filp > null then let
@@ -274,16 +273,12 @@ in
     val () = fprint_location (__cast (filp), loc)
     val _(*int*) = fflush_err (pfmod | !filp)
     val _(*int*) = fseek_err (!filp, 0l, SEEK_SET)
-    val stropt = input_line (__cast (filp))
+    val res = input_line_vt (__cast (filp))
     val () = fclose_exn (pffil | filp)
-  in
-    if stropt_is_some (stropt)
-      then stropt_unsome (stropt) else EMPSTR
-    // end of [if]
-  end else let
-    prval None_v () = pfopt in EMPSTR
+  in res end else let
+    prval None_v () = pfopt in strptr_null ()
   end (* end of [if] *)
-end // end of [tostring_location]
+end // end of [tostrptr_location]
 
 end // end of [local]
 
