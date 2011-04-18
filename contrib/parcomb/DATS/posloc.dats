@@ -52,10 +52,10 @@ filename_make_string (name) = @{
 } // end of [filename_make_string]
 
 implement
-fprint_filename (pf | out, fil) = fprint_string (pf | out, fil.filename)
+fprint_filename (out, fil) = fprint_string (out, fil.filename)
 
-implement print_filename (fil) = print_mac (fprint_filename, fil)
-implement prerr_filename (fil) = prerr_mac (fprint_filename, fil)
+implement print_filename (fil) = fprint_filename (stdout_ref, fil)
+implement prerr_filename (fil) = fprint_filename (stderr_ref, fil)
 
 (* ****** ****** *)
 
@@ -127,10 +127,11 @@ implement position_line (p) = p.line
 implement position_loff (p) = p.loff
 implement position_toff (p) = p.toff
 
-implement fprint_position (pf | fil, pos) = fprintf1_exn
-  (pf | fil, "%li(line=%i, offs=%i)", @(pos.toff+1L, pos.line+1, pos.loff+1))
-implement print_position (pos) = print_mac (fprint_position, pos)
-implement prerr_position (pos) = prerr_mac (fprint_position, pos)
+implement
+fprint_position (fil, pos) = fprintf
+  (fil, "%li(line=%i, offs=%i)", @(pos.toff+1L, pos.line+1, pos.loff+1))
+implement print_position (pos) = fprint_position (stdout_ref, pos)
+implement prerr_position (pos) = fprint_position (stderr_ref, pos)
 
 implement lt_position_position (p1, p2) = p1.toff < p2.toff
 implement lte_position_position (p1, p2) = p1.toff <= p2.toff
@@ -151,25 +152,26 @@ typedef location = '{
 
 assume location_t = location
 
-implement fprint_location (pf | out, loc) = begin
-  fprint_filename (pf | out, loc.filename);
-  fprint1_string (pf | out, ": ");
-  fprint1_lint (pf | out, loc.begpos_toff+1L);
-  fprint1_string (pf | out, "(line=");
-  fprint1_int (pf | out, loc.begpos_line+1);
-  fprint1_string (pf | out, ", offs=");
-  fprint1_int (pf | out, loc.begpos_loff+1);
-  fprint1_string (pf | out, ") -- ");
-  fprint1_lint (pf | out, loc.endpos_toff+1L);
-  fprint1_string (pf | out, "(line=");
-  fprint1_int (pf | out, loc.endpos_line+1);
-  fprint1_string (pf | out, ", offs=");
-  fprint1_int (pf | out, loc.endpos_loff+1);
-  fprint1_string (pf | out, ")");
+implement
+fprint_location (out, loc) = begin
+  fprint_filename (out, loc.filename);
+  fprint_string (out, ": ");
+  fprint_lint (out, loc.begpos_toff+1L);
+  fprint_string (out, "(line=");
+  fprint_int (out, loc.begpos_line+1);
+  fprint_string (out, ", offs=");
+  fprint_int (out, loc.begpos_loff+1);
+  fprint_string (out, ") -- ");
+  fprint_lint (out, loc.endpos_toff+1L);
+  fprint_string (out, "(line=");
+  fprint_int (out, loc.endpos_line+1);
+  fprint_string (out, ", offs=");
+  fprint_int (out, loc.endpos_loff+1);
+  fprint_string (out, ")");
 end // end of [fprint_location]
 
-implement print_location (loc) = print_mac (fprint_location, loc)
-implement prerr_location (loc) = prerr_mac (fprint_location, loc)
+implement print_location (loc) = fprint_location (stdout_ref, loc)
+implement prerr_location (loc) = fprint_location (stderr_ref, loc)
 
 (* ****** ****** *)
 

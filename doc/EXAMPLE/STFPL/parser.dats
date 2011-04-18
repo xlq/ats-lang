@@ -24,6 +24,10 @@ staload _(*anonymous*) = "prelude/DATS/list.dats"
 
 (* ****** ****** *)
 
+staload _(*anon*) = "libc/SATS/stdio.sats"
+
+(* ****** ****** *)
+
 staload "contrib/parcomb/SATS/posloc.sats"
 staload "contrib/parcomb/SATS/tokenize.sats"
 staload "contrib/parcomb/SATS/parcomb.sats" ;

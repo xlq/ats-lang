@@ -44,14 +44,15 @@ abstype filename_t // boxed type
 
 fun filename_make_string (name: string): filename_t
 
-fun fprint_filename {m:file_mode}
-  (pf: file_mode_lte (m, w) | out: &FILE m, fil: filename_t): void
-
+fun fprint_filename
+  (out: FILEref, fil: filename_t): void
+overload fprint with fprint_filename
 fun print_filename (loc: filename_t): void
-fun prerr_filename (loc: filename_t): void
-
 overload print with print_filename
+fun prerr_filename (loc: filename_t): void
 overload prerr with prerr_filename
+
+(* ****** ****** *)
 
 val filename_none: filename_t
 val filename_stdin: filename_t
@@ -72,8 +73,8 @@ fun position_toff (p: position_t):<> lint
 
 (* ****** ****** *)
 
-fun fprint_position {m:file_mode}
-  (pf: file_mode_lte (m, w) | fil: &FILE m, pos: position_t): void
+fun fprint_position
+  (fil: FILEref, pos: position_t): void
 overload fprint with fprint_position
 fun print_position (pos: position_t): void = "lexing_print_position"
 overload print with print_position
@@ -99,8 +100,8 @@ overload <> with neq_position_position
 
 abstype location_t // boxed type
 
-fun fprint_location {m:file_mode}
-  (pf: file_mode_lte (m, w) | out: &FILE m, loc: location_t): void
+fun fprint_location
+  (out: FILEref, loc: location_t): void
 overload fprint with fprint_location
 fun print_location (loc: location_t): void
 overload print with print_location
