@@ -160,8 +160,9 @@ atsopt_IATS_extract (ats_ptr_type s0) {
 } // end of [atsopt_IATS_extract]
 
 /* ****** ****** */
-
-// global
+//
+// HX: global
+//
 char *atsopt_ATSHOME = NULL ; // no need for marking as a root
 int atsopt_ATSHOME_length = 0;
 
@@ -178,8 +179,9 @@ atsopt_ATSHOME_getenv_exn () {
 } /* end of [atsopt_ATSHOME_getenv_exn] */
 
 /* ****** ****** */
-
-// global
+//
+// HX: global
+//
 char *atsopt_ATSHOMERELOC = NULL ; // no need for marking as a root
 
 ats_void_type

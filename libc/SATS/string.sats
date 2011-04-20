@@ -62,9 +62,7 @@ fun substrcmp
 
 fun strncmp {n:nat} (
   str1: !READ(string), str2: !READ(string), n: size_t n
-) :<> int
-  = "mac#atslib_strncmp"
-// end of [strncmp]
+) :<> int = "mac#atslib_strncmp" // end of [strncmp]
 
 fun substrncmp
   {n1:int}

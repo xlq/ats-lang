@@ -472,7 +472,8 @@ fn posmarknd_isall
 
 (* ****** ****** *)
 
-typedef param_t = @{
+typedef
+param_t = @{
   comkind= comkind
 , wait= int
 , prelude= int
@@ -744,7 +745,6 @@ extern fun is_IATS_flag (s: string): bool = "atsopt_is_IATS_flag"
 extern fun IATS_extract (s: string): Stropt = "atsopt_IATS_extract"
 //
 (* ****** ****** *)
-
 //
 // HX: for processing command-line flag: -DATSXYZ=def or -DATS XYZ=def
 //
@@ -753,7 +753,7 @@ fun process_DATS_def
   val def = string1_of_string (def)
   #define EQ '='
 //
-// HX: this is ATS/Geizella
+// HX: this is for ATS/Geizella
 //
 extern
 fun string_index_of_char_from_left
@@ -786,7 +786,9 @@ end // end of [process_DATS_def]
 
 (* ****** ****** *)
 
-fun process_IATS_dir (dir: string) = $Fil.the_pathlst_push (dir)
+fun process_IATS_dir
+  (dir: string): void = $Fil.the_pathlst_push (dir)
+// end of [process_IATS_dir]
 
 (* ****** ****** *)
 
@@ -816,10 +818,10 @@ fn warning (str: string) = begin
 end // end of [warning]
 
 fun loop {i:nat | i <= n} .<i>. (
-    ATSHOME: string
-  , argv: &(@[string][n]), param: &param_t
-  , arglst: arglst i
-  ) :<fun1> void = begin case+ arglst of
+  ATSHOME: string
+, argv: &(@[string][n]), param: &param_t
+, arglst: arglst i
+) :<fun1> void = begin case+ arglst of
   | ~list_vt_cons (arg, arglst) => begin
     case+ arg of
     | _ when DATS_wait_is_set () => let
@@ -837,10 +839,10 @@ fun loop {i:nat | i <= n} .<i>. (
         loop (ATSHOME, argv, param, arglst)
       end // end of [_ when ...]
 (*
-    | _ when ATSHOME_RELOC_wait_is_set () => let
+    | _ when ATSHOMERELOC_wait_is_set () => let
         val COMARGkey (_(*n*), dir) = arg
-        val () = ATSHOME_RELOC_wait_clear ()
-        val () = atshome_reloc_dir_set (dir) in loop (ATSHOME, argv, param, arglst)
+        val () = ATSHOMERELOC_wait_clear ()
+        val () = atshomereloc_dir_set (dir) in loop (ATSHOME, argv, param, arglst)
       end // end of [_ when ...]
 *)
     | COMARGkey (1, str) => let

@@ -30,10 +30,10 @@
 *)
 
 (* ****** ****** *)
-
+//
 // Author: Hongwei Xi (hwxi AT cs DOT bu DOT edu)
 // Time: October 2008
-
+//
 (* ****** ****** *)
 
 (* ats_comarg: handling command line arguments *)
