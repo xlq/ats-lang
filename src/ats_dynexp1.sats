@@ -603,9 +603,9 @@ and v1aldec = '{
 , v1aldec_ann= witht1ype
 } // end of [v1aldec]
 
-(* ****** ****** *)
-
 and v1aldeclst = List v1aldec
+
+(* ****** ****** *)
 
 and f1undec = '{
   f1undec_loc= loc_t
@@ -859,16 +859,16 @@ fun d1exp_while (_: loc_t, _: loopi1nv, test: d1exp, body: d1exp): d1exp
 
 (* ****** ****** *)
 
+fun d1exp_is_metric (_: d1exp): bool
+
+(* ****** ****** *)
+
 fun d1exp_make_e1xp (_: loc_t, _: e1xp): d1exp
 
 (* ****** ****** *)
 
 fun d1lab_lab (_: loc_t, lab: lab_t): d1lab
 fun d1lab_ind (_: loc_t, ind: d1explstlst): d1lab
-
-(* ****** ****** *)
-
-fun d1exp_is_metric (_: d1exp): bool
 
 (* ****** ****** *)
 

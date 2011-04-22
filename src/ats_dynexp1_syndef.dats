@@ -32,7 +32,7 @@
 (* ****** ****** *)
 //
 // Author: Hongwei Xi (hwxi AT cs DOT bu DOT edu)
-// Time: August 2007
+// Time: Feburary(?) 2011
 //
 (* ****** ****** *)
 
@@ -243,7 +243,7 @@ un_d1exp_decseq (d1e) =
 //
 // HX-2010-11-02:
 // this function is implemented in
-// $ATSHOME/utils/syndef/atsyndef_main.dats
+// $ATSHOME/libatsyndef/atsyndef_main.dats
 //
 typedef
 atsyndef_search_all_type =

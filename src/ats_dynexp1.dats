@@ -554,6 +554,18 @@ d1exp_while (loc, inv, test, body) = '{
 (* ****** ****** *)
 
 implement
+d1exp_is_metric (d1e) = begin
+  case+ d1e.d1exp_node of
+  | D1Elam_dyn (_, _, d1e) => d1exp_is_metric d1e
+  | D1Elam_met _ => true
+  | D1Elam_sta_ana (_, _, d1e) => d1exp_is_metric d1e
+  | D1Elam_sta_syn (_, _, d1e) => d1exp_is_metric d1e
+  | _ => false
+end // end of [d1exp_is_metric]
+
+(* ****** ****** *)
+
+implement
 d1exp_make_e1xp (loc, e0) = let
 //
   fun aux (e0: e1xp):<cloptr1> d1exp = case+ e0.e1xp_node of
@@ -593,17 +605,6 @@ implement d1lab_lab (loc, lab) = '{
 implement d1lab_ind (loc, ind) = '{
   d1lab_loc= loc, d1lab_node= D1LABind ind
 }
-
-(* ****** ****** *)
-
-implement d1exp_is_metric (d1e) = begin
-  case+ d1e.d1exp_node of
-  | D1Elam_dyn (_, _, d1e) => d1exp_is_metric d1e
-  | D1Elam_met _ => true
-  | D1Elam_sta_ana (_, _, d1e) => d1exp_is_metric d1e
-  | D1Elam_sta_syn (_, _, d1e) => d1exp_is_metric d1e
-  | _ => false
-end // end of [d1exp_is_metric]
 
 (* ****** ****** *)
 

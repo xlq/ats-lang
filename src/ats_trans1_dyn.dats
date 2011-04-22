@@ -349,8 +349,8 @@ end // end of [p1atitm_backslash]
 
 (* ****** ****** *)
 
-fn s0vararg_tr (s0a: s0vararg): s1vararg =
-  case+ s0a of
+fn s0vararg_tr
+  (s0a: s0vararg): s1vararg = case+ s0a of
   | S0VARARGseq (s0as) => S1VARARGseq (s0arglst_tr s0as)
   | S0VARARGone () => S1VARARGone ()
   | S0VARARGall () => S1VARARGall ()
@@ -426,9 +426,10 @@ fun aux_item (p0t0: p0at): p1atitm = let
         $Fix.ITEMatm (p1at_list (loc, p1ts))
       end
     | P0Tlist2 (p0ts1, p0ts2) => let
-        val s1es1 = p0atlst_tr p0ts1 and s1es2 = p0atlst_tr p0ts2
+        val p1ts1 = p0atlst_tr p0ts1
+        and p1ts2 = p0atlst_tr p0ts2
       in
-        $Fix.ITEMatm (p1at_list2 (loc, s1es1, s1es2))
+        $Fix.ITEMatm (p1at_list2 (loc, p1ts1, p1ts2))
       end
     | P0Tlst (p0ts) => let
         val p1ts = p0atlst_tr p0ts
@@ -1374,25 +1375,6 @@ fn v0aldeclst_tr
 
 (* ****** ****** *)
 
-fn v0ardec_tr
-  (d: v0ardec): v1ardec = let
-  val loc = d.v0ardec_loc
-  val knd = d.v0ardec_knd
-  val os1e = s0expopt_tr d.v0ardec_typ
-  val wth = d.v0ardec_wth // i0deopt
-  val od1e = d0expopt_tr d.v0ardec_ini
-in
-  v1ardec_make (
-    loc, knd, d.v0ardec_sym, d.v0ardec_sym_loc, os1e, wth, od1e
-  ) // end of [v1ardec_make]
-end // end of [v0ardec_tr]
-
-fn v0ardeclst_tr
-  (ds: v0ardeclst): v1ardeclst = $Lst.list_map_fun (ds, v0ardec_tr)
-// end of [v0ardeclst_tr]
-
-(* ****** ****** *)
-
 fn f0undec_tr
   (is_prf: bool, is_rec: bool, d: f0undec): f1undec = let
   val loc = d.f0undec_loc
@@ -1441,6 +1423,25 @@ end // end of [f0undeclst_tr]
 
 (* ****** ****** *)
 
+fn v0ardec_tr
+  (d: v0ardec): v1ardec = let
+  val loc = d.v0ardec_loc
+  val knd = d.v0ardec_knd
+  val os1e = s0expopt_tr d.v0ardec_typ
+  val wth = d.v0ardec_wth // i0deopt
+  val od1e = d0expopt_tr d.v0ardec_ini
+in
+  v1ardec_make (
+    loc, knd, d.v0ardec_sym, d.v0ardec_sym_loc, os1e, wth, od1e
+  ) // end of [v1ardec_make]
+end // end of [v0ardec_tr]
+
+fn v0ardeclst_tr
+  (ds: v0ardeclst): v1ardeclst = $Lst.list_map_fun (ds, v0ardec_tr)
+// end of [v0ardeclst_tr]
+
+(* ****** ****** *)
+
 fn m0acdef_tr
   (d: m0acdef): m1acdef = let
   val def = d0exp_tr d.m0acdef_def
@@ -1451,8 +1452,7 @@ in
 end // end of [m0acdef_tr]
 
 fn m0acdeflst_tr
-  (ds: m0acdeflst): m1acdeflst =
-  $Lst.list_map_fun (ds, m0acdef_tr)
+  (ds: m0acdeflst): m1acdeflst = $Lst.list_map_fun (ds, m0acdef_tr)
 // end of [m0acdeflst_tr]
 
 (* ****** ****** *)

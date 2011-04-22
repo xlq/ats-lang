@@ -175,7 +175,8 @@ implement funkind_castfn () = FUNKINDcastfn ()
 implement funkind_prfn () = FUNKINDprfn ()
 implement funkind_prfun () = FUNKINDprfun ()
 
-implement funkind_is_proof fk = case+ fk of
+implement
+funkind_is_proof fk = case+ fk of
   | FUNKINDfn () => false
   | FUNKINDfnstar () => false
   | FUNKINDfun () => false
@@ -184,7 +185,8 @@ implement funkind_is_proof fk = case+ fk of
   | FUNKINDprfun () => true
 // end of [funkind_is_proof]
 
-implement funkind_is_recursive fk = case+ fk of
+implement
+funkind_is_recursive fk = case+ fk of
   | FUNKINDfn () => false
   | FUNKINDfnstar () => true
   | FUNKINDfun () => true
@@ -2006,7 +2008,7 @@ d0exp_for_itp (hd, itp, body) = let
 in '{
   d0exp_loc= loc
 , d0exp_node= D0Efor (inv, loc_inv, itp.0, itp.1, itp.2, body)
-} end // end of [d2exp_for_itp]
+} end // end of [d0exp_for_itp]
 
 (* ****** ****** *)
 
@@ -2424,11 +2426,13 @@ implement casehead_make (k, t_case, inv) = '{
   casehead_tok= t_case, casehead_knd= k, casehead_inv= inv
 } // end of [casehead_make]
 
-implement loophead_make_none (t_loop) = '{
+implement
+loophead_make_none (t_loop) = '{
   loophead_tok= t_loop, loophead_inv= None ()
 } // end of [loophead_make_none]
 
-implement loophead_make_some (t_loop, inv, t_eqgt) = let
+implement
+loophead_make_some (t_loop, inv, t_eqgt) = let
   val loc = combine (t_loop.t0kn_loc, t_eqgt.t0kn_loc)
 in '{
   loophead_tok= t_loop, loophead_inv= Some inv

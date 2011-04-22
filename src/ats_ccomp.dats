@@ -450,7 +450,11 @@ valprim_is_const (vp) =
 implement
 valprim_is_mutable (vp) = begin
   case+ vp.valprim_node of
-  | VPargref _ => true | VPtmpref _ => true | _ => false
+  | VPargref _ => true
+  | VPtmpref _ => true
+  | VPcastfn (_d2c, vp) => valprim_is_mutable (vp)
+  | VPargtmpref _ => true
+  | _ => false
 end // end of [valprim_is_mutable]
 
 (* ****** ****** *)

@@ -675,8 +675,6 @@ extern d0exp_t d0exp_effmask_exn (t0kn_t) ;\n\
 extern d0exp_t d0exp_effmask_ntm (t0kn_t) ;\n\
 extern d0exp_t d0exp_effmask_ref (t0kn_t) ;\n\
 //\n\
-extern d0exp_t d0exp_empty (void) ;\n\
-//\n\
 extern d0exp_t d0exp_exist (t0kn_t, s0exparg_t, t0kn_t, d0exp_t, t0kn_t) ;\n\
 //\n\
 extern d0exp_t d0exp_extval (t0kn_t, s0exp_t, s0tring_t, t0kn_t) ;\n\

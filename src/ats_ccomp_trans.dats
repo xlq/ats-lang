@@ -2388,8 +2388,10 @@ fn ccomp_valdeclst (
 , valknd: $Syn.valkind
 , valdecs: hivaldeclst
 ) : void = let
-  fun aux (res: &instrlst_vt, valdecs: hivaldeclst)
-    :<cloref1> void = begin case+ valdecs of
+  fun aux (
+    res: &instrlst_vt
+  , valdecs: hivaldeclst
+  ) :<cloref1> void = begin case+ valdecs of
     | list_cons (valdec, valdecs) => let
         val loc0 = valdec.hivaldec_loc
         val vp = ccomp_exp (res, valdec.hivaldec_def)
@@ -2397,7 +2399,7 @@ fn ccomp_valdeclst (
         val fail = (case+ valknd of
           | $Syn.VALKINDvalplus _ => KONTnone ()
           | _ => KONTcaseof_fail (valdec.hivaldec_loc)
-        ) : kont
+        ) : kont // end of [val]
         val () = ccomp_patck (res, vp, hip, fail)
         val () = ccomp_match (res, level, vp, hip)
         val () = instr_add_valprimlst_free (res, loc0)

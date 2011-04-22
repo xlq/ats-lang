@@ -14,7 +14,7 @@ fun fact
   (n: int n): int = let
   var n: int = n
   var res: int = 1
-  val () = do {
+  val () = do! {
     val () = res := n * res; val () = n := n-1
   } while (n >= 1) // end of [val]
 in

@@ -5,6 +5,7 @@ ats-lang-anairiats-0.2.5:
 1. Fixing a bug in handling call-by-reference. I was really surprised that
    the bug had not shown up earlier.
 2. input_line_vt is added in prelude/filebas for returning a linear string
+3. Fixing a bug in [valprim_is_mutable]: casting was incorrectly handled.
 
 ########################################################################
 

@@ -7,7 +7,7 @@
 (***********************************************************************)
 
 (*
-** ATS/Postiats - Unleashing the Potential of Types!
+** ATS/Anairiats - Unleashing the Potential of Types!
 **
 ** Copyright (C) 2002-2008 Hongwei Xi, Boston University
 **
