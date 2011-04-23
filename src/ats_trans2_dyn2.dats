@@ -1039,12 +1039,13 @@ end // end of [i1mpdec_tr]
 (* ****** ****** *)
 
 fn s1taload_tr (
-    loc0: loc_t
-  , idopt: symopt_t, fil: fil_t, loaded: int
-  , d1cs: d1eclst
-  , loadflag: int
-  , d2cs_loaded: &d2eclst
-  ) : d2ec = let
+  loc0: loc_t
+, idopt: symopt_t
+, fil: fil_t
+, d1cs: d1eclst
+, loadflag: int
+, d2cs_loaded: &d2eclst
+) : d2ec = let
 (*
   val () = print "s1taload_tr: staid = "
   val () = case+ idopt of
@@ -1267,10 +1268,10 @@ d1ec_tr (d1c0) = begin
       d2ec_local (d1c0.d1ec_loc, d2cs_head, d2cs_body)
     end // end of [D1Clocal]
   | D1Cdynload (fil) => d2ec_dynload (d1c0.d1ec_loc, fil)
-  | D1Cstaload (idopt, fil, loaded, loadflag, d1cs) => let
+  | D1Cstaload (idopt, fil, loadflag, d1cs) => let
       var d2cs_loaded: d2eclst = list_nil ()
       val d2c0 = s1taload_tr
-        (d1c0.d1ec_loc, idopt, fil, loaded, d1cs, loadflag, d2cs_loaded)
+        (d1c0.d1ec_loc, idopt, fil, d1cs, loadflag, d2cs_loaded)
       // end of [val]
       val () = case+ idopt of
         | None _ => overload_d2eclst_tr (d2cs_loaded) | Some _ => ((*named*))

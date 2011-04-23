@@ -601,7 +601,6 @@ end // end of [d1exp_make_e1xp]
 implement d1lab_lab (loc, lab) = '{
   d1lab_loc= loc, d1lab_node= D1LABlab lab
 }
-
 implement d1lab_ind (loc, ind) = '{
   d1lab_loc= loc, d1lab_node= D1LABind ind
 }
@@ -791,8 +790,8 @@ implement d1ec_dynload (loc, fil) = '{
 }
 
 implement d1ec_staload
-  (loc, idopt, fil, loaded, loadflag, d1cs) = '{
-  d1ec_loc= loc, d1ec_node= D1Cstaload (idopt, fil, loaded, loadflag, d1cs)
+  (loc, idopt, fil, loadflag, d1cs) = '{
+  d1ec_loc= loc, d1ec_node= D1Cstaload (idopt, fil, loadflag, d1cs)
 } // end of [d1ec_staload]
 
 (* ****** ****** *)

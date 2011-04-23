@@ -30,10 +30,10 @@
 *)
 
 (* ****** ****** *)
-
+//
 // Author of the file: Hongwei Xi (hwxi AT cs DOT bu DOT edu)
 // Starting time: January, 2010
-
+//
 (* ****** ****** *)
 
 #include "contrib/SDL/SATS/SDL_active.sats"

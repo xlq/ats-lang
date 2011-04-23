@@ -407,8 +407,6 @@ typedef s1exparglst = List s1exparg
 (* ****** ****** *)
 
 fun s1arg_make (_: loc_t, _: sym_t, _: s1rtopt): s1arg
-
-fun sp1at_arg (_: loc_t, arg: s1arg): sp1at
 fun sp1at_con (_: loc_t, q: s0taq, id: sym_t, args: s1arglst): sp1at
 
 (* ****** ****** *)

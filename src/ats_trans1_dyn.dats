@@ -1570,26 +1570,26 @@ end // end of [i0nclude_tr]
 //
 static
 ats_bool_type
-ats_trans1_string_suffix_is_dats
+atsopt_string_suffix_is_dats
   (ats_ptr_type s0) {
   char *s = strrchr (s0, '.') ;
   if (!s) return ats_false_bool ;
   if (strcmp (s, ".dats") != 0) return ats_false_bool ;
   return ats_true_bool ;
-} // end of [ats_trans1_string_suffix_is_dats]
+} // end of [atsopt_string_suffix_is_dats]
 //
 %} // end of [%{^]
 
 extern
 fun string_suffix_is_dats
-  (s: string): bool = "ats_trans1_string_suffix_is_dats"
+  (s: string): bool = "atsopt_string_suffix_is_dats"
 // end of [string_suffix_is_dats]
 
 (* ****** ****** *)
 
 fn s0taload_tr (
-    loc0: loc_t, idopt: Option sym_t, fil: fil_t
-  ) : d1ec = let
+  loc0: loc_t, idopt: Option sym_t, fil: fil_t
+) : d1ec = let
   val fullname = $Fil.filename_full fil
   val oflagd1cs = staload_file_search fullname
   var loadflag: int = 1 // HX: this is for ATS_STALOADFLAG
@@ -1660,7 +1660,7 @@ fn s0taload_tr (
       } // end of [None_vt]
   ) : d1eclst // end of [val]
 in
-  d1ec_staload (loc0, idopt, fil, 0(*loaded*), loadflag, d1cs)
+  d1ec_staload (loc0, idopt, fil, loadflag, d1cs)
 end // end of [s0taload_tr]
 
 (* ****** ****** *)

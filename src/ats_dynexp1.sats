@@ -256,7 +256,7 @@ datatype d1ec_node =
   | D1Cdynload of (* dynamic load *)
       fil_t
   | D1Cstaload of (* static load *)
-      (Option sym_t, fil_t, int (*loaded*), int (*loadflag*), d1eclst)
+      (Option sym_t, fil_t, int (*loadflag*), d1eclst)
 // end of [d1ec_node]
 
 and d1exp_node =
@@ -874,9 +874,9 @@ fun d1lab_ind (_: loc_t, ind: d1explstlst): d1lab
 
 fun m1atch_make (_: loc_t, d1e: d1exp, op1t: p1atopt): m1atch
 
-fun c1lau_make
-  (_: loc_t, _: p1at, gua: m1atchlst, seq: int, neg: int, body: d1exp)
-  : c1lau
+fun c1lau_make (
+  _: loc_t, _: p1at, gua: m1atchlst, seq: int, neg: int, body: d1exp
+) : c1lau // end of [c1lau_make]
 
 fun sc1lau_make (_: loc_t, _: sp1at, body: d1exp): sc1lau
 
@@ -963,14 +963,12 @@ fun d1ec_local (_: loc_t, head: d1eclst, body: d1eclst): d1ec
 fun d1ec_dynload (_: loc_t, _: fil_t): d1ec
 
 fun d1ec_staload (
-    loc: loc_t
-  , id: Option sym_t
-  , fil: fil_t
-  , loaded: int
-  , loadflag: int
-  , d1cs: d1eclst
-  ) : d1ec
-// end of [d1ec_staload]
+  loc: loc_t
+, id: Option sym_t
+, fil: fil_t
+, loadflag: int
+, d1cs: d1eclst
+) : d1ec // end of [d1ec_staload]
 
 (* ****** ****** *)
 
