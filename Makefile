@@ -196,15 +196,15 @@ atsopt1_gc:: ; $(CPF) bootstrap1/atsopt_gc $(ATSHOMEBIN)/atsopt
 
 contrib::
 ifeq ($(HAVE_LIBGLIB20),1)
-	cd contrib/glib; make atsctrb_glib.o; make clean
+	cd contrib/glib; $(MAKE) all
 endif
 ifeq ($(HAVE_LIBGTK20),1)
-	cd contrib/cairo; make atsctrb_cairo.o; make clean
-	cd contrib/pango; make atsctrb_pango.o; make clean
-	cd contrib/GTK; make atsctrb_GTK.o; make clean
+	cd contrib/cairo; $(MAKE) all
+	cd contrib/pango; $(MAKE) all
+	cd contrib/GTK; $(MAKE) all
 endif
 ifeq ($(HAVE_LIBSDL10),1)
-	cd contrib/SDL; make atsctrb_SDL.o; make clean
+	cd contrib/SDL; $(MAKE) all
 endif
 
 ###### some toplevel commands ######

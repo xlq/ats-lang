@@ -198,7 +198,7 @@ typedef SDL_QuitEvent =
 (* ****** ****** *)
 
 fun SDL_PollEvent (
-  event: &SDL_Event? >> opt (SDL_Event, i>0)
+  event: &SDL_Event? >> opt (SDL_Event, i > 0)
 ) : #[i:two] int i
   = "mac#atsctrb_SDL_PollEvent"
 

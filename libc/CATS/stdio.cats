@@ -116,12 +116,25 @@ atslib_fclose_stderr() {
   return ;
 }
 
-/* --------------------------------------- */
+/* ****** ****** */
 
-#define atslib_feof feof
+/*
+#define atslib_feof feof // HX: cgwin defines [feof] as a macro
+*/
+ATSinline()
+ats_int_type
+atslib_feof(ats_ref_type filp) {  return feof((FILE*)filp) ; }
+
+/* ****** ****** */
+
+/*
 #define atslib_ferror ferror
+*/
+ATSinline()
+ats_int_type
+atslib_ferror(ats_ref_type filp) { return ferror((FILE*)filp) ; }
 
-/* --------------------------------------- */
+/* ****** ****** */
 
 #define atslib_fflush_err fflush
 

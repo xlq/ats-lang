@@ -60,8 +60,8 @@ typedef SDL_Color =
 } // end of [SDL_Color]
 
 fun SDL_Color_init (
-    color: &SDL_Color? >> SDL_Color, r: Uint8, g: Uint8, b: Uint8
-  ) :<> void
+  color: &SDL_Color? >> SDL_Color, r: Uint8, g: Uint8, b: Uint8
+) :<> void
   = "atsctrb_SDL_Color_init"
 
 (* ****** ****** *)

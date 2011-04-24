@@ -53,8 +53,12 @@
 #ifndef _XOPEN_SOURCE
 #define _XOPEN_SOURCE // for [sigsetjmp] in gcc-4.5
 #endif // end of [_XOPEN_SOURCE]
-#include <alloca.h>
 #include <setjmp.h>
+
+/* ****** ****** */
+//
+// HX-2011-04-24: the function [alloca] is declared in
+extern void *alloca (size_t nsz) ; // [alloca.h] or [stdlib.h]
 
 /* ****** ****** */
 

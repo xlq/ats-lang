@@ -24,6 +24,10 @@ GCC=gcc
 
 GLIBINC := -I"/usr/lib/glib-2.0/include"
 GLIBINC += -I"/usr/lib64/glib-2.0/include"
+#
+# [glib] is in /usr/local on FreeBSD
+#
+GLIBINC += -I"/usr/local/glib-2.0/include"
 INCLUDES= $(GLIBINC) -I"/usr/include/glib-2.0"
 
 ######

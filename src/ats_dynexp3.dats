@@ -680,7 +680,10 @@ in '{
 } end // end of [d3exp_raise]
 
 
-implement d3exp_rec (loc, s2e_rec, recknd, npf, ld3es) = let
+implement
+d3exp_rec (
+  loc, s2e_rec, recknd, npf, ld3es
+) = let
   val s2fe = labd3explst_eff_union (S2EFFnil (), ld3es)
 in '{
   d3exp_loc= loc
@@ -688,13 +691,19 @@ in '{
 , d3exp_node= D3Erec (recknd, npf, ld3es)
 } end // end of [d3exp_rec]
 
-implement d3exp_refarg (loc, s2e, refval, freeknd, d3e) = '{
+implement
+d3exp_refarg (
+  loc, s2e, refval, freeknd, d3e
+) = '{
   d3exp_loc= loc
 , d3exp_eff= d3e.d3exp_eff, d3exp_typ= s2e
 , d3exp_node= D3Erefarg (refval, freeknd, d3e)
 } // end of [d3exp_refarg]
 
-implement d3exp_scaseof (loc, s2e, s2e_val, sc3ls) = let
+implement
+d3exp_scaseof (
+  loc, s2e, s2e_val, sc3ls
+) = let
   val s2fe = S2EFFnil ()
   val s2fe = sc3laulst_eff_union (s2fe, sc3ls)
 in '{
@@ -703,7 +712,8 @@ in '{
 , d3exp_node= D3Escaseof (s2e_val, sc3ls)
 } end // end of [d3exp_scaseof]
 
-implement d3exp_sel (loc, s2e, root, path) = let
+implement
+d3exp_sel (loc, s2e, root, path) = let
   val s2fe = d3lab1lst_eff_union (root.d3exp_eff, path)
 in '{
   d3exp_loc= loc

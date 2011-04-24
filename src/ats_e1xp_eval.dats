@@ -315,7 +315,7 @@ in
     end // end of [(_, _)]
 end // end of [e1xp_eval_lt]
 
-and e1xp_eval_lte (
+and e1xp_eval_lteq (
   loc: loc_t, e1: e1xp, e2: e1xp
 ) : v1al = let
   val v1 = e1xp_eval e1; val v2 = e1xp_eval e2
@@ -330,7 +330,7 @@ in
   | (_, _) => begin
       e1xp_eval_opr_errmsg (loc, $Sym.symbol_LTEQ)
     end // end of [(_, _)]
-end // end of [e1xp_eval_lte]
+end // end of [e1xp_eval_lteq]
 
 and e1xp_eval_gt (
   loc: loc_t, e1: e1xp, e2: e1xp
@@ -347,9 +347,9 @@ in
   | (_, _) => begin
       e1xp_eval_opr_errmsg (loc, $Sym.symbol_GT)
     end // end of [(_, _)]
-end // end of [e1xp_eval_get]
+end // end of [e1xp_eval_gt]
 
-and e1xp_eval_gte (
+and e1xp_eval_gteq (
   loc: loc_t, e1: e1xp, e2: e1xp
 ) : v1al = let
   val v1 = e1xp_eval e1; val v2 = e1xp_eval e2
@@ -364,7 +364,7 @@ in
   | (_, _) => begin
       e1xp_eval_opr_errmsg (loc, $Sym.symbol_GTEQ)
     end // end of [(_, _)]
-end // end of [e1xp_eval_gte]
+end // end of [e1xp_eval_gteq]
 
 and e1xp_eval_eq (
   loc: loc_t, e1: e1xp, e2: e1xp
@@ -528,13 +528,13 @@ in
     | cons (e1, cons (e2, nil ())) => e1xp_eval_lt (loc, e1, e2)
     | _ => e1xp_eval_appid_errmsg_arity (loc, id)
   end else if id = $Sym.symbol_LTEQ then begin case+ es of
-    | cons (e1, cons (e2, nil ())) => e1xp_eval_lte (loc, e1, e2)
+    | cons (e1, cons (e2, nil ())) => e1xp_eval_lteq (loc, e1, e2)
     | _ => e1xp_eval_appid_errmsg_arity (loc, id)
   end else if id = $Sym.symbol_GT then begin case+ es of
     | cons (e1, cons (e2, nil ())) => e1xp_eval_gt (loc, e1, e2)
     | _ => e1xp_eval_appid_errmsg_arity (loc, id)
   end else if id = $Sym.symbol_GTEQ then begin case+ es of
-    | cons (e1, cons (e2, nil ())) => e1xp_eval_gte (loc, e1, e2)
+    | cons (e1, cons (e2, nil ())) => e1xp_eval_gteq (loc, e1, e2)
     | _ => e1xp_eval_appid_errmsg_arity (loc, id)
   end else if id = $Sym.symbol_EQ then begin case+ es of
     | cons (e1, cons (e2, nil ())) => e1xp_eval_eq (loc, e1, e2)

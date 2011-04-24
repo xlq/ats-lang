@@ -144,29 +144,32 @@ atsopt1_gc::
 ###### contrib libraries ######
 
 contrib::
-	cd contrib/parcomb; make all
+	$(MAKE) -C contrib/parcomb all
 
 ifeq ($(HAVE_LIBGLIB20),1)
-	cd contrib/glib; make all
+	$(MAKE) -C contrib/glib all
 endif
 ifeq ($(HAVE_LIBGTK20),1)
-	cd contrib/cairo; make all
-	cd contrib/pango; make all
-	cd contrib/GTK; make all
+	$(MAKE) -C contrib/cairo all
+	$(MAKE) -C contrib/pango all
+	$(MAKE) -C contrib/GTK all
 endif
 ifeq ($(HAVE_LIBSDL10),1)
-	cd contrib/SDL; make all
+	$(MAKE) -C contrib/SDL all
 endif
 
 ###### some toplevel commands ######
 
 bin/atscc bin/atslib:
-	cd utils/scripts; $(MAKE) atscc; cp atscc $(ATSHOMEQ)/bin
-	cd utils/scripts; $(MAKE) atslib; cp atslib $(ATSHOMEQ)/bin
-	cd utils/scripts; $(MAKE) clean
+	$(MAKE) -C utils/scripts atscc
+	$(CPF) utils/scripts/atscc $(ATSHOMEQ)/bin
+	$(MAKE) -C utils/scripts atslib
+	$(CPF) utils/scripts/atslib $(ATSHOMEQ)/bin
+	$(MAKE) -C utils/scripts clean
 
 bin/atspack:
-	cd utils/scripts; $(MAKE) atspack; cp atspack $(ATSHOMEQ)/bin
+	$(MAKE) -C utils/scripts atspack
+	cp utils/scripts/atspack $(ATSHOMEQ)/bin
 
 ###### library ######
 
@@ -215,36 +218,47 @@ ccomp/runtime/GCATS/gc_mt.o:
 
 ######
 
-clean::
-	rm -f bootstrap1/*.o
-	cd utils/scripts; $(MAKE) clean
-	cd utils/atslex; $(MAKE) clean
-	cd ccomp/runtime/GCATS; $(MAKE) clean
+CPF=cp -f
+RMF=rm -f
 
-cleanall:: clean
-	rm -f $(BUILT_CONFIG_FILES)
-	rm -f .libfiles_local
-	rm -f .libfiles_mt_local
-	rm -f bin/atsopt bin/atscc bin/atslib bin/atslex bin/atspack
-	rm -f ccomp/lib/libats.a
-	rm -f ccomp/lib/libats_mt.a
-	rm -f ccomp/lib/libats_lex.a
-	rm -f ccomp/lib/libats_smlbas.a
-	rm -f ccomp/lib/output/*
-	rm -f ccomp/lib64/libats.a
-	rm -f ccomp/lib64/libats_mt.a
-	rm -f ccomp/lib64/libats_lex.a
-	rm -f ccomp/lib64/libats_smlbas.a
-	rm -f ccomp/lib64/output/*
-	cd ccomp/runtime/GCATS; $(MAKE) cleanall
-	rm -f contrib/glib/atsctrb_glib.o
-	rm -f contrib/cairo/atsctrb_cairo.o
-	rm -f contrib/pango/atsctrb_pango.o
-	rm -f contrib/X11/atsctrb_X11.o
-	rm -f contrib/GTK/atsctrb_GTK.o
-	rm -f contrib/GL/atsctrb_GL.o
-	rm -f contrib/SDL/atsctrb_SDL.o
-	find . -name .svn -prune -o -name \*~ -exec rm \{} \;
+######
+
+clean::
+	$(RMF) bootstrap1/*.o
+	$(MAKE) -C utils/scripts clean
+	$(MAKE) -C utils/atslex clean
+	$(MAKE) -C ccomp/runtime/GCATS clean
+
+cleanall::
+	$(RMF) bootstrap1/*.o
+	$(RMF) $(BUILT_CONFIG_FILES)
+	$(RMF) .libfiles_local
+	$(RMF) .libfiles_mt_local
+	$(RMF) bin/atsopt bin/atscc bin/atslib bin/atslex bin/atspack
+	$(RMF) ccomp/lib/libats.a
+	$(RMF) ccomp/lib/libats_mt.a
+	$(RMF) ccomp/lib/libats_lex.a
+	$(RMF) ccomp/lib/libats_smlbas.a
+	$(RMF) ccomp/lib/output/*
+	$(RMF) ccomp/lib64/libats.a
+	$(RMF) ccomp/lib64/libats_mt.a
+	$(RMF) ccomp/lib64/libats_lex.a
+	$(RMF) ccomp/lib64/libats_smlbas.a
+	$(RMF) ccomp/lib64/output/*
+	$(RMF) contrib/glib/atsctrb_glib.o
+	$(RMF) contrib/cairo/atsctrb_cairo.o
+	$(RMF) contrib/pango/atsctrb_pango.o
+	$(RMF) contrib/X11/atsctrb_X11.o
+	$(RMF) contrib/GTK/atsctrb_GTK.o
+	$(RMF) contrib/GL/atsctrb_GL.o
+	$(RMF) contrib/SDL/atsctrb_SDL.o
+
+cleanall:: ; $(MAKE) -C utils/atslex cleanall
+cleanall:: ; $(MAKE) -C utils/scripts cleanall
+cleanall:: ; $(MAKE) -C ccomp/runtime/GCATS cleanall
+
+distclean:: cleanall
+distclean:: ; find . -name .svn -prune -o -name \*~ -exec rm \{} \;
 
 ######
 #

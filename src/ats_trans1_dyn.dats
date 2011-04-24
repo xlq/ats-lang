@@ -1062,10 +1062,10 @@ in
     in
       $Fix.ITEMopr ($Fix.OPERpre ($Fix.foldat_prec_dyn, f))
     end // end of [D0Efoldat]
-  | D0Efor (inv, loc_inv, ini, test, post, body) => let
-      val inv: loopi1nv = case+ inv of
-        | Some inv => loopi0nv_tr (loc_inv, inv)
-        | None () => loopi1nv_nil (loc_inv)
+  | D0Efor (oinv, loc_inv, ini, test, post, body) => let
+      val inv = (case+ oinv of
+        | Some x => loopi0nv_tr (loc_inv, x) | None _ => loopi1nv_nil (loc_inv)
+      ) : loopi1nv // end of [val]
       val ini = d0exp_tr ini
       val test = d0exp_tr test
       val post = d0exp_tr post

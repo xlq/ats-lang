@@ -214,7 +214,7 @@ fn d3exp_clo_restore
     | S2Efun (fc, lin, s2fe, npf, s2es_arg, s2e_res) => let
         val () = fc0 := fc in case+ lin of
         | _ when lin = 1 => s2exp_fun_srt
-            (s2rt_type, fc, ~1(*topized*), s2fe, npf, s2es_arg, s2e_res)
+            (s2rt_viewtype, fc, ~1(*topized*), s2fe, npf, s2es_arg, s2e_res)
         | _ when lin = 0 => s2e_fun
         | _ (* lin = ~1 *) => let
             val () = prerr_loc_error3 (loc)
@@ -406,6 +406,7 @@ in
     ) => let
 (*
       val () = begin
+        print "d23exp_app_tr_up: s2e_fun = "; print s2e_fun; print_newline ();
         print "d23exp_app_tr_up: s2fe_fun = "; print s2fe_fun; print_newline ();
         printf ("d23exp_app_tr_up: npf = %i and npf_fun = %i", @(npf, npf_fun));
         print_newline ()
@@ -703,7 +704,9 @@ fun aux1
 *)
       in
         case+ s2e_fun.s2exp_node of
-        | S2Efun (fc, _(*lin*), s2fe_fun, npf_fun, s2es_fun_arg, s2e_fun_res) => let
+        | S2Efun (
+            fc, _(*lin*), s2fe_fun, npf_fun, s2es_fun_arg, s2e_fun_res
+          ) => let
             val () = pfarity_check_fun (loc0, npf_fun, npf)
             val () = $SOL.s2explst_arg_tyleq_solve (loc_arg, s2es_arg, s2es_fun_arg)
             var s2e_res: s2exp = s2e_fun_res
@@ -723,10 +726,11 @@ fun aux1
             val d3e_fun = d3exp_funclo_restore (fc, d3e_fun)
             val d3es_arg = (
               if iswth then d3explst_arg_restore (d3es_arg, wths2es) else d3es_arg
-            ) : d3explst
+            ) : d3explst // end of [val]
             val () = the_effect_env_check_seff (loc0, s2fe_fun)
             val d3e_fun =
               d3exp_app_dyn (loc0, s2e_res, s2fe_fun, d3e_fun, npf, d3es_arg)
+            // end of [val]
           in
             aux1 (loc0, d3e_fun, d3as, d2as)
           end // end of [S2Efun]

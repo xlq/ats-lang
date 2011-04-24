@@ -160,18 +160,18 @@ fun fclose_stderr ():<!exn> void = "atslib_fclose_stderr"
 // ------------------------------------------------
 
 (*  
-
+//
 // int feof (FILE *stream);
-
+//
 The function feof() returns a nonzero value if the end of the given file
 stream has been reached.
-
+//
 *)
 
 symintr feof
-fun feof0 (f: FILEref):<> int = "mac#atslib_feof"
+fun feof0 (f: FILEref):<> int = "atslib_feof"
 overload feof with feof0
-fun feof1 {m:fm} (f: &FILE m):<> int = "mac#atslib_feof"
+fun feof1 {m:fm} (f: &FILE m):<> int = "atslib_feof"
 overload feof with feof1
 
 // ------------------------------------------------
@@ -183,13 +183,13 @@ overload feof with feof1
 The function [ferror] tests the error indicator for the stream pointed to by
 stream, returning non-zero if it is set.  The error indicator can only be
 reset by the [clearerr] function.
-
+//
 *)
 
 symintr ferror
-fun ferror0 (f: FILEref):<> int = "mac#atslib_ferror"
+fun ferror0 (f: FILEref):<> int = "atslib_ferror"
 overload ferror with ferror0
-fun ferror1 {m:fm} (f: &FILE m):<> int = "mac#atslib_ferror"
+fun ferror1 {m:fm} (f: &FILE m):<> int = "atslib_ferror"
 overload ferror with ferror1
 
 // ------------------------------------------------

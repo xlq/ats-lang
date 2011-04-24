@@ -328,17 +328,19 @@ d3exp_lval_set_typ (
 ) = let
 (*
   val () = begin
-    print "d3exp_lval_set_typ: d3e0 = "; print d3e0; print_newline ()
+    print "d3exp_lval_set_typ: d3e0 = "; print d3e0; print_newline ();
+    print "d3exp_lval_set_typ: s2e_new = "; print s2e_new; print_newline ();
   end // end of [val]
 *)
   fn refval_check (
       loc0: loc_t, d2v: d2var_t, refval: int
     ) : void = 
-    if refval > 1 then let
+    if refval > 0 then let
       val () = prerr_loc_error3 (loc0)
       val () = prerr ": the dynamic variable ["
       val () = prerr_d2var (d2v)
       val () = prerr "] is required to be mutable for supporting call-by-reference."
+      val () = prerr_newline ()
     in
       $Err.abort {void} ()
     end // end of [if]
@@ -440,7 +442,7 @@ fn s2exp_fun_is_freeptr
   (s2e: s2exp): bool = begin case+ s2e.s2exp_node of
   | S2Efun (fc, lin, _(*s2fe*), _(*npf*), _(*arg*), _(*res*)) => begin
     case+ fc of
-    | $Syn.FUNCLOclo knd when knd <> 0 => if lin > 0 then false else true
+    | $Syn.FUNCLOclo knd when knd > 0 => if lin = 0 then true else false
     | _ => false
     end // end of [S2Efun]
   | _ => false
