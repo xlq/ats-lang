@@ -207,7 +207,7 @@ matrix_make_clo
   pfv: !v
 | row: size_t m, col: size_t n
 , f: &(!v | sizeLt m, sizeLt n, &(a?) >> a) -<clo,f> void
-) :<f> matrix (a, m, n) // end of [matrix_make_clo_tsz]
+) :<f> matrix (a, m, n) // end of [matrix_make_clo]
 
 (* ****** ****** *)
 

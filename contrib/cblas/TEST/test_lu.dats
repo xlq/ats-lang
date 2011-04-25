@@ -300,8 +300,9 @@ fun{a1,a2:t@ype} test
   {N:nat | N >= 1} (N: int N): void = () where {
 //
   prval pf = unit_v ()
-  val A = matrix_make_clo_tsz {a2}
-    (pf | N, N, !p_clo, sizeof<a2>) where {
+  val A =
+    matrix_make_clo<a2>
+      (pf | N, N, !p_clo) where {
     val N = size1_of_int1 (N)
     var !p_clo = @lam (
         pf: !unit_v | i: size_t, j: size_t, x: &(a2?) >> a2
@@ -384,8 +385,9 @@ fun{a1,a2:t@ype} test
 //
   prval pf = unit_v ()
   // [A1] is a *unit* matrix
-  val A1 = matrix_make_clo_tsz {a2}
-    (pf | N, N, !p_clo, sizeof<a2>) where {
+  val A1 =
+    matrix_make_clo<a2>
+      (pf | N, N, !p_clo) where {
     val N = size1_of_int1 (N)
     var !p_clo = @lam (
         pf: !unit_v | i: size_t, j: size_t, x: &(a2?) >> a2

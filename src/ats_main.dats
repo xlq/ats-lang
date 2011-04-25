@@ -261,12 +261,10 @@ fn atsopt_usage (cmd: string): void = begin
 end // end of [atsopt_usage]
 
 (* ****** ****** *)
-
 //
 // ATS_MAJOR_VERSION, ATS_MINOR_VERSION, ATS_MICRO_VERSION
 // defined in [prelude/params.hats]
 //
-
 fn atsopt_version (): void = begin
   printf (
     "ATS/Anairiats version %i.%i.%i with Copyright (c) 2002-2011 Hongwei Xi\n"

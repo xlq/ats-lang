@@ -8,6 +8,8 @@ ats-lang-anairiats-0.2.5:
 3. Fixing a bug in [valprim_is_mutable]: casting was incorrectly handled.
 4. atslib_feof and atslib_ferror are changed to inlined functions (instead
    of macros). This is done to fix Cgwin defining feof as a macro.
+5. Some changes are made to support ATS on FreeBSD.
+6. Fixing a bug involving linear closures (of the form <lin,cloptr>).
 
 ########################################################################
 

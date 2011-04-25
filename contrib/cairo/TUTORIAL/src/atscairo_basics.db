@@ -191,7 +191,7 @@ count can increase or decrease depending on operations performed on the
 object, and the object is freed once the count drops to 0. In ATS, we can
 employ linear typs to track reference counts. Compared to various other
 APIs for cairo, the ability to track reference counts statically, that is,
-at compile-time, is probably the greatest benefit one receives when
+at compile-time, is arguably the greatest benefit one receives when
 programming with ATS/Cairo.
 
 </para>

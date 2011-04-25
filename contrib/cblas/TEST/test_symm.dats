@@ -106,8 +106,9 @@ typedef elt = double
 (* ****** ****** *)
 
 prval pf = unit_v ()
-val M1 = matrix_make_clo_tsz {elt}
-  (pf | 10, 10, !p_clo, sizeof<elt>) where {
+val M1 =
+  matrix_make_clo<elt>
+    (pf | 10, 10, !p_clo) where {
   var !p_clo = @lam (
       pf: !unit_v | i: size_t, j: size_t, x: &(elt?) >> elt
     ) : void =<clo> let
@@ -126,8 +127,9 @@ val () = print_newline ()
 (* ****** ****** *)
 
 prval pf = unit_v ()
-val M2 = matrix_make_clo_tsz {elt}
-  (pf | 10, 10, !p_clo, sizeof<elt>) where {
+val M2 =
+  matrix_make_clo<elt>
+    (pf | 10, 10, !p_clo) where {
   var !p_clo = @lam (
       pf: !unit_v | i: size_t, j: size_t, x: &(elt?) >> elt
     ) : void =<clo> let
