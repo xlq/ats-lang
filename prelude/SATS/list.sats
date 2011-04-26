@@ -192,7 +192,7 @@ fun{a:t@ype} list_append2_vt {i,j:nat}
 
 fun{a1,a2:t@ype}
 list_assoc_funenv
-  {v:view} {vt: viewtype} {eq:eff} (
+  {v:view} {vt:viewtype} {eq:eff} (
   pf: !v
 | xs: List @(a1, a2), eq: (!v | a1, a1, !vt) -<fun,eq> bool, x: a1, env: !vt
 ) :<eq> Option_vt a2 // end of [list_assoc_funenv]
