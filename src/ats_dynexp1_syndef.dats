@@ -264,10 +264,11 @@ fun atsyndef_search_all
 (* ****** ****** *)
 
 val _n1 = (~1 :: nil): intlst
-val _n1_p1 = (~1 :: 1 :: nil): intlst // while ($test) 
+val _n1_p1 = (~1 :: 1 :: nil): intlst // while ($test) ($body)
 val _n1_p1_n1 =
   (~1 :: 1 :: ~1 :: nil): intlst // do ($body) while ($test)
 val _n2 = (~2 :: nil): intlst
+val _p3 = ( 3 :: nil): intlst
 
 (* ****** ****** *)
 
@@ -276,8 +277,26 @@ macdef matii = match_intlst_intlst
 (* ****** ****** *)
 
 extern
-fun search_DO
-  (ns: intlst): fsyndefopt
+fun search_IF (ns: intlst): fsyndefopt
+extern
+fun d1exp_if_p3 (loc: loc_t, d1es: d1explst): d1exp
+implement
+search_IF (ns) = let
+(*
+  val () = print "search_IF: ns = "
+  val () = fprint_intlst (stdout_ref, ns)
+  val () = print_newline ()
+*)
+in
+  case+ 0 of
+  | _ when ns \matii _p3 => Some_vt (d1exp_if_p3)
+  | _ => None_vt ()
+end // end of [search_IF]
+
+(* ****** ****** *)
+
+extern
+fun search_DO (ns: intlst): fsyndefopt
 extern
 fun d1exp_do_n1_p1_n1
   (loc: loc_t, d1es: d1explst): d1exp
@@ -391,6 +410,7 @@ end // end of [search_FPRINTLN]
 
 (* ****** ****** *)
 
+val symbol_IF = $Sym.symbol_IF
 val symbol_DO = $Sym.symbol_DO
 val symbol_WHILE = $Sym.symbol_WHILE
 val symbol_PRINT = $Sym.symbol_make_string ("print")
@@ -411,6 +431,7 @@ atsyndef_search_all_default
 *)
 in
   case+ 0 of
+  | _ when id = symbol_IF => search_IF (ns)
   | _ when id = symbol_DO => search_DO (ns)
   | _ when id = symbol_WHILE => search_WHILE (ns)
   | _ when id = symbol_PRINT => search_PRINT (ns)
@@ -611,6 +632,21 @@ fun d1exp_appseq (
   | D1Elist (_(*npf*), d1es) => d1exp_applstseq (loc0, d1es, f)
   | _ => f (d1e)
 end // end of [d1exp_appseq]
+
+(* ****** ****** *)
+
+implement
+d1exp_if_p3
+  (loc0, arg) = let
+  val- cons (d1e1, _) = arg
+  val- D1Elist (_, d1es) = d1e1.d1exp_node
+  val- cons (d1e11, d1es) = d1es
+  val- cons (d1e12, d1es) = d1es
+  val- cons (d1e13, d1es) = d1es
+  val ifhead = i1nvresstate_nil
+in
+  d1exp_if (loc0, ifhead, d1e11, d1e12, Some (d1e13))
+end // end of [d1exp_if_p3]
 
 (* ****** ****** *)
 

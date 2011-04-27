@@ -10,6 +10,8 @@ ats-lang-anairiats-0.2.5:
    of macros). This is done to fix Cgwin defining feof as a macro.
 5. Some changes are made to support ATS on FreeBSD.
 6. Fixing a bug involving linear closures (of the form <lin,cloptr>).
+7. Adding support for if!: if! (e_cond, e_then, e_else) is for the
+   following expression: (if e_cond then e_then else e_else).
 
 ########################################################################
 

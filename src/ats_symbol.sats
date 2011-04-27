@@ -83,8 +83,8 @@ val symbol_FALSE : symbol_t
 val symbol_TRUE : symbol_t
 //
 val symbol_DO : symbol_t
-//
 val symbol_FOR : symbol_t
+val symbol_IF : symbol_t
 val symbol_IN : symbol_t
 val symbol_R0EAD : symbol_t // r@ead: read-only annotation
 val symbol_SIZEOF : symbol_t

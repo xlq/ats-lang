@@ -140,6 +140,7 @@ implement symbol_TRUE = symbol_make_string "true"
 
 implement symbol_DO = symbol_make_string "do"
 implement symbol_FOR = symbol_make_string "for"
+implement symbol_IF = symbol_make_string "if"
 implement symbol_IN = symbol_make_string "in"
 implement symbol_R0EAD = symbol_make_string "r@ead"
 implement symbol_SIZEOF = symbol_make_string "sizeof"

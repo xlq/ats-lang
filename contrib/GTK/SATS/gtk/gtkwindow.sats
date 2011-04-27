@@ -30,12 +30,10 @@
 *)
 
 (* ****** ****** *)
-
 //
 // Author: Hongwei Xi (hwxi AT cs DOT bu DOT edu)
 // Start Time: April, 2010
 //
-
 (* ****** ****** *)
 
 fun GTK_IS_WINDOW
