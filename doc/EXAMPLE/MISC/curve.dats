@@ -90,9 +90,9 @@ in
 end // end of [printrows]
 
 implement main (argc, argv) = let
-  val I = begin
-    if argc >= 2 then int_of_string (argv.[1]) else 0
-  end : int
+  val I =
+    if! (argc >= 2, int_of_string argv.[1], 0): int
+  // end of [val]
   val k = (if I > 0 then double_of_int I else K): double
   val X = 8 * k and Y = k
   val () = begin
