@@ -41,7 +41,9 @@ extern praxi forkdup_pair {v1,v2:view}
 *)
 
 implement main (argc, argv) = let
-  val nport = (if argc > 1 then int_of argv.[1] else TIME_SERVER_PORT): int
+  val nport = (
+    if argc > 1 then int_of argv.[1] else TIME_SERVER_PORT
+  ) : int // end of [nport]
   val [fd_s:int] (pfskt_s | fd_s) = socket_family_type_exn (AF_INET, SOCK_STREAM)
   var servaddr: sockaddr_in_struct // uninitialized
   val servport = in_port_nbo_of_int (nport)
