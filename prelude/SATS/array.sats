@@ -572,14 +572,17 @@ fun{a:viewt@ype}
 array_ptr_iforeach_fun
   {n:nat} {f:eff} (
   base: &(@[a][n])
-, f: (sizeLt n, &a) -<fun,f> void, asz: size_t n
+, f: (sizeLt n, &a) -<fun,f> void
+, asz: size_t n
 ) :<f> void // end of [array_ptr_iforeach_fun]
 
 fun{a:viewt@ype}
 array_ptr_iforeach_clo
   {v:view} {n:nat} {f:eff} (
   pfv: !v
-| base: &(@[a][n]), f: &(!v | sizeLt n, &a) -<clo,f> void, asz: size_t n
+| base: &(@[a][n])
+, f: &(!v | sizeLt n, &a) -<clo,f> void
+, asz: size_t n
 ) :<f> void // end of [array_ptr_iforeach_clo]
 
 (* ****** ****** *)

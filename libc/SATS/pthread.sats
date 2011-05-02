@@ -63,16 +63,13 @@ fun pthread_self (): pthread_t = "mac#atslib_pthread_self"
 
 absviewt@ype pthread_attr_t = $extype"pthread_attr_t"
 
-fun pthread_attr_init
-  (attr: &pthread_attr_t? >> opt (pthread_attr_t, i == 0)): #[i:nat] int i
+(* ****** ****** *)
+
+fun pthread_attr_init (
+  attr: &pthread_attr_t? >> opt (pthread_attr_t, i == 0)
+) : #[i:nat] int (i)
   = "mac#atslib_pthread_attr_init"
 // end of [pthread_attr_init]
-
-fun pthread_attr_destroy // HX: this function does not fail?
-  (attr: &pthread_attr_t >> opt (pthread_attr_t, i > 0)): #[i:nat] int i
-  = "mac#atslib_pthread_attr_destroy"
-// end of [pthread_attr_destroy]
-
 //
 // HX: possible failure: ENOMEM, which is remote
 //
@@ -80,6 +77,16 @@ fun pthread_attr_init_exn
   (attr: &pthread_attr_t? >> pthread_attr_t): void
   = "atslib_pthread_attr_init_exn"
 // end of [pthread_attr_init_exn]
+
+(* ****** ****** *)
+//
+// HX: this function does not fail?
+//
+fun pthread_attr_destroy (
+  attr: &pthread_attr_t >> opt (pthread_attr_t, i > 0)
+) : #[i:nat] int (i)
+  = "mac#atslib_pthread_attr_destroy"
+// end of [pthread_attr_destroy]
 
 fun pthread_attr_destroy_exn
   (attr: &pthread_attr_t >> pthread_attr_t?): void
@@ -203,7 +210,6 @@ fun pthread_mutex_create_unlocked
 // end of [pthread_mutex_create_unlocked]
 
 (* ****** ****** *)
-
 //
 // HX-2010-03-14:
 // it should be called 'uninitialize' or 'clear' in ATS
@@ -259,52 +265,6 @@ fun pthread_cond_signal
 fun pthread_cond_broadcast
   (cond: &cond_vt):<> int = "mac#atslib_pthread_cond_broadcast"
 // end of [pthread_cond_broadcast]
-
-(* ****** ****** *)
-
-//
-// HX-2010-10: refcounted mutex
-//
-absviewtype
-mutexref_view_type (v:view, l:addr) // a boxed type
-// end of [absviewtype]
-stadef mutexref_t = mutexref_view_type
-
-castfn mutexref_get_view_ptr
-  {v:view} {l1:addr} (
-  x: mutexref_t (v, l1)
-) :<> [l2:addr] (
-  mutex_vt v @ l2, minus (mutexref_t (v, l1), mutex_vt v @ l2)
-| ptr l2
-) // end of [mutexref_get_view_ptr]
-
-fun mutexref_lock
-  {v:view} {l:addr} (
-  x: !mutexref_t (v, l)
-) : (v | void)
-  = "atslib_pthread_mutexref_lock"
-// end of [mutexref_lock]
-
-fun mutexref_unlock
-  {v:view} {l:addr} (
-  pf: v | x: !mutexref_t (v, l)
-) : void
-  = "atslib_pthread_mutexref_unlock"
-// end of [mutexref_unlock]
-
-fun mutexref_ref
-  {v:view} {l:addr} (
-  x: !mutexref_t (v, l)
-) :<> mutexref_t (v, l)
-  = "atslib_pthread_mutexref_ref"
-// end of [mutexref_ref]
-
-fun mutexref_unref
-  {v:view} {l:addr} (
-  x: mutexref_t (v, l)
-) :<> void
-  = "atslib_pthread_mutexref_unref"
-// end of [mutexref_unref]
 
 (* ****** ****** *)
 

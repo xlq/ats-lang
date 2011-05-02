@@ -72,10 +72,13 @@ array_ptr_randinit {n:nat} {l:addr} (
 
 (* ****** ****** *)
 
-fun{a:t@ype} list0_randgen {n:nat} (n: int n): list0 (a)
+fun{a:t@ype}
+list0_randgen {n:nat} (n: int n): list0 (a)
 
-fun{a:t@ype} list_randgen {n:nat} (n: int n): list (a, n)
-fun{a:t@ype} list_vt_randgen {n:nat} (n: int n): list_vt (a, n)
+fun{a:t@ype}
+list_randgen {n:nat} (n: int n): list (a, n)
+fun{a:t@ype}
+list_vt_randgen {n:nat} (n: int n): list_vt (a, n)
 
 (* ****** ****** *)
 

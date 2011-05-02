@@ -47,7 +47,7 @@
 (* ****** ****** *)
 
 %{^
-#include "libc/CATS/stdio.cats"
+#include <libc/CATS/stdio.cats>
 #include <libc/sys/CATS/stat.cats>
 %} // end of [%{#]
 

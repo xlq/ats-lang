@@ -1,18 +1,16 @@
 %{^
-
-#include "libats/CATS/thunk.cats"
-
-#include "libc/CATS/pthread.cats"
-#include "libc/CATS/pthread_locks.cats"
-
+#include "thunk.cats"
+#include "pthread.cats"
+#include "pthread_locks.cats"
 %}
 
-staload "libc/SATS/pthread.sats"
-staload "libc/SATS/pthread_locks.sats"
+staload "pthread.sats"
+staload "pthread_locks.sats"
 
 (* ****** ****** *)
 
-dynload "libats/DATS/parallel.dats"
+staload "parallel.sats"
+dynload "parallel.dats"
 
 (* ****** ****** *)
 
@@ -36,32 +34,59 @@ typedef T = int
 (* ****** ****** *)
 
 staload Rand = "libc/SATS/random.sats"
-staload Time = "libc/SATS/time.sats"
 
 (* ****** ****** *)
 
 fn array_ptr_print {n:nat} {l:addr}
-  (pf_arr: !array_v (T, n, l) | A: ptr l, n: int n): void = let
-  fn f (i: natLt n, x: &T):<cloptr1> void = begin
+  (pf_arr: !array_v (T, n, l) | A: ptr l, n: size_t n): void = let
+  fn f (
+    i: sizeLt n, x: &T
+  ) :<> void = $effmask_all begin
     if i > 0 then print ", "; printf ("%2d", @(x))
   end
 in
-  iforeach_array_ptr_tsz_cloptr {T} (f, !A, n, sizeof<T>)
+  array_ptr_iforeach_fun<T> (!A, f, n)
 end
 
 (* ****** ****** *)
 
 #define N 100.0
 
-fn random_array_ptr_gen {n:nat} (n: int n):<>
-  [l:addr | l <> null] (free_gc_v l, array_v (T, n, l) | ptr l) =
-  array_ptr_make_fun_tsz_cloptr {T} (
-    n
-  , lam (x, i) =<cloptr> x := $effmask_ref (int_of ($Rand.drand48 () * N))
-  , sizeof<T>
-  ) // end of [array_ptr_make_fun_tsz_cloptr]
+(* ****** ****** *)
+
+extern fun randgen_elt ():<!ref> T
+implement randgen_elt () =  int_of (N * $Rand.drand48 ())
 
 (* ****** ****** *)
+
+fun
+randgen_arr
+  {n:nat} .<>.
+  (n: int n)
+  :<!ref> [l:addr] (
+    free_gc_v (T, n, l), array_v (T, n, l)
+  | ptr l
+  ) = let
+  val tsz = sizeof<T>
+  val n_sz = size1_of_int1 (n)
+  val (pf_gc, pf_arr | p_arr) =
+    array_ptr_alloc_tsz {T} (n_sz, tsz)
+  // end of [val]
+  val () = array_ptr_initialize_fun<T> (!p_arr, n_sz, f) where {
+    val f = lam (
+      _: sizeLt n
+    , x: &(T?) >> T
+    ) : void =<fun>
+      x := $effmask_all (randgen_elt ())
+    // end of [val]
+  } // end of [val]
+in
+  (pf_gc, pf_arr | p_arr)
+end // end of [rangen_arr]
+
+(* ****** ****** *)
+
+#define i2sz size1_of_int1
 
 fn usage (cmd: string): void = begin
   prerr ("Usage:\n");
@@ -78,12 +103,12 @@ implement main (argc, argv) = begin
     val () = parallel_worker_add_many (nthread)
     val () = printf ("There are now [%i] workers.", @(nthread))
     val () = print_newline ()
-    val (pf_gc, pf_arr | A) = random_array_ptr_gen (n)
+    val (pf_gc, pf_arr | A) = randgen_arr (n)
 (*
     val () = array_ptr_print (pf_arr | A, n)
     val () = print_newline ()
 *)
-    val () = mergesort (pf_arr | A, n)
+    val () = mergesort (pf_arr | A, (i2sz)n)
 (*
     val () = array_ptr_print (pf_arr | A, n)
     val () = print_newline ()

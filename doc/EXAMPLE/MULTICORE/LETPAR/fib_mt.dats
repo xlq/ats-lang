@@ -9,23 +9,21 @@
 
 %{^
 
-#include "libats/CATS/thunk.cats"
-
-#include "libc/CATS/pthread.cats"
-#include "libc/CATS/pthread_locks.cats"
+#include "thunk.cats"
+#include "pthread.cats"
+#include "pthread_locks.cats"
 
 %}
 
-staload "libc/SATS/pthread.sats"
-staload "libc/SATS/pthread_locks.sats"
+(* ****** ****** *)
+
+staload "pthread.sats"
+staload "pthread_locks.sats"
+staload "parallel.sats"
 
 (* ****** ****** *)
 
-staload "libats/SATS/parallel.sats"
-
-(* ****** ****** *)
-
-dynload "libats/DATS/parallel.dats"
+dynload "parallel.dats"
 
 (* ****** ****** *)
 

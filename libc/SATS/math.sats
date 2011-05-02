@@ -41,10 +41,14 @@
 
 (* ****** ****** *)
 
-macdef M_E = 2.7182818284590452354	/* e */
-macdef M_PI = 3.14159265358979323846	/* pi */
-macdef M_PI_2 = 1.57079632679489661923	/* pi/2 */
-macdef M_PI_4 = 0.78539816339744830962	/* pi/4 */
+#define ATS_STALOADFLAG 0 // there is no need for staloading at run-time!
+
+(* ****** ****** *)
+
+macdef M_E = 2.7182818284590452354	// e
+macdef M_PI = 3.14159265358979323846	// pi
+macdef M_PI_2 = 1.57079632679489661923	// pi/2
+macdef M_PI_4 = 0.78539816339744830962	// pi/4
 
 (* ****** ****** *)
 

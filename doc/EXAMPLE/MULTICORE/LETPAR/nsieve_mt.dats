@@ -28,27 +28,26 @@ Primes up to 40960000  2488465
 
 %{^
 
-#include "libats/CATS/thunk.cats"
-
-#include "libc/CATS/pthread.cats"
-#include "libc/CATS/pthread_locks.cats"
+#include "thunk.cats"
+#include "pthread.cats"
+#include "pthread_locks.cats"
 
 %}
 
-staload "libc/SATS/pthread.sats"
-staload "libc/SATS/pthread_locks.sats"
+staload "pthread.sats"
+staload "pthread_locks.sats"
 
 (* ****** ****** *)
 
-staload "libats/SATS/parallel.sats"
-
-(* ****** ****** *)
-
-dynload "libats/DATS/parallel.dats"
+staload "parallel.sats"
+dynload "parallel.dats"
 
 (* ****** ****** *)
 
 //
+
+typedef int8 = bool
+extern castfn int8_of_int (x: int): int8
 
 macdef  tt = int8_of_int (1)
 macdef  ff = int8_of_int (0)
@@ -80,13 +79,23 @@ fun sieve_many {m,m1,m2:nat | m1 <= m; m2 <= m} {i:nat} {l:addr}
   end // end of [if]
 end // end of [sieve_many]
 
+local
+
+staload M = "libc/SATS/math.sats"
+
+in
+
 fn sqrt_int {m:nat} (m: int m): Nat = let
-  val m_sqrt = int_of_double (sqrt (double_of m + 0.5))
-  val m_sqrt = int1_of_int m_sqrt
+  val m_sqrt = int_of_double ($M.sqrt (double_of m + 0.5))
+  val m_sqrt = int1_of_int (m_sqrt)
   val () = assert (m_sqrt >= 0) // redundant at run-time
 in
   m_sqrt
 end // end of [sqrt_int]
+
+end // end of [local]
+
+(* ****** ****** *)
 
 fn nsieve_mt (m: int): void = let
   val [m:int] m = int1_of_int m

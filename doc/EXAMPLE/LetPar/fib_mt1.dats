@@ -5,25 +5,24 @@
 //
 
 %{^
-
 #include "libats/CATS/thunk.cats"
-
-#include "libc/CATS/pthread.cats"
-#include "libc/CATS/pthread_locks.cats"
-
 %}
 
 staload "libc/SATS/pthread.sats"
-staload "libc/SATS/pthread_locks.sats"
+staload "libc/SATS/pthread_uplock.sats"
 
 (* ****** ****** *)
 
+(*
 staload "libats/SATS/letpar.sats"
 staload _(*anonymous*) = "libats/DATS/letpar.dats"
+*)
 
 (* ****** ****** *)
 
+(*
 dynload "libats/DATS/letpar.dats"
+*)
 
 (* ****** ****** *)
 
@@ -56,7 +55,7 @@ in
     (if nfib > 1 then fib_mt (nfib-1)+ fib_mt (nfib-2) else nfib)
   end // end of [if]
 end // end of [fib_mt]
-
+////
 fn fib_usage (cmd: string): void = begin
   prerr ("Usage:\n");
   prerrf ("  single core: %s [integer]\n", @(cmd));

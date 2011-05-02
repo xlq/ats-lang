@@ -20,9 +20,9 @@ overload <= with lte_T_T
 #endif // end of [undefined (ARG_MERGE_MT_DATS)]
 
 (* ****** ****** *)
-
-// staload "libats/SATS/parallel.sats"
-
+//
+// staload "parallel.sats"
+//
 (* ****** ****** *)
 
 fn merge_split_find {m:nat} {b:addr} .<m>.
@@ -157,9 +157,9 @@ and merge_gte
     prval pfc1_mul = mul_distribute (pfa1_mul, pfb1_mul)
     prval pfc_mul = mul_commute (pfc1_mul)
     val C_ofs = A_ofs + B_ofs
-    prval (pfa1, pfa2) = array_v_split {T} {l,l2} (pfa_mul, pfa)
-    prval (pfb1, pfb2) = array_v_split {T} {m,m2} (pfb_mul, pfb)
-    prval (pfc1, pfc2) = array_v_split {T?} {l+m,l2+m2} (pfc_mul, pfc)
+    prval (pfa1, pfa2) = array_v_split {T} {l} {l2} (pfa_mul, pfa)
+    prval (pfb1, pfb2) = array_v_split {T} {m} {m2} (pfb_mul, pfb)
+    prval (pfc1, pfc2) = array_v_split {T?} {l+m} {l2+m2} (pfc_mul, pfc)
     val ll2 = l - l2 and mm2 = m - m2
 
     val // par
@@ -186,8 +186,8 @@ fun mergesort1 {l:nat} {a1,a2:addr} .<l>. (
     stavar l2 : int
     val l2 : size_t l2 = l / 2; val ll2 = l - l2
     val [ofs:int] (pfa_mul | ofs) = l2 szmul2 sizeof<T>
-    prval (pfa11, pfa12) = array_v_split {T} {l,l2} (pfa_mul, pfa1)
-    prval (pfa21, pfa22) = array_v_split {T?} {l,l2} (pfa_mul, pfa2)
+    prval (pfa11, pfa12) = array_v_split {T} {l} {l2} (pfa_mul, pfa1)
+    prval (pfa21, pfa22) = array_v_split {T?} {l} {l2} (pfa_mul, pfa2)
     val ll2 = l - l2
 
     val () =
@@ -228,8 +228,8 @@ and mergesort2 {l:pos} {a1,a2:addr} .<l>. (
     stavar l2: int
     val l2 : size_t l2 = l / 2; val ll2 = l - l2
     val [ofs:int] (pfa_mul | ofs) = l2 szmul2 sizeof<T>
-    prval (pfa11, pfa12) = array_v_split {T} {l,l2} (pfa_mul, pfa1)
-    prval (pfa21, pfa22) = array_v_split {T?} {l,l2} (pfa_mul, pfa2)
+    prval (pfa11, pfa12) = array_v_split {T} {l} {l2} (pfa_mul, pfa1)
+    prval (pfa21, pfa22) = array_v_split {T?} {l} {l2} (pfa_mul, pfa2)
     val ll2 = l - l2
 
     val () =

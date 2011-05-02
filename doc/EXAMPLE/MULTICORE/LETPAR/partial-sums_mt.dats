@@ -7,34 +7,34 @@
 
 (* ****** ****** *)
 
-staload M = "libc/SATS/math.sats"
+staload
+M = "libc/SATS/math.sats"
+%{^
+#include "libc/CATS/math.cats"
+%}
 
 (* ****** ****** *)
 
 %{^
 
-#include "libats/CATS/thunk.cats"
-
-#include "libc/CATS/pthread.cats"
-#include "libc/CATS/pthread_locks.cats"
+#include "thunk.cats"
+#include "pthread.cats"
+#include "pthread_locks.cats"
 
 %}
 
-staload "libc/SATS/pthread.sats"
-staload "libc/SATS/pthread_locks.sats"
+staload "pthread.sats"
+staload "pthread_locks.sats"
+staload "parallel.sats"
 
 (* ****** ****** *)
 
-staload "libats/SATS/parallel.sats"
-
-(* ****** ****** *)
-
-dynload "libats/DATS/parallel.dats"
+dynload "parallel.dats"
 
 (* ****** ****** *)
 
 fun loop1 (n: int, i: int, sum: double): double =
-  if i < n then loop1 (n, i+1, sum + pow(2.0 / 3.0, double_of i)) else sum
+  if i < n then loop1 (n, i+1, sum + $M.pow(2.0 / 3.0, double_of i)) else sum
 
 #define NLOOP1SPLIT 2048
 fun loop1_mt (n: int, i: int): double = let

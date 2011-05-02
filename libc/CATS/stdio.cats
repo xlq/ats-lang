@@ -82,7 +82,7 @@ atslib_clearerr
 
 /* --------------------------------------- */
 
-#define atslib_fclose_err close
+#define atslib_fclose_err fclose
 
 ATSinline()
 ats_void_type
