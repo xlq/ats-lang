@@ -32,6 +32,8 @@ Primes up to 40960000  2488465
 #include "pthread.cats"
 #include "pthread_locks.cats"
 
+#include "libc/CATS/math.cats"
+
 %}
 
 staload "pthread.sats"
@@ -44,17 +46,15 @@ dynload "parallel.dats"
 
 (* ****** ****** *)
 
-//
+// staload _(*anon*) = "prelude/DATS/array.dats"
 
-typedef int8 = bool
-extern castfn int8_of_int (x: int): int8
+(* ****** ****** *)
 
-macdef  tt = int8_of_int (1)
-macdef  ff = int8_of_int (0)
+typedef two = bool
+macdef  tt = true
+macdef  ff = false
 
-//
-
-typedef two = int8
+(* ****** ****** *)
 
 extern fun sieve_once {m,limit:nat | limit <= m} {i,j:nat} {l:addr}
   (pf: !array_v (two, m, l) |
@@ -79,6 +79,8 @@ fun sieve_many {m,m1,m2:nat | m1 <= m; m2 <= m} {i:nat} {l:addr}
   end // end of [if]
 end // end of [sieve_many]
 
+(* ****** ****** *)
+
 local
 
 staload M = "libc/SATS/math.sats"
@@ -97,15 +99,49 @@ end // end of [local]
 
 (* ****** ****** *)
 
-fn nsieve_mt (m: int): void = let
+implement{a}
+array_ptr_initialize_fun
+  {n} {f:eff} (base, asz, f) = let
+//
+  typedef fun_t = (sizeLt n, &(a?) >> a) -<f> void
+  typedef fun1_t = (!unit_v | sizeLt n, &(a?) >> a, !ptr) -<f> void
+  val f1 = coerce (f) where {
+    extern castfn coerce (f: fun_t):<> fun1_t
+  } // end of [val]
+//
+  prval pfu = unit_v ()
+  val () = array_ptr_initialize_funenv_tsz
+    {a} {unit_v} {ptr} (pfu | base, asz, f1, sizeof<a>, null)
+  prval unit_v () = pfu
+//
+in
+  // empty
+end // end of [array_ptr_initialize_fun_tsz]
+
+fun{a:t@ype}
+array_ptr_make_fun {m:nat} (
+  m: int m, f: (sizeLt m, &(a?) >> a) -> void
+) :[l:agz] (
+  free_gc_v (a, m, l), array_v (a, m, l) | ptr l
+) = let
+  val asz = size1_of_int1 (m)
+  val (pfgc, pfat | p) = array_ptr_alloc_tsz {a} (asz, sizeof<a>)
+  val () = array_ptr_initialize_fun<a> (!p, asz, f)
+in
+  (pfgc, pfat | p)
+end // end of [array_ptr_make_fun]
+
+fn nsieve_mt
+  (m: int): void = let
   val [m:int] m = int1_of_int m
-  val () = assert_prerrf (
+  val () = assert_prerrf_bool1 (
     m >= 1, "nsieve_mt(%i): argument is illegal; it must be positive.\n", @(m)
   )
-  val [l:addr] (pf_gc, pf | A) =
-    let fn f (x: &(two?) >> two, _i: natLt m):<cloptr> void = x := tt in
-      array_ptr_make_fun_tsz_cloptr {two} (m, f, sizeof<two>)
-    end
+  val [l:addr] (pf_gc, pf | A) = let
+    fn f (_: sizeLt m, x: &(two?) >> two): void = x := tt
+  in
+    array_ptr_make_fun<two> (m, f)
+  end // end of [val]
   val m1 = sqrt_int (m)
   val [m1:int] m1 = (if m1 < m then m1 + 1 else m): natLte m
 (*
@@ -171,7 +207,7 @@ in
   printf ("Primes up to %8i %8i\n", @(m, count))
 end // end of [nsieve]
 
-//
+(* ****** ****** *)
 
 implement main (argc, argv) = let
   var nthread: int = 0
