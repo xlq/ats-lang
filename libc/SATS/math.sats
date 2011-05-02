@@ -41,7 +41,9 @@
 
 (* ****** ****** *)
 
-#define ATS_STALOADFLAG 0 // there is no need for staloading at run-time!
+(*
+#define ATS_STALOADFLAG 0 // there is no need for staloading
+*)
 
 (* ****** ****** *)
 
