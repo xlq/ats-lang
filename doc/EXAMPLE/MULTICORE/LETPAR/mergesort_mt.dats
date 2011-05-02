@@ -198,9 +198,9 @@ fun mergesort1 {l:nat} {a1,a2:addr} .<l>. (
       , pfa22: array_v (T, l-l2, a2+ofs)
       ) => l2 >= CUTOFF then let
         val par
-            () = mergesort2 (pfa11, pfa21 | A1, A2, l2)
+          () = mergesort2 (pfa11, pfa21 | A1, A2, l2)
         and 
-            () = mergesort2 (pfa12, pfa22 | A1+ofs, A2+ofs, ll2)
+          () = mergesort2 (pfa12, pfa22 | A1+ofs, A2+ofs, ll2)
       in
         // empty
       end else let

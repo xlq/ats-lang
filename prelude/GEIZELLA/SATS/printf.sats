@@ -73,14 +73,17 @@ overload fprintf with fprintf1_exn
 
 (* ****** ****** *)
 
-fun printf_err {ts:types} (fmt: printf_c ts, arg: ts):<!ref> int
-  = "atspre_printf_err"
+fun printf_err {ts:types}
+  (fmt: printf_c ts, arg: ts):<!ref> int = "atspre_printf_err"
+// end of [printf_err]
 
-fun printf {ts:types} (fmt: printf_c ts, arg: ts):<!exnref> void
-  = "atspre_printf_exn"
+fun printf {ts:types}
+  (fmt: printf_c ts, arg: ts):<!exnref> void = "atspre_printf_exn"
+// end of [printf_exn]
 
-fun prerrf {ts:types} (fmt: printf_c ts, arg: ts):<!exnref> void
-  = "atspre_prerrf_exn"
+fun prerrf {ts:types}
+  (fmt: printf_c ts, arg: ts):<!exnref> void = "atspre_prerrf_exn"
+// end of [prerrf_exn]
 
 (* ****** ****** *)
 
