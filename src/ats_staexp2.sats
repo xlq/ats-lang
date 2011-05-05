@@ -276,7 +276,7 @@ and s2exp_node =
       s2var_t
   | S2EVar of (* static existential variable *)
       s2Var_t
-  | S2Evararg of (* variable argument type *)
+  | S2Evararg of (* variadic argument type *)
       s2exp
   | S2Ewth of (* the result part of a function type *)
       (s2exp, wths2explst (* for restoration *))

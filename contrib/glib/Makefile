@@ -15,21 +15,11 @@ endif
 ######
 
 ATSCC=$(ATSUSRQ)/bin/atscc -Wall
+GLIBCFLAGS = `pkg-config glib-2.0 --cflags`
 
 ######
 
 GCC=gcc
-
-######
-
-GLIBINC := -I"/usr/lib/glib-2.0/include"
-GLIBINC += -I"/usr/lib64/glib-2.0/include"
-INCLUDES := $(GLIBINC)
-INCLUDES += -I"/usr/include/glib-2.0"
-#
-# [glib] is in /usr/local on FreeBSD
-#
-INCLUDES += -I"/usr/local/include/glib-2.0"
 
 ######
 
@@ -40,7 +30,7 @@ all:: clean
 ######
 
 glibconfig:: HATS/glibconfig
-	$(GCC) $(INCLUDES) -E -P -o HATS/glibconfig.hats -x c HATS/glibconfig
+	$(GCC) $(GLIBCFLAGS) -E -P -o HATS/glibconfig.hats -x c HATS/glibconfig
 
 ######
 
@@ -52,10 +42,10 @@ atsctrb_glib.o: \
 ######
 
 glib_sats.o: SATS/glib.sats
-	$(ATSCC) $(INCLUDES) -o $@ -c SATS/glib.sats
+	$(ATSCC) $(GLIBCFLAGS) -o $@ -c SATS/glib.sats
 
 glib_dats.o: DATS/glib.dats
-	$(ATSCC) $(INCLUDES) -o $@ -c DATS/glib.dats
+	$(ATSCC) $(GLIBCFLAGS) -o $@ -c DATS/glib.dats
 
 ######
 

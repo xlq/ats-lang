@@ -81,7 +81,8 @@ fn prerr_interror () = prerr "INTERNAL ERROR (ats_trans2_env)"
 
 (* ****** ****** *)
 
-viewtypedef s2rtextmap = $SymEnv.symmap_t (s2rtext)
+viewtypedef
+s2rtextmap = $SymEnv.symmap_t (s2rtext)
 typedef s2rtextmapref = ref s2rtextmap
 typedef s2rtextmaptbl = $HT.hashtbl_t (sym_t, s2rtextmapref)
 
@@ -177,6 +178,9 @@ fn the_s2rtenv_namespace_find
     $SymEnv.symmap_ref_search (r_m, id)
   end // end of [f]
 in
+//
+// HX: a linear closure is created and then freed after its use:
+//
   $NS.the_namespace_search (f)
 end // end of [the_s2rtenv_namespace_find]
 

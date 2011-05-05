@@ -781,9 +781,9 @@ end // end of [d3exp_seq_tr]
 (* ****** ****** *)
 
 fn d3exp_tmpcst_tr (
-    loc0: loc_t
-  , hit0: hityp, d2c: d2cst_t, s2ess: s2explstlst
-  ) : hiexp = let
+  loc0: loc_t
+, hit0: hityp, d2c: d2cst_t, s2ess: s2explstlst
+) : hiexp = let
   val sym = d2cst_get_sym d2c in case+ sym of
   | _ when sym = $Sym.symbol_SIZEOF => begin case+ s2ess of
     | cons (cons (s2e, nil ()), nil ()) => begin
@@ -808,10 +808,10 @@ fn d3exp_tmpcst_tr (
 end (* end of [d3exp_tmpcst_tr] *)
 
 fn d3exp_tmpvar_tr (
-    loc0: loc_t
-  , hit0: hityp
-  , d2v: d2var_t, s2ess: s2explstlst
-  ) : hiexp = let
+  loc0: loc_t
+, hit0: hityp
+, d2v: d2var_t, s2ess: s2explstlst
+) : hiexp = let
   val hitss = s2explstlst_tr (loc0, s2ess)
 in
   hiexp_tmpvar (loc0, hit0, d2v, hitss)

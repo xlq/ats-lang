@@ -50,9 +50,11 @@ staload "ats_dynexp2.sats"
 
 absview s2rtenv_token
 fun the_s2rtenv_add (id: sym_t, s2te: s2rtext): void
-
-// [find] goes in the following order:
+//
+// HX:
+// [find] searches in the following order:
 // current env; namespace env; pervasive env
+//
 fun the_s2rtenv_find (id: sym_t): s2rtextopt_vt
 fun the_s2rtenv_find_qua (q: $Syn.s0rtq, id: sym_t): s2rtextopt_vt
 
@@ -72,9 +74,11 @@ fun the_s2expenv_add_svar (s2v: s2var_t): void
 fun the_s2expenv_add_svarlst (s2vs: s2varlst): void
 fun the_s2expenv_add_datconptr (d2c: d2con_t): void
 fun the_s2expenv_add_datcontyp (d2c: d2con_t): void
-
+//
+// HX:
 // [find] goes in the following order:
 // current env; namespace env; pervasive env
+//
 fun the_s2expenv_find (id: sym_t): s2itemopt_vt
 fun the_s2expenv_find_qua (q: $Syn.s0taq, id: sym_t): s2itemopt_vt
 

@@ -271,7 +271,9 @@ in
     prval pfmod = file_mode_lte_rw_w ()
     extern castfn __cast (p: ptr): FILEref
     val () = fprint_location (__cast (filp), loc)
+(*
     val _(*int*) = fflush_err (pfmod | !filp)
+*)
     val _(*int*) = fseek_err (!filp, 0l, SEEK_SET)
     val res = input_line_vt (__cast (filp))
     val () = fclose_exn (pffil | filp)
