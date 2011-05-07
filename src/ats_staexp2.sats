@@ -605,8 +605,8 @@ overload prerr with prerr_s2cstlst
 //
 // HX: [s2var_t] is assumed in [ats_staexp2_svVar.dats]
 //
-fun s2var_make_id_srt (id: sym_t, s2t: s2rt): s2var_t
 fun s2var_make_srt (s2t: s2rt): s2var_t
+fun s2var_make_id_srt (id: sym_t, s2t: s2rt): s2var_t
 fun s2var_copy (s2v: s2var_t): s2var_t
 
 (* ****** ****** *)

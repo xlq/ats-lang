@@ -34,9 +34,9 @@
 (* author: Hongwei Xi (hwxi AT cs DOT bu DOT edu) *)
 
 (* ****** ****** *)
-
+//
 // some common functions on pointers
-
+//
 (* ****** ****** *)
 
 #include "prelude/params.hats"

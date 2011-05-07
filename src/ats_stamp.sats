@@ -44,10 +44,6 @@ abst@ype stamp_t = $Cnt.count_t
 
 (* ****** ****** *)
 
-val zero_stamp : stamp_t
-
-(* ****** ****** *)
-
 fun lt_stamp_stamp (s1: stamp_t, s2: stamp_t):<> bool
 overload < with lt_stamp_stamp
 

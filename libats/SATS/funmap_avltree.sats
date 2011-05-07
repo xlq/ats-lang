@@ -36,7 +36,7 @@
 ** A functional map implementation based on AVL trees
 **
 ** Contributed by Hongwei Xi (hwxi AT cs DOT bu DOT edu)
-** Time: March, 2010 // based on a version done in October, 2010
+** Time: March, 2010 // based on a version done in October, 2008
 **
 *)
 
@@ -52,12 +52,14 @@
 
 (* ****** ****** *)
 
-abstype map_t0ype_type (key:t@ype, itm:t@ype+)
-stadef map = map_t0ype_type
+abstype
+map_t0ype_t0ype_type (key:t@ype, itm:t@ype+)
+stadef map = map_t0ype_t0ype_type
 
 (* ****** ****** *)
 
 typedef cmp (key:t@ype) = (key, key) -<cloref> Sgn
+
 fun{key:t@ype}
 compare_key_key (x1: key, x2: key, cmp: cmp key):<> Sgn
 
@@ -125,8 +127,8 @@ funmap_takeout (
 // end of [funmap_takeout]
 
 fun{key,itm:t@ype}
-funmap_remove
-  (m: &map (key, itm)
+funmap_remove (
+  m: &map (key, itm)
 , k0: key
 , cmp: cmp key
 ) :<> bool(*removed/not: true/false*)

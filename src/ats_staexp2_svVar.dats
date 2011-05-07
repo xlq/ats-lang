@@ -193,6 +193,8 @@ compare_s2var_s2var (s2v1, s2v2) =
   $effmask_all ( _compare_s2var_s2var (s2v1, s2v2) )
 // end of [compare_s2var_s2var]
 
+end // end of [local] // for assuming [s2var_t]
+
 (* ****** ****** *)
 
 implement s2var_is_boxed (s2v) =
@@ -200,8 +202,6 @@ implement s2var_is_boxed (s2v) =
 // end of [s2var_is_boxed]
 
 implement s2var_is_unboxed (s2v) = ~(s2var_is_boxed s2v)
-
-end // end of [local] // for assuming [s2var_t]
 
 (* ****** ****** *)
 

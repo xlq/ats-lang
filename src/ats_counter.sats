@@ -57,9 +57,9 @@ fun lte_count_count (c1: count_t, c2: count_t):<> bool
 overload <= with lte_count_count
 //
 fun gt_count_count (c1: count_t, c2: count_t):<> bool
-overload > with lt_count_count
+overload > with gt_count_count
 fun gte_count_count (c1: count_t, c2: count_t):<> bool
-overload >= with lte_count_count
+overload >= with gte_count_count
 //
 fun eq_count_count (c1: count_t, c2: count_t):<> bool
 overload = with eq_count_count

@@ -56,7 +56,7 @@
 
 /* ****** ****** */
 
-typedef ats_int64_type atsopt_count_type ;
+typedef ats_int32_type atsopt_count_type ;
 /*
 typedef atsopt_count_type *atsopt_counter_type ;
 */

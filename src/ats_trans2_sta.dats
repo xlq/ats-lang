@@ -1035,7 +1035,7 @@ fun s1rtext_tr
         | S2TEsub (s2v1, _, s2ps1) => begin
             $Lst.list_append (s2ps, s2explst_alpha (s2v1, s2v, s2ps1))
           end
-      ) : s2explst
+      ) : s2explst // end of [val]
     in
       S2TEsub (s2v, s2t, s2ps)
     end // end of [S1TEsub]

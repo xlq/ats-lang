@@ -55,7 +55,6 @@
 staload "libats/SATS/funmap_avltree.sats"
 
 (* ****** ****** *)
-
 //
 // a specialized version can be implemented on the spot
 //
@@ -92,7 +91,7 @@ typedef avltree_dec (key:t@ype, itm:t@ype, h:int) =
 (* ****** ****** *)
 
 assume
-map_t0ype_type (
+map_t0ype_t0ype_type (
   key:t@ype, itm:t@ype
 ) = [h:nat] avltree (key, itm, h)
 
@@ -325,14 +324,13 @@ in
 end // end of [avltree_takeout_min]
 
 (* ****** ****** *)
-
 //
-// HX-2010-03-25: unsafe but convenient to implement
+// HX-2010-03-25: a bit unsafe but convenient to implement
 //
 extern
 fun{key,itm:t@ype}
 funmap_takeout_ptr {l_res:addr}
-  (m: &map (key, itm), k0: key, cmp: cmp key, res: ptr l_res):<> bool
+  (m: &map (key, itm), k0: key, cmp: cmp key, p_res: ptr l_res):<> bool
 // end of [funmap_takeout]
 
 implement{key,itm}
@@ -484,10 +482,10 @@ funmap_foreach_cloref (m, f) = let
   } // end of [val]
   typedef clo_type = (!unit_v | key, itm) -<clo> void
   val (vbox pf_f | p_f) = cloref_get_view_ptr {clo_type} (f)
-  prval pf0 = unit_v ()
+  prval pfu = unit_v ()
   val () = $effmask_ref
-    (funmap_foreach_clo<key,itm> {unit_v} (pf0 | m, !p_f))
-  prval unit_v () = pf0
+    (funmap_foreach_clo<key,itm> {unit_v} (pfu | m, !p_f))
+  prval unit_v () = pfu
 in
   // empty
 end // end of [funmap_foreach_cloref]
