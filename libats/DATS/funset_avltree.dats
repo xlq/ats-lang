@@ -46,6 +46,10 @@
 //
 (* ****** ****** *)
 
+#define ATS_DYNLOADFLAG 0 // no dynamic loading at run-time
+
+(* ****** ****** *)
+
 staload "libats/SATS/funset_avltree.sats"
 
 (* ****** ****** *)
@@ -59,7 +63,7 @@ implement{elt} compare_elt_elt (x1, x2, cmp) = cmp (x1, x2)
 //
 // HX-2010-03-24: this seems to work best!
 //
-#define HTDF 3 // max height difference
+#define HTDF 1 // max height difference
 #define HTDF1 %(HTDF+1)
 #define HTDF_1 %(HTDF-1)
 

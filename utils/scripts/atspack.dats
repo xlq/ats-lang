@@ -1316,34 +1316,38 @@ fn do_usage
 
 (* ****** ****** *)
 
-implement main (argc, argv) = let
-  fun loop {n,i:nat | i <= n} .<n-i>. (
-      argc: int n, argv: &(@[string][n]), i: int i, cnt: &int
-    ) : void =
-    if i < argc then let
-      val x = argv.[i]
-      val () = case+ 0 of
-        | _ when x = "--source" => (
-            cnt := cnt+1; atspack_source_code ()
-          )
-        | _ when x = "--precompiled" => (
-            cnt := cnt+1; atspack_precompiled ()
-          )
-        | _ when x = "-m32" => wordsize_target_set (4(*bytes*))
-        | _ when x = "-m64" => wordsize_target_set (8(*bytes*))
-        | _ when x = "--help" => do_usage (argv.[0])
-        | _ => let
-            val () = prerrf ("[%s]: unrecognized flag: %s\n", @(argv.[0], x))
-          in
-            // nothing
-          end // end of [_]
-     in
-       if cnt = 0 then loop (argc, argv, i+1, cnt)
-     end // end of [if]
-  // end of [loop]
-  var cnt: int = 0
-  val () = loop (argc, argv, 1, cnt)
-  val () = if cnt = 0 then do_usage (argv.[0])
+implement
+main (argc, argv) = let
+//
+fun loop {n,i:nat | i <= n} .<n-i>. (
+  argc: int n, argv: &(@[string][n]), i: int i, cnt: &int
+) : void =
+  if i < argc then let
+    val x = argv.[i]
+    val () = case+ 0 of
+      | _ when x = "--source" => (
+          cnt := cnt+1; atspack_source_code ()
+        )
+      | _ when x = "--precompiled" => (
+          cnt := cnt+1; atspack_precompiled ()
+        )
+      | _ when x = "-m32" => wordsize_target_set (4(*bytes*))
+      | _ when x = "-m64" => wordsize_target_set (8(*bytes*))
+      | _ when x = "--help" => do_usage (argv.[0])
+      | _ => let
+          val () = prerrf ("[%s]: unrecognized flag: %s\n", @(argv.[0], x))
+        in
+          // nothing
+        end // end of [_]
+   in
+     if cnt = 0 then loop (argc, argv, i+1, cnt)
+   end // end of [if]
+  (* end of [loop] *)
+//
+var cnt: int = 0
+val () = loop (argc, argv, 1, cnt)
+val () = if cnt = 0 then do_usage (argv.[0])
+//
 in
   // nothing
 end // end of [main]

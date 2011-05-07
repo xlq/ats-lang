@@ -12,6 +12,7 @@ ats-lang-anairiats-0.2.5:
 6. Fixing a bug involving linear closures (of the form <lin,cloptr>).
 7. Adding support for if!: if! (e_cond, e_then, e_else) is for the
    following expression: (if e_cond then e_then else e_else).
+8. Adding libats/funset_avltree to support (functional) sets.
 
 ########################################################################
 

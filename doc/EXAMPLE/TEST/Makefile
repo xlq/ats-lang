@@ -198,6 +198,10 @@ libats_funmap_avltree: libats_funmap_avltree.dats
 	$(ATSCC) -D_ATS_GCATS -O2 -o $@ $< && ./$@ 100000
 cleanall:: ; $(RMF) libats_funmap_avltree
 
+checkall:: libats_funset_avltree
+libats_funset_avltree: libats_funset_avltree.dats
+	$(ATSCC) -D_ATS_GCATS -O2 -o $@ $< && ./$@ 100000
+cleanall:: ; $(RMF) libats_funset_avltree
 
 ######
 
