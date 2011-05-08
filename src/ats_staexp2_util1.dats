@@ -83,19 +83,6 @@ end // end of [prerr_loc_interror]
 (* ****** ****** *)
 
 extern
-fun eq_s2rtbas_s2rtbas (s2tb1: s2rtbas, s2tb2: s2rtbas): bool
-overload = with eq_s2rtbas_s2rtbas
-
-implement
-eq_s2rtbas_s2rtbas (s2tb1, s2tb2) = begin
-  case+ (s2tb1, s2tb2) of
-  | (S2RTBASpre id1, S2RTBASpre id2) => (id1 = id2)
-  | (S2RTBASimp (id1, _, _), S2RTBASimp (id2, _, _)) => (id1 = id2)
-  | (S2RTBASdef s2td1, S2RTBASdef s2td2) => (s2td1 = s2td2)
-  | (_, _) => false
-end // end of [eq_s2rtbas_s2rtbas]
-
-extern
 fun lte_s2rtbas_s2rtbas (s2tb1: s2rtbas, s2tb2: s2rtbas): bool
 overload <= with lte_s2rtbas_s2rtbas
 
@@ -108,27 +95,6 @@ lte_s2rtbas_s2rtbas (s2tb1, s2tb2) = begin
   | (S2RTBASdef s2td1, S2RTBASdef s2td2) => (s2td1 = s2td2)
   | (_, _) => false
 end // end of [lte_s2rtbas_s2rtbas]
-
-(* ****** ****** *)
-
-implement
-eq_s2rt_s2rt (s2t1, s2t2) = begin
-  case+ (s2t1, s2t2) of
-  | (S2RTbas s2tb1, S2RTbas s2tb2) => s2tb1 = s2tb2
-  | (S2RTfun (s2ts1, s2t1), S2RTfun (s2ts2, s2t2)) =>
-    if s2ts2 = s2ts1 then s2t1 = s2t2 else false
-  | (S2RTtup s2ts1, S2RTtup s2ts2) => s2ts1 = s2ts2
-  | (_, _) => false
-end // end of [eq_s2rt_s2rt]
-
-implement
-eq_s2rtlst_s2rtlst (s2ts1, s2ts2) = begin
-  case+ (s2ts1, s2ts2) of
-  | (s2t1 :: s2ts1, s2t2 :: s2ts2) =>
-      if s2t1 = s2t2 then s2ts1 = s2ts2 else false
-  | (list_nil (), list_nil ()) => true
-  | (_, _) => false
-end // end of [eq_s2rtlst_s2rtlst]
 
 (* ****** ****** *)
 
@@ -1857,9 +1823,9 @@ s2exp_alpha (s1v, s1v1, s2e) = let
 end // end of [s2exp_alpha]
 
 implement
-s2explst_alpha (s1v, s1v1, s2elst) = let
+s2explst_alpha (s1v, s1v1, s2es) = let
   val sub = list_cons ((s1v, s2exp_var s1v1), list_nil ()) in
-  s2explst_subst (sub, s2elst)
+  s2explst_subst (sub, s2es)
 end // end of [s2explst_alpha]
 
 (* ****** ****** *)

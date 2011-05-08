@@ -131,10 +131,12 @@ fun{elt:t@ype} funset_symdiff
 (* ****** ****** *)
 
 fun{elt:t@ype}
-funset_is_subset (xs1: set elt, xs2: set elt, cmp: cmp elt): bool
+funset_is_subset
+  (xs1: set elt, xs2: set elt, cmp: cmp elt):<> bool
+// end of [funset_is_subset]
 
 fun{elt:t@ype}
-funset_is_equal (xs1: set elt, xs2: set elt, cmp: cmp elt): bool
+funset_is_equal (xs1: set elt, xs2: set elt, cmp: cmp elt):<> bool
 
 (* ****** ****** *)
 

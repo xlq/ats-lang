@@ -1092,7 +1092,7 @@ fn aux_equal
   val s2t1 = s2e1.s2exp_srt
 in
   case+ 0 of // this seems prettier than [if-then-else] sequence
-  | _ when s2t1 = s2rt_int => begin
+  | _ when s2t1 <= s2rt_int => begin
       case+ s3iexp_make_s2exp (s2e1, s2cs, fds) of
       | ~Some_vt s3ie1 => begin
         case+ s3iexp_make_s2exp (s2e2, s2cs, fds) of
@@ -1101,7 +1101,7 @@ in
         end // end of [Some_vt]
       | ~None_vt () => None_vt ()
     end // end of [s2t1 = s2rt_int]
-  | _ when s2t1 = s2rt_addr => begin
+  | _ when s2t1 <= s2rt_addr => begin
       case+ s3aexp_make_s2exp (s2e1, s2cs, fds) of
       | ~Some_vt s3ae1 => begin
         case+ s3aexp_make_s2exp (s2e2, s2cs, fds) of
@@ -1110,7 +1110,7 @@ in
         end // end of [Some_vt]
       | ~None_vt () => None_vt ()
     end // end of [s2t1 = s2rt_addr]
-  | _ when s2t1 = s2rt_bool => begin
+  | _ when s2t1 <= s2rt_bool => begin
       case+ s3bexp_make_s2exp (s2e1, s2cs, fds) of
       | ~Some_vt s3be1 => begin
         case+ s3bexp_make_s2exp (s2e2, s2cs, fds) of
@@ -1119,7 +1119,7 @@ in
         end // end of [Some_vt]
       | ~None_vt () => None_vt ()
     end // end of [s2t1 = s2rt_bool]
-  | _ when s2t1 = s2rt_char => begin
+  | _ when s2t1 <= s2rt_char => begin
       case+ s3iexp_make_s2exp (s2e1, s2cs, fds) of
       | ~Some_vt s3ie1 => begin
         case+ s3iexp_make_s2exp (s2e2, s2cs, fds) of

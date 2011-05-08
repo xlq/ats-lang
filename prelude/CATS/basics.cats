@@ -50,6 +50,13 @@
 /* ****** ****** */
 
 /*
+** HX-2011-05-06:
+*/
+extern ats_empty_type ats_empty_value ;
+
+/* ****** ****** */
+
+/*
 ** HX-2010-02-07: this one is used in many places
 */
 ATSinline()

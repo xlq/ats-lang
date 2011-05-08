@@ -52,7 +52,8 @@
 
 (* ****** ****** *)
 
-abstype heap_t0ype_type (elt:t@ype+)
+abstype
+heap_t0ype_type (elt:t@ype+)
 stadef heap = heap_t0ype_type
 
 (* ****** ****** *)

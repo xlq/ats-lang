@@ -70,6 +70,7 @@ fun tmps1explstlst_tr_up (ts1ess: tmps1explstlst): tmps2explstlst
 fun s1exp_tr_dn (s1e: s1exp, s2t: s2rt): s2exp
 fun s1explst_tr_dn {n:nat}
   (s1es: list (s1exp, n), s2ts: list (s2rt, n)): list (s2exp, n)
+// end of [s1explst_tr_dn]
 
 fun s1exp_tr_dn_bool (s1e: s1exp): s2exp
 fun s1exp_tr_dn_cls (s1e: s1exp): s2exp

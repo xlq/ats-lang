@@ -456,12 +456,6 @@ overload prerr with prerr_s2rt
 
 (* ****** ****** *)
 
-fun eq_s2rt_s2rt (_: s2rt, _: s2rt): bool
-overload = with eq_s2rt_s2rt
-
-fun eq_s2rtlst_s2rtlst (_: s2rtlst, _: s2rtlst): bool
-overload = with eq_s2rtlst_s2rtlst
-
 fun lte_s2rt_s2rt (_: s2rt, _: s2rt): bool
 overload <= with lte_s2rt_s2rt
 
@@ -1207,7 +1201,7 @@ fun s2exp_alpha
 // end of [s2exp_alpha]
 
 fun s2explst_alpha
-  (s2v: s2var_t, s2v1: s2var_t, s2e: s2explst): s2explst
+  (s2v: s2var_t, s2v1: s2var_t, s2es: s2explst): s2explst
 // end of [s2explst_alpha]
 
 (* ****** ****** *)
