@@ -77,7 +77,10 @@ s2cst_struct = @{ (* builtin or abstract *)
 , s2cst_tag= int // tag >= 0 if associated with a datasort
 } // end of [s2cst_struct]
 
-fun s2rt_arity_list (s2t: s2rt): List int = case+ s2t of
+(* ****** ****** *)
+
+fun s2rt_arity_list
+  (s2t: s2rt): List int = case+ s2t of
   | S2RTfun (s2ts, s2t) => begin
       list_cons ($Lst.list_length s2ts, s2rt_arity_list s2t)
     end // end of [S2RTfun]

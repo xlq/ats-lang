@@ -28,7 +28,7 @@ isacowananimal: \
 
 ######
 
-RMF = rm -f
+RMF=rm -f
 
 ######
 

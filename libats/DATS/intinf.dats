@@ -61,24 +61,42 @@ intinf_make_int {i} (i) = let
   val () = mpz_init_set_int (!p, i)
 in
   @(pf_gc, pf_at | p)
-end // end of [intinf_of_int1]
+end // end of [intinf_make_int]
 
-implement intinf_make_lint (i) = let
+implement
+intinf_make_lint (i) = let
   val @(pf_gc, pf_at | p) = ptr_alloc_tsz {mpz_vt} (sizeof<mpz_vt>)
   val i = lint_of_lint1 (i) where { extern castfn lint_of_lint1 {i:int} (x: lint i): lint }
   val () = mpz_init_set_lint (!p, i)
 in
   @(pf_gc, pf_at | p)
-end // end of [intinf_of_lint1]
+end // end of [intinf_make_lint]
 
-implement intinf_make_llint (i) = let
+implement
+intinf_make_llint (i) = let
   val @(pf_gc, pf_at | p) = ptr_alloc_tsz {mpz_vt} (sizeof<mpz_vt>)
   val i = llint_of_llint1 (i) where { extern castfn llint_of_llint1 {i:int} (x: llint i): llint }
   val i = double_of_llint (i)
   val () = mpz_init_set_double (!p, i)
 in
   @(pf_gc, pf_at | p)
-end // end of [intinf_of_llint1]
+end // end of [intinf_make_llint]
+
+implement
+intinf_make_double (d) = let
+  val @(pfgc, pfat | p) = ptr_alloc_tsz {mpz_vt} (sizeof<mpz_vt>)
+  val () = mpz_init_set_double (!p, d)
+in
+  #[0 | (pfgc, pfat | p)] // HX: [0] is just a place holder
+end // end of [intinf_make_double]
+
+implement
+intinf_make_string (rep) = let
+  val @(pfgc, pfat | p) = ptr_alloc_tsz {mpz_vt} (sizeof<mpz_vt>)
+  val () = mpz_init_set_str_exn (!p, rep, 10(*base*))
+in
+  #[0 | (pfgc, pfat | p)] // HX: [0] is just a place holder
+end // end of [intinf_make_double]
 
 (* ****** ****** *)
 
@@ -115,14 +133,16 @@ end // end of [print_intinf_base]
 
 (* ****** ****** *)
 
-implement pred_intinf (intinf) = let
+implement
+pred_intinf (intinf) = let
   val @(pf_gc, pf_at | p) = ptr_alloc_tsz {mpz_vt} (sizeof<mpz_vt>)
   val () = mpz_init (!p); val () = mpz_sub (!p, intinf, 1)
 in
   @(pf_gc, pf_at | p)
 end // end of [pred_intinf]
 
-implement succ_intinf (intinf) = let
+implement
+succ_intinf (intinf) = let
   val @(pf_gc, pf_at | p) = ptr_alloc_tsz {mpz_vt} (sizeof<mpz_vt>)
   val () = mpz_init (!p); val () = mpz_add (!p, intinf, 1)
 in
@@ -131,14 +151,16 @@ end // end of [succ_intinf]
 
 (* ****** ****** *)
 
-implement add_intinf_int (intinf, i) = let
+implement
+add_intinf_int (intinf, i) = let
   val @(pf_gc, pf_at | p) = ptr_alloc_tsz {mpz_vt} (sizeof<mpz_vt>)
   val () = mpz_init (!p); val () = mpz_add (!p, intinf, i)
 in
   @(pf_gc, pf_at | p)
 end // end of [add_intinf_int]
 
-implement add_intinf_intinf (intinf1, intinf2) = let
+implement
+add_intinf_intinf (intinf1, intinf2) = let
   val @(pf_gc, pf_at | p) = ptr_alloc_tsz {mpz_vt} (sizeof<mpz_vt>)
   val () = mpz_init (!p); val () = mpz_add (!p, intinf1, intinf2)
 in
@@ -147,14 +169,16 @@ end // end of [add_intinf_intinf]
 
 (* ****** ****** *)
 
-implement sub_intinf_int (intinf, i) = let
+implement
+sub_intinf_int (intinf, i) = let
   val @(pf_gc, pf_at | p) = ptr_alloc_tsz {mpz_vt} (sizeof<mpz_vt>)
   val () = mpz_init (!p); val () = mpz_sub (!p, intinf, i)
 in
   @(pf_gc, pf_at | p)
 end // end of [sub_intinf_int]
 
-implement sub_intinf_intinf (intinf1, intinf2) = let
+implement
+sub_intinf_intinf (intinf1, intinf2) = let
   val @(pf_gc, pf_at | p) = ptr_alloc_tsz {mpz_vt} (sizeof<mpz_vt>)
   val () = mpz_init (!p); val () = mpz_sub (!p, intinf1, intinf2)
 in
@@ -163,7 +187,8 @@ end // end of [sub_intinf_intinf]
 
 (* ****** ****** *)
 
-implement mul_int_intinf {m,n} (int, intinf) = let
+implement
+mul_int_intinf {m,n} (int, intinf) = let
   prval pf_mul = mul_make {m,n} ()
   val @(pf_gc, pf_at | p) = ptr_alloc_tsz {mpz_vt} (sizeof<mpz_vt>)
   val () = mpz_init (!p); val () = mpz_mul (!p, intinf, int)
@@ -171,7 +196,8 @@ in
   @(pf_mul | @(pf_gc, pf_at | p))
 end // end of [mul_int_intinf]
 
-implement mul_intinf_int {m,n} (intinf, int) = let
+implement
+mul_intinf_int {m,n} (intinf, int) = let
   prval pf_mul = mul_make {m,n} ()
   val @(pf_gc, pf_at | p) = ptr_alloc_tsz {mpz_vt} (sizeof<mpz_vt>)
   val () = mpz_init (!p); val () = mpz_mul (!p, intinf, int)
@@ -179,7 +205,8 @@ in
   @(pf_mul | @(pf_gc, pf_at | p))
 end // end of [mul_intinf_int]
 
-implement mul_intinf_intinf {m,n} (intinf1, intinf2) = let
+implement
+mul_intinf_intinf {m,n} (intinf1, intinf2) = let
   prval pf_mul = mul_make {m,n} ()
   val @(pf_gc, pf_at | p) = ptr_alloc_tsz {mpz_vt} (sizeof<mpz_vt>)
   val () = mpz_init (!p); val () = mpz_mul (!p, intinf1, intinf2)
@@ -189,7 +216,8 @@ end // end of [mul_intinf_intinf]
 
 (* ****** ****** *)
 
-implement square_intinf {n} (intinf) = let
+implement
+square_intinf {n} (intinf) = let
   prval pf_mul = mul_make {n,n} ()
   val @(pf_gc, pf_at | p) =
     ptr_alloc_tsz {mpz_vt} (sizeof<mpz_vt>)
@@ -200,7 +228,8 @@ end // end of [square_intinf]
 
 (* ****** ****** *)
 
-implement fdiv_intinf_int {m,n} (intinf, i) = let
+implement
+fdiv_intinf_int {m,n} (intinf, i) = let
   prval [q,r:int] pf_mul = lemma () where {
     extern prfun lemma () : [q,r:int | 0 <= r; r < n] MUL (q, n, m-r)
   } // end of [prval]
@@ -211,7 +240,8 @@ in
   #[q,r | @(pf_mul | @(pf_gc, pf_at | p))]
 end // end of [fdiv_intinf_int]
 
-implement fmod_intinf_int {m,n} (intinf, i) = let
+implement
+fmod_intinf_int {m,n} (intinf, i) = let
   prval [q,r:int] pf_mul =
     div_lemma {m,n} () where {
     extern praxi div_lemma {m,n:int | n > 0} ()

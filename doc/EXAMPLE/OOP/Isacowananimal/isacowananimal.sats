@@ -111,10 +111,12 @@ castfn slaughter {x:thing} // HX: a casting function for now
 absviewtype EATEN (thing)
 
 prfun
-eaten_more {x:thing}
-  (pf: VEGE (x) | X: !EATEN (x) >> THING (x)): void // vegetable can be eaten repeatedly
+eaten_more {x:thing} (
+  pf: VEGE (x) | X: !EATEN (x) >> THING (x)
+) : void // vegetable can be eaten repeatedly
 fun eaten_over {x:thing}
   (X: EATEN (x)): void = "thing_unref" // thing can only be eaten once
+// end of [eaten_over]
 
 (* ****** ****** *)
 

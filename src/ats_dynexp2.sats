@@ -795,6 +795,8 @@ and s2tavar = '{
 
 and s2tavarlst = List s2tavar
 
+(* ****** ****** *)
+
 and s2aspdec = '{
   s2aspdec_loc= loc_t
 , s2aspdec_cst= s2cst_t

@@ -99,9 +99,15 @@ castfn list_of_list_vt
 //
 // HX: always inlining
 //
-fun{} list_is_empty {a:t@ype} {n:nat} (xs: list (a, n)):<> bool (n == 0)
-fun{} list_isnot_empty {a:t@ype} {n:nat} (xs: list (a, n)):<> bool (n > 0)
+fun{} list_is_empty
+  {a:t@ype} {n:nat} (xs: list (a, n)):<> bool (n==0)
+fun{} list_isnot_empty
+  {a:t@ype} {n:nat} (xs: list (a, n)):<> bool (n > 0)
 overload ~ with list_isnot_empty
+
+fun{a:t@ype} list_is_sing
+  {n:nat} (xs: list (a, n)):<> bool (n==1)
+// end of [list_is_sing]
 
 (* ****** ****** *)
 

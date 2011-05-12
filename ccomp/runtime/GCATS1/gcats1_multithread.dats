@@ -56,7 +56,7 @@ threadinfolst the_threadinfolst_fst ;
 __thread threadinfolst the_threadinfolst_self ;
 
 void prerr_self_pid () {
-  fprintf (stderr, "%i", the_threadinfolst_self->pid) ; return ;
+  fprintf (stderr, "%i", (int)(the_threadinfolst_self->pid)) ; return ;
 }
 
 /* ****** ****** */

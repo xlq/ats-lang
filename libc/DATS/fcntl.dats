@@ -220,7 +220,7 @@ atslib_close_exn
   int err = close(fd) ;
   if (err < 0) {
     perror ("close") ;
-    fprintf (stderr, "exit(ATS): [close(%li)] failed\n", (fd)) ;
+    fprintf (stderr, "exit(ATS): [close(%i)] failed\n", (fd)) ;
     exit (EXIT_FAILURE) ;
   } // end of [atslib_close_exn]
   return ;

@@ -44,6 +44,10 @@
 
 (* ****** ****** *)
 
+%{^
+extern double round (double) ;
+extern double trunc (double) ;
+%}
 staload MATH = "libc/SATS/math.sats"
 
 (* ****** ****** *)

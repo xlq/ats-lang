@@ -1470,6 +1470,11 @@ list_isnot_empty {a} (xs) = begin
   case+ xs of _ :: _ => true | nil () => false
 end // end of [list_is_not_empty]
 
+implement{a}
+list_is_sing (xs) = begin
+  case+ xs of cons (_, nil ()) => true | _ =>> false
+end // end of [list_is_sing]
+
 (* ****** ****** *)
 
 implement{a}

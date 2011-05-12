@@ -309,7 +309,7 @@ ats_void_type gc_collect () {
   infolst = the_threadinfolst_fst ; nother = 0 ;
   while (infolst) {
     if (infolst != the_threadinfolst_self) {
-      fprintf (stderr, "gc_collect: SIGUSR1: infolst->pid = %i\n", infolst->pid) ;
+      fprintf (stderr, "gc_collect: SIGUSR1: infolst->pid = %i\n", (int)(infolst->pid)) ;
       pthread_kill (infolst->pid, SIGUSR1) ; nother += 1 ;
     }
     infolst = infolst->next ;
@@ -339,7 +339,7 @@ ats_void_type gc_collect () {
   infolst = the_threadinfolst_fst ;
   while (infolst) {
     if (infolst != the_threadinfolst_self) {
-      fprintf (stderr, "gc_collect: SIGUSR2: infolst->pid = %i\n", infolst->pid) ;
+      fprintf (stderr, "gc_collect: SIGUSR2: infolst->pid = %i\n", (int)(infolst->pid)) ;
       pthread_kill (infolst->pid, SIGUSR2) ;
     }
     infolst = infolst->next ;

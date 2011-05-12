@@ -588,7 +588,7 @@ array_ptr_iforeach_clo
 (* ****** ****** *)
 
 (*
-// moving an array of (linear) elements to form a list
+// HX: moving an array of (linear) elements to form a list
 *)
 fun{a:t@ype}
 array_ptr_to_list {n:nat}

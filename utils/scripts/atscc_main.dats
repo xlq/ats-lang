@@ -583,17 +583,17 @@ atscc_main (
   p = argv_new ;
 
   // initialization for [argv_new]
-  *((ats_string_type *)p) = gcc ;
-  p = ((ats_string_type *)p) + 1 ;
+  *((ats_string_type*)p) = gcc ;
+  p = ((ats_string_type*)p) + 1 ;
   for (i = 0; i < n; ++i) {
-    *((ats_string_type *)p) = strlst_head_get(ss) ;
-    p = ((ats_string_type *)p) + 1 ; ss = strlst_tail_get(ss) ;
+    *((ats_string_type*)p) = strlst_head_get(ss) ;
+    p = ((ats_string_type*)p) + 1 ; ss = strlst_tail_get(ss) ;
   } /* end of [for] */
   *((ats_stropt_type *)p) = (ats_stropt_type)0 ;
 
   // printf ("argv_new = ") ;
   for (i = 0; i <= n; ++i) {
-    printf ("%s ", ((ats_string_type *)argv_new)[i]) ;
+    printf ("%s ", (char*)((ats_string_type*)argv_new)[i]) ;
   } /* end of [for] */
   printf ("\n") ;
 

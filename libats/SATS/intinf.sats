@@ -88,6 +88,10 @@ fun intinf_make_double
   (d: double): Intinfptr_gc // [d] should be integral
 overload intinf_make with intinf_make_double
 
+fun intinf_make_string
+  (rep: string): Intinfptr_gc
+overload intinf_make with intinf_make_string
+
 (* ****** ****** *)
 
 fun intinfptr_free (x: Intinfptr_gc): void

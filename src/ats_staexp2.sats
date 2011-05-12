@@ -1079,11 +1079,10 @@ fun s2exp_extype_srt
 // end of [s2exp_extype_srt]
 
 fun s2exp_fun_srt (
-    s2t: s2rt
-  , fc: $Syn.funclo, lin: int, s2fe: s2eff, npf: int
-  , s2es_arg: s2explst, s2e_res: s2exp
-  ) : s2exp
-// end of [s2exp_fun_srt]
+  s2t: s2rt
+, fc: $Syn.funclo, lin: int, s2fe: s2eff, npf: int
+, s2es_arg: s2explst, s2e_res: s2exp
+) : s2exp // end of [s2exp_fun_srt]
 
 fun s2exp_int (i: int): s2exp
 val s2exp_int_0 : s2exp and s2exp_int_1 : s2exp
@@ -1138,8 +1137,9 @@ fun s2exparg_all (loc: loc_t): s2exparg
 fun s2exparg_seq (loc: loc_t, s2es: s2explst): s2exparg
 
 (* ****** ****** *)
-
-// implemented in [ats_staexp2_util1.dats]
+//
+// HX: implemented in [ats_staexp2_util1.dats]
+//
 fun s2exp_get_head (_: s2exp): s2exp
 
 fun s2cst_select_s2explstlst (_: s2cstlst, _: s2explstlst): s2cstlst
