@@ -36,9 +36,9 @@ cleanall:: clean
 
 checkall:: blurring
 cleanall:: ; $(RMF) blurring
-blurring: blurring.dats blur_image_surface.o
-	$(ATSCC) -o $@ blurring.dats blur_image_surface.o $(GTKCLFLAGS) -lm
-blur_image_surface.o: blur_image_surface.dats
+blurring: blurring.dats blur_image_surface_dats.o
+	$(ATSCC) -o $@ blurring.dats blur_image_surface_dats.o $(GTKCLFLAGS) -lm
+blur_image_surface_dats.o: blur_image_surface.dats
 	$(ATSCC) -c -o $@ blur_image_surface.dats $(XRCFLAGS)
 
 ######
@@ -83,7 +83,7 @@ text-transform: text-transform.dats
 
 ######
 
-RMF = rm -f
+RMF=rm -f
 
 ######
 
