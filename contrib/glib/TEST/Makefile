@@ -20,16 +20,7 @@ ATSCTRB=$(ATSLIBQ)/contrib/glib/atsctrb_glib.o
 
 ######
 
-GLIBINC=/usr/lib/glib-2.0/include
-GLIBINC=/usr/lib64/glib-2.0/include
-
-INCLUDES= \
-  -I $(GLIBINC) \
-  -I /usr/include/glib-2.0 \
-
-INCLUDES_ATS= \
-  -IATS $(GLIBINC) \
-  -IATS /usr/include/glib-2.0 \
+GLIBCFLAGS=`pkg-config glib-2.0 --cflags`
 
 ######
 
@@ -50,8 +41,7 @@ cleanall:: clean
 checkall:: garray-test
 garray-test: garray-test.dats
 	$(ATSCC) -O3 \
-  $(INCLUDES) $(INCLUDES_ATS) \
-  -o garray-test garray-test.dats \
+  $(GLIBCFLAGS) -o garray-test garray-test.dats \
   $(ATSCTRB) -lglib-2.0 \
   && ./garray-test
 cleanall:: ; $(RMF) garray-test
@@ -61,8 +51,7 @@ cleanall:: ; $(RMF) garray-test
 checkall:: glist-test
 glist-test: glist-test.dats
 	$(ATSCC) -O3 \
-  $(INCLUDES) $(INCLUDES_ATS) \
-  -o glist-test glist-test.dats \
+  $(GLIBCFLAGS) -o glist-test glist-test.dats \
   $(ATSCTRB) -lglib-2.0 \
   && ./glist-test
 cleanall:: ; $(RMF) glist-test
@@ -72,8 +61,7 @@ cleanall:: ; $(RMF) glist-test
 checkall:: gqsort-test
 gqsort-test: gqsort-test.dats
 	$(ATSCC) -O3 \
-  $(INCLUDES) $(INCLUDES_ATS) \
-  -o gqsort-test gqsort-test.dats \
+  $(GLIBCFLAGS) -o gqsort-test gqsort-test.dats \
   $(ATSCTRB) -lglib-2.0 \
   && ./gqsort-test
 cleanall:: ; $(RMF) gqsort-test
@@ -83,15 +71,14 @@ cleanall:: ; $(RMF) gqsort-test
 checkall:: gstring-test
 gstring-test: gstring-test.dats
 	$(ATSCC) -O3 \
-  $(INCLUDES) $(INCLUDES_ATS) \
-  -o gstring-test gstring-test.dats \
+  $(GLIBCFLAGS) -o gstring-test gstring-test.dats \
   $(ATSCTRB) -lglib-2.0 \
   && ./gstring-test
 cleanall:: ; $(RMF) gstring-test
 
 ######
 
-RMF = rm -f
+RMF=rm -f
 
 ######
 
