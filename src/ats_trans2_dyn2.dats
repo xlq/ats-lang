@@ -152,7 +152,6 @@ fn c1lassdec_tr
     , None () // argvar
     , None () // def
   ) // end of [s2cst_make]
-  val () = the_s2expenv_add_scst s2c
   val () = case+ sup of
     | Some s1e => let
         val s2e = s1exp_tr_dn_cls (s1e)
@@ -162,6 +161,7 @@ fn c1lassdec_tr
       end // end of [Some]
     | None () => ()
   // end of [val]
+  val () = the_s2expenv_add_scst s2c
 } // end of [c1lassdec_tr]
 
 (* ****** ****** *)

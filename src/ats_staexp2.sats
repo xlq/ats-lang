@@ -355,10 +355,8 @@ typedef s2exparglst = List s2exparg
 
 (* ****** ****** *)
 
-typedef s2qua =
-  @(s2varlst, s2explst)
-// end of [s2qua]
-
+typedef
+s2qua = (s2varlst, s2explst)
 typedef s2qualst = List s2qua
 
 (* ****** ****** *)
