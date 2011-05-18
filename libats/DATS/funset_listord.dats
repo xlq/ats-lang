@@ -54,6 +54,12 @@ _(*anon*) = "prelude/DATS/list.dats"
 staload "libats/SATS/funset_listord.sats"
 
 (* ****** ****** *)
+//
+// a specialized version can be implemented on the spot
+//
+implement{elt} compare_elt_elt (x1, x2, cmp) = cmp (x1, x2)
+//
+(* ****** ****** *)
 
 assume
 set_t0ype_type (elt: t@ype) = List (elt)
@@ -83,7 +89,7 @@ implement{a}
 funset_is_member
   (xs, x0, cmp) = let
   fun aux {n:nat} .<n>.
-    (xs: list (a, n)):<> bool = case+ xs of
+    (xs: list (a, n)):<cloref> bool = case+ xs of
     | list_cons (x, xs) => let
         val sgn = compare_elt_elt (x0, x, cmp) in
         if sgn < 0 then false else (if sgn > 0 then aux (xs) else true)

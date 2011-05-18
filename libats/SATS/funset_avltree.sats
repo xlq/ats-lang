@@ -54,10 +54,10 @@ stadef set = set_t0ype_type
 
 (* ****** ****** *)
 
-typedef cmp (elt:t@ype) = (elt, elt) -<cloref> Sgn
+typedef cmp (elt:t@ype) = (elt, elt) -<cloref> int
 
 fun{elt:t@ype}
-compare_elt_elt (x1: elt, x2: elt, cmp: cmp elt):<> Sgn
+compare_elt_elt (x1: elt, x2: elt, cmp: cmp elt):<> int
 
 (* ****** ****** *)
 
