@@ -156,9 +156,14 @@ fn d1cstdec_tr (
   val loc = d1c.d1cstdec_loc
   val fil = d1c.d1cstdec_fil
   val id = d1c.d1cstdec_sym
-  var s2e_cst = ( // it must be a prop or a t@ye; it cannot be linear
-    if $Syn.dcstkind_is_proof dck then s1exp_tr_dn_prop d1c.d1cstdec_typ
-                                  else s1exp_tr_dn_t0ype d1c.d1cstdec_typ
+  val typ = d1c.d1cstdec_typ
+  var s2e_cst = (
+//
+// HX: it must be a prop or a t@ype; it cannot be linear
+//
+    if $Syn.dcstkind_is_proof (dck)
+      then s1exp_tr_dn_prop (typ) else s1exp_tr_dn_t0ype (typ)
+    // end of [if]
   ) : s2exp // end of [var]
   val arilst = s2exp_arity_list s2e_cst
   val extdef = d1c.d1cstdec_extdef
@@ -1412,12 +1417,12 @@ end // end of [d1exp_arg_body_tr]
 
 implement
 d1exp_tr (d1e0) = let
-  val loc0 = d1e0.d1exp_loc
 (*
   val () = begin
     print "d1exp_tr: d1e0 = "; print_d1exp d1e0; print_newline ()
   end // end of [val]
 *)
+  val loc0 = d1e0.d1exp_loc
 in
   case+ d1e0.d1exp_node of
   | D1Eann_type (d1e, s1e) => let

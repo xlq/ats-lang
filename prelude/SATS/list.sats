@@ -123,10 +123,12 @@ list_app_fun {f:eff} (xs: List a, f: a -<fun,f> void):<f> void
 fun{a:t@ype}
 list_app_clo {v:view} {f:eff}
   (pf: !v | xs: List a, f: &(!v | a) -<clo,f> void):<f> void
+// end of [list_app_clo]
 
 fun{a:t@ype}
 list_app_cloptr {v:view} {f:eff}
   (pf: !v | xs: List a, f: !(!v | a) -<cloptr,f> void):<f> void
+// end of [list_app_cloptr]
 
 fun{a:t@ype}
 list_app_cloref {f:eff} (xs: List a, f: (a -<cloref,f> void)):<f> void
@@ -144,13 +146,12 @@ overload list_app with list_app_cloref
 fun{a1,a2:t@ype}
 list_app2_funenv
   {v:view} {vt:viewtype} {n:nat} {f:eff} (
-    pf: !v
-  | xs: list (a1, n)
-  , ys: list (a2, n)
-  , f: (!v | a1, a2, !vt) -<fun,f> void
-  , env: !vt
-  ) :<f> void
-// end of [list_app2_funenv]
+  pf: !v
+| xs: list (a1, n)
+, ys: list (a2, n)
+, f: (!v | a1, a2, !vt) -<fun,f> void
+, env: !vt
+) :<f> void // end of [list_app2_funenv]
 
 fun{a1,a2:t@ype}
 list_app2_fun {n:nat} {f:eff} (
@@ -898,7 +899,7 @@ list_unzip {n:nat}
 fun{a:t@ype}
 list_mergesort
   {env:viewtype} {n:nat} (
-  xs: list (a, n), lte: (a, a, !env) -<fun> bool, env: !env
+  xs: list (a, n), cmp: (a, a, !env) -<fun> int, env: !env
 ) :<> list (a, n) // end of [list_mergesort]
 
 (*
@@ -908,7 +909,7 @@ list_mergesort
 *)
 fun{a:t@ype}
 list_quicksort {env:viewtype} {n:nat}
-  (xs: list (a, n), lte: (a, a, !env) -<fun> bool, env: !env):<> list (a, n)
+  (xs: list (a, n), cmp: (a, a, !env) -<fun> int, env: !env):<> list (a, n)
 // end of [list_quicksort]
 
 (* ****** ****** *)

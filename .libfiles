@@ -261,6 +261,10 @@ libats/DATS/funmap_avltree.dats
 libats/SATS/funset_avltree.sats
 libats/DATS/funset_avltree.dats
 
+/* functional set implementation based on ordered lists */
+libats/SATS/funset_listord.sats
+libats/DATS/funset_listord.dats
+
 /* functional random-access list based on a nested datatype */
 libats/SATS/funralist_nested.sats
 libats/DATS/funralist_nested.dats

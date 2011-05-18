@@ -205,6 +205,13 @@ cleanall:: ; $(RMF) libats_funset_avltree
 
 ######
 
+checkall:: libats_funset_listord
+libats_funset_listord: libats_funset_listord.dats
+	$(ATSCC) -D_ATS_GCATS -O2 -o $@ $< && ./$@ 1000
+cleanall:: ; $(RMF) libats_funset_listord
+
+######
+
 checkall:: libats_funralist_nested
 libats_funralist_nested: libats_funralist_nested.dats
 	$(ATSCC) -D_ATS_GCATS -O2 -o $@ $< && ./$@ 100000

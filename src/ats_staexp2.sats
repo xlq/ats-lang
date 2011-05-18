@@ -236,7 +236,7 @@ and s2exp_node =
       intinf_t
   | S2Elam of (* static abstraction *)
       (s2varlst, s2exp)
-  | S2Emetfn of (* metric function *)
+  | S2Emetfn of (* metriked function *)
       (Option stamp_t, s2explst, s2exp)
   | {n:nat} S2Emetlt of (* strict metric ordering *)
       (s2explst n, s2explst n)

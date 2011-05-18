@@ -143,8 +143,8 @@ main (argc, argv) = let
 //
   val () = () where {
     val () = print "testing [list_mergesort] and [list_quicksort]: starts\n"
-    val xs_ms = list_mergesort<int> {ptr} (xs, lam (x1, x2, env) =<0> x1 <= x2, null)
-    val xs_qs = list_quicksort<int> {ptr} (xs, lam (x1, x2, env) =<0> x1 <= x2, null)
+    val xs_ms = list_mergesort<int> {ptr} (xs, lam (x1, x2, env) =<0> compare (x1, x2), null)
+    val xs_qs = list_quicksort<int> {ptr} (xs, lam (x1, x2, env) =<0> compare (x1, x2), null)
     val () = lstpr (xs_ms)
     val () = print_newline ()
     val () = lstpr (xs_qs)

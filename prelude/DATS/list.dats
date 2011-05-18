@@ -1900,11 +1900,9 @@ in
 end // end of [list_unzip]
 
 (* ****** ****** *)
-
 //
 // HX: implementing merge sort
 //
-
 (*
 **
 ** llist(a, i, n): a list of lists such that
@@ -1912,127 +1910,126 @@ end // end of [list_unzip]
 **   2. the length of the list is n.
 **
 *)
-
 local
 //
 // HX: this is not an efficient implementation but it is guaranteed to be O(n*log(n))
 //
-  datatype llist (a:t@ype+, int, int) =
+  datatype llist
+    (a:t@ype+, int, int) =
     | {i,j,n:nat} lcons (a, i+j, n+1) of (list (a, i), llist (a, j, n))
     | lnil (a, 0, 0)
-
-  typedef lte (a:t@ype, env: viewtype, f:eff) = (a, a, !env) -<fun,f> bool
-
-  fun{a:t@ype} aux1
-    {env:viewtype} {i:nat} {f:eff} .<i>.
-    (lte: lte (a, env, f), xs: list (a, i), env: !env)
-    :<f> [n:nat] llist (a, i, n) = case+ xs of
+  (* end of [llist] *)
+//
+  typedef cmp (a:t@ype, env: viewtype, f:eff) = (a, a, !env) -<fun,f> int
+//
+  macdef list2 (x, y) = ,(x) :: ,(y) :: nil
+//  
+  fun{a:t@ype}
+  aux1 {env:viewtype} {i:nat} {f:eff} .<i>. (
+    xs: list (a, i), cmp: cmp (a, env, f), env: !env
+  ) :<f> [n:nat] llist (a, i, n) =
+    case+ xs of
     | x1 :: x2 :: xs => let
         val l = (
-          if lte (x1, x2, env) then x1 :: x2 :: nil else x2 :: x1 :: nil
-        ) : list (a, 2)
+          if cmp (x1, x2, env) <= 0 then list2 (x1, x2) else list2 (x2, x1)
+        ) : list (a, 2) // end of [val]
       in
-         lcons (l, aux1 (lte, xs, env))
+         lcons (l, aux1 (xs, cmp, env))
       end
     | l as list_cons (x, list_nil ()) => lcons (l, lnil ())
     | nil () => lnil
-  // end of [aux1]
-
-  fun{a:t@ype} aux2
-    {env:viewtype} {i,j:nat} {f:eff} .<i+j>. (
-      lte: lte (a, env, f), xs: list (a, i), ys: list (a, j), env: !env
-    ) :<f> list (a, i+j) = begin
+  (* end of [aux1] *)
+//
+  fun{a:t@ype}
+  aux2 {env:viewtype} {i,j:nat} {f:eff} .<i+j>. (
+    xs: list (a, i), ys: list (a, j), cmp: cmp (a, env, f), env: !env
+  ) :<f> list (a, i+j) =
     case+ (xs, ys) of
-    | (xs as x :: xs', ys as y :: ys') => begin
-        if lte (x, y, env) then begin
-          x :: aux2 (lte, xs', ys, env)
-        end else begin
-          y :: aux2 (lte, xs, ys', env)
-        end
-      end // end of [::, ::]
+    | (xs as x :: xs', ys as y :: ys') => (
+        if cmp (x, y, env) <= 0 then
+          x :: aux2 (xs', ys, cmp, env) else y :: aux2 (xs, ys', cmp, env)
+        // end of [if]
+      ) // end of [::, ::]
     | (xs, nil ()) => xs
     | (nil (), ys) => ys
-  end // end of [aux2]
-  // end of [aux2]
-
-  fun{a:t@ype} aux3
-    {env:viewtype} {i,n:nat} {f:eff} .<n>.
-    (lte: lte (a, env, f), xss: llist (a, i, n), env: !env)
-    :<f> [n1:nat | (n < 2 && n1 == n) || n1 < n] llist (a, i, n1) =
+  (* end of [aux2] *)
+//
+  fun{a:t@ype}
+  aux3 {env:viewtype} {i,n:nat} {f:eff} .<n>. (
+    xss: llist (a, i, n), cmp: cmp (a, env, f), env: !env
+  ) :<f> [n1:nat | (n < 2 && n1 == n) || n1 < n] llist (a, i, n1) =
     case+ xss of
     | lcons (xs1, lcons (xs2, xss)) => begin
-        lcons (aux2 (lte, xs1, xs2, env), aux3 (lte, xss, env))
+        lcons (aux2 (xs1, xs2, cmp, env), aux3 (xss, cmp, env))
       end
     | _ =>> xss
-  // end of [aux3]
-
-  fun{a:t@ype} aux4
-    {env:viewtype} {i,n:nat} {f:eff} .<n>.
-    (lte: lte (a, env, f), xss: llist (a, i, n), env: !env)
-    :<f> list (a, i) = begin case+ xss of
+  (* end of [aux3] *)
+//
+  fun{a:t@ype}
+  aux4 {env:viewtype} {i,n:nat} {f:eff} .<n>. (
+    xss: llist (a, i, n), cmp: cmp (a, env, f), env: !env
+  ) :<f> list (a, i) =
+    case+ xss of
     | lnil () => nil ()
     | lcons (xs, lnil ()) => xs
-    | _ =>> begin
-        aux4 (lte, aux3 (lte, xss, env), env)
-      end
-  end // end of [aux4]
-
+    | _ =>> aux4 (aux3 (xss, cmp, env), cmp, env)
+  (* end of [aux4] *)
+//
 in // in of [local]
-
+//
 implement{a}
-list_mergesort (xs, lte, env) = aux4 (lte, aux1 (lte, xs, env), env)
-
+list_mergesort (xs, cmp, env) = aux4 (aux1 (xs, cmp, env), cmp, env)
+//
 end // end of [local]
 
 (* ****** ****** *)
-
 //
 // HX: implementing quick sort
 //
-
 local
 //
 // this may not be a practical implementation as it can easily be O(n*n)
 //
-  typedef lte (a:t@ype, env: viewtype, f:eff) = (a, a, !env) -<fun,f> bool
-
+  typedef cmp (a:t@ype, env: viewtype, f:eff) = (a, a, !env) -<fun,f> int
+//
   fun{a:t@ype}
   qsrt {env:viewtype}
-    {n:nat} {f:eff} .<n,0>.
-    (lte: lte (a, env, f), xs: list (a, n), env: !env)
-    :<f> list (a, n) = begin
+    {n:nat} {f:eff} .<n,0>. (
+    xs: list (a, n), cmp: cmp (a, env, f), env: !env
+  ) :<f> list (a, n) =
     case+ xs of // [case+]: exhaustive pattern matching
-    | x' :: xs' => begin
-        part {env} {n-1,0,0} (lte, x', xs', nil, nil, env)
-      end // end of [::]
+    | x' :: xs' =>
+        part {env} {n-1,0,0} (x', xs', nil, nil, cmp, env)
+      // end of [::]
     | nil () => nil ()
-  end // end of [qsrt]
-
+  (* end of [qsrt] *)
+//
   and part {env:viewtype}
     {p,l,r:nat} {f:eff} .<p+l+r,p+1>. (
-      lte: lte (a, env, f)
-    , x: a, xs: list (a, p)
-    , l: list (a, l), r: list (a, r)
+      x: a
+    , xs: list (a, p)
+    , l: list (a, l)
+    , r: list (a, r)
+    , cmp: cmp (a, env, f)
     , env: !env
-    ) :<f> list (a, p+l+r+1) = begin
+    ) :<f> list (a, p+l+r+1) =
     case+ xs of // case+ mandates exhaustive pattern matching
-    | x' :: xs' => begin
-        if lte (x', x, env) then begin
-          part {env} {p-1,l+1,r} (lte, x, xs', x' :: l, r, env)
-        end else begin
-          part {env} {p-1,l,r+1} (lte, x, xs', l, x' :: r, env)
-        end // end of [if]
-      end (* end of [::] *)
-    | nil () => begin
-        list_append (qsrt (lte, l, env), x :: qsrt (lte, r, env))
-      end // end of [nil]
-  end // end of [part]
-
+    | x' :: xs' => (
+        if cmp (x', x, env) <= 0 then
+          part {env} {p-1,l+1,r} (x, xs', x' :: l, r, cmp, env)
+        else
+          part {env} {p-1,l,r+1} (x, xs', l, x' :: r, cmp, env)
+        // end of [if]
+      ) // end of [::]
+    | nil () => (
+        list_append (qsrt (l, cmp, env), x :: qsrt (r, cmp, env))
+      ) // end of [nil]
+  (* end of [part] *)
+//
 in // in of [local]
-
-implement{a}
-list_quicksort (xs, lte, env) = qsrt (lte, xs, env)
-
+//
+implement{a} list_quicksort (xs, cmp, env) = qsrt (xs, cmp, env)
+//
 end // end of [local]
 
 (* ****** ****** *)

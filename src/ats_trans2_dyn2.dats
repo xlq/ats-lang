@@ -1071,7 +1071,6 @@ fn s1taload_tr (
 //
         val flag = $PM.posmark_pause_get ()
         val d2cs = d1eclst_tr d1cs
-        val () = d2cs_loaded := d2cs
         val () = $PM.posmark_resume_set (flag)
 //
         val () = trans2_env_namespace_add_topenv (fil_sym)
@@ -1080,7 +1079,7 @@ fn s1taload_tr (
       in
         d2cs
       end // end of [None_vt]
-  ) : d2eclst
+  ) : d2eclst // end of [val]
   val () = d2cs_loaded := d2cs
   val () = case+ idopt of
     | Some id => the_s2expenv_add (id, S2ITEMfil fil)
@@ -1189,13 +1188,12 @@ d1ec_tr (d1c0) = begin
       d2ec_datdec (d1c0.d1ec_loc, dtk, s2cs)
     end // end of [D1Cdatdecs]
   | D1Cexndecs (d1cs) => let
-      val d2cs = e1xndeclst_tr d1cs in
+      val d2cs = e1xndeclst_tr d1cs
+    in
       d2ec_exndec (d1c0.d1ec_loc, d2cs)
     end // end of [D1Cexndecs]
   | D1Cclassdec (id, sup) => let
-      val () = c1lassdec_tr (id, sup)
-    in
-      d2ec_none (d1c0.d1ec_loc)
+      val () = c1lassdec_tr (id, sup) in d2ec_none (d1c0.d1ec_loc)
     end // end of [D1Cclassdec]
   | D1Coverload (id, qid) => let
       val d2i = overload_tr (id, qid) in

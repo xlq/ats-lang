@@ -30,10 +30,10 @@
 *)
 
 (* ****** ****** *)
-
+//
 // Author: Hongwei Xi (hwxi AT cs DOT bu DOT edu)
 // Time: November 2007
-
+//
 (* ****** ****** *)
 
 (* The second translation resolves binding as well as sort assignment *)
