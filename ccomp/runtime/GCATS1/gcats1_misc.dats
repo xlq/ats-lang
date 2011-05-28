@@ -97,11 +97,11 @@ gc_stack_beg_set (ats_int_type dir) {
 
   // pagesize must be a power of 2
   pagesize = sysconf(_SC_PAGESIZE) ; // system configuration
-// /*
+/*
   fprintf(stderr, "gc_stack_beg_set: dir = %i\n", dir) ;
   fprintf(stderr, "gc_stack_beg_set: pagesize = %li\n", pagesize) ;
   fprintf(stderr, "gc_stack_beg_set: &pagesize = %p\n", &pagesize) ;
-// */
+*/
   pagemask = ~(pagesize - 1) ; // 1...10...0
 
   if (dir > 0) {
@@ -128,9 +128,9 @@ gc_stack_beg_get (
     exit (1) ;
   }
   return the_stack_beg ;
-}
+} // end of [gc_stack_beg_get]
 
-%}
+%} // end of [%{^]
 
 (* ****** ****** *)
 
