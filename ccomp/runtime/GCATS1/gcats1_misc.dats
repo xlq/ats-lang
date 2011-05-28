@@ -70,9 +70,9 @@ static volatile void* get_inner = &gc_stack_dir_get_inner ;
   int some_int ;
   if (!the_stack_direction)
     the_stack_direction = ((int(*)(int*))get_inner)(&some_int) ;
-// /*
+/*
   fprintf (stderr, "the_stack_direction = %i\n", the_stack_direction) ;
-// */
+*/
   return the_stack_direction ;
 }
 
