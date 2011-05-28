@@ -50,23 +50,34 @@ staload "gcats1.sats"
 
 %{^
 
-static int the_stack_direction = 0 ;
-
+static
+int the_stack_direction = 0 ;
+//
 // dir=1/-1 : upward/downward
-static ats_int_type volatile
-gc_stack_dir_get_main (unsigned int *some_ptr) {
-  unsigned int some_int ;
+//
+static
+int gc_stack_dir_get_inner (int *some_ptr) {
+  int some_int ;
   if (&some_int > some_ptr) return 1 ; else return -1 ;
   return 0 ; /* deadcode */
 }
 
-ats_int_type gc_stack_dir_get () {
-  unsigned int some_int ;
-  if (!the_stack_direction) { // uninitialized
-    the_stack_direction = gc_stack_dir_get_main (&some_int) ;
-  }
+static
+int gc_stack_dir_get_outer () {
+//
+static volatile void* get_inner = &gc_stack_dir_get_inner ;
+//
+  int some_int ;
+  if (!the_stack_direction)
+    the_stack_direction = ((int(*)(int*))get_inner)(&some_int) ;
+// /*
+  fprintf (stderr, "the_stack_direction = %i\n", the_stack_direction) ;
+// */
   return the_stack_direction ;
 }
+
+ats_int_type
+gc_stack_dir_get () { return gc_stack_dir_get_outer () ; }
 
 /* ****** ****** */
 
@@ -78,17 +89,19 @@ static
 ats_ptr_type the_stack_beg = (ats_ptr_type)0 ;
 #endif
 
-ats_void_type gc_stack_beg_set (ats_int_type dir) {
+ats_void_type
+gc_stack_beg_set (ats_int_type dir) {
   long int pagesize, pagemask ; uintptr_t beg ;
 
   if (the_stack_beg) return ; // already set
 
   // pagesize must be a power of 2
   pagesize = sysconf(_SC_PAGESIZE) ; // system configuration
-/*
-  fprintf(stderr, "get_stack_beg_set: pagesize = %li\n", pagesize) ;
-  fprintf(stderr, "get_stack_beg_set: &pagesize = %p\n", &pagesize) ;
-*/
+// /*
+  fprintf(stderr, "gc_stack_beg_set: dir = %i\n", dir) ;
+  fprintf(stderr, "gc_stack_beg_set: pagesize = %li\n", pagesize) ;
+  fprintf(stderr, "gc_stack_beg_set: &pagesize = %p\n", &pagesize) ;
+// */
   pagemask = ~(pagesize - 1) ; // 1...10...0
 
   if (dir > 0) {

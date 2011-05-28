@@ -487,8 +487,9 @@ in
 end // end of [p1at_app_tr]
 
 (* ****** ****** *)
-
+//
 // [freeknd]: 0: nonlinear; 1: preserve; ~1: free
+//
 fn p1at_free_tr (loc0: loc_t, p1t: p1at): p2at = let
   val p2t = p1at_tr p1t
 in

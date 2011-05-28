@@ -13,6 +13,9 @@ ats-lang-anairiats-0.2.5:
 7. Adding support for if!: if! (e_cond, e_then, e_else) is for the
    following expression: (if e_cond then e_then else e_else).
 8. Adding libats/funset_avltree to support (functional) sets.
+9. The original *_clo and *_cloptr functions are renamed as *_vclo and
+   *_vcloptr respectively, and the new *_clo and *_cloptr functions no
+   longer require a (linear) proof argument.
 
 ########################################################################
 

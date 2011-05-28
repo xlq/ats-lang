@@ -42,7 +42,8 @@ in
 end // end of [readin]
 
 and readin2 (
-  tbl: STRHASHMAPref (intlstref), inp: FILEref, xs: List_vt strptr1
+  tbl: STRHASHMAPref (intlstref)
+, inp: FILEref, xs: List_vt strptr1
 ) : void =
   case+ xs of
   | ~list_vt_nil () => readin (tbl, inp)

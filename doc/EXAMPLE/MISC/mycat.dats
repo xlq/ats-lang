@@ -230,7 +230,7 @@ in
   | _ when ch < 32 => begin case+ b of
     | '\t' when ~params.show_tabs => (putc(p, '\t'); p+1)
     | '\n' => (putc(p, '$') ; putc(p+1, '\n'); p+2)
-    | _ =>> (putc(p, '^'); putc(p+1, i2c(ch+64)); p+2)
+    | _ => (putc(p, '^'); putc(p+1, i2c(ch+64)); p+2)
     end // end of [...]
   | _ when ch < 127 => ( putc (p, b); p+1 )
   | _ when ch = 127 => ( putc (p, '^'); putc (p+1, '?'); p+2 )
@@ -240,9 +240,9 @@ in
   | _ when ch < 128 + 127 => (
       putc(p, 'M'); putc(p+1, '-'); putc(p+2, i2c(ch-128)); p+3
     )
-  | _ =>> (
+  | _ => (
       putc(p, 'M'); putc(p+1, '-'); putc(p+2, '^'); putc(p+3, '?'); p+4
-    )
+    ) (* end of [_] *)
 end // end of [putchar_quoted_buf]
 
 (* ****** ****** *)
@@ -514,7 +514,7 @@ in
   | "-u" => (* IGNORED*) false
   | "-v" => ( show_nonprinting(params); false; )
   | "--show-nonprinting" => ( show_nonprinting(params); false; )
-  | _ =>> (* unknown parameter => file path? *) true
+  | _ => (* unknown parameter => file path? *) true
 end // end of [parse_non_file_parameters]
 
 (* ****** ****** *)
@@ -529,7 +529,9 @@ fun parse_parameters
 in
   case+ isfilepath of
   | false => (
-      if next = argc then cat_stdin(params) else parse_parameters(params, argc,argv,next)
+      if next = argc then
+        cat_stdin(params) else parse_parameters(params, argc,argv,next)
+      // end of [if]
     ) // end of [false]
   | true => parse_file_path(params, argc,argv,current)
 end // end of [parse_parameters]
@@ -551,7 +553,7 @@ in
   else
     parse_parameters(params, argc,argv,1)
   // end of [if]
-end
+end (* end of [main] *)
 
 (* ****** ****** *)
 

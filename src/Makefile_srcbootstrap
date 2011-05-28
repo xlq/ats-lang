@@ -54,7 +54,6 @@ YACC=bison # HX: this is the default one
 
 ATSOPT = $(ATSHOME)/bootstrap0/atsopt
 BOOTDIR = $(ATSHOME)/bootstrap1
-ATSCCFLAG = -g
 
 ######
 

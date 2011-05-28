@@ -172,7 +172,9 @@ srclines::
 ######
 
 clean::
-	rm -f gcats1.hats *_?ats.c *_?ats.o *~
+	rm -f *~
+	rm -f *_?ats.c *_?ats.o
+	rm -f gcats1.hats
 
 cleanall:: clean; rm -f gc.o gc_mt.o
 

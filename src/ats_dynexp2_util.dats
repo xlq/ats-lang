@@ -30,10 +30,10 @@
 *)
 
 (* ****** ****** *)
-
+//
 // Author: Hongwei Xi (hwxi AT cs DOT bu DOT edu)
 // Time: February 2008
-
+//
 (* ****** ****** *)
 
 staload Err = "ats_error.sats"

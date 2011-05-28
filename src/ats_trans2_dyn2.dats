@@ -254,7 +254,9 @@ fn witht1ype_tr
 
 (* ****** ****** *)
 
-fn v1aldec_tr (d1c: v1aldec, p2t: p2at): v2aldec = let
+fn v1aldec_tr (
+  d1c: v1aldec, p2t: p2at
+) : v2aldec = let
   val loc = d1c.v1aldec_loc
   val def = d1exp_tr (d1c.v1aldec_def)
   val ann = witht1ype_tr (d1c.v1aldec_ann)
@@ -775,7 +777,7 @@ fun d1exp_arity_check
     | D1Elam_dyn (_(*lin*), p1t, d1e) => let
         val narg = (case+ p1t.p1at_node of
           | P1Tlist (_(*npf*), p1ts) => $Lst.list_length (p1ts) | _ => 1
-        ) : int
+        ) : int // end of [val]
       in
         if (n = narg) then aux1 (d1e, ns) else false
       end // end of [D1Elam_dyn]

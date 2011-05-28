@@ -1028,8 +1028,9 @@ fun d2exp_arrinit
 
 fun d2exp_arrsize (_: loc_t, eltyp: s2expopt, elts: d2explst): d2exp
 
-fun d2exp_arrsub
-  (_: loc_t, d2s: d2sym, arr: d2exp, ind: loc_t, ind: d2explstlst): d2exp
+fun d2exp_arrsub (
+  loc: loc_t, d2s: d2sym, arr: d2exp, locind: loc_t, ind: d2explstlst
+) : d2exp // end of [d2exp_arrsub]
 
 (* ****** ****** *)
 
@@ -1165,25 +1166,25 @@ fun i2nvarg_make (_: d2var_t, _: s2expopt): i2nvarg
 
 val i2nvresstate_nil : i2nvresstate
 
-fun i2nvresstate_make
-  (_: s2varlst, _: s2explst, _: i2nvarglst): i2nvresstate
-fun i2nvresstate_make_met
-  (_: s2varlst, _: s2explst, _: i2nvarglst, met: s2explstopt)
-  : i2nvresstate
+fun i2nvresstate_make (
+  svs: s2varlst, gua: s2explst, arg: i2nvarglst
+) : i2nvresstate // end of [i2nvresstate_make]
+fun i2nvresstate_make_met (
+  svs: s2varlst, gua: s2explst, arg: i2nvarglst, met: s2explstopt
+) : i2nvresstate // end of [i2nvresstate_make_met]
 
 fun i2nvresstate_update (res: i2nvresstate): i2nvresstate
 
 (* ****** ****** *)
 
-
-fun loopi2nv_make
-  (_: loc_t,
-   svs: s2varlst,
-   gua: s2explst,
-   met: s2explstopt,
-   arg: i2nvarglst,
-   res: i2nvresstate)
-  : loopi2nv
+fun loopi2nv_make (
+  loc: loc_t
+, svs: s2varlst
+, gua: s2explst
+, met: s2explstopt
+, arg: i2nvarglst
+, res: i2nvresstate
+) : loopi2nv // end of [loopi2nv_make]
 
 fun loopi2nv_update (i2nv: loopi2nv): loopi2nv
 
@@ -1215,23 +1216,25 @@ fun f2undec_make
 (* ****** ****** *)
 
 fun v2ardec_make (
-    _: loc_t
-  , knd: int
-  , _: d2var_t
-  , _: s2var_t
-  , typ: s2expopt
-  , wth: d2varopt
-  , ini: d2expopt
-  ) : v2ardec
+  _: loc_t
+, knd: int
+, _: d2var_t
+, _: s2var_t
+, typ: s2expopt
+, wth: d2varopt
+, ini: d2expopt
+) : v2ardec // end of [v2ardec_make]
+
+(* ****** ****** *)
 
 fun i2mpdec_make (
-    loc: loc_t
-  , loc_id: loc_t
-  , _: d2cst_t
-  , decarg: s2qualst
-  , tmparg: s2explstlst, tmpgua: s2explstlst
-  , def: d2exp
-  ) : i2mpdec
+  loc: loc_t
+, loc_id: loc_t
+, _: d2cst_t
+, decarg: s2qualst
+, tmparg: s2explstlst, tmpgua: s2explstlst
+, def: d2exp
+) : i2mpdec // end of [i2mpdec_make]
 
 (* ****** ****** *)
 
