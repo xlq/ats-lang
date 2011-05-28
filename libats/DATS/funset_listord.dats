@@ -212,7 +212,7 @@ funset_intersect
             list_cons (x1, aux (xs11, xs21))
           // end of [if]
         end // end of [list_cons]
-      | list_nil () => xs1
+      | list_nil () => list_nil ()
     ) // end of [list_cons]
   | list_nil () => list_nil ()
 in
