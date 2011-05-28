@@ -195,16 +195,19 @@ atsopt1_gc:: ; $(CPF) bootstrap1/atsopt_gc $(ATSHOMEBIN)/atsopt
 ###### contrib libraries ######
 
 contrib::
+ifeq (1,1)
+	$(MAKE) -C contrib/parcomb all
+endif
 ifeq ($(HAVE_LIBGLIB20),1)
-	cd contrib/glib; $(MAKE) all
+	$(MAKE) -C contrib/glib all
 endif
 ifeq ($(HAVE_LIBGTK20),1)
-	cd contrib/cairo; $(MAKE) all
-	cd contrib/pango; $(MAKE) all
-	cd contrib/GTK; $(MAKE) all
+	$(MAKE) -C contrib/cairo all
+	$(MAKE) -C contrib/pango all
+	$(MAKE) -C contrib/GTK all
 endif
 ifeq ($(HAVE_LIBSDL10),1)
-	cd contrib/SDL; $(MAKE) all
+	$(MAKE) -C contrib/SDL all
 endif
 
 ###### some toplevel commands ######

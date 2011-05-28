@@ -144,8 +144,9 @@ atsopt1_gc::
 ###### contrib libraries ######
 
 contrib::
+ifeq (1,1)
 	$(MAKE) -C contrib/parcomb all
-
+endif
 ifeq ($(HAVE_LIBGLIB20),1)
 	$(MAKE) -C contrib/glib all
 endif
