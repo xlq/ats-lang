@@ -60,7 +60,7 @@ fun explst_remdup
   | list_cons (x, xs) => let
       var !p_clo = @lam (pf: !unit_v | x1: exp): bool =<clo> ~(x = x1)
       prval pf = unit_v ()
-      val xs = list_filter_clo<exp> {unit_v} (pf | xs, !p_clo)
+      val xs = list_filter_vclo<exp> {unit_v} (pf | xs, !p_clo)
       prval unit_v () = pf
       val xs = list_of_list_vt (xs)
     in

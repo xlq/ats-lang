@@ -108,26 +108,60 @@ in
 end // end of [list_app_fun]
 
 implement{a}
+list_app_clo
+  {f:eff} (xs, f) = let
+  viewtypedef clo0_t = (a) -<clo,f> void
+  viewtypedef clo1_t = (!unit_v | a) -<clo,f> void
+  prval () = __assert(f) where {
+    extern prfun __assert (f: !clo0_t >> clo1_t): void
+  } // end of [val]
+  prval pfu = unit_v ()
+  val () = list_app_vclo<a> {unit_v} (pfu | xs, f)
+  prval unit_v () = pfu
+  prval () = __assert(f) where {
+    extern prfun __assert (f: !clo1_t >> clo0_t): void
+  } // end of [val]
+in
+  // nothing
+end // end of [list_app_clo]
+implement{a}
 list_app_vclo
   {v} {f:eff} (pf1 | xs, f) = let
   viewtypedef clo_t = (!v | a) -<clo,f> void
-  stavar l_f: addr; val p_f: ptr l_f = &f
-  viewdef V = (v, clo_t @ l_f)
+  stavar lf: addr; val lf: ptr lf = &f
+  viewdef V = (v, clo_t @ lf)
   prval pf = (pf1, view@ f)
-  fn app (pf: !V | x: a, p_f: !ptr l_f):<f> void = let
+  fn app (pf: !V | x: a, lf: !ptr lf):<f> void = let
     prval (pf1, pf2) = pf
-    val () = !p_f (pf1 | x)
+    val () = !lf (pf1 | x)
     prval () = pf := (pf1, pf2)
   in
     // nothing
   end // end of [app]
-  val () = list_app_funenv<a> {V} {ptr l_f} (pf | xs, app, p_f)
+  val () = list_app_funenv<a> {V} {ptr lf} (pf | xs, app, lf)
   prval () = pf1 := pf.0
   prval () = view@ f := pf.1
 in
-  ()
+  // nothing
 end // end of [list_app_vclo]
 
+implement{a}
+list_app_cloptr
+  {f:eff} (xs, f) = let
+  viewtypedef cloptr0_t = (a) -<cloptr,f> void
+  viewtypedef cloptr1_t = (!unit_v | a) -<cloptr,f> void
+  prval () = __assert(f) where {
+    extern prfun __assert (f: !cloptr0_t >> cloptr1_t): void
+  } // end of [val]
+  prval pfu = unit_v ()
+  val () = list_app_vcloptr<a> {unit_v} (pfu | xs, f)
+  prval unit_v () = pfu
+  prval () = __assert(f) where {
+    extern prfun __assert (f: !cloptr1_t >> cloptr0_t): void
+  } // end of [val]
+in
+  // nothing
+end // end of [list_app_cloptr]
 implement{a}
 list_app_vcloptr
   {v:view} {f:eff} (pf | xs, f) = let
@@ -145,7 +179,7 @@ list_app_cloref {f:eff} (xs, f) = let
   val () = list_app_funenv<a> {unit_v} {cloref_t} (pf | xs, app, f)
   prval unit_v () = pf
 in
-  ()
+  // nothing
 end // end of [list_app_cloref]
 
 (* ****** ****** *)
@@ -183,26 +217,60 @@ in
 end // end of [list_app2_fun]
 
 implement{a1,a2}
+list_app2_clo
+  {n} {f:eff} (xs1, xs2, f) = let
+  viewtypedef clo0_t = (a1, a2) -<clo,f> void
+  viewtypedef clo1_t = (!unit_v | a1, a2) -<clo,f> void
+  prval () = __assert(f) where {
+    extern prfun __assert (f: !clo0_t >> clo1_t): void
+  } // end of [val]
+  prval pfu = unit_v ()
+  val () = list_app2_vclo<a1,a2> {unit_v} (pfu | xs1, xs2, f)
+  prval unit_v () = pfu
+  prval () = __assert(f) where {
+    extern prfun __assert (f: !clo1_t >> clo0_t): void
+  } // end of [val]
+in
+  // nothing
+end // end of [list_app2_clo]
+implement{a1,a2}
 list_app2_vclo
   {v} {n} {f:eff} (pf1 | xs1, xs2, f) = let
   typedef clo_t = (!v | a1, a2) -<clo,f> void
-  stavar l_f: addr; val p_f: ptr l_f = &f
-  viewdef V = (v, clo_t @ l_f)
-  fn app (pf: !V | x1: a1, x2: a2, p_f: !ptr l_f):<f> void = let
+  stavar lf: addr; val lf: ptr lf = &f
+  viewdef V = (v, clo_t @ lf)
+  fn app (pf: !V | x1: a1, x2: a2, lf: !ptr lf):<f> void = let
     prval (pf1, pf2) = pf
-    val () = !p_f (pf1 | x1, x2)
+    val () = !lf (pf1 | x1, x2)
     prval () = pf := (pf1, pf2)
   in
     // nothing
   end // end of [app]
   prval pf = (pf1, view@ f)
-  val () = list_app2_funenv<a1,a2> {V} {ptr l_f} (pf | xs1, xs2, app, p_f)
+  val () = list_app2_funenv<a1,a2> {V} {ptr lf} (pf | xs1, xs2, app, lf)
   prval () = pf1 := pf.0
   prval () = view@ f := pf.1
 in
   // empty
 end // end of [list_app2_vclo]
 
+implement{a1,a2}
+list_app2_cloptr
+  {n} {f:eff} (xs1, xs2, f) = let
+  viewtypedef cloptr0_t = (a1, a2) -<cloptr,f> void
+  viewtypedef cloptr1_t = (!unit_v | a1, a2) -<cloptr,f> void
+  prval () = __assert(f) where {
+    extern prfun __assert (f: !cloptr0_t >> cloptr1_t): void
+  } // end of [val]
+  prval pfu = unit_v ()
+  val () = list_app2_vcloptr<a1,a2> {unit_v} (pfu | xs1, xs2, f)
+  prval unit_v () = pfu
+  prval () = __assert(f) where {
+    extern prfun __assert (f: !cloptr1_t >> cloptr0_t): void
+  } // end of [val]
+in
+  // nothing
+end // end of [list_app2_cloptr]
 implement{a1,a2}
 list_app2_vcloptr
   {v} {n} {f:eff} (pf | xs1, xs2, f) = let
@@ -444,21 +512,21 @@ end // end of [list_exists_fun]
 
 implement{a}
 list_exists_vclo
-  {v} {p:eff} (pf1 | xs, f) = let
+  {v} {p:eff} (pf1 | xs, p) = let
   typedef clo_t = (!v | a) -<clo,p> bool
-  stavar l_f: addr; val p_f: ptr l_f = &f
-  viewdef V = (v, clo_t @ l_f)
-  fn app (pf: !V | x: a, p_f: !ptr l_f):<p> bool = let
+  stavar lp: addr; val lp: ptr lp = &p
+  viewdef V = (v, clo_t @ lp)
+  fn app (pf: !V | x: a, lp: !ptr lp):<p> bool = let
     prval (pf1, pf2) = pf
-    val ans = !p_f (pf1 | x)
+    val ans = !lp (pf1 | x)
     prval () = pf := (pf1, pf2)
   in
     ans
   end // end of [app]
-  prval pf = (pf1, view@ f)
-  val ans = list_exists_funenv<a> {V} {ptr l_f} (pf | xs, app, p_f)
+  prval pf = (pf1, view@ p)
+  val ans = list_exists_funenv<a> {V} {ptr lp} (pf | xs, app, lp)
   prval () = pf1 := pf.0
-  prval () = view@ f := pf.1
+  prval () = view@ p := pf.1
 in
   ans
 end // end of [list_exists_vclo]
@@ -520,21 +588,21 @@ end // end of [list_exists2_fun]
 
 implement{a1,a2}
 list_exists2_vclo
-  {v} {n} {p:eff} (pf1 | xs1, xs2, f) = let
+  {v} {n} {p:eff} (pf1 | xs1, xs2, p) = let
   typedef clo_t = (!v | a1, a2) -<clo,p> bool
-  stavar l_f: addr; val p_f: ptr l_f = &f
-  viewdef V = (v, clo_t @ l_f)
-  fn app (pf: !V | x1: a1, x2: a2, p_f: !ptr l_f):<p> bool = let
+  stavar lp: addr; val lp: ptr lp = &p
+  viewdef V = (v, clo_t @ lp)
+  fn app (pf: !V | x1: a1, x2: a2, lp: !ptr lp):<p> bool = let
     prval (pf1, pf2) = pf
-    val ans = !p_f (pf1 | x1, x2)
+    val ans = !lp (pf1 | x1, x2)
     prval () = pf := (pf1, pf2)
   in
     ans
   end // end of [app]
-  prval pf = (pf1, view@ f)
-  val ans = list_exists2_funenv<a1,a2> {V} {ptr l_f} (pf | xs1, xs2, app, p_f)
+  prval pf = (pf1, view@ p)
+  val ans = list_exists2_funenv<a1,a2> {V} {ptr lp} (pf | xs1, xs2, app, lp)
   prval () = pf1 := pf.0
-  prval () = view@ f := pf.1
+  prval () = view@ p := pf.1
 in
   ans
 end // end of [list_exists2_vclo]
@@ -586,13 +654,14 @@ end // end of [list_extend]
 implement{a}
 list_filter_funenv
   {v} {vt} {n} {p:eff} (pf | xs, p, env) = let
+//
   fun loop {n:nat} .<n>. (
-      pf: !v
-    | xs: list (a, n)
-    , p: (!v | a, !vt) -<fun,p> bool
-    , res: &(List_vt a)? >> list_vt (a, n1)
-    , env: !vt
-    ) :<p> #[n1:nat | n1 <= n] void = case+ xs of
+    pf: !v
+  | xs: list (a, n)
+  , p: (!v | a, !vt) -<fun,p> bool
+  , res: &(List_vt a)? >> list_vt (a, n1)
+  , env: !vt
+  ) :<p> #[n1:nat | n1 <= n] void = case+ xs of
     | x :: xs => begin
         if p (pf | x, env) then let
           val () = res := list_vt_cons {a} {0} (x, ?)
@@ -604,9 +673,11 @@ list_filter_funenv
         end // end of [if]
       end (* end of [::] *)
     | nil () => (res := list_vt_nil ())
-  // end of [loop]
+  (* end of [loop] *)
+//
   var res: List_vt a // uninitialized
   val () = loop (pf | xs, p, res, env)
+//
 in
   res
 end // end of [list_filter_funenv]
@@ -617,39 +688,73 @@ list_filter_fun {n} {p:eff} (xs, f) = let
     coerce (f: a -<p> bool):<> (!unit_v | a, !ptr) -<p> bool
   } // end of [where]
   prval pf = unit_v ()
-  val ans = list_filter_funenv<a> {..} {ptr} (pf | xs, f, null)
+  val ys = list_filter_funenv<a> {..} {ptr} (pf | xs, f, null)
   prval unit_v () = pf
 in
-  ans
+  ys
 end // end of [list_filter_fun]
 
+implement{a}
+list_filter_clo
+  {n} {p:eff} (xs, p) = let
+  viewtypedef clo0_t = (a) -<clo,p> bool
+  viewtypedef clo1_t = (!unit_v | a) -<clo,p> bool
+  prval () = __assert(p) where {
+    extern prfun __assert (p: !clo0_t >> clo1_t): void
+  } // end of [val]
+  prval pfu = unit_v ()
+  val ys = list_filter_vclo<a> {unit_v} (pfu | xs, p)
+  prval unit_v () = pfu
+  prval () = __assert(p) where {
+    extern prfun __assert (p: !clo1_t >> clo0_t): void
+  } // end of [val]
+in
+  ys
+end // end of [list_filter_clo]
 implement{a}
 list_filter_vclo
   {v} {n} {p:eff} (pf1 | xs, f) = let
   typedef clo_t = (!v | a) -<clo,p> bool
-  stavar l_f: addr; val p_f: ptr l_f = &f
-  viewdef V = (v, clo_t @ l_f)
-  fn app (pf: !V | x: a, p_f: !ptr l_f):<p> bool = let
-    prval (pf1, pf2) = pf; val ans = !p_f (pf1 | x); prval () = pf := (pf1, pf2)
+  stavar lf: addr; val lf: ptr lf = &f
+  viewdef V = (v, clo_t @ lf)
+  fn app (pf: !V | x: a, lf: !ptr lf):<p> bool = let
+    prval (pf1, pf2) = pf; val ans = !lf (pf1 | x); prval () = pf := (pf1, pf2)
   in
     ans
   end // end of [app]
   prval pf = (pf1, view@ f)
-  val ans = list_filter_funenv<a> {V} {ptr l_f} (pf | xs, app, p_f)
+  val ys = list_filter_funenv<a> {V} {ptr lf} (pf | xs, app, lf)
   prval () = pf1 := pf.0
   prval () = view@ f := pf.1
 in
-  ans
+  ys
 end // end of [list_filter_vclo]
 
+implement{a}
+list_filter_cloptr
+  {n} {p:eff} (xs, p) = let
+  viewtypedef cloptr0_t = (a) -<cloptr,p> bool
+  viewtypedef cloptr1_t = (!unit_v | a) -<cloptr,p> bool
+  prval () = __assert(p) where {
+    extern prfun __assert (p: !cloptr0_t >> cloptr1_t): void
+  } // end of [val]
+  prval pfu = unit_v ()
+  val ys = list_filter_vcloptr<a> {unit_v} (pfu | xs, p)
+  prval unit_v () = pfu
+  prval () = __assert(p) where {
+    extern prfun __assert (p: !cloptr1_t >> cloptr0_t): void
+  } // end of [val]
+in
+  ys
+end // end of [list_filter_cloptr]
 implement{a}
 list_filter_vcloptr
   {v} {n} {p:eff} (pf | xs, p) = let
   viewtypedef cloptr_t = (!v | a) -<cloptr,p> bool
   fn app (pf: !v | x: a, p: !cloptr_t):<p> bool = p (pf | x)
-  val ans = list_filter_funenv<a> {v} {cloptr_t} (pf | xs, app, p)
+  val ys = list_filter_funenv<a> {v} {cloptr_t} (pf | xs, app, p)
 in
-  ans
+  ys
 end // end of [list_filter_vcloptr]
 
 implement{a}
@@ -657,20 +762,21 @@ list_filter_cloref {n} {p:eff} (xs, p) = let
   typedef cloref_t = a -<cloref,p> bool
   fn app (pf: !unit_v | x: a, p: !cloref_t):<p> bool = p (x)
   prval pf = unit_v ()
-  val ans = list_filter_funenv<a> {unit_v} {cloref_t} (pf | xs, app, p)
+  val ys = list_filter_funenv<a> {unit_v} {cloref_t} (pf | xs, app, p)
   prval unit_v () = pf
 in
-  ans
+  ys
 end // end of [list_filter_cloref]
 
 (* ****** ****** *)
 
 implement{a}
-list_find_funenv {v} {vt} {p:eff} (pf | xs, p, env) = let
+list_find_funenv
+  {v} {vt} {p:eff} (pf | xs, p, env) = let
   fun loop {n:nat} .<n>. (
-      pf: !v
-    | xs: list (a, n), p: !(!v | a, !vt) -<fun,p> bool, env: !vt
-    ) :<p> Option_vt a =
+    pf: !v
+  | xs: list (a, n), p: !(!v | a, !vt) -<fun,p> bool, env: !vt
+  ) :<p> Option_vt a =
     case+ xs of
     | x :: xs => if p (pf | x, env) then Some_vt (x) else loop (pf | xs, p, env)
     | nil () => None_vt ()
@@ -680,44 +786,78 @@ in
 end // end of [list_find_funenv]
 
 implement{a}
-list_find_fun {p:eff} (xs, f) = let
-  val f = coerce (f) where { extern castfn
-    coerce (f: a -<p> bool):<> (!unit_v | a, !ptr) -<p> bool
+list_find_fun {p:eff} (xs, p) = let
+  val p = coerce (p) where { extern castfn
+    coerce (p: a -<p> bool):<> (!unit_v | a, !ptr) -<p> bool
   } // end of [where]
-  prval pf = unit_v ()
-  val ans = list_find_funenv<a> {..} {ptr} (pf | xs, f, null)
-  prval unit_v () = pf
+  prval pfu = unit_v ()
+  val res = list_find_funenv<a> {..} {ptr} (pfu | xs, p, null)
+  prval unit_v () = pfu
 in
-  ans
+  res
 end // end of [list_find_fun]
 
 implement{a}
+list_find_clo
+  {p:eff} (xs, p) = let
+  viewtypedef clo0_t = (a) -<clo,p> bool
+  viewtypedef clo1_t = (!unit_v | a) -<clo,p> bool
+  prval () = __assert(p) where {
+    extern prfun __assert (p: !clo0_t >> clo1_t): void
+  } // end of [val]
+  prval pfu = unit_v ()
+  val ys = list_find_vclo<a> {unit_v} (pfu | xs, p)
+  prval unit_v () = pfu
+  prval () = __assert(p) where {
+    extern prfun __assert (p: !clo1_t >> clo0_t): void
+  } // end of [val]
+in
+  ys
+end // end of [list_find_clo]
+implement{a}
 list_find_vclo
-  {v} {p:eff} (pf1 | xs, f) = let
+  {v} {p:eff} (pf1 | xs, p) = let
   typedef clo_t = (!v | a) -<clo,p> bool
-  stavar l_f: addr; val p_f: ptr l_f = &f
-  viewdef V = (v, clo_t @ l_f)
-  fn app (pf: !V | x: a, p_f: !ptr l_f):<p> bool = let
-    prval (pf1, pf2) = pf; val ans = !p_f (pf1 | x); prval () = pf := (pf1, pf2)
+  stavar lp: addr; val lp: ptr lp = &p
+  viewdef V = (v, clo_t @ lp)
+  fn app (pf: !V | x: a, lf: !ptr lp):<p> bool = let
+    prval (pf1, pf2) = pf; val ans = !lf (pf1 | x); prval () = pf := (pf1, pf2)
   in
     ans
   end // end of [app]
-  prval pf = (pf1, view@ f)
-  val ans = list_find_funenv<a> {V} {ptr l_f} (pf | xs, app, p_f)
+  prval pf = (pf1, view@ p)
+  val res = list_find_funenv<a> {V} {ptr lp} (pf | xs, app, lp)
   prval () = pf1 := pf.0
-  prval () = view@ f := pf.1
+  prval () = view@ p := pf.1
 in
-  ans
+  res
 end // end of [list_find_vclo]
 
+implement{a}
+list_find_cloptr
+  {p:eff} (xs, p) = let
+  viewtypedef cloptr0_t = (a) -<cloptr,p> bool
+  viewtypedef cloptr1_t = (!unit_v | a) -<cloptr,p> bool
+  prval () = __assert(p) where {
+    extern prfun __assert (p: !cloptr0_t >> cloptr1_t): void
+  } // end of [val]
+  prval pfu = unit_v ()
+  val ys = list_find_vcloptr<a> {unit_v} (pfu | xs, p)
+  prval unit_v () = pfu
+  prval () = __assert(p) where {
+    extern prfun __assert (p: !cloptr1_t >> cloptr0_t): void
+  } // end of [val]
+in
+  ys
+end // end of [list_find_cloptr]
 implement{a}
 list_find_vcloptr
   {v} {p:eff} (pf | xs, p) = let
   viewtypedef cloptr_t = (!v | a) -<cloptr,p> bool
   fn app (pf: !v | x: a, p: !cloptr_t):<p> bool = p (pf | x)
-  val ans = list_find_funenv<a> {v} {cloptr_t} (pf | xs, app, p)
+  val res = list_find_funenv<a> {v} {cloptr_t} (pf | xs, app, p)
 in
-  ans
+  res
 end // end of [list_find_vcloptr]
 
 implement{a}
@@ -725,16 +865,18 @@ list_find_cloref {p:eff} (xs, p) = let
   typedef cloref_t = a -<cloref,p> bool
   fn app (pf: !unit_v | x: a, p: !cloref_t):<p> bool = p (x)
   prval pf = unit_v ()
-  val ans = list_find_funenv<a> {unit_v} {cloref_t} (pf | xs, app, p)
+  val res = list_find_funenv<a> {unit_v} {cloref_t} (pf | xs, app, p)
   prval unit_v () = pf
 in
-  ans
+  res
 end // end of [list_find_cloref]
 
 (* ****** ****** *)
 
 (*
+//
 // HX: this one does not work out
+//
 macrodef list_fold_left_mac (list_fold_left, f, res, xs) = `(
   case+ ,(xs) of
   | x :: xs => ,(list_fold_left) (,(f), ,(f) (,(res), x), xs)
@@ -746,11 +888,11 @@ implement{init}{a}
 list_fold_left_funenv
   {v} {vt} {f:eff} (pf | f, res, xs, env) = let
   fun loop {n:nat} .<n>. (
-      pf: !v
-    | f: (!v | init, a, !vt) -<fun,f> init
-    , res: init
-    , xs: list (a, n)
-    , env: !vt
+    pf: !v
+  | f: (!v | init, a, !vt) -<fun,f> init
+  , res: init
+  , xs: list (a, n)
+  , env: !vt
   ) :<f> init = case+ xs of
     | x :: xs => let
         val res = f (pf | res, x, env) in loop (pf | f, res, xs, env)
@@ -774,24 +916,58 @@ in
 end // end of [list_fold_left_fun]
 
 implement{init}{a}
+list_fold_left_clo
+  {f:eff} (f, res, xs) = let
+  viewtypedef clo0_t = (init, a) -<clo,f> init
+  viewtypedef clo1_t = (!unit_v | init, a) -<clo,f> init
+  prval () = __assert(f) where {
+    extern prfun __assert (f: !clo0_t >> clo1_t): void
+  } // end of [val]
+  prval pfu = unit_v ()
+  val res = list_fold_left_vclo<init><a> {unit_v} (pfu | f, res, xs)
+  prval unit_v () = pfu
+  prval () = __assert(f) where {
+    extern prfun __assert (f: !clo1_t >> clo0_t): void
+  } // end of [val]
+in
+  res
+end // end of [list_fold_left_clo]
+implement{init}{a}
 list_fold_left_vclo
   {v:view} {f:eff} (pf1 | f, res, xs) = let
   viewtypedef clo_t = (!v | init, a) -<clo,f> init
-  stavar l_f: addr; val p_f: ptr l_f = &f
-  viewdef V = (v, clo_t @ l_f)
-  fn app (pf: !V | res: init, x: a, p_f: !ptr l_f):<f> init = let
-    prval (pf1, pf2) = pf; val ans = !p_f (pf1 | res, x); prval () = pf := (pf1, pf2)
+  stavar lf: addr; val lf: ptr lf = &f
+  viewdef V = (v, clo_t @ lf)
+  fn app (pf: !V | res: init, x: a, lf: !ptr lf):<f> init = let
+    prval (pf1, pf2) = pf; val ans = !lf (pf1 | res, x); prval () = pf := (pf1, pf2)
   in
     ans
   end // end of [app]
   prval pf = (pf1, view@ f)
-  val ans = list_fold_left_funenv<init><a> {V} {ptr l_f} (pf | app, res, xs, p_f)
+  val res = list_fold_left_funenv<init><a> {V} {ptr lf} (pf | app, res, xs, lf)
   prval () = pf1 := pf.0
   prval () = view@ f := pf.1
 in
-  ans
+  res
 end // end of [list_fold_left_vclo]
 
+implement{init}{a}
+list_fold_left_cloptr
+  {f:eff} (f, res, xs) = let
+  viewtypedef cloptr0_t = (init, a) -<cloptr,f> init
+  viewtypedef cloptr1_t = (!unit_v | init, a) -<cloptr,f> init
+  prval () = __assert(f) where {
+    extern prfun __assert (f: !cloptr0_t >> cloptr1_t): void
+  } // end of [val]
+  prval pfu = unit_v ()
+  val res = list_fold_left_vcloptr<init><a> {unit_v} (pfu | f, res, xs)
+  prval unit_v () = pfu
+  prval () = __assert(f) where {
+    extern prfun __assert (f: !cloptr1_t >> cloptr0_t): void
+  } // end of [val]
+in
+  res
+end // end of [list_fold_left_cloptr]
 implement{init}{a}
 list_fold_left_vcloptr
   {v:view} {f:eff} (pf | f, res, xs) = let
@@ -894,24 +1070,58 @@ in
 end // end of [list_fold_right_fun]
 
 implement{a}{sink}
+list_fold_right_clo
+  {f:eff} (f, res, xs) = let
+  viewtypedef clo0_t = (a, sink) -<clo,f> sink
+  viewtypedef clo1_t = (!unit_v | a, sink) -<clo,f> sink
+  prval () = __assert(f) where {
+    extern prfun __assert (f: !clo0_t >> clo1_t): void
+  } // end of [val]
+  prval pfu = unit_v ()
+  val res = list_fold_right_vclo<a><sink> {unit_v} (pfu | f, res, xs)
+  prval unit_v () = pfu
+  prval () = __assert(f) where {
+    extern prfun __assert (f: !clo1_t >> clo0_t): void
+  } // end of [val]
+in
+  res
+end // end of [list_fold_right_clo]
+implement{a}{sink}
 list_fold_right_vclo
   {v:view} {f:eff} (pf1 | f, xs, res) = let
   viewtypedef clo_t = (!v | a, sink) -<clo,f> sink
-  stavar l_f: addr; val p_f: ptr l_f = &f
-  viewdef V = (v, clo_t @ l_f)
-  fn app (pf: !V | x: a, res: sink, p_f: !ptr l_f):<f> sink = let
-    prval (pf1, pf2) = pf; val ans = !p_f (pf1 | x, res); prval () = pf := (pf1, pf2)
+  stavar lf: addr; val lf: ptr lf = &f
+  viewdef V = (v, clo_t @ lf)
+  fn app (pf: !V | x: a, res: sink, lf: !ptr lf):<f> sink = let
+    prval (pf1, pf2) = pf; val ans = !lf (pf1 | x, res); prval () = pf := (pf1, pf2)
   in
     ans
   end // end of [app]
   prval pf = (pf1, view@ f)
-  val ans = list_fold_right_funenv<a><sink> {V} {ptr l_f} (pf | app, xs, res, p_f)
+  val ans = list_fold_right_funenv<a><sink> {V} {ptr lf} (pf | app, xs, res, lf)
   prval () = pf1 := pf.0
   prval () = view@ f := pf.1
 in
   ans
 end // end of [list_fold_right_vclo]
 
+implement{a}{sink}
+list_fold_right_cloptr
+  {f:eff} (f, res, xs) = let
+  viewtypedef cloptr0_t = (a, sink) -<cloptr,f> sink
+  viewtypedef cloptr1_t = (!unit_v | a, sink) -<cloptr,f> sink
+  prval () = __assert(f) where {
+    extern prfun __assert (f: !cloptr0_t >> cloptr1_t): void
+  } // end of [val]
+  prval pfu = unit_v ()
+  val res = list_fold_right_vcloptr<a><sink> {unit_v} (pfu | f, res, xs)
+  prval unit_v () = pfu
+  prval () = __assert(f) where {
+    extern prfun __assert (f: !cloptr1_t >> cloptr0_t): void
+  } // end of [val]
+in
+  res
+end // end of [list_fold_right_cloptr]
 implement{a}{sink}
 list_fold_right_vcloptr
   {v:view} {f:eff} (pf | f, xs, res) = let
@@ -960,7 +1170,8 @@ end // end of [list_fold2_right_funenv]
 (* ****** ****** *)
 
 implement{a}
-list_forall_funenv {v} {vt} {p:eff} (pf | xs, p, env) = let
+list_forall_funenv
+  {v} {vt} {p:eff} (pf | xs, p, env) = let
   fun loop {n:nat} .<n>. (
       pf: !v
     | xs: list (a, n)
@@ -990,21 +1201,21 @@ end // end of [list_forall_fun]
 
 implement{a}
 list_forall_vclo
-  {v} {p:eff} (pf1 | xs, f) = let
+  {v} {p:eff} (pf1 | xs, p) = let
   typedef clo_t = (!v | a) -<clo,p> bool
-  stavar l_f: addr; val p_f: ptr l_f = &f
-  viewdef V = (v, clo_t @ l_f)
-  fn app (pf: !V | x: a, p_f: !ptr l_f):<p> bool = let
+  stavar lp: addr; val lp: ptr lp = &p
+  viewdef V = (v, clo_t @ lp)
+  fn app (pf: !V | x: a, lp: !ptr lp):<p> bool = let
     prval (pf1, pf2) = pf
-    val ans = !p_f (pf1 | x)
+    val ans = !lp (pf1 | x)
     prval () = pf := (pf1, pf2)
   in
     ans
   end // end of [app]
-  prval pf = (pf1, view@ f)
-  val ans = list_forall_funenv<a> {V} {ptr l_f} (pf | xs, app, p_f)
+  prval pf = (pf1, view@ p)
+  val ans = list_forall_funenv<a> {V} {ptr lp} (pf | xs, app, lp)
   prval () = pf1 := pf.0
-  prval () = view@ f := pf.1
+  prval () = view@ p := pf.1
 in
   ans
 end // end of [list_forall_vclo]
@@ -1067,19 +1278,19 @@ end // end of [list_forall2_fun]
 
 implement{a1,a2}
 list_forall2_vclo
-  {v} {n} {p:eff} (pf1 | xs1, xs2, f) = let
+  {v} {n} {p:eff} (pf1 | xs1, xs2, p) = let
   typedef clo_t = (!v | a1, a2) -<clo,p> bool
-  stavar l_f: addr; val p_f: ptr l_f = &f
-  viewdef V = (v, clo_t @ l_f)
-  fn app (pf: !V | x1: a1, x2: a2, p_f: !ptr l_f):<p> bool = let
-    prval (pf1, pf2) = pf; val ans = !p_f (pf1 | x1, x2); prval () = pf := (pf1, pf2)
+  stavar lp: addr; val lp: ptr lp = &p
+  viewdef V = (v, clo_t @ lp)
+  fn app (pf: !V | x1: a1, x2: a2, lp: !ptr lp):<p> bool = let
+    prval (pf1, pf2) = pf; val ans = !lp (pf1 | x1, x2); prval () = pf := (pf1, pf2)
   in
     ans
   end // end of [app]
-  prval pf = (pf1, view@ f)
-  val ans = list_forall2_funenv<a1,a2> {V} {ptr l_f} (pf | xs1, xs2, app, p_f)
+  prval pf = (pf1, view@ p)
+  val ans = list_forall2_funenv<a1,a2> {V} {ptr lp} (pf | xs1, xs2, app, lp)
   prval () = pf1 := pf.0
-  prval () = view@ f := pf.1
+  prval () = view@ p := pf.1
 in
   ans
 end // end of [list_forall2_vclo]
@@ -1136,17 +1347,18 @@ in
 end // end of [list_foreach_fun]
 
 implement{a}
-list_foreach_vclo {v} {f:eff} (pf1 | xs, f) = let
+list_foreach_vclo
+  {v} {f:eff} (pf1 | xs, f) = let
   typedef clo_t = (!v | a) -<clo,f> void
-  stavar l_f: addr; val p_f: ptr l_f = &f
-  viewdef V = (v, clo_t @ l_f)
-  fn app (pf: !V | x: a, p_f: !ptr l_f):<f> void = () where {
+  stavar lf: addr; val lf: ptr lf = &f
+  viewdef V = (v, clo_t @ lf)
+  fn app (pf: !V | x: a, lf: !ptr lf):<f> void = () where {
     prval (pf1, pf2) = pf
-    val () = !p_f (pf1 | x)
+    val () = !lf (pf1 | x)
     prval () = pf := (pf1, pf2)
   } // end of [val]
   prval pf = (pf1, view@ f)
-  val ans = list_foreach_funenv<a> {V} {ptr l_f} (pf | xs, app, p_f)
+  val ans = list_foreach_funenv<a> {V} {ptr lf} (pf | xs, app, lf)
   prval () = pf1 := pf.0 and () = view@ f := pf.1
 in
   ans
@@ -1212,15 +1424,15 @@ implement{a1,a2}
 list_foreach2_vclo
   {v} {n} {f:eff} (pf1 | xs1, xs2, f) = let
   typedef clo_t = (!v | a1, a2) -<clo,f> void
-  stavar l_f: addr; val p_f: ptr l_f = &f
-  viewdef V = (v, clo_t @ l_f)
-  fn app (pf: !V | x1: a1, x2: a2, p_f: !ptr l_f):<f> void = () where {
+  stavar lf: addr; val lf: ptr lf = &f
+  viewdef V = (v, clo_t @ lf)
+  fn app (pf: !V | x1: a1, x2: a2, lf: !ptr lf):<f> void = () where {
     prval (pf1, pf2) = pf
-    val () = !p_f (pf1 | x1, x2)
+    val () = !lf (pf1 | x1, x2)
     prval () = pf := (pf1, pf2)
   } // end of [val]
   prval pf = (pf1, view@ f)
-  val () = list_foreach2_funenv<a1,a2> {V} {ptr l_f} (pf | xs1, xs2, app, p_f)
+  val () = list_foreach2_funenv<a1,a2> {V} {ptr lf} (pf | xs1, xs2, app, lf)
   prval () = pf1 := pf.0 and () = view@ f := pf.1
 in
   // empty
@@ -1290,15 +1502,15 @@ end // end of [list_iforeach_fun]
 implement{a}
 list_iforeach_vclo {v} {n} {f:eff} (pf1 | xs, f) = let
   typedef clo_t = (!v | natLt n, a) -<clo,f> void
-  stavar l_f: addr; val p_f: ptr l_f = &f
-  viewdef V = (v, clo_t @ l_f)
-  fn app (pf: !V | i: natLt n, x: a, p_f: !ptr l_f):<f> void = () where {
+  stavar lf: addr; val lf: ptr lf = &f
+  viewdef V = (v, clo_t @ lf)
+  fn app (pf: !V | i: natLt n, x: a, lf: !ptr lf):<f> void = () where {
     prval (pf1, pf2) = pf
-    val () = !p_f (pf1 | i, x)
+    val () = !lf (pf1 | i, x)
     prval () = pf := (pf1, pf2)
   } // end of [val]
   prval pf = (pf1, view@ f)
-  val () = list_iforeach_funenv<a> {V} {ptr l_f} (pf | xs, app, p_f)
+  val () = list_iforeach_funenv<a> {V} {ptr lf} (pf | xs, app, lf)
   prval () = pf1 := pf.0 and () = view@ f := pf.1
 in
   // empty
@@ -1365,15 +1577,15 @@ implement{a1,a2}
 list_iforeach2_vclo
   {v} {n} {f:eff} (pf1 | xs1, xs2, f) = let
   typedef clo_t = (!v | natLt n, a1, a2) -<clo,f> void
-  stavar l_f: addr; val p_f: ptr l_f = &f
-  viewdef V = (v, clo_t @ l_f)
-  fn app (pf: !V | i: natLt n, x1: a1, x2: a2, p_f: !ptr l_f):<f> void = () where {
+  stavar lf: addr; val lf: ptr lf = &f
+  viewdef V = (v, clo_t @ lf)
+  fn app (pf: !V | i: natLt n, x1: a1, x2: a2, lf: !ptr lf):<f> void = () where {
     prval (pf1, pf2) = pf
-    val () = !p_f (pf1 | i, x1, x2)
+    val () = !lf (pf1 | i, x1, x2)
     prval () = pf := (pf1, pf2)
   } // end of [val]
   prval pf = (pf1, view@ f)
-  val ans = list_iforeach2_funenv<a1,a2> {V} {ptr l_f} (pf | xs1, xs2, app, p_f)
+  val ans = list_iforeach2_funenv<a1,a2> {V} {ptr lf} (pf | xs1, xs2, app, lf)
   prval () = pf1 := pf.0 and () = view@ f := pf.1
 in
   ans
@@ -1555,26 +1767,60 @@ in
 end // end of [list_map_fun]
 
 implement{a}{b}
+list_map_clo
+  {n:int} {f:eff} (xs, f) = let
+  viewtypedef clo0_t = (a) -<clo,f> b
+  viewtypedef clo1_t = (!unit_v | a) -<clo,f> b
+  prval () = __assert(f) where {
+    extern prfun __assert (f: !clo0_t >> clo1_t): void
+  } // end of [val]
+  prval pfu = unit_v ()
+  val ys = list_map_vclo<a> {unit_v} (pfu | xs, f)
+  prval unit_v () = pfu
+  prval () = __assert(f) where {
+    extern prfun __assert (f: !clo1_t >> clo0_t): void
+  } // end of [val]
+in
+  ys
+end // end of [list_map_clo]
+implement{a}{b}
 list_map_vclo
   {v} {n:int} {f:eff} (pf1 | xs, f) = let
   viewtypedef clo_t = (!v | a) -<clo,f> b
-  stavar l_f: addr; val p_f: ptr l_f = &f
-  viewdef V = (v, clo_t @ l_f)
-  fn app (pf: !V | x: a, p_f: !ptr l_f):<f> b = let
+  stavar lf: addr; val lf: ptr lf = &f
+  viewdef V = (v, clo_t @ lf)
+  fn app (pf: !V | x: a, lf: !ptr lf):<f> b = let
     prval (pf1, pf2) = pf
-    val ans = !p_f (pf1 | x)
+    val ans = !lf (pf1 | x)
     prval () = pf := (pf1, pf2)
   in
     ans
   end // end of [app]
   prval pf = (pf1, view@ f)
-  val ys = list_map_funenv<a><b> {V} {ptr l_f} (pf | xs, app, p_f)
+  val ys = list_map_funenv<a><b> {V} {ptr lf} (pf | xs, app, lf)
   prval () = pf1 := pf.0
   prval () = view@ f := pf.1
 in
   ys
 end // end of [list_map_vclo]
 
+implement{a}{b}
+list_map_cloptr
+  {n:int} {f:eff} (xs, f) = let
+  viewtypedef cloptr0_t = (a) -<cloptr,f> b
+  viewtypedef cloptr1_t = (!unit_v | a) -<cloptr,f> b
+  prval () = __assert(f) where {
+    extern prfun __assert (f: !cloptr0_t >> cloptr1_t): void
+  } // end of [val]
+  prval pfu = unit_v ()
+  val ys = list_map_vcloptr<a> {unit_v} (pfu | xs, f)
+  prval unit_v () = pfu
+  prval () = __assert(f) where {
+    extern prfun __assert (f: !cloptr1_t >> cloptr0_t): void
+  } // end of [val]
+in
+  ys
+end // end of [list_map_cloptr]
 implement{a}{b}
 list_map_vcloptr
   {v} {n:int} {f:eff} (pf | xs, f) = let
@@ -1636,26 +1882,60 @@ in
 end // end of [list_map2_fun]
 
 implement{a1,a2}{b}
+list_map2_clo
+  {n} {f:eff} (xs1, xs2, f) = let
+  viewtypedef clo0_t = (a1, a2) -<clo,f> b
+  viewtypedef clo1_t = (!unit_v | a1, a2) -<clo,f> b
+  prval () = __assert(f) where {
+    extern prfun __assert (f: !clo0_t >> clo1_t): void
+  } // end of [val]
+  prval pfu = unit_v ()
+  val ys = list_map2_vclo<a1,a2> {unit_v} (pfu | xs1, xs2, f)
+  prval unit_v () = pfu
+  prval () = __assert(f) where {
+    extern prfun __assert (f: !clo1_t >> clo0_t): void
+  } // end of [val]
+in
+  ys
+end // end of [list_map2_clo]
+implement{a1,a2}{b}
 list_map2_vclo
   {v} {n} {f:eff} (pf1 | xs1, xs2, f) = let
   typedef clo_t = (!v | a1, a2) -<clo,f> b
-  stavar l_f: addr; val p_f: ptr l_f = &f
-  viewdef V = (v, clo_t @ l_f)
-  fn app (pf: !V | x1: a1, x2: a2, p_f: !ptr l_f):<f> b = let
+  stavar lf: addr; val lf: ptr lf = &f
+  viewdef V = (v, clo_t @ lf)
+  fn app (pf: !V | x1: a1, x2: a2, lf: !ptr lf):<f> b = let
     prval (pf1, pf2) = pf
-    val ans = !p_f (pf1 | x1, x2)
+    val ans = !lf (pf1 | x1, x2)
     prval () = pf := (pf1, pf2)
   in
     ans
   end // end of [app]
   prval pf = (pf1, view@ f)
-  val ans = list_map2_funenv<a1,a2><b> {V} {ptr l_f} (pf | xs1, xs2, app, p_f)
+  val ans = list_map2_funenv<a1,a2><b> {V} {ptr lf} (pf | xs1, xs2, app, lf)
   prval () = pf1 := pf.0
   prval () = view@ f := pf.1
 in
   ans
 end // end of [list_map2_vclo]
 
+implement{a1,a2}{b}
+list_map2_cloptr
+  {n} {f:eff} (xs1, xs2, f) = let
+  viewtypedef cloptr0_t = (a1, a2) -<cloptr,f> b
+  viewtypedef cloptr1_t = (!unit_v | a1, a2) -<cloptr,f> b
+  prval () = __assert(f) where {
+    extern prfun __assert (f: !cloptr0_t >> cloptr1_t): void
+  } // end of [val]
+  prval pfu = unit_v ()
+  val ys = list_map2_vcloptr<a1,a2> {unit_v} (pfu | xs1, xs2, f)
+  prval unit_v () = pfu
+  prval () = __assert(f) where {
+    extern prfun __assert (f: !cloptr1_t >> cloptr0_t): void
+  } // end of [val]
+in
+  ys
+end // end of [list_map2_cloptr]
 implement{a1,a2}{b}
 list_map2_vcloptr
   {v} {n} {f:eff}

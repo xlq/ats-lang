@@ -106,14 +106,14 @@ install:: config.h
 	do \
 	  [ -f "$$f" ] || continue; \
 	  cd $(abs_top_srcdir) && \
-	  $(INSTALL) -m 644 -D "$$f" $(DESTDIR)$(ATSNEWHOME)/"$$f" && \
+	  $(INSTALL) -m 644 "$$f" $(DESTDIR)$(ATSNEWHOME)/"$$f" && \
 	  echo "$$f"; \
 	done
 
 	# install specific files in the list as executables.
 	for f in bin/*; do \
 	  cd $(abs_top_srcdir) && \
-	  $(INSTALL) -m 755 -D "$$f" $(DESTDIR)$(ATSNEWHOME)/"$$f" && \
+	  $(INSTALL) -m 755 "$$f" $(DESTDIR)$(ATSNEWHOME)/"$$f" && \
 	  echo "$$f"; \
 	done
 #
@@ -122,7 +122,7 @@ install:: config.h
 	for f in bin/*; do \
 	  b=`basename "$$f"`; \
 	  cd $(abs_top_srcdir) && \
-	  $(INSTALL) -m 755 -D ats_env.sh $(DESTDIR)$(bindir)/"$$b" && \
+	  $(INSTALL) -m 755 ats_env.sh $(DESTDIR)$(bindir)/"$$b" && \
 	  echo install ats_env.sh to $(bindir)/"$$b"; \
 	done
 

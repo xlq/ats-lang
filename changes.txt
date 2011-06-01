@@ -16,6 +16,8 @@ ats-lang-anairiats-0.2.5:
 9. The original *_clo and *_cloptr functions are renamed as *_vclo and
    *_vcloptr respectively, and the new *_clo and *_cloptr functions no
    longer require a (linear) proof argument.
+10. [gc_stack_get_dir] is re-written to fix a bug triggered due to a form
+    of over-optimization by gcc-4.6: a volatile function may get inlined.
 
 ########################################################################
 
