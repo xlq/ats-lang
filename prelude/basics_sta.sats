@@ -161,7 +161,7 @@ abst@ype empty_t0ype = $extype"ats_empty_type" // sizeof(empty) = 0
 // HX-2011-02-11: [ats_undefined_type] is undefined
 //
 abst@ype undefined_t0ype = $extype"ats_undefined_type"
-abst@ype undefined_viewt0ype = $extype"ats_undefined_type"
+absviewt@ype undefined_viewt0ype = $extype"ats_undefined_type"
 //
 (* ****** ****** *)
 //
