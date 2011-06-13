@@ -115,6 +115,10 @@ extern
 fun extnam_issta
   (ext: string, ext_new: &string): bool = "atsopt_extnam_issta"
 // end of [extnam_issta]
+extern
+fun extnam_isext
+  (ext: string, ext_new: &string): bool = "atsopt_extnam_isext"
+// end of [extnam_isext]
 
 fn dcstextdef_tr
   (ext: Stropt): dcstextdef =
@@ -132,6 +136,8 @@ fn dcstextdef_tr
         (ext, ext_new) => DCSTEXTDEFsome_mac ext_new
     | _ when extnam_issta
         (ext, ext_new) => DCSTEXTDEFsome_sta ext_new
+    | _ when extnam_isext
+        (ext, ext_new) => DCSTEXTDEFsome_ext ext_new
     | _ => DCSTEXTDEFsome_ext ext_new
   end // end of [if]
 // end of [dcstextdef_tr]

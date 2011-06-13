@@ -47,7 +47,7 @@ in
   else () // end of [if]
 end // end of [catloop]
 
-(* ****** ****** *)
+;(* ****** ****** *)
 
 %{^
 typedef struct {

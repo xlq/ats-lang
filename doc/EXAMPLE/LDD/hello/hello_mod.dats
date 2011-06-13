@@ -18,12 +18,12 @@ staload "hello_mod.sats"
 
 (* ****** ****** *)
 
-staload "linux/SATS/kernel.sats"
+staload "contrib/linux/linux/SATS/kernel.sats"
 
 (* ****** ****** *)
 
-staload "linux/SATS/init.sats"
-staload "linux/SATS/module.sats"
+staload "contrib/linux/linux/SATS/init.sats"
+staload "contrib/linux/linux/SATS/module.sats"
 
 (* ****** ****** *)
 
@@ -45,8 +45,19 @@ module_exit (hello_exit) ;
 
 (* ****** ****** *)
 
+// #define MYDEBUG 0
+
+#ifdef MYDEBUG
+macdef printkloc (flag, msg) =
+  printk (,(flag) "%s:%s", @(#LOCATION, ,(msg)))
+#else
+macdef printkloc (flag, msg) = ()
+#endif
+
+(* ****** ****** *)
+
 implement hello_init () = let
-  val () = printk (KERN_INFO "Hello, world\n", @()) in 0
+  val () = printkloc (KERN_INFO, "Hello, world\n") in 0
 end // end of [hello_init]
 
 implement hello_exit () = let

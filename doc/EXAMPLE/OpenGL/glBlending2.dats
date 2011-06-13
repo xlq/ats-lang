@@ -78,15 +78,15 @@ in
 
 extern fun glLightfv {n:nat} {l:addr}
   (pf: !array_v (GLfloat, n, l) | light: GLenum, pname: GLenum, p: ptr l): void
-  = "#atsctrb_glLightfv"
+  = "mac#atsctrb_glLightfv"
 
 extern fun glLightModelfv {n:nat} {l:addr}
   (pf: !array_v (GLfloat, n, l) | pname: GLenum, params: ptr l): void
-  = "#atsctrb_glLightModelfv"
+  = "mac#atsctrb_glLightModelfv"
 
 extern fun glMaterialfv {n:nat} {l:addr}
   (pf: !array_v (GLfloat, n, l) | face: GLenum, pname: GLenum, params: ptr l): void
-  = "#atsctrb_glMaterialfv"
+  = "mac#atsctrb_glMaterialfv"
 
 end // end of [local]
 

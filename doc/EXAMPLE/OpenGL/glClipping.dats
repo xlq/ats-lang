@@ -40,7 +40,7 @@ implement display () = let
 //
   extern fun glClipPlane {l:addr}
     (pf: !array_v (double, 4, l) | plane: GLenum, eqn: ptr l): void
-    = "#atsctrb_glClipPlane"
+    = "mac#atsctrb_glClipPlane"
 //
   val () = glRotated (315.0, 1.0, 0.0, 0.0)
   val () = glRotated (45.0, 0.0, 1.0, 0.0)

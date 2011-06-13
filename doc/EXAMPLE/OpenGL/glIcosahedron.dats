@@ -66,7 +66,7 @@ end
 extern
 fun add_float_3_float_3 (
   v1: & @[float][3], v2: & @[float][3]
-) : [l:addr] (free_gc_v (float?, 3, l), float_3_v l | ptr l)
+) : [l:addr] (free_gc_v (float, 3, l), float_3_v l | ptr l)
   = "add_float_3_float_3"
 overload + with add_float_3_float_3
 
@@ -90,9 +90,9 @@ fn drawTriangle {l1,l2,l3:addr} (
 ) : void = let
 //
   extern fun glNormal3fv {l:addr}
-    (pf: !float_3_v l | p: ptr l): void = "#atsctrb_glNormal3fv"
+    (pf: !float_3_v l | p: ptr l): void = "mac#atsctrb_glNormal3fv"
   extern fun glVertex3fv {l:addr}
-    (pf: !float_3_v l | p: ptr l): void = "#atsctrb_glVertex3fv"
+    (pf: !float_3_v l | p: ptr l): void = "mac#atsctrb_glVertex3fv"
 //
   val (pf | ()) = glBegin (GL_TRIANGLES)
   val () = glNormal3fv (pf1 | p1)
@@ -130,9 +130,9 @@ subdivide (
     val () = subdivide (pf2, pf23, pf12 | p2, p23, p12, n-1)
     val () = subdivide (pf3, pf31, pf23 | p3, p31, p23, n-1)
     val () = subdivide (pf12, pf23, pf31 | p12, p23, p31, n-1)
-    val () = array_ptr_free {float} (pf12_gc, pf12 | p12)
-    val () = array_ptr_free {float} (pf23_gc, pf23 | p23)
-    val () = array_ptr_free {float} (pf31_gc, pf31 | p31)
+    val () = array_ptr_free (pf12_gc, pf12 | p12)
+    val () = array_ptr_free (pf23_gc, pf23 | p23)
+    val () = array_ptr_free (pf31_gc, pf31 | p31)
   in
     // empty
   end else begin
@@ -215,9 +215,9 @@ implement display () = let
   val (pf | ()) = glBegin (GL_TRIANGLES)
   val () = loop (0) where {
     extern fun glNormal3fv (A: array (float, 3)): void
-      = "#atsctrb_glNormal3fv"
+      = "mac#atsctrb_glNormal3fv"
     extern fun glVertex3fv (A: array (float, 3)): void
-      = "#atsctrb_glVertex3fv"
+      = "mac#atsctrb_glVertex3fv"
     extern fun subdivide {n:nat} (
       A1: array (float, 3), A2: array (float, 3), A3: array (float, 3), n: int n
     ) : void = "subdivide"

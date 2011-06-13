@@ -53,7 +53,7 @@ implement display () = let
   val () = glRotated (double_of !spin, 0.0, 1.0, 0.0)
   extern fun glLightfv {n:nat} {l:addr}
     (pf: !array_v (float, n, l) | light: GLenum, pname: GLenum, p: ptr l): void
-  = "#atsctrb_glLightfv"
+  = "mac#atsctrb_glLightfv"
   val () = glLightfv (pf_pos | GL_LIGHT0, GL_POSITION, p_pos)
   val () = glTranslated (x_pos, y_pos, z_pos)
   val () = glDisable (GL_LIGHTING)
