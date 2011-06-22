@@ -1150,7 +1150,7 @@ MAIN () =
   | "@(" { process_keyword (); ATLPAREN }
   | "@[" { process_keyword (); ATLBRACKET }
   | "@{" { process_keyword (); ATLBRACE }
-  | "#{" { process_keyword (); HASHLPAREN }
+  | "#(" { process_keyword (); HASHLPAREN }
   | "#[" { process_keyword (); HASHLBRACKET }
   | "#{" { process_keyword (); HASHLBRACE }
   | "," { process_keyword (); COMMA }

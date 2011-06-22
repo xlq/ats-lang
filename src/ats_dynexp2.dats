@@ -1230,13 +1230,13 @@ v2ardec_make (
 implement
 i2mpdec_make (
   loc, loc_id
-, d2c, s2vpss, s2es, s2ps, def
+, d2c, s2vpss, s2ess, s2pss, def
 ) = '{
   i2mpdec_loc= loc
 , i2mpdec_loc_id= loc_id
 , i2mpdec_cst= d2c
 , i2mpdec_decarg= s2vpss
-, i2mpdec_tmparg= s2es, i2mpdec_tmpgua= s2ps
+, i2mpdec_tmparg= s2ess, i2mpdec_tmpgua= s2pss
 , i2mpdec_def= def
 } // end of [i2mpdec_make]
 

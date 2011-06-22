@@ -517,8 +517,9 @@ end (* end of [s1explst_bind_svarlst] *)
 // HX: [s2e0] is assumed to be in WHNF
 //
 fun d1exp_tr_ann (
-    d1e0: d1exp, s2e0: s2exp
-  ) : d2exp = begin case+ s2e0.s2exp_node of
+  d1e0: d1exp, s2e0: s2exp
+) : d2exp = begin
+  case+ s2e0.s2exp_node of
   | S2Euni (s2vs, s2ps, s2e) => begin
     case+ d1e0.d1exp_node of
     | D1Elam_sta_ana (loc_arg, arg, body) => let
@@ -526,15 +527,11 @@ fun d1exp_tr_ann (
         val s2vs = s1arglst_bind_svarlst
           (loc_arg, arg, s2vs, sub) // end of [val]
         val (pf_s2expenv | ()) = the_s2expenv_push ()
-        val () =
-          the_s2expenv_add_svarlst (s2vs)
-        // end of [val]
+        val () = the_s2expenv_add_svarlst (s2vs)
         val s2ps = s2explst_subst (sub, s2ps)
         val s2e = s2exp_subst (sub, s2e)
         val body = d1exp_tr_ann (body, s2e)
-        val () =
-          the_s2expenv_pop (pf_s2expenv | (*none*))
-        // end of [val]
+        val () = the_s2expenv_pop (pf_s2expenv | (*none*))
       in
         d2exp_lam_sta (d1e0.d1exp_loc, s2vs, s2ps, body)
       end // end of [D1Elam_sta_ana]
@@ -611,7 +608,7 @@ and d1exp_arg_body_tr_ann (
   ) : p2atlst
   val () = if npf1 <> npf2 then begin // check for pfarity match
     prerr_loc_error2 d1e0.d1exp_loc;
-    $Deb.debug_prerrf (": %s: d1exp_tr_ann", @(THISFILENAME));
+    $Deb.debug_prerrf (": %s: d1exp_arg_body_tr_ann", @(THISFILENAME));
     if npf1 < npf2 then prerr ": less proof arguments are expected.";
     if npf1 > npf2 then prerr ": more proof arguments are expected.";
     prerr_newline ();
@@ -632,7 +629,7 @@ and d1exp_arg_body_tr_ann (
   in
     if ns2es <> np2ts then begin
       prerr_loc_error2 d1e0.d1exp_loc;
-      $Deb.debug_prerrf (": %s: d1exp_tr_ann", @(THISFILENAME));
+      $Deb.debug_prerrf (": %s: d1exp_arg_body_tr_ann", @(THISFILENAME));
       if ns2es < np2ts then prerr ": less arguments are expected.";
       if ns2es > np2ts then prerr ": more arguments are expected.";
       prerr_newline ();
