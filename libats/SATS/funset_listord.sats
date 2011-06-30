@@ -33,7 +33,7 @@
 
 (*
 **
-** A functional map implementation based on AVL trees
+** A functional map implementation based on ordered lists
 **
 ** Contributed by Hongwei Xi (hwxi AT cs DOT bu DOT edu)
 ** Time: May 18, 2011
