@@ -2331,6 +2331,7 @@ val d3e0 = (case+ d2e0.d2exp_node of
     } // end of [D2Emacsyn]
   | D2Eptrof d2e =>  d2exp_ptrof_tr_up (loc0, d2e)
   | D2Eraise d2e_exn => let
+      val () = the_effect_env_check_exn (loc0)
       val s2e_exn = s2exp_exception_viewtype ()
       val d3e_exn = d2exp_tr_dn (d2e_exn, s2e_exn)
       val s2e_raise = s2exp_bottom_viewt0ype_uni ()

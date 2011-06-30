@@ -455,11 +455,11 @@ list_drop (xs, i) = loop (xs, i) where {
 implement{a}
 list_drop_exn (xs, i) = loop (xs, i) where {
   fun loop {n,i:nat} .<i>.
-    (xs: list (a, n), i: int i):<> [i <= n] list (a, n-i) =
+    (xs: list (a, n), i: int i):<!exn> [i <= n] list (a, n-i) =
     if i > 0 then begin case+ xs of
       | list_cons (_, xs) => loop (xs, i-1)
       | list_nil () => $raise ListSubscriptException ()
-    end else xs
+    end else xs // end of [if]
 } // end of [list_drop_exn]
 
 (* ****** ****** *)

@@ -179,7 +179,7 @@ end // end of [funarray_xch_at]
 implement{a}
 funarray_get_elt_at_exn
   (A, i) = get_at (A, i) where {
-  fun get_at {n,i:nat} .<n>. (t: bt (a, n), i: int i):<> a =
+  fun get_at {n,i:nat} .<n>. (t: bt (a, n), i: int i):<!exn> a =
     if i > 0 then let
       val i2 = i / 2 in
       if i > i2 + i2 then begin case+ t of

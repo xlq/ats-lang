@@ -671,7 +671,8 @@ in '{
 
 (* ****** ****** *)
 
-implement d3exp_raise (loc, s2e, d3e_exn) = let
+implement
+d3exp_raise (loc, s2e, d3e_exn) = let
   val s2fe = s2eff_union_eff (d3e_exn.d3exp_eff, $Eff.effect_exn)
 in '{
   d3exp_loc= loc
