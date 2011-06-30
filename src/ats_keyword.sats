@@ -42,8 +42,9 @@
 
 staload LEX = "ats_lexer.sats"
 
-fun keyword_search (name: string): Option ($LEX.token_t)
-  = "ats_keyword_search"
+fun keyword_search
+  (name: string): Option ($LEX.token_t) = "ats_keyword_search"
+// end of [keyword_search]
 
 (* ****** ****** *)
 

@@ -151,7 +151,8 @@ end // end of [mul_commute]
 implement
 mul_distribute (pf1, pf2) = let
   prfun aux
-    {m,n1,n2:int}
+    {m:int}
+    {n1,n2:int}
     {p1,p2:int}
     .<max(2*m, 2*(~m)+1)>.
     (pf1: MUL (m, n1, p1), pf2: MUL (m, n2, p2)): MUL (m, n1+n2, p1+p2) =

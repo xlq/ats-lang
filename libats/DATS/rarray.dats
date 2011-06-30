@@ -163,36 +163,26 @@ end // end of [rarray_ptr_foreach_funenv_tsz]
 (* ****** ****** *)
 
 implement{a}
-rarray_ptr_foreach_fun (pfarr | p, f, asz) =
-  rarray_ptr_foreach_fun_tsz {a} (pfarr | p, f, asz, sizeof<a>)
-// end of [implement]
-
-implement
-rarray_ptr_foreach_fun_tsz
-  {a} {v} {n} (pfarr | p, f, asz, tsz) = let
+rarray_ptr_foreach_fun
+  {v} {n} (pfarr | p, f, asz) = let
   viewtypedef fun0_t = (&a) -<fun> void
   viewtypedef fun1_t = (!unit_v | &a, !ptr) -<fun> void
   val f = __cast (f) where { extern castfn __cast (f: fun0_t):<> fun1_t }
 //
   prval pfu = unit_v ()
   val () = rarray_ptr_foreach_funenv_tsz
-    {a} {unit_v} {ptr} (pfu, pfarr | p, f, asz, tsz, null)
+    {a} {unit_v} {ptr} (pfu, pfarr | p, f, asz, sizeof<a>, null)
   prval unit_v () = pfu
 //
 in
   // nothing
-end // end of [rarray_ptr_foreach_fun_tsz]
+end // end of [rarray_ptr_foreach_fun]
 
 (* ****** ****** *)
 
 implement{a}
-rarray_ptr_foreach_clo (pf, pfarr | p, f, asz) =
-  rarray_ptr_foreach_clo_tsz {a} (pf, pfarr | p, f, asz, sizeof<a>)
-// end of [implement]
-
-implement
-rarray_ptr_foreach_clo_tsz
-  {a} {v} {n} (pfv, pfarr | p, f, asz, tsz) = let
+rarray_ptr_foreach_clo
+  {v} {n} (pfv, pfarr | p, f, asz) = let
   viewtypedef clo_t = (!v | &a) -<clo> void
   stavar l_f: addr
   val p_f: ptr l_f = &f
@@ -202,12 +192,12 @@ rarray_ptr_foreach_clo_tsz
   end // end of [app]
   prval pf = (pfv, view@ f)
   val () = rarray_ptr_foreach_funenv_tsz
-    {a} {V} {ptr l_f} (pf, pfarr | p, app, asz, tsz, p_f)
+    {a} {V} {ptr l_f} (pf, pfarr | p, app, asz, sizeof<a>, p_f)
   prval (pf1, pf2) = pf
   prval () = (pfv := pf1; view@ f := pf2)
 in
   // empty
-end // end of [rarray_ptr_foreach_clo_tsz]
+end // end of [rarray_ptr_foreach_clo]
 
 (* ****** ****** *)
 

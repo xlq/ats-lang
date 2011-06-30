@@ -88,11 +88,13 @@ fun{a:viewt@ype}
 array2rarray_ptr
   {n:nat} {l:addr} (pf: array_v (a, n, l) | p: ptr l, n: size_t n)
   :<> [ofs:int] (MUL (n, sizeof a, ofs), rarray_v (a, n, l+ofs) | ptr (l+ofs))
+// end of [array2rarray_ptr]
 
 fun{a:viewt@ype}
 rarray2array_ptr
   {n:nat} {l:addr} (pf: rarray_v (a, n, l) | p: ptr l, n: size_t n)
   :<> [ofs:int] (MUL (n, sizeof a, ofs), array_v (a, n, l-ofs) | ptr (l-ofs))
+// end of [rarray2array_ptr]
 
 (* ****** ****** *)
 
@@ -116,12 +118,6 @@ rarray_ptr_foreach_fun
   pfarr: !rarray_v (a, n, l)
 | p: ptr l, f: (&a) -<fun> void, asz: size_t n
 ) :<> void // end of [rarray_ptr_foreach_fun]
-
-fun rarray_ptr_foreach_fun_tsz
-  {a:viewt@ype} {v:view} {n:nat} {l:addr} (
-  pfarr: !rarray_v (a, n, l)
-| p: ptr l, f: (&a) -<fun> void, asz: size_t n, tsz: sizeof_t a
-) :<> void // end of [rarray_ptr_foreach_fun_tsz]
 
 fun{a:viewt@ype}
 rarray_ptr_foreach_clo
