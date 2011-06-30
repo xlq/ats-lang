@@ -14,7 +14,9 @@ staload _(*anonymous*) = "prelude/DATS/array.dats"
 
 staload "contrib/GLES2/SATS/gl2.sats"
 
-staload "contrib/GLES2/TEST/SATS/util.sats"
+(* ****** ****** *)
+
+staload "utils/util.sats"
 
 (* ****** ****** *)
 

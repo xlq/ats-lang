@@ -16,7 +16,9 @@ staload _(*anonymous*) = "prelude/DATS/array.dats"
 
 staload "contrib/GLES2/SATS/gl2.sats"
 
-staload "contrib/GLES2/TEST/SATS/util.sats"
+(* ****** ****** *)
+
+staload "utils/util.sats"
 
 (* ****** ****** *)
 
@@ -52,7 +54,8 @@ val (pf_u_matrix | ()) =
 
 extern
 fun keypress (code: natLt 4):<!ref> void = "keypress"
-implement keypress (code) = let
+implement
+keypress (code) = let
   #define F float_of_GLfloat
 in
   case+ code of

@@ -18,7 +18,9 @@ staload "libats/lex/lexing.sats"
 
 staload "libc/SATS/stdio.sats"
 
-staload "GLES2/TEST/SATS/obj.sats"
+(* ****** ****** *)
+
+staload "obj.sats"
 
 (* ****** ****** *)
 

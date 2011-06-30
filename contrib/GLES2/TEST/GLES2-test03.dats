@@ -22,9 +22,11 @@ staload _(*anonymous*) = "prelude/DATS/reference.dats"
 
 staload "contrib/GLES2/SATS/gl2.sats"
 
-staload "contrib/GLES2/TEST/SATS/util.sats"
-staload "contrib/GLES2/TEST/SATS/mat4.sats"
-staload "contrib/GLES2/TEST/SATS/obj.sats"
+(* ****** ******* *)
+
+staload "utils/obj.sats"
+staload "utils/mat4.sats"
+staload "utils/util.sats"
 
 (* ****** ******* *)
 

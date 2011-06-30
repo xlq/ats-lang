@@ -41,7 +41,7 @@ cleanall:: clean
 
 checkall:: test_clapack
 test_clapack: test_clapack.dats
-	$(ATSCC) $(LIBFLAGS) -O3 -o $@ $< $(ATSCTRB) -llapack -lcblas \
+	$(ATSCC) $(LIBFLAGS) -O3 -o $@ $< $(ATSCTRB) -llapack -lblas \
       && ./test_clapack
 cleanall:: ; $(RMF) test_clapack
 

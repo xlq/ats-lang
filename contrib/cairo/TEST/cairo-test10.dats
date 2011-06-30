@@ -239,7 +239,7 @@ implement main () = () where {
   val () = cairo_translate (cr, (x_letter-wsf)/2, 72.0)
 //
   val image =
-    cairo_image_surface_create_from_png ("DATA/zoe-2006-05-27-1.png")
+    cairo_image_surface_create_from_png ("data/zoe-2006-05-27-1.png")
   // end of [val]
   val wimg = cairo_image_surface_get_width (image)
   val himg = cairo_image_surface_get_height (image)

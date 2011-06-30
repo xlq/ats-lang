@@ -36,7 +36,7 @@ staload "libc/SATS/unistd.sats"
 static
 ats_ptr_type lockpath (ats_ptr_type name) {
   static char path[100] ;
-  if (snprintf (path, sizeof(path), "%s%s", LOCKDIR, name) > sizeof(path))
+  if (snprintf (path, sizeof(path), "%s%s", LOCKDIR, (char*)name) > sizeof(path))
     return (char*)0;
   return path ;
 } // end of [lockpath]
