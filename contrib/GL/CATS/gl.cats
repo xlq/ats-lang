@@ -28,10 +28,10 @@
 */
 
 /* ****** ****** */
-
+//
 // Author of the file: Hongwei Xi (hwxi AT cs DOT bu DOT edu)
 // Starting time: December, 2009
-
+//
 /* ****** ****** */
 
 #ifndef ATSCTRB_GL_GL_CATS
