@@ -148,9 +148,18 @@ list_vt_tabulate_fun {n:nat} {f:eff}
 // end of [list_vt_tabulate_fun]
 
 fun{a:viewt@ype}
-list_vt_tabulate_clo {v:view} {n:nat} {f:eff}
+list_vt_tabulate_vclo {v:view} {n:nat} {f:eff}
   (pf: !v | f: &(!v | natLt n) -<clo,f> a, n: int n):<f> list_vt (a, n)
-// end of [list_vt_tabulate_clo]
+// end of [list_vt_tabulate_vclo]
+
+fun{a:viewt@ype}
+list_vt_tabulate_cloptr {n:nat} {f:eff}
+  (f: !(natLt n) -<cloptr,f> a, n: int n):<f> list_vt (a, n)
+// end of [list_vt_tabulate_cloptr]
+fun{a:viewt@ype}
+list_vt_tabulate_vcloptr {v:view} {n:nat} {f:eff}
+  (pf: !v | f: !(!v | natLt n) -<cloptr,f> a, n: int n):<f> list_vt (a, n)
+// end of [list_vt_tabulate_vcloptr]
 
 (* ****** ****** *)
 
@@ -161,23 +170,33 @@ list_vt_foreach_funenv
   :<f> void
 // end of [list_vt_foreach_funenv]
 
-fun{a:viewt@ype} list_vt_foreach_fun {n:nat} {f:eff}
+fun{a:viewt@ype}
+list_vt_foreach_fun {n:nat} {f:eff}
   (xs: !list_vt (a, n), f: (&a) -<fun,f> void):<f> void
 // end of [list_vt_foreach_fun]
 
-fun{a:viewt@ype} list_vt_foreach_clo {v:view} {n:nat} {f:eff}
+fun{a:viewt@ype}
+list_vt_foreach_vclo {v:view} {n:nat} {f:eff}
   (pf: !v | xs: !list_vt (a, n), f: &(!v | &a) -<clo,f> void):<f> void
-// end of [list_vt_foreach_clo]
+// end of [list_vt_foreach_vclo]
+
+fun{a:t@ype}
+list_vt_foreach_cloptr {n:nat} {f:eff}
+  (xs: !list_vt (a, n), f: !(&a) -<cloptr,f> void):<f> void
+// end of [list_vt_foreach_cloptr]
+fun{a:t@ype}
+list_vt_foreach_vcloptr {v:view} {n:nat} {f:eff}
+  (pf: !v | xs: !list_vt (a, n), f: !(!v | &a) -<cloptr,f> void):<f> void
+// end of [list_vt_foreach_vcloptr]
 
 (* ****** ****** *)
 
 fun{a:viewt@ype}
 list_vt_iforeach_funenv
   {v:view} {vt:viewtype} {n:nat} {f:eff} (
-    pf: !v
-  | xs: !list_vt (a, n), f: (!v | natLt n, &a, !vt) -<fun,f> void, env: !vt
-  ) :<f> void
-// end of [list_vt_iforeach_funenv]
+  pf: !v
+| xs: !list_vt (a, n), f: (!v | natLt n, &a, !vt) -<fun,f> void, env: !vt
+) :<f> void // end of [list_vt_iforeach_funenv]
 
 fun{a:viewt@ype}
 list_vt_iforeach_fun {n:nat} {f:eff}
@@ -185,9 +204,18 @@ list_vt_iforeach_fun {n:nat} {f:eff}
 // end of [list_vt_iforeach_fun]
 
 fun{a:viewt@ype}
-list_vt_iforeach_clo {v:view} {n:nat} {f:eff}
+list_vt_iforeach_vclo {v:view} {n:nat} {f:eff}
   (pf: !v | xs: !list_vt (a, n), f: &(!v | natLt n, &a) -<clo,f> void):<f> void
-// end of [list_vt_iforeach_clo]
+// end of [list_vt_iforeach_vclo]
+
+fun{a:t@ype}
+list_vt_iforeach_cloptr {n:nat} {f:eff}
+  (xs: !list_vt (a, n), f: !(natLt n, &a) -<cloptr,f> void):<f> void
+// end of [list_vt_iforeach_cloptr]
+fun{a:t@ype}
+list_vt_iforeach_vcloptr {v:view} {n:nat} {f:eff}
+  (pf: !v | xs: !list_vt (a, n), f: !(!v | natLt n, &a) -<cloptr,f> void):<f> void
+// end of [list_vt_iforeach_vcloptr]
 
 (* ****** ****** *)
 

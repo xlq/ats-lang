@@ -326,7 +326,7 @@ fprint_d2var (pf_out | out, d2v) = let
   val () = $Sym.fprint_symbol (pf_out | out, d2var_get_sym d2v)
 (*
   val () = fprint_string (pf_out | out, "(")
-  val () = $Stamp.fprint_stamp (pf_out | out, d2var_stamp_get d2v)
+  val () = $Stamp.fprint_stamp (pf_out | out, d2var_get_stamp d2v)
   val () = fprint_string (pf_out | out, ")")
 *)
 in

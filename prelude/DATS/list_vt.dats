@@ -304,7 +304,7 @@ in
 end // end of [list_vt_tabulate_fun]
 
 implement{a}
-list_vt_tabulate_clo
+list_vt_tabulate_vclo
   {v} {n} {f:eff}
   (pf1 | f, n) = ans where {
   typedef clo_t = (!v | natLt n) -<clo,f> a
@@ -323,7 +323,33 @@ list_vt_tabulate_clo
   val ans = list_vt_tabulate_funenv<a> {V} {ptr l_f} (pf | app, n, p_f)
   prval () = pf1 := pf.0
   prval () = view@ f := pf.1
-} // end of [list_vt_tabulate_clo]
+} // end of [list_vt_tabulate_vclo]
+
+implement{a}
+list_vt_tabulate_cloptr
+  {n} {f:eff} (f, n) = res where {
+//
+  viewtypedef cloptr0_t = (natLt n) -<cloptr,f> a
+  viewtypedef cloptr1_t = (!unit_v | natLt n) -<cloptr,f> a
+//
+  prval () = __assert(f) where {
+    extern prfun __assert (f: !cloptr0_t >> cloptr1_t): void
+  } // end of [val]
+  prval pfu = unit_v ()
+  val res = list_vt_tabulate_vcloptr<a> {unit_v} (pfu | f, n)
+  prval unit_v () = pfu
+  prval () = __assert(f) where {
+    extern prfun __assert (f: !cloptr1_t >> cloptr0_t): void
+  } // end of [val]
+} (* end of [list_app_cloptr] *)
+implement{a}
+list_vt_tabulate_vcloptr
+  {v} {n} {f:eff} (pf | f, n) = let
+  viewtypedef cloptr_t = (!v | natLt n) -<cloptr,f> a
+  fn app (pf: !v | i: natLt n, f: !cloptr_t):<f> a = f (pf | i)
+in
+  list_vt_tabulate_funenv<a> {v} {cloptr_t} (pf | app, n, f)
+end // end of [list_app_vcloptr]
 
 (* ****** ****** *)
 
@@ -346,8 +372,10 @@ end // end of [list_vt_foreach_funenv]
 implement{a}
 list_vt_foreach_fun
   {n} {f:eff} (xs, f) = let
+//
   typedef fun0_t = (&a) -<fun,f> void
   typedef fun1_t = (!unit_v | &a, !ptr) -<fun,f> void
+//
   val f = __cast (f) where { extern castfn __cast (f: fun0_t):<> fun1_t }
   prval pf = unit_v ()
   val () = list_vt_foreach_funenv<a> {unit_v} {ptr} (pf | xs, f, null)
@@ -357,7 +385,7 @@ in
 end // end of [list_vt_foreach_fun]
 
 implement{a}
-list_vt_foreach_clo
+list_vt_foreach_vclo
   {v} {n} {f:eff}
   (pf1 | xs, f) = () where {
   typedef clo_t = (!v | &a) -<clo,f> void
@@ -371,7 +399,36 @@ list_vt_foreach_clo
   prval pf = (pf1, view@ f)
   val () = list_vt_foreach_funenv<a> {V} {ptr l_f} (pf | xs, app, p_f)
   prval () = pf1 := pf.0 and () = view@ f := pf.1
-} // end of [list_vt_foreach_clo]
+} // end of [list_vt_foreach_vclo]
+
+implement{a}
+list_vt_foreach_cloptr
+  {n} {f:eff} (xs, f) = let
+//
+  viewtypedef cloptr0_t = (&a) -<cloptr,f> void
+  viewtypedef cloptr1_t = (!unit_v | &a) -<cloptr,f> void
+//
+  prval () = __assert(f) where {
+    extern prfun __assert (f: !cloptr0_t >> cloptr1_t): void
+  } // end of [val]
+  prval pfu = unit_v ()
+  val () = list_vt_foreach_vcloptr<a> {unit_v} (pfu | xs, f)
+  prval unit_v () = pfu
+  prval () = __assert(f) where {
+    extern prfun __assert (f: !cloptr1_t >> cloptr0_t): void
+  } // end of [val]
+in
+  // nothing
+end // end of [list_vt_foreach_cloptr]
+implement{a}
+list_vt_foreach_vcloptr
+  {v} {n} {f:eff} (pf | xs, f) = let
+  viewtypedef cloptr_t = (!v | &a) -<cloptr,f> void
+  fn app (pf: !v | x: &a, f: !cloptr_t):<f> void = f (pf | x)
+  val () = list_vt_foreach_funenv<a> {v} {cloptr_t} (pf | xs, app, f)
+in
+  // empty
+end // end of [list_vt_foreach_vcloptr]
 
 (* ****** ****** *)
 
@@ -394,8 +451,10 @@ end // end of [list_vt_iforeach_funenv]
 implement{a}
 list_vt_iforeach_fun
   {n} {f:eff} (xs, f) = let
+//
   typedef fun0_t = (natLt n, &a) -<fun,f> void
   typedef fun1_t = (!unit_v | natLt n, &a, !ptr) -<fun,f> void
+//
   val f = __cast (f) where { extern castfn __cast (f: fun0_t):<> fun1_t }
   prval pf = unit_v ()
   val () = list_vt_iforeach_funenv<a> {unit_v} {ptr} (pf | xs, f, null)
@@ -405,7 +464,7 @@ in
 end // end of [list_vt_iforeach_fun]
 
 implement{a}
-list_vt_iforeach_clo
+list_vt_iforeach_vclo
   {v} {n} {f:eff} (pf1 | xs, f) = let
   typedef clo_t = (!v | natLt n, &a) -<clo,f> void
   stavar l_f: addr; val p_f: ptr l_f = &f
@@ -420,7 +479,36 @@ list_vt_iforeach_clo
   prval () = pf1 := pf.0 and () = view@ f := pf.1
 in
   // empty
-end // end of [list_vt_iforeach_clo]
+end // end of [list_vt_iforeach_vclo]
+
+implement{a}
+list_vt_iforeach_cloptr
+  {n} {f:eff} (xs, f) = let
+//
+  viewtypedef cloptr0_t = (natLt n, &a) -<cloptr,f> void
+  viewtypedef cloptr1_t = (!unit_v | natLt n, &a) -<cloptr,f> void
+//
+  prval () = __assert(f) where {
+    extern prfun __assert (f: !cloptr0_t >> cloptr1_t): void
+  } // end of [val]
+  prval pfu = unit_v ()
+  val () = list_vt_iforeach_vcloptr<a> {unit_v} (pfu | xs, f)
+  prval unit_v () = pfu
+  prval () = __assert(f) where {
+    extern prfun __assert (f: !cloptr1_t >> cloptr0_t): void
+  } // end of [val]
+in
+  // nothing
+end // end of [list_vt_iforeach_cloptr]
+implement{a}
+list_vt_iforeach_vcloptr
+  {v} {n} {f:eff} (pf | xs, f) = let
+  viewtypedef cloptr_t = (!v | natLt n, &a) -<cloptr,f> void
+  fn app (pf: !v | i: natLt n, x: &a, f: !cloptr_t):<f> void = f (pf | i, x)
+  val () = list_vt_iforeach_funenv<a> {v} {cloptr_t} (pf | xs, app, f)
+in
+  // empty
+end // end of [list_vt_iforeach_vcloptr]
 
 (* ****** ****** *)
 
