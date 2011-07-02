@@ -414,7 +414,7 @@ iamax_test (): void = () where {
   val (pf_gc, pf_arr | p_arr) = array_ptr_alloc_tsz {a} (MN_sz, tsz)
   prval pf_fmat = fmatrix_v_of_array_v {a?} (pf_MN, pf_arr)
   prval pf = unit_v
-  val () = fmatrix_ptr_initialize_clo<a>
+  val () = fmatrix_ptr_initialize_vclo<a>
     {unit_v} (pf | !p_arr, M, N, !p_f) where {
     var !p_f = @lam (
         pf_v : !unit_v
@@ -990,7 +990,7 @@ gbmv_test (): void = () where {
     fmatrix_v_of_array_v {a?} {R,K} (pf_RK, pfB_arr)
   // end of [prval]
   prval pf_unit = unit_v
-  val () = fmatrix_ptr_initialize_clo<a>
+  val () = fmatrix_ptr_initialize_vclo<a>
     {unit_v} (pf_unit | !pB_arr, R_sz, K_sz, !p_f) where {
     val klpku = of_int<a> (KL + KU)
     var !p_f = @lam (
@@ -1090,7 +1090,7 @@ trmv_trsv_test (): void = () where {
   val (pfA_gc, pfA_arr | pA_arr) = array_ptr_alloc<a> (size1_of_int1 MM)
   prval pfA_fmat = fmatrix_v_of_array_v (pf_MM, pfA_arr)
   prval pf_unit = unit_v
-  val () = fmatrix_ptr_initialize_clo<a>
+  val () = fmatrix_ptr_initialize_vclo<a>
     {unit_v} (pf_unit | !pA_arr, M, M, !p_f) where {
     var !p_f = @lam (pf : !unit_v | A : &(a?) >> a, i : sizeLt M, j : sizeLt M)
       : void =<clo>
@@ -1178,7 +1178,7 @@ tbmv_tbsv_test (): void = () where {
   val (pfA_gc, pfA_arr | pA_arr) = array_ptr_alloc<a> (KN_sz)
   prval pfA_fmat = fmatrix_v_of_array_v (pf_KN, pfA_arr)
   prval pf_unit = unit_v
-  val () = fmatrix_ptr_initialize_clo<a>
+  val () = fmatrix_ptr_initialize_vclo<a>
     {unit_v} (pf_unit | !pA_arr, i2sz (K+1), N, !p_f) where {
     var !p_f = @lam (
         pf: !unit_v
@@ -1851,7 +1851,7 @@ hbmv_test (): void = () where {
   val (pfB_gc, pfB_arr | pB_arr) = array_ptr_alloc<a> (RM_sz)
   prval (pfB_fmat) = fmatrix_v_of_array_v {a?} {R,M} (pf_RM, pfB_arr)
   prval pf_unit = unit_v
-  val () = fmatrix_ptr_initialize_clo<a>
+  val () = fmatrix_ptr_initialize_vclo<a>
     {unit_v} (pf_unit | !pB_arr, R_sz, M_sz, !p_f) where {
     val kpk1 = of_int<a> (2*K)
     var !p_f = @lam (

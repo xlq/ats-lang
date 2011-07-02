@@ -173,7 +173,7 @@ implement display () = () where {
     prval pf_unit = unit_v ()
     prval vbox pf = pf_theStarLst
     val () =
-      list_vt_foreach_clo<star_t> {unit_v} (pf_unit | theStarLst, !p_f)
+      list_vt_foreach_vclo<star_t> {unit_v} (pf_unit | theStarLst, !p_f)
     // end of [val]
     prval unit_v () = pf_unit
   } // end of [val]

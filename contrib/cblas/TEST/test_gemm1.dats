@@ -165,7 +165,7 @@ prval pf1_mat = fmatrix_v_of_array_v {elt?} (pf_NN, pf1_arr)
 //
 prval pf = unit_v ()
 val () =
-  fmatrix_ptr_initialize_clo<elt>
+  fmatrix_ptr_initialize_vclo<elt>
     (pf | !p1_arr, N, N, !p_clo) where {
   var !p_clo = @lam (
       pf: !unit_v | x: &(elt?) >> elt, i: size_t, j: size_t
@@ -193,7 +193,7 @@ prval pf2_mat = fmatrix_v_of_array_v {elt?} (pf_NN, pf2_arr)
 //
 prval pf = unit_v ()
 val () =
-  fmatrix_ptr_initialize_clo<elt>
+  fmatrix_ptr_initialize_vclo<elt>
     (pf | !p2_arr, N, N, !p_clo) where {
   var !p_clo = @lam (
       pf: !unit_v | x: &(elt?) >> elt, i: size_t, j: size_t
