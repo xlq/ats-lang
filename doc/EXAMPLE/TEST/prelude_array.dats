@@ -37,10 +37,10 @@ main (argc, argv) = let
       end // end of [f]
     } // end of [val]
     val () = print_newline ()
-// testing [array_iforeach_clo]
+// testing [array_iforeach_vclo]
     prval pf = unit_v ()
     val () = print "A (0-9) = "
-    val () = array_iforeach_clo {unit_v} (pf | A, !p_f, asz) where {
+    val () = array_iforeach_vclo {unit_v} (pf | A, !p_f, asz) where {
       var !p_f = @lam
         (pf: !unit_v | i: sizeLt asz, x: &int): void =<clo>
         $effmask_all (

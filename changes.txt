@@ -19,8 +19,13 @@ ats-lang-anairiats-0.2.5:
 10. [gc_stack_get_dir] is re-written to fix a bug triggered due to a form
     of over-optimization by gcc-4.6: a volatile function may get inlined.
 11. Fixing is made to properly track the exn-effect.
+12. Adding contrib/GLES2 to support OpenGL/ES2 binding
+13. Renaming: list_vt_*_clo -> list_vt_*_vclo. Also adding various functions:
+    list_vt_*_cloptr and list_vt_*_vcloptr
+14. Makefile_macosx is added for building ATS on MAC OS X.
+15. Renaming (various packages): *_clo -> *_vclo and *_cloptr -> *_vcloptr
 
-########################################################################
+`########################################################################
 
 ats-lang-anairiats-0.2.4:
 

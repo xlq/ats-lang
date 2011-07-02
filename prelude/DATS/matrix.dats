@@ -221,7 +221,7 @@ in
 end // end of [matrix_make_fun_tsz]
 
 implement{a}
-matrix_make_clo
+matrix_make_vclo
   {v} {m,n} {f:eff}
   (pfv | m, n, f) = M where {
 //
@@ -247,7 +247,7 @@ matrix_make_clo
   prval pfV = (pfv, view@ f)
   val M = matrix_make_funenv_tsz {a} {V} {ptr l_f} (pfV | m, n, app, sizeof<a>, p_f)
   prval () = (pfv := pfV.0; view@ f := pfV.1)
-} // end of [matrix_make_clo_tsz]
+} // end of [matrix_make_vclo]
 
 (* ****** ****** *)
 
@@ -376,7 +376,7 @@ in
 end // end of [matrix_foreach_fun]
 
 implement{a}
-matrix_foreach_clo
+matrix_foreach_vclo
   {v} {m,n} (pfv | M, f, m, n) = let
 //
   stavar l_f: addr
@@ -397,7 +397,7 @@ matrix_foreach_clo
 //
 in
   // empty
-end // end of [matrix_foreach_clo]
+end // end of [matrix_foreach_vclo]
 
 implement{a}
 matrix_foreach_cloref {m,n} (M, f, m, n) = let
@@ -468,7 +468,7 @@ in
 end // end of [matrix_iforeach_fun]
 
 implement{a}
-matrix_iforeach_clo
+matrix_iforeach_vclo
   {v} {m,n} (pfv | M, f, m, n) = let
 //
   stavar l_f: addr
@@ -495,7 +495,7 @@ matrix_iforeach_clo
 //
 in
   // empty
-end // end of [matrix_iforeach_clo]
+end // end of [matrix_iforeach_vclo]
 
 implement{a}
 matrix_iforeach_cloref

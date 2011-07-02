@@ -79,7 +79,7 @@ end // end of [foreach_fun]
 //
 
 implement
-foreach_clo
+foreach_vclo
   {v} {n} {f:eff} (pf | n, f) = let
   viewtypedef clo_t = (!v | natLt n) -<clo,f> void
   stavar l_f: addr; val p_f: ptr l_f = &f
@@ -95,7 +95,7 @@ foreach_clo
   val () = foreach_funenv {v1} {ptr l_f} {n} {f} (pf1 | n, app, p_f)
 in
   pf := pf1.0; view@ f := pf1.1
-end // end of [foreach_clo]
+end // end of [foreach_vclo]
 
 //
 
@@ -149,7 +149,7 @@ in
 end // end of [foreach2_fun]
 
 implement
-foreach2_clo
+foreach2_vclo
   {v} {m,n} {f:eff} (pf | m, n, f) = let
   viewtypedef clo_t = (!v | natLt m, natLt n) -<clo,f> void
   stavar l_f: addr; val p_f: ptr l_f = &f
@@ -165,7 +165,7 @@ foreach2_clo
   val () = foreach2_funenv {v1} {ptr l_f} {m,n} {f} (pf1 | m, n, app, p_f)
 in
   pf := pf1.0; view@ f := pf1.1
-end // end of [foreach2_clo]
+end // end of [foreach2_vclo]
 
 implement
 foreach2_cloref
@@ -212,7 +212,7 @@ in
 end // end of [repeat_fun]
 
 implement
-repeat_clo
+repeat_vclo
   {v} {n} {f:eff} (pf | n, f) = let
   viewtypedef clo_t = (!v | (*none*)) -<clo,f> void
   stavar l_f: addr; val p_f: ptr l_f = &f
@@ -228,7 +228,7 @@ repeat_clo
   val () = repeat_funenv {v1} {ptr l_f} {n} {f} (pf1 | n, app, p_f)
 in
   pf := pf1.0; view@ f := pf1.1
-end // end of [repeat_clo]
+end // end of [repeat_vclo]
 
 implement
 repeat_cloref {n} {f} (n, f) = let

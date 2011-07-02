@@ -542,7 +542,7 @@ hashtbl_remove {l} (ptbl, k0, res) = found where {
 (* ****** ****** *)
 
 fun{key:t0p;itm:vt0p}
-  hashtbl_ptr_foreach_clo {v:view}
+  hashtbl_ptr_foreach_vclo {v:view}
     {sz:nat} {l_beg,l_end:addr} {f:eff} .<sz>. (
     pf: !v, pf_tbl: !hashtbl_v (key, itm, sz, l_beg, l_end)
   | sz: size_t sz, pbeg: ptr l_beg, f: &(!v | key, &itm) -<clo,f> void
@@ -563,23 +563,22 @@ fun{key:t0p;itm:vt0p}
       // nothing
     end // end of [val]
     val () = // segfault during typechecking if {v} is not provided!!!
-      hashtbl_ptr_foreach_clo<key,itm> {v}
-        (pf, pf2_tbl | sz-1, pbeg+sizeof<keyitm>, f)
+      hashtbl_ptr_foreach_vclo<key,itm> {v} (pf, pf2_tbl | sz-1, pbeg+sizeof<keyitm>, f)
     prval () = pf_tbl := hashtbl_v_cons (pf1_tbl, pf2_tbl)
   in
     // empty
   end // end of [if]
-end // end of [hashtbl_ptr_foreach_clo]
+end // end of [hashtbl_ptr_foreach_vclo]
 
 implement{key,itm}
-hashtbl_foreach_clo {v}
+hashtbl_foreach_vclo {v}
   (pf0 | ptbl, f) = () where {
   val (pf, fpf | p) = HASHTBLptr_tblget {key,itm} (ptbl)  
   val () = begin
-    hashtbl_ptr_foreach_clo {v} (pf0, p->pftbl | p->sz, p->pbeg, f)
+    hashtbl_ptr_foreach_vclo {v} (pf0, p->pftbl | p->sz, p->pbeg, f)
   end // end of [val]
   prval () = minus_addback (fpf, pf | ptbl)
-} // end of [hashtbl_foreach_clo]
+} // end of [hashtbl_foreach_vclo]
 
 implement{key,itm}
 hashtbl_foreach_cloref (tbl, f) = let
@@ -593,7 +592,7 @@ hashtbl_foreach_cloref (tbl, f) = let
     extern prfun __assert (_: vbox V): (V, V -<lin,prf> void)
   } // end of [prval]
   prval pf0 = unit_v ()
-  val () = hashtbl_foreach_clo<key,itm> {unit_v} (pf0 | tbl, !p_f)
+  val () = hashtbl_foreach_vclo<key,itm> {unit_v} (pf0 | tbl, !p_f)
   prval unit_v () = pf0
   prval () = fpf (pf)
 in
@@ -643,7 +642,7 @@ hashtbl_listize (ptbl) = let
   ) : void =<clo>
     (res := list_vt_cons ((k, x), res))
   // end of [var]
-  val () = hashtbl_foreach_clo<key,itm> {V} (view@ res | ptbl, !p_clo)
+  val () = hashtbl_foreach_vclo<key,itm> {V} (view@ res | ptbl, !p_clo)
 in
   res
 end // end of [hashtbl_listize]

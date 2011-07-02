@@ -181,7 +181,7 @@ end // end of [rarray_ptr_foreach_fun]
 (* ****** ****** *)
 
 implement{a}
-rarray_ptr_foreach_clo
+rarray_ptr_foreach_vclo
   {v} {n} (pfv, pfarr | p, f, asz) = let
   viewtypedef clo_t = (!v | &a) -<clo> void
   stavar l_f: addr
@@ -197,21 +197,21 @@ rarray_ptr_foreach_clo
   prval () = (pfv := pf1; view@ f := pf2)
 in
   // empty
-end // end of [rarray_ptr_foreach_clo]
+end // end of [rarray_ptr_foreach_vclo]
 
 (* ****** ****** *)
 
 implement{a}
-array_ptr_rforeach_clo
+array_ptr_rforeach_vclo
   (pf | A, f, n) = let
   prval pfarr = view@ (A)
   val (pfmul | ofs) = mul2_size1_size1 (n, sizeof<a>)
   prval pfarr = rarray_v_of_array_v {a} (pfmul, pfarr)
-  val () = rarray_ptr_foreach_clo<a> (pf, pfarr | &A+ofs, f, n)
+  val () = rarray_ptr_foreach_vclo<a> (pf, pfarr | &A+ofs, f, n)
   prval () = view@(A) := array_v_of_rarray_v {a} (pfmul, pfarr)
 in
   // nothing
-end // end of [array_ptr_rforeach_clo]
+end // end of [array_ptr_rforeach_vclo]
 
 (* ****** ****** *)
 

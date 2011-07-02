@@ -71,6 +71,8 @@ atsgrammar_main_dats.o: atsgrammar_main.dats
 ######
 
 ats_grammar.yats: atsgrammar; ./atsgrammar --format=yats > $@
+ats_grammar_yats.html: atsgrammar; ./atsgrammar --format=yats_html > $@
+
 ats_grammar.desc: atsgrammar; ./atsgrammar --format=desc > $@
 ats_grammar_desc.html: atsgrammar; ./atsgrammar --format=desc_html > $@
 
@@ -80,7 +82,7 @@ ats_grammar_desc.html: atsgrammar; ./atsgrammar --format=desc_html > $@
 # HX: '-o .depend' means appending instead of overwriting
 #
 depend::
-	rm -f .depend
+	$(RMF) .depend
 	$(ATSOPT) -o .depend -dep1 -s atsgrammar.sats
 	$(ATSOPT) -o .depend -dep1 -d atsgrammar_tyname.dats
 	$(ATSOPT) -o .depend -dep1 -d atsgrammar_symbol.dats

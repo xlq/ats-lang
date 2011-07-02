@@ -567,7 +567,7 @@ end // end of [linmap_foreach_fun]
 (* ****** ****** *)
 
 implement{key,itm}
-linmap_foreach_clo {v}
+linmap_foreach_vclo {v}
   (pf | m, f) = foreach (pf | m, f) where {
   fun foreach {h:nat} .<h>.
     (pf: !v | t: !avltree (key, itm, h), f: &(!v | key, &itm) -<clo> void):<> void =
@@ -577,7 +577,7 @@ linmap_foreach_clo {v}
       end // end of [B]
     | E () => fold@ (t)
   // end of [foreach]
-} // end of [linmap_foreach_clo]
+} // end of [linmap_foreach_vclo]
 
 implement{key,itm}
 linmap_foreach_cloref (m, f) = let
@@ -588,7 +588,7 @@ linmap_foreach_cloref (m, f) = let
   val (vbox pf_f | p_f) = cloref_get_view_ptr {clo_type} (f)
   prval pf0 = unit_v ()
   val () = $effmask_ref
-    (linmap_foreach_clo<key,itm> {unit_v} (pf0 | m, !p_f))
+    (linmap_foreach_vclo<key,itm> {unit_v} (pf0 | m, !p_f))
   prval unit_v () = pf0
 in
   // empty

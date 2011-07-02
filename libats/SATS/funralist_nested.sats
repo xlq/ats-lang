@@ -93,14 +93,18 @@ funralist_update {n:nat} (xs: list (a, n), i: natLt n, x: a):<> list (a, n)
 (* ****** ****** *)
 
 fun{elt:t@ype}
-funralist_foreach_clo {v:view} {n:nat} {f:eff}
+funralist_foreach_vclo {v:view} {n:nat} {f:eff}
   (pf: !v | xs: list (elt, n), f: &(!v | elt) -<clo,f> void):<f> void
-// end of [funralist_foreach_clo]
+// end of [funralist_foreach_vclo]
 
 fun{elt:t@ype}
-funralist_foreach_cloptr {v:view} {n:nat} {f:eff}
+funralist_foreach_cloptr {n:nat} {f:eff}
+  (xs: list (elt, n), f: !(elt) -<cloptr,f> void):<f> void
+// end of [funralist_foreach_vcloptr]
+fun{elt:t@ype}
+funralist_foreach_vcloptr {v:view} {n:nat} {f:eff}
   (pf: !v | xs: list (elt, n), f: !(!v | elt) -<cloptr,f> void):<f> void
-// end of [funralist_foreach_cloptr]
+// end of [funralist_foreach_vcloptr]
 
 fun{elt:t@ype}
 funralist_foreach_cloref {n:nat} {f:eff}

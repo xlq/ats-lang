@@ -325,20 +325,37 @@ end // end of [funarray_hirem_get]
 (* ****** ****** *)
 
 implement{a}
-funarray_foreach_clo {v} {n} (pf | A, n, f) = let
+funarray_foreach_vclo {v} {n} (pf | A, n, f) = let
   var i: natLte n
 in
   for* {i:nat | i <= n} .<n-i>. // term metric
     (i: int i) => (i := 0; i < n; i := i+1) f (pf | A[i])
-end // end of [funarray_foreach_clo]
+end // end of [funarray_foreach_vclo]
 
 implement{a}
-funarray_foreach_cloptr {v} {n} (pf | A, n, f) = let
+funarray_foreach_cloptr
+  {n} (A, n, f) = () where {
+//
+  viewtypedef cloptr0_t = (a) -<cloptr> void
+  viewtypedef cloptr1_t = (!unit_v | a) -<cloptr> void
+//
+  prval () = __assert(f) where {
+    extern prfun __assert (f: !cloptr0_t >> cloptr1_t): void
+  } // end of [val]
+  prval pfu = unit_v ()
+  val () = funarray_foreach_vcloptr<a> {unit_v} (pfu | A, n, f)
+  prval unit_v () = pfu
+  prval () = __assert(f) where {
+    extern prfun __assert (f: !cloptr1_t >> cloptr0_t): void
+  } // end of [val]
+} // end of [funarray_foreach_cloptr]
+implement{a}
+funarray_foreach_vcloptr {v} {n} (pf | A, n, f) = let
   var i: natLte n
 in
   for* {i:nat | i <= n} .<n-i>. // term metric
     (i: int i) => (i := 0; i < n; i := i+1) f (pf | A[i])
-end // end of [funarray_foreach_cloptr]
+end // end of [funarray_foreach_vcloptr]
 
 implement{a}
 funarray_foreach_cloref {n} (A, n, f) = let
@@ -351,20 +368,37 @@ end // end of [funarray_foreach_cloref]
 (* ****** ****** *)
 
 implement{a}
-funarray_iforeach_clo {v} {n} (pf | A, n, f) = let
+funarray_iforeach_vclo {v} {n} (pf | A, n, f) = let
   var i: natLte n
 in
   for* {i:nat | i <= n} .<n-i>. // term metric
     (i: int i) => (i := 0; i < n; i := i+1) f (pf | i, A[i])
-end // end of [funarray_iforeach_clo]
+end // end of [funarray_iforeach_vclo]
 
 implement{a}
-funarray_iforeach_cloptr {v} {n} (pf | A, n, f) = let
+funarray_iforeach_cloptr
+  {n} (A, n, f) = () where {
+//
+  viewtypedef cloptr0_t = (natLt n, a) -<cloptr> void
+  viewtypedef cloptr1_t = (!unit_v | natLt n, a) -<cloptr> void
+//
+  prval () = __assert(f) where {
+    extern prfun __assert (f: !cloptr0_t >> cloptr1_t): void
+  } // end of [val]
+  prval pfu = unit_v ()
+  val () = funarray_iforeach_vcloptr<a> {unit_v} (pfu | A, n, f)
+  prval unit_v () = pfu
+  prval () = __assert(f) where {
+    extern prfun __assert (f: !cloptr1_t >> cloptr0_t): void
+  } // end of [val]
+} // end of [funarray_iforeach_cloptr]
+implement{a}
+funarray_iforeach_vcloptr {v} {n} (pf | A, n, f) = let
   var i: natLte n
 in
   for* {i:nat | i <= n} .<n-i>. // term metric
     (i: int i) => (i := 0; i < n; i := i+1) f (pf | i, A[i])
-end // end of [funarray_iforeach_cloptr]
+end // end of [funarray_iforeach_vcloptr]
 
 implement{a}
 funarray_iforeach_cloref {n} (A, n, f) = let

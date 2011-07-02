@@ -152,11 +152,11 @@ funmap_foreach_fun (
 ) :<> void // end of [funmap_foreach_fun]
 
 fun{key,itm:t@ype}
-funmap_foreach_clo {v:view} (
+funmap_foreach_vclo {v:view} (
   pf: !v
 | xs: map (key, itm)
 , f: &(!v | key, itm) -<clo> void
-) :<> void // end of [funmap_foreach_clo]
+) :<> void // end of [funmap_foreach_vclo]
 
 fun{key,itm:t@ype}
 funmap_foreach_cloref (

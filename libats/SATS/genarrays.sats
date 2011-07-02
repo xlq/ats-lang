@@ -183,12 +183,12 @@ GEVEC_ptr_foreach_fun
 ) :<> void // end of [GEVEC_ptr_foreach_fun]
 
 fun{a:viewt@ype}
-GEVEC_ptr_foreach_clo
+GEVEC_ptr_foreach_vclo
   {v:view} {n:nat} {d:inc} (
   pf: !v
 | base: &GEVEC (a, n, d)
 , f: &(!v | &a) -<clo> void, vsz: size_t n, inc: size_t d
-) :<> void // end of [GEVEC_ptr_foreach_clo]
+) :<> void // end of [GEVEC_ptr_foreach_vclo]
 
 (* ****** ****** *)
 
@@ -226,12 +226,12 @@ fun GEVEC_ptr_iforeach_cloenv_tsz
 // end of [fun]
 
 fun{a:viewt@ype}
-GEVEC_ptr_iforeach_clo
+GEVEC_ptr_iforeach_vclo
   {v:view} {n:nat} {d:inc} (
   pf: !v
 | base: &GEVEC (a, n, d)
 , f: &(!v | sizeLt n, &a) -<clo> void, vsz: size_t n, inc: size_t d
-) :<> void // end of [GEVEC_ptr_iforeach_clo]
+) :<> void // end of [GEVEC_ptr_iforeach_vclo]
 
 (* ****** ****** *)
 
@@ -666,16 +666,17 @@ GEMAT_ptr_initialize_fun
 ) :<> void // end of [GEMAT_ptr_initialize_fun]
 
 //
-// HX: based on [GEMAT_ptr_iforeach_clo]
+// HX: based on [GEMAT_ptr_iforeach_vclo]
 //
-fun{a:t@ype} GEMAT_ptr_initialize_clo
+fun{a:t@ype}
+GEMAT_ptr_initialize_vclo
   {v:view} {ord:order} {m,n:nat} {ld:inc} (
   pf: !v
 | ord: ORDER ord
 , M: &GEMAT (a?, m, n, ord, ld) >> GEMAT (a, m, n, ord, ld)
 , m: size_t m, n: size_t n, ld: size_t ld
 , f: &(!v | sizeLt m, sizeLt n, &(a?) >> a) -<clo> void
-) :<> void // end of [GEMAT_ptr_initialize_clo]
+) :<> void // end of [GEMAT_ptr_initialize_vclo]
 
 (* ****** ****** *)
 
@@ -724,7 +725,7 @@ GEMAT_ptr_foreach_fun
 ) :<> void // end of [GEMAT_ptr_foreach_fun]
 
 fun{a:viewt@ype}
-GEMAT_ptr_foreach_clo
+GEMAT_ptr_foreach_vclo
   {v:view} {ord1,ord2:order} {m,n:nat} {ld:inc} (
   pf: !v
 | ord1: ORDER ord1
@@ -732,7 +733,7 @@ GEMAT_ptr_foreach_clo
 , f: &(!v | &a) -<clo> void
 , ord2: ORDER ord2
 , m: size_t m, n: size_t n, ld: size_t ld
-) :<> void // end of [GEMAT_ptr_foreach_clo]
+) :<> void // end of [GEMAT_ptr_foreach_vclo]
 
 (* ****** ****** *)
 
@@ -760,7 +761,7 @@ GEMAT_ptr_iforeach_fun
 ) :<> void // end of [GEMAT_ptr_iforeach_fun]
 
 fun{a:viewt@ype}
-GEMAT_ptr_iforeach_clo
+GEMAT_ptr_iforeach_vclo
   {v:view} {ord1,ord2:order} {m,n:nat} {ld:inc} (
   pf: !v
 | ord1: ORDER ord1
@@ -768,7 +769,7 @@ GEMAT_ptr_iforeach_clo
 , f: &(!v | sizeLt m, sizeLt n, &a) -<clo> void
 , ord2: ORDER ord2
 , m: size_t m, n: size_t n, ld: size_t ld
-) :<> void // end of [GEMAT_ptr_iforeach_clo]
+) :<> void // end of [GEMAT_ptr_iforeach_vclo]
 
 (* ****** ****** *)
 

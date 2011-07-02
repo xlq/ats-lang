@@ -665,7 +665,7 @@ end // end of [funset_foreach_fun]
 (* ****** ****** *)
 
 implement{elt}
-funset_foreach_clo {v}
+funset_foreach_vclo {v}
   (pf | m, f) = foreach (pf | m, f) where {
   fun foreach {h:nat} .<h>. (
     pf: !v | t: avltree (elt, h), f: &(!v | elt) -<clo> void
@@ -676,7 +676,7 @@ funset_foreach_clo {v}
       end // end of [B]
     | E () => ()
   // end of [foreach]
-} // end of [funset_foreach_clo]
+} // end of [funset_foreach_vclo]
 
 implement{elt}
 funset_foreach_cloref (m, f) = let
@@ -687,7 +687,7 @@ funset_foreach_cloref (m, f) = let
   val (vbox pf_f | p_f) = cloref_get_view_ptr {clo_type} (f)
   prval pfu = unit_v ()
   val () = $effmask_ref
-    (funset_foreach_clo<elt> {unit_v} (pfu | m, !p_f))
+    (funset_foreach_vclo<elt> {unit_v} (pfu | m, !p_f))
   prval unit_v () = pfu
 in
   // empty

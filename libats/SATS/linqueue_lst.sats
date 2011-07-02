@@ -114,10 +114,10 @@ queue_foreach_fun
 // end of [queue_foreach_fun]
 
 fun{a:viewt@ype}
-queue_foreach_clo
+queue_foreach_vclo
   {v:view} {n:nat}
   (pf: !v | q: &QUEUE (a, n), f: &(!v | &a) -<clo> void):<> void
-// end of [queue_foreach_clo]
+// end of [queue_foreach_vclo]
 
 (* ****** ****** *)
 

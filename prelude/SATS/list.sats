@@ -78,6 +78,10 @@ typedef List (a:t@ype) = [n:int | n >= 0] list (a, n)
 
 (* ****** ****** *)
 
+macdef list_sing (x) = list_cons (,(x), list_nil ())
+
+(* ****** ****** *)
+
 prfun list_length_is_nonnegative
   {a:t@ype} {n:int} (xs: list (a, n)): [n>=0] void
 // end of [list_length_is_nonnegative]
@@ -529,8 +533,9 @@ list_forall_cloref {p:eff} (xs: List a, p: a -<cloref,p> bool):<p> bool
 (*
 symintr list_forall
 overload list_forall with list_forall_fun
-overload list_forall with list_forall_clo
+overload list_forall with list_forall_vclo
 overload list_forall with list_forall_cloptr
+overload list_forall with list_forall_vcloptr
 overload list_forall with list_forall_cloref
 *)
 
@@ -574,8 +579,9 @@ list_forall2_cloref {n:nat} {p:eff} (
 (*
 symintr list_forall2
 overload list_forall2 with list_forall2_fun
-overload list_forall2 with list_forall2_clo
+overload list_forall2 with list_forall2_vclo
 overload list_forall2 with list_forall2_cloptr
+overload list_forall2 with list_forall2_vcloptr
 overload list_forall2 with list_forall2_cloref
 *)
 
@@ -794,8 +800,9 @@ list_map_cloref {n:nat} {f:eff}
 (*
 symintr list_map
 overload list_map with list_map_fun
-overload list_map with list_map_clo
+overload list_map with list_map_vclo
 overload list_map with list_map_cloptr
+overload list_map with list_map_vcloptr
 overload list_map with list_map_cloref
 *)
 
@@ -841,8 +848,9 @@ list_map2_cloref {n:nat} {f:eff} (
 (*
 symintr list_map2
 overload list_map2 with list_map2_fun
-overload list_map2 with list_map2_clo
+overload list_map2 with list_map2_vclo
 overload list_map2 with list_map2_cloptr
+overload list_map2 with list_map2_vcloptr
 overload list_map2 with list_map2_cloref
 *)
 
@@ -911,9 +919,9 @@ list_take_exn {n,i:nat}
 // end of [list_take_exn]
 
 (* ****** ****** *)
-
-// list_tabulate: try list_vt_tabulate
-
+//
+// list_tabulate: please try [list_vt_tabulate]
+//
 (* ****** ****** *)
 
 fun{a:t@ype}

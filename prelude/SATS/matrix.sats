@@ -201,13 +201,13 @@ matrix_make_fun
 ) :<f> matrix (a, m, n) // end of [matrix_make_fun_tsz]
 
 fun{a:viewt@ype}
-matrix_make_clo
+matrix_make_vclo
   {v:view}
   {m,n:pos} {f:eff} (
   pfv: !v
 | row: size_t m, col: size_t n
 , f: &(!v | sizeLt m, sizeLt n, &(a?) >> a) -<clo,f> void
-) :<f> matrix (a, m, n) // end of [matrix_make_clo]
+) :<f> matrix (a, m, n) // end of [matrix_make_vclo]
 
 (* ****** ****** *)
 
@@ -260,11 +260,11 @@ matrix_foreach_fun {m,n:nat} (
 ) :<!ref> void // end of [matrix_foreach_fun]
 
 fun{a:viewt@ype}
-matrix_foreach_clo {v:view} {m,n:nat} (
+matrix_foreach_vclo {v:view} {m,n:nat} (
   pf: !v
 | M: matrix (a, m, n)
 , f: &(!v | &a) -<clo> void, m: size_t m, n: size_t n
-) :<!ref> void // end of [matrix_foreach_clo]
+) :<!ref> void // end of [matrix_foreach_vclo]
 
 fun{a:viewt@ype}
 matrix_foreach_cloref {m,n:nat} (
@@ -297,11 +297,11 @@ matrix_iforeach_fun {m,n:nat} (
 ) :<!ref> void // end of [matrix_iforeach_fun]
 
 fun{a:viewt@ype}
-matrix_iforeach_clo {v:view} {m,n:nat} (
+matrix_iforeach_vclo {v:view} {m,n:nat} (
   pf: !v
 | M: matrix (a, m, n)
 , f: &(!v | sizeLt m, sizeLt n, &a) -<clo> void, m: size_t m, n: size_t n
-) :<!ref> void // end of [matrix_iforeach_clo]
+) :<!ref> void // end of [matrix_iforeach_vclo]
 
 fun{a:viewt@ype}
 matrix_iforeach_cloref {m,n:nat} (

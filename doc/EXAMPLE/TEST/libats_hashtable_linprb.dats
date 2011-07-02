@@ -174,7 +174,7 @@ implement main (argc, argv) = let
     i := enstr (p2s (sprintf ("%i", @(k+k+1))))
   // end of [var]
   prval pf = unit_v ()
-  val () = $H.hashtbl_foreach_clo<key,itm> {unit_v} (pf | ptbl, !p_f)
+  val () = $H.hashtbl_foreach_vclo<key,itm> {unit_v} (pf | ptbl, !p_f)
   prval unit_v () = pf
 //
   val () = find (ptbl, k10000, res)

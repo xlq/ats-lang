@@ -168,10 +168,10 @@ hashtbl_remove {l:agz} (
 (* ****** ****** *)
 
 fun{key:t0p;itm:vt0p}
-hashtbl_foreach_clo {v:view} {l:agz} (
+hashtbl_foreach_vclo {v:view} {l:agz} (
   pf: !v
 | ptbl: !HASHTBLptr (key, itm, l), f: &(!v | key, &itm) -<clo> void
-) :<> void // end of [hashtbl_foreach_clo]
+) :<> void // end of [hashtbl_foreach_vclo]
 
 fun{key:t0p;itm:vt0p}
 hashtbl_foreach_cloref {l:agz} (

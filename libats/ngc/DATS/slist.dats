@@ -192,7 +192,7 @@ in
 end // end of [slist_free_fun]
 
 implement{a}
-slist_free_clo
+slist_free_vclo
   {v} (pf1 | xs, f) = let
   viewtypedef clo_t = (!v | &a >> a?) -<clo> void
   stavar l_f: addr; val p_f: ptr l_f = &f
@@ -210,7 +210,7 @@ slist_free_clo
   prval () = view@ f := pf.1
 in
   ()
-end // end of [slist_free_clo]
+end // end of [slist_free_vclo]
 
 (* ****** ****** *)
 
@@ -366,7 +366,7 @@ end // end of [slist_foreach_fun]
 (* ****** ****** *)
 
 implement{a}
-slist_foreach_clo
+slist_foreach_vclo
   {v} (pfv | xs, f) = let
 //
   stavar l_f: addr
@@ -393,7 +393,7 @@ slist_foreach_clo
 //
 in
   // nothing
-end // end of [slist_foreach_clo]
+end // end of [slist_foreach_vclo]
   
 (* ****** ****** *)
 

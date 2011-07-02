@@ -44,7 +44,7 @@ main (argc, argv) = () where {
 //
   var i: int = 0
   val () =
-    $RA.funralist_foreach_clo<int>
+    $RA.funralist_foreach_vclo<int>
     {int@i} (view@ i | xs, !p_f) where {
     var !p_f = @lam (
       pf: !int @ i | x: int

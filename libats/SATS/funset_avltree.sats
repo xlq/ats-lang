@@ -156,11 +156,11 @@ funset_foreach_fun (
 ) :<> void // end of [funset_foreach_fun]
 
 fun{elt:t@ype}
-funset_foreach_clo {v:view} (
+funset_foreach_vclo {v:view} (
   pf: !v
 | xs: set (elt)
 , f: &(!v | elt) -<clo> void
-) :<> void // end of [funset_foreach_clo]
+) :<> void // end of [funset_foreach_vclo]
 
 fun{elt:t@ype}
 funset_foreach_cloref (

@@ -118,7 +118,7 @@ implement main (argc, argv) = let
     pf: !V | _: sizeLt NCHILD, x: &pid_t? >> pid_t
   ) : void =<clo> x := $effmask_all (fork_child (pf | sockfd, fchild))
   // end of [var]
-  val () = array_ptr_initialize_clo<pid_t>
+  val () = array_ptr_initialize_vclo<pid_t>
     (pf_sock_s | !p_children, NCHILD, !p_clo)
 //
   val () = array_ptr_foreach_fun<pid_t> (
@@ -135,7 +135,7 @@ implement main (argc, argv) = let
   in
     // nothing
   end // end of [var]
-  val () = array_ptr_foreach_clo<pid_t> {V} (view@ status | !p_children, !p_clo, NCHILD)
+  val () = array_ptr_foreach_vclo<pid_t> {V} (view@ status | !p_children, !p_clo, NCHILD)
 //
   val () = socket_close_exn(pf_sock_s | sockfd)
 in

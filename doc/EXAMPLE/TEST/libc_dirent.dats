@@ -105,7 +105,7 @@ in
         $effmask_all (print_direntptr (p_ent); print_newline ())
       // end of [@lam]
     in
-      array_ptr_foreach_clo<direntptr_gc> (pfu | !p_arr, !p_f, nent_sz)
+      array_ptr_foreach_vclo<direntptr_gc> (pfu | !p_arr, !p_f, nent_sz)
     end // end of [val]
     prval unit_v () = pfu
 //    

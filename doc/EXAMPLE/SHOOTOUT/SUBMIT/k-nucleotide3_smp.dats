@@ -257,7 +257,7 @@ implement symtbls_merge (xs) = let
           // nothing
         end // end of [var]
         prval pf = unit_v ()
-        val () = $H.hashtbl_foreach_clo {unit_v} (pf | x1, !p_clo)
+        val () = $H.hashtbl_foreach_vclo {unit_v} (pf | x1, !p_clo)
         prval unit_v () = pf
         val () = $H.hashtbl_free (x1)
       in
@@ -309,7 +309,7 @@ fn write_frequencies
   var total: int = 0
   var !p_clo = @lam (pf: !int@total | k: symbol_t, i: &int): void =<clo>
     (total := total + i)
-  val () = $H.hashtbl_foreach_clo {int@total} (view@ total | tbl, !p_clo)
+  val () = $H.hashtbl_foreach_vclo {int@total} (view@ total | tbl, !p_clo)
   val ftotal = float_of total
   var frqs: frqlst = list_vt_nil ()
   var !p_clo = @lam
@@ -317,7 +317,7 @@ fn write_frequencies
     val f = (float_of 100) * float_of cnt / ftotal; val kf = @(k, f) in
     frqs := list_vt_cons (kf, frqs)
   end // end of [f]
-  val () = $H.hashtbl_foreach_clo {frqlst@frqs} (view@ frqs | tbl, !p_clo)
+  val () = $H.hashtbl_foreach_vclo {frqlst@frqs} (view@ frqs | tbl, !p_clo)
   val () = $H.hashtbl_free (tbl)
   val () = list_vt_quicksort (frqs, compare_symflt_symflt)
 in

@@ -272,7 +272,7 @@ in
 end // end of [array_ptr_initialize_cloenv_tsz]
 
 implement{a}
-array_ptr_initialize_clo
+array_ptr_initialize_vclo
   {v} {n} {f:eff}
   (pf | base, asz, f) = let
   val p_f = &f; prval pf_f = view@ f
@@ -289,7 +289,7 @@ array_ptr_initialize_clo
   prval () = view@ f := pf_f
 in
   // empty
-end // end of [array_ptr_initialize_clo_tsz]
+end // end of [array_ptr_initialize_vclo]
 
 (* ****** ****** *)
 
@@ -414,18 +414,18 @@ end // end of [array_make_lst]
 (* ****** ****** *)
 
 implement{a}
-array_make_clo
+array_make_vclo
   (pf | asz, f) = let
   val (
     pf_gc, pf_arr | p_arr
   ) = array_ptr_alloc_tsz {a} (asz, sizeof<a>)
   prval () = free_gc_elim {a}
     (pf_gc) // return the certificate to GC
-  val () = array_ptr_initialize_clo<a> (pf | !p_arr, asz, f)
+  val () = array_ptr_initialize_vclo<a> (pf | !p_arr, asz, f)
   val (pfbox | ()) = vbox_make_view_ptr (pf_arr | p_arr)
 in
   @{ data= p_arr, view= pfbox }
-end // end of [array_make_clo_tsz]
+end // end of [array_make_vclo]
 
 (* ****** ****** *)
 
@@ -574,7 +574,7 @@ end // end of [array_ptr_foreach_fun]
 (* ****** ****** *)
 
 implement{a}
-array_ptr_foreach_clo
+array_ptr_foreach_vclo
   {v} {n} {f:eff} (pfv | A, f, asz) = let
 //
   viewtypedef clo_t = (!v | &a) -<clo,f> void
@@ -593,7 +593,7 @@ array_ptr_foreach_clo
   prval () = (pfv := pf1; view@ f := pf2)
 in
   // empty
-end // end of [array_ptr_foreach_clo]
+end // end of [array_ptr_foreach_vclo]
 
 (* ****** ****** *)
 
@@ -646,7 +646,7 @@ end // end of [array_ptr_foreach_fun]
 (* ****** ****** *)
 
 implement{a}
-array_ptr_iforeach_clo
+array_ptr_iforeach_vclo
   {v} {n} {f:eff} (pfv | A, f, asz) = let
 //
   viewtypedef clo_t = (!v | sizeLt n, &a) -<clo,f> void
@@ -668,7 +668,7 @@ array_ptr_iforeach_clo
   prval () = (pfv := pf1; view@ f := pf2)
 in
   // empty
-end // end of [array_ptr_iforeach_clo]
+end // end of [array_ptr_iforeach_vclo]
 
 (* ****** ****** *)
 //
@@ -700,7 +700,7 @@ in
 end // end of [array_foreach_fun]
 
 implement{a}
-array_foreach_clo
+array_foreach_vclo
   {v} {n} (pfv | A, f, asz) = let
   stavar l_f: addr
   typedef clo_t = (!v | &a) -<clo> void
@@ -715,7 +715,7 @@ array_foreach_clo
   prval () = (pfv := pf1; view@ f := pf2)
 in
   // empty
-end // end of [array_foreach_clo]
+end // end of [array_foreach_vclo]
 
 implement{a}
 array_foreach_cloref {n} (A, f, asz) = let
@@ -754,7 +754,7 @@ in
 end // end of [array_foreach_fun]
 
 implement{a}
-array_iforeach_clo
+array_iforeach_vclo
   {v} {n} (pfv | A, f, asz) = let
   stavar l_f: addr
   typedef clo_t = (!v | sizeLt n, &a) -<clo> void
@@ -772,7 +772,7 @@ array_iforeach_clo
   prval () = (pfv := pf1; view@ f := pf2)
 in
   // empty
-end // end of [array_iforeach_clo]
+end // end of [array_iforeach_vclo]
 
 implement{a}
 array_iforeach_cloref {n} (A, f, asz) = let

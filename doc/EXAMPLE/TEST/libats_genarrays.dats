@@ -36,7 +36,7 @@ GEMAT_fprint {ord:order} {m,n:nat} {ld:pos} (
     // empty
   end // end of [val]
   prval pf = unit_v ()
-  val () = GEMAT_ptr_iforeach_clo<a>
+  val () = GEMAT_ptr_iforeach_vclo<a>
     (pf | ord, M, !p_clo, ORDERrow, m, n, ld) where {
   } // end of [val]
   prval unit_v () = pf

@@ -138,10 +138,10 @@ linmap_foreach_fun (
 ) :<> void // end of [linmap_foreach_fun]
 
 fun{key:t0p;itm:vt0p}
-linmap_foreach_clo {v:view} (
+linmap_foreach_vclo {v:view} (
   pf: !v
 | m: !map (key, itm), f: &(!v | key, &itm) -<clo> void
-) :<> void // end of [linmap_foreach_clo]
+) :<> void // end of [linmap_foreach_vclo]
 
 fun{key:t0p;itm:vt0p}
 linmap_foreach_cloref

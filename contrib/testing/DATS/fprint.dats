@@ -29,6 +29,8 @@
 ** 02110-1301, USA.
 *)
 
+(* ****** ****** *)
+
 (*
 **
 ** Contributed by Hongwei Xi (hwxi AT cs DOT bu DOT edu)
@@ -218,7 +220,7 @@ matrix_fprint_fun {m,n}
     val () = if j = n-1 then fprint_string (out, sep2)
   } // end of [var]
   prval pfu = unit_v ()
-  val () = matrix_iforeach_clo (pfu | M, !p_clo, m, n)
+  val () = matrix_iforeach_vclo (pfu | M, !p_clo, m, n)
   prval unit_v () = pfu
 in
   // nothing

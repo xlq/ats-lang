@@ -408,7 +408,7 @@ end // end of [vector_foreach_funenv_tsz]
 (* ****** ****** *)
 
 implement{a}
-vector_foreach_clo
+vector_foreach_vclo
   {v} {m,n} (pf_v | V, f) = let
   viewtypedef clo_t = (!v | &a) -<clo> void
   stavar l_f: addr
@@ -424,7 +424,7 @@ vector_foreach_clo
   prval () = (pf_v := pf1; view@ f := pf2)
 in
   // empty
-end // end of [vector_foreach_clo]
+end // end of [vector_foreach_vclo]
 
 (* ****** ****** *)
 
@@ -449,7 +449,7 @@ end // end of [vector_iforeach_funenv_tsz]
 (* ****** ****** *)
 
 implement{a}
-vector_iforeach_clo
+vector_iforeach_vclo
   {v} {m,n} (pf_v | A, f) = let
   viewtypedef clo_t = (!v | sizeLt n, &a) -<clo> void
   stavar l_f: addr
@@ -465,7 +465,7 @@ vector_iforeach_clo
   prval () = (pf_v := pf1; view@ f := pf2)
 in
   // empty
-end // end of [vector_iforeach_clo_tsz]
+end // end of [vector_iforeach_vclo]
 
 (* ****** ****** *)
 

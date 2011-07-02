@@ -125,7 +125,7 @@ fmatrix_ptr_initialize_elt (base, m, n, x) = () where {
 // HX: initialization is done column by colmun
 //
 implement{a} // worth it???
-fmatrix_ptr_initialize_clo
+fmatrix_ptr_initialize_vclo
   {v} {m,n} (pf | base, m, n, f) = () where {
   prval pf_mat = view@ base
   prval (pf1_mn, pf_arr) = array_v_of_fmatrix_v (pf_mat)
@@ -186,7 +186,7 @@ fmatrix_ptr_initialize_clo
   val () = loop_all (pf_nm, pf_arr, pf | &base, f, n)
 //
   prval () = view@ base := fmatrix_v_of_array_v (pf1_mn, pf_arr) 
-} // end of [fmatrix_ptr_initialize_clo]
+} // end of [fmatrix_ptr_initialize_vclo]
 
 (* ****** ****** *)
 
@@ -294,7 +294,7 @@ end // end of [fmatrix_ptr_foreach_fun]
 (* ****** ****** *)
 
 implement{a}
-fmatrix_ptr_foreach_clo
+fmatrix_ptr_foreach_vclo
   {v} (pf_v | M, f, ord, m, n) = let
   stavar l_f: addr
   val p_f: ptr l_f = &f
@@ -310,7 +310,7 @@ fmatrix_ptr_foreach_clo
   prval () = (pf_v := pf1; view@ f := pf2)
 in
   // empty
-end // end of [fmatrix_ptr_foreach_clo_tsz]
+end // end of [fmatrix_ptr_foreach_vclo]
 
 (* ****** ****** *)
 //
@@ -343,14 +343,14 @@ end (* end of [fmatrix_ptr_iforeach_fun] *)
 (* ****** ****** *)
 
 implement{a}
-fmatrix_ptr_iforeach_clo {v} {ord} {m,n}
+fmatrix_ptr_iforeach_vclo {v} {ord} {m,n}
   (pf | M, f, ord, m, n) = if m > 0 then let
   prval (pf_mat, fpf) = GEMAT_v_of_fmatrix_v {a} (view@ M)
-  val () = GEMAT_ptr_iforeach_clo<a> (pf | ORDERcol, M, f, ord, m, n, m)
+  val () = GEMAT_ptr_iforeach_vclo<a> (pf | ORDERcol, M, f, ord, m, n, m)
   prval () = view@ M := fpf (pf_mat)
 in
   // nothing
-end (* end of [fmatrix_ptr_iforeach_clo] *)
+end (* end of [fmatrix_ptr_iforeach_vclo] *)
 
 (* ****** ****** *)
 

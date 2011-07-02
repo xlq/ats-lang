@@ -165,14 +165,14 @@ chain_remove {n:nat} .<n>. (
 end // end of [chain_remove]
 
 fun{key:t0p;itm:vt0p}
-chain_foreach_clo {v:view} {n:nat} {f:eff} .<n>. (
+chain_foreach_vclo {v:view} {n:nat} {f:eff} .<n>. (
   pf: !v | kis: !chain (key, itm, n), f: &(!v | key, &itm) -<clo,f> void
 ) :<f> void = begin case+ kis of
   | CHAINcons (k, !i, !kis1) => begin
-      f (pf | k, !i); chain_foreach_clo (pf | !kis1, f); fold@ kis
+      f (pf | k, !i); chain_foreach_vclo (pf | !kis1, f); fold@ kis
     end // end of [cons]
   | CHAINnil () => fold@ kis
-end // end of [chain_foreach_clo]
+end // end of [chain_foreach_vclo]
 
 (* ****** ****** *)
 
@@ -633,7 +633,7 @@ hashtbl_remove
 (* ****** ****** *)
 
 fun{key:t0p;itm:vt0p}
-hashtbl_ptr_foreach_clo {v:view}
+hashtbl_ptr_foreach_vclo {v:view}
   {sz,tot:nat}
   {l_beg,l_end:addr}
   {f:eff} .<sz>. (
@@ -643,25 +643,24 @@ hashtbl_ptr_foreach_clo {v:view}
 ) :<f> void = begin
   if sz > 0 then let
     prval hashtbl_v_cons (pf1_tbl, pf2_tbl) = pf_tbl
-    val () = chain_foreach_clo (pfv | !p_beg, f)
+    val () = chain_foreach_vclo (pfv | !p_beg, f)
     val () = // segfault during typechecking if {v} is not provided!!!
-      hashtbl_ptr_foreach_clo<key,itm> {v}
-        (pfv, pf2_tbl | sz-1, p_beg+sizeof<chain0>, f)
+      hashtbl_ptr_foreach_vclo<key,itm> {v} (pfv, pf2_tbl | sz-1, p_beg+sizeof<chain0>, f)
     prval () = pf_tbl := hashtbl_v_cons (pf1_tbl, pf2_tbl)
   in
     // empty
   end // end of [if]
-end // end of [hashtbl_ptr_foreach_clo]
+end // end of [hashtbl_ptr_foreach_vclo]
 
 implement{key,itm}
-hashtbl_foreach_clo
+hashtbl_foreach_vclo
   {v} (pfv | ptbl, f) = () where {
   val (pf, fpf | p) = HASHTBLptr_get_hashtbl {key,itm} (ptbl)  
   val () = begin
-    hashtbl_ptr_foreach_clo {v} (pfv, p->pftbl | p->sz, p->pbeg, f)
+    hashtbl_ptr_foreach_vclo {v} (pfv, p->pftbl | p->sz, p->pbeg, f)
   end // end of [val]
   prval () = minus_addback (fpf, pf | ptbl)
-} // end of [hashtbl_foreach_clo]
+} // end of [hashtbl_foreach_vclo]
 
 implement{key,itm}
 hashtbl_foreach_cloref
@@ -676,7 +675,7 @@ hashtbl_foreach_cloref
     extern prfun __assert (_: vbox V): (V, V -<lin,prf> void)
   } // end of [prval]
   prval pf0 = unit_v ()
-  val () = hashtbl_foreach_clo<key,itm> {unit_v} (pf0 | tbl, !p_f)
+  val () = hashtbl_foreach_vclo<key,itm> {unit_v} (pf0 | tbl, !p_f)
   prval unit_v () = pf0
   prval () = fpf (pf)
 } // end of [hashtbl_foreach_cloref]
@@ -705,7 +704,7 @@ hashtbl_listize (ptbl) = let
   ) : void =<clo>
     (res := list_vt_cons ((k, x), res))
   // end of [var]
-  val () = hashtbl_foreach_clo<key,itm> {V} (view@ res | ptbl, !p_clo)
+  val () = hashtbl_foreach_vclo<key,itm> {V} (view@ res | ptbl, !p_clo)
 in
   list_vt_reverse (res) // list-reversing for the shadowing semantics
 end // end of [hashtbl_listize]
@@ -744,8 +743,7 @@ atslib_hashtbl_ptr_make__chain
 
 ats_ptr_type
 atslib_hashtbl_make_hint__chain (
-  ats_clo_ref_type hash
-, ats_clo_ref_type eqfn
+  ats_clo_ref_type hash, ats_clo_ref_type eqfn
 , ats_size_type hint
 ) {
   size_t sz ;

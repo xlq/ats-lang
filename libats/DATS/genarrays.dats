@@ -217,7 +217,7 @@ end // end of [GEVEC_ptr_foreach_fun_tsz]
 //
 
 implement{a}
-GEVEC_ptr_foreach_clo
+GEVEC_ptr_foreach_vclo
   {v} (pf_v | base, f, vsz, inc) = let
   stavar l_f: addr
   val p_f: ptr l_f = &f
@@ -233,7 +233,7 @@ GEVEC_ptr_foreach_clo
   prval () = (pf_v := pf1; view@ f := pf2)
 in
   // empty
-end // end of [GEVEC_ptr_foreach_clo]
+end // end of [GEVEC_ptr_foreach_vclo]
 
 (* ****** ****** *)
 
@@ -311,7 +311,7 @@ end // end of [GEVEC_ptr_iforeach_cloenv_tsz]
 //
 
 implement{a}
-GEVEC_ptr_iforeach_clo
+GEVEC_ptr_iforeach_vclo
   {v} {n} (pf | base, f, n, inc) = let
   stavar l_f: addr
   val p_f = (&f: ptr l_f)
@@ -327,7 +327,7 @@ GEVEC_ptr_iforeach_clo
   } // end of [prval]
 in
   // nothing
-end // end of [GEVEC_ptr_iforeach_clo_tsz]
+end // end of [GEVEC_ptr_iforeach_vclo]
 
 (* ****** ****** *)
 
@@ -633,7 +633,7 @@ GEMAT_ptr_initialize_fun
 } // end of [GEMAT_ptr_initialize_fun]
 
 implement{a}
-GEMAT_ptr_initialize_clo
+GEMAT_ptr_initialize_vclo
   {v} {ord} {m,n} {ld} (pf | ord, X, m, n, ld, f) = () where {
 //
   typedef clotype0 =
@@ -649,11 +649,11 @@ GEMAT_ptr_initialize_clo
     extern castfn __cast
       (X: &GEMAT (a?, m, n, ord, ld) >> GEMAT (a, m, n, ord, ld)):<> ptr
   } // end of [val]
-  val () = GEMAT_ptr_iforeach_clo<a> (pf | ord, X, f, ord, m, n, ld)
+  val () = GEMAT_ptr_iforeach_vclo<a> (pf | ord, X, f, ord, m, n, ld)
   val _(*ptr*) = __cast (f) where {
     extern castfn __cast (f: &clotype1 >> clotype0) :<> ptr
   }
-} // end of [GEMAT_ptr_initialize_clo]
+} // end of [GEMAT_ptr_initialize_vclo]
 
 (* ****** ****** *)
 
@@ -800,7 +800,7 @@ in
 end // end of [GEMAT_ptr_foreach_fun]
 
 implement{a}
-GEMAT_ptr_foreach_clo
+GEMAT_ptr_foreach_vclo
   {v} {ord1,ord2} {m,n}
   (pf_v | ord1, M, f, ord2, m, n, ld) = let
   viewtypedef clo_t = (!v | &a) -<clo> void
@@ -817,7 +817,7 @@ GEMAT_ptr_foreach_clo
   prval () = (pf_v := pf1; view@ f := pf2)
 in
   // empty
-end // end of [GEMAT_ptr_foreach_clo]
+end // end of [GEMAT_ptr_foreach_vclo]
 
 (* ****** ****** *)
 
@@ -919,7 +919,7 @@ end // end of [GEMAT_ptr_iforeach_fun]
 (* ****** ****** *)
 
 implement{a}
-GEMAT_ptr_iforeach_clo
+GEMAT_ptr_iforeach_vclo
   {v} {ord1,ord2} {m,n}
   (pf_v | ord1, M, f, ord2, m, n, ld) = let
   viewtypedef clo_t = (!v | sizeLt m, sizeLt n, &a) -<clo> void
@@ -939,7 +939,7 @@ GEMAT_ptr_iforeach_clo
   prval () = (pf_v := pf1; view@ f := pf2)
 in
   // empty
-end // end of [GEMAT_ptr_iforeach_clo]
+end // end of [GEMAT_ptr_iforeach_vclo]
 
 (* ****** ****** *)
 

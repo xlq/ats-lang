@@ -111,9 +111,14 @@ fun fundeque_append {a:t@ype} {n1,n2:nat}
 
 fun{a:t@ype}
 fundeque_foreach_cloptr
+  {n:nat}
+  (xs: deque (a, n), f: !(a) -<cloptr> void):<> void
+// end of [fundeque_foreach_cloptr]
+fun{a:t@ype}
+fundeque_foreach_vcloptr
   {v:view} {n:nat}
   (pf: !v | xs: deque (a, n), f: !(!v | a) -<cloptr> void):<> void
-// end of [fundeque_foreach_cloptr]
+// end of [fundeque_foreach_vcloptr]
 
 fun{a:t@ype}
 fundeque_foreach_cloref {n:nat}
@@ -123,15 +128,20 @@ fundeque_foreach_cloref {n:nat}
 (* ****** ****** *)
 
 fun{a:t@ype}
-fundeque_foreach_rev_cloptr
+fundeque_rforeach_cloptr
+  {n:nat}
+  (xs: deque (a, n), f: !(a) -<cloptr> void):<> void
+// end of [fundeque_rforeach_cloptr]
+fun{a:t@ype}
+fundeque_rforeach_vcloptr
   {v:view} {n:nat}
   (pf: !v | xs: deque (a, n), f: !(!v | a) -<cloptr> void):<> void
-// end of [fundeque_foreach_rev_cloptr]
+// end of [fundeque_rforeach_vcloptr]
 
 fun{a:t@ype}
-fundeque_foreach_rev_cloref {n:nat}
+fundeque_rforeach_cloref {n:nat}
   (xs: deque (a, n), f: (a) -<cloref> void):<> void
-// end of [fundeque_foreach_rev_cloref]
+// end of [fundeque_rforeach_cloref]
 
 (* ****** ****** *)
 

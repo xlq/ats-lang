@@ -69,7 +69,7 @@ implement main () = () where {
 //
   viewdef V = unit_v
   prval pfu = unit_v
-  val () = $V.vector_iforeach_clo<T>
+  val () = $V.vector_iforeach_vclo<T>
     {V} (pfu | V, !p_clo) where {
     var !p_clo = @lam (pf: !V | i: sizeLt N, x: &T)
       : void =<> $effmask_all let

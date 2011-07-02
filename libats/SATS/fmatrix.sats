@@ -134,13 +134,13 @@ fmatrix_ptr_initialize_elt
 (* ****** ****** *)
 
 fun{a:viewt@ype}
-fmatrix_ptr_initialize_clo
+fmatrix_ptr_initialize_vclo
   {v:view} {m,n:nat} (
   pf: !v 
 | base: &fmatrix (a?, m, n) >> fmatrix (a, m, n)
 , m: size_t m, n: size_t n
 , f: &(!v | &(a?) >> a, sizeLt m, sizeLt n) -<clo> void
-) :<> void // end of [fmatrix_ptr_initialize_clo]
+) :<> void // end of [fmatrix_ptr_initialize_vclo]
 
 (* ****** ****** *)
 
@@ -263,12 +263,12 @@ fmatrix_ptr_foreach_fun {ord:order} {m,n:nat} (
 ) :<> void // end of [fmatrix_foreach_fun]
 
 fun{a:viewt@ype}
-fmatrix_ptr_foreach_clo {v:view} {ord:order} {m,n:nat} (
+fmatrix_ptr_foreach_vclo {v:view} {ord:order} {m,n:nat} (
   pf: !v
 | M: &fmatrix (a, m, n)
 , f: &(!v | &a) -<clo> void
 , ord: ORDER ord, m: size_t m, n: size_t n
-) :<> void // end of [fmatrix_foreach_clo]
+) :<> void // end of [fmatrix_foreach_vclo]
 
 (* ****** ****** *)
 
@@ -292,11 +292,11 @@ fmatrix_ptr_iforeach_fun
 ) :<> void // end of [fmatrix_iforeach_fun]
 
 fun{a:viewt@ype}
-fmatrix_ptr_iforeach_clo {v:view} {ord:order} {m,n:nat} (
+fmatrix_ptr_iforeach_vclo {v:view} {ord:order} {m,n:nat} (
   pf: !v
 | M: &fmatrix (a, m, n), f: &(!v | sizeLt m, sizeLt n, &a) -<clo> void
 , ord: ORDER ord, m: size_t m, n: size_t n
-) :<> void // end of [fmatrix_iforeach_clo]
+) :<> void // end of [fmatrix_iforeach_vclo]
 
 (* ****** ****** *)
 

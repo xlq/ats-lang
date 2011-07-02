@@ -69,7 +69,7 @@ implement main (argc, argv) = let
 //
   val () = if n < 100 then let
     prval pf = unit_v (); val () =
-      $M.linmap_foreach_clo<int,string> {unit_v} (pf | map, !p_clo) where {
+      $M.linmap_foreach_vclo<int,string> {unit_v} (pf | map, !p_clo) where {
       var !p_clo = @lam (pf: !unit_v | k: key, i: &itm): void =<clo> $effmask_all
         (printf ("%i\t->\t%s\n", @(k, i)))
     } // end of [val]

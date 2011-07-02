@@ -161,17 +161,30 @@ funarray_hirem_get (* O(log(n)) *)
 ** they can be readily replaced with for-loops. See the implementation.
 *)
 
-fun{a:t@ype} funarray_foreach_clo {v:view} {n:nat}
+fun{a:t@ype} funarray_foreach_vclo {v:view} {n:nat}
   (pf: !v | A: array (a, n), n: int n, f: &(!v | a) -<clo> void):<> void
-fun{a:t@ype} funarray_foreach_cloptr {v:view} {n:nat}
+
+fun{a:t@ype}
+funarray_foreach_cloptr {n:nat}
+  (A: array (a, n), n: int n, f: !(a) -<cloptr> void):<> void
+fun{a:t@ype} funarray_foreach_vcloptr {v:view} {n:nat}
   (pf: !v | A: array (a, n), n: int n, f: !(!v | a) -<cloptr> void):<> void
+
 fun{a:t@ype} funarray_foreach_cloref {n:nat}
   (A: array (a, n), n: int n, f: a -<cloref> void):<!ref> void
+  
+(* ****** ****** *)
 
-fun{a:t@ype} funarray_iforeach_clo {v:view} {n:nat}
+fun{a:t@ype} funarray_iforeach_vclo {v:view} {n:nat}
   (pf: !v | A: array (a, n), n: int n, f: &(!v | natLt n, a) -<clo> void):<> void
-fun{a:t@ype} funarray_iforeach_cloptr {v:view} {n:nat}
+
+fun{a:t@ype}
+funarray_iforeach_cloptr {n:nat}
+  (A: array (a, n), n: int n, f: !(natLt n, a) -<cloptr> void):<> void
+fun{a:t@ype}
+funarray_iforeach_vcloptr {v:view} {n:nat}
   (pf: !v | A: array (a, n), n: int n, f: !(!v | natLt n, a) -<cloptr> void):<> void
+
 fun{a:t@ype} funarray_iforeach_cloref {n:nat}
   (A: array (a, n), n: int n, f:  (natLt n, a) -<cloref> void):<!ref> void
 

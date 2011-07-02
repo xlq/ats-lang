@@ -126,9 +126,9 @@ fn array_ptr_print
     (pf: !unit_v | i: sizeLt n, x: &T): void =<clo> begin
     $effmask_all (if i > 0 then print ", "; printf ("%i", @(x)))
   end // end of [var]
-  prval pf = unit_v ()
-  val () = array_ptr_iforeach_clo<T> (pf | !A, !p_f, n)
-  prval unit_v () = pf
+  prval pfu = unit_v ()
+  val () = array_ptr_iforeach_vclo<T> (pfu | !A, !p_f, n)
+  prval unit_v () = pfu
 in
   // nothing
 end // end of [array_ptr_print]

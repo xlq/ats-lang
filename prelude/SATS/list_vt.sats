@@ -65,6 +65,10 @@ viewtypedef List_vt (a:viewt@ype) = [n:int | n >=0] list_vt (a, n)
 
 (* ****** ****** *)
 
+macdef list_vt_sing (x) = list_vt_cons (,(x), list_vt_nil ())
+
+(* ****** ****** *)
+
 prfun list_vt_length_is_nonnegative
   {a:viewt@ype} {n:int} (xs: !list_vt (a, n)): [n>=0] void
 // end of [list_vt_length_is_nonnegative]

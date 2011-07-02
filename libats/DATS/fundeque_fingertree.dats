@@ -888,7 +888,7 @@ implement foreach
 in // in of [local]
 
 implement{a}
-fundeque_foreach_cloptr
+fundeque_foreach_vcloptr
   {v} {n} (pf0 | xs, f) = let
   val f = __cast (f) where {
     extern castfn __cast
@@ -905,11 +905,29 @@ fundeque_foreach_cloptr
   } // end of [val]
 in
   $effmask_all (foreach (pf0 | xs, f0))
-end // end of [fundeque_foreach_cloptr]
+end // end of [fundeque_foreach_vcloptr]
 
 end // end of [local]
 
 (* ****** ****** *)
+
+implement{a}
+fundeque_foreach_cloptr
+  {n} (xs, f) = () where {
+//
+  viewtypedef cloptr0_t = (a) -<cloptr> void
+  viewtypedef cloptr1_t = (!unit_v | a) -<cloptr> void
+//
+  prval () = __assert(f) where {
+    extern prfun __assert (f: !cloptr0_t >> cloptr1_t): void
+  } // end of [val]
+  prval pfu = unit_v ()
+  val () = fundeque_foreach_vcloptr<a> {unit_v} (pfu | xs, f)
+  prval unit_v () = pfu
+  prval () = __assert(f) where {
+    extern prfun __assert (f: !cloptr1_t >> cloptr0_t): void
+  } // end of [val]
+} // end of [fundeque_foreach_cloptr]
 
 implement{a}
 fundeque_foreach_cloref
@@ -919,7 +937,7 @@ fundeque_foreach_cloref
     extern castfn __encode (f: (a) -<cloref> void):<> cloptr_type
   } // end of [val]
   prval pfu = unit_v ()
-  val () = fundeque_foreach_cloptr<a> (pfu | xs, f)
+  val () = fundeque_foreach_vcloptr<a> (pfu | xs, f)
   prval unit_v () = pfu
   val _ptr = __decode (f) where {
     extern castfn __decode (f: cloptr_type):<> ptr
@@ -933,14 +951,14 @@ end // end of [fundeque_foreach_cloref]
 local
 
 extern
-fun foreach_rev
+fun rforeach
   {a:t@ype} {v:view} {d:nat} {n:nat} (
   pf: !v
 | xt: fingertree (a, d, n)
 , f: (!v | ftnode (a, d)) -<cloref> void
 ) : void
 
-implement foreach_rev
+implement rforeach
   {a} {v} {d} (pf | xt, f) =
   case+ xt of
   | FTempty () => ()
@@ -969,7 +987,7 @@ implement foreach_rev
                 (f_1: &(!v | ftnode (a, d+1)) -<clo> void): (!v | ftnode (a, d+1)) -<cloref> void
             } // end of [val]
           in
-            foreach_rev (pf | m, f_1)
+            rforeach (pf | m, f_1)
           end // end of [_]
       ) : void // end of [val]
       val () = (case+ pr of
@@ -982,12 +1000,12 @@ implement foreach_rev
     in
       // nothing
     end // end of [FTdeep]
-// end of [foreach_rev]
+// end of [rforeach]
 
 in // in of [local]
 
 implement{a}
-fundeque_foreach_rev_cloptr
+fundeque_rforeach_vcloptr
   {v} {n} (pf0 | xs, f) = let
   val f = __cast (f) where {
     extern castfn __cast
@@ -1003,29 +1021,47 @@ fundeque_foreach_rev_cloptr
       (f0: &(!v | ftnode (a, 0)) -<clo> void):<> (!v | ftnode (a, 0)) -<cloref> void
   } // end of [val]
 in
-  $effmask_all (foreach_rev (pf0 | xs, f0))
-end // end of [fundeque_foreach_rev_cloptr]
+  $effmask_all (rforeach (pf0 | xs, f0))
+end // end of [fundeque_rforeach_vcloptr]
 
 end // end of [local]
 
 (* ****** ****** *)
 
 implement{a}
-fundeque_foreach_rev_cloref
+fundeque_rforeach_cloptr
+  {n} (xs, f) = () where {
+//
+  viewtypedef cloptr0_t = (a) -<cloptr> void
+  viewtypedef cloptr1_t = (!unit_v | a) -<cloptr> void
+//
+  prval () = __assert(f) where {
+    extern prfun __assert (f: !cloptr0_t >> cloptr1_t): void
+  } // end of [val]
+  prval pfu = unit_v ()
+  val () = fundeque_rforeach_vcloptr<a> {unit_v} (pfu | xs, f)
+  prval unit_v () = pfu
+  prval () = __assert(f) where {
+    extern prfun __assert (f: !cloptr1_t >> cloptr0_t): void
+  } // end of [val]
+} // end of [fundeque_rforeach_cloptr]
+
+implement{a}
+fundeque_rforeach_cloref
   {n} (xs, f) = let
   viewtypedef cloptr_type = (!unit_v | a) -<cloptr> void  
   val f = __encode (f) where {
     extern castfn __encode (f: (a) -<cloref> void):<> cloptr_type
   } // end of [val]
   prval pfu = unit_v ()
-  val () = fundeque_foreach_rev_cloptr<a> (pfu | xs, f)
+  val () = fundeque_rforeach_vcloptr<a> (pfu | xs, f)
   prval unit_v () = pfu
   val _ptr = __decode (f) where {
     extern castfn __decode (f: cloptr_type):<> ptr
   } // end of [val]
 in
   // nothing
-end // end of [fundeque_foreach_rev_cloref]
+end // end of [fundeque_rforeach_cloref]
 
 (* ****** ****** *)
 

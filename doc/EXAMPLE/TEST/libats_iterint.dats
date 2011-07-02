@@ -19,25 +19,25 @@ staload "libats/SATS/iterint.sats"
 (* ****** ****** *)
 
 (*
-fun foreach_clo {v:view} {n:nat} {f:eff}
+fun foreach_vclo {v:view} {n:nat} {f:eff}
   (pf: !v | n: int n, f: &(!v | natLt n) -<clo,f> void):<f> void
-// end of [foreach_clo]
+// end of [foreach_vclo]
 *)
 
-fn sum_foreach_clo {n:nat} (n: int n): Nat = res where {
+fn sum_foreach_vclo {n:nat} (n: int n): Nat = res where {
   var res: Nat = 0
   viewdef v = Nat @ res
   var !p_f = @lam
     (pf: !v | i: natLt n): void =<clo> res := res + (i+1)
   // end of [var]
-  val () = foreach_clo {v} {n} (view@ res | n, !p_f)
-} // end of [sum_foreach_clo]
+  val () = foreach_vclo {v} {n} (view@ res | n, !p_f)
+} // end of [sum_foreach_vclo]
 
-fn test_foreach_clo () = () where {
+fn test_foreach_vclo () = () where {
   #define N 100
-  val sum = sum_foreach_clo (N)
+  val sum = sum_foreach_vclo (N)
   val () = assert_errmsg (sum = N * (N+1) / 2, #LOCATION)
-} // end of [test_foreach_clo]
+} // end of [test_foreach_vclo]
 
 (* ****** ****** *)
 
@@ -62,12 +62,12 @@ fn test_foreach_cloref () = () where {
 (* ****** ****** *)
 
 (*
-fun foreach2_clo {v:view} {m,n:nat} {f:eff}
+fun foreach2_vclo {v:view} {m,n:nat} {f:eff}
   (pf: !v | m: int m, n: int n, f: &(!v | natLt m, natLt n) -<clo,f> void) :<f> void
-// end of [foreach2_clo]
+// end of [foreach2_vclo]
 *)
 
-fn sum_foreach2_clo {n:nat}
+fn sum_foreach2_vclo {n:nat}
   (n: int n): Nat = res where {
   var res: Nat = 0
   viewdef v = Nat @ res
@@ -75,15 +75,15 @@ fn sum_foreach2_clo {n:nat}
     (pf: !v | i: natLt n, j: natLt n): void =<clo>
     res := res + (i+1) nmul (j+1)
   // end of [var]
-  val () = foreach2_clo {v} {n,n} (view@ res | n, n, !p_f)
-} // end of [sum_foreach2_clo]
+  val () = foreach2_vclo {v} {n,n} (view@ res | n, n, !p_f)
+} // end of [sum_foreach2_vclo]
 
-fn test_foreach2_clo () = () where {
+fn test_foreach2_vclo () = () where {
   #define N 100
   #define R %(N * (N+1) / 2)
-  val sum = sum_foreach2_clo (N)
+  val sum = sum_foreach2_vclo (N)
   val () = assert_errmsg (sum = R * R, #LOCATION)
-} // end of [test_foreach2_clo]
+} // end of [test_foreach2_vclo]
 
 (* ****** ****** *)
 
@@ -112,12 +112,12 @@ fn test_foreach2_cloref () = () where {
 (* ****** ****** *)
 
 (*
-fun repeat_clo {v:view} {n:nat} {f:eff}
+fun repeat_vclo {v:view} {n:nat} {f:eff}
   (pf: !v | n: int n, f: &(!v | (*none*)) -<clo,f> void):<f> void
-// end of [repeat_clo]
+// end of [repeat_vclo]
 *)
 
-fn sum_repeat_clo {n:nat} (n: int n): Nat = res where {
+fn sum_repeat_vclo {n:nat} (n: int n): Nat = res where {
   var i: Nat = 1
   var res: Nat = 0
   viewdef v = (Nat @ i, Nat @ res)
@@ -130,15 +130,15 @@ fn sum_repeat_clo {n:nat} (n: int n): Nat = res where {
     // nothing
   end // end of [var]
   prval pf = (view@ i, view@ res)
-  val () = repeat_clo {v} {n} (pf | n, !p_f)
+  val () = repeat_vclo {v} {n} (pf | n, !p_f)
   prval () = (view@ i := pf.0; view@ res := pf.1)
-} // end of [sum_repeat_clo]
+} // end of [sum_repeat_vclo]
 
-fn test_repeat_clo () = () where {
+fn test_repeat_vclo () = () where {
   #define N 111
-  val sum = sum_repeat_clo (N)
+  val sum = sum_repeat_vclo (N)
   val () = assert_errmsg (sum = N * (N+1) / 2, #LOCATION)
-} // end of [test_repeat_clo]
+} // end of [test_repeat_vclo]
 
 (* ****** ****** *)
 
@@ -173,13 +173,13 @@ dynload "libats/DATS/iterint.dats"
 (* ****** ****** *)
 
 implement main () = let
-  val () = test_foreach_clo ()
+  val () = test_foreach_vclo ()
   val () = test_foreach_cloref ()
 //
-  val () = test_foreach2_clo ()
+  val () = test_foreach2_vclo ()
   val () = test_foreach2_cloref ()
 //
-  val () = test_repeat_clo ()
+  val () = test_repeat_vclo ()
   val () = test_repeat_cloref ()
 in
   print "[libats_iterint] testing passes!"; print_newline ()

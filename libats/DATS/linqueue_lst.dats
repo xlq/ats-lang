@@ -416,7 +416,7 @@ end // end of [queue_foreach_fun]
 (* ****** ****** *)
 
 implement{a}
-queue_foreach_clo
+queue_foreach_vclo
   {v} {n} (pf | q, f) = let
   stavar l_f: addr
   val p_f: ptr l_f = &f
@@ -436,7 +436,7 @@ queue_foreach_clo
   prval () = view@ f := pf1.1
 in
   // nothing
-end // end of [queue_foreach_clo]
+end // end of [queue_foreach_vclo]
 
 (* ****** ****** *)
 

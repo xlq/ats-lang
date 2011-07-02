@@ -296,8 +296,8 @@ end // end of [foreach]
 in // in of [local]
 
 implement{elt}
-funralist_foreach_cloptr
-  {v} {n} {f} (pf0 | xs, f) = let
+funralist_foreach_vcloptr
+  {v} {n} {f:eff} (pf0 | xs, f) = let
   typedef cloref_type = (!v | elt) -<cloref,f> void
   viewtypedef cloptr_type = (!v | elt) -<cloptr,f> void
   val f = __cast (f) where {
@@ -305,39 +305,57 @@ funralist_foreach_cloptr
   } // end of [val]
 in
   foreach<elt> (pf0 | xs, f)
-end // end of [funralist_foreach_cloptr]
+end // end of [funralist_foreach_vcloptr]
 
 end // end of [local]
 
 (* ****** ****** *)
 
 implement{elt}
-funralist_foreach_clo
-  {v} {n} {f} (pf0 | xs, f) = let
+funralist_foreach_vclo
+  {v} {n} {f:eff} (pf0 | xs, f) = let
   typedef clo_type = (!v | elt) -<clo,f> void
   viewtypedef cloptr_type = (!v | elt) -<cloptr,f> void
   val f = __encode (view@ f | &f) where {
     extern castfn __encode
       {l:addr} (pf: !clo_type @ l | p: ptr l):<> cloptr_type
   } // end of [where]
-  val () = funralist_foreach_cloptr<elt> {v} (pf0 | xs, f)
+  val () = funralist_foreach_vcloptr<elt> {v} (pf0 | xs, f)
   val _ptr = __decode (f) where {
     extern castfn __decode
       (f: cloptr_type):<> ptr // HX: this matches [__encode]
   } // end of [val]
 in
   // empty
-end // end of [funralist_foreach_clo]
+end // end of [funralist_foreach_vclo]
+
+implement{elt}
+funralist_foreach_cloptr
+  {n} {f:eff} (xs, f) = () where {
+//
+  viewtypedef cloptr0_t = (elt) -<cloptr, f> void
+  viewtypedef cloptr1_t = (!unit_v | elt) -<cloptr, f> void
+//
+  prval () = __assert(f) where {
+    extern prfun __assert (f: !cloptr0_t >> cloptr1_t): void
+  } // end of [val]
+  prval pfu = unit_v ()
+  val () = funralist_foreach_vcloptr<elt> {unit_v} (pfu | xs, f)
+  prval unit_v () = pfu
+  prval () = __assert(f) where {
+    extern prfun __assert (f: !cloptr1_t >> cloptr0_t): void
+  } // end of [val]
+} // end of [funralist_foreach_cloptr]
 
 implement{elt}
 funralist_foreach_cloref
-  {n} {f} (xs, f) = let
+  {n} {f:eff} (xs, f) = let
   viewtypedef cloptr_type = (!unit_v | elt) -<cloptr,f> void  
   val f = __encode (f) where {
     extern castfn __encode (f: (elt) -<cloref,f> void):<> cloptr_type
   } // end of [val]
   prval pfu = unit_v ()
-  val () = funralist_foreach_cloptr<elt> (pfu | xs, f)
+  val () = funralist_foreach_vcloptr<elt> (pfu | xs, f)
   prval unit_v () = pfu
   val _ptr = __decode (f) where {
     extern castfn __decode (f: cloptr_type):<> ptr

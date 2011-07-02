@@ -40,11 +40,11 @@ main (argc, argv) = let
     } // end of [val]
     val () = print_newline ()
 //
-// testing [matrix_iforeach_clo]
+// testing [matrix_iforeach_vclo]
 //
     val () = print "M (0-9) =\n"
     prval pf = unit_v ()
-    val () = matrix_iforeach_clo {unit_v} (pf | M, !p_f, row, col) where {
+    val () = matrix_iforeach_vclo {unit_v} (pf | M, !p_f, row, col) where {
       var !p_f = @lam
         (pf: !unit_v | i: sizeLt row, j: sizeLt col, x: &int): void =<clo>
         $effmask_all (let

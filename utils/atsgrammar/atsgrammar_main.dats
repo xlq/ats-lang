@@ -1492,7 +1492,6 @@ val () = symbol_set_tyname (f0arg2seq, f0arglst_tyname)
 (*
 ** dynamic expressions
 *)
-
 val d0exp = symbol_make_nt "d0exp"
 val () = symbol_set_tyname (d0exp, d0exp_tyname)
 val atmd0exp = symbol_make_nt "atmd0exp"

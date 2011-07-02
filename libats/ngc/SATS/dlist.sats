@@ -47,7 +47,7 @@ sortdef vt0p = viewt@ype
 
 absview
 dlnode_v (
-  a:viewt@ype+, l: addr, lp: addr, ln: addr
+  a:viewt@ype+, l: addr, lp: addr, ln: addr // lp: previous; ln: next
 ) // end of [dlnode_v]
 
 prfun
@@ -63,14 +63,14 @@ dlnode_get_prev_type
   (a:viewt@ype) = {l,lp,ln:addr} (
   !dlnode_v (a, l, lp, ln) | ptr l
 ) -<fun> ptr lp // end of [dlnode_get_prev_type]
-fun{a:vt0p} dlnode_get_prev : dlnode_get_prev_type (a) // specific
+fun{a:vt0p} dlnode_get_prev : dlnode_get_prev_type (a) // specific template
 
 typedef
 dlnode_set_prev_type
   (a:viewt@ype) = {l,lp1,ln:addr} {lp2:addr} (
   !dlnode_v (a, l, lp1, ln) >> dlnode_v (a, l, lp2, ln) | ptr l, ptr lp2
 ) -<fun> void // end of [dlnode_set_prev_type]
-fun{a:vt0p} dlnode_set_prev : dlnode_set_prev_type (a) // specific
+fun{a:vt0p} dlnode_set_prev : dlnode_set_prev_type (a) // specific template
 
 (* ****** ****** *)
 
@@ -79,14 +79,14 @@ dlnode_get_next_type
   (a:viewt@ype) = {l,lp,ln:addr} (
   !dlnode_v (a, l, lp, ln) | ptr l
 ) -<fun> ptr ln // end of [dlnode_get_next_type]
-fun{a:vt0p} dlnode_get_next : dlnode_get_next_type (a) // specific
+fun{a:vt0p} dlnode_get_next : dlnode_get_next_type (a) // specific template
 
 typedef
 dlnode_set_next_type
   (a:viewt@ype) = {l,lp,ln1:addr} {ln2:addr} (
   !dlnode_v (a, l, lp, ln1) >> dlnode_v (a, l, lp, ln2) | ptr l, ptr ln2
 ) -<fun> void // end of [dlnode_set_next_type]
-fun{a:vt0p} dlnode_set_next : dlnode_set_next_type (a) // specific
+fun{a:vt0p} dlnode_set_next : dlnode_set_next_type (a) // specific template
 
 (* ****** ****** *)
 
@@ -105,12 +105,12 @@ dlnode_alloc_type
   () -<fun> [l,lp,ln:addr] (
   option_v (dlnode_v (a?, l, lp, ln), l > null) | ptr l
 ) // end of [typedef]
-fun{a:vt0p} dlnode_alloc : dlnode_alloc_type (a) // specific
+fun{a:vt0p} dlnode_alloc : dlnode_alloc_type (a) // specific template
 
 typedef
 dlnode_free_type (a:viewt@ype) =
   {l,lp,ln:addr} (dlnode_v (a?, l, lp, ln) | ptr l) -<fun> void
-fun{a:vt0p} dlnode_free : dlnode_free_type (a) // specifc
+fun{a:vt0p} dlnode_free : dlnode_free_type (a) // specifc template
 
 (* ****** ****** *)
 
@@ -163,32 +163,37 @@ dlist_v (
 (* ****** ****** *)
 
 fun dlist_is_nil
-  {a:vt0p} {nf,nr:int} {l,r:addr} (
-  pf: !dlist_v (a, nf, nr, l) | p: ptr l
+  {a:vt0p} {nf,nr:int} {lm:addr} (
+  pf: !dlist_v (a, nf, nr, lm) | p: ptr lm
 ) :<> bool (nr==0) = "atspre_ptr_is_null"
-////
+
+fun dlist_is_cons
+  {a:vt0p} {nf,nr:int} {lm:addr} (
+  pf: !dlist_v (a, nf, nr, lm) | p: ptr lm
+) :<> bool (nr > 0) = "atspre_ptr_isnot_null"
+
 (* ****** ****** *)
 
-absviewtype dlist (a:viewt@ype+, n:int)
+absviewtype dlist (a:viewt@ype+, nf:int, nr: int)
 
 prfun dlist_fold
-  {a:vt0p} {n:int} {l,r:addr}
-  (pflst: dlist_v (a, n, l, r) | p: !ptr l >> dlist (a, n)): void
+  {a:vt0p} {nf,nr:int} {lm:addr}
+  (pflst: dlist_v (a, nf, nr, lm) | p: !ptr lm >> dlist (a, nf, nr)): void
 // end of [dlist_fold]
 
 prfun dlist_unfold
-  {a:vt0p} {n:int}
-  (xs: !dlist (a, n) >> ptr l):<> #[l,r:addr] (dlist_v (a, n, l, r) | void)
+  {a:vt0p} {nf,nr:int}
+  (xs: !dlist (a, nf, nr) >> ptr lm):<> #[lm:addr] (dlist_v (a, nf, nr, lm) | void)
 // end of [dlist_unfold]
 
 castfn dlist_encode
-  {a:vt0p} {n:int} {l,r:addr}
-  (pflst: dlist_v (a, n, l, r) | p: ptr l):<> dlist (a, n)
+  {a:vt0p} {nf,nr:int} {lm:addr}
+  (pflst: dlist_v (a, nf, nr, lm) | p: ptr lm):<> dlist (a, nf, nr)
 // end of [dlist_encode]
 
 castfn dlist_decode
-  {a:vt0p} {n:int}
-  (xs: dlist (a, n)):<> [l,r:addr] (dlist_v (a, n, l, r) | ptr l)
+  {a:vt0p} {nf,nr:int}
+  (xs: dlist (a, nf, nr)):<> [lm:addr] (dlist_v (a, nf, nr, lm) | ptr lm)
 // end of [dlist_decode]
 
 (* ****** ****** *)

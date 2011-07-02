@@ -86,7 +86,7 @@ main (argc, argv) = {
 //
   val () = $DQ.fundeque_foreach_cloref<int> (t12, lam x => $effmask_all (print(x)))
   val () = print_newline ()
-  val () = $DQ.fundeque_foreach_rev_cloref<int> (t12, lam x => $effmask_all (print(x)))
+  val () = $DQ.fundeque_rforeach_cloref<int> (t12, lam x => $effmask_all (print(x)))
   val () = print_newline ()
 //
 } // end of [main]

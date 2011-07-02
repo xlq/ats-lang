@@ -88,7 +88,7 @@ tabulate (asz, f) = let
   (* end of [var] *)
 //
   prval pf = unit_v ()
-  val () = array_ptr_initialize_clo<a> {unit_v} {n} (pf | !p_arr, asz, !p_clo)
+  val () = array_ptr_initialize_vclo<a> {unit_v} {n} (pf | !p_arr, asz, !p_clo)
   prval unit_v () = pf
   prval () = free_gc_elim {a} (pf_gc)
   val A = array_make_view_ptr (pf_arr | p_arr)

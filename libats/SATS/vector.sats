@@ -195,9 +195,9 @@ fun vector_foreach_funenv_tsz
 ) :<> void // end of [vector_foreach_funenv_tsz]
 
 fun{a:viewt@ype}
-vector_foreach_clo {v:view} {m,n:int}
+vector_foreach_vclo {v:view} {m,n:int}
   (pf: !v | V: &VECTOR (a, m, n), f: &(!v | &a) -<clo> void) :<> void
-// end of [vector_foreach_clo]
+// end of [vector_foreach_vclo]
 
 (* ****** ****** *)
 
@@ -209,9 +209,9 @@ fun vector_iforeach_funenv_tsz
 ) :<> void // end of [vector_iforeach_funenv_tsz]
 
 fun{a:viewt@ype}
-vector_iforeach_clo {v:view} {m,n:int}
+vector_iforeach_vclo {v:view} {m,n:int}
   (pf: !v | V: &VECTOR (a, m, n), f: &(!v | sizeLt n, &a) -<clo> void) :<> void
-// end of [vector_iforeach_clo]
+// end of [vector_iforeach_vclo]
 
 (* ****** ****** *)
 

@@ -120,24 +120,18 @@ rarray_ptr_foreach_fun
 ) :<> void // end of [rarray_ptr_foreach_fun]
 
 fun{a:viewt@ype}
-rarray_ptr_foreach_clo
+rarray_ptr_foreach_vclo
   {v:view} {n:nat} {l:addr} (
   pf: !v, pfarr: !rarray_v (a, n, l)
 | p: ptr l, f: &(!v | &a) -<clo> void, asz: size_t n
-) :<> void // end of [rarray_ptr_foreach_clo]
-
-fun rarray_ptr_foreach_clo_tsz
-  {a:viewt@ype} {v:view} {n:nat} {l:addr} (
-  pf: !v, pfarr: !rarray_v (a, n, l)
-| p: ptr l, f: &(!v | &a) -<clo> void, asz: size_t n, tsz: sizeof_t a
-) :<> void // end of [rarray_ptr_foreach_clo_tsz]
+) :<> void // end of [rarray_ptr_foreach_vclo]
 
 (* ****** ****** *)
 
 fun{a:viewt@ype}
-array_ptr_rforeach_clo {v:view} {n:nat} {l:addr} (
+array_ptr_rforeach_vclo {v:view} {n:nat} {l:addr} (
   pf: !v | A: &(@[a][n]), f: &(!v | &a) -<clo> void, asz: size_t n
-) :<> void // end of [array_ptr_rforeach_clo]
+) :<> void // end of [array_ptr_rforeach_vclo]
 
 (* ****** ****** *)
 

@@ -202,9 +202,9 @@ slist_free_fun {n:nat}
 // end of [slist_free_fun]
 
 fun{a:vt0p}
-slist_free_clo {v:view} {n:nat}
+slist_free_vclo {v:view} {n:nat}
   (pfv: !v | xs: slist (a, n), f: &(!v | &a >> a?) -<clo> void):<> void
-// end of [slist_free_clo]
+// end of [slist_free_vclo]
 
 (* ****** ****** *)
 
@@ -239,7 +239,7 @@ slist_foreach_fun
 ) :<> void // end of [slist_foreach_fun]
 
 fun{a:vt0p}
-slist_foreach_clo
+slist_foreach_vclo
   {v:view} {n:nat} (
   pfv: !v | xs: !slist (a, n), f: &(!v | &a) -<clo> void
 ) :<> void // end of [slist_foreach_clo]
