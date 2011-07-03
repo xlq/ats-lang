@@ -242,11 +242,8 @@ list_app2_vcloptr
   {v} {n} {f:eff} (pf | xs1, xs2, f) = let
   viewtypedef cloptr_t = (!v | a1, a2) -<cloptr,f> void
   fn app (pf: !v | x1: a1, x2: a2, f: !cloptr_t):<f> void = f (pf | x1, x2)
-  val () = begin
-    list_app2_funenv<a1,a2> {v} {cloptr_t} (pf | xs1, xs2, app, f)
-  end // end of [val]
 in
-  // empty
+  list_app2_funenv<a1,a2> {v} {cloptr_t} (pf | xs1, xs2, app, f)
 end  // end of [list_app2_vcloptr]
 
 implement{a1,a2}
@@ -322,7 +319,7 @@ list_append2_vt (xs, ys) = let
         val () = (res := list_vt_cons {a} {0} (x, ?)); val+ list_vt_cons (_, !p) = res
       in
         loop (xs, ys, !p); fold@ res
-      end
+      end (* end of [::] *)
     | nil () => (res := ys)
   end // end of [loop]
 in
@@ -354,42 +351,38 @@ end // end of [list_assoc_funenv]
 
 implement{a1,a2}
 list_assoc_fun
-  {eq:eff} (xys, eq, x0) = let
+  {eq:eff} (xys, eq, x0) = res where {
   val eq = coerce (eq) where { extern castfn
     coerce (eq: (a1, a1) -<eq> bool):<> (!unit_v | a1, a1, !ptr) -<eq> bool
   } // end of [where]
   prval pf = unit_v ()
-  val ans = list_assoc_funenv<a1,a2> {..} {ptr} (pf | xys, eq, x0, null)
+  val res = list_assoc_funenv<a1,a2> {..} {ptr} (pf | xys, eq, x0, null)
   prval unit_v () = pf
-in
-  ans
-end // end of [list_assoc_fun]
+} // end of [list_assoc_fun]
 
 implement{a1,a2}
 list_assoc_vclo
-  {v:view} {eq:eff}
-  (pf1 | xys, eq, x0) = let
+  {v} {eq:eff}
+  (pf1 | xys, eq, x0) = res where {
   typedef clo_t = (!v | a1, a1) -<clo,eq> bool
   stavar l_eq: addr; val p_eq: ptr l_eq = &eq
   viewdef V = (v, clo_t @ l_eq)
   fn app (pf: !V | x: a1, y: a1, p_eq: !ptr l_eq):<eq> bool = let
     prval (pf1, pf2) = pf
-    val ans = !p_eq (pf1 | x, y)
+    val res = !p_eq (pf1 | x, y)
     prval () = pf := (pf1, pf2)
   in
-    ans
+    res
   end // end of [app]
   prval pf = (pf1, view@ eq)
-  val ans = list_assoc_funenv<a1,a2> {V} {ptr l_eq} (pf | xys, app, x0, p_eq)
+  val res = list_assoc_funenv<a1,a2> {V} {ptr l_eq} (pf | xys, app, x0, p_eq)
   prval () = pf1 := pf.0
   prval () = view@ eq := pf.1
-in
-  ans
-end // end of [list_assoc_vclo]
+} // end of [list_assoc_vclo]
 
 implement{a1,a2}
 list_assoc_cloptr
-  {eq:eff} (xys, eq, x0) = let
+  {eq:eff} (xys, eq, x0) = res where {
   viewtypedef cloptr0_t = (a1, a1) -<cloptr,eq> bool
   viewtypedef cloptr1_t = (!unit_v | a1, a1) -<cloptr,eq> bool
   prval () = __assert(eq) where {
@@ -401,9 +394,7 @@ list_assoc_cloptr
   prval () = __assert(eq) where {
     extern prfun __assert (f: !cloptr1_t >> cloptr0_t): void
   } // end of [val]
-in
-  res
-end // end of [list_assoc_cloptr]
+} // end of [list_assoc_cloptr]
 implement{a1,a2}
 list_assoc_vcloptr
   {v} {eq:eff} (pf | xys, eq, x0) = let
@@ -481,7 +472,8 @@ in
 end // end of [list_exists_funenv]
 
 implement{a}
-list_exists_fun {p:eff} (xs, p) = let
+list_exists_fun
+  {p:eff} (xs, p) = let
   val p = coerce (p) where {
     extern castfn coerce (p: a -<p> bool):<> (!unit_v | a, !ptr) -<p> bool
   } // end of [where]
@@ -515,7 +507,7 @@ end // end of [list_exists_vclo]
 
 implement{a}
 list_exists_cloptr
-  {p:eff} (xs, p) = let
+  {p:eff} (xs, p) = ans where {
   viewtypedef cloptr0_t = (a) -<cloptr,p> bool
   viewtypedef cloptr1_t = (!unit_v | a) -<cloptr,p> bool
   prval () = __assert(p) where {
@@ -527,29 +519,25 @@ list_exists_cloptr
   prval () = __assert(p) where {
     extern prfun __assert (f: !cloptr1_t >> cloptr0_t): void
   } // end of [val]
-in
-  ans
-end // end of [list_exists_cloptr]
+} // end of [list_exists_cloptr]
 implement{a}
 list_exists_vcloptr
   {v} {p:eff} (pf | xs, p) = let
   viewtypedef cloptr_t = (!v | a) -<cloptr,p> bool
   fn app (pf: !v | x: a, p: !cloptr_t):<p> bool = p (pf | x)
-  val ans = list_exists_funenv<a> {v} {cloptr_t} (pf | xs, app, p)
 in
-  ans
+  list_exists_funenv<a> {v} {cloptr_t} (pf | xs, app, p)
 end // end of [list_exists_vcloptr]
 
 implement{a}
-list_exists_cloref {p:eff} (xs, p) = let
+list_exists_cloref
+  {p:eff} (xs, p) = ans where {
   typedef cloref_t = a -<cloref,p> bool
   fn app (pf: !unit_v | x: a, p: !cloref_t):<p> bool = p (x)
   prval pf = unit_v ()
   val ans = list_exists_funenv<a> {unit_v} {cloref_t} (pf | xs, app, p)
   prval unit_v () = pf
-in
-  ans
-end // end of [list_exists_cloref]
+} // end of [list_exists_cloref]
 
 (* ****** ****** *)
 
@@ -574,16 +562,15 @@ in
 end // end of [list_exists2_funenv]
 
 implement{a1,a2}
-list_exists2_fun {n} {p:eff} (xs1, xs2, p) = let
+list_exists2_fun
+  {n} {p:eff} (xs1, xs2, p) = ans where {
   val p = coerce (p) where { extern castfn
     coerce (p: (a1, a2) -<p> bool):<> (!unit_v | a1, a2, !ptr) -<p> bool
   } // end of [where]
   prval pf = unit_v ()
   val ans = list_exists2_funenv<a1,a2> {..} {ptr} (pf | xs1, xs2, p, null)
   prval unit_v () = pf
-in
-  ans
-end // end of [list_exists2_fun]
+} // end of [list_exists2_fun]
 
 implement{a1,a2}
 list_exists2_vclo
@@ -608,7 +595,7 @@ end // end of [list_exists2_vclo]
 
 implement{a1,a2}
 list_exists2_cloptr
-  {n} {p:eff} (xs1, xs2, p) = let
+  {n} {p:eff} (xs1, xs2, p) = ans where {
   viewtypedef cloptr0_t = (a1, a2) -<cloptr,p> bool
   viewtypedef cloptr1_t = (!unit_v | a1, a2) -<cloptr,p> bool
   prval () = __assert(p) where {
@@ -620,29 +607,25 @@ list_exists2_cloptr
   prval () = __assert(p) where {
     extern prfun __assert (f: !cloptr1_t >> cloptr0_t): void
   } // end of [val]
-in
-  ans
-end // end of [list_exists_cloptr]
+} // end of [list_exists_cloptr]
 implement{a1,a2}
 list_exists2_vcloptr
   {v} {n} {p:eff} (pf | xs1, xs2, p) = let
   viewtypedef cloptr_t = (!v | a1, a2) -<cloptr,p> bool
   fn app (pf: !v | x1: a1, x2: a2, p: !cloptr_t):<p> bool = p (pf | x1, x2)
-  val ans = list_exists2_funenv<a1,a2> {v} {cloptr_t} (pf | xs1, xs2, app, p)
 in
-  ans
+  list_exists2_funenv<a1,a2> {v} {cloptr_t} (pf | xs1, xs2, app, p)
 end // end of [list_exists2_vcloptr]
 
 implement{a1,a2}
-list_exists2_cloref {n} {p:eff} (xs1, xs2, p) = let
+list_exists2_cloref
+  {n} {p:eff} (xs1, xs2, p) = ans where {
   viewtypedef cloref_t = (a1, a2) -<cloref,p> bool
   fn app (pf: !unit_v | x1: a1, x2: a2, p: !cloref_t):<p> bool = p (x1, x2)
   prval pf = unit_v ()
   val ans = list_exists2_funenv<a1,a2> {unit_v} {cloref_t} (pf | xs1, xs2, app, p)
   prval unit_v () = pf
-in
-  ans
-end // end of [list_exists2_cloref]
+} // end of [list_exists2_cloref]
 
 (* ****** ****** *)
 
@@ -751,21 +734,19 @@ list_filter_vcloptr
   {v} {n} {p:eff} (pf | xs, p) = let
   viewtypedef cloptr_t = (!v | a) -<cloptr,p> bool
   fn app (pf: !v | x: a, p: !cloptr_t):<p> bool = p (pf | x)
-  val ys = list_filter_funenv<a> {v} {cloptr_t} (pf | xs, app, p)
 in
-  ys
+  list_filter_funenv<a> {v} {cloptr_t} (pf | xs, app, p)
 end // end of [list_filter_vcloptr]
 
 implement{a}
-list_filter_cloref {n} {p:eff} (xs, p) = let
+list_filter_cloref
+  {n} {p:eff} (xs, p) = ys where {
   typedef cloref_t = a -<cloref,p> bool
   fn app (pf: !unit_v | x: a, p: !cloref_t):<p> bool = p (x)
   prval pf = unit_v ()
   val ys = list_filter_funenv<a> {unit_v} {cloref_t} (pf | xs, app, p)
   prval unit_v () = pf
-in
-  ys
-end // end of [list_filter_cloref]
+} // end of [list_filter_cloref]
 
 (* ****** ****** *)
 
@@ -837,21 +818,19 @@ list_find_vcloptr
   {v} {p:eff} (pf | xs, p) = let
   viewtypedef cloptr_t = (!v | a) -<cloptr,p> bool
   fn app (pf: !v | x: a, p: !cloptr_t):<p> bool = p (pf | x)
-  val res = list_find_funenv<a> {v} {cloptr_t} (pf | xs, app, p)
 in
-  res
+  list_find_funenv<a> {v} {cloptr_t} (pf | xs, app, p)
 end // end of [list_find_vcloptr]
 
 implement{a}
-list_find_cloref {p:eff} (xs, p) = let
+list_find_cloref
+  {p:eff} (xs, p) = res where {
   typedef cloref_t = a -<cloref,p> bool
   fn app (pf: !unit_v | x: a, p: !cloref_t):<p> bool = p (x)
   prval pf = unit_v ()
   val res = list_find_funenv<a> {unit_v} {cloref_t} (pf | xs, app, p)
   prval unit_v () = pf
-in
-  res
-end // end of [list_find_cloref]
+} // end of [list_find_cloref]
 
 (* ****** ****** *)
 
@@ -918,7 +897,7 @@ end // end of [list_fold_left_vclo]
 
 implement{init}{a}
 list_fold_left_cloptr
-  {f:eff} (f, res, xs) = let
+  {f:eff} (f, res, xs) = res where {
   viewtypedef cloptr0_t = (init, a) -<cloptr,f> init
   viewtypedef cloptr1_t = (!unit_v | init, a) -<cloptr,f> init
   prval () = __assert(f) where {
@@ -930,29 +909,25 @@ list_fold_left_cloptr
   prval () = __assert(f) where {
     extern prfun __assert (f: !cloptr1_t >> cloptr0_t): void
   } // end of [val]
-in
-  res
-end // end of [list_fold_left_cloptr]
+} // end of [list_fold_left_cloptr]
 implement{init}{a}
 list_fold_left_vcloptr
   {v:view} {f:eff} (pf | f, res, xs) = let
   viewtypedef cloptr_t = (!v | init, a) -<cloptr,f> init
   fn app (pf: !v | res: init, x: a, f: !cloptr_t):<f> init = f (pf | res, x)
-  val ans = list_fold_left_funenv<init><a> {v} {cloptr_t} (pf | app, res, xs, f)
 in
-  ans
+  list_fold_left_funenv<init><a> {v} {cloptr_t} (pf | app, res, xs, f)
 end // end of [list_fold_left_vcloptr]
 
 implement{init}{a}
-list_fold_left_cloref {f:eff} (f, res, xs) = let
+list_fold_left_cloref
+  {f:eff} (f, res, xs) = res where {
   typedef cloref_t = (init, a) -<cloref,f> init
   fn app (pf: !unit_v | res: init, x: a, f: !cloref_t):<f> init = f (res, x)
   prval pf = unit_v ()
-  val ans = list_fold_left_funenv<init><a> {unit_v} {cloref_t} (pf | app, res, xs, f)
+  val res = list_fold_left_funenv<init><a> {unit_v} {cloref_t} (pf | app, res, xs, f)
   prval unit_v () = pf
-in
-  ans
-end // end of [list_fold_left_cloref]
+} // end of [list_fold_left_cloref]
 
 (* ****** ****** *)
 
@@ -1075,9 +1050,8 @@ list_fold_right_vcloptr
   {v:view} {f:eff} (pf | f, xs, res) = let
   viewtypedef cloptr_t = (!v | a, sink) -<cloptr,f> sink
   fn app (pf: !v | x: a, res: sink, f: !cloptr_t):<f> sink = f (pf | x, res)
-  val ans = list_fold_right_funenv<a><sink> {v} {cloptr_t} (pf | app, xs, res, f)
 in
-  ans
+  list_fold_right_funenv<a><sink> {v} {cloptr_t} (pf | app, xs, res, f)
 end // end of [list_fold_right_vcloptr]
 
 implement{a}{sink}
@@ -1190,9 +1164,8 @@ list_forall_vcloptr
   {v} {p:eff} (pf | xs, p) = let
   viewtypedef cloptr_t = (!v | a) -<cloptr,p> bool
   fn app (pf: !v | x: a, p: !cloptr_t):<p> bool = p (pf | x)
-  val ans = list_forall_funenv<a> {v} {cloptr_t} (pf | xs, app, p)
 in
-  ans
+  list_forall_funenv<a> {v} {cloptr_t} (pf | xs, app, p)
 end // end of [list_forall_vcloptr]
 
 implement{a}
@@ -1281,9 +1254,8 @@ list_forall2_vcloptr
   {v} {n} {p:eff} (pf | xs1, xs2, p) = let
   viewtypedef clo_t = (!v | a1, a2) -<cloptr,p> bool
   fn app (pf: !v | x1: a1, x2: a2, p: !clo_t):<p> bool = p (pf | x1, x2)
-  val ans = list_forall2_funenv<a1,a2> {v} {clo_t} (pf | xs1, xs2, app, p)
 in
-  ans
+  list_forall2_funenv<a1,a2> {v} {clo_t} (pf | xs1, xs2, app, p)
 end // end of [list_forall2_vcloptr]
 
 implement{a1,a2}
@@ -1367,9 +1339,8 @@ list_foreach_vcloptr
   {v} {f:eff} (pf | xs, f) = let
   viewtypedef cloptr_t = (!v | a) -<cloptr,f> void
   fn app (pf: !v | x: a, f: !cloptr_t):<f> void = f (pf | x)
-  val () = list_foreach_funenv<a> {v} {cloptr_t} (pf | xs, app, f)
 in
-  // empty
+  list_foreach_funenv<a> {v} {cloptr_t} (pf | xs, app, f)
 end // end of [list_foreach_vcloptr]
 
 implement{a}
@@ -1457,13 +1428,9 @@ implement{a1,a2}
 list_foreach2_vcloptr
   {v} {n} {f:eff} (pf | xs1, xs2, f) = let
   viewtypedef cloptr_t = (!v | a1, a2) -<cloptr,f> void
-  fn app (pf: !v | x1: a1, x2: a2, f: !cloptr_t):<f> void =
-    f (pf | x1, x2)
-  val () = begin
-    list_foreach2_funenv<a1,a2> {v} {cloptr_t} (pf | xs1, xs2, app, f)
-  end // end of [val]
+  fn app (pf: !v | x1: a1, x2: a2, f: !cloptr_t):<f> void = f (pf | x1, x2)
 in
-  // empty
+  list_foreach2_funenv<a1,a2> {v} {cloptr_t} (pf | xs1, xs2, app, f)
 end // end of [list_foreach2_vcloptr]
 
 implement{a1,a2}
@@ -1553,9 +1520,8 @@ list_iforeach_vcloptr
   {v} {n} {f:eff} (pf | xs, f) = let
   viewtypedef cloptr_t = (!v | natLt n, a) -<cloptr,f> void
   fn app (pf: !v | i: natLt n, x: a, f: !cloptr_t):<f> void = f (pf | i, x)
-  val () = list_iforeach_funenv<a> {v} {cloptr_t} (pf | xs, app, f)
 in
-  // empty
+  list_iforeach_funenv<a> {v} {cloptr_t} (pf | xs, app, f)
 end // end of [list_iforeach_vcloptr]
 
 implement{a}
@@ -1642,11 +1608,8 @@ list_iforeach2_vcloptr
   viewtypedef cloptr_t = (!v | natLt n, a1, a2) -<cloptr,f> void
   fn app (pf: !v | i: natLt n, x1: a1, x2: a2, f: !cloptr_t):<f> void =
     f (pf | i, x1, x2)
-  val () = begin
-    list_iforeach2_funenv<a1,a2> {v} {cloptr_t} (pf | xs1, xs2, app, f)
-  end // end of [val]
 in
-  // empty
+  list_iforeach2_funenv<a1,a2> {v} {cloptr_t} (pf | xs1, xs2, app, f)
 end // end of [list_iforeach2_vcloptr]
 
 implement{a1,a2}
@@ -1852,9 +1815,8 @@ list_map_vcloptr
   {v} {n:int} {f:eff} (pf | xs, f) = let
   viewtypedef cloptr_t = (!v | a) -<cloptr,f> b
   fn app (pf: !v | x: a, f: !cloptr_t):<f> b = f (pf | x)
-  val ys = list_map_funenv<a><b> {v} {cloptr_t} (pf | xs, app, f)
 in
-  ys
+  list_map_funenv<a><b> {v} {cloptr_t} (pf | xs, app, f)
 end // end of [list_map_vcloptr]
 
 implement{a}{b}
@@ -1946,13 +1908,12 @@ list_map2_cloptr
 implement{a1,a2}{b}
 list_map2_vcloptr
   {v} {n} {f:eff}
-  (pf | xs, ys, f) = zs where {
+  (pf | xs, ys, f) = let
   viewtypedef cloptr_t = (!v | a1, a2) -<cloptr,f> b
   fn app (pf: !v | x: a1, y: a2, f: !cloptr_t):<f> b = f (pf | x, y)
-  val zs = begin
-    list_map2_funenv<a1,a2><b> {v} {cloptr_t} (pf | xs, ys, app, f)
-  end // end of [val]
-} // end of [list_map2_vcloptr]
+in
+  list_map2_funenv<a1,a2><b> {v} {cloptr_t} (pf | xs, ys, app, f)
+end // end of [list_map2_vcloptr]
 
 implement{a1,a2}{b}
 list_map2_cloref
@@ -2159,9 +2120,11 @@ list_zipwth_vclo
 implement{a1,a2}{b}
 list_zipwth_cloptr
   (xs, ys, f) = list_map2_cloptr<a1,a2><b> (xs, ys, f)
+// end of [list_zipwth_cloptr]
 implement{a1,a2}{b}
 list_zipwth_vcloptr
   (pf | xs, ys, f) = list_map2_vcloptr<a1,a2><b> (pf | xs, ys, f)
+// end of [list_zipwth_vcloptr]
 
 implement{a1,a2}{b}
 list_zipwth_cloref
