@@ -83,6 +83,26 @@ fun fmodf (f1: float, f2: float):<> float = "mac#atslib_fmodf"
 fun fmodl (ld1: ldouble, ld2: ldouble):<> ldouble = "mac#atslib_fmodl"
 
 (* ****** ****** *)
+
+fun fmax (d1: double, d2: double):<> double = "mac#atslib_fmax"
+fun fmaxf (f1: float, f2: float):<> float = "mac#atslib_fmaxf"
+fun fmaxl (ld1: ldouble, ld2: ldouble):<> ldouble = "mac#atslib_fmaxl"
+
+fun fmin (d1: double, d2: double):<> double = "mac#atslib_fmin"
+fun fminf (f1: float, f2: float):<> float = "mac#atslib_fminf"
+fun fminl (ld1: ldouble, ld2: ldouble):<> ldouble = "mac#atslib_fminl"
+
+fun fdim (d1: double, d2: double):<> double = "mac#atslib_fdim"
+fun fdimf (f1: float, f2: float):<> float = "mac#atslib_fdimf"
+fun fdiml (ld1: ldouble, ld2: ldouble):<> ldouble = "mac#atslib_fdiml"
+//
+// HX: fma (x, y, z) = x * y + z
+//
+fun fma (d1: double, d2: double, d3: double):<> double = "mac#atslib_fma"
+fun fmaf (f1: float, f2: float, f3: float):<> float = "mac#atslib_fmaf"
+fun fmal (ld1: ldouble, ld2: ldouble, ld3: ldouble):<> ldouble = "mac#atslib_fmal"
+
+(* ****** ****** *)
 //
 // HX: already available in [prelude/SATS/float.sats]
 //

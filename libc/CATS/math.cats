@@ -64,6 +64,24 @@
 
 /* ****** ****** */
 
+#define atslib_fmax fmax
+#define atslib_fmaxf fmaxf
+#define atslib_fmaxl fmaxl
+
+#define atslib_fmin fmin
+#define atslib_fminf fminf
+#define atslib_fminl fminl
+
+#define atslib_fdim fdim
+#define atslib_fdimf fdimf
+#define atslib_fdiml fdiml
+
+#define atslib_fma fma
+#define atslib_fmaf fmaf
+#define atslib_fmal fmal
+
+/* ****** ****** */
+
 #define atslib_sqrt sqrt
 #define atslib_sqrtf sqrtf
 #define atslib_sqrtl sqrtl

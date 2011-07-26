@@ -4,11 +4,11 @@
 ** Instructor: Hongwei Xi (hwxi AT cs DOT bu DOT edu)
 *)
 
+(* ****** ****** *)
 //
 // Author: Hongwei Xi (hwxi AT cs DOT bu DOT edu)
 // Time: June, 2009
 //
-
 (* ****** ****** *)
 
 staload "absyn.sats"
