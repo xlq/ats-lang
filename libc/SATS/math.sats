@@ -191,9 +191,59 @@ fun tanhf (f: float):<> float = "mac#atslib_tanhf"
 fun tanhl (ld: ldouble):<> ldouble = "mac#atslib_tanhl"
 
 (* ****** ****** *)
+//
+// HX: This is a highly verbose solution but it is easy to use
+//
+macdef FP_NAN = $extval (int, "FP_NAN")
+macdef FP_INFINITE = $extval (int, "FP_INFINITE")
+macdef FP_ZERO = $extval (int, "FP_ZERO")
+macdef FP_NORMAL = $extval (int, "FP_NORMAL")
+macdef FP_SUBNORMAL = $extval (int, "FP_SUBNORMAL")
 
+symintr fpclassify
+fun fpclassify_double
+  (x: double):<> int = "mac#atslib_fpclassify"
+overload fpclassify with fpclassify_double
+fun fpclassify_float
+  (x: float):<> int = "mac#atslib_fpclassify"
+overload fpclassify with fpclassify_float
+fun fpclassify_ldouble
+  (x: ldouble):<> int = "mac#atslib_fpclassify"
+overload fpclassify with fpclassify_ldouble
+
+symintr isfinite
+fun isfinite_double
+  (x: double):<> int = "mac#atslib_isfinite"
+overload isfinite with isfinite_double
+fun isfinite_float
+  (x: float):<> int = "mac#atslib_isfinite"
+overload isfinite with isfinite_float
+fun isfinite_ldouble
+  (x: ldouble):<> int = "mac#atslib_isfinite"
+overload isfinite with isfinite_ldouble
+
+symintr isnormal
+fun isnormal_double
+  (x: double):<> int = "mac#atslib_isnormal"
+overload isnormal with isnormal_double
+fun isnormal_float
+  (x: float):<> int = "mac#atslib_isnormal"
+overload isnormal with isnormal_float
+fun isnormal_ldouble
+  (x: ldouble):<> int = "mac#atslib_isnormal"
+overload isnormal with isnormal_ldouble
+
+(* ****** ****** *)
+//
+// HX: BSD provision
+//
 fun isinf (d: double):<> int = "mac#atslib_isinf"
+fun isinff (f: float):<> int = "mac#atslib_isinff"
+fun isinfl (ld: ldouble):<> int = "mac#atslib_isinfl"
+
 fun isnan (d: double):<> int = "mac#atslib_isnan"
+fun isnanf (f: float):<> int = "mac#atslib_isnanf"
+fun isnanl (ld: ldouble):<> int = "mac#atslib_isnanl"
 
 (* ****** ****** *)
 
