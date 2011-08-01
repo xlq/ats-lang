@@ -47,7 +47,6 @@
 // this is originally done for the ATS/CBLAS package
 
 (* ****** ****** *)
-
 //
 // legend:
 // S: single precision float (float)
@@ -55,7 +54,6 @@
 // C: single precision complex (ccmplx)
 // Z: double precision complex (zcmplx)
 //
-
 (* ****** ****** *)
 
 // S, D, C, Z
@@ -83,6 +81,15 @@ fun{a:t@ype} of_double (x: double):<> a
 fun{a:t@ype} to_int (x:a):<> int
 fun{a:t@ype} to_float (x: a):<> float
 fun{a:t@ype} to_double (x: a):<> double
+
+(* ****** ****** *)
+
+// S, D, LD
+fun{a:t@ype} fpclassify (x: a):<> int
+fun{a:t@ype} isfinite (x: a):<> int
+fun{a:t@ype} isnormal (x: a):<> int
+fun{a:t@ype} isinf (x: a):<> int // BSD function
+fun{a:t@ype} isnan (x: a):<> int // BSD function
 
 (* ****** ****** *)
 

@@ -107,6 +107,32 @@ implement to_double<float> (x) = double_of_float (x)
 implement to_double<double> (x) = x
 
 (* ****** ****** *)
+//
+// HX: fpclassify, isfinite and isnormal are macros
+//
+implement fpclassify<float> (x) = $MATH.fpclassify_float (x)
+implement fpclassify<double> (x) = $MATH.fpclassify_double (x)
+implement fpclassify<ldouble> (x) = $MATH.fpclassify_ldouble (x)
+
+implement isfinite<float> (x) = $MATH.isfinite_float (x)
+implement isfinite<double> (x) = $MATH.isfinite_double (x)
+implement isfinite<ldouble> (x) = $MATH.isfinite_ldouble (x)
+
+implement isnormal<float> (x) = $MATH.isnormal_float (x)
+implement isnormal<double> (x) = $MATH.isnormal_double (x)
+implement isnormal<ldouble> (x) = $MATH.isnormal_ldouble (x)
+
+// HX: BSD function
+implement isinf<float> (x) = $MATH.isinff (x)
+implement isinf<double> (x) = $MATH.isinf (x)
+implement isinf<ldouble> (x) = $MATH.isinfl (x)
+
+// HX: BSD function
+implement isnan<float> (x) = $MATH.isnanf (x)
+implement isnan<double> (x) = $MATH.isnan (x)
+implement isnan<ldouble> (x) = $MATH.isnanl (x)
+
+(* ****** ****** *)
 
 implement abs<float,float> (x) = abs_float (x)
 implement abs<double,double> (x) = abs_double (x)
