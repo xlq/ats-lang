@@ -84,15 +84,6 @@ fun{a:t@ype} to_double (x: a):<> double
 
 (* ****** ****** *)
 
-// S, D, LD
-fun{a:t@ype} fpclassify (x: a):<> int
-fun{a:t@ype} isfinite (x: a):<> int
-fun{a:t@ype} isnormal (x: a):<> int
-fun{a:t@ype} isinf (x: a):<> int // BSD function
-fun{a:t@ype} isnan (x: a):<> int // BSD function
-
-(* ****** ****** *)
-
 // S, D, C, Z
 fun{a1,a2:t@ype} abs (x: a1):<> a2
 
@@ -188,6 +179,7 @@ fun{a:t@ype} tan (x: a):<> a
 fun{a:t@ype} asin (x: a):<> a
 fun{a:t@ype} acos (x: a):<> a
 fun{a:t@ype} atan (x: a):<> a
+fun{a:t@ype} atan2 (x1: a, x2: a):<> a
 
 (* ****** ****** *)
 

@@ -41,6 +41,27 @@
 #include <math.h>
 
 /* ****** ****** */
+//
+// HX: fpclassify
+//
+#define atslib_fpclassify(x) fpclassify(x)
+#define atslib_isfinite(x) isfinite(x)
+#define atslib_isnormal(x) isnormal(x)
+
+/* ****** ****** */
+
+//
+// HX: [isinf] and [isnan] are BSD provision
+//
+#define atslib_isinf isinf
+#define atslib_isinff isinff
+#define atslib_isinfl isinfl
+
+#define atslib_isnan isnan
+#define atslib_isnanf isnanf
+#define atslib_isnanl isnanl
+
+/* ****** ****** */
 
 #define atslib_ceil ceil
 #define atslib_ceilf ceilf
@@ -165,27 +186,6 @@
 #define atslib_tanh tanh
 #define atslib_tanhf tanhf
 #define atslib_tanhl tanhl
-
-/* ****** ****** */
-//
-// HX: fpclassify
-//
-#define atslib_fpclassify(x) fpclassify(x)
-#define atslib_isfinite(x) isfinite(x)
-#define atslib_isnormal(x) isnormal(x)
-
-/* ****** ****** */
-
-//
-// HX: [isinf] and [isnan] are BSD provision
-//
-#define atslib_isinf isinf
-#define atslib_isinff isinff
-#define atslib_isinfl isinfl
-
-#define atslib_isnan isnan
-#define atslib_isnanf isnanf
-#define atslib_isnanl isnanl
 
 /* ****** ****** */
 

@@ -6,7 +6,7 @@
 
 (* ****** ****** *)
 
-#include "number.hats"
+#include "prelude/HATS/number.hats"
 
 (* ****** ****** *)
 

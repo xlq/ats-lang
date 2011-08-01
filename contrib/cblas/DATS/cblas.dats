@@ -67,21 +67,21 @@ end (* end of [ORDER_of_CBLAS_ORDER] *)
 (* ****** ****** *)
 
 implement
-  CBLAS_UPLO_of_UPLO (x) = case+ x of
+CBLAS_UPLO_of_UPLO (x) = case+ x of
   | UPLOupper () => CblasUpper | UPLOlower () => CblasLower
 // end of [CBLAS_UPLO_of_UPLO]
 
 (* ****** ****** *)
 
 implement
-  CBLAS_DIAG_of_DIAG (x) = case+ x of
+CBLAS_DIAG_of_DIAG (x) = case+ x of
   | DIAGunit () => CblasUnit | DIAGnonunit () => CblasNonUnit
 // end of [CBLAS_DIAG_of_DIAG]
 
 (* ****** ****** *)
 
 implement
-  CBLAS_TRANSPOSE_of_TRANSPOSE (x) =
+CBLAS_TRANSPOSE_of_TRANSPOSE (x) =
   case+ x of
   | TRANSPOSE_N () => CblasNoTrans
   | TRANSPOSE_T () => CblasTrans
@@ -91,7 +91,7 @@ implement
 (* ****** ****** *)
 
 implement
-  CBLAS_SIDE_of_SIDE (x) = case+ x of
+CBLAS_SIDE_of_SIDE (x) = case+ x of
   | SIDEleft () => CblasLeft | SIDEright () => CblasRight
 // end of [CBLAS_SIDE_of_SIDE]
 
