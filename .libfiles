@@ -143,6 +143,7 @@ libc/SATS/grp.sats
 
 libc/SATS/math.sats
 libc/DATS/math.dats
+libc/SATS/float.sats
 
 libc/SATS/netdb.sats
 

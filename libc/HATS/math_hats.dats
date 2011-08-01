@@ -1,7 +1,7 @@
 (* ****** ****** *)
 
 //
-// this file is solely for typechecking [number.hats]
+// this file is solely for typechecking [math.hats]
 //
 
 (* ****** ****** *)
