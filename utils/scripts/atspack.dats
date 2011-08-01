@@ -696,6 +696,7 @@ fn Anairiats_doc_dir_copy () = let
 //
     val () = cp "prelude_lazy_vt.dats"
 //
+    val () = cp "libc_math.dats"
     val () = cp "libc_complex.dats"
     val () = cp "libc_dirent.dats"
     val () = cp "libc_dlfcn.dats"

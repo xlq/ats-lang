@@ -86,6 +86,11 @@ cleanall:: ; $(RMF) prelude_string
 
 ######
 
+checkall:: libc_math
+libc_math: libc_math.dats
+	$(ATSCC) -O2 -o $@ $< -lm && ./libc_math
+cleanall:: ; $(RMF) libc_math
+
 checkall:: libc_complex
 libc_complex: libc_complex.dats
 	$(ATSCC) -O2 -o $@ $< -lm && ./libc_complex
