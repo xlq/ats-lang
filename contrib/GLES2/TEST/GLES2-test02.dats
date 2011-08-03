@@ -586,3 +586,5 @@ ats_void_type mainats (
    return;
 }
 %} // end of [%{$]
+
+(* end of [GLES2-test02.dats] *)
