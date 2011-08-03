@@ -282,11 +282,11 @@ end // end of [draw]
 (* ****** ****** *)
 
 extern
-fun reshape {w,h:pos} (width: int w, height: int h): void = "reshape"
+fun reshape {w,h:pos}
+  (width: int w, height: int h): void = "reshape"
 implement reshape (w, h) =
   glViewport (
-    GLint_of_int1 0, GLint_of_int1 0
-  , GLsizei_of_int1 w, GLsizei_of_int1 h
+    GLint_of_int1 0, GLint_of_int1 0, GLsizei_of_int1 w, GLsizei_of_int1 h
   )
 
 (* ****** ****** *)
@@ -585,4 +585,4 @@ ats_void_type mainats (
 
    return;
 }
-%}
+%} // end of [%{$]
