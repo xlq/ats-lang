@@ -35,10 +35,20 @@
 (* author: Shivkumar Chandrasekaran (shiv AT ece DOT ucsb DOT edu) *)
 
 (* ****** ****** *)
+//
+// HX-2011-08-01: note that [float.h] is rather new (gcc 4.6)
+//
+(* ****** ****** *)
 
 %{#
 #include "libc/CATS/float.cats"
 %} // end of [%{#]
+
+(* ****** ****** *)
+
+(*
+#define ATS_STALOADFLAG 0 // no need for static loading at run-time
+*)
 
 (* ****** ****** *)
 

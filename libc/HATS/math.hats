@@ -65,22 +65,22 @@ implement isnantmp<ldouble> (x) = isnanl (x)
 
 (* ****** ****** *)
 
-implement ceiltmp<float> (x) = ceilf (x)
 implement ceiltmp<double> (x) = ceil (x)
+implement ceiltmp<float> (x) = ceilf (x)
 implement ceiltmp<ldouble> (x) = ceill (x)
 
-implement floortmp<float> (x) = floorf (x)
 implement floortmp<double> (x) = floor (x)
+implement floortmp<float> (x) = floorf (x)
 implement floortmp<ldouble> (x) = floorl (x)
 
 (* ****** ****** *)
 
-implement roundtmp<float> (x) = roundf (x)
 implement roundtmp<double> (x) = round (x)
+implement roundtmp<float> (x) = roundf (x)
 implement roundtmp<ldouble> (x) = roundl (x)
 
-implement trunctmp<float> (x) = truncf (x)
 implement trunctmp<double> (x) = trunc (x)
+implement trunctmp<float> (x) = truncf (x)
 implement trunctmp<ldouble> (x) = truncl (x)
 
 (* ****** ****** *)
@@ -91,20 +91,20 @@ implement fmodtmp<ldouble> (x1, x2) = fmodl (x1, x2)
 
 (* ****** ****** *)
 
-implement fmaxtmp<float> (x1, x2) = fmaxf (x1, x2)
 implement fmaxtmp<double> (x1, x2) = fmax (x1, x2)
+implement fmaxtmp<float> (x1, x2) = fmaxf (x1, x2)
 implement fmaxtmp<ldouble> (x1, x2) = fmaxl (x1, x2)
 
-implement fmintmp<float> (x1, x2) = fminf (x1, x2)
 implement fmintmp<double> (x1, x2) = fmin (x1, x2)
+implement fmintmp<float> (x1, x2) = fminf (x1, x2)
 implement fmintmp<ldouble> (x1, x2) = fminl (x1, x2)
 
-implement fdimtmp<float> (x1, x2) = fdimf (x1, x2)
 implement fdimtmp<double> (x1, x2) = fdim (x1, x2)
+implement fdimtmp<float> (x1, x2) = fdimf (x1, x2)
 implement fdimtmp<ldouble> (x1, x2) = fdiml (x1, x2)
 
-implement fmatmp<float> (x1, x2, x3) = fmaf (x1, x2, x3)
 implement fmatmp<double> (x1, x2, x3) = fma (x1, x2, x3)
+implement fmatmp<float> (x1, x2, x3) = fmaf (x1, x2, x3)
 implement fmatmp<ldouble> (x1, x2, x3) = fmal (x1, x2, x3)
 
 (* ****** ****** *)

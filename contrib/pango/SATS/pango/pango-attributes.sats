@@ -30,10 +30,10 @@
 *)
 
 (* ****** ****** *)
-
+//
 // Author of the file: Hongwei Xi (hwxi AT cs DOT bu DOT edu)
 // Starting time: May, 2010
-
+//
 (* ****** ****** *)
 
 typedef PangoColor =

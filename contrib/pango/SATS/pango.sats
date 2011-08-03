@@ -35,11 +35,9 @@
 // Starting time: May, 2010
 //
 (* ****** ****** *)
-
 //
 // API for pango in ATS
 //
-
 (* ****** ****** *)
 
 %{#
@@ -51,7 +49,7 @@
 #define ATS_STALOADFLAG 0 // no static loading at run-time
 
 (* ****** ****** *)
-
+//
 staload GLIB = "contrib/glib/SATS/glib.sats"
 //
 stadef gboolean (b:bool) = $GLIB.gboolean b

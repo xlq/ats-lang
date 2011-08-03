@@ -83,7 +83,7 @@ test03: GLES2-test03.dats \
           obj_sats.o obj_lats_dats.o mat4.o util.o
 	$(ATSCC) $< -o $@ \
           obj_sats.o obj_lats_dats.o mat4.o util.o \
-	  $(ATSMISCCTRB) -lX11 -lEGL -lGLESv2 -lats_lex
+	  $(ATSMISCCTRB) -lm -lX11 -lEGL -lGLESv2 -lats_lex
 
 #######
 

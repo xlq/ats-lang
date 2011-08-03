@@ -15,10 +15,13 @@
 // Time: June, 2011
 //
 
-staload "libc/SATS/math.sats" // for [M_PI]
+(* ****** ****** *)
 
+staload "libc/SATS/math.sats" // for [M_PI]
 staload _(*anonymous*) = "prelude/DATS/array.dats"
 staload _(*anonymous*) = "prelude/DATS/reference.dats"
+
+(* ****** ****** *)
 
 staload "contrib/GLES2/SATS/gl2.sats"
 
@@ -216,7 +219,7 @@ void glVertexAttribPointerBuffer (
 , ats_GLsizei_type stride
 , ats_GLsizei_type pos
 ) {
-  glVertexAttribPointer (indx, size, type, GL_FALSE, stride, (void *)pos);
+  glVertexAttribPointer (indx, size, type, GL_FALSE, stride, (void*)(uintptr_t)pos);
   return;
 } // end of [glVertexAttribPointerBuffer]
 
@@ -762,7 +765,7 @@ ats_void_type mainats (
    EGLint egl_major, egl_minor;
    int i;
    const char *s;
-   const char *meshname = "bunny.obj";
+   const char *meshname = "data/bunny.obj";
 
    for (i = 1; i < argc; i++) {
      if (strcmp(((char **)argv)[i], "-display") == 0) {

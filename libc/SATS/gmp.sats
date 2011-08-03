@@ -956,10 +956,11 @@ fun mpq_sgn (x: &mpq_vt):<> Sgn = "mac#atslib_mpq_sgn"
 
 (* ****** ****** *)
 
+(*
 //
 // some MPQ input/output/print functions
 //
-
+*)
 fun mpq_inp_str {m:file_mode} (
     pf_mode: file_mode_lte (m, r) | x: &mpq_vt, file: &FILE m, base: mp_base_t
   ) : size_t = "mac#atslib_mpq_inp_str"
@@ -1300,10 +1301,12 @@ fun mpf_reldiff (
 // end of [mpf_reldiff]
 
 (* ****** ****** *)
+
+(*
 //
 // some MPF input/output/print functions
 //
-
+*)
 fun mpf_inp_str {m:file_mode} (
   pf_mode: file_mode_lte (m, r)
 | x: &mpf_vt, file: &FILE m, base: mp_base_t
