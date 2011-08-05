@@ -45,6 +45,10 @@ test_bsearch_arr: test_bsearch_arr.dats
 	$(ATSCC) -o $@ $< && ./test_bsearch_arr
 cleanall:: ; rm -f test_bsearch_arr
 
+test_bsearch2_arr: test_bsearch2_arr.dats
+	$(ATSCC) -o $@ $< && ./test_bsearch2_arr
+cleanall:: ; rm -f test_bsearch2_arr
+
 ######
 
 clean:
