@@ -172,10 +172,12 @@ overload = with eq_size_size
 fun neq_size_int (sz1: size_t, i2: int):<> bool
   = "atspre_neq_size_int"
 overload <> with neq_size_int
+overload != with neq_size_int
 
 fun neq_size_size
   (sz1: size_t, sz2: size_t):<> bool = "atspre_neq_size_size"
 overload <> with neq_size_size
+overload != with neq_size_size
 
 (* ****** ****** *)
 
@@ -433,10 +435,12 @@ overload = with eq_size1_size1
 fun neq_size1_int1 {i,j:nat}
   (i: size_t i, j: int j):<> bool (i <> j) = "atspre_neq_size1_int1"
 overload <> with neq_size1_int1
+overload != with neq_size1_int1
 
 fun neq_size1_size1 {i,j:nat}
   (i: size_t i, j: size_t j):<> bool (i <> j) = "atspre_neq_size1_size1"
 overload <> with neq_size1_size1
+overload != with neq_size1_size1
 
 // ------ ------
 
@@ -582,6 +586,7 @@ fun neq_ssize1_ssize1 {i,j:int}
   (i: ssize_t i, j: ssize_t j):<> bool (i <> j)
   = "atspre_neq_ssize1_ssize1"
 overload <> with neq_ssize1_ssize1
+overload != with neq_ssize1_ssize1
 
 (* ****** ****** *)
 

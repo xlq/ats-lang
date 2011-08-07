@@ -90,6 +90,15 @@ array_ptr_xch_elt_at {n:int}
   {i:nat | i < n} {l:addr} (A: &(@[a][n]), i: size_t i, x: &a):<> void
 // end of [array_ptr_xch_elt_at]
 
+(*
+** HX: implemented in ATS (prelude/DATS/array.dats)
+*)
+fun{a:viewt@ype}
+array_ptr_exch
+  {n:int} {i1,i2:nat | i1 < n; i2 < n}
+  (A: &(@[a][n]), i1: size_t i1, i2: size_t i2):<> void
+// end of [array_ptr_exch]
+
 (* ****** ****** *)
 //
 // HX: these functions are present mostly for convenience as a
@@ -109,6 +118,12 @@ fun{a:viewt@ype}
 array_ptr_xch_elt_at__intsz {n:int}
   {i:nat | i < n} {l:addr} (A: &(@[a][n]), i: int i, x: &a):<> void
 // end of [array_ptr_xch_elt_at__intsz]
+
+fun{a:viewt@ype}
+array_ptr_exch__intsz
+  {n:int} {i1,i2:nat | i1 < n; i2 < n}
+  (A: &(@[a][n]), i1: int i1, i2: int i2):<> void
+// end of [array_ptr_exch__intsz]
 
 (* ****** ****** *)
 
@@ -255,7 +270,7 @@ fun array_ptr_initialize_funenv_tsz
 
 fun{a:viewt@ype}
 array_ptr_initialize_fun
- {n:nat} {f:eff} (
+  {n:nat} {f:eff} (
   base: &(@[a?][n]) >> @[a][n]
 , asz: size_t n
 , f: (sizeLt n, &(a?) >> a) -<fun,f> void
@@ -498,15 +513,6 @@ fun array_ptr_move_tsz
 ) :<> void = "atspre_array_ptr_move_tsz"
 // end of [array_ptr_move_tsz]
 
-(*
-** HX: implemented in ATS (prelude/DATS/array.dats)
-*)
-fun{a:viewt@ype}
-array_ptr_exch
-  {n:int} {i1,i2:nat | i1 < n; i2 < n; i1 <> i2}
-  (A: &(@[a][n]), i1: size_t i1, i2: size_t i2):<> void
-// end of [array_ptr_exch]
-
 (* ****** ****** *)
 //
 // HX:
@@ -748,6 +754,11 @@ fun{a:viewt@ype}
 array_exch {n:nat}
   (A: array (a, n), i: sizeLt n, j: sizeLt n):<!ref> void
 // end of [array_exch]
+
+fun{a:viewt@ype}
+array_exch__intsz {n:nat}
+  (A: array (a, n), i: natLt n, j: natLt n):<!ref> void
+// end of [array_exch__intsz]
 
 (* ****** ****** *)
 //

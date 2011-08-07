@@ -1120,6 +1120,16 @@ fn Anairiats_contrib_dir_copy
     val () = libdir_copy (SRCROOTcontrib_GL, DSTROOTcontrib_GL)
   } // end of [where]
 //
+  val () = () where { // API for GLES2: [contrib/GLES2]
+    val SRCROOTcontrib_GLES2 = SRCROOTcontrib ++ "GLES2/"
+    val DSTROOTcontrib_GLES2 = DSTROOTcontrib ++ "GLES2/"
+    val () = mkdir_exn (DSTROOTcontrib_GLES2, DIRmode)
+    val () = fcopy_exn (
+      SRCROOTcontrib_GLES2++"Makefile", DSTROOTcontrib_GLES2++"Makefile"
+    ) // end of [val]
+    val () = libdir_copy (SRCROOTcontrib_GLES2, DSTROOTcontrib_GLES2)
+  } // end of [where]
+//
   val () = () where { // API for SDL: [contrib/SDL]
     val SRCROOTcontrib_SDL = SRCROOTcontrib ++ "SDL/"
     val DSTROOTcontrib_SDL = DSTROOTcontrib ++ "SDL/"

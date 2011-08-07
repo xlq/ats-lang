@@ -39,6 +39,10 @@
 
 (* ****** ****** *)
 
+staload _(*anon*) = "prelude/DATS/array.dats"
+
+(* ****** ****** *)
+
 staload "libc/sys/SATS/time.sats" // for gettimeofday
 staload "libc/sys/SATS/types.sats" // for several lint_of* functions
 
@@ -72,7 +76,7 @@ end // end of [srand48_with_gettimeofday]
 implement
 randint {n} (n) = let
   val d01 = drand48 ()
-  val r = int_of(d01 * n)
+  val r = int_of (d01 * n)
   val [r:int] r = int1_of (r)
   prval () = __assert () where {
     extern prfun __assert (): [0 <= r; r <= n] void
@@ -84,11 +88,57 @@ end // end of [randint]
 (* ****** ****** *)
 
 implement
+randperm {n} (n) = let
+  typedef elt = natLt (n)
+  val asz = size1_of_int1 (n)
+  val (pfgc, pfarr | p) = array_ptr_alloc<int> (asz)
+  val () = loop (pfarr | n, p, 0) where {
+    fun loop {i:nat | i <= n} {l:addr} .<n-i>. (
+      pfarr: !array_v (int?, n-i, l) >> array_v (elt, n-i, l)
+    | n: int n, p: ptr l, i: int i
+    ) :<> void =
+      if i < n then let
+        prval (pfat1, pfarr2) = array_v_uncons {int?} (pfarr)
+        val () = !p := i
+        val () = loop (pfarr2 | n, p + sizeof<int>, i+1)
+        prval () = pfarr := array_v_cons {elt} (pfat1, pfarr2)
+      in
+        // nothing
+      end else let
+        prval () = array_v_unnil {int?} (pfarr)
+        prval () = pfarr := array_v_nil {elt} ()
+      in
+        // nothing
+      end // end of [if]
+    // end of [loop]
+  } // end of [val]
+  val () = loop (pfarr | n, p, 0) where {
+    fun loop {i:nat | i <= n} {l:addr} .<n-i>. (
+      pfarr: !array_v (elt, n-i, l) | n: int n, p: ptr l, i: int i
+    ) :<!ref> void =
+      if n - i >= 2 then let
+        val k = randint (n-i)
+        val () = array_ptr_exch__intsz (!p, 0, k)
+        prval (pfat1, pfarr2) = array_v_uncons {elt} (pfarr)
+        val () = loop (pfarr2 | n, p+sizeof<int>, i+1)
+        prval () = pfarr := array_v_cons {elt} (pfat1, pfarr2)
+      in
+        // nothing
+      end // end of [if]
+    // end of [loop]
+  } // end of [val]
+in
+  (pfgc, pfarr | p)
+end // end of [randperm]
+
+(* ****** ****** *)
+
+implement
 randint_r {n}
   (buf, n, res) = let
   var d01: double
   val _0 = drand48_r (buf, d01)
-  val r = int_of(d01 * n)
+  val r = int_of (d01 * n)
   val [r:int] r = int1_of (r)
   prval () = __assert () where {
     extern prfun __assert (): [0 <= r; r <= n] void

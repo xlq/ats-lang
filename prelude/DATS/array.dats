@@ -71,7 +71,8 @@ in
 end // end of [array_ptr_xch_elt_at]
 
 implement{a}
-array_ptr_exch (A, i, j) = let
+array_ptr_exch
+  (A, i, j) = if i != j then let
   var tmp: a // uninitialized
   extern prfun __copy {l:addr} (pf: !a @ l): a @ l  
   val (pf, fpf | pi) = array_ptr_takeout_tsz (view@ A | &A, i, sizeof<a>)
@@ -104,6 +105,11 @@ implement{a}
 array_ptr_xch_elt_at__intsz (A, i, x) = let
   val i = i2sz i in array_ptr_xch_elt_at<a> (A, i, x)
 end // end of [array_ptr_xch_elt_at__intsz]
+
+implement{a}
+array_ptr_exch__intsz (A, i, j) = let
+  val i = i2sz i and j = i2sz j in array_ptr_exch (A, i, j)
+end // end of [array_ptr_exch__intsz]
 
 (* ****** ****** *)
 
@@ -517,6 +523,17 @@ array_exch (A, i1, i2) =
     array_ptr_exch<a> (!A_data, i1, i2)
   end // end of [if]
 // end of [array_exch]
+
+implement{a}
+array_exch__intsz (A, i1, i2) = let
+  val i1 = i2sz (i1) and i2 = i2sz (i2)
+in
+  if i1 <> i2 then let
+    val A_data = A.data; prval vbox pf = A.view
+  in
+    array_ptr_exch<a> (!A_data, i1, i2)
+  end // end of [if]
+end // end of [array_exch__intsz]
 
 (* ****** ****** *)
 
