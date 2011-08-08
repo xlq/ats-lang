@@ -1,5 +1,5 @@
 (*
-// HX: main componenents
+// HX-2011-08: an implementation of ENIGMA
 *)
 
 (* ****** ****** *)
@@ -12,6 +12,21 @@ staload _(*anon*) = "prelude/DATS/reference.dats"
 (* ****** ****** *)
 
 staload "enigma.sats"
+
+(* ****** ****** *)
+
+#define N 26
+assume abrange = natLt (N)
+
+(* ****** ****** *)
+
+implement
+abrange_of_int (n) = let
+  val n = int1_of_int (n)
+  val () = assert (n >= 0); val () = assert (n < N) in n
+end // end of [abrange_of_int]
+
+implement int_of_abrange (n) = n
 
 (* ****** ****** *)
 
@@ -142,7 +157,11 @@ extern fun plugboard_make_rand (): plugboard
 extern fun fprint_plugboard (out: FILEref, x: plugboard): void
 
 local
-
+//
+// HX:
+// for a correct plugboard, encode and decode should be identical;
+// however, this constraint is not enforced here.
+//
 typedef
 plugboard_struct = @{
   encode= permmap (N), decode= permmap (N)
@@ -486,7 +505,7 @@ in
 end // end of [enigma_encode]
 
 implement
-enigma_init
+enigma_init_rotorseq
   (x, ns) = let
   fun init (xs: rotorseq, ns: List (abrange)): void =
     case+ xs of

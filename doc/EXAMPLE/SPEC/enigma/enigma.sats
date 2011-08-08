@@ -1,15 +1,19 @@
 (*
-// HX: main componenents
+// HX-2011-08: an implementation of ENIGMA
 *)
 
-#define N 26
-typedef abrange = natLt (N)
+(* ****** ****** *)
+
+abst@ype abrange = int
+fun abrange_of_int (n: int): abrange
+fun int_of_abrange (n: abrange): int
 
 (* ****** ****** *)
 
 abstype plugboard
 //
 // HX: [encode] and [decode] are inverse
+// HX: they should be the same in a valid plugboard
 //
 fun plugboard_encode (x: plugboard, n: abrange): abrange
 fun plugboard_decode (x: plugboard, n: abrange): abrange
@@ -60,7 +64,7 @@ abstype enigma
 //
 fun enigma_encode (x: enigma, n: abrange): abrange
 //
-fun enigma_init (x: enigma, ns: List (abrange)): void
+fun enigma_init_rotorseq (x: enigma, ns: List (abrange)): void
 //
 fun enigma_make_rand {n:pos} (nrotor: int n): enigma
 

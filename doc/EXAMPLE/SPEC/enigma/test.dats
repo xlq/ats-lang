@@ -33,17 +33,16 @@ main () = {
 #define nil list_nil
 #define :: list_cons
 //
-  // val () = srand48 (1000000L)
-  val () = srand48_with_time ()
+  val () = srand48_with_time () // val () = srand48 (1000000L)
 //
   val E = enigma_make_rand (5)
 //
   fn f (c: char):<cloref1> char =
     if c >= 'A' andalso c <= 'Z' then let
       val n = c - 'A'
-      val n = int1_of_int (n)
-      val () = assert (n >= 0); val () = assert (n < N)
+      val n = abrange_of_int (n)
       val v = enigma_encode (E, n)
+      val v = int_of_abrange (v)
     in
       char_of_int (int_of 'A' + v)
     end else c // end of [if]
@@ -62,13 +61,16 @@ main () = {
   val msg1 = "HELLO, WORLD!"
   val () = println! ("msg1 = ", msg1)
 //
-  val () = enigma_init (E, 0 :: 0 :: 0 :: 0 :: 0 :: nil)  
+  val _0 = abrange_of_int (0)
+//
+  val () = enigma_init_rotorseq (E, _0 :: _0 :: _0 :: _0 :: _0 :: nil)  
   val msg2 = fs (msg1)
   val () = println! ("msg2 = ", msg2)
 //
-  val () = enigma_init (E, 0 :: 0 :: 0 :: 0 :: 0 :: nil)
+  val () = enigma_init_rotorseq (E, _0 :: _0 :: _0 :: _0 :: _0 :: nil)
   val msg3 = fs (msg2)
   val () = println! ("msg3 = ", msg3)
+  val () = assertloc (msg1 = msg3)
   val msg4 = fs (msg3)
   val () = println! ("msg4 = ", msg4)
 //

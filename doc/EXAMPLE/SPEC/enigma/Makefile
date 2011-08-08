@@ -21,7 +21,7 @@ checkall:: test
 ######
 
 test: test.dats
-	$(ATSCC) -o $@ test.dats enigma.sats enigma.dats
+	$(ATSCC) -o $@ test.dats enigma.sats enigma.dats && ./test
 cleanall:: ; $(RMF) test
 
 ######
