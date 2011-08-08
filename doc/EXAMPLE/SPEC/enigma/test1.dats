@@ -33,7 +33,7 @@ main () = {
 #define nil list_nil
 #define :: list_cons
 //
-  val () = srand48_with_time () // val () = srand48 (1000000L)
+  val () = srand48_with_time ()
 //
   val E = enigma_make_rand (5)
 //
@@ -74,18 +74,8 @@ main () = {
   val msg4 = fs (msg3)
   val () = println! ("msg4 = ", msg4)
 //
-(*
-  val c0 = enigma_encode (E, 0)
-  val () = printf ("%2.2d\n", @(c0))
-  val c1 = enigma_encode (E, 1)
-  val () = printf ("%2.2d\n", @(c1))
-  val c2 = enigma_encode (E, 2)
-  val () = printf ("%2.2d\n", @(c2))
-*)
-//
 } // end of [main]
 
 (* ****** ****** *)
 
-(* end of [test.dats] *)
-
+(* end of [test1.dats] *)

@@ -169,30 +169,30 @@ plugboard_struct = @{
 
 assume plugboard = ref (plugboard_struct)
 
-extern fun plugboard_get_encode (x: plugboard): permmap (N)
-extern fun plugboard_get_decode (x: plugboard): permmap (N)
+extern fun plugboard_get_encmap (x: plugboard): permmap (N)
+extern fun plugboard_get_decmap (x: plugboard): permmap (N)
 
 in // in of [local]
 
 implement
-plugboard_get_encode (x) = let
+plugboard_get_encmap (x) = let
   val (vbox pf | p) = ref_get_view_ptr (x) in p->encode
-end // end of [plugboard_get_encode]
+end // end of [plugboard_get_encmap]
 implement
-plugboard_get_decode (x) = let
+plugboard_get_decmap (x) = let
   val (vbox pf | p) = ref_get_view_ptr (x) in p->decode
-end // end of [plugboard_get_decode]
+end // end of [plugboard_get_decmap]
 
 implement
 plugboard_encode (x, n) = let
-  val map = plugboard_get_encode (x)
+  val map = plugboard_get_encmap (x)
 in
   permmap_get (map, n)
 end // end of [plugboard_encode]
 
 implement
 plugboard_decode (x, n) = let
-  val map = plugboard_get_decode (x)
+  val map = plugboard_get_decmap (x)
 in
   permmap_get (map, n)
 end // end of [plugboard_decode]
@@ -212,10 +212,10 @@ end // end of [plugboard_make_rand]
 implement
 fprint_plugboard (out, x) = {
   val () = fprint_string (out, "encode: ")
-  val () = fprint_permmap (out, plugboard_get_encode (x), N)
+  val () = fprint_permmap (out, plugboard_get_encmap (x), N)
   val () = fprint_newline (out)
   val () = fprint_string (out, "decode: ")
-  val () = fprint_permmap (out, plugboard_get_decode (x), N)
+  val () = fprint_permmap (out, plugboard_get_decmap (x), N)
   val () = fprint_newline (out)
 } // end of [fprint_plugboard]
 
@@ -252,19 +252,19 @@ rotor_struct = @{
 
 assume rotor = ref (rotor_struct)
 
-extern fun rotor_get_encode (x: rotor): permmap (N)
-extern fun rotor_get_decode (x: rotor): permmap (N)
+extern fun rotor_get_encmap (x: rotor): permmap (N)
+extern fun rotor_get_decmap (x: rotor): permmap (N)
 
 in // in of [local]
 
 implement
-rotor_get_encode (x) = let
+rotor_get_encmap (x) = let
   val (vbox pf | p) = ref_get_view_ptr (x) in p->encode
-end // end of [rotor_get_encode]
+end // end of [rotor_get_encmap]
 implement
-rotor_get_decode (x) = let
+rotor_get_decmap (x) = let
   val (vbox pf | p) = ref_get_view_ptr (x) in p->decode
-end // end of [rotor_get_decode]
+end // end of [rotor_get_decmap]
 
 implement
 rotor_get_shift (x) = let
@@ -293,7 +293,7 @@ implement
 rotor_encode (x, n) = let
   val shift = rotor_get_shift (x)
   val n = addNN (n, shift)
-  val map = rotor_get_encode (x)
+  val map = rotor_get_encmap (x)
 in
   addNN (permmap_get (map, n), shift)
 end // end of [rotor_encode]
@@ -302,7 +302,7 @@ implement
 rotor_decode (x, n) = let
   val shift = rotor_get_shift (x)
   val n = subNN (n, shift)
-  val map = rotor_get_decode (x)
+  val map = rotor_get_decmap (x)
 in
   subNN (permmap_get (map, n), shift)
 end // end of [rotor_decode]
@@ -325,10 +325,10 @@ end // end of [rotor_make_rand]
 implement
 fprint_rotor (out, x) = {
   val () = fprint_string (out, "encode: ")
-  val () = fprint_permmap (out, rotor_get_encode (x), N)
+  val () = fprint_permmap (out, rotor_get_encmap (x), N)
   val () = fprint_newline (out)
   val () = fprint_string (out, "decode: ")
-  val () = fprint_permmap (out, rotor_get_decode (x), N)
+  val () = fprint_permmap (out, rotor_get_decmap (x), N)
   val () = fprint_newline (out)
 } // end of [fprint_rotor]
 
@@ -402,18 +402,18 @@ reflector_struct = @{
 
 assume reflector = ref (reflector_struct)
 
-extern fun reflector_get_encode (x: reflector): permmap (N)
+extern fun reflector_get_encmap (x: reflector): permmap (N)
 
 in // in of [local]
 
 implement
-reflector_get_encode (x) = let
+reflector_get_encmap (x) = let
   val (vbox pf | p) = ref_get_view_ptr (x) in p->encode
-end // end of [reflector_get_encode]
+end // end of [reflector_get_encmap]
 
 implement
 reflector_encode (x, n) = let
-  val map = reflector_get_encode (x) in permmap_get (map, n)
+  val map = reflector_get_encmap (x) in permmap_get (map, n)
 end // end of [reflector_encode]
 
 implement
@@ -429,7 +429,7 @@ end // end of [reflector_make_rand]
 implement
 fprint_reflector (out, x) = {
   val () = fprint_string (out, "encode: ")
-  val () = fprint_permmap (out, reflector_get_encode (x), N)
+  val () = fprint_permmap (out, reflector_get_encmap (x), N)
   val () = fprint_newline (out)
 } // end of [fprint_reflector]
 

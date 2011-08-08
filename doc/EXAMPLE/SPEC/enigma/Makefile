@@ -16,13 +16,17 @@ all: checkall cleanall
 
 ######
 
-checkall:: test
+checkall:: test1 test2
 
 ######
 
-test: test.dats
-	$(ATSCC) -o $@ test.dats enigma.sats enigma.dats && ./test
-cleanall:: ; $(RMF) test
+test1: test1.dats
+	$(ATSCC) -o $@ test1.dats enigma.sats enigma.dats && ./test1
+cleanall:: ; $(RMF) test1
+
+test2: test2.dats
+	$(ATSCC) -o $@ test2.dats enigma.sats enigma.dats && ./test2 < test2.dats
+cleanall:: ; $(RMF) test2
 
 ######
 
