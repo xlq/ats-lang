@@ -387,6 +387,8 @@ srclines::
 ######
 
 cleanall::
+	make -C utils cleanall
+cleanall::
 	make -C PE-problem1 cleanall
 	make -C PE-problem2 cleanall
 	make -C PE-problem3 cleanall

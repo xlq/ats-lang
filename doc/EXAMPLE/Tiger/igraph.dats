@@ -460,7 +460,7 @@ implement igraph_search_spill (ig) = let
       | _ when $TL.temp_is_fixed tmp => () | _ => let
           prval @(pf0, pf1, pf2) = pf
           val nusedef = ignodeinfo_nusedef_get (info)
-          val () = if nusedef = 0 then $raise Found (tmp)
+          val () = if nusedef = 0 then $effmask_exn ($raise Found (tmp))
           val nlivtot = ignodeinfo_nlivtot_get (info)
           val isupdate = (if nlivtot0 >= 0
             then nlivtot0 * nusedef < nlivtot * nusedef0 else true

@@ -215,10 +215,9 @@ atslib_fopen_exn (
 ) {
   FILE *fil = fopen((char*)name, (char*)mode) ;
   if (!fil) {
-    perror ("fopen") ; atspre_exit_prerrf (
-      1, "exit(ATS): [fopen(\"%s\", \"%s\")] failed\n", name, mode
-    ) ;
-  }
+    perror ("fopen") ;
+    atspre_exit_prerrf (1, "exit(ATS): [fopen(\"%s\", \"%s\")] failed\n", name, mode) ;
+  } // end of [if]
   return fil ;
 } /* atslib_fopen_exn */
 

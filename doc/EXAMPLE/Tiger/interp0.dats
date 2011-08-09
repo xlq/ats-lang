@@ -194,7 +194,7 @@ fun interp0Exp_CallExp
           (pf: !unit_v | e: exp): value =<clo1> interp0Exp (env0, e)
         // end of [var]
         prval pf = unit_v
-        val vs = list_map_clo<exp><value> (pf | es, !p_interp0)
+        val vs = list_map_vclo<exp><value> (pf | es, !p_interp0)
         prval unit_v () = pf
         val vs = list_of_list_vt (vs)
       in

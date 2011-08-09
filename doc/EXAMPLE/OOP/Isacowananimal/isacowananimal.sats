@@ -12,7 +12,7 @@
 (* ****** ****** *)
 %{#
 #include "isacowananimal.cats"
-%}
+%} // end of [%{#]
 (* ****** ****** *)
 
 datasort thing =

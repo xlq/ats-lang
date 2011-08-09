@@ -509,7 +509,7 @@ trans1_exp (e) =
     | E0XPstr (s) => e1xp_make_str (loc0, s)
     | E0XPtup (es) => let
         prval pf = unit_v ()
-        val es = list_map_clo (pf | es, !p_clo) where {
+        val es = list_map_vclo (pf | es, !p_clo) where {
           var !p_clo = @lam
             (pf: !unit_v | e: e0xp): e1xp =<clo> $effmask_all (auxExp (G, e))
           // end of [var
