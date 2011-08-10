@@ -71,7 +71,9 @@ if err = 0 then let
           | _ when ipid = 0 => let // child 2
               prval () = STDIN_FILENO_gtez ()
               val (pf1_ | ()) = stdin_fildes_view_get ()
-              val [i:int] err = dup2 (pf1, pf1_ | fd1, STDIN_FILENO)
+              val [i:int] (pfopt | err) = dup2 (pf1, pf1_ | fd1, STDIN_FILENO)
+              val () = assertloc (err >= 0)
+              prval Some_v (pf1_) = pfopt
               val () = stdin_fildes_view_set (pf1_ | (*none*))
               val () = (if (err < 0) then errptexit (EXIT_FAILURE) else ()): void
               val () = close_exn (pf1 | fd1)
@@ -99,7 +101,9 @@ if err = 0 then let
   | _ when ipid = 0 => let // child 1
       prval () = STDOUT_FILENO_gtez ()
       val (pf2_ | ()) = stdout_fildes_view_get ()
-      val [i:int] err = dup2 (pf2, pf2_ | fd2, STDOUT_FILENO)
+      val [i:int] (pfopt | err) = dup2 (pf2, pf2_ | fd2, STDOUT_FILENO)
+      val () = assertloc (err >= 0)
+      prval Some_v (pf2_) = pfopt
       val () = stdout_fildes_view_set (pf2_ | (*none*))
       val () = (if (err < 0) then errptexit (EXIT_FAILURE) else ()): void
       val () = close_exn (pf1 | fd1)

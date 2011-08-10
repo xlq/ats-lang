@@ -106,18 +106,18 @@ symintr dup2
 
 fun dup2_exi {fd:int;fd2:nat} (
   pf: !fildes_v fd
-, pf2: !fildes_v fd2
-| fd: int fd
-, fd2: int fd2
-) : [i:int | i <= 0] int i
-  = "mac#atslib_dup2"
+, pf2: fildes_v fd2
+| fd: int fd, fd2: int fd2
+) : [i:int] (
+  option_v (fildes_v fd2, i >= 0) | int i // i == fd2 if i >= 0
+) = "mac#atslib_dup2"
 overload dup2 with dup2_exi
 
 fun dup2_noexi {fd:int;fd2:nat} (
   pf: !fildes_v fd
 | fd: int fd, fd2: int fd2
-) : [i:int | i <= 0] (
-  option_v (fildes_v fd2, i == 0) | int i
+) : [i:int] (
+  option_v (fildes_v fd2, i >= 0) | int i // i == fd2 if i >= 0
 ) = "mac#atslib_dup2"
 overload dup2 with dup2_noexi
 

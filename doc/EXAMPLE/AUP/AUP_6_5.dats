@@ -94,14 +94,18 @@ in
   | _ when ipid = 0 => let // child
 //
       val (pf_ | ()) = stdin_fildes_view_get ()
-      val [i:int] err = dup2 (pfout1, pf_ | fdout1, STDIN_FILENO)
+      val [i:int] (pfopt | err) = dup2 (pfout1, pf_ | fdout1, STDIN_FILENO)
+      val () = assertloc (err >= 0)
+      prval Some_v (pf_) = pfopt
       val () = stdin_fildes_view_set (pf_ | (*none*))
       val () = close_exn (pfout1 | fdout1)
       val () = close_exn (pfout2 | fdout2)
       val () = (if (err < 0) then errptexit (EXIT_FAILURE) else ()): void
 //
       val (pf_ | ()) = stdout_fildes_view_get ()
-      val [i:int] err = dup2 (pfin2, pf_ | fdin2, STDOUT_FILENO)
+      val [i:int] (pfopt | err) = dup2 (pfin2, pf_ | fdin2, STDOUT_FILENO)
+      val () = assertloc (err >= 0)
+      prval Some_v (pf_) = pfopt      
       val () = stdout_fildes_view_set (pf_ | (*none*))
       val () = close_exn (pfin1 | fdin1)
       val () = close_exn (pfin2 | fdin2)
