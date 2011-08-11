@@ -110,6 +110,18 @@ atsctrb_GLsizei_of_int (int x) { return x ; }
 //
 
 ATSinline()
+ats_GLsizeiptr_type
+atsctrb_GLsizeiptr_of_uintptr (ats_uintptr_type x) { return (ats_GLsizeiptr_type) x ; }
+
+//
+
+ATSinline()
+ats_GLsizeiptr_type
+atsctrb_GLsizeiptr_of_int (ats_int_type x) { return x ; }
+
+//
+
+ATSinline()
 ats_GLfloat_type
 atsctrb_GLfloat_of_int (int x) { return x ; }
 

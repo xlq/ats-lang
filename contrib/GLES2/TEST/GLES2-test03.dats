@@ -217,9 +217,9 @@ void glVertexAttribPointerBuffer (
 , ats_GLsizei_type size
 , ats_GLenum_type type
 , ats_GLsizei_type stride
-, ats_GLsizei_type pos
+, ats_GLsizeiptr_type pos
 ) {
-  glVertexAttribPointer (indx, size, type, GL_FALSE, stride, (void*)(uintptr_t)pos);
+  glVertexAttribPointer (indx, size, type, GL_FALSE, stride, (void *)pos);
   return;
 } // end of [glVertexAttribPointerBuffer]
 
@@ -260,7 +260,7 @@ fun glVertexAttribPointerBuffer {a:t@ype} (
 , size: GLsizei
 , type: GLenum_type a
 , stride: GLsizei
-, pos: GLsizei
+, pos: GLsizeiptr
 ) : void
   = "glVertexAttribPointerBuffer"
 // end of [glVertexAttribPointerBuffer]
@@ -287,7 +287,7 @@ viewtypedef gpuidx = @{
 // vertex buffer
 viewtypedef gpuvrt = @{
   buf= GLbuffer                // buffer object (storage)
-, pos= GLsizei                 // offset to position
+, pos= GLsizeiptr              // offset to position
 , size= GLsizei                // element size (in [type])
 , type= [a:t@ype] GLenum_type a  // GL_FLOAT, ...
 } // end of [gpuvrt]
@@ -393,11 +393,14 @@ fun mesh_upload_vertices (m: &mesh, res: &gpuvrt? >> gpuvrt): void = let
   extern
   castfn __cast (x: size_t):<> GLsizei
   // end of [extern]
+  extern
+  castfn __cast_uintptr (x: uintptr):<> GLsizeiptr
+  // end of [extern]
 in
   glBindBuffer (GL_ARRAY_BUFFER, v);
   glBufferDataF3 (n, !vp, GL_STATIC_DRAW);
   res.buf := v;
-  res.pos := __cast 0;
+  res.pos := __cast_uintptr (uintptr_of 0);
   res.size := __cast 3;
   res.type := GL_FLOAT;
   m.verts := (pf_v, pf_vgc | n, vp)

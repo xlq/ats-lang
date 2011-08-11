@@ -6,6 +6,7 @@
 (* ****** ****** *)
 
 %{#
+#include "prelude/CATS/integer_ptr.cats"
 #include "contrib/GLES2/CATS/gl2.cats"
 %}
 
@@ -127,6 +128,9 @@ fun GLushort_of_uint (x: uint):<> GLushort = "atsctrb_GLushort_of_uint"
 
 fun GLsizei_of_size1 {i:int} (x: size_t i): GLsizei i = "atsctrb_GLsizei_of_size"
 fun GLsizei_of_int1 {i:int} (x: int i): GLsizei i = "atsctrb_GLsizei_of_int"
+
+fun GLsizeiptr_of_uintptr1 {i:int} (x: uintptr i): GLsizeiptr i = "atsctrb_GLsizeiptr_of_uintptr"
+fun GLsizeiptr_of_int1 {i:nat} (x: int i): GLsizeiptr i = "atsctrb_GLsizeiptr_of_int"
 
 fun GLfloat_of_int (x: int):<> GLfloat = "atsctrb_GLfloat_of_int"
 fun GLfloat_of_double (x: double):<> GLfloat = "atsctrb_GLfloat_of_double"
