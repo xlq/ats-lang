@@ -338,22 +338,22 @@ end // end of [instr_add_valprimlst_free]
 
 extern
 fun ccomp_patck_rec (
-    res: &instrlst_vt
-  , vp: valprim
-  , lhips: labhipatlst
-  , hit_rec: hityp_t
-  , fail: kont
-  ) : void // end of [ccomp_patck_rec]
+  res: &instrlst_vt
+, vp: valprim
+, lhips: labhipatlst
+, hit_rec: hityp_t
+, fail: kont
+) : void // end of [ccomp_patck_rec]
 
 extern
 fun ccomp_patck_sum (
-    res: &instrlst_vt
-  , vp: valprim
-  , d2c: d2con_t
-  , hips: hipatlst
-  , hit_sum: hityp_t
-  , fail: kont
-  ) : void // end of [ccomp_patck_sum]
+  res: &instrlst_vt
+, vp: valprim
+, d2c: d2con_t
+, hips: hipatlst
+, hit_sum: hityp_t
+, fail: kont
+) : void // end of [ccomp_patck_sum]
 
 implement
 ccomp_patck_rec

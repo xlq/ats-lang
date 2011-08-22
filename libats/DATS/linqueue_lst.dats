@@ -278,7 +278,7 @@ in
     prval (pf_sl, pf_gc, pf_at) = slseg1_v_decode1 (q.pf)
     val p2 = q.ptr2
     prval () = __assert (q)
-    prval () = p2->1 := null
+    val () = p2->1 := null // HX-2011-08-13: bugfix: prval -> val!!!
     prval pf_sl_new = slseg_v_extend {a} (pf_sl, pf_gc, pf_at)
   in
     list_vt_of_slist (pf_sl_new | p1)

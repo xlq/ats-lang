@@ -126,10 +126,11 @@ read_all_err
       end else let // nread <= 0
         val retry = begin
           if nread < 0 then errno_is_EINTR () else false (*EOF*)
-        end : bool
+        end : bool // end of [val]
       in        
-        if retry then loop (pf_fd, pf_buf | fd, p_buf, nleft, err)
-        else (if nread < 0 then err := 1; nleft)
+        if retry then
+          loop (pf_fd, pf_buf | fd, p_buf, nleft, err)
+        else (if nread < 0 then err := err + 1; nleft)
       end // end of [if]
     end else begin
       i2sz 0 // all bytes are read

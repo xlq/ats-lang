@@ -245,7 +245,8 @@ array_ptr_initialize_lst {n:nat}
 // end of [array_ptr_initialize_lst]
 
 // the linear list is freed along the way
-fun{a:viewt@ype} array_ptr_initialize_lst_vt {n:nat}
+fun{a:viewt@ype}
+array_ptr_initialize_lst_vt {n:nat}
   (base: &(@[a?][n]) >> @[a][n], xs: list_vt (a, n)):<> void
 // end of [array_ptr_initialize_lst_vt]
 

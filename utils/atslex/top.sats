@@ -7,28 +7,27 @@
 (***********************************************************************)
 
 (*
- * ATS - Unleashing the Power of Types!
- *
- * Copyright (C) 2002-2008 Hongwei Xi, Boston University
- *
- * All rights reserved
- *
- * ATS is free software;  you can  redistribute it and/or modify it under
- * the terms of the GNU LESSER GENERAL PUBLIC LICENSE as published by the
- * Free Software Foundation; either version 2.1, or (at your option)  any
- * later version.
- * 
- * ATS is distributed in the hope that it will be useful, but WITHOUT ANY
- * WARRANTY; without  even  the  implied  warranty  of MERCHANTABILITY or
- * FITNESS FOR A PARTICULAR PURPOSE.  See the  GNU General Public License
- * for more details.
- * 
- * You  should  have  received  a  copy of the GNU General Public License
- * along  with  ATS;  see  the  file  COPYING.  If not, write to the Free
- * Software Foundation, 51  Franklin  Street,  Fifth  Floor,  Boston,  MA
- * 02110-1301, USA.
- *
- *)
+** ATS - Unleashing the Power of Types!
+**
+** Copyright (C) 2002-2010 Hongwei Xi, Boston University
+**
+** All rights reserved
+**
+** ATS is free software;  you can  redistribute it and/or modify it under
+** the terms of the GNU LESSER GENERAL PUBLIC LICENSE as published by the
+** Free Software Foundation; either version 2.1, or (at your option)  any
+** later version.
+** 
+** ATS is distributed in the hope that it will be useful, but WITHOUT ANY
+** WARRANTY; without  even  the  implied  warranty  of MERCHANTABILITY or
+** FITNESS FOR A PARTICULAR PURPOSE.  See the  GNU General Public License
+** for more details.
+** 
+** You  should  have  received  a  copy of the GNU General Public License
+** along  with  ATS;  see  the  file  COPYING.  If not, write to the Free
+** Software Foundation, 51  Franklin  Street,  Fifth  Floor,  Boston,  MA
+** 02110-1301, USA.
+*)
 
 (* ****** ****** *)
 //
@@ -65,19 +64,23 @@ datatype regex = // type for regular expressions
   | REGseq of (regex, regex)
   | REGstar of regex
   | REGstr of string
+// end if [regex]
 
 datatype redef =
   | redef_nil | redef_cons of (string (* identifier *), regex, redef)
+// end of [redef]
 
 datatype rules =
   | rules_nil | rules_cons of (regex, string (* code for action *), rules)
+// end of [rules]
 
 datatype lexfns =
   | lexfns_nil | lexfns_cons of (string (*name*), string (*arg*), rules, lexfns)
+// end if [lexfns]
 
 typedef lexer = '{
   preamble= string, redef= redef, lexfns= lexfns, postamble= string
-}
+} // end of [lexer]
 
 (* ****** ****** *)
 
@@ -110,8 +113,9 @@ fun prerr_token (tok: token): void = "prerr_token"
 fun token_initialization (): void
 
 (* ****** ****** *)
-
-// implemented in [position.dats]
+//
+// HX: implemented in [position.dats]
+//
 fun position_get (): pos_t = "position_get"
 fun position_prev_get (): pos_t = "position_prev_get"
 
@@ -119,9 +123,9 @@ fun print_pos (p: pos_t): void = "print_pos"
 fun prerr_pos (p: pos_t): void = "prerr_pos"
 
 (* ****** ****** *)
-
-// implemented in [charset.sats]
-
+//
+// HX: implemented in [charset.sats]
+//
 val char_max: char
 
 fun add_char_int (c: char, i: int): char
@@ -151,17 +155,18 @@ fun print_charset (cs: charset_t): void
 fun prerr_charset (cs: charset_t): void
 
 (* ****** ****** *)
-
-// implemented in [parser.dats]
+//
+// HX: implemented in [parser.dats]
+//
 fun print_regex (reg: regex): void
 fun prerr_regex (reg: regex): void
 
 fun lexer_parse (): lexer
 
 (* ****** ****** *)
-
-// implemented in [intset.dats]
-
+//
+// HX: implemented in [intset.dats]
+//
 val intset_nil : intset_t
 fun intset_is_nil (ns: intset_t): bool
 
@@ -185,11 +190,12 @@ fun prerr_intset (cs: intset_t): void
 
 fun foreach_intset {v:view}
   (pf: !v | f: !(!v | int) -<cloptr1> void, ns: intset_t): void
+// end of [foreach_intset]
 
 (* ****** ****** *)
-
-// implemented in [states.dats]
-
+//
+// HX: implemented in [states.dats]
+//
 fun states_nil (): states_t
 
 fun states_free (sts: states_t): void
@@ -199,14 +205,16 @@ fun states_insert (sts: &states_t, tag0: int, ns0: intset_t): void
 
 fun states_foreach_and_free {v:view}
   (pf: !v | f: !(!v | int, intset_t) -<cloptr1> void, sts: states_t): void
+// end of [states_foreach_and_free]
 
 (* ****** ****** *)
-
-// implemented in [lexgen.dats]
+//
+// HX: implemented in [lexgen.dats]
+//
 fun fprint_lexfns {m:file_mode}
   (pf_mod: file_mode_lte (m, w) | fil: &FILE m, rds: redef, lfs: lexfns): void
+// end of [fprint_lexfns]
 
 (* ****** ****** *)
 
 (* end of top.sats *)
-

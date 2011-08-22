@@ -26,9 +26,33 @@ extern fun fildescopy
 (* ****** ****** *)
 
 #define PROLOG_one "\
-<HTML>\n\
-<HEAD>\n\
-<STYLE TYPE=\"text/css\">\n\
+<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Strict//EN\"
+\"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd\">
+<html xmlns=\"http://www.w3.org/1999/xhtml\">
+<head>
+  <title></title>
+  <meta http-equiv=\"Content-Type\" content=\"text/html;charset=utf-8\"/>
+  <style type=\"text/css\">
+    .atsyntax {color:#E80000;background-color:#E0E0E0}
+    .atsyntax span.comment {color:#787878;font-style:italic}
+    .atsyntax span.extern  {color:#A52A2A}
+    .atsyntax span.keyword {color:#000000;font-weight:bold}
+    .atsyntax span.neuexp  {color:#800080}
+    .atsyntax span.staexp  {color:#0000FF}
+    .atsyntax span.dynexp  {color:#E80000}
+    .atsyntax span.prfexp  {color:#009000}
+    .atsyntax span.stacstdec  {text-decoration:none}
+    .atsyntax span.stacstuse  {color:#0000CF;text-decoration:underline}
+    .atsyntax span.dyncstdec  {text-decoration:none}
+    .atsyntax span.dyncstimp  {color:#B80000;text-decoration:underline}
+    .atsyntax span.dyncstuse  {color:#B80000;text-decoration:underline}
+    .atsyntax body {color:#E80000;background-color:#E0E0E0}
+  </style>
+</head>
+<!--
+<html>\n\
+<head>\n\
+<style type=\"text/css\">\n\
 span.comment {color:787878;font-style:italic}\n\
 span.extern  {color:A52A2A}\n\
 span.keyword {color:000000;font-weight:bold}\n\
@@ -36,16 +60,16 @@ span.neuexp  {color:800080}\n\
 span.staexp  {color:0000FF}\n\
 span.dynexp  {color:E80000}\n\
 span.prfexp  {color:009000}\n\
-</STYLE>\n\
-</HEAD>\n\
-<BODY text=\"#000000\" bgcolor=\"#ffffff\" link=\"#0000FF\" vlink=\"#CC00CC\" alink=\"#ff0000\">\n\
-\n\
+</style>\n\
+</head>\n\
+-->
+<body text=\"#000000\" bgcolor=\"#ffffff\" link=\"#0000FF\" vlink=\"#CC00CC\" alink=\"#ff0000\">\n\
 "
 
 #define EPILOG_one "\
 \n\
-</BODY>\n\
-</HTML>\n\
+</body>\n\
+</html>\n\
 "
 
 val nPROLOG_one = string1_length (PROLOG_one)

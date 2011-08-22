@@ -373,19 +373,16 @@ ing sequences (Additional characters may follow these sequences.):
 
 fun fopen_err {m:fm}
   (path: !READ(string), m: file_mode m)
-  :<> [l:addr] (FILEopt_v (m, l) | ptr l)
-  = "mac#atslib_fopen_err"
+  :<> [l:addr] (FILEopt_v (m, l) | ptr l) = "mac#atslib_fopen_err"
 // end of [fopen_err]
 
 fun fopen_exn {m:fm}
   (path: !READ(string), m: file_mode m)
-  :<!exn> [l:addr] (FILE m @ l | ptr l)
-  = "atslib_fopen_exn"
+  :<!exn> [l:addr] (FILE m @ l | ptr l) = "atslib_fopen_exn"
 // end of [fopen_exn]
 
 fun fopen_ref_exn {m:fm}
-  (path: !READ(string), m: file_mode m):<!exn> FILEref
-  = "atslib_fopen_exn"
+  (path: !READ(string), m: file_mode m):<!exn> FILEref = "atslib_fopen_exn"
 // end of [fopen_ref_exn]
 
 // ------------------------------------------------

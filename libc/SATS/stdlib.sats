@@ -113,6 +113,10 @@ fun _Exit (status: int): void = "mac#atslib__Exit"
 fun atexit (f: () -> void): int = "mac#atslib_atexit"
 
 (* ****** ****** *)
+(*
+// HX: [mktemp] is not interface as it is BAD!!!
+*)
+(* ****** ****** *)
 //
 // HX: the last six characters of path much be XXXXXX
 //

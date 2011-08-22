@@ -219,7 +219,7 @@ typecheck_file_exec (
 ats_void_type
 atscc_version_exec () {
   int err = execl (
-    (char*)atsopt_global, (char*)atsopt_global, "--version", (ats_ptr_type)0
+    (char*)atsopt_global, (char*)atsopt_global, "--version", (char*)0
   ) ;
   if (err < 0) perror("atscc_version: [execl] failed: ") ;
   exit(EXIT_FAILURE) ;

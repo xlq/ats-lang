@@ -161,16 +161,16 @@ fun close_loop_exn {fd:int}
 //
 fun read_err
   {fd:int} {sz,n:nat | n <= sz} (
-    pf: !fildes_v (fd)
-  | fd: int fd, buf: &b0ytes(sz) >> bytes(sz), ntotal: size_t n
-  ) : ssizeBtw(~1, n+1) = "atslib_fildes_read_err"
+  pf: !fildes_v (fd)
+| fd: int fd, buf: &b0ytes(sz) >> bytes(sz), ntotal: size_t n
+) : ssizeBtw(~1, n+1) = "atslib_fildes_read_err"
 // end of [read_err]
 
 fun read_exn
   {fd:int} {sz,n:nat | n <= sz} (
-    pf: !fildes_v (fd)
-  | fd: int fd, buf: &b0ytes(sz) >> bytes(sz), ntotal: size_t n
-  ) : sizeLte n = "atslib_fildes_read_exn"
+  pf: !fildes_v (fd)
+| fd: int fd, buf: &b0ytes(sz) >> bytes(sz), ntotal: size_t n
+) : sizeLte n = "atslib_fildes_read_exn"
 // end of [read_exn]
 
 (* ****** ****** *)
@@ -182,14 +182,14 @@ fun read_exn
 //
 fun read_all_err
   {fd:int} {sz,n:nat | n <= sz} (
-    pf: !fildes_v (fd) | fd: int fd, buf: &bytes sz, ntotal: size_t n
-  ) : ssizeBtw (~1, n+1) = "atslib_fildes_read_all_err"
+  pf: !fildes_v (fd) | fd: int fd, buf: &bytes sz, ntotal: size_t n
+) : ssizeBtw (~1, n+1) = "atslib_fildes_read_all_err"
 // end of [read_all_err]
 
 fun read_all_exn
   {fd:int} {sz,n:nat | n <= sz} (
-    pf: !fildes_v (fd) | fd: int fd, buf: &bytes sz, ntotal: size_t n
-  ) : sizeLte n = "atslib_fildes_read_all_exn"
+  pf: !fildes_v (fd) | fd: int fd, buf: &bytes sz, ntotal: size_t n
+) : sizeLte n = "atslib_fildes_read_all_exn"
 // end of [read_all_exn]
 
 (* ****** ****** *)
@@ -198,14 +198,14 @@ fun read_all_exn
 //
 fun write_err
   {fd:int} {sz,n:nat | n <= sz} (
-    pf: !fildes_v (fd) | fd: int fd, buf: &bytes sz, ntotal: size_t n
-  ) : ssizeBtw(~1, n+1) = "atslib_fildes_write_err"
+  pf: !fildes_v (fd) | fd: int fd, buf: &bytes sz, ntotal: size_t n
+) : ssizeBtw(~1, n+1) = "atslib_fildes_write_err"
 // end of [write_err]
 
 fun write_exn
   {fd:int} {sz,n:nat | n <= sz} (
-    pf: !fildes_v (fd) | fd: int fd, buf: &bytes sz, ntotal: size_t n
-  ) : sizeLte n = "atslib_fildes_write_exn"
+  pf: !fildes_v (fd) | fd: int fd, buf: &bytes sz, ntotal: size_t n
+) : sizeLte n = "atslib_fildes_write_exn"
 // end of [write_exn]
 
 (* ****** ****** *)
@@ -232,16 +232,16 @@ fun write_all_exn
 //
 fun write_substring_err
   {fd:int} {sz:int} {i,n:nat | i+n <= sz} (
-    pf: !fildes_v (fd)
-  | fd: int fd, str: !READ(string sz), start: size_t i, n: size_t n
-  ) : ssizeBtw(~1, n+1) = "atslib_fildes_write_substring_err"
+  pf: !fildes_v (fd)
+| fd: int fd, str: !READ(string sz), start: size_t i, n: size_t n
+) : ssizeBtw(~1, n+1) = "atslib_fildes_write_substring_err"
 // end of [write_substring_err]
 
 fun write_substring_exn
   {fd:int} {sz:int} {i,n:nat | i+n <= sz} (
-    pf: !fildes_v (fd)
-  | fd: int fd, str: !READ(string sz), start: size_t i, n: size_t n
-  ) : sizeLte n = "atslib_fildes_write_substring_exn"
+  pf: !fildes_v (fd)
+| fd: int fd, str: !READ(string sz), start: size_t i, n: size_t n
+) : sizeLte n = "atslib_fildes_write_substring_exn"
 // end of [write_substring_exn]
 
 (* ****** ****** *)

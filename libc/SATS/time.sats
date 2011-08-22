@@ -103,21 +103,23 @@ fun tm_get_isdst
   (tm: &READ(tm_struct)):<> int = "atslib_tm_get_isdst"
 
 (* ****** ****** *)
-
+//
 symintr time
-
-// HX: error-checking is nor forced
+//
+// HX: error-checking is not forced
+//
 fun time_get (): time_t = "atslib_time_get"
 overload time with time_get
-
+//
 fun time_get_and_set // HX: error must be checked!
   (p: &time_t? >> opt (time_t, b)): #[b:bool] bool (b)
   = "atslib_time_get_and_set" // function!
 overload time with time_get_and_set
-
+//
 (* ****** ****** *)
 //
 // HX: [ctime] is non-reentrant
+// HX: the returned string ends with a newline.
 //
 fun ctime (
   t: &READ(time_t)

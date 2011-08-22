@@ -153,8 +153,11 @@ all1:: bootstrapping
 all1:: atsopt1
 all1:: bin/atscc
 all1:: bin/atslib
-all1:: libfiles libfiles_mt
+all1:: libfiles
+all1:: libfiles_mt
+all1:: libatsdoc
 all1:: bin/atspack
+all1:: bin/atsdoc
 all1:: bin/atslex
 all1:: ccomp/runtime/GCATS/gc.o
 all1:: ccomp/runtime/GCATS/gc_mt.o
@@ -223,6 +226,10 @@ bin/atspack:
 	$(MAKE) -C utils/scripts atspack
 	$(CPF) utils/scripts/atspack $(ATSHOMEBIN)
 
+bin/atsdoc:
+	$(MAKE) -C utils/atsdoc atsdoc
+	$(CPF) utils/atsdoc/atsdoc $(ATSHOMEBIN)
+
 ###### library ######
 
 ATS_PROOFCHECK=
@@ -253,6 +260,8 @@ lib64files: .libfiles_local
 .libfiles_mt_local: .libfiles_mt ; $(CC) -E -P -x c -o $@ $<
 libfiles_mt: .libfiles_mt_local
 	$(ATSLIB) $(ATS_PROOFCHECK) -D_ATS_MULTITHREAD -O2 --libats_mt
+
+libatsdoc: ; $(MAKE) -C libatsdoc
 
 ###### a lexer for ATS ######
 
@@ -318,7 +327,9 @@ cleanall:: clean
 	$(RMF) bootstrap0/atsopt
 	$(RMF) bootstrap1/atsopt
 	$(RMF) src/ats_grammar_yats.c src/ats_grammar_yats.h
-	$(RMF) bin/atsopt bin/atscc bin/atslib bin/atslex bin/atspack
+	$(RMF) bin/atsopt
+	$(RMF) bin/atscc bin/atslib bin/atslex bin/atspack
+	$(RMF) bin/atsdoc
 	$(RMF) ccomp/lib/libats.a
 	$(RMF) ccomp/lib/libats_mt.a
 	$(RMF) ccomp/lib/libats_lex.a

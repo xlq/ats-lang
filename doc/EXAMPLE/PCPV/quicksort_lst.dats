@@ -77,7 +77,6 @@ absprop SORT (xs: ilist, ys: ilist) // [ys] is sorted version of [xs]
 
 absprop LB (x:int, xs:ilist)
 absprop UB (x:int, xs:ilist)
-stadef APPEND = APPEND
 absprop UNION4 (x:int, xs:ilist, ys:ilist, zs:ilist, res:ilist)
 
 (* ****** ****** *)

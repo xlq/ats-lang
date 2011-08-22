@@ -7,12 +7,8 @@
 *)
 
 postfix (imul + 10) !!
-
 extern fun !! (x: int): int
-
-implement !! (x) = begin
-  if x >= 2 then x * (x - 2)!! else 1
-end // end of [!!]
+implement !! (x) = if x >= 2 then x * (x - 2)!! else 1
 
 (* ****** ****** *)
 

@@ -143,7 +143,7 @@ macros::
 	scp $(OUTPUT)/macros.html \
           ats-hwxi,ats-lang@web.sourceforge.net:htdocs/TUTORIAL/contents/
 
-function-or-closure::
+function-or-closure:: function-or-closure.html
 	$(FPROC) -one function-or-closure.html
 	scp $(OUTPUT)/function-or-closure.html \
           ats-hwxi,ats-lang@web.sourceforge.net:htdocs/TUTORIAL/contents/
@@ -213,12 +213,12 @@ strings::
 	scp $(OUTPUT)/strings.html \
           ats-hwxi,ats-lang@web.sourceforge.net:htdocs/TUTORIAL/contents/
 
-datatypes::
+datatypes:: datatypes.html
 	$(FPROC) -one datatypes.html
 	scp $(OUTPUT)/datatypes.html \
           ats-hwxi,ats-lang@web.sourceforge.net:htdocs/TUTORIAL/contents/
 
-dataprops::
+dataprops:: dataprops.html
 	$(FPROC) -one dataprops.html
 	scp $(OUTPUT)/dataprops.html \
           ats-hwxi,ats-lang@web.sourceforge.net:htdocs/TUTORIAL/contents/
@@ -297,6 +297,7 @@ looping::
 
 ATSHOMEQ="$(ATSHOME)"
 ATSCC=$(ATSHOMEQ)/bin/atscc
+ATSDOC=$(ATSHOMEQ)/bin/atsdoc
 
 ######
 
@@ -330,9 +331,49 @@ compall::
 
 ######
 
-clean::
-	rm -f *_dats.c *_sats.c *~
+function-or-closure_: function-or-closure_atxt.dats
+	$(ATSCC) -D_ATS_GCATS -o $@ function-or-closure_atxt.dats -latsdoc
+function-or-closure_atxt.dats: function-or-closure.atxt
+	$(ATSDOC) -do $@ -i function-or-closure.atxt > function-or-closure_atxt.txt
+function-or-closure.html: function-or-closure_ ; ./function-or-closure_ > $@
 
-cleanall: clean; rm -f *_?ats.html
+clean:: ; $(RMF) function-or-closure_
+cleanall:: ; $(RMF) function-or-closure.html
+
+######
+
+datatypes_: datatypes_atxt.dats
+	$(ATSCC) -D_ATS_GCATS -o $@ datatypes_atxt.dats -latsdoc
+datatypes_atxt.dats: datatypes.atxt
+	$(ATSDOC) -do $@ -i datatypes.atxt > datatypes_atxt.txt
+datatypes.html: datatypes_ ; ./datatypes_ > $@
+
+clean:: ; $(RMF) datatypes_
+cleanall:: ; $(RMF) datatypes.html
+
+######
+
+dataprops_: dataprops_atxt.dats
+	$(ATSCC) -D_ATS_GCATS -o $@ dataprops_atxt.dats -latsdoc
+dataprops_atxt.dats: dataprops.atxt
+	$(ATSDOC) -do $@ -i dataprops.atxt > dataprops_atxt.txt
+dataprops.html: dataprops_ ; ./dataprops_ > $@
+
+clean:: ; $(RMF) dataprops_
+cleanall:: ; $(RMF) dataprops.html
+
+######
+
+RMF=rm -f
+
+######
+
+clean:: ; $(RMF) *~
+clean:: ; $(RMF) *_?ats.c
+clean:: ; $(RMF) *_?ats.o
+clean:: ; $(RMF) *_atxt.dats
+
+cleanall:: clean
+cleanall:: ; $(RMF) *_?ats.html
 
 ###### end of [Makefile] ######
