@@ -1,0 +1,5 @@
+atsdoc_translate_sats.o :
+atsdoc_translate_dats.o : atsdoc_translate.sats
+atsdoc_translate_error_dats.o : atsdoc_translate.sats
+atsdoc_translate_item_dats.o : atsdoc_translate.sats
+atsdoc_main_dats.o : atsdoc_translate.sats
