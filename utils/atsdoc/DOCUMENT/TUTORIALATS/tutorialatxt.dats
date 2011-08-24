@@ -44,6 +44,16 @@ macdef code (x) = xmltagging ("code", ,(x))
 //
 macdef command (x) = xmltagging ("command", ,(x))
 //
+macdef LI (x) = xmltagging ("listitem", ,(x))
+//
+fun itemizedlist
+  (xs: textlst): text = let
+  val opn = TEXTstrcst "<itemizedlist>\n"
+  val cls = TEXTstrcst "\n</itemizedlist>"
+in
+  TEXTapptxt3 (opn, TEXTcontxt (xs), cls)
+end
+//
 local
 val ATSCODEopn = "<informalexample><programlisting><![CDATA["
 val ATSCODEcls = "]]></programlisting></informalexample>"

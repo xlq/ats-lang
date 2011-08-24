@@ -84,6 +84,7 @@ funarg =
   | FAint of string
   | FAident of string
   | FAstrsub of string
+  | FAfunres of string
   | FAnil of ()
 // end of [funarg]
 
@@ -151,13 +152,13 @@ fun fprint_the_tranitmlst (out: FILEref, basename: string): void
 
 fun trans_top (out: FILEref, buf: &lexbuf): void
 
-fun trans_extcode (
-  buf: &lexbuf, pos0: &position, pos: &position
-) : void // end of [trans_extcode]
+fun trans_extcode
+  (buf: &lexbuf, pos0: &position, pos: &position) : void
+// end of [trans_extcode]
 
-fun trans_funcall (
-  buf: &lexbuf, pos0: &position, pos: &position, fnam: string, fres: string
-) : string(*fres*) // end of [trans_funcall]
+fun trans_funcall // HX: pos0 is right after the char '#'
+  (buf: &lexbuf, pos0: &position, pos: &position) : Option_vt (string(*fres*))
+// end of [trans_funcall]
 
 (* ****** ****** *)
 //

@@ -63,10 +63,8 @@ OBJECTS := $(patsubst %.dats, %_dats.o, $(OBJECTS))
 
 ######
 
-atsdoc: \
-  atsdoc_main_dats.o $(OBJECTS)
-	$(ATSCC) $(ATSGCFLAG) $(ATSCCFLAGS) \
-  -o atsdoc atsdoc_main_dats.o $(OBJECTS) -L$(ATSHOME)/libatsdoc -latsdoc
+atsdoc: atsdoc_main_dats.o $(OBJECTS)
+	$(ATSCC) $(ATSGCFLAG) $(ATSCCFLAGS) -o atsdoc atsdoc_main_dats.o $(OBJECTS) -latsdoc
 
 ######
 

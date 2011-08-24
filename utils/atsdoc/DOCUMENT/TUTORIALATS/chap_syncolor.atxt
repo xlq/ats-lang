@@ -20,30 +20,30 @@ differentiate various syntatical entities in ATS code.
 The convention I adopt for coloring ATS syntax is given as follows:
 ")
 
-<itemizedlist>
-<listitem>
+#itemizedlist{
+#LI("\
 #para("
 The keywords in ATS are all colored
 <phrase role=\\\"color: BLACK; style: BOLD\\\">black</phrase>
 (and possibly written in bold face).
 ")
-</listitem>
+"),
 
-<listitem>
+#LI("\
 #para("
 The comments in ATS are all colored
 <phrase role=\\\"\\\#787878\\\; stype NORMAL\\\">gray</phrase>.
 ")
-</listitem>
+"),
 
-<listitem>
+#LI("\
 #para("
 The code in the statics of ATS is colored
 <phrase role=\\\"BLUE; stype NORMAL\\\">blue</phrase>.
 ")
-</listitem>
+"),
 
-<listitem>
+#LI("\
 #para("
 The code in the dynamics of ATS is colored
 <phrase role=\\\"\\\#E80000; stype NORMAL\\\">red</phrase>
@@ -51,16 +51,15 @@ unless it represents proofs, for which the color
 <phrase role=\\\"\\\#009000; stype NORMAL\\\">dark green</phrase>
 is used.
 ")
-</listitem>
+"),
 
-<listitem>
+#LI("\
 #para("
 The external code (in C) is colored
 <phrase role=\\\"\\\#A52A2A; stype NORMAL\\\">deep brown</phrase>.
 ")
-</listitem>
-
-</itemizedlist>
+")
+}#comment("itemizedlist")
 
 #para("\
 Please find an example of ATS code #mycodelink("fact_dats.html", "on-line")

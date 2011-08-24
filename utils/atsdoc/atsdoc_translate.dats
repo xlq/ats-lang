@@ -370,27 +370,16 @@ end // end of [trans_PERCENT]
 implement
 trans_top_SHARP
   (out, buf, pos) = let
-  val k = testing_ident (buf, pos)
-in
-//
-if k >= 0 then let
-  val k = uint_of_int (k)
-  val fnam = lexbuf_get_substrptr1 (buf, 1u, k)
-  val fnam = string_of_strptr (fnam)
-  val fres = funcall_fres () // HX: incrementally stamped
-//
   var pos0: position
-  val () = lexbuf_get_position (buf, pos0)
-// HX: [fres] may be supplied
-  val fres = trans_funcall (buf, pos0, pos, fnam, fres)
+  val () = $LOC.position_copy (pos0, pos)
+  val opt = trans_funcall (buf, pos0, pos)
+in
 //
-in
-  fprintf (out, "#%s$", @(fres)) // HX: '$' is a separator!
-end else let
-  val err = fputc_err ('#', out)
-in
-  // nothing
-end // end of [if]
+case+ opt of
+| ~Some_vt (fres) => fprintf (out, "#%s$", @(fres)) // HX: '$' is a separator!
+| ~None_vt () => let
+    val err = fputc_err ('#', out) in (*nothing*)
+  end // end of [if]
 //
 end // end of [trans_top_SHARP]
 
@@ -457,7 +446,11 @@ trans_top_from_filename
   val (pffil | filp) = $STDIO.fopen_exn (fullname, file_mode_r)
   var buf: lexbuf
   val () = lexbuf_initialize_filp (file_mode_lte_r_r, pffil | buf, filp)
+//
+  val (pfpush | ()) = $FIL.the_filenamelst_push (fil)
   val () = trans_top (tout, buf)
+  val () = $FIL.the_filenamelst_pop (pfpush | (*none*))
+//
   val () = lexbuf_uninitialize (buf)
 in
   fprint_the_docerrlst (stderr_ref)

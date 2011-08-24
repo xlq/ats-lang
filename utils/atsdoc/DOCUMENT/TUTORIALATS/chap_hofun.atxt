@@ -22,46 +22,51 @@ Let us use BT to range over base types such as #code("char"),
 #code("double"), #code("int") and #code("string").  A simple type T is
 formed according to the following inductive definition:
 
-<itemizedlist>
-<listitem>
+#ignore("\
+#LI[item1]("\
 #para("BT is a simple type.")
-</listitem>
-
-<listitem>
+")
+")\
+#ignore("\
+#LI[item2]("\
 #para("\
 (T#sub("1"), ..., T#sub("n")) -&gt; T#sub("0") is a simple type if
 T#sub("0"), T#sub("1"), ... T#sub("n") are simple types.
 ")
-</listitem>
-</itemizedlist>
+")#comment("LI")
+")\
+#itemizedlist{item1, item2}
 
 Let #emph("order") be a function from simply types to natural numbers
 defined as follows:
 
-<itemizedlist>
-<listitem>
+#ignore("\
+#LI[item1]("
 #para("\
 #emph("order")(BT) = 0
 ")
-</listitem>
-<listitem>
+")#comment("LI")
+")\
+#ignore("\
+#LI[item2]("\
 #para("\
 #emph("order")((T#sub("1"), ..., T#sub("n")) -&gt; T#sub("0")) = 
 #emph("max")(#emph("order")(T#sub("0")), 1 + #emph("order")(T#sub("1")), ..., 1 + #emph("order")(T#sub("n")))
 ")
-</listitem>
-</itemizedlist>
+")#comment("LI")
+")\
+#itemizedlist{item1, item2}
 
 ")#comment("para")
 
 #para("\
 
-Given a function f of simple type T, we say that f is a #emph("n")th-order
-function if #emph("order")(T) = #emph("n"). For instance, a function of the type
-(int, int) -&gt; int is 1st-order, and a function of the type
-int -&gt; (int -&gt; int) is also 1st-order, and a function of the type
-((int -&gt; int), int) -&gt; int is 2nd-order.  In practice, most higher-order
-functions are 2nd-order.
+Given a function f of some simple type T, we say that f is a
+#emph("n")th-order function if #emph("order")(T) = #emph("n"). For
+instance, a function of the type (int, int) -&gt; int is 1st-order, and a
+function of the type int -&gt; (int -&gt; int) is also 1st-order, and a
+function of the type ((int -&gt; int), int) -&gt; int is 2nd-order.  In
+practice, most higher-order functions are 2nd-order.
 
 ")#comment("para")
 

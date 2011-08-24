@@ -77,6 +77,7 @@ fprint_funarg (out, x) =
     in
       // nothing
     end // end of [FAstrsub]
+  | FAfunres (res) => fprint_string (out, res) 
   | FAnil () => fprint_string (out, "#error")
 // end of [fprint_funarg]
 
@@ -304,34 +305,20 @@ trans_string_SHARP
   (out, buf, pos) = let
   var pos0: position
   val () = $LOC.position_copy (pos0, pos)
-  val k = testing_ident (buf, pos)
+  val opt = trans_funcall (buf, pos0, pos)
 in
 //
-if k >= 0 then let
-//
-  val st0 = lexbuf_get_base (buf)
-  val st1 = $LOC.position_get_ntot (pos0)
-  val st = st1 - st0
-  val st = (uint_of)st
-//
-  val k = uint_of_int (k)
-  val fnam = lexbuf_get_substrptr1 (buf, st, k)
-  val fnam = string_of_strptr (fnam)
-  val fres = funcall_fres () // HX: incrementally stamped
-//
-  val fcal = trans_funcall (buf, pos0, pos, fnam, fres)
-//
-  val () = stroutptr_add_char (out, '#')
-  val () = stroutptr_add_string (out, fres)
-  val () = stroutptr_add_char (out, '$') // HX: '$' is used as a sep!
-//
-in
-  // nothing
-end else let
-  val () = stroutptr_add_char (out, '#')
-in
-  // nothing
-end // end of [if]
+case+ opt of
+| ~Some_vt (fres) => let
+    val () = stroutptr_add_char (out, '#')
+    val () = stroutptr_add_string (out, fres)
+    val () = stroutptr_add_char (out, '$') // HX: '$' is used as a sep!
+  in
+    // nothing
+  end // end of [Some_vt]
+| ~None_vt () => let
+    val () = stroutptr_add_char (out, '#') in (*nothing*)
+  end // end of [if]
 //
 end // end of [trans_string_SHARP]
 
@@ -471,6 +458,15 @@ if i >= 0 then let
     in
       FAstrsub (str)
     end // end of ['"']
+  | '#' => let
+      var pos0: position
+      val () = posincby1 (pos)
+      val () = $LOC.position_copy (pos0, pos)
+      val opt = trans_funcall (buf, pos0, pos)
+    in
+      case+ opt of
+      | ~Some_vt (fres) => FAfunres (fres) | ~None_vt () => FAnil ()
+    end // end of ['#']
   | _ when DIGIT_test (c) => let
       val st0 = lexbuf_get_base (buf)
       val st1 = $LOC.position_get_ntot (pos)
@@ -616,7 +612,24 @@ end // end of [trans_funarglst_OPEN]
 
 implement
 trans_funcall
-  (buf, pos0, pos, fnam, fres) = let
+  (buf, pos0, pos) = let
+//
+  val k = testing_ident (buf, pos)
+in
+//
+if k >= 0 then let
+//
+  val st0 = lexbuf_get_base (buf)
+  val st1 = $LOC.position_get_ntot (pos0)
+  val st = st1 - st0
+  val st = (uint_of)st
+//
+  val k = uint_of_int (k)
+  val fnam = lexbuf_get_substrptr1 (buf, st, k)
+  val fnam = string_of_strptr (fnam)
+  val fres = funcall_fres () // HX: incrementally stamped
+//
+// HX: [fres] may be supplied by the user
 //
   val opt = trans_funres (buf, pos) 
   val fres = (case opt of
@@ -631,7 +644,9 @@ trans_funcall
   val () = the_tranitmlst_add (fcal)
 //
 in
-  fres // HX: it may be supplied by the user
+  Some_vt (fres)
+end else None_vt () // end of [if]
+//
 end // end of [trans_funcall]
 
 (* ****** ****** *)
