@@ -34,8 +34,9 @@
 #
 ######
 
-ATSCC=$(ATSHOME)/bin/atscc
-ATSOPT=$(ATSHOME)/bin/atsopt
+ATSHOMEQ="$(ATSHOME)"
+ATSCC=$(ATSHOMEQ)/bin/atscc
+ATSOPT=$(ATSHOMEQ)/bin/atsopt
 
 ######
 
@@ -48,7 +49,12 @@ ATSCCFLAGS=-g -O2
 
 ######
 
-all:: libatsdoc
+ATSLIB=$(ATSHOMEQ)/ccomp/lib
+ATSLIB=$(ATSHOMEQ)/ccomp/lib64
+
+######
+
+all:: libatsdoc clean
 
 ######
 
@@ -100,7 +106,7 @@ atsdoc_text_dats.o : DATS/atsdoc_text.dats; $(ATSCC) $(ATSCCFLAGS) -c $<
 
 libatsdoc: dynloadall.dats $(OBJECTS)
 	$(ATSCC) $(ATSCCFLAGS) -c dynloadall.dats
-	$(ARR) libatsdoc.a dynloadall_dats.o $(OBJECTS)
+	$(ARR) $(ATSLIB)/libatsdoc.a dynloadall_dats.o $(OBJECTS)
 
 ######
 #

@@ -359,7 +359,8 @@ local
 #define i2c char_of_int
 
 fun
-IDENTFST_test (c: char): bool = case+ 0 of
+IDENTFST_test
+  (c: char): bool = case+ 0 of
   | _ when ('a' <= c andalso c <= 'z') => true
   | _ when ('A' <= c andalso c <= 'Z') => true
   | _ when c = '_' => true
@@ -367,7 +368,8 @@ IDENTFST_test (c: char): bool = case+ 0 of
 // end of [IDENTFST_test]
 
 fun
-IDENTRST_test (c: char): bool = case+ 0 of
+IDENTRST_test
+  (c: char): bool = case+ 0 of
   | _ when ('a' <= c andalso c <= 'z') => true
   | _ when ('A' <= c andalso c <= 'Z') => true
   | _ when ('0' <= c andalso c <= '9') => true
@@ -399,9 +401,11 @@ in
     val () = cur := reader_get_char (inp)
   in
     list_vt_cons (fst, identrst_get (inp, cur))
-  end else
+  end else let // HX: '$' can be used as a separator!
+    val () = if (fst = '$') then cur := reader_get_char (inp)
+  in
     list_vt_nil ()
-  // end of [if]
+  end // end of [if]
 end // end of [identrst_get]
 
 fun fprsub_ident {n:nat} (

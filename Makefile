@@ -155,12 +155,13 @@ all1:: bin/atscc
 all1:: bin/atslib
 all1:: libfiles
 all1:: libfiles_mt
-all1:: libatsdoc
+all1:: libatsdoca
 all1:: bin/atspack
-all1:: bin/atsdoc
-all1:: bin/atslex
 all1:: ccomp/runtime/GCATS/gc.o
 all1:: ccomp/runtime/GCATS/gc_mt.o
+# atsdoc and atslex may require GC
+all1:: bin/atsdoc
+all1:: bin/atslex
 all1:: atsopt1_gc
 all1:: contrib
 all1:: ; @echo "ATS/Anairiats has been built up successfully!"
@@ -261,7 +262,7 @@ lib64files: .libfiles_local
 libfiles_mt: .libfiles_mt_local
 	$(ATSLIB) $(ATS_PROOFCHECK) -D_ATS_MULTITHREAD -O2 --libats_mt
 
-libatsdoc: ; $(MAKE) -C libatsdoc
+libatsdoca: ; $(MAKE) -C libatsdoc
 
 ###### a lexer for ATS ######
 
@@ -330,6 +331,7 @@ cleanall:: clean
 	$(RMF) bin/atsopt
 	$(RMF) bin/atscc bin/atslib bin/atslex bin/atspack
 	$(RMF) bin/atsdoc
+	$(RMF) libatsdoc/libatsdoc.a
 	$(RMF) ccomp/lib/libats.a
 	$(RMF) ccomp/lib/libats_mt.a
 	$(RMF) ccomp/lib/libats_lex.a

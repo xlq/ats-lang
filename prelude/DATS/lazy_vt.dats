@@ -69,6 +69,8 @@ end // end of [local]
 
 *)
 
+implement{a} lazy_vt_force (r) = !r
+
 (* ****** ****** *)
 
 extern castfn

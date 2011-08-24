@@ -584,6 +584,13 @@ array_ptr_iforeach_fun
 ) :<f> void // end of [array_ptr_iforeach_fun]
 
 fun{a:viewt@ype}
+array_ptr_iforeach_clo
+  {n:nat} {f:eff} (
+  base: &(@[a][n])
+, f: &(sizeLt n, &a) -<clo,f> void
+, asz: size_t n
+) :<f> void // end of [array_ptr_iforeach_clo]
+fun{a:viewt@ype}
 array_ptr_iforeach_vclo
   {v:view} {n:nat} {f:eff} (
   pfv: !v

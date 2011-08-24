@@ -51,7 +51,8 @@ assume lazy_t0ype_type (a:t@ype) = ref (thunkvalue a)
 
 in
 
-implement{a} lazy_force_crypt (r) = $effmask_ref let
+implement{a}
+lazy_force_crypt (r) = $effmask_ref let
   val (vbox pf | p) = begin
     ref_get_view_ptr ($decrypt r) // this effect is ignored!
   end // end of [val]
@@ -67,6 +68,8 @@ in
 end // end of [lazy_force_crypt]
 
 *)
+
+implement{a} lazy_force (r) = !r
 
 (* ****** ****** *)
 

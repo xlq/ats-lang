@@ -46,7 +46,7 @@ tutorial_all:
           casting-functions.html \
           stack-allocation.html \
           statetypes.html \
-          looping.html \
+          loopcon.html \
 
 	scp $(OUTPUT)/tutorial_all.html \
           ats-hwxi,ats-lang@web.sourceforge.net:htdocs/TUTORIAL/contents/
@@ -92,7 +92,7 @@ ones::
 	$(FPROC) -one casting-functions.html
 	$(FPROC) -one stack-allocation.html
 	$(FPROC) -one statetypes.html
-	$(FPROC) -one looping.html
+	$(FPROC) -one loopcon.html
 	scp $(OUTPUT)/*.html \
           ats-hwxi,ats-lang@web.sourceforge.net:htdocs/TUTORIAL/contents/
 
@@ -288,9 +288,9 @@ statetypes::
 	scp $(OUTPUT)/statetypes.html \
           ats-hwxi,ats-lang@web.sourceforge.net:htdocs/TUTORIAL/contents/
 
-looping::
-	$(FPROC) -one looping.html
-	scp $(OUTPUT)/looping.html \
+loopcon::
+	$(FPROC) -one loopcon.html
+	scp $(OUTPUT)/loopcon.html \
           ats-hwxi,ats-lang@web.sourceforge.net:htdocs/TUTORIAL/contents/
 
 ######
@@ -327,7 +327,7 @@ compall::
 	$(ATSCC)  programming-with-theorem-proving.dats
 	$(ATSCC)  -tc casting-functions.dats
 	$(ATSCC)  stack-allocation.dats
-	$(ATSCC)  -tc looping.dats
+	$(ATSCC)  -tc loopcon.dats
 
 ######
 

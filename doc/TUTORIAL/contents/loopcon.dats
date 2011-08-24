@@ -1,6 +1,6 @@
 //
 //
-// code demonstrating some typical uses of looping constructs
+// code demonstrating some typical uses of loop constructs
 //
 //
 
@@ -143,4 +143,4 @@ end // end of [main]
 
 (* ****** ****** *)
 
-(* end of [looping.dats] *)
+(* end of [loopcon.dats] *)

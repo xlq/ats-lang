@@ -663,6 +663,24 @@ end // end of [array_ptr_foreach_fun]
 (* ****** ****** *)
 
 implement{a}
+array_ptr_iforeach_clo
+  {n} {f:eff} (A, f, asz) = let
+  typedef clo0_t = (sizeLt n, &a) -<clo,f> void
+  typedef clo1_t = (!unit_v | sizeLt n, &a) -<clo,f> void
+  prval () = __assert(f) where {
+    extern prfun __assert (f: !clo0_t >> clo1_t): void
+  } // end of [val]
+  prval pfu = unit_v ()
+  val () = array_ptr_iforeach_vclo<a> {unit_v} (pfu | A, f, asz)
+  prval unit_v () = pfu
+  prval () = __assert(f) where {
+    extern prfun __assert (f: !clo1_t >> clo0_t): void
+  } // end of [val]
+in
+  // nothing
+end // end of [array_ptr_iforeach_clo]
+
+implement{a}
 array_ptr_iforeach_vclo
   {v} {n} {f:eff} (pfv | A, f, asz) = let
 //

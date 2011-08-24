@@ -16,7 +16,6 @@ staload "prelude/DATS/lazy.dats"
 
 datatype stream_con (a:t@ype+) =
   | stream_nil (a) | stream_cons (a) of (a, stream a)
-
 where stream (a:t@ype) = lazy (stream_con a)
 
 *)
@@ -29,14 +28,16 @@ where stream (a:t@ype) = lazy (stream_con a)
 
 typedef N2 = [n:int | n >= 2] int n
 val N2s: stream N2 = from 2 where {
-  fun from (n: N2):<1,~ref> stream N2 = $delay (n :: from (n+1))
+  fun from (n: N2):<!laz> stream N2 = $delay (n :: from (n+1))
 }
 
-fun sieve (ns: stream N2):<1,~ref> stream N2 =
+fun sieve
+  (ns: stream N2):<!laz> stream N2 = let
   // [val-] means no warning message from the compiler
-  let val- n :: ns = !ns in
-     $delay (n :: sieve (stream_filter_cloref<N2> (ns, lam x => x nmod n > 0)))
-  end
+  val- n :: ns = !ns
+in
+  $delay (n :: sieve (stream_filter_cloref<N2> (ns, lam x => x nmod n > 0)))
+end // end of [sieve]
 
 val primes: stream N2 = sieve N2s
 
@@ -51,7 +52,7 @@ val // the following values are defined mutually recursively
 rec fibs_1: stream int64 = $delay (one :: fibs_2) // fib1, fib2, ...
 and fibs_2: stream int64 = $delay (one :: fibs_3) // fib2, fib3, ...
 and fibs_3: stream int64 = ( // fib3, fib4, ...
-  stream_map2_fun<int64,int64,int64> (fibs_1, fibs_2, lam (x, y) => x + y)
+  stream_map2_fun<int64,int64><int64> (fibs_1, fibs_2, lam (x, y) => x + y)
 )
 // find the nth Fibonacci number
 fn nfib {n:pos} (n: int n): int64 = stream_nth (fibs_1, n-1)

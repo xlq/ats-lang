@@ -501,7 +501,9 @@ thunkvalue (a:t@ype+) =
   | thunkvalue_value (a) of a
 // end of [thunkvalue]
 
+//
 // implemented in [prelude/DATS/lazy.dats]
+//
 fun{a:t@ype}
 lazy_force_crypt (x: crypt (lazy a)):<!laz> a
 macdef lazy_force (x) = lazy_force_crypt ($encrypt ,(x))
@@ -519,6 +521,9 @@ lazy_vt_force_crypt (x: crypt (lazy_vt a)):<!laz> a
 macdef lazy_vt_force (x) = lazy_vt_force_crypt ($encrypt ,(x))
 
 *)
+
+fun{a:t@ype} lazy_force (x: lazy a):<!laz> a
+fun{a:viewt@ype} lazy_vt_force (x: lazy_vt a):<!laz> a
 
 (* ****** ****** *)
 

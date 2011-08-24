@@ -26,21 +26,22 @@ in
 end // end of [let]
 
 (* ****** ****** *)
-
-val epsilon = 1E-6 (* precision *)
-
+//
 // Newton-Raphson's method for finding roots
-// [f1] is a derivative of [f]
+//
+typedef
+fdouble = double -<cloref1> double
+//
+macdef epsilon = 1E-6 (* precision *)
+//
+// [f1] is the derivative of [f]
+//
 fn newton_raphson (
-    f: double -<cloref1> double
-  , f1: double -<cloref1> double
-  , x0: double
+    f: fdouble, f1: fdouble, x0: double
   ) : double = let
   fun loop (
-      f: double -<cloref1> double
-    , f1: double -<cloref1> double
-    , x0: double
-    ): double = let
+    f: fdouble, f1: fdouble, x0: double
+  ) : double = let
     val y0 = f x0
   in
     if abs (y0 / x0) < epsilon then x0 else begin
@@ -54,7 +55,6 @@ end // end of [newton_raphson]
 // square root function
 fn sqrt (c: double): double =
   newton_raphson (lam x => x * x - c, lam x => 2.0 * x, 1.0)
-
 // cubic root function
 fn cbrt (c: double): double =
   newton_raphson (lam x => x * x * x - c, lam x => 3.0 * x * x, 1.0)
