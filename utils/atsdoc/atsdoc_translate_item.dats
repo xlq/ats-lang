@@ -654,13 +654,15 @@ end // end of [trans_funcall]
 implement
 fprint_the_tranitmlst
   (out, basename) = let
+(*
+** HX: [basename] is no longer needed!
+*)
   fun loop (
     out: FILEref, xs: List (tranitm)
   ) :<cloref1> void =
     case+ xs of
     | list_cons (x, xs) => let
         val () = fprint_string (out, "(*\n")
-        val () = fprint_string (out, basename)
         val () = $LOC.fprint_location (out, x.tranitm_loc)
         val () = fprint_string (out, "\n*)\n")
         val () = fprint_tranitm (out, x)

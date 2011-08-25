@@ -224,6 +224,34 @@ end // end of [dout_set_filename]
 
 (* ****** ****** *)
 
+local
+
+val argv0 = ref<string> ("")
+
+in
+
+fn argv0_get (): string = !argv0
+fn argv0_set (cmd: string): void = !argv0 := cmd
+
+end // end of [local]
+
+fn atsdoc_usage (): void = {
+  val cmd = argv0_get () // [argv0] is already set
+  val () = printf ("usage: %s <command> ... <command>\n\n", @(cmd))
+  val () = printf ("where a <command> is of one of the following forms:\n\n", @())
+  val () = printf ("  -to filename (outputing texting data to <filename>)\n", @())
+  val () = printf ("  --toutput filename (outputing texting to <filename>)\n", @())
+  val () = printf ("  -do filename (outputing ATS code to <filename>)\n", @())
+  val () = printf ("  --doutput filename (outputing ATS code to <filename>)\n", @())
+  val () = printf ("  -i filenames (for taking input from <filenames>)\n", @())
+  val () = printf ("  --input filenames (for taking input from <filenames>)\n", @())
+  val () = printf ("  -h (for printing out the usage)\n", @())
+  val () = printf ("  --help (for printing out the usage)\n", @())
+  val () = printf ("\n", @())
+} // end of [atsdoc_usage]
+
+(* ****** ****** *)
+
 fn*
 process_cmdline
   {i:nat} .<i,0>. (
@@ -323,13 +351,18 @@ process_cmdline2_COMARGkey1
   val () = (case+ key of
     | "-i" => {
         val () = state.ninputfile := 0
-        val () = state.waitkind := WAITKINDinput
+        val () = state.waitkind := WAITKINDinput ()
       }
     | "-to" => {
         val () = state.waitkind := WAITKINDtoutput ()
       }
     | "-do" => {
         val () = state.waitkind := WAITKINDdoutput ()
+      }
+    | "-h" => {
+        val () = state.waitkind := WAITKINDnone ()
+        val () = state.ninputfile := state.ninputfile + 1 // HX: cutting a corner!
+        val () = atsdoc_usage () // print out usage
       }
 (*
     | "-v" => atsdoc_version (stdout_ref)
@@ -359,6 +392,11 @@ process_cmdline2_COMARGkey2
     | "--doutput" => {
         val () = state.waitkind := WAITKINDdoutput ()
       }
+    | "--help" => {
+        val () = state.waitkind := WAITKINDnone ()
+        val () = state.ninputfile := state.ninputfile + 1 // HX: cutting a corner!
+        val () = atsdoc_usage () // print out usage
+      }
 (*
     | "--version" => atsdoc_version (stdout_ref)
 *)
@@ -376,6 +414,8 @@ main (
 ) = () where {
 (*
 *)
+//
+val () = argv0_set (argv.[0])
 //
 val arglst = comarglst_parse (argc, argv)
 val ~list_vt_cons (arg0, arglst) = arglst

@@ -8,7 +8,7 @@
 
 (*
 ** ATS/Postiats - Unleashing the Potential of Types!
-** Copyright (C) 2011-20?? Hongwei Xi, ATS Trustworthy Software, Inc.
+** Copyright (C) 2011-20?? Hongwei Xi, ATS Trustful Software, Inc.
 ** All rights reserved
 **
 ** ATS is free software;  you can  redistribute it and/or modify it under
@@ -59,7 +59,9 @@ staload "libatsdoc/SATS/atsdoc_text.sats"
 
 local
 
-staload F = "libc/SATS/fcntl.sats"
+staload
+F = "libc/SATS/fcntl.sats"
+stadef fildes_v = $F.fildes_v
 staload S = "libc/SATS/stdlib.sats"
 staload W = "libc/sys/SATS/wait.sats"
 staload UNI = "libc/SATS/unistd.sats"
@@ -104,7 +106,7 @@ end // end of [string2filename]
 
 extern
 fun file2strptr {fd:int} (
-  pf: !($F.fildes_v fd)  | fd: int fd
+  pf: !fildes_v fd  | fd: int fd
 ) : strptr0 = "atsdoc_file2strptr"
 // end of [file2strptr]
 %{$
@@ -136,11 +138,57 @@ atsdoc_file2strptr
 } // end of [atsdoc_file2strptr]
 %} // end of [%{$]
 
+(* ****** ****** *)
+
+implement{a}
+tostring_fprint (prfx, fpr, x) = let
+  val tmp = sprintf ("%sXXXXXX", @(prfx))
+  val [m,n:int] tmp = strbuf_of_strptr (tmp)
+  prval () = __assert () where {
+    extern prfun __assert (): [n >= 6] void
+  }
+  prval pfstr = tmp.1
+  val (pfopt | fd) = $S.mkstemp !(tmp.2) // create it!
+  prval () = tmp.1 := pfstr
+  val tmp = strptr_of_strbuf (tmp)
+in
+//
+if fd >= 0 then let
+  prval $F.open_v_succ (pffil) = pfopt
+  val (fpf | out) = fdopen (pffil | fd, file_mode_w) where {
+    extern fun fdopen {fd:nat} (
+      pffil: !fildes_v fd | fd: int fd, mode: file_mode
+    ) : (fildes_v fd -<lin,prf> void | FILEref) = "mac#fdopen"
+  } // end of [out]
+  val () = fpr (out, x)
+  val _err = $STDIO.fflush_err (out)
+  val res = file2strptr (pffil | fd)
+  prval () = fpf (pffil)
+  val _err = $STDIO.fclose_err (out)
+  val _err = $UNI.unlink ($UN.castvwtp1 (tmp))
+  val () = strptr_free (tmp)
+in
+  res (*strptr*)
+end else let
+  prval $F.open_v_fail () = pfopt; val () = strptr_free (tmp) in strptr_null ()
+end // end of [if]
+//
+end // end of [tostring_fprint]
+
+(* ****** ****** *)
+
+implement
+tostring_strsub (sub) = 
+  tostring_fprint<string> ("atsdoc_tostring_strsub", fprint_strsub, sub)
+// end of [tostring_strsub]
+
+(* ****** ****** *)
+
 implement
 atscode2xml_strcode
   (stadyn, code) = let
   val [l:addr] path =
-    string2filename ("atscode2xmlinp", code)
+    string2filename ("atsdoc_atscode2xmlinp", code)
   prval () = addr_is_gtez {l} ()
 in
 //
@@ -155,6 +203,8 @@ end else let
 end // end of [if]
 //
 end // end of [atscode2xml_strcode]
+
+(* ****** ****** *)
 
 extern
 fun atsopt_get (): string = "atsopt_get"
@@ -174,18 +224,22 @@ end (* end of [if] *)
 //
 end // end of [atsopt_get]
 
+(* ****** ****** *)
+
 extern
 fun atscc_posmark_html_body_exec (
   stadyn: int, out: string, path: string
 ) : void = "atscc_posmark_html_body_exec"
 // end of [atscc_posmark_html_body_exec]
 
+(* ****** ****** *)
+
 implement
 atscode2xml_filcode
   (stadyn, path) = let
 //
   val tmp = sprintf
-    ("%sXXXXXX", @("atscode2xmlout"))
+    ("%sXXXXXX", @("atsdoc_atscode2xmlout"))
   // end of [val]
   val [m,n:int] tmp = strbuf_of_strptr (tmp)
   prval () = __assert () where {

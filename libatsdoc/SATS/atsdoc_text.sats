@@ -8,7 +8,7 @@
 
 (*
 ** ATS/Postiats - Unleashing the Potential of Types!
-** Copyright (C) 2011-20?? Hongwei Xi, ATS Trustworthy Software, Inc.
+** Copyright (C) 2011-20?? Hongwei Xi, ATS Trustful Software, Inc.
 ** All rights reserved
 **
 ** ATS is free software;  you can  redistribute it and/or modify it under
@@ -42,22 +42,22 @@ typedef symbol = $SYM.symbol
 
 datatype text =
 //
-  | TEXTstrcst of string
-  | TEXTstrsub of string
+  | TEXTstrcst of string // string constants
+  | TEXTstrsub of string // strings containing marked tokens
 //
-  | TEXTapptxt2 of (text, text)
-  | TEXTappstr2 of (string, string)
+  | TEXTapptxt2 of (text, text) // text concatenation
+  | TEXTappstr2 of (string, string) // string concatenation
 //
-  | TEXTapptxt3 of (text, text, text)
-  | TEXTappstr3 of (string, string, string)
+  | TEXTapptxt3 of (text, text, text) // text concatenation
+  | TEXTappstr3 of (string, string, string) // string concatenation
 //
-  | TEXTapptxt4 of (text, text, text, text)
-  | TEXTappstr4 of (string, string, string, string)
+  | TEXTapptxt4 of (text, text, text, text) // text concatenation
+  | TEXTappstr4 of (string, string, string, string) // string concatenation
 //
-  | TEXTnil of ()
+  | TEXTnil of () // empty text
 //
-  | TEXTcontxt of textlst
-  | TEXTconstr of stringlst
+  | TEXTcontxt of textlst // text concatenation
+  | TEXTconstr of stringlst // string concatenation
 // end of [text]
 
 where
@@ -82,8 +82,19 @@ fun fprint_text (out: FILEref, txt: text): void
 
 (* ****** ****** *)
 
-fun fprint_strsub (out: FILEref, str: string): void
+fun fprint_strsub (out: FILEref, sub: string): void
 fun fprint_filsub (out: FILEref, path: string): void
+
+(* ****** ****** *)
+//
+// HX: this one is generic and should probably be moved into libats
+//
+fun{a:t@ype}
+tostring_fprint
+  (prfx: string, fpr: (FILEref, a) -> void, x: a): strptr0
+// end of [tostring_fprint]
+
+fun tostring_strsub (sub: string): strptr0
 
 (* ****** ****** *)
 

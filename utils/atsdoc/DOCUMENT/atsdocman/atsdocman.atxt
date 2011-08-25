@@ -3,6 +3,7 @@
 dynload "libatsdoc/dynloadall.dats"
 //
 staload "libatsdoc/SATS/atsdoc_text.sats"
+//
 %}
 
 %{
@@ -93,6 +94,17 @@ fun atslink (): text =
 // end of [atslink]
 
 #define MYCODEROOT "http://www.ats-lang.org/DOCUMENT"
+
+fun myhomelink (
+  codepath: string, linkname: string
+) : text = let
+  val res = sprintf (
+    "<a href=\"%s/atsdocman/%s\">%s</a>", @(MYCODEROOT, codepath, linkname)
+  ) // end of [val]
+  val res = string_of_strptr (res)
+in
+  TEXTstrcst (res)
+end // end of [myatshomelink]
 
 fun myatshomelink (
   codepath: string, linkname: string
@@ -204,7 +216,7 @@ are generated. It also possible to do the same thing by executing the
 following command-line:
 
 #textpre("\
-#command("atsdoc") -do foo_atxt.dats -i foo.atxt > -to foo_atxt.txt
+#command("atsdoc") -do foo_atxt.dats -i foo.atxt > foo_atxt.txt
 ")#comment("textpre")
 
 ")#comment("para")
@@ -369,10 +381,21 @@ that its (string) argument string, may contain marked tokens, that is, symbols
 formed by placing identifiers between the two characters '\\\#' and
 '$'. When stringizing a value of the form #code("TEXTstrsub")(str) for some
 string str, we must replace each marked token in str with the string it
-represents.
-
+represents. For further details, please see the implementation of
+#code("fprint_filsub") in
+#myatshomelink("libatsdoc/DATS/atsdoc_text.dats", "libatsdoc/DATS/atsdoc_text.dats").
 
 ")#comment("para")
+
+<HR></HR>
+
+#para("\
+
+Please find #myhomelink("TEST", "on-line") all the files involved in the
+above presentation.  The atext file for producing the current html file is
+also available #myhomelink("atsdocman.atxt", "on-line").
+
+")
 
 #comment(" ****** ****** ")
 
