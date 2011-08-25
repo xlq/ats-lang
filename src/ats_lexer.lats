@@ -519,7 +519,9 @@ fn process_comment_clike_open
   (p1: position_t): void = let
   val p2 = lexing_fstpos_get ()
 in
-  prerr_string "The comment starting at [";
+  $Fil.atsopt_filename_prerr ();
+  prerr_string ": LEXING ERROR";
+  prerr_string ": the comment starting at [";
   prerr_position p2;
   prerr_string "] cannot be embedded in another C-like comment";
   prerr_string ", which initiates from [";
@@ -979,7 +981,9 @@ fn process_unclosed_comment
   {a:viewt@ype} (p: position_t, ps: poslst): a = let
   val () = poslst_free ps
 in
-  prerr_string "The comment starting at [";
+  $Fil.atsopt_filename_prerr ();
+  prerr_string ": LEXING ERROR";
+  prerr_string ": the comment starting at [";
   prerr_position p;
   prerr_string "] is unclosed!\n";
   $raise LexingErrorException
@@ -987,7 +991,9 @@ end // end of [process_unclosed_comment]
 
 fn process_unclosed_comment_clike
   {a:viewt@ype} (p: position_t): a = begin
-  prerr_string "The comment starting at [";
+  $Fil.atsopt_filename_prerr ();
+  prerr_string ": LEXING ERROR";
+  prerr_string ": the comment starting at [";
   prerr_position p;
   prerr_string "] is unclosed!\n";
   $raise LexingErrorException
@@ -995,20 +1001,29 @@ end // end of [process_unclosed_comment_clike]
 
 //
 
-fn process_unclosed_string {a:viewt@ype} {n:nat}
-  (fstpos: position_t, cs: $CS.charlst_vt n, n: int n): a = begin
-  $CS.charlst_free (cs);
-  prerr_string "The string starting at [";
+fn process_unclosed_string
+  {a:viewt@ype} {n:nat} (
+  fstpos: position_t, cs: $CS.charlst_vt n, n: int n
+) : a = let
+  val () = $CS.charlst_free (cs)
+in
+  $Fil.atsopt_filename_prerr ();
+  prerr_string ": LEXING ERROR";
+  prerr_string ": the string starting at [";
   prerr_position fstpos;
   prerr_string "] is unclosed!\n";
   $raise LexingErrorException
 end // end of [process_unclosed_string]
 
-fn process_unclosed_extcode {a:viewt@ype} {n:nat}
-  (fstpos: position_t, i: int, cs: $CS.charlst_vt n, n: int n)
-  : a = begin
-  $CS.charlst_free (cs);
-  prerr_string "The code starting at [";
+fn process_unclosed_extcode
+  {a:viewt@ype} {n:nat} (
+  fstpos: position_t, i: int, cs: $CS.charlst_vt n, n: int n
+) : a = let
+  val () = $CS.charlst_free (cs)
+in
+  $Fil.atsopt_filename_prerr ();
+  prerr_string ": LEXING ERROR";
+  prerr_string ": the code starting at [";
   prerr_position fstpos;
   prerr_string "] is unclosed!\n";
   $raise LexingErrorException
