@@ -13,8 +13,9 @@
 //
 
 (* ****** ****** *)
-
-// [f91] is proven to be terminating
+//
+// HX: [f91] is proven to be terminating
+//
 fun f91 {i:int} .<max(101-i,0)>. (N: int i)
   :<> [j:int | (i <= 100 && j == 91) || (i > 100 && j == i-10)] int j =
   if N > 100 then N-10 else f91 (f91 (N+11))

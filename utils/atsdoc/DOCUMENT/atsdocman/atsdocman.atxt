@@ -93,29 +93,29 @@ fun atslink (): text =
   TEXTstrcst "<a href=\"http://www.ats-lang.org/\">ATS</a>"
 // end of [atslink]
 
-#define MYCODEROOT "http://www.ats-lang.org/DOCUMENT"
+#define MYDOCROOT "http://www.ats-lang.org/DOCUMENT"
 
-fun myhomelink (
+fun mydoclink (
   codepath: string, linkname: string
 ) : text = let
   val res = sprintf (
-    "<a href=\"%s/atsdocman/%s\">%s</a>", @(MYCODEROOT, codepath, linkname)
+    "<a href=\"%s/atsdocman/%s\">%s</a>", @(MYDOCROOT, codepath, linkname)
   ) // end of [val]
   val res = string_of_strptr (res)
 in
   TEXTstrcst (res)
-end // end of [myatshomelink]
+end // end of [mydoclink]
 
-fun myatshomelink (
+fun myatsdoclink (
   codepath: string, linkname: string
 ) : text = let
   val res = sprintf (
-    "<a href=\"%s/ANAIRIATS/%s\">%s</a>", @(MYCODEROOT, codepath, linkname)
+    "<a href=\"%s/ANAIRIATS/%s\">%s</a>", @(MYDOCROOT, codepath, linkname)
   ) // end of [val]
   val res = string_of_strptr (res)
 in
   TEXTstrcst (res)
-end // end of [myatshomelink]
+end // end of [myatsdoclink]
 
 macdef filename(x) = xmltagging ("I", ,(x)) // italic
 
@@ -151,9 +151,17 @@ macdef filename(x) = xmltagging ("I", ,(x)) // italic
 
 <body>
 
+%{
+fun HR (sz: int): text = let
+  val res = sprintf ("<HR SIZE=%i ALIGN=LEFT></HR>", @(sz))
+in
+  TEXTstrcst (string_of_strptr (res))
+end // end of [HR]
+%}
+
 <H1>atsdoc</H1>
 
-<HR></HR>
+#HR(2)
 
 #comment(" ****** ****** ")
 
@@ -259,13 +267,13 @@ by placing an identifier between the char '\\\#' and the char '$'.
 
 #para("\
 
-The plan is to compile #filename("foo_atxt.dats") into an executable that can
-generate a text file by replacing the marked tokens in
-#filename("foo_atxt.txt") with some corresponding texts. However, the
+The plan is to compile #filename("foo_atxt.dats") into an executable that
+can generate a text file by replacing each marked token in
+#filename("foo_atxt.txt") with some text attached to it. However, the
 #code("main") function is not present in #filename("foo_atxt.dats").  Also,
 the functions #code("author") and #code("timestamp") are not available.  By
 embedding proper ATS source code into #filename("foo.atxt"), we can readily
-resolve these issues and fulfil the plan.
+resolve these issues and fulfill the plan.
 
 ")#comment("para")
 
@@ -279,6 +287,7 @@ Let #filename("foo2.atxt") be a file of the following content:
 dynload \\\"libatsdoc/dynloadall.dats\\\"
 //
 staload \\\"libatsdoc/SATS/atsdoc_text.sats\\\"
+//
 %}
 
 %{
@@ -310,7 +319,7 @@ implement main () = fprint_filsub (stdout_ref, \\\"foo2_atxt.txt\\\")
 %}
 ")#comment("textpre")
 
-Any text surrounded by the special symbols %{ and %} is copied into
+Any text surrounded by the special symbols '%{' and '%}' is copied into
 #filename("foo2_atxt.dats") after the following command-line is executed:
 
 #textpre("\
@@ -345,7 +354,7 @@ Time of the last modification: Wed Aug 24 20:31:59 2011
 
 The functions #code("author") and #code("timestamp") presented above do not
 return strings. Instead, they return values of the type #code("text"),
-which is declared in #myatshomelink("libatsdoc/SATS/atsdoc_text.sats", "libatsdoc/SATS/atsdoc_text.sats") as
+which is declared in #myatsdoclink("libatsdoc/SATS/atsdoc_text.sats", "libatsdoc/SATS/atsdoc_text.sats") as
 follows:
 
 #atscode2xmls("\
@@ -375,25 +384,25 @@ and
 stringlst = List (string)
 ")#comment("atscode2xmls")
 
-The meaning of all the data constructors associated with #code("text")
-should be easily understood except #code("TEXTstrsub"), which indicates
-that its (string) argument string, may contain marked tokens, that is, symbols
-formed by placing identifiers between the two characters '\\\#' and
+The meaning of all the data constructors associated with the datatype
+#code("text") should be easily understood except #code("TEXTstrsub"), which
+indicates that its (string) argument may contain marked tokens, that is,
+symbols formed by placing identifiers between the two characters '\\\#' and
 '$'. When stringizing a value of the form #code("TEXTstrsub")(str) for some
 string str, we must replace each marked token in str with the string it
 represents. For further details, please see the implementation of
-#code("fprint_filsub") in
-#myatshomelink("libatsdoc/DATS/atsdoc_text.dats", "libatsdoc/DATS/atsdoc_text.dats").
+#code("fprint_strsub") in #myatsdoclink("libatsdoc/DATS/atsdoc_text.dats",
+"libatsdoc/DATS/atsdoc_text.dats").
 
 ")#comment("para")
 
-<HR></HR>
+#HR(2)
 
 #para("\
 
-Please find #myhomelink("TEST", "on-line") all the files involved in the
+Please find #mydoclink("TEST", "on-line") all the files involved in the
 above presentation.  The atext file for producing the current html file is
-also available #myhomelink("atsdocman.atxt", "on-line").
+also available #mydoclink("atsdocman.atxt", "on-line").
 
 ")
 

@@ -47,7 +47,7 @@ with lazy-evaluation.  For cleaner syntax, the special prefix operator
 
 #para("\
 
-In #myatscodelink("prelude/SATS/lazy.sats", "prelude/SATS/lazy.sats"), the
+In #myatsdoclink("prelude/SATS/lazy.sats", "prelude/SATS/lazy.sats"), the
 following datatype #code("stream_con") and #code("stream") are declared
 mutually recursively for representing (lazy) streams:
 
@@ -58,8 +58,8 @@ where stream (a:t@ype) = lazy (stream_con a)
 ")
 
 Also, a number of common functions on streams are declared in
-#myatscodelink("prelude/SATS/lazy.sats", "prelude/SATS/lazy.sats") and
-implemented in #myatscodelink("prelude/DATS/lazy.dats", "prelude/DATS/lazy.dats").
+#myatsdoclink("prelude/SATS/lazy.sats", "prelude/SATS/lazy.sats") and
+implemented in #myatsdoclink("prelude/DATS/lazy.dats", "prelude/DATS/lazy.dats").
 
 ")#comment("para")
 

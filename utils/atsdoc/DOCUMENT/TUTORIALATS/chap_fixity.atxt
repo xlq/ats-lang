@@ -27,7 +27,7 @@ notation for a unary function application.
 Each identifier in ATS can be assigned one of the following fixities:
 #emph("prefix"), #emph("infix") and #emph("postfix").  The fixity
 declarations for many commonly used identifiers can be found in
-#myatscodelink("prelude/fixity.ats", "prelude/fixity.ats").  Often, the
+#myatsdoclink("prelude/fixity.ats", "prelude/fixity.ats").  Often, the
 name #emph("operator") is used to refer to an identifier that is assigned a
 fixity. For instance, the following syntax declares that #code("+") and
 #code("-") are infix operators of a precedence value equal to 50:

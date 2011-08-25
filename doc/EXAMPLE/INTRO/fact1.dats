@@ -24,7 +24,8 @@ fn fact1_usage (cmd: string): void =
 
 (* ****** ****** *)
 
-implement main (argc, argv) = begin
+implement
+main (argc, argv) =
   if argc >= 2 then let
     val n = int_of argv.[1] // turning string into integer
     val res = fact1 n
@@ -32,8 +33,8 @@ implement main (argc, argv) = begin
     printf ("factorial of %i = %i\n", @(n, res))
   end else begin
     fact1_usage argv.[0]; exit (1)
-  end
-end // end of [main]
+  end // end of [if]
+// end of [main]
 
 (* ****** ****** *)
 

@@ -33,7 +33,7 @@ extension #emph(".hats").
 #para("\
 A common use of file inclusion is to keep some constants, flags or
 parameters being defined consistently across a set of files. For instance,
-the file #myatscodelink("prelude/params.hats", "prelude/params.hats")
+the file #myatsdoclink("prelude/params.hats", "prelude/params.hats")
 serves such a purpose.
 ")
 

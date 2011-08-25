@@ -142,15 +142,16 @@ fn cbrt (c: double): double =
 
 #para("\
 
-Higher-order functions can be of great use in supporting a common form of
-code sharing. As function arguments are often represented as heap-allocated
-closures that can only be reclaimed through garbage collection (GC),
-higher-order functions are less commonly used in a setting where GC is not
-present. In ATS, linear clousres are available to support higher-order
-functions in the absence of GC as they can be manually freed if needed,
-making it possible to employ higher-order functions extensively in systems
-programming (where GC is unavailable or simply disallowed). The details on
-linear closures are to be found elsewhere.
+Higher-order functions can be of great use in supporting a form of code
+sharing that is both common and flexible. As function arguments are often
+represented as heap-allocated closures that can only be reclaimed through
+garbage collection (GC), higher-order functions are used infrequently, if
+ever, in a setting where GC is not present. In ATS, linear closures, which
+can be manually freed if needed, are available to support higher-order
+functions in the absence of GC, making it possible to employ higher-order
+functions extensively in systems programming (where GC is unavailable or
+simply disallowed). The details on linear closures are to be given
+elsewhere.
 
 ")#comment("para")
 

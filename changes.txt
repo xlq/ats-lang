@@ -24,6 +24,9 @@ ats-lang-anairiats-0.2.5:
     list_vt_*_cloptr and list_vt_*_vcloptr
 14. Makefile_macosx is added for building ATS on MAC OS X.
 15. Renaming (various packages): *_clo -> *_vclo and *_cloptr -> *_vcloptr
+16. Adding libatsdoc.
+17. Adding the [atsdoc] utility
+18. Adding atsdoc/DOCUMENT/TUTORIALATS
 
 `########################################################################
 

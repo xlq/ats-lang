@@ -32,7 +32,7 @@ typedef ref (a:viewt@ype) = [l:addr] (vbox (a @ l) | ptr l)
 ")
 
 The interfaces for various functions on references can be found in
-#myatscodelink("prelude/SATS/reference.sats", "prelude/SATS/reference.sats").
+#myatsdoclink("prelude/SATS/reference.sats", "prelude/SATS/reference.sats").
 
 ")#comment("para")
 

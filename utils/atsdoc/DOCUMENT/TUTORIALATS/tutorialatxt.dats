@@ -89,33 +89,35 @@ fun comment (x: string): text =
 
 (* ****** ****** *)
 
+// (*
+#define MYDOCROOT "http://www.ats-lang.org/DOCUMENT"
+// *)
 (*
-#define MYCODEROOT "http://www.ats-lang.org/DOCUMENT"
+#define MYDOCROOT "http://www.cs.bu.edu/~hwxi/ATS/DOCUMENT"
 *)
-#define MYCODEROOT "http://www.cs.bu.edu/~hwxi/ATS/DOCUMENT"
 
-fun mycodelink (
+fun mydoclink (
   codepath: string, linkname: string
 ) : text = let
   val res = sprintf (
-    "<ulink url=\"%s/TUTORIALATS/CODE/%s\">%s</ulink>", @(MYCODEROOT, codepath, linkname)
+    "<ulink url=\"%s/TUTORIALATS/DOC/%s\">%s</ulink>", @(MYDOCROOT, codepath, linkname)
   ) // end of [val]
   val res = string_of_strptr (res)
 in
   TEXTstrcst (res)
-end // end of [mycodelink]
+end // end of [mydoclink]
 
-fun myatscodelink (
+fun myatsdoclink (
   codepath: string, linkname: string
 ) : text = let
   val res = sprintf (
-    "<ulink url=\"%s/ANAIRIATS/%s\">%s</ulink>", @(MYCODEROOT, codepath, linkname)
+    "<ulink url=\"%s/ANAIRIATS/%s\">%s</ulink>", @(MYDOCROOT, codepath, linkname)
   ) // end of [val]
   val res = string_of_strptr (res)
 in
   TEXTstrcst (res)
-end // end of [myatscodelink]
+end // end of [myatsdoclink]
 
 (* ****** ****** *)
 
-(* end of [tutorial.dats] *)
+(* end of [tutorialatxt.dats] *)

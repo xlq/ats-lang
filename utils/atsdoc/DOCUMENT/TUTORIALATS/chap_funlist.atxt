@@ -71,7 +71,7 @@ val xs = $lst {Nat} (1, 2, 3) // [Nat] is given as the type for the list element
 ")
 
 The interfaces for various functions on lists can be found in
-#myatscodelink("prelude/SATS/list.sats", "prelude/SATS/list.sats").
+#myatsdoclink("prelude/SATS/list.sats", "prelude/SATS/list.sats").
 ")#comment("para")
 
 #para("\
@@ -127,7 +127,7 @@ This is not a tail-recursive implementation. As a consequence,
 argument is of a large length (e.g., 1 million). Can #code("append") be
 given a tail-recursive implementation in ATS? The answer is affirmative.
 For instance, a tail-recursive implementation of #code("append") is
-available in #myatscodelink("prelude/DATS/list.dats",
+available in #myatsdoclink("prelude/DATS/list.dats",
 "prelude/DATS/list.dats").  As the implementation makes use of linear types,
 it is to be explained elsewhere.
 
