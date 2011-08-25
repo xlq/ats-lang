@@ -1,0 +1,44 @@
+######
+#
+# A simple Makefile
+#
+######
+
+ATSCC=$(ATSHOME)/bin/atscc
+ATSDOC=$(ATSHOME)/bin/atsdoc
+
+######
+
+all:: atsdocman.html uploadloc
+
+######
+
+atsdocman: atsdocman_atxt.dats
+	$(ATSCC) -o $@ atsdocman_atxt.dats -latsdoc
+atsdocman_atxt.dats: atsdocman.atxt
+	$(ATSDOC) -do $@ -i atsdocman.atxt > atsdocman_atxt.txt
+atsdocman.html: atsdocman
+	./atsdocman > $@
+
+uploadloc:: ; $(CPF) atsdocman.html $(HOME)/public_html/ATS/atsdocman.html
+
+upload:: atsdocman.html
+	scp -r atsdocman.html ats-hwxi,ats-lang@web.sourceforge.net:htdocs/DOCUMENT/atsdocman/
+
+######
+
+CPF=cp -f
+RMF=rm -f
+
+######
+
+clean:: ; $(RMF) *~
+clean:: ; $(RMF) *_?ats.o *_?ats.c
+clean:: ; $(RMF) *_atxt.txt
+clean:: ; $(RMF) *_atxt.dats
+
+cleanall:: clean
+cleanall:: ; $(RMF) atsdocman
+cleanall:: ; $(RMF) atsdocman.html
+
+######
