@@ -53,7 +53,7 @@ mutually recursively for representing (lazy) streams:
 
 #atscode("\
 datatype stream_con (a:t@ype+) =
-  | stream_nil (a) | stream_cons (a) of (a, stream a)
+  | stream_nil (a) of () | stream_cons (a) of (a, stream a)
 where stream (a:t@ype) = lazy (stream_con a)
 ")
 
@@ -72,7 +72,11 @@ remove all of its multiples; we repeat this process on the rest of the
 stream recursively. The final stream then consists of all the prime numbers
 ordered ascendingly.
 
-#atscode("
+#atscode_extract("
+\#define nil stream_nil
+\#define cons stream_cons
+\#define :: stream_cons
+
 typedef N2 = [n:int | n >= 2] int n
 val N2s: stream N2 = from 2 where {
   fun from (n: N2):<!laz> stream N2 = $delay (n :: from (n+1))
@@ -113,7 +117,7 @@ given stream that satisfy a given predicate.
 We give another example of lazy-evaluation as follows, which
 demonstrates an interesting approach to computing Fibonacci numbers:
 
-#atscode("
+#atscode_extract("
 val one = int64_of_int 1
 
 val // the following values are defined mutually recursively
@@ -149,5 +153,14 @@ elements in xs1 and xs2, respectively.
 #comment(" end of [chap_lazyeval.atxt] ")
 
 %{
-implement main () = fprint_filsub (stdout_ref, "chap_lazyeval_atxt.txt")
+implement main () = {
+//
+  val filr =
+    $STDIO.fopen_ref_exn ("CODE/chap_lazyeval.dats", file_mode_w)
+  val () = fprint_theCodeLst (filr)
+  val () = $STDIO.fclose_exn (filr)
+//
+  val () = fprint_filsub (stdout_ref, "chap_lazyeval_atxt.txt")
+//
+}
 %}

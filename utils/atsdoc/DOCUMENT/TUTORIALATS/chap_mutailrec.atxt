@@ -25,7 +25,7 @@ functions can be defined similarly.  As an example, the following two
 functions #code("isEvn") and #code("isOdd") are defined mutually
 recursively:
 
-#atscode("
+#atscode_extract("
 fun isEvn (n: int): bool = if n > 0 then isOdd (n-1) else true
 and isOdd (n: int): bool = if n > 0 then isEvn (n-1) else false
 ")
@@ -44,7 +44,7 @@ combined. The keyword #code("fn*") in ATS is introduced for this
 purpose precisely. For instance, let us replace #code("fun") with
 #code("fn*") in the code above:
 
-#atscode("
+#atscode_extract("
 fn* isEvn (n: int): bool = if n > 0 then isOdd (n-1) else true
 and isOdd (n: int): bool = if n > 0 then isEvn (n-1) else false
 ")
@@ -105,7 +105,7 @@ int main (
 A straightforward translation of the C code into ATS (in the style of
 functional programming) can be done as follows:
 
-#atscode("\
+#atscode_extract("\
 implement
 main (argc, argv) = let
   fn* loop1
@@ -142,5 +142,14 @@ takes only a fixed amount of stack space to run.
 #comment(" end of [chap_mutailrec.atxt] ")
 
 %{
-implement main () = fprint_filsub (stdout_ref, "chap_mutailrec_atxt.txt")
+implement main () = {
+//
+  val filr =
+    $STDIO.fopen_ref_exn ("CODE/chap_mutailrec.dats", file_mode_w)
+  val () = fprint_theCodeLst (filr)
+  val () = $STDIO.fclose_exn (filr)
+//
+  val () = fprint_filsub (stdout_ref, "chap_mutailrec_atxt.txt")
+//
+}
 %}

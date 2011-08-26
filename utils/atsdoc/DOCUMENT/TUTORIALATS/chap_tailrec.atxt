@@ -32,8 +32,8 @@ recursive calls in the body of the following defined function #code("f91"),
 where the outer call to #code("f91") is a tail-call while the inner one is
 not:
 
-#atscode("\
-fun f91 (n: int) = if n > 100 then n - 10 else f91 (f91 (n+11))
+#atscode_extract("\
+fun f91 (n: int): int = if n > 100 then n - 10 else f91 (f91 (n+11))
 ")
 
 If each self call in the body of a function is a tail-call, then this
@@ -59,7 +59,7 @@ tail-recursive call optimization. The following recursive function #code("sum1")
 sums up all the natural numbers less than or equal to #code("n"), where #code("n")
 is the given parameter:
 
-#atscode("\
+#atscode_extract("\
 fun sum1 (n: int): int = if n > 0 then n + sum1 (n-1) else 0
 ")
 
@@ -77,7 +77,7 @@ When applied to an integer #code("n"), the following defined function
 #code("sum2") also sums up all the natural numbers less than or equal to
 #code("n"):
 
-#atscode("
+#atscode_extract("
 fn sum2 (n: int): int = let
   fun loop (n: int, res: int): int =
     if n > 0 then loop (n-1, res + n) else res
@@ -125,5 +125,14 @@ tail-recurisve.
 #comment(" end of [chap_tailrec.atxt] ")
 
 %{
-implement main () = fprint_filsub (stdout_ref, "chap_tailrec_atxt.txt")
+implement main () = {
+//
+  val filr =
+    $STDIO.fopen_ref_exn ("CODE/chap_tailrec.dats", file_mode_w)
+  val () = fprint_theCodeLst (filr)
+  val () = $STDIO.fclose_exn (filr)
+//
+  val () = fprint_filsub (stdout_ref, "chap_tailrec_atxt.txt")
+//
+}
 %}

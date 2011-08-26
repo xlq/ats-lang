@@ -12,9 +12,6 @@ Time of Generation: #timestamp()\
 <chapter id="hofun">
 #title("Higher-Order Functions")
 
-%{
-macdef sub(x) = xmltagging("subscript", ,(x))
-%}
 #para("
 A higher-order function is one that takes another function as its argument.
 
@@ -76,7 +73,7 @@ As an example, we implement as follows a 2nd-order function
 #code("find_root") that takes as its only argument a function f from
 integers to integers and searches for a root of f by enumeration:
 
-#atscode("\
+#atscode_extract("\
 fn find_root
   (f: int -<cloref1> int): int = let
   fun aux (
@@ -101,7 +98,7 @@ f(n) = 0.
 As another example, we implement as follows the famous Newton-Raphson's
 method for finding roots of functions on reals:
 
-#atscode("\
+#atscode_extract("\
 typedef
 fdouble = double -<cloref1> double
 //
@@ -129,7 +126,7 @@ end // end of [newton_raphson]
 We can now readily implement square root function and the cubic root
 function based on #code("newton_raphson"):
 
-#atscode("\
+#atscode_extract("\
 // square root function
 fn sqrt (c: double): double =
   newton_raphson (lam x => x * x - c, lam x => 2.0 * x, 1.0)
@@ -162,5 +159,14 @@ elsewhere.
 #comment(" end of [chap_hofun.atxt] ")
 
 %{
-implement main () = fprint_filsub (stdout_ref, "chap_hofun_atxt.txt")
+implement main () = {
+//
+  val filr =
+    $STDIO.fopen_ref_exn ("CODE/chap_hofun.dats", file_mode_w)
+  val () = fprint_theCodeLst (filr)
+  val () = $STDIO.fclose_exn (filr)
+//
+  val () = fprint_filsub (stdout_ref, "chap_hofun_atxt.txt")
+//
+}
 %}

@@ -67,7 +67,7 @@ v)") can be written as #code("!r") and #code("!r := v"), respectively.
 A reference is typically employed to record some form of persistent state.
 For instance, following is such an example:
 
-#atscode("
+#atscode_extract("
 local
 //
 // [ref] is a shorthand for [ref_make_elt]
@@ -105,7 +105,7 @@ References are commonly misused in practice. The following program is often
 written by a beginner of functional programming who has already learned
 (some) imperative programming:
 
-#atscode("\
+#atscode_extract("\
 fun fact
   (n: int): int = let
   val res = ref<int> (1)
@@ -137,7 +137,7 @@ is no generated garbage after a call to #code("fact") returns. A proper
 translation of the C implementation in ATS can actually be given as
 follows, which makes no use of references:
 
-#atscode("\
+#atscode_extract("\
 fun fact
   (n: int): int = let
   fun loop (n: int, res: int): int =
@@ -164,5 +164,14 @@ Unless strong justification can be given, making extensive use of
 #comment(" end of [chap_reference.atxt] ")
 
 %{
-implement main () = fprint_filsub (stdout_ref, "chap_reference_atxt.txt")
+implement main () = {
+//
+  val filr =
+    $STDIO.fopen_ref_exn ("CODE/chap_reference.dats", file_mode_w)
+  val () = fprint_theCodeLst (filr)
+  val () = $STDIO.fclose_exn (filr)
+//
+  val () = fprint_filsub (stdout_ref, "chap_reference_atxt.txt")
+//
+}
 %}

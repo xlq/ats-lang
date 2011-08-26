@@ -36,7 +36,7 @@ simply be written as #code("&amp;VT1").
 As an example, an implementation of the factorial function is given as
 follows that makes use of call-by-reference:
 
-#atscode("\
+#atscode_extract("\
 fun fact (x: int): int = let
   fun loop {l:addr} (x: int, res: &int): void =
     if x > 0 then (res := res * x; loop (x-1, res)) else ()
@@ -64,7 +64,7 @@ error-handling. For instance, the following function #code("divopt")
 returns a value of the type #code("Option(int)") that either contains
 the result of the division or indicates a case of division-by-zero:
 
-#atscode("
+#atscode_extract("
 fun divopt
   (x: int, y: int): Option (int) =
   if y != 0 then Some (x/y) else None ()
@@ -77,10 +77,10 @@ In other words, the memory is leaked if GC is not available. To address
 the issue of error-handing in the absence of GC, we can employ call-by-reference
 as is shown below:
 
-#atscode("
+#atscode_extract("
 fun diverr (
   x: int, y: int, err: &int
-) : int
+) : int =
   if y != 0 then x/y else (err := err+1; 0(*meaningless*))
 // end of [diverr]
 ")
@@ -91,7 +91,6 @@ error-handling is commonly seen in code written in languages like C.
 
 ")#comment("para")
 
-
 </chapter><!--"callbyref"-->
 
 #comment(" ****** ****** ")
@@ -99,5 +98,14 @@ error-handling is commonly seen in code written in languages like C.
 #comment(" end of [chap_callbyref.atxt] ")
 
 %{
-implement main () = fprint_filsub (stdout_ref, "chap_callbyref_atxt.txt")
+implement main () = {
+//
+  val filr =
+    $STDIO.fopen_ref_exn ("CODE/chap_callbyref.dats", file_mode_w)
+  val () = fprint_theCodeLst (filr)
+  val () = $STDIO.fclose_exn (filr)
+//
+  val () = fprint_filsub (stdout_ref, "chap_callbyref_atxt.txt")
+//
+}
 %}
