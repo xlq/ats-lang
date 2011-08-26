@@ -177,7 +177,7 @@ implement qsetlst_free
     pf: !V | x: &T >> T?
   ) : void =<clo> qdatptr_free (x.data, m)
   prval pfv = unit_v ()
-  val () = slist_free_clo<T> {V} (pfv | xs, !p_clo)
+  val () = slist_free_vclo<T> {V} (pfv | xs, !p_clo)
   prval unit_v () = pfv
 in
   // nothing
