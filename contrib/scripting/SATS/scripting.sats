@@ -110,5 +110,21 @@ fun{itm:t@ype}
 strhashmap_listize (tbl: STRHASHMAPref itm): List_vt @(string, itm)
 
 (* ****** ****** *)
+//
+// HX-2011-08-26: turning file content into a string
+//
+fun fstringize (fil: FILEref): strptr1 // HX: no error indication
+
+(* ****** ****** *)
+//
+// HX-2011-08-26:
+// replace each occurrence of [pat] with [str] in the input
+// taken from [inp] and output the result to [out] // 0/1 for errs
+//
+fun fsubst_pat_string
+  (inp: FILEref, out: FILEref, pat: string, sub: string): int(*err*)
+// end of [fsubst_pat_str]
+
+(* ****** ****** *)
 
 (* end of [scripting.sats] *)

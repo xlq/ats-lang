@@ -41,6 +41,11 @@ linesplit: linesplit.dats
 	$(ATSCC) -o linesplit linesplit.dats $(ATSCTRB) -lpcre && ./linesplit < data/grades.txt
 cleanall:: ; $(RMF) linesplit
 
+checkall:: fsubst
+fsubst: fsubst.dats
+	$(ATSCC) -o fsubst fsubst.dats $(ATSCTRB) -lpcre && ./fsubst < data/grades.txt Ben Benjamin
+cleanall:: ; $(RMF) fsubst
+
 ######
 
 RMF = rm -f
@@ -49,7 +54,6 @@ RMF = rm -f
 
 clean:
 	$(RMF) *~
-	$(RMF) ./MISC/*
 	$(RMF) *_dats.c *_sats.c
 
 ###### end of [Makefile] ######

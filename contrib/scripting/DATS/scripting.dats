@@ -49,9 +49,17 @@
 
 (* ****** ****** *)
 
-staload UN = "prelude/SATS/unsafe.sats"
-staload STDIO = "libc/SATS/stdio.sats"
+staload _(*anon*) = "prelude/DATS/list_vt.dats"
+staload _(*anon*) = "prelude/DATS/pointer.dats"
+staload _(*anon*) = "libats/DATS/linqueue_lst.dats"
 
+(* ****** ****** *)
+//
+staload UN = "prelude/SATS/unsafe.sats"
+//
+staload FCNTL = "libc/SATS/fcntl.sats"
+staload STDIO = "libc/SATS/stdio.sats"
+//
 (* ****** ****** *)
 
 staload RE = "libats/SATS/regexp.sats"
@@ -113,12 +121,14 @@ in
     res
   end else let
     val _ptr = $RE.regexp_free_null (re)
+(*
     val pat = $UN.castvwtp1 {string} (pat)
     val () = prerrf (
       "exit(ATS): [pcre_comiple] failed: pattern = %s\n", @(pat)
     ) // end of [val]
+*)
   in
-    list_vt_nil ()
+    list_vt_nil () // HX: indication of error
   end (* end of [if] *)
 end // end of [string_split_string_list]
 
@@ -256,6 +266,79 @@ in
 end // end of [strhashmap_listize]
 
 end // end of [local]
+
+(* ****** ****** *)
+
+local
+
+staload Q = "libats/SATS/linqueue_lst.sats"
+
+in // in of [local]
+
+implement
+fstringize (fil) = let
+  viewtypedef VT (n:int) = $Q.QUEUE (char, n)
+  fun loop {n:nat} (
+    fil: FILEref, q: &VT (n) >> VT (n), n: int n
+  ) : #[n:nat] int n = let
+    val i = $STDIO.fgetc0_err (fil)
+  in
+    if i >= 0 then let
+      val () = $Q.queue_insert (q, (char_of_int)i)
+    in
+      loop (fil, q, n+1)
+    end else n
+  end // end of [loop]
+  var q: VT (0)
+  val () = $Q.queue_initialize {char} (q)
+  val n = loop (fil, q, 0)
+  val cs = $Q.queue_uninitialize (q)
+  val res = string_make_list_int ($UN.castvwtp1(cs), n)
+  val () = list_vt_free (cs)
+in
+  strptr_of_strbuf (res)
+end // end of [fstringize]
+
+end // end of [local]
+
+(* ****** ****** *)
+
+implement
+fsubst_pat_string
+  (inp, out, pat, sub) = let
+  val str0 = fstringize (inp)
+in
+//
+if strptr_isnot_null (str0) then let
+//
+  val strlst =
+    string_split_string_list ($UN.castvwtp1(str0), pat)
+   // end of [val]
+  val () = strptr_free (str0)
+  fun loop (
+    out: FILEref, sub: string, i: int, res: List_vt (strptr1)
+  ) : void = let
+    // nothing
+  in
+    case+ res of
+    | ~list_vt_cons (fst, res) => let
+        val () = if i > 0 then fprint_string (out, sub)
+        val () = fprint_strptr (out, fst); val () = strptr_free (fst)
+      in
+        loop (out, sub, i+1, res)
+      end // end of [list_vt_cons]
+    | ~list_vt_nil () => ()
+  end // end of [loop]
+  val () = loop (out, sub, 0, strlst)
+in
+  0 (*succ*)
+end else let
+  val () = strptr_free (str0)
+in
+  1 (*fail*)
+end // end of [if]
+//
+end // end of [fsubst_pat_string]
 
 (* ****** ****** *)
 
