@@ -39,6 +39,7 @@ DBSRC := \
   chap_mutailrec_atxt.db \
   chap_termetric_atxt.db \
   chap_hofun_atxt.db \
+  chap_polytemp_atxt.db \
   chap_printf_atxt.db \
   chap_funlist_atxt.db \
   chap_reference_atxt.db \
@@ -162,6 +163,19 @@ cleanall:: ; $(RMF) chap_hofun
 cleanall:: ; $(RMF) chap_hofun_atxt.*
 
 typecheck:: ; $(ATSCC) -tc CODE/chap_hofun.dats
+
+######
+
+chap_polytemp: chap_polytemp_atxt.dats
+	$(ATSCC) -D_ATS_GCATS -o $@ $< -latsdoc
+chap_polytemp_atxt.dats: chap_polytemp.atxt
+	$(ATSDOC) -do $@ -i $< > chap_polytemp_atxt.txt
+chap_polytemp_atxt.db: chap_polytemp ; ./$< > $@
+
+cleanall:: ; $(RMF) chap_polytemp
+cleanall:: ; $(RMF) chap_polytemp_atxt.*
+
+typecheck:: ; $(ATSCC) -tc CODE/chap_polytemp.dats
 
 ######
 

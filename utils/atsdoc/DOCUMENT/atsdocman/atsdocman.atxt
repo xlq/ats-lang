@@ -1,4 +1,11 @@
 %{
+(*
+** Author: Hongwei Xi (hwxi AT cs DOT bu DOT edu)
+** Time: August, 2011
+*)
+%}
+
+%{
 //
 dynload "libatsdoc/dynloadall.dats"
 //
@@ -375,7 +382,7 @@ datatype text =
   | TEXTnil of () // empty text
 //
   | TEXTcontxt of textlst // text concatenation
-  | TEXTconstr of stringlst // string concatenation
+  | TEXTcontxtsep of (textlst, text(*sep*)) // text concat with separator
 // end of [text]
 
 where

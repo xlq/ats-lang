@@ -57,7 +57,7 @@ datatype text =
   | TEXTnil of () // empty text
 //
   | TEXTcontxt of textlst // text concatenation
-  | TEXTconstr of stringlst // string concatenation
+  | TEXTcontxtsep of (textlst, text(*sep*)) // text concatenation with separator
 // end of [text]
 
 where
@@ -78,7 +78,9 @@ fun theTextMap_insert_str (s: string, txt: text): void
 
 (* ****** ****** *)
 
-fun fprint_text (out: FILEref, txt: text): void
+fun fprint_text (out: FILEref, x: text): void
+fun fprint_textlst (out: FILEref, xs: textlst): void
+fun fprint_textlst_sep (out: FILEref, xs: textlst, sep: text): void
 
 (* ****** ****** *)
 

@@ -442,10 +442,9 @@ local
     .atsyntax span.dyncstdec  {text-decoration:none}\n\
     .atsyntax span.dyncstimp  {color:#B80000;text-decoration:underline}\n\
     .atsyntax span.dyncstuse  {color:#B80000;text-decoration:underline}\n\
-    body {color:#E80000;background-color:#E0E0E0}\n\
   </style>\n\
 </head>\n\
-<body>\n\
+<body class=\"atsyntax\">\n\
 "
 #define HTM_POSMARK_PRE_BEG "<pre class=\"atsyntax\">\n"
 #define HTM_POSMARK_PRE_END "</pre>\n"

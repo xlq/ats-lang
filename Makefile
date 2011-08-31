@@ -160,9 +160,9 @@ all1:: bin/atspack
 all1:: ccomp/runtime/GCATS/gc.o
 all1:: ccomp/runtime/GCATS/gc_mt.o
 # atsdoc and atslex may require GC
-all1:: bin/atsdoc
-all1:: bin/atslex
 all1:: atsopt1_gc
+all1:: bin/atslex
+all1:: bin/atsdoc
 all1:: contrib
 all1:: ; @echo "ATS/Anairiats has been built up successfully!"
 all1:: ; @echo "The value of ATSHOME for this build is \"$(ATSHOME)\"."

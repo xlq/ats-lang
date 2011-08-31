@@ -137,10 +137,17 @@ string_make_list_int (cs, n) = let
       if i < n then let
         val+ list_cons (c, cs) = cs
         val [c:char] c = char1_of_char c
-        val () = $effmask_all (if (c <> NUL) then () else begin
-          prerr ("exit(ATS): a string cannot contain null characters in the middle.");
-          prerr_newline (); exit (1)
-        end) : [c <> NUL] void // end of [val]
+//
+        val () = $effmask_all (
+          if (c <> NUL) then () else let
+            val () = prerrf (
+              "exit(ATS): a string cannot contain null characters in the middle.\n", @()
+            ) // end of [val]
+          in
+            exit(1)
+          end (* end of [if] *)
+        ) : [c <> NUL] void // end of [val]
+//
         val () = strbuf_set_char_at (buf, i2sz i, c)
       in
         loop (buf, n, i+1, cs)
@@ -166,10 +173,17 @@ string_make_list_rev_int (cs, n) = let
       if i <= n1 then let
         val+ list_cons (c, cs) = cs
         val [c:char] c = char1_of_char c
-        val () = $effmask_all (if (c <> NUL) then () else begin
-          prerr ("exit(ATS): a string cannot contain null characters in the middle.");
-          prerr_newline (); exit (1)
-        end) : [c <> NUL] void // end of [val]
+//
+        val () = $effmask_all (
+          if (c <> NUL) then () else let
+            val () = prerrf (
+              "exit(ATS): a string cannot contain null characters in the middle.\n", @()
+            ) // end of [val]
+          in
+            exit(1)
+          end (* end of [if] *)
+        ) : [c <> NUL] void // end of [val]
+//
         val () = strbuf_set_char_at (buf, i2sz (n1-i), c)
       in
         loop (buf, n1, i+1, cs)

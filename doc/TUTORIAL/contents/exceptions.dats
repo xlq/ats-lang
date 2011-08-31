@@ -6,6 +6,10 @@
 
 (* ****** ****** *)
 
+staload _(*anon*) = "prelude/DATS/list.dats"
+
+(* ****** ****** *)
+
 exception Fail // Fail: exn
 exception Fail_msg of string // Fail_msg: string -> exn
 
@@ -33,11 +37,12 @@ end // end of [isBraunTree]
 (* ****** ****** *)
 
 extern fun{a:t@ype}
-  list_iforeach (xs: List a, f: (Nat, a) -> void): void
+  list_iforeach (xs: List a, f: (Nat, a) -<cloref1> void): void
+implement{a} list_iforeach (xs, f) = ()
 
-fn{a:t@ype} nth (xs: List a, n: Nat): a = let
+fn nth{a:t@ype} (xs: List a, n: Nat): a = let
   exception Found of a
-  fn f (i: Nat, x: a): void = if i = n then $raise (Found x)
+  fn f (i: Nat, x: a):<cloref1> void = if i = n then $raise (Found x)
 in
   try let
     val () = list_iforeach (xs, f) in $raise ListSubscriptException ()
@@ -47,7 +52,7 @@ in
 end // end of [nth]
 
 (* ****** ****** *)
-
+////
 fn{a:t@ype} nth (xs: List a, n: Nat): a = let
   exception Found of ()
   val ans = ref_make_elt<Option a> (None)

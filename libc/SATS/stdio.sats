@@ -313,10 +313,14 @@ non-zero value upon failure.
 abst@ype
 fpos_t = $extype"ats_fpos_type"
 
-fun fgetpos {m:fm} (
-  f: &FILE m, pos: &fpos_t? >> opt (fpos_t, i==0)
+fun fgetpos0_err (
+  fil: FILEref, pos: &fpos_t? >> fpos_t
+) :<> [i:int | i <= 0] int (i) = "mac#atslib_fgetpos"
+// end of [fgetpos0_err]
+fun fgetpos1_err {m:fm} (
+  fil: &FILE m, pos: &fpos_t? >> opt (fpos_t, i==0)
 ) :<> #[i:int | i <= 0] int (i) = "mac#atslib_fgetpos"
-// end of [fgetpos]
+// end of [fgetpos1_err]
 
 // ------------------------------------------------
 
@@ -330,10 +334,10 @@ it must return -1 and set errno to EBADF.
 *)
 
 symintr fileno
-fun fileno0 (f: FILEref):<> int = "mac#atslib_fileno"
-overload fileno with fileno0
-fun fileno1 {m:fm} (f: &FILE m):<> int = "mac#atslib_fileno"
-overload fileno with fileno1
+fun fileno0_err (f: FILEref):<> int = "mac#atslib_fileno"
+overload fileno with fileno0_err
+fun fileno1_err {m:fm} (f: &FILE m):<> int = "mac#atslib_fileno"
+overload fileno with fileno1_err
 
 // ------------------------------------------------
 

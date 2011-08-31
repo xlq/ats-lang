@@ -20,6 +20,7 @@
 <!ENTITY chap_mutailrec SYSTEM "chap_mutailrec_atxt.db">
 <!ENTITY chap_termetric SYSTEM "chap_termetric_atxt.db">
 <!ENTITY chap_hofun SYSTEM "chap_hofun_atxt.db">
+<!ENTITY chap_polytemp SYSTEM "chap_polytemp_atxt.db">
 <!ENTITY chap_printf SYSTEM "chap_printf_atxt.db">
 <!ENTITY chap_funlist SYSTEM "chap_funlist_atxt.db">
 <!ENTITY chap_reference SYSTEM "chap_reference_atxt.db">
@@ -53,6 +54,7 @@ To my wife Jinning and daughter Zoe.
 &chap_mutailrec;
 &chap_termetric;
 &chap_hofun;
+&chap_polytemp;
 &chap_printf;
 &chap_funlist;
 &chap_reference;

@@ -26,10 +26,8 @@ val LTSLASH = "</"
 val GT = ">"
 
 val TEXTnewline = TEXTstrcst"\n"
-val COMMENTopn = TEXTstrcst"<!--"
-and COMMENTcls = TEXTstrcst("-->")
 
-fun xmltagging (
+fn xmltagging (
   tag: string, x: string
 ) : text = let
   val _opn = TEXTappstr3 (LT, tag, GT)
@@ -91,9 +89,20 @@ end // end of [val]
 
 fun ignore (x: string): text = TEXTnil ()
 
+(* ****** ****** *)
+
+local
+
+val COMMENTopn = TEXTstrcst"<!--"
+and COMMENTcls = TEXTstrcst("-->")
+
+in // in of [local]
+
 fun comment (x: string): text =
   TEXTapptxt3 (COMMENTopn, TEXTstrsub(x), COMMENTcls)
 // end of [comment]
+
+end // end of [local]
 
 (* ****** ****** *)
 
@@ -105,10 +114,21 @@ fun comment (x: string): text =
 *)
 
 fun mydoclink (
-  codepath: string, linkname: string
+  path: string, linkname: string
 ) : text = let
   val res = sprintf (
-    "<ulink url=\"%s/TUTORIALATS/DOC/%s\">%s</ulink>", @(MYDOCROOT, codepath, linkname)
+    "<ulink url=\"%s/TUTORIALATS/%s\">%s</ulink>", @(MYDOCROOT, path, linkname)
+  ) // end of [val]
+  val res = string_of_strptr (res)
+in
+  TEXTstrcst (res)
+end // end of [mydoclink]
+
+fun mycodelink (
+  path: string, linkname: string
+) : text = let
+  val res = sprintf (
+    "<ulink url=\"%s/TUTORIALATS/CODE/%s\">%s</ulink>", @(MYDOCROOT, path, linkname)
   ) // end of [val]
   val res = string_of_strptr (res)
 in
@@ -116,10 +136,10 @@ in
 end // end of [mydoclink]
 
 fun myatsdoclink (
-  codepath: string, linkname: string
+  path: string, linkname: string
 ) : text = let
   val res = sprintf (
-    "<ulink url=\"%s/ANAIRIATS/%s\">%s</ulink>", @(MYDOCROOT, codepath, linkname)
+    "<ulink url=\"%s/ANAIRIATS/%s\">%s</ulink>", @(MYDOCROOT, path, linkname)
   ) // end of [val]
   val res = string_of_strptr (res)
 in

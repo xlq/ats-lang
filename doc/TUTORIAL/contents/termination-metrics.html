@@ -32,7 +32,7 @@ function <i>fact</i> is terminating.
 
 <H4>Some General Recursive Functions</H4>
 
- We implement as follows a function <i>gcd</i> that computes the greatest
+We implement as follows a function <i>gcd</i> that computes the greatest
 common division of two given positive integers:
 
 <PRE><span class="dynexp"><span class="comment">// [gcd] computes the greates common divisors of two positive integers
@@ -127,7 +127,7 @@ implement bar () = $Foo.foo ()
 </PRE>
 
 Clearly, neither <i>foo</i> nor <i>bar</i> is terminating. In practice, it
-is difficult resolve this issue of calling cycles among terminating
+is difficult to resolve this issue of calling cycles among terminating
 functions by solely relying on termination metrics. Instead, <i>atscc</i>
 can generate run-time code for detecting calling cycles among terminating
 functions if the flag <i>-D_ATS_TERMINATION_CHECK</i> is present. For

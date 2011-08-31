@@ -39,13 +39,28 @@ staload _(*anon*) = "prelude/DATS/list_vt.dats"
 staload _(*anon*) = "prelude/DATS/reference.dats"
 
 (* ****** ****** *)
-
+//
 staload
 UN = "prelude/SATS/unsafe.sats"
+//
 staload
 STDIO = "libc/SATS/stdio.sats"
+macdef SEEK_SET = $STDIO.SEEK_SET
+macdef fopen_err = $STDIO.fopen_err
+macdef fclose_err = $STDIO.fclose_err
+macdef fflush_err = $STDIO.fflush_err
 macdef fputc_err = $STDIO.fputc_err
-
+macdef fseek_err = $STDIO.fseek_err
+//
+staload
+FCNTL = "libc/SATS/fcntl.sats"
+staload
+STDLIB = "libc/SATS/stdlib.sats"
+staload
+UNISTD = "libc/SATS/unistd.sats"
+staload
+WAIT = "libc/sys/SATS/wait.sats"
+//
 (* ****** ****** *)
 
 staload "libatsdoc/SATS/atsdoc_symbol.sats"
@@ -106,7 +121,7 @@ end // end of [string2filename]
 
 extern
 fun file2strptr {fd:int} (
-  pf: !fildes_v fd  | fd: int fd
+  pf: !fildes_v fd  | fd: int fd // [fd] is regular: no support for pipe
 ) : strptr0 = "atsdoc_file2strptr"
 // end of [file2strptr]
 %{$
@@ -117,16 +132,21 @@ atsdoc_file2strptr
   int nerr = 0 ;
   char* sbp = (char*)0 ;
 //
-  int ofs_end = lseek (fd, 0, SEEK_END) ;
-  if (ofs_end < 0) nerr += 1 ;
-  int ofs_beg = lseek (fd, 0, SEEK_SET) ;
-  if (ofs_beg < 0) nerr += 1 ;
+  long int ofs_beg, ofs_end, nbyte ;
 //
-  if (nerr == 0) { sbp = ATS_MALLOC(ofs_end + 1) ; }
+  ofs_beg = lseek (fd, 0L, SEEK_CUR) ;
+  if (ofs_beg < 0) nerr += 1 ;
+  ofs_end = lseek (fd, 0L, SEEK_END) ;
+  if (ofs_end < 0) nerr += 1 ;
+  ofs_beg = lseek (fd, ofs_beg, SEEK_SET) ;
+  if (ofs_beg < 0) nerr += 1 ;
+  nbyte = ofs_end - ofs_beg ;
+//
+  if (nerr == 0) { sbp = ATS_MALLOC(nbyte + 1) ; }
   if (sbp == NULL) nerr += 1 ;
 //
   if (nerr == 0) {
-    err = atslib_fildes_read_err (fd, sbp, ofs_end) ;
+    err = atslib_fildes_read_all_err (fd, sbp, nbyte) ;
   }
   if (err < 0) { nerr += 1 ; }
 //
@@ -161,10 +181,11 @@ if fd >= 0 then let
     ) : (fildes_v fd -<lin,prf> void | FILEref) = "mac#fdopen"
   } // end of [out]
   val () = fpr (out, x)
-  val _err = $STDIO.fflush_err (out)
+  val _err = fflush_err (out)
+  val _err = fseek_err (out, 0L, SEEK_SET)
   val res = file2strptr (pffil | fd)
   prval () = fpf (pffil)
-  val _err = $STDIO.fclose_err (out)
+  val _err = fclose_err (out)
   val _err = $UNI.unlink ($UN.castvwtp1 (tmp))
   val () = strptr_free (tmp)
 in
@@ -393,13 +414,30 @@ fprint_text (out, x) =
 //
   | TEXTnil () => ()
 //
-  | TEXTcontxt (xs) =>
-      list_app_cloptr<text> (xs, lam (x) =<1> fprint_text (out, x))
-    // end of [TEXTcontxt]
-  | TEXTconstr (xs) =>
-      list_app_cloptr<string> (xs, lam (x) =<1> fprint_string (out, x))
-    // end of [TEXTconstr]
+  | TEXTcontxt (xs) => fprint_textlst (out, xs)
+  | TEXTcontxtsep (xs, sep) => fprint_textlst_sep (out, xs, sep)
 (* end of [fprint_text] *)
+
+implement
+fprint_textlst (out, xs) =
+  list_app_cloptr<text> (xs, lam (x) =<1> fprint_text (out, x))
+// end of [fprint_textlst]
+
+implement
+fprint_textlst_sep (out, xs, sep) = let
+  fun loop (xs: textlst, i: int):<cloref1> void =
+    case+ xs of
+    | list_cons (x, xs) => let
+        val () = if i > 0 then fprint_text (out, sep)
+        val () = fprint_text (out, x)
+      in
+        loop (xs, i+1)
+      end // end of [list_cons]
+    | list_nil () => ()
+  // end of [loop]
+in
+  loop (xs, 0)
+end // end of [fprint_textlst]
 
 (* ****** ****** *)
 
@@ -473,7 +511,8 @@ in
     val sym = symbol_make_string (id)
     val ans = theTextMap_search (sym)
     val () = (case+ ans of
-      | ~Some_vt (txt) => fprint_text (out, txt) | ~None_vt () => ()
+      | ~Some_vt xt => fprint_text (out, xt)
+      | ~None_vt () => fprintf (out, "#%s$", @(id))
     ) // end of [val]
 //
     val () = list_vt_free<char> (cs)
@@ -565,7 +604,7 @@ end // end of [fprint_strsub]
 
 implement
 fprint_filsub (out, path) = let
-  val (pfopt | filp) = $STDIO.fopen_err (path, file_mode_r)
+  val (pfopt | filp) = fopen_err (path, file_mode_r)
 in
 //
 if filp > null then let

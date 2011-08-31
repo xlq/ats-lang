@@ -8,10 +8,10 @@ studying the tutorial (if the reader is familiar with ML and C), I consider
 the book <ulink
 url="http://www.ats-lang.org/DOCUMENT/INTPROGINATS/HTML/book1.html"
 >Introduction to Programming in ATS</ulink> a far more approriate resource
-for someone to acquire a view of ATS in a more systematic way. Of course,
-there will also be considerable amount of overlapping between these two
-books.  The primary purpose of the tutorial is to bring more insights into
-a rich set of programming features in ATS and also demonstrate through
+for someone to acquire a view of ATS in a coherent and systematic manner.  Of
+course, there will also be considerable amount of overlapping between these
+two books.  The primary purpose of the tutorial is to bring more insights
+into a rich set of programming features in ATS and also demonstrate through
 concrete examples that these features can be made of effective use in the
 construction of high-quality programs.  </para>
 

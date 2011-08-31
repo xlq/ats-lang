@@ -18,15 +18,18 @@ ats-lang-anairiats-0.2.5:
    longer require a (linear) proof argument.
 10. [gc_stack_get_dir] is re-written to fix a bug triggered due to a form
     of over-optimization by gcc-4.6: a volatile function may get inlined.
-11. Fixing is made to properly track the exn-effect.
-12. Adding contrib/GLES2 to support OpenGL/ES2 binding
+    Kudos to Matthew for helping me on this one!
+11. Fixing a bug that wrongly affected the exn-effect tracking.
+12. Adding contrib/GLES2 to support OpenGL/ES2 binding. Thanks to Artyom!
 13. Renaming: list_vt_*_clo -> list_vt_*_vclo. Also adding various functions:
     list_vt_*_cloptr and list_vt_*_vcloptr
 14. Makefile_macosx is added for building ATS on MAC OS X.
-15. Renaming (various packages): *_clo -> *_vclo and *_cloptr -> *_vcloptr
+15. Renaming (in various packages): *_clo -> *_vclo and *_cloptr -> *_vcloptr
 16. Adding libatsdoc.
-17. Adding the [atsdoc] utility
+17. Adding the [atsdoc] utility for writing documents
 18. Adding atsdoc/DOCUMENT/TUTORIALATS
+19. Finishing part 3 of the book on Introduction to Programming in ATS
+20. Adding contrib/atswebpage for helping build web pages
 
 `########################################################################
 
