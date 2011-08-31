@@ -44,7 +44,7 @@ such interfaces are declared in a static file. For instance, the following
 syntax declares interfaces in a static file (or types) for a value named
 #code("pi") and a function named #code("area_of_circle"):
 
-#atscode("
+#atscode("\
 val pi : double
 fun area_of_circle (radius: double): double
 ")
@@ -52,7 +52,7 @@ fun area_of_circle (radius: double): double
 When the same interfaces are declared in a #emph("dynamic") file, the
 following slighly different syntax should be used:
 
-#atscode("
+#atscode("\
 extern val pi : double
 extern fun area_of_circle (radius: double): double
 ")

@@ -92,7 +92,7 @@ As this is not a tail-recursive implementation, the function
 containing more than 1 million elements).  A tail-recursive implementation
 of #code("length") that can handle lists of any length is given as follows:
 
-#atscode_extract("
+#atscode_extract("\
 fun{a:t@ype}
 length {n:nat} .<>.
   (xs: list (a, n)): int n = let
@@ -112,7 +112,7 @@ end // end of [length]
 Let us see another example. The following function #code("append") returns
 the concatenation of two given lists:
 
-#atscode_extract("
+#atscode_extract("\
 fun{a:t@ype}
 append {m,n:nat} .<m>. (
   xs: list (a, m), ys: list (a, n)

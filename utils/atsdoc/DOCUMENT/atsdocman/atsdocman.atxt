@@ -128,14 +128,14 @@ macdef filename(x) = xmltagging ("I", ,(x)) // italic
 
 %}
 
-#copy("\
-<!DOCTYPE html PUBLIC \\\"-//W3C//DTD XHTML 1.0 Strict//EN\\\"
-\\\"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd\\\">
-<html xmlns=\\\"http://www.w3.org/1999/xhtml\\\">
+#copy('\
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
 <head>
   <title></title>
-  <meta http-equiv=\\\"Content-Type\\\" content=\\\"text/html;charset=utf-8\\\"/>
-  <style type=\\\"text/css\\\">
+  <meta http-equiv="Content-Type" content="text/html;charset=utf-8"/>
+  <style type="text/css">
     .code {color:\#E80000}
     .textpre {color:\#000000;background-color:\#E0E0E0}
     .atsyntax {color:\#E80000;background-color:\#E0E0E0}
@@ -154,7 +154,7 @@ macdef filename(x) = xmltagging ("I", ,(x)) // italic
     .atsyntax body {color:\#E80000;background-color:\#E0E0E0}
   </style>
 </head>
-")#comment("copy")
+')#comment("copy")
 
 <body>
 
@@ -188,24 +188,27 @@ knowledge of ATS.
 
 The syntax for texting function calls (TFC's) is given as follows:
 
-#textpre("\
-funarg    ::= STRING | INTEGER | ID | funcall
-funarglst ::= /*empty*/ | fuarg | funarg \\\",\\\" funarglst
-funcall   ::= \\\"\\\#\\\"ID{funres}(funarglst) | \\\"\\\#\\\"ID[funres]{funarglst}
-funres    ::= \\\"[\\\" ID \\\"]\\\"
-")#comment("textpre")
+#textpre('\
+funarg    ::= DSTRING | SSTRING | INTEGER | ID | funcall
+funarglst ::= /*empty*/ | fuarg | funarg "," funarglst
+funcall   ::= "\\\#"ID{funres}(funarglst) | "\\\#"ID[funres]{funarglst}
+funres    ::= "[" ID "]"
+')#comment("textpre")
 
-where STRING is for (double-quoted) strings in ATS, INTEGER is for integers
-of base 10 in ATS and ID is for valid identifiers in ATS. For instance,
-following are some syntactically valid TFC's:
+where DSTRING and SSTRING are for double-quoted and single-quoted strings,
+respectively, and INTEGER is for integers of base 10, and ID is for valid
+identifiers in ATS. For instance, following are some syntactically valid
+TFC's:
 
-#textpre("\
+#textpre('\
 \\\#fact(10)
 \\\#timestamp[NOW]()
-\\\#foo(\\\"\\\#Hello(\\\"world\\\")\\\")
+\\\#foo("\\\#Hello("world")")
+\\\#foo("\\\#Hello(\'world\')")
 \\\#bar(\\\#version(), 100)
 \\\#foolst{itm1, itm2, itm3}
-")
+')
+
 ")#comment("para")
 
 <H2>Text Laden with TFC's</H2>
@@ -239,19 +242,19 @@ following command-line:
 #para("\
 The content of #filename("foo_atxt.dats") is listed as follows:
 
-#atscode2xmld("\
+#atscode2xmld('\
 (*
 foo.atxt: 2(line=1, offs=2) -- 12(line=1, offs=12)
 *)
 val _tok1 = author()
-val () = theTextMap_insert_str (\\\"_tok1\\\", _tok1)
+val () = theTextMap_insert_str ("_tok1", _tok1)
 
 (*
 foo.atxt: 45(line=2, offs=33) -- 61(line=2, offs=49)
 *)
 val NOW = timestamp()
-val () = theTextMap_insert_str (\\\"NOW\\\", NOW)
-")#comment("atscode2xmld")
+val () = theTextMap_insert_str ("NOW", NOW)
+')#comment("atscode2xmld")
 
 Note that the name of the identifier #code("_tok1") is generated
 automatically while the name of the identifer #code("NOW") is taken from
@@ -288,29 +291,29 @@ resolve these issues and fulfill the plan.
 
 Let #filename("foo2.atxt") be a file of the following content:
 
-#textpre("\
+#textpre('\
 %{
 //
-dynload \\\"libatsdoc/dynloadall.dats\\\"
+dynload "libatsdoc/dynloadall.dats"
 //
-staload \\\"libatsdoc/SATS/atsdoc_text.sats\\\"
+staload "libatsdoc/SATS/atsdoc_text.sats"
 //
 %}
 
 %{
-fn author () = TEXTstrcst\\\"John Doe\\\"
+fn author () = TEXTstrcst"John Doe"
 %}
 
 %{
 staload
-UN = \\\"prelude/SATS/unsafe.sats\\\"
-staload TIME = \\\"libc/SATS/time.sats\\\"
+UN = "prelude/SATS/unsafe.sats"
+staload TIME = "libc/SATS/time.sats"
 
 fn timestamp
   (): text = let
   var time = $TIME.time_get ()
   val (fpf | x) = $TIME.ctime (time)
-  val x1 = sprintf (\\\"%s\\\", @($UN.castvwtp1(x)))
+  val x1 = sprintf ("%s", @($UN.castvwtp1(x)))
   prval () = fpf (x)
   val x1 = string_of_strptr (x1)
 in
@@ -322,9 +325,9 @@ Author: \\\#author()
 Time of the last modification: \\\#timestamp[NOW]()
 
 %{
-implement main () = fprint_filsub (stdout_ref, \\\"foo2_atxt.txt\\\")
+implement main () = fprint_filsub (stdout_ref, "foo2_atxt.txt")
 %}
-")#comment("textpre")
+')#comment("textpre")
 
 Any text surrounded by the special symbols '%{' and '%}' is copied into
 #filename("foo2_atxt.dats") after the following command-line is executed:

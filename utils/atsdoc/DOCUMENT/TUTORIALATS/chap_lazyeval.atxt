@@ -72,7 +72,7 @@ remove all of its multiples; we repeat this process on the rest of the
 stream recursively. The final stream then consists of all the prime numbers
 ordered ascendingly.
 
-#atscode_extract("
+#atscode_extract("\
 \#define nil stream_nil
 \#define cons stream_cons
 \#define :: stream_cons
@@ -101,7 +101,7 @@ fn nprime {n: nat} (n: int n): N2 = stream_nth (primes, n)
 The function template #code("stream_filter_cloref") is of the following
 interface:
 
-#atscode("
+#atscode("\
 fun{a:t@ype}
 stream_filter_cloref
   (xs: stream a, p: a -<cloref,!laz> bool):<!laz> stream a
@@ -117,7 +117,7 @@ given stream that satisfy a given predicate.
 We give another example of lazy-evaluation as follows, which
 demonstrates an interesting approach to computing Fibonacci numbers:
 
-#atscode_extract("
+#atscode_extract("\
 val one = int64_of_int 1
 
 val // the following values are defined mutually recursively
@@ -133,7 +133,7 @@ fn nfib {n:pos} (n: int n): int64 = stream_nth (fibs_1, n-1)
 The function template #code("stream_map2_fun") is assigned the following
 interface:
 
-#atscode("
+#atscode("\
 fun{a1,a2:t@ype}{b:t@ype}
 stream_map2_fun
   (xs1: stream a1, xs2: stream a2, f: (a1, a2) -<!laz> b):<!laz> stream b

@@ -27,9 +27,9 @@ Given a viewtype VT, the type for references to values of viewtype VT is
 #code("ref")(VT). For convenience, the type constructor #code("ref") is
 declared to be abstract in ATS. However, it can be defined as follows:
 
-#atscode("
+#atscode('\
 typedef ref (a:viewt@ype) = [l:addr] (vbox (a @ l) | ptr l)
-")
+')
 
 The interfaces for various functions on references can be found in
 #myatsdoclink("prelude/SATS/reference.sats", "prelude/SATS/reference.sats").
@@ -40,19 +40,19 @@ The interfaces for various functions on references can be found in
 For creating a reference, the function template #code("ref_make_elt") of
 the following interface can be called:
 
-#atscode("
+#atscode('\
 fun{a:viewt@ype} ref_make_elt (x: a):<> ref a
-")
+')
 
 For reading from and writing to a reference, the
 function templates #code("ref_get_elt") and #code("ref_set_elt") can be
 used, respectively,
 which are assigned the following interfaces:
 
-#atscode("\
+#atscode('\
 fun{a:t@ype} ref_get_elt (r: ref a):<!ref> a
 fun{a:t@ype} ref_set_elt (r: ref a, x: a):<!ref> void
-")
+')
 
 Note that the symbol #code("!ref") indicates that these functions incur the
 so-called #code("ref")-effect when evaluated. Given a reference #code("r")
@@ -67,7 +67,7 @@ v)") can be written as #code("!r") and #code("!r := v"), respectively.
 A reference is typically employed to record some form of persistent state.
 For instance, following is such an example:
 
-#atscode_extract("
+#atscode_extract('\
 local
 //
 // [ref] is a shorthand for [ref_make_elt]
@@ -80,13 +80,13 @@ fun getNewName
   (prfx: string): string = let
   val n = !count
   val () = !count := n + 1
-  val name = sprintf (\\\"%s%i\\\", @(prfx, n))
+  val name = sprintf ("%s%i", @(prfx, n))
 in
   string_of_strptr (name)
 end // end of [getNewName]
 
 end // end of [local]
-")
+')
 
 The function #code("getNewName") is called to generate fresh names. As the
 integer content of the reference #code("count") is updated whenever a call
@@ -105,7 +105,7 @@ References are commonly misused in practice. The following program is often
 written by a beginner of functional programming who has already learned
 (some) imperative programming:
 
-#atscode_extract("\
+#atscode_extract('\
 fun fact
   (n: int): int = let
   val res = ref<int> (1)
@@ -115,18 +115,18 @@ fun fact
 in
   !res
 end // end of [fact]
-")
+')
 
 The function #code("fact") is written in such a style as somewhat a direct
 translation of the following C code:
 
-#atscode("\
+#atscode('\
 int fact (int n) {
   int res = 1 ;
   while (n > 0) res = n * res ;
   return res ;
 }
-")
+')
 
 In the ATS implementation of #code("fact"), #code("res") is a
 heap-allocated reference and it becomes garbage (waiting to be reclaimed by
@@ -137,7 +137,7 @@ is no generated garbage after a call to #code("fact") returns. A proper
 translation of the C implementation in ATS can actually be given as
 follows, which makes no use of references:
 
-#atscode_extract("\
+#atscode_extract('\
 fun fact
   (n: int): int = let
   fun loop (n: int, res: int): int =
@@ -146,7 +146,7 @@ fun fact
 in
   loop (n, 1)
 end // end of [fact]
-")
+')
 
 ")#comment("para")
 

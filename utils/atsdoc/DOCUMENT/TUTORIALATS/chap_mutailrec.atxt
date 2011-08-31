@@ -25,7 +25,7 @@ functions can be defined similarly.  As an example, the following two
 functions #code("isEvn") and #code("isOdd") are defined mutually
 recursively:
 
-#atscode_extract("
+#atscode_extract("\
 fun isEvn (n: int): bool = if n > 0 then isOdd (n-1) else true
 and isOdd (n: int): bool = if n > 0 then isEvn (n-1) else false
 ")
@@ -44,7 +44,7 @@ combined. The keyword #code("fn*") in ATS is introduced for this
 purpose precisely. For instance, let us replace #code("fun") with
 #code("fn*") in the code above:
 
-#atscode_extract("
+#atscode_extract("\
 fn* isEvn (n: int): bool = if n > 0 then isOdd (n-1) else true
 and isOdd (n: int): bool = if n > 0 then isEvn (n-1) else false
 ")
@@ -52,7 +52,7 @@ and isOdd (n: int): bool = if n > 0 then isEvn (n-1) else false
 Then the following C code is essentially generated from compiling
 these two mutually defined functions:
 
-#atscode("
+#atscode("\
 bool isEvnisOdd (int tag, int n) {
 
 bool res ;
@@ -87,25 +87,25 @@ When translating C code involving embedded loops, we often encounter the
 need for mutual tail-recursion. For instance, the following C code prints
 out ordered pairs of digits:
 
-#atscode("
+#atscode('\
 int main (
   int argc, char *argv[]
 ) {
   int i, j ;
   for (i = 0; i <= 9; i += 1) {
     for (j = i; j <= 9; j += 1) {
-      if (i < j) printf (\\\", \\\") ; printf (\\\"(%i, %i)\\\", i, j) ;
+      if (i < j) printf (", ") ; printf ("(%i, %i)", i, j) ;
     } /* for */
-    printf (\\\"\\\n\\\") ;
+    printf ("\n") ;
   } /* for */
   return 0 ;
 }
-")
+')
 
 A straightforward translation of the C code into ATS (in the style of
 functional programming) can be done as follows:
 
-#atscode_extract("\
+#atscode_extract('\
 implement
 main (argc, argv) = let
   fn* loop1
@@ -117,7 +117,7 @@ main (argc, argv) = let
     {i,j:nat | i <= 9; j <= 10} (i: int i, j: int j): void =
     if j <= 9 then (
       if i < j then (
-        print \\\", \\\"; printf (\\\"(%i, %i)\\\", @(i, j)); loop2 (i, j+1)
+        print ", "; printf ("(%i, %i)", @(i, j)); loop2 (i, j+1)
       ) // end of [if]
     ) else (
       print_newline (); loop1 (i+1)
@@ -126,7 +126,7 @@ main (argc, argv) = let
 in
   loop1 (0)
 end // end of [main]
-")
+')
 
 Evidently, #code("loop1") and #code("loop2") are defined mutually
 tail-recursively. The use of the keyword #code("fn*") ensures that these

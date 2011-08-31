@@ -18,14 +18,14 @@ There are two special functions of the name
 #code("main_void") and #code("main_argc_argv") that are given the
 following interfaces:
 
-#atscode("\
-fun main_void (): void = \\\"mainats\\\"
+#atscode('\
+fun main_void (): void = "mainats"
 overload main with main_void
 
 fun main_argc_argv {n:int | n >= 1}
-  (argc: int n, argv: &(@[string][n])): void = \\\"mainats\\\"
+  (argc: int n, argv: &(@[string][n])): void = "mainats"
 overload main with main_argc_argv
-")
+')
 
 The symbol #code("main") is overloaded with both of these functions. In
 addition, the C-name #code("mainats") is assigned to both of them. When a
@@ -57,7 +57,7 @@ be turned into an executable). However, in certain situations, it may make
 sense to implement #code("mainats") in C directly. Note that the interface
 for #code("mainats") in C is:
 
-#atscode("
+#atscode("\
 extern ats_void_type mainats (ats_int_type, ats_ptr_type) ;
 ")
 
@@ -107,12 +107,12 @@ from the given command line:
 
 #para("\
 
-#atscode("\
+#atscode('\
 //
 // some function implemented in ATS
 //
 extern fun main_work // implemented elsewhere
-  {n:pos} (argc: int n, argv: &(@[string][n])): void = \\\"main_work\\\"
+  {n:pos} (argc: int n, argv: &(@[string][n])): void = "main_work"
 // end of [main_work]
 
 %{^
@@ -132,7 +132,8 @@ mainats (
 } /* end of [mainats] */
 
 %} // end of [%{$]
-")
+')
+
 ")#comment("para")
 
 </chapter><!--"mainats"-->

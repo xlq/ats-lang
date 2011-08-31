@@ -77,7 +77,7 @@ When applied to an integer #code("n"), the following defined function
 #code("sum2") also sums up all the natural numbers less than or equal to
 #code("n"):
 
-#atscode_extract("
+#atscode_extract("\
 fn sum2 (n: int): int = let
   fun loop (n: int, res: int): int =
     if n > 0 then loop (n-1, res + n) else res

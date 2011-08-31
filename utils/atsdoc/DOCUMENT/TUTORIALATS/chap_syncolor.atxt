@@ -12,59 +12,59 @@ Time of Generation: #timestamp()\
 <chapter id="syntax-coloring">
 #title("Syntax-Coloring for ATS code")
 
-#para("\
+#para('\
 The syntax of ATS is highly involved, which can
 be a daunting obstacle for beginners trying to read and write
 ATS code. In order to alleviate this problem, I may employ colors to
 differentiate various syntatical entities in ATS code.
 The convention I adopt for coloring ATS syntax is given as follows:
-")
+')
 
 #itemizedlist{
 #LI("\
-#para("
+#para('
 The keywords in ATS are all colored
-<phrase role=\\\"color: BLACK; style: BOLD\\\">black</phrase>
+<phrase role="color: BLACK; style: BOLD">black</phrase>
 (and possibly written in bold face).
-")
+')
 "),
 
 #LI("\
-#para("
+#para('
 The comments in ATS are all colored
-<phrase role=\\\"\\\#787878\\\; stype NORMAL\\\">gray</phrase>.
-")
+<phrase role="\\\#787878\\\; stype NORMAL">gray</phrase>.
+')
 "),
 
 #LI("\
-#para("
+#para('
 The code in the statics of ATS is colored
-<phrase role=\\\"BLUE; stype NORMAL\\\">blue</phrase>.
-")
+<phrase role="BLUE; stype NORMAL">blue</phrase>.
+')
 "),
 
 #LI("\
-#para("
+#para('
 The code in the dynamics of ATS is colored
-<phrase role=\\\"\\\#E80000; stype NORMAL\\\">red</phrase>
+<phrase role="\\\#E80000; stype NORMAL">red</phrase>
 unless it represents proofs, for which the color
-<phrase role=\\\"\\\#009000; stype NORMAL\\\">dark green</phrase>
+<phrase role="\\\#009000; stype NORMAL">dark green</phrase>
 is used.
-")
+')
 "),
 
 #LI("\
-#para("
+#para('
 The external code (in C) is colored
-<phrase role=\\\"\\\#A52A2A; stype NORMAL\\\">deep brown</phrase>.
-")
+<phrase role="\\\#A52A2A; stype NORMAL">deep brown</phrase>.
+')
 ")
 }#comment("itemizedlist")
 
-#para("\
+#para('\
 Please find an example of ATS code #mycodelink("fact_dats.html", "on-line")
 that involves all of the syntax-coloring mentioned above.
-")
+')
 
 </chapter><!--id="syntax-coloring"-->
 

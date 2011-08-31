@@ -241,64 +241,72 @@ end // end of [trans_extcode_START]
 
 (* ****** ****** *)
 
-extern
-fun trans_string {l:agz} (
-  out: !stroutptr l, buf: &lexbuf, pos0: &position, pos: &position
-) : void // end of [trans_string]
+#define SQUOTE '\''
+#define DQUOTE '"'
+#define SHARP '#'
+#define SLASH '\\'
 
+extern
+fun trans_string {l:agz} ( // single quoted
+  SDQ: char, out: !stroutptr l, buf: &lexbuf, pos0: &position, pos: &position
+) : void // end of [trans_sstring]
 extern
 fun trans_string_SHARP {l:agz}
   (out: !stroutptr l, buf: &lexbuf, pos: &position): void
-// end of [trans_string_SHARP]
-
+// end of [trans_sstring_SHARP]
 extern
 fun trans_string_SLASH {l:agz}
-  (out: !stroutptr l, buf: &lexbuf, pos: &position): void
-// end of [trans_string_SLASH]
+  (SDQ: char, out: !stroutptr l, buf: &lexbuf, pos: &position): void
+// end of [trans_sstring_SLASH]
 
 (* ****** ****** *)
 
 implement
 trans_string
-  (out, buf, pos0, pos) = let
+  (SDQ, out, buf, pos0, pos) = let
   val i = lexbufpos_get_char (buf, pos)
 in
 //
 if i >= 0 then let
   val c = (i2c)i
 (*
-  val () = fprintf (stderr_ref, "trans_string: c = %c\n", @(c))
+  val () = fprintf (stderr_ref, "trans_dstring: c = %c\n", @(c))
 *)
 in
   case+ c of
-  | '"' => let
+  | _ when c = SDQ => let
       val () = posincby1 (pos) in () // HX: closing properly
-    end // end of ['"']
-  | '#' => let
+    end // end of [SDQ]
+  | DQUOTE => let
+      val () = posincby1 (pos)
+      val () = stroutptr_add_char (out, SLASH)
+      val () = stroutptr_add_char (out, DQUOTE)
+    in
+      trans_string (SDQ, out, buf, pos0, pos)      
+    end
+  | SHARP => let
       val () = posincby1 (pos)
       val () = trans_string_SHARP (out, buf, pos)
     in
-      trans_string (out, buf, pos0, pos)
-    end // end of ['#']
-  | '\\' => let
+      trans_string (SDQ, out, buf, pos0, pos)
+    end // end of [SHARP]
+  | SLASH => let
       val () = posincby1 (pos)
-      val () = trans_string_SLASH (out, buf, pos)
+      val () = trans_string_SLASH (SDQ, out, buf, pos)
     in
-      trans_string (out, buf, pos0, pos)
-    end // END OF ['\\']
+      trans_string (SDQ, out, buf, pos0, pos)
+    end // end OF [SLASH]
   | _ => let
       val () = posincbyc (pos, i)
       val () = stroutptr_add_char (out, c)
     in
-      trans_string (out, buf, pos0, pos)
+      trans_string (SDQ, out, buf, pos0, pos)
     end // end of [_]
 end else (
   lexbufpos2_docerr (buf, pos0, pos, DE_STRING_unclose)
 ) (* end of [if] *)
 //
-end // end of [trans_string]
-
-(* ****** ****** *)
+end // end of [trans_dstring]
 
 implement
 trans_string_SHARP
@@ -320,40 +328,44 @@ case+ opt of
     val () = stroutptr_add_char (out, '#') in (*nothing*)
   end // end of [if]
 //
-end // end of [trans_string_SHARP]
+end // end of [trans_dstring_SHARP]
 
 (* ****** ****** *)
 
 implement
 trans_string_SLASH
-  (out, buf, pos) = let
+  (SDQ, out, buf, pos) = let
   val i = lexbufpos_get_char (buf, pos)
 in
 //
 if i >= 0 then let
   val c = (i2c)i in
   case+ c of
-  | '"' => let
-      val () = posincby1 (pos) in stroutptr_add_char (out, '"')
-    end // end of ['"']
-  | '#' => let
-      val () = posincby1 (pos) in stroutptr_add_char (out, '#')
-    end // end of ['#']
-  | '\\' => let
-      val () = posincby1 (pos) in stroutptr_add_char (out, '\\')
-    end // end of ['\\']
+  | _ when c = SDQ => let
+      val () = posincby1 (pos)
+      val () = stroutptr_add_char (out, SLASH)
+      val () = stroutptr_add_char (out, SDQ)
+    in
+      // nothing
+    end // end of [SDQ]
+  | SHARP => let
+      val () = posincby1 (pos) in stroutptr_add_char (out, SHARP)
+    end // end of [SHARP]
+  | SLASH => let
+      val () = posincby1 (pos) in stroutptr_add_char (out, SLASH)
+    end // end of [SLASH]
   | _ => let
       val () = posincbyc (pos, i)
-      val () = stroutptr_add_char (out, '\\')
+      val () = stroutptr_add_char (out, SLASH)
       val () = stroutptr_add_char (out, c)
     in
       // nothing
     end // end of [_]
 end else (
-  stroutptr_add_char (out, '\\')
+  stroutptr_add_char (out, SLASH)
 ) (* end of [if] *)
 //
-end // end of [trans_string_SLASH]
+end // end of [trans_dstring_SLASH]
 
 (* ****** ****** *)
 
@@ -448,17 +460,27 @@ in
 if i >= 0 then let
   val c = (i2c)i in
   case+ c of
-  | '"' => let
+  | SQUOTE => let
       var pos0: position
       val () = $LOC.position_copy (pos0, pos)
       val () = posincby1 (pos)
       val out = stroutptr_make ()
-      val () = trans_string (out, buf, pos0, pos)
+      val () = trans_string (SQUOTE, out, buf, pos0, pos)
+      val str = stroutptr2string (out)
+    in
+      FAstrsub (str)
+    end // end of [SQUOTE]
+  | DQUOTE => let
+      var pos0: position
+      val () = $LOC.position_copy (pos0, pos)
+      val () = posincby1 (pos)
+      val out = stroutptr_make ()
+      val () = trans_string (DQUOTE, out, buf, pos0, pos)
       val str = stroutptr2string (out)
     in
       FAstrsub (str)
     end // end of ['"']
-  | '#' => let
+  | SHARP => let
       var pos0: position
       val () = posincby1 (pos)
       val () = $LOC.position_copy (pos0, pos)
@@ -466,7 +488,7 @@ if i >= 0 then let
     in
       case+ opt of
       | ~Some_vt (fres) => FAfunres (fres) | ~None_vt () => FAnil ()
-    end // end of ['#']
+    end // end of [SHARP]
   | _ when DIGIT_test (c) => let
       val st0 = lexbuf_get_base (buf)
       val st1 = $LOC.position_get_ntot (pos)
@@ -681,4 +703,4 @@ end // end of [fprint_the_tranitmlst]
 
 (* ****** ****** *)
 
-(* end of [atsdoc_translate_funcall.dats] *)
+(* end of [atsdoc_translate_item.dats] *)

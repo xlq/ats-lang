@@ -36,11 +36,11 @@ character #code("c"), a double #code("d") and an integer #code("i"),
 #code("@(c, d, i)") is an argument of types #code("(char, double, int)"),
 and the following expression is well-typed in ATS:
 
-#atscode("\
-printf (\\\"c = %c and d = %f and i = %i\\\", @(c, d, i))
-")
+#atscode('\
+printf ("c = %c and d = %f and i = %i", @(c, d, i))
+')
 
-The type of the format string #code("\\\"c = %c and d = %f and i = %i\\\"")
+The type of the format string #code("\"c = %c and d = %f and i = %i\"")
 is computed to be #code("printf_c(char, double, int)") and then #code("@(c,
 d, i)") is checked to be of the type #code("(char, double, int)").  Note
 that a format string must be a constant in order for its type to be
@@ -66,8 +66,8 @@ main () = let
     {i,j:nat | i <= N; j <= i}
     (i: int i, j: int j): void =
     if j < i then let
-      val () = if (j > 0) then print '\\\t'
-      val () = printf (\\\"%1d*%1d=%2.2d\\\", @(j+1, i, (j+1) * i))
+      val () = if (j > 0) then print '\t'
+      val () = printf (\"%1d*%1d=%2.2d\", @(j+1, i, (j+1) * i))
     in
       loop2 (i, j+1)
     end else let

@@ -12,37 +12,37 @@ Time of Generation: #timestamp()\
 <chapter id="file-inclusion">
 #title("File Inclusion inside ATS Code")
 
-#para("\
+#para('\
 
 As is in C, file inclusion inside ATS code is done through the use of the
 directive #emph("\\\#include"). For instance, the following line indicates
 that a file named #emph("foobar") is included, that is, this line is to be
 replaced with the content of the file #emph("foobar"):
 
-#atscode("\
-\#include \\\"foobar.hats\\\"
-")
+#atscode('\
+\#include "foobar.hats"
+')
 
 Note that the included file is parsed according to the syntax for statics
 or dynamics depending whether the file is included in a static or dynamic
 file.  As a convention, the name of an included file often ends with the
 extension #emph(".hats").
 
-")#comment("para")
+')#comment("para")
 
-#para("\
+#para('\
 A common use of file inclusion is to keep some constants, flags or
 parameters being defined consistently across a set of files. For instance,
 the file #myatsdoclink("prelude/params.hats", "prelude/params.hats")
 serves such a purpose.
-")
+')
 
-#para("\
+#para('\
 File inclusion can also be used to emulate (in a limited but rather useful
 manner) the feature of functors (a module-level language construct) as is
 supported in languages such as SML and OCaml.  Examples illustrating such a
 use of file inclusion can be found elsewhere.
-")
+')
 
 </chapter><!--"file-inclusion"-->
 
