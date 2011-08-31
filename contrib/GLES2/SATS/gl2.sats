@@ -4,11 +4,15 @@
 // Starting time: May 13, 2011
 //
 (* ****** ****** *)
+//
+// License: GNU LESSER GENERAL PUBLIC LICENSE version 2.1
+//
+(* ****** ****** *)
 
 %{#
 #include "prelude/CATS/integer_ptr.cats"
 #include "contrib/GLES2/CATS/gl2.cats"
-%}
+%} // end of [%{#]
 
 (* ****** ****** *)
 

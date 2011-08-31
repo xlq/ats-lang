@@ -4,6 +4,10 @@
 // Starting time: May 13, 2011
 //
 /* ****** ****** */
+//
+// License: GNU LESSER GENERAL PUBLIC LICENSE version 2.1
+//
+/* ****** ****** */
 
 #ifndef ATSCTRB_GLES2_GL_CATS
 #define ATSCTRB_GLES2_GL_CATS

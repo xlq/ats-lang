@@ -56,14 +56,14 @@ cairo_create0 (sf) = cr where {
 (* ****** ****** *)
 
 implement
-cairo_get_target1 (cr) = sf1 where {
+cairo_get1_target (cr) = sf1 where {
   val (fpf_sf | sf) = cairo_get_target (cr)
   val sf1 = cairo_surface_reference (sf) // increase refcount by 1
   prval () = minus_addback (fpf_sf, sf | cr) // return borrowed resource
 } // end of [cairo_get_target1]
 
 implement
-cairo_get_group_target1 (cr) = sf1 where {
+cairo_get1_group_target (cr) = sf1 where {
   val (fpf_sf | sf) = cairo_get_group_target (cr)
   val sf1 = cairo_surface_reference (sf) // increase refcount by 1
   prval () = minus_addback (fpf_sf, sf | cr) // return borrowed resource

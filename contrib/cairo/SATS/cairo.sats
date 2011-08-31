@@ -149,6 +149,7 @@ fun neq_cairo_status_cairo_status (
 ) :<> bool
   = "mac#atspre_neq_int_int"
 overload <> with neq_cairo_status_cairo_status
+overload != with neq_cairo_status_cairo_status
 
 (* ****** ****** *)
 //
@@ -280,17 +281,17 @@ fun cairo_get_group_target
 // note that these two functions are slightly different from
 // the original ones in cairo in terms of reference counting
 //
-fun cairo_get_target1
+fun cairo_get1_target
   {l:agz} (
   cr: !cairo_ref l
 ) : cairo_surface_ref1
-  = "atsctrb_cairo_get_target1" // function!
+  = "atsctrb_cairo_get1_target" // function!
 
-fun cairo_get_group_target1
+fun cairo_get1_group_target
   {l:agz} (
   cr: !cairo_ref l
 ) : cairo_surface_ref1
-  = "atsctrb_cairo_get_group_target1" // function!
+  = "atsctrb_cairo_get1_group_target" // function!
 
 (* ****** ****** *)
 
