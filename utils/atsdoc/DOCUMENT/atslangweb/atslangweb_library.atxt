@@ -57,13 +57,13 @@ padding-right: 10px ;
 
 <h1>Libraries</h1>
 
-<MENU>
-<LI>#ulink("\\\#ATSHOME_prelude", "ATS/prelude")
-<LI>#ulink("\\\#ATSHOME_libc", "ATS/libc")
-<LI>#ulink("\\\#ATSHOME_libats", "ATS/libats")
-<LI>#ulink("\\\#ATSHOME_libats_smlbas", "ATS/libats/smlbas")
-<LI>#ulink("\\\#ATSHOME_contrib", "ATS/contrib")
-</MENU>
+#menu('\
+#litxt(#ulink("\#ATSHOME_prelude", "ATS/prelude"))
+#litxt(#ulink("\#ATSHOME_libc", "ATS/libc"))
+#litxt(#ulink("\#ATSHOME_libats", "ATS/libats"))
+#litxt(#ulink("\#ATSHOME_libats_smlbas", "ATS/libats/smlbas"))
+#litxt(#ulink("\#ATSHOME_contrib", "ATS/contrib"))
+')#comment("menu")
 
 #HR(6)
 

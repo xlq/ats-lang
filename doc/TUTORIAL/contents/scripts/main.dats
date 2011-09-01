@@ -46,7 +46,6 @@ extern fun fildescopy
     .atsyntax span.dyncstdec  {text-decoration:none}
     .atsyntax span.dyncstimp  {color:#B80000;text-decoration:underline}
     .atsyntax span.dyncstuse  {color:#B80000;text-decoration:underline}
-    .atsyntax body {color:#E80000;background-color:#E0E0E0}
   </style>
 </head>
 <!--
@@ -122,13 +121,14 @@ end // end of [copy_one]
 <META name=\"description\" content=\"Home Page for ATS-tutorial-all\">\n\
 <META name=\"keywords\" content=\"\">\n\
 <STYLE TYPE=\"text/css\">\n\
-span.comment {color:787878;font-style:italic}\n\
-span.extern  {color:A52A2A}\n\
-span.keyword {color:000000;font-weight:bold}\n\
-span.neuexp  {color:800080}\n\
-span.staexp  {color:0000FF}\n\
-span.dynexp  {color:E80000}\n\
-span.prfexp  {color:009000}\n\
+.atsyntax {color:#E80000;background-color:#E0E0E0}
+.atsyntax span.comment {color:787878;font-style:italic}\n\
+.atsyntax span.extern  {color:A52A2A}\n\
+.atsyntax span.keyword {color:000000;font-weight:bold}\n\
+.atsyntax span.neuexp  {color:800080}\n\
+.atsyntax span.staexp  {color:0000FF}\n\
+.atsyntax span.dynexp  {color:E80000}\n\
+.atsyntax span.prfexp  {color:009000}\n\
 </STYLE>\n\
 </HEAD>\n\
 <BODY text=\"#000000\" bgcolor=\"#ffffff\" link=\"#0000FF\" vlink=\"#CC00CC\" alink=\"#ff0000\">\n\

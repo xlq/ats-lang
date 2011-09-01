@@ -157,19 +157,19 @@ As an example, the following code implements a simple test on <i>qsort</i>:
 </FONT></PRE>
 *)
 %}
-#atscode2xmld("\
+#atscode2xmld('\
 fn test_qsort () = let
   fun pr_loop {n,i:nat | i <= n} .<n-i>.
     (A: &(@[int][n]), n: size_t n, i: size_t i): void =
     if i < n then begin
-      if i > 0 then print \\\", \\\"; print A.[i]; pr_loop (A, n, i+1)
+      if i > 0 then print ", "; print A.[i]; pr_loop (A, n, i+1)
     end // end of [if]
   // end of [pr_loop]
 
   // creating a linear array of size 10
   val (pf_gc, pf_arr | p_arr, asz) = $arrsz {int} (1, 9, 2, 8, 3, 7, 4, 6, 5, 0)
 
-  val () = (print \\\"before quicksort:\\\n\\\")
+  val () = (print "before quicksort:\\\n")
   val () = pr_loop (!p_arr, asz, 0)
   val () = print_newline ()
 
@@ -177,13 +177,13 @@ fn test_qsort () = let
     qsort {int} (!p_arr, asz, sizeof<int>, lam (x, y) => compare (x, y))
   end // end of [val]
 
-  val () = (print \\\"after quicksort:\\\n\\\")
+  val () = (print "after quicksort:\n")
   val () = pr_loop (!p_arr, asz, 0)
   val () = print_newline ()
 in
   array_ptr_free {int} (pf_gc, pf_arr | p_arr)
 end // end of [test_qsort]
-")
+')
 
 <H4>Implementing a function without enviroment</H4>
 

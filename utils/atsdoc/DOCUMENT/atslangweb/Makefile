@@ -17,6 +17,7 @@ all:: RESOURCE
 all:: EXAMPLE
 all:: IMPLEMENT
 all:: PAPER
+all:: 
 all:: clean
 
 ######
@@ -42,9 +43,10 @@ XRFLAGS=`pkg-config cairo --cflags --libs`
 GTKFLAGS=`pkg-config gtk+-2.0 --cflags --libs`
 
 atslangweb_bgimages: \
-  atslangweb_bgimages.dats; $(ATSCC) -o $@ $(XRFLAGS) $< -lm && ./$@
-
+  atslangweb_bgimages.dats; $(ATSCC) -o $@ $(XRFLAGS) $< -lm
 clean:: ; $(RMF) atslangweb_bgimages
+
+BGIMAGES: atslangweb_bgimages ; ./$<
 cleanall:: ; $(RMF) images/theSidebar_bgimage.png
 cleanall:: ; $(RMF) images/thePageBody_bgimage.png
 

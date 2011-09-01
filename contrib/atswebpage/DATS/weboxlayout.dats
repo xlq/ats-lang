@@ -376,21 +376,21 @@ fprint_weboxlst_html
     case+ xs of
     | list_cons (x, xs) => let
         val () = if i > 0 then fprint_string (out, "\n")
-        val () = if isvbox then fprint_string (out, "<TR>\n")
+        val () = if isvbox then fprint_string (out, "<tr>\n")
 //
         val () = if ishbox then let
           val pc = get_percent_from (pcs, i)
         in
           case+ 0 of
           | _ when pc >= 0 => fprintf
-              (out, "<TD valign=top width=%d%%>\n", @(pc))
-          | _ => fprintf (out, "<TD valign=top>\n", @())
+              (out, "<td valign=\"top\" width=\"%d%%\">\n", @(pc))
+          | _ => fprintf (out, "<td valign=\"top\">\n", @())
         end // end of [val]
-        val () = if isvbox then fprint_string (out, "<TD halign=left>\n")
+        val () = if isvbox then fprint_string (out, "<td halign=\"left\">\n")
 //
         val () = fprint_webox_html (out, x)
-        val () = if isbox then fprint_string (out, "</TD>\n")
-        val () = if isvbox then fprint_string (out, "</TR>\n")
+        val () = if isbox then fprint_string (out, "</td>\n")
+        val () = if isvbox then fprint_string (out, "</tr>\n")
       in
         loop (xs, i+1)
       end // end of [list_cons]
@@ -398,13 +398,13 @@ fprint_weboxlst_html
   // end of [loop]
   val () = if isbox then {
     val () = fprintf (
-      out, "<TABLE WIDTH=100%% BORDER=0 CELLSPACING=0 CELLPADDING=0>\n", @()
+      out, "<table width=\"100%%\" border=\"0\" cellspacing=\"0\" cellpadding=\"0\">\n", @()
     ) // end of [val]
   } (* end of [if] *)
-  val () = if ishbox then fprint_string (out, "<TR>\n")
+  val () = if ishbox then fprint_string (out, "<tr>\n")
   val () = loop (xs, 0)
-  val () = if ishbox then fprint_string (out, "</TR>\n")
-  val () = if isbox then fprintf (out, "</TABLE>\n", @())
+  val () = if ishbox then fprint_string (out, "</tr>\n")
+  val () = if isbox then fprintf (out, "</table>\n", @())
 in
   // nothing
 end // end of [fprint_weboxlst_html]

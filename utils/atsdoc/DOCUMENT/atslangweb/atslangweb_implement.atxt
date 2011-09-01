@@ -57,15 +57,15 @@ padding-right: 10px ;
 
 <h1>Implementations</h1>
 
-<MENU>
-<LI>#ulink("\#ATS_Proto", "ATS/Proto"): the first implementation
-<LI>#ulink("\#ATS_Geizella", "ATS/Geizella"): a previously released implementation
-<LI>#ulink("\#ATS_Anairiats", "ATS/Anairiats"): the currently released implementation
-</MENU>
+#menu('\
+#lisub("#ulink("\#ATS_Proto", "ATS/Proto"): the first implementation")
+#lisub("#ulink("\#ATS_Geizella", "ATS/Geizella"): a previously released implementation")
+#lisub("#ulink("\#ATS_Anairiats", "ATS/Anairiats"): the currently released implementation")
+')#comment("menu")
 
 #HR(6)
 
-<H2>#uid("ATS_Proto", "ATS/Proto")</H2>
+<h2>#uid("ATS_Proto", "ATS/Proto")</h2>
 
 #para("\
 
@@ -84,7 +84,7 @@ future reference.
 
 #HR(2)
 
-<H2>#uid("ATS_Geizella", "ATS/Geizella")</H2>
+<h2>#uid("ATS_Geizella", "ATS/Geizella")</h2>
 
 #para('\
 
@@ -105,13 +105,12 @@ the help of ATS/Geizella).
 
 #HR(2)
 
-<H2>#uid("ATS_Anairiats", "ATS/Anairiats")</H2>
+<h2>#uid("ATS_Anairiats", "ATS/Anairiats")</h2>
 
 #para('\
 
 #ulink("\
-http://ats-lang.svn.sourceforge.net/viewvc/ats-lang/trunk\
-", "ATS/Anairiats"
+http://ats-lang.svn.sourceforge.net/viewvc/ats-lang/trunk", "ATS/Anairiats"
 ) is the currently released implementation of
 ATS. It is nearly entirely written in ATS itself, consisting of about
 100,000 lines source code written in ATS.  When compared to ATS/Geizella, a

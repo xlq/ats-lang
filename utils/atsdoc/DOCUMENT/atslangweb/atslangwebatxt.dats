@@ -62,16 +62,31 @@ end // end of [xmltagging]
 
 (* ****** ****** *)
 
-macdef head (x) = xmltagging ("HEAD", ,(x)) // <HEAD> ... </HEAD>
-macdef title (x) = xmltagging ("TITLE", ,(x)) // <TITLE> ... </TITLE>
+macdef head (x) = xmltagging ("head", ,(x)) // <head> ... </head>
+macdef title (x) = xmltagging ("title", ,(x)) // <title> ... </title>
 
 (* ****** ****** *)
 
-macdef emph (x) = xmltagging ("I", ,(x)) // <I> ... </I>
-macdef para (x) = xmltagging ("P", ,(x)) // <P> ... </P>
-macdef filename(x) = xmltagging ("U", ,(x)) // <U> ... </U>
-macdef textpre(x) = xmltagging ("PRE", ,(x)) // <PRE> ... </PRE>
-macdef command(x) = xmltagging ("PRE", ,(x)) // <PRE> ... </PRE>
+macdef emph (x) = xmltagging ("i", ,(x)) // <i> ... </i>
+macdef para (x) = xmltagging ("p", ,(x)) // <p> ... </p>
+macdef strong(x) = xmltagging ("strong", ,(x)) // <strong> ... </strong>
+
+macdef textpre(x) = xmltagging ("pre", ,(x)) // <pre> ... </pre>
+macdef command(x) = xmltagging ("pre", ,(x)) // <pre> ... </pre>
+
+fn center (x: string): text = let
+  val opn = strcst"<p style=\"text-align: center;\">"
+  val cls = strcst"</p>"
+in
+  TEXTapptxt3 (opn, strsub(x), cls)
+end
+
+fn filename (x: string): text = let
+  val opn = strcst"<span style=\"text-decoration: underline;\">"
+  val cls = strcst"</span>"
+in
+  TEXTapptxt3 (opn, strsub(x), cls)
+end
 
 (* ****** ****** *)
 
@@ -90,8 +105,22 @@ end // end of [local]
 
 (* ****** ****** *)
 
+fn menu
+  (itmlst: string): text = xmltagging ("ul", itmlst)
+// end of [menu]
+
+fn lisub
+  (x: string): text = xmltagging ("li", x)
+// end of [lisub]
+
+fn litxt (x: text): text =
+  TEXTapptxt3 (strcst"<li>", x, strcst"</li>")
+// end of [litxt]
+
+(* ****** ****** *)
+
 fn HR (sz: int) =
-  strcst_of_strptr (sprintf ("<HR SIZE=%i></HR>", @(sz)))
+  strcst_of_strptr (sprintf ("<hr style=\"width: %ipx;\"></hr>", @(sz)))
 // end of [HR]
 
 (* ****** ****** *)

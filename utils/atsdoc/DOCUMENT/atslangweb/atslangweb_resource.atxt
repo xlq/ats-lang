@@ -57,16 +57,16 @@ padding-right: 10px ;
 
 <h1>Resources for ATS Users</h1>
 
-<MENU>
-<LI>Editing ATS source code
-<LI>ML programmer\'s guide to ATS
-<LI>Mailing-list for ATS users
-<LI>IRC channel for ATS users
-<LI>ATS/Cairo Tutorial
-<LI>Courses based on ATS
-</MENU>
+#menu('\
+#lisub("Editing ATS source code")
+#lisub("ML programmer\'s guide to ATS")
+#lisub("Mailing-list for ATS users")
+#lisub("IRC channel for ATS users")
+#lisub("ATS/Cairo Tutorial")
+#lisub("Courses based on ATS")
+')#comment("menu")
 
-<HR SIZE=6></HR>
+#HR(6)
 
 <!-- ****** ****** -->
 

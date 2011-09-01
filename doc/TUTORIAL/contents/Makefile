@@ -6,54 +6,57 @@ FPROC="scripts/fproc"
 
 ######
 
-tutorial_all:
-	$(FPROC) -many \
-          syntax-coloring.html \
-          basics.html \
-          filename-extensions.html \
-          file-inclusion.html \
-          compilation.html \
-          ats-main.html \
-          fixity.html \
-          overloading.html \
-          macros.html \
-          function-or-closure.html \
-          variadicity.html \
-          tail-recursive-functions.html \
-          termination-metrics.html \
-          types-with-effects.html \
-          templates.html \
-          lists.html \
-          val-and-var.html \
-          call-by-reference.html \
-          pointers.html \
-          references.html \
-          arrays-and-matrices.html \
-          linear-arrays.html \
-          strings.html \
-          datatypes.html \
-          dataprops.html \
-          dataviews.html \
-          dataviewtypes.html \
-          pattern-matching.html \
-          exceptions.html \
-          higher-order-functions.html \
-          lazy-evaluation.html \
-          llazy-evaluation.html \
-          input-and-output.html \
-          ATS-and-C.html \
-          programming-with-theorem-proving.html \
-          casting-functions.html \
-          stack-allocation.html \
-          statetypes.html \
-          loopcon.html \
+HTMLFILES=\
+  syntax-coloring.html \
+  basics.html \
+  filename-extensions.html \
+  file-inclusion.html \
+  compilation.html \
+  ats-main.html \
+  fixity.html \
+  overloading.html \
+  macros.html \
+  function-or-closure.html \
+  variadicity.html \
+  tail-recursive-functions.html \
+  termination-metrics.html \
+  types-with-effects.html \
+  templates.html \
+  lists.html \
+  val-and-var.html \
+  call-by-reference.html \
+  pointers.html \
+  references.html \
+  arrays-and-matrices.html \
+  linear-arrays.html \
+  strings.html \
+  datatypes.html \
+  dataprops.html \
+  dataviews.html \
+  dataviewtypes.html \
+  pattern-matching.html \
+  exceptions.html \
+  higher-order-functions.html \
+  lazy-evaluation.html \
+  llazy-evaluation.html \
+  input-and-output.html \
+  ATS-and-C.html \
+  programming-with-theorem-proving.html \
+  casting-functions.html \
+  stack-allocation.html \
+  statetypes.html \
+  loopcon.html \
 
+######
+
+tutorial_all: $(HTMLFILES)
+	$(FPROC) -many $(HTMLFILES)
 	scp $(OUTPUT)/tutorial_all.html \
           ats-hwxi,ats-lang@web.sourceforge.net:htdocs/TUTORIAL/contents/
 
 ######
 
-ones::
+ones:: $(HTMLFILES)
 	$(FPROC) -one syntax-coloring.html
 	$(FPROC) -one basics.html
 	$(FPROC) -one filename-extensions.html

@@ -57,8 +57,8 @@ padding-right: 10px ;
 
 <h1>Papers about ATS and Its Uses</h1>
 
-<MENU>
-</MENU>
+#menu('\
+')#comment("menu")
 
 <!-- ****** ****** -->
 

@@ -57,14 +57,14 @@ padding-right: 10px ;
 
 <h1>Documentation</h1>
 
-<MENU>
-<LI>Introduction to Programming in ATS
-<LI>A Tutorial on Programming Features in ATS
-<LI>ATS Utility Commands
-<LI>The Formal Grammar of ATS/Anairiats
-</MENU>
+#menu('\
+#lisub("Introduction to Programming in ATS")
+#lisub("A Tutorial on Programming Features in ATS")
+#lisub("ATS Utility Commands")
+#lisub("The Formal Grammar of ATS/Anairiats")
+')#comment("menu")
 
-<HR SIZE=6></HR>
+#HR(6)
 
 <!-- ****** ****** -->
 

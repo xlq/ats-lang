@@ -37,29 +37,29 @@ end // end of [addcssrule_strsub]
    "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
 
-<HEAD>
+<head>
 <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
-<TITLE>The ATS Programming Language</TITLE>
+<title>The ATS Programming Language</title>
 <link rel="stylesheet" type="text/css" href="\#theStyleSheetLink$" />
-</HEAD><!--head-->
+</head><!--head-->
 
 #comment("****** ****** *")
 
-#addcssrule("\
-body {
-}
-\#body-layout {
-background-color: \#E7CF9E; /* golden brown */\n\
-margin: 0px ;
-}
-")
-
 #addcssrule_strsub("
-\\\#theBodyProp {
-background-color: \\\#346090;
+body {
+/*
+background-color: \\\#E7CF9E; /* golden brown */\n\
+*/
+background-color: \\\#346090; /* deep green/blue */
 background-image: url(#ATSLANGWEBROOTget()/images/theSidebar_bgimage.png);
 background-position: left;
 background-repeat: repeat-y;
+font-family: sans-serif;
+}
+\\\#body-layout {
+margin: 0px;
+}
+\\\#theBodyProp {
 width: 100% ;
 margin-top: 0px;
 }
@@ -89,17 +89,17 @@ color: \#E0E0E0 ;
 #ignoretxt(
 #strsub[theSidebar]('\
 <div id="theSidebar-prop">
-<TABLE BORDER=0 CELLSPACING=0 CELLPADDING=2>
-  <TR><TD>\#ATSLANGWEBHOME$(<a href="http://www.ats-lang.org/ATS.html">old</a>)</TD></TR>
-  <TR><TD>\#ATSLANGWEBDOWNLOAD$</TD></TR>
-  <TR><TD>\#ATSLANGWEBDOCUMENT$</TD></TR>
-  <TR><TD>\#ATSLANGWEBLIBRARY$</TD></TR>
-  <TR><TD>\#ATSLANGWEBRESOURCE$</TD></TR>
-  <TR><TD>\#ATSLANGWEBEXAMPLE$</TD></TR>
-  <TR><TD>\#ATSLANGWEBIMPLEMENT</TD></TR>
-  <TR><TD>\#ATSLANGWEBPAPER</TD></TR>
-  <TR><TD><A HREF="https://lists.sourceforge.net/lists/listinfo/ats-lang-users">Mailing List</A></TD></TR>
-</TABLE>
+<table border="0" cellspacing="0" cellpadding="2">
+  <tr><td>\#ATSLANGWEBHOME$(<a href="http://www.ats-lang.org/ATS.html">old</a>)</td></tr>
+  <tr><td>\#ATSLANGWEBDOWNLOAD$</td></tr>
+  <tr><td>\#ATSLANGWEBDOCUMENT$</td></tr>
+  <tr><td>\#ATSLANGWEBLIBRARY$</td></tr>
+  <tr><td>\#ATSLANGWEBRESOURCE$</td></tr>
+  <tr><td>\#ATSLANGWEBEXAMPLE$</td></tr>
+  <tr><td>\#ATSLANGWEBIMPLEMENT</td></tr>
+  <tr><td>\#ATSLANGWEBPAPER</td></tr>
+  <tr><td><a href="https://lists.sourceforge.net/lists/listinfo/ats-lang-users">Mailing List</a></td></tr>
+</table>
 </div>
 '))
 
@@ -161,10 +161,10 @@ padding-right: 6px ;
 *)
 %}
 
-#addcssrule("\
-\#thePageBody {
+#addcssrule_strsub("\
+\\\#thePageBody {
 background-color: white ;
-background-image: url(http://www.cs.bu.edu/~hwxi/ATS3/images/thePageBody_bgimage.png);
+background-image: url(#ATSLANGWEBROOTget()/images/thePageBody_bgimage.png);
 }
 ")
 
@@ -189,7 +189,12 @@ text-align: right ;
 #ignoretxt(
 #strsub[thePageFooterRest]('\
 <a href="http://sourceforge.net">
-<img src="http://sflogo.sourceforge.net/sflogo.php?group_id=205722&amp;type=2" width=120 height=36 border=0 alt="SourceForge.net Logo" />
+<img
+src="http://sflogo.sourceforge.net/sflogo.php?group_id=205722&amp;type=2"
+width="120"
+height="36"
+alt="SourceForge.net Logo"
+/>
 </a>
 '))
 
