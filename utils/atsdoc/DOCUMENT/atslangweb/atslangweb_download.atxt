@@ -1,0 +1,312 @@
+%{
+//
+staload STDIO = "libc/SATS/stdio.sats"
+//
+(* ****** ****** *)
+//
+#define ISTEMP 0
+//
+#include "atslangwebatxt.dats"
+//
+val _ATSLANGWEBDOWNLOAD: text =
+  strcst"<strong>Download</strong>"
+val () = theTextMap_insert_str ("ATSLANGWEBDOWNLOAD", _ATSLANGWEBDOWNLOAD)
+//
+(* ****** ****** *)
+//
+#include "atslangweb_layout.dats"
+//
+(* ****** ****** *)
+
+val theCSSfilr =
+  $STDIO.fopen_ref_exn ("styles/atslangweb_download.css", file_mode_w)
+val () = fprintf (theCSSfilr,
+  "@import url(%s/styles/atslangweb_temp.css);\n\n", @(ATSLANGWEBROOT)
+) // end of [val]
+
+fun addcssrule
+  (rule: string): text = let
+  val () = fprint_string (theCSSfilr, rule) in TEXTnil ()
+end // end of [addcssrule]
+
+(* ****** ****** *)
+//
+%}
+
+#strsub[theStyleSheetLink]("\
+#ATSLANGWEBROOTget()/styles/atslangweb_download.css\
+")
+
+#ignoretxt(
+#strsub[thePageHeaderSeparator]('\
+<div class="Page-mysitelinks">
+#mysitelinks("DOWNLOAD")
+</div>
+'))
+
+#addcssrule("\
+\#thePageBody-prop {
+padding-left: 10px ;
+padding-right: 10px ;
+}
+")
+
+#strsub[thePageBody]('\
+<div id="thePageBody-prop">
+<h1>Download</h1>
+
+<MENU>
+<LI>#ulink("\#ATS_packages", "ATS packages for download")
+<LI>#ulink("\#installation_requirements", "Installation requirements")
+<LI>#ulink("\#installation_precompiled", "Installation from a precompiled package")
+<LI>#ulink("\#installation_source", "Installation through source code compilation")
+<LI>#ulink("\#installation_bootstrapping", "Installation through bootstrapping")
+</MENU>
+
+#HR(6)
+
+<H2>#uid("ATS_packages", "ATS Packages")</H2>
+
+#para('\
+
+ATS is <A href="http://www.opensource.org">Open Source</A> and <A
+href="http://www.gnu.org/philosophy/free-sw.html">Free Software</A>, and it
+is freely available under the GNU GENERAL PUBLIC LICENSE version 3 (<A
+href="http://www.gnu.org/licenses/gpl-3.0.html">GPLv3 </A>) as is published
+by the Free Software Foundation.  The current implementation of ATS is
+given the name ATS/Anairiats or simply Anairiats.  The latest released
+ATS/Anairats packages are available at the following links:
+
+<MENU>
+<LI>#para('\
+The current <B>stable</B> release is <a href="http://sourceforge.net/projects/ats-lang/download">ats-lang-anairiats-0.2.4</a> (2.8MB)
+')
+<LI>#para('\
+The current <B>unstable</B> version is
+<a href="#ATSLANGWEBROOTget()/IMPLEMENTATION/Anairiats/ats-lang-anairiats-0.2.5-unstable.tar.gz">ats-lang-anairiats-0.2.5-unstable</a>.
+')
+</MENU>
+
+')#comment("para")
+
+#HR(2)
+
+<H2>#uid("installation_requirements", "Installation requirements")</H2>
+
+#para('\
+
+In order to
+install ATS, the following requirements need to be met:
+
+<MENU>
+<LI>Operating System requirement: ATS is supported under the following
+operating systems:
+<UL>
+<LI>Linux
+<LI>Windows with Cygwin
+<LI>MacOS X (currently no GC support for multithreading)
+<LI>SunOS (currently no GC support for multithreading)
+<LI>BSD Unix (currently no GC support for multithreading)
+</UL>
+<LI>Programming Language requirement: GNU C Compiler (GCC).
+</MENU>
+
+')
+
+#para("\
+
+We plan to port ATS to other platforms in the future. If you have succeeded
+in porting ATS to a platform not listed here, please drop us a note.
+
+")
+
+#para('\
+
+The GMP library (libgmp.a), which is in general included in a GNU/Linux
+distribution, is currently <em>optional</em> and it may be required for
+installing a release of ATS in the future.  Please see <a
+href="http://gmplib.org">http://gmplib.org</a> for more details on GMP.
+
+')
+
+#HR(2)
+
+<H2>#uid(
+"installation_precompiled", "Installation from a precompiled package"
+)</H2>
+
+
+#para("\
+This installation method currently only supports the following platforms:
+")
+
+<MENU>
+<LI>Linux on i386 (x86-32)
+<LI>Linux on AMD64 (x86-64)
+<LI>SunOS on UltraSparc
+</MENU>
+
+#para("\
+
+Please first download a compressed tarball containing a precompiled release of
+ATS from the following site that suits your platform:
+
+")
+
+<CENTER>
+<a href="http://sourceforge.net/projects/ats-lang/download">http://sourceforge.net/projects/ats-lang/download</a>
+</CENTER>
+
+#para("\
+Let x.x.x be the version number of the downloaded ATS package.
+")
+
+<MENU>
+
+<LI>#para("\
+
+(<B>Option 1</B>) You can untar the tarball in the root directory (that is,
+the directory #filename("/.")) and then set the shell environment variables
+ATSHOME and ATSHOMERELOC to #filename("/usr/share/atshome") and
+#filename("ATS-x.x.x"), respectively. This option most likely requires root
+access.
+
+")
+
+<LI>#para("\
+
+(<B>Option 2</B>) You can untar the tarball in the directory
+#filename("/tmp"), and then move the directory /tmp/usr/share/atshome into
+a directory of your choice, say, #filename("FOO"), and then set the
+environment variables ATSHOME and ATSHOMERELOC to #filename("FOO/atshome")
+and #filename("ATS-x.x.x"), repectively. In addition, you need to put
+#filename("$ATSHOME/bin") on your execution path or create symbolic links
+to the executables #filename("$ATSHOME/bin/atscc") and
+#filename("$ATSHOME/bin/atsopt") in a directory that is already on your
+execution path, where $ATSHOME refers to the content of ATSHOME.
+
+")
+
+</MENU>
+
+#HR(2)
+
+<H2>#uid(
+"installation_source", "Installation through source code compilation"
+)</H2>
+
+<MENU>
+<LI><B>Step 1:</B>
+#para("\
+
+After downloading a compressed tarball containing a release of ATS from the
+following site:
+
+")
+<CENTER>
+<a href="http://sourceforge.net/projects/ats-lang/download">http://sourceforge.net/projects/ats-lang/download</a>
+</CENTER>
+
+#para("\
+
+please untar it in a directory, say FOO, of your choice. This, for instance,
+can be done by executing the following command line:
+
+#command("tar -zvxf ATS.tar.gz")
+
+All the files and directories extracted from the tarball are now in the
+directory #filename("FOO/ATS").
+
+")
+
+<LI><B>Step 2:</B>
+#para("\
+
+Please execute the following command
+
+#command("\
+./configure --prefix=DESTDIR</pre>
+")
+
+where DESTDIR refers to the directory into which ATS is to be installed.
+
+If the argument [--prefix=DESTDIR] is missing, then the default directory
+for installing ATS is #filename("/usr/local").
+
+You can now go into the directory #filename("FOO/ATS") and execute
+
+#command("make all")
+
+This generates executables #filename("atscc") and #filename("atsopt") in
+the directory #filename("FOO/ATS/bin"), which are the commands you need for
+compiling ATS programs, and a library file #filename("libats.a") in the
+directory #filename("FOO/ATS/CCOMP/lib"), which you need for linking.
+
+")
+
+<LI><B>Step 3:</B>
+
+#para("\
+
+Please set the environment variable ATSHOME to #filename("FOO/ATS") and
+then set the environment variable ATSHOMERELOC to ATS-x.x.x, where x.x.x is
+the version number of the compiled ATS package.
+
+")
+
+<LI><B>Step 4:</B>
+
+#para("\
+
+Optionally, you may install ATS by executing the following
+command line:
+
+#command("make install")
+
+and then set ATSHOME to #filename("DESTDIR/share/ats-anairiats-x.x.x"),
+which is the directory where ATS is to be installed. The environment
+variable ATSHOMERELOC is still set to ATS-x.x.x.
+
+")#comment("para")
+
+</MENU>
+
+#HR(2)
+
+<H2>#uid(
+"installation_bootstrapping", "Installation through bootstrapping"
+)</H2>
+
+
+#para('\
+
+This installation method is
+probably the best if you would like to keep abreast of the development of ATS.
+Please find more details #ulink1("#ATSLANGWEBROOTget()/IMPLEMENT", "here").
+
+')#comment("para")
+
+</div>#comment("div/id=thePageBody-prop")
+')#comment("strsub")
+
+<!-- ****** ****** -->
+
+#ignoretxt(
+#strsub[thePageFooterSeparator]('\
+<div class="Page-mysitelinks">
+#mysitelinks("DOWNLOAD")
+</div>
+'))
+
+%{
+
+implement
+main () = {
+//
+val () =  $STDIO.fclose_exn (theCSSfilr)
+//
+val () = fprint_filsub (stdout_ref, "atslangweb_temp.html")
+//
+} // end of [main]
+
+%}

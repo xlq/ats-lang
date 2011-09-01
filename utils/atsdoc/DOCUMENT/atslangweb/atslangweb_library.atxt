@@ -1,0 +1,95 @@
+%{
+//
+staload STDIO = "libc/SATS/stdio.sats"
+//
+(* ****** ****** *)
+//
+#define ISTEMP 0
+//
+#include "atslangwebatxt.dats"
+//
+val _ATSLANGWEBLIBRARY: text =
+  strcst"<strong>Libraries</strong>"
+val () = theTextMap_insert_str ("ATSLANGWEBLIBRARY", _ATSLANGWEBLIBRARY)
+//
+(* ****** ****** *)
+//
+#include "atslangweb_layout.dats"
+//
+(* ****** ****** *)
+
+val theCSSfilr =
+  $STDIO.fopen_ref_exn ("styles/atslangweb_library.css", file_mode_w)
+val () = fprintf (theCSSfilr,
+  "@import url(%s/styles/atslangweb_temp.css);\n\n", @(ATSLANGWEBROOT)
+) // end of [val]
+
+fun addcssrule
+  (rule: string): text = let
+  val () = fprint_string (theCSSfilr, rule) in TEXTnil ()
+end // end of [addcssrule]
+
+(* ****** ****** *)
+//
+%}
+
+#strsub[theStyleSheetLink]("\
+#ATSLANGWEBROOTget()/styles/atslangweb_library.css\
+")
+
+#ignoretxt(
+#strsub[thePageHeaderSeparator]('\
+<div class="Page-mysitelinks">
+#mysitelinks("LIBRARY")
+</div>
+'))
+
+#addcssrule("\
+\#thePageBody-prop {
+padding-left: 10px ;
+padding-right: 10px ;
+}
+")
+#strsub[thePageBody]('\
+<div id="thePageBody-prop">
+
+<!-- ****** ****** -->
+
+<h1>Libraries</h1>
+
+<MENU>
+<LI>#ulink("\\\#ATSHOME_prelude", "ATS/prelude")
+<LI>#ulink("\\\#ATSHOME_libc", "ATS/libc")
+<LI>#ulink("\\\#ATSHOME_libats", "ATS/libats")
+<LI>#ulink("\\\#ATSHOME_libats_smlbas", "ATS/libats/smlbas")
+<LI>#ulink("\\\#ATSHOME_contrib", "ATS/contrib")
+</MENU>
+
+#HR(6)
+
+<!-- ****** ****** -->
+
+</div>#comment("div/id=thePageBody-prop")
+')#comment("strsub")
+
+<!-- ****** ****** -->
+
+#ignoretxt(
+#strsub[thePageFooterSeparator]('\
+<div class="Page-mysitelinks">
+#mysitelinks("LIBRARY")
+</div>
+'))
+
+%{
+
+implement
+main () = {
+//
+val () =  $STDIO.fclose_exn (theCSSfilr)
+//
+val () = fprint_filsub (stdout_ref, "atslangweb_temp.html")
+//
+} // end of [main]
+
+%}

@@ -1,0 +1,88 @@
+%{
+//
+staload STDIO = "libc/SATS/stdio.sats"
+//
+(* ****** ****** *)
+//
+#define ISTEMP 0
+//
+#include "atslangwebatxt.dats"
+//
+val _ATSLANGWEBPAPER: text =
+  strcst"<strong>Papers</strong>"
+val () = theTextMap_insert_str ("ATSLANGWEBPAPER", _ATSLANGWEBPAPER)
+//
+(* ****** ****** *)
+//
+#include "atslangweb_layout.dats"
+//
+(* ****** ****** *)
+
+val theCSSfilr =
+  $STDIO.fopen_ref_exn ("styles/atslangweb_paper.css", file_mode_w)
+val () = fprintf (theCSSfilr,
+  "@import url(%s/styles/atslangweb_temp.css);\n\n", @(ATSLANGWEBROOT)
+) // end of [val]
+
+fun addcssrule
+  (rule: string): text = let
+  val () = fprint_string (theCSSfilr, rule) in TEXTnil ()
+end // end of [addcssrule]
+
+(* ****** ****** *)
+//
+%}
+
+#strsub[theStyleSheetLink]("\
+#ATSLANGWEBROOTget()/styles/atslangweb_paper.css\
+")
+
+#ignoretxt(
+#strsub[thePageHeaderSeparator]('\
+<div class="Page-mysitelinks">
+#mysitelinks("PAPER")
+</div>
+'))
+
+#addcssrule("\
+\#thePageBody-prop {
+padding-left: 10px ;
+padding-right: 10px ;
+}
+")
+#strsub[thePageBody]('\
+<div id="thePageBody-prop">
+
+<!-- ****** ****** -->
+
+<h1>Papers about ATS and Its Uses</h1>
+
+<MENU>
+</MENU>
+
+<!-- ****** ****** -->
+
+</div>#comment("div/id=thePageBody-prop")
+')#comment("strsub")
+
+<!-- ****** ****** -->
+
+#ignoretxt(
+#strsub[thePageFooterSeparator]('\
+<div class="Page-mysitelinks">
+#mysitelinks("PAPER")
+</div>
+'))
+
+%{
+
+implement
+main () = {
+//
+val () =  $STDIO.fclose_exn (theCSSfilr)
+//
+val () = fprint_filsub (stdout_ref, "atslangweb_temp.html")
+//
+} // end of [main]
+
+%}

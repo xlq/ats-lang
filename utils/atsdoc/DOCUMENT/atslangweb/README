@@ -1,0 +1,27 @@
+#
+# Constructing webpages for the ATS programming language
+#
+
+#
+# Author: Hongwei Xi (gmhwxi AT gmail DOT com)
+#
+
+######
+//
+atslangatxt.dats: for use by atsdoc
+atslangweb_layout.dats: page layout
+//
+atslangweb_temp.atxt: template
+//
+atslangweb_home.atxt: the root page
+atslangweb_download.atxt: for download
+atslangweb_document.atxt: for documentation
+atslangweb_example.atxt: for various examples
+atslangweb_implement.atxt: about implementations
+atslangweb_paper.atxt: for various papers
+//
+atslangweb_bgimages.dats: for generating some BG images
+//
+###### end of [README] ######
+
+

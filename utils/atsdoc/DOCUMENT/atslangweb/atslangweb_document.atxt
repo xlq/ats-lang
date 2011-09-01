@@ -1,0 +1,94 @@
+%{
+//
+staload STDIO = "libc/SATS/stdio.sats"
+//
+(* ****** ****** *)
+//
+#define ISTEMP 0
+//
+#include "atslangwebatxt.dats"
+//
+val _ATSLANGWEBDOCUMENT: text =
+  strcst"<strong>Documentation</strong>"
+val () = theTextMap_insert_str ("ATSLANGWEBDOCUMENT", _ATSLANGWEBDOCUMENT)
+//
+(* ****** ****** *)
+//
+#include "atslangweb_layout.dats"
+//
+(* ****** ****** *)
+
+val theCSSfilr =
+  $STDIO.fopen_ref_exn ("styles/atslangweb_document.css", file_mode_w)
+val () = fprintf (theCSSfilr,
+  "@import url(%s/styles/atslangweb_temp.css);\n\n", @(ATSLANGWEBROOT)
+) // end of [val]
+
+fun addcssrule
+  (rule: string): text = let
+  val () = fprint_string (theCSSfilr, rule) in TEXTnil ()
+end // end of [addcssrule]
+
+(* ****** ****** *)
+//
+%}
+
+#strsub[theStyleSheetLink]("\
+#ATSLANGWEBROOTget()/styles/atslangweb_document.css\
+")
+
+#ignoretxt(
+#strsub[thePageHeaderSeparator]('\
+<div class="Page-mysitelinks">
+#mysitelinks("DOCUMENT")
+</div>
+'))
+
+#addcssrule("\
+\#thePageBody-prop {
+padding-left: 10px ;
+padding-right: 10px ;
+}
+")
+#strsub[thePageBody]('\
+<div id="thePageBody-prop">
+
+<!-- ****** ****** -->
+
+<h1>Documentation</h1>
+
+<MENU>
+<LI>Introduction to Programming in ATS
+<LI>A Tutorial on Programming Features in ATS
+<LI>ATS Utility Commands
+<LI>The Formal Grammar of ATS/Anairiats
+</MENU>
+
+<HR SIZE=6></HR>
+
+<!-- ****** ****** -->
+
+</div>#comment("div/id=thePageBody-prop")
+')#comment("strsub")
+
+<!-- ****** ****** -->
+
+#ignoretxt(
+#strsub[thePageFooterSeparator]('\
+<div class="Page-mysitelinks">
+#mysitelinks("DOCUMENT")
+</div>
+'))
+
+%{
+
+implement
+main () = {
+//
+val () =  $STDIO.fclose_exn (theCSSfilr)
+//
+val () = fprint_filsub (stdout_ref, "atslangweb_temp.html")
+//
+} // end of [main]
+
+%}

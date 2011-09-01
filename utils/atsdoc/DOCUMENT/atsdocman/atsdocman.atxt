@@ -137,7 +137,7 @@ macdef filename(x) = xmltagging ("I", ,(x)) // italic
   <meta http-equiv="Content-Type" content="text/html;charset=utf-8"/>
   <style type="text/css">
     .code {color:\#E80000}
-    .textpre {color:\#000000;background-color:\#E0E0E0}
+    .atsyntax {color:#E80000;background-color:#E0E0E0}
     .atsyntax {color:\#E80000;background-color:\#E0E0E0}
     .atsyntax span.comment {color:\#787878;font-style:italic}
     .atsyntax span.extern  {color:\#A52A2A}
@@ -151,7 +151,6 @@ macdef filename(x) = xmltagging ("I", ,(x)) // italic
     .atsyntax span.dyncstdec  {text-decoration:none}
     .atsyntax span.dyncstimp  {color:\#B80000;text-decoration:underline}
     .atsyntax span.dyncstuse  {color:\#B80000;text-decoration:underline}
-    .atsyntax body {color:\#E80000;background-color:\#E0E0E0}
   </style>
 </head>
 ')#comment("copy")
