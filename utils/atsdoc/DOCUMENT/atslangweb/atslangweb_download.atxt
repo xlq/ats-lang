@@ -87,6 +87,8 @@ by the Free Software Foundation.  The current implementation of ATS is
 given the name ATS/Anairiats or simply Anairiats.  The latest released
 ATS/Anairats packages are available at the following links:
 
+')#comment("para")
+
 #menu('\
 #litxt(
 #para('\
@@ -102,8 +104,6 @@ The current #strong("unstable") version is
 '))
 ')#comment("menu")
 
-')#comment("para")
-
 #HR(2)
 
 <h2>#uid("installation_requirements", "Installation requirements")</h2>
@@ -113,22 +113,21 @@ The current #strong("unstable") version is
 In order to
 install ATS, the following requirements need to be met:
 
+')
+
 #menu('\
-#lisub("\
+#lisub('\
 Operating System requirement: ATS is supported under the following
 operating systems:
-")
 #menu('\
 #lisub("Linux")
 #lisub("Windows with Cygwin")
 #lisub("MacOS X (currently no GC support for multithreading)")
 #lisub("SunOS (currently no GC support for multithreading)")
 #lisub("BSD Unix (currently no GC support for multithreading)")
-')
+')')
 #lisub("Programming Language requirement: GNU C Compiler (GCC).")
 ')#comment("menu")
-
-')#comment("para")
 
 #para("\
 
@@ -216,10 +215,8 @@ execution path, where $ATSHOME refers to the content of ATSHOME.
 #lisub('\
 #strong("Step 1:")
 #para("\
-
 After downloading a compressed tarball containing a release of ATS from the
 following site:
-
 ")
 
 #center('\
@@ -231,7 +228,11 @@ following site:
 please untar it in a directory, say FOO, of your choice. This, for instance,
 can be done by executing the following command line:
 
+")
+
 #command("tar -zvxf ATS.tar.gz")
+
+#para("\
 
 All the files and directories extracted from the tarball are now in the
 directory #filename("FOO/ATS").
@@ -245,9 +246,13 @@ directory #filename("FOO/ATS").
 
 Please execute the following command
 
+")
+
 #command("\
 ./configure --prefix=DESTDIR
 ")
+
+#para("\
 
 where DESTDIR refers to the directory into which ATS is to be installed.
 
@@ -256,7 +261,11 @@ for installing ATS is #filename("/usr/local").
 
 You can now go into the directory #filename("FOO/ATS") and execute
 
+")
+
 #command("make all")
+
+#para("\
 
 This generates executables #filename("atscc") and #filename("atsopt") in
 the directory #filename("FOO/ATS/bin"), which are the commands you need for
@@ -285,9 +294,13 @@ the version number of the compiled ATS package.
 Optionally, you may install ATS by executing the following
 command line:
 
+")
+
 #command("make install")
 
-and then set ATSHOME to #filename("DESTDIR/share/ats-anairiats-x.x.x"),
+#para("\
+
+Then you set ATSHOME to #filename("DESTDIR/share/ats-anairiats-x.x.x"),
 which is the directory where ATS is to be installed. The environment
 variable ATSHOMERELOC is still set to ATS-x.x.x.
 

@@ -429,19 +429,19 @@ local
   <title></title>\n\
   <meta http-equiv=\"Content-Type\" content=\"text/html;charset=utf-8\"/>\n\
   <style type=\"text/css\">\n\
-    .atsyntax {color:#E80000;background-color:#E0E0E0}\n\
-    .atsyntax span.comment {color:#787878;font-style:italic}\n\
-    .atsyntax span.extern  {color:#A52A2A}\n\
-    .atsyntax span.keyword {color:#000000;font-weight:bold}\n\
-    .atsyntax span.neuexp  {color:#800080}\n\
-    .atsyntax span.staexp  {color:#0000FF}\n\
-    .atsyntax span.dynexp  {color:#E80000}\n\
-    .atsyntax span.prfexp  {color:#009000}\n\
-    .atsyntax span.stacstdec  {text-decoration:none}\n\
-    .atsyntax span.stacstuse  {color:#0000CF;text-decoration:underline}\n\
-    .atsyntax span.dyncstdec  {text-decoration:none}\n\
-    .atsyntax span.dyncstimp  {color:#B80000;text-decoration:underline}\n\
-    .atsyntax span.dyncstuse  {color:#B80000;text-decoration:underline}\n\
+    .atsyntax {color:#E80000;background-color:#E0E0E0;}\n\
+    .atsyntax span.comment {color:#787878;font-style:italic;}\n\
+    .atsyntax span.extern  {color:#A52A2A;}\n\
+    .atsyntax span.keyword {color:#000000;font-weight:bold;}\n\
+    .atsyntax span.neuexp  {color:#800080;}\n\
+    .atsyntax span.staexp  {color:#0000FF;}\n\
+    .atsyntax span.dynexp  {color:#E80000;}\n\
+    .atsyntax span.prfexp  {color:#009000;}\n\
+    .atsyntax span.stacstdec  {text-decoration:none;}\n\
+    .atsyntax span.stacstuse  {color:#0000CF;text-decoration:underline;}\n\
+    .atsyntax span.dyncstdec  {text-decoration:none;}\n\
+    .atsyntax span.dyncstimp  {color:#B80000;text-decoration:underline;}\n\
+    .atsyntax span.dyncstuse  {color:#B80000;text-decoration:underline;}\n\
   </style>\n\
 </head>\n\
 <body class=\"atsyntax\">\n\

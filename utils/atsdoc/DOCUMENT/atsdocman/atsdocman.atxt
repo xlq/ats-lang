@@ -136,21 +136,20 @@ macdef filename(x) = xmltagging ("I", ,(x)) // italic
   <title></title>
   <meta http-equiv="Content-Type" content="text/html;charset=utf-8"/>
   <style type="text/css">
-    .code {color:\#E80000}
-    .atsyntax {color:#E80000;background-color:#E0E0E0}
-    .atsyntax {color:\#E80000;background-color:\#E0E0E0}
-    .atsyntax span.comment {color:\#787878;font-style:italic}
-    .atsyntax span.extern  {color:\#A52A2A}
-    .atsyntax span.keyword {color:\#000000;font-weight:bold}
-    .atsyntax span.neuexp  {color:\#800080}
-    .atsyntax span.staexp  {color:\#0000FF}
-    .atsyntax span.dynexp  {color:\#E80000}
-    .atsyntax span.prfexp  {color:\#009000}
-    .atsyntax span.stacstdec  {text-decoration:none}
-    .atsyntax span.stacstuse  {color:\#0000CF;text-decoration:underline}
-    .atsyntax span.dyncstdec  {text-decoration:none}
-    .atsyntax span.dyncstimp  {color:\#B80000;text-decoration:underline}
-    .atsyntax span.dyncstuse  {color:\#B80000;text-decoration:underline}
+    .code {color:\#E80000;}
+    .atsyntax {color:\#E80000;background-color:\#E0E0E0;}
+    .atsyntax span.comment {color:\#787878;font-style:italic;}
+    .atsyntax span.extern  {color:\#A52A2A;}
+    .atsyntax span.keyword {color:\#000000;font-weight:bold;}
+    .atsyntax span.neuexp  {color:\#800080;}
+    .atsyntax span.staexp  {color:\#0000FF;}
+    .atsyntax span.dynexp  {color:\#E80000;}
+    .atsyntax span.prfexp  {color:\#009000;}
+    .atsyntax span.stacstdec  {text-decoration:none;}
+    .atsyntax span.stacstuse  {color:\#0000CF;text-decoration:underline;}
+    .atsyntax span.dyncstdec  {text-decoration:none;}
+    .atsyntax span.dyncstimp  {color:\#B80000;text-decoration:underline;}
+    .atsyntax span.dyncstuse  {color:\#B80000;text-decoration:underline;}
   </style>
 </head>
 ')#comment("copy")

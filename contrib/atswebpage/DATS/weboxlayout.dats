@@ -382,11 +382,12 @@ fprint_weboxlst_html
           val pc = get_percent_from (pcs, i)
         in
           case+ 0 of
-          | _ when pc >= 0 => fprintf
-              (out, "<td valign=\"top\" width=\"%d%%\">\n", @(pc))
-          | _ => fprintf (out, "<td valign=\"top\">\n", @())
+          | _ when pc >= 0 => fprintf (
+              out, "<td style=\"vertical-align: top; width: %d%%;\">\n", @(pc)
+            ) // end of [ pc >= 0]
+          | _ => fprintf (out, "<td style=\"vertical-align: top;\">\n", @())
         end // end of [val]
-        val () = if isvbox then fprint_string (out, "<td halign=\"left\">\n")
+        val () = if isvbox then fprint_string (out, "<td>\n") // HX: no [halign]!
 //
         val () = fprint_webox_html (out, x)
         val () = if isbox then fprint_string (out, "</td>\n")
