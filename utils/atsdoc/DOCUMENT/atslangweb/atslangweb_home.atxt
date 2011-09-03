@@ -62,7 +62,7 @@ padding-right: 10px ;
 #litxt(#ulink("\#acknowledgments", "Acknowledgments"))
 ')#comment("menu")
 
-#HR(6)
+#HR(2)
 
 <h2>#uid("what_is_ats", "What is ATS?")</h2>
 
@@ -131,7 +131,7 @@ encoding deduction systems and their (meta-)properties.
 
 ')#comment("para")
 
-#HR(2)
+#HR(1)
 
 <h2>#uid("what_is_ats_good_for", "What is ATS good for?")</h2>
 
@@ -172,7 +172,7 @@ the power and potential of types in constructing high-quality software.
 "))
 ')#comment("menu")
 
-#HR(2)
+#HR(1)
 
 <h2>#uid("acknowledgments", "Acknowledgments")</h2>
 

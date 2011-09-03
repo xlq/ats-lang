@@ -63,10 +63,60 @@ padding-right: 10px ;
 #lisub("Mailing-list for ATS users")
 #lisub("IRC channel for ATS users")
 #lisub("ATS/Cairo Tutorial")
-#lisub("Courses based on ATS")
+#litxt(#ulink("\#ATS_courses", "Courses based on ATS"))
 ')#comment("menu")
 
-#HR(6)
+#HR(2)
+
+<h2>#uid("ATS_courses", "Courses based on ATS")</h2>
+
+#menu('\
+#lisub("\
+#strong("BU CAS CS 520:")
+Many advanced features in ATS such as dependent types and linear types are
+presented in this graduate-level course:
+#para("")
+#menu('\
+#litxt(#ulink("http://www.cs.bu.edu/~hwxi/academic/courses/Fall11/CS520.html", "Fall\'11"))
+#litxt(#ulink("http://www.cs.bu.edu/~hwxi/academic/courses/Fall10/CS520.html", "Fall\'10"))
+#litxt(#ulink("http://www.cs.bu.edu/~hwxi/academic/courses/Fall09/CS520.html", "Fall\'09"))
+#litxt(#ulink("http://www.cs.bu.edu/~hwxi/academic/courses/Fall08/CS520.html", "Fall\'08"))
+')#comment("menu")
+#para("")
+")#comment("lisub")
+
+#lisub("\
+#strong("BU CAS CS 525:")
+ATS is employed in compiler construction:
+#para("")
+#menu('\
+#litxt(#ulink("http://www.cs.bu.edu/~hwxi/academic/courses/Spring11/CS525.html", "Spring'11"))
+#lisub("\
+#ulink("http://www.cs.bu.edu/~hwxi/academic/courses/Spring09/CS525.html", "Spring'09"):
+#ulink("http://www.cs.bu.edu/~hwxi/academic/courses/CS525/Spring09/code/Tiger/", "TIGERATS")
+is a compiler written in ATS for the Tiger language presented in Andrew
+Appel\'s book on modern compiler design and implementation. This compiler
+currently targets x86-32 and MIPS32 (plus pseudo instructions accepted by
+#ulink("http://spimsimulator.sourceforge.net", "SPIM")).
+
+")#comment("lisub")
+')#comment("menu")
+")#comment("lisub")
+#para("")
+
+#lisub("\
+#strong("BU CAS CS 320:")
+ATS is mostly used like SML in this undergraduate-level course:
+#para("")
+#menu('\
+#litxt(#ulink("http://www.cs.bu.edu/~hwxi/academic/courses/Summer10/CS320.html", "Summer I, 2010"))
+#litxt(#ulink("http://www.cs.bu.edu/~hwxi/academic/courses/Summer09/CS320.html", "Summer I, 2009"))
+')#comment("menu")
+")
+
+')#comment("menu")
+
+#HR(1)
 
 <!-- ****** ****** -->
 

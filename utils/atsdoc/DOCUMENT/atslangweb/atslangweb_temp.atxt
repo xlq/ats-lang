@@ -48,18 +48,18 @@ end // end of [addcssrule_strsub]
 #addcssrule_strsub("
 body {
 /*
-background-color: \\\#E7CF9E; /* golden brown */\n\
+background-color: \#E7CF9E; /* golden brown */\n\
 */
-background-color: \\\#346090; /* deep green/blue */
+background-color: \#346090; /* deep green/blue */
 background-image: url(#ATSLANGWEBROOTget()/images/theSidebar_bgimage.png);
 background-position: left;
 background-repeat: repeat-y;
 font-family: sans-serif;
 }
-\\\#body-layout {
+\#body-layout {
 margin: 0px;
 }
-\\\#theBodyProp {
+\#theBodyProp {
 width: 100% ;
 margin-top: 0px;
 }
@@ -95,29 +95,30 @@ color: \#E0E0E0 ;
   <tr><td>\#ATSLANGWEBDOCUMENT$</td></tr>
   <tr><td>\#ATSLANGWEBLIBRARY$</td></tr>
   <tr><td>\#ATSLANGWEBRESOURCE$</td></tr>
+  <tr><td>\#ATSLANGWEBCOMMUNITY$</td></tr>
   <tr><td>\#ATSLANGWEBEXAMPLE$</td></tr>
-  <tr><td>\#ATSLANGWEBIMPLEMENT</td></tr>
-  <tr><td>\#ATSLANGWEBPAPER</td></tr>
-  <tr><td><a href="https://lists.sourceforge.net/lists/listinfo/ats-lang-users">Mailing List</a></td></tr>
+  <tr><td>\#ATSLANGWEBIMPLEMENT$</td></tr>
+  <tr><td>\#ATSLANGWEBPAPER$</td></tr>
+  <tr><td><a href="https://lists.sourceforge.net/lists/listinfo/ats-lang-users">Mailing-list</a></td></tr>
 </table>
 </div>
 '))
 
 #addcssrule_strsub("
-\\\#thePage {
+\#thePage {
 }
-\\\#thePageHeaderTitle {
+\#thePageHeaderTitle {
 background: white ;
 background-image: url(#ATSLANGWEBROOTget()/images/thePageHeader_bgimage.png);
 text-align: center ;
 }
-\\\#thePageHeaderMainTitle {
-font-size: 250% ;
+\#thePageHeaderMainTitle {
+font-size: 225% ;
 padding-top: 36px ;
 padding-bottom: 4px ;
 }
-\\\#thePageHeaderByTitle {
-font-size: 160% ;
+\#thePageHeaderByTitle {
+font-size: 140% ;
 padding-top: 0px ;
 padding-bottom: 20px ;
 }
@@ -162,7 +163,7 @@ padding-right: 6px ;
 %}
 
 #addcssrule_strsub("\
-\\\#thePageBody {
+\#thePageBody {
 background-color: white ;
 background-image: url(#ATSLANGWEBROOTget()/images/thePageBody_bgimage.png);
 }
@@ -183,11 +184,17 @@ background-image: url(#ATSLANGWEBROOTget()/images/thePageBody_bgimage.png);
 \#thePageFooterRest {
 background: white ;
 padding-top: 6px ;
-text-align: right ;
 }
 ")
 #ignoretxt(
 #strsub[thePageFooterRest]('\
+<table>
+<tr>
+<td style="width: 100%;">
+This page is maintained by
+#ulink("http://www.cs.bu.edu/~hwxi/", "Hongwei Xi").
+</td>
+<td style="width: 0%;"><!--pushed to the right-->
 <a href="http://sourceforge.net">
 <img
 src="http://sflogo.sourceforge.net/sflogo.php?group_id=205722&amp;type=2"
@@ -195,6 +202,8 @@ width="120"
 height="36"
 alt="SourceForge.net Logo"
 />
+</td>
+</tr>
 </a>
 '))
 
@@ -204,7 +213,7 @@ in
 //
 fun theBodyText (): text = let
   val res = tostring_fprint<webox>
-    ("atslangweb_body_content", fprint_webox_html, theBodyProp)
+    ("atslangweb_theBodyText", fprint_webox_html, theBodyProp)
   val () = assert (strptr_isnot_null res)
   val res = string_of_strptr (res)
 in

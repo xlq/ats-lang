@@ -4,6 +4,7 @@
 ** Time: August, 2011
 **
 *)
+(* ****** ****** *)
 //
 // For write the TUTORIALATS book
 //
@@ -11,44 +12,11 @@ staload _(*anon*) = "prelude/DATS/list.dats"
 staload _(*anon*) = "prelude/DATS/list_vt.dats"
 staload _(*anon*) = "prelude/DATS/reference.dats"
 //
-staload UN = "prelude/SATS/unsafe.sats"
-//
-staload
-STDIO = "libc/SATS/stdio.sats"
-staload TIME = "libc/SATS/time.sats"
-//
-dynload "libatsdoc/dynloadall.dats"
-//
-staload "libatsdoc/SATS/atsdoc_text.sats"
-//
-val LT = "<"
-val LTSLASH = "</"
-val GT = ">"
+(* ****** ****** *)
 
-val TEXTnewline = TEXTstrcst"\n"
+#include "utils/atsdoc/DATS/docbookatxt.dats"
 
-fn xmltagging (
-  tag: string, x: string
-) : text = let
-  val _opn = TEXTappstr3 (LT, tag, GT)
-  val _clo = TEXTappstr3 (LTSLASH, tag, GT)
-in
-  TEXTapptxt3 (_opn, TEXTstrsub(x), _clo)
-end // end of [xmltagging]
-//
-fun id(x) = TEXTstrcst(x)
-//
-macdef title (x) = xmltagging ("title", ,(x))
-//
-macdef emph (x) = xmltagging ("emphasis", ,(x))
-macdef para (x) = xmltagging ("para", ,(x))
-macdef simplesect (x) = xmltagging ("simplesect", ,(x))
-//
-macdef code (x) = xmltagging ("code", ,(x))
-//
-macdef sub(x) = xmltagging("subscript", ,(x))
-//
-macdef command (x) = xmltagging ("command", ,(x))
+(* ****** ****** *)
 //
 macdef LI (x) = xmltagging ("listitem", ,(x))
 //
@@ -60,58 +28,14 @@ in
   TEXTapptxt3 (opn, TEXTcontxtsep (xs, TEXTnewline), cls)
 end
 //
-local
-val ATSCODEopn = "<informalexample><programlisting><![CDATA["
-val ATSCODEcls = "]]></programlisting></informalexample>"
-in
-fun atscode
-  (x: string): text = TEXTappstr3 (ATSCODEopn, x, ATSCODEcls)
-(*
-fun atscode2xmls (x: string): text = atscode2xml_strcode (0, x)
-fun atscode2xmld (x: string): text = atscode2xml_strcode (1, x)
-*)
-end // end of [local]
-//
 (* ****** ****** *)
 
-fun timestamp
-  (): text = let
-  var time = $TIME.time_get ()
-  val (fpf | x) = $TIME.ctime (time)
-  val x1 = sprintf ("%s", @($UN.castvwtp1(x)))
-  prval () = fpf (x)
-  val x1 = string_of_strptr (x1)
-in
-  TEXTstrcst (x1)
-end // end of [val]
-
-(* ****** ****** *)
-
-fun ignore (x: string): text = TEXTnil ()
-
-(* ****** ****** *)
-
-local
-
-val COMMENTopn = TEXTstrcst"<!--"
-and COMMENTcls = TEXTstrcst("-->")
-
-in // in of [local]
-
-fun comment (x: string): text =
-  TEXTapptxt3 (COMMENTopn, TEXTstrsub(x), COMMENTcls)
-// end of [comment]
-
-end // end of [local]
-
-(* ****** ****** *)
-
-// (*
 #define MYDOCROOT "http://www.ats-lang.org/DOCUMENT"
-// *)
 (*
 #define MYDOCROOT "http://www.cs.bu.edu/~hwxi/ATS/DOCUMENT"
 *)
+
+(* ****** ****** *)
 
 fun mydoclink (
   path: string, linkname: string
@@ -170,7 +94,7 @@ fun fprint_theCodeLst
         val () = fprint_text (out, x)
       in
         loop (xs, i+1)
-      end
+      end // end of [list_cons]
     | list_nil () => ()
 in
   loop (theCodeLst_get (),  0)

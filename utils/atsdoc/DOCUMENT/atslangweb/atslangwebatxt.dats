@@ -22,7 +22,8 @@ staload _(*anon*) = "libatsdoc/DATS/atsdoc_text.dats"
 //
 (* ****** ****** *)
 
-#include "atslangweb_params.hats"
+#include
+"utils/atsdoc/DOCUMENT/atslangweb/atslangweb_params.hats"
 
 (* ****** ****** *)
 
@@ -120,7 +121,7 @@ fn litxt (x: text): text =
 (* ****** ****** *)
 
 fn HR (sz: int) =
-  strcst_of_strptr (sprintf ("<hr style=\"width: %ipx;\"></hr>", @(sz)))
+  strcst_of_strptr (sprintf ("<hr style=\"background-color: #E0E0E0; height: %ipx;\"></hr>", @(sz)))
 // end of [HR]
 
 (* ****** ****** *)
@@ -156,6 +157,9 @@ val ATSLANGWEBLIBRARY: text = strcst ((s2s)res) where {
 val ATSLANGWEBRESOURCE: text = strcst ((s2s)res) where {
   val res = sprintf ("<a href=\"%s/RESOURCE/\">Resources</a>", @(ATSLANGWEBROOT))
 }
+val ATSLANGWEBCOMMUNITY: text = strcst ((s2s)res) where {
+  val res = sprintf ("<a href=\"%s/COMMUNITY/\">Community</a>", @(ATSLANGWEBROOT))
+}
 val ATSLANGWEBEXAMPLE: text = strcst ((s2s)res) where {
   val res = sprintf ("<a href=\"%s/EXAMPLE/\">Examples</a>", @(ATSLANGWEBROOT))
 }
@@ -175,6 +179,7 @@ val () = theTextMap_insert_str ("ATSLANGWEBDOWNLOAD", ATSLANGWEBDOWNLOAD)
 val () = theTextMap_insert_str ("ATSLANGWEBDOCUMENT", ATSLANGWEBDOCUMENT)
 val () = theTextMap_insert_str ("ATSLANGWEBLIBRARY", ATSLANGWEBLIBRARY)
 val () = theTextMap_insert_str ("ATSLANGWEBRESOURCE", ATSLANGWEBRESOURCE)
+val () = theTextMap_insert_str ("ATSLANGWEBCOMMUNITY", ATSLANGWEBCOMMUNITY)
 val () = theTextMap_insert_str ("ATSLANGWEBEXAMPLE", ATSLANGWEBEXAMPLE)
 val () = theTextMap_insert_str ("ATSLANGWEBIMPLEMENT", ATSLANGWEBIMPLEMENT)
 val () = theTextMap_insert_str ("ATSLANGWEBPAPER", ATSLANGWEBPAPER)
@@ -248,6 +253,14 @@ in
   subpage_ahref (flag, link, "Resources")
 end // end of [RESOURCE_ahref]
 
+fn COMMUNITY_ahref
+  (flag: int): string = let
+  val link = sprintf ("%s/%s", @(root, "COMMUNITY"))
+  val link = (s2s)link
+in
+  subpage_ahref (flag, link, "Community")
+end // end of [COMMUNITY_ahref]
+
 end // end of [local]
 
 (* ****** ****** *)
@@ -269,7 +282,12 @@ fn mysitelinks (current: string) = let
   val flag = (if (current = "RESOURCE") then 1 else 0): int
   val RESOURCE = strcst (RESOURCE_ahref (flag))
 //
-  val xs = $lst {text} (HOME, DOWNLOAD, DOCUMENT, LIBRARY, RESOURCE)
+  val flag = (if (current = "COMMUNITY") then 1 else 0): int
+  val COMMUNITY = strcst (COMMUNITY_ahref (flag))
+//
+  val xs = $lst {text} (
+    HOME, DOWNLOAD, DOCUMENT, LIBRARY, RESOURCE, COMMUNITY
+  ) // end of [val]
 //
   val sep = strcst ("<span class=\"separator\"> | </span>")
 //

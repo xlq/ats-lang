@@ -120,7 +120,7 @@ nonfix iadd fadd padd uadd
 
 #para("\
 
-Lastly, please note that each fixity declaration is only effective within the
+Lastly, please note that each fixity declaration is only effective within
 its own legal scope.
 
 ")

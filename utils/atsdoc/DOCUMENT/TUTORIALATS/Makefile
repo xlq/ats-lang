@@ -266,6 +266,11 @@ uploadloc:
 
 ######
 
+upload_pdf:
+	scp -r PDF/main.pdf ats-hwxi,ats-lang@web.sourceforge.net:htdocs/DOCUMENT/TUTORIALATS/PDF/
+
+######
+
 RMF = rm -f
 
 ######

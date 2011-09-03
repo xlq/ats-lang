@@ -30,6 +30,10 @@ fun addcssrule
 end // end of [addcssrule]
 
 (* ****** ****** *)
+
+fn OCaml (): text = ulink("http://caml.inria.fr/ocaml", "OCaml")
+
+(* ****** ****** *)
 //
 %}
 
@@ -50,6 +54,7 @@ padding-left: 10px ;
 padding-right: 10px ;
 }
 ")
+
 #strsub[thePageBody]('\
 <div id="thePageBody-prop">
 
@@ -63,13 +68,13 @@ padding-right: 10px ;
 #lisub("#ulink("\#ATS_Anairiats", "ATS/Anairiats"): the currently released implementation")
 ')#comment("menu")
 
-#HR(6)
+#HR(2)
 
 <h2>#uid("ATS_Proto", "ATS/Proto")</h2>
 
 #para("\
 
-ATS/Proto, written in #ulink("http://caml.inria.fr/ocaml", "OCaml"), is the
+ATS/Proto, written in #OCaml(), is the
 first complete implementation of ATS. In this implementation, the standard
 boxed data representation is chosen to implement parametric
 polymorphism. There is direct support in ATS/Proto for object-oriented
@@ -82,7 +87,7 @@ future reference.
 
 ")#comment("para")
 
-#HR(2)
+#HR(1)
 
 <h2>#uid("ATS_Geizella", "ATS/Geizella")</h2>
 
@@ -91,8 +96,8 @@ future reference.
 #ulink("\
 http://ats-lang.svn.sourceforge.net/viewvc/ats-lang/bootstrap/geizella\
 ", "ATS/Geizella"
-) is a previously released implementation of ATS, which is also written in
-#ulink("http://caml.inria.fr/ocaml", "OCaml").  In this implementation, the
+) is a previously released implementation of ATS, which is also written
+in #OCaml().  In this implementation, the
 native unboxed data representation (as is in C) is adopted, making
 ATS/Geizella particularly well-suited for direct interaction with C (that
 incurs no run-time overhead).  As for parametric polymorphism, it is
@@ -103,7 +108,7 @@ the help of ATS/Geizella).
 
 ')
 
-#HR(2)
+#HR(1)
 
 <h2>#uid("ATS_Anairiats", "ATS/Anairiats")</h2>
 
@@ -119,6 +124,48 @@ efficient, and in general it issues more informative messages for
 identifying program errors.
 
 ')
+
+<table>
+<tr><td>
+#para('\
+#strong("Bootstrapping via gcc:")
+In order to bootstrap ATS/Anairiats, one needs to first check out the
+following svn directory and name it as some local directory, say, "FOO":
+')
+
+#command('\
+svn co https://ats-lang.svn.sourceforge.net/svnroot/ats-lang/trunk FOO
+')
+
+#para('\
+
+Note that this checkout puts the C code needed for bootstrapping in a
+directory of the name "FOO/bootstrap0". Please go into the directory "FOO"
+and then execute \'make all\'.
+
+')
+</td></tr>
+
+<tr><td>
+#para('\
+
+#strong("Bootstrapping via ocaml") It is also possible to use the
+ATS/Geizella compiler (written in #OCaml()) for bootstrapping
+ATS/Anairiats. This can be done by checking out the following svn
+directory and name it as the local directory "FOO/bootstrap0":
+
+')
+
+#command('\
+svn co https://ats-lang.svn.sourceforge.net/svnroot/ats-lang/bootstrap/geizella FOO/bootstrap0
+')
+
+#para('\
+After this is done, please go into the directory "FOO" and then execute \'make all-geizella\'.
+')
+
+</td></tr>
+</table>
 
 <!-- ****** ****** -->
 

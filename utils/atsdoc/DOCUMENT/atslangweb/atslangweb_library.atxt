@@ -65,7 +65,7 @@ padding-right: 10px ;
 #litxt(#ulink("\#ATSHOME_contrib", "ATS/contrib"))
 ')#comment("menu")
 
-#HR(6)
+#HR(2)
 
 <!-- ****** ****** -->
 

@@ -14,11 +14,11 @@ all:: DOWNLOAD
 all:: DOCUMENT
 all:: LIBRARY
 all:: RESOURCE
+all:: COMMUNITY
 all:: EXAMPLE
 all:: IMPLEMENT
 all:: PAPER
-all:: 
-all:: clean
+#all:: clean
 
 ######
 
@@ -107,6 +107,17 @@ cleanall:: ; $(RMF) styles/atslangweb_resource.css
 
 ######
 
+atslangweb_community: atslangweb_community_atxt.dats ; $(ATSCC) -o $@ $< $(ATSWEBPAGE) -latsdoc
+atslangweb_community_atxt.dats: \
+  atslangweb_community.atxt ; $(ATSDOC) -do $@ -i atslangweb_community.atxt > atslangweb_community_atxt.txt
+COMMUNITY:: atslangweb_community atslangweb_temp.html ; ./$< > $@/atslangweb_community.html
+
+clean:: ; $(RMF) atslangweb_community
+cleanall:: ; $(RMF) COMMUNITY/atslangweb_community.html
+cleanall:: ; $(RMF) styles/atslangweb_community.css
+
+######
+
 atslangweb_example: atslangweb_example_atxt.dats ; $(ATSCC) -o $@ $< $(ATSWEBPAGE) -latsdoc
 atslangweb_example_atxt.dats: \
   atslangweb_example.atxt ; $(ATSDOC) -do $@ -i atslangweb_example.atxt > atslangweb_example_atxt.txt
@@ -160,6 +171,10 @@ upload:: upload_resource
 upload_resource:: ; scp RESOURCE/atslangweb_resource.html \
   ats-hwxi@web.sourceforge.net:/home/groups/a/at/ats-lang/htdocs/RESOURCE
 
+upload:: upload_community
+upload_community:: ; scp COMMUNITY/atslangweb_community.html \
+  ats-hwxi@web.sourceforge.net:/home/groups/a/at/ats-lang/htdocs/COMMUNITY
+
 upload:: upload_example
 upload_example:: ; scp EXAMPLE/atslangweb_example.html \
   ats-hwxi@web.sourceforge.net:/home/groups/a/at/ats-lang/htdocs/EXAMPLE
@@ -186,6 +201,7 @@ upload_images: ; scp -r images/*.png \
 #   DOCUMENT/atslangweb_document.html \				    #
 #   LIBRARY/atslangweb_library.html \				    #
 #   RESOURCE/atslangweb_resource.html \				    #
+#   COMMUNITY/atslangweb_community.html \				    #
 #   EXAMPLE/atslangweb_example.html \				    #
 #   IMPLEMENT/atslangweb_implement.html \			    #
 #   PAPER/atslangweb_paper.html \				    #

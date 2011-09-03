@@ -26,7 +26,7 @@ returns.
 In the following contrived example, the implemented function
 #code("name_of_month_1") allocates in its stack frame an array of size 12
 that is initialized with the names of 12 months, and then returns the name
-of the #emph("i")th month:
+of the #emph("i")th month, where #emph("i") is an integer between 1 and 12:
 
 #atscode_extract('\
 fn name_of_month_1

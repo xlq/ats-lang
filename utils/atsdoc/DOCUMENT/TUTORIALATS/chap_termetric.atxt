@@ -155,7 +155,7 @@ and isOdd
 // end of [isOdd]
 ")
 
-Clearly, we may also verify the termination of these two functions by using
+Clearly, we can also verify the termination of these two functions by using
 the metrics #code(".&lt;n, 1&gt;.") and #code(".&lt;n, 0&gt;.") for
 #code("isEvn") and #code("isOdd"), respectively.
 
