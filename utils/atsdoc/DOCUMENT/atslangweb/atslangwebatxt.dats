@@ -9,15 +9,13 @@ staload _(*anon*) = "prelude/DATS/list.dats"
 staload _(*anon*) = "prelude/DATS/list_vt.dats"
 staload _(*anon*) = "prelude/DATS/reference.dats"
 //
-staload UN = "prelude/SATS/unsafe.sats"
+(* ****** ****** *)
 //
-staload
-STDIO = "libc/SATS/stdio.sats"
-staload TIME = "libc/SATS/time.sats"
+#include "utils/atsdoc/DATS/xhtmlatxt.dats"
 //
-dynload "libatsdoc/dynloadall.dats"
+macdef para (x) = xmltagging ("p", ,(x))
+macdef emph (x) = xmltagging ("em", ,(x))
 //
-staload "libatsdoc/SATS/atsdoc_text.sats"
 staload _(*anon*) = "libatsdoc/DATS/atsdoc_text.dats"
 //
 (* ****** ****** *)
@@ -30,57 +28,16 @@ staload _(*anon*) = "libatsdoc/DATS/atsdoc_text.dats"
 #define s2s string_of_strptr
 
 (* ****** ****** *)
-
-fun ignore (x: string) = TEXTnil ()
-fun ignoretxt (x: text) = TEXTnil ()
-
-(* ****** ****** *)
-
+//
 macdef strcst (x) = TEXTstrcst ,(x)
 macdef strsub (x) = TEXTstrsub ,(x)
-
+//
 fun strcst_of_strptr (x: strptr1): text = TEXTstrcst ((s2s)x)
 fun strsub_of_strptr (x: strptr1): text = TEXTstrsub ((s2s)x)
-
+//
 (* ****** ****** *)
 
-val LT = "<"
-val LTSLASH = "</"
-val GT = ">"
-
-val TEXTnewline = TEXTstrcst"\n"
-val COMMENTopn = TEXTstrcst"<!--"
-and COMMENTcls = TEXTstrcst("-->")
-
-fn xmltagging (
-  tag: string, x: string
-) : text = let
-  val _opn = TEXTappstr3 (LT, tag, GT)
-  val _clo = TEXTappstr3 (LTSLASH, tag, GT)
-in
-  TEXTapptxt3 (_opn, TEXTstrsub(x), _clo)
-end // end of [xmltagging]
-
-(* ****** ****** *)
-
-macdef head (x) = xmltagging ("head", ,(x)) // <head> ... </head>
-macdef title (x) = xmltagging ("title", ,(x)) // <title> ... </title>
-
-(* ****** ****** *)
-
-macdef emph (x) = xmltagging ("i", ,(x)) // <i> ... </i>
-macdef para (x) = xmltagging ("p", ,(x)) // <p> ... </p>
-macdef strong(x) = xmltagging ("strong", ,(x)) // <strong> ... </strong>
-
-macdef textpre(x) = xmltagging ("pre", ,(x)) // <pre> ... </pre>
 macdef command(x) = xmltagging ("pre", ,(x)) // <pre> ... </pre>
-
-fn center (x: string): text = let
-  val opn = strcst"<p style=\"text-align: center;\">"
-  val cls = strcst"</p>"
-in
-  TEXTapptxt3 (opn, strsub(x), cls)
-end
 
 fn filename (x: string): text = let
   val opn = strcst"<span style=\"text-decoration: underline;\">"
@@ -88,21 +45,6 @@ fn filename (x: string): text = let
 in
   TEXTapptxt3 (opn, strsub(x), cls)
 end
-
-(* ****** ****** *)
-
-local
-
-val COMMENTopn = TEXTstrcst"<!--"
-and COMMENTcls = TEXTstrcst("-->")
-
-in // in of [local]
-
-fun comment (x: string): text =
-  TEXTapptxt3 (COMMENTopn, TEXTstrsub(x), COMMENTcls)
-// end of [comment]
-
-end // end of [local]
 
 (* ****** ****** *)
 
