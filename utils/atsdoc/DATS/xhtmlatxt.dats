@@ -108,6 +108,26 @@ fun ignoretxt (x: text): text = TEXTnil ()
 
 (* ****** ****** *)
 
+macdef strong(x) =
+  xmltagging ("strong", ,(x)) // <strong> ... </strong>
+// end of [strong]
+
+(* ****** ****** *)
+
+macdef textpre(x) = xmltagging ("pre", ,(x)) // <pre> ... </pre>
+
+(* ****** ****** *)
+
+fn pcenter
+  (x: string): text = let
+  val opn = TEXTstrcst"<p style=\"text-align: center;\">"
+  val cls = TEXTstrcst"</p>"
+in
+  TEXTapptxt3 (opn, TEXTstrsub(x), cls)
+end // end of [pcenter]
+
+(* ****** ****** *)
+
 fun timestamp
   (): text = let
   var time = $TIME.time_get ()

@@ -42,9 +42,11 @@ DBSRC := \
   chap_polytemp_atxt.db \
   chap_printf_atxt.db \
   chap_funlist_atxt.db \
+  chap_array_atxt.db \
   chap_reference_atxt.db \
   chap_callbyref_atxt.db \
   chap_lazyeval_atxt.db \
+  chap_castfn_atxt.db \
   chap_stkalloc_atxt.db \
 
 ######
@@ -205,6 +207,19 @@ typecheck:: ; $(ATSCC) -tc CODE/chap_funlist.dats
 
 ######
 
+chap_array: chap_array_atxt.dats
+	$(ATSCC) -D_ATS_GCATS -o $@ $< -latsdoc
+chap_array_atxt.dats: chap_array.atxt
+	$(ATSDOC) -do $@ -i $< > chap_array_atxt.txt
+chap_array_atxt.db: chap_array ; ./$< > $@
+
+cleanall:: ; $(RMF) chap_array
+cleanall:: ; $(RMF) chap_array_atxt.*
+
+typecheck:: ; $(ATSCC) -tc CODE/chap_array.dats
+
+######
+
 chap_reference: chap_reference_atxt.dats
 	$(ATSCC) -D_ATS_GCATS -o $@ $< -latsdoc
 chap_reference_atxt.dats: chap_reference.atxt
@@ -241,6 +256,19 @@ cleanall:: ; $(RMF) chap_lazyeval
 cleanall:: ; $(RMF) chap_lazyeval_atxt.*
 
 typecheck:: ; $(ATSCC) -tc CODE/chap_lazyeval.dats
+
+######
+
+chap_castfn: chap_castfn_atxt.dats
+	$(ATSCC) -D_ATS_GCATS -o $@ $< -latsdoc
+chap_castfn_atxt.dats: chap_castfn.atxt
+	$(ATSDOC) -do $@ -i $< > chap_castfn_atxt.txt
+chap_castfn_atxt.db: chap_castfn ; ./chap_castfn > $@
+
+cleanall:: ; $(RMF) chap_castfn 
+cleanall:: ; $(RMF) chap_castfn_atxt.*
+
+typecheck:: ; $(ATSCC) -tc CODE/chap_castfn.dats
 
 ######
 

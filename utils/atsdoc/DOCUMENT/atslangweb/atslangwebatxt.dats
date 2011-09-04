@@ -20,8 +20,7 @@ staload _(*anon*) = "libatsdoc/DATS/atsdoc_text.dats"
 //
 (* ****** ****** *)
 
-#include
-"utils/atsdoc/DOCUMENT/atslangweb/atslangweb_params.hats"
+#include "atslangweb_params.hats"
 
 (* ****** ****** *)
 
@@ -237,6 +236,19 @@ in
   TEXTcontxtsep (xs, sep)
 end // end of [mysitelinks]
 
+(* ****** ****** *)
+//
+local
+(*
+** nothing
+*)
+in
+//
+fun atscode2xmls (x: string): text = atscode2xml_strcode (0, x)
+fun atscode2xmld (x: string): text = atscode2xml_strcode (1, x)
+//
+end // end of [local]
+//
 (* ****** ****** *)
 
 (* end of [atslangwebatxt.dats] *)

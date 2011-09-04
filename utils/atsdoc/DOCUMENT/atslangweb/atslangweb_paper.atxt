@@ -63,6 +63,7 @@ padding-right: 10px ;
 #litxt(#ulink("\#GRDTpaper", "Guarded Recursive Datatype Constructors"))
 #litxt(#ulink("\#ATSpaper", "Applied Type System"))
 #litxt(#ulink("\#CPwTPpaper", "Combining Programming with Theorem-Proving"))
+#litxt(#ulink("\#SPPSVpaper", "Safe Programming with Pointers through Stateful Views"))
 ')#comment("menu")
 
 #HR(2)
@@ -93,7 +94,6 @@ Links: #ulink("DML-jfp07.pdf", "pdf") #ulink("DML-jfp07.ps", "ps")
 </td></tr>
 
 </table>
-
 #para("")
 
 #HR(1)
@@ -192,7 +192,6 @@ Links: #ulink("ATS-types03.pdf", "pdf") #ulink("ATS-types03.ps", "ps")
 </td></tr>
 
 </table>
-
 #para("")
 
 #HR(1)
@@ -227,7 +226,39 @@ Links: #ulink("CPwTP-icfp05.pdf", "pdf") #ulink("CPwTP-icfp05.ps", "ps")
 </td></tr>
 
 </table>
+#para("")
 
+#HR(1)
+
+<h2>#uid("SPPSVpaper", "Safe Programming with Pointers through Stateful Views")</h2>
+
+<table>
+
+<tr><td>
+Abstract:\
+
+The need for direct memory manipulation through pointers is essential in
+many applications. However, it is also commonly understood that the use (or
+probably misuse) of pointers is often a rich source of program errors.
+Therefore, approaches that can effectively enforce safe use of pointers in
+programming are highly sought after.  ATS is a programming language with a
+type system rooted in a recently developed framework #emph("Applied Type
+System"), and a novel and desirable feature in ATS lies in its support for
+safe programming with pointers through a novel notion of #emph("stateful
+views"). In particular, even pointer arithmetic is allowed in ATS and
+guaranteed to be safe by the type system of ATS.  In this paper, we give an
+overview of this feature in ATS, presenting some interesting examples based
+on a prototype implementation of ATS to demonstrate the practicality of
+safe programming with pointer through stateful views.\
+
+#para("")
+</td></tr>
+
+<tr><td>
+Links: #ulink("SPPSV-padl05.pdf", "pdf") #ulink("SPPSV-padl05.ps", "ps")
+</td></tr>
+
+</table>
 #para("")
 
 <!-- ****** ****** -->

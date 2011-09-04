@@ -59,7 +59,6 @@ so-called #code("ref")-effect when evaluated. Given a reference #code("r")
 and a value #code("v"), #code("ref_get_elt(r)") and #code("ref_set_elt(r,
 v)") can be written as #code("!r") and #code("!r := v"), respectively.
 
-
 ")#comment("para")
 
 #para("\

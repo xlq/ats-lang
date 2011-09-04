@@ -74,16 +74,15 @@ padding-right: 10px ;
 
 #para("\
 
-ATS/Proto, written in #OCaml(), is the
-first complete implementation of ATS. In this implementation, the standard
-boxed data representation is chosen to implement parametric
-polymorphism. There is direct support in ATS/Proto for object-oriented
-programming (OOP), which is no longer available in later implementations of
-ATS. Also, there is support in ATS/Proto for typed meta-programming (MP),
-that is, constructing programs that can output well-typed programs, which
-is abandoned in later implementations. As of now, ATS/Proto is no longer
-actively maintained and its main purpose is to serve as an example for
-future reference.
+ATS/Proto, written in #OCaml(), is the first complete implementation of
+ATS. In this implementation, the standard boxed data representation is
+chosen to implement parametric polymorphism. There is direct support in
+ATS/Proto for object-oriented programming (OOP), which is no longer
+available in later implementations of ATS. Also, there is support in
+ATS/Proto for typed meta-programming (MP), that is, constructing programs
+that can output well-typed programs, which is mostly abandoned in later
+implementations. As of now, ATS/Proto is no longer actively maintained and
+its main purpose is to serve as an example for future reference.
 
 ")#comment("para")
 

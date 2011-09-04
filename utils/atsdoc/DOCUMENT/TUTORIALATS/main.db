@@ -23,9 +23,11 @@
 <!ENTITY chap_polytemp SYSTEM "chap_polytemp_atxt.db">
 <!ENTITY chap_printf SYSTEM "chap_printf_atxt.db">
 <!ENTITY chap_funlist SYSTEM "chap_funlist_atxt.db">
+<!ENTITY chap_array SYSTEM "chap_array_atxt.db">
 <!ENTITY chap_reference SYSTEM "chap_reference_atxt.db">
 <!ENTITY chap_callbyref SYSTEM "chap_callbyref_atxt.db">
 <!ENTITY chap_lazyeval SYSTEM "chap_lazyeval_atxt.db">
+<!ENTITY chap_castfn SYSTEM "chap_castfn_atxt.db">
 <!ENTITY chap_stkalloc SYSTEM "chap_stkalloc_atxt.db">
 ]>
 <book id="proginats" lang="en">
@@ -57,6 +59,7 @@ To my wife Jinning and daughter Zoe.
 &chap_polytemp;
 &chap_printf;
 &chap_funlist;
+&chap_array;
 &chap_reference;
 &chap_callbyref;
 &chap_lazyeval;
@@ -64,6 +67,7 @@ To my wife Jinning and daughter Zoe.
 
 <part id="advanced_tutorial_topics">
 <title>Advanced Tutorial Topics</title>
+&chap_castfn;
 &chap_stkalloc;
 </part><!--"advanced_tutorial_topics"-->
 
