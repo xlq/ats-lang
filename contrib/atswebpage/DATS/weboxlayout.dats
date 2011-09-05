@@ -38,7 +38,7 @@ randcolor
   val r = randint (FF)
   val b = randint (FF)
   val g = randint (FF)
-  val name = sprintf ("%x%x%x", @((i2u)r, (i2u)b, (i2u)g))
+  val name = sprintf ("#%x%x%x", @((i2u)r, (i2u)b, (i2u)g))
 //
 in
   Some (string_of_strptr (name))
@@ -276,12 +276,12 @@ fprint_webox_css_one (out, x0) = {
 //
   val color = webox_get_color (x0)
   val () = (case+ color of
-    | Some (v) => fprintf (out, "color: #%s ;\n", @(v)) | None () => ()
+    | Some (v) => fprintf (out, "color: %s ;\n", @(v)) | None () => ()
   ) : void // end of [val]
 //
   val color = webox_get_bgcolor (x0)
   val () = (case+ color of
-    | Some (v) => fprintf (out, "background-color: #%s ;\n", @(v)) | None () => ()
+    | Some (v) => fprintf (out, "background-color: %s ;\n", @(v)) | None () => ()
   ) : void // end of [val]
 //
   val display = webox_get_display (x0)
