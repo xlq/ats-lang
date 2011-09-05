@@ -81,6 +81,14 @@ fun ulink1 (link: string, name: string): text =
 
 (* ****** ****** *)
 
+#define ATSLANGSVNROOT
+"http://ats-lang.svn.sourceforge.net/svnroot/ats-lang/trunk"
+// end of [#define]
+
+fun ATSLANGSVNROOTget (): text = TEXTstrcst (ATSLANGSVNROOT)
+
+(* ****** ****** *)
+
 fun ATSLANGWEBROOTget (): text = TEXTstrcst (ATSLANGWEBROOT)
 
 val ATSLANGWEBHOME: text = strcst ((s2s)res) where {

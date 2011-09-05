@@ -42,6 +42,8 @@ typedef symbol = $SYM.symbol
 
 datatype text =
 //
+  | TEXTnil of () // empty text
+//
   | TEXTstrcst of string // string constants
   | TEXTstrsub of string // strings containing marked tokens
 //
@@ -50,11 +52,6 @@ datatype text =
 //
   | TEXTapptxt3 of (text, text, text) // text concatenation
   | TEXTappstr3 of (string, string, string) // string concatenation
-//
-  | TEXTapptxt4 of (text, text, text, text) // text concatenation
-  | TEXTappstr4 of (string, string, string, string) // string concatenation
-//
-  | TEXTnil of () // empty text
 //
   | TEXTcontxt of textlst // text concatenation
   | TEXTcontxtsep of (textlst, text(*sep*)) // text concatenation with separator
@@ -96,7 +93,7 @@ tostring_fprint
   (prfx: string, fpr: (FILEref, a) -> void, x: a): strptr0
 // end of [tostring_fprint]
 
-fun tostring_strsub (sub: string): strptr0
+fun tostring_strsub (sub: string): strptr0 // HX: nullptr means error
 
 (* ****** ****** *)
 

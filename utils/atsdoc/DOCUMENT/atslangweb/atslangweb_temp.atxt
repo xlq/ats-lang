@@ -120,7 +120,7 @@ color: \#E0E0E0 ;
   <tr><td>\#ATSLANGWEBEXAMPLE$</td></tr>
   <tr><td>\#ATSLANGWEBIMPLEMENT$</td></tr>
   <tr><td>\#ATSLANGWEBPAPER$</td></tr>
-  <tr><td><a href="https://lists.sourceforge.net/lists/listinfo/ats-lang-users">Mailing-list</a></td></tr>
+  <tr><td>#ulink("https://lists.sourceforge.net/lists/listinfo/ats-lang-users", "Mailing-list")</td></tr>
 </table>
 </div>
 '))
@@ -223,9 +223,10 @@ width="120"
 height="36"
 alt="SourceForge.net Logo"
 />
+</a>
 </td>
 </tr>
-</a>
+</table>
 '))
 
 %{

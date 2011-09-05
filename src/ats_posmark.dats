@@ -652,16 +652,18 @@ in
       fprint1_string (pf_mod | fil_d, HTM_PRFEXP_FONT_END)
     end // end of [PMprfexp]
   | PMstacstdec (i, loc(*dec*)) => if i = 0 then let
-      val () = fprint1_string (pf_mod | fil_d, "<a name=\"")
+      val () = fprint1_string (pf_mod | fil_d, "<a id=\"loc")
       val () = fprint1_lint (pf_mod | fil_d, ofs) where {
         val ofs = $Loc.location_begpos_toff (loc)
       } // end of [val]
       val () = fprint1_string (pf_mod | fil_d, "\">")
     in
       fprint1_string (pf_mod | fil_d, HTM_STACSTDEC_FONT_BEG)
-    end else begin
-      fprint1_string (pf_mod | fil_d, HTM_STACSTDEC_FONT_END);
-      fprint1_string (pf_mod | fil_d, "</a>")
+    end else let
+      val () = fprint1_string (pf_mod | fil_d, HTM_STACSTDEC_FONT_END)
+      val () = fprint1_string (pf_mod | fil_d, "</a>")
+    in
+      // nothing
     end // end of [PMdyncstdec]
   | PMstacstuse (i, loc(*dec*)) => if i = 0 then let
       val () = fprint1_string (pf_mod | fil_d, "<a href=\"")
@@ -669,7 +671,7 @@ in
         val fil = $Loc.location_get_filename loc
         val name = $Fil.filename_full (fil)
       } // end of [val]
-      val () = fprint1_string (pf_mod | fil_d, "#") 
+      val () = fprint1_string (pf_mod | fil_d, "#loc") 
       val () = fprint1_lint (pf_mod | fil_d, ofs) where {
         val ofs = $Loc.location_begpos_toff (loc)
       } // end of [val]
@@ -681,7 +683,7 @@ in
       fprint1_string (pf_mod | fil_d, "</a>")
     end // end of [PMstacstuse]
   | PMdyncstdec (i, loc(*dec*)) => if i = 0 then let
-      val () = fprint1_string (pf_mod | fil_d, "<a name=\"")
+      val () = fprint1_string (pf_mod | fil_d, "<a id=\"loc")
       val () = fprint1_lint (pf_mod | fil_d, ofs) where {
         val ofs = $Loc.location_begpos_toff (loc)
       } // end of [val]
@@ -698,7 +700,7 @@ in
         val fil = $Loc.location_get_filename loc
         val name = $Fil.filename_full (fil)
       } // end of [val]
-      val () = fprint1_string (pf_mod | fil_d, "#")
+      val () = fprint1_string (pf_mod | fil_d, "#loc")
       val ofs = $Loc.location_begpos_toff (loc)
       val () = fprint1_lint (pf_mod | fil_d, ofs)
       val () = fprint1_string (pf_mod | fil_d, "\">")
@@ -714,7 +716,7 @@ in
         val fil = $Loc.location_get_filename loc
         val name = $Fil.filename_full (fil)
       } // end of [val]
-      val () = fprint1_string (pf_mod | fil_d, "#") 
+      val () = fprint1_string (pf_mod | fil_d, "#loc") 
       val () = fprint1_lint (pf_mod | fil_d, ofs) where {
         val ofs = $Loc.location_begpos_toff (loc)
       } // end of [val]

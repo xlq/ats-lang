@@ -10,7 +10,7 @@ ATSUSRQ="$(ATSHOME)"
 ATSLIBQ="$(ATSHOME)"
 ifeq ($"(ATSHOME)","")
 ATSUSRQ="/usr"
-ATSLIBQ="/usr/lib/ats-anairiats-0.2.3"
+ATSLIBQ="/usr/lib/ats-anairiats-0.2.5"
 endif
 
 ######

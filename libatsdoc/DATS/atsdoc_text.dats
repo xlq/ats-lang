@@ -376,6 +376,8 @@ implement
 fprint_text (out, x) =
   case+ x of
 //
+  | TEXTnil () => ()
+//
   | TEXTstrcst (str) => fprint_string (out, str)
   | TEXTstrsub (sub) => fprint_strsub (out, sub)
 //
@@ -399,23 +401,9 @@ fprint_text (out, x) =
       val () = fprint_string (out, x3)
     }
 //
-  | TEXTapptxt4 (x1, x2, x3, x4) => {
-      val () = fprint_text (out, x1)
-      val () = fprint_text (out, x2)
-      val () = fprint_text (out, x3)
-      val () = fprint_text (out, x4)
-    }
-  | TEXTappstr4 (x1, x2, x3, x4) => {
-      val () = fprint_string (out, x1)
-      val () = fprint_string (out, x2)
-      val () = fprint_string (out, x3)
-      val () = fprint_string (out, x4)
-    }
-//
-  | TEXTnil () => ()
-//
   | TEXTcontxt (xs) => fprint_textlst (out, xs)
   | TEXTcontxtsep (xs, sep) => fprint_textlst_sep (out, xs, sep)
+//
 (* end of [fprint_text] *)
 
 implement
@@ -493,11 +481,9 @@ in
     val () = cur := reader_get_char (inp)
   in
     list_vt_cons (fst, identrst_get (inp, cur))
-  end else let // HX: '$' can be used as a separator!
-    val () = if (fst = '$') then cur := reader_get_char (inp)
-  in
+  end else
     list_vt_nil ()
-  end // end of [if]
+  // end of [if]
 end // end of [identrst_get]
 
 fun fprsub_ident {n:nat} (
@@ -549,7 +535,25 @@ and aux_SHARP (
 ) : void =
   if cur >= 0 then let
     val cs = ident_get (inp, cur)
-    val () = fprsub_ident (out, cs)
+    val dlrend = (cur = int_of('$')): bool
+//
+    fun loop (out: FILEref, cs: List_vt (char)): void =
+      case+ cs of
+      | ~list_vt_cons (c, cs) => let
+          val err = fputc_err (c, out) in loop (out, cs)
+        end // end of [list_cons]
+      | ~list_vt_nil () => ()
+    (* end of [loop] *)
+//
+    val () =
+      if dlrend then let
+        val () = cur := reader_get_char (inp)
+      in
+        fprsub_ident (out, cs) // valid identifier
+      end else let
+        val err = fputc_err ('#', out) in loop (out, cs)
+      end // end of [if]
+    // end of [val]
   in
     aux (out, inp, cur)
   end else let

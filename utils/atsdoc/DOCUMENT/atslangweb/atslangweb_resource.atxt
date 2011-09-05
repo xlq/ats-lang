@@ -58,15 +58,54 @@ padding-right: 10px ;
 <h1>Resources for ATS Users</h1>
 
 #menu('\
-#lisub("Editing ATS source code")
-#lisub("ML programmer\'s guide to ATS")
-#lisub("Mailing-list for ATS users")
-#lisub("IRC channel for ATS users")
-#lisub("ATS/Cairo Tutorial")
+#litxt(#ulink("\#ATS_edit", "Editing ATS source code"))
+#litxt(#ulink("\#ATS_mler", "ML programmer\'s guide to ATS"))
+#litxt(#ulink("\#ATS_mailinglst", "Mailing-list for ATS users"))
+#litxt(#ulink("\#ATS_irc", "IRC channel for ATS users")
 #litxt(#ulink("\#ATS_courses", "Courses based on ATS"))
 ')#comment("menu")
 
 #HR(2)
+
+<h2>#uid("ATS_edit", "Editing ATS source code")</h2>
+
+#menu("\
+#lisub('\
+A #ulink1("#ATSLANGSVNROOTget()/utils/vim/ats.vim", "mode") for editing ATS source code in vim.
+')
+#lisub('\
+A #ulink("http://cs-people.bu.edu/md/ats-mode/", "mode") for editing ATS source code in emacs.
+')
+")#comment("menu")
+
+#HR(1)
+
+<h2>#uid("ATS_mailinglst", "Mailing-list for ATS users")</h2>
+
+#menu("\
+#lisub('\
+This #ulink("https://lists.sourceforge.net/lists/listinfo/ats-lang-users",
+"mailing-list") is for ATS users to discuss general questions related to ATS.
+')
+
+#lisub('\
+The archive of messages sent to the ATS users mailing-list can be found
+#ulink("http://news.gmane.org/gmane.comp.lang.ats.user", "here").
+')
+")#comment("menu")
+
+#HR(1)
+
+<h2>#uid("ATS_irc", "IRC channel for ATS users")</h2>
+
+#menu("\
+#lisub('
+This IRC channel
+#ulink("http://webchat.freenode.net", "\#\#ats") is chatting about to ATS.
+')
+")#comment("menu")
+
+#HR(1)
 
 <h2>#uid("ATS_courses", "Courses based on ATS")</h2>
 
@@ -98,11 +137,10 @@ is a compiler written in ATS for the Tiger language presented in Andrew
 Appel\'s book on modern compiler design and implementation. This compiler
 currently targets x86-32 and MIPS32 (plus pseudo instructions accepted by
 #ulink("http://spimsimulator.sourceforge.net", "SPIM")).
-
 ")#comment("lisub")
 ')#comment("menu")
-")#comment("lisub")
 #para("")
+")#comment("lisub")
 
 #lisub("\
 #strong("BU CAS CS 320:")
@@ -115,8 +153,6 @@ ATS is mostly used like SML in this undergraduate-level course:
 ")
 
 ')#comment("menu")
-
-#HR(1)
 
 <!-- ****** ****** -->
 

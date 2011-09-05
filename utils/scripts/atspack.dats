@@ -1252,6 +1252,7 @@ implement atspack_source_code () = let
   val () = cp "INSTALL"
   val () = cp "VERSION.txt"
   val () = cp2 "Makefile_dist" "Makefile"
+  val () = cp2 "Makefile_macosx" "Makefile_macosx"
   val () = cp2 "Makefile_bootstrap" "Makefile_bootstrap"
 //
   val () = cp "ats_env.sh.in"
