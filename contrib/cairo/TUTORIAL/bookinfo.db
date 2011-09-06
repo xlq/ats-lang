@@ -16,7 +16,7 @@
 <abstract>
 <para>
 This tutorial focuses on employing types in ATS to facilitate safe and
-reliable programming with #ulink("http://www.cairographics.org", "cairo"),
+reliable programming with <ulink url="http://www.cairographics.org">cairo</ulink>,
 a comprehensive drawing package supporting 2D graphics, through the API for
 cairo in ATS. In particular, it is demonstrated concretely that linear
 types can be used effectively to prevent resources (such as contexts

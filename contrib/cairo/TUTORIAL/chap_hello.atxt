@@ -54,7 +54,7 @@ follows:\
 #para('\
 <inlinemediaobject>
 <imageobject>
-<imagedata fileref="#MYDOCROOTget()/IMAGE/tutprog_hw.png" format="PNG"/>
+<imagedata fileref="#MYIMAGEROOTget()/tutprog_hw.png" format="PNG"/>
 </imageobject>
 </inlinemediaobject>
 ')

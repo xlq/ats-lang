@@ -101,7 +101,7 @@ styles, respectively:
 #para('\
 <inlinemediaobject>
 <imageobject>
-<imagedata fileref="#MYDOCROOTget()/IMAGE/tutprog_linecap.png" format="PNG"/>
+<imagedata fileref="#MYIMAGEROOTget()/tutprog_linecap.png" format="PNG"/>
 </imageobject>
 </inlinemediaobject>
 ')
@@ -124,7 +124,7 @@ styles, respectively:
 #para('\
 <inlinemediaobject>
 <imageobject>
-<imagedata fileref="#MYDOCROOTget()/IMAGE/tutprog_linejoin.png" format="PNG"/>
+<imagedata fileref="#MYIMAGEROOTget()/tutprog_linejoin.png" format="PNG"/>
 </imageobject>
 </inlinemediaobject>
 ')

@@ -19,7 +19,7 @@ We are to generate an image showing a white circle inside a black square:
 #para('\
 <inlinemediaobject>
 <imageobject>
-<imagedata fileref="#MYDOCROOTget()/IMAGE/tutprog_sqrcirc.png" format="PNG"/>
+<imagedata fileref="#MYIMAGEROOTget()/tutprog_sqrcirc.png" format="PNG"/>
 </imageobject>
 </inlinemediaobject>
 ')
@@ -219,7 +219,7 @@ following interesting image:\
 #para('\
 <inlinemediaobject>
 <imageobject>
-<imagedata fileref="#MYDOCROOTget()/IMAGE/illucircmot.png" format="PNG"/>
+<imagedata fileref="#MYIMAGEROOTget()/illucircmot.png" format="PNG"/>
 </imageobject>
 </inlinemediaobject>
 ')
@@ -235,7 +235,7 @@ following interesting image:\
 #para('\
 <inlinemediaobject>
 <imageobject>
-<imagedata fileref="#MYDOCROOTget()/IMAGE/illuwavy.png" format="PNG"/>
+<imagedata fileref="#MYIMAGEROOTget()/illuwavy.png" format="PNG"/>
 </imageobject>
 </inlinemediaobject>
 ')

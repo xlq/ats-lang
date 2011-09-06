@@ -111,7 +111,7 @@ typecheck:: ; $(ATSCC) -tc CODE/chap_drawtext.dats
 ######
 
 upload:: upload_pdf
-upload_pdf: pdf; scp -r HTML/*.pdf \
+upload_pdf: pdf; scp -r PDF/*.pdf \
   ats-hwxi,ats-lang@web.sourceforge.net:htdocs/DOCUMENT/ATSCAIRO/PDF
 
 upload:: upload_html

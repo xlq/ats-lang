@@ -65,7 +65,7 @@ for the entire code):
 #para('\
 <inlinemediaobject>
 <imageobject>
-<imagedata fileref="#MYDOCROOTget()/IMAGE/tutprog_showtext.png" format="PNG"/>
+<imagedata fileref="#MYIMAGEROOTget()/tutprog_showtext.png" format="PNG"/>
 </imageobject>
 </inlinemediaobject>
 ')

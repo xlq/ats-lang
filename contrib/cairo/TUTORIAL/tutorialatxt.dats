@@ -46,8 +46,17 @@ fun filename (x: string) = TEXTstrcst (x)
 
 #define MYDOCROOT
 "http://www.ats-lang.org/DOCUMENT/ATSCAIRO"
+#define MYCODEROOT
+"http://www.ats-lang.org/DOCUMENT/ATSCAIRO/CODE"
+#define MYIMAGEROOT
+"http://www.ats-lang.org/DOCUMENT/ATSCAIRO/IMAGE"
+(*
+#define MYIMAGEROOT "IMAGE" // for generation pdf version
+*)
 
 fun MYDOCROOTget () = TEXTstrcst (MYDOCROOT)
+fun MYCODEROOTget () = TEXTstrcst (MYCODEROOT)
+fun MYIMAGEROOTget () = TEXTstrcst (MYIMAGEROOT)
 
 (* ****** ****** *)
 
@@ -83,34 +92,23 @@ fun mycodelink (
   path: string, linkname: string
 ) : text = let
   val res = sprintf (
-    "<ulink url=\"%s/CODE/%s\">%s</ulink>", @(MYDOCROOT, path, linkname)
+    "<ulink url=\"%s/%s\">%s</ulink>", @(MYCODEROOT, path, linkname)
   ) // end of [val]
   val res = string_of_strptr (res)
 in
   TEXTstrcst (res)
-end // end of [mydoclink]
+end // end of [mycodelink]
 
 fun myimagelink (
   path: string, linkname: string
 ) : text = let
   val res = sprintf (
-    "<ulink url=\"%s/IMAGE/%s\">%s</ulink>", @(MYDOCROOT, path, linkname)
+    "<ulink url=\"%s/%s\">%s</ulink>", @(MYIMAGEROOT, path, linkname)
   ) // end of [val]
   val res = string_of_strptr (res)
 in
   TEXTstrcst (res)
-end // end of [mydoclink]
-
-fun myatsdoclink (
-  path: string, linkname: string
-) : text = let
-  val res = sprintf (
-    "<ulink url=\"%s/ANAIRIATS/%s\">%s</ulink>", @(MYDOCROOT, path, linkname)
-  ) // end of [val]
-  val res = string_of_strptr (res)
-in
-  TEXTstrcst (res)
-end // end of [myatsdoclink]
+end // end of [myimagelink]
 
 (* ****** ****** *)
 
