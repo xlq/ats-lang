@@ -1,0 +1,126 @@
+<sect1 id="cairo_drawing_text">
+<title>Drawing Text</title>
+
+<para>
+We present a function <emphasis>showtext</emphasis> as follows that draws
+the text represented by a given string in a manner that puts the center of
+the drawing at the position (0, 0).
+
+<informalexample><programlisting>
+fun showtext {l:agz}
+  (cr: !cairo_ref l, utf8: string): void = () where {
+  var te : cairo_text_extents_t
+  val () = cairo_text_extents (cr, utf8, te)
+//
+  val width = te.width
+  and height = te.height
+  val x_base = te.width / 2 + te.x_bearing
+  and y_base = ~te.y_bearing / 2
+//
+  val (pf0 | ()) = cairo_save (cr)
+//
+  val () = cairo_rectangle (cr, ~width / 2, ~height/ 2, width, height)
+  val () = cairo_set_source_rgb (cr, 0.5, 0.5, 1.0)
+  val () = cairo_fill (cr)
+//
+  #define RAD 2.0
+  val () = cairo_arc (cr, ~x_base, y_base, RAD, 0.0, 2*PI)
+  val () = cairo_set_source_rgb (cr, 1.0, 0.0, 0.0) // red
+  val () = cairo_fill (cr)
+//
+  val () = cairo_arc (cr, ~x_base+te.x_advance, y_base+te.y_advance, RAD, 0.0, 2*PI)
+  val () = cairo_set_source_rgb (cr, 1.0, 0.0, 0.0) // red
+  val () = cairo_fill (cr)
+//
+  val () = cairo_move_to (cr, ~x_base, y_base)
+  val () = cairo_text_path (cr, utf8)
+  val () = cairo_set_source_rgb (cr, 0.25, 0.25, 0.25) // dark gray
+  val () = cairo_fill (cr)
+//
+  val () = cairo_restore (pf0 | cr)
+//
+} // end of [showtext]
+</programlisting></informalexample>
+
+For instance, the following image is produced by calling
+<emphasis>showtext</emphasis> (see <ulink
+url="CODE/tutprog_showtext_dats.html"><filename>tutprog_showtext.dats</filename></ulink>
+for the entire code):
+</para>
+
+<para>
+<inlinemediaobject>
+<imageobject>
+<imagedata fileref="IMAGE/tutprog_showtext.png" format="PNG"/>
+</imageobject>
+</inlinemediaobject>
+</para>
+
+<para>
+Given a string <emphasis>utf8</emphasis>, we can find out some properties
+about the path that draws the text represented by the string as follows:
+<informalexample><programlisting>
+  var te : cairo_text_extents_t
+  val () = cairo_text_extents (cr, utf8, te)
+</programlisting></informalexample>
+
+The type <emphasis>cairo_text_extents_t</emphasis> is defined as an
+external struct type in ATS:
+<informalexample><programlisting>
+//
+// This external struct type is originally defined in [cairo.h]:
+//
+typedef cairo_text_extents_t =
+  $extype_struct "cairo_text_extents_t" of {
+  x_bearing= double
+, y_bearing= double
+, width= double
+, height= double
+, x_advance= double
+, y_advance= double
+} // end of [cairo_text_extents_t]
+</programlisting></informalexample>
+
+and the function <emphasis>cairo_text_extents</emphasis> is given the
+following type:
+
+<informalexample><programlisting>
+fun cairo_text_extents {l:agz} (
+  cr: !cairo_ref l, utf8: string
+, extents: &amp;cairo_text_extents_t? >> cairo_text_extents_t
+) : void
+</programlisting></informalexample>
+
+In the above image depicting the text <emphasis>Top Secret</emphasis>, the
+center of the left red dot is often referred to as the base point of the
+text, which initiates the path that draws the text. The width and height of
+the rectangle forming the background of the text are stored in the fields
+of <emphasis>width</emphasis> and <emphasis>height</emphasis> of the struct
+in <emphasis>te</emphasis>, respectively. The vector is (x_bearing,
+y_bearing) from the base point to the upper left corner of the rectangle,
+and the vector is (x_advance, y_advance) from the base point to the center
+of the right red dot, which is the suggested base point for the text that
+follows.
+
+The function call <emphasis>cairo_text_path(cr, utf8)</emphasis> generates
+a path that draws the text represented by <emphasis>utf8</emphasis>, where
+the function <emphasis>cairo_text_path</emphasis> is given the following
+type in ATS:
+
+<informalexample><programlisting>
+fun cairo_text_path {l:agz} (cr: !cairo_ref l, text: string): void
+</programlisting></informalexample>
+
+Note that a call to <emphasis>cairo_text_path</emphasis> followed by
+a call to <emphasis>cairo_fill</emphasis> is essentially equivalent
+to a call to <emphasis>cairo_show_text</emphasis>, which is given the
+following type in ATS:
+
+<informalexample><programlisting>
+fun cairo_show_text {l:agz} (cr: !cairo_ref l, utf8: string): void
+</programlisting></informalexample>
+
+</para>
+
+</sect1><!-- cairo_drawing_text -->
+

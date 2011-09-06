@@ -1,0 +1,182 @@
+<sect1 id = "cairo_drawing_circle_square">
+<title>Drawing Rectangles and Circles</title>
+
+<para>
+We are to generate an image showing a white circle inside a black square:
+</para>
+
+<para>
+<inlinemediaobject>
+<imageobject>
+<imagedata fileref="IMAGE/tutprog_sqrcirc.png" format="PNG"/>
+</imageobject>
+</inlinemediaobject>
+</para>
+
+<para>
+The main function for drawing this image is given as follows:
+
+<informalexample><programlisting>
+fun draw_sqrcirc {l:agz}
+  (cr: !cairo_ref l): void = let
+  val () = cairo_rectangle (cr, ~0.5, ~0.5, 1.0, 1.0)
+  val () = cairo_set_source_rgb (cr, 0.0, 0.0, 0.0) // black color
+  val () = cairo_fill (cr)
+  val () = cairo_arc (cr, 0.0, 0.0, 0.5, 0.0, 2*PI)
+  val () = cairo_set_source_rgb (cr, 1.0, 1.0, 1.0) // white color
+  val () = cairo_fill (cr)
+in
+  // nothing
+end // end of [draw_sqrcirc]
+</programlisting></informalexample>
+
+At this moment, let us assume that the square is centered at the position
+(0, 0) and the length of each of its sides is 1. Therefore, the upper left
+corner of the square is at (-0.5, -0.5) as x-axis and y-axis increase from
+left to right and from top to bottom, respectively. We first draw
+as follows a rectangle which happens to be a square:
+
+<informalexample><programlisting>
+  val () = cairo_rectangle (cr, ~0.5, ~0.5, 1.0, 1.0)
+</programlisting></informalexample>
+
+The function <emphasis>cairo_rectangle</emphasis> is given the following
+type in ATS:
+
+<informalexample><programlisting>
+fun cairo_rectangle {l:agz} (
+  cr: !cairo_ref l, x: double, y: double, width: double, height: double
+) : void // end of [cairo_rectangle]
+</programlisting></informalexample>
+
+When called, this function draws a rectangle whose width and height are
+<emphasis>width</emphasis> and <emphasis>height</emphasis>,
+respectively, and whose upper left corner is located at (x, y).
+
+We then fill the rectangle with black color:
+<informalexample><programlisting>
+  val () = cairo_set_source_rgb (cr, 0.0, 0.0, 0.0) // black color
+  val () = cairo_fill (cr)
+</programlisting></informalexample>
+</para>
+
+<para>
+We next draw a circle of radius 0.5 whose center is at (0.0, 0.0):
+<informalexample><programlisting>
+  val () = cairo_arc (cr, 0.0, 0.0, 0.5, 0.0, 2*PI)
+</programlisting></informalexample>
+
+The function <emphasis>cairo_arc</emphasis> is given the following
+type in ATS:
+
+<informalexample><programlisting>
+fun cairo_arc {l:agz} (
+  cr: !cairo_ref l
+, xc: double, yc: double, rad: double, angle1: double, angle2: double
+) : void // end of [cairo_arc]
+</programlisting></informalexample>
+
+When called, this function draws an arc that is part of the circle
+whose radius equals <emphasis>radius</emphasis> and whose center is
+at (xc, yc). The arc begins at the angle <emphasis>angle1</emphasis>
+and ends at the angle <emphasis>angle2</emphasis>, where clockwise
+rotation is assumed. If counterclockwise rotation is needed, the following
+function can be used instead:
+
+<informalexample><programlisting>
+fun cairo_arc_negative {l:agz} (
+  cr: !cairo_ref l
+, xc: double, yc: double, rad: double, angle1: double, angle2: double
+) : void // end of [cairo_arc_negative]
+</programlisting></informalexample>
+
+Lastly, we fill the circle with white color:
+<informalexample><programlisting>
+  val () = cairo_set_source_rgb (cr, 1.0, 1.0, 1.0) // white color
+  val () = cairo_fill (cr)
+</programlisting></informalexample>
+</para>
+
+<para>
+We can now make a call to the function <emphasis>draw_sqrcirc</emphasis>
+to generate a PNG file:
+<informalexample><programlisting>
+implement main () = () where {
+//
+  val W = 250 and H = 250
+//
+  val surface = // create a surface for drawing
+    cairo_image_surface_create (CAIRO_FORMAT_ARGB32, W, H)
+  val cr = cairo_create (surface)
+//
+  val WH = min (W, H)
+  val WH = double_of (WH)
+  val (pf0 | ()) = cairo_save (cr)
+  val () = cairo_translate (cr, WH/2, WH/2)
+  val () = cairo_scale (cr, WH, WH)
+  val () = draw_sqrcirc (cr)
+  val () = cairo_restore (pf0 | cr)
+//
+  val status = cairo_surface_write_to_png (surface, "tutprog_sqrcirc.png")
+  val () = cairo_surface_destroy (surface) // a type error if omitted
+  val () = cairo_destroy (cr) // a type error if omitted
+//
+  // in case of a failure ...
+  val () = assert_errmsg (status = CAIRO_STATUS_SUCCESS, #LOCATION)
+} // end of [main]
+</programlisting></informalexample>
+The functions <emphasis>cairo_translate</emphasis>
+and <emphasis>cairo_scale</emphasis> are given the following types in ATS:
+
+<informalexample><programlisting>
+fun cairo_translate
+  {l:agz} (cr: !cairo_ref l, x: double, y: double): void
+// end of [cairo_translate]
+
+fun cairo_scale
+  {l:agz} (cr: !cairo_ref l, sx: double, sy: double): void
+// end of [cairo_scale]
+</programlisting></informalexample>
+
+When called, <emphasis>cairo_translate</emphasis> creates a new coordinate
+system by shifting the origin of the current coordinate system to the point
+(x, y) and <emphasis>cairo_scale</emphasis> creates a new coordinate
+system whose x-unit and y-unit are sx and sy times the x-unit and y-unit of
+the current system, respectively.
+</para>
+
+<para>
+
+For the entirety of the code used in this section, please see
+<ulink url="CODE/tutprog_sqrcirc_dats.html"><filename>tutprog_sqrcirc.dats</filename></ulink>.
+
+</para>
+
+<para>
+For a more elaborate example involving circles, please see
+<ulink
+url="CODE/illucircmot_dats.html"><filename>illucircmot.dats</filename></ulink>,
+which generates the following interesting image:
+</para>
+
+<para>
+<inlinemediaobject>
+<imageobject><imagedata fileref="IMAGE/illucircmot.png" format="PNG"/></imageobject>
+</inlinemediaobject>
+</para>
+
+<para>
+For a more elabortate example involving squares and circles, please see
+<ulink
+url="CODE/illuwavy_dats.html"><filename>illuwavy.dats</filename></ulink>,
+which generates the following interesting image:
+</para>
+
+<para>
+<inlinemediaobject>
+<imageobject><imagedata fileref="IMAGE/illuwavy.png" format="PNG"/></imageobject>
+</inlinemediaobject>
+</para>
+
+</sect1><!-- cairo_drawing_rectangle_circle -->
+

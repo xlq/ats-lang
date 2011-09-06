@@ -1,10 +1,16 @@
-#if (INLINED == 0)
-#define __COMMENT(x)
-#endif
-#if (INLINED == 1)
-#define __COMMENT(x) x
-#endif
-#if (INLINED == 0)
+%{
+//
+#include "../tutorialatxt.dats"
+//
+#ifndef ISEXTRACT #then
+fun textextract (x: string) = TEXTstrcst (x)
+#else
+fun textextract (x: string) = let
+  val () = fprint_string (stdout_ref, x) in TEXTnil ()
+end // end of [textextract]
+#endif // end of [#if]
+%}\
+\
 (*
 **
 ** ATS/Cairo Tutorial: Hello, world!
@@ -38,7 +44,7 @@
 ** FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
 ** OTHER DEALINGS IN THE SOFTWARE.
 *)
-__COMMENT()
+
 (* ****** ****** *)
 //
 // How to compile:
@@ -48,13 +54,13 @@ __COMMENT()
 //   ./tutprog_hw
 //
 (* ****** ****** *)
-#endif
-__COMMENT(<programlisting>)
+
+#textextract('\
 staload "contrib/cairo/SATS/cairo.sats"
 extern fun cairo_show_text {l:agz}
-  (cr: !cairo_ref l, utf8: string): void = "mac#atsctrb_cairo_show_text"
+  (cr: !cairo_ref l, utf8: string): void = "mac\#atsctrb_cairo_show_text"
 // end of [cairo_show_text]
-__COMMENT()
+
 implement main () = () where {
 //
   val surface = // create a surface for drawing
@@ -74,11 +80,19 @@ implement main () = () where {
   val () = cairo_destroy (cr) // a type error if omitted
 //
   // in case of a failure ...
-  val () = assert_errmsg (status = CAIRO_STATUS_SUCCESS, #LOCATION)
+  val () = assert_errmsg (status = CAIRO_STATUS_SUCCESS, \#LOCATION)
 } // end of [main]
-__COMMENT(</programlisting>)
-#if (INLINED == 0)
+')
+
 (* ****** ****** *)
-__COMMENT()
+
 (* end of [tutprog_hw.dats] *)
-#endif
+\
+%{
+implement
+main () = {
+#ifndef ISEXTRACT #then
+  val () = fprint_filsub (stdout_ref, "tutprog_hw_atxt.txt")
+#endif // end of [#if]
+}
+%}\

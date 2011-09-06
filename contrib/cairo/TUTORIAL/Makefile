@@ -1,0 +1,110 @@
+#
+#
+# A Simple Makefile
+#
+#
+
+######
+
+ATSHOMEQ="$(ATSHOME)"
+ATSCC=$(ATSHOMEQ)/bin/atscc
+ATSDOC=$(ATSHOMEQ)/bin/atsdoc
+#LIBATSDOC=$(ATSHOMEQ)/libatsdoc
+
+######
+
+DBSRC= \
+  chap_hello_atxt.db \
+  chap_objtypes_atxt.db \
+  chap_funtypes_atxt.db \
+  chap_drawline_atxt.db \
+
+######
+
+all:: html
+
+######
+
+pdf: main.db $(DBSRC) ; jw -b pdf --output PDF/ main.db
+html: main.db $(DBSRC) ; jw -b html --output HTML/ main.db
+
+######
+
+chap_hello: chap_hello_atxt.dats
+	$(ATSCC) -D_ATS_GCATS -o $@ $< -latsdoc
+chap_hello_atxt.dats: chap_hello.atxt
+	$(ATSDOC) -do $@ -i $< > chap_hello_atxt.txt
+chap_hello_atxt.db: chap_hello ; ./chap_hello > $@
+
+cleanall:: ; $(RMF) chap_hello 
+cleanall:: ; $(RMF) chap_hello_atxt.*
+
+typecheck:: ; $(ATSCC) -tc CODE/chap_hello.dats
+
+######
+
+chap_objtypes: chap_objtypes_atxt.dats
+	$(ATSCC) -D_ATS_GCATS -o $@ $< -latsdoc
+chap_objtypes_atxt.dats: chap_objtypes.atxt
+	$(ATSDOC) -do $@ -i $< > chap_objtypes_atxt.txt
+chap_objtypes_atxt.db: chap_objtypes ; ./chap_objtypes > $@
+
+cleanall:: ; $(RMF) chap_objtypes 
+cleanall:: ; $(RMF) chap_objtypes_atxt.*
+
+typecheck:: ; $(ATSCC) -tc CODE/chap_objtypes.dats
+
+######
+
+chap_funtypes: chap_funtypes_atxt.dats
+	$(ATSCC) -D_ATS_GCATS -o $@ $< -latsdoc
+chap_funtypes_atxt.dats: chap_funtypes.atxt
+	$(ATSDOC) -do $@ -i $< > chap_funtypes_atxt.txt
+chap_funtypes_atxt.db: chap_funtypes ; ./chap_funtypes > $@
+
+cleanall:: ; $(RMF) chap_funtypes 
+cleanall:: ; $(RMF) chap_funtypes_atxt.*
+
+typecheck:: ; $(ATSCC) -tc CODE/chap_funtypes.dats
+
+######
+
+chap_drawline: chap_drawline_atxt.dats
+	$(ATSCC) -D_ATS_GCATS -o $@ $< -latsdoc
+chap_drawline_atxt.dats: chap_drawline.atxt
+	$(ATSDOC) -do $@ -i $< > chap_drawline_atxt.txt
+chap_drawline_atxt.db: chap_drawline ; ./chap_drawline > $@
+
+cleanall:: ; $(RMF) chap_drawline 
+cleanall:: ; $(RMF) chap_drawline_atxt.*
+
+typecheck:: ; $(ATSCC) -tc CODE/chap_drawline.dats
+
+######
+
+upload:: upload_pdf
+upload_pdf: pdf; scp -r HTML/*.pdf \
+  ats-hwxi,ats-lang@web.sourceforge.net:htdocs/DOCUMENT/ATSCAIRO/PDF
+
+upload:: upload_html
+upload_html: html; scp -r HTML/*.html \
+  ats-hwxi,ats-lang@web.sourceforge.net:htdocs/DOCUMENT/ATSCAIRO/HTML
+
+upload_code: ; scp -r CODE/*.dats \
+  ats-hwxi,ats-lang@web.sourceforge.net:htdocs/DOCUMENT/ATSCAIRO/CODE
+upload_image: ; scp -r CODE/*.png \
+  ats-hwxi,ats-lang@web.sourceforge.net:htdocs/DOCUMENT/ATSCAIRO/IMAGE
+
+######
+
+RMF=rm -f
+
+######
+
+clean:: ; $(RMF) *~
+clean:: ; $(RMF) *_?ats.c *_?ats.o
+
+cleanall:: clean
+cleanall:: ; $(RMF) HTML/*.html
+
+###### end of [Makefile] ######
