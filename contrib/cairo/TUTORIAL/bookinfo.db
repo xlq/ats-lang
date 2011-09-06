@@ -15,11 +15,14 @@
 
 <abstract>
 <para>
-
-This document is a tutorial on using the <emphasis>cairo</emphasis> drawing
-package in ATS. The reader is assumed to have already acquired some
-rudimentary knowledge of ATS.
-
+This tutorial focuses on employing types in ATS to facilitate safe and
+reliable programming with #ulink("http://www.cairographics.org", "cairo"),
+a comprehensive drawing package supporting 2D graphics, through the API for
+cairo in ATS. In particular, it is demonstrated concretely that linear
+types can be used effectively to prevent resources (such as contexts
+created for drawing) from being leaked due to programming errors. It is
+assumed that the reader have already acquired some rudimentary knowledge of
+ATS.
 </para>
 </abstract>
 
@@ -30,14 +33,12 @@ rudimentary knowledge of ATS.
 
 <legalnotice>
 <para>
-
 Permission is granted to copy, distribute and/or modify this document under
 the terms of the GNU Free Documentation License, Version 1.1 or any later
 version published by the Free Software Foundation; with no Invariant
 Sections, with no Front-Cover texts, and with no Back-Cover Texts. A copy
 of the license is included in the section entitled "GNU Free Documentation
 License".
-
 </para>
 </legalnotice>
 

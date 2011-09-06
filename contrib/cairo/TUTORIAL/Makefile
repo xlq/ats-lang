@@ -19,6 +19,7 @@ DBSRC= \
   chap_funtypes_atxt.db \
   chap_drawline_atxt.db \
   chap_drawsqrcirc_atxt.db \
+  chap_drawtext_atxt.db \
 
 ######
 
@@ -93,6 +94,19 @@ cleanall:: ; $(RMF) chap_drawsqrcirc
 cleanall:: ; $(RMF) chap_drawsqrcirc_atxt.*
 
 typecheck:: ; $(ATSCC) -tc CODE/chap_drawsqrcirc.dats
+
+######
+
+chap_drawtext: chap_drawtext_atxt.dats
+	$(ATSCC) -D_ATS_GCATS -o $@ $< -latsdoc
+chap_drawtext_atxt.dats: chap_drawtext.atxt
+	$(ATSDOC) -do $@ -i $< > chap_drawtext_atxt.txt
+chap_drawtext_atxt.db: chap_drawtext ; ./chap_drawtext > $@
+
+cleanall:: ; $(RMF) chap_drawtext 
+cleanall:: ; $(RMF) chap_drawtext_atxt.*
+
+typecheck:: ; $(ATSCC) -tc CODE/chap_drawtext.dats
 
 ######
 

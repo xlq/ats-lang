@@ -25,6 +25,8 @@ all:: tutprog_sqrcirc.png
 all:: illucircmot.png
 all:: illuwavy.png
 
+all:: tutprog_showtext.png
+
 all:: clean
 
 ######
@@ -119,6 +121,10 @@ cleanall:: ; $(RMF) illuwavy.png
 
 tutprog_showtext: tutprog_showtext.dats
 	$(ATSCC) -o $@ tutprog_showtext.dats `pkg-config cairo --cflags --libs`
+tutprog_showtext.png: tutprog_showtext; ./$<
+
+clean:: ; $(RMF) tutprog_showtext
+cleanall:: ; $(RMF) tutprog_showtext.png
 
 ######
 
