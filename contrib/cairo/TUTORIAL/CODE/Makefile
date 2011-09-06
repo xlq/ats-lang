@@ -21,6 +21,10 @@ all:: tutprog_linejoin.png
 all:: tutprog_triangle.dats
 all:: tutprog_triangle.dats.extract
 
+all:: tutprog_sqrcirc.png
+all:: illucircmot.png
+all:: illuwavy.png
+
 all:: clean
 
 ######
@@ -82,6 +86,34 @@ clean:: ; $(RMF) tutprog_triangle1
 
 cleanall:: ; $(RMF) tutprog_triangle.dats
 cleanall:: ; $(RMF) tutprog_triangle.dats.extract
+
+######
+
+tutprog_sqrcirc: tutprog_sqrcirc.dats
+	$(ATSCC) -o $@ $< `pkg-config cairo --cflags --libs`
+tutprog_sqrcirc.png: tutprog_sqrcirc ; ./$<
+
+clean:: ; $(RMF) tutprog_sqrcirc
+cleanall:: ; $(RMF) tutprog_sqrcirc.png
+
+######
+
+illucircmot: illucircmot.dats
+	$(ATSCC) -o $@ $< `pkg-config cairo --cflags --libs` -lm
+illucircmot.png: illucircmot ; ./$<
+
+clean:: ; $(RMF) illucircmot
+cleanall:: ; $(RMF) illucircmot.png
+
+######
+
+illuwavy: illuwavy.dats
+	$(ATSCC) -o $@ $< `pkg-config gtk+-2.0 --cflags --libs`
+illuwavy.png: illuwavy.dats
+	$(ATSCC) -DATS ISPNG -o illuwavy $< `pkg-config gtk+-2.0 --cflags --libs` && ./illuwavy
+
+clean:: ; $(RMF) illuwavy
+cleanall:: ; $(RMF) illuwavy.png
 
 ######
 

@@ -171,7 +171,7 @@ mismanagement. For instance, if the following line:
 is removed from the program in
 #mycodelink("tutprog_hw.dats", "tutprog_hw.dats"),
 then a type-error message is issued at compile-time to indicate that the
-resource #emph("surface") is not properly freed.  A message as such can be
+resource #code("surface") is not properly freed.  A message as such can be
 of great value in practice for correcting potential memory leaks that may
 otherwise readily go unnoticed.  ATS is a programming language that
 distinguishes itself in its practical and effective support for precise

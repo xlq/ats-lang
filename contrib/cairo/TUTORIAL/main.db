@@ -9,6 +9,7 @@
 <!ENTITY chap_objtypes SYSTEM "chap_objtypes_atxt.db">
 <!ENTITY chap_funtypes SYSTEM "chap_funtypes_atxt.db">
 <!ENTITY chap_drawline SYSTEM "chap_drawline_atxt.db">
+<!ENTITY chap_drawsqrcirc SYSTEM "chap_drawsqrcirc_atxt.db">
 ]>
 <book id="atscairo-tutorial" lang="en">
 &bookinfo;
@@ -29,6 +30,7 @@
 &chap_objtypes;
 &chap_funtypes;
 &chap_drawline;
+&chap_drawsqrcirc;
 </part><!--"basic_tutorial_topics"-->
 
 </book>
