@@ -15,11 +15,21 @@
 /* ****** ****** */
 
 %{
-
+//
 #include <stdio.h> // for [fprintf]
 #include "ats_memory.h" // HX: loading [ats_types.h] as well
+/*
+// HX: this is okay
+#define malloc ats_malloc_gc
+#define realloc ats_realloc_gc
+#define free ats_free_gc
+*/
+//
+// HX-2011-09-06:
+//
 #define malloc ats_malloc_ngc
 #define realloc ats_realloc_ngc
+#define free ats_free_ngc
 
 extern void yyerror (char *s) ;
 
@@ -2908,6 +2918,13 @@ yyparse_main (
   extern YYSTYPE yylval;
   // fprintf (stderr, "yyparse_main: &yylval = %p\n", &yylval) ;
   ATS_GC_MARKROOT (&yylval, sizeof(YYSTYPE)) ;
+//
+#ifdef YYPATCH
+#if (YYPATCH >= 20101229)
+  // fprintf (stderr, "yyparse_main: &yystack = %p\n", &yystack) ;
+  ATS_GC_MARKROOT (&yystack, sizeof(YYSTACKDATA)) ;
+#endif
+#endif
 //
   yylex_tok0 = tok0 ;
 //
