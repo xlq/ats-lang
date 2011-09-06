@@ -16,8 +16,8 @@ one focuses on employing types in ATS to facilitate safe and reliable
 programming with cairo.  In particular, it is demonstrated concretely here
 that linear types can be used effectively to prevent resources (e.g.,
 contexts and surfaces created for drawing) from being leaked due to
-programming errors. The reader of the tutorial is expected to have already
-acquired some rudimentary knowledge of ATS.
+programming errors. The reader of the tutorial is assumed to have already
+acquired some reasonable level of familiarity with ATS.
 </para>
 
 </preface>

@@ -45,10 +45,14 @@ UN = "prelude/SATS/unsafe.sats"
 //
 staload
 STDIO = "libc/SATS/stdio.sats"
+sortdef fm = $STDIO.fm
+stadef FILE_v = $STDIO.FILE_v
 macdef SEEK_SET = $STDIO.SEEK_SET
+macdef feof = $STDIO.feof
 macdef fopen_err = $STDIO.fopen_err
 macdef fclose_err = $STDIO.fclose_err
 macdef fflush_err = $STDIO.fflush_err
+macdef fgetc_err = $STDIO.fgetc_err
 macdef fputc_err = $STDIO.fputc_err
 macdef fseek_err = $STDIO.fseek_err
 //
@@ -202,6 +206,37 @@ implement
 tostring_strsub (sub) = 
   tostring_fprint<string> ("atsdoc_tostring_strsub", fprint_strsub, sub)
 // end of [tostring_strsub]
+
+(* ****** ****** *)
+
+implement
+filename2text (path) = let
+  val [l:addr] (pfopt | filp) = fopen_err (path, file_mode_r)
+in
+  if filp > null then let
+    prval Some_v (pffil) = pfopt
+    val filr = __cast (pffil | filp) where {
+      extern castfn __cast {m:fm} (pffil: FILE_v (m, l) | p: ptr l): FILEref
+    } // end of [val]
+//
+    fun fpr (out: FILEref, inp: FILEref): void = let
+      val c = fgetc_err (inp)
+    in
+      if (c != EOF) then (fprint_char (out, (char_of_int)c); fpr (out, inp)) else ()
+    end // end of [fpr]
+//
+    val res = tostring_fprint ("atsdoc_filename2text", fpr, filr)
+    val _err = fclose_err (filr)
+  in
+    if strptr_isnot_null (res) then
+      TEXTstrcst ((string_of_strptr)res)
+    else let
+      val () = strptr_free (res) in TEXTnil ()
+    end (* end of [if] *)
+  end else let
+    prval None_v () = pfopt in TEXTnil ()
+  end (* end of [if] *)
+end // end of [filename2text]
 
 (* ****** ****** *)
 

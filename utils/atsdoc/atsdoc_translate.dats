@@ -409,6 +409,11 @@ if i >= 0 then let
     in
       // nothing
     end // end of ['\\']
+  | '%' => let
+      val () = posincby1 (pos); val err = fputc_err (c, out)
+    in
+      // nothing
+    end // end of ['\\']
   | _ => let
       val () = posincby1 (pos)
       val err = fputc_err ('\\', out); val err = fputc_err (c, out)

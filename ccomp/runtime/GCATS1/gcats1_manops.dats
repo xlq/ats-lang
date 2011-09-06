@@ -176,7 +176,10 @@ ats_void_type gc_man_free (ats_ptr_type ptr) {
 
 ats_ptr_type gc_man_realloc_bsz
   (ats_ptr_type ptr, ats_int_type bsz) {
+//
   manmemlst mms, mms_prev, mms_next ;
+//
+  if (!ptr) return gc_man_malloc_bsz (bsz) ;
 //
   mms = (manmemlst)((byte*)ptr - offsetof(manmem, data)) ;
   mms_prev = mms->prev ; mms_next = mms->next ;

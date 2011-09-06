@@ -10,4 +10,4 @@
 (* ****** ****** *)
 
 #define thePage_width ~1(*pix*)
-#define theSidebar_width 150(*pix*)
+#define theSidebar_width 175(*pix*)

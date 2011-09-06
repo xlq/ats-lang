@@ -110,6 +110,27 @@ Links:
 
 <h2>#uid("ATSCAIRObook", "ATS/Cairo Tutorial")</h2>
 
+<table>
+<tr><td>\
+
+This tutorial focuses on employing types in ATS to facilitate safe and
+reliable programming with #ulink("http://www.cairographics.org", "cairo"),
+a comprehensive drawing package supporting 2D graphics, through the API for
+cairo in ATS. In particular, it is demonstrated concretely that linear
+types can be used effectively to prevent resources (such as contexts
+created for drawing) from being leaked due to programming errors.\
+
+</td></tr>
+<tr><td>
+Links:
+#ulink1("#ATSLANGWEBROOTget()/DOCUMENT/ATSCAIRO/HTML/book1.html", "html")
+#ulink1("#ATSLANGWEBROOTget()/DOCUMENT/ATSCAIRO/PDF/main.pdf", "pdf")
+</td></tr>
+</table>
+#para("")
+
+
+
 <!-- ****** ****** -->
 
 </div>#comment("div/id=thePageBody-prop")

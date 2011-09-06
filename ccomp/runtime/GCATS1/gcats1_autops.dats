@@ -309,7 +309,8 @@ ats_void_type gc_aut_realloc_wsz_memcpy_wsz
 
 //
 
-implement gc_aut_realloc_wsz (ptr, wsz_new) = let
+implement
+gc_aut_realloc_wsz (ptr, wsz_new) = let
 (*
   val () = begin
     prerr "gc_aut_realloc_wsz: ptr = "; prerr ptr; prerr_newline ()
@@ -361,6 +362,8 @@ implement gc_aut_realloc_wsz (ptr, wsz_new) = let
     | _ => ptr // return the original value
   end // end of [aux_main]
 in
+//
+if ptr > null then (
   case+ 0 of
   | _ when botsegtbllst_is_cons tbls => let
       val ofs_botseg = PTR_BOTSEG_GET (ptr)
@@ -381,6 +384,9 @@ in
       | _ => err (ptr)
     end
   | _ => err (ptr)
+) else (
+  gc_aut_malloc_wsz (wsz_new)
+) // end of [if]
 end // end of [gc_aut_realloc]
 
 (* ****** ****** *)

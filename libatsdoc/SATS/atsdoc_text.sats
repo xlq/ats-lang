@@ -64,6 +64,10 @@ stringlst = List (string)
 
 (* ****** ****** *)
 
+fun filename2text (path: string): text
+
+(* ****** ****** *)
+
 fun atscode2xml_strcode (stadyn: int, code: string): text
 fun atscode2xml_filcode (stadyn: int, path: string): text
 

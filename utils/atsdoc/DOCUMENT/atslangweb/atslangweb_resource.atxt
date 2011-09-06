@@ -60,8 +60,6 @@ padding-right: 10px ;
 #menu('\
 #litxt(#ulink("\#ATS_edit", "Editing ATS source code"))
 #litxt(#ulink("\#ATS_mler", "ML programmer\'s guide to ATS"))
-#litxt(#ulink("\#ATS_mailinglst", "Mailing-list for ATS users"))
-#litxt(#ulink("\#ATS_irc", "IRC channel for ATS users")
 #litxt(#ulink("\#ATS_courses", "Courses based on ATS"))
 ')#comment("menu")
 
@@ -75,33 +73,6 @@ A #ulink1("#ATSLANGSVNROOTget()/utils/vim/ats.vim", "mode") for editing ATS sour
 ')
 #lisub('\
 A #ulink("http://cs-people.bu.edu/md/ats-mode/", "mode") for editing ATS source code in emacs.
-')
-")#comment("menu")
-
-#HR(1)
-
-<h2>#uid("ATS_mailinglst", "Mailing-list for ATS users")</h2>
-
-#menu("\
-#lisub('\
-This #ulink("https://lists.sourceforge.net/lists/listinfo/ats-lang-users",
-"mailing-list") is for ATS users to discuss general questions related to ATS.
-')
-
-#lisub('\
-The archive of messages sent to the ATS users mailing-list can be found
-#ulink("http://news.gmane.org/gmane.comp.lang.ats.user", "here").
-')
-")#comment("menu")
-
-#HR(1)
-
-<h2>#uid("ATS_irc", "IRC channel for ATS users")</h2>
-
-#menu("\
-#lisub('
-This IRC channel
-#ulink("http://webchat.freenode.net", "\#\#ats") is chatting about to ATS.
 ')
 ")#comment("menu")
 

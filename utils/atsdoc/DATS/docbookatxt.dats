@@ -72,6 +72,11 @@ in
 //
 fun atscode
   (x: string): text = TEXTappstr3 (ATSCODEopn, x, ATSCODEcls)
+fun atscodefil
+  (path: string): text = let
+  val code = filename2text (path) in
+  TEXTapptxt3 (TEXTstrcst(ATSCODEopn), code, TEXTstrcst(ATSCODEcls))
+end // end of [atscode1]
 (*
 fun atscode2xmls (x: string): text = atscode2xml_strcode (0, x)
 fun atscode2xmld (x: string): text = atscode2xml_strcode (1, x)

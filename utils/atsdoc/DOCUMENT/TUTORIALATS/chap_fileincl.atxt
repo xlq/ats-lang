@@ -53,4 +53,3 @@ use of file inclusion can be found elsewhere.
 %{
 implement main () = fprint_filsub (stdout_ref, "chap_fileincl_atxt.txt")
 %}
-
