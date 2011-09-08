@@ -14,7 +14,7 @@ staload _(*anon*) = "prelude/DATS/reference.dats"
 //
 (* ****** ****** *)
 
-#include "utils/atsdoc/DATS/docbookatxt.dats"
+#include "utils/atsdoc/HATS/docbookatxt.hats"
 
 (* ****** ****** *)
 //

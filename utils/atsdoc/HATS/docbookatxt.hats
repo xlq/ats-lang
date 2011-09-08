@@ -45,7 +45,40 @@
 
 (* ****** ****** *)
 
-#include "utils/atsdoc/DATS/xhtmlatxt.dats"
+#include "utils/atsdoc/HATS/xhtmlatxt.hats"
+
+(* ****** ****** *)
+
+macdef
+bookinfo (x) = xmltagging ("bookinfo", ,(x))
+
+macdef
+articleinfo (x) = xmltagging ("articleinfo", ,(x))
+
+(* ****** ****** *)
+
+macdef title (x) = xmltagging ("title", ,(x))
+macdef subtitle (x) = xmltagging ("subtitle", ,(x))
+
+(* ****** ****** *)
+
+macdef author (x) = xmltagging ("author", ,(x))
+macdef firstname (x) = xmltagging ("firstname", ,(x))
+macdef surname (x) = xmltagging ("surname", ,(x))
+
+(* ****** ****** *)
+
+macdef email (x)  = xmltagging ("email", ,(x))
+macdef address (x)  = xmltagging ("address", ,(x))
+macdef affiliation (x)  = xmltagging ("affiliation", ,(x))
+
+(* ****** ****** *)
+
+macdef copyright (x) = xmltagging ("copyright", ,(x))
+
+(* ****** ****** *)
+
+macdef abstract (x) = xmltagging ("abstract", ,(x))
 
 (* ****** ****** *)
 //
@@ -58,9 +91,25 @@ macdef simplesect (x) = xmltagging ("simplesect", ,(x))
 //
 (* ****** ****** *)
 //
-macdef sub(x) = xmltagging("subscript", ,(x))
-macdef sup(x) = xmltagging("superscript", ,(x))
+macdef sub (x) = xmltagging ("subscript", ,(x))
+macdef sup (x) = xmltagging ("superscript", ,(x))
 //
+(* ****** ****** *)
+
+macdef member (x) = xmltagging ("member", ,(x))
+macdef simplelist (x) = xmltagging ("simplelist", ,(x))
+
+(* ****** ****** *)
+
+macdef listitem (x) = xmltagging ("listitem", ,(x))
+macdef orderedlist (x) = xmltagging ("orderedlist", ,(x))
+macdef itemizedlist (x) = xmltagging ("itemizedlist", ,(x))
+
+(* ****** ****** *)
+
+macdef programlisting (x) = xmltagging ("programlisting", ,(x))
+macdef informalexample (x) = xmltagging ("informalexample", ,(x))
+
 (* ****** ****** *)
 //
 local
