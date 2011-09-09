@@ -1149,7 +1149,7 @@ d0eclst_t d0eclst ;
 %token <t0kn> SCASE
 %token <t0kn> SIF
 %token <t0kn> SORTDEF
-%token <t0kn> STA
+%token <t0kn> STACST
 %token <t0kn> STADEF
 %token <t0kn> STAIF
 %token <t0kn> STALOAD
@@ -2720,7 +2720,7 @@ d0ec
   | DATASORT d0atsrtdec andd0atsrtdecseq  { $$ = d0ec_datsrts(0, $2, $3) ; }
   | DATAPARASORT d0atsrtdec andd0atsrtdecseq  { $$ = d0ec_datsrts(1, $2, $3) ; }
   | abskind s0tacon ands0taconseq  { $$ = d0ec_stacons($1, $2, $3) ; }
-  | STA s0tacst ands0tacstseq  { $$ = d0ec_stacsts($2, $3) ; }
+  | STACST s0tacst ands0tacstseq  { $$ = d0ec_stacsts($2, $3) ; }
   | STAVAR s0tavar ands0tavarseq  { $$ = d0ec_stavars($2, $3) ; }
   | stadefkind s0expdef ands0expdefseq  { $$ = d0ec_sexpdefs($1, $2, $3) ; }
   | ASSUME s0aspdec  { $$ = d0ec_saspdec($2) ; }

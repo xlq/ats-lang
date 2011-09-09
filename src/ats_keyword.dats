@@ -212,7 +212,8 @@ keyval_insert("rec", REC) ;
 keyval_insert("scase", SCASE) ;
 keyval_insert("sif", SIF) ;
 keyval_insert("sortdef", SORTDEF) ;
-keyval_insert("sta", STA) ;
+keyval_insert("sta", STACST) ; // HX-2011-09-09: BWC
+keyval_insert("stacst", STACST) ; // HX-2011-09-09: sta -> stacst
 keyval_insert("stadef", STADEF) ;
 keyval_insert("staif", STAIF) ;
 keyval_insert("staload", STALOAD) ;
