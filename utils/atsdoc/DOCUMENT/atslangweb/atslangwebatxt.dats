@@ -11,7 +11,7 @@ staload _(*anon*) = "prelude/DATS/reference.dats"
 //
 (* ****** ****** *)
 //
-#include "utils/atsdoc/DATS/xhtmlatxt.dats"
+#include "utils/atsdoc/HATS/xhtmlatxt.hats"
 //
 macdef para (x) = xmltagging ("p", ,(x))
 macdef emph (x) = xmltagging ("em", ,(x))
