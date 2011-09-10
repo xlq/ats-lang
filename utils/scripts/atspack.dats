@@ -557,27 +557,6 @@ fn Anairiats_doc_dir_copy () = let
     ) // end of [fcopy_exn]
   } // end of [val]
 //
-  val () = () where {
-    val SRCROOTdoc_TUTORIAL = SRCROOTdoc ++ "TUTORIAL/"
-    val DSTROOTdoc_TUTORIAL = DSTROOTdoc ++ "TUTORIAL/"
-    val () = mkdir_exn (DSTROOTdoc_TUTORIAL, DIRmode)
-    val () = fcopy_exn (
-      SRCROOTdoc_TUTORIAL ++ "tutorial.html", DSTROOTdoc_TUTORIAL ++ "tutorial.html"
-    ) // end of [val]
-    val SRCROOTdoc_TUTORIAL_contents = SRCROOTdoc_TUTORIAL ++ "contents/"
-    val DSTROOTdoc_TUTORIAL_contents = DSTROOTdoc_TUTORIAL ++ "contents/"
-    val () = mkdir_exn (DSTROOTdoc_TUTORIAL_contents, DIRmode)
-    val () = fcopy_exn (
-      SRCROOTdoc_TUTORIAL_contents ++ "Makefile", DSTROOTdoc_TUTORIAL_contents ++ "Makefile"
-    )
-    val () = dir_copy (
-      SRCROOTdoc_TUTORIAL_contents, DSTROOTdoc_TUTORIAL_contents, name_is_html
-    )
-    val () = dir_copy (
-      SRCROOTdoc_TUTORIAL_contents, DSTROOTdoc_TUTORIAL_contents, name_is_xats
-    )
-  } // end of [val]
-//
   val SRCROOTdoc_EXAMPLE = SRCROOTdoc ++ "EXAMPLE/"
   val DSTROOTdoc_EXAMPLE = DSTROOTdoc ++ "EXAMPLE/"
   val () = mkdir_exn (DSTROOTdoc_EXAMPLE, DIRmode)
