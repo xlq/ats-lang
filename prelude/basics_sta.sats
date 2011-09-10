@@ -560,24 +560,18 @@ stadef array = array_viewt0ype_int_type // without dynamic size
 stadef matrix0 = matrix0_viewt0ype_type // with dynamic size
 stadef matrix = matrix_viewt0ype_int_int_type // without dynamic size
 
-(*
-** HX: this order is significant!
-*)
-stadef bool = bool_bool_t0ype
 stadef bool = bool_t0ype
+stadef bool = bool_bool_t0ype
 
 stadef byte = byte_t0ype
 
 (* ****** ****** *)
 
-(*
-** HX: this order is significant!
-*)
-stadef char = char_char_t0ype
 stadef char = char_t0ype
+stadef char = char_char_t0ype
 
-stadef schar = schar_t0ype
 stadef uchar = uchar_t0ype
+stadef schar = schar_t0ype
 
 (* ****** ****** *)
 
@@ -589,34 +583,25 @@ stadef exn = exception_viewtype // a boxed type
 
 (* ****** ****** *)
 
-(*
-** HX: this order is significant!
-*)
-stadef int = int_int_t0ype
 stadef int = int_t0ype
+stadef int = int_int_t0ype
 
-(*
-** HX: this order is significant!
-*)
-stadef uint = uint_int_t0ype
 stadef uint = uint_t0ype
+stadef uint = uint_int_t0ype
 
-(*
-** HX: this order is significant!
-*)
-stadef size_t = size_int_t0ype
 stadef size_t = size_t0ype
+stadef size_t = size_int_t0ype
 
-stadef ssize_t = ssize_int_t0ype
 stadef ssize_t = ssize_t0ype
+stadef ssize_t = ssize_int_t0ype
 
-stadef ptrdiff_t = ptrdiff_int_t0ype
 stadef ptrdiff_t = ptrdiff_t0ype
+stadef ptrdiff_t = ptrdiff_int_t0ype
 
 (* ****** ****** *)
 
-stadef ptr = ptr_addr_type
 stadef ptr = ptr_type
+stadef ptr = ptr_addr_type
 
 (* ****** ****** *)
 
@@ -806,11 +791,8 @@ va_list_viewt0ype = $extype"ats_va_list_viewtype"
 absviewt@ype
 va_list_types_viewt0ype (types) = va_list_viewt0ype
 
-(*
-** HX: this order is significant!
-*)
-stadef va_list = va_list_types_viewt0ype
 stadef va_list = va_list_viewt0ype
+stadef va_list = va_list_types_viewt0ype
 
 (* ****** ****** *)
 

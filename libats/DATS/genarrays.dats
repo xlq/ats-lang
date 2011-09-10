@@ -1132,7 +1132,7 @@ TRMAT_ptr_copy
   {ord} {ul} {dg} {m} {ld1,ld2}
   (ord, ul, dg, M1, M2, m, ld1, ld2) = let
   fn loop_UN_row (
-      M1: &TRMAT (a, m, row, upper, nonunit, ld1), M2: &TRMAT (a, m, row, upper, nonunit, ld2)
+      M1: &TRMAT (a, m, row, upper, nonunit(), ld1), M2: &TRMAT (a, m, row, upper, nonunit(), ld2)
     ) :<cloref> void = let
     val _0 = size1_of_int1 (0)
     var i: size_t? // uninitialized
@@ -1145,7 +1145,7 @@ TRMAT_ptr_copy
     ) // end of [for]
   end
   fn loop_UU_row (
-      M1: &TRMAT (a, m, row, upper, unit, ld1), M2: &TRMAT (a, m, row, upper, unit, ld2)
+      M1: &TRMAT (a, m, row, upper, unit(), ld1), M2: &TRMAT (a, m, row, upper, unit(), ld2)
     ) :<cloref> void = let
     val _0 = size1_of_int1 (0)
     var i: size_t? // uninitialized
@@ -1171,7 +1171,7 @@ TRMAT_ptr_copy
     ) // end of [for]
   end
   fn loop_LU_row (
-      M1: &TRMAT (a, m, row, lower, unit, ld1), M2: &TRMAT (a, m, row, lower, unit, ld2)
+      M1: &TRMAT (a, m, row, lower, unit(), ld1), M2: &TRMAT (a, m, row, lower, unit(), ld2)
     ) :<cloref> void = let
     val _0 = size1_of_int1 (0)
     var i: size_t? // uninitialized

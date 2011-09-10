@@ -144,6 +144,11 @@ end // end of [s2rt_is_int]
 (* ****** ****** *)
 
 implement
+s2rt_is_fun (s2t) = case+ s2t of S2RTfun _ => true | _ => false
+
+(* ****** ****** *)
+
+implement
 s2rt_is_prop (s2t) = begin
   case+ s2t of
   | S2RTbas s2tb => begin case+ s2tb of

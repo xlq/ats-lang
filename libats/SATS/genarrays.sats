@@ -261,7 +261,7 @@ datatype UPLO (uplo) =
 (* ****** ****** *)
 
 datasort diag = unit | nonunit // unit / non-unit
-datatype DIAG (diag) = DIAGunit (unit) | DIAGnonunit (nonunit)
+datatype DIAG (diag) = DIAGunit (unit()) | DIAGnonunit (nonunit())
 
 (* ****** ****** *)
 
@@ -809,18 +809,18 @@ prfun TRMAT_v_unnil {a:viewt@ype}
 prfun TRMAT1x1_v_takeout_unit
   {a1:viewt@ype}
   {ord:order} {ul:uplo} {ld:inc} {l:addr} (
-  pf: TRMAT_v (a1, 1, ord, ul, unit, ld, l)
+  pf: TRMAT_v (a1, 1, ord, ul, unit(), ld, l)
 ) : (
-  {a2:viewt@ype | a1 \tszeq a2} () -<prf> TRMAT_v (a2, 1, ord, ul, unit, ld, l)
+  {a2:viewt@ype | a1 \tszeq a2} () -<prf> TRMAT_v (a2, 1, ord, ul, unit(), ld, l)
 ) // end of [TRMAT1x1_v_takeout_unit]
 
 prfun TRMAT1x1_v_takeout_nonunit
   {a1:viewt@ype}
   {ord:order} {ul:uplo} {ld:inc} {l:addr} (
-  pf: TRMAT_v (a1, 1, ord, ul, nonunit, ld, l)
+  pf: TRMAT_v (a1, 1, ord, ul, nonunit(), ld, l)
 ) : (
   a1 @ l
-, {a2:viewt@ype | a1 \tszeq a2} a2 @ l -<prf> TRMAT_v (a2, 1, ord, ul, nonunit, ld, l)
+, {a2:viewt@ype | a1 \tszeq a2} a2 @ l -<prf> TRMAT_v (a2, 1, ord, ul, nonunit(), ld, l)
 ) // end of [TRMAT1x1_v_takeout_nonunit]
 
 (* ****** ****** *)
@@ -845,14 +845,14 @@ prfun TRMAT_v_of_GEMAT_v {a:viewt@ype}
 fun{a:t@ype} TRMAT_UN_ptr_get_elt_at
    {ord:order} {m,i,j:nat | i <= j; j < m} {ld:inc} (
    ord: ORDER ord
- , A: &TRMAT (a, m, ord, upper, nonunit, ld)
+ , A: &TRMAT (a, m, ord, upper, nonunit(), ld)
  , ld: size_t ld, i: size_t i, j: size_t j
  ) :<> a // end of [TRMAT_UN_ptr_get_elt_at]
 
 fun{a:t@ype} TRMAT_UN_ptr_set_elt_at
    {ord:order} {m,i,j:nat | i <= j; j < m} {ld:inc} (
    ord: ORDER ord
- , A: &TRMAT (a, m, ord, upper, nonunit, ld)
+ , A: &TRMAT (a, m, ord, upper, nonunit(), ld)
  , ld: size_t ld, i: size_t i, j: size_t j
  , x: a
  ) :<> void // end of [TRMAT_UN_ptr_set_elt_at]
@@ -863,14 +863,14 @@ fun{a:t@ype} TRMAT_UN_ptr_set_elt_at
 fun{a:t@ype} TRMAT_UU_ptr_get_elt_at
    {ord:order} {m,i,j:nat | i < j; j < m} {ld:inc} (
    ord: ORDER ord
- , A: &TRMAT (a, m, ord, upper, unit, ld)
+ , A: &TRMAT (a, m, ord, upper, unit(), ld)
  , ld: size_t ld, i: size_t i, j: size_t j
  ) :<> a // end of [TRMAT_UU_ptr_get_elt_at]
 
 fun{a:t@ype} TRMAT_UU_ptr_set_elt_at
    {ord:order} {m,i,j:nat | i < j; j < m} {ld:inc} (
    ord: ORDER ord
- , A: &TRMAT (a, m, ord, upper, unit, ld)
+ , A: &TRMAT (a, m, ord, upper, unit(), ld)
  , ld: size_t ld, i: size_t i, j: size_t j
  , x: a
  ) :<> void // end of [TRMAT_UU_ptr_set_elt_at]
@@ -881,14 +881,14 @@ fun{a:t@ype} TRMAT_UU_ptr_set_elt_at
 fun{a:t@ype} TRMAT_LN_ptr_get_elt_at
    {ord:order} {m,i,j:nat | j <= i; i < m} {ld:inc} (
    ord: ORDER ord
- , A: &TRMAT (a, m, ord, lower, nonunit, ld)
+ , A: &TRMAT (a, m, ord, lower, nonunit(), ld)
  , ld: size_t ld, i: size_t i, j: size_t j
  ) :<> a // end of [TRMAT_LN_ptr_get_elt_at]
 
 fun{a:t@ype} TRMAT_LN_ptr_set_elt_at
    {ord:order} {m,i,j:nat | j <= i; i < m} {ld:inc} (
    ord: ORDER ord
- , A: &TRMAT (a, m, ord, lower, nonunit, ld)
+ , A: &TRMAT (a, m, ord, lower, nonunit(), ld)
  , ld: size_t ld, i: size_t i, j: size_t j
  , x: a
  ) :<> void // end of [TRMAT_LN_ptr_set_elt_at]
@@ -899,14 +899,14 @@ fun{a:t@ype} TRMAT_LN_ptr_set_elt_at
 fun{a:t@ype} TRMAT_LU_ptr_get_elt_at
    {ord:order} {m,i,j:nat | j < i; i < m} {ld:inc} (
    ord: ORDER ord
- , A: &TRMAT (a, m, ord, lower, unit, ld)
+ , A: &TRMAT (a, m, ord, lower, unit(), ld)
  , ld: size_t ld, i: size_t i, j: size_t j
  ) :<> a // end of [TRMAT_LU_ptr_get_elt_at]
 
 fun{a:t@ype} TRMAT_LU_ptr_set_elt_at
    {ord:order} {m,i,j:nat | j < i; i < m} {ld:inc} (
    ord: ORDER ord
- , A: &TRMAT (a, m, ord, lower, unit, ld)
+ , A: &TRMAT (a, m, ord, lower, unit(), ld)
  , ld: size_t ld, i: size_t i, j: size_t j
  , x: a
  ) :<> void // end of [TRMAT_LU_ptr_set_elt_at]

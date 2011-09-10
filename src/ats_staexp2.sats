@@ -387,8 +387,10 @@ val s2rt_types : s2rt
 
 fun s2rt_is_cls (s2t: s2rt): bool
 
-fun s2rt_is_dat (s2r: s2rt): bool
+fun s2rt_is_dat (s2t: s2rt): bool
 fun s2rt_is_int (s2t: s2rt): bool
+
+fun s2rt_is_fun (s2t: s2rt): bool
 
 fun s2rt_is_prop (s2t: s2rt): bool
 fun s2rt_is_type (s2t: s2rt): bool

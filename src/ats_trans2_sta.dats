@@ -705,49 +705,65 @@ end // end of [s1exp_qid_app_tr_up]
 
 (* ****** ****** *)
 
-fn s1exp_qid_tr_up
-  (loc0: loc_t, q: $Syn.s0taq, id: sym_t): s2exp = begin
-  case+ the_s2expenv_find_qua (q, id) of
-  | ~Some_vt s2i => begin case+ s2i of
-    | S2ITEMcst s2cs => begin case+ s2cs of
-      | S2CSTLSTcons (s2c, _) => let
+fn s1exp_qid_tr_up (
+  loc0: loc_t, q: $Syn.s0taq, id: sym_t
+) : s2exp = let
+  val ans = the_s2expenv_find_qua (q, id)
+in
 //
-          val () = stacstuseloc_posmark (loc0, s2c)
+case+ ans of
+| ~Some_vt s2i => begin case+ s2i of
+  | S2ITEMcst s2cs => begin case+ s2cs of
+    | S2CSTLSTcons (s2c, _) => let
 //
-          val s2t = s2cst_get_srt s2c; val s2e_s2c = s2exp_cst s2c
-        in
-          case+ s2t of
-          | S2RTfun (nil (), _res) when s2rt_is_dat _res => begin
-              // a nullary constructor is automatically applied!!!
-              s2exp_app_srt (_res, s2e_s2c, nil ())
-            end // end of [S2RTfun]
-          | _ => s2e_s2c
-        end // end of [S2CSTLSTcons]
-      | S2CSTLSTnil () => begin // this clause should be unreachable
-          prerr_interror ();
-          prerr ": s1exp_qid_tr_up: Some: S2ITEMcst: S2CSTLSTnil";
-          prerr_newline ();
-          $Err.abort ()
-        end // end of [S2CSTLSTnil]
-      end // end of [S2ITEMcst]
-    | S2ITEMe1xp e1xp => s1exp_tr_up (s1exp_make_e1xp (loc0, e1xp))
-    | S2ITEMvar s2v => let
-        val () = s2var_check_tmplev (loc0, s2v) in s2exp_var s2v
-      end // end of [S2ITEMvar]
-    | _ => begin
-        prerr_loc_interror loc0;
-        prerr ": s1exp_qid_tr_up: s2i = "; prerr s2i; prerr_newline ();
+        fun loop (
+          s2cs: s2cstlst, s2c0: s2cst_t
+        ) : s2cst_t = // find the first non-functional one if it exists
+          case+ s2cs of
+          | S2CSTLSTcons (s2c, s2cs) => let
+              val s2t = s2cst_get_srt (s2c) in
+              if s2rt_is_fun (s2t) then loop (s2cs, s2c0) else s2c
+            end // end of [list_cons]
+          | S2CSTLSTnil () => s2c0 // end of [list_nil]
+        val s2c = loop (s2cs, s2c)
+//
+        val () = stacstuseloc_posmark (loc0, s2c)
+//
+        val s2t = s2cst_get_srt s2c; val s2e_s2c = s2exp_cst s2c
+      in
+        case+ s2t of
+        | S2RTfun (nil (), _res) when s2rt_is_dat _res => begin
+            // a nullary constructor is automatically applied!!!
+            s2exp_app_srt (_res, s2e_s2c, nil ())
+          end // end of [S2RTfun]
+        | _ => s2e_s2c
+      end // end of [S2CSTLSTcons]
+    | S2CSTLSTnil () => begin // this clause should be unreachable
+        prerr_interror ();
+        prerr ": s1exp_qid_tr_up: Some: S2ITEMcst: S2CSTLSTnil";
+        prerr_newline ();
         $Err.abort ()
-      end // end of [_]
-    end // end of [Some_vt]
-  | ~None_vt () => begin
-      prerr_loc_error2 loc0;
-      $Deb.debug_prerrf (": %s: s1exp_qid_tr_up", @(THISFILENAME));
-      prerr ": the static identifier [";
-      $Syn.prerr_s0taq q; $Sym.prerr_symbol id; prerr "] is unrecognized.";
-      prerr_newline ();
+      end // end of [S2CSTLSTnil]
+    end // end of [S2ITEMcst]
+  | S2ITEMe1xp e1xp => s1exp_tr_up (s1exp_make_e1xp (loc0, e1xp))
+  | S2ITEMvar s2v => let
+      val () = s2var_check_tmplev (loc0, s2v) in s2exp_var s2v
+    end // end of [S2ITEMvar]
+  | _ => begin
+      prerr_loc_interror loc0;
+      prerr ": s1exp_qid_tr_up: s2i = "; prerr s2i; prerr_newline ();
       $Err.abort ()
-    end // end of [None_vt]
+    end // end of [_]
+  end // end of [Some_vt]
+| ~None_vt () => begin
+    prerr_loc_error2 loc0;
+    $Deb.debug_prerrf (": %s: s1exp_qid_tr_up", @(THISFILENAME));
+    prerr ": the static identifier [";
+    $Syn.prerr_s0taq q; $Sym.prerr_symbol id; prerr "] is unrecognized.";
+    prerr_newline ();
+    $Err.abort ()
+  end // end of [None_vt]
+//
 end // end of [s1exp_qid_tr_up]
 
 (* ****** ****** *)

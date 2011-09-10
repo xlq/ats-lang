@@ -92,9 +92,9 @@ fn prerr_loc_interror (loc: loc_t) = begin
 end // end of [prerr_loc_interror]
 
 (* ****** ****** *)
-
+//
 // typedef funclo =  $Syn.funclo // declared in [ats_trans3.sats]
-
+//
 (* ****** ****** *)
 
 fn pfarity_check_fun
