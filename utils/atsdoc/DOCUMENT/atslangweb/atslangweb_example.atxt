@@ -58,15 +58,16 @@ padding-right: 10px ;
 <h1>Examples</h1>
 
 #menu('\
-#litxt(#ulink("\#HW_example", "Hello, world!"))
+#litxt(#ulink("\#HWexample", "Hello, world!"))
 #lisub('\
-#ulink("\#FIB_example", "Computing Fibonacci Numbers:") an example of programming with theorem-proving
+#ulink("\#FIBexample", "Computing Fibonacci Numbers:") an example of programming with theorem-proving
 ')
+#litxt(#ulink("\#FURTHERexamples", "Further Examples"))
 ')#comment("menu")
 
 #HR(2)
 
-<h2>#uid("HW_example", "Hello, world!")</h2>
+<h2>#uid("HWexample", "Hello, world!")</h2>
 
 #para('
 Following is a complete program in ATS for printing out the string
@@ -98,7 +99,7 @@ code.
 
 #HR(1)
 
-<h2>#uid("FIB_example", "Computing Fibonacci Numbers")</h2>
+<h2>#uid("FIBexample", "Computing Fibonacci Numbers")</h2>
 
 #para("\
 
@@ -163,7 +164,7 @@ referred to as a prop in ATS. Intuitively, if a proof can be assgined the
 type FIB(n,r) for some integers n and r, then fib(n) equals r.  In other
 words, FIB(n,r) encodes the relation fib(n)=r. There are three constructors
 FIB0, FIB1 and FIB2 associated with FIB, which are given the following
-types corresponding to the three equations in the definition of fib:
+types corresponding to the three equations in the definition of fib:\
 
 ')
 
@@ -226,6 +227,14 @@ Lastly, it should be emphasized that proofs are completely erased after
 typechecking. In particular, there is no proof construction at run-time.
 
 ')#comment("para")
+
+<h2>#uid("FURTHERexamples", "Further Examples")</h2>
+
+Please find
+#ulink1("#ATSLANGWEBROOTget()/EXAMPLE/example.html", "on-line")
+a large variety of programs written in ATS.
+
+#para("")
 
 <!-- ****** ****** -->
 

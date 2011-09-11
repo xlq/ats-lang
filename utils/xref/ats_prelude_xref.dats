@@ -42,73 +42,74 @@
 // in the directory [$ATSHOME/prelude]/
 //
 // A typical use is like this:
-
-// atsopt --posmark_xref=XREF -d ats_prelude_xref.dats > /dev/null
-
+//
+// atsopt --xrefprelude --posmark_xref=XREF -d ats_prelude_xref.dats > /dev/null
+//
 // where [XREF] should be replaced with the name of a directory
 // that is already created for storing the files that are to be
 // generated for cross-referencing.
 //
 
 (* ****** ****** *)
-
-staload _ = "prelude/sortdef.sats"
 //
-staload _ = "prelude/basics_sta.sats"
-staload _ = "prelude/basics_dyn.sats"
+staload "prelude/basics_sta.sats"
 //
-staload _ = "prelude/macrodef.sats"
+staload "prelude/sortdef.sats"
 //
-staload _ = "prelude/SATS/arith.sats"
-staload _ = "prelude/SATS/vsubrw.sats"
+staload "prelude/basics_dyn.sats"
 //
-staload _ = "prelude/SATS/bool.sats"
+staload "prelude/macrodef.sats"
 //
-staload _ = "prelude/SATS/byte.sats"
+staload "prelude/SATS/arith.sats"
+staload "prelude/SATS/vsubrw.sats"
 //
-staload _ = "prelude/SATS/char.sats"
+staload "prelude/SATS/bool.sats"
 //
-staload _ = "prelude/SATS/extern.sats"
+staload "prelude/SATS/byte.sats"
 //
-staload _ = "prelude/SATS/filebas.sats"
+staload "prelude/SATS/char.sats"
 //
-staload _ = "prelude/SATS/float.sats"
+staload "prelude/SATS/extern.sats"
 //
-staload _ = "prelude/SATS/integer.sats"
-staload _ = "prelude/SATS/integer_fixed.sats"
-staload _ = "prelude/SATS/integer_ptr.sats"
+staload "prelude/SATS/filebas.sats"
 //
-staload _ = "prelude/SATS/lazy.sats"
-staload _ = "prelude/SATS/lazy_vt.sats"
+staload "prelude/SATS/float.sats"
 //
-staload _ = "prelude/SATS/memory.sats"
+staload "prelude/SATS/integer.sats"
+staload "prelude/SATS/integer_fixed.sats"
+staload "prelude/SATS/integer_ptr.sats"
 //
-staload _ = "prelude/SATS/pointer.sats"
+staload "prelude/SATS/lazy.sats"
+staload "prelude/SATS/lazy_vt.sats"
 //
-staload _ = "prelude/SATS/printf.sats"
+staload "prelude/SATS/memory.sats"
 //
-staload _ = "prelude/SATS/reference.sats"
+staload "prelude/SATS/pointer.sats"
 //
-staload _ = "prelude/SATS/sizetype.sats"
+staload "prelude/SATS/printf.sats"
 //
-staload _ = "prelude/SATS/string.sats"
+staload "prelude/SATS/reference.sats"
 //
-staload _ = "prelude/SATS/array.sats"
-staload _ = "prelude/SATS/array0.sats"
+staload "prelude/SATS/sizetype.sats"
 //
-staload _ = "prelude/SATS/list.sats"
-staload _ = "prelude/SATS/list0.sats"
-staload _ = "prelude/SATS/list_vt.sats"
+staload "prelude/SATS/string.sats"
 //
-staload _ = "prelude/SATS/matrix.sats"
-staload _ = "prelude/SATS/matrix0.sats"
+staload "prelude/SATS/array.sats"
+staload "prelude/SATS/array0.sats"
 //
-staload _ = "prelude/SATS/option.sats"
-staload _ = "prelude/SATS/option0.sats"
+staload "prelude/SATS/list.sats"
+staload "prelude/SATS/list0.sats"
+staload "prelude/SATS/list_vt.sats"
 //
-staload _ = "prelude/SATS/ptrarr.sats"
+staload "prelude/SATS/matrix.sats"
+staload "prelude/SATS/matrix0.sats"
 //
-staload _ = "prelude/SATS/unsafe.sats"
+staload "prelude/SATS/option.sats"
+staload "prelude/SATS/option0.sats"
+//
+staload "prelude/SATS/ptrarr.sats"
+//
+staload "prelude/SATS/unsafe.sats"
 
 (* ****** ****** *)
 

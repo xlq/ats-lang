@@ -250,6 +250,7 @@ fn atsopt_usage (cmd: string): void = begin
   print "  --posmark_html (for generating html file depicting colored concrete syntax)\n";
   print "  --posmark_html_body (for generating html body depicting colored concrete syntax)\n";
   print "  --posmark_xref (for generating html file depicting some syntactic cross references)\n";
+  print "  --xrefprelude (for generating cross-referencing prelude files)\n";
   print "  --gline (for generating line pragma information on source code)\n";
   print "  --debug=0 (for disabling the generation of debugging information)\n";
   print "  --debug=1 (for enabling the generation of debugging information)\n";
@@ -307,6 +308,14 @@ in
   // empty
 end // end of [fixity_load]
 
+(* ****** ****** *)
+
+local
+
+val xrefpreludeflag = ref_make_elt<int> (0)
+
+in // in of [local]
+
 fn pervasive_load
   (ATSHOME: string, basename: string): void = let
   val fullname = $Fil.filename_append (ATSHOME, basename)
@@ -325,19 +334,23 @@ fn pervasive_load
 *)
   val () = $Fil.the_filenamelst_pop ()
   val d1cs = $Trans1.d0eclst_tr (d0cs)
-// (*
-  val () = $TransEnv1.staload_file_insert (fullname, 0(*loadflag*), list_nil)
-// *)
+//
+  val () = if !xrefpreludeflag = 0 then
+    $TransEnv1.staload_file_insert (fullname, 0(*loadflag*), list_nil)
+  (* end of [val] *)
+//
   val _(*d2cs*) = $Trans2.d1eclst_tr d1cs
 in
   // empty
 end // end of [pervasive_load]
 
-fn prelude_load (ATSHOME: string): void = let
+fun prelude_load
+  (pv: int, ATSHOME: string): void = let
 //
   val () = e1xpenv_load ()
-//
   val () = fixity_load (ATSHOME)
+//
+  val () = if (pv = ~1) then !xrefpreludeflag := 1
 //
   val () = pervasive_load (ATSHOME, "prelude/basics_sta.sats")
   val () = pervasive_load (ATSHOME, "prelude/sortdef.sats")
@@ -407,6 +420,8 @@ fn prelude_load (ATSHOME: string): void = let
   val () = pervasive_load (ATSHOME, "prelude/SATS/prelude_finish.sats") // miscellaneous
 *)
 //
+  val () = if (pv = ~1) then !xrefpreludeflag := 0
+//
   val () = $TransEnv2.trans2_env_pervasive_add_topenv ()
 //
   val () = $TransEnv3.trans3_env_initialize () // initializing the environment for trans3
@@ -414,6 +429,8 @@ fn prelude_load (ATSHOME: string): void = let
 in
   // empty
 end // end of [prelude_load]
+
+end // end of [local]
 
 (* ****** ****** *)
 
@@ -910,6 +927,8 @@ fun loop {i:nat | i <= n} .<i>. (
             ) // end of ["--depgen=2"]
           | "--typecheck" => (param.typecheck_only := 1)
 //
+          | "--xrefprelude" => (param.prelude := ~1)
+//
           | _ when is_posmark_html (str) => let
               val () = param.posmark := POSMARK_SOME
               val () = param.posmarknd := POSMARKND_HTML_FILE
@@ -949,9 +968,10 @@ fun loop {i:nat | i <= n} .<i>. (
           | COMKINDinput i => flag := i | _ => ()
         // end of [val]
         val () = param.wait := 0
-        val () = if param.prelude = 0 then
-          (param.prelude := 1; prelude_load ATSHOME)
-        // end of [val]
+        val pv = param.prelude
+        val () = if pv <= 0 then let
+          val () = param.prelude := 1 in prelude_load (pv, ATSHOME)
+        end // end of [val]
         val COMARGkey (_(*n*), basename) = arg
         val d0cs = do_parse_filename (flag, param, basename)
         val () = begin case+ 0 of
@@ -1019,9 +1039,10 @@ fun loop {i:nat | i <= n} .<i>. (
       end // end of [_ when ...]
     | _ when
         comkind_is_pervasive (param.comkind) => let
-        val () = if param.prelude = 0 then
-          (param.prelude := 1; prelude_load ATSHOME)
-        // end of [val]
+        val pv = param.prelude
+        val () = if pv <= 0 then let
+          val () = param.prelude := 1 in prelude_load (pv, ATSHOME)
+        end // end of [val]
         val COMARGkey (_(*n*), basename) = arg
         val d0cs = do_parse_filename (0(*static*), param, basename)
         val d1cs = $Trans1.d0eclst_tr d0cs
@@ -1046,9 +1067,10 @@ fun loop {i:nat | i <= n} .<i>. (
   | ~list_vt_nil () when param.wait > 0 => begin
     case+ param.comkind of
     | COMKINDinput flag => () where {
-        val () = if param.prelude = 0 then
-          (param.prelude := 1; prelude_load (ATSHOME))
-        // end of [val]
+        val pv = param.prelude
+        val () = if pv <= 0 then let
+          val () = param.prelude := 1 in prelude_load (pv, ATSHOME)
+        end // end of [val]
         val d0cs = do_parse_stdin (flag)
         val () = begin case+ 0 of
           | _ when param.depgen > 0 => ()

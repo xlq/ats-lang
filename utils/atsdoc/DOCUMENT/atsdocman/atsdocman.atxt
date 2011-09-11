@@ -175,8 +175,8 @@ end // end of [HR]
 The command #command("atsdoc") is a utility in #atslink() for turning a
 text file laden with #emph("texting function calls") into one in which
 these calls are replaced with the strings represented by their return
-values. This utility is designed for people who have some rudimentary
-knowledge of ATS.
+values. This utility is designed for people who have some basic knowledge
+of programmming in ATS.
 
 ")
 
@@ -377,9 +377,6 @@ datatype text =
   | TEXTapptxt3 of (text, text, text) // text concatenation
   | TEXTappstr3 of (string, string, string) // string concatenation
 //
-  | TEXTapptxt4 of (text, text, text, text) // text concatenation
-  | TEXTappstr4 of (string, string, string, string) // string concatenation
-//
   | TEXTnil of () // empty text
 //
   | TEXTcontxt of textlst // text concatenation
@@ -399,8 +396,8 @@ symbols formed by placing identifiers between the two characters '\\\#' and
 '$'. When stringizing a value of the form #code("TEXTstrsub")(str) for some
 string str, we must replace each marked token in str with the string it
 represents. For further details, please see the implementation of
-#code("fprint_strsub") in #myatsdoclink("libatsdoc/DATS/atsdoc_text.dats",
-"libatsdoc/DATS/atsdoc_text.dats").
+#code("fprint_strsub") in
+#myatsdoclink("libatsdoc/DATS/atsdoc_text.dats", "libatsdoc/DATS/atsdoc_text.dats").
 
 ")#comment("para")
 
