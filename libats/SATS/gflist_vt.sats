@@ -49,7 +49,20 @@ staload "libats/SATS/ilistp.sats" // for handling integer sequences
 (* ****** ****** *)
 
 absviewt@ype
-elt (a:viewt@ype, x:int) = a
+elt_vt0ype_int (a:viewt@ype, x:int) = a
+stadef elt = elt_vt0ype_int
+viewtypedef elt (a:viewt@ype) = [x:int] elt (a, x)
+(*
+// HX-2011-09-11:
+abst@ype elt (a:t@ype, x:int) = !a // according to the new syntax proposal
+*)
+
+prfun eltencode {a:viewt@ype}
+  (x: &a >> elt (a, x)): #[x:int] void
+prfun eltdecode
+  {a:viewt@ype} {x:int} (x: &elt (a, x) >> a): void
+
+(* ****** ****** *)
 
 dataviewtype
 gflist_vt (a:viewt@ype, ilist) =

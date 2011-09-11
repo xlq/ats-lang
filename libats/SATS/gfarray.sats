@@ -49,7 +49,9 @@ staload "libats/SATS/ilistp.sats" // for handling integer sequences
 (* ****** ****** *)
 
 absviewt@ype
-elt (a:viewt@ype, x:int) = a
+elt_v0type_int (a:viewt@ype, x:int) = a
+stadef elt = elt_v0type_int
+stadef elt (a:viewt@ype) = [x:int] elt (a, x)
 
 prfun eltencode {a:viewt@ype}
   (x: &a >> elt (a, x)): #[x:int] void

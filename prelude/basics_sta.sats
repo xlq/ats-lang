@@ -167,156 +167,156 @@ absviewt@ype undefined_viewt0ype = $extype"ats_undefined_type"
 //
 // HX: some built-in static constants for integer operations
 //
-sta neg_int_int : int -> int (* integer negation *)
+stacst neg_int_int : int -> int (* integer negation *)
 stadef ~ = neg_int_int
 //
-sta add_int_int_int : (int, int) -> int (* addition *)
+stacst add_int_int_int : (int, int) -> int (* addition *)
 stadef + = add_int_int_int
 //
-sta sub_int_int_int: (int, int) -> int (* subtraction *)
+stacst sub_int_int_int: (int, int) -> int (* subtraction *)
 stadef - = sub_int_int_int
 //
-sta nsub_int_int_int: (int, int) -> int (* subtraction on nats *)
+stacst nsub_int_int_int: (int, int) -> int (* subtraction on nats *)
 stadef nsub = nsub_int_int_int
 //
-sta mul_int_int_int : (int, int) -> int (* multiplication *)
+stacst mul_int_int_int : (int, int) -> int (* multiplication *)
 stadef * = mul_int_int_int
 //
-sta div_int_int_int : (int, int) -> int (* division *)
+stacst div_int_int_int : (int, int) -> int (* division *)
 stadef / = div_int_int_int
 //
 (*
-sta mod_int_int_int : (int, int) -> int (* modulo operation *)
+stacst mod_int_int_int : (int, int) -> int (* modulo operation *)
 stadef mod = mod_int_int_int
 *)
 // [y] is required to be a constant
 stadef mod (x:int, y:int) = x - y * (x / y)
 //
-sta abs_int_int : int -> int
+stacst abs_int_int : int -> int
 stadef abs = abs_int_int
 //
-sta max_int_int_int : (int, int) -> int
+stacst max_int_int_int : (int, int) -> int
 stadef max = max_int_int_int
 //
-sta min_int_int_int : (int, int) -> int
+stacst min_int_int_int : (int, int) -> int
 stadef min = min_int_int_int
 //
-sta int_of_bool : bool -> int and bool_of_int : int -> bool
-sta int_of_char : char -> int and char_of_int : int -> char
+stacst int_of_bool : bool -> int and bool_of_int : int -> bool
+stacst int_of_char : char -> int and char_of_int : int -> char
 //
 (* ****** ****** *)
 //
 // HX: some built-in boolean constants
 //
-sta true_bool : bool and false_bool : bool
+stacst true_bool : bool and false_bool : bool
 stadef true = true_bool and false = false_bool
 //
 // HX: some built-in static constants for boolean operations
 //
-sta neg_bool_bool : bool -> bool (* boolean negation *)
+stacst neg_bool_bool : bool -> bool (* boolean negation *)
 stadef ~ = neg_bool_bool
 //
-sta mul_bool_bool_bool : (bool, bool) -> bool (* conjunction *)
+stacst mul_bool_bool_bool : (bool, bool) -> bool (* conjunction *)
 stadef && = mul_bool_bool_bool
 //
-sta add_bool_bool_bool : (bool, bool) -> bool (* disjunction *)
+stacst add_bool_bool_bool : (bool, bool) -> bool (* disjunction *)
 stadef || = add_bool_bool_bool
 //
-sta gt_bool_bool_bool : (bool, bool) -> bool
+stacst gt_bool_bool_bool : (bool, bool) -> bool
 stadef > = gt_bool_bool_bool
 //
-sta gte_bool_bool_bool : (bool, bool) -> bool
+stacst gte_bool_bool_bool : (bool, bool) -> bool
 stadef >= = gte_bool_bool_bool
 //
-sta lt_bool_bool_bool : (bool, bool) -> bool
+stacst lt_bool_bool_bool : (bool, bool) -> bool
 stadef < = lt_bool_bool_bool
 //
-sta lte_bool_bool_bool : (bool, bool) -> bool
+stacst lte_bool_bool_bool : (bool, bool) -> bool
 stadef <= = lte_bool_bool_bool
 //
-sta eq_bool_bool_bool : (bool, bool) -> bool
+stacst eq_bool_bool_bool : (bool, bool) -> bool
 stadef == = eq_bool_bool_bool
 //
-sta neq_bool_bool_bool : (bool, bool) -> bool
+stacst neq_bool_bool_bool : (bool, bool) -> bool
 stadef <> = neq_bool_bool_bool
 //
 (* ****** ****** *)
 //
 // HX: some built-in static constants for char comparisons
 //
-sta sub_char_char_int : (char, char) -> int
+stacst sub_char_char_int : (char, char) -> int
 stadef - = sub_char_char_int
 //
-sta gt_char_char_bool : (char, char) -> bool
+stacst gt_char_char_bool : (char, char) -> bool
 stadef > = gt_char_char_bool
 //
-sta gte_char_char_bool : (char, char) -> bool
+stacst gte_char_char_bool : (char, char) -> bool
 stadef >= = gte_char_char_bool
 //
-sta lt_char_char_bool : (char, char) -> bool
+stacst lt_char_char_bool : (char, char) -> bool
 stadef < = lt_char_char_bool
 //
-sta lte_char_char_bool : (char, char) -> bool
+stacst lte_char_char_bool : (char, char) -> bool
 stadef <= = lte_char_char_bool
 //
-sta eq_char_char_bool : (char, char) -> bool
+stacst eq_char_char_bool : (char, char) -> bool
 stadef == = eq_char_char_bool
 //
-sta neq_char_char_bool : (char, char) -> bool
+stacst neq_char_char_bool : (char, char) -> bool
 stadef <> = neq_char_char_bool
 //
 (* ****** ****** *)
 //
 // HX: some built-in static constants for integer comparisons
 //
-sta gt_int_int_bool : (int, int) -> bool
+stacst gt_int_int_bool : (int, int) -> bool
 stadef > = gt_int_int_bool
 //
-sta gte_int_int_bool : (int, int) -> bool
+stacst gte_int_int_bool : (int, int) -> bool
 stadef >= = gte_int_int_bool
 //
-sta lt_int_int_bool : (int, int) -> bool
+stacst lt_int_int_bool : (int, int) -> bool
 stadef < = lt_int_int_bool
 //
-sta lte_int_int_bool : (int, int) -> bool
+stacst lte_int_int_bool : (int, int) -> bool
 stadef <= = lte_int_int_bool
 //
-sta eq_int_int_bool : (int, int) -> bool
+stacst eq_int_int_bool : (int, int) -> bool
 stadef == = eq_int_int_bool
 //
-sta neq_int_int_bool : (int, int) -> bool
+stacst neq_int_int_bool : (int, int) -> bool
 stadef <> = neq_int_int_bool
 //
 // HX: some built-in static constants for pointer arithmetic
 //
-sta null_addr : addr
+stacst null_addr : addr
 stadef null = null_addr
 //
-sta add_addr_int_addr : (addr, int) -> addr
+stacst add_addr_int_addr : (addr, int) -> addr
 stadef + = add_addr_int_addr
 //
-sta sub_addr_int_addr : (addr, int) -> addr
+stacst sub_addr_int_addr : (addr, int) -> addr
 stadef - = sub_addr_int_addr
 //
-sta sub_addr_addr_int : (addr, addr) -> int
+stacst sub_addr_addr_int : (addr, addr) -> int
 stadef - = sub_addr_addr_int
 //
-sta gt_addr_addr_bool : (addr, addr) -> bool
+stacst gt_addr_addr_bool : (addr, addr) -> bool
 stadef > = gt_addr_addr_bool
 //
-sta gte_addr_addr_bool : (addr, addr) -> bool
+stacst gte_addr_addr_bool : (addr, addr) -> bool
 stadef >= = gte_addr_addr_bool
 //
-sta lt_addr_addr_bool : (addr, addr) -> bool
+stacst lt_addr_addr_bool : (addr, addr) -> bool
 stadef < = lt_addr_addr_bool
 //
-sta lte_addr_addr_bool : (addr, addr) -> bool
+stacst lte_addr_addr_bool : (addr, addr) -> bool
 stadef <= = lte_addr_addr_bool
 //
-sta eq_addr_addr_bool : (addr, addr) -> bool
+stacst eq_addr_addr_bool : (addr, addr) -> bool
 stadef == = eq_addr_addr_bool
 //
-sta neq_addr_addr_bool : (addr, addr) -> bool
+stacst neq_addr_addr_bool : (addr, addr) -> bool
 stadef <> = neq_addr_addr_bool
 //
 (* ****** ****** *)
@@ -324,7 +324,7 @@ stadef <> = neq_addr_addr_bool
 (*
 ** subclass relation
 *)
-sta lte_cls_cls_bool : (cls, cls) -> bool
+stacst lte_cls_cls_bool : (cls, cls) -> bool
 stadef <= = lte_cls_cls_bool
 
 (* ****** ****** *)
@@ -392,15 +392,17 @@ typedef Refopt (a: viewt@ype) = [b:bool] refopt (a, b)
 
 (* ****** ****** *)
 //
-// HX: for taking out a component in a record
+// HX: for boxing a view
+//
+absprop
+vbox_view_prop (view)
+stadef vbox = vbox_view_prop
+//
+// HX: for taking out a field
+//
 abst@ype
 without_viewt0ype_t0ype (viewt@ype)
 stadef without = without_viewt0ype_t0ype
-//
-// HX: sta vbox_view_prop : view -> prop
-//
-absprop vbox_view_prop (view)
-stadef vbox = vbox_view_prop
 //
 (* ****** ****** *)
 
@@ -408,7 +410,8 @@ stadef vbox = vbox_view_prop
 //
 // HX: support for union type may be removed
 //
-absviewt@ype opt_viewt0ype_int_viewt0ype
+absviewt@ype
+opt_viewt0ype_int_viewt0ype
   (a:viewt@ype+, i:int) = union (i) { value= a }
 stadef opt = value_viewt0ype_int_viewt0ype
 *)
@@ -436,7 +439,7 @@ absviewtype vtfrac (stamp, viewtype, rat)
 
 (* ****** ****** *)
 //
-// HX: build-in dependent type constructors
+// HX: built-in dependent type constructors
 //
 abstype
 array0_viewt0ype_type (elt:viewt@ype) // unnamed
@@ -548,7 +551,7 @@ stadef div_r = div_int_int_int_bool
 stadef
 size_int_int_bool
   (sz: int, n:int) = n >= 0
-sta sizeof_viewt0ype_int : viewt@ype -> int
+stacst sizeof_viewt0ype_int : viewt@ype -> int
 stadef sizeof = sizeof_viewt0ype_int
 
 (* ****** ****** *)
