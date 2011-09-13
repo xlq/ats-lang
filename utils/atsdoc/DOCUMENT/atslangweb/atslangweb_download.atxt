@@ -110,8 +110,7 @@ The current #strong("unstable") version is
 
 #para('\
 
-In order to
-install ATS, the following requirements need to be met:
+The following requirements are supposed to be met in order to install ATS:
 
 ')
 

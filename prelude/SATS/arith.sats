@@ -110,6 +110,7 @@ prfun mul_pos_pos_pos :
 (* ****** ****** *)
 
 prfun mul_negate {m,n:int} {p:int} (pf: MUL (m, n, p)):<prf> MUL (~m, n, ~p)
+prfun mul_negate2 {m,n:int} {p:int} (pf: MUL (m, n, p)):<prf> MUL (m, ~n, ~p)
 
 (* ****** ****** *)
 

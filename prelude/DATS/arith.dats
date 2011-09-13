@@ -94,23 +94,6 @@ end // end of [mul_pos_pos_pos]
 
 (* ****** ****** *)
 
-implement
-mul_negate (pf) = let
-  prfn aux {m,n,p:int}
-    (pf: MUL (m, n, p)): MUL (~m, n, ~p) =
-    sif m > 0 then MULneg pf
-    else sif m < 0 then begin
-      let prval MULneg pf = pf in pf end
-    end else begin
-      let prval MULbas () = pf in pf end
-    end // end of [sif]
-  // end of [aux]
-in
-  aux (pf)
-end // end of [mul_negate]
-
-(* ****** ****** *)
-
 prfun mul_m_n1_mnm
   {m,n:int} {p:int} .<max(2*m, 2*(~m)+1)>.
   (pf: MUL (m, n, p)): MUL (m, n+1, p+m) = begin
@@ -128,6 +111,26 @@ prfun mul_m_neg_n_neg_mn
   | MULind pf => MULind (mul_m_neg_n_neg_mn pf)
   | MULneg pf => MULneg (mul_m_neg_n_neg_mn pf)
 end // end of [mul_m_neg_n_neg_mn]
+
+(* ****** ****** *)
+
+implement
+mul_negate (pf) = let
+  prfn aux {m,n,p:int}
+    (pf: MUL (m, n, p)): MUL (~m, n, ~p) =
+    sif m > 0 then MULneg pf
+    else sif m < 0 then begin
+      let prval MULneg pf = pf in pf end
+    end else begin
+      let prval MULbas () = pf in pf end
+    end // end of [sif]
+  // end of [aux]
+in
+  aux (pf)
+end // end of [mul_negate]
+
+implement
+mul_negate2 (pf) = mul_m_neg_n_neg_mn (pf)
 
 (* ****** ****** *)
 
