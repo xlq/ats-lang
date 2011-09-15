@@ -626,9 +626,9 @@ val SORTDEF = symbol_make "SORTDEF"
 val () = symbol_set_fullname (SORTDEF, "\"sortdef\"")
 val () = symbol_set_tyname (SORTDEF, t0kn_tyname)
 //
-val STA = symbol_make "STA"
-val () = symbol_set_fullname (STA, "\"sta\"")
-val () = symbol_set_tyname (STA, t0kn_tyname)
+val STACST = symbol_make "STACST"
+val () = symbol_set_fullname (STACST, "\"stacst\"")
+val () = symbol_set_tyname (STACST, t0kn_tyname)
 //
 val STADEF = symbol_make "STADEF"
 val () = symbol_set_fullname (STADEF, "\"stadef\"")
@@ -2251,6 +2251,8 @@ atme0xp /* atomic generic expression */
   | LITERAL_float                       { $$ = e0xp_float($1) ; }
   | LITERAL_int                         { $$ = e0xp_int($1) ; }
   | LITERAL_string                      { $$ = e0xp_string($1) ; }
+  | SRPFILENAME                         { $$ = e0xp_FILENAME($1) ; }
+  | SRPLOCATION                         { $$ = e0xp_LOCATION($1) ; }
   | i0de                                { $$ = e0xp_ide($1) ; }
   | LPAREN e0xpseq RPAREN               { $$ = e0xp_list($1, $2, $3) ; }
   | PERCENTLPAREN e0xp RPAREN           { $$ = e0xp_eval($1, $2, $3) ; }
@@ -2269,6 +2271,10 @@ val gr = grmrule_append (LITERAL_int)
 val () = grmrule_set_action (gr, "{ $$ = e0xp_int($1) ; }")
 val gr = grmrule_append (LITERAL_string)
 val () = grmrule_set_action (gr, "{ $$ = e0xp_string($1) ; }")
+val gr = grmrule_append (SRPFILENAME)
+val () = grmrule_set_action (gr, "{ $$ = e0xp_FILENAME($1) ; }")
+val gr = grmrule_append (SRPLOCATION)
+val () = grmrule_set_action (gr, "{ $$ = e0xp_LOCATION($1) ; }")
 val gr = grmrule_append (i0de)
 val () = grmrule_set_action (gr, "{ $$ = e0xp_ide($1) ; }")
 val gr = grmrule_append ($lst_t {symbol} (tupz! LPAREN e0xpseq RPAREN))
@@ -3679,7 +3685,7 @@ val gr = grmrule_append ($lst_t {symbol} (tupz! SEMICOLON s0qua barsemis0quaseq)
 val () = grmrule_set_action (gr, "{ $$ = s0qualst_cons($2, $3) ; }")
 //
 val barsemi = SYMREGaltlit (BAR, SEMICOLON)
-val barsemis0qua = SYMREGseq (barsemi, SYMREGlit s0exp)
+val barsemis0qua = SYMREGseq (barsemi, SYMREGlit s0qua)
 val () = theGrmrulelst_merge_all (barsemis0quaseq, SYMREGstar (barsemis0qua))
 //
 val () = symbol_close (pf | barsemis0quaseq)
@@ -5211,16 +5217,16 @@ atmd0exp /* atomic dynamic expressions */
   | LITERAL_int                         { $$ = d0exp_int($1) ; }
   | LITERAL_intsp                       { $$ = d0exp_intsp($1) ; }
   | LITERAL_string                      { $$ = d0exp_string($1) ; }
-
+/* */
   | SRPFILENAME                         { $$ = d0exp_FILENAME($1) ; }
   | SRPLOCATION                         { $$ = d0exp_LOCATION($1) ; }
-
+/* */
   | di0de                               { $$ = d0exp_ide($1) ; }
   | OP di0de                            { $$ = d0exp_opide($1, $2) ; }
   | d0ynq i0de                          { $$ = d0exp_qid($1, $2) ; }
-
+/* */
   | i0dext                              { $$ = d0exp_idext($1) ; }
-
+/* */
   | AMPERSAND                           { $$ = d0exp_ptrof($1) ; }
   | BREAK                               { $$ = d0exp_loopexn(0, $1) ; }
   | CONTINUE                            { $$ = d0exp_loopexn(1, $1) ; }
@@ -6607,7 +6613,7 @@ d0ec
   | DATAPARASORT d0atsrtdec andd0atsrtdecseq
                                         { $$ = d0ec_datsrts(1, $2, $3) ; }
   | abskind s0tacon ands0taconseq       { $$ = d0ec_stacons($1, $2, $3) ; }
-  | STA s0tacst ands0tacstseq           { $$ = d0ec_stacsts($2, $3) ; }
+  | STACST s0tacst ands0tacstseq        { $$ = d0ec_stacsts($2, $3) ; }
   | STAVAR s0tavar ands0tavarseq        { $$ = d0ec_stavars($2, $3) ; }
   | stadefkind s0expdef ands0expdefseq  { $$ = d0ec_sexpdefs($1, $2, $3) ; }
   | ASSUME s0aspdec                     { $$ = d0ec_saspdec($2) ; }
@@ -6669,7 +6675,7 @@ val gr = grmrule_append ($lst_t {symbol} (tupz! DATAPARASORT d0atsrtdec andd0ats
 val () = grmrule_set_action (gr, "{ $$ = d0ec_datsrts(1, $2, $3) ; }")
 val gr = grmrule_append ($lst_t {symbol} (tupz! abskind s0tacon ands0taconseq))
 val () = grmrule_set_action (gr, "{ $$ = d0ec_stacons($1, $2, $3) ; }")
-val gr = grmrule_append ($lst_t {symbol} (tupz! STA s0tacst ands0tacstseq))
+val gr = grmrule_append ($lst_t {symbol} (tupz! STACST s0tacst ands0tacstseq))
 val () = grmrule_set_action (gr, "{ $$ = d0ec_stacsts($2, $3) ; }")
 val gr = grmrule_append ($lst_t {symbol} (tupz! STAVAR s0tavar ands0tavarseq))
 val () = grmrule_set_action (gr, "{ $$ = d0ec_stavars($2, $3) ; }")

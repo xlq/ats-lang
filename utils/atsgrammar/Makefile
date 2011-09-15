@@ -97,7 +97,7 @@ include .depend
 
 ######
 
-RMF = rm -f
+RMF=rm -f
 
 ######
 

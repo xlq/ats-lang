@@ -37,10 +37,21 @@ val thePreamble = "\
 (* ****** ****** *)
 
 val theExternHeader = "\
+//\n\
 #include <stdio.h> // for [fprintf]\n\
 #include \"ats_memory.h\" // HX: loading [ats_types.h] as well\n\
+/*\n\
+// HX: this is okay\n\
+#define malloc ats_malloc_gc\n\
+#define realloc ats_realloc_gc\n\
+#define free ats_free_gc\n\
+*/\n\
+//\n\
+// HX-2011-09-06:\n\
+//\n\
 #define malloc ats_malloc_ngc\n\
 #define realloc ats_realloc_ngc\n\
+#define free ats_free_ngc\n\
 \n\
 extern void yyerror (char *s) ;\n\
 \n\
@@ -1075,6 +1086,13 @@ yyparse_main (\n\
   // fprintf (stderr, \"yyparse_main: &yylval = %p\\n\", &yylval) ;\n\
   ATS_GC_MARKROOT (&yylval, sizeof(YYSTYPE)) ;\n\
 //\n\
+#ifdef YYPATCH\n\
+#if (YYPATCH >= 20101229)\n\
+  // fprintf (stderr, \"yyparse_main: &yystack = %p\\n\", &yystack) ;\n\
+  ATS_GC_MARKROOT (&yystack, sizeof(YYSTACKDATA)) ;\n\
+#endif\n\
+#endif\n\
+//\n\
   yylex_tok0 = tok0 ;\n\
 //\n\
   yyparse () ;\n\
@@ -1337,7 +1355,7 @@ emit_yats (out) = let
   val () = fprint_string (out, "*/\n")
 //
   val () = fprint_string (out, "\n/* ****** ****** */\n\n")
-  val () = fprint_string (out, "%{\n\n")
+  val () = fprint_string (out, "%{\n")
 //
   val () = fprint_string (out, theExternHeader)
 //

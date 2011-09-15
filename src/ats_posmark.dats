@@ -652,16 +652,16 @@ in
       fprint1_string (pf_mod | fil_d, HTM_PRFEXP_FONT_END)
     end // end of [PMprfexp]
   | PMstacstdec (i, loc(*dec*)) => if i = 0 then let
-      val () = fprint1_string (pf_mod | fil_d, "<a id=\"loc")
+      val () = fprint1_string (pf_mod | fil_d, "<span id=\"loc")
       val () = fprint1_lint (pf_mod | fil_d, ofs) where {
         val ofs = $Loc.location_begpos_toff (loc)
       } // end of [val]
       val () = fprint1_string (pf_mod | fil_d, "\">")
     in
       fprint1_string (pf_mod | fil_d, HTM_STACSTDEC_FONT_BEG)
-    end else let
+    end else let // HX: closing
       val () = fprint1_string (pf_mod | fil_d, HTM_STACSTDEC_FONT_END)
-      val () = fprint1_string (pf_mod | fil_d, "</a>")
+      val () = fprint1_string (pf_mod | fil_d, "</span>")
     in
       // nothing
     end // end of [PMdyncstdec]
@@ -683,16 +683,18 @@ in
       fprint1_string (pf_mod | fil_d, "</a>")
     end // end of [PMstacstuse]
   | PMdyncstdec (i, loc(*dec*)) => if i = 0 then let
-      val () = fprint1_string (pf_mod | fil_d, "<a id=\"loc")
+      val () = fprint1_string (pf_mod | fil_d, "<span id=\"loc")
       val () = fprint1_lint (pf_mod | fil_d, ofs) where {
         val ofs = $Loc.location_begpos_toff (loc)
       } // end of [val]
       val () = fprint1_string (pf_mod | fil_d, "\">")
     in
       fprint1_string (pf_mod | fil_d, HTM_DYNCSTDEC_FONT_BEG)
-    end else begin
-      fprint1_string (pf_mod | fil_d, HTM_DYNCSTDEC_FONT_END);
-      fprint1_string (pf_mod | fil_d, "</a>")
+    end else let // HX: closing
+      val () = fprint1_string (pf_mod | fil_d, HTM_DYNCSTDEC_FONT_END);
+      val () = fprint1_string (pf_mod | fil_d, "</span>")
+    in
+      // nothing
     end // end of [PMdyncstdec]
   | PMdyncstimp (i, loc(*dec*)) => if i = 0 then let
       val () = fprint1_string (pf_mod | fil_d, "<a href=\"")

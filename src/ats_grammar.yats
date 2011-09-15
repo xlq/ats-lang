@@ -9,7 +9,7 @@
 /* ****** ****** */
 
 /*
-** Time of Generation: Sat Jul  2 08:34:07 2011
+** Time of Generation: Thu Sep 15 17:24:02 2011
 */
 
 /* ****** ****** */
@@ -1696,6 +1696,7 @@ atme0xp
   | LITERAL_int  { $$ = e0xp_int($1) ; }
   | LITERAL_string  { $$ = e0xp_string($1) ; }
   | SRPFILENAME  { $$ = e0xp_FILENAME($1) ; }
+  | SRPLOCATION  { $$ = e0xp_LOCATION($1) ; }
   | i0de  { $$ = e0xp_ide($1) ; }
   | LPAREN e0xpseq RPAREN  { $$ = e0xp_list($1, $2, $3) ; }
   | PERCENTLPAREN e0xp RPAREN  { $$ = e0xp_eval($1, $2, $3) ; }
