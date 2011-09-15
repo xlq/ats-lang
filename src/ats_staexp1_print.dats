@@ -103,6 +103,12 @@ in
   | E1XPundef () => begin
       fprint1_string (pf | out, "E1XPundef()")
     end // end of [E1XPundef]
+  | E1XPcstsp (cst) => begin
+      prstr "E1XPcstsp(";
+      $Syn.fprint_cstsp (pf | out, cst);
+      prstr ")"
+    end // end of [E1XPcstsp]
+ 
 end // end of [fprint_e1xp]
 
 implement print_e1xp (e) = print_mac (fprint_e1xp, e)

@@ -76,6 +76,7 @@ v1al_is_true (v) = begin
   | V1ALstring s => string_isnot_empty s // 2nd most common
   | V1ALfloat f => f <> 0.0
   | V1ALchar c => c <> '\000'
+  | V1ALcstsp _ => true // HX: always true
 end // end of [v1al_is_true]
 
 implement v1al_is_false (v) = ~v1al_is_true(v)
@@ -595,6 +596,7 @@ in
   | E1XPnone () => V1ALint 0
   | E1XPstring (s, _) => V1ALstring s
   | E1XPundef () => e1xp_eval_errmsg_undef (e0.e1xp_loc)
+  | E1XPcstsp (cst) => V1ALcstsp (e0.e1xp_loc, cst)
 end // end of [e1xp_eval]
 
 (* ****** ****** *)
@@ -619,6 +621,7 @@ e1xp_make_v1al (loc, v) = // turning a value into an expr
   | V1ALstring s => let
       val n = int_of_size (string_length s) in e1xp_string (loc, s, n)
     end // end of [V1ALstring]
+  | V1ALcstsp (_(*loc*), cst) => e1xp_cstsp (loc, cst)
 // end of [e1xp_make_v1al]
 
 (* ****** ****** *)

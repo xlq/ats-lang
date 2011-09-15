@@ -104,6 +104,10 @@ implement e1xp_undef (loc) = '{
   e1xp_loc= loc, e1xp_node= E1XPundef ()
 } // end of [e1xp_undef]
 
+implement e1xp_cstsp (loc, cst) = '{
+  e1xp_loc= loc, e1xp_node= E1XPcstsp (cst)
+}
+
 (* ****** ****** *)
 
 implement e1xp_true  (): e1xp = e1xp_int ($Loc.location_none, "1")

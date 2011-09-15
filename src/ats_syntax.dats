@@ -124,7 +124,8 @@ implement dcstkind_is_proof (dk) = case+ dk of
   | _ => false
 // end of [dcstkind_is_proof]
 
-implement fprint_dcstkind (out, dk) = case+ dk of
+implement
+fprint_dcstkind (out, dk) = case+ dk of
   | DCSTKINDfun () => fprint_string (out, "DCSTKINDfun")
   | DCSTKINDval () => fprint_string (out, "DCSTKINDval")
   | DCSTKINDcastfn () => fprint_string (out, "DCSTKINDcastfn")
@@ -434,9 +435,20 @@ implement e0xp_string s = '{
 , e0xp_node= E0XPstring (s.s0tring_val, s.s0tring_len)
 }
 
+implement e0xp_FILENAME (tok) = '{
+  e0xp_loc= tok.t0kn_loc, e0xp_node= E0XPcstsp CSTSPfilename
+}
+
+implement e0xp_LOCATION (tok) = '{
+  e0xp_loc= tok.t0kn_loc, e0xp_node= E0XPcstsp CSTSPlocation
+}
+
 (* ****** ****** *)
 
-implement fprint_s0rtq (pf | out, q) = case+ q.s0rtq_node of
+implement
+fprint_s0rtq
+  (pf | out, q) =
+  case+ q.s0rtq_node of
   | S0RTQnone () => ()
   | S0RTQstr fname => begin
       fprint1_char (pf | out, '"');

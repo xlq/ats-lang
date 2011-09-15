@@ -203,6 +203,11 @@ p1at_make_e1xp (loc, e0) = let
         prerr ": incorrect use of undefined value."; prerr_newline ();
         $Err.abort ()
       end // end of [E1XPundef]
+    | E1XPcstsp (cst) => begin
+        prerr_loc_error1 (loc);
+        prerr ": incorrect use of a special constant."; prerr_newline ();
+        $Err.abort ()
+      end // end of [E1XPcstsp]
   // end of [aux]
 //
   and auxlst
@@ -583,6 +588,7 @@ d1exp_make_e1xp (loc, e0) = let
         prerr_loc_error1 (loc); prerr ": incorrect use of undefined value."; prerr_newline ();
         $Err.abort ()
       end // end of [E1XPundef]
+    | E1XPcstsp (cst) => d1exp_cstsp (loc, cst)
   // end of [aux]
 //
   and auxlst (es0: e1xplst)

@@ -233,6 +233,7 @@ implement e0xp_tr (e0) = let
     | E0XPint (int: string) => $Fix.ITEMatm (e1xp_int (loc, int))
     | E0XPlist (es) => $Fix.ITEMatm (e1xp_list (loc, e0xplst_tr es))
     | E0XPstring (str, len) => $Fix.ITEMatm (e1xp_string (loc, str, len))
+    | E0XPcstsp (cst) => $Fix.ITEMatm (e1xp_cstsp (loc, cst))
   end // end of [aux_item]
 //
   and aux_itemlst (e0: e0xp): e1xpitmlst = let
@@ -461,6 +462,7 @@ do_e0xpact_assert (loc, v) = let
     | V1ALstring s => let
         val s = string1_of_string s in string_is_empty s
       end // end of [V1ALstring]
+    | V1ALcstsp _ => true // HX: always true
   ) : bool
 in
   if is_false then begin
@@ -481,17 +483,31 @@ do_e0xpact_error (loc, v) = let
     | V1ALfloat f => prerr f
     | V1ALint i => prerr i
     | V1ALstring s => prerr s
+    | V1ALcstsp (loc, cst) => (case+ cst of
+        | CSTSPfilename () => prerr "#FILENAME"
+        | CSTSPlocation () => prerr "#LOCATION"
+      ) // end of [V1ALcstsp]
   // end of [val]
 in
   exit {void} (1)
 end // end of [do_e0xpact_error]
 
 implement
-do_e0xpact_prerr (v) = case+ v of
+do_e0xpact_prerr
+  (v) = case+ v of
   | V1ALchar c => prerr c
   | V1ALfloat f => prerr f
   | V1ALint i => prerr i
   | V1ALstring s => prerr s
+  | V1ALcstsp (loc, cst) => (
+    case+ cst of
+    | CSTSPfilename () => let
+        val fil = $Loc.location_get_filename (loc)
+      in
+        $Fil.prerr_filename (fil)
+      end
+    | CSTSPlocation () => $Loc.prerr_location (loc)
+    ) // end of [V1ALcstsp]
 // end of [do_e0xpact_prerr]
 
 (* ****** ****** *)

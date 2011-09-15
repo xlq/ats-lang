@@ -1695,6 +1695,7 @@ atme0xp
   | LITERAL_float  { $$ = e0xp_float($1) ; }
   | LITERAL_int  { $$ = e0xp_int($1) ; }
   | LITERAL_string  { $$ = e0xp_string($1) ; }
+  | SRPFILENAME  { $$ = e0xp_FILENAME($1) ; }
   | i0de  { $$ = e0xp_ide($1) ; }
   | LPAREN e0xpseq RPAREN  { $$ = e0xp_list($1, $2, $3) ; }
   | PERCENTLPAREN e0xp RPAREN  { $$ = e0xp_eval($1, $2, $3) ; }

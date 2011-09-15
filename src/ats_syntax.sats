@@ -388,6 +388,7 @@ datatype e0xp_node =
   | E0XPint of string
   | E0XPlist of e0xplst
   | E0XPstring of (string, int(*length*))
+  | E0XPcstsp of cstsp // for special constants
 // end of [e0xp_node]
 
 where e0xp: type = '{
@@ -423,6 +424,9 @@ fun e0xp_list
 // end of [e0xp_list]
 
 fun e0xp_string (s: s0tring): e0xp = "e0xp_string"
+
+fun e0xp_FILENAME (tok: t0kn): e0xp = "e0xp_FILENAME"
+fun e0xp_LOCATION (tok: t0kn): e0xp = "e0xp_LOCATION"
 
 (* ****** ****** *)
 //

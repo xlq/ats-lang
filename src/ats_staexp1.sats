@@ -53,6 +53,7 @@ typedef funclo = $Syn.funclo
 typedef s0rtq = $Syn.s0rtq
 typedef s0taq = $Syn.s0taq
 typedef i0delst = $Syn.i0delst
+typedef cstsp = $Syn.cstsp
 
 (* ****** ****** *)
 
@@ -66,6 +67,7 @@ datatype e1xp_node =
   | E1XPnone of ()
   | E1XPstring of (string, int(*length*))
   | E1XPundef of () // a special value for marking undefinition
+  | E1XPcstsp of $Syn.cstsp // special constants
 // end of [e1xp_node]
 
 where e1xp: type = '{
@@ -105,6 +107,7 @@ fun e1xp_list (_: loc_t, _: e1xplst): e1xp
 fun e1xp_none (_: loc_t): e1xp
 fun e1xp_string (_: loc_t, _: string, _: int): e1xp
 fun e1xp_undef (_: loc_t): e1xp
+fun e1xp_cstsp (_: loc_t, cst: cstsp): e1xp
 //
 fun e1xp_true (): e1xp and e1xp_false (): e1xp
 
@@ -115,6 +118,7 @@ datatype v1al =
   | V1ALfloat of double
   | V1ALint of int
   | V1ALstring of string
+  | V1ALcstsp of (loc_t, cstsp)
 // end of [v1al]
 
 val v1al_true : v1al and v1al_false : v1al
