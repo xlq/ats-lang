@@ -14,7 +14,6 @@ ATSDOC=$(ATSHOMEQ)/bin/atsdoc
 ######
 
 all:: html
-all:: uploadloc
 all:: clean
 
 ######

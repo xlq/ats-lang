@@ -33,7 +33,7 @@ represents the suspended evaluation of exp.  On the other hand, given a
 value v of the type #code("lazy")(T) for some type T,
 #code("lazy_force")(v) resumes the suspended evaluation represented by v
 and returns a result of type T. The interface for the function template
-#code("lazy_force") is:
+#code("lazy_force") is given as follows:
 
 #atscode("\
 fun{a:t@ype} lazy_force (x: lazy a):<!laz> a

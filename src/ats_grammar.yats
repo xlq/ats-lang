@@ -9,7 +9,7 @@
 /* ****** ****** */
 
 /*
-** Time of Generation: Thu Sep 15 17:24:02 2011
+** Time of Generation: Fri Sep 16 12:54:29 2011
 */
 
 /* ****** ****** */
@@ -291,6 +291,10 @@ extern e0xp_t e0xp_ide (i0de_t) ;
 extern e0xp_t e0xp_int (i0nt_t) ;
 extern e0xp_t e0xp_list (t0kn_t, e0xplst_t, t0kn_t) ;
 extern e0xp_t e0xp_string (s0tring_t) ;
+
+extern e0xp_t e0xp_FILENAME (t0kn_t) ; // a special string constant
+extern e0xp_t e0xp_LOCATION (t0kn_t) ; // a special string constant
+
 extern e0xplst_t e0xplst_nil (void) ;
 extern e0xplst_t e0xplst_cons (e0xp_t, e0xplst_t) ;
 extern e0xpopt_t e0xpopt_none (void) ;

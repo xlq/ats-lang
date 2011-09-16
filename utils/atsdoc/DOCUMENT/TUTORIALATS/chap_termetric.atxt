@@ -48,8 +48,8 @@ The special syntax #code(".&lt;n&gt;.") indicates that the metric supplied
 for verifying the termination of the defined function is a singleton tuple
 #code("(n)"). In the definition of #code("fact"), the metric for the
 recursive call to #code("fact") is #code("(n-1)"), which is strictly less
-than #code("(n)"). Therefore, the defined function #code("fact") is
-terminating.
+than the original metric #code("(n)"). Therefore, the defined function
+#code("fact") is terminating.
 
 ")#comment("para")
 
@@ -60,7 +60,7 @@ terminating.
 #para("\
 
 We implement as follows a function #code("gcd") that computes the greatest
-common division of two given positive integers:
+common divisor of two given positive integers:
 
 #atscode_extract("\
 //
@@ -90,7 +90,7 @@ positive).  Thus, #code("gcd") is a terminating function.
 #para("
 
 As another example, we implement as follows the Ackermann's function, which
-is famous for being recursive but not primitive recursion:
+is famous for being recursive but not primitive recursive:
 
 #atscode_extract("\
 //
@@ -106,14 +106,14 @@ fun ack {m,n:nat} .<m, n>.
 
 The syntax #code(".&lt;m, n&gt;.") indicates that the termination metric is
 a pair of natural numbers: #code("(m, n)"). Note that the standard
-lexicographical ordering on natural numbers to compare such metrics.  To
-verify that #code("ack") is terminating, we need to solve the following
-constraints:
+lexicographical ordering on natural numbers is employed to compare such
+metrics.  To verify that #code("ack") is terminating, we need to solve the
+following constraints:
 
 #itemizedlist{
 #LI("#para("\
 #code("(m-1, k)") is less than #code("(m, n)") under the assumption
-#code("m > 0"), where #code("k") is an arbitrary natural number.
+#code("m > 0"), where #code("k") can be any natural number.
 ")"),
 
 #LI("#para("\
@@ -174,14 +174,14 @@ fun foo ():<> void and bar ():<> void
 ")
 
 Moreover, suppose that the following implementation of #code("foo")
-is given in a file named #code("foo.dats"):
+is given in a file named #filename("foo.dats"):
 
 #atscode("\
 implement foo () = $Bar.bar ()
 ")
 
 while the following implementation of #code("bar") is given in another file
-named #code("bar.dats"):
+named #filename("bar.dats") that is different from #filename("foo.dats"):
 
 #atscode("\
 implement bar () = $Foo.foo ()

@@ -17,6 +17,12 @@ staload _(*anon*) = "prelude/DATS/reference.dats"
 #include "utils/atsdoc/HATS/docbookatxt.hats"
 
 (* ****** ****** *)
+
+macdef filename(x) =
+  xmltagging ("filename", ,(x)) // italic
+// end of [filename]
+
+(* ****** ****** *)
 //
 macdef LI (x) = xmltagging ("listitem", ,(x))
 //

@@ -68,6 +68,7 @@ end // end of [genGradientSegImage]
 
 implement
 main () = {
+//
   val filename = "images/theSidebar_bgimage.png"
   val wsf = theSidebar_width
 //

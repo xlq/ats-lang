@@ -9,7 +9,7 @@ ATSDOC=$(ATSHOME)/bin/atsdoc
 
 ######
 
-all:: atsdocman.html uploadloc
+all:: atsdocman.html
 
 ######
 
@@ -20,7 +20,8 @@ atsdocman_atxt.dats: atsdocman.atxt
 atsdocman.html: atsdocman
 	./atsdocman > $@
 
-uploadloc:: ; $(CPF) atsdocman.html $(HOME)/public_html/ATS/atsdocman.html
+uploadloc:: atsdocman.html
+	$(CPF) $< $(HOME)/public_html/ATS/DOCUMENT/atsdocman.html
 
 upload:: atsdocman.html atsdocman.atxt
 	scp -r $^ ats-hwxi,ats-lang@web.sourceforge.net:htdocs/DOCUMENT/atsdocman/
