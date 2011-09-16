@@ -313,6 +313,10 @@ extern e0xp_t e0xp_ide (i0de_t) ;\n\
 extern e0xp_t e0xp_int (i0nt_t) ;\n\
 extern e0xp_t e0xp_list (t0kn_t, e0xplst_t, t0kn_t) ;\n\
 extern e0xp_t e0xp_string (s0tring_t) ;\n\
+\n\
+extern e0xp_t e0xp_FILENAME (t0kn_t) ; // a special string constant\n\
+extern e0xp_t e0xp_LOCATION (t0kn_t) ; // a special string constant\n\
+\n\
 extern e0xplst_t e0xplst_nil (void) ;\n\
 extern e0xplst_t e0xplst_cons (e0xp_t, e0xplst_t) ;\n\
 extern e0xpopt_t e0xpopt_none (void) ;\n\
