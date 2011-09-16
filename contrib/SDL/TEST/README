@@ -1,9 +1,9 @@
 #
 # Some examples in ATS that make use of the ATS/SDL API
 #
-
 # Author: Hongwei Xi (hwxi AT cs DOT bu DOT edu)
-
+# Start Time: January, 2010
+#
 ######
 
 LazyFoo:
