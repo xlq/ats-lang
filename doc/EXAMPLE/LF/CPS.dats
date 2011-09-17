@@ -47,7 +47,7 @@ dataprop RT1 (ty, ty, int) =
   | {t,t':ty} {n:nat} RT1 (t, (t' ->> bot) ->> bot, n+1) of RT2 (t, t', n)
 
 and RT2 (ty, ty, int) =
-  | RT2int (int, int, 0)
+  | RT2int (int(), int(), 0)
   | {t1,t2,t1',t2':ty} {n1,n2:nat}
       RT2fun (t1 ->> t2, t1' ->> t2',n1+n2+1) of (RT2(t1, t1',n1), RT1 (t2, t2',n2))
   | RT2bot (bot, bot, 0)
@@ -253,9 +253,9 @@ fn cps0 {t1,t2:ty} (pf: RT10 (t1, t2) | e: EXP0 t1): EXP0' t2 =
 // Some examples
 
 val ans1: [t:ty] EXP0' t = let
-  prval [t2:ty] pf = rt1fun {int ->> int} ()
+  prval [t2:ty] pf = rt1fun {int() ->> int()} ()
 in
-  cps0 {int->>int,t2} (pf | EXPlam {nil} {int,int} (EXPvar VARone))
+  cps0 {int()->>int(),t2} (pf | EXPlam {nil} {int(),int()} (EXPvar VARone))
 end
 
 implement main (argc, argv) = let
