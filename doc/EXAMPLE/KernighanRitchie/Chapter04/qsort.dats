@@ -27,15 +27,15 @@ fun qsort {n:nat} {left,right:int}
         .<right+1-i>.
         (v: &(@[int][n]), last: int last, i: int i)
         :<cloref> intBtw (left, right+1) =
-        if i <= right then begin
+        if i <= right then (
           if v.[i] < piv then begin
             swap (v, last, i); loop (v,  last+1, i+1)
           end else begin
             loop (v, last, i+1)
           end // end of [if]
-        end else begin
+        ) else (
           last - 1 // loop exits
-        end // end of [if]
+        ) // end of [if]
     } // end of [val]
   in
     swap (v, left, last); qsort (v, left, last-1); qsort (v, last+1, right)
