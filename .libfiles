@@ -234,6 +234,10 @@ libc/dynloadall.dats
 
 /* ****** ****** */
 
+/* biarray (bidirectional array) implementation */
+libats/SATS/biarray.sats
+libats/DATS/biarray.dats
+
 /* FORTRAN matrix: column-major */
 libats/SATS/fmatrix.sats
 libats/DATS/fmatrix.dats

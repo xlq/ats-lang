@@ -38,6 +38,10 @@
 *)
 
 (* ****** ****** *)
+//
+// License: LGPL 3.0 (available at http://www.gnu.org/licenses/lgpl.txt)
+//
+(* ****** ****** *)
 
 absview biarray_v (a:viewt@ype, n:int, lbeg:addr, lend:addr)
 
@@ -55,10 +59,37 @@ prfun biarray_v_of_array_v
 
 (* ****** ****** *)
 
+prfun biarray_v_offset
+  {a:viewt@ype} {n:int} {l1,l2:addr}
+  (pf: !biarray_v (a, n, l1, l2)): MUL (n, sizeof(a), l2-l1)
+// end of [biarray_v_offset]
+
+(* ****** ****** *)
+
+prfun biarray_v_nil
+  {a:viewt@ype} {l:addr} (): biarray_v (a, 0, l, l)
+// end of [biarray_v_nil]
+
+prfun biarray_v_unnil
+  {a:viewt@ype} {l1,l2:addr} (pf: biarray_v (a, 0, l1, l2)): [l1==l2] void
+// end of [biarray_v_unnil]
+
+(* ****** ****** *)
+
+prfun biarray_v_sing
+  {a:viewt@ype} {l:addr} (pf: a @ l): biarray_v (a, 1, l, l+sizeof(a))
+// end of [biarray_v_sing]
+
+prfun biarray_v_unsing
+  {a:viewt@ype} {l1,l2:addr} (pf: biarray_v (a, 1, l1, l2)): a @ l1
+// end of [biarray_v_unsing]
+
+(* ****** ****** *)
+
 prfun biarray_v_cons
   {a:viewt@ype} {n:nat} {lbeg,lend:addr} (
   pf1: a @ lbeg, pf2: biarray_v (a, n, lbeg+sizeof(a), lend)
-) : biarray_v (a, n, lbeg, lend) // end of [biarray_v_cons]
+) : biarray_v (a, n+1, lbeg, lend) // end of [biarray_v_cons]
 
 prfun biarray_v_uncons
   {a:viewt@ype} {n:pos} {lbeg,lend:addr}
@@ -71,7 +102,7 @@ prfun biarray_v_uncons
 prfun biarray_v_snoc
   {a:viewt@ype} {n:nat} {lbeg,lend:addr} (
   pf1: biarray_v (a, n, lbeg, lend), pf2: a @ lend
-) : biarray_v (a, n, lbeg, lend+sizeof(a))
+) : biarray_v (a, n+1, lbeg, lend+sizeof(a))
 
 prfun biarray_v_unsnoc
   {a:viewt@ype} {n:pos} {lbeg,lend:addr}

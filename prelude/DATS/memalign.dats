@@ -34,7 +34,7 @@
 (* ****** ****** *)
 
 //
-// some common pointer operations
+// some common memalign operations
 //
 
 (* ****** ****** *)
@@ -43,39 +43,15 @@
 
 (* ****** ****** *)
 
-staload "prelude/SATS/pointer.sats"
-
-(* ****** ****** *)
-//
-// HX: this is a proof function
-//
-implement ptr_is_gtez {l} (p) = addr_is_gtez {l} ()
+staload "prelude/SATS/memalign.sats"
 
 (* ****** ****** *)
 
-implement{a} ptr_alloc () = ptr_alloc_tsz {a} (sizeof<a>)
+implement
+ptr_view_conversion {a1,a2} (pf1, pf2) = begin
+  pf2 := ptr_of_b0ytes_v {a2} (pf1, ptr_to_b0ytes_v {a1} (pf2))
+end // end of [ptr_view_conversion]
 
 (* ****** ****** *)
 
-implement{a} ptr_zero (x) = ptr_zero_tsz {a} (x, sizeof<a>)
-
-(* ****** ****** *)
-
-implement{a} ptr_get_t (pf | p) = !p
-implement{a} ptr_set_t (pf | p, x) = (!p := x)
-implement{a} ptr_move_t (pf1, pf2 | p1, p2) = (!p2 := !p1)
-
-(* ****** ****** *)
-
-implement{a} ptr_get_vt (pf | p) = !p
-implement{a} ptr_set_vt (pf | p, x) = (!p := x)
-implement{a} ptr_move_vt (pf1, pf2 | p1, p2) = (!p2 := !p1)
-
-(* ****** ****** *)
-
-implement{a} ptr_get_inv (pf | p) = !p
-implement{a} ptr_set_inv (pf | p, x) = (!p := x)
-
-(* ****** ****** *)
-
-(* end of [pointer.dats] *)
+(* end of [memalign.dats] *)

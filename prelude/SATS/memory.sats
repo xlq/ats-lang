@@ -8,9 +8,7 @@
 
 (*
 ** ATS - Unleashing the Potential of Types!
-**
 ** Copyright (C) 2002-2008 Hongwei Xi, Boston University
-**
 ** All rights reserved
 **
 ** ATS is free software;  you can  redistribute it and/or modify it under
@@ -62,12 +60,9 @@ prfun bytes_v_unsplit
 
 (* ****** ****** *)
 //
-// HX: two axioms for view conversion
-//
 praxi ptr_to_b0ytes_v
   : {a:viewt@ype} {l:addr} a? @ l -<prf> b0ytes (sizeof a) @ l
-praxi ptr_of_b0ytes_v
-  : {a:viewt@ype} {l:addr} b0ytes (sizeof a) @ l -<prf> a? @ l
+// end of [ptr_to_b0ytes_v]
 
 (* ****** ****** *)
 //
@@ -102,21 +97,22 @@ fun gc_max_memlim_get_page_set (wsz: size_t): void =
   "ats_gc_max_memlim_set_page"
 
 (* ****** ****** *)
-
-// deprecated (HX: 2009-10-21)
-fun gc_chunk_count_limit_get (): int
-  = "ats_gc_chunk_count_limit_get"
-fun gc_chunk_count_limit_set (n: int): void
-  = "ats_gc_chunk_count_limit_set"
-
+//
+// HX-2009-10-21: deprecated
+//
+fun gc_chunk_count_limit_get
+  (): int = "ats_gc_chunk_count_limit_get"
+fun gc_chunk_count_limit_set
+  (n: int): void = "ats_gc_chunk_count_limit_set"
+//
 (* ****** ****** *)
-
-// deprecated (HX: 2009-10-21)
-fun gc_chunk_count_limit_max_get (): int
-  = "ats_gc_chunk_count_limit_max_get"
-fun gc_chunk_count_limit_max_set (n: int): void
-  = "ats_gc_chunk_count_limit_max_set"
-
+//
+// HX-2009-10-21: deprecated
+fun gc_chunk_count_limit_max_get
+  (): int = "ats_gc_chunk_count_limit_max_get"
+fun gc_chunk_count_limit_max_set
+  (n: int): void = "ats_gc_chunk_count_limit_max_set"
+//
 (* ****** ****** *)
 
 fun malloc_gc
@@ -129,7 +125,7 @@ fun calloc_gc
   {a:viewt@ype}
   {n:nat} (
   n: size_t n, tsz: sizeof_t a
-) :<> [l:agz] (freebyte_gc_v (n, l), @[a?][n] @ l | ptr l)
+) :<> [l:agz] (free_gc_v (a, n, l), @[a?][n] @ l | ptr l)
   = "ats_calloc_gc"
 // end of [calloc_gc]
 

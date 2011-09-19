@@ -40,11 +40,9 @@
 *)
 
 (* ****** ****** *)
-
 //
 // License: LGPL 3.0 (available at http://www.gnu.org/licenses/lgpl.txt)
 //
-
 (* ****** ****** *)
 
 dataview
@@ -73,14 +71,14 @@ prfun rarray_v_uncons
 (* ****** ****** *)
 
 prfun rarray_v_of_array_v
-  {a:viewt@ype} {n:nat} {l:addr} {ofs:int}
-  (pfmul: MUL (n, sizeof a, ofs), pfarr: array_v (a, n, l)):<> rarray_v (a, n, l+ofs)
-// end of [rarray_v_of_array_v]
+  {a:viewt@ype} {n:nat} {l:addr} {ofs:int} (
+  pfmul: MUL (n, sizeof a, ofs), pfarr: array_v (a, n, l)
+) :<> rarray_v (a, n, l+ofs) // end of [rarray_v_of_array_v]
 
 prfun array_v_of_rarray_v
-  {a:viewt@ype} {n:nat} {l:addr} {ofs:int}
-  (pfmul: MUL (n, sizeof a, ofs), pfarr: rarray_v (a, n, l)):<> array_v (a, n, l-ofs)
-// end of [rarray_v_of_array_v]
+  {a:viewt@ype} {n:nat} {l:addr} {ofs:int} (
+  pfmul: MUL (n, sizeof a, ofs), pfarr: rarray_v (a, n, l)
+) :<> array_v (a, n, l-ofs) // end of [rarray_v_of_array_v]
 
 (* ****** ****** *)
 

@@ -58,4 +58,22 @@ biarray_v_of_array_v (pfmul, pfarr) = (pfmul, pfarr)
 
 (* ****** ****** *)
 
-(* end of [biarray.sats] *)
+implement
+biarray_v_offset
+  {a} (pf) = pfmul where {
+  prval (pfmul, pfarr) = pf
+  prval () = pf := biarray_v_of_array_v {a} (pfmul, pfarr)
+} // end of [biarray_v_offset]
+
+(* ****** ****** *)
+
+implement
+biarray_v_unnil (pf) = let
+  val (pfmul, pfarr) = pf; val () = array_v_unnil (pfarr)
+in
+  mul_elim (pfmul)
+end // end of [biarray_v_unnil]
+
+(* ****** ****** *)
+
+(* end of [biarray.dats] *)

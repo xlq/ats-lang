@@ -550,7 +550,7 @@ stadef div_r = div_int_int_int_bool
 
 stadef
 size_int_int_bool
-  (sz: int, n:int) = n >= 0
+  (sz:int, n:int) = n >= 0
 stacst sizeof_viewt0ype_int : viewt@ype -> int
 stadef sizeof = sizeof_viewt0ype_int
 
