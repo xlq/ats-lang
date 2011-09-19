@@ -8,9 +8,7 @@
 
 (*
 ** ATS/Anairiats - Unleashing the Potential of Types!
-**
 ** Copyright (C) 2002-2008 Hongwei Xi, Boston University
-**
 ** All rights reserved
 **
 ** ATS is free software;  you can  redistribute it and/or modify it under
@@ -2103,4 +2101,4 @@ trans3_env_initialize () = () where {
 
 (* ****** ****** *)
 
-(* end of [ats_trans3_env.sats] *)
+(* end of [ats_trans3_env.dats] *)
