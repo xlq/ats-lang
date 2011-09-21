@@ -206,6 +206,10 @@ fun d2con_select_arity (d2cs: d2conlst, n: int): d2conlst = begin
   | D2CONLSTnil () => D2CONLSTnil ()
 end // end of [d2con_select_arity]
 
+(*
+//
+// HX-2011-09-19: no longer in use
+//
 fun d2con_select_arity_err_some
   (loc_id: loc_t, q: d0ynq, id: sym_t, n: int): d2con_t = begin
   prerr_loc_error2 loc_id;
@@ -215,6 +219,7 @@ fun d2con_select_arity_err_some
   prerr_newline ();
   $Err.abort {d2con_t} ()
 end // end of [d2con_select_arity_err_some]
+*)
 
 fun d2con_select_arity_err_none
   (loc_id: loc_t, q: d0ynq, id: sym_t, n: int): d2con_t = begin
@@ -429,12 +434,16 @@ fn p1at_qid_app_dyn_tr (
     if is_arg_omit then d2cs else d2con_select_arity (d2cs, np1ts)
   ) : d2conlst
   val d2c = begin case+ d2cs of
+    | D2CONLSTcons (d2c, _) => d2c
+(*
+// HX-2011-09-19: removed due to being too clumsy
     | D2CONLSTcons (d2c, d2cs) => begin case+ d2cs of
       | D2CONLSTcons _ => begin
           d2con_select_arity_err_some (loc_id, q, id, np1ts)
         end
       | D2CONLSTnil _ => d2c
       end // end of [D2CONLSTcons]
+*)
     | _ => begin
         d2con_select_arity_err_none (loc_id, q, id, np1ts)
       end // end of [_]
@@ -850,12 +859,16 @@ fn d1exp_qid_tr (
     | D2ITEMcon d2cs => let
         val d2cs = d2con_select_arity (d2cs, 0)
         val d2c: d2con_t = case+ d2cs of
+          | D2CONLSTcons (d2c, _) => d2c
+(*
+// HX-2011-09-19: removed due to being too clumsy
           | D2CONLSTcons (d2c, d2cs) => begin case+ d2cs of
             | D2CONLSTcons _ => begin
                 d2con_select_arity_err_some (loc0, q, id, 0)
               end // end of [D2CONLSTcons]
             | _ => d2c
             end // end of [D2CONLSTcons]
+*)
           | _ => begin
               d2con_select_arity_err_none (loc0, q, id, 0)
             end // end of [_]
@@ -909,12 +922,16 @@ in
     | D2ITEMcon d2cs => let
         val d2cs = d2con_select_arity (d2cs, 0)
         val d2c = (case+ d2cs of
+          | D2CONLSTcons (d2c, _) => d2c
+(*
+// HX-2011-09-19: removed due to being too clumsy
           | D2CONLSTcons (d2c, d2cs) => begin case+ d2cs of
             | D2CONLSTcons _ =>
                 d2con_select_arity_err_some (loc_id, q, id, 0)
               // end of [D2CONLSTcons]
             | _ => d2c
             end // end of [D2CONLSTcons]
+*)
           | D2CONLSTnil _ => d2con_select_arity_err_none (loc_id, q, id, 0)
         ) : d2con_t // end of [val]
       in
@@ -986,10 +1003,13 @@ in
         val n = $Lst.list_length darg
         val d2cs = d2con_select_arity (d2cs, n)
         val d2c = (case+ d2cs of
-          | D2CONLSTcons (d2c, D2CONLSTnil ()) => d2c
+          | D2CONLSTcons (d2c,__) => d2c
+(*
+// HX-2011-09-19: removed due to being too clumsy
           | D2CONLSTcons (d2c, _) => begin
               d2con_select_arity_err_some (loc_qid, q, id, n)
             end // end of [D2CONLST]
+*)
           | D2CONLSTnil () => begin
               d2con_select_arity_err_none (loc_qid, q, id, n)
             end // end of [D2CONLSTnil]
