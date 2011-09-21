@@ -8,9 +8,7 @@
 
 (*
 ** ATS - Unleashing the Potential of Types!
-**
 ** Copyright (C) 2002-2008 Hongwei Xi, Boston University
-**
 ** All rights reserved
 **
 ** ATS is free software;  you can  redistribute it and/or modify it under
@@ -42,6 +40,10 @@
 staload "prelude/SATS/array.sats"
 
 (* ****** ****** *)
+//
+// HX: code implementing prfun functions manipulating array views
+//
+(* ****** ****** *)
 
 implement
 array_v_sing {a}
@@ -57,7 +59,8 @@ array_v_unsing {a}
 
 (* ****** ****** *)
 
-implement array_v_split {a}
+implement
+array_v_split {a}
   (pf_mul, pf_arr) = split (pf_mul, pf_arr) where {
   prfun split
     {n,i:nat | i <= n} {l:addr} {ofs:int} .<i>.
@@ -79,7 +82,8 @@ implement array_v_split {a}
 
 (* ****** ****** *)
 
-implement array_v_unsplit {a}
+implement
+array_v_unsplit {a}
   (pf_mul, pf1_arr, pf2_arr) = unsplit (pf_mul, pf1_arr, pf2_arr) where {
 //
   extern praxi lemma {n:int} {l:addr} (pf: !array_v (a, n, l)): [n>=0] void
@@ -104,13 +108,15 @@ implement array_v_unsplit {a}
 
 (* ****** ****** *)
 
-implement array_v_extend {a} (pf_mul, pf1_arr, pf2_at) = let
+implement
+array_v_extend {a} (pf_mul, pf1_arr, pf2_at) = let
   prval pf2_arr = array_v_cons {a} (pf2_at, array_v_nil {a} ())
 in
   array_v_unsplit {a} (pf_mul, pf1_arr, pf2_arr)
 end // end of [array_v_extend]
 
-implement array_v_unextend {a}
+implement
+array_v_unextend {a}
   (pf_mul, pf_arr) = unextend (pf_mul, pf_arr) where {
   prfun unextend {n:int | n > 0} {l:addr} {ofs:int} .<n>.
     (pf_mul: MUL (n, sizeof a, ofs), pf_arr: array_v (a, n, l))
@@ -133,7 +139,8 @@ implement array_v_unextend {a}
 
 (* ****** ****** *)
 
-implement array_v_takeout {a}
+implement
+array_v_takeout {a}
   (pf_mul, pf_arr) = takeout (pf_mul, pf_arr) where {
   prfun takeout {n,i:nat | i < n} {l:addr} {ofs:int} .<n>.
     (pf_mul: MUL (i, sizeof a, ofs), pf_arr: array_v (a, n, l))
@@ -153,7 +160,8 @@ implement array_v_takeout {a}
   end // end of takeout]
 } // end of [array_v_takeout]
 
-implement array_v_takeout2 {a}
+implement
+array_v_takeout2 {a}
   (pf1_mul, pf2_mul, pf_arr) = takeout2 (pf1_mul, pf2_mul, pf_arr) where {
   prfun takeout2
     {n,i1,i2:nat | i1 < n; i2 < n; i1 <> i2} {l:addr} {ofs1,ofs2:int} .<n>.
@@ -185,4 +193,4 @@ implement array_v_takeout2 {a}
 
 (* ****** ****** *)
 
-(* end of [array_v.dats] *)
+(* end of [array_prf.dats] *)
