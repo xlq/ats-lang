@@ -68,7 +68,7 @@ prelude/DATS/arith.dats
 //
 prelude/SATS/array.sats
 prelude/DATS/array.dats
-prelude/DATS/array_v.dats
+prelude/DATS/array_prf.dats
 prelude/SATS/array0.sats
 prelude/DATS/array0.dats
 //
