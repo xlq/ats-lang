@@ -28,7 +28,10 @@ implement
 main () = () where {
   typedef AI = addrinfo(0) 
   var hint: AI
-  val () = ptr_zero<AI> (hint)
+  val () = ptr_zero<AI>
+    (__assert () | hint) where {
+    extern prfun __assert (): NULLABLE (AI)
+  } // end of [val]
   val () = hint.ai_family := AF_INET
   val () = hint.ai_socktype := SOCK_STREAM
   var infop: addrinfoptr

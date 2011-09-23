@@ -47,7 +47,10 @@ fun mysleep0 {n:nat}
   prval () = opt_unsome {sigset_t} (set2)
 //
   var act: sigaction and act2: sigaction
-  val () = ptr_zero<sigaction> (act)
+  val () = ptr_zero<sigaction>
+    (__assert () | act) where {
+    extern prfun __assert (): NULLABLE (sigaction)
+  } // end of [val]
   // HX: note that SIGUSR1 kills the process if there is no handler for it
   val () = act.sa_handler := sighandler(lam (sgn:signum_t): void => ())
   val err = sigaction (SIGALRM, act, act2)

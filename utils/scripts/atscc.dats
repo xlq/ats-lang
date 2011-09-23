@@ -8,9 +8,7 @@
 
 (*
 ** ATS - Unleashing the Power of Types!
-**
 ** Copyright (C) 2002-2008 Hongwei Xi, Boston University
-**
 ** All rights reserved
 **
 ** ATS is free software;  you can  redistribute it and/or modify it under
@@ -63,7 +61,8 @@ fun typecheck_file_exec (
   flag_stadyn: int, param_rev: Strlst, s: string
 ) : void = "typecheck_file_exec"
 
-implement typecheck_file
+implement
+typecheck_file
   (flag_stadyn, param_rev, infile) = () where {
   val cmd = lam (): void =<cloptr1>
     typecheck_file_exec (flag_stadyn, param_rev, infile)
@@ -85,7 +84,8 @@ extern fun ccomp_file_to_file_exec
   (flag_stadyn: int, param_rev: Strlst, s1: string, s2: string): void
   = "ccomp_file_to_file_exec"
 
-implement ccomp_file_to_file_err
+implement
+ccomp_file_to_file_err
   (flag_stadyn, param_rev, infile, outfile) = let
   val cmd = lam(): void =<cloptr1>
     ccomp_file_to_file_exec (flag_stadyn, param_rev, infile, outfile)
@@ -94,7 +94,8 @@ in
   fork_exec_and_wait_cloptr_exn (cmd)
 end // end of [ccomp_file_to_file_err]
 
-implement ccomp_file_to_file
+implement
+ccomp_file_to_file
   (flag_stadyn, param_rev, infile, outfile) = () where {
   val status = begin
     ccomp_file_to_file_err (flag_stadyn, param_rev, infile, outfile)

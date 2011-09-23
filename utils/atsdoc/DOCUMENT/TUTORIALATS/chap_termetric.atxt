@@ -191,11 +191,11 @@ Clearly, neither #code("foo") nor #code("bar") is terminating. In practice,
 it is difficult to resolve this issue of calling cycles among functions by
 solely relying on termination metrics. Instead, #code("atscc") can generate
 run-time code for detecting calling cycles among functions if the flag
-#emph("-D_ATS_TERMINATION_CHECK") is present. For instance, if
+#emph("-D_ATS_PROOFCHECK") is present. For instance, if
 #code("foo.dats") and #code("bar.dats") are compiled as follows:
 
 <informalexample><programlisting>
-#command("atscc") -D_ATS_TERMINATION_CHECK foo.dats and bar.dats
+#command("atscc") -D_ATS_PROOFCHECK foo.dats and bar.dats
 </programlisting></informalexample>
 
 then a run-time error is to be reported to indicate a calling cycle when

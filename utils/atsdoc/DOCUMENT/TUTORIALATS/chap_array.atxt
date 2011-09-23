@@ -107,7 +107,7 @@ end // end of [array_reverse]
 If the test #code("i < n/2") is changed to #code("i <= n/2"), a type-error
 is to be reported. Why? The reason is that #code("A[n-1-i]") becomes
 out-of-bounds array subscripting in the case where #code("n") and
-#code("i") both equals zero. Given that it is very unlikely to encounter a
+#code("i") both equal zero. Given that it is very unlikely to encounter a
 case where an array of size 0 is involved, a bug like this, if not detected
 early, can be buried so scarily deep!\
 

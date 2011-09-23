@@ -251,8 +251,8 @@ end // end of [compare_funlab_funlab]
 (* ****** ****** *)
 
 fn _funlab_make (
-    name: string, level: int, hit: hityp_t, stamp: stamp_t, prfck: int
-  ) : funlab = '{
+  name: string, level: int, hit: hityp_t, stamp: stamp_t, prfck: int
+) : funlab = '{
   funlab_name= name
 , funlab_lev= level
 , funlab_typ= hit

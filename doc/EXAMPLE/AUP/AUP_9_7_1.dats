@@ -59,7 +59,10 @@ fun print_bytes_size
 implement
 main () = () where {
   var act: sigaction
-  val () = ptr_zero<sigaction> (act)
+  val () = ptr_zero<sigaction>
+    (__assert () | act) where {
+    extern prfun __assert (): NULLABLE (sigaction)
+  } // end of [val]
   val () = act.sa_handler := sighandler_of_fun(lam (sgn) => ())
   val err = sigaction_null (SIGALRM, act)
   val () = assertloc (err = 0)

@@ -43,7 +43,10 @@ fun handler
 implement
 main () = () where {
   var act: sigaction
-  val () = ptr_zero<sigaction> (act)
+  val () = ptr_zero<sigaction>
+    (__assert () | act) where {
+    extern prfun __assert (): NULLABLE (sigaction)
+  } // end of [val]
   val () = act.sa_handler := (sighandler)handler
   val err = sigaction_null (SIGINT, act)
   val () = if err < 0 then (perror "sigaction"; exit (EXIT_FAILURE))

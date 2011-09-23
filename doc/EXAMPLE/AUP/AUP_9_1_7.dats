@@ -47,7 +47,10 @@ fun handler
 implement
 main () = () where {
   var act: sigaction
-  val () = ptr_zero<sigaction> (act)
+  val () = ptr_zero<sigaction>
+    (__assert () | act) where {
+    extern prfun __assert (): NULLABLE (sigaction)
+  } // end of [val]
   val () = act.sa_handler := (sighandler)handler
   val () = act.sa_flags := SA_RESTART // HX: even this cannot affect [sleep]!
   val err = sigaction_null (SIGINT, act)

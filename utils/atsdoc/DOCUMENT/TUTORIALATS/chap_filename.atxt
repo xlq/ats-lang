@@ -41,7 +41,7 @@ also contain defintions for dynamic values and functions. However,
 interfaces for functions and values in a dynamic file should follow the
 keyword #code("extern"), which on the other hand should not be present when
 such interfaces are declared in a static file. For instance, the following
-syntax declares interfaces in a static file (or types) for a value named
+syntax declares interfaces (or types) in a static file for a value named
 #code("pi") and a function named #code("area_of_circle"):
 
 #atscode("\

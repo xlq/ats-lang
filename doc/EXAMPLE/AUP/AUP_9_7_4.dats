@@ -63,7 +63,10 @@ val theMsgLen = string_length (theMsg)
 
 fun test_timer (): void = let
   var act: sigaction?
-  val () = ptr_zero<sigaction> (act)
+  val () = ptr_zero<sigaction>
+    (__assert () | act) where {
+    extern prfun __assert (): NULLABLE (sigaction)
+  } // end of [val]
   fun handler (sgn: signum_t): void = let
     val (pf_stdout | ()) = stdout_fildes_view_get ()
     val _err = write_substring_err (pf_stdout | STDOUT_FILENO, theMsg, 0, theMsgLen)
@@ -77,7 +80,10 @@ fun test_timer (): void = let
 //
   var itv: itimerval?
   val _2 = $UNSAFE.cast{time_t} (2)
-  val () = ptr_zero<itimerval> (itv)
+  val () = ptr_zero<itimerval>
+    (__assert () | itv) where {
+    extern prfun __assert (): NULLABLE (itimerval)
+  } // end of [val]
   val () = itv.it_interval.tv_sec := _2; val () = itv.it_value.tv_sec := _2
   val err = setitimer_null (ITIMER_REAL, itv)
   val () = assertloc (err = 0)

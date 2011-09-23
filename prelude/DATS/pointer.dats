@@ -57,7 +57,8 @@ implement{a} ptr_alloc () = ptr_alloc_tsz {a} (sizeof<a>)
 
 (* ****** ****** *)
 
-implement{a} ptr_zero (x) = ptr_zero_tsz {a} (x, sizeof<a>)
+implement{a}
+ptr_zero (pf | x) = ptr_zero_tsz {a} (pf | x, sizeof<a>)
 
 (* ****** ****** *)
 

@@ -8,9 +8,7 @@
 
 (*
 ** ATS - Unleashing the Potential of Types!
-**
 ** Copyright (C) 2002-2008 Hongwei Xi, Boston University
-**
 ** All rights reserved
 **
 ** ATS is free software;  you can  redistribute it and/or modify it under
@@ -249,13 +247,15 @@ fun ptr_free
 
 (* ****** ****** *)
 
+absprop
+NULLABLE (a: viewt@ype-) // contra-variant
+
 fun{a:viewt@ype}
-ptr_zero (x: &a? >> a):<> void
+ptr_zero (pf: NULLABLE (a) | x: &a? >> a):<> void
 
 fun ptr_zero_tsz
   {a:viewt@ype} (
-  x: &a? >> a
-, tsz: sizeof_t a
+  pf: NULLABLE (a) | x: &a? >> a, tsz: sizeof_t a
 ) :<> void = "atspre_ptr_zero_tsz"
 // end of [ptr_zero_tsz]
 

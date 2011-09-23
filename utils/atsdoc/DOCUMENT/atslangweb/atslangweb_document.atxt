@@ -96,7 +96,7 @@ examples that these features can be made of effective use in the
 construction of high-quality programs. For someone familiar with both ML
 and C, it is possible to learn programming in ATS by simply studying the
 tutorial. However, a coherent and systematic view of ATS is diffcult to be
-gained from the tuorial alone.
+gained from the tutorial alone.
 </td></tr>
 <tr><td>
 Links:
@@ -117,7 +117,7 @@ This tutorial focuses on employing types in ATS to facilitate safe and
 reliable programming with #ulink("http://www.cairographics.org", "cairo"),
 a comprehensive drawing package supporting 2D graphics, through the API for
 cairo in ATS. In particular, it is demonstrated concretely that linear
-types can be used effectively to prevent resources (such as contexts
+types can be used highly effectively to prevent resources (such as contexts
 created for drawing) from being leaked due to programming errors.\
 
 </td></tr>

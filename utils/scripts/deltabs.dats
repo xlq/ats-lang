@@ -8,9 +8,7 @@
 
 (*
 ** ATS - Unleashing the Power of Types!
-**
 ** Copyright (C) 2002-2008 Hongwei Xi, Boston University
-**
 ** All rights reserved
 **
 ** ATS is free software;  you can  redistribute it and/or modify it under
@@ -121,78 +119,87 @@ end
 
 (* ****** ****** *)
 
-implement putline {m} (pf | out, s) = let
-
-fun prsp {n:nat} .<n>. (out: &FILE m, nsp: int n): void =
+implement
+putline {m} (pf | out, s) = let
+//
+fun prsp {n:nat} .<n>.
+  (out: &FILE m, nsp: int n): void =
   if nsp > 0 then (fputc_exn (pf |' ', out); prsp (out, nsp-1))
-
-fun loop{n,i:nat | i <= n} .<n-i>.
-  (out: &FILE m, s: string n, n: int n, i: int i): void =
+//
+fun loop{n,i:nat | i <= n} .<n-i>. (
+  out: &FILE m, s: string n, n: size_t n, i: size_t i
+) : void =
   if i < n then let
     val c = s[i]
   in
     if (c = '\t') then let
-      val nsp = (SPACES_PER_TAB - i mod SPACES_PER_TAB)
+      val i = int1_of_size1 (i)
+      val nsp = (SPACES_PER_TAB - i nmod SPACES_PER_TAB)
     in
       prsp (out, nsp)
     end else begin
       fputc_exn (pf | c, out)
     end;
     loop (out, s, n, i+1)
-  end
-
-val s = string1_of_string0 s
-
+  end // end of [if]
+//
+val s = string1_of_string s
+//
 in
-  loop (out, s, length s, 0)
-end
+  loop (out, s, string_length s, 0)
+end // end of [putline]
 
 (* ****** ****** *)
 
-fn fdeltabs (fil_s: &FILE r, fil_d: &FILE w): void =
-  let
-    fun loop (fil_s: &FILE r, fil_d: &FILE w): void =
-      if feof (fil_s) = 0 then let
-        val s = getline (file_mode_lte_r_r | fil_s)
-      in
-        putline (file_mode_lte_w_w | fil_d, s);
-        loop (fil_s, fil_d)
-      end
-  in
-    loop (fil_s, fil_d)
-  end
+fn fdeltabs (
+  fil_s: &FILE r, fil_d: &FILE w
+) : void = let
+  fun loop (fil_s: &FILE r, fil_d: &FILE w): void =
+    if feof (fil_s) = 0 then let
+      val s = getline (file_mode_lte_r_r | fil_s)
+    in
+      putline (file_mode_lte_w_w | fil_d, s); loop (fil_s, fil_d)
+    end // end of [if]
+in
+  loop (fil_s, fil_d)
+end // end of [fdeltabs]
 
 (* ****** ****** *)
 
-fn deltabs_file_file (src: string, dst: string): void = let
+fn deltabs_file_file
+  (src: string, dst: string): void = let
   val (pf_s_opt | ptr_s) = fopen_err (src, file_mode_r)
   val () = assert_prerrf_bool1
-    (ptr_s <> null, "Exit: [fopen_err(\"%s\", \"r\")] failed\n", @(src))
+    (ptr_s > null, "Exit: [fopen_err(\"%s\", \"r\")] failed\n", @(src))
   prval Some_v pf_s = pf_s_opt
   val (pf_d_opt | ptr_d) = fopen_err (dst, file_mode_w)
   val () = assert_prerrf_bool1
-    (ptr_d <> null, "Exit: [fopen_err(\"%s\", \"w\")] failed\n", @(dst))
+    (ptr_d > null, "Exit: [fopen_err(\"%s\", \"w\")] failed\n", @(dst))
   prval Some_v pf_d = pf_d_opt
 in
   fdeltabs (!ptr_s, !ptr_d);
   fclose_exn (pf_s | ptr_s);
   fclose_exn (pf_d | ptr_d);
-end
+end // end of [deltabs_file_file]
 
-// [dst_dir] needs to end with "/"
-fn deltabs_file_dir (src_fil: string, dst_dir: string): void =
-  let
-    val dst_fil = dst_dir + src_fil
-  in
-    deltabs_file_file (src_fil, dst_fil)
-  end
+//
+// HX: [dst_dir] needs to end with "/"
+//
+fn deltabs_file_dir (
+  src_fil: string, dst_dir: string
+) : void = let
+  val dst_fil = dst_dir + src_fil
+in
+  deltabs_file_file (src_fil, dst_fil)
+end // end of [deltabs_file_dir]
 
 (* ****** ****** *)
 
-implement main (argc, argv) = let
-
+implement
+main (argc, argv) = let
+//
 val cmd = argv.[0]
-
+//
 val () = if (argc < 2) then begin
   prerrf ("Usage of [%s]:\n", @(cmd));
   prerrf ("  1. %s [-(stdin)]\n", @(cmd));
@@ -201,42 +208,42 @@ val () = if (argc < 2) then begin
   prerrf ("  4. %s [file(src)] [file(dst)]\n", @(cmd));
   prerrf ("  5. %s [file(src)] ... [file(src)] [dir(dst)]\n", @(cmd));
   exit (1)
-end
-
+end // end of [val]
+//
 val () = assert (argc >= 2)
-
+//
 in
-
+//
 case+ argc of
-  | 2 when (argv.[1] = "-") => let
-      val (pf_s | ptr_s) = stdin_get ()
-      val (pf_d | ptr_d) = stdout_get ()
-    in
-       fdeltabs (!ptr_s, !ptr_d);
-       stdin_view_set (pf_s | (*none*));
-       stdout_view_set (pf_d | (*none*))
-    end
-  | 2 => let
-      val (pf_d | ptr_d) = stdout_get ()
-      val (pf_s | ptr_s) = fopen_exn (argv.[1], file_mode_r)
-    in
-       fdeltabs (!ptr_s, !ptr_d);
-       fclose_exn (pf_s | ptr_s);
-       stdout_view_set (pf_d | (*none*))
-    end
-  | 3 when (argv.[1] = "-") => let
-      val (pf_s | ptr_s) = stdin_get ()
-      val (pf_d | ptr_d) = fopen_exn (argv.[2], file_mode_w)
-    in
-       fdeltabs (!ptr_s, !ptr_d);
-       fclose_exn (pf_d | ptr_d);
-       stdin_view_set (pf_s | (*none*))
-    end
-  | 3 => deltabs_file_file (argv.[1], argv.[2])
-  | _ =>> begin
-      exit_errmsg (1, "not yet supported!\n")
-    end
-
+| 2 when (argv.[1] = "-") => let
+    val (pf_s | ptr_s) = stdin_get ()
+    val (pf_d | ptr_d) = stdout_get ()
+  in
+    fdeltabs (!ptr_s, !ptr_d);
+    stdin_view_set (pf_s | (*none*));
+    stdout_view_set (pf_d | (*none*))
+  end
+| 2 => let
+    val (pf_d | ptr_d) = stdout_get ()
+    val (pf_s | ptr_s) = fopen_exn (argv.[1], file_mode_r)
+  in
+    fdeltabs (!ptr_s, !ptr_d);
+    fclose_exn (pf_s | ptr_s);
+    stdout_view_set (pf_d | (*none*))
+  end
+| 3 when (argv.[1] = "-") => let
+    val (pf_s | ptr_s) = stdin_get ()
+    val (pf_d | ptr_d) = fopen_exn (argv.[2], file_mode_w)
+  in
+    fdeltabs (!ptr_s, !ptr_d);
+    fclose_exn (pf_d | ptr_d);
+    stdin_view_set (pf_s | (*none*))
+  end
+| 3 => deltabs_file_file (argv.[1], argv.[2])
+| _ =>> begin
+    exit_errmsg (1, "not yet supported!\n")
+  end // end of [_]
+//
 end // end of [main]
 
 (* ****** ****** *)

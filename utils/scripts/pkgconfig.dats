@@ -8,9 +8,7 @@
 
 (*
 ** ATS - Unleashing the Power of Types!
-**
 ** Copyright (C) 2002-2008 Hongwei Xi, Boston University
-**
 ** All rights reserved
 **
 ** ATS is free software;  you can  redistribute it and/or modify it under
@@ -250,7 +248,7 @@ int execvp_with_stdout (char **result, char* argv[])
     close(filedes[0]);
     close(filedes[1]);
     return -1;
-  }
+  } // end of [if]
 
   close(filedes[1]);
 
@@ -271,10 +269,10 @@ int execvp_with_stdout (char **result, char* argv[])
         continue;
       else
         break;
-    }
+    } // end of [if]
 
     buf_used += res;
-  }
+  } // end of [while]
 
   buf[buf_used] = '\0';
 

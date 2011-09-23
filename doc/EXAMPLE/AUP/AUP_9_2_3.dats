@@ -73,7 +73,10 @@ in
   | _ when ipid = 0 => let // child
 //
       var act: sigaction
-      val () = ptr_zero<sigaction> (act)
+      val () = ptr_zero<sigaction>
+        (__assert () | act) where {
+        extern prfun __assert (): NULLABLE (sigaction)
+      }
       // HX: note that SIGUSR1 kills the process if there is no handler for it
       val () = act.sa_handler := sighandler(lam (sgn:signum_t): void => ())
       val err = sigaction_null (SIGUSR1, act)

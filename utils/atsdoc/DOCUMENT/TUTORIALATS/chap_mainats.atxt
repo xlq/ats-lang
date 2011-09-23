@@ -28,9 +28,10 @@ overload main with main_argc_argv
 ')
 
 The symbol #code("main") is overloaded with both of these functions. In
-addition, the C-name #code("mainats") is assigned to both of them. When a
-function in ATS is translated into one in C, the C-name of the
-function, if ever assgined, is used to refer to its translation in C.
+addition, the global name #code("mainats") is assigned to both of
+them. When a function in ATS is translated into one in C, the global name
+of the function, if ever assgined, is used to refer to its translation in
+C.
 
 ")#comment("para")
 
