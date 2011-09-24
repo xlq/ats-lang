@@ -9,10 +9,13 @@ ats-lang-anairiats-0.2.6:
    non-functional one is chosen (if there is one).
 5. The tutorial (doc/TUTORIAL) is no longer put into the release package.
 6. Allowing #FILENAME and #LOCATION to be used as e0xp. For instance, the
-   following line is now illegal:
+   following line is now legal:
    #print (#FILENAME)
 7. Fixing a bug related to xref that caused illegal xhtml files to be
-   generated (A elements being embedded inside A elements). Thanks, David!
+   generated (cases of A elements being embedded inside another A element).
+   Thanks, David!
+8. Introducing ISALIGNED to handle alignment.
+9. Introducing NULLABLE to handle ptr_zero and ptr_zero_tsz.
 
 ########################################################################
 

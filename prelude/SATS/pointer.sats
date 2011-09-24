@@ -250,6 +250,9 @@ fun ptr_free
 absprop
 NULLABLE (a: viewt@ype-) // contra-variant
 
+(*
+** HX: is [ptr_zeroing] a more informative name?
+*)
 fun{a:viewt@ype}
 ptr_zero (pf: NULLABLE (a) | x: &a? >> a):<> void
 
