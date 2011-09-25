@@ -8,9 +8,7 @@
 
 (*
 ** ATS - Unleashing the Potential of Types!
-**
 ** Copyright (C) 2002-2010 Hongwei Xi, Boston University
-**
 ** All rights reserved
 **
 ** ATS is free software;  you can  redistribute it and/or modify it under
@@ -412,7 +410,7 @@ hashtbl_search (ptbl, k0, res) = let
 in
   if p_itm <> null then let
     prval (fpf, pf) = __assert () where {
-      extern prfun __assert (): (itm @ l -<prf> void, itm @ l)
+      extern praxi __assert (): (itm @ l -<prf> void, itm @ l)
     } // end of [prval]
     val () = res := !p_itm
     prval () = fpf (pf)
@@ -672,7 +670,7 @@ hashtbl_foreach_cloref
   val [l:addr] (pfbox | p_f) = cloref_get_view_ptr {T} (f)
   viewdef V = T @ l
   prval (pf, fpf) = __assert (pfbox) where {
-    extern prfun __assert (_: vbox V): (V, V -<lin,prf> void)
+    extern praxi __assert (_: vbox V): (V, V -<lin,prf> void)
   } // end of [prval]
   prval pf0 = unit_v ()
   val () = hashtbl_foreach_vclo<key,itm> {unit_v} (pf0 | tbl, !p_f)

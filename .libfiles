@@ -262,6 +262,10 @@ libats/DATS/funheap_braun.dats
 libats/SATS/funmap_avltree.sats
 libats/DATS/funmap_avltree.dats
 
+/* functional map implementation based on red-black trees */
+libats/SATS/funmap_rbtree.sats
+libats/DATS/funmap_rbtree.dats
+
 /* functional set implementation based on AVL trees */
 libats/SATS/funset_avltree.sats
 libats/DATS/funset_avltree.dats

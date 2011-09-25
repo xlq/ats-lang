@@ -8,9 +8,7 @@
 
 (*
 ** ATS - Unleashing the Potential of Types!
-**
 ** Copyright (C) 2002-2010 Hongwei Xi, Boston University
-**
 ** All rights reserved
 **
 ** ATS is free software;  you can  redistribute it and/or modify it under
@@ -325,7 +323,10 @@ end // end of [avltree_takeout_min]
 
 (* ****** ****** *)
 //
-// HX-2010-03-25: a bit unsafe but convenient to implement
+// HX-2010-03-25:
+// this is a bit unsafe but convenient to implement
+// the pointer [p_res] is assumed to be associated with a proof
+// of at-view if it is not null
 //
 extern
 fun{key,itm:t@ype}
@@ -337,9 +338,9 @@ implement{key,itm}
 funmap_takeout_ptr {l_res}
   (m, k0, cmp, p_res) = b(*removed*) where {
   fun takeout {h:nat} .<h>. (
-      t: avltree (key, itm, h)
-    , p_res: ptr l_res, b: &bool? >> bool
-    ) :<cloref> avltree_dec (key, itm, h) = begin
+    t: avltree (key, itm, h)
+  , p_res: ptr l_res, b: &bool? >> bool
+  ) :<cloref> avltree_dec (key, itm, h) = begin
     case+ t of
     | B {..} {hl,hr} (h, k, x, tl, tr) => let
         val sgn = compare_key_key (k0, k, cmp)
@@ -370,8 +371,8 @@ funmap_takeout_ptr {l_res}
         | _ (*sgn = 0*) => let
             val () = if (p_res <> null) then let
               prval (pf, fpf) = __assert () where {
-                extern prfun __assert (): (itm? @ l_res, itm @ l_res -<> void)
-              }
+                extern praxi __assert (): (itm? @ l_res, itm @ l_res -<> void)
+              } // end of [prval]
               val () = !p_res := x
               prval () = fpf (pf)
             in
@@ -411,7 +412,7 @@ funmap_takeout
   val ans = funmap_takeout_ptr<key,itm> (m, k0, cmp, &res)
   val [b:bool] ans = bool1_of_bool (ans)
   prval pf = __assert (view@ res) where {
-    extern prfun __assert {l_res:addr} (pf: itm? @ l_res):<> (opt (itm, b) @ l_res)
+    extern praxi __assert {l_res:addr} (pf: itm? @ l_res):<> (opt (itm, b) @ l_res)
   } // end of [prval]
   prval () = (view@ res := pf)
 } // end of [funmap_takeout]

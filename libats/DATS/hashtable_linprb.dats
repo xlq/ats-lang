@@ -255,7 +255,7 @@ hashtbl_search_ref (ptbl, k0) = let
 in
   if found then let
     prval (pf, fpf) = __assert () where {
-      extern prfun __assert (): ((key,itm) @ l, (key,itm) @ l -<prf> void)
+      extern praxi __assert (): ((key,itm) @ l, (key,itm) @ l -<prf> void)
     } // end of [prval]
     val pitm = &(pkeyitm->1)
     prval () = fpf (pf)
@@ -278,7 +278,7 @@ hashtbl_search (ptbl, k0, res) = let
 in
   if found then let
     prval (pf, fpf) = __assert () where {
-      extern prfun __assert (): ((key,itm) @ l, (key,itm) @ l -<prf> void)
+      extern praxi __assert (): ((key,itm) @ l, (key,itm) @ l -<prf> void)
     } // end of [prval]
     val () = res := pkeyitm->1
     prval () = opt_some {itm} (res)
@@ -321,7 +321,7 @@ in
       val [l:addr] pkeyitm =
         hashtbl_ptr_probe_ofs<key,itm> (pf2 | p2_beg, k0, eqfn, sz2, ofs, found)
       prval (pf, fpf) = __assert () where {
-        extern prfun __assert (): ((key,itm?) @ l, (key,itm) @ l -<prf> void)
+        extern praxi __assert (): ((key,itm?) @ l, (key,itm) @ l -<prf> void)
       } // end of [prval]
       val () = pkeyitm->0 := k0
       val () = pkeyitm->1 := i0
@@ -373,11 +373,11 @@ hashtbl_ptr_reinsert
   ) :<> void = let
   viewtypedef keyitm = @(key, itm)
   viewtypedef keyitmopt = Opt @(key, itm)
-  extern prfun __assert1
+  extern praxi __assert1
     {l:addr} (p: ptr l): (keyitmopt @ l, keyitmopt @ l -<prf> void)
-  extern prfun __assert2
+  extern praxi __assert2
     {l:addr} (p: ptr l): ((key,itm?) @ l, (key,itm) @ l -<prf> void)
-  extern prfun __assert3
+  extern praxi __assert3
     {l:addr} (p: ptr l): ((key,itm) @ l, keyitmopt @ l -<prf> void)
   val p_end = p_beg + sz1mul (sz, sizeof<keyitm>)
   fun ins {l1,l2:addr}
@@ -425,7 +425,7 @@ hashtbl_ptr_reinsert
           val b2 = ins (p_beg, p_cur, i0)
           prval () = __assert (b2) where {
             // the item must have been inserted at this point
-            extern prfun __assert {b:bool} (b: bool b): [b==false] void
+            extern praxi __assert {b:bool} (b: bool b): [b==false] void
           } // end of [val]
           prval () = opt_unnone {itm} (i0)
         in
@@ -464,7 +464,7 @@ hashtbl_insert
   val [b:bool] found = bool1_of_bool (found)
   val () = (if :(res: opt (itm, b)) => found then let
     prval (pf, fpf) = __assert () where {
-      extern prfun __assert (): ((key,itm) @ l, (key,itm) @ l -<prf> void)
+      extern praxi __assert (): ((key,itm) @ l, (key,itm) @ l -<prf> void)
     } // end of [prval]
     val i = pkeyitm->1
     val () = pkeyitm->1 := i0
@@ -478,7 +478,7 @@ hashtbl_insert
     val () = p->tot := tot + 1
 //
     prval (pf, fpf) = __assert () where {
-      extern prfun __assert (): ((key,itm?) @ l, (key,itm) @ l -<prf> void)
+      extern praxi __assert (): ((key,itm?) @ l, (key,itm) @ l -<prf> void)
     } // end of [prval]
     val () = pkeyitm->0 := k0
     val () = pkeyitm->1 := i0
@@ -522,7 +522,7 @@ hashtbl_remove {l} (ptbl, k0, res) = found where {
     val tot = p->tot
     val () = p->tot := tot - 1
     prval (pf, fpf) = __assert () where {
-      extern prfun __assert (): ((key,itm) @ l, (key,itm?) @ l -<prf> void)
+      extern praxi __assert (): ((key,itm) @ l, (key,itm?) @ l -<prf> void)
     } // end of [prval]
     val () = res := pkeyitm->1
     prval () = fpf (pf)
@@ -587,7 +587,7 @@ hashtbl_foreach_cloref (tbl, f) = let
   val [l:addr] (pfbox | p_f) = cloref_get_view_ptr {T} (f)
   viewdef V = T @ l
   prval (pf, fpf) = __assert (pfbox) where {
-    extern prfun __assert (_: vbox V): (V, V -<lin,prf> void)
+    extern praxi __assert (_: vbox V): (V, V -<lin,prf> void)
   } // end of [prval]
   prval pf0 = unit_v ()
   val () = hashtbl_foreach_vclo<key,itm> {unit_v} (pf0 | tbl, !p_f)
