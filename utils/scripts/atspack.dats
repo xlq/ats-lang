@@ -693,6 +693,7 @@ fn Anairiats_doc_dir_copy () = let
     val () = cp "libats_fundeque_fingertree.dats"
     val () = cp "libats_funheap_braun.dats"
     val () = cp "libats_funmap_avltree.dats"
+    val () = cp "libats_funmap_rbtree.dats"
     val () = cp "libats_funralist_nested.dats"
     val () = cp "libats_funset_avltree.dats"
     val () = cp "libats_funset_listord.dats"

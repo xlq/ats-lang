@@ -30,12 +30,10 @@
 (* ****** ****** *)
 
 (*
-**
-** A functional map implementation based on AVL trees
+** A functional map implementation based on red-black trees
 **
 ** Contributed by Hongwei Xi (hwxi AT cs DOT bu DOT edu)
 ** Time: September, 2011 // based on a version done in October, 2008
-**
 *)
 
 (* ****** ****** *)
