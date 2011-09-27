@@ -71,7 +71,9 @@ implement{key} compare_key_key (x1, x2, cmp) = cmp (x1, x2)
 (* ****** ****** *)
 
 dataviewtype
-avltree (key:t@ype, itm:viewt@ype+, int(*height*)) =
+avltree (
+  key:t@ype, itm:viewt@ype+, int(*height*)
+) =
   | {hl,hr:nat | hl <= hr+HTDF; hr <= hl+HTDF}
     B (key, itm, 1+max(hl,hr)) of
       (int (1+max(hl,hr)), key, itm, avltree (key, itm, hl), avltree (key, itm, hr))
@@ -462,14 +464,14 @@ linmap_takeout_ptr {l_res}
             val () = if :(pf_x: itm? @ l_x) =>
               (p_res <> null) then let
               prval (pf, fpf) = __assert () where {
-                extern prfun __assert (): (itm? @ l_res, itm @ l_res -<> void)
+                extern praxi __assert (): (itm? @ l_res, itm @ l_res -<> void)
               }
               val () = !p_res := !p_x
               prval () = fpf (pf)
             in
               // nothing
             end else let
-              extern prfun __assert (pf: !itm @ l_x >> itm? @ l_x): void
+              extern praxi __assert (pf: !itm @ l_x >> itm? @ l_x): void
               prval () = __assert (pf_x) // leak happens if [itm] contains resources!
             in
               // nothing
@@ -515,7 +517,7 @@ linmap_takeout
   val ans = linmap_takeout_ptr<key,itm> (m, k0, cmp, &res)
   val [b:bool] ans = bool1_of_bool (ans)
   prval pf = __assert (view@ res) where {
-    extern prfun __assert {l_res:addr} (pf: itm? @ l_res):<> opt (itm, b) @ l_res
+    extern praxi __assert {l_res:addr} (pf: itm? @ l_res):<> opt (itm, b) @ l_res
   } // end of [prval]
   prval () = view@ res := pf
 } // end of [linmap_takeout]

@@ -353,6 +353,209 @@ case+ m of
 end // end of [linmap_insert]
 
 (* ****** ****** *)
+
+fn{key:t0p;itm:vt0p}
+rbtree_clr_trans_blk_red
+  {bh:pos} (t: rbtree (key, itm, BLK, bh, 0))
+  :<> [v:nat] rbtree (key, itm, RED, bh-1, v) = let
+  val+ T {..}{c,cl,cr} (!p_c, _, _, _, _) = t in !p_c := RED; fold@ {..}{..}{..}{cl+cr} (t); t
+end // end of [rbtree_clr_trans_blk_red]
+
+(* ****** ****** *)
+
+fn{key:t0p;itm:vt0p}
+remfix_l
+  {cl,cr:clr}
+  {bh:nat}
+  {v:nat}
+  {l_c,l_k,l_x,l_tl,l_tr:addr} (
+  pf_c: int(BLK) @ l_c
+, pf_k: key @ l_k
+, pf_x: itm @ l_x
+, pf_tl: rbtree (key, itm, cl, bh, v) @ l_tl
+, pf_tr: rbtree (key, itm, cr, bh+1, 0) @ l_tr
+| t: T_unfold (l_c, l_k, l_x, l_tl, l_tr)
+, p_c: ptr (l_c)
+, p_tl: ptr (l_tl)
+, p_tr: ptr (l_tr)
+) :<> [c:clr;v:nat | v <= cr] rbtree (key, itm, c, bh+1, v) = let
+  #define B BLK; #define R RED
+in
+  case+ !p_tl of
+  | T (!p_cl as R, _, _, _, _) => (
+      !p_cl := B; fold@ (!p_tl); !p_c := R; fold@ {..}{..}{..}{cr} (t); t
+    ) // end of [T (R, ...)]
+  | _ =>> let
+    in
+      case+ !p_tr of
+      | T {..} {cr,crl,crr} (!p_cr as B, _, _, _, _) => let
+          val () = !p_cr := R; val () = fold@ {..}{..}{..}{crl+crr} (!p_tr)
+        in
+          insfix_r (pf_c, pf_k, pf_x, pf_tl, pf_tr | t, p_tr)
+        end // end of [T (B, ...)]
+      | T (!p_cr as R, !p_kr, !p_xr, !p_trl, !p_trr) => let
+          val trl = !p_trl
+          val+ T (!p_crl, !p_krl, !p_xrl, !p_trll, !p_trlr) = trl
+//
+          val tr = !p_tr
+          val () = !p_tr := !p_trll
+          val () = fold@ (t)
+          val () = !p_trll := t
+//
+          val () = !p_trl := !p_trlr
+          val () = !p_trr := rbtree_clr_trans_blk_red (!p_trr)
+//
+          val () = !p_cr := B
+          val [c_new:int] t_new = insfix_r (
+            view@(!p_cr), view@(!p_kr), view@(!p_xr), view@(!p_trl), view@(!p_trr) | tr, p_trr
+          ) // end of [val]
+          val () = !p_trlr := t_new
+//
+        in
+          !p_crl := R; fold@ {..}{..}{..}{c_new} (trl); trl
+        end // end of [T (R, ...)]
+    end // end of [_]
+end // end of [remfix_l]
+
+fn{key:t0p;itm:vt0p}
+remfix_r
+  {cl,cr:clr}
+  {bh:nat}
+  {v:nat}
+  {l_c,l_k,l_x,l_tl,l_tr:addr} (
+  pf_c: int(BLK) @ l_c
+, pf_k: key @ l_k
+, pf_x: itm @ l_x
+, pf_tl: rbtree (key, itm, cl, bh+1, 0) @ l_tl
+, pf_tr: rbtree (key, itm, cr, bh, v) @ l_tr
+| t: T_unfold (l_c, l_k, l_x, l_tl, l_tr)
+, p_c: ptr (l_c)
+, p_tl: ptr (l_tl)
+, p_tr: ptr (l_tr)
+) :<> [c:clr;v:nat | v <= cl] rbtree (key, itm, c, bh+1, v) = let
+  #define B BLK; #define R RED
+in
+  case+ !p_tr of
+  | T (!p_cr as R, _, _, _, _) => (
+      !p_cr := B; fold@ (!p_tr); !p_c := R; fold@ {..}{..}{..}{cl} (t); t
+    ) // end of [T (R, ...)]
+  | _ =>> let
+    in
+      case+ !p_tl of
+      | T {..} {cl,cll,clr} (!p_cl as B, _, _, _, _) => let
+          val () = !p_cl := R; val () = fold@ {..}{..}{..}{cll+clr} (!p_tl)
+        in
+          insfix_l (pf_c, pf_k, pf_x, pf_tl, pf_tr | t, p_tl)
+        end // end of [T (B, ...)]
+      | T (!p_cl as R, !p_kl, !p_xl, !p_tll, !p_tlr) => let
+          val tlr = !p_tlr
+          val+ T (!p_clr, !p_klr, !p_xlr, !p_tlrl, !p_tlrr) = tlr
+//
+          val tl = !p_tl
+          val () = !p_tl := !p_tlrr
+          val () = fold@ (t)
+          val () = !p_tlrr := t
+//
+          val () = !p_tll := rbtree_clr_trans_blk_red (!p_tll)
+          val () = !p_tlr := !p_tlrl
+//
+          val () = !p_cl := B
+          val [c_new:int] t_new = insfix_l (
+            view@(!p_cl), view@(!p_kl), view@(!p_xl), view@(!p_tll), view@(!p_tlr) | tl, p_tll
+          ) // end of [val]
+          val () = !p_tlrl := t_new
+//
+        in
+          !p_clr := R; fold@ {..}{..}{..}{c_new} (tlr); tlr
+        end // end of [T (R, ...)]
+    end // end of [_]
+end // end of [remfix_r]
+
+(* ****** ****** *)
+
+typedef rbtree0 = rbtree (void, void, 0, 0, 0)?
+viewtypedef
+T_node (key:t@ype, itm:viewt@ype) =
+  T_pstruct (int?, key, itm, rbtree0, rbtree0)
+// end of [T_node]
+
+extern
+castfn T_node_make
+  {key:t0p;itm:vt0p}
+  {l_c,l_k,l_x,l_tl,l_tr:addr} (
+    pf_c: int? @ l_c, pf_k: key @ l_k, pf_x: itm @ l_x, pf_tl: rbtree? @ l_tl, pf_tr: rbtree? @ l_tr
+  | x: T_unfold (l_c, l_k, l_x, l_tl, l_tr)
+  ) :<> T_node (key, itm)
+// end of [T_node_make]
+
+fun{key:t0p;itm:vt0p}
+rbtree_remove_min
+  {c:clr}
+  {bh:nat | bh+c > 0} .<bh,c>. (
+  t: &rbtree0 (key, itm, c, bh) >> rbtree (key, itm, c1, bh-bhdf, 0)
+, bhdf: &int? >> int (bhdf)
+) :<> #[
+  bhdf:two; c1:clr | bhdf <= bh; c1 <= c+bhdf
+] T_node (key, itm) = let
+  #define B BLK; #define R RED
+  val+ T {..} {c,cl,cr} (!p_c, !p_k, !p_x, !p_tl, !p_tr) = t
+  prval pf_c = view@ !p_c
+  prval pf_k = view@ !p_k
+  prval pf_x = view@ !p_x
+  prval pf_tl = view@ !p_tl
+  prval pf_tr = view@ !p_tr
+in
+  case+ !p_c of
+  | B => (case+ !p_tl of
+    | T _ => let
+        val () = fold@ {..}{..}{..}{0} (!p_tl)
+        val node = rbtree_remove_min (!p_tl, bhdf)
+      in
+        if bhdf = 0 then let
+          val () = fold@ {..}{..}{..}{0} (t) in node
+        end else let
+          val () = t := remfix_l (
+            pf_c, pf_k, pf_x, pf_tl, pf_tr | t, p_c, p_tl, p_tr
+          ) // end of [val]
+        in
+          case+ t of
+          | T (!p_c as R, _, _, _, _) => (
+              bhdf := 0; !p_c := B; fold@ {..}{..}{..}{0} (t); node
+            ) // end of [T]
+          | _ =>> node
+        end (* end of [if] *)
+      end // end of [T]
+    | ~E () => let
+        val () = bhdf := 1
+        val tr = !p_tr; val t0 = t; val () = t := tr in
+        T_node_make {key,itm} (pf_c, pf_k, pf_x, pf_tl, pf_tr | t0)
+      end // end of [E]
+    ) // end of [T (B, ...)]
+  | R => begin case+ !p_tl of
+    | T _ => let
+        val () = fold@ {..}{..}{..}{0} (!p_tl)
+        val node = rbtree_remove_min (!p_tl, bhdf)
+      in
+        if bhdf = 0 then let
+          val () = fold@ {..}{..}{..}{0} (t) in node
+        end else let // bhdf = 1
+          val () = bhdf := 0
+          val () = !p_tr := rbtree_clr_trans_blk_red (!p_tr)
+          val () = !p_c := B
+          val () = t := insfix_r (pf_c, pf_k, pf_x, pf_tl, pf_tr | t, p_tr)
+        in
+          node
+        end (* end of [if] *)
+      end // end of [T (B, ...)]
+    | ~E () => let
+        val () = bhdf := 0
+        val tr = !p_tr; val t0 = t; val () = t := tr in
+        T_node_make {key,itm} (pf_c, pf_k, pf_x, pf_tl, pf_tr | t0)
+      end // end of [E]
+    end (* end of [T (R, ...)] *)
+end // end of [rbtree_remove_min]
+
+(* ****** ****** *)
 //
 // HX: unsafe but convenient to implement
 //
@@ -371,7 +574,7 @@ linmap_takeout
   val ans = linmap_takeout_ptr<key,itm> (m, k0, cmp, &res)
   val [b:bool] ans = bool1_of_bool (ans)
   prval pf = __assert (view@ res) where {
-    extern prfun __assert {l_res:addr} (pf: itm? @ l_res):<> opt (itm, b) @ l_res
+    extern praxi __assert {l_res:addr} (pf: itm? @ l_res):<> opt (itm, b) @ l_res
   } // end of [prval]
   prval () = view@ res := pf
 } // end of [linmap_takeout]
