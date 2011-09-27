@@ -41,15 +41,21 @@
 
 staload "libats/SATS/biarray.sats"
 
+(* ****** ****** *)
+
 assume
-biarray_v (a:viewt@ype, n:int, lbeg:addr, lend:addr)
-  = [ofs:int | lend==lbeg+ofs] (MUL (n, sizeof(a), ofs), array_v (a, n, lbeg))
-// end of [biarray_v]
+biarray_v (
+  a:viewt@ype, n:int, lbeg:addr, lend:addr
+) = [ofs:int | lend==lbeg+ofs] (
+  MUL (n, sizeof(a), ofs), array_v (a, n, lbeg)
+) // end of [biarray_v]
 
 (* ****** ****** *)
 
 implement
-array_v_of_biarray_v (pf) = let prval (pfmul, pfarr) = pf in pfarr end
+array_v_of_biarray_v (pf) =
+  let prval (pfmul, pfarr) = pf in pfarr end
+// end of [array_v_of_biarray_v]
 
 (* ****** ****** *)
 
