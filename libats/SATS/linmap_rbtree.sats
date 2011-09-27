@@ -99,7 +99,7 @@ linmap_search (
 fun{key:t0p;itm:vt0p}
 linmap_insert (
   m: &map (key, itm)
-, k0: key, x0: itm
+, k0: key, x0: &itm >> itm?
 , cmp: cmp key
 , res: &itm? >> opt (itm, b)
 ) :<> #[b:bool] bool b // end of [linmap_insert]

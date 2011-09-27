@@ -604,8 +604,9 @@ s2exp_is_non_fun (s2e) =
   case+ s2e.s2exp_node of
   | S2Efun _ => false
   | S2EVar _ => false
-  | S2Eexi (_, _, s2e) => s2exp_is_non_fun s2e
-  | S2Euni (_, _, s2e) => s2exp_is_non_fun s2e
+  | S2Euni (_, _, s2e) => let
+      val s2e = s2exp_whnf (s2e) in s2exp_is_non_fun s2e
+    end // end of [S2Euni]
   | _ => true
 // end of [s2exp_is_non_fun]
 
@@ -614,8 +615,9 @@ s2exp_is_non_tyrec (s2e) =
   case+ s2e.s2exp_node of
   | S2Etyrec _ => false
   | S2EVar _ => false
-  | S2Eexi (_, _, s2e) => s2exp_is_non_tyrec s2e
-  | S2Euni (_, _, s2e) => s2exp_is_non_tyrec s2e
+  | S2Eexi (_, _, s2e) => let
+      val s2e = s2exp_whnf (s2e) in s2exp_is_non_tyrec s2e
+    end // end of [S2Eexi]
   | _ => true
 // end of [s2exp_is_non_tyrec]
 

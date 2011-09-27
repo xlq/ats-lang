@@ -4,7 +4,7 @@ ats-lang-anairiats-0.2.6:
 
 1. Adding contrib/JNI for interface ATS and Java.
 2. Adding the --xrefprelude flag to make cross-referencing work again.
-3. The keyword [sta] can also be written as [stacst].
+3. The keyword [sta] can now also be written as [stacst].
 4. If a name refers to several static constants, then the latest declared
    non-functional one is chosen (if there is one).
 5. The tutorial (doc/TUTORIAL) is no longer put into the release package.
@@ -16,6 +16,7 @@ ats-lang-anairiats-0.2.6:
    Thanks, David!
 8. Introducing ISALIGNED to handle alignment.
 9. Introducing NULLABLE to handle ptr_zero and ptr_zero_tsz.
+10. adding libats/funmap_rbtree (functional maps based on red-black trees)
 
 ########################################################################
 
@@ -206,19 +207,13 @@ ats-lang-anairiats-0.1.9:
 1. overloaded symbols in a macro definition is re-loaded when the macro
    definition is expanded. This change can greatly facilitate the use of
    macros defined in $ATSHOME/prelude/macrodef.sats
-
 2. macro expansion is now handled by [d1exp_tr] in [ats_trans2_dyn1.dats]
    (instead of being done by [d2exp_tr] in [ats_trans3_dyn2.dats])
 *)
-
 3. The semantics for symbol overloading is greatly simplified.
-
 4. Adding libc/sched based on /usr/include/sched.x
-
 5. Adding libats/parworkshop to support multicore programming.
-
 6. The examples in doc/EXAMPLE/MULTICORE are modified to run again.
-
 7. Adding support for lliunt and ullint.
 
 ......
@@ -229,9 +224,7 @@ ats-lang-anairiats-0.1.8:
 
 1. string generation functions have been modified to return linear strings
    that can be freed.
-
 2. $extype_struct is introduced to interface with C structs
-
 3. Fixing a serious mistake causing static unification variable to be
    wrongly tagged.
 
@@ -241,12 +234,9 @@ ats-lang-anairiats-0.1.7:
 
 1. Adding support for implementing variadic functions in ATS.
    Please see the files: $ATSHOME/libc/?ATS/stdarg.?ats
-
 2. Adding a check to detect looping caused by recursive staloading
    and/or including
-
 3. Overhauling [prelude/SATS/array.sats]
-
 4. Adding support for special constants $FILENAME and $LOCATION.
 
 ########################################################################
@@ -254,11 +244,8 @@ ats-lang-anairiats-0.1.7:
 ats-lang-anairiats-0.1.6:
 
 1. Support for OOP is under development. So far, typechecking is done.
-
 2. Type error message reporting is made more informative. This is ongoing.
-
 3. Adding $ATSHOME/ccomp/lib64 for storing libfiles for 64-bit machines.
-
 4. Makefiles are re-designed by Likai Liu.
 
 ########################################################################
@@ -267,27 +254,19 @@ ats-lang-anariats-0.1.5:
 
 1. A character whose ascii code is greater than 127 is treated as the null
    character by the ATS lexer. So any chars can now appear in comments.
-
 2. Some location information is reported when a match failure occurs at
    run-time.
-
 3. [atscc] now returns a nonzero exit status to the OS if compilation does
    not finish normally.
-
 4. various list functions (e.g., list_map_* functions) now return linear
    lists instead of nonlinear ones.
-
 5. Some packages in SML Basis Library are implemented in [libats/smlbas]
-
 6. A bug is fixed that was due to nonlinear constructor patterns being
    given reference arguments.
-
 7. The constant [div_int_int_int_bool] is re-defined as the previous
    definition was wrong if the divider and the dividee are of different
    signs.
-
 8. A bug is fixed that was duo to [as] patterns being wrongly compiled.
-
 9. [prelude/SATS/matrix0.sats] and [prelude/DATS/matrix0.dats] are added.
 
 ########################################################################
@@ -304,7 +283,6 @@ ats-lang-anariats-0.1.3:
 
 1. Various bug fixes. In particular, a bug causing incorrect compilation
    of pattern matching is fixed.
-
 2. It is now possible to generate html files for cross-referencing. The
    flag for this feature is [--posmark_xref=XREF], where XREF should be
    replaced with the name of some directory (already created) to store
@@ -316,10 +294,8 @@ ats-lang-anariats-0.1.2:
 
 1. Linear lazy evaluation is now supported. See [prelude/DATS/file.dats]
    for some code using this cool feature.
-
 2. Many new tutorials have been added. There is also a all-in-one format
    that allows for easy printout.
-
 3. Many examples from the book K&R are translated into the directory:
    [doc/EXAMPLE/KernighanRitchie].   
 
@@ -330,12 +306,9 @@ ats-lang-anariats-0.1.1:
 1. A type [schar] for signed chars is added. Now, the type [char] depends
    on the interpretation of the C compiler used to compile the C code that
    is generated from ATS programs by [atsopt].
-
 2. [scase] is now supported.
-
 3. [x1,x2:int] <pat> is now a legal pattern; it is equivalent to the following
    pattern [x1:int,x2:int] <pat>
-
 4. It is now allowed in ATS to allocate (linear) arrays on stack at run-time.
 
 ########################################################################
@@ -345,10 +318,8 @@ ats-lang-anariats-0.1.0:
 1. The syntax for template implementation is changed:
    previous syntax: implement foo<a,b><c> (...) = ...
    current  syntax: implement{a,b}{c} foo (...) = ...
-
 2. It is now allowed to implement a special template instantiation:
    implement foo<double,string><int> (...) = ...
-
 3. Various bug fixes can be found in BUGS.txt.
 
 ########################################################################
@@ -356,23 +327,16 @@ ats-lang-anariats-0.1.0:
 ats-lang-anariats-0.0.2:
 
 1. fixed a bug affecting [nonfix] declarations.
-
 2. [ats_trans1.dats] is splitted into the following two:
    [ats_trans1_sat.dats] and [ats_trans1_dyn.dats]
-
 3. Make/Install is significantly improved. There is no need to set
    ATSHOME (and ATSHOMERELOC) before 'make all' is executed.
-
 4. The confusion between array and array0 is resolved.
-
 5. [EXAMPLE/SHOOTOUT/SUMBIT] is created.
-
 6. The function [intvec_normalize_gte] did not handle the case [gcd > 1]
    correctly. It is fixed now.
-
 7. The incorrect handling of [continue] in a for loop is fixed now.  See
    [BUGS.txt]
-
 8. The command [atspackage] no longer puts the source code for Anairiats
    into a distribution.
 

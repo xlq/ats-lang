@@ -66,6 +66,9 @@ sortdef clr = {c:nat | c <= 1}
 typedef color (c:int) = int c
 typedef color = [c:clr] color c
 
+sortdef t0p = t@ype
+sortdef vt0p = viewt@ype
+
 (* ****** ****** *)
 
 dataviewtype rbtree (
@@ -86,8 +89,18 @@ where rbtree0
 
 (* ****** ****** *)
 
+fn{key:t0p;itm:vt0p}
+rbtree_get_color
+  {c:clr} {bh:int} {v:int}
+  (t: !rbtree (key, itm, c, bh, v)):<> int (c) =
+  case+ t of
+  | T (c, _, _, _, _) => (fold@ (t); c) | E () => (fold@ (t); BLK)
+// end of [rbtree_get_color]
+
+(* ****** ****** *)
+
 assume map_t0ype_viewt0ype
-  (key:t@ype, itm:viewt@ype) = [c:clr;bh:nat] rbtree0 (key, itm, c, bh)
+  (key:t0p, itm:vt0p) = [c:clr;bh:nat] rbtree0 (key, itm, c, bh)
 // end of [assume]
 
 (* ****** ****** *)
@@ -135,6 +148,209 @@ linmap_height (t) = ht (t) where {
     | E () => (fold@ t; 0)
   // end of [ht]
 } // end of [linmap_height]
+
+(* ****** ****** *)
+
+implement{key,itm}
+linmap_search
+  (t, k0, cmp, res) = search (t, res) where {
+  fun search
+    {c:clr} {bh:nat} .<bh,c>. (
+      t: !rbtree0 (key, itm, c, bh), res: &itm? >> opt (itm, b)
+    ):<cloref> #[b:bool] bool b = begin
+    case+ t of
+    | T (_(*c*), k, x, !ptl, !ptr) => let
+        val sgn = compare_key_key (k0, k, cmp)
+      in
+        case+ 0 of
+        | _ when sgn < 0 => let
+            val ans = search (!ptl, res) in fold@ t; ans
+          end // end of [sgn < 0]
+        | _ when sgn > 0 => let
+            val ans = search (!ptr, res) in fold@ t; ans
+          end // end of [sgn > 0]
+        | _ => let
+            val () = res := x; prval () = opt_some {itm} (res) in
+            fold@ t; true
+          end // end of [_]
+      end // end of [B]
+    | E () => let
+        prval () = opt_none {itm} (res) in fold@ t; false
+      end // end of [E]
+  end // end of [search]
+} // end of [linmap_search]
+
+(* ****** ****** *)
+
+fn{key:t0p;itm:vt0p}
+insfix_l // right rotation
+  {cl,cr:clr}
+  {bh:nat}
+  {v:nat}
+  {l_c,l_k,l_x,l_tl,l_tr:addr} (
+  pf_c: int(BLK) @ l_c
+, pf_k: key @ l_k
+, pf_x: itm @ l_x
+, pf_tl: rbtree (key, itm, cl, bh, v) @ l_tl
+, pf_tr: rbtree (key, itm, cr, bh, 0) @ l_tr
+| t: T_unfold (l_c, l_k, l_x, l_tl, l_tr)
+, p_tl: ptr (l_tl)
+) :<> [c:clr] rbtree0 (key, itm, c, bh+1) = let
+  #define B BLK; #define R RED
+in
+  case+ !p_tl of
+  | T (!p_cl as R, _, _, !p_tll as T (!p_cll as R, _, _, _, _), !p_tlr) => let
+//
+      val () = !p_cll := B
+      val () = fold@ (!p_tll)
+//
+      val tl = !p_tl
+      val () = !p_tl := !p_tlr
+      val () = fold@ (t)
+//
+      val () = !p_tlr := t
+    in
+      fold@ (tl); tl
+    end // end of [T (R, T (R, ...), ...)]
+  | T (!p_cl as R, _, _, !p_tll, !p_tlr as T (!p_clr as R, _, _, !p_tlrl, !p_tlrr)) => let
+//
+      val tl = !p_tl
+      val () = !p_tl := !p_tlrr
+      val () = fold@ (t)
+      val () = !p_tlrr := t
+//
+      val tlr = !p_tlr
+      val () = !p_tlr := !p_tlrl
+      val () = !p_cl := B
+      val () = fold@ (tl)
+      val () = !p_tlrl := tl
+//
+    in
+      fold@ (tlr); tlr
+    end // end of [T (R, ..., T (R, ...))]
+  | _ =>> (fold@ (t); t)
+end // end of [insfix_l]
+
+fn{key:t0p;itm:vt0p}
+insfix_r // left rotation
+  {cl,cr:clr}
+  {bh:nat}
+  {v:nat}
+  {l_c,l_k,l_x,l_tl,l_tr:addr} (
+  pf_c: int(BLK) @ l_c
+, pf_k: key @ l_k
+, pf_x: itm @ l_x
+, pf_tl: rbtree (key, itm, cl, bh, 0) @ l_tl
+, pf_tr: rbtree (key, itm, cr, bh, v) @ l_tr
+| t: T_unfold (l_c, l_k, l_x, l_tl, l_tr)
+, p_tr: ptr (l_tr)
+) :<> [c:clr] rbtree0 (key, itm, c, bh+1) = let
+  #define B BLK; #define R RED
+in
+  case+ !p_tr of
+  | T (!p_cr as R, _, _, !p_trl, !p_trr as T (!p_crr as R, _, _, _, _)) => let
+//
+      val () = !p_crr := B
+      val () = fold@ (!p_trr)
+//
+      val tr = !p_tr
+      val () = !p_tr := !p_trl
+      val () = fold@ (t)
+//
+      val () = !p_trl := t
+    in
+      fold@ (tr); tr
+    end // end of [T (R, ..., T (R, ...))]
+  | T (!p_cr as R, _, _, !p_trl as T (!p_crr as R, _, _, !p_trll, !p_trlr), !p_trr) => let
+//
+      val tr = !p_tr
+      val () = !p_tr := !p_trll
+      val () = fold@ (t)
+      val () = !p_trll := t
+//
+      val trl = !p_trl
+      val () = !p_trl := !p_trlr
+      val () = !p_cr := B
+      val () = fold@ (tr)
+      val () = !p_trlr := tr
+//
+    in
+      fold@ (trl); trl
+    end // end of [T (R, T (R, ...), ...)]
+  | _ =>> (fold@ (t); t)
+end // end of [insfix_r]
+
+(* ****** ****** *)
+
+implement{key,itm}
+linmap_insert
+  (m, k0, x0, cmp, res) = let
+//
+#define B BLK; #define R RED
+//
+fun ins
+  {c:clr} {bh:nat} .<bh,c>. (
+  t: &rbtree0 (key, itm, c, bh) >>
+       rbtree (key, itm, cl, bh, v)
+, x0: &itm >> itm?
+, res: &itm? >> opt (itm, b)
+) :<cloref> #[b: bool; cl:clr; v:nat | v <= c] bool (b) =
+  case+ t of
+  | T (
+      !p_c, !p_k, !p_x, !p_tl, !p_tr
+    ) => let
+      val sgn = compare_key_key (k0, !p_k, cmp)
+    in
+      if sgn < 0 then let
+        val b = ins (!p_tl, x0, res)
+        stavar cl: int
+        prval cl: int (cl) = rbtree_get_color (!p_tl)
+      in
+        if !p_c = B then let
+          val () = t := insfix_l
+            (view@(!p_c), view@(!p_k), view@(!p_x), view@(!p_tl), view@(!p_tr) | t, p_tl)
+          // end of [val]
+        in
+          b
+        end else let
+          val () = !p_c := R in fold@ {..}{..}{..}{cl} (t); b
+        end // end of [if]
+      end else if sgn > 0 then let
+        val b = ins (!p_tr, x0, res)
+        stavar cr: int
+        prval cr: int (cr) = rbtree_get_color (!p_tr)
+      in
+        if !p_c = B then let
+          val () = t := insfix_r
+            (view@(!p_c), view@(!p_k), view@(!p_x), view@(!p_tl), view@ (!p_tr) | t, p_tr)
+          // end of [val]
+        in
+          b
+        end else let
+          val () = !p_c := R in fold@ {..}{..}{..}{cr} (t); b
+        end // end of [if]
+      end else let
+        val () = res := !p_x
+        prval () = opt_some {itm} (res)
+        val () = !p_x := x0
+        val () = fold@ {..}{..}{..}{0} (t)
+      in
+        true
+      end (* end of [if] *)
+    end // end of [cons]
+  | ~E () => let
+      prval () = opt_none {itm} (res)
+      val () = t := T {..}{..}{..}{0} (R, k0, x0, E, E) in false
+    end // end of [E]
+// end of [ins]
+val b = ins (m, x0, res)
+//
+in
+//
+case+ m of
+| T (!p_c as R, _, _, _, _) => (!p_c := B; fold@ (m); b) | _ =>> b
+//
+end // end of [linmap_insert]
 
 (* ****** ****** *)
 //
