@@ -24,6 +24,7 @@ DBSRC= \
 ######
 
 all:: html
+all:: clean
 
 ######
 
@@ -38,7 +39,7 @@ chap_hello_atxt.dats: chap_hello.atxt
 	$(ATSDOC) -do $@ -i $< > chap_hello_atxt.txt
 chap_hello_atxt.db: chap_hello ; ./chap_hello > $@
 
-cleanall:: ; $(RMF) chap_hello 
+clean:: ; $(RMF) chap_hello 
 cleanall:: ; $(RMF) chap_hello_atxt.*
 
 typecheck:: ; $(ATSCC) -tc CODE/chap_hello.dats
@@ -51,7 +52,7 @@ chap_objtypes_atxt.dats: chap_objtypes.atxt
 	$(ATSDOC) -do $@ -i $< > chap_objtypes_atxt.txt
 chap_objtypes_atxt.db: chap_objtypes ; ./chap_objtypes > $@
 
-cleanall:: ; $(RMF) chap_objtypes 
+clean:: ; $(RMF) chap_objtypes 
 cleanall:: ; $(RMF) chap_objtypes_atxt.*
 
 typecheck:: ; $(ATSCC) -tc CODE/chap_objtypes.dats
@@ -64,7 +65,7 @@ chap_funtypes_atxt.dats: chap_funtypes.atxt
 	$(ATSDOC) -do $@ -i $< > chap_funtypes_atxt.txt
 chap_funtypes_atxt.db: chap_funtypes ; ./chap_funtypes > $@
 
-cleanall:: ; $(RMF) chap_funtypes 
+clean:: ; $(RMF) chap_funtypes 
 cleanall:: ; $(RMF) chap_funtypes_atxt.*
 
 typecheck:: ; $(ATSCC) -tc CODE/chap_funtypes.dats
@@ -77,7 +78,7 @@ chap_drawline_atxt.dats: chap_drawline.atxt
 	$(ATSDOC) -do $@ -i $< > chap_drawline_atxt.txt
 chap_drawline_atxt.db: chap_drawline ; ./chap_drawline > $@
 
-cleanall:: ; $(RMF) chap_drawline 
+clean:: ; $(RMF) chap_drawline 
 cleanall:: ; $(RMF) chap_drawline_atxt.*
 
 typecheck:: ; $(ATSCC) -tc CODE/chap_drawline.dats
@@ -90,7 +91,7 @@ chap_drawsqrcirc_atxt.dats: chap_drawsqrcirc.atxt
 	$(ATSDOC) -do $@ -i $< > chap_drawsqrcirc_atxt.txt
 chap_drawsqrcirc_atxt.db: chap_drawsqrcirc ; ./chap_drawsqrcirc > $@
 
-cleanall:: ; $(RMF) chap_drawsqrcirc 
+clean:: ; $(RMF) chap_drawsqrcirc 
 cleanall:: ; $(RMF) chap_drawsqrcirc_atxt.*
 
 typecheck:: ; $(ATSCC) -tc CODE/chap_drawsqrcirc.dats
@@ -103,7 +104,7 @@ chap_drawtext_atxt.dats: chap_drawtext.atxt
 	$(ATSDOC) -do $@ -i $< > chap_drawtext_atxt.txt
 chap_drawtext_atxt.db: chap_drawtext ; ./chap_drawtext > $@
 
-cleanall:: ; $(RMF) chap_drawtext 
+clean:: ; $(RMF) chap_drawtext 
 cleanall:: ; $(RMF) chap_drawtext_atxt.*
 
 typecheck:: ; $(ATSCC) -tc CODE/chap_drawtext.dats
