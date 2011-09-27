@@ -137,6 +137,16 @@ funmap_height (t) = ht (t) where {
 (* ****** ****** *)
 
 implement{key,itm}
+funmap_black_height (t) = case+ t of
+  | T (c, _, _, tl, _) => let
+      val bhl = funmap_black_height (tl) in bhl + 1
+    end // end of [T]
+  | E () => 0 // end of [E]
+// end of [funmap_black_height]
+
+(* ****** ****** *)
+
+implement{key,itm}
 funmap_search
   (t, k0, cmp, res) = search (t, res) where {
   fun search
