@@ -30,10 +30,12 @@
 (* ****** ****** *)
 
 (*
+**
 ** A functional map implementation based on red-black trees
 **
 ** Contributed by Hongwei Xi (hwxi AT cs DOT bu DOT edu)
 ** Time: September, 2011 // based on a version done in October, 2008
+**
 *)
 
 (* ****** ****** *)
@@ -74,9 +76,13 @@ fun{} funmap_isnot_nil {key,itm:t@ype} (m: map (key, itm)):<> bool
 //
 fun{key,itm:t@ype} funmap_size (m: map (key, itm)):<> size_t
 //
-// HX: this function is O(1) // for gathering stats
+// HX: this function is O(n) // for gathering stats
 //
 fun{key,itm:t@ype} funmap_height (m: map (key, itm)):<> Nat
+//
+// HX: this function is O(log(n)) // for gathering stats
+//
+fun{key,itm:t@ype} funmap_black_height (m: map (key, itm)):<> Nat
 
 (* ****** ****** *)
 
