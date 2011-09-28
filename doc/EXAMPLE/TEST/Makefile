@@ -274,6 +274,11 @@ libats_linmap_avltree: libats_linmap_avltree.dats
 	$(ATSCC) -D_ATS_GCATS -O2 -o $@ $< && ./libats_linmap_avltree 100000
 cleanall:: ; $(RMF) libats_linmap_avltree
 
+checkall:: libats_linmap_rbtree
+libats_linmap_rbtree: libats_linmap_rbtree.dats
+	$(ATSCC) -D_ATS_GCATS -O2 -o $@ $< && ./libats_linmap_rbtree 100000
+cleanall:: ; $(RMF) libats_linmap_rbtree
+
 ######
 
 checkall:: libats_linqueue_arr
