@@ -462,10 +462,10 @@ linmap_takeout_ptr {l_res}
           end // end of [sgn > 0]
         | _ (*sgn = 0*) => let
             val () = if :(pf_x: itm? @ l_x) =>
-              (p_res <> null) then let
+              (p_res > null) then let
               prval (pf, fpf) = __assert () where {
                 extern praxi __assert (): (itm? @ l_res, itm @ l_res -<> void)
-              }
+              } // end of [prval]
               val () = !p_res := !p_x
               prval () = fpf (pf)
             in

@@ -89,8 +89,9 @@ where rbtree0
 
 (* ****** ****** *)
 
-fn{key:t0p;itm:vt0p}
+prfn
 rbtree_get_color
+  {key:t0p;itm:vt0p}
   {c:clr} {bh:int} {v:int}
   (t: !rbtree (key, itm, c, bh, v)):<> int (c) =
   case+ t of
@@ -556,6 +557,44 @@ in
 end // end of [rbtree_remove_min]
 
 (* ****** ****** *)
+
+fn{key:t0p;itm:vt0p}
+rbtree_join
+  {cl,cr:clr} {bh:nat} (
+  tl: rbtree0 (key, itm, cl, bh)
+, tr: rbtree0 (key, itm, cr, bh)
+) :<> [c:clr;v:nat | v <= cl+cr] rbtree (key, itm, c, bh, v) =
+  case+ tr of
+  | T _ => let
+      val () = fold@ {..}{..}{..}{0} (tr)
+      var tr = tr
+      var bhdf: int
+      val node = rbtree_remove_min (tr, bhdf)
+      stavar cr: int
+      prval cr: int (cr) = rbtree_get_color (tr)
+      val+ T (!p_c, !p_k, !p_x, !p_tl, !p_tr) = node
+    in
+      if bhdf = 0 then let
+        val () = !p_c := RED
+        val () = !p_tl := tl
+        val () = !p_tr := tr
+      in
+        fold@ {..}{..}{..}{cl+cr} (node); node
+      end else let
+        val () = !p_c := BLK
+        val () = !p_tl := tl
+        val () = !p_tr := tr
+      in
+        remfix_r (
+          view@ (!p_c), view@ (!p_k), view@ (!p_x), view@ (!p_tl), view@ (!p_tr)
+        | node, p_c, p_tl, p_tr
+        ) // end of [remfix_r]
+      end (* end of [if] *)
+    end // end of [T]
+  | ~E () => tl
+// end of [rbtree_join]
+
+(* ****** ****** *)
 //
 // HX: unsafe but convenient to implement
 //
@@ -565,6 +604,156 @@ linmap_takeout_ptr {l_res:addr} (
   m: &map (key, itm), k0: key, cmp: cmp key, res: ptr l_res
 ) :<> bool
 // end of [linmap_takeout]
+
+implement{key,itm}
+linmap_takeout_ptr {l_res}
+  (m, k0, cmp, p_res) = let
+  #define B BLK; #define R RED
+//
+fun takeout
+  {c:clr} {bh:nat} .<bh,c>. (
+  t: &rbtree0 (key, itm, c, bh) >> rbtree0 (key, itm, c1, bh-bhdf)
+, bhdf: &int? >> int bhdf
+, p_res: ptr l_res
+) :<cloref> #[bhdf:two; c1:clr | bhdf <= bh; c1 <= c+bhdf] bool =
+  case+ t of
+  | T _ => let
+      val () = fold@ {..}{..}{..}{0} (t)
+      val+ T (!p_c, !p_k, !p_x, !p_tl, !p_tr) = t
+      stavar l_x: addr
+      val p_x = p_x : ptr l_x
+      prval pf_c = view@ !p_c
+      prval pf_k = view@ !p_k
+      prval pf_x = view@ !p_x
+      prval pf_tl = view@ !p_tl
+      prval pf_tr = view@ !p_tr
+      val sgn = compare_key_key (k0, !p_k, cmp)
+    in
+      case+ !p_c of
+      | B => if sgn < 0 then let
+          val bval = takeout (!p_tl, bhdf, p_res)
+        in
+          if bhdf = 0 then let
+            val () = fold@ {..}{..}{..}{0} (t) in bval
+          end else let // bhdf = 1
+            val () = t := remfix_l
+              (pf_c, pf_k, pf_x, pf_tl, pf_tr | t, p_c, p_tl, p_tr)
+            // end of [val]
+          in
+            case+ t of
+            | T (!p_c as R, _, _, _, _) => (
+                bhdf := 0; !p_c := B; fold@ (t); bval
+              ) // end of [T]
+            | _ =>> bval
+          end // end of [if]
+        end else if sgn > 0 then let
+          val bval = takeout (!p_tr, bhdf, p_res)
+        in
+          if bhdf = 0 then let
+            val () = fold@ {..}{..}{..}{0} (t) in bval
+          end else let // bhdf = 1
+            val () = t := remfix_r
+              (pf_c, pf_k, pf_x, pf_tl, pf_tr | t, p_c, p_tl, p_tr)
+            // end of [val]
+          in
+            case+ t of
+            | T (!p_c as R, _, _, _, _) => (
+                bhdf := 0; !p_c := B; fold@ (t); bval
+              ) // end of [T]
+            | _ =>> bval
+          end // end of [if]
+        end else let // x0 = x
+          val () = if :(pf_x: itm? @ l_x) =>
+            (p_res > null) then let
+            prval (pf, fpf) = __assert () where {
+              extern praxi __assert (): (itm? @ l_res, itm @ l_res -<> void)
+            } // end of [prval]
+            val () = !p_res := !p_x
+            prval () = fpf (pf)
+          in
+            // nothing
+          end else let
+            extern praxi __assert (pf: !itm @ l_x >> itm? @ l_x): void
+            prval () = __assert (pf_x) // leak happens if [itm] contains resources!
+          in
+            // nothing
+          end // end of [val]
+          val tl = !p_tl and tr = !p_tr
+          val () = free@ {key,itm}{0,0,0}{0}{0} (t)
+          val bval = true
+          val () = t := rbtree_join (tl, tr)
+        in
+          case+ t of
+          | T (!p_c as R, _, _, _, _) => (
+              bhdf := 0; !p_c := B; fold@ (t); bval
+            ) // end of [T]
+          | _ =>> (bhdf := 1; bval)
+        end (* end of [if] *)
+      // end of [B]
+      | R => if sgn < 0 then let
+          val bval = takeout (!p_tl, bhdf, p_res)
+        in
+          if bhdf = 0 then let
+            val () = fold@ {..}{..}{..}{0} (t) in bval
+          end else let // bhdf = 1
+            val () = bhdf := 0
+            val () = !p_c := BLK
+            val () = t := remfix_l
+              (pf_c, pf_k, pf_x, pf_tl, pf_tr | t, p_c, p_tl, p_tr)
+            // end of [val]
+          in
+            bval
+          end // end of [if]
+        end else if sgn > 0 then let
+          val bval = takeout (!p_tr, bhdf, p_res)
+        in
+          if bhdf = 0 then let
+            val () = fold@ {..}{..}{..}{0} (t) in bval
+          end else let // bhdf = 1
+            val () = bhdf := 0
+            val () = !p_c := BLK
+            val () = t := remfix_r
+              (pf_c, pf_k, pf_x, pf_tl, pf_tr | t, p_c, p_tl, p_tr)
+            // end of [val]
+          in
+            bval   
+          end // end of [if]
+        end else let // x0 = x
+          val () = bhdf := 0
+          val () = if :(pf_x: itm? @ l_x) =>
+            (p_res > null) then let
+            prval (pf, fpf) = __assert () where {
+              extern praxi __assert (): (itm? @ l_res, itm @ l_res -<> void)
+            } // end of [prval]
+            val () = !p_res := !p_x
+            prval () = fpf (pf)
+          in
+            // nothing
+          end else let
+            extern praxi __assert (pf: !itm @ l_x >> itm? @ l_x): void
+            prval () = __assert (pf_x) // leak happens if [itm] contains resources!
+          in
+            // nothing
+          end // end of [val]
+          val tl = !p_tl and tr = !p_tr
+          val () = free@ {key,itm}{0,0,0}{0}{0} (t)
+          val bval = true
+          val () = t := rbtree_join (tl, tr)
+        in
+           true
+        end (* end of [if] *)
+      // end of [R]
+    end // end of [T]
+  | E () => (bhdf := 0; fold@ (t); false)
+// end of [takeout]
+//
+var bhdf: int // uninitialized
+//
+in
+//
+takeout (m, bhdf, p_res)
+//
+end // end of [linmap_takeout_ptr]
 
 (* ****** ****** *)
 

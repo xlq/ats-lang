@@ -163,7 +163,7 @@ funmap_search
         | _ => let
             val () = res := x; prval () = opt_some {itm} (res) in true
           end // end of [_]
-      end // end of [B]
+      end // end of [T]
     | E () => let
         prval () = opt_none {itm} (res) in false
       end // end of [E]
@@ -392,7 +392,7 @@ rbtree_join
       var bhdf: int // uninmitialized
       val [cr:int] tr = rbtree_remove_min (tr, k0, x0, bhdf)
     in
-      if bhdf = 0 then T {..}{..}{..}{cl+cr} (1(*red*), k0, x0, tl, tr) else remfix_r (k0, x0, tl, tr)
+      if bhdf = 0 then T {..}{..}{..}{cl+cr} (RED, k0, x0, tl, tr) else remfix_r (k0, x0, tl, tr)
     end // end of [T]
   | E () => tl
 // end of [rbtree_join]
@@ -446,12 +446,14 @@ funmap_takeout_ptr {l_res}
           if bhdf = 0 then
             T {..}{..}{..}{0} (B, k, x, tl, tr)
           else let // bhdf = 1
-            val t = remfix_r (k, x, tl, tr) in case+ t of
+            val t = remfix_r (k, x, tl, tr)
+          in
+            case+ t of
             | T (R, k, x, tl, tr) => (bhdf := 0; T (B, k, x, tl, tr))
             | _ =>> t
           end // end of [if]
         end else let // x0 = x
-          val () = if (p_res <> null) then let
+          val () = if (p_res > null) then let
             prval (pf, fpf) = __assert () where {
               extern praxi __assert (): (itm? @ l_res, itm @ l_res -<> void)
             } // end of [prval]
@@ -489,7 +491,7 @@ funmap_takeout_ptr {l_res}
           end // end of [if]
         end else let // x0 = x
           val () = bhdf := 0
-          val () = if (p_res <> null) then let
+          val () = if (p_res > null) then let
             prval (pf, fpf) = __assert () where {
               extern praxi __assert (): (itm? @ l_res, itm @ l_res -<> void)
             } // end of [prval]
@@ -544,9 +546,9 @@ funmap_foreach_funenv {v} {vt}
     {c:clr} {bh:nat} {u:nat} .<bh,c+u>.
     (pf: !v | t: rbtree (key, itm, c, bh, u), env: !vt):<cloref> void =
     case+ t of
-    | T (_(*c*), k, x, tl, tr) => begin
+    | T (_(*c*), k, x, tl, tr) => (
         foreach (pf | tl, env); f (pf | k, x, env); foreach (pf | tr, env)
-      end // end of [B]
+      ) // end of [T]
     | E () => ()
   // end of [foreach]
 } // end of [funmap_foreach_funenv]
@@ -581,7 +583,7 @@ funmap_foreach_vclo {v}
     case+ t of
     | T (_(*c*), k, x, tl, tr) => begin
         foreach (pf | tl, f); f (pf | k, x); foreach (pf | tr, f)
-      end // end of [B]
+      end // end of [T]
     | E () => ()
   // end of [foreach]
 } // end of [funmap_foreach_vclo]
@@ -618,7 +620,7 @@ funmap_listize (xs) = let
         val res = listize (tl, res)
       in
         res
-      end // end of [B]
+      end // end of [T]
     | E () => res
   // end of [listize]
 in
