@@ -95,7 +95,7 @@ chain_free_fun
 ) :<> void = begin case+ kis of
   | CHAINcons (_(*key*), !p_itm, kis1) => let
       val () = f (!p_itm)
-      val () = free@ {key,itm} {0} (kis) in chain_free_fun (kis1, f)
+      val () = free@ {key,itm}{0} (kis) in chain_free_fun (kis1, f)
     end (* end of [CHAINcon] *)
   | ~CHAINnil () => ()
 end // end of [chain_free_fun]
@@ -126,7 +126,7 @@ chain_search
 
 fn{key:t0p;itm:vt0p}
 chain_insert {n:nat} (
-  kis: &chain (key,itm,n) >> chain (key,itm,n+1), k: key, i: itm
+  kis: &chain (key,itm,n) >> chain (key,itm,n+1), k: key, i: &itm >> itm?!
 ) :<> void =
   kis := CHAINcons (k, i, kis)
 // end of [chain_insert]
@@ -147,7 +147,7 @@ chain_remove {n:nat} .<n>. (
         prval () = opt_some {itm} (res)
         val kis1 = !kis1
       in
-        free@ {key,itm} {n} (kis); kis := kis1; true
+        free@ {key,itm}{n} (kis); kis := kis1; true
       end else let
         val ans = chain_remove<key,itm> {n-1} (!kis1, k0, eqfn, res)
       in
@@ -430,7 +430,7 @@ hashtbl_ptr_insert_ofs
   {l_beg,l_end:addr} (
   pf: !hashtbl_v (key, itm, sz, tot, l_beg, l_end)
         >> hashtbl_v (key, itm, sz, tot+1, l_beg, l_end)
-| p_beg: ptr l_beg, k: key, i: itm, ofs: size_t ofs
+| p_beg: ptr l_beg, k: key, i: &itm>>itm?!, ofs: size_t ofs
 ) :<> void = let
   val (pf1, pf2 | p_mid) =
     hashtbl_ptr_split<key,itm> {sz,ofs,tot} (pf | p_beg, ofs)
@@ -476,18 +476,19 @@ hashtbl_ptr_insert_chain
 , kis: chain (key, itm, n)
 , hash: hash key
 ) :<> void = begin case+ kis of
-  | ~CHAINcons (k, i, kis) => let
+  | CHAINcons (k, !p_i, kis1) => let
       // insertion must be done in the reverse order!
-      val () = hashtbl_ptr_insert_chain (pf | sz, p_beg, kis, hash)
+      val () = hashtbl_ptr_insert_chain (pf | sz, p_beg, kis1, hash)
       val h = hash_key (k, hash)
       val h = size1_of_ulint (h)
       val [ofs:int] ofs = sz1mod (h, sz)
       val (pf1, pf2 | p_mid) =
         hashtbl_ptr_split<key,itm> {sz,ofs,tot+n-1} (pf | p_beg, ofs)
       prval hashtbl_v_cons (pf21, pf22) = pf2
-      val () = chain_insert (!p_mid, k, i)
+      val () = chain_insert (!p_mid, k, !p_i)
       prval pf2 = hashtbl_v_cons (pf21, pf22)
       prval () = pf := hashtbl_v_unsplit (pf1, pf2)
+      val () = free@ {key,itm}{0} (kis)
     in
       // empty
     end // end of [cons]

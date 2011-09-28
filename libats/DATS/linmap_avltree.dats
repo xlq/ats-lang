@@ -281,71 +281,78 @@ end // end of [avltree_rrotate]
 
 (* ****** ****** *)
 
-implement{key,itm} linmap_insert
-  (m, k0, x0, cmp, res) = insert (m, x0, res) where {
-  fun insert {h:nat} .<h>. (
-      t: &avltree (key, itm, h) >> avltree_inc (key, itm, h)
-    , x0: &itm >> itm?, res: &itm? >> opt (itm, b)
-    ) :<cloref> #[b:bool] bool b = begin
-    case+ t of
-    | B {..} {hl,hr}
-        (!p_h, !p_k, !p_x, !p_tl, !p_tr) => let
-        prval pf_h = view@ !p_h
-        prval pf_k = view@ !p_k
-        prval pf_x = view@ !p_x
-        prval pf_tl = view@ !p_tl
-        prval pf_tr = view@ !p_tr        
-        val sgn = compare_key_key (k0, !p_k, cmp)
+implement{key,itm}
+linmap_insert
+  (m, k0, x0, cmp, res) = let
+//
+fun insert {h:nat} .<h>. (
+  t: &avltree (key, itm, h) >> avltree_inc (key, itm, h)
+, x0: &itm >> itm?!, res: &itm? >> opt (itm, b)
+) :<cloref> #[b:bool] bool b = begin
+  case+ t of
+  | B {..} {hl,hr}
+      (!p_h, !p_k, !p_x, !p_tl, !p_tr) => let
+      prval pf_h = view@ !p_h
+      prval pf_k = view@ !p_k
+      prval pf_x = view@ !p_x
+      prval pf_tl = view@ !p_tl
+      prval pf_tr = view@ !p_tr        
+      val sgn = compare_key_key (k0, !p_k, cmp)
+    in
+      if sgn < 0 then let
+        val ans = insert (!p_tl, x0, res)
+        val hl = avltree_height<key,itm> (!p_tl)
+        and hr = avltree_height<key,itm> (!p_tr)
       in
-        if sgn < 0 then let
-          val ans = insert (!p_tl, x0, res)
-          val hl = avltree_height<key,itm> (!p_tl)
-          and hr = avltree_height<key,itm> (!p_tr)
+        if hl - hr <= HTDF then let
+          val () = !p_h := 1+max(hl,hr)
+          prval () = fold@ (t)
         in
-          if hl - hr <= HTDF then let
-            val () = !p_h := 1+max(hl,hr)
-            prval () = fold@ (t)
-          in
-            ans // B (1+max(hl,hr), k, x, tl, tr)
-          end else let // hl = hr+HTDF1
-            val () = t := avltree_rrotate<key,itm>
-              (pf_h, pf_k, pf_x, pf_tl, pf_tr | p_h, hl, p_tl, hr, p_tr, t)
-          in
-            ans
-          end // end of [if]
-        end else if sgn > 0 then let
-          val ans = insert (!p_tr, x0, res)
-          val hl = avltree_height<key,itm> (!p_tl)
-          and hr = avltree_height<key,itm> (!p_tr)
+          ans // B (1+max(hl,hr), k, x, tl, tr)
+        end else let // hl = hr+HTDF1
+          val () = t := avltree_rrotate<key,itm>
+            (pf_h, pf_k, pf_x, pf_tl, pf_tr | p_h, hl, p_tl, hr, p_tr, t)
         in
-          if hr - hl <= HTDF then let
-            val () = !p_h := 1+max(hl, hr)
-            prval () = fold@ (t)
-          in
-            ans // B (1+max(hl, hr), k, x, tl, tr)
-          end else let // hl+HTDF1 = hr
-            val () = t := avltree_lrotate<key,itm>
-              (pf_h, pf_k, pf_x, pf_tl, pf_tr | p_h, hl, p_tl, hr, p_tr, t)
-          in
-            ans
-          end // end of [if]
-        end else let (* key already exists *)
-          val () = res := !p_x
-          prval () = opt_some {itm} (res)
-          val () = !p_x := x0
-          prval () = fold@ t
-        in
-          true // B (h, k, x0, tl, tr)
+          ans
         end // end of [if]
-      end // end of [B]
-    | ~E () => let
-        val () = t := B (1, k0, x0, E (), E ()) // a new node is created
-        prval () = opt_none {itm} (res)
+      end else if sgn > 0 then let
+        val ans = insert (!p_tr, x0, res)
+        val hl = avltree_height<key,itm> (!p_tl)
+        and hr = avltree_height<key,itm> (!p_tr)
       in
-        false
-      end // end of [E]
-  end // end of [insert]
-} // end of [linmap_insert]
+        if hr - hl <= HTDF then let
+          val () = !p_h := 1+max(hl, hr)
+          prval () = fold@ (t)
+        in
+          ans // B (1+max(hl, hr), k, x, tl, tr)
+        end else let // hl+HTDF1 = hr
+          val () = t := avltree_lrotate<key,itm>
+            (pf_h, pf_k, pf_x, pf_tl, pf_tr | p_h, hl, p_tl, hr, p_tr, t)
+        in
+          ans
+        end // end of [if]
+      end else let (* key already exists *)
+        val () = res := !p_x
+        prval () = opt_some {itm} (res)
+        val () = !p_x := x0
+        prval () = fold@ t
+      in
+        true // B (h, k, x0, tl, tr)
+      end // end of [if]
+    end // end of [B]
+  | ~E () => let
+      val () = t := B (1, k0, x0, E (), E ()) // a new node is created
+      prval () = opt_none {itm} (res)
+    in
+      false
+    end // end of [E]
+end // end of [insert]
+//
+in
+//
+insert (m, x0, res)
+//
+end // end of [linmap_insert]
 
 (* ****** ****** *)
 

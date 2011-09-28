@@ -248,7 +248,7 @@ fun ptr_free
 (* ****** ****** *)
 
 absprop
-NULLABLE (a: viewt@ype-) // contra-variant
+NULLABLE (a: viewt@ype+) // covariant
 
 (*
 ** HX: is [ptr_zeroing] a more informative name?

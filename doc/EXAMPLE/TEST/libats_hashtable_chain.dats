@@ -75,10 +75,10 @@ implement main (argc, argv) = let
   var i: int; val () = for (i := 0; i < n; i := i+1) let
     val key = i
     // val key = $RAND.randint n
-    val itm = tostring key // val itm = sprintf ("%i", @(key))
+    var kstr = tostring key // val itm = sprintf ("%i", @(key))
     // val () = printf ("key = %i and itm = %s\n", @(key, itm))
   in
-    $H.hashtbl_insert<key,itm> (ptbl, key, itm)
+    $H.hashtbl_insert<key,itm> (ptbl, key, kstr)
   end // end [for]
   val size = $H.hashtbl_size (ptbl)
   val total = $H.hashtbl_total (ptbl)

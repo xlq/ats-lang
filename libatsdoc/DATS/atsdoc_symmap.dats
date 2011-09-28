@@ -86,8 +86,9 @@ implement
 symmap_insert
   {itm} (map, sym, i) = {
   val k = $SYM.symbol_get_stamp (sym)
+  var i = i // HX: no-op
   var res: itm
-  val _exist = linmap_insert (map, k, i, cmp0, res)
+  val _exist = linmap_insert<uint,itm> (map, k, i, cmp0, res)
   prval () = opt_clear (res)
 } // end of [symmap_insert]
 

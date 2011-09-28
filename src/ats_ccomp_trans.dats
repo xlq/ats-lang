@@ -2033,6 +2033,7 @@ in
     in
       instr_add_move_val (res, loc0, tmp_res, valprim_floatsp (f, hit0))
     end // end of [HIEfloatsp]
+  | HIEfreeat hie => ccomp_exp_freeat (res, hie)
   | HIEif (hie_cond, hie_then, hie_else) => let
       val vp_cond = ccomp_exp (res, hie_cond)
       val tmp_res_then = tmpvar_make_root (tmp_res)

@@ -161,7 +161,7 @@ hashtbl_search {l:agz} (
 fun{key:t0p;itm:vt0p}
 hashtbl_insert {l:agz} (
   ptbl: !HASHTBLptr (key, itm, l)
-, k: key, i: itm, res: &itm? >> opt (itm, b)
+, k: key, i: &itm >> itm?!, res: &itm? >> opt (itm, b)
 ) :<> #[b:bool] bool b
 // end of [hashtbl_insert]
 

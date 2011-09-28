@@ -462,7 +462,7 @@ hashtbl_insert
   val [l:addr] pkeyitm =
     hashtbl_ptr_probe_ofs<key,itm> (p->pftbl | p->pbeg, k0, p->eqfn, sz, ofs, found)
   val [b:bool] found = bool1_of_bool (found)
-  val () = (if :(res: opt (itm, b)) => found then let
+  val () = (if :(i0: itm?!, res: opt (itm, b)) => found then let
     prval (pf, fpf) = __assert () where {
       extern praxi __assert (): ((key,itm) @ l, (key,itm) @ l -<prf> void)
     } // end of [prval]
