@@ -136,7 +136,7 @@ fn dna_count_one {l:agz} {n1,n2:nat}
 in
   while (n1 < n2) let
     val [l_itm:addr] p_itm = $H.hashtbl_search_ref<symbol_t,int> (tbl, sym)
-    val () = if p_itm <> null then let
+    val () = if p_itm > null then let
       prval (fpf, pf) = __assert () where {
         extern praxi __assert (): (int@l_itm -<prf> void, int@l_itm)
       } // end of [prval]
@@ -144,7 +144,9 @@ in
       prval () = fpf (pf)
     in
       // nothing
-    end else $H.hashtbl_insert (tbl, sym, 1)
+    end else let
+      var symval = 1 in $H.hashtbl_insert (tbl, sym, symval)
+    end // end of [if]
   in
     n1 := n1 + 1; sym := succ_symbol sym
   end // end of [while]
@@ -241,7 +243,7 @@ implement symtbls_merge (xs) = let
             extern castfn __ref (x: ptr l):<> symtbl l
           }
           val [l_itm:addr] p_itm = $H.hashtbl_search_ref<symbol_t,int> (x, k)
-          val () = if p_itm <> null then let
+          val () = if p_itm > null then let
             prval (fpf, pf) = __assert () where {
               extern praxi __assert (): (int@l_itm -<prf> void, int@l_itm)
             } // end of [prval]
@@ -249,7 +251,9 @@ implement symtbls_merge (xs) = let
             prval () = fpf (pf)
           in
             // nothing
-          end else $H.hashtbl_insert (x, k, i)
+          end else let
+            var i = i in $H.hashtbl_insert (x, k, i)
+          end // end of [if]
           prval () = __unref (x) where {
             extern praxi __unref (x: symtbl l): void
           } // end of [prval]
@@ -304,7 +308,7 @@ fn write_frequencies
   val tbls = dna_count (ws, dna, n-k+1, k, N)
   val tbl = symtbls_merge (tbls)
   val ptbl = $H.ptr_of_HASHTBLptr tbl
-  val () = assert_errmsg (ptbl <> null, ": " + #LOCATION)
+  val () = assert_errmsg (ptbl > null, ": " + #LOCATION)
 //
   var total: int = 0
   var !p_clo = @lam (pf: !int@total | k: symbol_t, i: &int): void =<clo>

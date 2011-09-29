@@ -160,8 +160,9 @@ in
     in
       // nothing
     end else let
+      var symval = 1
       var res: int
-      val ans = $H.hashtbl_insert<symbol_t,int> (tbl, sym, 1, res)
+      val ans = $H.hashtbl_insert<symbol_t,int> (tbl, sym, symval, res)
       prval () = opt_clear (res)
     in
       // nothing

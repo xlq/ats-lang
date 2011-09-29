@@ -132,7 +132,7 @@ fn dna_count {n,k:pos | k <= n} {l:agz}
 in
   while (n >= k) let
     val [l_itm:addr] p_itm = $H.hashtbl_search_ref<symbol_t,int> (tbl, sym)
-    val () = if p_itm <> null then let
+    val () = if p_itm > null then let
       prval (fpf, pf) = __assert () where {
         extern praxi __assert (): (int@l_itm -<prf> void, int@l_itm)
       } // end of [prval]
@@ -140,7 +140,9 @@ in
       prval () = fpf (pf)
     in
       // nothing
-    end else $H.hashtbl_insert (tbl, sym, 1)
+    end else let
+      var symval = 1 in $H.hashtbl_insert (tbl, sym, symval)
+    end // end of [if]
   in
     n := n - 1; sym := succ_symbol sym
   end // end of [while]
