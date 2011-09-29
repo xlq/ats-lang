@@ -704,6 +704,7 @@ fn Anairiats_doc_dir_copy () = let
     val () = cp "libats_iterint.dats"
     val () = cp "libats_linbitvec.dats"
     val () = cp "libats_linmap_avltree.dats"
+    val () = cp "libats_linmap_rbtree.dats"
     val () = cp "libats_linqueue_arr.dats"
     val () = cp "libats_linqueue_lst.dats"
     val () = cp "libats_linstack_arr.dats"

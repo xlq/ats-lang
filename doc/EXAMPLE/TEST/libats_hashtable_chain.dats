@@ -75,7 +75,7 @@ implement main (argc, argv) = let
   var i: int; val () = for (i := 0; i < n; i := i+1) let
     val key = i
     // val key = $RAND.randint n
-    var kstr = tostring key // val itm = sprintf ("%i", @(key))
+    val kstr = tostring key // val itm = sprintf ("%i", @(key))
     // val () = printf ("key = %i and itm = %s\n", @(key, itm))
   in
     $H.hashtbl_insert<key,itm> (ptbl, key, kstr)
