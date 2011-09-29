@@ -287,7 +287,7 @@ linmap_insert
 //
 fun insert {h:nat} .<h>. (
   t: &avltree (key, itm, h) >> avltree_inc (key, itm, h)
-, x0: &itm >> itm?!, res: &itm? >> opt (itm, b)
+, x0: itm, res: &itm? >> opt (itm, b)
 ) :<cloref> #[b:bool] bool b = begin
   case+ t of
   | B {..} {hl,hr}

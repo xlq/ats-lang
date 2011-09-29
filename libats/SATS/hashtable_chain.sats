@@ -154,7 +154,7 @@ hashtbl_search {l:agz} (
 
 fun{key:t0p;itm:vt0p}
 hashtbl_insert {l:agz}
-  (ptbl: !HASHTBLptr (key, itm, l), k: key, i: &itm>>itm?!):<> void
+  (ptbl: !HASHTBLptr (key, itm, l), k: key, i: itm):<> void
 // end of [hashtbl_insert]
 
 fun{key:t0p;itm:vt0p}

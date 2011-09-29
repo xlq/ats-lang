@@ -291,10 +291,8 @@ linmap_insert
 //
 fun ins
   {c:clr} {bh:nat} .<bh,c>. (
-  t: &rbtree0 (key, itm, c, bh) >>
-       rbtree (key, itm, cl, bh, v)
-, x0: &itm >> itm?!
-, res: &itm? >> opt (itm, b)
+  t: &rbtree0 (key, itm, c, bh) >> rbtree (key, itm, cl, bh, v)
+, x0: itm, res: &itm? >> opt (itm, b)
 ) :<cloref> #[b: bool; cl:clr; v:nat | v <= c] bool (b) =
   case+ t of
   | T (
