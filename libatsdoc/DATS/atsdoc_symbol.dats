@@ -112,7 +112,7 @@ val symbol_null = $UN.cast{symbol} (null) // HX: a hack!
 fun symbol_insert (
   k: string, i: symbol
 ) : void = () where {
-  val k = encode (k); var i = encode (i)
+  val k = encode (k); val i = encode (i)
   val (fptbl | ptbl) = HASHTBLref_takeout_ptr (rtbl)
   var res: symbol_t
   val _keyisused = hashtbl_insert<key,itm> (ptbl, k, i, res)
