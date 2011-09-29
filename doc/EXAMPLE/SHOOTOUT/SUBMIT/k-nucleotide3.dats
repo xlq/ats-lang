@@ -140,9 +140,9 @@ in
       prval () = fpf (pf)
     in
       // nothing
-    end else let
-      var symval = 1 in $H.hashtbl_insert (tbl, sym, symval)
-    end // end of [if]
+    end else (
+      $H.hashtbl_insert (tbl, sym, 1)
+    ) // end of [if]
   in
     n := n - 1; sym := succ_symbol sym
   end // end of [while]
@@ -219,7 +219,7 @@ extern fun getrest (sz: &size_t? >> size_t n): #[n:nat] string n = "__getrest"
 #define LINEBUFSZ 1024
 char theLineBuffer[LINEBUFSZ] ;
 ats_ptr_type __getline () {
-  fgets (theLineBuffer, LINEBUFSZ, stdin) ; return theLineBuffer ;
+  void *ptr = fgets (theLineBuffer, LINEBUFSZ, stdin) ; return theLineBuffer ;
 } /* end of [getline] */
 
 #define RESTBUFSZ (128 * 1024 * 1024)

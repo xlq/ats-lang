@@ -187,7 +187,7 @@ extern fun getrest (sz: &size_t? >> size_t n): #[n:nat] string n = "__getrest"
 #define LINEBUFSZ 1024
 char theLineBuffer[LINEBUFSZ] ;
 ats_ptr_type __getline () {
-  fgets (theLineBuffer, LINEBUFSZ, stdin) ; return theLineBuffer ;
+  void *ptr = fgets (theLineBuffer, LINEBUFSZ, stdin) ; return theLineBuffer ;
 } /* end of [__getline] */
 
 #define RESTBUFSZ (128 * 1024 * 1024)

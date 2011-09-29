@@ -160,9 +160,8 @@ in
     in
       // nothing
     end else let
-      var symval = 1
       var res: int
-      val ans = $H.hashtbl_insert<symbol_t,int> (tbl, sym, symval, res)
+      val ans = $H.hashtbl_insert<symbol_t,int> (tbl, sym, 1, res)
       prval () = opt_clear (res)
     in
       // nothing
@@ -243,7 +242,7 @@ extern fun getrest (sz: &size_t? >> size_t n): #[n:nat] string n = "__getrest"
 #define LINEBUFSZ 1024
 char theLineBuffer[LINEBUFSZ] ;
 ats_ptr_type __getline () {
-  fgets (theLineBuffer, LINEBUFSZ, stdin) ; return theLineBuffer ;
+  void *ptr = fgets (theLineBuffer, LINEBUFSZ, stdin) ; return theLineBuffer ;
 } /* end of [getline] */
 
 #define RESTBUFSZ (128 * 1024 * 1024)
