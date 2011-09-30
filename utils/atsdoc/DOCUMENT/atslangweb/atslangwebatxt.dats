@@ -245,6 +245,22 @@ in
 end // end of [mysitelinks]
 
 (* ****** ****** *)
+
+fun staexp (x: string) = let
+  val opn = "<span class=atsyntax_staexp>"
+  val cls = "</span>"
+in
+  TEXTappstr3 (opn, x, cls)
+end // end of [staexp]
+
+fun dynexp (x: string) = let
+  val opn = "<span class=atsyntax_dynexp>"
+  val cls = "</span>"
+in
+  TEXTappstr3 (opn, x, cls)
+end // end of [dynexp]
+
+(* ****** ****** *)
 //
 local
 (*
