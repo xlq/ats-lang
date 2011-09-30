@@ -84,6 +84,11 @@ margin-top: 0px;
 .atsyntax span.dyncstdec  {text-decoration:none;}
 .atsyntax span.dyncstimp  {color:\#B80000;text-decoration:underline;}
 .atsyntax span.dyncstuse  {color:\#B80000;text-decoration:underline;}
+/*
+** for manual usage
+*/
+.atsyntax_staexp  {color:\#0000FF;}
+.atsyntax_dynexp  {color:\#E80000;}
 ')
 
 %{
