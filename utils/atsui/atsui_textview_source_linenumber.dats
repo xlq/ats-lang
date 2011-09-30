@@ -8,9 +8,7 @@
 
 (*
 ** ATS/Anairiats - Unleashing the Potential of Types!
-**
 ** Copyright (C) 2010-201? Hongwei Xi, Boston University
-**
 ** All rights reserved
 **
 ** ATS is free software;  you can  redistribute it and/or modify it under
@@ -214,7 +212,7 @@ while (true) let
       , _: ptr //
       , _: gint, _: gint // x, y
       , _: ptr // layout
-      ) : void = "#gtk_paint_layout"
+      ) : void = "mac#gtk_paint_layout"
     } // end of [val]
     prval () = minus_addback (fpf_sty, sty | tv)
   in

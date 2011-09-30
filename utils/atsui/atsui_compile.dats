@@ -8,9 +8,7 @@
 
 (*
 ** ATS/Anairiats - Unleashing the Potential of Types!
-**
 ** Copyright (C) 2010-201? Hongwei Xi, Boston University
-**
 ** All rights reserved
 **
 ** ATS is free software;  you can  redistribute it and/or modify it under
@@ -107,6 +105,9 @@ fun cb_compile_clicked
     extern castfn __cast {l:agz} (x: !gstring l): string
     val cmd = g_strdup_printf
       ("atscc --typecheck %s >& %s", @(__cast name, ATSUIccompoutput))
+(*
+    val () = printf ("cb_compile_clicked: %s\n", @(__cast cmd))
+*)
     val _err = $STDLIB.system (__cast cmd)
     val () = gstring_free (cmd)
     prval () = minus_addback (fpf_name, name | x)

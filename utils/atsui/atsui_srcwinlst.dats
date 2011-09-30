@@ -8,9 +8,7 @@
 
 (*
 ** ATS/Anairiats - Unleashing the Potential of Types!
-**
 ** Copyright (C) 2010-201? Hongwei Xi, Boston University
-**
 ** All rights reserved
 **
 ** ATS is free software;  you can  redistribute it and/or modify it under
@@ -231,7 +229,7 @@ the_srcwinlst_remove (tb, n) = let
   val srcwin = srcwinlst_remove (!p_the_srcwinlst, tb, n) where {
     extern fun srcwinlst_remove {l:agz}
       (xs: &srcwinlst, tb: !GtkTextBuffer_ref l, n: &int? >> int): srcwin0
-      = "#atsui_srcwinlst_remove"
+      = "mac#atsui_srcwinlst_remove"
   } // end of [val]
   prval () = fpf (pf)
 in
@@ -249,7 +247,7 @@ the_srcwinlst_getnext (n) = let
   prval (pf, fpf) = the_srcwinlst_takeout ()
   extern fun nth {n:nat}
     (xs: !srcwinlst, n: int n): [l:addr] (srcwin l -<lin,prf> void | srcwin l)
-    = "#atsctrb_g_list_nth_data"
+    = "mac#atsctrb_g_list_nth_data"
   // end of [nth]
   val (fpf_x | x) = nth (!p_the_srcwinlst, n)
   val px = ptr_of_srcwin (x)

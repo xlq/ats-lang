@@ -8,9 +8,7 @@
 
 (*
 ** ATS/Anairiats - Unleashing the Potential of Types!
-**
 ** Copyright (C) 2010-201? Hongwei Xi, Boston University
-**
 ** All rights reserved
 **
 ** ATS is free software;  you can  redistribute it and/or modify it under
@@ -42,19 +40,19 @@ staload "contrib/GTK/SATS/gtk.sats"
 (* ****** ****** *)
 
 fun gtk_button_new_with_label
-  (label: string): GtkButton_ref1 = "#atsctrb_gtk_button_new_with_label"
+  (label: string): GtkButton_ref1 = "mac#atsctrb_gtk_button_new_with_label"
 // end of [gtk_button_new_with_label]
 
 fun gtk_frame_new
-  (name: string): GtkFrame_ref1 = "#atsctrb_gtk_frame_new"
+  (name: string): GtkFrame_ref1 = "mac#atsctrb_gtk_frame_new"
 // end of [gtk_frame_new]
 
 fun gtk_menu_item_new_with_label
-  (name: string): GtkMenuItem_ref1 = "#atsctrb_gtk_menu_item_new_with_label"
+  (name: string): GtkMenuItem_ref1 = "mac#atsctrb_gtk_menu_item_new_with_label"
 // end of [gtk_menu_item_new_with_label]
 
 fun gtk_menu_item_new_with_mnemonic
-  (name: string): GtkMenuItem_ref1 = "#atsctrb_gtk_menu_item_new_with_mnemonic"
+  (name: string): GtkMenuItem_ref1 = "mac#atsctrb_gtk_menu_item_new_with_mnemonic"
 // end of [gtk_menu_item_new_with_mnemonic]
 
 fun gtk_image_menu_item_new_from_stock
@@ -64,7 +62,7 @@ fun gtk_image_menu_item_new_from_stock
 // end of [gtk_image_menu_item_new_from_stock]
 
 fun gtk_image_menu_item_new_from_stock_null
-  (name: string): GtkImageMenuItem_ref1 = "#atsctrb_gtk_image_menu_item_new_from_stock_null"
+  (name: string): GtkImageMenuItem_ref1 = "mac#atsctrb_gtk_image_menu_item_new_from_stock_null"
 // end of [gtk_image_menu_item_new_from_stock_null]
 
 (* ****** ****** *)
