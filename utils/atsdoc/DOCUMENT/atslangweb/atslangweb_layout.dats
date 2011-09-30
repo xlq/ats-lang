@@ -63,15 +63,15 @@ end
 
 (* ****** ****** *)
 
-val theSidebar =
-  webox_make_name_width ("theSidebar", theSidebar_width)
-// end of [theSidebar]
-
-(* ****** ****** *)
-
 val thePage =
   webox_make_name_width ("thePage", thePage_width)
 // end of [thePage]
+
+(* ****** ****** *)
+
+val theSidebar =
+  webox_make_name_width ("theSidebar", theSidebar_width)
+// end of [theSidebar]
 
 (* ****** ****** *)
 
