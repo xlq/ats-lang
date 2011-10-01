@@ -31,6 +31,8 @@ staload "libc/SATS/complex.sats"
 (* ****** ****** *)
 
 staload "libats/SATS/genarrays.sats"
+stadef unit = unit ()
+stadef nonunit = nonunit ()
 
 (* ****** ****** *)
 
@@ -94,8 +96,8 @@ val CblasUnit : CBLAS_DIAG_t (unit)
 val CblasNonUnit : CBLAS_DIAG_t (nonunit)
 *)
 
-macdef CblasUnit = $extval (CBLAS_DIAG_t unit, "CblasUnit")
-macdef CblasNonUnit = $extval (CBLAS_DIAG_t nonunit, "CblasNonUnit")
+macdef CblasUnit = $extval (CBLAS_DIAG_t(unit), "CblasUnit")
+macdef CblasNonUnit = $extval (CBLAS_DIAG_t(nonunit), "CblasNonUnit")
 
 (*
 fun eq_CBLAS_DIAG_DIAG {dg1,dg2:diag}
