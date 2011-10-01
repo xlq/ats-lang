@@ -5,6 +5,7 @@
 ######
 
 ATSCC=$(ATSHOME)/bin/atscc
+GLIBFLAGS=`pkg-config glib-2.0 --cflags --libs`
 CLUTTERFLAGS=`pkg-config clutter-1.0 --cflags --libs`
 ATSCLUTTERLIB=$(ATSHOME)/contrib/Clutter/atsctrb_clutter.o
 
@@ -23,7 +24,7 @@ compall:: \
 ######
 
 test01: clutter-test01.dats
-	$(ATSCC) -o test01 clutter-test01.dats $(CLUTTERFLAGS)
+	$(ATSCC) -o test01 clutter-test01.dats $(GLIBFLAGS) $(CLUTTERFLAGS)
 
 ######
 
