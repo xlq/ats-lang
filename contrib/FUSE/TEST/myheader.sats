@@ -1,3 +1,7 @@
+(*
+** HX: this is a standard way to do systems programming in ATS
+*)
+
 (* ****** ****** *)
 
 %{#
@@ -9,7 +13,7 @@
 #include "prelude/CATS/pointer.cats"
 #include "prelude/CATS/sizetype.cats"
 #include "prelude/CATS/string.cats"
-%}
+%} // end of [%{#]
 
 (* ****** ****** *)
 

@@ -11,7 +11,6 @@ endif
 
 syn case match
 
-
 " Comments
 syn match atsCommentCPP "\/\/.*"
 syn region atsCommentOC start="(\*" end="\*)" contains=atsCommentOC
