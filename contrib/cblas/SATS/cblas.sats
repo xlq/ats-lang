@@ -30,10 +30,54 @@ staload "libc/SATS/complex.sats"
 
 (* ****** ****** *)
 
-staload "libats/SATS/genarrays.sats"
-stadef unit = unit ()
-stadef nonunit = nonunit ()
-
+staload GA = "libats/SATS/genarrays.sats"
+//
+sortdef inc = $GA.inc
+//
+sortdef order = $GA.order
+//
+stadef row = $GA.row
+stadef col = $GA.col
+stadef ORDER = $GA.ORDER
+//
+sortdef uplo = $GA.uplo
+stadef upper = $GA.upper
+stadef lower = $GA.lower
+stadef UPLO = $GA.UPLO
+//
+sortdef diag = $GA.diag
+stadef unit = $GA.unit ()
+stadef nonunit = $GA.nonunit ()
+stadef DIAG = $GA.DIAG
+//
+sortdef transpose = $GA.transpose
+stadef TPN = $GA.TPN
+stadef TPT = $GA.TPT
+stadef TPC = $GA.TPC
+stadef TRANSPOSE = $GA.TRANSPOSE
+//
+sortdef side = $GA.side
+stadef left = $GA.left
+stadef right = $GA.right
+stadef SIDE = $GA.SIDE
+//
+stadef GEVEC = $GA.GEVEC
+stadef GEMAT = $GA.GEMAT
+stadef GEMAT_v = $GA.GEMAT_v
+stadef GBMAT = $GA.GBMAT
+stadef TRMAT = $GA.TRMAT
+stadef TBMAT = $GA.TBMAT
+stadef TPMAT = $GA.TPMAT
+stadef SYMAT = $GA.SYMAT
+stadef SBMAT = $GA.SBMAT
+stadef SPMAT = $GA.SPMAT
+stadef HEMAT = $GA.HEMAT
+stadef HBMAT = $GA.HBMAT
+stadef HPMAT = $GA.HPMAT
+//
+stadef trandim_p = $GA.trandim_p
+stadef sidedim_p = $GA.sidedim_p
+//
 (* ****** ****** *)
 
 abst@ype CBLAS_ORDER_t (order) = int
@@ -106,9 +150,10 @@ fun eq_CBLAS_DIAG_DIAG {dg1,dg2:diag}
 overload = with eq_CBLAS_DIAG_DIAG
 *)
 
-// implemented in [clbas.dats]
-fun CBLAS_DIAG_of_DIAG {dg:diag}
-  (x: DIAG dg):<> CBLAS_DIAG_t dg
+//
+// HX: implemented in [clbas.dats]
+//
+fun CBLAS_DIAG_of_DIAG {dg:diag} (x: DIAG dg):<> CBLAS_DIAG_t dg
 
 (* ****** ****** *)
 
