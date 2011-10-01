@@ -46,6 +46,10 @@ end // end of [addcssrule_strsub]
 
 #comment("****** ****** *")
 
+#comment("\n\
+Note: This page is automatically generated from [template.atxt]\n\
+")
+
 #addcssrule_strsub("
 body {
 /*
