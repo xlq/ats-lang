@@ -5,6 +5,7 @@
 ######
 
 ATSCC=$(ATSHOME)/bin/atscc
+ATSOPT=$(ATSHOME)/bin/atsopt
 
 ######
 
@@ -33,4 +34,3 @@ cleanall:: ; $(RMF) libats_Hello.so
 cleanall:: ; $(RMF) Hello.class
 
 ###### end of [Makefile] ######
-
