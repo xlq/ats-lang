@@ -620,7 +620,10 @@ absviewt@ype GLshader (i:int) = GLuint
 viewtypedef GLshader = [i:int] GLshader (i)
 
 (* ****** ****** *)
-(* GL core functions (listed in mostly alphabetical order) *)
+
+(*
+** GL core functions (listed in mostly alphabetical order)
+*)
 
 fun glActiveTexture (texture: GLenum): void = "mac#atsctrb_glActiveTexture"
 
