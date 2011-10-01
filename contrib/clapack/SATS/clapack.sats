@@ -68,8 +68,8 @@ stadef trandim_p = $GA.trandim_p
 //
 
 sortdef diag = $GA.diag
-stadef unit = $GA.unit
-stadef nonunit = $GA.nonunit
+stadef unit = $GA.unit()
+stadef nonunit = $GA.nonunit()
 
 (* ****** ****** *)
 
@@ -117,8 +117,8 @@ macdef ClapackConjTrans = $extval (CLAPACK_TRANSPOSE_t TPC, "'C'")
 (* ****** ****** *)
 
 abst@ype CLAPACK_DIAG_t (diag) = char
-macdef ClapackUnit = $extval (CLAPACK_DIAG_t unit, "'U'")
-macdef ClapackNonUnit = $extval (CLAPACK_DIAG_t nonunit, "'N'")
+macdef ClapackUnit = $extval (CLAPACK_DIAG_t(unit), "'U'")
+macdef ClapackNonUnit = $extval (CLAPACK_DIAG_t(nonunit), "'N'")
 
 (* ****** ****** *)
 
