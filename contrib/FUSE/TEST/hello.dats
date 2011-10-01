@@ -162,7 +162,11 @@ implement
 hello_getattr
   (path, stbuf) = let
   var res: int = 0
-  val () = ptr_zero_tsz {stat} (stbuf, sizeof<stat>)
+  val () = ptr_zero_tsz {stat} (
+    __assert () | stbuf, sizeof<stat>
+  ) where {
+    extern praxi __assert (): NULLABLE (stat)
+  } // end of [val]
 in
   case+ 0 of
   | _ when (
