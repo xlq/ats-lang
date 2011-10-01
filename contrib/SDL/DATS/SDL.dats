@@ -8,9 +8,7 @@
 
 (*
 ** ATS - Unleashing the Potential of Types!
-**
 ** Copyright (C) 2002-2010 Hongwei Xi, Boston University
-**
 ** All rights reserved
 **
 ** ATS is free software;  you can  redistribute it and/or modify it under
@@ -30,16 +28,14 @@
 *)
 
 (* ****** ****** *)
-
+//
 // Author of the file: Hongwei Xi (hwxi AT cs DOT bu DOT edu)
 // Starting time: January, 2010
-
+//
 (* ****** ****** *)
-
 //
 // API for SDL in ATS
 //
-
 (* ****** ****** *)
 
 #define ATS_DYNLOADFLAG 0 // no need for dynamic loading
@@ -50,7 +46,8 @@ staload "contrib/SDL/SATS/SDL.sats"
 
 (* ****** ****** *)
 
-implement SDL_SetVideoMode_exn
+implement
+SDL_SetVideoMode_exn
   (width, height, bpp, flags) = let
   val (pf | sf) = SDL_SetVideoMode (width, height, bpp, flags)
 in
@@ -65,7 +62,8 @@ end // end of [SDL_SetVideoMode_exn]
 
 (* ****** ****** *)
 
-implement SDL_LoadBMP_exn (filename) = let
+implement
+SDL_LoadBMP_exn (filename) = let
   val sf = SDL_LoadBMP (filename) // [sfopt] may be null
 in
   if ref_is_null (sf) then let

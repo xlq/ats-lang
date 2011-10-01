@@ -8,9 +8,7 @@
 
 (*
 ** ATS - Unleashing the Potential of Types!
-**
 ** Copyright (C) 2002-2010 Hongwei Xi, Boston University
-**
 ** All rights reserved
 **
 ** ATS is free software;  you can  redistribute it and/or modify it under
@@ -46,7 +44,7 @@ fun SDL_ThreadID ():<> Uint32 = "mac#atsctrb_SDL_ThreadID"
 
 fun SDL_CreateThread
   {vt:viewtype} (
-  threadfun: vt -<fun> int, env: vt
+  threadfun: (vt) -<fun> int, env: vt
 ) : SDL_Thread_ptr
   = "mac#atsctrb_SDL_CreateThread"
 // end of [fun]
