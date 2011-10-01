@@ -29,8 +29,8 @@ all:: clean
 
 ######
 
-glibconfig:: HATS/glibconfig
-	$(GCC) $(GLIBCFLAGS) -E -P -o HATS/glibconfig.hats -x c HATS/glibconfig
+glibconfig: HATS/glibconfig_hats
+	$(GCC) $(GLIBCFLAGS) -E -P -o HATS/glibconfig.hats -x c $<
 
 ######
 
