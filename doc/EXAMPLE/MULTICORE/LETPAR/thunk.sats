@@ -50,7 +50,7 @@ fun thunk_exec (x: thunk_t): void
 
 (* ****** ****** *)
 
-val thunkopt_none :<> thunkopt_t (0)
+fun thunkopt_none ():<> thunkopt_t (0)
   = "atslib_thunkopt_none"
 
 fun thunkopt_some (_: thunk_t):<> thunkopt_t (1)

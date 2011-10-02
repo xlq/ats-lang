@@ -7,35 +7,32 @@
 (***********************************************************************)
 
 (*
- * ATS - Unleashing the Power of Types!
- *
- * Copyright (C) 2002-2008 Hongwei Xi, Boston University
- *
- * All rights reserved
- *
- * ATS is free software;  you can  redistribute it and/or modify it under
- * the  terms of the  GNU General Public License as published by the Free
- * Software Foundation; either version 2.1, or (at your option) any later
- * version.
- * 
- * ATS is distributed in the hope that it will be useful, but WITHOUT ANY
- * WARRANTY; without  even  the  implied  warranty  of MERCHANTABILITY or
- * FITNESS FOR A PARTICULAR PURPOSE.  See the  GNU General Public License
- * for more details.
- * 
- * You  should  have  received  a  copy of the GNU General Public License
- * along  with  ATS;  see the  file COPYING.  If not, please write to the
- * Free Software Foundation,  51 Franklin Street, Fifth Floor, Boston, MA
- * 02110-1301, USA.
- *
- *)
+** ATS - Unleashing the Power of Types!
+** Copyright (C) 2002-2008 Hongwei Xi, Boston University
+** All rights reserved
+**
+** ATS is free software;  you can  redistribute it and/or modify it under
+** the  terms of the  GNU General Public License as published by the Free
+** Software Foundation; either version 2.1, or (at your option) any later
+** version.
+** 
+** ATS is distributed in the hope that it will be useful, but WITHOUT ANY
+** WARRANTY; without  even  the  implied  warranty  of MERCHANTABILITY or
+** FITNESS FOR A PARTICULAR PURPOSE.  See the  GNU General Public License
+** for more details.
+** 
+** You  should  have  received  a  copy of the GNU General Public License
+** along  with  ATS;  see the  file COPYING.  If not, please write to the
+** Free Software Foundation,  51 Franklin Street, Fifth Floor, Boston, MA
+** 02110-1301, USA.
+*)
 
 
 (* ****** ****** *)
-
-// Time: March 2008
+//
 // Author: Hongwei Xi (hwxi AT cs DOT bu DOT edu)
-
+// Time: March 2008
+//
 (* ****** ****** *)
 
 // Some functions for supporting multicore programming
@@ -138,49 +135,58 @@ extern fun mc_per_thread_set (mc: MC):<> void
 
 *)
 
-extern fun pthread_create_detached_lockord12
+extern
+fun pthread_create_detached_lockord12
   (thunk: (!lockord12 | (*none*)) -<lin,cloptr1> void): void
   = "ats_pthread_create_detached"
 
-extern fun lock1_create_tsz {l:addr}
+extern
+fun lock1_create_tsz {l:addr}
   (pf: !TQ @ l >> TQ? @ l | p: ptr l , tsz: sizeof_t TQ) : lock1_t
   = "atslib_pthread_mutexref_create_tsz"
 
-extern fun lock1_lock
+extern
+fun lock1_lock
   (_ord1: lockord1, _ord2: !lockord2 | m: lock1_t)
   :<> [l:addr] (lock1_unlock_ticket l, TQ @ l | ptr l)
   = "atslib_pthread_mutexref_lock"
 
-extern fun lock1_unlock {l:addr}
+extern
+fun lock1_unlock {l:addr}
   (_ticket: lock1_unlock_ticket l, _at: TQ @ l | p: ptr l)
   :<> (lockord1 | void)
   = "atslib_pthread_mutexref_unlock"
 
-extern fun cond_wait_lock1 {l:addr} (
-    _ord2: !lockord2
-  , _ticket: !lock1_unlock_ticket l
-  , _at: !TQ @ l
-  | cond: &cond_vt
-  , p: ptr l) :<> void
+extern
+fun cond_wait_lock1 {l:addr} (
+  _ord2: !lockord2
+, _ticket: !lock1_unlock_ticket l
+, _at: !TQ @ l
+| cond: &cond_vt
+, p: ptr l
+) :<> void
   = "atslib_pthread_cond_wait_mutexref"
 
 //
 
-extern fun lock2_create_tsz {l:addr} (
-    pf: !MClst @ l >> MClst? @ l
-  | p: ptr l
-  , tsz: sizeof_t (MClst)
-  ):<> lock2_t
+extern
+fun lock2_create_tsz {l:addr} (
+  pf: !MClst @ l >> MClst? @ l
+| p: ptr l
+, tsz: sizeof_t (MClst)
+):<> lock2_t
   = "atslib_pthread_mutexref_create_tsz"
 
-extern fun lock2_lock
-  (_ord2: lockord2 | m: lock2_t)
-  :<> [l:addr] (lock2_unlock_ticket l, MClst @ l | ptr l)
+extern
+fun lock2_lock (
+  _ord2: lockord2 | m: lock2_t
+) :<> [l:addr] (lock2_unlock_ticket l, MClst @ l | ptr l)
   = "atslib_pthread_mutexref_lock"
 
-extern fun lock2_unlock {l:addr}
-  (_ticket: lock2_unlock_ticket l, _at: MClst @ l | p: ptr l)
-  :<> (lockord2 | void)
+extern
+fun lock2_unlock {l:addr} (
+  _ticket: lock2_unlock_ticket l, _at: MClst @ l | p: ptr l
+) :<> (lockord2 | void)
   = "atslib_pthread_mutexref_unlock"
 
 (* ****** ****** *)
@@ -267,7 +273,7 @@ and worker_fun_cont {l:addr} (
     print "worker_fun_cont: "; print_newline ()
   end
 *)
-  val xT = ptr1->T; val () = ptr1->T := thunkopt_none
+  val xT = ptr1->T; val () = ptr1->T := thunkopt_none()
 in
   if thunkopt_is_some (xT) then let
 (*
@@ -340,7 +346,7 @@ end // end of [local]
 implement parallel_nworker_get () = nworker_get ()
 
 fn parallel_mc_make (): MC = let
-  var x: TQ; val () = x.T := thunkopt_none; val () = x.Q := 0
+  var x: TQ; val () = x.T := thunkopt_none(); val () = x.Q := 0
   val m = lock1_create_tsz (view@ x | &x, sizeof<TQ>)
   val (pf_gc, pf_at | ptr) = pthread_cond_create ()
   prval () = free_gc_elim (pf_gc)
@@ -520,7 +526,7 @@ fun spawnlock_sync {v:view} {l:addr} (
 in
   if pthread_uplockopt_is_none lockopt then let
     val xQ = ptr1->Q; val () = if xQ = 1 then ptr1->Q := ~1
-    val xT = ptr1->T; val () = ptr1->T := thunkopt_none
+    val xT = ptr1->T; val () = ptr1->T := thunkopt_none()
     val (pford1 | ()) = lock1_unlock (pf1_ticket, pf1_at | ptr1)
     val () = begin
       if thunkopt_is_some (xT) then thunk_exec (thunkopt_unsome xT)
@@ -545,7 +551,7 @@ and spawnlock_sync_cont {v:view} {l:addr} (
   , mc: MC
   , lock: spawnlock v
   ) : (lockord1, v | void) = let
-  val xT = ptr1->T; val () = ptr1->T := thunkopt_none
+  val xT = ptr1->T; val () = ptr1->T := thunkopt_none()
 in
   if thunkopt_is_some (xT) then let
     val (pford1 | ()) = lock1_unlock (pf1_ticket, pf1_at | ptr1)
