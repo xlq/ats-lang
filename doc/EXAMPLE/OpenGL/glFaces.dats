@@ -9,12 +9,6 @@
 
 (* ****** ****** *)
 
-%{^
-extern ats_void_type mainats (ats_int_type argc, ats_ptr_type argv) ;
-%}
-
-(* ****** ****** *)
-
 staload "libc/SATS/math.sats"
 staload "libc/SATS/unistd.sats"
 
@@ -346,15 +340,20 @@ end // end of [mouse]
 
 (* ****** ****** *)
 
+%{^
+extern
+ats_void_type mainats (ats_int_type argc, ats_ptr_type argv) ;
+%} // end of [%{^]
 implement main_dummy () = ()
 
 (* ****** ****** *)
 
 %{$
 
-ats_void_type mainats
-  (ats_int_type argc, ats_ptr_type argv) {
-
+ats_void_type
+mainats (
+  ats_int_type argc, ats_ptr_type argv
+) {
   glutInit ((int*)&argc, (char**)argv) ;
   glutInitDisplayMode (GLUT_DOUBLE | GLUT_RGB) ;
   glutInitWindowSize (500, 500) ;
@@ -369,7 +368,7 @@ ats_void_type mainats
   return ; /* deadcode */
 } /* end of [mainats] */
 
-%}
+%} // end of[%{$]
 
 (* ****** ****** *)
 
