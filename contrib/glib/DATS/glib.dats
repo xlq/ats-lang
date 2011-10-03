@@ -8,9 +8,7 @@
 
 (*
 ** ATS - Unleashing the Potential of Types!
-**
 ** Copyright (C) 2002-2010 Hongwei Xi, Boston University
-**
 ** All rights reserved
 **
 ** ATS is free software;  you can  redistribute it and/or modify it under
@@ -30,10 +28,10 @@
 *)
 
 (* ****** ****** *)
-
+//
 // Author of the file: Hongwei Xi (hwxi AT cs DOT bu DOT edu)
 // Starting time: February, 2010
-
+//
 (* ****** ****** *)
 
 #define ATS_STALOADFLAG 0 // no need for static loading
@@ -45,7 +43,8 @@ staload "contrib/glib/SATS/glib.sats"
 
 (* ****** ****** *)
 
-implement{a} g_array_get_elt_at (array, i) = let
+implement{a}
+g_array_get_elt_at (array, i) = let
   val (pf, fpf | p) = g_array_takeout_tsz {a} (array, i, sizeof<a>)
   val x = !p
   prval () = minus_addback (fpf, pf | array)
@@ -53,7 +52,8 @@ in
   x
 end // end of [g_array_get_elt_at]
 
-implement{a} g_array_set_elt_at (array, i, x) = let
+implement{a}
+g_array_set_elt_at (array, i, x) = let
   val (pf, fpf | p) = g_array_takeout_tsz {a} (array, i, sizeof<a>)
   val () = !p := x
   prval () = minus_addback (fpf, pf | array)
