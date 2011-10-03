@@ -4,12 +4,10 @@
 *)
 
 (* ****** ****** *)
-
 //
 // Author: Hongwei Xi (hwxi AT cs DOT bu DOT edu)
 // Time: February, 2010
 //
-
 (* ****** ****** *)
 
 #include "contrib/glib/HATS/glibconfig.hats"
