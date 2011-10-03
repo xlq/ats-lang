@@ -8,9 +8,7 @@
 
 (*
 ** ATS - Unleashing the Potential of Types!
-**
-** Copyright (C) 2009-2010 Hongwei Xi, Boston University
-**
+** Copyright (C) 2002-2010 Hongwei Xi, Boston University
 ** All rights reserved
 **
 ** ATS is free software;  you can  redistribute it and/or modify it under
@@ -30,12 +28,10 @@
 *)
 
 (* ****** ****** *)
-
 //
 // Author: Hongwei Xi (hwxi AT cs DOT bu DOT edu)
 // Start Time: May, 2010
 //
-
 (* ****** ****** *)
 //
 // HX-2010-05-28: if [l1] is null, then no button is inserted
