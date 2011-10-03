@@ -115,15 +115,21 @@ the_drawingarea_get () {
   g_object_ref (G_OBJECT(the_drawingarea)); return the_drawingarea ;
 }
 ats_void_type
-the_drawingarea_set (ats_ptr_type x) {
+the_drawingarea_initset (ats_ptr_type x) {
   g_object_ref(G_OBJECT(x)) ;
   if (the_drawingarea) g_object_unref (G_OBJECT(the_drawingarea));
   the_drawingarea = x ;
   return ;
-} // end of [the_drawingarea_set]
+} // end of [the_drawingarea_initset]
 \%} // end of [%{^] 
-extern fun the_drawingarea_get (): GtkDrawingArea_ref1 = "the_drawingarea_get"
-extern fun the_drawingarea_set (x: !GtkDrawingArea_ref1): void = "the_drawingarea_set"
+extern
+fun the_drawingarea_get
+  (): GtkDrawingArea_ref1 = "the_drawingarea_get"
+// end of [the_drawingarea_get]
+extern
+fun the_drawingarea_initset
+  (x: !GtkDrawingArea_ref1): void = "the_drawingarea_initset"
+// end of [the_drawingarea_initset]
 
 (* ****** ****** *)
 
@@ -234,7 +240,7 @@ implement main1 () = () where {
   val vbox0 = gtk_vbox_new (GFALSE(*homo*), (gint)10(*spacing*))
   val () = gtk_container_add (window, vbox0)
   val darea = gtk_drawing_area_new ()
-  val () = the_drawingarea_set (darea)
+  val () = the_drawingarea_initset (darea)
   val () = gtk_box_pack_start (vbox0, darea, GTRUE, GTRUE, (guint)0)
   val _sid = g_signal_connect
     (darea, (gsignal)"expose-event", G_CALLBACK (on_expose_event), (gpointer)null)
