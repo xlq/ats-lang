@@ -66,7 +66,7 @@ praxi bytes_v_of_array_v
 praxi free_gc_trans
   {a:viewt@ype}
   {n:int} {l:addr} (
-  pf_gc: free_gc_v (a, n, l)
+  pfgc: free_gc_v (a, n, l)
 ) : [bsz:int] (
   MUL (n, sizeof(a), bsz), freebyte_gc_v (bsz, l)
 ) // end of [free_gc_trans]
@@ -199,7 +199,7 @@ fun array_ptr_alloc_tsz
 *)
 fun array_ptr_free
   {a:viewt@ype} {n:int} {l:addr} (
-  pf_gc: free_gc_v (a, n, l), pf_arr: array_v (a?, n, l) | p_arr: ptr l
+  pfgc: free_gc_v (a, n, l), pfarr: array_v (a?, n, l) | p: ptr l
 ) :<> void = "atspre_array_ptr_free"
 
 (* ****** ****** *)
@@ -323,7 +323,7 @@ prfun array_v_split
   {a:viewt@ype}
   {n:int} {i:nat | i <= n}
   {l:addr} {ofs:int} (
-  pf_mul: MUL (i, sizeof a, ofs), pf_arr: array_v (a, n, l)
+  pfmul: MUL (i, sizeof a, ofs), pfarr: array_v (a, n, l)
 ) :<prf> @(
   array_v (a, i, l), array_v (a, n-i, l+ofs)
 ) // end of [array_v_split]
@@ -332,8 +332,8 @@ prfun array_v_unsplit
   {a:viewt@ype}
   {n1,n2:int}
   {l:addr} {ofs:int} (
-  pf_mul: MUL (n1, sizeof a, ofs)
-, pf1_arr: array_v (a, n1, l), pf2_arr: array_v (a, n2, l+ofs)
+  pfmul: MUL (n1, sizeof a, ofs)
+, pf1arr: array_v (a, n1, l), pf2arr: array_v (a, n2, l+ofs)
 ) :<prf> array_v (a, n1+n2, l)
 // end of [array_v_unsplit]
 
@@ -507,7 +507,7 @@ fun array_ptr_copy_tsz
 *)
 fun array_ptr_move_tsz
   {a:viewt@ype} {n:nat} (
-  A: &(@[a][n]) >> @[a?][n], B: &(@[a?][n]) >> @[a][n], n: size_t n
+  A: &(@[a][n]) >> @[a?!][n], B: &(@[a?][n]) >> @[a][n], n: size_t n
 , tsz: sizeof_t a
 ) :<> void = "atspre_array_ptr_move_tsz"
 // end of [array_ptr_move_tsz]

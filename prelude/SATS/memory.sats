@@ -131,7 +131,7 @@ fun calloc_gc
 
 fun free_gc
   {n:nat} {l:addr}
-  (_: freebyte_gc_v (n, l), _: b0ytes n @ l | p: ptr l):<> void
+  (pfgc: freebyte_gc_v (n, l), pfat: b0ytes n @ l | p: ptr l):<> void
   = "ats_free_gc"
 // end of [free_gc]
 
