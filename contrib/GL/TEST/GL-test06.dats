@@ -210,8 +210,8 @@ viewdef old_v = @(
 
 extern
 fun keyboard (
-    pf: !old_v | key: uchar, x: int, y: int
-  ) : void = "keyboard"
+  pf: !old_v | key: uchar, x: int, y: int
+) : void = "keyboard" // end of [keyboard]
 implement keyboard
   (pf | key, x, y) = let
   prval (pf1, pf2, pf3, pf4) = pf
