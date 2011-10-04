@@ -86,7 +86,7 @@ viewtypedef GdkGLWindow_ref1 = [l:addr | l > null] GdkGLWindow_ref (l)
 
 (* ****** ****** *)
 
-abst@ype GdkGLConfigMode = int // enum type
+abst@ype GdkGLConfigMode = uint // enum type
 macdef GDK_GL_MODE_RGB = $extval (GdkGLConfigMode, "GDK_GL_MODE_RGB")
 macdef GDK_GL_MODE_RGBA = $extval (GdkGLConfigMode, "GDK_GL_MODE_RGBA")
 macdef GDK_GL_MODE_INDEX = $extval (GdkGLConfigMode, "GDK_GL_MODE_INDEX")
@@ -101,7 +101,7 @@ macdef GDK_GL_MODE_MULTISAMPLE = $extval (GdkGLConfigMode, "GDK_GL_MODE_MULTISAM
 
 fun lor_GdkGLConfigMode_GdkGLConfigMode
   (x1: GdkGLConfigMode, x2: GdkGLConfigMode): GdkGLConfigMode = "atspre_lor_uint_uint"
-// end of [lor_GdkGLConfigMode_GdkGLConfigMode]
+overload lor with lor_GdkGLConfigMode_GdkGLConfigMode
 
 fun gdk_gl_config_new_by_mode
   (mode: GdkGLConfigMode): GdkGLConfig_ref1 = "mac#atsctrb_gdk_gl_config_new_by_mode"
