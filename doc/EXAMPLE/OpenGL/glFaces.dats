@@ -293,8 +293,12 @@ end // end of [display]
 
 (* ****** ****** *)
 
-extern fun reshape (w: int, h: int): void = "reshape"
-implement reshape (w, h) = let
+extern fun reshape
+  (w: int, h: int): void = "reshape"
+// end of [reshape]
+
+implement
+reshape (w, h) = let
   val () = glViewport (0, 0, w, h)
   val () = glMatrixMode (GL_PROJECTION)
   val () = glLoadIdentity ()
@@ -309,8 +313,10 @@ end // end of [reshape]
 
 extern fun keyboard
   (key: uchar, x: int, y: int): void = "keyboard"
+// end of [keyboard]
 
-implement keyboard (key, x, y) = let
+implement
+keyboard (key, x, y) = let
   val key = char_of_uchar (key)
 in
   case+ 0 of
@@ -325,8 +331,10 @@ val animation_status_ref = ref_make_elt<int> (0)
 
 extern fun mouse
   (button: int, state: int, x: int, y: int): void = "mouse"
+// end of [mouse]
 
-implement mouse (button, state, x, y) = begin case+ 0 of
+implement
+mouse (button, state, x, y) = begin case+ 0 of
   | _ when (button = (int)GLUT_LEFT_BUTTON) => begin
       if (state = (int)GLUT_DOWN) then let
         val status = !animation_status_ref
