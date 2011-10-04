@@ -43,6 +43,13 @@ gtkglHello: gtkglHello.dats
 
 ######
 
+checkall:: gtkglFaces
+cleanall:: ; $(RMF) gtkglFaces
+gtkglFaces: gtkglFaces.dats
+	$(ATSCC) -o gtkglFaces gtkglFaces.dats $(ATSCTRB) $(ATSCTRBGTK) $(GTKGLEXT)
+
+######
+
 RMF = rm -f
 
 ######

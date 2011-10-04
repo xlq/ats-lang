@@ -143,6 +143,11 @@ atsctrb_lor_GdkEventMask_GdkEventMask
 
 #define atsctrb_gdk_window_set_background gdk_window_set_background
 
+#define atsctrb_gdk_window_invalidate_rect gdk_window_invalidate_rect
+
+#define atsctrb_gdk_window_process_updates gdk_window_process_updates
+#define atsctrb_gdk_window_process_all_updates gdk_window_process_all_updates
+
 /* ****** ****** */
 
 #endif // end of [ATSCTRB_GTK_GDK_CATS]

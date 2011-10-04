@@ -186,10 +186,46 @@ macdef GDK_WINDOW_EDGE_SOUTH_EAST =
 
 fun gdk_window_set_background
   {c:cls | c <= GdkWindow}
-  {l:agz} (
+  {l:addr} (
   window: !gobjref (c, l), color: &GdkColor
 ) : void = "mac#atsctrb_gdk_window_set_background"
 // end of [gdk_window_set_background]
+
+(* ****** ****** *)
+
+(*
+void gdk_window_invalidate_rect (
+  GdkWindow *window, const GdkRectangle *rect, gboolean invalidate_children
+) ; // end of [gdk_window_invalidate_rect]
+*)
+fun gdk_window_invalidate_rect
+  {c:cls | c <= GdkWindow}
+  {l:addr} (
+  window: !gobjref (c, l)
+, rect: &GdkRectangle, invalidate_children: gboolean
+) : void = "mac#atsctrb_gdk_window_invalidate_rect"
+// end of [gdk_window_invalidate_rect]
+
+(* ****** ****** *)
+
+(*
+void gdk_window_process_updates (
+  GdkWindow *window, gboolean update_children
+) ; // end of [gdk_window_process_updates]
+*)
+fun gdk_window_process_updates
+  {c:cls | c <= GdkWindow}
+  {l:addr} (
+  window: !gobjref (c, l), update_children: gboolean
+) : void = "mac#atsctrb_gdk_window_process_updates"
+// end of [gdk_window_process_updates]
+
+(*
+void gdk_window_process_all_updates (void);
+*)
+fun gdk_window_process_all_updates
+  (): void = "mac#atsctrb_gdk_window_process_all_updates"
+// end of [gdk_window_process_all_updates]
 
 (* ****** ****** *)
 

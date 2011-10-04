@@ -43,6 +43,15 @@ typedef GtkAllocation =
 } // end of [GtkAllocation]
 
 (* ****** ****** *)
+//
+// HX: GtkAllocation and GdkRectangle are the same!
+//
+praxi GtkAllocation2GdkRectangle
+  {l:addr} (pf: GtkAllocation @ l): GdkRectangle @ l
+praxi GdkRectangle2GtkAllocation
+  {l:addr} (pf: GdkRectangle @ l): GtkAllocation @ l
+
+(* ****** ****** *)
 
 abst@ype GTK_WIDGET_FLAG = guint
 macdef GTK_CAN_DEFAULT = $extval (GTK_WIDGET_FLAG, "GTK_CAN_DEFAULT")
@@ -237,9 +246,10 @@ fun gtk_widget_getref_allocation
   {c:cls | c <= GtkWidget} {l:agz}
   (widget: !gobjref (c, l))
   : [l_alloc:addr] (
-    GtkAllocation @ l_alloc, minus (gobjref (c, l), GtkAllocation @ l_alloc)
-  | ptr l_alloc
-  ) = "atsctrb_gtk_widget_getref_allocation" // function!
+  GtkAllocation @ l_alloc
+, minus (gobjref (c, l), GtkAllocation @ l_alloc)
+| ptr l_alloc
+) = "atsctrb_gtk_widget_getref_allocation" // function!
 // end of [gtk_widget_getref_allocation]
 
 (* ****** ****** *)

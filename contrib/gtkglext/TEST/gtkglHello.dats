@@ -126,8 +126,8 @@ fun ftoggle (): void = () where {
 //
   val () = {
     val (vbox pf | p) = ref_get_view_ptr (theRGB)
-    val () = p->0 := 1.0 - p->0
-    val () = p->2 := 1.0 - p->2
+    val () = p->0 := 1.0 - p->0 // toggling
+    val () = p->2 := 1.0 - p->2 // toggling
   } // end of [val]
 //
   val darea = theDrawingArea_get ()
@@ -353,4 +353,4 @@ mainats (
 
 (* ****** ****** *)
 
-(* end of [glFaces2.dats] *)
+(* end of [gtkglHello.dats] *)
