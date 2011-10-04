@@ -8,7 +8,7 @@
 
 (*
 ** ATS - Unleashing the Potential of Types!
-** Copyright (C) 2009-2010 Hongwei Xi, Boston University
+** Copyright (C) 2002-2010 Hongwei Xi, Boston University
 ** All rights reserved
 **
 ** ATS is free software;  you can  redistribute it and/or modify it under
@@ -87,17 +87,17 @@ absview ClutterFree_v (l:addr)
 
 (*
 viewtypedef ClutterAction_ref (l:addr) = gobjref (ClutterAction, l)
-viewtypedef ClutterAction_ref0 = [l:agez] ClutterAction_ref l
-viewtypedef ClutterAction_ref1 = [l:addr | l > null] ClutterAction_ref l
+viewtypedef ClutterAction_ref0 = [l:agez] ClutterAction_ref (l)
+viewtypedef ClutterAction_ref1 = [l:addr | l > null] ClutterAction_ref (l)
 *)
 
 viewtypedef ClutterRectangle_ref (l:addr) = gobjref (ClutterRectangle, l)
-viewtypedef ClutterRectangle_ref0 = [l:agez] ClutterRectangle_ref l
-viewtypedef ClutterRectangle_ref1 = [l:addr | l > null] ClutterRectangle_ref l
+viewtypedef ClutterRectangle_ref0 = [l:agez] ClutterRectangle_ref (l)
+viewtypedef ClutterRectangle_ref1 = [l:addr | l > null] ClutterRectangle_ref (l)
 
 viewtypedef ClutterStage_ref (l:addr) = gobjref (ClutterStage, l)
-viewtypedef ClutterStage_ref0 = [l:agez] ClutterStage_ref l
-viewtypedef ClutterStage_ref1 = [l:addr | l > null] ClutterStage_ref l
+viewtypedef ClutterStage_ref0 = [l:agez] ClutterStage_ref (l)
+viewtypedef ClutterStage_ref1 = [l:addr | l > null] ClutterStage_ref (l)
 
 (* ****** ****** *)
 

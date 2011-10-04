@@ -28,18 +28,18 @@
 */
 
 /* ****** ****** */
-
+//
 // Author of the file: Hongwei Xi (hwxi AT cs DOT bu DOT edu)
 // Starting time: April, 2010
+//
+/* ****** ****** */
+
+#ifndef ATSCTRB_GTK_GTK_CATS
+#define ATSCTRB_GTK_GTK_CATS
 
 /* ****** ****** */
 
-#ifndef ATSCTRB_GTK_CATS
-#define ATSCTRB_GTK_CATS
-
-/* ****** ****** */
-
-#include "gtk/gtk.h"
+#include <gtk/gtk.h>
 
 /* ****** ****** */
 
@@ -1724,6 +1724,6 @@ atsctrb_gtk_window_new
 
 /* ****** ****** */
 
-#endif // end of [ATSCTRB_GTK_CATS]
+#endif // end of [ATSCTRB_GTK_GTK_CATS]
 
 /* end of [gtk.cats] */

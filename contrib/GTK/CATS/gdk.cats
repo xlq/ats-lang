@@ -34,12 +34,12 @@
 //
 /* ****** ****** */
 
-#ifndef ATSCTRB_GDK_CATS
-#define ATSCTRB_GDK_CATS
+#ifndef ATSCTRB_GTK_GDK_CATS
+#define ATSCTRB_GTK_GDK_CATS
 
 /* ****** ****** */
 
-#include "gdk/gdk.h"
+#include <gdk/gdk.h>
 
 /* ****** ****** */
 
@@ -145,4 +145,4 @@ atsctrb_lor_GdkEventMask_GdkEventMask
 
 /* ****** ****** */
 
-#endif // end of [ATSCTRB_GDK_CATS]
+#endif // end of [ATSCTRB_GTK_GDK_CATS]

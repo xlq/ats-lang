@@ -7,9 +7,9 @@
 /************************************************************************/
 
 /*
-** ATS - Unleashing the Power of Types!
-**
-** Copyright (C) 2009-2010 Hongwei Xi.
+** ATS - Unleashing the Potential of Types!
+** Copyright (C) 2002-2010 Hongwei Xi, Boston University
+** All rights reserved
 **
 ** ATS is free software;  you can  redistribute it and/or modify it under
 ** the terms of the GNU LESSER GENERAL PUBLIC LICENSE as published by the
@@ -39,7 +39,7 @@
 
 /* ****** ****** */
 
-#include "clutter/clutter.h"
+#include <clutter/clutter.h>
 
 /* ****** ****** */
 

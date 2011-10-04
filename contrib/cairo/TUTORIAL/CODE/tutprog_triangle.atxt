@@ -205,8 +205,9 @@ mainats (ats_int_type argc, ats_ptr_type argv) ;
 
 (* ****** ****** *)
 
-fun on_expose_event {l:agz}
-  (darea: !GtkDrawingArea_ref l, event: &GdkEvent): gboolean = let
+fun on_expose_event {l:agz} (
+  darea: !GtkDrawingArea_ref l, event: &GdkEvent
+) : gboolean = let
   val (fpf_win | win) = gtk_widget_get_window (darea)
   val () = assert_errmsg (g_object_isnot_null (win), \#LOCATION)
   val cr = gdk_cairo_create (win)
@@ -216,7 +217,7 @@ fun on_expose_event {l:agz}
   prval () = minus_addback (fpf, pf | darea)
   val () = cairo_destroy (cr)
 in
-  GFALSE // HX: what does this mean?
+  GTRUE // HX: the event is properly handled
 end // end of [on_expose_event]
 
 (* ****** ****** *)

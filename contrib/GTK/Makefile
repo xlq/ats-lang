@@ -34,10 +34,13 @@ GTK_dats.o: DATS/gtk.dats
 
 ######
 
-clean::
-	rm -f *_?ats.c *_?ats.o
+RMF=rm -f
 
-cleanall: clean
-	rm -f atsctrb_GTK.o
+######
+
+clean:: ; $(RMF) *_?ats.c *_?ats.o
+
+cleanall:: clean
+cleanall:: ; $(RMF) atsctrb_GTK.o
 
 ###### end of [Makefile] ######
