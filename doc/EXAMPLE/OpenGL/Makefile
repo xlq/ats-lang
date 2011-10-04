@@ -32,19 +32,10 @@ cleanall:: clean
 
 ######
 
-GTKGLEXT=`pkg-config --cflags --libs gtk+-2.0 gtkglext-1.0 gtkglext-x11-1.0`
-
-######
-
 checkall:: glHello
 cleanall:: ; $(RMF) glHello
 glHello: glHello.dats
 	$(ATSCC) -o glHello glHello.dats $(ATSCTRB) -lGL -lglut
-
-checkall:: gtkglHello
-cleanall:: ; $(RMF) gtkglHello
-gtkglHello: gtkglHello.dats
-	$(ATSCC) -o gtkglHello gtkglHello.dats $(ATSCTRB) $(ATSCTRBGTK) $(GTKGLEXT)
 
 ######
 
