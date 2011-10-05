@@ -17,7 +17,8 @@ ATSCC=$(ATSUSRQ)/bin/atscc -Wall
 
 ######
 
-all: atsctrb_atswebpage.o clean
+all:: atsctrb_atswebpage.o
+all:: clean
 
 ######
 
@@ -35,9 +36,9 @@ atsctrb_atswebpage.o: $(OBJECTS); ld -r -o $@ $^
 
 ######
 
-dynloadall_dats.o: dynloadall.dats; $(ATSCC) $(XRCFLAGS) -o $@ -c $<
-weboxlayout_sats.o: SATS/weboxlayout.sats; $(ATSCC) $(XRCFLAGS) -o $@ -c $<
-weboxlayout_dats.o: DATS/weboxlayout.dats; $(ATSCC) $(XRCFLAGS) -o $@ -c $<
+dynloadall_dats.o: dynloadall.dats; $(ATSCC) -o $@ -c $<
+weboxlayout_sats.o: SATS/weboxlayout.sats; $(ATSCC) -o $@ -c $<
+weboxlayout_dats.o: DATS/weboxlayout.dats; $(ATSCC) -o $@ -c $<
 
 ######
 

@@ -10,7 +10,6 @@
 
 (* ****** ****** *)
 
-staload "libc/SATS/math.sats"
 staload "contrib/GL/SATS/gl.sats"
 
 (* ****** ****** *)
@@ -32,7 +31,7 @@ end // end of [initialize]
 (* ****** ****** *)
 
 extern
-fun glColor_update (): void
+fun glColor3d_update (): void
 
 extern
 fun display (): void = "display"
@@ -41,7 +40,7 @@ implement display () = let
 (*
   val () = glColor3d (1.0, 1.0, 1.0)
 *)
-  val () = glColor_update ()
+  val () = glColor3d_update ()
 //
   val (pf | ()) = glBegin (GL_POLYGON)
   val () = glVertex3d (0.25, 0.25, 0.0)
@@ -116,11 +115,11 @@ val theRGB = ref<dbl3> @(1.0, 0.0, 0.0) // red
 in
 
 implement
-glColor_update () = let
+glColor3d_update () = let
   val (vbox pf | p) = ref_get_view_ptr (theRGB)
 in
   $effmask_ref (glColor3d (p->0, p->1, p->2))
-end // end of [glColor_update]
+end // end of [glColor3d_update]
 
 fun ftoggle (): void = () where {
 //
@@ -158,8 +157,6 @@ frealize (darea, data) = let
   prval () = minus_addback (fpf1, glcontext | darea)
 in
   if (can_begin) then let
-    val () = glClearColor (1.0, 1.0, 1.0, 1.0)
-    val () = glClearDepth ((GLclampd)1.0)
     val () = initialize ()
     val () = gdk_gl_drawable_gl_end (pfbeg | gldrawable)
     prval () = minus_addback (fpf2, gldrawable | darea)

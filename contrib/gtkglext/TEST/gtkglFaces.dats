@@ -322,7 +322,7 @@ fun theDrawingArea_set_gl_capability {l:addr}
 
 guint timeout_id = 0 ;
 
-#define TIMEOUT_INTERVAL 20
+#define TIMEOUT_INTERVAL 50
 
 void timeout_add () {
   if (timeout_id == 0) {
