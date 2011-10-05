@@ -11,13 +11,15 @@
 ATSUSRQ="$(ATSHOME)"
 ifeq ($(ATSUSRQ),"")
 ATSUSRQ="/usr"
-endif
+endif # end of [ifeq]
 
 ######
 
 ATSCC=$(ATSUSRQ)/bin/atscc
-ATSCTRB=$(ATSUSRQ)/contrib/GL/atsctrb_GL.o
+ATSCTRBGL=$(ATSUSRQ)/contrib/GL/atsctrb_GL.o
+ATSCTRBXR=$(ATSUSRQ)/contrib/cairo/atsctrb_cairo.o
 ATSCTRBGTK=$(ATSUSRQ)/contrib/GTK/atsctrb_GTK.o
+ATSCTRBPSLIDE=$(ATSUSRQ)/contrib/atspslide/atsctrb_atspslide.o
 
 ######
 
@@ -39,14 +41,21 @@ GTKGLEXT=`pkg-config --cflags --libs gtk+-2.0 gtkglext-1.0 gtkglext-x11-1.0`
 checkall:: gtkglHello
 cleanall:: ; $(RMF) gtkglHello
 gtkglHello: gtkglHello.dats
-	$(ATSCC) -o gtkglHello gtkglHello.dats $(ATSCTRB) $(ATSCTRBGTK) $(GTKGLEXT)
+	$(ATSCC) -o gtkglHello gtkglHello.dats $(ATSCTRBGL) $(ATSCTRBGTK) $(GTKGLEXT)
 
 ######
 
 checkall:: gtkglFaces
 cleanall:: ; $(RMF) gtkglFaces
 gtkglFaces: gtkglFaces.dats
-	$(ATSCC) -o gtkglFaces gtkglFaces.dats $(ATSCTRB) $(ATSCTRBGTK) $(GTKGLEXT)
+	$(ATSCC) -o gtkglFaces gtkglFaces.dats $(ATSCTRBGL) $(ATSCTRBGTK) $(GTKGLEXT)
+
+######
+
+checkall:: gtkglClock
+cleanall:: ; $(RMF) gtkglClock
+gtkglClock: gtkglClock.dats ; \
+  $(ATSCC) -o gtkglClock gtkglClock.dats $(ATSCTRBGL) $(ATSCTRBXR) $(ATSCTRBGTK) $(ATSCTRBPSLIDE) $(GTKGLEXT)
 
 ######
 
