@@ -27,7 +27,7 @@ all:: clean
 SOURCES := \
   dynloadall.dats \
   atspslide_cairodraw.dats \
-  atspslide_utils.dats \
+  atspslide_glTexture.dats \
 
 OBJECTS := $(SOURCES)
 OBJECTS := $(patsubst %.dats, %_dats.o, $(OBJECTS))
@@ -47,8 +47,8 @@ dynloadall_dats.o: dynloadall.dats; $(ATSCC) -o $@ -c $<
 #
 atspslide_cairodraw_dats.o: \
   DATS/atspslide_cairodraw.dats ; $(ATSCC) -o $@ $(XRCFLAGS) -c $<
-atspslide_utils_dats.o: \
-  DATS/atspslide_utils.dats ; $(ATSCC) -o $@ $(GTKCFLAGS) -c $<
+atspslide_glTexture_dats.o: \
+  DATS/atspslide_glTexture.dats ; $(ATSCC) -o $@ $(GTKCFLAGS) -c $<
 #
 ######
 

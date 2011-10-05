@@ -12,7 +12,8 @@
 dynload
 "contrib/atspslide/DATS/atspslide_cairodraw.dats"
 //
-dynload "contrib/atspslide/DATS/atspslide_utils.dats"
+dynload
+"contrib/atspslide/DATS/atspslide_glTexture.dats"
 //
 (* ****** ****** *)
 
