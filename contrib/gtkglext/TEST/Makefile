@@ -59,6 +59,13 @@ gtkglClock: gtkglClock.dats ; \
 
 ######
 
+checkall:: gtkglCubeRot
+cleanall:: ; $(RMF) gtkglCubeRot
+gtkglCubeRot: gtkglCubeRot.dats ; \
+  $(ATSCC) -o gtkglCubeRot gtkglCubeRot.dats $(ATSCTRBGL) $(ATSCTRBXR) $(ATSCTRBGTK) $(ATSCTRBPSLIDE) $(GTKGLEXT)
+
+######
+
 RMF = rm -f
 
 ######

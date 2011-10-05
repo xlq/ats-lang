@@ -33,7 +33,9 @@ implement initialize () = let
   val () = glClearColor (0.5, 0.5, 0.5, 0.0)
   val () = glMatrixMode (GL_PROJECTION)
   val () = glLoadIdentity ()
-  val () = glOrtho (0.0, 1.0, 0.0, 1.0, ~1.0, 1.0)
+  val () = glOrtho (~1.0, 1.0, ~1.0, 1.0, ~10.0, 10.0)
+  val () = glMatrixMode (GL_MODELVIEW)
+  val () = glLoadIdentity ()
 in
   // empty
 end // end of [initialize]
@@ -164,6 +166,9 @@ end (* end of [fconfigure] *)
 
 (* ****** ****** *)
 
+val theDelta = 10.0
+val theAlpha_ref = ref<double> (0.0)
+
 extern
 fun fexpose {l:agz} (
   darea: !GtkDrawingArea_ref l, event: &GdkEvent
@@ -194,32 +199,41 @@ in
 //
     val surface =
       cairo_image_surface_create (CAIRO_FORMAT_ARGB32, width, height)
-    val cr = cairo_create (surface)
-//
     val width = (double_of)width and height = (double_of)height
+//
+    val cr = cairo_create (surface)
+    val (pf_save | ()) = cairo_save (cr)
+    val () = cairo_scale (cr, width, height)
+    val () = cairo_rectangle (cr, 0.0, 0.0, 1.0, 1.0)
+    val () = cairo_set_source_rgb (cr, 1.0, 0.0, 0.0) // red color
+    val () = cairo_fill (cr)
+    val gltext1 = glTexture_make_cairo_ref (GL_BGRA_format, cr)
+    val () = cairo_restore (pf_save | cr)
 //
     val (pf_save | ()) = cairo_save (cr)
     val () = cairo_scale (cr, width, height)
-//
     val () = cairo_rectangle (cr, 0.0, 0.0, 1.0, 1.0)
-    val () = cairo_set_source_rgb (cr, 1.0, 1.0, 1.0) // white color
+    val () = cairo_set_source_rgb (cr, 0.0, 0.0, 1.0) // blue color
     val () = cairo_fill (cr)
-//        
-    val () = cairodraw_clock01 (cr)
+    val gltext2 = glTexture_make_cairo_ref (GL_BGRA_format, cr)
     val () = cairo_restore (pf_save | cr)
 //
+    val () = cairo_destroy (cr)
     val () = cairo_surface_destroy (surface)
 //
-    val gltext = glTexture_make_cairo_ref (GL_BGRA_format, cr)
-    val () = cairo_destroy (cr)
-//
     val () = glClear (GL_COLOR_BUFFER_BIT)
-//    val () = glColor3d (0.0, 0.0, 0.0) // black color
-    val () = glTranslated (0.0, 0.0, 0.0)
+    val () = glColor3d (0.0, 0.0, 0.0) // black color
 //
-    val () = glTexture_mapout_rect (gltext, 1.0, 1.0, 1(*down*))
+    val (pfmat | ()) = glPushMatrix ()
+    val () = let
+      val alpha = !theAlpha_ref in glRotated (~alpha, 0.0, 1.0, 0.0)
+    end // end of [val]
+    val () = glTranslated (~0.5, ~0.5, 0.5)
+    val () = glTexture_mapout_rect12 (gltext1, gltext2, 1.0, 1.0, 1(*down*))
+    val () = glPopMatrix (pfmat | (*none*))
 //
-    val () = glDeleteTexture (gltext)
+    val () = glDeleteTexture (gltext1)
+    val () = glDeleteTexture (gltext2)
 //
     val () = if ((bool_of)is_double_buffered) then
       gdk_gl_drawable_swap_buffers (gldrawable) else glFlush ()
@@ -242,6 +256,13 @@ extern
 fun ftimeout (): gboolean = "ftimeout"
 implement
 ftimeout () = let
+//
+  val alpha = !theAlpha_ref + theDelta
+  val alpha = (
+    if alpha >= 360.0 then alpha - 360.0 else alpha
+  ) : double
+  val () = !theAlpha_ref := alpha
+//
   val darea = theDrawingArea_get ()
   val (fpf_win | win) = gtk_widget_get_window (darea)
   var alloc: GtkAllocation
@@ -283,7 +304,7 @@ extern fun timeout_remove (): void = "timeout_remove"
 
 (* ****** ****** *)
 
-val toggle_ref = ref_make_elt<int> (1)
+val toggle_ref = ref_make_elt<int> (0)
 
 (* ****** ****** *)
 
@@ -466,4 +487,4 @@ mainats (
 
 (* ****** ****** *)
 
-(* end of [gtkglClock.dats] *)
+(* end of [gtkglCubeRot.dats] *)
