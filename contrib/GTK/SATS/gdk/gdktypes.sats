@@ -128,7 +128,8 @@ macdef GDK_MODIFIER_MASK = $extval (GdkModifierType, "GDK_MODIFIER_MASK")
 
 (* ****** ****** *)
 
-abst@ype GdkVisibilityState = $extype"GdkVisibilityState"
+abst@ype
+GdkVisibilityState = $extype"GdkVisibilityState"
 abst@ype GdkWindowState = $extype"GdkWindowState"
 
 (* ****** ****** *)

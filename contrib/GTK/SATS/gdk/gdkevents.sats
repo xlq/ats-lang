@@ -142,6 +142,11 @@ macdef GDK_VISIBILITY_PARTIAL
 macdef GDK_VISIBILITY_FULLY_OBSCURED =
   $extval (GdkVisibilityState, "GDK_VISIBILITY_FULLY_OBSCURED")
 
+fun eq_GdkVisibilityState_GdkVisibilityState
+  (x1: GdkVisibilityState, x2: GdkVisibilityState): bool
+  = "atsctrb_eq_GdkVisibilityState_GdkVisibilityState"
+overload = with eq_GdkVisibilityState_GdkVisibilityState
+
 (* ****** ****** *)
 
 macdef GDK_WINDOW_STATE_WITHDRAWN =

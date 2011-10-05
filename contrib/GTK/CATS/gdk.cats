@@ -110,6 +110,12 @@ atsctrb_lor_GdkEventMask_GdkEventMask
   (GdkEventMask x1, GdkEventMask x2) { return (x1 | x2) ; }
 // end of [atsctrb_lor_GdkEventMask_GdkEventMask]
 
+ATSinline()
+ats_bool_type
+atsctrb_eq_GdkVisibilityState_GdkVisibilityState
+  (GdkVisibilityState x1, GdkVisibilityState x2) { return (x1 == x2) ; }
+// end of [atsctrb_eq_GdkVisibilityState_GdkVisibilityState]
+
 /* ****** ****** */
 
 //
