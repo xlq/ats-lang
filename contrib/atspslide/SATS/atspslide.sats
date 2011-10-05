@@ -63,7 +63,7 @@ fun cairodraw_clock01 {l:agz} (cr: !cairo_ref l): void
 
 (* ****** ****** *)
 //
-// atspslide_utils 
+// atspslide_glTexture 
 //
 (* ****** ****** *)
 
@@ -78,6 +78,23 @@ fun glTexture_make_cairo_ref {l:agz}
 fun glTexture_mapout_rect {i:int} {d:two} (
   texture: !GLtexture(i), width: double, height: double, vdir: int(d)
 ) : void // end of [glTexture_mapout_rect]
+
+//
+// HX: front(1), right(2), back(3), left(4), top(5) and bottom(6)
+//
+fun glTexture_mapout_rect12
+  {i1,i2:int} {d:two} (
+  texture1: !GLtexture(i1)
+, texture2: !GLtexture(i2)
+, width: double, height: double, vdir: int(d)
+) : void // end of [glTexture_mapout_rect12]
+
+fun glTexture_mapout_rect16
+  {i1,i2:int} {d:two} (
+  texture1: !GLtexture(i1)
+, texture2: !GLtexture(i2)
+, width: double, height: double, vdir: int(d)
+) : void // end of [glTexture_mapout_rect16]
 
 (* ****** ****** *)
 

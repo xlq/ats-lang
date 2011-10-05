@@ -106,11 +106,9 @@ end // end of [glTexture_make_cairo_ref]
 
 implement
 glTexture_mapout_rect
-  (texture, wid, hgt, vdir) = let
+  (gltext, wid, hgt, vdir) = let
 //
-  val () = glBindTexture (GL_TEXTURE_2D, texture)
-//
-  val (pfmat | ()) = glPushMatrix ()
+  val () = glBindTexture (GL_TEXTURE_2D, gltext)
 //
   val () = glEnable (GL_TEXTURE_2D)
   val () = glTexEnvi
@@ -132,12 +130,25 @@ glTexture_mapout_rect
   val () = glEnd (pfbeg | (*none*))
   val () = glDisable (GL_TEXTURE_2D)
 //
-  val () = glPopMatrix (pfmat | (*none*))
-//
 in
   // nothing
 end // end of [glTexture_mapout_rect]
 
 (* ****** ****** *)
 
-(* end of [atspslide_utils.dats] *)
+implement
+glTexture_mapout_rect12
+  (gltext1, gltext2, wid, hgt, vdir) = let
+  val () = glTexture_mapout_rect (gltext1, wid, hgt, vdir)
+  val (pfmat | ()) = glPushMatrix ()
+  val () = glTranslated (wid, 0.0, 0.0)
+  val () = glRotated (90.0, 0.0, 1.0, 0.0)
+  val () = glTexture_mapout_rect (gltext2, wid, hgt, vdir)
+  val () = glPopMatrix (pfmat | (*none*))
+in
+  // nothing
+end // end of [glTexture_mapout_rect12]
+
+(* ****** ****** *)
+
+(* end of [atspslide_glTexture.dats] *)
