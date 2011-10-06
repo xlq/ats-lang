@@ -394,6 +394,7 @@ end (* end of [fconfigure] *)
 
 val theDelta = 5.0
 val theAlpha_ref = ref<double> (0.0)
+val theRotateknd_ref = ref_make_elt<int> (0)
 
 extern
 fun fexpose {l:agz} (
@@ -460,12 +461,19 @@ in
     val () = glClear (GL_COLOR_BUFFER_BIT)
     val () = glColor3d (0.0, 0.0, 0.0) // black color
 //
+    val knd12 = !theRotateknd_ref; val knd16 = 1 - knd12
+//
     val (pfmat | ()) = glPushMatrix ()
-    val () = let
-      val alpha = !theAlpha_ref in glRotated (~alpha, 0.0, 1.0, 0.0)
-    end // end of [val]
+    val () = () where {
+      val alpha = !theAlpha_ref
+      val () = if knd12 > 0 then glRotated (~alpha, 0.0, 1.0, 0.0)
+      val () = if knd16 > 0 then glRotated (~alpha, 1.0, 0.0, 0.0)
+    } // end of [val]
     val () = glTranslated (~0.5, ~0.5, 0.5)
-    val () = glTexture_mapout_rect12 (gltext1, gltext2, 1.0, 1.0, 1(*down*))
+    val () = if knd12 > 0 then
+      glTexture_mapout_rect12 (gltext1, gltext2, 1.0, 1.0, 1(*down*))
+    val () = if knd16 > 0 then
+      glTexture_mapout_rect16 (gltext1, gltext2, 1.0, 1.0, 1(*down*))
     val () = glPopMatrix (pfmat | (*none*))
 //
     val () = glDeleteTexture (gltext1)
@@ -528,6 +536,7 @@ ftimeout () = let
       !theAlpha_ref := alpha
     else let
       val () = !rotate_ref := 0
+      val () = !theRotateknd_ref := randint (2)
       val () = timeout_remove ()
       val () = theVerticesLst_push ()
     in
