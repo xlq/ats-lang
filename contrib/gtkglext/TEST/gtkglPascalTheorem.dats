@@ -89,7 +89,7 @@ fun genRandDoubles
 
 local
 //
-val () = srand48_with_time ()
+// nothing
 //
 in // in of [local]
 //
@@ -646,7 +646,10 @@ macdef gs = gstring_of_string
 
 extern
 fun main1 (): void = "main1"
-implement main1 () = () where {
+implement
+main1 () = () where {
+//
+val () = srand48_with_time ()
 //
 val glconfig = gdk_gl_config_new_by_mode (
   GDK_GL_MODE_RGB lor GDK_GL_MODE_ALPHA lor GDK_GL_MODE_DEPTH lor GDK_GL_MODE_DOUBLE

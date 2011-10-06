@@ -16,7 +16,8 @@ ats-lang-anairiats-0.2.6:
    Thanks, David!
 8. Introducing ISALIGNED to handle alignment.
 9. Introducing NULLABLE to handle ptr_zero and ptr_zero_tsz.
-10. adding libats/funmap_rbtree (functional maps based on red-black trees)
+10. Adding libats/funmap_rbtree (functional maps based on red-black trees)
+11. Adding contrib/gtkglext (based on gtkglext-1.0)
 
 ########################################################################
 
