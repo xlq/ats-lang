@@ -1,6 +1,6 @@
 (*
 **
-** A gtkglext example involving cairo
+** A clock example involving cairo and texturing
 **
 ** Author: Hongwei Xi (hwxi AT cs DOT bu DOT edu)
 ** Time: October, 2011 // adapted to gtkglext-1.0
@@ -305,6 +305,7 @@ in
     val (fpf_win | win) = gtk_widget_get_window (darea)
     val () = gdk_window_invalidate_rect (win, alloc, GFALSE)
     prval () = view@ (alloc) := GdkRectangle2GtkAllocation (pf)
+    val () = gdk_window_process_updates (win, GFALSE)
     prval () = minus_addback (fpf_win, win | darea)
     val () = g_object_unref (darea)
   in
@@ -358,7 +359,7 @@ val glconfig = gdk_gl_config_new_by_mode (
 //
 val window = gtk_window_new (GTK_WINDOW_TOPLEVEL)
 val () = gtk_window_set_default_size (window, (gint)400, (gint)400)
-val (fpf_x | x) = (gs)"gtkglHello"
+val (fpf_x | x) = (gs)"gtkglClock"
 val () = gtk_window_set_title (window, x)
 prval () = fpf_x (x)
 val (fpf_window | window_) = g_object_vref (window)

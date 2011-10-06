@@ -66,6 +66,14 @@ gtkglCubeRot: gtkglCubeRot.dats ; \
 
 ######
 
+checkall:: gtkglPascalTheorem
+cleanall:: ; $(RMF) gtkglPascalTheorem
+gtkglPascalTheorem: gtkglPascalTheorem.dats ; \
+  $(ATSCC) -o gtkglPascalTheorem \
+    gtkglPascalTheorem.dats $(ATSCTRBGL) $(ATSCTRBXR) $(ATSCTRBGTK) $(ATSCTRBPSLIDE) $(GTKGLEXT)
+
+######
+
 RMF = rm -f
 
 ######

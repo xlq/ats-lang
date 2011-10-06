@@ -493,6 +493,7 @@ in
     val (fpf_win | win) = gtk_widget_get_window (darea)
     val () = gdk_window_invalidate_rect (win, alloc, GFALSE)
     prval () = view@ (alloc) := GdkRectangle2GtkAllocation (pf)
+    val () = gdk_window_process_updates (win, GFALSE)
     prval () = minus_addback (fpf_win, win | darea)
     val () = g_object_unref (darea)
   in
