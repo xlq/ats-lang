@@ -1,6 +1,7 @@
 (*
 **
-** A gtkglext example of demonstrating the elegant theorem of Pascal
+** A gtkglext example
+** for demonstrating the elegant theorem of Pascal
 **
 ** Author: Hongwei Xi (hwxi AT cs DOT bu DOT edu)
 ** Time: October, 2011 // adapted to gtkglext-1.0
@@ -123,12 +124,12 @@ end // end of [local]
 (* ****** ****** *)
 
 extern
-fun draw_pascal_theorem {l:agz} (
+fun drawPascalTheorem {l:agz} (
   cr: !cairo_ref l, W: double, H: double, ts: list0 (double)
-) : void // end of [draw_pascal_theorem]
+) : void // end of [drawPascalTheorem]
 
 implement
-draw_pascal_theorem
+drawPascalTheorem
   (cr, W, H, ts) = () where {
   val- t1 :: t2 :: t3 :: t4 :: t5 :: t6 :: nil () = ts
   val a1 = _2PI * t1
@@ -239,7 +240,7 @@ draw_pascal_theorem
 //
   val () = cairo_stroke (cr)
 //
-} // end of [draw_pascal_theorem]
+} // end of [drawPascalTheorem]
 
 (* ****** ****** *)
 
@@ -442,7 +443,7 @@ in
       | list0_cons (ts, _) => let
           val () = cairo_translate (cr, (WH-WH1)/2, (WH-WH1)/2)
         in
-          draw_pascal_theorem (cr, WH1, WH1, ts) // previous example
+          drawPascalTheorem (cr, WH1, WH1, ts) // previous example
         end // end of [list0_cons]
       | list0_nil () => ()
     ) // end of [val]
@@ -451,7 +452,7 @@ in
 //
     val (pf_save | ()) = cairo_save (cr)
     val () = cairo_translate (cr, (WH-WH1)/2, (WH-WH1)/2)
-    val () = draw_pascal_theorem (cr, WH1, WH1, !theVertices)
+    val () = drawPascalTheorem (cr, WH1, WH1, !theVertices)
     val gltext2 = glTexture_make_cairo_ref (GL_BGRA_format, cr)
     val () = cairo_restore (pf_save | cr)
 //
@@ -774,4 +775,4 @@ mainats (
 
 (* ****** ****** *)
 
-(* end of [gtkglCubeRot.dats] *)
+(* end of [gtkglPascalTheorem.dats] *)
