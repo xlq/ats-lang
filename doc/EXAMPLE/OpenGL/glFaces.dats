@@ -15,7 +15,7 @@ staload "libc/SATS/unistd.sats"
 staload "contrib/GL/SATS/gl.sats"
 staload "contrib/GL/SATS/glut.sats"
 
-staload _(*anonymous*) = "prelude/DATS/reference.dats"
+staload _(*anon*) = "prelude/DATS/reference.dats"
 
 (* ****** ****** *)
 
@@ -30,19 +30,6 @@ val hair_move_angle2_max = M_PI / 2
 val hair_move_angle3_max = 2 * M_PI / 3
 
 val head_rotate_angle_max = 30.0
-
-(* ****** ****** *)
-
-fn glClearColor_black () = glClearColor (0.0, 0.0, 0.0, 0.0)
-fn glClearColor_white () = glClearColor (1.0, 1.0, 1.0, 0.0)
-
-extern fun initialize (): void = "initialize"
-implement initialize () = let
-  val () = glClearColor_white ()
-  val () = glShadeModel (GL_FLAT)
-in
-  // empty
-end // end of [initialize]
 
 (* ****** ****** *)
 
@@ -213,26 +200,55 @@ end // end of [draw_face]
 
 (* ****** ****** *)
 
-extern fun animate (): void = "animate"
+local
 
+fn glClearColor_black
+  (): void = glClearColor (0.0, 0.0, 0.0, 0.0)
+fn glClearColor_white
+  (): void = glClearColor (1.0, 1.0, 1.0, 0.0)
+
+in // in of [local]
+
+extern
+fun initialize
+  (): void = "initialize"
+// end of [initialize]
+implement initialize () = let
+  val () = glClearColor_white ()
+  val () = glShadeModel (GL_FLAT)
+in
+  // empty
+end // end of [initialize]
+
+end // end of [local]
+
+(* ****** ****** *)
+//
+extern
+fun animate (): void = "animate"
+//
+// HX: this is a very crude way of doing animation!
+//
 implement animate () = let
   val frame = !frame_cur_ref
   val frame_new = begin
     if frame < frame_max then frame + 1 else 0
-  end
-  val () =
-    if frame_new = 0 then begin
-      !direction_ref := ~(!direction_ref)
-    end
+  end : int // end of [val]
+  val () = if frame_new = 0 then let
+    val dir = !direction_ref in !direction_ref := ~dir
+  end // end of [val]
   val () = !frame_cur_ref := frame_new
-  val () = usleep (100000)
+  val () = usleep (100000) // one-tenth of a second
 in
   glutPostRedisplay ()
 end // end of [animate]
 
 (* ****** ****** *)
 
-extern fun display (): void = "display"
+extern
+fun display
+  (): void = "display"
+// end of [display]
 implement display () = let
   val face_radius = 10.0
   val frame = !frame_cur_ref
@@ -253,7 +269,7 @@ implement display () = let
       glTranslatef (~15.0 * x_ratio, 0.0, 0.0)
     end else begin
       glTranslatef (~30.0 + 15.0 * x_ratio , 0.0, 0.0)
-    end
+    end // end of [if]
 *)
   val () = glTranslated (~20.0, 0.0, 0.0)
 (*
@@ -293,7 +309,8 @@ end // end of [display]
 
 (* ****** ****** *)
 
-extern fun reshape
+extern
+fun reshape
   (w: int, h: int): void = "reshape"
 // end of [reshape]
 
@@ -311,7 +328,8 @@ end // end of [reshape]
 
 (* ****** ****** *)
 
-extern fun keyboard
+extern
+fun keyboard
   (key: uchar, x: int, y: int): void = "keyboard"
 // end of [keyboard]
 
