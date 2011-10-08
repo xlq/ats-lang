@@ -275,11 +275,17 @@ in
   // nothing
 end // end of [cairodraw_slide_count]
 
+local
+
+#define PREFIX "review"
+
 fun
 slidename_get_by_count
   (count: int): strptr1 =
-  sprintf ("data/lecture01_%i.png", @(count))
+  sprintf ("data/%s_%i.png", @(PREFIX, count))
 // end of [slidename_get_by_count]
+
+in // in of [local]
 
 implement
 cairodraw_slide
@@ -298,6 +304,8 @@ in
     strptr_free (path)
   end // end of [if]
 end // end of [cairodraw_slide]
+
+end // end of [local]
 
 (* ****** ****** *)
 
