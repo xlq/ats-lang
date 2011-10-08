@@ -54,8 +54,10 @@ glTexture_make_cairo_ref
 // HX: it seems OK even if width and height are not powers of 2
 *)
 //
-  val [w:int] width = cairo_image_surface_get_width (img)
-  val [h:int] height = cairo_image_surface_get_height (img)
+  val width = cairo_image_surface_get_width (img)
+  val [w:int] width = int1_of_int (width)
+  val height = cairo_image_surface_get_height (img)
+  val [h:int] height = int1_of_int (height)
   val stride = cairo_image_surface_get_stride (img)
 //
 (*
