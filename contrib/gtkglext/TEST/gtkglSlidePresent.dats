@@ -254,9 +254,117 @@ end // end of [cairodraw_slide]
 
 (* ****** ****** *)
 
+#define
+ACTpresent 0 // default
+#define ACTrotate 1
+
+local
+//
+val theActState_ref = ref<int> (ACTpresent)
+//
+in
+//
+fun theActState_get () = !theActState_ref
+fun theActState_set (act: int): void = !theActState_ref := act
+//
+end // end of [val]
+
 val theDelta = 5.0
 val theAlpha_ref = ref<double> (0.0)
 val theRotateknd_ref = ref_make_elt<int> (0)
+
+(* ****** ****** *)
+
+fun fexpose_present
+  (vpw: int, vph: int): void = let
+  val surface =
+    cairo_image_surface_create (CAIRO_FORMAT_ARGB32, vpw, vph)
+  val vpw = (double_of)vpw
+  and vph = (double_of)vph
+//
+  val [l:addr] cr = cairo_create (surface)
+//
+  val (pf_save | ()) = cairo_save (cr)
+  val () = cairo_scale (cr, vpw, vph)
+  val () = cairodraw_slide_relative (cr, 0) // current one
+  val () = cairodraw_clock01 (cr) // HX: a translucent clock layover
+  val () = cairo_restore (pf_save | cr)
+  val gltext = glTexture_make_cairo_ref (GL_BGRA_format, cr)
+//
+  val () = cairo_destroy (cr)
+  val () = cairo_surface_destroy (surface)
+//
+  val () = glClear (GL_COLOR_BUFFER_BIT)
+  val () = glColor3d (0.0, 0.0, 0.0) // black color
+//
+  val (pfmat | ()) = glPushMatrix ()
+  val () = glTranslated (~0.5, ~0.5, 0.5)
+  val () = glTexture_mapout_rect (gltext, 1.0, 1.0, 1(*down*))
+  val () = glPopMatrix (pfmat | (*none*))
+//
+  val () = glDeleteTexture (gltext)
+//
+in
+  // nothing
+end // end of [fexpose_present]
+
+fun fexpose_rotate
+  (vpw: int, vph: int): void = let
+  val surface =
+    cairo_image_surface_create (CAIRO_FORMAT_ARGB32, vpw, vph)
+  val vpw = (double_of)vpw
+  and vph = (double_of)vph
+//
+  val [l:addr] cr = cairo_create (surface)
+//
+  val (pf_save | ()) = cairo_save (cr)
+  val () = cairo_scale (cr, vpw, vph)
+  val () = cairodraw_slide_relative (cr, 0) // current one
+  val () = cairodraw_clock01 (cr) // HX: a translucent clock layover
+  val () = cairo_restore (pf_save | cr)
+  val gltext1 = glTexture_make_cairo_ref (GL_BGRA_format, cr)
+//
+  val (pf_save | ()) = cairo_save (cr)
+  val () = cairo_scale (cr, vpw, vph)
+  val () = cairodraw_slide_relative (cr, 1) // next one
+  val () = cairodraw_clock01 (cr) // HX: a translucent clock layover
+  val () = cairo_restore (pf_save | cr)
+  val gltext2 = glTexture_make_cairo_ref (GL_BGRA_format, cr)
+//
+  val () = cairo_destroy (cr)
+  val () = cairo_surface_destroy (surface)
+//
+  val () = glClear (GL_COLOR_BUFFER_BIT)
+  val () = glColor3d (0.0, 0.0, 0.0) // black color
+//
+  val knd12 = !theRotateknd_ref; val knd16 = 1 - knd12
+//
+  val (pfmat | ()) = glPushMatrix ()
+  val () = () where {
+    val alpha = !theAlpha_ref
+    val () = if knd12 > 0 then glRotated (~alpha, 0.0, 1.0, 0.0)
+    val () = if knd16 > 0 then glRotated (~alpha, 1.0, 0.0, 0.0)
+  } // end of [val]
+  val () = glTranslated (~0.5, ~0.5, 0.5)
+//
+  val () = glEnable (GL_CULL_FACE)
+  val () = glCullFace (GL_BACK) // HX: prevent transparency!
+  val () = if knd12 > 0 then
+    glTexture_mapout_rect12 (gltext1, gltext2, 1.0, 1.0, 1(*down*))
+  val () = if knd16 > 0 then
+    glTexture_mapout_rect16 (gltext1, gltext2, 1.0, 1.0, 1(*down*))
+  val () = glDisable (GL_CULL_FACE)
+//
+  val () = glPopMatrix (pfmat | (*none*))
+//
+  val () = glDeleteTexture (gltext1)
+  val () = glDeleteTexture (gltext2)
+//
+in
+  // nothing
+end // end of [fexpose_rotate]
+
+(* ****** ****** *)
 
 extern
 fun fexpose {l:agz} (
@@ -289,60 +397,13 @@ in
     val vpw = int_of(wh * uw)
     val vph = int_of(wh * uh)
 //
-(*
-    val () = println! ("fexpose: width = ", width)
-    val () = println! ("fexpose: height = ", height)
-*)
-//
-    val surface =
-      cairo_image_surface_create (CAIRO_FORMAT_ARGB32, vpw, vph)
-    val vpw = (double_of)vpw
-    and vph = (double_of)vph
-//
-    val [l:addr] cr = cairo_create (surface)
-//
-    val (pf_save | ()) = cairo_save (cr)
-    val () = cairo_scale (cr, vpw, vph)
-    val () = cairodraw_slide_relative (cr, 0) // current one
-    val () = cairodraw_clock01 (cr) // HX: a translucent clock layover
-    val () = cairo_restore (pf_save | cr)
-    val gltext1 = glTexture_make_cairo_ref (GL_BGRA_format, cr)
-//
-    val (pf_save | ()) = cairo_save (cr)
-    val () = cairo_scale (cr, vpw, vph)
-    val () = cairodraw_slide_relative (cr, 1) // next one
-    val () = cairodraw_clock01 (cr) // HX: a translucent clock layover
-    val () = cairo_restore (pf_save | cr)
-    val gltext2 = glTexture_make_cairo_ref (GL_BGRA_format, cr)
-//
-    val () = cairo_destroy (cr)
-    val () = cairo_surface_destroy (surface)
-//
-    val () = glClear (GL_COLOR_BUFFER_BIT)
-    val () = glColor3d (0.0, 0.0, 0.0) // black color
-//
-    val knd12 = !theRotateknd_ref; val knd16 = 1 - knd12
-//
-    val (pfmat | ()) = glPushMatrix ()
-    val () = () where {
-      val alpha = !theAlpha_ref
-      val () = if knd12 > 0 then glRotated (~alpha, 0.0, 1.0, 0.0)
-      val () = if knd16 > 0 then glRotated (~alpha, 1.0, 0.0, 0.0)
-    } // end of [val]
-    val () = glTranslated (~0.5, ~0.5, 0.5)
-//
-    val () = glEnable (GL_CULL_FACE)
-    val () = glCullFace (GL_BACK) // HX: prevent transparency!
-    val () = if knd12 > 0 then
-      glTexture_mapout_rect12 (gltext1, gltext2, 1.0, 1.0, 1(*down*))
-    val () = if knd16 > 0 then
-      glTexture_mapout_rect16 (gltext1, gltext2, 1.0, 1.0, 1(*down*))
-    val () = glDisable (GL_CULL_FACE)
-//
-    val () = glPopMatrix (pfmat | (*none*))
-//
-    val () = glDeleteTexture (gltext1)
-    val () = glDeleteTexture (gltext2)
+    val theActState = theActState_get ()
+    val () = (
+      case+ theActState of
+      | 0 => fexpose_present (vpw, vph)
+      | 1 => fexpose_rotate (vpw, vph)
+      | _ => () // HX: should it do something?
+    ) : void // end of [val]
 //
     val () = if ((bool_of)is_double_buffered) then
       gdk_gl_drawable_swap_buffers (gldrawable) else glFlush ()
@@ -395,19 +456,30 @@ fun ftimeout (): gboolean = "ftimeout"
 implement
 ftimeout () = let
 //
-  val alpha = !theAlpha_ref + theDelta
-  val () =
-    if alpha <= 90.0 then
+  val act = theActState_get ()
+  val () = if
+    (act = ACTrotate) then {
+    val alpha = !theAlpha_ref + theDelta
+//
+    val isRot = alpha <= 90.0
+    val () = if isRot then let
+      // more rotation is needed
+    in
       !theAlpha_ref := alpha
-    else let
+    end // end of [val]
+    val () = if ~(isRot) then let
+      // rotation is completed by now
       val () = !rotate_ref := 0
       val () = !theRotateknd_ref := randint (2)
       val () = theSlideCount_inc ()
+      val () = theActState_set (ACTpresent)
+(*
       val () = timeout_remove ()
+*)
     in
       !theAlpha_ref := 0.0
-    end // end of [if]
-  // end of [val]
+    end // end of [val]
+  } // end of [if]
   val darea = theDrawingArea_get ()
   val (fpf_win | win) = gtk_widget_get_window (darea)
   var alloc: GtkAllocation
@@ -456,6 +528,7 @@ fnext () = let
 //
 in
   if (x = 0) then let
+    val () = theActState_set (ACTrotate)
     val () = timeout_add () in (*nothing*)
   end else let
     val () = timeout_remove ()
