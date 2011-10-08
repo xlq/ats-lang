@@ -23,6 +23,7 @@ macdef _2PI = 2 * M_PI
 (* ****** ****** *)
 
 staload "contrib/GL/SATS/gl.sats"
+staload "contrib/GL/SATS/glu.sats"
 staload "contrib/cairo/SATS/cairo.sats"
 
 (* ****** ****** *)
@@ -260,9 +261,13 @@ implement initialize () = let
   val () = glMatrixMode (GL_PROJECTION)
   val () = glLoadIdentity ()
   val ratio = 0.725
-  val () = glOrtho (~1.0*ratio, 1.0*ratio, ~1.0*ratio, 1.0*ratio, ~10.0, 10.0)
+(*
+  val () = glOrtho (~1.0*ratio, 1.0*ratio, ~1.0*ratio, 1.0*ratio, 1.0, 10.0)
+*)
+  val () = glFrustum (~1.0*ratio, 1.0*ratio, ~1.0*ratio, 1.0*ratio, 9.0, 10.0)
   val () = glMatrixMode (GL_MODELVIEW)
   val () = glLoadIdentity ()
+  val () = gluLookAt (0.0, 0.0, 10.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0)
 in
   // empty
 end // end of [initialize]
@@ -471,10 +476,15 @@ in
       val () = if knd16 > 0 then glRotated (~alpha, 1.0, 0.0, 0.0)
     } // end of [val]
     val () = glTranslated (~0.5, ~0.5, 0.5)
+//
+    val () = glEnable (GL_CULL_FACE)
+    val () = glCullFace (GL_BACK) // HX: prevent transparency!
     val () = if knd12 > 0 then
       glTexture_mapout_rect12 (gltext1, gltext2, 1.0, 1.0, 1(*down*))
     val () = if knd16 > 0 then
       glTexture_mapout_rect16 (gltext1, gltext2, 1.0, 1.0, 1(*down*))
+    val () = glDisable (GL_CULL_FACE)
+//
     val () = glPopMatrix (pfmat | (*none*))
 //
     val () = glDeleteTexture (gltext1)
