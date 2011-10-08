@@ -260,12 +260,14 @@ let
   val fmt = cairo_image_surface_get_format (sf)
   val w = let
     val w = cairo_image_surface_get_width (sf)
+    val w = int1_of_int (w)
   in
     if fmt = CAIRO_FORMAT_A1 then 0
     else if fmt = CAIRO_FORMAT_A8 then w / 4
     else w
   end : Int // end of [val]
   val h = cairo_image_surface_get_height (sf)
+  val h = int1_of_int (h)
 in
 if (w > 0 && h > 0) then let
   val sf_tmp =

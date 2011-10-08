@@ -26,10 +26,12 @@ fun draw {l:agz}
   (cr: !cairo_ref l, w: int, h: int): void = () where {
 //
   val mn = min (w, h)
-  val PNGFILENAME = "DATA/romedalen.png"
+  val PNGFILENAME = "data/romedalen.png"
   val image = cairo_image_surface_create_from_png (PNGFILENAME)
   val iw = cairo_image_surface_get_width (image)
+  val iw = int1_of_int (iw)
   val ih = cairo_image_surface_get_height (image)
+  val ih = int1_of_int (ih)
   val () = cairo_translate (cr, (w-iw)/2.0, (h-ih)/2.0)
 //
   val () = blur_image_surface (image, max(iw,ih)/2)
