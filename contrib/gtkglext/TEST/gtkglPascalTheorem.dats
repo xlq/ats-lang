@@ -251,29 +251,6 @@ dynload "contrib/atspslide/dynloadall.dats"
 
 (* ****** ****** *)
 
-extern
-fun initialize (): void = "initialize"
-implement initialize () = let
-(*
-  val () = glClearColor (0.0, 0.0, 0.0, 0.0)
-*)
-  val () = glClearColor (0.5, 0.5, 0.5, 0.0)
-  val () = glMatrixMode (GL_PROJECTION)
-  val () = glLoadIdentity ()
-  val ratio = 0.725
-(*
-  val () = glOrtho (~1.0*ratio, 1.0*ratio, ~1.0*ratio, 1.0*ratio, 1.0, 10.0)
-*)
-  val () = glFrustum (~1.0*ratio, 1.0*ratio, ~1.0*ratio, 1.0*ratio, 9.0, 10.0)
-  val () = glMatrixMode (GL_MODELVIEW)
-  val () = glLoadIdentity ()
-  val () = gluLookAt (0.0, 0.0, 10.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0)
-in
-  // empty
-end // end of [initialize]
-
-(* ****** ****** *)
-
 staload "contrib/glib/SATS/glib.sats"
 staload "contrib/glib/SATS/glib-object.sats"
 staload "contrib/GTK/SATS/gdk.sats"
@@ -325,6 +302,29 @@ fun theDrawingArea_set_gl_capability {l:addr}
 (* ****** ****** *)
 
 extern
+fun initialize (): void = "initialize"
+implement initialize () = let
+(*
+  val () = glClearColor (0.0, 0.0, 0.0, 0.0)
+*)
+  val () = glClearColor (0.5, 0.5, 0.5, 0.0)
+  val () = glMatrixMode (GL_PROJECTION)
+  val () = glLoadIdentity ()
+  val ratio = 0.725
+(*
+  val () = glOrtho (~1.0*ratio, 1.0*ratio, ~1.0*ratio, 1.0*ratio, 1.0, 10.0)
+*)
+  val () = glFrustum (~1.0*ratio, 1.0*ratio, ~1.0*ratio, 1.0*ratio, 9.0, 10.0)
+  val () = glMatrixMode (GL_MODELVIEW)
+  val () = glLoadIdentity ()
+  val () = gluLookAt (0.0, 0.0, 10.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0)
+in
+  // empty
+end // end of [initialize]
+
+(* ****** ****** *)
+
+extern
 fun frealize {l:agz} (
   darea: !GtkDrawingArea_ref l, data: gpointer
 ) : void = "frealize"
@@ -348,6 +348,8 @@ in
     // nothing
   end // end of [if]
 end // end of [frealize]
+
+(* ****** ****** *)
 
 extern
 fun funrealize {l:agz} (
@@ -381,7 +383,9 @@ in
     val w = (int_of)p->width
     val h = (int_of)p->height
     val wh = min (w, h)
+//
     val () = glViewport ((w-wh)/2, (h-wh)/2, wh, wh)
+//
     prval () = minus_addback (fpf, pf | darea)
     val () = initialize ()
     val () = gdk_gl_drawable_gl_end (pfbeg | gldrawable)
@@ -442,7 +446,7 @@ in
 //
     val (pf_save | ()) = cairo_save (cr)
     val () = cairo_rectangle (cr, 0.0, 0.0, WH, WH)
-    val () = cairo_set_source_rgb (cr, 1.0, 0.0, 0.0) // right color
+    val () = cairo_set_source_rgb (cr, 1.0, 0.0, 0.0) // red color
     val () = cairo_fill (cr)
     val () = (case+ !theVerticesLst of
       | list0_cons (ts, _) => let
