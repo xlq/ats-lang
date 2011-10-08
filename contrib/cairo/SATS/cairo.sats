@@ -335,7 +335,6 @@ fun cairo_set_source_rgba
   = "mac#atsctrb_cairo_set_source_rgba"
 
 (* ****** ****** *)
-
 //
 // HX-2010-04-29: pattern reference count is unchanged!
 //
@@ -2202,21 +2201,21 @@ fun cairo_image_surface_get_format
 fun cairo_image_surface_get_width
   {l:agz} (
   sf: !cairo_surface_ref l
-) : Nat
+) : int // HX: the C interface says int
   = "mac#atsctrb_cairo_image_surface_get_width"
 // end of [cairo_image_surface_get_width]
 
 fun cairo_image_surface_get_height
   {l:agz} (
   sf: !cairo_surface_ref l
-) : Nat
+) : int // HX: the C interface says int
   = "mac#atsctrb_cairo_image_surface_get_height"
 // end of [cairo_image_surface_get_height]
 
 fun cairo_image_surface_get_stride
   {l:agz} (
   sf: !cairo_surface_ref l
-) : Nat
+) : int // HX: the C interface says int
   = "mac#atsctrb_cairo_image_surface_get_stride"
 // end of [cairo_image_surface_get_stride]
 
