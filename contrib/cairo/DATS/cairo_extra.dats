@@ -49,25 +49,23 @@ staload "contrib/cairo/SATS/cairo_extra.sats"
 
 implement
 cairo_show_text_inbox
-  (cr, W, H, utf8) = () where {
+  (cr, bxw, bxh, utf8) = () where {
   val (pf | ()) = cairo_save (cr)
-  #define FONTSIZE 1
-  val () = cairo_set_font_size (cr, (double_of)FONTSIZE)
 //
-  val () = () where {
-    var te : cairo_text_extents_t
+  val () = cairo_set_font_size (cr, 1.0(*FONTSIZE*)) // HX: the value should not matter
 //
-    val MN = min (W, H)
-    val () = cairo_text_extents (cr, utf8, te)
-    val alpha = (1.0 * MN / te.width) // this is just an estimate
-    val () = cairo_scale (cr, alpha, alpha)
+  var te : cairo_text_extents_t
 //
-    val () = cairo_text_extents (cr, utf8, te)
-    val w = te.width and h = te.height
-    val x_base = w / 2 + te.x_bearing and y_base = ~te.y_bearing / 2
-    val () = cairo_move_to (cr, ~x_base, y_base)
-    val () = cairo_show_text (cr, utf8)
-  } // end of [val]
+  val () = cairo_text_extents (cr, utf8, te)
+  val alpha = (1.0 * bxw / te.width) // this is just an estimate
+  val () = cairo_scale (cr, alpha, alpha)
+//
+  val () = cairo_text_extents (cr, utf8, te)
+  val w = te.width and h = te.height
+  val x_base = w / 2 + te.x_bearing and y_base = ~te.y_bearing / 2
+  val () = cairo_move_to (cr, ~x_base, y_base)
+  val () = cairo_show_text (cr, utf8)
+//
   val () = cairo_restore (pf | cr)
 } // end of [cairo_show_text_inbox]
 
