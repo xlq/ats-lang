@@ -152,6 +152,36 @@ end // end of [glTexture_mapout_rect12]
 (* ****** ****** *)
 
 implement
+glTexture_mapout_rect14
+  (gltext1, gltext2, wid, hgt, vdir) = let
+  val () = glTexture_mapout_rect (gltext1, wid, hgt, vdir)
+  val (pfmat | ()) = glPushMatrix ()
+  val () = glTranslated (0.0, 0.0, ~wid)
+  val () = glRotated (~90.0, 0.0, 1.0, 0.0)
+  val () = glTexture_mapout_rect (gltext2, wid, hgt, vdir)
+  val () = glPopMatrix (pfmat | (*none*))
+in
+  // nothing
+end // end of [glTexture_mapout_rect14]
+
+(* ****** ****** *)
+
+implement
+glTexture_mapout_rect15
+  (gltext1, gltext2, wid, hgt, vdir) = let
+  val () = glTexture_mapout_rect (gltext1, wid, hgt, vdir)
+  val (pfmat | ()) = glPushMatrix ()
+  val () = glTranslated (0.0, wid, 0.0)
+  val () = glRotated (~90.0, 1.0, 0.0, 0.0)
+  val () = glTexture_mapout_rect (gltext2, wid, hgt, vdir)
+  val () = glPopMatrix (pfmat | (*none*))
+in
+  // nothing
+end // end of [glTexture_mapout_rect15]
+
+(* ****** ****** *)
+
+implement
 glTexture_mapout_rect16
   (gltext1, gltext2, wid, hgt, vdir) = let
   val () = glTexture_mapout_rect (gltext1, wid, hgt, vdir)

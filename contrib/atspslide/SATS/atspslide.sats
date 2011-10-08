@@ -42,14 +42,13 @@ staload "contrib/GL/SATS/gl.sats"
 staload "contrib/cairo/SATS/cairo.sats"
 
 (* ****** ****** *)
-
+//
 abstype slide_type
 typedef slide = slide_type
-typedef slideopt = Option (slide)
-
-fun slide_get_by_indx (indx: int): slideopt
-fun slide_get_by_name (name: string): slideopt
-
+//
+fun slideopt_get_by_indx (indx: int): Option_vt (slide)
+fun slideopt_get_by_name (name: string): Option_vt (slide)
+//
 (* ****** ****** *)
 //
 // atspslide_cairodraw
@@ -57,10 +56,20 @@ fun slide_get_by_name (name: string): slideopt
 (* ****** ****** *)
 (*
 ** HX-2011-10-01:
-** a clock that may be used as background of a slide
+** A clock that may be used as a layover
+** The dimension of the clock is 1.0 by 1.0
 *)
 fun cairodraw_clock01 {l:agz} (cr: !cairo_ref l): void
 
+(*
+** HX-2011-10-01:
+** A given number at the center of a circle
+** The dimension of the enclosing square is 1.0 by 1.0
+*)
+fun cairodraw_circnum {l:agz} (cr: !cairo_ref l, int: int): void
+
+fun cairodraw_slide {l:agz} (cr: !cairo_ref l, x: slide): void
+//
 (* ****** ****** *)
 //
 // atspslide_glTexture 
@@ -78,7 +87,6 @@ fun glTexture_make_cairo_ref {l:agz}
 fun glTexture_mapout_rect {i:int} {d:two} (
   texture: !GLtexture(i), width: double, height: double, vdir: int(d)
 ) : void // end of [glTexture_mapout_rect]
-
 //
 // HX: front(1), right(2), back(3), left(4), top(5) and bottom(6)
 //
@@ -88,6 +96,20 @@ fun glTexture_mapout_rect12
 , texture2: !GLtexture(i2)
 , width: double, height: double, vdir: int(d)
 ) : void // end of [glTexture_mapout_rect12]
+
+fun glTexture_mapout_rect14
+  {i1,i2:int} {d:two} (
+  texture1: !GLtexture(i1)
+, texture2: !GLtexture(i2)
+, width: double, height: double, vdir: int(d)
+) : void // end of [glTexture_mapout_rect14]
+
+fun glTexture_mapout_rect15
+  {i1,i2:int} {d:two} (
+  texture1: !GLtexture(i1)
+, texture2: !GLtexture(i2)
+, width: double, height: double, vdir: int(d)
+) : void // end of [glTexture_mapout_rect15]
 
 fun glTexture_mapout_rect16
   {i1,i2:int} {d:two} (

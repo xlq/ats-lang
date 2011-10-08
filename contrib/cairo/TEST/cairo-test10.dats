@@ -255,9 +255,9 @@ implement main () = () where {
   val ycoef = hsf / himg
   val () = cairo_scale (cr, xcoef, ycoef)
   val () = cairo_set_source_surface (cr, image, 0.0, 0.0)
-  val () = cairo_surface_destroy (image)
   val () = cairo_paint (cr)
   val () = cairo_restore (pf | cr)
+  val () = cairo_surface_destroy (image)
 //
   val () = cairo_select_font_face
     (cr, "serif", CAIRO_FONT_SLANT_NORMAL, CAIRO_FONT_WEIGHT_BOLD)

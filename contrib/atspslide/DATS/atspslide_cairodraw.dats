@@ -34,7 +34,12 @@
 //
 (* ****** ****** *)
 
+staload UN = "prelude/SATS/unsafe.sats"
+
+(* ****** ****** *)
+
 staload "contrib/cairo/SATS/cairo.sats"
+staload "contrib/cairo/SATS/cairo_extra.sats"
 
 (* ****** ****** *)
 
@@ -73,34 +78,57 @@ cairodraw_clock01
   val hs = tm.tm_hour * PI / 6 + ms / 12
   val ss = tm.tm_sec * PI / 30
 //
+  val (pf | ()) = cairo_save (cr)
+  val () = cairo_translate (cr, 0.5, 0.5)
+//
   val () = cairo_set_line_cap (cr, CAIRO_LINE_CAP_ROUND)
   val () = cairo_set_line_width (cr, 0.1)
 //
   // draw a black clock outline
-  val () = cairo_set_source_rgba (cr, 0.0, 0.0, 0.0, 0.1)
-  val () = cairo_translate (cr, 0.5, 0.5)
+  val () = cairo_new_path (cr)
   val () = cairo_arc (cr, 0.0, 0.0, 0.4, 0.0, _2PI)
+  val () = cairo_set_source_rgba (cr, 0.0, 0.0, 0.0, 0.1)
   val () = cairo_stroke (cr)
 //
   // draw a green dot on the current second
-  val () = cairo_set_source_rgba (cr, 0.0, 1.0, 0.0, 0.250)
   val () = cairo_arc
     (cr, 0.4 * sin(ss), 0.4 * ~cos(ss), 0.05, 0.0, _2PI)
+  val () = cairo_set_source_rgba (cr, 0.0, 1.0, 0.0, 0.250)
   val () = cairo_fill (cr)
 //
   // draw the minutes indicator
-  val () = cairo_set_source_rgba (cr, 0.2, 0.2, 1.0, 0.125)
   val () = cairo_move_to (cr, 0.0, 0.0)
   val () = cairo_line_to (cr, 0.4 * sin(ms), 0.4 * ~cos(ms))
+  val () = cairo_set_source_rgba (cr, 0.2, 0.2, 1.0, 0.125)
   val () = cairo_stroke(cr)
 //
   // draw the hours indicator
-  val () = cairo_set_source_rgba (cr, 0.2, 0.2, 1.0, 0.125)
   val () = cairo_move_to (cr, 0.0, 0.0)
   val () = cairo_line_to (cr, 0.2 * sin(hs), 0.2 * ~cos(hs))
+  val () = cairo_set_source_rgba (cr, 0.2, 0.2, 1.0, 0.125)
   val () = cairo_stroke (cr)
 //
+  val () = cairo_restore (pf | cr)
+//
 } // end of [cairodraw_clock01]
+
+(* ****** ****** *)
+
+implement
+cairodraw_circnum (cr, int) = let
+  val (pf | ()) = cairo_save (cr)
+  val () = cairo_translate (cr, 0.5, 0.5)
+  val () = cairo_arc (cr, 0.0, 0.0, 0.5, 0.0, _2PI)
+  val () = cairo_set_source_rgb (cr, 1.0, 1.0, 1.0)
+  val () = cairo_fill (cr)
+  val utf8 = sprintf ("%i", @(int))
+  val () = cairo_set_source_rgb (cr, 1.0, 1.0, 0.0)
+  val () = cairo_show_text_inbox (cr, 0.50, 0.50, $UN.castvwtp1 (utf8))
+  val () = cairo_restore (pf | cr)
+  val () = strptr_free (utf8)
+in
+  // nothing
+end // end of [cairodraw_circnum]
 
 (* ****** ****** *)
 

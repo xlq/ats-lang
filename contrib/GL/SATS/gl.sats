@@ -1073,38 +1073,36 @@ fun glMatrixMode
 
 (* ****** ****** *)
 
-typedef glOrtho_type (a:t@ype) = (
-  a (*lft*), a (*rgt*)
-, a (*bot*), a (*top*)
-, a (*near_val*), a (*far_val*)
+typedef
+glOrtho_type (a:t@ype) = (
+  a (*lft*), a (*rgt*), a (*bot*), a (*top*), a (*near_val*), a (*far_val*)
 ) -<fun1> void // end of [glOrtho_type]
 
 symintr glOrtho
 
-fun glOrtho_double : glOrtho_type (double)
-  = "mac#atsctrb_glOrtho"
+fun glOrtho_double
+  : glOrtho_type (double) = "mac#atsctrb_glOrtho"
 overload glOrtho with glOrtho_double
 
-fun glOrtho_GLdouble : glOrtho_type (GLdouble)
-  = "mac#atsctrb_glOrtho"
+fun glOrtho_GLdouble
+  : glOrtho_type (GLdouble) = "mac#atsctrb_glOrtho"
 overload glOrtho with glOrtho_GLdouble
 
 (* ****** ****** *)
 
-typedef glFrustum_type (a:t@ype) = (
-  a (*lft*), a (*rgh*)
-, a (*bot*), a (*top*)
-, a (*near_val*), a (*far_val*)
-) -<fun1> void
+typedef
+glFrustum_type (a:t@ype) = (
+  a (*lft*), a (*rgh*), a (*bot*), a (*top*), a (*near_val*), a (*far_val*)
+) -<fun1> void // end of [glFrustum_type]
 
 symintr glFrustum
 
-fun glFrustum_double : glFrustum_type (double)
-  = "mac#atsctrb_glFrustum"
+fun glFrustum_double
+  : glFrustum_type (double) = "mac#atsctrb_glFrustum"
 overload glFrustum with glFrustum_double
 
-fun glFrustum_GLdouble : glFrustum_type (GLdouble)
-  = "mac#atsctrb_glFrustum"
+fun glFrustum_GLdouble
+  : glFrustum_type (GLdouble) = "mac#atsctrb_glFrustum"
 overload glFrustum with glFrustum_GLdouble
 
 (* ****** ****** *)
