@@ -74,6 +74,14 @@ gtkglPascalTheorem: gtkglPascalTheorem.dats ; \
 
 ######
 
+checkall:: gtkglSlidePresent
+cleanall:: ; $(RMF) gtkglSlidePresent
+gtkglSlidePresent: gtkglSlidePresent.dats ; \
+  $(ATSCC) -o gtkglSlidePresent \
+    gtkglSlidePresent.dats $(ATSCTRBGL) $(ATSCTRBXR) $(ATSCTRBGTK) $(ATSCTRBPSLIDE) $(GTKGLEXT)
+
+######
+
 RMF = rm -f
 
 ######
