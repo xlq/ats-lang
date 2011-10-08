@@ -10,6 +10,7 @@
 
 (* ****** ****** *)
 
+staload UN = "prelude/SATS/unsafe.sats"
 staload _(*anon*) = "prelude/DATS/reference.dats"
 
 (* ****** ****** *)
@@ -129,7 +130,7 @@ implement initialize () = let
 *)
   val r = 1.0 / 2 // HX: for [glFrustum]
   val w = r and h = r
-  val znear = 2.0; val zfar = znear + 1.0
+  val znear = 2.0; val zfar = znear + 2.0
   val () = glFrustum (~1.0*w, 1.0*w, ~1.0*h, 1.0*h, znear, zfar)
   val () = glMatrixMode (GL_MODELVIEW)
   val () = glLoadIdentity ()
@@ -239,9 +240,11 @@ cairodraw_slide_relative
   cairodraw_slide (cr, theSlideCount_get () + count)
 // end of [cairodraw_slide_relative]
 
-implement
-cairodraw_slide
-  (cr, count) = let
+fun
+cairodraw_slide_count
+  {l:agz} (
+  cr: !cairo_ref (l), count: int
+) : void = let
   val (pf | ()) = cairo_save (cr)
   val () = cairo_rectangle (cr, 0.0, 0.0, 1.0, 1.0)
   val () = cairo_set_source_rgb (cr, 0.5, 0.5, 0.5) // midgray color
@@ -250,6 +253,50 @@ cairodraw_slide
   val () = cairo_restore (pf | cr)
 in
   // nothing
+end // end of [cairodraw_slide_count]
+
+fun
+cairodraw_slide_pngfile
+  {l:agz} (
+  cr: !cairo_ref (l), path: string
+) : void = let
+  val wsf = 1.0
+  val hsf = 1.0
+  val img = cairo_image_surface_create_from_png (path)
+  val wimg = cairo_image_surface_get_width (img)
+  and himg = cairo_image_surface_get_height (img)
+  val (pf | ()) = cairo_save (cr)
+  val () = cairo_scale (cr, 1.0*wsf/wimg, 1.0*hsf/himg)
+  val () = cairo_set_source_surface (cr, img, 0.0, 0.0)
+  val () = cairo_paint (cr)
+  val () = cairo_restore (pf | cr)
+  val () = cairo_surface_destroy (img)
+in
+  // nothing
+end // end of [cairodraw_slide_count]
+
+fun
+slidename_get_by_count
+  (count: int): strptr1 =
+  sprintf ("data/lecture01_%i.png", @(count))
+// end of [slidename_get_by_count]
+
+implement
+cairodraw_slide
+  (cr, count) = let
+  val [l:addr] path = slidename_get_by_count (count)
+  val path1 = $UN.castvwtp1 {string} {strptr(l)} (path)
+  val isexi = test_file_exists (path1)
+in
+  if isexi then let
+    val () = cairodraw_slide_pngfile (cr, path1)
+  in
+    strptr_free (path)
+  end else let
+    val () = cairodraw_slide_count (cr, count)
+  in
+    strptr_free (path)
+  end // end of [if]
 end // end of [cairodraw_slide]
 
 (* ****** ****** *)
@@ -426,7 +473,7 @@ end // end of [fexpose]
 //
 guint timeout_id = 0 ;
 //
-#define TIMEOUT_INTERVAL 40
+#define TIMEOUT_INTERVAL 100
 //
 void timeout_add () {
   if (timeout_id == 0) {
@@ -527,24 +574,27 @@ fnext () = let
   val () = !rotate_ref := 1 - x
 //
 in
-  if (x = 0) then let
-    val () = theActState_set (ACTrotate)
-    val () = timeout_add () in (*nothing*)
-  end else let
-    val () = timeout_remove ()
-    var alloc: GtkAllocation
-    val darea = theDrawingArea_get ()
-    val () = gtk_widget_get_allocation (darea, alloc)
-    prval pf = GtkAllocation2GdkRectangle (view@ (alloc))
-    val (fpf_win | win) = gtk_widget_get_window (darea)
-    val () = gdk_window_invalidate_rect (win, alloc, GFALSE)
-    prval () = view@ (alloc) := GdkRectangle2GtkAllocation (pf)
-    val () = gdk_window_process_updates (win, GFALSE)
-    prval () = minus_addback (fpf_win, win | darea)
-    val () = g_object_unref (darea)
-  in
-    // nothing
-  end // end of [if]
+//
+if (x = 0) then let
+  val () = theActState_set (ACTrotate)
+  val () = timeout_add () in (*nothing*)
+end else let
+  val () = timeout_remove ()
+  var alloc: GtkAllocation
+  val darea = theDrawingArea_get ()
+  val () = gtk_widget_get_allocation (darea, alloc)
+  prval pf = GtkAllocation2GdkRectangle (view@ (alloc))
+  val (fpf_win | win) = gtk_widget_get_window (darea)
+  val () = gdk_window_invalidate_rect (win, alloc, GFALSE)
+  prval () = view@ (alloc) := GdkRectangle2GtkAllocation (pf)
+  val () = gdk_window_process_updates (win, GFALSE)
+  prval () = minus_addback (fpf_win, win | darea)
+  val () = g_object_unref (darea)
+//
+in
+  // nothing
+end // end of [if]
+//
 end // end of [fnext]
 
 (* ****** ****** *)
