@@ -8,9 +8,7 @@
 
 (*
 ** ATS - Unleashing the Potential of Types!
-**
 ** Copyright (C) 2002-2011 Hongwei Xi, Boston University
-**
 ** All rights reserved
 **
 ** ATS is free software;  you can  redistribute it and/or modify it under
@@ -47,7 +45,8 @@ sortdef vt0p = viewt@ype
 
 absview
 dlnode_v (
-  a:viewt@ype+, l: addr, lp: addr, ln: addr // lp: previous; ln: next
+  a:viewt@ype+
+, l: addr, lp: addr, ln: addr // lp: previous; ln: next
 ) // end of [dlnode_v]
 
 prfun
