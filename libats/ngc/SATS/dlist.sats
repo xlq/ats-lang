@@ -126,7 +126,7 @@ dlseg_v (
     ) // end of [dlseg_v_cons]
   | {lf:addr}
     {lr:addr}
-    dlseg_v_nil (a, 0, lf, lr, lr, lf)
+    dlseg_v_nil (a, 0, lf, lr, lr, lf) of ()
 // end of [dlseg_v]
 
 dataview
@@ -142,7 +142,7 @@ rdlseg_v (
     ) // end of [dlseg_v_cons]
   | {lf:addr}
     {lr:addr}
-    rdlseg_v_nil (a, 0, lf, lr, lr, lf)
+    rdlseg_v_nil (a, 0, lf, lr, lr, lf) of ()
 // end of [rdlseg_v]
 
 (* ****** ****** *)
