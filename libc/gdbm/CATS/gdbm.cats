@@ -37,6 +37,15 @@
 
 /* ****** ****** */
 
+ATSinline()
+ats_void_type
+atslib_gdbm_datum_free
+  (datum x) {
+  if (x.dptr != NULL) ATS_FREE (x.dptr) ; return ;
+} // end of [atslib_gdbm_datum_free]
+
+/* ****** ****** */
+
 #define atslib_gdbm_open gdbm_open
 #define atslib_gdbm_close gdbm_close
 

@@ -48,6 +48,8 @@ typedef mode_t = $TYPES.mode_t
 
 absviewtype GDBM_FILE (l:addr) // HX: a boxed viewtype
 
+castfn gdbm_free_null (dbf: GDBM_FILE (null)):<> ptr null
+
 (* ****** ****** *)
 
 absviewtype
@@ -62,6 +64,10 @@ datum (n:int) =
 
 viewtypedef datum0 = [n:int] datum (n)
 viewtypedef datum1 = [n:nat] datum (n) // for valid data
+//
+// HX: implemented in [gdbm.cats]
+//
+fun datum_free (x: datum0): void = "atslib_gdbm_datum_free"
 
 (* ****** ****** *)
 //
@@ -132,8 +138,33 @@ fun gdm_version_cmp
 (* ****** ****** *)
 
 (*
-GDBM_FILE gdbm_openname, block_size, flags, mode, fatal_func);
+#define  GDBM_READER  0		/* A reader. */
+#define  GDBM_WRITER  1		/* A writer. */
+#define  GDBM_WRCREAT 2		/* A writer.  Create the db if needed. */
+#define  GDBM_NEWDB   3		/* A writer.  Always create a new db. */
+#define  GDBM_FAST    0x10	/* Write fast! => No fsyncs.  OBSOLETE. */
+#define  GDBM_SYNC    0x20	/* Sync operations to the disk. */
+#define  GDBM_NOLOCK  0x40	/* Don't do file locking operations. */
 *)
+macdef GDBM_READER = $extval (int, "GDBM_READER")
+macdef GDBM_WRITER = $extval (int, "GDBM_WRITER")
+macdef GDBM_WRCREAT = $extval (int, "GDBM_WRCREAT")
+macdef GDBM_NEWDB = $extval (int, "GDBM_NEWDB")
+macdef GDBM_FAST = $extval (int, "GDBM_FAST")
+macdef GDBM_SYNC = $extval (int, "GDBM_SYNC")
+macdef GDBM_NOLOCK = $extval (int, "GDBM_NOLOCK")
+(*
+GDBM_FILE gdbm_open (name, block_size, flags, mode, fatal_func);
+*)
+//
+// fatal_func: (!READ(string)) -> void
+//
+fun gdbm_open (
+  name: !READ(string)
+, block_size: int, flags: int, mode: mode_t, fatal_func: ptr
+) : [l:agez] GDBM_FILE (l)
+  = "mac#atslib_gdbm_open"
+// end of [gdbm_open]
 
 (* ****** ****** *)
 
@@ -151,6 +182,14 @@ fun gdbm_close
 (*
 int gdbm_store(dbf, key, content, flag);
 *)
+
+(*
+#define  GDBM_INSERT  0		/* Never replace old data with new. */
+#define  GDBM_REPLACE 1		/* Always replace old data with new. */
+*)
+macdef GDBM_INSERT = $extval (int, "GDBM_INSERT")
+macdef GDBM_REPLACE = $extval (int, "GDBM_REPLACE")
+
 fun gdbm_store
   {n1,n2:nat} {l:agz} (
   dbf: !GDBM_FILE l, key: !datum(n1), content: !datum(n2), flag: int

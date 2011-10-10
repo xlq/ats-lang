@@ -646,7 +646,7 @@ overload gint with gint_of_GtkResponseType
 
 fun
 cb_btn_close_clicked {l:agz}
-  (win: !GtkWindow_ref (l)): gboolean = GTRUE where {
+  (btn: ptr, win: !GtkWindow_ref (l)): gboolean = GTRUE where {
 (*
   val () = (print (#LOCATION + ": cb_btn_close_clicked"); print_newline ())
 *)
@@ -654,16 +654,15 @@ cb_btn_close_clicked {l:agz}
   val _type = GTK_MESSAGE_QUESTION
   val buttons = GTK_BUTTONS_YES_NO
 //
-  val (fpf_x | x) = (gs)"Quit ATSUI?"
+  val (fpf_x | x) = (gs)"Quit?"
   val dialog = gtk_message_dialog_new0 (flags, _type, buttons, x)
   prval () = fpf_x (x)
   val (fpf_x | x) = (gs)"Confirmation"
   val () = gtk_window_set_title (dialog, x)
   prval () = fpf_x (x)
 //
-(*
   val () = gtk_window_set_transient_for (dialog, win(*parent*))
-*)
+//
   val response = gtk_dialog_run (dialog)
   val () = gtk_widget_destroy (dialog)
 //
@@ -734,30 +733,28 @@ val () = gtk_box_pack_start (vbox0, hbox1, GFALSE, GTRUE, (guint)10)
 val (fpf_x | x) = (gs)"_Close"
 val btn_close = gtk_button_new_with_mnemonic (x)
 prval () = fpf_x (x)
-(*
-val _sid = g_signal_connect
-  (btn_close, (gsignal)"clicked", G_CALLBACK(gtk_main_quit), (gpointer)null)
-*)
 val _sid = g_signal_connect
   (btn_close, (gsignal)"clicked", G_CALLBACK(cb_btn_close_clicked), (gpointer_vt)window)
 // end of [val]
-val () = gtk_box_pack_end (hbox1, btn_close, GTRUE, GTRUE, (guint)10)
+val () = gtk_box_pack_end (hbox1, btn_close, GFALSE, GFALSE, (guint)10)
 val () = gtk_widget_show_unref (btn_close)
-val (fpf_x | x) = (gs)"_Next"
-val btn_next = gtk_button_new_with_mnemonic (x)
-prval () = fpf_x (x)
-val _sid = g_signal_connect
-  (btn_next, (gsignal)"clicked", G_CALLBACK(fnext), (gpointer)null)
-val () = gtk_box_pack_end (hbox1, btn_next, GTRUE, GTRUE, (guint)10)
-val () = gtk_widget_show_unref (btn_next)
+//
 val (fpf_x | x) = (gs)"_Prev"
 val btn_prev = gtk_button_new_with_mnemonic (x)
 prval () = fpf_x (x)
 val _sid = g_signal_connect
   (btn_prev, (gsignal)"clicked", G_CALLBACK(fprev), (gpointer)null)
 // end of [val]
-val () = gtk_box_pack_end (hbox1, btn_prev, GTRUE, GTRUE, (guint)10)
+val () = gtk_box_pack_start (hbox1, btn_prev, GFALSE, GFALSE, (guint)4)
 val () = gtk_widget_show_unref (btn_prev)
+//
+val (fpf_x | x) = (gs)"_Next"
+val btn_next = gtk_button_new_with_mnemonic (x)
+prval () = fpf_x (x)
+val _sid = g_signal_connect
+  (btn_next, (gsignal)"clicked", G_CALLBACK(fnext), (gpointer)null)
+val () = gtk_box_pack_start (hbox1, btn_next, GFALSE, GFALSE, (guint)4)
+val () = gtk_widget_show_unref (btn_next)
 //
 val () = gtk_widget_show_unref (hbox1)
 //
