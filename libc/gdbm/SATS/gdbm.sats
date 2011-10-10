@@ -33,12 +33,312 @@
 
 (* ****** ****** *)
 
+%{#
+#include "libc/gdbm/CATS/gdbm.cats"
+%} // end of [%{#]
+
+(* ****** ****** *)
+
 staload FCNTL = "libc/SATS/fcntl.sats"
 typedef flag_t = $FCNTL.flag_t
 staload TYPES = "libc/sys/SATS/types.sats"
 typedef mode_t = $TYPES.mode_t
 
 (* ****** ****** *)
+
+absviewtype GDBM_FILE (l:addr) // HX: a boxed viewtype
+
+(* ****** ****** *)
+
+absviewtype
+dptr_int_viewtype (n:int)
+stadef dptr = dptr_int_viewtype
+
+viewtypedef
+datum (n:int) =
+  $extype_struct "datum" of {
+  dptr= dptr(n), dsize= int(n)
+} // end of [datum]
+
+viewtypedef datum0 = [n:int] datum (n)
+viewtypedef datum1 = [n:nat] datum (n) // for valid data
+
+(* ****** ****** *)
+//
+abst@ype gdbm_error = int
+//
+macdef
+GDBM_NO_ERROR = $extval (gdbm_error, "GDBM_NO_ERROR")
+macdef
+GDBM_MALLOC_ERROR = $extval (gdbm_error, "GDBM_MALLOC_ERROR")
+macdef
+GDBM_BLOCK_SIZE_ERROR = $extval (gdbm_error, "GDBM_BLOCK_SIZE_ERROR")
+macdef
+GDBM_FILE_OPEN_ERROR = $extval (gdbm_error, "GDBM_FILE_OPEN_ERROR")
+macdef
+GDBM_FILE_WRITE_ERROR = $extval (gdbm_error, "GDBM_FILE_WRITE_ERROR")
+macdef
+GDBM_FILE_SEEK_ERROR = $extval (gdbm_error, "GDBM_FILE_SEEK_ERROR")
+macdef
+GDBM_FILE_READ_ERROR = $extval (gdbm_error, "GDBM_FILE_READ_ERROR")
+macdef
+GDBM_BAD_MAGIC_NUMBER = $extval (gdbm_error, "GDBM_BAD_MAGIC_NUMBER")
+macdef
+GDBM_EMPTY_DATABASE = $extval (gdbm_error, "GDBM_EMPTY_DATABASE")
+macdef
+GDBM_CANT_BE_READER = $extval (gdbm_error, "GDBM_CANT_BE_READER")
+macdef
+GDBM_CANT_BE_WRITER = $extval (gdbm_error, "GDBM_CANT_BE_WRITER")
+macdef
+GDBM_READER_CANT_DELETE = $extval (gdbm_error, "GDBM_READER_CANT_DELETE")
+macdef
+GDBM_READER_CANT_STORE = $extval (gdbm_error, "GDBM_READER_CANT_STORE")
+macdef
+GDBM_READER_CANT_REORGANIZE = $extval (gdbm_error, "GDBM_READER_CANT_REORGANIZE")
+macdef
+GDBM_UNKNOWN_UPDATE = $extval (gdbm_error, "GDBM_UNKNOWN_UPDATE")
+macdef
+GDBM_ITEM_NOT_FOUND = $extval (gdbm_error, "GDBM_ITEM_NOT_FOUND")
+macdef
+GDBM_REORGANIZE_FAILED = $extval (gdbm_error, "GDBM_REORGANIZE_FAILED")
+macdef
+GDBM_CANNOT_REPLACE = $extval (gdbm_error, "GDBM_CANNOT_REPLACE")
+macdef
+GDBM_ILLEGAL_DATA = $extval (gdbm_error, "GDBM_ILLEGAL_DATA")
+macdef
+GDBM_OPT_ALREADY_SET = $extval (gdbm_error, "GDBM_OPT_ALREADY_SET")
+macdef
+GDBM_OPT_ILLEGAL = $extval (gdbm_error, "GDBM_OPT_ILLEGAL")
+macdef
+GDBM_BYTE_SWAPPED = $extval (gdbm_error, "GDBM_BYTE_SWAPPED")
+macdef
+GDBM_BAD_FILE_OFFSET = $extval (gdbm_error, "GDBM_BAD_FILE_OFFSET")
+macdef
+GDBM_BAD_OPEN_FLAGS = $extval (gdbm_error, "GDBM_BAD_OPEN_FLAGS")
+//
+(* ****** ****** *)
+
+val gdbm_version
+  : string = "mac#gdb_version" // pre-allocated
+val gdbm_version_number
+  : array (int, 3) = "mac#gdb_version_number" // pre-allocated
+// end of [gdbm_version_number]
+
+fun gdm_version_cmp
+  (x: &(@[int][3]), y: &(@[int][3])):<> int
+  = "mac#gdbm_version_cmp"
+// end of [gdm_version_cmp]
+  
+(* ****** ****** *)
+
+(*
+GDBM_FILE gdbm_openname, block_size, flags, mode, fatal_func);
+*)
+
+(* ****** ****** *)
+
+(*
+void gdbm_close(dbf);
+*)
+fun gdbm_close
+  {l:addr} (
+  dbf: GDBM_FILE l
+) : void = "mac#atslib_gdbm_close"
+// end of [gdbm_close]
+
+(* ****** ****** *)
+
+(*
+int gdbm_store(dbf, key, content, flag);
+*)
+fun gdbm_store
+  {n1,n2:nat} {l:agz} (
+  dbf: !GDBM_FILE l, key: !datum(n1), content: !datum(n2), flag: int
+) : int(*err*)
+  = "mac#atslib_gdbm_store"
+// end of [gdbm_store]
+
+(* ****** ****** *)
+
+(*
+datum gdbm_fetch(dbf, key);
+*)
+fun gdbm_fetch
+  {n:nat} {l:agz} (
+  dbf: !GDBM_FILE l, key: !datum (n)
+) : datum0 = "mac#atslib_gdbm_fetch" // the return value is malloced
+// end of [gdbm_fetch]
+
+(*
+int gdbm_exists(dbf, key);
+*)
+fun gdbm_exists
+  {n:nat} {l:agz} (
+  dbf: !GDBM_FILE l, key: !datum (n)
+) : int // true/false: 1/0
+  = "mac#atslib_gdbm_exists"
+// end of [gdbm_exists]
+
+(* ****** ****** *)
+
+(*
+int gdbm_delete(dbf, key);
+*)
+fun gdbm_delete
+  {n:nat} {l:agz} (
+  dbf: !GDBM_FILE l, key: !datum (n)
+) : int // succ/fail: 0/-1
+  = "mac#atslib_gdbm_delete"
+// end of [gdbm_delete]
+
+(* ****** ****** *)
+
+(*
+datum gdbm_firstkey(dbf);
+*)
+fun gdbm_firstkey
+  {l:agz} (
+  dbf: !GDBM_FILE l
+) : datum0
+  = "mac#atslib_gdbm_firstkey"
+// end of [gdbm_firstkey]
+
+(* ****** ****** *)
+
+(*
+datum gdbm_nextkey(dbf, key);
+*)
+
+fun gdbm_nextkey
+  {n:nat} {l:agz} (
+  dbf: !GDBM_FILE l, prev: !datum(n)
+) : datum0 = "mac#atslib_gdbm_nextkey"
+// end of [gdbm_nextkey]
+
+(* ****** ****** *)
+
+(*
+int gdbm_reorganize(dbf);
+*)
+fun gdbm_reorganize {l:agz}
+  (dbf: !GDBM_FILE l): int = "mac#gdbm_reorganize"
+// end of [gdbm_reorganize]
+
+(* ****** ****** *)
+
+(*
+void gdbm_sync(dbf);
+*)
+fun gdbm_sync {l:agz}
+  (dbf: !GDBM_FILE l): void = "mac#gdbm_sync"
+// end of [gdbm_sync]
+
+(* ****** ****** *)
+
+(*
+int gdbm_export (GDBM FILE dbf, const char *exportfile,int flag, int mode);
+*)
+fun gdbm_export {l:agz} (
+  dbf: !GDBM_FILE l, exportfile: !READ(string), flag: int, mode: mode_t
+) : int = "mac#atslib_gdbm_export"
+// end of [gdbm_export]
+
+(* ****** ****** *)
+
+(*
+int gdbm_import (GDBM FILE dbf , const char *importfile , int flag);
+*)
+fun gdbm_import {l:agz} (
+  dbf: !GDBM_FILE l, importfile: !READ(string), flag: int
+) : int = "mac#atslib_gdbm_import"
+// end of [gdbm_import]
+
+(* ****** ****** *)
+
+(*
+char *gdbm_strerror(int errno);
+*)
+fun gdbm_strerror
+  (errno: gdbm_error): string(*pre-allocated*) = "mac#atslib_gdbm_strerror"
+// end of [gdbm_strerror]
+
+(* ****** ****** *)
+
+(*
+int gdbm_setopt(dbf, option, value, size);
+*)
+abst@ype
+gdbmsetopt(a:t@ype) = int
+abst@ype
+gdbmgetopt(a:t@ype) = int
+//
+macdef
+GDBM_CACHESIZE = $extval (gdbmsetopt(size_t), "GDBM_CACHESIZE")
+macdef
+GDBM_SETCACHESIZE = $extval (gdbmsetopt(size_t), "GDBM_SETCACHESIZE")
+macdef
+GDBM_GETCACHESIZE = $extval (gdbmgetopt(size_t), "GDBM_GETCACHESIZE")
+//
+macdef GDBM_GETFLAGS = $extval (gdbmgetopt(int), "GDBM_GETFLAGS")
+//
+macdef GDBM_FASTMODE = $extval (gdbmsetopt(int), "GDBM_FASTMODE")
+//
+macdef
+GDBM_SYNCMODE = $extval (gdbmsetopt(int), "GDBM_SYNCMODE")
+macdef
+GDBM_SETSYNCMODE = $extval (gdbmsetopt(int), "GDBM_SETSYNCMODE")
+macdef
+GDBM_GETSYNCMODE = $extval (gdbmgetopt(int), "GDBM_GETSYNCMODE")
+//
+macdef
+GDBM_COALESCEBLKS = $extval (gdbmsetopt(int), "GDBM_COALESCEBLKS")
+macdef
+GDBM_SETCOALESCEBLKS = $extval (gdbmsetopt(int), "GDBM_SETCOALESCEBLKS")
+macdef
+GDBM_GETCOALESCEBLKS = $extval (gdbmgetopt(int), "GDBM_GETCOALESCEBLKS")
+//
+macdef
+GDBM_SETMAXMAPSIZE = $extval (gdbmsetopt(size_t), "GDBM_SETMAXMAPSIZE")
+macdef
+GDBM_GETMAXMAPSIZE = $extval (gdbmgetopt(size_t), "GDBM_GETMAXMAPSIZE")
+//
+macdef
+GDBM_SETMMAP = $extval (gdbmsetopt(int), "GDBM_SETMMAP")
+macdef
+GDBM_GETMMAP = $extval (gdbmgetopt(int), "GDBM_GETMMAP")
+//
+(*
+GDBM_GETDBNAME = $extval (gdbmgetopt(ptr), "GDBM_GETDBNAME")
+*)
+//
+(* ****** ****** *)
+
+fun gdbm_setopt
+  {a:t@ype} {l:addr} (
+  dbf: !GDBM_FILE l
+, option: gdbmsetopt(a), value: &a, size: sizeof_t(a)
+) : int(*err*) = "mac#atslib_gdbm_setopt"
+// end of [gdbm_setopt]
+
+fun gdbm_getopt
+  {a:t@ype} {l:addr} (
+  dbf: !GDBM_FILE l
+, option: gdbmgetopt(a), value: &a? >> a, size: sizeof_t(a)
+) : int(*err*) = "mac#atslib_gdbm_getopt"
+// end of [gdbm_setopt]
+
+fun gdbm_getdbname {l:agz}
+  (dbf: !GDBM_FILE (l)): strptr0 = "atslib_gdbm_getdbname"
+// end of [gdbm_getdbname]
+
+(* ****** ****** *)
+
+(*
+int gdbm_fdesc(dbf);
+*)
+fun gdbm_fdesc {l:agz}
+  (dbf: !GDBM_FILE l): int(*fd*) = "mac#gdbm_fdesc" // no failure
+// end of [gdbm_fdesc]
 
 (* ****** ****** *)
 
