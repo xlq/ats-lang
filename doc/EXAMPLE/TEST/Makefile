@@ -168,13 +168,17 @@ cleanall:: ; $(RMF) libc_unistd
 
 ######
 
-
 checkall:: libc_sys_utsname
 libc_sys_utsname: libc_sys_utsname.dats ; $(ATSCC) -O2 -o $@ $< && ./libc_sys_utsname
 cleanall:: ; $(RMF) libc_sys_utsname
 
 ######
 
+checkall:: libc_sys_utsname
+libc_gdbm_gdbm: libc_gdbm_gdbm.dats ; $(ATSCC) -O2 -o $@ $< -lgdbm && ./libc_gdbm_gdbm
+cleanall:: ; $(RMF) libc_gdbm_gdbm
+
+######
 
 checkall:: libats_funarray_braun
 libats_funarray_braun: libats_funarray_braun.dats
