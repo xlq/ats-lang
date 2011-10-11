@@ -46,7 +46,11 @@ main () = () where {
   val () = assertloc (err = 0)
   val isexi = gdbm_exists (dbf, k)
   val () = assertloc (isexi = 0)
-  prval () = fpf_k (datum_takeout_ptr (k))
+  prval () = fpf_k (k.dptr)
+  prval () = cleanup_top {datum(null,0)} (k)
+(*
+  prval () = fpf_k (datum_takeout_ptr (k)) // HX: an alternative to do it
+*)
 //
   val () = gdbm_close (dbf)
 //
