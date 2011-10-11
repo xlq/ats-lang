@@ -33,6 +33,10 @@
 
 (* ****** ****** *)
 
+#define ATS_STALOADFLAG 0 // there is need for staloading at run0time
+
+(* ****** ****** *)
+
 %{#
 #include "libc/gdbm/CATS/gdbm.cats"
 %} // end of [%{#]
@@ -46,28 +50,55 @@ typedef mode_t = $TYPES.mode_t
 
 (* ****** ****** *)
 
-absviewtype GDBM_FILE (l:addr) // HX: a boxed viewtype
+absviewtype GDBM_FILE (lf:addr) // HX: a boxed viewtype
 
-castfn gdbm_free_null (dbf: GDBM_FILE (null)):<> ptr null
+castfn gdbm_free_null
+  (dbf: GDBM_FILE (null)):<> ptr null
+castfn ptr_of_gdbm_file {lf:addr} (dbf: !GDBM_FILE lf):<> ptr (lf)
+overload ptr_of with ptr_of_gdbm_file
 
 (* ****** ****** *)
 
 absviewtype
-dptr_int_viewtype (n:int)
-stadef dptr = dptr_int_viewtype
+dptr_addr_int_viewtype (l:addr, n:int)
+stadef dptr = dptr_addr_int_viewtype 
+
+castfn ptr_of_dptr
+  {l:addr} {n:int} (x: !dptr(l, n)):<> ptr (l)
+overload ptr_of with ptr_of_dptr
 
 viewtypedef
-datum (n:int) =
+datum (l:addr, n:int) =
   $extype_struct "datum" of {
-  dptr= dptr(n), dsize= int(n)
+  dptr= dptr(l, n), dsize= int(n)
 } // end of [datum]
 
-viewtypedef datum0 = [n:int] datum (n)
-viewtypedef datum1 = [n:nat] datum (n) // for valid data
+viewtypedef datum0 = [n:int;l:addr] datum (l, n)
+viewtypedef datum1 = [n:nat;l:addr | l > null] datum (l, n) // for valid data
+
+fun datum_is_valid {n:int} {l:addr}
+  (x: datum (l, n)): bool (l > null) = "mac#atslib_gdbm_datum_is_valid"
+// end of [datum_is_valid]
+
+fun datum_takeout_ptr
+  {l:addr} {n:int} (x: datum (l, n)):<> dptr (l, n)
+  = "mac#atslib_gdbm_datum_takeout_ptr"
+// end of [datum_takeout_ptr]
+
+(* ****** ****** *)
 //
 // HX: implemented in [gdbm.cats]
 //
-fun datum_free (x: datum0): void = "atslib_gdbm_datum_free"
+fun datum_make0_string
+  (str: string): [l:agz;n:nat] (dptr (l, n) -<lin,prf> void | datum (l, n))
+  = "mac#atslib_gdbm_datum_make0_string"
+// end of [datum_make0_string]
+
+fun datum_make1_string
+  (str: string): datum1 = "mac#atslib_gdbm_datum_make1_string"
+// end of [datum_make1_string]
+
+fun datum_free (x: datum0): void = "mac#atslib_gdbm_datum_free"
 
 (* ****** ****** *)
 //
@@ -122,6 +153,8 @@ GDBM_BAD_FILE_OFFSET = $extval (gdbm_error, "GDBM_BAD_FILE_OFFSET")
 macdef
 GDBM_BAD_OPEN_FLAGS = $extval (gdbm_error, "GDBM_BAD_OPEN_FLAGS")
 //
+fun gdbm_errno_get (): gdbm_error = "mac#atslib_gdbm_errno_get"
+//
 (* ****** ****** *)
 
 val gdbm_version
@@ -162,7 +195,7 @@ GDBM_FILE gdbm_open (name, block_size, flags, mode, fatal_func);
 fun gdbm_open (
   name: !READ(string)
 , block_size: int, flags: int, mode: mode_t, fatal_func: ptr
-) : [l:agez] GDBM_FILE (l)
+) : [lf:agez] GDBM_FILE (lf)
   = "mac#atslib_gdbm_open"
 // end of [gdbm_open]
 
@@ -172,8 +205,8 @@ fun gdbm_open (
 void gdbm_close(dbf);
 *)
 fun gdbm_close
-  {l:addr} (
-  dbf: GDBM_FILE l
+  {lf:addr} (
+  dbf: GDBM_FILE lf
 ) : void = "mac#atslib_gdbm_close"
 // end of [gdbm_close]
 
@@ -191,8 +224,8 @@ macdef GDBM_INSERT = $extval (int, "GDBM_INSERT")
 macdef GDBM_REPLACE = $extval (int, "GDBM_REPLACE")
 
 fun gdbm_store
-  {n1,n2:nat} {l:agz} (
-  dbf: !GDBM_FILE l, key: !datum(n1), content: !datum(n2), flag: int
+  {lf:agz} {l1,l2:addr} {n1,n2:nat} (
+  dbf: !GDBM_FILE lf, key: !datum(l1, n1), content: !datum(l2, n2), flag: int
 ) : int(*err*)
   = "mac#atslib_gdbm_store"
 // end of [gdbm_store]
@@ -203,8 +236,8 @@ fun gdbm_store
 datum gdbm_fetch(dbf, key);
 *)
 fun gdbm_fetch
-  {n:nat} {l:agz} (
-  dbf: !GDBM_FILE l, key: !datum (n)
+  {lf:agz} {l:agz} {n:int} (
+  dbf: !GDBM_FILE lf, key: !datum (l, n)
 ) : datum0 = "mac#atslib_gdbm_fetch" // the return value is malloced
 // end of [gdbm_fetch]
 
@@ -212,8 +245,8 @@ fun gdbm_fetch
 int gdbm_exists(dbf, key);
 *)
 fun gdbm_exists
-  {n:nat} {l:agz} (
-  dbf: !GDBM_FILE l, key: !datum (n)
+  {lf:agz} {l:agz} {n:int} (
+  dbf: !GDBM_FILE lf, key: !datum (l, n)
 ) : int // true/false: 1/0
   = "mac#atslib_gdbm_exists"
 // end of [gdbm_exists]
@@ -224,8 +257,8 @@ fun gdbm_exists
 int gdbm_delete(dbf, key);
 *)
 fun gdbm_delete
-  {n:nat} {l:agz} (
-  dbf: !GDBM_FILE l, key: !datum (n)
+  {lf:agz} {l:agz} {n:int} (
+  dbf: !GDBM_FILE lf, key: !datum (l, n)
 ) : int // succ/fail: 0/-1
   = "mac#atslib_gdbm_delete"
 // end of [gdbm_delete]
@@ -236,8 +269,8 @@ fun gdbm_delete
 datum gdbm_firstkey(dbf);
 *)
 fun gdbm_firstkey
-  {l:agz} (
-  dbf: !GDBM_FILE l
+  {lf:agz} (
+  dbf: !GDBM_FILE lf
 ) : datum0
   = "mac#atslib_gdbm_firstkey"
 // end of [gdbm_firstkey]
@@ -249,8 +282,8 @@ datum gdbm_nextkey(dbf, key);
 *)
 
 fun gdbm_nextkey
-  {n:nat} {l:agz} (
-  dbf: !GDBM_FILE l, prev: !datum(n)
+  {lf:agz} {l:agz} {n:int} (
+  dbf: !GDBM_FILE l, prev: !datum(l, n)
 ) : datum0 = "mac#atslib_gdbm_nextkey"
 // end of [gdbm_nextkey]
 
@@ -259,8 +292,8 @@ fun gdbm_nextkey
 (*
 int gdbm_reorganize(dbf);
 *)
-fun gdbm_reorganize {l:agz}
-  (dbf: !GDBM_FILE l): int = "mac#gdbm_reorganize"
+fun gdbm_reorganize {lf:agz}
+  (dbf: !GDBM_FILE lf): int = "mac#gdbm_reorganize"
 // end of [gdbm_reorganize]
 
 (* ****** ****** *)
@@ -268,8 +301,8 @@ fun gdbm_reorganize {l:agz}
 (*
 void gdbm_sync(dbf);
 *)
-fun gdbm_sync {l:agz}
-  (dbf: !GDBM_FILE l): void = "mac#gdbm_sync"
+fun gdbm_sync {lf:agz}
+  (dbf: !GDBM_FILE lf): void = "mac#gdbm_sync"
 // end of [gdbm_sync]
 
 (* ****** ****** *)
@@ -277,8 +310,8 @@ fun gdbm_sync {l:agz}
 (*
 int gdbm_export (GDBM FILE dbf, const char *exportfile,int flag, int mode);
 *)
-fun gdbm_export {l:agz} (
-  dbf: !GDBM_FILE l, exportfile: !READ(string), flag: int, mode: mode_t
+fun gdbm_export {lf:agz} (
+  dbf: !GDBM_FILE lf, exportfile: !READ(string), flag: int, mode: mode_t
 ) : int = "mac#atslib_gdbm_export"
 // end of [gdbm_export]
 
@@ -287,8 +320,8 @@ fun gdbm_export {l:agz} (
 (*
 int gdbm_import (GDBM FILE dbf , const char *importfile , int flag);
 *)
-fun gdbm_import {l:agz} (
-  dbf: !GDBM_FILE l, importfile: !READ(string), flag: int
+fun gdbm_import {lf:agz} (
+  dbf: !GDBM_FILE lf, importfile: !READ(string), flag: int
 ) : int = "mac#atslib_gdbm_import"
 // end of [gdbm_import]
 
@@ -353,21 +386,21 @@ GDBM_GETDBNAME = $extval (gdbmgetopt(ptr), "GDBM_GETDBNAME")
 (* ****** ****** *)
 
 fun gdbm_setopt
-  {a:t@ype} {l:addr} (
-  dbf: !GDBM_FILE l
+  {a:t@ype} {lf:agz} (
+  dbf: !GDBM_FILE lf
 , option: gdbmsetopt(a), value: &a, size: sizeof_t(a)
 ) : int(*err*) = "mac#atslib_gdbm_setopt"
 // end of [gdbm_setopt]
 
 fun gdbm_getopt
-  {a:t@ype} {l:addr} (
-  dbf: !GDBM_FILE l
+  {a:t@ype} {lf:agz} (
+  dbf: !GDBM_FILE lf
 , option: gdbmgetopt(a), value: &a? >> a, size: sizeof_t(a)
 ) : int(*err*) = "mac#atslib_gdbm_getopt"
 // end of [gdbm_setopt]
 
-fun gdbm_getdbname {l:agz}
-  (dbf: !GDBM_FILE (l)): strptr0 = "atslib_gdbm_getdbname"
+fun gdbm_getdbname {lf:agz}
+  (dbf: !GDBM_FILE (lf)): strptr0 = "atslib_gdbm_getdbname"
 // end of [gdbm_getdbname]
 
 (* ****** ****** *)
@@ -375,8 +408,8 @@ fun gdbm_getdbname {l:agz}
 (*
 int gdbm_fdesc(dbf);
 *)
-fun gdbm_fdesc {l:agz}
-  (dbf: !GDBM_FILE l): int(*fd*) = "mac#gdbm_fdesc" // no failure
+fun gdbm_fdesc {lf:agz}
+  (dbf: !GDBM_FILE lf): int(*fd*) = "mac#gdbm_fdesc" // no failure
 // end of [gdbm_fdesc]
 
 (* ****** ****** *)
