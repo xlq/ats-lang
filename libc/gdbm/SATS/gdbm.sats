@@ -50,55 +50,16 @@ typedef mode_t = $TYPES.mode_t
 
 (* ****** ****** *)
 
+#include "libc/gdbm/SATS/datum.sats"
+
+(* ****** ****** *)
+
 absviewtype GDBM_FILE (lf:addr) // HX: a boxed viewtype
 
-castfn gdbm_free_null
+castfn GDBM_FILE_free_null
   (dbf: GDBM_FILE (null)):<> ptr null
-castfn ptr_of_gdbm_file {lf:addr} (dbf: !GDBM_FILE lf):<> ptr (lf)
-overload ptr_of with ptr_of_gdbm_file
-
-(* ****** ****** *)
-
-absviewtype
-dptr_addr_int_viewtype (l:addr, n:int)
-stadef dptr = dptr_addr_int_viewtype 
-
-castfn ptr_of_dptr
-  {l:addr} {n:int} (x: !dptr(l, n)):<> ptr (l)
-overload ptr_of with ptr_of_dptr
-
-viewtypedef
-datum (l:addr, n:int) =
-  $extype_struct "datum" of {
-  dptr= dptr(l, n), dsize= int(n)
-} // end of [datum]
-
-viewtypedef datum0 = [n:int;l:addr] datum (l, n)
-viewtypedef datum1 = [n:nat;l:addr | l > null] datum (l, n) // for valid data
-
-fun datum_is_valid {n:int} {l:addr}
-  (x: datum (l, n)): bool (l > null) = "mac#atslib_gdbm_datum_is_valid"
-// end of [datum_is_valid]
-
-fun datum_takeout_ptr
-  {l:addr} {n:int} (x: datum (l, n)):<> dptr (l, n)
-  = "mac#atslib_gdbm_datum_takeout_ptr"
-// end of [datum_takeout_ptr]
-
-(* ****** ****** *)
-//
-// HX: implemented in [gdbm.cats]
-//
-fun datum_make0_string
-  (str: string): [l:agz;n:nat] (dptr (l, n) -<lin,prf> void | datum (l, n))
-  = "mac#atslib_gdbm_datum_make0_string"
-// end of [datum_make0_string]
-
-fun datum_make1_string
-  (str: string): datum1 = "mac#atslib_gdbm_datum_make1_string"
-// end of [datum_make1_string]
-
-fun datum_free (x: datum0): void = "mac#atslib_gdbm_datum_free"
+castfn ptr_of_GDBM_FILE {lf:addr} (dbf: !GDBM_FILE lf):<> ptr (lf)
+overload ptr_of with ptr_of_GDBM_FILE
 
 (* ****** ****** *)
 //

@@ -33,66 +33,60 @@
 
 /* ****** ****** */
 
-#include <gdbm.h>
+#include "libc/CATS/string.cats"
 
 /* ****** ****** */
 
-#include "libc/gdbm/CATS/datum.cats"
+typedef datum ats_datum_type ;
 
 /* ****** ****** */
 
 ATSinline()
-gdbm_error
-atslib_gdbm_errno_get () { return gdbm_errno ; }
+ats_bool_type
+atslib_gdbm_datum_is_valid
+  (ats_datum_type x) { return (x.dptr != NULL) ; }
+// end of [atslib_gdbm_datum_is_valid]
 
-/* ****** ****** */
-
-#define atslib_gdbm_open gdbm_open
-#define atslib_gdbm_close gdbm_close
-
-#define atslib_gdbm_store gdbm_store
-
-#define atslib_gdbm_fetch gdbm_fetch
-#define atslib_gdbm_exists gdbm_exists
-
-#define atslib_gdbm_delete gdbm_delete
-
-#define atslib_gdbm_firstkey gdbm_firstkey
-#define atslib_gdbm_nextkey gdbm_nextkey
-
-#define atslib_gdbm_reorganize gdbm_reorganize
-
-#define atslib_gdbm_sync gdbm_sync
-
-#define atslib_gdbm_export gdbm_export
-#define atslib_gdbm_import gdbm_import
-
-#define atslib_gdbm_strerror gdbm_strerror
-
-/* ****** ****** */
-
-#define atslib_gdbm_setopt gdbm_setopt
-/*
-#define getdbm_getopt getdbm_setopt // HX: they are the same!
-*/
-#define atslib_gdbm_getopt gdbm_setopt
-
-#ifdef GDBM_GETDBNAME
 ATSinline()
-gdbm_getdbname (
-  ats_ptr_type dbf
-) {
-  int err ; char *dbname ;
-  err = gdbm_setopt((GDBM_FILE)dbf, GDBM_GETDBNAME, &dbname, sizeof(void*)) ;
-  if (err < 0) return (char*)0 ;
-  return dbname ;
-} // end of [gdbm_getdbname]
-#endif // end of [GDBM_GETDBNAME]
+ats_ptr_type
+atslib_gdbm_datum_takeout_ptr
+  (ats_datum_type x) { return x.dptr ; }
+// end of [atslib_gdbm_datum_takeout_ptr]
 
 /* ****** ****** */
 
-#define atslib_gdbm_fdesc gdbm_fdesc
+extern
+ats_ptr_type atslib_strdup_gc (ats_ptr_type str) ;
+
+ATSinline()
+ats_datum_type
+atslib_gdbm_datum_make0_string
+  (char *str) {
+  datum res ;
+  res.dptr = str ;
+  res.dsize = (int)(atslib_strlen(str) + 1) ; // HX: account for the trailing null char!
+  return res ;
+} // end of [atslib_gdbm_datum_make0_string]
+
+ATSinline()
+ats_datum_type
+atslib_gdbm_datum_make1_string
+  (char *str) {
+  datum res ;
+  res.dptr = (char*)atslib_strdup_gc(str) ;
+  res.dsize = (int)(atslib_strlen(str) + 1) ; // HX: account for the trailing null char!
+  return res ;
+} // end of [atslib_gdbm_datum_make1_string]
 
 /* ****** ****** */
 
-/* end of [gdbm.cats] */
+ATSinline()
+ats_void_type
+atslib_gdbm_datum_free
+  (ats_datum_type x) {
+  if (x.dptr != NULL) ATS_FREE (x.dptr) ; return ;
+} // end of [atslib_gdbm_datum_free]
+
+/* ****** ****** */
+
+/* end of [datum.cats] */

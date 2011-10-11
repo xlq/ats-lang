@@ -33,7 +33,7 @@
 
 /* ****** ****** */
 
-#include <gdbm.h>
+#include <gdbm-ndbm.h>
 
 /* ****** ****** */
 
@@ -41,58 +41,27 @@
 
 /* ****** ****** */
 
-ATSinline()
-gdbm_error
-atslib_gdbm_errno_get () { return gdbm_errno ; }
+#define atslib_ndbm_open dbm_open
+#define atslib_ndbm_close dbm_close
+
+#define atslib_ndbm_store dbm_store
+
+#define atslib_ndbm_fetch dbm_fetch
+
+#define atslib_ndbm_delete dbm_delete
+
+#define atslib_ndbm_firstkey dbm_firstkey
+#define atslib_ndbm_nextkey dbm_nextkey
+
+#define atslib_ndbm_error dbm_error
+#define atslib_ndbm_clearerr dbm_clearerr
+
+#define atslib_ndbm_dirfno dbm_dirfno
+
+#define atslib_ndbm_pagfno dbm_pagfno
+
+#define atslib_ndbm_rdonly dbm_rdonly
 
 /* ****** ****** */
 
-#define atslib_gdbm_open gdbm_open
-#define atslib_gdbm_close gdbm_close
-
-#define atslib_gdbm_store gdbm_store
-
-#define atslib_gdbm_fetch gdbm_fetch
-#define atslib_gdbm_exists gdbm_exists
-
-#define atslib_gdbm_delete gdbm_delete
-
-#define atslib_gdbm_firstkey gdbm_firstkey
-#define atslib_gdbm_nextkey gdbm_nextkey
-
-#define atslib_gdbm_reorganize gdbm_reorganize
-
-#define atslib_gdbm_sync gdbm_sync
-
-#define atslib_gdbm_export gdbm_export
-#define atslib_gdbm_import gdbm_import
-
-#define atslib_gdbm_strerror gdbm_strerror
-
-/* ****** ****** */
-
-#define atslib_gdbm_setopt gdbm_setopt
-/*
-#define getdbm_getopt getdbm_setopt // HX: they are the same!
-*/
-#define atslib_gdbm_getopt gdbm_setopt
-
-#ifdef GDBM_GETDBNAME
-ATSinline()
-gdbm_getdbname (
-  ats_ptr_type dbf
-) {
-  int err ; char *dbname ;
-  err = gdbm_setopt((GDBM_FILE)dbf, GDBM_GETDBNAME, &dbname, sizeof(void*)) ;
-  if (err < 0) return (char*)0 ;
-  return dbname ;
-} // end of [gdbm_getdbname]
-#endif // end of [GDBM_GETDBNAME]
-
-/* ****** ****** */
-
-#define atslib_gdbm_fdesc gdbm_fdesc
-
-/* ****** ****** */
-
-/* end of [gdbm.cats] */
+/* end of [ndbm.cats] */
