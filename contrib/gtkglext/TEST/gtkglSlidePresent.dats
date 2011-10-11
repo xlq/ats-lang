@@ -687,7 +687,7 @@ val glconfig = gdk_gl_config_new_by_mode (
 //
 val window = gtk_window_new (GTK_WINDOW_TOPLEVEL)
 val () = gtk_window_set_default_size (window, (gint)400, (gint)400)
-val (fpf_x | x) = (gs)"gtkglPascalTheorem"
+val (fpf_x | x) = (gs)"gtkglSlidePresent"
 val () = gtk_window_set_title (window, x)
 prval () = fpf_x (x)
 val (fpf_window | window_) = g_object_vref (window)
