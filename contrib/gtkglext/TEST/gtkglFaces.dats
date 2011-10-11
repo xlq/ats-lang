@@ -222,7 +222,7 @@ implement initialize () = let
 //
   val () = glMatrixMode (GL_PROJECTION)
   val () = glLoadIdentity ()
-  val () = glOrtho (~50.0, 50.0, ~50.0, 50.0, ~1.0, 1.0)
+  val () = glOrtho (~25.0, 25.0, ~25.0, 25.0, ~1.0, 1.0)
   val () = glMatrixMode (GL_MODELVIEW)
   val () = glLoadIdentity ()
 //
@@ -253,11 +253,11 @@ display () = let
   val x_ratio = cos (head_rotate_angle * M_PI / 180)
 //
   val (pf | ()) = glPushMatrix ()
-  val () = glTranslated (~20.0, 0.0, 0.0)
+  val () = glTranslated (~13.75, 0.0, 0.0)
   val () = draw_face (face_radius, anim_ratio, 1)
   val () = glPopMatrix (pf | (*none*))
   val (pf | ()) = glPushMatrix ()
-  val () = glTranslated (20.0, 0.0, 0.0)
+  val () = glTranslated (13.75, 0.0, 0.0)
   val () = draw_face (face_radius, anim_ratio, ~1)
   val () = glPopMatrix (pf | (*none*))
 in
@@ -452,7 +452,7 @@ end // end of [ftimeout]
 //
 guint timeout_id = 0 ;
 //
-#define TIMEOUT_INTERVAL 50
+#define TIMEOUT_INTERVAL 100
 //
 void timeout_add () {
   if (timeout_id == 0) {
