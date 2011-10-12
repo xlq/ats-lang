@@ -98,7 +98,7 @@ The current #strong("stable") release is <a href="http://sourceforge.net/project
 #para('\
 The current #strong("unstable") version is
 #ulink1(
-  "#ATSLANGWEBROOTget()/IMPLEMENTATION/Anairiats/ats-lang-anairiats-0.2.6-unstable.tar.gz"
+  "http://www.cs.bu.edu/~hwxi/ATS/IMPLEMENTATION/Anairiats/ats-lang-anairiats-0.2.6-unstable.tar.gz"
 , "ats-lang-anairiats-0.2.6-unstable"
 )
 '))

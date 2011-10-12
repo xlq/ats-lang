@@ -178,7 +178,7 @@ checkall:: libc_gdbm_gdbm
 libc_gdbm_gdbm: libc_gdbm_gdbm.dats ; $(ATSCC) -O2 -o $@ $< -lgdbm && ./libc_gdbm_gdbm
 cleanall:: ; $(RMF) libc_gdbm_gdbm gdbmtest.gdbm
 
-checkall:: libc_gdbm_ndbm
+# checkall:: libc_gdbm_ndbm
 libc_gdbm_ndbm: libc_gdbm_ndbm.dats ; $(ATSCC) -O2 -o $@ $< -lgdbm -lgdbm_compat && ./libc_gdbm_ndbm
 cleanall:: ; $(RMF) libc_gdbm_ndbm ndbmtest.dir ndbmtest.pag
 

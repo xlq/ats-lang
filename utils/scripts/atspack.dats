@@ -688,6 +688,7 @@ fn Anairiats_doc_dir_copy () = let
     val () = cp "libc_unistd.dats"
 //
     val () = cp "libc_gdbm_gdbm.dats"
+    val () = cp "libc_gdbm_ndbm.dats"
 //
     val () = cp "libc_sys_utsname.dats"
 //
@@ -921,6 +922,11 @@ fn Anairiats_libc_dir_copy () = let
   val () = mkdir_exn (DSTROOTlibc_netinet, DIRmode)
   val () = libdir_copy (SRCROOTlibc_netinet, DSTROOTlibc_netinet)
 //
+  val SRCROOTlibc_gdbm = SRCROOTlibc ++ "gdbm/"
+  val DSTROOTlibc_gdbm = DSTROOTlibc ++ "gdbm/"
+  val () = mkdir_exn (DSTROOTlibc_gdbm, DIRmode)
+  val () = libdir_copy (SRCROOTlibc_gdbm, DSTROOTlibc_gdbm)
+//
 in
   prerr "The [libc] directory is successfully copied.";
   prerr_newline ()
@@ -1034,7 +1040,7 @@ fn Anairiats_contrib_dir_copy
       SRCROOTcontrib ++ "glib/CATS/glib/", DSTROOTcontrib_glib_CATS_glib, name_is_cats
     ) // end of [val]
     val () = fcopy_exn (
-      SRCROOTcontrib ++ "glib/HATS/glibconfig", DSTROOTcontrib ++ "glib/HATS/glibconfig"
+      SRCROOTcontrib ++ "glib/HATS/glibconfig_hats", DSTROOTcontrib ++ "glib/HATS/glibconfig_hats"
     ) // end of [val]
   } // end of [where]
 //
