@@ -48,29 +48,8 @@ dynload "contrib/atspslide/dynloadall.dats"
 
 (* ****** ****** *)
 
-local
-
-val theSlideCount_ref = ref_make_elt<int> (0)
-
-in // in of [local]
-
-fun theSlideCount_get (): int = !theSlideCount_ref
-
-fun theSlideCount_inc (): void = let
-  val n = !theSlideCount_ref in !theSlideCount_ref := n+1
-end // end of [theSlideCount_inc]
-
-fun theSlideCount_dec (): void = let
-  val n = !theSlideCount_ref in !theSlideCount_ref := n-1
-end // end of [theSlideCount_dec]
-
-end // end of [local]
-
-(* ****** ****** *)
-
 #define theSlideWidth 16
 #define theSlideHeight 9
-
 val theSlideAspect = 1.0 * theSlideHeight / theSlideWidth
 
 (* ****** ****** *)
@@ -103,12 +82,76 @@ theDrawingArea_set_gl_capability
 extern
 fun theDrawingArea_get (): GtkDrawingArea_ref1 = "theDrawingArea_get"
 extern
-fun theDrawingArea_initset (x: !GtkDrawingArea_ref1): void = "theDrawingArea_initset"
+fun theDrawingArea_initset
+  {l:agz} (x: !GtkDrawingArea_ref l): void = "theDrawingArea_initset"
 //
 extern
 fun theDrawingArea_set_gl_capability {l:addr}
   (glconfig: !GdkGLConfig_ref (l)): void = "theDrawingArea_set_gl_capability"
 // end of [theDrawingArea_set_gl_capability]
+
+(* ****** ****** *)
+
+%{^
+GtkWidget *theSpinner = NULL;
+ats_ptr_type
+theSpinner_get () {
+  g_object_ref (G_OBJECT(theSpinner)); return theSpinner ;
+} // end of [theSpinner_get]
+ats_void_type
+theSpinner_initset (ats_ptr_type x) {
+  g_object_ref(G_OBJECT(x)) ;
+  if (theSpinner) g_object_unref (G_OBJECT(theSpinner));
+  theSpinner = x ;
+  return ;
+} // end of [theSpinner_initset]
+%}
+extern
+fun theSpinner_get (): GtkSpinButton_ref1 = "theSpinner_get"
+extern
+fun theSpinner_initset
+  {l:agz} (x: !GtkSpinButton_ref l): void = "theSpinner_initset"
+
+(* ****** ****** *)
+
+local
+
+val theSlideCount_ref = ref_make_elt<int> (0)
+
+in // in of [local]
+
+fun theSlideCount_get (): int = !theSlideCount_ref
+fun theSlideCount_set (n: int): void = !theSlideCount_ref := n
+
+fun theSlideCount_inc
+  (): void = let
+  val n1 = !theSlideCount_ref + 1
+  val () = !theSlideCount_ref := n1
+  val spinner = theSpinner_get ()
+  val () = gtk_spin_button_set_value (spinner, (gdouble)n1)
+  val () = g_object_unref (spinner)
+in
+  // nothing  
+end // end of [theSlideCount_inc]
+
+fun theSlideCount_dec
+  (): void = let
+  val n = !theSlideCount_ref
+in
+//
+if n > 0 then let
+  val n1 = n - 1
+  val () = !theSlideCount_ref := n1
+  val spinner = theSpinner_get ()
+  val () = gtk_spin_button_set_value (spinner, (gdouble)n1)
+  val () = g_object_unref (spinner)
+in
+  // nothing
+end // end of [if]
+//
+end // end of [theSlideCount_dec]
+
+end // end of [local]
 
 (* ****** ****** *)
 
@@ -278,6 +321,7 @@ end // end of [cairodraw_slide_count]
 local
 
 #define PREFIX "review"
+#define PREFIX "lecture01"
 
 fun
 slidename_get_by_count
@@ -455,9 +499,8 @@ in
     val theActState = theActState_get ()
     val () = (
       case+ theActState of
-      | 0 => fexpose_present (vpw, vph)
       | 1 => fexpose_rotate (vpw, vph)
-      | _ => () // HX: should it do something?
+      | _(*0*) => fexpose_present (vpw, vph)
     ) : void // end of [val]
 //
     val () = if ((bool_of)is_double_buffered) then
@@ -604,6 +647,31 @@ in
 end // end of [if]
 //
 end // end of [fnext]
+
+(* ****** ****** *)
+
+extern
+fun fgoto (): void
+implement fgoto () = let
+//
+  val spinner = theSpinner_get ()
+  val n = gtk_spin_button_get_value (spinner)
+  val () = theSlideCount_set (int_of(double_of(n)))
+  val () = g_object_unref (spinner)
+//
+  var alloc: GtkAllocation
+  val darea = theDrawingArea_get ()
+  val () = gtk_widget_get_allocation (darea, alloc)
+  prval pf = GtkAllocation2GdkRectangle (view@ (alloc))
+  val (fpf_win | win) = gtk_widget_get_window (darea)
+  val () = gdk_window_invalidate_rect (win, alloc, GFALSE)
+  prval () = view@ (alloc) := GdkRectangle2GtkAllocation (pf)
+  val () = gdk_window_process_updates (win, GFALSE)
+  prval () = minus_addback (fpf_win, win | darea)
+  val () = g_object_unref (darea)
+in
+  // nothing
+end // end of [fgoto]
 
 (* ****** ****** *)
 
@@ -756,6 +824,24 @@ val _sid = g_signal_connect
 val () = gtk_box_pack_start (hbox1, btn_next, GFALSE, GFALSE, (guint)4)
 val () = gtk_widget_show_unref (btn_next)
 //
+val (fpf_x | x) = (gs)"_Goto"
+val btn_goto = gtk_button_new_with_mnemonic (x)
+prval () = fpf_x (x)
+val _sid = g_signal_connect
+  (btn_goto, (gsignal)"clicked", G_CALLBACK(fgoto), (gpointer)null)
+val () = gtk_box_pack_start (hbox1, btn_goto, GFALSE, GFALSE, (guint)4)
+val () = gtk_widget_show_unref (btn_goto)
+//
+val adj = gtk_adjustment_new (
+  0.0(*ini*), 0.0(*min*), 999.0(*max*), 1.0(*inc*), 5.0(*pinc*), 0.0(*psize*)
+) // end of [val]
+val spinner = gtk_spin_button_new (adj, (gdouble)0.0, (guint)0)
+val () = g_object_unref (adj)
+val () = theSpinner_initset (spinner)
+val () = gtk_spin_button_set_wrap (spinner, GTRUE)
+val () = gtk_box_pack_start (hbox1, spinner, GFALSE, GTRUE, (guint)0)
+val () = gtk_widget_show_unref (spinner)
+//
 val () = gtk_widget_show_unref (hbox1)
 //
 val () = gtk_widget_show_unref (vbox0)
@@ -763,7 +849,9 @@ val () = gtk_widget_show_unref (vbox0)
 val () = gtk_widget_show (window)
 prval () = fpf_window (window)
 //
-val () = if !rotate_ref = 1 then timeout_add () // start the clock
+(*
+val () = timeout_add () // start the clock
+*)
 //
 } // end of [main1]
 
