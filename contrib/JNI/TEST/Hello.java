@@ -4,8 +4,9 @@ class Hello {
         public static native String hello(); // native method
 	static   //static initializer code
 	{
-		System.load("$ATSHOME/contrib/JNI/TEST/libats_Hello.so");
-	} 
+	    String ATSHOME = System.getenv("ATSHOME") ;
+	    System.load(ATSHOME + "/contrib/JNI/TEST/libats_Hello.so") ;
+	}
  
 	public static void main(String[] args)
 	{
