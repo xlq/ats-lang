@@ -4,7 +4,7 @@ class Hello {
         public static native String hello(); // native method
 	static   //static initializer code
 	{
-		System.load("$ATSHOME/contrib/jni/TEST/libats_Hello.so");
+		System.load("$ATSHOME/contrib/JNI/TEST/libats_Hello.so");
 	} 
  
 	public static void main(String[] args)
