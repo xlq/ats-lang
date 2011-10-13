@@ -217,7 +217,7 @@ glTexture_mapout_cylinder
   val dt = angle / n
   val angle2 = angle / 2
 //
-  #define EPSILON 1E-2
+  #define EPSILON 1E-2 // HX: small enough
   val rad = (
     if angle >= EPSILON then wid / angle else ~1.0
   ) : double // end of [val]
