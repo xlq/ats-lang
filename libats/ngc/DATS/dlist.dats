@@ -208,6 +208,37 @@ in
   end (* end of [if] *)
 end // end of [dlist_insert_before]
 
+(* ******** ******* *)
+
+implement{a}
+dlist_cons {nf,nr}
+  (pfnod | p, xs) = let
+  val () = dlnode_set_prev<a> (pfnod | p, null)
+  val (pflst | p_xs) = dlist_decode {a} (xs)
+  val () = dlnode_set_next<a> (pfnod | p, p_xs)
+in
+  if p_xs > null then let
+    prval dlist_v_cons (pf1lst, pf2lst) = pflst
+    prval rdlseg_v_nil () = pf1lst
+    prval dlseg_v_cons (pf2nod, pf2lst) = pf2lst
+    val () = dlnode_set_prev<a> (pf2nod | p_xs, p)
+    prval pf2lst = dlseg_v_cons (pf2nod, pf2lst)
+    prval pflst = dlist_v_cons (rdlseg_v_nil (), dlseg_v_cons {a} (pfnod, pf2lst))
+  in
+    dlist_encode (pflst | p)
+  end else let
+    prval () = __assert () where {
+      extern prfun __assert (): [nr <= 0] void
+    } // end of [where]
+    prval dlist_v_nil () = pflst
+    prval pflst = dlist_v_cons (rdlseg_v_nil (), dlseg_v_cons {a} (pfnod, dlseg_v_nil ()))
+  in
+    dlist_encode (pflst | p)
+  end (* end of [if] *)
+end // end of [dlist_cons]
+
+(* ******** ******* *)
+
 implement{a}
 dlist_remove {nf,nr} (xs) = let
   val (pfdl | p1) = dlist_decode {a} (xs) // casting
@@ -260,6 +291,30 @@ in
   end; // end of [if]
   (pfhd | p1)
 end // end of [dlist_remove]
+
+(* ****** ****** *)
+
+implement{a}
+dlist_move_forward {nf,nr} (xs) = let
+  val (pf | p1) = dlist_decode {a} (xs) // casting
+  prval dlist_v_cons (pf1dl, dlseg_v_cons (pfhd, pf2dl)) = pf
+  val res = dlnode_get_next<a> (pfhd | p1)
+  prval () = pf := dlist_v_cons (rdlseg_v_cons (pf1dl, pfhd), pf2dl)
+in
+  xs := dlist_encode (pf | res)
+end // end of [dlist_move_forward]
+
+implement{a}
+dlist_move_backward {nf,nr} (xs) = let
+  val (pf | p1) = dlist_decode {a} (xs) // casting
+  prval dlist_v_cons (
+    rdlseg_v_cons (pf1dl, pf1), dlseg_v_cons (pfhd, pf2dl)
+  ) = pf
+  val res = dlnode_get_prev<a> (pfhd | p1)
+  prval () = pf := dlist_v_cons (pf1dl, dlseg_v_cons (pf1, dlseg_v_cons (pfhd, pf2dl)))
+in
+  xs := dlist_encode (pf | res)
+end // end of [dlist_move_backward]
 
 (* ****** ****** *)
 
@@ -401,30 +456,6 @@ dlist_free_vclo {v}
 in
   ()
 end // end of [dlist_free_vclo]
-
-(* ****** ****** *)
-
-implement{a}
-dlist_move_forward {nf,nr} (xs) = let
-  val (pf | p1) = dlist_decode {a} (xs) // casting
-  prval dlist_v_cons (pf1dl, dlseg_v_cons (pfhd, pf2dl)) = pf
-  val res = dlnode_get_next<a> (pfhd | p1)
-  prval () = pf := dlist_v_cons (rdlseg_v_cons (pf1dl, pfhd), pf2dl)
-in
-  xs := dlist_encode (pf | res)
-end // end of [dlist_move_forward]
-
-implement{a}
-dlist_move_backward {nf,nr} (xs) = let
-  val (pf | p1) = dlist_decode {a} (xs) // casting
-  prval dlist_v_cons (
-    rdlseg_v_cons (pf1dl, pf1), dlseg_v_cons (pfhd, pf2dl)
-  ) = pf
-  val res = dlnode_get_prev<a> (pfhd | p1)
-  prval () = pf := dlist_v_cons (pf1dl, dlseg_v_cons (pf1, dlseg_v_cons (pfhd, pf2dl)))
-in
-  xs := dlist_encode (pf | res)
-end // end of [dlist_move_backward]
 
 (* ****** ****** *)
 
