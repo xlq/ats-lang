@@ -70,15 +70,15 @@ fun rdlseg_ptr_is_cons
 
 implement{a}
 dlist_is_at_end {nf,nr} (xs) = let
-  val (pf | ()) = dlist_unfold {a} (xs)
+  prval (pf | ()) = dlist_unfold {a} (xs)
   stavar lm:addr
   prval pf = pf: dlist_v (a, nf, nr, lm)
   val p_xs = p2p (xs)
   prval dlist_v_cons (pf1dl, dlseg_v_cons (pfhd, pf2dl)) = pf
   val nx = dlnode_get_next<a> (pfhd | p_xs)
   var res: bool // uninitialized
-in
-  if :(pf: dlist_v (a, nf, nr, lm), res: bool (nr <= 1)) =>
+  val () = if
+    :(pf: dlist_v (a, nf, nr, lm), res: bool (nr <= 1)) =>
     dlseg_ptr_is_cons {a} (pf2dl | nx) then let
     prval dlseg_v_cons (pf_at, pf21dl) = pf2dl
   in
@@ -89,8 +89,9 @@ in
   in
     pf := dlist_v_cons (pf1dl, dlseg_v_cons (pfhd, dlseg_v_nil ()));
     res := true
-  end; // end of [if]
-  dlist_fold (pf | xs); // HX: no-op at run-time
+  end // end of [if]
+  prval () = dlist_fold (pf | xs) // HX: no-op at run-time
+in
   res
 end // end of [dlist_is_at_end]
 
@@ -99,15 +100,15 @@ dlist_isnot_at_end (xs) = ~dlist_is_at_end<a> (xs)
 
 implement{a}
 dlist_is_at_beg {nf,nr} (xs) = let
-  val (pf | ()) = dlist_unfold (xs)
+  prval (pf | ()) = dlist_unfold (xs)
   stavar lm:addr
   prval pf = pf: dlist_v (a, nf, nr, lm)
   val p_xs = p2p (xs)
   prval dlist_v_cons (pf1dl, dlseg_v_cons (pfhd, pf2dl)) = pf
   val pr = dlnode_get_prev<a> (pfhd | p_xs)
   var res: bool // uninitialized
-in
-  if :(pf: dlist_v (a, nf, nr, lm), res: bool (nf == 0)) =>
+  val () = if
+    :(pf: dlist_v (a, nf, nr, lm), res: bool (nf == 0)) =>
     rdlseg_ptr_is_cons {a} (pf1dl | pr) then let
     prval rdlseg_v_cons (pf11dl, pf_at) = pf1dl
   in
@@ -119,11 +120,13 @@ in
     pf := dlist_v_cons (rdlseg_v_nil (), dlseg_v_cons (pfhd, pf2dl));
     res := true
   end; // end of [if]
-  dlist_fold (pf | xs); // HX: no-op at run-time
+  prval () = dlist_fold (pf | xs) // HX: no-op at run-time
+in
   res
 end // end of [dlist_is_at_beg]
 
-implement{a} dlist_isnot_at_beg {nf,nr} (xs) = ~dlist_is_at_beg<a> (xs)
+implement{a}
+dlist_isnot_at_beg {nf,nr} (xs) = ~dlist_is_at_beg<a> (xs)
 
 (* ****** ****** *)
 
@@ -140,14 +143,41 @@ dlist_sing {l,lp,ln} (
   dlist_encode (dlist_v_cons (rnil (), dcons (pfnod, dnil ())) | p)
 ) // end of [dlist_sing]
 
-(* ****** ****** *)
+implement{a}
+dlist_cons {nf,nr}
+  (pfnod | p, xs) = let
+  val () = dlnode_set_prev<a> (pfnod | p, null)
+  val (pflst | p_xs) = dlist_decode {a} (xs)
+  val () = dlnode_set_next<a> (pfnod | p, p_xs)
+in
+  if p_xs > null then let
+    prval dlist_v_cons (pf1lst, pf2lst) = pflst
+    prval rdlseg_v_nil () = pf1lst
+    prval dlseg_v_cons (pf2nod, pf2lst) = pf2lst
+    val () = dlnode_set_prev<a> (pf2nod | p_xs, p)
+    prval pf2lst = dlseg_v_cons (pf2nod, pf2lst)
+    prval pflst = dlist_v_cons (rdlseg_v_nil (), dlseg_v_cons {a} (pfnod, pf2lst))
+  in
+    dlist_encode (pflst | p)
+  end else let
+    prval () = __assert () where {
+      extern prfun __assert (): [nr <= 0] void
+    } // end of [where]
+    prval dlist_v_nil () = pflst
+    prval pflst = dlist_v_cons (rdlseg_v_nil (), dlseg_v_cons {a} (pfnod, dlseg_v_nil ()))
+  in
+    dlist_encode (pflst | p)
+  end (* end of [if] *)
+end // end of [dlist_cons]
+
+(* ******** ******* *)
 
 implement{a}
 dlist_insert_after
   {nf,nr} {l1,lp,ln}
   (pfnod | p1, xs) = let
-  prval (pfdl | p2) = dlist_unfold {a} (xs)
-  val p2 = xs // HX: this is optimized away
+  prval (pfdl | ()) = dlist_unfold {a} (xs)
+  val p2 = p2p (xs) // HX: this is optimized away
   prval dlist_v_cons (pf1dl, dlseg_v_cons (pfhd, pf2dl)) = pfdl
   val () = dlnode_set_prev<a> (pfnod | p1, p2)
   val nx = dlnode_get_next<a> (pfhd | p2)
@@ -179,8 +209,8 @@ implement{a}
 dlist_insert_before
   {nf,nr} {l1,lp,ln}
   (pfnod | p1, xs) = let
-  prval (pfdl | void) = dlist_unfold {a} (xs)
-  val p2 = xs // HX: this is optimized away
+  prval (pfdl | ()) = dlist_unfold {a} (xs)
+  val p2 = p2p (xs) // HX: this is optimized away
   prval dlist_v_cons (pf1dl, dcons (pfhd, pf2dl)) = pfdl
   val () = dlnode_set_next<a> (pfnod | p1, p2)
   val pr = dlnode_get_prev<a> (pfhd | p2)
@@ -207,35 +237,6 @@ in
     // nothing
   end (* end of [if] *)
 end // end of [dlist_insert_before]
-
-(* ******** ******* *)
-
-implement{a}
-dlist_cons {nf,nr}
-  (pfnod | p, xs) = let
-  val () = dlnode_set_prev<a> (pfnod | p, null)
-  val (pflst | p_xs) = dlist_decode {a} (xs)
-  val () = dlnode_set_next<a> (pfnod | p, p_xs)
-in
-  if p_xs > null then let
-    prval dlist_v_cons (pf1lst, pf2lst) = pflst
-    prval rdlseg_v_nil () = pf1lst
-    prval dlseg_v_cons (pf2nod, pf2lst) = pf2lst
-    val () = dlnode_set_prev<a> (pf2nod | p_xs, p)
-    prval pf2lst = dlseg_v_cons (pf2nod, pf2lst)
-    prval pflst = dlist_v_cons (rdlseg_v_nil (), dlseg_v_cons {a} (pfnod, pf2lst))
-  in
-    dlist_encode (pflst | p)
-  end else let
-    prval () = __assert () where {
-      extern prfun __assert (): [nr <= 0] void
-    } // end of [where]
-    prval dlist_v_nil () = pflst
-    prval pflst = dlist_v_cons (rdlseg_v_nil (), dlseg_v_cons {a} (pfnod, dlseg_v_nil ()))
-  in
-    dlist_encode (pflst | p)
-  end (* end of [if] *)
-end // end of [dlist_cons]
 
 (* ******** ******* *)
 
@@ -301,7 +302,7 @@ dlist_move_forward {nf,nr} (xs) = let
   val res = dlnode_get_next<a> (pfhd | p1)
   prval () = pf := dlist_v_cons (rdlseg_v_cons (pf1dl, pfhd), pf2dl)
 in
-  xs := dlist_encode (pf | res)
+  dlist_encode (pf | res)
 end // end of [dlist_move_forward]
 
 implement{a}
@@ -313,7 +314,7 @@ dlist_move_backward {nf,nr} (xs) = let
   val res = dlnode_get_prev<a> (pfhd | p1)
   prval () = pf := dlist_v_cons (pf1dl, dlseg_v_cons (pf1, dlseg_v_cons (pfhd, pf2dl)))
 in
-  xs := dlist_encode (pf | res)
+  dlist_encode (pf | res)
 end // end of [dlist_move_backward]
 
 (* ****** ****** *)
@@ -355,20 +356,27 @@ in
     val pr = dlnode_get_prev<a> (pfhd | p)
     val nx = dlnode_get_next<a> (pfhd | p)
     val () = dlnode_free<a> (pfhd | p)
+    val () = loop0 (pf1 | pr)
+    val () = loop1 (pf2 | nx)
   in
-    loop0 (pf1 | pr);
-    loop1 (pf2 | nx)
+    // nothing
   end else let
-    val (pf | p) = dlist_decode {a} (xs) // casting
+    prval (pf | ()) =
+      dlist_unfold {a} (xs)
+    // end of [prval]
+    prval () = cleanup_top {ptr} (xs)
     prval dlist_v_nil () = pf
   in
-    (*empty*)
+    // nothing
   end // end of [if]
 end // end of [dlist_free]
 
+(* ****** ****** *)
+
 implement{a}
 dlist_free_funenv
-  {v} {vt} {nf,nr} (pfv | xs, f, env) = let
+  {v} {vt} {nf,nr}
+  (pfv | xs, f, env) = let
   fun loop0 {n:nat} {lf,lmp,lm:addr} .<n>. (
     pfv: !v, pf: rdlseg_v (a, n, lf, null, lmp, lm)
   | p: ptr lmp, f: (!v | &a >> a?, !vt) -<fun> void, env: !vt
@@ -382,9 +390,10 @@ dlist_free_funenv
       val () = dlnode_free<a> (pfnod | p)
     in
       loop0 (pfv, pf1 | p1, f, env)
-    end else begin
+    end else
       let prval rnil () = pf in () end
-    end // end of [loop0]
+    (* end of [if] *)
+  // end of [loop0]
   fun loop1 {n:nat} {l,lp,lr:addr} .<n>. (
     pfv: !v, pf: dlseg_v (a, n, l, lp, lr, null)
   | p: ptr l, f: (!v | &a >> a?, !vt) -<fun> void, env: !vt
@@ -398,9 +407,10 @@ dlist_free_funenv
       val () = dlnode_free<a> (pfnod | p)
     in
       loop1 (pfv, pf1 | p1, f, env)
-    end else begin
+    end else
       let prval dnil () = pf in () end
-    end // end of [loop1]
+    (* end of [if] *)
+  // end of [loop1]
 in
   if dlist_is_cons xs then let
     val (pf | p) = dlist_decode {a} (xs) // casting
@@ -409,13 +419,17 @@ in
     val nx = dlnode_get_next<a> (pfhd | p)
     prval (pfat, fpfhd) = dlnode_v_takeout_val {a} (pfhd)
     val () = f (pfv | !p, env)
-    prval () = pfhd := fpfhd {a?} (pfat)
+    prval pfhd = fpfhd {a?} (pfat)
     val () = dlnode_free<a> (pfhd | p)
+    val () = loop0 (pfv, pf1 | pr, f, env)
+    val () = loop1 (pfv, pf2 | nx, f, env)
   in
-    loop0 (pfv, pf1 | pr, f, env);
-    loop1 (pfv, pf2 | nx, f, env)
+    // nothing
   end else let
-    val (pf | p) = dlist_decode {a} (xs) // casting
+    prval (pf | ()) =
+      dlist_unfold {a} (xs)
+    // end of [prval]
+    prval () = cleanup_top {ptr} (xs)
     prval dlist_v_nil () = pf
   in
     (*empty*)
@@ -424,7 +438,7 @@ end // end of [dlist_free_funenv]
 
 implement{a}
 dlist_free_fun
-  (xs, f) = let
+  (xs, f) = () where {
   val f = coerce (f) where {
     extern castfn coerce
       (f: (&a >> a?) -<fun> void):<> (!unit_v | &a >> a?, !ptr) -<fun> void
@@ -432,13 +446,11 @@ dlist_free_fun
   prval pf = unit_v ()
   val () = dlist_free_funenv<a> {..} {ptr} (pf | xs, f, null)
   prval unit_v () = pf
-in
-  ()
-end // end of [dlist_free_fun]
+} // end of [dlist_free_fun]
 
 implement{a}
 dlist_free_vclo {v}
-  (pf1 | xs, f) = let
+  (pf1 | xs, f) = () where {
   viewtypedef clo_t = (!v | &a >> a?) -<clo> void
   stavar l_f: addr; val p_f: ptr l_f = &f
   viewdef V = (v, clo_t @ l_f)
@@ -453,9 +465,48 @@ dlist_free_vclo {v}
   val () = dlist_free_funenv<a> {V} {ptr l_f} (pf | xs, app, p_f)
   prval () = pf1 := pf.0
   prval () = view@ f := pf.1
-in
-  ()
-end // end of [dlist_free_vclo]
+} // end of [dlist_free_vclo]
+
+(* ****** ****** *)
+
+implement{a}
+dlist_appfst_funenv
+  (pfv | xs, f, env) = () where {
+  prval (pf | ()) = dlist_unfold {a} (xs)
+  val p = p2p (xs)
+  prval dlist_v_cons (pf1, dcons (pfhd, pf2)) = pf
+  prval (pfat, fpfhd) = dlnode_v_takeout_val {a} (pfhd)
+  val () = f (pfv | !p, env)
+  prval pfhd = fpfhd {a} (pfat)
+  prval pf = dlist_v_cons (pf1, dcons (pfhd, pf2))
+  prval () = dlist_fold {a} (pf | xs)
+} // end of [dlist_appfst_funenv]
+
+implement{a}
+dlist_appfst_fun
+  (xs, f) = () where {
+  prval (pf | ()) = dlist_unfold {a} (xs)
+  val p = p2p (xs)
+  prval dlist_v_cons (pf1, dcons (pfhd, pf2)) = pf
+  prval (pfat, fpfhd) = dlnode_v_takeout_val {a} (pfhd)
+  val () = f (!p)
+  prval pfhd = fpfhd {a} (pfat)
+  prval pf = dlist_v_cons (pf1, dcons (pfhd, pf2))
+  prval () = dlist_fold {a} (pf | xs)
+} // end of [dlist_appfst_fun]
+
+implement{a}
+dlist_appfst_vclo
+  (pfv | xs, f) = () where {
+  prval (pf | ()) = dlist_unfold {a} (xs)
+  val p = p2p (xs)
+  prval dlist_v_cons (pf1, dcons (pfhd, pf2)) = pf
+  prval (pfat, fpfhd) = dlnode_v_takeout_val {a} (pfhd)
+  val () = f (pfv | !p)
+  prval pfhd = fpfhd {a} (pfat)
+  prval pf = dlist_v_cons (pf1, dcons (pfhd, pf2))
+  prval () = dlist_fold {a} (pf | xs)
+} // end of [dlist_appfst_fun]
 
 (* ****** ****** *)
 

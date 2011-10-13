@@ -211,28 +211,28 @@ fun dlist_is_cons
 
 fun{a:vt0p}
 dlist_is_at_end
-  {nf:nat;nr:pos} (
+  {nf,nr:int | nr > 0} (
   xs: !dlist (a, nf, nr)
 ) :<> bool (nr <= 1)
 // end of [dlist_is_at_end]
 
 fun{a:vt0p}
 dlist_isnot_at_end
-  {nf:nat;nr:pos} (
+  {nf,nr:int | nr > 0} (
   xs: !dlist (a, nf, nr)
 ) :<> bool (nr > 1)
 // end of [dlist_isnot_at_end]
 
 fun{a:vt0p}
 dlist_is_at_beg
-  {nf:nat;nr:pos} (
+  {nf,nr:int | nr > 0} (
   xs: !dlist (a, nf, nr)
-) :<> bool (nf == 0)
+) :<> bool (nf <= 0)
 // end of [dlist_is_at_beg]
 
 fun{a:vt0p}
 dlist_isnot_at_beg
-  {nf:nat;nr:pos} (
+  {nf,nr:int | nr > 0} (
   xs: !dlist (a, nf, nr)
 ) :<> bool (nf > 0)
 // end of [dlist_isnot_at_beg]
@@ -248,26 +248,6 @@ dlist_sing {l,lp,ln:addr} (
 | p: ptr l
 ) :<> dlist (a, 0, 1) // end of [dlist_sing]
 
-(* ****** ****** *)
-
-fun{a:vt0p}
-dlist_insert_after
-  {nf:nat;nr:pos} {l1,lp,ln:addr} (
-  pfnod: dlnode_v (a, l1, lp, ln)
-| p1: ptr l1
-, xs: &dlist (a, nf, nr) >> dlist (a, nf, nr+1)
-) :<> void // end of [dlist_insert_after]
-
-fun{a:vt0p}
-dlist_insert_before
-  {nf:nat;nr:pos} {l1,lp,ln:addr} (
-  pfnod: dlnode_v (a, l1, lp, ln)
-| p1: ptr l1
-, xs: &dlist (a, nf, nr) >> dlist (a, nf+1, nr)
-) :<> void // end of [dlist_insert_before]
-
-(* ******** ******* *)
-
 fun{a:vt0p}
 dlist_cons
   {nf,nr:int} {l1,lp,ln:addr} (
@@ -278,7 +258,28 @@ dlist_cons
 (* ******** ******* *)
 
 fun{a:vt0p}
-dlist_remove {nf:nat;nr:pos} (
+dlist_insert_after
+  {nf,nr:int | nr > 0}
+  {l1,lp,ln:addr} (
+  pfnod: dlnode_v (a, l1, lp, ln)
+| p1: ptr l1
+, xs: !dlist (a, nf, nr) >> dlist (a, nf, nr+1)
+) :<> void // end of [dlist_insert_after]
+
+fun{a:vt0p}
+dlist_insert_before
+  {nf,nr:int | nr > 0}
+  {l1,lp,ln:addr} (
+  pfnod: dlnode_v (a, l1, lp, ln)
+| p1: ptr l1
+, xs: !dlist (a, nf, nr) >> dlist (a, nf+1, nr)
+) :<> void // end of [dlist_insert_before]
+
+(* ******** ******* *)
+
+fun{a:vt0p}
+dlist_remove
+ {nf,nr:int | nr > 0} (
  xs: &dlist (a, nf, nr) >> dlist (a, nf', nr')
 ) :<> #[nf',nr':nat | nf'+nr' == nf+nr-1] [l1,lp,ln:addr] (
   dlnode_v (a, l1, lp, ln) | ptr l1
@@ -288,39 +289,64 @@ dlist_remove {nf:nat;nr:pos} (
 
 fun{a:vt0p}
 dlist_move_forward
-  {nf:nat;nr:nat | nr >= 2} (
-  xs: &dlist (a, nf, nr) >> dlist (a, nf+1, nr-1)
-) :<> void // end of [dlist_move_forward]
+  {nf,nr:int | nr >= 2}
+  (xs: dlist (a, nf, nr)):<> dlist (a, nf+1, nr-1)
+// end of [dlist_move_forward]
 
 fun{a:vt0p}
 dlist_move_backward
-  {nf:pos;nr:int} {l1:addr} (
-  xs: &dlist (a, nf, nr) >> dlist (a, nf-1, nr+1)
-) :<> void // end of [dlist_move_backward]
+  {nf,nr:int | nf > 0}
+  (xs: dlist (a, nf, nr)):<> dlist (a, nf-1, nr+1)
+// end of [dlist_move_backward]
 
 (* ******** ******* *)
 
 fun{a:t0p}
-dlist_free {nf,nr:nat} (
+dlist_free {nf,nr:int} (
   xs: dlist (a, nf, nr)
 ) :<> void // end of [dlist_free]
 
 fun{a:vt0p}
-dlist_free_funenv {v:view} {vt:viewtype} {nf,nr:nat} (
+dlist_free_funenv
+  {v:view} {vt:viewtype} {nf,nr:int} (
   pfv: !v
 | xs: dlist (a, nf, nr), f: (!v | &a >> a?, !vt) -<fun> void
 , env: !vt
 ) :<> void // end of [dlist_free_funenv]
 
 fun{a:vt0p}
-dlist_free_fun {nf,nr:nat} (
+dlist_free_fun {nf,nr:int} (
   xs: dlist (a, nf, nr), f: (&a >> a?) -<fun> void
 ) :<> void // end of [dlist_free_fun]
 
 fun{a:vt0p}
-dlist_free_vclo {v:view} {nf,nr:nat} (
+dlist_free_vclo {v:view} {nf,nr:int} (
   pfv: !v | xs: dlist (a, nf, nr), f: &(!v | &a >> a?) -<clo> void
 ) :<> void // end of [dlist_free_vclo]
+
+(* ******** ******* *)
+
+fun{a:vt0p}
+dlist_appfst_funenv
+  {v:view}
+  {vt:viewtype}
+  {nf,nr:int | nr > 0} (
+  pfv: !v
+| xs: !dlist (a, nf, nr), f: (!v | &a, !vt) -<fun> void
+, env: !vt
+) :<> void // end of [dlist_appfst_funenv]
+
+fun{a:vt0p}
+dlist_appfst_fun
+  {nf,nr:int | nr > 0} (
+  xs: !dlist (a, nf, nr), f: (&a) -<fun> void
+) :<> void // end of [dlist_appfst_fun]
+
+fun{a:vt0p}
+dlist_appfst_vclo
+  {v:view} {nf,nr:int | nr > 0} (
+  pfv: !v | xs: !dlist (a, nf, nr), f: &(!v | &a) -<clo> void
+) :<> void // end of [dlist_appfst_vclo]
 
 (* ******** ******* *)
 
