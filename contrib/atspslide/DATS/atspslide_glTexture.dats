@@ -34,6 +34,10 @@
 //
 (* ****** ****** *)
 
+staload "libc/SATS/math.sats"
+
+(* ****** ****** *)
+
 staload "contrib/GL/SATS/gl.sats"
 staload "contrib/cairo/SATS/cairo.sats"
 
@@ -207,12 +211,71 @@ fun glTexture_mapout_cylinder
 *)
 implement
 glTexture_mapout_cylinder
+  {i} {d} {n}
   (gltext, wid, hgt, angle, vdir, n) = let
+//
+  val dt = angle / n
+  val angle2 = angle / 2
+//
+  #define EPSILON 1E-2
+  val rad = (
+    if angle >= EPSILON then wid / angle else ~1.0
+  ) : double // end of [val]
+  macdef xeval (t1, n, k1) = 
+    if angle >= EPSILON then
+      rad * sin ,(t1) else wid * (1.0 * ,(k1) / ,(n) - 0.5)
+    // end of [if]
+  macdef zeval (t1, n, k1) =
+    if angle >= EPSILON then
+      rad * (~1.0 + cos ,(t1)) else wid * (~square (1.0 * ,(k1) / ,(n) - 0.5) * angle2)
+    // end of [if]
+//
+  fun loop
+    {k:nat | k <= n} .<n-k>. (
+    x0: double
+  , y0: double
+  , z0: double
+  , t0: double, k0: int k
+  ) :<cloref1> void =
+    if k0 < n then let
+      val k1 = k0 + 1
+      val t1 = t0 + dt
+      val x1 = xeval (t1, n, k1)
+      val y1 = y0
+      val z1 = zeval (t1, n, k1)
+      val r0 = 1.0 * k0 / n
+      val r1 = 1.0 * k1 / n
+//
+      val lower = vdir and upper = 1-vdir
+//
+      val () = glTexCoord2d (r0, 0.0)
+      val () = glVertex3d (x0, y0+lower*hgt, z0)
+      val () = glTexCoord2d (r0, 1.0)
+      val () = glVertex3d (x0, y0+upper*hgt, z0)
+      val () = glTexCoord2d (r1, 1.0)
+      val () = glVertex3d (x1, y1+upper*hgt, z1)
+      val () = glTexCoord2d (r1, 0.0)
+      val () = glVertex3d (x1, y1+lower*hgt, z1)
+    in
+      loop (x1, y1, z1, t1, k1)
+    end // end of [if]
+//
+  val t0 = ~angle2
+  val x0 = xeval (t0, n, 0)
+  val y0 = ~hgt / 2
+  val z0 = zeval (t0, n, 0)
 //
   val () = glBindTexture (GL_TEXTURE_2D, gltext)
 //
+  val () = glEnable (GL_TEXTURE_2D)
+  val () = glTexEnvi
+    (GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, (GLint)GL_REPLACE)
+  val (pfbeg | ()) = glBegin (GL_QUADS)
+  val () = loop (x0, y0, z0, t0, 0)
+  val () = glEnd (pfbeg | (*none*))
+  val () = glDisable (GL_TEXTURE_2D)
 in
-  assert_prerrf_bool (false, "%s: glTexture_mapout_cylinder", @(#LOCATION))
+  // nothing
 end // end of [glTexture_mapout_cylinder]
 
 (* ****** ****** *)

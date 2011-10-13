@@ -82,29 +82,37 @@ fun glTexture_make_cairo_ref {l:agz}
 
 (* ****** ****** *)
 //
-// HX: vdir=0/1:up/down
+// HX:
+// vdir=0/1:up/down
+// the lower left corner of the rectangle (in the xy-plane)
+// is at (0, 0, 0)
 //
 fun glTexture_mapout_rect {i:int} {d:two} (
   texture: !GLtexture(i), width: double, height: double, vdir: int(d)
 ) : void // end of [glTexture_mapout_rect]
 //
-// HX: front(1), right(2), back(3), left(4), top(5) and bottom(6)
+// HX:
+// front(1), right(2), back(3), left(4), top(5) and bottom(6)
+// the lower left corner of the rectanglular solid is at (0, 0, 0)
 //
-fun glTexture_mapout_rect12
+fun
+glTexture_mapout_rect12
   {i1,i2:int} {d:two} (
   texture1: !GLtexture(i1)
 , texture2: !GLtexture(i2)
 , width: double, height: double, vdir: int(d)
 ) : void // end of [glTexture_mapout_rect12]
 
-fun glTexture_mapout_rect14
+fun
+glTexture_mapout_rect14
   {i1,i2:int} {d:two} (
   texture1: !GLtexture(i1)
 , texture2: !GLtexture(i2)
 , width: double, height: double, vdir: int(d)
 ) : void // end of [glTexture_mapout_rect14]
 
-fun glTexture_mapout_rect15
+fun
+glTexture_mapout_rect15
   {i1,i2:int} {d:two} (
   texture1: !GLtexture(i1)
 , texture2: !GLtexture(i2)
@@ -122,10 +130,11 @@ fun glTexture_mapout_rect16
 //
 // HX-2011-10-12:
 // vdir=0/1:up/down
-// angle: goes from 0 to PI
+// the front center of the cylinder is at (0, 0, 0)
+// angle: goes from 0 to 2*PI
 // if angle = 0, this is the same as glTexture_mapout_rect
-// if angle = PI/2, then the front half of the cylinder is covered
-// if angle = PI, then the whole cylinder is covered
+// if angle = PI, then the front half of the cylinder is covered
+// if angle = 2*PI, then the whole cylinder is covered
 //
 fun glTexture_mapout_cylinder
   {i:int} {d:two} {n:pos} (
