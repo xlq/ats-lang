@@ -314,7 +314,7 @@ implement initialize () = let
 (*
   val () = glOrtho (~1.0*ratio, 1.0*ratio, ~1.0*ratio, 1.0*ratio, 1.0, 10.0)
 *)
-  val () = glFrustum (~1.0*ratio, 1.0*ratio, ~1.0*ratio, 1.0*ratio, 9.0, 10.0)
+  val () = glFrustum (~1.0*ratio, 1.0*ratio, ~1.0*ratio, 1.0*ratio, 9.0, 12.0)
   val () = glMatrixMode (GL_MODELVIEW)
   val () = glLoadIdentity ()
   val () = gluLookAt (0.0, 0.0, 10.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0)
