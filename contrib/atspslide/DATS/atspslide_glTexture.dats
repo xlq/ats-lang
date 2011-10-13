@@ -198,4 +198,23 @@ end // end of [glTexture_mapout_rect16]
 
 (* ****** ****** *)
 
+(*
+fun glTexture_mapout_cylinder
+  {i:int} {d:two} {n:pos} (
+  texture: !GLtexture(i)
+, width: double, height: double, angle: double, vdir: int(d), nslice: int(n)
+) : void // end of [glTexture_mapout_cylinder]
+*)
+implement
+glTexture_mapout_cylinder
+  (gltext, wid, hgt, angle, vdir, n) = let
+//
+  val () = glBindTexture (GL_TEXTURE_2D, gltext)
+//
+in
+  assert_prerrf_bool (false, "%s: glTexture_mapout_cylinder", @(#LOCATION))
+end // end of [glTexture_mapout_cylinder]
+
+(* ****** ****** *)
+
 (* end of [atspslide_glTexture.dats] *)
