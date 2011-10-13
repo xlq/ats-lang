@@ -13,8 +13,8 @@ staload UN = "prelude/SATS/unsafe.sats"
 
 (* ****** ****** *)
 
-staload "libats/ngc/SATS/slist.sats"
-staload _(*anon*) = "libats/ngc/DATS/slist.dats"
+staload "libats/ngc/SATS/dlist.sats"
+staload _(*anon*) = "libats/ngc/DATS/dlist.dats"
 
 (* ****** ****** *)
 
@@ -24,6 +24,7 @@ struct {
   char *name ;
   int age ;
   int sex ;
+  void *prev ;
   void *next ;
 } person_struct ;
 
@@ -34,6 +35,20 @@ person_alloc () {
 
 ats_void_type
 person_free (ats_ptr_type p) { return ATS_FREE(p) ; }
+
+ats_ptr_type
+person_get_prev (
+  ats_ptr_type x
+) {
+  return ((person_struct*)x)->prev ;
+} // end of [person_get_prev]
+
+ats_void_type
+person_set_prev (
+  ats_ptr_type x, ats_ptr_type p
+) {
+  ((person_struct*)x)->prev = p ; return ;
+} // end of [person_set_prev]
 
 ats_ptr_type
 person_get_next (
@@ -59,33 +74,44 @@ $extype_struct
   name= strptr1, age= int, sex= int
 } // end of [person]
 
-viewtypedef personlst (n:int) = slist (person, n)
+viewtypedef
+personlst (nf:int, nr:int) = dlist (person, nf, nr)
 
 (* ****** ****** *)
 
 extern
 fun person_alloc
-  : slnode_alloc_type (person) = "person_alloc"
-implement slnode_alloc<person> () = person_alloc ()
+  : dlnode_alloc_type (person) = "person_alloc"
+implement dlnode_alloc<person> () = person_alloc ()
 
 (* ****** ****** *)
 
 extern
 fun person_free
-  : slnode_free_type (person) = "person_free"
-implement slnode_free<person> (pf | x) = person_free (pf | x)
+  : dlnode_free_type (person) = "person_free"
+implement dlnode_free<person> (pf | x) = person_free (pf | x)
 
 (* ****** ****** *)
 
 extern
+fun person_get_prev
+  : dlnode_get_prev_type (person) = "person_get_prev"
+implement dlnode_get_prev<person> (pf | x) = person_get_prev (pf | x)
+
+extern
+fun person_set_prev
+  : dlnode_set_prev_type (person) = "person_set_prev"
+implement dlnode_set_prev<person> (pf | x, p) = person_set_prev (pf | x, p)
+
+extern
 fun person_get_next
-  : slnode_get_next_type (person) = "person_get_next"
-implement slnode_get_next<person> (pf | x) = person_get_next (pf | x)
+  : dlnode_get_next_type (person) = "person_get_next"
+implement dlnode_get_next<person> (pf | x) = person_get_next (pf | x)
 
 extern
 fun person_set_next
-  : slnode_set_next_type (person) = "person_set_next"
-implement slnode_set_next<person> (pf | x, p) = person_set_next (pf | x, p)
+  : dlnode_set_next_type (person) = "person_set_next"
+implement dlnode_set_next<person> (pf | x, p) = person_set_next (pf | x, p)
 
 (* ****** ****** *)
 
@@ -94,7 +120,7 @@ staload "libc/SATS/random.sats"
 (* ****** ****** *)
 
 fun personlst_randgen {n:nat}
-  (n: int n): personlst (n) = let
+  (n: int n): personlst (0, n) = let
   viewtypedef a = person
 in
   if n > 0 then let
@@ -102,7 +128,7 @@ in
     val (pfopt | p) = person_alloc ()
     val () = assertloc (p > null)
     prval Some_v (pfnod) = pfopt
-    prval (pfat, fpfnod) = slnode_v_takeout_val {a?} (pfnod)
+    prval (pfat, fpfnod) = dlnode_v_takeout_val {a?} (pfnod)
 //
     val id = randint (10)
     val () = p->name := sprintf ("XYZ-%1d", @(id))
@@ -113,8 +139,8 @@ in
 //
     val xs = personlst_randgen (n-1)
   in
-    slist_cons<person> (pfnod | p, xs)
-  end else slist_nil ()
+    dlist_cons<person> (pfnod | p, xs)
+  end else dlist_nil ()
 end // end of [personlst_randgen]
 
 (* ****** ****** *)
@@ -126,29 +152,11 @@ main () = () where {
 //
   #define N 5
   val xs1 = personlst_randgen (N)
-  val xs2 = personlst_randgen (N)
-  val xs = slist_append<person> (xs1, xs2)
-  val n = slist_length<person> (xs)
-  val () = println! ("n = ", n)
-  val () = assertloc ( n = N+N )
 //
-  val () = slist_foreach_fun<person> (xs
-  , lam (x) => $effmask_all (
-      printf ("%s(age=%i,sex=%i)\n", @($UN.castvwtp1 {string} (x.name), x.age, x.sex))
-    )
-  ) // end of [val]
-//
-  val xs = slist_reverse<person> (xs)
-  val () = slist_foreach_fun<person> (xs
-  , lam (x) => $effmask_all (
-      printf ("%s(age=%i,sex=%i)\n", @($UN.castvwtp1 {string} (x.name), x.age, x.sex))
-    )
-  ) // end of [val]
-//
-  val () = slist_free_fun<person> (xs, lam (x) => strptr_free (x.name))
+  val () = dlist_free_fun<person> (xs1, lam (x) => strptr_free (x.name))
 //
 } // end of [main]
 
 (* ****** ****** *)
 
-(* end of [libats_ngc_slist.dats] *)
+(* end of [libats_ngc_dlist.dats] *)

@@ -343,6 +343,11 @@ libats_ngc_slist: libats_ngc_slist.dats
 	$(ATSCC) -O2 -o $@ $< && ./$@
 cleanall:: ; $(RMF) libats_ngc_slist
 
+checkall:: libats_ngc_dlist
+libats_ngc_dlist: libats_ngc_dlist.dats
+	$(ATSCC) -O2 -o $@ $< && ./$@
+cleanall:: ; $(RMF) libats_ngc_dlist
+
 ######
 
 checkall:: libats_smlbas_array
