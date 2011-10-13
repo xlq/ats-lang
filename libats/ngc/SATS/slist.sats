@@ -112,12 +112,12 @@ viewdef slist_v
 
 (* ****** ****** *)
 
-fun slist_is_nil
+fun slist_ptr_is_nil
   {a:vt0p} {n:int} {l:addr} (
   pf: !slist_v (a, n, l) | p: ptr l
 ) :<> bool (n==0) = "atspre_ptr_is_null"
 
-fun slist_is_cons
+fun slist_ptr_is_cons
   {a:vt0p} {n:int} {l:addr} (
   pf: !slist_v (a, n, l) | p: ptr l
 ) :<> bool (n > 0) = "atspre_ptr_isnot_null"
