@@ -120,18 +120,27 @@ glTexture_mapout_rect
   val () = glTexEnvi
     (GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, (GLint)GL_REPLACE)
   val (pfbeg | ()) = glBegin (GL_QUADS)
-  val () = glTexCoord2d (0.0, 0.0)
-  val lower = vdir and upper = 1-vdir
-  val () = glVertex2d (0.0, lower * hgt)
 //
-  val () = glTexCoord2d (0.0, 1.0)
-  val () = glVertex2d (0.0, upper * hgt)
-//
-  val () = glTexCoord2d (1.0, 1.0)
-  val () = glVertex2d (wid, upper * hgt)
-//
-  val () = glTexCoord2d (1.0, 0.0)
-  val () = glVertex2d (wid, lower * hgt)
+  val () = if (vdir = 0) then {
+    val () = glTexCoord2d (0.0, 0.0)
+    val () = glVertex2d (0.0, 0.0)
+    val () = glTexCoord2d (1.0, 0.0)
+    val () = glVertex2d (wid, 0.0)
+    val () = glTexCoord2d (1.0, 1.0)
+    val () = glVertex2d (wid, hgt)
+    val () = glTexCoord2d (0.0, 1.0)
+    val () = glVertex2d (0.0, hgt)
+  } // end of [val]
+  val () = if (vdir > 0) then {
+    val () = glTexCoord2d (0.0, 0.0)
+    val () = glVertex2d (0.0, hgt)
+    val () = glTexCoord2d (0.0, 1.0)
+    val () = glVertex2d (0.0, 0.0)
+    val () = glTexCoord2d (1.0, 1.0)
+    val () = glVertex2d (wid, 0.0)
+    val () = glTexCoord2d (1.0, 0.0)
+    val () = glVertex2d (wid, hgt)
+  } // end of [val]
 //
   val () = glEnd (pfbeg | (*none*))
   val () = glDisable (GL_TEXTURE_2D)
@@ -202,20 +211,13 @@ end // end of [glTexture_mapout_rect16]
 
 (* ****** ****** *)
 
-(*
-fun glTexture_mapout_cylinder
-  {i:int} {d:two} {n:pos} (
-  texture: !GLtexture(i)
-, width: double, height: double, angle: double, vdir: int(d), nslice: int(n)
-) : void // end of [glTexture_mapout_cylinder]
-*)
 implement
-glTexture_mapout_cylinder
+glTexture_mapout_cylinder_vert
   {i} {d} {n}
   (gltext, wid, hgt, angle, vdir, n) = let
 //
-  val dt = angle / n
   val angle2 = angle / 2
+  val t0 = ~angle2 and dt = angle / n
 //
   #define EPSILON 1E-2 // HX: small enough
   val rad = (
@@ -246,21 +248,30 @@ glTexture_mapout_cylinder
       val r0 = 1.0 * k0 / n
       val r1 = 1.0 * k1 / n
 //
-      val lower = vdir and upper = 1-vdir
-//
-      val () = glTexCoord2d (r0, 0.0)
-      val () = glVertex3d (x0, y0+lower*hgt, z0)
-      val () = glTexCoord2d (r0, 1.0)
-      val () = glVertex3d (x0, y0+upper*hgt, z0)
-      val () = glTexCoord2d (r1, 1.0)
-      val () = glVertex3d (x1, y1+upper*hgt, z1)
-      val () = glTexCoord2d (r1, 0.0)
-      val () = glVertex3d (x1, y1+lower*hgt, z1)
+      val () = if vdir = 0 then {
+        val () = glTexCoord2d (r0, 0.0)
+        val () = glVertex3d (x0, y0, z0)
+        val () = glTexCoord2d (r1, 0.0)
+        val () = glVertex3d (x1, y1, z1)
+        val () = glTexCoord2d (r1, 1.0)
+        val () = glVertex3d (x1, y1+hgt, z1)
+        val () = glTexCoord2d (r0, 1.0)
+        val () = glVertex3d (x0, y0+hgt, z0)
+      } // end of [val]
+      val () = if vdir > 0 then {
+        val () = glTexCoord2d (r0, 0.0)
+        val () = glVertex3d (x0, y0+hgt, z0)
+        val () = glTexCoord2d (r0, 1.0)
+        val () = glVertex3d (x0, y0, z0)
+        val () = glTexCoord2d (r1, 1.0)
+        val () = glVertex3d (x1, y1, z1)
+        val () = glTexCoord2d (r1, 0.0)
+        val () = glVertex3d (x1, y1+hgt, z1)
+      } // end of [val]
     in
       loop (x1, y1, z1, t1, k1)
     end // end of [if]
 //
-  val t0 = ~angle2
   val x0 = xeval (t0, n, 0)
   val y0 = ~hgt / 2
   val z0 = zeval (t0, n, 0)
@@ -276,7 +287,89 @@ glTexture_mapout_cylinder
   val () = glDisable (GL_TEXTURE_2D)
 in
   // nothing
-end // end of [glTexture_mapout_cylinder]
+end // end of [glTexture_mapout_cylinder_vert]
+
+(* ****** ****** *)
+
+implement
+glTexture_mapout_cylinder_hori
+  {i} {d} {n}
+  (gltext, wid, hgt, angle, vdir, n) = let
+//
+  val angle2 = angle / 2
+  val (t0, dt) = (
+    if vdir = 0 then (~angle2, angle/n) else (angle2, ~angle/n)
+  ) : (double, double)
+//
+  #define EPSILON 1E-2 // HX: small enough
+  val rad = (
+    if angle >= EPSILON then hgt / angle else ~1.0
+  ) : double // end of [val]
+  macdef yeval (t1, n, k1) = 
+    if angle >= EPSILON then
+      rad * sin ,(t1) else hgt * (1.0 * ,(k1) / ,(n) - 0.5)
+    // end of [if]
+  macdef zeval (t1, n, k1) =
+    if angle >= EPSILON then
+      rad * (~1.0 + cos ,(t1)) else hgt * (~square (1.0 * ,(k1) / ,(n) - 0.5) * angle2)
+    // end of [if]
+//
+  fun loop
+    {k:nat | k <= n} .<n-k>. (
+    x0: double
+  , y0: double
+  , z0: double
+  , t0: double, k0: int k
+  ) :<cloref1> void =
+    if k0 < n then let
+      val k1 = k0 + 1
+      val t1 = t0 + dt
+      val x1 = x0
+      val y1 = yeval (t1, n, k1)
+      val z1 = zeval (t1, n, k1)
+      val r0 = 1.0 * k0 / n
+      val r1 = 1.0 * k1 / n
+//
+      val () = if (vdir = 0) then {
+        val () = glTexCoord2d (0.0, r0)
+        val () = glVertex3d (x0, y0, z0)
+        val () = glTexCoord2d (1.0, r0)
+        val () = glVertex3d (x1+wid, y0, z0)
+        val () = glTexCoord2d (1.0, r1)
+        val () = glVertex3d (x1+wid, y1, z1)
+        val () = glTexCoord2d (0.0, r1)
+        val () = glVertex3d (x0, y1, z1)
+      }
+      val () = if (vdir > 0) then {
+        val () = glTexCoord2d (0.0, r0)
+        val () = glVertex3d (x0, y0, z0)
+        val () = glTexCoord2d (0.0, r1)
+        val () = glVertex3d (x0, y1, z1)
+        val () = glTexCoord2d (1.0, r1)
+        val () = glVertex3d (x1+wid, y1, z1)
+        val () = glTexCoord2d (1.0, r0)
+        val () = glVertex3d (x1+wid, y0, z0)
+      } // end of [val]
+    in
+      loop (x1, y1, z1, t1, k1)
+    end // end of [if]
+//
+  val x0 = ~wid / 2
+  val y0 = yeval (t0, n, 0)
+  val z0 = zeval (t0, n, 0)
+//
+  val () = glBindTexture (GL_TEXTURE_2D, gltext)
+//
+  val () = glEnable (GL_TEXTURE_2D)
+  val () = glTexEnvi
+    (GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, (GLint)GL_REPLACE)
+  val (pfbeg | ()) = glBegin (GL_QUADS)
+  val () = loop (x0, y0, z0, t0, 0)
+  val () = glEnd (pfbeg | (*none*))
+  val () = glDisable (GL_TEXTURE_2D)
+in
+  // nothing
+end // end of [glTexture_mapout_cylinder_hori]
 
 (* ****** ****** *)
 

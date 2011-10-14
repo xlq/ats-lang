@@ -496,19 +496,32 @@ fun fexpose_cylindrot
   val () = glClear (GL_COLOR_BUFFER_BIT)
   val () = glColor3d (0.0, 0.0, 0.0) // black color
 //
+  val vert = !theRotateknd_ref; val hori = 1 - vert
+//
   val (pfmat | ()) = glPushMatrix ()
-  val rad = 1/PI
+//
   val () = glEnable (GL_CULL_FACE)
   val () = glCullFace (GL_BACK) // HX: prevent transparency!
   val () = () where {
     val alpha = !theAlpha_ref
-    val () = glRotated (~alpha, 0.0, 1.0, 0.0)
+    val () = if vert > 0 then glRotated (~alpha, 0.0, 1.0, 0.0)
+    val () = if hori > 0 then glRotated (~alpha, 1.0, 0.0, 0.0)
   } // end of [val]
+  val rad = 1/PI
   val () = glTranslated (0.0, 0.0, rad)
-  val () = glTexture_mapout_cylinder (gltext1, 1.0, 1.0, PI, 1(*down*), 64(*nslide*))
+  val () = if vert > 0 then
+    glTexture_mapout_cylinder_vert (gltext1, 1.0, 1.0, PI, 1(*down*), 32(*nslide*))
+  val () = if hori > 0 then
+    glTexture_mapout_cylinder_hori (gltext1, 1.0, 1.0, PI, 1(*down*), 32(*nslide*))
   val () = glTranslated (0.0, 0.0, ~2*rad)
-  val () = glRotated (180.0, 0.0, 1.0, 0.0)
-  val () = glTexture_mapout_cylinder (gltext2, 1.0, 1.0, PI, 1(*down*), 64(*nslide*))
+  val () = if vert > 0 then {
+    val () = glRotated (180.0, 0.0, 1.0, 0.0)
+    val ()=  glTexture_mapout_cylinder_vert (gltext2, 1.0, 1.0, PI, 1(*down*), 32(*nslide*))
+  } // end of [val]
+  val () = if hori > 0 then {
+    val () = glRotated (180.0, 1.0, 0.0, 0.0)
+    val () = glTexture_mapout_cylinder_hori (gltext2, 1.0, 1.0, PI, 1(*down*), 32(*nslide*))
+  } // end of [val]
   val () = glDisable (GL_CULL_FACE)
 //
   val () = glPopMatrix (pfmat | (*none*))

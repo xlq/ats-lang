@@ -93,7 +93,8 @@ fun glTexture_mapout_rect {i:int} {d:two} (
 //
 // HX:
 // front(1), right(2), back(3), left(4), top(5) and bottom(6)
-// the lower left corner of the rectanglular solid is at (0, 0, 0)
+// the front lower left corner of the rectanglular solid is at
+// (0, 0, 0)
 //
 fun
 glTexture_mapout_rect12
@@ -130,17 +131,33 @@ fun glTexture_mapout_rect16
 //
 // HX-2011-10-12:
 // vdir=0/1:up/down
+// the cylinder is positioned vertically
 // the front center of the cylinder is at (0, 0, 0)
 // angle: goes from 0 to 2*PI
 // if angle = 0, this is the same as glTexture_mapout_rect
 // if angle = PI, then the front half of the cylinder is covered
 // if angle = 2*PI, then the whole cylinder is covered
 //
-fun glTexture_mapout_cylinder
+fun glTexture_mapout_cylinder_vert
   {i:int} {d:two} {n:pos} (
   texture: !GLtexture(i)
 , width: double, height: double, angle: double, vdir: int(d), nslice: int(n)
-) : void // end of [glTexture_mapout_cylinder]
+) : void // end of [glTexture_mapout_cylinder_vert]
+//
+// HX:
+// vdir=0/1:up/down
+// the cylinder is positioned horizontally
+// the front center of the cylinder is at (0, 0, 0)
+// angle: goes from 0 to 2*PI
+// if angle = 0, this is the same as glTexture_mapout_rect
+// if angle = PI, then the front half of the cylinder is covered
+// if angle = 2*PI, then the whole cylinder is covered
+//
+fun glTexture_mapout_cylinder_hori
+  {i:int} {d:two} {n:pos} (
+  texture: !GLtexture(i)
+, width: double, height: double, angle: double, vdir: int(d), nslice: int(n)
+) : void // end of [glTexture_mapout_cylinder_hori]
 
 (* ****** ****** *)
 
