@@ -1,6 +1,6 @@
 (*
 **
-** A simple OpenGL example
+** A tool for presenting slides
 **
 ** Author: Hongwei Xi (hwxi AT cs DOT bu DOT edu)
 ** Time: Summer, 2008 // originally done
