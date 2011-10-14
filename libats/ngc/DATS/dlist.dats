@@ -133,6 +133,8 @@ dlist_isnot_at_beg {nf,nr} (xs) = ~dlist_is_at_beg<a> (xs)
 implement{a}
 dlist_nil () = dlist_encode (dlist_v_nil () | null)
 
+(* ****** ****** *)
+
 implement{a}
 dlist_sing {l,lp,ln} (
   pfnod
@@ -143,32 +145,64 @@ dlist_sing {l,lp,ln} (
   dlist_encode (dlist_v_cons (rnil (), dcons (pfnod, dnil ())) | p)
 ) // end of [dlist_sing]
 
+(* ****** ****** *)
+
 implement{a}
-dlist_cons {nf,nr}
+dlist_cons {nr}
   (pfnod | p, xs) = let
   val () = dlnode_set_prev<a> (pfnod | p, null)
   val (pflst | p_xs) = dlist_decode {a} (xs)
   val () = dlnode_set_next<a> (pfnod | p, p_xs)
 in
-  if p_xs > null then let
-    prval dlist_v_cons (pf1lst, pf2lst) = pflst
-    prval rdlseg_v_nil () = pf1lst
-    prval dlseg_v_cons (pf2nod, pf2lst) = pf2lst
-    val () = dlnode_set_prev<a> (pf2nod | p_xs, p)
-    prval pf2lst = dlseg_v_cons (pf2nod, pf2lst)
-    prval pflst = dlist_v_cons (rdlseg_v_nil (), dlseg_v_cons {a} (pfnod, pf2lst))
-  in
-    dlist_encode (pflst | p)
-  end else let
-    prval () = __assert () where {
-      extern prfun __assert (): [nr <= 0] void
-    } // end of [where]
-    prval dlist_v_nil () = pflst
-    prval pflst = dlist_v_cons (rdlseg_v_nil (), dlseg_v_cons {a} (pfnod, dlseg_v_nil ()))
-  in
-    dlist_encode (pflst | p)
-  end (* end of [if] *)
+//
+if p_xs > null then let
+  prval dlist_v_cons (pf1lst, pf2lst) = pflst
+  prval rdlseg_v_nil () = pf1lst
+  prval dlseg_v_cons (pf2nod, pf2lst) = pf2lst
+  val () = dlnode_set_prev<a> (pf2nod | p_xs, p)
+  prval pf2lst = dlseg_v_cons (pf2nod, pf2lst)
+  prval pflst = dlist_v_cons (rdlseg_v_nil (), dlseg_v_cons {a} (pfnod, pf2lst))
+in
+  dlist_encode (pflst | p)
+end else let
+  prval () = __assert () where {
+    extern prfun __assert (): [nr <= 0] void
+  } // end of [where]
+  prval dlist_v_nil () = pflst
+  prval pflst = dlist_v_cons (rdlseg_v_nil (), dlseg_v_cons {a} (pfnod, dlseg_v_nil ()))
+in
+  dlist_encode (pflst | p)
+end (* end of [if] *)
+//
 end // end of [dlist_cons]
+
+(* ******** ******* *)
+
+implement{a}
+dlist_uncons {nr} (xs) = let
+  val (pf | p_xs) = dlist_decode (xs)
+  val dlist_v_cons (rnil (), dcons (pfhd, pfdl)) = pf
+  val nx = dlnode_get_next<a> (pfhd | p_xs)
+in
+//
+if nx > null then let
+  prval dcons (pf1_at, pf1dl) = pfdl
+  val () = dlnode_set_prev<a> (pf1_at | nx, null)
+  prval pfdl = dcons {a} (pf1_at, pf1dl)
+  val () = xs := dlist_encode (dlist_v_cons (rnil, pfdl) | nx)
+in
+  (pfhd | p_xs)
+end else let
+  prval () = __assert () where {
+    extern prfun __assert (): [nr <= 0] void
+  } // end of [where]
+  prval dnil () = pfdl
+  val () = xs := dlist_encode (dlist_v_nil () | nx)
+in
+  (pfhd | p_xs)
+end (* end of [if] *)
+//
+end // end of [dlist_uncons]
 
 (* ******** ******* *)
 

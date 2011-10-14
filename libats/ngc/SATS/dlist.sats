@@ -248,18 +248,40 @@ dlist_isnot_at_beg
 fun{a:vt0p}
 dlist_nil ():<> dlist (a, 0, 0)
 
+(* ****** ****** *)
+
 fun{a:vt0p}
-dlist_sing {l,lp,ln:addr} (
+dlist_sing
+  {l,lp,ln:addr} (
   pfnod: dlnode_v (a, l, lp, ln)
 | p: ptr l
 ) :<> dlist (a, 0, 1) // end of [dlist_sing]
 
+castfn
+dlist_unsing
+  {a:vt0p} (
+  xs: dlist (a, 0, 1)
+) : [l:addr] (
+  dlnode_v (a, l, null, null) | ptr l
+) // end of [dlist_unsing]
+
+(* ****** ****** *)
+
 fun{a:vt0p}
 dlist_cons
-  {nf,nr:int} {l1,lp,ln:addr} (
+  {nr:int}
+  {l1,lp,ln:addr} (
   pfnod: dlnode_v (a, l1, lp, ln)
 | p1: ptr l1, xs: dlist (a, 0, nr)
 ) : dlist (a, 0, nr+1)
+
+fun{a:vt0p}
+dlist_uncons
+  {nr:pos} (
+  xs: &dlist (a, 0, nr) >> dlist (a, 0, nr-1)
+) : [l,lp,ln:addr] (
+  dlnode_v (a, l, lp, ln) | ptr l
+) // end of [dlist_uncons]
 
 (* ******** ******* *)
 
