@@ -184,26 +184,30 @@ dlist_insert_after
   val () = dlnode_set_next<a> (pfnod | p1, nx)
   val () = dlnode_set_next<a> (pfhd | p2, p1)
 in
-  if nx > null then let
-    prval dcons (pf_at, pf21dl) = pf2dl
-    val () = dlnode_set_prev<a> (pf_at | nx, p1)
-    prval () = pf2dl := dlseg_v_cons {a} (pf_at, pf21dl)
-    prval () = pfdl := dlist_v_cons (pf1dl, dcons (pfhd, dcons (pfnod, pf2dl)))
-    prval () = dlist_fold (pfdl | xs)
-  in
-    // nothing
-  end else let
-    prval () = __assert () where {
-      extern prfun __assert (): [nr <= 0] void
-    } // end of [prval]
-    prval dnil () = pf2dl
-    prval () = pf2dl := dnil {a} ()
-    prval () = pfdl := dlist_v_cons (pf1dl, dcons (pfhd, dcons (pfnod, pf2dl)))
-    prval () = dlist_fold (pfdl | xs)
-  in
-    // nothing
-  end (* end of [if] *)
+//
+if nx > null then let
+  prval dcons (pf_at, pf21dl) = pf2dl
+  val () = dlnode_set_prev<a> (pf_at | nx, p1)
+  prval () = pf2dl := dlseg_v_cons {a} (pf_at, pf21dl)
+  prval pfdl = dlist_v_cons (pf1dl, dcons (pfhd, dcons (pfnod, pf2dl)))
+  prval () = dlist_fold (pfdl | xs)
+in
+  // nothing
+end else let
+  prval () = __assert () where {
+    extern prfun __assert (): [nr <= 1] void
+  } // end of [prval]
+  prval dnil () = pf2dl
+  prval () = pf2dl := dnil {a} ()
+  prval pfdl = dlist_v_cons (pf1dl, dcons (pfhd, dcons (pfnod, pf2dl)))
+  prval () = dlist_fold (pfdl | xs)
+in
+  // nothing
+end (* end of [if] *)
+//
 end // end of [dlist_insert_after]
+
+(* ****** ****** *)
 
 implement{a}
 dlist_insert_before
@@ -217,25 +221,27 @@ dlist_insert_before
   val () = dlnode_set_prev<a> (pfhd | p2, p1)
   val () = dlnode_set_prev<a> (pfnod | p1, pr)
 in
-  if pr > null then let
-    prval rcons (pf11dl, pf_at) = pf1dl
-    val () = dlnode_set_next<a> (pf_at | pr, p1)
-    prval () = pf1dl := rcons {a} (rcons {a} (pf11dl, pf_at), pfnod)
-    prval () = pfdl := dlist_v_cons (pf1dl, dcons {a} (pfhd, pf2dl))
-    prval () = dlist_fold (pfdl | xs)
-  in
-    // nothing
-  end else let
-    prval () = __assert () where {
-      extern prfun __assert (): [nf <= 0] void
-    } // end of [where]
-    prval rdlseg_v_nil () = pf1dl
-    prval () = pf1dl := rdlseg_v_cons {a} (rdlseg_v_nil {a} (), pfnod)
-    prval () = pfdl := dlist_v_cons (pf1dl, dlseg_v_cons {a} (pfhd, pf2dl))
-    prval () = dlist_fold (pfdl | xs)
-  in
-    // nothing
-  end (* end of [if] *)
+//
+if pr > null then let
+  prval rcons (pf11dl, pf_at) = pf1dl
+  val () = dlnode_set_next<a> (pf_at | pr, p1)
+  prval pf1dl = rcons {a} (rcons {a} (pf11dl, pf_at), pfnod)
+  prval pfdl = dlist_v_cons (pf1dl, dcons {a} (pfhd, pf2dl))
+  prval () = dlist_fold (pfdl | xs)
+in
+  // nothing
+end else let
+  prval () = __assert () where {
+    extern prfun __assert (): [nf <= 0] void
+  } // end of [where]
+  prval rdlseg_v_nil () = pf1dl
+  prval pf1dl = rdlseg_v_cons {a} (rdlseg_v_nil {a} (), pfnod)
+  prval pfdl = dlist_v_cons (pf1dl, dlseg_v_cons {a} (pfhd, pf2dl))
+  prval () = dlist_fold (pfdl | xs)
+in
+  // nothing
+end (* end of [if] *)
+//
 end // end of [dlist_insert_before]
 
 (* ******** ******* *)
@@ -246,52 +252,97 @@ dlist_remove {nf,nr} (xs) = let
   prval dlist_v_cons (pf1dl, dlseg_v_cons (pfhd, pf2dl)) = pfdl
   val pr = dlnode_get_prev<a> (pfhd | p1)
   val nx = dlnode_get_next<a> (pfhd | p1)
-  viewtypedef R = [nf',nr':nat | nf'+nr' == nf+nr-1] dlist (a, nf', nr')
+  prval dcons (pf2_at, pf21dl) = pf2dl
+  val () = dlnode_set_prev<a> (pf2_at | nx, pr)
 in
-  if :(xs: R) => nx > null then let
-    prval dcons (pf2_at, pf21dl) = pf2dl
-  in
-    if :(xs: R) => pr > null then let
-      prval rcons (pf11dl, pf1_at) = pf1dl
-      val () = dlnode_set_next<a> (pf1_at | pr, nx)
-      val () = dlnode_set_prev<a> (pf2_at | nx, pr)
-      prval () = pfdl := dlist_v_cons (rcons {a} (pf11dl, pf1_at), dcons {a} (pf2_at, pf21dl))
-    in
-      xs := dlist_encode (pfdl | nx);      
-    end else let      
-      prval () = __assert () where {
-        extern prfun __assert (): [nf <= 0] void
-      } // end of [where]
-      prval rnil () = pf1dl
-      val () = dlnode_set_prev<a> (pf2_at | nx, null)
-      prval () = pfdl := dlist_v_cons (rnil {a} (), dcons {a} (pf2_at, pf21dl))
-    in
-      xs := dlist_encode (pfdl | nx);
-    end
-  end else let
-      prval () = __assert () where {
-        extern prfun __assert (): [nr <= 1] void
-      } // end of [where]
-    prval dnil () = pf2dl
-  in
-    if :(xs: R) => pr > null then let
-      prval rdlseg_v_cons (pf11dl, pf1_at) = pf1dl
-      val () = dlnode_set_next<a> (pf1_at | pr, null)
-      prval () = pfdl := dlist_v_cons (pf11dl, dcons {a} (pf1_at, dnil {a} ()))
-    in
-      xs := dlist_encode (pfdl | pr);
-    end else let
-      prval () = __assert () where {
-        extern prfun __assert (): [nf <= 0] void
-      } // end of [where]
-      prval rdlseg_v_nil () = pf1dl
-      prval () = pfdl := dlist_v_nil ()
-    in
-      xs := dlist_encode (pfdl | null)
-    end
-  end; // end of [if]
+//
+if pr > null then let
+  prval rcons (pf11dl, pf1_at) = pf1dl
+  val () = dlnode_set_next<a> (pf1_at | pr, nx)
+  prval pfdl = dlist_v_cons (rcons {a} (pf11dl, pf1_at), dcons {a} (pf2_at, pf21dl))
+  val () = xs := dlist_encode (pfdl | nx)
+in
   (pfhd | p1)
+end else let      
+  prval () = __assert () where {
+    extern prfun __assert (): [nf <= 0] void
+  } // end of [where]
+  prval rnil () = pf1dl
+  prval pfdl = dlist_v_cons (rnil {a} (), dcons {a} (pf2_at, pf21dl))
+  val () = xs := dlist_encode (pfdl | nx)
+in
+  (pfhd | p1)
+end (* end of [if] *)
+//
 end // end of [dlist_remove]
+
+(* ****** ****** *)
+
+implement{a}
+dlist_remove_after {nf,nr} (xs) = let
+  val (pfdl | ()) = dlist_unfold {a} (xs) // casting
+  val p_xs = p2p (xs)
+  prval dlist_v_cons (pf1dl, dlseg_v_cons (pf2_at, pf2dl)) = pfdl
+  val nx = dlnode_get_next<a> (pf2_at | p_xs)
+  prval dcons (pfhd, pf2dl) = pf2dl
+  val nx2 = dlnode_get_next<a> (pfhd | nx)
+  val () = dlnode_set_next<a> (pf2_at | p_xs, nx2)
+in
+//
+if nx2 > null then let
+  prval dcons (pf21_at, pf21dl) = pf2dl
+  val () = dlnode_set_prev<a> (pf21_at | nx2, p_xs)
+  prval pf2dl = dcons {a} (pf21_at, pf21dl)
+  prval pfdl = dlist_v_cons (pf1dl, dcons {a} (pf2_at, pf2dl))
+  prval () = dlist_fold (pfdl | xs)
+in
+  (pfhd | nx)
+end else let      
+  prval () = __assert () where {
+    extern prfun __assert (): [nr <= 2] void
+  } // end of [where]
+  prval dnil () = pf2dl
+  prval pfdl = dlist_v_cons (pf1dl, dcons {a} (pf2_at, dnil {a} ()))
+  prval () = dlist_fold (pfdl | xs)
+in
+  (pfhd | nx)
+end (* end of [if] *)
+//
+end // end of [dlist_remove_after]
+
+(* ****** ****** *)
+
+implement{a}
+dlist_remove_before {nf,nr} (xs) = let
+  val (pfdl | ()) = dlist_unfold {a} (xs) // casting
+  val p_xs = p2p (xs)
+  prval dlist_v_cons (pf1dl, dlseg_v_cons (pf2_at, pf2dl)) = pfdl
+  val pr = dlnode_get_prev<a> (pf2_at | p_xs)
+  prval rcons (pf1dl, pfhd) = pf1dl
+  val pr2 = dlnode_get_prev<a> (pfhd | pr)
+  val () = dlnode_set_prev<a> (pf2_at | p_xs, pr2)
+in
+//
+if pr2 > null then let
+  prval rcons (pf11dl, pf11_at) = pf1dl
+  val () = dlnode_set_next<a> (pf11_at | pr2, p_xs)
+  prval pf1dl = rcons {a} (pf11dl, pf11_at)
+  prval pfdl = dlist_v_cons (pf1dl, dcons {a} (pf2_at, pf2dl))
+  prval () = dlist_fold (pfdl | xs)
+in
+  (pfhd | pr)
+end else let      
+  prval () = __assert () where {
+    extern prfun __assert (): [nf <= 0] void
+  } // end of [where]
+  prval rnil () = pf1dl
+  prval pfdl = dlist_v_cons (rnil {a} (), dcons {a} (pf2_at, pf2dl))
+  prval () = dlist_fold (pfdl | xs)
+in
+  (pfhd | pr)
+end (* end of [if] *)
+//
+end // end of [dlist_remove_before]
 
 (* ****** ****** *)
 

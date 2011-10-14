@@ -369,7 +369,7 @@ fun theActState_set (act: int): void = !theActState_ref := act
 //
 end // end of [val]
 
-val theDelta = 5.0
+val theDelta = 10.0
 val theAlpha_ref = ref<double> (0.0)
 val theRotateknd_ref = ref_make_elt<int> (0)
 

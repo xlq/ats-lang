@@ -175,6 +175,12 @@ fun dlist_ptr_is_cons
 
 absviewtype dlist (a:viewt@ype+, nf:int, nr: int) = ptr
 
+prfun
+dlist_length_is_nonnegative
+  {a:vt0p} {nf,nr:int}
+  (xs: !dlist (a, nf, nr)): [nf>=0;nr>=0] void
+// end of [dlist_length_is_nonnegative]
+
 prfun dlist_fold
   {a:vt0p} {nf,nr:int} {lm:addr}
   (pflst: dlist_v (a, nf, nr, lm) | p: !ptr lm >> dlist (a, nf, nr)): void
@@ -278,16 +284,6 @@ dlist_insert_before
 (* ******** ******* *)
 
 fun{a:vt0p}
-dlist_remove
- {nf,nr:int | nr > 0} (
- xs: &dlist (a, nf, nr) >> dlist (a, nf', nr')
-) :<> #[nf',nr':nat | nf'+nr' == nf+nr-1] [l1,lp,ln:addr] (
-  dlnode_v (a, l1, lp, ln) | ptr l1
-) // end of [dlist_remove]
-
-(* ******** ******* *)
-
-fun{a:vt0p}
 dlist_move_forward
   {nf,nr:int | nr >= 2}
   (xs: dlist (a, nf, nr)):<> dlist (a, nf+1, nr-1)
@@ -298,6 +294,32 @@ dlist_move_backward
   {nf,nr:int | nf > 0}
   (xs: dlist (a, nf, nr)):<> dlist (a, nf-1, nr+1)
 // end of [dlist_move_backward]
+
+(* ******** ******* *)
+
+fun{a:vt0p}
+dlist_remove
+ {nf,nr:int | nr >= 2} (
+ xs: &dlist (a, nf, nr) >> dlist (a, nf, nr-1)
+) :<> [l1,lp,ln:addr] (
+  dlnode_v (a, l1, lp, ln) | ptr l1
+) // end of [dlist_remove]
+
+fun{a:vt0p}
+dlist_remove_after
+ {nf,nr:int | nr >= 2} (
+ xs: !dlist (a, nf, nr) >> dlist (a, nf, nr-1)
+) :<> [l1,lp,ln:addr] (
+  dlnode_v (a, l1, lp, ln) | ptr l1
+) // end of [dlist_remove_after]
+
+fun{a:vt0p}
+dlist_remove_before
+ {nf,nr:int | nf > 0} (
+ xs: !dlist (a, nf, nr) >> dlist (a, nf-1, nr)
+) :<> [l1,lp,ln:addr] (
+  dlnode_v (a, l1, lp, ln) | ptr l1
+) // end of [dlist_remove_before]
 
 (* ******** ******* *)
 

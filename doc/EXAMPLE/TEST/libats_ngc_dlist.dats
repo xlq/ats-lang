@@ -150,8 +150,9 @@ main () = () where {
 //
   val () = srand48_with_time ()
 //
-  #define N 10
+  #define N 5
   val xs = personlst_randgen (N)
+//
   val xs = loop (xs) where {
     fun loop
       {nf,nr:int | nr > 0} .<nr>.
@@ -163,6 +164,22 @@ main () = () where {
       ) // end of [val]
     in
       if dlist_is_at_end (xs) then xs else loop (dlist_move_forward<person> (xs))
+    end // end of [loop]
+  } // end of [val]
+//
+  val xs = loop (xs) where {
+    fun loop
+      {nf,nr:int | nr > 0}
+      (xs: personlst (nf, nr))
+      : personlst (0, nf+nr) = let
+      val () = dlist_appfst_fun<person> (xs
+      , lam (x) => $effmask_all (
+          printf ("%s(age=%i,sex=%i)\n", @($UN.castvwtp1 {string} (x.name), x.age, x.sex))
+        ) (* end of [lam] *)
+      ) // end of [val]
+      prval () = dlist_length_is_nonnegative (xs)
+    in
+      if dlist_is_at_beg (xs) then xs else loop (dlist_move_backward<person> (xs))
     end // end of [loop]
   } // end of [val]
 //

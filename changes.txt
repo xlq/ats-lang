@@ -19,7 +19,9 @@ ats-lang-anairiats-0.2.6:
 10. Adding libats/funmap_rbtree (functional maps based on red-black trees)
 11. Adding contrib/gtkglext (based on gtkglext-1.0)
 12. Adding contrib/atspslide for doing slide presentation and other things.
-13: Adding libc/gdbm/gdbm (API for GDBM in ATS).
+13: Adding libc/gdbm/gdbm (API for gdbm in ATS).
+14: Adding libc/gdbm/ndbm (API for gdbm-ndbm in ATS).
+15: Adding libats/ngc/DATS/dlist.dats. Thanks to Artyom!
 
 ########################################################################
 
