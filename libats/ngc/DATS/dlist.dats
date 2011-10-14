@@ -181,7 +181,7 @@ end // end of [dlist_cons]
 implement{a}
 dlist_uncons {nr} (xs) = let
   val (pf | p_xs) = dlist_decode (xs)
-  val dlist_v_cons (rnil (), dcons (pfhd, pfdl)) = pf
+  prval dlist_v_cons (rnil (), dcons (pfhd, pfdl)) = pf
   val nx = dlnode_get_next<a> (pfhd | p_xs)
 in
 //

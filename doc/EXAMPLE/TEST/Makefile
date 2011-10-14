@@ -377,7 +377,7 @@ cleanall:: ; $(RMF) libats_smlbas_string
 
 checkall:: libats_smlbas_time
 libats_smlbas_time: libats_smlbas_time.dats
-	$(ATSCC) -O2 -o $@ $< -lm -lats_smlbas && ./$@
+	$(ATSCC) -O2 -o $@ $< -lats_smlbas -lm && ./$@
 cleanall:: ; $(RMF) libats_smlbas_time
 
 ######
