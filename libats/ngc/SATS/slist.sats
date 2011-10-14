@@ -207,7 +207,9 @@ slist_free_vclo {v:view} {n:nat}
 (* ****** ****** *)
 
 fun{a:vt0p}
-slist_length {n:nat} (xs: !slist (a, n)):<> size_t (n)
+slist_length
+  {n:nat} (xs: !slist (a, n)):<> size_t (n)
+// end of [slist_length]
 
 (* ****** ****** *)
 

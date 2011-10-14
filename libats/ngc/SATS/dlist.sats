@@ -226,7 +226,7 @@ fun{a:vt0p}
 dlist_isnot_at_end
   {nf,nr:int | nr > 0} (
   xs: !dlist (a, nf, nr)
-) :<> bool (nr > 1)
+) :<> bool (nr >= 2)
 // end of [dlist_isnot_at_end]
 
 fun{a:vt0p}
@@ -240,7 +240,7 @@ fun{a:vt0p}
 dlist_isnot_at_beg
   {nf,nr:int | nr > 0} (
   xs: !dlist (a, nf, nr)
-) :<> bool (nf > 0)
+) :<> bool (nf >= 1)
 // end of [dlist_isnot_at_beg]
 
 (* ****** ****** *)

@@ -135,7 +135,7 @@ main () = () where {
   val () = slist_foreach_fun<person> (xs
   , lam (x) => $effmask_all (
       printf ("%s(age=%i,sex=%i)\n", @($UN.castvwtp1 {string} (x.name), x.age, x.sex))
-    )
+    ) (* end of [lam] *)
   ) // end of [val]
 //
   val xs = slist_reverse<person> (xs)
