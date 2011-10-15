@@ -67,7 +67,13 @@ relative to the current point on the current (sub)path.\
 #para('\
 
 Once a path is constructed, #code("cairo_stroke") can be called to draw
-line segments along the path.  There are a few line attributes that can be
+line segments along the path:
+
+#atscode('\
+fun cairo_stroke {l:agz} (cr: !cairo_ref l) : void
+')
+
+There are a few line attributes that can be
 set in cairo. For instance, the styles of line cap and line join as well as
 the width of line can be set by the following functions:\
 

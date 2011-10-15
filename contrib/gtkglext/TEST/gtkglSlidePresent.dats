@@ -320,8 +320,7 @@ end // end of [cairodraw_slide_count]
 
 local
 
-#define PREFIX "review"
-#define PREFIX "lecture01"
+#define PREFIX "myslide"
 
 fun
 slidename_get_by_count
@@ -595,7 +594,7 @@ end // end of [fexpose]
 //
 guint timeout_id = 0 ;
 //
-#define TIMEOUT_INTERVAL 100
+#define TIMEOUT_INTERVAL 50
 //
 void timeout_add () {
   if (timeout_id == 0) {
