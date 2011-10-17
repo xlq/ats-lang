@@ -362,8 +362,9 @@ viewtypedef bottom_viewt0ype_exi = [a:viewt@ype | false] a
 //
 // HX: some built-in type/viewtype/prop/view constructors
 //
-absview at_viewt0ype_addr_view (viewt@ype+, addr)
-stadef @ = at_viewt0ype_addr_view
+absview
+at_viewt0ype_addr_view (viewt@ype+, addr)
+stadef @ = at_viewt0ype_addr_view // HX: @ is infix
 
 (* ****** ****** *)
 
@@ -803,7 +804,8 @@ datasort file_mode =
   | file_mode_rw (* read and write *)
 // end of [file_mode]
 //
-stadef r = file_mode_r () and w = file_mode_w ()
+stadef r = file_mode_r ()
+stadef w = file_mode_w ()
 stadef rw = file_mode_rw ()
 //
 // [ats_FILE_viewtype] is defined in [libc/CATS/stdio.cats]
