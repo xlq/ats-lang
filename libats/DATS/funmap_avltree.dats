@@ -114,7 +114,7 @@ funmap_size (t) = size (t) where {
   fun size {h:nat} .<h>.
     (t: avltree (key, itm, h)):<> size_t = begin case+ t of
     | B (_(*h*), _(*key*), _(*itm*), tl, tr) => (size_of_int1)1 + size (tl) + size (tr)
-    | E () => 0
+    | E () => (size_of_int1)0
   end // end of [size]
 } // end of [funmap_size]
 

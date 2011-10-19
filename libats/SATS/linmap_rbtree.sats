@@ -73,14 +73,20 @@ fun{} linmap_is_nil {key:t0p;itm:vt0p} (m: !map (key, itm)):<> bool
 fun{} linmap_isnot_nil {key:t0p;itm:vt0p} (m: !map (key, itm)):<> bool
 
 (* ****** ****** *)
-
+//
 // this function is O(n)-time and non-tail-recursive
-fun{key,itm:t@ype} linmap_size (m: !map (key, itm)):<> Nat
+//
+fun{key,itm:t@ype}
+linmap_size (m: !map (key, itm)):<> size_t
 
-// this function is O(n) // for gathering stats
+(* ****** ****** *)
+//
+// HX: this function is O(n) // for gathering stats
+//
 fun{key,itm:t@ype} linmap_height (m: !map (key, itm)):<> Nat
-
-// this function is O(log(n)) // for gathering stats
+//
+// HX: this function is O(log(n)) // for gathering stats
+//
 fun{key,itm:t@ype} linmap_black_height (m: !map (key, itm)):<> Nat
 
 (* ****** ****** *)

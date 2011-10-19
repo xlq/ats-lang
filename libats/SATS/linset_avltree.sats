@@ -8,7 +8,7 @@
 
 (*
 ** ATS - Unleashing the Potential of Types!
-** Copyright (C) 2002-2010 Hongwei Xi, Boston University
+** Copyright (C) 2002-2011 Hongwei Xi, Boston University
 ** All rights reserved
 **
 ** ATS is free software;  you can  redistribute it and/or modify it under
@@ -31,10 +31,10 @@
 
 (*
 **
-** A map implementation based on AVL trees
+** A set implementation based on AVL trees
 **
 ** Contributed by Hongwei Xi (hwxi AT cs DOT bu DOT edu)
-** Time: March, 2010
+** Time: October, 2011
 **
 *)
 
@@ -75,6 +75,11 @@ fun{a:t0p} linset_make_sing (x0: a):<> set (a) // singleton set
 fun{} linset_is_empty {a:t0p} (xs: !set a):<> bool
 fun{} linset_isnot_empty {a:t0p} (xs: !set a):<> bool
 
+(* ****** ****** *)
+//
+// HX: the time complexity of this function is O(n), where n is
+fun{a:t@ype} linset_size (xs: !set a):<> size_t // the size of the set
+//
 (* ****** ****** *)
 
 fun{a:t0p}

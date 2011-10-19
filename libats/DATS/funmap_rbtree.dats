@@ -119,7 +119,7 @@ funmap_size (t) = sz (t) where {
   fun sz {c:clr} {bh:nat} .<bh, c>.
     (t: rbtree0 (key, itm, c, bh)):<> size_t = begin case+ t of
     | T (_(*c*), _(*key*), _(*itm*), tl, tr) => (size_of_int1)1 + sz (tl) + sz (tr)
-    | E () => 0
+    | E () => (size_of_int1)0
   end // end of [sz]
 } // end of [funmap_size]
 

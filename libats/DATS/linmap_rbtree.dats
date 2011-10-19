@@ -127,12 +127,12 @@ implement{key,itm}
 linmap_size (t) = sz (t) where {
   fun sz
     {c:clr} {bh:nat} {v:nat} .<bh,c+v>.
-    (t: !rbtree (key, itm, c, bh, v)):<> Nat =
+    (t: !rbtree (key, itm, c, bh, v)):<> size_t =
     case+ t of
     | T (_(*c*), _(*key*), _(*itm*), !ptl, !ptr) => let
-       val sz = 1 + sz (!ptl) + sz (!ptr) in (fold@ t; sz)
+       val sz = (size_of_int1)1 + sz (!ptl) + sz (!ptr) in (fold@ t; sz)
       end // end of [B]
-    | E () => (fold@ t; 0)
+    | E () => (fold@ t; size_of_int1(0))
   // end of [sz]
 } // end of [linmap_size]
 

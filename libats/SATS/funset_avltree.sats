@@ -67,14 +67,14 @@ fun{a:t@ype} funset_make_list (xs: List a, cmp: cmp a):<> set (a)
 
 (* ****** ****** *)
 
-fun{} funset_is_empty {a:t@ype} (xs: set a):<> bool
-fun{} funset_isnot_empty {a:t@ype} (xs: set a):<> bool
+fun{} funset_is_nil {a:t@ype} (xs: set a):<> bool
+fun{} funset_isnot_nil {a:t@ype} (xs: set a):<> bool
 
 (* ****** ****** *)
 //
 // HX: the time complexity of this function is O(n), where n is
 fun{a:t@ype} funset_size (xs: set a):<> size_t // the size of the set
-
+//
 (* ****** ****** *)
 
 fun{a:t@ype}

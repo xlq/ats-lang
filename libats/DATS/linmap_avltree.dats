@@ -46,6 +46,7 @@
 
 (* ****** ****** *)
 
+#define ATS_STALOADFLAG 0 // no static loading at run-time
 #define ATS_DYNLOADFLAG 0 // no dynamic loading at run-time
 
 (* ****** ****** *)
@@ -53,14 +54,13 @@
 staload "libats/SATS/linmap_avltree.sats"
 
 (* ****** ****** *)
-
 //
 // a specialized version can be implemented on the spot
 //
-implement{key} compare_key_key (x1, x2, cmp) = cmp (x1, x2)
+implement{key}
+compare_key_key (x1, x2, cmp) = cmp (x1, x2)
 
 (* ****** ****** *)
-
 //
 // HX-2010-03-24: this seems to work best!
 //
@@ -81,11 +81,13 @@ avltree (
 // end of [datatype avltree]
 typedef avltree0 = avltree (void, void, 0)?
 
-viewtypedef avltree_inc (key:t@ype, itm:viewt@ype, h:int) =
+viewtypedef
+avltree_inc (key:t@ype, itm:viewt@ype, h:int) =
   [h1:nat | h <= h1; h1 <= h+1] avltree (key, itm, h1)
 // end of [avltree_inc]
 
-viewtypedef avltree_dec (key:t@ype, itm:viewt@ype, h:int) =
+viewtypedef
+avltree_dec (key:t@ype, itm:viewt@ype, h:int) =
   [h1:nat | h1 <= h; h <= h1+1] avltree (key, itm, h1)
 // end of [avltree_dec]
 
@@ -117,11 +119,12 @@ linmap_isnot_nil (t) =
 implement{key,itm}
 linmap_size (t) = size (t) where {
   fun size {h:nat} .<h>.
-    (t: !avltree (key, itm, h)):<> Nat = begin case+ t of
+    (t: !avltree (key, itm, h)):<> size_t = begin
+    case+ t of
     | B (_(*h*), _(*key*), _(*itm*), !ptl, !ptr) => let
-       val sz = 1 + size (!ptl) + size (!ptr) in (fold@ t; sz)
+       val sz = (size_of_int1)1 + size (!ptl) + size (!ptr) in (fold@ t; sz)
       end // end of [B]
-    | E () => (fold@ t; 0)
+    | E () => (fold@ t; size_of_int1(0))
   end // end of [size]
 } // end of [linmap_size]
 
@@ -409,7 +412,6 @@ in
 end // end of [avltree_takeout_min]
 
 (* ****** ****** *)
-
 //
 // HX-2010-03-25: unsafe but convenient to implement
 //
