@@ -84,94 +84,89 @@ funset_isnot_member (xs: set a, x0: a, cmp: cmp a):<> bool
 
 (* ****** ****** *)
 
-fun{elt:t@ype}
+fun{a:t@ype}
 funset_insert (
-  xs: &set (elt)
-, x0: elt
-, cmp: cmp elt
+  xs: &set (a), x0: a, cmp: cmp a
 ) :<> bool(*[x0] alreay exists in [xs]*) // end of [funset_insert]
 
 (* ****** ****** *)
 
-fun{elt:t@ype}
+fun{a:t@ype}
 funset_remove (
-  xs: &set (elt)
-, x0: elt
-, cmp: cmp elt
-) :<> bool(*removed/not: true/false*)
-// end of [funset_remove]
+  xs: &set (a), x0: a, cmp: cmp (a)
+) :<> bool(*[x0] removed/not: true/false*) // end of [funset_remove]
 
 (* ****** ****** *)
 //
 // HX: choose an element in an unspecified manner
 //
-fun{elt:t@ype}
+fun{a:t@ype}
 funset_choose (
-  xs: set elt, x: &elt? >> opt (elt, b)
+  xs: set a, x: &a? >> opt (a, b)
 ) : #[b:bool] bool (b) // end of [funset_choose]
 //
 // HX: take out an element in an unspecified manner
 //
-fun{elt:t@ype}
+fun{a:t@ype}
 funset_takeout (
-  xs: &set elt >> set elt, x: &elt? >> opt (elt, b)
+  xs: &set a >> set a, x: &a? >> opt (a, b)
 ) : #[b:bool] bool (b) // end of [funset_takeout]
 //
 (* ****** ****** *)
 
-fun{elt:t@ype} funset_union
-  (xs1: set elt, xs2: set elt, cmp: cmp elt):<> set (elt)
-fun{elt:t@ype} funset_intersect
-  (xs1: set elt, xs2: set elt, cmp: cmp elt):<> set (elt)
-fun{elt:t@ype} funset_diff
-  (xs1: set elt, xs2: set elt, cmp: cmp elt):<> set (elt)
-fun{elt:t@ype} funset_symdiff
-  (xs1: set elt, xs2: set elt, cmp: cmp elt):<> set (elt)
+fun{a:t@ype} funset_union
+  (xs1: set a, xs2: set a, cmp: cmp a):<> set (a)
+fun{a:t@ype} funset_intersect
+  (xs1: set a, xs2: set a, cmp: cmp a):<> set (a)
+fun{a:t@ype} funset_diff
+  (xs1: set a, xs2: set a, cmp: cmp a):<> set (a)
+fun{a:t@ype} funset_symdiff
+  (xs1: set a, xs2: set a, cmp: cmp a):<> set (a)
 
 (* ****** ****** *)
 
-fun{elt:t@ype}
+fun{a:t@ype}
 funset_is_subset
-  (xs1: set elt, xs2: set elt, cmp: cmp elt):<> bool
+  (xs1: set a, xs2: set a, cmp: cmp a):<> bool
 // end of [funset_is_subset]
 
-fun{elt:t@ype}
-funset_is_equal (xs1: set elt, xs2: set elt, cmp: cmp elt):<> bool
+fun{a:t@ype}
+funset_is_equal (xs1: set a, xs2: set a, cmp: cmp a):<> bool
 
 (* ****** ****** *)
 
-fun{elt:t@ype}
+fun{a:t@ype}
 funset_foreach_funenv
   {v:view} {vt:viewtype} (
   pf: !v 
-| xs: set (elt)
-, f: (!v | elt, !vt) -<fun> void
+| xs: set (a)
+, f: (!v | a, !vt) -<fun> void
 , env: !vt
 ) :<> void // end of [funset_foreach_funenv]
 
-fun{elt:t@ype}
+fun{a:t@ype}
 funset_foreach_fun (
-  xs: set (elt)
-, f: (elt) -<fun> void
+  xs: set (a)
+, f: (a) -<fun> void
 ) :<> void // end of [funset_foreach_fun]
 
-fun{elt:t@ype}
+fun{a:t@ype}
 funset_foreach_vclo {v:view} (
   pf: !v
-| xs: set (elt)
-, f: &(!v | elt) -<clo> void
+| xs: set (a)
+, f: &(!v | a) -<clo> void
 ) :<> void // end of [funset_foreach_vclo]
 
-fun{elt:t@ype}
+fun{a:t@ype}
 funset_foreach_cloref (
-  xs: set (elt)
-, f: (elt) -<cloref> void
+  xs: set (a)
+, f: (a) -<cloref> void
 ) :<!ref> void // end of [funset_foreach_cloref]
 
 (* ****** ****** *)
 
-fun{elt:t@ype}
-funset_listize (xs: set (elt)):<> List_vt (elt)
+fun{a:t@ype}
+funset_listize (xs: set (a)):<> List_vt (a)
 
 (* ****** ****** *)
 

@@ -50,8 +50,9 @@
 
 (* ****** ****** *)
 
-absviewtype map_t0ype_viewt0ype (key:t@ype, itm:viewt@ype+)
-stadef map = map_t0ype_viewt0ype
+absviewtype
+map_t0ype_viewt0ype_type (key:t@ype, itm:viewt@ype+)
+stadef map = map_t0ype_viewt0ype_type
 
 (* ****** ****** *)
 

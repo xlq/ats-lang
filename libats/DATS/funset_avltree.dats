@@ -56,7 +56,7 @@ staload "libats/SATS/funset_avltree.sats"
 //
 // a specialized version can be implemented on the spot
 //
-implement{elt} compare_elt_elt (x1, x2, cmp) = cmp (x1, x2)
+implement{a} compare_elt_elt (x1, x2, cmp) = cmp (x1, x2)
 //
 (* ****** ****** *)
 
@@ -70,26 +70,26 @@ implement{elt} compare_elt_elt (x1, x2, cmp) = cmp (x1, x2)
 (* ****** ****** *)
 
 datatype avltree (
-  elt:t@ype+, int(*height*)
+  a:t@ype+, int(*height*)
 ) =
   | {hl,hr:nat | hl <= hr+HTDF; hr <= hl+HTDF}
-    B (elt, 1+max(hl,hr)) of
-      (int (1+max(hl,hr)), elt, avltree (elt, hl), avltree (elt, hr))
-  | E (elt, 0)
+    B (a, 1+max(hl,hr)) of
+      (int (1+max(hl,hr)), a, avltree (a, hl), avltree (a, hr))
+  | E (a, 0)
 // end of [datatype avltree]
 
-typedef avltree_inc (elt:t@ype, h:int) =
-  [h1:nat | h <= h1; h1 <= h+1] avltree (elt, h1)
+typedef avltree_inc (a:t@ype, h:int) =
+  [h1:nat | h <= h1; h1 <= h+1] avltree (a, h1)
 // end of [avltree_inc]
 
-typedef avltree_dec (elt:t@ype, h:int) =
-  [h1:nat | h1 <= h; h <= h1+1] avltree (elt, h1)
+typedef avltree_dec (a:t@ype, h:int) =
+  [h1:nat | h1 <= h; h <= h1+1] avltree (a, h1)
 // end of [avltree_dec]
 
 (* ****** ****** *)
 
 assume
-set_t0ype_type (elt:t@ype) = [h:nat] avltree (elt, h)
+set_t0ype_type (a:t@ype) = [h:nat] avltree (a, h)
 
 (* ****** ****** *)
 
@@ -161,14 +161,14 @@ funset_isnot_member (xs, x0, cmp) = ~funset_is_member (xs, x0, cmp)
 (*
 ** left rotation for restoring height invariant
 *)
-fn{elt:t@ype}
+fn{a:t@ype}
 avltree_lrotate {hl,hr:nat | hl+HTDF1 == hr} (
-    x: elt
+    x: a
   , hl : int hl
-  , tl: avltree (elt, hl)
+  , tl: avltree (a, hl)
   , hr : int hr
-  , tr: avltree (elt, hr)
-  ) :<> avltree_inc (elt, hr) = let
+  , tr: avltree (a, hr)
+  ) :<> avltree_inc (a, hr) = let
   val+ B {..} {hrl,hrr} (_(*hr*), xr, trl, trr) = tr
   val hrl = avltree_height trl : int hrl
   and hrr = avltree_height trr : int hrr
@@ -189,14 +189,14 @@ end // end of [avltree_lrotate]
 (*
 ** right rotation for restoring height invariant
 *)
-fn{elt:t@ype}
+fn{a:t@ype}
 avltree_rrotate {hl,hr:nat | hl == hr+HTDF1} (
-    x: elt
+    x: a
   , hl: int hl
-  , tl: avltree (elt, hl)
+  , tl: avltree (a, hl)
   , hr: int hr
-  , tr: avltree (elt, hr)
-  ) :<> avltree_inc (elt, hl) = let
+  , tr: avltree (a, hr)
+  ) :<> avltree_inc (a, hl) = let
   val+ B {..} {hll, hlr} (_(*hl*), xl, tll, tlr) = tl
   val hll = avltree_height tll : int hll
   and hlr = avltree_height tlr : int hlr
@@ -216,12 +216,12 @@ end // end of [avltree_rrotate]
 
 (* ****** ****** *)
 
-implement{elt}
+implement{a}
 funset_insert
   (xs, x0, cmp) = res where {
   fun insert {h:nat} .<h>. (
-      t: avltree (elt, h), res: &bool? >> bool
-    ) :<cloref> avltree_inc (elt, h) = begin case+ t of
+      t: avltree (a, h), res: &bool? >> bool
+    ) :<cloref> avltree_inc (a, h) = begin case+ t of
     | B {..} {hl,hr} (h, x, tl, tr) => let
         val sgn = compare_elt_elt (x0, x, cmp)
       in
@@ -259,16 +259,16 @@ funset_insert
 
 (* ****** ****** *)
 
-fun{elt:t@ype}
-avltree_takeout_min {h:pos} .<h>. (
-    t: avltree (elt, h)
-  , x0: &elt? >> elt
-  ) :<> avltree_dec (elt, h) = let
+fun{a:t@ype}
+avltree_takeout_min
+  {h:pos} .<h>. (
+  t: avltree (a, h), x0: &a? >> a
+) :<> avltree_dec (a, h) = let
   val+ B {..} {hl,hr} (_, x, tl, tr) = t
 in
   case+ tl of
   | B _ => let
-      val [hl:int] tl = avltree_takeout_min<elt> (tl, x0)
+      val [hl:int] tl = avltree_takeout_min<a> (tl, x0)
       val hl = avltree_height (tl) : int hl
       and hr = avltree_height (tr) : int hr
     in
@@ -283,12 +283,12 @@ end // end of [avltree_takeout_min]
 
 (* ****** ****** *)
 
-implement{elt}
+implement{a}
 funset_remove
   (m, x0, cmp) = b(*removed*) where {
   fun remove {h:nat} .<h>. (
-      t: avltree (elt, h), b: &bool? >> bool
-    ) :<cloref> avltree_dec (elt, h) = begin
+    t: avltree (a, h), b: &bool? >> bool
+  ) :<cloref> avltree_dec (a, h) = begin
     case+ t of
     | B {..} {hl,hr} (h, x, tl, tr) => let
         val sgn = compare_elt_elt (x0, x, cmp)
@@ -321,8 +321,8 @@ funset_remove
           in
             case+ tr of
             | B _ => let
-                var x_min: elt?
-                val [hr:int] tr = avltree_takeout_min<elt> (tr, x_min)
+                var x_min: a?
+                val [hr:int] tr = avltree_takeout_min<a> (tr, x_min)
                 val hl = avltree_height (tl) : int hl
                 and hr = avltree_height (tr) : int hr
               in
@@ -348,24 +348,24 @@ funset_remove
 (*
 ** left join: height(tl) >= height(tr)
 *)
-fun{elt:t@ype}
+fun{a:t@ype}
 avltree_ljoin
   {hl,hr:nat | hl >= hr} .<hl>. (
-  x: elt, tl: avltree (elt, hl), tr: avltree (elt, hr)
-) :<> avltree_inc (elt, hl) = let
+  x: a, tl: avltree (a, hl), tr: avltree (a, hr)
+) :<> avltree_inc (a, hl) = let
   val hl = avltree_height (tl): int hl
   and hr = avltree_height (tr): int hr
 in
   if hl >= hr + HTDF1 then let
     val+ B {..} {hll, hlr} (_, xl, tll, tlr) = tl
-    val [hlr:int] tlr = avltree_ljoin<elt> (x, tlr, tr)
+    val [hlr:int] tlr = avltree_ljoin<a> (x, tlr, tr)
     val hll = avltree_height (tll): int hll
     and hlr = avltree_height (tlr): int hlr
   in
     if hlr <= hll + HTDF then
       B (max(hll,hlr)+1, xl, tll, tlr)
     else // hll+HTDF1 = hlr
-      avltree_lrotate<elt> (xl, hll, tll, hlr, tlr)
+      avltree_lrotate<a> (xl, hll, tll, hlr, tlr)
     // end of [if]
   end else begin
     B (hl+1, x, tl, tr)
@@ -375,17 +375,17 @@ end // end of [avltree_ljoin]
 (*
 ** right join: height(tl) <= height(tr)
 *)
-fun{elt:t@ype}
+fun{a:t@ype}
 avltree_rjoin
   {hl,hr:nat| hl <= hr} .<hr>. (
-  x: elt, tl: avltree (elt, hl), tr: avltree (elt, hr)
-) :<> avltree_inc (elt, hr) = let
+  x: a, tl: avltree (a, hl), tr: avltree (a, hr)
+) :<> avltree_inc (a, hr) = let
   val hl = avltree_height (tl): int hl
   and hr = avltree_height (tr): int hr
 in
   if hr >= hl + HTDF1 then let
     val+ B {..} {hrl,hrr} (_, xr, trl, trr) = tr
-    val [hrl:int] trl = avltree_rjoin<elt> (x, tl, trl)
+    val [hrl:int] trl = avltree_rjoin<a> (x, tl, trl)
     val hrl = avltree_height (trl): int hrl
     and hrr = avltree_height (trr): int hrr
   in
@@ -401,10 +401,10 @@ end // end of [avltree_rjoin]
 
 (* ****** ****** *)
 
-fn{elt:t@ype}
+fn{a:t@ype}
 avltree_join {hl,hr:nat} (
-  x: elt, tl: avltree (elt, hl), tr: avltree (elt, hr)
-) :<> [h:int | hl <= h; hr <= h; h <= max(hl,hr)+1] avltree (elt, h) = let
+  x: a, tl: avltree (a, hl), tr: avltree (a, hr)
+) :<> [h:int | hl <= h; hr <= h; h <= max(hl,hr)+1] avltree (a, h) = let
   val hl = avltree_height tl: int hl
   and hr = avltree_height tr: int hr
 in
@@ -413,16 +413,16 @@ end // end of [avltree_join]
 
 (* ****** ****** *)
 
-fn{elt:t@ype}
+fn{a:t@ype}
 avltree_concat {hl,hr:nat} (
-  tl: avltree (elt, hl), tr: avltree (elt, hr)
-) :<> [h:nat | h <= max(hl,hr)+1] avltree (elt, h) =
+  tl: avltree (a, hl), tr: avltree (a, hr)
+) :<> [h:nat | h <= max(hl,hr)+1] avltree (a, h) =
   case+ (tl, tr) of
   | (E (), _) => tr
   | (_, E ()) => tl
   | (_, _) =>> let
-      var x_min: elt // uninitialized
-      val tr = avltree_takeout_min<elt> (tr, x_min)
+      var x_min: a // uninitialized
+      val tr = avltree_takeout_min<a> (tr, x_min)
     in
       avltree_join (x_min, tl, tr)
     end // end of [_, _]
@@ -432,16 +432,16 @@ avltree_concat {hl,hr:nat} (
 
 typedef avltree = avltree (void, 0)
 
-fun{elt:t@ype}
+fun{a:t@ype}
 avltree_split_at {h:nat} .<h>. (
-  t: avltree (elt, h), x0: elt
-, tl0: &avltree? >> avltree (elt, hl)
-, tr0: &avltree? >> avltree (elt, hr)
-, cmp: cmp elt
+  t: avltree (a, h), x0: a
+, tl0: &avltree? >> avltree (a, hl)
+, tr0: &avltree? >> avltree (a, hr)
+, cmp: cmp a
 ) :<> #[i:two; hl,hr:nat | hl <= h; hr <= h] int i =
   case t of
   | B (_(*h*), x, tl, tr) => let
-      val sgn = compare_elt_elt<elt> (x0, x, cmp)
+      val sgn = compare_elt_elt<a> (x0, x, cmp)
     in
       if sgn < 0 then let
         val i = avltree_split_at (tl, x0, tl0, tr0, cmp)
@@ -460,34 +460,34 @@ avltree_split_at {h:nat} .<h>. (
 
 (* ****** ****** *)
 
-implement{elt}
+implement{a}
 funset_choose
   (xs, x0) = case+ xs of
   | B (_(*h*), x, _(*tl*), _(*tr*)) => let
       val () = x0 := x
-      prval () = opt_some {elt} (x0)
+      prval () = opt_some {a} (x0)
     in
       true
     end
   | E () => let
-      prval () = opt_none {elt} (x0)
+      prval () = opt_none {a} (x0)
     in
       false
     end
 // end of [funset_choose]
 
-implement{elt}
+implement{a}
 funset_takeout
   (xs, x0) = case+ xs of
   | B (_(*h*), x, tl, tr) => let
       val () = x0 := x
-      val () = xs := avltree_concat<elt> (tl, tr)
-      prval () = opt_some {elt} (x0)
+      val () = xs := avltree_concat<a> (tl, tr)
+      prval () = opt_some {a} (x0)
     in
       true
     end
   | E () => let
-      prval () = opt_none {elt} (x0)
+      prval () = opt_none {a} (x0)
     in
       false
     end
@@ -495,12 +495,12 @@ funset_takeout
 
 (* ****** ****** *)
 
-implement{elt}
+implement{a}
 funset_union
   (t1, t2, cmp) = union (t1, t2) where {
   fun union {h1,h2:nat} .<h1>. (
-    t1: avltree (elt, h1), t2: avltree (elt, h2)
-  ) :<cloref> [h:nat] avltree (elt, h) = begin
+    t1: avltree (a, h1), t2: avltree (a, h2)
+  ) :<cloref> [h:nat] avltree (a, h) = begin
     case+ (t1, t2) of
     | (E (), _) => t2
     | (_, E ()) => t1
@@ -518,12 +518,12 @@ funset_union
 
 (* ****** ****** *)
 
-implement{elt}
+implement{a}
 funset_intersect
   (t1, t2, cmp) = inter (t1, t2) where {
   fun inter {h1,h2:nat} .<h1>. (
-    t1: avltree (elt, h1), t2: avltree (elt, h2)
-  ) :<cloref> [h:nat] avltree (elt, h) = begin
+    t1: avltree (a, h1), t2: avltree (a, h2)
+  ) :<cloref> [h:nat] avltree (a, h) = begin
     case+ (t1, t2) of
     | (E (), _) => E ()
     | (_, E ()) => E ()
@@ -541,12 +541,12 @@ funset_intersect
 
 (* ****** ****** *)
 
-implement{elt}
+implement{a}
 funset_diff
   (t1, t2, cmp) = diff (t1, t2) where {
   fun diff {h1,h2:nat} .<h1>. (
-    t1: avltree (elt, h1), t2: avltree (elt, h2)
-  ) :<cloref> [h:nat] avltree (elt, h) = begin
+    t1: avltree (a, h1), t2: avltree (a, h2)
+  ) :<cloref> [h:nat] avltree (a, h) = begin
     case+ (t1, t2) of
     | (E (), _) => E ()
     | (_, E ()) => t1
@@ -564,12 +564,12 @@ funset_diff
 
 (* ****** ****** *)
 
-implement{elt}
+implement{a}
 funset_symdiff
   (t1, t2, cmp) = symdiff (t1, t2) where {
   fun symdiff {h1,h2:nat} .<h1>. (
-    t1: avltree (elt, h1), t2: avltree (elt, h2)
-  ) :<cloref> [h:nat] avltree (elt, h) = begin
+    t1: avltree (a, h1), t2: avltree (a, h2)
+  ) :<cloref> [h:nat] avltree (a, h) = begin
     case+ (t1, t2) of
     | (E (), _) => t2
     | (_, E ()) => t1
@@ -587,11 +587,11 @@ funset_symdiff
 
 (* ****** ****** *)
 
-implement{elt}
+implement{a}
 funset_is_subset
   (t1, t2, cmp) = test (t1, t2) where {
   fun test {h1,h2:nat} .<h1>. (
-    t1: avltree (elt, h1), t2: avltree (elt, h2)
+    t1: avltree (a, h1), t2: avltree (a, h2)
   ) :<cloref> bool = begin case+ (t1, t2) of
     | (E (), _) => true
     | (_, E ()) => false
@@ -609,11 +609,11 @@ funset_is_subset
 
 (* ****** ****** *)
 
-implement{elt}
+implement{a}
 funset_is_equal
   (t1, t2, cmp) = test (t1, t2) where {
   fun test {h1,h2:nat} .<h1>. (
-    t1: avltree (elt, h1), t2: avltree (elt, h2)
+    t1: avltree (a, h1), t2: avltree (a, h2)
   ) :<cloref> bool = begin case+ (t1, t2) of
     | (E _, E _) => true
     | (E _, B _) => false
@@ -632,11 +632,11 @@ funset_is_equal
 
 (* ****** ****** *)
 
-implement{elt}
+implement{a}
 funset_foreach_funenv {v} {vt}
   (pf | xs, f, env) = foreach (pf | xs, env) where {
   fun foreach {h:nat} .<h>.
-    (pf: !v | t: avltree (elt, h), env: !vt):<cloref> void =
+    (pf: !v | t: avltree (a, h), env: !vt):<cloref> void =
     case+ t of
     | B (_(*h*), x, tl, tr) => begin
         foreach (pf | tl, env); f (pf | x, env); foreach (pf | tr, env)
@@ -645,17 +645,17 @@ funset_foreach_funenv {v} {vt}
   // end of [foreach]
 } // end of [funset_foreach_funenv]
 
-implement{elt}
+implement{a}
 funset_foreach_fun
   (xs, f) = let
 //
   val f = coerce (f) where {
     extern castfn coerce
-      (f: (elt) -<fun> void):<> (!unit_v | elt, !ptr) -<fun> void
+      (f: (a) -<fun> void):<> (!unit_v | a, !ptr) -<fun> void
   } // end of [val]
 //
   prval pfu = unit_v ()
-  val () = funset_foreach_funenv<elt> {unit_v} {ptr} (pfu | xs, f, null)
+  val () = funset_foreach_funenv<a> {unit_v} {ptr} (pfu | xs, f, null)
   prval unit_v () = pfu
 //  
 in
@@ -664,11 +664,11 @@ end // end of [funset_foreach_fun]
 
 (* ****** ****** *)
 
-implement{elt}
+implement{a}
 funset_foreach_vclo {v}
   (pf | m, f) = foreach (pf | m, f) where {
   fun foreach {h:nat} .<h>. (
-    pf: !v | t: avltree (elt, h), f: &(!v | elt) -<clo> void
+    pf: !v | t: avltree (a, h), f: &(!v | a) -<clo> void
   ) :<> void =
     case+ t of
     | B (_(*h*), x, tl, tr) => begin
@@ -678,16 +678,16 @@ funset_foreach_vclo {v}
   // end of [foreach]
 } // end of [funset_foreach_vclo]
 
-implement{elt}
+implement{a}
 funset_foreach_cloref (m, f) = let
   val f = __cast (f) where { extern castfn __cast
-    (f: (elt) -<cloref> void):<> (!unit_v | elt) -<cloref> void
+    (f: (a) -<cloref> void):<> (!unit_v | a) -<cloref> void
   } // end of [val]
-  typedef clo_type = (!unit_v | elt) -<clo> void
+  typedef clo_type = (!unit_v | a) -<clo> void
   val (vbox pf_f | p_f) = cloref_get_view_ptr {clo_type} (f)
   prval pfu = unit_v ()
   val () = $effmask_ref
-    (funset_foreach_vclo<elt> {unit_v} (pfu | m, !p_f))
+    (funset_foreach_vclo<a> {unit_v} (pfu | m, !p_f))
   prval unit_v () = pfu
 in
   // empty
@@ -695,16 +695,16 @@ end // end of [funset_foreach_cloref]
 
 (* ****** ****** *)
 
-implement{elt}
+implement{a}
 funset_listize (xs) = let
-  viewtypedef res_vt = List_vt (elt)
+  viewtypedef res_vt = List_vt (a)
   fun listize {h:nat} .<h>. (
-    t: avltree (elt, h), res: res_vt
+    t: avltree (a, h), res: res_vt
   ) :<> res_vt =
     case+ t of
     | B (_(*h*), x, tl, tr) => let
         val res = listize (tr, res)
-        val res = list_vt_cons {elt} (x, res)
+        val res = list_vt_cons {a} (x, res)
         val res = listize (tl, res)
       in
         res
