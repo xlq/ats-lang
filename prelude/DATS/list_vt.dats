@@ -144,22 +144,16 @@ end // end of [list_vt_of_arraysize]
 
 (* ****** ****** *)
 
+local
+
+staload UN = "prelude/SATS/unsafe.sats"
+
+in // in of [local]
+
 implement{a}
-list_vt_copy
-  (xs0) = res where {
-  fun loop {n:nat} .<n>.
-    (xs: !list_vt (a, n), res: &List_vt a? >> list_vt (a, n))
-    :<> void = case+ xs of
-    | list_vt_cons (x, !p_xs1) => let
-        val () = res := list_vt_cons {a} {0} (x, ?)
-        val+ list_vt_cons (_, !p_res1) = res; val () = loop (!p_xs1, !p_res1)
-      in
-        fold@ xs; fold@ res
-      end // end of [cons]
-    | list_vt_nil () => (fold@ xs; res := list_vt_nil ())
-  var res: List_vt a // uninitialized
-  val () = loop (xs0, res)
-} // end of [list_vt_copy]
+list_vt_copy {n} (xs0) = list_copy ($UN.castvwtp1 {list(a,n)} (xs0))
+
+end // end of [local]
 
 (* ****** ****** *)
 

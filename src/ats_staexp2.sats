@@ -1233,8 +1233,9 @@ fun s2exp_topize_0 (s2e: s2exp): s2exp // = s2exp_topize (0, s2e)
 fun s2exp_topize_1 (s2e: s2exp): s2exp // = s2exp_topize (1, s2e)
 
 (* ****** ****** *)
-
-// weak-head normalization
+//
+// HX: weak-head normalization
+//
 fun s2exp_whnf (s2e: s2exp): s2exp
 fun s2explst_whnf {n:nat} (s2es: s2explst n): s2explst n
 

@@ -247,6 +247,11 @@ fun{a:t@ype} list_concat (xs: List (List a)):<> List_vt a
 (* ****** ****** *)
 
 fun{a:t@ype}
+list_copy {n:nat} (xs: list (a, n)):<> list_vt (a, n)
+
+(* ****** ****** *)
+
+fun{a:t@ype}
 list_drop
   {n:int} {i:nat | i <= n}
   (xs: list (a, n), i: int i):<> list (a, n-i)

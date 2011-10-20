@@ -434,6 +434,25 @@ end // end of [list_concat]
 (* ****** ****** *)
 
 implement{a}
+list_copy
+  (xs0) = res where {
+  fun loop {n:nat} .<n>.
+    (xs: list (a, n), res: &List_vt a? >> list_vt (a, n))
+    :<> void = case+ xs of
+    | list_cons (x, xs) => let
+        val () = res := list_vt_cons {a} {0} (x, ?)
+        val+ list_vt_cons (_, !p_res1) = res; val () = loop (xs, !p_res1)
+      in
+        fold@ res
+      end // end of [cons]
+    | list_nil () => res := list_vt_nil ()
+  var res: List_vt a // uninitialized
+  val () = loop (xs0, res)
+} // end of [list_copy]
+
+(* ****** ****** *)
+
+implement{a}
 list_drop (xs, i) = loop (xs, i) where {
   fun loop {n,i:nat | i <= n} .<i>.
     (xs: list (a, n), i: int i):<> list (a, n-i) =
