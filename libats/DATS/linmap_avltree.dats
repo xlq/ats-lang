@@ -369,10 +369,8 @@ extern
 castfn B_node_make
   {key:t@ype;itm:viewt@ype}
   {l_h,l_k,l_x,l_tl,l_tr:addr} (
-    pf_h: int? @ l_h, pf_k: key @ l_k, pf_x: itm @ l_x, pf_tl: avltree? @ l_tl, pf_tr: avltree? @ l_tr
-  | x: B_unfold (l_h, l_k, l_x, l_tl, l_tr)
-  ) :<> B_node (key, itm)
-// end of [B_node_make]
+  pf_h: int? @ l_h, pf_k: key @ l_k, pf_x: itm @ l_x, pf_tl: avltree? @ l_tl, pf_tr: avltree? @ l_tr
+| x: B_unfold (l_h, l_k, l_x, l_tl, l_tr)) :<> B_node (key, itm) // end of [B_node_make]
 
 fun{key:t0p;itm:vt0p}
 avltree_takeout_min {h:pos} .<h>. (
@@ -426,9 +424,9 @@ implement{key,itm}
 linmap_takeout_ptr {l_res}
   (m, k0, cmp, p_res) = takeout (m, p_res) where {
   fun takeout {h:nat} .<h>. (
-      t: &avltree (key, itm, h) >> avltree_dec (key, itm, h)
-    , p_res: ptr l_res
-    ) :<cloref> bool = begin case+ t of
+    t: &avltree (key, itm, h) >> avltree_dec (key, itm, h)
+  , p_res: ptr l_res
+  ) :<cloref> bool = begin case+ t of
     | B {..} {hl,hr} (!p_h, !p_k, !p_x, !p_tl, !p_tr) => let
         stavar l_x:addr
         val p_x = p_x : ptr l_x
@@ -665,7 +663,7 @@ linmap_listize_free (m) = let
       in
         res
       end // end of [B]
-    | ~E () => res
+    | ~E () => res // end of [E]
   // end of [aux]
 in
   aux (m, list_vt_nil)

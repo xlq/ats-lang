@@ -345,4 +345,536 @@ end // end of [linset_insert]
 
 (* ****** ****** *)
 
+viewtypedef
+B_node (a:t@ype) =
+  B_pstruct (int?, a, avltree0, avltree0)
+// end of [B_node]
+
+extern
+castfn B_node_make
+  {a:t@ype} {l_h,l_x,l_tl,l_tr:addr} (
+  pf_h: int? @ l_h, pf_x: a @ l_x, pf_tl: avltree? @ l_tl, pf_tr: avltree? @ l_tr
+| x: B_unfold (l_h, l_x, l_tl, l_tr)
+) :<> B_node (a) // end of [B_node_make]
+
+fun{a:t@ype}
+avltree_takeout_min {h:pos} .<h>. (
+  t: &avltree (a, h) >> avltree_dec (a, h)
+) :<> B_node (a) = let
+  val+ B {..} {hl,hr} (!p_h, !p_x, !p_tl, !p_tr) = t
+  prval pf_h = view@ !p_h
+  prval pf_x = view@ !p_x
+  prval pf_tl = view@ !p_tl
+  prval pf_tr = view@ !p_tr
+in
+  case+ !p_tl of
+  | B _ => let
+      prval () = fold@ (!p_tl)
+      val node = avltree_takeout_min<a> (!p_tl)
+      val hl = avltree_height<a> (!p_tl)
+      and hr = avltree_height<a> (!p_tr)
+    in
+      if hr - hl <= HTDF then let
+        val () = !p_h := 1+max(hl,hr)
+        prval () = fold@ t // B (1+max(hl,hr), k, x, tl, tr)
+      in
+        node
+      end else let
+        val () = t := avltree_lrotate<a>
+          (pf_h, pf_x, pf_tl, pf_tr | p_h, hl, p_tl, hr, p_tr, t)
+        // end of [val]
+      in
+        node
+      end // end of [if]
+    end // end of [B]
+  | ~E () => let
+      val tr = !p_tr; val t0 = t; val () = t := tr in
+      B_node_make {a} (pf_h, pf_x, pf_tl, pf_tr | t0)
+    end // end of [E]
+end // end of [avltree_takeout_min]
+
+(* ****** ****** *)
+
+implement{a}
+linset_remove
+  (xs, x0, cmp) = remove (xs) where {
+  fun remove {h:nat} .<h>. (
+    t: &avltree (a, h) >> avltree_dec (a, h)
+  ) :<cloref> bool = begin case+ t of
+    | B {..} {hl,hr} (!p_h, !p_x, !p_tl, !p_tr) => let
+        stavar l_x:addr
+        val p_x = p_x : ptr l_x
+        prval pf_h = view@ !p_h
+        prval pf_x = view@ !p_x
+        prval pf_tl = view@ !p_tl
+        prval pf_tr = view@ !p_tr
+        val sgn = compare_elt_elt (x0, !p_x, cmp)
+      in
+        case+ 0 of
+        | _ when sgn < 0 => let
+            val ans(*removed*) = remove (!p_tl)
+            val hl = avltree_height<a> (!p_tl)
+            and hr = avltree_height<a> (!p_tr)
+          in
+            if hr - hl <= HTDF then let
+              prval () = !p_h := 1+max(hl,hr) in fold@ (t); ans
+            end else let // hl+HTDF1 = hr
+              val () = t := avltree_lrotate<a>
+                (pf_h, pf_x, pf_tl, pf_tr | p_h, hl, p_tl, hr, p_tr, t)
+              // end of [val]
+            in
+              ans
+            end // end of [if]
+          end // end of [sgn < 0]
+        | _ when sgn > 0 => let
+            val ans = remove (!p_tr)
+            val hl = avltree_height<a> (!p_tl)
+            and hr = avltree_height<a> (!p_tr)
+          in
+            if hl - hr <= HTDF then let
+              prval () = !p_h := 1+max(hl,hr) in fold@ (t); ans
+            end else let // hl=hr+HTDF1
+              val () = t := avltree_rrotate<a>
+                (pf_h, pf_x, pf_tl, pf_tr | p_h, hl, p_tl, hr, p_tr, t)
+              // end of [val]
+            in
+              ans
+            end // end of [if]
+          end // end of [sgn > 0]
+        | _ (*sgn = 0*) => let
+            var tl = !p_tl and tr = !p_tr
+            val () = free@ {a} {0,0} (t)
+          in
+            case+ tr of
+            | B _ => let
+                prval () = fold@ tr
+                val t1 = avltree_takeout_min<a> (tr)
+                val B (!p1_h, !p1_x, !p1_tl, !p1_tr) = t1
+                prval pf1_h = view@ !p1_h
+                prval pf1_x = view@ !p1_x                
+                prval pf1_tl = view@ !p1_tl
+                prval pf1_tr = view@ !p1_tr
+                val hl = avltree_height<a> (tl)
+                and hr = avltree_height<a> (tr)
+                val () = !p1_tl := tl and () = !p1_tr := tr 
+              in
+                if hl - hr <= HTDF then let
+                  val () = !p1_h := 1+max(hl,hr) in fold@ t1; t := t1; true
+                end else let
+                  val () = t := avltree_rrotate<a>
+                    (pf1_h, pf1_x, pf1_tl, pf1_tr | p1_h, hl, p1_tl, hr, p1_tr, t1)
+                  // end of [val]
+                in
+                  true
+                end // end of [if]
+              end // end of [B]
+            | E _ => (t := tl; true)
+          end // end of [sgn = 0]
+      end // end of [B]
+    | E () => (fold@ t; false(*~removed*))
+  end // end of [remove]
+} // end of [linset_remove]
+
+(* ****** ****** *)
+
+(*
+** left join: height(tl) >= height(tr)
+*)
+fun{a:t@ype}
+avltree_ljoin
+  {hl,hr:nat | hl >= hr} .<hl>. (
+  xn: B_node (a)
+, tl: avltree (a, hl), tr: avltree (a, hr)
+) :<> avltree_inc (a, hl) = let
+  val hl = avltree_height (tl): int hl
+  and hr = avltree_height (tr): int hr
+in
+  if hl >= hr + HTDF1 then let
+    val+ B {..} {hll, hlr} (!p_hl, !p_xl, !p_tll, !p_tlr) = tl
+    val [hlr:int] tlr = avltree_ljoin<a> (xn, !p_tlr, tr)
+    val () = !p_tlr := tlr
+    val hll = avltree_height<a> (!p_tll): int hll
+    and hlr = avltree_height<a> (!p_tlr): int hlr
+  in
+    if hlr <= hll + HTDF then let
+      val () = !p_hl := max (hll, hlr) + 1
+      prval () = fold@ {a} (tl)
+    in
+      tl
+    end else let // hll+HTDF1 = hlr
+      prval pf_hl = view@(!p_hl)
+      prval pf_xl = view@(!p_xl)
+      prval pf_tll = view@ (!p_tll)
+      prval pf_tlr = view@ (!p_tlr)
+    in
+      avltree_lrotate<a> (
+        pf_hl, pf_xl, pf_tll, pf_tlr | p_hl, hll, p_tll, hlr, p_tlr, tl
+      ) // end of [avltree_lrotate]
+    end // end of [if]
+  end else let
+    val B (!p_h, _, !p_tl, !p_tr) = xn
+    val () = !p_h := hl + 1
+    val () = !p_tl := tl and () = !p_tr := tr
+  in
+    fold@ {a} (xn); xn
+  end // end of [if]
+end // end of [avltree_ljoin]
+
+(*
+** right join: height(tl) <= height(tr)
+*)
+fun{a:t@ype}
+avltree_rjoin
+  {hl,hr:nat| hl <= hr} .<hr>. (
+  xn: B_node (a)
+, tl: avltree (a, hl), tr: avltree (a, hr)
+) :<> avltree_inc (a, hr) = let
+  val hl = avltree_height (tl): int hl
+  and hr = avltree_height (tr): int hr
+in
+  if hr >= hl + HTDF1 then let
+    val+ B {..} {hrl,hrr} (!p_hr, !p_xr, !p_trl, !p_trr) = tr
+    val [hrl:int] trl = avltree_rjoin<a> (xn, tl, !p_trl)
+    val () = !p_trl := trl
+    val hrl = avltree_height<a> (!p_trl): int hrl
+    and hrr = avltree_height<a> (!p_trr): int hrr
+  in
+    if hrl <= hrr + HTDF then let
+      val () = !p_hr := max (hrl,hrr) + 1
+      prval () = fold@ {a} (tr)
+    in
+      tr
+    end else let // hrl = hrr+HTDF1
+      prval pf_hr = view@(!p_hr)
+      prval pf_xr = view@(!p_xr)
+      prval pf_trl = view@ (!p_trl)
+      prval pf_trr = view@ (!p_trr)
+    in
+      avltree_rrotate<a> (
+        pf_hr, pf_xr, pf_trl, pf_trr | p_hr, hrl, p_trl, hrr, p_trr, tr
+      ) // end of [avltree_lrotate]
+    end // end of [if]
+  end else let
+    val B (!p_h, _, !p_tl, !p_tr) = xn
+    val () = !p_h := hr + 1
+    val () = !p_tl := tl and () = !p_tr := tr
+  in
+    fold@ {a} (xn); xn
+  end // end of [if]
+end // end of [avltree_rjoin]
+
+(* ****** ****** *)
+
+fn{a:t@ype}
+avltree_join
+  {hl,hr:nat} (
+  xn: B_node (a)
+, tl: avltree (a, hl), tr: avltree (a, hr)
+) :<> [h:int | hl <= h; hr <= h; h <= max(hl,hr)+1] avltree (a, h) = let
+  val hl = avltree_height tl: int hl
+  and hr = avltree_height tr: int hr
+in
+  if hl >= hr
+    then avltree_ljoin<a> (xn, tl, tr) else avltree_rjoin<a> (xn, tl, tr)
+  // end of [if]
+end // end of [avltree_join]
+
+(* ****** ****** *)
+
+fn{a:t@ype}
+avltree_concat
+  {hl,hr:nat} (
+  tl: avltree (a, hl), tr: avltree (a, hr)
+) :<> [h:nat | h <= max(hl,hr)+1] avltree (a, h) =
+  case+ (tl, tr) of
+  | (~E (), _) => tr
+  | (_, ~E ()) => tl
+  | (_, _) =>> let
+      var tr = tr
+      val xn_min = avltree_takeout_min<a> (tr)
+    in
+      avltree_join<a> (xn_min, tl, tr)
+    end // end of [_, _]
+// end of [avltree_concat]
+
+(* ****** ****** *)
+
+fun{a:t@ype}
+avltree_split_at {h:nat} .<h>. (
+  t: avltree (a, h)
+, x0: a
+, xn: &B_node(a)? >> opt (B_node(a), i>0)
+, tl0: &avltree0 >> avltree (a, hl)
+, tr0: &avltree0 >> avltree (a, hr)
+, cmp: cmp a
+) :<> #[i:two; hl,hr:nat | hl <= h; hr <= h] int i =
+  case+ t of
+  | B (!p_h, !p_x, !p_tl, !p_tr) => let
+      val x = !p_x
+      val tl = !p_tl and tr = !p_tr
+      val t = B_node_make {a}
+        (view@(!p_h), view@(!p_x), view@(!p_tl), view@(!p_tr) | t)
+      val sgn = compare_elt_elt<a> (x0, x, cmp)
+    in
+      if sgn < 0 then let
+        val i = avltree_split_at<a> (tl, x0, xn, tl0, tr0, cmp)
+      in
+        tr0 := avltree_join<a> (t, tr0, tr); i
+      end else if sgn > 0 then let
+        val i = avltree_split_at<a> (tr, x0, xn, tl0, tr0, cmp)
+      in
+        tl0 := avltree_join<a> (t, tl, tl0); i
+      end else let
+        val () = xn := t
+        val ()= tl0 := tl and () = tr0 := tr
+        prval () = opt_some {B_node(a)} (xn)
+      in
+        1 // [x0] found in t
+      end // end of [if]
+    end // end of [B]
+  | ~E () => let
+      val () = tl0 := E () and () = tr0 := E ()
+      prval () = opt_none {B_node(a)} (xn)
+    in
+      0 // [x0] not found in t
+    end // end of [E]
+// end of [avltree_split_at]
+
+(* ****** ****** *)
+
+implement{a}
+linset_choose
+  (xs, x0) = case+ xs of
+  | B (_(*h*), x, _(*tl*), _(*tr*)) => let
+      prval () = fold@ (xs)
+      val () = x0 := x
+      prval () = opt_some {a} (x0)
+    in
+      true
+    end // end of [B]
+  | E () => let
+      prval () = fold@ (xs)
+      prval () = opt_none {a} (x0)
+    in
+      false
+    end // end of [E]
+// end of [linset_choose]
+
+implement{a}
+linset_takeout
+  (xs, x0) = case+ xs of
+  | ~B (_(*h*), x, tl, tr) => let
+      val () = x0 := x
+      val () = xs := avltree_concat<a> (tl, tr)
+      prval () = opt_some {a} (x0)
+    in
+      true
+    end // end of [E]
+  | E () => let
+      prval () = fold@ (xs)
+      prval () = opt_none {a} (x0)
+    in
+      false
+    end // end of [E]
+// end of [linset_takeout]
+
+(* ****** ****** *)
+
+fn B_node_free_opt
+  {a:t@ype} {i:nat} (
+  xn: opt (B_node(a), i > 0), i: int i
+) :<> void = let
+  viewtypedef T = B_node(a)
+in
+  if i > 0 then let
+    prval () = opt_unsome {T} (xn)
+    val+ B _ = xn
+  in
+    free@ {a} {0,0} (xn)
+  end else let
+    prval () = opt_unnone {T} (xn)
+    prval () = cleanup_top {T} (xn)
+  in
+    (*nothing*)
+  end // end of [if]
+end // end of [B_node_free_opt]
+
+(* ****** ****** *)
+
+implement{a}
+linset_union
+  (t1, t2, cmp) = union (t1, t2) where {
+  fun union {h1,h2:nat} .<h1>. (
+    t1: avltree (a, h1), t2: avltree (a, h2)
+  ) :<cloref> [h:nat] avltree (a, h) = begin
+    case+ (t1, t2) of
+    | (~E (), _) => t2
+    | (_, ~E ()) => t1
+    | (_, _) =>> let
+        val+ B (!p_h1, !p_x1, !p_t1l, !p_t1r) = t1
+        val x1 = !p_x1
+        val t1l = !p_t1l and t1r = !p_t1r
+        var xn: B_node (a)
+        var t2l0: avltree0 and t2r0: avltree0
+        val i = avltree_split_at<a> (t2, x1, xn, t2l0, t2r0, cmp)
+        val () = B_node_free_opt {a} (xn, i)
+        val t12l = union (t1l, t2l0) and t12r = union (t1r, t2r0)
+        val t1 = B_node_make {a} (
+          view@(!p_h1), view@(!p_x1), view@(!p_t1l), view@(!p_t1r) | t1
+        ) // end of [val]
+      in
+        avltree_join<a> (t1, t12l, t12r)
+      end // end of [_, _]
+    end // end of [uni]
+  // end of [union]
+} // end of [linset_union]
+
+(* ****** ****** *)
+
+implement{a}
+linset_intersect
+  (t1, t2, cmp) = inter (t1, t2) where {
+  fun inter {h1,h2:nat} .<h1>. (
+    t1: avltree (a, h1), t2: avltree (a, h2)
+  ) :<cloref> [h:nat] avltree (a, h) = begin
+    case+ (t1, t2) of
+    | (~E (), _) => (linset_free (t2); E ())
+    | (_, ~E ()) => (linset_free (t1); E ())
+    | (_, _) =>> let
+        val+ ~B (_(*h1*), x1, t1l, t1r) = t1
+        stadef T = B_node(a)
+        var xn: T?
+        var t2l0: avltree0 and t2r0: avltree0
+        val+ i = avltree_split_at<a> (t2, x1, xn, t2l0, t2r0, cmp)
+        val t12l = inter (t1l, t2l0) and t12r = inter (t1r, t2r0)
+      in
+        if i = 0 then let
+          prval () = opt_unnone {T} (xn)
+        in
+          avltree_concat (t12l, t12r)
+        end else let
+          prval () = opt_unsome {T} (xn)
+        in
+          avltree_join<a> (xn, t12l, t12r)
+        end // end of [if]
+      end // end of [_, _]
+    end // end of [inter]
+  // end of [inter]
+} // end of [linset_intersect]
+
+(* ****** ****** *)
+
+implement{a}
+linset_diff
+  (t1, t2, cmp) = diff (t1, t2) where {
+  fun diff {h1,h2:nat} .<h1>. (
+    t1: avltree (a, h1), t2: avltree (a, h2)
+  ) :<cloref> [h:nat] avltree (a, h) = begin
+    case+ (t1, t2) of
+    | (~E (), _) => (linset_free (t2); E ())
+    | (_, ~E ()) => t1
+    | (_, _) =>> let
+        val+ B (!p_h1, !p_x1, !p_t1l, !p_t1r) = t1
+        val x1 = !p_x1
+        val t1l = !p_t1l and t1r = !p_t1r
+        var xn: B_node(a)
+        var t2l0: avltree0 and t2r0: avltree0
+        val i = avltree_split_at<a> (t2, x1, xn, t2l0, t2r0, cmp)
+        val () = B_node_free_opt {a} (xn, i)
+        val t12l = diff (t1l, t2l0) and t12r = diff (t1r, t2r0)
+      in
+        if i > 0 then let
+          val () = free@ {a} {0,0} (t1) in avltree_concat (t12l, t12r)
+        end else let
+          val t1 = B_node_make {a} (
+            view@(!p_h1), view@(!p_x1), view@(!p_t1l), view@(!p_t1r) | t1
+          ) // end of [val]
+        in
+          avltree_join<a> (t1, t12l, t12r)
+        end (* end of [if] *)
+      end // end of [_, _]
+    end // end of [diff]
+  // end of [diff]
+} // end of [linset_diff]
+
+(* ****** ****** *)
+
+implement{a}
+linset_symdiff
+  (t1, t2, cmp) = symdiff (t1, t2) where {
+  fun symdiff {h1,h2:nat} .<h1>. (
+    t1: avltree (a, h1), t2: avltree (a, h2)
+  ) :<cloref> [h:nat] avltree (a, h) = begin
+    case+ (t1, t2) of
+    | (~E (), _) => t2
+    | (_, ~E ()) => t1
+    | (_, _) =>> let
+        val+ B (!p_h1, !p_x1, !p_t1l, !p_t1r) = t1
+        val x1 = !p_x1
+        val t1l = !p_t1l and t1r = !p_t1r
+        var xn: B_node(a)
+        var t2l0: avltree0 and t2r0: avltree0
+        val i = avltree_split_at<a> (t2, x1, xn, t2l0, t2r0, cmp)
+        val () = B_node_free_opt {a} (xn, i)
+        val t12l = symdiff (t1l, t2l0) and t12r = symdiff (t1r, t2r0)
+      in
+        if i > 0 then let
+          val () = free@ {a} {0,0} (t1) in avltree_concat (t12l, t12r)
+        end else let
+          val t1 = B_node_make {a} (
+            view@(!p_h1), view@(!p_x1), view@(!p_t1l), view@(!p_t1r) | t1
+          ) // end of [val]
+        in
+          avltree_join<a> (t1, t12l, t12r)
+        end (* end of [if] *)
+      end // end of [_, _]
+    end // end of [symdiff]
+  // end of [diff]
+} // end of [linset_symdiff]
+
+(* ****** ****** *)
+
+implement{a}
+linset_listize (xs) = let
+  viewtypedef res_t = List_vt (a)
+  fun aux {h:nat} .<h>.
+    (t: !avltree (a, h), res: res_t):<> res_t =
+    case+ t of
+    | B (_(*h*), x, !p_tl, !p_tr) => let
+        val res = aux (!p_tr, res)
+        val res = list_vt_cons (x, res)
+        val res = aux (!p_tl, res)
+        prval () = fold@ (t)
+      in
+        res
+      end // end of [B]
+    | E () => (fold@ (t); res)
+  // end of [aux]
+in
+  aux (xs, list_vt_nil)
+end // end of [linset_listize]
+
+(* ****** ****** *)
+
+implement{a}
+linset_listize_free (xs) = let
+  viewtypedef res_t = List_vt (a)
+  fun aux {h:nat} .<h>.
+    (t: avltree (a, h), res: res_t):<> res_t =
+    case+ t of
+    | ~B (_(*h*), x, tl, tr) => let
+        val res = aux (tr, res)
+        val res = list_vt_cons (x, res)
+        val res = aux (tl, res)
+      in
+        res
+      end // end of [B]
+    | ~E () => res // end of [E]
+  // end of [aux]
+in
+  aux (xs, list_vt_nil)
+end // end of [linset_listize_free]
+
+(* ****** ****** *)
+
 (* end of [linset_avltree.dats] *)

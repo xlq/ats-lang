@@ -430,16 +430,16 @@ avltree_concat {hl,hr:nat} (
 
 (* ****** ****** *)
 
-typedef avltree = avltree (void, 0)
+typedef avltree0 = avltree (void, 0)?
 
 fun{a:t@ype}
 avltree_split_at {h:nat} .<h>. (
   t: avltree (a, h), x0: a
-, tl0: &avltree? >> avltree (a, hl)
-, tr0: &avltree? >> avltree (a, hr)
+, tl0: &avltree0 >> avltree (a, hl)
+, tr0: &avltree0 >> avltree (a, hr)
 , cmp: cmp a
 ) :<> #[i:two; hl,hr:nat | hl <= h; hr <= h] int i =
-  case t of
+  case+ t of
   | B (_(*h*), x, tl, tr) => let
       val sgn = compare_elt_elt<a> (x0, x, cmp)
     in
@@ -468,12 +468,12 @@ funset_choose
       prval () = opt_some {a} (x0)
     in
       true
-    end
+    end // end of [B]
   | E () => let
       prval () = opt_none {a} (x0)
     in
       false
-    end
+    end // end of [E]
 // end of [funset_choose]
 
 implement{a}
@@ -485,12 +485,12 @@ funset_takeout
       prval () = opt_some {a} (x0)
     in
       true
-    end
+    end // end of [E]
   | E () => let
       prval () = opt_none {a} (x0)
     in
       false
-    end
+    end // end of [E]
 // end of [funset_takeout]
 
 (* ****** ****** *)
@@ -506,7 +506,7 @@ funset_union
     | (_, E ()) => t1
     | (_, _) =>> let
         val+ B (_(*h1*), x1, t1l, t1r) = t1
-        var t2l0: avltree? and t2r0: avltree?
+        var t2l0: avltree0 and t2r0: avltree0
         val+ _(*i*) = avltree_split_at (t2, x1, t2l0, t2r0, cmp)
         val t12l = union (t1l, t2l0) and t12r = union (t1r, t2r0)
       in
@@ -529,7 +529,7 @@ funset_intersect
     | (_, E ()) => E ()
     | (_, _) =>> let
         val+ B (_(*h1*), x1, t1l, t1r) = t1
-        var t2l0: avltree? and t2r0: avltree?
+        var t2l0: avltree0 and t2r0: avltree0
         val+ i = avltree_split_at (t2, x1, t2l0, t2r0, cmp)
         val t12l = inter (t1l, t2l0) and t12r = inter (t1r, t2r0)
       in
@@ -552,7 +552,7 @@ funset_diff
     | (_, E ()) => t1
     | (_, _) =>> let
         val+ B (_(*h1*), x1, t1l, t1r) = t1
-        var t2l0: avltree? and t2r0: avltree?
+        var t2l0: avltree0 and t2r0: avltree0
         val+ i = avltree_split_at (t2, x1, t2l0, t2r0, cmp)
         val t12l = diff (t1l, t2l0) and t12r = diff (t1r, t2r0)
       in
@@ -575,7 +575,7 @@ funset_symdiff
     | (_, E ()) => t1
     | (_, _) =>> let
         val+ B (_(*h1*), x1, t1l, t1r) = t1
-        var t2l0: avltree? and t2r0: avltree?
+        var t2l0: avltree0 and t2r0: avltree0
         val+ i = avltree_split_at (t2, x1, t2l0, t2r0, cmp)
         val t12l = symdiff (t1l, t2l0) and t12r = symdiff (t1r, t2r0)
       in
@@ -597,7 +597,7 @@ funset_is_subset
     | (_, E ()) => false
     | (_, _) =>> let
         val+ B(_(*h1*), x1, t1l, t1r) = t1
-        var t2l0: avltree? and t2r0: avltree?
+        var t2l0: avltree0 and t2r0: avltree0
         val+ i = avltree_split_at (t2, x1, t2l0, t2r0, cmp)
       in
         if i > 0 then
@@ -620,7 +620,7 @@ funset_is_equal
     | (B _, E _) => false
     | (_, _) =>> let
         val+ B(_(*h1*), x1, t1l, t1r) = t1
-        var t2l0: avltree? and t2r0: avltree?
+        var t2l0: avltree0 and t2r0: avltree0
         val+ i = avltree_split_at (t2, x1, t2l0, t2r0, cmp)
       in
         if i > 0 then
