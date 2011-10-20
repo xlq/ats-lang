@@ -835,6 +835,119 @@ linset_symdiff
 (* ****** ****** *)
 
 implement{a}
+linset_is_subset
+  (xs1, xs2, cmp) = let
+  fun is_subset
+    {h1:nat} .<h1>. (
+    t1: !avltree (a, h1), t2: !set(a), cmp: cmp(a)
+  ) :<cloref> bool =
+    case+ t1 of
+    | B (_, x, !p_t1l, !p_t1r) => let
+        val test = linset_is_member (t2, x, cmp)
+      in
+        if test then (
+          if is_subset (!p_t1l, t2, cmp) then let
+            val res = is_subset (!p_t1r, t2, cmp) in fold@ t1; res
+          end else (fold@ t1; false) // end of [if]
+        ) else (fold@ t1; false) // end of [if]
+      end // end of [B]
+    | E _ => (fold@ (t1); true)
+  // end of [is_subset]
+in
+  is_subset (xs1, xs2, cmp)
+end // end of [linset_is_supset]
+
+implement{a}
+linset_is_supset
+  (xs1, xs2, cmp) = linset_is_subset<a> (xs2, xs1, cmp)
+// end of [linset_is_supset]
+
+implement{a}
+linset_is_equal
+  (xs1, xs2, cmp) =
+  if linset_is_supset<a> (xs1, xs2, cmp)
+    then linset_is_subset<a> (xs1, xs2, cmp) else false
+  // end of [if]
+(* end of [linset_is_equal] *)
+
+(* ****** ****** *)
+
+implement{a}
+linset_foreach_funenv {v} {vt}
+  (pf | xs, f, env) = foreach (pf | xs, env) where {
+  fun foreach {h:nat} .<h>.
+    (pf: !v | t: !avltree (a, h), env: !vt):<cloref> void =
+    case+ t of
+    | B (
+        _(*h*), x, !p_tl, !p_tr
+      ) => let
+        val () = foreach (pf | !p_tl, env)
+        val () = f (pf | x, env)
+        val () = foreach (pf | !p_tr, env)
+      in
+        fold@ (t)
+      end // end of [B]
+    | E () => fold@ (t)
+  // end of [foreach]
+} // end of [linset_foreach_funenv]
+
+implement{a}
+linset_foreach_fun
+  (xs, f) = let
+//
+  val f = coerce (f) where {
+    extern castfn coerce
+      (f: (a) -<fun> void):<> (!unit_v | a, !ptr) -<fun> void
+  } // end of [val]
+//
+  prval pfu = unit_v ()
+  val () = linset_foreach_funenv<a> {unit_v} {ptr} (pfu | xs, f, null)
+  prval unit_v () = pfu
+//  
+in
+  // nothing
+end // end of [linset_foreach_fun]
+
+(* ****** ****** *)
+
+implement{a}
+linset_foreach_vclo {v}
+  (pf | m, f) = foreach (pf | m, f) where {
+  fun foreach {h:nat} .<h>. (
+    pf: !v | t: !avltree (a, h), f: &(!v | a) -<clo> void
+  ) :<> void =
+    case+ t of
+    | B (
+        _(*h*), x, !p_tl, !p_tr
+      ) => let
+        val () = foreach (pf | !p_tl, f)
+        val () = f (pf | x)
+        val () = foreach (pf | !p_tr, f)
+      in
+        fold@ (t)
+      end // end of [B]
+    | E () => fold@ (t)
+  // end of [foreach]
+} // end of [linset_foreach_vclo]
+
+implement{a}
+linset_foreach_cloref (m, f) = let
+  val f = __cast (f) where { extern castfn __cast
+    (f: (a) -<cloref> void):<> (!unit_v | a) -<cloref> void
+  } // end of [val]
+  typedef clo_type = (!unit_v | a) -<clo> void
+  val (vbox pf_f | p_f) = cloref_get_view_ptr {clo_type} (f)
+  prval pfu = unit_v ()
+  val () = $effmask_ref
+    (linset_foreach_vclo<a> {unit_v} (pfu | m, !p_f))
+  prval unit_v () = pfu
+in
+  // empty
+end // end of [linset_foreach_cloref]
+
+(* ****** ****** *)
+
+implement{a}
 linset_listize (xs) = let
   viewtypedef res_t = List_vt (a)
   fun aux {h:nat} .<h>.

@@ -136,12 +136,47 @@ fun{a:t@ype} linset_symdiff
 (* ****** ****** *)
 
 fun{a:t@ype}
-linset_is_subset
+linset_is_subset // xs2 contains xs1
   (xs1: !set a, xs2: !set a, cmp: cmp a):<> bool
 // end of [linset_is_subset]
 
 fun{a:t@ype}
+linset_is_supset // xs1 contains xs2
+  (xs1: !set a, xs2: !set a, cmp: cmp a):<> bool
+// end of [linset_is_supset]
+
+fun{a:t@ype}
 linset_is_equal (xs1: !set a, xs2: !set a, cmp: cmp a):<> bool
+
+(* ****** ****** *)
+
+fun{a:t@ype}
+linset_foreach_funenv
+  {v:view} {vt:viewtype} (
+  pf: !v 
+| xs: !set (a)
+, f: (!v | a, !vt) -<fun> void
+, env: !vt
+) :<> void // end of [linset_foreach_funenv]
+
+fun{a:t@ype}
+linset_foreach_fun (
+  xs: !set (a)
+, f: (a) -<fun> void
+) :<> void // end of [linset_foreach_fun]
+
+fun{a:t@ype}
+linset_foreach_vclo {v:view} (
+  pf: !v
+| xs: !set (a)
+, f: &(!v | a) -<clo> void
+) :<> void // end of [linset_foreach_vclo]
+
+fun{a:t@ype}
+linset_foreach_cloref (
+  xs: !set (a)
+, f: (a) -<cloref> void
+) :<!ref> void // end of [linset_foreach_cloref]
 
 (* ****** ****** *)
 

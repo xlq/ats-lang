@@ -607,6 +607,11 @@ funset_is_subset
   end // end of [test]    
 } // end of [funset_is_subset]
 
+implement{a}
+funset_is_supset
+  (t1, t2, cmp) = funset_is_subset<a> (t2, t1, cmp)
+// end of [funset_is_supset]
+
 (* ****** ****** *)
 
 implement{a}

@@ -131,6 +131,11 @@ funset_is_subset
 // end of [funset_is_subset]
 
 fun{a:t@ype}
+funset_is_supset
+  (xs1: set a, xs2: set a, cmp: cmp a):<> bool
+// end of [funset_is_supset]
+
+fun{a:t@ype}
 funset_is_equal (xs1: set a, xs2: set a, cmp: cmp a):<> bool
 
 (* ****** ****** *)
