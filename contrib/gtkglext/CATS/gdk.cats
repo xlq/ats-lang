@@ -30,7 +30,7 @@
 /* ****** ****** */
 //
 // Author of the file: Hongwei Xi (hwxi AT cs DOT bu DOT edu)
-// Starting time: June, 2010
+// Starting time: October, 2011
 //
 /* ****** ****** */
 

@@ -34,25 +34,38 @@
 //
 /* ****** ****** */
 
-#ifndef ATSCTRB_GTKGLEXT_GTK_CATS
-#define ATSCTRB_GTKGLEXT_GTK_CATS
+#ifndef ATSCTRB_GRAPHVIZ_GVC_CATS
+#define ATSCTRB_GRAPHVIZ_GVC_CATS
 
 /* ****** ****** */
 
-#include <gtk/gtkgl.h>
+#define atsctrb_gvContext gvContext
+
+ATSincline()
+ats_ptr_type
+atsctrb_gvContext_exn
+  () {
+  ats_ptr_type gvc = gvContext() ;
+  if (!gvc) {
+    fprintf (stderr, "[gvContext()] failded.\n") ;
+    exit (1)
+  } // end of [if]
+  return gvc ;
+} // end of [atsctrb_gvContext_exn]
 
 /* ****** ****** */
 
-#define atsctrb_gtk_widget_is_gl_capable gtk_widget_is_gl_capable
+ATSinline()
+ats_int_type
+atsctrb_gvFreeContext0
+  (ats_ptr_type gvc) {
+  if (!gvc) return 0 ; else return gvFreeContext(gvc) ;
+} // end of [atsctrb_gvFreeContext0]
 
-#define atsctrb_gtk_widget_get_gl_config gtk_widget_get_gl_config
-
-#define atsctrb_gtk_widget_get_gl_context gtk_widget_get_gl_context
-
-#define atsctrb_gtk_widget_get_gl_drawable gtk_widget_get_gl_drawable
+#define atsctrb_gvFreeContext1 gvFreeContext
 
 /* ****** ****** */
 
-#endif // end of [ATSCTRB_GTKGLEXT_GTK_CATS]
+#endif // end of [ATSCTRB_GRAPHVIZ_GVC_CATS]
 
-/* end of [gtk.cats] */
+/* end of [gvc.cats] */
