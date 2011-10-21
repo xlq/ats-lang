@@ -22,12 +22,21 @@ LDFLAGS=-lgsl -lgslcblas
 
 ######
 
+all::
+
+######
+
 cleanall:: clean
 
 ######
 
-test_rng: test_rng.dats ; $(ATSCC) -o $@ $< $(LDFLAGS) 
+all:: test_rng ; ./test_rng
+test_rng: test_rng.dats ; $(ATSCC) -O2 -o $@ $< $(LDFLAGS) 
 cleanall:: ; $(RMF) test_rng
+
+all:: test_randist ; ./test_randist
+test_randist: test_randist.dats ; $(ATSCC) -O2 -o $@ $< $(LDFLAGS) 
+cleanall:: ; $(RMF) test_randist
 
 ######
 
