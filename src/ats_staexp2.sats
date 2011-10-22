@@ -1244,8 +1244,9 @@ fun s2exp_of_s2exp_whnf (s2e: s2exp_whnf_t): s2exp
 fun s2exp_whnf_of_s2exp (s2e: s2exp): s2exp_whnf_t
 
 (* ****** ****** *)
-
-// application normalization
+//
+// HX: application normalization
+//
 fun s2exp_nfapp (s2e: s2exp): s2exp
 fun s2explst_nfapp {n:nat} (s2es: s2explst n): s2explst n
 
@@ -1261,7 +1262,6 @@ fun s2explst_opnexi (s2es: s2explst): @(s2varlst, s2explst, s2explst)
 //
 // HX: implemented in [ats_staexp2_util2.dats]
 //
-
 fun labs2explst_get_lab
   (_: labs2explst, l0: lab_t): s2expopt_vt
 fun labs2explst_set_lab

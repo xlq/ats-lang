@@ -680,7 +680,7 @@ linset_takeout
 
 (* ****** ****** *)
 
-fn B_node_free_opt
+fn{} B_node_free_opt
   {a:t@ype} {i:nat} (
   xn: opt (B_node(a), i > 0), i: int i
 ) :<> void = let
@@ -717,7 +717,7 @@ linset_union
         var xn: B_node (a)
         var t2l0: avltree0 and t2r0: avltree0
         val i = avltree_split_at<a> (t2, x1, xn, t2l0, t2r0, cmp)
-        val () = B_node_free_opt {a} (xn, i)
+        val () = B_node_free_opt<> {a} (xn, i)
         val t12l = union (t1l, t2l0) and t12r = union (t1r, t2r0)
         val t1 = B_node_make {a} (
           view@(!p_h1), view@(!p_x1), view@(!p_t1l), view@(!p_t1r) | t1

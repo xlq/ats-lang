@@ -242,7 +242,8 @@ list_assoc_cloref {eq:eff} (
 
 (* ****** ****** *)
 
-fun{a:t@ype} list_concat (xs: List (List a)):<> List_vt a
+fun{a:t@ype}
+list_concat (xs: List (List a)):<> List_vt a
 
 (* ****** ****** *)
 

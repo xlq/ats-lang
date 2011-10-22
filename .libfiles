@@ -322,6 +322,10 @@ libats/DATS/linmap_avltree.dats
 libats/SATS/linmap_rbtree.sats
 libats/DATS/linmap_rbtree.dats
 
+/* linear set implementation based on AVL trees */
+libats/SATS/linset_avltree.sats
+libats/DATS/linset_avltree.dats
+
 /* linear array-based queue implementation */
 libats/SATS/linqueue_arr.sats
 libats/DATS/linqueue_arr.dats

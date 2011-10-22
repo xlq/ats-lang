@@ -2203,14 +2203,14 @@ and aux_wths2explst
 // end of [aux_wths2explst]
 
 and aux_s2eff (
-    s2V0: s2Var_t
-  , s2fe: s2eff
-  , ans: &int, s2cs: &s2cstlst, s2vs: &s2varlst
-  ) : void = begin case+ s2fe of
+  s2V0: s2Var_t
+, s2fe: s2eff
+, ans: &int, s2cs: &s2cstlst, s2vs: &s2varlst
+) : void = begin case+ s2fe of
   | S2EFFall _ => ()
   | S2EFFnil _ => ()
   | S2EFFset (_, s2es) => aux_s2explst (s2V0, s2es, ans, s2cs, s2vs)
-end // end of[aux_s2eff]
+end // end of [aux_s2eff]
 
 and aux_s2lab (
     s2V0: s2Var_t
