@@ -37,16 +37,15 @@
 #define ATS_STALOADFLAG 0 // no need for staloading at run-time
 
 (* ****** ****** *)
-//
-#include
-"contrib/graphviz/SATS/types.sats"
-//
-(* ****** ****** *)
 
 %{#
 #include "contrib/graphviz/CATS/gvc.cats"
 %} // end of [%{#]
 
+(* ****** ****** *)
+//
+staload "contrib/graphviz/SATS/types.sats"
+//
 (* ****** ****** *)
 
 (*
@@ -65,6 +64,16 @@ viewtypedef GVCptr0 = [l:addr] GVCptr (l)
 viewtypedef GVCptr1 = [l:addr | l >  null] GVCptr (l)
 //
 (* ****** ****** *)
+
+(*
+GVC_t *gvNEWcontext
+  (const lt_symlist_t *builtins, int demand_loading)
+*)
+fun gvNEWcontext (
+  builtins: ptr, demand_loading: int
+) : GVCptr0 = "mac#atsctrb_gvNEWcontext"
+
+(* ****** ****** *)
 (*
 GVC_t *gvContext(void)
 *)
@@ -78,6 +87,28 @@ fun gvFreeContext0
 fun gvFreeContext1
   (gvc: GVCptr1): int = "mac#atsctrb_gvFreeContext1"
 //
+(* ****** ****** *)
+
+/*
+char *gvcVersion(GVC_t*);
+*/
+fun gvcVersion
+  {l1:agz} (
+  gvc: !GVCptr l1
+) : [l2:addr] (minus (GVCptr l1, strptr l2) | strptr l2)
+  = "mac#atsctrb_gvcVersion"
+// end of [gvcVersion]
+
+/*
+extern char *gvcBuildDate(GVC_t*);
+*/
+fun gvcBuildDate
+  {l1:agz} (
+  gvc: !GVCptr l1
+) : [l2:addr] (minus (GVCptr l1, strptr l2) | strptr l2)
+  = "mac#atsctrb_gvcBuildDate"
+// end of [gvcBuildDate]
+
 (* ****** ****** *)
 
 absview gvLayout_v (addr(*gvc*), addr(*graph*))
@@ -102,6 +133,15 @@ fun gvRender
   pf: !gvLayout_v (l1, l2)
 | gvc: !GVCptr l1, g: !pgraph l2, format: !READ(string), out: FILEref
 ) : [i:int | i <= 0] int (i) = "mac#atsctrb_gvRender"
+
+fun gvRenderFilename
+  {l1,l2:agz} (
+  pf: !gvLayout_v (l1, l2)
+| gvc: !GVCptr l1
+, g: !pgraph l2
+, format: !READ(string)
+, path: !READ(string)
+) : [i:int | i <= 0] int (i) = "mac#atsctrb_gvRenderFilename"
 
 (* ****** ****** *)
 

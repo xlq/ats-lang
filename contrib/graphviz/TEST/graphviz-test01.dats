@@ -15,15 +15,20 @@ staload
 (* ****** ****** *)
 
 implement
-main () = {
+main (argc, argv) = {
   val filr = stdin_ref
+//
+  val () = aginit ()
   val gvc = gvContext_exn ()
+//
+  var fmt: string = "plain"
+  val () = if argc >= 2 then fmt := argv.[1]
 //
   val g = agread (filr)
   val (pfopt | err) = gvLayout (gvc, g, "dot")
   val () = assert (err = 0)
   prval Some_v (pf) = pfopt
-  val err = gvRender (pf | gvc, g, "plain", stdout_ref)
+  val err = gvRender (pf | gvc, g, fmt, stdout_ref)
   val _0 = gvFreeLayout (pf | gvc, g)
   val () = agclose (g)
 //

@@ -39,11 +39,19 @@
 
 /* ****** ****** */
 
+#define atsctrb_aginit aginit
+
 #define atsctrb_agopen agopen
-#define atsctrb_agread agread
 #define atsctrb_agclose agclose
 
+#define atsctrb_agread agread
 #define atsctrb_agwrite agwrite
+
+/* ****** ****** */
+
+#define atsctrb_agstrdup agstrdup
+#define atsctrb_agstrdup_html agstrdup_html
+#define atsctrb_agstrfree agstrfree
 
 /* ****** ****** */
 

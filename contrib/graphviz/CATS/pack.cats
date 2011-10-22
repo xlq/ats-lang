@@ -34,12 +34,12 @@
 //
 /* ****** ****** */
 
-#ifndef ATSCTRB_GRAPHVIZ_GVC_CATS
-#define ATSCTRB_GRAPHVIZ_GVC_CATS
+#ifndef ATSCTRB_GRAPHVIZ_PACK_CATS
+#define ATSCTRB_GRAPHVIZ_PACK_CATS
 
 /* ****** ****** */
 
-#include "graphviz/gvc.h"
+#include "graphviz/pack.h"
 
 /* ****** ****** */
 
@@ -47,46 +47,10 @@
 
 /* ****** ****** */
 
-#define atsctrb_gvContext gvContext
-
-ATSinline()
-ats_ptr_type
-atsctrb_gvContext_exn
-  () {
-  ats_ptr_type gvc = gvContext() ;
-  if (!gvc) {
-    fprintf (stderr, "[gvContext()] failded.\n") ;
-    exit (1) ;
-  } // end of [if]
-  return gvc ;
-} // end of [atsctrb_gvContext_exn]
+#define atsctrb_ccomps ccomps
 
 /* ****** ****** */
 
-#define atsctrb_gvcVersion gvcVersion
-#define atsctrb_gvcBuildDate gvcBuildDate
+#endif // end of [ATSCTRB_GRAPHVIZ_PACK_CATS]
 
-/* ****** ****** */
-
-ATSinline()
-ats_int_type
-atsctrb_gvFreeContext0
-  (ats_ptr_type gvc) {
-  if (!gvc) return 0 ; else return gvFreeContext(gvc) ;
-} // end of [atsctrb_gvFreeContext0]
-
-#define atsctrb_gvFreeContext1 gvFreeContext
-
-/* ****** ****** */
-
-#define atsctrb_gvLayout gvLayout
-#define atsctrb_gvRender gvRender
-#define atsctrb_gvRenderFilename gvRenderFilename
-
-#define atsctrb_gvFreeLayout gvFreeLayout
-
-/* ****** ****** */
-
-#endif // end of [ATSCTRB_GRAPHVIZ_GVC_CATS]
-
-/* end of [gvc.cats] */
+/* end of [pack.cats] */

@@ -24,10 +24,15 @@ GVLDFLAGS=`pkg-config libgvc --libs`
 
 ######
 
+all::
+
+######
+
 cleanall:: clean
 
 ######
 
+all:: test01 ; ./test01 < data/hashtable.gv
 test01: graphviz-test01.dats
 	$(ATSCC) -O2 -g -o $@ $(GVCFLAGS) $< $(GVLDFLAGS)
 cleanall:: ; $(RMF) test01
