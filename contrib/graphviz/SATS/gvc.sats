@@ -34,6 +34,15 @@
 //
 (* ****** ****** *)
 
+#define ATS_STALOADFLAG 0 // no need for staloading at run-time
+
+(* ****** ****** *)
+//
+#include
+"contrib/graphviz/SATS/types.sats"
+//
+(* ****** ****** *)
+
 %{#
 #include "contrib/graphviz/CATS/gvc.cats"
 %} // end of [%{#]
@@ -55,11 +64,7 @@ absviewtype GVCptr (l:addr)
 viewtypedef GVCptr0 = [l:addr] GVCptr (l)
 viewtypedef GVCptr1 = [l:addr | l >  null] GVCptr (l)
 //
-absviewtype pgraph_viewtype (l:addr) = ptr
-stadef pgraph = pgraph_viewtype
-//
 (* ****** ****** *)
-
 (*
 GVC_t *gvContext(void)
 *)
@@ -69,9 +74,9 @@ fun gvContext_exn (): GVCptr1 = "mac#atsctrb_gvContext_exn"
 // HX: returning the number of accumulated errors
 //
 fun gvFreeContext0
-  (gvc: GVCptr0): int = "mac#atsctrb_gvFreecContext0"
+  (gvc: GVCptr0): int = "mac#atsctrb_gvFreeContext0"
 fun gvFreeContext1
-  (gvc: GVCptr1): int = "mac#atsctrb_gvFreecContext1"
+  (gvc: GVCptr1): int = "mac#atsctrb_gvFreeContext1"
 //
 (* ****** ****** *)
 
@@ -81,8 +86,22 @@ absview gvLayout_v (addr(*gvc*), addr(*graph*))
 int gvLayout(GVC_t *gvc, graph_t *g, const char *engine)
 *)
 fun gvLayout {l1,l2:agz} (
-  gvc: !GVCptr l1, g: pgraph l2
+  gvc: !GVCptr l1, g: !pgraph l2, engname: !READ(string)
 ) : [i:int | i <= 0] (option_v (gvLayout_v (l1, l2), i >= 0) | int i)
+  = "mac#atsctrb_gvLayout"
+
+fun gvFreeLayout {l1,l2:agz} (
+  pf: gvLayout_v (l1, l2) | gvc: !GVCptr l1, g: !pgraph l2
+) : int(*0*) // always returning 0
+  = "mac#atsctrb_gvFreeLayout" // end of [gvFreeLayout]
+
+(* ****** ****** *)
+
+fun gvRender
+  {l1,l2:agz} (
+  pf: !gvLayout_v (l1, l2)
+| gvc: !GVCptr l1, g: !pgraph l2, format: !READ(string), out: FILEref
+) : [i:int | i <= 0] int (i) = "mac#atsctrb_gvRender"
 
 (* ****** ****** *)
 

@@ -34,50 +34,16 @@
 //
 /* ****** ****** */
 
-#ifndef ATSCTRB_GRAPHVIZ_GVC_CATS
-#define ATSCTRB_GRAPHVIZ_GVC_CATS
+#ifndef ATSCTRB_GRAPHVIZ_TYPES_CATS
+#define ATSCTRB_GRAPHVIZ_TYPES_CATS
 
 /* ****** ****** */
 
-#include "graphviz/gvc.h"
+#define atsctrb_agopen agopen
+#define atsctrb_agread agread
+#define atsctrb_agclose agclose
 
-/* ****** ****** */
-
-#include "contrib/graphviz/CATS/types.cats"
-
-/* ****** ****** */
-
-#define atsctrb_gvContext gvContext
-
-ATSinline()
-ats_ptr_type
-atsctrb_gvContext_exn
-  () {
-  ats_ptr_type gvc = gvContext() ;
-  if (!gvc) {
-    fprintf (stderr, "[gvContext()] failded.\n") ;
-    exit (1) ;
-  } // end of [if]
-  return gvc ;
-} // end of [atsctrb_gvContext_exn]
-
-/* ****** ****** */
-
-ATSinline()
-ats_int_type
-atsctrb_gvFreeContext0
-  (ats_ptr_type gvc) {
-  if (!gvc) return 0 ; else return gvFreeContext(gvc) ;
-} // end of [atsctrb_gvFreeContext0]
-
-#define atsctrb_gvFreeContext1 gvFreeContext
-
-/* ****** ****** */
-
-#define atsctrb_gvLayout gvLayout
-#define atsctrb_gvRender gvRender
-
-#define atsctrb_gvFreeLayout gvFreeLayout
+#define atsctrb_agwrite agwrite
 
 /* ****** ****** */
 

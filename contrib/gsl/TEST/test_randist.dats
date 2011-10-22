@@ -27,7 +27,7 @@ main () = {
   val () = gsl_rng_set (my_rng, $UN.cast2ulint (t1))
 //
   #define N 10
-  var i: int
+  var i: int // uninitialized
 //
   val () = print "(****** Uniform: ******)\n"
   val () = for (i := 0; i < N; i := i+1) {
