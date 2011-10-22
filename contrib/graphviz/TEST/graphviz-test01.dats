@@ -10,7 +10,8 @@
 (* ****** ****** *)
 
 staload
-"contrib/graphviz/SATS/gvc.sats"
+"contrib/graphviz/SATS/types.sats"
+staload "contrib/graphviz/SATS/gvc.sats"
 
 (* ****** ****** *)
 
@@ -24,7 +25,7 @@ main (argc, argv) = {
   var fmt: string = "plain"
   val () = if argc >= 2 then fmt := argv.[1]
 //
-  val g = agread (filr)
+  val g = agread_exn (filr)
   val (pfopt | err) = gvLayout (gvc, g, "dot")
   val () = assert (err = 0)
   prval Some_v (pf) = pfopt

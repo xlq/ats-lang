@@ -34,6 +34,10 @@
 //
 (* ****** ****** *)
 
+#define ATS_STALOADFLAG 0 // no need for staloading at run-time
+
+(* ****** ****** *)
+
 (*
 typedef struct graph_t graph_t;
 *)
@@ -117,6 +121,9 @@ macdef ADIGRAPHSTRICT = $extval (int, "ADIGRAPHSTRICT")
 fun agopen (
   name: !READ(string), type: int
 ) : pgraph0 = "mac#atsctrb_agopen"
+fun agopen_exn (
+  name: !READ(string), type: int
+) : pgraph1 = "mac#atsctrb_agopen_exn"
 //
 fun agclose {l:agz}
   (g: pgraph l): void = "mac#atsctrb_agclose"
@@ -124,6 +131,9 @@ fun agclose {l:agz}
 fun agread (
   filr: FILEref
 ) : pgraph0 = "mac#atsctrb_agread"
+fun agread_exn (
+  filr: FILEref
+) : pgraph1 = "mac#atsctrb_agread_exn"
 //
 fun agwrite {l:agz}
   (g: !pgraph l, filr: FILEref): [i:int | i <= 0] int(*err*)

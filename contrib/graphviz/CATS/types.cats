@@ -42,9 +42,35 @@
 #define atsctrb_aginit aginit
 
 #define atsctrb_agopen agopen
+
+ATSinline()
+ats_ptr_type
+atsctrb_agopen_exn (
+  ats_ptr_type path, ats_int_type type
+) {
+  ats_ptr_type g = (void*)agopen((char*)path, type) ;
+  if (!g) {
+    fprintf (stderr, "[agopen] failed.\n") ; exit (1) ;
+  } // end of [if]
+  return g ;
+} // end of [atsctrb_agopen_exn]
+
 #define atsctrb_agclose agclose
 
 #define atsctrb_agread agread
+
+ATSinline()
+ats_ptr_type
+atsctrb_agread_exn (
+  ats_ptr_type path
+) {
+  ats_ptr_type g = (void*)agread((FILE*)path) ;
+  if (!g) {
+    fprintf (stderr, "[agread] failed.\n") ; exit (1) ;
+  } // end of [if]
+  return g ;
+} // end of [atsctrb_agread_exn]
+
 #define atsctrb_agwrite agwrite
 
 /* ****** ****** */
