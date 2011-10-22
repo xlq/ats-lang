@@ -61,8 +61,13 @@ abst@ype
 passwd_rest // unknown quantity
 typedef passwd_struct =
 $extype_struct "ats_passwd_type" of {
-  pw_uid= uid_t
+  pw_name= ptr // char*
+, pw_passwd= ptr // char*
+, pw_uid= uid_t
 , pw_gid= gid_t
+, pw_gecos= ptr // char*
+, pw_dir= ptr // char*
+, pw_shell= ptr // char*
 , _rest= undefined_t
 } // end of [passwd]
 typedef passwd = passwd_struct

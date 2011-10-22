@@ -56,7 +56,10 @@ abst@ype
 group_rest // unknown quantity
 typedef group_struct =
 $extype_struct "ats_group_type" of {
-  gr_gid= gid_t
+  gr_name= ptr // char*
+, gr_passwd= ptr // char*
+, gr_gid= gid_t
+, gr_mem= ptr // char** // member list // null-terminated
 , _rest= undefined_t
 } // end of [group]
 typedef group = group_struct
@@ -79,15 +82,19 @@ fun group_get_gr_passwd (
 
 (* ****** ****** *)
 //
-// HX: please use with caution!
+// HX: ptrarr: null-terminated array of pointers
 //
-fun group_get_gr_mem
-  (grp: &READ(group)): ptr = "atslib_group_get_gr_mem" // fun!
+fun group_get_gr_mem (
+  grp: &READ(group)
+) : [n:nat;l:addr] (
+  ptrarr(n) @ l, ptrarr(n) @ l -<lin,prf> void | ptr l
+) = "atslib_group_get_gr_mem"
 // end of [group_get_gr_mem]
 
 (* ****** ****** *)
-
+//
 // HX: non-reentrant
+//
 fun getgrnam (
   nam: !READ(string)
 ) :<!ref> [l:addr] (
@@ -95,7 +102,10 @@ fun getgrnam (
 ) = "mac#atslib_getgrnam"
 // end of [getgrnam]
 
+(* ****** ****** *)
+//
 // HX: non-reentrant
+//
 fun getgrgid (
   gid: gid_t
 ) :<!ref> [l:addr] (

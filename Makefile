@@ -349,7 +349,7 @@ cleanall:: clean
 	$(RMF) contrib/GTK/atsctrb_GTK.o
 	$(RMF) contrib/GL/atsctrb_GL.o
 	$(RMF) contrib/GL/atsctrb_glut.o
-	$(RMF) contrib/SDL/atsctrb_gtkglext.o
+	$(RMF) contrib/gtkglext/atsctrb_gtkglext.o
 	$(RMF) contrib/SDL/atsctrb_SDL.o
 
 cleanall:: ; $(MAKE) -C utils/atslex -f ./Makefile cleanall

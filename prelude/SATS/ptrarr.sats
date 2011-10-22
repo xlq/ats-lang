@@ -46,7 +46,7 @@ dataview ptrarr_v (n:int, l:addr) =
   | {l:addr} ptrarr_v_cons (n+1, l) of (Ptr1 @ l, ptrarr_v (n, l+sizeof(ptr)))
 // end of [ptrarr_v]
 *)
-abst@ype ptrarr (n:int) = array(ptr, n)
+abst@ype ptrarr (n:int) = array (ptr, n)
 
 praxi ptrarr_takeout {vt:viewtype}
   {n:nat} {l:addr} (pf: ptrarr(n) @ l): (

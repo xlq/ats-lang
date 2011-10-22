@@ -406,9 +406,11 @@ in
 end // end of [f2undeclst_tr]
 
 (* ****** ****** *)
-
-// [sta] means allocation at compile-time
-fn v2ardec_tr_sta (d2c: v2ardec): v3ardec = let
+//
+// HX: [sta] means allocation at compile-time
+//
+fn v2ardec_tr_sta
+  (d2c: v2ardec): v3ardec = let
   val loc0 = d2c.v2ardec_loc
   val d2v_ptr = d2c.v2ardec_dvar
 (*
@@ -633,7 +635,9 @@ end // end of [v2ardec_tr_dyn]
 
 (* ****** ****** *)
 
-fn v2ardec_tr (d2c: v2ardec): v3ardec = let
+fn v2ardec_tr (
+  d2c: v2ardec
+) : v3ardec = let
   val knd = d2c.v2ardec_knd
 in
   if knd = 0 then begin
@@ -643,8 +647,9 @@ in
   end // end of [if]
 end // end of [v2ardec_tr]
 
-fun v2ardeclst_tr
-  (d2cs: v2ardeclst): v3ardeclst = let
+fn v2ardeclst_tr (
+  d2cs: v2ardeclst
+) : v3ardeclst = let
   val () = aux d2cs where {
     fun aux // add static address variables into the environment
       (d2cs: v2ardeclst): void = case+ d2cs of
