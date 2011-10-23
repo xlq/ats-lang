@@ -427,22 +427,9 @@ s2explst_whnf (s2es) = $Lst.list_map_fun (s2es, s2exp_whnf)
 // end of [s2explst_whnf]
 
 (* ****** ****** *)
-
-local
-
-assume s2exp_whnf_t = s2exp
-
-in // end of [local]
-
-implement s2exp_of_s2exp_whnf (s2e) = s2e
-implement s2exp_whnf_of_s2exp (s2e) = s2e
-
-end // end of [local]
-
-(* ****** ****** *)
-
-// application normalization
-
+//
+// HX: application normalization
+//
 fun s2exp_nfapp_flag
   (s2e0: s2exp, flag: &int): s2exp = let
   val s2e0 = s2exp_whnf_flag (s2e0, flag)
