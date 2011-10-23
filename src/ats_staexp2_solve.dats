@@ -199,6 +199,20 @@ end // end of [prerr_the_staerrlst]
 (* ****** ****** *)
 
 implement
+label_equal_solve_err
+  (loc, l1, l2, err) =
+  if l1 = l2 then () else (err := err + 1)
+// end of [label_equal_solve_err]
+
+implement
+stamp_equal_solve_err
+  (loc, s1, s2, err) =
+  if s1 = s2 then () else (err := err + 1)
+// end of [stamp_equal_solve_err]
+
+(* ****** ****** *)
+
+implement
 funclo_equal_solve
   (loc0, fc1, fc2) =
   if fc1 = fc2 then () else let
@@ -228,12 +242,6 @@ clokind_equal_solve_err
 // end of [clokind_equal_solve_err]
 
 implement
-label_equal_solve_err
-  (loc, l1, l2, err) =
-  if l1 = l2 then () else (err := err + 1)
-// end of [label_equal_solve_err]
-
-implement
 linearity_equal_solve_err
   (loc, lin1, lin2, err) =
   if lin1 = lin2 then () else (err := err + 1)
@@ -245,23 +253,19 @@ pfarity_equal_solve_err
   if npf1 = npf2 then () else (err := err + 1)
 // end of [pfarity_equal_solve_err]
 
-implement
-refval_equal_solve_err
-  (loc0, refval1, refval2, err) =
-  if refval1 = refval2 then () else (err := err + 1)
-// end of [refval_equal_solve_err]
-
-implement
-stamp_equal_solve_err
-  (loc, s1, s2, err) =
-  if s1 = s2 then () else (err := err + 1)
-// end of [stamp_equal_solve_err]
+(* ****** ****** *)
 
 implement
 tyreckind_equal_solve_err
   (loc, knd1, knd2, err) =
   if knd1 = knd2 then () else (err := err + 1)
 // end of [tyreckind_equal_solve_err]
+
+implement
+refval_equal_solve_err
+  (loc0, refval1, refval2, err) =
+  if refval1 = refval2 then () else (err := err + 1)
+// end of [refval_equal_solve_err]
 
 (* ****** ****** *)
 

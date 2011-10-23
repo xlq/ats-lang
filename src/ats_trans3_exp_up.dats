@@ -1894,8 +1894,9 @@ in
 end (* end of [d2exp_viewat_tr_up] *)
 
 (* ****** ****** *)
-
-// the function is declared above
+//
+// HX: the function is declared above
+//
 implement
 d2exp_viewat_assgn_tr_up
   (loc0, d2e_l, d2e_r) = let

@@ -43,6 +43,12 @@ staload "ats_staexp2.sats"
 
 (* ****** ****** *)
 
+fun label_equal_solve_err
+  (_: loc_t, _: $Lab.label_t, _: $Lab.label_t, err: &int): void
+
+fun stamp_equal_solve_err
+  (_: loc_t, s1: stamp_t, s2: stamp_t, err: &int): void
+
 fun funclo_equal_solve
   (_: loc_t, _: $Syn.funclo, _: $Syn.funclo): void
 fun funclo_equal_solve_err
@@ -50,9 +56,6 @@ fun funclo_equal_solve_err
 
 fun clokind_equal_solve_err
   (_: loc_t, knd1: int, knd2: int, err: &int): void
-
-fun label_equal_solve_err
-  (_: loc_t, _: $Lab.label_t, _: $Lab.label_t, err: &int): void
 
 fun linearity_equal_solve_err
   (_: loc_t, lin1: int, lin2: int, err: &int): void
@@ -62,16 +65,11 @@ fun pfarity_equal_solve
 fun pfarity_equal_solve_err
   (_: loc_t, npf1: int, npf2: int, err: &int): void
 
-fun refval_equal_solve
-  (loc0: loc_t, refval1: int, refval2: int): void
-fun refval_equal_solve_err
-  (loc0: loc_t, refval1: int, refval2: int, err: &int): void
-
-fun stamp_equal_solve_err
-  (_: loc_t, s1: stamp_t, s2: stamp_t, err: &int): void
-
 fun tyreckind_equal_solve_err
   (_: loc_t, _: tyreckind, _: tyreckind, err: &int): void
+
+fun refval_equal_solve_err
+  (_: loc_t, refval1: int, refval2: int, err: &int): void
 
 (* ****** ****** *)
 
