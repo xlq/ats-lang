@@ -76,13 +76,13 @@ typedef List (a:t@ype) = [n:int | n >= 0] list (a, n)
 
 (* ****** ****** *)
 
-macdef list_sing (x) = list_cons (,(x), list_nil ())
-
-(* ****** ****** *)
-
 prfun list_length_is_nonnegative
   {a:t@ype} {n:int} (xs: list (a, n)): [n>=0] void
 // end of [list_length_is_nonnegative]
+
+(* ****** ****** *)
+
+macdef list_sing (x) = list_cons (,(x), list_nil ())
 
 (* ****** ****** *)
 

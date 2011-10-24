@@ -45,7 +45,7 @@
 
 praxi array_v_of_bytes_v
   {a:viewt@ype}
-  {n:nat}
+  {n:int}
   {l:addr}
   {bsz:int} (
   pf1: MUL (n, sizeof a, bsz)
@@ -54,7 +54,7 @@ praxi array_v_of_bytes_v
 
 praxi bytes_v_of_array_v
   {a:viewt@ype}
-  {n:nat}
+  {n:int}
   {l:addr}
   (pf: @[a?][n] @ l)
   : [bsz:int] (
@@ -178,8 +178,10 @@ prfun array_v_unsing
 (* ****** ****** *)
 
 fun{a:viewt@ype}
-array_ptr_alloc {n:nat} (asz: size_t n)
-  :<> [l:agz] (free_gc_v (a, n, l), array_v (a?, n, l) | ptr l)
+array_ptr_alloc
+  {n:nat} (
+  asz: size_t n
+) :<> [l:agz] (free_gc_v (a, n, l), array_v (a?, n, l) | ptr l)
 // end of [array_ptr_alloc]
 
 (*
@@ -191,16 +193,6 @@ fun array_ptr_alloc_tsz
 ) :<> [l:agz] (free_gc_v (a, n, l), array_v (a?, n, l) | ptr l)
   = "atspre_array_ptr_alloc_tsz"
 // end of [fun]
-
-(* ****** ****** *)
-
-(*
-** HX: implemented in C
-*)
-fun array_ptr_free
-  {a:viewt@ype} {n:int} {l:addr} (
-  pfgc: free_gc_v (a, n, l), pfarr: array_v (a?, n, l) | p: ptr l
-) :<> void = "atspre_array_ptr_free"
 
 (* ****** ****** *)
 
@@ -220,16 +212,36 @@ array_ptr_allocfree
 
 (* ****** ****** *)
 
+(*
+** HX: implemented in C
+*)
+fun array_ptr_free
+  {a:viewt@ype} {n:int} {l:addr} (
+  pfgc: free_gc_v (a, n, l), pfarr: array_v (a?, n, l) | p: ptr l
+) :<> void = "atspre_array_ptr_free"
+
 fun{a:t@ype}
-array_ptr_initialize_elt {n:nat}
-  (base: &(@[a?][n]) >> @[a][n], asz: size_t n, ini: a):<> void
-// end of [array_ptr_initialize_elt]
+array_ptr_free_fun
+  {n:int} {l:addr} (
+  pfgc: free_gc_v (a, n, l)
+, pfarr: array_v (a, n, l)
+| p: ptr l, asz: size_t n
+, f: (&a >> a?) -<fun> void
+) :<> void // end of [array_ptr_free_fun]
+
+(* ****** ****** *)
+
+fun{a:t@ype}
+array_ptr_initialize_elt
+  {n:int} (
+  base: &(@[a?][n]) >> @[a][n], asz: size_t n, ini: a
+) :<> void // end of [array_ptr_initialize_elt]
 
 (*
 ** HX: implemented in C
 *)
 fun array_ptr_initialize_elt_tsz
-  {a:t@ype} {n:nat} (
+  {a:t@ype} {n:int} (
   base: &(@[a?][n]) >> @[a][n], asz: size_t n, ini: &a, tsz: sizeof_t a
 ) :<> void
   = "atspre_array_ptr_initialize_elt_tsz"
@@ -238,15 +250,17 @@ fun array_ptr_initialize_elt_tsz
 (* ****** ****** *)
 
 fun{a:t@ype}
-array_ptr_initialize_lst {n:nat}
-  (base: &(@[a?][n]) >> @[a][n], xs: list (a, n)):<> void
-// end of [array_ptr_initialize_lst]
+array_ptr_initialize_lst
+  {n:int} (
+  base: &(@[a?][n]) >> @[a][n], xs: list (a, n)
+) :<> void // end of [array_ptr_initialize_lst]
 
 // the linear list is freed along the way
 fun{a:viewt@ype}
-array_ptr_initialize_lst_vt {n:nat}
-  (base: &(@[a?][n]) >> @[a][n], xs: list_vt (a, n)):<> void
-// end of [array_ptr_initialize_lst_vt]
+array_ptr_initialize_lst_vt
+  {n:int} (
+  base: &(@[a?][n]) >> @[a][n], xs: list_vt (a, n)
+) :<> void // end of [array_ptr_initialize_lst_vt]
 
 (* ****** ****** *)
 
@@ -311,7 +325,7 @@ array_ptr_initialize_vclo
 
 fun{a:viewt@ype}
 array_ptr_clear_fun
-  {n:nat} {f:eff} (
+  {n:int} {f:eff} (
   base: &(@[a][n]) >> @[a?][n]
 , asz: size_t n
 , f: (&a >> a?) -<fun,f> void

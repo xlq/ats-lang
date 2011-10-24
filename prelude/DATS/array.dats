@@ -56,6 +56,14 @@ staload "prelude/SATS/array.sats"
 
 (* ****** ****** *)
 
+extern
+praxi lemma_array_param
+  {a:viewt@ype} {n:int} {l:addr}
+  (pf: !array_v (a, n, l)): [n>=0;l>null] void
+// end of [lemma_array_param]
+
+(* ****** ****** *)
+
 implement{a} array_ptr_get_elt_at (A, i) = A.[i]
 implement{a} array_ptr_set_elt_at (A, i, x) = (A.[i] := x)
 
@@ -118,16 +126,29 @@ array_ptr_alloc (asz) = array_ptr_alloc_tsz {a} (asz, sizeof<a>)
 
 implement{a}
 array_ptr_allocfree (asz) = let
-  val [l:addr] (pf_gc, pf_arr | p_arr) = array_ptr_alloc<a> (asz)
+  val [l:addr] (pfgc, pfarr | p_arr) = array_ptr_alloc<a> (asz)
 in #[l | (
-  pf_arr
-| p_arr, lam (pf_arr | p_arr) =<lin> array_ptr_free {a} (pf_gc, pf_arr | p_arr)
+  pfarr
+| p_arr, lam (pfarr | p_arr) =<lin> array_ptr_free {a} (pfgc, pfarr | p_arr)
 ) ] end // end of [array_ptr_allocfree]
 
 (* ****** ****** *)
 
 implement{a}
+array_ptr_free_fun
+  (pfgc, pfarr | p, asz, f) = let
+  val () = array_ptr_clear_fun<a> (!p, asz, f)
+in
+  array_ptr_free (pfgc, pfarr | p)
+end // end of [array_ptr_free_fun]
+
+(* ****** ****** *)
+
+implement{a}
 array_ptr_initialize_elt (A0, n0, x0) = let
+//
+  prval () = lemma_array_param {a?} (view@ (A0))
+//
   fun loop {n:nat} {l:addr} .<n>.
     (pf: array_v (a?, n, l) | p: ptr l, n: size_t n, x0: a)
     :<> (array_v (a, n, l) | void) =
@@ -152,6 +173,9 @@ end // end of [array_ptr_initialize_elt]
 
 implement{a}
 array_ptr_initialize_lst (A0, xs0) = let
+//
+  prval () = lemma_array_param {a?} (view@ (A0))
+//
   fun loop {n:nat} {l:addr} .<n>. (
       pf: array_v (a?, n, l) | p: ptr l, xs: list (a, n)
     ) :<> (
@@ -177,6 +201,9 @@ end // end of [array_ptr_initialize_lst]
 
 implement{a}
 array_ptr_initialize_lst_vt (A0, xs0) = let
+//
+  prval () = lemma_array_param {a?} (view@ (A0))
+//
   fun loop {n:nat} {l:addr} .<n>. (
       pf: array_v (a?, n, l) | p: ptr l, xs: list_vt (a, n)
     ) :<> (
@@ -205,20 +232,20 @@ array_ptr_initialize_funenv_tsz
   {a} {v} {vt} {n} {f:eff}
   (pf | base, asz, f, tsz, env) = let
   fun loop {i:nat | i <= n} {l:addr} .<n-i>. (
-    pfv: !v, pf_arr: !array_v (a?, n-i, l) >> array_v (a, n-i, l)
+    pfv: !v, pfarr: !array_v (a?, n-i, l) >> array_v (a, n-i, l)
   | p: ptr l, n: size_t n, i: size_t i
   , f: (!v | sizeLt n, &(a?) >> a, !vt) -<f> void, tsz: sizeof_t a, env: !vt
   ) :<f> void =
     if i < n then let
-      prval (pf1_at, pf2_arr) = array_v_uncons {a?} (pf_arr)
+      prval (pf1_at, pf2_arr) = array_v_uncons {a?} (pfarr)
       val () = f (pfv | i, !p, env)
       val () = loop (pfv, pf2_arr | p + tsz, n, i+1, f, tsz, env)
-      prval () = pf_arr := array_v_cons {a} (pf1_at, pf2_arr)
+      prval () = pfarr := array_v_cons {a} (pf1_at, pf2_arr)
     in
       // nothing
     end else let
-      prval () = array_v_unnil (pf_arr)
-      prval () = pf_arr := array_v_nil {a} ()
+      prval () = array_v_unnil (pfarr)
+      prval () = pfarr := array_v_nil {a} ()
     in
       // nothing
     end // end of [if]
@@ -253,20 +280,20 @@ array_ptr_initialize_cloenv_tsz
   {a} {v} {vt} {n} {f:eff}
   (pf | base, asz, f, tsz, env) = let
   fun loop {i:nat | i <= n} {l:addr} .<n-i>. (
-      pfv: !v, pf_arr: !array_v (a?, n-i, l) >> array_v (a, n-i, l)
+      pfv: !v, pfarr: !array_v (a?, n-i, l) >> array_v (a, n-i, l)
     | p: ptr l, n: size_t n, i: size_t i
     , f: &(!v | sizeLt n, &(a?) >> a, !vt) -<clo,f> void, tsz: sizeof_t a, env: !vt
     ) :<f> void =
     if i < n then let
-      prval (pf1_at, pf2_arr) = array_v_uncons {a?} (pf_arr)
+      prval (pf1_at, pf2_arr) = array_v_uncons {a?} (pfarr)
       val () = f (pfv | i, !p, env)
       val () = loop (pfv, pf2_arr | p + tsz, n, i+1, f, tsz, env)
-      prval () = pf_arr := array_v_cons {a} (pf1_at, pf2_arr)
+      prval () = pfarr := array_v_cons {a} (pf1_at, pf2_arr)
     in
       // nothing
     end else let
-      prval () = array_v_unnil (pf_arr)
-      prval () = pf_arr := array_v_nil {a} ()
+      prval () = array_v_unnil (pfarr)
+      prval () = pfarr := array_v_nil {a} ()
     in
       // nothing
     end // end of [if]
@@ -300,6 +327,9 @@ end // end of [array_ptr_initialize_vclo]
 implement{a}
 array_ptr_clear_fun
   {n} {f:eff} (base, asz, f) = let
+//
+  prval () = lemma_array_param {a} (view@ (base))
+//
   fun clear {n:nat} {l:addr} .<n>. (
       pf_arr: !array_v (a, n, l) >> array_v (a?, n, l)
     | p_arr: ptr l, n: size_t n
