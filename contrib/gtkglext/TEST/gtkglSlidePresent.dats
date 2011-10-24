@@ -356,6 +356,9 @@ end // end of [local]
 ACTpresent 0 // default
 #define ACTrectrot 1
 #define ACTcylindrot 2
+#define ACTsliding 3 // left-right/top-bottom
+#define ACTdisking 4 // disk expanding (and its reversal)
+#define ACTfadeout 5 // fading gradually (and its reversal)
 
 local
 //
@@ -416,6 +419,8 @@ fun fexpose_rectrot
   val vpw = (double_of)vpw
   and vph = (double_of)vph
 //
+  val knd12 = !theRotateknd_ref; val knd16 = 1 - knd12
+//
   val [l:addr] cr = cairo_create (surface)
 //
   val (pf_save | ()) = cairo_save (cr)
@@ -437,8 +442,6 @@ fun fexpose_rectrot
 //
   val () = glClear (GL_COLOR_BUFFER_BIT)
   val () = glColor3d (0.0, 0.0, 0.0) // black color
-//
-  val knd12 = !theRotateknd_ref; val knd16 = 1 - knd12
 //
   val (pfmat | ()) = glPushMatrix ()
   val () = () where {
@@ -473,6 +476,8 @@ fun fexpose_cylindrot
   val vpw = (double_of)vpw
   and vph = (double_of)vph
 //
+  val vert = !theRotateknd_ref; val hori = 1 - vert
+//
   val [l:addr] cr = cairo_create (surface)
 //
   val (pf_save | ()) = cairo_save (cr)
@@ -494,8 +499,6 @@ fun fexpose_cylindrot
 //
   val () = glClear (GL_COLOR_BUFFER_BIT)
   val () = glColor3d (0.0, 0.0, 0.0) // black color
-//
-  val vert = !theRotateknd_ref; val hori = 1 - vert
 //
   val (pfmat | ()) = glPushMatrix ()
 //
@@ -534,6 +537,160 @@ end // end of [fexpose_cylindrot]
 
 (* ****** ****** *)
 
+fun fexpose_sliding
+  (vpw: int, vph: int): void = let
+  val surface =
+    cairo_image_surface_create (CAIRO_FORMAT_ARGB32, vpw, vph)
+  val vpw = (double_of)vpw
+  and vph = (double_of)vph
+//
+  val vert = !theRotateknd_ref; val hori = 1 - vert
+//
+  val alpha = !theAlpha_ref
+  var n: int = 0 and ratio: double = 0.0
+  val () = () where {
+    val () = if alpha >= 90.0 then n := 1
+    val () = if alpha < 90.0 then ratio := alpha/90
+    val () = if alpha >= 90.0 then ratio := 2-alpha/90
+  } // end of [val]
+//
+  val [l:addr] cr = cairo_create (surface)
+//
+  val (pf_save | ()) = cairo_save (cr)
+  val () = cairo_scale (cr, vpw, vph)
+  val () = cairodraw_slide_relative (cr, n) // current one
+  val () = cairodraw_clock01 (cr) // HX: a translucent clock layover
+//
+  val () = if vert > 0 then
+    cairo_rectangle (cr, 0.0, 0.0, ratio, 1.0)
+  val () = if hori > 0 then
+    cairo_rectangle (cr, 0.0, 0.0, 1.0, ratio)
+  val () = cairo_set_source_rgba (cr, 0.0, 0.0, 0.0, 1.0)
+  val () = cairo_fill (cr)
+//
+  val () = cairo_restore (pf_save | cr)
+  val gltext = glTexture_make_cairo_ref (GL_BGRA_format, cr)
+//
+  val () = cairo_destroy (cr)
+  val () = cairo_surface_destroy (surface)
+//
+  val () = glClear (GL_COLOR_BUFFER_BIT)
+  val () = glColor3d (0.0, 0.0, 0.0) // black color
+//
+  val (pfmat | ()) = glPushMatrix ()
+  val () = glTranslated (~0.5, ~0.5, 0.5)
+  val () = glTexture_mapout_rect (gltext, 1.0, 1.0, 1(*down*))
+  val () = glPopMatrix (pfmat | (*none*))
+//
+  val () = glDeleteTexture (gltext)
+//
+in
+  // nothing
+end // end of [fexpose_sliding]
+
+(* ****** ****** *)
+
+fun fexpose_disking
+  (vpw: int, vph: int): void = let
+  val surface =
+    cairo_image_surface_create (CAIRO_FORMAT_ARGB32, vpw, vph)
+  val vpw = (double_of)vpw
+  and vph = (double_of)vph
+//
+  val alpha = !theAlpha_ref
+  var n: int = 0 and ratio: double = 0.0
+  val () = () where {
+    val () = if alpha >= 90.0 then n := 1
+    val () = if alpha < 90.0 then ratio := alpha/90
+    val () = if alpha >= 90.0 then ratio := 2-alpha/90
+  } // end of [val]
+//
+  val [l:addr] cr = cairo_create (surface)
+//
+  val (pf_save | ()) = cairo_save (cr)
+  val () = cairo_scale (cr, vpw, vph)
+  val () = cairodraw_slide_relative (cr, n) // current one
+  val () = cairodraw_clock01 (cr) // HX: a translucent clock layover
+//
+  val rad = sqrt (2.0)
+  val r0 = rad / 20
+  val r1 = rad - r0
+  val sigma = ratio * ratio
+  val () = cairo_arc (cr, 0.5, 0.5, r0 + sigma * r1, 0.0, _2PI)
+  val () = cairo_set_source_rgba (cr, 0.0, 0.0, 0.0, 1.0)
+  val () = cairo_fill (cr)
+//
+  val () = cairo_restore (pf_save | cr)
+  val gltext = glTexture_make_cairo_ref (GL_BGRA_format, cr)
+//
+  val () = cairo_destroy (cr)
+  val () = cairo_surface_destroy (surface)
+//
+  val () = glClear (GL_COLOR_BUFFER_BIT)
+  val () = glColor3d (0.0, 0.0, 0.0) // black color
+//
+  val (pfmat | ()) = glPushMatrix ()
+  val () = glTranslated (~0.5, ~0.5, 0.5)
+  val () = glTexture_mapout_rect (gltext, 1.0, 1.0, 1(*down*))
+  val () = glPopMatrix (pfmat | (*none*))
+//
+  val () = glDeleteTexture (gltext)
+//
+in
+  // nothing
+end // end of [fexpose_disking]
+
+(* ****** ****** *)
+
+fun fexpose_fadeout
+  (vpw: int, vph: int): void = let
+  val surface =
+    cairo_image_surface_create (CAIRO_FORMAT_ARGB32, vpw, vph)
+  val vpw = (double_of)vpw
+  and vph = (double_of)vph
+//
+  val alpha = !theAlpha_ref
+  var n: int = 0 and ratio: double = 0.0
+  val () = () where {
+    val () = if alpha >= 90.0 then n := 1
+    val () = if alpha < 90.0 then ratio := alpha/90
+    val () = if alpha >= 90.0 then ratio := 2-alpha/90
+  } // end of [val]
+//
+  val [l:addr] cr = cairo_create (surface)
+//
+  val (pf_save | ()) = cairo_save (cr)
+  val () = cairo_scale (cr, vpw, vph)
+  val () = cairodraw_slide_relative (cr, n) // current one
+  val () = cairodraw_clock01 (cr) // HX: a translucent clock layover
+//
+  macdef quad (x) = square (square ,(x))
+  val () = cairo_rectangle (cr, 0.0, 0.0, 1.0, 1.0)
+  val () = cairo_set_source_rgba (cr, 0.0, 0.0, 0.0, quad(ratio))
+  val () = cairo_fill (cr)
+//
+  val () = cairo_restore (pf_save | cr)
+  val gltext = glTexture_make_cairo_ref (GL_BGRA_format, cr)
+//
+  val () = cairo_destroy (cr)
+  val () = cairo_surface_destroy (surface)
+//
+  val () = glClear (GL_COLOR_BUFFER_BIT)
+  val () = glColor3d (0.0, 0.0, 0.0) // black color
+//
+  val (pfmat | ()) = glPushMatrix ()
+  val () = glTranslated (~0.5, ~0.5, 0.5)
+  val () = glTexture_mapout_rect (gltext, 1.0, 1.0, 1(*down*))
+  val () = glPopMatrix (pfmat | (*none*))
+//
+  val () = glDeleteTexture (gltext)
+//
+in
+  // nothing
+end // end of [fexpose_fadeout]
+
+(* ****** ****** *)
+
 extern
 fun fexpose {l:agz} (
   darea: !GtkDrawingArea_ref l, event: &GdkEvent
@@ -568,8 +725,11 @@ in
     val theActState = theActState_get ()
     val () = (
       case+ theActState of
-      | 1 => fexpose_rectrot (vpw, vph)
-      | 2 => fexpose_cylindrot (vpw, vph)
+      | ACTrectrot => fexpose_rectrot (vpw, vph)
+      | ACTcylindrot => fexpose_cylindrot (vpw, vph)
+      | ACTsliding => fexpose_sliding (vpw, vph)
+      | ACTdisking => fexpose_disking (vpw, vph)
+      | ACTfadeout => fexpose_fadeout (vpw, vph)
       | _(*0*) => fexpose_present (vpw, vph)
     ) : void // end of [val]
 //
@@ -697,7 +857,7 @@ fnext () = let
 in
 //
 if (x = 0) then let
-  val rotknd = 1 + randint(2)
+  val rotknd = 5 + randint(1)
   val () = theActState_set (rotknd)
   val () = timeout_add () in (*nothing*)
 end else let
