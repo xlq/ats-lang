@@ -278,6 +278,12 @@ ATSinline()
 ats_float_type
 atspre_square_float (ats_float_type f) { return (f * f) ; }
 
+// cube function
+
+ATSinline()
+ats_float_type
+atspre_cube_float (ats_float_type f) { return (f * f * f) ; }
+
 // print function
 
 ATSinline()
@@ -561,9 +567,13 @@ atspre_min_double_double
 
 ATSinline()
 ats_double_type
-atspre_square_double (ats_double_type d) {
-  return (d * d) ;
-} // end of [atspre_square_double]
+atspre_square_double (ats_double_type d) { return (d * d) ; }
+
+// cube function
+
+ATSinline()
+ats_double_type
+atspre_cube_double (ats_double_type d) { return (d * d * d) ; }
 
 // print functions
 
@@ -808,9 +818,13 @@ atspre_min_ldouble_ldouble
 
 ATSinline()
 ats_ldouble_type
-atspre_square_ldouble (ats_ldouble_type ld) {
-  return (ld * ld) ;
-}
+atspre_square_ldouble (ats_ldouble_type ld) { return (ld * ld) ; }
+
+// cube function
+
+ATSinline()
+ats_ldouble_type
+atspre_cube_ldouble (ats_ldouble_type ld) { return (ld * ld * ld) ; }
 
 // print functions
 

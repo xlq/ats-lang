@@ -212,6 +212,10 @@ fun square_float
   (f: float):<> float = "atspre_square_float"
 overload square with square_float
 
+fun cube_float
+  (f: float):<> float = "atspre_cube_float"
+overload cube with cube_float
+
 fun pow_float_int1 (f: float, n: Nat):<> float
 overload pow with pow_float_int1
 
@@ -405,6 +409,10 @@ fun square_double
   (d: double):<> double = "atspre_square_double"
 overload square with square_double
 
+fun cube_double
+  (d: double):<> double = "atspre_cube_double"
+overload cube with cube_double
+
 fun pow_double_int1 (d: double, n: Nat):<> double
 overload pow with pow_double_int1
 
@@ -573,6 +581,10 @@ overload min with min_ldouble_ldouble
 fun square_ldouble
   (ld: ldouble):<> ldouble = "atspre_square_ldouble"
 overload square with square_ldouble
+
+fun cube_ldouble
+  (ld: ldouble):<> ldouble = "atspre_cube_ldouble"
+overload cube with cube_ldouble
 
 fun pow_ldouble_int1 (ld: ldouble, n: Nat):<> ldouble
 overload pow with pow_ldouble_int1
