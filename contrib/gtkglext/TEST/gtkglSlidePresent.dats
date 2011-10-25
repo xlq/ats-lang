@@ -664,9 +664,9 @@ fun fexpose_fadeout
   val () = cairodraw_slide_relative (cr, n) // current one
   val () = cairodraw_clock01 (cr) // HX: a translucent clock layover
 //
-  macdef quad (x) = square (square ,(x))
+  macdef nrt (x) = pow (,(x), 1.0/8)
   val () = cairo_rectangle (cr, 0.0, 0.0, 1.0, 1.0)
-  val () = cairo_set_source_rgba (cr, 0.0, 0.0, 0.0, quad(ratio))
+  val () = cairo_set_source_rgba (cr, 0.0, 0.0, 0.0, nrt(ratio))
   val () = cairo_fill (cr)
 //
   val () = cairo_restore (pf_save | cr)
@@ -857,7 +857,7 @@ fnext () = let
 in
 //
 if (x = 0) then let
-  val rotknd = 5 + randint(1)
+  val rotknd = 1 + randint(5)
   val () = theActState_set (rotknd)
   val () = timeout_add () in (*nothing*)
 end else let
