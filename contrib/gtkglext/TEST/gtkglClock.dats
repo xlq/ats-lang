@@ -217,7 +217,7 @@ in
 //    val () = glColor3d (0.0, 0.0, 0.0) // black color
     val () = glTranslated (0.0, 0.0, 0.0)
 //
-    val () = glTexture_mapout_rect (gltext, 1.0, 1.0, 1(*down*))
+    val () = glTexture_mapout_rect_all (gltext, 1.0, 1.0, 1(*down*))
 //
     val () = glDeleteTexture (gltext)
 //

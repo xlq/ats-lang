@@ -229,7 +229,7 @@ in
       val alpha = !theAlpha_ref in glRotated (~alpha, 0.0, 1.0, 0.0)
     end // end of [val]
     val () = glTranslated (~0.5, ~0.5, 0.5)
-    val () = glTexture_mapout_rect12 (gltext1, gltext2, 1.0, 1.0, 1(*down*))
+    val () = glTexture_mapout_cube12 (gltext1, gltext2, 1.0, 1.0, 1(*down*))
     val () = glPopMatrix (pfmat | (*none*))
 //
     val () = glDeleteTexture (gltext1)

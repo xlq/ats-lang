@@ -484,9 +484,9 @@ in
     val () = glEnable (GL_CULL_FACE)
     val () = glCullFace (GL_BACK) // HX: prevent transparency!
     val () = if knd12 > 0 then
-      glTexture_mapout_rect12 (gltext1, gltext2, 1.0, 1.0, 1(*down*))
+      glTexture_mapout_cube12 (gltext1, gltext2, 1.0, 1.0, 1(*down*))
     val () = if knd16 > 0 then
-      glTexture_mapout_rect16 (gltext1, gltext2, 1.0, 1.0, 1(*down*))
+      glTexture_mapout_cube16 (gltext1, gltext2, 1.0, 1.0, 1(*down*))
     val () = glDisable (GL_CULL_FACE)
 //
     val () = glPopMatrix (pfmat | (*none*))

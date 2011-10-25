@@ -354,11 +354,13 @@ end // end of [local]
 
 #define
 ACTpresent 0 // default
-#define ACTrectrot 1
+#define ACTcuberot 1
 #define ACTcylindrot 2
 #define ACTsliding 3 // left-right/top-bottom
 #define ACTdisking 4 // disk expanding (and its reversal)
 #define ACTfadeout 5 // fading gradually (and its reversal)
+#define ACTfolding01 6 // folding and unfolding
+#define ACTfolding02 7 // folding and unfolding
 
 local
 //
@@ -401,7 +403,7 @@ fun fexpose_present
 //
   val (pfmat | ()) = glPushMatrix ()
   val () = glTranslated (~0.5, ~0.5, 0.5)
-  val () = glTexture_mapout_rect (gltext, 1.0, 1.0, 1(*down*))
+  val () = glTexture_mapout_rect_all (gltext, 1.0, 1.0, 1(*down*))
   val () = glPopMatrix (pfmat | (*none*))
 //
   val () = glDeleteTexture (gltext)
@@ -412,7 +414,7 @@ end // end of [fexpose_present]
 
 (* ****** ****** *)
 
-fun fexpose_rectrot
+fun fexpose_cuberot
   (vpw: int, vph: int): void = let
   val surface =
     cairo_image_surface_create (CAIRO_FORMAT_ARGB32, vpw, vph)
@@ -453,9 +455,9 @@ fun fexpose_rectrot
   val () = glEnable (GL_CULL_FACE)
   val () = glCullFace (GL_BACK) // HX: prevent transparency!
   val () = if knd12 > 0 then
-    glTexture_mapout_rect12 (gltext1, gltext2, 1.0, 1.0, 1(*down*))
+    glTexture_mapout_cube12 (gltext1, gltext2, 1.0, 1.0, 1(*down*))
   val () = if knd16 > 0 then
-    glTexture_mapout_rect16 (gltext1, gltext2, 1.0, 1.0, 1(*down*))
+    glTexture_mapout_cube16 (gltext1, gltext2, 1.0, 1.0, 1(*down*))
   val () = glDisable (GL_CULL_FACE)
 //
   val () = glPopMatrix (pfmat | (*none*))
@@ -465,7 +467,7 @@ fun fexpose_rectrot
 //
 in
   // nothing
-end // end of [fexpose_rectrot]
+end // end of [fexpose_cuberot]
 
 (* ****** ****** *)
 
@@ -579,7 +581,7 @@ fun fexpose_sliding
 //
   val (pfmat | ()) = glPushMatrix ()
   val () = glTranslated (~0.5, ~0.5, 0.5)
-  val () = glTexture_mapout_rect (gltext, 1.0, 1.0, 1(*down*))
+  val () = glTexture_mapout_rect_all (gltext, 1.0, 1.0, 1(*down*))
   val () = glPopMatrix (pfmat | (*none*))
 //
   val () = glDeleteTexture (gltext)
@@ -631,7 +633,7 @@ fun fexpose_disking
 //
   val (pfmat | ()) = glPushMatrix ()
   val () = glTranslated (~0.5, ~0.5, 0.5)
-  val () = glTexture_mapout_rect (gltext, 1.0, 1.0, 1(*down*))
+  val () = glTexture_mapout_rect_all (gltext, 1.0, 1.0, 1(*down*))
   val () = glPopMatrix (pfmat | (*none*))
 //
   val () = glDeleteTexture (gltext)
@@ -680,7 +682,7 @@ fun fexpose_fadeout
 //
   val (pfmat | ()) = glPushMatrix ()
   val () = glTranslated (~0.5, ~0.5, 0.5)
-  val () = glTexture_mapout_rect (gltext, 1.0, 1.0, 1(*down*))
+  val () = glTexture_mapout_rect_all (gltext, 1.0, 1.0, 1(*down*))
   val () = glPopMatrix (pfmat | (*none*))
 //
   val () = glDeleteTexture (gltext)
@@ -688,6 +690,124 @@ fun fexpose_fadeout
 in
   // nothing
 end // end of [fexpose_fadeout]
+
+(* ****** ****** *)
+
+fun fexpose_folding01
+  (vpw: int, vph: int): void = let
+  val surface =
+    cairo_image_surface_create (CAIRO_FORMAT_ARGB32, vpw, vph)
+  val vpw = (double_of)vpw
+  and vph = (double_of)vph
+//
+  val alpha = !theAlpha_ref
+  var n: int = 0 and ratio: double = 0.0
+  val () = () where {
+    val () = if alpha >= 90.0 then n := 1
+    val () = if alpha < 90.0 then ratio := alpha/90
+    val () = if alpha >= 90.0 then ratio := 2-alpha/90
+  } // end of [val]
+//
+  val [l:addr] cr = cairo_create (surface)
+//
+  val (pf_save | ()) = cairo_save (cr)
+  val () = cairo_scale (cr, vpw, vph)
+  val () = cairodraw_slide_relative (cr, n) // current one
+  val () = cairodraw_clock01 (cr) // HX: a translucent clock layover
+  val () = cairo_restore (pf_save | cr)
+  val gltext = glTexture_make_cairo_ref (GL_BGRA_format, cr)
+//
+  val () = cairo_destroy (cr)
+  val () = cairo_surface_destroy (surface)
+//
+  val () = glClear (GL_COLOR_BUFFER_BIT)
+  val () = glColor3d (0.0, 0.0, 0.0) // black color
+//
+  val tx = 0.5 * cos (ratio*PI/2)
+  val tz = 0.5 * sin (ratio*PI/2)
+//
+  val (pfmat | ()) = glPushMatrix ()
+  val () = glTranslated (~tx, ~0.5, 0.5)
+  val () = glRotated (90*ratio, 0.0, 1.0, 0.0)
+  val () = glTexture_mapout_rect (gltext, 0.0, 0.0, 0.5, 1.0, 0.5, 1.0, 1(*down*))
+  val () = glPopMatrix (pfmat | (*none*))
+  val (pfmat | ()) = glPushMatrix ()
+  val () = glTranslated (0.0, ~0.5, 0.5-tz)
+  val () = glRotated (~90*ratio, 0.0, 1.0, 0.0)
+  val () = glTexture_mapout_rect (gltext, 0.5, 0.0, 1.0, 1.0, 0.5, 1.0, 1(*down*))
+  val () = glPopMatrix (pfmat | (*none*))
+//
+  val () = glDeleteTexture (gltext)
+//
+in
+  // nothing
+end // end of [fexpose_folding01]
+
+(* ****** ****** *)
+
+fun fexpose_folding02
+  (vpw: int, vph: int): void = let
+  val surface =
+    cairo_image_surface_create (CAIRO_FORMAT_ARGB32, vpw, vph)
+  val vpw = (double_of)vpw
+  and vph = (double_of)vph
+//
+  val alpha = !theAlpha_ref
+  var n: int = 0 and ratio: double = 0.0
+  val () = () where {
+    val () = if alpha >= 90.0 then n := 1
+    val () = if alpha < 90.0 then ratio := alpha/90
+    val () = if alpha >= 90.0 then ratio := 2-alpha/90
+  } // end of [val]
+//
+  val [l:addr] cr = cairo_create (surface)
+//
+  val (pf_save | ()) = cairo_save (cr)
+  val () = cairo_scale (cr, vpw, vph)
+  val () = cairodraw_slide_relative (cr, n) // current one
+  val () = cairodraw_clock01 (cr) // HX: a translucent clock layover
+  val () = cairo_restore (pf_save | cr)
+  val gltext = glTexture_make_cairo_ref (GL_BGRA_format, cr)
+//
+  val () = cairo_destroy (cr)
+  val () = cairo_surface_destroy (surface)
+//
+  val () = glClear (GL_COLOR_BUFFER_BIT)
+  val () = glColor3d (0.0, 0.0, 0.0) // black color
+//
+  val tx = 0.5 * cos (ratio*PI/2)
+  val tz = 0.5 * sin (ratio*PI/2)
+//
+  val (pfmat | ()) = glPushMatrix ()
+  val () = if n = 0 then {
+    val () = glTranslated (~tx, ~0.5, 0.5)
+    val () = glRotated (90*ratio, 0.0, 1.0, 0.0)
+    val () = glTexture_mapout_rect (gltext, 0.0, 0.0, 0.5, 1.0, 0.5, 1.0, 1(*down*))
+  } // end of [val]
+  val () = if n = 1 then {
+    val () = glTranslated (~tx, ~0.5, 0.5-tz)
+    val () = glRotated (~90*ratio, 0.0, 1.0, 0.0)
+    val () = glTexture_mapout_rect (gltext, 0.0, 0.0, 0.5, 1.0, 0.5, 1.0, 1(*down*))
+  } // end of [val]
+  val () = glPopMatrix (pfmat | (*none*))
+  val (pfmat | ()) = glPushMatrix ()
+  val () = if n = 0 then {
+    val () = glTranslated (0.0, ~0.5, 0.5-tz)
+    val () = glRotated (~90*ratio, 0.0, 1.0, 0.0)
+    val () = glTexture_mapout_rect (gltext, 0.5, 0.0, 1.0, 1.0, 0.5, 1.0, 1(*down*))
+  } // end of [val]
+  val () = if n = 1 then {
+    val () = glTranslated (0.0, ~0.5, 0.5)
+    val () = glRotated (90*ratio, 0.0, 1.0, 0.0)
+    val () = glTexture_mapout_rect (gltext, 0.5, 0.0, 1.0, 1.0, 0.5, 1.0, 1(*down*))
+  } // end of [val]
+  val () = glPopMatrix (pfmat | (*none*))
+//
+  val () = glDeleteTexture (gltext)
+//
+in
+  // nothing
+end // end of [fexpose_folding02]
 
 (* ****** ****** *)
 
@@ -725,11 +845,13 @@ in
     val theActState = theActState_get ()
     val () = (
       case+ theActState of
-      | ACTrectrot => fexpose_rectrot (vpw, vph)
+      | ACTcuberot => fexpose_cuberot (vpw, vph)
       | ACTcylindrot => fexpose_cylindrot (vpw, vph)
       | ACTsliding => fexpose_sliding (vpw, vph)
       | ACTdisking => fexpose_disking (vpw, vph)
       | ACTfadeout => fexpose_fadeout (vpw, vph)
+      | ACTfolding01 => fexpose_folding01 (vpw, vph)
+      | ACTfolding02 => fexpose_folding02 (vpw, vph)
       | _(*0*) => fexpose_present (vpw, vph)
     ) : void // end of [val]
 //
@@ -857,7 +979,7 @@ fnext () = let
 in
 //
 if (x = 0) then let
-  val rotknd = 1 + randint(5)
+  val rotknd = 1 + randint(7)
   val () = theActState_set (rotknd)
   val () = timeout_add () in (*nothing*)
 end else let

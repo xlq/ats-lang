@@ -87,7 +87,21 @@ fun glTexture_make_cairo_ref {l:agz}
 // the lower left corner of the rectangle (in the xy-plane)
 // is at (0, 0, 0)
 //
-fun glTexture_mapout_rect {i:int} {d:two} (
+fun glTexture_mapout_rect
+  {i:int} {d:two} (
+  texture: !GLtexture(i)
+, tx0: double, ty0: double, tx1: double, ty1: double
+, width: double, height: double, vdir: int(d)
+) : void // end of [glTexture_mapout_rect]
+
+(* ****** ****** *)
+//
+// HX:
+// vdir=0/1:up/down
+// the lower left corner of the rectangle (in the xy-plane)
+// is at (0, 0, 0)
+//
+fun glTexture_mapout_rect_all {i:int} {d:two} (
   texture: !GLtexture(i), width: double, height: double, vdir: int(d)
 ) : void // end of [glTexture_mapout_rect]
 //
@@ -97,35 +111,35 @@ fun glTexture_mapout_rect {i:int} {d:two} (
 // (0, 0, 0)
 //
 fun
-glTexture_mapout_rect12
+glTexture_mapout_cube12
   {i1,i2:int} {d:two} (
   texture1: !GLtexture(i1)
 , texture2: !GLtexture(i2)
 , width: double, height: double, vdir: int(d)
-) : void // end of [glTexture_mapout_rect12]
+) : void // end of [glTexture_mapout_cube12]
 
 fun
-glTexture_mapout_rect14
+glTexture_mapout_cube14
   {i1,i2:int} {d:two} (
   texture1: !GLtexture(i1)
 , texture2: !GLtexture(i2)
 , width: double, height: double, vdir: int(d)
-) : void // end of [glTexture_mapout_rect14]
+) : void // end of [glTexture_mapout_cube14]
 
 fun
-glTexture_mapout_rect15
+glTexture_mapout_cube15
   {i1,i2:int} {d:two} (
   texture1: !GLtexture(i1)
 , texture2: !GLtexture(i2)
 , width: double, height: double, vdir: int(d)
-) : void // end of [glTexture_mapout_rect15]
+) : void // end of [glTexture_mapout_cube15]
 
-fun glTexture_mapout_rect16
+fun glTexture_mapout_cube16
   {i1,i2:int} {d:two} (
   texture1: !GLtexture(i1)
 , texture2: !GLtexture(i2)
 , width: double, height: double, vdir: int(d)
-) : void // end of [glTexture_mapout_rect16]
+) : void // end of [glTexture_mapout_cube16]
 
 (* ****** ****** *)
 //

@@ -111,8 +111,9 @@ end // end of [glTexture_make_cairo_ref]
 (* ****** ****** *)
 
 implement
-glTexture_mapout_rect
-  (gltext, wid, hgt, vdir) = let
+glTexture_mapout_rect (
+  gltext, tx0, ty0, tx1, ty1, wid, hgt, vdir
+) = let
 //
   val () = glBindTexture (GL_TEXTURE_2D, gltext)
 //
@@ -122,23 +123,23 @@ glTexture_mapout_rect
   val (pfbeg | ()) = glBegin (GL_QUADS)
 //
   val () = if (vdir = 0) then {
-    val () = glTexCoord2d (0.0, 0.0)
+    val () = glTexCoord2d (tx0, ty0)
     val () = glVertex2d (0.0, 0.0)
-    val () = glTexCoord2d (1.0, 0.0)
+    val () = glTexCoord2d (tx1, 0.0)
     val () = glVertex2d (wid, 0.0)
-    val () = glTexCoord2d (1.0, 1.0)
+    val () = glTexCoord2d (tx1, ty1)
     val () = glVertex2d (wid, hgt)
-    val () = glTexCoord2d (0.0, 1.0)
+    val () = glTexCoord2d (tx0, ty1)
     val () = glVertex2d (0.0, hgt)
   } // end of [val]
   val () = if (vdir > 0) then {
-    val () = glTexCoord2d (0.0, 0.0)
+    val () = glTexCoord2d (tx0, ty0)
     val () = glVertex2d (0.0, hgt)
-    val () = glTexCoord2d (0.0, 1.0)
+    val () = glTexCoord2d (tx0, ty1)
     val () = glVertex2d (0.0, 0.0)
-    val () = glTexCoord2d (1.0, 1.0)
+    val () = glTexCoord2d (tx1, ty1)
     val () = glVertex2d (wid, 0.0)
-    val () = glTexCoord2d (1.0, 0.0)
+    val () = glTexCoord2d (tx1, ty0)
     val () = glVertex2d (wid, hgt)
   } // end of [val]
 //
@@ -152,62 +153,69 @@ end // end of [glTexture_mapout_rect]
 (* ****** ****** *)
 
 implement
-glTexture_mapout_rect12
+glTexture_mapout_rect_all (gltext, wid, hgt, vdir) =
+  glTexture_mapout_rect (gltext, 0.0, 0.0, 1.0, 1.0, wid, hgt, vdir)
+// end of [glTexture_mapout_rect_all]
+
+(* ****** ****** *)
+
+implement
+glTexture_mapout_cube12
   (gltext1, gltext2, wid, hgt, vdir) = let
-  val () = glTexture_mapout_rect (gltext1, wid, hgt, vdir)
+  val () = glTexture_mapout_rect_all (gltext1, wid, hgt, vdir)
   val (pfmat | ()) = glPushMatrix ()
   val () = glTranslated (wid, 0.0, 0.0)
   val () = glRotated (90.0, 0.0, 1.0, 0.0)
-  val () = glTexture_mapout_rect (gltext2, wid, hgt, vdir)
+  val () = glTexture_mapout_rect_all (gltext2, wid, hgt, vdir)
   val () = glPopMatrix (pfmat | (*none*))
 in
   // nothing
-end // end of [glTexture_mapout_rect12]
+end // end of [glTexture_mapout_cube12]
 
 (* ****** ****** *)
 
 implement
-glTexture_mapout_rect14
+glTexture_mapout_cube14
   (gltext1, gltext2, wid, hgt, vdir) = let
-  val () = glTexture_mapout_rect (gltext1, wid, hgt, vdir)
+  val () = glTexture_mapout_rect_all (gltext1, wid, hgt, vdir)
   val (pfmat | ()) = glPushMatrix ()
   val () = glTranslated (0.0, 0.0, ~wid)
   val () = glRotated (~90.0, 0.0, 1.0, 0.0)
-  val () = glTexture_mapout_rect (gltext2, wid, hgt, vdir)
+  val () = glTexture_mapout_rect_all (gltext2, wid, hgt, vdir)
   val () = glPopMatrix (pfmat | (*none*))
 in
   // nothing
-end // end of [glTexture_mapout_rect14]
+end // end of [glTexture_mapout_cube14]
 
 (* ****** ****** *)
 
 implement
-glTexture_mapout_rect15
+glTexture_mapout_cube15
   (gltext1, gltext2, wid, hgt, vdir) = let
-  val () = glTexture_mapout_rect (gltext1, wid, hgt, vdir)
+  val () = glTexture_mapout_rect_all (gltext1, wid, hgt, vdir)
   val (pfmat | ()) = glPushMatrix ()
   val () = glTranslated (0.0, wid, 0.0)
   val () = glRotated (~90.0, 1.0, 0.0, 0.0)
-  val () = glTexture_mapout_rect (gltext2, wid, hgt, vdir)
+  val () = glTexture_mapout_rect_all (gltext2, wid, hgt, vdir)
   val () = glPopMatrix (pfmat | (*none*))
 in
   // nothing
-end // end of [glTexture_mapout_rect15]
+end // end of [glTexture_mapout_cube15]
 
 (* ****** ****** *)
 
 implement
-glTexture_mapout_rect16
+glTexture_mapout_cube16
   (gltext1, gltext2, wid, hgt, vdir) = let
-  val () = glTexture_mapout_rect (gltext1, wid, hgt, vdir)
+  val () = glTexture_mapout_rect_all (gltext1, wid, hgt, vdir)
   val (pfmat | ()) = glPushMatrix ()
   val () = glTranslated (0.0, 0.0, ~wid)
   val () = glRotated (90.0, 1.0, 0.0, 0.0)
-  val () = glTexture_mapout_rect (gltext2, wid, hgt, vdir)
+  val () = glTexture_mapout_rect_all (gltext2, wid, hgt, vdir)
   val () = glPopMatrix (pfmat | (*none*))
 in
   // nothing
-end // end of [glTexture_mapout_rect16]
+end // end of [glTexture_mapout_cube16]
 
 (* ****** ****** *)
 
