@@ -105,13 +105,15 @@ in
 
 end // end of [s2var_make_id_srt]
 
-implement s2var_make_srt (s2t) = let
+implement
+s2var_make_srt (s2t) = let
   val id = s2var_name_make ()
 in
   s2var_make_id_srt (id, s2t)
 end // end of [s2var_make_srt]
 
-implement s2var_copy (s2v0) = let
+implement
+s2var_copy (s2v0) = let
   val id0 = s2var_get_sym s2v0
   val s2t0 = s2var_get_srt s2v0
   val id_new = s2var_name_make_prefix ($Sym.symbol_name id0)
@@ -370,7 +372,8 @@ val s2Var_name_counter = $Cnt.counter_make ()
 
 in // in of [local]
 
-implement s2Var_make_srt (loc, s2t) = let
+implement
+s2Var_make_srt (loc, s2t) = let
 //
 val cnt = $Cnt.counter_getinc (s2Var_name_counter)
 val stamp = $Stamp.s2Var_stamp_make ()

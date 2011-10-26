@@ -129,7 +129,7 @@ c3str_metric_dec (loc, met, met_bound) = '{
 }
 
 implement
-  c3str_pattern_match_exhaustiveness (loc, knd, p2tcs) = '{
+c3str_pattern_match_exhaustiveness (loc, knd, p2tcs) = '{
   c3str_loc= loc
 , c3str_kind= C3STRKINDpattern_match_exhaustiveness (knd, p2tcs)
 , c3str_node= C3STRprop (s2exp_bool false)
