@@ -89,9 +89,10 @@ fun glTexture_make_cairo_ref {l:agz}
 //
 fun glTexture_mapout_rect
   {i:int} {d:two} (
-  texture: !GLtexture(i)
-, tx0: double, ty0: double, tx1: double, ty1: double
-, width: double, height: double, vdir: int(d)
+  gltext: !GLtexture(i)
+, tx0: double, ty0: double
+, tx1: double, ty1: double
+, wrect: double, hrect: double, vdir: int(d)
 ) : void // end of [glTexture_mapout_rect]
 
 (* ****** ****** *)
@@ -102,7 +103,7 @@ fun glTexture_mapout_rect
 // is at (0, 0, 0)
 //
 fun glTexture_mapout_rect_all {i:int} {d:two} (
-  texture: !GLtexture(i), width: double, height: double, vdir: int(d)
+  gltext: !GLtexture(i), wrect: double, hrect: double, vdir: int(d)
 ) : void // end of [glTexture_mapout_rect]
 //
 // HX:
@@ -113,32 +114,32 @@ fun glTexture_mapout_rect_all {i:int} {d:two} (
 fun
 glTexture_mapout_cube12
   {i1,i2:int} {d:two} (
-  texture1: !GLtexture(i1)
-, texture2: !GLtexture(i2)
-, width: double, height: double, vdir: int(d)
+  gltext1: !GLtexture(i1)
+, gltext2: !GLtexture(i2)
+, wrect: double, hrect: double, vdir: int(d)
 ) : void // end of [glTexture_mapout_cube12]
 
 fun
 glTexture_mapout_cube14
   {i1,i2:int} {d:two} (
-  texture1: !GLtexture(i1)
-, texture2: !GLtexture(i2)
-, width: double, height: double, vdir: int(d)
+  gltext1: !GLtexture(i1)
+, gltext2: !GLtexture(i2)
+, wrect: double, hrect: double, vdir: int(d)
 ) : void // end of [glTexture_mapout_cube14]
 
 fun
 glTexture_mapout_cube15
   {i1,i2:int} {d:two} (
-  texture1: !GLtexture(i1)
-, texture2: !GLtexture(i2)
-, width: double, height: double, vdir: int(d)
+  gltext1: !GLtexture(i1)
+, gltext2: !GLtexture(i2)
+, wrect: double, hrect: double, vdir: int(d)
 ) : void // end of [glTexture_mapout_cube15]
 
 fun glTexture_mapout_cube16
   {i1,i2:int} {d:two} (
-  texture1: !GLtexture(i1)
-, texture2: !GLtexture(i2)
-, width: double, height: double, vdir: int(d)
+  gltext1: !GLtexture(i1)
+, gltext2: !GLtexture(i2)
+, wrect: double, hrect: double, vdir: int(d)
 ) : void // end of [glTexture_mapout_cube16]
 
 (* ****** ****** *)
@@ -154,8 +155,8 @@ fun glTexture_mapout_cube16
 //
 fun glTexture_mapout_cylinder_vert
   {i:int} {d:two} {n:pos} (
-  texture: !GLtexture(i)
-, width: double, height: double, angle: double, vdir: int(d), nslice: int(n)
+  gltext: !GLtexture(i)
+, wtext: double, htext: double, angle: double, vdir: int(d), nslice: int(n)
 ) : void // end of [glTexture_mapout_cylinder_vert]
 //
 // HX:
@@ -169,9 +170,26 @@ fun glTexture_mapout_cylinder_vert
 //
 fun glTexture_mapout_cylinder_hori
   {i:int} {d:two} {n:pos} (
-  texture: !GLtexture(i)
-, width: double, height: double, angle: double, vdir: int(d), nslice: int(n)
+  gltext: !GLtexture(i)
+, wtext: double, htext: double, angle: double, vdir: int(d), nslice: int(n)
 ) : void // end of [glTexture_mapout_cylinder_hori]
+
+(* ****** ****** *)
+//
+// HX:
+// vdir=0/1:up/down
+// the sphere is positioned horizontally
+// the front center of the sphere is at (0, 0, 0)
+// angle: goes from 0 to 2*PI
+// if angle = 0, this is the same as glTexture_mapout_rect
+// if angle = PI, then the front half of the sphere is covered
+// if angle = 2*PI, then the whole sphere is covered
+//
+fun glTexture_mapout_sphere
+  {i:int} {d:two} {n:pos} (
+  gltext: !GLtexture(i)
+, wtext: double, htext: double, vdir: int(d), angle: double, nslice: int (n)
+) : void // end of [glTexture_mapout_sphere]
 
 (* ****** ****** *)
 

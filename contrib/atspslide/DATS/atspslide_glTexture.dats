@@ -112,7 +112,7 @@ end // end of [glTexture_make_cairo_ref]
 
 implement
 glTexture_mapout_rect (
-  gltext, tx0, ty0, tx1, ty1, wid, hgt, vdir
+  gltext, tx0, ty0, tx1, ty1, wrect, hrect, vdir
 ) = let
 //
   val () = glBindTexture (GL_TEXTURE_2D, gltext)
@@ -126,21 +126,21 @@ glTexture_mapout_rect (
     val () = glTexCoord2d (tx0, ty0)
     val () = glVertex2d (0.0, 0.0)
     val () = glTexCoord2d (tx1, 0.0)
-    val () = glVertex2d (wid, 0.0)
+    val () = glVertex2d (wrect, 0.0)
     val () = glTexCoord2d (tx1, ty1)
-    val () = glVertex2d (wid, hgt)
+    val () = glVertex2d (wrect, hrect)
     val () = glTexCoord2d (tx0, ty1)
-    val () = glVertex2d (0.0, hgt)
+    val () = glVertex2d (0.0, hrect)
   } // end of [val]
   val () = if (vdir > 0) then {
     val () = glTexCoord2d (tx0, ty0)
-    val () = glVertex2d (0.0, hgt)
+    val () = glVertex2d (0.0, hrect)
     val () = glTexCoord2d (tx0, ty1)
     val () = glVertex2d (0.0, 0.0)
     val () = glTexCoord2d (tx1, ty1)
-    val () = glVertex2d (wid, 0.0)
+    val () = glVertex2d (wrect, 0.0)
     val () = glTexCoord2d (tx1, ty0)
-    val () = glVertex2d (wid, hgt)
+    val () = glVertex2d (wrect, hrect)
   } // end of [val]
 //
   val () = glEnd (pfbeg | (*none*))
@@ -153,20 +153,20 @@ end // end of [glTexture_mapout_rect]
 (* ****** ****** *)
 
 implement
-glTexture_mapout_rect_all (gltext, wid, hgt, vdir) =
-  glTexture_mapout_rect (gltext, 0.0, 0.0, 1.0, 1.0, wid, hgt, vdir)
+glTexture_mapout_rect_all (gltext, wrect, hrect, vdir) =
+  glTexture_mapout_rect (gltext, 0.0, 0.0, 1.0, 1.0, wrect, hrect, vdir)
 // end of [glTexture_mapout_rect_all]
 
 (* ****** ****** *)
 
 implement
 glTexture_mapout_cube12
-  (gltext1, gltext2, wid, hgt, vdir) = let
-  val () = glTexture_mapout_rect_all (gltext1, wid, hgt, vdir)
+  (gltext1, gltext2, wrect, hrect, vdir) = let
+  val () = glTexture_mapout_rect_all (gltext1, wrect, hrect, vdir)
   val (pfmat | ()) = glPushMatrix ()
-  val () = glTranslated (wid, 0.0, 0.0)
+  val () = glTranslated (wrect, 0.0, 0.0)
   val () = glRotated (90.0, 0.0, 1.0, 0.0)
-  val () = glTexture_mapout_rect_all (gltext2, wid, hgt, vdir)
+  val () = glTexture_mapout_rect_all (gltext2, wrect, hrect, vdir)
   val () = glPopMatrix (pfmat | (*none*))
 in
   // nothing
@@ -176,12 +176,12 @@ end // end of [glTexture_mapout_cube12]
 
 implement
 glTexture_mapout_cube14
-  (gltext1, gltext2, wid, hgt, vdir) = let
-  val () = glTexture_mapout_rect_all (gltext1, wid, hgt, vdir)
+  (gltext1, gltext2, wrect, hrect, vdir) = let
+  val () = glTexture_mapout_rect_all (gltext1, wrect, hrect, vdir)
   val (pfmat | ()) = glPushMatrix ()
-  val () = glTranslated (0.0, 0.0, ~wid)
+  val () = glTranslated (0.0, 0.0, ~wrect)
   val () = glRotated (~90.0, 0.0, 1.0, 0.0)
-  val () = glTexture_mapout_rect_all (gltext2, wid, hgt, vdir)
+  val () = glTexture_mapout_rect_all (gltext2, wrect, hrect, vdir)
   val () = glPopMatrix (pfmat | (*none*))
 in
   // nothing
@@ -191,12 +191,12 @@ end // end of [glTexture_mapout_cube14]
 
 implement
 glTexture_mapout_cube15
-  (gltext1, gltext2, wid, hgt, vdir) = let
-  val () = glTexture_mapout_rect_all (gltext1, wid, hgt, vdir)
+  (gltext1, gltext2, wrect, hrect, vdir) = let
+  val () = glTexture_mapout_rect_all (gltext1, wrect, hrect, vdir)
   val (pfmat | ()) = glPushMatrix ()
-  val () = glTranslated (0.0, wid, 0.0)
+  val () = glTranslated (0.0, wrect, 0.0)
   val () = glRotated (~90.0, 1.0, 0.0, 0.0)
-  val () = glTexture_mapout_rect_all (gltext2, wid, hgt, vdir)
+  val () = glTexture_mapout_rect_all (gltext2, wrect, hrect, vdir)
   val () = glPopMatrix (pfmat | (*none*))
 in
   // nothing
@@ -206,12 +206,12 @@ end // end of [glTexture_mapout_cube15]
 
 implement
 glTexture_mapout_cube16
-  (gltext1, gltext2, wid, hgt, vdir) = let
-  val () = glTexture_mapout_rect_all (gltext1, wid, hgt, vdir)
+  (gltext1, gltext2, wrect, hrect, vdir) = let
+  val () = glTexture_mapout_rect_all (gltext1, wrect, hrect, vdir)
   val (pfmat | ()) = glPushMatrix ()
-  val () = glTranslated (0.0, 0.0, ~wid)
+  val () = glTranslated (0.0, 0.0, ~wrect)
   val () = glRotated (90.0, 1.0, 0.0, 0.0)
-  val () = glTexture_mapout_rect_all (gltext2, wid, hgt, vdir)
+  val () = glTexture_mapout_rect_all (gltext2, wrect, hrect, vdir)
   val () = glPopMatrix (pfmat | (*none*))
 in
   // nothing
@@ -222,22 +222,22 @@ end // end of [glTexture_mapout_cube16]
 implement
 glTexture_mapout_cylinder_vert
   {i} {d} {n}
-  (gltext, wid, hgt, angle, vdir, n) = let
+  (gltext, wtext, htext, angle, vdir, n) = let
 //
   val angle2 = angle / 2
   val t0 = ~angle2 and dt = angle / n
 //
   #define EPSILON 1E-2 // HX: small enough
   val rad = (
-    if angle >= EPSILON then wid / angle else ~1.0
+    if angle >= EPSILON then wtext / angle else ~1.0
   ) : double // end of [val]
   macdef xeval (t1, n, k1) = 
     if angle >= EPSILON then
-      rad * sin ,(t1) else wid * (1.0 * ,(k1) / ,(n) - 0.5)
+      rad * sin ,(t1) else wtext * (1.0 * ,(k1) / ,(n) - 0.5)
     // end of [if]
   macdef zeval (t1, n, k1) =
     if angle >= EPSILON then
-      rad * (~1.0 + cos ,(t1)) else wid * (~square (1.0 * ,(k1) / ,(n) - 0.5) * angle2)
+      rad * (~1.0 + cos ,(t1)) else wtext * (~square (1.0 * ,(k1) / ,(n) - 0.5) * angle2)
     // end of [if]
 //
   fun loop
@@ -262,26 +262,26 @@ glTexture_mapout_cylinder_vert
         val () = glTexCoord2d (r1, 0.0)
         val () = glVertex3d (x1, y1, z1)
         val () = glTexCoord2d (r1, 1.0)
-        val () = glVertex3d (x1, y1+hgt, z1)
+        val () = glVertex3d (x1, y1+htext, z1)
         val () = glTexCoord2d (r0, 1.0)
-        val () = glVertex3d (x0, y0+hgt, z0)
+        val () = glVertex3d (x0, y0+htext, z0)
       } // end of [val]
       val () = if vdir > 0 then {
         val () = glTexCoord2d (r0, 0.0)
-        val () = glVertex3d (x0, y0+hgt, z0)
+        val () = glVertex3d (x0, y0+htext, z0)
         val () = glTexCoord2d (r0, 1.0)
         val () = glVertex3d (x0, y0, z0)
         val () = glTexCoord2d (r1, 1.0)
         val () = glVertex3d (x1, y1, z1)
         val () = glTexCoord2d (r1, 0.0)
-        val () = glVertex3d (x1, y1+hgt, z1)
+        val () = glVertex3d (x1, y1+htext, z1)
       } // end of [val]
     in
       loop (x1, y1, z1, t1, k1)
     end // end of [if]
 //
   val x0 = xeval (t0, n, 0)
-  val y0 = ~hgt / 2
+  val y0 = ~htext / 2
   val z0 = zeval (t0, n, 0)
 //
   val () = glBindTexture (GL_TEXTURE_2D, gltext)
@@ -302,7 +302,7 @@ end // end of [glTexture_mapout_cylinder_vert]
 implement
 glTexture_mapout_cylinder_hori
   {i} {d} {n}
-  (gltext, wid, hgt, angle, vdir, n) = let
+  (gltext, wtext, htext, angle, vdir, n) = let
 //
   val angle2 = angle / 2
   val (t0, dt) = (
@@ -311,15 +311,15 @@ glTexture_mapout_cylinder_hori
 //
   #define EPSILON 1E-2 // HX: small enough
   val rad = (
-    if angle >= EPSILON then hgt / angle else ~1.0
+    if angle >= EPSILON then htext / angle else ~1.0
   ) : double // end of [val]
   macdef yeval (t1, n, k1) = 
     if angle >= EPSILON then
-      rad * sin ,(t1) else hgt * (1.0 * ,(k1) / ,(n) - 0.5)
+      rad * sin ,(t1) else htext * (1.0 * ,(k1) / ,(n) - 0.5)
     // end of [if]
   macdef zeval (t1, n, k1) =
     if angle >= EPSILON then
-      rad * (~1.0 + cos ,(t1)) else hgt * (~square (1.0 * ,(k1) / ,(n) - 0.5) * angle2)
+      rad * (~1.0 + cos ,(t1)) else htext * (~square (1.0 * ,(k1) / ,(n) - 0.5) * angle2)
     // end of [if]
 //
   fun loop
@@ -342,9 +342,9 @@ glTexture_mapout_cylinder_hori
         val () = glTexCoord2d (0.0, r0)
         val () = glVertex3d (x0, y0, z0)
         val () = glTexCoord2d (1.0, r0)
-        val () = glVertex3d (x1+wid, y0, z0)
+        val () = glVertex3d (x1+wtext, y0, z0)
         val () = glTexCoord2d (1.0, r1)
-        val () = glVertex3d (x1+wid, y1, z1)
+        val () = glVertex3d (x1+wtext, y1, z1)
         val () = glTexCoord2d (0.0, r1)
         val () = glVertex3d (x0, y1, z1)
       }
@@ -354,15 +354,15 @@ glTexture_mapout_cylinder_hori
         val () = glTexCoord2d (0.0, r1)
         val () = glVertex3d (x0, y1, z1)
         val () = glTexCoord2d (1.0, r1)
-        val () = glVertex3d (x1+wid, y1, z1)
+        val () = glVertex3d (x1+wtext, y1, z1)
         val () = glTexCoord2d (1.0, r0)
-        val () = glVertex3d (x1+wid, y0, z0)
+        val () = glVertex3d (x1+wtext, y0, z0)
       } // end of [val]
     in
       loop (x1, y1, z1, t1, k1)
     end // end of [if]
 //
-  val x0 = ~wid / 2
+  val x0 = ~wtext / 2
   val y0 = yeval (t0, n, 0)
   val z0 = zeval (t0, n, 0)
 //
