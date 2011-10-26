@@ -32,6 +32,7 @@ cleanall:: ; $(RMF) *_?ats.html
 ######
 
 checkall:: HelloWorld
+cleanall:: ; $(RMF) HelloWorld
 HelloWorld: HelloWorld.dats
 	$(ATSCC) -o HelloWorld HelloWorld.dats && ./HelloWorld
 
