@@ -357,6 +357,14 @@ libats/DATS/vector.dats
 libats/ngc/SATS/deque_arr.sats
 libats/ngc/DATS/deque_arr.dats
 
+/* linear singly-linked lists */
+libats/ngc/SATS/slist.sats
+libats/ngc/DATS/slist.dats
+
+/* linear doubly-linked lists */
+libats/ngc/SATS/dlist.sats
+libats/ngc/DATS/dlist.dats
+
 /* ****** ****** */
 
 /*
