@@ -558,7 +558,7 @@ fun aux_itemlst_all {n:nat} (
       val () = aux_item_all (x.sascstr_sub, res, sais, sbis)
       val s3is = trans3_env_pop_sta ()
       val s3is = $Lst.list_vt_reverse_list s3is
-      val c3t = c3str_itmlst (x.sascstr_loc, C3STRKINDnone (), s3is)
+      val c3t = c3str_itmlst (x.sascstr_loc, C3STRKINDmain, s3is)
       val () = !(x.sascstr_ref) := Some (c3t)
     in
       aux_itemlst_all (met_bound, res, sais, sbis, xs)

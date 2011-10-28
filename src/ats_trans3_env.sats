@@ -50,7 +50,7 @@ staload "ats_dynexp3.sats"
 (* ****** ****** *)
 
 datatype c3strkind =
-  | C3STRKINDnone
+  | C3STRKINDmain of ()
   | C3STRKINDmetric_nat (* checking for metric being welfounded *)
   | C3STRKINDmetric_dec (* checking for metric being decreasing *)
   | C3STRKINDpattern_match_exhaustiveness of

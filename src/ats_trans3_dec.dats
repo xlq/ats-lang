@@ -837,7 +837,7 @@ c3str_get_final () = let
  end // end of [val]
 *)
 in
- c3str_itmlst ($Loc.location_none, C3STRKINDnone (), s3is_rev)
+ c3str_itmlst ($Loc.location_none, C3STRKINDmain, s3is_rev)
 end // end of [c3str_get_final]
 
 (* ****** ****** *)

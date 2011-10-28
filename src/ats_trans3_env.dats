@@ -101,15 +101,16 @@ end // end of [prerr_loc_interror]
 implement
 c3str_prop (loc, s2e) = '{
   c3str_loc= loc
-, c3str_kind= C3STRKINDnone
-, c3str_node= C3STRprop s2e
+, c3str_kind= C3STRKINDmain
+, c3str_node= C3STRprop (s2e)
 } // end of [c3str_prop]
 
 implement
-c3str_itmlst (loc, knd, s3is) = '{
+c3str_itmlst
+  (loc, knd, s3is) = '{
   c3str_loc= loc
 , c3str_kind= knd
-, c3str_node= C3STRitmlst s3is
+, c3str_node= C3STRitmlst (s3is)
 } // end of [c3str_itmlst]
 
 implement
@@ -1228,7 +1229,7 @@ end // end of [trans3_env_pop_sta_and_add]
 
 implement
 trans3_env_pop_sta_and_add_none (loc) =
- trans3_env_pop_sta_and_add (loc, C3STRKINDnone ())
+ trans3_env_pop_sta_and_add (loc, C3STRKINDmain ())
 // end of ...
 
 implement

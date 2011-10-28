@@ -1947,7 +1947,7 @@ c3str_solve_main
   var ans: intBtw (~1, 1) = ans
   val () = begin case+ ans of
     | _ when ans >= 0 => begin case+ c3t.c3str_kind of
-      | C3STRKINDnone () => begin
+      | C3STRKINDmain () => begin
           if unsolved > 0U then begin
             // an error message has already been reported
           end else begin

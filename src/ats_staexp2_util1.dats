@@ -754,7 +754,8 @@ end // end of [s2rt_lin_prg_boxed_npf_labs2explst]
 
 (* ****** ****** *)
 
-implement s2exp_tyrec (recknd, npf, ls2es) = let
+implement
+s2exp_tyrec (recknd, npf, ls2es) = let
   val tyrecknd: tyreckind = case+ recknd of
     | 0 => TYRECKINDflt0 () | _ => TYRECKINDbox ()
   var lin: int = 0 and prg: int = 0

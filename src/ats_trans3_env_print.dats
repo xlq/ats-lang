@@ -106,7 +106,7 @@ fprint_c3strkind (pf | out, knd) = let
   macdef prstr (s) = fprint1_string (pf | out, ,(s))
 in
   case+ knd of
-  | C3STRKINDnone () => prstr "none"
+  | C3STRKINDmain () => prstr "main"
   | C3STRKINDmetric_nat () => prstr "metric_nat"
   | C3STRKINDmetric_dec () => prstr "metric_dec"
   | C3STRKINDpattern_match_exhaustiveness _ => prstr "pattern"
