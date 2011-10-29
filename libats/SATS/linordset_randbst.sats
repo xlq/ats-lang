@@ -78,14 +78,22 @@ fun{} linordset_isnot_empty {a:t0p} (xs: !set a):<> bool
 
 (* ****** ****** *)
 //
-// HX: the time complexity of this function is O(n), where n is
-fun{a:t@ype} linordset_size (xs: !set a):<> size_t // the size of the set
+// HX: the time complexity of this function is O(1)
+fun{a:t@ype} linordset_size (xs: !set a):<> size_t
+//
+// HX: the time complexity
+fun{a:t@ype} // of this function is O(n) where n is
+linordset_height (xs: !set a):<> size_t // the size of [xs]
 //
 (* ****** ****** *)
 
-fun{a:t0p}
+fun{a:t@ype} linordset_free (xs: set (a)):<> void
+
+(* ****** ****** *)
+
+fun{a:t@ype}
 linordset_is_member (xs: !set a, x0: a, cmp: cmp a):<> bool
-fun{a:t0p}
+fun{a:t@ype}
 linordset_isnot_member (xs: !set a, x0: a, cmp: cmp a):<> bool
 
 (* ****** ****** *)
@@ -109,7 +117,7 @@ fun linordset_rngobj_free
 (* ****** ****** *)
 
 fun{a:t0p}
-linordset_insert (
+linordset_insert ( // O(log(|xs|))
   obj: !rngobj
 , xs: &set (a), x0: a, cmp: cmp a
 ) :<> bool(*[x0] alreay exists in [xs]*)
@@ -117,22 +125,20 @@ linordset_insert (
 (* ****** ****** *)
 
 fun{a:t@ype}
-linordset_remove (
+linordset_remove ( // O(log(|xs|))
   xs: &set (a), x0: a, cmp: cmp (a)
 ) :<> bool(*[x0] removed/not: true/false*)
 
 (* ****** ****** *)
 
 fun{a:t0p}
-linordset_ordget {n:nat} (
-  obj: !rngobj
-, xs: !set (a), n: int n, x0: &a? >> opt (a, b), cmp: cmp a
+linordset_ordget {d:nat} ( // O(log(|xs|))
+  xs: !set (a), d: int d, x0: &a? >> opt (a, b)
 ) :<> #[b:bool] bool (b) // true/false : found/not
 
 fun{a:t0p}
-linordset_ordrem {n:nat} (
-  obj: !rngobj
-, xs: &set (a), n: int n, x0: &a? >> opt (a, b), cmp: cmp a
+linordset_ordrem {d:nat} ( // O(log(|xs|))
+  xs: &set (a), d: int d, x0: &a? >> opt (a, b)
 ) :<> #[b:bool] bool (b) // true/false : removed/not
 
 (* ****** ****** *)
