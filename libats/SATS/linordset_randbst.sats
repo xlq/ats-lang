@@ -51,6 +51,12 @@
 
 (* ****** ****** *)
 
+%{#
+#include "libats/CATS/linordset_randbst.cats"
+%} // end of [%{#]
+
+(* ****** ****** *)
+
 sortdef t0p = t@ype
 
 (* ****** ****** *)

@@ -75,6 +75,9 @@ fun{} funset_isnot_nil {a:t@ype} (xs: set a):<> bool
 // HX: the time complexity of this function is O(n), where n is
 fun{a:t@ype} funset_size (xs: set a):<> size_t // the size of the set
 //
+// HX: the time complexity of this function is O(n); it is for
+fun{a:t@ype} funset_height (xs: set a):<> size_t // gathering stats
+//
 (* ****** ****** *)
 
 fun{a:t@ype}

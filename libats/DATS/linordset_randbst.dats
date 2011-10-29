@@ -40,10 +40,12 @@
 *)
 
 (* ****** ****** *)
-
 //
 // License: LGPL 3.0 (available at http://www.gnu.org/licenses/lgpl.txt)
 //
+(* ****** ****** *)
+
+#define ATS_DYNLOADFLAG 0 // no need for dynloading at run-time
 
 (* ****** ****** *)
 
@@ -51,8 +53,32 @@ staload "libats/SATS/linordset_randbst.sats"
 
 (* ****** ****** *)
 
+%{^
+
+ats_void_type
+atslib_linordset_rngobj_free
+  (ats_ptr_type obj) {
+  ((linordset_rngobj_struct*)obj)->free (obj) ; return ;
+} // end of [atslib_linordset_rngobj_free]
+
+ats_double_type
+atslib_linordset_rngobj_eval
+  (ats_ptr_type obj) {
+  return ((linordset_rngobj_struct*)obj)->get_double (obj) ;
+} // end of [atslib_linordset_rngobj_eval]
+
+ats_void_type
+atslib_linordset_rngobj_setseed
+  (ats_ptr_type obj, ats_ulint_type seed) {
+  ((linordset_rngobj_struct*)obj)->setseed (obj, seed) ; return ;
+} // end of [atslib_linordset_rngobj_setseed]
+
+%} // end of [%{^]
+
+(* ****** ****** *)
+
 extern
-fun linordset_rngobj_eval
+fun linordset_rngobj_eval // linordset_rngobj_randbst.cats
   (obj: !rngobj):<> double = "atslib_linordset_rngobj_eval"
 // end of [linordset_rngobj_eval]
 
@@ -61,7 +87,7 @@ fun linordset_rngobj_eval
 (*
 ** 0 if r <= m/(m+n); 1 if r > m/(m+n)
 *)
-fn randchoose_m_n
+fn{} randchoose_m_n
   {m,n:nat} (
   obj: !rngobj, m: int m, n: int n
 ) :<> natLt (2) = let
@@ -118,6 +144,13 @@ bstree_height
 // end of [bstree_height]
 
 implement{a} linordset_height (xs) = bstree_height (xs)
+
+(* ****** ****** *)
+
+implement{} linordset_make_nil () = BSTnil ()
+
+implement{a}
+linordset_make_sing (x) = BSTcons (1, x, BSTnil, BSTnil)
 
 (* ****** ****** *)
 

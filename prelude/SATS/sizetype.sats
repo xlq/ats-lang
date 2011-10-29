@@ -179,6 +179,16 @@ overload != with neq_size_size
 
 (* ****** ****** *)
 
+fun max_size_size
+  (sz1: size_t, sz2: size_t):<> size_t = "atspre_max_size_size"
+// end of [max_size_size]
+
+fun min_size_size
+  (sz1: size_t, sz2: size_t):<> size_t = "atspre_min_size_size"
+// end of [min_size_size]
+
+(* ****** ****** *)
+
 // bit operations
 
 fun land_size_size (sz1: size_t, sz2: size_t):<> size_t

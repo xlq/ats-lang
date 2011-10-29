@@ -99,6 +99,9 @@ atspre_size_of_int
 #define atspre_neq_size_int atspre_neq_size1_int1
 #define atspre_neq_size_size atspre_neq_size1_size1
 
+#define atspre_max_size_size atspre_max_size1_size1
+#define atspre_min_size_size atspre_min_size1_size1
+
 /* ****** ****** */
 
 ATSinline()

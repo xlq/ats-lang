@@ -326,6 +326,10 @@ libats/DATS/linmap_rbtree.dats
 libats/SATS/linset_avltree.sats
 libats/DATS/linset_avltree.dats
 
+/* linear ordset implementation based on randomized bstrees */
+libats/SATS/linordset_randbst.sats
+libats/DATS/linordset_randbst.dats
+
 /* linear array-based queue implementation */
 libats/SATS/linqueue_arr.sats
 libats/DATS/linqueue_arr.dats

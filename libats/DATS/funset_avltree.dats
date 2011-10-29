@@ -130,6 +130,17 @@ funset_size (xs) = aux (xs) where {
   // end of [aux]
 } // end of [funset_size]
 
+implement{a}
+funset_height (xs) = aux (xs) where {
+  fun aux {h:nat} .<h>.
+    (t: avltree (a, h)):<> size_t =
+    case+ t of
+    | B (_, _, tl, tr) =>
+        (size_of_int1)1 + max_size_size (aux (tl), aux (tr))
+    | E () => 0
+  // end of [aux]
+} // end of [funset_size]
+
 (* ****** ****** *)
 
 macdef avltree_height (t) =
