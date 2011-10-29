@@ -328,7 +328,7 @@ bstree_ordget
   t: !bstree (a, n), d: int d
 ) :<> a = let
   val+ BSTcons
-    (n, x, !p_tl, !p_tr) = t
+    (_, x, !p_tl, !p_tr) = t
   val nl = bstree_size (!p_tl)
 in
   if d < nl then let
@@ -350,6 +350,137 @@ in
     prval () = opt_none {a} (x0) in false
   end // end of [if]
 end // end of [linordset_ordget]
+
+(* ****** ****** *)
+
+fun{a:t@ype}
+bstree_join_random
+  {nl,nr:nat} .<nl+nr>. (
+  obj: !rngobj
+, tl: bstree (a, nl)
+, tr: bstree (a, nr)
+) :<> bstree (a, nl+nr) = begin case+ tl of
+  | BSTcons (
+      !p_nl, _(*xl*), !p_tll, !p_tlr
+    ) => begin
+    case+ tr of
+    | BSTcons (
+        !p_nr, _(*xr*), !p_trl, !p_trr
+      ) => let
+        val nl = !p_nl and nr = !p_nr
+        val n = nl + nr
+      in
+        if randchoose_m_n (obj, nl, nr) = 0 then let
+          prval () = fold@ tr
+          val () = !p_tlr := bstree_join_random (obj, !p_tlr, tr)
+          val () = !p_nl := n
+          prval () = fold@ (tl)
+        in
+          tl
+        end else let
+          prval () = fold@ tl
+          val () = !p_trl := bstree_join_random (obj, tl, !p_trl)
+          val () = !p_nr := n
+          prval () = fold@ (tr)
+        in
+          tr
+        end // end of [if]
+      end (* end of [BSTcons] *)
+    | ~BSTnil () => (fold@ tl; tl)
+    end (* end of [BSTcons] *)
+  | ~BSTnil () => tr
+end // end of [bstree_join_random]
+
+(* ****** ****** *)
+
+fun{a:t@ype}
+bstree_ordrem
+  {n,d:nat | d < n} .<n>. (
+  obj: !rngobj
+, t: &bstree (a, n) >> bstree (a, n-1), d: int d
+) :<> a = let
+  val+ BSTcons
+    (!p_n, x, !p_tl, !p_tr) = t
+  val nl = bstree_size (!p_tl)
+in
+  if d < nl then let
+    val res = bstree_ordrem<a> (obj, !p_tl, d)
+    val () = !p_n := !p_n - 1
+    prval () = fold@ {a} (t)
+  in
+    res
+  end else if d > nl then let
+    val res = bstree_ordrem<a> (obj, !p_tr, d-nl-1)
+    val () = !p_n := !p_n - 1
+    prval () = fold@ {a} (t)
+  in
+    res
+  end else let
+    val t_new = bstree_join_random<a> (obj, !p_tl, !p_tr)
+    val () = free@ {a} {0,0} (t)
+    val () = t := t_new
+  in
+    x (* removed *)
+  end // end of [if]
+end (* end of [bstree_ordrem] *)
+
+implement{a}
+linordset_ordrem
+  (obj, xs, d, x0) = let
+  val n = bstree_size (xs)
+in
+  if d < n then let
+    val () = x0 :=
+      bstree_ordrem<a> (obj, xs, d)
+    prval () = opt_some {a} (x0)
+  in
+    true
+  end else let
+    prval () = opt_none {a} (x0) in false
+  end (* end of [if] *)
+end // end of [linordset_ordrem]
+
+(* ****** ****** *)
+
+fun{a:t@ype}
+bstree_remove_random
+  {n:nat} .<n>. (
+  obj: !rngobj
+, t: &bstree (a, n) >> bstree (a, n-i)
+, x0: a, cmp: cmp a
+) :<> #[i:two | i <= n] int (i) = begin
+  case+ t of
+  | BSTcons {..} {nl,nr}
+      (!p_n, x, !p_tl, !p_tr) => let
+      val sgn = compare_elt_elt (x0, x, cmp)
+    in
+      if sgn < 0 then let
+        val ans = bstree_remove_random (obj, !p_tl, x0, cmp)
+        val () = !p_n := !p_n - ans
+        prval () = fold@ (t)
+      in
+        ans
+      end else if sgn > 0 then let
+        val ans = bstree_remove_random (obj, !p_tr, x0, cmp)
+        val () = !p_n := !p_n - ans
+        prval () = fold@ (t)
+      in
+        ans
+      end else let
+        val t_new = bstree_join_random<a> (obj, !p_tl, !p_tr)
+        val () = free@ {a} {0,0} (t)
+        val () = t := t_new
+      in
+        1 (* removed *)
+      end // end of [0]
+    end (* end of [BSTcons] *)
+  | BSTnil () => (fold@ t; 0)
+end // end of [bstree_remove_random]
+
+implement{a}
+linordset_remove (obj, xs, x0, cmp) = let
+  val ans = bstree_remove_random (obj, xs, x0, cmp) in ans > 0
+end // end of [linordset_remove]
 
 (* ****** ****** *)
 

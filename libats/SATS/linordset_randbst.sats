@@ -119,14 +119,15 @@ fun linordset_rngobj_free
 fun{a:t0p}
 linordset_insert ( // O(log(|xs|))
   obj: !rngobj
-, xs: &set (a), x0: a, cmp: cmp a
+, xs: &set (a), x0: a, cmp: cmp (a)
 ) :<> bool(*[x0] alreay exists in [xs]*)
 
 (* ****** ****** *)
 
 fun{a:t@ype}
 linordset_remove ( // O(log(|xs|))
-  xs: &set (a), x0: a, cmp: cmp (a)
+  obj: !rngobj
+, xs: &set (a), x0: a, cmp: cmp (a)
 ) :<> bool(*[x0] removed/not: true/false*)
 
 (* ****** ****** *)
@@ -138,7 +139,7 @@ linordset_ordget {d:nat} ( // O(log(|xs|))
 
 fun{a:t0p}
 linordset_ordrem {d:nat} ( // O(log(|xs|))
-  xs: &set (a), d: int d, x0: &a? >> opt (a, b)
+  obj: !rngobj, xs: &set (a), d: int d, x0: &a? >> opt (a, b)
 ) :<> #[b:bool] bool (b) // true/false : removed/not
 
 (* ****** ****** *)
