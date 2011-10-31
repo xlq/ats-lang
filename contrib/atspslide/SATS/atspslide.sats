@@ -68,8 +68,10 @@ fun cairodraw_clock01 {l:agz} (cr: !cairo_ref l): void
 *)
 fun cairodraw_circnum {l:agz} (cr: !cairo_ref l, int: int): void
 
+(* ****** ****** *)
+
 fun cairodraw_slide {l:agz} (cr: !cairo_ref l, x: slide): void
-//
+
 (* ****** ****** *)
 //
 // atspslide_glTexture 

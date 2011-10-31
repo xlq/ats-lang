@@ -445,6 +445,18 @@ in
   @{ data= p_arr, view= pfbox }
 end // end of [array_make_lst]
 
+implement{a}
+array_make_lst_vt (asz, xs) = let
+  val (
+    pf_gc, pf_arr | p_arr
+  ) = array_ptr_alloc_tsz {a} (asz, sizeof<a>)
+  prval () = free_gc_elim {a} (pf_gc) // return the certificate to GC
+  val () = array_ptr_initialize_lst_vt<a> (!p_arr, xs)
+  val (pfbox | ()) = vbox_make_view_ptr (pf_arr | p_arr)
+in
+  @{ data= p_arr, view= pfbox }
+end // end of [array_make_lst_vt]
+
 (* ****** ****** *)
 
 implement{a}

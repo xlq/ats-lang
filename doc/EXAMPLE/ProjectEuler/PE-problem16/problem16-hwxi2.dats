@@ -71,7 +71,7 @@ implement add_intlst_intlst
     (pf: REP (ds, n) | ds: intlst ds):<> [ds:intlst] (REP (ds, n+1) | intlst ds) =
     case+ ds of
     | intlst_cons (d, ds) => let
-          prval REPcons (pf) = pf; val d = d + 1
+        prval REPcons (pf) = pf; val d = d + 1
       in
         if d < BASE then
           (REPcons pf | intlst_cons (d, ds))

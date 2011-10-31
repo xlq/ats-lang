@@ -85,6 +85,27 @@ in
   if r < n then r else 0
 end // end of [randint]
 
+local
+
+staload UN = "prelude/SATS/unsafe.sats"
+
+in // in of [local]
+
+implement
+randsize {n} (n) = let
+  val d01 = drand48 ()
+  val r = ullint_of_double (d01 * (double_of_size)n)
+  val r = $UN.cast2size (r)
+  val [r:int] r = size1_of_size (r)
+  prval () = __assert () where {
+    extern prfun __assert (): [0 <= r; r <= n] void
+  } // end of [prval]
+in
+  if r < n then r else (size1_of_int1)0
+end // end of [randsize]
+
+end // end of [local]
+
 (* ****** ****** *)
 
 implement
@@ -146,6 +167,29 @@ randint_r {n}
 in
   if r < n then res := r else res := 0
 end // end of [randint_r]
+
+local
+
+staload UN = "prelude/SATS/unsafe.sats"
+
+in // in of [local]
+
+implement
+randsize_r {n}
+  (buf, n, res) = let
+  var d01: double
+  val _0 = drand48_r (buf, d01)
+  val r = ullint_of (d01 * (double_of_size)n)
+  val r = $UN.cast2size (r)
+  val [r:int] r = size1_of_size (r)
+  prval () = __assert () where {
+    extern prfun __assert (): [0 <= r; r <= n] void
+  } // end of [prval]
+in
+  if r < n then res := r else res := (size1_of_int1)0
+end // end of [randint_r]
+
+end // end of [local]
 
 (* ****** ****** *)
 

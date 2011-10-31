@@ -11,6 +11,7 @@
 (* ****** ****** *)
 
 staload UN = "prelude/SATS/unsafe.sats"
+staload _(*anon*) = "prelude/DATS/array.dats"
 staload _(*anon*) = "prelude/DATS/reference.dats"
 
 (* ****** ****** *)
@@ -361,6 +362,7 @@ ACTpresent 0 // default
 #define ACTfadeout 5 // fading gradually (and its reversal)
 #define ACTfolding01 6 // folding and unfolding
 #define ACTfolding02 7 // folding and unfolding
+#define ACTrandom01 8 // random squares
 
 local
 //
@@ -560,7 +562,7 @@ fun fexpose_sliding
 //
   val (pf_save | ()) = cairo_save (cr)
   val () = cairo_scale (cr, vpw, vph)
-  val () = cairodraw_slide_relative (cr, n) // current one
+  val () = cairodraw_slide_relative (cr, n) // 0/1
   val () = cairodraw_clock01 (cr) // HX: a translucent clock layover
 //
   val () = if vert > 0 then
@@ -611,7 +613,7 @@ fun fexpose_disking
 //
   val (pf_save | ()) = cairo_save (cr)
   val () = cairo_scale (cr, vpw, vph)
-  val () = cairodraw_slide_relative (cr, n) // current one
+  val () = cairodraw_slide_relative (cr, n) // 0/1
   val () = cairodraw_clock01 (cr) // HX: a translucent clock layover
 //
   val rad = sqrt (2.0)
@@ -663,7 +665,7 @@ fun fexpose_fadeout
 //
   val (pf_save | ()) = cairo_save (cr)
   val () = cairo_scale (cr, vpw, vph)
-  val () = cairodraw_slide_relative (cr, n) // current one
+  val () = cairodraw_slide_relative (cr, n) // 0/1
   val () = cairodraw_clock01 (cr) // HX: a translucent clock layover
 //
   macdef nrt (x) = pow (,(x), 1.0/8)
@@ -712,7 +714,7 @@ fun fexpose_folding01
 //
   val (pf_save | ()) = cairo_save (cr)
   val () = cairo_scale (cr, vpw, vph)
-  val () = cairodraw_slide_relative (cr, n) // current one
+  val () = cairodraw_slide_relative (cr, n) // 0/1
   val () = cairodraw_clock01 (cr) // HX: a translucent clock layover
   val () = cairo_restore (pf_save | cr)
   val gltext = glTexture_make_cairo_ref (GL_BGRA_format, cr)
@@ -764,7 +766,7 @@ fun fexpose_folding02
 //
   val (pf_save | ()) = cairo_save (cr)
   val () = cairo_scale (cr, vpw, vph)
-  val () = cairodraw_slide_relative (cr, n) // current one
+  val () = cairodraw_slide_relative (cr, n) // 0/1
   val () = cairodraw_clock01 (cr) // HX: a translucent clock layover
   val () = cairo_restore (pf_save | cr)
   val gltext = glTexture_make_cairo_ref (GL_BGRA_format, cr)
@@ -811,6 +813,148 @@ end // end of [fexpose_folding02]
 
 (* ****** ****** *)
 
+local
+
+staload "libc/SATS/random.sats"
+
+#define M 10
+#define N 10
+#define MN %(M * N)
+val xs =
+  loop (MN, list_vt_nil) where {
+  fun loop {n0,n:nat} .<n>. (
+    n: int n, res: list_vt (int, n0)
+  ) : list_vt (int, n0+n) =
+    if n > 0 then
+      loop (n-1, list_vt_cons (n-1, res))
+    else res
+  // end of [loop]
+} // end of [val]
+val thePosArray = array_make_lst_vt<int> (MN, xs)
+
+fn{a:viewt@ype}
+randshuffle {n:nat} (
+  A: &(@[a][n]), n: size_t n
+) : void = let
+//
+fun loop
+  {n:nat} {l:addr} .<n>. (
+  pfarr: !array_v (a, n, l) | p: ptr l, n: size_t n
+) : void =
+  if n >= 2 then let
+    val i = randsize (n)
+    val () = if i > 0 then array_ptr_exch (!p, 0, i)
+    prval (pf1at, pf2arr) = array_v_uncons {a} (pfarr)
+    val () = loop (pf2arr | p+sizeof<a>, n-1)
+    prval () = pfarr := array_v_cons {a} (pf1at, pf2arr)
+  in
+    // nothing
+  end else () // end of [if]
+//
+in
+  loop (view@ (A) | &A, n)
+end // end of [randshuffle]
+
+fun thePosArray_reshuffle (): void = let
+  val (vbox pf | p) = array_get_view_ptr (thePosArray)
+in
+  $effmask_ref (randshuffle<int> (!p, MN))
+end // end of [thePosArray_reshuffle]
+
+val () = thePosArray_reshuffle ()
+
+fun cairodraw_random_squares
+  {l:agz}
+  {m,n:pos}
+  {asz:nat}
+  {s0,k:nat | s0+k <= asz} .<k>. (
+  cr: !cairo_ref l
+, m: int m, n: int n
+, A: &(@[int][asz]), s0: int s0, k: int k
+) : void =
+  if k > 0 then let
+    val pos = A.[s0]
+    val pos = int1_of_int (pos)
+  in
+    if pos < 0 then
+      cairodraw_random_squares (cr, m, n, A, s0+1, k-1)
+    else let
+      val pos_m = pos idiv n
+    in
+      if pos_m >= m then
+        cairodraw_random_squares (cr, m, n, A, s0+1, k-1)
+      else let
+        val pos_n = pos nmod n
+        val xu = 1.0/m and yu = 1.0/n
+        val x = pos_m*xu and y = pos_n*yu
+        val xE = 0.2*xu and yE = 0.2*yu
+        val () = cairo_rectangle (cr, x-xE/2, y-yE/2, xu+xE, yu+yE)
+(*
+        // if you like disks :
+        val () = cairo_arc (cr, x+xu/2, y+yu/2, sqrt(xu*xu+yu*yu)/2, 0.0, _2PI)
+*)
+        val () = cairo_fill (cr)
+      in
+        cairodraw_random_squares (cr, m, n, A, s0+1, k-1) 
+      end // end of [if]
+    end // end of [if]
+  end else (
+    // nothing
+  ) // end of [if]
+// end of [cairodraw_random_squares]
+
+in // in of [local]
+
+fun fexpose_random01
+  (vpw: int, vph: int): void = let
+  val surface =
+    cairo_image_surface_create (CAIRO_FORMAT_ARGB32, vpw, vph)
+  val vpw = (double_of)vpw
+  and vph = (double_of)vph
+//
+  val alpha = !theAlpha_ref
+//
+  val [l:addr] cr = cairo_create (surface)
+//
+  val (pf_save | ()) = cairo_save (cr)
+  val () = cairo_scale (cr, vpw, vph)
+  val () = cairodraw_slide_relative (cr, 0) // current one
+  val () = cairodraw_clock01 (cr) // HX: a translucent clock layover
+//
+  val () = cairo_set_source_rgba (cr, 0.0, 0.0, 0.0, 1.0)
+  val () = {
+    val k = int_of (alpha/180 * MN)
+    val k = int1_of_int (k)
+    val () = assertloc (0 <= k && k <= MN)
+    val (vbox pf | p) = array_get_view_ptr (thePosArray)
+    val () = $effmask_ref (cairodraw_random_squares (cr, M, N, !p, 0, k))
+  } // end of [val]
+  val () = if (alpha > 179.999) then thePosArray_reshuffle ()
+//
+  val () = cairo_restore (pf_save | cr)
+  val gltext = glTexture_make_cairo_ref (GL_BGRA_format, cr)
+//
+  val () = cairo_destroy (cr)
+  val () = cairo_surface_destroy (surface)
+//
+  val () = glClear (GL_COLOR_BUFFER_BIT)
+  val () = glColor3d (0.0, 0.0, 0.0) // black color
+//
+  val (pfmat | ()) = glPushMatrix ()
+  val () = glTranslated (~0.5, ~0.5, 0.5)
+  val () = glTexture_mapout_rect_all (gltext, 1.0, 1.0, 1(*down*))
+  val () = glPopMatrix (pfmat | (*none*))
+//
+  val () = glDeleteTexture (gltext)
+//
+in
+  // nothing
+end // end of [fexpose_random01]
+
+end // end of [local]
+
+(* ****** ****** *)
+
 extern
 fun fexpose {l:agz} (
   darea: !GtkDrawingArea_ref l, event: &GdkEvent
@@ -852,6 +996,7 @@ in
       | ACTfadeout => fexpose_fadeout (vpw, vph)
       | ACTfolding01 => fexpose_folding01 (vpw, vph)
       | ACTfolding02 => fexpose_folding02 (vpw, vph)
+      | ACTrandom01 => fexpose_random01 (vpw, vph)
       | _(*0*) => fexpose_present (vpw, vph)
     ) : void // end of [val]
 //
@@ -979,7 +1124,7 @@ fnext () = let
 in
 //
 if (x = 0) then let
-  val rotknd = 1 + randint(7)
+  val rotknd = 1 + randint(8)
   val () = theActState_set (rotknd)
   val () = timeout_add () in (*nothing*)
 end else let
