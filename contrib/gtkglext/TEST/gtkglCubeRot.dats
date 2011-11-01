@@ -371,7 +371,7 @@ end // end of [visibility_notify_event]
 
 (* ****** ****** *)
 
-fun ESCAPE_key_press_cb
+fun cb_ESCAPE_key_press
   {l:agz} (
   win: !GtkWindow_ref (l), event: &GdkEventKey, data: gpointer
 ) : gboolean = let
@@ -381,17 +381,13 @@ in
 case+ 0 of
 | _ when kv=(guint)GDK_Escape => let
     val () = g_signal_stop_emission_by_name (win, (gsignal)"key_press_event")
-    val (fpf_win | win_) = g_object_vref (win)
-    val () = gtk_widget_destroy (win_)
-    prval () = __assert (fpf_win) where {
-      extern praxi __assert {v:view} (fpf: v): void // no need to return [win]
-    } // end of [prval]
+    val () = gtk_widget_destroy (win)
   in
     GTRUE
   end // end of [_ when ...]
 | _ => GFALSE
 //
-end // end of [ESCAPE_key_press_cb]
+end // end of [cb_ESCAPE_key_press]
 
 (* ****** ****** *)
 
@@ -412,11 +408,11 @@ val (fpf_x | x) = (gs)"gtkglCubeRot"
 val () = gtk_window_set_title (window, x)
 prval () = fpf_x (x)
 val _sid = g_signal_connect
-(window, (gsignal)"delete_event", G_CALLBACK (gtk_widget_destroy), (gpointer)null)
+  (window, (gsignal)"delete_event", G_CALLBACK (gtk_widget_destroy), (gpointer)null)
 val _sid = g_signal_connect
-(window, (gsignal)"key_press_event", G_CALLBACK (ESCAPE_key_press_cb), (gpointer)null)
+  (window, (gsignal)"key_press_event", G_CALLBACK (cb_ESCAPE_key_press), (gpointer)null)
 val _sid = g_signal_connect
-(window, (gsignal)"destroy", G_CALLBACK (gtk_main_quit), (gpointer)null)
+  (window, (gsignal)"destroy", G_CALLBACK (gtk_main_quit), (gpointer)null)
 //
 val vbox0 = gtk_vbox_new (GFALSE(*homo*), (gint)10(*spacing*))
 //

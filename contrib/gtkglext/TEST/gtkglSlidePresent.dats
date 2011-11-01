@@ -94,6 +94,75 @@ fun theDrawingArea_set_gl_capability {l:addr}
 (* ****** ****** *)
 
 %{^
+GtkWidget *theButtonClose = NULL;
+ats_ptr_type
+theButtonClose_get () {
+  g_object_ref (G_OBJECT(theButtonClose)); return theButtonClose ;
+} // end of [theButtonClose_get]
+ats_void_type
+theButtonClose_initset (ats_ptr_type x) {
+  g_object_ref(G_OBJECT(x)) ;
+  if (theButtonClose) g_object_unref (G_OBJECT(theButtonClose));
+  theButtonClose = x ;
+  return ;
+} // end of [theButtonClose_initset]
+%}
+extern
+fun theButtonClose_get (): GtkButton_ref1 = "theButtonClose_get"
+extern
+fun theButtonClose_initset
+  {l:agz} (x: !GtkButton_ref l): void = "theButtonClose_initset"
+// end of [theButtonClose_initset]
+
+(* ****** ****** *)
+
+%{^
+GtkWidget *theButtonPrev = NULL;
+ats_ptr_type
+theButtonPrev_get () {
+  g_object_ref (G_OBJECT(theButtonPrev)); return theButtonPrev ;
+} // end of [theButtonPrev_get]
+ats_void_type
+theButtonPrev_initset (ats_ptr_type x) {
+  g_object_ref(G_OBJECT(x)) ;
+  if (theButtonPrev) g_object_unref (G_OBJECT(theButtonPrev));
+  theButtonPrev = x ;
+  return ;
+} // end of [theButtonPrev_initset]
+%}
+extern
+fun theButtonPrev_get (): GtkButton_ref1 = "theButtonPrev_get"
+extern
+fun theButtonPrev_initset
+  {l:agz} (x: !GtkButton_ref l): void = "theButtonPrev_initset"
+// end of [theButtonPrev_initset]
+
+(* ****** ****** *)
+
+%{^
+GtkWidget *theButtonNext = NULL;
+ats_ptr_type
+theButtonNext_get () {
+  g_object_ref (G_OBJECT(theButtonNext)); return theButtonNext ;
+} // end of [theButtonNext_get]
+ats_void_type
+theButtonNext_initset (ats_ptr_type x) {
+  g_object_ref(G_OBJECT(x)) ;
+  if (theButtonNext) g_object_unref (G_OBJECT(theButtonNext));
+  theButtonNext = x ;
+  return ;
+} // end of [theButtonNext_initset]
+%}
+extern
+fun theButtonNext_get (): GtkButton_ref1 = "theButtonNext_get"
+extern
+fun theButtonNext_initset
+  {l:agz} (x: !GtkButton_ref l): void = "theButtonNext_initset"
+// end of [theButtonNext_initset]
+
+(* ****** ****** *)
+
+%{^
 GtkWidget *theSpinner = NULL;
 ats_ptr_type
 theSpinner_get () {
@@ -1210,6 +1279,45 @@ overload gint with gint_of_GtkResponseType
 
 (* ****** ****** *)
 
+fun cb_key_press
+  {l:agz} (
+  win: !GtkWindow_ref (l), event: &GdkEventKey, data: gpointer
+) : gboolean = let
+  val kv = event.keyval
+in
+//
+case+ 0 of
+| _ when kv=(guint)GDK_Escape => let
+    val btn = theButtonClose_get ()
+    val () = g_signal_emit_by_name (btn, (gsignal)"clicked")
+    val () = g_object_unref (btn)
+  in
+    GTRUE
+  end // end of [_ when ...]
+| _ when (
+    kv=(guint)GDK_Up orelse kv=(guint)GDK_Left
+  ) => let
+    val btn = theButtonPrev_get ()
+    val () = g_signal_emit_by_name (btn, (gsignal)"clicked")
+    val () = g_object_unref (btn)
+  in
+    GTRUE
+  end // end of [_ when ...]
+| _ when (
+    kv=(guint)GDK_Down orelse kv=(guint)GDK_Right
+  ) => let
+    val btn = theButtonNext_get ()
+    val () = g_signal_emit_by_name (btn, (gsignal)"clicked")
+    val () = g_object_unref (btn)
+  in
+    GTRUE
+  end // end of [_ when ...]
+| _ => GFALSE
+//
+end // end of [cb_key_press]
+
+(* ****** ****** *)
+
 fun
 cb_btn_close_clicked {l:agz}
   (btn: ptr, win: !GtkWindow_ref (l)): gboolean = GTRUE where {
@@ -1257,9 +1365,11 @@ val (fpf_x | x) = (gs)"gtkglSlidePresent"
 val () = gtk_window_set_title (window, x)
 prval () = fpf_x (x)
 val _sid = g_signal_connect
-(window, (gsignal)"delete_event", G_CALLBACK (gtk_widget_destroy), (gpointer)null)
+  (window, (gsignal)"delete_event", G_CALLBACK (gtk_widget_destroy), (gpointer)null)
 val _sid = g_signal_connect
-(window, (gsignal)"destroy", G_CALLBACK (gtk_main_quit), (gpointer)null)
+  (window, (gsignal)"key_press_event", G_CALLBACK (cb_key_press), (gpointer)null)
+val _sid = g_signal_connect
+  (window, (gsignal)"destroy", G_CALLBACK (gtk_main_quit), (gpointer)null)
 //
 val vbox0 = gtk_vbox_new (GFALSE(*homo*), (gint)10(*spacing*))
 val () = gtk_container_add (window, vbox0)
@@ -1297,6 +1407,7 @@ val () = gtk_box_pack_start (vbox0, hbox1, GFALSE, GTRUE, (guint)10)
 //
 val (fpf_x | x) = (gs)"_Close"
 val btn_close = gtk_button_new_with_mnemonic (x)
+val () = theButtonClose_initset (btn_close)
 prval () = fpf_x (x)
 val _sid = g_signal_connect
   (btn_close, (gsignal)"clicked", G_CALLBACK(cb_btn_close_clicked), (gpointer_vt)window)
@@ -1306,6 +1417,7 @@ val () = gtk_widget_show_unref (btn_close)
 //
 val (fpf_x | x) = (gs)"_Prev"
 val btn_prev = gtk_button_new_with_mnemonic (x)
+val () = theButtonPrev_initset (btn_prev)
 prval () = fpf_x (x)
 val _sid = g_signal_connect
   (btn_prev, (gsignal)"clicked", G_CALLBACK(fprev), (gpointer)null)
@@ -1315,6 +1427,7 @@ val () = gtk_widget_show_unref (btn_prev)
 //
 val (fpf_x | x) = (gs)"_Next"
 val btn_next = gtk_button_new_with_mnemonic (x)
+val () = theButtonNext_initset (btn_next)
 prval () = fpf_x (x)
 val _sid = g_signal_connect
   (btn_next, (gsignal)"clicked", G_CALLBACK(fnext), (gpointer)null)
