@@ -54,9 +54,8 @@ extern fun main1 (): void = "main1"
 
 implement main1 () = () where {
   val window = gtk_window_new (GTK_WINDOW_TOPLEVEL)
-  val (fpf_window | window_) = g_object_vref (window)
-  val _sid = g_signal_connect0 (
-    window_, (gsignal)"delete_event", (G_CALLBACK)delete_event, (gpointer)null
+  val _sid = g_signal_connect (
+    window, (gsignal)"delete_event", (G_CALLBACK)delete_event, (gpointer)null
   ) // end of [val]
   val () = gtk_container_set_border_width (window, (guint)10)
 //
@@ -105,8 +104,7 @@ implement main1 () = () where {
   val () = gtk_widget_show (table)
   val () = g_object_unref (table)
 //
-  val () = gtk_widget_show (window)
-  prval () = fpf_window (window)
+  val () = gtk_widget_show_unref (window) // ref-count becomes 1!
   val () = gtk_main ()
 } // end of [main1]
 

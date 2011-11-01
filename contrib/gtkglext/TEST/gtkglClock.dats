@@ -362,10 +362,9 @@ val () = gtk_window_set_default_size (window, (gint)400, (gint)400)
 val (fpf_x | x) = (gs)"gtkglClock"
 val () = gtk_window_set_title (window, x)
 prval () = fpf_x (x)
-val (fpf_window | window_) = g_object_vref (window)
-val _sid = g_signal_connect0
-(window_, (gsignal)"delete_event", G_CALLBACK (gtk_widget_destroy), (gpointer)null)
-val _sid = g_signal_connect1
+val _sid = g_signal_connect
+(window, (gsignal)"delete_event", G_CALLBACK (gtk_widget_destroy), (gpointer)null)
+val _sid = g_signal_connect
 (window, (gsignal)"destroy", G_CALLBACK (gtk_main_quit), (gpointer)null)
 //
 val vbox0 = gtk_vbox_new (GFALSE(*homo*), (gint)10(*spacing*))
@@ -421,8 +420,7 @@ val () = gtk_widget_show_unref (hbox1)
 //
 val () = gtk_widget_show_unref (vbox0)
 //
-val () = gtk_widget_show (window)
-prval () = fpf_window (window)
+val () = gtk_widget_show_unref (window) // ref-count becomes 1
 //
 val () = if !toggle_ref = 1 then timeout_add () // start the clock
 //

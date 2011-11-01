@@ -179,7 +179,7 @@ fun add_gint_gint {i,j:int}
 overload + with add_gint_gint
 
 fun sub_gint_gint {i,j:int}
-  (x: gint i, y: gint j): gint (i+j) = "atsctrb_sub_gint_gint"
+  (x: gint i, y: gint j): gint (i-j) = "atsctrb_sub_gint_gint"
 overload - with sub_gint_gint
 
 fun mul_gint_gint : mul (gint) = "atsctrb_mul_gint_gint"
@@ -209,6 +209,45 @@ overload = with eq_gint_gint
 fun neq_gint_gint {i,j:int}
   (x: gint i, y: gint j): bool (i <> j) = "atsctrb_neq_gint_gint"
 overload <> with neq_gint_gint
+
+(* ****** ****** *)
+
+fun add_guint_guint {i,j:int}
+  (x: guint i, y: guint j): guint (i+j) = "atsctrb_add_guint_guint"
+overload + with add_guint_guint
+
+fun sub_guint_guint
+  {i,j:int | i >= j}
+  (x: guint i, y: guint j): guint (i-j) = "atsctrb_sub_guint_guint"
+overload - with sub_guint_guint
+
+fun mul_guint_guint : mul (guint) = "atsctrb_mul_guint_guint"
+overload * with mul_guint_guint
+fun div_guint_guint : div (guint) = "atsctrb_div_guint_guint"
+overload / with div_guint_guint
+
+(* ****** ****** *)
+
+fun lt_guint_guint {i,j:int}
+  (x: guint i, y: guint j): bool (i < j) = "atsctrb_lt_guint_guint"
+overload < with lt_guint_guint
+fun lte_guint_guint {i,j:int}
+  (x: guint i, y: guint j): bool (i <= j) = "atsctrb_lte_guint_guint"
+overload <= with lte_guint_guint
+
+fun gt_guint_guint {i,j:int}
+  (x: guint i, y: guint j): bool (i > j) = "atsctrb_gt_guint_guint"
+overload > with gt_guint_guint
+fun gte_guint_guint {i,j:int}
+  (x: guint i, y: guint j): bool (i >= j) = "atsctrb_gte_guint_guint"
+overload >= with gte_guint_guint
+
+fun eq_guint_guint {i,j:int}
+  (x: guint i, y: guint j): bool (i == j) = "atsctrb_eq_guint_guint"
+overload = with eq_guint_guint
+fun neq_guint_guint {i,j:int}
+  (x: guint i, y: guint j): bool (i <> j) = "atsctrb_neq_guint_guint"
+overload <> with neq_guint_guint
 
 (* ****** ****** *)
 

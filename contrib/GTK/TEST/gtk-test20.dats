@@ -58,9 +58,8 @@ extern
 fun main1 (): void = "main1"
 implement main1 () = () where {
   val window = gtk_window_new (GTK_WINDOW_TOPLEVEL)
-  val (fpf_window | window_) = g_object_vref (window)
-  val _sid = g_signal_connect0
-    (window_, (gsignal)"destroy", G_CALLBACK(gtk_main_quit), (gpointer)null)
+  val _sid = g_signal_connect
+    (window, (gsignal)"destroy", G_CALLBACK(gtk_main_quit), (gpointer)null)
   val () = gtk_window_set_position(window, GTK_WIN_POS_CENTER)
   val () = gtk_window_set_default_size(window, (gint)250, (gint)200)
   val (fpf_x | x) = gstring_of_string ("lines & cols")
@@ -104,9 +103,8 @@ implement main1 () = () where {
   prval () = minus_addback (fpf_buf, buf | view)
   val () = gtk_widget_show_unref (view)
   val () = gtk_widget_show_unref (vbox)
-  val () = gtk_widget_show (window)
+  val () = gtk_widget_show_unref (window) // ref-count becomes 1!
   val () = gtk_main ()
-  prval () = fpf_window (window)
 } // end of [main1]
 
 (* ****** ****** *)

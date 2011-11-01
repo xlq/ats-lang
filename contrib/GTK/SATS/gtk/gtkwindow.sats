@@ -43,7 +43,10 @@ fun GTK_IS_WINDOW
 // end of [GTK_IS_WINDOW]
 
 (* ****** ****** *)
-
+//
+// HX-2011-10:
+// the ref-count of the created window is 2!
+//
 fun gtk_window_new
   (tp: GtkWindowType)
   : GtkWindow_ref1 = "mac#atsctrb_gtk_window_new"

@@ -49,9 +49,8 @@ extern fun main1 (): void = "main1"
 
 implement main1 () = () where {
   val window = gtk_window_new (GTK_WINDOW_TOPLEVEL)
-  val (fpf_window | window_) = g_object_vref (window) // no-op casting
-  val _sid = g_signal_connect0 (
-    window_, (gsignal)"destroy", (G_CALLBACK)gtk_main_quit, (gpointer)null
+  val _sid = g_signal_connect (
+    window, (gsignal)"destroy", (G_CALLBACK)gtk_main_quit, (gpointer)null
   ) // end of [val]
   val (fpf_x | x) = (gs)"Arrow Buttons"
   val () = gtk_window_set_title (window, x)
@@ -78,8 +77,7 @@ implement main1 () = () where {
   val () = gtk_widget_show (box)
   val () = g_object_unref (box)
 //
-  val () = gtk_widget_show (window)
-  prval () = fpf_window (window)
+  val () = gtk_widget_show_unref (window) // ref-count becomes 1!
   val () = gtk_main ()
 } // end of [main1]
 

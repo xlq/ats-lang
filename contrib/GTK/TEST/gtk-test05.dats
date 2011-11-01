@@ -227,9 +227,8 @@ implement main1 (which) = () where {
 //
   val quitbox = gtk_hbox_new (GFALSE, (gint)0)
   val button = gtk_button_new_with_label0 ("Quit")
-  val (fpf_window | window_) = g_object_vref (window)
-  val _sid = g_signal_connect_swapped0
-    (button, (gsignal)"clicked", G_CALLBACK(delete_event), window_)
+  val _sid = g_signal_connect_swapped
+    (button, (gsignal)"clicked", G_CALLBACK(delete_event), window)
   val () = gtk_box_pack_start (quitbox, button, GTRUE, GFALSE, (guint)0)
   val () = gtk_widget_show (button)
   val () = g_object_unref (button)
@@ -240,8 +239,7 @@ implement main1 (which) = () where {
   val () = gtk_widget_show (box1)
   val () = g_object_unref (box1)
 //
-  val () = gtk_widget_show (window)
-  prval () = fpf_window (window)
+  val () = gtk_widget_show_unref (window) // ref-count becomes 1!
 //
   val () = gtk_main ()
 } // end of [main1]

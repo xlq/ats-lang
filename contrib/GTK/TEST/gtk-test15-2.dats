@@ -68,7 +68,7 @@ implement main1 () = () where {
   prval () = fpf_x (x)
   prval () = minus_addback (fpf_btn, btn | filew)
 //
-  val _sid = g_signal_connect1
+  val _sid = g_signal_connect
     (filew, (gsignal)"destroy", G_CALLBACK(gtk_widget_destroy), (gpointer)null)
 //
   val (fpf_chooser | chooser) = gtk_file_chooser_dialog_get_chooser (filew)

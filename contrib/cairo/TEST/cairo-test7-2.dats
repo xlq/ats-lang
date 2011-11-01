@@ -311,15 +311,14 @@ implement main1 () = () where {
   val _sid = g_signal_connect
     (darea, (gsignal)"expose-event", G_CALLBACK (fexpose), (gpointer)null)
   val () = g_object_unref (darea)
-  val (fpf_window | window_) = g_object_vref (window)
-  val _sid = g_signal_connect0
-    (window_, (gsignal)"delete-event", G_CALLBACK (gtk_main_quit), (gpointer)null)
-  val _sid = g_signal_connect1
+  val _sid = g_signal_connect
+    (window, (gsignal)"delete-event", G_CALLBACK (gtk_main_quit), (gpointer)null)
+  val _sid = g_signal_connect
     (window, (gsignal)"destroy-event", G_CALLBACK (gtk_widget_destroy), (gpointer)null)
 //
   val _rid = gtk_timeout_add ((guint32)100U, ftimeout, (gpointer)null)
   val () = gtk_widget_show_all (window)
-  prval () = fpf_window (window)
+  val () = g_object_unref (window) // ref-count becomes 1!
   val () = gtk_main ()
 } // end of [val]
 

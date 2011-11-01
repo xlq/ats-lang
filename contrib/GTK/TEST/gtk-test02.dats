@@ -63,12 +63,11 @@ implement main1 () = () where {
   val _sid = g_signal_connect
     (button, (gsignal)"clicked", (G_CALLBACK)hw, (gpointer)null)
   val () = gtk_container_add (window, button)
-  val (fpf_window | window_) = g_object_vref (window)
-  val _sid = g_signal_connect_swapped0
-    (button, (gsignal)"clicked", (G_CALLBACK)gtk_widget_destroy, window_)
+  val _sid = g_signal_connect_swapped
+    (button, (gsignal)"clicked", (G_CALLBACK)gtk_widget_destroy, window)
   val () = gtk_widget_show (window)
   val () = g_object_unref (button)
-  prval () = fpf_window (window)
+  val () = g_object_unref (window) // ref-count becomes 1!
   val () = gtk_main ()
 } // end of [main1]
 

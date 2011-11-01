@@ -83,7 +83,6 @@ fun g_object_free_null {c:cls} (x: gobjref (c, null)):<> void
 // end of [g_object_free_null]
 
 (* ****** ****** *)
-
 //
 // HX-2010-04-13: this is unsafe but I cannot find a better means ...
 //

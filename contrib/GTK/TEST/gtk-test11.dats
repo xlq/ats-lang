@@ -101,9 +101,8 @@ implement main1 () = () where {
   val (fpf_x | x) = (gs)"GTK Statusbar Example"
   val () = gtk_window_set_title (window, x)
   prval () = fpf_x (x)
-  val (fpf_window | window_) = g_object_vref (window)
-  val _sid = g_signal_connect0
-    (window_, (gsignal)"delete_event", G_CALLBACK (delete_event), (gpointer)null)
+  val _sid = g_signal_connect
+    (window, (gsignal)"delete_event", G_CALLBACK (delete_event), (gpointer)null)
 //
   val vbox = gtk_vbox_new (GFALSE, (gint)1)
   val () = gtk_container_add (window, vbox)
@@ -138,8 +137,8 @@ implement main1 () = () where {
 //
   val () = g_object_unref (vbox)
 //
-  val () = gtk_widget_show (window)
-  prval () = fpf_window (window)
+  val () = gtk_widget_show_unref (window) // ref-count becomes 1!
+//
   val () = gtk_main ()
 } // end of [main1]
 

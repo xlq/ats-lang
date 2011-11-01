@@ -112,11 +112,10 @@ implement main1 () = () where {
 //
   val () = g_object_unref (table)
 //
-  val (fpf_window | window_) = g_object_vref (window)
-  val _sid = g_signal_connect0
-    (window_, (gsignal)"destroy", G_CALLBACK(gtk_main_quit), (gpointer)null)
+  val _sid = g_signal_connect
+    (window, (gsignal)"destroy", G_CALLBACK(gtk_main_quit), (gpointer)null)
   val () = gtk_widget_show_all (window)
-  prval () = fpf_window (window)
+  val () = g_object_unref (window) // ref-count becomes 1!
 //
   val () = gtk_main ()
 } // end of [main1]

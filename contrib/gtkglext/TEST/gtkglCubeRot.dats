@@ -371,6 +371,30 @@ end // end of [visibility_notify_event]
 
 (* ****** ****** *)
 
+fun ESCAPE_key_press_cb
+  {l:agz} (
+  win: !GtkWindow_ref (l), event: &GdkEventKey, data: gpointer
+) : gboolean = let
+  val kv = event.keyval
+in
+//
+case+ 0 of
+| _ when kv=(guint)GDK_Escape => let
+    val () = g_signal_stop_emission_by_name (win, (gsignal)"key_press_event")
+    val (fpf_win | win_) = g_object_vref (win)
+    val () = gtk_widget_destroy (win_)
+    prval () = __assert (fpf_win) where {
+      extern praxi __assert {v:view} (fpf: v): void // no need to return [win]
+    } // end of [prval]
+  in
+    GTRUE
+  end // end of [_ when ...]
+| _ => GFALSE
+//
+end // end of [ESCAPE_key_press_cb]
+
+(* ****** ****** *)
+
 macdef gs = gstring_of_string
 
 extern
@@ -382,17 +406,20 @@ val glconfig = gdk_gl_config_new_by_mode (
 ) // end of [glconfig]
 //
 val window = gtk_window_new (GTK_WINDOW_TOPLEVEL)
+//
 val () = gtk_window_set_default_size (window, (gint)400, (gint)400)
 val (fpf_x | x) = (gs)"gtkglCubeRot"
 val () = gtk_window_set_title (window, x)
 prval () = fpf_x (x)
-val (fpf_window | window_) = g_object_vref (window)
-val _sid = g_signal_connect0
-(window_, (gsignal)"delete_event", G_CALLBACK (gtk_widget_destroy), (gpointer)null)
-val _sid = g_signal_connect1
+val _sid = g_signal_connect
+(window, (gsignal)"delete_event", G_CALLBACK (gtk_widget_destroy), (gpointer)null)
+val _sid = g_signal_connect
+(window, (gsignal)"key_press_event", G_CALLBACK (ESCAPE_key_press_cb), (gpointer)null)
+val _sid = g_signal_connect
 (window, (gsignal)"destroy", G_CALLBACK (gtk_main_quit), (gpointer)null)
 //
 val vbox0 = gtk_vbox_new (GFALSE(*homo*), (gint)10(*spacing*))
+//
 val () = gtk_container_add (window, vbox0)
 val darea = gtk_drawing_area_new ()
 //
@@ -445,8 +472,7 @@ val () = gtk_widget_show_unref (hbox1)
 //
 val () = gtk_widget_show_unref (vbox0)
 //
-val () = gtk_widget_show (window)
-prval () = fpf_window (window)
+val () = gtk_widget_show_unref (window)
 //
 val () = if !rotate_ref = 1 then timeout_add () // start the clock
 //

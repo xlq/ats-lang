@@ -8,7 +8,7 @@ ATSUSRQ="$(ATSHOME)"
 ATSLIBQ="$(ATSHOME)"
 ifeq ("$(ATSHOME)","")
 ATSUSRQ="/usr"
-ATSLIBQ="/usr/lib/ats-anairiats-0.2.3"
+ATSLIBQ="/usr/lib/ats-anairiats-0.2.6"
 endif # end of [ifeq]
 
 ######
@@ -43,23 +43,23 @@ test03: gtk-test03.dats ; $(ATSCC) -o $@ $< $(GTKFLAGS)
 cleanall:: ; $(RMF) test03
 
 checkall:: test04
-test04: gtk-test04.dats ; $(ATSCC) -o $@ $< $(GTKFLAGS)
+test04: gtk-test04.dats ; $(ATSCC) -o $@ $< $(GTKFLAGS) $(ATSGTKLIB)
 cleanall:: ; $(RMF) test04
 
 checkall:: test05
-test05: gtk-test05.dats ; $(ATSCC) -o $@ $< $(GTKFLAGS)
+test05: gtk-test05.dats ; $(ATSCC) -o $@ $< $(GTKFLAGS) $(ATSGTKLIB)
 cleanall:: ; $(RMF) test05
 
 checkall:: test06
-test06: gtk-test06.dats ; $(ATSCC) -o $@ $< $(GTKFLAGS)
+test06: gtk-test06.dats ; $(ATSCC) -o $@ $< $(GTKFLAGS) $(ATSGTKLIB)
 cleanall:: ; $(RMF) test06
 
 checkall:: test07
-test07: gtk-test07.dats ; $(ATSCC) -o $@ $< $(GTKFLAGS)
+test07: gtk-test07.dats ; $(ATSCC) -o $@ $< $(GTKFLAGS) $(ATSGTKLIB)
 cleanall:: ; $(RMF) test07
 
 checkall:: test08
-test08: gtk-test08.dats ; $(ATSCC) -o $@ $< $(GTKFLAGS)
+test08: gtk-test08.dats ; $(ATSCC) -o $@ $< $(GTKFLAGS) $(ATSGTKLIB)
 cleanall:: ; $(RMF) test08
 
 checkall:: test09
@@ -69,29 +69,29 @@ cleanall:: ; $(RMF) test09
 ######
 
 checkall:: test10
-test10: gtk-test10.dats ; $(ATSCC) -o $@ $< $(GTKFLAGS)
+test10: gtk-test10.dats ; $(ATSCC) -o $@ $< $(GTKFLAGS) $(ATSGTKLIB)
 cleanall:: ; $(RMF) test10
 
 checkall:: test11
-test11: gtk-test11.dats ; $(ATSCC) -o $@ $< $(GTKFLAGS)
+test11: gtk-test11.dats ; $(ATSCC) -o $@ $< $(GTKFLAGS) $(ATSGTKLIB)
 cleanall:: ; $(RMF) test11
 
 checkall:: test12
-test12: gtk-test12.dats ; $(ATSCC) -o $@ $< $(GTKFLAGS)
+test12: gtk-test12.dats ; $(ATSCC) -o $@ $< $(GTKFLAGS) $(ATSGTKLIB)
 cleanall:: ; $(RMF) test12
 
 checkall:: test13
-test13: gtk-test13.dats ; $(ATSCC) -o $@ $< $(GTKFLAGS)
+test13: gtk-test13.dats ; $(ATSCC) -o $@ $< $(GTKFLAGS) $(ATSGTKLIB)
 cleanall:: ; $(RMF) test13
 
 checkall:: test14
-test14: gtk-test14.dats ; $(ATSCC) -o $@ $< $(GTKFLAGS)
+test14: gtk-test14.dats ; $(ATSCC) -o $@ $< $(GTKFLAGS) $(ATSGTKLIB)
 cleanall:: ; $(RMF) test14
 
 ######
 
 checkall:: test15-1
-test15-1: gtk-test15-1.dats ; $(ATSCC) -o $@ $< $(GTKFLAGS)
+test15-1: gtk-test15-1.dats ; $(ATSCC) -o $@ $< $(GTKFLAGS) $(ATSGTKLIB)
 cleanall:: ; $(RMF) test15-1
 
 checkall:: test15-2
@@ -109,7 +109,7 @@ test17: gtk-test17.dats ; $(ATSCC) -o $@ $< $(GTKFLAGS)
 cleanall:: ; $(RMF) test17
 
 checkall:: test18
-test18: gtk-test18.dats ; $(ATSCC) -o $@ $< $(GTKFLAGS)
+test18: gtk-test18.dats ; $(ATSCC) -o $@ $< $(GTKFLAGS) $(ATSGTKLIB)
 cleanall:: ; $(RMF) test18
 
 checkall:: test19

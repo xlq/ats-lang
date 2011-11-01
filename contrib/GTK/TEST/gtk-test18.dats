@@ -44,7 +44,7 @@ fun menu_add_item
     (__cast (p_str)) where { extern castfn __cast (x: ptr): String }
   // end of [val]
   val str = string1_of_strbuf @(pf_gc, pf | p)
-  val _sid = g_signal_connect1 (
+  val _sid = g_signal_connect (
     item, (gsignal)"activate", G_CALLBACK(cb_menuitem), (gpointer)str
   ) // end of [val]
 //
@@ -126,11 +126,9 @@ implement main1 () = () where {
 //
   val () = gtk_widget_show (vbox)
   val () = g_object_unref (vbox)
-  val (fpf_window | window_) = g_object_vref (window)
-  val _sid = g_signal_connect0
-    (window_, (gsignal)"destroy", G_CALLBACK(gtk_main_quit), (gpointer)null)  
-  val () = gtk_widget_show (window)
-  prval () = fpf_window (window)
+  val _sid = g_signal_connect
+    (window, (gsignal)"destroy", G_CALLBACK(gtk_main_quit), (gpointer)null)  
+  val () = gtk_widget_show_unref (window) // ref-count becomes 1!
   val () = gtk_main ()
 } // end of [main1]
 

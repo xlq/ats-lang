@@ -163,9 +163,8 @@ implement main1 () = () where {
   val () = gtk_window_set_title (window, x)
   prval () = fpf_x (x)
   val () = gtk_window_set_resizable (window, GTRUE)
-  val (fpf_window | window_) = g_object_vref (window)
-  val _sid = g_signal_connect0 (
-    window_, (gsignal)"destroy", G_CALLBACK(gtk_main_quit), (gpointer)null
+  val _sid = g_signal_connect (
+    window, (gsignal)"destroy", G_CALLBACK(gtk_main_quit), (gpointer)null
   ) // end of [val]
   val darea = gtk_drawing_area_new ()
   val () = the_drawingarea_set (darea)
@@ -179,11 +178,10 @@ implement main1 () = () where {
   val _sid = g_signal_connect (darea, (gsignal)"event", G_CALLBACK (area_event), (gpointer)null)
 //
   val () = gtk_container_add (window, darea)
-  val () = gtk_widget_show (darea)
-  val () = g_object_unref (darea)
+  val () = gtk_widget_show_unref (darea)
 //
-  val () = gtk_widget_show (window)
-  prval () = fpf_window (window)
+  val () = gtk_widget_show_unref (window) // ref-count becomes 1!
+//
   val () = gtk_main ()
 } // end of [main1]
 

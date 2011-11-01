@@ -50,9 +50,8 @@ implement main1 () = () where {
   val (fpf_x | x) = (gs)"File Selection Test"
   val filew = gtk_file_selection_new (x)
   prval () = fpf_x (x)
-  val (fpf_filew | filew_) = g_object_vref (filew)
-  val _sid = g_signal_connect0
-    (filew_, (gsignal)"destroy", G_CALLBACK(gtk_main_quit), (gpointer)null)
+  val _sid = g_signal_connect
+    (filew, (gsignal)"destroy", G_CALLBACK(gtk_main_quit), (gpointer)null)
 //
   val (fpf_btn | btn) = gtk_file_selection_get_ok_button (filew)
   val _sid = g_signal_connect_swapped
@@ -68,8 +67,8 @@ implement main1 () = () where {
   val () = gtk_file_selection_set_filename (filew, x)
   prval () = fpf_x (x)
 //
-  val () = gtk_widget_show (filew)
-  prval () = fpf_filew (filew)
+  val () = gtk_widget_show_unref (filew) // ref-count becomes 1!
+//
   val () = gtk_main ()
 } // end of [main1]
 

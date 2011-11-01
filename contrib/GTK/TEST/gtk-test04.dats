@@ -59,11 +59,10 @@ implement main1 () = () where {
   val (fpf_x | x) = (gs)"Hello Buttons!"
   val () = gtk_window_set_title (window, x)
   prval () = fpf_x (x)
-  val (fpf_window | window_) = g_object_vref (window)
-  val _sid = g_signal_connect0 (
-    window_, (gsignal)"destroy", (G_CALLBACK)handle_destroy, (gpointer)null
+  val _sid = g_signal_connect (
+    window, (gsignal)"destroy", (G_CALLBACK)handle_destroy, (gpointer)null
   ) // end of [val]
-  val _sid = g_signal_connect1 (
+  val _sid = g_signal_connect (
     window, (gsignal)"delete_event", (G_CALLBACK)handle_delete_event, (gpointer)null
   ) // end of [val]
 //
@@ -95,7 +94,7 @@ implement main1 () = () where {
   val (fpf_x | x) = (gs)"_Q_u_i_t"
   val button = gtk_button_new_with_mnemonic (x)
   prval () = fpf_x (x)
-  val _sid = g_signal_connect_swapped1
+  val _sid = g_signal_connect_swapped
     (button, (gsignal)"clicked", G_CALLBACK(handle_destroy), window)
   val () = gtk_table_attach_defaults
     (table, button, (guint)0U, (guint)2U, (guint)1U, (guint)2U)
@@ -105,8 +104,7 @@ implement main1 () = () where {
   val () = gtk_widget_show (table)
   val () = g_object_unref (table)
 //
-  val () = gtk_widget_show (window)
-  prval () = fpf_window (window)
+  val () = gtk_widget_show_unref (window) // ref-count becomes 1!
 //
   val () = gtk_main ()
 //

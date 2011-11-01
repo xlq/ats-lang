@@ -168,7 +168,7 @@ macdef GDK_WINDOW_STATE_BELOW =
 
 typedef GdkEvent = $extype_struct "GdkEvent" of {
   type= GdkEventType
-, window= Ptr // GdkWindow *window;
+, window= ptr // GdkWindow *window;
 , send_event= gint8
 , _rest= undefined_t // this field cannot be accessed
 } // end of [GdkEvent]
@@ -182,7 +182,7 @@ propdef GdkEvent_castdn_t (a:t@ype) = {l:addr}
 typedef GdkEventAny =
   $extype_struct "GdkEventAny" of {
   type= GdkEventType
-, window= Ptr // GdkWindow *window;
+, window= ptr // GdkWindow *window;
 , send_event= gint8
 } // end of [GdkEventAny]
 praxi GdkEventAny_castdn : GdkEvent_castdn_t (GdkEventAny)
@@ -192,14 +192,14 @@ praxi GdkEventAny_castdn : GdkEvent_castdn_t (GdkEventAny)
 typedef GdkEventButton =
   $extype_struct "GdkEventButton" of {
   type= GdkEventType
-, window= Ptr // GdkWindow *window;
+, window= ptr // GdkWindow *window;
 , send_event= gint8
 , time= guint32
 , x= gdouble, y= gdouble
 //  gdouble *axes;
 , state= guint
 , button= guint
-, device= Ptr // GdkDevice *device;
+, device= ptr // GdkDevice *device;
 , x_root= gdouble, y_root= gdouble
 , _res= undefined_t // this field cannot be accessed
 } // end of [GdkEventButton]
@@ -210,10 +210,10 @@ praxi GdkEventButton_castdn : GdkEvent_castdn_t (GdkEventButton)
 typedef GdkEventExpose =
   $extype_struct "GdkEventExpose" of {
   type= GdkEventType
-, window= Ptr // GdkWindow *window;
+, window= ptr // GdkWindow *window;
 , send_event= gint8
 , area= GdkRectangle
-, region= Ptr // GdkRegion *region;
+, region= ptr // GdkRegion *region;
 , count = gint // the number of events that follow
 } // end of [GdkEventExpose]
 praxi GdkEventExpose_castdn : GdkEvent_castdn_t (GdkEventExpose)
@@ -223,7 +223,7 @@ praxi GdkEventExpose_castdn : GdkEvent_castdn_t (GdkEventExpose)
 typedef GdkEventNoExpose =
   $extype_struct "GdkNoEventExpose" of {
   type= GdkEventType
-, window= Ptr // GdkWindow *window;
+, window= ptr // GdkWindow *window;
 , send_event= gint8
 } // end of [GdkEventNoExpose]
 
@@ -232,7 +232,7 @@ typedef GdkEventNoExpose =
 typedef GdkEventVisibility =
   $extype_struct "GdkEventVisibility" of {
   type= GdkEventType
-, window= Ptr // GdkWindow *window;
+, window= ptr // GdkWindow *window;
 , send_event= gint8
 , state= GdkVisibilityState
 } // end of [GdkEventVisibility]
@@ -242,18 +242,37 @@ typedef GdkEventVisibility =
 typedef GdkEventMotion =
   $extype_struct "GdkEventMotion" of {
   type= GdkEventType
-, window= Ptr // GdkWindow *window;
+, window= ptr // GdkWindow *window;
 , send_event= gint8
 , time= guint32
 , x= gdouble
 , y= gdouble
-, axes= Ptr // gdouble *axes;
+, axes= ptr // gdouble *axes;
 , state= guint
 , is_hint= gint16
-, device= Ptr // GdkDevice *device;
+, device= ptr // GdkDevice *device;
 , x_root= gdouble
 , y_root= gdouble
 } // end of [GdkEventMotion]
+
+(* ****** ****** *)
+
+typedef GdkEventKey =
+  $extype_struct "GdkEventKey" of {
+  type= GdkEventType
+, window= ptr // GdkWindow *window;
+, send_event= gint8
+, time= guint32
+, state= guint
+, keyval= guint
+, length= gint
+, string= ptr // gchar*
+, hardware_keycode= guint16
+, group= guint8
+(*
+, is_modifier= guint : 1
+*)
+} // end of [GdkEventKey]
 
 (* ****** ****** *)
 

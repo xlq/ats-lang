@@ -1675,6 +1675,9 @@ atsctrb_gtk_window_new
   (GtkWindowType window_type) {
   GtkWidget *widget = gtk_window_new (window_type) ;
   g_object_ref_sink(G_OBJECT(widget)) ; // removing floating reference!
+/*
+** the ref-count of the created window is 2!
+*/
   return widget ;
 } // end of [atsctrb_gtk_window_new]
 
