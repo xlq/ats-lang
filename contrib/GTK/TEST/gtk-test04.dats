@@ -44,7 +44,7 @@ fun handle_destroy
   {c:cls | c <= GtkWidget} {l:agz}
   (widget: gobjref (c, l)): void = () where {
   val () = (print "this is from [handle_destroy]"; print_newline ())
-  val () = gtk_widget_destroy (widget)
+  val () = gtk_widget_destroy0 (widget)
   val () = gtk_main_quit ()
 } // end of [handle_destroy]
 

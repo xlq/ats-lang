@@ -16,10 +16,12 @@ mainats (ats_int_type argc, ats_ptr_type argv) ;
 %}
 
 (* ****** ****** *)
-
-staload "contrib/GTK/SATS/gtkclassdec.sats"
+//
+staload "contrib/glib/SATS/glib-object.sats"
+//
 staload "contrib/GTK/SATS/gtk.sats"
-
+staload "contrib/GTK/SATS/gtkclassdec.sats"
+//
 (* ****** ****** *)
 
 extern fun main1 (): void = "main1"
@@ -28,7 +30,7 @@ implement main1 () = () where {
   val window = gtk_window_new (GTK_WINDOW_TOPLEVEL)
   val () = gtk_widget_show {GtkWindow} (window)
   val () = gtk_main ()
-  val () = gtk_widget_destroy (window) // can never be reached!!!
+  val () = gtk_widget_destroy0 (window) // can never be reached!!!
 } // end of [main1]
 
 (* ****** ****** *)

@@ -339,10 +339,9 @@ implement main1 () = () where {
   val (fpf_x | x) = (gs)"cairo: moving discs"
   val () = gtk_window_set_title (window, x)
   prval () = fpf_x (x)
-  val (fpf_window | window_) = g_object_vref (window)
-  val _sid = g_signal_connect0
-    (window_, (gsignal)"delete-event", G_CALLBACK (gtk_widget_destroy), (gpointer)null)
-  val _sid = g_signal_connect1
+  val _sid = g_signal_connect
+    (window, (gsignal)"delete-event", G_CALLBACK (gtk_widget_destroy), (gpointer)null)
+  val _sid = g_signal_connect
     (window, (gsignal)"destroy", G_CALLBACK (gtk_main_quit), (gpointer)null)
 //
   val vbox0 = gtk_vbox_new (GFALSE(*homo*), (gint)10(*spacing*))
@@ -397,7 +396,7 @@ implement main1 () = () where {
   val () = g_object_unref (hbox1)
   val () = g_object_unref (vbox0)
   val () = gtk_widget_show_all (window)
-  prval () = fpf_window (window)
+  val () = g_object_unref (window)
   val () = gtk_main ()
 } // end of [main1]
 

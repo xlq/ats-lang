@@ -77,13 +77,15 @@ implement main1 () = () where {
 //
   val response = gtk_dialog_run (filew)
 //
-  val () = case+ 0 of
+  val () = (case+ 0 of
     | _ when (response = (gint)GTK_RESPONSE_ACCEPT) => file_open (chooser)
     | _ => ()
+  ) : void // end of [val]
 //
   prval () = minus_addback (fpf_chooser, chooser | filew)
 //
-  val () = gtk_widget_destroy (filew)
+  val () = gtk_widget_destroy0 (filew)
+//
 } // end of [main1]
 
 (* ****** ****** *)

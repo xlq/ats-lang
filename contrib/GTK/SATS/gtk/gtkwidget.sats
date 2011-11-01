@@ -75,13 +75,26 @@ fun GTK_WIDGET_SAVED_STATE
 // end of [GTK_WIDGET_SAVED_STATE]
 
 (* ****** ****** *)
-
 //
-// HX: this one is based on refcount?
+// HX: ref-count is unaffected!
 //
 fun gtk_widget_destroy
-  {c:cls | c <= GtkWidget} {l:agz} (widget: gobjref (c, l)): void
+  {c:cls | c <= GtkWidget}
+  {l:agz} (
+  widget: !gobjref (c, l)
+) : void
   = "mac#atsctrb_gtk_widget_destroy"
+// end of [gtk_widget_destroy]
+//
+// HX: [gtk_widget_destroy0] consumes the gobject!
+//
+fun gtk_widget_destroy0
+  {c:cls | c <= GtkWidget}
+  {l:agz} (
+  widget: gobjref (c, l)
+) : void
+  = "mac#atsctrb_gtk_widget_destroy"
+// end of [gtk_widget_destroy0]
 
 (* ****** ****** *)
 

@@ -225,8 +225,9 @@ macdef gs = gstring_of_string
 overload gint with gint_of_GtkResponseType
 
 fun answering
-  {c:cls | c <= GtkWindow} {l:agz}
-  (parent: !gobjref (c, l), xs: List exp): void = () where {
+  {c:cls | c <= GtkWindow} {l:agz} (
+  parent: !gobjref (c, l), xs: List exp
+) : void = () where {
   val dialog = gtk_dialog_new ()
 //
   val () = gtk_window_set_transient_for (dialog, parent)
@@ -308,7 +309,7 @@ fun answering
     | _ => ()
   end // end of [val]
 //
-  val () = gtk_widget_destroy (dialog)
+  val () = gtk_widget_destroy0 (dialog)
 } // end of [answering]
 
 (* ****** ****** *)
@@ -486,10 +487,9 @@ implement main1 () = () where {
   val () = $RAND.srand48_with_time ()
 //
   val window = gtk_window_new (GTK_WINDOW_TOPLEVEL)
-  val (fpf_window | window_) = g_object_vref (window)
-  val _sig = g_signal_connect0
-    (window_, (gsignal)"destroy", G_CALLBACK(gtk_widget_destroy), (gpointer)null)
-  val _sig = g_signal_connect1
+  val _sig = g_signal_connect
+    (window, (gsignal)"destroy", G_CALLBACK(gtk_widget_destroy), (gpointer)null)
+  val _sig = g_signal_connect
     (window, (gsignal)"delete_event", G_CALLBACK(quitapp), (gpointer)null)
   val (fpf_x | x) = (gs)"Game-of-24"
   val () = gtk_window_set_title (window, x)
@@ -532,7 +532,7 @@ implement main1 () = () where {
     val (fpf_x | x) = (gs)"Eval"
     val button = gtk_button_new_with_label (x)
     prval () = fpf_x (x)
-    val _sid = g_signal_connect_swapped1
+    val _sid = g_signal_connect_swapped
       (button, (gsignal)"clicked", G_CALLBACK(evalapp), window)
     val () = gtk_box_pack_start (hbox, button, GTRUE, GTRUE, (guint)10)
     val () = gtk_widget_show_unref (button)
@@ -559,7 +559,7 @@ implement main1 () = () where {
   val () = gtk_widget_show_unref (vbox0)
 //
   val () = gtk_widget_show (window)
-  prval () = fpf_window (window)
+  val () = g_object_unref (window) // ref-count becomes 1!
   val () = gtk_main ()
 } // end of [main1]
 
