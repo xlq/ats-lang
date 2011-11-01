@@ -12,8 +12,7 @@ staload _(*anon*) = "libats/DATS/funset_avltree.dats"
 
 (* ****** ****** *)
 
-staload Time = "libc/SATS/time.sats"
-staload Rand = "libc/SATS/random.sats"
+staload RAND = "libc/SATS/random.sats"
 
 (* ****** ****** *)
 
@@ -34,13 +33,13 @@ implement main (argc, argv) = let
   end // end of [val]
   val [n:int] n = int1_of n; val n2 = n / 2
   val () = assert (n > 0)
-  val () = $Rand.srand48_with_time ()
+  val () = $RAND.srand48_with_time ()
   fn cmp (x1: int, x2: int):<cloref> Sgn = compare (x1, x2)
 
   var ints1: $FS.set (int) = $FS.funset_make_nil ()
   var i: int; val () =
     for (i := 0; i < n2; i := i+1) {
-      val _ = $FS.funset_insert<int> (ints1, $Rand.randint n, cmp)
+      val _ = $FS.funset_insert<int> (ints1, $RAND.randint n, cmp)
     }
   // end [val]
   val size1 = $FS.funset_size (ints1)
@@ -55,17 +54,13 @@ implement main (argc, argv) = let
   var ints2: $FS.set (int) = $FS.funset_make_nil ()
   var i: int; val () =
     for (i := n2; i < n; i := i+1) {
-      val _ = $FS.funset_insert<int> (ints2, $Rand.randint n, cmp)
-    }
+      val _ = $FS.funset_insert<int> (ints2, $RAND.randint n, cmp)
+    } (* end of [for] *)
   // end [val]
   val size2 = $FS.funset_size (ints2)
-  val () = begin
-    print "size2 = "; print size2; print_newline ()
-  end
+  val () = println! ("size2 = ", size2)
   val height2 = $FS.funset_height (ints2)
-  val () = begin
-    print "height2 = "; print height2; print_newline ()
-  end
+  val () = println! ("height2 = ", height2)
 
   val ints_union = $FS.funset_union (ints1, ints2, cmp)
   val size = $FS.funset_size (ints_union)

@@ -549,7 +549,7 @@ datatype d2ec_node =
   | D2Cvaldecs of (* value declaration *)
       ($Syn.valkind, v2aldeclst)
   | D2Cvaldecs_par of (* parallel value declaration *)
-      v2aldeclst
+      v2aldeclst // HX: this one is no longer supported
   | D2Cvaldecs_rec of (* recursive value declaration *)
       v2aldeclst
   | D2Cfundecs of (* function declaration *)

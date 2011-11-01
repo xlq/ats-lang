@@ -1229,11 +1229,11 @@ cb_btn_close_clicked {l:agz}
 //
   val () = gtk_window_set_transient_for (dialog, win(*parent*))
 //
-  val response = gtk_dialog_run (dialog)
-  val () = gtk_widget_destroy (dialog)
+  val res = gtk_dialog_run (dialog)
+  val () = gtk_widget_destroy0 (dialog)
 //
   val () = case+ 0 of
-    | _ when response = (gint)GTK_RESPONSE_YES => gtk_main_quit () // many things to do here!
+    | _ when res = (gint)GTK_RESPONSE_YES => gtk_main_quit () // many things to do here!
     | _ => () // quit is not confirmed
   // end of [val]
 } // end of [cb_file_quit_activate]

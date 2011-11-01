@@ -12,8 +12,7 @@ staload _(*anon*) = "libats/DATS/linordset_randbst.dats"
 
 (* ****** ****** *)
 
-staload Time = "libc/SATS/time.sats"
-staload Rand = "libc/SATS/random.sats"
+staload RAND = "libc/SATS/random.sats"
 
 (* ****** ****** *)
 
@@ -29,7 +28,7 @@ main (argc, argv) = let
   end // end of [val]
   val [n:int] n = int1_of n; val n2 = n / 2
   val () = assert (n > 0)
-  val () = $Rand.srand48_with_time ()
+  val () = $RAND.srand48_with_time ()
   fn cmp (x1: int, x2: int):<cloref> Sgn = compare (x1, x2)
 //
   val rng = $LS.linordset_rngobj_make_drand48 ()
@@ -37,18 +36,21 @@ main (argc, argv) = let
   var ints1: $LS.set (int) = $LS.linordset_make_nil ()
   var i: int; val () =
     for (i := 0; i < n2; i := i+1) {
-      val _ = $LS.linordset_insert<int> (rng, ints1, $Rand.randint n, cmp)
-    }
+      val _ = $LS.linordset_insert<int> (rng, ints1, $RAND.randint n, cmp)
+    } (* end of [for] *)
   // end [val]
 //
   val size1 = $LS.linordset_size (ints1)
-  val () = begin
-    print "size1 = "; print size1; print_newline ()
-  end
+  val () = println! ("size1 = ", size1)
   val height1 = $LS.linordset_height (ints1)
-  val () = begin
-    print "height1 = "; print height1; print_newline ()
-  end // end of [val]
+  val () = println! ("height1 = ", height1)
+//
+  var x0: int
+//
+  val ans = $LS.linordset_ordrem (rng, ints1, 0, x0)
+  val () = assertloc (ans)
+  prval () = opt_unsome {int} (x0)
+  val () = println! ("ordrem(ints1, 0) = ", x0)
 //
   val () = $LS.linordset_free (ints1)
 //
