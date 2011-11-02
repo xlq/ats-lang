@@ -432,6 +432,8 @@ ACTpresent 0 // default
 #define ACTfolding01 6 // folding and unfolding
 #define ACTfolding02 7 // folding and unfolding
 #define ACTrandom01 8 // random squares
+#define ACTrandom02 9 // random horizontal stripes
+#define ACTrandom03 10 // random vertical stripes
 
 local
 //
@@ -886,8 +888,8 @@ local
 
 staload "libc/SATS/random.sats"
 
-#define M 40
-#define N 40
+#define M 20
+#define N 20
 #define MN %(M * N)
 val xs =
   loop (MN, list_vt_nil) where {
@@ -972,6 +974,68 @@ fun cairodraw_random_squares
   ) // end of [if]
 // end of [cairodraw_random_squares]
 
+fun cairodraw_random_hstripes // horizontal stripes
+  {l:agz}
+  {mn:pos}
+  {asz:nat}
+  {s0,k:nat | s0+k <= asz} .<k>. (
+  cr: !cairo_ref l
+, mn: int mn
+, A: &(@[int][asz]), s0: int s0, k: int k
+) : void =
+  if k > 0 then let
+    val pos = A.[s0]
+    val pos = int1_of_int (pos)
+  in
+    if pos < 0 then
+      cairodraw_random_hstripes (cr, mn, A, s0+1, k-1)
+    else if pos >= mn then
+      cairodraw_random_hstripes (cr, mn, A, s0+1, k-1)
+    else let
+      val yu = 1.0/mn
+      val y = pos * yu
+      val yE = 0.4*yu
+      val () = cairo_rectangle (cr, 0.0, y-yE/2, 1.0, yu+yE)
+      val () = cairo_fill (cr)
+    in
+      cairodraw_random_hstripes (cr, mn, A, s0+1, k-1) 
+    end // end of [if]
+  end else (
+    // nothing
+  ) // end of [if]
+// end of [cairodraw_random_hstripes]
+
+fun cairodraw_random_vstripes // vertical stripes
+  {l:agz}
+  {mn:pos}
+  {asz:nat}
+  {s0,k:nat | s0+k <= asz} .<k>. (
+  cr: !cairo_ref l
+, mn: int mn
+, A: &(@[int][asz]), s0: int s0, k: int k
+) : void =
+  if k > 0 then let
+    val pos = A.[s0]
+    val pos = int1_of_int (pos)
+  in
+    if pos < 0 then
+      cairodraw_random_vstripes (cr, mn, A, s0+1, k-1)
+    else if pos >= mn then
+      cairodraw_random_vstripes (cr, mn, A, s0+1, k-1)
+    else let
+      val xu = 1.0/mn
+      val x = pos * xu
+      val xE = 0.2*xu
+      val () = cairo_rectangle (cr, x-xE/2, 0.0, xu+xE, 1.0)
+      val () = cairo_fill (cr)
+    in
+      cairodraw_random_vstripes (cr, mn, A, s0+1, k-1) 
+    end // end of [if]
+  end else (
+    // nothing
+  ) // end of [if]
+// end of [cairodraw_random_vstripes]
+
 in // in of [local]
 
 fun fexpose_random01
@@ -998,7 +1062,7 @@ fun fexpose_random01
     val (vbox pf | p) = array_get_view_ptr (thePosArray)
     val () = $effmask_ref (cairodraw_random_squares (cr, M, N, !p, 0, k))
   } // end of [val]
-  val () = if (alpha > 179.999) then thePosArray_reshuffle ()
+  val () = if (alpha >= 179.999) then thePosArray_reshuffle ()
 //
   val () = cairo_restore (pf_save | cr)
   val gltext = glTexture_make_cairo_ref (GL_BGRA_format, cr)
@@ -1019,6 +1083,98 @@ fun fexpose_random01
 in
   // nothing
 end // end of [fexpose_random01]
+
+fun fexpose_random02
+  (vpw: int, vph: int): void = let
+  val surface =
+    cairo_image_surface_create (CAIRO_FORMAT_ARGB32, vpw, vph)
+  val vpw = (double_of)vpw
+  and vph = (double_of)vph
+//
+  val alpha = !theAlpha_ref
+//
+  val [l:addr] cr = cairo_create (surface)
+//
+  val (pf_save | ()) = cairo_save (cr)
+  val () = cairo_scale (cr, vpw, vph)
+  val () = cairodraw_slide_relative (cr, 0) // current one
+  val () = cairodraw_clock01 (cr) // HX: a translucent clock layover
+//
+  val () = cairo_set_source_rgba (cr, 0.0, 0.0, 0.0, 1.0)
+  val () = {
+    val k = int_of (alpha/180 * MN)
+    val k = int1_of_int (k)
+    val () = assertloc (0 <= k && k <= MN)
+    val (vbox pf | p) = array_get_view_ptr (thePosArray)
+    val () = $effmask_ref (cairodraw_random_hstripes (cr, MN, !p, 0, k))
+  } // end of [val]
+  val () = if (alpha >= 179.999) then thePosArray_reshuffle ()
+//
+  val () = cairo_restore (pf_save | cr)
+  val gltext = glTexture_make_cairo_ref (GL_BGRA_format, cr)
+//
+  val () = cairo_destroy (cr)
+  val () = cairo_surface_destroy (surface)
+//
+  val () = glClear (GL_COLOR_BUFFER_BIT)
+  val () = glColor3d (0.0, 0.0, 0.0) // black color
+//
+  val (pfmat | ()) = glPushMatrix ()
+  val () = glTranslated (~0.5, ~0.5, 0.5)
+  val () = glTexture_mapout_rect_all (gltext, 1.0, 1.0, 1(*down*))
+  val () = glPopMatrix (pfmat | (*none*))
+//
+  val () = glDeleteTexture (gltext)
+//
+in
+  // nothing
+end // end of [fexpose_random02]
+
+fun fexpose_random03
+  (vpw: int, vph: int): void = let
+  val surface =
+    cairo_image_surface_create (CAIRO_FORMAT_ARGB32, vpw, vph)
+  val vpw = (double_of)vpw
+  and vph = (double_of)vph
+//
+  val alpha = !theAlpha_ref
+//
+  val [l:addr] cr = cairo_create (surface)
+//
+  val (pf_save | ()) = cairo_save (cr)
+  val () = cairo_scale (cr, vpw, vph)
+  val () = cairodraw_slide_relative (cr, 0) // current one
+  val () = cairodraw_clock01 (cr) // HX: a translucent clock layover
+//
+  val () = cairo_set_source_rgba (cr, 0.0, 0.0, 0.0, 1.0)
+  val () = {
+    val k = int_of (alpha/180 * MN)
+    val k = int1_of_int (k)
+    val () = assertloc (0 <= k && k <= MN)
+    val (vbox pf | p) = array_get_view_ptr (thePosArray)
+    val () = $effmask_ref (cairodraw_random_vstripes (cr, MN, !p, 0, k))
+  } // end of [val]
+  val () = if (alpha >= 179.999) then thePosArray_reshuffle ()
+//
+  val () = cairo_restore (pf_save | cr)
+  val gltext = glTexture_make_cairo_ref (GL_BGRA_format, cr)
+//
+  val () = cairo_destroy (cr)
+  val () = cairo_surface_destroy (surface)
+//
+  val () = glClear (GL_COLOR_BUFFER_BIT)
+  val () = glColor3d (0.0, 0.0, 0.0) // black color
+//
+  val (pfmat | ()) = glPushMatrix ()
+  val () = glTranslated (~0.5, ~0.5, 0.5)
+  val () = glTexture_mapout_rect_all (gltext, 1.0, 1.0, 1(*down*))
+  val () = glPopMatrix (pfmat | (*none*))
+//
+  val () = glDeleteTexture (gltext)
+//
+in
+  // nothing
+end // end of [fexpose_random03]
 
 end // end of [local]
 
@@ -1066,6 +1222,8 @@ in
       | ACTfolding01 => fexpose_folding01 (vpw, vph)
       | ACTfolding02 => fexpose_folding02 (vpw, vph)
       | ACTrandom01 => fexpose_random01 (vpw, vph)
+      | ACTrandom02 => fexpose_random02 (vpw, vph)
+      | ACTrandom03 => fexpose_random03 (vpw, vph)
       | _(*0*) => fexpose_present (vpw, vph)
     ) : void // end of [val]
 //
@@ -1193,7 +1351,7 @@ fnext () = let
 in
 //
 if (x = 0) then let
-  val rotknd = 1 + randint(8)
+  val rotknd = 1 + randint(10)
   val () = theActState_set (rotknd)
   val () = timeout_add () in (*nothing*)
 end else let
