@@ -225,7 +225,7 @@ regex-dna: regex-dna.dats
 checkall:: regex-dna_smp
 cleanall:: ; $(RMF) regex-dna_smp
 regex-dna_smp: regex-dna_smp.dats
-	$(ATSCC) -D_ATS_MULTITHREAD -lpthread -lpcre -O3 -fomit-frame-pointer regex-dna_smp.dats -o regex-dna_smp
+	$(ATSCC) -D_ATS_MULTITHREAD -O3 -fomit-frame-pointer regex-dna_smp.dats -o regex-dna_smp -lpthread -lpcre
 
 checkall:: regex-dna2
 cleanall:: ; $(RMF) regex-dna2

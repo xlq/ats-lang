@@ -6,7 +6,7 @@
 ** multicore version of regex-dna benchmark using PCRE
 **
 ** compilation command:
-**   atscc -D_ATS_MULTITHREAD -lpthread -lpcre -O3 -fomit-frame-pointer regex-dna_smp.dats -o regex-dna_smp
+**   atscc -D_ATS_MULTITHREAD -O3 -fomit-frame-pointer regex-dna_smp.dats -o regex-dna_smp -lpthread -lpcre
 *)
 
 (* ****** ****** *)
