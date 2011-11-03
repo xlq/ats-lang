@@ -42,7 +42,6 @@
 
 /* ****** ****** */
 
-#include <stdlib.h>
 #include "ats_types.h"
 
 /* ****** ****** */

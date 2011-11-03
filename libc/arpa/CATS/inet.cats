@@ -40,7 +40,17 @@
 
 #include <arpa/inet.h>
 #include <netinet/in.h>
-#include <stdio.h> // for [perror]
+
+/* ****** ****** */
+
+#ifndef EXIT_FAILURE
+#define EXIT_FAILURE 1
+#endif
+#ifndef EXIT_SUCCESS
+#define	EXIT_SUCCESS 0
+#endif
+
+extern void perror (const char *msg) ; // in [stdio.h]
 
 /* ****** ****** */
 

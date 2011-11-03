@@ -43,6 +43,9 @@
 
 /* ****** ****** */
 
+#ifndef __USE_MISC
+#define __USE_MISC // HX: this is necessary to obtain [dran48_data]
+#endif
 #include <stdlib.h>
 
 /* ****** ****** */
