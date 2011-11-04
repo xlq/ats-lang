@@ -66,6 +66,8 @@ extern typedef "strlst_t" = STRLSTcons_pstruct (string, strlst 0)
 
 %{$
 
+extern void free (void*) ;
+
 ats_ptr_type atscc_pkgconfig (
   ats_ptr_type arglst, ats_int_type narg
 ) {
@@ -84,10 +86,10 @@ ats_ptr_type atscc_pkgconfig (
 
   if (err != 0) {
     if (buf != 0) free (buf) ; return (ats_ptr_type)0 ;
-  }
+  } // end of [if]
 
   toks = (lstrlst_t)shelltok_parse (buf) ; free (buf) ;
-  
+
   return toks ;
 }
 

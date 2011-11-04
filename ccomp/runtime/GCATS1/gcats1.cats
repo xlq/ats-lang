@@ -44,25 +44,23 @@
 #include "gcats1.hats"
 
 /* ****** ****** */
-
+//
 #include <setjmp.h>
 #include <unistd.h>
-#include <string.h> // for [memset]
 #include <stdio.h>
-
 //
-
+extern void free (void*) ; // see [stdlib.h]
+extern void *memset (void *src, int c, size_t n) ; // see [string.h]
+//
 #ifdef _ATS_MULTITHREAD
 #include <pthread.h>
 #include <semaphore.h>
 #include <signal.h>
 #endif
-
 //
-
 #include "ats_basics.h"
 #include "ats_types.h"
-
+//
 /* ****** ****** */
 
 #undef ATS_FREE
@@ -93,6 +91,9 @@ ats_int_type log2_ceil (ats_int_type n) {
 /* ****** ****** */
 
 typedef unsigned char byte ;
+
+/* ****** ****** */
+
 typedef void *freeitmlst ;
 
 /* ****** ****** */

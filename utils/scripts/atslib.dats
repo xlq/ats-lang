@@ -166,23 +166,78 @@ fun library_make_loop
   {m:fm} {l_file:addr} (
   param_rev: Strlst, file: &FILE r, dir: String, libfilename: string
 ) : void = let
-  fn filename_is_legal
-    (name: String): bool = let
+//
+fn line_is_comment
+  (name: String): bool = let
+in
+  if string_isnot_at_end (name, 0) then
+    if name[0] = '#' then true else false
+  else true // end of [if]
+end // end of [line_is_comment]
+//
+fun split {n:int}
+  {i0,i:nat | i0 <= i; i <= n} .<n-i>. (
+  line: string (n), n: size_t n, i0: size_t i0, i: size_t i
+) : List (string) =
+  if i < n then let
+    val c = line[i]
   in
-    if string_isnot_at_end (name, 0) then
-      if name[0] = '#' then false else true
-    else false // end of [if]
-  end // end of [filename_is_legal]
+    if c != ' ' then
+      split (line, n, i0, i+1)
+    else let
+      val x = string_make_substring (line, i0, i-i0)
+      val x = string_of_strbuf (x)
+    in
+      list_cons (x, split_skip (line, n, i+1))
+    end
+  end else let
+    val x = string_make_substring (line, i0, n-i0)
+    val x = string_of_strbuf (x)
+  in
+    list_cons (x, list_nil)
+  end // end of [if]
+and split_skip {n:int}
+  {i:nat | i <= n} .<n-i>. (
+  line: string (n), n: size_t n, i: size_t i
+) : List (string) =
+  if i < n then let
+    val c = line[i]
+  in
+    if c != ' ' then
+      split (line, n, i, i+1)
+    else
+      split_skip (line, n, i+1)
+    // end of [if]
+  end else
+    list_nil () // end of [if]
+// end of [split_skip]
 in
   if feof (file) <> 0 then ()
   else let
-    val name =
+    val line =
       fget_line (file_mode_lte_r_r | file)
     // end of [val]
     val () = if
-      filename_is_legal name then let
-      val dirname = sbp2str (dir + name) in
-      ccomp_gcc_ar_libfile (param_rev, dirname, libfilename)
+      ~line_is_comment (line) then let
+      val n = string_length (line)
+      val xs = split (line, n, 0, 0)
+    in
+      case+ xs of
+      | list_cons (x, xs) => let
+          val x = string1_of_string x
+          val dirx = sbp2str (dir + x)
+          val param_rev = loop (xs, param_rev) where {
+            fun loop {m,n:nat}
+              (xs: list (string, m), ys: strlst n): strlst (m+n) =
+              case+ xs of
+              | list_cons (x, xs) => loop (xs, STRLSTcons (x, ys))
+              | list_nil () => ys
+            // end of [loop]
+          } // end of [val]
+        in
+          ccomp_gcc_ar_libfile (param_rev, dirx, libfilename)
+        end // end of [list_cons]
+      | list_nil () => ()
     end // end of [val]
   in
     library_make_loop (param_rev, file, dir, libfilename)

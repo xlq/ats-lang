@@ -244,23 +244,23 @@ ATSLIB=$(ATSHOMEBIN)/atslib
 
 .libfiles_local: .libfiles ; $(CC) -E -P -x c -o $@ $<
 libfiles: .libfiles_local
-	$(ATSLIB) $(ATS_PROOFCHECK) -D_XOPEN_SOURCE -O2 --libats
+	$(ATSLIB) $(ATS_PROOFCHECK) -O2 -D_XOPEN_SOURCE --libats
 	$(ATSLIB) $(ATS_PROOFCHECK) -O2 --libats_lex
 	$(ATSLIB) $(ATS_PROOFCHECK) -O2 --libats_smlbas
 
 lib32files: .libfiles_local
-	$(ATSLIB) $(ATS_PROOFCHECK) -m32 -D_XOPEN_SOURCE -O2 --libats
+	$(ATSLIB) $(ATS_PROOFCHECK) -m32 -O2 -D_XOPEN_SOURCE --libats
 	$(ATSLIB) $(ATS_PROOFCHECK) -m32 -O2 --libats_lex
 	$(ATSLIB) $(ATS_PROOFCHECK) -m32 -O2 --libats_smlbas
 
 lib64files: .libfiles_local
-	$(ATSLIB) $(ATS_PROOFCHECK) -m64 -D_XOPEN_SOURCE -O2 --libats
+	$(ATSLIB) $(ATS_PROOFCHECK) -m64 -O2 -D_XOPEN_SOURCE --libats
 	$(ATSLIB) $(ATS_PROOFCHECK) -m64 -O2 --libats_lex
 	$(ATSLIB) $(ATS_PROOFCHECK) -m64 -O2 --libats_smlbas
 
 .libfiles_mt_local: .libfiles_mt ; $(CC) -E -P -x c -o $@ $<
 libfiles_mt: .libfiles_mt_local
-	$(ATSLIB) $(ATS_PROOFCHECK) -D_ATS_MULTITHREAD -O2 --libats_mt
+	$(ATSLIB) $(ATS_PROOFCHECK) -O2 -D_ATS_MULTITHREAD --libats_mt
 
 libatsdoca: ; $(MAKE) -C libatsdoc
 

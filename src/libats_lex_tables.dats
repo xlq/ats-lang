@@ -73,6 +73,9 @@ fun table_ptr_free {a:viewt@ype} {n:nat} {l:addr}
 (* ****** ****** *)
 
 %{^
+//
+extern void free (void*) ;
+//
 ATSinline()
 ats_void_type
 table_ptr_free (ats_ptr_type p) { free (p) ; return ; }

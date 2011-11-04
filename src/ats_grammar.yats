@@ -14,9 +14,10 @@
 
 /* ****** ****** */
 
-%{
+%{^
 //
 #include <stdio.h> // for [fprintf]
+extern void exit (int) ; // HX: see [stdlib.h]
 #include "ats_memory.h" // HX: loading [ats_types.h] as well
 /*
 // HX: this is okay

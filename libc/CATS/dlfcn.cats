@@ -41,6 +41,8 @@
 #include <dlfcn.h>
 #include <stdio.h>
 
+extern void exit (int) ;
+
 /* ****** ****** */
 
 ATSinline()

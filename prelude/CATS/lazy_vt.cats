@@ -41,6 +41,10 @@
 
 /* ****** ****** */
 
+extern void free (void*) ; // see [stdlib.h]
+
+/* ****** ****** */
+
 #define ats_instr_move_lazy_ldelay_mac(tmp, hit, vp_clo) \
   do { tmp = (vp_clo) ; } while (0) /* end of [do ... while ...] */
 
