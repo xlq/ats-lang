@@ -152,8 +152,8 @@ libc/DATS/printf.dats
 
 libc/SATS/pwd.sats
 
-libc/SATS/random.sats
-libc/DATS/random.dats
+libc/SATS/random.sats -D_XOPEN_SOURCE
+libc/DATS/random.dats -D_XOPEN_SOURCE
 
 libc/SATS/sched.sats
 
@@ -328,9 +328,11 @@ libats/DATS/linset_avltree.dats
 
 /*
 ** linear ordset implementation based on randomized bstrees
+** note that the flag __USE_MISC needs to be set in order to
+** gain access to struct drand48_data
 */
-libats/SATS/linordset_randbst.sats -D_BSD_SOURCE
-libats/DATS/linordset_randbst.dats -D_BSD_SOURCE
+libats/SATS/linordset_randbst.sats -D_XOPEN_SOURCE -D_BSD_SOURCE
+libats/DATS/linordset_randbst.dats -D_XOPEN_SOURCE -D_BSD_SOURCE
 
 /* linear array-based queue implementation */
 libats/SATS/linqueue_arr.sats

@@ -244,17 +244,17 @@ ATSLIB=$(ATSHOMEBIN)/atslib
 
 .libfiles_local: .libfiles ; $(CC) -E -P -x c -o $@ $<
 libfiles: .libfiles_local
-	$(ATSLIB) $(ATS_PROOFCHECK) -O2 -D_XOPEN_SOURCE --libats
+	$(ATSLIB) $(ATS_PROOFCHECK) -O2 --libats
 	$(ATSLIB) $(ATS_PROOFCHECK) -O2 --libats_lex
 	$(ATSLIB) $(ATS_PROOFCHECK) -O2 --libats_smlbas
 
 lib32files: .libfiles_local
-	$(ATSLIB) $(ATS_PROOFCHECK) -m32 -O2 -D_XOPEN_SOURCE --libats
+	$(ATSLIB) $(ATS_PROOFCHECK) -m32 -O2 --libats
 	$(ATSLIB) $(ATS_PROOFCHECK) -m32 -O2 --libats_lex
 	$(ATSLIB) $(ATS_PROOFCHECK) -m32 -O2 --libats_smlbas
 
 lib64files: .libfiles_local
-	$(ATSLIB) $(ATS_PROOFCHECK) -m64 -O2 -D_XOPEN_SOURCE --libats
+	$(ATSLIB) $(ATS_PROOFCHECK) -m64 -O2 --libats
 	$(ATSLIB) $(ATS_PROOFCHECK) -m64 -O2 --libats_lex
 	$(ATSLIB) $(ATS_PROOFCHECK) -m64 -O2 --libats_smlbas
 

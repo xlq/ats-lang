@@ -56,6 +56,7 @@
 #define atslib_pthread_attr_destroy pthread_attr_destroy
 
 ATSinline()
+ats_void_type
 atslib_pthread_attr_init_exn
   (ats_ref_type p_attr) {
   if (pthread_attr_init((pthread_attr_t*)p_attr)) {
@@ -65,6 +66,7 @@ atslib_pthread_attr_init_exn
 } // end of [atslib_pthread_attr_init_exn]
 
 ATSinline()
+ats_void_type
 atslib_pthread_attr_destroy_exn
   (ats_ref_type p_attr) {
   if (pthread_attr_destroy((pthread_attr_t*)p_attr)) {
