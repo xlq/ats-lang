@@ -39,7 +39,7 @@
 %{^
 #include <stddef.h> // for [offsetof]
 extern void free (void*) ; // see [stdlib.h]
-extern void realloc (void*, size_t) ; // see [stdlib.h]
+extern void *realloc (void *ptr, size_t bsz) ; // see [stdlib.h]
 %}
 
 (* ****** ****** *)

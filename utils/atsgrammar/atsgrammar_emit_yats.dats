@@ -1046,6 +1046,9 @@ ats_void_type\n\
 yylval_token_set(t0kn_t val)\n\
   { yylval.t0kn = val ; return ; }\n\
 \n\
+// HX: see [stdlib.h]
+extern void exit (int) ;\n\
+//\n\
 // HX: implemented in [ats_filename.dats]\n\
 extern ats_void_type atsopt_filename_prerr () ;\n\
 //\n\

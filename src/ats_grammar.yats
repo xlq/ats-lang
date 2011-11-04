@@ -14,10 +14,9 @@
 
 /* ****** ****** */
 
-%{^
+%{
 //
 #include <stdio.h> // for [fprintf]
-extern void exit (int) ; // HX: see [stdlib.h]
 #include "ats_memory.h" // HX: loading [ats_types.h] as well
 /*
 // HX: this is okay
@@ -2882,6 +2881,9 @@ ats_void_type
 yylval_token_set(t0kn_t val)
   { yylval.t0kn = val ; return ; }
 
+// HX: see [stdlib.h]
+extern void exit (int) ;
+//
 // HX: implemented in [ats_filename.dats]
 extern ats_void_type atsopt_filename_prerr () ;
 //
