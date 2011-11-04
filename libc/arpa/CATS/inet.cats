@@ -43,12 +43,14 @@
 
 /* ****** ****** */
 
-#ifndef EXIT_FAILURE
-#define EXIT_FAILURE 1
-#endif
 #ifndef EXIT_SUCCESS
 #define	EXIT_SUCCESS 0
 #endif
+#ifndef EXIT_FAILURE
+#define EXIT_FAILURE 1
+#endif
+
+/* ****** ****** */
 
 extern void perror (const char *msg) ; // in [stdio.h]
 

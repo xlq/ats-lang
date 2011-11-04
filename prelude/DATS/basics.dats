@@ -112,6 +112,13 @@ ats_exit_errmsg (
 ** HX: various functions for asserts
 */
 
+#ifndef EXIT_SUCCESS
+#define	EXIT_SUCCESS 0
+#endif
+#ifndef EXIT_FAILURE
+#define EXIT_FAILURE 1
+#endif
+
 ats_void_type
 atspre_assertfalse () {
 //

@@ -40,7 +40,16 @@
 
 #include <math.h>
 #include <stdio.h>
-#include <stdlib.h>
+
+/* ****** ****** */
+//
+// HX: these functions are in [stdlib.h]
+//
+extern double atof (const char *str) ;
+extern long int atol (const char *str) ;
+extern long long int atoll (const char *str) ;
+
+/* ****** ****** */
 
 #include "ats_types.h"
 

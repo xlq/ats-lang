@@ -51,6 +51,10 @@
 //
 /* ****** ****** */
 
+extern void exit (int) ; // HX: see [stdlib.h]
+
+/* ****** ****** */
+
 ATSinline()
 ats_size_type
 atspre_size_of_int

@@ -347,6 +347,19 @@ end // end of [strptr_dup]
 (* ****** ****** *)
 
 %{$
+
+#ifndef EXIT_SUCCESS
+#define	EXIT_SUCCESS 0
+#endif
+#ifndef EXIT_FAILURE
+#define EXIT_FAILURE 1
+#endif
+
+%}
+
+/* ****** ****** */
+
+%{$
 //
 // HX: a commonly used simple hash function
 //
@@ -372,8 +385,6 @@ atspre_string_hash_33 (ats_ptr_type s0) {
 (* ****** ****** *)
 
 %{$
-
-/* ****** ****** */
 
 ats_ptr_type
 atspre_string_make_char (
