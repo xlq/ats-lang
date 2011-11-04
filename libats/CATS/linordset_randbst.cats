@@ -42,10 +42,9 @@
 #define ATS_LIBATS_LINORDSET_RANDBST_CATS
 
 /* ****** ****** */
-
-#ifndef __USE_MISC
-#define __USE_MISC // HX: this is necessary to obtain [dran48_data]
-#endif
+//
+// HX: __USE_MISC must be turned on
+//
 #include <stdlib.h>
 
 /* ****** ****** */

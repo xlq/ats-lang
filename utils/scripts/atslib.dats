@@ -28,12 +28,10 @@
 *)
 
 (* ****** ****** *)
-
 //
 // Author: Hongwei Xi (hwxi AT cs DOT bu DOT edu)
 // Time: Summer 2007
 //
-
 (* ****** ****** *)
 
 staload "libc/SATS/stdio.sats"
@@ -164,20 +162,25 @@ extern fun fget_line {m:fm}
 
 #define i2sz size1_of_int1
 
-fun library_make_loop {m:fm} {l_file:addr}
-  (param_rev: Strlst, file: &FILE r, dir: String, libfilename: string)
-  : void = let
-  fn filename_is_legal (name: String): bool = let
-    val _0 = i2sz 0
+fun library_make_loop
+  {m:fm} {l_file:addr} (
+  param_rev: Strlst, file: &FILE r, dir: String, libfilename: string
+) : void = let
+  fn filename_is_legal
+    (name: String): bool = let
   in
-    if string_is_at_end (name, _0) then false
-    else (if name[_0] = '#' then false else true)
+    if string_isnot_at_end (name, 0) then
+      if name[0] = '#' then false else true
+    else false // end of [if]
   end // end of [filename_is_legal]
 in
   if feof (file) <> 0 then ()
   else let
-    val name = fget_line (file_mode_lte_r_r | file)
-    val () = if filename_is_legal name then let
+    val name =
+      fget_line (file_mode_lte_r_r | file)
+    // end of [val]
+    val () = if
+      filename_is_legal name then let
       val dirname = sbp2str (dir + name) in
       ccomp_gcc_ar_libfile (param_rev, dirname, libfilename)
     end // end of [val]
