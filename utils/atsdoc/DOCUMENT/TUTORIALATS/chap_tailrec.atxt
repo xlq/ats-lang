@@ -21,7 +21,7 @@ in imperative programming are often implemented as tail-recursive functions.
 
 #para('\
 
-Suppose that a function #emph("bar") calls another function #emph("bar"),
+Suppose that a function #emph("foo") calls another function #emph("bar"),
 that is, there is a call to #emph("bar") appearing in the body of
 #emph("foo"), where #emph("foo") and #emph("bar") may actually be the same
 function. If the return value of the call to #emph("bar") also happens to be
@@ -60,7 +60,7 @@ stack space is adequate for executing each call to the function.
 Let us now see some examples that can help further illustrate the notion of
 tail-recursive call optimization. The following recursive function
 #code("sum1") sums up all the natural numbers less than or equal to a given
-parameter #code("n"):
+integer parameter #code("n"):
 
 ")
 
@@ -70,9 +70,9 @@ fun sum1 (n: int): int = if n > 0 then n + sum1 (n-1) else 0
 
 #para("\
 
-Clearly, #code("sum1") is not recursive as the only self call in its body
-is not a tail-call.  The counterpart of #code("sum1") in C can essentially
-be given as follows:
+Clearly, #code("sum1") is not tail-recursive as the only self call in its
+body is not a tail-call.  The counterpart of #code("sum1") in C can
+essentially be given as follows:
 
 #atscode("\
 int sum1 (int n) {
@@ -96,7 +96,7 @@ end // end of [sum2]
 
 The inner function #code("loop") in the definition of #code("sum2") is
 tail-recursive.  The stack space consumed by #code("loop") is constant,
-that is, it is independent of the value of the argument of #code("sum2").
+that is, it is independent of the values of the arguments of #code("loop").
 Essentially, the ATS compiler translates the definition of #code("sum2")
 into the following C code:
 

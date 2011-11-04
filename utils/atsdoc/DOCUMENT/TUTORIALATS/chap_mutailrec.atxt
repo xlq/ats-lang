@@ -38,18 +38,17 @@ Therefore, #code("isEvn") and #code("isOdd") are mutually tail-recursive.
 
 #para("\
 
-In order to turn mutually recursive tail-calls into jumps, the
-bodies of the involved mutually recursive functions need to be
-combined. The keyword #code("fn*") in ATS is introduced for this
-purpose precisely. For instance, let us replace #code("fun") with
-#code("fn*") in the code above:
+In order to turn mutually recursive tail-calls into jumps, the bodies of
+the involved mutually recursive functions need to be combined. The keyword
+#code("fn*") in ATS is introduced precisely for this purpose. For instance,
+let us replace #code("fun") with #code("fn*") in the code above:
 
 #atscode_extract("\
 fn* isEvn (n: int): bool = if n > 0 then isOdd (n-1) else true
 and isOdd (n: int): bool = if n > 0 then isEvn (n-1) else false
 ")
 
-Then the following C code is essentially generated from compiling
+Then the following C code is essentially what is generated from compiling
 these two mutually defined functions:
 
 #atscode("\
@@ -84,8 +83,8 @@ only if they all have the same return type. In the above case, both
 #para("\
 
 When translating C code involving embedded loops, we often encounter the
-need for mutual tail-recursion. For instance, the following C code prints
-out ordered pairs of digits:
+need for mutual tail-recursion. For example, the following C code prints
+out some ordered pairs of digits:
 
 #atscode('\
 int main (
