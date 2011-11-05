@@ -55,7 +55,7 @@ symtbl (
   dna= dna_t
 , ptr= ptr l
 , view_arr= @[tblent_t][sz] @ l
-, view_arr_gc= free_gc_v (tblent_t, sz, l)
+, view_arr_gc= free_gc_v (tblent_t?, sz, l)
 , size= int sz
 , nitm= int n
 } // end of [symtbl]
@@ -149,7 +149,7 @@ extern
 fun tblent_array_make
   {sz: nat} (sz: int sz)
   :<> [l:addr] (
-  free_gc_v (tblent_t, sz, l), array_v (tblent_t, sz, l) | ptr l
+  free_gc_v (tblent_t?, sz, l), array_v (tblent_t, sz, l) | ptr l
 ) = "tblent_array_make"
 
 %{^
@@ -180,7 +180,7 @@ val () = begin
   p_tbl->nitm := 0
 end // end of [val]
 //
-prval () = free_gc_elim {symtbl0} (pf_tbl_gc)
+prval () = free_gc_elim {symtbl0?} (pf_tbl_gc)
 val (pfbox | ()) = vbox_make_view_ptr (pf_tbl | p_tbl)
 //
 in

@@ -169,7 +169,7 @@ implement symtbl_make (dna, sz) = (pfbox | p_tbl) where {
     p_tbl->nitm := 0
   end (* end of [val] *)
 
-  prval () = free_gc_elim {symtbl0} (pf_tbl_gc)
+  prval () = free_gc_elim {symtbl0?} (pf_tbl_gc)
   val (pfbox | ()) = vbox_make_view_ptr (pf_tbl | p_tbl)
 } // symtbl_make
 
