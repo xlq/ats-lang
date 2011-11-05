@@ -67,7 +67,7 @@ array_copy {n:nat} (
   ) : array (a, n) = B where {
   val (vbox pf1_arr | p1) = array_get_view_ptr (A)
   val (pf2_gc, pf2_arr | p2) = array_ptr_alloc_tsz {a} (n, sizeof<a>)
-  prval () = free_gc_elim {a} (pf2_gc)
+  prval () = free_gc_elim {a?} (pf2_gc)
   val () = array_ptr_copy_tsz (!p1, !p2, n, sizeof<a>)
   val B = array_make_view_ptr {a} (pf2_arr | p2)
 } // end of [array_copy]
@@ -128,7 +128,7 @@ val A0: array (int, ASZ) = let
     !p_arr, ASZ, lam (_, x) =<fun> x := $effmask_ref (randint (N))
   ) // end of [val]
   val () = qsort {int} (!p_arr, ASZ, sizeof<int>, lam (x1, x2) => compare (x1, x2))
-  prval () = free_gc_elim {int} (pf_gc)
+  prval () = free_gc_elim {int?} (pf_gc)
 in
   array_make_view_ptr (pf_arr | p_arr)
 end // end of [val]
