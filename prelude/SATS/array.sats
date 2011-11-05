@@ -66,7 +66,7 @@ praxi bytes_v_of_array_v
 praxi free_gc_trans
   {a:viewt@ype}
   {n:int} {l:addr} (
-  pfgc: free_gc_v (a, n, l)
+  pfgc: free_gc_v (a?, n, l)
 ) : [bsz:int] (
   MUL (n, sizeof(a), bsz), freebyte_gc_v (bsz, l)
 ) // end of [free_gc_trans]
@@ -181,7 +181,7 @@ fun{a:viewt@ype}
 array_ptr_alloc
   {n:nat} (
   asz: size_t n
-) :<> [l:agz] (free_gc_v (a, n, l), array_v (a?, n, l) | ptr l)
+) :<> [l:agz] (free_gc_v (a?, n, l), array_v (a?, n, l) | ptr l)
 // end of [array_ptr_alloc]
 
 (*
@@ -190,7 +190,7 @@ array_ptr_alloc
 fun array_ptr_alloc_tsz
   {a:viewt@ype} {n:nat} (
   asz: size_t n, tsz: sizeof_t a
-) :<> [l:agz] (free_gc_v (a, n, l), array_v (a?, n, l) | ptr l)
+) :<> [l:agz] (free_gc_v (a?, n, l), array_v (a?, n, l) | ptr l)
   = "atspre_array_ptr_alloc_tsz"
 // end of [fun]
 
@@ -217,13 +217,13 @@ array_ptr_allocfree
 *)
 fun array_ptr_free
   {a:viewt@ype} {n:int} {l:addr} (
-  pfgc: free_gc_v (a, n, l), pfarr: array_v (a?, n, l) | p: ptr l
+  pfgc: free_gc_v (a?, n, l), pfarr: array_v (a?, n, l) | p: ptr l
 ) :<> void = "atspre_array_ptr_free"
 
 fun{a:t@ype}
 array_ptr_free_fun
   {n:int} {l:addr} (
-  pfgc: free_gc_v (a, n, l)
+  pfgc: free_gc_v (a?, n, l)
 , pfarr: array_v (a, n, l)
 | p: ptr l, asz: size_t n
 , f: (&a >> a?) -<fun> void
