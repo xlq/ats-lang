@@ -103,7 +103,7 @@ fun deque_isnot_full {a:viewt@ype}
 fun{a:viewt@ype}
 deque_initialize
   {m:nat} {l:addr} (
-  pfgc: free_gc_v (a, m, l)
+  pfgc: free_gc_v (a?, m, l)
 , pfarr: array_v (a?, m, l)
 | q: &DEQUE0(a)? >> DEQUE (a, m, 0)
 , m: size_t m, p: ptr l
@@ -112,7 +112,7 @@ deque_initialize
 fun deque_initialize_tsz
   {a:viewt@ype}
   {m:nat} {l:addr} (
-  pfgc: free_gc_v (a, m, l)
+  pfgc: free_gc_v (a?, m, l)
 , pfarr: array_v (a?, m, l)
 | q: &DEQUE0(a)? >> DEQUE (a, m, 0)
 , m: size_t m
@@ -131,7 +131,7 @@ fun deque_uninitialize
   {m,n:int} (
   q: &DEQUE (a, m, n) >> DEQUE0(a)?
 ) :<> [l:addr] (
-  free_gc_v (a, m, l), array_v (a?, m, l)
+  free_gc_v (a?, m, l), array_v (a?, m, l)
 | ptr l
 ) = "atslib_ngc_deque_arr_deque_uninitialize"
 // end of [deque_uninitialize]
@@ -144,7 +144,7 @@ fun deque_uninitialize_vt
   {m:int} (
   q: &DEQUE (a, m, 0) >> DEQUE0(a)?
 ) :<> [l:addr] (
-  free_gc_v (a, m, l), array_v (a?, m, l)
+  free_gc_v (a?, m, l), array_v (a?, m, l)
 | ptr l
 ) // end of [deque_uninitialize_vt]
 
@@ -308,12 +308,12 @@ deque_update_capacity
   {m1,n:int}
   {m2:nat | n <= m2}
   {l:addr} (
-  pfgc: free_gc_v (a, m2, l)
+  pfgc: free_gc_v (a?, m2, l)
 , pfarr: array_v (a?, m2, l)
 | q: &DEQUE (a, m1, n) >> DEQUE (a, m2, n)
 , m2: size_t (m2), parr: ptr l
 ) : [l:addr] (
-  free_gc_v (a, m1, l), array_v (a?!, m1, l)
+  free_gc_v (a?, m1, l), array_v (a?!, m1, l)
 | ptr l
 ) // end of [deque_update_capcity]
 
@@ -323,13 +323,13 @@ deque_update_capacity_tsz
   {m1,n:int}
   {m2:nat | n <= m2}
   {l:addr} (
-  pfgc: free_gc_v (a, m2, l)
+  pfgc: free_gc_v (a?, m2, l)
 , pfarr: array_v (a?, m2, l)
 | q: &DEQUE (a, m1, n) >> DEQUE (a, m2, n)
 , m2: size_t (m2), parr: ptr l
 , tsz: sizeof_t (a)
 ) : [l:addr] (
-  free_gc_v (a, m1, l), array_v (a?!, m1, l)
+  free_gc_v (a?, m1, l), array_v (a?!, m1, l)
 | ptr l
 ) = "atslib_ngc_deque_arr_deque_update_capacity_tsz"
 

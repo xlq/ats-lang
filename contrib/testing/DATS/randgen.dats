@@ -8,9 +8,7 @@
 
 (*
 ** ATS - Unleashing the Potential of Types!
-**
 ** Copyright (C) 2002-2011 Hongwei Xi, Boston University
-**
 ** All rights reserved
 **
 ** ATS is free software;  you can  redistribute it and/or modify it under
@@ -63,7 +61,7 @@ end // end of [array0_randgen]
 implement{a}
 array_randgen (n) = let
   val (pfgc, pfarr | p) = array_ptr_randgen<a> (n)
-  prval () = free_gc_elim {a} (pfgc) // HX: return the certificate
+  prval () = free_gc_elim {a?} (pfgc) // HX: return the certificate
 in
   array_make_view_ptr (pfarr | p)
 end // end of [array_randgen]

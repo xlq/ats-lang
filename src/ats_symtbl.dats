@@ -54,7 +54,7 @@ tblent = Option symbol_t
 viewtypedef
 symtbl (sz:int, n:int, l:addr) = @{
   ptr= ptr l
-, view= @(free_gc_v (tblent, sz, l), @[tblent][sz] @ l)
+, view= @(free_gc_v (tblent?, sz, l), @[tblent][sz] @ l)
 , size= int sz
 , nitm= int n
 } // end of [symtbl]
@@ -73,7 +73,7 @@ implement
 symtbl_make (sz) = let
   val (pf_tbl_gc, pf_tbl | p_tbl) =
     ptr_alloc_tsz {symtbl0} (sizeof<symtbl>)
-  prval () = free_gc_elim {symtbl0} (pf_tbl_gc)
+  prval () = free_gc_elim {symtbl0?} (pf_tbl_gc)
 (*
   val () = (
     print "symtbl_make: p_tbl = "; print p_tbl; print_newline ()

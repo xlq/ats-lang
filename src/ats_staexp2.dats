@@ -159,7 +159,7 @@ implement s2rtdat_make (id) = let
   val (pf_gc, pf | p) =
     ptr_alloc_tsz {s2rtdat_struct} (sizeof<s2rtdat_struct>)
   // end of [val]
-  prval () = free_gc_elim {s2rtdat_struct} (pf_gc)
+  prval () = free_gc_elim {s2rtdat_struct?} (pf_gc)
   val () = p->s2rtdat_sym := id
   val () = p->s2rtdat_conlst := S2CSTLSTnil ()
   val () = p->s2rtdat_stamp := stamp

@@ -8,9 +8,7 @@
 
 (*
 ** ATS - Unleashing the Potential of Types!
-**
 ** Copyright (C) 2002-2010 Hongwei Xi, Boston University
-**
 ** All rights reserved
 **
 ** ATS is free software;  you can  redistribute it and/or modify it under
@@ -67,20 +65,20 @@ implement{a}
 fmatrix_ptr_alloc (m, n) = let
   val (pf_mn | mn) = mul2_size1_size1 (m, n)
   prval () = mul_nat_nat_nat (pf_mn)
-  val (pf_gc, pf_arr | p_arr) = array_ptr_alloc_tsz {a} (mn, sizeof<a>)
-  prval pf_fmat = fmatrix_v_of_array_v (pf_mn, pf_arr)
+  val (pfgc, pfarr | p_arr) = array_ptr_alloc_tsz {a} (mn, sizeof<a>)
+  prval pf_fmat = fmatrix_v_of_array_v (pf_mn, pfarr)
 in
-  (pf_gc, pf_mn, pf_fmat | p_arr)
+  (pfgc, pf_mn, pf_fmat | p_arr)
 end // end of [fmatrix_ptr_alloc]
 
 (* ****** ****** *)
 
 implement
 fmatrix_ptr_free {a}
-  (pf_gc, pf_mn, pf_fmat | p_fmat) = let
-  prval (pf2_mn, pf_arr) = array_v_of_fmatrix_v (pf_fmat)
+  (pfgc, pf_mn, pf_fmat | p_fmat) = let
+  prval (pf2_mn, pfarr) = array_v_of_fmatrix_v (pf_fmat)
   prval () = mul_isfun (pf2_mn, pf_mn)
-  val () = array_ptr_free {a} (pf_gc, pf_arr | p_fmat)
+  val () = array_ptr_free {a} (pfgc, pfarr | p_fmat)
 in
   // nothing
 end // end of [fmatrix_ptr_free]
@@ -92,17 +90,17 @@ fmatrix_ptr_allocfree (m, n) = let
   val (pf_mn | mn) = mul2_size1_size1 (m, n)
   prval () = mul_nat_nat_nat (pf_mn)
   val [l:addr] (
-    pf_gc, pf_arr | p_arr
+    pfgc, pfarr | p_arr
   ) = array_ptr_alloc_tsz {a} (mn, sizeof<a>)
-  prval pf_fmat = fmatrix_v_of_array_v (pf_mn, pf_arr)
+  prval pf_fmat = fmatrix_v_of_array_v (pf_mn, pfarr)
 in #[l | (
   pf_fmat
 | p_arr
 , lam (pf_fmat | p_arr) =<lin> let
-    prval (pf2_mn, pf_arr) = array_v_of_fmatrix_v (pf_fmat)
+    prval (pf2_mn, pfarr) = array_v_of_fmatrix_v (pf_fmat)
     prval () = mul_isfun (pf2_mn, pf_mn)
   in
-    array_ptr_free {a} (pf_gc, pf_arr | p_arr)
+    array_ptr_free {a} (pfgc, pfarr | p_arr)
   end
 ) ] end // end of [fmatrix_ptr_allocfree]
 
@@ -111,13 +109,13 @@ in #[l | (
 implement{a}
 fmatrix_ptr_initialize_elt (base, m, n, x) = () where {
   prval pf_mat = view@ base
-  prval (pf_mn1, pf_arr) = array_v_of_fmatrix_v (pf_mat)
+  prval (pf_mn1, pfarr) = array_v_of_fmatrix_v (pf_mat)
   val (pf_mn2 | mn) = mul2_size1_size1 (m, n)
   prval () = mul_nat_nat_nat (pf_mn2)
   prval () = mul_isfun (pf_mn1, pf_mn2)
   var x: a = x
   val () = array_ptr_initialize_elt_tsz {a} (base, mn, x, sizeof<a>)
-  prval () = view@ base := fmatrix_v_of_array_v (pf_mn1, pf_arr) 
+  prval () = view@ base := fmatrix_v_of_array_v (pf_mn1, pfarr) 
 } // end of [fmatrix_ptr_initialize]
 
 (* ****** ****** *)
@@ -128,7 +126,7 @@ implement{a} // worth it???
 fmatrix_ptr_initialize_vclo
   {v} {m,n} (pf | base, m, n, f) = () where {
   prval pf_mat = view@ base
-  prval (pf1_mn, pf_arr) = array_v_of_fmatrix_v (pf_mat)
+  prval (pf1_mn, pfarr) = array_v_of_fmatrix_v (pf_mat)
   val [mn:int] (pf2_mn | mn) = mul2_size1_size1 (m, n)
   prval () = mul_nat_nat_nat (pf2_mn)
   prval () = mul_isfun (pf1_mn, pf2_mn)
@@ -136,19 +134,19 @@ fmatrix_ptr_initialize_vclo
   typedef clo_t = (!v | &(a?) >> a, sizeLt m, sizeLt n) -<clo> void
 //
   fun loop_one {mi:nat | mi <= m} {l:addr} .<mi>. (
-      pf_arr: !array_v (a?, mi, l) >> array_v (a, mi, l)
+      pfarr: !array_v (a?, mi, l) >> array_v (a, mi, l)
     , pf: !v
     | p: ptr l, f: &clo_t, mi: size_t mi, j: sizeLt n
     ) :<cloref> void = if mi > 0 then let
-    prval (pf1_elt, pf2_arr) = array_v_uncons {a?} (pf_arr)
+    prval (pf1_elt, pf2_arr) = array_v_uncons {a?} (pfarr)
     val () = f (pf | !p, m - mi, j)
     val () = loop_one (pf2_arr, pf | p+sizeof<a>, f, mi - 1, j)
-    prval () = pf_arr := array_v_cons {a} (pf1_elt, pf2_arr)
+    prval () = pfarr := array_v_cons {a} (pf1_elt, pf2_arr)
   in
     // nothing
   end else let
-    prval () = array_v_unnil {a?} (pf_arr)
-    prval () = pf_arr := array_v_nil {a} ()
+    prval () = array_v_unnil {a?} (pfarr)
+    prval () = pfarr := array_v_nil {a} ()
   in
     // nothing
   end // end of [loop_one]
@@ -156,7 +154,7 @@ fmatrix_ptr_initialize_vclo
   fun loop_all
     {nj:nat | nj <= n} {p:int} {l:addr} .<nj>. (
     pf_mul: MUL (nj, m, p)
-  , pf_arr: !array_v (a?, p, l) >> array_v (a, p, l)
+  , pfarr: !array_v (a?, p, l) >> array_v (a, p, l)
   , pf: !v
   | p: ptr l
   , f: &clo_t
@@ -166,26 +164,26 @@ fmatrix_ptr_initialize_vclo
     prval pf1_mul = mul_add_const {~1} (pf_mul)
     prval () = mul_nat_nat_nat (pf1_mul)
     val (pfmul, pf1_arr, pf2_arr | p1) =
-      array_ptr_split_tsz {a?} (pf_arr | p, m, sizeof<a>)
+      array_ptr_split_tsz {a?} (pfarr | p, m, sizeof<a>)
     val () = loop_one (pf1_arr, pf | p, f, m, n-nj)
     val () = loop_all (pf1_mul, pf2_arr, pf | p1, f, nj-1)
-    prval () = pf_arr :=
+    prval () = pfarr :=
       array_v_unsplit {a} (pfmul, pf1_arr, pf2_arr)
     // end of [prval]
   in
     // nothing
   end else let
     prval MULbas () = pf_mul
-    prval () = array_v_unnil {a?} (pf_arr)
-    prval () = pf_arr := array_v_nil {a} ()
+    prval () = array_v_unnil {a?} (pfarr)
+    prval () = pfarr := array_v_nil {a} ()
   in
     // nothing
   end // end of [loop_all]
 //
   prval pf_nm = mul_commute (pf1_mn)
-  val () = loop_all (pf_nm, pf_arr, pf | &base, f, n)
+  val () = loop_all (pf_nm, pfarr, pf | &base, f, n)
 //
-  prval () = view@ base := fmatrix_v_of_array_v (pf1_mn, pf_arr) 
+  prval () = view@ base := fmatrix_v_of_array_v (pf1_mn, pfarr) 
 } // end of [fmatrix_ptr_initialize_vclo]
 
 (* ****** ****** *)

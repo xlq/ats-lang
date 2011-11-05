@@ -104,7 +104,7 @@ fun randsize {n:pos}
 // HX: [randperm] returns a randomly generated permutation
 //
 fun randperm {n:nat} (n: int n)
-  :<!ref> [l:agz] (free_gc_v (int, n, l), array_v (natLt n, n, l) | ptr l)
+  :<!ref> [l:agz] (free_gc_v (int?, n, l), array_v (natLt n, n, l) | ptr l)
 // end of [randperm]
 
 (* ****** ****** *)

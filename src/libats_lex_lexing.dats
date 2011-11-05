@@ -90,7 +90,7 @@ infile_make_string (s) = let
   val [l:addr] (
     pf_gc, pf_at | p
   ) = ptr_alloc_tsz {T} (sizeof<T>)
-  viewdef V = (free_gc_v (T, l), T @ l)
+  viewdef V = (free_gc_v (T?, l), T @ l)
   fn _free (pf: V | (*none*)):<cloref1> void = begin
      ptr_free {T} (pf.0, pf.1 | p)
   end // end of [_free]

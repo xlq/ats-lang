@@ -8,9 +8,7 @@
 
 (*
 ** ATS/Anairiats - Unleashing the Potential of Types!
-**
 ** Copyright (C) 2002-2008 Hongwei Xi, Boston University
-**
 ** All rights reserved
 **
 ** ATS is free software;  you can  redistribute it and/or modify it under
@@ -124,7 +122,7 @@ infile_make_string
 //
   typedef T = sizeLte n
   val [l:addr] (pf_gc, pf_at | p) = ptr_alloc_tsz {T} (sizeof<T>)
-  viewdef V = (free_gc_v (T, l), T @ l)
+  viewdef V = (free_gc_v (T?, l), T @ l)
 //
   fn _free (
     pf: V | (*none*)

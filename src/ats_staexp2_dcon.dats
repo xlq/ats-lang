@@ -110,8 +110,8 @@ in
   aux (s2exp_confun (npf, arg, s2e_res), qua)
 end // end of [val]
 //
-val (pf_gc, pf | p) = ptr_alloc_tsz {d2con_struct} (sizeof<d2con_struct>)
-prval () = free_gc_elim {d2con_struct} (pf_gc)
+val (pfgc, pfat | p) = ptr_alloc_tsz {d2con_struct} (sizeof<d2con_struct>)
+prval () = free_gc_elim {d2con_struct?} (pfgc)
 //
 val () = begin
 p->d2con_loc := loc;
@@ -130,7 +130,7 @@ p->d2con_tag := ~1;
 p->d2con_stamp := stamp
 end // end of [val]
 //
-val (pfbox | ()) = vbox_make_view_ptr (pf | p)
+val (pfbox | ()) = vbox_make_view_ptr (pfat | p)
 //
 in
 //

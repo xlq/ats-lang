@@ -8,9 +8,7 @@
 
 (*
 ** ATS - Unleashing the Potential of Types!
-**
 ** Copyright (C) 2002-2010 Hongwei Xi, Boston University
-**
 ** All rights reserved
 **
 ** ATS is free software;  you can  redistribute it and/or modify it under
@@ -90,14 +88,14 @@ implement
 stack_uninitialize
   {a} {m,n} (s) = () where {
   val (pfgc, pfarr | parr) = $DQ.deque_uninitialize {a} (s)
-  val () = array_ptr_free (pfgc, pfarr | parr)
+  val () = array_ptr_free {a} (pfgc, pfarr | parr)
 } // end of [stack_uninitialize]
 
 implement
 stack_uninitialize_vt
   {a} {m} (s) = () where {
   val (pfgc, pfarr | parr) = $DQ.deque_uninitialize_vt {a} (s)
-  val () = array_ptr_free (pfgc, pfarr | parr)
+  val () = array_ptr_free {a} (pfgc, pfarr | parr)
 } // end of [stack_uninitialize_vt]
 
 (* ****** ****** *)
@@ -127,8 +125,8 @@ stack_update_capacity
   (s, m2) = () where {
   val (pfgc, pfarr | parr) = array_ptr_alloc<a> (m2)
   val (pfgc, pfarr | parr) =
-    $DQ.deque_update_capacity (pfgc, pfarr | s, m2, parr)
-  val () = array_ptr_free (pfgc, pfarr | parr)
+    $DQ.deque_update_capacity<a> (pfgc, pfarr | s, m2, parr)
+  val () = array_ptr_free {a} (pfgc, pfarr | parr)
 } // end of [stack_update_capacity]
 
 (* ****** ****** *)

@@ -265,20 +265,31 @@ overload main with main_argc_argv
 
 (* ****** ****** *)
 //
+// HX-2011-11-05
+//
+symintr free_gc_topize
+//
+praxi
+free_gc_topize_viewt0ype_addr
+  {a:viewt@ype} {l:addr} (pf: free_gc_v (a, l)): free_gc_v (a?, l)
+overload free_gc_topize with free_gc_topize_viewt0ype_addr
+//
+(* ****** ****** *)
+//
 // HX: for returning free_gc_v to GC
 //
 symintr free_gc_elim
-
-praxi free_gc_addr_elim // return the certificate to the GC
+//
+praxi free_gc_elim_addr // return the certificate to the GC
   {l:addr} (pf: free_gc_v l): void
-overload free_gc_elim with free_gc_addr_elim
-praxi free_gc_viewt0ype_addr_elim // return the certificate to the GC
+overload free_gc_elim with free_gc_elim_addr
+praxi free_gc_elim_viewt0ype_addr // return the certificate to the GC
   {a:viewt@ype} {l:addr} (pf: free_gc_v (a, l)): void
-overload free_gc_elim with free_gc_viewt0ype_addr_elim
-praxi free_gc_viewt0ype_int_addr_elim // return the certificate to the GC
+overload free_gc_elim with free_gc_elim_viewt0ype_addr
+praxi free_gc_elim_viewt0ype_int_addr // return the certificate to the GC
   {a:viewt@ype} {n:int} {l:addr} (pf: free_gc_v (a, n, l)): void
-overload free_gc_elim with free_gc_viewt0ype_int_addr_elim
-
+overload free_gc_elim with free_gc_elim_viewt0ype_int_addr
+//
 (* ****** ****** *)
 //
 // HX: implemented in [basics.cats]

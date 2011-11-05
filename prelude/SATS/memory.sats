@@ -125,7 +125,7 @@ fun calloc_gc
   {a:viewt@ype}
   {n:nat} (
   n: size_t n, tsz: sizeof_t a
-) :<> [l:agz] (free_gc_v (a, n, l), @[a?][n] @ l | ptr l)
+) :<> [l:agz] (free_gc_v (a?, n, l), @[a?][n] @ l | ptr l)
   = "ats_calloc_gc"
 // end of [calloc_gc]
 

@@ -8,9 +8,7 @@
 
 (*
 ** ATS - Unleashing the Power of Types!
-**
 ** Copyright (C) 2002-2008 Hongwei Xi, Boston University
-**
 ** All rights reserved
 **
 ** ATS is free software;  you can  redistribute it and/or modify it under
@@ -46,6 +44,8 @@
 
 staload "top.sats"
 
+typedef intset = intset_t
+
 // datatype for regular expressions
 datatype regex1_node =
   | REG1alt of (regex1, regex1)
@@ -59,7 +59,7 @@ datatype regex1_node =
   | REG1null
 
 where regex1: type = '{
-  node= regex1_node, null= bool, fstpos= intset_t, lstpos= intset_t
+  node= regex1_node, null= bool, fstpos= intset, lstpos= intset
 }
 
 (* ****** ****** *)
@@ -143,9 +143,9 @@ fn regex1_null (): regex1 = '{
 
 fn regex1_seq (r1: regex1, r2: regex1): regex1 = let
   val null: bool = if r1.null then r2.null else false
-  val fstpos: intset_t =
+  val fstpos: intset =
     if r1.null then r1.fstpos + r2.fstpos else r1.fstpos
-  val lstpos: intset_t =
+  val lstpos: intset =
     if r2.null then r1.lstpos + r2.lstpos else r2.lstpos
 in '{
   node= REG1seq (r1, r2)
@@ -299,14 +299,14 @@ fun followpos
   {n:nat} (
   n0: int n, r: regex1
 ) : [l:addr] (
-  free_gc_v (intset_t, n, l), array_v (intset_t, n, l) | ptr l
+  free_gc_v (intset?, n, l), array_v (intset, n, l) | ptr l
 ) = let
   fun aux {l:addr}
-    (pf: !array_v (intset_t, n, l) | A: ptr l, n0: int n, r: regex1): void =
+    (pf: !array_v (intset, n, l) | A: ptr l, n0: int n, r: regex1): void =
     aux_node (pf | A, n0, r.node)
 
   and aux_node{l:addr}
-    (pf: !array_v (intset_t, n, l) | A: ptr l, n0: int n, r_node: regex1_node)
+    (pf: !array_v (intset, n, l) | A: ptr l, n0: int n, r_node: regex1_node)
     : void =
     case+ r_node of
     | REG1alt (r1, r2) => begin
@@ -320,7 +320,7 @@ fun followpos
     | REG1plus r0 => let
         val r0_fstpos = r0.fstpos
         val f = lam (
-          pf: !array_v (intset_t, n, l) | i: int
+          pf: !array_v (intset, n, l) | i: int
         ) : void =<cloptr1> let
           val i = int1_of_int i
 (*
@@ -339,7 +339,7 @@ fun followpos
     | REG1seq (r1, r2) => let
         val r2_fstpos = r2.fstpos
         val f = lam (
-          pf: !array_v (intset_t, n, l) | i: int
+          pf: !array_v (intset, n, l) | i: int
         ) : void =<cloptr1> let
           val i = int1_of i
 (*
@@ -358,7 +358,7 @@ fun followpos
     | REG1star r0 => let
         val r0_fstpos = r0.fstpos
         val f = lam (
-          pf: !array_v (intset_t, n, l) | i: int
+          pf: !array_v (intset, n, l) | i: int
         ) : void =<cloptr1> let
           val i = int1_of i
 (*
@@ -376,17 +376,17 @@ fun followpos
       end // end of [REG1star]
   // end of [aux] and [aux_node]
   val n0_sz = size1_of_int1 n0
-  val tsz = sizeof<intset_t>
-  val (pf_arr_gc, pf_arr | p_arr) =
-    array_ptr_alloc_tsz {intset_t} (n0_sz, tsz)
+  val tsz = sizeof<intset>
+  val (pf_gc, pf_arr | p_arr) =
+    array_ptr_alloc_tsz {intset} (n0_sz, tsz)
   val () = begin
-    array_ptr_initialize_elt_tsz {intset_t} (!p_arr, n0_sz, ini, tsz)
+    array_ptr_initialize_elt_tsz {intset} (!p_arr, n0_sz, ini, tsz)
   end where {
-    var ini: intset_t = intset_nil
+    var ini: intset = intset_nil
   } // end of [val]
   val () = aux (pf_arr | p_arr, n0, r)
 in
-  (pf_arr_gc, pf_arr | p_arr)
+  (pf_gc, pf_arr | p_arr)
 end // end of [followpos]
 
 (* ****** ****** *)
@@ -424,7 +424,7 @@ intlst = intlst_nil | intlst_cons of (int, intlst)
 
 dataviewtype
 statelst =
-  | statelst_nil | statelst_cons of (intset_t, statelst)
+  | statelst_nil | statelst_cons of (intset, statelst)
 // end of [statelst]
 
 dataviewtype
@@ -440,17 +440,17 @@ viewtypedef Translst = [n:nat] translst n
 fn transition_char
   {n:nat} {l_csi,l_pos:addr} (
   pf1: !array_v (CSI, n, l_csi)
-, pf2: !array_v (intset_t, n, l_pos)
+, pf2: !array_v (intset, n, l_pos)
 | A_csi: ptr l_csi
 , A_pos: ptr l_pos
-, n: int n, st: intset_t, c: char
-) : intset_t = let
+, n: int n, st: intset, c: char
+) : intset = let
 (*
   val () = prerrf ("transition_char: c = %i\n", @(int_of c))
 *)
-  var st_res: intset_t = intset_nil
+  var st_res: intset = intset_nil
   viewdef V = (
-    array_v (CSI, n, l_csi), array_v (intset_t, n, l_pos), intset_t @ st_res
+    array_v (CSI, n, l_csi), array_v (intset, n, l_pos), intset @ st_res
   ) // end of [viewdef]
   val f = lam (
     pf: !V | i: int
@@ -484,10 +484,10 @@ end // end of [transition_char]
 
 fun transition_one {n:nat} {l_csi,l_pos:addr}
   (pf1: !array_v (CSI, n, l_csi),
-   pf2: !array_v (intset_t, n, l_pos) |
+   pf2: !array_v (intset, n, l_pos) |
    A_csi: ptr l_csi, A_pos: ptr l_pos, n: int n,
    nst_r: &int, sts: &states_t, stlst: &statelst,
-   st0: intset_t, c: char, ns: intlst): intlst = begin
+   st0: intset, c: char, ns: intlst): intlst = begin
   if int_of_char c >= ~1 then let
     val st = transition_char (pf1, pf2 | A_csi, A_pos, n, st0, c)
     val nst = states_find (sts, st)
@@ -516,7 +516,7 @@ macdef CHAR_MAX = '\177'
 
 fun transition_all {n:nat} {l_csi,l_pos:addr}
   (pf1: !array_v (CSI, n, l_csi),
-   pf2: !array_v (intset_t, n, l_pos) |
+   pf2: !array_v (intset, n, l_pos) |
    A_csi: ptr l_csi, A_pos: ptr l_pos, n: int n,
    nst_r: &int, sts: &states_t, stlst: statelst,
    ans: Translst): Translst = begin
@@ -541,7 +541,7 @@ end // end of [transition_all]
 
 fun accept_one {n:nat} {l_csi:addr}
   (pf1: !array_v (CSI, n, l_csi) |
-   A_csi: ptr l_csi, n: int n, st: intset_t): int = let
+   A_csi: ptr l_csi, n: int n, st: intset): int = let
   var irule = (0: int)
   viewdef V = (array_v (CSI, n, l_csi), int @ irule)
   val f = lam
@@ -576,7 +576,7 @@ fun accept_all {n:nat} {l_csi:addr} (
   var ans: acclst = acclst_nil ()
   viewdef V = (array_v (CSI, n, l_csi), acclst @ ans)
   val f = lam (
-    pf: !V | tag: int, st: intset_t
+    pf: !V | tag: int, st: intset
   ) : void =<cloptr1> let
     prval (pf1, pf2) = pf
     val irule = accept_one (pf1 | A_csi, n, st)
@@ -844,7 +844,7 @@ val () = stlst := statelst_cons (root_fstpos, stlst)
 val dfa_transtbl = transition_all
   (pf_csi, pf_pos | A_csi, A_pos, npos, nst_r, sts, stlst, translst_nil ())
 
-val () = array_ptr_free {intset_t} (pf_pos_gc, pf_pos | A_pos)
+val () = array_ptr_free {intset} (pf_pos_gc, pf_pos | A_pos)
 
 val dfa_acctbl = accept_all (pf_csi | A_csi, npos, sts: states_t)
 val dfa_nfinal = acclst_length dfa_acctbl (* number of final states *)

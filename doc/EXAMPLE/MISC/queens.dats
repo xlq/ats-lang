@@ -72,17 +72,17 @@ fn board_make
   {sz:nat} (
   sz: int sz
 ) :<> [l:addr] (
-  free_gc_v (int, sz, l), array_v (Nat, sz, l) | ptr l
+  free_gc_v (int?, sz, l), array_v (Nat, sz, l) | ptr l
 ) = let
   val sz = size1_of_int1 sz
-  val (pf_gc, pf | p) =
+  val (pfgc, pfarr | p) =
     array_ptr_alloc<Nat> (sz)
   // end of [val]
   var x: Nat = 0; val () =
     array_ptr_initialize_elt<Nat> (!p, sz, x)
   // end of [val]
 in
-  (pf_gc, pf | p)
+  (pfgc, pfarr | p)
 end // end of [board_make]
 
 (* ****** ****** *)

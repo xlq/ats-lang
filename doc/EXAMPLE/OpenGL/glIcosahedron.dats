@@ -66,7 +66,7 @@ end
 extern
 fun add_float_3_float_3 (
   v1: & @[float][3], v2: & @[float][3]
-) : [l:addr] (free_gc_v (float, 3, l), float_3_v l | ptr l)
+) : [l:addr] (free_gc_v (float?, 3, l), float_3_v l | ptr l)
   = "add_float_3_float_3"
 overload + with add_float_3_float_3
 
@@ -130,9 +130,9 @@ subdivide (
     val () = subdivide (pf2, pf23, pf12 | p2, p23, p12, n-1)
     val () = subdivide (pf3, pf31, pf23 | p3, p31, p23, n-1)
     val () = subdivide (pf12, pf23, pf31 | p12, p23, p31, n-1)
-    val () = array_ptr_free (pf12_gc, pf12 | p12)
-    val () = array_ptr_free (pf23_gc, pf23 | p23)
-    val () = array_ptr_free (pf31_gc, pf31 | p31)
+    val () = array_ptr_free {float} (pf12_gc, pf12 | p12)
+    val () = array_ptr_free {float} (pf23_gc, pf23 | p23)
+    val () = array_ptr_free {float} (pf31_gc, pf31 | p31)
   in
     // empty
   end else begin

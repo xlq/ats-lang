@@ -52,7 +52,7 @@ staload _(*anonymous*) = "prelude/DATS/reference.dats"
 
 assume matrix0_viewt0ype_type
   (a:viewt@ype) = ref [l:addr] [m,n:nat] [mn:int] (
-  MUL (m, n, mn), free_gc_v (a, mn, l), @[a][mn] @ l | ptr l, size_t m, size_t n
+  MUL (m, n, mn), free_gc_v (a?, mn, l), @[a][mn] @ l | ptr l, size_t m, size_t n
 ) // end of [matrix0_viewt0ype_type]
 
 (* ****** ****** *)

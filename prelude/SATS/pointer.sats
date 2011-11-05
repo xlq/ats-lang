@@ -232,17 +232,17 @@ praxi free_gc_viewt0ype_addr_trans
 (* ****** ****** *)
 
 fun{a:viewt@ype} ptr_alloc ()
-  :<> [l:addr | l > null] (free_gc_v (a, l), a? @ l | ptr l)
+  :<> [l:addr | l > null] (free_gc_v (a?, l), a? @ l | ptr l)
 // end of [ptr_alloc]
 
 fun ptr_alloc_tsz
   {a:viewt@ype} (tsz: sizeof_t a)
-  :<> [l:addr | l > null] (free_gc_v (a, l), a? @ l | ptr l)
+  :<> [l:addr | l > null] (free_gc_v (a?, l), a? @ l | ptr l)
   = "atspre_ptr_alloc_tsz"
 
 fun ptr_free
   {a:viewt@ype} {l:addr} (
-  pfgc: free_gc_v (a, l), pfat: a? @ l | p: ptr l
+  pfgc: free_gc_v (a?, l), pfat: a? @ l | p: ptr l
 ) :<> void = "atspre_ptr_free" // end of [ptr_free]
 
 (* ****** ****** *)

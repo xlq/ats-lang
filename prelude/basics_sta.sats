@@ -717,7 +717,7 @@ stadef freebyte_ngc_v = freebyte_ngc_int_addr_view
 // HX:
 // values of viewtype [junkptr] need to be freed by calling [free];
 // note that the viewtype [junkptr] may be just defined as follows:
-// [a:viewt@ype; l:addr] (free_gc_v (a, 1, l), a? @ l | ptr l)
+// [a:viewt@ype; l:addr] (free_gc_v (a?, 1, l), a? @ l | ptr l)
 //
 absviewtype junkptr_viewtype // unnamed
 stadef junkptr = junkptr_viewtype // shorthand
@@ -729,7 +729,7 @@ stadef junkptr = junkptr_viewtype // shorthand
 viewtypedef
 arraysize_viewt0ype_int_viewt0ype
   (a:viewt@ype, n:int) =
-  [l:addr] (free_gc_v (a, n, l), @[a][n] @ l | ptr l, size_t n)
+  [l:addr] (free_gc_v (a?, n, l), @[a][n] @ l | ptr l, size_t n)
 // end of [viewtypedef]
 
 stadef arraysize = arraysize_viewt0ype_int_viewt0ype

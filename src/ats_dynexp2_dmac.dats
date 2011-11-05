@@ -77,20 +77,22 @@ assume d2mac_abs_t (narg:int) =
 
 in // in of [local]
 
-implement d2mac_make {narg} (loc, name, knd, args, def) = let
-
+implement
+d2mac_make {narg}
+  (loc, name, knd, args, def) = let
+//
 val narg = aux args where {
   fun aux {narg:nat}
     (args: macarglst narg): int narg = case+ args of
     | list_cons (_, args) => 1 + aux (args) | list_nil () => 0
 } // end of [where]
-
+//
 val stamp = $Stamp.d2mac_stamp_make ()
-val (pf_gc, pf | p) =
+val (pfgc, pfat | p) =
   ptr_alloc_tsz {d2mac_struct narg} (sizeof<d2mac_struct narg>)
 // end of [val]
-prval () = free_gc_elim {d2mac_struct narg} (pf_gc)
-
+prval () = free_gc_elim {d2mac_struct(narg)?} (pfgc)
+//
 val () = begin
 p->d2mac_loc := loc;
 p->d2mac_sym := name;
@@ -100,13 +102,13 @@ p->d2mac_arglst := args;
 p->d2mac_def := def;
 p->d2mac_stamp := stamp
 end // end of [val]
-
-val (pfbox | ()) = vbox_make_view_ptr (pf | p)
-
+//
+val (pfbox | ()) = vbox_make_view_ptr (pfat | p)
+//
 in // in of [let]
-
+//
 (pfbox | p)
-
+//
 end // end of [d2mac_make]
 
 implement d2mac_get_loc (d2m) =

@@ -8,9 +8,7 @@
 
 (*
 ** ATS - Unleashing the Potential of Types!
-**
 ** Copyright (C) 2002-2009 Hongwei Xi, Boston University
-**
 ** All rights reserved
 **
 ** ATS is free software;  you can  redistribute it and/or modify it under
@@ -80,7 +78,7 @@ implement{a}
 tabulate (asz, f) = let
   val [n:int] asz = size1_of_size (asz)
   val (
-    pf_gc, pf_arr | p_arr
+    pfgc, pfarr | p_arr
   ) = array_ptr_alloc_tsz {a} (asz, sizeof<a>)
 //
   var !p_clo = @lam
@@ -90,8 +88,8 @@ tabulate (asz, f) = let
   prval pf = unit_v ()
   val () = array_ptr_initialize_vclo<a> {unit_v} {n} (pf | !p_arr, asz, !p_clo)
   prval unit_v () = pf
-  prval () = free_gc_elim {a} (pf_gc)
-  val A = array_make_view_ptr (pf_arr | p_arr)
+  prval () = free_gc_elim {a?} (pfgc)
+  val A = array_make_view_ptr (pfarr | p_arr)
 in
   '(A, asz)
 end // end of [tabulate]
@@ -136,7 +134,7 @@ end (* end of [copy] *)
 (* ****** ****** *)
 
 implement{a} app (f, [n:int] A) = () where {
-  val (vbox pf_arr | p_arr) = array_get_view_ptr (A.0)
+  val (vbox pfarr | p_arr) = array_get_view_ptr (A.0)
   viewdef v = unit_v; viewdef vt = (a) -<cloref1> void 
   prval pf = unit_v ()
   fn _app
@@ -146,7 +144,7 @@ implement{a} app (f, [n:int] A) = () where {
 } // end of [app]
 
 implement{a} appi (f, [n:int] A) = () where {
-  val (vbox pf_arr | p_arr) = array_get_view_ptr (A.0)
+  val (vbox pfarr | p_arr) = array_get_view_ptr (A.0)
   viewdef v = unit_v; viewdef vt = (size_t, a) -<cloref1> void 
   prval pf = unit_v ()
   fn _app
@@ -158,7 +156,7 @@ implement{a} appi (f, [n:int] A) = () where {
 (* ****** ****** *)
 
 implement{a} modify (f, [n:int] A) = () where {
-  val (vbox pf_arr | p_arr) = array_get_view_ptr (A.0)
+  val (vbox pfarr | p_arr) = array_get_view_ptr (A.0)
   viewdef v = unit_v; viewdef vt = (a) -<cloref1> a
   prval pf = unit_v ()
   fn _app (pf: !v | x: &a, f: !vt):<> void = x := $effmask_all (f (x))
@@ -167,7 +165,7 @@ implement{a} modify (f, [n:int] A) = () where {
 } // end of [modify]
 
 implement{a} modifyi (f, [n:int] A) = () where {
-  val (vbox pf_arr | p_arr) = array_get_view_ptr (A.0)
+  val (vbox pfarr | p_arr) = array_get_view_ptr (A.0)
   viewdef v = unit_v; viewdef vt = (size_t, a) -<cloref1> a
   prval pf = unit_v ()
   fn _app (pf: !v | i: sizeLt n, x: &a, f: !vt):<> void = x := $effmask_all (f (i, x))
@@ -179,7 +177,7 @@ implement{a} modifyi (f, [n:int] A) = () where {
 
 implement{a,b}
   foldl (f, ini, [n:int] A) = res where {
-  val (vbox pf_arr | p_arr) = array_get_view_ptr (A.0)
+  val (vbox pfarr | p_arr) = array_get_view_ptr (A.0)
   val asz = A.1
   var res: b = ini
   var i: sizeLte n // uninitialized
@@ -191,7 +189,7 @@ implement{a,b}
 
 implement{a,b}
   foldli (f, ini, [n:int] A) = res where {
-  val (vbox pf_arr | p_arr) = array_get_view_ptr (A.0)
+  val (vbox pfarr | p_arr) = array_get_view_ptr (A.0)
   val asz = A.1
   var res: b = ini
   var i: sizeLte n // uninitialized
@@ -205,7 +203,7 @@ implement{a,b}
 
 implement{a,b}
   foldr (f, snk, [n:int] A) = res where {
-  val (vbox pf_arr | p_arr) = array_get_view_ptr (A.0)
+  val (vbox pfarr | p_arr) = array_get_view_ptr (A.0)
   var res: b = snk
   var i: sizeLte n = A.1
   val () = while (i > 0) let
@@ -215,7 +213,7 @@ implement{a,b}
 
 implement{a,b}
   foldri (f, snk, [n:int] A) = res where {
-  val (vbox pf_arr | p_arr) = array_get_view_ptr (A.0)
+  val (vbox pfarr | p_arr) = array_get_view_ptr (A.0)
   var res: b = snk
   var i: sizeLte n = A.1
   val () = while (i > 0) let
@@ -227,7 +225,7 @@ implement{a,b}
 
 implement{a} find (f, [n:int] A) = res where {
   val asz = A.1
-  val (vbox pf_arr | p_arr) = array_get_view_ptr (A.0)
+  val (vbox pfarr | p_arr) = array_get_view_ptr (A.0)
   var i: sizeLte n // uninitialzed ()
   var res: option0 a = option0_none ()
   val _0 = size1_of_int1 (0)
@@ -241,7 +239,7 @@ implement{a} find (f, [n:int] A) = res where {
 
 implement{a} findi (f, [n:int] A) = res where {
   val asz = A.1
-  val (vbox pf_arr | p_arr) = array_get_view_ptr (A.0)
+  val (vbox pfarr | p_arr) = array_get_view_ptr (A.0)
   var i: sizeLte n // uninitialzed ()
   var res: option0 @(size_t, a) = option0_none ()
   val _0 = size1_of_int1 (0)
@@ -257,7 +255,7 @@ implement{a} findi (f, [n:int] A) = res where {
 
 implement{a} all (f, [n:int] A) = res where {
   val asz = A.1
-  val (vbox pf_arr | p_arr) = array_get_view_ptr (A.0)
+  val (vbox pfarr | p_arr) = array_get_view_ptr (A.0)
   var i: sizeLte n // uninitialzed ()
   var res: bool = true
   val _0 = size1_of_int1 (0)
@@ -275,7 +273,7 @@ implement{a} all (f, [n:int] A) = res where {
 
 implement{a} exists (f, [n:int] A) = res where {
   val asz = A.1
-  val (vbox pf_arr | p_arr) = array_get_view_ptr (A.0)
+  val (vbox pfarr | p_arr) = array_get_view_ptr (A.0)
   var i: sizeLte n // uninitialzed ()
   var res: bool = false
   val _0 = size1_of_int1 (0)

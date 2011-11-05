@@ -63,7 +63,7 @@ absviewt@ype intinf0 = intinf (0)
 viewtypedef Intinf = [i:int] intinf (i)
 
 viewtypedef intinfptr_gc (i: int) =
-  [l:addr] (free_gc_v (intinf0, l), intinf i @ l | ptr l)
+  [l:addr] (free_gc_v (intinf0?, l), intinf i @ l | ptr l)
 viewtypedef Intinfptr_gc = [i:int] intinfptr_gc (i)
   
 (* ****** ****** *)

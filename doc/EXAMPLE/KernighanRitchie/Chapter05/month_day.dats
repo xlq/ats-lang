@@ -8,17 +8,17 @@ staload "prelude/DATS/matrix.dats"
 
 #define NMONTH 12
 #define NMONTH1 NMONTH + 1
-val daytab: matrix (int, 2, 13) =
-  matrix (2, 13) $arrsz (
+val daytab =
+  matrix_make_arrsz {int} (2, 13, $arrsz (
   0, 31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31
 , 0, 31, 29, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31
-) // end of [val]
+)) // end of [val]
 
 fn isleap (year: int): natLt 2 =
   if year mod 4 = 0 then
     if year mod 100 = 0 then
       (if year mod 400 = 0 then 1 else 0)
-    else 1
+    else 1 // end of [if]
   else 0
 // end of [isleap]
 

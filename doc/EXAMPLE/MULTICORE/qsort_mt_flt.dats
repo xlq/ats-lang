@@ -141,7 +141,7 @@ end // end of [array_ptr_print]
 fn random_array_ptr_gen
   {n:nat} (n: size_t n):<>
   [l:addr | l <> null] (
-  free_gc_v (T, n, l), array_v (T, n, l) | ptr l
+  free_gc_v (T?, n, l), array_v (T, n, l) | ptr l
 ) = let
   val (
     pfgc, pfarr | parr

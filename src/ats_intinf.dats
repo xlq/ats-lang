@@ -86,7 +86,7 @@ atslib_mpz_out_str_exn (
 implement
 intinf_make_int (i: int) = let
   val (pf_gc, pf_at | p) = ptr_alloc_tsz {mpz_vt} (sizeof<mpz_vt>)
-  prval () = free_gc_elim {mpz_vt} (pf_gc)
+  prval () = free_gc_elim {mpz_vt?} (pf_gc)
   val () = mpz_init_set_int (!p, i);
 in
   ref_make_view_ptr (pf_at | p)
@@ -99,7 +99,7 @@ extern fun intinf_set_string
 implement
 intinf_make_string (s: string) = let
   val (pf_gc, pf_at | p) = ptr_alloc_tsz {mpz_vt} (sizeof<mpz_vt>)
-  prval () = free_gc_elim {mpz_vt} (pf_gc)
+  prval () = free_gc_elim {mpz_vt?} (pf_gc)
   val () = intinf_set_string (!p, s)
 in
   ref_make_view_ptr (pf_at | p)
@@ -112,7 +112,7 @@ extern fun intinf_set_stringsp
 implement
 intinf_make_stringsp (s: string) = let
   val (pf_gc, pf_at | p) = ptr_alloc_tsz {mpz_vt} (sizeof<mpz_vt>)
-  prval () = free_gc_elim {mpz_vt} (pf_gc)
+  prval () = free_gc_elim {mpz_vt?} (pf_gc)
   val () = intinf_set_stringsp (!p, s)
 in
   ref_make_view_ptr (pf_at | p)

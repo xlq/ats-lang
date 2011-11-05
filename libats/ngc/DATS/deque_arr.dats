@@ -102,7 +102,7 @@ viewtypedef DEQUE_vt (
 , qarr_beg= ptr l_beg
 , qarr_end= ptr l_end
 , pfqarr= DEQUEarr_v (a, m, n, lft, rgt, l_beg, l_end)
-, pfqarr_gc= free_gc_v (a, m, lft)
+, pfqarr_gc= free_gc_v (a?, m, lft)
 } // end of [DEQUE_vt]
 
 typedef DEQUE0_vt

@@ -8,9 +8,7 @@
 
 (*
 ** ATS - Unleashing the Potential of Types!
-**
 ** Copyright (C) 2002-2009 Hongwei Xi, Boston University
-**
 ** All rights reserved
 **
 ** ATS is free software;  you can  redistribute it and/or modify it under
@@ -76,12 +74,12 @@ array (row, col, ini) = let
   and [n:int] n = size1_of_size col
   val (pf_mul | mn) = mul2_size1_size1 (m, n)
   prval () = mul_nat_nat_nat pf_mul
-  val [l:addr] (pf_gc, pf_arr | p_arr) =
+  val [l:addr] (pfgc, pfarr | p_arr) =
     array_ptr_alloc_tsz {a} (mn, sizeof<a>)
   // end of [val]
-  prval () = free_gc_elim {a} (pf_gc) // return the certificate
+  prval () = free_gc_elim {a?} (pfgc) // return the certificate
   val () = array_ptr_initialize_elt<a> (!p_arr, mn, ini)
-  prval pf_mat = matrix_v_of_array_v (pf_mul, pf_arr)
+  prval pf_mat = matrix_v_of_array_v (pf_mul, pfarr)
   val (pf_mat_box | ()) = vbox_make_view_ptr_matrix (pf_mat | p_arr)
 in
   #[m,n | #[l | '{ data= p_arr, view= pf_mat_box, row= m, col= n} ] ]
@@ -100,21 +98,21 @@ implement{a} array_ptr_initialize_lstlst
   {m,n}{mn} (pf_mul | base, m, xss) = let
   val (pf_ofs | ofs) = mul2_size1_size1 (m, sizeof<a>)
   fun loop {n:nat} {mn:int} {l:addr} .<n>. (
-      pf_mul: MUL (n, m, mn), pf_arr: !array_v (a?, mn, l) >> array_v (a, mn, l)
+      pf_mul: MUL (n, m, mn), pfarr: !array_v (a?, mn, l) >> array_v (a, mn, l)
     | p_arr: ptr l, xss: list (list (a, m), n)
     ) :<cloref> void =
     case+ xss of
     | list_nil () => () where {
         prval MULbas () = pf_mul
-        prval () = array_v_unnil (pf_arr); prval () = pf_arr := array_v_nil {a} ()
+        prval () = array_v_unnil (pfarr); prval () = pfarr := array_v_nil {a} ()
       } // end of [list_nil]
     | list_cons (xs, xss) => let
         prval pf1_mul = mul_add_const {~1} {n,m} (pf_mul)
         prval () = mul_nat_nat_nat (pf1_mul)
-        prval (pf1_arr, pf2_arr) = array_v_split {a?} {mn} {m} (pf_ofs, pf_arr)
+        prval (pf1_arr, pf2_arr) = array_v_split {a?} {mn} {m} (pf_ofs, pfarr)
         val () = array_ptr_initialize_lst<a> (!p_arr, xs)
         val () = loop (pf1_mul, pf2_arr | p_arr + ofs, xss)
-        prval () = pf_arr := array_v_unsplit {a} (pf_ofs, pf1_arr, pf2_arr)
+        prval () = pfarr := array_v_unsplit {a} (pf_ofs, pf1_arr, pf2_arr)
       in
         // nothing
       end (* end of [list_cons] *)
@@ -152,12 +150,12 @@ fromList (xss) = let
   val m = size1_of_int1 (m) and n = size1_of_int1 (n)
   val (pf_mul | mn) = mul2_size1_size1 (m, n)
   prval () = mul_nat_nat_nat pf_mul
-  val [l:addr] (pf_gc, pf_arr | p_arr) =
+  val [l:addr] (pfgc, pfarr | p_arr) =
     array_ptr_alloc_tsz {a} (mn, sizeof<a>)
   // end of [val]
-  prval () = free_gc_elim {a} (pf_gc) // return the certificate
+  prval () = free_gc_elim {a?} (pfgc) // return the certificate
   val () = array_ptr_initialize_lstlst<a> (pf_mul | !p_arr, m, xss)
-  prval pf_mat = matrix_v_of_array_v (pf_mul, pf_arr)
+  prval pf_mat = matrix_v_of_array_v (pf_mul, pfarr)
   val (pf_mat_box | ()) = vbox_make_view_ptr_matrix (pf_mat | p_arr)
 in
   #[m,n | #[l | '{ data= p_arr, view= pf_mat_box, row= m, col= n} ] ]
@@ -172,15 +170,15 @@ tabulate (trv, m, n, f) = let
   val () = (if n > 0 then () else $raise Size ()): [n > 0] void
   val [mn:int] (pf_mul_mn | mn) = mul2_size1_size1 (m, n)
   prval () = mul_nat_nat_nat (pf_mul_mn)
-  val [l:addr] (pf_gc, pf_arr | p_arr) =
+  val [l:addr] (pfgc, pfarr | p_arr) =
     array_ptr_alloc_tsz {a} (mn, sizeof<a>)
   // end of [val]
-  prval () = free_gc_elim {a} (pf_gc) // return the certificate
-  prval pf_arr = __cast pf_arr where {
-    extern prfun __cast (pf_arr: array_v (a?, mn, l)):<> array_v (a, mn, l) 
+  prval () = free_gc_elim {a?} (pfgc) // return the certificate
+  prval pfarr = __cast pfarr where {
+    extern prfun __cast (pfarr: array_v (a?, mn, l)):<> array_v (a, mn, l) 
   } (* end of [prval] *)
   val _0 = size1_of_int1 0 and _1 = size1_of_int1 1
-  val () = case+ :(pf_arr: array_v (a, mn, l)) => trv of
+  val () = case+ :(pfarr: array_v (a, mn, l)) => trv of
     | RowMajor () => let
         var i: size_t? and j: size_t? ; var k: size_t = _0
       in
@@ -209,7 +207,7 @@ tabulate (trv, m, n, f) = let
         end // end of [for]
       end (* end of [ColMajor] *)
   // end of [val]
-  prval pf_mat = matrix_v_of_array_v {a} (pf_mul_mn, pf_arr)
+  prval pf_mat = matrix_v_of_array_v {a} (pf_mul_mn, pfarr)
   val (pf_mat_box | ()) = vbox_make_view_ptr_matrix (pf_mat | p_arr)
 in
   #[m,n | #[l | '{ data= p_arr, view= pf_mat_box, row= m, col= n} ] ]
@@ -243,13 +241,13 @@ in
   if i < m then
     if j < n then let
       prval vbox pf_mat = M.view
-      prval (pf_mul_mn, pf_arr) = array_v_of_matrix_v {a} (pf_mat)
+      prval (pf_mul_mn, pfarr) = array_v_of_matrix_v {a} (pf_mat)
       val (pf_mul_i_n | i_n) = mul2_size1_size1 (i, n)
       prval () = mul_nat_nat_nat pf_mul_i_n
       prval () = lemma_for_matrix_subscripting (pf_mul_mn, pf_mul_i_n)
       val M_data = M.data
       val x = !M_data.[i_n+j]
-      prval () = pf_mat := matrix_v_of_array_v (pf_mul_mn, pf_arr)
+      prval () = pf_mat := matrix_v_of_array_v (pf_mul_mn, pfarr)
     in
       x // return value
     end else begin
@@ -268,13 +266,13 @@ in
   if i < m then
     if j < n then let
       prval vbox pf_mat = M.view
-      prval (pf_mul_mn, pf_arr) = array_v_of_matrix_v {a} (pf_mat)
+      prval (pf_mul_mn, pfarr) = array_v_of_matrix_v {a} (pf_mat)
       val (pf_mul_i_n | i_n) = mul2_size1_size1 (i, n)
       prval () = mul_nat_nat_nat pf_mul_i_n
       prval () = lemma_for_matrix_subscripting (pf_mul_mn, pf_mul_i_n)
       val M_data = M.data
       val () = !M_data.[i_n+j] := x
-      prval () = pf_mat := matrix_v_of_array_v (pf_mul_mn, pf_arr)
+      prval () = pf_mat := matrix_v_of_array_v (pf_mul_mn, pfarr)
     in
       // no return value
     end else begin
@@ -303,7 +301,7 @@ app (
   val p_arr = M.data; prval vbox pf_mat = M.view
   val m = M.row and n = M.col
   prval [mn:int] (
-    pf_mul_mn, pf_arr
+    pf_mul_mn, pfarr
   ) = array_v_of_matrix_v {a} (pf_mat)
   val _0 = size1_of_int1 0 and _1 = size1_of_int1 1
   val () = case+ trv of
@@ -336,7 +334,7 @@ app (
       end (* end of [ColMajor] *)
   // end of [val]
 in
-  pf_mat := matrix_v_of_array_v (pf_mul_mn, pf_arr)
+  pf_mat := matrix_v_of_array_v (pf_mul_mn, pfarr)
 end // end of [app]
   
 (* ****** ****** *)
@@ -348,7 +346,7 @@ fold (
   val p_arr = M.data; prval vbox pf_mat = M.view
   val m = M.row and n = M.col
   prval [mn:int] (
-    pf_mul_mn, pf_arr
+    pf_mul_mn, pfarr
   ) = array_v_of_matrix_v {a} (pf_mat)
   val _0 = size1_of_int1 0 and _1 = size1_of_int1 1
   var res: b = ini
@@ -382,7 +380,7 @@ fold (
       end (* end of [ColMajor] *)
   // end of [val]
 in
-  pf_mat := matrix_v_of_array_v (pf_mul_mn, pf_arr)
+  pf_mat := matrix_v_of_array_v (pf_mul_mn, pfarr)
 end // end of [fold]
 
 (* ****** ****** *)
@@ -394,7 +392,7 @@ modify (
   val p_arr = M.data; prval vbox pf_mat = M.view
   val m = M.row and n = M.col
   prval [mn:int] (
-    pf_mul_mn, pf_arr
+    pf_mul_mn, pfarr
   ) = array_v_of_matrix_v {a} (pf_mat)
   val _0 = size1_of_int1 0 and _1 = size1_of_int1 1
   val () = case+ trv of
@@ -427,7 +425,7 @@ modify (
       end (* end of [ColMajor] *)
   // end of [val]
 in
-  pf_mat := matrix_v_of_array_v (pf_mul_mn, pf_arr)
+  pf_mat := matrix_v_of_array_v (pf_mul_mn, pfarr)
 end // end of [modify]
 
 (* ****** ****** *)

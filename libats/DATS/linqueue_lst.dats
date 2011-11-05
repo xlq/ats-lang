@@ -61,7 +61,7 @@ slseg_v (
 ) =
   | {n:nat} {la,lb,lz:addr}
     slseg_v_cons (a, n+1, la, lz) of (
-      free_gc_v (wptr(a), la), (a, ptr lb) @ la, slseg_v (a, n, lb, lz)
+      free_gc_v (wptr(a)?, la), (a, ptr lb) @ la, slseg_v (a, n, lb, lz)
     ) // end of [slseg_v_cons]
   | {la:addr} slseg_v_nil (a, 0, la, la)
 // end of [slseg_v]
@@ -78,7 +78,7 @@ prfun slseg_v_extend
   {n:nat}
   {la,ly,lz:addr} (
   pf_sl: slseg_v (a, n, la, ly)
-, pf_gc: free_gc_v (wptr(a), ly)
+, pf_gc: free_gc_v (wptr(a)?, ly)
 , pf_at: (a, ptr lz) @ ly
 ) :<prf> slseg_v (a, n+1, la, lz)
 // end of [slseg_v_extend]
@@ -89,7 +89,7 @@ slseg_v_extend
   prfun extend
     {n:nat} {la,ly,lz:addr} .<n>. (
       pf_sl: slseg_v (a, n, la, ly)
-    , pf_gc: free_gc_v (wptr(a), ly)
+    , pf_gc: free_gc_v (wptr(a)?, ly)
     , pf_at: (a, ptr lz) @ ly
     ) :<prf> slseg_v (a, n+1, la, lz) =
     case+ pf_sl of
@@ -164,7 +164,7 @@ prfun slseg1_v_decode1
   (pf: slseg1_v (a, n, l1, l2))
 :<> [n > 0] (
   slseg_v (a, n-1, l1, l2)
-, free_gc_v (wptr(a), l2)
+, free_gc_v (wptr(a)?, l2)
 , (a, ptr?) @ l2
 ) // end of [slseg1_v_decode1]
 
@@ -173,7 +173,7 @@ prfun slseg1_v_encode1
   {a:viewt@ype}
   {n:int} {l1,l2:addr} (
   pf_sl: slseg_v (a, n, l1, l2)
-, pf_gc: free_gc_v (wptr(a), l2)
+, pf_gc: free_gc_v (wptr(a)?, l2)
 , pf_at: (a, ptr?) @ l2
 ) :<> slseg1_v (a, n+1, l1, l2) // end of [slseg1_v_encode1]
 

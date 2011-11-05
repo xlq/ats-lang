@@ -98,14 +98,14 @@ implement
 queue_uninitialize
   {a} (q) = () where {
   val (pfgc, pfarr | parr) = $DQ.deque_uninitialize (q)
-  val () = array_ptr_free (pfgc, pfarr | parr)
+  val () = array_ptr_free {a} (pfgc, pfarr | parr)
 } // end of [queue_uninitialize]
 
 implement
 queue_uninitialize_vt
   {a} (q) = () where {
   val (pfgc, pfarr | parr) = $DQ.deque_uninitialize_vt (q)
-  val () = array_ptr_free (pfgc, pfarr | parr)
+  val () = array_ptr_free {a} (pfgc, pfarr | parr)
 } // end of [queue_uninitialize_vt]
 
 (* ****** ****** *)
@@ -166,8 +166,8 @@ queue_update_capacity
   (q, m2) = () where {
   val (pfgc, pfarr | parr) = array_ptr_alloc<a> (m2)
   val (pfgc, pfarr | parr) =
-    $DQ.deque_update_capacity (pfgc, pfarr | q, m2, parr)
-  val () = array_ptr_free (pfgc, pfarr | parr)
+    $DQ.deque_update_capacity<a> (pfgc, pfarr | q, m2, parr)
+  val () = array_ptr_free {a} (pfgc, pfarr | parr)
 } // end of [queue_update_capacity]
 
 (* ****** ****** *)

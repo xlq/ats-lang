@@ -101,7 +101,7 @@ implement s2cst_make (
 
 val stamp = $Stamp.s2cst_stamp_make ()
 val (pf_gc, pf | p) = ptr_alloc_tsz {s2cst_struct} (sizeof<s2cst_struct>)
-prval () = free_gc_elim {s2cst_struct} (pf_gc)
+prval () = free_gc_elim {s2cst_struct?} (pf_gc)
 
 val () = begin
 p->s2cst_sym := id;

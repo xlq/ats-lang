@@ -88,13 +88,13 @@ assume array_viewt0ype_int_type
 
 viewtypedef // this one is declared in [prelude/basic_sta.sats]
 arraysize_viewt0ype_int_viewt0ype (a: viewt@ype, n:int) =
-  [l:addr | l <> null] (free_gc_v (a, n, l), @[a][n] @ l | ptr l, int n)
+  [l:addr | l <> null] (free_gc_v (a?, n, l), @[a][n] @ l | ptr l, int n)
 
 *)
 
 implement
 array_make_arrsz {a} {n} (arrsz) = let
-  prval () = free_gc_elim {a} {n} (arrsz.0)
+  prval () = free_gc_elim {a?} {n} (arrsz.0)
   val (pfbox | ()) = vbox_make_view_ptr (arrsz.1 | arrsz.2)
 in
   @{ data= arrsz.2, view= pfbox }

@@ -139,7 +139,7 @@ array_ptr_free_fun
   (pfgc, pfarr | p, asz, f) = let
   val () = array_ptr_clear_fun<a> (!p, asz, f)
 in
-  array_ptr_free (pfgc, pfarr | p)
+  array_ptr_free {a} (pfgc, pfarr | p)
 end // end of [array_ptr_free_fun]
 
 (* ****** ****** *)
@@ -413,7 +413,7 @@ arraysize_viewt0ype_int_viewt0ype
 
 implement
 array_make_arrsz {a} {n} (arrsz) = let
-  prval () = free_gc_elim {a} (arrsz.0) // return the certificate
+  prval () = free_gc_elim {a?} (arrsz.0) // return the certificate
   val (pfbox | ()) = vbox_make_view_ptr (arrsz.1 | arrsz.2)
 in
   @{ data= arrsz.2, view= pfbox }
@@ -424,11 +424,11 @@ end // end of [array_make_arrsz]
 implement{a}
 array_make_elt (asz, x) = let
   val (
-    pf_gc, pf_arr | p_arr
+    pfgc, pfarr | p_arr
   ) = array_ptr_alloc_tsz {a} (asz, sizeof<a>)
-  prval () = free_gc_elim {a} (pf_gc) // return the certificate to GC
+  prval () = free_gc_elim {a?} (pfgc) // return the certificate to GC
   val () = array_ptr_initialize_elt<a> (!p_arr, asz, x)
-  val (pfbox | ()) = vbox_make_view_ptr (pf_arr | p_arr)
+  val (pfbox | ()) = vbox_make_view_ptr (pfarr | p_arr)
 in
   @{ data= p_arr, view= pfbox }
 end // end of [array_make_elt]
@@ -436,11 +436,11 @@ end // end of [array_make_elt]
 implement{a}
 array_make_lst (asz, xs) = let
   val (
-    pf_gc, pf_arr | p_arr
+    pfgc, pfarr | p_arr
   ) = array_ptr_alloc_tsz {a} (asz, sizeof<a>)
-  prval () = free_gc_elim {a} (pf_gc) // return the certificate to GC
+  prval () = free_gc_elim {a?} (pfgc) // return the certificate to GC
   val () = array_ptr_initialize_lst<a> (!p_arr, xs)
-  val (pfbox | ()) = vbox_make_view_ptr (pf_arr | p_arr)
+  val (pfbox | ()) = vbox_make_view_ptr (pfarr | p_arr)
 in
   @{ data= p_arr, view= pfbox }
 end // end of [array_make_lst]
@@ -448,11 +448,11 @@ end // end of [array_make_lst]
 implement{a}
 array_make_lst_vt (asz, xs) = let
   val (
-    pf_gc, pf_arr | p_arr
+    pfgc, pfarr | p_arr
   ) = array_ptr_alloc_tsz {a} (asz, sizeof<a>)
-  prval () = free_gc_elim {a} (pf_gc) // return the certificate to GC
+  prval () = free_gc_elim {a?} (pfgc) // return the certificate to GC
   val () = array_ptr_initialize_lst_vt<a> (!p_arr, xs)
-  val (pfbox | ()) = vbox_make_view_ptr (pf_arr | p_arr)
+  val (pfbox | ()) = vbox_make_view_ptr (pfarr | p_arr)
 in
   @{ data= p_arr, view= pfbox }
 end // end of [array_make_lst_vt]
@@ -463,12 +463,12 @@ implement{a}
 array_make_vclo
   (pf | asz, f) = let
   val (
-    pf_gc, pf_arr | p_arr
+    pfgc, pfarr | p_arr
   ) = array_ptr_alloc_tsz {a} (asz, sizeof<a>)
-  prval () = free_gc_elim {a}
-    (pf_gc) // return the certificate to GC
+  prval () = free_gc_elim {a?}
+    (pfgc) // return the certificate to GC
   val () = array_ptr_initialize_vclo<a> (pf | !p_arr, asz, f)
-  val (pfbox | ()) = vbox_make_view_ptr (pf_arr | p_arr)
+  val (pfbox | ()) = vbox_make_view_ptr (pfarr | p_arr)
 in
   @{ data= p_arr, view= pfbox }
 end // end of [array_make_vclo]
@@ -481,8 +481,8 @@ array_make_cloref
 //
   typedef cloref_t = (sizeLt n, &(a?) >> a) -<cloref,f> void
 //
-  val (pf_gc, pf_arr | p_arr) = array_ptr_alloc<a> (asz)
-  prval () = free_gc_elim {a} (pf_gc) // return the certificate to GC
+  val (pfgc, pfarr | p_arr) = array_ptr_alloc<a> (asz)
+  prval () = free_gc_elim {a?} (pfgc) // return the certificate to GC
 //
   prval pfu = unit_v ()
   val () = let
@@ -496,7 +496,7 @@ array_make_cloref
   end // end of [val]  
   prval unit_v () = pfu
 //
-  val (pfbox | ()) = vbox_make_view_ptr (pf_arr | p_arr)
+  val (pfbox | ()) = vbox_make_view_ptr (pfarr | p_arr)
 in
   @{ data= p_arr, view= pfbox }
 end // end of [array_make_cloref]

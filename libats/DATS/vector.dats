@@ -8,9 +8,7 @@
 
 (*
 ** ATS - Unleashing the Potential of Types!
-**
 ** Copyright (C) 2002-2010 Hongwei Xi, Boston University
-**
 ** All rights reserved
 **
 ** ATS is free software;  you can  redistribute it and/or modify it under
@@ -81,16 +79,16 @@ prfun vector_v_encode01
 
 implement{a}
 vector_initialize {m} (V, m) = let
-  val [l:addr] (pf_gc, pf | p) = array_ptr_alloc<a> (m)
-  prval pf = vector_v_encode01 {a} (pf)
-  prval pf_gc = __cast (pf_gc) where {
-    extern prfun __cast (pf: free_gc_v (a, m, l)): free_gc_v l
+  val [l:addr] (pfgc, pfarr | p) = array_ptr_alloc<a> (m)
+  prval pfgc = __cast (pfgc) where {
+    extern prfun __cast (pf: free_gc_v (a?, m, l)): free_gc_v l
   } // end of [prval]
+  prval pfarr = vector_v_encode01 {a} (pfarr)
   val () = V.m := m
   val () = V.n := size1_of_int1 (0)
   val () = V.ptr := p
-  val () = V.vfree := pf_gc
-  prval () = VECTOR_encode {a} (pf | V)
+  val () = V.vfree := pfgc
+  prval () = VECTOR_encode {a} (pfarr | V)
 in
   // nothing
 end // end of [vector_initialize]

@@ -131,7 +131,7 @@ end // end of [matrix_make_arrsz]
 implement
 matrix_make_arrsz__main
   {a} (pfmul | m, n, arrsz) = let
-  prval () = free_gc_elim {a} (arrsz.0) // return the certificate
+  prval () = free_gc_elim {a?} (arrsz.0) // return the certificate
   prval pfmat = matrix_v_of_array_v (pfmul, arrsz.1)
   val (pfmat_box | ()) = vbox_make_view_ptr_matrix (pfmat | arrsz.2)
 in @{
@@ -147,7 +147,7 @@ matrix_make_elt (m, n, x) = let
   val (pfgc, pfarr | p_arr) =
     array_ptr_alloc_tsz {a} (mn, sizeof<a>)
   // end of [val]
-  prval () = free_gc_elim {a} (pfgc) // return the certificate
+  prval () = free_gc_elim {a?} (pfgc) // return the certificate
   val () = array_ptr_initialize_elt<a> (!p_arr, mn, x)
   prval pfmat = matrix_v_of_array_v (pf_mul, pfarr)
   val (pfmat_box | ()) = vbox_make_view_ptr_matrix (pfmat | p_arr)
@@ -181,7 +181,7 @@ matrix_make_funenv_tsz
   val (
     pfgc, pfarr | p_arr
   ) = array_ptr_alloc_tsz {a} (mn, tsz)
-  prval () = free_gc_elim {a} (pfgc) // return the certificate to GC
+  prval () = free_gc_elim {a?} (pfgc) // return the certificate to GC
   viewtypedef fun_t =
     (!v | &(a?) >> a, sizeLt m, natLt n, !vt) -<> void
   var !p_f1 = @lam

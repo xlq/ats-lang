@@ -68,12 +68,12 @@ assume s2cstref_t = s2cstref
 
 implement s2cstref_make (name) = let
   val id = $Sym.symbol_make_string name
-  val (pf_gc, pf | p) = begin
+  val (pfgc, pfat | p) = begin
     ptr_alloc_tsz {s2cstref_struct} (sizeof<s2cstref_struct>)
   end // end of [val]
-  prval () = free_gc_elim {s2cstref_struct} (pf_gc)
+  prval () = free_gc_elim {s2cstref_struct?} (pfgc)
   val () = (p->sym := id; p->cst := None ())
-  val (pfbox | ()) = vbox_make_view_ptr (pf | p)
+  val (pfbox | ()) = vbox_make_view_ptr (pfat | p)
 in
   (pfbox | p)
 end  // end of [s2cstref_make]
@@ -412,12 +412,12 @@ in // in of [local]
 
 implement d2conref_make (name) = let
   val id = $Sym.symbol_make_string name
-  val (pf_gc, pf | p) = begin
+  val (pfgc, pfat | p) = begin
     ptr_alloc_tsz {d2conref_struct} (sizeof<d2conref_struct>)
   end // end of [val]
-  prval () = free_gc_elim {d2conref_struct} (pf_gc)
+  prval () = free_gc_elim {d2conref_struct?} (pfgc)
   val () = (p->sym := id; p->con := None ())
-  val (pfbox | ()) = vbox_make_view_ptr (pf | p)
+  val (pfbox | ()) = vbox_make_view_ptr (pfat | p)
 in
   (pfbox | p)
 end  // end of [d2conref_make]
@@ -496,12 +496,12 @@ in // in of [local]
 
 implement d2cstref_make (name) = let
   val id = $Sym.symbol_make_string name
-  val (pf_gc, pf | p) = begin
+  val (pfgc, pfat | p) = begin
     ptr_alloc_tsz {d2cstref_struct} (sizeof<d2cstref_struct>)
   end // end of [val]
-  prval () = free_gc_elim {d2cstref_struct} (pf_gc)
+  prval () = free_gc_elim {d2cstref_struct?} (pfgc)
   val () = (p->sym := id; p->cst := None ())
-  val (pfbox | ()) = vbox_make_view_ptr (pf | p)
+  val (pfbox | ()) = vbox_make_view_ptr (pfat | p)
 in
   (pfbox | p)
 end  // end of [d2cstref_make]
