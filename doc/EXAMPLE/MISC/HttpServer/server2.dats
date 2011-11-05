@@ -113,7 +113,7 @@ end // end of [socket_write_substring]
 local
 
 typedef string2 = @(string, string)
-val (pf_gc, pf_arr | ptr, len) = $arrsz {string2} (
+val (pfgc, pfarr | ptr, len) = $arrsz {string2} (
   ("ats",  "text/plain")
 , ("au",   "audio/basic")
 , ("c",    "text/plain")
@@ -147,9 +147,9 @@ val (pf_gc, pf_arr | ptr, len) = $arrsz {string2} (
 //
 stavar l: addr and n: int; typedef T = @[string2][n]
 //
-prval () = free_gc_elim {string2} (pf_gc)
+prval () = free_gc_elim {string2?} (pfgc)
 //
-val (the_doctype_map_prop | ()) = vbox_make_view_ptr {T} {l} (pf_arr | ptr)
+val (the_doctype_map_prop | ()) = vbox_make_view_ptr {T} {l} (pfarr | ptr)
 val the_doctype_map_ptr : ptr l = ptr
 val the_doctype_map_len : size_t n = len
 //
@@ -306,13 +306,13 @@ val dir_msg30_len = string_length dir_msg30_str
 
 val dir_msg31_str = let
   #define THIRTYTWO 32
-  val (pf_gc, pf_buf | p_buf) = malloc_gc (THIRTYTWO)
+  val (pfgc, pfbuf | p_buf) = malloc_gc (THIRTYTWO)
   var ntick = time_get ()
-  val p1 = ctime_r (pf_buf | ntick, p_buf) // reentrant function
+  val p1 = ctime_r (pfbuf | ntick, p_buf) // reentrant function
   val () = assert_errmsg (p1 > null, #LOCATION)
-  prval ctime_v_succ (pf_buf) = pf_buf
+  prval ctime_v_succ (pfbuf) = pfbuf
 in
-  string1_of_strbuf @(pf_gc, pf_buf | p_buf)
+  string1_of_strbuf @(pfgc, pfbuf | p_buf)
 end // end of [val]
 
 val dir_msg31_len = string_length dir_msg31_str
@@ -508,7 +508,7 @@ viewtypedef Strlin = Strbufptr_gc
 
 viewtypedef entlst = List_vt (Strlin)
 viewtypedef entarrptr_gc (n: int, l:addr) =
-  (free_gc_v (Strlin, n, l), @[Strlin][n] @ l | ptr l)
+  (free_gc_v (Strlin?, n, l), @[Strlin][n] @ l | ptr l)
 
 fun dirent_name_get_all
   (dir: &DIR, asz: &size_t 0? >> size_t n): #[n:nat][l:addr] entarrptr_gc (n, l) = let
@@ -526,7 +526,7 @@ fun dirent_name_get_all
   stavar n: int
   val n: int n = list_vt_length ents
   val () = asz := size1_of_int1 (n)
-  val [l:addr] (pf_gc, pf_arr | p_arr) =
+  val [l:addr] (pfgc, pfarr | p_arr) =
     array_ptr_alloc<Strlin> (asz)
   val () = array_ptr_initialize_lst_vt<Strlin> (!p_arr, ents)
   val () = $STDLIB.qsort {Strlin} {n}
@@ -535,7 +535,7 @@ fun dirent_name_get_all
        (x1: &Strlin, x2: &Strlin): Sgn =<fun> compare_string_string (__cast x1, __cast x2)
   } // end of [val]  
 in
-  #[n | #[l | (pf_gc, pf_arr | p_arr)]]
+  #[n | #[l | (pfgc, pfarr | p_arr)]]
 end // end of [dirent_name_get_all]
 
 (* ****** ****** *)
@@ -543,13 +543,13 @@ end // end of [dirent_name_get_all]
 fun directory_send_loop
   {fd:int} {n:nat} {l:addr} .<n>. (
     pf_conn: !socket_v (fd, conn)
-  , pf_arr: ! @[Strlin][n] @ l >> @[Strlin?][n] @ l
+  , pfarr: ! @[Strlin][n] @ l >> @[Strlin?][n] @ l
   | fd: int fd, parent: string, p_arr: ptr l, asz: size_t n
   ) : void = let
   #define MSGSZ 1024; viewtypedef T = Strlin
 in
   if asz > 0 then let
-    prval @(pf1_elt, pf2_arr) = array_v_uncons {T} (pf_arr)
+    prval @(pf1_elt, pf2_arr) = array_v_uncons {T} (pfarr)
     val ent = !p_arr
     val ft = let
       val str = __cast ent where {
@@ -561,11 +561,11 @@ in
           val str = string1_of_string (str)
           val parent = string1_of_string (parent)
           val fil = string1_append (parent, str)
-          val (pf_gc, pf_fil | p_fil) = fil
+          val (pfgc, pf_fil | p_fil) = fil
           val ft = filename_type (name) where {
             extern castfn __cast (p: ptr): string; val name = __cast p_fil
           } // end of [val]
-          val () = strbufptr_free @(pf_gc, pf_fil | p_fil)
+          val () = strbufptr_free @(pfgc, pf_fil | p_fil)
         } // end of [_]
     end : Sgn (* end of [val] *)
     val () = case+ 0 of
@@ -594,12 +594,12 @@ in
     // end of [val]
     val () = directory_send_loop
       (pf_conn, pf2_arr | fd, parent, p_arr+sizeof<Strlin>, asz-1)
-    prval () = pf_arr := array_v_cons {T?} (pf1_elt, pf2_arr)
+    prval () = pfarr := array_v_cons {T?} (pf1_elt, pf2_arr)
   in
     // empty
   end else let
-    prval () = array_v_unnil {T} (pf_arr)
-    prval () = pf_arr := array_v_nil {T?} ()
+    prval () = array_v_unnil {T} (pfarr)
+    prval () = pfarr := array_v_nil {T?} ()
   in
     // empty
   end // end of [if]
@@ -654,11 +654,11 @@ in
 //
     val _ = socket_write_substring (pf_conn | fd, dir_msg50_str, 0, dir_msg50_len)
     var asz: size_t 0? // unintialized
-    val (pf_gc, pf_arr | p_arr) = dirent_name_get_all (!p_dir, asz)
+    val (pfgc, pfarr | p_arr) = dirent_name_get_all (!p_dir, asz)
     val () = closedir_exn (pf_dir | p_dir)
-    val () = directory_send_loop (pf_conn, pf_arr | fd, dirname, p_arr, asz)
+    val () = directory_send_loop (pf_conn, pfarr | fd, dirname, p_arr, asz)
   in
-    array_ptr_free {Strlin} (pf_gc, pf_arr | p_arr)
+    array_ptr_free {Strlin} (pfgc, pfarr | p_arr)
   end // end of [if]
 end (* end of [directory_send] *)
 

@@ -74,7 +74,7 @@ staload _(*anonymous*) = "prelude/DATS/list_vt.dats"
 local
 
 typedef string2 = @(string, string)
-val (pf_gc, pf_arr | ptr, len) = $arrsz {string2} (
+val (pfgc, pfarr | ptr, len) = $arrsz {string2} (
   ("ats",  "text/plain")
 , ("au",   "audio/basic")
 , ("c",    "text/plain")
@@ -104,17 +104,17 @@ val (pf_gc, pf_arr | ptr, len) = $arrsz {string2} (
 , ("uu",   "application/octet-stream")
 , ("wav",  "audio/x-wav")
 , ("zip",  "application/zip")
-)
+) // end of [val]
 
 in
 
 stavar len: int
 //
-prval () = free_gc_elim {string2} (pf_gc)
+prval () = free_gc_elim {string2?} (pfgc)
 //
 val (
   the_doctype_map_prop | ()
-) = vbox_make_view_ptr (pf_arr | ptr)
+) = vbox_make_view_ptr (pfarr | ptr)
 val the_doctype_map_ptr = ptr
 val the_doctype_map_len: int len = int1_of_size1 (len)
 
