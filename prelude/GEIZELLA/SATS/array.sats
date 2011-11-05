@@ -8,9 +8,7 @@
 
 (*
 ** ATS - Unleashing the Potential of Types!
-**
 ** Copyright (C) 2002-2010 Hongwei Xi, Boston University
-**
 ** All rights reserved
 **
 ** ATS is free software;  you can  redistribute it and/or modify it under
@@ -138,7 +136,7 @@ praxi free_gc_viewt0ype_addr_trans
 
 fun{a:viewt@ype}
 array_ptr_alloc {n:nat} (asz: size_t n)
-  :<> [l:agz] (free_gc_v (a, n, l), array_v (a?, n, l) | ptr l)
+  :<> [l:agz] (free_gc_v (a?, n, l), array_v (a?, n, l) | ptr l)
 // end of [array_ptr_alloc]
 
 (*
@@ -146,7 +144,7 @@ array_ptr_alloc {n:nat} (asz: size_t n)
 *)
 fun array_ptr_alloc_tsz
   {a:viewt@ype} {n:nat} (asz: size_t n, tsz: sizeof_t a):<>
-    [l:agz] (free_gc_v (a, n, l), array_v (a?, n, l) | ptr l)
+    [l:agz] (free_gc_v (a?, n, l), array_v (a?, n, l) | ptr l)
   = "atspre_array_ptr_alloc_tsz"
 // end of [array_ptr_alloc_tsz]
 
@@ -157,7 +155,7 @@ fun array_ptr_alloc_tsz
 *)
 fun array_ptr_free
   {a:viewt@ype} {n:int} {l:addr} (
-  pf_gc: free_gc_v (a, n, l), pf_arr: array_v (a?, n, l) | p_arr: ptr l
+  pf_gc: free_gc_v (a?, n, l), pf_arr: array_v (a?, n, l) | p_arr: ptr l
 ) :<> void = "atspre_array_ptr_free"
 
 (* ****** ****** *)

@@ -8,9 +8,7 @@
 
 (*
 ** ATS - Unleashing the Potential of Types!
-**
 ** Copyright (C) 2002-2008 Hongwei Xi, Boston University
-**
 ** All rights reserved
 **
 ** ATS is free software;  you can  redistribute it and/or modify it under
@@ -213,15 +211,15 @@ praxi free_gc_viewt0ype_addr_trans
 (* ****** ****** *)
 
 fun{a:viewt@ype} ptr_alloc ()
-  :<> [l:addr | l > null] (free_gc_v (a, l), a? @ l | ptr l)
+  :<> [l:addr | l > null] (free_gc_v (a?, l), a? @ l | ptr l)
 // end of [ptr_alloc]
 
 fun ptr_alloc_tsz {a:viewt@ype} (tsz: sizeof_t a)
-  :<> [l:addr | l > null] (free_gc_v (a, l), a? @ l | ptr l)
+  :<> [l:addr | l > null] (free_gc_v (a?, l), a? @ l | ptr l)
   = "atspre_ptr_alloc_tsz"
 
 fun ptr_free {a:viewt@ype} {l:addr}
-  (_: free_gc_v (a, l), _: a? @ l | _: ptr l):<> void = "atspre_ptr_free"
+  (_: free_gc_v (a?, l), _: a? @ l | _: ptr l):<> void = "atspre_ptr_free"
 // end of [ptr_free]
 
 (* ****** ****** *)

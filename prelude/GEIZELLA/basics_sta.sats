@@ -8,9 +8,7 @@
 
 (*
 ** ATS - Unleashing the Potential of Types!
-**
 ** Copyright (C) 2002-2008 Hongwei Xi, Boston University
-**
 ** All rights reserved
 **
 ** ATS is free software;  you can  redistribute it and/or modify it under
@@ -631,8 +629,12 @@ stadef free_ngc_v = free_ngc_viewt0ype_addr_int_view
 
 //
 
-viewdef freebyte_gc_v (n:int, l:addr) = free_gc_v (byte, n, l)
-viewdef freebyte_ngc_v (n:int, l:addr) = free_ngc_v (byte, n, l)
+absview
+freebyte_gc_int_addr_view (n:int, l:addr)
+stadef freebyte_gc_v = freebyte_gc_int_addr_view
+absview
+freebyte_ngc_int_addr_view (n:int, l:addr)
+stadef freebyte_ngc_v = freebyte_ngc_int_addr_view
 
 (* ****** ****** *)
 
@@ -647,7 +649,7 @@ stadef junkptr = junkptr_viewtype
 // This definition should not be changed!
 viewtypedef
 arraysize_viewt0ype_int_viewt0ype (a: viewt@ype, n:int) =
-  [l:addr | l <> null] (free_gc_v (a, n, l), @[a][n] @ l | ptr l, int n)
+  [l:addr | l <> null] (free_gc_v (a?, n, l), @[a][n] @ l | ptr l, int n)
 
 stadef arraysize = arraysize_viewt0ype_int_viewt0ype
 
