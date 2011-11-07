@@ -47,7 +47,8 @@ staload "prelude/SATS/unsafe.sats"
 (* ****** ****** *)
 
 implement{a}
-ptrget {l} (p) = x where {
+ptrget (p) = x where {
+  val [l:addr] p = (ptr1_of_ptr)p
   prval (pf, fpf) = __assert () where {
     extern praxi __assert (): (a @ l, a? @ l -<lin,prf> void)
   } // end of [prval]
@@ -56,7 +57,8 @@ ptrget {l} (p) = x where {
 } // end of [ptrget]
 
 implement{a}
-ptrset {l} (p, x) = () where {
+ptrset (p, x) = () where {
+  val [l:addr] p = (ptr1_of_ptr)p
   prval (pf, fpf) = __assert () where {
     extern praxi __assert (): (a? @ l, a @ l -<lin,prf> void)
   } // end of [prval]
