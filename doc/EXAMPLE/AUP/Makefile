@@ -180,8 +180,8 @@ test972: AUP_9_7_2.dats; $(ATSCC) -Wall -o $@ $< && ./test972
 compall:: test974
 test974: AUP_9_7_4.dats; $(ATSCC) -Wall -o $@ $<
 
-#compall:: test975 # it needs [clock_gettime] and [clock_getres]
-test975: AUP_9_7_5.dats; $(ATSCC) -Wall -o $@ $< && ./test975
+compall:: test975 # it needs [clock_gettime] and [clock_getres]
+test975: AUP_9_7_5.dats; $(ATSCC) -Wall -o $@ $< -lrt && ./test975
 
 #######
 
