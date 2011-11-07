@@ -22,6 +22,8 @@ ats-lang-anairiats-0.2.6:
 13: Adding libc/gdbm/gdbm (API for gdbm in ATS).
 14: Adding libc/gdbm/ndbm (API for gdbm-ndbm in ATS).
 15: Adding libats/ngc/DATS/dlist.dats. Thanks to Artyom!
+16: [atslib] can now process flags for each individual file. See .libfiles.
+17: pervasive changes: free_gc_v (T, ...) => free_gc_v (T?, ...)
 
 ########################################################################
 

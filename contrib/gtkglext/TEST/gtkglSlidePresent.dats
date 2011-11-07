@@ -55,6 +55,11 @@ val theSlideAspect = 1.0 * theSlideHeight / theSlideWidth
 
 (* ****** ****** *)
 
+extern
+fun myslide_dirname_get (): string = "myslide_dirname_get"
+
+(* ****** ****** *)
+
 %{^
 GtkWidget *theDrawingArea = NULL;
 ats_ptr_type
@@ -394,9 +399,11 @@ local
 
 fun
 slidename_get_by_count
-  (count: int): strptr1 =
-  sprintf ("data/%s_%i.png", @(PREFIX, count))
-// end of [slidename_get_by_count]
+  (count: int): strptr1 = let
+  val dirname = myslide_dirname_get ()
+in
+  sprintf ("%s/%s_%i.png", @(dirname, PREFIX, count))
+end // end of [slidename_get_by_count]
 
 in // in of [local]
 
@@ -1634,12 +1641,23 @@ implement main_dummy () = ()
 
 %{$
 
+char *the_myslide_dirname = "data" ;
+
+ats_ptr_type
+myslide_dirname_get () {
+  return the_myslide_dirname ;
+} // end of [myslide_dirname_get]
+
 ats_void_type
 mainats (
   ats_int_type argc, ats_ptr_type argv
 ) {
   int gtkglcheck ;
   GdkGLConfig *glconfig ;
+//
+  if (argc >= 2) {
+    the_myslide_dirname = ((char**)argv)[1] ;
+  } // end of [if]
 //
   gtk_init ((int*)&argc, (char***)&argv) ;
 //
