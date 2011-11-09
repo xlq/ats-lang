@@ -190,13 +190,28 @@ arrseg_v_unsplit {a:t@ype}
 ) // end of [arrseg_v_unsplit]
 
 (* ****** ****** *)
+//
+// HX: reverse NTH
+//
+dataprop
+RNTH (x0:int, ilist, int) =
+  | {xs:ilist} {n:nat}
+    RNTHbas (x0, ilist_cons (x0, xs), n) of LENGTH (xs, n)
+  | {x:int} {xs:ilist} {n:nat}
+    RNTHind (x0, ilist_cons (x, xs), n) of RNTH (x0, xs, n)
+// end of [RNTH]
 
 extern
 fun{a:t@ype}
 arrseg_get
-  {l:addr} {x:elt} {xs:ilist} {f,n:nat} {i:nat | i < n} (
-  pf1: NTH (x, xs, i), pf2: !arrseg_v (a, l, xs, f, n) | p: ptr l, f: int f, i: int i
-) : E (a, x)
+  {l:addr}
+  {x:elt}
+  {xs:ilist}
+  {f,n:nat}
+  {i:nat | i < n} (
+  pf1: RNTH (x, xs, i), pf2: !arrseg_v (a, l, xs, f, n)
+| p: ptr l, f: int f, i: int i
+) : E (a, x) // end of [arrseg_get]
 
 extern
 fun{a:t@ype}
@@ -370,18 +385,12 @@ ringbuf_v_head
 , arrseg_v (a, l, ilist_sing(x), f, 1) -<lin,prf> ringbuf_v (a, l, m, xs, f, n)
 ) // end of [ringbuf_v_head]
 
-(*
-arrseg_get
-  {l:addr} {x:elt} {xs:ilist} {f,n:nat | n > 0} (
-  pf1: NTH (x, xs, n), pf2: !arrseg_v (a, l, xs, f, n) | p: ptr l, i: int i
-) : E (a, x)
-*)
 implement{a}
 head (pfhq | rb) = let
   val p = rb.ptr
   prval pfat = rb.atview
   prval (pf1, fpf2) = ringbuf_v_head (pfhq, rb.bufview)
-  val x = arrseg_get (NTHbas (), pf1 | p->data, p->first, 0)
+  val x = arrseg_get (RNTHbas (LENGTHnil), pf1 | p->data, p->first, 0)
   prval () = rb.bufview := fpf2 (pf1)
   prval () = rb.atview := pfat
 in
@@ -467,7 +476,7 @@ pop (pflen, pfdeq | rb) = let
   prval () = length_isfun (pflen, pflen_alt)
   prval (pfmod, pf1, fpf2) = ringbuf_v_pop {a} (pfdeq, rb.bufview)
   val f = p->first and n = p->len
-  val x = arrseg_get (NTHbas (), pf1 | p->data, f, 0)
+  val x = arrseg_get (RNTHbas (LENGTHnil), pf1 | p->data, f, 0)
   prval () = rb.bufview := fpf2 (arrseg0_v_of_arrseg_v (pf1))
   val () = p->len := n-1
   val (pfmod_alt | f1) = op nmod2 (f+1, p->size)

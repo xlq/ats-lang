@@ -89,7 +89,8 @@ end // end of [lemma4]
 
 (* ****** ****** *)
 
-prfun lemma5 {x:int} {xs1,xs2:ilist} {y:int} {ys:ilist} .<>.
+prfun lemma5
+  {x:int} {xs1,xs2:ilist} {y:int} {ys:ilist} .<>.
   (pf1: ENQUE (x, xs1, xs2), pf2: DEQUE (xs2, ys, y)): (RQ (xs2, ys), DQ (xs2, y)) =
   (pf2, pf2)
 // end of [lemma5]
