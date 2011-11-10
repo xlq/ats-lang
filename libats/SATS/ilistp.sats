@@ -84,6 +84,15 @@ prfun ilisteq_elim
 (* ****** ****** *)
 
 dataprop
+ISEMP (ilist, bool) =
+  | ISEMPnil (ilist_nil, true)
+  | {x:int} {xs:ilist}
+    ISEMPcons (ilist_cons (x, xs), false)
+// end of [ISEMP]
+
+(* ****** ****** *)
+
+dataprop
 LENGTH (ilist, int) =
   | LENGTHnil (ilist_nil, 0) of ()
   | {x:int} {xs:ilist} {n:nat}

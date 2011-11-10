@@ -97,6 +97,7 @@ dataprop
 ISEMP (ilist, bool) =
   | ISEMPnil (nil, true)
   | {x:int}{xs:ilist} ISEMPcons (cons (x, xs), false)
+// end of [ISEMP]
 
 absviewt@ype list (ilist)
 extern
@@ -108,6 +109,7 @@ fun list_head
 extern
 fun list_pop
   {x:int}{xs1:ilist} (xs: &list (cons (x, xs1)) >> list xs1):<> void
+// end of [ISEMP]
 
 (* ****** ****** *)
 
@@ -205,46 +207,6 @@ case+ opt of
 end (* end of [if] *)
 //
 end // end of [bldr_cons]
-
-(* ****** ****** *)
-////
-fun build
-  {d:int} {xs:ilist} .<>. (
-  d: int d, xs: &list xs >> list ts
-) :
-  #[ts:ilist][hs:ilist;t:tree;b:bool] (
-  BUILD (xs, d, t, b), APPEND (hs, ts, xs) | option (tree t, b)
-) = let
-  val [hs:ilist,t:tree,ret:bool]
-    (pf_bldr, pf_app | opt) = build_rec (d, xs)
-  // end of [val]
-in
-//
-case opt of
-| None () => (
-    BLDfail_rec {d}{xs,hs}{t} (pf_bldr), pf_app | None ()
-  ) // end of [None]
-| Some (t) => let
-    val (pf_emp | isemp) = list_is_empty (xs)
-  in
-    if isemp then let
-      prval ISEMPnil () = pf_emp
-      prval ILISTEQ () = append_unit2_elim (pf_app)
-    in
-      (BLDsucc (pf_bldr), pf_app | Some (t))
-    end else let
-      prval ISEMPcons () = pf_emp
-      prval pflen_hs = length_istot ()
-      prval pflen_ts = length_istot ()
-      prval pflen_xs = append_length_lemma (pf_app, pflen_hs, pflen_ts)
-      prval LENGTHcons _ = pflen_ts
-      prval pf_bld = BLDfail_len (pflen_xs, pflen_hs, pf_bldr)
-    in
-      (pf_bld, pf_app | None ())
-    end (* end of [if] *)
-  end // end of [Some]
-//
-end // end of [build]
 
 (* ****** ****** *)
 
