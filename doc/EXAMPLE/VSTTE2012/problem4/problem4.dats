@@ -45,23 +45,22 @@ dataprop
 BUILDREC (
   ilist(*source*), ilist(*list consumed*), int (*d*), tree, bool
 ) =
-| {d:int}{t:tree}{xs:ilist}
-  BLDRemp (nil, nil, d, t, false)
-| {d:int} {h:int | h < d}
-  {xs1,fs:ilist} {t:tree}
-  BLDRles (cons (h, xs1), nil, d, t, false) of ()
+| {d:int}
+  BLDRemp (nil, nil, d, leaf, false)
+| {d:int} {h:int | h < d} {xs1:ilist}
+  BLDRles (cons (h, xs1), nil, d, leaf, false) of ()
 | {d:int} {xs1:ilist}
   BLDRequ (cons (d, xs1), cons (d, nil), d, leaf, true) of ()
-| {d:int}{xs,fs:ilist}{t:tree}
-  BLDRlft (xs, fs, d, t, false) of
-    BUILDREC (xs, fs, d+1, t, false)
+| {d:int}{xs,hs:ilist}{t:tree}
+  BLDRlft (xs, hs, d, t, false) of
+    BUILDREC (xs, hs, d+1, t, false)
 | {d:int}{xs,hs,ts,hts,ys:ilist}{t1,t2:tree}
   BLDRrgh (xs, ys, d, node(t1,t2), false) of (
     BUILDREC (xs, hs, d+1, t1, true)
   , BUILDREC (ts, hts, d+1, t2, false)
   , APPEND (hs, ts, xs)
   , APPEND (hs, hts, ys)
-  )
+  ) // end of [BLDRrgh]
 | {xs,hs,ts,hts,tts,ys:ilist} {d:int} {t1,t2:tree}
   BLDRsuc (xs, ys, d, node(t1,t2), true) of (
     BUILDREC (xs, hs, d+1, t1, true)
@@ -156,13 +155,13 @@ fun bldr_cons
 in
 //
 if h < d then let
-  prval pf_bld = BLDRles{d}{h}{xs1,nil}{leaf} ()
+  prval pf_bld = BLDRles ()
   prval pf_app = append_unit1 {xs} ()
 in
   (pf_bld, pf_app | None ())
 end else if h = d then let
   val () = list_pop (xs)
-  prval pf_bld = BLDRequ {d}{xs1} ()
+  prval pf_bld = BLDRequ ()
   prval pf_app = append_sing {d}{xs1}()
 in
   (pf_bld, pf_app | Some (tleaf()))
@@ -246,67 +245,6 @@ case opt of
   end // end of [Some]
 //
 end // end of [build]
-
-(* ****** ****** *)
-
-////
-
-fun build_rec
-  {xs:ilist} {d:int} (d: int d, xs: &list xs >> list ts): 
-  #[ts:ilist][hs:ilist] [t:btree] [ret:bool] (
-  BUILDREC (xs, hs, d, t, ret), APPEND (hs, ts, xs) | tree t, bool ret) = let
-  val [b:bool] (pf_emp | b) = is_empty (xs)
-in
-  if b = true then let
-    prval ISEMPTY_t () = pf_emp
-    prval pf_build = BUILDREC_empty {d}{leaf}{xs}()
-    prval pf_append = lemma_append_self {xs} ()
-  in
-    (pf_build, pf_append | tree_leaf (), false)
-  end
-  else let
-    prval ISEMPTY_f {h:int}{ts:ilist} () = pf_emp
-    val h = head xs
-  in
-    if h < d then let
-      prval pf_build = BUILDREC_small {h,d}{ts,nil}{leaf} ()
-      prval pf_append = lemma_append_self {xs} ()
-    in
-      (pf_build, pf_append | tree_leaf (), false)
-    end
-    else if h = d then let
-      val () = pop (xs)
-      prval pf_build = BUILDREC_leaf {d}{ts} ()
-      prval pf_append = lemma_append_singleton {h}{ts} ()
-    in
-      (pf_build, pf_append | tree_leaf (), true)
-    end else let
-      val [ts:ilist][t1:btree][ret1:bool] (pf_build1, pf_append1 | t1, ret1) 
-        = build_rec (d+1, xs)  // todo how to get hs
-    in
-      if ret1 = false then let
-        prval pf_build = BUILDREC_left (pf_build1)
-      in
-        (pf_build, pf_append1 | t1, false)
-      end else let
-        val [tts:ilist][t2:btree][ret2:bool] (pf_build2, pf_append2 | t2, ret2) = 
-          build_rec (d+1, xs)  // todo how to get hs
-      in
-        if ret2 = false then let
-          prval pf_build = BUILDREC_right (pf_build1, pf_build2, pf_append1)
-        in
-          (pf_build, pf_append1 | t2, false)
-        end else let
-          prval (pf_append_hs_hts, pf_append_ys_tts) = lemma_append_associate (pf_append1, pf_append2)
-          prval pf_build = BUILDREC_both (pf_build1, pf_build2, pf_append1, pf_append2, pf_append_hs_hts)
-          val t = tree_node (t1, t2)
-        in
-          (pf_build, pf_append_ys_tts | t, true)
-        end
-      end
-    end
-  end
-end
 
 (* ****** ****** *)
 
