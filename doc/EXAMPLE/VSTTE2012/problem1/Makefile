@@ -1,0 +1,24 @@
+#
+# A simple Makefile
+#
+
+######
+
+ATSCC=$(ATSHOME)/bin/atscc
+ATSOPT=$(ATSHOME)/bin/atsopt
+
+######
+
+problem1: problem1.dats ; $(ATSCC) -o $@ $< && ./$@
+cleanall:: ; $(RMF) problem1
+
+######
+
+RMF=rm -f
+
+clean:: ; $(RMF) *~
+clean:: ; $(RMF) *_?ats.c *_?ats.o
+
+cleanall:: clean
+
+###### end of [Makefile] ######
