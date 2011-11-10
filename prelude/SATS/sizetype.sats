@@ -309,7 +309,7 @@ fun mul_int1_size1 {i:nat;j:int}
 overload * with mul_int1_size1
 
 fun mul_size1_int1 {i:int;j:nat}
-  (i: int i, j: size_t j):<> size_t (i*j) = "atspre_mul_size1_int1"
+  (i: size_t i, j: int j):<> size_t (i*j) = "atspre_mul_size1_int1"
 overload * with mul_size1_int1
 
 fun mul_size1_size1 {i,j:int}

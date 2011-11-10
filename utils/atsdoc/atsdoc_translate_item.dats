@@ -142,7 +142,7 @@ implement
 stroutptr_free (out) = let
   prval pfat = out.1; val p = out.2
   val xs = $Q.queue_uninitialize (!p)
-  val () = ptr_free (out.0, pfat | p)
+  val () = ptr_free {T0} (out.0, pfat | p)
 in
   xs
 end // end of [stroutptr_free]
