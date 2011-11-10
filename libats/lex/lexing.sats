@@ -135,6 +135,15 @@ absviewt@ype lexbuf_t (* implemented externally in lexing.dats*)
 
 (* ****** ****** *)
 
+(*
+** HX: this one is implemented in C
+*)
+fun lexbuf_curpos_fprint
+  (out: FILEref, lb: &lexbuf_t): void = "lexbuf_curpos_fprint"
+// end of [lexbuf_curpos_fprint]
+
+(* ****** ****** *)
+
 // implemented externally in [libats/lex/lexing.dats]
 fun lexbuf_fstpos_get (lb: &lexbuf_t): position_t = "lexbuf_fstpos_get"
 fun lexbuf_fstpos_set (lb: &lexbuf_t): void = "lexbuf_fstpos_set"
@@ -142,28 +151,38 @@ fun lexbuf_fstpos_set (lb: &lexbuf_t): void = "lexbuf_fstpos_set"
 fun lexbuf_lstpos_get (lb: &lexbuf_t): position_t = "lexbuf_lstpos_get"
 fun lexbuf_lstpos_set (lb: &lexbuf_t): void = "lexbuf_lstpos_set"
 
-fun lexbuf_curpos_get (lb: &lexbuf_t): position_t = "lexbuf_curpos_get"
+fun lexbuf_curpos_get
+  (lb: &lexbuf_t): position_t = "lexbuf_curpos_get"
 fun lexbuf_curpos_set (lb: &lexbuf_t): void = "lexbuf_curpos_set"
 
 fun lexbuf_size_get (lb: &lexbuf_t): Nat = "lexbuf_size_get"
 fun lexbuf_char_next (lb: &lexbuf_t): int = "lexbuf_char_next"
 fun lexbuf_is_eof (lb: &lexbuf_t): bool = "lexbuf_is_eof"
 
-fun lexing_engine_lexbuf
-  (lb: &lexbuf_t, transtbl: transition_table_t, acctbl: accept_table_t)
-  : int (*nstate*)
+fun lexing_engine_lexbuf (
+  lb: &lexbuf_t, transtbl: transition_table_t, acctbl: accept_table_t
+) : int (*nstate*)
   = "lexing_engine_lexbuf"
+// end of [fun]
 
 (* ****** ****** *)
-
+//
 // This function makes a lexbuf from an infile.
-fun lexbuf_make_infile {v:view}
-  (pf: v | f: infile_t v): [l:addr] (lexbuf_t @ l | ptr l) =
-  "lexbuf_make_infile"
+//
+fun lexbuf_make_infile
+  {v:view} (
+  pf: v | f: infile_t v
+) : [l:addr] (lexbuf_t @ l | ptr l)
+  = "lexbuf_make_infile"
+// end of [fun]
 
+(* ****** ****** *)
+//
 // This function frees a lexbuf.
-fun lexbuf_free {l:addr} (pf: lexbuf_t @ l | p: ptr l): void
-  = "lexbuf_free"
+//
+fun lexbuf_free
+  {l:addr} (pf: lexbuf_t @ l | p: ptr l): void = "lexbuf_free"
+// end of [lexbuf_free]
 
 (* ****** ****** *)
 
@@ -197,10 +216,11 @@ fun lexeme_string_lexbuf (lb: &lexbuf_t): string
 fun lexeme_string (): string = "lexeme_string"
 
 (* ****** ****** *)
-
+//
 // This function is for testing whether the lexbuf reaches the end.
+//
 fun lexing_is_eof (): bool = "lexing_is_eof"
-
+//
 (* ****** ****** *)
 
 fun lexing_fstpos_get (): position_t = "lexing_fstpos_get"

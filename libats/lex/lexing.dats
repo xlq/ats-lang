@@ -657,15 +657,6 @@ lexbuf_curpos_fprint (
   ) ; return ;
 } // end of [lexbuf_curpos_fprint]
 
-ats_void_type
-lexing_curpos_prerr () {
-  lexbuf *lxbf ;
-  lxbf = (lexbuf *)(lexing_lexbuf_get()) ;
-  lexbuf_curpos_fprint (stderr, lxbf) ;
-  lexing_lexbuf_set(lxbf) ;
-  return ;
-} // end of [lexing_curpos_prerr]
-
 /* ****** ****** */
 
 ats_ptr_type

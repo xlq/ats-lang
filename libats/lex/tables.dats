@@ -106,7 +106,7 @@ extern fun __accept_table_make_fun
   = "__accept_table_make_fun"
 
 implement
-__accept_table_make ntot =
+__accept_table_make (ntot) =
   lam nfin => lam s => __accept_table_make_fun (ntot, nfin, s)
 // end of [__accept_table_make ntot]
 
@@ -256,6 +256,9 @@ end // end of [transition_table_get]
 
 #define NBITS_PER_BYTE 8
 #define NUMBER_OF_CHARS ((1 << NBITS_PER_BYTE - 1) + 1)
+
+extern void *malloc (size_t bsz) ;
+extern void *calloc (size_t n, size_t tsz) ;
 
 ats_ptr_type
 __accept_table_make_fun (

@@ -239,6 +239,12 @@ overload prerr with prerr_size
 //
 (* ****** ****** *)
 
+praxi size_param_lemma
+  {i:int} (x: size_t i): [i >= 0] void
+// end of [size_param_lemma]
+
+(* ****** ****** *)
+
 castfn size1_of_lint1 {i:nat} (x: lint i): size_t i
 castfn size1_of_ulint1 {i:nat} (x: ulint i): size_t i
 castfn size1_of_size (sz: size_t):<> [i:nat] size_t i

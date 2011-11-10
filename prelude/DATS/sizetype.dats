@@ -45,6 +45,9 @@ implement
 divmod_size1_size1
   {m,n} (m, n, r) = let
 //
+  prval () = size_param_lemma (m)
+  prval () = size_param_lemma (n)
+//
   val (pfdiv_mn | q) = div2_size1_size1 (m, n)
   val (pfmul_qn | qn) = mul2_size1_size1 (q, n)
 //
