@@ -1,8 +1,8 @@
 (*
+**
 ** VSTTE 2012 Verification Competition
 ** Problem 3
 **
-** what we implement likely exceeds what is required:
 ** the following code gives you a verfied template-implementation
 ** of ring buffers.
 *)
