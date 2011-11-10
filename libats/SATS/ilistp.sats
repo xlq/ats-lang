@@ -84,15 +84,6 @@ prfun ilisteq_elim
 (* ****** ****** *)
 
 dataprop
-NTH (x0:int, ilist, int) =
-  | {xs:ilist} NTHbas (x0, ilist_cons (x0, xs), 0)
-  | {x:int} {xs:ilist} {n:nat}
-    NTHind (x0, ilist_cons (x, xs), n+1) of NTH (x0, xs, n)
-// end of [NTH]
-
-(* ****** ****** *)
-
-dataprop
 LENGTH (ilist, int) =
   | LENGTHnil (ilist_nil, 0) of ()
   | {x:int} {xs:ilist} {n:nat}
@@ -168,6 +159,39 @@ dataprop REVAPP (ilist, ilist, ilist) =
   | {x:int} {xs:ilist} {ys:ilist} {zs:ilist}
     REVAPPcons (ilist_cons (x, xs), ys, zs) of REVAPP (xs, ilist_cons (x, ys), zs)
 // end of [REVAPP]
+
+(* ****** ****** *)
+
+dataprop
+NTH (x0:int, ilist, int) =
+  | {xs:ilist} NTHbas (x0, ilist_cons (x0, xs), 0)
+  | {x:int} {xs:ilist} {n:nat}
+    NTHind (x0, ilist_cons (x, xs), n+1) of NTH (x0, xs, n)
+// end of [NTH]
+//
+// HX: reverse NTH
+//
+dataprop
+RNTH (x0:int, ilist, int) =
+  | {xs:ilist} {n:nat}
+    RNTHbas (x0, ilist_cons (x0, xs), n) of LENGTH (xs, n)
+  | {x:int} {xs:ilist} {n:nat}
+    RNTHind (x0, ilist_cons (x, xs), n) of RNTH (x0, xs, n)
+// end of [RNTH]
+
+(* ****** ****** *)
+
+prfun nth_rnth_lemma
+  {x:int} {xs:ilist}
+  {n:int} {i:nat | i < n}
+  (pf1: NTH (x, xs, i), pf2: LENGTH (xs, n)): RNTH (x, xs, n-1-i)
+// end of [nth_rnth_lemma]
+
+prfun rnth_nth_lemma
+  {x:int} {xs:ilist}
+  {n:int} {i:nat | i < n}
+  (pf1: RNTH (x, xs, i), pf2: LENGTH (xs, n)): NTH (x, xs, n-1-i)
+// end of [rnth_nth_lemma]
 
 (* ****** ****** *)
 

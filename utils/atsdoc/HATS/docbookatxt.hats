@@ -85,6 +85,7 @@ macdef abstract (x) = xmltagging ("abstract", ,(x))
 macdef code (x) = xmltagging ("code", ,(x))
 macdef command (x) = xmltagging ("command", ,(x))
 macdef emph (x) = xmltagging ("emphasis", ,(x))
+macdef filename (x) = xmltagging ("filename", ,(x))
 //
 macdef para (x) = xmltagging ("para", ,(x))
 macdef simplesect (x) = xmltagging ("simplesect", ,(x))
