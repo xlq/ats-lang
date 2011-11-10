@@ -2,9 +2,7 @@
 ** VSTTE 2012 Verification Competition
 ** Problem 3
 **
-** All is done.
-**
-** what we implement probably far exceeds what is required:
+** what we implement likely exceeds what is required:
 ** the following code gives you a verfied template-implementation
 ** of ring buffers.
 *)
@@ -492,9 +490,95 @@ end // end of [pop]
 end // end of [local]
 
 (* ****** ****** *)
+//
+// The following code is solely for testing
+// the functions implemented above; it is not
+// needed if you do not want to test.
+//
+(* ****** ****** *)
+
+staload _(*anon*) = "prelude/DATS/array.dats"
+staload _(*anon*) = "prelude/DATS/pointer.dats"
+
+(* ****** ****** *)
+
+local
+
+staload UN = "prelude/SATS/unsafe.sats"
+staload _(*anon*) = "prelude/DATS/unsafe.dats"
+
+in
+
+implement{a}
+arrseg_get
+  {l}{x}{xs}{f,n}{i}
+  (pf1, pf2 | p, f, i) = let
+  val fi = f+i
+in
+  $UN.ptrget (p + (size1_of_int1)fi*sizeof<a>)
+end // end of [arrseg_get]
+
+implement{a}
+arrseg0_set
+  {l}{x}{xs}{f}
+  (pf | p, f, x) = let
+  val () = $UN.ptrset (p + (size1_of_int1)f*sizeof<a>, x)
+  prval () = __assert (pf) where {
+    extern prfun __assert (
+      pf: !arrseg0_v (a, l, f, 1) >> arrseg_v (a, l, ilist_sing(x), f, 1)
+    ) : void
+  } // end of [prval]
+in
+  // nothing
+end // end of [arrseg0_set]
+
+end // end of [local]
+
+(* ****** ****** *)
 
 implement
 main () = () where {
+  typedef dbl = double
+  val rb = create<dbl> (2)
+//
+  extern castfn encode {a:t@ype} (x: a): [x:int] E (a,x)
+  extern castfn decode {a:t@ype} {x:int} (x: E (a, x)): a
+//
+  val x = encode {dbl} (1.0)
+  val y = encode {dbl} (2.0)
+  val z = encode {dbl} (3.0)
+//
+  prval pflen0 = LENGTHnil ()
+  prval pfenq0 = ENQUE () // x :: nil
+  val () = push (pflen0, pfenq0 | rb, x)
+//
+  prval pflen1 = LENGTHcons (LENGTHnil ())
+  prval pfenq1 = ENQUE ()
+  val () = push (pflen1, pfenq1 | rb, y)
+//
+  prval pflen2 = LENGTHcons (pflen1)
+  prval pfdeq2 = DEQUE_cons (DEQUE_nil ())
+  val h = pop (pflen2, pfdeq2 | rb)
+  prval () = sassert (h, x) // Yes, [h] and [x] are the same
+  val () = println! ("h = ", (decode)h)
+//
+  prval pflen1 = LENGTHcons (LENGTHnil ())
+  prval pfenq1 = ENQUE ()
+  val () = push (pflen1, pfenq1 | rb, z)
+//
+  prval pflen2 = LENGTHcons (pflen1)
+  prval pfdeq2 = DEQUE_cons (DEQUE_nil ())
+  val h = pop (pflen2, pfdeq2 | rb)
+  prval () = sassert (h, y) // Yes, [h] and [y] are the same
+  val () = println! ("h = ", (decode)h)
+//
+  prval pflen1 = LENGTHcons (LENGTHnil ())
+  prval pfdeq1 = DEQUE_nil ()
+  val h = pop (pflen1, pfdeq1 | rb)
+  prval () = sassert (h, z) // Yes, [h] and [z] are the same
+  val () = println! ("h = ", (decode)h)
+//
+  val () = rbfree (rb)
 } // end of [main]
 
 (* ****** ****** *)
