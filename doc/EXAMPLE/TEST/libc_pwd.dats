@@ -10,7 +10,7 @@
 //
 (* ****** ****** *)
 
-staload UNSAFE = "prelude/SATS/unsafe.sats"
+staload UN = "prelude/SATS/unsafe.sats"
 
 (* ****** ****** *)
 
@@ -23,23 +23,23 @@ staload "libc/SATS/unistd_sysconf.sats" // for [_SC_GETPW_R_SIZE_MAX]
 fun show_passwd (pw: &passwd): void = let
 //
   val (fpf | p) = passwd_get_pw_name (pw)
-  val () = printf ("NAME = %s\n", @($UNSAFE.castvwtp1{string}(p)))
+  val () = printf ("NAME = %s\n", @($UN.castvwtp1{string}(p)))
   prval () = fpf (p)
 //
   val (fpf | p) = passwd_get_pw_passwd (pw)
-  val () = printf ("PASSWD = %s\n", @($UNSAFE.castvwtp1{string}(p)))
+  val () = printf ("PASSWD = %s\n", @($UN.castvwtp1{string}(p)))
   prval () = fpf (p)
 //
   val (fpf | p) = passwd_get_pw_gecos (pw)
-  val () = printf ("RNAME = %s\n", @($UNSAFE.castvwtp1{string}(p)))
+  val () = printf ("RNAME = %s\n", @($UN.castvwtp1{string}(p)))
   prval () = fpf (p)
 //
   val (fpf | p) = passwd_get_pw_dir (pw)
-  val () = printf ("HOME = %s\n", @($UNSAFE.castvwtp1{string}(p)))
+  val () = printf ("HOME = %s\n", @($UN.castvwtp1{string}(p)))
   prval () = fpf (p)
 //
   val (fpf | p) = passwd_get_pw_shell (pw)
-  val () = printf ("SHELL = %s\n", @($UNSAFE.castvwtp1{string}(p)))
+  val () = printf ("SHELL = %s\n", @($UN.castvwtp1{string}(p)))
   prval () = fpf (p)
 //
 in
@@ -50,14 +50,21 @@ end // end of [show_passwd]
 
 implement
 main () = () where {
+//
   val (fpf_logname | logname) = getenv ("LOGNAME")
+//
+  val () = if
+    strptr_is_null (logname) then {
+    val () = fprintln! (stderr_ref, "[LOGNAME] is undefined!")
+    val () = exit (0) // HX: still considered normal exit
+  } // end of [val]
 //
 (*
 fun getpwnam (nam: !READ(string)):<!ref>
   [l:addr] (ptroutopt (passwd, l) | ptr l) = "#atslib_getpwnam"
 // end of [getpwnam]
 *)
-  val (pfopt | p_pw) = getpwnam ($UNSAFE.castvwtp1{string}(logname))
+  val (pfopt | p_pw) = getpwnam ($UN.castvwtp1{string}(logname))
   val () = assertloc (p_pw > null)
   prval Some_v @(pf_pw, fpf_pw) = pfopt
   val () = show_passwd (!p_pw)
@@ -79,7 +86,7 @@ fun getpwnam_r {n:nat} (
   var !p_buf with pf_buf = @[byte][n]()
   var pwbuf: passwd
   var ppwbuf: ptr
-  val err = getpwnam_r ($UNSAFE.castvwtp1{string}(logname), pwbuf, !p_buf, n, ppwbuf)
+  val err = getpwnam_r ($UN.castvwtp1{string}(logname), pwbuf, !p_buf, n, ppwbuf)
   val () = assertloc (err = 0)
   val () = assertloc (ppwbuf = &pwbuf)
   prval () = opt_unsome {passwd} (pwbuf)
