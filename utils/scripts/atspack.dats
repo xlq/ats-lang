@@ -718,6 +718,7 @@ fn Anairiats_doc_dir_copy () = let
     val () = cp "libats_vector.dats"
 //
     val () = cp "libats_ngc_slist.dats"
+    val () = cp "libats_ngc_dlist.dats"
 //
     val () = cp "libats_smlbas_array.dats"
     val () = cp "libats_smlbas_array2.dats"
