@@ -204,7 +204,7 @@ fun array_of_CSIlst
   {n:nat} (
   lst: CSIlst n, n: int n
 ) :<> [l:addr] (
-  free_gc_v (CSI, n, l), array_v (CSI, n, l) | ptr l
+  free_gc_v (CSI?, n, l), array_v (CSI, n, l) | ptr l
 ) = "array_of_CSIlst"
 
 %{
@@ -844,12 +844,12 @@ val () = stlst := statelst_cons (root_fstpos, stlst)
 val dfa_transtbl = transition_all
   (pf_csi, pf_pos | A_csi, A_pos, npos, nst_r, sts, stlst, translst_nil ())
 
-val () = array_ptr_free {intset} (pf_pos_gc, pf_pos | A_pos)
+val () = array_ptr_free {intset?} (pf_pos_gc, pf_pos | A_pos)
 
 val dfa_acctbl = accept_all (pf_csi | A_csi, npos, sts: states_t)
 val dfa_nfinal = acclst_length dfa_acctbl (* number of final states *)
 
-val () = array_ptr_free {CSI} (pf_csi_gc, pf_csi | A_csi)
+val () = array_ptr_free {CSI?} (pf_csi_gc, pf_csi | A_csi)
 
 val dfa_nstate = nst_r - 1
 
