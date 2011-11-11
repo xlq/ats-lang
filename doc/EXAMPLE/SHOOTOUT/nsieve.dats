@@ -49,7 +49,7 @@ fn nsieve {m:nat} (m: int m): void = let
 
   val count = loop2 (pf | 2, 0)
 
-  val () = array_ptr_free {bool} (pf_gc, pf | A)
+  val () = array_ptr_free {bool?} (pf_gc, pf | A)
 in
   printf ("Primes up to %8i %8i\n", @(m, count))
 end // end of [nsieve]

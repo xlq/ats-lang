@@ -327,7 +327,7 @@ rbfree {a} (rb) = let
   val p = rb.ptr
   prval pfat = rb.atview
   prval pf_arr = array_v_of_ringbuf_v (rb.bufview)
-  val () = array_ptr_free {a} (rb.gcview_arr, pf_arr | p->data)
+  val () = array_ptr_free {a?} (rb.gcview_arr, pf_arr | p->data)
   val () = ptr_free {ringbuf0_struct} (rb.gcview, pfat | p)
 in
   // nothing

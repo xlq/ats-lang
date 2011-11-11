@@ -467,10 +467,10 @@ fun is_mersenne_prime (exponent: intGte 2): bool = let
   val () = print_newline ()
   val ans = check_zero_signal (pf_r | R, n)
 in
-  array_ptr_free {real} (pf_gc_r, pf_r | R);
-  array_ptr_free {imag} (pf_gc_i, pf_i | I);
-  array_ptr_free {real} (pf_gc_b, pf_b | B);
-  array_ptr_free {real} (pf_gc_w, pf_w | W);
+  array_ptr_free {real?} (pf_gc_r, pf_r | R);
+  array_ptr_free {imag?} (pf_gc_i, pf_i | I);
+  array_ptr_free {real?} (pf_gc_b, pf_b | B);
+  array_ptr_free {real?} (pf_gc_w, pf_w | W);
   ans
 end // end of [is_mersenne_prime]
 

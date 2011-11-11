@@ -174,7 +174,7 @@ fn nsieve_mt {lws:agz}
       end
   } // end of [where]
 //
-  val () = array_ptr_free {two} (pf_gc, pf | p_A)
+  val () = array_ptr_free {two?} (pf_gc, pf | p_A)
 in
   printf ("The number of primes < %8i is %8i\n", @(m, count))
 end // end of [nsieve_mt]

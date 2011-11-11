@@ -119,7 +119,7 @@ fun EXPthree {G:env} {t1,t2,t3:ty} (): EXP (t1 :: t2 :: t3 :: G, t3) =
   EXPvar (VARshi (VARshi VARone))
 
 // lam x. x
-val ans1 = cc0 (EXPlam {nil} {int,int} (EXPone ()))
+val ans1 = cc0 (EXPlam {nil} {int(),int()} (EXPone ()))
 
 // lam x. lam y. y (x)
 val ans2 = cc0 (EXPlam (EXPlam (EXPapp (EXPone (), EXPtwo ()))))

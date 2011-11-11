@@ -157,7 +157,7 @@ in
 //
   print (clear);
   loop (pf_board, view@ nsol | 0);
-  array_ptr_free {int} (pf_gc, pf_board | board);
+  array_ptr_free {int?} (pf_gc, pf_board | board);
   repeat (len, lam () => print cuu)
 //
 end // end of [play]

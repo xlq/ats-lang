@@ -191,7 +191,7 @@ main (argc, argv) = let
   val () = workshop_wait_blocked_all (ws)
   val () = if (n <= 100) then
     (array_ptr_print (pfarr | A, nsz); print_newline ())
-  val () = array_ptr_free {T} (pfgc, pfarr | A)
+  val () = array_ptr_free {T?} (pfgc, pfarr | A)
 //
   var i: Nat = 0
   val () = while (i < nworker) let

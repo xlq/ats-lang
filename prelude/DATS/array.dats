@@ -129,7 +129,7 @@ array_ptr_allocfree (asz) = let
   val [l:addr] (pfgc, pfarr | p_arr) = array_ptr_alloc<a> (asz)
 in #[l | (
   pfarr
-| p_arr, lam (pfarr | p_arr) =<lin> array_ptr_free {a} (pfgc, pfarr | p_arr)
+| p_arr, lam (pfarr | p_arr) =<lin> array_ptr_free {a?} (pfgc, pfarr | p_arr)
 ) ] end // end of [array_ptr_allocfree]
 
 (* ****** ****** *)
@@ -139,7 +139,7 @@ array_ptr_free_fun
   (pfgc, pfarr | p, asz, f) = let
   val () = array_ptr_clear_fun<a> (!p, asz, f)
 in
-  array_ptr_free {a} (pfgc, pfarr | p)
+  array_ptr_free {a?} (pfgc, pfarr | p)
 end // end of [array_ptr_free_fun]
 
 (* ****** ****** *)

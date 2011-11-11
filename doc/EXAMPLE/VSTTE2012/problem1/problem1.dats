@@ -264,7 +264,7 @@ main () = () where {
   val () = array_ptr_iforeach_fun<byte> (!p, pr, N)
   val () = print_newline ()
 //
-  val () = array_ptr_free {byte} (pfgc, pfarr | p)
+  val () = array_ptr_free {byte?} (pfgc, pfarr | p)
 } // end of [main]
 
 (* ****** ****** *)

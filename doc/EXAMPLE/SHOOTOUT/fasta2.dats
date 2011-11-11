@@ -212,10 +212,10 @@ val () = fprint (stdout_ref, ">ONE Homo sapiens alu\n")
 val () = repeat_fasta (stdout_ref, alu, i2sz (2 * n))
 val () = fprint (stdout_ref, ">TWO IUB ambiguity codes\n")
 val () = random_fasta (stdout_ref, !p_iub, iub_sz, i2sz (3 * n))
-val () = array_ptr_free {amino} (pf_gc, pf_iub | p_iub)
+val () = array_ptr_free {amino?} (pf_gc, pf_iub | p_iub)
 val () = fprint (stdout_ref, ">THREE Homo sapiens frequency\n")
 val () = random_fasta (stdout_ref, !p_homo, homo_sz, i2sz (n * 5))
-val () = array_ptr_free {amino} (pf_homo_gc, pf_homo | p_homo)
+val () = array_ptr_free {amino?} (pf_homo_gc, pf_homo | p_homo)
 
 } // end of [main]
 

@@ -137,7 +137,7 @@ implement{a}
 list_vt_of_arraysize (arrsz) = let
   val (pf_gc, pf_arr | p_arr, asz) = arrsz
   val res = list_vt_make_array (!p_arr, asz)
-  val () = array_ptr_free {a} (pf_gc, pf_arr | p_arr)
+  val () = array_ptr_free {a?} (pf_gc, pf_arr | p_arr)
 in
   res
 end // end of [list_vt_of_arraysize]
@@ -626,7 +626,7 @@ list_vt_quicksort {n} (xs, cmp) = let
         end // end of [list_vt_nil]
     // end of [loop]
   } // end of [val]
-  val () = array_ptr_free {a1} (pf_gc, pf_arr | p_arr)
+  val () = array_ptr_free {a1?} (pf_gc, pf_arr | p_arr)
   val _ = __cast (xs) where {
     extern castfn __cast (xs: !list_vt (a1, n) >> list_vt (a, n)):<> ptr
   } // end of val]

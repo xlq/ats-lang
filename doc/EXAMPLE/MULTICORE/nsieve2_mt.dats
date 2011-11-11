@@ -164,7 +164,7 @@ fn nsieve_mt {lws:agz}
 //
   val msz = size1_of_int1 (m)
   val [la:addr] (pf_gc, pf | p_A) =
-    array_ptr_alloc_tsz {two} (msz, sizeof<two>)
+    array_ptr_alloc_tsz {two?} (msz, sizeof<two>)
   var x0 = tt
   val () = array_ptr_initialize_elt_tsz {two} (!p_A, msz, x0, sizeof<two>)
   val m1 = sqrt_int (m)
@@ -228,7 +228,7 @@ fn nsieve_mt {lws:agz}
     // end of [loop]
   } // end of [where]
 //
-  val () = array_ptr_free {two} (pf_gc, pf | p_A)
+  val () = array_ptr_free {two?} (pf_gc, pf | p_A)
 in
   printf ("The number of primes < %8i is %8i\n", @(m, count))
 end // end of [nsieve_mt]

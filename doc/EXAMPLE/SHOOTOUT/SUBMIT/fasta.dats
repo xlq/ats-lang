@@ -245,10 +245,10 @@ fprint (file_mode_lte_w_w | !stdout, ">ONE Homo sapiens alu\n") ;
 repeat_fasta (!stdout, alu, n * 2) ;
 fprint (file_mode_lte_w_w | !stdout, ">TWO IUB ambiguity codes\n");
 random_fasta (pf_iub | !stdout, iub, iub_sz, n * 3) ;
-array_ptr_free {amino} (pf_gc, pf_iub | iub) ;
+array_ptr_free {amino?} (pf_gc, pf_iub | iub) ;
 fprint (file_mode_lte_w_w | !stdout, ">THREE Homo sapiens frequency\n");
 random_fasta (pf_homo | !stdout, homo, homo_sz, n * 5) ;
-array_ptr_free {amino} (pf_homo_gc, pf_homo | homo) ;
+array_ptr_free {amino?} (pf_homo_gc, pf_homo | homo) ;
 stdout_view_set (pf_stdout | (*none*))
 
 end

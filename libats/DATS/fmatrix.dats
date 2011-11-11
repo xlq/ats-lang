@@ -78,7 +78,7 @@ fmatrix_ptr_free {a}
   (pfgc, pf_mn, pf_fmat | p_fmat) = let
   prval (pf2_mn, pfarr) = array_v_of_fmatrix_v (pf_fmat)
   prval () = mul_isfun (pf2_mn, pf_mn)
-  val () = array_ptr_free {a} (pfgc, pfarr | p_fmat)
+  val () = array_ptr_free {a?} (pfgc, pfarr | p_fmat)
 in
   // nothing
 end // end of [fmatrix_ptr_free]
@@ -100,7 +100,7 @@ in #[l | (
     prval (pf2_mn, pfarr) = array_v_of_fmatrix_v (pf_fmat)
     prval () = mul_isfun (pf2_mn, pf_mn)
   in
-    array_ptr_free {a} (pfgc, pfarr | p_arr)
+    array_ptr_free {a?} (pfgc, pfarr | p_arr)
   end
 ) ] end // end of [fmatrix_ptr_allocfree]
 

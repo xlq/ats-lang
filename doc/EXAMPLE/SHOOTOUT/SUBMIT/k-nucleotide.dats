@@ -46,7 +46,9 @@ extern fun symtbl_dna (tbl: symtbl_t): dna_t
 
 (* ****** ****** *)
 
-abst@ype tblent_t = $extype "tblent_t"
+abst@ype
+tblent_t = $extype "tblent_t"
+typedef tblent = tblent_t
 
 viewtypedef
 symtbl (
@@ -54,8 +56,8 @@ symtbl (
 ) = @{
   dna= dna_t
 , ptr= ptr l
-, view_arr= @[tblent_t][sz] @ l
-, view_arr_gc= free_gc_v (tblent_t?, sz, l)
+, view_arr= @[tblent][sz] @ l
+, view_arr_gc= free_gc_v (tblent?, sz, l)
 , size= int sz
 , nitm= int n
 } // end of [symtbl]
@@ -149,7 +151,7 @@ extern
 fun tblent_array_make
   {sz: nat} (sz: int sz)
   :<> [l:addr] (
-  free_gc_v (tblent_t?, sz, l), array_v (tblent_t, sz, l) | ptr l
+  free_gc_v (tblent?, sz, l), array_v (tblent, sz, l) | ptr l
 ) = "tblent_array_make"
 
 %{^
@@ -190,7 +192,7 @@ end // symtbl_make
 (* ****** ****** *)
 
 extern fun tblent_array_clear {sz:nat} {l:addr}
-  (pf: !array_v (tblent_t, sz, l) | p: ptr l, sz: int sz):<> void
+  (pf: !array_v (tblent, sz, l) | p: ptr l, sz: int sz):<> void
   = "tblent_array_clear"
 
 %{
@@ -219,7 +221,7 @@ end // end of [symtbl_clear]
 // HX: linear probing
 //
 extern fun symtbl_search_probe {sz,i:nat | i < sz} {l:addr}
-  (pf: !array_v(tblent_t, sz, l) |
+  (pf: !array_v(tblent, sz, l) |
   dna: dna_t, p: ptr l, sz: int sz, name: string, i: int i):<> int
   = "symtbl_search_probe"
 
@@ -265,7 +267,7 @@ end
 (* ****** ****** *)
 
 extern fun symtbl_insert_probe {sz,i:nat | i < sz} {l:addr}
-  (pf: !array_v (tblent_t, sz, l) |
+  (pf: !array_v (tblent, sz, l) |
    dna: dna_t, p: ptr l, sz: int sz, sym: symbol_t, cnt: int, i: int i):<> bool
   = "symtbl_insert_probe"
 
@@ -308,8 +310,8 @@ ats_bool_type symtbl_insert_probe
 (* ****** ****** *)
 
 extern fun symtbl_resize_move {sz:nat} {l,l_new:addr}
-  (pf: !array_v(tblent_t, sz, l),
-   pf_new: !array_v(tblent_t, sz+sz, l_new) |
+  (pf: !array_v(tblent, sz, l),
+   pf_new: !array_v(tblent, sz+sz, l_new) |
    dna: dna_t, p: ptr l, p_new: ptr l_new, sz: int sz):<> void
   = "symtbl_resize_move"
 
@@ -349,7 +351,7 @@ val (pf_arr_gc_new, pf_arr_new | p_arr_new) = tblent_array_make (sz + sz)
 in
 
 symtbl_resize_move (pf_arr, pf_arr_new | p_tbl->dna, p_arr, p_arr_new, sz);
-array_ptr_free {tblent_t} (pf_arr_gc, pf_arr | p_arr);
+array_ptr_free {tblent?} (pf_arr_gc, pf_arr | p_arr);
 p_tbl->ptr := p_arr_new;
 p_tbl->view_arr := pf_arr_new;
 p_tbl->view_arr_gc := pf_arr_gc_new;
@@ -382,7 +384,7 @@ end // end of [symtbl_insert]
 (* ****** ****** *)
 
 extern fun tblent_array_fold {a:viewt@ype} {sz: nat} {l:addr}
-  (pf: !array_v (tblent_t, sz, l) |
+  (pf: !array_v (tblent, sz, l) |
    p: ptr l, sz: int sz, f: !(symbol_t, int, &a) -<cloptr1> void, res: &a)
   :<> void
   = "tblent_array_fold"

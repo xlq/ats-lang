@@ -216,8 +216,8 @@ array_ptr_allocfree
 ** HX: implemented in C
 *)
 fun array_ptr_free
-  {a:viewt@ype} {n:int} {l:addr} (
-  pfgc: free_gc_v (a?, n, l), pfarr: array_v (a?, n, l) | p: ptr l
+  {a:t@ype} {n:int} {l:addr} (
+  pfgc: free_gc_v (a, n, l), pfarr: array_v (a, n, l) | p: ptr l
 ) :<> void = "atspre_array_ptr_free"
 
 fun{a:viewt@ype}
