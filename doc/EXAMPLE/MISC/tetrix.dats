@@ -761,7 +761,7 @@ fn tetrix (): void = let
     val (pf_gc, pf | p) = gen_shape_obj ()
   in
     shapeObj_falling !p;
-    ptr_free {shapeObj0} (pf_gc, pf | p) ;
+    ptr_free {shapeObj0?} (pf_gc, pf | p) ;
     loop ()
   end // end of [loop]
 //

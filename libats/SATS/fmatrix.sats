@@ -101,11 +101,11 @@ fmatrix_ptr_alloc
 (* ****** ****** *)
 
 fun fmatrix_ptr_free
-  {a:viewt@ype}
+  {a:t@ype}
   {m,n,mn:nat} {l:addr} (
-  pf_gc: free_gc_v (a?, mn, l)
+  pf_gc: free_gc_v (a, mn, l)
 , pf_mn: MUL (m, n, mn)
-, pf_fmat: fmatrix_v (a?, m, n, l)
+, pf_fmat: fmatrix_v (a, m, n, l)
 | p: ptr l
 ) :<> void // end of [fmatrix_ptr_free]
 

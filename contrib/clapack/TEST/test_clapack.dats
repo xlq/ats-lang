@@ -105,7 +105,7 @@ staload _(*anonymous*) = "contrib/cblas/DATS/cblas_extra.dats"
 fun{t:t@ype}
 randgen_arr {n:nat} .<>. (n: int n)
   :<!ref> [l:addr] (
-    free_gc_v (t, n, l), array_v (t, n, l)
+    free_gc_v (t?, n, l), array_v (t, n, l)
   | ptr l
   ) = let
   val tsz = sizeof<t>
@@ -132,7 +132,7 @@ fun{t:t@ype}
 randgen_fmat
   {m,n:nat} (m: int m, n: int n)
   : [mn:int] [l:addr] (
-    free_gc_v (t, mn, l)
+    free_gc_v (t?, mn, l)
   , MUL (m, n, mn)
   , fmatrix_v (t, m, n, l)
   | ptr l
@@ -169,7 +169,7 @@ fun{t:t@ype}
 randgen_gemat
   {m,n:nat} (m: int m, n: int n)
   : [mn:int] [l:addr] (
-    free_gc_v (t, mn, l)
+    free_gc_v (t?, mn, l)
   , MUL (m, n, mn)
   , GEMAT_v (t, m, n, col, m, l)
   | ptr l

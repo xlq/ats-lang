@@ -110,7 +110,7 @@ in
     prval unit_v () = pfu
 //    
     val () = array_ptr_clear_fun<direntptr_gc> (
-      !p_arr, nent_sz, lam p =<fun> ptr_free {dirent} (p.0, p.1 | p.2)
+      !p_arr, nent_sz, lam p =<fun> ptr_free {dirent?} (p.0, p.1 | p.2)
     ) // end of [val]
 //
   in
@@ -139,7 +139,7 @@ in
         prval () = p.1 := pfent
         val x1 = strptr_dup (x)
         prval () = fpf_x (x)
-        val () = ptr_free {dirent} (p.0, p.1 | p.2)
+        val () = ptr_free {dirent?} (p.0, p.1 | p.2)
       } // end of [fun f]
     } // end of [nams]
     val (n, nams) = list_vt_of_stream_vt<strptr1> (nams)

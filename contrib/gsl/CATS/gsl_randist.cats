@@ -25,8 +25,8 @@
 
 /* ****** ****** */
 
-#define atsctrb gsl_ran_exponential gsl_ran_exponential
-#define atsctrb gsl_ran_exponential_pdf gsl_ran_exponential_pdf
+#define atsctrb_gsl_ran_exponential gsl_ran_exponential
+#define atsctrb_gsl_ran_exponential_pdf gsl_ran_exponential_pdf
 
 /* ****** ****** */
 

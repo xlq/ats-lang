@@ -334,7 +334,7 @@ in
     prval slseg_v_cons (pf1_gc, pf1_at, pf1_sl) = pf_sl
     prval () = q.pf := slseg1_v_encode1 {a} (pf1_sl, pf_gc, pf_at)
     val () = q.ptr1 := p1->1
-    val x = p1->0; val () = ptr_free {VT} (pf1_gc, pf1_at | p1)
+    val x = p1->0; val () = ptr_free {VT?} (pf1_gc, pf1_at | p1)
   in
     x
   end else let
@@ -344,7 +344,7 @@ in
     prval slseg_v_nil () = pf_sl
     prval () = q.pf := slseg1_v_encode0 {a} {null} ()
     val () = q.ptr1 := null and () = q.ptr2 := null
-    val x = p2->0; val () = ptr_free {VT} (pf_gc, pf_at | p2)
+    val x = p2->0; val () = ptr_free {VT?} (pf_gc, pf_at | p2)
   in
     x
   end // end of [if]

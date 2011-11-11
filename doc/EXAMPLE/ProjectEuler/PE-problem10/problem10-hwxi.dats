@@ -39,7 +39,7 @@ fn sumprimes {m:nat} (m: int m): uint64 = let
 //
   val sum = loop2 (pf | 2, (uint64_of)0)
 //
-  val () = array_ptr_free {bool} (pf_gc, pf | A)
+  val () = array_ptr_free {bool?} (pf_gc, pf | A)
 in
   sum
 end // end of [sumprimes]

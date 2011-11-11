@@ -132,7 +132,7 @@ randgen_arr
   {n:nat} .<>.
   (n: int n)
   :<!ref> [l:addr] (
-    free_gc_v (a, n, l), array_v (a, n, l)
+    free_gc_v (a?, n, l), array_v (a, n, l)
   | ptr l
   ) = let
   val tsz = sizeof<a>
@@ -166,7 +166,7 @@ fun{a:t@ype}
 randgen_fmat
   {m,n:nat} (m: int m, n: int n)
   : [mn:int] [l:addr] (
-    free_gc_v (a, mn, l)
+    free_gc_v (a?, mn, l)
   , MUL (m, n, mn)
   , fmatrix_v (a, m, n, l)
   | ptr l

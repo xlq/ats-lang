@@ -100,7 +100,7 @@ end // end of [intinf_make_double]
 
 implement
 intinfptr_free @(pf_gc, pf_at | p) =
-  (mpz_clear (!p); ptr_free {intinf0} (pf_gc, pf_at | p))
+  (mpz_clear (!p); ptr_free {intinf0?} (pf_gc, pf_at | p))
 // end of [intinfptr_free]
 
 (* ****** ****** *)

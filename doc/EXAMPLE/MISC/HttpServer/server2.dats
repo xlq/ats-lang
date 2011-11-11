@@ -658,7 +658,7 @@ in
     val () = closedir_exn (pf_dir | p_dir)
     val () = directory_send_loop (pf_conn, pfarr | fd, dirname, p_arr, asz)
   in
-    array_ptr_free {Strlin} (pfgc, pfarr | p_arr)
+    array_ptr_free {Strlin?} (pfgc, pfarr | p_arr)
   end // end of [if]
 end (* end of [directory_send] *)
 

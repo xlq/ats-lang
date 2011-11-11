@@ -553,7 +553,7 @@ GEMAT_row_ptr_allocfree {m,n} (m, n) = let
     pf_gmat: GEMAT (a?, m, n, row, n) @ l | p: ptr l
   ) : void =<fun,lin> let
     prval TRANORDrowcol () = GEMAT_v_trans (pf_gmat) in
-    fmatrix_ptr_free {a} (pf_gc, pf_nm, fpf_fmat {a?} (pf_gmat) | p)
+    fmatrix_ptr_free {a?} (pf_gc, pf_nm, fpf_fmat {a?} (pf_gmat) | p)
   end // end of [val]
 in
   (pf_gmat | p, free)
@@ -570,7 +570,7 @@ GEMAT_col_ptr_allocfree {m,n} (m, n) = let
   val free = lam (
     pf_gmat: GEMAT (a?, m, n, col, m) @ l | p: ptr l
   ) : void =<fun,lin>
-    fmatrix_ptr_free {a} (pf_gc, pf_mn, fpf_fmat {a?} (pf_gmat) | p)
+    fmatrix_ptr_free {a?} (pf_gc, pf_mn, fpf_fmat {a?} (pf_gmat) | p)
   // end of [val]
 in
   (pf_gmat | p, free)
