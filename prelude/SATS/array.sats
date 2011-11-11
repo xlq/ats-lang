@@ -64,9 +64,9 @@ praxi bytes_v_of_array_v
 (* ****** ****** *)
 
 praxi free_gc_trans
-  {a:viewt@ype}
+  {a:t@ype}
   {n:int} {l:addr} (
-  pfgc: free_gc_v (a?, n, l)
+  pfgc: free_gc_v (a, n, l)
 ) : [bsz:int] (
   MUL (n, sizeof(a), bsz), freebyte_gc_v (bsz, l)
 ) // end of [free_gc_trans]
@@ -220,7 +220,7 @@ fun array_ptr_free
   pfgc: free_gc_v (a?, n, l), pfarr: array_v (a?, n, l) | p: ptr l
 ) :<> void = "atspre_array_ptr_free"
 
-fun{a:t@ype}
+fun{a:viewt@ype}
 array_ptr_free_fun
   {n:int} {l:addr} (
   pfgc: free_gc_v (a?, n, l)

@@ -1,5 +1,12 @@
 ########################################################################
 
+ats-lang-anairiats-0.2.7:
+
+1. free_gc_viewt0ype_addr_view -> free_gc_t0ype_addr_view
+   free_gc_viewt0ype_int_addr_view -> free_gc_t0ype_int_addr_view
+
+########################################################################
+
 ats-lang-anairiats-0.2.6:
 
 1. Adding contrib/JNI for interface ATS and Java.

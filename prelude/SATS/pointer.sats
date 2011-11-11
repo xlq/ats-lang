@@ -224,10 +224,10 @@ overload tostring with tostring_ptr
 
 (* ****** ****** *)
 
-praxi free_gc_viewt0ype_addr_trans
-  {a1,a2:viewt@ype | sizeof a1 == sizeof a2} {l:addr}
+praxi free_gc_t0ype_addr_trans
+  {a1,a2:t@ype | sizeof a1 == sizeof a2} {l:addr}
   (pf_gc: !free_gc_v (a1, l) >> free_gc_v (a2, l)): void
-// end of [free_gc_viewt0ype_addr_trans]
+// end of [free_gc_t0ype_addr_trans]
 
 (* ****** ****** *)
 

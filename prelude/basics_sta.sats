@@ -688,22 +688,22 @@ free_ngc_addr_view (l:addr)
 stadef free_ngc_v = free_ngc_addr_view
 
 absview
-free_gc_viewt0ype_addr_view
-  (a:viewt@ype+, l:addr)
-stadef free_gc_v = free_gc_viewt0ype_addr_view
+free_gc_t0ype_addr_view
+  (a:t@ype+, l:addr)
+stadef free_gc_v = free_gc_t0ype_addr_view
 absview
-free_ngc_viewt0ype_addr_view
-  (a:viewt@ype+, l:addr)
-stadef free_ngc_v = free_ngc_viewt0ype_addr_view
+free_ngc_t0ype_addr_view
+  (a:t@ype+, l:addr)
+stadef free_ngc_v = free_ngc_t0ype_addr_view
 
 absview
-free_gc_viewt0ype_int_addr_view
-  (a:viewt@ype+, n:int, l:addr)
-stadef free_gc_v = free_gc_viewt0ype_int_addr_view
+free_gc_t0ype_int_addr_view
+  (a:t@ype+, n:int, l:addr)
+stadef free_gc_v = free_gc_t0ype_int_addr_view
 absview
-free_ngc_viewt0ype_int_addr_view
-  (a:viewt@ype+, n:int, l: addr)
-stadef free_ngc_v = free_ngc_viewt0ype_int_addr_view
+free_ngc_t0ype_int_addr_view
+  (a:t@ype+, n:int, l: addr)
+stadef free_ngc_v = free_ngc_t0ype_int_addr_view
 
 absview
 freebyte_gc_int_addr_view (n:int, l:addr)
@@ -717,7 +717,7 @@ stadef freebyte_ngc_v = freebyte_ngc_int_addr_view
 // HX:
 // values of viewtype [junkptr] need to be freed by calling [free];
 // note that the viewtype [junkptr] may be just defined as follows:
-// [a:viewt@ype; l:addr] (free_gc_v (a?, 1, l), a? @ l | ptr l)
+// [a:t@ype; l:addr] (free_gc_v (a, 1, l), a @ l | ptr l)
 //
 absviewtype junkptr_viewtype // unnamed
 stadef junkptr = junkptr_viewtype // shorthand
