@@ -127,7 +127,7 @@ infile_make_string
   fn _free (
     pf: V | (*none*)
   ) :<cloref1> void = begin
-     ptr_free {T} (pf.0, pf.1 | p)
+     ptr_free {T?} (pf.0, pf.1 | p)
   end // end of [_free]
 //
   fn _getc (
@@ -243,7 +243,6 @@ lexbuf_fstpos_set (lxbf); aux (lxbf, irule, 1)
 //
 end // end of [lexing_engine_lexbuf]
 
-
 implement
 lexing_engine (transtbl, acctbl) = let
   val (pf_lexbuf | lexbuf) = lexing_lexbuf_get ()
@@ -274,17 +273,24 @@ in
   lexing_lexbuf_set (pf_lexbuf | lexbuf)
 end // end of [lexeme_set]
 
+(* ****** ****** *)
+
 implement
-lexeme_string () = let
+lexeme_strptr () = let
   val (
     pf_lexbuf | lexbuf
   ) = lexing_lexbuf_get ()
-  val s = lexeme_string_lexbuf (!lexbuf)
+  val res = lexeme_strptr_lexbuf (!lexbuf)
+  val () = lexing_lexbuf_set (pf_lexbuf | lexbuf); 
 in
-  lexing_lexbuf_set (pf_lexbuf | lexbuf); s
+  res
+end // end of [lexeme_strptr]
+implement
+lexeme_string () = let
+  val res = lexeme_strptr () in string_of_strptr (res)
 end // end of [lexeme_string]
 
-//
+(* ****** ****** *)
 
 implement
 lexing_is_eof () = let
@@ -779,7 +785,7 @@ lexeme_set_lexbuf (
 /* ****** ****** */
 
 ats_ptr_type
-lexeme_string_lexbuf
+lexeme_strptr_lexbuf
   (ats_ptr_type lxbf0) {
   int len, fstpos, lstpos ;
   char *src, *dst0, *dst ;
@@ -810,7 +816,7 @@ lexeme_string_lexbuf
   *dst = '\000' ;
 
   return dst0 ;
-} // end of [lexeme_string_lexbuf]
+} // end of [lexeme_strptr_lexbuf]
 
 /* ****** ****** */
 

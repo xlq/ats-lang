@@ -210,11 +210,12 @@ fun lexeme_get (index: int): char = "lexeme_get"
 fun lexeme_set_lexbuf (lb: &lexbuf_t, index: int, c: char): void
   = "lexeme_set_lexbuf"
 fun lexeme_set (index: int, c: char): void = "lexeme_set"
-
-fun lexeme_string_lexbuf (lb: &lexbuf_t): string
-  = "lexeme_string_lexbuf"
+//
+fun lexeme_strptr_lexbuf
+  (lb: &lexbuf_t): strptr1 = "lexeme_strptr_lexbuf"
+fun lexeme_strptr (): strptr1
 fun lexeme_string (): string = "lexeme_string"
-
+//
 (* ****** ****** *)
 //
 // This function is for testing whether the lexbuf reaches the end.
