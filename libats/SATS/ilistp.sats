@@ -84,6 +84,11 @@ prfun ilisteq_elim
 (* ****** ****** *)
 
 dataprop
+ISCONS (ilist) =
+  {x:int}{xs:ilist} ISCONS (ilist_cons (x, xs))
+// end of [ISCONS]
+
+dataprop
 ISEMP (ilist, bool) =
   | ISEMPnil (ilist_nil, true)
   | {x:int} {xs:ilist}
@@ -138,10 +143,13 @@ dataprop APPEND (ilist, ilist, ilist) =
     APPENDcons (ilist_cons (x, xs), ys, ilist_cons (x, zs)) of APPEND (xs, ys, zs)
 // end of [APPEND]
 
-prfun append_istot {xs,ys:ilist} (): [zs:ilist] APPEND (xs, ys, zs)
+prfun append_istot
+  {xs,ys:ilist} (): [zs:ilist] APPEND (xs, ys, zs)
 prfun append_isfun {xs,ys:ilist} {zs1,zs2:ilist}
   (pf1: APPEND (xs, ys, zs1), pf2: APPEND (xs, ys, zs2)): ILISTEQ (zs1, zs2)
 // end of [append_isfun]
+
+(* ****** ****** *)
 
 prfun append_unit1
   {xs:ilist} (): APPEND (ilist_nil, xs, xs)
@@ -152,6 +160,8 @@ prfun append_sing
   {x:int}{xs:ilist}
   (): APPEND (ilist_sing(x), xs, ilist_cons (x, xs))
 // end of [append_sing]
+
+(* ****** ****** *)
 
 prfun append_length_lemma
   {xs1,xs2:ilist} {xs:ilist} {n1,n2:int} (

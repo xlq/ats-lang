@@ -891,6 +891,11 @@ viewtypedef Option_vt (a:viewt@ype) = [b:bool] option_vt (a, b)
 dataprop unit_p = unit_p of ()
 dataview unit_v = unit_v of ()
 //
+dataprop
+option_prop_bool_prop
+  (P:prop+, bool) = Some_p (P, true) of P | None_p (P, false) of ()
+stadef option_p = option_prop_bool_prop
+//
 dataview
 option_view_bool_view
   (a:view+, bool) = Some_v (a, true) of a | None_v (a, false)
