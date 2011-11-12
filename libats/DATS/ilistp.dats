@@ -88,6 +88,25 @@ implement length_isnat
 (* ****** ****** *)
 
 implement
+append_unit1 () = APPENDnil ()
+
+implement
+append_unit2 () = let
+  prfun lemma {xs:ilist} .<xs>.
+    (): APPEND (xs, ilist_nil, xs) =
+    scase xs of
+    | ilist_cons (x, xs) => APPENDcons (lemma {xs} ())
+    | ilist_nil () => APPENDnil ()
+in
+  lemma ()
+end // end of [append_unit2]
+
+implement
+append_sing () = APPENDcons (APPENDnil ())
+
+(* ****** ****** *)
+
+implement
 append_length_lemma (pf, pf1len, pf2len) = let
 //
 prfun lemma

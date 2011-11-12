@@ -143,8 +143,15 @@ prfun append_isfun {xs,ys:ilist} {zs1,zs2:ilist}
   (pf1: APPEND (xs, ys, zs1), pf2: APPEND (xs, ys, zs2)): ILISTEQ (zs1, zs2)
 // end of [append_isfun]
 
-prfun append_unit1 {xs:ilist} (): APPEND (ilist_nil, xs, xs)
-prfun append_unit2 {xs:ilist} (): APPEND (xs, ilist_nil, xs)
+prfun append_unit1
+  {xs:ilist} (): APPEND (ilist_nil, xs, xs)
+prfun append_unit2
+  {xs:ilist} (): APPEND (xs, ilist_nil, xs)
+
+prfun append_sing
+  {x:int}{xs:ilist}
+  (): APPEND (ilist_sing(x), xs, ilist_cons (x, xs))
+// end of [append_sing]
 
 prfun append_length_lemma
   {xs1,xs2:ilist} {xs:ilist} {n1,n2:int} (
