@@ -61,8 +61,26 @@ prfun treq_elim
       prval TREQ () = treq_elim (pf2)
     in
       TREQ ()
-    end // end of [TLnode]
+    end // end of [treq_node]
 // end of [treq_elim]
+
+extern
+prfun treq_symm {t1,t2:tree} (pf: treq (t1, t2)): treq (t2, t1)
+
+dataprop
+trsz (tree, int) =
+  | trsz_leaf (leaf, 0)
+  | {t1,t2:tree}{n1,n2:nat}
+    trsz_node (node(t1, t2), n1+n2+1) of (trsz (t1, n1), trsz (t2, n2))
+// end of [trsz]
+
+extern
+prfun trsz_istot {t:tree} (): [n:nat] trsz (t, n)
+extern
+prfun trsz_isfun {t:tree}{n1,n2:nat}
+  (pf1: trsz (t, n1), pf2: trsz (t, n2)): [n1==n2] void
+
+(* ****** ****** *)
 
 datatype tree (tree) =
  | tleaf (leaf) of ()
@@ -136,7 +154,7 @@ prfun lemma_prefix_prefix
 ) : OR (PREFIX (xs1, xs2), PREFIX (xs2, xs1))
 
 extern
-prfun lemma_remove_prefix_remove
+prfun lemma_remove_remove_prefix
   {xs:ilist}{fs0,rs0:ilist}{fs,fs2:ilist} (
   pf1: REMOVE (xs, fs0, rs0)
 , pf2: REMOVE (fs, fs0, fs2)
@@ -235,11 +253,76 @@ prfn lemma_ntlp_less
 
 (* ****** ****** *)
 
-extern
-prfun lemma_tl_prefix
-  {d:int}{t1,t2:tree}{xs1,xs2:ilist} (
-  pf1tl: TL (d, t1, xs1), pf2tl: TL (d, t2, xs2), pfpre: PREFIX (xs1, xs2)
-) : treq (t1, t2)
+prfun lemma_tl_prefix_trsz
+  {d:int}
+  {t1,t2:tree}
+  {xs1,xs2:ilist}
+  {n1,n2:nat} .<n1+n2>. (
+  pf1sz: trsz (t1, n1), pf2sz: trsz (t2, n2)
+, pf1tl: TL (d, t1, xs1), pf2tl: TL (d, t2, xs2)
+, pfpre: PREFIX (xs1, xs2)
+) : treq (t1, t2) =
+  case+ pf1tl of
+  | TLnode {d}{t11,t12}{fs11,fs12,fs1} (pf11tl, pf12tl, pf1app) => (
+    case+ pf2tl of
+    | TLnode {d}{t21,t22}{fs21,fs22,fs2} (pf21tl, pf22tl, pf2app) => let
+        prval trsz_node (pf11sz, pf12sz) = pf1sz
+        prval trsz_node (pf21sz, pf22sz) = pf2sz
+        prval pf1pre = PREFIX (pf1app)
+        prval pf1_treq = let
+          prval pfor = lemma_prefix_prefix (lemma_prefix_trans (pf1pre, pfpre), PREFIX pf2app)
+        in
+          case+ pfor of
+          | ORleft pfpre => // fs11 <= fs21
+              lemma_tl_prefix_trsz (pf11sz, pf21sz, pf11tl, pf21tl, pfpre)
+          | ORright pfpre =>
+              treq_symm (lemma_tl_prefix_trsz (pf21sz, pf11sz, pf21tl, pf11tl, pfpre))
+        end : treq (t11, t21)
+        prval TREQ () = treq_elim (pf1_treq)
+        prval ILISTEQ () = TL_tree_isfun (pf11tl, pf21tl)
+        prval pf2pre = lemma_remove_remove_prefix (pf2app, pf1app, pfpre)
+        prval pf2_treq = lemma_tl_prefix_trsz (pf12sz, pf22sz, pf12tl, pf22tl, pf2pre)
+      in
+        treq_node (pf1_treq, pf2_treq)
+      end // end of [TLnode]
+    | TLleaf (d) =/=> let
+        prval pf11len = length_istot {fs11} ()
+        prval ILISTEQ () = lemma_tl_listpos (pf11tl)
+        prval LENGTHcons _ = pf11len
+        prval pf12len = length_istot {fs12} ()
+        prval ILISTEQ () = lemma_tl_listpos (pf12tl)
+        prval LENGTHcons _ = pf12len
+        prval pflen1 = append_length_lemma (pf1app, pf11len, pf12len)
+        prval PREFIX pfapp = pfpre
+        prval pflen2 = append_length_lemma (pfapp, pflen1, length_istot ())
+        prval LENGTHcons (LENGTHnil ()) = pflen2
+      in
+        // nothing
+      end // end of [TLnode]
+    ) // end of [TLnode]
+  | TLleaf (d) => (
+    case+ pf2tl of
+    | TLnode (pf21tl, pf22tl, pf2app) =/=> let
+        prval PREFIX pfapp = pfpre
+        prval APPENDcons _ = pfapp
+        prval ILISTEQ () = lemma_tl_listpos (pf21tl)
+        prval APPENDcons _ = pf2app
+      in
+        // nothing
+      end // end of [TLnode]
+    | TLleaf (d) => treq_leaf ()
+    ) // end of [TLleaf]
+// end of [lemma_tl_prefix_trsz]
+
+prfn lemma_tl_prefix
+  {d:int}
+  {t1,t2:tree}
+  {xs1,xs2:ilist} (
+  pf1tl: TL (d, t1, xs1), pf2tl: TL (d, t2, xs2)
+, pfpre: PREFIX (xs1, xs2)
+) : treq (t1, t2) = lemma_tl_prefix_trsz (
+  trsz_istot (), trsz_istot (), pf1tl, pf2tl, pfpre
+) // end of [lemma_tl_prefix]
 
 (* ****** ****** *)
 
@@ -296,7 +379,7 @@ prfn lemma_ntlp_snd
               TL_tree_isfun (pftl0, pf1tl)
             end
         end : ILISTEQ (fs0, fs1)
-        prval pf2pre = lemma_remove_prefix_remove {xs} {fs0,rs0} {fs,fs2} (pfrem0, pf1app, pfpre)
+        prval pf2pre = lemma_remove_remove_prefix (pfrem0, pf1app, pfpre)
         prval NTLP (fpf1) = pfntlp
       in
         fpf1 {..}{fs2} (pf2pre, pf2tl)
