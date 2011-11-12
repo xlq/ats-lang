@@ -19,6 +19,12 @@ propdef ISCONS (xs:ilist) = ISEMP (xs, false)
 
 (* ****** ****** *)
 
+extern
+prfun
+append_sing
+  {x:int}{xs:ilist} (): APPEND (sing(x), xs, cons (x, xs))
+// end of [append_sing]
+
 propdef
 REMOVE
   (xs:ilist, ys:ilist, zs:ilist) = APPEND (ys, zs, xs)
@@ -336,15 +342,22 @@ main () = () where {
   val xs1 = __cast (xs1) where {
     extern castfn __cast (xs: list0(int)): list (xs1)
   }
-  val res = build (xs1)
-  val t_xs1 = case+ res of
+  val res1 = build (xs1)
+  val t_xs1 = case+ res1 of
     | buildres_succ (pftl | t) => t // HX: it can only succeed
     | buildres_fail (pfntl | (*none*)) =/=> lemma_tl_ntl_false (pftl_xs1, pfntl) 
+  // end of [val]
 //
   val () = (print "t_xs1 = "; fprint_tree (stdout_ref, t_xs1); print_newline ())
 //
   stadef xs2 = cons (1, cons (3, cons (2, cons (2, nil))))
   val xs2 = list0_cons (1, list0_cons (3, list0_cons (2, list0_cons (2, list0_nil))))
+  val xs2 = __cast (xs2) where {
+    extern castfn __cast (xs: list0(int)): list (xs2)
+  }
+//
+  val res2 = build (xs2)
+  val- buildres_fail (pfntl | (*none*)) = res2
 //
 } // end of [main]
 
