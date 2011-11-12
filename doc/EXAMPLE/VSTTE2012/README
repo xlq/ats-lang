@@ -3,6 +3,12 @@ Team:
 1. Zhiqiang Ren
 2. Hongwei Xi
 
+######
+
+Programming language: ATS
+
+######
+
 Problem1:
 
 VT1: Done. You may try to change array indices and see what happens.
@@ -10,6 +16,8 @@ VT2: Done. By using termination metrics.
 VT3: Done. By taking advantage of boolean arrays being sorted
 
 The code can run.
+
+######
 
 Problem2:
 
@@ -20,6 +28,8 @@ VT3: Done // 25 points
 
 The code can run.
 
+######
+
 Problem3:
 
 VT1: Done. You may try to change array indices and see what happens.
@@ -28,7 +38,17 @@ VT3: Harness: Done
 
 The code can run.
 
+######
+
 Problem4:
+
+VT1: Done.
+VT2: Done.
+VT3: Done.
+VT4-1: Done.
+
+######
 
 Problem5:
 
+###### end of [README] ######
