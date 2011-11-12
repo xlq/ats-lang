@@ -19,10 +19,10 @@ propdef ISCONS (xs:ilist) = ISEMP (xs, false)
 
 (* ****** ****** *)
 
-extern
-prfun
+prfn
 append_sing
-  {x:int}{xs:ilist} (): APPEND (sing(x), xs, cons (x, xs))
+  {x:int}{xs:ilist}
+  (): APPEND (sing(x), xs, cons (x, xs)) = APPENDcons (APPENDnil)
 // end of [append_sing]
 
 propdef
@@ -50,6 +50,20 @@ treq (tree, tree) =
     treq_node (node (t11, t12), node (t21, t22)) of (treq (t11, t21), treq (t12, t22))
 // end of [treq]
 
+dataprop TREQ (tree, tree) = {t:tree} TREQ (t, t) of ()
+
+prfun treq_elim
+  {t1,t2:tree} .<t1>. (pf: treq (t1, t2)): TREQ (t1, t2) =
+  case+ pf of
+  | treq_leaf () => TREQ ()
+  | treq_node (pf1, pf2) => let
+      prval TREQ () = treq_elim (pf1)
+      prval TREQ () = treq_elim (pf2)
+    in
+      TREQ ()
+    end // end of [TLnode]
+// end of [treq_elim]
+
 datatype tree (tree) =
  | tleaf (leaf) of ()
  | {t1,t2:tree} tnode (node (t1,t2)) of (tree t1, tree t2)
@@ -61,65 +75,266 @@ dataprop
 TL (int, tree, ilist) =
  | {d:int}
    TLleaf (d, leaf, cons (d, nil)) of int(d)
- | {d:int} {t1,t2:tree} {xs1,xs2,xs3,xs4:ilist}
-   TLnode (d, node (t1, t2), xs4) of (
+ | {d:int} {t1,t2:tree} {xs1,xs2,xs3:ilist}
+   TLnode (d, node (t1, t2), xs3) of (
      TL (d+1,t1,xs1), TL (d+1,t2, xs2), APPEND (xs1, xs2, xs3)
    ) // end [TLcons]
 // end of [TL]
 
 propdef TL0 (t:tree, xs:ilist) = TL (0, t, xs)
 
-(*
+(* ****** ****** *)
+
+prfun
+lemma_tl_listpos
+  {d:int}{t:tree}{xs:ilist} .<t>.
+  (pftl: TL (d, t, xs)): [x:int;xs1:ilist | x >= d] ILISTEQ (xs, cons(x, xs1)) =
+  case+ pftl of
+  | TLleaf _ => ILISTEQ ()
+  | TLnode (pf1tl, _, pfapp) => let
+      prval ILISTEQ () = lemma_tl_listpos (pf1tl)
+      prval APPENDcons _ = pfapp
+    in
+      ILISTEQ ()
+    end // end of [TLnode]
+// end of [lemma_tl_listpos]
+
+(* ****** ****** *)
+
 dataprop
 NTL (d:int, xs: ilist) =
-  {t:tree} NTL (d, xs) of (TL (d, t, xs) -<prf> [false] void)
+  NTL (d, xs) of {t:tree} TL (d, t, xs) -<prf> [false] void
 // end of [NTL]
-*)
-absprop NTL (d:int, xs:ilist)
 
-extern
-prfun lemma_tl_ntl_false
-  {d:int}{xs:ilist}{t:tree}
-  (pftl: TL (d, t, xs), pfntl: NTL (d, xs)): [false] void
-// end of [lemma_tl_ntl_false]
+dataprop
+PREFIX (xs: ilist, ys: ilist) =
+  {xs2:ilist} PREFIX (xs, ys) of APPEND (xs, xs2, ys)
+// end of [PREFIX]
 
-extern
-prfun lemma_ntl_empty {d:nat} (): NTL (d, nil)
-
-extern
-prfun lemma_ntl_less
-  {d:nat} {x:int | x < d}{xs:ilist} (): NTL (d, cons (x, xs))
-// end of [lemma_ntl_less]
-
-extern
-prfun lemma_ntl_fst
-  {d:nat}
-  {x:int | x > d}{xs:ilist}
-  (pf: NTL (d+1, cons (x, xs))): NTL (d, cons (x, xs))
-// end of [lemma_ntl_fst]
-
-extern
-prfun lemma_ntl_snd
-  {d:nat}
-  {xs:ilist}{t:tree}{fs,rs:ilist} (
-  pfrem: REMOVE (xs, fs, rs), pftl: TL (d+1, t, fs), pfntl: NTL (d+1, rs)
-) : NTL (d, xs)
-// end of [lemma_ntl_snd]
-
-extern
-prfun lemma_ntl_remainder
-  {d:nat}{xs:ilist}{t:tree}{fs,rs:ilist} (
-  pfrem: REMOVE (xs, fs, rs), pftl: TL (d, t, fs), pfpos: ISCONS (rs)
-) : NTL (d, xs) // end of [lemma_ntl_remainder]
+dataprop
+NTLP (d:int, xs:ilist) =
+  NTLP (d, xs) of {t:tree}{fs:ilist} (PREFIX (fs, xs), TL (d, t, fs)) -<prf> [false] void
+// end of [NTLP]
 
 (* ****** ****** *)
 
 extern
 prfun
-TL_list_isfun
-  {d:int}{xs:ilist}{t1,t2:tree} (
-  pf1: TL (d, t1, xs), pf2: TL (d, t2, xs)
+lemma_prefix_trans {xs1,xs2,xs3:ilist}
+  (pf1: PREFIX (xs1, xs2), pf2: PREFIX (xs2, xs3)): PREFIX (xs1, xs3)
+// end of [lemma_prefix_trans]
+
+
+dataprop OR (P1: prop, P2: prop) =
+  | ORleft (P1, P2) of P1 | ORright (P1, P2) of P2
+// end of [OR]
+
+extern
+prfun lemma_prefix_prefix
+  {xs1,xs2,xs3:ilist} (
+  pf1: PREFIX (xs1, xs3), pf2: PREFIX (xs2, xs3)
+) : OR (PREFIX (xs1, xs2), PREFIX (xs2, xs1))
+
+extern
+prfun lemma_remove_prefix_remove
+  {xs:ilist}{fs0,rs0:ilist}{fs,fs2:ilist} (
+  pf1: REMOVE (xs, fs0, rs0)
+, pf2: REMOVE (fs, fs0, fs2)
+, pf3: PREFIX (fs, xs)
+) : PREFIX (fs2, rs0)
+
+(* ****** ****** *)
+
+prfun
+TL_tree_isfun
+  {d:int}{t:tree}{xs1,xs2:ilist} .<t>. (
+  pf1: TL (d, t, xs1), pf2: TL (d, t, xs2)
+) : ILISTEQ (xs1, xs2) =
+  case+ (pf1, pf2) of
+  | (TLleaf _, TLleaf _) => ILISTEQ ()
+  | (TLnode (pf11, pf12, pf1app),
+     TLnode (pf21, pf22, pf2app)) => let
+      prval ILISTEQ () = TL_tree_isfun (pf11, pf21)
+      prval ILISTEQ () = TL_tree_isfun (pf12, pf22)
+    in
+      append_isfun (pf1app, pf2app)
+    end // end of [TLnode, TLnode]
+// end of [TL_tree_isfun]
+
+(* ****** ****** *)
+
+prfun
+lemma_tl_ntl_false
+  {d:int}{xs:ilist}{t:tree} .<>. (
+  pftl: TL (d, t, xs), pfntl: NTL (d, xs)
+) : [false] void = let
+  prval NTL (fpf) = pfntl in fpf (pftl)
+end // end of [lemma_tl_ntl_false]
+
+(* ****** ****** *)
+
+prfun lemma_tl_nil_false
+  {d:nat} {t:tree} .<t>.
+  (pftl: TL (d, t, nil)): [false] void =
+  case+ pftl of
+  | TLleaf _ => ()
+  | TLnode (
+      pf1tl, pf2tl, pfapp
+    ) => let
+      prval APPENDnil () = pfapp in lemma_tl_nil_false (pf1tl)
+    end // end of [TLnode]
+// end of [lemma_tl_nil_false]
+
+prfn lemma_ntlp_nil
+  {d:nat} (): NTLP (d, nil) =
+  NTLP {d,nil} (
+    lam (pfpre, pftl) => let
+      prval PREFIX pfapp = pfpre
+      prval APPENDnil () = pfapp
+    in
+      lemma_tl_nil_false (pftl)
+    end
+  ) // end of [NTLP]
+// end of [lemma_ntlp_nil]
+
+(* ****** ****** *)
+
+prfun lemma_tl_less_false
+  {d:nat} {t:tree}
+  {x:int | x < d} {xs:ilist} .<t>.
+  (pftl: TL (d, t, cons (x, xs))): [false] void =
+  case+ pftl of
+  | TLleaf _ => ()
+  | TLnode (
+      pf1tl, pf2tl, pfapp
+    ) => let
+      prval ILISTEQ () = lemma_tl_listpos (pf1tl)
+      prval APPENDcons _ = pfapp
+    in
+      lemma_tl_less_false (pf1tl)
+    end // end of [TLnode]
+// end of [lemma_tl_less_false]
+
+(* ****** ****** *)
+
+prfn lemma_ntlp_less
+  {d0:nat}
+  {x:int | x < d0}
+  {xs:ilist}
+  (): NTLP (d0, cons (x, xs)) =
+  NTLP {d0,cons(x,xs)} (
+    lam (pfpre, pftl) => let
+      prval PREFIX pfapp = pfpre
+    in
+      case+ pfapp of
+      | APPENDnil () => lemma_tl_nil_false (pftl)
+      | APPENDcons _ => lemma_tl_less_false (pftl)
+    end
+  ) // end of [NTLP]
+// end of [lemma_ntlp_less]
+
+(* ****** ****** *)
+
+extern
+prfun lemma_tl_prefix
+  {d:int}{t1,t2:tree}{xs1,xs2:ilist} (
+  pf1tl: TL (d, t1, xs1), pf2tl: TL (d, t2, xs2), pfpre: PREFIX (xs1, xs2)
 ) : treq (t1, t2)
+
+(* ****** ****** *)
+
+prfn lemma_ntlp_fst
+  {d:nat}
+  {x:int | x > d}{xs:ilist}
+  (pfntlp: NTLP (d+1, cons (x, xs))): NTLP (d, cons (x, xs)) = let
+  prfn fpf {t:tree}{fs:ilist}
+    (pfpre: PREFIX (fs, cons (x, xs)), pftl: TL (d, t, fs)): [false] void = let
+    prval PREFIX (pfapp) = pfpre
+  in
+    case+ pftl of
+    | TLnode (pf1tl, pf2tl, pf1app) => let
+        prval pf1pre = PREFIX (pf1app)
+        prval pf1pre_xs = lemma_prefix_trans (pf1pre, pfpre)
+        prval NTLP (fpf1) = pfntlp
+      in
+        fpf1 (pf1pre_xs, pf1tl)
+      end // end of [TLnode]
+    | TLleaf (d) =/=> let
+        prval APPENDcons _ = pfapp in (*nothing*)
+      end // end of [TLleaf]
+  end // end of [fpf]
+in
+  NTLP (fpf)
+end // end of [lemma_ntlp_fst]
+
+prfn lemma_ntlp_snd
+  {d:nat}
+  {xs:ilist}{t0:tree}{fs0,rs0:ilist} (
+  pfrem0: REMOVE (xs, fs0, rs0), pftl0: TL (d+1, t0, fs0), pfntlp: NTLP (d+1, rs0)
+) : NTLP (d, xs) = let
+  prfn fpf {t:tree}{fs:ilist}
+    (pfpre: PREFIX (fs, xs), pftl: TL (d, t, fs)): [false] void = let
+    prval PREFIX (pfapp) = pfpre
+  in
+    case+ pftl of
+    | TLnode
+        {d}{t1,t2}{fs1,fs2,fs}
+        (pf1tl, pf2tl, pf1app) => let
+        prval pf1pre = PREFIX pf1app
+        prval ILISTEQ () = let
+          prval pfor = lemma_prefix_prefix (PREFIX pfrem0, lemma_prefix_trans (pf1pre, pfpre))
+        in
+          case+ pfor of
+          | ORleft pfpre => let
+              prval TREQ () = treq_elim (lemma_tl_prefix (pftl0, pf1tl, pfpre))
+            in
+              TL_tree_isfun (pftl0, pf1tl)
+            end
+          | ORright pfpre => let
+              prval TREQ () = treq_elim (lemma_tl_prefix (pf1tl, pftl0, pfpre))
+            in
+              TL_tree_isfun (pftl0, pf1tl)
+            end
+        end : ILISTEQ (fs0, fs1)
+        prval pf2pre = lemma_remove_prefix_remove {xs} {fs0,rs0} {fs,fs2} (pfrem0, pf1app, pfpre)
+        prval NTLP (fpf1) = pfntlp
+      in
+        fpf1 {..}{fs2} (pf2pre, pf2tl)
+      end // end of [TLnode]
+    | TLleaf (d) => let
+        prval ILISTEQ () = lemma_tl_listpos (pftl0)
+        prval APPENDcons _ = pfrem0
+        prval APPENDcons _ = pfapp
+      in
+        (*nothing*)
+      end // end of [TLleaf]
+  end // end of [fpf]
+in
+  NTLP (fpf)
+end // end of [lemma_ntlp_snd]
+
+(* ****** ****** *)
+
+prfun lemma_ntl_remainder
+  {d:nat}{xs:ilist}{t:tree}{fs,rs:ilist} .<>. (
+  pfrem: REMOVE (xs, fs, rs), pftl: TL (d, t, fs), pfpos: ISCONS (rs)
+) : NTL (d, xs) = let
+  prfn fpf {t1:tree} (pf1tl: TL (d, t1, xs)): [false] void = let
+    prval pf_treq = lemma_tl_prefix (pftl, pf1tl, PREFIX pfrem)
+    prval TREQ () = treq_elim (pf_treq)
+    prval pflen_fs = length_istot {fs} ()
+    prval pflen_rs = length_istot {rs} ()
+    prval ILISTEQ () = TL_tree_isfun (pftl, pf1tl)
+    prval ISEMPcons () = pfpos
+    prval LENGTHcons _ = pflen_rs
+    prval pflen_xs = append_length_lemma (pfrem, pflen_fs, pflen_rs)
+    prval () = length_isfun (pflen_fs, pflen_xs)
+  in
+    // nothing
+  end // end of [fpf]
+in
+  NTL (fpf)
+end // end of [lemma_ntl_remainder]
 
 (* ****** ****** *)
 //
@@ -145,7 +360,7 @@ bldres (
   | {t:tree}{fs,rs:ilist}
     bldres_succ (d, xs, true) of
       (ISCONS(fs), REMOVE (xs, fs, rs), TL (d, t, fs) | tree t, list (rs))
-  | bldres_fail (d, xs, false) of (NTL (d, xs) | (*none*))
+  | bldres_fail (d, xs, false) of (NTLP (d, xs) | (*none*))
 // end of [bldres]
 
 (* ****** ****** *)
@@ -159,9 +374,9 @@ in
 //
 if isemp then let
   prval ISEMPnil () = pf
-  prval pfntl = lemma_ntl_empty ()
+  prval pfntlp = lemma_ntlp_nil ()
 in
-  bldres_fail (pfntl | (*none*))
+  bldres_fail (pfntlp | (*none*))
 end else let
   prval ISEMPcons () = pf in bldr_cons (pflen | d, xs)
 end // end of [if]
@@ -177,9 +392,9 @@ and bldr_cons
 in
 //
 if h < d then let
-  prval pfntl = lemma_ntl_less ()
+  prval pfntlp = lemma_ntlp_less ()
 in
-  bldres_fail (pfntl | (*none*))
+  bldres_fail (pfntlp | (*none*))
 end else if h = d then let
   val xs = list_pop (xs)
   prval pfrem = append_sing {x}{xs1} ()
@@ -211,14 +426,15 @@ case+ res1 of
       in
         bldres_succ (ISEMPcons(), pfrem, pftl | tnode (t1, t2), xs)
       end // end of [bldres_succ]
-    | bldres_fail (pf2ntl | (*none*)) => let
-        prval pfntl = lemma_ntl_snd (pf1rem, pf1tl, pf2ntl)
+    | bldres_fail (pf2ntlp | (*none*)) => let
+        prval pfntlp = lemma_ntlp_snd (pf1rem, pf1tl, pf2ntlp)
       in
-        bldres_fail (pfntl | (*none*))
+        bldres_fail (pfntlp | (*none*))
       end // end of [bldres_fail]
   end
-| bldres_fail (pf1ntl | (*none*)) =>
-    bldres_fail (lemma_ntl_fst (pf1ntl) | (*none*))
+| bldres_fail (pf1ntlp | (*none*)) =>
+    bldres_fail (lemma_ntlp_fst (pf1ntlp) | (*none*))
+  // end of [bldres_fail]
 //
 end // end of [if]
 //
@@ -258,7 +474,12 @@ in
         buildres_fail (pfntl | (*none*))
       end (* end of [if] *)
     end // end of [bldres_succ]
-  | bldres_fail (pfntl | (*none*)) => buildres_fail (pfntl | (*none*))
+  | bldres_fail (pfntlp | (*none*)) => let
+      prval NTLP {d,xs} (fpf) = pfntlp
+      prval pfntl = NTL {d,xs} (lam (pftl) => fpf (PREFIX (append_unit2 ()), pftl))
+    in
+      buildres_fail (pfntl | (*none*))
+    end // end of [bldres_fail]
 end // end of [build]
 
 (* ****** ****** *)
@@ -291,7 +512,7 @@ local
 
 assume list (xs:ilist) = list0 (int)
 
-in
+in // in of [local]
 
 implement
 list_is_empty
