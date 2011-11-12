@@ -247,7 +247,7 @@ prfn lemma_ntlp_less
       case+ pfapp of
       | APPENDnil () => lemma_tl_nil_false (pftl)
       | APPENDcons _ => lemma_tl_less_false (pftl)
-    end
+    end (* end of [lam] *)
   ) // end of [NTLP]
 // end of [lemma_ntlp_less]
 
@@ -655,13 +655,35 @@ main () = () where {
   val () = (print "t_xs1 = "; fprint_tree (stdout_ref, t_xs1); print_newline ())
 //
   stadef xs2 = cons (1, cons (3, cons (2, cons (2, nil))))
+//
+(*
+dataprop
+NTLP (d:int, xs:ilist) =
+  NTLP (d, xs) of {t:tree}{fs:ilist} (PREFIX (fs, xs), TL (d, t, fs)) -<prf> [false] void
+// end of [NTLP]
+*)
+  prval pf1_ntlp =
+    lemma_ntlp_less {3} {2} {sing(2)} ()
+  prval pf2_ntlp =
+    lemma_ntlp_snd {2} (APPENDcons (APPENDnil), TLleaf (3), pf1_ntlp)
+  prval pf3_ntlp = lemma_ntlp_fst {1} {3} (pf2_ntlp)
+  prval pf4_ntlp =
+    lemma_ntlp_snd {0} (APPENDcons (APPENDnil), TLleaf (1), pf3_ntlp)
+//
   val xs2 = list0_cons (1, list0_cons (3, list0_cons (2, list0_cons (2, list0_nil))))
   val xs2 = __cast (xs2) where {
     extern castfn __cast (xs: list0(int)): list (xs2)
   }
 //
   val res2 = build (xs2)
-  val- buildres_fail (pfntl | (*none*)) = res2
+  val () = (case+ res2 of
+    | buildres_fail (pfntl | (*none*)) => ()
+    | buildres_succ (pftl | t) =/=> let
+        prval NTLP (fpf) = pf4_ntlp
+        prval pfapp = append_unit2 ()
+        prval pfpre = PREFIX (pfapp) in fpf (pfpre, pftl)
+      end // end of [buildres_succ]
+  ) : void // end of [val]
 //
 } // end of [main]
 
