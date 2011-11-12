@@ -3,6 +3,8 @@
 ** VSTTE 2012 Verification Competition
 ** Problem 4
 **
+** HX: All VTs are done.
+**
 *)
 
 (* ****** ****** *)
@@ -601,8 +603,9 @@ implement
 list_is_empty
   (xs) = let
   prval () = __assert () where {
-    extern praxi __assert (): [false] void
-  }
+    extern praxi __assert
+      (): [false] void // abandoning constraint-solving
+  } // end of [prval]
 in
   case+ xs of
   | list0_cons _ => (ISEMPcons | false)
@@ -631,9 +634,10 @@ end // end of [local]
 implement
 main () = () where {
 //
+// VT4-1: harnessing
+//
   stadef t1 = node (leaf, node (node (leaf, leaf), leaf))
   stadef xs1 = cons (1, cons (3, cons (3, cons (2, nil))))
-//
   prval pf0 = TLleaf (1)
   prval pf100 = TLleaf (3)
   prval pf101 = TLleaf (3)
@@ -651,17 +655,11 @@ main () = () where {
     | buildres_succ (pftl | t) => t // HX: it can only succeed
     | buildres_fail (pfntl | (*none*)) =/=> lemma_tl_ntl_false (pftl_xs1, pfntl) 
   // end of [val]
-//
   val () = (print "t_xs1 = "; fprint_tree (stdout_ref, t_xs1); print_newline ())
 //
-  stadef xs2 = cons (1, cons (3, cons (2, cons (2, nil))))
+// VT4-2: harnessing
 //
-(*
-dataprop
-NTLP (d:int, xs:ilist) =
-  NTLP (d, xs) of {t:tree}{fs:ilist} (PREFIX (fs, xs), TL (d, t, fs)) -<prf> [false] void
-// end of [NTLP]
-*)
+  stadef xs2 = cons (1, cons (3, cons (2, cons (2, nil))))
   prval pf1_ntlp =
     lemma_ntlp_less {3} {2} {sing(2)} ()
   prval pf2_ntlp =
@@ -674,16 +672,16 @@ NTLP (d:int, xs:ilist) =
   val xs2 = __cast (xs2) where {
     extern castfn __cast (xs: list0(int)): list (xs2)
   }
-//
   val res2 = build (xs2)
-  val () = (case+ res2 of
-    | buildres_fail (pfntl | (*none*)) => ()
+  prval pfntl = (
+    case+ res2 of
+    | buildres_fail (pfntl | (*none*)) => pfntl
     | buildres_succ (pftl | t) =/=> let
         prval NTLP (fpf) = pf4_ntlp
         prval pfapp = append_unit2 ()
         prval pfpre = PREFIX (pfapp) in fpf (pfpre, pftl)
       end // end of [buildres_succ]
-  ) : void // end of [val]
+  ) : NTL (0, xs2) // end of [prval]
 //
 } // end of [main]
 
