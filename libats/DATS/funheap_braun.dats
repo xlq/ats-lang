@@ -59,7 +59,7 @@ staload "libats/SATS/funheap_braun.sats"
 //
 // a specialized version can be implemented on the spot
 //
-implement{elt} compare_elt_elt (x1, x2, cmp) = cmp (x1, x2)
+implement{a} compare_elt_elt (x1, x2, cmp) = cmp (x1, x2)
 
 (* ****** ****** *)
 
@@ -73,7 +73,7 @@ stadef bt = brauntree // an abbreviation
 
 (* ****** ****** *)
 
-assume heap_t0ype_type (elt:t@ype) = [n:nat] brauntree (elt, n)
+assume heap_t0ype_type (a:t@ype) = [n:nat] brauntree (a, n)
 
 (* ****** ****** *)
 
@@ -81,13 +81,13 @@ implement{} funheap_make_nil () = E ()
 
 (* ****** ****** *)
 
-implement{elt}
+implement{a}
 funheap_size (hp) = size (hp) where {
 //
 // this algorithm is taken from a paper by Chris Okasaki
 //
   fun diff {nl,nr:nat | nr <= nl && nl <= nr+1} .<nr>. 
-    (nr: size_t nr, t: bt (elt, nl)):<> int (nl-nr) = begin case+ t of
+    (nr: size_t nr, t: bt (a, nl)):<> int (nl-nr) = begin case+ t of
     | B (_, tl, tr) => begin
         if nr > 0 then let
           val nr2 = nr / 2
@@ -101,7 +101,7 @@ funheap_size (hp) = size (hp) where {
   end // end of [diff]
 //
   fun size {n:nat} .<n>.
-    (t: bt (elt, n)):<> size_t n = case+ t of
+    (t: bt (a, n)):<> size_t n = case+ t of
     | B (_, tl, tr) => let
         val nr = size tr; val d1 = diff (nr, tl) + 1
       in
@@ -113,20 +113,20 @@ funheap_size (hp) = size (hp) where {
 
 (* ****** ****** *)
 
-implement{elt}
+implement{a}
 funheap_height (hp) = loop (hp, 0) where {
   fun loop {n:nat} .<n>.
-    (t: bt (elt, n), res: Nat):<> Nat =
+    (t: bt (a, n), res: Nat):<> Nat =
     case+ t of B (_, tl, _) => loop (tl, res + 1) | E () => res
   // end of [loop]
 } // end of [funheap_height]
 
 (* ****** ****** *)
 
-implement{elt}
+implement{a}
 funheap_insert (hp, x, cmp) = () where {
   fun insert {n:nat} .<n>.
-    (t: bt (elt, n), x: elt):<cloref> bt (elt, n+1) =
+    (t: bt (a, n), x: a):<cloref> bt (a, n+1) =
     case+ t of
     | E () => B (x, E (), E ())
     | B (x0, t1, t2) => let
@@ -142,9 +142,9 @@ funheap_insert (hp, x, cmp) = () where {
 
 (* ****** ****** *)
 
-fun{elt:t@ype}
+fun{a:t@ype}
 brauntree_leftrem {n:pos} .<n>.
-  (t: bt (elt, n), x_r: &elt? >> elt):<> bt (elt, n-1) = let
+  (t: bt (a, n), x_r: &a? >> a):<> bt (a, n-1) = let
   val+ B (x, t1, t2) = t
 in
   case+ t1 of
@@ -156,16 +156,16 @@ end // end of [brauntree_leftrem]
 
 (* ****** ****** *)
 
-fn{elt:t@ype}
+fn{a:t@ype}
 brauntree_siftdn
   {nl,nr:nat | nr <= nl; nl <= nr+1}  (
-    x: elt
-  , tl: bt (elt, nl), tr: bt (elt, nr)
-  , cmp: cmp elt
-  ) :<> bt (elt, nl+nr+1) = siftdn (x, tl, tr) where {
+    x: a
+  , tl: bt (a, nl), tr: bt (a, nr)
+  , cmp: cmp a
+  ) :<> bt (a, nl+nr+1) = siftdn (x, tl, tr) where {
   fun siftdn {nl,nr:nat | nr <= nl; nl <= nr+1} .<nl+nr>.
-    (x: elt, tl: bt (elt, nl), tr: bt (elt, nr))
-    :<cloref> bt (elt, nl+nr+1) = case+ (tl, tr) of
+    (x: a, tl: bt (a, nl), tr: bt (a, nr))
+    :<cloref> bt (a, nl+nr+1) = case+ (tl, tr) of
     | (B (xl, tll, tlr), B (xr, trl, trr)) => begin
         if compare_elt_elt (xl, x, cmp) >= 0 then begin // xl >= x
           if compare_elt_elt (xr, x, cmp) >= 0
@@ -191,17 +191,17 @@ brauntree_siftdn
 
 (* ****** ****** *)
 
-implement{elt}
+implement{a}
 funheap_delmin (hp, res, cmp) = let
   fn delmin {n:pos} (
-      t: bt (elt, n), res: &elt? >> elt
-    ) :<cloref> bt (elt, n-1) = let
+      t: bt (a, n), res: &a? >> a
+    ) :<cloref> bt (a, n-1) = let
     val+ B (x, t1, t2) = t; val () = res := x in
     case+ t1 of
     | B _ => let
-        var x_lrm: elt // uninitialized
-        val t1 = brauntree_leftrem<elt> (t1, x_lrm) in
-        brauntree_siftdn<elt> (x_lrm, t2, t1, cmp)
+        var x_lrm: a // uninitialized
+        val t1 = brauntree_leftrem<a> (t1, x_lrm) in
+        brauntree_siftdn<a> (x_lrm, t2, t1, cmp)
       end // end of [B]
     | E () => E ()
   end // end of [demin]
@@ -209,10 +209,10 @@ in
   case+ hp of
   | B _ => let
       val () = hp := delmin (hp, res)
-      prval () = opt_some {elt} (res) in true (*removed*)
+      prval () = opt_some {a} (res) in true (*removed*)
     end // end of [B_]
   | E _ => let
-      prval () = opt_none {elt} (res) in false(*notremoved*)
+      prval () = opt_none {a} (res) in false(*notremoved*)
     end // end of [E]
 end // end of [funheap_delmin]
 

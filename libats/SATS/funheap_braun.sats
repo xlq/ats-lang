@@ -51,34 +51,34 @@
 (* ****** ****** *)
 
 abstype
-heap_t0ype_type (elt:t@ype+)
+heap_t0ype_type (a:t@ype+)
 stadef heap = heap_t0ype_type
 
 (* ****** ****** *)
 
-typedef cmp (elt:t@ype) = (elt, elt) -<cloref> Sgn
-fun{elt:t@ype}
-compare_elt_elt (x1: elt, x2: elt, cmp: cmp elt):<> Sgn
+typedef cmp (a:t@ype) = (a, a) -<cloref> Sgn
+fun{a:t@ype}
+compare_elt_elt (x1: a, x2: a, cmp: cmp a):<> Sgn
 
 (* ****** ****** *)
 
-fun{} funheap_make_nil {elt:t@ype} ():<> heap (elt)
+fun{} funheap_make_nil {a:t@ype} ():<> heap (a)
 
 (* ****** ****** *)
 
-fun{elt:t@ype} funheap_size (hp: heap elt): size_t
-fun{elt:t@ype} funheap_height (hp: heap elt): Nat
+fun{a:t@ype} funheap_size (hp: heap a): size_t
+fun{a:t@ype} funheap_height (hp: heap a): Nat
 
 (* ****** ****** *)
 
-fun{elt:t@ype}
-funheap_insert (t: &heap (elt), x: elt, cmp: cmp elt):<> void
+fun{a:t@ype}
+funheap_insert (t: &heap (a), x: a, cmp: cmp a):<> void
 
 (* ****** ****** *)
 
-fun{elt:t@ype}
+fun{a:t@ype}
 funheap_delmin (
-  t: &heap (elt), res: &elt? >> opt (elt, b), cmp: cmp elt
+  t: &heap (a), res: &a? >> opt (a, b), cmp: cmp a
 ) :<> #[b:bool] bool b // end of [funheap_delim]
 
 (* ****** ****** *)

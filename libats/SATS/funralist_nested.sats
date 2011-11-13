@@ -52,61 +52,61 @@
 //
 // HX: indexed by list length
 //
-abstype list_t0ype_int_type (elt:t@ype+, n:int)
-stadef list = list_t0ype_int_type
+abstype ralist_t0ype_int_type (a:t@ype+, n:int)
+stadef ralist = ralist_t0ype_int_type
 
 (* ****** ****** *)
 
-fun{} funralist_make_nil {elt:t@ype} ():<> list (elt, 0)
+fun{} funralist_make_nil {a:t@ype} ():<> ralist (a, 0)
 
 (* ****** ****** *)
 
-fun{elt:t@ype} funralist_length {n:nat} (xs: list (elt, n)): int n
+fun{a:t@ype} funralist_length {n:nat} (xs: ralist (a, n)): int n
 
 (* ****** ****** *)
 
 fun{a:t@ype}
-funralist_cons {n:nat} (x: a, xs: list (a, n)):<> list (a, n+1)
+funralist_cons {n:nat} (x: a, xs: ralist (a, n)):<> ralist (a, n+1)
 // end of [funralist_cons]
 
 fun{a:t@ype}
-funralist_uncons {n:pos} (xs: list (a, n), x: &a? >> a):<> list (a, n-1)
+funralist_uncons {n:pos} (xs: ralist (a, n), x: &a? >> a):<> ralist (a, n-1)
 // end of [funralist_uncons]
 
 (* ****** ****** *)
 
-fun{a:t@ype} funralist_head {n:pos} (xs: list (a, n)):<> a
-fun{a:t@ype} funralist_tail {n:pos} (xs: list (a, n)):<> list (a, n-1)
+fun{a:t@ype} funralist_head {n:pos} (xs: ralist (a, n)):<> a
+fun{a:t@ype} funralist_tail {n:pos} (xs: ralist (a, n)):<> ralist (a, n-1)
 
 (* ****** ****** *)
 
 fun{a:t@ype}
-funralist_lookup {n:nat} (xs: list (a, n), i: natLt n):<> a
+funralist_lookup {n:nat} (xs: ralist (a, n), i: natLt n):<> a
 // end of [funralist_lookup]
 
 fun{a:t@ype}
-funralist_update {n:nat} (xs: list (a, n), i: natLt n, x: a):<> list (a, n)
+funralist_update {n:nat} (xs: ralist (a, n), i: natLt n, x: a):<> ralist (a, n)
 // end of [funralist_update]
 
 (* ****** ****** *)
 
-fun{elt:t@ype}
+fun{a:t@ype}
 funralist_foreach_vclo {v:view} {n:nat} {f:eff}
-  (pf: !v | xs: list (elt, n), f: &(!v | elt) -<clo,f> void):<f> void
+  (pf: !v | xs: ralist (a, n), f: &(!v | a) -<clo,f> void):<f> void
 // end of [funralist_foreach_vclo]
 
-fun{elt:t@ype}
+fun{a:t@ype}
 funralist_foreach_cloptr {n:nat} {f:eff}
-  (xs: list (elt, n), f: !(elt) -<cloptr,f> void):<f> void
+  (xs: ralist (a, n), f: !(a) -<cloptr,f> void):<f> void
 // end of [funralist_foreach_vcloptr]
-fun{elt:t@ype}
+fun{a:t@ype}
 funralist_foreach_vcloptr {v:view} {n:nat} {f:eff}
-  (pf: !v | xs: list (elt, n), f: !(!v | elt) -<cloptr,f> void):<f> void
+  (pf: !v | xs: ralist (a, n), f: !(!v | a) -<cloptr,f> void):<f> void
 // end of [funralist_foreach_vcloptr]
 
-fun{elt:t@ype}
+fun{a:t@ype}
 funralist_foreach_cloref {n:nat} {f:eff}
-  (xs: list (elt, n), f: (elt) -<cloref,f> void):<f> void
+  (xs: ralist (a, n), f: (a) -<cloref,f> void):<f> void
 // end of [funralist_foreach_cloref]
 
 (* ****** ****** *)
