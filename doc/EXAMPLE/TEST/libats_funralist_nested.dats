@@ -12,7 +12,7 @@
 
 staload RA = "libats/SATS/funralist_nested.sats"
 staload _(*anon*) = "libats/DATS/funralist_nested.dats"
-stadef ralist = $RA.list
+stadef ralist = $RA.ralist
 
 (* ****** ****** *)
 
