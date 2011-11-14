@@ -66,16 +66,16 @@ funheap_insert
 (* ****** ****** *)
 
 fun{a:t@ype}
-funheap_merge (
-  hp1: heap (a), hp2: heap (a), cmp: cmp a
-) :<> heap (a) // end of [funheap_merge]
+funheap_delmin (
+  hp: &heap (a), res: &a? >> opt (a, b), cmp: cmp a
+) :<> #[b:bool] bool b // end of [funheap_delim]
 
 (* ****** ****** *)
 
 fun{a:t@ype}
-funheap_delmin (
-  hp: &heap (a), res: &a? >> opt (a, b), cmp: cmp a
-) :<> #[b:bool] bool b // end of [funheap_delim]
+funheap_merge (
+  hp1: heap (a), hp2: heap (a), cmp: cmp a
+) :<> heap (a) // end of [funheap_merge]
 
 (* ****** ****** *)
 

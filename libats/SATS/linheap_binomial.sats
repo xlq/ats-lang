@@ -75,6 +75,13 @@ linheap_delmin (
 (* ****** ****** *)
 
 fun{a:t@ype}
+linheap_merge (
+  hp1: heap (a), hp2: heap (a), cmp: cmp a
+) :<> heap (a) // end of [linheap_merge]
+
+(* ****** ****** *)
+
+fun{a:t@ype}
 linheap_free (hp: heap (a)):<> void
 
 (* ****** ****** *)
