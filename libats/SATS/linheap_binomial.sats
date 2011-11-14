@@ -8,7 +8,7 @@
 
 (*
 ** ATS - Unleashing the Potential of Types!
-** Copyright (C) 2002-2010 Hongwei Xi, Boston University
+** Copyright (C) 2002-2011 Hongwei Xi, Boston University
 ** All rights reserved
 **
 ** ATS is free software;  you can  redistribute it and/or modify it under
@@ -28,23 +28,6 @@
 *)
 
 (* ****** ****** *)
-
-(*
-**
-** A functional heap implementation based on Braun trees
-**
-** Contributed by Hongwei Xi (hwxi AT cs DOT bu DOT edu)
-** Time: April, 2010 // based on a version done in November, 2008
-**
-*)
-
-(* ****** ****** *)
-//
-// HX-2011-11-13:
-// This style of heap is VERY inefficient! Please use funheap_binomial
-// instead, which is about 20 times faster for a heap of the size 1M.
-//
-(* ****** ****** *)
 //
 // License: LGPL 3.0 (available at http://www.gnu.org/licenses/lgpl.txt)
 //
@@ -54,40 +37,46 @@
 
 (* ****** ****** *)
 
-abstype
-heap_t0ype_type (a:t@ype+)
-stadef heap = heap_t0ype_type
+absviewtype
+heap_viewt0ype_viewtype (a:viewt@ype+)
+stadef heap = heap_viewt0ype_viewtype
 
 (* ****** ****** *)
 
-typedef cmp (a:t@ype) = (a, a) -<cloref> Sgn
-fun{a:t@ype}
-compare_elt_elt (x1: a, x2: a, cmp: cmp a):<> Sgn
-
-(* ****** ****** *)
-
-fun{} funheap_make_nil {a:t@ype} ():<> heap (a)
+sortdef vt0p = viewt@ype
 
 (* ****** ****** *)
 //
-fun{a:t@ype}
-funheap_size (hp: heap a):<> size_t
+typedef cmp (a:vt0p) = (&a, &a) -<cloref> Sgn
 //
-// HX: primarily for statistics
-fun{a:t@ype} funheap_height (hp: heap a):<> Nat
+fun{a:vt0p}
+compare_elt_elt (x1: &a, x2: &a, cmp: cmp a):<> Sgn
 //
 (* ****** ****** *)
 
-fun{a:t@ype}
-funheap_insert (hp: &heap (a), x: a, cmp: cmp a):<> void
+fun{} linheap_make_nil {a:vt0p} ():<> heap (a)
 
 (* ****** ****** *)
 
-fun{a:t@ype}
-funheap_delmin (
+fun{a:vt0p} linheap_size (hp: !heap a): size_t
+
+(* ****** ****** *)
+
+fun{a:vt0p}
+linheap_insert (hp: &heap (a), x: a, cmp: cmp a):<> void
+
+(* ****** ****** *)
+
+fun{a:vt0p}
+linheap_delmin (
   hp: &heap (a), res: &a? >> opt (a, b), cmp: cmp a
-) :<> #[b:bool] bool b // end of [funheap_delim]
+) :<> #[b:bool] bool b // end of [linheap_delim]
 
 (* ****** ****** *)
 
-(* end of [funheap_braun.sats] *)
+fun{a:t@ype}
+linheap_free (hp: heap (a)):<> void
+
+(* ****** ****** *)
+
+(* end of [linheap_binomial.sats] *)

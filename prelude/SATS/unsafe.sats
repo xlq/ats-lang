@@ -64,8 +64,8 @@ castfn cast2ssize {a:t@ype} (x: a):<> ssize_t
 //
 // HX: only if you know what you are doing ...
 //
-fun{a:viewt@ype} ptrget (p: ptr): a
-fun{a:viewt@ype} ptrset (p: ptr, x: a): void
+fun{a:viewt@ype} ptrget (p: ptr):<> a
+fun{a:viewt@ype} ptrset (p: ptr, x: a):<> void
 
 (* ****** ****** *)
 //

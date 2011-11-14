@@ -1,16 +1,21 @@
 (*
 
-// some testing code for [libats/funheap_braun]
+// some testing code for [libats/funheap_binomial]
 
 // Author: Hongwei Xi (hwxi AT cs DOT bu DOT edu)
-// Time: April, 2010
+// Time: November, 2011
 
 *)
 
 (* ****** ****** *)
-
-staload H = "libats/SATS/funheap_braun.sats"
-staload _(*anon*) = "libats/DATS/funheap_braun.dats"
+//
+staload H = "libats/SATS/funheap_binomial.sats"
+//
+// staload _(*anon*) = "libats/DATS/funheap_binomial.dats"
+//
+staload _(*anon*) = "funheap_binomial.dats"
+//
+(* ****** ****** *)
 
 typedef elt = int
 typedef heap_t = $H.heap (elt)
@@ -38,8 +43,6 @@ main (argc, argv) = () where {
 //
   val sz = $H.funheap_size (heap)
   val () = (print "funheap_size (heap) = "; print sz; print_newline ())
-  val ht = $H.funheap_height (heap)
-  val () = (print "funheap_size (heap) = "; print ht; print_newline ())
 //
   val () = loop (sz, heap) where {
     val sz = size1_of_size (sz)
@@ -58,8 +61,12 @@ main (argc, argv) = () where {
       end // end of [if]
     end // end of [loop]
   } // end of [loop]
+//
+  val sz = $H.funheap_size (heap)
+  val () = (print "funheap_size (heap) = "; print sz; print_newline ())
+//
 } // end of [main]
 
 (* ****** ****** *)
 
-(* end of [libats_funheap_braun.dats] *)
+(* end of [libats_funheap_binomial.dats] *)

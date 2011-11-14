@@ -55,12 +55,11 @@
 staload "libats/SATS/funheap_braun.sats"
 
 (* ****** ****** *)
-
 //
 // a specialized version can be implemented on the spot
 //
 implement{a} compare_elt_elt (x1, x2, cmp) = cmp (x1, x2)
-
+//
 (* ****** ****** *)
 
 datatype brauntree (a:t@ype+, int) =
