@@ -114,7 +114,7 @@ fn intvec_ptr_free
   {n:int} {l:addr} (
   pf_gc: free_gc_v (i0nt?, n, l), pf_arr: (intvec n)? @ l | p: ptr l
 ) :<> void =
-  array_ptr_free {i0nt} (pf_gc, pf_arr | p)
+  array_ptr_free {i0nt?} (pf_gc, pf_arr | p)
 // end of [intvec_ptr_free]
 
 (* ****** ****** *)

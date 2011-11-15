@@ -483,7 +483,7 @@ fn posmarklst_sort (
     $Arr.array_ptr_make_lst_vt<ppm> (n, ppms)
   val () = qsort {ppm} (!p_arr, size1_of_int1 n, sizeof<ppm>, cmp)
   val res = loop (!p_arr, n-1, list_vt_nil ())
-  val () = array_ptr_free {ppm} (pf_gc, pf_arr | p_arr)
+  val () = array_ptr_free {ppm?} (pf_gc, pf_arr | p_arr)
 //
 in
   res
