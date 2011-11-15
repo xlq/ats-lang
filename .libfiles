@@ -238,6 +238,10 @@ libc/dynloadall.dats
 libats/SATS/biarray.sats
 libats/DATS/biarray.dats
 
+/* bimatrix (bidirectional matrix) implementation */
+libats/SATS/bimatrix.sats
+libats/DATS/bimatrix.dats
+
 /* FORTRAN matrix: column-major */
 libats/SATS/fmatrix.sats
 libats/DATS/fmatrix.dats
@@ -257,6 +261,10 @@ libats/DATS/fundeque_fingertree.dats
 /* functional heap implementation based on Braun trees */
 libats/SATS/funheap_braun.sats
 libats/DATS/funheap_braun.dats
+
+/* functional heap implementation based on binomial trees */
+libats/SATS/funheap_binomial.sats
+libats/DATS/funheap_binomial.dats
 
 /* functional map implementation based on AVL trees */
 libats/SATS/funmap_avltree.sats

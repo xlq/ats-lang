@@ -291,7 +291,7 @@ in
       val s2e_arg = case+ s2es_arg of
       | list_cons (s2e, _) => s2e | list_nil _ => begin
           prerr_loc_interror loc0;
-          prerr ": p2at_tr_dn: P2Tchar"; prerr_newline ();
+          prerr ": p2at_char_tr_dn"; prerr_newline ();
           $Err.abort {s2exp} ()
         end (* end of [list_nil] *)
       // end of [val]
@@ -989,7 +989,9 @@ end // end of [p2at_vbox_tr_dn]
 
 (* ****** ****** *)
 
-implement p2at_tr_dn (p2t0, s2e0) = let
+implement
+p2at_tr_dn
+  (p2t0, s2e0) = let
   val loc0 = p2t0.p2at_loc
 (*
   val () = begin

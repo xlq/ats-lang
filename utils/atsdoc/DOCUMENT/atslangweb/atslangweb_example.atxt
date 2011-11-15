@@ -233,6 +233,8 @@ typechecking. In particular, there is no proof construction at run-time.
 
 ')#comment("para")
 
+#HR(1)
+
 <h2>#uid("FURTHERexamples", "Further Examples")</h2>
 
 Please find
