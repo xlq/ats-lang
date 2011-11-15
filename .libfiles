@@ -264,7 +264,9 @@ libats/DATS/funheap_braun.dats
 
 /* functional heap implementation based on binomial trees */
 libats/SATS/funheap_binomial.sats
+/*
 libats/DATS/funheap_binomial.dats
+*/
 
 /* functional map implementation based on AVL trees */
 libats/SATS/funmap_avltree.sats
