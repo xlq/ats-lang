@@ -5,7 +5,8 @@ ats-lang-anairiats-0.2.7:
 1. free_gc_viewt0ype_addr_view -> free_gc_t0ype_addr_view
    free_gc_viewt0ype_int_addr_view -> free_gc_t0ype_int_addr_view
 2. ptr_free and array_ptr_free: interface change
-3: Adding libats/SATS/bimatrix.sats. Thanks to Artyom!
+3. Adding funheap_binomial and linheap_binomial
+4. Adding libats/SATS/bimatrix.sats. Thanks to Artyom!
 
 ########################################################################
 
