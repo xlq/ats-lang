@@ -82,7 +82,9 @@ fun workshop_make_tsz
 // locking/unlocking
 //
 fun workshop_get_nworker
-  {a:viewt@ype} {l:agz} (ws: !WORKSHOPptr (a, l)):<> int
+  {a:viewt@ype} {l:agz} (
+  ws: !WORKSHOPptr (a, l)
+) :<> int
   = "atslib_parworkshop_workshop_get_nworker"
 // end of [workshop_get_nworker]
 
@@ -117,7 +119,8 @@ workshop_add_worker
 
 fun{a:viewt@ype}
 workshop_add_nworker
-  {l:agz} {n:nat} (ws: !WORKSHOPptr (a, l), n: int n): int(*err*)
+  {l:agz} {n:nat}
+  (ws: !WORKSHOPptr (a, l), n: int n): int(*err*)
 // end of [workshop_add_nworker]
 
 (* ****** ****** *)
@@ -131,19 +134,33 @@ fun{a:viewt@ype}
 workshop_remove_work {l:agz} (ws: !WORKSHOPptr (a, l)): a
 
 (* ****** ****** *)
-
+//
+// HX: wait until all workers have quit
+//
 fun workshop_wait_quit_all
   {a:viewt@ype} {l:agz} (ws: !WORKSHOPptr (a, l)): void
 // end of [workshop_wait_quit_all]
 
+(* ****** ****** *)
+//
+// HX: wait until all workers have paused
+//
 fun workshop_wait_paused_all
   {a:viewt@ype} {l:agz} (ws: !WORKSHOPptr (a, l)): void
 // end of [workshop_wait_paused_all]
 
+//
+// HX: resume all the workers that are currently paused
+//
 fun workshop_resume_paused_all
   {a:viewt@ype} {l:agz} (ws: !WORKSHOPptr (a, l)): void
 // end of [workshop_resume_paused_all]
 
+(* ****** ****** *)
+
+//
+// HX: wait until all workers have blocked
+//
 fun workshop_wait_blocked_all
   {a:viewt@ype} {l:agz} (ws: !WORKSHOPptr (a, l)): void
 // end of [workshop_wait_blocked_all]
