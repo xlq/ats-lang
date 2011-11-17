@@ -508,6 +508,35 @@ end // end of [s2explst_nfapp]
 
 (* ****** ****** *)
 
+fn etaexpand_s2exp_s2exp
+  (s2e1: s2exp, s2e2: s2exp): @(s2exp, s2exp) = let
+  val s2t0 = s2e1.s2exp_srt
+in
+//
+case+ s2t0 of
+  | S2RTfun (s2ts_arg, s2t_res) => let
+      val s2es_arg = $Lst.list_map_fun
+        (s2ts_arg, lam s2t =<1> s2exp_var (s2var_make_srt (s2t)))
+      val s2e1 = s2exp_app_srt (s2t_res, s2e1, s2es_arg)
+      val s2e2 = s2exp_app_srt (s2t_res, s2e2, s2es_arg)
+    in
+      (s2e1, s2e2)
+    end // end of [S2RTfun]
+  | _ => (s2e1, s2e2) // end of [_]
+//
+end // end of [eta_expand]
+
+fn islam_s2exp (s2e: s2exp): bool =
+  case+ s2e.s2exp_node of S2Elam _ => true | _ => false
+// end of [islam_s2exp]
+
+fn islam_s2exp_s2exp
+  (s2e1: s2exp, s2e2: s2exp): bool =
+  if islam_s2exp (s2e1) then true else islam_s2exp (s2e2)
+// end of [islam_s2exp_s2exp]
+
+(* ****** ****** *)
+
 fun s2eff_syneq (s2fe1: s2eff, s2fe2: s2eff): bool = begin
   case+ (s2fe1, s2fe2) of
   | (S2EFFall (), S2EFFall ()) => true
@@ -689,6 +718,16 @@ in
   | S2EVar s2V1 => begin case+ s2e20.s2exp_node of
     | S2EVar s2V2 => eq_s2Var_s2Var (s2V1, s2V2) | _ => false
     end // end of [S2EVar]
+  | _ when islam_s2exp_s2exp (s2e10, s2e20) => let
+(*
+      val () = (
+        print "s2exp_syneq: eta expansion"; print_newline ()
+      ) // end of [val]
+*)
+      val (s2e10, s2e20) = etaexpand_s2exp_s2exp (s2e10, s2e20)
+    in
+      s2exp_syneq (s2e10, s2e20)
+    end
   | _ => false (* test accuracy may be increased ... *)
 end // end of [s2exp_syneq]
 

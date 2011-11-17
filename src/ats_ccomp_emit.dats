@@ -636,6 +636,9 @@ fn emit_valprim_ptrof {m:file_mode}
     in
       fprint1_string (pf | out, "env"); fprint1_int (pf | out, ind)
     end // end of [VPenv]
+  | VPext nam => () where {
+      val () = fprintf (pf | out, "(&%s)", @(nam))
+    } // end of [VPextval]
   | VPtmpref tmp => let
       val () = fprint1_string (pf | out, "(&")
       val () = emit_tmpvar (pf | out, tmp)

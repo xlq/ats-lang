@@ -1132,24 +1132,31 @@ end (* end of [ccomp_exp_ptrof_var] *)
 (* ****** ****** *)
 
 fn ccomp_exp_refarg (
-    res: &instrlst_vt
-  , refval: int
-  , hie: hiexp
-  ) : valprim = begin case+ 0 of
+  res: &instrlst_vt
+, refval: int, hie: hiexp
+) : valprim = begin case+ 0 of
   | _ when refval = 0 => ccomp_exp (res, hie)
-  | _ (*call-by-ref*) => begin case+ hie.hiexp_node of
+  | _ (*call-by-ref*) => (
+    case+ hie.hiexp_node of
     | HIEvar d2v_mut =>
         ccomp_exp_ptrof_var (res, d2v_mut, list_nil ())
     | HIEsel_ptr (hie_ptr, hils) =>
         ccomp_exp_ptrof_ptr (res, hie_ptr, hils)
     | HIEsel_var (d2v_mut, hils) =>
         ccomp_exp_ptrof_var (res, d2v_mut, hils)
+    | HIEextval (name) => let
+        val hit =
+          hityp_normalize (hie.hiexp_typ)
+        // end of [val]
+      in
+        valprim_ptrof (valprim_ext (name, hit))
+      end // end of [HIEextval]
     | _ => begin
         prerr_loc_interror (hie.hiexp_loc);
         prerr ": ccomp_exp_refarg: hie = "; prerr_hiexp hie; prerr_newline ();
         $Err.abort {valprim} ()
       end // end of [_]
-  end // end of [_]
+  ) // end of [_]
 end (* end of [ccomp_exp_refarg] *)
 
 (* ****** ****** *)
