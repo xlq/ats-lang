@@ -96,6 +96,7 @@ d2exp_is_varlamcst
   | D2Elam_dyn _ => true
   | D2Echar _ => true
   | D2Eint _ => true
+  | D2Efloat _ => true
   | D2Estring _ => true
   | D2Etop _ => true
   | _ => false

@@ -52,14 +52,16 @@ castfn cast {to:t@ype} {from:t@ype} (x: from):<> to
 castfn castvwtp1 {to:t@ype} {from:viewt@ype} (x: !from):<> to
 
 (* ****** ****** *)
-
+//
+castfn cast2ptr {a:type} (x: a):<> ptr
+//
 castfn cast2int {a:t@ype} (x: a):<> int
 castfn cast2uint {a:t@ype} (x: a):<> uint
 castfn cast2lint {a:t@ype} (x: a):<> lint
 castfn cast2ulint {a:t@ype} (x: a):<> ulint
 castfn cast2size {a:t@ype} (x: a):<> size_t
 castfn cast2ssize {a:t@ype} (x: a):<> ssize_t
-
+//
 (* ****** ****** *)
 //
 // HX: only if you know what you are doing ...

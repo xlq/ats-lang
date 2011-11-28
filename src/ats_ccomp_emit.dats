@@ -191,13 +191,20 @@ atsopt_emit_filename (ats_ptr_type out, ats_ptr_type fil) {
 implement
 emit_d2con
   (pf | out, d2c) = let
-  val fil = d2con_get_fil d2c
-  val sym = d2con_get_sym d2c
+  val fil = d2con_get_fil (d2c)
+  val sym = d2con_get_sym (d2c)
   val name = $Sym.symbol_name sym
   val () = emit_filename (pf | out, fil)
   val () = fprint1_string (pf | out, "__")
+  val () = emit_identifier (pf | out, name)
+  val tag = d2con_get_tag (d2c)
+  val () = if
+    tag >= 0 then { // HX: no exncon
+    val () = fprint1_string (pf | out, "_")
+    val () = fprint1_int (pf | out, tag)
+  } // end of [val]
 in
-  emit_identifier (pf | out, name)
+  // nothing
 end // end of [emit_d2con]
 
 implement
