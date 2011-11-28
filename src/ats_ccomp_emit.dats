@@ -199,10 +199,11 @@ emit_d2con
   val () = emit_identifier (pf | out, name)
   val tag = d2con_get_tag (d2c)
   val () = if
-    tag >= 0 then { // HX: no exncon
-    val () = fprint1_string (pf | out, "_")
-    val () = fprint1_int (pf | out, tag)
-  } // end of [val]
+    tag >= 0 then let // HX: no exncon
+    val () = fprintf1_exn (pf | out, "_%i", @(tag))
+  in
+    // nothing
+  end // end of [val]
 in
   // nothing
 end // end of [emit_d2con]
@@ -644,7 +645,7 @@ fn emit_valprim_ptrof {m:file_mode}
       fprint1_string (pf | out, "env"); fprint1_int (pf | out, ind)
     end // end of [VPenv]
   | VPext nam => () where {
-      val () = fprintf (pf | out, "(&%s)", @(nam))
+      val () = fprintf1_exn (pf | out, "(&%s)", @(nam))
     } // end of [VPextval]
   | VPtmpref tmp => let
       val () = fprint1_string (pf | out, "(&")
