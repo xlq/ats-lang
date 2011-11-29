@@ -459,7 +459,7 @@ file_is_exec (
   int ret = stat (name, &buf) ;
 //
   if (ret < 0) { atspre_exit_prerrf
-    (errno, "exit(ATS): File [%s] does not exist.\n", atsopt_global) ;
+    (1, "exit(ATS): File [%s] does not exist.\n", atsopt_global) ;
   } // end of [if]
 //
   return (S_IXUSR & buf.st_mode) ;
