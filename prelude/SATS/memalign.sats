@@ -43,6 +43,10 @@
 
 (* ****** ****** *)
 
+#define ATS_STALOADFLAG 0 // HX: there no need for staloading
+
+(* ****** ****** *)
+
 (*
 //
 // HX-2011-09-20: do we need this?
