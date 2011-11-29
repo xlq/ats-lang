@@ -204,6 +204,11 @@ libats_funheap_braun: libats_funheap_braun.dats
 	$(ATSCC) -D_ATS_GCATS -O2 -o $@ $< && ./$@ 100000
 cleanall:: ; $(RMF) libats_funheap_braun
 
+checkall:: libats_funheap_binomial
+libats_funheap_binomial: libats_funheap_binomial.dats
+	$(ATSCC) -D_ATS_GCATS -O2 -o $@ $< && ./$@ 100000
+cleanall:: ; $(RMF) libats_funheap_binomial
+
 ######
 
 checkall:: libats_funmap_avltree
@@ -274,6 +279,13 @@ checkall:: libats_linbitvec
 libats_linbitvec: libats_linbitvec.dats
 	$(ATSCC) -O2 -o $@ $< && ./libats_linbitvec
 cleanall:: ; $(RMF) libats_linbitvec
+
+######
+
+checkall:: libats_linheap_binomial
+libats_linheap_binomial: libats_linheap_binomial.dats
+	$(ATSCC) -D_ATS_GCATS -O2 -o $@ $< && ./$@ 100000
+cleanall:: ; $(RMF) libats_linheap_binomial
 
 ######
 

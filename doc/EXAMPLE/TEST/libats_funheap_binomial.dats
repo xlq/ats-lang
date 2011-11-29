@@ -10,10 +10,7 @@
 (* ****** ****** *)
 //
 staload H = "libats/SATS/funheap_binomial.sats"
-//
-// staload _(*anon*) = "libats/DATS/funheap_binomial.dats"
-//
-staload _(*anon*) = "funheap_binomial.dats"
+staload _(*anon*) = "libats/DATS/funheap_binomial.dats"
 //
 (* ****** ****** *)
 

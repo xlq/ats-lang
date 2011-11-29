@@ -3,7 +3,7 @@
 ** A tool for presenting slides
 **
 ** Author: Hongwei Xi (hwxi AT cs DOT bu DOT edu)
-** Time: Summer, 2008 // originally done
+** Time: Summer, 2008 // original version based on SDL
 ** Time: October, 2011 // adapted to gtkglext-1.0
 **
 *)
@@ -431,16 +431,17 @@ end // end of [local]
 
 #define
 ACTpresent 0 // default
-#define ACTcuberot 1
-#define ACTcylindrot 2
-#define ACTsliding 3 // left-right/top-bottom
-#define ACTdisking 4 // disk expanding (and its reversal)
-#define ACTfadeout 5 // fading gradually (and its reversal)
-#define ACTfolding01 6 // folding and unfolding
-#define ACTfolding02 7 // folding and unfolding
-#define ACTrandom01 8 // random squares
-#define ACTrandom02 9 // random horizontal stripes
-#define ACTrandom03 10 // random vertical stripes
+#define ACTrectrot 1
+#define ACTtriangrot 2
+#define ACTcylindrot 3
+#define ACTsliding 4 // left-right/top-bottom
+#define ACTdisking 5 // disk expanding (and its reversal)
+#define ACTfadeout 6 // fading gradually (and its reversal)
+#define ACTfolding01 7 // folding and unfolding
+#define ACTfolding02 8 // folding and unfolding
+#define ACTrandom01 9 // random squares
+#define ACTrandom02 10 // random horizontal stripes
+#define ACTrandom03 11 // random vertical stripes
 
 local
 //
@@ -494,7 +495,7 @@ end // end of [fexpose_present]
 
 (* ****** ****** *)
 
-fun fexpose_cuberot
+fun fexpose_rectrot
   (vpw: int, vph: int): void = let
   val surface =
     cairo_image_surface_create (CAIRO_FORMAT_ARGB32, vpw, vph)
@@ -547,7 +548,19 @@ fun fexpose_cuberot
 //
 in
   // nothing
-end // end of [fexpose_cuberot]
+end // end of [fexpose_rectrot]
+
+(* ****** ****** *)
+
+fun fexpose_triangrot
+  (vpw: int, vph: int): void = let
+  val surface =
+    cairo_image_surface_create (CAIRO_FORMAT_ARGB32, vpw, vph)
+  val vpw = (double_of)vpw
+  and vph = (double_of)vph
+in
+  // nothing
+end // end of [fexpose_triangrot]
 
 (* ****** ****** *)
 
@@ -1221,7 +1234,8 @@ in
     val theActState = theActState_get ()
     val () = (
       case+ theActState of
-      | ACTcuberot => fexpose_cuberot (vpw, vph)
+      | ACTrectrot => fexpose_rectrot (vpw, vph)
+      | ACTtriangrot => fexpose_triangrot (vpw, vph)
       | ACTcylindrot => fexpose_cylindrot (vpw, vph)
       | ACTsliding => fexpose_sliding (vpw, vph)
       | ACTdisking => fexpose_disking (vpw, vph)
