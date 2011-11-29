@@ -597,12 +597,13 @@ atscc_main (
 
   pid = fork () ;
   if (pid < 0) {
-    ats_exit_errmsg (errno, "Exit: [fork] failed.\n") ;
+    ats_exit_errmsg (1, "Exit: [fork] failed.\n") ;
   } /* end of [if] */
   if (pid == 0) execvp (gcc, argv_new) ; // this is the child
+  status = 0 ;
   wait (&status) ; // this is the parent
   if (status) {
-    atspre_exit_prerrf (status, "Exit: [%s] failed.\n", gcc) ;
+    atspre_exit_prerrf (1, "Exit: [%s] failed.\n", gcc) ;
   } /* end of [if] */
   return ;
 } // end of [atscc_main]

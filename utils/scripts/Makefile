@@ -48,6 +48,8 @@ CCFLAGS=-O2 -g
 all: atscc atslib
 	echo "[atscc] and [atslib] have been generated."
 
+######
+
 atscc:  atscc_main_dats.c \
           top_sats.o basics_dats.o pkgconfig.o atscc_dats.o \
           errno_sats.o fcntl_sats.o stdio_sats.o stdlib_sats.o string_sats.o unistd_sats.o \
@@ -56,6 +58,8 @@ atscc:  atscc_main_dats.c \
           top_sats.o basics_dats.o pkgconfig.o atscc_dats.o \
           errno_sats.o fcntl_sats.o stdio_sats.o stdlib_sats.o string_sats.o unistd_sats.o \
           sys_types_sats.o sys_wait_sats.o
+
+######
 
 atslib: atslib_main_dats.c \
           top_sats.o basics_dats.o atscc_dats.o atslib_dats.o \
@@ -66,8 +70,12 @@ atslib: atslib_main_dats.c \
           fcntl_sats.o stdio_sats.o stdlib_sats.o unistd_sats.o \
           sys_types_sats.o sys_wait_sats.o
 
+######
+
 atspack: atspack.dats
 	$(ATSCC) -o atspack $(CCFLAGS) atspack.dats
+
+######
 
 deltabs: deltabs.dats
 	$(ATSCC) -o deltabs $(CCFLAGS) deltabs.dats -D_ATS_gcats
