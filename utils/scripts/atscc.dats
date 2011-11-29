@@ -71,7 +71,7 @@ typecheck_file
   val (pf_ifexited | ifexited) = WIFEXITED (status)
   val () = if ifexited then let
     val code = WEXITSTATUS (pf_ifexited | status) in
-    if code <> 0 then exit_prerrf {void}
+    if code != 0 then exit_prerrf {void}
       (code, "exit(ATS): [typecheck_file(%s)] failed.\n", @(infile))
     // end of [if]
   end // end of [val]
@@ -104,7 +104,7 @@ ccomp_file_to_file
   val (pf_ifexited | ifexited) = WIFEXITED (status)
   val () = if ifexited then let
     val code = WEXITSTATUS (pf_ifexited | status) in
-    if (code <> 0) then exit_prerrf {void} (code,
+    if (code != 0) then exit_prerrf {void} (code,
       "exit(ATS): [ccomp_file_to_file(%s, %s)] failed.\n", @(infile, outfile)
     ) // end of [if]
   end // end of [val]
@@ -126,7 +126,7 @@ atscc_version () = () where { val status =
   val (pf_ifexited | ifexited) = WIFEXITED (status)
   val () = if ifexited then let
     val code = WEXITSTATUS (pf_ifexited | status) in
-    if code <> 0 then exit_prerrf {void}
+    if code != 0 then exit_prerrf {void}
       (code, "exit(ATS): [atscc_version] failed.\n", @())
     // end of [if]
   end // end of [val]

@@ -61,8 +61,8 @@ ar_s_exn (libfile) = let
     fork_exec_and_wait_cloptr_exn (lam () => ar_s_exec (libfile))
   // end of [val]
 in
-  if (status <> 0) then
-    exit_prerrf {void} (status, "exit(ATS): [ar_s(%s)] failed\n", @(libfile))
+  if (status != 0) then
+    exit_prerrf {void} (1, "exit(ATS): [ar_s(%s)] failed\n", @(libfile))
   // end of [if]
 end // end of [ar_s_exn]
 
@@ -138,17 +138,17 @@ ccomp_gcc_ar_libfile
   val outfile_c = sbp2str (outfile + ".c")
   val status = ccomp_file_to_file_err
     (flag_stadyn, STRLSTnil(*param_ats*), infile, outfile_c)
-  val () = if (status <> 0) then exit_prerrf {void}
-    (status, "exit(ATS): [ccomp_gcc_ar_libfile(%s)] failed: ccomp\n", @(infile))
+  val () = if (status != 0) then exit_prerrf {void}
+    (1, "exit(ATS): [ccomp_gcc_ar_libfile(%s)] failed: ccomp\n", @(infile))
   // end of [val]
   val outfile_o = sbp2str (outfile + ".o")
   val status = gcc_libfile_err (param_rev, outfile_c, outfile_o)
-  val () = if (status <> 0) then begin exit_prerrf {void}
-    (status, "exit(ATS): [ccomp_gcc_ar_libfile(%s)] failed: gcc\n", @(infile))
+  val () = if (status != 0) then begin exit_prerrf {void}
+    (1, "exit(ATS): [ccomp_gcc_ar_libfile(%s)] failed: gcc\n", @(infile))
   end // end of [val]
   val status = ar_r_err (libfile, outfile_o)
-  val () = if (status <> 0) then exit_prerrf {void}
-    (status, "exit(ATS): [ccomp_gcc_ar_libfile(%s)] failed: ar\n", @(infile))
+  val () = if (status != 0) then exit_prerrf {void}
+    (1, "exit(ATS): [ccomp_gcc_ar_libfile(%s)] failed: ar\n", @(infile))
   // end of [val]
 in
   printf ("The file [%s] has been compiled and archived.\n", @(infile))
@@ -395,7 +395,7 @@ atsutil_fget_line
   char *buf0, *buf1, *p;
 //
   if (feof((FILE *)file)) {
-    ats_exit_errmsg(1, (ats_string_type)"exit(ATS): [fget_line] failed: EOF\n");
+    ats_exit_errmsg (1, (ats_string_type)"exit(ATS): [fget_line] failed: EOF\n");
   } // end of [if]
 //
   sz = INCSZ;

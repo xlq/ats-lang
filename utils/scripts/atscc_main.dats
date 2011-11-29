@@ -565,7 +565,8 @@ atscc_main (
 ) {
   int i, n ;
   ats_sum_ptr_type ss ;
-  ats_ptr_type argv_new, p ; pid_t pid ; int status ;
+  ats_ptr_type argv_new, p ; pid_t pid ;
+  int status, ecode ;
 
   extern ats_ptr_type ATSCCOMP_gcc ;
 
@@ -603,7 +604,10 @@ atscc_main (
   status = 0 ;
   wait (&status) ; // this is the parent
   if (status) {
-    atspre_exit_prerrf (1, "Exit: [%s] failed.\n", gcc) ;
+    if (WIFEXITED(status))
+      ecode = WEXITSTATUS(status) ; else ecode = EXIT_FAILURE ;
+    // end of [if]
+    atspre_exit_prerrf (ecode, "Exit: [%s] failed.\n", gcc) ;
   } /* end of [if] */
   return ;
 } // end of [atscc_main]

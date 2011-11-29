@@ -336,27 +336,27 @@ end // end of [lstrlst_reverse]
 /* ****** ****** */
 
 ats_void_type // also defined in [prelude/DATS/basics.dats]
-ats_exit(const ats_int_type status) { exit(status) ; return ; }
+ats_exit(const ats_int_type ecode) { exit (ecode) ; return ; }
 
 ats_void_type // also defined in [prelude/DATS/basics.dats]
 ats_exit_errmsg (
-  const ats_int_type status, const ats_ptr_type errmsg
+  ats_int_type ecode, ats_ptr_type errmsg
 ) {
-  fprintf(stderr, "%s", (char *)errmsg) ; exit(status) ; return ;
+  fprintf(stderr, "%s", (char*)errmsg) ; exit (ecode) ; return ;
 } // end of [ats_exit_errmsg]
 
 /* ****** ****** */
 
 ats_void_type // also defined in [prelude/DATS/printf.dats]
-atspre_exit_prerrf ( // [status] should be of the type uint8
-  const ats_int_type status, const ats_ptr_type fmt, ...
+atspre_exit_prerrf ( // [ecode] should be of the type uint8
+  ats_int_type ecode, const ats_ptr_type fmt, ...
 ) {
   va_list ap ;
   va_start(ap, fmt) ; vfprintf(stderr, (char *)fmt, ap) ; va_end(ap) ;
 /*
-  fprintf (stderr, "atspre_exit_prerrf: status = %i\n", status) ;
+  fprintf (stderr, "atspre_exit_prerrf: ecode = %i\n", ecode) ;
 */
-  exit(status) ;
+  exit (ecode) ;
   return ; // deadcode
 } // end of [atspre_exit_prerrf]
 
@@ -374,9 +374,9 @@ atspre_assert_prerrf (
     err = vfprintf(stderr, (char *)fmt, ap) ;
     va_end(ap) ;
     if (err < 0) { ats_exit_errmsg
-      (err, "exit(ATS): [atspre_assert_prerrf]: prerrf failed\n") ;
+      (1, "exit(ATS): [atspre_assert_prerrf]: prerrf failed\n") ;
     } else { ats_exit_errmsg
-      (  1, "exit(ATS): [atspre_assert_prerrf]: assert failed\n") ;
+      (1, "exit(ATS): [atspre_assert_prerrf]: assert failed\n") ;
     } /* end of [if] */
   } /* end of [if] */
 //
@@ -492,14 +492,21 @@ ats_int_type
 atslib_fork_exec_and_wait_cloptr_exn
   (ats_ptr_type f_child) {
   pid_t pid ;
-  int status ;
+  int status, ecode ;
 
   pid = fork () ;
   if (pid < 0) {
-    ats_exit_errmsg (errno, "Exit: [fork] failed.\n") ;
+    ats_exit_errmsg (1, "Exit: [fork] failed.\n") ;
   }
   if (pid > 0) {
-    wait (&status) ; ATS_FREE (f_child) ; return status ;
+    wait (&status) ;
+    ATS_FREE (f_child) ;
+    if (status) {
+      if (WIFEXITED(status))
+        ecode = WEXITSTATUS(status) ; else ecode = EXIT_FAILURE ;
+      // end of [if]
+      exit (ecode) ;
+    } else return (0) ;
   } // end of [if]
   /* this is the child */
   ((ats_void_type (*)(ats_clo_ptr_type))((ats_clo_ptr_type)f_child)->closure_fun)(f_child) ;

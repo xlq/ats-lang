@@ -280,11 +280,13 @@ int execvp_with_stdout (char **result, char* argv[])
 
   close(filedes[0]);
 
-  int status;
+  int status, ecode ;
   waitpid(pid, &status, 0);
-  *result = buf;
-
-  return status;
+  if (WIFEXITED(status))
+    ecode = WEXITSTATUS(status) ; else ecode = EXIT_FAILURE ;
+  // end of [if]
+  *result = buf ;
+  return ecode ;
 }
 
 %} (* end of [%{^] *)
