@@ -264,9 +264,7 @@ libats/DATS/funheap_braun.dats
 
 /* functional heap implementation based on binomial trees */
 libats/SATS/funheap_binomial.sats
-/*
 libats/DATS/funheap_binomial.dats
-*/
 
 /* functional map implementation based on AVL trees */
 libats/SATS/funmap_avltree.sats
@@ -323,6 +321,10 @@ libats/DATS/iterint.dats
 /* linear bit vector implementation */
 libats/SATS/linbitvec.sats
 libats/DATS/linbitvec.dats
+
+/* linear heap implementation based on binomial trees */
+libats/SATS/linheap_binomial.sats
+libats/DATS/linheap_binomial.dats
 
 /* linear map implementation based on AVL trees */
 libats/SATS/linmap_avltree.sats
