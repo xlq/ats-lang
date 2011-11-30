@@ -42,9 +42,18 @@
 
 /* ****** ****** */
 
-#include "ats_exception.h"
-#include "ats_memory.h"
+/*
+** these functions are declared in stdlib.h
+*/
+extern int atoi (const char* cs) ;
+extern long int atol (const char* cs) ;
+extern long long int atoll (const char* cs) ;
+
+/* ****** ****** */
+
 #include "ats_types.h"
+#include "ats_memory.h"
+#include "ats_exception.h"
 
 /* ****** ****** */
 
@@ -74,7 +83,8 @@ atspre_int_of_uchar (ats_uchar_type c) { return c ; }
 
 ATSinline()
 ats_int_type
-atspre_int_of_string (ats_ptr_type s) { return atoi((char*)s) ; }
+atspre_int_of_string
+  (ats_ptr_type s) { return atoi((char*)s) ; }
 /* end of [atspre_int_of_string] */
 
 //
@@ -627,7 +637,7 @@ atspre_uint_of_lint (ats_lint_type li) { return li ; }
 ATSinline()
 ats_lint_type
 atspre_lint_of_string
-  (ats_ptr_type s) { return atol ((char*)s) ; }
+  (ats_ptr_type s) { return atol((char*)s) ; }
 // end of [atspre_lint_of_string]
 
 // arithmetic functions and comparison functions
@@ -1019,7 +1029,7 @@ atspre_llint_of_double
 ATSinline()
 ats_llint_type
 atspre_llint_of_string
-  (ats_ptr_type s) { return atoll ((char*)s) ; }
+  (ats_ptr_type s) { return atoll((char*)s) ; }
 // end of [atspre_llint_of_string]
 
 //
