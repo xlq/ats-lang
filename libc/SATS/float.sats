@@ -51,14 +51,14 @@
 (* ****** ****** *)
 
 fun{a:t@ype} RADIX_tmp (): int
-macdef DBL_RADIX = $extval (int, "DBL_RADIX")
 macdef FLT_RADIX = $extval (int, "FLT_RADIX")
+macdef DBL_RADIX = $extval (int, "DBL_RADIX")
 macdef LDBL_RADIX = $extval (int, "LDBL_RADIX")
 
-//
-// HX: there is no DBL_ROUNDS or LDBL_ROUNDS
-//
+fun{a:t@ype} ROUNDS_tmp (): int
 macdef FLT_ROUNDS = $extval (int, "FLT_ROUNDS")
+macdef DBL_ROUNDS = $extval (int, "DBL_ROUNDS")
+macdef LDBL_ROUNDS = $extval (int, "LDBL_ROUNDS")
 
 (* ****** ****** *)
 
