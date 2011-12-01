@@ -45,7 +45,6 @@
 #ifndef DBL_RADIX
 #define DBL_RADIX FLT_RADIX
 #endif
-
 #ifndef LDBL_RADIX
 #define LDBL_RADIX FLT_RADIX
 #endif
@@ -55,7 +54,6 @@
 #ifndef DBL_ROUNDS
 #define DBL_ROUNDS FLT_ROUNDS
 #endif
-
 #ifndef LDBL_ROUNDS
 #define LDBL_ROUNDS FLT_ROUNDS
 #endif

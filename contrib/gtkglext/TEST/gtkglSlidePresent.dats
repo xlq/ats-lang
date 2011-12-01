@@ -558,6 +558,58 @@ fun fexpose_triangrot
     cairo_image_surface_create (CAIRO_FORMAT_ARGB32, vpw, vph)
   val vpw = (double_of)vpw
   and vph = (double_of)vph
+//
+  val vert = !theRotateknd_ref; val hori = 1 - vert
+//
+  val [l:addr] cr = cairo_create (surface)
+  val (pf_save | ()) = cairo_save (cr)
+  val () = cairo_scale (cr, vpw, vph)
+  val () = cairodraw_slide_relative (cr, 0) // current one
+  val () = cairodraw_clock01 (cr) // HX: a translucent clock layover
+  val () = cairo_restore (pf_save | cr)
+  val gltext1 = glTexture_make_cairo_ref (GL_BGRA_format, cr)
+//
+  val (pf_save | ()) = cairo_save (cr)
+  val () = cairo_scale (cr, vpw, vph)
+  val () = cairodraw_slide_relative (cr, 1) // next one
+  val () = cairodraw_clock01 (cr) // HX: a translucent clock layover
+  val () = cairo_restore (pf_save | cr)
+  val gltext2 = glTexture_make_cairo_ref (GL_BGRA_format, cr)
+//
+  val () = cairo_destroy (cr)
+  val () = cairo_surface_destroy (surface)
+//
+  val () = glClear (GL_COLOR_BUFFER_BIT)
+  val () = glColor3d (0.0, 0.0, 0.0) // black color
+//
+  val (pfmat | ()) = glPushMatrix ()
+//
+  val () = glEnable (GL_CULL_FACE)
+  val () = glCullFace (GL_BACK) // HX: prevent transparency!
+  val z0 = 1.0/3
+  val () = () where {
+    val alpha = !theAlpha_ref
+    val () = if vert > 0 then glRotated (~2*alpha/3, 0.0, 1.0, 0.0)
+    val () = if hori > 0 then glRotated (~2*alpha/3, 1.0, 0.0, 0.0)
+  } // end of [val]
+  val () = glTranslated (~0.5, ~0.5, z0)
+  val () = glTexture_mapout_rect_all (gltext1, 1.0, 1.0, 1(*down*))
+  val () = if vert > 0 then {
+    val () = glTranslated (1.0, 0.0, 0.0)
+    val () = glRotated (120.0, 0.0, 1.0, 0.0)
+  } // end of [val]
+  val () = if hori > 0 then {
+    val () = glTranslated (0.0, 1.0/2, ~sqrt(3.0)/2)
+    val () = glRotated (120.0, 1.0, 0.0, 0.0)
+  } // end of [val]
+  val () = glTexture_mapout_rect_all (gltext2, 1.0, 1.0, 1(*down*))
+  val () = glDisable (GL_CULL_FACE)
+//
+  val () = glPopMatrix (pfmat | (*none*))
+//
+  val () = glDeleteTexture (gltext1)
+  val () = glDeleteTexture (gltext2)
+//
 in
   // nothing
 end // end of [fexpose_triangrot]
@@ -1372,7 +1424,7 @@ fnext () = let
 in
 //
 if (x = 0) then let
-  val rotknd = 1 + randint(10)
+  val rotknd = 1 + randint(11)
   val () = theActState_set (rotknd)
   val () = timeout_add () in (*nothing*)
 end else let
