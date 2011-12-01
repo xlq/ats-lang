@@ -63,15 +63,15 @@ extern prfun P3aux1_ft3 {n:nat}
 //
 extern fun P3aux1_fun
   {n:nat | n >= 2 }
-  (n: &intinf n): [p:pos] (P3aux1 (n, p) | int p) = "P3aux1_fun"
+  (n: !intinf n): [p:pos] (P3aux1 (n, p) | int p) = "P3aux1_fun"
 // end of [P3aux1_fun]
 
 (* ****** ****** *)
 
-extern fun P3aux1_fun_dummy {n:nat} (n: &intinf n): int = "P3aux1_fun"
+extern fun P3aux1_fun_dummy {n:nat} (n: !intinf n): int = "P3aux1_fun"
 
 implement P3aux1_fun_dummy {n} (n) = let
-  fun loop {p:pos} (n: &intinf n, p: int p): int =
+  fun loop {p:pos} (n: !intinf n, p: int p): int =
     if n >= p * p then let
       val (_ | r) = n mod p
     in
@@ -104,17 +104,16 @@ extern prfun P3_ft2 {n:nat}
 (* ****** ****** *)
 
 extern fun div {n:nat} {p:pos}
-  (n: &intinf n, p: int p): [q:int] (DIV (n, p, q) | intinfptr_gc q)
+  (n: !intinf n, p: int p): [q:int] (DIV (n, p, q) | intinf q)
   = "atslib_fdiv_intinf_int"
 // end of [div]
 
 fun P3main {n:int | n >= 2} // .<n>.
-  (n: &intinf n): [p:int] (P3 (n, p) | int p) = let
+  (n: !intinf n): [p:int] (P3 (n, p) | int p) = let
   val [p1:int] (pf_P3aux1 | p1) = P3aux1_fun (n)
 in
   if p1 >= 2 then let
-    val (pf_div | n2obj) = div (n, p1)
-    val (pf_n2_gc, pf_n2 | p_n2) = n2obj
+    val (pf_div | n2) = div (n, p1)
     prval (pf_prime, pf_mod) = P3aux1_ft2 (pf_P3aux1)
     prval pf_mul = divmod_ft (pf_div, pf_mod) // n = p1 * n2
     prval pf1_P3 = P3_ft1 (pf_prime)
@@ -137,8 +136,8 @@ in
     in
       lemma (pf1_mul, pf_mul)
     end // end of [val]
-    val (pf2_P3 | p2) = P3main (!p_n2)
-    val () = intinfptr_free @(pf_n2_gc, pf_n2 | p_n2)
+    val (pf2_P3 | p2) = P3main (n2)
+    val () = intinf_free (n2)
     prval pf_P3 = P3_ft2 (pf_mul, pf1_P3, pf2_P3)
   in
     (pf_P3 | max (p1, p2))
@@ -159,40 +158,21 @@ dynload "libats/DATS/intinf.dats"
 
 implement main () = () where {
   val N1 = 13195
-  val (pf_N1_gc, pf_N1 | p_N1) = intinf_make (N1)
-  val (pf_P3 | p) = P3main (!p_N1)
-  val () = intinfptr_free @(pf_N1_gc, pf_N1 | p_N1)
-  val () = printf ("The largest prime factor of [%i] is [%i].\n", @(N1,p))
+  val _N1 = intinf_make (N1)
+  val (pf_P3 | p) = P3main (_N1)
+  val () = intinf_free (_N1)
+  val () = println! ("The largest prime factor of [", N1, "] is [", p, "].")
 //
   val N2 = 600851475143LL
   val [n2:int] N21 = llint1_of_llint (N2)
   prval () = __assert () where { extern prfun __assert (): [n2 >= 2] void }
-  val (pf_N21_gc, pf_N21 | p_N21) = intinf_make_llint (N21)
-  val (pf_P3 | p) = P3main (!p_N21)
+  val _N21 = intinf_make_llint (N21)
+  val (pf_P3 | p) = P3main (_N21)
+  val () = intinf_free (_N21)
   val () = assert_errmsg (p = 6857, #LOCATION)
   val () = begin
     print ("The largest prime factor of ["); print N2; print "] is ["; print p; print "]."; print_newline ()
   end // end of [val]
-//
-(*
-  val [_:int] (pf_mul | N3obj) = square (!p_N21)
-*)
-//
-  val () = intinfptr_free @(pf_N21_gc, pf_N21 | p_N21)
-//
-(*
-  // HX-2010-02-06: I added this one
-  val (pf_N3_gc, pf_N3 | p_N3) = N3obj
-  val N4obj = !p_N3 - 1
-  val () = intinf_free (pf_N3_gc, pf_N3 | p_N3)
-  val (pf_N4_gc, pf_N4 | p_N4) = N4obj
-  val () = assert (!p_N4 >= 2)
-  val (pf_P3 | p) = P3main (!p_N4)
-  val () = begin
-    print ("The largest prime factor of ["); print !p_N4; print "] is ["; print p; print "]."; print_newline ()
-  end // end of [val]
-  val () = intinf_free (pf_N4_gc, pf_N4 | p_N4)
-*)
 } // end of [main]
 
 (* ****** ****** *)

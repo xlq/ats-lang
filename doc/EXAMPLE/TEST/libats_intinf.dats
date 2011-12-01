@@ -14,23 +14,20 @@ staload "libats/SATS/intinf.sats"
 
 (* ****** ****** *)
 
-fun fact (x: int): Intinfptr_gc =
-  loop (pf_gc, pf_at | x, res) where {
+fun fact
+  (x: int): Intinf =
+  loop (x, res) where {
   val x = int1_of_int x
-  val (pf_gc, pf_at | res) = intinf_make (1)
-  fun loop {i:int} {res:addr} (
-      pf_gc: free_gc_v (intinf0?, res)
-    , pf_at: Intinf @ res
-    | x: int i, res: ptr res
-    ) : Intinfptr_gc =
+  val res = intinf_make (1)
+  fun loop {i:int} (
+    x: int i, res: Intinf
+  ) : Intinf =
     if x > 0 then let
-      val (pf_mul | (pf1_gc, pf1_at | res1)) = !res * x
-      val () = intinfptr_free @(pf_gc, pf_at | res)
+      val (pf_mul | res1) = res * x
+      val () = intinf_free (res)
     in
-      loop (pf1_gc, pf1_at | x - 1, res1)
-    end else begin
-      #[.. | #[.. | (pf_gc, pf_at | res)]] // loop exits
-    end // end of [if]
+      loop (x - 1, res1)
+    end else res // end of [if]
   // end of [loop]
 } // end of [fact]
 
@@ -46,11 +43,11 @@ implement main (argc, argv) = let
   val () = if (argc <> 2) then prerr_usage (argv.[0])
   val () = assert (argc = 2)
   val n = int1_of_string (argv.[1])
-  val (pf_gc, pf_at | res) = fact (n)
+  val res = fact (n)
   val () = begin
-    printf ("fact (%i) = ", @(n)); print !res; print_newline ()
+    printf ("fact (%i) = ", @(n)); print (res); print_newline ()
   end // end of [val]
-  val () = intinfptr_free @(pf_gc, pf_at | res)
+  val () = intinf_free (res)
 in
   // empty
 end // end of [main]

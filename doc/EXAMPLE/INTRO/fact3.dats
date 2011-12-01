@@ -34,12 +34,12 @@ dataprop FACT (int, int) =
   | {n,r,r1:int | n > 0} FACTsucc (n, r) of (FACT (n-1, r1), MUL (n, r1, r))
 // end of [FACT]
 
-fun fact3 {n:nat} .<n>. (n: int n): [r:int] (FACT (n, r) | intinfptr_gc r) =
+fun fact3 {n:nat} .<n>. (n: int n): [r:int] (FACT (n, r) | intinf r) =
   if n > 0 then let
     val n1 = pred n
-    val (pf1 | (pf1_gc, pf1_at | p1)) = fact3 (n1)
-    val (pf_mul | r) = n * !p1
-    val () = intinfptr_free @(pf1_gc, pf1_at | p1)
+    val (pf1 | r1) = fact3 (n1)
+    val (pf_mul | r) = n * r1
+    val () = intinf_free (r1)
   in
     (FACTsucc (pf1, pf_mul) | r)
   end else begin
@@ -64,12 +64,12 @@ main (argc, argv) =
     val n0 = int1_of argv.[1] // turning string into integer
     val () = assert_errmsg
       (n0 >= 0, "The integer argument needs to be nonnegative.\n")
-    val (pf | (pf_gc, pf_at | p_res)) = fact3 (n0)
+    val (pf | res) = fact3 (n0)
     val () = begin
-      print "The factorial of "; print n0; print " = "; print !p_res; print_newline ()
+      print "The factorial of "; print n0; print " = "; print (res); print_newline ()
     end // end of [val]
   in
-    intinfptr_free @(pf_gc, pf_at | p_res)
+    intinf_free (res)
   end else begin
     fact3_usage (argv.[0]); exit (1)
   end // end of [if]
