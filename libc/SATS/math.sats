@@ -51,6 +51,10 @@ macdef M_PI_2 = 1.57079632679489661923	// pi/2
 macdef M_PI_4 = 0.78539816339744830962	// pi/4
 
 (* ****** ****** *)
+
+macdef INFINITY = $extval (float, "INFINITY")
+
+(* ****** ****** *)
 //
 // HX-2011-08-01:
 // each floating point number can be put in one of these categories:
@@ -68,6 +72,8 @@ fun fpclassify_float
   (x: float):<> int = "mac#atslib_fpclassify"
 fun fpclassify_ldouble
   (x: ldouble):<> int = "mac#atslib_fpclassify"
+
+(* ****** ****** *)
 
 fun{a:t@ype} isfinite (x: a):<> int
 fun isfinite_double

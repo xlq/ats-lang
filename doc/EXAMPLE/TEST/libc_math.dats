@@ -36,8 +36,10 @@ val DEG = M_PI / 180.0
   val () = println! ("cos(60) = ", cos60)
   val tan60 = tantmp (60 * DEG)
   val () = println! ("tan(60) = ", tan60)
-//
   val () = println! ("tan(30) * tan(60) = ", tan30 * tan60)
+//
+  val inf = INFINITY
+  val () = println! ("inf = ", inf)
 //
 in
   // empty
