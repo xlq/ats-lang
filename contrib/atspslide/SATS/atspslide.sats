@@ -59,7 +59,12 @@ fun slideopt_get_by_name (name: string): Option_vt (slide)
 ** A clock that may be used as a layover
 ** The dimension of the clock is 1.0 by 1.0
 *)
-fun cairodraw_clock01 {l:agz} (cr: !cairo_ref l): void
+(*
+** HX:
+** knd = 0: no second hand
+** knd > 0: show second hand
+*)
+fun cairodraw_clock01 {l:agz} (cr: !cairo_ref l, knd: int): void
 
 (*
 ** HX-2011-10-01:

@@ -189,6 +189,29 @@ fun theSpinner_initset
 
 (* ****** ****** *)
 
+%{^
+GtkWidget *theButtonGoto = NULL;
+ats_ptr_type
+theButtonGoto_get () {
+  g_object_ref (G_OBJECT(theButtonGoto)); return theButtonGoto ;
+} // end of [theButtonGoto_get]
+ats_void_type
+theButtonGoto_initset (ats_ptr_type x) {
+  g_object_ref(G_OBJECT(x)) ;
+  if (theButtonGoto) g_object_unref (G_OBJECT(theButtonGoto));
+  theButtonGoto = x ;
+  return ;
+} // end of [theButtonGoto_initset]
+%}
+extern
+fun theButtonGoto_get (): GtkButton_ref1 = "theButtonGoto_get"
+extern
+fun theButtonGoto_initset
+  {l:agz} (x: !GtkButton_ref l): void = "theButtonGoto_initset"
+// end of [theButtonGoto_initset]
+
+(* ****** ****** *)
+
 local
 
 val theSlideCount_ref = ref_make_elt<int> (0)
@@ -460,6 +483,13 @@ val theRotateknd_ref = ref_make_elt<int> (0)
 
 (* ****** ****** *)
 
+(*
+#define CLOCKND 0 // no second hand
+*)
+#define CLOCKND 1 // show the second hand
+
+(* ****** ****** *)
+
 fun fexpose_present
   (vpw: int, vph: int): void = let
   val surface =
@@ -472,7 +502,7 @@ fun fexpose_present
   val (pf_save | ()) = cairo_save (cr)
   val () = cairo_scale (cr, vpw, vph)
   val () = cairodraw_slide_relative (cr, 0) // current one
-  val () = cairodraw_clock01 (cr) // HX: a translucent clock layover
+  val () = cairodraw_clock01 (cr, CLOCKND) // HX: a translucent clock layover
   val () = cairo_restore (pf_save | cr)
   val gltext = glTexture_make_cairo_ref (GL_BGRA_format, cr)
 //
@@ -509,14 +539,14 @@ fun fexpose_rectrot
   val (pf_save | ()) = cairo_save (cr)
   val () = cairo_scale (cr, vpw, vph)
   val () = cairodraw_slide_relative (cr, 0) // current one
-  val () = cairodraw_clock01 (cr) // HX: a translucent clock layover
+  val () = cairodraw_clock01 (cr, CLOCKND) // HX: a translucent clock layover
   val () = cairo_restore (pf_save | cr)
   val gltext1 = glTexture_make_cairo_ref (GL_BGRA_format, cr)
 //
   val (pf_save | ()) = cairo_save (cr)
   val () = cairo_scale (cr, vpw, vph)
   val () = cairodraw_slide_relative (cr, 1) // next one
-  val () = cairodraw_clock01 (cr) // HX: a translucent clock layover
+  val () = cairodraw_clock01 (cr, CLOCKND) // HX: a translucent clock layover
   val () = cairo_restore (pf_save | cr)
   val gltext2 = glTexture_make_cairo_ref (GL_BGRA_format, cr)
 //
@@ -565,14 +595,14 @@ fun fexpose_triangrot
   val (pf_save | ()) = cairo_save (cr)
   val () = cairo_scale (cr, vpw, vph)
   val () = cairodraw_slide_relative (cr, 0) // current one
-  val () = cairodraw_clock01 (cr) // HX: a translucent clock layover
+  val () = cairodraw_clock01 (cr, CLOCKND) // HX: a translucent clock layover
   val () = cairo_restore (pf_save | cr)
   val gltext1 = glTexture_make_cairo_ref (GL_BGRA_format, cr)
 //
   val (pf_save | ()) = cairo_save (cr)
   val () = cairo_scale (cr, vpw, vph)
   val () = cairodraw_slide_relative (cr, 1) // next one
-  val () = cairodraw_clock01 (cr) // HX: a translucent clock layover
+  val () = cairodraw_clock01 (cr, CLOCKND) // HX: a translucent clock layover
   val () = cairo_restore (pf_save | cr)
   val gltext2 = glTexture_make_cairo_ref (GL_BGRA_format, cr)
 //
@@ -630,14 +660,14 @@ fun fexpose_cylindrot
   val (pf_save | ()) = cairo_save (cr)
   val () = cairo_scale (cr, vpw, vph)
   val () = cairodraw_slide_relative (cr, 0) // current one
-  val () = cairodraw_clock01 (cr) // HX: a translucent clock layover
+  val () = cairodraw_clock01 (cr, CLOCKND) // HX: a translucent clock layover
   val () = cairo_restore (pf_save | cr)
   val gltext1 = glTexture_make_cairo_ref (GL_BGRA_format, cr)
 //
   val (pf_save | ()) = cairo_save (cr)
   val () = cairo_scale (cr, vpw, vph)
   val () = cairodraw_slide_relative (cr, 1) // next one
-  val () = cairodraw_clock01 (cr) // HX: a translucent clock layover
+  val () = cairodraw_clock01 (cr, CLOCKND) // HX: a translucent clock layover
   val () = cairo_restore (pf_save | cr)
   val gltext2 = glTexture_make_cairo_ref (GL_BGRA_format, cr)
 //
@@ -706,7 +736,7 @@ fun fexpose_sliding
   val (pf_save | ()) = cairo_save (cr)
   val () = cairo_scale (cr, vpw, vph)
   val () = cairodraw_slide_relative (cr, n) // 0/1
-  val () = cairodraw_clock01 (cr) // HX: a translucent clock layover
+  val () = cairodraw_clock01 (cr, CLOCKND) // HX: a translucent clock layover
 //
   val () = if vert > 0 then
     cairo_rectangle (cr, 0.0, 0.0, ratio, 1.0)
@@ -757,7 +787,7 @@ fun fexpose_disking
   val (pf_save | ()) = cairo_save (cr)
   val () = cairo_scale (cr, vpw, vph)
   val () = cairodraw_slide_relative (cr, n) // 0/1
-  val () = cairodraw_clock01 (cr) // HX: a translucent clock layover
+  val () = cairodraw_clock01 (cr, CLOCKND) // HX: a translucent clock layover
 //
   val rad = sqrt (2.0)
   val r0 = rad / 20
@@ -809,7 +839,7 @@ fun fexpose_fadeout
   val (pf_save | ()) = cairo_save (cr)
   val () = cairo_scale (cr, vpw, vph)
   val () = cairodraw_slide_relative (cr, n) // 0/1
-  val () = cairodraw_clock01 (cr) // HX: a translucent clock layover
+  val () = cairodraw_clock01 (cr, CLOCKND) // HX: a translucent clock layover
 //
   macdef nrt (x) = pow (,(x), 1.0/8)
   val () = cairo_rectangle (cr, 0.0, 0.0, 1.0, 1.0)
@@ -858,7 +888,7 @@ fun fexpose_folding01
   val (pf_save | ()) = cairo_save (cr)
   val () = cairo_scale (cr, vpw, vph)
   val () = cairodraw_slide_relative (cr, n) // 0/1
-  val () = cairodraw_clock01 (cr) // HX: a translucent clock layover
+  val () = cairodraw_clock01 (cr, CLOCKND) // HX: a translucent clock layover
   val () = cairo_restore (pf_save | cr)
   val gltext = glTexture_make_cairo_ref (GL_BGRA_format, cr)
 //
@@ -910,7 +940,7 @@ fun fexpose_folding02
   val (pf_save | ()) = cairo_save (cr)
   val () = cairo_scale (cr, vpw, vph)
   val () = cairodraw_slide_relative (cr, n) // 0/1
-  val () = cairodraw_clock01 (cr) // HX: a translucent clock layover
+  val () = cairodraw_clock01 (cr, CLOCKND) // HX: a translucent clock layover
   val () = cairo_restore (pf_save | cr)
   val gltext = glTexture_make_cairo_ref (GL_BGRA_format, cr)
 //
@@ -1124,7 +1154,7 @@ fun fexpose_random01
   val (pf_save | ()) = cairo_save (cr)
   val () = cairo_scale (cr, vpw, vph)
   val () = cairodraw_slide_relative (cr, 0) // current one
-  val () = cairodraw_clock01 (cr) // HX: a translucent clock layover
+  val () = cairodraw_clock01 (cr, CLOCKND) // HX: a translucent clock layover
 //
   val () = cairo_set_source_rgba (cr, 0.0, 0.0, 0.0, 1.0)
   val () = {
@@ -1170,7 +1200,7 @@ fun fexpose_random02
   val (pf_save | ()) = cairo_save (cr)
   val () = cairo_scale (cr, vpw, vph)
   val () = cairodraw_slide_relative (cr, 0) // current one
-  val () = cairodraw_clock01 (cr) // HX: a translucent clock layover
+  val () = cairodraw_clock01 (cr, CLOCKND) // HX: a translucent clock layover
 //
   val () = cairo_set_source_rgba (cr, 0.0, 0.0, 0.0, 1.0)
   val () = {
@@ -1216,7 +1246,7 @@ fun fexpose_random03
   val (pf_save | ()) = cairo_save (cr)
   val () = cairo_scale (cr, vpw, vph)
   val () = cairodraw_slide_relative (cr, 0) // current one
-  val () = cairodraw_clock01 (cr) // HX: a translucent clock layover
+  val () = cairodraw_clock01 (cr, CLOCKND) // HX: a translucent clock layover
 //
   val () = cairo_set_source_rgba (cr, 0.0, 0.0, 0.0, 1.0)
   val () = {
@@ -1321,13 +1351,12 @@ end // end of [fexpose]
 //
 guint timeout_id = 0 ;
 //
-#define TIMEOUT_INTERVAL 50
-//
-void timeout_add () {
+void
+timeout_add_val (uint ntime) {
   if (timeout_id == 0) {
-    timeout_id = g_timeout_add (TIMEOUT_INTERVAL, (GSourceFunc)ftimeout, NULL);
+    timeout_id = g_timeout_add (ntime, (GSourceFunc)ftimeout, NULL);
   } ; return ;
-} // end of [timeout_add]
+} // end of [timeout_add_val]
 //
 void timeout_remove () {
   if (timeout_id != 0) {
@@ -1337,7 +1366,13 @@ void timeout_remove () {
 //
 %} // end of [%{$]
 
-extern fun timeout_add (): void = "timeout_add"
+macdef TIMEOUT_INTERVAL = 200U
+macdef TIMEOUT_INTERVAL_ROT = 50U
+extern
+fun timeout_add_val
+  (ntime: uint): void = "timeout_add_val"
+fun timeout_add_rot () = timeout_add_val (TIMEOUT_INTERVAL_ROT)
+
 extern fun timeout_remove (): void = "timeout_remove"
 
 (* ****** ****** *)
@@ -1368,9 +1403,8 @@ ftimeout () = let
       val () = !theRotateknd_ref := randint (2)
       val () = theSlideCount_inc ()
       val () = theActState_set (ACTpresent)
-(*
       val () = timeout_remove ()
-*)
+      val () = timeout_add_val (TIMEOUT_INTERVAL)
     in
       !theAlpha_ref := 0.0
     end // end of [val]
@@ -1426,7 +1460,10 @@ in
 if (x = 0) then let
   val rotknd = 1 + randint(11)
   val () = theActState_set (rotknd)
-  val () = timeout_add () in (*nothing*)
+  val () = timeout_remove ()
+  val () = timeout_add_rot ()
+in
+  // nothing
 end else let
   val () = timeout_remove ()
   var alloc: GtkAllocation
@@ -1478,7 +1515,7 @@ map_event (): gboolean = let
 (*
   val () = println! ("map_event: enter")
 *)
-  val () = if (!rotate_ref = 1) then timeout_add () in GTRUE
+  val () = if (!rotate_ref = 1) then timeout_add_rot () in GTRUE
 end // end of [map_event]
 
 fun
@@ -1497,7 +1534,7 @@ visibility_notify_event (
   val () = println! ("visibility_notify_event: enter")
 *)
   val () = if (!rotate_ref = 1) then
-    if (event.state = GDK_VISIBILITY_FULLY_OBSCURED) then timeout_remove () else timeout_add ()
+    if (event.state = GDK_VISIBILITY_FULLY_OBSCURED) then timeout_remove () else timeout_add_rot ()
   // end of [if]
 in
   GTRUE
@@ -1538,6 +1575,16 @@ case+ 0 of
     kv=(guint)GDK_Down orelse kv=(guint)GDK_Right
   ) => let
     val btn = theButtonNext_get ()
+    val () = g_signal_emit_by_name (btn, (gsignal)"clicked")
+    val () = g_object_unref (btn)
+  in
+    GTRUE
+  end // end of [_ when ...]
+| _ when (
+    kv=(guint)GDK_space
+  ) => let
+    val () = theSlideCount_inc ()
+    val btn = theButtonGoto_get ()
     val () = g_signal_emit_by_name (btn, (gsignal)"clicked")
     val () = g_object_unref (btn)
   in
@@ -1667,6 +1714,7 @@ val () = gtk_widget_show_unref (btn_next)
 //
 val (fpf_x | x) = (gs)"_Goto"
 val btn_goto = gtk_button_new_with_mnemonic (x)
+val () = theButtonGoto_initset (btn_goto)
 prval () = fpf_x (x)
 val _sid = g_signal_connect
   (btn_goto, (gsignal)"clicked", G_CALLBACK(fgoto), (gpointer)null)
@@ -1690,7 +1738,7 @@ val () = gtk_widget_show_unref (vbox0)
 val () = gtk_widget_show_unref (window)
 //
 (*
-val () = timeout_add () // start the clock
+val () = timeout_add_val (TIMEOUT_INTERVAL) // start the clock
 *)
 //
 } // end of [main1]

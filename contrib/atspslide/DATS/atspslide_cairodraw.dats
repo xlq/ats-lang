@@ -65,7 +65,7 @@ macdef cos = $M.cos
 
 implement
 cairodraw_clock01
-  (cr) = () where {
+  (cr, knd) = () where {
 //
   var t = time_get ()
   var tm: tm_struct // unintialized
@@ -91,10 +91,12 @@ cairodraw_clock01
   val () = cairo_stroke (cr)
 //
   // draw a green dot on the current second
-  val () = cairo_arc
-    (cr, 0.4 * sin(ss), 0.4 * ~cos(ss), 0.05, 0.0, _2PI)
-  val () = cairo_set_source_rgba (cr, 0.0, 1.0, 0.0, 0.250)
-  val () = cairo_fill (cr)
+  val () = if knd > 0 then {
+    val () = cairo_arc
+      (cr, 0.4 * sin(ss), 0.4 * ~cos(ss), 0.05, 0.0, _2PI)
+    val () = cairo_set_source_rgba (cr, 0.0, 1.0, 0.0, 0.250)
+    val () = cairo_fill (cr)
+  } // end of [val]
 //
   // draw the minutes indicator
   val () = cairo_move_to (cr, 0.0, 0.0)

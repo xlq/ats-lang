@@ -205,7 +205,7 @@ in
     val () = cairo_set_source_rgb (cr, 1.0, 1.0, 1.0) // white color
     val () = cairo_fill (cr)
 //        
-    val () = cairodraw_clock01 (cr)
+    val () = cairodraw_clock01 (cr, 1(*knd*))
     val () = cairo_restore (pf_save | cr)
 //
     val () = cairo_surface_destroy (surface)
