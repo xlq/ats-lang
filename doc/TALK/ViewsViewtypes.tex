@@ -62,7 +62,7 @@ which gives the language its name.
 \item
 Both dependent types (DML-style) and linear types are available in ATS.
 \item
-The current implementation of ATS (ATS/Anairiats) is written in ATS itself,
+The current compiler of ATS (ATS/Anairiats) is written in ATS itself,
 consisting of approximately 100K lines of code.
 \end{itemize}
 \end{slide}
@@ -78,14 +78,17 @@ The core of ATS is a call-by-value functional programming language, which
 can also support lazy evaluation.
 \item
 ATS supports a programming paradigm referred to as {\em programming with
-theorem-proving}, which allows code for run-time computation and code for
-proof construction to be written in a syntactically intertwined manner.
-\item Imperative programming in ATS is firmly rooted in the paradigm of
-programming with theorem-proving.
-\item ATS and C share the same native data representation, and
+theorem-proving (PwTP)}, allowing code for run-time computation and
+code for proof construction to be written in a syntactically intertwined
+manner.
+\item
+Imperative programming in ATS makes essential use of PwTP.
+\item
+ATS and C share the same native data representation, and
 programs in ATS are compiled directly into C code. To some extent, ATS
 can be thought of as a front end for C.
-\item For more details, please visit:
+\item
+For more details, please visit:
 \begin{center}
 \texttt{http://www.ats-lang.org}
 \end{center}
@@ -207,7 +210,7 @@ respectively.
 \Bimp & ~:~ & (\sbool,\stype) \Simp \stype \\[4pt]
 
 \Band & ~:~ & (\sbool,\stype) \Simp \stype \\[4pt]
-\tleq & ~:~ & (\stype,\stype) \Simp \sbool & \mbox{(impredicative formulation)}\\
+\tleq & ~:~ & (\stype,\stype) \Simp \sbool & \mbox{(impredicative formulation)}\\[4pt]
 \end{array}\]
 Also, for each sort $\sigma$, we assume that the two static constructors
 $\forall_\sigma$ and $\exists_\sigma$ are assigned the sc-sort
@@ -227,7 +230,9 @@ A constraint relation is of the following form:
 \Sigma;\vB\temd B
 \end{array}\]
 where $\vB$ stands for a sequence of static boolean terms
-(often referred to as assumptions).\\~\\
+(often referred to as assumptions). This relation holds if
+one of the assumptions in $\vB$ is false or the conclusion $B$
+is true.\\~\\
 \end{slide}
 %%%%%%
 %%
@@ -328,8 +333,7 @@ datatype list (a:type, int) =
   | nil (a, 0) of ()
   | {n:int | n >= 0} cons (a, n+1) of (a, list (a, n))
 \end{verbatim}
-}
-~\\
+}~\\~\\
 The concrete syntax means the following:
 \[\begin{array}{rcl}
 nil & : & \forall a:\stype.~~() \Timp list (a, 0) \\
@@ -370,10 +374,8 @@ datatype FIB (int, int) =
   | {n:nat}{r0,r1:nat} // fib(n+2) = fib(n)+fib(n+1)
     FIB2 (n+2, r0+r1) of (FIB (n, r0), FIB (n+1, r1))
 \end{verbatim}
-}
-~\\
-The following function {\it fib} computes Fibonacci numbers:
-~\\~\\
+}~\\~\\
+The following function {\it fib} computes Fibonacci numbers:\\~\\
 {\blue\begin{verbatim}
 fun fib {n:nat}
   (n: int (n)): [r:nat] (FIB (n, r) | int (r))
@@ -385,6 +387,27 @@ fun fib {n:nat}
 %%%%%%
 %%
 %% Slide 16
+%%
+%%%%%%
+\begin{slide}{\em A Direct Implementaation of {\it fib}}
+{\blue\begin{verbatim}
+implement fib (n) =
+  case+ n of
+  | 0 => (FIB0 () |  0)
+  | 1 => (FIB1 () |  1)
+  | _ =>> let
+      val (pf0 | r0) = fib (n-2)
+      val (pf1 | r1) = fib (n-1)
+    in
+      (FIB2 (pf0, pf1) | r0 + r1)
+    end
+// end of [fib]
+\end{verbatim}
+}
+\end{slide}
+%%%%%%
+%%
+%% Slide 17
 %%
 %%%%%%
 \begin{slide}{\em Views}
@@ -402,7 +425,7 @@ We also provide a means for forming recursive views.
 \end{slide}
 %%%%%%
 %%
-%% Slide 17
+%% Slide 18
 %%
 %%%%%%
 \def\tptr{\mbox{\bf ptr}}
@@ -428,7 +451,7 @@ ptrset {l:addr}
 \end{slide}
 %%%%%%
 %%
-%% Slide 18
+%% Slide 19
 %%
 %%%%%%
 \begin{slide}{\em Example: {\it Swap}}
@@ -449,7 +472,7 @@ end // end of [swap]
 \end{slide}
 %%%%%%
 %%
-%% Slide 19
+%% Slide 20
 %%
 %%%%%%
 \begin{slide}{\em Syntactical Convenience}
@@ -466,7 +489,7 @@ ptrset {l:addr}
 \end{slide}
 %%%%%%
 %%
-%% Slide 20
+%% Slide 21
 %%
 %%%%%%
 \begin{slide}{\em Another Implementation of {\it Swap}}
@@ -483,7 +506,7 @@ end // end of [swap]
 \end{slide}
 %%%%%%
 %%
-%% Slide 21
+%% Slide 22
 %%
 %%%%%%
 \def\varrayView{{\it array\_v}}
@@ -496,7 +519,7 @@ dataview array_v (a:type, int, addr) =
     array_v_nil (a,0,l)
   | {n:nat}{l:addr}
     array_v_cons (a,n+1,l) of (a@l, array_v (a,n,l+1))
-\end{verbatim}}~\\
+\end{verbatim}}~\\~\\
 The concrete syntax means the following:
 \[\begin{array}{rcl}
 \cArrayNil  &\kern-6pt:\kern-6pt& \forall a:\stype.\forall l:addr.~~\varrayView(a,0,l) \\
@@ -506,7 +529,7 @@ The concrete syntax means the following:
 \end{slide}
 %%%%%%
 %%
-%% Slide 22
+%% Slide 23
 %%
 %%%%%%
 \begin{slide}{\em Proof Functions for View Change}
@@ -528,7 +551,7 @@ prfun unsplit
 \end{slide}
 %%%%%%
 %%
-%% Slide 23
+%% Slide 24
 %%
 %%%%%%
 \begin{slide}{\em Another Proof Function for View Change}
@@ -544,13 +567,13 @@ prfun takeout
 \end{slide}
 %%%%%%
 %%
-%% Slide 24
+%% Slide 25
 %%
 %%%%%%
 \begin{slide}{\em Array Subscripting}
 {\blue\begin{verbatim}
 fun{a:type}
-arrget
+arrsub
   {n:int}{i:nat | i < n}
   {l:addr} (
   pf: !array_v (a, n, l) | p: ptr l, i: int i
@@ -558,13 +581,13 @@ arrget
   prval (pfat, fpf) = takeout {a}{n}{i} (pf)
   val x = ptrget<a> (pfat | p+i)
   prval () = pf := fpf (pfat)
-} // end of [arrget]
+} // end of [arrsub]
 \end{verbatim}
 }
 \end{slide}
 %%%%%%
 %%
-%% Slide 25
+%% Slide 26
 %%
 %%%%%%
 \def\VT{{\it VT}}
@@ -574,7 +597,7 @@ arrget
 \item
 A linear type in ATS is given the name viewtype, which is chosen to
 indicate that a linear type consists of two parts: one part for views and
-the other for types. We use \sviewtype as the sort for viewtypes.
+the other for types. We use $\sviewtype$ as the sort for viewtypes.
 \item Given a view V and a type T, the
 tuple (V | T) is a viewtype, where the bar symbol (|) is a separator (just
 like a comma) to separate views from types.
@@ -589,7 +612,7 @@ viewtype comes entirely from the view part residing within it.
 \end{slide}
 %%%%%%
 %%
-%% Slide 26
+%% Slide 27
 %%
 %%%%%%
 \begin{slide}{\em Generic Types for {\it ptrget} and {\it ptrset}}
@@ -608,13 +631,13 @@ ptrset {l:addr}
 \end{slide}
 %%%%%%
 %%
-%% Slide 27
+%% Slide 28
 %%
 %%%%%%
 \begin{slide}{\em Example: Viewtype for Linear Closures}
 Given two types A and B, a pointer to some address L where a closure
 function is stored that takes a value of the type A to return a value of
-the type B can be given the viewtype cloptr(A, B, L): ~\\~\\
+the type B can be given the viewtype cloptr(A, B, L):\\~\\
 {\blue\begin{verbatim}
 viewtypedef cloptr
   (a:t@ype, b:t@ype, l:addr) =
@@ -629,7 +652,7 @@ the address of the left-value.
 \end{slide}
 %%%%%%
 %%
-%% Slide 28
+%% Slide 29
 %%
 %%%%%%
 \def\vtList{{\it list\_vt}}
@@ -640,9 +663,10 @@ the address of the left-value.
 dataviewtype
 list_vt (a:type, int) =
   | {n:nat}
-    list_vt_cons (a, n+1) of (a, list_vt (a, n))
+    list_vt_cons (a,n+1) of (a, list_vt (a,n))
   | list_vt_nil (a, 0)
-\end{verbatim}}~\\
+\end{verbatim}
+}~\\~\\
 The concrete syntax means the following:
 \[\begin{array}{rcl}
 \cListvtNil  &:& \forall a:\stype.~~\vtList(a,0) \\
@@ -651,5 +675,180 @@ The concrete syntax means the following:
 \end{array}\]
 \end{slide}
 %%%%%%
+%%
+%% Slide 30
+%%
+%%%%%%
+\begin{slide}{\em Example: Reverse}
+{\blue\begin{verbatim}
+fun{a:type}
+reverse {n:nat} (
+  xs: list_vt (a, n)
+) : list_vt (a, n) = revapp (xs, list_vt_nil)
+\end{verbatim}
+}
+\end{slide}
+%%%%%%
+%%
+%% Slide 31
+%%
+%%%%%%
+\begin{slide}{\em Example: Reverse-Append}
+{\blue\begin{verbatim}
+fun{a:type}
+revapp {m,n:nat} (
+  xs: list_vt (a, m), ys: list_vt (a, n)
+) : list_vt (a, m+n) =
+  case+ xs of
+  | list_vt_cons
+      (_, !ptl) => let
+      val tl = !ptl; val () = !ptl := ys
+      prval () = fold@ (xs)
+    in
+      revapp (tl, xs)
+    end
+  | ~list_vt_nil () => ys
+// end of [revapp]
+\end{verbatim}
+}
+\end{slide}
+%%%%%%
+%%
+%% Slide 32
+%%
+%%%%%%
+\begin{slide}{\em Abstract Views}
+{\blue\begin{verbatim}
+absview free_v (n:int, l:addr)
+
+fun free {n:nat}{l:addr} (
+  pfgc: free_v (n, l), pfat: bytes(n) @ l | p: ptr l
+) : void // end of [free]
+
+dataview malloc_v (n:int, addr) =
+  | {l:agz} malloc_v_succ (n, l) of
+      (free_v (n, l), bytes(n) @ l | ptr l)
+  | malloc_v_fail (n, null) of ()
+
+fun malloc {n:nat}
+  (n: size_t (n)): [l:addr] (malloc_v (n, l) | ptr l)
+// end of [malloc]
+
+\end{verbatim}
+}
+\end{slide}
+%%%%%%
+%%
+%% Slide 33
+%%
+%%%%%%
+\begin{slide}{\em Abstract Viewtypes (1)}
+{\blue\begin{verbatim}
+absviewtype queue (a:viewtype, n:int)
+
+fun{a:viewtype} queue_new (): queue (a, 0)
+fun{a:viewtype} queue_free (obj: queue (a, 0)): void
+
+fun{a:viewtype}
+queue_enque {n:nat} (
+  obj: !queue (a, n) >> queue (a, n+1), x: a
+) : void // end of [queue_enque]
+
+fun{a:viewtype}
+queue_deque {n:pos}
+  (obj: !queue (a, n) >> queue (a, n-1)): a
+\end{verbatim}
+}
+\end{slide}
+%%%%%%
+%%
+%% Slide 34
+%%
+%%%%%%
+\begin{slide}{\em Abstract Viewtypes (2)}
+{\blue\begin{verbatim}
+absviewtype mylock (v:view)
+
+fun mylock_create
+  {v:view} (pf: v | (*none*)): mylock(v)
+
+fun mylock_destroy
+  {v:view} (lock: mylock v): (v | void)
+
+fun mylock_acquire
+  {v:view} (lock: !mylock v): (v | void)
+
+fun mylock_release
+  {v:view} (pf: v | lock: !mylock v): void
+\end{verbatim}
+}
+\end{slide}
+%%%%%%
+%%
+%% Slide 35
+%%
+%%%%%%
+\begin{slide}{\em Conclusion}
+\begin{itemize}
+\item
+ATS is a statically type programming language that unifies implementation
+with (a form of) formal specification.
+\item
+The signatory feature of ATS is a programming paradigm referred to as
+programming-with-theorem-proving (PwTP) in which code for (run-time)
+computation and code for proof construction can be written in a
+syntactically intertwined manner.
+\item
+Views are linear props and viewtypes combine views with types.  In
+particular, the linearity of a viewtype comes entirely from its view part.
+Imperative programming in ATS is built on top of views and viewtypes
+(together with the support of PwTP).
+\end{itemize}
+\end{slide}
+%%%%%%
+%%
+%% Slide 36
+%%
+%%%%%%
+\begin{slide}{\em Future Direction}
+\begin{itemize}
+\item Applying ATS to systems programming. We need more case studies.
+\item
+Reducing the amount of ``administrative code'' needed for proof
+manipulation. We want to investigate more effective approaches to proof
+management in order to better support PwTP.
+\item
+Identifying the potential of PwTP in areas other than systems programming
+(e.g., security).
+\end{itemize}
+\end{slide}
+%%%%%%
+%%
+%% Slide 37
+%%
+%%%%%%
+\begin{slide}{\em The End}
+\vspace{72pt}
+\begin{center}
+{\huge\bf Thank you!}
+\end{center}
+\end{slide}
 \end{document}
 %%%%%% end of [ViewsViewtypes.tex] %%%%%%
+implement
+fib {n} (n) = let
+  fun loop
+    {i:nat | i < n} {r0,r1:nat} (
+    pf0: FIB (i, r0), pf1: FIB (i+1, r1)
+  | ni: int (n-i), r0: int r0, r1: int r1
+  ) : [r:nat] (FIB (n, r) | int r) =
+    if ni > 1 then
+      loop {i+1} (pf1, FIB2 (pf0, pf1) | ni-1, r1, r0+r1)
+    else (pf1 | r1)
+in
+  case+ n of
+  | 0 => (FIB0 () |  0)
+  | 1 => (FIB1 () |  1)
+  | _ =>> loop {0} (FIB0, FIB1 | n, 0, 1)
+end // end of [fib]
+
