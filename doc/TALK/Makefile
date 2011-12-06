@@ -17,6 +17,7 @@ ATSCTRBPSLIDE=$(ATSUSRQ)/contrib/atspslide/atsctrb_atspslide.o
 ######
 
 all:: myslide
+all:: bin/ViewsViewtypesPresent
 
 ######
 
@@ -52,6 +53,7 @@ clean:
 	rm -f *.dvi
 
 cleanall: clean
+	rm -f bin/ViewsViewtypesPresent
 	rm -f data/myslide_*.png
 
 ###### end of [Makefile] ######
