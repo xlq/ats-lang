@@ -1590,6 +1590,18 @@ case+ 0 of
   in
     GTRUE
   end // end of [_ when ...]
+| _ when (
+    kv=(guint)GDK_Return
+  ) => let
+    val spinner = theSpinner_get ()
+    val () = gtk_spin_button_update (spinner)
+    val () = g_object_unref (spinner)
+    val btn = theButtonGoto_get ()
+    val () = g_signal_emit_by_name (btn, (gsignal)"clicked")
+    val () = g_object_unref (btn)
+  in
+    GTRUE
+  end // end of [_ when ...]
 | _ => GFALSE
 //
 end // end of [cb_key_press]

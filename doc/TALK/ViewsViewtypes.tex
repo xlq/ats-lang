@@ -482,7 +482,7 @@ ptrget {l:addr} (pf: !a@l | p: ptr l): a
 
 fun{a:type}
 ptrset {l:addr}
-  (pf: !a?@l >> a@l | p: ptr l, x: a): void
+  (pf: !(a?)@l >> a@l | p: ptr l, x: a): void
 // end of [ptrset]
 \end{verbatim}
 }
