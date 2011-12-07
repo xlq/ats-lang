@@ -30,7 +30,7 @@
 (* ****** ****** *)
 //
 // Author: Artyom Shalkhakov (artyom.shalkhakov AT gmail DOT com)
-// Author: Hongwei Xi (hwxi AT cs DOT bu DOT edu)
+// Author: Hongwei Xi (hwxi AT cs DOT bu DOT edu) // minor modification
 //
 (* ****** ****** *)
 
