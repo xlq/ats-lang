@@ -167,6 +167,83 @@ fun pthread_cleanup_pop
 (* ****** ****** *)
 
 absviewt@ype
+pthread_spinlock_view_viewt0ype
+  (v:view) = $extype"pthread_spinlock_t"
+// end of [absviewt@ype]
+stadef spinlock_vt = pthread_spinlock_view_viewt0ype
+
+fun pthread_spin_init_locked
+  {v:view} (
+  spn: &spinlock_vt? >> opt (spinlock_vt(v), i==0)
+, pshared : int
+) : #[i:nat] int i
+  = "atslib_pthread_spin_init_locked"
+// end of [pthread_spin_init_locked]
+
+fun pthread_spin_init_unlocked {v:view} (
+  pf: !v >> option_v (v, i > 0)
+| spn: &spinlock_vt? >> opt (spinlock_vt(v), i==0)
+, pshared : int
+) : #[i:nat] int i = "atslib_pthread_spin_init_unlocked"
+// end of [pthread_spin_init_unlocked]
+
+(* ****** ****** *)
+
+fun pthread_spin_create_locked
+  {v:view} (
+  pshared: int
+) : [l:addr] (
+  option_v ((free_gc_v l, spinlock_vt v @ l), l > null)
+| ptr l
+) = "atslib_pthread_spin_create_locked"
+// end of [pthread_spin_create_locked]
+
+fun pthread_spin_create_unlocked
+  {v:view} (
+  pf: !v >> option_v (v, l==null) | pshared: int
+) : #[l:addr] (
+  option_v ((free_gc_v l, spinlock_vt v @ l), l > null)
+| ptr l
+) = "atslib_pthread_spin_create_unlocked"
+// end of [pthread_spin_create_unlocked]
+
+(* ****** ****** *)
+
+fun pthread_spin_destroy
+  {v:view} {l:addr} (
+  p: &spinlock_vt(v) >> opt (spinlock_vt(v), i > 0)
+) : #[i:nat] (
+  option_v (v, i==0) | int i
+) = "mac#atslib_pthread_spin_destroy"
+// end of [pthread_spin_destroy]
+
+(* ****** ****** *)
+
+fun pthread_spin_lock
+  {v:view} (
+  spn: &spinlock_vt v
+) :<> [i:nat] (option_v (v, i==0) | int i)
+  = "mac#atslib_pthread_spin_lock" // macro!
+// end of [pthread_spin_lock]
+
+fun pthread_spin_trylock
+  {v:view} (
+  spn: &spinlock_vt v
+) :<> [i:nat] (option_v (v, i==0) | int i)
+  = "mac#atslib_pthread_spin_trylock" // macro!
+// end of [pthread_spin_trylock]
+
+fun pthread_spin_unlock
+  {v:view} (
+  resource: v | spn: &spinlock_vt v
+) :<> [i:nat] (
+  option_v (v, i > 0) | int i
+) = "mac#atslib_pthread_spin_unlock" // macro!
+// end of [pthread_spin_unlock]
+
+(* ****** ****** *)
+
+absviewt@ype
 pthread_mutex_view_viewt0ype
   (v:view) = $extype"pthread_mutex_t"
 // end of [absviewt@ype]
@@ -177,8 +254,9 @@ stadef mutex_vt = pthread_mutex_view_viewt0ype
 // HX: this one does initialization and locking
 //
 fun pthread_mutex_init_locked
-  {v:view} (mut: &mutex_vt? >> opt (mutex_vt(v), i==0)): #[i:nat] int i
-  = "atslib_pthread_mutex_init_locked"
+  {v:view} (
+  mut: &mutex_vt? >> opt (mutex_vt(v), i==0)
+) : #[i:nat] int i = "atslib_pthread_mutex_init_locked"
 // end of [pthread_mutex_init_locked]
 
 fun pthread_mutex_init_unlocked {v:view} (
@@ -190,7 +268,7 @@ fun pthread_mutex_init_unlocked {v:view} (
 (* ****** ****** *)
 
 fun pthread_mutex_create_locked
-  {v:view} {l:addr} (
+  {v:view} (
 // there is no argument
 ) : [l:addr] (
   option_v ((free_gc_v l, mutex_vt v @ l), l > null)
@@ -199,9 +277,9 @@ fun pthread_mutex_create_locked
 // end of [pthread_mutex_create_locked]
 
 fun pthread_mutex_create_unlocked
-  {v:view} {l:addr} (
+  {v:view} (
   pf: !v >> option_v (v, l==null) | (*none*)
-) : [l:addr] (
+) : #[l:addr] (
   option_v ((free_gc_v l, mutex_vt v @ l), l > null)
 | ptr l
 ) = "atslib_pthread_mutex_create_unlocked"
@@ -214,21 +292,30 @@ fun pthread_mutex_create_unlocked
 //
 fun pthread_mutex_destroy
   {v:view} {l:addr} (p: &mutex_vt(v) >> opt (mutex_vt(v), i > 0))
-  : #[i:nat] (option_v (v, i==0) | int i) = "atslib_pthread_mutex_destroy"
+  : #[i:nat] (
+  option_v (v, i==0) | int i
+) = "mac#atslib_pthread_mutex_destroy"
 // end of [pthread_mutex_destroy]
 
 (* ****** ****** *)
 
 fun pthread_mutex_lock
   {v:view} (
-  mutex: &mutex_vt v
+  mut: &mutex_vt v
 ) :<> [i:nat] (option_v (v, i==0) | int i)
   = "mac#atslib_pthread_mutex_lock" // macro!
 // end of [pthread_mutex_lock]
 
+fun pthread_mutex_trylock
+  {v:view} (
+  mut: &mutex_vt v
+) :<> [i:nat] (option_v (v, i==0) | int i)
+  = "mac#atslib_pthread_mutex_trylock" // macro!
+// end of [pthread_mutex_trylock]
+
 fun pthread_mutex_unlock
   {v:view} (
-  resource: v | mutex: &mutex_vt v
+  resource: v | mut: &mutex_vt v
 ) :<> [i:nat] (
   option_v (v, i > 0) | int i
 ) = "mac#atslib_pthread_mutex_unlock" // macro!

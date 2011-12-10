@@ -46,8 +46,9 @@
 // #define THREAD_SAFE // HX: what is this?
 //
 #include <stdio.h>
-#include <unistd.h>
 #include <stdlib.h>
+#include <unistd.h>
+//
 #include <pthread.h>
 //
 /* ****** ****** */
@@ -102,7 +103,18 @@ atslib_pthread_attr_destroy_exn
 
 /* ****** ****** */
 
+#define atslib_pthread_spin_destroy pthread_spin_destroy
+
+#define atslib_pthread_spin_lock pthread_spin_lock
+#define atslib_pthread_spin_trylock pthread_spin_trylock
+#define atslib_pthread_spin_unlock pthread_spin_unlock
+
+/* ****** ****** */
+
+#define atslib_pthread_mutex_destroy pthread_mutex_destroy
+
 #define atslib_pthread_mutex_lock pthread_mutex_lock
+#define atslib_pthread_mutex_trylock pthread_mutex_trylock
 #define atslib_pthread_mutex_unlock pthread_mutex_unlock
 
 /* ****** ****** */

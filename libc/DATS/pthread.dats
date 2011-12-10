@@ -88,6 +88,57 @@ end // end of [pthread_create_detached_cloptr]
 /* ****** ****** */
 
 ats_int_type
+atslib_pthread_spin_init_locked
+  (ats_ptr_type p, ats_int_type pshared) {
+  int err ;
+  err = pthread_spin_init((pthread_spinlock_t*)p, pshared) ;
+  if (err) return err ;
+  err = pthread_spin_lock((pthread_spinlock_t*)p) ;
+  if (err) {
+    pthread_spin_destroy((pthread_spinlock_t*)p) ; return err ;
+  } // end of [if]
+  return 0 ;
+} // end of [atslib_pthread_spin_init_locked]
+
+ATSinline()
+ats_int_type
+atslib_pthread_spin_init_unlocked
+  (ats_ptr_type p, ats_int_type pshared) {
+  int err = pthread_spin_init((pthread_spinlock_t*)p, pshared) ;
+  return err ;
+} // end of [atslib_pthread_spin_init_unlocked]
+
+/* ****** ****** */
+
+ats_ptr_type
+atslib_pthread_spin_create_locked
+  (ats_int_type pshared) {
+  int err ;
+  pthread_spinlock_t *p ;
+  p = (pthread_spinlock_t*)ATS_MALLOC(sizeof(pthread_spinlock_t)) ;
+  err = atslib_pthread_spin_init_locked(p, pshared) ;
+  if (err) {
+    ATS_FREE(p) ; return (pthread_spinlock_t*)0 ;
+  } // end of [if]
+  return p ;
+} // end of [atslib_pthread_spin_create_locked]
+
+ats_ptr_type
+atslib_pthread_spin_create_unlocked
+  (ats_int_type pshared) {
+  int err ;
+  pthread_spinlock_t *p ;
+  p = (pthread_spinlock_t*)ATS_MALLOC(sizeof(pthread_spinlock_t)) ;
+  err = atslib_pthread_spin_init_unlocked(p, pshared) ;
+  if (err) {
+    ATS_FREE(p) ; return (pthread_spinlock_t*)0 ;
+  } // end of [if]
+  return p ;
+} // end of [atslib_pthread_spin_create_unlocked]
+
+/* ****** ****** */
+
+ats_int_type
 atslib_pthread_mutex_init_locked
   (ats_ptr_type p) {
   int err ;
@@ -95,7 +146,7 @@ atslib_pthread_mutex_init_locked
   if (err) return err ;
   err = pthread_mutex_lock((pthread_mutex_t*)p) ;
   if (err) {
-     pthread_mutex_destroy((pthread_mutex_t*)p) ; return err ;
+    pthread_mutex_destroy((pthread_mutex_t*)p) ; return err ;
   } // end of [if]
   return 0 ;
 } // end of [atslib_pthread_mutex_init_locked]
@@ -114,7 +165,7 @@ ats_ptr_type
 atslib_pthread_mutex_create_locked () {
   int err ;
   pthread_mutex_t *p ;
-  p = (pthread_mutex_t*)ATS_MALLOC(sizeof (pthread_mutex_t)) ;
+  p = (pthread_mutex_t*)ATS_MALLOC(sizeof(pthread_mutex_t)) ;
   err = atslib_pthread_mutex_init_locked(p) ;
   if (err) {
     ATS_FREE(p) ; return (pthread_mutex_t*)0 ;
@@ -126,7 +177,7 @@ ats_ptr_type
 atslib_pthread_mutex_create_unlocked () {
   int err ;
   pthread_mutex_t *p ;
-  p = (pthread_mutex_t*)ATS_MALLOC(sizeof (pthread_mutex_t)) ;
+  p = (pthread_mutex_t*)ATS_MALLOC(sizeof(pthread_mutex_t)) ;
   err = atslib_pthread_mutex_init_unlocked(p) ;
   if (err) {
     ATS_FREE(p) ; return (pthread_mutex_t*)0 ;
@@ -139,7 +190,7 @@ atslib_pthread_mutex_create_unlocked () {
 ats_ptr_type
 atslib_pthread_cond_create () {
   pthread_cond_t *p ;
-  p = (pthread_cond_t*)ATS_MALLOC(sizeof (pthread_cond_t)) ;
+  p = (pthread_cond_t*)ATS_MALLOC(sizeof(pthread_cond_t)) ;
   if (pthread_cond_init(p, NULL)) {
     ATS_FREE(p) ; return (pthread_cond_t*)0 ;
   } // end of [if]

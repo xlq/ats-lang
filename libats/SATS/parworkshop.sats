@@ -166,12 +166,10 @@ fun workshop_wait_blocked_all
 // end of [workshop_wait_blocked_all]
 
 (* ****** ****** *)
-
 //
 // HX-2010-03-31:
 // freeing a workshop must wait until all workers quit
 //
-
 fun workshop_free
   {a:t@ype}
   {l:agz} (
@@ -180,6 +178,11 @@ fun workshop_free
   = "atslib_parworkshop_workshop_free"
 // end of [workshop_free]
 
+//
+// HX:
+// an exception is raised
+// if there are still linear works left while there are no workers.
+//
 fun workshop_free_vt_exn
   {a:viewt@ype}
   {l:agz} (
