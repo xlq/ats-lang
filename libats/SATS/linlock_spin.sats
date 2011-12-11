@@ -44,17 +44,22 @@
 (* ****** ****** *)
 
 abstype
-lock_view_type
+lock_view_viewtype
   (v:view, l:addr)
-stadef lock = lock_view_type
-typedef lock0 (v:view) = [l:addr] lock (v, l)
-typedef lock1 (v:view) = [l:addr | l > null] lock (v, l)
+stadef lock = lock_view_viewtype
+viewtypedef lock0 (v:view) = [l:addr] lock (v, l)
+viewtypedef lock1 (v:view) = [l:addr | l > null] lock (v, l)
 
 (* ****** ****** *)
 
 castfn ptr_of_lock
-  {v:view} {l:addr} (x: lock (v, l)):<> ptr (l)
+  {v:view}
+  {l:addr} (x: !lock (v, l)):<> ptr (l)
 // end of [ptr_of_lock]
+
+castfn lock_free_null
+  {v:view} (x: lock (v, null)):<> ptr (null)
+// end of [lock_free_null]
 
 (* ****** ****** *)
 
@@ -81,7 +86,7 @@ fun linlock_destroy
 (* ****** ****** *)
 
 fun linlock_acquire
-  {v:view} {l:agz} (x: lock (v, l)): (v | void)
+  {v:view} {l:agz} (x: !lock (v, l)): (v | void)
   = "mac#atslib_linlock_acquire"
 // end of [linlock_acquire]
 
@@ -92,7 +97,7 @@ fun linlock_acquire_try
 // end of [linlock_acquire_try]
 
 fun linlock_release
-  {v:view} {l:agz} (pf: v | x: lock (v, l)): void
+  {v:view} {l:agz} (pf: v | x: !lock (v, l)): void
   = "mac#atslib_linlock_release"
 // end of [linlock_release]
 
