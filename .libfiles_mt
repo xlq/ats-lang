@@ -30,6 +30,14 @@ libc/DATS/pthread_upbarr.dats
 
 /* ****** ****** */
 
+libats/SATS/funlock_spin.sats
+libats/DATS/funlock_spin.dats
+
+libats/SATS/linlock_spin.sats
+libats/DATS/linlock_spin.dats
+
+/* ****** ****** */
+
 libats/SATS/parworkshop.sats
 libats/DATS/parworkshop.dats
 

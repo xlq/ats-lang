@@ -38,7 +38,7 @@
 (* ****** ****** *)
 
 %{#
-#include "libats/CATS/funlock_spin.cats"
+#include "libats/CATS/linlock_spin.cats"
 %} // end of [%{#]
 
 (* ****** ****** *)
@@ -58,38 +58,44 @@ castfn ptr_of_lock
 
 (* ****** ****** *)
 
-fun funlock_create_locked
+fun linlock_create_locked
   {v:view} (
   pshared: int
 ) : lock0 (v)
-  = "atslib_funlock_create_locked"
-// end of [funlock_create_locked]
+  = "atslib_linlock_create_locked"
+// end of [linlock_create_locked]
 
-fun funlock_create_unlocked
+fun linlock_create_unlocked
   {v:view} (
   pf: !v >> option_v (v, l==null) | pshared: int
 ) : #[l:addr] lock (v, l)
-  = "atslib_funlock_create_unlocked"
-// end of [funlock_create_unlocked]
+  = "atslib_linlock_create_unlocked"
+// end of [linlock_create_unlocked]
 
 (* ****** ****** *)
 
-fun funlock_acquire
-  {v:view} {l:agz} (x: lock (v, l)): (v | void)
-  = "mac#atslib_funlock_acquire"
-// end of [funlock_acquire]
+fun linlock_destroy
+  {v:view} (x: lock1 (v)): (v | void)
+// end of [linlock_destroy]
 
-fun funlock_acquire_try
+(* ****** ****** *)
+
+fun linlock_acquire
+  {v:view} {l:agz} (x: lock (v, l)): (v | void)
+  = "mac#atslib_linlock_acquire"
+// end of [linlock_acquire]
+
+fun linlock_acquire_try
   {v:view} {l:agz}
   (x: lock (v, l)): [i:nat] (option_v (v, i==0) | int i)
-  = "mac#atslib_funlock_acquire_try"
-// end of [funlock_acquire_try]
+  = "mac#atslib_linlock_acquire_try"
+// end of [linlock_acquire_try]
 
-fun funlock_release
+fun linlock_release
   {v:view} {l:agz} (pf: v | x: lock (v, l)): void
-  = "mac#atslib_funlock_release"
-// end of [funlock_release]
+  = "mac#atslib_linlock_release"
+// end of [linlock_release]
 
 (* ****** ****** *)
 
-(* end of [funlock_spin.sats] *)
+(* end of [linlock_spin.sats] *)
