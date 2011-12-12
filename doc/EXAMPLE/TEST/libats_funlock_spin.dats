@@ -83,8 +83,8 @@ main () = () where {
     i := i + 1
   end // end of [val]
 //
-  val () = workshop_insert_work (ws, 0)
-  val () = workshop_insert_work (ws, 0)
+  val () = workshop_insert_work (ws, 0) // quit ticket
+  val () = workshop_insert_work (ws, 0) // quit ticket
 //
   val () = workshop_free (ws)
 //

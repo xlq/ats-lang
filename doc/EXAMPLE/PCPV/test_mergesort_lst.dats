@@ -46,13 +46,19 @@ main () = () where {
 //
   #define N 10
 (*
-  #define N 1000000
+  #define N 100,000,000 // HX: this is no problem 
+//
+// the following timing was recorded on wildwest.bu.edu
+// 338.230u 8.491s 5:50.18 99.0% 0+0k 24+232io 0pf+0w
+//
 *)
 //
   val xs = listgen (N)
 //
   val () = println! ("The input list has been generated")
-  val () = (list_vt_fprint_elt (stdout_ref, xs, ", "); print_newline ())
+  val () = if N <= 100 then
+    (list_vt_fprint_elt (stdout_ref, xs, ", "); print_newline ())
+  // end of [val]
   prval _pflen = gflist_vt_of_list_vt {T} (xs)
 //
   extern fun lte
@@ -64,8 +70,10 @@ main () = () where {
   val (_pfsrt | ys) = mergesort<T> (xs, lte)
 //
   prval _pflen = list_vt_of_gflist_vt {T} (ys)
-  val () = (list_vt_fprint_elt (stdout_ref, ys, ", "); print_newline ())
-//
+  val ys = ys
+  val () = if N <= 100 then
+    (list_vt_fprint_elt<T> (stdout_ref, ys, ", "); print_newline ())
+  // end of [val]
   val () = list_vt_free (ys)
 //
 } // end of [main]
