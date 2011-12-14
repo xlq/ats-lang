@@ -84,7 +84,8 @@ typedef guchar = [c:char] guchar (c)
 
 (* ****** ****** *)
 
-abst@ype gint (i:int) = $extype"gint"
+abst@ype
+gint (i:int) = $extype"gint"
 typedef gint = [i:int] gint i
 
 abst@ype guint (i:int) = $extype"guint"
@@ -97,18 +98,21 @@ abst@ype gushort = $extype"gushort"
 
 (* ****** ****** *)
 
-abst@ype glong (i: int) = $extype"glong"
-typedef glong = [i:nat] glong (i)
+abst@ype
+glong (i: int) = $extype"glong"
+typedef glong = [i:int] glong (i)
 
 abst@ype gulong (i:int) = $extype"gulong"
 typedef gulong = [i:nat] gulong (i)
 
 (* ****** ****** *)
 
-abst@ype gsize (i:int) = $extype"gsize"
+abst@ype
+gsize (i:int) = $extype"gsize"
 typedef gsize = [i:nat] gsize i
 
-abst@ype gssize (i:int) = $extype"gssize"
+abst@ype
+gssize (i:int) = $extype"gssize"
 typedef gssize = [i:int] gssize i
 
 (* ****** ****** *)

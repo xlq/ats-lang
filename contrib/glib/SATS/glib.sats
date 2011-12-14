@@ -78,6 +78,8 @@ macdef GLIB_VERSION =
 #include "contrib/glib/SATS/glib/gstring.sats"
 #include "contrib/glib/SATS/glib/gutils.sats"
 
+#include "contrib/glib/SATS/glib/gunicode.sats"
+
 (* ****** ****** *)
 
 (* end of [glib.sats] *)

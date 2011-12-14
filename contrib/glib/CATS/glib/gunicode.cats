@@ -33,32 +33,43 @@
 
 /* ****** ****** */
 
-#ifndef ATSCTRB_GLIB_CATS
-#define ATSCTRB_GLIB_CATS
+#ifndef ATSCTRB_GLIB_GUNICODE_CATS
+#define ATSCTRB_GLIB_GUNICODE_CATS
 
 /* ****** ****** */
 
-#include "glib.h"
-//
-#include "contrib/glib/CATS/glib/gbasics.cats"
-//
-#define atsctrb_g_strdup g_strdup
-#define atsctrb_g_strndup g_strndup
-#define atsctrb_g_strdup_printf g_strdup_printf
-#define atsctrb_g_strnfill g_strnfill
-//
-#include "contrib/glib/CATS/glib/garray.cats"
-#include "contrib/glib/CATS/glib/ghash.cats"
-#include "contrib/glib/CATS/glib/glist.cats" // doubly-linked
-#include "contrib/glib/CATS/glib/gmem.cats"
-#include "contrib/glib/CATS/glib/gqsort.cats"
-#include "contrib/glib/CATS/glib/grand.cats"
-#include "contrib/glib/CATS/glib/gslist.cats" // singly-linked
-#include "contrib/glib/CATS/glib/gstring.cats"
-#include "contrib/glib/CATS/glib/gutils.cats"
-
-#include "contrib/glib/CATS/glib/gunicode.cats"
+#include "glib/gunicode.h"
 
 /* ****** ****** */
 
-#endif /* ATSCTRB_GLIB_CATS */
+#define atsctrb_g_unichar_isalnum g_unichar_isalnum
+#define atsctrb_g_unichar_isalpha g_unichar_isalpha
+#define atsctrb_g_unichar_iscntrl g_unichar_iscntrl
+#define atsctrb_g_unichar_isdigit g_unichar_isdigit
+#define atsctrb_g_unichar_isgraph g_unichar_isgraph
+#define atsctrb_g_unichar_islower g_unichar_islower
+#define atsctrb_g_unichar_isprint g_unichar_isprint
+#define atsctrb_g_unichar_ispunct g_unichar_ispunct
+#define atsctrb_g_unichar_isspace g_unichar_isspace
+#define atsctrb_g_unichar_isupper g_unichar_isupper
+#define atsctrb_g_unichar_isxdigit g_unichar_isxdigit
+#define atsctrb_g_unichar_istitle g_unichar_istitle
+#define atsctrb_g_unichar_isdefined g_unichar_isdefined
+#define atsctrb_g_unichar_iswide g_unichar_iswide
+#define atsctrb_g_unichar_iswide_cjk g_unichar_iswide_cjk
+#define atsctrb_g_unichar_iszerowidth g_unichar_iszerowidth
+#define atsctrb_g_unichar_ismark g_unichar_ismark
+
+/* ****** ****** */
+
+ATSinline()
+glong
+atsctrb_g_utf8_strlen_cstr
+  (ats_ptr_type str) {
+  return g_utf8_strlen ((gchar*)str, -1) ;
+} // end of [atsctrb_g_utf8_strlen_cstr]
+#define atsctrb_g_utf8_strlen_carr g_utf8_strlen
+
+/* ****** ****** */
+
+#endif /* ATSCTRB_GLIB_GUNICODE_CATS */

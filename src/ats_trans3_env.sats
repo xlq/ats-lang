@@ -340,6 +340,8 @@ fun s2qua_hypo_instantiate_and_add
 fun s2exp_metric_instantiate
   (_: loc_t, d2vopt: Option stamp_t, met: s2explst): void
 
+(* ****** ****** *)
+
 fun s2exp_exi_instantiate_all (_: loc_t, _: s2exp): s2exp
 fun s2exp_exi_instantiate_one (_: loc_t, _: s2exp): s2exp
 fun s2exp_exi_instantiate_seq

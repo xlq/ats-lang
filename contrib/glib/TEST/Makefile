@@ -40,41 +40,36 @@ cleanall:: clean
 
 checkall:: garray-test
 garray-test: garray-test.dats
-	$(ATSCC) -O3 \
-  $(GLIBCFLAGS) -o garray-test garray-test.dats \
-  $(ATSCTRB) -lglib-2.0 \
-  && ./garray-test
+	$(ATSCC) -O3 $(GLIBCFLAGS) -o $@ $< $(ATSCTRB) -lglib-2.0 && ./$@
 cleanall:: ; $(RMF) garray-test
 
 ######
 
 checkall:: glist-test
 glist-test: glist-test.dats
-	$(ATSCC) -O3 \
-  $(GLIBCFLAGS) -o glist-test glist-test.dats \
-  $(ATSCTRB) -lglib-2.0 \
-  && ./glist-test
+	$(ATSCC) -O3 $(GLIBCFLAGS) -o $@ $< $(ATSCTRB) -lglib-2.0 && ./$@
 cleanall:: ; $(RMF) glist-test
 
 ######
 
 checkall:: gqsort-test
 gqsort-test: gqsort-test.dats
-	$(ATSCC) -O3 \
-  $(GLIBCFLAGS) -o gqsort-test gqsort-test.dats \
-  $(ATSCTRB) -lglib-2.0 \
-  && ./gqsort-test
+	$(ATSCC) -O3 $(GLIBCFLAGS) -o $@ $< $(ATSCTRB) -lglib-2.0 && ./$@
 cleanall:: ; $(RMF) gqsort-test
 
 ######
 
 checkall:: gstring-test
 gstring-test: gstring-test.dats
-	$(ATSCC) -O3 \
-  $(GLIBCFLAGS) -o gstring-test gstring-test.dats \
-  $(ATSCTRB) -lglib-2.0 \
-  && ./gstring-test
+	$(ATSCC) -O3 $(GLIBCFLAGS) -o $@ $< $(ATSCTRB) -lglib-2.0 && ./$@
 cleanall:: ; $(RMF) gstring-test
+
+######
+
+checkall:: gunicode-test
+gunicode-test: gunicode-test.dats
+	$(ATSCC) -O3 $(GLIBCFLAGS) -o $@ $< $(ATSCTRB) -lglib-2.0 && ./$@
+cleanall:: ; $(RMF) gunicode-test
 
 ######
 
