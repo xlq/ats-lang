@@ -404,7 +404,8 @@ prfun lemma_ntl_remainder
   {d:nat}{xs:ilist}{t:tree}{fs,rs:ilist} .<>. (
   pfrem: REMOVE (xs, fs, rs), pftl: TL (d, t, fs), pfpos: ISCONS (rs)
 ) : NTL (d, xs) = let
-  prfn fpf {t1:tree} (pf1tl: TL (d, t1, xs)): [false] void = let
+  prfn fpf {t1:tree}
+    (pf1tl: TL (d, t1, xs)): [false] void = let
     prval pf_treq = lemma_tl_prefix (pftl, pf1tl, PREFIX pfrem)
     prval TREQ () = treq_elim (pf_treq)
     prval pflen_fs = length_istot {fs} ()
