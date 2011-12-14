@@ -9,6 +9,10 @@ ATSOPT=$(ATSHOME)/bin/atsopt
 
 ######
 
+all:: problem2
+
+######
+
 problem2: problem2.dats ; $(ATSCC) -o $@ $< && ./$@
 cleanall:: ; $(RMF) problem2
 
