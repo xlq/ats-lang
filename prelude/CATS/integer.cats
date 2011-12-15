@@ -552,10 +552,12 @@ atspre_tostrptr_uint
 
 #define atspre_nmul atspre_mul_int_int
 #define atspre_ndiv atspre_div_int_int
+// HX: there is no [ndiv1]
 #define atspre_ndiv2 atspre_div_int_int
 
 #define atspre_nmod atspre_mod_int_int
 #define atspre_nmod1 atspre_mod_int_int
+#define atspre_nmod2 atspre_mod_int_int
 
 #define atspre_ilt atspre_lt_int_int
 #define atspre_ilte atspre_lte_int_int
@@ -586,6 +588,8 @@ atspre_nhalf (ats_int_type n) { return (n >> 1) ; }
 #define atspre_umul atspre_mul_uint_uint
 #define atspre_udiv atspre_div_uint_uint
 #define atspre_umod atspre_mod_uint_uint
+// HX: there is no [nmod1]
+#define atspre_umod2 atspre_mod_uint_uint
 
 //
 
@@ -596,6 +600,7 @@ atspre_uimod (
 ) {
   return (u1 % ((ats_uint_type)i2)) ;
 } /* end of [atspre_uimod] */
+#define atspre_uimod2 ats_uimod
 
 #define atspre_ult atspre_lt_uint_uint
 #define atspre_ulte atspre_lte_uint_uint

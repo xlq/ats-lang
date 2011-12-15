@@ -275,7 +275,11 @@ fun{key:t@ype;itm:viewt@ype}
       val () = hashtbl_ptr_insert_chain (pf | sz, p_beg, kis, hash)
       val h = hash_key (k, hash)
       val h = uint1_of_uint (h)
-      val [off:int] off = h mod sz; val off = size1_of_int1 off
+//
+      val [q,r:int] off = h mod sz
+      stadef off = r
+      val off = size1_of_int1 (off)
+//
       val (pf1, pf2 | p_mid) =
         hashtbl_split<> {..} {sz,off,tot+n-1} (pf | p_beg, off)
       prval hashtbl_v_cons (pf21, pf22) = pf2
