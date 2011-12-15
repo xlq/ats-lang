@@ -133,6 +133,7 @@ implement symtbl_search (tbl, name) = let
   val () = printf ("symtbl_search: hash_val = %u\n", @(hash_val))
 *)
   val (vbox pf_tbl | p_tbl) = tbl
+  val hash_val = uint1_of_uint (hash_val)
   val i = hash_val uimod p_tbl->size
 in
   symtbl_search_probe (p_tbl->view.1 | p_tbl->ptr, p_tbl->size, i, name)
@@ -170,6 +171,7 @@ fun symtbl_resize_move
           val sz2 = sz + sz
           val hash_val = string_hash_33 (symbol_name sym)
           val hash_val = uint_of_ulint (hash_val)
+          val hash_val = uint1_of_uint (hash_val)
           val i = hash_val uimod sz2
         in
           symtbl_insert_probe (pf_new | p_new, sz2, i, sym);
@@ -226,6 +228,7 @@ val () = printf ("symtbl_insert: name = %s\n", @(name))
 val () = printf ("symtbl_insert: hash_val = %u\n", @(hash_val))
 *)
 val (vbox pf_tbl | p_tbl) = tbl
+val hash_val = uint1_of_uint (hash_val)
 val i = hash_val uimod p_tbl->size
 
 in
