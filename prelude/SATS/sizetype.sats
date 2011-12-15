@@ -265,7 +265,7 @@ fun size1_of_int1 {i:nat}
   (i: int i):<> size_t i = "atspre_size1_of_int1"
 // end of [size1_of_int1]
 
-fun size1_of_uint1 {i:nat}
+fun size1_of_uint1 {i:int}
   (u: uint i):<> size_t i = "atspre_size1_of_uint1"
 // end of [size1_of_uint1]
 

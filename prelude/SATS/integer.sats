@@ -566,81 +566,81 @@ overload uint1_of with uint1_of_int1
 
 // arithmetic functions and comparison functions
 
-fun usucc {i:nat} (i: uint i):<> uint (i + 1)
+fun usucc {i:int} (i: uint i):<> uint (i + 1)
   = "atspre_usucc"
 and upred {i:pos} (i: uint i):<> uint (i - 1)
   = "atspre_upred"
 overload succ with usucc
 overload pred with upred
 
-fun uadd {i,j:nat} (i: uint i, j: uint j):<> uint (i+j)
+fun uadd {i,j:int} (i: uint i, j: uint j):<> uint (i+j)
   = "atspre_uadd"
-and usub {i,j:nat | i >= j} (i: uint i, j: uint j):<> uint (i-j)
+and usub {i,j:int | i >= j} (i: uint i, j: uint j):<> uint (i-j)
   = "atspre_usub"
 overload + with uadd
 overload - with usub
 
-fun umul {i,j:nat} (i: uint i, j: uint j):<> uint (i*j)
+fun umul {i,j:int} (i: uint i, j: uint j):<> uint (i*j)
   = "atspre_umul"
-and udiv {i,j:nat | j > 0} (i: uint i, j: uint j):<> uint (i/j)
+and udiv {i,j:int | j > 0} (i: uint i, j: uint j):<> uint (i/j)
   = "atspre_udiv"
 overload * with umul
 overload / with udiv
 
-fun umod {i,j:int | i >= 0; j > 0} // [j] is a constant!
+fun umod {i,j:int | j > 0} // [j] is a constant!
   (i: uint i, j: uint j) :<> [q,r:nat | r < j; i == q*j + r] uint r
   = "atspre_umod"
 //
 // HX: there is no [umod1]
 //
-fun umod2 {i,j:nat | j > 0}
+fun umod2 {i,j:int | j > 0}
   (i: uint i, j: uint j):<> [r:int] (MOD (i, j, r) | uint r)
   = "atspre_umod2"
 overload mod with umod
 
-fun uimod {i,j:nat | j > 0}
+fun uimod {i,j:int | j > 0}
   (i: uint i, j: int j):<> [q,r:nat | r < j; i == q*j + r] int r
   = "atspre_uimod"
 //
 // HX: there is no [uimod1]
 //
-fun uimod2 {i,j:nat | j > 0}
+fun uimod2 {i,j:int | j > 0}
   (i: uint i, j: int j):<> [r:int] (MOD (i, j, r) | int r)
   = "atspre_uimod2"
 overload mod with uimod
 
-fun ult {i,j:nat} (i: uint i, j: uint j):<> bool (i < j)
+fun ult {i,j:int} (i: uint i, j: uint j):<> bool (i < j)
   = "atspre_ult"
-and ulte {i,j:nat} (i: uint i, j: uint j):<> bool (i <= j)
+and ulte {i,j:int} (i: uint i, j: uint j):<> bool (i <= j)
   = "atspre_ulte"
 overload < with ult
 overload <= with ulte
 
-fun ugt {i,j:nat} (i: uint i, j: uint j):<> bool (i > j)
+fun ugt {i,j:int} (i: uint i, j: uint j):<> bool (i > j)
   = "atspre_ugt"
-and ugte {i,j:nat} (i: uint i, j: uint j):<> bool (i >= j)
+and ugte {i,j:int} (i: uint i, j: uint j):<> bool (i >= j)
   = "atspre_ugte"
 overload > with ugt
 overload >= with ugte
 
-fun ueq {i,j:nat} (i: uint i, j: uint j):<> bool (i == j)
+fun ueq {i,j:int} (i: uint i, j: uint j):<> bool (i == j)
   = "atspre_ueq"
-and uneq {i,j:nat} (i: uint i, j: uint j):<> bool (i <> j)
+and uneq {i,j:int} (i: uint i, j: uint j):<> bool (i <> j)
   = "atspre_uneq"
 overload = with ueq
 overload <> with uneq
 overload != with uneq
 
-fun umax {i,j:nat}
+fun umax {i,j:int}
   (i: uint i, j: uint j):<> [k:int | max_r (i, j, k)] uint k
   = "atspre_umax"
-and umin {i,j:nat}
+and umin {i,j:int}
   (i: uint i, j: uint j):<> [k:int | min_r (i, j, k)] uint k
   = "atspre_umin"
 overload max with umax
 overload min with umin
 
-fun uhalf {i:nat} (i: uint i):<> uint (i/2) = "atspre_uhalf"
+fun uhalf {i:int} (i: uint i):<> uint (i/2) = "atspre_uhalf"
 
 (* ****** ****** *)
 //
