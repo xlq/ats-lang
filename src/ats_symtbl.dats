@@ -128,12 +128,12 @@ end // end of [symtbl_search_probe]
 implement symtbl_search (tbl, name) = let
   val hash_val = string_hash_33 name
   val hash_val = uint_of_ulint (hash_val)
+  val hash_val = uint1_of_uint (hash_val)
 (*
   val () = printf ("symtbl_search: name = %s\n", @(name))
   val () = printf ("symtbl_search: hash_val = %u\n", @(hash_val))
 *)
   val (vbox pf_tbl | p_tbl) = tbl
-  val hash_val = uint1_of_uint (hash_val)
   val i = hash_val uimod p_tbl->size
 in
   symtbl_search_probe (p_tbl->view.1 | p_tbl->ptr, p_tbl->size, i, name)
@@ -223,12 +223,12 @@ symtbl_insert (tbl, name, sym) = let
 val () = symtbl_resize_if (tbl)
 val hash_val = string_hash_33 name
 val hash_val = uint_of_ulint (hash_val)
+val hash_val = uint1_of_uint (hash_val)
 (*
 val () = printf ("symtbl_insert: name = %s\n", @(name))
 val () = printf ("symtbl_insert: hash_val = %u\n", @(hash_val))
 *)
 val (vbox pf_tbl | p_tbl) = tbl
-val hash_val = uint1_of_uint (hash_val)
 val i = hash_val uimod p_tbl->size
 
 in
