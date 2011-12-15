@@ -28,12 +28,10 @@
 *)
 
 (* ****** ****** *)
-
 //
 // Author: Hongwei Xi (hwxi AT cs DOT bu DOT edu)
 // Time: Summer, 2007
 //
-
 (* ****** ****** *)
 
 fun wordsize_target_get (): size_t

@@ -28,12 +28,10 @@
 *)
 
 (* ****** ****** *)
-
 //
 // Author: Hongwei Xi (hwxi AT cs DOT bu DOT edu)
 // Time: Summer, 2007
 //
-
 (* ****** ****** *)
 
 staload STDLIB = "libc/SATS/stdlib.sats"
@@ -327,6 +325,7 @@ end // end of [lstrlst_reverse]
 
 #include <errno.h>
 #include <sys/stat.h>
+#include <sys/wait.h>
 #include <unistd.h>
 
 /* ****** ****** */

@@ -418,11 +418,11 @@ in
       var wths2es: wths2explst = WTHS2EXPLSTnil ()
       val iswth = s2exp_is_wth (s2e_fun_res)
       val () = if iswth then let
-        val s2e_fun_res = s2exp_opnexi_and_add (loc_app, s2e_fun_res)
+        val s2e_fun_res =
+          s2exp_opnexi_and_add (loc_app, s2e_fun_res)
+        val- S2Ewth (s2e, wths2es1) = s2e_fun_res.s2exp_node
       in
-        case+ s2e_fun_res.s2exp_node of
-        | S2Ewth (s2e, wths2es1) => (s2e_res := s2e; wths2es := wths2es1)
-        | _ => $Err.deadcode (": [ats_trans3_exp_up]: d23exp_app_tr_up: iswth")
+        s2e_res := s2e; wths2es := wths2es1
       end : void // end of [val]
       val d3e_fun = d3exp_funclo_restore (fc, d3e_fun)
       val d3es_arg = (
