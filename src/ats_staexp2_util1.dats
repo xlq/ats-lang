@@ -1112,7 +1112,6 @@ s2zexp_make_s2exp (s2e0) = let
 *)
       | S2Eread (_, s2e) => s2zexp_make_s2exp s2e
       | S2Esize s2ze => s2ze
-      | S2Esizeof s2e => s2zexp_make_s2exp s2e
       | S2Etop (_(*knd*), s2e) => s2zexp_make_s2exp s2e
       | S2Etyarr (s2e_elt, s2ess_dim) => begin
           S2ZEtyarr (aux_s2exp (s2vss, s2e_elt), s2ess_dim)

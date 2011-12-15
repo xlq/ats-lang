@@ -192,7 +192,8 @@ fn{key:t0p;itm:t0p}
 ht_search {sz:pos} (
   ht: &HT (key, itm, sz), k0: key
 ) :<> Option_vt itm = let
-  val off = op uimod (ht.hash k0, ht.size)
+  val h0 = ht.hash k0
+  val off = op uimod (uint1_of_uint (h0), ht.size)
 in
   table_search (ht.table, off, k0, ht.eq)
 end // end of [ht_search]
@@ -201,7 +202,8 @@ fn{key:t0p;itm:vt0p}
 ht_insert {sz:pos} (
   ht: &HT (key, itm, sz), k: key, i: itm
 ) :<> void = let
-  val off = op uimod (ht.hash k, ht.size)
+  val h = ht.hash (k)
+  val off = op uimod (uint1_of_uint(h), ht.size)
 in
   table_insert (ht.table, off, k, i); ht.nitm := ht.nitm + 1
 end // end of [ht_insert]
@@ -222,7 +224,8 @@ fn{key:t0p;itm:vt0p}
 ht_remove {sz:pos} (
   ht: &HT (key, itm, sz), k: key
 ) :<> Option_vt itm = let
-  val off = op uimod (ht.hash k, ht.size)
+  val h = ht.hash (k)
+  val off = op uimod (uint1_of_uint (h), ht.size)
   val off_sz = size1_of_int1 (off)
   val ans = table_remove<key,itm> (ht.table, off_sz, k, ht.eq)
   val () = (case+ ans of
