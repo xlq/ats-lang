@@ -550,11 +550,15 @@ fun nhalf {n:nat}
 //
 (* ****** ****** *)
 
+praxi uint_param_lemma {i:int} (u: uint i): [i >= 0] void
+
+(* ****** ****** *)
+
 castfn uint1_of_uint (i: uint):<> [i:nat] uint i
+overload uint1_of with uint1_of_uint
 
 castfn uint1_of_int (i: int):<> [i:nat] uint i
 castfn uint1_of_int1 {i:nat} (i: int i):<> uint i
-
 overload uint1_of with uint1_of_int
 overload uint1_of with uint1_of_int1
 
