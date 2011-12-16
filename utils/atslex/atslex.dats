@@ -112,11 +112,8 @@ end // end of [local]
 
 (* ****** ****** *)
 
-extern
-fun is_reentrant (str: string): bool
-
-implement
-is_reentrant (str) = case+ str of
+fn is_reentrant
+  (str: string): bool = case+ str of
   | "--reentrant" => true | _ => false
 // end of [is_reentrant]
 
@@ -126,8 +123,8 @@ val the_reentrant = ref<bool> (false)
 
 in // in of [local]
 
-implement atslex_reentrant () = !the_reentrant
-implement atslex_reentrant_set (b) = !the_reentrant := b
+implement atslex_get_reentrant () = !the_reentrant
+implement atslex_set_reentrant (b) = !the_reentrant := b
 
 end // end of [local]
 
@@ -148,15 +145,16 @@ fun loop
   argv: &(@[string][n]), i: size_t i, n: size_t n
 ) :<fun1> void =
   if i < n then begin
-    if is_reentrant (argv.[i]) then atslex_reentrant_set (true);
-    loop (argv, i+1, n)
+    if is_reentrant (argv.[i])
+      then atslex_set_reentrant (true) else loop (argv, i+1, n)
+    // end of [if]
   end // end of [if]
 // end of [loop]
 val () = loop (argv, 0, size1_of_int1 argc)
 *)
-val () = if argc >= 2 then
-  if is_reentrant (argv.[1]) then atslex_reentrant_set (true)
-// end of [val]
+val () = if argc >= 2 then (
+  if is_reentrant (argv.[1]) then atslex_set_reentrant (true)
+) // end of [val]
 
 val () = let
   val (pf_stdin | p_stdin) = stdin_get ()

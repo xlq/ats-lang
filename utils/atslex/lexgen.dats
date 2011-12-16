@@ -775,7 +775,7 @@ fun fprint_header
   pf_mod: file_mode_lte (m, w)
 | fil: &FILE m, id: string, arg: string
 ) : void = let
-  val isreent = atslex_reentrant ()
+  val isreent = atslex_get_reentrant ()
 in
   fprintf (pf_mod | fil, "implement %s (", @(id));
   if isreent then begin
@@ -801,7 +801,7 @@ fun fprint_rules {m:file_mode} (
   pf_mod: file_mode_lte (m, w)
 | fil: &FILE m, id: string, arg: string, rls: rules
 ) : void = let
-  val isreent = atslex_reentrant ()
+  val isreent = atslex_get_reentrant ()
   fun loop (fil: &FILE m, rls: rules, irule: int): void =
     case+ rls of
     | rules_cons (r, code, rls) => begin
