@@ -137,24 +137,22 @@ end // end of [atslex_usage]
 (* ****** ****** *)
 
 implement
-main {n} (argc, argv) = let
+main {n}
+  (argc, argv) = let
 
-(*
+val () =
+  loop (argv, 0) where {
 fun loop
   {i:nat | i <= n} .<n-i>. (
-  argv: &(@[string][n]), i: size_t i, n: size_t n
-) :<fun1> void =
-  if i < n then begin
+  argv: &(@[string][n]), i: int i
+) :<cloref1> void =
+  if i < argc then (
     if is_reentrant (argv.[i])
-      then atslex_set_reentrant (true) else loop (argv, i+1, n)
+      then atslex_set_reentrant (true) else loop (argv, i+1)
     // end of [if]
-  end // end of [if]
+  ) // end of [if]
 // end of [loop]
-val () = loop (argv, 0, size1_of_int1 argc)
-*)
-val () = if argc >= 2 then (
-  if is_reentrant (argv.[1]) then atslex_set_reentrant (true)
-) // end of [val]
+} // end of [where] // end of [val]
 
 val () = let
   val (pf_stdin | p_stdin) = stdin_get ()
@@ -168,29 +166,29 @@ val () = token_initialization ()
 
 val lexer = lexer_parse ()
 val () = the_atslex_input_fin () // close the input channel
-
+//
 // val () = prerr ("atslex: [lexer_parse] is finished.\n")
-
+//
 val (pf_stdout | ptr_stdout) = stdout_get ()
 
 val () = fprint_string (
   file_mode_lte_w_w | !ptr_stdout, lexer.preamble
 ) // end of [fprint_string]
-
+//
 // val () = prerr ("atslex: preamble is finished.\n")
-
+//
 val () = fprint_lexfns (
   file_mode_lte_w_w | !ptr_stdout, lexer.redef, lexer.lexfns
 ) // end of [fprint_lexfns]
-
+//
 // val () = prerr ("atslex: [fprint_lexfns] is finished.\n")
-
+//
 val () = fprint_string (
   file_mode_lte_w_w | !ptr_stdout, lexer.postamble
 ) // end of [fprint_string]
-
+//
 // val () = prerr ("atslex: postamble is finished.\n")
-
+//
 val () = stdout_view_set (pf_stdout | (*none*))
 
 in
