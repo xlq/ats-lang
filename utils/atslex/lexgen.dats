@@ -770,11 +770,24 @@ end // end of [fprint_acclst]
 
 (* ****** ****** *)
 
-fun fprint_header {m:file_mode}
-  (pf_mod: file_mode_lte (m, w) | fil: &FILE m, id: string, arg: string)
-  : void = begin
-  fprintf (pf_mod | fil, "implement %s (%s) =\n", @(id, arg));
-  fprint_string (pf_mod | fil, "case+ lexing_engine (__");
+fun fprint_header
+  {m:file_mode} (
+  pf_mod: file_mode_lte (m, w)
+| fil: &FILE m, id: string, arg: string
+) : void = let
+  val isreent = atslex_reentrant ()
+in
+  fprintf (pf_mod | fil, "implement %s (", @(id));
+  if isreent then begin
+    fprint_string (pf_mod | fil, "mylexbuf");
+    if string_isnot_empty arg then fprint_string (pf_mod | fil, ", ");
+  end; // end of [if]
+  fprintf (pf_mod | fil, "%s) =\n", @(arg));
+  if ~isreent then begin
+    fprint_string (pf_mod | fil, "case+ lexing_engine (__")
+  end else begin
+    fprint_string (pf_mod | fil, "case+ lexing_engine_lexbuf (mylexbuf, __");
+  end; // end of [if]
   fprint_string (pf_mod | fil, id);
   fprint_string (pf_mod | fil, "_transition_table, __");
   fprint_string (pf_mod | fil, id);
@@ -785,9 +798,10 @@ end // end of [fprint_header]
 (* ****** ****** *)
 
 fun fprint_rules {m:file_mode} (
-    pf_mod: file_mode_lte (m, w)
-  | fil: &FILE m, id: string, arg: string, rls: rules
-  ) : void = let
+  pf_mod: file_mode_lte (m, w)
+| fil: &FILE m, id: string, arg: string, rls: rules
+) : void = let
+  val isreent = atslex_reentrant ()
   fun loop (fil: &FILE m, rls: rules, irule: int): void =
     case+ rls of
     | rules_cons (r, code, rls) => begin
@@ -798,15 +812,22 @@ fun fprint_rules {m:file_mode} (
   // end of [loop]
 in
   loop (fil, rls, 1);
-  fprintf (pf_mod | fil, "  | _ => %s_lexing_error (%s)\n", @(id, arg))
+  fprintf (pf_mod | fil, "  | _ => %s_lexing_error (", @(id));
+  if isreent then begin
+    fprint_string (pf_mod | fil, "mylexbuf");
+    if string_isnot_empty arg then fprint_string (pf_mod | fil, ", ");
+  end; // end of [if]
+  fprintf (pf_mod | fil, "%s)\n", @(arg))
 end // end of [fprint_rules]
 
 (* ****** ****** *)
 
-extern fun fprint_DFA {m:file_mode} (
-    pf_mod: file_mode_lte (m, w)
-  | fil: &FILE m, env: redef, id: string, arg: string, rls: rules
-  ) : void
+extern
+fun fprint_DFA
+  {m:file_mode} (
+  pf_mod: file_mode_lte (m, w)
+| fil: &FILE m, env: redef, id: string, arg: string, rls: rules
+) : void // end of [fprint_DFA]
 
 val regex_eof = REGchars charset_eof
 

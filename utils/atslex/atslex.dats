@@ -7,28 +7,27 @@
 (***********************************************************************)
 
 (*
- * ATS - Unleashing the Power of Types!
- *
- * Copyright (C) 2002-2008 Hongwei Xi, Boston University
- *
- * All rights reserved
- *
- * ATS is free software;  you can  redistribute it and/or modify it under
- * the terms of the GNU LESSER GENERAL PUBLIC LICENSE as published by the
- * Free Software Foundation; either version 2.1, or (at your option)  any
- * later version.
- * 
- * ATS is distributed in the hope that it will be useful, but WITHOUT ANY
- * WARRANTY; without  even  the  implied  warranty  of MERCHANTABILITY or
- * FITNESS FOR A PARTICULAR PURPOSE.  See the  GNU General Public License
- * for more details.
- * 
- * You  should  have  received  a  copy of the GNU General Public License
- * along  with  ATS;  see the  file COPYING.  If not, please write to the
- * Free Software Foundation,  51 Franklin Street, Fifth Floor, Boston, MA
- * 02110-1301, USA.
- *
- *)
+** ATS - Unleashing the Power of Types!
+**
+** Copyright (C) 2002-2008 Hongwei Xi, Boston University
+**
+** All rights reserved
+**
+** ATS is free software;  you can  redistribute it and/or modify it under
+** the terms of the GNU LESSER GENERAL PUBLIC LICENSE as published by the
+** Free Software Foundation; either version 2.1, or (at your option)  any
+** later version.
+** 
+** ATS is distributed in the hope that it will be useful, but WITHOUT ANY
+** WARRANTY; without  even  the  implied  warranty  of MERCHANTABILITY or
+** FITNESS FOR A PARTICULAR PURPOSE.  See the  GNU General Public License
+** for more details.
+** 
+** You  should  have  received  a  copy of the GNU General Public License
+** along  with  ATS;  see the  file COPYING.  If not, please write to the
+** Free Software Foundation,  51 Franklin Street, Fifth Floor, Boston, MA
+** 02110-1301, USA.
+*)
 
 (* ****** ****** *)
 
@@ -113,13 +112,51 @@ end // end of [local]
 
 (* ****** ****** *)
 
+extern
+fun is_reentrant (str: string): bool
+
+implement
+is_reentrant (str) = case+ str of
+  | "--reentrant" => true | _ => false
+// end of [is_reentrant]
+
+local
+
+val the_reentrant = ref<bool> (false)
+
+in // in of [local]
+
+implement atslex_reentrant () = !the_reentrant
+implement atslex_reentrant_set (b) = !the_reentrant := b
+
+end // end of [local]
+
+(* ****** ****** *)
+
 fn atslex_usage (cmd: string): void = begin
-  printf ("usage: %s --input <filename> --output <filename>\n", @(cmd));
+  printf ("usage: %s [--reentrant] --input <filename> --output <filename>\n", @(cmd));
 end // end of [atslex_usage]
 
 (* ****** ****** *)
 
-implement main (argc, argv) = let
+implement
+main {n} (argc, argv) = let
+
+(*
+fun loop
+  {i:nat | i <= n} .<n-i>. (
+  argv: &(@[string][n]), i: size_t i, n: size_t n
+) :<fun1> void =
+  if i < n then begin
+    if is_reentrant (argv.[i]) then atslex_reentrant_set (true);
+    loop (argv, i+1, n)
+  end // end of [if]
+// end of [loop]
+val () = loop (argv, 0, size1_of_int1 argc)
+*)
+val () = if argc >= 2 then
+  if is_reentrant (argv.[1]) then atslex_reentrant_set (true)
+// end of [val]
 
 val () = let
   val (pf_stdin | p_stdin) = stdin_get ()

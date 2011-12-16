@@ -852,7 +852,8 @@ typedef List (a:t@ype) = [n:int | n >= 0] list (a, n)
 //
 // HX: [option0_t0ype_type] is co-variant
 //
-datatype option0_t0ype_type (a: t@ype) =
+datatype
+option0_t0ype_type (a: t@ype+) =
   | option0_some (a) of (a) | option0_none (a) of ()
 // end of [datatype]
 stadef option0 = option0_t0ype_type

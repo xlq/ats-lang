@@ -43,19 +43,25 @@ ATSLEX=$(ATSHOME)/bin/atslex
 ######
 
 calc: calc_lats_dats.c; $(ATSCC) -g -o calc $< -lats_lex
+calc_r: calc_r_lats_dats.c; $(ATSCC) -g -o calc_r $< -lats_lex
 
 ######
 
 calc_lats.dats: calc.lats; $(ATSLEX) < $< > $@
 calc_lats_dats.c: calc_lats.dats; $(ATSCC) -c calc_lats.dats
 
+calc_r_lats.dats: calc_r.lats; $(ATSLEX) --reentrant < $< > $@
+calc_r_lats_dats.c: calc_r_lats.dats; $(ATSCC) -c calc_r_lats.dats
+
 ######
 
 clean::
 	rm -f *~
 	rm -f calc_lats.dats calc_lats_dats.c calc_lats_dats.o
+	rm -f calc_r_lats.dats calc_r_lats_dats.c calc_r_lats_dats.o
 
-cleanall: clean
+cleanall:: clean
 	rm -f ./calc
+	rm -f ./calc_r
 
 ###### end of  [Makefile] ######

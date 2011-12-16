@@ -89,6 +89,9 @@ fun the_atslex_input_set {l:addr} (pf: FILE r @ l | p: ptr l): void
 
 fun atslex_getchar (): int = "atslex_getchar"
 
+fun atslex_reentrant (): bool
+fun atslex_reentrant_set (b: bool): void
+
 (* ****** ****** *)
 //
 // HX: implemented in [token.dats]
