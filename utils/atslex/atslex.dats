@@ -70,7 +70,8 @@ val theInputRef = ref<input> (INPUTnone ())
 
 in // in of [local]
 
-implement the_atslex_input_fin () = let
+implement
+the_atslex_input_fin () = let
   val (vbox pf | p) = ref_get_view_ptr (theInputRef)
 in
   case+ !p of
@@ -82,7 +83,9 @@ in
   | INPUTnone () => fold@ !p
 end // end of [the_atslex_input_fin]
 
-implement the_atslex_input_set (pf_fil | p_fil) = let
+implement
+the_atslex_input_set
+  (pf_fil | p_fil) = let
   val (vbox pf | p) = ref_get_view_ptr (theInputRef)
 in
   case+ !p of
@@ -161,9 +164,9 @@ in
 end // end of [val]
 
 val () = token_initialization ()
-
+//
 // val () = prerr ("atslex: [lexer_parse] is started.\n")
-
+//
 val lexer = lexer_parse ()
 val () = the_atslex_input_fin () // close the input channel
 //
