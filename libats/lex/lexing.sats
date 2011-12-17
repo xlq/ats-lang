@@ -119,7 +119,11 @@ fun infile_free {v:view}
 fun infile_getc {v:view}
   (pf: !v | f: infile_t v): int = "lexing_infile_getc"
 
-fun infile_make_string (s: string): [v:view] (v | infile_t v)
+fun infile_make_string (inp: string): [v:view] (v | infile_t v)
+(*
+** HX-2011-12-16: [inp] is *not* freed; it needs to be GCed!
+*)
+fun infile_make_strptr (inp: strptr1): [v:view] (v | infile_t v)
 
 fun infile_make_file
   {m:file_mode} {l:addr} (

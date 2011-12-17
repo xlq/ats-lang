@@ -1614,7 +1614,7 @@ fn d2exp_rec_tr_up (
 ) : d3exp = let
 (*
   val () = begin
-    print "labd2explst_tr_up: ld2es = "; print ld2es; print_newline ()
+    print "d2exp_rec_tr_up: ld2es = "; print ld2es; print_newline ()
   end // end of [val]
 *)
   fun aux (

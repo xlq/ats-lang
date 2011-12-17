@@ -147,6 +147,11 @@ in #[
   V | ( @(pf_gc, pf_at) | @{ free= _free, getc= _getc } )
 ] end // end of [infile_make_string]
 
+implement
+infile_make_strptr (inp) = let
+  val inp = string_of_strptr (inp) in infile_make_string (inp)
+end // end of [infile_make_strptr]
+
 (* ****** ****** *)
 
 local
