@@ -147,10 +147,50 @@ in #[
   V | ( @(pf_gc, pf_at) | @{ free= _free, getc= _getc } )
 ] end // end of [infile_make_string]
 
+(* ****** ****** *)
+
 implement
-infile_make_strptr (inp) = let
-  val inp = string_of_strptr (inp) in infile_make_string (inp)
-end // end of [infile_make_strptr]
+infile_make_strptr
+  (inp) = let
+  stavar l1:addr; val inp = inp: strptr l1
+  val [m,n:int] (pf_free, pf_sb | p_sb) = strbuf_of_strptr inp
+  val n = strbuf_length (!p_sb)
+//
+  typedef T = sizeLte n
+  val [l2:addr] (pf_gc, pf_at | p) = ptr_alloc_tsz {T} (sizeof<T>)
+//
+  viewdef V = (
+    freebyte_gc_v (m, l1), strbuf_v (m, n, l1), free_gc_v (T?, l2), T @ l2
+  ) // end of [V]
+  fn _free (
+    pf: V | (*none*)
+  ) :<cloref1> void = let
+    val () = strbufptr_free @(pf.0, pf.1 | p_sb)
+  in
+    ptr_free {T?} (pf.2, pf.3 | p)
+  end // end of [_free]
+//
+  fn _getc (
+    pf: !V | (*none*)
+  ) :<cloref1> int = let
+    prval pf1_at = pf.1 
+    prval pf2_at = pf.3
+    val i = !p
+    val isend = strbuf_is_at_end (!p_sb, i)
+    val ans = 
+      if :(pf2_at: T @ l2) => isend then ~1 else begin
+        !p := i+1; int_of_char (strbuf_get_char_at (!p_sb, i))
+      end // end of [if]
+    // end of [val]
+  in
+    pf.1 := pf1_at; pf.3 := pf2_at; ans
+  end // end of [_getc]
+//
+  val () = !p := size1_of_int1 0
+//
+in #[
+  V | ( @(pf_free, pf_sb, pf_gc, pf_at) | @{ free= _free, getc= _getc } )
+] end // end of [infile_make_strptr]
 
 (* ****** ****** *)
 

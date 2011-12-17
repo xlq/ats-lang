@@ -121,7 +121,7 @@ fun infile_getc {v:view}
 
 fun infile_make_string (inp: string): [v:view] (v | infile_t v)
 (*
-** HX-2011-12-16: [inp] is *not* freed; it needs to be GCed!
+** HX-2011-12-16: [inp] is freed when [infile] is freed
 *)
 fun infile_make_strptr (inp: strptr1): [v:view] (v | infile_t v)
 
@@ -145,6 +145,8 @@ absviewt@ype lexbuf_t (* implemented externally in lexing.dats*)
 fun lexbuf_curpos_fprint
   (out: FILEref, lb: &lexbuf_t): void = "lexbuf_curpos_fprint"
 // end of [lexbuf_curpos_fprint]
+
+fun lexbuf_curpos_prerr (lb: &lexbuf_t): void
 
 (* ****** ****** *)
 
@@ -231,8 +233,6 @@ fun lexing_is_eof (): bool = "lexing_is_eof"
 fun lexing_fstpos_get (): position_t = "lexing_fstpos_get"
 fun lexing_lstpos_get (): position_t = "lexing_lstpos_get"
 fun lexing_curpos_get (): position_t = "lexing_curpos_get"
-
-fun lexing_curpos_prerr (): void = "lexing_curpos_prerr"
 
 (* ****** ****** *)
 
