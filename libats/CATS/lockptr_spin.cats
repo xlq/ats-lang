@@ -37,28 +37,39 @@
 
 /* ****** ****** */
 
-#ifndef ATS_LIBATS_FUNLOCK_SPIN_CATS
-#define ATS_LIBATS_FUNLOCK_SPIN_CATS
+#ifndef ATS_LIBATS_LOCKPTR_SPIN_CATS
+#define ATS_LIBATS_LOCKPTR_SPIN_CATS
 
 /* ****** ****** */
 
-#include "libats/CATS/linlock_spin.cats"
+#include "libc/CATS/pthread.cats"
 
 /* ****** ****** */
 
-#define atslib_funlock_create_locked atslib_linlock_create_locked
-#define atslib_funlock_create_unlocked atslib_linlock_create_unlocked
+extern
+ats_ptr_type
+atslib_pthread_spin_create_locked (ats_int_type pshared) ;
+extern
+ats_ptr_type
+atslib_pthread_spin_create_unlocked (ats_int_type pshared) ;
 
 /* ****** ****** */
 
-#define atslib_funlock_acquire atslib_linlock_acquire
-#define atslib_funlock_acquire_try atslib_linlock_acquire_try
-#define atslib_funlock_release atslib_linlock_release
+#define atslib_lockptr_create_locked \
+  atslib_pthread_spin_create_locked
+#define atslib_lockptr_create_unlocked \
+  atslib_pthread_spin_create_unlocked
 
 /* ****** ****** */
 
-#endif // end of [#ifndef ATS_CONTRIB_FUNLOCK_SPIN_CATS]
+#define atslib_lockptr_acquire atslib_pthread_spin_lock
+#define atslib_lockptr_acquire_try atslib_pthread_spin_trylock
+#define atslib_lockptr_release atslib_pthread_spin_unlock
 
 /* ****** ****** */
 
-/* end of [funlock_spin.cats] */
+#endif // end of [#ifndef ATS_CONTRIB_LOCKPTR_SPIN_CATS]
+
+/* ****** ****** */
+
+/* end of [lockptr_spin.cats] */

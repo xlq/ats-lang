@@ -33,7 +33,7 @@
 
 (* ****** ****** *)
 
-staload "libats/SATS/funlock_spin.sats"
+staload "libats/SATS/lockref_spin.sats"
 
 (* ****** ****** *)
 //
@@ -41,4 +41,4 @@ staload "libats/SATS/funlock_spin.sats"
 //
 (* ****** ****** *)
 
-(* end of [funlock_spin.dats] *)
+(* end of [lockref_spin.dats] *)

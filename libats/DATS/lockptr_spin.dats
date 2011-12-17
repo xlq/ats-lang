@@ -33,19 +33,19 @@
 
 (* ****** ****** *)
 
-staload "libats/SATS/linlock_spin.sats"
+staload "libats/SATS/lockptr_spin.sats"
 
 (* ****** ****** *)
 
 %{^
 ats_void_type
-atslib_linlock_destroy
+atslib_lockptr_destroy
   (ats_ptr_type lock) {
   atslib_pthread_spin_destroy((pthread_spinlock_t*)lock) ;
   ATS_FREE(lock) ; return ;
-} // end of [atslib_linlock_destroy]
+} // end of [atslib_lockptr_destroy]
 %} // end of [%{^]
 
 (* ****** ****** *)
 
-(* end of [linlock_spin.dats] *)
+(* end of [lockptr_spin.dats] *)

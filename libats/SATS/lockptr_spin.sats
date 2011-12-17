@@ -32,64 +32,79 @@
 // License: LGPL 3.0 (available at http://www.gnu.org/licenses/lgpl.txt)
 //
 (* ****** ****** *)
+//
+// HX-2011-12-10: this one is implemented on the top of pthread spinlock
+//
+(* ****** ****** *)
 
 #define ATS_STALOADFLAG 0 // no static loading at run-time
 
 (* ****** ****** *)
 
 %{#
-#include "libats/CATS/funlock_spin.cats"
+#include "libats/CATS/lockptr_spin.cats"
 %} // end of [%{#]
 
 (* ****** ****** *)
 
 abstype
-lock_view_type
+lock_view_viewtype
   (v:view, l:addr)
-stadef lock = lock_view_type
-typedef lock0 (v:view) = [l:addr] lock (v, l)
-typedef lock1 (v:view) = [l:addr | l > null] lock (v, l)
+stadef lock = lock_view_viewtype
+viewtypedef lock0 (v:view) = [l:addr] lock (v, l)
+viewtypedef lock1 (v:view) = [l:addr | l > null] lock (v, l)
 
 (* ****** ****** *)
 
 castfn ptr_of_lock
-  {v:view} {l:addr} (x: lock (v, l)):<> ptr (l)
+  {v:view}
+  {l:addr} (x: !lock (v, l)):<> ptr (l)
 // end of [ptr_of_lock]
+
+castfn lock_free_null
+  {v:view} (x: lock (v, null)):<> ptr (null)
+// end of [lock_free_null]
 
 (* ****** ****** *)
 
-fun funlock_create_locked
+fun lockptr_create_locked
   {v:view} (
   pshared: int
 ) : lock0 (v)
-  = "atslib_funlock_create_locked"
-// end of [funlock_create_locked]
+  = "atslib_lockptr_create_locked"
+// end of [lockptr_create_locked]
 
-fun funlock_create_unlocked
+fun lockptr_create_unlocked
   {v:view} (
   pf: !v >> option_v (v, l==null) | pshared: int
 ) : #[l:addr] lock (v, l)
-  = "atslib_funlock_create_unlocked"
-// end of [funlock_create_unlocked]
+  = "atslib_lockptr_create_unlocked"
+// end of [lockptr_create_unlocked]
 
 (* ****** ****** *)
 
-fun funlock_acquire
-  {v:view} {l:agz} (x: lock (v, l)): (v | void)
-  = "mac#atslib_funlock_acquire"
-// end of [funlock_acquire]
+fun lockptr_destroy
+  {v:view} (x: lock1 (v)): (v | void)
+// end of [lockptr_destroy]
 
-fun funlock_acquire_try
+(* ****** ****** *)
+
+fun lockptr_acquire
+  {v:view} {l:agz} (x: !lock (v, l)): (v | void)
+  = "mac#atslib_lockptr_acquire"
+// end of [lockptr_acquire]
+
+fun lockptr_acquire_try
   {v:view} {l:agz}
   (x: lock (v, l)): [i:nat] (option_v (v, i==0) | int i)
-  = "mac#atslib_funlock_acquire_try"
-// end of [funlock_acquire_try]
+  = "mac#atslib_lockptr_acquire_try"
+// end of [lockptr_acquire_try]
 
-fun funlock_release
-  {v:view} {l:agz} (pf: v | x: lock (v, l)): void
-  = "mac#atslib_funlock_release"
-// end of [funlock_release]
+fun lockptr_release
+  {v:view} {l:agz} (pf: v | x: !lock (v, l)): void
+  = "mac#atslib_lockptr_release"
+// end of [lockptr_release]
 
 (* ****** ****** *)
 
-(* end of [funlock_spin.sats] *)
+(* end of [lockptr_spin.sats] *)
