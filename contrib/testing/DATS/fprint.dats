@@ -109,7 +109,6 @@ array_ptr_fprint_elt
 implement{a}
 array_ptr_fprint_fun
   {n} (out, A, n, sep, pr) = let
-  val sep = $UN.castvwtp1{string} (sep)
   var i: sizeLte (n); val _0 = size1_of_int1 (0)
 in
   for (i := _0; i < n; i := i+1) (
@@ -140,7 +139,6 @@ list_fprint_elt
 implement{a}
 list_fprint_fun
   (out, xs, sep, pr) = let
-  val sep = $UN.castvwtp1{string} (sep)
   fun loop (
     xs: List a, i: int
   ) :<cloref1> void =
@@ -184,8 +182,6 @@ matrix0_fprint_elt
 implement{a}
 matrix0_fprint_fun
   (out, M, sep1, sep2, pr) = let
-  val sep1 = $UN.castvwtp1{string} (sep1)
-  val sep2 = $UN.castvwtp1{string} (sep2)
   val m = matrix0_row (M) and n = matrix0_col (M)
   var !p_clo = @lam (
     i: size_t, j: size_t, x: &a
@@ -210,8 +206,6 @@ matrix_fprint_elt {m,n}
 implement{a}
 matrix_fprint_fun {m,n}
   (out, M, m, n, sep1, sep2, pr) = let
-  val sep1 = $UN.castvwtp1{string} (sep1)
-  val sep2 = $UN.castvwtp1{string} (sep2)
   var !p_clo = @lam (
     pf: !unit_v | i: sizeLt m, j: sizeLt n, x: &a
   ) : void =<clo> $effmask_all {

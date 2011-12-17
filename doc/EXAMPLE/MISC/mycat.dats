@@ -4,6 +4,8 @@
 **
 ** Author: Sylvain Nahas (* sylvain DOT nahas AT googlemail DOT com *)
 ** Author: Hongwei Xi (* hwxi AT cs DOT bu DOT edu *)
+**
+** Time: Summer, 2011
 *)
 
 (* ****** ****** *)

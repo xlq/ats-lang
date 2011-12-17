@@ -30,6 +30,10 @@ returns a list that is a sorted permutation of its input.
 
 This is finally done now in ATS, which succeeds DML as well as extends it.
 
+For more examples of a similar nature, please follow the link below:
+
+http://www.ats-lang.org/EXAMPLE/PCPV
+
 *)
 
 (* ****** ****** *)
