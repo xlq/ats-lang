@@ -307,7 +307,7 @@ fun socket_write_substring
   {fd:int} {n:int}
   {st,ln:nat | st+ln <= n} (
   pf_sock: !socket_v (fd, conn)
-| fd: int fd, str: !READ(string n), st: size_t st, ln: size_t ln
+| fd: int fd, str: string n, st: size_t st, ln: size_t ln
 ) : void // all bytes must be written if this function returns
 // end of [socket_write_substring]
 

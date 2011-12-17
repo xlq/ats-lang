@@ -113,7 +113,7 @@ fun passwd_get_pw_shell (
 
 // HX: non-reentrant
 fun getpwnam (
-  nam: !READ(string)
+  nam: string
 ) :<!ref> [l:addr] (
   vptroutopt (passwd, l) | ptr l
 ) = "mac#atslib_getpwnam"
@@ -121,7 +121,7 @@ fun getpwnam (
 
 // HX: reentrant
 fun getpwnam_r {n:nat} (
-  nam: !READ(string)
+  nam: string
 , pwbuf: &passwd? >> opt (passwd, i==0)
 , buf: &b0ytes(n) >> bytes(n)
 , n: size_t (n)

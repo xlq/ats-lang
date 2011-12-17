@@ -755,20 +755,19 @@ cloref_t0ype_type (_fun: t@ype) // unnamed
 stadef cloref = cloref_t0ype_type
 
 (* ****** ****** *)
+
+viewtypedef // HX: for commenting only
+SHARED_viewt0ype_viewt0ype (a: viewt@ype) = a
+stadef SHARED = SHARED_viewt0ype_viewt0ype
+
+(* ****** ****** *)
 //
 // HX: for handling read-only data
 //
 (*
-absviewt@ype
-READ_viewt0ype_viewt0ype
-  (a: viewt@ype+, int) = a
-// end of [READ_viewt0ype_viewt0ype]
-*)
-
-(*
 viewtypedef
 READ_viewt0ype_int_viewt0ype
-  (a: viewt@ype, stamp: int) = a
+  (a: viewt@ype+, stamp: int) = a
 stadef READ = READ_viewt0ype_int_viewt0ype
 *)
 

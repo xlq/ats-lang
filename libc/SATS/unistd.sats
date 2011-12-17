@@ -126,9 +126,9 @@ fun _exit (status: int): void = "mac#atslib__exit" // !macro
 (* ****** ****** *)
 
 fun execv {n:pos}
-  (path: !READ(string), argv: &ptrarr(n)): int = "mac#atslib_execv"
+  (path: string, argv: &ptrarr(n)): int = "mac#atslib_execv"
 fun execvp {n:pos}
-  (path: !READ(string), argv: &ptrarr(n)): int = "mac#atslib_execvp"
+  (path: string, argv: &ptrarr(n)): int = "mac#atslib_execvp"
 
 (* ****** ****** *)
 
@@ -328,19 +328,19 @@ macdef X_OK = $extval (uint, "X_OK") // test for execute permission
 macdef F_OK = $extval (uint, "F_OK") // test for existence
 //
 fun access
-  (path: !READ(string), mode: uint): int = "mac#atslib_access"
+  (path: string, mode: uint): int = "mac#atslib_access"
 // end of [access]
 
 (* ****** ****** *)
 
 fun chroot
-  (path: !READ(string)): int = "mac#atslib_chroot" // 0/-1 : succ/fail
+  (path: string): int = "mac#atslib_chroot" // 0/-1 : succ/fail
 // end of [chroot]
 
 (* ****** ****** *)
 
 fun chdir
-  (path: !READ(string)): int(*err*) = "mac#atslib_chdir"
+  (path: string): int(*err*) = "mac#atslib_chdir"
 fun fchdir {fd:int}
   (pf: !fildes_v (fd) | fd: int): int(*err*) = "mac#atslib_fchdir"
 // end of [fchdir]
@@ -355,14 +355,14 @@ fun nice
 //
 // HX: succ/fail: 0/-1
 //
-fun rmdir (path: !READ(string)): int = "mac#atslib_rmdir"
+fun rmdir (path: string): int = "mac#atslib_rmdir"
 
 (* ****** ****** *)
 
 fun link (
-  src: !READ(string), dst: !READ(string)
+  src: string, dst: string
 ) : int = "mac#atslib_link"
-fun unlink (path: !READ(string)): int = "mac#atslib_unlink"
+fun unlink (path: string): int = "mac#atslib_unlink"
 
 (* ****** ****** *)
 
@@ -412,7 +412,7 @@ fun fdatasync {fd:int} // (sets errno)
 fun readlink
   {n:nat} {l:addr} (
   pf: !b0ytes(n) @ l >> bytes(n) @ l
-| path: !READ(string), p: ptr l, n: size_t n
+| path: string, p: ptr l, n: size_t n
 ) : [n1:int | n1 <= n] ssize_t (n1) = "mac#atslib_readlink"
 // end of [readlink]
 
@@ -493,7 +493,7 @@ fun gethostname
 // HX: [m] should most likely be [n+1].
 //
 fun sethostname {m,n:nat | n < m}
-  (name: !READ(string n), m: size_t m): int = "mac#atslib_sethostname"
+  (name: string n, m: size_t m): int = "mac#atslib_sethostname"
 // end of [sethostname]
 
 (* ****** ****** *)
@@ -516,7 +516,7 @@ fun getdomainname
 // HX: [m] should most likely be [n+1].
 //
 fun setdomainname {m,n:nat | n < m}
-  (name: !READ(string n), m: size_t m): int = "mac#atslib_setdomainname"
+  (name: string n, m: size_t m): int = "mac#atslib_setdomainname"
 // end of [setdomainname]
 
 (* ****** ****** *)

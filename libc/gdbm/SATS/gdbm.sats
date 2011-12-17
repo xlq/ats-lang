@@ -151,10 +151,10 @@ macdef GDBM_NOLOCK = $extval (int, "GDBM_NOLOCK")
 GDBM_FILE gdbm_open (name, block_size, flags, mode, fatal_func);
 *)
 //
-// fatal_func: (!READ(string)) -> void
+// fatal_func: (string) -> void
 //
 fun gdbm_open (
-  name: !READ(string)
+  name: string
 , block_size: int, flags: int, mode: mode_t, fatal_func: ptr
 ) : [lf:agez] GDBM_FILE (lf)
   = "mac#atslib_gdbm_open"
@@ -272,7 +272,7 @@ fun gdbm_sync {lf:agz}
 int gdbm_export (GDBM FILE dbf, const char *exportfile,int flag, int mode);
 *)
 fun gdbm_export {lf:agz} (
-  dbf: !GDBM_FILE lf, exportfile: !READ(string), flag: int, mode: mode_t
+  dbf: !GDBM_FILE lf, exportfile: string, flag: int, mode: mode_t
 ) : int = "mac#atslib_gdbm_export"
 // end of [gdbm_export]
 
@@ -282,7 +282,7 @@ fun gdbm_export {lf:agz} (
 int gdbm_import (GDBM FILE dbf , const char *importfile , int flag);
 *)
 fun gdbm_import {lf:agz} (
-  dbf: !GDBM_FILE lf, importfile: !READ(string), flag: int
+  dbf: !GDBM_FILE lf, importfile: string, flag: int
 ) : int = "mac#atslib_gdbm_import"
 // end of [gdbm_import]
 

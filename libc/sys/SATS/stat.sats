@@ -137,30 +137,30 @@ fun isfdtype {fd:nat}
 (* ****** ****** *)
 
 fun chmod_err
-  (path: !READ(string), mode: mode_t): int
+  (path: string, mode: mode_t): int
   = "mac#atslib_chmod_err" // macro!
 fun chmod_exn
-  (path: !READ(string), mode: mode_t): void
+  (path: string, mode: mode_t): void
   = "atslib_chmod_exn" // function!
 
 (* ****** ****** *)
 
 fun mkdir_err
-  (path: !READ(string), mode: mode_t): int
+  (path: string, mode: mode_t): int
   = "mac#atslib_mkdir_err" // macro!
 fun mkdir_exn
-  (path: !READ(string), mode: mode_t): void
+  (path: string, mode: mode_t): void
   = "atslib_mkdir_exn" // function!
 
 (* ****** ****** *)
 
 fun stat_err (
-  path: !READ(string)
+  path: string
 , st: &stat? >> opt (stat, i==0)
 ) : #[i:int | i <= 0] int i
   = "mac#atslib_stat_err" // macro!
 fun stat_exn (
-  path: !READ(string), st: &stat? >> stat
+  path: string, st: &stat? >> stat
 ) : void
   = "atslib_stat_exn"
 // end of [stat_exn]
@@ -176,12 +176,12 @@ fun fstat_exn {fd:nat}
 // end of [fstat_exn]
 
 fun lstat_err (
-  path: !READ(string)
+  path: string
 , st: &stat? >> opt (stat, i==0)
 ) : #[i:int | i <= 0] int i
   = "mac#atslib_lstat_err" // macro!
 fun lstat_exn (
-  path: !READ(string), buf: &stat? >> stat
+  path: string, buf: &stat? >> stat
 ) : void = "atslib_lstat_exn"
 // end of [lstat_exn]
 
@@ -196,7 +196,7 @@ fun umask (
 (* ****** ****** *)
 
 fun mkfifo // 0/-1 : succ/fail // errno set
-  (path: !READ(string), perm: mode_t): int = "mac#atslib_mkfifo"
+  (path: string, perm: mode_t): int = "mac#atslib_mkfifo"
 // end of [mkfifo]
 
 (* ****** ****** *)

@@ -68,7 +68,7 @@ DBM * dbm_open (char *file , int flags , int mode )
 *)
 
 fun dbm_open (
-  file: !READ(string), flags: flag_t, mode: mode_t
+  file: string, flags: flag_t, mode: mode_t
 ) : DBMptr0 = "mac#atslib_ndbm_open"
 
 (* ****** ****** *)

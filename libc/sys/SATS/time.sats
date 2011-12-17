@@ -120,7 +120,7 @@ fun futimes {fd:int} ( // -1 on error // errno set
 // end of [futimes]
 
 fun futimesat ( // -1 on error // errno set
-  dirfd: int, path: !READ(string), buf: &(@[timeval][2])
+  dirfd: int, path: string, buf: &(@[timeval][2])
 ) : int = "mac#atslib_futimesat"
 // end of [futimesat]
 

@@ -49,29 +49,29 @@ macdef EXIT_FAILURE = $extval (int, "EXIT_FAILURE")
 
 (* ****** ****** *)
 
-fun atoi (inp: !READ(string)):<> int = "mac#atslib_atoi"
-fun atof (inp: !READ(string)):<> double = "mac#atslib_atof"
-fun atol (inp: !READ(string)):<> lint = "mac#atslib_atol"
-fun atoll (inp: !READ(string)):<> llint = "mac#atslib_atoll"
+fun atoi (inp: string):<> int = "mac#atslib_atoi"
+fun atof (inp: string):<> double = "mac#atslib_atof"
+fun atol (inp: string):<> lint = "mac#atslib_atol"
+fun atoll (inp: string):<> llint = "mac#atslib_atoll"
 
 (* ****** ****** *)
 
 fun strtoi_errnul (
-  inp: !READ(string), base: intBtw (2, 36+1)
+  inp: string, base: intBtw (2, 36+1)
 ) :<> int = "mac#atslib_strtoi_errnul"
 
 fun strtol_errnul (
-  inp: !READ(string), base: intBtw (2, 36+1)
+  inp: string, base: intBtw (2, 36+1)
 ) :<> lint = "mac#atslib_strtol_errnul"
 
 fun strtoll_errnul (
-  inp: !READ(string), base: intBtw (2, 36+1)
+  inp: string, base: intBtw (2, 36+1)
 ) :<> llint = "mac#atslib_strtoll_errnul"
 
 (* ****** ****** *)
 
 fun getenv (
-  name: !READ(string)
+  name: string
 ) : [l:addr] (
   strptr l -<lin,prf> void | strptr l
 ) = "mac#atslib_getenv"
@@ -90,16 +90,16 @@ fun putenv {l:agz} (nameval: !strptr l): int // 0/nz : succ/fail
 // also note that the original value may be leaked out!!!
 //
 fun setenv ( // 0/-1 : succ/fail
-  name: !READ(string), value: !READ(string), overwrite: int
+  name: string, value: string, overwrite: int
 ) : int = "mac#atslib_setenv" // end of [atslib_setenv]
 
 fun unsetenv
-  (name: !READ(string)): int = "mac#atslib_unsetenv" // 0/-1: succ/fail
+  (name: string): int = "mac#atslib_unsetenv" // 0/-1: succ/fail
 // end of [unsetenv]
 
 (* ****** ****** *)
 
-fun system (cmd: !READ(string)): int = "mac#atslib_system"
+fun system (cmd: string): int = "mac#atslib_system"
 
 (* ****** ****** *)
 

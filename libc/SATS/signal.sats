@@ -274,7 +274,7 @@ fun siginterrupt // 0/-1 : succ/fail // errno set
 
 // HX: print onto stderr
 fun psignal
-  (sgn: signum_t, msg: !READ(string)): void = "mac#atslib_psignal"
+  (sgn: signum_t, msg: string): void = "mac#atslib_psignal"
 // end of [psignal]
 
 fun strsignal (sgn: signum_t) // HX: errno set?

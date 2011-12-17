@@ -44,12 +44,12 @@ ats_ptr_type lockpath (ats_ptr_type name) {
 %} // end of [%{^]
 
 extern
-fun lockpath (name: !READ(string)): Stropt = "lockpath"
+fun lockpath (name: string): Stropt = "lockpath"
 
 (* ****** ****** *)
 
-extern fun lock (name: !READ(string)): bool
-extern fun unlock (name: !READ(string)): bool
+extern fun lock (name: string): bool
+extern fun unlock (name: string): bool
 
 (* ****** ****** *)
 
@@ -67,7 +67,7 @@ in
     val flag = O_WRONLY lor O_CREAT lor O_EXCL
     val err = loop (path, flag, 0) where {
       fun loop (
-          path: !READ(string), flag: flag_t, n: int
+          path: string, flag: flag_t, n: int
         ) : int(*err*) = let
         val (pf_fdopt | fd) = open_flag_err (path, flag)
       in

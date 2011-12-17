@@ -66,7 +66,7 @@ typedef statvfs = statvfs_struct
 (* ****** ****** *)
 
 fun statvfs ( // -1 on error // errno set
-  path: !READ(string), buf: &statvfs? >> opt (statvfs, i==0)
+  path: string, buf: &statvfs? >> opt (statvfs, i==0)
 ) : #[i:int | i <= 0] int i = "mac#atslib_statvfs"
 // end of [statvfs]
 

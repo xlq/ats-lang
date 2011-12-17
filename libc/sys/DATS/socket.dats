@@ -191,8 +191,6 @@ socket_write_substring
   {fd} {n} {st,ln}
   (pfsock | fd, str, st, ln) = let
 //
-  val str = $UN.castvwtp1 {string(n)} (str)
-//
   val (pf, fpf | p) =
     string_takeout_bufptr {n} {st} {ln} (str, st)
   val () = socket_write_all_exn (pfsock | fd, !p, ln)

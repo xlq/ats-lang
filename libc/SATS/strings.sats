@@ -64,7 +64,7 @@ fun ffs (i: int): [n:int | n >= 0] int n = "mac#atslib_ffs"
 // HX: string comparison like [strcmp] but case is ignored
 //
 fun strcasecmp (
-  str1: !READ(string), str2: !READ(string)
+  str1: string, str2: string
 ) : int= "mac#atslib_strcasecmp" // end of [strcasecmp]
 
 (* ****** ****** *)
@@ -72,7 +72,7 @@ fun strcasecmp (
 // HX: string comparison like [strncmp] but case is ignored
 //
 fun strncasecmp {n:nat} (
-  str1: !READ(string), str2: !READ(string), n: size_t n
+  str1: string, str2: string, n: size_t n
 ) : int = "mac#atslib_strncasecmp" // end of [strncasecmp]
 
 (* ****** ****** *)

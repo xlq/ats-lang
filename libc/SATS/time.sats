@@ -211,7 +211,7 @@ fun strftime
   pf: !b0ytes m @ l >> strbuf (m, n) @ l
 | p: ptr l
 , m: size_t m
-, fmt: !READ(string)
+, fmt: string
 , tm: &READ(tm_struct)
 ) :<> #[n:nat | n < m] size_t n
   = "mac#atslib_strftime" // this a macro!
@@ -227,7 +227,7 @@ fun strftime
 //
 fun getdate_err_get ():<> int = "atslib_getdate_err_get"
 fun getdate_err_set (x: int):<> void = "atslib_getdate_err_set"
-fun getdate (str: !READ(string)):<!ref>
+fun getdate (str: string):<!ref>
   [l:addr] (ptroutopt (tm_struct, l) | ptr l) = "mac#atslib_getdate"
 // end of [getdate]
 *)
@@ -236,7 +236,7 @@ fun getdate (str: !READ(string)):<!ref>
 // -D_XOPEN_SOURCE
 //
 fun strptime (
-  str: !READ(string), fmt: !READ(string)
+  str: string, fmt: string
 , tm: &tm_struct? >> opt (tm_struct, l > null)
 ) : #[l:addr] ptr l
   = "mac#atslib_strptime" // HX: it returns NULL on error
