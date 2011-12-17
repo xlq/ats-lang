@@ -55,12 +55,12 @@ fprint_elt (out: FILEref, x: a): void // HX: cannot implemented generically
 
 fun{a:t@ype}
 array0_fprint_elt (
-  out: FILEref, A: array0 a, sep: !READ(string)
+  out: FILEref, A: array0 a, sep: string
 ) : void // end of [array0_fprint_elt]
 
 fun{a:t@ype}
 array0_fprint_fun (
-  out: FILEref, A: array0 a, sep: !READ(string)
+  out: FILEref, A: array0 a, sep: string
 , pr: (FILEref, a) -> void
 ) : void // end of [array0_fprint_fun]
 
@@ -69,13 +69,13 @@ array0_fprint_fun (
 fun{a:t@ype}
 array_fprint_elt {n:nat} (
   out: FILEref
-, A: array (a, n), n:  size_t n, sep: !READ(string)
+, A: array (a, n), n:  size_t n, sep: string
 ) : void // end of [array_fprint_elt]
 
 fun{a:t@ype}
 array_fprint_fun {n:nat} (
   out: FILEref
-, A: array (a, n), n:  size_t n, sep: !READ(string)
+, A: array (a, n), n:  size_t n, sep: string
 , pr: (FILEref, a) -> void
 ) : void // end of [array_fprint_fun]
 
@@ -84,13 +84,13 @@ array_fprint_fun {n:nat} (
 fun{a:t@ype}
 array_ptr_fprint_elt {n:nat} (
   out: FILEref
-, A: &(@[a][n]), n: size_t n, sep: !READ(string)
+, A: &(@[a][n]), n: size_t n, sep: string
 ) : void // end of [array_ptr_fprint_elt]
 
 fun{a:t@ype}
 array_ptr_fprint_fun {n:nat} (
   out: FILEref
-, A: &(@[a][n]), n: size_t n, sep: !READ(string)
+, A: &(@[a][n]), n: size_t n, sep: string
 , pr: (FILEref, a) -> void
 ) : void // end of [array_ptr_fprint_fun]
 
@@ -98,12 +98,12 @@ array_ptr_fprint_fun {n:nat} (
 
 fun{a:t@ype}
 list0_fprint_elt (
-  out: FILEref, xs: list0 (a), sep: !READ(string)
+  out: FILEref, xs: list0 (a), sep: string
 ) : void // end of [list0_fprint_elt]
 
 fun{a:t@ype}
 list0_fprint_fun (
-  out: FILEref, xs: list0 (a), sep: !READ(string)
+  out: FILEref, xs: list0 (a), sep: string
 , pr: (FILEref, a) -> void
 ) : void // end of [list0_fprint_fun]
 
@@ -111,12 +111,12 @@ list0_fprint_fun (
 
 fun{a:t@ype}
 list_fprint_elt (
-  out: FILEref, xs: List (a), sep: !READ(string)
+  out: FILEref, xs: List (a), sep: string
 ) : void // end of [list_fprint_elt]
 
 fun{a:t@ype}
 list_fprint_fun (
-  out: FILEref, xs: List (a), sep: !READ(string)
+  out: FILEref, xs: List (a), sep: string
 , pr: (FILEref, a) -> void
 ) : void // end of [list_fprint_fun]
 
@@ -124,12 +124,12 @@ list_fprint_fun (
 
 fun{a:t@ype}
 list_vt_fprint_elt {n:nat} (
-  out: FILEref, xs: !list_vt (a, n), sep: !READ(string)
+  out: FILEref, xs: !list_vt (a, n), sep: string
 ) : void // end of [list_vt_fprint_elt]
 
 fun{a:t@ype}
 list_vt_fprint_fun {n:nat} (
-  out: FILEref, xs: !list_vt (a, n), sep: !READ(string)
+  out: FILEref, xs: !list_vt (a, n), sep: string
 , pr: (FILEref, a) -> void
 ) : void // end of [list_vt_fprint]
 
@@ -139,14 +139,14 @@ fun{a:t@ype}
 matrix0_fprint_elt (
   out: FILEref
 , M: matrix0 (a)
-, sep1: !READ(string), sep2: !READ(string)
+, sep1: string, sep2: string
 ) : void // end of [matrix0_fprint_elt]
 
 fun{a:t@ype}
 matrix0_fprint_fun (
   out: FILEref
 , M: matrix0 (a)
-, sep1: !READ(string), sep2: !READ(string)
+, sep1: string, sep2: string
 , pr: (FILEref, a) -> void
 ) : void // end of [matrix0_fprint_fun]
 
@@ -157,7 +157,7 @@ matrix_fprint_elt
   {m,n:nat} {l:addr} (
   out: FILEref
 , M: matrix (a, m, n), m: size_t m, n: size_t n
-, sep1: !READ(string), sep2: !READ(string)
+, sep1: string, sep2: string
 ) : void // end of [matrix_fprint_elt]
 
 fun{a:t@ype}
@@ -165,7 +165,7 @@ matrix_fprint_fun
   {m,n:nat} {l:addr} (
   out: FILEref
 , M: matrix (a, m, n), m: size_t m, n: size_t n
-, sep1: !READ(string), sep2: !READ(string)
+, sep1: string, sep2: string
 , pr: (FILEref, a) -> void
 ) : void // end of [matrix_fprint_fun]
 
@@ -177,7 +177,7 @@ matrix_ptr_fprint_elt
   pf: !matrix_v (a, m, n, l) 
 | out: FILEref
 , p: ptr l, m: size_t m, n: size_t n
-, sep1: !READ(string), sep2: !READ(string)
+, sep1: string, sep2: string
 ) : void // end of [matrix_ptr_fprint_elt]
 
 fun{a:t@ype}
@@ -186,7 +186,7 @@ matrix_ptr_fprint_fun
   pf: !matrix_v (a, m, n, l) 
 | out: FILEref
 , p: ptr l, m: size_t m, n: size_t n
-, sep1: !READ(string), sep2: !READ(string)
+, sep1: string, sep2: string
 , pr: (FILEref, a) -> void
 ) : void // end of [matrix_ptr_fprint_fun]
 

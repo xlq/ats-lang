@@ -146,7 +146,7 @@ fun g_unichar_ismark (c: gunichar):<> gboolean = "mac#atsctrb_g_unichar_ismark"
 (* ****** ****** *)
 
 fun g_utf8_strlen_cstr (
-  x: !READ(string)
+  x: string
 ) : glong = "atsctrb_g_utf8_strlen_cstr"
 // end of [g_utf8_strlen_cstr]
 

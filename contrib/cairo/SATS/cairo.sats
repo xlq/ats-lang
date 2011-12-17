@@ -1259,7 +1259,7 @@ castfn int_of_cairo_font_weight (x: cairo_font_weight_t):<> int
 fun cairo_select_font_face
   {l:agz} (
   cr: !cairo_ref l
-, name: !READ(string) (*family*)
+, name: string (*family*)
 , slnt: cairo_font_slant_t
 , wght: cairo_font_weight_t
 ) : void = "mac#atsctrb_cairo_select_font_face"
@@ -1386,7 +1386,7 @@ fun cairo_font_extents
 
 fun cairo_text_extents
   {l:agz} (
-  cr: !cairo_ref l, utf8: !READ(string)
+  cr: !cairo_ref l, utf8: string
 , extents: &cairo_text_extents_t? >> cairo_text_extents_t
 ) : void
   = "mac#atsctrb_cairo_text_extents"
@@ -1406,7 +1406,7 @@ fun cairo_glyph_extents
 fun cairo_text_path
   {l:agz} (
   cr: !cairo_ref l
-, text: !READ(string) // read-only
+, text: string // read-only
 ) : void
   = "mac#atsctrb_cairo_text_path"
 // end of [cairo_text_path]
@@ -1426,7 +1426,7 @@ fun cairo_glyph_path
 fun cairo_show_text
   {l:agz} (
   cr: !cairo_ref l
-, utf8: !READ(string) // read-only
+, utf8: string // read-only
 ) : void
   = "mac#atsctrb_cairo_show_text"
 // end of [cairo_show_text]
@@ -1444,7 +1444,7 @@ fun cairo_show_glyphs
 (* ****** ****** *)
 
 fun cairo_toy_font_face_create (
-  family: !READ(string)
+  family: string
 , s: cairo_font_slant_t, w: cairo_font_weight_t
 ) : cairo_font_face_ref1
   = "mac#atsctrb_cairo_toy_font_face_create"
@@ -1717,7 +1717,7 @@ fun
 cairo_scaled_font_text_extents
   {l:agz} (
   font: !cairo_scaled_font_ref l
-, utf8: !READ(string)
+, utf8: string
 , extents: &cairo_text_extents_t? >> cairo_text_extents_t
 ) : void
   = "mac#atsctrb_cairo_scaled_font_text_extents"
@@ -2242,7 +2242,7 @@ fun cairo_image_surface_get_data
 (* ****** ****** *)
 
 fun cairo_image_surface_create_from_png
-  (filename: !READ(string)): cairo_surface_ref1
+  (filename: string): cairo_surface_ref1
   = "mac#atsctrb_cairo_image_surface_create_from_png"
 // end of [cairo_image_surface_create_from_png]
 
@@ -2256,7 +2256,7 @@ fun cairo_image_surface_create_from_png_stream
 // end of [cairo_image_surface_create_from_png_stream]
 
 fun cairo_surface_write_to_png {l:agz}
-  (sf: !cairo_surface_ref l, filename: !READ(string)): cairo_status_t
+  (sf: !cairo_surface_ref l, filename: string): cairo_status_t
   = "mac#atsctrb_cairo_surface_write_to_png"
 // end of [cairo_surface_write_to_png]
 
@@ -2281,7 +2281,7 @@ fun cairo_surface_write_to_png_stream
 *)
 
 fun cairo_pdf_surface_create (
-  filename: !READ(string) // read-only string
+  filename: string // read-only string
 , width_in_points: double, height_in_points: double
 ) : cairo_surface_ref1
   = "mac#atsctrb_cairo_pdf_surface_create"
@@ -2327,7 +2327,7 @@ fun cairo_pdf_surface_set_size
 *)
 
 fun cairo_ps_surface_create (
-  filename: !READ(string)
+  filename: string
 , width_in_points: double, height_in_points: double
 ) : cairo_surface_ref1 = "mac#atsctrb_cairo_ps_surface_create"
 // end of [cairo_ps_surface_create]
@@ -2411,7 +2411,7 @@ fun cairo_ps_surface_dsc_begin_page_setup
 fun cairo_ps_surface_dsc_comment
   {l:agz} (
   sf: !cairo_surface_ref l
-, comment: !READ(string) // read-only
+, comment: string // read-only
 ) : void
   = "mac#atsctrb_cairo_ps_surface_dsc_comment"
 // end of [cairo_ps_surface_dsc_comment]
@@ -2423,7 +2423,7 @@ fun cairo_ps_surface_dsc_comment
 *)
 fun
 cairo_svg_surface_create (
-  filename: !READ(string)
+  filename: string
 , width_in_points: double, height_in_points: double
 ) : cairo_surface_ref1
   = "mac#atsctrb_cairo_svg_surface_create"

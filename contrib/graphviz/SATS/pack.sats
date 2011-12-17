@@ -52,7 +52,7 @@ Agraph_t **ccomps(Agraph_t*, int*, char*);
 // then to call [free] on the array
 //
 fun ccomps {l1:agz} (
-  g: !pgraph l1, ncc: &int? >> int n, pfx: !READ(Stropt)
+  g: !pgraph l1, ncc: &int? >> int n, pfx: Stropt
 ) : #[n:nat;l2:addr] pgrapharr (n, l2)
   = "mac#atsctrb_ccomps"
 

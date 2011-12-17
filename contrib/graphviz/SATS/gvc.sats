@@ -117,7 +117,7 @@ absview gvLayout_v (addr(*gvc*), addr(*graph*))
 int gvLayout(GVC_t *gvc, graph_t *g, const char *engine)
 *)
 fun gvLayout {l1,l2:agz} (
-  gvc: !GVCptr l1, g: !pgraph l2, engname: !READ(string)
+  gvc: !GVCptr l1, g: !pgraph l2, engname: string
 ) : [i:int | i <= 0] (option_v (gvLayout_v (l1, l2), i >= 0) | int i)
   = "mac#atsctrb_gvLayout"
 
@@ -131,7 +131,7 @@ fun gvFreeLayout {l1,l2:agz} (
 fun gvRender
   {l1,l2:agz} (
   pf: !gvLayout_v (l1, l2)
-| gvc: !GVCptr l1, g: !pgraph l2, format: !READ(string), out: FILEref
+| gvc: !GVCptr l1, g: !pgraph l2, format: string, out: FILEref
 ) : [i:int | i <= 0] int (i) = "mac#atsctrb_gvRender"
 
 fun gvRenderFilename
@@ -139,8 +139,8 @@ fun gvRenderFilename
   pf: !gvLayout_v (l1, l2)
 | gvc: !GVCptr l1
 , g: !pgraph l2
-, format: !READ(string)
-, path: !READ(string)
+, format: string
+, path: string
 ) : [i:int | i <= 0] int (i) = "mac#atsctrb_gvRenderFilename"
 
 (* ****** ****** *)

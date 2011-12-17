@@ -119,10 +119,10 @@ macdef ADIGRAPH = $extval (int, "ADIGRAPH")
 macdef ADIGRAPHSTRICT = $extval (int, "ADIGRAPHSTRICT")
 //
 fun agopen (
-  name: !READ(string), type: int
+  name: string, type: int
 ) : pgraph0 = "mac#atsctrb_agopen"
 fun agopen_exn (
-  name: !READ(string), type: int
+  name: string, type: int
 ) : pgraph1 = "mac#atsctrb_agopen_exn"
 //
 fun agclose {l:agz}
@@ -157,12 +157,12 @@ absview agstrdup_v
 // end of [agstrdup_v]
 
 fun agstrdup {l1:agz} (
-  g: !pgraph l1, x: !READ(string)
+  g: !pgraph l1, x: string
 ) : [l2:agz] (agstrdup_v (l1, l2) | strptr l2)
   = "mac#atsctrb_agstrdup"
 
 fun agstrdup_html {l1:agz} (
-  g: !pgraph l1, x: !READ(string)
+  g: !pgraph l1, x: string
 ) : [l2:agz] (agstrdup_v (l1, l2) | strptr l2)
   = "mac#atsctrb_agstrdup_html"
 

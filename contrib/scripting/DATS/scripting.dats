@@ -136,7 +136,7 @@ end // end of [string_split_string_list]
 fun string_replace_substring
   {n:nat} {i,ln:nat | i + ln <= n} {k:nat} (
   src: string n, n: int n, i: int i, ln: int ln
-, sub: !READ(string k), k: int k
+, sub: string k, k: int k
 ) : strptr1 = "atsctrb_string_replace_substring"
 *)
 
