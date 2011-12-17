@@ -15,7 +15,7 @@ staload UNISTD = "libc/SATS/unistd.sats"
 (* ****** ****** *)
 
 staload "libc/SATS/pthread.sats"
-staload "libats/SATS/funlock_spin.sats"
+staload "libats/SATS/lockref_spin.sats"
 staload "libats/SATS/parworkshop.sats"
 staload _(*anon*) = "libats/DATS/parworkshop.dats"
 
@@ -33,16 +33,16 @@ local
 
 var X: int with pf_X = 0
 viewdef V = int @ X
-val lock = funlock_create_unlocked {V} (pf_X | 0(*pshared*))
+val lock = lockref_create_unlocked {V} (pf_X | 0(*pshared*))
 val () = assertloc (ptr_of_lock(lock) > null)
 
 in // in of [local]
 
 fun getincX () = res where {
-  val (pf | ()) = funlock_acquire (lock)
+  val (pf | ()) = lockref_acquire (lock)
   val res = X
   val () = X := X + 1
-  val () = funlock_release (pf | lock)
+  val () = lockref_release (pf | lock)
 } // end of [getincX]
 
 end // end of [local]
@@ -92,4 +92,4 @@ main () = () where {
 
 (* ****** ****** *)
 
-(* end of [libats_funlock_spin.dats] *)
+(* end of [libats_lockref_spin.dats] *)

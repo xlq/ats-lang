@@ -336,10 +336,10 @@ cleanall:: ; $(RMF) libats_parworkshop
 
 ######
 
-checkall:: libats_funlock_spin
-libats_funlock_spin: libats_funlock_spin.dats
-	$(ATSCC) -D_ATS_MULTITHREAD -O2 -o $@ $< -lpthread -lats_mt && ./libats_funlock_spin
-cleanall:: ; $(RMF) libats_funlock_spin
+checkall:: libats_lockref_spin
+libats_lockref_spin: libats_lockref_spin.dats
+	$(ATSCC) -D_ATS_MULTITHREAD -O2 -o $@ $< -lpthread -lats_mt && ./libats_lockref_spin
+cleanall:: ; $(RMF) libats_lockref_spin
 
 ######
 

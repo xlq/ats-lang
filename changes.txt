@@ -9,6 +9,7 @@ ats-lang-anairiats-0.2.7:
 4. Adding libats/SATS/bimatrix.sats. Thanks to Artyom!
 5. The s2exp_syneq function (syn. eq.) now employs eta-expansion
 6. !READ(string) -> string (SHARED is introduced to do the opposite)
+7. Adding libats/lockptr_spin and libats/lockref_spin (spinlocks)
 
 ########################################################################
 
