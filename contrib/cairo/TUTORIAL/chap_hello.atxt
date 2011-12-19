@@ -23,11 +23,12 @@ The functions in the cairo package are declared in the following file:
 #ulink1(
 "#ATSLANGSVNROOTget()/contrib/cairo/SATS/cairo.sats", "contrib/cairo/SATS/cairo.sats"
 )
+")#comment("para")
 
+#para("\
 Note that in this tutorial, a file name, if relative, is always relative to
 the ATS home directory (stored in the environment variable ATSHOME) unless
 it is specified otherwise.
-
 ")
 
 #para('\
