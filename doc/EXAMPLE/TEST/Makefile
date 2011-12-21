@@ -350,6 +350,13 @@ cleanall:: ; $(RMF) libats_rarray
 
 ######
 
+checkall:: libats_refcount
+libats_refcount: libats_refcount.dats
+	$(ATSCC) -O2 -o $@ $< -lats -lpcre && ./libats_refcount
+cleanall:: ; $(RMF) libats_refcount
+
+######
+
 checkall:: libats_regexp
 libats_regexp: libats_regexp.dats
 	$(ATSCC) -O2 -o $@ $< -lats -lpcre && ./libats_regexp

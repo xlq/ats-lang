@@ -194,6 +194,11 @@ in #[
 
 (* ****** ****** *)
 
+implement
+lexbuf_curpos_prerr (lb) = lexbuf_curpos_fprint (stderr_ref, lb)
+
+(* ****** ****** *)
+
 local
 //
 // staload "libc/SATS/stdio.sats"
@@ -701,8 +706,9 @@ lexing_curpos_get () {
 
 ats_void_type
 lexbuf_curpos_fprint (
-  ats_ptr_type fil, lexbuf *lxbf
+  ats_ptr_type fil, ats_ref_type lxbf0
 ) {
+  lexbuf *lxbf = (lexbuf*)lxbf0 ;
   fprintf ((FILE *)fil, "%li(line=%i, offset=%i)",
     lxbf->curpos_toff+1L, lxbf->curpos_line+1, lxbf->curpos_loff+1
   ) ; return ;

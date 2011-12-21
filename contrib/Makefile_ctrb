@@ -10,6 +10,7 @@ all::
 
 GIT=git
 SVN=svn
+HG=hg
 
 ######
 #
@@ -37,6 +38,15 @@ libevent: ; $(GIT) clone http://github.com/doublec/ats-libevent $@
 # Time: October, 2011
 #
 libzmq: ; $(GIT) clone http://github.com/doublec/ats-libzmq $@
+#
+######
+#
+# OpenGL ES 2.0 bindings
+#
+# Author: Artyom Shalkhakov (artyom DOT shalkhakov AT gmail DOT com)
+# Time: December, 2011
+#
+gles2: ; $(HG) clone https://code.google.com/p/ats-opengles2-bind
 #
 ######
 
