@@ -46,7 +46,7 @@ libzmq: ; $(GIT) clone http://github.com/doublec/ats-libzmq $@
 # Author: Artyom Shalkhakov (artyom DOT shalkhakov AT gmail DOT com)
 # Time: December, 2011
 #
-gles2: ; $(HG) clone https://code.google.com/p/ats-opengles2-bind
+GLES2: ; $(HG) clone https://code.google.com/p/ats-opengles2-bind $@
 #
 ######
 

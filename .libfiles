@@ -362,6 +362,15 @@ libats/DATS/linstack_arr.dats
 libats/SATS/rarray.sats
 libats/DATS/rarray.dats
 
+/* reference counting (effectful) implementation */
+libats/SATS/refcount.sats
+libats/DATS/refcount.dats
+/* reference counting (reentrant) implementation */
+/*
+libats/SATS/refcountr.sats
+libats/DATS/refcountr.dats
+*/
+
 #ifdef HAVE_PCRE_H
 libats/SATS/regexp.sats
 libats/DATS/regexp.dats

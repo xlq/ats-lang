@@ -30,11 +30,8 @@
 (* ****** ****** *)
 
 absviewtype
-nref_viewt0ype_viewtype (a:viewt@ype) = ptr // ref-effectful
+nref_viewt0ype_viewtype (a:viewt@ype) = ptr // non-reentrant
 stadef nref = nref_viewt0ype_viewtype
-absviewtype
-nrefr_viewt0ype_viewtype (a:viewt@ype) = ptr // support reentrancy
-stadef nrefr = nrefr_viewt0ype_viewtype
 
 (* ****** ****** *)
 
@@ -71,42 +68,6 @@ fun{a:viewt@ype}
 refcount_takeout
   (r: !nref a >> nrefout (a, l)):<!ref> #[l:addr] (a @ l | ptr l)
 // end of [refcount_takeout]
-
-(* ****** ****** *)
-
-fun{a:viewt@ype}
-refcountr_make (x: a):<> nrefr (a)
-
-fun{a:viewt@ype}
-refcountr_ref (r: !nrefr a):<> nrefr a
-
-fun{a:viewt@ype}
-refcountr_unref
-  (r: nrefr a, x: &a? >> opt (a, b)):<> #[b: bool] bool(b)
-// end of [refcountr_unref]
-
-fun{a:viewt@ype}
-refcountr_unref_fun
-  (r: nrefr a, f: (&a >> a?) -<fun> void):<> void
-// end of [refcountr_unref_fun]
-
-fun{a:viewt@ype}
-refcountr_get_count (r: !nrefr a):<> uint
-
-(* ****** ****** *)
-
-absviewtype
-nrefrout (a:viewt@ype, l:addr) = nrefr (a)
-
-prfun refcountr_addback
-  {a:viewt@ype} {l:addr}
-  (pf: a @ l | r: !nrefrout (a, l) >> nrefr (a)): void
-// end of [refcountr_addback]
-
-fun{a:viewt@ype}
-refcountr_takeout
-  (r: !nrefr a >> nrefrout (a, l)):<> #[l:addr] (a @ l | ptr l)
-// end of [refcountr_takeout]
 
 (* ****** ****** *)
 

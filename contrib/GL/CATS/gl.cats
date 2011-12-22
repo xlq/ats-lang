@@ -40,6 +40,7 @@
 /* ****** ****** */
 
 #include <stdio.h>
+extern void exit (int status) ; // see [stdlib.h]
 
 /* ****** ****** */
 
