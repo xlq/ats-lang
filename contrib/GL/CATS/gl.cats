@@ -39,12 +39,15 @@
 
 /* ****** ****** */
 
-#include <stdio.h>
-extern void exit (int status) ; // see [stdlib.h]
+#include <stdio.h> // for stderr, fprintf, etc.
 
 /* ****** ****** */
 
 #include <GL/gl.h>
+
+/* ****** ****** */
+
+extern void exit (int status) ; // see [stdlib.h]
 
 /* ****** ****** */
 

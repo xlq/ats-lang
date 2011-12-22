@@ -38,6 +38,8 @@
 
 %{^
 #include <stddef.h> // for [offsetof]
+extern void *malloc (size_t bsz) ; // see [stdlib.h]
+extern void *calloc (size_t n, size_t tsz) ; // see [stdlib.h]
 extern void free (void*) ; // see [stdlib.h]
 extern void *realloc (void *ptr, size_t bsz) ; // see [stdlib.h]
 %}

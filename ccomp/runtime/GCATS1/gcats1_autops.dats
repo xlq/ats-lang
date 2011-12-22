@@ -154,20 +154,24 @@ end // end of [gc_aut_malloc_wsz]
 
 (* ****** ****** *)
 
-extern fun gc_aut_calloc_bsz (n(*all*): int, bsz(*each*): int): ptr
-  = "gc_aut_calloc_bsz"
+extern
+fun gc_aut_calloc_bsz
+  (n(*all*): int, bsz(*each*): int): ptr = "gc_aut_calloc_bsz"
+// end of [gc_aut_calloc_bsz]
 
 %{^
 
 static inline
-ats_void_type gc_aut_calloc_bsz_memset_bsz
+ats_void_type
+gc_aut_calloc_bsz_memset_bsz
   (ats_ptr_type p, ats_int_type c, ats_int_type bsz) {
   memset (p, c, bsz) ; return ;
 }
 
 %}
 
-implement gc_aut_calloc_bsz (n, bsz) = let
+implement
+gc_aut_calloc_bsz (n, bsz) = let
 (*
   val () = begin
     prerr "gc_aut_calloc_bsz: n = "; prerr n; prerr_newline ()
@@ -253,7 +257,8 @@ end // end of [gc_aut_free_chunk]
 
 //
 
-implement gc_aut_free (ptr) = let
+implement
+gc_aut_free (ptr) = let
 (*
   val () = begin
     prerr "gc_aut_free: ptr = "; prerr ptr; prerr_newline ()
@@ -288,7 +293,8 @@ end // end of [gc_aut_free]
 
 (* ****** ****** *)
 
-implement gc_aut_realloc_bsz (ptr, bsz) = let
+implement
+gc_aut_realloc_bsz (ptr, bsz) = let
   val wsz = (bsz + NBYTE_PER_WORD_MASK) >> NBYTE_PER_WORD_LOG
 in
   gc_aut_realloc_wsz (ptr, wsz)

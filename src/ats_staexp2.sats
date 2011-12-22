@@ -690,10 +690,12 @@ fun s2Var_set_srt (_: s2Var_t, _: s2rt): void
 fun s2Var_get_link (_: s2Var_t): Option s2exp
 fun s2Var_set_link (_: s2Var_t, _: s2expopt): void
 fun s2Var_get_svar (_: s2Var_t): Option s2var_t
+//
 fun s2Var_get_lbs (_: s2Var_t): s2Varboundlst
 fun s2Var_set_lbs (_: s2Var_t, lbs: s2Varboundlst): void
 fun s2Var_get_ubs (_: s2Var_t): s2Varboundlst
 fun s2Var_set_ubs (_: s2Var_t, ubs: s2Varboundlst): void
+//
 fun s2Var_get_sVarset (_: s2Var_t): s2Varset_t
 fun s2Var_set_sVarset (_: s2Var_t, sVs: s2Varset_t): void
 fun s2Var_get_stamp (_: s2Var_t): stamp_t
