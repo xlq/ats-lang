@@ -763,6 +763,12 @@ overload length with list_length
 
 (* ****** ****** *)
 
+fun{a,b:t@ype} list_length_compare {m,n:nat}
+  (xs: list (a, m), ys: list (b, n)):<> [k:int | sgn_r (m-n, k)] int k
+// end of [list_length_compare]
+
+(* ****** ****** *)
+
 //
 // HX: please try [list_vt_make_elt]
 // fun{a:t@ype} list_make_elt {n:nat} (x: a, n: int n):<> list (a, n)

@@ -1717,14 +1717,18 @@ s2exp_template_instantiate
       end // end of [list_cons]
     | list_nil () => ($Lst.list_reverse subs, s2e)
   end // end of [aux1]
-  fun aux2
-    (loc0: loc_t, subs: List stasub_t, s2vpss: s2qualst,
-     ts2ess: tmps2explstlst, s2e: s2exp): @(List stasub_t, s2exp) = begin
+  fun aux2 (
+    loc0: loc_t
+  , subs: List stasub_t
+  , s2vpss: s2qualst
+  , ts2ess: tmps2explstlst
+  , s2e: s2exp
+  ) : @(List stasub_t, s2exp) = begin
     case+ ts2ess of
     | TMPS2EXPLSTLSTcons (loc, s2es, ts2ess) => begin case+ s2vpss of
       | list_cons (s2vps, s2vpss) => let
           val sub = begin
-            s2qua_instantiate_with_and_add (loc0, s2vps.0, s2vps.1,loc,  s2es)
+            s2qua_instantiate_with_and_add (loc0, s2vps.0, s2vps.1,loc, s2es)
           end
           val s2vpss = aux0 (sub, s2vpss)
           val s2e = s2exp_subst (sub, s2e)

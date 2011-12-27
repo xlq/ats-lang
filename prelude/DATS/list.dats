@@ -1755,6 +1755,20 @@ end // end of [list_length]
 
 (* ****** ****** *)
 
+implement{a,b}
+list_length_compare (xs, ys) =
+  case+ xs of
+  | list_cons (x, xs) => (case+ ys of
+    | list_cons (y, ys) => list_length_compare (xs, ys)
+    | list_nil () => 1
+    )
+  | list_nil () => (
+    case+ ys of list_cons _ => ~1 | list_nil () => 0
+    ) // end of [list_nil]
+// end of [list_length_compare]
+
+(* ****** ****** *)
+
 implement{a}{b}
 list_map_funenv
   {v} {vt} {n} {f:eff} (pf | xs, f, env) = let

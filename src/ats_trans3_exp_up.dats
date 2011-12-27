@@ -551,7 +551,6 @@ local
 datatype d3exparg = 
   | D3EXPARGsta of s2exparglst
   | D3EXPARGdyn of (loc_t(*arg*), int(*npf*), d3explst)
-
 typedef d3exparglst = List d3exparg
 
 //
@@ -673,9 +672,12 @@ fun aux_select0 (xyzs: xyzlst_t): xyzlst_t = begin case+ xyzs of
   | nil () => nil () // end of [nil]
 end // end of [aux_select0]
 
-fun aux1
-  (loc0: loc_t, d3e_fun: d3exp, d3as: d3exparglst, d2as: d2exparglst)
-  : d3exp = begin case+ d3as of
+fun aux1 (
+  loc0: loc_t
+, d3e_fun: d3exp
+, d3as: d3exparglst
+, d2as: d2exparglst
+) : d3exp = begin case+ d3as of
   | list_cons (d3a, d3as) => begin case+ d3a of
     | D3EXPARGsta s2as => let
         val s2e_fun = begin
@@ -746,9 +748,13 @@ fun aux1
   | list_nil () => d2exp_apps_tr_up (d3e_fun, d2as) // end of [list_nil]
 end // end of [aux1]
 
-fun aux2
-  (loc0: loc_t, d2s: d2sym, d3as: d3exparglst,
-   xyzs: xyzlst_t, d2as: d2exparglst): d3exp = let
+fun aux2 (
+  loc0: loc_t
+, d2s: d2sym
+, d3as: d3exparglst
+, xyzs: xyzlst_t
+, d2as: d2exparglst
+) : d3exp = let
   fn err_nil (loc0: loc_t, d2s: d2sym):<cloref1> d3exp = begin
      prerr_loc_error3 loc0;
      $Deb.debug_prerrf (": %s: d2exp_apps_sym_tr_up: aux2", @(THISFILENAME));
@@ -815,7 +821,11 @@ in
   | nil () => err_nil (loc0, d2s)
 end // end of [aux2]
 
-fn* aux3 (d2as: d2exparglst, s2e: s2exp): bool = begin
+fn* aux3 (
+  d2as: d2exparglst, s2e: s2exp
+) : bool = let
+  // nothing
+in
   case+ d2as of
   | list_cons (d2a, d2as) => begin case+ d2a of
     | D2EXPARGdyn (_(*loc*), npf, d2es) => aux3_app (npf, d2es, d2as, s2e)
