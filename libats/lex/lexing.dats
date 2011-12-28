@@ -65,7 +65,10 @@ staload "libats/lex/lexing.sats"
 
 (* ****** ****** *)
 
-assume position_t = '{ line= int, loff= int, toff= lint }
+assume
+position_t = '{
+  line= int, loff= int, toff= lint
+} // end of [position_t]
 
 implement position_line (p) = p.line
 implement position_loff (p) = p.loff
@@ -80,8 +83,11 @@ extern fun position_make_int_int_lint
   (line: int, loff: int, toff: lint): position_t
   = "position_make_int_int_lint"
 
-implement position_make_int_int_lint (line, loff, toff) =
-  '{ line= line, loff= loff, toff= toff }
+implement
+position_make_int_int_lint
+  (line, loff, toff) = '{
+  line= line, loff= loff, toff= toff
+} // end of [position_make_int_int_lint]
 
 implement
 fprint_position
@@ -94,18 +100,31 @@ implement prerr_position (pos) = prerr_mac (fprint_position, pos)
 
 (* ****** ****** *)
 
-typedef infile (v:view) =
+viewtypedef
+infile (v:view) =
 $extype_struct
   "atslex_infile_t" of {
-  free= (v | (*none*)) -<cloref1> void
-, getc= (!v | (*none*)) -<cloref1> int
+  free= (v | (*none*)) -<cloptr1> void
+, getc= (!v | (*none*)) -<cloptr1> int
 } // end of [infile]
 assume infile_t = infile
 
 (* ****** ****** *)
 
 implement
-infile_free (pf | infil) = infil.free (pf | (*none*))
+infile_free (pf | infil) = let
+  val () = infil.free (pf | (*none*))
+  val () = cloptr_free (infil.getc)
+  val () = cloptr_free (infil.free)
+//
+  prval () = __assert (infil) where {
+    extern prval __assert {vt:viewt@ype} (x: vt): void
+  } // end of [val]
+//
+in
+  // nothing
+end // end of [infile_free]
+
 implement
 infile_getc (pf | infil) = infil.getc (pf | (*none*))
 
@@ -126,13 +145,13 @@ infile_make_string
 //
   fn _free (
     pf: V | (*none*)
-  ) :<cloref1> void = begin
+  ) :<cloptr1> void = begin
      ptr_free {T?} (pf.0, pf.1 | p)
   end // end of [_free]
 //
   fn _getc (
     pf: !V | (*none*)
-  ) :<cloref1> int = let
+  ) :<cloptr1> int = let
     prval pf_at = (pf.1: T @ l)
     val i = !p; val ans: int = begin
       if i < n then (!p := i+1; int_of_char str[i]) else ~1
@@ -164,7 +183,7 @@ infile_make_strptr
   ) // end of [V]
   fn _free (
     pf: V | (*none*)
-  ) :<cloref1> void = let
+  ) :<cloptr1> void = let
     val () = strbufptr_free @(pf.0, pf.1 | p_sb)
   in
     ptr_free {T?} (pf.2, pf.3 | p)
@@ -172,7 +191,7 @@ infile_make_strptr
 //
   fn _getc (
     pf: !V | (*none*)
-  ) :<cloref1> int = let
+  ) :<cloptr1> int = let
     prval pf1_at = pf.1 
     prval pf2_at = pf.3
     val i = !p
@@ -227,10 +246,10 @@ infile_make_file
   viewdef V = FILE m @ l
   fn _free (
     pf_fil: V | (*none*)
-  ) :<cloref1> void = fclose_exn (pf_fil | fil)
+  ) :<cloptr1> void = fclose_exn (pf_fil | fil)
   fn _getc (
     pf_fil: !V | (*none*)
-  ) :<cloref1> int = fgetc_err (pf_mod | !fil)
+  ) :<cloptr1> int = fgetc_err (pf_mod | !fil)
 in #[
   V | (pf_fil | @{ free= _free, getc= _getc })
 ] end // end of [infile_make_file]
@@ -238,10 +257,10 @@ in #[
 implement
 infile_make_stdin () = let
   viewdef V = unit_v
-  fn _free (pf: V | (*none*)):<cloref1> void = () where {
+  fn _free (pf: V | (*none*)):<cloptr1> void = () where {
      prval unit_v () = pf
   } // end of [_free]
-  fn _getc (pf: !V | (*none*)):<cloref1> int = getchar ()
+  fn _getc (pf: !V | (*none*)):<cloptr1> int = getchar ()
 in
   #[ V | (unit_v () | @{ free= _free, getc= _getc } ) ]
 end // end of [infile_make_stdin]

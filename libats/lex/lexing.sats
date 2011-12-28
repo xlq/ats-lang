@@ -110,14 +110,14 @@ overload prerr with prerr_position
 //
 // HX: flat type for the input file
 //
-abst@ype infile_t
+absviewt@ype infile_t
   (v:view) = $extype "atslex_infile_t"
 // end of [infile_t]
 
 fun infile_free {v:view}
   (pf: v | f: infile_t v): void = "lexing_infile_free"
 fun infile_getc {v:view}
-  (pf: !v | f: infile_t v): int = "lexing_infile_getc"
+  (pf: !v | f: !infile_t v): int = "lexing_infile_getc"
 
 fun infile_make_string (inp: string): [v:view] (v | infile_t v)
 (*
