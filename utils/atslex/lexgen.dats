@@ -82,7 +82,9 @@ viewtypedef T = [n:nat] @{ lst= CSIlst n, len= int n }
 
 (* ****** ****** *)
 
-fn regex1_alt (r1: regex1, r2: regex1): regex1 = let
+fn regex1_alt (
+  r1: regex1, r2: regex1
+) : regex1 = let
   val null: bool = if r1.null then true else r2.null
   val fstpos = r1.fstpos + r2.fstpos
   val lstpos = r1.lstpos + r2.lstpos
@@ -95,7 +97,9 @@ in '{
 
 //
 
-fn regex1_chars (x: &T, cs: charset_t): regex1 = let
+fn regex1_chars (
+  x: &T, cs: charset_t
+) : regex1 = let
   val x_len = x.len
   val () = x.len := x_len + 1
   val x_lst = x.lst
@@ -109,7 +113,9 @@ in '{
 
 //
 
-fn regex1_end (x: &T, irule: int): regex1 = let
+fn regex1_end (
+  x: &T, irule: int
+) : regex1 = let
   val x_len = x.len
   val () = x.len := x_len + 1
   val x_lst = x.lst
@@ -141,7 +147,9 @@ fn regex1_null (): regex1 = '{
 
 //
 
-fn regex1_seq (r1: regex1, r2: regex1): regex1 = let
+fn regex1_seq (
+  r1: regex1, r2: regex1
+) : regex1 = let
   val null: bool = if r1.null then r2.null else false
   val fstpos: intset =
     if r1.null then r1.fstpos + r2.fstpos else r1.fstpos
@@ -156,7 +164,8 @@ in '{
 
 //
 
-fn regex1_opt (r: regex1): regex1 = let
+fn regex1_opt
+  (r: regex1): regex1 = let
   val fstpos = r.fstpos and lstpos = r.lstpos
 in '{
   node= REG1opt r
@@ -165,7 +174,8 @@ in '{
 , lstpos= lstpos
 } end // end of [regex1_opt]
 
-fn regex1_plus (r: regex1): regex1 = let
+fn regex1_plus
+  (r: regex1): regex1 = let
   val null = r.null and fstpos = r.fstpos and lstpos = r.lstpos
 in '{
   node= REG1plus r
@@ -174,7 +184,8 @@ in '{
 , lstpos= lstpos
 } end // end of [regex1_plus]
 
-fn regex1_star (r: regex1): regex1 = let
+fn regex1_star
+  (r: regex1): regex1 = let
   val fstpos = r.fstpos and lstpos = r.lstpos
 in '{
   node= REG1star r
@@ -185,8 +196,9 @@ in '{
 
 (* ****** ****** *)
 
-fn redef_find
-  (env: redef, id0: string): Option regex = let
+fn redef_find (
+  env: redef, id0: string
+) : Option regex = let
   fun loop (env: redef, id0: string): Option regex = begin
     case+ env of
     | redef_cons (id, r, env) =>
@@ -413,23 +425,22 @@ end (* rules_mark *)
 
 (* ****** ****** *)
 
-dataviewtype
-acclst =
-  | acclst_nil
+dataviewtype acclst =
+  | acclst_nil of ()
   | acclst_cons of (int (*state*), int (*rule*), acclst)
 // end of [acclst]
 
 dataviewtype
 intlst = intlst_nil | intlst_cons of (int, intlst)
+// end of [dataviewtype]
 
-dataviewtype
-statelst =
-  | statelst_nil | statelst_cons of (intset, statelst)
+dataviewtype statelst =
+  | statelst_nil of () | statelst_cons of (intset, statelst)
 // end of [statelst]
 
 dataviewtype
 translst (int) =
-  | translst_nil (0)
+  | translst_nil (0) of ()
   | {n:nat} translst_cons (n+1) of (int, intlst, translst n)
 // end of [translst]
 
@@ -539,9 +550,11 @@ end // end of [transition_all]
 
 (* ****** ****** *)
 
-fun accept_one {n:nat} {l_csi:addr}
-  (pf1: !array_v (CSI, n, l_csi) |
-   A_csi: ptr l_csi, n: int n, st: intset): int = let
+fun accept_one
+  {n:nat} {l_csi:addr} (
+  pf1: !array_v (CSI, n, l_csi)
+| A_csi: ptr l_csi, n: int n, st: intset
+) : int = let
   var irule = (0: int)
   viewdef V = (array_v (CSI, n, l_csi), int @ irule)
   val f = lam
@@ -570,9 +583,11 @@ in
   irule
 end // end of [accept_one]
 
-fun accept_all {n:nat} {l_csi:addr} (
-    pf1: !array_v (CSI, n, l_csi) | A_csi: ptr l_csi, n: int n, sts: states_t
-  ) : acclst = let
+fun accept_all
+  {n:nat} {l_csi:addr} (
+  pf1: !array_v (CSI, n, l_csi)
+| A_csi: ptr l_csi, n: int n, sts: states_t
+) : acclst = let
   var ans: acclst = acclst_nil ()
   viewdef V = (array_v (CSI, n, l_csi), acclst @ ans)
   val f = lam (
@@ -594,41 +609,55 @@ end // end of [accept_all]
 
 (* ****** ****** *)
 
-extern fun acclst_length (lst: !acclst): int = "acclst_length"
+extern
+fun acclst_length
+  (lst: !acclst): int = "acclst_length"
+// end of [acclst_length]
 
-implement acclst_length (lst) = let
-  fun loop (lst: !acclst, j: int): int =
+implement
+acclst_length (lst) = let
+  fun loop (
+    lst: !acclst, j: int
+  ) : int =
     case+ lst of
     | acclst_cons (_, _, !lst_r) =>
         let val n = loop (!lst_r, j+1) in fold@ lst; n end
     | acclst_nil () => (fold@ lst; j)
+  // end of [loop]
 in
   loop (lst, 0)
 end // end of [acclst_length]
 
 (* ****** ****** *)
 
-extern fun translst_length {n:nat} (lst: !translst n): int n
-  = "translst_length"
+extern
+fun translst_length
+  {n:nat} (lst: !translst n): int n = "translst_length"
+// end of [translst_length]
 
-implement translst_length (lst) = let
-  fun loop {i,j:nat} (lst: !translst i, j: int j): int(i+j) =
+implement
+translst_length (lst) = let
+  fun loop {i,j:nat}
+    (lst: !translst i, j: int j): int(i+j) =
     case+ lst of
     | translst_cons (_, _, !lst_r) =>
       let val n = loop (!lst_r, j+1) in fold@ lst; n end
     | translst_nil () => (fold@ lst; j)
+  // end of [loop]
 in
   loop (lst, 0)
 end // end of [translst_length]
 
 (* ****** ****** *)
 
-extern fun translst_uncons {n:pos} (
-    lst: &translst n >> translst (n-1), tag: &(int?) >> int, ns: &intlst? >> intlst
-  ) : void
-  = "translst_uncons"
+extern
+fun translst_uncons {n:pos} (
+  lst: &translst n >> translst (n-1), tag: &(int?) >> int, ns: &intlst? >> intlst
+) : void = "translst_uncons"
 
-implement translst_uncons (lst, tag, ns) = let
+implement
+translst_uncons
+  (lst, tag, ns) = let
   val+ ~translst_cons (tag_v, ns_v, lst_v) = lst
 in
   tag := tag_v; ns := ns_v; lst := lst_v
@@ -636,79 +665,102 @@ end // end of [translst_uncons]
 
 (* ****** ****** *)
 
-extern fun fprint_irule {m:file_mode}
-  (pf_mod: file_mode_lte (m, w) | fil: &FILE m, i: int): void
-  = "fprint_irule"
+extern
+fun fprint_irule
+  {m:file_mode} (
+  pf_mod: file_mode_lte (m, w) | fil: &FILE m, i: int
+) : void = "fprint_irule"
 
-extern fun fprint_state {m:file_mode}
-  (pf_mod: file_mode_lte (m, w) | fil: &FILE m, n: int): void
-  = "fprint_state"
+extern
+fun fprint_state
+  {m:file_mode} (
+  pf_mod: file_mode_lte (m, w) | fil: &FILE m, n: int
+) : void = "fprint_state"
 
 %{
 
 ats_void_type
-fprint_irule(ats_ptr_type fil, ats_int_type i) {
+fprint_irule (
+  ats_ptr_type fil, ats_int_type i
+) {
+//
   int x, x0, x1, x2 ;
-
+//
   x = i >> 8 ;
   x2 = '0' + (x & 07) ; x >>= 3 ;
   x1 = '0' + (x & 07) ; x >>= 3 ;
   x0 = '0' + (x & 07) ; x >>= 3 ;
   fputc ('\\', fil); fputc (x0, fil) ; fputc (x1, fil) ; fputc (x2, fil) ;
-
+//
   if (x != 0) {
     fprintf (
       stderr, "lexgen.dats: fprint_irule: rule number is too large: %i .\n", i
     ) ;
     exit (1) ;
-  }
-
+  } // end of [if]
+//
   x = i & 0xff ;
   x2 = '0' + (x & 07) ; x >>= 3 ;
   x1 = '0' + (x & 07) ; x >>= 3 ;
   x0 = '0' + (x & 07) ;
   fputc ('\\', fil); fputc (x0, fil) ; fputc (x1, fil) ; fputc (x2, fil) ;
-}
+//
+  return ;
+} // end of [fprint_irule]
 
 ats_void_type
-fprint_state (ats_ptr_type fil, ats_int_type n) {
+fprint_state (
+  ats_ptr_type fil, ats_int_type n
+) {
+//
   int x, x0, x1, x2 ;
-
+//
   x = n >> 8 ;
   x2 = '0' + (x & 07) ; x >>= 3 ;
   x1 = '0' + (x & 07) ; x >>= 3 ;
   x0 = '0' + (x & 07) ; x >>= 3 ;
   fputc ('\\', fil); fputc (x0, fil) ; fputc (x1, fil) ; fputc (x2, fil) ;
-
+//
   if (x != 0) {
     fprintf (
       stderr, "lexgen.dats: fprint_state: state number is too large: %i .\n", n
     ) ;
     exit (1) ;
-  }
-
+  } // end of [fprint_state]
+//
   x = n & 0xff ;
   x2 = '0' + (x & 07) ; x >>= 3 ;
   x1 = '0' + (x & 07) ; x >>= 3 ;
   x0 = '0' + (x & 07) ;
   fputc ('\\', fil); fputc (x0, fil) ; fputc (x1, fil) ; fputc (x2, fil) ;
-}
+//
+  return ;
+} // end of [fprint_state]
 
 %}
 
-extern fun fprint_intlst {m:file_mode}
-  (pf_mod: file_mode_lte (m, w) | fil: &FILE m, ns: intlst): void
-   = "fprint_intlst"
-
+extern
+fun fprint_intlst {m:file_mode} (
+  pf_mod: file_mode_lte (m, w) | fil: &FILE m, ns: intlst
+) : void = "fprint_intlst"
+//
 // printing as well as freeing
-implement fprint_intlst {m} (pf_mod | fil, ns) = let
-  fun loop (fil: &FILE m, ns: intlst): void = case+ ns of
-    | ~intlst_cons (n, ns) => begin
+//
+implement
+fprint_intlst {m}
+  (pf_mod | fil, ns) = let
+  fun loop (
+    fil: &FILE m, ns: intlst
+  ) : void = case+ ns of
+    | ~intlst_cons (n, ns) => (
         fprint_state (pf_mod | fil, n); loop (fil, ns)
-      end
+      ) // end of [intlst_cons]
     | ~intlst_nil () => ()
+  // end of [loop]
+  val () = loop (fil, ns)
+  val () = fprint_char (pf_mod | fil, '\\')
 in
-  loop (fil, ns); fprint_char (pf_mod | fil, '\\')
+  // nothing
 end // end of [fprint_intlst]
 
 (* ****** ****** *)
@@ -716,14 +768,18 @@ end // end of [fprint_intlst]
 extern typedef "intlst" = intlst
 
 // printing as well as freeing
-extern fun fprint_translst {m:file_mode}
-  (pf_mod: file_mode_lte (m, w) | fil: &FILE m, lst: Translst): void
-  = "fprint_translst"
+extern
+fun fprint_translst {m:file_mode} (
+  pf_mod: file_mode_lte (m, w) | fil: &FILE m, lst: Translst
+) : void = "fprint_translst"
 
 %{
 
 ats_void_type
-fprint_translst (ats_ptr_type fil, ats_ptr_type lst) {
+fprint_translst (
+  ats_ptr_type fil
+, ats_ptr_type lst
+) {
   int i, n, tag ; intlst ns, *A;
 
   n = translst_length (lst) ;
@@ -737,24 +793,27 @@ fprint_translst (ats_ptr_type fil, ats_ptr_type lst) {
     fprintf (stderr, "fprint_translst: i = %i and tag = %i\n", i, tag);
 */
     A[tag] = ns ;
-  }
+  } // end of [for]
 
   for (i = 1; i <= n; ++i) {
     fprint_intlst (fil, A[i]) ; fprintf ((FILE*)fil, "\n") ;
-  }
+  } // end of [for]
 
   ats_free_ngc(A) ;
 
   return ;
-}
+} // end of [fprint_translst]
 
 %}
-
-// freeing as well
-fun fprint_acclst {m:file_mode}
-  (pf_mod: file_mode_lte (m, w) | fil: &FILE m, lst: acclst)
-  : void = let
-  fun loop (fil: &FILE m, lst: acclst): void =
+//
+// HX: freeing as well
+//
+fun fprint_acclst {m:file_mode} (
+  pf_mod: file_mode_lte (m, w) | fil: &FILE m, lst: acclst
+) : void = let
+  fun loop (
+    fil: &FILE m, lst: acclst
+  ) : void =
     case+ lst of
     | ~acclst_cons (n, i, lst) => begin
         fprint_state (pf_mod | fil, n);
@@ -762,8 +821,9 @@ fun fprint_acclst {m:file_mode}
         fprint_char (pf_mod | fil, '\\');
         fprint_newline (pf_mod | fil);
         loop (fil, lst)
-      end
+      end // end of [acclst_cons]
     | ~acclst_nil () => ()
+  // end of [loop]
 in
   loop (fil, lst)
 end // end of [fprint_acclst]
@@ -797,12 +857,15 @@ end // end of [fprint_header]
 
 (* ****** ****** *)
 
-fun fprint_rules {m:file_mode} (
+fun fprint_rules
+  {m:file_mode} (
   pf_mod: file_mode_lte (m, w)
 | fil: &FILE m, id: string, arg: string, rls: rules
 ) : void = let
   val isreent = atslex_get_reentrant ()
-  fun loop (fil: &FILE m, rls: rules, irule: int): void =
+  fun loop (
+    fil: &FILE m, rls: rules, irule: int
+  ) : void =
     case+ rls of
     | rules_cons (r, code, rls) => begin
         fprintf (pf_mod | fil, "  | %i => ( %s )\n", @(irule, code));
@@ -831,53 +894,57 @@ fun fprint_DFA
 
 val regex_eof = REGchars charset_eof
 
-implement fprint_DFA (pf_mod | fil, env, id, arg, rls) = let
-
+implement
+fprint_DFA (
+  pf_mod | fil, env, id, arg, rls
+) = let
+//
 var x0: T = @{ lst= CSIlst_nil (), len= 0 }
 // EOF is pre-defined and cannot be overwritten
 val env = redef_cons ("EOF", regex_eof, env)
 val root_regex1 = rules_mark (env, x0, rls)
 val root_fstpos = root_regex1.fstpos
-
+//
 (*
 val () = fprint_string (pf_mod | fil, "root_fstpos = ")
 val () = fprint_intset (pf_mod | fil, root_fstpos)
 val () = fprint_newline (pf_mod | fil)
 *)
-
+//
 val npos = x0.len
-
+//
 val (pf_csi_gc, pf_csi | A_csi) = array_of_CSIlst (x0.lst, npos)
 val (pf_pos_gc, pf_pos | A_pos) = followpos (npos, root_regex1)
-
+//
 var nst_r = (0: int)
 var sts = states_nil ()
-
+//
 // state 0 is special: it is the error state
 val _ = states_insert (sts, 0, intset_nil)
 // state 1 is special: it is the start state
 val _ = states_insert (sts, 1, root_fstpos)
 val () = nst_r := (2: int)
-
+//
 var stlst = statelst_nil ()
 val () = stlst := statelst_cons (root_fstpos, stlst)
-
-val dfa_transtbl = transition_all
-  (pf_csi, pf_pos | A_csi, A_pos, npos, nst_r, sts, stlst, translst_nil ())
-
+//
+val dfa_transtbl = transition_all (
+  pf_csi, pf_pos | A_csi, A_pos, npos, nst_r, sts, stlst, translst_nil ()
+) // end of [val]
+//
 val () = array_ptr_free {intset?} (pf_pos_gc, pf_pos | A_pos)
-
+//
 val dfa_acctbl = accept_all (pf_csi | A_csi, npos, sts: states_t)
 val dfa_nfinal = acclst_length dfa_acctbl (* number of final states *)
-
+//
 val () = array_ptr_free {CSI?} (pf_csi_gc, pf_csi | A_csi)
-
+//
 val dfa_nstate = nst_r - 1
-
+//
 in
-
+//
 // transition table
-
+//
   fprintf (
     pf_mod | fil,
     "val __%s_transition_table: transition_table_t = __transition_table_make %i \"\\\n",
@@ -885,9 +952,9 @@ in
   );
   fprint_translst (pf_mod | fil, dfa_transtbl);
   fprint_string (pf_mod | fil, "\"\n");
-
+//
 // accepting states
-
+//
   fprintf (
     pf_mod | fil,
     "val __%s_accept_table: accept_table_t = __accept_table_make %i %i \"\\\n",
@@ -895,19 +962,23 @@ in
   );
   fprint_acclst (pf_mod | fil, dfa_acctbl);
   fprint_string (pf_mod | fil, "\"\n\n");
-
+//
 // function for lexical analysis
-
+//
   fprint_header (pf_mod | fil, id, arg);
   fprint_rules (pf_mod | fil, id, arg, rls);
   fprint_newline (pf_mod | fil);
-
+//
 end // end of [fprint_DFA]
 
 (* ****** ****** *)
 
-implement fprint_lexfns {m} (pf_mod | fil, env, lfs) = let
-  fun loop (fil: &FILE m, env: redef, lfs: lexfns): void =
+implement
+fprint_lexfns {m}
+  (pf_mod | fil, env, lfs) = let
+  fun loop (
+    fil: &FILE m, env: redef, lfs: lexfns
+  ) : void =
     case+ lfs of
     | lexfns_cons (id, arg, rls, lfs) => begin
         fprint_DFA (pf_mod | fil, env, id, arg, rls);
