@@ -577,8 +577,9 @@ end // end of [linmap_foreach_fun]
 implement{key,itm}
 linmap_foreach_vclo {v}
   (pf | m, f) = foreach (pf | m, f) where {
-  fun foreach {h:nat} .<h>.
-    (pf: !v | t: !avltree (key, itm, h), f: &(!v | key, &itm) -<clo> void):<> void =
+  fun foreach {h:nat} .<h>. (
+    pf: !v | t: !avltree (key, itm, h), f: &(!v | key, &itm) -<clo> void
+  ) :<> void =
     case+ t of
     | B (_(*h*), !p_k, !p_x, !p_tl, !p_tr) => begin
         foreach (pf | !p_tl, f); f (pf | !p_k, !p_x); foreach (pf | !p_tr, f); fold@ (t)

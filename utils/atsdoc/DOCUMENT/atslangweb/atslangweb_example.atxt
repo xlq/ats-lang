@@ -144,11 +144,23 @@ int fibc (int n) {
 } // end of [fibc]
 ')
 
+If translated into ATS, the function fibc can essentially be implemented
+as follows:
+#atscode2xmld('\
+fun fibc (n: int): int = let
+  fun loop (n: int, f0: int, f1: int) =
+    if n > 0 then loop (n-1, f1, f0+f1) else f0
+  // end of [loop]
+in
+  loop (n, 0, 1)
+end // end of [fibc]
+')
+
 There is obviously a logic gap between the defintion of fib and its
-implementation fibc in C. In ATS, an implementation of fib can be given
-that completely bridges this gap. First, the specification of fib needs to
-be encoded into ATS, which is fulfilled by the declaration of the following
-dataprop:
+implementation as is embodied in fibc. In ATS, an implementation of fib can
+be given that completely bridges this gap. First, the specification of fib
+needs to be encoded into ATS, which is fulfilled by the declaration of the
+following dataprop:
 
 #atscode2xmls('\
 dataprop FIB (int, int) =
@@ -222,7 +234,7 @@ value r such that the proof, which is of the type #staexp("FIB")(n,r),
 asserts fib(n)=r.  Therefore, #dynexp("fibats") is a verified
 implementation of fib as is encoded by #staexp("FIB"). Note that the inner
 function #dynexp("loop") directly corresponds to the while-loop in the body
-of fibc.
+of the function fibc (written in C).
 
 ')#comment("para")
 

@@ -394,7 +394,7 @@ ats_ptr_type
 lexbuf_fstpos_get (
   ats_ptr_type lxbf0
 ) {
-  lexbuf *lxbf = (lexbuf *)lxbf0 ;
+  lexbuf *lxbf = (lexbuf*)lxbf0 ;
   return position_make_int_int_lint
     (lxbf->fstpos_line, lxbf->fstpos_loff, lxbf->fstpos_toff) ;
 } // end of [lexbuf_fstpos_get]
@@ -403,7 +403,7 @@ ats_void_type
 lexbuf_fstpos_set (
   ats_ptr_type lxbf0
 ) {
-  lexbuf *lxbf = (lexbuf *)lxbf0 ;
+  lexbuf *lxbf = (lexbuf*)lxbf0 ;
   lxbf->fstpos = lxbf->curpos ;
   lxbf->fstpos_line = lxbf->curpos_line ;
   lxbf->fstpos_loff = lxbf->curpos_loff ;
@@ -417,7 +417,7 @@ ats_ptr_type
 lexbuf_lstpos_get (
   ats_ptr_type lxbf0
 ) {
-  lexbuf *lxbf = (lexbuf *)lxbf0 ;
+  lexbuf *lxbf = (lexbuf*)lxbf0 ;
   return position_make_int_int_lint
     (lxbf->lstpos_line, lxbf->lstpos_loff, lxbf->lstpos_toff) ;
 } // end of [lexbuf_lstpos_get]
@@ -426,7 +426,7 @@ ats_void_type
 lexbuf_lstpos_set (
   ats_ptr_type lxbf0
 ) {
-  lexbuf *lxbf = (lexbuf *)lxbf0 ;
+  lexbuf *lxbf = (lexbuf*)lxbf0 ;
   lxbf->lstpos = lxbf->curpos ;
   lxbf->lstpos_line = lxbf->curpos_line ;
   lxbf->lstpos_loff = lxbf->curpos_loff ;
@@ -440,7 +440,7 @@ ats_ptr_type
 lexbuf_curpos_get (
   ats_ptr_type lxbf0
 ) {
-  lexbuf *lxbf = (lexbuf *)lxbf0 ;
+  lexbuf *lxbf = (lexbuf*)lxbf0 ;
   return position_make_int_int_lint
     (lxbf->curpos_line, lxbf->curpos_loff, lxbf->curpos_toff) ;
 } // end of [lexbuf_curpos_get]
@@ -449,7 +449,8 @@ ats_void_type
 lexbuf_curpos_set (
   ats_ptr_type lxbf0
 ) {
-  lexbuf *lxbf = (lexbuf *)lxbf0 ;
+  lexbuf *lxbf ;
+  lxbf = (lexbuf*)lxbf0 ;
   lxbf->curpos = lxbf->lstpos ;
   lxbf->curpos_line = lxbf->lstpos_line ;
   lxbf->curpos_loff = lxbf->lstpos_loff ;
@@ -464,7 +465,7 @@ lexbuf_size_get (
   ats_ptr_type lxbf0
 ) {
   int sz ; lexbuf *lxbf ;
-  lxbf = (lexbuf *)lxbf0;
+  lxbf = (lexbuf*)lxbf0;
   sz = lxbf->lstpos - lxbf->fstpos ;
   if (sz < 0) { sz += lxbf->buf_size ; }
   return sz ;
@@ -697,7 +698,7 @@ lexbuf_is_eof (
 ats_ptr_type
 lexing_fstpos_get () {
   ats_ptr_type pos ; lexbuf *lxbf ;
-  lxbf = (lexbuf *)(lexing_lexbuf_get()) ;
+  lxbf = (lexbuf*)(lexing_lexbuf_get()) ;
   pos = lexbuf_fstpos_get (lxbf) ;
   lexing_lexbuf_set(lxbf) ;
   return pos;
@@ -706,7 +707,7 @@ lexing_fstpos_get () {
 ats_ptr_type
 lexing_lstpos_get () {
   ats_ptr_type pos ; lexbuf *lxbf ;
-  lxbf = (lexbuf *)(lexing_lexbuf_get()) ;
+  lxbf = (lexbuf*)(lexing_lexbuf_get()) ;
   pos = lexbuf_lstpos_get (lxbf) ;
   lexing_lexbuf_set(lxbf) ;
   return pos;
@@ -715,7 +716,7 @@ lexing_lstpos_get () {
 ats_ptr_type
 lexing_curpos_get () {
   ats_ptr_type pos ; lexbuf *lxbf ;
-  lxbf = (lexbuf *)(lexing_lexbuf_get()) ;
+  lxbf = (lexbuf*)(lexing_lexbuf_get()) ;
   pos = lexbuf_curpos_get (lxbf) ;
   lexing_lexbuf_set(lxbf) ;
   return pos;
@@ -728,7 +729,7 @@ lexbuf_curpos_fprint (
   ats_ptr_type fil, ats_ref_type lxbf0
 ) {
   lexbuf *lxbf = (lexbuf*)lxbf0 ;
-  fprintf ((FILE *)fil, "%li(line=%i, offset=%i)",
+  fprintf ((FILE*)fil, "%li(line=%i, offset=%i)",
     lxbf->curpos_toff+1L, lxbf->curpos_line+1, lxbf->curpos_loff+1
   ) ; return ;
 } // end of [lexbuf_curpos_fprint]
