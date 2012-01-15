@@ -93,7 +93,6 @@ linmap_search (
 ) :<> #[b:bool] bool b // end of [linmap_search]
 
 (* ****** ****** *)
-
 //
 // HX-2010-03-25:
 // if [k0] occurs in [m], [x0] replaces the original value associated
@@ -161,6 +160,11 @@ fun{key:t0p;itm:vt0p}
 linmap_free_vt (
   m: !map (key, itm) >> opt (map (key, itm), b)
 ) :<> #[b:bool] bool b(*~freed*) // end of [linmap_free_vt]
+
+fun{key:t0p;itm:vt0p}
+linmap_free_fun (
+  m: map (key, itm), f: (&itm >> itm?) -<fun> void
+) : void // end of [linmap_free_fun]
 
 (* ****** ****** *)
 

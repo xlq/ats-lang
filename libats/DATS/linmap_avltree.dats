@@ -625,6 +625,21 @@ linmap_free_vt (m) = let
     } // end of [E]
 end // end of [linmap_free]
 
+implement{key,itm}
+linmap_free_fun (m, f) = 
+  _free_fun (m, f) where {
+  fun _free_fun {h:nat} .<h>. (
+    t: avltree (key, itm, h), f: (&itm >> itm?) -<fun> void
+  ) :<> void = case+ t of
+    | B (_, _, !p_x, tl, tr) => let
+        val () = f (!p_x); val () = free@ {key,itm}{0,0} (t)
+      in
+        _free_fun (tl, f); _free_fun (tr, f)
+      end // end of [B]
+    | ~E () => ()
+  // end of [_free_fun]
+} // end of [linmap_free_fun]
+
 (* ****** ****** *)
 //
 // HX: it can also be implemented based on [foreach]

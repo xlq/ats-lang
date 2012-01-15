@@ -26,7 +26,7 @@ garbage collection (GC).
 Given a viewtype VT, the type for arrays containing n values of viewtype VT
 is #code("array")(VT, n).  Note that arrays in ATS are the same as those in
 C: There is no size information attached them. The interfaces for various
-functions on references can be found in
+functions on arrays can be found in
 #myatsdoclink("prelude/SATS/array.sats", "prelude/SATS/array.sats").
 
 ")#comment("para")

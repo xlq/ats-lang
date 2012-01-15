@@ -10,6 +10,9 @@ ats-lang-anairiats-0.2.7:
 5. The s2exp_syneq function (syn. eq.) now employs eta-expansion
 6. !READ(string) -> string (SHARED is introduced to do the opposite)
 7. Adding libats/lockptr_spin and libats/lockref_spin (spinlocks)
+8. The docbook source for the ATS intro book is now included.
+9. The closures in each infile object are made to be linear and they
+   are freed when the infile object is freed.
 
 ########################################################################
 
