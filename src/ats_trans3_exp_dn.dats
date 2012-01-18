@@ -243,8 +243,10 @@ end // end of [d2exp_if_tr_dn]
 
 (* ****** ****** *)
 
-implement d2exp_sif_tr_dn
-  (loc0, res, s2p_cond, d2e_then, d2e_else, s2e0) = let
+implement
+d2exp_sif_tr_dn (
+  loc0, res, s2p_cond, d2e_then, d2e_else, s2e0
+) = let
   val res = i2nvresstate_update (res)
   val sbis = the_d2varset_env_stbefitemlst_save ()
   val sac = staftscstr_initialize (res, sbis)
@@ -270,9 +272,10 @@ implement d2exp_sif_tr_dn
   in
     d3e_else
   end // end of [val]
-
+//
   val () = staftscstr_stbefitemlst_check (loc0, sac, sbis)
   val () = staftscstr_stbefitemlst_update (loc0, sac, sbis)
+//
 in
   d3exp_sif (loc0, s2e0, s2p_cond, d3e_then, d3e_else)
 end // end of [d2exp_sif_tr_dn]

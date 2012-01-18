@@ -42,9 +42,9 @@ fun{a:viewt@ype}
 refcount_ref (r: !nref a):<!ref> nref a
 
 fun{a:viewt@ype}
-refcount_unref
-  (r: nref a, x: &a? >> opt (a, b)):<!ref> #[b: bool] bool(b)
-// end of [refcount_unref]
+refcount_unref (
+  r: nref a, x: &a? >> opt (a, b)
+) :<!ref> #[b: bool] bool(b) // end of [fun]
 
 fun{a:viewt@ype}
 refcount_unref_fun

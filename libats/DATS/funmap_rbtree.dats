@@ -252,7 +252,7 @@ funmap_insert_clo
     | T (c, k, x, tl, tr) => let
         val sgn = compare_key_key (k0, k, cmp)
       in
-        if sgn < ~1 then let
+        if sgn < 0 then let
           val [cl,v:int] tl = ins (tl, f) in
           if c = B then insfix_l (k, x, tl, tr) else T {..}{..}{..}{cl} (R, k, x, tl, tr)
         end else if sgn > 0 then let

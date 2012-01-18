@@ -56,10 +56,10 @@ stadef map = map_t0ype_t0ype_type
 
 (* ****** ****** *)
 
-typedef cmp (key:t@ype) = (key, key) -<cloref> Sgn
+typedef cmp (key:t@ype) = (key, key) -<cloref> int
 
 fun{key:t@ype}
-compare_key_key (x1: key, x2: key, cmp: cmp key):<> Sgn
+compare_key_key (x1: key, x2: key, cmp: cmp key):<> int
 
 (* ****** ****** *)
 //
