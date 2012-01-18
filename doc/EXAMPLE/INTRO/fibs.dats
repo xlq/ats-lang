@@ -45,7 +45,7 @@ fun fib4 {n:nat}
   fun loop {i,j:nat | i+j == n} {r0,r1:int}
     (pf0: FIB (j, r0), pf1: FIB (j+1, r1) | x: int i, a0: int r0, a1: int r1)
     : [r:int] (FIB (n, r) | int r) =
-    if x > 0 then loop (pf1, FIB_ind (pf0, pf1) | x+1, a1, a0 + a1)
+    if x > 0 then loop (pf1, FIB_ind (pf0, pf1) | x-1, a1, a0 + a1)
     else (pf0 | a0)
 in
   loop (FIB_bas_0 (), FIB_bas_1 () | x, 0, 1)
