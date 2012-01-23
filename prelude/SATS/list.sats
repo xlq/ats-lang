@@ -101,6 +101,11 @@ castfn list_of_list_vt
 //
 // HX: always inlining
 //
+fun{} list_is_nil
+  {a:t@ype} {n:nat} (xs: list (a, n)):<> bool (n==0)
+fun{} list_is_cons
+  {a:t@ype} {n:nat} (xs: list (a, n)):<> bool (n > 0)
+
 fun{} list_is_empty
   {a:t@ype} {n:nat} (xs: list (a, n)):<> bool (n==0)
 fun{} list_isnot_empty

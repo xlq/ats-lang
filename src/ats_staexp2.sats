@@ -1250,7 +1250,7 @@ fun s2explst_nfapp {n:nat} (s2es: s2explst n): s2explst n
 //
 (* ****** ****** *)
 //
-// HX: implemented in [ats_staexp2_util1.dats]
+// HX: implemented in [ats_staexp2_util2.dats]
 //
 fun s2exp_absuni (s2e: s2exp): @(s2varlst, s2explst, s2exp)
 fun s2exp_opnexi (s2e: s2exp): @(s2varlst, s2explst, s2exp)

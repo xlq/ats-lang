@@ -297,13 +297,15 @@ in
   aux (s2c1, stamp2)
 end // end of [s2cst_is_eqsup]
 
-implement s2cst_is_listlike (s2c) = let
+implement
+s2cst_is_listlike (s2c) = let
   val islst = let val (vbox pf | p) = s2c in p->s2cst_islst end
 in
   case+ islst of Some _ => true | None () => false
 end // end of [s2cst_is_listlike]
 
-implement s2cst_is_singular (s2c) = let
+implement
+s2cst_is_singular (s2c) = let
   val od2cs = let val (vbox pf | p) = s2c in p->s2cst_conlst end
 in
   case+ od2cs of
