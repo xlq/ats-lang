@@ -291,26 +291,26 @@ cleanall:: ; $(RMF) libats_linheap_binomial
 
 checkall:: libats_linmap_avltree
 libats_linmap_avltree: libats_linmap_avltree.dats
-	$(ATSCC) -D_ATS_GCATS -O2 -o $@ $< && ./libats_linmap_avltree 100000
+	$(ATSCC) -D_ATS_GCATS -O2 -o $@ $< && ./$@ 100000
 cleanall:: ; $(RMF) libats_linmap_avltree
 
 checkall:: libats_linmap_rbtree
 libats_linmap_rbtree: libats_linmap_rbtree.dats
-	$(ATSCC) -D_ATS_GCATS -O2 -o $@ $< && ./libats_linmap_rbtree 100000
+	$(ATSCC) -D_ATS_GCATS -O2 -o $@ $< && ./$@ 100000
 cleanall:: ; $(RMF) libats_linmap_rbtree
 
 ######
 
 checkall:: libats_linqueue_arr
 libats_linqueue_arr: libats_linqueue_arr.dats
-	$(ATSCC) -D_ATS_GCATS -O2 -o $@ $< && ./libats_linqueue_arr 1000000
+	$(ATSCC) -D_ATS_GCATS -O2 -o $@ $< && ./$@ 1000000
 cleanall:: ; $(RMF) libats_linqueue_arr
 
 ######
 
 checkall:: libats_linqueue_lst
 libats_linqueue_lst: libats_linqueue_lst.dats
-	$(ATSCC) -D_ATS_GCATS -O2 -o $@ $< && ./libats_linqueue_lst 1000000
+	$(ATSCC) -D_ATS_GCATS -O2 -o $@ $< && ./$@ 1000000
 cleanall:: ; $(RMF) libats_linqueue_lst
 
 ######
@@ -380,6 +380,11 @@ checkall:: libats_ngc_dlist
 libats_ngc_dlist: libats_ngc_dlist.dats
 	$(ATSCC) -O2 -o $@ $< && ./$@
 cleanall:: ; $(RMF) libats_ngc_dlist
+
+checkall:: libats_ngc_linmap_avltree
+libats_ngc_linmap_avltree: libats_ngc_linmap_avltree.dats
+	$(ATSCC) -O2 -o $@ $< && ./$@ 100000
+cleanall:: ; $(RMF) libats_ngc_linmap_avltree
 
 ######
 
