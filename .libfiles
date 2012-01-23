@@ -394,6 +394,10 @@ libats/ngc/DATS/slist.dats
 libats/ngc/SATS/dlist.sats
 libats/ngc/DATS/dlist.dats
 
+/* linear avltree-based maps */
+libats/ngc/SATS/linmap_avltree.sats
+libats/ngc/DATS/linmap_avltree.dats
+
 /* ****** ****** */
 
 /*
