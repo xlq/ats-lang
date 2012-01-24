@@ -668,19 +668,19 @@ fun _free
   {h:nat} {l:addr} .<h>. (
   pfv: !v
 , pf1: avltree_v (key, itm, h, l)
-| pt: ptr l, env: !vt
+| p_t: ptr l, env: !vt
 ) :<cloref> void =
-  if pt > null then let
+  if p_t > null then let
     prval B (pf_nod, pf_tl, pf_tr) = pf1
-    val k = avlnode_get_key<key,itm> (pf_nod | pt)
-    and p_tl = avlnode_get_left<key,itm> (pf_nod | pt)
-    and p_tr = avlnode_get_right<key,itm> (pf_nod | pt)
+    val k = avlnode_get_key<key,itm> (pf_nod | p_t)
+    and p_tl = avlnode_get_left<key,itm> (pf_nod | p_t)
+    and p_tr = avlnode_get_right<key,itm> (pf_nod | p_t)
     val () = _free (pfv, pf_tl | p_tl, env)
     prval (pf_at, fpf) = avlnode_v_takeout_val {key,itm} (pf_nod)
-    val () = f (pfv | !pt, env)
+    val () = f (pfv | !p_t, env)
     prval () = pf_nod := fpf {itm?} (pf_at)
     val () = _free (pfv, pf_tr | p_tr, env)
-    val () = avlnode_free<key,itm> (pf_nod | pt)
+    val () = avlnode_free<key,itm> (pf_nod | p_t)
   in
     // nothing
   end else let
