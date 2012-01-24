@@ -302,10 +302,10 @@ implement{key,itm}
 linmap_insert {l} (pf_nod | m, p, cmp) = let
 //
 fun insert {l_at,l_t:addr} {h:nat} .<h>. (
-  pf_t: !avltree_v (key, itm, h, l_t) >> avltree_v_inc (key, itm, h, l_t')
+  pf_t: !avltree_v (key, itm, h, l_t) >> avltree_v_inc (key, itm, h, l_t1)
 , pf_at: !avlnode_v (key, itm, l_at) >> option_v (avlnode_v (key, itm, l_at), b)
-| p0: ptr l_at, p: &ptr l_t >> ptr l_t', cmp: cmp key
-) :<> #[b:bool;l_t':addr] bool b =
+| p0: ptr l_at, p: &ptr l_t >> ptr l_t1, cmp: cmp key
+) :<> #[b:bool;l_t1:addr] bool b =
   if p > null then let
     prval B (pf1_at, pf_tl, pf_tr) = pf_t
     val sgn = compare_key_key
@@ -388,10 +388,10 @@ end // end of [linmap_insert]
 (* ****** ****** *)
 
 fun{key:t0p;itm:vt0p}
-avltree_takeout_min {h:pos} {lt:addr} .<h>. (
-  pf_t: !avltree_v (key, itm, h, lt) >> avltree_v_dec (key, itm, h, lt')
-| p_t: &ptr lt >> ptr lt'
-) :<> #[lt':addr] [l:addr] (avlnode_v (key, itm, l) | ptr l) = let
+avltree_takeout_min {h:pos} {l_t:addr} .<h>. (
+  pf_t: !avltree_v (key, itm, h, l_t) >> avltree_v_dec (key, itm, h, l_t1)
+| p_t: &ptr l_t >> ptr l_t1
+) :<> #[l_t1:addr] [l:addr] (avlnode_v (key, itm, l) | ptr l) = let
   prval B (pf_nod, pf_tl, pf_tr) = pf_t
   var p_tl = avlnode_get_left<key,itm> (pf_nod | p_t)
   and p_tr = avlnode_get_right<key,itm> (pf_nod | p_t)
@@ -434,9 +434,9 @@ implement{key,itm}
 linmap_takeout
   (m, k0, cmp) = takeout (m.0 | m.1) where {
   fun takeout {h:nat} {l0:addr} .<h>. (
-    pf_t: !avltree_v (key, itm, h, l0) >> avltree_v_dec (key, itm, h, l')
-  | p_t: &ptr l0 >> ptr l'
-  ) :<cloref> #[l':addr] [l_at:addr] (
+    pf_t: !avltree_v (key, itm, h, l0) >> avltree_v_dec (key, itm, h, l1)
+  | p_t: &ptr l0 >> ptr l1
+  ) :<cloref> #[l1:addr] [l_at:addr] (
     option_v (avlnode_v (key, itm, l_at), l_at > null)
   | ptr l_at
   ) = begin
