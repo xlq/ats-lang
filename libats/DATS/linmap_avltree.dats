@@ -626,19 +626,29 @@ linmap_free_vt (m) = let
 end // end of [linmap_free]
 
 implement{key,itm}
-linmap_free_fun (m, f) = 
-  _free_fun (m, f) where {
-  fun _free_fun {h:nat} .<h>. (
-    t: avltree (key, itm, h), f: (&itm >> itm?) -<fun> void
-  ) :<> void = case+ t of
-    | B (_, _, !p_x, tl, tr) => let
-        val () = f (!p_x); val () = free@ {key,itm}{0,0} (t)
-      in
-        _free_fun (tl, f); _free_fun (tr, f)
-      end // end of [B]
-    | ~E () => ()
-  // end of [_free_fun]
-} // end of [linmap_free_fun]
+linmap_free_funenv
+  {v}{vt} (
+  pfv | m, f, env
+) = let
+//
+fun _free
+  {h:nat} .<h>. (
+  pfv: !v
+| t: avltree (key, itm, h)
+, env: !vt
+) :<cloref> void =
+  case+ t of
+  | B (_, _, !p_x, tl, tr) => let
+      val () = f (pfv | !p_x, env)
+      val () = free@ {key,itm}{0,0} (t)
+    in
+      _free (pfv | tl, env); _free (pfv | tr, env)
+    end // end of [B]
+  | ~E () => ()
+// end of [_free]
+in
+  _free (pfv | m, env)
+end // end of [linmap_free_funenv]
 
 (* ****** ****** *)
 //
@@ -647,8 +657,9 @@ linmap_free_fun (m, f) =
 implement{key,itm}
 linmap_listize (m) = let
   viewtypedef res_t = List_vt @(key, itm)
-  fun aux {h:nat} .<h>.
-    (t: !avltree (key, itm, h), res: res_t):<> res_t =
+  fun aux {h:nat} .<h>. (
+    t: !avltree (key, itm, h), res: res_t
+  ) :<> res_t =
     case+ t of
     | B (_(*h*), k, x, !p_tl, !p_tr) => let
         val res = aux (!p_tr, res)

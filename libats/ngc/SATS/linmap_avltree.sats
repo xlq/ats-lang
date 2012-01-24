@@ -275,11 +275,12 @@ linmap_foreach_vclo {v:view} (
 fun{key:t0p;itm:t0p}
 linmap_free (m: map (key, itm)):<> void
 
-fun{key:t0p;itm:vt0p}
-linmap_free_funenv
+fun{
+key:t0p;itm:vt0p
+} linmap_free_funenv
   {v:view} {vt:viewtype} (
   pfv: !v
-| m: map (key, itm), f: (!v | key, &itm >> itm?, !vt) -<fun> void
+| m: map (key, itm), f: (!v | &itm >> itm?, !vt) -<fun> void
 , env: !vt
 ) :<> void // end of [linmap_free_funenv]
 

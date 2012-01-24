@@ -867,19 +867,28 @@ linmap_free_vt (m) = let
 end // end of [linmap_free]
 
 implement{key,itm}
-linmap_free_fun (m, f) = 
-  _free_fun (m, f) where {
-  fun _free_fun {c:clr}{bh:nat} .<bh,c>. (
-    t: rbtree0 (key, itm, c, bh), f: (&itm >> itm?) -<fun> void
-  ) :<> void = case+ t of
-    | T (_, _, !p_x, tl, tr) => let
-        val () = f (!p_x); val () = free@ {key,itm}{0,0,0}{0}{0} (t)
-      in
-        _free_fun (tl, f); _free_fun (tr, f)
-      end // end of [T]
-    | ~E () => ()
-  // end of [_free_fun]
-} // end of [linmap_free_fun]
+linmap_free_funenv
+  {v}{vt} (
+  pfv | m, f, env
+) = let
+//
+fun _free
+  {c:clr}{bh:nat} .<bh,c>. (
+  pfv: !v
+| t: rbtree0 (key, itm, c, bh)
+, env: !vt
+) :<cloref> void = case+ t of
+  | T (_, _, !p_x, tl, tr) => let
+      val () = f (pfv | !p_x, env)
+      val () = free@ {key,itm}{0,0,0}{0}{0} (t)
+    in
+      _free (pfv | tl, env); _free (pfv | tr, env)
+    end // end of [T]
+  | ~E () => ()
+// end of [_free_fun]
+in
+  _free (pfv | m, env)
+end // end of [linmap_free_funenv]
 
 (* ****** ****** *)
 //
