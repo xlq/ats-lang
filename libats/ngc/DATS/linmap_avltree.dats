@@ -563,19 +563,22 @@ linmap_foreach_funenv {v} {vt}
   (pf | m, f, env) =
   foreach (pf, m.0 | m.1, env) where {
 //
-fun foreach {h:nat} {l:addr} .<h>. (
-  pf0: !v, pf1: !avltree_v (key, itm, h, l) | pt: ptr l, env: !vt
+fun foreach
+  {h:nat} {l:addr} .<h>. (
+  pfv: !v
+, pf1: !avltree_v (key, itm, h, l)
+| p_t: ptr l, env: !vt
 ) :<cloref> void =
-  if pt > null then let
+  if p_t > null then let
     prval B (pf_nod, pf_tl, pf_tr) = pf1
-    val k = avlnode_get_key<key,itm> (pf_nod | pt)
-    and p_tl = avlnode_get_left<key,itm> (pf_nod | pt)
-    and p_tr = avlnode_get_right<key,itm> (pf_nod | pt)
-    val () = foreach (pf0, pf_tl | p_tl, env)
+    val k = avlnode_get_key<key,itm> (pf_nod | p_t)
+    and p_tl = avlnode_get_left<key,itm> (pf_nod | p_t)
+    and p_tr = avlnode_get_right<key,itm> (pf_nod | p_t)
+    val () = foreach (pfv, pf_tl | p_tl, env)
     prval (pf_at, fpf) = avlnode_v_takeout_val {key,itm} (pf_nod)
-    val () = f (pf0 | k, !pt, env)
+    val () = f (pfv | k, !p_t, env)
     prval () = pf_nod := fpf (pf_at)
-    val () = foreach (pf0, pf_tr | p_tr, env)
+    val () = foreach (pfv, pf_tr | p_tr, env)
     prval () = pf1 := B (pf_nod, pf_tl, pf_tr)
   in
     // nothing
@@ -610,20 +613,23 @@ linmap_foreach_vclo {v}
   (pf | m, f) =
   foreach (pf, m.0 | m.1, f) where {
 //
-fun foreach {h:nat} {l:addr} .<h>. (
-  pf0: !v, pf1: !avltree_v (key, itm, h, l)
-| pt: ptr l, f: &(!v | key, &itm) -<clo> void
+fun foreach
+  {h:nat} {l:addr} .<h>. (
+  pfv: !v
+, pf1: !avltree_v (key, itm, h, l)
+| p_t: ptr l
+, f: &(!v | key, &itm) -<clo> void
 ) :<> void =
-  if pt > null then let
+  if p_t > null then let
     prval B (pf_nod, pf_tl, pf_tr) = pf1
-    val k = avlnode_get_key<key,itm> (pf_nod | pt)
-    and p_tl = avlnode_get_left<key,itm> (pf_nod | pt)
-    and p_tr = avlnode_get_right<key,itm> (pf_nod | pt)
-    val () = foreach (pf0, pf_tl | p_tl, f)
+    val k = avlnode_get_key<key,itm> (pf_nod | p_t)
+    and p_tl = avlnode_get_left<key,itm> (pf_nod | p_t)
+    and p_tr = avlnode_get_right<key,itm> (pf_nod | p_t)
+    val () = foreach (pfv, pf_tl | p_tl, f)
     prval (pf_at, fpf) = avlnode_v_takeout_val {key,itm} (pf_nod)
-    val () = f (pf0 | k, !pt)
+    val () = f (pfv | k, !p_t)
     prval () = pf_nod := fpf (pf_at)
-    val () = foreach (pf0, pf_tr | p_tr, f)
+    val () = foreach (pfv, pf_tr | p_tr, f)
     prval () = pf1 := B (pf_nod, pf_tl, pf_tr)
   in
     // nothing
