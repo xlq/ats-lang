@@ -161,7 +161,7 @@ fn draw_clock
   val () = cairo_fill (cr)
   val () = cairo_arc
     (cr, 0.0, 0.0, rad, 0.0, 2 * PI)
-  val () = cairo_set_source_rgba (cr, 0.0, 1.0, 0.0, 0.250)
+  val () = cairo_set_source_rgba (cr, 0.0, 0.0, 1.0, 0.125)
   val () = cairo_set_line_width (cr, 4.0)
   val () = cairo_stroke (cr)
 //
@@ -174,24 +174,24 @@ fn draw_clock
 //
   val h_l = 0.60 * rad
   val (pf | ()) = cairo_save (cr)
-  val () = cairo_set_source_rgba (cr, 0.0, 0.0, 0.0, 0.125)
+  val () = cairo_set_source_rgba (cr, 0.0, 0.0, 1.0, 0.250)
   val () = cairo_rotate (cr, h_ang)
   val () = draw_hand (cr, 3.0, 1.5, h_l)
   val () = cairo_restore (pf | cr)
   val (pf | ()) = cairo_save (cr)
-  val () = cairo_set_source_rgba (cr, 0.0, 0.0, 0.0, 0.125)
+  val () = cairo_set_source_rgba (cr, 0.0, 0.0, 1.0, 0.250)
   val () = cairo_rotate (cr, h_ang+PI)
   val () = draw_hand (cr, 3.0, 1.5, h_l/4)
   val () = cairo_restore (pf | cr)
 //
   val m_l = 0.85 * rad
   val (pf | ()) = cairo_save (cr)
-  val () = cairo_set_source_rgba (cr, 0.0, 0.0, 0.0, 0.125)
+  val () = cairo_set_source_rgba (cr, 0.0, 0.0, 1.0, 0.250)
   val () = cairo_rotate (cr, m_ang)
   val () = draw_hand (cr, 2.0, 1.0, m_l)
   val () = cairo_restore (pf | cr)
   val (pf | ()) = cairo_save (cr)
-  val () = cairo_set_source_rgba (cr, 0.0, 0.0, 0.0, 0.125)
+  val () = cairo_set_source_rgba (cr, 0.0, 0.0, 1.0, 0.250)
   val () = cairo_rotate (cr, m_ang+PI)
   val () = draw_hand (cr, 2.0, 1.0, h_l/4)
   val () = cairo_restore (pf | cr)
@@ -199,12 +199,12 @@ fn draw_clock
 val () = if knd > 0 then {
   val s_l = 0.85 * rad
   val (pf | ()) = cairo_save (cr)
-  val () = cairo_set_source_rgba (cr, 1.0, 0.0, 0.0, 0.250)
+  val () = cairo_set_source_rgba (cr, 0.0, 0.0, 1.0, 0.250)
   val () = cairo_rotate (cr, s_ang)
   val () = draw_hand (cr, 1.0, 0.5, m_l)
   val () = cairo_restore (pf | cr)
   val (pf | ()) = cairo_save (cr)
-  val () = cairo_set_source_rgba (cr, 1.0, 0.0, 0.0, 0.250)
+  val () = cairo_set_source_rgba (cr, 0.0, 0.0, 1.0, 0.250)
   val () = cairo_rotate (cr, s_ang+PI)
   val () = draw_hand (cr, 1.0, 0.5, h_l/4)
   val () = cairo_restore (pf | cr)
