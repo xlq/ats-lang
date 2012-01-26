@@ -1,6 +1,8 @@
 (*
 **
 ** A simple CAIRO example: a wavy illusion
+** Please see Kitaoka's page: http://www.ritsumei.ac.jp/~akitaoka/
+**
 ** Author: Hongwei Xi (hwxi AT cs DOT bu DOT edu)
 ** Time: April, 2010
 **
@@ -41,13 +43,15 @@ typedef color = @{
   r= double, g= double, b= double
 }
 
-macdef rbgset (cr, c) = let
+macdef
+rbgset (cr, c) = let
   val c = ,(c) in cairo_set_source_rgb (,(cr), c.r, c.g, c.b)
 end // end of [rbgset]
 
 (* ****** ****** *)
 
-staload MATH = "libc/SATS/math.sats"
+staload
+MATH = "libc/SATS/math.sats"
 macdef PI = $MATH.M_PI
 
 (* ****** ****** *)
@@ -221,7 +225,7 @@ mainats (ats_int_type argc, ats_ptr_type argv) ;
 
 (* ****** ****** *)
 
-fun on_expose_event {l:agz} (
+fun fexpose {l:agz} (
     darea: !GtkDrawingArea_ref l, event: &GdkEvent
   ) : gboolean = let
   val (fpf_win | win) = gtk_widget_get_window (darea)
@@ -234,7 +238,7 @@ fun on_expose_event {l:agz} (
   val () = cairo_destroy (cr)
 in
   GFALSE // HX: what does this mean?
-end // end of [on_expose_event]
+end // end of [fexpose]
 
 (* ****** ****** *)
 
@@ -242,7 +246,8 @@ macdef gs = gstring_of_string
 
 extern fun main1 (): void = "main1"
 
-implement main1 () = () where {
+implement
+main1 () = () where {
   val W = 300 and H = 300
 //
 #ifdef ISPNG
@@ -262,15 +267,14 @@ implement main1 () = () where {
   val darea = gtk_drawing_area_new ()
   val () = gtk_container_add (window, darea)
   val _sid = g_signal_connect
-    (darea, (gsignal)"expose-event", G_CALLBACK (on_expose_event), (gpointer)null)
+    (darea, (gsignal)"expose-event", G_CALLBACK (fexpose), (gpointer)null)
   val () = g_object_unref (darea)
-  val (fpf_window | window_) = g_object_vref (window)
-  val _sid = g_signal_connect0
-    (window_, (gsignal)"delete-event", G_CALLBACK (gtk_main_quit), (gpointer)null)
-  val _sid = g_signal_connect1
+  val _sid = g_signal_connect
+    (window, (gsignal)"delete-event", G_CALLBACK (gtk_main_quit), (gpointer)null)
+  val _sid = g_signal_connect
     (window, (gsignal)"destroy-event", G_CALLBACK (gtk_widget_destroy), (gpointer)null)
   val () = gtk_widget_show_all (window)
-  prval () = fpf_window (window)
+  val () = g_object_unref (window) // HX: ref-count decreases to 1!
   val () = gtk_main ()
 #endif
 } // end of [main1]

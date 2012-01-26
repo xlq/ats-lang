@@ -1,7 +1,7 @@
 (*
 **
 ** A simple CAIRO example: an illusion of circular motion
-** see Kitaoka's page: http://www.ritsumei.ac.jp/~akitaoka/
+** Please see Kitaoka's page: http://www.ritsumei.ac.jp/~akitaoka/
 **
 ** Author: Hongwei Xi (hwxi AT cs DOT bu DOT edu)
 ** Time: 2009-12 // first implementation
@@ -37,10 +37,10 @@
 (* ****** ****** *)
 //
 // how to compile:
-//   atscc -o test8 `pkg-config --cflags --libs cairo` illucircmot.dats
+//   atscc -o illucircmot `pkg-config --cflags --libs cairo` illucircmot.dats
 //
 // how ot test:
-//   ./test8
+//   ./illucircmot
 //   'gthumb' or 'eog' can be used to view the generated image file 'illucircmot.png'
 //
 (* ****** ****** *)
@@ -154,7 +154,8 @@ fun draw_rings
 
 (* ****** ****** *)
 
-implement main () = () where {
+implement
+main () = () where {
   val margin = 10
   val U = 150
   #define NROW 2; #define NCOL 2

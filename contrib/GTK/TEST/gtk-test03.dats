@@ -82,13 +82,9 @@ implement main1 () = () where {
   val () = gtk_widget_show (box1)
   val () = g_object_unref (box1)
 //
-  val () = gtk_widget_show (window)
-//
+  val () = gtk_widget_show_unref (window) // HX: ref-count decreases to 1!
   val () = gtk_main ()
 //
-  prval () = __leak (window) where {
-    extern prfun __leak {a:viewtype} (x: a): void // it is okay after [gtk_main]
-  }
 } // end of [main1]
 
 (* ****** ****** *)

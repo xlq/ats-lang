@@ -482,12 +482,13 @@ val theAlpha_ref = ref<double> (0.0)
 val theRotateknd_ref = ref_make_elt<int> (0)
 
 (* ****** ****** *)
-
 (*
 #define CLOCKND 0 // no second hand
 *)
 #define CLOCKND 1 // show the second hand
-
+//
+macdef cairodraw_clock (cr) = cairodraw_clock01 (,(cr), CLOCKND)
+//
 (* ****** ****** *)
 
 fun fexpose_present
@@ -502,7 +503,7 @@ fun fexpose_present
   val (pf_save | ()) = cairo_save (cr)
   val () = cairo_scale (cr, vpw, vph)
   val () = cairodraw_slide_relative (cr, 0) // current one
-  val () = cairodraw_clock01 (cr, CLOCKND) // HX: a translucent clock layover
+  val () = cairodraw_clock (cr) // HX: a translucent clock layover
   val () = cairo_restore (pf_save | cr)
   val gltext = glTexture_make_cairo_ref (GL_BGRA_format, cr)
 //
@@ -539,14 +540,14 @@ fun fexpose_rectrot
   val (pf_save | ()) = cairo_save (cr)
   val () = cairo_scale (cr, vpw, vph)
   val () = cairodraw_slide_relative (cr, 0) // current one
-  val () = cairodraw_clock01 (cr, CLOCKND) // HX: a translucent clock layover
+  val () = cairodraw_clock (cr) // HX: a translucent clock layover
   val () = cairo_restore (pf_save | cr)
   val gltext1 = glTexture_make_cairo_ref (GL_BGRA_format, cr)
 //
   val (pf_save | ()) = cairo_save (cr)
   val () = cairo_scale (cr, vpw, vph)
   val () = cairodraw_slide_relative (cr, 1) // next one
-  val () = cairodraw_clock01 (cr, CLOCKND) // HX: a translucent clock layover
+  val () = cairodraw_clock (cr) // HX: a translucent clock layover
   val () = cairo_restore (pf_save | cr)
   val gltext2 = glTexture_make_cairo_ref (GL_BGRA_format, cr)
 //
@@ -595,14 +596,14 @@ fun fexpose_triangrot
   val (pf_save | ()) = cairo_save (cr)
   val () = cairo_scale (cr, vpw, vph)
   val () = cairodraw_slide_relative (cr, 0) // current one
-  val () = cairodraw_clock01 (cr, CLOCKND) // HX: a translucent clock layover
+  val () = cairodraw_clock (cr) // HX: a translucent clock layover
   val () = cairo_restore (pf_save | cr)
   val gltext1 = glTexture_make_cairo_ref (GL_BGRA_format, cr)
 //
   val (pf_save | ()) = cairo_save (cr)
   val () = cairo_scale (cr, vpw, vph)
   val () = cairodraw_slide_relative (cr, 1) // next one
-  val () = cairodraw_clock01 (cr, CLOCKND) // HX: a translucent clock layover
+  val () = cairodraw_clock (cr) // HX: a translucent clock layover
   val () = cairo_restore (pf_save | cr)
   val gltext2 = glTexture_make_cairo_ref (GL_BGRA_format, cr)
 //
@@ -660,14 +661,14 @@ fun fexpose_cylindrot
   val (pf_save | ()) = cairo_save (cr)
   val () = cairo_scale (cr, vpw, vph)
   val () = cairodraw_slide_relative (cr, 0) // current one
-  val () = cairodraw_clock01 (cr, CLOCKND) // HX: a translucent clock layover
+  val () = cairodraw_clock (cr) // HX: a translucent clock layover
   val () = cairo_restore (pf_save | cr)
   val gltext1 = glTexture_make_cairo_ref (GL_BGRA_format, cr)
 //
   val (pf_save | ()) = cairo_save (cr)
   val () = cairo_scale (cr, vpw, vph)
   val () = cairodraw_slide_relative (cr, 1) // next one
-  val () = cairodraw_clock01 (cr, CLOCKND) // HX: a translucent clock layover
+  val () = cairodraw_clock (cr) // HX: a translucent clock layover
   val () = cairo_restore (pf_save | cr)
   val gltext2 = glTexture_make_cairo_ref (GL_BGRA_format, cr)
 //
@@ -736,7 +737,7 @@ fun fexpose_sliding
   val (pf_save | ()) = cairo_save (cr)
   val () = cairo_scale (cr, vpw, vph)
   val () = cairodraw_slide_relative (cr, n) // 0/1
-  val () = cairodraw_clock01 (cr, CLOCKND) // HX: a translucent clock layover
+  val () = cairodraw_clock (cr) // HX: a translucent clock layover
 //
   val () = if vert > 0 then
     cairo_rectangle (cr, 0.0, 0.0, ratio, 1.0)
@@ -787,7 +788,7 @@ fun fexpose_disking
   val (pf_save | ()) = cairo_save (cr)
   val () = cairo_scale (cr, vpw, vph)
   val () = cairodraw_slide_relative (cr, n) // 0/1
-  val () = cairodraw_clock01 (cr, CLOCKND) // HX: a translucent clock layover
+  val () = cairodraw_clock (cr) // HX: a translucent clock layover
 //
   val rad = sqrt (2.0)
   val r0 = rad / 20
@@ -839,7 +840,7 @@ fun fexpose_fadeout
   val (pf_save | ()) = cairo_save (cr)
   val () = cairo_scale (cr, vpw, vph)
   val () = cairodraw_slide_relative (cr, n) // 0/1
-  val () = cairodraw_clock01 (cr, CLOCKND) // HX: a translucent clock layover
+  val () = cairodraw_clock (cr) // HX: a translucent clock layover
 //
   macdef nrt (x) = pow (,(x), 1.0/8)
   val () = cairo_rectangle (cr, 0.0, 0.0, 1.0, 1.0)
@@ -888,7 +889,7 @@ fun fexpose_folding01
   val (pf_save | ()) = cairo_save (cr)
   val () = cairo_scale (cr, vpw, vph)
   val () = cairodraw_slide_relative (cr, n) // 0/1
-  val () = cairodraw_clock01 (cr, CLOCKND) // HX: a translucent clock layover
+  val () = cairodraw_clock (cr) // HX: a translucent clock layover
   val () = cairo_restore (pf_save | cr)
   val gltext = glTexture_make_cairo_ref (GL_BGRA_format, cr)
 //
@@ -940,7 +941,7 @@ fun fexpose_folding02
   val (pf_save | ()) = cairo_save (cr)
   val () = cairo_scale (cr, vpw, vph)
   val () = cairodraw_slide_relative (cr, n) // 0/1
-  val () = cairodraw_clock01 (cr, CLOCKND) // HX: a translucent clock layover
+  val () = cairodraw_clock (cr) // HX: a translucent clock layover
   val () = cairo_restore (pf_save | cr)
   val gltext = glTexture_make_cairo_ref (GL_BGRA_format, cr)
 //
@@ -1154,7 +1155,7 @@ fun fexpose_random01
   val (pf_save | ()) = cairo_save (cr)
   val () = cairo_scale (cr, vpw, vph)
   val () = cairodraw_slide_relative (cr, 0) // current one
-  val () = cairodraw_clock01 (cr, CLOCKND) // HX: a translucent clock layover
+  val () = cairodraw_clock (cr) // HX: a translucent clock layover
 //
   val () = cairo_set_source_rgba (cr, 0.0, 0.0, 0.0, 1.0)
   val () = {
@@ -1200,7 +1201,7 @@ fun fexpose_random02
   val (pf_save | ()) = cairo_save (cr)
   val () = cairo_scale (cr, vpw, vph)
   val () = cairodraw_slide_relative (cr, 0) // current one
-  val () = cairodraw_clock01 (cr, CLOCKND) // HX: a translucent clock layover
+  val () = cairodraw_clock (cr) // HX: a translucent clock layover
 //
   val () = cairo_set_source_rgba (cr, 0.0, 0.0, 0.0, 1.0)
   val () = {
@@ -1246,7 +1247,7 @@ fun fexpose_random03
   val (pf_save | ()) = cairo_save (cr)
   val () = cairo_scale (cr, vpw, vph)
   val () = cairodraw_slide_relative (cr, 0) // current one
-  val () = cairodraw_clock01 (cr, CLOCKND) // HX: a translucent clock layover
+  val () = cairodraw_clock (cr) // HX: a translucent clock layover
 //
   val () = cairo_set_source_rgba (cr, 0.0, 0.0, 0.0, 1.0)
   val () = {
