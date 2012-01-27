@@ -186,13 +186,12 @@ linmap_search
       in
         tag
       end else let
-        prval (pf1_at, fpf) = avlnode_v_takeout_val {key,itm} (pf_at)
-        // AS: but this is wrong, no?
-        // when asked for an item, we are giving *them* the node pointer!
-        // assuming that at [p] lies an item, the code is correct
-        val () = res := !p
+        val (
+          pf1_at, fpf | p1
+        ) = avlnode_takeout_val<key,itm> (pf_at | p)
+        val () = res := !p1
         prval () = pf_at := fpf (pf1_at)
-        prval () = opt_some {itm} (res)
+        prval () = opt_some {itm} (res) // [itm] is a t@ype
         prval () = pf := B (pf_at, pf_l, pf_r)
       in
         true // item associated with the key [k0] is found
@@ -552,8 +551,6 @@ linmap_remove (m, k0, cmp) = let
 in
   if p > null then let
     prval Some_v (pf_nod) = pf
-    prval (pf_itm, fpf) = avlnode_v_takeout_val {key,itm} (pf_nod)
-    prval () = pf_nod := fpf {itm?} (pf_itm)
   in
     avlnode_free<key,itm> (pf_nod | p); true
   end else let
@@ -580,9 +577,9 @@ fun foreach
     and p_tl = avlnode_get_left<key,itm> (pf_nod | p_t)
     and p_tr = avlnode_get_right<key,itm> (pf_nod | p_t)
     val () = foreach (pfv, pf_tl | p_tl, env)
-    prval (pf_at, fpf) = avlnode_v_takeout_val {key,itm} (pf_nod)
-    val () = f (pfv | k, !p_t, env)
-    prval () = pf_nod := fpf (pf_at)
+    val (pf_at, fpf | p) = avlnode_takeout_val<key,itm> (pf_nod | p_t)
+    val () = f (pfv | k, !p, env)
+    prval () = pf_nod := fpf {itm} (pf_at)
     val () = foreach (pfv, pf_tr | p_tr, env)
     prval () = pf1 := B (pf_nod, pf_tl, pf_tr)
   in
@@ -631,9 +628,9 @@ fun foreach
     and p_tl = avlnode_get_left<key,itm> (pf_nod | p_t)
     and p_tr = avlnode_get_right<key,itm> (pf_nod | p_t)
     val () = foreach (pfv, pf_tl | p_tl, f)
-    prval (pf_at, fpf) = avlnode_v_takeout_val {key,itm} (pf_nod)
-    val () = f (pfv | k, !p_t)
-    prval () = pf_nod := fpf (pf_at)
+    val (pf_at, fpf | p) = avlnode_takeout_val<key,itm> (pf_nod | p_t)
+    val () = f (pfv | k, !p)
+    prval () = pf_nod := fpf {itm} (pf_at)
     val () = foreach (pfv, pf_tr | p_tr, f)
     prval () = pf1 := B (pf_nod, pf_tl, pf_tr)
   in
@@ -702,8 +699,8 @@ fun _free
     and p_tl = avlnode_get_left<key,itm> (pf_nod | p_t)
     and p_tr = avlnode_get_right<key,itm> (pf_nod | p_t)
     val () = _free (pfv, pf_tl | p_tl, env)
-    prval (pf_at, fpf) = avlnode_v_takeout_val {key,itm} (pf_nod)
-    val () = f (pfv | !p_t, env)
+    val (pf_at, fpf | p) = avlnode_takeout_val<key,itm> (pf_nod | p_t)
+    val () = f (pfv | !p, env)
     prval () = pf_nod := fpf {itm?} (pf_at)
     val () = _free (pfv, pf_tr | p_tr, env)
     val () = avlnode_free<key,itm> (pf_nod | p_t)

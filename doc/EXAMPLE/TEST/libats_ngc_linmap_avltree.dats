@@ -26,7 +26,12 @@ viewtypedef map_vt (key:t@ype, itm:viewt@ype) = map (key, itm)
 typedef
 struct {
   char *value ;
+} node_itm ;
+
+typedef
+struct {
   int key ;
+  char *value ;
   int height ;
   void *left ;
   void *right ;
@@ -41,6 +46,11 @@ ats_void_type
 node_free (ats_ptr_type p) {
   return ATS_FREE(p) ;
 } // end of [node_free]
+
+ats_ptr_type
+node_takeout_val (ats_ptr_type x) {
+  return &(((node_struct*)x)->value) ;
+} // end of [node_takeout_val]
 
 ATSinline()
 ats_int_type node_get_height (ats_ptr_type x) {
@@ -98,9 +108,10 @@ node_set_key (ats_ptr_type x, int k0) {
 
 (* ****** ****** *)
 
-viewtypedef node_itm =
+viewtypedef
+node_itm =
 $extype_struct
-  "node_struct" of {
+  "node_itm" of {
   value= string
 } // end of [node_itm]
 
@@ -115,6 +126,13 @@ extern
 fun node_free
   : avlnode_free_type (int, node_itm) = "node_free"
 implement avlnode_free<int, node_itm> (pf | x) = node_free (pf | x)
+
+(* ****** ****** *)
+
+extern
+fun node_takeout_val
+  : avlnode_takeout_val_type (int, node_itm) = "node_takeout_val"
+implement avlnode_takeout_val<int, node_itm> (pf | x) = node_takeout_val (pf | x)
 
 (* ****** ****** *)
 
@@ -199,11 +217,14 @@ implement main (argc, argv) = let
         val () = assertloc (p > null)
         prval Some_v pfnod = pfopt
         val () = avlnode_set_key<key,itm?> (pfnod | p, key)
-        prval (pfat, fpfnod) = avlnode_v_takeout_val {key,itm?} (pfnod)
-        //
-        val () = p->value := itm
-        //
+//
+        val (
+          pfat, fpfnod | p_itm
+        ) =
+          avlnode_takeout_val<key,itm?> (pfnod | p)
+        val () = p_itm->value := itm
         prval () = pfnod := fpfnod {itm} (pfat)
+//
 (*
         val () = printf ("key = %i and itm = %s\n", @(key, itm))
 *)

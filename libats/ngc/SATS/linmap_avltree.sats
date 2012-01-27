@@ -145,12 +145,27 @@ fun{key:t0p;itm:vt0p} avlnode_set_key : avlnode_set_key_type (key, itm) // speci
 
 (* ****** ****** *)
 
+(*
+//
+// HX: this one assumes too much
+//
 prfun
 avlnode_v_takeout_val
   {key:t0p;itm:vt0p} {h:int} {ll,lr,l0:addr}
   (pf: avlnode_v (key, itm, h, ll, lr, l0))
   : (itm @ l0, {itm:vt0p} itm @ l0 -<lin,prf> avlnode_v (key, itm, h, ll, lr, l0))
 // end of [avlnode_v_takeout_val]
+*)
+typedef
+avlnode_takeout_val_type
+  (key:t0p, itm:vt0p) =
+  {h:int} {ll,lr,l0:addr} (
+  avlnode_v (key, itm, h, ll, lr, l0) | ptr l0
+) -<fun> [l:addr] (
+  itm @ l, {itm:vt0p} itm @ l -<lin,prf> avlnode_v (key, itm, h, ll, lr, l0) | ptr l
+) // end of [avlnode_takeout_val_type]
+
+fun{key:t0p;itm:vt0p} avlnode_takeout_val : avlnode_takeout_val_type (key, itm)
 
 (* ****** ****** *)
 
