@@ -894,10 +894,12 @@ end // end of [linmap_free]
 implement{key,itm}
 linmap_listize (m) = let
   viewtypedef res_t = List_vt @(key, itm)
-  fun aux {c:clr} {bh:nat} .<bh,c>.
-    (t: !rbtree0 (key, itm, c, bh), res: res_t):<> res_t =
+  fun aux
+    {c:clr} {bh:nat} .<bh,c>. (
+    t: !rbtree0 (key, itm, c, bh), res: res_t
+  ) :<> res_t =
     case+ t of
-    | T (_(*c*), k, x, !p_tl, !p_tr) => let
+    | T (c, k, x, !p_tl, !p_tr) => let
         val res = aux (!p_tr, res)
         val res = list_vt_cons ((k, x), res)
         val res = aux (!p_tl, res)
@@ -908,7 +910,7 @@ linmap_listize (m) = let
     | E () => (fold@ (t); res)
   // end of [aux]
 in
-  aux (m, list_vt_nil)
+  aux (m, list_vt_nil ())
 end // end of [linmap_listize]
 
 (* ****** ****** *)
@@ -916,10 +918,12 @@ end // end of [linmap_listize]
 implement{key,itm}
 linmap_listize_free (m) = let
   viewtypedef res_t = List_vt @(key, itm)
-  fun aux {c:clr} {bh:nat} .<bh,c>.
-    (t: rbtree0 (key, itm, c, bh), res: res_t):<> res_t =
+  fun aux
+    {c:clr} {bh:nat} .<bh,c>. (
+    t: rbtree0 (key, itm, c, bh), res: res_t
+  ) :<> res_t =
     case+ t of
-    | ~T (_(*c*), k, x, tl, tr) => let
+    | ~T (c, k, x, tl, tr) => let
         val res = aux (tr, res)
         val res = list_vt_cons ((k, x), res)
         val res = aux (tl, res)
@@ -929,7 +933,7 @@ linmap_listize_free (m) = let
     | ~E () => res
   // end of [aux]
 in
-  aux (m, list_vt_nil)
+  aux (m, list_vt_nil ())
 end // end of [linmap_listize_free]
 
 (* ****** ****** *)
