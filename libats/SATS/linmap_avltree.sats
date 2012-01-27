@@ -118,11 +118,9 @@ linmap_remove (m: &map (key, itm), k0: key, cmp: cmp key):<> bool
 // end of [linmap_remove]
 
 (* ****** ****** *)
-
 //
 // HX: note the [foreach] can be used as [clear]
 //
-
 fun{key:t0p;itm:vt0p}
 linmap_foreach_funenv
   {v:view} {vt:viewtype} (
@@ -149,7 +147,9 @@ linmap_foreach_cloref
 // end of [linmap_foreach_cloref]
 
 (* ****** ****** *)
-
+//
+// HX: [clear] is based on [foreach]
+//
 fun{
 key:t0p;itm:vt0p
 } linmap_clear_funenv
@@ -161,10 +161,9 @@ key:t0p;itm:vt0p
 ) : void // end of [linmap_clear_funenv]
 
 (* ****** ****** *)
-
+//
 fun{key:t0p;itm:t0p}
 linmap_free (m: map (key, itm)):<> void
-
 //
 // HX: a linear map can be properly freed only if it is empty
 //
