@@ -606,6 +606,27 @@ end // end of [linmap_foreach_cloref]
 (* ****** ****** *)
 
 implement{key,itm}
+linmap_clear_funenv
+  {v} {vt} (
+  pfv | m, f, env
+) = let
+  typedef FT1 = (!v | key, &itm >> itm?, !vt) -<fun> void
+  typedef FT2 = (!v | key, &itm >> itm , !vt) -<fun> void
+  val () = let
+    extern castfn __cast (f: FT1):<> FT2
+  in
+    linmap_foreach_funenv (pfv | m, __cast(f), env)
+  end // end of [val]
+  prval () = __assert (m) where {
+    extern praxi __assert (m: !map (key, itm) >> map (key, itm?)): void
+  } // end of [val]
+in
+  // nothing
+end // end of [linmap_clear_funenv]
+
+(* ****** ****** *)
+
+implement{key,itm}
 linmap_free (m) = _free (m) where {
   fun _free {h:nat} .<h>.
     (t: avltree (key, itm, h)):<> void = case+ t of
@@ -623,32 +644,7 @@ linmap_free_vt (m) = let
   | E () => false where {
       prval () = opt_none {VT} (m)
     } // end of [E]
-end // end of [linmap_free]
-
-implement{key,itm}
-linmap_free_funenv
-  {v}{vt} (
-  pfv | m, f, env
-) = let
-//
-fun _free
-  {h:nat} .<h>. (
-  pfv: !v
-| t: avltree (key, itm, h)
-, env: !vt
-) :<cloref> void =
-  case+ t of
-  | B (_, _, !p_x, tl, tr) => let
-      val () = f (pfv | !p_x, env)
-      val () = free@ {key,itm}{0,0} (t)
-    in
-      _free (pfv | tl, env); _free (pfv | tr, env)
-    end // end of [B]
-  | ~E () => ()
-// end of [_free]
-in
-  _free (pfv | m, env)
-end // end of [linmap_free_funenv]
+end // end of [linmap_free_vt]
 
 (* ****** ****** *)
 //

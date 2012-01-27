@@ -84,6 +84,11 @@ linheap_merge (
 fun{a:t@ype}
 linheap_free (hp: heap (a)):<> void
 
+fun{a:vt0p}
+linheap_free_vt (
+  hp: !heap(a) >> opt (heap(a), b)
+) :<> #[b:bool] bool b(*~freed*) // end of [linheap_free_vt]
+
 (* ****** ****** *)
 
 (* end of [linheap_binomial.sats] *)

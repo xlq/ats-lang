@@ -147,7 +147,7 @@ fun{key:t0p;itm:vt0p} avlnode_set_key : avlnode_set_key_type (key, itm) // speci
 
 (*
 //
-// HX: this one assumes too much
+// HX: this one requires that [itm] be the first field
 //
 prfun
 avlnode_v_takeout_val
@@ -288,19 +288,9 @@ key:t0p;itm:vt0p
 ) :<> void // end of [linmap_clear_funenv]
 //
 (* ****** ****** *)
-
+//
 fun{key:t0p;itm:t0p}
 linmap_free (m: map (key, itm)):<> void
-
-fun{
-key:t0p;itm:vt0p
-} linmap_free_funenv
-  {v:view} {vt:viewtype} (
-  pfv: !v
-| m: map (key, itm), f: (!v | &itm >> itm?, !vt) -<fun> void
-, env: !vt
-) :<> void // end of [linmap_free_funenv]
-
 //
 // AS: frees the map if it is empty
 //

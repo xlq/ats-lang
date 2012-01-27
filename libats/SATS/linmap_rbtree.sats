@@ -157,9 +157,20 @@ linmap_foreach_cloref
 
 (* ****** ****** *)
 
+fun{
+key:t0p;itm:vt0p
+} linmap_clear_funenv
+  {v:view}{vt:viewtype} (
+  pfv: !v
+| m: !map (key, itm) >> map (key, itm?)
+, f: (!v | key, &itm >> itm?, !vt) -<fun> void
+, env: !vt
+) : void // end of [linmap_clear_funenv]
+
+(* ****** ****** *)
+//
 fun{key:t0p;itm:t0p}
 linmap_free (m: map (key, itm)):<> void
-
 //
 // HX: a linear map can be properly freed only if it is empty
 //
@@ -168,16 +179,6 @@ key:t0p;itm:vt0p
 } linmap_free_vt (
   m: !map (key, itm) >> opt (map (key, itm), b)
 ) :<> #[b:bool] bool b(*~freed*) // end of [linmap_free_vt]
-
-fun{
-key:t0p;itm:vt0p
-} linmap_free_funenv
-  {v:view}{vt:viewtype} (
-  pfv: !v
-| m: map (key, itm)
-, f: (!v | &itm >> itm?, !vt) -<fun> void
-, env: !vt
-) : void // end of [linmap_free_funenv]
 
 (* ****** ****** *)
 

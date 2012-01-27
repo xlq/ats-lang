@@ -662,48 +662,26 @@ linmap_clear_funenv
   } // end of [val]
 in
   // nothing
-end // end of [linmap_cforeach_funenv]
+end // end of [linmap_clear_funenv]
 
 (* ****** ****** *)
 
 implement{key,itm}
 linmap_free (m) = let
-  prval pfu = unit_v ()
-  val () =
-    linmap_free_funenv<key,itm>
-    {unit_v} {ptr} (
-    pfu | m, lam (pf | x, env) => (), null
-  ) // end of [val]
-  prval unit_v () = pfu
-in
-  // nothing
-end // end of [linmap_free]
-
-(* ****** ****** *)
-
-implement{key,itm}
-linmap_free_funenv
-  {v} {vt} (
-  pfv | m, f, env
-) = let
+//
+// HX: freeing is done in the inord fashion
 //
 fun _free
   {h:nat} {l:addr} .<h>. (
-  pfv: !v
-, pf1: avltree_v (key, itm, h, l)
-| p_t: ptr l, env: !vt
+  pf1: avltree_v (key, itm, h, l) | p_t: ptr l
 ) :<cloref> void =
   if p_t > null then let
     prval B (pf_nod, pf_tl, pf_tr) = pf1
-    val k = avlnode_get_key<key,itm> (pf_nod | p_t)
-    and p_tl = avlnode_get_left<key,itm> (pf_nod | p_t)
+    val p_tl = avlnode_get_left<key,itm> (pf_nod | p_t)
     and p_tr = avlnode_get_right<key,itm> (pf_nod | p_t)
-    val () = _free (pfv, pf_tl | p_tl, env)
-    val (pf_at, fpf | p) = avlnode_takeout_val<key,itm> (pf_nod | p_t)
-    val () = f (pfv | !p, env)
-    prval () = pf_nod := fpf {itm?} (pf_at)
-    val () = _free (pfv, pf_tr | p_tr, env)
     val () = avlnode_free<key,itm> (pf_nod | p_t)
+    val () = _free (pf_tl | p_tl)
+    and () = _free (pf_tr | p_tr)
   in
     // nothing
   end else let
@@ -713,8 +691,10 @@ fun _free
   end // end of [if]
 // end of [_free]
 in
-  _free (pfv, m.0 | m.1, env)
-end // end of [linmap_free_funenv]
+  _free (m.0 | m.1)
+end // end of [linmap_free]
+
+(* ****** ****** *)
 
 implement{key,itm}
 linmap_free_vt (m) =

@@ -502,4 +502,19 @@ linheap_free (hp) = bheap_free (hp)
 
 (* ****** ****** *)
 
+implement{a}
+linheap_free_vt (hp) = let
+  viewtypedef VT = heap (a) in
+  case+ hp of
+  | bheap_cons
+      (pf | _, _) => true where {
+      prval () = fold@ (hp); prval () = opt_some {VT} (hp)
+    } // end of [B]
+  | bheap_nil () => false where {
+      prval () = opt_none {VT} (hp)
+    } // end of [E]
+end // end of [linheap_free_vt]
+
+(* ****** ****** *)
+
 (* end of [linheap_binomail.dats] *)
