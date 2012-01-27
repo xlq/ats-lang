@@ -82,6 +82,17 @@ A #ulink("http://cs-people.bu.edu/md/ats-mode/", "mode") for editing ATS source 
 
 #menu('\
 #lisub("\
+#strong("BU CAS CS 511:")
+ATS is employed
+primarily as a programming language advocating formal specification and verification:
+#para("")
+#menu('\
+#litxt(#ulink("http://www.cs.bu.edu/~hwxi/academic/courses/Spring12/CS511.html", "Spring\'12"))
+')#comment("menu")
+#para("")
+")#comment("lisub")
+
+#lisub("\
 #strong("BU CAS CS 520:")
 Many advanced features in ATS such as dependent types and linear types are
 presented in this graduate-level course:

@@ -56,38 +56,20 @@ sortdef t0p = t@ype and vt0p = viewt@ype
 
 (* ****** ****** *)
 
-(*
-viewtypedef avlnode (
-  key:t0p, itm:vt0p, h:int, ll:addr, lr:addr
-) = @{
-  key= key, itm= itm
-, hgt= int h, lft= ptr ll, rgt= ptr lr
-} // end of [avlnode]
-
-viewdef
-*)
-
 absview
 avlnode_v (
-  key:t0p, itm:vt0p, h:int
-, ll:addr, lr:addr, l:addr
-) // = avlnode (key, itm, h, ll, lr) @ l
-// end of [avlnode_v]
+  key:t@ype
+, itm:viewt@ype+
+, h:int
+, ll:addr, lr:addr
+, l:addr
+) // end of [avlnode_v]
 
 viewdef
 avlnode_v (
   key:t0p, itm:vt0p, l0:addr
 ) = [h:int] [ll,lr:addr] avlnode_v (key, itm, h, ll, lr, l0)
 // end of [avlnode_v]
-
-(*
-viewtypedef avlnode (
-  key:t0p, itm:vt0p
-) = @{
-  key= key, itm= itm
-, hgt= int?, lft= ptr?, rgt= ptr?
-} // end of [avlnode]
-*)
 
 prfun
 avlnode_ptr_is_gtz
@@ -213,10 +195,10 @@ fun{} linmap_isnot_nil {key:t0p;itm:vt0p} (m: !map (key, itm)):<> bool
 //
 fun{key:t0p;itm:vt0p}
 linmap_size (m: !map (key, itm)):<> size_t
-
-// this function is O(1) // for gathering stats
+//
+// HX: this function is O(1) // for gathering stats
 fun{key:t0p;itm:vt0p} linmap_height (m: !map (key, itm)):<> Nat
-
+//
 (* ****** ****** *)
 
 fun{key:t0p;itm:t0p}
@@ -226,14 +208,17 @@ linmap_search (
 ) :<> #[b:bool] bool b // end of [linmap_search]
 
 (* ****** ****** *)
-
-// if [p0->key] occurs in [m], [p0->itm] replaces the original value associated
+//
+// AS:
+// if [p0->key] occurs in [m], [p0] replaces the original node associated
 // with [p0->key]
+//
 fun{key:t0p;itm:vt0p}
 linmap_insert {l_at:addr} (
-  pf_at: !avlnode_v (key, itm, l_at) >> option_v (avlnode_v (key, itm, l_at), b)
-| m: &map (key, itm), p0: ptr l_at, cmp: cmp key
-) :<> #[b:bool] bool (b) // end of [linmap_insert]
+  pf_at: !avlnode_v (key, itm, l_at)
+     >> option_v (avlnode_v (key, itm, l_at1), b)
+| m: &map (key, itm), p0: &ptr l_at >> ptr l_at1, cmp: cmp key
+) :<> #[b:bool;l_at1:addr] bool (b) // end of [linmap_insert]
 
 (* ****** ****** *)
 
@@ -259,17 +244,34 @@ linmap_foreach_funenv
 , env: !vt
 ) :<> void // end of [linmap_foreach_funenv]
 
-fun{key:t0p;itm:vt0p}
-linmap_foreach_fun (
+fun{
+key:t0p;itm:vt0p
+} linmap_foreach_fun (
   m: !map (key, itm), f: (key, &itm) -<fun> void
 ) :<> void // end of [linmap_foreach_fun]
 
-fun{key:t0p;itm:vt0p}
-linmap_foreach_vclo {v:view} (
+fun{
+key:t0p;itm:vt0p
+} linmap_foreach_vclo {v:view} (
   pf: !v
 | m: !map (key, itm), f: &(!v | key, &itm) -<clo> void
 ) :<> void // end of [linmap_foreach_vclo]
 
+(* ****** ****** *)
+//
+// AS: clearing a map
+// the same as [foreach] in terms of functionality
+//
+fun{
+key:t0p;itm:vt0p
+} linmap_clear_funenv
+  {v:view} {vt:viewtype} (
+  pf: !v
+| m: !map (key, itm) >> map (key, itm?)
+, f: (!v | key, &itm >> itm?, !vt) -<fun> void
+, env: !vt
+) :<> void // end of [linmap_clear_funenv]
+//
 (* ****** ****** *)
 
 fun{key:t0p;itm:t0p}
@@ -283,6 +285,15 @@ key:t0p;itm:vt0p
 | m: map (key, itm), f: (!v | &itm >> itm?, !vt) -<fun> void
 , env: !vt
 ) :<> void // end of [linmap_free_funenv]
+
+//
+// AS: frees the map if it is empty
+//
+fun{
+key:t0p;itm:vt0p
+} linmap_free_vt (
+  m: !map (key, itm) >> opt (map (key, itm), b)
+) :<> #[b:bool] bool b(*~freed*) // end of [linmap_free_vt]
 
 (* ****** ****** *)
 

@@ -74,7 +74,10 @@ compare_key_key (x1, x2, cmp) = cmp (x1, x2)
 
 dataview
 avltree_v (
-  key:t@ype, itm:viewt@ype+, int(*height*), addr(*self*)
+  key:t@ype
+, itm:viewt@ype+
+, int(*height*)
+, addr(*self*)
 ) =
   | {ll,lr:addr}
     {hl,hr:nat | hl <= hr+HTDF; hr <= hl+HTDF}
@@ -101,8 +104,9 @@ avltree_v_dec (key:t@ype, itm:viewt@ype, h:int, l:addr) =
 (* ****** ****** *)
 
 assume
-map_t0ype_viewt0ype_type
-  (key:t@ype, itm:viewt@ype) = [l:addr] [h:nat] (avltree_v (key, itm, h, l) | ptr l)
+map_t0ype_viewt0ype_type (
+  key:t@ype, itm:viewt@ype
+) = [l:addr] [h:nat] (avltree_v (key, itm, h, l) | ptr l)
 // end of [map_t0ype_viewt0ype_type]
 
 (* ****** ****** *)
@@ -112,13 +116,13 @@ implement{} linmap_make_nil () = (E () | null)
 (* ****** ****** *)
 
 implement{} linmap_is_nil (t) = t.1 = null
-
 implement{} linmap_isnot_nil (t) = t.1 > null
 
 (* ****** ****** *)
 
 implement{key,itm}
-linmap_size (t) = size (t.0 | t.1) where {
+linmap_size (t) =
+  size (t.0 | t.1) where {
   fun size {h:nat} {l:addr} .<h>. (
     pf: !avltree_v (key, itm, h, l)
   | p: ptr l
@@ -183,6 +187,9 @@ linmap_search
         tag
       end else let
         prval (pf1_at, fpf) = avlnode_v_takeout_val {key,itm} (pf_at)
+        // AS: but this is wrong, no?
+        // when asked for an item, we are giving *them* the node pointer!
+        // assuming that at [p] lies an item, the code is correct
         val () = res := !p
         prval () = pf_at := fpf (pf1_at)
         prval () = opt_some {itm} (res)
@@ -303,9 +310,9 @@ linmap_insert {l} (pf_nod | m, p, cmp) = let
 //
 fun insert {l_at,l_t:addr} {h:nat} .<h>. (
   pf_t: !avltree_v (key, itm, h, l_t) >> avltree_v_inc (key, itm, h, l_t1)
-, pf_at: !avlnode_v (key, itm, l_at) >> option_v (avlnode_v (key, itm, l_at), b)
-| p0: ptr l_at, p: &ptr l_t >> ptr l_t1, cmp: cmp key
-) :<> #[b:bool;l_t1:addr] bool b =
+, pf_at: !avlnode_v (key, itm, l_at) >> option_v (avlnode_v (key, itm, l_at1), b)
+| p0: &ptr l_at >> ptr l_at1, p: &ptr l_t >> ptr l_t1, cmp: cmp key
+) :<> #[b:bool;l_t1,l_at1:addr] bool b =
   if p > null then let
     prval B (pf1_at, pf_tl, pf_tr) = pf_t
     val sgn = compare_key_key
@@ -353,18 +360,16 @@ fun insert {l_at,l_t:addr} {h:nat} .<h>. (
         ans
       end // end of [if]
     end else let (* key already exists *)
-      // swap the two items
-      // TODO: perhaps swapping two pointers to the corresponding nodes
-      // is better?
-      prval (pf1_itm, fpf1) = avlnode_v_takeout_val {key,itm} (pf_at)
-      prval (pf2_itm, fpf2) = avlnode_v_takeout_val {key,itm} (pf1_at)
-      val tmp = !p0
-      val () = !p0 := !p
-      val () = !p := tmp
-      prval () = pf_at := fpf1 (pf1_itm)
-      prval () = pf1_at := fpf2 (pf2_itm)
-      prval () = pf_t := B (pf1_at, pf_tl, pf_tr)
-      prval () = pf_at := Some_v (pf_at)
+      // swap the two nodes
+      val () = avlnode_set_height<key,itm> (pf_at | p0, avlnode_get_height<key,itm> (pf1_at | p))
+      val () = avlnode_set_left<key,itm> (pf_at | p0, avlnode_get_left<key,itm> (pf1_at | p))
+      val () = avlnode_set_right<key,itm> (pf_at | p0, avlnode_get_right<key,itm> (pf1_at | p))
+      val tmp = p
+      val () = p := p0
+      val () = p0 := tmp
+      prval () = avlnode_ptr_is_gtz (pf_at)
+      prval () = pf_t := B (pf_at, pf_tl, pf_tr)
+      prval () = pf_at := Some_v (pf1_at)
     in
       true // B (h, k, x0, tl, tr)
     end // end of [if]
@@ -644,6 +649,27 @@ fun foreach
 (* ****** ****** *)
 
 implement{key,itm}
+linmap_clear_funenv
+  {v} {vt} (
+  pfv | m, f, env
+) = let
+  typedef FT1 = (!v | key, &itm >> itm?, !vt) -<fun> void
+  typedef FT2 = (!v | key, &itm >> itm , !vt) -<fun> void
+  val () = let
+    extern castfn __cast (f: FT1):<> FT2
+  in
+    linmap_foreach_funenv (pfv | m, __cast(f), env)
+  end // end of [val]
+  prval () = __assert (m) where {
+    extern praxi __assert (m: !map (key, itm) >> map (key, itm?)): void
+  } // end of [val]
+in
+  // nothing
+end // end of [linmap_cforeach_funenv]
+
+(* ****** ****** *)
+
+implement{key,itm}
 linmap_free (m) = let
   prval pfu = unit_v ()
   val () =
@@ -692,6 +718,20 @@ fun _free
 in
   _free (pfv, m.0 | m.1, env)
 end // end of [linmap_free_funenv]
+
+implement{key,itm}
+linmap_free_vt (m) =
+  if m.1 > null then let
+    prval () = opt_some {map (key, itm)} (m)
+  in
+    true
+  end else let // m.1 = null
+    prval E () = m.0
+    prval () = opt_none {map (key, itm)} (m)
+  in
+    false
+  end // end of [if]
+// end of [linmap_free_vt]
 
 (* ****** ****** *)
 

@@ -204,12 +204,14 @@ implement main (argc, argv) = let
         val () = p->value := itm
         //
         prval () = pfnod := fpfnod {itm} (pfat)
-        // val () = printf ("key = %i and itm = %s\n", @(key, itm))
+(*
+        val () = printf ("key = %i and itm = %s\n", @(key, itm))
+*)
+        var p = p
+        val found = linmap_insert<key,itm> (pfnod | map, p, cmp)
       in
-        if linmap_insert<key,itm> (pfnod | map, p, cmp) then let
+        if found then let
           prval Some_v pfat = pfnod
-          prval (pf1at, fpfat) = avlnode_v_takeout_val {key,itm} (pfat)
-          prval () = pfat := fpfat {itm?} (pf1at)
         in
           avlnode_free<key,itm> (pfat | p)
         end else let
