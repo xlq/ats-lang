@@ -646,6 +646,39 @@ fun foreach
 (* ****** ****** *)
 
 implement{key,itm}
+linmap_rforeach_funenv {v} {vt}
+  (pf | m, f, env) =
+  rforeach (pf, m.0 | m.1, env) where {
+//
+fun rforeach
+  {h:nat} {l:addr} .<h>. (
+  pfv: !v
+, pf1: !avltree_v (key, itm, h, l)
+| p_t: ptr l, env: !vt
+) :<cloref> void =
+  if p_t > null then let
+    prval B (pf_nod, pf_tl, pf_tr) = pf1
+    val k = avlnode_get_key<key,itm> (pf_nod | p_t)
+    and p_tl = avlnode_get_left<key,itm> (pf_nod | p_t)
+    and p_tr = avlnode_get_right<key,itm> (pf_nod | p_t)
+    val () = rforeach (pfv, pf_tr | p_tr, env)
+    val (pf_at, fpf | p) = avlnode_takeout_val<key,itm> (pf_nod | p_t)
+    val () = f (pfv | k, !p, env)
+    prval () = pf_nod := fpf {itm} (pf_at)
+    val () = rforeach (pfv, pf_tl | p_tl, env)
+    prval () = pf1 := B (pf_nod, pf_tl, pf_tr)
+  in
+    // nothing
+  end else let
+    prval E () = pf1; prval () = pf1 := E () in
+    // nothing
+  end // end of [if]
+// end of [rforeach]
+} // end of [linmap_rforeach_funenv]
+
+(* ****** ****** *)
+
+implement{key,itm}
 linmap_clear_funenv
   {v} {vt} (
   pfv | m, f, env

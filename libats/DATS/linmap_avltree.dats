@@ -605,6 +605,28 @@ end // end of [linmap_foreach_cloref]
 
 (* ****** ****** *)
 
+(*
+fun{key,itm:t@ype}
+linmap_rforeach_funenv {v:view} {vt:viewtype}
+  (pf: !v | m: map (key, itm), f: (!v | key, itm, !vt) -<clo> void, env: !vt):<> void
+// end of [linmap_rforeach_funenv]
+*)
+
+implement{key,itm}
+linmap_rforeach_funenv {v} {vt}
+  (pf | m, f, env) = rforeach (pf | m, env) where {
+  fun rforeach {h:nat} .<h>.
+    (pf: !v | t: !avltree (key, itm, h), env: !vt):<cloref> void =
+    case+ t of
+    | B (_(*h*), !p_k, !p_x, !p_tl, !p_tr) => begin
+        rforeach (pf | !p_tr, env); f (pf | !p_k, !p_x, env); rforeach (pf | !p_tl, env); fold@ (t)
+      end // end of [B]
+    | E () => fold@ (t)
+  // end of [rforeach]
+} // end of [linmap_rforeach_funenv]
+
+(* ****** ****** *)
+
 implement{key,itm}
 linmap_clear_funenv
   {v} {vt} (

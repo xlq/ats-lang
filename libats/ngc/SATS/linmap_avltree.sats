@@ -250,8 +250,9 @@ linmap_remove (m: &map (key, itm), k0: key, cmp: cmp key):<> bool
 
 (* ****** ****** *)
 
-fun{key:t0p;itm:vt0p}
-linmap_foreach_funenv
+fun{
+key:t0p;itm:vt0p
+} linmap_foreach_funenv
   {v:view} {vt:viewtype} (
   pf: !v
 | m: !map (key, itm)
@@ -273,9 +274,20 @@ key:t0p;itm:vt0p
 ) :<> void // end of [linmap_foreach_vclo]
 
 (* ****** ****** *)
+
+fun{
+key:t0p;itm:vt0p
+} linmap_rforeach_funenv
+  {v:view} {vt:viewtype} (
+  pf: !v
+| m: !map (key, itm)
+, f: (!v | key, &itm, !vt) -<fun> void
+, env: !vt
+) :<> void // end of [linmap_rforeach_funenv]
+
+(* ****** ****** *)
 //
-// AS: clearing a map
-// the same as [foreach] in terms of functionality
+// AS: clearing a map based on [foreach]
 //
 fun{
 key:t0p;itm:vt0p

@@ -155,6 +155,19 @@ linmap_foreach_cloref
 
 (* ****** ****** *)
 //
+// HX: [foreach] in the reverse order
+//
+fun{key:t0p;itm:vt0p}
+linmap_rforeach_funenv
+  {v:view} {vt:viewtype} (
+  pf: !v
+| m: !map (key, itm)
+, f: (!v | key, &itm, !vt) -<fun> void
+, env: !vt
+) :<> void // end of [linmap_rforeach_funenv]
+
+(* ****** ****** *)
+//
 // HX: [clear] is based on [foreach]
 //
 fun{
