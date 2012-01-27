@@ -633,6 +633,13 @@ fn p2at_con_tr_dn (
     end (* end of [_ when flag = 0] *)
   | _ (*flag<>0*) => let // s2e0 = S2Edatuni (...)
       val s2es_arg = (s2es_arg_var: s2explst)
+//
+(*
+      val () = (
+        print "p2at_con_tr_dn: s2es_arg = "; print_s2explst s2es_arg; print_newline ()
+      ) // end of [val]
+*)
+//
       val [sgn:int] sgn = $Lst.list_length_compare (p2ts, s2es_arg)
       val () = (if sgn <> 0 then begin
         prerr_loc_interror loc0;

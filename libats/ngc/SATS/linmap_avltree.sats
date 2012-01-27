@@ -88,9 +88,9 @@ fun{key:t0p;itm:vt0p} avlnode_get_height : avlnode_get_height_type (key, itm) //
 
 typedef
 avlnode_set_height_type
-  (key:t0p, itm:vt0p) = {h1,h2:int} {ll,lr,l0:addr} (
-  !avlnode_v (key, itm, h1, ll, lr, l0) >> avlnode_v (key, itm, h2, ll, lr, l0)
-| ptr l0, int h2
+  (key:t0p, itm:vt0p) = {h,h1:int} {ll,lr,l0:addr} (
+  !avlnode_v (key, itm, h, ll, lr, l0) >> avlnode_v (key, itm, h1, ll, lr, l0)
+| ptr l0, int h1
 ) -<fun> void // end of [avlnode_set_height_type]
 fun{key:t0p;itm:vt0p} avlnode_set_height : avlnode_set_height_type (key, itm) // specific
 
@@ -103,9 +103,9 @@ fun{key:t0p;itm:vt0p} avlnode_get_left : avlnode_get_left_type (key, itm) // spe
 
 typedef
 avlnode_set_left_type
-  (key:t0p, itm:vt0p) = {h:int} {ll,lr,l0,l1:addr} (
-  !avlnode_v (key, itm, h, ll, lr, l0) >> avlnode_v (key, itm, h, l1, lr, l0)
-| ptr l0, ptr l1
+  (key:t0p, itm:vt0p) = {h:int} {ll,lr,l0,ll1:addr} (
+  !avlnode_v (key, itm, h, ll, lr, l0) >> avlnode_v (key, itm, h, ll1, lr, l0)
+| ptr l0, ptr ll1
 ) -<fun> void // end of [avlnode_set_left_type]
 fun{key:t0p;itm:vt0p} avlnode_set_left : avlnode_set_left_type (key, itm) // specific
 
@@ -119,9 +119,9 @@ fun{key:t0p;itm:vt0p} avlnode_get_right : avlnode_get_right_type (key, itm) // s
 
 typedef
 avlnode_set_right_type
-  (key:t0p, itm:vt0p) = {h:int} {ll,lr,l0,l1:addr} (
-  !avlnode_v (key, itm, h, ll, lr, l0) >> avlnode_v (key, itm, h, ll, l1, l0)
-| ptr l0, ptr l1
+  (key:t0p, itm:vt0p) = {h:int} {ll,lr,l0,lr1:addr} (
+  !avlnode_v (key, itm, h, ll, lr, l0) >> avlnode_v (key, itm, h, ll, lr1, l0)
+| ptr l0, ptr lr1
 ) -<fun> void // end of [avlnode_set_right_type]
 fun{key:t0p;itm:vt0p} avlnode_set_right : avlnode_set_right_type (key, itm) // specific
 
@@ -190,10 +190,10 @@ stadef map = map_t0ype_viewt0ype_type
 
 (* ****** ****** *)
 
-typedef cmp (key:t0p) = (key, key) -<cloref> Sgn
+typedef cmp (key:t0p) = (key, key) -<cloref> int
 
 fun{key:t0p}
-compare_key_key (x1: key, x2: key, cmp: cmp key):<> Sgn
+compare_key_key (x1: key, x2: key, cmp: cmp key):<> int
 
 (* ****** ****** *)
 
