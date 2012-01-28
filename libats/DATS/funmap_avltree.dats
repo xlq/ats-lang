@@ -493,6 +493,29 @@ end // end of [funmap_foreach_cloref]
 
 (* ****** ****** *)
 
+(*
+fun{key,itm:t@ype}
+funmap_rforeach_funenv
+  {v:view} {vt:viewtype} (
+  pf: !v | m: map (key, itm), f: (!v | key, itm, !vt) -<clo> void, env: !vt
+) :<> void // end of [funmap_rforeach_funenv]
+*)
+
+implement{key,itm}
+funmap_rforeach_funenv {v} {vt}
+  (pf | m, f, env) = rforeach (pf | m, env) where {
+  fun rforeach {h:nat} .<h>.
+    (pf: !v | t: avltree (key, itm, h), env: !vt):<cloref> void =
+    case+ t of
+    | B (_(*h*), k, x, tl, tr) => begin
+        rforeach (pf | tr, env); f (pf | k, x, env); rforeach (pf | tl, env)
+      end // end of [B]
+    | E () => ()
+  // end of [rforeach]
+} // end of [funmap_rforeach_funenv]
+
+(* ****** ****** *)
+
 implement{key,itm}
 funmap_listize (xs) = let
   typedef keyitm = @(key, itm)

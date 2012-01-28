@@ -165,6 +165,17 @@ funmap_foreach_cloref (
 (* ****** ****** *)
 
 fun{key,itm:t@ype}
+funmap_rforeach_funenv
+  {v:view} {vt:viewtype} (
+  pf: !v 
+| xs: map (key, itm)
+, f: (!v | key, itm, !vt) -<fun> void
+, env: !vt
+) :<> void // end of [funmap_rforeach_funenv]
+
+(* ****** ****** *)
+
+fun{key,itm:t@ype}
 funmap_listize (xs: map (key, itm)):<> List_vt @(key, itm)
 
 (* ****** ****** *)

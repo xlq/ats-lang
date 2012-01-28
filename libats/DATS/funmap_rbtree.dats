@@ -606,6 +606,22 @@ end // end of [funmap_foreach_cloref]
 (* ****** ****** *)
 
 implement{key,itm}
+funmap_rforeach_funenv {v} {vt}
+  (pf | m, f, env) = rforeach (pf | m, env) where {
+  fun rforeach
+    {c:clr} {bh:nat} {u:nat} .<bh,c+u>.
+    (pf: !v | t: rbtree (key, itm, c, bh, u), env: !vt):<cloref> void =
+    case+ t of
+    | T (_(*c*), k, x, tl, tr) => (
+        rforeach (pf | tr, env); f (pf | k, x, env); rforeach (pf | tl, env)
+      ) // end of [T]
+    | E () => ()
+  // end of [rforeach]
+} // end of [funmap_rforeach_funenv]
+
+(* ****** ****** *)
+
+implement{key,itm}
 funmap_listize (xs) = let
   typedef keyitm = @(key, itm)
   viewtypedef res_vt = List_vt keyitm
