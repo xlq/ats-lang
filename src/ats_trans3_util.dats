@@ -242,6 +242,19 @@ d2exp_typ_syn (d2e0) = begin
   | D2Eann_type (_, s2e) => s2e
   | D2Eann_seff (d2e, _) => d2exp_typ_syn (d2e)
   | D2Eann_funclo (d2e, _) => d2exp_typ_syn (d2e)
+//
+  | D2Earrsize (opt, d2es) => let
+      val loc0 = d2e0.d2exp_loc
+      val sz = $Lst.list_length d2es
+      val s2e_elt = (case+ opt of
+        | Some s2e => s2e | None () => let
+            val s2t = s2rt_t0ype in s2exp_Var_make_srt (loc0, s2t)
+          end // end of [None]
+      ) : s2exp // end of [val]
+    in
+      s2exp_arraysize_viewt0ype_int_viewt0ype (s2e_elt, sz)
+    end // end of [D2Earrsz]
+//
   | D2Eassgn _ => s2exp_void_t0ype ()
   | D2Echar _ => s2exp_char_t0ype ()
   | D2Ecst d2c => d2cst_get_typ d2c

@@ -163,7 +163,8 @@ fun mpz_set_str_exn
 symintr mpz_init_set
 
 // x := y
-fun mpz_init_set_mpz (x: &mpz_vt? >> mpz_vt, y: &mpz_vt):<> void
+fun mpz_init_set_mpz
+  (x: &mpz_vt? >> mpz_vt, y: &mpz_vt):<> void
   = "mac#atslib_mpz_init_set_mpz"
 overload mpz_init_set with mpz_init_set_mpz
 fun mpz_init_set_int (x: &mpz_vt? >> mpz_vt, y: int):<> void

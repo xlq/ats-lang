@@ -145,7 +145,6 @@ end // end of [prerr_staerr_funclo_equal]
 fn prerr_staerr_s2exp_tyleq
   (loc: loc_t, s2e1: s2exp, s2e2: s2exp): void = begin
   prerr_loc_error3 (loc);
-  $Deb.debug_prerrf (": %s: s2exp_tyleq_solve", @(THISFILENAME));
   prerr ": mismatch of static terms (tyleq):\n";
   prerr "The needed term is: "; pprerr_s2exp s2e2; prerr_newline ();
   prerr "The actual term is: "; pprerr_s2exp s2e1; prerr_newline ();
@@ -154,7 +153,6 @@ end // end of [prerr_staerr_s2exp_tyleq]
 fn prerr_staerr_s2exp_equal
   (loc: loc_t, s2e1: s2exp, s2e2: s2exp): void = begin
   prerr_loc_error3 (loc);
-  $Deb.debug_prerrf (": %s: s2exp_equal_solve", @(THISFILENAME));
   prerr ": mismatch of static terms (equal):\n";
   prerr "The needed term is: "; pprerr_s2exp s2e2; prerr_newline ();
   prerr "The actual term is: "; pprerr_s2exp s2e1; prerr_newline ();
@@ -163,7 +161,6 @@ end // end of [prerr_staerr_s2exp_equal]
 fn prerr_staerr_s2eff_leq
   (loc: loc_t, s2fe1: s2eff, s2fe2: s2eff): void = begin
   prerr_loc_error3 (loc);
-  $Deb.debug_prerrf (": %s: s2exp_equal_solve", @(THISFILENAME));
   prerr ": mismatch of effects:\n";
   prerr "The needed term is: "; prerr_s2eff s2fe2; prerr_newline ();
   prerr "The actual term is: "; prerr_s2eff s2fe1; prerr_newline ();  
@@ -172,28 +169,32 @@ end // end of [prerr_staerr_s2eff_leq]
 fn prerr_staerr_s2exp_linearity
   (loc: loc_t, s2e: s2exp): void = begin
   prerr_loc_error3 (loc);
-  $Deb.debug_prerrf (": %s: s2exp_equal_solve", @(THISFILENAME));
   prerr ": mismatch of linearity:\n";
   prerr "A nonlinear term is needed: "; pprerr_s2exp s2e; prerr_newline ();
 end // end of [prerr_staerr_s2exp_linearity]
 
 fn prerr_the_staerrlst () = let
-  fun loop (xs: staerrlst_vt): void = case+ xs of
-    | ~list_vt_cons (x, xs) => let
-        val () = case+ x of
-        | STAERR_funclo_equal (loc, fc1, fc2) => prerr_staerr_funclo_equal (loc, fc1, fc2)
-        | STAERR_s2exp_equal (loc, s2e1, s2e2) => prerr_staerr_s2exp_equal (loc, s2e1, s2e2)
-        | STAERR_s2exp_tyleq (loc, s2e1, s2e2) => prerr_staerr_s2exp_tyleq (loc, s2e1, s2e2)
-        | STAERR_s2eff_leq (loc, s2fe1, s2fe2) => prerr_staerr_s2eff_leq (loc, s2fe1, s2fe2)
-        | STAERR_s2exp_linearity (loc, s2e) => prerr_staerr_s2exp_linearity (loc, s2e)
-        // end of [case] // end of [val]
-      in
-        loop (xs)
-      end // end of [list_vt_cons]
-    | ~list_vt_nil () => ()
-  // end of [loop]
+//
+fun loop (
+  xs: staerrlst_vt
+) : void = case+ xs of
+  | ~list_vt_cons (x, xs) => let
+      val () = (case+ x of
+      | STAERR_funclo_equal (loc, fc1, fc2) => prerr_staerr_funclo_equal (loc, fc1, fc2)
+      | STAERR_s2exp_equal (loc, s2e1, s2e2) => prerr_staerr_s2exp_equal (loc, s2e1, s2e2)
+      | STAERR_s2exp_tyleq (loc, s2e1, s2e2) => prerr_staerr_s2exp_tyleq (loc, s2e1, s2e2)
+      | STAERR_s2eff_leq (loc, s2fe1, s2fe2) => prerr_staerr_s2eff_leq (loc, s2fe1, s2fe2)
+      | STAERR_s2exp_linearity (loc, s2e) => prerr_staerr_s2exp_linearity (loc, s2e)
+      ) : void // end of [case] // end of [val]
+    in
+      loop (xs)
+    end // end of [list_vt_cons]
+  | ~list_vt_nil () => ()
+// end of [loop]
 in
-  loop (the_staerrlst_get ())
+//
+loop (the_staerrlst_get ())
+//
 end // end of [prerr_the_staerrlst]
 
 (* ****** ****** *)
