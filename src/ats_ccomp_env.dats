@@ -38,6 +38,7 @@ staload Deb = "ats_debug.sats"
 staload Err = "ats_error.sats"
 staload Glo = "ats_global.sats"
 staload Lst = "ats_list.sats"
+staload _(*anon*) = "ats_list.dats"
 staload Map = "ats_map_lin.sats"
 staload Set = "ats_set_fun.sats"
 
@@ -334,7 +335,38 @@ end // end of [local]
 
 local
 
-val the_datcstlst = ref_make_elt<datcstlst> (DATCSTLSTnil ())
+val the_saspcstlst = ref_make_elt<saspcstlst> (list_vt_nil)
+
+in
+
+implement
+saspcstlst_free (xs) = $Lst.list_vt_free (xs)
+
+implement
+the_saspcstlst_add (s2c) = let
+  val (pfbox | p) = ref_get_view_ptr (the_saspcstlst)
+  prval vbox pf = pfbox
+in
+ !p := list_vt_cons (s2c, !p)
+end // end of [the_saspcstlst_add]
+
+implement
+the_saspcstlst_get () = s2cs where {
+  val (pfbox | p) = ref_get_view_ptr (the_saspcstlst)
+  prval vbox pf = pfbox
+  val s2cs = !p
+  val () = !p := list_vt_nil ()
+} // end of [the_saspcstlst_get]
+
+end // end of [local]
+
+(* ****** ****** *)
+
+local
+
+val the_datcstlst =
+  ref_make_elt<datcstlst> (DATCSTLSTnil ())
+// end of [val]
 
 fn datcstlst_reverse
   (xs: datcstlst): datcstlst = let
@@ -848,12 +880,12 @@ end // end of [local]
 
 local
 
-val the_extvallst = ref_make_elt<extvallst> (EXTVALLSTnil ())
+val the_extvalist = ref_make_elt<extvalist> (EXTVALLSTnil ())
 
-fn extvallst_reverse
-  (xs: extvallst): extvallst = let
-  fun aux (xs: extvallst, ys: extvallst)
-    : extvallst = begin case+ xs of
+fn extvalist_reverse
+  (xs: extvalist): extvalist = let
+  fun aux (xs: extvalist, ys: extvalist)
+    : extvalist = begin case+ xs of
     | EXTVALLSTcons (_(*name*), _(*vp*), !p_xs1) => let
         val xs1 = !p_xs1; val () = (!p_xs1 := ys; fold@ (xs))
       in
@@ -863,36 +895,36 @@ fn extvallst_reverse
   end // end of [aux]
 in
   aux (xs, EXTVALLSTnil ())
-end // end of [extvallst_reverse]
+end // end of [extvalist_reverse]
 
 in // in of [local]
 
 implement
-the_extvallst_add (name, hit) = let
-  val (pfbox | p) = ref_get_view_ptr (the_extvallst)
+the_extvalist_add (name, hit) = let
+  val (pfbox | p) = ref_get_view_ptr (the_extvalist)
   prval vbox pf = pfbox
 in
   !p := EXTVALLSTcons (name, hit, !p)
-end // end of [the_extvallst_add]
+end // end of [the_extvalist_add]
 
 implement
-the_extvallst_get () = let
+the_extvalist_get () = let
   val res = let
-    val (pfbox | p) = ref_get_view_ptr (the_extvallst)
+    val (pfbox | p) = ref_get_view_ptr (the_extvalist)
     prval vbox pf = pfbox
     val res = !p
   in
     !p := EXTVALLSTnil (); res
   end // end of [val]
 in
-  extvallst_reverse (res)
-end // end of [the_extvallst_get]
+  extvalist_reverse (res)
+end // end of [the_extvalist_get]
 
 implement
-extvallst_free (exts) = begin case+ exts of
-  | ~EXTVALLSTcons (_(*name*), _(*vp*), exts) => extvallst_free exts
+extvalist_free (exts) = begin case+ exts of
+  | ~EXTVALLSTcons (_(*name*), _(*vp*), exts) => extvalist_free exts
   | ~EXTVALLSTnil () => ()
-end // end of [extvallst_free]
+end // end of [extvalist_free]
 
 end // end of [local]
 

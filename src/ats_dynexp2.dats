@@ -1193,9 +1193,14 @@ s2tavar_make (loc, s2v) =
   '{ s2tavar_loc= loc, s2tavar_var = s2v }
 
 implement
-s2aspdec_make (loc, s2c, def) = '{
-  s2aspdec_loc= loc, s2aspdec_cst= s2c, s2aspdec_def= def
-}
+s2aspdec_make (
+  fil, loc, s2c, def
+) = '{
+  s2aspdec_fil= fil
+, s2aspdec_loc= loc
+, s2aspdec_cst= s2c
+, s2aspdec_def= def
+} // end of [s2aspdec_make]
 
 implement
 v2aldec_make

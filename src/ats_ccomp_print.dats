@@ -36,8 +36,11 @@
 
 staload Cnt = "ats_counter.sats"
 staload Err = "ats_error.sats"
+staload Fil = "ats_filename.sats"
+macdef fprint_filename = $Fil.fprint_filename
 staload IntInf = "ats_intinf.sats"
 staload Lab = "ats_label.sats"
+macdef fprint_label = $Lab.fprint_label
 staload Lst = "ats_list.sats"
 
 (* ****** ****** *)
@@ -46,10 +49,6 @@ staload "ats_staexp2.sats"
 staload "ats_dynexp2.sats"
 
 staload "ats_hiexp.sats"; staload "ats_ccomp.sats"
-
-(* ****** ****** *)
-
-macdef fprint_label = $Lab.fprint_label
 
 (* ****** ****** *)
 

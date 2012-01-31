@@ -497,7 +497,8 @@ and d1atsrtdeclst = List d1atsrtdec
 (* ****** ****** *)
 
 and s1tacon = '{ // static constructor declaration
-  s1tacon_loc= loc_t
+  s1tacon_fil= fil_t
+, s1tacon_loc= loc_t
 , s1tacon_sym= sym_t
 , s1tacon_arg= d1atarglstopt
 , s1tacon_def= s1expopt
@@ -506,7 +507,8 @@ and s1tacon = '{ // static constructor declaration
 and s1taconlst = List s1tacon
 
 and s1tacst = '{ // static constant declaration
-  s1tacst_loc= loc_t
+  s1tacst_fil= fil_t
+, s1tacst_loc= loc_t
 , s1tacst_sym= sym_t
 , s1tacst_arg= s1rtlstopt
 , s1tacst_res= s1rt
@@ -535,7 +537,8 @@ and s1expdef = '{
 and s1expdeflst = List s1expdef
 
 and s1aspdec = '{
-  s1aspdec_loc= loc_t
+  s1aspdec_fil= fil_t
+, s1aspdec_loc= loc_t
 , s1aspdec_qid= sqi0de
 , s1aspdec_arg= s1arglstlst
 , s1aspdec_res= s1rtopt
@@ -547,8 +550,8 @@ and s1aspdeclst = List s1aspdec
 (* ****** ****** *)
 
 and d1cstdec = '{
-  d1cstdec_loc= loc_t
-, d1cstdec_fil= fil_t
+  d1cstdec_fil= fil_t
+, d1cstdec_loc= loc_t
 , d1cstdec_sym= sym_t
 , d1cstdec_typ= s1exp
 , d1cstdec_extdef= dcstextdef
@@ -570,8 +573,8 @@ and d1atcon = '{
 and d1atconlst = List d1atcon
 
 and d1atdec = '{
-  d1atdec_loc= loc_t
-, d1atdec_fil= fil_t
+  d1atdec_fil= fil_t
+, d1atdec_loc= loc_t
 , d1atdec_sym= sym_t
 , d1atdec_arg= d1atarglstopt
 , d1atdec_con= d1atconlst
@@ -582,8 +585,8 @@ and d1atdeclst = List d1atdec
 (* ****** ****** *)
 
 and e1xndec = '{
-  e1xndec_loc= loc_t
-, e1xndec_fil= fil_t
+  e1xndec_fil= fil_t
+, e1xndec_loc= loc_t
 , e1xndec_sym= sym_t
 , e1xndec_qua= s1qualstlst
 , e1xndec_npf= int
@@ -980,12 +983,12 @@ fun d1atsrtdec_make
 
 fun s1rtdef_make (_: loc_t, id: sym_t, def: s1rtext): s1rtdef
 
-fun s1tacon_make
-  (_: loc_t, id: sym_t, arg: d1atarglstopt, def: s1expopt): s1tacon
-// end of [s1tacon_make]
+fun s1tacon_make (
+  _: fil_t, _: loc_t, id: sym_t, arg: d1atarglstopt, def: s1expopt
+) : s1tacon // end of [s1tacon_make]
 
 fun s1tacst_make
-  (_: loc_t, id: sym_t, arg: s1rtlstopt, res: s1rt): s1tacst
+  (_: fil_t, _: loc_t, id: sym_t, arg: s1rtlstopt, res: s1rt): s1tacst
 // end of [s1tacst_make]
 
 fun s1tavar_make (_: loc_t, id: sym_t, s1t: s1rt): s1tavar
@@ -999,13 +1002,13 @@ fun s1expdef_make (
   ) : s1expdef
 // end of [s1expdef_make]
 
-fun s1aspdec_make
-  (loc: loc_t, qid: sqi0de, arg: s1arglstlst, res: s1rtopt, def: s1exp)
-  : s1aspdec
-// end of [s1aspdec_make]
+fun s1aspdec_make (
+  fil: fil_t, loc: loc_t
+, qid: sqi0de, arg: s1arglstlst, res: s1rtopt, def: s1exp
+) : s1aspdec // end of [s1aspdec_make]
 
 fun d1cstdec_make
-  (loc: loc_t, fil: fil_t, id: sym_t, typ: s1exp, extdef: dcstextdef)
+  (fil: fil_t, loc: loc_t, id: sym_t, typ: s1exp, extdef: dcstextdef)
   : d1cstdec
 // end of [d1cstdec_make]
 
@@ -1016,12 +1019,12 @@ fun d1atcon_make
 // end of [d1atcon_make]
 
 fun d1atdec_make
-  (_: loc_t, fil: fil_t, id: sym_t, _: d1atarglstopt, _: d1atconlst)
+  (fil: fil_t, _: loc_t, id: sym_t, _: d1atarglstopt, _: d1atconlst)
   : d1atdec
 // end of [d1atdec_make]
 
 fun e1xndec_make
-  (_: loc_t, fil: fil_t, id: sym_t, qua: s1qualstlst, npf: int, arg: s1explst)
+  (fil: fil_t, _: loc_t, id: sym_t, qua: s1qualstlst, npf: int, arg: s1explst)
   : e1xndec
 // end of [e1xndec_make]
 

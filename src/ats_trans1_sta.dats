@@ -512,12 +512,14 @@ do_e0xpact_prerr
 
 implement
 s0tacon_tr (d) = let
+  val fil = d.s0tacon_fil
+  val loc = d.s0tacon_loc
   val arg = (case+ d.s0tacon_arg of
     | Some d0as => Some (d0atarglst_tr d0as) | None () => None ()
   ) : Option d1atarglst 
   val def = s0expopt_tr d.s0tacon_def
 in
-  s1tacon_make (d.s0tacon_loc, d.s0tacon_sym, arg, def)
+  s1tacon_make (fil, loc, d.s0tacon_sym, arg, def)
 end // end of [s0tacon_tr]
 
 implement
@@ -527,13 +529,15 @@ s0taconlst_tr (ds) = $Lst.list_map_fun (ds, s0tacon_tr)
 
 implement
 s0tacst_tr (d) = let
+  val fil = d.s0tacst_fil
+  val loc = d.s0tacst_loc
   val os1ts_arg = (
     case+ d.s0tacst_arg of
     | Some arg => Some (d0atarglst_srtlst_tr arg) | None () => None ()
   ) : s1rtlstopt
   val s1t_res: s1rt = s0rt_tr d.s0tacst_res
 in
-  s1tacst_make (d.s0tacst_loc, d.s0tacst_sym, os1ts_arg, s1t_res)
+  s1tacst_make (fil, loc, d.s0tacst_sym, os1ts_arg, s1t_res)
 end // end of [s0tacst_tr]
 
 implement
@@ -1052,7 +1056,10 @@ s0aspdec_tr (d) = let
   val res = s0rtopt_tr d.s0aspdec_res
   val def = s0exp_tr d.s0aspdec_def
 in
-  s1aspdec_make (d.s0aspdec_loc, d.s0aspdec_qid, arg, res, def)
+//
+s1aspdec_make (
+  d.s0aspdec_fil, d.s0aspdec_loc, d.s0aspdec_qid, arg, res, def
+) // end of [s1aspdec_make]
 end // end of [s0aspdec_tr]
 
 (* ****** ****** *)
@@ -1106,7 +1113,7 @@ d0atdec_tr (d0c) = let
   val con = d0atconlst_tr d0c.d0atdec_con
 in
   d1atdec_make (
-    d0c.d0atdec_loc, d0c.d0atdec_fil, d0c.d0atdec_sym, arg, con
+    d0c.d0atdec_fil, d0c.d0atdec_loc, d0c.d0atdec_sym, arg, con
   ) // end of [d1atdec_make]
 end // end of [d0atdec_tr]
 
@@ -1134,7 +1141,7 @@ e0xndec_tr (d) = let
   ) : s1explst // end of [val]
 in
   e1xndec_make (
-    d.e0xndec_loc, d.e0xndec_fil, d.e0xndec_sym, qua, npf0, arg
+    d.e0xndec_fil, d.e0xndec_loc, d.e0xndec_sym, qua, npf0, arg
   ) // end of [e1xndec_make]
 end // end of [e0xndec_tr]
 

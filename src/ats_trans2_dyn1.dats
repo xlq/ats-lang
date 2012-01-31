@@ -151,9 +151,9 @@ end // end of [s2exp_arity_list]
 fn d1cstdec_tr (
     dck: $Syn.dcstkind, s2vpslst: s2qualst, d1c: d1cstdec
   ) : d2cst_t = let
+  val id = d1c.d1cstdec_sym
   val loc = d1c.d1cstdec_loc
   val fil = d1c.d1cstdec_fil
-  val id = d1c.d1cstdec_sym
   val typ = d1c.d1cstdec_typ
   var s2e_cst = (
 //
@@ -165,7 +165,7 @@ fn d1cstdec_tr (
   ) : s2exp // end of [var]
   val arilst = s2exp_arity_list s2e_cst
   val extdef = d1c.d1cstdec_extdef
-  val d2c = d2cst_make (loc, fil, id, dck, s2vpslst, arilst, s2e_cst, extdef)
+  val d2c = d2cst_make (id, fil, loc, dck, s2vpslst, arilst, s2e_cst, extdef)
 in
   the_d2expenv_add_dcst d2c; d2c
 end // end of [d1cstdec_tr]

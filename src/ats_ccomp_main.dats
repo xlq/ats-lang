@@ -50,6 +50,7 @@ staload Fil = "ats_filename.sats"
 typedef fil_t = $Fil.filename_t
 staload Glo = "ats_global.sats"
 staload Lst = "ats_list.sats"
+staload Sym = "ats_symbol.sats"
 staload Syn = "ats_syntax.sats"
 
 (* ****** ****** *)
@@ -302,6 +303,40 @@ fn emit_typdeflst_free {m:file_mode} (
 in
   aux (out, 0, tds)
 end // end of [emit_typdeflst_free]
+
+(* ****** ****** *)
+
+fun emit_saspcstlst
+  {m:file_mode} (
+    pf: fmlte (m, w)
+  | out: &FILE m
+  , xs: !saspcstlst
+  ) : int = let
+  fun aux (
+    out: &FILE m, i: int, xs: !saspcstlst
+  ) : int =
+    case+ xs of
+    | list_vt_cons (x, !p_xs1) => let
+        val s2c = x
+        val- Some (fil) = s2cst_get_fil (s2c)
+        val name = $Sym.symbol_name (s2cst_get_sym (s2c))
+        val () = fprint1_string (pf | out, "int ")
+        val () = emit_filename (pf | out, fil)
+        val () = fprint1_string (pf | out, "__sasp__")
+        val () = emit_identifier (pf | out, name)
+        val () = fprint1_string (pf | out, " = 0 ;\n")
+        val res = aux (out, i+1, !p_xs1)
+        prval () = fold@ (xs)
+      in
+        res
+      end // end of [list_vt_cons]
+    | list_vt_nil () => let
+        val () = fold@ (xs) in i
+      end // end of [list_vt_nil]
+  // end of [aux]
+in
+  aux (out, 0, xs)
+end // end of [emit_saspcstlst]
 
 (* ****** ****** *)
 
@@ -769,13 +804,13 @@ end // end of [instrlst_vt_tmpvarmap_gen]
 
 (* ****** ****** *)
 
-fn emit_extvallst_dec
+fn emit_extvalist_dec
   {m:file_mode} (
   pf: fmlte (m, w)
-| out: &FILE m, exts: !extvallst
+| out: &FILE m, exts: !extvalist
 ) : int = let
   fun aux (
-    out: &FILE m, i: int, exts: !extvallst
+    out: &FILE m, i: int, exts: !extvalist
   ) : int = begin case+ exts of
     | EXTVALLSTcons (name, vp, !exts_rest) => let
         val () = emit_hityp (pf | out, vp.valprim_typ)
@@ -788,13 +823,13 @@ fn emit_extvallst_dec
   end // end of [aux]
 in
   aux (out, 0, exts)
-end // end of [emit_extvallst_dec]
+end // end of [emit_extvalist_dec]
 
-fn emit_extvallst_markroot
+fn emit_extvalist_markroot
   {m:file_mode} (
-  pf: fmlte (m, w) | out: &FILE m, exts: !extvallst
+  pf: fmlte (m, w) | out: &FILE m, exts: !extvalist
 ) : int = let
-  fun aux (out: &FILE m, i: int, exts: !extvallst)
+  fun aux (out: &FILE m, i: int, exts: !extvalist)
     : int = begin case+ exts of
     | EXTVALLSTcons (name, vp, !exts_rest) => let
         val () = fprint1_string (pf | out, "ATS_GC_MARKROOT (&")
@@ -810,7 +845,7 @@ fn emit_extvallst_markroot
   end // end of [aux]
 in
   aux (out, 0, exts)
-end // end of [emit_extvallst_markroot]
+end // end of [emit_extvalist_markroot]
 
 (* ****** ****** *)
 
@@ -1026,7 +1061,7 @@ fn emit_dynload
   , fil: fil_t
   , res: !instrlst_vt
   , tmps: !tmpvarmap_vt
-  , exts: !extvallst
+  , exts: !extvalist
   ) : void = let
 //
 // HX: code for dynamic loading
@@ -1117,7 +1152,7 @@ fn emit_dynload
   val _(*n*) = emit_tmpvarmap_markroot (pf | out, tmps)
   val () = fprint1_string
     (pf | out, "\n/* marking external values for GC */\n")
-  val _(*n*) = emit_extvallst_markroot (pf | out, exts)
+  val _(*n*) = emit_extvalist_markroot (pf | out, exts)
 //
   val () = fprint1_string
     (pf | out, "\n/* code for dynamic loading */\n")
@@ -1356,6 +1391,17 @@ implement ccomp_main {m}
     // empty
   end // end of [val]
 //
+// HX: assuming abstract types
+//
+  val s2cs = the_saspcstlst_get ()
+  val () = let
+    val () = fprint1_string (pf | out, "/* assuming abstract types */\n")
+    val n = emit_saspcstlst (pf | out, s2cs)
+  in
+    if n > 0 then fprint1_char (pf | out, '\n')
+  end
+  val () = saspcstlst_free (s2cs)
+//
 // HX: declaring datatype constructors
 //
   val datcsts = the_datcstlst_get ()
@@ -1430,12 +1476,12 @@ implement ccomp_main {m}
 //
 // HX: declaring external variables
 //
-  val extvals = the_extvallst_get ()
+  val extvals = the_extvalist_get ()
   val () = if (flag > 0) then let // external variable declarations
     val () = begin
       fprint1_string (pf | out, "/* external value variable declarations */\n\n")
     end // end of [val]
-    val n = emit_extvallst_dec (pf | out, extvals)
+    val n = emit_extvalist_dec (pf | out, extvals)
     val () = if n > 0 then fprint1_char (pf | out, '\n')
   in
     // empty
@@ -1483,7 +1529,7 @@ implement ccomp_main {m}
 //
   val () = $Lst.list_vt_free__boxed (res)
   val () = tmpvarmap_free (tmps_static)
-  val () = extvallst_free (extvals)
+  val () = extvalist_free (extvals)
 //
   val () = begin case+ 0 of
     | _ when mainatsknd >= 0 => begin

@@ -53,7 +53,11 @@ staload "ats_staexp2.sats"
 typedef
 s2cst_struct = @{ (* builtin or abstract *)
   s2cst_sym= sym_t // the name
-, s2cst_loc= loc_t // the location of declaration
+(*
+// HX: abstract type is associated with a filename
+*)
+, s2cst_fil= Option (fil_t)
+, s2cst_loc= loc_t // the location of introduction
 , s2cst_srt= s2rt // the sort
 , s2cst_isabs= Option (s2expopt) // is abstract?
 , s2cst_iscon= bool // is constructive?
@@ -105,6 +109,7 @@ prval () = free_gc_elim {s2cst_struct?} (pf_gc)
 
 val () = begin
 p->s2cst_sym := id;
+p->s2cst_fil := None ();
 p->s2cst_loc := loc;
 p->s2cst_srt := s2t;
 p->s2cst_isabs := isabs;
@@ -136,6 +141,11 @@ end // end of [s2cst_make]
 
 implement s2cst_get_sym (s2c) =
   let val (vbox pf | p) = s2c in p->s2cst_sym end
+
+implement s2cst_get_fil (s2c) =
+  let val (vbox pf | p) = s2c in p->s2cst_fil end
+implement s2cst_set_fil (s2c, opt) =
+  let val (vbox pf | p) = s2c in p->s2cst_fil := opt end
 
 implement s2cst_get_loc (s2c) =
   let val (vbox pf | p) = s2c in p->s2cst_loc end
@@ -319,12 +329,15 @@ end // end of [local] (for assuming s2cst_t)
 
 (* ****** ****** *)
 
-implement s2cst_make_dat
-  (id, loc, os2ts_arg, s2t_res, argvar) = let
-  val s2t = (case+ os2ts_arg of
+implement
+s2cst_make_dat (
+  id, loc, os2ts_arg, s2t_res, argvar
+) = let
+  val s2t = (
+    case+ os2ts_arg of
     | Some s2ts_arg => s2rt_fun (s2ts_arg, s2t_res)
     | None () => s2t_res
-  ) : s2rt
+  ) : s2rt // end of [val]
 in
   s2cst_make (
     id // name
@@ -342,7 +355,8 @@ end // end of [s2cst_make_dat]
 
 (* ****** ****** *)
 
-implement s2cst_make_cls
+implement
+s2cst_make_cls
   (id, loc, s2vss) = let
   val s2t = aux (s2vss, s2rt_cls) where {
     fun aux (

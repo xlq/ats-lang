@@ -1783,6 +1783,7 @@ fn s1tacon_tr (
   s2t_res: s2rt, d: s1tacon
 ) : void = let
   val id = d.s1tacon_sym
+  val fil = d.s1tacon_fil
   val loc = d.s1tacon_loc
   val argvar = (case+ d.s1tacon_arg of
     | Some d1as => Some (d1atarglst_tr d1as) | None () => None ()
@@ -1800,7 +1801,7 @@ fn s1tacon_tr (
     | None => s2t_res
   ) : s2rt // end of [val]
   val (pf_s2expenv | ()) = the_s2expenv_push ()
-  val s2vs_opt = (let
+  val s2vs_opt = let
     fun aux (
       xs: List @(symopt_t, s2rt, int)
     ) : s2varlst =
@@ -1816,7 +1817,7 @@ fn s1tacon_tr (
     // end of [aux]
   in
     case+ argvar of Some xs => Some (aux xs) | None () => None ()
-  end) : Option (s2varlst) // end of [val]
+  end : Option (s2varlst) // end of [val]
   val def = (
     case+ d.s1tacon_def of
     | Some s1e => let
@@ -1843,8 +1844,9 @@ fn s1tacon_tr (
     , None () // def
     ) // end of [s2cst_make]
   // end of [val]
+  val () = s2cst_set_fil (s2c, Some (fil))
 in
-  the_s2expenv_add_scst s2c
+  the_s2expenv_add_scst (s2c)
 end // end of [s1tacon_tr]
 
 implement
@@ -2165,7 +2167,8 @@ s1aspdec_tr (d1c) = let
     prerr_newline ();
     $Err.abort {s2aspdec} ()
   end // end of [err5]
-
+//
+  val fil = d1c.s1aspdec_fil
   val loc = d1c.s1aspdec_loc
   val qid = d1c.s1aspdec_qid
   val q = qid.sqi0de_qua and id = qid.sqi0de_sym
@@ -2198,7 +2201,7 @@ in
             val s2t_s2c = s2cst_get_srt s2c
           in
             if s2t_s2e <= s2t_s2c then begin
-              s2aspdec_make (loc, s2c, s2e)
+              s2aspdec_make (fil, loc, s2c, s2e)
             end else begin
               err1 (loc, q, id, s2t_s2c, s2t_s2e)
             end // end of [if]

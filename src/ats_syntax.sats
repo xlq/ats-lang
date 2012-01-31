@@ -1088,7 +1088,8 @@ fun s0rtdeflst_cons (x: s0rtdef, xs: s0rtdeflst): s0rtdeflst
 (* ****** ****** *)
 
 typedef s0tacon = '{
-  s0tacon_loc= loc_t
+  s0tacon_fil= fil_t
+, s0tacon_loc= loc_t
 , s0tacon_sym= sym_t
 , s0tacon_arg= d0atarglstopt
 , s0tacon_def= s0expopt
@@ -1109,7 +1110,8 @@ fun s0taconlst_cons (x: s0tacon, xs: s0taconlst): s0taconlst
   = "s0taconlst_cons"
 
 typedef s0tacst = '{
-  s0tacst_loc= loc_t
+  s0tacst_fil= fil_t
+, s0tacst_loc= loc_t
 , s0tacst_sym= sym_t
 , s0tacst_arg= d0atarglstopt
 , s0tacst_res= s0rt
@@ -1163,8 +1165,10 @@ fun s0expdeflst_cons (x: s0expdef, xs: s0expdeflst): s0expdeflst
 
 (* ****** ****** *)
 
-typedef s0aspdec = '{
-  s0aspdec_loc= loc_t
+typedef
+s0aspdec = '{
+  s0aspdec_fil= fil_t
+, s0aspdec_loc= loc_t
 , s0aspdec_qid= sqi0de
 , s0aspdec_arg= s0arglstlst
 , s0aspdec_res= s0rtopt
@@ -1196,9 +1200,9 @@ fun d0atconlst_cons (x: d0atcon, xs: d0atconlst): d0atconlst
 
 typedef
 d0atdec = '{
-  d0atdec_loc= loc_t
+  d0atdec_fil= fil_t
+, d0atdec_loc= loc_t
 , d0atdec_headloc= loc_t
-, d0atdec_fil= fil_t
 , d0atdec_sym= sym_t
 , d0atdec_arg= d0atarglstopt
 , d0atdec_con= d0atconlst
@@ -1219,8 +1223,8 @@ fun d0atdeclst_cons (x: d0atdec, xs: d0atdeclst): d0atdeclst
 
 typedef
 e0xndec = '{
-  e0xndec_loc= loc_t
-, e0xndec_fil= fil_t
+  e0xndec_fil= fil_t
+, e0xndec_loc= loc_t
 , e0xndec_sym= sym_t
 , e0xndec_qua= s0qualstlst
 , e0xndec_arg= s0expopt
@@ -1386,8 +1390,8 @@ fun extnamopt_some (ext: s0tring): Stropt = "extnamopt_some"
 
 typedef
 d0cstdec = '{
-  d0cstdec_loc= loc_t
-, d0cstdec_fil= fil_t
+  d0cstdec_fil= fil_t
+, d0cstdec_loc= loc_t
 , d0cstdec_sym= sym_t
 , d0cstdec_arg= d0arglst
 , d0cstdec_eff= e0fftaglstopt

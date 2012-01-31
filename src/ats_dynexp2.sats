@@ -147,9 +147,9 @@ overload prerr with prerr_d2sym
 (* ****** ****** *)
 
 fun d2cst_make (
-  _: loc_t
+  id: sym_t
 , fil: fil_t
-, id: sym_t
+, loc: loc_t
 , dck: $Syn.dcstkind
 , decarg: s2qualst
 , arilst: List int
@@ -159,9 +159,9 @@ fun d2cst_make (
 
 (* ****** ****** *)
 
+fun d2cst_get_sym (_: d2cst_t): sym_t
 fun d2cst_get_loc (_: d2cst_t): loc_t
 fun d2cst_get_fil (_: d2cst_t): fil_t
-fun d2cst_get_sym (_: d2cst_t): sym_t
 fun d2cst_get_kind (_: d2cst_t): $Syn.dcstkind
 fun d2cst_get_arilst (_: d2cst_t): List int
 fun d2cst_get_decarg (_: d2cst_t): s2qualst
@@ -796,7 +796,8 @@ and s2tavarlst = List s2tavar
 (* ****** ****** *)
 
 and s2aspdec = '{
-  s2aspdec_loc= loc_t
+  s2aspdec_fil= fil_t
+, s2aspdec_loc= loc_t
 , s2aspdec_cst= s2cst_t
 , s2aspdec_def= s2exp
 } // end of [s2aspdec]
@@ -1199,7 +1200,9 @@ fun sc2lau_make (_: loc_t, sp2t: sp2at, exp: d2exp): sc2lau
 (* ****** ****** *)
 
 fun s2tavar_make (_: loc_t, s2v: s2var_t): s2tavar
-fun s2aspdec_make (_: loc_t, s2c: s2cst_t, def: s2exp): s2aspdec
+fun s2aspdec_make
+  (fil: fil_t, _: loc_t, s2c: s2cst_t, def: s2exp): s2aspdec
+// end of [s2aspdec_make]
 
 (* ****** ****** *)
 

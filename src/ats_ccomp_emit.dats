@@ -124,12 +124,6 @@ atsopt_emit_identifier (
 
 %} // end of [%{$]
 
-extern
-fun emit_identifier {m:file_mode} (
-  pf: fmlte (m, w) | out: &FILE m, name: string
-) : void = "atsopt_emit_identifier"
-// end of [emit_identifier]
-
 (* ****** ****** *)
 
 implement

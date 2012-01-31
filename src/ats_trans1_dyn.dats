@@ -272,6 +272,7 @@ fn d0cstdec_tr (
   , isprf: bool
   , d: d0cstdec
   ) : d1cstdec = let
+  val fil0 = d.d0cstdec_fil
   val loc0 = d.d0cstdec_loc
   val s1e_res = s0exp_tr d.d0cstdec_res
   val arg = d.d0cstdec_arg and eff = d.d0cstdec_eff
@@ -279,7 +280,7 @@ fn d0cstdec_tr (
   val extdef = dcstextdef_tr (d.d0cstdec_extdef)
 in
   d1cstdec_make (
-    loc0, d.d0cstdec_fil, d.d0cstdec_sym, s1e, extdef
+    fil0, loc0, d.d0cstdec_sym, s1e, extdef
   ) // end of [d1cstdec_make]
 end // end of [d0cstdec_tr]
 

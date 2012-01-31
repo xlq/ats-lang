@@ -1347,34 +1347,48 @@ implement s0rtdeflst_cons (x, xs) = cons (x, xs)
 (* ****** ****** *)
 
 implement
-s0tacon_make_none_none (id) = '{
-  s0tacon_loc= id.i0de_loc
+s0tacon_make_none_none
+  (id) = let
+  val fil = $Fil.the_filename_get ()
+in '{
+  s0tacon_fil= fil
+, s0tacon_loc= id.i0de_loc
 , s0tacon_sym= id.i0de_sym
 , s0tacon_arg= None ()
 , s0tacon_def= None ()
-}
+} end // end of [s0tacon_make_none_none]
 
 implement
-s0tacon_make_some_none (id, arg) = '{
-  s0tacon_loc= id.i0de_loc
+s0tacon_make_some_none
+  (id, arg) = let
+  val fil = $Fil.the_filename_get ()
+in '{
+  s0tacon_fil= fil
+, s0tacon_loc= id.i0de_loc
 , s0tacon_sym= id.i0de_sym
 , s0tacon_arg= Some arg
 , s0tacon_def= None ()
-}
+} end // end of [s0tacon_make_some_none]
 
 implement
-s0tacon_make_none_some (id, def) = let
+s0tacon_make_none_some
+  (id, def) = let
+  val fil = $Fil.the_filename_get ()
   val loc = combine (id.i0de_loc, def.s0exp_loc) in '{
-  s0tacon_loc= loc
+  s0tacon_fil= fil
+, s0tacon_loc= loc
 , s0tacon_sym= id.i0de_sym
 , s0tacon_arg= None ()
 , s0tacon_def= Some def
 } end // end of [s0tacon_make_none_some]
 
 implement
-s0tacon_make_some_some (id, arg, def) = let
+s0tacon_make_some_some
+  (id, arg, def) = let
+  val fil = $Fil.the_filename_get ()
   val loc = combine (id.i0de_loc, def.s0exp_loc) in '{
-  s0tacon_loc= loc
+  s0tacon_fil= fil
+, s0tacon_loc= loc
 , s0tacon_sym= id.i0de_sym
 , s0tacon_arg= Some arg
 , s0tacon_def= Some def
@@ -1386,20 +1400,26 @@ implement s0taconlst_cons (x, xs) = cons (x, xs)
 (* ****** ****** *)
 
 implement
-s0tacst_make_none (id, s0t) = let
+s0tacst_make_none
+  (id, s0t) = let
+  val fil = $Fil.the_filename_get ()
   val loc = combine (id.i0de_loc, s0t.s0rt_loc)
 in '{
-  s0tacst_loc= loc
+  s0tacst_fil= fil
+, s0tacst_loc= loc
 , s0tacst_sym= id.i0de_sym
 , s0tacst_arg= None ()
 , s0tacst_res= s0t
 } end // end of [s0tacst_make_none]
 
 implement
-s0tacst_make_some (id, arg, s0t) = let
+s0tacst_make_some
+  (id, arg, s0t) = let
+  val fil = $Fil.the_filename_get ()
   val loc = combine (id.i0de_loc, s0t.s0rt_loc)
 in '{
-  s0tacst_loc= loc
+  s0tacst_fil= fil
+, s0tacst_loc= loc
 , s0tacst_sym= id.i0de_sym
 , s0tacst_arg= Some arg
 , s0tacst_res= s0t
@@ -1446,9 +1466,11 @@ implement s0expdeflst_cons (x, xs) = cons (x, xs)
 implement
 s0aspdec_make
   (qid, arg, res, def) = let
+  val fil = $Fil.the_filename_get ()
   val loc = combine (qid.sqi0de_loc, def.s0exp_loc)
 in '{
-  s0aspdec_loc= loc
+  s0aspdec_fil= fil
+, s0aspdec_loc= loc
 , s0aspdec_qid= qid
 , s0aspdec_arg= arg
 , s0aspdec_res= res
@@ -1498,9 +1520,9 @@ fun d0atdec_make (
     | cons (x, xs) => aux_loc (id, x, xs) | nil () => id.i0de_loc
   ) : loc_t
 in '{
-  d0atdec_loc= loc
+  d0atdec_fil= fil
+, d0atdec_loc= loc
 , d0atdec_headloc= hdloc
-, d0atdec_fil= fil
 , d0atdec_sym= id.i0de_sym
 , d0atdec_arg= arg
 , d0atdec_con= xs
@@ -1526,8 +1548,8 @@ implement e0xndec_make (qua, id, arg) = let
   ) : loc_t
   val fil = $Fil.the_filename_get ()
 in '{
-  e0xndec_loc= loc
-, e0xndec_fil= fil
+  e0xndec_fil= fil
+, e0xndec_loc= loc
 , e0xndec_sym= id.i0de_sym
 , e0xndec_qua= qua
 , e0xndec_arg= arg
@@ -1611,8 +1633,8 @@ implement d0cstdec_make
   val fil = $Fil.the_filename_get ()
   val loc = combine (id.i0de_loc, res.s0exp_loc)
 in '{
-  d0cstdec_loc= loc
-, d0cstdec_fil= fil
+  d0cstdec_fil= fil
+, d0cstdec_loc= loc
 , d0cstdec_sym= id.i0de_sym
 , d0cstdec_arg= arg
 , d0cstdec_eff= eff

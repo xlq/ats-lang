@@ -2833,7 +2833,9 @@ ccomp_dec (res, hid0) = let
   val loc0 = hid0.hidec_loc
 in
   case+ hid0.hidec_node of
-  | HIDsaspdec _(*s2aspdec*) => () // run-time checking?
+  | HIDsaspdec (saspdec) =>
+      the_saspcstlst_add (saspdec.s2aspdec_cst)
+    // end of [HIDsaspdec]
   | HIDdcstdec (knd, d2cs) => begin case+ 0 of
     | _ when $Syn.dcstkind_is_proof knd => ()
     | _ => $Lst.list_foreach_fun (d2cs, the_dyncstset_add_if)
@@ -2850,7 +2852,7 @@ in
     end // end of [HIDextype]
   | HIDextval (name, hie_def) => let
       val vp_def = ccomp_exp (res, hie_def)
-      val () = the_extvallst_add (name, vp_def)
+      val () = the_extvalist_add (name, vp_def)
       val () = instr_add_extval (res, loc0, name, vp_def)
     in
       // empty

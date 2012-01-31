@@ -61,6 +61,16 @@ fun typdeflst_get (): typdeflst
 
 (* ****** ****** *)
 
+viewtypedef
+saspcstlst = List_vt (s2cst_t)
+
+fun saspcstlst_free (xs: saspcstlst): void
+
+fun the_saspcstlst_add (x: s2cst_t): void
+fun the_saspcstlst_get (): saspcstlst
+
+(* ****** ****** *)
+
 dataviewtype datcstlst =
   | DATCSTLSTcons of (s2cst_t, datcstlst) | DATCSTLSTnil of ()
 // end of [datcstlst]
@@ -211,14 +221,15 @@ fun the_extypelst_add (name: string, hit: hityp_t): void
 
 (* ****** ****** *)
 
-dataviewtype extvallst =
-  | EXTVALLSTcons of (string (*name*), valprim, extvallst)
-  | EXTVALLSTnil
+dataviewtype extvalist =
+  | EXTVALLSTnil of ()
+  | EXTVALLSTcons of (string (*name*), valprim, extvalist)
+// end of [extvalist]
 
-fun extvallst_free (exts: extvallst): void
+fun extvalist_free (exts: extvalist): void
 
-fun the_extvallst_get (): extvallst
-fun the_extvallst_add (name: string, vp: valprim): void
+fun the_extvalist_get (): extvalist
+fun the_extvalist_add (name: string, vp: valprim): void
 
 (* ****** ****** *)
 

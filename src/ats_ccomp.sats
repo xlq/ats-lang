@@ -830,7 +830,14 @@ fun instr_add_valprimlst_free (res: &instrlst_vt, loc: loc_t): void
 
 (* ****** ****** *)
 
-(* implemented in [ats_ccomp_emit.dats] *)
+(*
+** implemented in [ats_ccomp_emit.dats]
+*)
+
+fun emit_identifier
+  {m:file_mode} (
+  pf: file_mode_lte (m, w) | out: &FILE m, name: string
+) : void = "atsopt_emit_identifier"
 
 fun emit_label {m:file_mode}
   (pf: file_mode_lte (m, w) | out: &FILE m, l: $Lab.label_t): void
