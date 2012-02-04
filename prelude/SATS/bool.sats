@@ -143,12 +143,12 @@ overload not with neg_bool1
 
 fun add_bool1_bool1 {b1,b2:bool}
   (b1: bool b1, b2: bool b2):<> bool (b1 || b2)
-  = "atspre_add_bool1_bool1"
+  = "mac#atspre_add_bool1_bool1"
 overload || with add_bool1_bool1
 
 fun mul_bool1_bool1 {b1,b2:bool}
   (b1: bool b1, b2: bool b2):<> bool (b1 && b2)
-  = "atspre_mul_bool1_bool1"
+  = "mac#atspre_mul_bool1_bool1"
 overload && with mul_bool1_bool1
 
 (* ****** ****** *)
