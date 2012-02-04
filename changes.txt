@@ -13,6 +13,9 @@ ats-lang-anairiats-0.2.7:
 8. The docbook source for the ATS intro book is now included.
 9. The closures in each infile object are made to be linear and they
    are freed when the infile object is freed.
+10. The compiler now generates code to prevent an abstract type from
+    being implemented (assumed) more than once.
+11. && and || are now macros (long overdue!)
 
 ########################################################################
 
