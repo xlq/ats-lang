@@ -237,6 +237,7 @@ stadef == = eq_bool_bool_bool
 //
 stacst neq_bool_bool_bool : (bool, bool) -> bool
 stadef <> = neq_bool_bool_bool
+stadef != = neq_bool_bool_bool
 //
 (* ****** ****** *)
 //
@@ -262,6 +263,7 @@ stadef == = eq_char_char_bool
 //
 stacst neq_char_char_bool : (char, char) -> bool
 stadef <> = neq_char_char_bool
+stadef != = neq_char_char_bool
 //
 (* ****** ****** *)
 //
@@ -284,6 +286,7 @@ stadef == = eq_int_int_bool
 //
 stacst neq_int_int_bool : (int, int) -> bool
 stadef <> = neq_int_int_bool
+stadef != = neq_int_int_bool
 //
 // HX: some built-in static constants for pointer arithmetic
 //
@@ -316,6 +319,7 @@ stadef == = eq_addr_addr_bool
 //
 stacst neq_addr_addr_bool : (addr, addr) -> bool
 stadef <> = neq_addr_addr_bool
+stadef != = neq_addr_addr_bool
 //
 (* ****** ****** *)
 

@@ -52,26 +52,24 @@ castfn bool1_of_bool (x: bool):<> Bool
 (* ****** ****** *)
 
 fun bool_of_int (i: int):<> bool
-fun int_of_bool (b: bool):<> int
+fun int_of_bool (b: bool):<> natLt(2) // Two
 
 fun bool1_of_int1 {i:int} (i: int i):<> bool (i <> 0)
 fun int1_of_bool1 {b:bool} (b: bool b):<> int (int_of_bool b)
 
 (* ****** ****** *)
-//
-// HX: the following two function are identical
-//
+
 fun neg_bool
   (b: bool):<> bool = "atspre_neg_bool"
 overload ~ with neg_bool
 overload not with neg_bool
 
 fun add_bool_bool
-  (b1: bool, b2: bool):<> bool = "atspre_add_bool_bool"
+  (b1: bool, b2: bool):<> bool = "mac#atspre_add_bool_bool"
 overload || with add_bool_bool
 
 fun mul_bool_bool
-  (b1: bool, b2: bool):<> bool = "atspre_mul_bool_bool"
+  (b1: bool, b2: bool):<> bool = "mac#atspre_mul_bool_bool"
 overload && with mul_bool_bool
 
 (* ****** ****** *)
@@ -96,6 +94,7 @@ and neq_bool_bool
   (b1: bool, b2: bool):<> bool = "atspre_neq_bool_bool"
 overload = with eq_bool_bool
 overload <> with neq_bool_bool
+overload != with neq_bool_bool
 
 fun compare_bool_bool
   (b1: bool, b2: bool):<> Sgn = "atspre_compare_bool_bool"

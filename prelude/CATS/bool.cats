@@ -58,6 +58,7 @@ atspre_neg_bool
 
 /* ****** ****** */
 
+#if(0)
 ATSinline()
 ats_bool_type
 atspre_add_bool_bool (
@@ -73,6 +74,9 @@ atspre_mul_bool_bool (
 ) {
   if (b1) { return b2 ; } else { return ats_false_bool ; }
 } // end of [atspre_mul_bool_bool]
+#endif
+#define atspre_add_bool_bool (b1, b2) ((b1) || (b2))
+#define atspre_mul_bool_bool (b1, b2) ((b1) && (b2))
 
 /* ****** ****** */
 

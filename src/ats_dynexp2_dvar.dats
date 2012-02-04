@@ -130,7 +130,8 @@ in
 
 end // end of [d2var_make]
 
-implement d2var_make_any (loc) = begin
+implement
+d2var_make_any (loc) = begin
   d2var_make (loc, $Sym.symbol_UNDERSCORE)
 end // end of [d2var_make_any]
 
