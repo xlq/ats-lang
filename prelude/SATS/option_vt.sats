@@ -48,6 +48,13 @@ option_vt_free (x: Option_vt (a)): void
 
 (* ****** ****** *)
 
+fun option_vt_is_none
+  {a:viewt@ype} {b:bool} (x: !option_vt (a, b)): bool (~b)
+fun option_vt_is_some
+  {a:viewt@ype} {b:bool} (x: !option_vt (a, b)): bool ( b)
+
+(* ****** ****** *)
+
 #if VERBOSE_PRELUDE #then
 #print "Loading [option_vt.sats] finishes!\n"
 #endif

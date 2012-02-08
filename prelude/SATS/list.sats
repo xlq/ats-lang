@@ -83,6 +83,7 @@ prfun list_length_is_nonnegative
 (* ****** ****** *)
 
 macdef list_sing (x) = list_cons (,(x), list_nil ())
+macdef list_pair (x1, x2) = list_cons (,(x1), list_cons (,(x2), list_nil))
 
 (* ****** ****** *)
 

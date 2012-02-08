@@ -48,4 +48,16 @@ option_vt_free (x) =
 
 (* ****** ****** *)
 
+implement
+option_vt_is_none (x) = case+ x of
+  | Some_vt _ => (fold@ (x); false) | None_vt _ => (fold@ (x); true)
+// end of [option_vt_is_none]
+
+implement
+option_vt_is_some (x) = case+ x of
+  | Some_vt _ => (fold@ (x); true) | None_vt _ => (fold@ (x); false)
+// end of [option_vt_is_some]
+
+(* ****** ****** *)
+
 (* end of [option_vt.dats] *)

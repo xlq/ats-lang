@@ -65,7 +65,6 @@ typedef Option (a:t@ype) = [b:bool] option (a, b)
 
 fun option_is_none
   {a:t@ype} {b:bool} (opt: option (a, b)):<> bool (~b)
-
 fun option_is_some
   {a:t@ype} {b:bool} (opt: option (a, b)):<> bool ( b)
 

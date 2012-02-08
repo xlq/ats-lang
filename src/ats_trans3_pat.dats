@@ -447,30 +447,35 @@ fn p2at_con_tr_up
   (loc0: loc_t, d2c: d2con_t,
    s2vpss: s2qualst, s2e_con: s2exp, npf: int, p2ts: p2atlst)
   : p2atcontrup = let
-  val () = aux s2vpss where {
-    fun aux (s2vpss: s2qualst): void =
-      case+ s2vpss of
-      | list_cons (s2vps, s2vpss) => let
-          val s2vs = s2vps.0
+//
+val () = aux s2vpss where {
+  fun aux (s2vpss: s2qualst): void =
+    case+ s2vpss of
+    | list_cons (s2vps, s2vpss) => let
+        val s2vs = s2vps.0
 (*
-          val () = begin
-            print "p2at_con_tr_up: aux: s2vs = "; print_s2varlst s2vs; print_newline ()
-          end // end of [val]
+        val () = begin
+          print "p2at_con_tr_up: aux: s2vs = "; print_s2varlst s2vs; print_newline ()
+        end // end of [val]
 *)
-          val () = trans3_env_add_svarlst s2vs
-        in
-          aux s2vpss
-        end // end of [list_cons]
-      | list_nil () => ()
-    } // end [where]
-  val () = aux (loc0, s2vpss) where {
+        val () = trans3_env_add_svarlst s2vs
+      in
+        aux s2vpss
+      end // end of [list_cons]
+    | list_nil () => ()
+  // end of [aux]
+} // end [where]
+//
+val () = aux (loc0, s2vpss) where {
   fun aux (loc0: loc_t, s2vpss: s2qualst): void =
     case+ s2vpss of
     | list_cons (s2vps, s2vpss) => begin
         trans3_env_hypo_add_proplst (loc0, s2vps.1); aux (loc0, s2vpss)
       end (* end of [list_cons] *)
     | list_nil () => ()
-  } // end [where]
+  // end of [aux]
+} // end [where]
+//
 in
   case+ s2e_con.s2exp_node of
   | S2Efun (
