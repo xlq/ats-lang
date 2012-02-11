@@ -92,6 +92,9 @@ overload prerr with $Lab.prerr_label
 fn prerr_loc_error3 (loc: loc_t): void =
   ($Loc.prerr_location loc; prerr ": error(3)")
 // end of [prerr_loc_error3]
+fn prerr_loc_warning3 (loc: loc_t): void =
+  ($Loc.prerr_location loc; prerr ": warning(3)")
+// end of [prerr_loc_warning3]
 
 fn prerr_interror () = prerr "INTERNAL ERROR (ats_trans3_exp_dn)"
 
@@ -883,8 +886,10 @@ end // end of [m2atch_tr_up]
 fn m2atchlst_tr_up (m2ats: m2atchlst): m3atchlst =
   $Lst.list_map_fun (m2ats, m2atch_tr_up)
 
-implement c2lau_tr_dn
-  (c2l, op2tcss, d3es, n, s2es_pat, s2e0, osacsbis) = let
+implement
+c2lau_tr_dn (
+  c2l, op2tcss, d3es, n, s2es_pat, s2e0, osacsbis
+) = let
   val loc0 = c2l.c2lau_loc
   val p2ts = c2l.c2lau_pat
 (*
@@ -896,14 +901,14 @@ implement c2lau_tr_dn
 *)
   val () = trans3_env_push_sta ()
   val (pf_d2varset | ()) = the_d2varset_env_push_let ()
-  val () = the_d2varset_env_add_p2atlst p2ts
+  val () = the_d2varset_env_add_p2atlst (p2ts)
   val () = case+ op2tcss of
     | ~Some_vt p2tcss => begin // adding nonsequentiality assumptions
         trans3_env_hypo_add_p2atcstlstlst (loc0, p2tcss, s2es_pat)
       end // end of [Some_vt]
     | ~None_vt () => ()
   val p3ts = p2atlst_tr_dn (p2ts, s2es_pat)
-
+//
   val () = aux (d3es, p3ts) where {
     fun aux {n:nat} (d3es: d3explst n, p3ts: p3atlst n): void =
       case+ d3es of
@@ -914,7 +919,7 @@ implement c2lau_tr_dn
         end // end of [cons]
       | nil () => () // end of [nil]
   } // end of [where]
-
+//
   val gua = m2atchlst_tr_up (c2l.c2lau_gua)
   val seq = c2l.c2lau_seq and neg = c2l.c2lau_neg
   val d3e_exp = d2exp_tr_dn (c2l.c2lau_exp, s2e_exp) where {
@@ -922,7 +927,7 @@ implement c2lau_tr_dn
       if neg > 0 then s2exp_bottom_viewt0ype_exi () else s2e0
     end // end of [val]
   } // end of [val]
-
+//
   val () = case+ osacsbis of
     | ~SACSBISsome (sac, sbis) =>
         if c2lau_is_raised c2l then () else begin
@@ -944,23 +949,50 @@ fn pattern_match_is_redundant_errmsg (loc0: loc_t): void = begin
   $Err.abort {void} ()
 end // end of [pattern_match_is_redundant_errmsg]
 
-fn c2laulst0_tr_dn {n:nat}
-  (loc0: loc_t, casknd: int, res: i2nvresstate,
-   n: int n, s2es_pat: s2explst n, s2e0: s2exp): void = begin
-  prerr_loc_interror loc0;
-  prerr ": c2laulst0_tr_dn: not implemeted yet."; prerr_newline ();
-  $Err.abort {void} ()
+(* ****** ****** *)
+
+fn
+c2laulst0_tr_dn
+  {n:nat} (
+  loc0: loc_t
+, casknd: int
+, res: i2nvresstate
+, n: int n, s2es_pat: s2explst n
+, s2e0: s2exp
+) : void = let
+in
+//
+case+ 0 of
+| _ when casknd = 0 => let
+    val () = prerr_loc_warning3 (loc0)
+    val () = prerr ": a case-expression is expected to have at least one match clause."
+    val () = prerr_newline ()
+  in
+    // nothing
+  end // end of [CK_case]
+| _ when casknd > 0 => let
+    val () = prerr_loc_error3 (loc0)
+    val () = prerr ": a case+-expression is required to have at least one match clause."
+    val () = prerr_newline ()
+  in
+    $Err.abort {void} ()
+  end // end of [CK_case_pos]
+| _ (*casknd < 0*) => ()
+//
 end // end of [c2laulst0_tr_dn]
 
-fn c2laulst1_tr_dn {n:nat}
-  (loc0: loc_t,
-   cmplt: &int,
-   casknd: int,
-   res: i2nvresstate,
-   c2l: c2lau n,
-   d3es: d3explst n,
-   n: int n, s2es_pat: s2explst n,
-   s2e0: s2exp): c3lau n = let
+fn
+c2laulst1_tr_dn
+  {n:nat} (
+  loc0: loc_t
+, cmplt: &int
+, casknd: int
+, res: i2nvresstate
+, c2l: c2lau n
+, d3es: d3explst n
+, n: int n, s2es_pat: s2explst n
+, s2e0: s2exp
+) : c3lau n = let
   val p2tcss = c2lau_pat_complement c2l
   val () = case+ p2tcss of cons _ => () | nil _ => cmplt := 1
   val c3l = c2lau_tr_dn
@@ -973,16 +1005,18 @@ in
   c3l
 end (* end of [c2laulst1_tr] *)
 
-fun c2laulst2_tr_dn {n:nat}
-  (loc0: loc_t,
-   cmplt: &int, 
-   casknd: int,
-   res: i2nvresstate,
-   c2l: c2lau n, c2ls: c2laulst n,
-   d3es: d3explst n,
-   n: int n, s2es_pat: s2explst n,
-   s2e0: s2exp)
-  : c3laulst n = let
+fun
+c2laulst2_tr_dn
+  {n:nat} (
+  loc0: loc_t
+, cmplt: &int
+, casknd: int
+, res: i2nvresstate
+, c2l: c2lau n, c2ls: c2laulst n
+, d3es: d3explst n
+, n: int n, s2es_pat: s2explst n
+, s2e0: s2exp
+) : c3laulst n = let
 (*
   val () = begin
     print "c2laulst2_tr_dn: s2es_pat = "; print s2es_pat; print_newline ();
@@ -1006,89 +1040,90 @@ in
   c3ls
 end (* end of [c2laulst2_tr_dn] *)
 
-and c2laulst2_rest_tr_dn {n,ni:nat}
-  (loc0: loc_t, 
-   casknd: int,
-   c3l_fst: c3lau n,
-   c2ls_rst: c2laulst n,
-   p2tcss0: &p2atcstlstlst n,
-   d3es: d3explst n,
-   n: int n, s2es_pat: s2explst n,
-   s2e0: s2exp,
-   sac: staftscstr_t ni,
-   sbis: stbefitemlst ni)
-  : c3laulst n = let
+and c2laulst2_rest_tr_dn
+  {n,ni:nat} (
+  loc0: loc_t
+, casknd: int
+, c3l_fst: c3lau n
+, c2ls_rst: c2laulst n
+, p2tcss0: &p2atcstlstlst n
+, d3es: d3explst n
+, n: int n, s2es_pat: s2explst n
+, s2e0: s2exp
+, sac: staftscstr_t ni
+, sbis: stbefitemlst ni
+) : c3laulst n = let
+//
   fun aux_main (
-      c3ls: List_vt (c3lau n)
-    , p2tcss0: &p2atcstlstlst n
-    , c2ls: c2laulst n
-    ) :<cloref1> c3laulst n = begin case+ c2ls of
-    | cons (c2l, c2ls) => let
-        val p2ts = c2l.c2lau_pat
-        val p2tcs0 = p2atcstlst_of_p2atlst p2ts
+    c3ls: List_vt (c3lau n)
+  , p2tcss0: &p2atcstlstlst n
+  , c2ls: c2laulst n
+  ) :<cloref1> c3laulst n = begin case+ c2ls of
+  | cons (c2l, c2ls) => let
+      val p2ts = c2l.c2lau_pat
+      val p2tcs0 = p2atcstlst_of_p2atlst p2ts
 (*
-        val () = begin
-          print "c2laulst2_rest_tr_dn: p2tcs0 = "; print p2tcs0; print_newline ();
-          print "c2laulst2_rest_tr_dn: p2tcss0 = "; print p2tcss0; print_newline ();
-        end (* end of [val] *)
+      val () = begin
+        print "c2laulst2_rest_tr_dn: p2tcs0 = "; print p2tcs0; print_newline ();
+        print "c2laulst2_rest_tr_dn: p2tcss0 = "; print p2tcss0; print_newline ();
+      end (* end of [val] *)
 *)
-        val p2tcss1 = aux (p2tcss0, list_vt_nil ()) where {
-          fun aux (
-              p2tcss: p2atcstlstlst n
-            , res: List_vt (p2atcstlst n)
-            ) :<cloref1> p2atcstlstlst n = case+ p2tcss of
-            | list_cons (p2tcs, p2tcss) => begin
-                if p2atcstlst_intersect_test (p2tcs, p2tcs0) then
-                  aux (p2tcss, list_vt_cons (p2tcs, res))
-                else begin
-                  aux (p2tcss, res)
-                end
-              end // end of [begin]
-            | list_nil () => $Lst.list_vt_reverse_list res
-        } // end of [where]
+      val p2tcss1 = aux (p2tcss0, list_vt_nil ()) where {
+        fun aux (
+          p2tcss: p2atcstlstlst n
+        , res: List_vt (p2atcstlst n)
+        ) :<cloref1> p2atcstlstlst n =
+        case+ p2tcss of
+        | list_cons (p2tcs, p2tcss) => (
+            if p2atcstlst_intersect_test (p2tcs, p2tcs0)
+              then aux (p2tcss, list_vt_cons (p2tcs, res)) else aux (p2tcss, res)
+            // end of [if]
+          ) // end of [list_cons]
+        | list_nil () => $Lst.list_vt_reverse_list (res)
+      } // end of [where]
 (*
-        val () = begin
-          print "c2laulst2_rest_tr_dn: p2tcss1 = "; print p2tcss1; print_newline ();
-        end // end of [val]
+      val () = begin
+        print "c2laulst2_rest_tr_dn: p2tcss1 = "; print p2tcss1; print_newline ();
+      end // end of [val]
 *)
-        val () = case+ p2tcss1 of
-          | cons _ => ()
-          | nil () => begin case+ casknd of
-            | 0 => pattern_match_is_redundant_errmsg c2l.c2lau_loc
-            | 1 => pattern_match_is_redundant_errmsg c2l.c2lau_loc
-            | _ => ()        
-            end
-        val op2tcss = (
-          if c2l.c2lau_seq > 0 then Some_vt p2tcss1 else None_vt ()
-        ) : Option_vt (p2atcstlstlst n)
-        val () = case+ c2l.c2lau_gua of
-          | list_nil _ => p2tcss0 := aux (p2tcss0, nil ()) where {
-              fun aux (
-                  p2tcss: p2atcstlstlst n, res: p2atcstlstlst n
-                ) :<cloref1> p2atcstlstlst n = case+ p2tcss of
-                | cons (p2tcs, p2tcss) => let
-                    val p2tcss_diff = p2atcstlst_difference (p2tcs, p2tcs0)
-                  in
-                    aux (p2tcss, $Lst.list_append (p2tcss_diff, res))
-                  end // end of [cons]
-                | nil () => res
-            } // end of [where]
-          | list_cons _ => ()
-        // end of [val]
+      val () = case+ p2tcss1 of
+        | cons _ => ()
+        | nil () => begin case+ casknd of
+          | 0 => pattern_match_is_redundant_errmsg c2l.c2lau_loc
+          | 1 => pattern_match_is_redundant_errmsg c2l.c2lau_loc
+          | _ => ()        
+          end
+      val op2tcss = (
+        if c2l.c2lau_seq > 0 then Some_vt p2tcss1 else None_vt ()
+      ) : Option_vt (p2atcstlstlst n)
+      val () = case+ c2l.c2lau_gua of
+        | list_nil _ => p2tcss0 := aux (p2tcss0, nil ()) where {
+            fun aux (
+              p2tcss: p2atcstlstlst n, res: p2atcstlstlst n
+              ) :<cloref1> p2atcstlstlst n = case+ p2tcss of
+              | cons (p2tcs, p2tcss) => let
+                  val p2tcss_diff = p2atcstlst_difference (p2tcs, p2tcs0)
+                in
+                  aux (p2tcss, $Lst.list_append (p2tcss_diff, res))
+                end // end of [cons]
+              | nil () => res
+          } // end of [where]
+        | list_cons _ => ()
+      // end of [val]
 (*
-        val () = begin
-          print "c2laulst_rest_tr_dn: p2tcss0 = "; print p2tcss0; print_newline ();
-        end // end of [val]
+      val () = begin
+        print "c2laulst_rest_tr_dn: p2tcss0 = "; print p2tcss0; print_newline ();
+      end // end of [val]
 *)
-        val () = stbefitemlst_restore_lin_typ (sbis)
-        val c3l = c2lau_tr_dn
-          (c2l, op2tcss, d3es, n, s2es_pat, s2e0, SACSBISsome (sac, sbis))
-        // end of [val]
-      in
-        aux_main (list_vt_cons (c3l, c3ls), p2tcss0, c2ls)
-      end // end of [cons]
-    | nil () => $Lst.list_vt_reverse_list c3ls
-    end (* end of [aux_main] *)
+      val () = stbefitemlst_restore_lin_typ (sbis)
+      val c3l = c2lau_tr_dn
+        (c2l, op2tcss, d3es, n, s2es_pat, s2e0, SACSBISsome (sac, sbis))
+      // end of [val]
+    in
+      aux_main (list_vt_cons (c3l, c3ls), p2tcss0, c2ls)
+    end // end of [cons]
+  | nil () => $Lst.list_vt_reverse_list c3ls
+  end (* end of [aux_main] *)
   val c3ls_rst  = aux_main (list_vt_nil (), p2tcss0, c2ls_rst)
 (*
   val () = begin

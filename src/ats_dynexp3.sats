@@ -351,19 +351,20 @@ and m3atch = '{
 
 and m3atchlst = List m3atch
 
-and c3lau (n:int) = '{ (* type for clauses *)
-  c3lau_loc= loc_t // location information
+and c3lau
+  (n:int) = '{ // for clauses
+  c3lau_loc= loc_t // location
 , c3lau_pat= p3atlst n // pattern list
 , c3lau_gua= m3atchlst // clause guard
 , c3lau_seq= int // sequentiality
-, c3lau_neg= int // negativativy
+, c3lau_neg= int // negativativity
 , c3lau_exp= d3exp // expression body
 } // end of [c3lau]
 
-and c3lau = [n:nat] c3lau n
+and c3lau = [n:nat] c3lau (n)
 
 and c3laulst (n:int) = List (c3lau n)
-and c3laulst = [n:nat] c3laulst n
+and c3laulst = [n:nat] c3laulst (n)
 
 and sc3lau = '{ (* type for static clauses *)
   sc3lau_loc= loc_t
@@ -371,7 +372,7 @@ and sc3lau = '{ (* type for static clauses *)
 , sc3lau_exp= d3exp
 } // end of [sc3lau]
 
-and sc3laulst = List sc3lau
+and sc3laulst = List (sc3lau)
 
 (* ****** ****** *)
 
@@ -663,13 +664,14 @@ fun d3lab1_ind (_: loc_t, ind: d3explstlst, elt: s2exp): d3lab1
 
 fun m3atch_make (_: loc_t, _: d3exp, _: p3atopt): m3atch
 
-fun c3lau_make {n:nat}
-  (_: loc_t,
-   pat: p3atlst n,
-   gua: m3atchlst,
-   seq: int,
-   neg: int,
-   exp: d3exp): c3lau n
+fun c3lau_make
+  {n:nat} (
+  loc: loc_t
+, pat: p3atlst n
+, gua: m3atchlst
+, seq: int, neg: int
+, exp: d3exp
+) : c3lau n // end of [c3lau_make]
 
 fun sc3lau_make (_: loc_t, sp2t: sp2at, exp: d3exp): sc3lau
 

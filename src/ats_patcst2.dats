@@ -364,7 +364,7 @@ p2atcst_complement (p2tc0) = begin case+ p2tc0 of
         ) : d2conlst // end of [val]
       in
         p2atcst_con_complement (d2c0, d2cs, p2tcs)
-      end else begin // associated with a extensible sum
+      end else begin // HX: [d2c0] associated with an extensible sum
         singleton (P2TCany ())
       end // end of [if]
     end // end of [P2TCcon]
@@ -416,7 +416,7 @@ p2atcstlst_complement {n} (p2tcs0) = begin
       p2tcss
     end // end of [::]
   | nil () => nil () // end of [nil]
-end // end of [p2atcstlst_commplement]
+end // end of [p2atcstlst_complement]
 
 implement
 labp2atcstlst_complement (lp2tcs0) = begin
@@ -452,7 +452,7 @@ labp2atcstlst_complement (lp2tcs0) = begin
       lp2tcss
     end
   | LABP2ATCSTLSTnil () => nil ()
-end // end of [labp2atcstlst_commplement]
+end // end of [labp2atcstlst_complement]
 
 (* ****** ****** *)
 
@@ -515,29 +515,37 @@ p2atcst_intersect_test (p2tc1, p2tc2) = begin
   | (_, _) => false
 end (* end of [p2atcst_intersect_test] *)
 
-implement p2atcstlst_intersect_test (p2tcs1, p2tcs2) =
-  case+ p2tcs1 of
-  | cons (p2tc1, p2tcs1) => let
-      val+ cons (p2tc2, p2tcs2) = p2tcs2
-    in
-      if p2atcst_intersect_test (p2tc1, p2tc2) then
-        p2atcstlst_intersect_test (p2tcs1, p2tcs2)
-      else false
-    end // end of [cons]
-  | nil () => true
-(* end of [p2atcstlst_intersect_test] *)
+implement
+p2atcstlst_intersect_test
+  (p2tcs1, p2tcs2) = let
+in
+//
+case+ p2tcs1 of
+| cons (p2tc1, p2tcs1) => let
+    val+ cons (p2tc2, p2tcs2) = p2tcs2
+  in
+    if p2atcst_intersect_test (p2tc1, p2tc2) then
+      p2atcstlst_intersect_test (p2tcs1, p2tcs2)
+    else false
+  end // end of [cons]
+| nil () => true
+//
+end // end of [p2atcstlst_intersect_test]
 
 implement
 labp2atcstlst_intersect_test
-  (lp2tcs1, lp2tcs2) = begin
-  case+ (lp2tcs1, lp2tcs2) of
-  | (LABP2ATCSTLSTcons (l1, p2tc1, lp2tcs1),
-     LABP2ATCSTLSTcons (l2, p2tc2, lp2tcs2)) =>
-      if p2atcst_intersect_test (p2tc1, p2tc2) then
-        labp2atcstlst_intersect_test (lp2tcs1, lp2tcs2)
-      else false
-    // end of [LABP2ATCSTLSTcons, LABP2ATCSTLSTcons]
-  | (_, _) => true
+  (lp2tcs1, lp2tcs2) = let
+in
+//
+case+ (lp2tcs1, lp2tcs2) of
+| (LABP2ATCSTLSTcons (l1, p2tc1, lp2tcs1),
+   LABP2ATCSTLSTcons (l2, p2tc2, lp2tcs2)) =>
+    if p2atcst_intersect_test (p2tc1, p2tc2) then
+      labp2atcstlst_intersect_test (lp2tcs1, lp2tcs2)
+    else false
+  // end of [LABP2ATCSTLSTcons, LABP2ATCSTLSTcons]
+| (_, _) => true
+//
 end // end of [labp2atcstlst_intersect_test]
 
 (* ****** ****** *)

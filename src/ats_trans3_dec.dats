@@ -214,7 +214,7 @@ fun v2aldeclst_rec_tr
           list_cons (p3t, aux1 d2cs)
         end // end of [list_cons]
       | list_nil () => list_nil ()
-    // end of [loop]
+    // end of [aux1]
   } // end of [val]
   val d3cs = aux2 (d2cs, p3ts) where {
     fun aux2 {n:nat} .<n>. (
