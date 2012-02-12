@@ -30,6 +30,8 @@ end // end of [fprint_strnref]
 
 (* ****** ****** *)
 
+staload UN = "prelude/SATS/unsafe.sats"
+
 implement
 main () = () where {
 //
@@ -39,12 +41,13 @@ main () = () where {
   val str = strptr_of_strbuf (str)
 //
   val r = refcount_make<strptr0> (str)
+  val p = $UN.castvwtp1 {ptr} (r)
   val () = assert (1u = refcount_get_count r)
 //
   val () = fprint_strnref (stdout_ref, r)
 //
   val r1 = refcount_ref (r)
-  val () = assert (2u = refcount_get_count r)
+  val () = assert (2u = refcount_get_count (r))
 //
   stadef T = strptr0
   var x: T?
@@ -55,10 +58,13 @@ main () = () where {
 //
   val () = fprint_strnref (stdout_ref, r1)
 //
+  val () = assert (1u = refcount_get_count (r1))
   val ans = refcount_unref (r1, x)
   val () = assert (ans = true)
   prval () = opt_unsome {T} (x)
+//
   val () = strptr_free (x)
+//
 } // end of [main]
 
 (* ****** ****** *)

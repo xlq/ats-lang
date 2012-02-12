@@ -111,8 +111,8 @@ end else let
   val () = x := p->1
   prval () = fpf (pfat)
   prval () = opt_some {a} (x)
-  prval () = __free (r) where {
-    extern prfun __free (r: nref (a)): void = "ats_free_gc"
+  val () = __free (r) where {
+    extern fun __free (r: nref (a)):<> void = "ats_free_gc"
   } // end of [prval]
 in
   true // refcount has reached 0
