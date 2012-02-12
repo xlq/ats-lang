@@ -107,9 +107,12 @@ fun{a:t@ype}
 funset_is_equal (xs1: set (a), xs2: set (a), cmp: cmp (a)):<> bool
 
 (* ****** ****** *)
-
-fun funset_listize {a:t@ype} (xs: set (a)):<> List (a) // HX: identity
-
+//
+castfn funset2list {a:t@ype} (xs: set(a)): List (a)
+//
+fun{a:t@ype}
+funset_listize (xs: set (a)):<> List_vt (a) // = list_copy
+//
 (* ****** ****** *)
 
 (* end of [funset_listord.sats] *)

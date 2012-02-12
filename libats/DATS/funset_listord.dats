@@ -325,7 +325,8 @@ end // end of [funset_is_subset]
 
 (* ****** ****** *)
 
-implement funset_listize (xs) = xs
+implement{a}
+funset_listize (xs) = list_copy<a> (xs)
 
 (* ****** ****** *)
 
