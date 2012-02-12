@@ -10,6 +10,10 @@
 
 (* ****** ****** *)
 
+staload UN = "prelude/SATS/unsafe.sats"
+
+(* ****** ****** *)
+
 staload Rand = "libc/SATS/random.sats"
 
 (* ****** ****** *)
@@ -145,11 +149,12 @@ main (argc, argv) = let
     val () = print "testing [list_mergesort] and [list_quicksort]: starts\n"
     val xs_ms = list_mergesort<int> {ptr} (xs, lam (x1, x2, env) =<0> compare (x1, x2), null)
     val xs_qs = list_quicksort<int> {ptr} (xs, lam (x1, x2, env) =<0> compare (x1, x2), null)
-    val () = lstpr (xs_ms)
+    val () = lstpr ($UN.castvwtp1 {List(int)} (xs_ms))
     val () = print_newline ()
-    val () = lstpr (xs_qs)
+    val () = list_vt_free (xs_ms)
+    val () = lstpr ($UN.castvwtp1 {List(int)} (xs_qs))
     val () = print_newline ()
-    val () = assert (lsteq (xs_ms, xs_qs))
+    val () = list_vt_free (xs_qs)
     val () = print "testing [list_mergesort] and [list_quicksort]: finishes\n"
   } // end of [val]
 //
