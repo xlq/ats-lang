@@ -54,7 +54,13 @@ end // end of [list_vt_length_is_nonnegative]
 
 (* ****** ****** *)
 
-fn list_vt_is_cons {a:viewt@ype} {n:nat} (xs: !list_vt (a, n)): bool (n>0) =
+implement{}
+list_vt_is_nil (xs) =
+  case+ xs of list_vt_nil () => (fold@ xs; true) | list_vt_cons _ => (fold@ xs; false)
+// end of [list_vt_is_nil]
+
+implement{}
+list_vt_is_cons (xs) =
   case+ xs of list_vt_cons _ => (fold@ xs; true) | list_vt_nil () => (fold@ xs; false)
 // end of [list_vt_is_cons]
 
@@ -507,7 +513,7 @@ end // end of [list_vt_iforeach_vcloptr]
 local
 
 staload STDLIB = "libc/SATS/stdlib.sats"
-typedef cmp (a:viewt@ype) = (&a, &a) -<clo> Sgn
+typedef cmp (a:viewt@ype) = (&a, &a) -<clo> int
 
 in // in of [local]
 
@@ -584,7 +590,7 @@ list_vt_quicksort {n} (xs, cmp) = let
 // HX-2010:
 // I use an array to do quicksorting and then copy the sorted
 // array back in to the list. Note that this style of hacking
-// should probably not imitated :)
+// should probably not be imitated :)
 //
   abst@ype a1 = a?
   val _ = __cast (xs) where {
@@ -593,7 +599,7 @@ list_vt_quicksort {n} (xs, cmp) = let
   } // end of [val]
   val cmp = __cast (cmp) where {
     extern castfn
-      __cast (cmp: (&a, &a) -<fun> Sgn):<> (&a1, &a1) -<fun> Sgn
+      __cast (cmp: (&a, &a) -<fun> int):<> (&a1, &a1) -<fun> int
   } // end of [val]
   val asz = size1_of_int1 (list_vt_length xs)
   val (

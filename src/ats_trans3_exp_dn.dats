@@ -943,7 +943,8 @@ end // end of [c2lau_tr_dn]
 
 (* ****** ****** *)
 
-fn pattern_match_is_redundant_errmsg (loc0: loc_t): void = begin
+fn pattern_match_is_redundant_errmsg
+  (loc0: loc_t): void = begin
   prerr_loc_error3 loc0;
   prerr ": this pattern match clause is redundant."; prerr_newline ();
   $Err.abort {void} ()

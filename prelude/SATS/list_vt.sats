@@ -73,6 +73,13 @@ prfun list_vt_length_is_nonnegative
 
 (* ****** ****** *)
 
+fun{} list_vt_is_nil
+  {a:viewt@ype} {n:nat} (xs: !list_vt (a, n)):<> bool (n==0)
+fun{} list_vt_is_cons
+  {a:viewt@ype} {n:nat} (xs: !list_vt (a, n)):<> bool (n > 0)
+
+(* ****** ****** *)
+
 fun{a:viewt@ype}
 list_vt_make_array {n:nat}
   (A: &(@[a][n]) >> @[a?!][n], n: size_t n):<> list_vt (a, n)
@@ -223,26 +230,29 @@ list_vt_iforeach_vcloptr {v:view} {n:nat} {f:eff}
 
 fun{a:viewt@ype}
 list_vt_mergesort {n:nat}
-  (xs: list_vt (a, n), cmp: &(&a, &a) -<clo> Sgn):<> list_vt (a, n)
+  (xs: list_vt (a, n), cmp: &(&a, &a) -<clo> int):<> list_vt (a, n)
 // end of [list_vt_mergesort]
 
 (*
 // HX: if needed, this one is more general:
 fun{a:viewt@ype}
 list_vt_mergesort {v:view} {n:nat}
-  (pf: !v | xs: list_vt (a, n), cmp: &(!v | &a, &a) -<clo> Sgn):<> list_vt (a, n)
+  (pf: !v | xs: list_vt (a, n), cmp: &(!v | &a, &a) -<clo> int):<> list_vt (a, n)
 // end of [list_vt_mergesort]
 *)
 
+(* ****** ****** *)
 //
 // HX:
-// note that [libc/CATS/stdlib.cats] is needed
-// this one essentially copies a given list into an array;
-// then it sorts the array and copies it back into the list;
-// then it frees up the array.
+//
+// This one essentially copies a given list into an array; then it sorts
+// the array and copies it back into the list; then it frees up the array.
+//
+// Note that [libc/CATS/stdlib.cats] is needed. It is required that [cmp] be a
+// function here as the qsort in stdlib is the underlying implementation.
 //
 fun{a:viewt@ype}
-list_vt_quicksort {n:nat} (xs: !list_vt (a, n), cmp: (&a, &a) -<fun> Sgn):<> void
+list_vt_quicksort {n:nat} (xs: !list_vt (a, n), cmp: (&a, &a) -<fun> int):<> void
 // end of [list_vt_quicksort]
 
 (* ****** ****** *)

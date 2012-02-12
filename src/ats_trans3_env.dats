@@ -1139,7 +1139,7 @@ fn trans3_env_hypo_add_disj
   val (vbox pf | p) = ref_get_view_ptr the_s3itemlst
 in
   !p := list_vt_cons (S3ITEMdisj s3iss, !p)
-end // end of [trans3_env_hypo_add_p2atcstlstlst]
+end // end of [trans3_env_hypo_add_disj]
 
 (* ****** ****** *)
 
@@ -1847,7 +1847,7 @@ in
     | ~None_vt () => () // end of [None_vt]
     end // end of [P2TCbool]
   | P2TCchar c => begin
-      case+ un_s2exp_bool_bool_t0ype s2e0 of
+      case+ un_s2exp_char_char_t0ype s2e0 of
       | ~Some_vt (s2e_arg) => begin
           $SOL.s2exp_hypo_equal_solve (loc0, s2e_arg, s2exp_char c)
         end // end of [Some_vt]
@@ -1873,7 +1873,7 @@ in
           print "trans3_env_hypo_add_p2atcst: s2vpss_d2c = "; print_s2qualst s2vpss_d2c; print_newline ()
         end // end of [val]
         val () = begin
-          print "trans3_env_hypo_add_p2atcst: s2es_arg_res = "; print_s2explst s2es_fun_arg; print_newline ()
+          print "trans3_env_hypo_add_p2atcst: s2es_fun_arg = "; print_s2explst s2es_fun_arg; print_newline ()
         end // end of [val]
         val () = begin
           print "trans3_env_hypo_add_p2atcst: s2e_fun_res = "; print_s2exp s2e_fun_res; print_newline ()
@@ -2014,7 +2014,7 @@ end // end of [trans3_env_add_metric]
 //
 implement
 trans3_env_add_p2atcstlstlst_false
-  (loc0, casknd, p2tcss, s2es) = aux p2tcss where {
+  (loc0, casknd, p2tcss, s2es) = let
   fun aux (p2tcss: p2atcstlstlst):<cloptr1> void = begin
     case+ p2tcss of
     | list_cons (p2tcs, p2tcss) => let
@@ -2030,7 +2030,9 @@ trans3_env_add_p2atcstlstlst_false
       end // end of [list_cons]
     | list_nil () => () // end of [list_nil]
   end // end of [aux]
-} // end of [trans3_env_add_p2atcstlstlst_false]
+in
+  aux (p2tcss)
+end // end of [trans3_env_add_p2atcstlstlst_false]
 
 (* ****** ****** *)
 

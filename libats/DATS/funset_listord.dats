@@ -73,9 +73,10 @@ implement{a} funset_make_sing (x) = list_cons (x, list_nil)
 implement{a}
 funset_make_list (xs, cmp) = let
   var env: ptr = null
-  fn cmp (x1: a, x2: a, env: !ptr):<> int = cmp (x1, x2)
+  var !p_clo = @lam (x1: &a, x2: &a): int =<clo> cmp (x1, x2)
+  val xs = list_copy (xs)
 in
-  list_mergesort (xs, cmp, env)
+  list_of_list_vt (list_vt_mergesort (xs, !p_clo))
 end // end of [funset_make_list]
 
 (* ****** ****** *)

@@ -139,10 +139,11 @@ fun p1at_arg_tr (_: p1at, _: &wths1explst): p2at
 fun p1atlst_arg_tr (_: p1atlst, _: &wths1explst): p2atlst
 
 (* ****** ****** *)
-
-// used in [ats_trans3_env]
+//
+// HX: used in [ats_trans3_env]
+//
 fun p1at_con_instantiate (loc: loc_t, d2c: d2con_t): @(s2qualst, s2exp)
-
+//
 (* ****** ****** *)
 
 fun d1exp_tr (_: d1exp): d2exp

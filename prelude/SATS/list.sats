@@ -990,14 +990,15 @@ list_unzip {n:nat}
 
 (*
 ** HX:
-** if the list to be sorted is long (say, containing 10K+ elements),
+** [list_mergesort] one sorts in a bottom-up fashion.
+** If the list to be sorted is long (say, containing 10K+ elements),
 ** please try to use [list_vt_mergesort] instead
 *)
 fun{a:t@ype}
 list_mergesort
   {env:viewtype} {n:nat} (
   xs: list (a, n), cmp: (a, a, !env) -<fun> int, env: !env
-) :<> list (a, n) // end of [list_mergesort]
+) :<> list_vt (a, n) // end of [list_mergesort]
 
 (*
 ** HX:
@@ -1006,7 +1007,7 @@ list_mergesort
 *)
 fun{a:t@ype}
 list_quicksort {env:viewtype} {n:nat}
-  (xs: list (a, n), cmp: (a, a, !env) -<fun> int, env: !env):<> list (a, n)
+  (xs: list (a, n), cmp: (a, a, !env) -<fun> int, env: !env):<> list_vt (a, n)
 // end of [list_quicksort]
 
 (* ****** ****** *)

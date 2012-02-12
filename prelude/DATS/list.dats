@@ -2207,44 +2207,65 @@ local
 //
 // HX: this is not an efficient implementation but it is guaranteed to be O(n*log(n))
 //
-  datatype llist
+  dataviewtype llist
     (a:t@ype+, int, int) =
-    | {i,j,n:nat} lcons (a, i+j, n+1) of (list (a, i), llist (a, j, n))
+    | {i,j,n:nat} lcons (a, i+j, n+1) of (list_vt (a, i), llist (a, j, n))
     | lnil (a, 0, 0)
   (* end of [llist] *)
 //
   typedef cmp (a:t@ype, env: viewtype, f:eff) = (a, a, !env) -<fun,f> int
 //
-  macdef list2 (x, y) = ,(x) :: ,(y) :: nil
+  macdef list2 (x, y) = list_vt_cons (,(x), list_vt_cons (,(y), list_vt_nil))
 //  
   fun{a:t@ype}
-  aux1 {env:viewtype} {i:nat} {f:eff} .<i>. (
-    xs: list (a, i), cmp: cmp (a, env, f), env: !env
+  aux1 {env:viewtype}
+    {i:nat} {f:eff} .<i>. (
+    xs: list_vt (a, i), cmp: cmp (a, env, f), env: !env
   ) :<f> [n:nat] llist (a, i, n) =
     case+ xs of
-    | x1 :: x2 :: xs => let
-        val l = (
-          if cmp (x1, x2, env) <= 0 then list2 (x1, x2) else list2 (x2, x1)
-        ) : list (a, 2) // end of [val]
-      in
-         lcons (l, aux1 (xs, cmp, env))
-      end
-    | l as list_cons (x, list_nil ()) => lcons (l, lnil ())
-    | nil () => lnil
+    | list_vt_cons (x1, !p_xs1) => (
+      case+ !p_xs1 of
+      | ~list_vt_cons (x2, xs2) => let
+          val () = free@ {a} {0} (xs)
+          val x12 = (
+            if cmp (x1, x2, env) <= 0 then list2 (x1, x2) else list2 (x2, x1)
+          ) : list_vt (a, 2) // end of [val]
+        in
+          lcons (x12, aux1 (xs2, cmp, env))
+        end // end of [list_vt_cons]
+      | list_vt_nil () => let
+          prval () = fold@ (!p_xs1); prval () = fold@ (xs) in lcons (xs, lnil ())
+        end // end of [list_vt_nil]
+      ) // end of [list_vt_cons]
+    | ~list_vt_nil () => lnil ()
   (* end of [aux1] *)
 //
   fun{a:t@ype}
-  aux2 {env:viewtype} {i,j:nat} {f:eff} .<i+j>. (
-    xs: list (a, i), ys: list (a, j), cmp: cmp (a, env, f), env: !env
-  ) :<f> list (a, i+j) =
-    case+ (xs, ys) of
-    | (xs as x :: xs', ys as y :: ys') => (
-        if cmp (x, y, env) <= 0 then
-          x :: aux2 (xs', ys, cmp, env) else y :: aux2 (xs, ys', cmp, env)
-        // end of [if]
-      ) // end of [::, ::]
-    | (xs, nil ()) => xs
-    | (nil (), ys) => ys
+  aux2 {env:viewtype}
+    {i,j:nat} {f:eff} .<i+j>. (
+    xs: list_vt (a, i), ys: list_vt (a, j), cmp: cmp (a, env, f), env: !env
+  ) :<f> list_vt (a, i+j) =
+    case+ xs of
+    | list_vt_cons (x, !p_xs1) => (
+      case+ ys of
+      | list_vt_cons (y, !p_ys1) => (
+          if cmp (x, y, env) <= 0 then let
+            val xs1 = !p_xs1
+            val () = free@ {a} {0} (xs)
+            prval () = fold@ (ys)
+          in
+            list_vt_cons (x, aux2 (xs1, ys, cmp, env))
+          end else let
+            prval () = fold@ (xs)
+            val ys1 = !p_ys1
+            val () = free@ {a} {0} (ys)
+          in
+            list_vt_cons (y, aux2 (xs, ys1, cmp, env))
+          end // end of [if]
+        ) // end of [list_vt_cons]
+      | ~list_vt_nil () => (fold@ (xs); xs)
+      ) // end of [list_vt_cons]
+    | ~list_vt_nil () => ys
   (* end of [aux2] *)
 //
   fun{a:t@ype}
@@ -2252,26 +2273,43 @@ local
     xss: llist (a, i, n), cmp: cmp (a, env, f), env: !env
   ) :<f> [n1:nat | (n < 2 && n1 == n) || n1 < n] llist (a, i, n1) =
     case+ xss of
-    | lcons (xs1, lcons (xs2, xss)) => begin
+    | ~lcons (xs1, ~lcons (xs2, xss)) => begin
         lcons (aux2 (xs1, xs2, cmp, env), aux3 (xss, cmp, env))
-      end
+      end // end of [lcons]
     | _ =>> xss
   (* end of [aux3] *)
 //
   fun{a:t@ype}
   aux4 {env:viewtype} {i,n:nat} {f:eff} .<n>. (
     xss: llist (a, i, n), cmp: cmp (a, env, f), env: !env
-  ) :<f> list (a, i) =
+  ) :<f> list_vt (a, i) =
     case+ xss of
-    | lnil () => nil ()
-    | lcons (xs, lnil ()) => xs
-    | _ =>> aux4 (aux3 (xss, cmp, env), cmp, env)
+    | lcons (
+        !p_xs, !p_xss1
+      ) => (
+      case+ !p_xss1 of
+      | lcons _ => let
+          prval () =
+            fold@ (!p_xss1)
+          // end of [prval]
+          prval () = fold@ (xss)
+        in
+          aux4 (aux3 (xss, cmp, env), cmp, env)
+        end // end of [lcons]
+      | ~lnil () => let
+          val xs = !p_xs; val () = free@ {a}{0,0,0} (xss) in xs
+        end // end of [lnil]
+      ) // end of [~lcons]
+    | ~lnil () => list_vt_nil ()
   (* end of [aux4] *)
 //
 in // in of [local]
 //
 implement{a}
-list_mergesort (xs, cmp, env) = aux4 (aux1 (xs, cmp, env), cmp, env)
+list_mergesort
+  (xs, cmp, env) = let
+  val xs = list_copy (xs) in aux4 (aux1 (xs, cmp, env), cmp, env)
+end // end of [list_mergesort]
 //
 end // end of [local]
 
@@ -2285,43 +2323,48 @@ local
 //
   typedef cmp (a:t@ype, env: viewtype, f:eff) = (a, a, !env) -<fun,f> int
 //
+  #define :: list_vt_cons
+//
   fun{a:t@ype}
   qsrt {env:viewtype}
     {n:nat} {f:eff} .<n,0>. (
-    xs: list (a, n), cmp: cmp (a, env, f), env: !env
-  ) :<f> list (a, n) =
+    xs: list_vt (a, n), cmp: cmp (a, env, f), env: !env
+  ) :<f> list_vt (a, n) =
     case+ xs of // [case+]: exhaustive pattern matching
-    | x' :: xs' =>
-        part {env} {n-1,0,0} (x', xs', nil, nil, cmp, env)
+    | ~list_vt_cons (x', xs') =>
+        part {env} {n-1,0,0} (x', xs', list_vt_nil, list_vt_nil, cmp, env)
       // end of [::]
-    | nil () => nil ()
+    | ~list_vt_nil () => list_vt_nil ()
   (* end of [qsrt] *)
 //
   and part {env:viewtype}
     {p,l,r:nat} {f:eff} .<p+l+r,p+1>. (
       x: a
-    , xs: list (a, p)
-    , l: list (a, l)
-    , r: list (a, r)
+    , xs: list_vt (a, p)
+    , l: list_vt (a, l), r: list_vt (a, r)
     , cmp: cmp (a, env, f)
     , env: !env
-    ) :<f> list (a, p+l+r+1) =
+    ) :<f> list_vt (a, p+l+r+1) =
     case+ xs of // case+ mandates exhaustive pattern matching
-    | x' :: xs' => (
+    | ~list_vt_cons (x', xs') => (
         if cmp (x', x, env) <= 0 then
           part {env} {p-1,l+1,r} (x, xs', x' :: l, r, cmp, env)
         else
           part {env} {p-1,l,r+1} (x, xs', l, x' :: r, cmp, env)
         // end of [if]
-      ) // end of [::]
-    | nil () => (
-        list_append (qsrt (l, cmp, env), x :: qsrt (r, cmp, env))
+      ) // end of [list_vt_cons]
+    | ~list_vt_nil () => (
+        list_vt_append (qsrt (l, cmp, env), x :: qsrt (r, cmp, env))
       ) // end of [nil]
   (* end of [part] *)
 //
 in // in of [local]
 //
-implement{a} list_quicksort (xs, cmp, env) = qsrt (xs, cmp, env)
+implement{a}
+list_quicksort
+  (xs, cmp, env) = let
+  val xs = list_copy (xs) in qsrt (xs, cmp, env)
+end // end of [list_quicksort]
 //
 end // end of [local]
 
