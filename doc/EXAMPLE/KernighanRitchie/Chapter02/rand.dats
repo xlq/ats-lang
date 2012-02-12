@@ -41,8 +41,10 @@ in
 implement rand () = let
   val n = !next * 1103515245UL + 12345UL
   val () = !next := n
+  val quot = uint_of_ulint (n / 65536UL)
+  val quot = uint1_of_uint (quot)
 in
-  uint_of_ulint (n / 65536UL) uimod 32768
+  quot uimod 32768
 end // end of [rand]
 
 implement srand (seed) = !next := seed
