@@ -55,10 +55,10 @@ main () = () where {
   val ans = refcount_unref (r, x)
   val () = assert (ans = false)
   prval () = opt_unnone {T} (x)
+  val () = assert (1u = refcount_get_count (r1))
 //
   val () = fprint_strnref (stdout_ref, r1)
 //
-  val () = assert (1u = refcount_get_count (r1))
   val ans = refcount_unref (r1, x)
   val () = assert (ans = true)
   prval () = opt_unsome {T} (x)

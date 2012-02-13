@@ -386,6 +386,11 @@ libats_ngc_linmap_avltree: libats_ngc_linmap_avltree.dats
 	$(ATSCC) -O2 -o $@ $< && ./$@ 100000
 cleanall:: ; $(RMF) libats_ngc_linmap_avltree
 
+checkall:: libats_ngc_linmap_pavltree
+libats_ngc_linmap_pavltree: libats_ngc_linmap_pavltree.dats
+	$(ATSCC) -O2 -o $@ $< && ./$@ 100000
+cleanall:: ; $(RMF) libats_ngc_linmap_pavltree
+
 ######
 
 checkall:: libats_smlbas_array

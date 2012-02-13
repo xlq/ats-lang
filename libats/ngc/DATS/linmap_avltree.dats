@@ -36,7 +36,7 @@
 ** Contributed by Hongwei Xi (hwxi AT cs DOT bu DOT edu)
 ** Contributed by
 **   Artyom Shalkhakov (artyom DOT shalkhakov AT gmail DOT com)
-** Time: January, 2011 // based on a version done by HX in May, 2010
+** Time: January, 2012 // based on a version done by HX in May, 2010
 **
 *)
 
@@ -99,7 +99,7 @@ avltree_v_inc (key:t@ype, itm:viewt@ype, h:int, l:addr) =
 viewdef
 avltree_v_dec (key:t@ype, itm:viewt@ype, h:int, l:addr) =
   [h1:nat | h1 <= h; h <= h1+1] avltree_v (key, itm, h1, l)
-// end of [avltree_v_inc]
+// end of [avltree_v_dec]
 
 (* ****** ****** *)
 
