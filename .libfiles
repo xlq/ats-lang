@@ -390,14 +390,23 @@ libats/ngc/DATS/deque_arr.dats
 libats/ngc/SATS/slist.sats
 libats/ngc/DATS/slist.dats
 
-/* linear doubly-linked lists */
+/*
+** AS-2011:
+** linear doubly-linked lists
+*/
 libats/ngc/SATS/dlist.sats
 libats/ngc/DATS/dlist.dats
 
-/* linear avltree-based maps */
+/*
+** AS-2012-01:
+** linear avltree-based maps
+*/
 libats/ngc/SATS/linmap_avltree.sats
 libats/ngc/DATS/linmap_avltree.dats
-/* linear pavltree-based maps */
+/*
+** AS-2012-02:
+** linear pavltree-based maps
+*/
 libats/ngc/SATS/linmap_pavltree.sats
 libats/ngc/DATS/linmap_pavltree.dats
 
