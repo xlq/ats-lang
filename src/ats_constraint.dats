@@ -154,7 +154,7 @@ s3bexp_bneq (s3be1, s3be2) = begin case+ s3be1 of
         S3BEbadd (S3BEbmul (s3be1, _s3be2), S3BEbmul (_s3be1, s3be2))
       end // end of [_]
     end // end of [_]
-end // end of [s3bexp_beq]
+end // end of [s3bexp_bneq]
 
 (* ****** ****** *)
 

@@ -200,33 +200,28 @@ dataprop EXP2 (int, int) =
 //
 // HX: proven in [arith.dats]
 //
-prfun EXP2_istot {n:nat} (): [p:nat] EXP2 (n, p)
-prfun EXP2_isfun {n:nat} {p1,p2:int}
+prfun lemma_exp2_params :
+  {n:int}{p:int} EXP2 (n, p) -<prf> [n>=0;p>=1] void
+// end of [lemma_exp2_params]
+//
+prfun exp2_istot {n:nat} (): [p:nat] EXP2 (n, p)
+prfun exp2_isfun {n:nat} {p1,p2:int}
   (pf1: EXP2 (n, p1), pf2: EXP2 (n, p2)): [p1==p2] void
-// end of [EXP2_isfun]
-
+// end of [exp2_isfun]
 //
-// HX: proven in [arith.dats]
-//
-prfun EXP2_ispos
+prfun exp2_ispos
   {n:nat} {p:int} (pf: EXP2 (n, p)): [p >= 1] void
-// end of [EXP2_ispos]
-
+// end of [exp2_ispos]
 //
-// HX: proven in [arith.dats]
-//
-prfun EXP2_monotone
+prfun exp2_ismono
   {n1,n2:nat | n1 <= n2} {p1,p2:int}
   (pf1: EXP2 (n1, p1), pf2: EXP2 (n2, p2)): [p1 <= p2] void
-// end of [EXP2_monotone]
-
+// end of [exp2_ismono]
 //
-// HX: proven in [arith.dats]
-//
-prfun EXP2_mul
+prfun exp2_mul
   {n1,n2:nat | n1 <= n2} {p1,p2:nat} {p:int} (
   pf1: EXP2 (n1, p1), pf2: EXP2 (n2, p2), pf3: MUL (p1, p2, p)
-) : EXP2 (n1+n2, p) // end of [EXP2_mul]
+) : EXP2 (n1+n2, p) // end of [exp2_mul]
 
 (* ****** ****** *)
 

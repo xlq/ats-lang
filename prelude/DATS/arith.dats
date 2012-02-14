@@ -229,13 +229,30 @@ end // end of [mul_associate]
 ** the power-of-2 function
 *)
 
-implement EXP2_istot {n} () = istot {n} () where {
+implement
+lemma_exp2_params (pf) = let
+  prfun aux
+    {n:int}
+    {p:int}
+    .<max(n,0)>. (
+    pf: EXP2 (n, p)
+  ) : [n>=0;p>=1] void = case+ pf of
+    | EXP2ind (pf1) => aux (pf1) | EXP2bas () => ()
+  // end of [aux]
+in
+  aux (pf)
+end // end of [lemma_exp2_params]
+
+implement
+exp2_istot {n} () = istot {n} () where {
   prfun istot {n:nat} .<n>. (): [p:nat] EXP2 (n, p) =
     sif n > 0 then EXP2ind (istot {n-1} ()) else EXP2bas ()
-} // end of [pow2_istot]
+} // end of [exp2_istot]
 
-implement EXP2_isfun
-  (pf1, pf2) = isfun (pf1, pf2) where {
+implement
+exp2_isfun
+  (pf1, pf2) =
+  isfun (pf1, pf2) where {
   prfun isfun {n:nat} {p1,p2:int} .<n>.
     (pf1: EXP2 (n, p1), pf2: EXP2 (n, p2)): [p1==p2] void =
     case+ pf1 of
@@ -246,21 +263,15 @@ implement EXP2_isfun
         prval EXP2bas () = pf2 in (* nothing *)
       end // end of [EXP2bas]
   // end of [isfun]
-} // end of [EXP2_isfun]
+} // end of [exp2_isfun]
 
-implement EXP2_ispos
-  (pf) = ispos (pf) where {
-  prfun ispos
-    {n:nat} {p:int} .<n>.
-    (pf: EXP2 (n, p)): [p >= 1] void =
-    case+ pf of
-    | EXP2ind (pf) => ispos (pf)
-    | EXP2bas () => ()
-  // end of [ispos]
-} // end of [EXP2_ispos]
+implement
+exp2_ispos (pf) = lemma_exp2_params (pf)
 
-implement EXP2_monotone
-  (pf1, pf2) = lemma (pf1, pf2) where {
+implement
+exp2_ismono
+  (pf1, pf2) =
+  lemma (pf1, pf2) where {
   prfun lemma {n1,n2:nat | n1 <= n2} {p1,p2:int} .<n2>.
     (pf1: EXP2 (n1, p1), pf2: EXP2 (n2, p2)): [p1 <= p2] void =
     case+ pf2 of
@@ -269,9 +280,11 @@ implement EXP2_monotone
       end // end of [EXP2ind]
     | EXP2bas () => let prval EXP2bas () = pf1 in () end
   // end of [lemma]
-} // end of [pow2_monotone_lemma]
+} // end of [exp2_ismono]
 
-implement EXP2_mul (pf1, pf2, pf3) = let
+implement
+exp2_mul
+  (pf1, pf2, pf3) = let
   prfun lemma {n1,n2:nat} {p1,p2:nat} {p:int} .<n2>. (
       pf1: EXP2 (n1, p1), pf2: EXP2 (n2, p2), pf3: MUL (p1, p2, p)
     ) : [p>=0] EXP2 (n1+n2, p) = case+ pf2 of
@@ -287,7 +300,7 @@ implement EXP2_mul (pf1, pf2, pf3) = let
   // end of [lemma]
 in
   lemma (pf1, pf2, pf3)
-end // end of [EXP2_mul]
+end // end of [exp2_mul]
 
 (* ****** ****** *)
 
