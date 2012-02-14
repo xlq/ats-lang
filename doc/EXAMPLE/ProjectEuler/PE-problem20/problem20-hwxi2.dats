@@ -77,7 +77,7 @@ prfun lemma1 {k:int} .<>.
   prval pf_nm = mul_commute (pf) // n*m=p
   prval pf_k_nm = mul_make {k,p} ()
 //
-  prval () = mul_associate (pf_kn, pf_nm, pf_kn_m, pf_k_nm) // kn*m=k*p
+  prval () = mul_is_associative (pf_kn, pf_nm, pf_kn_m, pf_k_nm) // kn*m=k*p
 //
 in
   mul_commute (pf_kn_m)

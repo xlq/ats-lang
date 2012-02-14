@@ -126,8 +126,8 @@ btree_bheap_merge
       else if n > n1 then
         bheap_cons (pf1 | bt1, btree_bheap_merge (pf | bt, n, hp1, cmp))
       else let
-        prval () = EXP2_ispos (pf1)
-        prval () = EXP2_isfun (pf, pf1)
+        prval () = exp2_ispos (pf1)
+        prval () = exp2_isfun (pf, pf1)
         val bt = btree_btree_merge (bt, bt1, cmp)
       in
         btree_bheap_merge (EXP2ind (pf) | bt, n+1, hp1, cmp)
@@ -152,8 +152,8 @@ bheap_bheap_merge
     | bheap_nil () => hp1
     | bheap_cons (pf2 | bt2, hp21) => let
 //
-        prval () = EXP2_ispos (pf1)
-        prval () = EXP2_ispos (pf2)
+        prval () = exp2_ispos (pf1)
+        prval () = exp2_ispos (pf2)
 //
         val n1 = btree_rank (bt1)
         val n2 = btree_rank (bt2)
@@ -163,7 +163,7 @@ bheap_bheap_merge
         else if n1 > n2 then
           bheap_cons (pf2 | bt2, bheap_bheap_merge (hp1, hp21, cmp))
         else let
-          prval () = EXP2_isfun (pf1, pf2)
+          prval () = exp2_isfun (pf1, pf2)
           val bt12 = btree_btree_merge (bt1, bt2, cmp)
         in
           btree_bheap_merge (EXP2ind (pf1) | bt12, n1+1, bheap_bheap_merge (hp11, hp21, cmp), cmp)
@@ -186,7 +186,7 @@ bheap_find_min
   ) :<> void =
     case+ hp of
     | bheap_cons (pf |bt, hp) => let
-        prval () = EXP2_ispos (pf)
+        prval () = exp2_ispos (pf)
         val+ btnode (_, x, _) = bt
         val () = if compare_elt_elt<a> (x0, x, cmp) > 0 then (x0 := x)
       in
@@ -226,7 +226,7 @@ bheap_remove_min
   ) :<> void =
     case+ hp0 of
     | bheap_cons (pf | bt, hp) => let
-        prval () = EXP2_ispos (pf)
+        prval () = exp2_ispos (pf)
         val+ btnode (_, x, _) = bt
         val sgn = compare_elt_elt<a> (x0, x, cmp)
         val () = if sgn > 0 then (x0 := x; pos := pos+1)
@@ -255,7 +255,7 @@ bheap_remove_min
     } // end of [prval]
 //
     val+ bheap_cons (pf | bt, hp) = hp0
-    prval () = EXP2_ispos (pf)
+    prval () = exp2_ispos (pf)
   in
     if pos > 0 then let
       val (pfmin | hp) = remove (hp, pos-1, btmin)
@@ -312,7 +312,7 @@ funheap_size (hp) = let
     case+ hp of
     | bheap_cons (pf | bt, hp) => let
         val btnode (n, _, _) = bt; val (pf1 | p) = pow2 (n)
-        prval () = EXP2_isfun (pf, pf1)
+        prval () = exp2_isfun (pf, pf1)
       in
         p + aux (hp)
       end // end of [bheap_cons]
@@ -349,7 +349,7 @@ in
 //
 case+ hp of
 | bheap_cons (pf0 | _, _) => let
-    prval () = EXP2_ispos (pf0)
+    prval () = exp2_ispos (pf0)
     val (_(*pf*) | hp_new, btmin) = bheap_remove_min (hp, cmp)
     val btnode (_, x, bts) = btmin
     val () = res := x
@@ -360,7 +360,7 @@ case+ hp of
       ) :<> [sz:nat] bheap (a, 0, sz) =
         case+ bts of
         | btlst_cons (bt, bts) => let
-            prval pf = EXP2_istot () in loop (bts, bheap_cons (pf | bt, hp))
+            prval pf = exp2_istot () in loop (bts, bheap_cons (pf | bt, hp))
           end // end of [btlst_cons]
         | btlst_nil () => hp
       // end of [loop]

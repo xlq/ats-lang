@@ -129,7 +129,7 @@ prfun mul_distribute2 {m1,m2:int} {n:int} {p1,p2:int}
 (* ****** ****** *)
 
 prfun
-mul_associate
+mul_is_associative
   {x,y,z:int}
   {xy,yz,xy_z,x_yz:int} (
   pf1: MUL (x, y, xy)

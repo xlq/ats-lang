@@ -108,7 +108,7 @@ bheap_free
   case+ hp of
   | ~bheap_cons
       (pf | bt, hp) => let
-      prval () = EXP2_ispos (pf)
+      prval () = exp2_ispos (pf)
       val ~btnode (_, _, bts) = bt
     in
       btreelst_free (bts); bheap_free (hp)
@@ -167,8 +167,8 @@ btree_bheap_merge
       in
         hp
       end else let
-        prval () = EXP2_ispos (pf1)
-        prval () = EXP2_isfun (pf, pf1)
+        prval () = exp2_ispos (pf1)
+        prval () = exp2_isfun (pf, pf1)
         val bt1 = !p_bt1
         val bt = btree_btree_merge (bt, bt1, cmp)
         val hp1 = !p_hp1
@@ -196,8 +196,8 @@ bheap_bheap_merge
     | ~bheap_nil () => (fold@ (hp1); hp1)
     | bheap_cons (pf2 | !p_bt2, !p_hp21) => let
 //
-        prval () = EXP2_ispos (pf1)
-        prval () = EXP2_ispos (pf2)
+        prval () = exp2_ispos (pf1)
+        prval () = exp2_ispos (pf2)
 //
         val n1 = btree_rank<a> (!p_bt1)
         and n2 = btree_rank<a> (!p_bt2)
@@ -215,7 +215,7 @@ bheap_bheap_merge
         in
           hp2
         end else let
-          prval () = EXP2_isfun (pf1, pf2)
+          prval () = exp2_isfun (pf1, pf2)
           val bt12 = btree_btree_merge (!p_bt1, !p_bt2, cmp)
           val hp11 = !p_hp11 and hp21 = !p_hp21
           val () = free@ {a}{0}{0}{0}{1} (hp1)
@@ -241,7 +241,7 @@ bheap_find_min
   ) :<> void =
     case+ hp0 of
     | bheap_cons (pf | !p_bt, !p_hp) => let
-        prval () = EXP2_ispos (pf)
+        prval () = exp2_ispos (pf)
         val btnode (_, !p_x, _) = !p_bt
         val () = if compare_elt_elt<a> (x0, !p_x, cmp) > 0 then (x0 := !p_x)
         prval () = fold@ (!p_bt)
@@ -294,7 +294,7 @@ bheap_remove_min
   in
     case+ hp0 of
     | bheap_cons (pf | !p_bt, !p_hp) => let
-        prval () = EXP2_ispos (pf)
+        prval () = exp2_ispos (pf)
         val+ btnode (_, !p_x, _) = !p_bt
         val sgn = compare_elt_elt<a> (x0, !p_x, cmp)
         val () = if sgn > 0 then ($UN.ptrset<a> (&x0, $UN.ptrget<a>(p_x)); pos := pos+1)
@@ -335,7 +335,7 @@ bheap_remove_min
     } // end of [prval]
 //
     val+ bheap_cons (pf | !p_bt, !p_hp) = hp0
-    prval () = EXP2_ispos (pf)
+    prval () = exp2_ispos (pf)
   in
     if pos > 0 then let
       val (pfmin | ()) = remove (!p_hp, pos-1, btmin)
@@ -400,7 +400,7 @@ linheap_size (hp0) = let
     case+ hp0 of
     | bheap_cons (pf | !p_bt, !p_hp) => let
         val n = btree_rank<a> (!p_bt); val (pf1 | p) = pow2 (n)
-        prval () = EXP2_isfun (pf, pf1)
+        prval () = exp2_isfun (pf, pf1)
         val sz = p + aux (!p_hp)
       in
         fold@ (hp0); sz
@@ -444,7 +444,7 @@ in
 //
 case+ hp of
 | bheap_cons (pf0 | _, _) => let
-    prval () = EXP2_ispos (pf0)
+    prval () = exp2_ispos (pf0)
     prval () = fold@ (hp)
     val (_(*pf*) | btmin) = bheap_remove_min (hp, cmp)
     val ~btnode (_, x, bts) = btmin
@@ -456,7 +456,7 @@ case+ hp of
       ) :<> [sz:nat] bheap (a, 0, sz) =
         case+ bts of
         | ~btlst_cons (bt, bts) => let
-            prval pf = EXP2_istot () in loop (bts, bheap_cons (pf | bt, hp))
+            prval pf = exp2_istot () in loop (bts, bheap_cons (pf | bt, hp))
           end // end of [btlst_cons]
         | ~btlst_nil () => hp
       // end of [loop]

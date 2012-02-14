@@ -172,7 +172,8 @@ implement mul_distribute2 (pf1, pf2) =
 
 (* ****** ****** *)
 
-implement mul_associate {x,y,z}
+implement
+mul_is_associative {x,y,z}
   (pf_xy, pf_yz, pf_xy_z, pf_x_yz) = let
 //
   prfn dist {x1,x2:int;y:int} {x1y,x2y:int}
@@ -272,7 +273,8 @@ implement
 exp2_ismono
   (pf1, pf2) =
   lemma (pf1, pf2) where {
-  prfun lemma {n1,n2:nat | n1 <= n2} {p1,p2:int} .<n2>.
+  prfun lemma
+    {n1,n2:nat | n1 <= n2} {p1,p2:int} .<n2>.
     (pf1: EXP2 (n1, p1), pf2: EXP2 (n2, p2)): [p1 <= p2] void =
     case+ pf2 of
     | EXP2ind (pf2) => begin case+ pf1 of
@@ -285,9 +287,10 @@ exp2_ismono
 implement
 exp2_mul
   (pf1, pf2, pf3) = let
-  prfun lemma {n1,n2:nat} {p1,p2:nat} {p:int} .<n2>. (
-      pf1: EXP2 (n1, p1), pf2: EXP2 (n2, p2), pf3: MUL (p1, p2, p)
-    ) : [p>=0] EXP2 (n1+n2, p) = case+ pf2 of
+  prfun lemma
+    {n1,n2:nat} {p1,p2:nat} {p:int} .<n2>. (
+    pf1: EXP2 (n1, p1), pf2: EXP2 (n2, p2), pf3: MUL (p1, p2, p)
+  ) : [p>=0] EXP2 (n1+n2, p) = case+ pf2 of
     | EXP2ind {n21} {p21} (pf21) => let // n2 = n21+1; p2 = p21 + p21
         prval pf31 = mul_istot {p1,p21} ()
         prval pf32 = mul_distribute (pf31, pf31)
