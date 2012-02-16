@@ -304,7 +304,7 @@ funset_is_equal
   (xs1, xs2, cmp) = let
   fun aux {n1,n2:nat} .<n1+n2>. (
     xs1: list (a, n1), xs2: list (a, n2)
-  ) :<cloref> bool =
+  ) :<cloref> bool = (
     case+ xs1 of
     | list_cons (x1, xs11) => (
       case+ xs2 of
@@ -317,8 +317,8 @@ funset_is_equal
       ) // end of [list_cons]
     | list_nil () => (case+ xs2 of
       | list_cons _ => false | list_nil () => true
-      )
-  // end of [aux]
+      ) // end of [list_nil]
+  ) // end of [aux]
 in
   aux (xs1, xs2)
 end // end of [funset_is_subset]
@@ -330,4 +330,4 @@ funset_listize (xs) = list_copy<a> (xs)
 
 (* ****** ****** *)
 
-(* end of [funset_listord.sats] *)
+(* end of [funset_listord.dats] *)

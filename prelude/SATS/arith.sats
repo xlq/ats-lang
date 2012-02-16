@@ -51,6 +51,9 @@ dataprop MUL (int, int, int) =
 
 (* ****** ****** *)
 
+(*
+** HX: [mul_make] can be proven based on [mul_istot] and [mul_elim]
+*)
 praxi mul_make : {m,n:int} () -<prf> MUL (m, n, m*n)
 praxi mul_elim : {m,n:int} {p:int} MUL (m, n, p) -<prf> [p == m*n] void
 

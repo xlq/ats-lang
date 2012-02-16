@@ -932,14 +932,14 @@ stadef crypt = crypt_viewt0ype_viewt0ype
 (* ****** ****** *)
 //
 // HX:
-// [lazy(T)] : suspended computation with a value of type T
+// [lazy(T)] : suspended computation of a value of type T
 //
 abstype
 lazy_t0ype_type (t@ype+) // boxed type // unnamed
 stadef lazy = lazy_t0ype_type
 //
 // HX: [lazy_vt(VT)] :
-// suspended computation with a linear value of viewtype VT
+// suspended computation of a linear value of viewtype VT
 //
 absviewtype
 lazy_viewt0ype_viewtype

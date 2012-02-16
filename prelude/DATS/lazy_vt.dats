@@ -72,7 +72,7 @@ implement{a} lazy_vt_force (r) = !r
 (* ****** ****** *)
 
 extern castfn
-list_vt_cons_unfold_of_stream_vt_cons_unfold {l1,l2:addr}
+list_vt_cons_of_stream_vt_cons {l1,l2:addr}
   (x: stream_vt_cons_unfold (l1, l2)):<> list_vt_cons_unfold (l1, l2)
 // casting one data constructor to another
 
@@ -87,14 +87,13 @@ list_vt_of_stream_vt (xs) = let
     | stream_vt_cons (!p_x, !p_xs1) => let
         val () = n := n + 1
         val xs1 = !p_xs1
-        prval pf_xs1 = list_vt_of_lazy_vt (view@ !p_xs1) where {
+        prval pf_xs1 =
+          list_vt_of_lazy_vt (view@ !p_xs1) where {
           extern prfun list_vt_of_lazy_vt
             {l:addr} (pf: stream_vt a? @ l): List_vt a? @ l
         } // end of [prval]
         val () = !p_xs1 := loop (xs1, n)
-        val xs_cons = begin
-          list_vt_cons_unfold_of_stream_vt_cons_unfold (xs_con)
-        end // end of [val]
+        val xs_cons = list_vt_cons_of_stream_vt_cons (xs_con)
       in
         fold@ xs_cons; xs_cons
       end // end of [stream_cons]
@@ -107,11 +106,7 @@ end // end of [list_vt_of_stream_vt]
 
 (* ****** ****** *)
 
-implement{a}
-stream_vt_free (xs) = case+ !xs of
-  | ~stream_vt_cons (_, xs) => stream_vt_free xs
-  | ~stream_vt_nil () => ()
-// end of [stream_vt_free]
+implement{a} stream_vt_free (xs) = ~xs
 
 (* ****** ****** *)
 
@@ -145,12 +140,14 @@ end // end of [stream_vt_filter_con]
 in // in of [local]
 
 implement{a}
-stream_vt_filter_fun (xs, pred) =
-  $ldelay (stream_vt_filter_cloptr_con<a> (xs, lam x => pred x), ~xs)
-// end of [stream_vt_filter_fun]
+stream_vt_filter_fun
+  (xs, pred) = $ldelay (
+  stream_vt_filter_cloptr_con<a> (xs, lam x => pred x), ~xs
+) // end of [stream_vt_filter_fun]
 
 implement{a}
-stream_vt_filter_cloptr (xs, pred) = $ldelay (
+stream_vt_filter_cloptr
+  (xs, pred) = $ldelay (
   stream_vt_filter_cloptr_con<a> (xs, pred), (cloptr_free pred; ~xs)
 ) // end of [stream_vt_filter_cloptr]
 
