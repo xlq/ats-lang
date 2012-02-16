@@ -193,6 +193,8 @@ in
   aux (xs1, xs2)
 end // end of [funset_union]
 
+(* ****** ****** *)
+
 implement{a}
 funset_intersect
   (xs1, xs2, cmp) = let
@@ -220,6 +222,8 @@ in
   aux (xs1, xs2)
 end // end of [funset_intersect]
 
+(* ****** ****** *)
+
 implement{a}
 funset_diff
   (xs1, xs2, cmp) = let
@@ -246,6 +250,8 @@ funset_diff
 in
   aux (xs1, xs2)
 end // end of [funset_diff]
+
+(* ****** ****** *)
 
 implement{a}
 funset_symdiff

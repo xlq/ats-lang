@@ -176,6 +176,149 @@ funmset_isnot_member
 (* ****** ****** *)
 
 implement{a}
+funmset_insert
+  (nxs, x0, cmp) = let
+//
+typedef nx = @(Pos, a)
+//
+fun aux
+  {k:nat} .<k>. (
+  nxs: list (nx, k)
+) :<cloref> List (nx) =
+  case+ nxs of
+  | list_cons (nx, nxs1) => let
+      val sgn = compare_elt_elt (x0, nx.1, cmp)
+    in
+      if sgn < 0 then
+        list_cons ((1, x0), nxs)
+      else if sgn > 0 then let
+        val nxs1 = aux (nxs1) in list_cons (nx, nxs1)
+      end else let
+        val nx = (nx.0 + 1, nx.1) in list_cons (nx, nxs1)
+      end (* end of [if] *)
+    end // end of [list_cons]
+  | list_nil () => list_cons ((1, x0), list_nil)
+// end of [aux]
+//
+in
+  nxs := aux (nxs)
+end // end of [funmset_insert]
+
+(* ****** ****** *)
+
+implement{a}
+funmset_remove
+  (nxs, x0, cmp) = let
+//
+typedef nx = @(Pos, a)
+//
+fun aux {k:nat} .<k>. (
+  nxs: list (nx, k), flag: &int
+) :<cloref> List (nx) =
+  case nxs of
+  | list_cons (nx, nxs1) => let
+      val sgn = compare_elt_elt (x0, nx.1, cmp)
+    in
+      if sgn < 0 then nxs
+      else if sgn > 0 then let
+        val flag0 = flag
+        val nxs1 = aux (nxs1, flag)
+      in
+        if flag = flag0 then nxs else list_cons (nx, nxs1)
+      end else let
+        val n1 = nx.0 - 1
+        val () = flag := flag + 1
+      in
+        if n1 > 0 then list_cons ((n1, nx.1), nxs1) else nxs1
+      end (* end of [if] *)
+   end // end of [list_cons]
+  | list_nil () => list_nil ()
+// end of [aux]
+//
+var flag: int = 0
+val () = nxs := aux (nxs, flag)
+//
+in
+  if flag > 0 then true else false
+end // end of [funmset_remove]
+
+(* ****** ****** *)
+
+implement{a}
+funmset_union
+  (nxs1, nxs2, cmp) = let
+//
+typedef nx = @(Pos, a)
+//
+fun aux {k1,k2:nat} .<k1+k2>. (
+  nxs1: list (nx, k1), nxs2: list (nx, k2)
+) :<cloref> List (nx) =
+  case nxs1 of
+  | list_cons (nx1, nxs11) => (
+    case+ nxs2 of
+    | list_cons (nx2, nxs21) => let
+        val sgn = compare_elt_elt (nx1.1, nx2.1, cmp)
+      in
+        if sgn < 0 then
+          list_cons (nx1, aux (nxs11, nxs2))
+        else if sgn > 0 then
+          list_cons (nx2, aux (nxs1, nxs21))
+        else let
+          val nx12 = (nx1.0 + nx2.0, nx1.1)
+        in
+          list_cons (nx12, aux (nxs11, nxs21))
+        end (* end of [if] *)
+      end // end of [list_cons]
+    | list_nil () => nxs1
+  ) // end of [list_cons]
+| list_nil () => nxs2
+//
+in
+  aux (nxs1, nxs2)
+end // end of [funmset_union]
+
+(* ****** ****** *)
+
+implement{a}
+funmset_intersect
+  (nxs1, nxs2, cmp) = let
+//
+typedef nx = @(Pos, a)
+//
+fun aux {k1,k2:nat} .<k1+k2>. (
+  nxs1: list (nx, k1), nxs2: list (nx, k2)
+) :<cloref> List (nx) =
+  case nxs1 of
+  | list_cons (nx1, nxs11) => (
+    case+ nxs2 of
+    | list_cons (nx2, nxs21) => let
+        val sgn =
+          compare_elt_elt (nx1.1, nx2.1, cmp)
+        // end of [val]
+      in
+        if sgn < 0 then
+          aux (nxs11, nxs2)
+        else if sgn > 0 then
+          aux (nxs1, nxs21)
+        else let
+          val nx12 = (
+            if nx1.0 <= nx2.0 then nx1 else nx2
+          ) : nx // end of [val]
+        in
+          list_cons (nx1, aux (nxs11, nxs21))
+        end // end of [if]
+      end // end of [list_cons]
+    | list_nil () => list_nil ()
+  ) // end of [list_cons]
+| list_nil () => list_nil ()
+//
+in
+  aux (nxs1, nxs2)
+end // end of [funmset_intersect]
+
+(* ****** ****** *)
+
+implement{a}
 funmset_listize (nxs) = let
   typedef nx = @(Pos, a)
   viewtypedef res = List_vt (a)
