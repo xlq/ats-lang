@@ -301,6 +301,13 @@ cleanall:: ; $(RMF) libats_linmap_rbtree
 
 ######
 
+checkall:: libats_linset_listord
+libats_linset_listord: libats_linset_listord.dats
+	$(ATSCC) -D_ATS_GCATS -O2 -o $@ $< && ./$@ 1000
+cleanall:: ; $(RMF) libats_linmap_listord
+
+######
+
 checkall:: libats_linqueue_arr
 libats_linqueue_arr: libats_linqueue_arr.dats
 	$(ATSCC) -D_ATS_GCATS -O2 -o $@ $< && ./$@ 1000000

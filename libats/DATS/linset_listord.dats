@@ -51,6 +51,11 @@
 
 (* ****** ****** *)
 
+staload
+_(*anon*) = "prelude/DATS/list_vt.dats"
+
+(* ****** ****** *)
+
 staload "libats/SATS/linset_listord.sats"
 
 (* ****** ****** *)
@@ -76,6 +81,53 @@ linset_make_sing (x) = list_vt_sing (x)
 (* ****** ****** *)
 
 implement{a}
+linset_size (xs) = size_of_int1 (list_vt_length (xs))
+
+(* ****** ****** *)
+
+implement{a}
+linset_is_member
+  (xs, x0, cmp) = let
+//
+fun loop
+  {n:nat} .<n>. (
+  xs: !list_vt (a, n)
+) :<cloref> bool =
+  case+ xs of
+  | list_vt_cons
+      (x, !p_xs) => let
+      val sgn = compare_elt_elt<a> (x0, x, cmp)
+    in
+      if sgn < 0 then let
+        prval () = fold@ {a} (xs) in false
+      end else if sgn > 0 then let
+        val ans = loop (!p_xs)
+        prval () = fold@ {a} (xs)
+      in
+        ans
+      end else let
+        prval () = fold@ {a} (xs) in true // HX: x0 = x
+      end (* end of [if] *)
+    end // end of [list_vt_cons]
+  | list_vt_nil () => (fold@ (xs); false)
+// end of [loop]
+in
+  loop (xs)
+end // end of [linset_is_member]
+
+implement{a}
+linset_isnot_member
+  (xs, x0, cmp) = ~linset_is_member<a> (xs, x0, cmp)
+// end of [linset_isnot_member]
+
+(* ****** ****** *)
+
+implement{a} linset_copy (xs) = list_vt_copy<a> (xs)
+implement{a} linset_free (xs) = list_vt_free<a> (xs)
+
+(* ****** ****** *)
+
+implement{a}
 linset_insert
   (xs, x0, cmp) = let
   fun ins {n:nat} .<n>. ( // tail-recursive
@@ -83,7 +135,7 @@ linset_insert
   ) :<cloref> #[n1:nat | n <= n1; n1 <= n+1] bool =
     case+ xs of
     | list_vt_cons (x, !p_xs) => let
-        val sgn = compare_elt_elt (x0, x, cmp)
+        val sgn = compare_elt_elt<a> (x0, x, cmp)
       in
         if sgn < 0 then let
           prval () = fold@ (xs)
@@ -114,7 +166,7 @@ linset_remove
   ) :<cloref> #[n1:nat | n1 <= n; n <= n1+1] bool =
     case+ xs of
     | list_vt_cons (x, !p_xs) => let
-        val sgn = compare_elt_elt (x0, x, cmp)
+        val sgn = compare_elt_elt<a> (x0, x, cmp)
       in
         if sgn < 0 then let
           prval () = fold@ (xs) in false
@@ -138,6 +190,57 @@ end // end of [linset_remove]
 
 (* ****** ****** *)
 
+implement{a}
+linset_union
+  (xs1, xs2, cmp) = let
+//
+viewtypedef res = List_vt (a)
+fun loop
+  {n1,n2:nat} .<n1+n2>. (
+  xs1: list_vt (a, n1), xs2: list_vt (a, n2), res: &res? >> res
+) :<cloref> void =
+  case+ xs1 of
+  | list_vt_cons (x1, !p_xs1) => (
+    case+ xs2 of
+    | list_vt_cons (x2, !p_xs2) => let
+        val sgn = compare_elt_elt<a> (x1, x2, cmp)
+      in
+        if sgn < 0 then let
+          val xs11 = !p_xs1
+          prval () = fold@ {a} (xs2)
+          val () = loop (xs11, xs2, !p_xs1)
+          prval () = fold@ {a} (xs1)
+        in
+          res := xs1
+        end else if sgn > 0 then let
+          prval () = fold@ {a} (xs1)
+          val xs21 = !p_xs2
+          val () = loop (xs1, xs21, !p_xs2)
+          prval () = fold@ (xs2)
+        in
+          res := xs2
+        end else let // x1 = x2
+          val xs11 = !p_xs1
+          val xs21 = !p_xs2
+          val () = free@ {a}{0} (xs2)
+          val () = loop (xs11, xs21, !p_xs1)
+          prval () = fold@ (xs1)
+        in
+          res := xs1
+        end // end of [if]
+      end // end of [list_vt_cons]
+    | ~list_vt_nil () => (fold@ (xs1); res := xs1)
+    ) // end of [list_vt_cons]
+  | ~list_vt_nil () => (res := xs2)
+// end of [loop]
+var res: res // uninitialized
+val () = loop (xs1, xs2, res)
+in
+  res
+end // end of [linset_union]
+
+(* ****** ****** *)
+
 local
 //
 staload UN = "prelude/SATS/unsafe.sats"
@@ -155,7 +258,7 @@ linset_is_subset
     | list_cons (x1, xs11) => (
       case+ xs2 of
       | list_cons (x2, xs21) => let
-          val sgn = compare_elt_elt (x1, x2, cmp)
+          val sgn = compare_elt_elt<a> (x1, x2, cmp)
         in
           if sgn < 0 then false
           else if sgn > 0 then loop (xs1, xs21)
@@ -182,7 +285,7 @@ linset_is_equal
     | list_cons (x1, xs11) => (
       case+ xs2 of
       | list_cons (x2, xs21) => let
-          val sgn = compare_elt_elt (x1, x2, cmp)
+          val sgn = compare_elt_elt<a> (x1, x2, cmp)
         in
           if sgn = 0 then loop (xs11, xs21) else false
         end // end of [list_cons]

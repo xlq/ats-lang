@@ -50,10 +50,6 @@
 
 (* ****** ****** *)
 
-sortdef t0p = t@ype
-
-(* ****** ****** *)
-
 absviewtype
 set_t0ype_viewtype (elt: t@ype+)
 stadef set = set_t0ype_viewtype
@@ -62,18 +58,18 @@ stadef set = set_t0ype_viewtype
 
 typedef cmp (a:t@ype) = (a, a) -<cloref> int
 
-fun{a:t0p}
+fun{a:t@ype}
 compare_elt_elt (x1: a, x2: a, cmp: cmp (a)):<> int
 
 (* ****** ****** *)
 
 fun{} linset_make_nil {a:t@ype} ():<> set (a)
-fun{a:t0p} linset_make_sing (x0: a):<> set (a) // singleton set
+fun{a:t@ype} linset_make_sing (x0: a):<> set (a) // singleton set
 
 (* ****** ****** *)
 
-fun{} linset_is_empty {a:t0p} (xs: !set a):<> bool
-fun{} linset_isnot_empty {a:t0p} (xs: !set a):<> bool
+fun{} linset_is_empty {a:t@ype} (xs: !set a):<> bool
+fun{} linset_isnot_empty {a:t@ype} (xs: !set a):<> bool
 
 (* ****** ****** *)
 //
@@ -82,10 +78,15 @@ fun{a:t@ype} linset_size (xs: !set a):<> size_t // the size of the set
 //
 (* ****** ****** *)
 
-fun{a:t0p}
+fun{a:t@ype}
 linset_is_member (xs: !set a, x0: a, cmp: cmp a):<> bool
-fun{a:t0p}
+fun{a:t@ype}
 linset_isnot_member (xs: !set a, x0: a, cmp: cmp a):<> bool
+
+(* ****** ****** *)
+
+fun{a:t@ype}
+linset_copy (xs: !set (a)):<> set (a)
 
 (* ****** ****** *)
 

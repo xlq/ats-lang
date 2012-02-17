@@ -1277,9 +1277,9 @@ fn s2exp_metlt_reduce {n:nat}
             )
           end // end of [lt = 0]
         | _ when lt > 0 => s2p_lt (* true *) // end of [lt > 0]
-        | _ (* lt < 0 *) => begin
-            if lte > 0 then auxlst (s2es1, s2es2) else s2p_lte (* false *)
-          end // end of [lt < 0]
+        | _ (* lt < 0 *) => // HX: lte != 0
+            if lte >= 0 then auxlst (s2es1, s2es2) else s2p_lte (* false *)
+          // end of [lt < 0]
       end // end of [list_cons]
     | list_nil () => s2exp_bool false
   end // end of [auxlst]
