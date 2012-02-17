@@ -31,7 +31,7 @@
 
 (*
 **
-** A set implementation based on AVL trees
+** A linear set implementation based on AVL trees
 **
 ** Contributed by Hongwei Xi (hwxi AT cs DOT bu DOT edu)
 ** Time: October, 2011
@@ -104,7 +104,11 @@ set_t0ype_type
 
 (* ****** ****** *)
 
-implement{} linset_make_nil () = E ()
+implement{}
+linset_make_nil () = E ()
+
+implement{a}
+linset_make_sing (x) = B (1, x, E (), E ())
 
 (* ****** ****** *)
 

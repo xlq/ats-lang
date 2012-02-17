@@ -342,6 +342,10 @@ libats/DATS/linmap_rbtree.dats
 libats/SATS/linset_avltree.sats
 libats/DATS/linset_avltree.dats
 
+/* linear set implementation based on ordered lists */
+libats/SATS/linset_listord.sats
+libats/DATS/linset_listord.dats
+
 /*
 ** linear ordset implementation based on randomized bstrees
 ** note that the flag __USE_MISC needs to be set in order to
