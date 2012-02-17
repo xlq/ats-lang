@@ -372,30 +372,37 @@ fn s2cfdeflst_push (fds0: &s2cfdeflst_vt): void = begin
   fds0 := S2CFDEFLSTmark (fds0)
 end // end of [s2cfdeflst_push]
 
-fun s2cfdeflst_find
-  (fds0: &s2cfdeflst_vt, s2c0: s2cst_t, s2es0: s2explst)
-  : Option_vt s2var_t = begin case+ fds0 of
-  | S2CFDEFLSTcons (s2c, s2es, s2v, _, !fds) => let
-      val cond = (
-        if eq_s2cst_s2cst (s2c0, s2c) then s2explst_syneq (s2es, s2es0) else false
-      ) : bool
-    in
-      if cond then begin
-        fold@ fds0; Some_vt s2v
-      end else let
-        val ans = s2cfdeflst_find (!fds, s2c0, s2es0)
-      in
-        fold@ fds0; ans
-      end (* end of [if] *)
-    end // end of [S2CFDEFLSTcons]
-  | S2CFDEFLSTmark (!fds) => let
+fun s2cfdeflst_find (
+  fds0: &s2cfdeflst_vt
+, s2c0: s2cst_t, s2es0: s2explst
+) : Option_vt s2var_t = let
+in
+//
+case+ fds0 of
+| S2CFDEFLSTcons
+    (s2c, s2es, s2v, _, !fds) => let
+    val test = (
+      if eq_s2cst_s2cst (s2c0, s2c)
+        then s2explst_syneq (s2es0, s2es) else false
+    ) : bool // end of [val]
+  in
+    if test then begin
+      fold@ fds0; Some_vt s2v
+    end else let
       val ans = s2cfdeflst_find (!fds, s2c0, s2es0)
     in
       fold@ fds0; ans
-    end // end of [S2CFDEFLSTmark]
-  | S2CFDEFLSTnil () => begin
-      fold@ fds0; None_vt ()
-    end // end of [S2CFDEFLSTnil]
+    end (* end of [if] *)
+  end // end of [S2CFDEFLSTcons]
+| S2CFDEFLSTmark (!fds) => let
+    val ans = s2cfdeflst_find (!fds, s2c0, s2es0)
+  in
+    fold@ fds0; ans
+  end // end of [S2CFDEFLSTmark]
+| S2CFDEFLSTnil () => (
+    fold@ fds0; None_vt ()
+  ) // end of [S2CFDEFLSTnil]
+//
 end // end of [s2cfdeflst_find]
 
 (* ****** ****** *)

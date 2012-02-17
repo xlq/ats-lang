@@ -54,8 +54,11 @@ compare_elt_elt (x1: a, x2: a, cmp: cmp (a)):<> int
 (* ****** ****** *)
 
 fun{} funmset_make_nil {a:t@ype} ():<> mset (a)
-fun{a:t@ype} funmset_make_sing (x0: a):<> mset (a) // singleton set
-fun{a:t@ype} funmset_make_list (xs: List a, cmp: cmp a):<> mset (a)
+fun{a:t@ype} funmset_make_sing (x: a):<> mset (a)
+fun{a:t@ype}
+funmset_make_pair (x1: a, x2: a, cmp: cmp a):<> mset (a)
+fun{a:t@ype}
+funmset_make_list (xs: List a, cmp: cmp a):<> mset (a)
 
 (* ****** ****** *)
 

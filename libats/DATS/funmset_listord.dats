@@ -71,6 +71,28 @@ implement{} funmset_make_nil () = list_nil ()
 implement{a} funmset_make_sing (x) = list_cons ((1, x), list_nil)
 
 implement{a}
+funmset_make_pair
+  (x1, x2, cmp) = let
+  val sgn =
+    compare_elt_elt (x1, x2, cmp)
+  // end of [val]
+in
+//
+if sgn < 0 then let
+  val nx1 = (1, x1) and nx2 = (1, x2)
+in
+  list_pair (nx1, nx2)
+end else if sgn > 0 then let
+  val nx1 = (1, x1) and nx2 = (1, x2)
+in
+  list_pair (nx2, nx1)
+end else let
+  val nx = @(2, x1) in list_sing (nx)
+end // end of [if]
+//
+end // end of [funmset_make_pair]
+
+implement{a}
 funmset_make_list
   (xs, cmp) = let
   var env: ptr = null
