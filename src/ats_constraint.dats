@@ -1373,7 +1373,7 @@ in
     in
       None_vt ()
     end // end of [_]
-end // end of [s2iexp_make_s2exp]
+end // end of [s3iexp_make_s2exp]
 
 (* ****** ****** *)
 
@@ -2103,7 +2103,7 @@ in
       in
         c3str_solve_itmlst (loc0, s2vs, s3bes, s3is, s2cs, fds, unsolved, errno)
       end // end of [S3ITEMsVar]
-    end // end of [lost_cons]
+    end // end of [list_cons]
   | list_nil () => ~1(*solved*)
 end // end of [c3str_solve_itmlst]
 

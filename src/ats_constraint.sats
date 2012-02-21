@@ -208,6 +208,7 @@ dataviewtype s2cfdeflst_vt =
 
 fun s3aexp_make_s2exp
   (s2e: s2exp, s2cs: &s2cstlst, fds: &s2cfdeflst_vt): s3aexpopt_vt
+// end of [s3aexp_make_s2exp]
 
 fun s3bexp_make_s2exp
   (s2e: s2exp, s2cs: &s2cstlst, fds: &s2cfdeflst_vt): s3bexpopt_vt
@@ -216,6 +217,7 @@ fun s3bexp_make_h3ypo
 
 fun s3iexp_make_s2exp
   (s2e: s2exp, s2cs: &s2cstlst, fds: &s2cfdeflst_vt): s3iexpopt_vt
+// end of [s3iexp_make_s2exp]
 
 (* ****** ****** *)
 

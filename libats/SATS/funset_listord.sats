@@ -107,6 +107,26 @@ fun{a:t@ype}
 funset_is_equal (xs1: set (a), xs2: set (a), cmp: cmp (a)):<> bool
 
 (* ****** ****** *)
+(*
+** set ordering induced by the ordering on elements
+*)
+fun{a:t@ype}
+funset_compare
+  (xs1: set (a), xs2: set (a), cmp: cmp (a)):<> int
+// end of [funset_compare]
+
+(* ****** ****** *)
+
+fun{a:t@ype}
+funset_foreach_funenv
+  {v:view} {vt:viewtype} (
+  pf: !v 
+| xs: set (a)
+, f: (!v | a, !vt) -<fun> void
+, env: !vt
+) :<> void // end of [funset_foreach_funenv]
+
+(* ****** ****** *)
 //
 castfn funset2list {a:t@ype} (xs: set(a)): List (a)
 //

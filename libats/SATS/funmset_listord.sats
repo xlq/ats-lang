@@ -106,7 +106,19 @@ funmset_is_subset
 // end of [funmset_is_subset]
 
 fun{a:t@ype}
-funmset_is_equal (xs1: mset (a), mxs2: mset (a), cmp: cmp (a)):<> bool
+funmset_is_equal
+  (xs1: mset (a), mxs2: mset (a), cmp: cmp (a)):<> bool
+// end of [funmset_is_equal]
+
+(* ****** ****** *)
+
+(*
+** multiset ordering induced by the ordering on elements
+*)
+fun{a:t@ype}
+funmset_compare
+  (xs1: mset (a), xs2: mset (a), cmp: cmp (a)):<> int
+// end of [funmset_compare]
 
 (* ****** ****** *)
 //

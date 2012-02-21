@@ -65,10 +65,15 @@ assume
 set_t0ype_type (elt: t@ype) = List (elt)
 
 (* ****** ****** *)
+//
+// HX: a set is represented as a sorted list in descending order
+//
+(* ****** ****** *)
 
-implement{} funset_make_nil () = list_nil ()
-
-implement{a} funset_make_sing (x) = list_cons (x, list_nil)
+implement{}
+funset_make_nil () = list_nil ()
+implement{a}
+funset_make_sing (x) = list_cons (x, list_nil)
 
 implement{a}
 funset_make_list
@@ -76,8 +81,8 @@ funset_make_list
 //
 var env: ptr = null
 var !p_clo = @lam
-  (x1: &a, x2: &a): int =<clo> ~cmp (x1, x2)
-val xs = list_copy (xs) // HX: [xs] is decending!
+  (x1: &a, x2: &a): int =<clo> cmp (x1, x2)
+val xs = list_copy (xs) // HX: [xs] is ascending!
 //
 fun loop1 {m:pos} .<m,0>. (
   xs: list_vt (a, m), ys: List_vt (a), cmp: cmp a
@@ -96,7 +101,7 @@ and loop2 {n:nat} .<n,1>. (
   | list_vt_cons (x, !p_xs) => let
       val sgn = compare_elt_elt (x0, x, cmp)
     in
-      if sgn > 0 then let // HX: [xs] is decending!
+      if sgn < 0 then let // HX: [xs] is ascending!
         prval () = fold@ (xs) in loop1 (xs, ys, cmp)
       end else let
         val xs1 = !p_xs
@@ -132,7 +137,7 @@ funset_is_member
     (xs: list (a, n)):<cloref> bool = case+ xs of
     | list_cons (x, xs) => let
         val sgn = compare_elt_elt (x0, x, cmp) in
-        if sgn < 0 then false else (if sgn > 0 then aux (xs) else true)
+        if sgn > 0 then false else (if sgn < 0 then aux (xs) else true)
       end // end of [list_cons]
     | list_nil () => false
   // end of [aux]
@@ -155,9 +160,9 @@ funset_insert
     | list_cons (x, xs1) => let
         val sgn = compare_elt_elt (x0, x, cmp)
       in
-        if sgn < 0 then let
+        if sgn > 0 then let
           val () = flag := flag + 1 in list_cons (x0, xs)
-        end else if sgn > 0 then let
+        end else if sgn < 0 then let
           val flag0 = flag
           val xs1 = aux (xs1, flag)
         in
@@ -186,8 +191,8 @@ funset_remove
     | list_cons (x, xs1) => let
         val sgn = compare_elt_elt (x0, x, cmp)
       in
-        if sgn < 0 then xs
-        else if sgn > 0 then let
+        if sgn > 0 then xs
+        else if sgn < 0 then let
           val flag0 = flag
           val xs1 = aux (xs1, flag)
         in
@@ -219,9 +224,9 @@ funset_union
       | list_cons (x2, xs21) => let
           val sgn = compare_elt_elt (x1, x2, cmp)
         in
-          if sgn < 0 then
+          if sgn > 0 then
             list_cons (x1, aux (xs11, xs2))
-          else if sgn > 0 then
+          else if sgn < 0 then
             list_cons (x2, aux (xs1, xs21))
           else
             list_cons (x1, aux (xs11, xs21))
@@ -249,9 +254,9 @@ funset_intersect
       | list_cons (x2, xs21) => let
           val sgn = compare_elt_elt (x1, x2, cmp)
         in
-          if sgn < 0 then
+          if sgn > 0 then
             aux (xs11, xs2)
-          else if sgn > 0 then
+          else if sgn < 0 then
             aux (xs1, xs21)
           else
             list_cons (x1, aux (xs11, xs21))
@@ -279,9 +284,9 @@ funset_diff
       | list_cons (x2, xs21) => let
           val sgn = compare_elt_elt (x1, x2, cmp)
         in
-          if sgn < 0 then
+          if sgn > 0 then
             list_cons (x1, aux (xs11, xs2))
-          else if sgn > 0 then
+          else if sgn < 0 then
             aux (xs1, xs21)
           else
             aux (xs11, xs21)
@@ -309,9 +314,9 @@ funset_symdiff
       | list_cons (x2, xs21) => let
           val sgn = compare_elt_elt (x1, x2, cmp)
         in
-          if sgn < 0 then
+          if sgn > 0 then
             list_cons (x1, aux (xs11, xs2))
-          else if sgn > 0 then
+          else if sgn < 0 then
             list_cons (x2, aux (xs1, xs21))
           else
             aux (xs11, xs21)
@@ -339,8 +344,8 @@ funset_is_subset
       | list_cons (x2, xs21) => let
           val sgn = compare_elt_elt (x1, x2, cmp)
         in
-          if sgn < 0 then false
-          else if sgn > 0 then aux (xs1, xs21)
+          if sgn > 0 then false
+          else if sgn < 0 then aux (xs1, xs21)
           else aux (xs11, xs21)
         end
       | list_nil () => false
@@ -354,16 +359,16 @@ implement{a}
 funset_is_equal
   (xs1, xs2, cmp) = let
   fun aux // tail-recursive
-    {n1,n2:nat} .<n1+n2>. (
+    {n1,n2:nat} .<n1>. (
     xs1: list (a, n1), xs2: list (a, n2)
   ) :<cloref> bool = (
     case+ xs1 of
-    | list_cons (x1, xs11) => (
+    | list_cons (x1, xs1) => (
       case+ xs2 of
-      | list_cons (x2, xs21) => let
+      | list_cons (x2, xs2) => let
           val sgn = compare_elt_elt (x1, x2, cmp)
         in
-          if sgn = 0 then aux (xs11, xs21) else false
+          if sgn = 0 then aux (xs1, xs2) else false
         end
       | list_nil () => false
       ) // end of [list_cons]
@@ -374,6 +379,51 @@ funset_is_equal
 in
   aux (xs1, xs2)
 end // end of [funset_is_equal]
+
+(* ****** ****** *)
+
+implement{a}
+funset_compare
+  (xs1, xs2, cmp) = let
+//
+fun aux // tail-recursive
+  {n1,n2:nat} .<n1>. (
+  xs1: list (a, n1), xs2: list (a, n2)
+) :<cloref> int = (
+  case+ xs1 of
+  | list_cons (x1, xs1) => (
+    case+ xs2 of
+    | list_cons (x2, xs2) => let
+        val sgn = compare_elt_elt (x1, x2, cmp)
+      in
+        if sgn > 0 then 1 else (
+          if sgn < 0 then ~1 else aux (xs1, xs2)
+        ) // end of [if]
+      end // end of [list_cons]
+    | list_nil () => 1
+    ) // end of [list_cons]
+  | list_nil () => (
+    case+ xs2 of list_cons _ => ~1 | list_nil _ => 0
+    )
+) // end of [aux]
+//
+in
+  aux (xs1, xs2)
+end // end of [funset_compare]
+
+(* ****** ****** *)
+
+implement{a}
+funset_foreach_funenv
+  {v}{vt} (pf | xs, f, env) = (
+  case+ xs of
+  | list_cons (x, xs) => let
+      val () = f (pf | x, env)
+    in
+      funset_foreach_funenv (pf | xs, f, env)
+    end // end of [list_cons]
+  | list_nil () => ()
+) // end of [funset_foreach_funenv]
 
 (* ****** ****** *)
 

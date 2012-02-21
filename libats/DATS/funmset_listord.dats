@@ -46,8 +46,8 @@
 
 (* ****** ****** *)
 
-staload
-_(*anon*) = "prelude/DATS/list.dats"
+staload UN = "prelude/SATS/unsafe.sats"
+staload _(*anon*) = "prelude/DATS/list.dats"
 
 (* ****** ****** *)
 
@@ -65,10 +65,15 @@ assume
 mset_t0ype_type (elt: t@ype) = List @(Pos, elt)
 
 (* ****** ****** *)
+//
+// HX: mset is represented as a sorted mlist in descending order
+//
+(* ****** ****** *)
 
-implement{} funmset_make_nil () = list_nil ()
-
-implement{a} funmset_make_sing (x) = list_cons ((1, x), list_nil)
+implement{}
+funmset_make_nil () = list_nil ()
+implement{a}
+funmset_make_sing (x) = list_cons ((1, x), list_nil)
 
 implement{a}
 funmset_make_pair
@@ -78,11 +83,11 @@ funmset_make_pair
   // end of [val]
 in
 //
-if sgn < 0 then let
+if sgn > 0 then let
   val nx1 = (1, x1) and nx2 = (1, x2)
 in
   list_pair (nx1, nx2)
-end else if sgn > 0 then let
+end else if sgn < 0 then let
   val nx1 = (1, x1) and nx2 = (1, x2)
 in
   list_pair (nx2, nx1)
@@ -96,7 +101,11 @@ implement{a}
 funmset_make_list
   (xs, cmp) = let
   var env: ptr = null
-  var !p_clo = @lam (x1: &a, x2: &a): int =<clo> cmp (x1, x2)
+//
+// HX: ~cmp: descending order
+//
+  var !p_clo = @lam
+    (x1: &a, x2: &a): int =<clo> ~cmp (x1, x2)
   val xs = list_copy (xs)
   val xs = list_vt_mergesort (xs, !p_clo)
   fun ntimes {k:nat} .<k>. (
@@ -106,7 +115,7 @@ funmset_make_list
     | list_vt_cons (x, !p_xs) => let
         val sgn = compare_elt_elt (x0, x, cmp)
       in
-        if sgn < 0 then let
+        if sgn > 0 then let
           prval () = fold@ (xs) in xs
         end else let
           val () = n := n + 1
@@ -174,7 +183,7 @@ funmset_get_ntime
     case+ nxs of
     | list_cons (nx, nxs) => let
         val sgn = compare_elt_elt (x0, nx.1, cmp) in
-        if sgn < 0 then 0 else (if sgn > 0 then aux (nxs) else nx.0)
+        if sgn > 0 then 0 else (if sgn < 0 then aux (nxs) else nx.0)
       end // end of [list_cons]
     | list_nil () => 0
   // end of [aux]
@@ -211,9 +220,9 @@ fun aux
   | list_cons (nx, nxs1) => let
       val sgn = compare_elt_elt (x0, nx.1, cmp)
     in
-      if sgn < 0 then
+      if sgn > 0 then
         list_cons ((1, x0), nxs)
-      else if sgn > 0 then let
+      else if sgn < 0 then let
         val nxs1 = aux (nxs1) in list_cons (nx, nxs1)
       end else let
         val nx = (nx.0 + 1, nx.1) in list_cons (nx, nxs1)
@@ -241,8 +250,8 @@ fun aux {k:nat} .<k>. (
   | list_cons (nx, nxs1) => let
       val sgn = compare_elt_elt (x0, nx.1, cmp)
     in
-      if sgn < 0 then nxs
-      else if sgn > 0 then let
+      if sgn > 0 then nxs
+      else if sgn < 0 then let
         val flag0 = flag
         val nxs1 = aux (nxs1, flag)
       in
@@ -281,9 +290,9 @@ fun aux {k1,k2:nat} .<k1+k2>. (
     | list_cons (nx2, nxs21) => let
         val sgn = compare_elt_elt (nx1.1, nx2.1, cmp)
       in
-        if sgn < 0 then
+        if sgn > 0 then
           list_cons (nx1, aux (nxs11, nxs2))
-        else if sgn > 0 then
+        else if sgn < 0 then
           list_cons (nx2, aux (nxs1, nxs21))
         else let
           val nx12 = (nx1.0 + nx2.0, nx1.1)
@@ -318,9 +327,9 @@ fun aux {k1,k2:nat} .<k1+k2>. (
           compare_elt_elt (nx1.1, nx2.1, cmp)
         // end of [val]
       in
-        if sgn < 0 then
+        if sgn > 0 then
           aux (nxs11, nxs2)
-        else if sgn > 0 then
+        else if sgn < 0 then
           aux (nxs1, nxs21)
         else let
           val nx12 = (
@@ -340,6 +349,108 @@ end // end of [funmset_intersect]
 
 (* ****** ****** *)
 
+implement{a}
+funmset_is_subset
+  (nxs1, nxs2, cmp) = let
+//
+typedef nx = (int, a)
+fun aux // tail-recursive
+  {k1,k2:nat} .<k1+k2>. (
+  nxs1: list (nx, k1), nxs2: list (nx, k2)
+) :<cloref> bool =
+  case+ nxs1 of
+  | list_cons (nx1, nxs11) => (
+    case+ nxs2 of
+    | list_cons (nx2, nxs21) => let
+        val sgn = compare_elt_elt (nx1.1, nx2.1, cmp)
+      in
+        if sgn > 0 then false
+        else if sgn < 0 then aux (nxs1, nxs21)
+        else (
+          if nx1.0 <= nx2.0 then aux (nxs11, nxs21) else false
+        ) // end of [if]
+      end // end of [list_cons]
+    | list_nil () => false
+    ) // end of [list_cons]
+  | list_nil () => true
+// end of [aux]
+in
+  aux (nxs1, nxs2)
+end // end of [funmset_is_subset]
+
+implement{a}
+funmset_is_equal
+  (nxs1, nxs2, cmp) = let
+//
+typedef nx = (int, a)
+fun aux // tail-recursive
+  {k1,k2:nat} .<k1>. (
+  nxs1: list (nx, k1), nxs2: list (nx, k2)
+) :<cloref> bool = (
+  case+ nxs1 of
+  | list_cons (nx1, nxs1) => (
+    case+ nxs2 of
+    | list_cons (nx2, nxs2) => let
+        val sgn = compare_elt_elt (nx1.1, nx2.1, cmp)
+      in
+        if sgn = 0 then (
+          if nx1.0 = nx2.0 then aux (nxs1, nxs2) else false
+        ) else false // end of [if]
+      end // end of [list_cons]
+    | list_nil () => false
+    ) // end of [list_cons]
+  | list_nil () => (case+ nxs2 of
+    | list_cons _ => false | list_nil () => true
+    ) // end of [list_nil]
+) // end of [aux]
+//
+in
+  aux (nxs1, nxs2)
+end // end of [funmset_is_equal]
+
+(* ****** ****** *)
+
+implement{a}
+funmset_compare
+  (nxs1, nxs2, cmp) = let
+//
+typedef nx = (int, a)
+//
+fun aux // tail-recursive
+  {k1,k2:nat} .<k1>. (
+  nxs1: list (nx, k1), nxs2: list (nx, k2)
+) :<cloref> int = (
+  case+ nxs1 of
+  | list_cons (nx1, nxs1) => (
+    case+ nxs2 of
+    | list_cons (nx2, nxs2) => let
+        val sgn = compare_elt_elt (nx1.1, nx2.1, cmp)
+      in
+        if sgn > 0 then 1
+        else if sgn < 0 then ~1
+        else let
+          val n1 = nx1.0 and n2 = nx2.0
+        in
+          if n1 > n2 then 1
+          else if n1 < n2 then ~1
+          else aux (nxs1, nxs2)
+        end (* end of [if] *)
+      end // end of [list_cons]
+    | list_nil () => 1
+    ) // end of [list_cons]
+  | list_nil () => (
+    case+ nxs2 of list_cons _ => ~1 | list_nil _ => 0
+    )
+) // end of [aux]
+//
+in
+  aux (nxs1, nxs2)
+end // end of [funmset_compare]
+
+(* ****** ****** *)
+(*
+** HX: the returned list is in descending order
+*)
 implement{a}
 funmset_listize (nxs) = let
   typedef nx = @(Pos, a)
