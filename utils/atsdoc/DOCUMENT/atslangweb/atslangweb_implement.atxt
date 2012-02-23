@@ -164,6 +164,16 @@ After this is done, please go into the directory "FOO" and then execute \'make a
 ')
 
 </td></tr>
+
+<tr><td>
+#para('\
+
+A git #ulink("https://github.com/rsimoes/ATS-Lang", "mirror") of the
+ATS/Anairiats subversion repository is available at github, maintained by
+Richard Simoes. It is expected that syncs are done weekly at minimum.
+
+')
+</td></tr>
 </table>
 
 <!-- ****** ****** -->

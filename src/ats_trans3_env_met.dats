@@ -63,17 +63,6 @@ overload = with $Stamp.eq_stamp_stamp
 
 (* ****** ****** *)
 
-local
-
-assume metric_env_token = unit_v
-
-viewtypedef metbindlst_vt = List_vt @(d2varlst, s2explst)
-val the_metbindlst: ref (metbindlst_vt) = ref_make_elt (list_vt_nil ())
-
-in // in of [local]
-
-(* ****** ****** *)
-
 implement
 metric_nat_check
   (loc0, s2es_met) = let
@@ -93,6 +82,19 @@ metric_nat_check
 in
   aux (loc0, s2es_met)
 end // end of [metric_nat_check]
+
+(* ****** ****** *)
+
+local
+
+assume metric_env_token = unit_v
+
+viewtypedef metbindlst_vt = List_vt @(d2varlst, s2explst)
+val the_metbindlst: ref (metbindlst_vt) = ref_make_elt (list_vt_nil ())
+
+in // in of [local]
+
+(* ****** ****** *)
 
 implement
 metric_env_get (d2v_stamp) = let
@@ -197,4 +199,3 @@ end // end of [s2exp_metfn_load]
 (* ****** ****** *)
 
 (* end of [ats_trans3_env_met.sats] *)
-

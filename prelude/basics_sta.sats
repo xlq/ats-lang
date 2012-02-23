@@ -174,9 +174,6 @@ stadef + = add_int_int_int
 stacst sub_int_int_int: (int, int) -> int (* subtraction *)
 stadef - = sub_int_int_int
 //
-stacst nsub_int_int_int: (int, int) -> int (* subtraction on nats *)
-stadef nsub = nsub_int_int_int
-//
 stacst mul_int_int_int : (int, int) -> int (* multiplication *)
 stadef * = mul_int_int_int
 //
@@ -198,6 +195,9 @@ stadef max = max_int_int_int
 //
 stacst min_int_int_int : (int, int) -> int
 stadef min = min_int_int_int
+//
+stadef nsub_int_int_int (x:int, y:int) = max (x-y, 0)
+stadef nsub = nsub_int_int_int
 //
 stacst int_of_bool : bool -> int and bool_of_int : int -> bool
 stacst int_of_char : char -> int and char_of_int : int -> char
@@ -507,12 +507,6 @@ stadef btw_int_int_int_bool (x: int, y: int, z:int): bool =
 //
 stadef int_of_bool_bool (b: bool, v: int): bool =
   (b && v == 1) || (~b && v == 0)
-//
-// HX: subtraction relation on natural numbers
-//
-stadef nsub_int_int_int_bool (x: int, y: int, v: int): bool =
-  (x >= y && v == x - y) || (x <= y && v == 0)
-stadef nsub_r = nsub_int_int_int_bool
 //
 // HX: maximum function relation
 //

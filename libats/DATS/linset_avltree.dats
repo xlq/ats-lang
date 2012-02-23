@@ -168,6 +168,20 @@ linset_isnot_member (xs, x0, cmp) = ~linset_is_member (xs, x0, cmp)
 
 (* ****** ****** *)
 
+implement{a}
+linset_free (xs) = let
+  fun aux {h:nat} .<h>.
+    (t: avltree (a, h)):<> void =
+    case+ t of
+    | ~B (_, x, tl, tr) => (aux tl; aux tr)
+    | ~E () => ()
+  // end of [aux]
+in
+  aux (xs)
+end // end of [linset_free]
+
+(* ****** ****** *)
+
 (*
 ** left rotation for restoring height invariant
 *)

@@ -1056,13 +1056,6 @@ in
     in
       Some_vt (s3iexp_var s2v)
     end
-  // Natural number subtraction
-  | _ when s2cstref_equ_cst (Nsub_int_int_int, s2c) => let
-      val s2c_rel = s2cstref_get_cst (Nsub_int_int_int_bool)
-      val s2v = s2cfdeflst_replace (s2rt_int, s2c_rel, s2es, s2cs, fds)
-    in
-      Some_vt (s3iexp_var s2v)
-    end // end of [Nsub_int_int_int]
   | _ when s2cstref_equ_cst (IntOfBool_bool_int, s2c) => let
       val s2c_rel = s2cstref_get_cst (IntOfBool_bool_int_bool)
       val s2v = s2cfdeflst_replace (s2rt_int, s2c_rel, s2es, s2cs, fds)
