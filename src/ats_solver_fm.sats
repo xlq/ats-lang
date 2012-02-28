@@ -28,10 +28,10 @@
 *)
 
 (* ****** ****** *)
-
+//
 // Author: Hongwei Xi (hwxi AT cs DOT bu DOT edu)
 // Time: February 2008
-
+//
 (* ****** ****** *)
 
 // 
@@ -168,9 +168,11 @@ fun fprint_intvecptr {m:file_mode} {n:nat} (
   ) : void
 
 (* ****** ****** *)
-
+(*
+** knd: eq/neq: 1/~1; gte/lt: 2/~2
+*)
 dataviewtype icstr (int) =
-  | {n:pos} {l:addr} (* knd: eq/neq: 1/~1; lt/gte: 2/~2 *)
+  | {n:pos} {l:addr}
     ICvec (n) of (int(*knd*), intvecptr_t n)
   | {n:pos} {s:nat} (* knd: conj/disj: 0/1 *)
     ICveclst (n) of (int(*knd*), icstrlst (n, s))

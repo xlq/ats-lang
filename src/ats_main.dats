@@ -403,6 +403,7 @@ fun prelude_load
   val () = pervasive_load (ATSHOME, "prelude/SATS/list.sats")
   val () = pervasive_load (ATSHOME, "prelude/SATS/list0.sats")
   val () = pervasive_load (ATSHOME, "prelude/SATS/list_vt.sats")
+  val () = pervasive_load (ATSHOME, "prelude/SATS/dlist_vt.sats")
 //
   val () = pervasive_load (ATSHOME, "prelude/SATS/matrix.sats")
   val () = pervasive_load (ATSHOME, "prelude/SATS/matrix0.sats")

@@ -28,10 +28,10 @@
 *)
 
 (* ****** ****** *)
-
+//
 // Author: Hongwei Xi (hwxi AT cs DOT bu DOT edu)
 // Time: February 2008
-
+//
 (* ****** ****** *)
 
 // 
@@ -417,7 +417,7 @@ intveclst_inspect_gte (vecs, n) = begin
       val sgn = intvec_inspect_gte (!p, n)
       prval () = !pf_arr := pf
     in
-      if sgn <> 0 then begin // tautology
+      if sgn <> 0 then begin // tautology/contradiction
         intvec_ptr_free (!pf_gc, !pf_arr | p); 
         let val tmp = !vecs_nxt in free@ {n} (vecs); vecs := tmp end;
         if sgn > 0 then intveclst_inspect_gte (vecs, n) else ~1
@@ -708,72 +708,83 @@ fun intveclst_split_at
 // end of [intveclst_split_at]
 
 implement
-intveclst_split_at {n,i} (vecs, n, i) = let
+intveclst_split_at
+  {n,i} (vecs, n, i) = let
 //
 stadef ivs = intveclst
 //
-fun auxbeg // split [vecs] into three groups
-  (poss: &ivs n, neus: &ivs n, negs: &ivs n, vecs: ivs n)
-  :<cloptr1> void = let
-  var fst = vecs
+fun auxbeg ( // split [vecs] into three groups
+  poss: &ivs n, neus: &ivs n, negs: &ivs n, vecs: ivs n
+) :<cloptr1> void = let
+  val fst = vecs
 in
-  case+ fst of
-  | INTVECLSTcons (!pf_gc, !pf_arr | p, !nxt) => let
-      prval pf = !pf_arr; val vi = p->[i]; prval () = !pf_arr := pf
-      val vecs = !nxt
-      val () =
-        if vi > 0 then begin
-          !nxt := poss; poss := fst; fold@ poss
-        end else if vi < 0 then begin
-          !nxt := negs; negs := fst; fold@ negs
-        end else begin
-          !nxt := neus; neus := fst; fold@ neus
-        end // end of [if]
-    in
-      auxbeg (poss, neus, negs, vecs)
-    end // end of [INTVECLSTcons]
-  | INTVECLSTnil () => ()
+//
+case+ fst of
+| INTVECLSTcons
+    (!pf_gc, !pf_arr | p, !nxt) => let
+    prval pf = !pf_arr; val vi = p->[i]; prval () = !pf_arr := pf
+    val vecs = !nxt
+    val () = (
+      if vi > 0 then begin
+        !nxt := poss; poss := fst; fold@ poss
+      end else if vi < 0 then begin
+        !nxt := negs; negs := fst; fold@ negs
+      end else begin
+        !nxt := neus; neus := fst; fold@ neus
+      end // end of [if]
+    ) : void // end of [val]
+  in
+    auxbeg (poss, neus, negs, vecs)
+  end // end of [INTVECLSTcons]
+| ~INTVECLSTnil () => ()
+//
 end // end of [auxbeg]
 //
-fun auxcomb // [~1] is returned if contradiction is reached
-  (neus: &ivs n, neg: &intvec n, poss: &ivs n):<cloptr1> intBtw (~1, 1) = begin
+fun auxcomb (
+// return [~1] if contradiction is reached
+  neus: &ivs n, neg: &intvec n, poss: &ivs n
+) :<cloptr1> intBtw (~1, 1) = begin
   case+ poss of
-  | INTVECLSTcons (_, !pf_arr | p, !poss_nxt) => let
+  | INTVECLSTcons
+      (_, !pf_arr | p, !poss_nxt) => let
       prval pf = !pf_arr
       val @(pf_new_gc, pf_new_arr | p_new) = intvec_combine_at (!p, neg, n, i)
       val sgn = intvec_inspect_gte (!p_new, n)
       prval () = !pf_arr := pf
-      val () =
+      val () = (
         if sgn <> 0 then begin // tautology or contradiction
           intvec_ptr_free (pf_new_gc, pf_new_arr | p_new)
         end else begin
           neus := INTVECLSTcons (pf_new_gc, pf_new_arr | p_new, neus)
-        end
+        end // end of [if]
+      ) : void // end of [val]
     in
       if (sgn >= 0) then begin
         let val ans = auxcomb (neus, neg, !poss_nxt) in fold@ poss; ans end
       end else begin
         fold@ (poss); ~1
-      end
+      end (* end of [if] *)
     end // end of [INTVECLSTcons]
   | INTVECLSTnil () => (fold@ (poss); 0)
 end // end of [auxcomb]
 //
 // HX: [~1] is returned if contradiction is reached
 //
-fun auxcomblst
-  (neus: &ivs n, poss: &ivs n, negs: ivs n)
-  :<cloptr1> intBtw (~1, 1) = begin case+ negs of
-  | ~INTVECLSTcons (pf_gc, pf_arr | p, negs_nxt) => let
+fun auxcomblst (
+  neus: &ivs n, poss: &ivs n, negs: ivs n
+) :<cloptr1> intBtw (~1, 1) = begin
+  case+ negs of
+  | ~INTVECLSTcons
+      (pf_gc, pf_arr | p, negs_nxt) => let
       val ans = auxcomb (neus, !p, poss)
       val () = intvec_ptr_free (pf_gc, pf_arr | p)
     in
       if ans >= 0 then begin
         auxcomblst (neus, poss, negs_nxt)
-      end else begin
-        intveclst_free (negs_nxt); ans
-      end
-    end
+      end else let
+        val () = intveclst_free (negs_nxt) in ans
+      end (* end of [if] *)
+    end // end of [INTVECLSTcons]
   | ~INTVECLSTnil () => 0
 end // end of [auxcomblst]
 //
@@ -781,7 +792,9 @@ var poss: ivs n = INTVECLSTnil ()
 and neus: ivs n = INTVECLSTnil ()
 and negs: ivs n = INTVECLSTnil ()
 //
-val () = auxbeg (poss, neus, negs, vecs)
+val () =
+  auxbeg (poss, neus, negs, vecs)
+// end of [val]
 val ans = auxcomblst (neus, poss, negs)
 val () = intveclst_free poss
 //
@@ -801,7 +814,8 @@ intveclst_solve {n} (vecs, n) = let
   fun aux_solve
     (vecs: &intveclst n, n: int n): intBtw (~1, 1) = begin
     case+ vecs of
-    | INTVECLSTcons (_(*pf_gc*), !pf_arr | p, !vecs_nxt) => let
+    | INTVECLSTcons
+        (_(*pf_gc*), !pf_arr | p, _(*p_vecs*)) => let
         prval pf = !pf_arr
         val i (* 0 < i < n *) = intvec_absmin_coeff_index_get (!p, n)
         prval () = (!pf_arr := pf; fold@ vecs)
@@ -940,7 +954,9 @@ intvec_elimlst_at (
   stamp0, vec, v1ecs_eq, n
 ) = begin
   case+ v1ecs_eq of
-  | INTVECLST1cons (_, !pf_arr | stamp, p, i, !v1ecs_eq_nxt) => begin
+  | INTVECLST1cons (
+      _, !pf_arr | stamp, p, i, !v1ecs_eq_nxt
+    ) => begin
       if stamp0 <= stamp then let
         // Note: elimination must be done in the reverse order!
         // It was done incorrectly and a bug occurred.
@@ -1005,7 +1021,7 @@ intveclst_make {n}
 //
 in
   vecs
-end // end of [intveclst]
+end // end of [intveclst_make]
 
 (* ****** ****** *)
 

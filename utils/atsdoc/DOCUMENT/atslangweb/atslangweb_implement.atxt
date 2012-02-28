@@ -114,13 +114,13 @@ the help of ATS/Geizella).
 #para('\
 
 #ulink("\
+
 http://ats-lang.svn.sourceforge.net/viewvc/ats-lang/trunk", "ATS/Anairiats"
-) is the currently released implementation of
-ATS. It is nearly entirely written in ATS itself, consisting of about
-100,000 lines source code written in ATS.  When compared to ATS/Geizella, a
-previous implementation of ATS, ATS/Anairiats is significantly more
-efficient, and in general it issues more informative messages for
-identifying program errors.
+) is the currently released implementation of ATS. It is nearly entirely
+written in ATS itself, consisting of about 100,000 lines of source code.
+When compared to ATS/Geizella, a previous implementation of ATS,
+ATS/Anairiats is significantly more efficient, and in general it issues
+more informative messages for identifying program errors.\
 
 ')
 
