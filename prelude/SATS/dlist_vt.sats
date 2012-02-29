@@ -75,48 +75,59 @@ dlist_vt_snoc {f:int}
 (* ****** ****** *)
 
 fun{a:vt0p}
-dlist_vt_is_beg 
-  {f,r:int | r > 0}
-  (xs: !dlist_vt (a, f, r)):<> bool (f==0)
-// end of [dlist_vt_is_beg]
-fun{a:vt0p}
 dlist_vt_is_end
   {f,r:int | r > 0}
   (xs: !dlist_vt (a, f, r)):<> bool (r==1)
 // end of [dlist_vt_is_end]
+fun{a:vt0p}
+rdlist_vt_is_end
+  {f,r:int | r > 0}
+  (xs: !dlist_vt (a, f, r)):<> bool (f==0)
+// end of [rdlist_vt_is_end]
+
+(* ****** ****** *)
+
+fun{a:t0p}
+dlist_vt_get
+  {f,r:int | r > 0} (xs: !dlist_vt (a, f, r)): a
+// end of [dlist_vt_get]
+fun{a:t0p}
+dlist_vt_set
+  {f,r:int | r > 0} (xs: !dlist_vt (a, f, r), x: a): void
+// end of [dlist_vt_set]
 
 (* ****** ****** *)
 
 fun{a:vt0p}
-dlist_vt_length_f
-  {f,r:int} (xs: !dlist_vt (a, f, r)):<> int (f)
-fun{a:vt0p}
-dlist_vt_length_r
+dlist_vt_length
   {f,r:int} (xs: !dlist_vt (a, f, r)):<> int (r)
+fun{a:vt0p}
+rdlist_vt_length
+  {f,r:int} (xs: !dlist_vt (a, f, r)):<> int (f)
 
 (* ****** ****** *)
 
 fun{a:vt0p}
-dlist_vt_move_f
-  {f,r:int | f > 0}
-  (xs: dlist_vt (a, f, r)):<> dlist_vt (a, f-1, r+1)
-fun{a:vt0p}
-dlist_vt_move_r
+dlist_vt_move
   {f,r:int | r > 1}
   (xs: dlist_vt (a, f, r)):<> dlist_vt (a, f+1, r-1)
+fun{a:vt0p}
+rdlist_vt_move
+  {f,r:int | f > 0}
+  (xs: dlist_vt (a, f, r)):<> dlist_vt (a, f-1, r+1)
 
 (* ****** ****** *)
 
-fun{a:vt0p}
-dlist_vt_move_beg
-  {f,r:int | r > 0}
-  (xs: dlist_vt (a, f, r)):<> dlist_vt (a, 0, f+r)
-// end of [dlist_vt_move_beg]
 fun{a:vt0p}
 dlist_vt_move_end
   {f,r:int | r > 0}
   (xs: dlist_vt (a, f, r)):<> dlist_vt (a, f+r-1, 1)
 // end of [dlist_vt_move_end]
+fun{a:vt0p}
+rdlist_vt_move_end
+  {f,r:int | r > 0}
+  (xs: dlist_vt (a, f, r)):<> dlist_vt (a, 0, f+r)
+// end of [rdlist_vt_move_end]
 
 (* ****** ****** *)
 
@@ -135,8 +146,10 @@ dlist_vt_free {f,r:int} (xs: dlist_vt (a, f, r)):<> void
 
 fun{a:vt0p}
 dlist_vt_foreach_funenv
-  {v:view} {vt:vtp} {f,r:int} {fe:eff} (
-  pf: !v | xs: !dlist_vt (a, f, r), f: !(!v | &a, !vt) -<fe> void, env: !vt
+  {v:view}{vt:vtp}{f,r:int}{fe:eff} (
+  pf: !v
+| xs: !dlist_vt (a, f, r)
+, f: !(!v | &a, !vt) -<fe> void, env: !vt
 ) :<fe> void // end of [dlist_vt_foreach_funenv]
 
 fun{a:vt0p}
@@ -144,6 +157,23 @@ dlist_vt_foreach_fun
   {f,r:int} {fe:eff}
   (xs: !dlist_vt (a, f, r), f: (&a) -<fun,fe> void):<fe> void
 // end of [dlist_vt_foreach_fun]
+
+(* ****** ****** *)
+
+fun{a:vt0p}
+rdlist_vt_foreach_funenv
+  {v:view}{vt:vtp}{f,r:int}{fe:eff} (
+  pf: !v
+| xs: !dlist_vt (a, f, r)
+, f: !(!v | &a, !vt) -<fe> void
+, env: !vt
+) :<fe> void // end of [rdlist_vt_foreach_funenv]
+
+fun{a:vt0p}
+rdlist_vt_foreach_fun
+  {f,r:int} {fe:eff}
+  (xs: !dlist_vt (a, f, r), f: (&a) -<fun,fe> void):<fe> void
+// end of [rdlist_vt_foreach_fun]
 
 (* ****** ****** *)
 

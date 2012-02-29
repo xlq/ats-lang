@@ -107,19 +107,18 @@ end // end of [dlist_vt_snoc]
 (* ****** ****** *)
 
 implement{a}
-dlist_vt_is_beg
+dlist_vt_get
   {f,r} (xs) = let
-  val+ DLISTcons (_, prev, _) = xs
-  prval () = fold@ (xs)
-  val [b:bool] ans = (
-    if prev > null then false else true
-  ) : Bool // end of [val]
-  prval () = __assert () where {
-    extern praxi __assert (): [b==(f==0)] void
-  } // end of [prval]
-in
-  ans
-end // end of [dlist_vt_is_beg]
+  val+ DLISTcons (x, _, _) = xs in fold@ (xs); x
+end // end of [dlist_vt_get]
+
+implement{a}
+dlist_vt_set
+  {f,r} (xs, x) = let
+  val+ DLISTcons (!p_x, _, _) = xs in !p_x := x; fold@ (xs)
+end // end of [dlist_vt_set]
+
+(* ****** ****** *)
 
 implement{a}
 dlist_vt_is_end
@@ -138,10 +137,43 @@ in
   ans
 end // end of [dlist_vt_is_end]
 
+implement{a}
+rdlist_vt_is_end
+  {f,r} (xs) = let
+  val+ DLISTcons (_, prev, _) = xs
+  prval () = fold@ (xs)
+  val [b:bool] ans = (
+    if prev > null then false else true
+  ) : Bool // end of [val]
+  prval () = __assert () where {
+    extern praxi __assert (): [b==(f==0)] void
+  } // end of [prval]
+in
+  ans
+end // end of [rdlist_vt_is_end]
+
 (* ****** ****** *)
 
 implement{a}
-dlist_vt_length_f
+dlist_vt_length
+  {f,r} (xs) = let
+  fun loop {r:nat}{r0:int} .<r>.
+    (xs: !DLIST (a, r), res: int (r0)):<> int (r0+r) =
+    case+ xs of
+    | DLISTcons (_, _, !p_xs) => let
+        val res = loop (!p_xs, res + 1); prval () = fold@ (xs)
+      in
+        res
+      end // end of [DLISTcons]
+    | DLISTnil () => (fold@ (xs); res)
+  // end of [loop]
+  prval () = lemma1_dlist_vt_params {a}{f,r} (xs)
+in
+  loop (xs, 0)
+end // end of [dlist_vt_length]
+
+implement{a}
+rdlist_vt_length
   {f,r} (xs) = let
 //
   fun loop {f:nat} .<f>.
@@ -179,32 +211,27 @@ in
   __cast (res) where {
     extern castfn __cast (res: int):<> int (f)
   } // end of [__cast]
-end // end of [dlist_vt_length_f]
+end // end of [rdlist_vt_length]
 
 (* ****** ****** *)
 
 implement{a}
-dlist_vt_length_r
+dlist_vt_move
   {f,r} (xs) = let
-  fun loop {r:nat}{r0:int} .<r>.
-    (xs: !DLIST (a, r), res: int (r0)):<> int (r0+r) =
-    case+ xs of
-    | DLISTcons (_, _, !p_xs) => let
-        val res = loop (!p_xs, res + 1); prval () = fold@ (xs)
-      in
-        res
-      end // end of [DLISTcons]
-    | DLISTnil () => (fold@ (xs); res)
-  // end of [loop]
-  prval () = lemma1_dlist_vt_params {a}{f,r} (xs)
+  val+ DLISTcons (_, _, !p_xs1) = xs
+  val xs1 = __copy (!p_xs1) where {
+    extern castfn __copy (xs: !DLIST(a, r-1)):<> DLIST(a, r-1)
+  } // end of [val]
+  prval () = fold@ (xs)
+  prval () = __free (xs) where {
+    extern praxi __free (xs: DLIST (a, r)): void
+  } // end of [prval]
 in
-  loop (xs, 0)
-end // end of [dlist_vt_length_r]
-
-(* ****** ****** *)
+  xs1 // : dlist_vt (a, f+1, r-1)
+end // end of [dlist_vt_move]
 
 implement{a}
-dlist_vt_move_f
+rdlist_vt_move
   {f,r} (xs) = let
 //
   prval () =
@@ -224,35 +251,9 @@ in
   __cast (prev) where {
     extern castfn __cast (p: ptr):<> DLIST(a, r+1)
   } // end of [__cast]
-end // end of [dlist_vt_move_f]
-
-implement{a}
-dlist_vt_move_r
-  {f,r} (xs) = let
-  val+ DLISTcons (_, _, !p_xs1) = xs
-  val xs1 = __copy (!p_xs1) where {
-    extern castfn __copy (xs: !DLIST(a, r-1)):<> DLIST(a, r-1)
-  } // end of [val]
-  prval () = fold@ (xs)
-  prval () = __free (xs) where {
-    extern praxi __free (xs: DLIST (a, r)): void
-  } // end of [prval]
-in
-  xs1 // : dlist_vt (a, f+1, r-1)
-end // end of [dlist_vt_move_r]
+end // end of [rdlist_vt_move]
 
 (* ****** ****** *)
-
-implement{a}
-dlist_vt_move_beg
-  {f,r} (xs) = let
-  val isbeg = dlist_vt_is_beg {f,r} (xs)
-  prval () = lemma1_dlist_vt_params {a}{f,r} (xs)
-in
-  if isbeg then
-    xs else dlist_vt_move_beg {f-1,r+1} (dlist_vt_move_f {f,r} (xs))
-  // end of [if]
-end // end of [dlist_vt_move_beg]
 
 implement{a}
 dlist_vt_move_end
@@ -261,9 +262,20 @@ dlist_vt_move_end
   prval () = lemma1_dlist_vt_params {a}{f,r} (xs)
 in
   if isend then
-    xs else dlist_vt_move_end {f+1,r-1} (dlist_vt_move_r {f,r} (xs))
+    xs else dlist_vt_move_end {f+1,r-1} (dlist_vt_move {f,r} (xs))
   // end of [if]
 end // end of [dlist_vt_move_end]
+
+implement{a}
+rdlist_vt_move_end
+  {f,r} (xs) = let
+  val isend = rdlist_vt_is_end {f,r} (xs)
+  prval () = lemma1_dlist_vt_params {a}{f,r} (xs)
+in
+  if isend then
+    xs else rdlist_vt_move_end {f-1,r+1} (rdlist_vt_move {f,r} (xs))
+  // end of [if]
+end // end of [rdlist_vt_move_end]
 
 (* ****** ****** *)
 
@@ -296,6 +308,113 @@ dlist_vt_free {f,r} (xs) = let
 in
   loop (xs)
 end // end of [dlist_vt_free]
+
+(* ****** ****** *)
+
+implement{a}
+dlist_vt_foreach_funenv
+  {v}{vt}{f,r}{fe}
+  (pfv | xs, f, env) = let
+//
+fun loop
+  {f,r:int | r >= 0} .<r>. (
+  pfv: !v
+| xs: !dlist_vt (a, f, r)
+, f: !(!v | &a, !vt) -<fe> void, env: !vt
+) :<fe> void =
+  case+ xs of
+  | DLISTcons
+      (!p_x, _, !p_xs1) => let
+      val () = f (pfv | !p_x, env)
+      val () = loop (pfv | !p_xs1, f, env)
+      prval () = fold@ (xs)
+    in
+      // nothing
+    end // end of [DLISTcons]
+  | DLISTnil () => fold@ (xs)
+// end of [loop]
+//
+prval () = lemma1_dlist_vt_params {a}{f,r} (xs)
+//
+in
+  loop (pfv | xs, f, env)
+end // end of [dlist_vt_foreach_funenv]
+
+implement{a}
+dlist_vt_foreach_fun
+  {f,r} {fe:eff} (xs, f) = let
+//
+typedef fun0_t = (&a) -<fun,fe> void
+typedef fun1_t = (!unit_v | &a, !ptr) -<fun,fe> void
+//
+val f = __cast (f) where { extern castfn __cast (f: fun0_t):<> fun1_t }
+prval pf = unit_v ()
+val () = dlist_vt_foreach_funenv<a> {unit_v} {ptr} (pf | xs, f, null)
+prval unit_v () = pf
+//
+in
+  // nothing
+end // end of [dlist_vt_foreach_fun]
+
+(* ****** ****** *)
+
+implement{a}
+rdlist_vt_foreach_funenv
+  {v}{vt}{f,r}{fe}
+  (pfv | xs, f, env) = let
+//
+fun loop {f:nat} .<f>. (
+  pfv: !v
+| prev: ptr, f: !(!v | &a, !vt) -<fe> void, env: !vt
+) :<fe> void = let
+  val xs = __cast (prev) where {
+    extern castfn __cast (p: ptr):<> [r:nat] DLIST (a, r)
+  } // end of [val]
+in
+  case+ xs of
+  | DLISTcons
+      (!p_x, prev, _) => let
+      val () = f (pfv | !p_x, env)
+      prval () = fold@ {a} (xs)
+      prval () = __assert () where {
+        extern praxi __assert (): [f > 0] void
+      } // end of [prval]
+      prval () = __free (xs) where {
+        extern praxi __free {r:int} (xs: DLIST (a, r)): void
+      } // end of [prval]
+    in
+      loop {f-1} (pfv | prev, f, env)
+    end // end of [DLISTcons]
+  | ~DLISTnil () => ()
+end // end of [loop]
+//
+prval () = lemma1_dlist_vt_params {a}{f,r} (xs)
+//
+in
+//
+case+ xs of
+| DLISTcons (_, prev, _) => let
+    prval () = fold@ (xs) in loop {f} (pfv | prev, f, env)
+  end // end of [DLISTcons]
+| DLISTnil () => fold@ (xs)
+//
+end // end of [rdlist_vt_foreach_funenv]
+
+implement{a}
+rdlist_vt_foreach_fun
+  {f,r} {fe:eff} (xs, f) = let
+//
+typedef fun0_t = (&a) -<fun,fe> void
+typedef fun1_t = (!unit_v | &a, !ptr) -<fun,fe> void
+//
+val f = __cast (f) where { extern castfn __cast (f: fun0_t):<> fun1_t }
+prval pf = unit_v ()
+val () = rdlist_vt_foreach_funenv<a> {unit_v} {ptr} (pf | xs, f, null)
+prval unit_v () = pf
+//
+in
+  // nothing
+end // end of [rdlist_vt_foreach_fun]
 
 (* ****** ****** *)
 
