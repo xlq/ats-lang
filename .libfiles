@@ -79,6 +79,9 @@ prelude/DATS/list_vt.dats
 prelude/SATS/list0.sats
 prelude/DATS/list0.dats
 //
+prelude/SATS/dlist_vt.sats
+prelude/DATS/dlist_vt.dats
+//
 prelude/SATS/matrix.sats
 prelude/DATS/matrix.dats
 prelude/SATS/matrix0.sats

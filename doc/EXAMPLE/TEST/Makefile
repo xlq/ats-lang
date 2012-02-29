@@ -69,6 +69,11 @@ prelude_list_vt: prelude_list_vt.dats
 	$(ATSCC) -O2 -o $@ $< && ./prelude_list_vt
 cleanall:: ; $(RMF) prelude_list_vt
 
+checkall:: prelude_dlist_vt
+prelude_dlist_vt: prelude_dlist_vt.dats
+	$(ATSCC) -O2 -o $@ $< && ./prelude_dlist_vt
+cleanall:: ; $(RMF) prelude_dlist_vt
+
 checkall:: prelude_matrix
 prelude_matrix: prelude_matrix.dats
 	$(ATSCC) -O2 -o $@ $< && ./prelude_matrix

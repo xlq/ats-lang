@@ -33,6 +33,9 @@
 
 (* ****** ****** *)
 
+sortdef tp = type
+sortdef vtp = viewtype
+sortdef t0p = t@ype
 sortdef vt0p = viewt@ype
 
 (* ****** ****** *)
@@ -72,6 +75,19 @@ dlist_vt_snoc {f:int}
 (* ****** ****** *)
 
 fun{a:vt0p}
+dlist_vt_is_beg 
+  {f,r:int | r > 0}
+  (xs: !dlist_vt (a, f, r)):<> bool (f==0)
+// end of [dlist_vt_is_beg]
+fun{a:vt0p}
+dlist_vt_is_end
+  {f,r:int | r > 0}
+  (xs: !dlist_vt (a, f, r)):<> bool (r==1)
+// end of [dlist_vt_is_end]
+
+(* ****** ****** *)
+
+fun{a:vt0p}
 dlist_vt_length_f
   {f,r:int} (xs: !dlist_vt (a, f, r)):<> int (f)
 fun{a:vt0p}
@@ -92,18 +108,42 @@ dlist_vt_move_r
 (* ****** ****** *)
 
 fun{a:vt0p}
-dlist_vt_insert_r
+dlist_vt_move_beg
+  {f,r:int | r > 0}
+  (xs: dlist_vt (a, f, r)):<> dlist_vt (a, 0, f+r)
+// end of [dlist_vt_move_beg]
+fun{a:vt0p}
+dlist_vt_move_end
+  {f,r:int | r > 0}
+  (xs: dlist_vt (a, f, r)):<> dlist_vt (a, f+r-1, 1)
+// end of [dlist_vt_move_end]
+
+(* ****** ****** *)
+
+fun{a:vt0p}
+dlist_vt_insert
   {f,r:int | r > 0}
   (xs: dlist_vt (a, f, r), x: a):<> dlist_vt (a, f, r+1)
-fun{a:vt0p}
-dlist_vt_insert_f
-  {f,r:int | r > 0}
-  (xs: dlist_vt (a, f, r), x: a):<> dlist_vt (a, f+1, r)
+// end of [dlist_vt_insert]
 
 (* ****** ****** *)
 
 fun{a:t@ype}
 dlist_vt_free {f,r:int} (xs: dlist_vt (a, f, r)):<> void
+
+(* ****** ****** *)
+
+fun{a:vt0p}
+dlist_vt_foreach_funenv
+  {v:view} {vt:vtp} {f,r:int} {fe:eff} (
+  pf: !v | xs: !dlist_vt (a, f, r), f: !(!v | &a, !vt) -<fe> void, env: !vt
+) :<fe> void // end of [dlist_vt_foreach_funenv]
+
+fun{a:vt0p}
+dlist_vt_foreach_fun
+  {f,r:int} {fe:eff}
+  (xs: !dlist_vt (a, f, r), f: (&a) -<fun,fe> void):<fe> void
+// end of [dlist_vt_foreach_fun]
 
 (* ****** ****** *)
 

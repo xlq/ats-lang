@@ -22,20 +22,20 @@ staload _(*anonymous*) = "prelude/DATS/list_vt.dats"
 #define MAXELT 100
 
 (*
-fun random_list_gen {n: nat}
+fun list_randgen {n: nat}
   (n: int n): list_vt (natLt MAXELT, n) = loop (n, list_vt_nil) where {
   typedef T = natLt MAXELT
   fun loop {i,j:nat} .<i>.
     (i: int i, xs: list_vt (T, j)):<!ref> list_vt (T, i+j) =
     if i = 0 then xs else loop (i-1, list_vt_cons ($RAND.randint MAXELT, xs))
   // end of [loop]
-} // end of [random]
+} // end of [list_randgen]
 *)
 
-fun random_list_gen {n:nat}
+fun list_randgen {n:nat}
   (n: int n): list_vt (natLt MAXELT, n) =
   list_vt_tabulate_fun (lam _ =<!ref> $RAND.randint MAXELT, n)
-// end of [random_list_gen]
+// end of [list_randgen]
 
 // end of [val]
 
@@ -58,7 +58,7 @@ implement main (argc, argv) = let
   val () = list_vt_free (xs)
 //
   val () = $RAND.srand48_with_time () // a new seed is generated
-  val xs = random_list_gen (10)
+  val xs = list_randgen (10)
 //
   val () = () where {
     val () = print "xs (randomly generated) = "
