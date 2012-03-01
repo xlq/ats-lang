@@ -84,10 +84,21 @@ dlist_vt_snoc {f:int}
 (* ****** ****** *)
 
 fun{a:vt0p}
+dlist_vt_is_beg
+  {f,r:int | r > 0}
+  (xs: !dlist_vt (a, f, r)):<> bool (f==0)
+// end of [dlist_vt_is_beg]
+fun{a:vt0p}
 dlist_vt_is_end
   {f,r:int | r > 0}
   (xs: !dlist_vt (a, f, r)):<> bool (r==1)
 // end of [dlist_vt_is_end]
+
+fun{a:vt0p}
+rdlist_vt_is_beg
+  {f,r:int | r > 0}
+  (xs: !dlist_vt (a, f, r)):<> bool (r==1)
+// end of [rdlist_vt_is_end]
 fun{a:vt0p}
 rdlist_vt_is_end
   {f,r:int | r > 0}

@@ -121,6 +121,21 @@ end // end of [dlist_vt_set]
 (* ****** ****** *)
 
 implement{a}
+dlist_vt_is_beg
+  {f,r} (xs) = let
+  val+ DLISTcons (_, prev, _) = xs
+  prval () = fold@ (xs)
+  val [b:bool] ans = (
+    if prev > null then false else true
+  ) : Bool // end of [val]
+  prval () = __assert () where {
+    extern praxi __assert (): [b==(f==0)] void
+  } // end of [prval]
+in
+  ans
+end // end of [dlist_vt_is_beg]
+
+implement{a}
 dlist_vt_is_end
   {f,r} (xs) = let
   val+ DLISTcons
@@ -138,19 +153,14 @@ in
 end // end of [dlist_vt_is_end]
 
 implement{a}
+rdlist_vt_is_beg
+  {f,r} (xs) = dlist_vt_is_end {f,r} (xs)
+// end of [rdlist_vt_is_beg]
+
+implement{a}
 rdlist_vt_is_end
-  {f,r} (xs) = let
-  val+ DLISTcons (_, prev, _) = xs
-  prval () = fold@ (xs)
-  val [b:bool] ans = (
-    if prev > null then false else true
-  ) : Bool // end of [val]
-  prval () = __assert () where {
-    extern praxi __assert (): [b==(f==0)] void
-  } // end of [prval]
-in
-  ans
-end // end of [rdlist_vt_is_end]
+  {f,r} (xs) = dlist_vt_is_beg {f,r} (xs)
+// end of [rdlist_vt_is_end]
 
 (* ****** ****** *)
 
