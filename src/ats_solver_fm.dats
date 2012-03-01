@@ -945,12 +945,12 @@ end // end of [print_intveclst1]
 (* ****** ****** *)
 
 extern
-fun intvec_elimlst_at {n:pos} (
+fun intvec_elimlst {n:pos} (
   stamp: int, vec: &intvec n, v1ecs_eq: !intveclst1 n, n: int n
-) : void // end of [intvec_elimlst_at]
+) : void // end of [intvec_elimlst]
 
 implement
-intvec_elimlst_at (
+intvec_elimlst (
   stamp0, vec, v1ecs_eq, n
 ) = begin
   case+ v1ecs_eq of
@@ -960,7 +960,7 @@ intvec_elimlst_at (
       if stamp0 <= stamp then let
         // Note: elimination must be done in the reverse order!
         // It was done incorrectly and a bug occurred.
-        val () = intvec_elimlst_at (stamp0, vec, !v1ecs_eq_nxt, n)
+        val () = intvec_elimlst (stamp0, vec, !v1ecs_eq_nxt, n)
         prval pf = !pf_arr
         val () = assert (i > 0)
         val () = intvec_elim_at (vec, !p, n, i)
@@ -968,18 +968,18 @@ intvec_elimlst_at (
       in
         fold@ v1ecs_eq
       end else let
-        val () = intvec_elimlst_at (stamp0, vec, !v1ecs_eq_nxt, n)
+        val () = intvec_elimlst (stamp0, vec, !v1ecs_eq_nxt, n)
       in
         fold@ v1ecs_eq
       end (* end of [if] *)
     end // end of [INTVECLST1cons]
   | INTVECLST1mark (!v1ecs_eq_nxt) => let
-      val () = intvec_elimlst_at (stamp0, vec, !v1ecs_eq_nxt, n)
+      val () = intvec_elimlst (stamp0, vec, !v1ecs_eq_nxt, n)
     in
       fold@ v1ecs_eq
     end // end of [INTVECLST1mark]
   | INTVECLST1nil () => (fold@ v1ecs_eq)
-end // end of [intvec_elimlst_at]
+end // end of [intvec_elimlst]
 
 (* ****** ****** *)
 
@@ -1002,18 +1002,18 @@ intveclst_make {n}
         prval pf = !pf_arr
         val (pf_new_gc, pf_new_arr | p_new) = intvec_copy (!p, n)
         prval () = !pf_arr := pf
-        val () = intvec_elimlst_at (stamp, !p_new, v1ecs_eq, n)
+        val () = intvec_elimlst (stamp, !p_new, v1ecs_eq, n)
         val () = res := INTVECLSTcons (pf_new_gc, pf_new_arr | p_new, ?)
         val+ INTVECLSTcons (_, _ | _, !res_nxt) = res
       in
         loop (!v1ecs_nxt, v1ecs_eq, n, !res_nxt); fold@ v1ecs; fold@ res
-      end // end of [INTVECLST1mark]
+      end // end of [INTVECLST1cons]
     | INTVECLST1mark (!v1ecs_nxt) => begin
         loop (!v1ecs_nxt, v1ecs_eq, n, res); fold@ v1ecs
-      end
+      end // end of [INTVECLST1mark]
     | INTVECLST1nil () => begin
         res := INTVECLSTnil (); fold@ v1ecs
-      end
+      end // end of [INTVECLST1nil]
   end // end of [loop]
 //
   var vecs: intveclst n // uninitialized
@@ -1043,7 +1043,7 @@ fun aux_main {s:nat} (
             if knd < 0 then begin // knd = ~2(*lt*)
               intvec_negate (!p, n); p->[0] := pred (p->[0])
             end
-          val () = intvec_elimlst_at (0(*stamp*), !p, v1ecs_eq, n)
+          val () = intvec_elimlst (0(*stamp*), !p, v1ecs_eq, n)
           val sgn = intvec_inspect_gte (!p, n)
         in
           if sgn > 0 then let // tautology
@@ -1078,7 +1078,7 @@ fun aux_main {s:nat} (
         end // end of [2(*gte*) and ~2(*lt*)]
       | _ when knd = 1(*eq*) => let
           val (pf_gc, pf_arr | p) = intvecptr_copy (!ivp, n)
-          val () = intvec_elimlst_at (0(*stamp*), !p, v1ecs_eq, n)
+          val () = intvec_elimlst (0(*stamp*), !p, v1ecs_eq, n)
           val sgn = intvec_inspect_eq (!p, n)
         in
           if sgn > 0 then let // tautology

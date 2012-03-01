@@ -68,7 +68,10 @@ viewtypedef List_vt (a:viewt@ype) = [n:int | n >=0] list_vt (a, n)
 
 (* ****** ****** *)
 
-macdef list_vt_sing (x) = list_vt_cons (,(x), list_vt_nil ())
+macdef list_vt_sing (x) =
+  list_vt_cons (,(x), list_vt_nil ())
+macdef list_vt_pair (x1, x2) =
+  list_vt_cons (,(x1), list_vt_cons (,(x2), list_vt_nil))
 
 (* ****** ****** *)
 
@@ -79,14 +82,14 @@ prfun list_vt_length_is_nonnegative
 (* ****** ****** *)
 
 fun{} list_vt_is_nil
-  {a:vt0p} {n:nat} (xs: !list_vt (a, n)):<> bool (n==0)
+  {a:vt0p} {n:int} (xs: !list_vt (a, n)):<> bool (n==0)
 fun{} list_vt_is_cons
-  {a:vt0p} {n:nat} (xs: !list_vt (a, n)):<> bool (n > 0)
+  {a:vt0p} {n:int} (xs: !list_vt (a, n)):<> bool (n > 0)
 
 (* ****** ****** *)
 
 fun{a:vt0p}
-list_vt_make_array {n:nat}
+list_vt_make_array {n:int}
   (A: &(@[a][n]) >> @[a?!][n], n: size_t n):<> list_vt (a, n)
 // end of [list_vt_make_array]
 
@@ -94,13 +97,13 @@ list_vt_make_array {n:nat}
 
 fun{a:vt0p}
 list_vt_of_arraysize
-  {n:nat} (arrsz: arraysize (a, n)):<> list_vt (a, n)
+  {n:int} (arrsz: arraysize (a, n)):<> list_vt (a, n)
 // end of [list_vt_of_arraysize]
 
 (* ****** ****** *)
 
 fun{a:t0p}
-list_vt_copy {n:nat} (xs: !list_vt (a, n)):<> list_vt (a, n)
+list_vt_copy {n:int} (xs: !list_vt (a, n)):<> list_vt (a, n)
 
 (* ****** ****** *)
 
@@ -117,7 +120,7 @@ list_vt_free_fun (
 // HX: this one is more general than [list_length] as [a] can be linear
 //
 fun{a:vt0p}
-list_vt_length {n:nat} (xs: !list_vt (a, n)):<> int n
+list_vt_length {n:int} (xs: !list_vt (a, n)):<> int n
 
 (* ****** ****** *)
 
@@ -127,18 +130,25 @@ list_vt_make_elt {n:nat} (x: a, n: int n):<> list_vt (a, n)
 (* ****** ****** *)
 
 fun{a:vt0p}
-list_vt_append {m,n:nat}
+list_vt_append {m,n:int}
   (xs: list_vt (a, m), ys: list_vt (a, n)):<> list_vt (a, m+n)
 // end of [list_vt_append]
 
 (* ****** ****** *)
 
 fun{a:vt0p}
-list_vt_reverse {n:nat} (xs: list_vt (a, n)):<> list_vt (a, n)
+list_vt_split_at {n:int} {i:nat | i <= n}
+  (xs: &list_vt (a, n) >> list_vt (a, n-i), i: int i):<> list_vt (a, i)
+// end of [list_vt_split_at]
+
+(* ****** ****** *)
+
+fun{a:vt0p}
+list_vt_reverse {n:int} (xs: list_vt (a, n)):<> list_vt (a, n)
 // end of [list_vt_reverse]
 
 fun{a:vt0p}
-list_vt_reverse_append {m,n:nat}
+list_vt_reverse_append {m,n:int}
   (xs: list_vt (a, m), ys: list_vt (a, n)):<> list_vt (a, m+n)
 // end of [list_vt_reverse_append]
 
@@ -179,27 +189,27 @@ list_vt_tabulate_vcloptr {v:view} {n:nat} {f:eff}
 
 fun{a:vt0p}
 list_vt_foreach_funenv
-  {v:view} {vt:viewtype} {n:nat} {f:eff}
+  {v:view} {vt:viewtype} {n:int} {f:eff}
   (pf: !v | xs: !list_vt (a, n), f: !(!v | &a, !vt) -<f> void, env: !vt)
   :<f> void
 // end of [list_vt_foreach_funenv]
 
 fun{a:vt0p}
-list_vt_foreach_fun {n:nat} {f:eff}
+list_vt_foreach_fun {n:int} {f:eff}
   (xs: !list_vt (a, n), f: (&a) -<fun,f> void):<f> void
 // end of [list_vt_foreach_fun]
 
 fun{a:vt0p}
-list_vt_foreach_vclo {v:view} {n:nat} {f:eff}
+list_vt_foreach_vclo {v:view} {n:int} {f:eff}
   (pf: !v | xs: !list_vt (a, n), f: &(!v | &a) -<clo,f> void):<f> void
 // end of [list_vt_foreach_vclo]
 
 fun{a:t0p}
-list_vt_foreach_cloptr {n:nat} {f:eff}
+list_vt_foreach_cloptr {n:int} {f:eff}
   (xs: !list_vt (a, n), f: !(&a) -<cloptr,f> void):<f> void
 // end of [list_vt_foreach_cloptr]
 fun{a:t0p}
-list_vt_foreach_vcloptr {v:view} {n:nat} {f:eff}
+list_vt_foreach_vcloptr {v:view} {n:int} {f:eff}
   (pf: !v | xs: !list_vt (a, n), f: !(!v | &a) -<cloptr,f> void):<f> void
 // end of [list_vt_foreach_vcloptr]
 
@@ -207,41 +217,41 @@ list_vt_foreach_vcloptr {v:view} {n:nat} {f:eff}
 
 fun{a:vt0p}
 list_vt_iforeach_funenv
-  {v:view} {vt:viewtype} {n:nat} {f:eff} (
+  {v:view} {vt:viewtype} {n:int} {f:eff} (
   pf: !v
 | xs: !list_vt (a, n), f: (!v | natLt n, &a, !vt) -<fun,f> void, env: !vt
 ) :<f> void // end of [list_vt_iforeach_funenv]
 
 fun{a:vt0p}
-list_vt_iforeach_fun {n:nat} {f:eff}
+list_vt_iforeach_fun {n:int} {f:eff}
   (xs: !list_vt (a, n), f: (natLt n, &a) -<fun,f> void):<f> void
 // end of [list_vt_iforeach_fun]
 
 fun{a:vt0p}
-list_vt_iforeach_vclo {v:view} {n:nat} {f:eff}
+list_vt_iforeach_vclo {v:view} {n:int} {f:eff}
   (pf: !v | xs: !list_vt (a, n), f: &(!v | natLt n, &a) -<clo,f> void):<f> void
 // end of [list_vt_iforeach_vclo]
 
 fun{a:t0p}
-list_vt_iforeach_cloptr {n:nat} {f:eff}
+list_vt_iforeach_cloptr {n:int} {f:eff}
   (xs: !list_vt (a, n), f: !(natLt n, &a) -<cloptr,f> void):<f> void
 // end of [list_vt_iforeach_cloptr]
 fun{a:t0p}
-list_vt_iforeach_vcloptr {v:view} {n:nat} {f:eff}
+list_vt_iforeach_vcloptr {v:view} {n:int} {f:eff}
   (pf: !v | xs: !list_vt (a, n), f: !(!v | natLt n, &a) -<cloptr,f> void):<f> void
 // end of [list_vt_iforeach_vcloptr]
 
 (* ****** ****** *)
 
 fun{a:vt0p}
-list_vt_mergesort {n:nat}
+list_vt_mergesort {n:int}
   (xs: list_vt (a, n), cmp: &(&a, &a) -<clo> int):<> list_vt (a, n)
 // end of [list_vt_mergesort]
 
 (*
 // HX: if needed, this one is more general:
 fun{a:vt0p}
-list_vt_mergesort {v:view} {n:nat}
+list_vt_mergesort {v:view} {n:int}
   (pf: !v | xs: list_vt (a, n), cmp: &(!v | &a, &a) -<clo> int):<> list_vt (a, n)
 // end of [list_vt_mergesort]
 *)
@@ -257,7 +267,7 @@ list_vt_mergesort {v:view} {n:nat}
 // function here as the qsort in stdlib is the underlying implementation.
 //
 fun{a:vt0p}
-list_vt_quicksort {n:nat} (xs: !list_vt (a, n), cmp: (&a, &a) -<fun> int):<> void
+list_vt_quicksort {n:int} (xs: !list_vt (a, n), cmp: (&a, &a) -<fun> int):<> void
 // end of [list_vt_quicksort]
 
 (* ****** ****** *)

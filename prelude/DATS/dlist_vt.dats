@@ -297,14 +297,14 @@ end // end of [dlist_vt_insert]
 (* ****** ****** *)
 
 implement{a}
-dlist_vt_free {f,r} (xs) = let
+dlist_vt_free {r} (xs) = let
   fun loop
     {r:nat} .<r>.
     (xs: DLIST (a, r)):<> void =
     case+ xs of
     | ~DLISTcons (_, _, xs) => loop (xs) | ~DLISTnil () => ()
   // end of [loop]
-  prval () = lemma1_dlist_vt_params {a}{f,r} (xs)
+  prval () = lemma1_dlist_vt_params {a}{0,r} (xs)
 in
   loop (xs)
 end // end of [dlist_vt_free]

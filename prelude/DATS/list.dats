@@ -63,14 +63,20 @@ list_length_is_nonnegative (xs) =
 
 // this is a casting function
 implement
-list_of_list_vt {a} (xs) = aux (xs) where {
-  castfn aux {n:nat} .<n>.
-    (xs: list_vt (a, n)):<> list (a, n) =
-    case+ xs of
-    | ~list_vt_cons (x, xs) => list_cons (x, aux xs)
-    | ~list_vt_nil () => list_nil ()
-  // end of [aux]
-} // end of [list_of_list_vt]
+list_of_list_vt {a} (xs) = let
+//
+castfn aux {n:nat} .<n>.
+  (xs: list_vt (a, n)):<> list (a, n) =
+  case+ xs of
+  | ~list_vt_cons (x, xs) => list_cons (x, aux xs)
+  | ~list_vt_nil () => list_nil ()
+// end of [aux]
+//
+prval () = list_vt_length_is_nonnegative (xs)
+//
+in
+  aux (xs)
+end // end of [list_of_list_vt]
 
 (* ****** ****** *)
 
@@ -167,8 +173,8 @@ end // end of [list_app_cloref]
 
 implement{a1,a2}
 list_app2_funenv
-  {v:view} {vt:viewtype}
-  {n} {f:eff} (pf | xs1, xs2, f, env) = let
+  {v}{vt}{n}{f:eff}
+  (pf | xs1, xs2, f, env) = let
   fun loop {n:nat} .<n>. (
       pf: !v
     | xs1: list (a1, n)
@@ -181,6 +187,7 @@ list_app2_funenv
       end // end of [::, ::]
     | (nil (), nil ()) => ()
   // end of [loop]
+  prval () = list_length_is_nonnegative (xs1)
 in
   loop (pf | xs1, xs2, f, env)
 end // end of [list_app2_funenv]
@@ -263,20 +270,25 @@ end  // end of [list_app2_cloref]
 //
 implement{a}
 list_append (xs, ys) = let
-  var res: List a // uninitialized
-  fun loop
-    {n1,n2:nat} .<n1>. (
-    xs: list (a, n1)
-  , ys: list (a, n2)
-  , res: &(List a)? >> list (a, n1+n2)
-  ) :<> void = begin case+ xs of
-    | x :: xs => let
-        val () = (res := cons {a} {0} (x, ?)); val+ cons (_, !p) = res
-      in
-        loop (xs, ys, !p); fold@ res
-      end
-    | nil () => (res := ys)
-  end // end of [loop]
+//
+var res: List a // uninitialized
+fun loop
+  {n1,n2:nat} .<n1>. (
+  xs: list (a, n1)
+, ys: list (a, n2)
+, res: &(List a)? >> list (a, n1+n2)
+) :<> void = begin case+ xs of
+  | x :: xs => let
+      val () = (res := cons {a} {0} (x, ?)); val+ cons (_, !p) = res
+    in
+      loop (xs, ys, !p); fold@ res
+    end
+  | nil () => (res := ys)
+end // end of [loop]
+//
+prval () = list_length_is_nonnegative (xs)
+prval () = list_length_is_nonnegative (ys)
+//
 in
   loop (xs, ys, res); res
 end // end of [list_append]
@@ -300,26 +312,34 @@ end // end of [list_append]
 
 implement{a}
 list_append1_vt (xs, ys) = let
-  extern castfn __cast {j:nat} (ys: list (a, j)):<> list_vt (a, j)
+  extern castfn __cast
+    {j:int} (ys: list (a, j)):<> list_vt (a, j)
+  // end of [extern]
 in
   list_of_list_vt (list_vt_append (xs, __cast (ys)))
 end // end of [list_append1_vt]
 
 implement{a}
 list_append2_vt (xs, ys) = let
-  var res: List_vt a // uninitialized
-  fun loop {n1,n2:nat} .<n1>. (
-    xs: list (a, n1)
-  , ys: list_vt (a, n2)
-  , res: &(List_vt a)? >> list_vt (a, n1+n2)
-  ) :<> void = begin case+ xs of
-    | x :: xs => let
-        val () = (res := list_vt_cons {a} {0} (x, ?)); val+ list_vt_cons (_, !p) = res
-      in
-        loop (xs, ys, !p); fold@ res
-      end (* end of [::] *)
-    | nil () => (res := ys)
-  end // end of [loop]
+//
+fun loop {n1,n2:nat} .<n1>. (
+  xs: list (a, n1)
+, ys: list_vt (a, n2)
+, res: &(List_vt a)? >> list_vt (a, n1+n2)
+) :<> void = begin case+ xs of
+  | x :: xs => let
+      val () = (res := list_vt_cons {a} {0} (x, ?)); val+ list_vt_cons (_, !p) = res
+    in
+      loop (xs, ys, !p); fold@ res
+    end (* end of [::] *)
+  | nil () => (res := ys)
+end // end of [loop]
+//
+var res: List_vt a // uninitialized
+//
+prval () = list_length_is_nonnegative (xs)
+prval () = list_vt_length_is_nonnegative (ys)
+//
 in
   loop (xs, ys, res); res
 end // end of [list_append_vt]
@@ -436,6 +456,7 @@ end // end of [list_concat]
 implement{a}
 list_copy
   (xs0) = res where {
+//
   fun loop {n:nat} .<n>.
     (xs: list (a, n), res: &List_vt a? >> list_vt (a, n))
     :<> void = case+ xs of
@@ -447,6 +468,9 @@ list_copy
       end // end of [cons]
     | list_nil () => res := list_vt_nil ()
   var res: List_vt a // uninitialized
+//
+  prval () = list_length_is_nonnegative (xs0)
+//
   val () = loop (xs0, res)
 } // end of [list_copy]
 
@@ -461,13 +485,17 @@ list_drop (xs, i) = loop (xs, i) where {
 } // end of [list_drop]
 
 implement{a}
-list_drop_exn (xs, i) = loop (xs, i) where {
-  fun loop {n,i:nat} .<i>.
-    (xs: list (a, n), i: int i):<!exn> [i <= n] list (a, n-i) =
-    if i > 0 then begin case+ xs of
-      | list_cons (_, xs) => loop (xs, i-1)
-      | list_nil () => $raise ListSubscriptException ()
-    end else xs // end of [if]
+list_drop_exn
+  (xs, i) = loop (xs, i) where {
+fun loop {n,i:nat} .<i>.
+  (xs: list (a, n), i: int i):<!exn> [i <= n] list (a, n-i) =
+  if i > 0 then begin case+ xs of
+    | list_cons (_, xs) => loop (xs, i-1)
+    | list_nil () => $raise ListSubscriptException ()
+  end else xs // end of [if]
+//
+prval () = list_length_is_nonnegative (xs)
+//
 } // end of [list_drop_exn]
 
 (* ****** ****** *)
@@ -560,7 +588,9 @@ list_exists_cloref
 
 implement{a1,a2}
 list_exists2_funenv
-  {v} {vt} {n} {p:eff} (pf | xs1, xs2, p, env) = let
+  {v}{vt}{n}{p:eff}
+  (pf | xs1, xs2, p, env) = let
+  prval () = list_length_is_nonnegative (xs1)
   fun loop {n:nat} .<n>. (
       pf: !v
     | xs1: list (a1, n)
@@ -661,6 +691,7 @@ list_extend (xs, y) = let
       end // end of [::]
     | nil () => (res := list_vt_cons (y, list_vt_nil ()))
   end // end of [loop]
+  prval () = list_length_is_nonnegative (xs)
 in
   loop (xs, y, res); res
 end // end of [list_extend]
@@ -692,6 +723,9 @@ list_filter_funenv
   (* end of [loop] *)
 //
   var res: List_vt a // uninitialized
+//
+  prval () = list_length_is_nonnegative (xs)
+//
   val () = loop (pf | xs, p, res, env)
 //
 in
@@ -950,22 +984,26 @@ list_fold_left_cloref
 
 implement{init}{a1,a2}
 list_fold2_left_funenv
-  {v} {vt} {n} {f:eff} (pf | f, res, xs1, xs2, env) = let
-  fun loop {n:nat} .<n>. (
-      pf: !v
-    | f: !(!v | init, a1, a2, !vt) -<fun,f> init
-    , res: init
-    , xs1: list (a1, n)
-    , xs2: list (a2, n)
-    , env: !vt
-    ) :<f> init = case+ xs1 of
-    | x1 :: xs1 => let
-        val+ x2 :: xs2 = xs2; val res = f (pf | res, x1, x2, env)
-      in
-        loop (pf | f, res, xs1, xs2, env)
-      end // end of [::]
-    | nil () => res
-  // end of [loop]
+  {v}{vt}{n}{f:eff}
+  (pf | f, res, xs1, xs2, env) = let
+fun loop {n:nat} .<n>. (
+    pf: !v
+  | f: !(!v | init, a1, a2, !vt) -<fun,f> init
+  , res: init
+  , xs1: list (a1, n)
+  , xs2: list (a2, n)
+  , env: !vt
+  ) :<f> init = case+ xs1 of
+  | x1 :: xs1 => let
+      val+ x2 :: xs2 = xs2; val res = f (pf | res, x1, x2, env)
+    in
+      loop (pf | f, res, xs1, xs2, env)
+    end // end of [::]
+  | nil () => res
+// end of [loop]
+//
+prval () = list_length_is_nonnegative (xs1)
+//
 in
   loop (pf | f, res, xs1, xs2, env)
 end // end of [list_fold2_left_funenv]
@@ -1086,22 +1124,26 @@ end // end of [list_fold_right_cloref]
 
 implement{a1,a2}{sink}
 list_fold2_right_funenv
-  {v} {vt} {n} {f:eff} (pf | f, xs1, xs2, res, env) = let
-  fun loop {n:nat} .<n>. (
-      pf: !v
-    | f: (!v | a1, a2, sink, !vt) -<fun,f> sink
-    , xs1: list (a1, n)
-    , xs2: list (a2, n)
-    , res: sink
-    , env: !vt
-    ) :<f> sink = case+ xs1 of
-    | x1 :: xs1 => let
-        val+ x2 :: xs2 = xs2; val res = loop (pf | f, xs1, xs2, res, env)
-      in
-        f (pf | x1, x2, res, env)
-      end // end of [::]
-    | nil () => res
-  // end of [loop]
+  {v}{vt}{n}{f:eff}
+  (pf | f, xs1, xs2, res, env) = let
+fun loop {n:nat} .<n>. (
+    pf: !v
+  | f: (!v | a1, a2, sink, !vt) -<fun,f> sink
+  , xs1: list (a1, n)
+  , xs2: list (a2, n)
+  , res: sink
+  , env: !vt
+  ) :<f> sink = case+ xs1 of
+  | x1 :: xs1 => let
+      val+ x2 :: xs2 = xs2; val res = loop (pf | f, xs1, xs2, res, env)
+    in
+      f (pf | x1, x2, res, env)
+    end // end of [::]
+  | nil () => res
+// end of [loop]
+//
+prval () = list_length_is_nonnegative (xs1)
+//
 in
   loop (pf | f, xs1, xs2, res, env)
 end // end of [list_fold2_right_funenv]
@@ -1201,19 +1243,23 @@ end // end of [list_forall_cloref]
 implement{a1,a2}
 list_forall2_funenv
   {v} {vt} {n} {p:eff} (pf | xs1, xs2, p, env) = let
-  fun loop {n:nat} .<n>. (
-    pf: !v
-  | xs1: list (a1, n)
-  , xs2: list (a2, n)
-  , p: (!v | a1, a2, !vt) -<fun,p> bool
-  , env: !vt
-  ) :<p> bool = begin case+ xs1 of
-    | x1 :: xs1 => let
-        val+ x2 :: xs2 = xs2 in
-        if p (pf | x1, x2, env) then loop (pf | xs1, xs2, p, env) else false
-      end // end of [::]
-    | nil () => true
-  end // end of [loop]
+//
+fun loop {n:nat} .<n>. (
+  pf: !v
+| xs1: list (a1, n)
+, xs2: list (a2, n)
+, p: (!v | a1, a2, !vt) -<fun,p> bool
+, env: !vt
+) :<p> bool = begin case+ xs1 of
+  | x1 :: xs1 => let
+      val+ x2 :: xs2 = xs2 in
+      if p (pf | x1, x2, env) then loop (pf | xs1, xs2, p, env) else false
+    end // end of [::]
+  | nil () => true
+end // end of [loop]
+//
+prval () = list_length_is_nonnegative (xs1)
+//
 in
   loop (pf | xs1, xs2, p, env)
 end // end of [list_forall2_funenv]
@@ -1375,21 +1421,26 @@ end // end of [list_foreach_cloref]
 
 implement{a1,a2}
 list_foreach2_funenv
-  {v} {vt} {n} {f:eff} (pf | xs1, xs2, f, env) = let
-  fun loop {n:nat} .<n>. (
-      pf: !v
-    | xs1: list (a1, n)
-    , xs2: list (a2, n)
-    , f: (!v | a1, a2, !vt) -<fun,f> void
-    , env: !vt
-    ) :<f> void = case+ xs1 of
-    | x1 :: xs1 => let
-        val x2 :: xs2 = xs2
-      in
-        f (pf | x1, x2, env); loop (pf | xs1, xs2, f, env)
-      end
-    | nil () => ()
-  // end of [loop]
+  {v}{vt}{n}{f:eff}
+  (pf | xs1, xs2, f, env) = let
+//
+fun loop {n:nat} .<n>. (
+  pf: !v
+| xs1: list (a1, n)
+, xs2: list (a2, n)
+, f: (!v | a1, a2, !vt) -<fun,f> void
+  , env: !vt
+  ) :<f> void = case+ xs1 of
+  | x1 :: xs1 => let
+     val x2 :: xs2 = xs2
+    in
+      f (pf | x1, x2, env); loop (pf | xs1, xs2, f, env)
+    end
+  | nil () => ()
+// end of [loop]
+//
+prval () = list_length_is_nonnegative (xs1)
+//
 in
   loop (pf | xs1, xs2, f, env)
 end // end of [list_foreach2_funenv]
@@ -1468,20 +1519,26 @@ end // end of [list_foreach2_cloref]
 
 implement{a}
 list_iforeach_funenv
-  {v} {vt} {n} {f:eff} (pf | xs, f, env) = let
-  viewtypedef cloptr_t = (!v | natLt n, a, !vt) -<fun,f> void
-  fun loop {i,j:nat | i+j==n} .<j>. (
-      pf: !v
-    | i: int i
-    , xs: list (a, j)
-    , f: !cloptr_t
-    , env: !vt
-    ) :<f> void = begin case+ xs of
-    | x :: xs => begin
-        f (pf | i, x, env); loop (pf | i+1, xs, f, env)
-      end // end of [::]
-    | nil () => ()
-  end // end of [loop]
+  {v}{vt}{n}{f:eff}
+  (pf | xs, f, env) = let
+//
+viewtypedef cloptr_t = (!v | natLt n, a, !vt) -<fun,f> void
+//
+fun loop {i,j:nat | i+j==n} .<j>. (
+    pf: !v
+  | i: int i
+  , xs: list (a, j)
+  , f: !cloptr_t
+  , env: !vt
+  ) :<f> void = begin case+ xs of
+  | x :: xs => begin
+      f (pf | i, x, env); loop (pf | i+1, xs, f, env)
+    end // end of [::]
+  | nil () => ()
+end // end of [loop]
+//
+prval () = list_length_is_nonnegative (xs)
+//
 in
   loop (pf | 0, xs, f, env)
 end // end of [list_iforeach_funenv]
@@ -1557,16 +1614,25 @@ end // end of [list_iforeach_cloref]
 implement{a1,a2}
 list_iforeach2_funenv
   {v} {vt} {n} {f:eff} (pf | xs1, xs2, f, env) = let
-  viewtypedef cloptr_t = (!v | natLt n, a1, a2, !vt) -<fun,f> void
-  fun loop {i,j:nat | i+j==n} .<j>. (
-      pf: !v
-    | i: int i, xs1: list (a1, j), xs2: list (a2, j), f: !cloptr_t, env: !vt
-    ) :<f> void = begin case+ (xs1, xs2) of
-    | (x1 :: xs1, x2 :: xs2) => begin
-        f (pf | i, x1, x2, env); loop (pf | i+1, xs1, xs2, f, env)
-      end // end of [::, ::]
-    | (nil (), nil ()) => ()
-  end // end of [loop]
+//
+viewtypedef cloptr_t = (!v | natLt n, a1, a2, !vt) -<fun,f> void
+//
+fun loop
+  {i,j:nat | i+j==n} .<j>. (
+    pf: !v
+  | i: int i
+  , xs1: list (a1, j), xs2: list (a2, j)
+  , f: !cloptr_t, env: !vt
+  ) :<f> void = (
+  case+ (xs1, xs2) of
+  | (x1 :: xs1, x2 :: xs2) => begin
+      f (pf | i, x1, x2, env); loop (pf | i+1, xs1, xs2, f, env)
+    end // end of [::, ::]
+  | (nil (), nil ()) => ()
+) // end of [loop]
+//
+prval () = list_length_is_nonnegative (xs1)
+//
 in
   loop (pf | 0, xs1, xs2, f, env)
 end // end of [list_iforeach2_funenv]
@@ -1668,6 +1734,7 @@ list_get_elt_at_exn (xs, i) = let
     | x :: xs => if i > 0 then loop (xs, i - 1) else x
     | nil () => $raise ListSubscriptException ()
   // end of [loop]
+  prval () = list_length_is_nonnegative (xs)
 in
   loop (xs, i)
 end // end of [list_get_elt_at_exn]
@@ -1757,6 +1824,7 @@ list_length (xs) = let
     (xs: list (a, i), j: int j):<> int (i+j) = begin
     case+ xs of  _ :: xs => loop (xs, isucc j) | nil () => j
   end // end of [loop]
+  prval () = list_length_is_nonnegative (xs)
 in
   loop (xs, 0)
 end // end of [list_length]
@@ -1779,39 +1847,46 @@ list_length_compare (xs, ys) =
 
 implement{a}{b}
 list_map_funenv
-  {v} {vt} {n} {f:eff} (pf | xs, f, env) = let
-  typedef fun_t = (!v | a, !vt) -<fun,f> b
-  fun loop {n:nat} .<n>. (
-      pf: !v
-    | xs: list (a, n)
-    , f: fun_t
-    , res: &(List_vt b)? >> list_vt (b, n)
-    , env: !vt
-    ) :<f> void = begin case+ xs of
-    | x :: xs => let
-        val y = f (pf | x, env)
-        val+ () = (res := list_vt_cons {b} {0} (y, ?)); val+ list_vt_cons (_, !p) = res
-      in
-        loop (pf | xs, f, !p, env); fold@ res
-      end // end of [::]
-    | nil () => (res := list_vt_nil ())
-  end // end of [loop]
-  var res: List_vt b // uninitialized
+  {v}{vt}{n}{f:eff}
+  (pf | xs, f, env) = let
+//
+typedef fun_t = (!v | a, !vt) -<fun,f> b
+//
+fun loop {n:nat} .<n>. (
+    pf: !v
+  | xs: list (a, n)
+  , f: fun_t
+  , res: &(List_vt b)? >> list_vt (b, n)
+  , env: !vt
+  ) :<f> void = begin case+ xs of
+  | x :: xs => let
+      val y = f (pf | x, env)
+      val+ () = (res := list_vt_cons {b} {0} (y, ?)); val+ list_vt_cons (_, !p) = res
+    in
+      loop (pf | xs, f, !p, env); fold@ res
+    end // end of [::]
+  | nil () => (res := list_vt_nil ())
+end // end of [loop]
+//
+var res: List_vt b // uninitialized
+//
+prval () = list_length_is_nonnegative (xs)
+//
 in
   loop (pf | xs, f, res, env); res
 end // end of [list_map_funenv]
 
 implement{a}{b}
-list_map_fun {n:int} {f:eff} (xs, f) = let
+list_map_fun
+  {n}{f:eff}
+  (xs, f) = ys where {
   val f = coerce (f) where {
     extern castfn coerce (f: a -<f> b):<> (!unit_v | a, !ptr) -<f> b
   } // end of [where]
   prval pf = unit_v ()
   val ys = list_map_funenv<a><b> {..} {ptr} (pf | xs, f, null)
   prval unit_v () = pf
-in
-  ys
-end // end of [list_map_fun]
+} // end of [list_map_fun]
 
 implement{a}{b}
 list_map_vclo
@@ -1859,39 +1934,46 @@ in
 end // end of [list_map_vcloptr]
 
 implement{a}{b}
-list_map_cloref {n:int} {f:eff} (xs, f) = let
+list_map_cloref
+  {n}{f:eff}
+  (xs, f) = ys where {
   typedef cloref_t = a -<cloref,f> b
   fn app (pf: !unit_v | x: a, f: !cloref_t):<f> b = f (x)
   prval pf = unit_v ()
   val ys = list_map_funenv<a><b> {unit_v} {cloref_t} (pf | xs, app, f)
   prval unit_v () = pf
-in
-  ys
-end // end of [list_map_cloref]
+} // end of [list_map_cloref]
 
 (* ****** ****** *)
 
 implement{a1,a2}{b}
 list_map2_funenv
-  {v:view} {vt:viewtype} {n} {f:eff} (pf | xs, ys, f, env) = let
-  var res: List_vt b? // uninitialized
-  fun loop {n:nat} .<n>. (
-      pf: !v
-    | xs: list (a1, n)
-    , ys: list (a2, n)
-    , f: (!v | a1, a2, !vt) -<fun,f> b
-    , res: &(List_vt b)? >> list_vt (b, n)
-    , env: !vt
-  ) :<f> void = begin case+ (xs, ys) of
-    | (x :: xs, y :: ys) => let
-        val z = f (pf | x, y, env)
-        val+ () = (res := list_vt_cons {b} {0} (z, ?))
-        val+ list_vt_cons (_, !p_res1) = res
-      in
-        loop (pf | xs, ys, f, !p_res1, env); fold@ res
-      end
-    | (nil (), nil ()) => (res := list_vt_nil ())
-  end // end of [loop]
+  {v}{vt}{n}{f:eff}
+  (pf | xs, ys, f, env) = let
+//
+fun loop {n:nat} .<n>. (
+    pf: !v
+  | xs: list (a1, n)
+  , ys: list (a2, n)
+  , f: (!v | a1, a2, !vt) -<fun,f> b
+  , res: &(List_vt b)? >> list_vt (b, n)
+  , env: !vt
+) :<f> void = begin case+ (xs, ys) of
+  | (x :: xs, y :: ys) => let
+      val z = f (pf | x, y, env)
+      val+ () = (res := list_vt_cons {b} {0} (z, ?))
+      val+ list_vt_cons (_, !p_res1) = res
+    in
+      loop (pf | xs, ys, f, !p_res1, env); fold@ res
+    end
+  | (nil (), nil ()) => (res := list_vt_nil ())
+end // end of [loop]
+//
+var res: List_vt b? // uninitialized
+//
+prval () = list_length_is_nonnegative (xs)
+prval () = list_length_is_nonnegative (ys)
+//
 in
   loop (pf | xs, ys, f, res, env); res
 end // end of [list_map2_funenv]
@@ -1973,6 +2055,9 @@ list_reverse_append (xs, ys) = let
   fun loop {n1,n2:nat} .<n1>.
     (xs: list (a, n1), ys: list (a, n2)):<> list (a, n1+n2) =
     case+ xs of x :: xs => loop (xs, x :: ys) | nil () => ys
+  // end of [loop]
+  prval () = list_length_is_nonnegative (xs)
+  prval () = list_length_is_nonnegative (ys)
 in
   loop (xs, ys)
 end // end of [list_reverse_append]
@@ -1981,7 +2066,9 @@ end // end of [list_reverse_append]
 
 implement{a}
 list_reverse_append1_vt (xs, ys) = let
-  extern castfn __cast {j:nat} (ys: list (a, j)):<> list_vt (a, j)
+  extern castfn __cast
+    {j:int} (ys: list (a, j)):<> list_vt (a, j)
+  // end of [__cast]
 in
   list_of_list_vt (list_vt_reverse_append (xs, __cast (ys)))
 end // end of [list_reverse_append1_vt]
@@ -1991,6 +2078,9 @@ list_reverse_append2_vt (xs, ys) = let
   fun loop {n1,n2:nat} .<n1>.
     (xs: list (a, n1), ys: list_vt (a, n2)):<> list_vt (a, n1+n2) =
     case+ xs of x :: xs => loop (xs, list_vt_cons (x, ys)) | nil () => ys
+  // end of [loop]
+  prval () = list_length_is_nonnegative (xs)
+  prval () = list_vt_length_is_nonnegative (ys)
 in
   loop (xs, ys)
 end // end of [list_reverse_append2_vt]
@@ -2036,14 +2126,20 @@ end // end of [aux_test]
 in
 
 implement{a}
-list_set_elt_at_exn (xs, i, x0) =
+list_set_elt_at_exn (xs, i, x0) = let
+  prval () = list_length_is_nonnegative (xs)
+in
   if aux_test<a> (xs, i) then list_set_elt_at (xs, i, x0)
   else $raise ListSubscriptException
+end // end of [list_set_elt_at_exn]
 
 implement{a}
-list_set_elt_at_opt (xs, i, x0) =
+list_set_elt_at_opt (xs, i, x0) = let
+  prval () = list_length_is_nonnegative (xs)
+in
   if aux_test<a> (xs, i) then Some_vt (list_set_elt_at (xs, i, x0))
   else None_vt ()
+end // end of [list_set_elt_at_opt]
 
 end // end of [local]
 
@@ -2052,9 +2148,9 @@ end // end of [local]
 implement{a}
 list_split_at {n} {i} (xs, i) = let
   var fsts: List_vt a? // uninitialized
-  fun loop {j:nat | j <= i} .<i-j>.
-    (xs: list (a, n-j), ij: int (i-j), fsts: &(List_vt a)? >> list_vt (a, i-j))
-    :<> list (a, n-i) =
+  fun loop {j:nat | j <= i} .<i-j>. (
+    xs: list (a, n-j), ij: int (i-j), fsts: &(List_vt a)? >> list_vt (a, i-j)
+  ) :<> list (a, n-i) =
     if ij > 0 then let
       val+ x :: xs = xs
       val () = (fsts := list_vt_cons {a} {0} (x, ?)); val+ list_vt_cons (_, !p) = fsts
@@ -2063,7 +2159,7 @@ list_split_at {n} {i} (xs, i) = let
       fold@ fsts; snds
     end else begin
       fsts := list_vt_nil (); xs
-    end
+    end // end of [loop]
   val snds = loop {0} (xs, i, fsts)
 in
   (fsts, snds)
@@ -2099,24 +2195,30 @@ in
 end // end of [list_take]
 
 implement{a}
-list_take_exn {n,i} (xs, i) = let
-  fun loop {n,i:nat} .<i>.
-    (xs: list (a, n), i: int i, res: &List_vt a? >> list_vt (a, j))
-    :<> #[j:nat | (i <= n && i == j) || (n < i && n == j)] bool (n < i)  =
-    if i > 0 then begin case+ xs of
-      | list_cons (x, xs) =>
-          (fold@ res; ans) where {
-          val () = res := list_vt_cons {a} {0} (x, ?)
-          val+ list_vt_cons (_, !p_res1) = res
-          val ans = loop (xs, i-1, !p_res1)
-        } // end of [list_cons]
-      | list_nil () => (res := list_vt_nil (); true(*err*))
-    end else begin
-      res := list_vt_nil (); false(*err*)
-    end (* end of [if] *)
-  // end of [loop]    
-  var res: List_vt a? // uninitialized
-  val err = loop {n,i} (xs, i, res)
+list_take_exn
+  {n}{i} (xs, i) = let
+//
+fun loop {n,i:nat} .<i>.
+  (xs: list (a, n), i: int i, res: &List_vt a? >> list_vt (a, j))
+  :<> #[j:nat | (i <= n && i == j) || (n < i && n == j)] bool (n < i)  =
+  if i > 0 then begin case+ xs of
+    | list_cons (x, xs) =>
+        (fold@ res; ans) where {
+        val () = res := list_vt_cons {a} {0} (x, ?)
+        val+ list_vt_cons (_, !p_res1) = res
+        val ans = loop (xs, i-1, !p_res1)
+      } // end of [list_cons]
+    | list_nil () => (res := list_vt_nil (); true(*err*))
+  end else begin
+    res := list_vt_nil (); false(*err*)
+  end (* end of [if] *)
+// end of [loop]    
+var res: List_vt a? // uninitialized
+//
+prval () = list_length_is_nonnegative (xs)
+//
+val err = loop {n,i} (xs, i, res)
+//
 in
   if err then let
     val () = list_vt_free res in $raise ListSubscriptException ()
@@ -2129,7 +2231,9 @@ end (* end of [list_take_exn] *)
 
 implement{a,b}
 list_zip (xs, ys) = let
+//
   typedef ab = @(a, b)
+//
   var res: List_vt ab // uninitialized
   fun loop {i:nat} .<i>.
     (xs: list (a, i), ys: list (b, i), res: &(List_vt ab)? >> list_vt (ab, i)):<> void =
@@ -2140,6 +2244,11 @@ list_zip (xs, ys) = let
         loop (xs, ys, !p); fold@ res
       end // end of [::, ::]
     | (nil (), nil ()) => (res := list_vt_nil ())
+  // end of [loop]
+//
+  prval () = list_length_is_nonnegative (xs)
+  prval () = list_length_is_nonnegative (ys)
+//
 in
   loop (xs, ys, res); res
 end // end of [list_zip]
@@ -2174,7 +2283,10 @@ list_zipwth_cloref
 
 implement{a1,a2}
 list_unzip xys = let
-  var res1: List_vt a1 and res2: List_vt a2 // uninitialized
+//
+  var res1: List_vt a1
+  and res2: List_vt a2 // uninitialized
+//
   fun loop {n:nat} .<n>. (
       xys: list (@(a1, a2), n)
     , res1: &(List_vt a1)? >> list_vt (a1, n)
@@ -2188,6 +2300,9 @@ list_unzip xys = let
       end
     | nil () => (res1 := list_vt_nil (); res2 := list_vt_nil ())
   end // end of [loop]
+//
+  prval () = list_length_is_nonnegative (xys)
+//
 in
   loop (xys, res1, res2); (res1, res2)
 end // end of [list_unzip]
@@ -2308,7 +2423,14 @@ in // in of [local]
 implement{a}
 list_mergesort
   (xs, cmp, env) = let
-  val xs = list_copy (xs) in aux4 (aux1 (xs, cmp, env), cmp, env)
+//
+  prval () =
+    list_length_is_nonnegative (xs)
+  // end of [prval]
+//
+  val xs = list_copy (xs)
+in
+  aux4 (aux1 (xs, cmp, env), cmp, env)
 end // end of [list_mergesort]
 //
 end // end of [local]
@@ -2363,7 +2485,12 @@ in // in of [local]
 implement{a}
 list_quicksort
   (xs, cmp, env) = let
-  val xs = list_copy (xs) in qsrt (xs, cmp, env)
+  prval () =
+    list_length_is_nonnegative (xs)
+  // end of [val]
+  val xs = list_copy (xs)
+in
+  qsrt (xs, cmp, env)
 end // end of [list_quicksort]
 //
 end // end of [local]

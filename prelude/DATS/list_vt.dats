@@ -48,7 +48,8 @@ staload "prelude/SATS/list_vt.sats"
 
 (* ****** ****** *)
 
-implement list_vt_length_is_nonnegative (xs) = begin
+implement
+list_vt_length_is_nonnegative (xs) = begin
   case+ xs of list_vt_cons _ => fold@ xs | list_vt_nil () => fold@ xs
 end // end of [list_vt_length_is_nonnegative]
 
@@ -69,32 +70,38 @@ list_vt_is_cons (xs) =
 implement{a}
 list_vt_make_array (A, n) = let
 //
-  viewtypedef list_vt = [a:viewt@ype;n:nat] list_vt (a, n)
+viewtypedef
+list_vt = [a:viewt@ype;n:nat] list_vt (a, n)
 //
-  fun loop {n:nat} {l1,l2:addr} .<n>. (
-      pf1: !array_v (a, n, l1) >> array_v (a?!, n, l1)
-    , pf2: !list_vt? @ l2 >> list_vt (a, n) @ l2
-    | p_arr: ptr l1, res: ptr l2, n: size_t n
-    ) :<> void =
-    if n > 0 then let
-      prval (pf11, pf12) = array_v_uncons {a} (pf1)
-      val () = !res := list_vt_cons {a} {0} (!p_arr, ?)
-      val list_vt_cons (_, !res_next) = !res
-      val () = loop 
-        (pf12, view@ (!res_next) | p_arr+sizeof<a>, res_next, n-1)
-      // end of [val]
-      prval () = pf1 := array_v_cons {a?!} (pf11, pf12)
-    in
-      fold@ (!res)
-    end else let
-      prval () = array_v_unnil {a} (pf1)
-      prval () = pf1 := array_v_nil {a?!} ()
-    in
-      !res := list_vt_nil {a} ()
-    end // end of [if]
-  // end of [loop]
-  var res: list_vt?
-  val () = loop (view@ A, view@ res | &A, &res, n)
+prval () = lemma_array_v_params (view@(A))
+//
+fun loop
+  {n:nat} {l1,l2:addr} .<n>. (
+  pf1: !array_v (a, n, l1) >> array_v (a?!, n, l1)
+, pf2: !list_vt? @ l2 >> list_vt (a, n) @ l2
+| p_arr: ptr l1, res: ptr l2, n: size_t n
+) :<> void = (
+  if n > 0 then let
+    prval (pf11, pf12) = array_v_uncons {a} (pf1)
+    val () = !res := list_vt_cons {a} {0} (!p_arr, ?)
+    val list_vt_cons (_, !res_next) = !res
+    val () = loop 
+      (pf12, view@ (!res_next) | p_arr+sizeof<a>, res_next, n-1)
+    // end of [val]
+    prval () = pf1 := array_v_cons {a?!} (pf11, pf12)
+  in
+    fold@ (!res)
+  end else let
+    prval () = array_v_unnil {a} (pf1)
+    prval () = pf1 := array_v_nil {a?!} ()
+  in
+    !res := list_vt_nil {a} ()
+  end // end of [if]
+) // end of [loop]
+//
+var res: list_vt?
+val () = loop (view@ A, view@ res | &A, &res, n)
+//
 in
   res
 end // end of [list_vt_make_arrsz]
@@ -157,7 +164,9 @@ staload UN = "prelude/SATS/unsafe.sats"
 in // in of [local]
 
 implement{a}
-list_vt_copy {n} (xs0) = list_copy ($UN.castvwtp1 {list(a,n)} (xs0))
+list_vt_copy {n} (xs0) =
+  list_copy ($UN.castvwtp1 {list(a,n)} (xs0))
+// end of [list_vt_copy]
 
 end // end of [local]
 
@@ -188,7 +197,8 @@ end // end of [list_vt_free_fun]
 (* ****** ****** *)
 
 implement{a}
-list_vt_length (xs0) = loop (xs0, 0) where {
+list_vt_length (xs0) = let
+  prval () = list_vt_length_is_nonnegative (xs0)
   fun loop {i,j:nat} .<i>.
     (xs: !list_vt (a, i), j: int j):<> int (i+j) = begin
     case+ xs of
@@ -196,7 +206,9 @@ list_vt_length (xs0) = loop (xs0, 0) where {
         let val n = loop (!p_xs1, j+1) in fold@ xs; n end
     | list_vt_nil () => (fold@ xs; j)
   end // end of [loop]
-} // end of [list_vt_length]
+in
+  loop (xs0, 0)
+end // end of [list_vt_length]
 
 (* ****** ****** *)
 
@@ -213,16 +225,51 @@ end // end of [list_make_elt]
 
 implement{a}
 list_vt_append (xs0, ys0) = let
-  var xs0 = xs0
-  fun{a:viewt@ype} loop {m,n:nat} .<m>.
-    (xs0: &list_vt (a, m) >> list_vt (a, m+n), ys0: list_vt (a, n))
-    :<> void = begin case+ xs0 of
-    | list_vt_cons (_, !p_xs) => (loop (!p_xs, ys0); fold@ xs0)
-    | ~list_vt_nil () => (xs0 := ys0)
-  end // end of [loop]
+//
+prval () = list_vt_length_is_nonnegative (xs0)
+prval () = list_vt_length_is_nonnegative (ys0)
+//
+var xs0 = xs0
+fun{a:viewt@ype} loop {m,n:nat} .<m>.
+  (xs0: &list_vt (a, m) >> list_vt (a, m+n), ys0: list_vt (a, n))
+  :<> void = begin case+ xs0 of
+  | list_vt_cons (_, !p_xs) => (loop (!p_xs, ys0); fold@ xs0)
+  | ~list_vt_nil () => (xs0 := ys0)
+end // end of [loop]
 in
   loop (xs0, ys0); xs0
 end // end of [list_vt_append]
+
+(* ****** ****** *)
+
+(*
+** HX: tail-recursive implementation
+*)
+implement{a}
+list_vt_split_at (xs, i) = let
+//
+fun loop
+  {n:int}{i:nat | i <= n} .<i>. (
+  xs: &list_vt (a, n) >> list_vt (a, n-i)
+, i: int i
+, res: &(List_vt a)? >> list_vt (a, i)
+) :<> void = (
+  if i > 0 then let
+    val () = res := xs
+    val+ list_vt_cons (_, !xs_nxt) = res; val () = xs := !xs_nxt
+  in
+    loop (xs, i-1, !xs_nxt); fold@ {a} (res)
+  end else begin
+    res := list_vt_nil {a} ()
+  end
+) // end of [loop]
+//
+var res: List_vt a
+val () = loop (xs, i, res)
+//
+in
+  res(*list_vt (a, i)*)
+end // end of [list_vt_split_at]
 
 (* ****** ****** *)
 
@@ -233,6 +280,10 @@ list_vt_reverse (xs) =
 
 implement{a}
 list_vt_reverse_append (xs, ys) = let
+//
+prval () = list_vt_length_is_nonnegative (xs)
+prval () = list_vt_length_is_nonnegative (ys)
+//
   fun revapp {m,n:nat} .<m>. (
     xs: list_vt (a, m), ys: list_vt (a, n)
   ) :<> list_vt (a, m+n) =
@@ -354,15 +405,19 @@ end // end of [list_app_vcloptr]
 implement{a}
 list_vt_foreach_funenv
   {v} {vt} {n} {f} (pf | xs0, f, env) = let
-  viewtypedef fun_t = (!v | &a, !vt) -<f> void
-  fun loop {i:nat} .<i>.
-    (pf: !v | xs0: !list_vt (a, i), f: !fun_t, env: !vt):<f> void =
-    case+ xs0 of
-    | list_vt_cons (!p_x, !p_xs) => begin
-        f (pf | !p_x, env); loop (pf | !p_xs, f, env); fold@ xs0
-      end // end of [val]
-    | list_vt_nil () => (fold@ xs0)
-  // end of [loop]
+//
+viewtypedef fun_t = (!v | &a, !vt) -<f> void
+//
+prval () = list_vt_length_is_nonnegative (xs0)
+//
+fun loop {i:nat} .<i>.
+  (pf: !v | xs0: !list_vt (a, i), f: !fun_t, env: !vt):<f> void =
+  case+ xs0 of
+  | list_vt_cons (!p_x, !p_xs) => begin
+      f (pf | !p_x, env); loop (pf | !p_xs, f, env); fold@ xs0
+    end // end of [val]
+  | list_vt_nil () => (fold@ xs0)
+// end of [loop]
 in
   loop (pf | xs0, f, env)
 end // end of [list_vt_foreach_funenv]
@@ -433,15 +488,19 @@ end // end of [list_vt_foreach_vcloptr]
 implement{a}
 list_vt_iforeach_funenv
   {v} {vt} {n} {f} (pf | xs0, f, env) = let
-  viewtypedef fun_t = (!v | natLt n, &a, !vt) -<f> void
-  fun loop {i:nat | i <= n} .<n-i>.
-    (pf: !v | i: int i, xs0: !list_vt (a, n-i), f: !fun_t, env: !vt):<f> void =
-    case+ xs0 of
-    | list_vt_cons (!p_x, !p_xs) => begin
-        f (pf | i, !p_x, env); loop (pf | i+1, !p_xs, f, env); fold@ xs0
-      end // end of [val]
-    | list_vt_nil () => (fold@ xs0)
-  // end of [loop]
+//
+viewtypedef fun_t = (!v | natLt n, &a, !vt) -<f> void
+//
+prval () = list_vt_length_is_nonnegative (xs0)
+//
+fun loop {i:nat | i <= n} .<n-i>.
+  (pf: !v | i: int i, xs0: !list_vt (a, n-i), f: !fun_t, env: !vt):<f> void =
+  case+ xs0 of
+  | list_vt_cons (!p_x, !p_xs) => begin
+      f (pf | i, !p_x, env); loop (pf | i+1, !p_xs, f, env); fold@ xs0
+    end // end of [val]
+  | list_vt_nil () => (fold@ xs0)
+// end of [loop]
 in
   loop (pf | 0, xs0, f, env)
 end // end of [list_vt_iforeach_funenv]
@@ -592,50 +651,53 @@ list_vt_quicksort {n} (xs, cmp) = let
 // array back in to the list. Note that this style of hacking
 // should probably not be imitated :)
 //
-  abst@ype a1 = a?
-  val _ = __cast (xs) where {
-    extern castfn __cast
-      (xs: !list_vt (a, n) >> list_vt (a1, n)):<> ptr
-  } // end of [val]
-  val cmp = __cast (cmp) where {
-    extern castfn
-      __cast (cmp: (&a, &a) -<fun> int):<> (&a1, &a1) -<fun> int
-  } // end of [val]
-  val asz = size1_of_int1 (list_vt_length xs)
-  val (
-    pf_gc, pf_arr | p_arr
-  ) = array_ptr_alloc_tsz {a1} (asz, sizeof<a1>)
-  val () = array_ptr_initialize_lst<a1> (!p_arr, __cast xs) where {
-    extern castfn __cast
-      (xs: !list_vt (a1, n) >> list_vt (a1?, n)):<> list (a1, n) // good hacking :)  
-  } // end of [val]
-  val () = $effmask_all ($STDLIB.qsort (!p_arr, asz, sizeof<a1>, cmp))
-  val () = loop (pf_arr | p_arr, xs) where {
-    fun loop {n:nat} {l:addr} .<n>. (
-        pf_arr: !array_v (a1, n, l) >> array_v (a1?, n, l)
-      | p_arr: ptr l, xs: !list_vt (a1?, n) >> list_vt (a1, n)
-      ) :<> void =
-      case+ xs of
-      | list_vt_cons (!p_x1, !p_xs1) => let
-          prval (pf1_elt, pf2_arr) = array_v_uncons {a1} (pf_arr)
-          val () = !p_x1 := !p_arr
-          val () = loop (pf2_arr | p_arr + sizeof<a1>, !p_xs1)
-          prval () = pf_arr := array_v_cons {a1?} (pf1_elt, pf2_arr)
-        in
-          fold@ (xs)
-        end // end of [list_vt_cons]
-      | list_vt_nil () => let
-          prval () = array_v_unnil {a1} (pf_arr)
-          prval () = pf_arr := array_v_nil {a1?} ()
-        in
-          fold@ (xs)
-        end // end of [list_vt_nil]
-    // end of [loop]
-  } // end of [val]
-  val () = array_ptr_free {a1?} (pf_gc, pf_arr | p_arr)
-  val _ = __cast (xs) where {
-    extern castfn __cast (xs: !list_vt (a1, n) >> list_vt (a, n)):<> ptr
-  } // end of val]
+prval () = list_vt_length_is_nonnegative (xs)
+//
+abst@ype a1 = a?
+val _ = __cast (xs) where {
+  extern castfn __cast
+    (xs: !list_vt (a, n) >> list_vt (a1, n)):<> ptr
+} // end of [val]
+val cmp = __cast (cmp) where {
+  extern castfn
+    __cast (cmp: (&a, &a) -<fun> int):<> (&a1, &a1) -<fun> int
+} // end of [val]
+val asz = size1_of_int1 (list_vt_length xs)
+val (
+  pf_gc, pf_arr | p_arr
+) = array_ptr_alloc_tsz {a1} (asz, sizeof<a1>)
+val () = array_ptr_initialize_lst<a1> (!p_arr, __cast xs) where {
+  extern castfn __cast
+    (xs: !list_vt (a1, n) >> list_vt (a1?, n)):<> list (a1, n) // good hacking :)  
+} // end of [val]
+val () = $effmask_all ($STDLIB.qsort (!p_arr, asz, sizeof<a1>, cmp))
+val () = loop (pf_arr | p_arr, xs) where {
+  fun loop {n:nat} {l:addr} .<n>. (
+      pf_arr: !array_v (a1, n, l) >> array_v (a1?, n, l)
+    | p_arr: ptr l, xs: !list_vt (a1?, n) >> list_vt (a1, n)
+    ) :<> void =
+    case+ xs of
+    | list_vt_cons (!p_x1, !p_xs1) => let
+        prval (pf1_elt, pf2_arr) = array_v_uncons {a1} (pf_arr)
+        val () = !p_x1 := !p_arr
+        val () = loop (pf2_arr | p_arr + sizeof<a1>, !p_xs1)
+        prval () = pf_arr := array_v_cons {a1?} (pf1_elt, pf2_arr)
+      in
+        fold@ (xs)
+      end // end of [list_vt_cons]
+    | list_vt_nil () => let
+        prval () = array_v_unnil {a1} (pf_arr)
+        prval () = pf_arr := array_v_nil {a1?} ()
+      in
+        fold@ (xs)
+      end // end of [list_vt_nil]
+  // end of [loop]
+} // end of [val]
+val () = array_ptr_free {a1?} (pf_gc, pf_arr | p_arr)
+val _ = __cast (xs) where {
+  extern castfn __cast (xs: !list_vt (a1, n) >> list_vt (a, n)):<> ptr
+} // end of val]
+//
 in
   // empty
 end // end of [list_vt_quicksort]

@@ -40,6 +40,15 @@ sortdef vt0p = viewt@ype
 
 (* ****** ****** *)
 
+(*
+**
+** HX-2012-02-29:
+** dlist_vt (a, f, r) means that there are f elements in
+** front of the current one while r-1 elements after it. So the
+** total number of elements is f+r. If f=r=0, then the list is
+** empty.
+**
+*)
 absviewtype // f: front; r: rear
 dlist_viewt0ype_int_int_viewtype (a: viewt@ype+, f: int, r: int)
 stadef dlist_vt = dlist_viewt0ype_int_int_viewtype
@@ -140,7 +149,7 @@ dlist_vt_insert
 (* ****** ****** *)
 
 fun{a:t@ype}
-dlist_vt_free {f,r:int} (xs: dlist_vt (a, f, r)):<> void
+dlist_vt_free {r:int} (xs: dlist_vt (a, 0, r)):<> void
 
 (* ****** ****** *)
 
