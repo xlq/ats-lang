@@ -123,7 +123,10 @@ funmset_compare
 (* ****** ****** *)
 //
 fun{a:t@ype}
-funmset_listize (xs: mset (a)):<> List_vt (a)
+funmset_listize (xs: mset (a)):<> List_vt (a) // no repeats
+//
+fun{a:t@ype} // if an element occurs n times, then it is repeated
+funmset_mlistize (xs: mset (a)):<> List_vt (a) // n times in the output
 //
 (* ****** ****** *)
 

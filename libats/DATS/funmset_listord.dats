@@ -455,6 +455,18 @@ implement{a}
 funmset_listize (nxs) = let
   typedef nx = @(Pos, a)
   viewtypedef res = List_vt (a)
+in
+  list_map_fun<nx><a> (nxs, lam (nx) =<0> nx.1)
+end // end of [funmset_listize]
+
+(* ****** ****** *)
+(*
+** HX: the returned list is in descending order
+*)
+implement{a}
+funmset_mlistize (nxs) = let
+  typedef nx = @(Pos, a)
+  viewtypedef res = List_vt (a)
   fn* loop1 {k:nat} .<k,0>. (
     nxs: list (nx, k), res: &res? >> res
   ) :<> void =
@@ -483,7 +495,7 @@ funmset_listize (nxs) = let
   val () = loop1 (nxs, res)
 in
   res
-end // end of [funmset_listize]
+end // end of [funmset_mlistize]
   
 (* ****** ****** *)
 

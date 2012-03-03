@@ -637,14 +637,15 @@ val p2t0 = (
         p1at_qid_app_dyn_tr (loc0, loc0, loc0, q, id, '[], 0(*npf*), '[])
       end // end of [_]
     end // end of [P1Tqid]
-  | P1Tlist (npf, p1ts) => begin case+ p1ts of
+  | P1Tlist (npf, p1ts) => (
+    case+ p1ts of
     | cons _ => let
         val p2ts = p1atlst_tr p1ts
       in
         linearity_check := 2; p2at_tup (loc0, 0(*tupknd*), npf, p2ts)
       end // end of [cons]
     | nil _ => p2at_empty (loc0)
-    end // end of [P1Tlist]
+    ) // end of [P1Tlist]
   | P1Tlst (p1ts) => begin
       linearity_check := 2; p2at_lst (loc0, p1atlst_tr p1ts)
     end // end of [P1Tlst]
@@ -721,7 +722,7 @@ p1at_arg_tr
     in
       p2at_list (p1t0.p1at_loc, npf, p2ts)
     end // end of [P1Tlist]
-  | _ => p1at_tr p1t0
+  | _ => p1at_tr (p1t0)
 // end of [p1at_arg_tr]
 
 implement
@@ -729,6 +730,13 @@ p1atlst_arg_tr
   (p1ts, wths1es) = case+ p1ts of
   | list_cons (p1t, p1ts) => let
       val p2t = p1at_arg_tr (p1t, wths1es)
+      val p2t = (
+        case+ p2t.p2at_node of
+        | P2Tlist (npf, p2ts) =>
+            p2at_tup (p2t.p2at_loc, 0(*tupknd*), npf, p2ts)
+          // end of [P2Tlist]
+        | _ => p2t // end of [_]
+      ) : p2at // end of [val]
       val p2ts = p1atlst_arg_tr (p1ts, wths1es)
     in
       list_cons (p2t, p2ts)
