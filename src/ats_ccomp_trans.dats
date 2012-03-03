@@ -1528,14 +1528,27 @@ fn tailcall_arg_move (
   ) : valprimlst_vt = begin
     case+ vps of
     | list_cons (vp, vps) => let
-        val vp = (case+ vp.valprim_node of
-          | VParg i_arg when i_arg < i => valprim_mov (res, loc0, vp)
-          | VPptrof vp1 => begin case+ vp1.valprim_node of
-              | VPargref i_arg when i_arg < i => valprim_mov (res, loc0, vp) | _ => vp
-            end // end of [VPptrof]
+//
+// HX-2012-03-02:
+// Should this be left for the C compiler???
+//
+        val vp = (
+          case+ vp.valprim_node of
+          | VParg i_arg
+            when i_arg < i => valprim_mov (res, loc0, vp)
+          | VPptrof vp1 => (
+            case+ vp1.valprim_node of
+            | VPargref i_arg
+              when i_arg < i => valprim_mov (res, loc0, vp)
+            | _ => vp
+            ) // end of [VPptrof]
+          | VPcastfn _ => valprim_mov (res, loc0, vp)
           | VPclo _ => valprim_mov (res, loc0, vp)
           | _ => vp
         ) : valprim // end of [val]
+(*
+        val vp = valprim_mov (res, loc0, vp)
+*)
       in
         list_vt_cons (vp, aux1_arg (res, loc0, i+1, vps))
       end // end of [list_vt_cons]

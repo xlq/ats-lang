@@ -284,7 +284,8 @@ val the_tailcallst = ref_make_elt<tailcallst> (TAILCALLSTnil ())
 
 in // in of [local]
 
-implement the_tailcallst_add (fl, tmps) = let
+implement
+the_tailcallst_add (fl, tmps) = let
 (*
   val () = begin
     print "the_tailcallst_add: fl = "; print_funlab fl; prerr_newline ()
@@ -295,7 +296,8 @@ in
   !p := TAILCALLSTcons (fl, tmps, !p)
 end // end of [the_tailcallst_add]
 
-implement the_tailcallst_find (fl0) = let
+implement
+the_tailcallst_find (fl0) = let
   fun aux (fl0: funlab_t, tcs: !tailcallst)
     : Option_vt (tmpvarlst) = begin case+ tcs of
     | TAILCALLSTcons (fl, tmps, !tcs1) => let
@@ -304,7 +306,7 @@ implement the_tailcallst_find (fl0) = let
         ) : Option_vt tmpvarlst
       in
         fold@ tcs; ans
-      end
+      end // end of [TAILCALLSTcons]
     | TAILCALLSTmark _ => (fold@ tcs; None_vt ())
     | TAILCALLSTnil () => (fold@ tcs; None_vt ())
   end // end of [aux]
@@ -313,13 +315,15 @@ in
   $effmask_ref (aux (fl0, !p))
 end // end of [the_tailcallst_find]
 
-implement the_tailcallst_mark () = let
+implement
+the_tailcallst_mark () = let
   val (vbox pf | p) = ref_get_view_ptr (the_tailcallst)
 in
   !p := TAILCALLSTmark (!p); (unit_v () | ())
 end // end of [the_tailcallst_mark]
 
-implement the_tailcallst_unmark
+implement
+the_tailcallst_unmark
   (pf_token | (*none*)): void = let
   prval unit_v () = pf_token
   fun aux (tcs: tailcallst): tailcallst = begin
@@ -376,7 +380,8 @@ in
   // empty
 end // end of [emit_tailjoin_case]
 
-implement emit_tailjoinlst {m} (pf | out, tjs) = let
+implement
+emit_tailjoinlst {m} (pf | out, tjs) = let
   val () = fprint1_string (pf | out, "va_list funarg ;\n\n")
   val () = begin
     fprint1_string (pf | out, "switch (");
