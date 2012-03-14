@@ -1228,7 +1228,7 @@ fn c1lau_tr {n:nat} (n: int n, c1l: c1lau): c2lau n = let
     prerr_loc_error2 c1l.c1lau_loc;
     $Deb.debug_prerrf (": %s: c1lau_tr", @(THISFILENAME));
     if np2ts < n then prerr ": this clause should contain more patterns.";
-    if np2ts > n then prerr ": this clause should contain less patterns.";
+    if np2ts > n then prerr ": this clause should contain fewer patterns.";
     prerr_newline ();
     $Err.abort {void} ();
     assert (np2ts = n) // deadcode
@@ -1677,8 +1677,8 @@ in
         | _ => $Err.abort {d2exp} () where {
             val n = $Lst.list_length d1es
             val () = prerr_loc_error2 loc0
-            val () = if n > 2 then prerr ": less argumnets should be given."
-            val () = if n < 2 then prerr ": more argumnets should be given."
+            val () = if n > 2 then prerr ": fewer arguments should be given."
+            val () = if n < 2 then prerr ": more arguments should be given."
             val () = prerr_newline ()
           } // end of [_]
         end // end of [D1Elist]

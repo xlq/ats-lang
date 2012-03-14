@@ -209,7 +209,7 @@ fn pfarity_check
     $Deb.debug_prerrf (": %s", @(THISFILENAME));
     prerr ": pfarity_check: pfarity mismatch";
     if npf1 < npf2 then prerr ": more proof components are needed.";
-    if npf1 > npf2 then prerr ": less proof components are needed.";
+    if npf1 > npf2 then prerr ": fewer proof components are needed.";
     prerr_newline ();
     $Err.abort {void} ()
   end // end of [if]
@@ -490,7 +490,7 @@ in
           prerr loc0; prerr ": error(3)";
           prerr ": the constructor ["; prerr d2c; prerr "] needs";
           if np2ts < ns2es_arg then prerr " more arguments.";
-          if np2ts > ns2es_arg then prerr " less arguments.";
+          if np2ts > ns2es_arg then prerr " fewer arguments.";
           $Err.abort {void} ();
           assert (np2ts = ns2es_arg) // deadcode
         end else begin
@@ -701,7 +701,7 @@ in
           | (list_nil (), list_nil ()) => stasub_nil
           | (list_cons _, list_nil _) => begin
               prerr loc0; prerr "error(3)";
-              prerr ": the existentially quantified pattern needs less bound variables.";
+              prerr ": the existentially quantified pattern needs fewer bound variables.";
               prerr_newline ();
               $Err.abort {stasub_t} ()
             end (* end of [list_cons, list_nil] *)

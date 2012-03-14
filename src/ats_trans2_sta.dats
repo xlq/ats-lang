@@ -341,7 +341,7 @@ fun sp1at_arg_tr_dn (
       prerr_loc_error2 loc0;
       prerr ": the static constructor [";
       $Syn.prerr_s0taq q; $Sym.prerr_symbol id; prerr "] requires ";
-      case+ s1as of list_cons _ => prerr "less" | _ => prerr "more";
+      case+ s1as of list_cons _ => prerr "fewer" | _ => prerr "more";
       prerr " arguments.";
       prerr_newline ();
       $Err.abort {s2varlst} ()
@@ -557,7 +557,7 @@ fn s1exp_app_tr_up
           |  1 => begin
               prerr_loc_error2 loc_app;
               $Deb.debug_prerrf (": %s: s1exp_app_tr_up", @(THISFILENAME));
-              prerr ": the static application needs less arguments.";
+              prerr ": the static application needs fewer arguments.";
               prerr_newline ();
               $Err.abort ()
             end // end of [1]
@@ -611,7 +611,7 @@ fn s1exp_app_datconptr_tr_up
       $Deb.debug_prerrf (": %s: s1exp_app_datcon_tr_up", @(THISFILENAME));
       prerr ": the type constructor [";
       prerr d2c;
-      prerr "] expects less arguments.";
+      prerr "] expects fewer arguments.";
       prerr_newline ();
       $Err.abort {void} ()
     end // end of [if]
@@ -2229,7 +2229,7 @@ fn d1atcon_tr (
 
   fn err1 (loc: loc_t, id: sym_t): s2explstopt = begin
     prerr_loc_error2 loc;
-    prerr ": less indexes are needed for the constructor [";
+    prerr ": fewer indexes are needed for the constructor [";
     $Sym.prerr_symbol id; prerr "]"; prerr_newline ();
     $Err.abort {s2explstopt} ()
   end // end of [err1]

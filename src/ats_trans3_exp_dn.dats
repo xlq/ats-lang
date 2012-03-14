@@ -386,7 +386,7 @@ fun labd2explst_tr_dn
   | (LABD2EXPLSTcons (l1, _, _), LABS2EXPLSTnil ()) => begin
       prerr_loc_error3 loc0;
       $Deb.debug_prerrf (": %s: labd2explst_tr_dn", @(THISFILENAME));
-      prerr ": the tuple/record needs less components";
+      prerr ": the tuple/record needs fewer components";
       prerr ": a component with the label ["; prerr l1; prerr "] should be removed.";
       prerr_newline ();
       $Err.abort {labd3explst} ()
@@ -582,7 +582,7 @@ val d3e0 = case+ d2e0.d2exp_node of
           val () = if npf <> npf_fun then begin // pfarity check
             prerr_loc_error3 loc0;
             prerr ": this function is expected to have";
-            if npf > npf_fun then prerr " less proof arguments.";
+            if npf > npf_fun then prerr " fewer proof arguments.";
             if npf < npf_fun then prerr " more proof arguments.";
             prerr_newline ();
             $Err.abort {void} ()
@@ -608,7 +608,7 @@ val d3e0 = case+ d2e0.d2exp_node of
             if sgn <> 0 then begin
               prerr_loc_error3 loc0;
               prerr ": the funcion is expected to have";
-              if sgn > 0 then prerr " less arguments.";
+              if sgn > 0 then prerr " fewer arguments.";
               if sgn < 0 then prerr " more arguments.";
               prerr_newline ();
               $Err.abort ();

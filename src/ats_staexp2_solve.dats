@@ -1231,7 +1231,7 @@ s2explst_arg_tyleq_solve (loc0, s2es10, s2es20) = let
       prerr_loc_error3 (loc0);
       $Deb.debug_prerrf (": %s: s2exp_arg_tyleq_solve", @(THISFILENAME));
       if sgn > 0 then prerr ": this function call needs more arguments.";
-      if sgn < 0 then prerr ": this function call needs less arguments.";
+      if sgn < 0 then prerr ": this function call needs fewer arguments.";
       prerr_newline ();
       $Err.abort {void} ();
       assert (sgn = 0)

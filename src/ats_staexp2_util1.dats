@@ -1311,7 +1311,7 @@ stasub_extend_sarglst_svarlst
 //
   fn err2 (loc0: loc_t): @(stasub, s2varlst) = begin
     prerr_loc_error2 loc0;
-    prerr ": the static application is expected to have less arguments.";
+    prerr ": the static application is expected to have fewer arguments.";
     prerr_newline ();
     $Err.abort ()
   end // end of [err2]

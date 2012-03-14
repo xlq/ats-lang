@@ -335,7 +335,7 @@ fn d23explst_tr_dn {n:nat} (
     val () = prerr_loc_error3 loc0
     val () = $Deb.debug_prerrf (": %s: d23explst_tr_dn", @(THISFILENAME))
     val () = if sgn > 0 then
-      prerr ": arity mismatch: less arguments are needed."
+      prerr ": arity mismatch: fewer arguments are needed."
     val () = if sgn < 0 then
       prerr ": arity mismatch: more arguments are needed."
     val () = prerr_newline ()

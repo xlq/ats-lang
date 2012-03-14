@@ -1362,7 +1362,7 @@ s2qua_instantiate_with_and_add
       end // end of [list_cons, list_nil]
     | (list_nil _, list_cons _) => begin
         prerr_loc_error3 loc0;
-        prerr ": the static application needs less arguments.";
+        prerr ": the static application needs fewer arguments.";
         prerr_newline ();
         $Err.abort {stasub_t} ()
       end // end of [list_nil, list_cons]

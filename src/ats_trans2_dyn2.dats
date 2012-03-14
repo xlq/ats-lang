@@ -460,7 +460,7 @@ in
   if ns1as <> ns2vs then begin
     prerr_loc_error2 loc0;
     if ns1as < ns2vs then prerr ": more static arguments should be given.";
-    if ns1as > ns2vs then prerr ": less static arguments should be given.";
+    if ns1as > ns2vs then prerr ": fewer static arguments should be given.";
     prerr_newline ();
     $Err.abort {s2varlst} ()
   end else begin
@@ -502,7 +502,7 @@ in
   if ns1es <> ns2vs then begin
     prerr_loc_error2 loc0;
     if ns1es < ns2vs then prerr ": more template arguments should be given.";
-    if ns1es > ns2vs then prerr ": less template arguments should be given.";
+    if ns1es > ns2vs then prerr ": fewer template arguments should be given.";
     prerr_newline ();
     $Err.abort {s2explst} ()
   end else begin
@@ -607,7 +607,7 @@ and d1exp_arg_body_tr_ann (
   val () = if npf1 <> npf2 then begin // check for pfarity match
     prerr_loc_error2 d1e0.d1exp_loc;
     $Deb.debug_prerrf (": %s: d1exp_arg_body_tr_ann", @(THISFILENAME));
-    if npf1 < npf2 then prerr ": less proof arguments are expected.";
+    if npf1 < npf2 then prerr ": fewer proof arguments are expected.";
     if npf1 > npf2 then prerr ": more proof arguments are expected.";
     prerr_newline ();
     $Err.abort {void} ()
@@ -628,7 +628,7 @@ and d1exp_arg_body_tr_ann (
     if ns2es <> np2ts then begin
       prerr_loc_error2 d1e0.d1exp_loc;
       $Deb.debug_prerrf (": %s: d1exp_arg_body_tr_ann", @(THISFILENAME));
-      if ns2es < np2ts then prerr ": less arguments are expected.";
+      if ns2es < np2ts then prerr ": fewer arguments are expected.";
       if ns2es > np2ts then prerr ": more arguments are expected.";
       prerr_newline ();
       $Err.abort {p2atlst} ()
@@ -915,7 +915,7 @@ fn i1mpdec_tr
           $Deb.debug_prerrf (": %s: i1mpdec_tr: aux2_imp", @(THISFILENAME));
           prerr ": the implementation for [";
           prerr q; prerr id;
-          prerr "] should be applied to less template arguments.";
+          prerr "] should be applied to fewer template arguments.";
           prerr_newline ();
           $Err.abort {s2exp} ()
         end // end of [nil]
@@ -960,7 +960,7 @@ fn i1mpdec_tr
           $Deb.debug_prerrf (": %s: i1mpdec_tr: aux2_tmp", @(THISFILENAME));
           prerr ": the implementation for [";
           prerr q; prerr id;
-          prerr "] should be applied to less template arguments.";
+          prerr "] should be applied to fewer template arguments.";
           prerr_newline ();
           $Err.abort {s2exp} ()
         end // end of [nil]

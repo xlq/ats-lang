@@ -905,7 +905,7 @@ fn d2exparg_dyn_get {n:nat} (
           prerr ": the dynamic symbol [";
           $Sym.prerr_symbol sym;
           if nd2es > 2 then prerr "] expects two arguments but is given more.";
-          if nd2es < 2 then prerr "] expects two arguments but is given less.";
+          if nd2es < 2 then prerr "] expects two arguments but is given fewer.";
           prerr_newline ();
           $Err.abort {void} ();
           assert (nd2es = n) // deadcode
