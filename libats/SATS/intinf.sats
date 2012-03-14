@@ -66,27 +66,27 @@ viewtypedef Intinf = [i:int] intinf (i)
 symintr intinf_make
 
 fun intinf_make_int
-  {i:int} (i: int i): intinf (i)
+  {i:int} (i: int i):<> intinf (i)
 overload intinf_make with intinf_make_int
 
 fun intinf_make_lint
-  {i:int} (i: lint i): intinf (i)
+  {i:int} (i: lint i):<> intinf (i)
 overload intinf_make with intinf_make_lint
 
 fun intinf_make_llint
-  {i:int} (i: llint i): intinf (i)
+  {i:int} (i: llint i):<> intinf (i)
 overload intinf_make with intinf_make_llint
 
 fun intinf_make_double
-  (d: double): Intinf // [d] should be integral
+  (d: double):<> Intinf // [d] should be integral
 overload intinf_make with intinf_make_double
 
 fun intinf_make_string
-  (rep: string): Intinf
+  (rep: string):<> Intinf
 overload intinf_make with intinf_make_string
 
 fun intinf_make_intinf
-  {i:int} (i: !intinf (i)): intinf (i)
+  {i:int} (i: !intinf (i)):<> intinf (i)
 overload intinf_make with intinf_make_intinf
 
 (* ****** ****** *)
@@ -101,16 +101,27 @@ fun intinf_get_int // HX: this is unsafe because of potential
 
 (* ****** ****** *)
 
-fun fprint_intinf {m:file_mode} {i:int}
+symintr fprint_intinf
+
+fun fprint0_intinf
+ {i:int} (out: FILEref, i: !intinf i): void
+fun fprint1_intinf {m:file_mode} {i:int}
   (pf: file_mode_lte (m, w) | fil: &FILE m, i: !intinf i): void
-// end of [fprint_intinf]
+overload fprint_intinf with fprint0_intinf
+overload fprint_intinf with fprint1_intinf
 
 fun print_intinf {i:int} (i: !intinf i): void
 overload print with print_intinf
 
-fun fprint_intinf_base {m:file_mode} {i:int} (
+symintr fprint_intinf_base
+fun fprint0_intinf_base {i:int} (
+  out: FILEref, b: intBtw (2, 36+1), i: !intinf i
+) : void // end of [fprint0_intinf_base]
+fun fprint1_intinf_base {m:file_mode} {i:int} (
   pf: file_mode_lte (m, w) | fil: &FILE m, b: intBtw (2, 36+1), i: !intinf i
-) : void // end of [fprint_intinf_base]
+) : void // end of [fprint1_intinf_base]
+overload fprint_intinf_base with fprint0_intinf_base
+overload fprint_intinf_base with fprint1_intinf_base
 
 fun print_intinf_base
   {i:int} (b: intBtw (2, 36+1), i: !intinf i): void

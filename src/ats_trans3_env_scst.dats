@@ -110,7 +110,7 @@ the_s2cstlst_env_bind_and_add
   in
     $Err.abort {void} ()
   end (* end of [if] *)
-end // end of [the_s2cstlst_env_bind_ad_add]
+end // end of [the_s2cstlst_env_bind_and_add]
 
 (* ****** ****** *)
 

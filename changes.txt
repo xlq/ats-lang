@@ -18,6 +18,8 @@ ats-lang-anairiats-0.2.7:
 11. && and || are now macros (long overdue!)
 12. The libats/ngc/linmap_pavltree package is added. Kudos to Artyom!
 13: Adding libats/funmset_listord (functional multiset implementation)
+14: Fixing a bug involving tailcall optimization (argument movement)
+15: Fixing a minor bug involving p2at_arg_tr.
 
 ########################################################################
 

@@ -80,12 +80,15 @@ end // end of [mul_nat_nat_nat]
 implement
 mul_pos_pos_pos (pf) = let
   prfun aux {m,n:pos} {p:int} .<m>.
-    (pf: MUL (m, n, p)): [p>=n] void = begin
-    case+ pf of MULind pf => mul_nat_nat_nat (pf)
+    (pf: MUL (m, n, p)): [p>=m+n-1] void = let
+    prval MULind pf1 = pf
+    prval pf2 = mul_commute (pf1)
+    prval MULind pf3 = pf2
+    prval () = mul_nat_nat_nat (pf3)
+  in
+    // nothing
   end // end of [aux]
-  val () = aux (pf)
-  prval pf = mul_commute (pf)
-  val () = aux (pf)
+  prval () = aux (pf)
 in
   // nothing
 end // end of [mul_pos_pos_pos]

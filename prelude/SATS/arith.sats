@@ -106,7 +106,7 @@ prfun mul_isfun {m,n:int} {p1,p2:int}
 prfun mul_nat_nat_nat :
   {m,n:nat} {p:int} MUL (m, n, p) -<prf> [p >= 0] void
 prfun mul_pos_pos_pos :
-  {m,n:pos} {p:int} MUL (m, n, p) -<prf> [p >= m; p >= n] void
+  {m,n:pos} {p:int} MUL (m, n, p) -<prf> [p >= m+n-1] void
 
 (* ****** ****** *)
 

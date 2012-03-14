@@ -64,8 +64,11 @@ end // end of [intinf_make_int]
 
 implement
 intinf_make_lint (i) = let
-  val @(pf_gc, pf_at | p) = ptr_alloc_tsz {mpz_vt} (sizeof<mpz_vt>)
-  val i = lint_of_lint1 (i) where { extern castfn lint_of_lint1 {i:int} (x: lint i): lint }
+  val @(pf_gc, pf_at | p) =
+    ptr_alloc_tsz {mpz_vt} (sizeof<mpz_vt>)
+  val i = lint_of_lint1 (i) where { 
+    extern castfn lint_of_lint1 {i:int} (x: lint i):<> lint
+  } // end of [val]
   val () = mpz_init_set_lint (!p, i)
 in
   @(pf_gc, pf_at | p)
@@ -73,8 +76,11 @@ end // end of [intinf_make_lint]
 
 implement
 intinf_make_llint (i) = let
-  val @(pf_gc, pf_at | p) = ptr_alloc_tsz {mpz_vt} (sizeof<mpz_vt>)
-  val i = llint_of_llint1 (i) where { extern castfn llint_of_llint1 {i:int} (x: llint i): llint }
+  val @(pf_gc, pf_at | p) =
+    ptr_alloc_tsz {mpz_vt} (sizeof<mpz_vt>)
+  val i = llint_of_llint1 (i) where {
+    extern castfn llint_of_llint1 {i:int} (x: llint i):<> llint
+  } // end of [val]
   val i = double_of_llint (i)
   val () = mpz_init_set_double (!p, i)
 in
@@ -107,25 +113,48 @@ intinf_free @(pf_gc, pf_at | p) =
 (* ****** ****** *)
 
 implement
-fprint_intinf
-  (pf | fil, intinf) = fprint_intinf_base (pf | fil, 10, intinf)
-// end of [fprint_intinf]
+fprint0_intinf
+  (out, intinf) = fprint0_intinf_base (out, 10, intinf)
+// end of [fprint0_intinf]
+implement
+fprint1_intinf
+  (pf | fil, intinf) = fprint1_intinf_base (pf | fil, 10, intinf)
+// end of [fprint1_intinf]
 
-implement print_intinf (intinf) = print_mac (fprint_intinf, intinf)
+implement print_intinf (intinf) = print_mac (fprint1_intinf, intinf)
+
+(* ****** ****** *)
 
 implement
-fprint_intinf_base
+fprint0_intinf_base
+  (out, base, intinf) = let
+  val [l:addr]
+    (pffil | p) = __cast (out) where {
+    extern castfn __cast
+      (out: FILEref): [l:addr] (FILE(w) @ l | ptr l)
+    // end of [extern]
+  } // end of [val]
+  val () = fprint1_intinf_base (file_mode_lte_w_w | !p, base, intinf)
+  prval () = __free (pffil) where {
+    extern praxi __free (pf: FILE(w) @ l): void
+  } // end of [prval]
+in
+  (*nothing*)
+end // end of [fprint0_intinf_base]
+
+implement
+fprint1_intinf_base
   (pf | fil, base, intinf) = () where {
   prval pfat = intinf.1
   val n = mpz_out_str (pf | fil, base, !(intinf.2))
   prval () = intinf.1 := pfat
   val () = assert_errmsg (n > 0, "exit(ATS): [fprint_intinf_base] failed.\n")
-} // end of [fprint_intinf_base]
+} // end of [fprint1_intinf_base]
 
 implement
 print_intinf_base (base, intinf) = let
   val (pf_stdout | p_stdout) = stdout_get ()
-  val () = fprint_intinf_base
+  val () = fprint1_intinf_base
     (file_mode_lte_w_w | !p_stdout, base, intinf)
   val () = stdout_view_set (pf_stdout | (*none*))
 in

@@ -71,8 +71,8 @@ fun strcasecmp (
 //
 // HX: string comparison like [strncmp] but case is ignored
 //
-fun strncasecmp {n:nat} (
-  str1: string, str2: string, n: size_t n
+fun strncasecmp (
+  str1: string, str2: string, n: size_t
 ) : int = "mac#atslib_strncasecmp" // end of [strncasecmp]
 
 (* ****** ****** *)

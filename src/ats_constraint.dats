@@ -1955,7 +1955,7 @@ c3str_solve_main
             prerr ": unsolved constraint"; prerr_c3str_if (unsolved, c3t);
             prerr_newline ()
           end
-        end // end of [C3STRKINDnone]
+        end // end of [C3STRKINDmain]
       | C3STRKINDmetric_nat () => begin
           $Loc.prerr_location loc0; prerr ": error(3)";
           prerr ": unsolved constraint for termination metric being welfounded";

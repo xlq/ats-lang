@@ -309,7 +309,7 @@ xref:: $(XREFOBJ)
 
 ######
 
-lines:
+srclines:
 	wc -l \
   ats_main.dats \
   ats_lexer.lats \

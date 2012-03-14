@@ -510,12 +510,12 @@ overload mpz_mod with mpz_mod2_ulint
 // this one is much faster but it needs a proof that n is a multiple of d
 //
 symintr mpz_divexact
-fun mpz_divexact3_mpz // q := n/d
-  (q: &mpz_vt, n: &mpz_vt, d: &mpz_vt):<> void = "mac#atslib_mpz_divexact3_mpz"
-overload mpz_divexact with mpz_divexact3_mpz
-fun mpz_divexact2_mpz // n := n/d
-  (n: &mpz_vt, d: &mpz_vt):<> void = "mac#atslib_mpz_divexact2_mpz"
-overload mpz_divexact with mpz_divexact2_mpz
+fun mpz_divexact3 // q := n/d
+  (q: &mpz_vt, n: &mpz_vt, d: &mpz_vt):<> void = "mac#atslib_mpz_divexact3"
+overload mpz_divexact with mpz_divexact3
+fun mpz_divexact2 // n := n/d
+  (n: &mpz_vt, d: &mpz_vt):<> void = "mac#atslib_mpz_divexact2"
+overload mpz_divexact with mpz_divexact2
 
 (* ****** ****** *)
 //
@@ -665,15 +665,17 @@ fun mpz_sgn (x: &mpz_vt):<> Sgn = "mac#atslib_mpz_sgn"
 (* ****** ****** *)
 
 symintr mpz_gcd
-fun mpz_gcd3_mpz
-  (dst: &mpz_vt, src1: &mpz_vt, src2: &mpz_vt): void = "mac#atslib_mpz_gcd3_mpz"
+fun mpz_gcd3_mpz (
+  dst: &mpz_vt, src1: &mpz_vt, src2: &mpz_vt
+) :<> void = "mac#atslib_mpz_gcd3_mpz" // end of [fun]
 overload mpz_gcd with mpz_gcd3_mpz
-fun mpz_gcd2_mpz (dst: &mpz_vt, src2: &mpz_vt): void = "mac#atslib_mpz_gcd2_mpz"
+fun mpz_gcd2_mpz (dst: &mpz_vt, src2: &mpz_vt):<> void = "mac#atslib_mpz_gcd2_mpz"
 overload mpz_gcd with mpz_gcd2_mpz
-fun mpz_gcd3_ui
-  (dst: &mpz_vt, src1: &mpz_vt, src2: ulint): ulint = "mac#atslib_mpz_gcd3_ui"
+fun mpz_gcd3_ui (
+  dst: &mpz_vt, src1: &mpz_vt, src2: ulint
+) :<> ulint = "mac#atslib_mpz_gcd3_ui" // end of [fun]
 overload mpz_gcd with mpz_gcd3_ui
-fun mpz_gcd2_ui (dst: &mpz_vt, src2: ulint): ulint = "mac#atslib_mpz_gcd2_ui"
+fun mpz_gcd2_ui (dst: &mpz_vt, src2: ulint):<> ulint = "mac#atslib_mpz_gcd2_ui"
 overload mpz_gcd with mpz_gcd2_ui
 
 fun mpz_gcdext // for given a and b, g, s and t are computed s.t. g = a*s + b*t

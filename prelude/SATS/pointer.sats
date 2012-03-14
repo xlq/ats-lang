@@ -47,7 +47,7 @@
 
 (* ****** ****** *)
 
-prfun ptr_is_gtez
+praxi ptr_is_gtez
   {l:addr} (p: ptr l):<> [l >= null] void
 // end of [ptr_is_gtez]
 

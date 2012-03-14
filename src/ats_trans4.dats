@@ -335,6 +335,7 @@ s2exp_tr_named (
     ) : hityp = begin
     prerr_loc_error4 (loc0);
     $Deb.debug_prerrf (": [%s]: s2exp_tr", @(THISFILENAME));
+    prerr ": a template argument is not a type";
     prerr ": s2t0 = "; prerr s2t0; prerr "; s2e0 = "; prerr_s2exp (s2e0);
     prerr_newline ();
     $Err.abort {hityp} ()

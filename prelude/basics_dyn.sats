@@ -101,6 +101,10 @@ praxi addr_is_gtez {l:addr} (): [l >= null] void
 
 (* ****** ****** *)
 
+prfun false_elim {X:prop | false} (): X // [false] implies all
+
+(* ****** ****** *)
+
 (*
 **
 ** The proof function [verify_constraint] is mostly used for

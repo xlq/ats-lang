@@ -37,6 +37,10 @@
 
 (* ****** ****** *)
 
+implement
+false_elim () = case+ 0 of _ =/=> ()
+
+(* ****** ****** *)
 (*
 // HX: this is declared in $ATSHOME/prelude/basic_dyn.sats:
 // prfun verify_constraint {p:bool | p} (): [p] void // verify and add

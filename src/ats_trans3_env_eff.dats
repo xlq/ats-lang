@@ -140,7 +140,7 @@ typedef efs_t = $Eff.effset_t
 val the_efis = ref_make_elt<effenvitmlst> (list_nil)
 val the_efiss = ref_make_elt<effenvitmlstlst> (list_nil)
 
-in
+in // end of [local]
 
 implement the_effect_env_add_lam (s2fe) = begin
   !the_efis := list_cons (EFFENVITEMlam s2fe, !the_efis)
@@ -269,7 +269,8 @@ implement the_effect_env_check_ref (loc0) =
 
 //
 
-fn the_effect_env_check_effset (loc0: loc_t, efs0: efs_t): void = let
+fn the_effect_env_check_effset
+  (loc0: loc_t, efs0: efs_t): void = let
   fun auxCK (effs: List eff_t):<cloptr1> List eff_t = begin
     case+ effs of
     | list_cons (eff, effs) => begin

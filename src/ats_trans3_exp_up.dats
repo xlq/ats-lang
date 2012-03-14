@@ -1746,7 +1746,7 @@ in
      val d3ls_nt = d2lablst_tr_up d2ls
    in
      d3exp_sel_tr_up (loc0, d3e0, d3ls_nt)
-   end // end of [D2Ederef]
+   end // end of [_]
 end // end of [d2exp_sel_tr_up]
 
 (* ****** ****** *)
