@@ -1518,9 +1518,11 @@ funarg_varfin_check (loc0) = let
       end // end of [list_cons]
     | list_nil () => ()
   end // end of [auxpatlst]
+  val opt = the_lamloop_env_arg_get ()
 in
-  case+ the_lamloop_env_arg_get loc0 of
-  | ~Some_vt p3ts => auxpatlst (loc0, p3ts) | ~None_vt () => begin
+  case+ opt of
+  | ~Some_vt p3ts => auxpatlst (loc0, p3ts)
+  | ~None_vt () => begin
       prerr_loc_interror loc0;
       prerr ": funarg_varfin_check: no argument(s)."; prerr_newline ();
       $Err.abort {void} ()
@@ -1596,9 +1598,11 @@ s2exp_wth_instantiate (loc0, s2e0) = let
 in
   case+ s2e0.s2exp_node of
   | S2Ewth (s2e, wths2es) => let
+      val opt = the_lamloop_env_arg_get () 
       val p3ts = (
-        case+ the_lamloop_env_arg_get (loc0) of
-        | ~Some_vt p3ts => p3ts | ~None_vt () => begin
+        case+ opt of
+        | ~Some_vt p3ts => p3ts
+        | ~None_vt () => begin
             prerr_loc_interror loc0;
             prerr ": s2exp_wth_instantiate"; prerr_newline ();
             $Err.abort {p3atlst} ()

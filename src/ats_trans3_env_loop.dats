@@ -97,17 +97,23 @@ end // end of [the_lamloop_env_push_loop1]
 
 (* ****** ****** *)
 
-implement the_lamloop_env_arg_get (loc0) = begin
+implement
+the_lamloop_env_arg_get () = let
+//
+fun aux (
+  lmlps: lamlooplst
+) : Option_vt p3atlst = (
+  case+ lmlps of
+  | list_cons (lmlp, lmlps) => (
+    case+ lmlp of
+    | LMLPlam p3ts => Some_vt (p3ts) | _ => aux lmlps
+    )
+  | list_nil () => None_vt ()
+) // end of [aux]
+//
+in
   case+ !the_lamloop of
-  | LMLPlam p3ts => Some_vt (p3ts)
-  | _ => aux !the_lamloops where {
-      fun aux (lmlps: lamlooplst): Option_vt p3atlst =
-        case+ lmlps of
-        | list_cons (lmlp, lmlps) => begin case+ lmlp of
-          | LMLPlam p3ts => Some_vt (p3ts) | _ => aux lmlps
-          end
-        | list_nil () => None_vt ()
-    } // end of [where]
+  | LMLPlam p3ts => Some_vt (p3ts) | _ => aux !the_lamloops
 end // end of [the_lamloop_env_arg_get]
 
 (* ****** ******* *)

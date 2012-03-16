@@ -501,7 +501,7 @@ fun the_lamloop_env_push_loop1 {n:nat} (
   lamloop_env_token | void
 ) // end of [the_lamloop_env_push_loop1]
 
-fun the_lamloop_env_arg_get (loc0: loc_t): Option_vt (p3atlst)
+fun the_lamloop_env_arg_get (): Option_vt (p3atlst)
 
 (* ****** ****** *)
 
