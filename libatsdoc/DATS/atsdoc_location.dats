@@ -44,6 +44,10 @@ staload "libatsdoc/SATS/atsdoc_location.sats"
 
 (* ****** ****** *)
 
+macdef neof (i) = (,(i) != EOF)
+
+(* ****** ****** *)
+
 assume
 position_t0ype =
 $extype_struct
@@ -98,7 +102,7 @@ position_copy (
 implement
 position_incby_char
   (pos, i) =
-if i >= 0 then let
+if neof(i) then let
 //
   #define c2i int_of_char
 //

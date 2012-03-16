@@ -65,6 +65,10 @@ staload "atsdoc_translate.sats"
 
 (* ****** ****** *)
 
+macdef neof (i) = (,(i) != EOF)
+
+(* ****** ****** *)
+
 implement
 fprint_funarg (out, x) =
   case+ x of
@@ -210,7 +214,7 @@ trans_extcode_START
   val i = lexbufpos_get_char (buf, pos)
 in
 //
-if i >= 0 then let
+if neof(i) then let
   val c = (i2c)i
 in
   case+ c of
@@ -267,7 +271,7 @@ trans_string
   val i = lexbufpos_get_char (buf, pos)
 in
 //
-if i >= 0 then let
+if neof(i) then let
   val c = (i2c)i
 (*
   val () = fprintf (stderr_ref, "trans_dstring: c = %c\n", @(c))
@@ -338,7 +342,7 @@ trans_string_SLASH
   val i = lexbufpos_get_char (buf, pos)
 in
 //
-if i >= 0 then let
+if neof(i) then let
   val c = (i2c)i in
   case+ c of
   | _ when c = SDQ => let
@@ -386,7 +390,7 @@ trans_funres (buf, pos) = let
   val i = lexbufpos_get_char (buf, pos)
 in
 //
-if i >= 0 then let
+if neof(i) then let
   val c = (i2c)i in
   case+ c of
   | '\[' => let
@@ -406,7 +410,9 @@ trans_funres_LBRACKET
   (buf, pos0, pos) = let
 //
   val k = testing_ident (buf, pos)
-  val () = if k < 0 then lexbufpos2_docerr (buf, pos0, pos, DE_FUNRES_none)
+  val () = if k < 0 then
+    lexbufpos2_docerr (buf, pos0, pos, DE_FUNRES_none)
+  // end of [val]
   val k = (if k >= 0 then k else 0): int
   val k = (uint_of)k
 //
@@ -457,7 +463,7 @@ trans_funarg (buf, pos) = let
 //
 in
 //
-if i >= 0 then let
+if neof(i) then let
   val c = (i2c)i in
   case+ c of
   | SQUOTE => let
@@ -558,7 +564,7 @@ trans_funarglst
 //
 in
 //
-if i >= 0 then let
+if neof(i) then let
   val c = (i2c)i
 (*
   val () = fprintf (stderr_ref, "trans_funarglst: c = %c\n", @(c))
@@ -593,7 +599,7 @@ trans_funarglst_OPEN
 //
 in
 //
-if i >= 0 then let
+if neof(i) then let
   val c = (i2c)i in
   case+ c of
   | _ when c = cls => let

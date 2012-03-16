@@ -76,6 +76,10 @@ staload "libatsdoc/SATS/atsdoc_text.sats"
 
 (* ****** ****** *)
 
+macdef neof (i) = (,(i) != EOF)
+
+(* ****** ****** *)
+
 local
 
 staload
@@ -526,7 +530,7 @@ fun fprsub_ident {n:nat} (
 ) : void = let
   val n = list_vt_length (cs)
 in
-  if n >= 0 then let
+  if n > 0 then let
     val id = string_make_list_int ($UN.castvwtp1(cs), n)
     val id = string_of_strbuf (id)
     val sym = symbol_make_string (id)
@@ -553,7 +557,7 @@ fprsub_reader (out, inp) = let
 fun aux (
   out: FILEref, inp: &reader, cur: &int
 ) : void =
-  if cur >= 0 then let
+  if neof(cur) then let
     val fst = (i2c)cur
     val () = cur := reader_get_char (inp)
   in 
@@ -568,7 +572,7 @@ fun aux (
 and aux_SHARP (
   out: FILEref, inp: &reader, cur: &int
 ) : void =
-  if cur >= 0 then let
+  if neof(cur) then let
     val cs = ident_get (inp, cur)
     val dlrend = (cur = int_of('$')): bool
 //
@@ -598,7 +602,7 @@ and aux_SHARP (
 and aux_SLASH (
   out: FILEref, inp: &reader, cur: &int
 ) : void =
-  if cur >= 0 then let
+  if neof(cur) then let
     val fst = (i2c)cur
     val () = cur := reader_get_char (inp)
   in

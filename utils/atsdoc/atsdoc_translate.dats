@@ -78,7 +78,13 @@ staload "atsdoc_translate.sats"
 
 (* ****** ****** *)
 
+macdef neof (i) = (,(i) != EOF)
+
+(* ****** ****** *)
+
 fun funres_prfx () = "_tok"
+
+(* ****** ****** *)
 
 local
 
@@ -168,7 +174,7 @@ ftesting_seq0
   ) : uint = let
     val i = lexbuf_get_char (buf, nchr)
   in
-    if i >= 0 then
+    if neof(i) then
       if f ((i2c)i)
         then loop (buf, succ(nchr), f) else nchr
       // end of [if]
@@ -192,7 +198,7 @@ testing_spaces
   ) : uint = let
     val i = lexbufpos_get_char (buf, pos)
   in
-    if i >= 0 then (
+    if neof(i) then (
       if SPACE_test ((i2c)i) then let
         val () = posincbyc (pos, i) in loop (buf, pos, k+1u)
       end else k // end of [if]
@@ -216,7 +222,7 @@ implement testing_literal
     if string_isnot_at_end (lit, k) then let
       val i = lexbuf_get_char (buf, nchr)
     in
-      if i >= 0 then
+      if neof(i) then
         if ((i2c)i = lit[k])
           then loop (buf, succ(nchr), lit, k+1) else ~1
         // end of [if]
@@ -237,7 +243,7 @@ testing_ident
   val i = lexbufpos_get_char (buf, pos)
 in
 //
-if i >= 0 then (
+if neof(i) then (
   if IDENTFST_test ((i2c)i) then let
     val () = posincby1 (pos)
     val nchr = ftesting_seq0 (buf, pos, IDENTRST_test)
@@ -306,7 +312,7 @@ trans_top
 //
 in
 //
-if i0 >= 0 then let
+if neof(i0) then let
   val c = (i2c)i0 // the first character
   val () = posincbyc (pos, i0)
 in
@@ -391,7 +397,7 @@ trans_top_SLASH
   val i = lexbufpos_get_char (buf, pos)
 in
 //
-if i >= 0 then let
+if neof(i) then let
   val c = (i2c)i in
   case+ c of
   | '\n' => let

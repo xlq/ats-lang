@@ -75,6 +75,10 @@ staload "libatsdoc/SATS/atsdoc_lexbuf.sats"
 //
 (* ****** ****** *)
 
+macdef neof (i) = (,(i) != EOF)
+
+(* ****** ****** *)
+
 viewtypedef
 lexbuf_int_int
   (m: int, n:int) =
@@ -226,7 +230,7 @@ in
   end else let
     val i = $R.reader_get_char (buf.reader)
   in
-    if i >= 0 then let
+    if neof(i) then let
       val c = (i2uc)i
       val m = $Q.queue_cap {uchar} (buf.cbuf)
     in
