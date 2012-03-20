@@ -46,7 +46,7 @@ staload IntInf = "ats_intinf.sats"
 
 (* ****** ****** *)
 
-abst@ype i0nt = int
+abstype i0nt
 
 val i0nt_0 : i0nt
 val i0nt_1 : i0nt
